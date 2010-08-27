@@ -122,7 +122,7 @@ executive::Device::~Device() {
 bool executive::Device::checkMemoryAccess(const void* pointer, 
 	size_t size) const
 {
-	MemoryAllocation* allocation = getMemoryAllocation(pointer, false);
+	MemoryAllocation* allocation = getMemoryAllocation(pointer, AnyAllocation);
 	if(allocation == 0) return false;
 	
 	report(" Checking access " << pointer << " (" << size 

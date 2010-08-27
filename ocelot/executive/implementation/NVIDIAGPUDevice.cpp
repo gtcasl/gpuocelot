@@ -714,26 +714,11 @@ namespace executive
 	}
 	
 	Device::MemoryAllocation* NVIDIAGPUDevice::getMemoryAllocation(
-		const void* address, bool hostAllocation) const
+		const void* address, AllocationType type) const
 	{
 		MemoryAllocation* allocation = 0;
-		if(hostAllocation)
-		{
-			if(!_hostAllocations.empty())
-			{
-				AllocationMap::const_iterator alloc = 
-					_hostAllocations.upper_bound((void*)address);
-				if(alloc != _hostAllocations.begin()) --alloc;
-				if(alloc != _hostAllocations.end())
-				{
-					if((char*)address >= (char*)alloc->second->mappedPointer())
-					{
-						allocation = alloc->second;
-					}
-				}
-			}
-		}
-		else
+		
+		if(type == DeviceAllocation || type == AnyAllocation)
 		{
 			if(!_allocations.empty())
 			{
@@ -742,14 +727,35 @@ namespace executive
 				if(alloc != _allocations.begin()) --alloc;
 				if(alloc != _allocations.end())
 				{
-					if((char*)address >= (char*)alloc->second->pointer())
+					if(!alloc->second->host()
+					 	&& (char*)address >= (char*)alloc->second->pointer())
 					{
 						allocation = alloc->second;
+						return allocation;
 					}
 				}
 			}
 		}
 
+		if(type == HostAllocation || type == AnyAllocation)
+		{
+			for(AllocationMap::const_iterator alloc = _allocations.begin(); 
+				alloc != _allocations.end(); ++alloc)
+			{
+				if(alloc->second->host())
+				{
+					if((char*)address >= alloc->second->mappedPointer() 
+						&& (char*)address < 
+						(char*)alloc->second->mappedPointer()
+						+ alloc->second->size())
+					{
+						allocation = alloc->second;
+						break;
+					}
+				}
+			}
+		}
+		
 		return allocation;		
 	}
 
@@ -779,7 +785,8 @@ namespace executive
 					module->second.globals.find(name);
 				if(global != module->second.globals.end())
 				{
-					return getMemoryAllocation(global->second, false);
+					return getMemoryAllocation(global->second, 
+						DeviceAllocation);
 				}
 			}
 			return 0;
@@ -804,7 +811,7 @@ namespace executive
 		Module::GlobalMap::iterator global = module->second.globals.find(name);
 		if(global == module->second.globals.end()) return 0;
 		
-		return getMemoryAllocation(global->second, false);
+		return getMemoryAllocation(global->second, DeviceAllocation);
 	}
 
 	Device::MemoryAllocation* NVIDIAGPUDevice::allocate(size_t size)

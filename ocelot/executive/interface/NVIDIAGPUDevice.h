@@ -235,7 +235,7 @@ namespace executive
 			
 		public:
 			Device::MemoryAllocation* getMemoryAllocation(const void* address, 
-				bool hostAllocation) const;
+				AllocationType type) const;
 			/*! \brief Get the address of a global by stream */
 			Device::MemoryAllocation* getGlobalAllocation(
 				const std::string& module, const std::string& name);

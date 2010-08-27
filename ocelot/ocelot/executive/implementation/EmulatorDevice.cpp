@@ -325,10 +325,30 @@ namespace executive
 	}
 			
 	Device::MemoryAllocation* EmulatorDevice::getMemoryAllocation(
-		const void* address, bool hostAllocation) const
+		const void* address, AllocationType type) const
 	{
 		MemoryAllocation* allocation = 0;
-		if(hostAllocation)
+		
+		if(type == DeviceAllocation || type == AnyAllocation)
+		{
+			if(!_allocations.empty())
+			{
+				AllocationMap::const_iterator alloc = _allocations.upper_bound(
+					(void*)address);
+				if(alloc != _allocations.begin()) --alloc;
+				if(alloc != _allocations.end())
+				{
+					if(!alloc->second->host()
+					 	&& (char*)address >= (char*)alloc->second->pointer())
+					{
+						allocation = alloc->second;
+						return allocation;
+					}
+				}
+			}
+		}
+
+		if(type == HostAllocation || type == AnyAllocation)
 		{
 			for(AllocationMap::const_iterator alloc = _allocations.begin(); 
 				alloc != _allocations.end(); ++alloc)
@@ -346,24 +366,7 @@ namespace executive
 				}
 			}
 		}
-		else
-		{
-			if(!_allocations.empty())
-			{
-				AllocationMap::const_iterator alloc = _allocations.upper_bound(
-					(void*)address);
-				if(alloc != _allocations.begin()) --alloc;
-				if(alloc != _allocations.end())
-				{
-					if(!alloc->second->host()
-					 	&& (char*)address >= (char*)alloc->second->pointer())
-					{
-						allocation = alloc->second;
-					}
-				}
-			}
-		}
-
+		
 		return allocation;		
 	}
 
@@ -393,7 +396,8 @@ namespace executive
 					module->second->globals.find(name);
 				if(global != module->second->globals.end())
 				{
-					return getMemoryAllocation(global->second, false);
+					return getMemoryAllocation(global->second,
+						DeviceAllocation);
 				}
 			}
 			return 0;
@@ -418,7 +422,7 @@ namespace executive
 		Module::GlobalMap::iterator global = module->second->globals.find(name);
 		if(global == module->second->globals.end()) return 0;
 		
-		return getMemoryAllocation(global->second, false);
+		return getMemoryAllocation(global->second, DeviceAllocation);
 	}
 
 	Device::MemoryAllocation* EmulatorDevice::allocate(size_t size)
@@ -1008,7 +1012,7 @@ namespace executive
 			{
 				kernel->removeTraceGenerator(*gen);
 			}
-			throw;		
+			throw;
 		}
 		
 		for(trace::TraceGeneratorVector::const_iterator 

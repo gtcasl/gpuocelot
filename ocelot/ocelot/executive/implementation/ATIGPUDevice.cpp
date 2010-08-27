@@ -191,11 +191,11 @@ namespace executive
     }
 
 	Device::MemoryAllocation *ATIGPUDevice::getMemoryAllocation(
-			const void *address, bool hostAllocation) const
+			const void *address, AllocationType type) const
 	{
 		MemoryAllocation *allocation = 0;
 
-		if (hostAllocation) {
+		if (type == HostAllocation) {
 			assertM(false, "Not implemented yet");
 		} else {
 			if (!_uav0Allocations.empty()) {

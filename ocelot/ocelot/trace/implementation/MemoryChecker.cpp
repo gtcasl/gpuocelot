@@ -154,7 +154,8 @@ namespace trace
 						|| !_cache.valid )
 					{
 						const executive::Device::MemoryAllocation* allocation = 
-							_device->getMemoryAllocation( (void*)*address );
+							_device->getMemoryAllocation( (void*)*address, 
+								executive::Device::AnyAllocation );
 						if( allocation == 0 )
 						{
 							globalMemoryError( _device, _dim,

@@ -32,7 +32,7 @@ check_PROGRAMS = TestLexer TestParser \
 	TestCudaSequence TestCudaTextureFilters TestLLVMKernels TestDeviceSwitching \
 	MemoryTraceAnalyzer InstructionTraceAnalyzer BranchTraceAnalyzer \
 	ParallelismTraceAnalyzer SharedComputationAnalyzer \
-	Module PtxToLlvmTranslator DFG CFG
+	Module PtxToLlvmTranslator DFG CFG TestUniform
 lib_LTLIBRARIES = libocelot.la
 ################################################################################
 
@@ -371,6 +371,14 @@ TestCudaSequence_LDADD = libocelot.la $(LLVM_LDFLAGS)
 TestCudaSequence_LDFLAGS = -static
 ################################################################################
 
+################################################################################
+##
+##
+TestUniform_CXXFLAGS = $(SDK_CFLAGS)
+TestUniform_SOURCES = ocelot/cuda/test/kernels/uniform.cu.cpp
+TestUniform_LDADD = libocelot.la $(LLVM_LDFLAGS)
+TestUniform_LDFLAGS = -static
+################################################################################
 
 ################################################################################
 ## TestDeviceSwitching

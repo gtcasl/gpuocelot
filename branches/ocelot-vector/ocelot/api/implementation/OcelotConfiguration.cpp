@@ -258,7 +258,7 @@ void api::OcelotConfiguration::initialize(std::istream &stream) {
 		ocelot = main.parse<std::string>("ocelot", "ocelot-refactored");
 	}
 	catch (hydrazine::Exception exp) {
-		report("api::OcelotConfiguration::initialize() exception: " << exp.message);
+		report("api::OcelotConfiguration::initialize() exception: " << exp.what());
 	}
 	if (config) {
 		delete config;

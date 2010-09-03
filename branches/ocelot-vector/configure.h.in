@@ -64,6 +64,10 @@
    */
 #undef HAVE_LIBBOOST_SYSTEM_MT
 
+/* Define to 1 if you have the `boost_thread-mt' library (-lboost_thread-mt).
+   */
+#undef HAVE_LIBBOOST_THREAD_MT
+
 /* Define to 1 if you have the `boost_wserialization-mt' library
    (-lboost_wserialization-mt). */
 #undef HAVE_LIBBOOST_WSERIALIZATION_MT

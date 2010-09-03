@@ -1904,6 +1904,8 @@ namespace executive
 		}
 		
 		manager.run( *module );
+
+		report("ran vectorization pass:");
 		module->dump();
 		
 		#endif		
@@ -2550,8 +2552,21 @@ namespace executive
 			
 		}
 		
+		// set a timer
+		struct timeval start_time, end_time;
+		gettimeofday(&start_time, 0);
+
 		_manager.launch( _function, &_context, 
 			_barrierSupport, _resumePointOffset, _externSharedMemorySize );
+
+		// stop a timer, measure runtime
+		gettimeofday(&end_time, 0);
+
+		double runtime = (double)end_time.tv_sec - (double)start_time.tv_sec + 
+			(double)end_time.tv_usec * 1.0e-6 - (double)start_time.tv_usec * 1.0e-6;
+		
+		std::cout << "warpsize: " << LLVM_UNIFORMCONTROL_WARPSIZE << ", runtime: " << runtime << " s\n";
+		
 	}
 	
 	void LLVMExecutableKernel::setKernelShape( int x, int y, int z )

@@ -17,6 +17,7 @@
 // LLVM includes
 #include <llvm/Instructions.h>
 #include <llvm/Constants.h>
+#include <llvm/Support/raw_ostream.h>
 
 // Hydrazine includes
 #include <hydrazine/implementation/debug.h>
@@ -26,8 +27,28 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 #define Ocelot_Exception(x) { std::stringstream ss; ss << x; std::cerr << x << std::endl; throw hydrazine::Exception(ss.str()); }
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
+char analysis::LLVMUniformVectorization::ID = 0;
+
+std::string operator+(const std::string &str, llvm::Value *value) {
+	std::string valStr;
+	/*
+	llvm::raw_string_ostream os(valStr);
+	value->print(os);*/
+	return str + valStr;
+}
+
+std::ostream &operator<<(std::ostream &out, llvm::Value *value) {
+	std::string str;
+	llvm::raw_string_ostream os(str);
+	value->print(os);
+	out << str;
+	return out;
+}
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -87,7 +108,7 @@ analysis::LLVMUniformVectorization::DivergentBranch::DivergentBranch(
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 analysis::LLVMUniformVectorization::LLVMUniformVectorization(int _warpSize):
-	llvm::FunctionPass(this),
+	llvm::FunctionPass(ID),
 	warpSize(_warpSize)
 {
 
@@ -121,7 +142,7 @@ bool analysis::LLVMUniformVectorization::runOnFunction(llvm::Function &F) {
 
 
 void analysis::LLVMUniformVectorization::addWarpSynchronous(llvm::Function &F) {
-	Translation translation(&F);
+	Translation translation(&F, warpSize);
 	
 	report("Vectorization: " << translation.F->getNameStr());
 	
@@ -137,6 +158,7 @@ void analysis::LLVMUniformVectorization::addWarpSynchronous(llvm::Function &F) {
 	
 	if (LLVM_UNIFORMCONTROL_WARPSIZE > 1) {
 		updateSchedulerBlocks(translation);
+		//vectorize(translation);
 	}
 	
 	report("end vectorization " << translation.F->getNameStr() << "\n");
@@ -257,7 +279,7 @@ void analysis::LLVMUniformVectorization::addInterleavedInstructions(Translation 
 					}
 					instList.push_back(instr);
 
-					translation.warpInstructionMap[(&*inst_it)].push_back(instr);
+					translation.warpInstructionMap[(&*inst_it)].replicated.push_back(instr);
 				}
 			}
 		}
@@ -296,7 +318,7 @@ void analysis::LLVMUniformVectorization::resolveDependencies(Translation &transl
 				for (int tid = 0; tid < warpSize; tid++) {
 					// clone instruction
 					
-					llvm::Instruction *instr = translation.warpInstructionMap[(&*inst_it)][tid];
+					llvm::Instruction *instr = translation.warpInstructionMap[(&*inst_it)].replicated[tid];
 					updateDependencies(translation, instr, tid);
 					
 					// replace element ptr instructions with computations of thread idx
@@ -437,7 +459,7 @@ void analysis::LLVMUniformVectorization::updateDependencies(Translation &transla
 			WarpInstructionMap::iterator op_it = translation.warpInstructionMap.find(operand);
 			
 			if (op_it != translation.warpInstructionMap.end()) {
-				instr->setOperand(i, op_it->second[tid]);
+				instr->setOperand(i, op_it->second.replicated[tid]);
 			}
 			else if (llvm::PHINode::classof(operand)) {
 				// update phi nodes
@@ -448,7 +470,7 @@ void analysis::LLVMUniformVectorization::updateDependencies(Translation &transla
 				for (unsigned int j = 0; j < phiNode->getNumIncomingValues(); ++j) {
 					op_it = translation.warpInstructionMap.find(phiNode->getIncomingValue(j));
 					if (op_it != translation.warpInstructionMap.end()) {
-						llvm::Value *incoming = op_it->second[tid];
+						llvm::Value *incoming = op_it->second.replicated[tid];
 						if (llvm::Instruction::classof(incoming)) {
 							llvm::BasicBlock *scalar = static_cast<llvm::Instruction*>(incoming)->getParent();
 							llvm::BasicBlock *warpBlock = translation.getWarpBlockFromScalar(scalar);
@@ -579,14 +601,14 @@ void analysis::LLVMUniformVectorization::handleDivergentBranch(Translation &tran
 		const llvm::Type *int16ty = llvm::Type::getInt16Ty(translation.F->getContext());
 		const llvm::Type *int32ty = llvm::Type::getInt32Ty(translation.F->getContext());
 		llvm::Constant *constOne = llvm::ConstantInt::get(int16ty, 1);
-		llvm::Instruction *z = new llvm::ZExtInst(ws_it->second[0], int16ty, "condZ", 
+		llvm::Instruction *z = new llvm::ZExtInst(ws_it->second.replicated[0], int16ty, "condZ", 
 			divergent.warpBlock);
 		
 		// insert reduction code 
 		for (int n = 1; n < warpSize; n++) {
 			llvm::BinaryOperator *shlOp = llvm::BinaryOperator::Create(llvm::Instruction::Shl, z, 
 				constOne, "condZsl", divergent.warpBlock);
-			llvm::Instruction *cmpInt16 = new llvm::ZExtInst(ws_it->second[n], int16ty, "cmpws",
+			llvm::Instruction *cmpInt16 = new llvm::ZExtInst(ws_it->second.replicated[n], int16ty, "cmpws",
 				divergent.warpBlock);
 			z = llvm::BinaryOperator::Create(llvm::Instruction::Or, shlOp, cmpInt16, "condZ", 
 				divergent.warpBlock);
@@ -670,7 +692,9 @@ void analysis::LLVMUniformVectorization::updateSchedulerBlocks(Translation &tran
 		if (llvm::BranchInst::classof(termInst)) {
 			llvm::BranchInst *braInst = static_cast<llvm::BranchInst *>(termInst);
 			for (unsigned int i = 0; i < braInst->getNumSuccessors(); i++) {
-				if (translation.warpSchedulerBlocks.find(braInst->getSuccessor(i)) == translation.warpSchedulerBlocks.end()) {
+				if (translation.warpSchedulerBlocks.find(braInst->getSuccessor(i)) ==
+					translation.warpSchedulerBlocks.end()) {
+
 					llvm::BasicBlock *wsBlock = translation.getWarpBlockFromScalar(braInst->getSuccessor(i));
 					braInst->setSuccessor(i, wsBlock);
 				}
@@ -735,6 +759,182 @@ void analysis::LLVMUniformVectorization::debugEmitCFG(Translation &translation) 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
+bool analysis::LLVMUniformVectorization::VectorizedInstruction::isVectorizable() const {
+	bool res = false;
+	if (replicated.size()) {
+		llvm::Instruction *inst = replicated[0];
+		llvm::BinaryOperator *binOp = llvm::dyn_cast<llvm::BinaryOperator>(inst);
+		bool isFloatOrDouble = inst->getType()->isFloatTy() || inst->getType()->isDoubleTy();
+		if (binOp && isFloatOrDouble) {
+			return true;
+		}
+/*
+		llvm::CastInst *castInst = llvm::dyn_cast<llvm::CastInst>(inst);
+		if (castInst) {
+			return true;
+		}
+*/
+	}
+	return res;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
+/*! \brief given an instruction from the scalar set, get a set of scalar values that are 
+	either replicated scalar instructions from the vectorized set or extracted vector elements */
+analysis::LLVMUniformVectorization::InstructionVector 
+	analysis::LLVMUniformVectorization::Translation::getInstructionAsReplicated(
+		llvm::Value *inst, llvm::Instruction *before) {
+
+	WarpInstructionMap::iterator ws_it = warpInstructionMap.find(inst);
+	if (ws_it == warpInstructionMap.end()) {
+		throw hydrazine::Exception(std::string("getInstructionAsReplicated() - instruction ") + inst + 
+			" not in warpTranslationMap");
+	}
+
+	InstructionVector replicated;
+
+	return replicated;
+}
+
+/*! \brief given an instruction from the scalar set, get a vector from the vectorized set that
+	is either a promoted-to-vector instruction or a set of scalar values packed into a vector*/
+llvm::Instruction *analysis::LLVMUniformVectorization::Translation::getInstructionAsVectorized(
+	llvm::Value *inst, llvm::Instruction *before) {
+
+	const llvm::Type *tyInt32 = llvm::Type::getInt32Ty(F->getContext());
+	llvm::Instruction *vectorInstruction = 0;
+
+	llvm::Instruction *instruction = llvm::dyn_cast<llvm::Instruction>(inst);
+	llvm::Constant *constant = llvm::dyn_cast<llvm::Constant>(inst);
+	if (instruction) {
+		WarpInstructionMap::iterator ws_it = warpInstructionMap.find(inst);
+		if (ws_it == warpInstructionMap.end()) {
+			throw hydrazine::Exception(std::string("getInstructionAsVectorized() - instruction ") + inst + 
+				" not in warpTranslationMap");
+		}
+		if (!ws_it->second.vector) {
+			vectorize(instruction);
+			ws_it = warpInstructionMap.find(inst);
+		}
+		vectorInstruction = ws_it->second.vector;
+	}
+	else if (constant) {
+		// it's a constant, so pack it into a vector
+				// it's already replicated, so pack into a vector
+		llvm::VectorType *vecType = llvm::VectorType::get(inst->getType(), warpSize);
+		llvm::Value *vectorValue = llvm::UndefValue::get(vecType);
+		for (int tid = 0; tid < warpSize; tid++) {
+			llvm::Constant *idx = llvm::ConstantInt::get(tyInt32, tid);
+			vectorValue = llvm::InsertElementInst::Create(vectorValue, 
+				constant, idx, "", before);
+		}
+		vectorInstruction = static_cast<llvm::Instruction*>(vectorValue);
+	}
+	else {
+		throw hydrazine::Exception("Failed to get instruction as vector type");
+	}
+
+	assert(vectorInstruction);
+
+	return vectorInstruction;
+}
+
+/*!
+	\brief visit an instruction and either promotes to vector, or packs results into a vector
+*/
+void analysis::LLVMUniformVectorization::Translation::vectorize(llvm::Instruction *inst) {
+	WarpInstructionMap::iterator ws_it = warpInstructionMap.find(inst);
+	if (ws_it == warpInstructionMap.end()) {
+		return;
+		throw hydrazine::Exception(std::string("getInstructionAsVectorized() - instruction ") + inst + 
+			" not in warpTranslationMap");
+	}
+
+	if (ws_it->second.vector) {
+		return;
+	}
+	if (llvm::TerminatorInst::classof(inst)) {
+		return;
+	}
+
+	llvm::Instruction *before = 0; // TODO - it seems like LLVM should have a good way of inserting
+																	//	an instruction AFTER another instruction
+
+	// this is terrible, I know. 
+	llvm::Instruction *after = ws_it->second.replicated[warpSize - 1];
+	llvm::BasicBlock *block = after->getParent();
+	llvm::BasicBlock::iterator inst_it = block->begin();
+	bool found = false;
+	for (; inst_it != block->end(); ++inst_it) {
+		if (&*inst_it == after) {
+			++inst_it;
+			assert(inst_it != block->end());
+			found = true;
+			before = &*inst_it;
+			break;
+		}
+	}
+
+	assert(found && before);
+	const llvm::Type *tyInt32 = llvm::Type::getInt32Ty(F->getContext());
+
+	if (ws_it->second.isVectorizable()) {
+		// fetch vector operands, promote this instruction to a vector, and replace replicated
+		//   instructions with extracted elements
+
+		report(" IS Vectorizable: " << inst);
+
+		InstructionVector operands;
+		for (unsigned int op = 0; op < inst->getNumOperands(); ++op) {
+			operands.push_back(getInstructionAsVectorized(inst->getOperand(op), before));
+		}
+		llvm::BinaryOperator *binOp = llvm::dyn_cast<llvm::BinaryOperator>(inst);
+		if (binOp) {
+			llvm::BinaryOperator *vecOp = llvm::BinaryOperator::Create(binOp->getOpcode(), 
+				operands[0], operands[1], "", before);
+			ws_it->second.vector = vecOp;
+		}
+		else {
+			throw hydrazine::Exception("Unhandled vectorizable LLVM instruction");
+		}
+
+		report("VECTORIZED SOMETHING!");
+
+		InstructionVector extracted;
+		for (int tid = 0; tid < warpSize; tid++) {
+			llvm::Constant *idx = llvm::ConstantInt::get(tyInt32, tid);
+			llvm::Instruction *element = llvm::ExtractElementInst::Create(ws_it->second.vector, 
+				idx, "", before);
+			extracted.push_back(element);
+		}
+
+		// update uses
+		for (int tid = 0; tid < warpSize; tid++) {
+			ws_it->second.replicated[tid]->replaceAllUsesWith(extracted[tid]);
+			ws_it->second.replicated[tid]->eraseFromParent();
+		}
+		ws_it->second.replicated = extracted;
+	}
+	else {
+		const llvm::Type *instType = inst->getType();
+		if (!llvm::SequentialType::classof(instType) && !instType->isVoidTy()) {
+
+			// it's already replicated, so pack into a vector
+			llvm::VectorType *vecType = llvm::VectorType::get(inst->getType(), warpSize);
+			llvm::Value *vectorValue = llvm::UndefValue::get(vecType);
+			for (int tid = 0; tid < warpSize; tid++) {
+				llvm::Constant *idx = llvm::ConstantInt::get(tyInt32, tid);
+				vectorValue = llvm::InsertElementInst::Create(vectorValue, 
+					ws_it->second.replicated[tid], idx, "", before);
+			}
+			ws_it->second.vector = static_cast<llvm::Instruction *>(vectorValue);
+			report("  IS packed into vector: " << ws_it->second.vector);
+		}
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
 /*!
 	\brief this could probably be implemented as a second function pass, but examine
 		collections of instructions of size <warpSize>, hoist or sink instructions, and
@@ -742,6 +942,20 @@ void analysis::LLVMUniformVectorization::debugEmitCFG(Translation &translation) 
 */
 void analysis::LLVMUniformVectorization::vectorize(Translation &translation) {
 
+	report("vectorize(translation)");
+
+	// go through the work list 
+	for (BasicBlockList::iterator bb_it = translation.traversal.begin(); 
+		bb_it != translation.traversal.end(); ++bb_it) {
+		llvm::BasicBlock *block = *bb_it;
+		report("  vectorizing " << block->getNameStr());
+
+		for (llvm::BasicBlock::iterator inst_it = block->begin(); inst_it != block->end(); ++inst_it) {
+			llvm::Instruction *inst = &*inst_it;
+			report("    " << inst);
+			translation.vectorize(&*inst_it);
+		}		
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////

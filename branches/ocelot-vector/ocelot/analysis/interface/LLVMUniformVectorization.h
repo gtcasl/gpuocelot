@@ -33,8 +33,28 @@ namespace analysis
 	*/
 	class LLVMUniformVectorization: public llvm::FunctionPass {
 	public:
+		typedef std::vector< llvm::Instruction *> InstructionVector;
+
+		/*!
+			\brief contains replicated and/or vectorized instructions
+		*/
+		class VectorizedInstruction {
+		public:
+			VectorizedInstruction(): vector(0) { }
+
+			bool isVectorizable() const;
+
+		public:
+
+			//! \brief replicated form of instruction
+			InstructionVector replicated;
+
+			//! \brief vectorized form of instruction
+			llvm::Instruction *vector;
+		};
+
 		typedef std::list< llvm::BasicBlock *> BasicBlockList;
-		typedef std::map< llvm::Value *, std::vector< llvm::Instruction *> > WarpInstructionMap;
+		typedef std::map< llvm::Value *, VectorizedInstruction > WarpInstructionMap;
 		typedef std::map< llvm::BasicBlock *, llvm::BasicBlock *> BasicBlockMap;
 
 		/*!
@@ -87,7 +107,7 @@ namespace analysis
 		*/
 		class Translation {
 		public:
-			Translation(llvm::Function *f): F(f) { }
+			Translation(llvm::Function *f, int ws=LLVM_UNIFORMCONTROL_WARPSIZE): F(f), warpSize(ws) { }
 			~Translation();
 			
 			//! \brief gets a warp-synchronous block from a scalar block
@@ -95,7 +115,19 @@ namespace analysis
 			
 			//! \brief gets a scalar block corresponding to a warp-synchronous block
 			llvm::BasicBlock * getScalarBlockFromWarp(llvm::BasicBlock *warpBlock);
-			
+		
+			/*! \brief given an instruction from the scalar set, get a set of scalar values that are 
+				either replicated scalar instructions from the vectorized set or extracted vector elements */
+			InstructionVector getInstructionAsReplicated(llvm::Value *inst, llvm::Instruction *before=0);
+
+			/*! \brief given an instruction from the scalar set, get a vector from the vectorized set that
+				is either a promoted-to-vector instruction or a set of scalar values packed into a vector*/
+			llvm::Instruction *getInstructionAsVectorized(llvm::Value *inst, llvm::Instruction *before=0);
+
+			/*!
+				\brief visit an instruction and either promotes to vector, or packs results into a vector
+			*/
+			void vectorize(llvm::Instruction *inst);
 		
 		public:
 		
@@ -145,6 +177,7 @@ namespace analysis
 			*/
 			WarpSchedulerMap warpSchedulerBlocks;
 			
+			int warpSize;
 		};
 
 	public:
@@ -259,6 +292,8 @@ namespace analysis
 
 		//! \brief number of consecutive threads to pack into a single hardware thread
 		int warpSize;
+
+		static char ID;
 	};
 
 }

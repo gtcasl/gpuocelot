@@ -27,7 +27,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 #define Ocelot_Exception(x) { std::stringstream ss; ss << x; std::cerr << x << std::endl; throw hydrazine::Exception(ss.str()); }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -158,7 +158,7 @@ void analysis::LLVMUniformVectorization::addWarpSynchronous(llvm::Function &F) {
 	
 	if (LLVM_UNIFORMCONTROL_WARPSIZE > 1) {
 		updateSchedulerBlocks(translation);
-		//vectorize(translation);
+		vectorize(translation);
 	}
 	
 	report("end vectorization " << translation.F->getNameStr() << "\n");
@@ -866,14 +866,22 @@ void analysis::LLVMUniformVectorization::Translation::vectorize(llvm::Instructio
 	llvm::BasicBlock *block = after->getParent();
 	llvm::BasicBlock::iterator inst_it = block->begin();
 	bool found = false;
-	for (; inst_it != block->end(); ++inst_it) {
-		if (&*inst_it == after) {
-			++inst_it;
-			assert(inst_it != block->end());
-			found = true;
-			before = &*inst_it;
-			break;
+	for (; llvm::PHINode::classof(&*inst_it); ++inst_it) { }
+
+	if (!llvm::PHINode::classof(after)) {
+		for (; inst_it != block->end(); ++inst_it) {
+			if (&*inst_it == after) {
+				++inst_it;
+				assert(inst_it != block->end());
+				found = true;
+				before = &*inst_it;
+				break;
+			}
 		}
+	}
+	else {
+		before = &*inst_it;
+		found = true;
 	}
 
 	assert(found && before);

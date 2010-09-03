@@ -12,7 +12,6 @@ extern "C" __global__ void kernel_uniform(float *A, float a) {
 	A[tid] = a * tid;
 }
 
-#if 0
 /*!
 	\brief simple kernel with uniform control flow and a loop
 */
@@ -23,8 +22,6 @@ extern "C" __global__ void kernel_uniform_loop(float *A, float a, float *B, int 
 		A[tid] += B[i];
 	}
 }
-
-#endif
 
 /*!
 
@@ -73,7 +70,6 @@ int main() {
 		}
 	}
 
-/*
 	if (!errors) {
 		kernel_uniform_loop<<< gridSize, blockSize >>>(A_gpu, A_k, B_gpu, B);
 		cudaMemcpy(A_cpu, A_gpu, A_bytes, cudaMemcpyDeviceToHost);
@@ -91,16 +87,6 @@ int main() {
 			}
 		}
 	}
-*/
-
-/*
-	if (!errors) {
-		float *A1_gpu = (float *)A_gpu;
-		float *A2_gpu = 0;
-		cudaMalloc((void **)&A2_gpu, A_bytes);
-
-	}
-*/
 
 cleanup:
 

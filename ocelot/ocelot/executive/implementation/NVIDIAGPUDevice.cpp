@@ -39,7 +39,7 @@
 #define REPORT_BASE 0
 
 // Print out the full ptx for each module as it is loaded
-#define REPORT_PTX 1
+#define REPORT_PTX 0
 
 typedef cuda::CudaDriver driver;
 
@@ -649,6 +649,12 @@ namespace executive
 			checkError(driver::cuCtxCreate(&_context, flags, device));
 		}
 		
+		checkError(driver::cuCtxGetLimit(&_properties.stackSize, CU_LIMIT_STACK_SIZE));
+		checkError(driver::cuCtxGetLimit(&_properties.printfFIFOSize, CU_LIMIT_PRINTF_FIFO_SIZE));
+		
+		report("CU_LIMIT_STACK_SIZE = " << _properties.stackSize);
+		report("printfFIFOSize = " << _properties.printfFIFOSize);
+		
 		checkError(driver::cuCtxPopCurrent(&_context));
 		
 		char name[256];
@@ -703,6 +709,7 @@ namespace executive
 			CU_DEVICE_ATTRIBUTE_CONCURRENT_KERNELS, device));
 		checkError(driver::cuDeviceComputeCapability(&_properties.major, 
 			&_properties.minor, device));
+			
 	}
 
 	NVIDIAGPUDevice::~NVIDIAGPUDevice()

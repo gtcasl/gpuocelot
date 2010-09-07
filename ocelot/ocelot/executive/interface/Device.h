@@ -76,7 +76,10 @@ namespace executive
 					int major;
 					/*! minor shader model revision */
 					int minor;
-
+					/*! stack size */
+					size_t stackSize;
+					/*! printfFIFOSize */
+					size_t printfFIFOSize;
 				public:
 					/*! Write attributes of the device to an output stream */
 					std::ostream& write(std::ostream &out) const;

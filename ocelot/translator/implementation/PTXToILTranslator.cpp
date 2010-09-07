@@ -213,6 +213,7 @@ namespace translator
  			case ir::PTXInstruction::Mul:   _translateMul(i);  break;
 			case ir::PTXInstruction::Mul24: _translateMul(i);  break;
 			case ir::PTXInstruction::Or:    _translateOr(i);   break;
+			case ir::PTXInstruction::Rem:   _translateRem(i);  break;
 			case ir::PTXInstruction::SelP:  _translateSelP(i); break;
 			case ir::PTXInstruction::SetP:  _translateSetP(i); break;
 			case ir::PTXInstruction::Shl:   _translateShl(i);  break;
@@ -416,6 +417,9 @@ namespace translator
 				{
 					case ir::PTXInstruction::AtomicAdd:
 					{
+						assertM(i.a.offset == 0, 
+								"Atomic Add from offset not supported");
+
 						ir::ILUav_Read_Add_Id uav_read_add_id;
 
 						uav_read_add_id.d = _translate(i.d);
@@ -429,15 +433,48 @@ namespace translator
 					default:
 					{
 						assertM(false, "Atomic operation \"" 
-								<< i.atomicOperation << "\" not supported");
+								<< i.atomicOperation 
+								<< "\" not supported in "
+								<< i.toString());
+					}
+				}
+				break;
+			}
+			case ir::PTXInstruction::Shared:
+			{
+				switch(i.atomicOperation)
+				{
+					case ir::PTXInstruction::AtomicAdd:
+					{
+						assertM(i.a.offset == 0, 
+								"Atomic Add from offset not supported");
+
+						ir::ILLds_Read_Add_Resource lds_read_add_resource;
+
+						lds_read_add_resource.d = _translate(i.d).x();
+						lds_read_add_resource.a = _translate(i.a).x();
+						lds_read_add_resource.b = _translate(i.b).x();
+
+						_add(lds_read_add_resource);
+
+						break;
+					}
+					default:
+					{
+						assertM(false, "Atomic operation \"" 
+								<< i.atomicOperation 
+								<< "\" not supported in "
+								<< i.toString());
 					}
 				}
 				break;
 			}
 			default:
 			{
-				assertM(false, "Address Space \"" << i.addressSpace 
-						<< "\" not supported");
+				assertM(false, "Address Space \"" 
+						<< ir::PTXInstruction::toString(i.addressSpace)
+						<< "\" not supported in "
+						<< i.toString());
 			}
 		}
 	}
@@ -914,6 +951,120 @@ namespace translator
 		ior.d = _translate(i.d);
 
 		_add(ior);
+	}
+
+	void PTXToILTranslator::_translateRem(const ir::PTXInstruction &i)
+	{
+		assertM(i.type == ir::PTXOperand::s32, "Type " 
+				<< ir::PTXOperand::toString(i.type) << " not supported");
+
+		// out0 = in0 % in1
+		// mdef(285)_out(1)_in(2)
+		// mov r0, in0
+		// mov r1, in1
+		// dcl_literal l25, 0, 0, 0, 0
+		// mov r0._y__, r1.x
+		// ilt r1.xy, r0, l25
+		// iadd r0.xy, r0, r1
+		// ixor r0.xy, r0, r1
+		// udiv r2.x, r0.x, r0.y
+		// umul r2.x, r2.x, r0.y
+		// iadd r0.x, r0.x, r2.x_neg(xyzw)
+		// iadd r0.x, r0.x, r1.x
+		// ixor r0.x, r0.x, r1.x
+		// mov out0, r0
+		// mend
+		
+		ir::ILOperand r0 = _tempRegister();
+		ir::ILOperand r1 = _tempRegister();
+		ir::ILOperand r2 = _tempRegister();
+
+		// mov r0, in0
+		{
+			ir::ILMov mov;
+			mov.d = r0; mov.a = _translate(i.a);
+			_add(mov);
+		}
+
+		// mov r1, in1
+		{
+			ir::ILMov mov;
+			mov.d = r1; mov.a = _translate(i.b);
+			_add(mov);
+		}
+
+		// dcl_literal l25, 0, 0, 0, 0
+		ir::ILOperand l25 = _translateLiteral(0);
+
+		// mov r0._y__, r1.x
+		{
+			ir::ILMov mov;
+			mov.d = r0._y__(); mov.a = r1.x();
+			_add(mov);
+		}
+
+		// ilt r1.xy, r0, l25
+		{
+			ir::ILIlt ilt;
+			ilt.d = r1.xy(); ilt.a = r0; ilt.b = l25;
+			_add(ilt);
+		}
+
+		// iadd r0.xy, r0, r1
+		{
+			ir::ILIadd iadd;
+			iadd.d = r0.xy(); iadd.a = r0; iadd.b = r1;
+			_add(iadd);
+		}
+
+		// ixor r0.xy, r0, r1
+		{
+			ir::ILIxor ixor;
+			ixor.d = r0.xy(); ixor.a = r0; ixor.b = r1;
+			_add(ixor);
+		}
+
+		// udiv r2.x, r0.x, r0.y
+		{
+			ir::ILUdiv udiv;
+			udiv.d = r2.x(); udiv.a = r0.x(); udiv.b = r0.y();
+			_add(udiv);
+		}
+
+		// umul r2.x, r2.x, r0.y
+		{
+			ir::ILUmul umul;
+			umul.d = r2.x(); umul.a = r2.x(); umul.b = r0.y();
+			_add(umul);
+		}
+
+		// iadd r0.x, r0.x, r2.x_neg(xyzw)
+		{
+			ir::ILIadd iadd;
+			iadd.d = r0.x(); iadd.a = r0.x(); iadd.b = r2.x().neg();
+			_add(iadd);
+		}
+
+		// iadd r0.x, r0.x, r1.x
+		{
+			ir::ILIadd iadd;
+			iadd.d = r0.x(); iadd.a = r0.x(); iadd.b = r1.x();
+			_add(iadd);
+		}
+
+		// ixor r0.x, r0.x, r1.x
+		{
+			ir::ILIxor ixor;
+			ixor.d = r0.x(); ixor.a = r0.x(); ixor.b = r1.x();
+			_add(ixor);
+		}
+
+		// mov out0, r0
+		{
+			ir::ILMov mov;
+			mov.d = _translate(i.d); mov.a = r0;
+			_add(mov);
+		}
 	}
 
 	void PTXToILTranslator::_translateSelP(const ir::PTXInstruction &i)

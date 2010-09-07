@@ -57,7 +57,7 @@ namespace executive
 		_properties.name = "CAL Device";
 		_properties.multiprocessorCount = _attribs.numberOfShaderEngines;
 		_properties.major = 1;
-		_properties.minor = 0;
+		_properties.minor = 2;
 
         // Multiple contexts per device is not supported yet
         // only one context per device so we can create it in the constructor

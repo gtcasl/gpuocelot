@@ -98,6 +98,7 @@ typedef enum CUevent_flags_enum {
     CU_EVENT_BLOCKING_SYNC = 1 ///< Event uses blocking synchronization
 } CUevent_flags;
 
+
 /**
  * Array formats
  */

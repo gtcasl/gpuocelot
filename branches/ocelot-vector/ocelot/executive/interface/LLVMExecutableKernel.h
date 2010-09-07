@@ -34,8 +34,20 @@ namespace executive
 			typedef std::unordered_map< std::string, size_t > AllocationMap;
 			/*! \brief A type for referring to a specific PTX thread */
 			typedef unsigned int ThreadContext;
+			
+			class JITedFunction {
+			public:
+				typedef unsigned int (*Pointer)(LLVMContext *);
+			public:
+				JITedFunction(): function(0), function_id(0) { }
+				
+			public:
+				Pointer function;
+				unsigned int function_id;				
+			};
+			
 			/*! \brief A function pointer to the translated kernel */
-			typedef unsigned int (*Function)( LLVMContext* );
+			//typedef unsigned int (*Function)( LLVMContext* );
 			
 			/*! \brief A class for managing global llvm state */
 			class LLVMState
@@ -100,7 +112,8 @@ namespace executive
 							/*! \brief The type of message to the thread */
 							Type type;
 							/*! \brief The LLVM code being executed */
-							Function function;
+							JITedFunction function;
+							
 							/*! \brief The context being executed */
 							LLVMContext* context;
 							/*! \brief The begining cta of the grid */
@@ -113,7 +126,8 @@ namespace executive
 							unsigned int resumePointOffset;
 							
 						public:
-							Message( Type t = Invalid, Function f = 0,
+							Message(Type t = Invalid);
+							Message( Type t, JITedFunction f,
 								LLVMContext* c = 0, 
 								unsigned int begin = 0,
 								unsigned int end = 0,
@@ -126,25 +140,25 @@ namespace executive
 					void execute();
 					
 					/*! \brief Launch a series of ctas with barriers */
-					void launchKernelWithBarriers( Function f, LLVMContext* c, 
+					void launchKernelWithBarriers( JITedFunction f, LLVMContext* c, 
 						unsigned int begin,
 						unsigned int end,
 						unsigned int step,
 						unsigned int rp );
 
 					/*! \brief Launch a series of ctas without barriers */
-					void launchKernelWithoutBarriers( Function f, 
+					void launchKernelWithoutBarriers( JITedFunction f, 
 						LLVMContext* c, 
 						unsigned int begin,
 						unsigned int end,
 						unsigned int step );
 					
 					/*! \brief Launch a specific cta with barriers */
-					void launchCtaWithBarriers( Function f, LLVMContext* c, 
+					void launchCtaWithBarriers( JITedFunction f, LLVMContext* c, 
 						unsigned int rp );
 
 					/*! \brief Launch a specific cta without barriers */
-					void launchCtaWithoutBarriers( Function f, LLVMContext* c );
+					void launchCtaWithoutBarriers( JITedFunction f, LLVMContext* c );
 			};
 			
 			/*! \brief Controls the execution of worker threads */
@@ -179,7 +193,7 @@ namespace executive
 					
 				public:
 					/*! \brief Launches a kernel on a grid using a context */
-					void launch( Function f, LLVMContext* context, 
+					void launch( JITedFunction f, LLVMContext* context, 
 						bool barriers, unsigned int resumePointOffset, 
 						unsigned int externalSharedMemory );
 					
@@ -237,7 +251,7 @@ namespace executive
 			/*! \brief LLVM module */
 			llvm::Module* _module;
 			/*! \brief The translated function */
-			Function _function;
+			JITedFunction _function;			
 			/*! \brief The stored ptx kernel used for translation */
 			ir::PTXKernel* _ptx;
 			/*! \brief Does this kernel require barrier support? */

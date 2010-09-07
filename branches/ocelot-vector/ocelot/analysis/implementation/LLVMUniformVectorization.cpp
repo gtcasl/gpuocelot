@@ -32,7 +32,7 @@
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
-char analysis::LLVMUniformVectorization::ID = 0;
+char analysis::LLVMUniformVectorization::ID = 1;
 
 std::string operator+(const std::string &str, llvm::Value *value) {
 	std::string valStr;
@@ -144,28 +144,24 @@ bool analysis::LLVMUniformVectorization::runOnFunction(llvm::Function &F) {
 void analysis::LLVMUniformVectorization::addWarpSynchronous(llvm::Function &F) {
 	Translation translation(&F, warpSize);
 	
-	report("Vectorization: " << translation.F->getNameStr());
-	
-	breadthFirstTraversal(translation.traversal, translation.F);
-	
-	addInterleavedInstructions(translation);
-	resolveDependencies(translation);
-	
-	updateThreadIdxUses(translation);
-	updateLocalMemAddresses(translation);
-	resolveControlFlow(translation);
-	createSchedulerBlock(translation);
-	
 	if (LLVM_UNIFORMCONTROL_WARPSIZE > 1) {
+		report("Vectorization: " << translation.F->getNameStr());
+	
+		breadthFirstTraversal(translation.traversal, translation.F);
+	
+		addInterleavedInstructions(translation);
+		resolveDependencies(translation);
+	
+		updateThreadIdxUses(translation);
+		updateLocalMemAddresses(translation);
+		resolveControlFlow(translation);
+		createSchedulerBlock(translation);
 		updateSchedulerBlocks(translation);
+		
 		vectorize(translation);
 	}
 	
 	report("end vectorization " << translation.F->getNameStr() << "\n");
-	
-	// debugging
-	//debugEmitCFG(translation);
-	//translation.F->getParent()->dump();
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -839,6 +835,7 @@ llvm::Instruction *analysis::LLVMUniformVectorization::Translation::getInstructi
 	else if (constant) {
 		// it's a constant, so pack it into a vector
 				// it's already replicated, so pack into a vector
+
 		llvm::VectorType *vecType = llvm::VectorType::get(inst->getType(), warpSize);
 		llvm::Value *vectorValue = llvm::UndefValue::get(vecType);
 		for (int tid = 0; tid < warpSize; tid++) {
@@ -928,9 +925,9 @@ void analysis::LLVMUniformVectorization::Translation::vectorize(llvm::Instructio
 			report(" call instruction: " << calleeName);
 
 			const char *str[] = {
-				"__ocelot_sqrtf", "llvm.sqrt.f32",
-				"__ocelot_sinf", "llvm.sin.f32",
-				"__ocelot_cosf", "llvm.cos.f32",
+				"__ocelot_sqrtf", "llvm.sqrt.v4f32",
+				"__ocelot_sinf", "llvm.sin.v4f32",
+				"__ocelot_cosf", "llvm.cos.v4f32",
 				0, 0
 			};
 			llvm::Function *funcIntrinsic = 0;
@@ -953,7 +950,7 @@ void analysis::LLVMUniformVectorization::Translation::vectorize(llvm::Instructio
 			std::vector< llvm::Value *> args;
 
 			report("  getting vector operands:");
-			for (unsigned int op = 0; op < inst->getNumOperands() - 1; ++op) {
+			for (unsigned int op = 1; op < inst->getNumOperands(); ++op) {
 				report("    operand [" << op << "]: " << inst->getOperand(op));
 				args.push_back(getInstructionAsVectorized(inst->getOperand(op), before));
 			}

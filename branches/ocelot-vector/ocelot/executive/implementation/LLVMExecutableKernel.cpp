@@ -26,9 +26,14 @@
 #include <hydrazine/interface/Casts.h>
 #include <hydrazine/implementation/debug.h>
 
+// Intel profiling
+#include </opt/intel/vtune/analyzer/include/JITProfiling.h>
+
 #ifdef REPORT_BASE
 #undef REPORT_BASE
 #endif
+
+#define INTEL_VTUNE_PROFILING_ENABLED 0
 
 #define REPORT_BASE 0
 #define REPORT_ALL_PTX_SOURCE 0
@@ -53,6 +58,7 @@
 #include <llvm/ExecutionEngine/ExecutionEngine.h>
 #include <llvm/ExecutionEngine/JIT.h> 
 #include <llvm/ExecutionEngine/GenericValue.h> 
+#include <llvm/CodeGen/MachineCodeInfo.h>
 #include <llvm/Module.h>
 #include <llvm/PassManager.h>
 #if( DEBUG_LLVM == 1 )
@@ -1392,9 +1398,14 @@ namespace executive
 	{
 		pthread_mutex_unlock( &_mutex );
 	}
+	
+	LLVMExecutableKernel::Worker::Message::Message(Type t):
+		type(t), context(0), begin(0), end(0), step(0), resumePointOffset(0) {
+	
+	}
 
 	LLVMExecutableKernel::Worker::Message::Message( Type t, 
-		Function f, LLVMContext* c, unsigned int xb, unsigned int xe, 
+		JITedFunction f, LLVMContext* c, unsigned int xb, unsigned int xe, 
 		unsigned int s, unsigned int rp ) : type( t ), function( f ), context( c ), 
 		begin( xb ), end( xe ), step( s ), resumePointOffset( rp )
 	{
@@ -1432,7 +1443,7 @@ namespace executive
 	}
 
 	void LLVMExecutableKernel::Worker::launchKernelWithBarriers( 
-		Function f, LLVMContext* c, unsigned int begin, unsigned int end, 
+		JITedFunction f, LLVMContext* c, unsigned int begin, unsigned int end, 
 		unsigned int step, unsigned int rp )
 	{
 		for( unsigned int i = begin; i < end; i += step )
@@ -1447,7 +1458,7 @@ namespace executive
 	}
 
 	void LLVMExecutableKernel::Worker::launchKernelWithoutBarriers( 
-		Function f, LLVMContext* c, unsigned int begin, 
+		JITedFunction f, LLVMContext* c, unsigned int begin, 
 		unsigned int end, unsigned int step )
 	{
 		for( unsigned int i = begin; i < end; i += step )
@@ -1462,7 +1473,7 @@ namespace executive
 	}
 
 	void LLVMExecutableKernel::Worker::launchCtaWithBarriers( 
-		Function function, LLVMContext* c, unsigned int resumePointOffset )
+		JITedFunction function, LLVMContext* c, unsigned int resumePointOffset )
 	{
 		char* localBase = c->local;
 		bool done = false;
@@ -1493,7 +1504,28 @@ namespace executive
 							<< ", z " << z << " )" << " at resume point " 
 							<< *((unsigned int*)(c->local 
 							+ resumePointOffset)) );
-						unsigned int resume = function( c );
+							
+#if INTEL_VTUNE_PROFILING_ENABLED
+						{
+							iJIT_Method_NIDS eventData = {0};
+							eventData.method_id = function.function_id;
+							eventData.stack_id = 0;
+							eventData.method_name = 0;
+							iJIT_NotifyEvent(iJVM_EVENT_TYPE_ENTER_NIDS, &eventData );
+						}
+#endif
+						unsigned int resume = function.function( c );
+
+#if INTEL_VTUNE_PROFILING_ENABLED
+						{
+							iJIT_Method_NIDS eventData = {0};
+							eventData.method_id = function.function_id; // TODO
+							eventData.stack_id = 0;
+							eventData.method_name = 0;
+							iJIT_NotifyEvent(iJVM_EVENT_TYPE_LEAVE_NIDS, &eventData );
+						}
+#endif
+						
 						done &= resume == 0;
 						*((unsigned int*)(c->local 
 							+ resumePointOffset)) = resume;
@@ -1508,7 +1540,7 @@ namespace executive
 	}
 
 	void LLVMExecutableKernel::Worker::launchCtaWithoutBarriers( 
-		Function function, LLVMContext* c )
+		JITedFunction function, LLVMContext* c )
 	{
 		char* localBase = c->local;
 		bool done = true;
@@ -1526,7 +1558,29 @@ namespace executive
 						"  Launching thread ( x " << x << ", y " << y 
 						<< ", z " << z << " )" );
 					c->local = localBase + c->localSize * threadId( *c );
-					unsigned int resume = function( c );
+
+#if INTEL_VTUNE_PROFILING_ENABLED
+						{
+							iJIT_Method_NIDS eventData = {0};
+							eventData.method_id = function.function_id;
+							eventData.stack_id = 0;
+							eventData.method_name = 0;
+							iJIT_NotifyEvent(iJVM_EVENT_TYPE_ENTER_NIDS, &eventData );
+						}
+#endif
+					
+					unsigned int resume = function.function( c );
+
+#if INTEL_VTUNE_PROFILING_ENABLED
+						{
+							iJIT_Method_NIDS eventData = {0};
+							eventData.method_id = function.function_id;
+							eventData.stack_id = 0;
+							eventData.method_name = 0;
+							iJIT_NotifyEvent(iJVM_EVENT_TYPE_LEAVE_NIDS, &eventData );
+						}
+#endif
+					
 					done &= resume == 0;
 					reportE( REPORT_INSIDE_TRANSLATED_CODE, 
 						"   Thread blocked at " << resume );
@@ -1551,7 +1605,7 @@ namespace executive
 		clear();
 	}
 
-	void LLVMExecutableKernel::ExecutionManager::launch( Function f, 
+	void LLVMExecutableKernel::ExecutionManager::launch( JITedFunction f,
 		LLVMContext* c, bool barriers, unsigned int resumePointOffset,
 		unsigned int externalSharedMemory )
 	{
@@ -1906,9 +1960,9 @@ namespace executive
 		manager.run( *module );
 
 		report("ran vectorization pass:");
-		//module->dump();
+//		module->dump();
 		
-		#endif		
+		#endif
 		report("end optimization");
 	}
 	
@@ -1947,8 +2001,33 @@ namespace executive
 
 		assertM( function != 0, 
 			"Could not find function _Z_ocelotTranslated_" + name );
-		_function = hydrazine::bit_cast< Function >( 
+			
+		llvm::MachineCodeInfo machineInfo;
+		_state.jit->runJITOnFunction(function, &machineInfo);
+		
+		_function.function = hydrazine::bit_cast<JITedFunction::Pointer>(machineInfo.address());
+		assertM(_function.function, "Could not JIT function _Z_ocelotTranslated_" + name);
+							
+		/*
+		_function.function = hydrazine::bit_cast< JITedFunction::Pointer >( 
 			_state.jit->getPointerToFunction( function ) );
+			*/
+			
+#if INTEL_VTUNE_PROFILING_ENABLED
+		iJIT_Method_Load eventData = {0};
+		eventData.method_id = iJIT_GetNewMethodID();
+		eventData.method_name = (char *)name.c_str();
+		eventData.method_load_address = reinterpret_cast<void *>(_function.function);
+		eventData.method_size = machineInfo.size(); // TODO
+		eventData.line_number_size = 0;
+		eventData.line_number_table = 0;
+		eventData.class_id = 0;
+		eventData.source_file_name = (char *)name.c_str();
+		_function.function_id = eventData.method_id;
+		
+		iJIT_NotifyEvent(iJVM_EVENT_TYPE_METHOD_LOAD_FINISHED, &eventData);		
+
+#endif
 
 		#if ( REPORT_OPTIMIZED_LLVM_SOURCE > 0 ) && ( REPORT_BASE > 0 )
 		std::string m;
@@ -2546,19 +2625,19 @@ namespace executive
 		_context.nctaid.y = y;
 		_gridDim.x = x;
 		_gridDim.y = y;
-
-		{
-			// dump the function to stdout
-			
-		}
 		
+#define DISPLAY_RUNTIME 0
+		
+#if DISPLAY_RUNTIME == 1
 		// set a timer
 		struct timeval start_time, end_time;
 		gettimeofday(&start_time, 0);
+#endif
 
 		_manager.launch( _function, &_context, 
 			_barrierSupport, _resumePointOffset, _externSharedMemorySize );
-
+			
+#if DISPLAY_RUNTIME == 1
 		// stop a timer, measure runtime
 		gettimeofday(&end_time, 0);
 
@@ -2566,7 +2645,7 @@ namespace executive
 			(double)end_time.tv_usec * 1.0e-6 - (double)start_time.tv_usec * 1.0e-6;
 		
 		std::cout << "warpsize: " << LLVM_UNIFORMCONTROL_WARPSIZE << ", runtime: " << runtime << " s\n";
-		
+#endif	
 	}
 	
 	void LLVMExecutableKernel::setKernelShape( int x, int y, int z )

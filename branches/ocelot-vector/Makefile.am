@@ -376,7 +376,7 @@ TestCudaSequence_LDFLAGS = -static
 ##
 TestUniform_CXXFLAGS = $(SDK_CFLAGS)
 TestUniform_SOURCES = ocelot/cuda/test/kernels/uniform.cu.cpp
-TestUniform_LDADD = libocelot.la $(LLVM_LDFLAGS)
+TestUniform_LDADD = libocelot.la /opt/intel/vtune/analyzer/bin/JITProfiling.a /usr/lib64/libdl.so $(LLVM_LDFLAGS)
 TestUniform_LDFLAGS = -static
 ################################################################################
 

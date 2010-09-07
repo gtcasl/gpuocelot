@@ -16,46 +16,47 @@ namespace ir
 	{
 		switch(opcode)
 		{
-			case Add:                return "add";
-			case And:                return "and";
-			case Break:              return "break";
-			case Cmov_Logical:       return "cmov_logical";
-			case Else:               return "else";
-			case End:                return "end";
-			case EndIf:              return "endif";
-			case EndLoop:            return "endloop";
-			case Fence:              return "fence_threads_lds";
-			case Iadd:               return "iadd";
-			case Iand:               return "iand";
-			case Ieq:                return "ieq";
-			case IfLogicalZ:         return "if_logicalz";
-			case Ige:                return "ige";
-			case Ilt:                return "ilt";
-			case Imul:               return "imul";
-			case Ine:                return "ine";
-			case Inegate:            return "inegate";
-			case Ior:                return "ior";
-			case Ishl:               return "ishl";
-			case Ishr:               return "ishr";
-			case Ixor:               return "ixor";
-			case Lds_And_Resource:   return "lds_and_resource(1)";
-			case Lds_Load_Id:        return "lds_load_id(1)";
-			case Lds_Or_Resource:    return "lds_or_resource(1)";
-			case Lds_Store_Id:       return "lds_store_id(1)";
-			case Mad:                return "mad";
-			case Mov:                return "mov";
-			case Mul:                return "mul";
-			case Sub:                return "sub";
-			case Uav_Arena_Load_Id:  return "uav_arena_load_id(1)";
-			case Uav_Arena_Store_Id: return "uav_arena_store_id(1)";
-			case Uav_Raw_Load_Id:    return "uav_raw_load_id(0)";
-			case Uav_Raw_Store_Id:   return "uav_raw_store_id(0) mem.x,";
-			case Uav_Read_Add_Id:    return "uav_read_add_id(0)";
-			case Udiv:               return "udiv";
-			case Umul:               return "umul";
-			case Ushr:               return "ushr";
-			case WhileLoop:          return "whileloop";
-			case InvalidOpcode:      return "INVALID_OPCODE";
+			case Add:                   return "add";
+			case And:                   return "and";
+			case Break:                 return "break";
+			case Cmov_Logical:          return "cmov_logical";
+			case Else:                  return "else";
+			case End:                   return "end";
+			case EndIf:                 return "endif";
+			case EndLoop:               return "endloop";
+			case Fence:                 return "fence_threads_lds";
+			case Iadd:                  return "iadd";
+			case Iand:                  return "iand";
+			case Ieq:                   return "ieq";
+			case IfLogicalZ:            return "if_logicalz";
+			case Ige:                   return "ige";
+			case Ilt:                   return "ilt";
+			case Imul:                  return "imul";
+			case Ine:                   return "ine";
+			case Inegate:               return "inegate";
+			case Ior:                   return "ior";
+			case Ishl:                  return "ishl";
+			case Ishr:                  return "ishr";
+			case Ixor:                  return "ixor";
+			case Lds_And_Resource:      return "lds_and_resource(1)";
+			case Lds_Load_Id:           return "lds_load_id(1)";
+			case Lds_Or_Resource:       return "lds_or_resource(1)";
+			case Lds_Read_Add_Resource: return "lds_read_add_resource(1)";
+			case Lds_Store_Id:          return "lds_store_id(1)";
+			case Mad:                   return "mad";
+			case Mov:                   return "mov";
+			case Mul:                   return "mul";
+			case Sub:                   return "sub";
+			case Uav_Arena_Load_Id:     return "uav_arena_load_id(1)";
+			case Uav_Arena_Store_Id:    return "uav_arena_store_id(1)";
+			case Uav_Raw_Load_Id:       return "uav_raw_load_id(0)";
+			case Uav_Raw_Store_Id:      return "uav_raw_store_id(0) mem.x,";
+			case Uav_Read_Add_Id:       return "uav_read_add_id(0)";
+			case Udiv:                  return "udiv";
+			case Umul:                  return "umul";
+			case Ushr:                  return "ushr";
+			case WhileLoop:             return "whileloop";
+			case InvalidOpcode:         return "INVALID_OPCODE";
 			default:
 			{
 				assertM(false, "Opcode " << opcode << " not supported");
@@ -454,6 +455,16 @@ namespace ir
 	Instruction *ILLds_Or_Resource::clone(bool copy) const
 	{
 		return new ILLds_Or_Resource(*this);
+	}
+
+	ILLds_Read_Add_Resource::ILLds_Read_Add_Resource() 
+		: ILBinaryInstruction(Lds_Read_Add_Resource)
+	{
+	}
+
+	Instruction *ILLds_Read_Add_Resource::clone(bool copy) const
+	{
+		return new ILLds_Read_Add_Resource(*this);
 	}
 
 	ILLds_Store_Id::ILLds_Store_Id() 

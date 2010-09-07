@@ -241,20 +241,9 @@ namespace executive
 		// query device info
 		CalDriver()->calDeviceGetInfo(&_info, 0);
 
-		// TODO only for debugging
-		//report("Reading IL from file");
-		std::string file, temp;
-		std::ifstream input("/home/rdomingu/gpuocelot/ocelot/histogram64.il");
-		while (!input.eof()) {
-			getline(input, temp);
-			file += temp;
-			file += "\n";
-		}
-
 		// compile, link, and load module
 		CalDriver()->calclCompile(&_object, CAL_LANGUAGE_IL, 
 				ilKernel->code().c_str(), _info.target);
-				//file.c_str(), _info.target);
 
 		CalDriver()->calclLink(&_image, &_object, 1);
 		CalDriver()->calModuleLoad(&_module, *_context, _image);

@@ -45,6 +45,7 @@ namespace ir
 				Lds_And_Resource,
 				Lds_Load_Id,
 				Lds_Or_Resource,
+				Lds_Read_Add_Resource,
 				Lds_Store_Id,
 				Mad,
 				Mov,
@@ -404,6 +405,15 @@ namespace ir
 			ILLds_Or_Resource();
 
 			std::string toString() const;
+			Instruction *clone(bool copy=true) const;
+	};
+
+	class ILLds_Read_Add_Resource : public ILBinaryInstruction
+	{
+		public:
+			/*! \brief Default constructor */
+			ILLds_Read_Add_Resource();
+
 			Instruction *clone(bool copy=true) const;
 	};
 

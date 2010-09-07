@@ -81,6 +81,11 @@ extern "C" {
  **
  ***********************************/
 
+typedef enum CUlimit_enum {
+	CU_LIMIT_STACK_SIZE = 0,
+	CU_LIMIT_PRINTF_FIFO_SIZE
+} CUlimit;
+
 /**
  * Context creation flags
  */

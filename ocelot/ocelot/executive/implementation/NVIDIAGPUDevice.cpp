@@ -649,12 +649,6 @@ namespace executive
 			checkError(driver::cuCtxCreate(&_context, flags, device));
 		}
 		
-		checkError(driver::cuCtxGetLimit(&_properties.stackSize, CU_LIMIT_STACK_SIZE));
-		checkError(driver::cuCtxGetLimit(&_properties.printfFIFOSize, CU_LIMIT_PRINTF_FIFO_SIZE));
-		
-		report("CU_LIMIT_STACK_SIZE = " << _properties.stackSize);
-		report("printfFIFOSize = " << _properties.printfFIFOSize);
-		
 		checkError(driver::cuCtxPopCurrent(&_context));
 		
 		char name[256];

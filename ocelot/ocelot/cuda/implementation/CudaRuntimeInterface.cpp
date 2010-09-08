@@ -27,21 +27,12 @@
 
 cuda::CudaRuntimeInterface * cuda::CudaRuntimeInterface::instance = 0;
 
-class CudaRuntimeInterfacePtr {
-public:
-	CudaRuntimeInterfacePtr() {
-
+static void destroyInstance() {
+	if (cuda::CudaRuntimeInterface::instance) {
+		delete cuda::CudaRuntimeInterface::instance;
+		cuda::CudaRuntimeInterface::instance = 0;
 	}
-
-	~CudaRuntimeInterfacePtr() {
-		if (cuda::CudaRuntimeInterface::instance) {
-			delete cuda::CudaRuntimeInterface::instance;
-			cuda::CudaRuntimeInterface::instance = 0;
-		}
-	}
-};
-
-static CudaRuntimeInterfacePtr cudaRuntimeInterfacePtrInstance;
+}
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -51,6 +42,7 @@ cuda::CudaRuntimeInterface * cuda::CudaRuntimeInterface::get() {
 			cuda::CudaRuntimeInterface::instance = new CudaRuntime;
 			cuda::CudaRuntimeInterface::instance->ocelotRuntime.configure(
 				api::OcelotConfiguration::get());
+			std::atexit(destroyInstance);
 		}
 		else {
 			assert(0 && "no CUDA runtime implementation matches what is requested");

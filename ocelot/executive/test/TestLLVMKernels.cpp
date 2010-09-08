@@ -8,8 +8,14 @@
 #ifndef TEST_LLVM_KERNELS_CPP_INCLUDED
 #define TEST_LLVM_KERNELS_CPP_INCLUDED
 
+// Ocelot Includes
 #include <ocelot/executive/test/TestLLVMKernels.h>
+#include <ocelot/executive/interface/Device.h>
+
+// Hydrazine Includes
 #include <hydrazine/implementation/ArgumentParser.h>
+
+// Standard Library Includes
 #include <cmath>
 
 namespace test
@@ -333,6 +339,12 @@ namespace test
 	
 	bool TestLLVMKernels::doTest()
 	{
+		if( executive::Device::deviceCount( ir::Instruction::LLVM ) == 0 )
+		{
+			status << "No LLVM device present.\n";
+			return true;
+		}
+		
 		bool result = _loadKernels();
 		
 		return result && testDivergent() && testLooping()

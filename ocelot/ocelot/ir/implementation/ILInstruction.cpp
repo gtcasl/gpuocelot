@@ -24,7 +24,7 @@ namespace ir
 			case End:                   return "end";
 			case EndIf:                 return "endif";
 			case EndLoop:               return "endloop";
-			case Fence:                 return "fence_threads_lds";
+			case Fence:                 return "fence";
 			case Iadd:                  return "iadd";
 			case Iand:                  return "iand";
 			case Ieq:                   return "ieq";
@@ -263,13 +263,15 @@ namespace ir
 		return new ILEndLoop(*this);
 	}
 
-	ILFence::ILFence() : ILInstruction(Fence)
+	ILFence::ILFence() : ILInstruction(Fence), _threads(true), _lds(false)
 	{
 	}
 
 	std::string ILFence::toString() const
 	{
-		return ILInstruction::toString(opcode);
+		return ILInstruction::toString(opcode) +
+			(_threads ? "_threads" : "") +
+			(_lds ? "_lds" : "");
 	}
 
 	std::string ILFence::valid() const
@@ -280,6 +282,16 @@ namespace ir
 	Instruction *ILFence::clone(bool copy) const
 	{
 		return new ILFence(*this);
+	}
+
+	void ILFence::threads(bool value)
+	{
+		_threads = value;
+	}
+
+	void ILFence::lds(bool value)
+	{
+		_lds = value;
 	}
 
 	ILIadd::ILIadd() : ILBinaryInstruction(Iadd)

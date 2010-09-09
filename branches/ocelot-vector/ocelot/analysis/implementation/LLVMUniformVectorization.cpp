@@ -761,9 +761,13 @@ bool analysis::LLVMUniformVectorization::VectorizedInstruction::isVectorizable()
 		llvm::Instruction *inst = replicated[0];
 		llvm::BinaryOperator *binOp = llvm::dyn_cast<llvm::BinaryOperator>(inst);
 		bool isFloatOrDouble = inst->getType()->isFloatTy() || inst->getType()->isDoubleTy();
-		if (binOp && (isFloatOrDouble)) {
+		bool isInteger = inst->getType()->isIntegerTy();
+		bool isPrimitiveType = (isInteger || isFloatOrDouble);
+		
+		if (binOp && isFloatOrDouble) {
 			return true;
 		}
+		
 		llvm::CallInst *callInst = llvm::dyn_cast<llvm::CallInst>(inst);
 		if (callInst && isFloatOrDouble) {
 			// it's probably vectorizable
@@ -781,12 +785,16 @@ bool analysis::LLVMUniformVectorization::VectorizedInstruction::isVectorizable()
 				}
 			}
 		}
-/*
+
 		llvm::CastInst *castInst = llvm::dyn_cast<llvm::CastInst>(inst);
-		if (castInst) {
-			return true;
+		if (castInst && (isFloatOrDouble || (isInteger && castInst->getSrcTy()->isIntegerTy()))) {
+			return false;
 		}
-*/
+
+		llvm::CmpInst *cmpInst = llvm::dyn_cast<llvm::CmpInst>(inst);
+		if (cmpInst && isPrimitiveType) {
+			return false;
+		}
 	}
 	return res;
 }
@@ -908,13 +916,34 @@ void analysis::LLVMUniformVectorization::Translation::vectorize(llvm::Instructio
 		report(" IS Vectorizable: " << inst);
 
 		llvm::BinaryOperator *binOp = llvm::dyn_cast<llvm::BinaryOperator>(inst);
+		llvm::CastInst *castInst = llvm::dyn_cast<llvm::CastInst>(inst);
 		llvm::CallInst *callInst = llvm::dyn_cast<llvm::CallInst>(inst);
+		llvm::CmpInst *cmpInst = llvm::dyn_cast<llvm::CmpInst>(inst);
 		if (binOp) {
 			InstructionVector operands;
 			for (unsigned int op = 0; op < inst->getNumOperands(); ++op) {
 				operands.push_back(getInstructionAsVectorized(inst->getOperand(op), before));
 			}
 			llvm::BinaryOperator *vecOp = llvm::BinaryOperator::Create(binOp->getOpcode(), 
+				operands[0], operands[1], "", before);
+			ws_it->second.vector = vecOp;
+		}
+		else if (castInst) {
+			report("cast instruction: (" << inst->getNumOperands() << " operands) -  operand[0] - " 
+				<< inst->getOperand(0));
+			llvm::VectorType *destType = llvm::VectorType::get(castInst->getDestTy(), warpSize);
+			llvm::Instruction *operand = getInstructionAsVectorized(inst->getOperand(0), before);
+			llvm::CastInst *vecInst = llvm::CastInst::Create(castInst->getOpcode(), operand,
+				destType, "", before);
+			ws_it->second.vector = vecInst;
+		}
+		else if (cmpInst) {
+			report("compare instruction");
+			InstructionVector operands;
+			for (unsigned int op = 0; op < inst->getNumOperands(); op++) {
+				operands.push_back(getInstructionAsVectorized(inst->getOperand(op), before));
+			}
+			llvm::CmpInst *vecOp = llvm::CmpInst::Create(cmpInst->getOpcode(), cmpInst->getPredicate(),
 				operands[0], operands[1], "", before);
 			ws_it->second.vector = vecOp;
 		}
@@ -964,6 +993,7 @@ void analysis::LLVMUniformVectorization::Translation::vectorize(llvm::Instructio
 
 		report("VECTORIZED SOMETHING!");
 
+		report("  extracting from " << ws_it->second.vector);
 		InstructionVector extracted;
 		for (int tid = 0; tid < warpSize; tid++) {
 			llvm::Constant *idx = llvm::ConstantInt::get(tyInt32, tid);

@@ -1960,7 +1960,7 @@ namespace executive
 		manager.run( *module );
 
 		report("ran vectorization pass:");
-//		module->dump();
+		//module->dump();
 		
 		#endif
 		report("end optimization");

@@ -482,7 +482,7 @@ namespace translator
 	void PTXToILTranslator::_translateBar(const ir::PTXInstruction &i)
 	{
 		ir::ILFence fence;
-
+		fence.threads();
 		_add(fence);
 	}
 
@@ -1224,6 +1224,10 @@ namespace translator
 		{
 			case ir::PTXInstruction::Global:
 			{
+				assertM(i.volatility != ir::PTXInstruction::Volatile,
+						"Volatile global store operation not supported yet in " 
+						<< i.toString());
+
 				// TODO uav0 accesses should be aligned to 4
 				switch (i.vec)
 				{
@@ -1367,6 +1371,16 @@ namespace translator
 								<< " not supported");
 					}
 				}
+
+				// if volatile add fence after the store
+				if (i.volatility == ir::PTXInstruction::Volatile)
+				{
+					ir::ILFence fence;
+					fence.threads(false);
+					fence.lds(true);
+					_add(fence);
+				}
+
 				break;
 			}
 			default:

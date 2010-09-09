@@ -251,9 +251,18 @@ namespace ir
 			/*! \brief Default constructor */
 			ILFence();
 
+			/*! \brief Set/unset threads flag */
+			void threads(bool value = true);
+			/*! \brief Set/unset lds flag */
+			void lds(bool value = true);
+
 			std::string toString() const;
 			std::string valid() const;
 			Instruction *clone(bool copy=true) const;
+
+		private:
+			/*! \brief threads,lds flags */
+			bool _threads, _lds;
 	};
 
 	class ILIadd : public ILBinaryInstruction

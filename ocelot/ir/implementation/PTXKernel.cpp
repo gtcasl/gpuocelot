@@ -145,12 +145,10 @@ namespace ir
 	
 		BlockToLabelMap blocksByLabel;
 		BlockPointerVector branchBlocks;
-		
-		unsigned int blockIndex = 0;
-		
+
 		ControlFlowGraph::iterator last_inserted_block = cfg.end();
 		ControlFlowGraph::iterator block = cfg.insert_block(
-			ControlFlowGraph::BasicBlock("", blockIndex++));
+			ControlFlowGraph::BasicBlock("", cfg.newId()));
 		ControlFlowGraph::Edge edge(cfg.get_entry_block(), block, 
 			ControlFlowGraph::Edge::FallThrough);
 	
@@ -174,8 +172,8 @@ namespace ir
 				
 					edge.head = block;
 					last_inserted_block = block;
-					block = cfg.insert_block(ControlFlowGraph::BasicBlock("", 
-						blockIndex++));
+					block = cfg.insert_block(
+						ControlFlowGraph::BasicBlock("", cfg.newId()));
 					edge.tail = block;
 					edge.type = ControlFlowGraph::Edge::FallThrough;
 				}
@@ -198,8 +196,8 @@ namespace ir
 					}
 					edge.head = block;
 					branchBlocks.push_back(block);
-					block = cfg.insert_block(ControlFlowGraph::BasicBlock("", 
-						blockIndex++));
+					block = cfg.insert_block(
+						ControlFlowGraph::BasicBlock("", cfg.newId()));
 					if (statement.instruction.pg.condition 
 						!= ir::PTXOperand::PT) {
 						edge.tail = block;
@@ -219,8 +217,8 @@ namespace ir
 					edge.tail = cfg.get_exit_block();
 					edge.type = ControlFlowGraph::Edge::FallThrough;
 
-					block = cfg.insert_block(ControlFlowGraph::BasicBlock("", 
-						blockIndex++));
+					block = cfg.insert_block(
+						ControlFlowGraph::BasicBlock("", cfg.newId()));
 					edge.type = ControlFlowGraph::Edge::Invalid;
 				}
 				else if( statement.instruction.opcode == PTXInstruction::Call )
@@ -237,8 +235,8 @@ namespace ir
 					edge.tail = cfg.get_exit_block();
 					edge.type = ControlFlowGraph::Edge::Branch;
 
-					block = cfg.insert_block(ControlFlowGraph::BasicBlock("", 
-						blockIndex++));
+					block = cfg.insert_block(
+						ControlFlowGraph::BasicBlock("", cfg.newId()));
 					edge.type = ControlFlowGraph::Edge::Invalid;
 				}
 			}
@@ -358,23 +356,25 @@ namespace ir
 								a_it->identifier.clear();
 							}
 						}
-						RegisterMap::iterator it 
-							= map.find((instr.*operands[i]).registerName());
-
-						PTXOperand::RegisterType reg = 0;
-						if (it == map.end()) {
-							reg = (PTXOperand::RegisterType) map.size();
-							map.insert(std::make_pair( 
-								(instr.*operands[i]).registerName(), reg));
-						}
 						else {
-							reg = it->second;
+							RegisterMap::iterator it 
+								= map.find((instr.*operands[i]).registerName());
+
+							PTXOperand::RegisterType reg = 0;
+							if (it == map.end()) {
+								reg = (PTXOperand::RegisterType) map.size();
+								map.insert(std::make_pair( 
+									(instr.*operands[i]).registerName(), reg));
+							}
+							else {
+								reg = it->second;
+							}
+							(instr.*operands[i]).reg = reg;
+							report("  Assigning register " 
+								<< (instr.*operands[i]).registerName() 
+								<< " to " << reg);
+							(instr.*operands[i]).identifier.clear();
 						}
-						(instr.*operands[i]).reg = reg;
-						report("  Assigning register " 
-							<< (instr.*operands[i]).registerName() 
-							<< " to " << reg);
-						(instr.*operands[i]).identifier.clear();
 					}
 				}
 			}
@@ -416,9 +416,8 @@ namespace ir
 		{
 			RegisterVector regs = getReferencedRegisters();
 		
-			for( RegisterVector::const_iterator reg = regs.begin();
-				reg != regs.end(); ++reg )
-			{
+			for (RegisterVector::const_iterator reg = regs.begin();
+				reg != regs.end(); ++reg) {
 				if (reg->type == PTXOperand::pred) {
 					stream << "\t.reg .pred %p" << reg->id << ";\n";
 				}

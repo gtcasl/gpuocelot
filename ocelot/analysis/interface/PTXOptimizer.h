@@ -46,6 +46,9 @@ namespace analysis
 			/*! \brief The number of registers to allocate */
 			unsigned int registerCount;
 			
+			/*! \brief Print out the CFG of optimized kernels */
+			bool cfg;
+			
 		public:
 			/*! \brief The constructor sets the defaults */
 			PTXOptimizer();

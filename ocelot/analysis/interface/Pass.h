@@ -33,19 +33,31 @@ namespace analysis
 				InvalidPass
 			};
 			
+			/*! \brief Analysis type */
+			enum AnalysisType
+			{
+				NoAnalysis = 0x0,
+				ControlTreeAnalysis = 0x1,
+				DominatorTreeAnalysis = 0x2,
+				PostDominatorTreeAnalysis = 0x4,
+				DataflowGraphAnalysis = 0x8,
+				StaticSingleAssignment = 0x10
+			};
+			
 		public:
 			/*! \brief The type of this pass */
-			Type type;
-
-			/*! \brief Should the pass be run before or after ssa conversion */
-			bool ssa;
+			const Type type;
+			
+			/*! \brief What types of analysis routines does the pass require? */
+			const int analyses;
 			
 			/*! \brief The name of the pass */
-			std::string name;
+			const std::string name;
 		
 		public:
 			/*! \brief The default constructor sets the type */
-			explicit Pass( Type t = InvalidPass );
+			explicit Pass( Type t = InvalidPass, int a = NoAnalysis,
+				const std::string& n = "" );
 			/*! \brief Virtual destructor */
 			virtual ~Pass();
 			/*! \brief The type requires a new copy constructor */
@@ -63,7 +75,7 @@ namespace analysis
 	{
 		public:
 			/*! \brief The default constructor sets the type */
-			ImmutablePass();
+			ImmutablePass( int a = NoAnalysis, const std::string& n = "" );
 			/*! \brief Virtual destructor */
 			virtual ~ImmutablePass();
 			
@@ -77,7 +89,7 @@ namespace analysis
 	{
 		public:
 			/*! \brief The default constructor sets the type */
-			ModulePass();
+			ModulePass( int a = NoAnalysis, const std::string& n = "" );
 			/*! \brief Virtual destructor */
 			virtual ~ModulePass();
 			
@@ -91,7 +103,7 @@ namespace analysis
 	{
 		public:
 			/*! \brief The default constructor sets the type */
-			KernelPass();
+			KernelPass( int a = NoAnalysis, const std::string& n = "" );
 			/*! \brief Virtual destructor */
 			virtual ~KernelPass();
 			
@@ -109,7 +121,7 @@ namespace analysis
 	{
 		public:
 			/*! \brief The default constructor sets the type */
-			BasicBlockPass();
+			BasicBlockPass( int a = NoAnalysis, const std::string& n = "" );
 			/*! \brief Virtual destructor */
 			virtual ~BasicBlockPass();
 			

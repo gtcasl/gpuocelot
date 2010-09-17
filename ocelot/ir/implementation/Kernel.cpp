@@ -130,12 +130,31 @@ analysis::DataflowGraph* ir::Kernel::dfg() {
 	return _dfg;
 }
 
-ir::ControlTree* ir::Kernel::ctrl_tree()
-{
+ir::ControlTree* ir::Kernel::ctrl_tree() {
 	assertM(_cfg != 0, "Must create cfg before building control tree.");
 	if (_ct) return _ct;
 	_ct = new ControlTree(_cfg);
 	return _ct;
+}
+
+void ir::Kernel::clear_dfg() {
+	delete _dfg;
+	_dfg = 0;
+}
+
+void ir::Kernel::clear_ctrl_tree() {
+	delete _ct;
+	_ct = 0;
+}
+
+void ir::Kernel::clear_pdom_tree() {
+	delete _pdom_tree;
+	_pdom_tree = 0;
+}
+
+void ir::Kernel::clear_dom_tree() {
+	delete _dom_tree;
+	_dom_tree = 0;
 }
 
 bool ir::Kernel::executable() const {

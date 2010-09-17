@@ -1949,10 +1949,6 @@ std::string ir::PTXInstruction::toString() const {
 			if( uni ) {
 				result += ".uni";
 			}
-			if( d.addressMode != ir::PTXOperand::Invalid )
-			{
-				result += " " + d.toString();
-			}
 			return result;
 		}
 		case Rsqrt: {

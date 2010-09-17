@@ -703,7 +703,6 @@ namespace executive
 			CU_DEVICE_ATTRIBUTE_CONCURRENT_KERNELS, device));
 		checkError(driver::cuDeviceComputeCapability(&_properties.major, 
 			&_properties.minor, device));
-			
 	}
 
 	NVIDIAGPUDevice::~NVIDIAGPUDevice()

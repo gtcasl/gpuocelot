@@ -78,9 +78,8 @@ namespace analysis
 
 	
 	ConvertPredicationToSelectPass::ConvertPredicationToSelectPass()
+		: KernelPass( NoAnalysis, "ConvertPredicationToSelectPass" )
 	{
-		ssa = false;
-		name = "ConvertPredicationToSelect";
 	}
 
 	void ConvertPredicationToSelectPass::initialize( const ir::Module& m )

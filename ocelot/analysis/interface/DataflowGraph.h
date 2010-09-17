@@ -95,7 +95,6 @@ namespace analysis
 					const char* what() const throw();
 			};
 
-			
 			/*! \brief A class for referring to a generic instruction. */
 			class Instruction
 			{
@@ -229,6 +228,8 @@ namespace analysis
 			typedef BlockVector::value_type value_type;
 			/*! \brief Size type */
 			typedef BlockVector::size_type size_type;
+			/*! \brief Register set */
+			typedef Block::RegisterSet RegisterSet;
 
 			/*! \brief A vector of iterators */
 			typedef std::vector< iterator >	BlockPointerVector;

@@ -17,129 +17,130 @@ namespace ir {
 
 class Instruction;
 
+/*! \brief A basic block contains a series of instructions 
+	terminated by control flow */
+class BasicBlock {
+public:
+	/*! \brief A list of blocks */
+	typedef std::list< BasicBlock > BlockList;
+
+	/*! \brief An edge connects two basic blocks */
+	class Edge {
+	public:
+		enum Type {
+			Branch,	//< target of a branch
+			FallThrough, //< edge when bb continues execution without jump
+			Dummy, //< does not actually represent true control flow
+			Invalid //< edge is not valid
+		};
+	
+	public:
+		Edge( BlockList::iterator h = BlockList::iterator(), 
+			BlockList::iterator t = BlockList::iterator(), 
+			Type y = FallThrough );
+
+		/*!	pointer to head node of edge */
+		BlockList::iterator head;
+		/*!	pointer to tail node of edge */
+		BlockList::iterator tail;
+		/*!	Edge properties */
+		Type type;
+	};
+
+	typedef std::list< Edge > EdgeList;
+	typedef std::vector< BlockList::iterator > BlockPointerVector;
+	typedef std::vector< EdgeList::iterator > EdgePointerVector;
+	typedef std::list< Instruction* > InstructionList;
+	typedef unsigned int Id;
+
+public:
+	BasicBlock(const std::string& l = "", Id i = 0, 
+		const InstructionList& instructions = InstructionList());
+	~BasicBlock();
+
+	/*! \brief Clear/delete all instructions owned by the block */
+	void clear();
+
+	/*! \brief Get the fallthrough edge */
+	EdgeList::iterator get_fallthrough_edge();
+	/*! \brief Get the fallthrough edge */
+	EdgeList::const_iterator get_fallthrough_edge() const;
+	/*! \brief Does this have a fallthrough edge */
+	bool has_fallthrough_edge() const;
+
+	/*! \brief Get the branch edge */
+	EdgeList::iterator get_branch_edge();
+	/*! \brief Get the branch edge */
+	EdgeList::const_iterator get_branch_edge() const;
+	/*! \brief Does this have a branch edge */
+	bool has_branch_edge() const;
+
+	/*! \brief Get the edge connecting to the specified block */
+	EdgeList::iterator get_edge(BlockList::iterator b);
+	/*! \brief Get the edge connecting to the specified block */
+	EdgeList::const_iterator get_edge(BlockList::const_iterator b) const;
+
+public:
+	/*! \brief Find an in-edge with specific head and tail pointers */
+	EdgePointerVector::iterator find_in_edge(
+		BlockList::const_iterator head);
+	/*! \brief Find an out-edge with specific head and tail pointers */
+	EdgePointerVector::iterator find_out_edge(
+		BlockList::const_iterator tail);
+
+public:
+	/*!	list of instructions in BasicBlock. */
+	InstructionList instructions;
+
+	/*!	\brief Basic block label */
+	std::string label;
+	/*! \brief a comment appearing in the emitted PTX source file */
+	std::string comment;
+	/*! \brief Basic block unique identifier */
+	Id id;
+
+	/*! \brief Direct successor blocks */
+	BlockPointerVector successors;
+	/*! \brief Direct predecessor blocks */
+	BlockPointerVector predecessors;
+
+	/*! \brief Edges from direct predecessors */
+	EdgePointerVector in_edges;
+	/*! \brief Edges to direct successors */
+	EdgePointerVector out_edges;
+
+public:
+
+	/*!
+		\brief an object that formats the string representation of a basic 
+			block used in the DOT output of the graph
+	*/
+	class DotFormatter {
+	public:
+		DotFormatter();
+		virtual ~DotFormatter();
+
+	public:		
+		/*! \brief emits label for entry block */
+		virtual std::string entryLabel(const BasicBlock *block);
+		
+		/*! \brief emits label for exit block */
+		virtual std::string exitLabel(const BasicBlock *block);
+	
+		/*!	\brief prints string representation of */
+		virtual std::string toString(const BasicBlock *block);
+
+		/*! \brief emits DOT representation of an edge	*/
+		virtual std::string toString(const Edge *edge);
+	};
+};
+
+typedef BasicBlock::Edge Edge;
+
 /*! Control flow graph */
 class ControlFlowGraph {
 public:
-	/*! \brief A basic block contains a series of instructions 
-		terminated by control flow */
-	class BasicBlock {
-	public:
-		/*! \brief A list of blocks */
-		typedef std::list< BasicBlock > BlockList;
-	
-		/*! \brief An edge connects two basic blocks */
-		class Edge {
-		public:
-			enum Type {
-				Branch,	//< target of a branch
-				FallThrough, //< edge when bb continues execution without jump
-				Dummy, //< does not actually represent true control flow
-				Invalid //< edge is not valid
-			};
-		
-		public:
-			Edge( BlockList::iterator h = BlockList::iterator(), 
-				BlockList::iterator t = BlockList::iterator(), 
-				Type y = FallThrough );
-	
-			/*!	pointer to head node of edge */
-			BlockList::iterator head;
-			/*!	pointer to tail node of edge */
-			BlockList::iterator tail;
-			/*!	Edge properties */
-			Type type;
-		};
-
-		typedef std::list< Edge > EdgeList;
-		typedef std::vector< BlockList::iterator > BlockPointerVector;
-		typedef std::vector< EdgeList::iterator > EdgePointerVector;
-		typedef std::list< Instruction* > InstructionList;
-		typedef unsigned int Id;
-	
-	public:
-		BasicBlock(const std::string& l = "", Id i = 0, 
-			const InstructionList& instructions = InstructionList());
-		~BasicBlock();
-	
-		/*! \brief Clear/delete all instructions owned by the block */
-		void clear();
-	
-		/*! \brief Get the fallthrough edge */
-		EdgeList::iterator get_fallthrough_edge();
-		/*! \brief Get the fallthrough edge */
-		EdgeList::const_iterator get_fallthrough_edge() const;
-		/*! \brief Does this have a fallthrough edge */
-		bool has_fallthrough_edge() const;
-
-		/*! \brief Get the branch edge */
-		EdgeList::iterator get_branch_edge();
-		/*! \brief Get the branch edge */
-		EdgeList::const_iterator get_branch_edge() const;
-		/*! \brief Does this have a branch edge */
-		bool has_branch_edge() const;
-
-
-		/*! \brief Get the edge connecting to the specified block */
-		EdgeList::iterator get_edge(BlockList::iterator b);
-		/*! \brief Get the edge connecting to the specified block */
-		EdgeList::const_iterator get_edge(BlockList::const_iterator b) const;
-
-	public:
-		/*! \brief Find an in-edge with specific head and tail pointers */
-		EdgePointerVector::iterator find_in_edge(
-			BlockList::const_iterator head);
-		/*! \brief Find an out-edge with specific head and tail pointers */
-		EdgePointerVector::iterator find_out_edge(
-			BlockList::const_iterator tail);
-
-	public:
-		/*!	list of instructions in BasicBlock. */
-		InstructionList instructions;
-
-		/*!	\brief Basic block label */
-		std::string label;
-		/*! \brief a comment appearing in the emitted PTX source file */
-		std::string comment;
-		/*! \brief Basic block unique identifier */
-		Id id;
-	
-		/*! \brief Direct successor blocks */
-		BlockPointerVector successors;
-		/*! \brief Direct predecessor blocks */
-		BlockPointerVector predecessors;
-
-		/*! \brief Edges from direct predecessors */
-		EdgePointerVector in_edges;
-		/*! \brief Edges to direct successors */
-		EdgePointerVector out_edges;
-
-	public:
-
-		/*!
-			\brief an object that formats the string representation of a basic block used
-				in the DOT output of the graph
-		*/
-		class DotFormatter {
-		public:
-			DotFormatter();
-			virtual ~DotFormatter();
-
-			static std::string dotFriendly(const std::string &str);
-
-		public:		
-			/*! \brief emits label for entry block */
-			virtual std::string entryLabel(const BasicBlock *block);
-			
-			/*! \brief emits label for exit block */
-			virtual std::string exitLabel(const BasicBlock *block);
-		
-			/*!	\brief prints string representation of */
-			virtual std::string toString(const BasicBlock *block);
-
-			/*! \brief emits DOT representation of an edge	*/
-			virtual std::string toString(const Edge *edge);
-		};
-	};
+	typedef ir::BasicBlock BasicBlock;
 
 	/*! \brief A list of basic blocks */
 	typedef BasicBlock::BlockList BlockList;
@@ -186,6 +187,9 @@ public:
 	~ControlFlowGraph();
 
 public:
+	/*! Get a unique identifier for a new block */
+	BasicBlock::Id newId();
+
 	/*!	Gets the number of blocks within the graph */
 	size_t size() const;
 	
@@ -251,16 +255,13 @@ public:
 	/*!	Returns the exit block of a control flow graph */
 	const_iterator get_exit_block() const;
 	
-	/* \brief Converts { to [ and } to ] for use in dot. */
-	static std::string make_label_dot_friendly( const std::string& string );
-
 	/*!	write a graphviz-compatible file for visualizing the CFG */
 	std::ostream& write(std::ostream& out) const;
 
 	/*!	\brief write a graphviz-compatible file for visualizing the CFG
 	*/
 	std::ostream& write(std::ostream& out, 
-		BasicBlock::DotFormatter &blockFormatter) const;
+		BasicBlock::DotFormatter& blockFormatter) const;
 	
 	/*! \brief Clears all basic blocks and edges in the CFG.*/
 	void clear();
@@ -313,6 +314,8 @@ private:
 
 	iterator _entry;
 	iterator _exit;
+	
+	BasicBlock::Id _nextId;
 };
 
 }
@@ -362,5 +365,4 @@ namespace std
 
 
 #endif
-
 

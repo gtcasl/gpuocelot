@@ -404,10 +404,12 @@ namespace analysis
 	}
 
 	LinearScanRegisterAllocationPass::LinearScanRegisterAllocationPass( 
-		unsigned int regs ) : registers( regs )
+		unsigned int regs )
+		: KernelPass( DataflowGraphAnalysis | StaticSingleAssignment, 
+			"LinearScanRegisterAllocationPass" ), 
+		registers( regs )
 	{
-		ssa = true;
-		name = "LinearScanRegisterAllocation";
+
 	}
 
 	void LinearScanRegisterAllocationPass::initialize( const ir::Module& m )

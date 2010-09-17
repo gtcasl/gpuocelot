@@ -372,7 +372,7 @@ cuda::HostThreadContext& cuda::CudaRuntime::_getCurrentThread() {
 
 void cuda::CudaRuntime::_registerModule(ModuleMap::iterator module) {
 	if(module->second.loaded()) return;
-	module->second.createDataStructures();
+	module->second.loadNow();
 	
 	for(RegisteredTextureMap::iterator texture = _textures.begin(); 
 		texture != _textures.end(); ++texture) {

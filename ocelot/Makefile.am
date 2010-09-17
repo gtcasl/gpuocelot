@@ -44,6 +44,7 @@ libocelot_la_SOURCES = \
 	ocelot/parser/implementation/PTXLexer.cpp \
 	ocelot/analysis/implementation/DataflowGraph.cpp \
 	ocelot/analysis/implementation/SSAGraph.cpp \
+	ocelot/analysis/implementation/PassManager.cpp \
 	ocelot/analysis/implementation/Pass.cpp \
 	ocelot/analysis/implementation/RemoveBarrierPass.cpp \
 	ocelot/analysis/implementation/ConvertPredicationToSelectPass.cpp \
@@ -162,14 +163,6 @@ Module_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
 Module_SOURCES = ocelot/ir/test/Module.cpp
 Module_LDADD = libocelot.la $(LLVM_LDFLAGS)
 Module_LDFLAGS = -static
-################################################################################
-
-################################################################################
-## PtxToLlvmTranslator
-PtxToLlvmTranslator_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
-PtxToLlvmTranslator_SOURCES = ocelot/translator/test/PtxToLlvmTranslator.cpp
-PtxToLlvmTranslator_LDADD = libocelot.la $(LLVM_LDFLAGS)
-PtxToLlvmTranslator_LDFLAGS = -static
 ################################################################################
 
 ################################################################################
@@ -417,7 +410,6 @@ nobase_include_HEADERS = ocelot/api/interface/ocelot.h \
 	ocelot/translator/interface/PTXToILTranslator.h \
 	ocelot/translator/interface/PTXToLLVMTranslator.h \
 	ocelot/translator/interface/Translator.h \
-	ocelot/translator/test/PtxToLlvmTranslator.h \
 	ocelot/translator/test/TestPTXToLLVMTranslator.h \
 	ocelot/translator/test/PtxToIlTranslator.h \
 	ocelot/util/interface/OcelotConfig.h \

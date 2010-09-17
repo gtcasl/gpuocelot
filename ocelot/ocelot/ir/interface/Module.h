@@ -15,7 +15,7 @@
 
 #include <ocelot/ir/interface/Texture.h>
 #include <ocelot/ir/interface/Instruction.h>
-#include <ocelot/ir/interface/Kernel.h>
+#include <ocelot/ir/interface/PTXKernel.h>
 #include <ocelot/ir/interface/PTXStatement.h>
 #include <ocelot/ir/interface/Global.h>
 
@@ -31,10 +31,12 @@ namespace ir {
 		/*! \brief Typedef for a vector of PTXStatements */
 		typedef std::vector< PTXStatement > StatementVector;
 
-		typedef std::map< std::string, Kernel * > KernelMap;
+		typedef std::unordered_map< std::string, PTXKernel* > KernelMap;
+		
+		typedef std::vector< PTXKernel* > KernelVector;
 
 		/*! \brief Map from unique identifier to global variable */
-		typedef std::map< std::string, Global > GlobalMap;
+		typedef std::unordered_map< std::string, Global > GlobalMap;
 				
 	public:
 
@@ -64,9 +66,6 @@ namespace ir {
 
 		/*! \brief Write the module to an assembly file from the IR */
 		void writeIR(std::ostream& stream) const;
-
-		/*! \brief Creates IR data structures for PTX kernels */
-		void createDataStructures();
 
 		/*!	Deletes everything associated with this particular module */
 		void unload();
@@ -100,7 +99,18 @@ namespace ir {
 			\return pointer to kernel instance with (name) 
 				or 0 if kernel does not exist
 		*/
-		Kernel* getKernel(const std::string& name);
+		PTXKernel* getKernel(const std::string& name);
+		
+		/*! \brief Removes an existing kernel by name.
+			\param name [mangled] name of kernel
+		*/
+		void removeKernel(const std::string& name);
+		
+		/*! \brief Adds a new kernel.
+			\param kernel The kernel being inserted, it will be owned
+				by the module.
+		*/
+		void insertKernel(PTXKernel* kernel);		
 		
 		/*! \brief Gets a texture instance by name. 
 

@@ -8,6 +8,7 @@
 #define PTX_OPTIMIZER_CPP_INCLUDED
 
 #include <ocelot/analysis/interface/PTXOptimizer.h>
+#include <ocelot/analysis/interface/PassManager.h>
 #include <ocelot/analysis/interface/LinearScanRegisterAllocationPass.h>
 #include <ocelot/analysis/interface/RemoveBarrierPass.h>
 #include <ocelot/analysis/interface/ConvertPredicationToSelectPass.h>
@@ -35,113 +36,41 @@ namespace analysis
 	}
 
 	void PTXOptimizer::optimize()
-	{
-		typedef std::vector< KernelPass* > PassVector;
-		
+	{		
 		report("Running PTX to PTX Optimizer.");
 		
-		PassVector ssaPasses;
-		PassVector noSsaPasses;
-		
+		report(" Loading module '" << input << "'");
+		ir::Module module( input );
+
+		PassManager manager( &module );
+
 		if( registerAllocationType == LinearScan )
 		{
-			KernelPass* pass = new analysis::LinearScanRegisterAllocationPass( 
+			Pass* pass = new analysis::LinearScanRegisterAllocationPass( 
 				registerCount );
-			if( pass->ssa )
-			{
-				ssaPasses.push_back( pass );
-			}
-			else
-			{
-				noSsaPasses.push_back( pass );
-			}
+			manager.addPass( *pass );
 		}
 		
 		if( passes & RemoveBarriers )
 		{
-			KernelPass* pass = new analysis::RemoveBarrierPass;
-			if( pass->ssa )
-			{
-				ssaPasses.push_back( pass );
-			}
-			else
-			{
-				noSsaPasses.push_back( pass );
-			}			
+			Pass* pass = new analysis::RemoveBarrierPass;
+			manager.addPass( *pass );
 		}
 
 		if( passes & ReverseIfConversion )
 		{
-			KernelPass* pass = new analysis::ConvertPredicationToSelectPass;
-			if( pass->ssa )
-			{
-				ssaPasses.push_back( pass );
-			}
-			else
-			{
-				noSsaPasses.push_back( pass );
-			}			
+			Pass* pass = new analysis::ConvertPredicationToSelectPass;
+			manager.addPass( *pass );
 		}
-		
+
 		if( input.empty() )
 		{
 			std::cout << "No input file name given.  Bailing out." << std::endl;
 			return;
 		}
-		
-		report(" Loading module '" << input << "'");
-		ir::Module module( input );
 
-		report(" Running register allocation.");
-		module.createDataStructures();
-		
-		report(" Running passes that do not require SSA form.");
-		for( PassVector::iterator pass = noSsaPasses.begin(); 
-			pass != noSsaPasses.end(); ++pass)
-		{
-			report("  Running pass '" << (*pass)->toString() << "'" );
-			(*pass)->initialize( module );
-			for( ir::Module::KernelMap::const_iterator 
-				kernel = module.kernels().begin(); 
-				kernel != module.kernels().end(); ++kernel )
-			{
-				(*pass)->runOnKernel( *module.getKernel(kernel->first) );
-			}
-			(*pass)->finalize();
-			delete *pass;
-		}
-		
-		report(" Converting to SSA form.");
-		for( ir::Module::KernelMap::const_iterator 
-			kernel = module.kernels().begin(); 
-			kernel != module.kernels().end(); ++kernel )
-		{
-			module.getKernel(kernel->first)->dfg()->toSsa();
-		}
-	
-		report(" Running passes that require SSA form.");
-		for( PassVector::iterator pass = ssaPasses.begin(); 
-			pass != ssaPasses.end(); ++pass)
-		{
-			report("  Running pass '" << (*pass)->toString() << "'" );
-			(*pass)->initialize( module );
-			for( ir::Module::KernelMap::const_iterator 
-				kernel = module.kernels().begin(); 
-				kernel != module.kernels().end(); ++kernel )
-			{
-				(*pass)->runOnKernel( *module.getKernel(kernel->first) );
-			}
-			(*pass)->finalize();
-			delete *pass;
-		}
-
-		report(" Converting out of SSA form.");
-		for( ir::Module::KernelMap::const_iterator 
-			kernel = module.kernels().begin(); 
-			kernel != module.kernels().end(); ++kernel )
-		{
-			module.getKernel(kernel->first)->dfg()->fromSsa();
-		}
+		manager.runOnModule();
+		manager.destroyPasses();
 		
 		std::ofstream out( output.c_str() );
 		
@@ -152,6 +81,24 @@ namespace analysis
 		}
 		
 		module.writeIR( out );
+
+		if(!cfg) return;
+		
+		for( ir::Module::KernelMap::const_iterator 
+			kernel = module.kernels().begin(); 
+			kernel != module.kernels().end(); ++kernel )
+		{
+			report(" Writing CFG for kernel '" << kernel->first << "'");
+			std::ofstream out( kernel->first + "_cfg.dot" );
+		
+			if( !out.is_open() )
+			{
+				throw hydrazine::Exception( "Could not open output file " 
+					+ output + " for writing." );
+			}
+		
+			module.getKernel( kernel->first )->cfg()->write( out );
+		}
 	}
 }
 

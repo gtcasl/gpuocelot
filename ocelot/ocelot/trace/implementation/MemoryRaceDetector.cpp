@@ -105,7 +105,7 @@ namespace trace
 				}
 			}
 			++address;
-		}	
+		}
 	}
 	
 	void MemoryRaceDetector::_read( const TraceEvent& event )

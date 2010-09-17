@@ -22,9 +22,7 @@ namespace executive {
 
 	class EmulatedKernel;
 
-	/*!
-		Defines state of cooperative thread array
-	*/
+	/*! Defines state of cooperative thread array */
 	class CooperativeThreadArray {
 	public:
 		typedef std::deque <CTAContext> Stack;
@@ -41,9 +39,7 @@ namespace executive {
 
 		CooperativeThreadArray();
 
-		/*!
-			Destroys state associated with CTA
-		*/
+		/*! Destroys state associated with CTA */
 		~CooperativeThreadArray();
 
 		/*!

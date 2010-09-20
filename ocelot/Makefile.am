@@ -29,7 +29,7 @@ check_PROGRAMS = TestLexer TestParser \
 	TestPTXToLLVMTranslator  TestGPUKernel  \
 	TestCudaGlobals TestCudaMalloc TestCudaTexture2D TestCudaTextureArray \
 	TestCudaSequence TestLLVMKernels TestDeviceSwitching \
-	TestCalVectorScale 
+	TestCalVectorScale TestRaceCondition TestMemoryCheck
 EXTRA_PROGRAMS = Module PtxToLlvmTranslator PtxToIlTranslator DFG CFG PTXChecker
 lib_LTLIBRARIES = libocelot.la
 ################################################################################
@@ -308,6 +308,24 @@ TestCudaSequence_CXXFLAGS = $(SDK_CFLAGS)
 TestCudaSequence_SOURCES = ocelot/cuda/test/kernels/sequence.cu.cpp
 TestCudaSequence_LDADD = libocelot.la $(LLVM_LDFLAGS)
 TestCudaSequence_LDFLAGS = -static
+################################################################################
+
+################################################################################
+##
+##
+TestMemoryCheck_CXXFLAGS = $(SDK_CFLAGS)
+TestMemoryCheck_SOURCES = ocelot/cuda/test/kernels/memoryCheck.cu.cpp
+TestMemoryCheck_LDADD = libocelot.la $(LLVM_LDFLAGS)
+TestMemoryCheck_LDFLAGS = -static
+################################################################################
+
+################################################################################
+##
+##
+TestRaceCondition_CXXFLAGS = $(SDK_CFLAGS)
+TestRaceCondition_SOURCES = ocelot/cuda/test/kernels/raceCondition.cu.cpp
+TestRaceCondition_LDADD = libocelot.la $(LLVM_LDFLAGS)
+TestRaceCondition_LDFLAGS = -static
 ################################################################################
 
 ################################################################################

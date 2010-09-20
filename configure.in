@@ -71,7 +71,7 @@ AC_CHECK_PROG(HAVE_LLVM_CONFIG, llvm-config, yes, no)
 if test $HAVE_LLVM_CONFIG = yes && test $enable_llvm = yes
 then
 	LLVM_VERSION=$(llvm-config --version)
-	if test $LLVM_VERSION = 2.8svn
+	if test $LLVM_VERSION = 2.9svn
 	then
 		AC_DEFINE(HAVE_LLVM, [1], ["Define to 1 if llvm is installed"])
 		AC_SUBST(LLVM_CFLAGS, $(llvm-config --cppflags))

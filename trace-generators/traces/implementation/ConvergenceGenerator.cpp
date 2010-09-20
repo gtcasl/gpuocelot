@@ -20,6 +20,7 @@
 
 // Hydrazine includes
 #include <hydrazine/implementation/debug.h>
+#include <hydrazine/implementation/string.h>
 
 // Debugging messages
 #ifdef REPORT_BASE
@@ -66,7 +67,7 @@ void trace::ConvergenceGenerator::initialize(const executive::ExecutableKernel &
 	// initialize kernel header
 	//
 	_entry.name = kernel.name;
-	_entry.module = kernel.module->modulePath;
+	_entry.module = kernel.module->path();
 	_entry.format = TraceGenerator::ConvergenceTraceFormat;
 	_entry.path = "";
 	_entry.header = "";
@@ -151,7 +152,7 @@ public:
 		std::stringstream out;
 		out << "[shape=record,style=\"bold,filled\",fillcolor=\"#4444cc\",";
 		out << "label=";
-		out << "\"{ ENTRY: " << ir::ControlFlowGraph::make_label_dot_friendly(generator->kernel->name);
+		out << "\"{ ENTRY: " << hydrazine::toGraphVizParsableLabel(generator->kernel->name);
 		
 		if (generator->counterMap.find(block->label) != generator->counterMap.end()) {
 		
@@ -182,7 +183,7 @@ public:
 		out << "[shape=record,";
 
 		out << "label=";
-		out << "\"{" << ir::ControlFlowGraph::make_label_dot_friendly(block->label);
+		out << "\"{" << hydrazine::toGraphVizParsableLabel(block->label);
 		
 		if (generator->counterMap.find(block->label) != generator->counterMap.end()) {
 		

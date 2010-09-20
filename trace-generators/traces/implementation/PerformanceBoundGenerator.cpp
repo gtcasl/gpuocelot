@@ -20,6 +20,7 @@
 
 // Hydrazine includes
 #include <hydrazine/implementation/debug.h>
+#include <hydrazine/implementation/string.h>
 
 // Debugging messages
 #ifdef REPORT_BASE
@@ -101,7 +102,7 @@ void trace::PerformanceBoundGenerator::initialize(const executive::ExecutableKer
 	// initialize kernel header
 	//
 	_entry.name = kernel.name;
-	_entry.module = kernel.module->modulePath;
+	_entry.module = kernel.module->path();
 	_entry.format = TraceGenerator::PerformanceBoundTraceFormat;
 	_entry.path = "";
 	_entry.header = "";
@@ -177,7 +178,7 @@ public:
 		std::stringstream out;
 		out << "[shape=record,style=\"bold,filled\",fillcolor=\"#4444cc\",";
 		out << "label=";
-		out << "\"{ KERNEL: " << ir::ControlFlowGraph::make_label_dot_friendly(generator->kernel->name);
+		out << "\"{ KERNEL: " << hydrazine::toGraphVizParsableLabel(generator->kernel->name);
 		
 		if (generator->counterMap.find(block->label) != generator->counterMap.end()) {
 		
@@ -229,7 +230,7 @@ public:
 			out << "fillcolor=\"" << Formatter::colorToString(r,g,b) << "\",style=filled,";
 			out << "shape=record,label=\"{";
 	
-			out << ir::ControlFlowGraph::make_label_dot_friendly(block->label);
+			out << hydrazine::toGraphVizParsableLabel(block->label);
 		
 			if (blocksToPC.find(block->label) != blocksToPC.end()) {
 				std::string loc = generator->kernel->location(blocksToPC[block->label]);
@@ -242,7 +243,7 @@ public:
 		else {
 			out << "[shape=record,";
 			out << "label=";
-			out << "\"{" << ir::ControlFlowGraph::make_label_dot_friendly(block->label);
+			out << "\"{" << hydrazine::toGraphVizParsableLabel(block->label);
 		}
 		
 		out << "}\"";

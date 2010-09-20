@@ -13,6 +13,7 @@
 #include <boost/filesystem.hpp>
 
 // Ocelot includes
+#include <ocelot/ir/interface/ControlFlowGraph.h>
 #include <traces/interface/TraceConfiguration.h>
 #include <traces/interface/WarpSynchronousGenerator.h>
 #include <ocelot/trace/interface/TraceEvent.h>
@@ -21,6 +22,7 @@
 
 // Hydrazine includes
 #include <hydrazine/implementation/debug.h>
+#include <hydrazine/implementation/string.h>
 
 // Debugging messages
 #ifdef REPORT_BASE
@@ -286,7 +288,7 @@ void trace::WarpSynchronousGenerator::initialize(const executive::ExecutableKern
 	// initialize kernel header
 	//
 	_entry.name = kernel.name;
-	_entry.module = kernel.module->modulePath;
+	_entry.module = kernel.module->path();
 	_entry.format = TraceGenerator::WarpSynchronousTraceFormat;
 	_entry.path = "";
 	_entry.header = "";
@@ -489,7 +491,8 @@ std::string trace::WarpSynchronousGenerator::DotFormatter::toString(
 	std::stringstream ss;
 
 	if (blockCounter.find(block->label) == blockCounter.end()) {
-		ss << "[shape=record,label=\"" << dotFriendly(block->label) << "\"] // no block counter";
+		ss << "[shape=record,label=\"" << 
+			hydrazine::toGraphVizParsableLabel(block->label) << "\"] // no block counter";
 		return ss.str();
 	}
 
@@ -515,7 +518,7 @@ std::string trace::WarpSynchronousGenerator::DotFormatter::toString(
 	
 	ss << "[";
 	ss << "fillcolor=\"" << colorToString(r,g,b) << "\",style=filled,";
-	ss << "shape=record,label=\"{" << dotFriendly(block->label) 
+	ss << "shape=record,label=\"{" << hydrazine::toGraphVizParsableLabel(block->label) 
 		<< " | events: " << events << " | synchronous: " << synchronous << " | activity: " 
 		<< activity << "}\"";
 	if (t < 0.5) {

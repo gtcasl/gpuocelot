@@ -109,6 +109,8 @@ namespace trace {
 	
 	public:
 	
+		bool render;
+	
 		//! \brief specifies the active memory coalescing protocol to employ
 		CoalescingProtocol protocol;
 		

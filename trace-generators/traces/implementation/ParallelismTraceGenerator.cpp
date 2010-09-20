@@ -46,7 +46,7 @@ namespace trace
 		const executive::ExecutableKernel& kernel )
 	{
 		_entry.name = kernel.name;
-		_entry.module = kernel.module->modulePath;
+		_entry.module = kernel.module->path();
 		_entry.format = ParallelismTraceFormat;
 
 		std::string name = kernel.name;

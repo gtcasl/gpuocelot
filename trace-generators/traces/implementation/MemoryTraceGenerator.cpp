@@ -246,7 +246,7 @@ trace::MemoryTraceGenerator::~MemoryTraceGenerator() {
 void trace::MemoryTraceGenerator::initialize(
 	const executive::ExecutableKernel& kernel) {
 	_entry.name = kernel.name;
-	_entry.module = kernel.module->modulePath;
+	_entry.module = kernel.module->path();
 	_entry.format = MemoryTraceFormat;
 
 	std::string name = kernel.name;

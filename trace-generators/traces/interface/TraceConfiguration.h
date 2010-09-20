@@ -47,6 +47,9 @@ namespace trace
 			
 			/*! \brief Protocol for memory coalescing */
 			PerformanceBoundGenerator::CoalescingProtocol protocol;
+			
+			/*! \brief if true, a PDF is constructed from the DOT file */
+			bool render;
 		};
 		
 		/*! \brief configuration properties for ConvergenceGenerator */

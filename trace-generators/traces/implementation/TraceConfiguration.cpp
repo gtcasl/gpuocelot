@@ -84,6 +84,7 @@ TraceConfiguration::TraceConfiguration()
 			{
 				performanceBound.enabled = perfConfig.parse<bool>(
 					"enabled", false);
+				performanceBound.render = perfConfig.parse<bool>("render", false);
 				std::string protocol = 
 					perfConfig.parse<std::string>("protocol", "sm_20");
 				performanceBound.protocol =
@@ -197,6 +198,7 @@ TraceConfiguration::TraceConfiguration()
 		report("Creating performance bound trace generator");
 		_performanceBound.database = database;
 		_performanceBound.protocol = performanceBound.protocol;
+		_performanceBound.render = performanceBound.render;
 		ocelot::addTraceGenerator(_performanceBound, true);
 	}
 

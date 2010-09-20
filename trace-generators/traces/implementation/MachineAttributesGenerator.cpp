@@ -37,7 +37,7 @@ trace::MachineAttributesGenerator::~MachineAttributesGenerator() {
 void trace::MachineAttributesGenerator::initialize(const ir::ExecutableKernel& kernel) {
 
 	_entry.name = kernel.name;
-	_entry.module = kernel.module->modulePath;
+	_entry.module = kernel.module->path();
 	_entry.format = KernelDimensionsFormat;
 
 	std::string name = kernel.name;

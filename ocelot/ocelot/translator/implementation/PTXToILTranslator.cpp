@@ -215,14 +215,17 @@ namespace translator
 			case ir::PTXInstruction::Mov:   _translateMov(i);  break;
  			case ir::PTXInstruction::Mul:   _translateMul(i);  break;
 			case ir::PTXInstruction::Mul24: _translateMul(i);  break;
+			case ir::PTXInstruction::Neg:   _translateNeg(i);  break;
 			case ir::PTXInstruction::Or:    _translateOr(i);   break;
 			case ir::PTXInstruction::Rem:   _translateRem(i);  break;
 			case ir::PTXInstruction::SelP:  _translateSelP(i); break;
+			case ir::PTXInstruction::Set:   _translateSet(i);  break;
 			case ir::PTXInstruction::SetP:  _translateSetP(i); break;
 			case ir::PTXInstruction::Shl:   _translateShl(i);  break;
 			case ir::PTXInstruction::Shr:   _translateShr(i);  break;
  			case ir::PTXInstruction::St:    _translateSt(i);   break;
 			case ir::PTXInstruction::Sub:   _translateSub(i);  break;
+			case ir::PTXInstruction::Xor:   _translateXor(i);  break;
 			default:
 			{
 				assertM(false, "Opcode \""
@@ -363,6 +366,7 @@ namespace translator
 		switch (i.type)
 		{
 			case ir::PTXOperand::s32:
+			case ir::PTXOperand::s64:
 			case ir::PTXOperand::u16:
 			case ir::PTXOperand::u32:
 			case ir::PTXOperand::u64:
@@ -393,7 +397,8 @@ namespace translator
 			{
 				assertM(false, "Type "
 						<< ir::PTXOperand::toString(i.type)
-						<< " not supported");
+						<< "\" not supported in "
+						<< i.toString());
 			}
 		}
 	}
@@ -430,6 +435,21 @@ namespace translator
 						uav_read_add_id.b = _translate(i.b);
 
 						_add(uav_read_add_id);
+
+						break;
+					}
+					case ir::PTXInstruction::AtomicExch:
+					{
+						assertM(i.a.offset == 0, 
+								"Atomic Xchg from offset not supported");
+
+						ir::ILUav_Read_Xchg_Id uav_read_xchg_id;
+
+						uav_read_xchg_id.d = _translate(i.d);
+						uav_read_xchg_id.a = _translate(i.a);
+						uav_read_xchg_id.b = _translate(i.b);
+
+						_add(uav_read_xchg_id);
 
 						break;
 					}
@@ -945,6 +965,29 @@ namespace translator
 		}
 	}
 
+	void PTXToILTranslator::_translateNeg(const ir::PTXInstruction &i)
+	{
+		switch (i.type)
+		{
+			case ir::PTXOperand::s32:
+			{
+				ir::ILInegate inegate;
+
+				inegate.a = _translate(i.a);
+				inegate.d = _translate(i.d);
+
+				_add(inegate);
+
+				break;
+			}
+			default:
+			{
+				assertM(false, "Type " << ir::PTXOperand::toString(i.type)
+						<< " not supported");
+			}
+		}
+	}
+
 	void PTXToILTranslator::_translateOr(const ir::PTXInstruction &i)
 	{
 		ir::ILIor ior;
@@ -1082,6 +1125,12 @@ namespace translator
 		cmov_logical.c = _translate(i.b);
 
 		_add(cmov_logical);
+	}
+
+	void PTXToILTranslator::_translateSet(const ir::PTXInstruction &i)
+	{
+		// In IL there's no difference between predicate and normal registers
+		_translateSetP(i);
 	}
 
 	void PTXToILTranslator::_translateSetP(const ir::PTXInstruction &i)
@@ -1588,6 +1637,17 @@ namespace translator
 						<< " not supported");
 			}
 		}
+	}
+
+	void PTXToILTranslator::_translateXor(const ir::PTXInstruction& i)
+	{
+		ir::ILIxor ixor;
+
+		ixor.a = _translate(i.a);
+		ixor.b = _translate(i.b);
+		ixor.d = _translate(i.d);
+
+		_add(ixor);
 	}
 
 	ir::ILOperand PTXToILTranslator::_translateLiteral(int l)

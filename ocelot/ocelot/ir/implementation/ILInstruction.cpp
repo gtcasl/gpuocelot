@@ -52,6 +52,7 @@ namespace ir
 			case Uav_Raw_Load_Id:       return "uav_raw_load_id(0)";
 			case Uav_Raw_Store_Id:      return "uav_raw_store_id(0) mem.x,";
 			case Uav_Read_Add_Id:       return "uav_read_add_id(0)";
+			case Uav_Read_Xchg_Id:      return "uav_read_xchg_id(0)";
 			case Udiv:                  return "udiv";
 			case Umul:                  return "umul";
 			case Ushr:                  return "ushr";
@@ -593,6 +594,16 @@ namespace ir
 	Instruction *ILUav_Read_Add_Id::clone(bool copy) const
 	{
 		return new ILUav_Read_Add_Id(*this);
+	}
+
+	ILUav_Read_Xchg_Id::ILUav_Read_Xchg_Id() 
+		: ILBinaryInstruction(Uav_Read_Xchg_Id)
+	{
+	}
+
+	Instruction *ILUav_Read_Xchg_Id::clone(bool copy) const
+	{
+		return new ILUav_Read_Xchg_Id(*this);
 	}
 
 	ILUdiv::ILUdiv() : ILBinaryInstruction(Udiv)

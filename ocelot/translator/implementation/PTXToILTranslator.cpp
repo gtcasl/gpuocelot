@@ -6,6 +6,7 @@
 
 // Ocelot includes
 #include <ocelot/translator/interface/PTXToILTranslator.h>
+#include <ocelot/ir/interface/PTXKernel.h>
 
 // Hydrazine includes
 #include <hydrazine/implementation/debug.h>
@@ -31,11 +32,15 @@ namespace translator
 		assertM(k->ISA == ir::Instruction::PTX,
 				"Kernel must be a PTXKernel to translate to an ILKernel");
 
-		_ilKernel = new ir::ILKernel(*k);
+		ir::PTXKernel ptxKernel(*(static_cast<const ir::PTXKernel* >(k)));
 
-		report("Translating kernel " << k->name);
+		// do a pass of assignRegisters before translation
+		ptxKernel.assignRegisters(*ptxKernel.cfg());
+
+		report("Translating kernel " << ptxKernel.name);
 
 		// translate iterating thru the control tree
+		_ilKernel = new ir::ILKernel(ptxKernel);
 		_translate(_ilKernel->ctrl_tree()->get_root_node());
 		_addKernelPrefix();
 
@@ -79,9 +84,7 @@ namespace translator
 
 	void PTXToILTranslator::_translate(const ControlTree::InstNode* insts)
 	{
-		//ControlTree::InstNode::const_iterator ins;
 		ir::ControlFlowGraph::InstructionList::const_iterator ins;
-		//for (ins = insts->begin() ; ins != insts->end() ; ins++)
 		for (ins = insts->bb()->instructions.begin() ; 
 				ins != insts->bb()->instructions.end() ; ins++)
 		{

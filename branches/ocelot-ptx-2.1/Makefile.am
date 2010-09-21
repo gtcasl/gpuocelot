@@ -29,10 +29,95 @@ check_PROGRAMS = TestLexer TestParser \
 	TestPTXToLLVMTranslator  TestGPUKernel  \
 	TestCudaGlobals TestCudaMalloc TestCudaTexture2D TestCudaTextureArray \
 	TestCudaSequence TestLLVMKernels TestDeviceSwitching \
-	TestCalVectorScale TestPTXAssembly
+	TestCalVectorScale TestPTXAssembly TestSequenceDriverAPI
 EXTRA_PROGRAMS = Module DFG CFG PTXChecker
-lib_LTLIBRARIES = libocelot.la
+lib_LTLIBRARIES = libocelot.la libocelotcuda.la
 ################################################################################
+
+libocelotcuda_la_CXXFLAGS = $(LLVM_CFLAGS) $(INCLUDE) -Wall -ansi -Werror -std=c++0x
+libocelotcuda_la_SOURCES = \
+	ocelot/parser/implementation/ptx.lpp \
+	ocelot/parser/implementation/ptxgrammar.ypp \
+	ocelot/parser/implementation/PTXParser.cpp \
+	ocelot/parser/implementation/PTXLexer.cpp \
+	ocelot/analysis/implementation/DataflowGraph.cpp \
+	ocelot/analysis/implementation/SSAGraph.cpp \
+	ocelot/analysis/implementation/Pass.cpp \
+	ocelot/analysis/implementation/RemoveBarrierPass.cpp \
+	ocelot/analysis/implementation/ConvertPredicationToSelectPass.cpp \
+	ocelot/analysis/implementation/LinearScanRegisterAllocationPass.cpp \
+	ocelot/analysis/implementation/SubkernelFormationPass.cpp \
+	ocelot/api/implementation/ocelot.cpp \
+	ocelot/api/implementation/OcelotRuntime.cpp \
+	ocelot/api/implementation/OcelotConfiguration.cpp \
+	ocelot/ir/implementation/ControlFlowGraph.cpp \
+	ocelot/ir/implementation/Instruction.cpp \
+	ocelot/ir/implementation/Parameter.cpp \
+	ocelot/ir/implementation/Global.cpp \
+	ocelot/ir/implementation/PTXInstruction.cpp \
+	ocelot/ir/implementation/PTXStatement.cpp \
+	ocelot/ir/implementation/PTXOperand.cpp \
+	ocelot/ir/implementation/Module.cpp \
+	ocelot/ir/implementation/Kernel.cpp \
+	ocelot/ir/implementation/PTXKernel.cpp \
+	ocelot/ir/implementation/Texture.cpp \
+	ocelot/ir/implementation/DominatorTree.cpp \
+	ocelot/ir/implementation/PostdominatorTree.cpp \
+	ocelot/ir/implementation/LLVMInstruction.cpp \
+	ocelot/ir/implementation/LLVMKernel.cpp \
+	ocelot/ir/implementation/LLVMStatement.cpp \
+	ocelot/ir/implementation/Dim3.cpp \
+	ocelot/ir/implementation/Local.cpp \
+	ocelot/ir/implementation/ILInstruction.cpp \
+	ocelot/ir/implementation/ILKernel.cpp \
+	ocelot/ir/implementation/ILStatement.cpp \
+	ocelot/ir/implementation/ILOperand.cpp \
+	ocelot/ir/implementation/ControlTree.cpp \
+	hydrazine/implementation/Exception.cpp \
+	hydrazine/implementation/Timer.cpp \
+	hydrazine/implementation/LowLevelTimer.cpp \
+	hydrazine/implementation/ArgumentParser.cpp \
+	hydrazine/implementation/math.cpp \
+	hydrazine/implementation/debug.cpp \
+	hydrazine/implementation/string.cpp \
+	hydrazine/implementation/json.cpp \
+	hydrazine/implementation/WindowsCompatibility.cpp \
+	hydrazine/interface/Configurable.cpp \
+	hydrazine/interface/Test.cpp \
+	hydrazine/interface/Stringable.cpp \
+	hydrazine/interface/Clonable.cpp \
+	hydrazine/interface/Thread.cpp \
+	hydrazine/interface/Version.cpp \
+	ocelot/trace/implementation/TraceEvent.cpp \
+	ocelot/trace/implementation/TraceGenerator.cpp \
+	ocelot/trace/implementation/MemoryChecker.cpp \
+	ocelot/trace/implementation/MemoryRaceDetector.cpp \
+	ocelot/trace/implementation/InteractiveDebugger.cpp \
+	ocelot/executive/implementation/ExecutableKernel.cpp \
+	ocelot/executive/implementation/Device.cpp \
+	ocelot/executive/implementation/ATIGPUDevice.cpp \
+	ocelot/executive/implementation/NVIDIAGPUDevice.cpp \
+	ocelot/executive/implementation/EmulatorDevice.cpp \
+	ocelot/executive/implementation/MulticoreCPUDevice.cpp \
+	ocelot/executive/implementation/CTAContext.cpp \
+	ocelot/executive/implementation/EmulatorCallStack.cpp \
+	ocelot/executive/implementation/EmulatedKernel.cpp \
+	ocelot/executive/implementation/NVIDIAExecutableKernel.cpp \
+	ocelot/executive/implementation/ATIExecutableKernel.cpp \
+	ocelot/executive/implementation/RuntimeException.cpp \
+	ocelot/executive/implementation/CooperativeThreadArray.cpp \
+	ocelot/executive/implementation/LLVMExecutableKernel.cpp \
+	ocelot/executive/implementation/LLVMContext.cpp \
+	ocelot/executive/implementation/TextureOperations.cpp \
+	ocelot/cuda/implementation/CudaDriverApi.cpp \
+	ocelot/cuda/implementation/CudaDriver.cpp \
+	ocelot/cuda/implementation/CudaDriverInterface.cpp \
+	ocelot/cuda/implementation/CudaRuntimeContext.cpp \
+	ocelot/cuda/implementation/CudaDriverFrontend.cpp \
+	ocelot/cal/implementation/CalDriver.cpp \
+	ocelot/translator/implementation/Translator.cpp \
+	ocelot/translator/implementation/PTXToLLVMTranslator.cpp \
+	ocelot/translator/implementation/PTXToILTranslator.cpp
 
 ################################################################################
 ## libocelot
@@ -304,6 +389,23 @@ TestCudaSequence_LDFLAGS = -static
 ################################################################################
 
 ################################################################################
+##
+##
+TestSequenceDriverAPI_CXXFLAGS = $(SDK_CFLAGS)
+TestSequenceDriverAPI_SOURCES = ocelot/cuda/test/driver/sequence.cpp
+TestSequenceDriverAPI_LDADD = -locelotcuda $(LLVM_LDFLAGS)
+TestSequenceDriverAPI_LDFLAGS = -static
+################################################################################
+
+
+
+################################################################################
+##
+##
+
+################################################################################
+
+################################################################################
 ## TestDeviceSwitching
 TestDeviceSwitching_CXXFLAGS = $(INCLUDE) -Wall -ansi \
 	-pedantic -Werror -std=c++0x
@@ -365,6 +467,9 @@ nobase_include_HEADERS = ocelot/api/interface/ocelot.h \
 	ocelot/cuda/interface/CudaRuntimeInterface.h \
 	ocelot/cuda/interface/TraceGeneratingCudaRuntime.h \
 	ocelot/cuda/interface/cuda.h \
+	ocelot/cuda/interface/CudaDriverFrontend.h \
+	ocelot/cuda/interface/CudaDriverInterface.h \
+	ocelot/cuda/interface/CudaRuntimeContext.h \
 	ocelot/trace/interface/TraceEvent.h \
 	ocelot/trace/interface/TraceGenerator.h \
 	ocelot/trace/interface/MemoryRaceDetector.h \
@@ -434,7 +539,7 @@ nobase_include_HEADERS = ocelot/api/interface/ocelot.h \
 	hydrazine/interface/Thread.hpp \
 	hydrazine/interface/Version.h \
 	hydrazine/python/RunRegression.py \
-	regression/ocelotRegressionTests.txt	
+	regression/ocelotRegressionTests.txt 
 
 ################################################################################
 

@@ -12,7 +12,7 @@
 namespace translator
 {
 	Translator::Exception::Exception( const std::string& message, int code ) 
-		: hydrazine::Exception( message, code )
+		: hydrazine::Exception( message)
 	{
 	
 	}

@@ -56,6 +56,7 @@ namespace ir
 				Uav_Raw_Load_Id,
 				Uav_Raw_Store_Id,
 				Uav_Read_Add_Id,
+				Uav_Read_Xchg_Id,
 				Udiv,
 				Umul,
 				Ushr,
@@ -519,6 +520,15 @@ namespace ir
 		public:
 			/*! \brief Default constructor */
 			ILUav_Read_Add_Id();
+
+			Instruction *clone(bool copy=true) const;
+	};
+
+	class ILUav_Read_Xchg_Id : public ILBinaryInstruction
+	{
+		public:
+			/*! \brief Default constructor */
+			ILUav_Read_Xchg_Id();
 
 			Instruction *clone(bool copy=true) const;
 	};

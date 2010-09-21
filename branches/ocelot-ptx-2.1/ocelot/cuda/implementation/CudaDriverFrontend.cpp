@@ -43,7 +43,7 @@
 #define CUDA_VERBOSE 1
 
 // whether debugging messages are printed
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -59,8 +59,9 @@ cuda::CudaDriverFrontend *cuda::CudaDriverFrontend::_instance = 0;
 
 class CudaDriverFrontendDestructor {
 public:
-	CudaDriverFrontendDestructor() {
+	~CudaDriverFrontendDestructor() {
 		if (cuda::CudaDriverFrontend::_instance) {
+			report("!CudaDriverFrontendDestructor()");
 			delete cuda::CudaDriverFrontend::_instance;
 		}
 	}
@@ -83,7 +84,7 @@ cuda::CudaDriverFrontend::~CudaDriverFrontend() {
 	}
 }
 
-cuda::CudaDriverInterface * cuda::CudaDriverFrontend::get() {
+cuda::CudaDriverFrontend * cuda::CudaDriverFrontend::get() {
 	if (!_instance) {
 		_instance = new CudaDriverFrontend;
 	}
@@ -196,7 +197,15 @@ executive::Device& cuda::CudaDriverFrontend::Context::_getDevice() {
 
 //! \brief returns an Ocelot-formatted error message
 std::string cuda::CudaDriverFrontend::Context::_formatError(const std::string & message) {
-	return message;
+	std::string result = "==Ocelot== ";
+	for(std::string::const_iterator mi = message.begin(); 
+		mi != message.end(); ++mi) {
+		result.push_back(*mi);
+		if(*mi == '\n') {
+			result.append("==Ocelot== ");
+		}
+	}
+	return result;
 }
 
 // Load module and register it with all devices
@@ -330,12 +339,17 @@ CUresult cuda::CudaDriverFrontend::cuDeviceGetAttribute(int *pi, CUdevice_attrib
 
 	int ordinal = (int)dev;
 	executive::Device *device = _devices.at(ordinal);
-	//
-	// TODO
-	//
 	assert(device);
-	assert(0 && "cuDeviceGetProperties() not implemented yet");
-	result = CUDA_ERROR_NOT_FOUND;
+	switch (attrib) {
+		case CU_DEVICE_ATTRIBUTE_COMPUTE_MODE:
+			*pi = CU_COMPUTEMODE_EXCLUSIVE;
+			result = CUDA_SUCCESS;
+			break;
+		default:
+			*pi = 0;
+			assert(0 && "cuDeviceGetAttribute() - unsupported attribute requested");
+			break;
+	}
 	
 	_unlock();
 	return result;
@@ -352,13 +366,15 @@ CUresult cuda::CudaDriverFrontend::cuCtxCreate(CUcontext *pctx, unsigned int fla
 
 	_lock();
 
+	// check to see if the device is in use - only support exclusive mode use of devices
 	Context *newContext = new Context;
 	
 	*pctx = reinterpret_cast<CUcontext>(newContext);
 	_getThreadContextQueue().push_back(newContext);
+	
 	_unlock();
 	
-	return CUDA_ERROR_NOT_FOUND;
+	return CUDA_SUCCESS;
 }
 
 CUresult cuda::CudaDriverFrontend::cuCtxDestroy( CUcontext ctx ) {
@@ -491,11 +507,30 @@ CUresult cuda::CudaDriverFrontend::cuModuleLoad(CUmodule *module, const char *fn
 	CUresult result = CUDA_ERROR_NOT_FOUND;
 	Context *context = _bind();
 	if (context) {
-		
 		std::ifstream file(fname);
-		
-
-		result = CUDA_SUCCESS;
+		if (file.good()) {
+/*			ModuleMap::iterator module = _modules.insert(std::make_pair(fname, ir::Module())).first;
+			if (module->second.load(fname)) {
+				result = CUDA_SUCCESS;
+				//
+				// return 
+				//
+			}
+			else {
+				_modules.erase(module);
+				result = CUDA_ERROR_INVALID_VALUE;
+			}
+			*/
+			assert(0 && "unimplemented");
+		}	
+		else {
+			report("cuModuleLoad() - failed to load module '" << fname << "' from file");
+			result = CUDA_ERROR_FILE_NOT_FOUND;
+		}
+	}
+	else {
+		report("cuModuleLoad() - context not valid");
+		result = CUDA_ERROR_INVALID_CONTEXT;
 	}
 	_unbind();
 	return result;
@@ -503,36 +538,43 @@ CUresult cuda::CudaDriverFrontend::cuModuleLoad(CUmodule *module, const char *fn
 
 CUresult cuda::CudaDriverFrontend::cuModuleLoadData(CUmodule *module, 
 	const void *image) {
+	assert(0 && "unimplemented");
 	return CUDA_ERROR_NOT_FOUND;
 }
 
 CUresult cuda::CudaDriverFrontend::cuModuleLoadDataEx(CUmodule *module, 
 	const void *image, unsigned int numOptions, 
 	CUjit_option *options, void **optionValues) {
+	assert(0 && "unimplemented");
 	return CUDA_ERROR_NOT_FOUND;
 }
 
 CUresult cuda::CudaDriverFrontend::cuModuleLoadFatBinary(CUmodule *module, 
 	const void *fatCubin) {
+	assert(0 && "unimplemented");
 	return CUDA_ERROR_NOT_FOUND;
 }
 
 CUresult cuda::CudaDriverFrontend::cuModuleUnload(CUmodule hmod) {
+	assert(0 && "unimplemented");
 	return CUDA_ERROR_NOT_FOUND;
 }
 
 CUresult cuda::CudaDriverFrontend::cuModuleGetFunction(CUfunction *hfunc, 
 	CUmodule hmod, const char *name) {
+	assert(0 && "unimplemented");
 	return CUDA_ERROR_NOT_FOUND;
 }
 
 CUresult cuda::CudaDriverFrontend::cuModuleGetGlobal(CUdeviceptr *dptr, 
 	unsigned int *bytes, CUmodule hmod, const char *name) {
+	assert(0 && "unimplemented");
 	return CUDA_ERROR_NOT_FOUND;
 }
 
 CUresult cuda::CudaDriverFrontend::cuModuleGetTexRef(CUtexref *pTexRef, CUmodule hmod, 
 	const char *name) {
+	assert(0 && "unimplemented");
 	return CUDA_ERROR_NOT_FOUND;
 }
 

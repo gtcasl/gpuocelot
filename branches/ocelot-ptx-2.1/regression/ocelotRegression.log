@@ -19,10 +19,31 @@ INFO       /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestCalVe
 INFO       /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestPTXAssembly
 INFO     ==== INDIVIDUAL TEST RESULTS ====
 
+INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestPTXToLLVMTranslator -i ../../tests/ptx 
+INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestPTXAssembly 
+INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestCudaTextureArray 
+INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestCudaTexture2D 
+INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestCudaTexture2D
+INFO     Test completed in 2.18406486511 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestCudaGlobals 
+INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestCudaTextureArray
+INFO     Test completed in 2.26882696152 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestDataflowGraph -i ../../tests/ptx 
+INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestCudaGlobals
+INFO     Test completed in 1.00041389465 seconds
+INFO      It produced the following output:
+cudaSetDevice() - 0 - Ocelot PTX Emulator 
+Pass/Fail : Pass
+
 INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestEmulator 
-INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestInstructions 
 INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestEmulator
-INFO     Test completed in 0.0309460163116 seconds
+INFO     Test completed in 0.104874849319 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -32,8 +53,8 @@ Name : TestEmulator
 Description: 
 
 
-Test Seed : 1285097161
-Test time : 0.00357389
+Test Seed : 1285101911
+Test time : 0.0160923
 
 Status : Test output:
 10 registers
@@ -45,1028 +66,163 @@ Full kernel test passed
 
 
 
-INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestInstructions
-INFO     Test completed in 0.0302670001984 seconds
+INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestDeviceSwitching 
+INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestPTXToLLVMTranslator
+INFO     Test completed in 3.31108808517 seconds
+INFO      It produced the following output:
+TestPTXToLLVMTranslator: ocelot/translator/implementation/PTXToLLVMTranslator.cpp:7069: virtual ir::Kernel* translator::PTXToLLVMTranslator::translate(const ir::Kernel*): Assertion `_ptx->dfg()->ssa()' failed.
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestLLVMInstructions 
+INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestLLVMInstructions
+INFO     Test completed in 0.35596704483 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
 
-Name : TestInstructions
+Name : TestLLVMInstructions
 
-Description: 
-
-
-Test Seed : 1285097161
-Test time : 0.000632286
-
-Status : Test output:
-Accessors test passed.
-pass: load and store instructions
-Abs test passed.
-pass: arithmetic instructions
-pass: exotic arithmetic instructions
-pass: floating-point instructions
-pass: logical instructions
-pass: comparison instructions
-pass: predicated Add and Ld isntructions
-pass: control flow instructions
+Description: A test for the assembly code generation and automatic 
+             verfication of individual LLVM instructions. Test Points: 1) For each 
+             instruction, generate several assembly strings using the 
+             instruction's toString method, make sure that these pass the valid() 
+             check, compare to references from the LLVM manual.
 
 
+Test Seed : 1285101912
+Test time : 0.000896454
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestCalVectorScale 
-INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestLLVMKernels 
-INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestCalVectorScale
-INFO     Test completed in 0.0293841362 seconds
-INFO      It produced the following output:
-No CAL devices found
-Pass/Fail : Pass
+Status :  Checked instruction "<result> = add i32 4, %var"
+Add Instruction Passed
+ Checked instruction "%ptr = alloca i32"
+ Checked instruction "%ptr = alloca i32, i32 4"
+ Checked instruction "%ptr = alloca i32, i32 4, align 1024"
+ Checked instruction "%ptr = alloca i32, align 1024"
+Alloca Instruction Passed
+ Checked instruction "<result> = and i32 4, %var"
+ Checked instruction "<result> = and i32 15, 40"
+ Checked instruction "<result> = and i32 4, 8"
+And Instruction Passed
+ Checked instruction "<result> = ashr i32 4, 1"
+ Checked instruction "<result> = ashr i8 -2, 1"
+ Checked instruction "<result> = ashr < 2 x i32 > < i32 -2, i32 4 >, < i32 1, i32 3 >"
+Ashr Instruction Passed
+ Checked instruction "%X = bitcast i8 -1 to i8"
+ Checked instruction "%Z = bitcast < 2 x i32 > %V to i64"
+Bitcast Instruction Passed
+ Checked instruction "br i1 %cond, label %IfEqual, label %IfUnequal"
+Br Instruction Passed
+ Checked instruction "%retval = call i32 @test(i32 %argc)"
+ Checked instruction "call i32 (i8*, ...)* @printf(i8* %msg, i32 12, i8 42)"
+ Checked instruction "%X = tail call i32 @foo()"
+ Checked instruction "%Y = tail call fastcc i32 @foo()"
+ Checked instruction "call void @foo(i8 97 signext)"
+ Checked instruction "%r = call %struct.A @foo()"
+ Checked instruction "call void @foo() noreturn"
+ Checked instruction "%ZZ = call zeroext i32 @bar()"
+Call Instruction Passed
+ Checked instruction "%result = extractelement < 4 x i32 > %vec, i32 0"
+Extractelement Instruction Passed
+ Checked instruction "%result = extractvalue { i32, float } %agg, 0"
+Extractvalue Instruction Passed
+ Checked instruction "<result> = fadd float 0x4010000000000000, %var"
+Fadd Instruction Passed
+ Checked instruction "<result> = fcmp oeq float 0x4010000000000000, 0x4014000000000000"
+ Checked instruction "<result> = fcmp one float 0x4010000000000000, 0x4014000000000000"
+ Checked instruction "<result> = fcmp olt float 0x4010000000000000, 0x4014000000000000"
+ Checked instruction "<result> = fcmp ueq float 0x3ff0000000000000, 0x4000000000000000"
+Fcmp Instruction Passed
+ Checked instruction "<result> = fdiv float 0x4010000000000000, %var"
+Fdiv Instruction Passed
+ Checked instruction "<result> = fmul float 0x4010000000000000, %var"
+Fmul Instruction Passed
+ Checked instruction "%X = fpext float 0x400921cac0000000 to double"
+ Checked instruction "%Y = fpext float 0x3ff0000000000000 to float"
+Fpext Instruction Passed
+ Checked instruction "%X = fptosi double 0xc05ec00000000000 to i32"
+Fptosi Instruction Passed
+ Checked instruction "%X = fptoui double 0x405ec00000000000 to i32"
+Fptoui Instruction Passed
+ Checked instruction "%X = fptrunc double 0x405ec00000000000 to float"
+Fptrunc Instruction Passed
+ Checked instruction "free [ 4 x i8 ]* %array"
+Free Instruction Passed
+ Checked instruction "<result> = frem float 0x4010000000000000, %var"
+Frem Instruction Passed
+ Checked instruction "<result> = fsub float 0x0, %val"
+Fsub Instruction Passed
+ Checked instruction "%vptr = getelementptr { i32, < 2 x i8 > }* %svptr, i32 0, i32 1, i32 1"
+ Checked instruction "%eptr = getelementptr [ 12 x i8 ]* %aptr, i32 0, i32 1"
+Getelementptr Instruction Passed
+ Checked instruction "<result> = icmp ne float* %X, %X"
+Icmp Instruction Passed
+ Checked instruction "%result = insertelement < 4 x i32 > %vec, i32 1, i32 0"
+Insertelement Instruction Passed
+ Checked instruction "%result = insertvalue { i32, float } %agg, i32 1, 0"
+Insertvalue Instruction Passed
+ Checked instruction "%Y = inttoptr i64 0 to i32*"
+Inttoptr Instruction Passed
+ Checked instruction "%retval = invoke i32 @Test(i32 15) to label %Continue unwind label %TestCleanup"
+Invoke Instruction Passed
+ Checked instruction "%val = load i32* %ptr"
+Load Instruction Passed
+ Checked instruction "<result> = lshr i8 -2, 1"
+Lshr Instruction Passed
+ Checked instruction "%array2 = malloc [ 12 x i8 ], i32 %size"
+Malloc Instruction Passed
+ Checked instruction "<result> = mul i32 4, %var"
+Mul Instruction Passed
+ Checked instruction "<result> = or i32 15, 40"
+Or Instruction Passed
+ Checked instruction "%indvar = phi i32 [ 0, %LoopHeader ], [ %nextindvar, %Loop ]"
+Phi Instruction Passed
+ Checked instruction "%Y = ptrtoint i32* %x to i64"
+Prtoint Instruction Passed
+ Checked instruction "ret void"
+Ret Instruction Passed
+ Checked instruction "<result> = sdiv i32 4, %var"
+Sdiv Instruction Passed
+ Checked instruction "%X = select i1 1, i8 17, i8 42"
+Select Instruction Passed
+ Checked instruction "%X = sext i8 -1 to i16"
+Sext Instruction Passed
+ Checked instruction "<result> = shl i32 1, 32"
+Shl Instruction Passed
+ Checked instruction "%result = shufflevector < 4 x i32 > %v1, < 4 x i32 > %v2, < 8 x i32 > < i32 0, i32 1, i32 2, i32 3, i32 4, i32 5, i32 6, i32 7 >"
+ShuffleVector Instruction Passed
+ Checked instruction "%X = sitofp i32 257 to float"
+Sitofp Instruction Passed
+ Checked instruction "<result> = srem i32 4, %var"
+Srem Instruction Passed
+ Checked instruction "store i32 3, i32* %ptr"
+Store Instruction Passed
+ Checked instruction "<result> = sub i32 4, %var"
+Sub Instruction Passed
+ Checked instruction "switch i32 %val, label %otherwise [ i32 0, label %onzero i32 1, label %onone i32 2, label %ontwo ]"
+Switch Instruction Passed
+ Checked instruction "%Y = trunc i32 123 to i1"
+Trunc Instruction Passed
+ Checked instruction "<result> = udiv i32 4, %var"
+Udiv Instruction Passed
+ Checked instruction "%Y = uitofp i8 -1 to double"
+Uitofp Instruction Passed
+ Checked instruction "unreachable"
+Unreachable Instruction Passed
+ Checked instruction "unwind"
+Unwind Instruction Passed
+ Checked instruction "<result> = urem i32 4, %var"
+Urem Instruction Passed
+ Checked instruction "%tmp = va_arg i8** %ap, i32"
+VarArg Instruction Passed
+ Checked instruction "<result> = xor i32 -1, %V"
+Xor Instruction Passed
+ Checked instruction "%X = zext i32 257 to i64"
+Zext Instruction Passed
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestCudaMalloc 
-INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestCudaMalloc
-INFO     Test completed in 0.0730400085449 seconds
-INFO      It produced the following output:
-test_malloc(256, 128)
-PASSED
-test_mallocArray(256, 128)
-checking results from last cudaMemcpyFromArray
-PASSED
-[1] mallocing pitch
-[2] memcpying2d
-[3] memcpying
-[4] checking for errors
-[5] mallocing
-[6] memcpying
-[7] memcpying
-[8] final free
-Pass/Fail : Pass
+
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestLexer -i ../../tests/ptx 
-INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestLLVMKernels
-INFO     Test completed in 0.105871200562 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-
-Name : TestLLVMKernels
-
-Description: A unit test for the LLVM executive runtime. Test Points: 1) 
-             Execute a kernel with a loop. 2) Execute a matrix multiply kernel.
-
-
-Test Seed : 1285097161
-Test time : 0.0695472
-
-Status : A = [
- 1 0 0 0 0 0 0 0 ;
- 0.5 1 0 0 0 0 0 0 ;
- 0.333333 0.5 1 0 0 0 0 0 ;
- 0.25 0.333333 0.5 1 0 0 0 0 ;
- 0.2 0.25 0.333333 0.5 1 0 0 0 ;
- 0.166667 0.2 0.25 0.333333 0.5 1 0 0 ;
- 0.142857 0.166667 0.2 0.25 0.333333 0.5 1 0 ;
- 0.125 0.142857 0.166667 0.2 0.25 0.333333 0.5 1 ;
-];
-V = [
- 1 ;
- 2 ;
- 3 ;
- 4 ;
- 5 ;
- 6 ;
- 7 ;
- 8 ;
-];
-R = [
- 1 ;
- 2.5 ;
- 4.33333 ;
- 6.41667 ;
- 8.7 ;
- 11.15 ;
- 13.7429 ;
- 16.4607 ;
-];
-
-
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestCudaTexture2D 
-INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestCudaTexture2D
-INFO     Test completed in 0.0384628772736 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestParser -i ../../tests/ptx 
-INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestParser
-INFO     Test completed in 0.468791007996 seconds
-INFO      It produced the following output:
-Pass/Fail : Fail
-
-
-Name : TestParser
-
-Description: A test for the PTXParser class. Test Points: 1) Load a PTX file 
-             and run it through the parser generating a module. Write the 
-             module to an intermediate stream. Parse the stream again 
-             generating a new module, compare both to make sure that they match.
-
-
-Test Seed : 1285097161
-Test time : 0.443479
-
-Status : Skipping file with incompatible ptx version.
-For file ../../tests/ptx/sdk2.2/quasirandomGenerator_SM13.ptx, Test Point 1 (Parse): Passed
-Skipping file with incompatible ptx version.
-For file ../../tests/ptx/sdk2.2/matrixMul_kernel.ptx, Test Point 1 (Parse): Passed
-Skipping file with incompatible ptx version.
-For file ../../tests/ptx/sdk2.2/dxtc.ptx, Test Point 1 (Parse): Passed
-Skipping file with incompatible ptx version.
-For file ../../tests/ptx/sdk2.2/reduction_kernel_sm10.ptx, Test Point 1 (Parse): Passed
-Skipping file with incompatible ptx version.
-For file ../../tests/ptx/sdk2.2/bisect_small.ptx, Test Point 1 (Parse): Passed
-Skipping file with incompatible ptx version.
-For file ../../tests/ptx/sdk2.2/recursiveGaussian.ptx, Test Point 1 (Parse): Passed
-Skipping file with incompatible ptx version.
-For file ../../tests/ptx/sdk2.2/MersenneTwister.ptx, Test Point 1 (Parse): Passed
-Skipping file with incompatible ptx version.
-For file ../../tests/ptx/sdk2.2/dwtHaar1D.ptx, Test Point 1 (Parse): Passed
-Skipping file with incompatible ptx version.
-For file ../../tests/ptx/sdk2.2/simpleVoteIntrinsics.ptx, Test Point 1 (Parse): Passed
-Skipping file with incompatible ptx version.
-For file ../../tests/ptx/sdk2.2/simpleTexture3D_kernel.ptx, Test Point 1 (Parse): Passed
-Skipping file with incompatible ptx version.
-For file ../../tests/ptx/sdk2.2/MonteCarlo_SM10.ptx, Test Point 1 (Parse): Passed
-Skipping file with incompatible ptx version.
-For file ../../tests/ptx/sdk2.2/bandwidthTest.ptx, Test Point 1 (Parse): Passed
-Skipping file with incompatible ptx version.
-For file ../../tests/ptx/sdk2.2/new_radixsort.ptx, Test Point 1 (Parse): Passed
-Skipping file with incompatible ptx version.
-For file ../../tests/ptx/sdk2.2/volumeRender_kernel.ptx, Test Point 1 (Parse): Passed
-Skipping file with incompatible ptx version.
-For file ../../tests/ptx/sdk2.2/histogram256_SM10.ptx, Test Point 1 (Parse): Passed
-Skipping file with incompatible ptx version.
-For file ../../tests/ptx/sdk2.2/lineOfSight.ptx, Test Point 1 (Parse): Passed
-Skipping file with incompatible ptx version.
-For file ../../tests/ptx/sdk2.2/dct8x8.ptx, Test Point 1 (Parse): Passed
-Skipping file with incompatible ptx version.
-For file ../../tests/ptx/sdk2.2/MonteCarlo_SM13.ptx, Test Point 1 (Parse): Passed
-Skipping file with incompatible ptx version.
-For file ../../tests/ptx/sdk2.2/ParticleSystem.ptx, Test Point 1 (Parse): Passed
-Skipping file with incompatible ptx version.
-For file ../../tests/ptx/sdk2.2/threadMigration.ptx, Test Point 1 (Parse): Passed
-Skipping file with incompatible ptx version.
-For file ../../tests/ptx/sdk2.2/bodysystemcuda.ptx, Test Point 1 (Parse): Passed
-Skipping file with incompatible ptx version.
-For file ../../tests/ptx/sdk2.2/simpleGL_kernel.ptx, Test Point 1 (Parse): Passed
-Skipping file with incompatible ptx version.
-For file ../../tests/ptx/sdk2.2/particleSystem2.ptx, Test Point 1 (Parse): Passed
-Skipping file with incompatible ptx version.
-For file ../../tests/ptx/sdk2.2/simpleMultiGPU_kernel.ptx, Test Point 1 (Parse): Passed
-Skipping file with incompatible ptx version.
-For file ../../tests/ptx/sdk2.2/simpleZeroCopy.ptx, Test Point 1 (Parse): Passed
-Skipping file with incompatible ptx version.
-For file ../../tests/ptx/sdk2.2/simpleAtomicIntrinsics.ptx, Test Point 1 (Parse): Passed
-Skipping file with incompatible ptx version.
-For file ../../tests/ptx/sdk2.2/convolutionTexture.ptx, Test Point 1 (Parse): Passed
-Skipping file with incompatible ptx version.
-For file ../../tests/ptx/sdk2.2/BlackScholes.ptx, Test Point 1 (Parse): Passed
-Skipping file with incompatible ptx version.
-For file ../../tests/ptx/sdk2.2/bitonic.ptx, Test Point 1 (Parse): Passed
-Skipping file with incompatible ptx version.
-For file ../../tests/ptx/sdk2.2/simpleTexture.ptx, Test Point 1 (Parse): Passed
-Skipping file with incompatible ptx version.
-For file ../../tests/ptx/sdk2.2/cppIntegration.ptx, Test Point 1 (Parse): Passed
-Skipping file with incompatible ptx version.
-For file ../../tests/ptx/sdk2.2/Mandelbrot_sm13.ptx, Test Point 1 (Parse): Passed
-Skipping file with incompatible ptx version.
-For file ../../tests/ptx/sdk2.2/histogram64.ptx, Test Point 1 (Parse): Passed
-Skipping file with incompatible ptx version.
-For file ../../tests/ptx/sdk2.2/scalarProd.ptx, Test Point 1 (Parse): Passed
-Skipping file with incompatible ptx version.
-For file ../../tests/ptx/sdk2.2/histogram256_SM11.ptx, Test Point 1 (Parse): Passed
-Skipping file with incompatible ptx version.
-For file ../../tests/ptx/sdk2.2/binomialOptions_SM10.ptx, Test Point 1 (Parse): Passed
-Skipping file with incompatible ptx version.
-For file ../../tests/ptx/sdk2.2/marchingCubes_kernel.ptx, Test Point 1 (Parse): Passed
-Skipping file with incompatible ptx version.
-For file ../../tests/ptx/sdk2.2/transpose.ptx, Test Point 1 (Parse): Passed
-Skipping file with incompatible ptx version.
-For file ../../tests/ptx/sdk2.2/bisect_large.ptx, Test Point 1 (Parse): Passed
-Skipping file with incompatible ptx version.
-For file ../../tests/ptx/sdk2.2/asyncAPI.ptx, Test Point 1 (Parse): Passed
-Skipping file with incompatible ptx version.
-For file ../../tests/ptx/sdk2.2/scan.ptx, Test Point 1 (Parse): Passed
-Skipping file with incompatible ptx version.
-For file ../../tests/ptx/sdk2.2/scanLargeArray.ptx, Test Point 1 (Parse): Passed
-Skipping file with incompatible ptx version.
-For file ../../tests/ptx/sdk2.2/postProcessGL.ptx, Test Point 1 (Parse): Passed
-Skipping file with incompatible ptx version.
-For file ../../tests/ptx/sdk2.2/binomialOptions_SM13.ptx, Test Point 1 (Parse): Passed
-Skipping file with incompatible ptx version.
-For file ../../tests/ptx/sdk2.2/simpleTexture_kernel.ptx, Test Point 1 (Parse): Passed
-Skipping file with incompatible ptx version.
-For file ../../tests/ptx/sdk2.2/fluidsGL.ptx, Test Point 1 (Parse): Passed
-Skipping file with incompatible ptx version.
-For file ../../tests/ptx/sdk2.2/imageDenoising.ptx, Test Point 1 (Parse): Passed
-Skipping file with incompatible ptx version.
-For file ../../tests/ptx/sdk2.2/SobelFilter_kernels.ptx, Test Point 1 (Parse): Passed
-Skipping file with incompatible ptx version.
-For file ../../tests/ptx/sdk2.2/clock.ptx, Test Point 1 (Parse): Passed
-Skipping file with incompatible ptx version.
-For file ../../tests/ptx/sdk2.2/transposeNew.ptx, Test Point 1 (Parse): Passed
-Skipping file with incompatible ptx version.
-For file ../../tests/ptx/sdk2.2/threadFenceReduction.ptx, Test Point 1 (Parse): Passed
-Skipping file with incompatible ptx version.
-For file ../../tests/ptx/sdk2.2/sobol_gpu.ptx, Test Point 1 (Parse): Passed
-Skipping file with incompatible ptx version.
-For file ../../tests/ptx/sdk2.2/reduction.ptx, Test Point 1 (Parse): Passed
-Skipping file with incompatible ptx version.
-For file ../../tests/ptx/sdk2.2/histogram256_SM12.ptx, Test Point 1 (Parse): Passed
-Skipping file with incompatible ptx version.
-For file ../../tests/ptx/sdk2.2/bicubicTexture.ptx, Test Point 1 (Parse): Passed
-Skipping file with incompatible ptx version.
-For file ../../tests/ptx/sdk2.2/simpleStreams.ptx, Test Point 1 (Parse): Passed
-Skipping file with incompatible ptx version.
-For file ../../tests/ptx/sdk2.2/template.ptx, Test Point 1 (Parse): Passed
-Skipping file with incompatible ptx version.
-For file ../../tests/ptx/sdk2.2/main.ptx, Test Point 1 (Parse): Passed
-Skipping file with incompatible ptx version.
-For file ../../tests/ptx/sdk2.2/fastWalshTransform.ptx, Test Point 1 (Parse): Passed
-Skipping file with incompatible ptx version.
-For file ../../tests/ptx/sdk2.2/boxFilter_kernel.ptx, Test Point 1 (Parse): Passed
-Skipping file with incompatible ptx version.
-For file ../../tests/ptx/sdk2.2/matrixMul.ptx, Test Point 1 (Parse): Passed
-Skipping file with incompatible ptx version.
-For file ../../tests/ptx/sdk2.2/alignedTypes.ptx, Test Point 1 (Parse): Passed
-Skipping file with incompatible ptx version.
-For file ../../tests/ptx/sdk2.2/convolutionFFT2D.ptx, Test Point 1 (Parse): Passed
-Skipping file with incompatible ptx version.
-For file ../../tests/ptx/sdk2.2/Mandelbrot_sm10.ptx, Test Point 1 (Parse): Passed
-Skipping file with incompatible ptx version.
-For file ../../tests/ptx/sdk2.2/oceanFFT_kernel.ptx, Test Point 1 (Parse): Passed
-Skipping file with incompatible ptx version.
-For file ../../tests/ptx/sdk2.2/radixsort.ptx, Test Point 1 (Parse): Passed
-Skipping file with incompatible ptx version.
-For file ../../tests/ptx/sdk2.2/reduction_kernel_sm13.ptx, Test Point 1 (Parse): Passed
-Skipping file with incompatible ptx version.
-For file ../../tests/ptx/sdk2.2/simpleTemplates.ptx, Test Point 1 (Parse): Passed
-Skipping file with incompatible ptx version.
-For file ../../tests/ptx/sdk2.2/quasirandomGenerator_SM10.ptx, Test Point 1 (Parse): Passed
-Skipping file with incompatible ptx version.
-For file ../../tests/ptx/sdk2.2/simpleCUFFT.ptx, Test Point 1 (Parse): Passed
-Skipping file with incompatible ptx version.
-For file ../../tests/ptx/sdk2.2/convolutionSeparable.ptx, Test Point 1 (Parse): Passed
-Skipping file with incompatible ptx version.
-For file ../../tests/ptx/synthetic/barrier.ptx, Test Point 1 (Parse): Passed
-Skipping file with incompatible ptx version.
-For file ../../tests/ptx/synthetic/kernels.ptx, Test Point 1 (Parse): Passed
-Skipping file with incompatible ptx version.
-For file ../../tests/ptx/synthetic/blockIsOwnPredecessor.ptx, Test Point 1 (Parse): Passed
-Skipping file with incompatible ptx version.
-For file ../../tests/ptx/synthetic/sequence.ptx, Test Point 1 (Parse): Passed
-For file ../../tests/ptx/sdk3.0/simpleAtomicIntrinsics_kernel.ptx, Test Point 1 (Parse): Passed
-Parse 1 failed with exception: 
-Failed to parse file '::unknown path::':
-1 
-2 .version 2.1
-3 .target sm_20
-4 .visible .func
-5 (
-6 	.param .align 4 .b8 __cudaretf__Z19bodyBodyInteraction6float36float4S0_[12]
-7 )
-8 _Z19bodyBodyInteraction6float36float4S0_
-9 (
-10 	.param .align 4 .b8 __cudaparmf1__Z19bodyBodyInteraction6float36float4S0_[12],
-11 	.param .align 16 .b8 __cudaparmf2__Z19bodyBodyInteraction6float36float4S0_[16],
-12 	.param .align 16 .b8 __cudaparmf3__Z19bodyBodyInteraction6float36float4S0_[16]
-13 )
-14 
-15 .visible .func
-16 (
-17 	.param .align 4 .b8 __cudaretf__Z11gravitation6float46float3[12]
-18 )
-19 _Z11gravitation6float46float3
-20 (
-21 	.param .align 16 .b8 __cudaparmf1__Z11gravitation6float46float3[16],
-22 	.param .align 4 .b8 __cudaparmf2__Z11gravitation6float46float3[12]
-23 )
-24 
-25 .file 1 "<command-line>"
-26 .file 2 "/tmp/tmpxft_0000510e_00000000-6_nbody_kernel.cudafe2.gpu"
-27 .file 3 "/usr/lib/gcc/i486-linux-gnu/4.4.3/include/stddef.h"
-28 .file 4 "/usr/local/cuda/bin/../include/crt/device_runtime.h"
-29 .file 5 "/usr/local/cuda/bin/../include/host_defines.h"
-30 .file 6 "/usr/local/cuda/bin/../include/builtin_types.h"
-31 .file 7 "/usr/local/cuda/bin/../include/device_types.h"
-32 .file 8 "/usr/local/cuda/bin/../include/driver_types.h"
-33 .file 9 "/usr/local/cuda/bin/../include/surface_types.h"
-34 .file 10 "/usr/local/cuda/bin/../include/texture_types.h"
-35 .file 11 "/usr/local/cuda/bin/../include/vector_types.h"
-36 .file 12 "/usr/local/cuda/bin/../include/device_launch_parameters.h"
-37 .file 13 "/usr/local/cuda/bin/../include/crt/storage_class.h"
-38 .file 14 "/usr/include/bits/types.h"
-39 .file 15 "/usr/include/time.h"
-40 .file 16 "/home/normal/NVIDIA_GPU_Computing_SDK/C/src/nbody/nbody_kernel.cu"
-41 .file 17 "/usr/local/cuda/bin/../include/common_functions.h"
-42 .file 18 "/usr/local/cuda/bin/../include/math_functions.h"
-43 .file 19 "/usr/local/cuda/bin/../include/math_constants.h"
-44 .file 20 "/usr/local/cuda/bin/../include/device_functions.h"
-45 .file 21 "/usr/local/cuda/bin/../include/sm_11_atomic_functions.h"
-46 .file 22 "/usr/local/cuda/bin/../include/sm_12_atomic_functions.h"
-47 .file 23 "/usr/local/cuda/bin/../include/sm_13_double_functions.h"
-48 .file 24 "/usr/local/cuda/bin/../include/sm_20_atomic_functions.h"
-49 .file 25 "/usr/local/cuda/bin/../include/sm_20_intrinsics.h"
-50 .file 26 "/usr/local/cuda/bin/../include/surface_functions.h"
-51 .file 27 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-52 .file 28 "/usr/local/cuda/bin/../include/math_functions_dbl_ptx3.h"
-53 .extern .shared .align 16 .b8 sharedPos[];
-54 .const .f32 softeningSquared;
-55 .visible .func
-56 (
-57 	.param .align 4 .b8 __cudaretf__Z19bodyBodyInteraction6float36float4S0_[12]
-58 )
-59 _Z19bodyBodyInteraction6float36float4S0_
-60 (
-61 	.param .align 4 .b8 __cudaparmf1__Z19bodyBodyInteraction6float36float4S0_[12],
-62 	.param .align 16 .b8 __cudaparmf2__Z19bodyBodyInteraction6float36float4S0_[16],
-63 	.param .align 16 .b8 __cudaparmf3__Z19bodyBodyInteraction6float36float4S0_[16]
-64 )
-65 {
-66 .reg .f32 %f<40>;
-67 	.loc 16 38 0
-68 $LBB1__Z19bodyBodyInteraction6float36float4S0_:
-69 	ld.param.f32 %f1, [__cudaparmf1__Z19bodyBodyInteraction6float36float4S0_];
-70 	mov.f32 %f2, %f1;
-71 	ld.param.f32 %f3, [__cudaparmf1__Z19bodyBodyInteraction6float36float4S0_ + 4];
-72 	mov.f32 %f4, %f3;
-73 	ld.param.f32 %f5, [__cudaparmf1__Z19bodyBodyInteraction6float36float4S0_ + 8];
-74 	mov.f32 %f6, %f5;
-75 	ld.param.f32 %f7, [__cudaparmf2__Z19bodyBodyInteraction6float36float4S0_];
-76 	mov.f32 %f8, %f7;
-77 	ld.param.f32 %f9, [__cudaparmf2__Z19bodyBodyInteraction6float36float4S0_ + 4];
-78 	mov.f32 %f10, %f9;
-79 	ld.param.f32 %f11, [__cudaparmf2__Z19bodyBodyInteraction6float36float4S0_ + 8];
-80 	mov.f32 %f12, %f11;
-81 	ld.param.f32 %f13, [__cudaparmf3__Z19bodyBodyInteraction6float36float4S0_];
-82 	mov.f32 %f14, %f13;
-83 	ld.param.f32 %f15, [__cudaparmf3__Z19bodyBodyInteraction6float36float4S0_ + 4];
-84 	mov.f32 %f16, %f15;
-85 	ld.param.f32 %f17, [__cudaparmf3__Z19bodyBodyInteraction6float36float4S0_ + 8];
-86 	mov.f32 %f18, %f17;
-87 	ld.param.f32 %f19, [__cudaparmf3__Z19bodyBodyInteraction6float36float4S0_ + 12];
-88 	mov.f32 %f20, %f19;
-89 	.loc 16 61 0
-90 	sub.f32 %f21, %f8, %f14;
-91 	sub.f32 %f22, %f10, %f16;
-92 	sub.f32 %f23, %f12, %f18;
-93 	mul.f32 %f24, %f22, %f22;
-94 	mad.rn.f32 %f25, %f21, %f21, %f24;
-95 	mad.rn.f32 %f26, %f23, %f23, %f25;
-96 	ld.const.f32 %f27, [softeningSquared];
-97 	add.f32 %f28, %f27, %f26;
-98 	rsqrt.approx.f32 %f29, %f28;
-99 	mul.f32 %f30, %f29, %f29;
-100 	mul.f32 %f31, %f29, %f30;
-101 	mul.f32 %f32, %f31, %f20;
-102 	mad.rn.f32 %f33, %f21, %f32, %f2;
-103 	.loc 16 62 0
-104 	mad.rn.f32 %f34, %f32, %f22, %f4;
-105 	.loc 16 63 0
-106 	mad.rn.f32 %f35, %f32, %f23, %f6;
-107 	.loc 16 65 0
-108 	mov.f32 %f36, %f33;
-109 	st.param.f32 [__cudaretf__Z19bodyBodyInteraction6float36float4S0_], %f36;
-110 	mov.f32 %f37, %f34;
-111 	st.param.f32 [__cudaretf__Z19bodyBodyInteraction6float36float4S0_ + 4], %f37;
-112 	mov.f32 %f38, %f35;
-113 	st.param.f32 [__cudaretf__Z19bodyBodyInteraction6float36float4S0_ + 8], %f38;
-114 	ret;
-115 $LDWend__Z19bodyBodyInteraction6float36float4S0_:
-116 }
-117 .visible .func
-118 (
-119 	.param .align 4 .b8 __cudaretf__Z11gravitation6float46float3[12]
-120 )
-121 _Z11gravitation6float46float3
-122 (
-123 	.param .align 16 .b8 __cudaparmf1__Z11gravitation6float46float3[16],
-124 	.param .align 4 .b8 __cudaparmf2__Z11gravitation6float46float3[12]
-125 )
-126 {
-127 .reg .u32 %r<31>;
-128 .reg .f32 %f<575>;
-129 .reg .pred %p<6>;
-130 	.loc 16 71 0
-131 $LBB1__Z11gravitation6float46float3:
-132 	ld.param.f32 %f1, [__cudaparmf1__Z11gravitation6float46float3];
-133 	mov.f32 %f2, %f1;
-134 	ld.param.f32 %f3, [__cudaparmf1__Z11gravitation6float46float3 + 4];
-135 	mov.f32 %f4, %f3;
-136 	ld.param.f32 %f5, [__cudaparmf1__Z11gravitation6float46float3 + 8];
-137 	mov.f32 %f6, %f5;
-138 	ld.param.f32 %f7, [__cudaparmf1__Z11gravitation6float46float3 + 12];
-139 	mov.f32 %f8, %f7;
-140 	ld.param.f32 %f9, [__cudaparmf2__Z11gravitation6float46float3];
-141 	mov.f32 %f10, %f9;
-142 	ld.param.f32 %f11, [__cudaparmf2__Z11gravitation6float46float3 + 4];
-143 	mov.f32 %f12, %f11;
-144 	ld.param.f32 %f13, [__cudaparmf2__Z11gravitation6float46float3 + 8];
-145 	mov.f32 %f14, %f13;
-146 	.loc 16 24 0
-147 	mov.u32 %r1, %ntid.x;
-148 	shr.u32 %r2, %r1, 5;
-149 	mul.lo.u32 %r3, %r2, 32;
-150 	mov.u32 %r4, 0;
-151 	setp.eq.u32 %p1, %r3, %r4;
-152 	@%p1 bra $Lt_1_3330;
-153 	mov.u32 %r5, sharedPos;
-154 	add.u32 %r6, %r3, 31;
-155 	shr.s32 %r7, %r6, 31;
-156 	mov.s32 %r8, 31;
-157 	and.b32 %r9, %r7, %r8;
-158 	add.s32 %r10, %r9, %r6;
-159 	shr.s32 %r11, %r10, 5;
-160 	mov.u32 %r12, %tid.y;
-161 	mul.lo.u32 %r13, %r12, %r1;
-162 	mul.lo.u32 %r14, %r13, 16;
-163 	add.u32 %r15, %r14, %r5;
-164 	ld.const.f32 %f15, [softeningSquared];
-165 	mov.u32 %r16, 0;
-166 	mov.s32 %r17, %r11;
-167 $Lt_1_1794:
-168 .pragma "nounroll"
-169 	.loc 16 97 0
-170 	mov.s32 %r18, %r16;
-171 	ld.shared.v4.f32 {%f16, %f17, %f18, _}, [%r15 + 0];
-172 	sub.f32 %f19, %f16, %f2;
-173 	sub.f32 %f20, %f17, %f4;
-174 	sub.f32 %f21, %f18, %f6;
-175 	mul.f32 %f22, %f20, %f20;
-176 	mad.rn.f32 %f23, %f19, %f19, %f22;
-177 	mad.rn.f32 %f24, %f21, %f21, %f23;
-178 	add.f32 %f25, %f24, %f15;
-179 	rsqrt.approx.f32 %f26, %f25;
-180 	mul.f32 %f27, %f26, %f26;
-181 	mul.f32 %f28, %f26, %f27;
-182 	mul.f32 %f29, %f28, %f8;
-183 	mad.rn.f32 %f30, %f19, %f29, %f10;
-184 	mad.rn.f32 %f31, %f29, %f20, %f12;
-185 	mad.rn.f32 %f32, %f29, %f21, %f14;
-186 	ld.shared.v4.f32 {%f33, %f34, %f35, _}, [%r15 + 16];
-187 	sub.f32 %f36, %f33, %f2;
-188 	sub.f32 %f37, %f34, %f4;
-189 	sub.f32 %f38, %f35, %f6;
-190 	mul.f32 %f39, %f37, %f37;
-191 	mad.rn.f32 %f40, %f36, %f36, %f39;
-192 	mad.rn.f32 %f41, %f38, %f38, %f40;
-193 	add.f32 %f42, %f41, %f15;
-194 	rsqrt.approx.f32 %f43, %f42;
-195 	mul.f32 %f44, %f43, %f43;
-196 	mul.f32 %f45, %f43, %f44;
-197 	mul.f32 %f46, %f45, %f8;
-198 	mad.rn.f32 %f47, %f36, %f46, %f30;
-199 	mad.rn.f32 %f48, %f46, %f37, %f31;
-200 	mad.rn.f32 %f49, %f46, %f38, %f32;
-201 	ld.shared.v4.f32 {%f50, %f51, %f52, _}, [%r15 + 32];
-202 	sub.f32 %f53, %f50, %f2;
-203 	sub.f32 %f54, %f51, %f4;
-204 	sub.f32 %f55, %f52, %f6;
-205 	mul.f32 %f56, %f54, %f54;
-206 	mad.rn.f32 %f57, %f53, %f53, %f56;
-207 	mad.rn.f32 %f58, %f55, %f55, %f57;
-208 	add.f32 %f59, %f58, %f15;
-209 	rsqrt.approx.f32 %f60, %f59;
-210 	mul.f32 %f61, %f60, %f60;
-211 	mul.f32 %f62, %f60, %f61;
-212 	mul.f32 %f63, %f62, %f8;
-213 	mad.rn.f32 %f64, %f53, %f63, %f47;
-214 	mad.rn.f32 %f65, %f63, %f54, %f48;
-215 	mad.rn.f32 %f66, %f63, %f55, %f49;
-216 	ld.shared.v4.f32 {%f67, %f68, %f69, _}, [%r15 + 48];
-217 	sub.f32 %f70, %f67, %f2;
-218 	sub.f32 %f71, %f68, %f4;
-219 	sub.f32 %f72, %f69, %f6;
-220 	mul.f32 %f73, %f71, %f71;
-221 	mad.rn.f32 %f74, %f70, %f70, %f73;
-222 	mad.rn.f32 %f75, %f72, %f72, %f74;
-223 	add.f32 %f76, %f75, %f15;
-224 	rsqrt.approx.f32 %f77, %f76;
-225 	mul.f32 %f78, %f77, %f77;
-226 	mul.f32 %f79, %f77, %f78;
-227 	mul.f32 %f80, %f79, %f8;
-228 	mad.rn.f32 %f81, %f70, %f80, %f64;
-229 	mad.rn.f32 %f82, %f80, %f71, %f65;
-230 	mad.rn.f32 %f83, %f80, %f72, %f66;
-231 	ld.shared.v4.f32 {%f84, %f85, %f86, _}, [%r15 + 64];
-232 	sub.f32 %f87, %f84, %f2;
-233 	sub.f32 %f88, %f85, %f4;
-234 	sub.f32 %f89, %f86, %f6;
-235 	mul.f32 %f90, %f88, %f88;
-236 	mad.rn.f32 %f91, %f87, %f87, %f90;
-237 	mad.rn.f32 %f92, %f89, %f89, %f91;
-238 	add.f32 %f93, %f92, %f15;
-239 	rsqrt.approx.f32 %f94, %f93;
-240 	mul.f32 %f95, %f94, %f94;
-241 	mul.f32 %f96, %f94, %f95;
-242 	mul.f32 %f97, %f96, %f8;
-243 	mad.rn.f32 %f98, %f87, %f97, %f81;
-244 	mad.rn.f32 %f99, %f97, %f88, %f82;
-245 	mad.rn.f32 %f100, %f97, %f89, %f83;
-246 	ld.shared.v4.f32 {%f101, %f102, %f103, _}, [%r15 + 80];
-247 	sub.f32 %f104, %f101, %f2;
-248 	sub.f32 %f105, %f102, %f4;
-249 	sub.f32 %f106, %f103, %f6;
-250 	mul.f32 %f107, %f105, %f105;
-251 	mad.rn.f32 %f108, %f104, %f104, %f107;
-252 	mad.rn.f32 %f109, %f106, %f106, %f108;
-253 	add.f32 %f110, %f109, %f15;
-254 	rsqrt.approx.f32 %f111, %f110;
-255 	mul.f32 %f112, %f111, %f111;
-256 	mul.f32 %f113, %f111, %f112;
-257 	mul.f32 %f114, %f113, %f8;
-258 	mad.rn.f32 %f115, %f104, %f114, %f98;
-259 	mad.rn.f32 %f116, %f114, %f105, %f99;
-260 	mad.rn.f32 %f117, %f114, %f106, %f100;
-261 	ld.shared.v4.f32 {%f118, %f119, %f120, _}, [%r15 + 96];
-262 	sub.f32 %f121, %f118, %f2;
-263 	sub.f32 %f122, %f119, %f4;
-264 	sub.f32 %f123, %f120, %f6;
-265 	mul.f32 %f124, %f122, %f122;
-266 	mad.rn.f32 %f125, %f121, %f121, %f124;
-267 	mad.rn.f32 %f126, %f123, %f123, %f125;
-268 	add.f32 %f127, %f126, %f15;
-269 	rsqrt.approx.f32 %f128, %f127;
-270 	mul.f32 %f129, %f128, %f128;
-271 	mul.f32 %f130, %f128, %f129;
-272 	mul.f32 %f131, %f130, %f8;
-273 	mad.rn.f32 %f132, %f121, %f131, %f115;
-274 	mad.rn.f32 %f133, %f131, %f122, %f116;
-275 	mad.rn.f32 %f134, %f131, %f123, %f117;
-276 	ld.shared.v4.f32 {%f135, %f136, %f137, _}, [%r15 + 112];
-277 	sub.f32 %f138, %f135, %f2;
-278 	sub.f32 %f139, %f136, %f4;
-279 	sub.f32 %f140, %f137, %f6;
-280 	mul.f32 %f141, %f139, %f139;
-281 	mad.rn.f32 %f142, %f138, %f138, %f141;
-282 	mad.rn.f32 %f143, %f140, %f140, %f142;
-283 	add.f32 %f144, %f143, %f15;
-284 	rsqrt.approx.f32 %f145, %f144;
-285 	mul.f32 %f146, %f145, %f145;
-286 	mul.f32 %f147, %f145, %f146;
-287 	mul.f32 %f148, %f147, %f8;
-288 	mad.rn.f32 %f149, %f138, %f148, %f132;
-289 	mad.rn.f32 %f150, %f148, %f139, %f133;
-290 	mad.rn.f32 %f151, %f148, %f140, %f134;
-291 	ld.shared.v4.f32 {%f152, %f153, %f154, _}, [%r15 + 128];
-292 	sub.f32 %f155, %f152, %f2;
-293 	sub.f32 %f156, %f153, %f4;
-294 	sub.f32 %f157, %f154, %f6;
-295 	mul.f32 %f158, %f156, %f156;
-296 	mad.rn.f32 %f159, %f155, %f155, %f158;
-297 	mad.rn.f32 %f160, %f157, %f157, %f159;
-298 	add.f32 %f161, %f160, %f15;
-299 	rsqrt.approx.f32 %f162, %f161;
-300 	mul.f32 %f163, %f162, %f162;
-301 	mul.f32 %f164, %f162, %f163;
-302 	mul.f32 %f165, %f164, %f8;
-303 	mad.rn.f32 %f166, %f155, %f165, %f149;
-304 	mad.rn.f32 %f167, %f165, %f156, %f150;
-305 	mad.rn.f32 %f168, %f165, %f157, %f151;
-306 	ld.shared.v4.f32 {%f169, %f170, %f171, _}, [%r15 + 144];
-307 	sub.f32 %f172, %f169, %f2;
-308 	sub.f32 %f173, %f170, %f4;
-309 	sub.f32 %f174, %f171, %f6;
-310 	mul.f32 %f175, %f173, %f173;
-311 	mad.rn.f32 %f176, %f172, %f172, %f175;
-312 	mad.rn.f32 %f177, %f174, %f174, %f176;
-313 	add.f32 %f178, %f177, %f15;
-314 	rsqrt.approx.f32 %f179, %f178;
-315 	mul.f32 %f180, %f179, %f179;
-316 	mul.f32 %f181, %f179, %f180;
-317 	mul.f32 %f182, %f181, %f8;
-318 	mad.rn.f32 %f183, %f172, %f182, %f166;
-319 	mad.rn.f32 %f184, %f182, %f173, %f167;
-320 	mad.rn.f32 %f185, %f182, %f174, %f168;
-321 	ld.shared.v4.f32 {%f186, %f187, %f188, _}, [%r15 + 160];
-322 	sub.f32 %f189, %f186, %f2;
-323 	sub.f32 %f190, %f187, %f4;
-324 	sub.f32 %f191, %f188, %f6;
-325 	mul.f32 %f192, %f190, %f190;
-326 	mad.rn.f32 %f193, %f189, %f189, %f192;
-327 	mad.rn.f32 %f194, %f191, %f191, %f193;
-328 	add.f32 %f195, %f194, %f15;
-329 	rsqrt.approx.f32 %f196, %f195;
-330 	mul.f32 %f197, %f196, %f196;
-331 	mul.f32 %f198, %f196, %f197;
-332 	mul.f32 %f199, %f198, %f8;
-333 	mad.rn.f32 %f200, %f189, %f199, %f183;
-334 	mad.rn.f32 %f201, %f199, %f190, %f184;
-335 	mad.rn.f32 %f202, %f199, %f191, %f185;
-336 	ld.shared.v4.f32 {%f203, %f204, %f205, _}, [%r15 + 176];
-337 	sub.f32 %f206, %f203, %f2;
-338 	sub.f32 %f207, %f204, %f4;
-339 	sub.f32 %f208, %f205, %f6;
-340 	mul.f32 %f209, %f207, %f207;
-341 	mad.rn.f32 %f210, %f206, %f206, %f209;
-342 	mad.rn.f32 %f211, %f208, %f208, %f210;
-343 	add.f32 %f212, %f211, %f15;
-344 	rsqrt.approx.f32 %f213, %f212;
-345 	mul.f32 %f214, %f213, %f213;
-346 	mul.f32 %f215, %f213, %f214;
-347 	mul.f32 %f216, %f215, %f8;
-348 	mad.rn.f32 %f217, %f206, %f216, %f200;
-349 	mad.rn.f32 %f218, %f216, %f207, %f201;
-350 	mad.rn.f32 %f219, %f216, %f208, %f202;
-351 	ld.shared.v4.f32 {%f220, %f221, %f222, _}, [%r15 + 192];
-352 	sub.f32 %f223, %f220, %f2;
-353 	sub.f32 %f224, %f221, %f4;
-354 	sub.f32 %f225, %f222, %f6;
-355 	mul.f32 %f226, %f224, %f224;
-356 	mad.rn.f32 %f227, %f223, %f223, %f226;
-357 	mad.rn.f32 %f228, %f225, %f225, %f227;
-358 	add.f32 %f229, %f228, %f15;
-359 	rsqrt.approx.f32 %f230, %f229;
-360 	mul.f32 %f231, %f230, %f230;
-361 	mul.f32 %f232, %f230, %f231;
-362 	mul.f32 %f233, %f232, %f8;
-363 	mad.rn.f32 %f234, %f223, %f233, %f217;
-364 	mad.rn.f32 %f235, %f233, %f224, %f218;
-365 	mad.rn.f32 %f236, %f233, %f225, %f219;
-366 	ld.shared.v4.f32 {%f237, %f238, %f239, _}, [%r15 + 208];
-367 	sub.f32 %f240, %f237, %f2;
-368 	sub.f32 %f241, %f238, %f4;
-369 	sub.f32 %f242, %f239, %f6;
-370 	mul.f32 %f243, %f241, %f241;
-371 	mad.rn.f32 %f244, %f240, %f240, %f243;
-372 	mad.rn.f32 %f245, %f242, %f242, %f244;
-373 	add.f32 %f246, %f245, %f15;
-374 	rsqrt.approx.f32 %f247, %f246;
-375 	mul.f32 %f248, %f247, %f247;
-376 	mul.f32 %f249, %f247, %f248;
-377 	mul.f32 %f250, %f249, %f8;
-378 	mad.rn.f32 %f251, %f240, %f250, %f234;
-379 	mad.rn.f32 %f252, %f250, %f241, %f235;
-380 	mad.rn.f32 %f253, %f250, %f242, %f236;
-381 	ld.shared.v4.f32 {%f254, %f255, %f256, _}, [%r15 + 224];
-382 	sub.f32 %f257, %f254, %f2;
-383 	sub.f32 %f258, %f255, %f4;
-384 	sub.f32 %f259, %f256, %f6;
-385 	mul.f32 %f260, %f258, %f258;
-386 	mad.rn.f32 %f261, %f257, %f257, %f260;
-387 	mad.rn.f32 %f262, %f259, %f259, %f261;
-388 	add.f32 %f263, %f262, %f15;
-389 	rsqrt.approx.f32 %f264, %f263;
-390 	mul.f32 %f265, %f264, %f264;
-391 	mul.f32 %f266, %f264, %f265;
-392 	mul.f32 %f267, %f266, %f8;
-393 	mad.rn.f32 %f268, %f257, %f267, %f251;
-394 	mad.rn.f32 %f269, %f267, %f258, %f252;
-395 	mad.rn.f32 %f270, %f267, %f259, %f253;
-396 	ld.shared.v4.f32 {%f271, %f272, %f273, _}, [%r15 + 240];
-397 	sub.f32 %f274, %f271, %f2;
-398 	sub.f32 %f275, %f272, %f4;
-399 	sub.f32 %f276, %f273, %f6;
-400 	mul.f32 %f277, %f275, %f275;
-401 	mad.rn.f32 %f278, %f274, %f274, %f277;
-402 	mad.rn.f32 %f279, %f276, %f276, %f278;
-403 	add.f32 %f280, %f279, %f15;
-404 	rsqrt.approx.f32 %f281, %f280;
-405 	mul.f32 %f282, %f281, %f281;
-406 	mul.f32 %f283, %f281, %f282;
-407 	mul.f32 %f284, %f283, %f8;
-408 	mad.rn.f32 %f285, %f274, %f284, %f268;
-409 	mad.rn.f32 %f286, %f284, %f275, %f269;
-410 	mad.rn.f32 %f287, %f284, %f276, %f270;
-411 	ld.shared.v4.f32 {%f288, %f289, %f290, _}, [%r15 + 256];
-412 	sub.f32 %f291, %f288, %f2;
-413 	sub.f32 %f292, %f289, %f4;
-414 	sub.f32 %f293, %f290, %f6;
-415 	mul.f32 %f294, %f292, %f292;
-416 	mad.rn.f32 %f295, %f291, %f291, %f294;
-417 	mad.rn.f32 %f296, %f293, %f293, %f295;
-418 	add.f32 %f297, %f296, %f15;
-419 	rsqrt.approx.f32 %f298, %f297;
-420 	mul.f32 %f299, %f298, %f298;
-421 	mul.f32 %f300, %f298, %f299;
-422 	mul.f32 %f301, %f300, %f8;
-423 	mad.rn.f32 %f302, %f291, %f301, %f285;
-424 	mad.rn.f32 %f303, %f301, %f292, %f286;
-425 	mad.rn.f32 %f304, %f301, %f293, %f287;
-426 	ld.shared.v4.f32 {%f305, %f306, %f307, _}, [%r15 + 272];
-427 	sub.f32 %f308, %f305, %f2;
-428 	sub.f32 %f309, %f306, %f4;
-429 	sub.f32 %f310, %f307, %f6;
-430 	mul.f32 %f311, %f309, %f309;
-431 	mad.rn.f32 %f312, %f308, %f308, %f311;
-432 	mad.rn.f32 %f313, %f310, %f310, %f312;
-433 	add.f32 %f314, %f313, %f15;
-434 	rsqrt.approx.f32 %f315, %f314;
-435 	mul.f32 %f316, %f315, %f315;
-436 	mul.f32 %f317, %f315, %f316;
-437 	mul.f32 %f318, %f317, %f8;
-438 	mad.rn.f32 %f319, %f308, %f318, %f302;
-439 	mad.rn.f32 %f320, %f318, %f309, %f303;
-440 	mad.rn.f32 %f321, %f318, %f310, %f304;
-441 	ld.shared.v4.f32 {%f322, %f323, %f324, _}, [%r15 + 288];
-442 	sub.f32 %f325, %f322, %f2;
-443 	sub.f32 %f326, %f323, %f4;
-444 	sub.f32 %f327, %f324, %f6;
-445 	mul.f32 %f328, %f326, %f326;
-446 	mad.rn.f32 %f329, %f325, %f325, %f328;
-447 	mad.rn.f32 %f330, %f327, %f327, %f329;
-448 	add.f32 %f331, %f330, %f15;
-449 	rsqrt.approx.f32 %f332, %f331;
-450 	mul.f32 %f333, %f332, %f332;
-451 	mul.f32 %f334, %f332, %f333;
-452 	mul.f32 %f335, %f334, %f8;
-453 	mad.rn.f32 %f336, %f325, %f335, %f319;
-454 	mad.rn.f32 %f337, %f335, %f326, %f320;
-455 	mad.rn.f32 %f338, %f335, %f327, %f321;
-456 	ld.shared.v4.f32 {%f339, %f340, %f341, _}, [%r15 + 304];
-457 	sub.f32 %f342, %f339, %f2;
-458 	sub.f32 %f343, %f340, %f4;
-459 	sub.f32 %f344, %f341, %f6;
-460 	mul.f32 %f345, %f343, %f343;
-461 	mad.rn.f32 %f346, %f342, %f342, %f345;
-462 	mad.rn.f32 %f347, %f344, %f344, %f346;
-463 	add.f32 %f348, %f347, %f15;
-464 	rsqrt.approx.f32 %f349, %f348;
-465 	mul.f32 %f350, %f349, %f349;
-466 	mul.f32 %f351, %f349, %f350;
-467 	mul.f32 %f352, %f351, %f8;
-468 	mad.rn.f32 %f353, %f342, %f352, %f336;
-469 	mad.rn.f32 %f354, %f352, %f343, %f337;
-470 	mad.rn.f32 %f355, %f352, %f344, %f338;
-471 	ld.shared.v4.f32 {%f356, %f357, %f358, _}, [%r15 + 320];
-472 	sub.f32 %f359, %f356, %f2;
-473 	sub.f32 %f360, %f357, %f4;
-474 	sub.f32 %f361, %f358, %f6;
-475 	mul.f32 %f362, %f360, %f360;
-476 	mad.rn.f32 %f363, %f359, %f359, %f362;
-477 	mad.rn.f32 %f364, %f361, %f361, %f363;
-478 	add.f32 %f365, %f364, %f15;
-479 	rsqrt.approx.f32 %f366, %f365;
-480 	mul.f32 %f367, %f366, %f366;
-481 	mul.f32 %f368, %f366, %f367;
-482 	mul.f32 %f369, %f368, %f8;
-483 	mad.rn.f32 %f370, %f359, %f369, %f353;
-484 	mad.rn.f32 %f371, %f369, %f360, %f354;
-485 	mad.rn.f32 %f372, %f369, %f361, %f355;
-486 	ld.shared.v4.f32 {%f373, %f374, %f375, _}, [%r15 + 336];
-487 	sub.f32 %f376, %f373, %f2;
-488 	sub.f32 %f377, %f374, %f4;
-489 	sub.f32 %f378, %f375, %f6;
-490 	mul.f32 %f379, %f377, %f377;
-491 	mad.rn.f32 %f380, %f376, %f376, %f379;
-492 	mad.rn.f32 %f381, %f378, %f378, %f380;
-493 	add.f32 %f382, %f381, %f15;
-494 	rsqrt.approx.f32 %f383, %f382;
-495 	mul.f32 %f384, %f383, %f383;
-496 	mul.f32 %f385, %f383, %f384;
-497 	mul.f32 %f386, %f385, %f8;
-498 	mad.rn.f32 %f387, %f376, %f386, %f370;
-499 	mad.rn.f32 %f388, %f386, %f377, %f371;
-500 	mad.rn.f32 %f389, %f386, %f378, %f372;
-501 	ld.shared.v4.f32 {%f390, %f391, %f392, _}, [%r15 + 352];
-502 	sub.f32 %f393, %f390, %f2;
-503 	sub.f32 %f394, %f391, %f4;
-504 	sub.f32 %f395, %f392, %f6;
-505 	mul.f32 %f396, %f394, %f394;
-506 	mad.rn.f32 %f397, %f393, %f393, %f396;
-507 	mad.rn.f32 %f398, %f395, %f395, %f397;
-508 	add.f32 %f399, %f398, %f15;
-509 	rsqrt.approx.f32 %f400, %f399;
-510 	mul.f32 %f401, %f400, %f400;
-511 	mul.f32 %f402, %f400, %f401;
-512 	mul.f32 %f403, %f402, %f8;
-513 	mad.rn.f32 %f404, %f393, %f403, %f387;
-514 	mad.rn.f32 %f405, %f403, %f394, %f388;
-515 	mad.rn.f32 %f406, %f403, %f395, %f389;
-516 	ld.shared.v4.f32 {%f407, %f408, %f409, _}, [%r15 + 368];
-517 	sub.f32 %f410, %f407, %f2;
-518 	sub.f32 %f411, %f408, %f4;
-519 	sub.f32 %f412, %f409, %f6;
-520 	mul.f32 %f413, %f411, %f411;
-521 	mad.rn.f32 %f414, %f410, %f410, %f413;
-522 	mad.rn.f32 %f415, %f412, %f412, %f414;
-523 	add.f32 %f416, %f415, %f15;
-524 	rsqrt.approx.f32 %f417, %f416;
-525 	mul.f32 %f418, %f417, %f417;
-526 	mul.f32 %f419, %f417, %f418;
-527 	mul.f32 %f420, %f419, %f8;
-528 	mad.rn.f32 %f421, %f410, %f420, %f404;
-529 	mad.rn.f32 %f422, %f420, %f411, %f405;
-530 	mad.rn.f32 %f423, %f420, %f412, %f406;
-531 	ld.shared.v4.f32 {%f424, %f425, %f426, _}, [%r15 + 384];
-532 	sub.f32 %f427, %f424, %f2;
-533 	sub.f32 %f428, %f425, %f4;
-534 	sub.f32 %f429, %f426, %f6;
-535 	mul.f32 %f430, %f428, %f428;
-536 	mad.rn.f32 %f431, %f427, %f427, %f430;
-537 	mad.rn.f32 %f432, %f429, %f429, %f431;
-538 	add.f32 %f433, %f432, %f15;
-539 	rsqrt.approx.f32 %f434, %f433;
-540 	mul.f32 %f435, %f434, %f434;
-541 	mul.f32 %f436, %f434, %f435;
-542 	mul.f32 %f437, %f436, %f8;
-543 	mad.rn.f32 %f438, %f427, %f437, %f421;
-544 	mad.rn.f32 %f439, %f437, %f428, %f422;
-545 	mad.rn.f32 %f440, %f437, %f429, %f423;
-546 	ld.shared.v4.f32 {%f441, %f442, %f443, _}, [%r15 + 400];
-547 	sub.f32 %f444, %f441, %f2;
-548 	sub.f32 %f445, %f442, %f4;
-549 	sub.f32 %f446, %f443, %f6;
-550 	mul.f32 %f447, %f445, %f445;
-551 	mad.rn.f32 %f448, %f444, %f444, %f447;
-552 	mad.rn.f32 %f449, %f446, %f446, %f448;
-553 	add.f32 %f450, %f449, %f15;
-554 	rsqrt.approx.f32 %f451, %f450;
-555 	mul.f32 %f452, %f451, %f451;
-556 	mul.f32 %f453, %f451, %f452;
-557 	mul.f32 %f454, %f453, %f8;
-558 	mad.rn.f32 %f455, %f444, %f454, %f438;
-559 	mad.rn.f32 %f456, %f454, %f445, %f439;
-560 	mad.rn.f32 %f457, %f454, %f446, %f440;
-561 	ld.shared.v4.f32 {%f458, %f459, %f460, _}, [%r15 + 416];
-562 	sub.f32 %f461, %f458, %f2;
-563 	sub.f32 %f462, %f459, %f4;
-564 	sub.f32 %f463, %f460, %f6;
-565 	mul.f32 %f464, %f462, %f462;
-566 	mad.rn.f32 %f465, %f461, %f461, %f464;
-567 	mad.rn.f32 %f466, %f463, %f463, %f465;
-568 	add.f32 %f467, %f466, %f15;
-569 	rsqrt.approx.f32 %f468, %f467;
-570 	mul.f32 %f469, %f468, %f468;
-571 	mul.f32 %f470, %f468, %f469;
-572 	mul.f32 %f471, %f470, %f8;
-573 	mad.rn.f32 %f472, %f461, %f471, %f455;
-574 	mad.rn.f32 %f473, %f471, %f462, %f456;
-575 	mad.rn.f32 %f474, %f471, %f463, %f457;
-576 	ld.shared.v4.f32 {%f475, %f476, %f477, _}, [%r15 + 432];
-577 	sub.f32 %f478, %f475, %f2;
-578 	sub.f32 %f479, %f476, %f4;
-579 	sub.f32 %f480, %f477, %f6;
-580 	mul.f32 %f481, %f479, %f479;
-581 	mad.rn.f32 %f482, %f478, %f478, %f481;
-582 	mad.rn.f32 %f483, %f480, %f480, %f482;
-583 	add.f32 %f484, %f483, %f15;
-584 	rsqrt.approx.f32 %f485, %f484;
-585 	mul.f32 %f486, %f485, %f485;
-586 	mul.f32 %f487, %f485, %f486;
-587 	mul.f32 %f488, %f487, %f8;
-588 	mad.rn.f32 %f489, %f478, %f488, %f472;
-589 	mad.rn.f32 %f490, %f488, %f479, %f473;
-590 	mad.rn.f32 %f491, %f488, %f480, %f474;
-591 	ld.shared.v4.f32 {%f492, %f493, %f494, _}, [%r15 + 448];
-592 	sub.f32 %f495, %f492, %f2;
-593 	sub.f32 %f496, %f493, %f4;
-594 	sub.f32 %f497, %f494, %f6;
-595 	mul.f32 %f498, %f496, %f496;
-596 	mad.rn.f32 %f499, %f495, %f495, %f498;
-597 	mad.rn.f32 %f500, %f497, %f497, %f499;
-598 	add.f32 %f501, %f500, %f15;
-599 	rsqrt.approx.f32 %f502, %f501;
-600 	mul.f32 %f503, %f502, %f502;
-601 	mul.f32 %f504, %f502, %f503;
-602 	mul.f32 %f505, %f504, %f8;
-603 	mad.rn.f32 %f506, %f495, %f505, %f489;
-604 	mad.rn.f32 %f507, %f505, %f496, %f490;
-605 	mad.rn.f32 %f508, %f505, %f497, %f491;
-606 	ld.shared.v4.f32 {%f509, %f510, %f511, _}, [%r15 + 464];
-607 	sub.f32 %f512, %f509, %f2;
-608 	sub.f32 %f513, %f510, %f4;
-609 	sub.f32 %f514, %f511, %f6;
-610 	mul.f32 %f515, %f513, %f513;
-611 	mad.rn.f32 %f516, %f512, %f512, %f515;
-612 	mad.rn.f32 %f517, %f514, %f514, %f516;
-613 	add.f32 %f518, %f517, %f15;
-614 	rsqrt.approx.f32 %f519, %f518;
-615 	mul.f32 %f520, %f519, %f519;
-616 	mul.f32 %f521, %f519, %f520;
-617 	mul.f32 %f522, %f521, %f8;
-618 	mad.rn.f32 %f523, %f512, %f522, %f506;
-619 	mad.rn.f32 %f524, %f522, %f513, %f507;
-620 	mad.rn.f32 %f525, %f522, %f514, %f508;
-621 	ld.shared.v4.f32 {%f526, %f527, %f528, _}, [%r15 + 480];
-622 	sub.f32 %f529, %f526, %f2;
-623 	sub.f32 %f530, %f527, %f4;
-624 	sub.f32 %f531, %f528, %f6;
-625 	mul.f32 %f532, %f530, %f530;
-626 	mad.rn.f32 %f533, %f529, %f529, %f532;
-627 	mad.rn.f32 %f534, %f531, %f531, %f533;
-628 	add.f32 %f535, %f534, %f15;
-629 	rsqrt.approx.f32 %f536, %f535;
-630 	mul.f32 %f537, %f536, %f536;
-631 	mul.f32 %f538, %f536, %f537;
-632 	mul.f32 %f539, %f538, %f8;
-633 	mad.rn.f32 %f540, %f529, %f539, %f523;
-634 	mad.rn.f32 %f541, %f539, %f530, %f524;
-635 	mad.rn.f32 %f542, %f539, %f531, %f525;
-636 	add.u32 %r19, %r18, 32;
-637 	add.u32 %r15, %r15, 512;
-638 	ld.shared.v4.f32 {%f543, %f544, %f545, _}, [%r15 + -16];
-639 	sub.f32 %f546, %f543, %f2;
-640 	sub.f32 %f547, %f544, %f4;
-641 	sub.f32 %f548, %f545, %f6;
-642 	mul.f32 %f549, %f547, %f547;
-643 	mad.rn.f32 %f550, %f546, %f546, %f549;
-644 	mad.rn.f32 %f551, %f548, %f548, %f550;
-645 	add.f32 %f552, %f551, %f15;
-646 	rsqrt.approx.f32 %f553, %f552;
-647 	mul.f32 %f554, %f553, %f553;
-648 	mul.f32 %f555, %f553, %f554;
-649 	mul.f32 %f556, %f555, %f8;
-650 	mad.rn.f32 %f10, %f546, %f556, %f540;
-651 	mad.rn.f32 %f12, %f556, %f547, %f541;
-652 	mad.rn.f32 %f14, %f556, %f548, %f542;
-653 	mov.s32 %r16, %r19;
-654 	setp.gt.u32 %p2, %r3, %r19;
-655 	@%p2 bra $Lt_1_1794;
-656 	bra.uni $Lt_1_1282;
-657 $Lt_1_3330:
-658 	mov.u32 %r16, 0;
-659 	mov.u32 %r5, sharedPos;
-660 $Lt_1_1282:
-661 	mov.s32 %r20, %r16;
-662 	setp.ge.u32 %p3, %r20, %r1;
-663 	@%p3 bra $Lt_1_2306;
-664 	sub.u32 %r21, %r1, %r20;
-665 	mov.u32 %r22, %tid.y;
-666 	mul.lo.u32 %r23, %r22, %r1;
-667 	mul.lo.u32 %r24, %r20, 16;
-668 	mul.lo.u32 %r25, %r23, 16;
-669 	add.s32 %r26, %r24, %r25;
-670 	add.u32 %r15, %r26, %r5;
-671 	ld.const.f32 %f15, [softeningSquared];
-672 	mov.s32 %r27, %r21;
-673 $Lt_1_2818:
-674 	mov.s32 %r28, %r16;
-675 	add.u32 %r29, %r28, 1;
-676 	add.u32 %r15, %r15, 16;
-677 	ld.shared.v4.f32 {%f557, %f558, %f559, _}, [%r15 + -16];
-678 	sub.f32 %f560, %f557, %f2;
-679 	sub.f32 %f561, %f558, %f4;
-680 	sub.f32 %f562, %f559, %f6;
-681 	mul.f32 %f563, %f561, %f561;
-682 	mad.rn.f32 %f564, %f560, %f560, %f563;
-683 	mad.rn.f32 %f565, %f562, %f562, %f564;
-684 	add.f32 %f566, %f565, %f15;
-685 	rsqrt.approx.f32 %f567, %f566;
-686 	mul.f32 %f568, %f567, %f567;
-687 	mul.f32 %f569, %f567, %f568;
-688 	mul.f32 %f570, %f569, %f8;
-689 	mad.rn.f32 %f10, %f560, %f570, %f10;
-690 	mad.rn.f32 %f12, %f570, %f561, %f12;
-691 	mad.rn.f32 %f14, %f570, %f562, %f14;
-692 	mov.s32 %r16, %r29;
-693 	setp.ne.u32 %p4, %r29, %r1;
-694 	@%p4 bra $Lt_1_2818;
-695 $Lt_1_2306:
-696 	.loc 16 100 0
-697 	mov.f32 %f571, %f10;
-698 	st.param.f32 [__cudaretf__Z11gravitation6float46float3], %f571;
-699 	mov.f32 %f572, %f12;
-700 	st.param.f32 [__cudaretf__Z11gravitation6float46float3 + 4], %f572;
-701 	mov.f32 %f573, %f14;
-702 	st.param.f32 [__cudaretf__Z11gravitation6float46float3 + 8], %f573;
-703 	ret;
-704 $LDWend__Z11gravitation6float46float3:
-705 }
-706 
-::unknown path:: (169, 5):  syntax error, unexpected TOKEN_LOC, expecting ';'
-For file ../../tests/ptx/sdk3.0/nbody_kernel.ptx, Test Point 1 (Parse): Failed
-
-
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestKernels 
-INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestKernels
-INFO     Test completed in 0.0417459011078 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-
-Name : TestKernels
-
-Description: 
-
-
-Test Seed : 1285097161
-Test time : 0.0140707
-
-Status : Test output:
-looping kernel succeeded
-matrix vector kernel succeeded
-
-
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestCudaTextureArray 
-INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestCudaTextureArray
-INFO     Test completed in 0.0369999408722 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestDataflowGraph -i ../../tests/ptx 
 INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestDataflowGraph
-INFO     Test completed in 0.609167814255 seconds
+INFO     Test completed in 1.52707791328 seconds
 INFO      It produced the following output:
 Pass/Fail : Fail
 
@@ -1081,171 +237,216 @@ Description: A test for the DataflowGraph class. Test Points: 1)
              ranges spanning blocks are consistent.
 
 
-Test Seed : 1285097162
-Test time : 0.583395
+Test Seed : 1285101910
+Test time : 1.3276
 
 Status : Testing Generic Dataflow
- For File: ../../tests/ptx/sdk2.2/quasirandomGenerator_SM13.ptx
+ For File: ../../tests/ptx/sdk2.2/simpleTexture.ptx
   Skipping file with incompatible ptx version.
- For File: ../../tests/ptx/sdk2.2/matrixMul_kernel.ptx
+ For File: ../../tests/ptx/sdk2.2/simpleAtomicIntrinsics.ptx
   Skipping file with incompatible ptx version.
- For File: ../../tests/ptx/sdk2.2/dxtc.ptx
-  Skipping file with incompatible ptx version.
- For File: ../../tests/ptx/sdk2.2/reduction_kernel_sm10.ptx
-  Skipping file with incompatible ptx version.
- For File: ../../tests/ptx/sdk2.2/bisect_small.ptx
-  Skipping file with incompatible ptx version.
- For File: ../../tests/ptx/sdk2.2/recursiveGaussian.ptx
-  Skipping file with incompatible ptx version.
- For File: ../../tests/ptx/sdk2.2/MersenneTwister.ptx
-  Skipping file with incompatible ptx version.
- For File: ../../tests/ptx/sdk2.2/dwtHaar1D.ptx
-  Skipping file with incompatible ptx version.
- For File: ../../tests/ptx/sdk2.2/simpleVoteIntrinsics.ptx
-  Skipping file with incompatible ptx version.
- For File: ../../tests/ptx/sdk2.2/simpleTexture3D_kernel.ptx
-  Skipping file with incompatible ptx version.
- For File: ../../tests/ptx/sdk2.2/MonteCarlo_SM10.ptx
-  Skipping file with incompatible ptx version.
- For File: ../../tests/ptx/sdk2.2/bandwidthTest.ptx
-  Skipping file with incompatible ptx version.
- For File: ../../tests/ptx/sdk2.2/new_radixsort.ptx
-  Skipping file with incompatible ptx version.
- For File: ../../tests/ptx/sdk2.2/volumeRender_kernel.ptx
-  Skipping file with incompatible ptx version.
- For File: ../../tests/ptx/sdk2.2/histogram256_SM10.ptx
-  Skipping file with incompatible ptx version.
- For File: ../../tests/ptx/sdk2.2/lineOfSight.ptx
+ For File: ../../tests/ptx/sdk2.2/fastWalshTransform.ptx
   Skipping file with incompatible ptx version.
  For File: ../../tests/ptx/sdk2.2/dct8x8.ptx
   Skipping file with incompatible ptx version.
- For File: ../../tests/ptx/sdk2.2/MonteCarlo_SM13.ptx
-  Skipping file with incompatible ptx version.
- For File: ../../tests/ptx/sdk2.2/ParticleSystem.ptx
-  Skipping file with incompatible ptx version.
- For File: ../../tests/ptx/sdk2.2/threadMigration.ptx
-  Skipping file with incompatible ptx version.
- For File: ../../tests/ptx/sdk2.2/bodysystemcuda.ptx
-  Skipping file with incompatible ptx version.
- For File: ../../tests/ptx/sdk2.2/simpleGL_kernel.ptx
-  Skipping file with incompatible ptx version.
- For File: ../../tests/ptx/sdk2.2/particleSystem2.ptx
-  Skipping file with incompatible ptx version.
- For File: ../../tests/ptx/sdk2.2/simpleMultiGPU_kernel.ptx
-  Skipping file with incompatible ptx version.
- For File: ../../tests/ptx/sdk2.2/simpleZeroCopy.ptx
-  Skipping file with incompatible ptx version.
- For File: ../../tests/ptx/sdk2.2/simpleAtomicIntrinsics.ptx
+ For File: ../../tests/ptx/sdk2.2/bitonic.ptx
   Skipping file with incompatible ptx version.
  For File: ../../tests/ptx/sdk2.2/convolutionTexture.ptx
   Skipping file with incompatible ptx version.
  For File: ../../tests/ptx/sdk2.2/BlackScholes.ptx
   Skipping file with incompatible ptx version.
- For File: ../../tests/ptx/sdk2.2/bitonic.ptx
-  Skipping file with incompatible ptx version.
- For File: ../../tests/ptx/sdk2.2/simpleTexture.ptx
-  Skipping file with incompatible ptx version.
- For File: ../../tests/ptx/sdk2.2/cppIntegration.ptx
-  Skipping file with incompatible ptx version.
- For File: ../../tests/ptx/sdk2.2/Mandelbrot_sm13.ptx
-  Skipping file with incompatible ptx version.
- For File: ../../tests/ptx/sdk2.2/histogram64.ptx
-  Skipping file with incompatible ptx version.
- For File: ../../tests/ptx/sdk2.2/scalarProd.ptx
-  Skipping file with incompatible ptx version.
- For File: ../../tests/ptx/sdk2.2/histogram256_SM11.ptx
-  Skipping file with incompatible ptx version.
- For File: ../../tests/ptx/sdk2.2/binomialOptions_SM10.ptx
-  Skipping file with incompatible ptx version.
- For File: ../../tests/ptx/sdk2.2/marchingCubes_kernel.ptx
-  Skipping file with incompatible ptx version.
- For File: ../../tests/ptx/sdk2.2/transpose.ptx
-  Skipping file with incompatible ptx version.
- For File: ../../tests/ptx/sdk2.2/bisect_large.ptx
-  Skipping file with incompatible ptx version.
- For File: ../../tests/ptx/sdk2.2/asyncAPI.ptx
-  Skipping file with incompatible ptx version.
- For File: ../../tests/ptx/sdk2.2/scan.ptx
-  Skipping file with incompatible ptx version.
- For File: ../../tests/ptx/sdk2.2/scanLargeArray.ptx
-  Skipping file with incompatible ptx version.
- For File: ../../tests/ptx/sdk2.2/postProcessGL.ptx
-  Skipping file with incompatible ptx version.
- For File: ../../tests/ptx/sdk2.2/binomialOptions_SM13.ptx
-  Skipping file with incompatible ptx version.
- For File: ../../tests/ptx/sdk2.2/simpleTexture_kernel.ptx
-  Skipping file with incompatible ptx version.
- For File: ../../tests/ptx/sdk2.2/fluidsGL.ptx
-  Skipping file with incompatible ptx version.
- For File: ../../tests/ptx/sdk2.2/imageDenoising.ptx
-  Skipping file with incompatible ptx version.
- For File: ../../tests/ptx/sdk2.2/SobelFilter_kernels.ptx
-  Skipping file with incompatible ptx version.
- For File: ../../tests/ptx/sdk2.2/clock.ptx
-  Skipping file with incompatible ptx version.
- For File: ../../tests/ptx/sdk2.2/transposeNew.ptx
-  Skipping file with incompatible ptx version.
- For File: ../../tests/ptx/sdk2.2/threadFenceReduction.ptx
-  Skipping file with incompatible ptx version.
- For File: ../../tests/ptx/sdk2.2/sobol_gpu.ptx
-  Skipping file with incompatible ptx version.
- For File: ../../tests/ptx/sdk2.2/reduction.ptx
-  Skipping file with incompatible ptx version.
- For File: ../../tests/ptx/sdk2.2/histogram256_SM12.ptx
-  Skipping file with incompatible ptx version.
- For File: ../../tests/ptx/sdk2.2/bicubicTexture.ptx
-  Skipping file with incompatible ptx version.
- For File: ../../tests/ptx/sdk2.2/simpleStreams.ptx
-  Skipping file with incompatible ptx version.
- For File: ../../tests/ptx/sdk2.2/template.ptx
-  Skipping file with incompatible ptx version.
- For File: ../../tests/ptx/sdk2.2/main.ptx
-  Skipping file with incompatible ptx version.
- For File: ../../tests/ptx/sdk2.2/fastWalshTransform.ptx
-  Skipping file with incompatible ptx version.
- For File: ../../tests/ptx/sdk2.2/boxFilter_kernel.ptx
-  Skipping file with incompatible ptx version.
- For File: ../../tests/ptx/sdk2.2/matrixMul.ptx
-  Skipping file with incompatible ptx version.
- For File: ../../tests/ptx/sdk2.2/alignedTypes.ptx
-  Skipping file with incompatible ptx version.
- For File: ../../tests/ptx/sdk2.2/convolutionFFT2D.ptx
+ For File: ../../tests/ptx/sdk2.2/dxtc.ptx
   Skipping file with incompatible ptx version.
  For File: ../../tests/ptx/sdk2.2/Mandelbrot_sm10.ptx
   Skipping file with incompatible ptx version.
+ For File: ../../tests/ptx/sdk2.2/scalarProd.ptx
+  Skipping file with incompatible ptx version.
+ For File: ../../tests/ptx/sdk2.2/imageDenoising.ptx
+  Skipping file with incompatible ptx version.
+ For File: ../../tests/ptx/sdk2.2/sobol_gpu.ptx
+  Skipping file with incompatible ptx version.
+ For File: ../../tests/ptx/sdk2.2/dwtHaar1D.ptx
+  Skipping file with incompatible ptx version.
+ For File: ../../tests/ptx/sdk2.2/MonteCarlo_SM13.ptx
+  Skipping file with incompatible ptx version.
+ For File: ../../tests/ptx/sdk2.2/bisect_large.ptx
+  Skipping file with incompatible ptx version.
+ For File: ../../tests/ptx/sdk2.2/simpleStreams.ptx
+  Skipping file with incompatible ptx version.
+ For File: ../../tests/ptx/sdk2.2/simpleCUFFT.ptx
+  Skipping file with incompatible ptx version.
+ For File: ../../tests/ptx/sdk2.2/SobelFilter_kernels.ptx
+  Skipping file with incompatible ptx version.
+ For File: ../../tests/ptx/sdk2.2/new_radixsort.ptx
+  Skipping file with incompatible ptx version.
+ For File: ../../tests/ptx/sdk2.2/Mandelbrot_sm13.ptx
+  Skipping file with incompatible ptx version.
+ For File: ../../tests/ptx/sdk2.2/matrixMul.ptx
+  Skipping file with incompatible ptx version.
+ For File: ../../tests/ptx/sdk2.2/template.ptx
+  Skipping file with incompatible ptx version.
+ For File: ../../tests/ptx/sdk2.2/alignedTypes.ptx
+  Skipping file with incompatible ptx version.
+ For File: ../../tests/ptx/sdk2.2/bodysystemcuda.ptx
+  Skipping file with incompatible ptx version.
+ For File: ../../tests/ptx/sdk2.2/quasirandomGenerator_SM13.ptx
+  Skipping file with incompatible ptx version.
+ For File: ../../tests/ptx/sdk2.2/bisect_small.ptx
+  Skipping file with incompatible ptx version.
+ For File: ../../tests/ptx/sdk2.2/matrixMul_kernel.ptx
+  Skipping file with incompatible ptx version.
+ For File: ../../tests/ptx/sdk2.2/recursiveGaussian.ptx
+  Skipping file with incompatible ptx version.
+ For File: ../../tests/ptx/sdk2.2/boxFilter_kernel.ptx
+  Skipping file with incompatible ptx version.
+ For File: ../../tests/ptx/sdk2.2/histogram64.ptx
+  Skipping file with incompatible ptx version.
+ For File: ../../tests/ptx/sdk2.2/reduction_kernel_sm10.ptx
+  Skipping file with incompatible ptx version.
+ For File: ../../tests/ptx/sdk2.2/histogram256_SM10.ptx
+  Skipping file with incompatible ptx version.
+ For File: ../../tests/ptx/sdk2.2/histogram256_SM11.ptx
+  Skipping file with incompatible ptx version.
+ For File: ../../tests/ptx/sdk2.2/clock.ptx
+  Skipping file with incompatible ptx version.
  For File: ../../tests/ptx/sdk2.2/oceanFFT_kernel.ptx
+  Skipping file with incompatible ptx version.
+ For File: ../../tests/ptx/sdk2.2/quasirandomGenerator_SM10.ptx
+  Skipping file with incompatible ptx version.
+ For File: ../../tests/ptx/sdk2.2/bandwidthTest.ptx
+  Skipping file with incompatible ptx version.
+ For File: ../../tests/ptx/sdk2.2/MersenneTwister.ptx
+  Skipping file with incompatible ptx version.
+ For File: ../../tests/ptx/sdk2.2/simpleZeroCopy.ptx
+  Skipping file with incompatible ptx version.
+ For File: ../../tests/ptx/sdk2.2/simpleTexture_kernel.ptx
+  Skipping file with incompatible ptx version.
+ For File: ../../tests/ptx/sdk2.2/main.ptx
   Skipping file with incompatible ptx version.
  For File: ../../tests/ptx/sdk2.2/radixsort.ptx
   Skipping file with incompatible ptx version.
  For File: ../../tests/ptx/sdk2.2/reduction_kernel_sm13.ptx
   Skipping file with incompatible ptx version.
+ For File: ../../tests/ptx/sdk2.2/simpleTexture3D_kernel.ptx
+  Skipping file with incompatible ptx version.
  For File: ../../tests/ptx/sdk2.2/simpleTemplates.ptx
   Skipping file with incompatible ptx version.
- For File: ../../tests/ptx/sdk2.2/quasirandomGenerator_SM10.ptx
+ For File: ../../tests/ptx/sdk2.2/scan.ptx
   Skipping file with incompatible ptx version.
- For File: ../../tests/ptx/sdk2.2/simpleCUFFT.ptx
+ For File: ../../tests/ptx/sdk2.2/binomialOptions_SM10.ptx
+  Skipping file with incompatible ptx version.
+ For File: ../../tests/ptx/sdk2.2/bicubicTexture.ptx
+  Skipping file with incompatible ptx version.
+ For File: ../../tests/ptx/sdk2.2/transposeNew.ptx
+  Skipping file with incompatible ptx version.
+ For File: ../../tests/ptx/sdk2.2/scanLargeArray.ptx
+  Skipping file with incompatible ptx version.
+ For File: ../../tests/ptx/sdk2.2/simpleMultiGPU_kernel.ptx
+  Skipping file with incompatible ptx version.
+ For File: ../../tests/ptx/sdk2.2/binomialOptions_SM13.ptx
+  Skipping file with incompatible ptx version.
+ For File: ../../tests/ptx/sdk2.2/transpose.ptx
+  Skipping file with incompatible ptx version.
+ For File: ../../tests/ptx/sdk2.2/volumeRender_kernel.ptx
+  Skipping file with incompatible ptx version.
+ For File: ../../tests/ptx/sdk2.2/asyncAPI.ptx
+  Skipping file with incompatible ptx version.
+ For File: ../../tests/ptx/sdk2.2/threadMigration.ptx
   Skipping file with incompatible ptx version.
  For File: ../../tests/ptx/sdk2.2/convolutionSeparable.ptx
   Skipping file with incompatible ptx version.
- For File: ../../tests/ptx/synthetic/barrier.ptx
+ For File: ../../tests/ptx/sdk2.2/marchingCubes_kernel.ptx
   Skipping file with incompatible ptx version.
- For File: ../../tests/ptx/synthetic/kernels.ptx
+ For File: ../../tests/ptx/sdk2.2/ParticleSystem.ptx
   Skipping file with incompatible ptx version.
- For File: ../../tests/ptx/synthetic/blockIsOwnPredecessor.ptx
+ For File: ../../tests/ptx/sdk2.2/reduction.ptx
   Skipping file with incompatible ptx version.
- For File: ../../tests/ptx/synthetic/sequence.ptx
+ For File: ../../tests/ptx/sdk2.2/simpleVoteIntrinsics.ptx
   Skipping file with incompatible ptx version.
- For File: ../../tests/ptx/sdk3.0/simpleAtomicIntrinsics_kernel.ptx
+ For File: ../../tests/ptx/sdk2.2/MonteCarlo_SM10.ptx
+  Skipping file with incompatible ptx version.
+ For File: ../../tests/ptx/sdk2.2/cppIntegration.ptx
+  Skipping file with incompatible ptx version.
+ For File: ../../tests/ptx/sdk2.2/fluidsGL.ptx
+  Skipping file with incompatible ptx version.
+ For File: ../../tests/ptx/sdk2.2/simpleGL_kernel.ptx
+  Skipping file with incompatible ptx version.
+ For File: ../../tests/ptx/sdk2.2/histogram256_SM12.ptx
+  Skipping file with incompatible ptx version.
+ For File: ../../tests/ptx/sdk2.2/particleSystem2.ptx
+  Skipping file with incompatible ptx version.
+ For File: ../../tests/ptx/sdk2.2/postProcessGL.ptx
+  Skipping file with incompatible ptx version.
+ For File: ../../tests/ptx/sdk2.2/lineOfSight.ptx
+  Skipping file with incompatible ptx version.
+ For File: ../../tests/ptx/sdk2.2/threadFenceReduction.ptx
+  Skipping file with incompatible ptx version.
+ For File: ../../tests/ptx/sdk2.2/convolutionFFT2D.ptx
+  Skipping file with incompatible ptx version.
+ For File: ../../tests/ptx/sdk3.0/simpleTexture.ptx
+  For Kernel: _Z15transformKernelPfiif
+ For File: ../../tests/ptx/sdk3.0/simpleAtomicIntrinsics.ptx
   For Kernel: _Z10testKernelPi
- For File: ../../tests/ptx/sdk3.0/nbody_kernel.ptx
-  For Kernel: _Z11gravitation6float46float3
-  For Kernel: _Z19bodyBodyInteraction6float36float4S0_
- For File: ../../tests/ptx/sdk3.0/quasirandomGenerator_SM13.ptx
-  For Kernel: _Z26quasirandomGeneratorKernelPfjj
-  For Kernel: _Z13MoroInvCNDgpud
-  For Kernel: _Z16inverseCNDKernelPfS_j
- For File: ../../tests/ptx/sdk3.0/matrixMul_kernel.ptx
-  For Kernel: _Z9matrixMulPfS_S_ii
+ For File: ../../tests/ptx/sdk3.0/fastWalshTransform.ptx
+  For Kernel: _Z15fwtBatch1KernelPfS_i
+  For Kernel: _Z15fwtBatch2KernelPfS_i
+  For Kernel: _Z14modulateKernelPfS_i
+ For File: ../../tests/ptx/sdk3.0/dct8x8.ptx
+  For Kernel: _Z20CUDAshortInplaceIDCTPsi
+  For Kernel: _Z18CUDAkernelShortDCTPsi
+  For Kernel: _Z20CUDAshortInplaceIDCTPj
+  For Kernel: _Z15CUDAkernel2IDCTPfS_i
+  For Kernel: _Z19CUDAshortInplaceDCTPsi
+  For Kernel: _Z31CUDAsubroutineInplaceIDCTvectorPfi
+  For Kernel: _Z14CUDAkernel2DCTPfS_i
+  For Kernel: _Z27CUDAkernelQuantizationShortPsi
+  For Kernel: _Z30CUDAsubroutineInplaceDCTvectorPfi
+  For Kernel: _Z15CUDAkernel1IDCTPfiii
+  For Kernel: _Z19CUDAshortInplaceDCTPj
+  For Kernel: _Z27CUDAkernelQuantizationFloatPfi
+  For Kernel: _Z14CUDAkernel1DCTPfiii
+  For Kernel: _Z19CUDAkernelShortIDCTPsi
+ For File: ../../tests/ptx/sdk3.0/convolutionTexture.ptx
+  For Kernel: _Z17convolutionColumnILi3EEfff
+  For Kernel: _Z14convolutionRowILi14EEfff
+  For Kernel: _Z14convolutionRowILi15EEfff
+  For Kernel: _Z21convolutionRowsKernelPfii
+  For Kernel: _Z17convolutionColumnILi10EEfff
+  For Kernel: _Z17convolutionColumnILi4EEfff
+  For Kernel: _Z17convolutionColumnILi8EEfff
+  For Kernel: _Z14convolutionRowILi12EEfff
+  For Kernel: _Z14convolutionRowILi5EEfff
+  For Kernel: _Z17convolutionColumnILi1EEfff
+  For Kernel: _Z17convolutionColumnILi2EEfff
+  For Kernel: _Z14convolutionRowILi0EEfff
+  For Kernel: _Z17convolutionColumnILi16EEfff
+  For Kernel: _Z14convolutionRowILi8EEfff
+  For Kernel: _Z14convolutionRowILi7EEfff
+  For Kernel: _Z17convolutionColumnILi14EEfff
+  For Kernel: _Z14convolutionRowILi13EEfff
+  For Kernel: _Z17convolutionColumnILi9EEfff
+  For Kernel: _Z17convolutionColumnILi5EEfff
+  For Kernel: _Z17convolutionColumnILi12EEfff
+  For Kernel: _Z17convolutionColumnILi7EEfff
+  For Kernel: _Z17convolutionColumnILi15EEfff
+  For Kernel: _Z14convolutionRowILin1EEfff
+  For Kernel: _Z14convolutionRowILi6EEfff
+  For Kernel: _Z17convolutionColumnILi13EEfff
+  For Kernel: _Z17convolutionColumnILi11EEfff
+  For Kernel: _Z14convolutionRowILi10EEfff
+  For Kernel: _Z14convolutionRowILi9EEfff
+  For Kernel: _Z14convolutionRowILi16EEfff
+  For Kernel: _Z14convolutionRowILi11EEfff
+  For Kernel: _Z24convolutionColumnsKernelPfii
+  For Kernel: _Z17convolutionColumnILin1EEfff
+  For Kernel: _Z14convolutionRowILi4EEfff
+  For Kernel: _Z17convolutionColumnILi6EEfff
+  For Kernel: _Z14convolutionRowILi2EEfff
+  For Kernel: _Z14convolutionRowILi3EEfff
+  For Kernel: _Z17convolutionColumnILi0EEfff
+  For Kernel: _Z14convolutionRowILi1EEfff
+ For File: ../../tests/ptx/sdk3.0/BlackScholes.ptx
+  For Kernel: _Z15BlackScholesGPUPfS_S_S_S_ffi
  For File: ../../tests/ptx/sdk3.0/dxtc.ptx
 Load module failed with exception: 
 Failed to parse file '../../tests/ptx/sdk3.0/dxtc.ptx':
@@ -4146,162 +3347,9 @@ Failed to parse file '../../tests/ptx/sdk3.0/dxtc.ptx':
 
 
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestPTXAssembly 
-INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestPTXAssembly
-INFO     Test completed in 10.1101558208 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-
-Name : TestPTXAssembly
-
-Description: A unit test framework for PTX. Runs random inputs through unit 
-             tests on all available devices until a timer expires.
-
-
-Test Seed : 1285097162
-Test time : 10.0808
-
-Status : Ran 'TestVectorElements-u32' for 56 iterations.
-Ran 'TestAdd-u16' for 65 iterations.
-Ran 'TestAdd-s16' for 66 iterations.
-Ran 'TestAdd-u32' for 66 iterations.
-Ran 'TestAdd-s32' for 67 iterations.
-Ran 'TestAdd-s32-sat' for 66 iterations.
-Ran 'TestAdd-u64' for 67 iterations.
-Ran 'TestAdd-s64' for 67 iterations.
-Ran 'TestSub-u16' for 66 iterations.
-Ran 'TestSub-s16' for 66 iterations.
-Ran 'TestSub-u32' for 67 iterations.
-Ran 'TestSub-s32' for 67 iterations.
-Ran 'TestSub-s32-sat' for 66 iterations.
-Ran 'TestSub-u64' for 67 iterations.
-Ran 'TestSub-s64' for 66 iterations.
-Ran 'TestSub-Carry-s32' for 60 iterations.
-Ran 'TestSub-Carry-u32' for 60 iterations.
-Ran 'TestAdd-Carry-s32' for 60 iterations.
-Ran 'TestAdd-Carry-u32' for 60 iterations.
-Ran 'TestMul-Lo-u16' for 63 iterations.
-Ran 'TestMul-Hi-u16' for 64 iterations.
-Ran 'TestMul-Wide-u16' for 66 iterations.
-Ran 'TestMul-Lo-s16' for 66 iterations.
-Ran 'TestMul-Hi-s16' for 67 iterations.
-Ran 'TestMul-Wide-s16' for 66 iterations.
-Ran 'TestMul-Lo-u32' for 66 iterations.
-Ran 'TestMul-Hi-u32' for 66 iterations.
-Ran 'TestMul-Wide-u32' for 66 iterations.
-Ran 'TestMul-Lo-s32' for 66 iterations.
-Ran 'TestMul-Hi-s32' for 66 iterations.
-Ran 'TestMul-Wide-s32' for 66 iterations.
-Ran 'TestMul-Lo-u64' for 66 iterations.
-Ran 'TestMul-Hi-u64' for 66 iterations.
-Ran 'TestMul-Lo-s64' for 66 iterations.
-Ran 'TestMul-Hi-s64' for 66 iterations.
-Ran 'TestMad-Lo-u16' for 63 iterations.
-Ran 'TestMad-Hi-u16' for 63 iterations.
-Ran 'TestMad-Wide-u16' for 63 iterations.
-Ran 'TestMad-Lo-s16' for 63 iterations.
-Ran 'TestMad-Hi-s16' for 63 iterations.
-Ran 'TestMad-Wide-s16' for 63 iterations.
-Ran 'TestMad-Lo-u32' for 63 iterations.
-Ran 'TestMad-Hi-u32' for 63 iterations.
-Ran 'TestMad-Wide-u32' for 63 iterations.
-Ran 'TestMad-Lo-s32' for 63 iterations.
-Ran 'TestMad-Hi-s32' for 60 iterations.
-Ran 'TestMad-Sat-Hi-s32' for 60 iterations.
-Ran 'TestMad-Wide-s32' for 60 iterations.
-Ran 'TestMad-Lo-u64' for 62 iterations.
-Ran 'TestMad-Hi-u64' for 62 iterations.
-Ran 'TestMad-Lo-s64' for 63 iterations.
-Ran 'TestMad-Hi-s64' for 60 iterations.
-Ran 'TestSad-u16' for 57 iterations.
-Ran 'TestSad-s16' for 62 iterations.
-Ran 'TestSad-u32' for 61 iterations.
-Ran 'TestSad-s32' for 60 iterations.
-Ran 'TestSad-u64' for 62 iterations.
-Ran 'TestSad-s64' for 61 iterations.
-Ran 'TestDiv-u16' for 62 iterations.
-Ran 'TestDiv-s16' for 60 iterations.
-Ran 'TestDiv-u32' for 62 iterations.
-Ran 'TestDiv-s32' for 66 iterations.
-Ran 'TestDiv-u64' for 65 iterations.
-Ran 'TestDiv-s64' for 62 iterations.
-Ran 'TestRem-u16' for 66 iterations.
-Ran 'TestRem-s16' for 66 iterations.
-Ran 'TestRem-u32' for 65 iterations.
-Ran 'TestRem-s32' for 66 iterations.
-Ran 'TestRem-u64' for 66 iterations.
-Ran 'TestRem-s64' for 66 iterations.
-Ran 'TestAbs-s16' for 70 iterations.
-Ran 'TestAbs-s32' for 70 iterations.
-Ran 'TestAbs-s64' for 70 iterations.
-Ran 'TestNeg-s16' for 70 iterations.
-Ran 'TestNeg-s32' for 70 iterations.
-Ran 'TestNeg-s64' for 70 iterations.
-Ran 'TestMax-u16' for 67 iterations.
-Ran 'TestMax-u32' for 67 iterations.
-Ran 'TestMax-u64' for 67 iterations.
-Ran 'TestMax-s16' for 66 iterations.
-Ran 'TestMax-s32' for 66 iterations.
-Ran 'TestMax-s64' for 66 iterations.
-Ran 'TestMin-u16' for 67 iterations.
-Ran 'TestMin-u32' for 66 iterations.
-Ran 'TestMin-u64' for 63 iterations.
-Ran 'TestMin-s16' for 66 iterations.
-Ran 'TestMin-s32' for 64 iterations.
-Ran 'TestMin-s64' for 61 iterations.
-Ran 'TestPopc-b32' for 67 iterations.
-Ran 'TestPopc-b64' for 66 iterations.
-Ran 'TestClz-b32' for 69 iterations.
-Ran 'TestClz-b64' for 69 iterations.
-Ran 'TestBfind-u32' for 70 iterations.
-Ran 'TestBfind-u64' for 66 iterations.
-Ran 'TestBfind-s32' for 67 iterations.
-Ran 'TestBfind-s64' for 66 iterations.
-Ran 'TestBfind-shiftamount-u32' for 69 iterations.
-Ran 'TestBfind-shiftamount-u64' for 70 iterations.
-Ran 'TestBfind-shiftamount-s32' for 70 iterations.
-Ran 'TestBfind-shiftamount-s64' for 67 iterations.
-Ran 'TestBrev-b32' for 68 iterations.
-Ran 'TestBrev-b64' for 69 iterations.
-Ran 'TestBfi-b32' for 59 iterations.
-Ran 'TestBfi-b64' for 60 iterations.
-Ran 'TestPrmt-b32' for 61 iterations.
-Ran 'TestPrmt-f4e-b32' for 63 iterations.
-Ran 'TestPrmt-b4e-b32' for 62 iterations.
-Ran 'TestPrmt-rc8-b32' for 63 iterations.
-Ran 'TestPrmt-ecl-b32' for 64 iterations.
-Ran 'TestPrmt-ecr-b32' for 62 iterations.
-Ran 'TestPrmt-rc16-b32' for 63 iterations.
-Ran 'TestCall-Uni' for 46 iterations.
-Ran 'TestCall-Nondivergent' for 47 iterations.
-Ran 'TestCall-Divergent' for 40 iterations.
-Ran 'TestCall-Recursive' for 43 iterations.
-Ran 'TestCall-Indirect' for 23 iterations.
-Ran 'TestTestP-f32-Finite' for 61 iterations.
-Ran 'TestTestP-f32-Infinite' for 61 iterations.
-Ran 'TestTestP-f32-Number' for 61 iterations.
-Ran 'TestTestP-f32-NotANumber' for 61 iterations.
-Ran 'TestTestP-f32-Normal' for 62 iterations.
-Ran 'TestTestP-f32-SubNormal' for 62 iterations.
-Ran 'TestTestP-f64-Finite' for 62 iterations.
-Ran 'TestTestP-f64-Infinite' for 61 iterations.
-Ran 'TestTestP-f64-Number' for 61 iterations.
-Ran 'TestTestP-f64-NotANumber' for 62 iterations.
-Ran 'TestTestP-f64-Normal' for 62 iterations.
-Ran 'TestTestP-f64-SubNormal' for 62 iterations.
-
-
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestPTXToLLVMTranslator -i ../../tests/ptx 
-INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestPTXToLLVMTranslator
-INFO     Test completed in 0.426507949829 seconds
-INFO      It produced the following output:
-TestPTXToLLVMTranslator: ocelot/translator/implementation/PTXToLLVMTranslator.cpp:7069: virtual ir::Kernel* translator::PTXToLLVMTranslator::translate(const ir::Kernel*): Assertion `_ptx->dfg()->ssa()' failed.
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestDeviceSwitching 
+INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestKernels 
 INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestDeviceSwitching
-INFO     Test completed in 0.0430970191956 seconds
+INFO     Test completed in 0.717051029205 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -4320,8 +3368,8 @@ Description: A unit test for the ability of the CUDA runtime to switch
              parallel.
 
 
-Test Seed : 1285097173
-Test time : 0.00626326
+Test Seed : 1285101912
+Test time : 0.0147493
 
 Status : Test Point 1 Passed
 Test Point 2 Passed
@@ -4329,170 +3377,1442 @@ Test Point 3 Passed
 
 
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestLLVMInstructions 
-INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestLLVMInstructions
-INFO     Test completed in 0.0251171588898 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-
-Name : TestLLVMInstructions
-
-Description: A test for the assembly code generation and automatic 
-             verfication of individual LLVM instructions. Test Points: 1) For each 
-             instruction, generate several assembly strings using the 
-             instruction's toString method, make sure that these pass the valid() 
-             check, compare to references from the LLVM manual.
-
-
-Test Seed : 1285097173
-Test time : 0.00136518
-
-Status :  Checked instruction "<result> = add i32 4, %var"
-Add Instruction Passed
- Checked instruction "%ptr = alloca i32"
- Checked instruction "%ptr = alloca i32, i32 4"
- Checked instruction "%ptr = alloca i32, i32 4, align 1024"
- Checked instruction "%ptr = alloca i32, align 1024"
-Alloca Instruction Passed
- Checked instruction "<result> = and i32 4, %var"
- Checked instruction "<result> = and i32 15, 40"
- Checked instruction "<result> = and i32 4, 8"
-And Instruction Passed
- Checked instruction "<result> = ashr i32 4, 1"
- Checked instruction "<result> = ashr i8 -2, 1"
- Checked instruction "<result> = ashr < 2 x i32 > < i32 -2, i32 4 >, < i32 1, i32 3 >"
-Ashr Instruction Passed
- Checked instruction "%X = bitcast i8 -1 to i8"
- Checked instruction "%Z = bitcast < 2 x i32 > %V to i64"
-Bitcast Instruction Passed
- Checked instruction "br i1 %cond, label %IfEqual, label %IfUnequal"
-Br Instruction Passed
- Checked instruction "%retval = call i32 @test(i32 %argc)"
- Checked instruction "call i32 (i8*, ...)* @printf(i8* %msg, i32 12, i8 42)"
- Checked instruction "%X = tail call i32 @foo()"
- Checked instruction "%Y = tail call fastcc i32 @foo()"
- Checked instruction "call void @foo(i8 97 signext)"
- Checked instruction "%r = call %struct.A @foo()"
- Checked instruction "call void @foo() noreturn"
- Checked instruction "%ZZ = call zeroext i32 @bar()"
-Call Instruction Passed
- Checked instruction "%result = extractelement < 4 x i32 > %vec, i32 0"
-Extractelement Instruction Passed
- Checked instruction "%result = extractvalue { i32, float } %agg, 0"
-Extractvalue Instruction Passed
- Checked instruction "<result> = fadd float 0x4010000000000000, %var"
-Fadd Instruction Passed
- Checked instruction "<result> = fcmp oeq float 0x4010000000000000, 0x4014000000000000"
- Checked instruction "<result> = fcmp one float 0x4010000000000000, 0x4014000000000000"
- Checked instruction "<result> = fcmp olt float 0x4010000000000000, 0x4014000000000000"
- Checked instruction "<result> = fcmp ueq float 0x3ff0000000000000, 0x4000000000000000"
-Fcmp Instruction Passed
- Checked instruction "<result> = fdiv float 0x4010000000000000, %var"
-Fdiv Instruction Passed
- Checked instruction "<result> = fmul float 0x4010000000000000, %var"
-Fmul Instruction Passed
- Checked instruction "%X = fpext float 0x400921cac0000000 to double"
- Checked instruction "%Y = fpext float 0x3ff0000000000000 to float"
-Fpext Instruction Passed
- Checked instruction "%X = fptosi double 0xc05ec00000000000 to i32"
-Fptosi Instruction Passed
- Checked instruction "%X = fptoui double 0x405ec00000000000 to i32"
-Fptoui Instruction Passed
- Checked instruction "%X = fptrunc double 0x405ec00000000000 to float"
-Fptrunc Instruction Passed
- Checked instruction "free [ 4 x i8 ]* %array"
-Free Instruction Passed
- Checked instruction "<result> = frem float 0x4010000000000000, %var"
-Frem Instruction Passed
- Checked instruction "<result> = fsub float 0x0, %val"
-Fsub Instruction Passed
- Checked instruction "%vptr = getelementptr { i32, < 2 x i8 > }* %svptr, i32 0, i32 1, i32 1"
- Checked instruction "%eptr = getelementptr [ 12 x i8 ]* %aptr, i32 0, i32 1"
-Getelementptr Instruction Passed
- Checked instruction "<result> = icmp ne float* %X, %X"
-Icmp Instruction Passed
- Checked instruction "%result = insertelement < 4 x i32 > %vec, i32 1, i32 0"
-Insertelement Instruction Passed
- Checked instruction "%result = insertvalue { i32, float } %agg, i32 1, 0"
-Insertvalue Instruction Passed
- Checked instruction "%Y = inttoptr i64 0 to i32*"
-Inttoptr Instruction Passed
- Checked instruction "%retval = invoke i32 @Test(i32 15) to label %Continue unwind label %TestCleanup"
-Invoke Instruction Passed
- Checked instruction "%val = load i32* %ptr"
-Load Instruction Passed
- Checked instruction "<result> = lshr i8 -2, 1"
-Lshr Instruction Passed
- Checked instruction "%array2 = malloc [ 12 x i8 ], i32 %size"
-Malloc Instruction Passed
- Checked instruction "<result> = mul i32 4, %var"
-Mul Instruction Passed
- Checked instruction "<result> = or i32 15, 40"
-Or Instruction Passed
- Checked instruction "%indvar = phi i32 [ 0, %LoopHeader ], [ %nextindvar, %Loop ]"
-Phi Instruction Passed
- Checked instruction "%Y = ptrtoint i32* %x to i64"
-Prtoint Instruction Passed
- Checked instruction "ret void"
-Ret Instruction Passed
- Checked instruction "<result> = sdiv i32 4, %var"
-Sdiv Instruction Passed
- Checked instruction "%X = select i1 1, i8 17, i8 42"
-Select Instruction Passed
- Checked instruction "%X = sext i8 -1 to i16"
-Sext Instruction Passed
- Checked instruction "<result> = shl i32 1, 32"
-Shl Instruction Passed
- Checked instruction "%result = shufflevector < 4 x i32 > %v1, < 4 x i32 > %v2, < 8 x i32 > < i32 0, i32 1, i32 2, i32 3, i32 4, i32 5, i32 6, i32 7 >"
-ShuffleVector Instruction Passed
- Checked instruction "%X = sitofp i32 257 to float"
-Sitofp Instruction Passed
- Checked instruction "<result> = srem i32 4, %var"
-Srem Instruction Passed
- Checked instruction "store i32 3, i32* %ptr"
-Store Instruction Passed
- Checked instruction "<result> = sub i32 4, %var"
-Sub Instruction Passed
- Checked instruction "switch i32 %val, label %otherwise [ i32 0, label %onzero i32 1, label %onone i32 2, label %ontwo ]"
-Switch Instruction Passed
- Checked instruction "%Y = trunc i32 123 to i1"
-Trunc Instruction Passed
- Checked instruction "<result> = udiv i32 4, %var"
-Udiv Instruction Passed
- Checked instruction "%Y = uitofp i8 -1 to double"
-Uitofp Instruction Passed
- Checked instruction "unreachable"
-Unreachable Instruction Passed
- Checked instruction "unwind"
-Unwind Instruction Passed
- Checked instruction "<result> = urem i32 4, %var"
-Urem Instruction Passed
- Checked instruction "%tmp = va_arg i8** %ap, i32"
-VarArg Instruction Passed
- Checked instruction "<result> = xor i32 -1, %V"
-Xor Instruction Passed
- Checked instruction "%X = zext i32 257 to i64"
-Zext Instruction Passed
-
-
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestCudaGlobals 
-INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestCudaGlobals
-INFO     Test completed in 0.0311930179596 seconds
-INFO      It produced the following output:
-cudaSetDevice() - 0 - Ocelot PTX Emulator 
-Pass/Fail : Pass
-
 INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestCudaSequence 
-INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestCudaSequence
-INFO     Test completed in 0.0367870330811 seconds
+INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestKernels
+INFO     Test completed in 0.270705938339 seconds
 INFO      It produced the following output:
-A_gpu = 0x302a260
 Pass/Fail : Pass
+
+
+Name : TestKernels
+
+Description: 
+
+
+Test Seed : 1285101912
+Test time : 0.0268562
+
+Status : Test output:
+looping kernel succeeded
+matrix vector kernel succeeded
+
+
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestCalVectorScale 
+INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestCudaSequence
+INFO     Test completed in 0.972016811371 seconds
+INFO      It produced the following output:
+A_gpu = 0x1e6e200
+Pass/Fail : Pass
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestLLVMKernels 
+INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestCalVectorScale
+INFO     Test completed in 0.997610092163 seconds
+INFO      It produced the following output:
+No CAL devices found
+Pass/Fail : Pass
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestParser -i ../../tests/ptx 
+INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestLLVMKernels
+INFO     Test completed in 0.874952077866 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+
+Name : TestLLVMKernels
+
+Description: A unit test for the LLVM executive runtime. Test Points: 1) 
+             Execute a kernel with a loop. 2) Execute a matrix multiply kernel.
+
+
+Test Seed : 1285101914
+Test time : 0.16923
+
+Status : A = [
+ 1 0 0 0 0 0 0 0 ;
+ 0.5 1 0 0 0 0 0 0 ;
+ 0.333333 0.5 1 0 0 0 0 0 ;
+ 0.25 0.333333 0.5 1 0 0 0 0 ;
+ 0.2 0.25 0.333333 0.5 1 0 0 0 ;
+ 0.166667 0.2 0.25 0.333333 0.5 1 0 0 ;
+ 0.142857 0.166667 0.2 0.25 0.333333 0.5 1 0 ;
+ 0.125 0.142857 0.166667 0.2 0.25 0.333333 0.5 1 ;
+];
+V = [
+ 1 ;
+ 2 ;
+ 3 ;
+ 4 ;
+ 5 ;
+ 6 ;
+ 7 ;
+ 8 ;
+];
+R = [
+ 1 ;
+ 2.5 ;
+ 4.33333 ;
+ 6.41667 ;
+ 8.7 ;
+ 11.15 ;
+ 13.7429 ;
+ 16.4607 ;
+];
+
+
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestCudaMalloc 
+INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestParser
+INFO     Test completed in 0.906179189682 seconds
+INFO      It produced the following output:
+Pass/Fail : Fail
+
+
+Name : TestParser
+
+Description: A test for the PTXParser class. Test Points: 1) Load a PTX file 
+             and run it through the parser generating a module. Write the 
+             module to an intermediate stream. Parse the stream again 
+             generating a new module, compare both to make sure that they match.
+
+
+Test Seed : 1285101914
+Test time : 0.360297
+
+Status : Skipping file with incompatible ptx version.
+For file ../../tests/ptx/sdk2.2/simpleTexture.ptx, Test Point 1 (Parse): Passed
+Skipping file with incompatible ptx version.
+For file ../../tests/ptx/sdk2.2/simpleAtomicIntrinsics.ptx, Test Point 1 (Parse): Passed
+Skipping file with incompatible ptx version.
+For file ../../tests/ptx/sdk2.2/fastWalshTransform.ptx, Test Point 1 (Parse): Passed
+Skipping file with incompatible ptx version.
+For file ../../tests/ptx/sdk2.2/dct8x8.ptx, Test Point 1 (Parse): Passed
+Skipping file with incompatible ptx version.
+For file ../../tests/ptx/sdk2.2/bitonic.ptx, Test Point 1 (Parse): Passed
+Skipping file with incompatible ptx version.
+For file ../../tests/ptx/sdk2.2/convolutionTexture.ptx, Test Point 1 (Parse): Passed
+Skipping file with incompatible ptx version.
+For file ../../tests/ptx/sdk2.2/BlackScholes.ptx, Test Point 1 (Parse): Passed
+Skipping file with incompatible ptx version.
+For file ../../tests/ptx/sdk2.2/dxtc.ptx, Test Point 1 (Parse): Passed
+Skipping file with incompatible ptx version.
+For file ../../tests/ptx/sdk2.2/Mandelbrot_sm10.ptx, Test Point 1 (Parse): Passed
+Skipping file with incompatible ptx version.
+For file ../../tests/ptx/sdk2.2/scalarProd.ptx, Test Point 1 (Parse): Passed
+Skipping file with incompatible ptx version.
+For file ../../tests/ptx/sdk2.2/imageDenoising.ptx, Test Point 1 (Parse): Passed
+Skipping file with incompatible ptx version.
+For file ../../tests/ptx/sdk2.2/sobol_gpu.ptx, Test Point 1 (Parse): Passed
+Skipping file with incompatible ptx version.
+For file ../../tests/ptx/sdk2.2/dwtHaar1D.ptx, Test Point 1 (Parse): Passed
+Skipping file with incompatible ptx version.
+For file ../../tests/ptx/sdk2.2/MonteCarlo_SM13.ptx, Test Point 1 (Parse): Passed
+Skipping file with incompatible ptx version.
+For file ../../tests/ptx/sdk2.2/bisect_large.ptx, Test Point 1 (Parse): Passed
+Skipping file with incompatible ptx version.
+For file ../../tests/ptx/sdk2.2/simpleStreams.ptx, Test Point 1 (Parse): Passed
+Skipping file with incompatible ptx version.
+For file ../../tests/ptx/sdk2.2/simpleCUFFT.ptx, Test Point 1 (Parse): Passed
+Skipping file with incompatible ptx version.
+For file ../../tests/ptx/sdk2.2/SobelFilter_kernels.ptx, Test Point 1 (Parse): Passed
+Skipping file with incompatible ptx version.
+For file ../../tests/ptx/sdk2.2/new_radixsort.ptx, Test Point 1 (Parse): Passed
+Skipping file with incompatible ptx version.
+For file ../../tests/ptx/sdk2.2/Mandelbrot_sm13.ptx, Test Point 1 (Parse): Passed
+Skipping file with incompatible ptx version.
+For file ../../tests/ptx/sdk2.2/matrixMul.ptx, Test Point 1 (Parse): Passed
+Skipping file with incompatible ptx version.
+For file ../../tests/ptx/sdk2.2/template.ptx, Test Point 1 (Parse): Passed
+Skipping file with incompatible ptx version.
+For file ../../tests/ptx/sdk2.2/alignedTypes.ptx, Test Point 1 (Parse): Passed
+Skipping file with incompatible ptx version.
+For file ../../tests/ptx/sdk2.2/bodysystemcuda.ptx, Test Point 1 (Parse): Passed
+Skipping file with incompatible ptx version.
+For file ../../tests/ptx/sdk2.2/quasirandomGenerator_SM13.ptx, Test Point 1 (Parse): Passed
+Skipping file with incompatible ptx version.
+For file ../../tests/ptx/sdk2.2/bisect_small.ptx, Test Point 1 (Parse): Passed
+Skipping file with incompatible ptx version.
+For file ../../tests/ptx/sdk2.2/matrixMul_kernel.ptx, Test Point 1 (Parse): Passed
+Skipping file with incompatible ptx version.
+For file ../../tests/ptx/sdk2.2/recursiveGaussian.ptx, Test Point 1 (Parse): Passed
+Skipping file with incompatible ptx version.
+For file ../../tests/ptx/sdk2.2/boxFilter_kernel.ptx, Test Point 1 (Parse): Passed
+Skipping file with incompatible ptx version.
+For file ../../tests/ptx/sdk2.2/histogram64.ptx, Test Point 1 (Parse): Passed
+Skipping file with incompatible ptx version.
+For file ../../tests/ptx/sdk2.2/reduction_kernel_sm10.ptx, Test Point 1 (Parse): Passed
+Skipping file with incompatible ptx version.
+For file ../../tests/ptx/sdk2.2/histogram256_SM10.ptx, Test Point 1 (Parse): Passed
+Skipping file with incompatible ptx version.
+For file ../../tests/ptx/sdk2.2/histogram256_SM11.ptx, Test Point 1 (Parse): Passed
+Skipping file with incompatible ptx version.
+For file ../../tests/ptx/sdk2.2/clock.ptx, Test Point 1 (Parse): Passed
+Skipping file with incompatible ptx version.
+For file ../../tests/ptx/sdk2.2/oceanFFT_kernel.ptx, Test Point 1 (Parse): Passed
+Skipping file with incompatible ptx version.
+For file ../../tests/ptx/sdk2.2/quasirandomGenerator_SM10.ptx, Test Point 1 (Parse): Passed
+Skipping file with incompatible ptx version.
+For file ../../tests/ptx/sdk2.2/bandwidthTest.ptx, Test Point 1 (Parse): Passed
+Skipping file with incompatible ptx version.
+For file ../../tests/ptx/sdk2.2/MersenneTwister.ptx, Test Point 1 (Parse): Passed
+Skipping file with incompatible ptx version.
+For file ../../tests/ptx/sdk2.2/simpleZeroCopy.ptx, Test Point 1 (Parse): Passed
+Skipping file with incompatible ptx version.
+For file ../../tests/ptx/sdk2.2/simpleTexture_kernel.ptx, Test Point 1 (Parse): Passed
+Skipping file with incompatible ptx version.
+For file ../../tests/ptx/sdk2.2/main.ptx, Test Point 1 (Parse): Passed
+Skipping file with incompatible ptx version.
+For file ../../tests/ptx/sdk2.2/radixsort.ptx, Test Point 1 (Parse): Passed
+Skipping file with incompatible ptx version.
+For file ../../tests/ptx/sdk2.2/reduction_kernel_sm13.ptx, Test Point 1 (Parse): Passed
+Skipping file with incompatible ptx version.
+For file ../../tests/ptx/sdk2.2/simpleTexture3D_kernel.ptx, Test Point 1 (Parse): Passed
+Skipping file with incompatible ptx version.
+For file ../../tests/ptx/sdk2.2/simpleTemplates.ptx, Test Point 1 (Parse): Passed
+Skipping file with incompatible ptx version.
+For file ../../tests/ptx/sdk2.2/scan.ptx, Test Point 1 (Parse): Passed
+Skipping file with incompatible ptx version.
+For file ../../tests/ptx/sdk2.2/binomialOptions_SM10.ptx, Test Point 1 (Parse): Passed
+Skipping file with incompatible ptx version.
+For file ../../tests/ptx/sdk2.2/bicubicTexture.ptx, Test Point 1 (Parse): Passed
+Skipping file with incompatible ptx version.
+For file ../../tests/ptx/sdk2.2/transposeNew.ptx, Test Point 1 (Parse): Passed
+Skipping file with incompatible ptx version.
+For file ../../tests/ptx/sdk2.2/scanLargeArray.ptx, Test Point 1 (Parse): Passed
+Skipping file with incompatible ptx version.
+For file ../../tests/ptx/sdk2.2/simpleMultiGPU_kernel.ptx, Test Point 1 (Parse): Passed
+Skipping file with incompatible ptx version.
+For file ../../tests/ptx/sdk2.2/binomialOptions_SM13.ptx, Test Point 1 (Parse): Passed
+Skipping file with incompatible ptx version.
+For file ../../tests/ptx/sdk2.2/transpose.ptx, Test Point 1 (Parse): Passed
+Skipping file with incompatible ptx version.
+For file ../../tests/ptx/sdk2.2/volumeRender_kernel.ptx, Test Point 1 (Parse): Passed
+Skipping file with incompatible ptx version.
+For file ../../tests/ptx/sdk2.2/asyncAPI.ptx, Test Point 1 (Parse): Passed
+Skipping file with incompatible ptx version.
+For file ../../tests/ptx/sdk2.2/threadMigration.ptx, Test Point 1 (Parse): Passed
+Skipping file with incompatible ptx version.
+For file ../../tests/ptx/sdk2.2/convolutionSeparable.ptx, Test Point 1 (Parse): Passed
+Skipping file with incompatible ptx version.
+For file ../../tests/ptx/sdk2.2/marchingCubes_kernel.ptx, Test Point 1 (Parse): Passed
+Skipping file with incompatible ptx version.
+For file ../../tests/ptx/sdk2.2/ParticleSystem.ptx, Test Point 1 (Parse): Passed
+Skipping file with incompatible ptx version.
+For file ../../tests/ptx/sdk2.2/reduction.ptx, Test Point 1 (Parse): Passed
+Skipping file with incompatible ptx version.
+For file ../../tests/ptx/sdk2.2/simpleVoteIntrinsics.ptx, Test Point 1 (Parse): Passed
+Skipping file with incompatible ptx version.
+For file ../../tests/ptx/sdk2.2/MonteCarlo_SM10.ptx, Test Point 1 (Parse): Passed
+Skipping file with incompatible ptx version.
+For file ../../tests/ptx/sdk2.2/cppIntegration.ptx, Test Point 1 (Parse): Passed
+Skipping file with incompatible ptx version.
+For file ../../tests/ptx/sdk2.2/fluidsGL.ptx, Test Point 1 (Parse): Passed
+Skipping file with incompatible ptx version.
+For file ../../tests/ptx/sdk2.2/simpleGL_kernel.ptx, Test Point 1 (Parse): Passed
+Skipping file with incompatible ptx version.
+For file ../../tests/ptx/sdk2.2/histogram256_SM12.ptx, Test Point 1 (Parse): Passed
+Skipping file with incompatible ptx version.
+For file ../../tests/ptx/sdk2.2/particleSystem2.ptx, Test Point 1 (Parse): Passed
+Skipping file with incompatible ptx version.
+For file ../../tests/ptx/sdk2.2/postProcessGL.ptx, Test Point 1 (Parse): Passed
+Skipping file with incompatible ptx version.
+For file ../../tests/ptx/sdk2.2/lineOfSight.ptx, Test Point 1 (Parse): Passed
+Skipping file with incompatible ptx version.
+For file ../../tests/ptx/sdk2.2/threadFenceReduction.ptx, Test Point 1 (Parse): Passed
+Skipping file with incompatible ptx version.
+For file ../../tests/ptx/sdk2.2/convolutionFFT2D.ptx, Test Point 1 (Parse): Passed
+Parse 1 failed with exception: 
+Failed to parse file '::unknown path::':
+1 
+2 .version 2.1
+3 .target sm_20
+4 .file 1 "<command-line>"
+5 .file 2 "/tmp/tmpxft_00004466_00000000-6_simpleTexture.cudafe2.gpu"
+6 .file 3 "/usr/lib/gcc/i486-linux-gnu/4.4.3/include/stddef.h"
+7 .file 4 "/usr/local/cuda/bin/../include/crt/device_runtime.h"
+8 .file 5 "/usr/local/cuda/bin/../include/host_defines.h"
+9 .file 6 "/usr/local/cuda/bin/../include/builtin_types.h"
+10 .file 7 "/usr/local/cuda/bin/../include/device_types.h"
+11 .file 8 "/usr/local/cuda/bin/../include/driver_types.h"
+12 .file 9 "/usr/local/cuda/bin/../include/surface_types.h"
+13 .file 10 "/usr/local/cuda/bin/../include/texture_types.h"
+14 .file 11 "/usr/local/cuda/bin/../include/vector_types.h"
+15 .file 12 "/usr/local/cuda/bin/../include/device_launch_parameters.h"
+16 .file 13 "/usr/local/cuda/bin/../include/crt/storage_class.h"
+17 .file 14 "/usr/include/bits/types.h"
+18 .file 15 "/usr/include/time.h"
+19 .file 16 "/home/normal/NVIDIA_GPU_Computing_SDK/C/src/simpleTexture/simpleTexture_kernel.cu"
+20 .file 17 "/usr/local/cuda/bin/../include/common_functions.h"
+21 .file 18 "/usr/local/cuda/bin/../include/math_functions.h"
+22 .file 19 "/usr/local/cuda/bin/../include/math_constants.h"
+23 .file 20 "/usr/local/cuda/bin/../include/device_functions.h"
+24 .file 21 "/usr/local/cuda/bin/../include/sm_11_atomic_functions.h"
+25 .file 22 "/usr/local/cuda/bin/../include/sm_12_atomic_functions.h"
+26 .file 23 "/usr/local/cuda/bin/../include/sm_13_double_functions.h"
+27 .file 24 "/usr/local/cuda/bin/../include/sm_20_atomic_functions.h"
+28 .file 25 "/usr/local/cuda/bin/../include/sm_20_intrinsics.h"
+29 .file 26 "/usr/local/cuda/bin/../include/surface_functions.h"
+30 .file 27 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+31 .file 28 "/usr/local/cuda/bin/../include/math_functions_dbl_ptx3.h"
+32 .global .texref tex;
+33 .const .align 4 .b8 __cudart_i2opi_f[24] = { 65, 144, 67, 60, 153, 149, 98, 219, 192, 221, 52, 245, 209, 87, 39, 252, 41, 21, 68, 78, 110, 131, 249, 162 };
+34 .entry _Z15transformKernelPfiif
+35 (
+36 	.param .u32 __cudaparm__Z15transformKernelPfiif_g_odata,
+37 	.param .s32 __cudaparm__Z15transformKernelPfiif_width,
+38 	.param .s32 __cudaparm__Z15transformKernelPfiif_height,
+39 	.param .f32 __cudaparm__Z15transformKernelPfiif_theta
+40 )
+41 {
+42 .reg .u32 %r<287>;
+43 .reg .f32 %f<141>;
+44 .reg .pred %p<50>;
+45 .local .align 4 .b8 __cuda_result_16[28];
+46 .local .align 4 .b8 __cuda_result_44[28];
+47 	.loc 16 27 0
+48 $LBB1__Z15transformKernelPfiif:
+49 	.loc 18 1702 0
+50 	ld.param.f32 %f1, [__cudaparm__Z15transformKernelPfiif_theta];
+51 	abs.f32 %f2, %f1;
+52 	mov.f32 %f3, 0f7f800000;
+53 	setp.eq.f32 %p1, %f2, %f3;
+54 	@!%p1 bra $Lt_0_46850;
+55 	neg.f32 %f4, %f1;
+56 	add.f32 %f5, %f1, %f4;
+57 	mov.u32 %r1, __cudart_i2opi_f;
+58 	mov.u32 %r2, __cuda_result_16;
+59 	bra.uni $Lt_0_3330;
+60 $Lt_0_46850:
+61 	mov.f32 %f6, 0f473ba700;
+62 	setp.gt.f32 %p2, %f2, %f6;
+63 	@!%p2 bra $Lt_0_47362;
+64 	.loc 18 1396 0
+65 	mov.u32 %r1, __cudart_i2opi_f;
+66 	mov.b32 %r3, %f1;
+67 	and.b32 %r4, %r3, -2147483648;
+68 	mov.s32 %r5, %r4;
+69 	.loc 18 24 0
+70 	shl.b32 %r6, %r3, 8;
+71 	mov.s32 %r7, %r1;
+72 	add.u32 %r8, %r1, 24;
+73 	mov.u32 %r9, __cuda_result_16;
+74 	or.b32 %r10, %r6, -2147483648;
+75 	mov.u32 %r11, 0;
+76 $Lt_0_48386:
+77 .pragma "nounroll"
+78 	.loc 18 1410 0
+79 	ld.const.u32 %r12, [%r7 + 0];
+80 	mul.lo.u32 %r13, %r12, %r10;
+81 	add.u32 %r14, %r13, %r11;
+82 	.loc 18 1411 0
+83 	set.gt.u32.u32 %r15, %r13, %r14;
+84 	neg.s32 %r16, %r15;
+85 	mul.hi.u32 %r17, %r12, %r10;
+86 	add.u32 %r11, %r16, %r17;
+87 	.loc 18 1412 0
+88 	st.local.u32 [%r9 + 0], %r14;
+89 	add.u32 %r9, %r9, 4;
+90 	add.u32 %r7, %r7, 4;
+91 	setp.ne.u32 %p3, %r7, %r8;
+92 	@%p3 bra $Lt_0_48386;
+93 	.loc 18 1414 0
+94 	mov.u32 %r2, __cuda_result_16;
+95 	st.local.u32 [__cuda_result_16 + 24], %r11;
+96 	.loc 18 1419 0
+97 	shl.b32 %r18, %r3, 1;
+98 	shr.u32 %r19, %r18, 24;
+99 	sub.u32 %r20, %r19, 128;
+100 	shr.u32 %r21, %r20, 5;
+101 	mov.s32 %r22, 4;
+102 	sub.s32 %r23, %r22, %r21;
+103 	mul.lo.u32 %r24, %r23, 4;
+104 	add.u32 %r25, %r24, %r2;
+105 	ld.local.u32 %r11, [%r25 + 8];
+106 	.loc 18 1420 0
+107 	ld.local.u32 %r26, [%r25 + 4];
+108 	and.b32 %r27, %r20, 31;
+109 	mov.u32 %r28, 0;
+110 	setp.eq.u32 %p4, %r27, %r28;
+111 	@%p4 bra $Lt_0_48898;
+112 	.loc 18 1423 0
+113 	mov.s32 %r29, 32;
+114 	sub.s32 %r30, %r29, %r27;
+115 	shr.u32 %r31, %r26, %r30;
+116 	shl.b32 %r32, %r11, %r27;
+117 	add.u32 %r11, %r31, %r32;
+118 	.loc 18 1424 0
+119 	ld.local.u32 %r33, [%r25 + 0];
+120 	shr.u32 %r34, %r33, %r30;
+121 	shl.b32 %r35, %r26, %r27;
+122 	add.u32 %r26, %r34, %r35;
+123 $Lt_0_48898:
+124 	.loc 18 1426 0
+125 	shr.u32 %r36, %r11, 30;
+126 	.loc 18 1428 0
+127 	shr.u32 %r37, %r26, 30;
+128 	shl.b32 %r38, %r11, 2;
+129 	add.u32 %r11, %r37, %r38;
+130 	.loc 18 1429 0
+131 	shl.b32 %r26, %r26, 2;
+132 	mov.u32 %r39, 0;
+133 	setp.eq.u32 %p5, %r26, %r39;
+134 	@%p5 bra $Lt_0_49666;
+135 	.loc 18 1430 0
+136 	add.u32 %r40, %r11, 1;
+137 	mov.u32 %r41, -2147483648;
+138 	set.gt.u32.u32 %r42, %r40, %r41;
+139 	neg.s32 %r43, %r42;
+140 	bra.uni $Lt_0_49410;
+141 $Lt_0_49666:
+142 	mov.u32 %r44, -2147483648;
+143 	set.gt.u32.u32 %r45, %r11, %r44;
+144 	neg.s32 %r43, %r45;
+145 $Lt_0_49410:
+146 	.loc 18 1431 0
+147 	add.u32 %r46, %r36, %r43;
+148 	.loc 18 1430 0
+149 	neg.s32 %r47, %r46;
+150 	mov.u32 %r48, 0;
+151 	setp.ne.u32 %p6, %r4, %r48;
+152 	selp.s32 %r36, %r47, %r46, %p6;
+153 	mov.u32 %r49, 0;
+154 	setp.eq.u32 %p7, %r43, %r49;
+155 	@%p7 bra $Lt_0_49922;
+156 	.loc 18 1436 0
+157 	neg.s32 %r26, %r26;
+158 	.loc 18 1438 0
+159 	mov.u32 %r50, 0;
+160 	set.eq.u32.u32 %r51, %r26, %r50;
+161 	neg.s32 %r52, %r51;
+162 	not.b32 %r53, %r11;
+163 	add.u32 %r11, %r52, %r53;
+164 	.loc 18 1439 0
+165 	xor.b32 %r5, %r4, -2147483648;
+166 $Lt_0_49922:
+167 	.loc 18 1441 0
+168 	mov.s32 %r54, %r36;
+169 	mov.u32 %r55, 0;
+170 	setp.le.s32 %p8, %r11, %r55;
+171 	@%p8 bra $Lt_0_69378;
+172 	mov.u32 %r56, 0;
+173 $Lt_0_50946:
+174 	.loc 18 1445 0
+175 	shr.u32 %r57, %r26, 31;
+176 	shl.b32 %r58, %r11, 1;
+177 	add.u32 %r11, %r57, %r58;
+178 	.loc 18 1446 0
+179 	shl.b32 %r26, %r26, 1;
+180 	.loc 18 1447 0
+181 	sub.u32 %r56, %r56, 1;
+182 	mov.u32 %r59, 0;
+183 	setp.gt.s32 %p9, %r11, %r59;
+184 	@%p9 bra $Lt_0_50946;
+185 	bra.uni $Lt_0_50434;
+186 $Lt_0_69378:
+187 	mov.u32 %r56, 0;
+188 $Lt_0_50434:
+189 	.loc 18 1449 0
+190 	mul.lo.u32 %r26, %r11, -921707870;
+191 	.loc 18 1450 0
+192 	mov.s32 %r60, -921707870;
+193 	mul.hi.u32 %r11, %r11, %r60;
+194 	mov.u32 %r61, 0;
+195 	setp.le.s32 %p10, %r11, %r61;
+196 	@%p10 bra $Lt_0_51458;
+197 	.loc 18 1452 0
+198 	shr.u32 %r62, %r26, 31;
+199 	shl.b32 %r63, %r11, 1;
+200 	add.u32 %r11, %r62, %r63;
+201 	.loc 18 1453 0
+202 	shl.b32 %r26, %r26, 1;
+203 	.loc 18 1454 0
+204 	sub.u32 %r56, %r56, 1;
+205 $Lt_0_51458:
+206 	.loc 18 1456 0
+207 	mov.u32 %r64, 0;
+208 	set.ne.u32.u32 %r65, %r26, %r64;
+209 	neg.s32 %r66, %r65;
+210 	add.u32 %r11, %r66, %r11;
+211 	shl.b32 %r67, %r11, 24;
+212 	mov.s32 %r68, 0;
+213 	set.lt.u32.s32 %r69, %r67, %r68;
+214 	neg.s32 %r70, %r69;
+215 	shr.u32 %r71, %r11, 8;
+216 	add.u32 %r72, %r56, 126;
+217 	shl.b32 %r73, %r72, 23;
+218 	add.u32 %r74, %r71, %r73;
+219 	add.u32 %r75, %r70, %r74;
+220 	or.b32 %r76, %r5, %r75;
+221 	mov.b32 %f7, %r76;
+222 	bra.uni $Lt_0_3586;
+223 $Lt_0_47362:
+224 	.loc 18 1471 0
+225 	mov.f32 %f8, 0f3f22f983;
+226 	mul.f32 %f9, %f1, %f8;
+227 	cvt.rni.s32.f32 %r77, %f9;
+228 	mov.s32 %r54, %r77;
+229 	cvt.rn.f32.s32 %f10, %r77;
+230 	neg.f32 %f11, %f10;
+231 	mov.f32 %f12, 0f2e85a309;
+232 	mov.f32 %f13, 0f39fdaa20;
+233 	mov.f32 %f14, 0f3fc90000;
+234 	mad.rn.f32 %f15, %f11, %f14, %f1;
+235 	mad.rn.f32 %f16, %f11, %f13, %f15;
+236 	mad.rn.f32 %f7, %f11, %f12, %f16;
+237 	mov.u32 %r1, __cudart_i2opi_f;
+238 	mov.u32 %r2, __cuda_result_16;
+239 $Lt_0_3586:
+240 	.loc 18 1705 0
+241 	add.s32 %r78, %r54, 1;
+242 	mov.f32 %f17, %f7;
+243 	mul.f32 %f18, %f17, %f17;
+244 	and.b32 %r79, %r78, 1;
+245 	mov.u32 %r80, 0;
+246 	setp.eq.s32 %p11, %r79, %r80;
+247 	@%p11 bra $Lt_0_52226;
+248 	.loc 18 1709 0
+249 	mov.f32 %f19, 0f37ccf5ce;
+250 	mov.f32 %f20, 0fbab6061a;
+251 	mad.rn.f32 %f21, %f19, %f18, %f20;
+252 	mov.f32 %f22, 0f3d2aaaa5;
+253 	mad.rn.f32 %f23, %f21, %f18, %f22;
+254 	mov.f32 %f24, 0fbf000000;
+255 	mad.rn.f32 %f25, %f23, %f18, %f24;
+256 	mov.f32 %f26, 0f3f800000;
+257 	mad.rn.f32 %f27, %f25, %f18, %f26;
+258 	bra.uni $Lt_0_51970;
+259 $Lt_0_52226:
+260 	.loc 18 1711 0
+261 	mov.f32 %f28, 0fb94ca1f9;
+262 	mov.f32 %f29, 0f3c08839e;
+263 	mad.rn.f32 %f30, %f28, %f18, %f29;
+264 	mov.f32 %f31, 0fbe2aaaa3;
+265 	mad.rn.f32 %f32, %f30, %f18, %f31;
+266 	mul.f32 %f33, %f18, %f32;
+267 	mad.rn.f32 %f27, %f33, %f17, %f17;
+268 $Lt_0_51970:
+269 	.loc 18 1713 0
+270 	neg.f32 %f34, %f27;
+271 	and.b32 %r81, %r78, 2;
+272 	mov.s32 %r82, 0;
+273 	setp.ne.s32 %p12, %r81, %r82;
+274 	selp.f32 %f27, %f34, %f27, %p12;
+275 	mov.f32 %f5, %f27;
+276 $Lt_0_3330:
+277 	.loc 18 1638 0
+278 	mov.f32 %f35, 0f00000000;
+279 	setp.eq.f32 %p13, %f1, %f35;
+280 	selp.s32 %r83, 1, 0, %p13;
+281 	selp.s32 %r84, 1, 0, %p1;
+282 	or.b32 %r85, %r83, %r84;
+283 	mov.u32 %r86, 0;
+284 	setp.eq.s32 %p14, %r85, %r86;
+285 	@%p14 bra $Lt_0_52482;
+286 	mov.f32 %f36, 0f00000000;
+287 	mul.rn.f32 %f37, %f1, %f36;
+288 	mov.u32 %r87, __cuda_result_44;
+289 	bra.uni $Lt_0_2306;
+290 $Lt_0_52482:
+291 	mov.f32 %f38, 0f473ba700;
+292 	setp.gt.f32 %p15, %f2, %f38;
+293 	@!%p15 bra $Lt_0_52994;
+294 	.loc 18 1396 0
+295 	mov.b32 %r3, %f1;
+296 	and.b32 %r4, %r3, -2147483648;
+297 	mov.s32 %r88, %r4;
+298 	.loc 18 24 0
+299 	shl.b32 %r6, %r3, 8;
+300 	mov.s32 %r89, %r1;
+301 	add.u32 %r8, %r1, 24;
+302 	mov.u32 %r90, __cuda_result_44;
+303 	or.b32 %r10, %r6, -2147483648;
+304 	mov.u32 %r91, 0;
+305 $Lt_0_54018:
+306 .pragma "nounroll"
+307 	.loc 18 1410 0
+308 	ld.const.u32 %r92, [%r89 + 0];
+309 	mul.lo.u32 %r93, %r92, %r10;
+310 	add.u32 %r94, %r93, %r91;
+311 	.loc 18 1411 0
+312 	set.gt.u32.u32 %r95, %r93, %r94;
+313 	neg.s32 %r96, %r95;
+314 	mul.hi.u32 %r97, %r92, %r10;
+315 	add.u32 %r91, %r96, %r97;
+316 	.loc 18 1412 0
+317 	st.local.u32 [%r90 + 0], %r94;
+318 	add.u32 %r90, %r90, 4;
+319 	add.u32 %r89, %r89, 4;
+320 	setp.ne.u32 %p16, %r89, %r8;
+321 	@%p16 bra $Lt_0_54018;
+322 	.loc 18 1414 0
+323 	mov.u32 %r87, __cuda_result_44;
+324 	st.local.u32 [__cuda_result_44 + 24], %r91;
+325 	.loc 18 1419 0
+326 	shl.b32 %r98, %r3, 1;
+327 	shr.u32 %r19, %r98, 24;
+328 	sub.u32 %r20, %r19, 128;
+329 	shr.u32 %r21, %r20, 5;
+330 	mov.s32 %r99, 4;
+331 	sub.s32 %r23, %r99, %r21;
+332 	mul.lo.u32 %r24, %r23, 4;
+333 	add.u32 %r100, %r24, %r87;
+334 	ld.local.u32 %r91, [%r100 + 8];
+335 	.loc 18 1420 0
+336 	ld.local.u32 %r101, [%r100 + 4];
+337 	and.b32 %r27, %r20, 31;
+338 	mov.u32 %r102, 0;
+339 	setp.eq.u32 %p17, %r27, %r102;
+340 	@%p17 bra $Lt_0_54530;
+341 	.loc 18 1423 0
+342 	mov.s32 %r103, 32;
+343 	sub.s32 %r30, %r103, %r27;
+344 	shr.u32 %r104, %r101, %r30;
+345 	shl.b32 %r105, %r91, %r27;
+346 	add.u32 %r91, %r104, %r105;
+347 	.loc 18 1424 0
+348 	ld.local.u32 %r106, [%r100 + 0];
+349 	shr.u32 %r107, %r106, %r30;
+350 	shl.b32 %r108, %r101, %r27;
+351 	add.u32 %r101, %r107, %r108;
+352 $Lt_0_54530:
+353 	.loc 18 1426 0
+354 	shr.u32 %r109, %r91, 30;
+355 	.loc 18 1428 0
+356 	shr.u32 %r110, %r101, 30;
+357 	shl.b32 %r111, %r91, 2;
+358 	add.u32 %r91, %r110, %r111;
+359 	.loc 18 1429 0
+360 	shl.b32 %r101, %r101, 2;
+361 	mov.u32 %r112, 0;
+362 	setp.eq.u32 %p18, %r101, %r112;
+363 	@%p18 bra $Lt_0_55298;
+364 	.loc 18 1430 0
+365 	add.u32 %r113, %r91, 1;
+366 	mov.u32 %r114, -2147483648;
+367 	set.gt.u32.u32 %r115, %r113, %r114;
+368 	neg.s32 %r116, %r115;
+369 	bra.uni $Lt_0_55042;
+370 $Lt_0_55298:
+371 	mov.u32 %r117, -2147483648;
+372 	set.gt.u32.u32 %r118, %r91, %r117;
+373 	neg.s32 %r116, %r118;
+374 $Lt_0_55042:
+375 	.loc 18 1431 0
+376 	add.u32 %r119, %r109, %r116;
+377 	.loc 18 1430 0
+378 	neg.s32 %r120, %r119;
+379 	mov.u32 %r121, 0;
+380 	setp.ne.u32 %p19, %r4, %r121;
+381 	selp.s32 %r109, %r120, %r119, %p19;
+382 	mov.u32 %r122, 0;
+383 	setp.eq.u32 %p20, %r116, %r122;
+384 	@%p20 bra $Lt_0_55554;
+385 	.loc 18 1436 0
+386 	neg.s32 %r101, %r101;
+387 	.loc 18 1438 0
+388 	mov.u32 %r123, 0;
+389 	set.eq.u32.u32 %r124, %r101, %r123;
+390 	neg.s32 %r125, %r124;
+391 	not.b32 %r126, %r91;
+392 	add.u32 %r91, %r125, %r126;
+393 	.loc 18 1439 0
+394 	xor.b32 %r88, %r4, -2147483648;
+395 $Lt_0_55554:
+396 	.loc 18 1441 0
+397 	mov.s32 %r127, %r109;
+398 	mov.u32 %r128, 0;
+399 	setp.le.s32 %p21, %r91, %r128;
+400 	@%p21 bra $Lt_0_69634;
+401 	mov.u32 %r129, 0;
+402 $Lt_0_56578:
+403 	.loc 18 1445 0
+404 	shr.u32 %r130, %r101, 31;
+405 	shl.b32 %r131, %r91, 1;
+406 	add.u32 %r91, %r130, %r131;
+407 	.loc 18 1446 0
+408 	shl.b32 %r101, %r101, 1;
+409 	.loc 18 1447 0
+410 	sub.u32 %r129, %r129, 1;
+411 	mov.u32 %r132, 0;
+412 	setp.gt.s32 %p22, %r91, %r132;
+413 	@%p22 bra $Lt_0_56578;
+414 	bra.uni $Lt_0_56066;
+415 $Lt_0_69634:
+416 	mov.u32 %r129, 0;
+417 $Lt_0_56066:
+418 	.loc 18 1449 0
+419 	mul.lo.u32 %r101, %r91, -921707870;
+420 	.loc 18 1450 0
+421 	mov.s32 %r133, -921707870;
+422 	mul.hi.u32 %r91, %r91, %r133;
+423 	mov.u32 %r134, 0;
+424 	setp.le.s32 %p23, %r91, %r134;
+425 	@%p23 bra $Lt_0_57090;
+426 	.loc 18 1452 0
+427 	shr.u32 %r135, %r101, 31;
+428 	shl.b32 %r136, %r91, 1;
+429 	add.u32 %r91, %r135, %r136;
+430 	.loc 18 1453 0
+431 	shl.b32 %r101, %r101, 1;
+432 	.loc 18 1454 0
+433 	sub.u32 %r129, %r129, 1;
+434 $Lt_0_57090:
+435 	.loc 18 1456 0
+436 	mov.u32 %r137, 0;
+437 	set.ne.u32.u32 %r138, %r101, %r137;
+438 	neg.s32 %r139, %r138;
+439 	add.u32 %r91, %r139, %r91;
+440 	shl.b32 %r140, %r91, 24;
+441 	mov.s32 %r141, 0;
+442 	set.lt.u32.s32 %r142, %r140, %r141;
+443 	neg.s32 %r143, %r142;
+444 	shr.u32 %r144, %r91, 8;
+445 	add.u32 %r145, %r129, 126;
+446 	shl.b32 %r146, %r145, 23;
+447 	add.u32 %r147, %r144, %r146;
+448 	add.u32 %r148, %r143, %r147;
+449 	or.b32 %r149, %r88, %r148;
+450 	mov.b32 %f39, %r149;
+451 	bra.uni $Lt_0_2562;
+452 $Lt_0_52994:
+453 	.loc 18 1471 0
+454 	mov.f32 %f40, 0f3f22f983;
+455 	mul.f32 %f9, %f1, %f40;
+456 	cvt.rni.s32.f32 %r77, %f9;
+457 	mov.s32 %r127, %r77;
+458 	cvt.rn.f32.s32 %f10, %r77;
+459 	neg.f32 %f11, %f10;
+460 	mov.f32 %f41, 0f2e85a309;
+461 	mov.f32 %f42, 0f39fdaa20;
+462 	mov.f32 %f43, 0f3fc90000;
+463 	mad.rn.f32 %f44, %f11, %f43, %f1;
+464 	mad.rn.f32 %f45, %f11, %f42, %f44;
+465 	mad.rn.f32 %f39, %f11, %f41, %f45;
+466 	mov.u32 %r87, __cuda_result_44;
+467 $Lt_0_2562:
+468 	.loc 18 1641 0
+469 	mov.f32 %f46, %f39;
+470 	mul.f32 %f47, %f46, %f46;
+471 	and.b32 %r150, %r127, 1;
+472 	mov.u32 %r151, 0;
+473 	setp.eq.s32 %p24, %r150, %r151;
+474 	@%p24 bra $Lt_0_57858;
+475 	.loc 18 1644 0
+476 	mov.f32 %f48, 0f37ccf5ce;
+477 	mov.f32 %f49, 0fbab6061a;
+478 	mad.rn.f32 %f50, %f48, %f47, %f49;
+479 	mov.f32 %f51, 0f3d2aaaa5;
+480 	mad.rn.f32 %f52, %f50, %f47, %f51;
+481 	mov.f32 %f53, 0fbf000000;
+482 	mad.rn.f32 %f54, %f52, %f47, %f53;
+483 	mov.f32 %f55, 0f3f800000;
+484 	mad.rn.f32 %f56, %f54, %f47, %f55;
+485 	bra.uni $Lt_0_57602;
+486 $Lt_0_57858:
+487 	.loc 18 1646 0
+488 	mov.f32 %f57, 0fb94ca1f9;
+489 	mov.f32 %f58, 0f3c08839e;
+490 	mad.rn.f32 %f59, %f57, %f47, %f58;
+491 	mov.f32 %f60, 0fbe2aaaa3;
+492 	mad.rn.f32 %f61, %f59, %f47, %f60;
+493 	mul.f32 %f62, %f47, %f61;
+494 	mad.rn.f32 %f56, %f62, %f46, %f46;
+495 $Lt_0_57602:
+496 	.loc 18 1648 0
+497 	neg.f32 %f63, %f56;
+498 	and.b32 %r152, %r127, 2;
+499 	mov.s32 %r153, 0;
+500 	setp.ne.s32 %p25, %r152, %r153;
+501 	selp.f32 %f56, %f63, %f56, %p25;
+502 	mov.f32 %f37, %f56;
+503 $Lt_0_2306:
+504 	.loc 16 39 0
+505 	mov.u32 %r154, %ctaid.y;
+506 	mov.u32 %r155, %ntid.y;
+507 	mul.lo.u32 %r156, %r154, %r155;
+508 	ld.param.s32 %r157, [__cudaparm__Z15transformKernelPfiif_height];
+509 	cvt.rn.f32.s32 %f64, %r157;
+510 	mov.u32 %r158, %ctaid.x;
+511 	mov.u32 %r159, %ntid.x;
+512 	mul.lo.u32 %r160, %r158, %r159;
+513 	ld.param.s32 %r161, [__cudaparm__Z15transformKernelPfiif_width];
+514 	cvt.rn.f32.s32 %f65, %r161;
+515 	mov.u32 %r162, %tid.y;
+516 	add.u32 %r163, %r162, %r156;
+517 	mov.u32 %r164, %tid.x;
+518 	add.u32 %r165, %r164, %r160;
+519 	cvt.rn.f32.u32 %f66, %r163;
+520 	cvt.rn.f32.u32 %f67, %r165;
+521 	div.rn.f32 %f68, %f66, %f64;
+522 	div.rn.f32 %f69, %f67, %f65;
+523 	mov.f32 %f70, 0fbf000000;
+524 	add.f32 %f71, %f68, %f70;
+525 	mov.f32 %f72, 0fbf000000;
+526 	add.f32 %f73, %f69, %f72;
+527 	mul.f32 %f74, %f37, %f71;
+528 	mul.f32 %f75, %f73, %f5;
+529 	sub.f32 %f76, %f75, %f74;
+530 	mov.f32 %f77, 0f3f000000;
+531 	add.f32 %f78, %f76, %f77;
+532 	.loc 18 1702 0
+533 	@!%p1 bra $Lt_0_58114;
+534 	neg.f32 %f79, %f1;
+535 	add.f32 %f80, %f1, %f79;
+536 	bra.uni $Lt_0_1282;
+537 $Lt_0_58114:
+538 	mov.f32 %f81, 0f473ba700;
+539 	setp.gt.f32 %p26, %f2, %f81;
+540 	@!%p26 bra $Lt_0_58626;
+541 	.loc 18 1396 0
+542 	mov.b32 %r3, %f1;
+543 	and.b32 %r4, %r3, -2147483648;
+544 	mov.s32 %r5, %r4;
+545 	.loc 18 24 0
+546 	shl.b32 %r6, %r3, 8;
+547 	mov.s32 %r7, %r1;
+548 	add.u32 %r8, %r1, 24;
+549 	mov.u32 %r9, __cuda_result_16;
+550 	or.b32 %r10, %r6, -2147483648;
+551 	mov.u32 %r11, 0;
+552 $Lt_0_59650:
+553 .pragma "nounroll"
+554 	.loc 18 1410 0
+555 	ld.const.u32 %r166, [%r7 + 0];
+556 	mul.lo.u32 %r167, %r166, %r10;
+557 	add.u32 %r168, %r167, %r11;
+558 	.loc 18 1411 0
+559 	set.gt.u32.u32 %r169, %r167, %r168;
+560 	neg.s32 %r170, %r169;
+561 	mul.hi.u32 %r171, %r166, %r10;
+562 	add.u32 %r11, %r170, %r171;
+563 	.loc 18 1412 0
+564 	st.local.u32 [%r9 + 0], %r168;
+565 	add.u32 %r9, %r9, 4;
+566 	add.u32 %r7, %r7, 4;
+567 	setp.ne.u32 %p27, %r7, %r8;
+568 	@%p27 bra $Lt_0_59650;
+569 	.loc 18 1414 0
+570 	st.local.u32 [__cuda_result_16 + 24], %r11;
+571 	.loc 18 1419 0
+572 	shl.b32 %r172, %r3, 1;
+573 	shr.u32 %r19, %r172, 24;
+574 	sub.u32 %r20, %r19, 128;
+575 	shr.u32 %r21, %r20, 5;
+576 	mov.s32 %r173, 4;
+577 	sub.s32 %r23, %r173, %r21;
+578 	mul.lo.u32 %r24, %r23, 4;
+579 	add.u32 %r25, %r24, %r2;
+580 	ld.local.u32 %r11, [%r25 + 8];
+581 	.loc 18 1420 0
+582 	ld.local.u32 %r26, [%r25 + 4];
+583 	and.b32 %r27, %r20, 31;
+584 	mov.u32 %r174, 0;
+585 	setp.eq.u32 %p28, %r27, %r174;
+586 	@%p28 bra $Lt_0_60162;
+587 	.loc 18 1423 0
+588 	mov.s32 %r175, 32;
+589 	sub.s32 %r30, %r175, %r27;
+590 	shr.u32 %r176, %r26, %r30;
+591 	shl.b32 %r177, %r11, %r27;
+592 	add.u32 %r11, %r176, %r177;
+593 	.loc 18 1424 0
+594 	ld.local.u32 %r178, [%r25 + 0];
+595 	shr.u32 %r179, %r178, %r30;
+596 	shl.b32 %r180, %r26, %r27;
+597 	add.u32 %r26, %r179, %r180;
+598 $Lt_0_60162:
+599 	.loc 18 1426 0
+600 	shr.u32 %r36, %r11, 30;
+601 	.loc 18 1428 0
+602 	shr.u32 %r181, %r26, 30;
+603 	shl.b32 %r182, %r11, 2;
+604 	add.u32 %r11, %r181, %r182;
+605 	.loc 18 1429 0
+606 	shl.b32 %r26, %r26, 2;
+607 	mov.u32 %r183, 0;
+608 	setp.eq.u32 %p29, %r26, %r183;
+609 	@%p29 bra $Lt_0_60930;
+610 	.loc 18 1430 0
+611 	add.u32 %r184, %r11, 1;
+612 	mov.u32 %r185, -2147483648;
+613 	set.gt.u32.u32 %r186, %r184, %r185;
+614 	neg.s32 %r187, %r186;
+615 	bra.uni $Lt_0_60674;
+616 $Lt_0_60930:
+617 	mov.u32 %r188, -2147483648;
+618 	set.gt.u32.u32 %r189, %r11, %r188;
+619 	neg.s32 %r187, %r189;
+620 $Lt_0_60674:
+621 	.loc 18 1431 0
+622 	add.u32 %r190, %r36, %r187;
+623 	.loc 18 1430 0
+624 	neg.s32 %r191, %r190;
+625 	mov.u32 %r192, 0;
+626 	setp.ne.u32 %p30, %r4, %r192;
+627 	selp.s32 %r36, %r191, %r190, %p30;
+628 	mov.u32 %r193, 0;
+629 	setp.eq.u32 %p31, %r187, %r193;
+630 	@%p31 bra $Lt_0_61186;
+631 	.loc 18 1436 0
+632 	neg.s32 %r26, %r26;
+633 	.loc 18 1438 0
+634 	mov.u32 %r194, 0;
+635 	set.eq.u32.u32 %r195, %r26, %r194;
+636 	neg.s32 %r196, %r195;
+637 	not.b32 %r197, %r11;
+638 	add.u32 %r11, %r196, %r197;
+639 	.loc 18 1439 0
+640 	xor.b32 %r5, %r4, -2147483648;
+641 $Lt_0_61186:
+642 	.loc 18 1441 0
+643 	mov.s32 %r54, %r36;
+644 	mov.u32 %r198, 0;
+645 	setp.le.s32 %p32, %r11, %r198;
+646 	@%p32 bra $Lt_0_69890;
+647 	mov.u32 %r56, 0;
+648 $Lt_0_62210:
+649 	.loc 18 1445 0
+650 	shr.u32 %r199, %r26, 31;
+651 	shl.b32 %r200, %r11, 1;
+652 	add.u32 %r11, %r199, %r200;
+653 	.loc 18 1446 0
+654 	shl.b32 %r26, %r26, 1;
+655 	.loc 18 1447 0
+656 	sub.u32 %r56, %r56, 1;
+657 	mov.u32 %r201, 0;
+658 	setp.gt.s32 %p33, %r11, %r201;
+659 	@%p33 bra $Lt_0_62210;
+660 	bra.uni $Lt_0_61698;
+661 $Lt_0_69890:
+662 	mov.u32 %r56, 0;
+663 $Lt_0_61698:
+664 	.loc 18 1449 0
+665 	mul.lo.u32 %r26, %r11, -921707870;
+666 	.loc 18 1450 0
+667 	mov.s32 %r202, -921707870;
+668 	mul.hi.u32 %r11, %r11, %r202;
+669 	mov.u32 %r203, 0;
+670 	setp.le.s32 %p34, %r11, %r203;
+671 	@%p34 bra $Lt_0_62722;
+672 	.loc 18 1452 0
+673 	shr.u32 %r204, %r26, 31;
+674 	shl.b32 %r205, %r11, 1;
+675 	add.u32 %r11, %r204, %r205;
+676 	.loc 18 1453 0
+677 	shl.b32 %r26, %r26, 1;
+678 	.loc 18 1454 0
+679 	sub.u32 %r56, %r56, 1;
+680 $Lt_0_62722:
+681 	.loc 18 1456 0
+682 	mov.u32 %r206, 0;
+683 	set.ne.u32.u32 %r207, %r26, %r206;
+684 	neg.s32 %r208, %r207;
+685 	add.u32 %r11, %r208, %r11;
+686 	shl.b32 %r209, %r11, 24;
+687 	mov.s32 %r210, 0;
+688 	set.lt.u32.s32 %r211, %r209, %r210;
+689 	neg.s32 %r212, %r211;
+690 	shr.u32 %r213, %r11, 8;
+691 	add.u32 %r214, %r56, 126;
+692 	shl.b32 %r215, %r214, 23;
+693 	add.u32 %r216, %r213, %r215;
+694 	add.u32 %r217, %r212, %r216;
+695 	or.b32 %r218, %r5, %r217;
+696 	mov.b32 %f7, %r218;
+697 	bra.uni $Lt_0_1538;
+698 $Lt_0_58626:
+699 	.loc 18 1471 0
+700 	mov.f32 %f82, 0f3f22f983;
+701 	mul.f32 %f9, %f1, %f82;
+702 	cvt.rni.s32.f32 %r77, %f9;
+703 	mov.s32 %r54, %r77;
+704 	cvt.rn.f32.s32 %f10, %r77;
+705 	neg.f32 %f11, %f10;
+706 	mov.f32 %f83, 0f2e85a309;
+707 	mov.f32 %f84, 0f39fdaa20;
+708 	mov.f32 %f85, 0f3fc90000;
+709 	mad.rn.f32 %f86, %f11, %f85, %f1;
+710 	mad.rn.f32 %f87, %f11, %f84, %f86;
+711 	mad.rn.f32 %f7, %f11, %f83, %f87;
+712 $Lt_0_1538:
+713 	.loc 18 1705 0
+714 	add.s32 %r78, %r54, 1;
+715 	mov.f32 %f88, %f7;
+716 	mul.f32 %f18, %f88, %f88;
+717 	and.b32 %r219, %r78, 1;
+718 	mov.u32 %r220, 0;
+719 	setp.eq.s32 %p35, %r219, %r220;
+720 	@%p35 bra $Lt_0_63490;
+721 	.loc 18 1709 0
+722 	mov.f32 %f89, 0f37ccf5ce;
+723 	mov.f32 %f90, 0fbab6061a;
+724 	mad.rn.f32 %f91, %f89, %f18, %f90;
+725 	mov.f32 %f92, 0f3d2aaaa5;
+726 	mad.rn.f32 %f93, %f91, %f18, %f92;
+727 	mov.f32 %f94, 0fbf000000;
+728 	mad.rn.f32 %f95, %f93, %f18, %f94;
+729 	mov.f32 %f96, 0f3f800000;
+730 	mad.rn.f32 %f27, %f95, %f18, %f96;
+731 	bra.uni $Lt_0_63234;
+732 $Lt_0_63490:
+733 	.loc 18 1711 0
+734 	mov.f32 %f97, 0fb94ca1f9;
+735 	mov.f32 %f98, 0f3c08839e;
+736 	mad.rn.f32 %f99, %f97, %f18, %f98;
+737 	mov.f32 %f100, 0fbe2aaaa3;
+738 	mad.rn.f32 %f101, %f99, %f18, %f100;
+739 	mul.f32 %f102, %f18, %f101;
+740 	mad.rn.f32 %f27, %f102, %f88, %f88;
+741 $Lt_0_63234:
+742 	.loc 18 1713 0
+743 	neg.f32 %f103, %f27;
+744 	and.b32 %r221, %r78, 2;
+745 	mov.s32 %r222, 0;
+746 	setp.ne.s32 %p36, %r221, %r222;
+747 	selp.f32 %f27, %f103, %f27, %p36;
+748 	mov.f32 %f80, %f27;
+749 $Lt_0_1282:
+750 	.loc 18 1638 0
+751 	mov.u32 %r223, 0;
+752 	setp.eq.s32 %p37, %r85, %r223;
+753 	@%p37 bra $Lt_0_63746;
+754 	mov.f32 %f104, 0f00000000;
+755 	mul.rn.f32 %f37, %f1, %f104;
+756 	bra.uni $Lt_0_258;
+757 $Lt_0_63746:
+758 	mov.f32 %f105, 0f473ba700;
+759 	setp.gt.f32 %p38, %f2, %f105;
+760 	@!%p38 bra $Lt_0_64258;
+761 	.loc 18 1396 0
+762 	mov.b32 %r3, %f1;
+763 	and.b32 %r4, %r3, -2147483648;
+764 	mov.s32 %r88, %r4;
+765 	.loc 18 24 0
+766 	shl.b32 %r6, %r3, 8;
+767 	mov.s32 %r89, %r1;
+768 	add.u32 %r8, %r1, 24;
+769 	mov.u32 %r90, __cuda_result_44;
+770 	or.b32 %r10, %r6, -2147483648;
+771 	mov.u32 %r91, 0;
+772 $Lt_0_65282:
+773 .pragma "nounroll"
+774 	.loc 18 1410 0
+775 	ld.const.u32 %r224, [%r89 + 0];
+776 	mul.lo.u32 %r225, %r224, %r10;
+777 	add.u32 %r226, %r225, %r91;
+778 	.loc 18 1411 0
+779 	set.gt.u32.u32 %r227, %r225, %r226;
+780 	neg.s32 %r228, %r227;
+781 	mul.hi.u32 %r229, %r224, %r10;
+782 	add.u32 %r91, %r228, %r229;
+783 	.loc 18 1412 0
+784 	st.local.u32 [%r90 + 0], %r226;
+785 	add.u32 %r90, %r90, 4;
+786 	add.u32 %r89, %r89, 4;
+787 	setp.ne.u32 %p39, %r89, %r8;
+788 	@%p39 bra $Lt_0_65282;
+789 	.loc 18 1414 0
+790 	st.local.u32 [__cuda_result_44 + 24], %r91;
+791 	.loc 18 1419 0
+792 	shl.b32 %r230, %r3, 1;
+793 	shr.u32 %r19, %r230, 24;
+794 	sub.u32 %r20, %r19, 128;
+795 	shr.u32 %r21, %r20, 5;
+796 	mov.s32 %r231, 4;
+797 	sub.s32 %r23, %r231, %r21;
+798 	mul.lo.u32 %r24, %r23, 4;
+799 	add.u32 %r100, %r24, %r87;
+800 	ld.local.u32 %r91, [%r100 + 8];
+801 	.loc 18 1420 0
+802 	ld.local.u32 %r101, [%r100 + 4];
+803 	and.b32 %r27, %r20, 31;
+804 	mov.u32 %r232, 0;
+805 	setp.eq.u32 %p40, %r27, %r232;
+806 	@%p40 bra $Lt_0_65794;
+807 	.loc 18 1423 0
+808 	mov.s32 %r233, 32;
+809 	sub.s32 %r30, %r233, %r27;
+810 	shr.u32 %r234, %r101, %r30;
+811 	shl.b32 %r235, %r91, %r27;
+812 	add.u32 %r91, %r234, %r235;
+813 	.loc 18 1424 0
+814 	ld.local.u32 %r236, [%r100 + 0];
+815 	shr.u32 %r237, %r236, %r30;
+816 	shl.b32 %r238, %r101, %r27;
+817 	add.u32 %r101, %r237, %r238;
+818 $Lt_0_65794:
+819 	.loc 18 1426 0
+820 	shr.u32 %r109, %r91, 30;
+821 	.loc 18 1428 0
+822 	shr.u32 %r239, %r101, 30;
+823 	shl.b32 %r240, %r91, 2;
+824 	add.u32 %r91, %r239, %r240;
+825 	.loc 18 1429 0
+826 	shl.b32 %r101, %r101, 2;
+827 	mov.u32 %r241, 0;
+828 	setp.eq.u32 %p41, %r101, %r241;
+829 	@%p41 bra $Lt_0_66562;
+830 	.loc 18 1430 0
+831 	add.u32 %r242, %r91, 1;
+832 	mov.u32 %r243, -2147483648;
+833 	set.gt.u32.u32 %r244, %r242, %r243;
+834 	neg.s32 %r245, %r244;
+835 	bra.uni $Lt_0_66306;
+836 $Lt_0_66562:
+837 	mov.u32 %r246, -2147483648;
+838 	set.gt.u32.u32 %r247, %r91, %r246;
+839 	neg.s32 %r245, %r247;
+840 $Lt_0_66306:
+841 	.loc 18 1431 0
+842 	add.u32 %r248, %r109, %r245;
+843 	.loc 18 1430 0
+844 	neg.s32 %r249, %r248;
+845 	mov.u32 %r250, 0;
+846 	setp.ne.u32 %p42, %r4, %r250;
+847 	selp.s32 %r109, %r249, %r248, %p42;
+848 	mov.u32 %r251, 0;
+849 	setp.eq.u32 %p43, %r245, %r251;
+850 	@%p43 bra $Lt_0_66818;
+851 	.loc 18 1436 0
+852 	neg.s32 %r101, %r101;
+853 	.loc 18 1438 0
+854 	mov.u32 %r252, 0;
+855 	set.eq.u32.u32 %r253, %r101, %r252;
+856 	neg.s32 %r254, %r253;
+857 	not.b32 %r255, %r91;
+858 	add.u32 %r91, %r254, %r255;
+859 	.loc 18 1439 0
+860 	xor.b32 %r88, %r4, -2147483648;
+861 $Lt_0_66818:
+862 	.loc 18 1441 0
+863 	mov.s32 %r127, %r109;
+864 	mov.u32 %r256, 0;
+865 	setp.le.s32 %p44, %r91, %r256;
+866 	@%p44 bra $Lt_0_70146;
+867 	mov.u32 %r129, 0;
+868 $Lt_0_67842:
+869 	.loc 18 1445 0
+870 	shr.u32 %r257, %r101, 31;
+871 	shl.b32 %r258, %r91, 1;
+872 	add.u32 %r91, %r257, %r258;
+873 	.loc 18 1446 0
+874 	shl.b32 %r101, %r101, 1;
+875 	.loc 18 1447 0
+876 	sub.u32 %r129, %r129, 1;
+877 	mov.u32 %r259, 0;
+878 	setp.gt.s32 %p45, %r91, %r259;
+879 	@%p45 bra $Lt_0_67842;
+880 	bra.uni $Lt_0_67330;
+881 $Lt_0_70146:
+882 	mov.u32 %r129, 0;
+883 $Lt_0_67330:
+884 	.loc 18 1449 0
+885 	mul.lo.u32 %r101, %r91, -921707870;
+886 	.loc 18 1450 0
+887 	mov.s32 %r260, -921707870;
+888 	mul.hi.u32 %r91, %r91, %r260;
+889 	mov.u32 %r261, 0;
+890 	setp.le.s32 %p46, %r91, %r261;
+891 	@%p46 bra $Lt_0_68354;
+892 	.loc 18 1452 0
+893 	shr.u32 %r262, %r101, 31;
+894 	shl.b32 %r263, %r91, 1;
+895 	add.u32 %r91, %r262, %r263;
+896 	.loc 18 1453 0
+897 	shl.b32 %r101, %r101, 1;
+898 	.loc 18 1454 0
+899 	sub.u32 %r129, %r129, 1;
+900 $Lt_0_68354:
+901 	.loc 18 1456 0
+902 	mov.u32 %r264, 0;
+903 	set.ne.u32.u32 %r265, %r101, %r264;
+904 	neg.s32 %r266, %r265;
+905 	add.u32 %r91, %r266, %r91;
+906 	shl.b32 %r267, %r91, 24;
+907 	mov.s32 %r268, 0;
+908 	set.lt.u32.s32 %r269, %r267, %r268;
+909 	neg.s32 %r270, %r269;
+910 	shr.u32 %r271, %r91, 8;
+911 	add.u32 %r272, %r129, 126;
+912 	shl.b32 %r273, %r272, 23;
+913 	add.u32 %r274, %r271, %r273;
+914 	add.u32 %r275, %r270, %r274;
+915 	or.b32 %r276, %r88, %r275;
+916 	mov.b32 %f39, %r276;
+917 	bra.uni $Lt_0_514;
+918 $Lt_0_64258:
+919 	.loc 18 1471 0
+920 	mov.f32 %f106, 0f3f22f983;
+921 	mul.f32 %f9, %f1, %f106;
+922 	cvt.rni.s32.f32 %r77, %f9;
+923 	mov.s32 %r127, %r77;
+924 	cvt.rn.f32.s32 %f10, %r77;
+925 	neg.f32 %f11, %f10;
+926 	mov.f32 %f107, 0f2e85a309;
+927 	mov.f32 %f108, 0f39fdaa20;
+928 	mov.f32 %f109, 0f3fc90000;
+929 	mad.rn.f32 %f110, %f11, %f109, %f1;
+930 	mad.rn.f32 %f111, %f11, %f108, %f110;
+931 	mad.rn.f32 %f39, %f11, %f107, %f111;
+932 $Lt_0_514:
+933 	.loc 18 1641 0
+934 	mov.f32 %f112, %f39;
+935 	mul.f32 %f47, %f112, %f112;
+936 	and.b32 %r277, %r127, 1;
+937 	mov.u32 %r278, 0;
+938 	setp.eq.s32 %p47, %r277, %r278;
+939 	@%p47 bra $Lt_0_69122;
+940 	.loc 18 1644 0
+941 	mov.f32 %f113, 0f37ccf5ce;
+942 	mov.f32 %f114, 0fbab6061a;
+943 	mad.rn.f32 %f115, %f113, %f47, %f114;
+944 	mov.f32 %f116, 0f3d2aaaa5;
+945 	mad.rn.f32 %f117, %f115, %f47, %f116;
+946 	mov.f32 %f118, 0fbf000000;
+947 	mad.rn.f32 %f119, %f117, %f47, %f118;
+948 	mov.f32 %f120, 0f3f800000;
+949 	mad.rn.f32 %f56, %f119, %f47, %f120;
+950 	bra.uni $Lt_0_68866;
+951 $Lt_0_69122:
+952 	.loc 18 1646 0
+953 	mov.f32 %f121, 0fb94ca1f9;
+954 	mov.f32 %f122, 0f3c08839e;
+955 	mad.rn.f32 %f123, %f121, %f47, %f122;
+956 	mov.f32 %f124, 0fbe2aaaa3;
+957 	mad.rn.f32 %f125, %f123, %f47, %f124;
+958 	mul.f32 %f126, %f47, %f125;
+959 	mad.rn.f32 %f56, %f126, %f112, %f112;
+960 $Lt_0_68866:
+961 	.loc 18 1648 0
+962 	neg.f32 %f127, %f56;
+963 	and.b32 %r279, %r127, 2;
+964 	mov.s32 %r280, 0;
+965 	setp.ne.s32 %p48, %r279, %r280;
+966 	selp.f32 %f56, %f127, %f56, %p48;
+967 	mov.f32 %f37, %f56;
+968 $Lt_0_258:
+969 	.loc 16 40 0
+970 	mov.f32 %f128, %f78;
+971 	mul.f32 %f129, %f80, %f71;
+972 	mad.rn.f32 %f130, %f73, %f37, %f129;
+973 	mov.f32 %f131, 0f3f000000;
+974 	add.f32 %f132, %f130, %f131;
+975 	mov.f32 %f133, 0f00000000;
+976 	mov.f32 %f134, 0f00000000;
+977 	tex.2d.v4.f32.f32 {%f135, %f136, %f137, %f138}, [tex, {%f128, %f132, %f133, %f134}];
+978 	.loc 16 43 0
+979 	mov.f32 %f139, %f135;
+980 	ld.param.u32 %r281, [__cudaparm__Z15transformKernelPfiif_g_odata];
+981 	mul.lo.u32 %r282, %r161, %r163;
+982 	add.u32 %r283, %r165, %r282;
+983 	mul.lo.u32 %r284, %r283, 4;
+984 	add.u32 %r285, %r281, %r284;
+985 	st.global.f32 [%r285 + 0], %f139;
+986 	.loc 16 44 0
+987 	exit;
+988 $LDWend__Z15transformKernelPfiif:
+989 }
+990 
+::unknown path:: (78, 5):  syntax error, unexpected TOKEN_LOC, expecting ';'
+For file ../../tests/ptx/sdk3.0/simpleTexture.ptx, Test Point 1 (Parse): Failed
+
+
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestInstructions 
+INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestInstructions
+INFO     Test completed in 0.294009923935 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+
+Name : TestInstructions
+
+Description: 
+
+
+Test Seed : 1285101914
+Test time : 0.00586271
+
+Status : Test output:
+Accessors test passed.
+pass: load and store instructions
+Abs test passed.
+pass: arithmetic instructions
+pass: exotic arithmetic instructions
+pass: floating-point instructions
+pass: logical instructions
+pass: comparison instructions
+pass: predicated Add and Ld isntructions
+pass: control flow instructions
+
+
+
+INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestCudaMalloc
+INFO     Test completed in 0.604306936264 seconds
+INFO      It produced the following output:
+test_malloc(256, 128)
+PASSED
+test_mallocArray(256, 128)
+checking results from last cudaMemcpyFromArray
+PASSED
+[1] mallocing pitch
+[2] memcpying2d
+[3] memcpying
+[4] checking for errors
+[5] mallocing
+[6] memcpying
+[7] memcpying
+[8] final free
+Pass/Fail : Pass
+
+INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestPTXAssembly
+INFO     Test completed in 12.0696520805 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+
+Name : TestPTXAssembly
+
+Description: A unit test framework for PTX. Runs random inputs through unit 
+             tests on all available devices until a timer expires.
+
+
+Test Seed : 1285101910
+Test time : 10.0585
+
+Status : Ran 'TestVectorElements-u32' for 39 iterations.
+Ran 'TestAdd-u16' for 100 iterations.
+Ran 'TestAdd-s16' for 97 iterations.
+Ran 'TestAdd-u32' for 95 iterations.
+Ran 'TestAdd-s32' for 100 iterations.
+Ran 'TestAdd-s32-sat' for 100 iterations.
+Ran 'TestAdd-u64' for 100 iterations.
+Ran 'TestAdd-s64' for 99 iterations.
+Ran 'TestSub-u16' for 100 iterations.
+Ran 'TestSub-s16' for 100 iterations.
+Ran 'TestSub-u32' for 100 iterations.
+Ran 'TestSub-s32' for 100 iterations.
+Ran 'TestSub-s32-sat' for 99 iterations.
+Ran 'TestSub-u64' for 99 iterations.
+Ran 'TestSub-s64' for 100 iterations.
+Ran 'TestSub-Carry-s32' for 90 iterations.
+Ran 'TestSub-Carry-u32' for 90 iterations.
+Ran 'TestAdd-Carry-s32' for 91 iterations.
+Ran 'TestAdd-Carry-u32' for 91 iterations.
+Ran 'TestMul-Lo-u16' for 99 iterations.
+Ran 'TestMul-Hi-u16' for 99 iterations.
+Ran 'TestMul-Wide-u16' for 99 iterations.
+Ran 'TestMul-Lo-s16' for 99 iterations.
+Ran 'TestMul-Hi-s16' for 99 iterations.
+Ran 'TestMul-Wide-s16' for 99 iterations.
+Ran 'TestMul-Lo-u32' for 99 iterations.
+Ran 'TestMul-Hi-u32' for 99 iterations.
+Ran 'TestMul-Wide-u32' for 99 iterations.
+Ran 'TestMul-Lo-s32' for 99 iterations.
+Ran 'TestMul-Hi-s32' for 99 iterations.
+Ran 'TestMul-Wide-s32' for 99 iterations.
+Ran 'TestMul-Lo-u64' for 99 iterations.
+Ran 'TestMul-Hi-u64' for 99 iterations.
+Ran 'TestMul-Lo-s64' for 99 iterations.
+Ran 'TestMul-Hi-s64' for 99 iterations.
+Ran 'TestMad-Lo-u16' for 94 iterations.
+Ran 'TestMad-Hi-u16' for 94 iterations.
+Ran 'TestMad-Wide-u16' for 94 iterations.
+Ran 'TestMad-Lo-s16' for 94 iterations.
+Ran 'TestMad-Hi-s16' for 94 iterations.
+Ran 'TestMad-Wide-s16' for 94 iterations.
+Ran 'TestMad-Lo-u32' for 94 iterations.
+Ran 'TestMad-Hi-u32' for 94 iterations.
+Ran 'TestMad-Wide-u32' for 94 iterations.
+Ran 'TestMad-Lo-s32' for 94 iterations.
+Ran 'TestMad-Hi-s32' for 94 iterations.
+Ran 'TestMad-Sat-Hi-s32' for 94 iterations.
+Ran 'TestMad-Wide-s32' for 94 iterations.
+Ran 'TestMad-Lo-u64' for 94 iterations.
+Ran 'TestMad-Hi-u64' for 94 iterations.
+Ran 'TestMad-Lo-s64' for 94 iterations.
+Ran 'TestMad-Hi-s64' for 95 iterations.
+Ran 'TestSad-u16' for 90 iterations.
+Ran 'TestSad-s16' for 95 iterations.
+Ran 'TestSad-u32' for 92 iterations.
+Ran 'TestSad-s32' for 94 iterations.
+Ran 'TestSad-u64' for 94 iterations.
+Ran 'TestSad-s64' for 95 iterations.
+Ran 'TestDiv-u16' for 99 iterations.
+Ran 'TestDiv-s16' for 100 iterations.
+Ran 'TestDiv-u32' for 99 iterations.
+Ran 'TestDiv-s32' for 100 iterations.
+Ran 'TestDiv-u64' for 100 iterations.
+Ran 'TestDiv-s64' for 100 iterations.
+Ran 'TestRem-u16' for 99 iterations.
+Ran 'TestRem-s16' for 100 iterations.
+Ran 'TestRem-u32' for 99 iterations.
+Ran 'TestRem-s32' for 98 iterations.
+Ran 'TestRem-u64' for 99 iterations.
+Ran 'TestRem-s64' for 99 iterations.
+Ran 'TestAbs-s16' for 102 iterations.
+Ran 'TestAbs-s32' for 103 iterations.
+Ran 'TestAbs-s64' for 105 iterations.
+Ran 'TestNeg-s16' for 104 iterations.
+Ran 'TestNeg-s32' for 104 iterations.
+Ran 'TestNeg-s64' for 105 iterations.
+Ran 'TestMax-u16' for 100 iterations.
+Ran 'TestMax-u32' for 99 iterations.
+Ran 'TestMax-u64' for 99 iterations.
+Ran 'TestMax-s16' for 99 iterations.
+Ran 'TestMax-s32' for 100 iterations.
+Ran 'TestMax-s64' for 100 iterations.
+Ran 'TestMin-u16' for 99 iterations.
+Ran 'TestMin-u32' for 99 iterations.
+Ran 'TestMin-u64' for 99 iterations.
+Ran 'TestMin-s16' for 99 iterations.
+Ran 'TestMin-s32' for 97 iterations.
+Ran 'TestMin-s64' for 99 iterations.
+Ran 'TestPopc-b32' for 105 iterations.
+Ran 'TestPopc-b64' for 106 iterations.
+Ran 'TestClz-b32' for 106 iterations.
+Ran 'TestClz-b64' for 106 iterations.
+Ran 'TestBfind-u32' for 106 iterations.
+Ran 'TestBfind-u64' for 106 iterations.
+Ran 'TestBfind-s32' for 106 iterations.
+Ran 'TestBfind-s64' for 106 iterations.
+Ran 'TestBfind-shiftamount-u32' for 105 iterations.
+Ran 'TestBfind-shiftamount-u64' for 106 iterations.
+Ran 'TestBfind-shiftamount-s32' for 106 iterations.
+Ran 'TestBfind-shiftamount-s64' for 106 iterations.
+Ran 'TestBrev-b32' for 105 iterations.
+Ran 'TestBrev-b64' for 105 iterations.
+Ran 'TestBfi-b32' for 91 iterations.
+Ran 'TestBfi-b64' for 90 iterations.
+Ran 'TestPrmt-b32' for 95 iterations.
+Ran 'TestPrmt-f4e-b32' for 95 iterations.
+Ran 'TestPrmt-b4e-b32' for 95 iterations.
+Ran 'TestPrmt-rc8-b32' for 95 iterations.
+Ran 'TestPrmt-ecl-b32' for 95 iterations.
+Ran 'TestPrmt-ecr-b32' for 95 iterations.
+Ran 'TestPrmt-rc16-b32' for 95 iterations.
+Ran 'TestCall-Uni' for 69 iterations.
+Ran 'TestCall-Nondivergent' for 69 iterations.
+Ran 'TestCall-Divergent' for 59 iterations.
+Ran 'TestCall-Recursive' for 64 iterations.
+Ran 'TestCall-Indirect' for 34 iterations.
+Ran 'TestTestP-f32-Finite' for 92 iterations.
+Ran 'TestTestP-f32-Infinite' for 92 iterations.
+Ran 'TestTestP-f32-Number' for 92 iterations.
+Ran 'TestTestP-f32-NotANumber' for 92 iterations.
+Ran 'TestTestP-f32-Normal' for 92 iterations.
+Ran 'TestTestP-f32-SubNormal' for 92 iterations.
+Ran 'TestTestP-f64-Finite' for 92 iterations.
+Ran 'TestTestP-f64-Infinite' for 92 iterations.
+Ran 'TestTestP-f64-Number' for 92 iterations.
+Ran 'TestTestP-f64-NotANumber' for 92 iterations.
+Ran 'TestTestP-f64-Normal' for 92 iterations.
+Ran 'TestTestP-f64-SubNormal' for 92 iterations.
+
+
 
 INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestLexer
-INFO     Test completed in 12.2052929401 seconds
+INFO     Test completed in 8.69679999352 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -4504,198 +4824,198 @@ Description: Tests for the PTX lexer. Test Point 1: Scan a PTX file and
              two sets of tokens match
 
 
-Test Seed : 1285097161
-Test time : 12.178
+Test Seed : 1285101912
+Test time : 8.41095
 
-Status : For file ../../tests/ptx/sdk2.2/quasirandomGenerator_SM13.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk2.2/matrixMul_kernel.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk2.2/dxtc.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk2.2/reduction_kernel_sm10.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk2.2/bisect_small.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk2.2/recursiveGaussian.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk2.2/MersenneTwister.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk2.2/dwtHaar1D.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk2.2/simpleVoteIntrinsics.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk2.2/simpleTexture3D_kernel.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk2.2/MonteCarlo_SM10.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk2.2/bandwidthTest.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk2.2/new_radixsort.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk2.2/volumeRender_kernel.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk2.2/histogram256_SM10.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk2.2/lineOfSight.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk2.2/dct8x8.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk2.2/MonteCarlo_SM13.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk2.2/ParticleSystem.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk2.2/threadMigration.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk2.2/bodysystemcuda.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk2.2/simpleGL_kernel.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk2.2/particleSystem2.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk2.2/simpleMultiGPU_kernel.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk2.2/simpleZeroCopy.ptx, Test Point 1 (Scan): Passed
+Status : For file ../../tests/ptx/sdk2.2/simpleTexture.ptx, Test Point 1 (Scan): Passed
 For file ../../tests/ptx/sdk2.2/simpleAtomicIntrinsics.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk2.2/fastWalshTransform.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk2.2/dct8x8.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk2.2/bitonic.ptx, Test Point 1 (Scan): Passed
 For file ../../tests/ptx/sdk2.2/convolutionTexture.ptx, Test Point 1 (Scan): Passed
 For file ../../tests/ptx/sdk2.2/BlackScholes.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk2.2/bitonic.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk2.2/simpleTexture.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk2.2/cppIntegration.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk2.2/Mandelbrot_sm13.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk2.2/histogram64.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk2.2/scalarProd.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk2.2/histogram256_SM11.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk2.2/binomialOptions_SM10.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk2.2/marchingCubes_kernel.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk2.2/transpose.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk2.2/bisect_large.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk2.2/asyncAPI.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk2.2/scan.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk2.2/scanLargeArray.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk2.2/postProcessGL.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk2.2/binomialOptions_SM13.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk2.2/simpleTexture_kernel.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk2.2/fluidsGL.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk2.2/imageDenoising.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk2.2/SobelFilter_kernels.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk2.2/clock.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk2.2/transposeNew.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk2.2/threadFenceReduction.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk2.2/sobol_gpu.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk2.2/reduction.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk2.2/histogram256_SM12.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk2.2/bicubicTexture.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk2.2/simpleStreams.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk2.2/template.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk2.2/main.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk2.2/fastWalshTransform.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk2.2/boxFilter_kernel.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk2.2/matrixMul.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk2.2/alignedTypes.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk2.2/convolutionFFT2D.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk2.2/dxtc.ptx, Test Point 1 (Scan): Passed
 For file ../../tests/ptx/sdk2.2/Mandelbrot_sm10.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk2.2/scalarProd.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk2.2/imageDenoising.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk2.2/sobol_gpu.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk2.2/dwtHaar1D.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk2.2/MonteCarlo_SM13.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk2.2/bisect_large.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk2.2/simpleStreams.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk2.2/simpleCUFFT.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk2.2/SobelFilter_kernels.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk2.2/new_radixsort.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk2.2/Mandelbrot_sm13.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk2.2/matrixMul.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk2.2/template.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk2.2/alignedTypes.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk2.2/bodysystemcuda.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk2.2/quasirandomGenerator_SM13.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk2.2/bisect_small.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk2.2/matrixMul_kernel.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk2.2/recursiveGaussian.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk2.2/boxFilter_kernel.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk2.2/histogram64.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk2.2/reduction_kernel_sm10.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk2.2/histogram256_SM10.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk2.2/histogram256_SM11.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk2.2/clock.ptx, Test Point 1 (Scan): Passed
 For file ../../tests/ptx/sdk2.2/oceanFFT_kernel.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk2.2/quasirandomGenerator_SM10.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk2.2/bandwidthTest.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk2.2/MersenneTwister.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk2.2/simpleZeroCopy.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk2.2/simpleTexture_kernel.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk2.2/main.ptx, Test Point 1 (Scan): Passed
 For file ../../tests/ptx/sdk2.2/radixsort.ptx, Test Point 1 (Scan): Passed
 For file ../../tests/ptx/sdk2.2/reduction_kernel_sm13.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk2.2/simpleTexture3D_kernel.ptx, Test Point 1 (Scan): Passed
 For file ../../tests/ptx/sdk2.2/simpleTemplates.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk2.2/quasirandomGenerator_SM10.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk2.2/simpleCUFFT.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk2.2/scan.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk2.2/binomialOptions_SM10.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk2.2/bicubicTexture.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk2.2/transposeNew.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk2.2/scanLargeArray.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk2.2/simpleMultiGPU_kernel.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk2.2/binomialOptions_SM13.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk2.2/transpose.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk2.2/volumeRender_kernel.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk2.2/asyncAPI.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk2.2/threadMigration.ptx, Test Point 1 (Scan): Passed
 For file ../../tests/ptx/sdk2.2/convolutionSeparable.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/synthetic/barrier.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/synthetic/kernels.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/synthetic/blockIsOwnPredecessor.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/synthetic/sequence.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk3.0/simpleAtomicIntrinsics_kernel.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk3.0/nbody_kernel.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk3.0/quasirandomGenerator_SM13.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk3.0/matrixMul_kernel.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk3.0/dxtc.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk3.0/bisect_small.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk3.0/bisect_util.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk3.0/Mandelbrot_kernel.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk3.0/recursiveGaussian.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk3.0/MersenneTwister.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk3.0/dwtHaar1D.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk3.0/simpleVoteIntrinsics.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk3.0/simpleTexture3D_kernel.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk3.0/MonteCarlo_SM10.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk3.0/simpleTemplates_kernel.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk3.0/bandwidthTest.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk3.0/volumeRender_kernel.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk3.0/simplePitchLinearTexture.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk3.0/concurrentKernels.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk3.0/lineOfSight.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk3.0/dct8x8.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk3.0/MonteCarlo_SM13.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk3.0/threadMigration.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk3.0/bodysystemcuda.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk3.0/Mandelbrot_sm11.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk3.0/simpleGL_kernel.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk3.0/dct8x8_kernel_quantization.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk3.0/particles_kernel.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk3.0/bisect_kernel_small.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk3.0/simpleMultiGPU_kernel.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk3.0/simpleZeroCopy.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk3.0/bisect_kernel_large.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk2.2/marchingCubes_kernel.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk2.2/ParticleSystem.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk2.2/reduction.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk2.2/simpleVoteIntrinsics.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk2.2/MonteCarlo_SM10.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk2.2/cppIntegration.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk2.2/fluidsGL.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk2.2/simpleGL_kernel.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk2.2/histogram256_SM12.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk2.2/particleSystem2.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk2.2/postProcessGL.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk2.2/lineOfSight.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk2.2/threadFenceReduction.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk2.2/convolutionFFT2D.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk3.0/simpleTexture.ptx, Test Point 1 (Scan): Passed
 For file ../../tests/ptx/sdk3.0/simpleAtomicIntrinsics.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk3.0/fastWalshTransform.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk3.0/dct8x8.ptx, Test Point 1 (Scan): Passed
 For file ../../tests/ptx/sdk3.0/convolutionTexture.ptx, Test Point 1 (Scan): Passed
 For file ../../tests/ptx/sdk3.0/BlackScholes.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk3.0/simpleTexture.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk3.0/cppIntegration.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk3.0/Mandelbrot_sm13.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk3.0/histogram64.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk3.0/dxtc.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk3.0/simpleTemplates_kernel.ptx, Test Point 1 (Scan): Passed
 For file ../../tests/ptx/sdk3.0/scalarProd.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk3.0/bitonicSort.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk3.0/binomialOptions_SM10.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk3.0/scalarProd_kernel.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk3.0/marchingCubes_kernel.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk3.0/transpose.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk3.0/bisect_large.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk3.0/asyncAPI.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk3.0/histogram256.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk3.0/threadFenceReduction_kernel.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk3.0/postProcessGL.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk3.0/particleSystem.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk3.0/clock_kernel.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk3.0/dct8x8_kernel2.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk3.0/binomialOptions_SM13.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk3.0/simpleTexture_kernel.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk3.0/simpleVote_kernel.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk3.0/tests.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk3.0/fluidsGL.ptx, Test Point 1 (Scan): Passed
 For file ../../tests/ptx/sdk3.0/imageDenoising.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk3.0/SobelFilter_kernels.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk3.0/clock.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk3.0/transposeNew.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk3.0/reduction_kernel.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk3.0/bisect_kernel_large_onei.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk3.0/threadFenceReduction.ptx, Test Point 1 (Scan): Passed
 For file ../../tests/ptx/sdk3.0/sobol_gpu.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk3.0/bicubicTexture.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk3.0/dwtHaar1D.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk3.0/MonteCarlo_SM13.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk3.0/bisect_large.ptx, Test Point 1 (Scan): Passed
 For file ../../tests/ptx/sdk3.0/simpleStreams.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk3.0/recursiveGaussian_kernel.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk3.0/transpose_kernel.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk3.0/template.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk3.0/main.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk3.0/dct8x8_kernel_short.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk3.0/fastWalshTransform.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk3.0/boxFilter_kernel.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk3.0/matrixMul.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk3.0/alignedTypes.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk3.0/convolutionFFT2D.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk3.0/ParticleSystem1.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk3.0/oceanFFT_kernel.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk3.0/bisect_kernel_large_multi.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk3.0/radixsort.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk3.0/cppIntegration_kernel.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk3.0/oddEvenMergeSort.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk3.0/simpleTemplates.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk3.0/vectorAdd.ptx, Test Point 1 (Scan): Passed
-For file ../../tests/ptx/sdk3.0/quasirandomGenerator_SM10.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk3.0/bisect_kernel_small.ptx, Test Point 1 (Scan): Passed
 For file ../../tests/ptx/sdk3.0/simpleCUFFT.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk3.0/bisect_kernel_large.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk3.0/Mandelbrot_kernel.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk3.0/SobelFilter_kernels.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk3.0/bisect_util.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk3.0/Mandelbrot_sm13.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk3.0/matrixMul.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk3.0/threadFenceReduction_kernel.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk3.0/template.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk3.0/alignedTypes.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk3.0/bodysystemcuda.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk3.0/vectorAdd.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk3.0/quasirandomGenerator_SM13.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk3.0/particles_kernel.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk3.0/simpleVote_kernel.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk3.0/bisect_small.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk3.0/bitonicSort.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk3.0/dct8x8_kernel_short.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk3.0/nbody_kernel.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk3.0/histogram256.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk3.0/bisect_kernel_large_onei.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk3.0/matrixMul_kernel.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk3.0/recursiveGaussian.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk3.0/boxFilter_kernel.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk3.0/histogram64.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk3.0/clock.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk3.0/oceanFFT_kernel.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk3.0/quasirandomGenerator_SM10.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk3.0/bandwidthTest.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk3.0/MersenneTwister.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk3.0/simpleZeroCopy.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk3.0/simpleTexture_kernel.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk3.0/main.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk3.0/radixsort.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk3.0/simpleAtomicIntrinsics_kernel.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk3.0/simpleTexture3D_kernel.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk3.0/tests.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk3.0/recursiveGaussian_kernel.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk3.0/simpleTemplates.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk3.0/binomialOptions_SM10.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk3.0/transpose_kernel.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk3.0/cppIntegration_kernel.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk3.0/dct8x8_kernel_quantization.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk3.0/ParticleSystem1.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk3.0/concurrentKernels.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk3.0/Mandelbrot_sm11.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk3.0/dct8x8_kernel2.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk3.0/bicubicTexture.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk3.0/transposeNew.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk3.0/scalarProd_kernel.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk3.0/simpleMultiGPU_kernel.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk3.0/binomialOptions_SM13.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk3.0/transpose.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk3.0/particleSystem.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk3.0/volumeRender_kernel.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk3.0/asyncAPI.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk3.0/threadMigration.ptx, Test Point 1 (Scan): Passed
 For file ../../tests/ptx/sdk3.0/convolutionSeparable.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk3.0/reduction_kernel.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk3.0/marchingCubes_kernel.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk3.0/bisect_kernel_large_multi.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk3.0/simpleVoteIntrinsics.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk3.0/MonteCarlo_SM10.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk3.0/cppIntegration.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk3.0/fluidsGL.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk3.0/simpleGL_kernel.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk3.0/postProcessGL.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk3.0/oddEvenMergeSort.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk3.0/clock_kernel.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk3.0/lineOfSight.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk3.0/threadFenceReduction.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk3.0/convolutionFFT2D.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/sdk3.0/simplePitchLinearTexture.ptx, Test Point 1 (Scan): Passed
 For file ../../tests/ptx/apps/bounding_box.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/synthetic/sequence.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/synthetic/blockIsOwnPredecessor.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/synthetic/kernels.ptx, Test Point 1 (Scan): Passed
+For file ../../tests/ptx/synthetic/barrier.ptx, Test Point 1 (Scan): Passed
 
 
 
 INFO     
 Passing tests:
- (0.031s) : /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestEmulator : Passed
- (0.030s) : /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestInstructions : Passed
- (0.106s) : /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestLLVMKernels : Passed
- (0.038s) : /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestCudaTexture2D : Passed
- (10.110s) : /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestPTXAssembly : Passed
- (0.037s) : /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestCudaTextureArray : Passed
- (0.029s) : /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestCalVectorScale : Passed
- (0.042s) : /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestKernels : Passed
- (12.205s) : /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestLexer : Passed
- (0.043s) : /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestDeviceSwitching : Passed
- (0.025s) : /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestLLVMInstructions : Passed
- (0.037s) : /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestCudaSequence : Passed
- (0.031s) : /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestCudaGlobals : Passed
- (0.073s) : /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestCudaMalloc : Passed
+ (0.105s) : /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestEmulator : Passed
+ (0.294s) : /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestInstructions : Passed
+ (1.000s) : /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestCudaGlobals : Passed
+ (2.184s) : /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestCudaTexture2D : Passed
+ (12.070s) : /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestPTXAssembly : Passed
+ (0.356s) : /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestLLVMInstructions : Passed
+ (0.998s) : /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestCalVectorScale : Passed
+ (0.271s) : /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestKernels : Passed
+ (8.697s) : /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestLexer : Passed
+ (0.717s) : /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestDeviceSwitching : Passed
+ (0.972s) : /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestCudaSequence : Passed
+ (0.875s) : /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestLLVMKernels : Passed
+ (0.604s) : /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestCudaMalloc : Passed
+ (2.269s) : /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestCudaTextureArray : Passed
 
 Failing tests:
- (0.427s) : /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestPTXToLLVMTranslator : Did not complete.
- (0.609s) : /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestDataflowGraph : Failed
- (0.469s) : /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestParser : Failed
+ (3.311s) : /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestPTXToLLVMTranslator : Did not complete.
+ (1.527s) : /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestDataflowGraph : Failed
+ (0.906s) : /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestParser : Failed
 
 Non-Existent tests:
 

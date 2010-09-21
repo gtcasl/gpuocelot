@@ -33,7 +33,7 @@
 #define CUDA_VERBOSE 1
 
 // whether debugging messages are printed
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -53,6 +53,7 @@ typedef cuda::CudaDriverFrontend CudaApi;
 ** Initialization
 *********************************/
 CUresult cuInit(unsigned int Flags) {
+	report("CudaDriverApi.cpp - cuInit()");
 	return CudaApi::get()->cuInit(Flags);;
 }
 

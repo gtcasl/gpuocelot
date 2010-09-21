@@ -128,7 +128,7 @@ namespace cuda {
 		CudaDriverFrontend();
 		~CudaDriverFrontend();
 
-		static CudaDriverInterface *get();
+		static CudaDriverFrontend *get();
 
 	public:
 		/*********************************

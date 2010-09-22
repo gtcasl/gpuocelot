@@ -36,6 +36,9 @@ namespace analysis
 	class SubkernelFormationPass : public ModulePass
 	{
 	public:
+		typedef std::vector<ir::PTXKernel*> KernelVector;
+			
+	public:
 		SubkernelFormationPass(unsigned int expectedRegionSize = 5, 
 			bool insertScheduler = false);
 		void runOnModule(ir::Module& m);
@@ -44,10 +47,9 @@ namespace analysis
 		class ExtractKernelsPass : public KernelPass
 		{
 		public:
-			typedef std::vector<ir::PTXKernel*> KernelVector;
 			typedef std::unordered_map<std::string, 
 				KernelVector> KernelVectorMap;
-		
+				
 		public:
 			ExtractKernelsPass(unsigned int expectedRegionSize, 
 				bool insertScheduler);

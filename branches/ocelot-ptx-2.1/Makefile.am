@@ -30,11 +30,12 @@ check_PROGRAMS = TestLexer TestParser \
 	TestCudaGlobals TestCudaMalloc TestCudaTexture2D TestCudaTextureArray \
 	TestCudaSequence TestLLVMKernels TestDeviceSwitching \
 	TestCalVectorScale TestPTXAssembly TestSequenceDriverAPI
-EXTRA_PROGRAMS = Module DFG CFG PTXChecker
+EXTRA_PROGRAMS = Module PtxToIlTranslator DFG CFG PTXChecker
 lib_LTLIBRARIES = libocelot.la libocelotcuda.la
 ################################################################################
 
-libocelotcuda_la_CXXFLAGS = $(LLVM_CFLAGS) $(INCLUDE) -Wall -ansi -Werror -std=c++0x
+libocelotcuda_la_CXXFLAGS = $(LLVM_CFLAGS) $(INCLUDE) \
+	-Wall -ansi -Werror -std=c++0x
 libocelotcuda_la_SOURCES = \
 	ocelot/parser/implementation/ptx.lpp \
 	ocelot/parser/implementation/ptxgrammar.ypp \
@@ -129,6 +130,7 @@ libocelot_la_SOURCES = \
 	ocelot/parser/implementation/PTXLexer.cpp \
 	ocelot/analysis/implementation/DataflowGraph.cpp \
 	ocelot/analysis/implementation/SSAGraph.cpp \
+	ocelot/analysis/implementation/PassManager.cpp \
 	ocelot/analysis/implementation/Pass.cpp \
 	ocelot/analysis/implementation/RemoveBarrierPass.cpp \
 	ocelot/analysis/implementation/ConvertPredicationToSelectPass.cpp \
@@ -249,6 +251,14 @@ Module_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
 Module_SOURCES = ocelot/ir/test/Module.cpp
 Module_LDADD = libocelot.la $(LLVM_LDFLAGS)
 Module_LDFLAGS = -static
+################################################################################
+
+################################################################################
+## PtxToIlTranslator
+PtxToIlTranslator_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
+PtxToIlTranslator_SOURCES = ocelot/translator/test/PtxToIlTranslator.cpp
+PtxToIlTranslator_LDADD = libocelot.la $(LLVM_LDFLAGS)
+PtxToIlTranslator_LDFLAGS = -static
 ################################################################################
 
 ################################################################################
@@ -486,6 +496,7 @@ nobase_include_HEADERS = ocelot/api/interface/ocelot.h \
 	ocelot/analysis/interface/LinearScanRegisterAllocationPass.h \
 	ocelot/analysis/interface/PTXOptimizer.h \
 	ocelot/analysis/interface/RemoveBarrierPass.h \
+	ocelot/analysis/interface/PassManager.h \
 	ocelot/analysis/test/TestDataflowGraph.h \
 	ocelot/ir/interface/Kernel.h \
 	ocelot/ir/interface/Module.h \
@@ -520,6 +531,7 @@ nobase_include_HEADERS = ocelot/api/interface/ocelot.h \
 	ocelot/translator/interface/PTXToLLVMTranslator.h \
 	ocelot/translator/interface/Translator.h \
 	ocelot/translator/test/TestPTXToLLVMTranslator.h \
+	ocelot/translator/test/PtxToIlTranslator.h \
 	ocelot/util/interface/OcelotConfig.h \
 	hydrazine/implementation/Exception.h \
 	hydrazine/implementation/Timer.h \

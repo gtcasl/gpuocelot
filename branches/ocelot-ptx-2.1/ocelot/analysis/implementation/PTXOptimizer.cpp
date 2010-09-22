@@ -8,6 +8,7 @@
 #define PTX_OPTIMIZER_CPP_INCLUDED
 
 #include <ocelot/analysis/interface/PTXOptimizer.h>
+#include <ocelot/analysis/interface/PassManager.h>
 #include <ocelot/analysis/interface/LinearScanRegisterAllocationPass.h>
 #include <ocelot/analysis/interface/RemoveBarrierPass.h>
 #include <ocelot/analysis/interface/ConvertPredicationToSelectPass.h>
@@ -36,95 +37,38 @@ namespace analysis
 	
 	}
 
-	static void runPass( ir::Module& module, Pass* pass )
-	{
-		report("  Running pass '" << pass->toString() << "'" );
-		switch( pass->type )
-		{
-			case Pass::ImmutablePass:
-			{
-				ImmutablePass* immutablePass = 
-					static_cast< ImmutablePass* >( pass );
-				immutablePass->runOnModule( module );
-			}
-			break;
-			case Pass::ModulePass:
-			{
-				ModulePass* modulePass = 
-					static_cast< ModulePass* >( pass );
-				modulePass->runOnModule( module );
-			}
-			break;
-			case Pass::KernelPass:
-			{
-				KernelPass* kernelPass = static_cast< KernelPass* >( pass );
-				kernelPass->initialize( module );
-				for( ir::Module::KernelMap::const_iterator 
-					kernel = module.kernels().begin(); 
-					kernel != module.kernels().end(); ++kernel )
-				{
-					kernelPass->runOnKernel( 
-						*module.getKernel( kernel->first ) );
-				}
-				kernelPass->finalize();
-			}
-			break;
-			case Pass::BasicBlockPass:
-			{
-				BasicBlockPass* bbPass = static_cast< BasicBlockPass* >( pass );
-				bbPass->initialize( module );
-				for( ir::Module::KernelMap::const_iterator 
-					kernel = module.kernels().begin(); 
-					kernel != module.kernels().end(); ++kernel )
-				{
-					ir::PTXKernel* ptx = module.getKernel( kernel->first );
-					bbPass->initialize( *ptx );
-					for( ir::ControlFlowGraph::iterator 
-						block = ptx->cfg()->begin(); 
-						block != ptx->cfg()->end(); ++block )
-					{
-						bbPass->runOnBlock( *block );
-					}
-					bbPass->finalizeKernel();
-				}
-				bbPass->finalize();				
-			}
-			break;
-			default: break;
-		}
-	}
-
 	void PTXOptimizer::optimize()
-	{
-		typedef std::vector< Pass* > PassVector;
-		
+	{		
 		report("Running PTX to PTX Optimizer.");
 		
-		PassVector allPasses;
-		
+		report(" Loading module '" << input << "'");
+		ir::Module module( input );
+
+		PassManager manager( &module );
+
 		if( registerAllocationType == LinearScan )
 		{
 			Pass* pass = new analysis::LinearScanRegisterAllocationPass( 
 				registerCount );
-			allPasses.push_back( pass );
+			manager.addPass( *pass );
 		}
 		
 		if( passes & RemoveBarriers )
 		{
 			Pass* pass = new analysis::RemoveBarrierPass;
-			allPasses.push_back( pass );		
+			manager.addPass( *pass );
 		}
 
 		if( passes & ReverseIfConversion )
 		{
 			Pass* pass = new analysis::ConvertPredicationToSelectPass;
-			allPasses.push_back( pass );
+			manager.addPass( *pass );
 		}
 
 		if( passes & SubkernelFormation )
 		{
 			Pass* pass = new analysis::SubkernelFormationPass;
-			allPasses.push_back( pass );
+			manager.addPass( *pass );
 		}
 		
 		if( input.empty() )
@@ -132,46 +76,9 @@ namespace analysis
 			std::cout << "No input file name given.  Bailing out." << std::endl;
 			return;
 		}
-		
-		report(" Loading module '" << input << "'");
-		ir::Module module( input );
 
-		report(" Running infinite register allocation.");
-		module.createDataStructures();
-		
-		report(" Running passes that do not require SSA form.");
-		for( PassVector::iterator pass = allPasses.begin(); 
-			pass != allPasses.end(); ++pass)
-		{
-			if( (*pass)->ssa ) continue;
-			runPass( module, *pass );
-			delete *pass;
-		}
-		
-		report(" Converting to SSA form.");
-		for( ir::Module::KernelMap::const_iterator 
-			kernel = module.kernels().begin(); 
-			kernel != module.kernels().end(); ++kernel )
-		{
-			module.getKernel(kernel->first)->dfg()->toSsa();
-		}
-	
-		report(" Running passes that require SSA form.");
-		for( PassVector::iterator pass = allPasses.begin(); 
-			pass != allPasses.end(); ++pass)
-		{
-			if( !(*pass)->ssa ) continue;
-			runPass( module, *pass );
-			delete *pass;
-		}
-
-		report(" Converting out of SSA form.");
-		for( ir::Module::KernelMap::const_iterator 
-			kernel = module.kernels().begin(); 
-			kernel != module.kernels().end(); ++kernel )
-		{
-			module.getKernel( kernel->first )->dfg()->fromSsa();
-		}
+		manager.runOnModule();
+		manager.destroyPasses();
 		
 		std::ofstream out( output.c_str() );
 		

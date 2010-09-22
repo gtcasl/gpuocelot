@@ -372,7 +372,7 @@ cuda::HostThreadContext& cuda::CudaRuntime::_getCurrentThread() {
 
 void cuda::CudaRuntime::_registerModule(ModuleMap::iterator module) {
 	if(module->second.loaded()) return;
-	module->second.createDataStructures();
+	module->second.loadNow();
 	
 	for(RegisteredTextureMap::iterator texture = _textures.begin(); 
 		texture != _textures.end(); ++texture) {
@@ -898,7 +898,8 @@ cudaError_t cuda::CudaRuntime::cudaHostGetDevicePointer(void **pDevice,
 	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
 	
 	executive::Device::MemoryAllocation* 
-		allocation = _getDevice().getMemoryAllocation(pHost, true);
+		allocation = _getDevice().getMemoryAllocation(pHost, 
+			executive::Device::HostAllocation);
 
 	if (allocation != 0) {	
 		if (allocation->host()) {
@@ -920,7 +921,8 @@ cudaError_t cuda::CudaRuntime::cudaHostGetFlags(unsigned int *pFlags,
 	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
 
 	executive::Device::MemoryAllocation* 
-		allocation = _getDevice().getMemoryAllocation(pHost, true);
+		allocation = _getDevice().getMemoryAllocation(pHost, 
+			executive::Device::HostAllocation);
 	
 	if (allocation != 0) {
 		*pFlags = allocation->flags();

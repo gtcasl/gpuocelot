@@ -259,14 +259,6 @@ void ir::Module::writeIR( std::ostream& stream ) const {
 	}
 }
 
-void ir::Module::createDataStructures() {
-	loadNow();
-	for (KernelMap::iterator kernel = _kernels.begin(); 
-		kernel != _kernels.end(); ++kernel) {
-		(kernel->second)->dfg();
-	}
-}
-
 ir::Texture* ir::Module::getTexture(const std::string& name) {
 	loadNow();
 	TextureMap::iterator texture = _textures.find(name);

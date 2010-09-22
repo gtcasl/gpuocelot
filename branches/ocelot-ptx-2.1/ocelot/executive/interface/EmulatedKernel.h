@@ -93,6 +93,9 @@ namespace executive {
 		/* Get a snapshot of the current register file */
 		RegisterFile getCurrentRegisterFile() const;
 
+		/* Get a pointer to the base of the current shared memory block */
+		const char* getSharedMemory() const;
+
 	protected:
 		/*! Cleans up the EmulatedKernel instance*/
 		void freeAll();

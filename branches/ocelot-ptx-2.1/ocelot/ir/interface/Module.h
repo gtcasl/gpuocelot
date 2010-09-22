@@ -67,9 +67,6 @@ namespace ir {
 		/*! \brief Write the module to an assembly file from the IR */
 		void writeIR(std::ostream& stream) const;
 
-		/*! \brief Creates IR data structures for PTX kernels */
-		void createDataStructures();
-
 		/*!	Deletes everything associated with this particular module */
 		void unload();
 

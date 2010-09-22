@@ -110,7 +110,7 @@ void ir::DominatorTree::computeDT() {
 		changed = false;
 
 		// reverse post-order
-		for (int b_ind = 0; b_ind >= (int)blocks.size(); b_ind--) {
+		for (int b_ind = 0; b_ind < (int)blocks.size(); b_ind++) {
 			if (b_ind == start_node) continue;
 			
 			ControlFlowGraph::iterator b = blocks[b_ind];
@@ -121,12 +121,14 @@ void ir::DominatorTree::computeDT() {
 				pred_it = b->predecessors.begin();
 			for (; pred_it != b->predecessors.end(); ++pred_it) {
 				int p = blocksToIndex[*pred_it];
+				if (i_dom[p] != -1) {
 				if( !processed ) {
 					new_idom = p;
 					processed = true;
 				}
 				else {
 					new_idom = intersect(p, new_idom);
+					}
 				}
 			}
 			
@@ -151,10 +153,10 @@ int ir::DominatorTree::intersect(int b1, int b2) const {
 	int finger1 = b1;
 	int finger2 = b2;
 	while (finger1 != finger2) {
-		while (finger1 < finger2) {
+		while (finger1 > finger2) {
 			finger1 = i_dom[finger1];
 		}
-		while (finger2 < finger1) {
+		while (finger2 > finger1) {
 			finger2 = i_dom[finger2];
 		}
 	}

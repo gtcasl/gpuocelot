@@ -49,7 +49,16 @@ namespace executive
 			/*!	\brief removes a trace generator from an EmulatedKernel */
 			void removeTraceGenerator(trace::TraceGenerator* generator);
 
+			/*! \brief Allocate shared memory */
+			void allocateSharedMemory();
+
 		private:
+			/*! \brief Determine the padding required to satisfy alignment */
+			static unsigned int _pad(size_t& size, unsigned int alignment);
+
+			/*! \brief Create the IL module from the code */
+			void _translateKernel();
+
 			/*! \brief Type of the constant buffer (cb) */
 			typedef struct { unsigned int x, y, z, w; } cb_t;
 

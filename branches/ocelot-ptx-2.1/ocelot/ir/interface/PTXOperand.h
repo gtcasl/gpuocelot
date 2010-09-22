@@ -1,5 +1,4 @@
-/*!
-	\file PTXOperand.h
+/*! \file PTXOperand.h
 	\author Andrew Kerr <arkerr@gatech.edu>
 	\date Jan 15, 2009
 	\brief internal representation of a PTX operand
@@ -174,6 +173,7 @@ namespace ir {
 			int o = 0, Vec v = v1);
 		PTXOperand(AddressMode m, DataType t, const std::string& identifier, 
 			int o = 0, Vec v = v1);
+		PTXOperand(AddressMode m, const std::string& identifier);
 		~PTXOperand();
 
 		std::string toString() const;

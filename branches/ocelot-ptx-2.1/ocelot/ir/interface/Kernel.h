@@ -80,10 +80,20 @@ namespace ir {
 		virtual const analysis::DataflowGraph* dfg() const;
 		/*! \brief Builds the Control tree within the kernel */
 		ControlTree* ctrl_tree();
-		/*! brief Gets the cfg */
+		/*! \brief Gets the cfg */
 		ControlFlowGraph* cfg();
-		/*! brief Gets the const cfg */
+		/*! \brief Gets the const cfg */
 		const ControlFlowGraph* cfg() const;
+
+	public:
+		/*! \brief Clear dataflow graph */
+		void clear_dfg();
+		/*! \brief Clear control tree */
+		void clear_ctrl_tree();
+		/*! \brief Clear post dominator tree */
+		void clear_pdom_tree();
+		/*! \brief Clear dominator tree */
+		void clear_dom_tree();
 
 	public:	
 		/*!	Returns true if the kernel instance is derived from 

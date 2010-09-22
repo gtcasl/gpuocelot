@@ -24,6 +24,8 @@ namespace trace
 		public:
 			/*! \brief A vector of integers */
 			typedef std::vector< int > IntVector;
+			/*! \brief A vector of bytes */
+			typedef std::vector< char > ByteVector;
 			
 		private:
 			/*! \brief The block dimensions */
@@ -32,12 +34,18 @@ namespace trace
 			IntVector _writers;
 			/*! \brief The last reader from each byte in shared memory */
 			IntVector _readers;
+			/*! \brief The data in shared memory before the last write */
+			ByteVector _previousData;
 			/*! \brief A pointer to the executable kernel */
 			const executive::EmulatedKernel* _kernel;
+			/*! \brief Always check writes even if the data matches */
+			bool _alwaysCheckWrites;
 		
 		private:
 			/*! \brief Check a shared memory write */
 			void _write( const TraceEvent& event );
+			/*! \brief Check after the data has been written */
+			void _postWrite( const TraceEvent& event );
 			/*! \brief Check a shared memory read */
 			void _read( const TraceEvent& event );
 			/*! \brief Encounter a barrier */
@@ -46,7 +54,12 @@ namespace trace
 		public:
 			/*! \brief The constructor initializes the cached allocations */
 			MemoryRaceDetector();
+		
+			/*! \brief Determine whether writes should be checked regardless
+				of whether or not the previous data matches */
+			void checkAllWrites( bool check );
 			
+		public:
 			/*! \brief Set the cache and get a pointer to the memory mappings */
 			virtual void initialize( 
 				const executive::ExecutableKernel& kernel );
@@ -57,6 +70,13 @@ namespace trace
 				returns
 			*/
 			virtual void event( const TraceEvent& event );
+
+			/*! \brief Called whenever an event takes place.
+
+				Note, the const reference 'event' is only valid until event() 
+				returns
+			*/
+			virtual void postEvent( const TraceEvent& event );
 			
 			/*!  \brief Called when a kernel is finished. There will be no more 
 					events for this kernel.

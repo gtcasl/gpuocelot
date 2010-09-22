@@ -1603,6 +1603,8 @@ namespace parser
 		statement.instruction.a = operand->second.operand;
 	
 		// no parsed call instructions are tail calls
+		statement.instruction.tailCall = false;
+		
 		statement.instruction.d.addressMode = ir::PTXOperand::ArgumentList;
 		statement.instruction.b.addressMode = ir::PTXOperand::ArgumentList;
 

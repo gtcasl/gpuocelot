@@ -42,6 +42,7 @@ namespace cuda
 						CUdevice_attribute attrib, CUdevice dev);
 					CUresult (*cuCtxCreate)(CUcontext *pctx, 
 						unsigned int flags, CUdevice dev );
+					CUresult (*cuCtxGetLimit)(size_t *, CUlimit);
 					CUresult (*cuCtxDestroy)( CUcontext ctx );
 					CUresult (*cuCtxAttach)(CUcontext *pctx, 
 						unsigned int flags);
@@ -298,6 +299,7 @@ namespace cuda
 
 			static CUresult cuCtxCreate(CUcontext *pctx, unsigned int flags, 
 				CUdevice dev );
+			static CUresult cuCtxGetLimit(size_t *, CUlimit);
 			static CUresult cuCtxDestroy( CUcontext ctx );
 			static CUresult cuCtxAttach(CUcontext *pctx, unsigned int flags);
 			static CUresult cuCtxDetach(CUcontext ctx);

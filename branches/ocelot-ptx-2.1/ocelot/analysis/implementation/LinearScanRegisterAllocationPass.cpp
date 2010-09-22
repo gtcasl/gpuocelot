@@ -405,7 +405,8 @@ namespace analysis
 
 	LinearScanRegisterAllocationPass::LinearScanRegisterAllocationPass( 
 		unsigned int regs )
-		: KernelPass( true, "LinearScanRegisterAllocationPass" ), 
+		: KernelPass( DataflowGraphAnalysis | StaticSingleAssignment, 
+			"LinearScanRegisterAllocationPass" ), 
 		registers( regs )
 	{
 

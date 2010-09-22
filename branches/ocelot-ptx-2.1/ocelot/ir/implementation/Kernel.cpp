@@ -20,8 +20,8 @@
 
 #define REPORT_BASE 0
 
-ir::Kernel::Kernel(Instruction::Architecture isa,
-	const std::string& n, bool isFunction) : 
+ir::Kernel::Kernel(Instruction::Architecture isa, const std::string& n, 
+	bool isFunction) : 
 	_function(isFunction), name(n), ISA(isa) {
 	_cfg = 0;
 	_dom_tree = 0;
@@ -79,18 +79,19 @@ const ir::Kernel& ir::Kernel::operator=(const Kernel &kernel) {
 
 ir::Parameter* ir::Kernel::getParameter(const std::string& name) {
 	using namespace std;
-	
+
 	ParameterMap::iterator p_it = parameters.find(name);
 	if (p_it != parameters.end()) {
 		return &p_it->second;
 	}
-	
+
 	for (ParameterVector::iterator p_it = arguments.begin(); 
 		p_it != arguments.end(); ++p_it) {
 		if (p_it->name == name) {
 			return &*p_it;
 		}
 	}
+	
 	return 0;
 }
 
@@ -108,6 +109,7 @@ const ir::Parameter* ir::Kernel::getParameter(const std::string& name) const {
 			return &*p_it;
 		}
 	}
+
 	return 0;
 }
 
@@ -145,12 +147,31 @@ analysis::DataflowGraph* ir::Kernel::dfg() {
 	return _dfg;
 }
 
-ir::ControlTree* ir::Kernel::ctrl_tree()
-{
+ir::ControlTree* ir::Kernel::ctrl_tree() {
 	assertM(_cfg != 0, "Must create cfg before building control tree.");
 	if (_ct) return _ct;
 	_ct = new ControlTree(_cfg);
 	return _ct;
+}
+
+void ir::Kernel::clear_dfg() {
+	delete _dfg;
+	_dfg = 0;
+}
+
+void ir::Kernel::clear_ctrl_tree() {
+	delete _ct;
+	_ct = 0;
+}
+
+void ir::Kernel::clear_pdom_tree() {
+	delete _pdom_tree;
+	_pdom_tree = 0;
+}
+
+void ir::Kernel::clear_dom_tree() {
+	delete _dom_tree;
+	_dom_tree = 0;
 }
 
 bool ir::Kernel::executable() const {

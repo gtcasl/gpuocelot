@@ -44,7 +44,8 @@ namespace ir
 					{
 						Inst,           // Instructions (e.g. basic block)
 						Block,          // Block of nodes
-						IfThen,         // If-then
+						IfThen,         // If-Then
+						IfThenElse,     // If-Then-Else
 						SelfLoop,       // Loop of only one node
 						Invalid
 					};
@@ -53,7 +54,7 @@ namespace ir
 					typedef std::unordered_set<Node*> NodeSet;
 
 					/*! \brief Get the label */
-					const std::string label() const;
+					const std::string& label() const;
 					/*! \brief Get the region type */
 					RegionType rtype() const;
 					/*! \brief Get the children */
@@ -62,6 +63,8 @@ namespace ir
 					NodeSet& succs();
 					/*! \brief Get predecessors from the abstract flowgraph */
 					NodeSet& preds();
+					/*! \brief Get fallthrough node */
+					Node*& fallthrough();
 
 					/*! \brief Destructor (virtual because polymorphic) */
 					virtual ~Node();
@@ -79,9 +82,11 @@ namespace ir
 					/*! \brief Children in the control tree */
 					const NodeList _children;
 					/*! \brief Successors in the abstract flowgraph */
-					NodeSet _successors;
+					NodeSet _succs;
 					/*! \brief Predecessors in the abstract flowgraph */
-					NodeSet _predecessors;
+					NodeSet _preds;
+					/*! \brief Fallthrough node */
+					Node* _fallthrough;
 			};
 
 			typedef Node::NodeList NodeList;
@@ -111,7 +116,7 @@ namespace ir
 						const NodeList& children);
 			};
 
-			/*! \brief If-then node */
+			/*! \brief If-Then node */
 			class IfThenNode : public Node
 			{
 				public:
@@ -126,7 +131,27 @@ namespace ir
 
 				private:
 					const NodeList buildChildren(Node* cond, 
-						Node* ifTrue) const;
+							Node* ifTrue) const;
+			};
+
+			/*! \brief If-Then-Else node */
+			class IfThenElseNode : public Node
+			{
+				public:
+					/*! \brief Constructor */
+					IfThenElseNode(const std::string& label, Node* cond, 
+							Node* ifTrue, Node* ifFalse);
+
+					/*! \brief Get condition node */
+					const Node* cond() const;
+					/*! \brief Get if-true node */
+					const Node* ifTrue() const;
+					/*! \brief Get if-false node */
+					const Node* ifFalse() const;
+
+				private:
+					const NodeList buildChildren(Node* cond, 
+							Node* ifTrue, Node* ifFalse) const;
 			};
 
 			/*! \brief Loop with only one node */
@@ -156,13 +181,14 @@ namespace ir
 			const Node* get_root_node() const;
 
 		private:
-			Node* insert_node(Node* node);
-			void dfs_postorder(Node* x);
-			Node* acyclic_region_type(Node* node, NodeSet& nset);
-			void compact(Node* node, NodeSet nodeSet);
-			void reduce(Node* node, NodeSet nodeSet);
-			Node* cyclic_region_type(Node* node, NodeSet& nset);
-			void structural_analysis(Node* entry);
+			Node* _insert_node(Node* node);
+			void _dfs_postorder(Node* x);
+			Node* _acyclic_region_type(Node* node, NodeSet& nset);
+			void _compact(Node* node, NodeSet nodeSet);
+			bool _backedge(Node* head, Node* tail);
+			void _reduce(Node* node, NodeSet nodeSet);
+			Node* _cyclic_region_type(Node* node, NodeSet& nset);
+			void _structural_analysis(Node* entry);
 
 			NodeList _nodes;
 			NodeList _post;
@@ -190,3 +216,4 @@ namespace std
 	}
 }
 #endif
+

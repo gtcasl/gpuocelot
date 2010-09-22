@@ -934,6 +934,11 @@ executive::EmulatedKernel::RegisterFile
 	return CTA->getCurrentRegisterFile();		
 }
 
+const char* executive::EmulatedKernel::getSharedMemory() const {
+	assert(CTA != 0);
+	return (char*) CTA->functionCallStack.sharedMemoryPointer();
+}
+
 static unsigned int align(unsigned int offset, unsigned int size) {
 	unsigned int difference = offset & (size - 1);
 	unsigned int alignedOffset = difference == 0 

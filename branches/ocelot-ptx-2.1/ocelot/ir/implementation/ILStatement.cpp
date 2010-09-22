@@ -51,9 +51,10 @@ namespace ir
 			}
 			case OtherDeclarations: return \
 							  "il_cs_2_0\n"
-							  "dcl_max_thread_per_group 256\n"
+							  "dcl_max_thread_per_group 512\n"
 							  "dcl_raw_uav_id(0)\n"
-							  "dcl_arena_uav_id(1)";
+							  "dcl_arena_uav_id(1)\n"
+							  "dcl_lds_id(1) 32768";
 			default:
 			{
 				assertM(false, "Statement type "

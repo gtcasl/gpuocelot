@@ -12,8 +12,8 @@
 
 namespace analysis
 {
-	Pass::Pass( Type t, bool s, const std::string& n )
-		: type( t ), ssa( s ), name( n )
+	Pass::Pass( Type t, int a, const std::string& n )
+		: type( t ), analyses( a ), name( n )
 	{
 	
 	}
@@ -23,7 +23,8 @@ namespace analysis
 	
 	}
 	
-	Pass::Pass( const Pass& p ) : type( p.type ), ssa( p.ssa ), name( p.name )
+	Pass::Pass( const Pass& p ) : type( p.type ), 
+		analyses( p.analyses ), name( p.name )
 	{
 	
 	}
@@ -39,8 +40,8 @@ namespace analysis
 		return name;
 	}
 	
-	ImmutablePass::ImmutablePass( bool s, const std::string& n) 
-		: Pass( Pass::ImmutablePass, s, n )
+	ImmutablePass::ImmutablePass( int a, const std::string& n) 
+		: Pass( Pass::ImmutablePass, a, n )
 	{
 	
 	}
@@ -50,8 +51,8 @@ namespace analysis
 	
 	}
 	
-	ModulePass::ModulePass( bool s, const std::string& n ) 
-		: Pass( Pass::ModulePass, s, n )
+	ModulePass::ModulePass( int a, const std::string& n ) 
+		: Pass( Pass::ModulePass, a, n )
 	{
 	
 	}
@@ -61,8 +62,8 @@ namespace analysis
 	
 	}
 
-	KernelPass::KernelPass( bool s, const std::string& n )
-		: Pass( Pass::KernelPass, s, n )
+	KernelPass::KernelPass( int a, const std::string& n )
+		: Pass( Pass::KernelPass, a, n )
 	{
 	
 	}
@@ -72,8 +73,8 @@ namespace analysis
 	
 	}
 
-	BasicBlockPass::BasicBlockPass( bool s, const std::string& n )
-		: Pass( Pass::BasicBlockPass, s, n )
+	BasicBlockPass::BasicBlockPass( int a, const std::string& n )
+		: Pass( Pass::BasicBlockPass, a, n )
 	{
 	
 	}

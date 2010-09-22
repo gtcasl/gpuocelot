@@ -129,6 +129,8 @@ namespace test
 			pass2.runOnKernel( *kernel );
 			pass2.finalize();
 
+			kernel->dfg()->toSsa();
+
 			ir::LLVMKernel* translatedKernel = dynamic_cast< ir::LLVMKernel* >( 
 				translator.translate( kernel ) );
 			translatedKernel->assemble();

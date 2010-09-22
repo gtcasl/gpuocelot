@@ -57,6 +57,7 @@ namespace executive
 		_properties.name = "CAL Device";
 		_properties.multiprocessorCount = _attribs.numberOfShaderEngines;
 		_properties.major = 1;
+		_properties.minor = 2;
 
         // Multiple contexts per device is not supported yet
         // only one context per device so we can create it in the constructor
@@ -70,7 +71,7 @@ namespace executive
 				&_uav0Resource, 
 				_device, 
 				width,
-				CAL_FORMAT_UNSIGNED_INT8_4,
+				CAL_FORMAT_UNSIGNED_INT32_1,
 				flags);
 
 		// Allocate cb0 resource
@@ -190,11 +191,11 @@ namespace executive
     }
 
 	Device::MemoryAllocation *ATIGPUDevice::getMemoryAllocation(
-			const void *address, bool hostAllocation) const
+			const void *address, AllocationType type) const
 	{
 		MemoryAllocation *allocation = 0;
 
-		if (hostAllocation) {
+		if (type == HostAllocation) {
 			assertM(false, "Not implemented yet");
 		} else {
 			if (!_uav0Allocations.empty()) {
@@ -225,7 +226,10 @@ namespace executive
 			new MemoryAllocation(&_uav0Resource, _uav0AllocPtr, size);
 		_uav0Allocations.insert(
 				std::make_pair(allocation->pointer(), allocation));
-		_uav0AllocPtr += size;
+
+		// uav0 accesses should be aligned to 4
+		_uav0AllocPtr += AlignUp(size, 4);
+
 		return allocation;
 	}
 
@@ -404,6 +408,8 @@ namespace executive
 					<< " in module " << moduleName);
 		}
 
+		report("Launching " << moduleName << ":" << kernelName);
+
 		ATIExecutableKernel kernel(*irKernel->second, &_context, &_event, 
 				&_uav0Resource, &_cb0Resource, &_cb1Resource);
 
@@ -439,7 +445,6 @@ namespace executive
 	void ATIGPUDevice::setOptimizationLevel(
 			translator::Translator::OptimizationLevel l)
 	{
-		assertM(false, "Not implemented yet");
 	}		
 
 	inline const cal::CalDriver *ATIGPUDevice::CalDriver()
@@ -548,9 +553,42 @@ namespace executive
 		CalDriver()->calResUnmap(*_resource);
 	}
 
-	void ATIGPUDevice::MemoryAllocation::copy(Device::MemoryAllocation *allocation,
+	/*! \brief Copy to another allocation */
+	void ATIGPUDevice::MemoryAllocation::copy(Device::MemoryAllocation *a,
 			size_t toOffset, size_t fromOffset, size_t size) const
 	{
-		assertM(false, "Not implemented yet");
+		MemoryAllocation* allocation = static_cast<MemoryAllocation*>(a);
+
+		assertM(_resource == allocation->_resource, "Invalid copy resources");
+		assert(fromOffset + size <= _size);
+		assert(toOffset + size <= allocation->_size);
+
+		CALvoid *data = NULL;
+		CALuint pitch = 0;
+		CALuint flags = 0;
+
+		CalDriver()->calResMap(&data, &pitch, *_resource, flags);
+
+		CALdeviceptr baseFromAddr = (_basePtr - ATIGPUDevice::Uav0BaseAddr);
+		CALdeviceptr fromAddr = baseFromAddr + fromOffset;
+
+		CALdeviceptr baseToAddr = (allocation->_basePtr - ATIGPUDevice::Uav0BaseAddr);
+		CALdeviceptr toAddr = baseToAddr + toOffset;
+
+		std::memcpy((char*)data + toAddr, (char *)data + fromAddr, size);
+		report("MemoryAllocation::copy("
+				<< "dev = " << std::hex << std::showbase << baseFromAddr
+				<< ", offset = " << std::dec << fromOffset
+				<< " dev = " << std::hex << std::showbase << baseToAddr
+				<< ", offset = " << std::dec << toOffset
+				<< ", size = " << std::dec << size
+				<< ")");
+		
+		CalDriver()->calResUnmap(*_resource);
+	}
+
+	size_t AlignUp(size_t a, size_t b)
+	{
+		return (a % b != 0) ? (a - a % b + b) : a;
 	}
 }

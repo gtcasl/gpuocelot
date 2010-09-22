@@ -23,6 +23,9 @@ namespace ir {
 		post-dominated by its parent. Each node is owned by its parent.
 	*/
 	class PostdominatorTree {
+	public:
+		typedef std::vector<int> IndexVector;
+		typedef std::vector<IndexVector> IndexArrayVector;
 		
 	public:
 		PostdominatorTree(ControlFlowGraph *cfg);
@@ -39,7 +42,11 @@ namespace ir {
 	
 		/*! nth element stores the immediate post-dominator 
 			of node n or -1 if undefined */
-		std::vector< int > p_dom;
+		IndexVector p_dom;
+	
+		/*!  nth element stores a list of elements for which 
+			n is the immediate post-dominator */
+		IndexArrayVector dominated;
 	
 		/*! Map from a BasicBlock pointer to an index into the blocks vector */
 		ControlFlowGraph::BlockMap blocksToIndex;

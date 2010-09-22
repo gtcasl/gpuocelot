@@ -41,14 +41,13 @@ namespace executive
 					/*! \brief Memset the allocation */
 					void memset(size_t offset, int value, size_t size);
 					/*! \brief Copy to another allocation */
-					void copy(Device::MemoryAllocation *allocation, 
+					void copy(Device::MemoryAllocation *a, 
 						size_t toOffset, size_t fromOffset, size_t size) const;
 
 				private:
 					/*! \brief Resource where the allocation lives */
 					const CALresource *const _resource;
 					/*! \brief Base pointer of the allocation */
-					//const int *const _basePtr;
 					const CALdeviceptr _basePtr;
 					/*! \brief Size of the allocation */
 					const size_t _size;
@@ -67,7 +66,7 @@ namespace executive
 
 			/*! \brief Get the allocation containing a pointer or 0 */
 			Device::MemoryAllocation *getMemoryAllocation(const void *address, 
-				bool hostAllocation) const;
+				AllocationType type) const;
 			/*! \brief Get the address of a global by name */
 			Device::MemoryAllocation *getGlobalAllocation(
 				const std::string& module, const std::string& name);
@@ -256,6 +255,9 @@ namespace executive
 				CalDriver singleton */
 			static const cal::CalDriver *CalDriver();
 	};
+
+	/*! \brief Align a to nearest higher multiple of b */
+	size_t AlignUp(size_t a, size_t b);
 }
 
 #endif

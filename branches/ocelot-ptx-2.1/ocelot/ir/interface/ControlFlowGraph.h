@@ -238,10 +238,11 @@ public:
 		
 		\param block The block being split
 		\param the instruction within the block to perform the split
+		\param the label of the new block
 		\return A pointer to the newly allocated second block
 	*/
 	iterator split_block(iterator block, unsigned int instruction, 
-		Edge::Type type);
+		Edge::Type type, const std::string& label = "");
 
 	/*!	Returns the entry block of a control flow graph */
 	iterator get_entry_block();

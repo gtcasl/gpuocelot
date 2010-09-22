@@ -51,19 +51,43 @@ namespace trace
 			for( ir::PTXU64 byte = *address; 
 				byte < *address + event.memory_size; ++byte )
 			{
-				if( _writers[ byte ] != -1 && _writers[ byte ] != thread )
+				_previousData[ byte ] = _kernel->getSharedMemory()[ byte ];
+			}
+			++address;
+		}
+	}
+	
+	void MemoryRaceDetector::_postWrite( const TraceEvent& event )
+	{
+		TraceEvent::U64Vector::const_iterator 
+			address = event.memory_addresses.begin();
+		int threads = event.active.size();
+		for( int thread = 0; thread < threads; ++thread )
+		{
+			if( !event.active[ thread ] ) continue;
+			for( ir::PTXU64 byte = *address; 
+				byte < *address + event.memory_size; ++byte )
+			{
+				bool mismatch = _alwaysCheckWrites ||
+					 _kernel->getSharedMemory()[ byte ] 
+					 != _previousData[ byte ];
+				if( _writers[ byte ] != -1 && _writers[ byte ] != thread 
+					&& mismatch )
 				{
 					std::stringstream stream;
 					stream << prefix( thread, _dim, event );
 					stream << "Shared memory race condition, address "
-						<< (void*)byte << " was previously written by thread " 
+						<< (void*)byte 
+						<< " was previously written by thread " 
 						<< _writers[ byte ] 
 						<< " without a memory barrier in between.";
 					stream << "\n";
-					stream << "Near " << _kernel->location( event.PC ) << "\n";
+					stream << "Near " << _kernel->location( event.PC ) 
+						<< "\n";
 					throw hydrazine::Exception( stream.str() );
 				}
-				else if( _readers[ byte ] != -1 && _readers[ byte ] != thread )
+				else if( _readers[ byte ] != -1 && _readers[ byte ] != thread
+					&& mismatch )
 				{
 					std::stringstream stream;
 					stream << prefix( thread, _dim, event );
@@ -122,11 +146,17 @@ namespace trace
 		_readers.assign( _readers.size(), -1 );
 	}
 	
-	MemoryRaceDetector::MemoryRaceDetector()
+	MemoryRaceDetector::MemoryRaceDetector() :
+		_alwaysCheckWrites( false )
 	{
 	
 	}
-	
+
+	void MemoryRaceDetector::checkAllWrites( bool writes )
+	{
+		_alwaysCheckWrites = writes;
+	}
+				
 	void MemoryRaceDetector::initialize( 
 		const executive::ExecutableKernel& kernel )
 	{
@@ -136,6 +166,7 @@ namespace trace
 
 		_writers.assign( kernel.totalSharedMemorySize(), -1 );
 		_readers.assign( kernel.totalSharedMemorySize(), -1 );
+		_previousData.resize( kernel.totalSharedMemorySize() );
 		
 		_kernel = static_cast< const executive::EmulatedKernel* >( &kernel );
 	}
@@ -157,6 +188,17 @@ namespace trace
 			|| event.instruction->opcode == ir::PTXInstruction::Exit )
 		{
 			_barrier();
+		}
+	}
+	
+	void MemoryRaceDetector::postEvent( const TraceEvent& event )
+	{
+		if( event.instruction->addressSpace == ir::PTXInstruction::Shared )
+		{
+			if( event.instruction->opcode == ir::PTXInstruction::St )
+			{
+				_postWrite( event );
+			}
 		}
 	}
 	

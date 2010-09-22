@@ -76,7 +76,10 @@ namespace executive
 					int major;
 					/*! minor shader model revision */
 					int minor;
-
+					/*! stack size */
+					size_t stackSize;
+					/*! printfFIFOSize */
+					size_t printfFIFOSize;
 				public:
 					/*! Write attributes of the device to an output stream */
 					std::ostream& write(std::ostream &out) const;
@@ -131,6 +134,15 @@ namespace executive
 			/*! \brief Vector of devices */
 			typedef std::vector< Device* > DeviceVector;
 
+			/*! \brief Possible types of allocations */
+			enum AllocationType
+			{
+				HostAllocation,
+				DeviceAllocation,
+				AnyAllocation,
+				InvalidAllocation
+			};
+
 		protected:
 			/*! \brief The properties of this device */
 			Properties _properties;
@@ -154,7 +166,7 @@ namespace executive
 				size_t size) const;
 			/*! \brief Get the allocation containing a pointer or 0 */
 			virtual MemoryAllocation* getMemoryAllocation(const void* address, 
-				bool hostAllocation = false) const = 0;
+				AllocationType type = DeviceAllocation) const = 0;
 			/*! \brief Get the address of a global by name */
 			virtual MemoryAllocation* getGlobalAllocation(
 				const std::string& module, const std::string& name) = 0;

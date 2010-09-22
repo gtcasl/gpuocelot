@@ -1779,7 +1779,10 @@ std::string ir::PTXInstruction::toString() const {
 			if( d.addressMode != PTXOperand::Invalid ) {
 				result += d.toString() + ", ";
 			}
-			result += a.toString() + ", " + b.toString();
+			result += a.toString();
+			if( b.addressMode != PTXOperand::Invalid ) {
+				result += ", " + b.toString();
+			}
 			if( a.addressMode == PTXOperand::Register ) {
 				result += ", " + c.toString();
 			}

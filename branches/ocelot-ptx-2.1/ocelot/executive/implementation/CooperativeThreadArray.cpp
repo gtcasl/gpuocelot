@@ -2135,7 +2135,7 @@ void executive::CooperativeThreadArray::eval_Bra(CTAContext &context, const PTXI
 	for (int i = 0; i < threadCount; i++) {
 		if (context.predicated(i, instr)) {
 			// typical branch
-			branch[i] = true;
+			branch[i] = context.active[i];
 			fall_through[i] = false;
 		}
 		else {

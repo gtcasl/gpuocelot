@@ -46,22 +46,190 @@ namespace executive
 	{
 	}
 
-	void ATIExecutableKernel::launchGrid(int width, int height)
+	unsigned int ATIExecutableKernel::_pad(size_t& size, unsigned int alignment)
 	{
-		// initialize ABI data
-		cb_t *cb0;
-		CALuint pitch = 0;
-		CALuint flags = 0;
+		unsigned int padding = alignment - (size % alignment);
+		padding = (alignment == padding) ? 0 : padding;
+		size += padding;
+		return padding;
+	}
 
-		cb_t blockDim = {_blockDim.x, _blockDim.y, _blockDim.z, 0};
-		cb_t gridDim = {width, height, 1, 0};
+	void ATIExecutableKernel::allocateSharedMemory()
+	{
+		report("Allocating shared memory");
 
-		CalDriver()->calResMap((CALvoid **)&cb0, &pitch, *_cb0Resource, flags);
-		cb0[0] = blockDim;
-		cb0[1] = gridDim;
-		CalDriver()->calResUnmap(*_cb0Resource);
+		typedef std::unordered_map<std::string, size_t> AllocationMap;
+		typedef std::unordered_set<std::string> StringSet;
+		typedef std::deque<ir::PTXOperand*> OperandVector;
+		typedef std::unordered_map<std::string,
+				ir::Module::GlobalMap::const_iterator> GlobalMap;
 
-		// translate ptx kernel
+		AllocationMap map;
+		GlobalMap sharedGlobals;
+		StringSet external;
+		OperandVector externalOperands;
+
+		unsigned int externalAlignment = 1;
+		size_t sharedSize = 0;
+
+		assert(module != 0);
+
+		// global shared variables
+		ir::Module::GlobalMap globals = module->globals();
+		ir::Module::GlobalMap::const_iterator global;
+		for (global = globals.begin() ; global != globals.end() ; global++)
+		{
+			ir::PTXStatement statement = global->second.statement;
+			if (statement.directive == ir::PTXStatement::Shared)
+			{
+				if (statement.attribute == ir::PTXStatement::Extern)
+				{
+					report("Found global external shared variable \""
+							<< statement.name << "\"");
+
+					assertM(external.count(statement.name) == 0,
+							"External global \"" << statement.name
+							<< "\" declared more than once.");
+
+					external.insert(statement.name);
+					externalAlignment = std::max(externalAlignment,
+							(unsigned int)statement.alignment);
+					externalAlignment = std::max(externalAlignment,
+							ir::PTXOperand::bytes(statement.type));
+				} else {
+					report("Found global shared variable \"" 
+							<< statement.name << "\"");
+					sharedGlobals.insert(
+							std::make_pair(statement.name, global));
+				}
+			}
+		}
+
+		// local shared variables	
+		LocalMap::const_iterator local;
+		for (local = locals.begin() ; local != locals.end() ; local++)
+		{
+			if (local->second.space == ir::PTXInstruction::Shared)
+			{
+				if (local->second.attribute == ir::PTXStatement::Extern)
+				{
+					report("Found local external shared variable \"" 
+							<< local->second.name << "\"");
+
+					assertM(external.count(local->second.name) == 0,
+							"External local \"" << local->second.name
+							<< "\" declared more than once.");
+
+					external.insert(local->second.name);
+					externalAlignment = std::max(externalAlignment,
+							(unsigned int)local->second.alignment);
+					externalAlignment = std::max(externalAlignment,
+							ir::PTXOperand::bytes(local->second.type));
+				} else
+				{
+					report("Allocating local shared variable \""
+							<< local->second.name << "\" of size "
+							<< local->second.getSize());
+
+					_pad(sharedSize, local->second.alignment);
+					map.insert(std::make_pair(local->second.name, sharedSize));
+					sharedSize += local->second.getSize();
+				}
+			}
+		}
+
+		ir::ControlFlowGraph::iterator block;
+		for (block = cfg()->begin() ; block != cfg()->end() ; block++)
+		{
+			ir::ControlFlowGraph::InstructionList insts = block->instructions;
+			ir::ControlFlowGraph::InstructionList::iterator inst;
+			for (inst = insts.begin() ; inst != insts.end() ; inst++)
+			{
+				ir::PTXInstruction& ptx = 
+					static_cast<ir::PTXInstruction&>(**inst);
+
+				if (ptx.opcode == ir::PTXInstruction::Mov ||
+						ptx.opcode == ir::PTXInstruction::Ld ||
+						ptx.opcode == ir::PTXInstruction::St)
+				{
+					ir::PTXOperand* operands[] = {&ptx.d, &ptx.a, &ptx.b, 
+						&ptx.c};
+
+					for (unsigned int i = 0 ; i != 4 ; i++)
+					{
+						ir::PTXOperand* operand = operands[i];
+
+						if (operand->addressMode == ir::PTXOperand::Address)
+						{
+							StringSet::iterator si = 
+								external.find(operand->identifier);
+							if (si != external.end())
+							{
+								report("For instruction \""
+										<< ptx.toString()
+										<< "\", mapping shared label \"" << *si
+										<< "\" to external shared memory.");
+								externalOperands.push_back(operand);
+								continue;
+							}
+
+							GlobalMap::iterator gi = 
+								sharedGlobals.find(operand->identifier);
+							if (gi != sharedGlobals.end())
+							{
+								ir::Module::GlobalMap::const_iterator it = 
+									gi->second;
+								sharedGlobals.erase(gi);
+
+								report("Allocating global shared variable \""
+										<< it->second.statement.name << "\"");
+
+								map.insert(std::make_pair(
+											it->second.statement.name, 
+											sharedSize));
+								sharedSize += it->second.statement.bytes();
+							}
+
+							AllocationMap::iterator mapping = 
+								map.find(operand->identifier);
+							if (mapping != map.end())
+							{
+								report("For instruction " << ptx.toString()
+										<< ", mapping shared label "
+										<< mapping->first << " to " << 
+										mapping ->second);
+
+								operand->addressMode = 
+									ir::PTXOperand::Immediate;
+								operand->imm_uint = mapping->second;
+							}
+						}
+					}
+				}
+			}
+		}
+
+		_pad(sharedSize, externalAlignment);
+
+		report("Mapping external shared variables.");
+		OperandVector::iterator operand;
+		for (operand = externalOperands.begin() ; 
+				operand != externalOperands.end() ; operand++)
+		{
+			report("Mapping external shared label \""
+					<< (*operand)->identifier << "\" to " << sharedSize);
+			(*operand)->addressMode = ir::PTXOperand::Immediate;
+			(*operand)->imm_uint = sharedSize;
+		}
+	}
+
+	void ATIExecutableKernel::_translateKernel()
+	{
+		report("Translating PTX kernel \"" << name << "\" to IL");
+
+		// allocate shared memory
+		allocateSharedMemory();
+		
 		report("Running IL Translator");
 		translator::PTXToILTranslator translator;
 		ir::ILKernel *ilKernel = 
@@ -79,6 +247,32 @@ namespace executive
 
 		CalDriver()->calclLink(&_image, &_object, 1);
 		CalDriver()->calModuleLoad(&_module, *_context, _image);
+
+		delete ilKernel;
+	}
+
+	void ATIExecutableKernel::launchGrid(int width, int height)
+	{
+		// initialize ABI data
+		cb_t *cb0;
+		CALuint pitch = 0;
+		CALuint flags = 0;
+
+		report("Launching grid");
+		report("Grid = " << width << ", " << height);
+		report("Block = " << _blockDim.x << ", " << _blockDim.y << ", " 
+				<< _blockDim.z);
+
+		cb_t blockDim = {_blockDim.x, _blockDim.y, _blockDim.z, 0};
+		cb_t gridDim = {width, height, 1, 0};
+
+		CalDriver()->calResMap((CALvoid **)&cb0, &pitch, *_cb0Resource, flags);
+		cb0[0] = blockDim;
+		cb0[1] = gridDim;
+		CalDriver()->calResUnmap(*_cb0Resource);
+
+		// translate ptx kernel
+		_translateKernel();
 
 		// bind memory handles to module names
 		CalDriver()->calCtxGetMem(&_uav0Mem, *_context, *_uav0Resource);
@@ -124,12 +318,13 @@ namespace executive
 		// free object and image
 		CalDriver()->calclFreeImage(_image);
 		CalDriver()->calclFreeObject(_object);
-
-		delete ilKernel;
 	}
 
 	void ATIExecutableKernel::setKernelShape(int x, int y, int z)
 	{
+		report("Setting kernel shape: " << x << ", " << y << ", " << z);
+		assertM(x * y * z <= 512, "Invalid kernel shape");
+
 		_blockDim.x = x;
 		_blockDim.y = y;
 		_blockDim.z = z;
@@ -177,6 +372,13 @@ namespace executive
 				case ir::PTXOperand::s32:
 				{
 					cb1[i].x = v.val_s32;
+					report("cb1[" << i << "] = {" << cb1[i].x << "}");
+					i++;
+					break;
+				}
+				case ir::PTXOperand::u32:
+				{
+					cb1[i].x = v.val_u32;
 					report("cb1[" << i << "] = {" << cb1[i].x << "}");
 					i++;
 					break;

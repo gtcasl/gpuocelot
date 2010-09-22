@@ -72,6 +72,7 @@ namespace cuda
 			"cuDeviceGetProperties" ) );
 		hydrazine::bit_cast( cuDeviceGetAttribute, dlsym( _driver, 
 			"cuDeviceGetAttribute" ) );
+		hydrazine::bit_cast( cuCtxGetLimit, dlsym( _driver, "cuCtxGetLimit" ) );	
 		hydrazine::bit_cast( cuCtxCreate, dlsym( _driver, "cuCtxCreate" ) );
 		hydrazine::bit_cast( cuCtxDestroy, dlsym( _driver, "cuCtxDestroy" ) );
 		hydrazine::bit_cast( cuCtxAttach, dlsym( _driver, "cuCtxAttach" ) );
@@ -330,6 +331,12 @@ namespace cuda
 	{
 		CHECK();
 		return (*_interface.cuCtxCreate)(pctx, flags, dev);
+	}
+	
+	CUresult CudaDriver::cuCtxGetLimit(size_t *pval, CUlimit limit) 
+	{
+		CHECK();
+		return (*_interface.cuCtxGetLimit)(pval, limit);
 	}
 
 	CUresult CudaDriver::cuCtxDestroy( CUcontext ctx )

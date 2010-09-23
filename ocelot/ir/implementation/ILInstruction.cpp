@@ -16,6 +16,7 @@ namespace ir
 	{
 		switch(opcode)
 		{
+			case Abs:                   return "abs";
 			case Add:                   return "add";
 			case And:                   return "and";
 			case Break:                 return "break";
@@ -34,6 +35,7 @@ namespace ir
 			case Imul:                  return "imul";
 			case Ine:                   return "ine";
 			case Inegate:               return "inegate";
+			case Inot:                  return "inot";
 			case Ior:                   return "ior";
 			case Ishl:                  return "ishl";
 			case Ishr:                  return "ishr";
@@ -43,15 +45,19 @@ namespace ir
 			case Lds_Or_Resource:       return "lds_or_resource(1)";
 			case Lds_Read_Add_Resource: return "lds_read_add_resource(1)";
 			case Lds_Store_Id:          return "lds_store_id(1)";
+			case Log_Vec:               return "log_vec";
 			case Mad:                   return "mad";
 			case Mov:                   return "mov";
 			case Mul:                   return "mul";
+			case Rcp:                   return "rcp";
 			case Sub:                   return "sub";
 			case Uav_Arena_Load_Id:     return "uav_arena_load_id(1)";
 			case Uav_Arena_Store_Id:    return "uav_arena_store_id(1)";
 			case Uav_Raw_Load_Id:       return "uav_raw_load_id(0)";
 			case Uav_Raw_Store_Id:      return "uav_raw_store_id(0) mem.x,";
 			case Uav_Read_Add_Id:       return "uav_read_add_id(0)";
+			case Uav_Read_Max_Id:       return "uav_read_max_id(0)";
+			case Uav_Read_Min_Id:       return "uav_read_min_id(0)";
 			case Uav_Read_Xchg_Id:      return "uav_read_xchg_id(0)";
 			case Udiv:                  return "udiv";
 			case Umul:                  return "umul";
@@ -140,6 +146,15 @@ namespace ir
 	std::string ILTrinaryInstruction::valid() const
 	{
 		assertM(false, "Not implemented yet");
+	}
+
+	ILAbs::ILAbs() : ILUnaryInstruction(Abs)
+	{
+	}
+
+	Instruction *ILAbs::clone(bool copy) const
+	{
+		return new ILAbs(*this);
 	}
 
 	ILAdd::ILAdd() : ILBinaryInstruction(Add)
@@ -386,6 +401,15 @@ namespace ir
 		return new ILInegate(*this);
 	}
 
+	ILInot::ILInot() : ILUnaryInstruction(Inot)
+	{
+	}
+
+	Instruction *ILInot::clone(bool copy) const
+	{
+		return new ILInot(*this);
+	}
+
 	ILIor::ILIor() : ILBinaryInstruction(Ior)
 	{
 	}
@@ -496,6 +520,15 @@ namespace ir
 		return new ILLds_Store_Id(*this);
 	}
 
+	ILLog_Vec::ILLog_Vec() : ILUnaryInstruction(Log_Vec)
+	{
+	}
+
+	Instruction *ILLog_Vec::clone(bool copy) const
+	{
+		return new ILLog_Vec(*this);
+	}
+
 	ILMad::ILMad() : ILTrinaryInstruction(Mad)
 	{
 	}
@@ -521,6 +554,15 @@ namespace ir
 	Instruction *ILMul::clone(bool copy) const
 	{
 		return new ILMul(*this);
+	}
+
+	ILRcp::ILRcp() : ILUnaryInstruction(Rcp)
+	{
+	}
+
+	Instruction *ILRcp::clone(bool copy) const
+	{
+		return new ILRcp(*this);
 	}
 
 	ILSub::ILSub() : ILBinaryInstruction(Sub)
@@ -594,6 +636,26 @@ namespace ir
 	Instruction *ILUav_Read_Add_Id::clone(bool copy) const
 	{
 		return new ILUav_Read_Add_Id(*this);
+	}
+
+	ILUav_Read_Max_Id::ILUav_Read_Max_Id() 
+		: ILBinaryInstruction(Uav_Read_Max_Id)
+	{
+	}
+
+	Instruction *ILUav_Read_Max_Id::clone(bool copy) const
+	{
+		return new ILUav_Read_Max_Id(*this);
+	}
+
+	ILUav_Read_Min_Id::ILUav_Read_Min_Id() 
+		: ILBinaryInstruction(Uav_Read_Min_Id)
+	{
+	}
+
+	Instruction *ILUav_Read_Min_Id::clone(bool copy) const
+	{
+		return new ILUav_Read_Min_Id(*this);
 	}
 
 	ILUav_Read_Xchg_Id::ILUav_Read_Xchg_Id() 

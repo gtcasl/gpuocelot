@@ -149,6 +149,17 @@ namespace ir
 		return o;
 	}
 
+	ILOperand ILOperand::xxxx() const
+	{
+		ILOperand o(*this);
+		o.swizzle_x = CompSel_X;
+		o.swizzle_y = CompSel_X;
+		o.swizzle_z = CompSel_X;
+		o.swizzle_w = CompSel_X;
+
+		return o;
+	}
+
 	ILOperand ILOperand::_y__() const
 	{
 		ILOperand o(*this);

@@ -202,6 +202,7 @@ namespace translator
 		report("Translating: " << i.toString());
 		switch (i.opcode) 
 		{
+ 			case ir::PTXInstruction::Abs:   _translateAbs(i);  break;
  			case ir::PTXInstruction::Add:   _translateAdd(i);  break;
 			case ir::PTXInstruction::And:   _translateAnd(i);  break;
 			case ir::PTXInstruction::Atom:  _translateAtom(i); break;
@@ -211,12 +212,15 @@ namespace translator
 			case ir::PTXInstruction::Div:   _translateDiv(i);  break;
  			case ir::PTXInstruction::Exit:  _translateExit(i); break;
  			case ir::PTXInstruction::Ld:    _translateLd(i);   break;
+			case ir::PTXInstruction::Lg2:   _translateLg2(i);  break;
 			case ir::PTXInstruction::Mad:   _translateMad(i);  break;
 			case ir::PTXInstruction::Mov:   _translateMov(i);  break;
  			case ir::PTXInstruction::Mul:   _translateMul(i);  break;
 			case ir::PTXInstruction::Mul24: _translateMul(i);  break;
 			case ir::PTXInstruction::Neg:   _translateNeg(i);  break;
+			case ir::PTXInstruction::Not:   _translateNot(i);  break;
 			case ir::PTXInstruction::Or:    _translateOr(i);   break;
+			case ir::PTXInstruction::Rcp:   _translateRcp(i);  break;
 			case ir::PTXInstruction::Rem:   _translateRem(i);  break;
 			case ir::PTXInstruction::SelP:  _translateSelP(i); break;
 			case ir::PTXInstruction::Set:   _translateSet(i);  break;
@@ -355,10 +359,37 @@ namespace translator
 			case ir::PTXOperand::nctaIdX: sr = ir::ILOperand::vNThreadGrpIdX; break;
 			case ir::PTXOperand::nctaIdY: sr = ir::ILOperand::vNThreadGrpIdY; break;
 			case ir::PTXOperand::nctaIdZ: sr = ir::ILOperand::vNThreadGrpIdZ; break;
-			default: assertM(false, "Special Register " << s << " not supported");
+			default: assertM(false, "Special Register " 
+							 << ir::PTXOperand::toString(s) 
+							 << " not supported");
 		}
 
 		return sr;
+	}
+
+	void PTXToILTranslator::_translateAbs(const ir::PTXInstruction &i)
+	{
+		switch (i.type)
+		{
+			case ir::PTXOperand::f32:
+			{
+				ir::ILAbs abs;
+
+				abs.d = _translate(i.d);
+				abs.a = _translate(i.a);
+
+				_add(abs);
+
+				break;
+			}
+			default:
+			{
+				assertM(false, "Type "
+						<< ir::PTXOperand::toString(i.type)
+						<< " not supported in "
+						<< i.toString());
+			}
+		}
 	}
 
 	void PTXToILTranslator::_translateAdd(const ir::PTXInstruction &i)
@@ -397,7 +428,7 @@ namespace translator
 			{
 				assertM(false, "Type "
 						<< ir::PTXOperand::toString(i.type)
-						<< "\" not supported in "
+						<< " not supported in "
 						<< i.toString());
 			}
 		}
@@ -453,10 +484,40 @@ namespace translator
 
 						break;
 					}
+					case ir::PTXInstruction::AtomicMax:
+					{
+						assertM(i.a.offset == 0, 
+								"Atomic Max from offset not supported");
+
+						ir::ILUav_Read_Max_Id uav_read_max_id;
+
+						uav_read_max_id.d = _translate(i.d);
+						uav_read_max_id.a = _translate(i.a);
+						uav_read_max_id.b = _translate(i.b);
+
+						_add(uav_read_max_id);
+
+						break;
+					}
+					case ir::PTXInstruction::AtomicMin:
+					{
+						assertM(i.a.offset == 0, 
+								"Atomic Min from offset not supported");
+
+						ir::ILUav_Read_Min_Id uav_read_min_id;
+
+						uav_read_min_id.d = _translate(i.d);
+						uav_read_min_id.a = _translate(i.a);
+						uav_read_min_id.b = _translate(i.b);
+
+						_add(uav_read_min_id);
+
+						break;
+					}
 					default:
 					{
 						assertM(false, "Atomic operation \"" 
-								<< i.atomicOperation 
+								<< i.toString(i.atomicOperation) 
 								<< "\" not supported in "
 								<< i.toString());
 					}
@@ -893,6 +954,31 @@ namespace translator
 		}
 	}
 
+	void PTXToILTranslator::_translateLg2(const ir::PTXInstruction &i)
+	{
+		switch (i.type)
+		{
+			case ir::PTXOperand::f32:
+			{
+				ir::ILLog_Vec log_vec;
+
+				log_vec.d = _translate(i.d);
+				log_vec.a = _translate(i.a);
+
+				_add(log_vec);
+
+				break;
+			}
+			default:
+			{
+				assertM(false, "Type "
+						<< ir::PTXOperand::toString(i.type)
+						<< " not supported in "
+						<< i.toString());
+			}
+		}
+	}
+
 	void PTXToILTranslator::_translateMad(const ir::PTXInstruction &i)
 	{
 		ir::ILMad mad;
@@ -959,8 +1045,10 @@ namespace translator
 			}
 			default:
 			{
-				assertM(false, "Type " << ir::PTXOperand::toString(i.type)
-						<< " not supported");
+				assertM(false, "Type "
+						<< ir::PTXOperand::toString(i.type)
+						<< " not supported in "
+						<< i.toString());
 			}
 		}
 	}
@@ -980,10 +1068,48 @@ namespace translator
 
 				break;
 			}
+			case ir::PTXOperand::f32:
+			{
+				ir::ILMov mov;
+
+				mov.d = _translate(i.d);
+				mov.a = _translate(i.a).neg();
+
+				_add(mov);
+
+				break;
+			}
 			default:
 			{
-				assertM(false, "Type " << ir::PTXOperand::toString(i.type)
-						<< " not supported");
+				assertM(false, "Type "
+						<< ir::PTXOperand::toString(i.type)
+						<< " not supported in "
+						<< i.toString());
+			}
+		}
+	}
+
+	void PTXToILTranslator::_translateNot(const ir::PTXInstruction &i)
+	{
+		switch (i.type)
+		{
+			case ir::PTXOperand::b32:
+			{
+				ir::ILInot inot;
+
+				inot.d = _translate(i.d);
+				inot.a = _translate(i.a);
+
+				_add(inot);
+
+				break;
+			}
+			default:
+			{
+				assertM(false, "Type "
+						<< ir::PTXOperand::toString(i.type)
+						<< " not supported in "
+						<< i.toString());
 			}
 		}
 	}
@@ -997,6 +1123,17 @@ namespace translator
 		ior.d = _translate(i.d);
 
 		_add(ior);
+	}
+
+	void PTXToILTranslator::_translateRcp(const ir::PTXInstruction &i)
+	{
+		// rcp operates on the fourth (w) component of a
+		ir::ILRcp rcp;
+
+		rcp.d = _translate(i.d);
+		rcp.a = _translate(i.a).xxxx();
+
+		_add(rcp);
 	}
 
 	void PTXToILTranslator::_translateRem(const ir::PTXInstruction &i)
@@ -1264,8 +1401,10 @@ namespace translator
 			}
 			default:
 			{
-				assertM(false, "Type " << ir::PTXOperand::toString(i.type)
-						<< " not supported");
+				assertM(false, "Type "
+						<< ir::PTXOperand::toString(i.type)
+						<< " not supported in "
+						<< i.toString());
 			}
 		}
 	}
@@ -1634,7 +1773,8 @@ namespace translator
 			{
 				assertM(false, "Type "
 						<< ir::PTXOperand::toString(i.type)
-						<< " not supported");
+						<< " not supported in "
+						<< i.toString());
 			}
 		}
 	}

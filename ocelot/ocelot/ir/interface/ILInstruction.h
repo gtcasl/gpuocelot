@@ -20,6 +20,7 @@ namespace ir
 			/*! \brief The opcode of the instruction */
 			enum Opcode
 			{
+				Abs,
 				Add,
 				And,
 				Break,
@@ -38,6 +39,7 @@ namespace ir
 				Imul,
 				Ine,
 				Inegate,
+				Inot,
 				Ior,
 				Ishl,
 				Ishr,
@@ -47,15 +49,19 @@ namespace ir
 				Lds_Or_Resource,
 				Lds_Read_Add_Resource,
 				Lds_Store_Id,
+				Log_Vec,
 				Mad,
 				Mov,
 				Mul,
+				Rcp,
 				Sub,
 				Uav_Arena_Load_Id,
 				Uav_Arena_Store_Id,
 				Uav_Raw_Load_Id,
 				Uav_Raw_Store_Id,
 				Uav_Read_Add_Id,
+				Uav_Read_Max_Id,
+				Uav_Read_Min_Id,
 				Uav_Read_Xchg_Id,
 				Udiv,
 				Umul,
@@ -164,22 +170,11 @@ namespace ir
 			virtual Instruction* clone(bool copy=true) const = 0;
 	};
 
-	class ILBreak: public ILInstruction
+	class ILAbs: public ILUnaryInstruction
 	{
 		public:
 			/*! \brief Default constructor */
-			ILBreak();
-
-			std::string toString() const;
-			std::string valid() const;
-			Instruction *clone(bool copy=true) const;
-	};
-
-	class ILCmov_Logical : public ILTrinaryInstruction
-	{
-		public:
-			/*! \brief Default constructor */
-			ILCmov_Logical();
+			ILAbs();
 
 			Instruction *clone(bool copy=true) const;
 	};
@@ -198,6 +193,26 @@ namespace ir
 		public:
 			/*! \brief Default constructor */
 			ILAnd();
+
+			Instruction *clone(bool copy=true) const;
+	};
+
+	class ILBreak: public ILInstruction
+	{
+		public:
+			/*! \brief Default constructor */
+			ILBreak();
+
+			std::string toString() const;
+			std::string valid() const;
+			Instruction *clone(bool copy=true) const;
+	};
+
+	class ILCmov_Logical : public ILTrinaryInstruction
+	{
+		public:
+			/*! \brief Default constructor */
+			ILCmov_Logical();
 
 			Instruction *clone(bool copy=true) const;
 	};
@@ -352,6 +367,15 @@ namespace ir
 			Instruction *clone(bool copy=true) const;
 	};
 
+	class ILInot : public ILUnaryInstruction
+	{
+		public:
+			/*! \brief Default constructor */
+			ILInot();
+
+			Instruction *clone(bool copy=true) const;
+	};
+
 	class ILIor : public ILBinaryInstruction
 	{
 		public:
@@ -437,6 +461,15 @@ namespace ir
 			Instruction *clone(bool copy=true) const;
 	};
 
+	class ILLog_Vec : public ILUnaryInstruction
+	{
+		public:
+			/*! \brief Default constructor */
+			ILLog_Vec();
+
+			Instruction *clone(bool copy=true) const;
+	};
+
 	class ILMad : public ILTrinaryInstruction
 	{
 		public:
@@ -460,6 +493,15 @@ namespace ir
 		public:
 			/*! \brief Default constructor */
 			ILMul();
+
+			Instruction *clone(bool copy=true) const;
+	};
+
+	class ILRcp : public ILUnaryInstruction
+	{
+		public:
+			/*! \brief Default constructor */
+			ILRcp();
 
 			Instruction *clone(bool copy=true) const;
 	};
@@ -520,6 +562,24 @@ namespace ir
 		public:
 			/*! \brief Default constructor */
 			ILUav_Read_Add_Id();
+
+			Instruction *clone(bool copy=true) const;
+	};
+
+	class ILUav_Read_Max_Id : public ILBinaryInstruction
+	{
+		public:
+			/*! \brief Default constructor */
+			ILUav_Read_Max_Id();
+
+			Instruction *clone(bool copy=true) const;
+	};
+
+	class ILUav_Read_Min_Id : public ILBinaryInstruction
+	{
+		public:
+			/*! \brief Default constructor */
+			ILUav_Read_Min_Id();
 
 			Instruction *clone(bool copy=true) const;
 	};

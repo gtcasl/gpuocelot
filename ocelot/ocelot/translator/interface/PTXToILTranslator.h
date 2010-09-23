@@ -56,6 +56,7 @@ namespace translator
 			ir::ILOperand::SpecialRegister _translate(
 					const ir::PTXOperand::SpecialRegister &s);
 
+			void _translateAbs(const ir::PTXInstruction &i);
 			void _translateAdd(const ir::PTXInstruction &i);
 			void _translateAnd(const ir::PTXInstruction &i);
 			void _translateAtom(const ir::PTXInstruction& i);
@@ -67,11 +68,14 @@ namespace translator
 			void _translateLd(const ir::PTXInstruction &i);
 			void _translateLdSharedByte(const ir::PTXInstruction &i);
 			void _translateLdSharedDword(const ir::PTXInstruction &i);
+			void _translateLg2(const ir::PTXInstruction &i);
 			void _translateMad(const ir::PTXInstruction &i);
 			void _translateMov(const ir::PTXInstruction &i);
 			void _translateMul(const ir::PTXInstruction &i);
 			void _translateNeg(const ir::PTXInstruction &i);
+			void _translateNot(const ir::PTXInstruction &i);
 			void _translateOr(const ir::PTXInstruction &i);
+			void _translateRcp(const ir::PTXInstruction &i);
 			void _translateRem(const ir::PTXInstruction &i);
 			void _translateSelP(const ir::PTXInstruction &i);
 			void _translateSet(const ir::PTXInstruction &i);

@@ -226,6 +226,7 @@ std::string ir::PTXInstruction::toString( Opcode opcode ) {
 		case Call: return "call"; break;
 		case Clz: return "clz"; break;
 		case CNot: return "cnot"; break;
+		case CopySign: return "copysign"; break;
 		case Cos: return "cos"; break;
 		case Cvt: return "cvt"; break;
 		case Cvta: return "cvta"; break;

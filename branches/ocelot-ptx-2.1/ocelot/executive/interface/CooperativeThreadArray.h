@@ -417,11 +417,13 @@ namespace executive {
 		void eval_Call(CTAContext &context, const ir::PTXInstruction &instr);
 		void eval_Clz(CTAContext &context, const ir::PTXInstruction &instr);
 		void eval_CNot(CTAContext &context, const ir::PTXInstruction &instr);
+		void eval_CopySign(CTAContext &context, const ir::PTXInstruction &instr);
 		void eval_Cos(CTAContext &context, const ir::PTXInstruction &instr);
 		void eval_Cvt(CTAContext &context, const ir::PTXInstruction &instr);
 		void eval_Div(CTAContext &context, const ir::PTXInstruction &instr);
 		void eval_Ex2(CTAContext &context, const ir::PTXInstruction &instr);
 		void eval_Exit(CTAContext &context, const ir::PTXInstruction &instr);
+		void eval_Fma(CTAContext &context, const ir::PTXInstruction &instr);
 		void eval_Ld(CTAContext &context, const ir::PTXInstruction &instr);
 		void eval_Lg2(CTAContext &context, const ir::PTXInstruction &instr);
 		void eval_Mad24(CTAContext &context, const ir::PTXInstruction &instr);

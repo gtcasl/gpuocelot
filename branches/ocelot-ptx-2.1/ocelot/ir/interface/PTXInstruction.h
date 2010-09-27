@@ -38,6 +38,7 @@ namespace ir {
 			Call,
 			Clz,
 			CNot,
+			CopySign,
 			Cos,
 			Cvt,
 			Cvta,

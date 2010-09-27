@@ -339,6 +339,8 @@ void executive::CooperativeThreadArray::execute(const ir::Dim3& block) {
 				eval_Clz(context, instr); break;
 			case PTXInstruction::CNot:
 				eval_CNot(context, instr); break;
+			case PTXInstruction::CopySign:
+				eval_CopySign(context, instr); break;
 			case PTXInstruction::Cos:
 				eval_Cos(context, instr); break;
 			case PTXInstruction::Cvt:
@@ -349,6 +351,8 @@ void executive::CooperativeThreadArray::execute(const ir::Dim3& block) {
 				eval_Ex2(context, instr); break;
 			case PTXInstruction::Exit:
 				eval_Exit(context, instr); break;
+			case PTXInstruction::Fma:
+				eval_Fma(context, instr); break;
 			case PTXInstruction::Ld:
 				eval_Ld(context, instr); break;
 			case PTXInstruction::Lg2:
@@ -2499,6 +2503,35 @@ void executive::CooperativeThreadArray::eval_CNot(CTAContext &context, const PTX
 	}
 }
 
+void executive::CooperativeThreadArray::eval_CopySign(CTAContext &context, const ir::PTXInstruction &instr) {
+	trace();
+	if (instr.type == PTXOperand::f32) {
+		for (int tid = 0; tid < threadCount; tid++) {
+			if (!context.predicated(tid, instr)) continue;
+			
+			PTXF32 a = operandAsF32(tid, instr.a), b = operandAsF32(tid, instr.b);
+			PTXU32 d = (hydrazine::bit_cast<PTXU32, PTXF32>(b) & 0x7ffffff) | 
+				(hydrazine::bit_cast<PTXU32, PTXF32>(a) & 0x8000000);
+
+			setRegAsF32(tid, instr.d.reg, hydrazine::bit_cast<PTXF32, PTXU32>(d));
+		}
+	}
+	else if (instr.type == PTXOperand::f64) {
+		for (int tid = 0; tid < threadCount; tid++) {
+			if (!context.predicated(tid, instr)) continue;
+			
+			PTXF64 a = operandAsF64(tid, instr.a), b = operandAsF64(tid, instr.b);
+			PTXU64 d = (hydrazine::bit_cast<PTXU64, PTXF64>(b) & 0x7ffffffffffffff) | 
+				(hydrazine::bit_cast<PTXU64, PTXF64>(a) & 0x800000000000000);
+
+			setRegAsF64(tid, instr.d.reg, hydrazine::bit_cast<PTXF64, PTXU64>(d));
+		}	
+	}
+	else {
+		throw RuntimeException("unsupported data type", context.PC, instr);
+	}
+}
+
 /*!
 
 */
@@ -3620,6 +3653,32 @@ void executive::CooperativeThreadArray::eval_Exit(CTAContext &context, const PTX
 		eval_Bar(context, instr);
 	}
 #endif
+}
+
+
+void executive::CooperativeThreadArray::eval_Fma(CTAContext &context, const ir::PTXInstruction &instr) {
+	trace();
+	if (instr.type == PTXOperand::f32) {
+		for (int tid = 0; tid < threadCount; tid++) {
+			if (!context.predicated(tid, instr)) continue;
+			
+			PTXF32 d, a = operandAsF32(tid, instr.a), b = operandAsF32(tid, instr.b), c = operandAsF32(tid, instr.c);
+			d = a * b + c;
+			setRegAsF32(tid, instr.d.reg, d);
+		}
+	}
+	else if (instr.type == PTXOperand::f64) {
+		for (int tid = 0; tid < threadCount; tid++) {
+			if (!context.predicated(tid, instr)) continue;
+			
+			PTXF64 d, a = operandAsF64(tid, instr.a), b = operandAsF64(tid, instr.b), c = operandAsF64(tid, instr.c);
+			d = a * b + c;
+			setRegAsF64(tid, instr.d.reg, d);
+		}
+	}
+	else {
+		throw RuntimeException("unsupported data type", context.PC, instr);
+	}
 }
 
 void executive::CooperativeThreadArray::normalLoad(int threadID, 

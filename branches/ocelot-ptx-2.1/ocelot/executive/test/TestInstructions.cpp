@@ -2543,6 +2543,94 @@ public:
 
 		return result;
 	}
+	
+	bool test_CopySign() {
+		bool result = true;
+
+		PTXInstruction ins;
+		ins.opcode = PTXInstruction::Fma;
+
+		// f32
+		//
+		if (result) {
+			ins.type = PTXOperand::f32;
+			ins.a = reg("r1", PTXOperand::f32, 0);
+			ins.b = reg("r2", PTXOperand::f32, 1);
+			ins.d = reg("r3", PTXOperand::f32, 2);
+
+			for (int i = 0; i < threadCount; i++) {
+				int as = (!(i & 0x01) ? -1 : 1);
+				int bs = (!(i % 0x02) ? 1 : -1);
+				cta.setRegAsF32(i, 0, (PTXF32)((float)(as * i) / (float)threadCount * 4.2f));
+				cta.setRegAsF32(i, 1, (PTXF32)((float)(bs * i) / (float)threadCount * 2.7f));
+				cta.setRegAsF32(i, 2, 0);
+			}
+			cta.eval_Fma(cta.runtimeStack.back(), ins);
+			for (int i = 0; i < threadCount; i++) {
+				PTXF32 got = cta.getRegAsF32(i, 2);
+				
+				PTXF32 a = cta.getRegAsF32(i, 0);
+				PTXF32 b = cta.getRegAsF32(i, 1);
+				
+				PTXF32 exp = b;
+				if (a < 0) {
+					exp = -std::fabs(b);
+				}
+				else {
+					exp = std::fabs(b);
+				}
+					
+				if (std::fabs(got - exp) > 0.1f) {
+					result = false;
+					status << "fma.f32 incorrect [" << i << "] - expected: " 
+						<< (PTXF32)exp
+						<< ", got " << got << "\n";
+					break;
+				}
+			}
+		}
+		
+		// f64
+		if (result) {
+			ins.type = PTXOperand::f64;
+			ins.a = reg("r1", PTXOperand::f64, 0);
+			ins.b = reg("r2", PTXOperand::f64, 1);
+			ins.d = reg("r3", PTXOperand::f64, 2);
+
+			for (int i = 0; i < threadCount; i++) {
+				int as = (!(i & 0x01) ? -1 : 1);
+				int bs = (!(i % 0x02) ? 1 : -1);
+				cta.setRegAsF64(i, 0, (PTXF64)((double)(as * i) / (double)threadCount * 1.2));
+				cta.setRegAsF64(i, 1, (PTXF64)((double)(bs * i) / (double)threadCount * 7.7));
+				cta.setRegAsF64(i, 2, 0);
+			}
+			cta.eval_Fma(cta.runtimeStack.back(), ins);
+			for (int i = 0; i < threadCount; i++) {
+				PTXF64 got = cta.getRegAsF64(i, 2);
+				
+				PTXF64 a = cta.getRegAsF64(i, 0);
+				PTXF64 b = cta.getRegAsF64(i, 1);
+				
+				PTXF64 exp = b;
+				if (a < 0) {
+					exp = -std::fabs(b);
+				}
+				else {
+					exp = std::fabs(b);
+				}
+					
+				if (std::fabs(got - exp) > 0.1) {
+					result = false;
+					status << "fma.f64 incorrect [" << i << "] - expected: " 
+						<< exp
+						<< ", got " << got << "\n";
+					break;
+				}
+			}
+		}
+
+		return result;
+	}
 
 	bool test_Ex2() {
 		bool result = true;
@@ -2568,6 +2656,76 @@ public:
 					status << "ex2.f32 incorrect [" << i << "] - expected: " 
 						<< (PTXF32)exp2((float)i / (float)threadCount * 4.0f) 
 						<< ", got " << cta.getRegAsF32(i, 2) << "\n";
+					break;
+				}
+			}
+		}
+
+		return result;
+	}
+
+	bool test_Fma() {
+		bool result = true;
+
+		PTXInstruction ins;
+		ins.opcode = PTXInstruction::Fma;
+
+		// f32
+		//
+		if (result) {
+			ins.type = PTXOperand::f32;
+			ins.a = reg("r1", PTXOperand::f32, 0);
+			ins.b = reg("r2", PTXOperand::f32, 1);
+			ins.c = reg("r4", PTXOperand::f32, 3);
+			ins.d = reg("r3", PTXOperand::f32, 2);
+
+			for (int i = 0; i < threadCount; i++) {
+				cta.setRegAsF32(i, 0, (PTXF32)((float)i / (float)threadCount * 4.0f));
+				cta.setRegAsF32(i, 1, (PTXF32)((float)i / (float)threadCount * 2.0f));
+				cta.setRegAsF32(i, 3, (PTXF32)((float)i / (float)threadCount * 0.5f));
+				cta.setRegAsF32(i, 2, 0);
+			}
+			cta.eval_Fma(cta.runtimeStack.back(), ins);
+			for (int i = 0; i < threadCount; i++) {
+				PTXF32 got = cta.getRegAsF32(i, 2);
+				PTXF32 exp = (float)i / (float)threadCount * 4.0f * (float)i / (float)threadCount * 2.0f +
+					(float)i / (float)threadCount * 0.5f;
+					
+				if (std::fabs(got - exp) > 0.1f) {
+					result = false;
+					status << "fma.f32 incorrect [" << i << "] - expected: " 
+						<< (PTXF32)exp
+						<< ", got " << got << "\n";
+					break;
+				}
+			}
+		}
+		
+		// f64
+		if (result) {
+			ins.type = PTXOperand::f64;
+			ins.a = reg("r1", PTXOperand::f64, 0);
+			ins.b = reg("r2", PTXOperand::f64, 1);
+			ins.c = reg("r4", PTXOperand::f64, 3);
+			ins.d = reg("r3", PTXOperand::f64, 2);
+
+			for (int i = 0; i < threadCount; i++) {
+				cta.setRegAsF64(i, 0, (PTXF32)((double)i / (double)threadCount * 4.5));
+				cta.setRegAsF64(i, 1, (PTXF32)((double)i / (double)threadCount * 2.25));
+				cta.setRegAsF64(i, 3, (PTXF32)((double)i / (double)threadCount * 0.55));
+				cta.setRegAsF64(i, 2, 0);
+			}
+			cta.eval_Fma(cta.runtimeStack.back(), ins);
+			for (int i = 0; i < threadCount; i++) {
+				PTXF32 got = cta.getRegAsF32(i, 2);
+				PTXF32 exp = (double)i / (double)threadCount * 4.5 * (double)i / (double)threadCount * 2.25 +
+					(double)i / (double)threadCount *  0.55;
+					
+				if (std::fabs(got - exp) > 0.1) {
+					result = false;
+					status << "fma.f64 incorrect [" << i << "] - expected: " 
+						<< exp
+						<< ", got " << got << "\n";
 					break;
 				}
 			}
@@ -4146,6 +4304,70 @@ public:
 			}
 		}
 	
+		return result;
+	}
+	
+	bool test_TestP() {
+		bool result = false;
+		/*
+		PTXInstruction ins;
+		ins.opcode = PTXInstruction::TestP;
+
+		cta.reset();
+
+		// f32
+		//
+		if (result) {
+			// testp.op.type p, a
+			//
+			//	op: .finite, .infinite, .number, .notanumber, .normal, .subnormal
+			//	type: .f32, .f64
+			//
+			ins.type = PTXOperand::f32;
+			ins.d = reg("p", PTXOperand::pred, 0);
+			ins.a = reg("a", PTXOperand::f32, 1);
+	
+			ir::PTXInstruction::FloatingPointMode floatModes[] = {
+				ir::PTXInstruction::Finite,
+				ir::PTXInstruction::Infinite,
+				ir::PTXInstruction::Number,
+				ir::PTXInstruction::NotANumber,
+				ir::PTXInstruction::Normal,
+				ir::PTXInstruction::SubNormal,
+				ir::PTXInstruction::FloatingPointMode_Invalid
+			};
+			
+			PTXF32 floatValues[] = {
+				-1, 0, 1, FLT_EPSILON, -FLT_EPSILON, 0
+			};
+			
+			for (int mode = 0; floatModes[mode] != ir::PTXInstruction::FloatingPointMode_Invalid; mode++) {
+				ins.opcode = PTXInstruction::TestP;
+				ins.floatingPointMode = floatModes[mode];
+				ins.d = reg("p", PTXOperand::pred, 0);
+				ins.a = reg("a", PTXOperand::f32, 1);
+				
+				
+				
+			}
+			
+		}
+		
+		// f64
+		//
+		if (result) {
+			// testp.op.type p, a
+			//
+			//	op: .finite, .infinite, .number, .notanumber, .normal, .subnormal
+			//	type: .f32, .f64
+			//
+			ins.type = PTXOperand::f32;
+			ins.d = reg("p", PTXOperand::pred, 0);
+			ins.a = reg("a", PTXOperand::f32, 1);
+	
+			
+		}
+		*/
 		return result;
 	}
 

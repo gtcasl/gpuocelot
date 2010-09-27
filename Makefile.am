@@ -386,6 +386,7 @@ nobase_include_HEADERS = ocelot/api/interface/ocelot.h \
 	ocelot/analysis/interface/LinearScanRegisterAllocationPass.h \
 	ocelot/analysis/interface/PTXOptimizer.h \
 	ocelot/analysis/interface/RemoveBarrierPass.h \
+	ocelot/analysis/interface/PassManager.h \
 	ocelot/analysis/test/TestDataflowGraph.h \
 	ocelot/ir/interface/Kernel.h \
 	ocelot/ir/interface/Module.h \

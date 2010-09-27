@@ -180,6 +180,7 @@ namespace parser
 					void instruction( const std::string& opcode, 
 						unsigned int operands );
 					void tex( int dataType );
+					void relaxedConvert( int token, YYLTYPE& location );
 					void convert( int token, YYLTYPE& location );
 					void convertC( int token, YYLTYPE& location );
 					void convertD( int token, YYLTYPE& location );

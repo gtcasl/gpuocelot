@@ -711,7 +711,7 @@ cvtModifier : cvtModifier1 optionalFtz optionalSaturate
 cvt : OPCODE_CVT cvtModifier dataType dataType operand ',' operand ';'
 {
 	state.instruction( $<text>1, $<value>3, 3 );
-	state.convert( $<value>4, @1 );
+	state.relaxedConvert( $<value>4, @1 );
 };
 
 divFullModifier : TOKEN_FULL optionalFtz

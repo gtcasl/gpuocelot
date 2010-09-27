@@ -1,23 +1,23 @@
-	.version 1.4
-	.target sm_10, map_f64_to_f32
+	.version 2.1
+	.target sm_20
 	// compiled with /usr/local/cuda3.1/cuda/open64/lib//be
 	// nvopencc 3.1 built on 2010-06-07
 
 	//-----------------------------------------------------------
-	// Compiling /tmp/tmpxft_00000692_00000000-7_sequence.cpp3.i (/tmp/ccBI#.DyauFX)
+	// Compiling /tmp/tmpxft_0000082f_00000000-7_sequence.cpp3.i (/tmp/ccBI#.I5Qn3J)
 	//-----------------------------------------------------------
 
 	//-----------------------------------------------------------
 	// Options:
 	//-----------------------------------------------------------
-	//  Target:ptx, ISA:sm_10, Endian:little, Pointer Size:64
+	//  Target:ptx, ISA:sm_20, Endian:little, Pointer Size:64
 	//  -O3	(Optimization level)
 	//  -g0	(Debug level)
 	//  -m2	(Report advisories)
 	//-----------------------------------------------------------
 
 	.file	1	"<command-line>"
-	.file	2	"/tmp/tmpxft_00000692_00000000-6_sequence.cudafe2.gpu"
+	.file	2	"/tmp/tmpxft_0000082f_00000000-6_sequence.cudafe2.gpu"
 	.file	3	"/usr/lib/gcc/x86_64-linux-gnu/4.4.3/include/stddef.h"
 	.file	4	"/usr/local/cuda3.1/cuda/bin/../include/crt/device_runtime.h"
 	.file	5	"/usr/local/cuda3.1/cuda/bin/../include/host_defines.h"
@@ -42,7 +42,7 @@
 	.file	24	"/usr/local/cuda3.1/cuda/bin/../include/sm_20_atomic_functions.h"
 	.file	25	"/usr/local/cuda3.1/cuda/bin/../include/sm_20_intrinsics.h"
 	.file	26	"/usr/local/cuda3.1/cuda/bin/../include/surface_functions.h"
-	.file	27	"/usr/local/cuda3.1/cuda/bin/../include/math_functions_dbl_ptx1.h"
+	.file	27	"/usr/local/cuda3.1/cuda/bin/../include/math_functions_dbl_ptx3.h"
 	.file	28	"sequence.cu"
 
 
@@ -50,27 +50,26 @@
 		.param .u64 __cudaparm_sequence_A,
 		.param .s32 __cudaparm_sequence_N)
 	{
-	.reg .u16 %rh<4>;
-	.reg .u32 %r<7>;
+	.reg .u32 %r<9>;
 	.reg .u64 %rd<6>;
 	.reg .pred %p<3>;
 	.loc	28	6	0
 $LDWbegin_sequence:
-	mov.u16 	%rh1, %ctaid.x;
-	mov.u16 	%rh2, %ntid.x;
-	mul.wide.u16 	%r1, %rh1, %rh2;
-	cvt.u32.u16 	%r2, %tid.x;
-	add.u32 	%r3, %r2, %r1;
-	ld.param.s32 	%r4, [__cudaparm_sequence_N];
-	setp.le.s32 	%p1, %r4, %r3;
+	mov.u32 	%r1, %ctaid.x;
+	mov.u32 	%r2, %ntid.x;
+	mul.lo.u32 	%r3, %r1, %r2;
+	mov.u32 	%r4, %tid.x;
+	add.u32 	%r5, %r4, %r3;
+	ld.param.s32 	%r6, [__cudaparm_sequence_N];
+	setp.le.s32 	%p1, %r6, %r5;
 	@%p1 bra 	$Lt_0_1026;
 	.loc	28	9	0
-	add.s32 	%r5, %r3, 1;
+	add.s32 	%r7, %r5, 1;
 	ld.param.u64 	%rd1, [__cudaparm_sequence_A];
-	cvt.s64.s32 	%rd2, %r3;
-	mul.wide.s32 	%rd3, %r3, 4;
+	cvt.s64.s32 	%rd2, %r5;
+	mul.wide.s32 	%rd3, %r5, 4;
 	add.u64 	%rd4, %rd1, %rd3;
-	st.global.s32 	[%rd4+0], %r5;
+	st.global.s32 	[%rd4+0], %r7;
 $Lt_0_1026:
 	.loc	28	11	0
 	exit;

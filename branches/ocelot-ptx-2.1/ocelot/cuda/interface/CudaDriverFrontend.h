@@ -82,6 +82,9 @@ namespace cuda {
 		
 			//! \brief object storing context information needed while configuring calls
 			HostThreadContext _hostThreadContext;
+			
+			//! \brieflaunch configuration of next kernel
+			KernelLaunchConfiguration _launchConfiguration;
 		
 			//! maps kernel symbols to module-kernels
 			RegisteredKernelMap _kernels;

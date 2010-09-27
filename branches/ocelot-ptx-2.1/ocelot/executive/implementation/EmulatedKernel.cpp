@@ -33,7 +33,7 @@
 
 #define REPORT_BASE 0
 
-#define REPORT_KERNEL_INSTRUCTIONS 0
+#define REPORT_KERNEL_INSTRUCTIONS 1
 #define REPORT_LAUNCH_CONFIGURATION 1
 
 executive::EmulatedKernel::EmulatedKernel(
@@ -97,7 +97,7 @@ void executive::EmulatedKernel::launchGrid(int width, int height) {
 	report("  max threads: " << maxThreadsPerBlock() << " threads per block");
 	report("  registers: " << registerCount() << " registers");
 	report("  grid: " << gridDim().x << ", " << gridDim().y << ", " << gridDim().z);
-	report("  block: " << blockDim().x << ", " << blockDim().y << ", " << blockDim().z);
+	report("  blockDim: " << blockDim().x << ", " << blockDim().y << ", " << blockDim().z);
 #endif
 
 	CooperativeThreadArray cta(this, gridDim(), !_generators.empty());
@@ -105,6 +105,9 @@ void executive::EmulatedKernel::launchGrid(int width, int height) {
 	for (int x = 0; x < width; ++x) {
 		for (int y = 0; y < height; ++y) {
 			cta.reset();
+			
+			report("  cta: " << x << ", " << y);
+			
 			cta.execute(ir::Dim3(x,y,0));
 		}
 	}

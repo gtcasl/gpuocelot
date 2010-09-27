@@ -139,8 +139,9 @@ void cuda::HostThreadContext::clear() {
 }
 
 void cuda::HostThreadContext::mapParameters(const ir::Kernel* kernel) {
-	
-	assert(kernel->arguments.size() == parameterIndices.size());
+	report("HostThreadContext::mapParameters() - arguments.size: " << kernel->arguments.size() << 
+		", parameterIndices: " << parameterIndices.size());
+//	assert(kernel->arguments.size() == parameterIndices.size());
 	IndexVector::iterator offset = parameterIndices.begin();
 	SizeVector::iterator size = parameterSizes.begin();
 	unsigned int dst = 0;
@@ -149,8 +150,7 @@ void cuda::HostThreadContext::mapParameters(const ir::Kernel* kernel) {
 		parameter = kernel->arguments.begin(); 
 		parameter != kernel->arguments.end(); ++parameter, ++offset, ++size) {
 		unsigned int misalignment = dst % parameter->getAlignment();
-		unsigned int alignmentOffset = misalignment == 0 
-			? 0 : parameter->getAlignment() - misalignment;
+		unsigned int alignmentOffset = misalignment == 0 ? 0 : parameter->getAlignment() - misalignment;
 		dst += alignmentOffset;
 		
 		memset(temp + dst, 0, parameter->getSize());

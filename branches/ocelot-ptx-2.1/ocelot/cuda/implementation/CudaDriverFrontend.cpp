@@ -17,11 +17,13 @@
 // Ocelot includes
 #include <ocelot/cuda/interface/cuda.h>
 #include <ocelot/api/interface/OcelotConfiguration.h>
+#include <ocelot/cuda/interface/CudaRuntimeContext.h>
 #include <ocelot/cuda/interface/CudaDriverFrontend.h>
 #include <ocelot/ir/interface/PTXInstruction.h>
 #include <ocelot/executive/interface/RuntimeException.h>
 
 // Hydrazine includes
+#include <hydrazine/interface/Casts.h>
 #include <hydrazine/implementation/Exception.h>
 #include <hydrazine/implementation/string.h>
 #include <hydrazine/implementation/debug.h>
@@ -43,7 +45,7 @@
 #define CUDA_VERBOSE 1
 
 // whether debugging messages are printed
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -368,7 +370,7 @@ CUresult cuda::CudaDriverFrontend::cuCtxCreate(CUcontext *pctx, unsigned int fla
 
 	// check to see if the device is in use - only support exclusive mode use of devices
 	Context *newContext = new Context;
-	
+	newContext->_device = _devices.at((int)dev);
 	*pctx = reinterpret_cast<CUcontext>(newContext);
 	_getThreadContextQueue().push_back(newContext);
 	
@@ -503,25 +505,23 @@ CUresult cuda::CudaDriverFrontend::cuCtxSynchronize(void) {
 
 ***********************************/
 
-CUresult cuda::CudaDriverFrontend::cuModuleLoad(CUmodule *module, const char *fname) {
+CUresult cuda::CudaDriverFrontend::cuModuleLoad(CUmodule *cuModule, const char *fname) {
 	CUresult result = CUDA_ERROR_NOT_FOUND;
 	Context *context = _bind();
 	if (context) {
 		std::ifstream file(fname);
 		if (file.good()) {
-/*			ModuleMap::iterator module = _modules.insert(std::make_pair(fname, ir::Module())).first;
+			ModuleMap::iterator module = context->_modules.insert(std::make_pair(fname, ir::Module())).first;
 			if (module->second.load(fname)) {
+				//ir::Module *modPtr = & module->second;
+				*cuModule = reinterpret_cast<CUmodule>(& module->second);
+				context->_getDevice().load(&module->second);
 				result = CUDA_SUCCESS;
-				//
-				// return 
-				//
 			}
 			else {
-				_modules.erase(module);
+				context->_modules.erase(module);
 				result = CUDA_ERROR_INVALID_VALUE;
 			}
-			*/
-			assert(0 && "unimplemented");
 		}	
 		else {
 			report("cuModuleLoad() - failed to load module '" << fname << "' from file");
@@ -556,14 +556,49 @@ CUresult cuda::CudaDriverFrontend::cuModuleLoadFatBinary(CUmodule *module,
 }
 
 CUresult cuda::CudaDriverFrontend::cuModuleUnload(CUmodule hmod) {
-	assert(0 && "unimplemented");
-	return CUDA_ERROR_NOT_FOUND;
+	CUresult result = CUDA_ERROR_NOT_FOUND;
+	Context *context = _bind();
+	if (context) {
+		context->_getDevice().unload(reinterpret_cast<const ir::Module *>(hmod)->path());
+		result = CUDA_SUCCESS;
+	}
+	else {
+		report("cuModuleLoad() - context not valid");
+		result = CUDA_ERROR_INVALID_CONTEXT;
+	}
+	_unbind();
+	return result;
 }
 
 CUresult cuda::CudaDriverFrontend::cuModuleGetFunction(CUfunction *hfunc, 
 	CUmodule hmod, const char *name) {
-	assert(0 && "unimplemented");
-	return CUDA_ERROR_NOT_FOUND;
+	
+	CUresult result = CUDA_ERROR_NOT_FOUND;
+	Context *context = _bind();
+	if (context) {
+		ir::Module *module = reinterpret_cast<ir::Module *>(hmod);
+		if (module) {
+			ir::PTXKernel *kernel = module->getKernel(name);
+			if (kernel) {
+				*hfunc = reinterpret_cast<CUfunction>(kernel);
+				result = CUDA_SUCCESS;
+			}
+			else {
+				result = CUDA_ERROR_NOT_FOUND;
+				report("cuModuleGetFunction() - failed to get kernel " << name);
+			}
+		}
+		else {
+			result = CUDA_ERROR_INVALID_VALUE;
+			report("cuModuleGetFunction() - invalid module");
+		}
+	}
+	else {
+		report("cuModuleGetFunction() - context not valid");
+		result = CUDA_ERROR_INVALID_CONTEXT;
+	}
+	_unbind();
+	return result;
 }
 
 CUresult cuda::CudaDriverFrontend::cuModuleGetGlobal(CUdeviceptr *dptr, 
@@ -587,13 +622,32 @@ CUresult cuda::CudaDriverFrontend::cuModuleGetTexRef(CUtexref *pTexRef, CUmodule
 
 CUresult cuda::CudaDriverFrontend::cuMemGetInfo(unsigned int *free, 
 	unsigned int *total) {
+	assert(0 && "unimplemented");
 	return CUDA_ERROR_NOT_FOUND;
 }
 
 
 CUresult cuda::CudaDriverFrontend::cuMemAlloc( CUdeviceptr *dptr, 
 	unsigned int bytesize) {
-	return CUDA_ERROR_NOT_FOUND;
+	CUresult result = CUDA_ERROR_NOT_FOUND;
+	Context *context = _bind();
+	if (context) {
+		executive::Device &device = context->_getDevice();
+		executive::Device::MemoryAllocation * allocation = device.allocate(bytesize);
+		if (allocation) {
+			*dptr = hydrazine::bit_cast<CUdeviceptr, void *>(allocation->pointer());
+			result = CUDA_SUCCESS;
+		}
+		else {
+			result = CUDA_ERROR_INVALID_VALUE;
+		}
+	}
+	else {
+		report("cuModuleGetFunction() - context not valid");
+		result = CUDA_ERROR_INVALID_CONTEXT;
+	}
+	_unbind();
+	return result;
 }
 
 CUresult cuda::CudaDriverFrontend::cuMemAllocPitch( CUdeviceptr *dptr, 
@@ -602,40 +656,48 @@ CUresult cuda::CudaDriverFrontend::cuMemAllocPitch( CUdeviceptr *dptr,
 			          unsigned int Height, 
 			          unsigned int ElementSizeBytes
 			         ) {
+	assert(0 && "unimplemented");
 	return CUDA_ERROR_NOT_FOUND;
 }
 
 CUresult cuda::CudaDriverFrontend::cuMemFree(CUdeviceptr dptr) {
+	assert(0 && "unimplemented");
 	return CUDA_ERROR_NOT_FOUND;
 }
 
 CUresult cuda::CudaDriverFrontend::cuMemGetAddressRange( CUdeviceptr *pbase, 
 	unsigned int *psize, CUdeviceptr dptr ) {
+	assert(0 && "unimplemented");
 	return CUDA_ERROR_NOT_FOUND;
 }
 
 
 CUresult cuda::CudaDriverFrontend::cuMemAllocHost(void **pp, unsigned int bytesize) {
+	assert(0 && "unimplemented");
 	return CUDA_ERROR_NOT_FOUND;
 }
 
 CUresult cuda::CudaDriverFrontend::cuMemFreeHost(void *p) {
+	assert(0 && "unimplemented");
 	return CUDA_ERROR_NOT_FOUND;
 }
 
 
 CUresult cuda::CudaDriverFrontend::cuMemHostAlloc(void **pp, 
 	unsigned long long bytesize, unsigned int Flags ) {
+	assert(0 && "unimplemented");
 	return CUDA_ERROR_NOT_FOUND;
 }
 
 
 CUresult cuda::CudaDriverFrontend::cuMemHostGetDevicePointer( CUdeviceptr *pdptr, 
 	void *p, unsigned int Flags ) {
+	assert(0 && "unimplemented");
 	return CUDA_ERROR_NOT_FOUND;
 }
 
 CUresult cuda::CudaDriverFrontend::cuMemHostGetFlags( unsigned int *pFlags, void *p ) {
+	assert(0 && "unimplemented");
 	return CUDA_ERROR_NOT_FOUND;
 }
 
@@ -655,18 +717,57 @@ CUresult cuda::CudaDriverFrontend::cuMemHostGetFlags( unsigned int *pFlags, void
 // system <-> device memory
 CUresult cuda::CudaDriverFrontend::cuMemcpyHtoD (CUdeviceptr dstDevice, 
 	const void *srcHost, unsigned int ByteCount ) {
-	return CUDA_ERROR_NOT_FOUND;
+	
+	CUresult result = CUDA_ERROR_NOT_FOUND;
+	Context *context = _bind();
+	if (context) {
+		executive::Device &device = context->_getDevice();
+		executive::Device::MemoryAllocation * allocation = device.getMemoryAllocation((void *)dstDevice);
+		if (allocation) {
+			allocation->copy(0, srcHost, (size_t)ByteCount);
+			result = CUDA_SUCCESS;
+		}
+		else {
+			result = CUDA_ERROR_INVALID_VALUE;
+		}
+	}
+	else {
+		report("cuModuleGetFunction() - context not valid");
+		result = CUDA_ERROR_INVALID_CONTEXT;
+	}
+	_unbind();
+	return result;
 }
 
 CUresult cuda::CudaDriverFrontend::cuMemcpyDtoH (void *dstHost, CUdeviceptr srcDevice, 
 	unsigned int ByteCount ) {
-	return CUDA_ERROR_NOT_FOUND;
+	
+	CUresult result = CUDA_ERROR_NOT_FOUND;
+	Context *context = _bind();
+	if (context) {
+		executive::Device &device = context->_getDevice();
+		executive::Device::MemoryAllocation * allocation = device.getMemoryAllocation((void *)srcDevice);
+		if (allocation) {
+			allocation->copy(dstHost, 0, (size_t)ByteCount);
+			result = CUDA_SUCCESS;
+		}
+		else {
+			result = CUDA_ERROR_INVALID_VALUE;
+		}
+	}
+	else {
+		report("cuModuleGetFunction() - context not valid");
+		result = CUDA_ERROR_INVALID_CONTEXT;
+	}
+	_unbind();
+	return result;
 }
 
 
 // device <-> device memory
 CUresult cuda::CudaDriverFrontend::cuMemcpyDtoD (CUdeviceptr dstDevice, 
 	CUdeviceptr srcDevice, unsigned int ByteCount ) {
+	assert(0 && "unimplemented");
 	return CUDA_ERROR_NOT_FOUND;
 }
 
@@ -675,11 +776,13 @@ CUresult cuda::CudaDriverFrontend::cuMemcpyDtoD (CUdeviceptr dstDevice,
 CUresult cuda::CudaDriverFrontend::cuMemcpyDtoA ( CUarray dstArray, 
 	unsigned int dstIndex, CUdeviceptr srcDevice, 
 	unsigned int ByteCount ) {
+	assert(0 && "unimplemented");
 	return CUDA_ERROR_NOT_FOUND;
 }
 
 CUresult cuda::CudaDriverFrontend::cuMemcpyAtoD ( CUdeviceptr dstDevice, 
 	CUarray hSrc, unsigned int SrcIndex, unsigned int ByteCount ) {
+	assert(0 && "unimplemented");
 	return CUDA_ERROR_NOT_FOUND;
 }
 
@@ -688,11 +791,13 @@ CUresult cuda::CudaDriverFrontend::cuMemcpyAtoD ( CUdeviceptr dstDevice,
 CUresult cuda::CudaDriverFrontend::cuMemcpyHtoA( CUarray dstArray, 
 	unsigned int dstIndex, const void *pSrc, 
 	unsigned int ByteCount ) {
+	assert(0 && "unimplemented");
 	return CUDA_ERROR_NOT_FOUND;
 }
 
 CUresult cuda::CudaDriverFrontend::cuMemcpyAtoH( void *dstHost, CUarray srcArray, 
 	unsigned int srcIndex, unsigned int ByteCount ) {
+	assert(0 && "unimplemented");
 	return CUDA_ERROR_NOT_FOUND;
 }
 
@@ -701,6 +806,7 @@ CUresult cuda::CudaDriverFrontend::cuMemcpyAtoH( void *dstHost, CUarray srcArray
 CUresult cuda::CudaDriverFrontend::cuMemcpyAtoA( CUarray dstArray, 
 	unsigned int dstIndex, CUarray srcArray, unsigned int srcIndex, 
 	unsigned int ByteCount ) {
+	assert(0 && "unimplemented");
 	return CUDA_ERROR_NOT_FOUND;
 }
 
@@ -708,10 +814,12 @@ CUresult cuda::CudaDriverFrontend::cuMemcpyAtoA( CUarray dstArray,
 // 2D memcpy
 
 CUresult cuda::CudaDriverFrontend::cuMemcpy2D( const CUDA_MEMCPY2D *pCopy ) {
+	assert(0 && "unimplemented");
 	return CUDA_ERROR_NOT_FOUND;
 }
 
 CUresult cuda::CudaDriverFrontend::cuMemcpy2DUnaligned( const CUDA_MEMCPY2D *pCopy ) {
+	assert(0 && "unimplemented");
 	return CUDA_ERROR_NOT_FOUND;
 }
 
@@ -719,6 +827,7 @@ CUresult cuda::CudaDriverFrontend::cuMemcpy2DUnaligned( const CUDA_MEMCPY2D *pCo
 // 3D memcpy
 
 CUresult cuda::CudaDriverFrontend::cuMemcpy3D( const CUDA_MEMCPY3D *pCopy ) {
+	assert(0 && "unimplemented");
 	return CUDA_ERROR_NOT_FOUND;
 }
 
@@ -741,11 +850,13 @@ CUresult cuda::CudaDriverFrontend::cuMemcpy3D( const CUDA_MEMCPY3D *pCopy ) {
 // system <-> device memory
 CUresult cuda::CudaDriverFrontend::cuMemcpyHtoDAsync (CUdeviceptr dstDevice, 
 const void *srcHost, unsigned int ByteCount, CUstream hStream ) {
+	assert(0 && "unimplemented");
 	return CUDA_ERROR_NOT_FOUND;
 }
 
 CUresult cuda::CudaDriverFrontend::cuMemcpyDtoHAsync (void *dstHost, 
 CUdeviceptr srcDevice, unsigned int ByteCount, CUstream hStream ) {
+	assert(0 && "unimplemented");
 	return CUDA_ERROR_NOT_FOUND;
 }
 
@@ -754,12 +865,14 @@ CUdeviceptr srcDevice, unsigned int ByteCount, CUstream hStream ) {
 CUresult cuda::CudaDriverFrontend::cuMemcpyHtoAAsync( CUarray dstArray, 
 	unsigned int dstIndex, const void *pSrc, 
 	unsigned int ByteCount, CUstream hStream ) {
+	assert(0 && "unimplemented");
 	return CUDA_ERROR_NOT_FOUND;
 }
 
 CUresult cuda::CudaDriverFrontend::cuMemcpyAtoHAsync( void *dstHost, CUarray srcArray, 
 	unsigned int srcIndex, unsigned int ByteCount, 
 	CUstream hStream ) {
+	assert(0 && "unimplemented");
 	return CUDA_ERROR_NOT_FOUND;
 }
 
@@ -767,6 +880,7 @@ CUresult cuda::CudaDriverFrontend::cuMemcpyAtoHAsync( void *dstHost, CUarray src
 // 2D memcpy
 CUresult cuda::CudaDriverFrontend::cuMemcpy2DAsync( const CUDA_MEMCPY2D *pCopy, 
 	CUstream hStream ) {
+	assert(0 && "unimplemented");
 	return CUDA_ERROR_NOT_FOUND;
 }
 
@@ -774,6 +888,7 @@ CUresult cuda::CudaDriverFrontend::cuMemcpy2DAsync( const CUDA_MEMCPY2D *pCopy,
 // 3D memcpy
 CUresult cuda::CudaDriverFrontend::cuMemcpy3DAsync( const CUDA_MEMCPY3D *pCopy, 
 	CUstream hStream ) {
+	assert(0 && "unimplemented");
 	return CUDA_ERROR_NOT_FOUND;
 }
 
@@ -785,16 +900,19 @@ CUresult cuda::CudaDriverFrontend::cuMemcpy3DAsync( const CUDA_MEMCPY3D *pCopy,
 ***********************************/
 CUresult cuda::CudaDriverFrontend::cuMemsetD8( CUdeviceptr dstDevice, 
 	unsigned char uc, unsigned int N ) {
+	assert(0 && "unimplemented");
 	return CUDA_ERROR_NOT_FOUND;
 }
 
 CUresult cuda::CudaDriverFrontend::cuMemsetD16( CUdeviceptr dstDevice, 
 	unsigned short us, unsigned int N ) {
+	assert(0 && "unimplemented");
 	return CUDA_ERROR_NOT_FOUND;
 }
 
 CUresult cuda::CudaDriverFrontend::cuMemsetD32( CUdeviceptr dstDevice, 
 	unsigned int ui, unsigned int N ) {
+	assert(0 && "unimplemented");
 	return CUDA_ERROR_NOT_FOUND;
 }
 
@@ -802,18 +920,21 @@ CUresult cuda::CudaDriverFrontend::cuMemsetD32( CUdeviceptr dstDevice,
 CUresult cuda::CudaDriverFrontend::cuMemsetD2D8( CUdeviceptr dstDevice,
 	unsigned int dstPitch, unsigned char uc, unsigned int Width, 
 	unsigned int Height ) {
+	assert(0 && "unimplemented");
 	return CUDA_ERROR_NOT_FOUND;
 }
 
 CUresult cuda::CudaDriverFrontend::cuMemsetD2D16( CUdeviceptr dstDevice, 
 	unsigned int dstPitch, unsigned short us, unsigned int Width, 
 	unsigned int Height ) {
+	assert(0 && "unimplemented");
 	return CUDA_ERROR_NOT_FOUND;
 }
 
 CUresult cuda::CudaDriverFrontend::cuMemsetD2D32( CUdeviceptr dstDevice, 
 	unsigned int dstPitch, unsigned int ui, unsigned int Width, 
 	unsigned int Height ) {
+	assert(0 && "unimplemented");
 	return CUDA_ERROR_NOT_FOUND;
 }
 
@@ -824,22 +945,86 @@ CUresult cuda::CudaDriverFrontend::cuMemsetD2D32( CUdeviceptr dstDevice,
 **
 ***********************************/
 
+CUresult cuda::CudaDriverFrontend::cuFuncSetBlockShape (CUfunction hfunc, int x, int y, int z) {
 
-CUresult cuda::CudaDriverFrontend::cuFuncSetBlockShape (CUfunction hfunc, int x, 
-	int y, int z) {
-	return CUDA_ERROR_NOT_FOUND;
+	CUresult result = CUDA_ERROR_NOT_FOUND;
+	Context *context = _bind();
+	if (context) {
+		ir::PTXKernel *ptxKernel = reinterpret_cast<ir::PTXKernel *>(hfunc);
+		if (ptxKernel) {
+			context->_launchConfiguration.blockDim.x = x;
+			context->_launchConfiguration.blockDim.y = y;
+			context->_launchConfiguration.blockDim.z = z;
+
+			result = CUDA_SUCCESS;
+			report("cuFuncSetBlockShape() - setting block dim to: " << context->_launchConfiguration.blockDim.x << ", "
+				<< context->_launchConfiguration.blockDim.y << ", "
+				<< context->_launchConfiguration.blockDim.z);
+		}
+		else {
+			report("cuFuncSetBlockShape() - kernel not found");
+			result = CUDA_ERROR_INVALID_CONTEXT;
+		}
+	}
+	else {
+		report("cuFuncSetBlockShape() - context not valid");
+		result = CUDA_ERROR_INVALID_CONTEXT;
+	}
+	_unbind();
+	return result;
 }
 
-CUresult cuda::CudaDriverFrontend::cuFuncSetSharedSize (CUfunction hfunc, 
-	unsigned int bytes) {
-	return CUDA_ERROR_NOT_FOUND;
+CUresult cuda::CudaDriverFrontend::cuFuncSetSharedSize (CUfunction hfunc, unsigned int bytes) {
+
+	CUresult result = CUDA_ERROR_NOT_FOUND;
+	Context *context = _bind();
+	if (context) {
+		ir::PTXKernel *ptxKernel = reinterpret_cast<ir::PTXKernel *>(hfunc);
+		if (ptxKernel) {
+			
+			context->_launchConfiguration.sharedMemory = bytes;
+
+			result = CUDA_SUCCESS;
+		}
+		else {
+			report("cuParamSetSize() - kernel not found");
+			result = CUDA_ERROR_INVALID_CONTEXT;
+		}
+	}
+	else {
+		report("cuParamSetSize() - context not valid");
+		result = CUDA_ERROR_INVALID_CONTEXT;
+	}
+	_unbind();
+	return result;
 }
 
-CUresult cuda::CudaDriverFrontend::cuFuncGetAttribute (int *pi, 
-	CUfunction_attribute attrib, CUfunction hfunc) {
+CUresult cuda::CudaDriverFrontend::cuFuncGetAttribute (int *pi, CUfunction_attribute attrib,
+	CUfunction hfunc) {
+
+	CUresult result = CUDA_ERROR_NOT_FOUND;
+	Context *context = _bind();
+	if (context) {
+		ir::PTXKernel *ptxKernel = reinterpret_cast<ir::PTXKernel *>(hfunc);
+		if (ptxKernel) {
+			result = CUDA_SUCCESS;
+			// thsi function isn't needed
+		}
+		else {
+			report("cuParamSetSize() - kernel not found");
+			result = CUDA_ERROR_INVALID_CONTEXT;
+		}
+	}
+	else {
+		report("cuParamSetSize() - context not valid");
+		result = CUDA_ERROR_INVALID_CONTEXT;
+	}
+	_unbind();
+	return result;
+	
+	assert(0 && "unimplemented");
 	return CUDA_ERROR_NOT_FOUND;
 }
-
 
 /************************************
 **
@@ -849,26 +1034,31 @@ CUresult cuda::CudaDriverFrontend::cuFuncGetAttribute (int *pi,
 
 CUresult cuda::CudaDriverFrontend::cuArrayCreate( CUarray *pHandle, 
 	const CUDA_ARRAY_DESCRIPTOR *pAllocateArray ) {
+	assert(0 && "unimplemented");
 	return CUDA_ERROR_NOT_FOUND;
 }
 
 CUresult cuda::CudaDriverFrontend::cuArrayGetDescriptor( 
 	CUDA_ARRAY_DESCRIPTOR *pArrayDescriptor, CUarray hArray ) {
+	assert(0 && "unimplemented");
 	return CUDA_ERROR_NOT_FOUND;
 }
 
 CUresult cuda::CudaDriverFrontend::cuArrayDestroy( CUarray hArray ) {
+	assert(0 && "unimplemented");
 	return CUDA_ERROR_NOT_FOUND;
 }
 
 
 CUresult cuda::CudaDriverFrontend::cuArray3DCreate( CUarray *pHandle, 
 	const CUDA_ARRAY3D_DESCRIPTOR *pAllocateArray ) {
+	assert(0 && "unimplemented");
 	return CUDA_ERROR_NOT_FOUND;
 }
 
 CUresult cuda::CudaDriverFrontend::cuArray3DGetDescriptor( 
 	CUDA_ARRAY3D_DESCRIPTOR *pArrayDescriptor, CUarray hArray ) {
+	assert(0 && "unimplemented");
 	return CUDA_ERROR_NOT_FOUND;
 }
 
@@ -880,78 +1070,93 @@ CUresult cuda::CudaDriverFrontend::cuArray3DGetDescriptor(
 **
 ***********************************/
 CUresult cuda::CudaDriverFrontend::cuTexRefCreate( CUtexref *pTexRef ) {
+	assert(0 && "unimplemented");
 	return CUDA_ERROR_NOT_FOUND;
 }
 
 CUresult cuda::CudaDriverFrontend::cuTexRefDestroy( CUtexref hTexRef ) {
+	assert(0 && "unimplemented");
 	return CUDA_ERROR_NOT_FOUND;
 }
 
 
 CUresult cuda::CudaDriverFrontend::cuTexRefSetArray( CUtexref hTexRef, CUarray hArray, 
 	unsigned int Flags ) {
+	assert(0 && "unimplemented");
 	return CUDA_ERROR_NOT_FOUND;
 }
 
 CUresult cuda::CudaDriverFrontend::cuTexRefSetAddress( unsigned int *ByteOffset, 
 	CUtexref hTexRef, CUdeviceptr dptr, unsigned int bytes ) {
+	assert(0 && "unimplemented");
 	return CUDA_ERROR_NOT_FOUND;
 }
 
 CUresult cuda::CudaDriverFrontend::cuTexRefSetAddress2D( CUtexref hTexRef, 
 	const CUDA_ARRAY_DESCRIPTOR *desc, CUdeviceptr dptr, 
 	unsigned int Pitch) {
+	assert(0 && "unimplemented");
 	return CUDA_ERROR_NOT_FOUND;
 }
 
 CUresult cuda::CudaDriverFrontend::cuTexRefSetFormat( CUtexref hTexRef, 
 	CUarray_format fmt, int NumPackedComponents ) {
+	assert(0 && "unimplemented");
 	return CUDA_ERROR_NOT_FOUND;
 }
 
 CUresult cuda::CudaDriverFrontend::cuTexRefSetAddressMode( CUtexref hTexRef, int dim, 
 	CUaddress_mode am ) {
+	assert(0 && "unimplemented");
 	return CUDA_ERROR_NOT_FOUND;
 }
 
 CUresult cuda::CudaDriverFrontend::cuTexRefSetFilterMode( CUtexref hTexRef, 
 	CUfilter_mode fm ) {
+	assert(0 && "unimplemented");
 	return CUDA_ERROR_NOT_FOUND;
 }
 
 CUresult cuda::CudaDriverFrontend::cuTexRefSetFlags( CUtexref hTexRef, 
 	unsigned int Flags ) {
+	assert(0 && "unimplemented");
 	return CUDA_ERROR_NOT_FOUND;
 }
 
 
 CUresult cuda::CudaDriverFrontend::cuTexRefGetAddress( CUdeviceptr *pdptr, 
 	CUtexref hTexRef ) {
+	assert(0 && "unimplemented");
 	return CUDA_ERROR_NOT_FOUND;
 }
 
 CUresult cuda::CudaDriverFrontend::cuTexRefGetArray( CUarray *phArray, 
 	CUtexref hTexRef ) {
+	assert(0 && "unimplemented");
 	return CUDA_ERROR_NOT_FOUND;
 }
 
 CUresult cuda::CudaDriverFrontend::cuTexRefGetAddressMode( CUaddress_mode *pam, 
 	CUtexref hTexRef, int dim ) {
+	assert(0 && "unimplemented");
 	return CUDA_ERROR_NOT_FOUND;
 }
 
 CUresult cuda::CudaDriverFrontend::cuTexRefGetFilterMode( CUfilter_mode *pfm, 
 	CUtexref hTexRef ) {
+	assert(0 && "unimplemented");
 	return CUDA_ERROR_NOT_FOUND;
 }
 
 CUresult cuda::CudaDriverFrontend::cuTexRefGetFormat( CUarray_format *pFormat, 
 	int *pNumChannels, CUtexref hTexRef ) {
+	assert(0 && "unimplemented");
 	return CUDA_ERROR_NOT_FOUND;
 }
 
 CUresult cuda::CudaDriverFrontend::cuTexRefGetFlags( unsigned int *pFlags, 
 	CUtexref hTexRef ) {
+	assert(0 && "unimplemented");
 	return CUDA_ERROR_NOT_FOUND;
 }
 
@@ -964,26 +1169,75 @@ CUresult cuda::CudaDriverFrontend::cuTexRefGetFlags( unsigned int *pFlags,
 
 CUresult cuda::CudaDriverFrontend::cuParamSetSize (CUfunction hfunc, 
 	unsigned int numbytes) {
-	return CUDA_ERROR_NOT_FOUND;
+	
+	CUresult result = CUDA_ERROR_NOT_FOUND;
+	Context *context = _bind();
+	if (context) {
+		ir::PTXKernel *ptxKernel = reinterpret_cast<ir::PTXKernel *>(hfunc);
+		if (ptxKernel) {
+			result = CUDA_SUCCESS;
+			// thsi function isn't needed
+		}
+		else {
+			report("cuParamSetSize() - kernel not found");
+			result = CUDA_ERROR_INVALID_CONTEXT;
+		}
+	}
+	else {
+		report("cuParamSetSize() - context not valid");
+		result = CUDA_ERROR_INVALID_CONTEXT;
+	}
+	_unbind();
+	return result;
 }
 
 CUresult cuda::CudaDriverFrontend::cuParamSeti    (CUfunction hfunc, int offset, 
 	unsigned int value) {
+	assert(0 && "unimplemented");
 	return CUDA_ERROR_NOT_FOUND;
 }
 
 CUresult cuda::CudaDriverFrontend::cuParamSetf    (CUfunction hfunc, int offset, 
 	float value) {
+	assert(0 && "unimplemented");
 	return CUDA_ERROR_NOT_FOUND;
 }
 
-CUresult cuda::CudaDriverFrontend::cuParamSetv    (CUfunction hfunc, int offset, 
-	void * ptr, unsigned int numbytes) {
-	return CUDA_ERROR_NOT_FOUND;
+//
+//
+//
+CUresult cuda::CudaDriverFrontend::cuParamSetv(CUfunction hfunc, int offset, 
+	void * ptr, unsigned int size) {
+	
+	CUresult result = CUDA_ERROR_NOT_FOUND;
+	Context *context = _bind();
+	if (context) {
+		ir::PTXKernel *ptxKernel = reinterpret_cast<ir::PTXKernel *>(hfunc);
+		if (ptxKernel) {
+			// set an argument
+			std::memcpy(context->_hostThreadContext.parameterBlock + offset, ptr, size);
+	
+			context->_hostThreadContext.parameterIndices.push_back(offset);
+			context->_hostThreadContext.parameterSizes.push_back(size);
+			
+			result = CUDA_SUCCESS;
+		}
+		else {
+			report("cuParamSetSize() - kernel not found");
+			result = CUDA_ERROR_INVALID_CONTEXT;
+		}
+	}
+	else {
+		report("cuParamSetSize() - context not valid");
+		result = CUDA_ERROR_INVALID_CONTEXT;
+	}
+	_unbind();
+	return result;
 }
 
 CUresult cuda::CudaDriverFrontend::cuParamSetTexRef(CUfunction hfunc, int texunit, 
 	CUtexref hTexRef) {
+	assert(0 && "unimplemented");
 	return CUDA_ERROR_NOT_FOUND;
 }
 
@@ -994,17 +1248,94 @@ CUresult cuda::CudaDriverFrontend::cuParamSetTexRef(CUfunction hfunc, int texuni
 **
 ***********************************/
 
-CUresult cuda::CudaDriverFrontend::cuLaunch ( CUfunction f ) {
+static ir::Dim3 convert(const dim3& d) {
+	return std::move(ir::Dim3(d.x, d.y, d.z));
+}
+
+CUresult cuda::CudaDriverFrontend::cuLaunch ( CUfunction hfunc ) {
+
+	assert(0 && "unimplemented");
 	return CUDA_ERROR_NOT_FOUND;
 }
 
-CUresult cuda::CudaDriverFrontend::cuLaunchGrid (CUfunction f, int grid_width, 
+CUresult cuda::CudaDriverFrontend::cuLaunchGrid (CUfunction hfunc, int grid_width, 
 	int grid_height) {
-	return CUDA_ERROR_NOT_FOUND;
+
+	CUresult result = CUDA_ERROR_NOT_FOUND;
+	Context *context = _bind();
+	if (context) {
+		ir::PTXKernel *ptxKernel = reinterpret_cast<ir::PTXKernel *>(hfunc);
+		if (ptxKernel) {
+	
+			context->_hostThreadContext.mapParameters(ptxKernel);
+			context->_launchConfiguration.gridDim.x = grid_width;
+			context->_launchConfiguration.gridDim.y = grid_height;
+			context->_launchConfiguration.gridDim.z = 1;
+			
+			report("kernel launch (" << ptxKernel->name 
+				<< ") on thread " << boost::this_thread::get_id());
+	
+			try {
+				trace::TraceGeneratorVector traceGens;
+
+				traceGens = context->_hostThreadContext.persistentTraceGenerators;
+				traceGens.insert(traceGens.end(),
+					context->_hostThreadContext.nextTraceGenerators.begin(), 
+					context->_hostThreadContext.nextTraceGenerators.end());
+
+				context->_getDevice().launch(ptxKernel->module->path(), 
+					ptxKernel->name, 
+					convert(context->_launchConfiguration.gridDim), 
+					convert(context->_launchConfiguration.blockDim), 
+					context->_launchConfiguration.sharedMemory, 
+					context->_hostThreadContext.parameterBlock, 
+					context->_hostThreadContext.parameterBlockSize, traceGens);
+					
+				report(" launch completed successfully");	
+			}
+			catch( const executive::RuntimeException& e ) {
+				std::cerr << "==Ocelot== PTX Emulator failed to run kernel \"" 
+					<< ptxKernel->name 
+					<< "\" with exception: \n";
+				std::cerr << e.toString()  
+					<< "\n" << std::flush;
+				_unbind();
+				throw;
+			}
+			catch( const std::exception& e ) {
+				std::cerr << "==Ocelot== " << context->_getDevice().properties().name
+					<< " failed to run kernel \""
+					<< ptxKernel->name
+					<< "\" with exception: \n";
+				std::cerr << e.what()
+					<< "\n" << std::flush;
+				_unbind();
+				throw;
+			}
+			catch(...) {
+				_unbind();
+				throw;
+			}
+
+			result = CUDA_SUCCESS;
+		}
+		else {
+			report("cuLaunch() - kernel not found");
+			result = CUDA_ERROR_INVALID_CONTEXT;
+		}
+	}
+	else {
+		report("cuLaunch() - context not valid");
+		result = CUDA_ERROR_INVALID_CONTEXT;
+	}
+	_unbind();
+	return result;
+
 }
 
 CUresult cuda::CudaDriverFrontend::cuLaunchGridAsync( CUfunction f, int grid_width, 
 	int grid_height, CUstream hStream ) {
+	assert(0 && "unimplemented");
 	return CUDA_ERROR_NOT_FOUND;
 }
 
@@ -1016,27 +1347,33 @@ CUresult cuda::CudaDriverFrontend::cuLaunchGridAsync( CUfunction f, int grid_wid
 ***********************************/
 CUresult cuda::CudaDriverFrontend::cuEventCreate( CUevent *phEvent, 
 	unsigned int Flags ) {
+	assert(0 && "unimplemented");
 	return CUDA_ERROR_NOT_FOUND;
 }
 
 CUresult cuda::CudaDriverFrontend::cuEventRecord( CUevent hEvent, CUstream hStream ) {
+	assert(0 && "unimplemented");
 	return CUDA_ERROR_NOT_FOUND;
 }
 
 CUresult cuda::CudaDriverFrontend::cuEventQuery( CUevent hEvent ) {
+	assert(0 && "unimplemented");
 	return CUDA_ERROR_NOT_FOUND;
 }
 
 CUresult cuda::CudaDriverFrontend::cuEventSynchronize( CUevent hEvent ) {
+	assert(0 && "unimplemented");
 	return CUDA_ERROR_NOT_FOUND;
 }
 
 CUresult cuda::CudaDriverFrontend::cuEventDestroy( CUevent hEvent ) {
+	assert(0 && "unimplemented");
 	return CUDA_ERROR_NOT_FOUND;
 }
 
 CUresult cuda::CudaDriverFrontend::cuEventElapsedTime( float *pMilliseconds, 
 	CUevent hStart, CUevent hEnd ) {
+	assert(0 && "unimplemented");
 	return CUDA_ERROR_NOT_FOUND;
 }
 
@@ -1048,18 +1385,22 @@ CUresult cuda::CudaDriverFrontend::cuEventElapsedTime( float *pMilliseconds,
 ***********************************/
 CUresult cuda::CudaDriverFrontend::cuStreamCreate( CUstream *phStream, 
 	unsigned int Flags ) {
+	assert(0 && "unimplemented");
 	return CUDA_ERROR_NOT_FOUND;
 }
 
 CUresult cuda::CudaDriverFrontend::cuStreamQuery( CUstream hStream ) {
+	assert(0 && "unimplemented");
 	return CUDA_ERROR_NOT_FOUND;
 }
 
 CUresult cuda::CudaDriverFrontend::cuStreamSynchronize( CUstream hStream ) {
+	assert(0 && "unimplemented");
 	return CUDA_ERROR_NOT_FOUND;
 }
 
 CUresult cuda::CudaDriverFrontend::cuStreamDestroy( CUstream hStream ) {
+	assert(0 && "unimplemented");
 	return CUDA_ERROR_NOT_FOUND;
 }
 
@@ -1071,33 +1412,39 @@ CUresult cuda::CudaDriverFrontend::cuStreamDestroy( CUstream hStream ) {
 ***********************************/
 CUresult cuda::CudaDriverFrontend::cuGraphicsUnregisterResource(
 	CUgraphicsResource resource) {
+	assert(0 && "unimplemented");
 	return CUDA_ERROR_NOT_FOUND;
 }
 
 CUresult cuda::CudaDriverFrontend::cuGraphicsSubResourceGetMappedArray(
 	CUarray *pArray, CUgraphicsResource resource, 
 	unsigned int arrayIndex, unsigned int mipLevel ) {
+	assert(0 && "unimplemented");
 	return CUDA_ERROR_NOT_FOUND;
 }
 
 CUresult cuda::CudaDriverFrontend::cuGraphicsResourceGetMappedPointer(
 	CUdeviceptr *pDevPtr, unsigned int *pSize, 
 	CUgraphicsResource resource ) {
+	assert(0 && "unimplemented");
 	return CUDA_ERROR_NOT_FOUND;
 }
 
 CUresult cuda::CudaDriverFrontend::cuGraphicsResourceSetMapFlags(
 	CUgraphicsResource resource, unsigned int flags ) {
+	assert(0 && "unimplemented");
 	return CUDA_ERROR_NOT_FOUND;
 }
  
 CUresult cuda::CudaDriverFrontend::cuGraphicsMapResources(unsigned int count, 
 	CUgraphicsResource *resources, CUstream hStream ) {
+	assert(0 && "unimplemented");
 	return CUDA_ERROR_NOT_FOUND;
 }
 
 CUresult cuda::CudaDriverFrontend::cuGraphicsUnmapResources(unsigned int count, 
 	CUgraphicsResource *resources, CUstream hStream ) {
+	assert(0 && "unimplemented");
 	return CUDA_ERROR_NOT_FOUND;
 }
 
@@ -1108,28 +1455,33 @@ CUresult cuda::CudaDriverFrontend::cuGraphicsUnmapResources(unsigned int count,
 **
 ***********************************/
 CUresult cuda::CudaDriverFrontend::cuGLInit() {
+	assert(0 && "unimplemented");
 	return CUDA_ERROR_NOT_FOUND;
 }
 
 CUresult cuda::CudaDriverFrontend::cuGLCtxCreate(CUcontext *pCtx, 
 	unsigned int Flags, CUdevice device) {
+	assert(0 && "unimplemented");
 	return CUDA_ERROR_NOT_FOUND;
 }
 
 CUresult cuda::CudaDriverFrontend::cuGraphicsGLRegisterBuffer( 
 	CUgraphicsResource *pCudaResource, unsigned int buffer, 
 	unsigned int Flags ) {
+	assert(0 && "unimplemented");
 	return CUDA_ERROR_NOT_FOUND;
 }
 
 CUresult cuda::CudaDriverFrontend::cuGraphicsGLRegisterImage( 
 	CUgraphicsResource *pCudaResource, unsigned int image, 
 	int target, unsigned int Flags) {
+	assert(0 && "unimplemented");
 	return CUDA_ERROR_NOT_FOUND;
 }
 
 
 std::string cuda::CudaDriverFrontend::toString(CUresult result) {
+	assert(0 && "unimplemented");
 	return "CUresult";
 }
 

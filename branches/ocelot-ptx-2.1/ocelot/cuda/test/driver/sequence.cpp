@@ -122,7 +122,12 @@ int main() {
 	}
 	parameters.A = reinterpret_cast<int *>(A_gpu);
 	parameters.N = N;
-	result = cuParamSetv(function, 0, &parameters, sizeof(parameters));
+	result = cuParamSetv(function, 0, &parameters.A, sizeof(parameters.A));
+	if (result != CUDA_SUCCESS) {
+		report("cuParamSetv() failed: " << result);
+		return 1;
+	}
+	result = cuParamSetv(function, 8, &parameters.N, sizeof(parameters.N));
 	if (result != CUDA_SUCCESS) {
 		report("cuParamSetv() failed: " << result);
 		return 1;

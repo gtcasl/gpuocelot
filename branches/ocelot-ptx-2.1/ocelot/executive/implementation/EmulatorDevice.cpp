@@ -952,6 +952,7 @@ namespace executive
 		const trace::TraceGeneratorVector& traceGenerators)
 	{
 		ModuleMap::iterator module = _modules.find(moduleName);
+		report("EmulatorDevice::launch() - " << moduleName << "::" << kernelName);
 		
 		if(module == _modules.end())
 		{

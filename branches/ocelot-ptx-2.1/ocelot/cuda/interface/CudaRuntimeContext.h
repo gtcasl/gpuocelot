@@ -38,7 +38,8 @@ namespace cuda {
 		KernelLaunchConfiguration(dim3 grid, dim3 block, size_t shared, 
 			cudaStream_t s): gridDim(grid), blockDim(block), 
 			sharedMemory(shared), stream(s) { }
-			
+		KernelLaunchConfiguration(): gridDim(0,0,0), blockDim(0,0,0), sharedMemory(0) { }
+		
 	public:
 		//! dimensions of grid
 		dim3 gridDim;

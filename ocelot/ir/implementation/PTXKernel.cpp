@@ -412,20 +412,18 @@ namespace ir
 			stream << "\t" << local->second.toString() << "\n";
 		}
 		
-		if( _dfg != 0 )
-		{
-			RegisterVector regs = getReferencedRegisters();
-		
-			for (RegisterVector::const_iterator reg = regs.begin();
-				reg != regs.end(); ++reg) {
-				if (reg->type == PTXOperand::pred) {
-					stream << "\t.reg .pred %p" << reg->id << ";\n";
-				}
-				else {
-					stream << "\t.reg ." 
-						<< PTXOperand::toString( reg->type ) << " " 
-						<< "%r" << reg->id << ";\n";
-				}
+		assert(_dfg != 0);
+		RegisterVector regs = getReferencedRegisters();
+	
+		for (RegisterVector::const_iterator reg = regs.begin();
+			reg != regs.end(); ++reg) {
+			if (reg->type == PTXOperand::pred) {
+				stream << "\t.reg .pred %p" << reg->id << ";\n";
+			}
+			else {
+				stream << "\t.reg ." 
+					<< PTXOperand::toString( reg->type ) << " " 
+					<< "%r" << reg->id << ";\n";
 			}
 		}
 		

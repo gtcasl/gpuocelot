@@ -269,6 +269,9 @@ namespace cuda {
 		virtual cudaError_t cudaLaunch(const char *entry);
 		virtual cudaError_t cudaFuncGetAttributes(struct cudaFuncAttributes *attr, 
 			const char *func);
+		virtual cudaError_t cudaFuncSetCacheConfig(const char *func, 
+			enum cudaFuncCache cacheConfig);
+
 
 		/*
 			Stream creation
@@ -351,6 +354,12 @@ namespace cuda {
 
 		virtual cudaError_t cudaDriverGetVersion(int *driverVersion);
 		virtual cudaError_t cudaRuntimeGetVersion(int *runtimeVersion);
+
+		/*
+			Symbol Tables
+		*/
+		virtual cudaError_t cudaGetExportTable(const void **ppExportTable, 
+			const cudaUUID_t *pExportTableId);
 
 		/*
 			Runtime Synchronization

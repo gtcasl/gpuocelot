@@ -175,6 +175,9 @@ namespace ir {
 		/*! Path from which Module was loaded */
 		std::string _modulePath;
 		
+		/*! Target string */
+		std::string _target;
+		
 		friend class executive::Executive;
 	};
 

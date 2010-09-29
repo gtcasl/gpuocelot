@@ -508,6 +508,11 @@ cudaError_t cuda::CudaRuntimeInterface::cudaFuncGetAttributes(struct cudaFuncAtt
 	return cudaErrorNotYetImplemented;
 }
 
+cudaError_t cuda::CudaRuntimeInterface::cudaFuncSetCacheConfig(const char *func, 
+	enum cudaFuncCache cacheConfig) {
+	assert(0 && "unimplemented");
+	return cudaErrorNotYetImplemented;
+}
 
 
 cudaError_t cuda::CudaRuntimeInterface::cudaStreamCreate(cudaStream_t *pStream) {
@@ -689,6 +694,13 @@ cudaError_t cuda::CudaRuntimeInterface::cudaRuntimeGetVersion(int *runtimeVersio
 	assert(0 && "unimplemented");
 	return cudaErrorNotYetImplemented;
 }
+
+cudaError_t cuda::CudaRuntimeInterface::cudaGetExportTable(
+	const void **ppExportTable, const cudaUUID_t *pExportTableId) {
+	assert(0 && "unimplemented");
+	return cudaErrorNotYetImplemented;
+}
+
 
 void cuda::CudaRuntimeInterface::cudaMutexOperation( int lock ) {
 	assert(0 && "unimplemented");

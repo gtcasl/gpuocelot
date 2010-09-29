@@ -862,6 +862,13 @@ namespace translator
 				op.name = _loadSpecialRegister( o.special );
 				break;
 			}
+			case ir::PTXOperand::BitBucket:
+			{
+				std::stringstream stream;
+				stream << "%r_" << o.reg;
+				op.name = stream.str();
+				break;
+			}
 			case ir::PTXOperand::Invalid:
 			{
 				assertM( false, "Cannot translate invalid PTX operand." );

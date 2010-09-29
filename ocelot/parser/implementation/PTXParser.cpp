@@ -1302,9 +1302,8 @@ namespace parser
 		state.fileName = fileName;
 		
 		ir::PTXOperand bucket;
-		bucket.identifier = "_";
 		bucket.type = ir::PTXOperand::b64;
-		bucket.addressMode = ir::PTXOperand::Register;
+		bucket.addressMode = ir::PTXOperand::BitBucket;
 		bucket.vec = ir::PTXOperand::v1;
 		
 		state.operands.insert( std::make_pair( "_", 

@@ -43,6 +43,7 @@ namespace ir {
 			Address,			//! treat as addressable variable
 			Label,				//! operand is a label
 			Special,			//! special register
+			BitBucket,			//! bit bucket register
 			Invalid
 		};
 

@@ -580,20 +580,22 @@ ir::PTXOperand::PTXOperand(SpecialRegister r, VectorIndex i, DataType t) :
 
 ir::PTXOperand::PTXOperand(const std::string& l) : identifier(l), 
 	addressMode(Label), type(TypeSpecifier_invalid),
-	offset(0), reg(0), vec(v1) {
+	offset(0), condition(Pred), reg(0), vec(v1) {
 }
 
 ir::PTXOperand::PTXOperand(AddressMode m, DataType t, RegisterType r, 
-	int o, Vec v) : addressMode(m), type(t), offset(o), reg(r), vec(v) {
+	int o, Vec v) : addressMode(m), type(t), offset(o), condition(Pred),
+	reg(r), vec(v) {
 }
 
 ir::PTXOperand::PTXOperand(AddressMode m, DataType t, 
 	const std::string& i, int o, Vec v) : identifier(i), 
-	addressMode(m), type(t), offset(o), vec(v) {
+	addressMode(m), type(t), offset(o), condition(Pred), vec(v) {
 }
 
 ir::PTXOperand::PTXOperand(AddressMode m, const std::string& i) : identifier(i),
-	addressMode(m), type(TypeSpecifier_invalid), offset(0), reg(0), vec(v1) {
+	addressMode(m), type(TypeSpecifier_invalid), offset(0), condition(Pred),
+	reg(0), vec(v1) {
 }
 
 ir::PTXOperand::~PTXOperand() {

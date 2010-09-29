@@ -187,6 +187,9 @@ public:
 	~ControlFlowGraph();
 
 public:
+	/*! Make sure that the next call to newId will return a unique id */
+	void computeNewBlockId();
+
 	/*! Get a unique identifier for a new block */
 	BasicBlock::Id newId();
 

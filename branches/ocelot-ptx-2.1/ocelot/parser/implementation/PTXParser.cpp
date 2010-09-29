@@ -1663,7 +1663,23 @@ namespace parser
 		conditionCode.identifier = "%_ZconditionCode";
 		operandVector.push_back( conditionCode );
 	}
+
+	void PTXParser::State::relaxedConvert( int token, YYLTYPE& location )
+	{
+		if( !ir::PTXOperand::relaxedValid( tokenToDataType( token ),
+			statement.instruction.a.type ) )
+		{
+			throw_exception( parser::PTXParser::toString( location, *this ) 
+				<< "Type of " << statement.instruction.a.identifier << " " 
+				<< ir::PTXOperand::toString( statement.instruction.a.type ) 
+				<< " not convertable to type " 
+				<< ir::PTXOperand::toString( tokenToDataType( token ) ) 
+				<< " using relaxed conversion rules.", InvalidDataType );
+		}
 	
+		statement.instruction.a.type = tokenToDataType( token );
+	}
+
 	void PTXParser::State::convert( int token, YYLTYPE& location )
 	{
 		if( !ir::PTXOperand::valid( tokenToDataType( token ),

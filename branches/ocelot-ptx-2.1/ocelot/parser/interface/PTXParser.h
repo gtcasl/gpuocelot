@@ -242,6 +242,7 @@ namespace parser
 					void call( const std::string& identifier,
 						YYLTYPE& location );
 					void carryIn();
+					void relaxedConvert( int token, YYLTYPE& location );
 					void convert( int token, YYLTYPE& location );
 					void convertC( int token, YYLTYPE& location );
 					void convertD( int token, YYLTYPE& location );

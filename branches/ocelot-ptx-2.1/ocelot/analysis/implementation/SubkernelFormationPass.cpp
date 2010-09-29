@@ -28,7 +28,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 // Standard Library Includes
 #include <queue>
@@ -36,22 +36,20 @@
 namespace analysis
 {
 
-SubkernelFormationPass::SubkernelFormationPass(unsigned int e, bool s)
+SubkernelFormationPass::SubkernelFormationPass(unsigned int e)
 	: ModulePass(DataflowGraphAnalysis, "SubkernelFormationPass"), 
-	_expectedRegionSize(e), _insertScheduler(s)
+	_expectedRegionSize(e)
 {
 
 }
 
 void SubkernelFormationPass::runOnModule(ir::Module& m)
 {
-	assertM(!_insertScheduler, "Not supported yet.");
-	
 	report("Running SubkernelFormationPass");
 	// This pass requires all kernels to be loaded
 	m.loadNow();
 
-	ExtractKernelsPass pass(_expectedRegionSize, _insertScheduler);
+	ExtractKernelsPass pass(_expectedRegionSize);
 	
 	pass.initialize(m);
 
@@ -81,10 +79,9 @@ void SubkernelFormationPass::runOnModule(ir::Module& m)
 }
 
 SubkernelFormationPass::ExtractKernelsPass::ExtractKernelsPass(
-	unsigned int regionSize, bool s) : 
-	KernelPass(false, "SubkernelFormationPass"), 
-	_expectedRegionSize(regionSize), 
-	_insertScheduler(s)
+	unsigned int regionSize) : 
+	KernelPass(DataflowGraphAnalysis, "ExtractKernelsPass"), 
+	_expectedRegionSize(regionSize)
 {
 
 }
@@ -107,10 +104,11 @@ static void createRestorePoint(ir::PTXKernel& newKernel, ir::PTXKernel& ptx,
 	DataflowGraph::IteratorMap::const_iterator
 		dfgBlock = cfgToDfgMap.find(oldBlock);
 
-	if(dfgBlock->second->aliveOut().empty()) return;
+	if(dfgBlock->second->aliveIn().empty()) return;
 	
 	ir::ControlFlowGraph::edge_iterator splitEdge = newKernel.cfg()->split_edge(
-		newEdge, ir::BasicBlock(newBlock->label + "_restore"));
+		newEdge, ir::BasicBlock(newBlock->label + "_restore",
+		newKernel.cfg()->newId()));
 
 	splitEdge->type = ir::BasicBlock::Edge::FallThrough;
 
@@ -126,8 +124,8 @@ static void createRestorePoint(ir::PTXKernel& newKernel, ir::PTXKernel& ptx,
 	splitEdge->head->instructions.push_back(move);
 
 	for(DataflowGraph::RegisterSet::const_iterator
-		reg = dfgBlock->second->aliveOut().begin();
-		reg != dfgBlock->second->aliveOut().end(); ++reg)
+		reg = dfgBlock->second->aliveIn().begin();
+		reg != dfgBlock->second->aliveIn().end(); ++reg)
 	{
 		report("    restoring r" << reg->id);
 		
@@ -273,6 +271,10 @@ static ir::ControlFlowGraph::iterator createRegion(
 		oldToNewBlockMap.insert(std::make_pair(*block, newBlock));
 	}
 	
+	newKernel.cfg()->computeNewBlockId();
+	
+	bool fallthroughToExit = false;
+	
 	for(BlockSet::const_iterator block = region.begin(); 
 		block != region.end(); ++block)
 	{
@@ -314,9 +316,36 @@ static ir::ControlFlowGraph::iterator createRegion(
 			// edges that leave the region are directed to the save point
 			BlockMap::iterator newHead = oldToNewBlockMap.find((*edge)->head);
 			assert(newHead != oldToNewBlockMap.end());
-			ir::ControlFlowGraph::edge_iterator newEdge = 
-				newKernel.cfg()->insert_edge(ir::Edge(newHead->second, 
-				newKernel.cfg()->get_exit_block(), (*edge)->type));
+			ir::ControlFlowGraph::edge_iterator newEdge;
+
+			if((*edge)->type == ir::Edge::FallThrough)
+			{
+				if(fallthroughToExit)
+				{
+					newEdge = newKernel.cfg()->insert_edge(ir::Edge(
+						newHead->second, newKernel.cfg()->get_exit_block(), 
+						ir::Edge::Branch));
+					
+					ir::PTXInstruction* branch = new ir::PTXInstruction(
+						ir::PTXInstruction::Bra);
+					branch->uni = true;
+					branch->d = std::move(ir::PTXOperand((*edge)->tail->label));
+					
+					newHead->second->instructions.push_back(branch);
+				}
+				else
+				{
+					fallthroughToExit = true;
+					newEdge = newKernel.cfg()->insert_edge(ir::Edge(
+						newHead->second, newKernel.cfg()->get_exit_block(),
+						(*edge)->type));
+				}
+			}
+			else
+			{
+				newEdge = newKernel.cfg()->insert_edge(ir::Edge(newHead->second, 
+					newKernel.cfg()->get_exit_block(), (*edge)->type));
+			}
 
 			createSavePoint(newKernel, ptx, newHead->second,
 				tail, newEdge, cfgToDfgMap);
@@ -345,7 +374,7 @@ static ir::ControlFlowGraph::iterator createRegion(
 	for(BlockSet::const_iterator block = inEdges.begin(); 
 		block != inEdges.end(); ++block)
 	{
-		report("    From block " << (*block)->label);
+		report("    From block " << (*block)->id);
 		for(ir::ControlFlowGraph::edge_pointer_iterator 
 			edge = (*block)->out_edges.begin(); 
 			edge != (*block)->out_edges.end(); ++edge)
@@ -376,6 +405,27 @@ static ir::ControlFlowGraph::iterator createRegion(
 		newKernel.cfg()->insert_edge(ir::Edge(
 			newKernel.cfg()->get_entry_block(),
 			newTail->second, ir::Edge::FallThrough));
+	}
+	
+	// Move all edges from the entry that do not enter the region to the exit
+	for(ir::ControlFlowGraph::edge_pointer_iterator 
+		edge = entry->out_edges.begin(); 
+		edge != entry->out_edges.end(); ++edge)
+	{
+		if(region.count((*edge)->tail) != 0) continue;
+
+		if(exit == ptx.cfg()->get_exit_block())
+		{
+			report("   Creating exit point - " 
+				<< ptx.name << "_split_entry" );
+			exit = ptx.cfg()->insert_block(ir::BasicBlock(newKernel.name 
+				+ "_split_entry", ptx.cfg()->newId()));			
+		}
+		
+		report("   Moving edge from block " << (*edge)->head->id << " to block " 
+			<< (*edge)->tail->id << " to next region");
+		deletedEdges.push_back(*edge);
+		newEdges.push_back(ir::Edge(exit, (*edge)->tail, ir::Edge::Branch));
 	}
 
 	for(ir::ControlFlowGraph::edge_pointer_iterator edge = deletedEdges.begin();
@@ -417,7 +467,9 @@ static void updateTailCallTargets(
 			
 			IdToSubkernelMap::const_iterator 
 				kernelName = idToKernelMap.find(call->branchTargetInstruction);
-			assert(kernelName != idToKernelMap.end());
+			assertM(kernelName != idToKernelMap.end(),
+				"Could not find kernel containing block with id " 
+				<< call->branchTargetInstruction);
 			
 			call->a.identifier = kernelName->second->name;
 		}
@@ -463,7 +515,7 @@ static void createScheduler(ir::PTXKernel& kernel, const BlockSet& inBlocks)
 		kernel.cfg()->remove_edge(*edge);
 		
 		// don't add multiple paths to the same block
-		if(!targets.insert((*edge)->tail).second) continue;
+		if(!targets.insert(newEdge.tail).second) continue;
 
 		kernel.cfg()->insert_edge(newEdge);
 	}
@@ -598,7 +650,7 @@ void SubkernelFormationPass::ExtractKernelsPass::runOnKernel(ir::Kernel& k)
 	DataflowGraph::IteratorMap cfgToDfgMap = ptx.dfg()->getCFGtoDFGMap();
 	
 	// This is the new kernel entry point
-	splitKernels.push_back(new ir::PTXKernel(k.name, _insertScheduler));
+	splitKernels.push_back(new ir::PTXKernel(k.name, false));
 
 	ir::PTXKernel* newKernel = splitKernels.back();
 
@@ -647,6 +699,8 @@ void SubkernelFormationPass::ExtractKernelsPass::runOnKernel(ir::Kernel& k)
 			if(!encountered.insert(tail).second) continue;
 			
 			// push successor blocks
+			report("  Queuing up sucessor of block " 
+				<< block->id << ", block " << tail->id);
 			queue.push_back(tail);
 		}
 
@@ -655,6 +709,8 @@ void SubkernelFormationPass::ExtractKernelsPass::runOnKernel(ir::Kernel& k)
 
 		currentRegionSize += block->instructions.size();
 		region.insert(block);
+		report("  Adding block with id " << block->id 
+			<< " to kernel " << newKernel->name);
 		idToKernelMap.insert(std::make_pair(block->id, newKernel));
 		
 		// create a new region if there are enough blocks

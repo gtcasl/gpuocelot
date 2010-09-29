@@ -660,7 +660,7 @@ namespace executive
 		_properties.totalMemory = total;
 		
 		checkError(driver::cuDeviceGetAttribute(
-			&_properties.multiprocessorCount,
+			(int*)&_properties.multiprocessorCount,
 			CU_DEVICE_ATTRIBUTE_MULTIPROCESSOR_COUNT, device));
 		checkError(driver::cuDeviceGetAttribute(&_properties.memcpyOverlap, 
 			CU_DEVICE_ATTRIBUTE_GPU_OVERLAP, device));

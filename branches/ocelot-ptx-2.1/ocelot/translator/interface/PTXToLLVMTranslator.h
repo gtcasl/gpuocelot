@@ -37,7 +37,7 @@ namespace translator
 			unsigned int _tempBlockCount;
 			bool _usesTextures;
 			RegisterVector _uninitialized;
-			const ir::PTXKernel* _ptx;
+			ir::PTXKernel* _ptx;
 		
 		private:
 			static ir::LLVMInstruction::DataType _translate( 
@@ -67,6 +67,7 @@ namespace translator
 			void _swapAllExceptName( ir::LLVMInstruction::Operand& o, 
 				const ir::PTXOperand& i );
 			
+			void _transformPTX();
 			void _translateInstructions();
 			void _newBlock( const std::string& name );
 			void _translate( const analysis::DataflowGraph::Instruction& i, 

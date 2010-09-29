@@ -211,6 +211,14 @@ ControlFlowGraph::~ControlFlowGraph() {
 	clear();
 }
 
+void ControlFlowGraph::computeNewBlockId() {
+	_nextId = 0;
+	for(const_iterator block = begin(); block != end(); ++block) {
+		_nextId = std::max(_nextId, block->id);
+	}
+	++_nextId;
+}
+
 BasicBlock::Id ControlFlowGraph::newId() {
 	return _nextId++;
 }
@@ -225,6 +233,7 @@ bool ControlFlowGraph::empty() const {
 
 ControlFlowGraph::iterator ControlFlowGraph::insert_block(
 	const BasicBlock& block) {
+	report("Inserting block '" << block.label << "' (" << block.id << ")" );
 	return _blocks.insert(end(), block);
 }
 

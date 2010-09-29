@@ -14,6 +14,8 @@
 #include <ocelot/ir/interface/PTXKernel.h>
 #include <ocelot/ir/interface/PTXInstruction.h>
 #include <ocelot/ir/interface/Module.h>
+#include <ocelot/analysis/interface/SubkernelFormationPass.h>
+#include <ocelot/analysis/interface/ConvertPredicationToSelectPass.h>
 
 #include <climits>
 
@@ -889,6 +891,11 @@ namespace translator
 		std::string temp = o.name;
 		o = _translate( i );
 		o.name = temp;
+	}
+
+	void PTXToLLVMTranslator::_transformPTX()
+	{
+		
 	}
 
 	void PTXToLLVMTranslator::_translateInstructions()
@@ -7063,10 +7070,10 @@ namespace translator
 		assertM( k->ISA == ir::Instruction::PTX, 
 			"Kernel must a PTXKernel to translate to an LLVMKernel" );
 		
-		_ptx = static_cast< const ir::PTXKernel* >( k );
+		_ptx = new ir::PTXKernel( *static_cast< const ir::PTXKernel* >( k ) );
 		_llvmKernel = new ir::LLVMKernel( *k );
-				
-		assert(_ptx->dfg()->ssa());
+		
+		_transformPTX();
 		_translateInstructions();
 		_initializeRegisters();
 		_addStackAllocations();

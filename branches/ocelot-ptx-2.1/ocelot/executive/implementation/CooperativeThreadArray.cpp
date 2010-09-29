@@ -2509,22 +2509,28 @@ void executive::CooperativeThreadArray::eval_CopySign(CTAContext &context, const
 		for (int tid = 0; tid < threadCount; tid++) {
 			if (!context.predicated(tid, instr)) continue;
 			
-			PTXF32 a = operandAsF32(tid, instr.a), b = operandAsF32(tid, instr.b);
+			PTXF32 a = operandAsF32(tid, instr.a);
+			PTXF32 b = operandAsF32(tid, instr.b);
 			PTXU32 d = (hydrazine::bit_cast<PTXU32, PTXF32>(b) & 0x7ffffff) | 
 				(hydrazine::bit_cast<PTXU32, PTXF32>(a) & 0x8000000);
 
-			setRegAsF32(tid, instr.d.reg, hydrazine::bit_cast<PTXF32, PTXU32>(d));
+			setRegAsF32(tid, instr.d.reg,
+				hydrazine::bit_cast<PTXF32, PTXU32>(d));
 		}
 	}
 	else if (instr.type == PTXOperand::f64) {
 		for (int tid = 0; tid < threadCount; tid++) {
 			if (!context.predicated(tid, instr)) continue;
 			
-			PTXF64 a = operandAsF64(tid, instr.a), b = operandAsF64(tid, instr.b);
-			PTXU64 d = (hydrazine::bit_cast<PTXU64, PTXF64>(b) & 0x7ffffffffffffff) | 
-				(hydrazine::bit_cast<PTXU64, PTXF64>(a) & 0x800000000000000);
+			PTXF64 a = operandAsF64(tid, instr.a);
+			PTXF64 b = operandAsF64(tid, instr.b);
+			PTXU64 d = (hydrazine::bit_cast<PTXU64, PTXF64>(b)
+				& 0x7ffffffffffffffULL) | 
+				(hydrazine::bit_cast<PTXU64, PTXF64>(a) 
+				& 0x800000000000000ULL);
 
-			setRegAsF64(tid, instr.d.reg, hydrazine::bit_cast<PTXF64, PTXU64>(d));
+			setRegAsF64(tid, instr.d.reg, 
+				hydrazine::bit_cast<PTXF64, PTXU64>(d));
 		}	
 	}
 	else {
@@ -2535,7 +2541,8 @@ void executive::CooperativeThreadArray::eval_CopySign(CTAContext &context, const
 /*!
 
 */
-void executive::CooperativeThreadArray::eval_Cos(CTAContext &context, const PTXInstruction &instr) {
+void executive::CooperativeThreadArray::eval_Cos(CTAContext &context,
+	const PTXInstruction &instr) {
 	trace();
 	if (instr.type == PTXOperand::f32) {
 		for (int threadID = 0; threadID < threadCount; threadID++) {

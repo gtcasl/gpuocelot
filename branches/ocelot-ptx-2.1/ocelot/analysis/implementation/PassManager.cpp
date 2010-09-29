@@ -22,7 +22,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 namespace analysis
 {
@@ -93,7 +93,8 @@ static void allocateNewDataStructures(ir::Kernel* k, int type)
 
 static void runKernelPass(ir::Kernel* kernel, Pass* pass)
 {
-	report("  Running pass '" << pass->toString() << "'" );
+	report("  Running pass '" << pass->toString() << "' on kernel '"
+		<< kernel->name << "'" );
 	switch(pass->type)
 	{
 	case Pass::ImmutablePass:
@@ -131,7 +132,6 @@ static void runKernelPass(ir::Kernel* kernel, Pass* pass)
 
 static void runKernelPass(ir::Module* module, ir::Kernel* kernel, Pass* pass)
 {
-	report("  Running pass '" << pass->toString() << "'" );
 	switch(pass->type)
 	{
 	case Pass::ImmutablePass: /* fall through */
@@ -139,12 +139,16 @@ static void runKernelPass(ir::Module* module, ir::Kernel* kernel, Pass* pass)
 	break;
 	case Pass::KernelPass:
 	{
+		report("  Running kernel pass '" << pass->toString() << "' on kernel '"
+			<< kernel->name << "'" );
 		KernelPass* kernelPass = static_cast<KernelPass*>(pass);
 		kernelPass->runOnKernel(*kernel);
 	}
 	break;
 	case Pass::BasicBlockPass:
 	{
+		report("  Running basic block pass '" << pass->toString() 
+			<< "' on kernel '" << kernel->name << "'" );
 		BasicBlockPass* bbPass = static_cast<BasicBlockPass*>(pass);
 		bbPass->initialize(*kernel);
 		for( ir::ControlFlowGraph::iterator 
@@ -162,7 +166,6 @@ static void runKernelPass(ir::Module* module, ir::Kernel* kernel, Pass* pass)
 
 static void initializeKernelPass(ir::Module* module, Pass* pass)
 {
-	report("  Initializing pass '" << pass->toString() << "'" );
 	switch(pass->type)
 	{
 	case Pass::ImmutablePass: /* fall through */
@@ -170,12 +173,14 @@ static void initializeKernelPass(ir::Module* module, Pass* pass)
 	break;
 	case Pass::KernelPass:
 	{
+		report("  Initializing kernel pass '" << pass->toString() << "'" );
 		KernelPass* kernelPass = static_cast<KernelPass*>(pass);
 		kernelPass->initialize(*module);
 	}
 	break;
 	case Pass::BasicBlockPass:
 	{
+		report("  Initializing basic block pass '" << pass->toString() << "'" );
 		BasicBlockPass* bbPass = static_cast<BasicBlockPass*>(pass);
 		bbPass->initialize(*module);
 	}
@@ -186,7 +191,6 @@ static void initializeKernelPass(ir::Module* module, Pass* pass)
 
 static void finalizeKernelPass(ir::Module* module, Pass* pass)
 {
-	report("  Finalizing kernel pass '" << pass->toString() << "'" );
 	switch(pass->type)
 	{
 	case Pass::ImmutablePass: /* fall through */
@@ -194,12 +198,14 @@ static void finalizeKernelPass(ir::Module* module, Pass* pass)
 	break;
 	case Pass::KernelPass:
 	{
+		report("  Finalizing kernel pass '" << pass->toString() << "'" );
 		KernelPass* kernelPass = static_cast<KernelPass*>(pass);
 		kernelPass->finalize();
 	}
 	break;
 	case Pass::BasicBlockPass:
 	{
+		report("  Finalizing basic block pass '" << pass->toString() << "'" );
 		BasicBlockPass* bbPass = static_cast<BasicBlockPass*>(pass);
 		bbPass->finalize();
 	}

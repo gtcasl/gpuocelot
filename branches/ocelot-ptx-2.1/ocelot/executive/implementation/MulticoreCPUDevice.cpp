@@ -12,6 +12,7 @@
 #include <ocelot/executive/interface/LLVMExecutableKernel.h>
 
 // hydrazine includes
+#include <hydrazine/interface/WindowsCompatibility.h>
 #include <hydrazine/implementation/Exception.h>
 #include <hydrazine/interface/Casts.h>
 

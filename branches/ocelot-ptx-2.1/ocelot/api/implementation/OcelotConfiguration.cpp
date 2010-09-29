@@ -201,6 +201,7 @@ static void initializeExecutive(api::OcelotConfiguration::Executive &executive,
 	executive.enableNVIDIA = config.parse<bool>("enableNVIDIA", true);
 	executive.enableAMD = config.parse<bool>("enableAMD", true);
 	executive.workerThreadLimit = config.parse<int>("workerThreadLimit", -1);
+	executive.workerThreadLimit = config.parse<int>("warpSize", -1);
 	
 	if (config.find("devices")) {
 		hydrazine::json::Visitor devices = config["devices"];

@@ -281,6 +281,9 @@ namespace cuda {
 		
 		//! optimization level
 		translator::Translator::OptimizationLevel _optimization;
+		
+		//! should we build a dfg for all kernels?
+		bool _requiresDataflowAnalysis;
 	
 	private:
 		cudaError_t _launchKernel(const std::string& module, 

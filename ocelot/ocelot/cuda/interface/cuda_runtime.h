@@ -357,6 +357,8 @@ struct textureReference {
   int __cudaReserved[16];
 };
 
+typedef struct CUuuid_st cudaUUID_t;
+
 /*
  * Function        : Select a load image from the __cudaFat binary
  *                   that will run on the specified GPU.
@@ -731,6 +733,8 @@ extern cudaError_t cudaThreadSynchronize(void);
 
 extern cudaError_t cudaDriverGetVersion(int *driverVersion);
 extern cudaError_t cudaRuntimeGetVersion(int *runtimeVersion);
+extern cudaError_t cudaGetExportTable(const void **ppExportTable,
+	const cudaUUID_t *pExportTableId);
 
 #ifdef __cplusplus
 }

@@ -39,6 +39,7 @@ ir::Module::Module() : _ptxPointer(0) {
 	target.targets.push_back("sm_13");
 	_statements.push_back(version);
 	_statements.push_back(target);
+	_target = ".target sm_13";
 }
 
 ir::Module::~Module() {
@@ -218,7 +219,7 @@ void ir::Module::writeIR( std::ostream& stream ) const {
 		<< " - to output stream.");
 
 	stream << ".version 1.4\n";
-	stream << ".target sm_13\n";
+	stream << _target << "\n";
 
 	stream << "/* Module " << _modulePath << " */\n\n";
 	
@@ -348,6 +349,9 @@ void ir::Module::extractPTXKernels() {
 				_kernels[kernel->name] = (kernel);
 				kernel->canonicalBlockLabels(kernelInstance++);
 			}
+		}
+		else if (statement.directive == PTXStatement::Target) {
+			_target = statement.toString();
 		}
 		if (inKernel) {
 			if (statement.directive == PTXStatement::Instr) {

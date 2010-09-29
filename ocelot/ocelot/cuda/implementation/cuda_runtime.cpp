@@ -436,6 +436,9 @@ cudaError_t  cudaFuncGetAttributes(struct cudaFuncAttributes *attr, const char *
 	return cuda::CudaRuntimeInterface::get()->cudaFuncGetAttributes(attr, func);
 }
 
+cudaError_t cudaFuncSetCacheConfig(const char *func, enum cudaFuncCache cacheConfig) {
+	return cuda::CudaRuntimeInterface::get()->cudaFuncSetCacheConfig(func, cacheConfig);
+}
 
 /*******************************************************************************
 *                                                                              *
@@ -632,6 +635,18 @@ cudaError_t  cudaDriverGetVersion(int *driverVersion) {
 cudaError_t  cudaRuntimeGetVersion(int *runtimeVersion) {
 	return cuda::CudaRuntimeInterface::get()->cudaRuntimeGetVersion(runtimeVersion);
 }
+
+/*******************************************************************************
+*                                                                              *
+*                                                                              *
+*                                                                              *
+*******************************************************************************/
+cudaError_t cudaGetExportTable(const void **ppExportTable,
+	const cudaUUID_t *pExportTableId) {
+	return cuda::CudaRuntimeInterface::get()->cudaGetExportTable(ppExportTable,
+		pExportTableId);
+}
+
 
 /*******************************************************************************
 *                                                                              *

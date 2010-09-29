@@ -1527,6 +1527,12 @@ namespace executive
 	{
 		// TODO work in something with the PTX JIT optimization level here
 	}
+	
+	bool NVIDIAGPUDevice::requiresDataflowAnalysis() const
+	{
+		return true;
+	}
+	
 }
 
 #endif

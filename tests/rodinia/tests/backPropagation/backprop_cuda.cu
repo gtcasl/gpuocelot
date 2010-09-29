@@ -195,6 +195,6 @@ void bpnn_train_cuda(BPNN *net, float eta, float momentum, float *eo, float *eh)
 #endif   
   
   
-  
+  printf("\nTEST PASSED\n");
 
 }

@@ -162,6 +162,8 @@ int main(int argc, char* argv[])
 	  printStringForError(err);
 	  exit(err);
    }   
+   
+   printf("\nTEST PASSED\n");
 }
 
 

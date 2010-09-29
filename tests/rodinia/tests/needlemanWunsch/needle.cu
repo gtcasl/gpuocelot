@@ -209,5 +209,6 @@ runTest( int argc, char** argv)
 	cudaFree(matrix_cuda);
 	cudaFree(matrix_cuda_out);
 
+	printf("\nTEST PASSED\n");
 }
 

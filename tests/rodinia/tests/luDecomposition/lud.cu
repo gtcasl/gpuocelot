@@ -26,6 +26,7 @@
 #include "common.h"
 
 static int do_verify = 0;
+static int silent_verify = 0;
 
 static struct option long_options[] = {
       /* name, has_arg, flag, val */
@@ -49,7 +50,7 @@ main ( int argc, char *argv[] )
   float *m, *d_m, *mm;
   stopwatch sw;
 
-  while ((opt = getopt_long(argc, argv, "::vs:i:", 
+  while ((opt = getopt_long(argc, argv, "::vVs:i:", 
                             long_options, &option_index)) != -1 ) {
       switch(opt){
         case 'i':
@@ -57,6 +58,10 @@ main ( int argc, char *argv[] )
           break;
         case 'v':
           do_verify = 1;
+          break;
+        case 'V':
+          do_verify = 1;
+          silent_verify = 1;
           break;
         case 's':
           matrix_dim = atoi(optarg);
@@ -96,7 +101,7 @@ main ( int argc, char *argv[] )
 
   if (do_verify){
     printf("Before LUD\n");
-    print_matrix(m, matrix_dim);
+    if (!silent_verify) print_matrix(m, matrix_dim);
     matrix_duplicate(m, &mm, matrix_dim);
   }
 
@@ -122,9 +127,9 @@ main ( int argc, char *argv[] )
 
   if (do_verify){
     printf("After LUD\n");
-    print_matrix(m, matrix_dim);
+    if (!silent_verify) print_matrix(m, matrix_dim);
     printf(">>>Verify<<<<\n");
-    lud_verify(mm, m, matrix_dim); 
+    lud_verify(mm, m, matrix_dim, silent_verify); 
     free(mm);
   }
 

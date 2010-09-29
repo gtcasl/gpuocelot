@@ -44,7 +44,7 @@ func_ret_t
 create_matrix_from_random(float **mp, int size);
 
 func_ret_t
-lud_verify(float *m, float *lu, int size);
+lud_verify(float *m, float *lu, int size, int silent);
 
 void
 matrix_multiply(float *inputa, float *inputb, float *output, int size);

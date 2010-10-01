@@ -37,7 +37,7 @@ namespace translator
 			unsigned int _tempBlockCount;
 			bool _usesTextures;
 			RegisterVector _uninitialized;
-			ir::PTXKernel* _ptx;
+			const ir::PTXKernel* _ptx;
 		
 		private:
 			static ir::LLVMInstruction::DataType _translate( 
@@ -67,7 +67,6 @@ namespace translator
 			void _swapAllExceptName( ir::LLVMInstruction::Operand& o, 
 				const ir::PTXOperand& i );
 			
-			void _transformPTX();
 			void _translateInstructions();
 			void _newBlock( const std::string& name );
 			void _translate( const analysis::DataflowGraph::Instruction& i, 
@@ -141,6 +140,8 @@ namespace translator
 				ir::PTXOperand::DataType dType, 
 				const ir::LLVMInstruction::Operand& s, 
 				ir::PTXOperand::DataType sType, int modifier = 0 );
+			void _flushToZero(const ir::LLVMInstruction::Operand& d, 
+				const ir::LLVMInstruction::Operand& a);
 			
 			std::string _tempRegister();
 			std::string _loadSpecialRegister( 
@@ -158,7 +159,6 @@ namespace translator
 				ir::PTXInstruction::AddressSpace space, 
 				ir::LLVMInstruction::DataType type, unsigned int vector );
 			
-			void _setFloatingPointRoundingMode( const ir::PTXInstruction& i );
 			ir::LLVMInstruction::Operand _destination( 
 				const ir::PTXInstruction& i, bool pd = false );
 			ir::LLVMInstruction::Operand _destinationCC( 

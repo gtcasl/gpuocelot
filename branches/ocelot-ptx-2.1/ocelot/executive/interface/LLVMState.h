@@ -20,24 +20,35 @@ namespace executive
 class LLVMState
 {
 public:
-	/*! \brief Build the jit */
-	LLVMState();
-	/*! \brief Destroy the jit */
-	~LLVMState();
-
-public:
 	/*! \brief Get a reference to the jit */
-	llvm::ExecutionEngine* jit();
+	static llvm::ExecutionEngine* jit();
 
 public:
 	/*! \brief A global singleton for the LLVM JIT */ 
 	static LLVMState llvmState;
 
 private:
-	/*! \brief LLVM JIT Engine */
-	llvm::ExecutionEngine* _jit;
-	/*! \brief LLVM fake mofule */
-	llvm::Module* _module;
+	class StateWrapper
+	{
+	public:
+		/*! \brief Build the jit */
+		StateWrapper();
+		/*! \brief Destroy the jit */
+		~StateWrapper();
+
+	public:
+		/*! \brief Get a reference to the jit */
+		llvm::ExecutionEngine* jit();
+
+	private:
+		/*! \brief LLVM JIT Engine */
+		llvm::ExecutionEngine* _jit;
+		/*! \brief LLVM fake mofule */
+		llvm::Module* _module;
+	};
+	
+private:
+	static StateWrapper _wrapper;
 };
 
 }

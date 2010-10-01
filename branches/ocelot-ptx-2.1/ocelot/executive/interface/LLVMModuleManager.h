@@ -17,6 +17,11 @@ namespace ir
 	class PTXKernel;
 }
 
+namespace llvm
+{
+	class Module;
+}
+
 namespace executive
 {
 
@@ -58,6 +63,7 @@ public:
 	public:
 		ir::PTXKernel* kernel;
 		Function       function;
+		llvm::Module*  module;
 	};
 		
 private:
@@ -76,7 +82,7 @@ private:
 		unsigned int kernelCount() const;
 		
 	private:
-		PTXKernelMap _kernels;
+		PTXKernelMap  _kernels;
 	};
 
 	typedef std::map<std::string, Module> ModuleMap;
@@ -115,8 +121,8 @@ private:
 		void execute();
 	
 	private:
-		ModuleMap    _modules;
-		unsigned int _kernelCount;
+		ModuleMap                     _modules;
+		unsigned int                  _kernelCount;
 	};
 	
 	static ModuleDatabase _database;

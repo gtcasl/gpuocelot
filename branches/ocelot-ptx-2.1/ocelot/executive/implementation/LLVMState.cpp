@@ -33,12 +33,17 @@
 namespace executive
 {
 
-LLVMState::LLVMState() : _jit(0), _module(0)
+llvm::ExecutionEngine* LLVMState::jit()
+{
+	return _wrapper.jit();
+}
+
+LLVMState::StateWrapper::StateWrapper() : _jit(0), _module(0)
 {
 
 }
 
-llvm::ExecutionEngine* LLVMState::jit()
+llvm::ExecutionEngine* LLVMState::StateWrapper::jit()
 {
 	#ifdef HAVE_LLVM
 	if(_jit == 0)
@@ -61,11 +66,13 @@ llvm::ExecutionEngine* LLVMState::jit()
 	return _jit;
 }
 
-LLVMState::~LLVMState()
+LLVMState::StateWrapper::~StateWrapper()
 {
 	delete _module;
 	delete _jit;
 }
+
+LLVMState::StateWrapper LLVMState::_wrapper;
 
 }
 

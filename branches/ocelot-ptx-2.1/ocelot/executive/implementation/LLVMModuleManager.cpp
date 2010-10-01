@@ -9,10 +9,25 @@
 
 // Ocelot Includes
 #include <ocelot/executive/interface/LLVMModuleManager.h>
+#include <ocelot/executive/interface/LLVMState.h>
+
+#include <ocelot/translator/interface/PTXToLLVMTranslator.h>
 
 #include <ocelot/analysis/interface/SubkernelFormationPass.h>
 
+#include <ocelot/ir/interface/LLVMKernel.h>
 #include <ocelot/ir/interface/Module.h>
+
+#include <ocelot/api/interface/OcelotConfiguration.h>
+
+// LLVM Includes
+#include <llvm/ExecutionEngine/ExecutionEngine.h>
+#include <llvm/Assembly/Parser.h>
+#include <llvm/Analysis/Verifier.h>
+#include <llvm/LLVMContext.h>
+#include <llvm/Module.h>
+#include <llvm/Support/SourceMgr.h>
+#include <llvm/Support/raw_ostream.h>
 
 namespace executive
 {
@@ -155,13 +170,13 @@ LLVMModuleManager::Function LLVMModuleManager::ModuleDatabase::getFunction(
 }
 
 LLVMModuleManager::KernelAndTranslation::KernelAndTranslation(ir::PTXKernel* k,
-	Function f) : kernel(k), function(f)
+	Function f) : kernel(k), function(f), module(0)
 {
 
 }
 
 LLVMModuleManager::Module::Module(const ir::Module* m)
-{
+{	
 	typedef analysis::SubkernelFormationPass::ExtractKernelsPass Pass;
 	Pass pass;
 	
@@ -204,17 +219,70 @@ unsigned int LLVMModuleManager::Module::kernelCount() const
 	return _kernels.size();
 }
 
-
 static void translate(LLVMModuleManager::KernelAndTranslation& kernel)
 {
 	assert(kernel.function == 0);
+	assert(kernel.module == 0);
 
-	assertM(false, "Translation not implemented.");
+	int level = api::OcelotConfiguration::get().executive.optimizationLevel;
+
+	kernel.kernel->dfg();
+
+	translator::PTXToLLVMTranslator translator(
+		(translator::Translator::OptimizationLevel)level);
+	ir::LLVMKernel* llvmKernel = static_cast<ir::LLVMKernel*>(
+		translator.translate(kernel.kernel));
+	
+	llvmKernel->assemble();
+	llvm::SMDiagnostic error;
+
+	kernel.module = new llvm::Module(kernel.kernel->name.c_str(),
+		llvm::getGlobalContext());
+
+	kernel.module = llvm::ParseAssemblyString(llvmKernel->code().c_str(), 
+		kernel.module, error, llvm::getGlobalContext());
+
+	if(kernel.module == 0)
+	{
+		report("  Parsing kernel failed, dumping code:\n" 
+			<< llvmKernel->numberedCode());
+		std::string m;
+		llvm::raw_string_ostream message(m);
+		message << "LLVM Parser failed: ";
+		error.Print(kernel.kernel->name.c_str(), message);
+
+		throw hydrazine::Exception(message.str());
+	}
+
+	report(" Checking module for errors.");
+	std::string verifyError;
+	
+	if(llvm::verifyModule(*kernel.module,
+		llvm::ReturnStatusAction, &verifyError))
+	{
+		report("  Checking kernel failed, dumping code:\n" 
+			<< llvmKernel->numberedCode());
+		delete llvmKernel;
+
+		throw hydrazine::Exception("LLVM Verifier failed for kernel: " 
+			+ kernel.kernel->name + " : \"" + verifyError + "\"");
+	}
+
+	delete llvmKernel;
+}
+
+static void optimize(LLVMModuleManager::KernelAndTranslation& kernel)
+{
+	assertM(false, "Optimizing kernel not implemented.");
 }
 
 static void unloadTranslation(LLVMModuleManager::KernelAndTranslation& kernel)
 {
 	assert(kernel.function != 0);
+	assert(kernel.module != 0);
+
+	LLVMState::jit()->removeModule(kernel.module);
+	delete kernel.module;
 
 	assertM(false, "Freeing a translated kernel not implemented.");
 }
@@ -238,7 +306,11 @@ LLVMModuleManager::Function LLVMModuleManager::Module::getFunction(
 	
 	if(kernel == _kernels.end()) return 0;
 	
-	if(kernel->second.function == 0) translate(kernel->second);
+	if(kernel->second.function == 0)
+	{
+		translate(kernel->second);
+		optimize(kernel->second);
+	}
 	
 	return kernel->second.function;
 }

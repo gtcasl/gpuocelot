@@ -567,8 +567,9 @@ std::string ir::PTXInstruction::valid() const {
 				&& d.addressMode != PTXOperand::Invalid ) {
 				return "operand D must be an argument list if it is specified.";
 			}
-			if( b.addressMode != PTXOperand::ArgumentList ) {
-				return "operand B must be an argument list.";
+			if( b.addressMode != PTXOperand::ArgumentList
+				&& b.addressMode != PTXOperand::Invalid ) {
+				return "operand B must be an argument list if it is specified.";
 			}
 			if( a.addressMode == PTXOperand::Register
 				&& c.addressMode != PTXOperand::FunctionName ) {
@@ -1542,8 +1543,9 @@ std::string ir::PTXInstruction::valid() const {
 				return "only shared and global address spaces supported " 
 					+ std::string( "for volatile stores" );
 			}
-			if( a.addressMode != PTXOperand::Register ) {
-				return "operand A must be a register";
+			if( a.addressMode != PTXOperand::Register
+				&& a.addressMode != PTXOperand::Immediate ) {
+				return "operand A must be a register or immediate";
 			}
 			if( !PTXOperand::relaxedValid( type, a.type ) ) {
 				return "operand A type " + PTXOperand::toString( a.type ) 

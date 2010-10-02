@@ -54,67 +54,7 @@ static void __report( executive::LLVMContext* context,
 }
 
 extern "C"
-{
-	bool __ocelot_testp_finite_f32( float a )
-	{
-		return !_isinf( a );
-	}
-	
-	bool __ocelot_testp_infinite_f32( float a )
-	{
-		return _isinf( a );
-	}
-	
-	bool __ocelot_testp_number_f32( float a )
-	{
-		return !_isnan( a );
-	}
-	
-	bool __ocelot_testp_notanumber_f32( float a )
-	{
-		return _isnan( a );
-	}
-	
-	bool __ocelot_testp_normal_f32( float a )
-	{
-		return _isnormal( a );
-	}
-	
-	bool __ocelot_testp_subnormal_f32( float a )
-	{
-		return !_isinf( a ) && !_isnan( a ) && !_isnormal( a );
-	}
-	
-	bool __ocelot_testp_finite_f64( double a )
-	{
-		return !_isinf( a );
-	}
-	
-	bool __ocelot_testp_infinite_f64( double a )
-	{
-		return _isinf( a );
-	}
-	
-	bool __ocelot_testp_number_f64( double a )
-	{
-		return !_isnan( a );
-	}
-	
-	bool __ocelot_testp_notanumber_f64( double a )
-	{
-		return _isnan( a );
-	}
-	
-	bool __ocelot_testp_normal_f64( double a )
-	{
-		return _isnormal( a );
-	}
-	
-	bool __ocelot_testp_subnormal_f64( double a )
-	{
-		return !_isinf( a ) && !_isnan( a ) && !_isnormal( a );
-	}
-	
+{	
 	unsigned int __ocelot_bfi_b32( unsigned int in, unsigned int orig, 
 		unsigned int position, unsigned int length )
 	{

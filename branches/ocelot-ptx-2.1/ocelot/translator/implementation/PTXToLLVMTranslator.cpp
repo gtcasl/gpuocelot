@@ -786,8 +786,8 @@ namespace translator
 	ir::LLVMInstruction::Operand PTXToLLVMTranslator::_translate( 
 		const ir::PTXOperand& o )
 	{
-		ir::LLVMInstruction::Operand op( o.identifier, 
-			o.addressMode == ir::PTXOperand::Immediate );
+		ir::LLVMInstruction::Operand op( o.identifier );
+		op.constant = o.addressMode == ir::PTXOperand::Immediate;
 
 		op.type.type = _translate( o.type );
 
@@ -1327,10 +1327,10 @@ namespace translator
 			}
 			else if ( i.carry & ir::PTXInstruction::CC )
 			{
-				ir::LLVMInstruction::Operand extendedA( _tempRegister(), false, 
+				ir::LLVMInstruction::Operand extendedA( _tempRegister(), 
 					ir::LLVMInstruction::Type( ir::LLVMInstruction::I64, 
 					ir::LLVMInstruction::Type::Element ) );
-				ir::LLVMInstruction::Operand extendedB( _tempRegister(), false, 
+				ir::LLVMInstruction::Operand extendedB( _tempRegister(),
 					ir::LLVMInstruction::Type( ir::LLVMInstruction::I64, 
 					ir::LLVMInstruction::Type::Element ) );
 				
@@ -1363,7 +1363,7 @@ namespace translator
 					_add( zext );					
 				}
 				
-				ir::LLVMInstruction::Operand extendedD( _tempRegister(), false, 
+				ir::LLVMInstruction::Operand extendedD( _tempRegister(),
 					ir::LLVMInstruction::Type( ir::LLVMInstruction::I64, 
 					ir::LLVMInstruction::Type::Element ) );
 				
@@ -1384,7 +1384,7 @@ namespace translator
 				
 				ir::LLVMLshr shift;
 				
-				shift.d = ir::LLVMInstruction::Operand ( _tempRegister(), false, 
+				shift.d = ir::LLVMInstruction::Operand ( _tempRegister(),
 					ir::LLVMInstruction::Type( ir::LLVMInstruction::I64, 
 					ir::LLVMInstruction::Type::Element ) );
 				shift.a = extendedD;
@@ -1398,7 +1398,7 @@ namespace translator
 				
 				ir::LLVMAnd mask;
 				
-				mask.d = ir::LLVMInstruction::Operand ( _tempRegister(), false, 
+				mask.d = ir::LLVMInstruction::Operand ( _tempRegister(),
 					ir::LLVMInstruction::Type( ir::LLVMInstruction::I64, 
 					ir::LLVMInstruction::Type::Element ) );
 				mask.a = shift.d;
@@ -1432,13 +1432,13 @@ namespace translator
 	{
 		if( i.carry & ir::PTXInstruction::CC )
 		{
-				ir::LLVMInstruction::Operand extendedA( _tempRegister(), false, 
+				ir::LLVMInstruction::Operand extendedA( _tempRegister(),
 					ir::LLVMInstruction::Type( ir::LLVMInstruction::I64, 
 					ir::LLVMInstruction::Type::Element ) );
-				ir::LLVMInstruction::Operand extendedB( _tempRegister(), false, 
+				ir::LLVMInstruction::Operand extendedB( _tempRegister(),
 					ir::LLVMInstruction::Type( ir::LLVMInstruction::I64, 
 					ir::LLVMInstruction::Type::Element ) );
-				ir::LLVMInstruction::Operand extendedC( _tempRegister(), false, 
+				ir::LLVMInstruction::Operand extendedC( _tempRegister(),
 					ir::LLVMInstruction::Type( ir::LLVMInstruction::I64, 
 					ir::LLVMInstruction::Type::Element ) );
 				
@@ -1481,10 +1481,10 @@ namespace translator
 					_add( zext );					
 				}
 				
-				ir::LLVMInstruction::Operand extendedDt( _tempRegister(), false, 
+				ir::LLVMInstruction::Operand extendedDt( _tempRegister(),
 					ir::LLVMInstruction::Type( ir::LLVMInstruction::I64, 
 					ir::LLVMInstruction::Type::Element ) );
-				ir::LLVMInstruction::Operand extendedD( _tempRegister(), false, 
+				ir::LLVMInstruction::Operand extendedD( _tempRegister(),
 					ir::LLVMInstruction::Type( ir::LLVMInstruction::I64, 
 					ir::LLVMInstruction::Type::Element ) );
 				
@@ -1511,7 +1511,7 @@ namespace translator
 				
 				ir::LLVMLshr shift;
 				
-				shift.d = ir::LLVMInstruction::Operand ( _tempRegister(), false, 
+				shift.d = ir::LLVMInstruction::Operand ( _tempRegister(),
 					ir::LLVMInstruction::Type( ir::LLVMInstruction::I64, 
 					ir::LLVMInstruction::Type::Element ) );
 				shift.a = extendedD;
@@ -1525,7 +1525,7 @@ namespace translator
 				
 				ir::LLVMAnd mask;
 				
-				mask.d = ir::LLVMInstruction::Operand ( _tempRegister(), false, 
+				mask.d = ir::LLVMInstruction::Operand ( _tempRegister(),
 					ir::LLVMInstruction::Type( ir::LLVMInstruction::I64, 
 					ir::LLVMInstruction::Type::Element ) );
 				mask.a = shift.d;
@@ -4685,10 +4685,10 @@ namespace translator
 			}
 			else if( i.carry & ir::PTXInstruction::CC )
 			{
-				ir::LLVMInstruction::Operand extendedA( _tempRegister(), false, 
+				ir::LLVMInstruction::Operand extendedA( _tempRegister(),
 					ir::LLVMInstruction::Type( ir::LLVMInstruction::I64, 
 					ir::LLVMInstruction::Type::Element ) );
-				ir::LLVMInstruction::Operand extendedB( _tempRegister(), false, 
+				ir::LLVMInstruction::Operand extendedB( _tempRegister(),
 					ir::LLVMInstruction::Type( ir::LLVMInstruction::I64, 
 					ir::LLVMInstruction::Type::Element ) );
 				
@@ -4721,7 +4721,7 @@ namespace translator
 					_add( zext );					
 				}
 				
-				ir::LLVMInstruction::Operand extendedD( _tempRegister(), false, 
+				ir::LLVMInstruction::Operand extendedD( _tempRegister(),
 					ir::LLVMInstruction::Type( ir::LLVMInstruction::I64, 
 					ir::LLVMInstruction::Type::Element ) );
 				
@@ -4742,7 +4742,7 @@ namespace translator
 				
 				ir::LLVMLshr shift;
 				
-				shift.d = ir::LLVMInstruction::Operand ( _tempRegister(), false, 
+				shift.d = ir::LLVMInstruction::Operand ( _tempRegister(),
 					ir::LLVMInstruction::Type( ir::LLVMInstruction::I64, 
 					ir::LLVMInstruction::Type::Element ) );
 				shift.a = extendedD;
@@ -4756,7 +4756,7 @@ namespace translator
 				
 				ir::LLVMAnd mask;
 				
-				mask.d = ir::LLVMInstruction::Operand ( _tempRegister(), false, 
+				mask.d = ir::LLVMInstruction::Operand ( _tempRegister(),
 					ir::LLVMInstruction::Type( ir::LLVMInstruction::I64, 
 					ir::LLVMInstruction::Type::Element ) );
 				mask.a = shift.d;
@@ -4790,13 +4790,13 @@ namespace translator
 	{	
 		if( i.carry & ir::PTXInstruction::CC )
 		{
-				ir::LLVMInstruction::Operand extendedA( _tempRegister(), false, 
+				ir::LLVMInstruction::Operand extendedA( _tempRegister(),
 					ir::LLVMInstruction::Type( ir::LLVMInstruction::I64, 
 					ir::LLVMInstruction::Type::Element ) );
-				ir::LLVMInstruction::Operand extendedB( _tempRegister(), false, 
+				ir::LLVMInstruction::Operand extendedB( _tempRegister(),
 					ir::LLVMInstruction::Type( ir::LLVMInstruction::I64, 
 					ir::LLVMInstruction::Type::Element ) );
-				ir::LLVMInstruction::Operand extendedC( _tempRegister(), false, 
+				ir::LLVMInstruction::Operand extendedC( _tempRegister(),
 					ir::LLVMInstruction::Type( ir::LLVMInstruction::I64, 
 					ir::LLVMInstruction::Type::Element ) );
 				
@@ -4839,10 +4839,10 @@ namespace translator
 					_add( zext );					
 				}
 				
-				ir::LLVMInstruction::Operand extendedDt( _tempRegister(), false, 
+				ir::LLVMInstruction::Operand extendedDt( _tempRegister(),
 					ir::LLVMInstruction::Type( ir::LLVMInstruction::I64, 
 					ir::LLVMInstruction::Type::Element ) );
-				ir::LLVMInstruction::Operand extendedD( _tempRegister(), false, 
+				ir::LLVMInstruction::Operand extendedD( _tempRegister(),
 					ir::LLVMInstruction::Type( ir::LLVMInstruction::I64, 
 					ir::LLVMInstruction::Type::Element ) );
 				
@@ -4871,7 +4871,7 @@ namespace translator
 				
 				ir::LLVMLshr shift;
 				
-				shift.d = ir::LLVMInstruction::Operand ( _tempRegister(), false, 
+				shift.d = ir::LLVMInstruction::Operand ( _tempRegister(),
 					ir::LLVMInstruction::Type( ir::LLVMInstruction::I64, 
 					ir::LLVMInstruction::Type::Element ) );
 				shift.a = extendedD;
@@ -4885,7 +4885,7 @@ namespace translator
 				
 				ir::LLVMAnd mask;
 				
-				mask.d = ir::LLVMInstruction::Operand ( _tempRegister(), false, 
+				mask.d = ir::LLVMInstruction::Operand ( _tempRegister(),
 					ir::LLVMInstruction::Type( ir::LLVMInstruction::I64, 
 					ir::LLVMInstruction::Type::Element ) );
 				mask.a = shift.d;
@@ -4927,24 +4927,29 @@ namespace translator
 
 	void PTXToLLVMTranslator::_translateTestP( const ir::PTXInstruction& i )
 	{
-		ir::LLVMCall call;
-		
 		switch( i.floatingPointMode )
 		{
 		case ir::PTXInstruction::Finite:
 		{
 			ir::LLVMFcmp isFin;
 		
-			isFin.d.type.type     = ir::LLVMInstruction::I1;
-			isFin.d.type.category = ir::LLVMInstruction::Type::Element;
-			isFin.d.name          = _tempRegister();
+			isFin.d = _destination( i );
 		
-			isFin.a.type.type     = ir::LLVMInstruction::F32;
+			isFin.a.type.type     = _translate( i.type );
 			isFin.a.type.category = ir::LLVMInstruction::Type::Element;
 			isFin.a.constant      = true;
-			isFin.a.i32           = hydrazine::bit_cast< ir::LLVMI32 >(
-				 std::numeric_limits<float>::infinity() );
-		
+			
+			if( i.type == ir::PTXOperand::f32 )
+			{
+				isFin.a.i32 = hydrazine::bit_cast< ir::LLVMI32 >(
+					 std::numeric_limits<float>::infinity() );
+			}
+			else
+			{
+				isFin.a.i64 = hydrazine::bit_cast< ir::LLVMI64 >(
+					 std::numeric_limits<double>::infinity() );
+			}
+			
 			isFin.b = _translate( i.a );
 
 			isFin.comparison = ir::LLVMInstruction::One;
@@ -4956,16 +4961,23 @@ namespace translator
 		{
 			ir::LLVMFcmp isInf;
 		
-			isInf.d.type.type     = ir::LLVMInstruction::I1;
-			isInf.d.type.category = ir::LLVMInstruction::Type::Element;
-			isInf.d.name          = _tempRegister();
+			isInf.d = _destination( i );
 		
-			isInf.a.type.type     = ir::LLVMInstruction::F32;
+			isInf.a.type.type     = _translate( i.type );
 			isInf.a.type.category = ir::LLVMInstruction::Type::Element;
 			isInf.a.constant      = true;
-			isInf.a.i32           = hydrazine::bit_cast< ir::LLVMI32 >(
-				 std::numeric_limits<float>::infinity() );
-		
+			
+			if( i.type == ir::PTXOperand::f32 )
+			{
+				isInf.a.i32 = hydrazine::bit_cast< ir::LLVMI32 >(
+					 std::numeric_limits<float>::infinity() );
+			}
+			else
+			{
+				isInf.a.i64 = hydrazine::bit_cast< ir::LLVMI64 >(
+					 std::numeric_limits<double>::infinity() );
+			}
+			
 			isInf.b = _translate( i.a );
 
 			isInf.comparison = ir::LLVMInstruction::Oeq;
@@ -4977,14 +4989,20 @@ namespace translator
 		{
 			ir::LLVMFcmp isNum;
 		
-			isNum.d.type.type     = ir::LLVMInstruction::F32;
-			isNum.d.type.category = ir::LLVMInstruction::Type::Element;
-			isNum.d.name          = _tempRegister();
+			isNum.d = _destination( i );
 		
-			isNum.a.type.type     = ir::LLVMInstruction::F32;
+			isNum.a.type.type     = _translate( i.type );
 			isNum.a.type.category = ir::LLVMInstruction::Type::Element;
 			isNum.a.constant      = true;
-			isNum.a.i64           = 0;
+			
+			if( i.type == ir::PTXOperand::f32 )
+			{
+				isNum.a.f32 = 0.0f;
+			}
+			else
+			{
+				isNum.a.f64 = 0.0;
+			}
 		
 			isNum.b = _translate( i.a );
 		
@@ -4997,14 +5015,20 @@ namespace translator
 		{
 			ir::LLVMFcmp isNan;
 		
-			isNan.d.type.type     = ir::LLVMInstruction::F32;
-			isNan.d.type.category = ir::LLVMInstruction::Type::Element;
-			isNan.d.name          = _tempRegister();
+			isNan.d = _destination( i );
 		
-			isNan.a.type.type     = ir::LLVMInstruction::F32;
+			isNan.a.type.type     = _translate( i.type );
 			isNan.a.type.category = ir::LLVMInstruction::Type::Element;
 			isNan.a.constant      = true;
-			isNan.a.i64           = 0;
+			
+			if( i.type == ir::PTXOperand::f32 )
+			{
+				isNan.a.f32 = 0.0f;
+			}
+			else
+			{
+				isNan.a.f64 = 0.0;
+			}
 		
 			isNan.b = _translate( i.a );
 		
@@ -5015,33 +5039,179 @@ namespace translator
 		break;
 		case ir::PTXInstruction::Normal:
 		{
-			ir::LLVMFcmp compare;
+			ir::LLVMFcmp equal;
 			
-			compare.comparison = ir::LLVMInstruction::
+			equal.comparison = ir::LLVMInstruction::One;
 			
+			equal.d = ir::LLVMInstruction::Operand( _tempRegister(),
+				ir::LLVMInstruction::Type( ir::LLVMInstruction::I1, 
+				ir::LLVMInstruction::Type::Element ) );
+			equal.a = _translate( i.a );
+			equal.b = ir::LLVMInstruction::Operand( (ir::LLVMI64) 0 );
+			equal.b.type.type = _translate( i.type );
+			
+			_add( equal );
+			
+			ir::LLVMFcmp less;
+			
+			less.comparison = ir::LLVMInstruction::Olt;
+			
+			less.d = ir::LLVMInstruction::Operand( _tempRegister(),
+				ir::LLVMInstruction::Type( ir::LLVMInstruction::I1, 
+				ir::LLVMInstruction::Type::Element ) );
+			less.a = equal.a;
+			less.b = ir::LLVMInstruction::Operand( (ir::LLVMI64) 0 );
+			less.b.type.type = equal.b.type.type;
+			
+			_add( less );
+
+			ir::LLVMFsub subtract;
+			
+			subtract.d = ir::LLVMInstruction::Operand( _tempRegister(),
+				ir::LLVMInstruction::Type( equal.b.type.type, 
+				ir::LLVMInstruction::Type::Element ) );
+			subtract.a = ir::LLVMInstruction::Operand( (ir::LLVMI64) 0 );
+			subtract.a.type.type = equal.b.type.type;
+			subtract.b = equal.a;
+			
+			_add( subtract );
+			
+			ir::LLVMSelect select;
+			
+			select.condition = less.d;
+			
+			select.d = ir::LLVMInstruction::Operand( _tempRegister(),
+				ir::LLVMInstruction::Type( equal.b.type.type, 
+				ir::LLVMInstruction::Type::Element ) );
+			select.a = subtract.d;
+			select.b = equal.a;
+			
+			_add( select );
+			
+			ir::LLVMFcmp greaterEqual;
+			
+			less.comparison = ir::LLVMInstruction::Oge;
+			
+			greaterEqual.d = ir::LLVMInstruction::Operand( _tempRegister(),
+				ir::LLVMInstruction::Type( ir::LLVMInstruction::I1, 
+				ir::LLVMInstruction::Type::Element ) );
+			greaterEqual.a = select.d;
+			
+			if( i.type == ir::PTXOperand::f32 )
+			{
+				greaterEqual.b = ir::LLVMInstruction::Operand( 
+					(ir::LLVMI64) hydrazine::bit_cast< ir::LLVMI32 >(
+					std::numeric_limits<float>::min() ) );
+			}
+			else
+			{
+				greaterEqual.b = ir::LLVMInstruction::Operand( 
+					(ir::LLVMI64) hydrazine::bit_cast< ir::LLVMI64 >(
+					std::numeric_limits<double>::min() ) );
+			}
+			
+			greaterEqual.b.type = equal.b.type.type;
+			
+			_add( greaterEqual );
+			
+			ir::LLVMOr lor;
+			
+			lor.a = greaterEqual.d;
+			lor.b = equal.d;
+			lor.d = _destination( i );
+			
+			_add( lor );
 		}
 		break;
 		case ir::PTXInstruction::SubNormal:
 		{
-			call.name = "@__ocelot_testp_subnormal";
+			ir::LLVMFcmp equal;
+			
+			equal.comparison = ir::LLVMInstruction::Eq;
+			
+			equal.d = ir::LLVMInstruction::Operand( _tempRegister(),
+				ir::LLVMInstruction::Type( ir::LLVMInstruction::I1, 
+				ir::LLVMInstruction::Type::Element ) );
+			equal.a = _translate( i.a );
+			equal.b = ir::LLVMInstruction::Operand( (ir::LLVMI64) 0 );
+			equal.b.type.type = _translate( i.type );
+			
+			_add( equal );
+			
+			ir::LLVMFcmp less;
+			
+			less.comparison = ir::LLVMInstruction::Olt;
+			
+			less.d = ir::LLVMInstruction::Operand( _tempRegister(),
+				ir::LLVMInstruction::Type( ir::LLVMInstruction::I1, 
+				ir::LLVMInstruction::Type::Element ) );
+			less.a = equal.a;
+			less.b = ir::LLVMInstruction::Operand( (ir::LLVMI64) 0 );
+			less.b.type.type = equal.b.type.type;
+			
+			_add( less );
+
+			ir::LLVMFsub subtract;
+			
+			subtract.d = ir::LLVMInstruction::Operand( _tempRegister(),
+				ir::LLVMInstruction::Type( equal.b.type.type, 
+				ir::LLVMInstruction::Type::Element ) );
+			subtract.a = ir::LLVMInstruction::Operand( (ir::LLVMI64) 0 );
+			subtract.a.type.type = equal.b.type.type;
+			subtract.b = equal.a;
+			
+			_add( subtract );
+			
+			ir::LLVMSelect select;
+			
+			select.condition = less.d;
+			
+			select.d = ir::LLVMInstruction::Operand( _tempRegister(),
+				ir::LLVMInstruction::Type( equal.b.type.type, 
+				ir::LLVMInstruction::Type::Element ) );
+			select.a = subtract.d;
+			select.b = equal.a;
+			
+			_add( select );
+			
+			ir::LLVMFcmp greaterEqual;
+			
+			less.comparison = ir::LLVMInstruction::Olt;
+			
+			greaterEqual.d = ir::LLVMInstruction::Operand( _tempRegister(),
+				ir::LLVMInstruction::Type( ir::LLVMInstruction::I1, 
+				ir::LLVMInstruction::Type::Element ) );
+			greaterEqual.a = select.d;
+			
+			if( i.type == ir::PTXOperand::f32 )
+			{
+				greaterEqual.b = ir::LLVMInstruction::Operand( 
+					(ir::LLVMI64) hydrazine::bit_cast< ir::LLVMI32 >(
+					std::numeric_limits<float>::min() ) );
+			}
+			else
+			{
+				greaterEqual.b = ir::LLVMInstruction::Operand( 
+					(ir::LLVMI64) hydrazine::bit_cast< ir::LLVMI64 >(
+					std::numeric_limits<double>::min() ) );
+			}
+			
+			greaterEqual.b.type = equal.b.type.type;
+			
+			_add( greaterEqual );
+			
+			ir::LLVMAnd land;
+			
+			land.a = greaterEqual.d;
+			land.b = equal.d;
+			land.d = _destination( i );
+			
+			_add( land );
 		}
 		break;
 		default: assertM(false, "Invalid floating point mode.");
 		}
 		
-		if( i.type == ir::PTXOperand::f32 )
-		{
-			call.name += "_f32";
-		}
-		else
-		{
-			call.name += "_f64";
-		}
-		
-		call.d = _destination( i );
-		call.parameters.push_back( _translate( i.a ) );
-		
-		_add( call );
 	}
 
 	void PTXToLLVMTranslator::_translateTex( const ir::PTXInstruction& i )
@@ -6647,25 +6817,6 @@ namespace translator
 				reg = add.d;
 			}
 			
-			if( space == ir::PTXInstruction::Shared )
-			{
-				ir::LLVMAnd mask;
-				
-				mask.d.name = _tempRegister();
-				mask.d.type.category = ir::LLVMInstruction::Type::Element;
-				mask.d.type.type = reg.type.type;
-				
-				mask.a = reg;
-				mask.b.type.category = ir::LLVMInstruction::Type::Element;
-				mask.b.type.type = reg.type.type;
-				mask.b.constant = true;
-				mask.b.i64 = 0x000000000000FFFFULL;
-				
-				_add( mask );
-				
-				reg = mask.d;
-			}
-			
 			if( space == ir::PTXInstruction::Global )
 			{
 				pointer = reg;
@@ -7273,48 +7424,7 @@ namespace translator
 		prmt.label = "__ocelot_prmt_ecr";
 		_llvmKernel->_statements.push_front( prmt );		
 		prmt.label = "__ocelot_prmt_rc16";
-		_llvmKernel->_statements.push_front( prmt );		
-
-		ir::LLVMStatement testp( ir::LLVMStatement::FunctionDeclaration );
-
-		testp.linkage = ir::LLVMStatement::InvalidLinkage;
-		testp.convention = ir::LLVMInstruction::DefaultCallingConvention;
-		testp.visibility = ir::LLVMStatement::Default;
-		
-		testp.operand.type.category = ir::LLVMInstruction::Type::Element;
-		testp.operand.type.type = ir::LLVMInstruction::I1;
-		
-		testp.parameters.resize( 1 );
-		testp.parameters[0].type.category = ir::LLVMInstruction::Type::Element;
-		testp.parameters[0].type.type = ir::LLVMInstruction::F32;
-	
-		testp.label = "__ocelot_testp_finite_f32";
-		_llvmKernel->_statements.push_front( testp );
-		testp.label = "__ocelot_testp_infinite_f32";
-		_llvmKernel->_statements.push_front( testp );
-		testp.label = "__ocelot_testp_number_f32";
-		_llvmKernel->_statements.push_front( testp );
-		testp.label = "__ocelot_testp_notanumber_f32";
-		_llvmKernel->_statements.push_front( testp );
-		testp.label = "__ocelot_testp_normal_f32";
-		_llvmKernel->_statements.push_front( testp );
-		testp.label = "__ocelot_testp_subnormal_f32";
-		_llvmKernel->_statements.push_front( testp );
-
-		testp.parameters[0].type.type = ir::LLVMInstruction::F64;
-		
-		testp.label = "__ocelot_testp_finite_f64";
-		_llvmKernel->_statements.push_front( testp );
-		testp.label = "__ocelot_testp_infinite_f64";
-		_llvmKernel->_statements.push_front( testp );
-		testp.label = "__ocelot_testp_number_f64";
-		_llvmKernel->_statements.push_front( testp );
-		testp.label = "__ocelot_testp_notanumber_f64";
-		_llvmKernel->_statements.push_front( testp );
-		testp.label = "__ocelot_testp_normal_f64";
-		_llvmKernel->_statements.push_front( testp );
-		testp.label = "__ocelot_testp_subnormal_f64";
-		_llvmKernel->_statements.push_front( testp );
+		_llvmKernel->_statements.push_front( prmt );
 
 		ir::LLVMStatement vote( ir::LLVMStatement::FunctionDeclaration );
 

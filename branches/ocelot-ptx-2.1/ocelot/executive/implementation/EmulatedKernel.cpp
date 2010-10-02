@@ -934,7 +934,7 @@ void executive::EmulatedKernel::jumpToPC(int PC) {
 executive::EmulatedKernel::RegisterFile 
 	executive::EmulatedKernel::getCurrentRegisterFile() const {
 	assert(CTA != 0);
-	return CTA->getCurrentRegisterFile();		
+	return CTA->getCurrentRegisterFile();
 }
 
 const char* executive::EmulatedKernel::getSharedMemory() const {

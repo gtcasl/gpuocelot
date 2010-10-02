@@ -50,7 +50,8 @@ namespace ir
 				\param name The name of the kernel
 				\param isFunction Is this a kernel or a function?
 			*/
-			PTXKernel(const std::string& name = "", bool isFunction = false);
+			PTXKernel(const std::string& name = "", bool isFunction = false,
+				const ir::Module* module = 0);
 			
 			/*! Constructs a kernel from an iterator into the PTXStatementVector
 

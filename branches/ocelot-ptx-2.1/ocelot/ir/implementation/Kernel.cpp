@@ -21,14 +21,13 @@
 #define REPORT_BASE 0
 
 ir::Kernel::Kernel(Instruction::Architecture isa, const std::string& n, 
-	bool isFunction) : 
-	_function(isFunction), name(n), ISA(isa) {
+	bool isFunction, const ir::Module* m) : 
+	_function(isFunction), name(n), ISA(isa), module(m) {
 	_cfg = 0;
 	_dom_tree = 0;
 	_pdom_tree = 0;
 	_dfg = 0;
 	_ct = 0;
-	module = 0;
 }
 
 ir::Kernel::~Kernel() {

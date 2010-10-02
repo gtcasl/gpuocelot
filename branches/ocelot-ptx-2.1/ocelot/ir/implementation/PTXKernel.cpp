@@ -21,8 +21,9 @@
 
 namespace ir
 {
-	PTXKernel::PTXKernel( const std::string& name, bool isFunction ) :
-		Kernel( Instruction::PTX, name, isFunction )
+	PTXKernel::PTXKernel( const std::string& name, bool isFunction,
+		const ir::Module* module ) :
+		Kernel( Instruction::PTX, name, isFunction, module )
 	{
 		_cfg = new ControlFlowGraph;
 	}

@@ -35,7 +35,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 namespace translator
 {
@@ -773,14 +773,23 @@ namespace translator
 			
 	void PTXToLLVMTranslator::_yield( unsigned int continuation )
 	{
-		ir::LLVMRet ret;
+		ir::LLVMBitcast bitcast;
 		
-		ret.d.constant = true;
-		ret.d.type.category = ir::LLVMInstruction::Type::Element;
-		ret.d.type.type = ir::LLVMInstruction::I32;
-		ret.d.i32 = continuation;
-		
-		_add( ret );
+		bitcast.a = _getMemoryBasePointer( ir::PTXInstruction::Local );
+
+		bitcast.d.type = ir::LLVMInstruction::Type( 
+			ir::LLVMInstruction::I32, ir::LLVMInstruction::Type::Pointer );
+		bitcast.d.name = _tempRegister();
+	
+		_add( bitcast );
+	
+		ir::LLVMStore store;
+	
+		store.d = bitcast.d;
+		store.a = ir::LLVMInstruction::Operand(
+			(ir::LLVMI32) continuation );
+			
+		_add( store );
 	}
 
 	ir::LLVMInstruction::Operand PTXToLLVMTranslator::_translate( 
@@ -788,9 +797,9 @@ namespace translator
 	{
 		ir::LLVMInstruction::Operand op( o.identifier );
 		op.constant = o.addressMode == ir::PTXOperand::Immediate;
-
+		
 		op.type.type = _translate( o.type );
-
+		
 		if( o.vec == ir::PTXOperand::v1 )
 		{
 			op.type.category = ir::LLVMInstruction::Type::Element;
@@ -814,15 +823,15 @@ namespace translator
 			{
 				switch( o.type )
 				{
-					case ir::PTXOperand::s8: /* fall through */
+					case ir::PTXOperand::s8:  /* fall through */
 					case ir::PTXOperand::s16: /* fall through */
 					case ir::PTXOperand::s32: /* fall through */
 					case ir::PTXOperand::s64: /* fall through */
-					case ir::PTXOperand::u8: /* fall through */
+					case ir::PTXOperand::u8:  /* fall through */
 					case ir::PTXOperand::u16: /* fall through */
 					case ir::PTXOperand::u32: /* fall through */
 					case ir::PTXOperand::u64: /* fall through */
-					case ir::PTXOperand::b8: /* fall through */
+					case ir::PTXOperand::b8:  /* fall through */
 					case ir::PTXOperand::b16: /* fall through */
 					case ir::PTXOperand::b32: /* fall through */
 					case ir::PTXOperand::b64:
@@ -983,7 +992,7 @@ namespace translator
 				}
 				else
 				{
-					_yield( 0 );
+					_add( ir::LLVMRet() );
 				}
 			}
 		}
@@ -1024,7 +1033,7 @@ namespace translator
 			case ir::PTXInstruction::Bra: _translateBra( i, block ); break;
 			case ir::PTXInstruction::Brev: _translateBrev( i ); break;
 			case ir::PTXInstruction::Brkpt: _translateBrkpt( i ); break;
-			case ir::PTXInstruction::Call: _translateCall( i ); break;
+			case ir::PTXInstruction::Call: _translateCall( i, block ); break;
 			case ir::PTXInstruction::Clz: _translateClz( i ); break;
 			case ir::PTXInstruction::CNot: _translateCNot( i ); break;
 			case ir::PTXInstruction::Cos: _translateCos( i ); break;
@@ -1991,7 +2000,7 @@ namespace translator
 
 	void PTXToLLVMTranslator::_translateBar( const ir::PTXInstruction& i )
 	{
-		_yield( i.reentryPoint );
+		assertM(false, "All barriers should have been removed.");
 	}
 
 	void PTXToLLVMTranslator::_translateBfi( const ir::PTXInstruction& i )
@@ -2112,18 +2121,29 @@ namespace translator
 
 	void PTXToLLVMTranslator::_translateBrkpt( const ir::PTXInstruction& i )
 	{
-		ir::LLVMCall call;
-		
-		call.name = "@breakpoint";
-		
-		_add( call );
-	}
-
-	void PTXToLLVMTranslator::_translateCall( const ir::PTXInstruction& i )
-	{
 		assertM( false, "Opcode " 
 			<< ir::PTXInstruction::toString( i.opcode ) 
 			<< " not supported." );
+	}
+
+	void PTXToLLVMTranslator::_translateCall( const ir::PTXInstruction& i,
+		const analysis::DataflowGraph::Block& block )
+	{
+		if( i.tailCall )
+		{
+			_yield( i.reentryPoint );
+			if( !block.targets().empty() )
+			{
+				ir::LLVMBr branch;
+				
+				branch.iftrue = "%" + (*block.targets().begin())->label();
+				_add( branch );
+			}
+		}
+		else
+		{
+			assertM(false, "Only tail calls supported for now.");
+		}
 	}
 
 	void PTXToLLVMTranslator::_translateClz( const ir::PTXInstruction& i )
@@ -2132,11 +2152,11 @@ namespace translator
 		
 		if( i.type == ir::PTXOperand::b32 )
 		{
-			call.name = "@__ocelot_clz_b32";
+			call.name = "@llvm.ctlz.i32";
 		}
 		else
 		{
-			call.name = "@__ocelot_clz_b64";
+			call.name = "@llvm.ctlz.i64";
 		}
 		
 		call.d = _destination( i );
@@ -2277,7 +2297,7 @@ namespace translator
 
 	void PTXToLLVMTranslator::_translateExit( const ir::PTXInstruction& i )
 	{
-		_yield( 0 );
+		_yield( -1 );
 	}
 
 	void PTXToLLVMTranslator::_translateLd( const ir::PTXInstruction& i )
@@ -3660,11 +3680,11 @@ namespace translator
 		
 		if( i.type == ir::PTXOperand::b32 )
 		{
-			call.name = "@__ocelot_popc_b32";
+			call.name = "@llvm.ctpop.i32";
 		}
 		else
 		{
-			call.name = "@__ocelot_popc_b64";
+			call.name = "@llvm.ctpop.i64";
 		}
 		
 		call.d = _destination( i );
@@ -7272,9 +7292,6 @@ namespace translator
 		kernel.convention = ir::LLVMInstruction::DefaultCallingConvention;
 		kernel.visibility = ir::LLVMStatement::Default;
 		kernel.functionAttributes = ir::LLVMInstruction::NoUnwind;
-	
-		kernel.operand.type.category = ir::LLVMInstruction::Type::Element;
-		kernel.operand.type.type = ir::LLVMInstruction::I32;
 		
 		kernel.parameters.resize( 1 );
 		kernel.parameters[ 0 ].attribute = ir::LLVMInstruction::NoAlias;
@@ -7300,29 +7317,6 @@ namespace translator
 
 		_llvmKernel->_statements.push_front( 
 			ir::LLVMStatement( ir::LLVMStatement::NewLine ) );		
-
-		ir::LLVMStatement popc( ir::LLVMStatement::FunctionDeclaration );
-
-		popc.label = "__ocelot_popc_b32";
-		popc.linkage = ir::LLVMStatement::InvalidLinkage;
-		popc.convention = ir::LLVMInstruction::DefaultCallingConvention;
-		popc.visibility = ir::LLVMStatement::Default;
-		
-		popc.operand.type.category = ir::LLVMInstruction::Type::Element;
-		popc.operand.type.type = ir::LLVMInstruction::I32;
-		
-		popc.parameters.resize( 1 );
-		popc.parameters[0].type.category = ir::LLVMInstruction::Type::Element;
-		popc.parameters[0].type.type = ir::LLVMInstruction::I32;
-	
-		_llvmKernel->_statements.push_front( popc );		
-		popc.label = "__ocelot_clz_b32";
-		_llvmKernel->_statements.push_front( popc );		
-		popc.label = "__ocelot_popc_b64";
-		popc.parameters[0].type.type = ir::LLVMInstruction::I64;
-		_llvmKernel->_statements.push_front( popc );		
-		popc.label = "__ocelot_clz_b64";
-		_llvmKernel->_statements.push_front( popc );		
 
 		ir::LLVMStatement brev( ir::LLVMStatement::FunctionDeclaration );
 

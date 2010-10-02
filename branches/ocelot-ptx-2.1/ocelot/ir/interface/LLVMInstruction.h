@@ -266,6 +266,8 @@ namespace ir
 					/*! \brief The constructor sets the type and pointer flag */
 					Operand( LLVMI64 value );
 					/*! \brief The constructor sets the type and pointer flag */
+					Operand( LLVMI32 value );
+					/*! \brief The constructor sets the type and pointer flag */
 					Operand( LLVMF32 value );
 					/*! \brief The constructor sets the type and pointer flag */
 					Operand( LLVMF64 value );

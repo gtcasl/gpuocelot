@@ -11,24 +11,6 @@
 
 #define REPORT_ATOMIC_OPERATIONS 0
 
-#ifdef isnan
-#define _isnan(x) isnan(x)
-#else
-#define _isnan(x) std::isnan(x)
-#endif
-
-#ifdef isinf
-#define _isinf(x) isinf(x)
-#else
-#define _isinf(x) std::isinf(x)
-#endif
-
-#ifdef isnormal
-#define _isnormal(x) isnormal(x)
-#else
-#define _isnormal(x) std::isnormal(x)
-#endif
-
 template < typename T >
 static void __report( executive::LLVMContext* context, 
 	T value, const bool read )
@@ -86,26 +68,6 @@ extern "C"
 	long long unsigned int __ocelot_brev_b64( long long unsigned int a )
 	{
 		return hydrazine::brev( a );
-	}
-
-	unsigned int __ocelot_clz_b32( unsigned int a )
-	{
-		return hydrazine::countLeadingZeros( a );
-	}
-
-	unsigned int __ocelot_clz_b64( long long unsigned int a )
-	{
-		return hydrazine::countLeadingZeros( a );
-	}
-
-	unsigned int __ocelot_popc_b32( unsigned int a )
-	{
-		return hydrazine::popc( a );
-	}
-
-	unsigned int __ocelot_popc_b64( long long unsigned int a )
-	{
-		return hydrazine::popc( a );
 	}
 
 	unsigned int __ocelot_prmt( unsigned int a, unsigned int b, unsigned int c )

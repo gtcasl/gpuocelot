@@ -118,7 +118,8 @@ static void createRestorePoint(ir::PTXKernel& newKernel, ir::PTXKernel& ptx,
 		ir::PTXOperand::u64, "_Zocelot_spill_area"));
 	move->d = std::move(ir::PTXOperand(ir::PTXOperand::Register, 
 		ir::PTXOperand::u64, ptx.dfg()->newRegister()));
-
+	move->type = ir::PTXOperand::u64;
+	
 	unsigned int offset = 0;
 
 	splitEdge->head->instructions.push_back(move);
@@ -136,7 +137,7 @@ static void createRestorePoint(ir::PTXKernel& newKernel, ir::PTXKernel& ptx,
 		load->type = reg->type;
 
 		load->a = std::move(ir::PTXOperand(ir::PTXOperand::Indirect,
-			ir::PTXOperand::u32, move->d.reg, offset));
+			ir::PTXOperand::u64, move->d.reg, offset));
 		load->d = std::move(ir::PTXOperand(ir::PTXOperand::Register,
 			reg->type, reg->id));
 	
@@ -180,7 +181,8 @@ static void createSavePoint(ir::PTXKernel& newKernel, ir::PTXKernel& ptx,
 			ir::PTXOperand::u64, "_Zocelot_spill_area"));
 		move->d = std::move(ir::PTXOperand(ir::PTXOperand::Register, 
 			ir::PTXOperand::u64, ptx.dfg()->newRegister()));
-
+		move->type = ir::PTXOperand::u64;
+		
 		splitEdge->head->instructions.push_back(move);
 
 		unsigned int offset = 0;
@@ -197,7 +199,7 @@ static void createSavePoint(ir::PTXKernel& newKernel, ir::PTXKernel& ptx,
 			store->type = reg->type;
 
 			store->d = std::move(ir::PTXOperand(ir::PTXOperand::Indirect,
-				ir::PTXOperand::u32, move->d.reg, offset));
+				ir::PTXOperand::u64, move->d.reg, offset));
 			store->a = std::move(ir::PTXOperand(ir::PTXOperand::Register,
 				reg->type, reg->id));
 	
@@ -213,6 +215,7 @@ static void createSavePoint(ir::PTXKernel& newKernel, ir::PTXKernel& ptx,
 		ir::PTXOperand::u64, "_Zocelot_resume_point"));
 	move->d = std::move(ir::PTXOperand(ir::PTXOperand::Register, 
 		ir::PTXOperand::u64, ptx.dfg()->newRegister()));
+	move->type = ir::PTXOperand::u64;
 
 	splitEdge->head->instructions.push_back(move);
 
@@ -223,7 +226,7 @@ static void createSavePoint(ir::PTXKernel& newKernel, ir::PTXKernel& ptx,
 	store->type = ir::PTXOperand::u32;
 
 	store->d = std::move(ir::PTXOperand(ir::PTXOperand::Indirect,
-		ir::PTXOperand::u32, move->d.reg));
+		ir::PTXOperand::u64, move->d.reg));
 	store->a = std::move(ir::PTXOperand(ir::PTXOperand::Immediate,
 		ir::PTXOperand::u32));
 	store->a.imm_uint = oldBlock->id;
@@ -650,7 +653,7 @@ void SubkernelFormationPass::ExtractKernelsPass::runOnKernel(ir::Kernel& k)
 	DataflowGraph::IteratorMap cfgToDfgMap = ptx.dfg()->getCFGtoDFGMap();
 	
 	// This is the new kernel entry point
-	splitKernels.push_back(new ir::PTXKernel(k.name, false));
+	splitKernels.push_back(new ir::PTXKernel(k.name, false, k.module));
 
 	ir::PTXKernel* newKernel = splitKernels.back();
 
@@ -733,7 +736,7 @@ void SubkernelFormationPass::ExtractKernelsPass::runOnKernel(ir::Kernel& k)
 			createScheduler(*newKernel, inEdges);
 		}
 		
-		splitKernels.push_back(new ir::PTXKernel(name.str(), true));
+		splitKernels.push_back(new ir::PTXKernel(name.str(), true, k.module));
 		encountered.clear();
 		inEdges.clear();
 		region.clear();

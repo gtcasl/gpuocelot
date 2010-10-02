@@ -126,6 +126,12 @@ namespace ir
 		i64 = value;
 	}
 
+	LLVMInstruction::Operand::Operand( LLVMI32 value ) :
+		constant( true ), type( Type( I32, Type::Element ) )
+	{
+		i32 = value;
+	}
+	
 	LLVMInstruction::Operand::Operand( LLVMF32 value ) :
 		constant( true ), type( Type( F32, Type::Element ) )
 	{

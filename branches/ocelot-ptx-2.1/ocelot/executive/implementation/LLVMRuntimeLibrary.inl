@@ -19,7 +19,22 @@
 // Hydrazine Includes
 #include <hydrazine/implementation/math.h>
 
+// Preprocessor Macros
+
+// Print out information when executing atomic operations 
 #define REPORT_ATOMIC_OPERATIONS 0
+
+// Only print out register updates from the Nth thread
+#define DEBUG_NTH_THREAD_ONLY 0
+
+// Print out PTX instructions as they are executed
+#define DEBUG_PTX_INSTRUCTION_TRACE 1
+
+// Print out PTX basic blocks as they are entered
+#define DEBUG_PTX_INSTRUCTION_TRACE 1
+
+// The id of the thread to print operations for
+#define NTH_THREAD 0
 
 typedef executive::LLVMModuleManager::KernelAndTranslation::MetaData MetaData;
 

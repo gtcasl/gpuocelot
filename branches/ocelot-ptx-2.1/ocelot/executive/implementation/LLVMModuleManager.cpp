@@ -101,6 +101,11 @@ static void optimizePTX(ir::PTXKernel& kernel,
 	pass.finalize();
 }
 
+static void allocatePTXMemory(ir::PTXKernel& kernel)
+{
+	report(" Allocating memory for .");
+}
+
 static void translate(llvm::Module*& module, ir::PTXKernel& kernel)
 {
 	assert(module == 0);
@@ -302,6 +307,7 @@ LLVMModuleManager::KernelAndTranslation::MetaData*
 	report("Translating PTX kernel '" << _kernel->name << "'");
 	
 	optimizePTX(*_kernel, _optimizationLevel);
+	allocatePTXMemory(*_kernel);
 	_metadata = generateMetadata(*_kernel, _optimizationLevel);
 	translate(_module, *_kernel);
 	optimize(*_module, _optimizationLevel);

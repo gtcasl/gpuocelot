@@ -45,7 +45,7 @@ namespace executive
 			
 		public:
 			/*! \brief Generic pointer back to other state */
-			char* other;
+			char* metadata;
 	};
 
 }

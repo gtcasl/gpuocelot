@@ -371,12 +371,12 @@ bool executive::EmulatedKernel::checkMemoryAccess(const void* base,
 	return device->checkMemoryAccess(base, size);
 }
 
-void executive::EmulatedKernel::updateParameterMemory() {
+void executive::EmulatedKernel::updateArgumentMemory() {
 	using namespace std;
 
 	if(!function()) {
 		delete[] ParameterMemory;
-		ParameterMemory = new char[_parameterMemorySize];
+		ParameterMemory = new char[_argumentMemorySize];
 	
 		unsigned int size = 0;
 		for(ParameterVector::iterator i_it = arguments.begin();
@@ -389,7 +389,7 @@ void executive::EmulatedKernel::updateParameterMemory() {
 			for(ir::Parameter::ValueVector::iterator
 				v_it = parameter.arrayValues.begin();
 				v_it != parameter.arrayValues.end(); ++v_it) {
-				assert(size < _parameterMemorySize);
+				assert(size < _argumentMemorySize);
 				memcpy(ParameterMemory + size, &v_it->val_b16,
 					parameter.getElementSize());
 				size += parameter.getElementSize();
@@ -910,7 +910,8 @@ void executive::EmulatedKernel::lazyLink(int callPC,
 	instructions[callPC].branchTargetInstruction = entryPoint->second;
 	
 	if (instructions[callPC].opcode == ir::PTXInstruction::Call) {
-		instructions[callPC].a.stackMemorySize = kernel->stackMemorySize();
+		instructions[callPC].a.stackMemorySize = 
+		kernel->argumentMemorySize();
 		instructions[callPC].a.localMemorySize = kernel->localMemorySize();
 		instructions[callPC].a.sharedMemorySize = kernel->sharedMemorySize();
 		instructions[callPC].a.registerCount = kernel->registerCount();
@@ -950,7 +951,7 @@ static unsigned int align(unsigned int offset, unsigned int size) {
 }
 
 void executive::EmulatedKernel::initializeStackMemory() {
-	_stackMemorySize = 0;
+	_parameterMemorySize = 0;
 	typedef std::unordered_map<std::string, unsigned int> OffsetMap;
 
 	report("Initializing stack memory for kernel " << name);
@@ -963,15 +964,15 @@ void executive::EmulatedKernel::initializeStackMemory() {
 			ir::Parameter& parameter = *i_it;
 			// align parameter memory
 			unsigned int padding = parameter.getAlignment() 
-				- ( _stackMemorySize % parameter.getAlignment() );
+				- ( _parameterMemorySize % parameter.getAlignment() );
 			padding = (parameter.getAlignment() == padding) ? 0 : padding;
-			_stackMemorySize += padding;
-			parameter.offset = _stackMemorySize;
-			offsets[parameter.name] = _stackMemorySize;
+			_parameterMemorySize += padding;
+			parameter.offset = _parameterMemorySize;
+			offsets[parameter.name] = _parameterMemorySize;
 			report( " Initializing memory for stack parameter " 
 				<< parameter.name << " of size " << parameter.getSize() 
-				<< " at offset " << _stackMemorySize );
-			_stackMemorySize += parameter.getSize();
+				<< " at offset " << _parameterMemorySize );
+			_parameterMemorySize += parameter.getSize();
 		}
 	}
 	
@@ -980,15 +981,15 @@ void executive::EmulatedKernel::initializeStackMemory() {
 		ir::Parameter& parameter = i_it->second;
 		// align parameter memory
 		unsigned int padding = parameter.getAlignment() 
-			- ( _stackMemorySize % parameter.getAlignment() );
+			- ( _parameterMemorySize % parameter.getAlignment() );
 		padding = (parameter.getAlignment() == padding) ? 0 : padding;
-		_stackMemorySize += padding;
-		parameter.offset = _stackMemorySize;
-		offsets[parameter.name] = _stackMemorySize;
+		_parameterMemorySize += padding;
+		parameter.offset = _parameterMemorySize;
+		offsets[parameter.name] = _parameterMemorySize;
 		report( " Initializing memory for stack parameter " << parameter.name 
 			<< " of size " << parameter.getSize() << " at offset " 
-			<< _stackMemorySize );
-		_stackMemorySize += parameter.getSize();
+			<< _parameterMemorySize );
+		_parameterMemorySize += parameter.getSize();
 	}
 	
 	report( "Setting offsets of operands to call instructions." );

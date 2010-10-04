@@ -34,6 +34,7 @@ public:
 		Kill,
 		SetupCta,
 		LaunchCta,
+		FlushCta,
 		Invalid,
 	};
 	
@@ -96,10 +97,57 @@ void LLVMWorkerThread::finishCta()
 	delete message;
 }
 
+void LLVMWorkerThread::flushTranslatedKernels()
+{
+	WorkerMessage message;
+	message.type = WorkerMessage::SetupCta;
+	
+	send(&message);
+	
+	WorkerMessage* reply;
+	receive(reply);
+	assert(reply == &message);	
+}
+
+LLVMModuleManager::FunctionId LLVMWorkerThread::getFunctionId(
+	const std::string& moduleName, const std::string& functionName)
+{
+	LLVMModuleManager::GetFunctionMessage message;
+	
+	message.type       = LLVMModuleManager::DatabaseMessage::GetId;
+	message.moduleName = moduleName;
+	message.kernelName = functionName;
+	
+	threadSend(&message, LLVMModuleManager::id());
+	
+	LLVMModuleManager::GetFunctionMessage* reply = 0;
+	threadReceive(reply);
+	assert(reply == &message);
+	
+	return message.id;
+}
+
+LLVMModuleManager::MetaData* LLVMWorkerThread::getFunctionMetaData(
+	const LLVMModuleManager::FunctionId& id)
+{
+	LLVMModuleManager::GetFunctionMessage message;
+	
+	message.type = LLVMModuleManager::DatabaseMessage::GetFunction;
+	message.id   = id;
+	
+	threadSend(&message, LLVMModuleManager::id());
+	
+	LLVMModuleManager::GetFunctionMessage* reply = 0;
+	threadReceive(reply);
+	assert(reply == &message);
+	
+	return message.metadata;
+}
+
 void LLVMWorkerThread::execute()
 {
 	WorkerMessage*             message;
-	LLVMCooperativeThreadArray cta;
+	LLVMCooperativeThreadArray cta(this);
 	
 	report("LLVMWorker thread is alive, waiting for command.");
 	
@@ -121,6 +169,13 @@ void LLVMWorkerThread::execute()
 			report(" Setting up CTA for kernel '" << message->kernel->name 
 				<< "' on thread " << id() << ".");
 			cta.setup(*message->kernel);
+			threadSend(message);
+		}
+		break;
+		case WorkerMessage::FlushCta:
+		{
+			report(" Flushing translation cache on thread " << id() << ".");
+			cta.flushTranslatedKernels();
 			threadSend(message);
 		}
 		break;

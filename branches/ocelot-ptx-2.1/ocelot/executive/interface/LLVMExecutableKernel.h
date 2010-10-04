@@ -11,6 +11,9 @@
 #include <ocelot/translator/interface/Translator.h>
 #include <ocelot/executive/interface/ExecutableKernel.h>
 
+// Standard Library Includes
+#include <unordered_map>
+
 // Forward Declarations
 namespace ir
 {
@@ -33,11 +36,12 @@ public:
 		InvalidCallType
 	};
 
+	typedef translator::Translator::OptimizationLevel OptimizationLevel;
+
 public:
 	/*! \brief Creates a new instance of the runtime bound to a kernel*/
 	LLVMExecutableKernel(const ir::Kernel& kernel, Device* d = 0,
-		translator::Translator::OptimizationLevel 
-		l = translator::Translator::NoOptimization);
+		OptimizationLevel l = translator::Translator::NoOptimization);
 	/*! \brief Clean up the runtime */
 	~LLVMExecutableKernel();
 
@@ -50,18 +54,20 @@ public:
 	void setExternSharedMemorySize(unsigned int bytes);
 	/*! \brief Describes the device used to execute the kernel */
 	void setWorkerThreads(unsigned int threadLimit);
-	/*! \brief Reload parameter memory */
-	void updateParameterMemory();
+	/*! \brief Reload argument memory */
+	void updateArgumentMemory();
 	/*! \brief Indicate that other memory has been updated */
 	void updateMemory();
 	/*! \brief Get a vector of all textures references by the kernel */
 	TextureVector textureReferences() const;
 
 public:
-	/*! \brief Get the block of parameter memory associated with the kernel */
-	char* parameterMemory() const;
+	/*! \brief Get the block of argument memory associated with the kernel */
+	char* argumentMemory() const;
 	/*! \brief Get the block of constant memory associated with the kernel */
 	char* constantMemory() const;
+	/*! \brief Get the optimization levelf or the kernel */
+	OptimizationLevel optimization() const;
 
 public:
 	/*!	adds a trace generator to the EmulatedKernel */
@@ -81,12 +87,23 @@ public:
 	std::string instruction(unsigned int statement) const;
 
 private:
-	typedef translator::Translator::OptimizationLevel OptimizationLevel;
+	typedef std::unordered_map<std::string, size_t> AllocationMap;
+                        
+private:
+	/*! \brief Allocate memory for the kernel */
+	void _allocateMemory();
+	/*! \brief Allocate argument memory for the kernel */
+	void _allocateArgumentMemory();
+	/*! \brief Allocate constant memory for the kernel */
+	void _allocateConstantMemory();
 
 private:
 	const ir::PTXKernel* _kernel;
 	const Device*        _device;
 	OptimizationLevel    _optimizationLevel;
+	AllocationMap        _constants;
+	char*                _argumentMemory;
+	char*                _constantMemory;
 };
 
 }

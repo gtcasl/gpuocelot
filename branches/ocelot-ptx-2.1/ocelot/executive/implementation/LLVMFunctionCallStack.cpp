@@ -19,6 +19,7 @@ namespace executive
 void LLVMFunctionCallStack::call(unsigned int l, unsigned int a)
 {
 	_stack.resize(_stack.size() + l + a);
+	_sizes.push_back(ArgumentAndLocalSize(l, a));
 }
 
 void LLVMFunctionCallStack::returned()

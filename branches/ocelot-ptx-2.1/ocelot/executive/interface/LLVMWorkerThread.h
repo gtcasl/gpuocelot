@@ -7,6 +7,9 @@
 #ifndef LLVM_WORKER_THREAD_H_INCLUDED
 #define LLVM_WORKER_THREAD_H_INCLUDED
 
+// Ocelot Includes
+#include <ocelot/executive/interface/LLVMModuleManager.h>
+
 // Hydrazine Includes
 #include <hydrazine/interface/Thread.h>
 
@@ -35,6 +38,18 @@ public:
 
 	/*! \brief Block until the currently executing CTA is finished */
 	void finishCta();
+	
+	/*! \brief Flush refernces to all translated kernels */
+	void flushTranslatedKernels();
+
+public:
+	/*! \brief Get the id of a translated function from the database */
+	LLVMModuleManager::FunctionId getFunctionId(const std::string& moduleName,
+		const std::string& functionName);
+
+	/*! \brief Get the translated function from the database */
+	LLVMModuleManager::KernelAndTranslation::MetaData* getFunctionMetaData(
+		const LLVMModuleManager::FunctionId& id);
 
 private:
 	/*! \brief The 'main' entry point for the thread. */

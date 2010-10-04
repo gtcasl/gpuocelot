@@ -7,8 +7,16 @@
 #ifndef LLVM_MODULE_MANAGER_H_INCLUDED
 #define LLVM_MODULE_MANAGER_H_INCLUDED
 
+// Ocelot Includes
+#include <ocelot/translator/interface/Translator.h>
+#include <ocelot/executive/interface/ExecutableKernel.h>
+#include <ocelot/ir/interface/ControlFlowGraph.h>
+
 // Hydrazine Includes
 #include <hydrazine/interface/Thread.h>
+
+// Standard Library Includes
+#include <vector>
 
 // Forward Declarations
 namespace ir
@@ -26,6 +34,7 @@ namespace executive
 {
 
 class LLVMContext;
+class LLVMExecutableKernel;
 
 /*! \brief A class that manages modules that are executed by LLVM kernels */
 class LLVMModuleManager
@@ -33,59 +42,113 @@ class LLVMModuleManager
 public:
 	typedef void (*Function)(LLVMContext*);
 	typedef unsigned int FunctionId;
+	typedef ExecutableKernel::TextureVector TextureVector;
 
 public:
 	/*! \brief Loads a module into the manager, kernels are now visible */
-	static void loadModule(const ir::Module* m);
+	static void loadModule(const ir::Module* m,
+		translator::Translator::OptimizationLevel l);
 
 	/*! \brief Is a module loaded? */
 	static bool isModuleLoaded(const std::string& moduleName);
 
-	/*! \brief Gets the corresponding id of a kernel in a specific module */
-	static FunctionId getFunctionId(const std::string& moduleName,
-		const std::string& kernelName);
-
-	/*! \brief Gets a completely translated function from the manager */
-	static Function getFunction(const FunctionId& id);
-
 	/*! \brief Gets the total number of functions in all modules */
 	static unsigned int totalFunctionCount();
 
-	/*! \brief unLoad module from the database */
+	/*! \brief unLoad module from the database, this invalidates all ids */
 	static void unloadModule(const std::string& moduleName);
 
+	/*! \brief Associate a hydrazine thread with this manager, 
+		allowing it to communicate */
+	static void associate(hydrazine::Thread* thread);
+
+	/*! \brief Get the id of the hydrazine thread */
+	static hydrazine::Thread::Id id();
+	
 public:
 	class KernelAndTranslation
 	{
 	public:
-		KernelAndTranslation(ir::PTXKernel* k = 0, Function f = 0);
+		class MetaData
+		{
+		public:
+			typedef std::unordered_map<ir::ControlFlowGraph::BasicBlock::Id, 
+				ir::ControlFlowGraph::const_iterator > BlockIdMap;
+
+		public:
+			BlockIdMap                  blocks;
+			boost::mutex                mutex;
+			const LLVMExecutableKernel* kernel;
+			Function                    function;
+			TextureVector               textures;
+		};
 	
 	public:
-		ir::PTXKernel* kernel;
-		Function       function;
-		llvm::Module*  module;
+		KernelAndTranslation(ir::PTXKernel* k = 0, 
+			translator::Translator::OptimizationLevel level = 
+			translator::Translator::NoOptimization);
+
+	public:
+		void               unload();
+		MetaData*          metadata();
+		const std::string& name() const;
+	
+	private:
+		ir::PTXKernel*                            _kernel;
+		llvm::Module*                             _module;
+		translator::Translator::OptimizationLevel _optimizationLevel;
+		MetaData*                                 _metadata;
 	};
-		
+
+	typedef KernelAndTranslation::MetaData MetaData;
+
+	class DatabaseMessage
+	{
+	public:
+		enum Type
+		{
+			GetId,
+			GetFunction,
+			KillThread,
+			Invalid
+		};
+	public:
+		Type type;
+	};
+
+	class GetFunctionMessage : public DatabaseMessage
+	{
+	public:
+		std::string moduleName;
+		std::string kernelName;
+		FunctionId  id;
+		MetaData*   metadata;
+	};
+	
 private:
-	typedef std::unordered_map<std::string, 
-		KernelAndTranslation> PTXKernelMap;
+	typedef std::unordered_map<std::string, FunctionId> FunctionIdMap;
+	typedef std::vector<KernelAndTranslation> KernelVector;
 	
 	class Module
 	{
 	public:
-		Module(const ir::Module* m);
-				
+		Module(const KernelVector& kernels, FunctionId nextId);
+	
 	public:
-		ir::PTXKernel* getKernel(const std::string& kernelName);
-		Function getFunction(const std::string& kernelName);
-		void unload();
-		unsigned int kernelCount() const;
+		FunctionId getFunctionId(const std::string& kernelName);
+		
+		FunctionId lowId() const;
+		FunctionId highId() const;
+		
+		bool empty() const;
+		
+		void shiftId(FunctionId nextId);
 		
 	private:
-		PTXKernelMap  _kernels;
+		FunctionIdMap  _ids;
 	};
 
-	typedef std::map<std::string, Module> ModuleMap;
+	typedef std::unordered_map<std::string, Module> ModuleMap;
 
 	/*! \brief A thread safe-class for actually maintaining the modules */
 	class ModuleDatabase : public hydrazine::Thread
@@ -98,7 +161,8 @@ private:
 		~ModuleDatabase();
 	
 		/*! \brief Load module into the database */
-		void loadModule(const ir::Module* module);
+		void loadModule(const ir::Module* module,
+			translator::Translator::OptimizationLevel l);
 	
 		/*! \brief Is a module loaded? */
 		bool isModuleLoaded(const std::string& moduleName);
@@ -106,23 +170,16 @@ private:
 		/*! \brief unLoad module from the database */
 		void unloadModule(const std::string& moduleName);
 		
-		/*! \brief Get the id of a translated function from the database */
-		FunctionId getFunctionId(const std::string& moduleName,
-			const std::string& functionName);
-	
 		/*! \brief Gets the total number of functions in all modules */
 		unsigned int totalFunctionCount() const;
-
-		/*! \brief Get the translated function from the database */
-		Function getFunction(const FunctionId& id);
 
 	private:
 		/*! \brief The entry point to the thread */
 		void execute();
 	
 	private:
-		ModuleMap                     _modules;
-		unsigned int                  _kernelCount;
+		ModuleMap    _modules;
+		KernelVector _kernels;
 	};
 	
 	static ModuleDatabase _database;

@@ -44,7 +44,7 @@ executive::NVIDIAExecutableKernel::NVIDIAExecutableKernel(
 	this->ISA = ir::Instruction::SASS;
 	
 	ptxKernel = new ir::PTXKernel( static_cast<ir::PTXKernel &>(kernel));
-	_parameterMemorySize = mapParameterOffsets();
+	_parameterMemorySize = mapArgumentOffsets();
 		
 	cuda::CudaDriver::cuFuncGetAttribute((int*)&_registerCount, 
 		CU_FUNC_ATTRIBUTE_NUM_REGS, cuFunction);
@@ -105,8 +105,8 @@ void executive::NVIDIAExecutableKernel::setExternSharedMemorySize(unsigned int b
 	}
 }
 
-void executive::NVIDIAExecutableKernel::updateParameterMemory() {
-	configureParameters();
+void executive::NVIDIAExecutableKernel::updateArgumentMemory() {
+	configureArguments();
 }
 
 void executive::NVIDIAExecutableKernel::updateMemory() {
@@ -139,24 +139,29 @@ void executive::NVIDIAExecutableKernel::removeTraceGenerator(
 	assertM(false, "No trace generation support in GPU kernel.");	
 }
 
+
 void executive::NVIDIAExecutableKernel::setWorkerThreads(unsigned int limit) {
 
 }
 
-void executive::NVIDIAExecutableKernel::configureParameters() {
-	report("executive::NVIDIAExecutableKernel::configureParameters() - size: " << _parameterMemorySize);
+void executive::NVIDIAExecutableKernel::configureArguments() {
+	report("executive::NVIDIAExecutableKernel::configureArguments() - size: " 
+		<< _argumentMemorySize);
 
-	char *paramBuffer = new char[_parameterMemorySize];
-	getParameterBlock((unsigned char*)paramBuffer, _parameterMemorySize);
+	char *argBuffer = new char[_argumentMemorySize];
+	getArgumentBlock((unsigned char*)argBuffer, _argumentMemorySize);
 
-	if (cuda::CudaDriver::cuParamSetSize(cuFunction, _parameterMemorySize) != CUDA_SUCCESS) {
-		delete [] paramBuffer;
-		Ocelot_Exception("NVIDIAExecutableKernel::configureParameters() - failed to set parameter size to " 
-			<< _parameterMemorySize);
+	if (cuda::CudaDriver::cuParamSetSize(cuFunction,
+		_argumentMemorySize) != CUDA_SUCCESS) {
+		delete [] argBuffer;
+		Ocelot_Exception("NVIDIAExecutableKernel::configureArguments() " 
+			<< "- failed to set parameter size to " << _argumentMemorySize);
 	}
-	if (cuda::CudaDriver::cuParamSetv(cuFunction, 0, paramBuffer, _parameterMemorySize) != CUDA_SUCCESS) {
-		delete [] paramBuffer;
-		Ocelot_Exception("NVIDIAExecutableKernel::configureParameters() - failed to set parameter data");
+	if (cuda::CudaDriver::cuParamSetv(cuFunction, 0, argBuffer,
+		_argumentMemorySize) != CUDA_SUCCESS) {
+		delete [] argBuffer;
+		Ocelot_Exception("NVIDIAExecutableKernel::configureArguments() " << 
+			"- failed to set parameter data");
 	}
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////

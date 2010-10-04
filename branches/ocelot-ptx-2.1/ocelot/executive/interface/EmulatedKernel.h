@@ -58,7 +58,7 @@ namespace executive {
 		void setWorkerThreads(unsigned int limit);
 
 		/*! \brief Indicate that the kernels parameters have been updated */
-		void updateParameterMemory();
+		void updateArgumentMemory();
 		
 		/*! \brief Indicate that other memory has been updated */
 		void updateMemory();

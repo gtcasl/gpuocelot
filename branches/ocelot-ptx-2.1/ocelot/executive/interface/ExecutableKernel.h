@@ -42,27 +42,27 @@ namespace executive {
 		virtual void launchGrid(int width, int height)=0;
 
 		/*!
-			\brief compute parameter offsets for parameter data
-			\return number of bytes required for parameter memory
+			\brief compute argument offsets for argument data
+			\return number of bytes required for argument memory
 		*/
-		virtual size_t mapParameterOffsets();
+		virtual size_t mapArgumentOffsets();
 
 		/*!
-			\brief given a block of parameter memory, sets the values of 
-				each parameter
-			\param parameter pointer to parameter memory
-			\param paramSize number of bytes to write to parameter memory
+			\brief given a block of argument memory, sets the values of 
+				each argument
+			\param parameter pointer to argument memory
+			\param argumentSize number of bytes to write to parameter memory
 		*/
-		virtual void setParameterBlock(const unsigned char *parameter, 
-			size_t paramSize);
+		virtual void setArgumentBlock(const unsigned char *parameter, 
+			size_t argumentSize);
 
 		/*!
-			\brief gets the values of each parameter as a block of binary data
-			\param parameter pointer to parameter memory
-			\param maxSize maximum number of bytes to write to parameter memory
-			\return actual number of bytes required by parameter memory
+			\brief gets the values of each argument as a block of binary data
+			\param parameter pointer to argument memory
+			\param maxSize maximum number of bytes to write to argument memory
+			\return actual number of bytes required by argument memory
 		*/
-		virtual size_t getParameterBlock(unsigned char *parameter, 
+		virtual size_t getArgumentBlock(unsigned char *argument,
 			size_t maxSize) const;
 	
 		/*!	\brief Sets the shape of a kernel */
@@ -74,8 +74,8 @@ namespace executive {
 		/*! \brief Sets the max number of pthreads this kernel can use */
 		virtual void setWorkerThreads(unsigned int workerThreadLimit)=0;
 			
-		/*! \brief Indicate that the kernels parameters have been updated */
-		virtual void updateParameterMemory()=0;
+		/*! \brief Indicate that the kernels arguments have been updated */
+		virtual void updateArgumentMemory()=0;
 		
 		/*! \brief Indicate that other memory has been updated */
 		virtual void updateMemory()=0;
@@ -104,8 +104,8 @@ namespace executive {
 		unsigned int sharedMemorySize() const;
 		unsigned int externSharedMemorySize() const;
 		unsigned int totalSharedMemorySize() const;
+		unsigned int argumentMemorySize() const;
 		unsigned int parameterMemorySize() const;
-		unsigned int stackMemorySize() const;
 		const ir::Dim3& blockDim() const;
 		const ir::Dim3& gridDim() const;
 
@@ -123,9 +123,9 @@ namespace executive {
 		/*! \brief The amount of allocated dynamic shared memory */
 		unsigned int _externSharedMemorySize;
 		/*! \brief Total amount of packed parameter memory */
-		unsigned int _parameterMemorySize;
+		unsigned int _argumentMemorySize;
         /*! \brief Kernel stack parameter memory space */
-        unsigned int _stackMemorySize;
+        unsigned int _parameterMemorySize;
 		/*! \brief The block dimensions */
 		ir::Dim3 _blockDim;
 		/*!	\brief Dimension of grid in blocks */

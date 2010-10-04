@@ -6,10 +6,22 @@
 */
 
 
-#ifndef LLVM_RUNTIME_LIBRARY_INL_INCLUDED
-#define LLVM_RUNTIME_LIBRARY_INL_INCLUDED
+#ifndef LLVM_RUNTIME_LIBRARY_CPP_INCLUDED
+#define LLVM_RUNTIME_LIBRARY_CPP_INCLUDED
+
+// Ocelot Includes
+#include <ocelot/executive/interface/Device.h>
+#include <ocelot/executive/interface/LLVMExecutableKernel.h>
+#include <ocelot/executive/interface/LLVMContext.h>
+#include <ocelot/executive/interface/LLVMModuleManager.h>
+#include <ocelot/executive/interface/TextureOperations.h>
+
+// Hydrazine Includes
+#include <hydrazine/implementation/math.h>
 
 #define REPORT_ATOMIC_OPERATIONS 0
+
+typedef executive::LLVMModuleManager::KernelAndTranslation::MetaData MetaData;
 
 template < typename T >
 static void __report( executive::LLVMContext* context, 
@@ -153,13 +165,12 @@ extern "C"
 	ir::PTXB32 __ocelot_atomic_inc( ir::PTXU64 address, ir::PTXB32 b,
 		executive::LLVMContext* context )
 	{
-		executive::LLVMExecutableKernel::OpaqueState* state = 
-			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
+		MetaData* state = (MetaData*) context->metadata;
 		
 		ir::PTXB32 d = 0;
 		ir::PTXB32 result = 0;
 
-		state->cache->lock();
+		state->mutex.lock();
 
 		d = *((ir::PTXB32*) address);
 		
@@ -170,7 +181,7 @@ extern "C"
 
 		*((ir::PTXB32*) address) = result;
 		
-		state->cache->unlock();
+		state->mutex.unlock();
 
 		return d;
 	}
@@ -178,13 +189,12 @@ extern "C"
 	ir::PTXB32 __ocelot_atomic_dec( ir::PTXU64 address, ir::PTXB32 b,
 		executive::LLVMContext* context )
 	{
-		executive::LLVMExecutableKernel::OpaqueState* state = 
-			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
+		MetaData* state = (MetaData*) context->metadata;
 		
 		ir::PTXB32 d = 0;
 		ir::PTXB32 result = 0;
 
-		state->cache->lock();
+		state->mutex.lock();
 
 		d = *((ir::PTXB32*) address);
 		
@@ -195,7 +205,7 @@ extern "C"
 
 		*((ir::PTXB32*) address) = result;
 		
-		state->cache->unlock();
+		state->mutex.unlock();
 
 		return d;
 	}
@@ -204,10 +214,9 @@ extern "C"
 		ir::ControlFlowGraph::BasicBlock::Id id )
 	{
 		#if(DEBUG_PTX_BASIC_BLOCK_TRACE == 1)
-		executive::LLVMExecutableKernel::OpaqueState* state = 
-			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
+		MetaData* state = (MetaData*) context->metadata;
 		
-		executive::LLVMExecutableKernel::OpaqueState::BlockIdMap::const_iterator
+		MetaData::BlockIdMap::const_iterator
 			block = state->blocks.find( id );
 		assert( block != state->blocks.end() );
 		
@@ -393,8 +402,7 @@ extern "C"
 		ir::PTXU64 _address, unsigned int bytes, unsigned int statement )
 	{
 		void* address = (void*)_address;
-		executive::LLVMExecutableKernel::OpaqueState* state = 
-			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
+		MetaData* state = (MetaData*) context->metadata;
 		
 		if( !state->kernel->device->checkMemoryAccess( address, bytes ) )
 		{
@@ -452,8 +460,7 @@ extern "C"
 	void __ocelot_check_shared_memory_access( executive::LLVMContext* context,
 		ir::PTXU64 _address, unsigned int bytes, unsigned int statement )
 	{
-		executive::LLVMExecutableKernel::OpaqueState* state = 
-			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
+		MetaData* state = (MetaData*) context->metadata;
 		
 		char* address = (char*) _address;
 		char* end = address + bytes;
@@ -487,8 +494,7 @@ extern "C"
 	void __ocelot_check_constant_memory_access( executive::LLVMContext* context,
 		ir::PTXU64 _address, unsigned int bytes, unsigned int statement )
 	{
-		executive::LLVMExecutableKernel::OpaqueState* state = 
-			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
+		MetaData* state = (MetaData*) context->metadata;
 		
 		char* address = (char*) _address;
 		char* end = address + bytes;
@@ -524,8 +530,7 @@ extern "C"
 	void __ocelot_check_local_memory_access( executive::LLVMContext* context,
 		ir::PTXU64 _address, unsigned int bytes, unsigned int statement )
 	{
-		executive::LLVMExecutableKernel::OpaqueState* state = 
-			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
+		MetaData* state = (MetaData*) context->metadata;
 		
 		char* address = (char*) _address;
 		char* end = address + bytes;
@@ -558,8 +563,7 @@ extern "C"
 	void __ocelot_check_param_memory_access( executive::LLVMContext* context,
 		ir::PTXU64 _address, unsigned int bytes, unsigned int statement )
 	{
-		executive::LLVMExecutableKernel::OpaqueState* state = 
-			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
+		MetaData* state = (MetaData*) context->metadata;
 		
 		char* address = (char*) _address;
 		char* end = address + bytes;
@@ -593,8 +597,7 @@ extern "C"
 		unsigned int index, unsigned int c0, unsigned int c1, unsigned int c2,
 		unsigned int c3 )
 	{
-		executive::LLVMExecutableKernel::OpaqueState* state = 
-			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
+		MetaData* state = (MetaData*) context->metadata;
 		const ir::Texture& texture = *state->textures[ index ];
 		
 		result[0] = executive::tex::sample< 0, float >( 
@@ -604,7 +607,7 @@ extern "C"
 		result[2] = executive::tex::sample< 2, float >( 
 			texture, c0, c1, c2 );
 		result[3] = executive::tex::sample< 3, float >( 
-			texture, c0, c1, c2 );			
+			texture, c0, c1, c2 );	
 	}
 
 	void __ocelot_tex_3d_fu( float* result, executive::LLVMContext* context, 
@@ -617,8 +620,7 @@ extern "C"
 	void __ocelot_tex_3d_ff( float* result, executive::LLVMContext* context, 
 		unsigned int index, float c0, float c1, float c2, float c3 )
 	{
-		executive::LLVMExecutableKernel::OpaqueState* state = 
-			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
+		MetaData* state = (MetaData*) context->metadata;
 		const ir::Texture& texture = *state->textures[ index ];
 		
 		result[0] = executive::tex::sample< 0, float >( 
@@ -635,8 +637,7 @@ extern "C"
 		executive::LLVMContext* context, unsigned int index, float c0, 
 		float c1, float c2, float c3 )
 	{
-		executive::LLVMExecutableKernel::OpaqueState* state = 
-			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
+		MetaData* state = (MetaData*) context->metadata;
 		const ir::Texture& texture = *state->textures[ index ];
 		
 		result[0] = executive::tex::sample< 0, int >( 
@@ -653,8 +654,7 @@ extern "C"
 		executive::LLVMContext* context, unsigned int index, float c0, 
 		float c1, float c2, float c3 )
 	{
-		executive::LLVMExecutableKernel::OpaqueState* state = 
-			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
+		MetaData* state = (MetaData*) context->metadata;
 		const ir::Texture& texture = *state->textures[ index ];
 		
 		result[0] = executive::tex::sample< 0, unsigned int >( 
@@ -671,8 +671,7 @@ extern "C"
 		executive::LLVMContext* context, unsigned int index, unsigned int c0, 
 		unsigned int c1, unsigned int c2, unsigned int c3 )
 	{
-		executive::LLVMExecutableKernel::OpaqueState* state = 
-			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
+		MetaData* state = (MetaData*) context->metadata;
 		const ir::Texture& texture = *state->textures[ index ];
 		
 		result[0] = executive::tex::sample< 0, int >( 
@@ -696,8 +695,7 @@ extern "C"
 		executive::LLVMContext* context, unsigned int index, unsigned int c0, 
 		unsigned int c1, unsigned int c2, unsigned int c3 )
 	{
-		executive::LLVMExecutableKernel::OpaqueState* state = 
-			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
+		MetaData* state = (MetaData*) context->metadata;
 		const ir::Texture& texture = *state->textures[ index ];
 		
 		result[0] = executive::tex::sample< 0, unsigned int >( 
@@ -720,8 +718,7 @@ extern "C"
 	void __ocelot_tex_2d_fu( float* result, executive::LLVMContext* context, 
 		unsigned int index, unsigned int c0, unsigned int c1 )
 	{
-		executive::LLVMExecutableKernel::OpaqueState* state = 
-			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
+		MetaData* state = (MetaData*) context->metadata;
 		const ir::Texture& texture = *state->textures[ index ];
 		
 		result[0] = executive::tex::sample< 0, float >( texture, c0, c1 );
@@ -739,8 +736,7 @@ extern "C"
 	void __ocelot_tex_2d_ff( float* result, executive::LLVMContext* context, 
 		unsigned int index, float c0, float c1 )
 	{
-		executive::LLVMExecutableKernel::OpaqueState* state = 
-			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
+		MetaData* state = (MetaData*) context->metadata;
 		const ir::Texture& texture = *state->textures[ index ];
 		
 		result[0] = executive::tex::sample< 0, float >( texture, c0, c1 );
@@ -753,8 +749,7 @@ extern "C"
 		executive::LLVMContext* context, 
 		unsigned int index, float c0, float c1 )
 	{
-		executive::LLVMExecutableKernel::OpaqueState* state = 
-			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
+		MetaData* state = (MetaData*) context->metadata;
 		const ir::Texture& texture = *state->textures[ index ];
 		
 		result[0] = executive::tex::sample< 0, int >( texture, c0, c1 );
@@ -767,8 +762,7 @@ extern "C"
 		executive::LLVMContext* context, unsigned int index, 
 		float c0, float c1 )
 	{
-		executive::LLVMExecutableKernel::OpaqueState* state = 
-			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
+		MetaData* state = (MetaData*) context->metadata;
 		const ir::Texture& texture = *state->textures[ index ];
 		
 		result[0] = executive::tex::sample< 0, 
@@ -785,8 +779,7 @@ extern "C"
 		executive::LLVMContext* context, unsigned int index, unsigned int c0, 
 		unsigned int c1 )
 	{
-		executive::LLVMExecutableKernel::OpaqueState* state = 
-			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
+		MetaData* state = (MetaData*) context->metadata;
 		const ir::Texture& texture = *state->textures[ index ];
 		
 		result[0] = executive::tex::sample< 0, 
@@ -810,8 +803,7 @@ extern "C"
 		executive::LLVMContext* context, unsigned int index, 
 		unsigned int c0, unsigned int c1 )
 	{
-		executive::LLVMExecutableKernel::OpaqueState* state = 
-			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
+		MetaData* state = (MetaData*) context->metadata;
 		const ir::Texture& texture = *state->textures[ index ];
 		
 		result[0] = executive::tex::sample< 0, int >( texture, c0, c1 );
@@ -830,8 +822,7 @@ extern "C"
 	void __ocelot_tex_1d_fs( float* result, executive::LLVMContext* context, 
 		int index, int c0 )
 	{
-		executive::LLVMExecutableKernel::OpaqueState* state = 
-			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
+		MetaData* state = (MetaData*) context->metadata;
 		const ir::Texture& texture = *state->textures[ index ];
 		
 		result[0] = executive::tex::sample< 0, float >( texture, c0 );
@@ -849,8 +840,7 @@ extern "C"
 	void __ocelot_tex_1d_ff( float* result, executive::LLVMContext* context, 
 		unsigned int index, float c0 )
 	{
-		executive::LLVMExecutableKernel::OpaqueState* state = 
-			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
+		MetaData* state = (MetaData*) context->metadata;
 		const ir::Texture& texture = *state->textures[ index ];
 		
 		result[0] = executive::tex::sample< 0, float >( texture, c0 );
@@ -862,8 +852,7 @@ extern "C"
 	void __ocelot_tex_1d_sf( unsigned int* result, 
 		executive::LLVMContext* context, unsigned int index, float c0 )
 	{
-		executive::LLVMExecutableKernel::OpaqueState* state = 
-			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
+		MetaData* state = (MetaData*) context->metadata;
 		const ir::Texture& texture = *state->textures[ index ];
 		
 		result[0] = executive::tex::sample< 0, int >( texture, c0 );
@@ -875,8 +864,7 @@ extern "C"
 	void __ocelot_tex_1d_uf( unsigned int* result, 
 		executive::LLVMContext* context, unsigned int index, float c0 )
 	{
-		executive::LLVMExecutableKernel::OpaqueState* state = 
-			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
+		MetaData* state = (MetaData*) context->metadata;
 		const ir::Texture& texture = *state->textures[ index ];
 		
 		result[0] = executive::tex::sample< 0, unsigned int >( texture, c0 );
@@ -888,8 +876,7 @@ extern "C"
 	void __ocelot_tex_1d_ss( unsigned int* result, 
 		executive::LLVMContext* context, unsigned int index, unsigned int c0 )
 	{
-		executive::LLVMExecutableKernel::OpaqueState* state = 
-			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
+		MetaData* state = (MetaData*) context->metadata;
 		const ir::Texture& texture = *state->textures[ index ];
 		
 		result[0] = executive::tex::sample< 0, int >( texture, c0 );
@@ -907,8 +894,7 @@ extern "C"
 	void __ocelot_tex_1d_us( unsigned int* result, 
 		executive::LLVMContext* context, unsigned int index, unsigned int c0 )
 	{
-		executive::LLVMExecutableKernel::OpaqueState* state = 
-			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
+		MetaData* state = (MetaData*) context->metadata;
 		const ir::Texture& texture = *state->textures[ index ];
 		
 		result[0] = executive::tex::sample< 0, unsigned int >( texture, c0 );

@@ -15,6 +15,9 @@
 // Hydrazine Includes
 #include <hydrazine/implementation/debug.h>
 
+// Standard Library Includes
+#include <cstring>
+
 #ifdef REPORT_BASE
 #undef REPORT_BASE
 #endif
@@ -24,10 +27,20 @@
 namespace executive
 {
 
+static unsigned int pad(size_t& size, unsigned int alignment)
+{
+	unsigned int padding = alignment - (size % alignment);
+	padding = (alignment == padding) ? 0 : padding;
+	size += padding;
+	return padding;
+}
+
 LLVMExecutableKernel::LLVMExecutableKernel(const ir::Kernel& k, 
 	executive::Device* d, translator::Translator::OptimizationLevel l) : 
-	ExecutableKernel(k, d), _optimizationLevel(l)
+	ExecutableKernel(k, d), _optimizationLevel(l), _argumentMemory(0),
+	_constantMemory(0)
 {
+	assert(!function());
 	assertM( k.ISA == ir::Instruction::PTX, 
 		"LLVMExecutable kernel must be constructed from a PTXKernel" );
 	ISA = ir::Instruction::LLVM;
@@ -37,7 +50,8 @@ LLVMExecutableKernel::LLVMExecutableKernel(const ir::Kernel& k,
 
 LLVMExecutableKernel::~LLVMExecutableKernel()
 {	
-
+	delete[] _argumentMemory;
+	delete[] _constantMemory;
 }
 
 void LLVMExecutableKernel::launchGrid(int x, int y)
@@ -72,14 +86,30 @@ void LLVMExecutableKernel::setWorkerThreads(unsigned int threadLimit)
 		std::min(device->properties().multiprocessorCount, threadLimit));
 }
 
-void LLVMExecutableKernel::updateParameterMemory()
+void LLVMExecutableKernel::updateArgumentMemory()
 {
-
+	_allocateMemory();
+	size_t size = 0;
+	for(ParameterVector::iterator argument = arguments.begin();
+		argument != arguments.end(); ++argument) 
+	{
+		pad(size, argument->getAlignment());
+		for(ir::Parameter::ValueVector::iterator 
+			value = argument->arrayValues.begin(); 
+			value != argument->arrayValues.end(); ++value) 
+		{
+			assertM(size < argumentMemorySize(), "Size " << size 
+				<< " not less than allocated parameter size " 
+				<< argumentMemorySize());
+			std::memcpy(_argumentMemory + size, &value->val_b16, 
+				argument->getElementSize());
+			size += argument->getElementSize();
+		}
+	}
 }
 
 void LLVMExecutableKernel::updateMemory()
 {
-
 }
 
 ExecutableKernel::TextureVector LLVMExecutableKernel::textureReferences() const
@@ -87,14 +117,20 @@ ExecutableKernel::TextureVector LLVMExecutableKernel::textureReferences() const
 	return TextureVector();
 }
 
-char* LLVMExecutableKernel::parameterMemory() const
+char* LLVMExecutableKernel::argumentMemory() const
 {
-	assertM(false, "Not Implemented");
+	return _argumentMemory;
 }
 
 char* LLVMExecutableKernel::constantMemory() const
 {
-	assertM(false, "Not Implemented");
+	return _constantMemory;
+}
+
+LLVMExecutableKernel::OptimizationLevel
+	LLVMExecutableKernel::optimization() const
+{
+	return _optimizationLevel;
 }
 
 void LLVMExecutableKernel::addTraceGenerator(
@@ -155,6 +191,144 @@ std::string LLVMExecutableKernel::instruction(
 	assertM(s_it->instruction.valid() == "", s_it->instruction.valid());
 	return s_it->instruction.toString();
 }
+
+void LLVMExecutableKernel::_allocateMemory()
+{
+	_allocateArgumentMemory();
+	_allocateConstantMemory();
+}
+
+void LLVMExecutableKernel::_allocateArgumentMemory()
+{
+	if(_argumentMemory != 0) return;
+	report( "  Allocating parameter memory." );
+
+	_argumentMemorySize = 0;
+
+	AllocationMap map;
+
+	for(ParameterVector::iterator argument = arguments.begin(); 
+		argument != arguments.end(); ++argument)
+	{
+		pad(_argumentMemorySize, argument->getAlignment());
+
+		report("   Allocated parameter " << argument->name << " from "
+			<< _argumentMemorySize << " to " 
+			<< (_argumentMemorySize + argument->getSize()));
+
+		argument->offset = _argumentMemorySize;
+		_argumentMemorySize += argument->getSize();
+
+		map.insert(std::make_pair(argument->name, argument->offset));
+	}
+
+	report("  Allocated " << _argumentMemorySize << " for parameter memory.");
+
+	_argumentMemory = new char[_argumentMemorySize];
+
+	report("  Determining offsets of operands that use parameters");
+
+	for(ir::ControlFlowGraph::iterator block = cfg()->begin(); 
+		block != cfg()->end(); ++block)
+	{
+		for( ir::ControlFlowGraph::InstructionList::iterator 
+			instruction = block->instructions.begin(); 
+			instruction != block->instructions.end(); ++instruction )
+		{
+			ir::PTXInstruction& ptx = static_cast<
+				ir::PTXInstruction&>(**instruction);
+
+			ir::PTXOperand* operands[] = {&ptx.d, &ptx.a, &ptx.b, &ptx.c};
+
+			if(ptx.opcode == ir::PTXInstruction::Mov
+				|| ptx.opcode == ir::PTXInstruction::Ld
+				|| ptx.opcode == ir::PTXInstruction::St)
+			{
+				for(unsigned int i = 0; i != 4; ++i)
+				{
+					if(operands[i]->addressMode == ir::PTXOperand::Address)
+					{
+						AllocationMap::iterator argument = map.find( 
+							operands[i]->identifier);
+						if(argument != map.end())
+						{
+							report("   For instruction \"" 
+							<< ptx.toString() << "\" mapping \"" 
+							<< argument->first << "\" to " 
+							<< (argument->second + operands[i]->offset));
+							operands[ i ]->offset += argument->second;
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+void LLVMExecutableKernel::_allocateConstantMemory()
+{
+	if(_constantMemory != 0) return;
+	report( " Allocating Constant Memory" );
+	_constMemorySize = 0;
+
+	for(ir::Module::GlobalMap::const_iterator 
+		global = module->globals().begin(); 
+		global != module->globals().end(); ++global) 
+	{
+		if(global->second.statement.directive == ir::PTXStatement::Const) 
+		{
+			report( "   Found global constant variable " 
+				<< global->second.statement.name << " of size " 
+				<< global->second.statement.bytes() );
+			pad(_constMemorySize, global->second.statement.alignment);
+			_constants.insert(std::make_pair( 
+				global->second.statement.name, _constMemorySize));
+			_constMemorySize += global->second.statement.bytes();
+		}
+	}
+
+	for(ir::ControlFlowGraph::iterator block = cfg()->begin(); 
+		block != cfg()->end(); ++block)
+	{
+		for(ir::ControlFlowGraph::InstructionList::iterator 
+			instruction = block->instructions.begin(); 
+			instruction != block->instructions.end(); ++instruction)
+		{
+			ir::PTXInstruction& ptx = static_cast<
+			ir::PTXInstruction&>(**instruction);
+			ir::PTXOperand* operands[] = {&ptx.d, &ptx.a, &ptx.b, &ptx.c};
+
+			if(ptx.opcode == ir::PTXInstruction::Mov
+				|| ptx.opcode == ir::PTXInstruction::Ld
+				|| ptx.opcode == ir::PTXInstruction::St)
+			{
+				for(unsigned int i = 0; i != 4; ++i)
+				{
+					if(operands[i]->addressMode == ir::PTXOperand::Address)
+					{
+						AllocationMap::iterator mapping = _constants.find( 
+							operands[i]->identifier );
+						if(_constants.end() != mapping) 
+						{
+							ptx.addressSpace = ir::PTXInstruction::Const;
+							operands[i]->offset += mapping->second;
+							report("   For instruction " 
+							<< ptx.toString() 
+							<< ", mapping constant label " << mapping->first 
+							<< " to " << mapping->second );
+						}
+					}
+				}
+			}
+		}
+	}
+
+	report("   Total constant memory size is " << _constMemorySize 
+		<< ".");
+
+	_constantMemory = new char[_constMemorySize];
+}
+
 
 }
 

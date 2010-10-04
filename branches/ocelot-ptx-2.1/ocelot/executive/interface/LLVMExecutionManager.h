@@ -50,6 +50,9 @@ private:
 
 		/*! \brief Gets the current number of threads */
 		unsigned int threads() const;
+		
+		/*! \brief Flush references to translated kernels */
+		void flushTranslatedKernels();
 	
 	private:
 		/*! \brier The currently active worker threads */

@@ -1376,7 +1376,7 @@ namespace executive
 	void NVIDIAGPUDevice::launch(const std::string& moduleName, 
 		const std::string& kernelName, const ir::Dim3& grid, 
 		const ir::Dim3& block, size_t sharedMemory, 
-		const void* parameterBlock, size_t parameterBlockSize, 
+		const void* argumentBlock, size_t argumentBlockSize, 
 		const trace::TraceGeneratorVector& traceGenerators)
 	{
 		ModuleMap::iterator module = _modules.find(moduleName);
@@ -1394,7 +1394,7 @@ namespace executive
 				<< " in module " << moduleName);
 		}
 		
-/*		if(kernel->sharedMemorySize() + sharedMemory > 
+		if(kernel->sharedMemorySize() + sharedMemory > 
 			(size_t)properties().sharedMemPerBlock)
 		{
 			Throw("Out of shared memory for kernel \""
@@ -1404,7 +1404,7 @@ namespace executive
 				<< properties().sharedMemPerBlock << " for device " 
 				<< properties().name);
 		}
-	*/	
+
 		if(kernel->constMemorySize() > (size_t)properties().totalConstantMemory)
 		{
 			Throw("Out of shared memory for kernel \""
@@ -1415,9 +1415,9 @@ namespace executive
 		}
 		
 		kernel->setKernelShape(block.x, block.y, block.z);
-		kernel->setParameterBlock((const unsigned char*)parameterBlock, 
-			parameterBlockSize);
-		kernel->updateParameterMemory();
+		kernel->setArgumentBlock((const unsigned char*)argumentBlock, 
+			argumentBlockSize);
+		kernel->updateArgumentMemory();
 		kernel->updateMemory();
 		kernel->setExternSharedMemorySize(sharedMemory);
 		

@@ -79,7 +79,7 @@ namespace test
 		param_A.arrayValues[ 0 ].val_u64 = ( ir::PTXU64 ) sequence;
 		param_B.arrayValues.resize( 1 );
 		param_B.arrayValues[ 0 ].val_u64 = ( ir::PTXU64 ) N;
-		kernel->updateParameterMemory();
+		kernel->updateArgumentMemory();
 
 		kernel->setKernelShape( 8, 1, 1 );
 		kernel->launchGrid( 1, 1 );
@@ -159,7 +159,7 @@ namespace test
 		param_N.arrayValues.resize( 1 );
 		param_N.arrayValues[ 0 ].val_u64 = ( ir::PTXU64 ) N;
 		
-		kernel->updateParameterMemory();
+		kernel->updateArgumentMemory();
 
 		kernel->setKernelShape( 8, 1, 1 );
 		kernel->launchGrid( 1, 1 );

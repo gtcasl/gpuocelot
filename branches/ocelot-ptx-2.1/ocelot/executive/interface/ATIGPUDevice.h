@@ -163,15 +163,15 @@ namespace executive
 			 *  \param grid grid dimensions
 			 *  \param block block dimensions
 			 *  \param sharedMemory shared memory size
-			 *  \param parameterBlock array of bytes for parameter memory
-			 *  \param parameterBlockSize number of bytes in parameter memory
+			 *  \param argumentBlock array of bytes for argument memory
+			 *  \param argumentBlockSize number of bytes in argument memory
 			 *  \param traceGenerators vector of trace generators to add and 
 			 	remove from kernel
 			 */
 			void launch(const std::string& module, 
 					const std::string& kernel, const ir::Dim3& grid, 
 					const ir::Dim3& block, size_t sharedMemory, 
-					const void *parameterBlock, size_t parameterBlockSize, 
+					const void *argumentBlock, size_t argumentBlockSize, 
 					const trace::TraceGeneratorVector& 
 					traceGenerators = trace::TraceGeneratorVector());
 			/*! \brief Get the function attributes of a specific kernel */

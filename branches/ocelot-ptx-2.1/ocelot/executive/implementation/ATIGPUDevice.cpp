@@ -388,8 +388,8 @@ namespace executive
 			const ir::Dim3& grid, 
 			const ir::Dim3& block, 
 			size_t sharedMemory, 
-			const void *parameterBlock, 
-			size_t parameterBlockSize, 
+			const void *argumentBlock, 
+			size_t argumentBlockSize, 
 			const trace::TraceGeneratorVector& traceGenerators)
 	{
 		ModuleMap::iterator module = _modules.find(moduleName);
@@ -414,9 +414,9 @@ namespace executive
 				&_uav0Resource, &_cb0Resource, &_cb1Resource);
 
 		kernel.setKernelShape(block.x, block.y, block.z);
-		kernel.setParameterBlock((const unsigned char *)parameterBlock, 
-				parameterBlockSize);
-		kernel.updateParameterMemory();
+		kernel.setArgumentBlock((const unsigned char *)argumentBlock, 
+				argumentBlockSize);
+		kernel.updateArgumentMemory();
 		kernel.launchGrid(grid.x, grid.y);
 		synchronize();
 	}

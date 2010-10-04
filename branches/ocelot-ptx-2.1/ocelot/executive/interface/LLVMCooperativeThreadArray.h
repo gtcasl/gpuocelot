@@ -8,6 +8,7 @@
 #define LLVM_COOPERATIVE_THREAD_ARRAY_H_INCLUDED
 
 // Ocelot Includes
+#include <ocelot/executive/interface/LLVMWorkerThread.h>
 #include <ocelot/executive/interface/LLVMFunctionCallStack.h>
 #include <ocelot/executive/interface/LLVMModuleManager.h>
 #include <ocelot/executive/interface/LLVMContext.h>
@@ -25,14 +26,18 @@ namespace executive
 class LLVMCooperativeThreadArray
 {
 public:
-	LLVMCooperativeThreadArray();
+	LLVMCooperativeThreadArray(LLVMWorkerThread* worker);
 
 public:
+	/*! \brief Prepares the CTA to execute the specified kernel */
 	void setup(const LLVMExecutableKernel& kernel);
+	/*! \brief Execute the specified CTA from the currently selected kernel */
 	void executeCta(unsigned int id);
+	/*! \brief Flush all references to translated kernels */
+	void flushTranslatedKernels();
 
 private:
-	typedef std::vector<LLVMModuleManager::Function> FunctionTable;
+	typedef std::vector<LLVMModuleManager::MetaData*> FunctionTable;
 	typedef std::vector<LLVMFunctionCallStack> StackVector;
 	typedef std::vector<LLVMContext> LLVMContextVector;
 	typedef std::vector<unsigned int> ThreadList;
@@ -62,6 +67,7 @@ private:
 	ThreadList                    _freeContexts;
 	ThreadList                    _reclaimedContexts;
 	unsigned int                  _warpSize;
+	LLVMWorkerThread*             _worker;
 };
 
 }

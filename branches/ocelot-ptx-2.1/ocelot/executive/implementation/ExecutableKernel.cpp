@@ -32,19 +32,19 @@ ExecutableKernel::ExecutableKernel( const ir::Kernel& k,
 	executive::Device* d ) : ir::Kernel( k ), device( d ), 
 	_constMemorySize( 0 ), _localMemorySize( 0 ), _maxThreadsPerBlock( 16384 ), 
 	_registerCount( 0 ), _sharedMemorySize( 0 ), 
-	_externSharedMemorySize( 0 ), _parameterMemorySize( 0 ),
-	_stackMemorySize( 0 )
+	_externSharedMemorySize( 0 ), _argumentMemorySize( 0 ),
+	_parameterMemorySize( 0 )
 {
-	mapParameterOffsets();
+	mapArgumentOffsets();
 }
 
 ExecutableKernel::ExecutableKernel( executive::Device* d ) :
 	device( d ), _constMemorySize( 0 ), _localMemorySize( 0 ), 
 	_maxThreadsPerBlock( 16384 ), _registerCount( 0 ), 
 	_sharedMemorySize( 0 ), _externSharedMemorySize( 0 ), 
-	_parameterMemorySize( 0 ), _stackMemorySize( 0 )
+	_argumentMemorySize( 0 ), _parameterMemorySize( 0 )
 {
-	mapParameterOffsets();
+	mapArgumentOffsets();
 }
 
 ExecutableKernel::~ExecutableKernel() 
@@ -108,14 +108,14 @@ unsigned int ExecutableKernel::totalSharedMemorySize() const
 	return externSharedMemorySize() + sharedMemorySize();
 }
 
-unsigned int ExecutableKernel::parameterMemorySize() const 
+unsigned int ExecutableKernel::argumentMemorySize() const 
 { 
-	return _parameterMemorySize; 
+	return _argumentMemorySize; 
 }
 
-unsigned int ExecutableKernel::stackMemorySize() const
+unsigned int ExecutableKernel::parameterMemorySize() const
 {
-	return _stackMemorySize;
+	return _parameterMemorySize;
 }
 
 const ir::Dim3& ExecutableKernel::blockDim() const
@@ -131,45 +131,29 @@ const ir::Dim3& ExecutableKernel::gridDim() const
 /*!
 	\brief compute parameter offsets for parameter data
 */
-size_t ExecutableKernel::mapParameterOffsets() {
-	unsigned int paramSize = 0;
+size_t ExecutableKernel::mapArgumentOffsets() {
+	unsigned int size = 0;
 
 	for (ParameterVector::iterator it = arguments.begin();
 			it != arguments.end(); ++it) {
-		unsigned int misAlignment = paramSize % it->getAlignment();
-		paramSize += misAlignment == 0 ? 0 : it->getAlignment() - misAlignment;
+		unsigned int misAlignment = size % it->getAlignment();
+		size += misAlignment == 0 ? 0 : it->getAlignment() - misAlignment;
 
-		it->offset = paramSize;
-		paramSize += it->getSize();
+		it->offset = size;
+		size += it->getSize();
 	}
 
-	for (ParameterMap::iterator it = parameters.begin(); 
-		it != parameters.end(); ++it) {
-		ir::Parameter& parameter = it->second;
-		unsigned int misAlignment = paramSize % parameter.getAlignment();
-		paramSize += misAlignment == 0 
-			? 0 : parameter.getAlignment() - misAlignment;
+	report("ExecutableKernels::mapArgumentOffsets() - '" << name 
+		<< "' - size: " << size << " bytes");
 
-		parameter.offset = paramSize;
-		paramSize += parameter.getSize();
-	}
-
-	report("ExecutableKernels::mapParameterOffsets() - '" << name 
-		<< "' - size: " << paramSize << " bytes");
-
-	return paramSize;
+	return size;
 }
 
-/*!
-	\brief given a block of parameter memory, sets the values of each parameter
-	\param parameter pointer to parameter memory
-	\param paramSize number of bytes to write to parameter memory
-*/
-void ExecutableKernel::setParameterBlock(const unsigned char *parameter, 
-	size_t paramSize) {
-	mapParameterOffsets();
+void ExecutableKernel::setArgumentBlock(const unsigned char *parameter, 
+	size_t size) {
+	mapArgumentOffsets();
 
-	report("ExecutableKernel::setParameterBlock() - paramSize = " << paramSize);
+	report("ExecutableKernel::setArgumentBlock() - paramSize = " << size);
 
 	for (ParameterVector::iterator it = arguments.begin();
 		it != arguments.end(); ++it) {
@@ -178,7 +162,8 @@ void ExecutableKernel::setParameterBlock(const unsigned char *parameter,
 			val_it = it->arrayValues.begin();
 			val_it != it->arrayValues.end(); 
 			++val_it, ptr += it->getElementSize()) {
-			assert((size_t)ptr - (size_t)parameter + it->getElementSize() < (size_t)paramSize);
+			assert((size_t)ptr - (size_t)parameter
+				+ it->getElementSize() < (size_t)size);
 			memcpy(&val_it->val_u64, ptr, it->getElementSize());
 		}
 
@@ -190,13 +175,7 @@ void ExecutableKernel::setParameterBlock(const unsigned char *parameter,
 	}
 }
 
-/*!
-	\brief gets the values of each parameter as a block of binary data
-	\param parameter pointer to parameter memory
-	\param maxSize maximum number of bytes to write to parameter memory
-	\return actual number of bytes required by parameter memory
-*/
-size_t ExecutableKernel::getParameterBlock(unsigned char* block, 
+size_t ExecutableKernel::getArgumentBlock(unsigned char* block, 
 	size_t maxSize) const {
 	size_t offset = 0;
 	for (ParameterVector::const_iterator it = arguments.begin();
@@ -218,27 +197,7 @@ size_t ExecutableKernel::getParameterBlock(unsigned char* block,
 		}
 		offset = parameter.offset + parameter.getElementSize();
 	}
-	
-	for (ParameterMap::const_iterator it = parameters.begin();
-		it != parameters.end(); ++it) {
-		const ir::Parameter& parameter = it->second;
-		report("Getting parameter " << parameter.name 
-			<< " " 
-			<< " - type: " << parameter.arrayValues.size() << " x " 
-			<< ir::PTXOperand::toString(parameter.type)
-			<< " - value: " << ir::Parameter::value(parameter));
-
-		unsigned char *ptr = block + parameter.offset;
-		for (ir::Parameter::ValueVector::const_iterator 
-			val_it = parameter.arrayValues.begin();
-			val_it != parameter.arrayValues.end(); 
-			++val_it, ptr += parameter.getElementSize()) {
-			
-			memcpy(ptr, &val_it->val_u64, parameter.getElementSize());
-		}
-		offset = parameter.offset + parameter.getElementSize();
-	}
-	
+		
 	return offset;
 }
 

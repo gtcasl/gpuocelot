@@ -340,11 +340,11 @@ namespace executive
 		assertM(false, "Not implemented yet");
 	}
 
-	void ATIExecutableKernel::updateParameterMemory()
+	void ATIExecutableKernel::updateArgumentMemory()
 	{
-		report("updateParameterMemory() - size: " << parameters.size());
+		report("updateArgumentMemory() - size: " << arguments.size());
 
-		if (parameters.size() == 0) return;
+		if (arguments.size() == 0) return;
 
 		cb_t *cb1;
 		CALuint pitch = 0;

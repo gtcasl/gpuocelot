@@ -10,7 +10,9 @@
 // Ocelot Includes
 #include <ocelot/executive/interface/LLVMExecutionManager.h>
 #include <ocelot/executive/interface/LLVMWorkerThread.h>
+#include <ocelot/executive/interface/LLVMModuleManager.h>
 #include <ocelot/executive/interface/LLVMExecutableKernel.h>
+#include <ocelot/ir/interface/Module.h>
 
 // Hydrazine Includes
 #include <hydrazine/implementation/debug.h>
@@ -55,12 +57,15 @@ LLVMExecutionManager::Manager::~Manager()
 
 void LLVMExecutionManager::Manager::launch(const LLVMExecutableKernel& kernel)
 {
-	typedef std::vector<bool> BitVector;
-
 	report("Launching LLVM kernel '" << kernel.name << "'.");
 	if(threads() == 0)
 	{
 		setWorkerThreadCount(hydrazine::getHardwareThreadCount());
+	}
+
+	if(!LLVMModuleManager::isModuleLoaded(kernel.module->path()))
+	{
+		LLVMModuleManager::loadModule(kernel.module, kernel.optimization());	
 	}
 	
 	for(WorkerVector::iterator worker = _workers.begin();
@@ -129,10 +134,10 @@ void LLVMExecutionManager::Manager::setWorkerThreadCount(unsigned int threads)
 			_workers[thread] = new LLVMWorkerThread;
 		}
 		
-		for(unsigned int thread = std::max((unsigned int)1, currentSize);
+		for(unsigned int thread = currentSize; 
 			thread != _workers.size(); ++thread)
 		{
-			_workers[thread]->associate(_workers[0]);
+			LLVMModuleManager::associate(_workers[thread]);
 		}
 	}
 }

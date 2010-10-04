@@ -19,6 +19,7 @@
 #ifdef HAVE_LLVM
 #include <llvm/Target/TargetSelect.h>
 #include <llvm/ExecutionEngine/ExecutionEngine.h>
+#include <llvm/ExecutionEngine/JIT.h> 
 #include <llvm/LLVMContext.h>
 #include <llvm/Module.h>
 #endif

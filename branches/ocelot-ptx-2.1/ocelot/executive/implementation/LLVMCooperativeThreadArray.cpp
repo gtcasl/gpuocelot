@@ -11,36 +11,57 @@
 #include <ocelot/executive/interface/LLVMCooperativeThreadArray.h>
 #include <ocelot/executive/interface/LLVMModuleManager.h>
 #include <ocelot/executive/interface/LLVMExecutableKernel.h>
+
+#include <ocelot/executive/implementation/LLVMRuntimeLibrary.inl>
+
 #include <ocelot/api/interface/OcelotConfiguration.h>
 
 #include <ocelot/ir/interface/Module.h>
 
+// Preprocessor Macros
+#ifdef REPORT_BASE
+#undef REPORT_BASE
+#endif
+
+#define REPORT_BASE 1
+
 namespace executive
 {
 
-LLVMCooperativeThreadArray::LLVMCooperativeThreadArray()
-	: _warpSize(std::max(api::OcelotConfiguration::get().executive.warpSize, 4))
+////////////////////////////////////////////////////////////////////////////////
+// Helper Functions
+static unsigned int threadId(LLVMContext& context)
+{
+	return context.tid.x + context.tid.y * context.ntid.x
+		+ context.tid.z * context.ntid.y * context.ntid.z;
+}
+////////////////////////////////////////////////////////////////////////////////
+
+LLVMCooperativeThreadArray::LLVMCooperativeThreadArray(LLVMWorkerThread* w) :
+	_warpSize(std::max(api::OcelotConfiguration::get().executive.warpSize, 4)),
+	_worker(w)
 {
 
 }
 
 void LLVMCooperativeThreadArray::setup(const LLVMExecutableKernel& kernel)
 {
-	if(!LLVMModuleManager::isModuleLoaded(kernel.module->path()))
+	report("Setting up LLVM-CTA to execute kernel " << kernel.name);
+	_functions.resize(LLVMModuleManager::totalFunctionCount(), 0);
+	_queuedThreads.resize(_functions.size());
+
+	_nextFunction = _worker->getFunctionId(kernel.module->path(), kernel.name);
+	report(" Entry point is function " << _nextFunction);
+
+	if(_functions[_nextFunction] == 0)
 	{
-		LLVMModuleManager::loadModule(kernel.module);
-	
-		_functions.resize(LLVMModuleManager::totalFunctionCount(), 0);
-		_queuedThreads.resize(_functions.size());
+		report("  Loading entry point into cache.");
+		_functions[_nextFunction] = _worker->getFunctionMetaData(_nextFunction);
 	}
-
-	_nextFunction = LLVMModuleManager::getFunctionId(
-		kernel.module->path(), kernel.name);
-
-	_functions[_nextFunction] = LLVMModuleManager::getFunction(_nextFunction);
 
 	const unsigned int threads = kernel.blockDim().x *
 		kernel.blockDim().y * kernel.blockDim().z;
+	report(" Creating contexts for " << threads << " threads.");
 
 	_contexts.resize(threads);
 	_stacks.resize(threads);
@@ -86,10 +107,15 @@ void LLVMCooperativeThreadArray::setup(const LLVMExecutableKernel& kernel)
 */
 void LLVMCooperativeThreadArray::executeCta(unsigned int id)
 {
+	report("Executing LLVM-CTA " << id);
 	const unsigned int threads  = _contexts.size();
 
 	const unsigned int warps   = threads / _warpSize;
 	const unsigned int remains = threads % _warpSize;
+
+	report(" warp size:        " << _warpSize);
+	report(" full warps:       " << warps);
+	report(" remaining threas: " << remains);
 
 	ThreadList warpList;
 
@@ -135,6 +161,12 @@ void LLVMCooperativeThreadArray::executeCta(unsigned int id)
 		const unsigned int threads = warpList.size();
 		const unsigned int warps   = threads / _warpSize;
 		const unsigned int remains = threads % _warpSize;
+
+		report("Next sub-kernel is " << _nextFunction);
+
+		report(" threads:          " << threads);
+		report(" full warps:       " << warps);
+		report(" remaining threas: " << remains);
 		
 		ThreadList::const_iterator begin = warpList.begin();
 
@@ -161,17 +193,27 @@ void LLVMCooperativeThreadArray::executeCta(unsigned int id)
 	_destroyContexts();
 }
 
+void LLVMCooperativeThreadArray::flushTranslatedKernels()
+{
+	_functions.clear();
+}
+
 void LLVMCooperativeThreadArray::_executeThread(unsigned int contextId)
 {
 	LLVMContext& context = _contexts[contextId];
-	LLVMModuleManager::Function function = _functions[_nextFunction];
+	LLVMModuleManager::MetaData* metadata = _functions[_nextFunction];
+	context.metadata = (char*) metadata;
 	
-	function(&context);
+	report("   executing thread " << threadId(context) 
+		<< " in context " << contextId);
+	
+	metadata->function(&context);
 }
 
 void LLVMCooperativeThreadArray::_executeWarp(ThreadList::const_iterator begin,
 	ThreadList::const_iterator end)
 {
+	report("  executing warp");
 	// this is a stupid implementation of a warp that just loops over threads
 	for(ThreadList::const_iterator i = begin; i != end; ++i)
 	{
@@ -191,6 +233,9 @@ unsigned int LLVMCooperativeThreadArray::_initializeNewContext(
 	
 		LLVMContext& context         = _contexts[contextId];
 		LLVMFunctionCallStack& stack = _stacks[contextId];
+		
+		stack.call(_kernel->localMemorySize(),
+			_kernel->parameterMemorySize());
 
 		context.nctaid.x  = _kernel->gridDim().x;
 		context.nctaid.y  = _kernel->gridDim().y;
@@ -205,7 +250,7 @@ unsigned int LLVMCooperativeThreadArray::_initializeNewContext(
 		context.tid.y     = (threadId / context.nctaid.x) % context.nctaid.y;
 		context.tid.z     = threadId / (context.nctaid.x * context.nctaid.y);
 		context.shared    = reinterpret_cast<char*>(_sharedMemory.data());
-		context.parameter = _kernel->parameterMemory();
+		context.parameter = _kernel->argumentMemory();
 		context.local     = stack.localMemory();
 		context.constant  = _kernel->constantMemory();
 	}
@@ -214,11 +259,11 @@ unsigned int LLVMCooperativeThreadArray::_initializeNewContext(
 		contextId = _reclaimedContexts.back();
 		_reclaimedContexts.pop_back();
 	
-		LLVMContext& context         = _contexts[contextId];
+		LLVMContext& context = _contexts[contextId];
 	
-		context.tid.x     = threadId % context.nctaid.x;
-		context.tid.y     = (threadId / context.nctaid.x) % context.nctaid.y;
-		context.tid.z     = threadId / (context.nctaid.x * context.nctaid.y);
+		context.tid.x = threadId % context.nctaid.x;
+		context.tid.y = (threadId / context.nctaid.x) % context.nctaid.y;
+		context.tid.z = threadId / (context.nctaid.x * context.nctaid.y);
 	}	
 	
 	return contextId;
@@ -230,7 +275,7 @@ void LLVMCooperativeThreadArray::_computeNextFunction()
 	{
 		_nextFunction = 0;
 	}
-	else if(_queuedThreads[_guessFunction].size() == _contexts.size())
+	else if(_queuedThreads[_guessFunction].size() >= _contexts.size()/2)
 	{
 		_nextFunction = _guessFunction;
 	}
@@ -258,8 +303,7 @@ void LLVMCooperativeThreadArray::_computeNextFunction()
 	// Possibly lazily compile the function
 	if(_functions[_nextFunction] == 0)
 	{
-		_functions[_nextFunction] = LLVMModuleManager::getFunction(
-			_nextFunction);
+		_functions[_nextFunction] = _worker->getFunctionMetaData(_nextFunction);
 	}
 }
 
@@ -322,7 +366,6 @@ bool LLVMCooperativeThreadArray::_finishContext(unsigned int contextId)
 	
 	return false;
 }
-
 
 void LLVMCooperativeThreadArray::_destroyContexts()
 {

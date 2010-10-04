@@ -130,8 +130,9 @@ executive::CooperativeThreadArray::CooperativeThreadArray(
 	threadCount(blockDim.x*blockDim.y*blockDim.z),
 	kernel(k), 
 	runtimeStack(1, CTAContext(kernel, this)),
-	functionCallStack(blockDim.x*blockDim.y*blockDim.z, k->stackMemorySize(), 
-		k->registerCount(), k->localMemorySize(), k->totalSharedMemorySize()),
+	functionCallStack(blockDim.x*blockDim.y*blockDim.z,
+		k->parameterMemorySize(), k->registerCount(), k->localMemorySize(),
+		k->totalSharedMemorySize()),
 	clock(0),
 	traceEvents(trace) {
 }
@@ -2323,13 +2324,13 @@ void executive::CooperativeThreadArray::eval_Call(CTAContext &context,
 
 			reportE(REPORT_CALL, 
 				"  call was taken, increasing stack size by (" 
-				<< targetKernel->stackMemorySize() << " stack) (" 
+				<< targetKernel->parameterMemorySize() << " parameter) (" 
 				<< targetKernel->registerCount() << " registers) (" 
 				<< targetKernel->localMemorySize() << " local memory) (" 
 				<< targetKernel->totalSharedMemorySize() 
 				<< " sharedMemorySize)");
 
-			functionCallStack.pushFrame(targetKernel->stackMemorySize(), 
+			functionCallStack.pushFrame(targetKernel->parameterMemorySize(), 
 				targetKernel->registerCount(), targetKernel->localMemorySize(), 
 				targetKernel->totalSharedMemorySize(), callPC, 
 				stackOffset, stackSize);

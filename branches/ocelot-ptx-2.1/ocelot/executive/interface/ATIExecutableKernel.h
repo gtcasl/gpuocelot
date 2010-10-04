@@ -34,8 +34,8 @@ namespace executive
 			/*! \brief Sets the max number of pthreads this kernel can use */
 			void setWorkerThreads(unsigned int workerThreadLimit);
 
-			/*! \brief Indicate that the kernels parameters have been updated */
-			void updateParameterMemory();
+			/*! \brief Indicate that the kernels arguments have been updated */
+			void updateArgumentMemory();
 
 			/*! \brief Indicate that other memory has been updated */
 			void updateMemory();

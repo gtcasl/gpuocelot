@@ -19,7 +19,7 @@
 	executive: {
 		devices: [ nvidia, llvm, emulated, amd ],
 		optimizationLevel: report,
-		workerThreadLimit: 2
+		workerThreadLimit: 1
 	}
 }
 

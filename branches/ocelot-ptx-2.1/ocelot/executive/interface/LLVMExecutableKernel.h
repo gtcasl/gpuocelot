@@ -66,7 +66,7 @@ public:
 	char* argumentMemory() const;
 	/*! \brief Get the block of constant memory associated with the kernel */
 	char* constantMemory() const;
-	/*! \brief Get the optimization levelf or the kernel */
+	/*! \brief Get the optimization level of the kernel */
 	OptimizationLevel optimization() const;
 
 public:
@@ -74,17 +74,6 @@ public:
 	void addTraceGenerator(trace::TraceGenerator *generator);
 	/*!	removes a trace generator from an EmulatedKernel */
 	void removeTraceGenerator(trace::TraceGenerator *generator);
-	
-public:
-	/*! \brief Get the number of threads per cta */
-	unsigned int threads() const;
-	/*! \brief Get the local id of the current thread */
-	unsigned int threadId() const;
-	/*! \brief Determine the location of a given PTX statement 
-		in the original source file */
-	std::string location(unsigned int statement) const;
-	/*! \brieg Get the instruction contained in a given statement */
-	std::string instruction(unsigned int statement) const;
 
 private:
 	typedef std::unordered_map<std::string, size_t> AllocationMap;
@@ -101,7 +90,6 @@ private:
 	const ir::PTXKernel* _kernel;
 	const Device*        _device;
 	OptimizationLevel    _optimizationLevel;
-	AllocationMap        _constants;
 	char*                _argumentMemory;
 	char*                _constantMemory;
 };

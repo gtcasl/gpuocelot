@@ -250,9 +250,16 @@ unsigned int LLVMCooperativeThreadArray::_initializeNewContext(
 		context.tid.y     = (threadId / context.nctaid.x) % context.nctaid.y;
 		context.tid.z     = threadId / (context.nctaid.x * context.nctaid.y);
 		context.shared    = reinterpret_cast<char*>(_sharedMemory.data());
-		context.parameter = _kernel->argumentMemory();
+		context.argument  = _kernel->argumentMemory();
 		context.local     = stack.localMemory();
+		context.parameter = stack.parameterMemory();
 		context.constant  = _kernel->constantMemory();
+		
+		context.sharedSize    = _kernel->totalSharedMemorySize();
+		context.parameterSize = _kernel->argumentMemorySize();
+		context.localSize     = _kernel->localMemorySize();
+		context.constantSize  = _kernel->constMemorySize();
+		context.argumentSize  = _kernel->argumentMemorySize();
 	}
 	else
 	{

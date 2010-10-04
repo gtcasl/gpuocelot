@@ -62,6 +62,56 @@ static void __report( executive::LLVMContext* context,
 	#endif
 }
 
+static std::string location(const ir::Module* module, unsigned int statement)
+{
+	ir::Module::StatementVector::const_iterator s_it 
+		= module->statements().begin();
+	std::advance(s_it, statement);
+	ir::Module::StatementVector::const_reverse_iterator s_rit 
+		= ir::Module::StatementVector::const_reverse_iterator( s_it );
+	unsigned int program = 0;
+	unsigned int line = 0;
+	unsigned int col = 0;
+	for( ; s_rit != module->statements().rend(); ++s_rit ) 
+	{
+		if( s_rit->directive == ir::PTXStatement::Loc) 
+		{
+			line = s_rit->sourceLine;
+			col = s_rit->sourceColumn;
+			program = s_rit->sourceFile;
+			break;
+		}
+	}
+
+	std::string fileName;
+	for( s_it = module->statements().begin(); 
+		s_it != module->statements().end(); ++s_it ) 
+	{
+		if(s_it->directive == ir::PTXStatement::File) 
+		{
+			if(s_it->sourceFile == program) 
+			{
+				fileName = s_it->name;
+				break;
+			}
+		}
+	}
+
+	std::stringstream stream;
+	stream << fileName << ":" << line << ":" << col;
+	return stream.str();
+}
+
+static std::string instruction(const ir::Module* module, unsigned int statement)
+{
+	assert( statement < module->statements().size() );
+	ir::Module::StatementVector::const_iterator s_it 
+		= module->statements().begin();
+	std::advance( s_it, statement );
+	assertM( s_it->instruction.valid() == "", s_it->instruction.valid() );
+	return s_it->instruction.toString();
+}
+
 extern "C"
 {	
 	unsigned int __ocelot_bfi_b32( unsigned int in, unsigned int orig, 
@@ -419,7 +469,9 @@ extern "C"
 		void* address = (void*)_address;
 		MetaData* state = (MetaData*) context->metadata;
 		
-		if( !state->kernel->device->checkMemoryAccess( address, bytes ) )
+		#if 0
+		
+		if( !state->device->checkMemoryAccess( address, bytes ) )
 		{
 			unsigned int thread = context->tid.x 
 				+ context->ntid.x * context->tid.y 
@@ -432,18 +484,20 @@ extern "C"
 				<< state->kernel->name << "'\n";
 			std::cerr << "Error in (cta " << cta << ")(thread " << thread 
 				<< "): instruction '" 
-				<< state->kernel->instruction( statement ) << "'\n";
+				<< instruction( state->kernel->module, statement ) << "'\n";
 			std::cerr << "Global memory address " 
 				<< address << " of size " << bytes
 				<< " is out of any allocated or mapped range.\n";
 			std::cerr << "Memory Map:\n";
 			std::cerr << 
-				state->kernel->device->nearbyAllocationsToString( address );
+				state->device->nearbyAllocationsToString( address );
 			std::cerr << "\n";
-			std::cout << "\tNear: " << state->kernel->location( statement )
+			std::cout << "\tNear: " << location( state->kernel->module, statement )
 				<< "\n\n";
 			assertM(false, "Aborting execution.");
 		}
+		
+		#endif
 		
 		bool error = bytes == 0;
 		if( !error ) error = (long long unsigned int)address % bytes != 0;
@@ -461,13 +515,13 @@ extern "C"
 				<< state->kernel->name << "'\n";
 			std::cerr << "Error in (cta " << cta << ")(thread " << thread 
 				<< "): instruction '" 
-				<< state->kernel->instruction( statement ) << "'\n";
+				<< instruction( state->kernel->module, statement ) << "'\n";
 			std::cerr << "Global memory address " 
 				<< address << " of size " << bytes
 				<< " is not aligned to the access size.\n";
 			std::cerr << "\n";
-			std::cout << "\tNear: " << state->kernel->location( statement )
-				<< "\n\n";
+			std::cout << "\tNear: "
+				<< location( state->kernel->module, statement ) << "\n\n";
 			assertM(false, "Aborting execution.");
 		}
 	}
@@ -479,8 +533,7 @@ extern "C"
 		
 		char* address = (char*) _address;
 		char* end = address + bytes;
-		char* allocationEnd = context->shared 
-			+ state->kernel->totalSharedMemorySize();
+		char* allocationEnd = context->shared + context->sharedSize;
 		
 		if( end > allocationEnd )
 		{
@@ -495,13 +548,13 @@ extern "C"
 				<< state->kernel->name << "'\n";
 			std::cerr << "Error in (cta " << cta << ")(thread " << thread 
 				<< "): instruction '" 
-				<< state->kernel->instruction( statement ) << "'\n";
+				<< instruction( state->kernel->module, statement ) << "'\n";
 			std::cerr << "Shared memory address " 
 				<< _address << " is " << (end - allocationEnd)
 				<< " bytes beyond the shared memory block of " 
-				<< state->kernel->totalSharedMemorySize() << " bytes.\n";
-			std::cout << "\tNear: " << state->kernel->location( statement )
-				<< "\n\n";
+				<< context->sharedSize << " bytes.\n";
+			std::cout << "\tNear: "
+				<< location( state->kernel->module, statement ) << "\n\n";
 			assertM(false, "Aborting execution.");
 		}
 	}
@@ -528,7 +581,7 @@ extern "C"
 				<< state->kernel->name << "'\n";
 			std::cerr << "Error in (cta " << cta << ")(thread " << thread 
 				<< "): instruction '" 
-				<< state->kernel->instruction( statement ) << "'\n";
+				<< instruction( state->kernel->module, statement ) << "'\n";
 			std::cerr << "Constant memory address " 
 				<< _address << " = " << (void *)_address << " of size " 
 					<< bytes << " bytes is " << (end - allocationEnd)
@@ -536,8 +589,8 @@ extern "C"
 				<< context->constantSize << " bytes\n  on interval: " 
 				<< (void *)context->constant 
 				<< " - " << (void *)allocationEnd << "\n";
-			std::cout << "\tNear: " << state->kernel->location( statement )
-				<< "\n\n";
+			std::cout << "\tNear: "
+				<< location( state->kernel->module, statement ) << "\n\n";
 			assertM(false, "Aborting execution.");
 		}	
 	}
@@ -564,13 +617,13 @@ extern "C"
 				<< state->kernel->name << "'\n";
 			std::cerr << "Error in (cta " << cta << ")(thread " << thread 
 				<< "): instruction '" 
-				<< state->kernel->instruction( statement ) << "'\n";
+				<< instruction( state->kernel->module, statement ) << "'\n";
 			std::cerr << "Local memory address " 
 				<< _address << " is " << (end - allocationEnd)
 				<< " bytes beyond the local memory block of " 
 				<< context->localSize << " bytes.\n";
-			std::cout << "\tNear: " << state->kernel->location( statement )
-				<< "\n\n";
+			std::cout << "\tNear: "
+				<< location( state->kernel->module, statement ) << "\n\n";
 			assertM(false, "Aborting execution.");
 		}	
 	}
@@ -597,13 +650,13 @@ extern "C"
 				<< state->kernel->name << "'\n";
 			std::cerr << "Error in (cta " << cta << ")(thread " << thread 
 				<< "): instruction '" 
-				<< state->kernel->instruction( statement ) << "'\n";
+				<< instruction( state->kernel->module, statement ) << "'\n";
 			std::cerr << "Parameter memory address " 
 				<< address << " is  " << (end - allocationEnd)
 				<< " bytes beyond the parameter memory block of " 
 				<< context->parameterSize << " bytes.\n";
-			std::cout << "\tNear: " << state->kernel->location( statement )
-				<< "\n\n";
+			std::cout << "\tNear: "
+				<< location( state->kernel->module, statement ) << "\n\n";
 			assertM(false, "Aborting execution.");
 		}	
 	}

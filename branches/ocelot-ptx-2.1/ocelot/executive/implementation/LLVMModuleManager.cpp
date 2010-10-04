@@ -101,9 +101,454 @@ static void optimizePTX(ir::PTXKernel& kernel,
 	pass.finalize();
 }
 
-static void allocatePTXMemory(ir::PTXKernel& kernel)
+static unsigned int pad(unsigned int& size, unsigned int alignment)
 {
-	report(" Allocating memory for .");
+	unsigned int padding = alignment - (size % alignment);
+	padding = (alignment == padding) ? 0 : padding;
+	size += padding;
+	return padding;
+}
+
+static void setupArgumentMemoryReferences(ir::PTXKernel& kernel,
+	const ir::PTXKernel& parent)
+{
+	typedef std::unordered_map<std::string, unsigned int> OffsetMap;
+	report("  Setting up argument memory references.");
+
+	unsigned int offset = 0;
+	
+	OffsetMap offsets;
+	
+	for(ir::Kernel::ParameterVector::const_iterator
+		argument = parent.arguments.begin();
+		argument != parent.arguments.end(); ++argument)
+	{
+		pad(offset, argument->getAlignment());
+		offsets.insert(std::make_pair(argument->name, offset));
+		report("   Argument " << argument->name << ", offset " << offset);
+		offset += argument->getSize();
+	}
+	
+	for(ir::ControlFlowGraph::iterator block = kernel.cfg()->begin(); 
+		block != kernel.cfg()->end(); ++block)
+	{
+		for( ir::ControlFlowGraph::InstructionList::iterator 
+			instruction = block->instructions.begin(); 
+			instruction != block->instructions.end(); ++instruction )
+		{
+			ir::PTXInstruction& ptx = static_cast<
+				ir::PTXInstruction&>(**instruction);
+
+			ir::PTXOperand* operands[] = {&ptx.d, &ptx.a, &ptx.b, &ptx.c};
+
+			if(ptx.opcode == ir::PTXInstruction::Mov
+				|| ptx.opcode == ir::PTXInstruction::Ld
+				|| ptx.opcode == ir::PTXInstruction::St)
+			{
+				for(unsigned int i = 0; i != 4; ++i)
+				{
+					if(operands[i]->addressMode == ir::PTXOperand::Address)
+					{
+						OffsetMap::iterator argument = offsets.find( 
+							operands[i]->identifier);
+						if(argument != offsets.end())
+						{
+							report("   For instruction \"" 
+							<< ptx.toString() << "\" mapping \"" 
+							<< argument->first << "\" to " 
+							<< (argument->second + operands[i]->offset));
+							operands[ i ]->offset += argument->second;
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+static void setupParameterMemoryReferences(ir::PTXKernel& kernel,
+	const ir::PTXKernel& parent)
+{
+	typedef std::unordered_map<std::string, unsigned int> OffsetMap;
+	report("  Setting up parameter memory references.");
+
+	unsigned int offset = 0;
+	
+	OffsetMap offsets;
+	
+	for(ir::Kernel::ParameterMap::const_iterator
+		parameter = parent.parameters.begin();
+		parameter != parent.parameters.end(); ++parameter)
+	{
+		pad(offset, parameter->second.getAlignment());
+		offsets.insert(std::make_pair(parameter->second.name, offset));
+		report("   Parameter " << parameter->second.name
+			<< ", offset " << offset);
+		offset += parameter->second.getSize();
+	}
+	
+	for(ir::ControlFlowGraph::iterator block = kernel.cfg()->begin(); 
+		block != kernel.cfg()->end(); ++block)
+	{
+		for( ir::ControlFlowGraph::InstructionList::iterator 
+			instruction = block->instructions.begin(); 
+			instruction != block->instructions.end(); ++instruction )
+		{
+			ir::PTXInstruction& ptx = static_cast<
+				ir::PTXInstruction&>(**instruction);
+
+			ir::PTXOperand* operands[] = {&ptx.d, &ptx.a, &ptx.b, &ptx.c};
+
+			if(ptx.opcode == ir::PTXInstruction::Mov
+				|| ptx.opcode == ir::PTXInstruction::Ld
+				|| ptx.opcode == ir::PTXInstruction::St)
+			{
+				for(unsigned int i = 0; i != 4; ++i)
+				{
+					if(operands[i]->addressMode == ir::PTXOperand::Address)
+					{
+						OffsetMap::iterator parameter = offsets.find( 
+							operands[i]->identifier);
+						if(parameter != offsets.end())
+						{
+							report("   For instruction \"" 
+							<< ptx.toString() << "\" mapping \"" 
+							<< parameter->first << "\" to " 
+							<< (parameter->second + operands[i]->offset));
+							operands[ i ]->offset += parameter->second;
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+static void setupSharedMemoryReferences(ir::PTXKernel& kernel,
+	const ir::PTXKernel& parent)
+{
+	typedef std::unordered_map<std::string, unsigned int> OffsetMap;
+	typedef std::unordered_set<std::string> StringSet;
+	typedef std::deque<ir::PTXOperand*> OperandVector;
+	typedef std::unordered_map<std::string, 
+		ir::Module::GlobalMap::const_iterator> GlobalMap;
+
+	report( "  Setting up shared memory references." );
+
+	OffsetMap offsets;
+	GlobalMap sharedGlobals;
+	StringSet external;
+	OperandVector externalOperands;
+
+	unsigned int externalAlignment = 1;             
+	unsigned int sharedMemorySize = 0;
+
+	for(ir::Module::GlobalMap::const_iterator 
+		global = kernel.module->globals().begin(); 
+		global != kernel.module->globals().end(); ++global) 
+	{
+		if(global->second.statement.directive == ir::PTXStatement::Shared) 
+		{
+			if(global->second.statement.attribute == ir::PTXStatement::Extern)
+			{
+				report("   Allocating global external shared variable " 
+					<< global->second.statement.name);
+				assertM(external.count(global->second.statement.name) == 0, 
+					"External global " << global->second.statement.name 
+					<< " more than once.");
+				external.insert(global->second.statement.name);
+				externalAlignment = std::max(externalAlignment, 
+					(unsigned) global->second.statement.alignment);
+				externalAlignment = std::max(externalAlignment, 
+				ir::PTXOperand::bytes(global->second.statement.type));
+			}
+			else 
+			{
+				report("   Allocating global shared variable " 
+					<< global->second.statement.name);
+				sharedGlobals.insert(std::make_pair( 
+					global->second.statement.name, global));
+			}
+		}
+	}
+
+	ir::Kernel::LocalMap::const_iterator local = parent.locals.begin();
+	for( ; local != parent.locals.end(); ++local )
+	{
+		if(local->second.space == ir::PTXInstruction::Shared)
+		{
+			if(local->second.attribute == ir::PTXStatement::Extern)
+			{
+				report("    Found local external shared variable " 
+					<< local->second.name);
+				assert( external.count(local->second.name) == 0 );
+				external.insert( local->second.name);
+				externalAlignment = std::max(externalAlignment, 
+					(unsigned) local->second.alignment);
+				externalAlignment = std::max(externalAlignment, 
+				ir::PTXOperand::bytes(local->second.type));
+			}
+			else
+			{
+				report("   Found local shared variable " 
+					<< local->second.name << " of size " 
+					<< local->second.getSize());
+				pad(sharedMemorySize, local->second.alignment);
+				offsets.insert(std::make_pair(local->second.name, 
+					sharedMemorySize));
+				sharedMemorySize += local->second.getSize();
+			}
+		}
+	}
+                
+	for(ir::ControlFlowGraph::iterator block = kernel.cfg()->begin(); 
+		block != kernel.cfg()->end(); ++block)
+	{
+		for(ir::ControlFlowGraph::InstructionList::iterator 
+			instruction = block->instructions.begin(); 
+			instruction != block->instructions.end(); ++instruction)
+		{
+			ir::PTXInstruction& ptx = static_cast<
+				ir::PTXInstruction&>(**instruction);
+
+			ir::PTXOperand* operands[] = {&ptx.d, &ptx.a, &ptx.b, &ptx.c};
+
+			if(ptx.opcode == ir::PTXInstruction::Mov
+				|| ptx.opcode == ir::PTXInstruction::Ld
+				|| ptx.opcode == ir::PTXInstruction::St)
+			{
+				for(unsigned int i = 0; i != 4; ++i)
+				{
+					if(operands[i]->addressMode == ir::PTXOperand::Address)
+					{
+						StringSet::iterator si = external.find(
+							operands[i]->identifier);
+						if(si != external.end()) 
+						{
+							report("   For instruction \"" 
+								<< ptx.toString() 
+								<< "\", mapping shared label \"" << *si 
+								<< "\" to external shared memory.");
+							externalOperands.push_back(operands[i]);
+							continue;
+						}
+	
+						GlobalMap::iterator gi = sharedGlobals.find(
+							operands[i]->identifier);
+						if(gi != sharedGlobals.end())
+						{
+							ir::Module::GlobalMap::const_iterator 
+							it = gi->second;
+							sharedGlobals.erase(gi);
+
+							report("   Found global shared variable " 
+								<< it->second.statement.name);
+
+							pad(sharedMemorySize, 
+							it->second.statement.alignment);
+
+							offsets.insert(std::make_pair(
+								it->second.statement.name, sharedMemorySize));
+							sharedMemorySize += it->second.statement.bytes();
+						}                               
+
+						OffsetMap::iterator offset = offsets.find(
+							operands[i]->identifier);
+						if(offsets.end() != offset) 
+						{
+							ptx.addressSpace = ir::PTXInstruction::Shared;
+							operands[i]->offset += offset->second;
+							report("   For instruction " 
+								<< ptx.toString() << ", mapping shared label " 
+								<< offset->first << " to " << offset->second);
+						}
+					}
+				}
+			}
+		}
+	}
+
+	pad(sharedMemorySize, externalAlignment);
+
+	report("   Mapping external shared variables.");
+	for( OperandVector::iterator operand = externalOperands.begin(); 
+		operand != externalOperands.end(); ++operand) 
+	{
+		report("    Mapping external shared label " 
+			<< (*operand)->identifier << " to " << sharedMemorySize);
+		(*operand)->offset += sharedMemorySize;
+	}
+
+	report( "   Total shared memory size is " << sharedMemorySize << "." );
+}
+
+static void setupConstantMemoryReferences(ir::PTXKernel& kernel,
+	const ir::PTXKernel& parent)
+{
+	report( "  Setting up constant memory references." );
+	typedef std::unordered_map<std::string, unsigned int> OffsetMap;
+
+	unsigned int constantMemorySize = 0;
+	OffsetMap constants;
+	
+	for(ir::Module::GlobalMap::const_iterator 
+		global = parent.module->globals().begin(); 
+		global != parent.module->globals().end(); ++global) 
+	{
+		if(global->second.statement.directive == ir::PTXStatement::Const) 
+		{
+			report( "   Found global constant variable " 
+				<< global->second.statement.name << " of size " 
+				<< global->second.statement.bytes() );
+			pad(constantMemorySize, global->second.statement.alignment);
+			constants.insert(std::make_pair(global->second.statement.name,
+				constantMemorySize));
+			constantMemorySize += global->second.statement.bytes();
+		}
+	}
+
+	report("   Total constant memory size is " << constantMemorySize << ".");
+
+	for(ir::ControlFlowGraph::iterator block = kernel.cfg()->begin(); 
+		block != kernel.cfg()->end(); ++block)
+	{
+		for(ir::ControlFlowGraph::InstructionList::iterator 
+			instruction = block->instructions.begin(); 
+			instruction != block->instructions.end(); ++instruction)
+		{
+			ir::PTXInstruction& ptx = static_cast<
+				ir::PTXInstruction&>(**instruction);
+			ir::PTXOperand* operands[] = {&ptx.d, &ptx.a, &ptx.b, &ptx.c};
+
+			if(ptx.opcode == ir::PTXInstruction::Mov
+				|| ptx.opcode == ir::PTXInstruction::Ld
+				|| ptx.opcode == ir::PTXInstruction::St)
+			{
+				for(unsigned int i = 0; i != 4; ++i)
+				{
+					if(operands[i]->addressMode == ir::PTXOperand::Address)
+					{
+						OffsetMap::iterator mapping = constants.find( 
+							operands[i]->identifier);
+						if(constants.end() != mapping) 
+						{
+							ptx.addressSpace = ir::PTXInstruction::Const;
+							operands[i]->offset += mapping->second;
+							report("   For instruction " 
+								<< ptx.toString() 
+								<< ", mapping constant label " << mapping->first 
+								<< " to " << mapping->second);
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+static void setupTextureMemoryReferences(ir::PTXKernel& kernel,
+	LLVMModuleManager::KernelAndTranslation::MetaData* metadata,
+	const ir::PTXKernel& parent)
+{
+	 report( " Setting up texture memory references." );
+	
+	for(ir::ControlFlowGraph::iterator block = kernel.cfg()->begin(); 
+		block != kernel.cfg()->end(); ++block)
+	{
+		for( ir::ControlFlowGraph::InstructionList::iterator 
+			instruction = block->instructions.begin(); 
+			instruction != block->instructions.end(); ++instruction )
+		{
+			ir::PTXInstruction& ptx = static_cast<
+				ir::PTXInstruction&>(**instruction);
+			if( ptx.opcode == ir::PTXInstruction::Tex )
+			{
+				report("  found texture instruction: " << ptx.toString());
+
+				assertM(false, "No support for textures yet.");
+				ptx.a.reg = 0;
+			}
+		}
+	}
+
+}
+
+static void setupLocalMemoryReferences(ir::PTXKernel& kernel,
+	const ir::PTXKernel& parent)
+{
+	report( "  Setting up local memory references." );
+	typedef std::unordered_map<std::string, unsigned int> OffsetMap;
+
+	unsigned int localMemorySize = 0;
+	OffsetMap offsets;
+
+	localMemorySize = 0;
+
+	for(ir::Kernel::LocalMap::const_iterator local = parent.locals.begin(); 
+		local != parent.locals.end(); ++local)
+	{
+		if(local->second.space == ir::PTXInstruction::Local)
+		{
+			report("   Found local local variable " 
+				<< local->second.name << " of size " 
+				<< local->second.getSize());
+			pad(localMemorySize, local->second.alignment);
+			offsets.insert(std::make_pair(local->second.name,
+				localMemorySize));
+			localMemorySize += local->second.getSize();
+		}
+	}
+    
+	for(ir::ControlFlowGraph::iterator block = kernel.cfg()->begin(); 
+		block != kernel.cfg()->end(); ++block)
+	{
+		for(ir::ControlFlowGraph::InstructionList::iterator 
+			instruction = block->instructions.begin(); 
+			instruction != block->instructions.end(); ++instruction)
+		{
+			ir::PTXInstruction& ptx = static_cast<
+				ir::PTXInstruction&>(**instruction);
+			ir::PTXOperand* operands[] = {&ptx.d, &ptx.a, &ptx.b, &ptx.c};
+
+			if(ptx.opcode == ir::PTXInstruction::Mov
+				|| ptx.opcode == ir::PTXInstruction::Ld
+				|| ptx.opcode == ir::PTXInstruction::St)
+			{
+				for(unsigned int i = 0; i != 4; ++i)
+				{
+					if(operands[i]->addressMode == ir::PTXOperand::Address)
+					{
+						OffsetMap::iterator offset = offsets.find( 
+							operands[i]->identifier);
+						if(offsets.end() != offset) 
+						{
+							ptx.addressSpace = ir::PTXInstruction::Local;
+							operands[i]->offset += offset->second;
+							report("   For instruction " 
+								<< ptx.toString() << ", mapping local label " 
+								<< offset->first << " to " << offset->second);
+						}
+					}
+				}
+			}
+		}       
+	}
+
+    report("   Total local memory size is " << localMemorySize << ".");
+}
+
+static void setupPTXMemoryReferences(ir::PTXKernel& kernel,
+	LLVMModuleManager::KernelAndTranslation::MetaData* metadata,
+	const ir::PTXKernel& parent)
+{
+	report(" Setting up memory references for kernel variables.");
+	
+	setupArgumentMemoryReferences(kernel, parent);
+	setupParameterMemoryReferences(kernel, parent);
+	setupSharedMemoryReferences(kernel, parent);
+	setupConstantMemoryReferences(kernel, parent);
+	setupTextureMemoryReferences(kernel, metadata, parent);
+	setupLocalMemoryReferences(kernel, parent);
 }
 
 static void translate(llvm::Module*& module, ir::PTXKernel& kernel)
@@ -177,6 +622,8 @@ static LLVMModuleManager::KernelAndTranslation::MetaData* generateMetadata(
 				block->block()));
 		}
 	}
+	
+	metadata->kernel = &kernel;
 	
 	return metadata;
 }
@@ -278,8 +725,8 @@ static void codegen(LLVMModuleManager::Function& function, llvm::Module& module,
 ////////////////////////////////////////////////////////////////////////////////
 // KernelAndTranslation
 LLVMModuleManager::KernelAndTranslation::KernelAndTranslation(ir::PTXKernel* k, 
-	translator::Translator::OptimizationLevel l) : _kernel(k), _module(0),
-	_optimizationLevel(l), _metadata(0)
+	translator::Translator::OptimizationLevel l, const ir::PTXKernel* p) : 
+	_kernel(k), _module(0), _optimizationLevel(l), _metadata(0), _parent(p)
 {
 
 }
@@ -307,8 +754,8 @@ LLVMModuleManager::KernelAndTranslation::MetaData*
 	report("Translating PTX kernel '" << _kernel->name << "'");
 	
 	optimizePTX(*_kernel, _optimizationLevel);
-	allocatePTXMemory(*_kernel);
 	_metadata = generateMetadata(*_kernel, _optimizationLevel);
+	setupPTXMemoryReferences(*_kernel, _metadata, *_parent);
 	translate(_module, *_kernel);
 	optimize(*_module, _optimizationLevel);
 	codegen(_metadata->function, *_module, *_kernel);
@@ -423,7 +870,6 @@ void LLVMModuleManager::ModuleDatabase::loadModule(const ir::Module* module,
 	pass.initialize(*module);
 
 	for(ir::Module::KernelMap::const_iterator
-		
 		kernel = module->kernels().begin(); 
 		kernel != module->kernels().end(); ++kernel)
 	{
@@ -442,7 +888,8 @@ void LLVMModuleManager::ModuleDatabase::loadModule(const ir::Module* module,
 			subkernel = kernel->second.begin();
 			subkernel != kernel->second.end(); ++subkernel)
 		{
-			subkernels.push_back(KernelAndTranslation(*subkernel, level));
+			subkernels.push_back(KernelAndTranslation(*subkernel,
+				level, kernel->first));
 		}
 	}
 

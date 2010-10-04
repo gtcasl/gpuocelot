@@ -13,6 +13,7 @@
 #include <ocelot/executive/interface/LLVMModuleManager.h>
 #include <ocelot/executive/interface/LLVMExecutableKernel.h>
 #include <ocelot/ir/interface/Module.h>
+#include <ocelot/api/interface/OcelotConfiguration.h>
 
 // Hydrazine Includes
 #include <hydrazine/implementation/debug.h>
@@ -57,10 +58,13 @@ LLVMExecutionManager::Manager::~Manager()
 
 void LLVMExecutionManager::Manager::launch(const LLVMExecutableKernel& kernel)
 {
+	typedef api::OcelotConfiguration Config;
+	
 	report("Launching LLVM kernel '" << kernel.name << "'.");
 	if(threads() == 0)
 	{
-		setWorkerThreadCount(hydrazine::getHardwareThreadCount());
+		setWorkerThreadCount(std::min(hydrazine::getHardwareThreadCount(),
+			(unsigned)Config::get().executive.workerThreadLimit));
 	}
 
 	if(!LLVMModuleManager::isModuleLoaded(kernel.module->path()))

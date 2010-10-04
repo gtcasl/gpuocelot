@@ -36,12 +36,14 @@ namespace executive
 			char* shared; //! Pointer to shared memory
 			char* constant; //! Pointer to constant memory
 			char* parameter; //! Pointer to parameter memory
+			char* argument; //! Pointer to argument memory
 			
 		public:
 			size_t localSize; //! Local memory per thread
 			size_t sharedSize; //! Shared memory
 			size_t constantSize; //! Constant memory
 			size_t parameterSize; //! Parameter memory
+			size_t argumentSize; // Argument memory
 			
 		public:
 			/*! \brief Generic pointer back to other state */

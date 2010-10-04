@@ -34,7 +34,6 @@ namespace executive
 {
 
 class LLVMContext;
-class LLVMExecutableKernel;
 
 /*! \brief A class that manages modules that are executed by LLVM kernels */
 class LLVMModuleManager
@@ -58,6 +57,7 @@ public:
 	/*! \brief unLoad module from the database, this invalidates all ids */
 	static void unloadModule(const std::string& moduleName);
 
+public:
 	/*! \brief Associate a hydrazine thread with this manager, 
 		allowing it to communicate */
 	static void associate(hydrazine::Thread* thread);
@@ -73,20 +73,21 @@ public:
 		{
 		public:
 			typedef std::unordered_map<ir::ControlFlowGraph::BasicBlock::Id, 
-				ir::ControlFlowGraph::const_iterator > BlockIdMap;
+				ir::ControlFlowGraph::const_iterator> BlockIdMap;
 
 		public:
-			BlockIdMap                  blocks;
-			boost::mutex                mutex;
-			const LLVMExecutableKernel* kernel;
-			Function                    function;
-			TextureVector               textures;
+			BlockIdMap           blocks;
+			boost::mutex         mutex;
+			const ir::PTXKernel* kernel;
+			Function             function;
+			TextureVector        textures;
 		};
 	
 	public:
 		KernelAndTranslation(ir::PTXKernel* k = 0, 
 			translator::Translator::OptimizationLevel level = 
-			translator::Translator::NoOptimization);
+			translator::Translator::NoOptimization,
+			const ir::PTXKernel* parent = 0);
 
 	public:
 		void               unload();
@@ -98,6 +99,7 @@ public:
 		llvm::Module*                             _module;
 		translator::Translator::OptimizationLevel _optimizationLevel;
 		MetaData*                                 _metadata;
+		const ir::PTXKernel*                      _parent;
 	};
 
 	typedef KernelAndTranslation::MetaData MetaData;

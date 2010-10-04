@@ -66,8 +66,8 @@ void SubkernelFormationPass::runOnModule(ir::Module& m)
 		kernel = pass.kernels.begin(); 
 		kernel != pass.kernels.end(); ++kernel)
 	{
-		report("  Replacing kernel " << kernel->first);
-		m.removeKernel(kernel->first);
+		report("  Replacing kernel " << kernel->first->name);
+		m.removeKernel(kernel->first->name);
 		for(KernelVector::const_iterator 
 			subkernel = kernel->second.begin();
 			subkernel != kernel->second.end(); ++subkernel)
@@ -93,8 +93,8 @@ void SubkernelFormationPass::ExtractKernelsPass::initialize(const ir::Module& m)
 
 typedef std::unordered_set<ir::ControlFlowGraph::iterator> BlockSet;
 
-static void createRestorePoint(ir::PTXKernel& newKernel, ir::PTXKernel& ptx, 
-	ir::ControlFlowGraph::iterator newBlock, 
+static unsigned int createRestorePoint(ir::PTXKernel& newKernel,
+	ir::PTXKernel& ptx, ir::ControlFlowGraph::iterator newBlock, 
 	ir::ControlFlowGraph::iterator oldBlock, 
 	ir::ControlFlowGraph::edge_iterator newEdge,
 	const DataflowGraph::IteratorMap& cfgToDfgMap)
@@ -104,7 +104,7 @@ static void createRestorePoint(ir::PTXKernel& newKernel, ir::PTXKernel& ptx,
 	DataflowGraph::IteratorMap::const_iterator
 		dfgBlock = cfgToDfgMap.find(oldBlock);
 
-	if(dfgBlock->second->aliveIn().empty()) return;
+	if(dfgBlock->second->aliveIn().empty()) return 0;
 	
 	ir::ControlFlowGraph::edge_iterator splitEdge = newKernel.cfg()->split_edge(
 		newEdge, ir::BasicBlock(newBlock->label + "_restore",
@@ -145,9 +145,11 @@ static void createRestorePoint(ir::PTXKernel& newKernel, ir::PTXKernel& ptx,
 	
 		offset += ir::PTXOperand::bytes(reg->type);
 	}
+	
+	return offset;
 }
 
-static void createSavePoint(ir::PTXKernel& newKernel, ir::PTXKernel& ptx, 
+static unsigned int createSavePoint(ir::PTXKernel& newKernel, ir::PTXKernel& ptx, 
 	ir::ControlFlowGraph::iterator newBlock, 
 	ir::ControlFlowGraph::iterator oldBlock,
 	ir::ControlFlowGraph::edge_iterator newEdge,
@@ -172,6 +174,8 @@ static void createSavePoint(ir::PTXKernel& newKernel, ir::PTXKernel& ptx,
 		newEdge, ir::BasicBlock(oldBlock->label + "_save", 
 		newKernel.cfg()->newId()));
 
+	unsigned int offset = 0;
+	
 	if(!dfgBlock->second->aliveIn().empty())
 	{
 		ir::PTXInstruction* move = new ir::PTXInstruction(
@@ -185,7 +189,6 @@ static void createSavePoint(ir::PTXKernel& newKernel, ir::PTXKernel& ptx,
 		
 		splitEdge->head->instructions.push_back(move);
 
-		unsigned int offset = 0;
 		for(DataflowGraph::RegisterSet::const_iterator
 			reg = dfgBlock->second->aliveIn().begin();
 			reg != dfgBlock->second->aliveIn().end(); ++reg)
@@ -242,10 +245,12 @@ static void createSavePoint(ir::PTXKernel& newKernel, ir::PTXKernel& ptx,
 	call->branchTargetInstruction = oldBlock->id;
 	
 	splitEdge->head->instructions.push_back(call);
+	
+	return offset;
 }
 
 static ir::ControlFlowGraph::iterator createRegion(
-	ir::PTXKernel& newKernel, ir::PTXKernel& ptx,
+	ir::PTXKernel& newKernel, unsigned int& spillRegionSize, ir::PTXKernel& ptx,
 	const BlockSet& region, const BlockSet& inEdges, 
 	ir::ControlFlowGraph::iterator entry,
 	const DataflowGraph::IteratorMap& cfgToDfgMap,
@@ -350,8 +355,9 @@ static ir::ControlFlowGraph::iterator createRegion(
 					newKernel.cfg()->get_exit_block(), (*edge)->type));
 			}
 
-			createSavePoint(newKernel, ptx, newHead->second,
-				tail, newEdge, cfgToDfgMap);
+			spillRegionSize = std::max(spillRegionSize, 
+				createSavePoint(newKernel, ptx, newHead->second,
+				tail, newEdge, cfgToDfgMap));
 			
 			// skip edges that go to an already created subkernel
 			if(alreadyAdded.count(tail) != 0) continue;
@@ -394,8 +400,9 @@ static ir::ControlFlowGraph::iterator createRegion(
 				newKernel.cfg()->get_entry_block(),
 				newTail->second, ir::Edge::Branch));
 			
-			createRestorePoint(newKernel, ptx, newTail->second,
-				tail, newEdge, cfgToDfgMap);
+			spillRegionSize = std::max(spillRegionSize, 
+				createRestorePoint(newKernel, ptx, newTail->second, 
+				tail, newEdge, cfgToDfgMap));
 		}
 	}
 
@@ -614,6 +621,30 @@ static void createScheduler(ir::PTXKernel& kernel, const BlockSet& inBlocks)
 	scheduler->instructions.push_back(branch);
 }
 
+static void addVariables(ir::PTXKernel& subkernel, const ir::Kernel& kernel,
+	unsigned int spillRegionSize)
+{
+	subkernel.arguments  = kernel.arguments;
+	subkernel.parameters = kernel.parameters;
+	subkernel.locals     = kernel.locals;
+	
+	ir::PTXStatement resume(ir::PTXStatement::Local);
+		
+	resume.type = ir::PTXOperand::u32;
+	resume.name = "_Zocelot_resume_point";
+	
+	subkernel.locals.insert(std::make_pair(resume.name, ir::Local(resume)));
+	
+	ir::PTXStatement spillRegion(ir::PTXStatement::Local);
+		
+	spillRegion.type = ir::PTXOperand::b8;
+	spillRegion.name = "_Zocelot_spill_area";
+	spillRegion.array.stride.push_back(spillRegionSize);
+	
+	subkernel.locals.insert(std::make_pair(spillRegion.name,
+		ir::Local(spillRegion)));
+}
+
 /* algorithm
     1) start at a kernel entry point that dominates all remaining blocks
     2) create a strongly connected subgraph with N instructions and no barriers
@@ -642,6 +673,7 @@ void SubkernelFormationPass::ExtractKernelsPass::runOnKernel(ir::Kernel& k)
 
 	unsigned int currentRegionSize = 0;
 	unsigned int kernelId = 0;
+	unsigned int spillRegionSize = 0;
 
 	std::string originalName = k.name;
 	
@@ -719,7 +751,7 @@ void SubkernelFormationPass::ExtractKernelsPass::runOnKernel(ir::Kernel& k)
 		// create a new region if there are enough blocks
 		if(currentRegionSize < _expectedRegionSize && !queue.empty()) continue;
 		
-		entry = createRegion(*newKernel, ptx, region,
+		entry = createRegion(*newKernel, spillRegionSize, ptx, region,
 			inEdges, entry, cfgToDfgMap, alreadyAdded);
 		alreadyAdded.insert(region.begin(), region.end());
 		
@@ -750,7 +782,10 @@ void SubkernelFormationPass::ExtractKernelsPass::runOnKernel(ir::Kernel& k)
 	// Rename 
 	updateTailCallTargets(splitKernels, idToKernelMap);
 	
-	kernels.insert(std::make_pair(k.name, std::move(splitKernels)));
+	addVariables(*splitKernels.front(), k, spillRegionSize);
+
+	kernels.insert(std::make_pair(splitKernels.front(),
+		std::move(splitKernels)));
 }
 
 void SubkernelFormationPass::ExtractKernelsPass::finalize()

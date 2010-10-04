@@ -50,15 +50,15 @@ namespace executive {
 		/*!
 			\brief given a block of argument memory, sets the values of 
 				each argument
-			\param parameter pointer to argument memory
-			\param argumentSize number of bytes to write to parameter memory
+			\param argument pointer to argument memory
+			\param argumentSize number of bytes to write to argument memory
 		*/
-		virtual void setArgumentBlock(const unsigned char *parameter, 
+		virtual void setArgumentBlock(const unsigned char *argument, 
 			size_t argumentSize);
 
 		/*!
 			\brief gets the values of each argument as a block of binary data
-			\param parameter pointer to argument memory
+			\param argument pointer to argument memory
 			\param maxSize maximum number of bytes to write to argument memory
 			\return actual number of bytes required by argument memory
 		*/

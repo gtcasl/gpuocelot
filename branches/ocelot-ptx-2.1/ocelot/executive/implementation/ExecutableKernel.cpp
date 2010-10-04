@@ -44,7 +44,7 @@ ExecutableKernel::ExecutableKernel( executive::Device* d ) :
 	_sharedMemorySize( 0 ), _externSharedMemorySize( 0 ), 
 	_argumentMemorySize( 0 ), _parameterMemorySize( 0 )
 {
-	mapArgumentOffsets();
+	
 }
 
 ExecutableKernel::~ExecutableKernel() 

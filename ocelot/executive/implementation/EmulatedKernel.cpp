@@ -17,6 +17,7 @@
 #include <ocelot/executive/interface/Device.h>
 #include <ocelot/executive/interface/RuntimeException.h>
 #include <ocelot/executive/interface/CooperativeThreadArray.h>
+#include <ocelot/ir/interface/HammockGraph.h>
 
 #include <ocelot/trace/interface/TraceGenerator.h>
 
@@ -25,6 +26,7 @@
 
 #include <cstring>
 
+#include <hydrazine/implementation/string.h>
 #include <hydrazine/implementation/debug.h>
 
 #ifdef REPORT_BASE
@@ -169,6 +171,40 @@ void executive::EmulatedKernel::initialize() {
 	initializeLocalMemory();
 }
 
+class DotFormatterBlockLabel : public ir::BasicBlock::DotFormatter {
+public:
+
+	DotFormatterBlockLabel() { }
+	~DotFormatterBlockLabel() { }
+
+	/*!	\brief prints string representation of */
+	std::string toString(const ir::BasicBlock *block) {
+	std::stringstream out;
+
+	out << "[shape=record,";
+	out << "label=";
+	out << "\"{" << hydrazine::toGraphVizParsableLabel(block->label);
+	out << "}\"]";
+
+	return out.str();
+	}
+};
+
+/*!
+	\brief computes thread frontiers prior to instruction layout
+*/
+ir::ControlFlowGraph::BlockPointerVector executive::EmulatedKernel::computeThreadFrontiers() {
+	ir::ControlFlowGraph::BlockPointerVector blockSequence;
+	
+	ir::ControlFlowGraph *cfg = this->cfg();
+	ir::HammockGraph hammockGraph(cfg);
+	
+	
+
+	
+	return cfg->executable_sequence();
+}
+
 void executive::EmulatedKernel::constructInstructionSequence() {
 	typedef std::unordered_map<ir::ControlFlowGraph::InstructionList::iterator, 
 		ir::ControlFlowGraph::InstructionList::iterator > InstructionMap;
@@ -179,8 +215,21 @@ void executive::EmulatedKernel::constructInstructionSequence() {
 	report("Constructing emulated instruction sequence.");
 
 	// visit basic blocks and add reconverge instructions
-	ir::ControlFlowGraph::BlockPointerVector 
-		bb_sequence = cfg()->executable_sequence();
+	ir::ControlFlowGraph::BlockPointerVector bb_sequence = cfg()->executable_sequence();
+
+#if 0
+	{
+		DotFormatterBlockLabel formatter;
+		
+		std::stringstream ss;
+		ss << name << ".dot";
+		std::ofstream file(ss.str().c_str());
+		cfg()->write(file, formatter);
+		
+		std::cout << "\n" << name << ":\n";
+		ir::HammockGraph hammockGraph(cfg());
+	}
+#endif	
 	
 	InstructionMap reconvergeTargets;
 	ReconvergeToBlockMap reconvergeSources;

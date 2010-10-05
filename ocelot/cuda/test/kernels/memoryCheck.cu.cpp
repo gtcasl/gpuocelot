@@ -1,8 +1,8 @@
-# 1 "/tmp/tmpxft_00006abb_00000000-1_memoryCheck.cudafe1.cpp"
+# 1 "/tmp/tmpxft_0000679b_00000000-1_memoryCheck.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_00006abb_00000000-1_memoryCheck.cudafe1.cpp"
-# 1 "memoryCheck.cu"
+# 1 "/tmp/tmpxft_0000679b_00000000-1_memoryCheck.cudafe1.cpp"
+# 1 "/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/memoryCheck.cu"
 # 46 "/usr/local/cuda3.1/cuda/bin/../include/device_types.h"
 # 149 "/usr/lib/gcc/x86_64-linux-gnu/4.4.3/include/stddef.h" 3
 typedef long ptrdiff_t;
@@ -8555,25 +8555,25 @@ cudaError_t err = cudaGetChannelDesc(&desc, array);
 return (err == (cudaSuccess)) ? cudaBindSurfaceToArray(surf, array, desc) : err;
 # 875 "/usr/local/cuda3.1/cuda/bin/../include/cuda_runtime.h"
 }
-# 2 "memoryCheck.cu"
+# 2 "/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/memoryCheck.cu"
 void badMemoryReference(int *A) ;
-# 6 "memoryCheck.cu"
+# 6 "/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/memoryCheck.cu"
 int main() {
-# 11 "memoryCheck.cu"
+# 11 "/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/memoryCheck.cu"
 int *invalidPtr = (reinterpret_cast< int *>(564));
-# 13 "memoryCheck.cu"
+# 13 "/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/memoryCheck.cu"
 int *validPtr = (0);
-# 14 "memoryCheck.cu"
+# 14 "/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/memoryCheck.cu"
 cudaMalloc((void **)(&validPtr), sizeof(int) * (64));
-# 16 "memoryCheck.cu"
-cudaConfigureCall(dim3(1, 1), dim3(61, 1)) ? ((void)0) : badMemoryReference(invalidPtr);
-# 18 "memoryCheck.cu"
+# 16 "/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/memoryCheck.cu"
+cudaConfigureCall(dim3(1, 1), dim3(64, 1)) ? ((void)0) : badMemoryReference(invalidPtr);
+# 18 "/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/memoryCheck.cu"
 return 0;
-# 19 "memoryCheck.cu"
+# 19 "/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/memoryCheck.cu"
 }
-# 1 "/tmp/tmpxft_00006abb_00000000-1_memoryCheck.cudafe1.stub.c"
-# 1 "/tmp/tmpxft_00006abb_00000000-1_memoryCheck.cudafe1.stub.c" 1
-# 1 "/tmp/tmpxft_00006abb_00000000-3_memoryCheck.fatbin.c" 1
+# 1 "/tmp/tmpxft_0000679b_00000000-1_memoryCheck.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_0000679b_00000000-1_memoryCheck.cudafe1.stub.c" 1
+# 1 "/tmp/tmpxft_0000679b_00000000-3_memoryCheck.fatbin.c" 1
 # 1 "/usr/local/cuda3.1/cuda/bin/../include/__cudaFatFormat.h" 1
 # 83 "/usr/local/cuda3.1/cuda/bin/../include/__cudaFatFormat.h"
 extern "C" {
@@ -8651,7 +8651,7 @@ void __cudaFatFreePTX( char* ptx );
 
 
 }
-# 2 "/tmp/tmpxft_00006abb_00000000-3_memoryCheck.fatbin.c" 2
+# 2 "/tmp/tmpxft_0000679b_00000000-3_memoryCheck.fatbin.c" 2
 
 
 
@@ -8715,8 +8715,8 @@ asm(
 ".quad 0x2d36302d30313032,0x2d2f2f090a0a3730,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x43202f2f090a2d2d,0x676e696c69706d6f,0x6d742f706d742f20\n"
-".quad 0x3030305f74667870,0x30305f6262613630,0x372d303030303030,0x4379726f6d656d5f\n"
-".quad 0x7070632e6b636568,0x6d742f2820692e33,0x2e23494263632f70,0x0a29466b324c7858\n"
+".quad 0x3030305f74667870,0x30305f6239373630,0x372d303030303030,0x4379726f6d656d5f\n"
+".quad 0x7070632e6b636568,0x6d742f2820692e33,0x2e23494263632f70,0x0a294c57367a4544\n"
 ".quad 0x2d2d2d2d2d2f2f09,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x0a0a2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2f2f09,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
@@ -8731,7 +8731,7 @@ asm(
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x0a0a2d2d2d2d2d2d,0x3109656c69662e09\n"
 ".quad 0x616d6d6f633c2209,0x3e656e696c2d646e,0x656c69662e090a22,0x706d742f22093209\n"
-".quad 0x5f746678706d742f,0x6262613630303030,0x303030303030305f,0x6f6d656d5f362d30\n"
+".quad 0x5f746678706d742f,0x6239373630303030,0x303030303030305f,0x6f6d656d5f362d30\n"
 ".quad 0x2e6b636568437972,0x2e32656661647563,0x662e090a22757067,0x2f22093309656c69\n"
 ".quad 0x2f62696c2f727375,0x5f3638782f636367,0x78756e696c2d3436,0x342e342f756e672d\n"
 ".quad 0x756c636e692f332e,0x65646474732f6564,0x662e090a22682e66,0x2f22093409656c69\n"
@@ -8785,28 +8785,30 @@ asm(
 ".quad 0x6c636e692f2e2e2f,0x667275732f656475,0x636e75665f656361,0x22682e736e6f6974\n"
 ".quad 0x09656c69662e090a,0x7273752f22093732,0x632f6c61636f6c2f,0x632f312e33616475\n"
 ".quad 0x2f6e69622f616475,0x756c636e692f2e2e,0x5f6874616d2f6564,0x6e6f6974636e7566\n"
-".quad 0x74705f6c62645f73,0x2e090a22682e3178,0x09383209656c6966,0x4379726f6d656d22\n"
-".quad 0x2275632e6b636568,0x746e652e090a0a0a,0x6238315a5f207972,0x79726f6d654d6461\n"
-".quad 0x636e657265666552,0x09090a2820695065,0x2e206d617261702e,0x75635f5f20343675\n"
-".quad 0x5f5f6d7261706164,0x654d64616238315a,0x6566655279726f6d,0x5f695065636e6572\n"
-".quad 0x2e090a7b090a2941,0x3233752e20676572,0x0a3b3e333c722520,0x752e206765722e09\n"
-".quad 0x363c647225203436,0x636f6c2e090a3b3e,0x0a30093209383209,0x6967656257444c24\n"
-".quad 0x616238315a5f5f6e,0x5279726f6d654d64,0x65636e6572656665,0x6f6c2e090a3a6950\n"
-".quad 0x3009330938320963,0x33732e766f6d090a,0x202c317225092032,0x702e646c090a3b30\n"
-".quad 0x3436752e6d617261,0x202c316472250920,0x70616475635f5f5b,0x38315a5f5f6d7261\n"
-".quad 0x726f6d654d646162,0x6e65726566655279,0x3b5d415f69506563,0x36752e747663090a\n"
-".quad 0x2509203631752e34,0x697425202c326472,0x756d090a3b782e64,0x3436752e6f6c2e6c\n"
-".quad 0x202c336472250920,0x3b34202c32647225,0x36752e646461090a,0x2c34647225092034\n"
-".quad 0x25202c3164722520,0x7473090a3b336472,0x2e6c61626f6c672e,0x72255b0920323373\n"
-".quad 0x25202c5d302b3464,0x6f6c2e090a3b3172,0x3009340938320963,0x0a3b74697865090a\n"
-".quad 0x5f646e6557444c24,0x4d64616238315a5f,0x66655279726f6d65,0x695065636e657265\n"
-".quad 0x202f2f207d090a3a,0x4d64616238315a5f,0x66655279726f6d65,0x695065636e657265\n"
-".quad 0x0000000000000a0a\n"
+".quad 0x74705f6c62645f73,0x2e090a22682e3178,0x09383209656c6966,0x612f656d6f682f22\n"
+".quad 0x65722f776572646e,0x69726f7469736f70,0x636f7570672f7365,0x65636f2f746f6c65\n"
+".quad 0x6c65636f2f746f6c,0x2f616475632f746f,0x72656b2f74736574,0x6d656d2f736c656e\n"
+".quad 0x6b6365684379726f,0x090a0a0a2275632e,0x5f207972746e652e,0x654d64616238315a\n"
+".quad 0x6566655279726f6d,0x20695065636e6572,0x7261702e09090a28,0x203436752e206d61\n"
+".quad 0x6170616475635f5f,0x6238315a5f5f6d72,0x79726f6d654d6461,0x636e657265666552\n"
+".quad 0x090a29415f695065,0x206765722e090a7b,0x3c7225203233752e,0x65722e090a3b3e33\n"
+".quad 0x25203436752e2067,0x090a3b3e363c6472,0x09383209636f6c2e,0x57444c240a300932\n"
+".quad 0x5a5f5f6e69676562,0x6d654d6461623831,0x726566655279726f,0x0a3a695065636e65\n"
+".quad 0x383209636f6c2e09,0x6f6d090a30093309,0x2509203233732e76,0x090a3b30202c3172\n"
+".quad 0x6d617261702e646c,0x722509203436752e,0x635f5f5b202c3164,0x5f6d726170616475\n"
+".quad 0x4d64616238315a5f,0x66655279726f6d65,0x695065636e657265,0x7663090a3b5d415f\n"
+".quad 0x31752e3436752e74,0x2c32647225092036,0x3b782e6469742520,0x6f6c2e6c756d090a\n"
+".quad 0x722509203436752e,0x32647225202c3364,0x6461090a3b34202c,0x2509203436752e64\n"
+".quad 0x647225202c346472,0x3b33647225202c31,0x6f6c672e7473090a,0x203233732e6c6162\n"
+".quad 0x302b346472255b09,0x0a3b317225202c5d,0x383209636f6c2e09,0x7865090a30093409\n"
+".quad 0x57444c240a3b7469,0x38315a5f5f646e65,0x726f6d654d646162,0x6e65726566655279\n"
+".quad 0x7d090a3a69506563,0x38315a5f202f2f20,0x726f6d654d646162,0x6e65726566655279\n"
+".quad 0x00000a0a69506563\n"
 ".text");
 
 extern "C" {
 
-extern const unsigned long long __deviceText_$compute_10$[373];
+extern const unsigned long long __deviceText_$compute_10$[381];
 
 }
 
@@ -8818,8 +8820,8 @@ static __cudaFatElfEntry __elfEntries1 = {(char*)"sm_10", (char*)__deviceText_$s
 
 
 
-static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000004,0xa14f518d,(char*)"1a8090518f10810e",(char*)"memoryCheck.cu",(char*)" ",__ptxEntries,__cubinEntries,&__debugEntries0,0,0,0,0,0,0xb9a67495,&__elfEntries1};
-# 2 "/tmp/tmpxft_00006abb_00000000-1_memoryCheck.cudafe1.stub.c" 2
+static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000004,0xa14f518d,(char*)"fd44acd8ac5a6cce",(char*)"/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/memoryCheck.cu",(char*)" ",__ptxEntries,__cubinEntries,&__debugEntries0,0,0,0,0,0,0x518a5ccc,&__elfEntries1};
+# 2 "/tmp/tmpxft_0000679b_00000000-1_memoryCheck.cudafe1.stub.c" 2
 # 1 "/usr/local/cuda3.1/cuda/bin/../include/crt/host_runtime.h" 1
 # 93 "/usr/local/cuda3.1/cuda/bin/../include/crt/host_runtime.h"
 extern "C" {
@@ -9213,17 +9215,17 @@ extern __attribute__((__weak__)) unsigned long long int ullmax(unsigned long lon
 # 4997 "/usr/local/cuda3.1/cuda/bin/../include/math_functions.h" 2 3
 # 88 "/usr/local/cuda3.1/cuda/bin/../include/common_functions.h" 2
 # 166 "/usr/local/cuda3.1/cuda/bin/../include/crt/host_runtime.h" 2
-# 3 "/tmp/tmpxft_00006abb_00000000-1_memoryCheck.cudafe1.stub.c" 2
+# 3 "/tmp/tmpxft_0000679b_00000000-1_memoryCheck.cudafe1.stub.c" 2
 struct __T20 {int *__par0;int __dummy_field;};
 extern void __device_stub__Z18badMemoryReferencePi(int *);
-static void __sti____cudaRegisterAll_46_tmpxft_00006abb_00000000_4_memoryCheck_cpp1_ii_cd871cf5(void) __attribute__((__constructor__));
+static void __sti____cudaRegisterAll_46_tmpxft_0000679b_00000000_4_memoryCheck_cpp1_ii_cd871cf5(void) __attribute__((__constructor__));
 void __device_stub__Z18badMemoryReferencePi(int *__par0){ struct __T20 *__T21;
 *(void**)(void*)&__T21 = (void*)0;if (cudaSetupArgument((void*)(char*)&__par0, sizeof(__par0), (size_t)&__T21->__par0) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(int *))badMemoryReference)); (void)cudaLaunch(((char *)((void ( *)(int *))badMemoryReference))); };}
 void badMemoryReference( int *__cuda_0)
-# 2 "memoryCheck.cu"
+# 2 "/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/memoryCheck.cu"
 {__device_stub__Z18badMemoryReferencePi( __cuda_0);
 
 }
-# 1 "/tmp/tmpxft_00006abb_00000000-1_memoryCheck.cudafe1.stub.c"
-static void __sti____cudaRegisterAll_46_tmpxft_00006abb_00000000_4_memoryCheck_cpp1_ii_cd871cf5(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(int *))badMemoryReference), (char*)"_Z18badMemoryReferencePi", "_Z18badMemoryReferencePi", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); }
-# 1 "/tmp/tmpxft_00006abb_00000000-1_memoryCheck.cudafe1.stub.c" 2
+# 1 "/tmp/tmpxft_0000679b_00000000-1_memoryCheck.cudafe1.stub.c"
+static void __sti____cudaRegisterAll_46_tmpxft_0000679b_00000000_4_memoryCheck_cpp1_ii_cd871cf5(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(int *))badMemoryReference), (char*)"_Z18badMemoryReferencePi", "_Z18badMemoryReferencePi", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); }
+# 1 "/tmp/tmpxft_0000679b_00000000-1_memoryCheck.cudafe1.stub.c" 2

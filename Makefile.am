@@ -53,6 +53,7 @@ libocelot_la_SOURCES = \
 	ocelot/api/implementation/OcelotRuntime.cpp \
 	ocelot/api/implementation/OcelotConfiguration.cpp \
 	ocelot/ir/implementation/ControlFlowGraph.cpp \
+	ocelot/ir/implementation/HammockGraph.cpp \
 	ocelot/ir/implementation/Instruction.cpp \
 	ocelot/ir/implementation/Parameter.cpp \
 	ocelot/ir/implementation/Global.cpp \
@@ -391,6 +392,7 @@ nobase_include_HEADERS = ocelot/api/interface/ocelot.h \
 	ocelot/ir/interface/Kernel.h \
 	ocelot/ir/interface/Module.h \
 	ocelot/ir/interface/ControlFlowGraph.h \
+	ocelot/ir/interface/HammockGraph.h \
 	ocelot/ir/interface/PostdominatorTree.h \
 	ocelot/ir/interface/Parameter.h \
 	ocelot/ir/interface/PTXKernel.h \

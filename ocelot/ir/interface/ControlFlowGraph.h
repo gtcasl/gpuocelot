@@ -48,7 +48,8 @@ public:
 	};
 
 	typedef std::list< Edge > EdgeList;
-	typedef std::vector< BlockList::iterator > BlockPointerVector;
+	typedef BlockList::iterator Pointer;
+	typedef std::vector< Pointer > BlockPointerVector;
 	typedef std::vector< EdgeList::iterator > EdgePointerVector;
 	typedef std::list< Instruction* > InstructionList;
 	typedef unsigned int Id;

@@ -1,8 +1,8 @@
-# 1 "/tmp/tmpxft_000071dc_00000000-1_raceCondition.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00006767_00000000-1_raceCondition.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_000071dc_00000000-1_raceCondition.cudafe1.cpp"
-# 1 "raceCondition.cu"
+# 1 "/tmp/tmpxft_00006767_00000000-1_raceCondition.cudafe1.cpp"
+# 1 "/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/raceCondition.cu"
 # 46 "/usr/local/cuda3.1/cuda/bin/../include/device_types.h"
 # 149 "/usr/lib/gcc/x86_64-linux-gnu/4.4.3/include/stddef.h" 3
 typedef long ptrdiff_t;
@@ -8555,23 +8555,23 @@ cudaError_t err = cudaGetChannelDesc(&desc, array);
 return (err == (cudaSuccess)) ? cudaBindSurfaceToArray(surf, array, desc) : err;
 # 875 "/usr/local/cuda3.1/cuda/bin/../include/cuda_runtime.h"
 }
-# 2 "raceCondition.cu"
+# 2 "/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/raceCondition.cu"
 void raceCondition(int *A) ;
-# 12 "raceCondition.cu"
+# 12 "/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/raceCondition.cu"
 int main() {
-# 14 "raceCondition.cu"
+# 14 "/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/raceCondition.cu"
 int *validPtr = (0);
-# 15 "raceCondition.cu"
+# 15 "/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/raceCondition.cu"
 cudaMalloc((void **)(&validPtr), sizeof(int) * (64));
-# 16 "raceCondition.cu"
+# 16 "/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/raceCondition.cu"
 cudaConfigureCall(dim3(1, 1), dim3(64, 1)) ? ((void)0) : raceCondition(validPtr);
-# 18 "raceCondition.cu"
+# 18 "/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/raceCondition.cu"
 return 0;
-# 19 "raceCondition.cu"
+# 19 "/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/raceCondition.cu"
 }
-# 1 "/tmp/tmpxft_000071dc_00000000-1_raceCondition.cudafe1.stub.c"
-# 1 "/tmp/tmpxft_000071dc_00000000-1_raceCondition.cudafe1.stub.c" 1
-# 1 "/tmp/tmpxft_000071dc_00000000-3_raceCondition.fatbin.c" 1
+# 1 "/tmp/tmpxft_00006767_00000000-1_raceCondition.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00006767_00000000-1_raceCondition.cudafe1.stub.c" 1
+# 1 "/tmp/tmpxft_00006767_00000000-3_raceCondition.fatbin.c" 1
 # 1 "/usr/local/cuda3.1/cuda/bin/../include/__cudaFatFormat.h" 1
 # 83 "/usr/local/cuda3.1/cuda/bin/../include/__cudaFatFormat.h"
 extern "C" {
@@ -8649,7 +8649,7 @@ void __cudaFatFreePTX( char* ptx );
 
 
 }
-# 2 "/tmp/tmpxft_000071dc_00000000-3_raceCondition.fatbin.c" 2
+# 2 "/tmp/tmpxft_00006767_00000000-3_raceCondition.fatbin.c" 2
 
 
 
@@ -8713,8 +8713,8 @@ asm(
 ".quad 0x2d36302d30313032,0x2d2f2f090a0a3730,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x43202f2f090a2d2d,0x676e696c69706d6f,0x6d742f706d742f20\n"
-".quad 0x3030305f74667870,0x30305f6364313730,0x372d303030303030,0x6e6f43656361725f\n"
-".quad 0x632e6e6f69746964,0x2f2820692e337070,0x494263632f706d74,0x7239377651372e23\n"
+".quad 0x3030305f74667870,0x30305f3736373630,0x372d303030303030,0x6e6f43656361725f\n"
+".quad 0x632e6e6f69746964,0x2f2820692e337070,0x494263632f706d74,0x57714746466b2e23\n"
 ".quad 0x2d2d2d2f2f090a29,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2f2f090a0a,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
@@ -8729,7 +8729,7 @@ asm(
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x656c69662e090a0a\n"
 ".quad 0x6d6f633c22093109,0x6e696c2d646e616d,0x69662e090a223e65,0x742f22093209656c\n"
-".quad 0x6678706d742f706d,0x3137303030305f74,0x30303030305f6364,0x61725f362d303030\n"
+".quad 0x6678706d742f706d,0x3736303030305f74,0x30303030305f3736,0x61725f362d303030\n"
 ".quad 0x7469646e6f436563,0x616475632e6e6f69,0x227570672e326566,0x09656c69662e090a\n"
 ".quad 0x2f7273752f220933,0x2f6363672f62696c,0x6c2d34365f363878,0x756e672d78756e69\n"
 ".quad 0x692f332e342e342f,0x732f6564756c636e,0x22682e6665646474,0x09656c69662e090a\n"
@@ -8783,40 +8783,42 @@ asm(
 ".quad 0x2f2e2e2f6e69622f,0x2f6564756c636e69,0x5f65636166727573,0x6e6f6974636e7566\n"
 ".quad 0x662e090a22682e73,0x2209373209656c69,0x636f6c2f7273752f,0x33616475632f6c61\n"
 ".quad 0x2f616475632f312e,0x692f2e2e2f6e6962,0x6d2f6564756c636e,0x636e75665f687461\n"
-".quad 0x62645f736e6f6974,0x682e317874705f6c,0x656c69662e090a22,0x6361722209383209\n"
-".quad 0x697469646e6f4365,0x0a0a2275632e6e6f,0x7972746e652e090a,0x63617233315a5f20\n"
-".quad 0x697469646e6f4365,0x090a282069506e6f,0x206d617261702e09,0x635f5f203436752e\n"
-".quad 0x5f6d726170616475,0x6563617233315a5f,0x6f697469646e6f43,0x090a29415f69506e\n"
-".quad 0x206765722e090a7b,0x3c7225203233752e,0x65722e090a3b3e36,0x25203436752e2067\n"
-".quad 0x0a3b3e33313c6472,0x6465726168732e09,0x206e67696c612e20,0x5f5f2038622e2034\n"
-".quad 0x635f5f5f61647563,0x61636f6c5f616475,0x30325f7261765f6c,0x535f30335f353335\n"
-".quad 0x325b386465726168,0x6c2e090a3b5d3635,0x093209383209636f,0x656257444c240a30\n"
-".quad 0x33315a5f5f6e6967,0x646e6f4365636172,0x3a69506e6f697469,0x36752e766f6d090a\n"
-".quad 0x2c31647225092034,0x5f616475635f5f20,0x6c5f616475635f5f,0x7261765f6c61636f\n"
-".quad 0x335f35333530325f,0x6465726168535f30,0x636f6c2e090a3b38,0x0a30093509383209\n"
-".quad 0x3436752e74766309,0x722509203631752e,0x64697425202c3264,0x747663090a3b782e\n"
-".quad 0x3436752e3233752e,0x25202c3172250920,0x646c090a3b326472,0x752e6d617261702e\n"
-".quad 0x3364722509203436,0x6475635f5f5b202c,0x5a5f5f6d72617061,0x6f43656361723331\n"
-".quad 0x506e6f697469646e,0x6d090a3b5d415f69,0x36752e6f6c2e6c75,0x2c34647225092034\n"
-".quad 0x34202c3264722520,0x752e646461090a3b,0x3564722509203436,0x202c33647225202c\n"
-".quad 0x6c090a3b34647225,0x6c61626f6c672e64,0x722509203233732e,0x356472255b202c32\n"
-".quad 0x7663090a3b5d302b,0x33752e3436752e74,0x2c36647225092032,0x6d090a3b31722520\n"
-".quad 0x2e656469772e6c75,0x6472250920323375,0x202c317225202c37,0x2e646461090a3b34\n"
-".quad 0x6472250920343675,0x2c31647225202c38,0x090a3b3764722520,0x65726168732e7473\n"
-".quad 0x5b09203233732e64,0x2c5d302b38647225,0x2e090a3b32722520,0x3909383209636f6c\n"
-".quad 0x2e67656e090a3009,0x3372250920323373,0x090a3b317225202c,0x2e3436732e747663\n"
-".quad 0x6472250920323373,0x0a3b337225202c39,0x6469772e6c756d09,0x2509203233732e65\n"
-".quad 0x7225202c30316472,0x61090a3b34202c33,0x09203436752e6464,0x25202c3131647225\n"
-".quad 0x647225202c316472,0x2e646c090a3b3031,0x732e646572616873,0x2c34722509203233\n"
-".quad 0x2b31316472255b20,0x73090a3b5d323532,0x6c61626f6c672e74,0x255b09203233732e\n"
-".quad 0x202c5d302b356472,0x6c2e090a3b347225,0x303109383209636f,0x74697865090a3009\n"
-".quad 0x6e6557444c240a3b,0x617233315a5f5f64,0x7469646e6f436563,0x090a3a69506e6f69\n"
-".quad 0x315a5f202f2f207d,0x6e6f436563617233,0x69506e6f69746964,0x0000000000000a0a\n"
+".quad 0x62645f736e6f6974,0x682e317874705f6c,0x656c69662e090a22,0x6f682f2209383209\n"
+".quad 0x6572646e612f656d,0x69736f7065722f77,0x672f736569726f74,0x746f6c65636f7570\n"
+".quad 0x2f746f6c65636f2f,0x632f746f6c65636f,0x747365742f616475,0x736c656e72656b2f\n"
+".quad 0x6e6f43656361722f,0x632e6e6f69746964,0x652e090a0a0a2275,0x315a5f207972746e\n"
+".quad 0x6e6f436563617233,0x69506e6f69746964,0x61702e09090a2820,0x3436752e206d6172\n"
+".quad 0x70616475635f5f20,0x33315a5f5f6d7261,0x646e6f4365636172,0x5f69506e6f697469\n"
+".quad 0x2e090a7b090a2941,0x3233752e20676572,0x0a3b3e363c722520,0x752e206765722e09\n"
+".quad 0x313c647225203436,0x68732e090a3b3e33,0x6c612e2064657261,0x622e2034206e6769\n"
+".quad 0x616475635f5f2038,0x5f616475635f5f5f,0x61765f6c61636f6c,0x5f35333530325f72\n"
+".quad 0x65726168535f3033,0x3b5d3635325b3864,0x3209636f6c2e090a,0x4c240a3009320938\n"
+".quad 0x5f6e696765625744,0x6563617233315a5f,0x6f697469646e6f43,0x6f6d090a3a69506e\n"
+".quad 0x2509203436752e76,0x635f5f202c316472,0x75635f5f5f616475,0x6c61636f6c5f6164\n"
+".quad 0x3530325f7261765f,0x68535f30335f3533,0x090a3b3864657261,0x09383209636f6c2e\n"
+".quad 0x747663090a300935,0x3631752e3436752e,0x202c326472250920,0x0a3b782e64697425\n"
+".quad 0x3233752e74766309,0x722509203436752e,0x3b32647225202c31,0x7261702e646c090a\n"
+".quad 0x09203436752e6d61,0x5f5b202c33647225,0x726170616475635f,0x617233315a5f5f6d\n"
+".quad 0x7469646e6f436563,0x5d415f69506e6f69,0x6c2e6c756d090a3b,0x2509203436752e6f\n"
+".quad 0x647225202c346472,0x61090a3b34202c32,0x09203436752e6464,0x7225202c35647225\n"
+".quad 0x34647225202c3364,0x6c672e646c090a3b,0x3233732e6c61626f,0x5b202c3272250920\n"
+".quad 0x3b5d302b35647225,0x36752e747663090a,0x2509203233752e34,0x317225202c366472\n"
+".quad 0x772e6c756d090a3b,0x203233752e656469,0x25202c3764722509,0x090a3b34202c3172\n"
+".quad 0x203436752e646461,0x25202c3864722509,0x647225202c316472,0x732e7473090a3b37\n"
+".quad 0x33732e6465726168,0x386472255b092032,0x327225202c5d302b,0x09636f6c2e090a3b\n"
+".quad 0x090a300939093832,0x203233732e67656e,0x7225202c33722509,0x2e747663090a3b31\n"
+".quad 0x203233732e343673,0x25202c3964722509,0x6c756d090a3b3372,0x33732e656469772e\n"
+".quad 0x3031647225092032,0x34202c337225202c,0x752e646461090a3b,0x3164722509203436\n"
+".quad 0x2c31647225202c31,0x0a3b303164722520,0x726168732e646c09,0x09203233732e6465\n"
+".quad 0x72255b202c347225,0x5d3235322b313164,0x6c672e7473090a3b,0x3233732e6c61626f\n"
+".quad 0x2b356472255b0920,0x3b347225202c5d30,0x3209636f6c2e090a,0x090a300930310938\n"
+".quad 0x4c240a3b74697865,0x5a5f5f646e655744,0x6f43656361723331,0x506e6f697469646e\n"
+".quad 0x2f2f207d090a3a69,0x63617233315a5f20,0x697469646e6f4365,0x00000a0a69506e6f\n"
 ".text");
 
 extern "C" {
 
-extern const unsigned long long __deviceText_$compute_10$[424];
+extern const unsigned long long __deviceText_$compute_10$[432];
 
 }
 
@@ -8828,8 +8830,8 @@ static __cudaFatElfEntry __elfEntries1 = {(char*)"sm_10", (char*)__deviceText_$s
 
 
 
-static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000004,0xa14f518d,(char*)"c487351f651d8323",(char*)"raceCondition.cu",(char*)" ",__ptxEntries,__cubinEntries,&__debugEntries0,0,0,0,0,0,0xcc43f56a,&__elfEntries1};
-# 2 "/tmp/tmpxft_000071dc_00000000-1_raceCondition.cudafe1.stub.c" 2
+static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000004,0xa14f518d,(char*)"97e508606a1d6e51",(char*)"/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/raceCondition.cu",(char*)" ",__ptxEntries,__cubinEntries,&__debugEntries0,0,0,0,0,0,0x9edb961d,&__elfEntries1};
+# 2 "/tmp/tmpxft_00006767_00000000-1_raceCondition.cudafe1.stub.c" 2
 # 1 "/usr/local/cuda3.1/cuda/bin/../include/crt/host_runtime.h" 1
 # 93 "/usr/local/cuda3.1/cuda/bin/../include/crt/host_runtime.h"
 extern "C" {
@@ -9223,17 +9225,17 @@ extern __attribute__((__weak__)) unsigned long long int ullmax(unsigned long lon
 # 4997 "/usr/local/cuda3.1/cuda/bin/../include/math_functions.h" 2 3
 # 88 "/usr/local/cuda3.1/cuda/bin/../include/common_functions.h" 2
 # 166 "/usr/local/cuda3.1/cuda/bin/../include/crt/host_runtime.h" 2
-# 3 "/tmp/tmpxft_000071dc_00000000-1_raceCondition.cudafe1.stub.c" 2
+# 3 "/tmp/tmpxft_00006767_00000000-1_raceCondition.cudafe1.stub.c" 2
 struct __T20 {int *__par0;int __dummy_field;};
 extern void __device_stub__Z13raceConditionPi(int *);
-static void __sti____cudaRegisterAll_48_tmpxft_000071dc_00000000_4_raceCondition_cpp1_ii_81125a25(void) __attribute__((__constructor__));
+static void __sti____cudaRegisterAll_48_tmpxft_00006767_00000000_4_raceCondition_cpp1_ii_81125a25(void) __attribute__((__constructor__));
 void __device_stub__Z13raceConditionPi(int *__par0){ struct __T20 *__T21;
 *(void**)(void*)&__T21 = (void*)0;if (cudaSetupArgument((void*)(char*)&__par0, sizeof(__par0), (size_t)&__T21->__par0) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(int *))raceCondition)); (void)cudaLaunch(((char *)((void ( *)(int *))raceCondition))); };}
 void raceCondition( int *__cuda_0)
-# 2 "raceCondition.cu"
+# 2 "/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/raceCondition.cu"
 {__device_stub__Z13raceConditionPi( __cuda_0);
-# 10 "raceCondition.cu"
+# 10 "/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/raceCondition.cu"
 }
-# 1 "/tmp/tmpxft_000071dc_00000000-1_raceCondition.cudafe1.stub.c"
-static void __sti____cudaRegisterAll_48_tmpxft_000071dc_00000000_4_raceCondition_cpp1_ii_81125a25(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(int *))raceCondition), (char*)"_Z13raceConditionPi", "_Z13raceConditionPi", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); }
-# 1 "/tmp/tmpxft_000071dc_00000000-1_raceCondition.cudafe1.stub.c" 2
+# 1 "/tmp/tmpxft_00006767_00000000-1_raceCondition.cudafe1.stub.c"
+static void __sti____cudaRegisterAll_48_tmpxft_00006767_00000000_4_raceCondition_cpp1_ii_81125a25(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(int *))raceCondition), (char*)"_Z13raceConditionPi", "_Z13raceConditionPi", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); }
+# 1 "/tmp/tmpxft_00006767_00000000-1_raceCondition.cudafe1.stub.c" 2

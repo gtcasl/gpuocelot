@@ -17,9 +17,9 @@
 #define IPDOM_RECONVERGENCE 1
 #define BARRIER_RECONVERGENCE 2
 #define GEN6_RECONVERGENCE 3
-#define SW_STACK_RECONVERGENCE 4
+#define SORTED_PREDICATE_STACK_RECONVERGENCE 4
 
-// specify here
+// specify reconvergence mechanism here
 #define RECONVERGENCE_MECHANISM IPDOM_RECONVERGENCE
 
 namespace executive {
@@ -29,6 +29,8 @@ namespace executive {
 
 	class CTAContext {
 	public:
+		CTAContext() { }
+		
 		CTAContext(const EmulatedKernel *kernel, CooperativeThreadArray *cta);
 
 		~CTAContext();

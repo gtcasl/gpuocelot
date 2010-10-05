@@ -1993,8 +1993,11 @@ void executive::CooperativeThreadArray::eval_Bra(CTAContext &context, const PTXI
 		if(!reconvergeContextAlreadyExists) {
 			runtimeStack.push_back(reconvergeContext);
 		}
+
 #endif
 
+
+#if RECONVERGENCE_MECHANISM == IPDOM_RECONVERGENCE || RECONVERGENCE_MECHANISM == BARRIER_RECONVERGENCE
 		if (branchContext.active.any()) {
 			runtimeStack.push_back(branchContext);
 		}
@@ -2002,6 +2005,54 @@ void executive::CooperativeThreadArray::eval_Bra(CTAContext &context, const PTXI
 		if (fallthroughContext.active.any()) {
 			runtimeStack.push_back(fallthroughContext);		
 		}
+		
+#elif RECONVERGENCE_MECHANISM == SORTED_PREDICATE_STACK_RECONVERGENCE
+		//
+		// insert branch target with greatest PC onto stack, and resume with branch target with
+		// least PC
+		//
+		CTAContext branchContexts[3];
+		int ctxCount = 0, ctxStart = 1;
+		
+		if (branchContext.active.any()) {
+			branchContexts[1] = branchContext;
+			ctxCount ++;
+		}
+		
+		if (fallthroughContext.active.any()) {
+		
+			if (ctxCount) {
+				if (fallthroughContext.PC < branchContexts[1].PC) {
+					ctxStart = 0;
+					branchContexts[0] = fallthroughContext;
+				}
+				else {
+					ctxStart = 1;
+					branchContexts[2] = fallthroughContext;
+				}
+			}
+			else {
+				branchContexts[1] = fallthroughContext;
+				ctxStart = 1;
+			}
+			ctxCount ++;
+		}		
+		
+		if (ctxCount == 2) {
+			for (Stack::iterator s_it = runtimeStack.begin(); s_it != runtimeStack.end(); ++s_it) {
+				if (s_it->PC > branchContexts[ctxStart+1].PC) {
+					runtimeStack.insert(s_it, branchContexts[ctxStart+1]);
+					break;
+				}
+			}
+		}
+		
+		runtimeStack.push_back(branchContexts[ctxStart]);
+		
+#else
+		report("Unimplemented reconvergence mechanism");
+#endif
+
 #if REPORT_BRA
 		report("   divergent branching");
 #endif
@@ -2029,8 +2080,25 @@ void executive::CooperativeThreadArray::eval_Reconverge(CTAContext &context, con
 
 #if RECONVERGENCE_MECHANISM == IPDOM_RECONVERGENCE
 	runtimeStack.pop_back();
-#elif  RECONVERGENCE_MECHANISM == BARRIER_RECONVERGENCE
+#elif RECONVERGENCE_MECHANISM == BARRIER_RECONVERGENCE
 	context.PC ++;
+#elif RECONVERGENCE_MECHANISM == SORTED_PREDICATE_STACK_RECONVERGENCE
+	// attempt to merge top TWO CTAContext with current context 'picking up' additional threads
+	if (runtimeStack.size() > 1) {
+		CTAContext activeContext = runtimeStack.back();
+		runtimeStack.pop_back();
+		
+		if (runtimeStack.back().PC == activeContext.PC) {
+			// merge contexts
+			activeContext.active |= runtimeStack.back().active;
+			runtimeStack.pop_back();
+		}
+		else {
+			// otherwise, we assume all PCs are greater than current and continue
+		}
+		runtimeStack.push_back(activeContext);
+	}
+	runtimeStack.back().PC ++;
 #else
 	report("Unimplemented reconvergence mechanism");
 #endif
@@ -3207,6 +3275,11 @@ void executive::CooperativeThreadArray::eval_Exit(CTAContext &context, const PTX
 	}
 	else {
 		eval_Bar(context, instr);
+	}
+#elif RECONVERGENCE_MECHANISM == SORTED_PREDICATE_STACK_RECONVERGENCE
+	if (context.active.count() == context.active.size()) {
+		trace();
+		context.running = false;
 	}
 #else
 	report("Undefined reconvergence mechanism");

@@ -110,6 +110,7 @@ static unsigned int pad(unsigned int& size, unsigned int alignment)
 }
 
 static void setupArgumentMemoryReferences(ir::PTXKernel& kernel,
+	LLVMModuleManager::KernelAndTranslation::MetaData* metadata,
 	const ir::PTXKernel& parent)
 {
 	typedef std::unordered_map<std::string, unsigned int> OffsetMap;
@@ -164,9 +165,12 @@ static void setupArgumentMemoryReferences(ir::PTXKernel& kernel,
 			}
 		}
 	}
+	
+	metadata->argumentSize = offset;
 }
 
 static void setupParameterMemoryReferences(ir::PTXKernel& kernel,
+	LLVMModuleManager::KernelAndTranslation::MetaData* metadata,
 	const ir::PTXKernel& parent)
 {
 	typedef std::unordered_map<std::string, unsigned int> OffsetMap;
@@ -222,9 +226,12 @@ static void setupParameterMemoryReferences(ir::PTXKernel& kernel,
 			}
 		}
 	}
+	
+	metadata->parameterSize = offset;
 }
 
 static void setupSharedMemoryReferences(ir::PTXKernel& kernel,
+	LLVMModuleManager::KernelAndTranslation::MetaData* metadata,
 	const ir::PTXKernel& parent)
 {
 	typedef std::unordered_map<std::string, unsigned int> OffsetMap;
@@ -241,7 +248,7 @@ static void setupSharedMemoryReferences(ir::PTXKernel& kernel,
 	OperandVector externalOperands;
 
 	unsigned int externalAlignment = 1;             
-	unsigned int sharedMemorySize = 0;
+	metadata->sharedSize = 0;
 
 	for(ir::Module::GlobalMap::const_iterator 
 		global = kernel.module->globals().begin(); 
@@ -293,10 +300,10 @@ static void setupSharedMemoryReferences(ir::PTXKernel& kernel,
 				report("   Found local shared variable " 
 					<< local->second.name << " of size " 
 					<< local->second.getSize());
-				pad(sharedMemorySize, local->second.alignment);
+				pad(metadata->sharedSize, local->second.alignment);
 				offsets.insert(std::make_pair(local->second.name, 
-					sharedMemorySize));
-				sharedMemorySize += local->second.getSize();
+					metadata->sharedSize));
+				metadata->sharedSize += local->second.getSize();
 			}
 		}
 	}
@@ -344,12 +351,14 @@ static void setupSharedMemoryReferences(ir::PTXKernel& kernel,
 							report("   Found global shared variable " 
 								<< it->second.statement.name);
 
-							pad(sharedMemorySize, 
+							pad(metadata->sharedSize, 
 							it->second.statement.alignment);
 
 							offsets.insert(std::make_pair(
-								it->second.statement.name, sharedMemorySize));
-							sharedMemorySize += it->second.statement.bytes();
+								it->second.statement.name,
+								metadata->sharedSize));
+							metadata->sharedSize
+								+= it->second.statement.bytes();
 						}                               
 
 						OffsetMap::iterator offset = offsets.find(
@@ -368,27 +377,28 @@ static void setupSharedMemoryReferences(ir::PTXKernel& kernel,
 		}
 	}
 
-	pad(sharedMemorySize, externalAlignment);
+	pad(metadata->sharedSize, externalAlignment);
 
 	report("   Mapping external shared variables.");
 	for( OperandVector::iterator operand = externalOperands.begin(); 
 		operand != externalOperands.end(); ++operand) 
 	{
 		report("    Mapping external shared label " 
-			<< (*operand)->identifier << " to " << sharedMemorySize);
-		(*operand)->offset += sharedMemorySize;
+			<< (*operand)->identifier << " to " << metadata->sharedSize);
+		(*operand)->offset += metadata->sharedSize;
 	}
 
-	report( "   Total shared memory size is " << sharedMemorySize << "." );
+	report( "   Total shared memory size is " << metadata->sharedSize << "." );
 }
 
 static void setupConstantMemoryReferences(ir::PTXKernel& kernel,
+	LLVMModuleManager::KernelAndTranslation::MetaData* metadata,
 	const ir::PTXKernel& parent)
 {
 	report( "  Setting up constant memory references." );
 	typedef std::unordered_map<std::string, unsigned int> OffsetMap;
 
-	unsigned int constantMemorySize = 0;
+	metadata->constantSize = 0;
 	OffsetMap constants;
 	
 	for(ir::Module::GlobalMap::const_iterator 
@@ -400,14 +410,15 @@ static void setupConstantMemoryReferences(ir::PTXKernel& kernel,
 			report( "   Found global constant variable " 
 				<< global->second.statement.name << " of size " 
 				<< global->second.statement.bytes() );
-			pad(constantMemorySize, global->second.statement.alignment);
+			pad(metadata->constantSize, global->second.statement.alignment);
 			constants.insert(std::make_pair(global->second.statement.name,
-				constantMemorySize));
-			constantMemorySize += global->second.statement.bytes();
+				metadata->constantSize));
+			metadata->constantSize += global->second.statement.bytes();
 		}
 	}
 
-	report("   Total constant memory size is " << constantMemorySize << ".");
+	report("   Total constant memory size is "
+		<< metadata->constantSize << ".");
 
 	for(ir::ControlFlowGraph::iterator block = kernel.cfg()->begin(); 
 		block != kernel.cfg()->end(); ++block)
@@ -474,15 +485,18 @@ static void setupTextureMemoryReferences(ir::PTXKernel& kernel,
 }
 
 static void setupLocalMemoryReferences(ir::PTXKernel& kernel,
+	LLVMModuleManager::KernelAndTranslation::MetaData* metadata,
 	const ir::PTXKernel& parent)
 {
 	report( "  Setting up local memory references." );
 	typedef std::unordered_map<std::string, unsigned int> OffsetMap;
 
-	unsigned int localMemorySize = 0;
 	OffsetMap offsets;
 
-	localMemorySize = 0;
+	// Reserve the first few 32-bit words
+	// [0] == resume point
+	// [1] == call type
+	metadata->localSize = 8;
 
 	for(ir::Kernel::LocalMap::const_iterator local = parent.locals.begin(); 
 		local != parent.locals.end(); ++local)
@@ -492,10 +506,17 @@ static void setupLocalMemoryReferences(ir::PTXKernel& kernel,
 			report("   Found local local variable " 
 				<< local->second.name << " of size " 
 				<< local->second.getSize());
-			pad(localMemorySize, local->second.alignment);
-			offsets.insert(std::make_pair(local->second.name,
-				localMemorySize));
-			localMemorySize += local->second.getSize();
+			if(local->second.name == "_Zocelot_resume_point")
+			{
+				offsets.insert(std::make_pair(local->second.name, 0));
+			}
+			else
+			{			
+				pad(metadata->localSize, local->second.alignment);
+				offsets.insert(std::make_pair(local->second.name,
+					metadata->localSize));
+				metadata->localSize += local->second.getSize();
+			}
 		}
 	}
     
@@ -534,7 +555,7 @@ static void setupLocalMemoryReferences(ir::PTXKernel& kernel,
 		}       
 	}
 
-    report("   Total local memory size is " << localMemorySize << ".");
+    report("   Total local memory size is " << metadata->localSize << ".");
 }
 
 static void setupPTXMemoryReferences(ir::PTXKernel& kernel,
@@ -543,12 +564,12 @@ static void setupPTXMemoryReferences(ir::PTXKernel& kernel,
 {
 	report(" Setting up memory references for kernel variables.");
 	
-	setupArgumentMemoryReferences(kernel, parent);
-	setupParameterMemoryReferences(kernel, parent);
-	setupSharedMemoryReferences(kernel, parent);
-	setupConstantMemoryReferences(kernel, parent);
+	setupArgumentMemoryReferences(kernel, metadata, parent);
+	setupParameterMemoryReferences(kernel, metadata, parent);
+	setupSharedMemoryReferences(kernel, metadata, parent);
+	setupConstantMemoryReferences(kernel, metadata, parent);
 	setupTextureMemoryReferences(kernel, metadata, parent);
-	setupLocalMemoryReferences(kernel, parent);
+	setupLocalMemoryReferences(kernel, metadata, parent);
 }
 
 static void translate(llvm::Module*& module, ir::PTXKernel& kernel)
@@ -839,6 +860,26 @@ void LLVMModuleManager::Module::shiftId(FunctionId nextId)
 LLVMModuleManager::ModuleDatabase::ModuleDatabase()
 {
 	start();
+	
+	std::stringstream ptx;
+	
+	ptx << 
+		".entry OcelotBarrierKernel()\n"
+		"{\t\n"
+		"\t.reg .u32 %r<3>;\n"
+		"\t.local .u32 %_Zocelot_resume_point;\n"
+		"\t.local .u32 %_Zocelot_barrier_resume_point;\n"
+		"\tentry:\n"
+		"\tmov.u32 %r0, %_Zocelot_barrier_resume_point;\n"
+		"\tld.local.u32 %r1, [%r0];\n"
+		"\tmov.u32 %r0, %_Zocelot_resume_point;\n"
+		"\tst.local.u32 [%r0], %r1;\n"		
+		"\texit;\n"
+		"}\n";
+	
+	_barrierModule.load(ptx, "_ZOcelotBarrierModule");
+	
+	loadModule(&_barrierModule, translator::Translator::DebugOptimization);
 }
 
 LLVMModuleManager::ModuleDatabase::~ModuleDatabase()
@@ -864,6 +905,8 @@ void LLVMModuleManager::ModuleDatabase::loadModule(const ir::Module* module,
 {
 	assert(!isModuleLoaded(module->path()));
 
+	report("Loading module '" << module->path() << "'");
+
 	typedef analysis::SubkernelFormationPass::ExtractKernelsPass Pass;
 	Pass pass;
 
@@ -888,6 +931,8 @@ void LLVMModuleManager::ModuleDatabase::loadModule(const ir::Module* module,
 			subkernel = kernel->second.begin();
 			subkernel != kernel->second.end(); ++subkernel)
 		{
+			report(" adding subkernel '" << (*subkernel)->name 
+				<< "' at index " << (subkernels.size() + _kernels.size()));
 			subkernels.push_back(KernelAndTranslation(*subkernel,
 				level, kernel->first));
 		}

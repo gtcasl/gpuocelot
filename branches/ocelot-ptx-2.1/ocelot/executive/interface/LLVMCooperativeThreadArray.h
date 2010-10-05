@@ -56,6 +56,7 @@ private:
 	void _destroyContexts();
 
 private:
+	LLVMModuleManager::FunctionId _functionBase;
 	LLVMModuleManager::FunctionId _guessFunction;
 	LLVMModuleManager::FunctionId _nextFunction;
 	FunctionTable                 _functions;

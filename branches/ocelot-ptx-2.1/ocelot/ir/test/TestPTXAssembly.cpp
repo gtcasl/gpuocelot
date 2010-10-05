@@ -133,7 +133,7 @@ std::string testTestp_PTX(ir::PTXOperand::DataType type,
 	ptx << "\t.reg .pred %p0;                              \n";
 	ptx << "\tld.param.u64 %rIn, [in];                     \n";
 	ptx << "\tld.param.u64 %rOut, [out];                   \n";
-	ptx << "\tld.global" << typeString << " %f0, [%rIn];                   \n";
+	ptx << "\tld.global" << typeString << " %f0, [%rIn];   \n";
 	ptx << "\ttestp." << ir::PTXInstruction::toString(mode) 
 		<< typeString << " %p0, %f0;\n";
 	ptx << "\tselp.u32 %r0, 0xffffffff, 0x0, %p0;          \n";

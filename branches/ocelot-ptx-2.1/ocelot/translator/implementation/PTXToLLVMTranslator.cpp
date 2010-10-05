@@ -264,7 +264,7 @@ namespace translator
 		ir::LLVMInstruction::Type context;
 		
 		context.category = ir::LLVMInstruction::Type::Structure;
-		context.members.resize( 13 );
+		context.members.resize( 10 );
 
 		context.members[0].category = ir::LLVMInstruction::Type::Structure;
 		context.members[0].label = "%Dimension";
@@ -278,17 +278,9 @@ namespace translator
 
 		context.members[5] = context.members[4];
 		context.members[6] = context.members[4];
-		context.members[7] = context.members[4];
-		
-		context.members[8].category = ir::LLVMInstruction::Type::Element;
-		context.members[8].type = ir::LLVMInstruction::I64;
-
-		context.members[9] = context.members[8];
-		context.members[10] = context.members[8];
-		context.members[11] = context.members[8];
-		
-		context.members[12].category = ir::LLVMInstruction::Type::Pointer;
-		context.members[12].type = ir::LLVMInstruction::I8;		
+		context.members[7] = context.members[4];	
+		context.members[8] = context.members[4];
+		context.members[9] = context.members[4];
 		
 		return context;
 	}
@@ -1590,25 +1582,23 @@ namespace translator
 			ir::LLVMCall call;
 		
 			call.d = _destination( i );
+			call.parameters.resize( 2 );
 
 			switch( i.atomicOperation )
 			{
 				case ir::PTXInstruction::AtomicAnd:
 				{
 					call.name = "@llvm.atomic.load.and";
-					call.parameters.resize( 2 );
 					break;
 				}
 				case ir::PTXInstruction::AtomicOr:
 				{
 					call.name = "@llvm.atomic.load.or";
-					call.parameters.resize( 2 );
 					break;
 				}
 				case ir::PTXInstruction::AtomicXor:
 				{
 					call.name = "@llvm.atomic.load.xor";
-					call.parameters.resize( 2 );
 					break;
 				}
 				case ir::PTXInstruction::AtomicCas:
@@ -1621,27 +1611,21 @@ namespace translator
 				case ir::PTXInstruction::AtomicExch:
 				{
 					call.name = "@llvm.atomic.swap";
-					call.parameters.resize( 2 );
 					break;
 				}
 				case ir::PTXInstruction::AtomicAdd:
 				{
 					call.name = "@llvm.atomic.cmp.swap";
-					call.parameters.resize( 2 );
 					break;
 				}
 				case ir::PTXInstruction::AtomicInc:
 				{
 					call.name = "@__ocelot_atomic_inc";
-					call.parameters.resize( 3 );
-					call.parameters[2] = _context();
 					break;
 				}
 				case ir::PTXInstruction::AtomicDec: 
 				{
 					call.name = "@__ocelot_atomic_dec";
-					call.parameters.resize( 3 );
-					call.parameters[2] = _context();
 					break;
 				}
 				case ir::PTXInstruction::AtomicMin:
@@ -1654,8 +1638,6 @@ namespace translator
 					{
 						call.name = "@llvm.atomic.load.umin";
 					}
-					
-					call.parameters.resize( 2 );
 					break;
 				}
 				case ir::PTXInstruction::AtomicMax:
@@ -1668,8 +1650,6 @@ namespace translator
 					{
 						call.name = "@llvm.atomic.load.umax";
 					}
-
-					call.parameters.resize( 2 );
 					break;
 				}
 				default: break;

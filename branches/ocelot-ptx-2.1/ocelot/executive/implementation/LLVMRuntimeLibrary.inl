@@ -19,6 +19,9 @@
 // Hydrazine Includes
 #include <hydrazine/implementation/math.h>
 
+// Boost Includes
+#include <boost/thread/mutex.hpp>
+
 // Preprocessor Macros
 
 // Print out information when executing atomic operations 
@@ -111,6 +114,8 @@ static std::string instruction(const ir::Module* module, unsigned int statement)
 	assertM( s_it->instruction.valid() == "", s_it->instruction.valid() );
 	return s_it->instruction.toString();
 }
+
+static boost::mutex mutex;
 
 extern "C"
 {	
@@ -227,15 +232,12 @@ extern "C"
 		return true;
 	}
 
-	ir::PTXB32 __ocelot_atomic_inc( ir::PTXU64 address, ir::PTXB32 b,
-		executive::LLVMContext* context )
+	ir::PTXB32 __ocelot_atomic_inc( ir::PTXU64 address, ir::PTXB32 b )
 	{
-		MetaData* state = (MetaData*) context->metadata;
-		
 		ir::PTXB32 d = 0;
 		ir::PTXB32 result = 0;
 
-		state->mutex.lock();
+		mutex.lock();
 
 		d = *((ir::PTXB32*) address);
 		
@@ -246,20 +248,17 @@ extern "C"
 
 		*((ir::PTXB32*) address) = result;
 		
-		state->mutex.unlock();
+		mutex.unlock();
 
 		return d;
 	}
 
-	ir::PTXB32 __ocelot_atomic_dec( ir::PTXU64 address, ir::PTXB32 b,
-		executive::LLVMContext* context )
+	ir::PTXB32 __ocelot_atomic_dec( ir::PTXU64 address, ir::PTXB32 b )
 	{
-		MetaData* state = (MetaData*) context->metadata;
-		
 		ir::PTXB32 d = 0;
 		ir::PTXB32 result = 0;
 
-		state->mutex.lock();
+		mutex.lock();
 
 		d = *((ir::PTXB32*) address);
 		
@@ -270,7 +269,7 @@ extern "C"
 
 		*((ir::PTXB32*) address) = result;
 		
-		state->mutex.unlock();
+		mutex.unlock();
 
 		return d;
 	}
@@ -533,7 +532,7 @@ extern "C"
 		
 		char* address = (char*) _address;
 		char* end = address + bytes;
-		char* allocationEnd = context->shared + context->sharedSize;
+		char* allocationEnd = context->shared + state->sharedSize;
 		
 		if( end > allocationEnd )
 		{
@@ -552,7 +551,7 @@ extern "C"
 			std::cerr << "Shared memory address " 
 				<< _address << " is " << (end - allocationEnd)
 				<< " bytes beyond the shared memory block of " 
-				<< context->sharedSize << " bytes.\n";
+				<< state->sharedSize << " bytes.\n";
 			std::cout << "\tNear: "
 				<< location( state->kernel->module, statement ) << "\n\n";
 			assertM(false, "Aborting execution.");
@@ -566,7 +565,7 @@ extern "C"
 		
 		char* address = (char*) _address;
 		char* end = address + bytes;
-		char* allocationEnd = context->constant + context->constantSize;
+		char* allocationEnd = context->constant + state->constantSize;
 		
 		if( end > allocationEnd )
 		{
@@ -586,7 +585,7 @@ extern "C"
 				<< _address << " = " << (void *)_address << " of size " 
 					<< bytes << " bytes is " << (end - allocationEnd)
 				<< " bytes beyond the constant memory block of " 
-				<< context->constantSize << " bytes\n  on interval: " 
+				<< state->constantSize << " bytes\n  on interval: " 
 				<< (void *)context->constant 
 				<< " - " << (void *)allocationEnd << "\n";
 			std::cout << "\tNear: "
@@ -602,7 +601,7 @@ extern "C"
 		
 		char* address = (char*) _address;
 		char* end = address + bytes;
-		char* allocationEnd = context->local + context->localSize;
+		char* allocationEnd = context->local + state->localSize;
 		
 		if( end > allocationEnd )
 		{
@@ -621,7 +620,7 @@ extern "C"
 			std::cerr << "Local memory address " 
 				<< _address << " is " << (end - allocationEnd)
 				<< " bytes beyond the local memory block of " 
-				<< context->localSize << " bytes.\n";
+				<< state->localSize << " bytes.\n";
 			std::cout << "\tNear: "
 				<< location( state->kernel->module, statement ) << "\n\n";
 			assertM(false, "Aborting execution.");
@@ -635,7 +634,7 @@ extern "C"
 		
 		char* address = (char*) _address;
 		char* end = address + bytes;
-		char* allocationEnd = context->parameter + context->parameterSize;
+		char* allocationEnd = context->parameter + state->parameterSize;
 				
 		if( end > allocationEnd )
 		{
@@ -654,7 +653,7 @@ extern "C"
 			std::cerr << "Parameter memory address " 
 				<< address << " is  " << (end - allocationEnd)
 				<< " bytes beyond the parameter memory block of " 
-				<< context->parameterSize << " bytes.\n";
+				<< state->parameterSize << " bytes.\n";
 			std::cout << "\tNear: "
 				<< location( state->kernel->module, statement ) << "\n\n";
 			assertM(false, "Aborting execution.");

@@ -11,6 +11,7 @@
 #include <ocelot/translator/interface/Translator.h>
 #include <ocelot/executive/interface/ExecutableKernel.h>
 #include <ocelot/ir/interface/ControlFlowGraph.h>
+#include <ocelot/ir/interface/Module.h>
 
 // Hydrazine Includes
 #include <hydrazine/interface/Thread.h>
@@ -77,10 +78,16 @@ public:
 
 		public:
 			BlockIdMap           blocks;
-			boost::mutex         mutex;
 			const ir::PTXKernel* kernel;
 			Function             function;
 			TextureVector        textures;
+		
+		public:
+			unsigned int sharedSize;
+			unsigned int localSize;
+			unsigned int parameterSize;
+			unsigned int argumentSize;
+			unsigned int constantSize;
 		};
 	
 	public:
@@ -182,6 +189,7 @@ private:
 	private:
 		ModuleMap    _modules;
 		KernelVector _kernels;
+		ir::Module   _barrierModule;
 	};
 	
 	static ModuleDatabase _database;

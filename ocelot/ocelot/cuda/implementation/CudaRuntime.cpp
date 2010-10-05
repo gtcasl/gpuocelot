@@ -272,6 +272,12 @@ void cuda::CudaRuntime::_enumerateDevices() {
 			executive::Device::createDevices(ir::Instruction::LLVM, _flags);
 		report(" - Added " << d.size() << " llvm-cpu devices." );
 		_devices.insert(_devices.end(), d.begin(), d.end());
+		
+		if (config::get().executive.workerThreadLimit > 0) {
+			for (executive::DeviceVector::iterator d_it = d.begin(); d_it != d.end(); ++d_it) {
+				(*d_it)->limitWorkerThreads(config::get().executive.workerThreadLimit);
+			}
+		}
 	}
 	if(config::get().executive.enableAMD) {
 		executive::DeviceVector d =
@@ -3278,6 +3284,8 @@ void cuda::CudaRuntime::setOptimizationLevel(
 		(*device)->setOptimizationLevel(l);
 		(*device)->unselect();
 	}
+	
+	
 
 	_unlock();
 }

@@ -93,6 +93,9 @@ namespace executive {
 		/*!	On construction, allocates registers by computing live ranges */
 		void registerAllocation();
 
+		/*! If requested, computes thread frontiers and lays out blocks  */
+		ir::ControlFlowGraph::BlockPointerVector computeThreadFrontiers();
+
 		/*!	Produces a packed vector of instructions, updates each operand, 
 			and changes labels to indices.
 		*/

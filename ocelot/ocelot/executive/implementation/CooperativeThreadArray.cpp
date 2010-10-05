@@ -31,9 +31,6 @@
 // global control for enabling reporting within the emulator
 #define REPORT_BASE 0
 
-// if 0, only reconverge warps at syncthreads
-#define IDEAL_RECONVERGENCE 1
-
 // reporting for kernel instructions
 #define REPORT_STATIC_INSTRUCTIONS 1
 #define REPORT_DYNAMIC_INSTRUCTIONS 1
@@ -411,7 +408,7 @@ void executive::CooperativeThreadArray::execute(const ir::Dim3& block) {
 	
 		// advance to next instruction if the current instruction wasn't a branch
 		if (instr.opcode != PTXInstruction::Bra && 
-#if IDEAL_RECONVERGENCE == 0
+#if RECONVERGENCE_MECHANISM == BARRIER_RECONVERGENCE
 			instr.opcode != PTXInstruction::Bar &&
 #endif
 			instr.opcode != PTXInstruction::Reconverge ) {
@@ -1893,7 +1890,7 @@ void executive::CooperativeThreadArray::eval_Atom(CTAContext &context, const PTX
 void executive::CooperativeThreadArray::eval_Bar(CTAContext& context, 
 	const PTXInstruction& instr) {
 	trace();
-#if IDEAL_RECONVERGENCE
+#if RECONVERGENCE_MECHANISM == IPDOM_RECONVERGENCE
 	if (context.active.count() < context.active.size()) {
 		// deadlock - not all threads reach synchronization barrier
 #if REPORT_BAR
@@ -1903,7 +1900,7 @@ void executive::CooperativeThreadArray::eval_Bar(CTAContext& context,
 		throw RuntimeException("barrier deadlock at: " 
 			+ kernel->location(context.PC), context.PC, instr);
 	}
-#else
+#elif RECONVERGENCE_MECHANISM == BARRIER_RECONVERGENCE
 	CTAContext continuation(context);
 	runtimeStack.pop_back();
 	if (runtimeStack.size() == 0) {
@@ -1911,6 +1908,8 @@ void executive::CooperativeThreadArray::eval_Bar(CTAContext& context,
 		continuation.PC = context.PC + 1;
 		runtimeStack.push_back(continuation);
 	}
+#else
+	report("Unimplemented reconvergence mechanism");
 #endif
 }
 
@@ -1981,7 +1980,7 @@ void executive::CooperativeThreadArray::eval_Bra(CTAContext &context, const PTXI
 		
 		runtimeStack.pop_back();
 
-#if IDEAL_RECONVERGENCE
+#if RECONVERGENCE_MECHANISM == IPDOM_RECONVERGENCE
 		bool reconvergeContextAlreadyExists = false;
 		for(Stack::reverse_iterator si = runtimeStack.rbegin(); 
 			si != runtimeStack.rend(); ++si ) {
@@ -2027,10 +2026,13 @@ void executive::CooperativeThreadArray::eval_Reconverge(CTAContext &context, con
 		}
 	}
 #endif
-#if IDEAL_RECONVERGENCE
+
+#if RECONVERGENCE_MECHANISM == IPDOM_RECONVERGENCE
 	runtimeStack.pop_back();
-#else
+#elif  RECONVERGENCE_MECHANISM == BARRIER_RECONVERGENCE
 	context.PC ++;
+#else
+	report("Unimplemented reconvergence mechanism");
 #endif
 }
 
@@ -3195,10 +3197,10 @@ void executive::CooperativeThreadArray::eval_Ex2(CTAContext &context, const PTXI
 
 */
 void executive::CooperativeThreadArray::eval_Exit(CTAContext &context, const PTXInstruction &instr) {
-#if IDEAL_RECONVERGENCE
+#if RECONVERGENCE_MECHANISM == IPDOM_RECONVERGENCE
 	eval_Bar(context, instr);
 	context.running = false;
-#else
+#elif RECONVERGENCE_MECHANISM == BARRIER_RECONVERGENCE
 	if (context.active.count() == context.active.size() || runtimeStack.size() == 1) {
 		trace();
 		context.running = false;
@@ -3206,6 +3208,8 @@ void executive::CooperativeThreadArray::eval_Exit(CTAContext &context, const PTX
 	else {
 		eval_Bar(context, instr);
 	}
+#else
+	report("Undefined reconvergence mechanism");
 #endif
 }
 

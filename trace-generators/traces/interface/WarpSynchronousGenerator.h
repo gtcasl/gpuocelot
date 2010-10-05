@@ -18,11 +18,11 @@
 
 // Ocelot includes
 #include <ocelot/api/interface/OcelotConfiguration.h>
-#include <ocelot/trace/interface/KernelEntry.h>
 #include <ocelot/ir/interface/PTXInstruction.h>
 #include <ocelot/ir/interface/Dim3.h>
 #include <ocelot/ir/interface/ControlFlowGraph.h>
 #include <ocelot/executive/interface/ExecutableKernel.h>
+#include <traces/interface/KernelEntry.h>
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 

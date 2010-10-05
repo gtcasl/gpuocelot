@@ -8,7 +8,7 @@
 #ifndef BRANCH_TRACE_GENERATOR_H_INCLUDED
 #define BRANCH_TRACE_GENERATOR_H_INCLUDED
 
-#include <ocelot/trace/interface/KernelEntry.h>
+#include <traces/interface/KernelEntry.h>
 
 namespace boost
 {

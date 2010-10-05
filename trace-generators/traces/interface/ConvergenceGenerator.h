@@ -14,7 +14,7 @@
 
 // Ocelot includes
 #include <ocelot/trace/interface/TraceGenerator.h>
-#include <ocelot/trace/interface/KernelEntry.h>
+#include <traces/interface/KernelEntry.h>
 #include <ocelot/api/interface/OcelotConfiguration.h>
 #include <ocelot/executive/interface/EmulatedKernel.h>
 

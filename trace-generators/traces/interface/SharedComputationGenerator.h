@@ -17,7 +17,7 @@
 
 #include <ocelot/ir/interface/PTXInstruction.h>
 #include <ocelot/trace/interface/TraceGenerator.h>
-#include <ocelot/trace/interface/KernelEntry.h>
+#include <traces/interface/KernelEntry.h>
 
 #include <boost/serialization/split_member.hpp>
 

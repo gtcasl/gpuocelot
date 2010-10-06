@@ -20,7 +20,7 @@
 #define SORTED_PREDICATE_STACK_RECONVERGENCE 4
 
 // specify reconvergence mechanism here
-#define RECONVERGENCE_MECHANISM IPDOM_RECONVERGENCE
+#define RECONVERGENCE_MECHANISM  GEN6_RECONVERGENCE
 
 namespace executive {
 

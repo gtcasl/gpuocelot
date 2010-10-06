@@ -33,13 +33,13 @@
 
 // reporting for kernel instructions
 #define REPORT_STATIC_INSTRUCTIONS 1
-#define REPORT_DYNAMIC_INSTRUCTIONS 1
+#define REPORT_DYNAMIC_INSTRUCTIONS 0
 
 // reporting for register accesses
 #define REPORT_NTH_THREAD_ONLY 1
-#define NTH_THREAD 1
-#define REPORT_REGISTER_READS 1
-#define REPORT_REGISTER_WRITES 1
+#define NTH_THREAD 0
+#define REPORT_REGISTER_READS 0
+#define REPORT_REGISTER_WRITES 0
 
 // individually turn on or off reporting for particular instructions
 #define REPORT_ABS 1
@@ -180,6 +180,9 @@ void executive::CooperativeThreadArray::initialize(ir::Dim3 grid, bool trace ) {
 	clock = 0;
 	gridDim = grid;
 	traceEvents = trace;
+#if RECONVERGENCE_MECHANISM == GEN6_RECONVERGENCE
+	threadPCs.resize(runtimeStack.back().active.size(), runtimeStack.back().PC);
+#endif
 }
 
 
@@ -267,7 +270,7 @@ void executive::CooperativeThreadArray::execute(const ir::Dim3& block) {
 	currentEvent.blockId = blockId;
 	currentEvent.gridDim = gridDim;
 	currentEvent.blockDim = blockDim;
-
+	
 	assert(runtimeStack.size());
 
 	report("CooperativeThreadArray::execute called");
@@ -280,6 +283,12 @@ void executive::CooperativeThreadArray::execute(const ir::Dim3& block) {
 		// get the context and advance the program counter
 		CTAContext& context = runtimeStack.back();
 		const PTXInstruction& instr = currentInstruction(context);
+
+#if RECONVERGENCE_MECHANISM == GEN6_RECONVERGENCE
+		for (size_t tid = 0; tid < context.active.size(); tid++) {
+			context.active[tid] = (threadPCs[tid] == context.PC);
+		}
+#endif
 
 		reportE(REPORT_DYNAMIC_INSTRUCTIONS, " [PC: " << context.PC 
 			<< ", counter: " << counter 
@@ -405,7 +414,8 @@ void executive::CooperativeThreadArray::execute(const ir::Dim3& block) {
 					<< " not supported.");
 				break;
 		}
-	
+
+
 		// advance to next instruction if the current instruction wasn't a branch
 		if (instr.opcode != PTXInstruction::Bra && 
 #if RECONVERGENCE_MECHANISM == BARRIER_RECONVERGENCE
@@ -416,6 +426,21 @@ void executive::CooperativeThreadArray::execute(const ir::Dim3& block) {
 			running = context.running;
 		}
 		
+		// GEN6 must manually increment the warp PC if instructions are branch or reconverge
+
+#if RECONVERGENCE_MECHANISM == GEN6_RECONVERGENCE
+		if (instr.opcode != PTXInstruction::Bra && instr.opcode != PTXInstruction::Exit) {
+			//
+			// these instruction handlers will have to update each thread's PC individually
+			//
+			for (size_t tid = 0; tid < context.active.size(); tid++) {
+				if (context.active[tid]) {
+					threadPCs[tid] = context.PC;
+				}
+			}
+		}
+#endif
+
 		postTrace();
 
 		clock += 4;
@@ -1908,6 +1933,23 @@ void executive::CooperativeThreadArray::eval_Bar(CTAContext& context,
 		continuation.PC = context.PC + 1;
 		runtimeStack.push_back(continuation);
 	}
+#elif RECONVERGENCE_MECHANISM == SORTED_PREDICATE_STACK_RECONVERGENCE
+	if (context.active.count() == context.active.size()) {
+		report("Barrier reached by convergent context");
+	}
+	else {
+		report("Sorted predicate stack reconvergence mechanism failed");
+		assert(0 && "Sorted predicate stack reconvergence mechanism failed");
+	}
+#elif RECONVERGENCE_MECHANISM == GEN6_RECONVERGENCE
+	if (context.active.count() != context.active.size()) {
+		std::cout << "warp PC: " << context.PC << "\n";
+		for (size_t tid = 0; tid < context.active.size(); tid++) {
+			std::cout << " " << threadPCs[tid];
+		}
+		std::cout << std::endl;
+		throw RuntimeException("GEN6 reconvergence mechanism hasn't reconverged by barrier.synchronization", context.PC, instr);
+	}
 #else
 	report("Unimplemented reconvergence mechanism");
 #endif
@@ -1955,6 +1997,19 @@ void executive::CooperativeThreadArray::eval_Bra(CTAContext &context, const PTXI
 		report("   uniform branching");
 #endif
 
+#if RECONVERGENCE_MECHANISM == GEN6_RECONVERGENCE
+		int targetPC = (branch.count() ? instr.branchTargetInstruction : context.PC + 1);
+		int minPC = targetPC;
+		for (size_t tid = 0; tid < context.active.size(); tid++) {
+			if (context.active[tid]) {
+				threadPCs[tid] = targetPC;
+			}
+			else if (threadPCs[tid] < minPC) {
+				minPC = threadPCs[tid];
+			}
+		}
+		context.PC = minPC;
+#else
 		// unfiorm
 		if (branch.count()) {
 			// all threads branch
@@ -1964,11 +2019,16 @@ void executive::CooperativeThreadArray::eval_Bra(CTAContext &context, const PTXI
 			// all threads fall through
 			context.PC ++;
 		}
+#endif
 	}
 	else {
 		// divergence - complicated
 		CTAContext branchContext(context), fallthroughContext(context), 
 			reconvergeContext(context);
+
+#if RECONVERGENCE_MECHANISM == GEN6_RECONVERGENCE
+		CTAContext unmodifiedContext(context);
+#endif
 
 		branchContext.active = branch;
 		branchContext.PC = instr.branchTargetInstruction;
@@ -2011,46 +2071,52 @@ void executive::CooperativeThreadArray::eval_Bra(CTAContext &context, const PTXI
 		// insert branch target with greatest PC onto stack, and resume with branch target with
 		// least PC
 		//
-		CTAContext branchContexts[3];
-		int ctxCount = 0, ctxStart = 1;
+		CTAContext branchContexts[2];
+		int ctxCount = 0, ctxStart = 0;
 		
 		if (branchContext.active.any()) {
-			branchContexts[1] = branchContext;
+			branchContexts[ctxStart+ctxCount] = branchContext;
 			ctxCount ++;
 		}
-		
 		if (fallthroughContext.active.any()) {
-		
-			if (ctxCount) {
-				if (fallthroughContext.PC < branchContexts[1].PC) {
-					ctxStart = 0;
-					branchContexts[0] = fallthroughContext;
-				}
-				else {
-					ctxStart = 1;
-					branchContexts[2] = fallthroughContext;
-				}
-			}
-			else {
-				branchContexts[1] = fallthroughContext;
-				ctxStart = 1;
-			}
+			branchContexts[ctxStart+ctxCount] = fallthroughContext;
 			ctxCount ++;
-		}		
+		}	
 		
-		if (ctxCount == 2) {
-			for (Stack::iterator s_it = runtimeStack.begin(); s_it != runtimeStack.end(); ++s_it) {
-				if (s_it->PC > branchContexts[ctxStart+1].PC) {
-					runtimeStack.insert(s_it, branchContexts[ctxStart+1]);
+		for (int ctx = 0; ctx < ctxCount; ctx++) {
+			for (Stack::iterator s_it = runtimeStack.begin(); true; ++s_it) {
+				if (s_it == runtimeStack.end() || s_it->PC > branchContexts[ctxStart+ctx].PC) {
+					runtimeStack.insert(s_it, branchContexts[ctxStart+ctx]);
+					break;
+				}
+				else if (s_it->PC == branchContexts[ctxStart+ctx].PC) {
+					// merge with existing contexts if one exists
+					s_it->active |= branchContexts[ctxStart+ctx].active;
 					break;
 				}
 			}
 		}
 		
-		runtimeStack.push_back(branchContexts[ctxStart]);
+#elif RECONVERGENCE_MECHANISM == GEN6_RECONVERGENCE
+		runtimeStack.push_back(unmodifiedContext);
 		
+		//
+		// assign PCs for participating threads then compute the minimum PC for the warp
+		//
+		int minPC = 0;
+		for (size_t tid = 0; tid < runtimeStack.back().active.size(); tid++) {
+			if (runtimeStack.back().active[tid]) {
+				threadPCs[tid] = (fall_through[tid] ? runtimeStack.back().PC + 1 : instr.branchTargetInstruction);
+			}
+			if (!tid || minPC > threadPCs[tid]) {
+				minPC = threadPCs[tid];
+			}
+		}
+		
+		runtimeStack.back().PC = minPC;
 #else
 		report("Unimplemented reconvergence mechanism");
+		throw RuntimeException("Undefined reconvergence mechanism", context.PC, instr);
 #endif
 
 #if REPORT_BRA
@@ -2084,7 +2150,7 @@ void executive::CooperativeThreadArray::eval_Reconverge(CTAContext &context, con
 	context.PC ++;
 #elif RECONVERGENCE_MECHANISM == SORTED_PREDICATE_STACK_RECONVERGENCE
 	// attempt to merge top TWO CTAContext with current context 'picking up' additional threads
-	if (runtimeStack.size() > 1) {
+	if (runtimeStack.size() > 1) {	
 		CTAContext activeContext = runtimeStack.back();
 		runtimeStack.pop_back();
 		
@@ -2099,8 +2165,11 @@ void executive::CooperativeThreadArray::eval_Reconverge(CTAContext &context, con
 		runtimeStack.push_back(activeContext);
 	}
 	runtimeStack.back().PC ++;
+#elif RECONVERGENCE_MECHANISM == GEN6_RECONVERGENCE
+	runtimeStack.back().PC ++;
 #else
 	report("Unimplemented reconvergence mechanism");
+	throw RuntimeException("Undefined reconvergence mechanism", context.PC, instr);
 #endif
 }
 
@@ -3277,12 +3346,24 @@ void executive::CooperativeThreadArray::eval_Exit(CTAContext &context, const PTX
 		eval_Bar(context, instr);
 	}
 #elif RECONVERGENCE_MECHANISM == SORTED_PREDICATE_STACK_RECONVERGENCE
-	if (context.active.count() == context.active.size()) {
+	if (runtimeStack.size() == 1 || context.active.count() == context.active.size()) {
 		trace();
 		context.running = false;
 	}
+	else {
+		runtimeStack.pop_back();
+	}
+#elif RECONVERGENCE_MECHANISM == GEN6_RECONVERGENCE
+	if (runtimeStack.size() == 1 || context.active.count() == context.active.size()) {
+		trace();
+		context.running = false;
+	}
+	else {
+		runtimeStack.pop_back();
+	}
 #else
 	report("Undefined reconvergence mechanism");
+	throw RuntimeException("Undefined reconvergence mechanism", context.PC, instr);
 #endif
 }
 

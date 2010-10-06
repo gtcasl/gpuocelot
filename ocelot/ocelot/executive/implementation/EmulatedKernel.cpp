@@ -35,8 +35,8 @@
 
 #define REPORT_BASE 0
 
-#define REPORT_KERNEL_INSTRUCTIONS 0
-#define REPORT_LAUNCH_CONFIGURATION 1
+#define REPORT_KERNEL_INSTRUCTIONS 1
+#define REPORT_LAUNCH_CONFIGURATION 0
 
 executive::EmulatedKernel::EmulatedKernel(
 	ir::Kernel* kernel, 
@@ -238,9 +238,11 @@ void executive::EmulatedKernel::constructInstructionSequence() {
 	// Create reconverge instructions
 	for (ir::ControlFlowGraph::pointer_iterator bb_it = bb_sequence.begin(); 
 		bb_it != bb_sequence.end(); ++bb_it) {
+#if RECONVERGENCE_MECHANISM == IPDOM_RECONVERGENCE
 		ir::ControlFlowGraph::InstructionList::iterator 
 			i_it = (*bb_it)->instructions.begin();
 		for (; i_it != (*bb_it)->instructions.end(); ++i_it) {
+
 			ir::PTXInstruction &ptx_instr = static_cast<
 				ir::PTXInstruction&>(**i_it);
 			if (ptx_instr.opcode == ir::PTXInstruction::Bra && !ptx_instr.uni) {
@@ -281,6 +283,13 @@ void executive::EmulatedKernel::constructInstructionSequence() {
 				}
 			}
 		}
+#elif RECONVERGENCE_MECHANISM == SORTED_PREDICATE_STACK_RECONVERGENCE
+		// every basic block with multiple predecessors gets a reconverge instruction
+		if ((*bb_it)->predecessors.size() > 1) {
+			report("inserted reconverge into " << (*bb_it)->label);
+			(*bb_it)->instructions.push_back(ir::PTXInstruction(ir::PTXInstruction::Reconverge).clone());
+		}
+#endif
 	}
 
 	InstructionIdMap ids;
@@ -322,6 +331,7 @@ void executive::EmulatedKernel::constructInstructionSequence() {
 			i_it != (*bb_it)->instructions.end(); ++i_it, ++id) {
 			ir::PTXInstruction& ptx = static_cast<ir::PTXInstruction&>(**i_it);
 			if (ptx.opcode == ir::PTXInstruction::Bra) {
+#if RECONVERGENCE_MECHANISM == IPDOM_RECONVERGENCE
 				report( "  Instruction " << ptx.toString() );
 				if (!ptx.uni) {
 					InstructionMap::iterator 
@@ -333,6 +343,7 @@ void executive::EmulatedKernel::constructInstructionSequence() {
 					instructions[id].reconvergeInstruction = target->second;
 					report("   reconverge at " << target->second);
 				}
+#endif
 				
 				InstructionIdMap::iterator branch = ids.find(
 					(*bb_it)->get_branch_edge()->tail->instructions.begin());

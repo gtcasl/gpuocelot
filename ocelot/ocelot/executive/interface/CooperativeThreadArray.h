@@ -128,6 +128,13 @@ namespace executive {
 			Stack containing the active thread mask and the program counter
 		*/
 		Stack runtimeStack;
+		
+#if RECONVERGENCE_MECHANISM == GEN6_RECONVERGENCE
+		/*!
+			\brief vector of thread PCs
+		*/
+		std::vector< int > threadPCs;
+#endif
 
 		/*!
 			Counter incremented 4 times per instruction

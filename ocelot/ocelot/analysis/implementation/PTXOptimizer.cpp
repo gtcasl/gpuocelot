@@ -151,6 +151,8 @@ int main( int argc, char** argv )
 	parser.parse( "-p", "--passes", passes, "", 
 		"A list of optimization passes (remove-barriers, " 
 		+ std::string( "reverse-if-conversion)") );
+	parser.parse( "-c", "--cfg", optimizer.cfg, false, 
+		"Dump out the CFG's of all generated kernels." );
 	parser.parse();
 
 	if( allocator == "linearscan" )

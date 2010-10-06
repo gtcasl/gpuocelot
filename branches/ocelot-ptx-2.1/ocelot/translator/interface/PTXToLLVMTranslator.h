@@ -61,7 +61,7 @@ namespace translator
 			void _insertDebugSymbols();
 			
 		private:
-			void _yield( unsigned int continuation );
+			void _yield( unsigned int continuation, unsigned int type );
 
 			ir::LLVMInstruction::Operand _translate( const ir::PTXOperand& o );
 			void _swapAllExceptName( ir::LLVMInstruction::Operand& o, 

@@ -155,7 +155,8 @@ static unsigned int createSavePoint(ir::PTXKernel& newKernel, ir::PTXKernel& ptx
 	ir::ControlFlowGraph::edge_iterator newEdge,
 	const DataflowGraph::IteratorMap& cfgToDfgMap)
 {
-	report("   Creating save point for block '" << newBlock->label << "'");
+	report("   Creating save point for edge '" << newBlock->label
+		<< "' -> '" << oldBlock->label << "'");
 	
 	DataflowGraph::IteratorMap::const_iterator
 		dfgBlock = cfgToDfgMap.find(oldBlock);
@@ -455,7 +456,20 @@ static ir::ControlFlowGraph::iterator createRegion(
 	return exit;
 }
 
-typedef std::unordered_map<ir::BasicBlock::Id, ir::PTXKernel*> IdToSubkernelMap;
+class KernelAndId
+{
+public:
+	KernelAndId(unsigned int i, ir::PTXKernel* k) : id(i), kernel(k)
+	{
+	
+	}
+
+public:
+	unsigned int   id;
+	ir::PTXKernel* kernel;
+};
+
+typedef std::unordered_map<ir::BasicBlock::Id, KernelAndId> IdToSubkernelMap;
 
 static void updateTailCallTargets(
 	const SubkernelFormationPass::KernelVector& splitKernels,
@@ -481,7 +495,8 @@ static void updateTailCallTargets(
 				"Could not find kernel containing block with id " 
 				<< call->branchTargetInstruction);
 			
-			call->a.identifier = kernelName->second->name;
+			call->a.identifier = kernelName->second.kernel->name;
+			call->branchTargetInstruction = kernelName->second.id;
 		}
 	}
 }
@@ -746,7 +761,8 @@ void SubkernelFormationPass::ExtractKernelsPass::runOnKernel(ir::Kernel& k)
 		region.insert(block);
 		report("  Adding block with id " << block->id 
 			<< " to kernel " << newKernel->name);
-		idToKernelMap.insert(std::make_pair(block->id, newKernel));
+		idToKernelMap.insert(std::make_pair(block->id,
+			KernelAndId(kernelId, newKernel)));
 		
 		// create a new region if there are enough blocks
 		if(currentRegionSize < _expectedRegionSize && !queue.empty()) continue;

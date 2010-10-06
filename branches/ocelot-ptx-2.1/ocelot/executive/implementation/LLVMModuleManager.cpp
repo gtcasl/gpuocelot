@@ -99,6 +99,8 @@ static void optimizePTX(ir::PTXKernel& kernel,
 	pass.initialize(*kernel.module);
 	pass.runOnKernel(kernel);
 	pass.finalize();
+	
+	kernel.dfg()->toSsa();
 }
 
 static unsigned int pad(unsigned int& size, unsigned int alignment)
@@ -494,7 +496,7 @@ static void setupLocalMemoryReferences(ir::PTXKernel& kernel,
 	OffsetMap offsets;
 
 	// Reserve the first few 32-bit words
-	// [0] == resume point
+	// [0] == subkernel-id
 	// [1] == call type
 	metadata->localSize = 8;
 
@@ -506,17 +508,11 @@ static void setupLocalMemoryReferences(ir::PTXKernel& kernel,
 			report("   Found local local variable " 
 				<< local->second.name << " of size " 
 				<< local->second.getSize());
-			if(local->second.name == "_Zocelot_resume_point")
-			{
-				offsets.insert(std::make_pair(local->second.name, 0));
-			}
-			else
-			{			
-				pad(metadata->localSize, local->second.alignment);
-				offsets.insert(std::make_pair(local->second.name,
-					metadata->localSize));
-				metadata->localSize += local->second.getSize();
-			}
+					
+			pad(metadata->localSize, local->second.alignment);
+			offsets.insert(std::make_pair(local->second.name,
+				metadata->localSize));
+			metadata->localSize += local->second.getSize();
 		}
 	}
     

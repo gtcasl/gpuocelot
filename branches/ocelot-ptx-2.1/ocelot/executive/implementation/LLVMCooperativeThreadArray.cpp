@@ -378,7 +378,7 @@ bool LLVMCooperativeThreadArray::_finishContext(unsigned int contextId)
 		stack.returned();
 		context.local = stack.localMemory();
 		report("     hit return, saving thread context at resume point "
-			<< nextFunction << ", pushing stack.");
+			<< nextFunction << ", popping stack.");
 	}
 	break;
 	}

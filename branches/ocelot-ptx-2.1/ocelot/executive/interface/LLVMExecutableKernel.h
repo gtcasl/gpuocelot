@@ -30,10 +30,10 @@ public:
 	/*! \brief Types of call instructions */
 	enum CallType
 	{
-		TailCall,
-		ReturnCall,
-		NormalCall,
-		InvalidCallType
+		TailCall        = 0x1,
+		ReturnCall      = 0x2,
+		NormalCall      = 0x3,
+		InvalidCallType = 0x0
 	};
 
 	typedef translator::Translator::OptimizationLevel OptimizationLevel;

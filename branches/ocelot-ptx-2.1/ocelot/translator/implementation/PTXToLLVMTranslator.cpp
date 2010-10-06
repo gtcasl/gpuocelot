@@ -15,6 +15,7 @@
 #include <ocelot/ir/interface/PTXKernel.h>
 #include <ocelot/ir/interface/PTXInstruction.h>
 #include <ocelot/ir/interface/Module.h>
+#include <ocelot/executive/interface/LLVMExecutableKernel.h>
 
 // Hydrazine Includes
 #include <hydrazine/interface/Casts.h>
@@ -763,7 +764,8 @@ namespace translator
 		_llvmKernel->_statements.push_front( instruction );
 	}
 			
-	void PTXToLLVMTranslator::_yield( unsigned int continuation )
+	void PTXToLLVMTranslator::_yield( unsigned int continuation,
+		unsigned int type )
 	{
 		ir::LLVMBitcast bitcast;
 		
@@ -781,6 +783,22 @@ namespace translator
 		store.a = ir::LLVMInstruction::Operand(
 			(ir::LLVMI32) continuation );
 			
+		_add( store );
+		
+		ir::LLVMGetelementptr get;
+			
+		get.a = bitcast.d;
+		get.d = ir::LLVMInstruction::Operand( _tempRegister(), 
+			ir::LLVMInstruction::Type( ir::LLVMInstruction::I32,
+			ir::LLVMInstruction::Type::Pointer ) );
+		get.indices.push_back( 1 );
+		
+		_add( get );
+		
+		store.d = get.d;
+		store.a = ir::LLVMInstruction::Operand(
+			(ir::LLVMI32) type );
+		
 		_add( store );
 	}
 
@@ -2111,7 +2129,7 @@ namespace translator
 	{
 		if( i.tailCall )
 		{
-			_yield( i.reentryPoint );
+			_yield( i.reentryPoint, executive::LLVMExecutableKernel::TailCall );
 			if( !block.targets().empty() )
 			{
 				ir::LLVMBr branch;
@@ -2277,7 +2295,7 @@ namespace translator
 
 	void PTXToLLVMTranslator::_translateExit( const ir::PTXInstruction& i )
 	{
-		_yield( -1 );
+		_yield( -1, executive::LLVMExecutableKernel::InvalidCallType );
 	}
 
 	void PTXToLLVMTranslator::_translateLd( const ir::PTXInstruction& i )
@@ -3795,7 +3813,7 @@ namespace translator
 
 	void PTXToLLVMTranslator::_translateRet( const ir::PTXInstruction& i )
 	{
-		_yield( i.reentryPoint );
+		_yield( i.reentryPoint, executive::LLVMExecutableKernel::ReturnCall );
 	}
 
 	void PTXToLLVMTranslator::_translateRsqrt( const ir::PTXInstruction& i )

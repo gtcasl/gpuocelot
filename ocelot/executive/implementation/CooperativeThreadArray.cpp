@@ -24,6 +24,18 @@
 #include <hydrazine/implementation/debug.h>
 #include <hydrazine/implementation/math.h>
 
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+#define IPDOM_RECONVERGENCE 1
+#define BARRIER_RECONVERGENCE 2
+#define GEN6_RECONVERGENCE 3
+#define SORTED_PREDICATE_STACK_RECONVERGENCE 4
+
+// specify reconvergence mechanism here
+#define RECONVERGENCE_MECHANISM  BARRIER_RECONVERGENCE
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
 #ifdef REPORT_BASE
 #undef REPORT_BASE
 #endif

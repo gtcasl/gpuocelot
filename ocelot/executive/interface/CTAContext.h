@@ -13,15 +13,6 @@
 #include <ocelot/ir/interface/PTXOperand.h>
 #include <ocelot/ir/interface/Kernel.h>
 
-
-#define IPDOM_RECONVERGENCE 1
-#define BARRIER_RECONVERGENCE 2
-#define GEN6_RECONVERGENCE 3
-#define SORTED_PREDICATE_STACK_RECONVERGENCE 4
-
-// specify reconvergence mechanism here
-#define RECONVERGENCE_MECHANISM  IPDOM_RECONVERGENCE
-
 namespace executive {
 
 	class EmulatedKernel;

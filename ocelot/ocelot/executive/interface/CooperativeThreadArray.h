@@ -129,12 +129,10 @@ namespace executive {
 		*/
 		Stack runtimeStack;
 		
-#if RECONVERGENCE_MECHANISM == GEN6_RECONVERGENCE
 		/*!
 			\brief vector of thread PCs
 		*/
-		std::vector< int > threadPCs;
-#endif
+		ThreadIdVector threadPCs;
 
 		/*!
 			Counter incremented 4 times per instruction

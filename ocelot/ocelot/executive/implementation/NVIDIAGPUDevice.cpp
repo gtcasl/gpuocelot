@@ -660,7 +660,7 @@ namespace executive
 		_properties.totalMemory = total;
 		
 		checkError(driver::cuDeviceGetAttribute(
-			&_properties.multiprocessorCount,
+			(int*)&_properties.multiprocessorCount,
 			CU_DEVICE_ATTRIBUTE_MULTIPROCESSOR_COUNT, device));
 		checkError(driver::cuDeviceGetAttribute(&_properties.memcpyOverlap, 
 			CU_DEVICE_ATTRIBUTE_GPU_OVERLAP, device));
@@ -1369,7 +1369,6 @@ namespace executive
 	{
 		ModuleMap::iterator module = _modules.find(moduleName);
 		if(module == _modules.end()) return 0;
-		
 		return module->second.getTexture(textureName);
 	}
 
@@ -1527,7 +1526,6 @@ namespace executive
 	{
 		// TODO work in something with the PTX JIT optimization level here
 	}
-	
 }
 
 #endif

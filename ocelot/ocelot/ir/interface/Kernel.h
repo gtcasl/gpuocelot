@@ -32,8 +32,9 @@ namespace ir {
 	public:
 		/*!	\brief Vector of parameters */
 		typedef std::vector<Parameter> ParameterVector;
-		/*! \brief Unique identifier to statement representing 
-			a local variable */
+		/*! \brief Map from names to parameters */
+		typedef std::map<std::string, Parameter> ParameterMap;
+		/*! \brief Map from names to local variables */
 		typedef std::map<std::string, Local> LocalMap;
 
 	protected:
@@ -54,7 +55,8 @@ namespace ir {
 	public:
 		/*!	Constructs an empty kernel */
 		Kernel(Instruction::Architecture isa = Instruction::Unknown,
-			bool isFunction = false);
+			const std::string& name = "", bool isFunction = false,
+			const ir::Module* module = 0);
 		/*!	Destructs kernel */
 		virtual ~Kernel();
 		/*! \brief Copy constructor (deep) */
@@ -108,7 +110,7 @@ namespace ir {
 		std::string name;
 		/*!	Instruction Set Architecture of the kernel */
 		Instruction::Architecture ISA;
-		/*!	Set of parameters in order specified in the kernel's definition */
+		/*! Set of parameters that are not kernel arguments */
 		ParameterVector parameters;
 		/*! \brief Local variables */
 		LocalMap locals;

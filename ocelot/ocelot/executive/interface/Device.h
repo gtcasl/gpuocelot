@@ -44,7 +44,7 @@ namespace executive
 					/*! number of bytes of global memory available to the device */
 					size_t totalMemory;
 					/*! gets the number of multiprocessors/cores on the device */
-					int multiprocessorCount;
+					unsigned int multiprocessorCount;
 					/*! true if the device can simultaneously execute a kernel while 
 						performing data transfer */
 					int memcpyOverlap;
@@ -309,7 +309,7 @@ namespace executive
 			/*! \brief Set the optimization level for kernels in this device */
 			virtual void setOptimizationLevel(
 				translator::Translator::OptimizationLevel level) = 0;
-				
+			
 		public:
 			/*! \brief Sets the device properties */
 			Device(unsigned int flags = 0);

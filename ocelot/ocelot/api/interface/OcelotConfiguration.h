@@ -141,6 +141,9 @@ namespace api {
 			//! \brief maximum number of worker threads - a non-positive 
 			//         number indicates no limit
 			int workerThreadLimit;
+
+			//! \brief suggested warp size
+			int warpSize;
 		};
 
 	public:

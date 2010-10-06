@@ -50,15 +50,15 @@ namespace ir {
 			PTXU16 u16;
 			PTXU32 u32;
 			PTXU64 u64;
-	
+
 			PTXS8 s8;
 			PTXS16 s16;
 			PTXS32 s32;
 			PTXS64 s64;
-        
+
             PTXF32 f32;
             PTXF64 f64;
-	
+
 			PTXB8 b8;
 			PTXB16 b16;
 			PTXB32 b32;

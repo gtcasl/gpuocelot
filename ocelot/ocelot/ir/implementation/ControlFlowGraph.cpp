@@ -211,6 +211,14 @@ ControlFlowGraph::~ControlFlowGraph() {
 	clear();
 }
 
+void ControlFlowGraph::computeNewBlockId() {
+	_nextId = 0;
+	for(const_iterator block = begin(); block != end(); ++block) {
+		_nextId = std::max(_nextId, block->id);
+	}
+	++_nextId;
+}
+
 BasicBlock::Id ControlFlowGraph::newId() {
 	return _nextId++;
 }
@@ -225,6 +233,7 @@ bool ControlFlowGraph::empty() const {
 
 ControlFlowGraph::iterator ControlFlowGraph::insert_block(
 	const BasicBlock& block) {
+	report("Inserting block '" << block.label << "' (" << block.id << ")" );
 	return _blocks.insert(end(), block);
 }
 
@@ -294,18 +303,37 @@ void ControlFlowGraph::remove_edge(edge_iterator edge) {
 
 ControlFlowGraph::edge_iterator ControlFlowGraph::split_edge(edge_iterator edge,
 	const BasicBlock& newBlock) {
+	iterator head = edge->head;
+	iterator tail = edge->tail;
+	Edge::Type type = edge->type;
+
+	remove_edge(edge);	
+
 	iterator block = insert_block(newBlock);
-	edge_iterator newEdge = insert_edge(Edge(block, edge->tail, edge->type));
-	edge->tail = block;
+	insert_edge(Edge(head, block, type));
+	edge_iterator newEdge = insert_edge(Edge(block, tail, type));	
+	
 	return newEdge;
 }
 
 ControlFlowGraph::iterator ControlFlowGraph::split_block(iterator block, 
-	unsigned int instruction, Edge::Type type) {
+	unsigned int instruction, Edge::Type type, const std::string& l) {
 	assert( instruction <= block->instructions.size() );
 	report("Splitting block " << block->label 
 		<< " at instruction " << instruction);
-	iterator newBlock = insert_block(BasicBlock(block->label + "_split"));
+	
+	std::string label;
+	
+	if(l.empty())
+	{
+		label = block->label + "_split";
+	}
+	else
+	{
+		label = l;
+	}
+	
+	iterator newBlock = insert_block(BasicBlock(label));
 	BasicBlock::InstructionList::iterator 
 		begin = block->instructions.begin();
 	std::advance(begin, instruction);
@@ -596,6 +624,8 @@ ControlFlowGraph::const_iterator ControlFlowGraph::begin() const {
 }
 
 ControlFlowGraph::const_iterator ControlFlowGraph::end() const {
+	return _blocks.end();
+
 	return _blocks.end();
 }
 

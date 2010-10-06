@@ -226,6 +226,7 @@ std::string ir::PTXInstruction::toString( Opcode opcode ) {
 		case Call: return "call"; break;
 		case Clz: return "clz"; break;
 		case CNot: return "cnot"; break;
+		case CopySign: return "copysign"; break;
 		case Cos: return "cos"; break;
 		case Cvt: return "cvt"; break;
 		case Cvta: return "cvta"; break;
@@ -1526,8 +1527,9 @@ std::string ir::PTXInstruction::valid() const {
 				return "only shared and global address spaces supported " 
 					+ std::string( "for volatile stores" );
 			}
-			if( a.addressMode != PTXOperand::Register ) {
-				return "operand A must be a register";
+			if( a.addressMode != PTXOperand::Register
+				&& a.addressMode != PTXOperand::Immediate ) {
+				return "operand A must be a register or immediate";
 			}
 			if( !PTXOperand::relaxedValid( type, a.type ) ) {
 				return "operand A type " + PTXOperand::toString( a.type ) 

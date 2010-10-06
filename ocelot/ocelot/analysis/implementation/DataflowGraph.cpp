@@ -542,10 +542,19 @@ namespace analysis
 	DataflowGraph::iterator DataflowGraph::insert( iterator predecessor, 
 		const std::string& label )
 	{
-		_consistent = false;
-		
 		BlockVector::iterator successor = predecessor->_fallthrough;
 
+		return insert( predecessor, successor, label );
+	}
+	
+	DataflowGraph::iterator DataflowGraph::insert( iterator predecessor, 
+		iterator successor, const std::string& label )
+	{
+		assert( predecessor->targets().count( successor ) != 0
+			|| predecessor->_fallthrough == successor );
+
+		_consistent = false;
+		
 		report( "Inserting new block " << label << " between " 
 			<< predecessor->label() << " and " << successor->label() );
 		
@@ -555,22 +564,43 @@ namespace analysis
 			= successor->_predecessors.find( predecessor );
 		assert( fi != successor->_predecessors.end() );
 		successor->_predecessors.erase( fi );
-		_cfg->remove_edge( predecessor->_block->get_fallthrough_edge() );
 		
-		iterator current = _blocks.insert( successor, Block(Block::Body) );
-		current->_block = _cfg->insert_block( 
-			ir::ControlFlowGraph::BasicBlock( label ) );
+		ir::ControlFlowGraph::edge_iterator edge = 
+			predecessor->_block->get_edge( successor->_block );
+		ir::BasicBlock::Edge::Type edgeType = edge->type;
+		
+		_cfg->remove_edge( edge );
+		
+		iterator current = _blocks.insert( successor, Block( Block::Body ) );
+		current->_block = _cfg->insert_block(
+			ir::ControlFlowGraph::BasicBlock( label, _cfg->newId() ) );
 		
 		_cfg->insert_edge( ir::ControlFlowGraph::Edge( predecessor->_block, 
-			current->_block, ir::ControlFlowGraph::Edge::FallThrough ) );
+			current->_block, edgeType ) );
 		
-		predecessor->_fallthrough = current;
+		if( predecessor->_fallthrough == successor )
+		{
+			predecessor->_fallthrough = current;
+			current->_fallthrough = successor;
+		}
+		else
+		{
+			predecessor->_targets.erase( successor );
+
+			BlockPointerSet::iterator ti
+				= predecessor->_targets.find( successor );
+			assert( ti != predecessor->_targets.end() );
+			predecessor->_targets.erase( ti );
+
+			predecessor->_targets.insert( current );
+			current->_targets.insert( successor );
+		}
+		
 		current->_predecessors.insert( predecessor );
-		current->_fallthrough = successor;
 		successor->_predecessors.insert( current );
 		
 		_cfg->insert_edge( ir::ControlFlowGraph::Edge( current->_block, 
-			successor->_block, ir::ControlFlowGraph::Edge::FallThrough ) );
+			successor->_block, edgeType ) );
 		
 		return current;
 	}
@@ -900,18 +930,10 @@ namespace analysis
 
 	DataflowGraph::BlockPointerVector DataflowGraph::executableSequence()
 	{
-		typedef std::unordered_map< ir::ControlFlowGraph::iterator, 
-			iterator > IteratorMap;
-		
 		ir::ControlFlowGraph::BlockPointerVector 
 			sequence = _cfg->executable_sequence();
 		
-		IteratorMap map;
-		
-		for( iterator block = begin(); block != end(); ++block )
-		{
-			map.insert( std::make_pair( block->block(), block ) );
-		}
+		IteratorMap map = getCFGtoDFGMap();
 		
 		BlockPointerVector result;
 		
@@ -925,6 +947,18 @@ namespace analysis
 		}
 		
 		return std::move( result );
+	}
+
+	DataflowGraph::IteratorMap DataflowGraph::getCFGtoDFGMap()
+	{
+		IteratorMap map;
+		
+		for( iterator block = begin(); block != end(); ++block )
+		{
+			map.insert( std::make_pair( block->block(), block ) );
+		}
+		
+		return map;	
 	}
 
 	std::ostream& operator<<( std::ostream& out, const DataflowGraph& graph )

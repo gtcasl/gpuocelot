@@ -262,7 +262,17 @@ namespace ir
 				public:
 					/*! \brief The constructor sets the type and pointer flag */
 					Operand( const std::string& n = std::string(), 
-						bool c = false, const Type& t = Type() );
+						const Type& t = Type() );
+					/*! \brief The constructor sets the type and pointer flag */
+					Operand( LLVMI64 value );
+					/*! \brief The constructor sets the type and pointer flag */
+					Operand( LLVMI32 value );
+					/*! \brief The constructor sets the type and pointer flag */
+					Operand( LLVMF32 value );
+					/*! \brief The constructor sets the type and pointer flag */
+					Operand( LLVMF64 value );
+					/*! \brief The constructor sets the type and pointer flag */
+					Operand( LLVMI1 value );
 					/*! \brief Is this a valid operand ? */
 					bool valid() const;
 					/*! \brief Return a parsable represention of the Operand */

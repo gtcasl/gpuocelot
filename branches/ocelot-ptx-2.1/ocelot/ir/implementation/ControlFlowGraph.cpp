@@ -543,9 +543,20 @@ ControlFlowGraph::BlockPointerVector ControlFlowGraph::executable_sequence() {
 			unscheduled.erase(fallthroughEdge->tail);
 		}
 		else {
+			// find a new block, favor branch targets over random blocks
+			iterator next = *unscheduled.begin();
+			
+			for(edge_pointer_iterator edge = sequence.back()->out_edges.begin();
+				edge != sequence.back()->out_edges.end(); ++edge)
+			{
+				if(unscheduled.count((*edge)->tail) != 0)
+				{
+					next = (*edge)->tail;
+				}
+			}
+			
 			// rewind through fallthrough edges to find the beginning of the 
 			// next chain of fall throughs
-			iterator next = *unscheduled.begin();
 			report("  restarting at " << next->label);
 			bool rewinding = true;
 			while (rewinding) {

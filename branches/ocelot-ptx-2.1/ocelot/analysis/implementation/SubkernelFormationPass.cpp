@@ -28,7 +28,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 // Standard Library Includes
 #include <queue>
@@ -331,16 +331,24 @@ static ir::ControlFlowGraph::iterator createRegion(
 			{
 				if(fallthroughToExit)
 				{
-					newEdge = newKernel.cfg()->insert_edge(ir::Edge(
+					ir::ControlFlowGraph::edge_iterator splitEdge =
+						newKernel.cfg()->insert_edge(ir::Edge(
 						newHead->second, newKernel.cfg()->get_exit_block(), 
 						ir::Edge::Branch));
-					
+
 					ir::PTXInstruction* branch = new ir::PTXInstruction(
 						ir::PTXInstruction::Bra);
 					branch->uni = true;
 					branch->d = std::move(ir::PTXOperand((*edge)->tail->label));
+
+					newEdge = newKernel.cfg()->split_edge(splitEdge,
+						ir::BasicBlock(newHead->second->label + "_bounce",
+						newKernel.cfg()->newId()));
 					
-					newHead->second->instructions.push_back(branch);
+					newEdge->type = ir::Edge::Branch;
+					newEdge->head->instructions.push_back(branch);
+					
+					splitEdge->type = ir::Edge::FallThrough;
 				}
 				else
 				{

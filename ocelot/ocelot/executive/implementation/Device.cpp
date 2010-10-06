@@ -171,7 +171,4 @@ int executive::Device::runtimeVersion() const {
 	return _runtimeVersion;
 }
 
-bool executive::Device::requiresDataflowAnalysis() const {
-	return false;
-}
 

@@ -5,7 +5,8 @@
 */
 
 #ifndef EXECUTIVE_NVIDIAKERNEL_H_INCLUDED
-#define EXECUTIVE_NVIDIAKERNEL_H_INCLUDED
+#define EXECUTIVE_NVIDIAKERNEL_H_INCLUDED
+
 #include <ocelot/cuda/interface/CudaDriver.h>
 
 #include <ocelot/ir/interface/PTXKernel.h>
@@ -71,12 +72,6 @@ namespace executive {
 		bool initialize();
 	
 	protected:
-		
-		/*!
-			PTX Kernel
-		*/
-		ir::PTXKernel *ptxKernel;
-		
 		/*!
 			CUDA function refering to this kernel
 		*/

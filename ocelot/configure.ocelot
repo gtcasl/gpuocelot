@@ -9,9 +9,9 @@
 			ignoreIrrelevantWrites: true
 		},
 		debugger: {
-			enabled: false,
+			enabled: true,
 			kernelFilter: "_Z13scalarProdGPUPfS_S_ii",
-			alwaysAttach: false
+			alwaysAttach: true
 		}
 	},
 	cuda: {
@@ -19,7 +19,7 @@
 		runtimeApiTrace: "trace/CudaAPI.trace"
 	},
 	executive: {
-		devices: [ emulated ],
+		devices: [ nvidia ],
 		optimizationLevel: basic,
 		workerThreadLimit: 2
 	}

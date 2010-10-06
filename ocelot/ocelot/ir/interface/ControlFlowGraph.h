@@ -347,7 +347,8 @@ namespace std
 	class hash< ir::ControlFlowGraph::InstructionList::iterator >
 	{
 	public:
-		size_t operator()( ir::ControlFlowGraph::InstructionList::iterator it ) const
+		size_t operator()( 
+			ir::ControlFlowGraph::InstructionList::iterator it ) const
 		{
 			return ( size_t )&( *it );
 		}
@@ -357,7 +358,8 @@ namespace std
 	class hash< ir::ControlFlowGraph::InstructionList::const_iterator >
 	{
 	public:
-		size_t operator()( ir::ControlFlowGraph::InstructionList::const_iterator it ) const
+		size_t operator()( 
+			ir::ControlFlowGraph::InstructionList::const_iterator it ) const
 		{
 			return ( size_t )&( *it );
 		}

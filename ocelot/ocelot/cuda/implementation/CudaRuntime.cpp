@@ -294,13 +294,6 @@ void cuda::CudaRuntime::_enumerateDevices() {
 		std::cerr << "==Ocelot==  Consider enabling the emulator in " 
 			<< "configure.ocelot.\n";
 	}
-
-	for(DeviceVector::iterator device = _devices.begin(); 
-		device != _devices.end(); ++device) {
-		if((*device)->requiresDataflowAnalysis()) {
-			_requiresDataflowAnalysis = true;
-		}
-	}	
 }
 
 //! acquires mutex and locks the runtime
@@ -398,15 +391,6 @@ void cuda::CudaRuntime::_registerModule(ModuleMap::iterator module) {
 		tex->normalizedFloat = texture->second.norm;
 	}
 	
-	if(_requiresDataflowAnalysis)
-	{
-		for(ir::Module::KernelMap::const_iterator 
-			kernel = module->second.kernels().begin();
-			kernel != module->second.kernels().end(); ++kernel) {
-			kernel->second->dfg();
-		}
-	}
-	
 	for(DeviceVector::iterator device = _devices.begin(); 
 		device != _devices.end(); ++device) {
 		(*device)->select();
@@ -435,8 +419,7 @@ void cuda::CudaRuntime::_registerAllModules() {
 cuda::CudaRuntime::CudaRuntime() : _deviceCount(0), _devicesLoaded(false), 
 	_selectedDevice(-1), _nextSymbol(1), _flags(0), 
 	_optimization((translator::Translator::OptimizationLevel)
-		config::get().executive.optimizationLevel),
-		_requiresDataflowAnalysis(false) {
+		config::get().executive.optimizationLevel) {
 
 	if(config::get().executive.enableNVIDIA) {
 		_deviceCount += executive::Device::deviceCount(ir::Instruction::SASS);

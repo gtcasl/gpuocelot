@@ -21,8 +21,6 @@ int main(int argc, char *arg[]) {
 	float *results_gpu = 0;
 	float *results_cpu = (float *)malloc(bytes);
 	int devices = 0;
-	int errors = 0;
-
 	cudaGetDeviceCount(&devices);
 	
 	for (int device = 0; device != devices; ++device) {
@@ -93,6 +91,7 @@ int main(int argc, char *arg[]) {
 		}
 		cudaMemcpy(results_cpu, results_gpu, bytes, cudaMemcpyDeviceToHost);
 	
+		int errors = 0;
 		for (int i = 0; i < N; i++) {
 			float expected = 3.14159f * (float)(i % 128);
 			float got = results_cpu[i];

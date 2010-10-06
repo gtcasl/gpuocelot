@@ -39,6 +39,7 @@ ir::Module::Module() : _ptxPointer(0) {
 	target.targets.push_back("sm_21");
 	_statements.push_back(version);
 	_statements.push_back(target);
+	_target = ".target sm_13";
 }
 
 ir::Module::~Module() {

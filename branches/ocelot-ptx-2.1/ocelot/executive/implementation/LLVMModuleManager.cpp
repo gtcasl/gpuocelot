@@ -157,10 +157,11 @@ static void setupArgumentMemoryReferences(ir::PTXKernel& kernel,
 						if(argument != offsets.end())
 						{
 							report("   For instruction \"" 
-							<< ptx.toString() << "\" mapping \"" 
-							<< argument->first << "\" to " 
-							<< (argument->second + operands[i]->offset));
+								<< ptx.toString() << "\" mapping \"" 
+								<< argument->first << "\" to " 
+								<< (argument->second + operands[i]->offset));
 							operands[ i ]->offset += argument->second;
+							operands[ i ]->isArgument = true;
 						}
 					}
 				}
@@ -169,6 +170,8 @@ static void setupArgumentMemoryReferences(ir::PTXKernel& kernel,
 	}
 	
 	metadata->argumentSize = offset;
+	
+	report("   total argument memory size is " << metadata->argumentSize);
 }
 
 static void setupParameterMemoryReferences(ir::PTXKernel& kernel,
@@ -222,6 +225,7 @@ static void setupParameterMemoryReferences(ir::PTXKernel& kernel,
 							<< parameter->first << "\" to " 
 							<< (parameter->second + operands[i]->offset));
 							operands[ i ]->offset += parameter->second;
+							operands[ i ]->isArgument = false;
 						}
 					}
 				}
@@ -230,6 +234,9 @@ static void setupParameterMemoryReferences(ir::PTXKernel& kernel,
 	}
 	
 	metadata->parameterSize = offset;
+
+	report("   total parameter memory size is " << metadata->parameterSize);
+
 }
 
 static void setupSharedMemoryReferences(ir::PTXKernel& kernel,
@@ -457,6 +464,8 @@ static void setupConstantMemoryReferences(ir::PTXKernel& kernel,
 			}
 		}
 	}
+	
+	report("   total constant memory size is " << metadata->constantSize);
 }
 
 static void setupTextureMemoryReferences(ir::PTXKernel& kernel,

@@ -56,7 +56,7 @@ namespace translator
 			void _reportWrites( const analysis::DataflowGraph::Instruction& i );
 			void _check( ir::PTXInstruction::AddressSpace space,
 				const ir::LLVMInstruction::Operand& address, 
-				unsigned int bytes, unsigned int statement );
+				unsigned int bytes, bool isArgument, unsigned int statement );
 			void _addMemoryCheckingDeclarations();
 			void _insertDebugSymbols();
 			
@@ -148,8 +148,8 @@ namespace translator
 			std::string _loadSpecialRegister( 
 				ir::PTXOperand::SpecialRegister s, 
 				ir::PTXOperand::VectorIndex index );
-			ir::LLVMInstruction::Operand 
-				_getMemoryBasePointer( ir::PTXInstruction::AddressSpace space );
+			ir::LLVMInstruction::Operand _getMemoryBasePointer( 
+			 	ir::PTXInstruction::AddressSpace space, bool isArgument );
 			ir::LLVMInstruction::Operand _getAddressableVariablePointer( 
 				ir::PTXInstruction::AddressSpace space,
 				const ir::PTXOperand& o );

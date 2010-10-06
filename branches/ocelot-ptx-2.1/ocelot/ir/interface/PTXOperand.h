@@ -44,6 +44,7 @@ namespace ir {
 			Special,			//! special register
 			ArgumentList,       //! treat as argument list for function call
 			FunctionName,       //! operand is a function name
+			BitBucket,			//! bit bucket register
 			Invalid
 		};
 

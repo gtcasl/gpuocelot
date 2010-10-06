@@ -19,13 +19,14 @@
 // Macros
 #define CHECK() {assertM(_interface.loaded(), __FUNCTION__ \
 	<< " called without loading the driver.");\
-	report(__FUNCTION__);}
+	reportE(REPORT_ALL_CALLS, __FUNCTION__);}
 
 #ifdef REPORT_BASE
 #undef REPORT_BASE
 #endif
 
 #define REPORT_BASE 0
+#define REPORT_ALL_CALLS 0
 
 namespace cuda
 {

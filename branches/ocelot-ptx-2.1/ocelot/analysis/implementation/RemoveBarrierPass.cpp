@@ -258,7 +258,7 @@ namespace analysis
 	}
 	
 	RemoveBarrierPass::RemoveBarrierPass()
-		: KernelPass( NoAnalysis, "RemoveBarriersPass" )
+		: KernelPass( DataflowGraphAnalysis, "RemoveBarriersPass" )
 	{
 
 	}

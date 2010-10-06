@@ -22,14 +22,12 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
-executive::NVIDIAExecutableKernel::NVIDIAExecutableKernel(): ptxKernel(0) {
+executive::NVIDIAExecutableKernel::NVIDIAExecutableKernel() {
 	this->ISA = ir::Instruction::SASS;
 }
 
 executive::NVIDIAExecutableKernel::~NVIDIAExecutableKernel() {
-	if (ptxKernel) {
-		delete ptxKernel;
-	}
+
 }
 
 /*!
@@ -37,13 +35,12 @@ executive::NVIDIAExecutableKernel::~NVIDIAExecutableKernel() {
 */
 executive::NVIDIAExecutableKernel::NVIDIAExecutableKernel(
 	ir::Kernel& kernel, const CUfunction& function, 
-	executive::Device* d ): ExecutableKernel(kernel, d), ptxKernel(0), 
+	executive::Device* d ): ExecutableKernel(kernel, d), 
 	cuFunction(function) {
 	
 	report("NVIDIAExecutableKernel()");
 	this->ISA = ir::Instruction::SASS;
 	
-	ptxKernel = new ir::PTXKernel( static_cast<ir::PTXKernel &>(kernel));
 	_parameterMemorySize = mapArgumentOffsets();
 		
 	cuda::CudaDriver::cuFuncGetAttribute((int*)&_registerCount, 
@@ -138,7 +135,6 @@ void executive::NVIDIAExecutableKernel::removeTraceGenerator(
 {
 	assertM(false, "No trace generation support in GPU kernel.");	
 }
-
 
 void executive::NVIDIAExecutableKernel::setWorkerThreads(unsigned int limit) {
 

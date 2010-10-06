@@ -598,7 +598,7 @@ namespace analysis
 		
 		current->_predecessors.insert( predecessor );
 		successor->_predecessors.insert( current );
-				
+		
 		_cfg->insert_edge( ir::ControlFlowGraph::Edge( current->_block, 
 			successor->_block, edgeType ) );
 		

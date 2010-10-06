@@ -48,7 +48,8 @@ public:
 	};
 
 	typedef std::list< Edge > EdgeList;
-	typedef std::vector< BlockList::iterator > BlockPointerVector;
+	typedef BlockList::iterator Pointer;
+	typedef std::vector< Pointer > BlockPointerVector;
 	typedef std::vector< EdgeList::iterator > EdgePointerVector;
 	typedef std::list< Instruction* > InstructionList;
 	typedef unsigned int Id;
@@ -165,6 +166,8 @@ public:
 	typedef EdgeList::iterator edge_iterator;
 	/*! \brief A const iterator over edges */
 	typedef EdgeList::const_iterator const_edge_iterator;
+	/*! \brief Edge pair */
+	typedef std::pair<edge_iterator, edge_iterator> EdgePair;
 
 	/*! \brief A pointer to an edge iterator */
 	typedef EdgePointerVector::iterator edge_pointer_iterator;
@@ -231,7 +234,7 @@ public:
 		\return implicily created edge from newblock->tail with same type as 
 			edge [may need modifying]
 	*/
-	edge_iterator split_edge(edge_iterator edge, const BasicBlock& newBlock);
+	EdgePair split_edge(edge_iterator edge, const BasicBlock& newBlock);
 
 	/*! \brief Splits a basic block into two such that there is a fallthrough
 		edge from the original block to the newly split block.
@@ -350,7 +353,8 @@ namespace std
 	class hash< ir::ControlFlowGraph::InstructionList::iterator >
 	{
 	public:
-		size_t operator()( ir::ControlFlowGraph::InstructionList::iterator it ) const
+		size_t operator()( 
+			ir::ControlFlowGraph::InstructionList::iterator it ) const
 		{
 			return ( size_t )&( *it );
 		}
@@ -360,7 +364,8 @@ namespace std
 	class hash< ir::ControlFlowGraph::InstructionList::const_iterator >
 	{
 	public:
-		size_t operator()( ir::ControlFlowGraph::InstructionList::const_iterator it ) const
+		size_t operator()( 
+			ir::ControlFlowGraph::InstructionList::const_iterator it ) const
 		{
 			return ( size_t )&( *it );
 		}

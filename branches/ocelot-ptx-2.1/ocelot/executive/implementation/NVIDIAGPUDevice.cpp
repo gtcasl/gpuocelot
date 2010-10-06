@@ -1368,15 +1368,15 @@ namespace executive
 		const std::string& textureName)
 	{
 		ModuleMap::iterator module = _modules.find(moduleName);
-		if(module == _modules.end()) return 0;
 		
+		if(module == _modules.end()) return 0;
 		return module->second.getTexture(textureName);
 	}
 
 	void NVIDIAGPUDevice::launch(const std::string& moduleName, 
 		const std::string& kernelName, const ir::Dim3& grid, 
 		const ir::Dim3& block, size_t sharedMemory, 
-		const void* argumentBlock, size_t argumentBlockSize, 
+		const void* argumentBlock, size_t argumentBlockSize,
 		const trace::TraceGeneratorVector& traceGenerators)
 	{
 		ModuleMap::iterator module = _modules.find(moduleName);

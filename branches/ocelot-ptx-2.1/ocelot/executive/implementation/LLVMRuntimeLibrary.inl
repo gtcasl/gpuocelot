@@ -659,6 +659,39 @@ extern "C"
 			assertM(false, "Aborting execution.");
 		}	
 	}
+
+	void __ocelot_check_argument_memory_access( executive::LLVMContext* context,
+		ir::PTXU64 _address, unsigned int bytes, unsigned int statement )
+	{
+		MetaData* state = (MetaData*) context->metadata;
+		
+		char* address = (char*) _address;
+		char* end = address + bytes;
+		char* allocationEnd = context->argument + state->argumentSize;
+				
+		if( end > allocationEnd )
+		{
+			unsigned int thread = context->tid.x 
+				+ context->ntid.x * context->tid.y 
+				+ context->ntid.x * context->ntid.y * context->tid.y;
+			unsigned int cta = context->ctaid.x 
+				+ context->nctaid.x * context->ctaid.y 
+				+ context->nctaid.x * context->nctaid.y * context->ctaid.y;
+			
+			std::cerr << "While executing kernel '" 
+				<< state->kernel->name << "'\n";
+			std::cerr << "Error in (cta " << cta << ")(thread " << thread 
+				<< "): instruction '" 
+				<< instruction( state->kernel->module, statement ) << "'\n";
+			std::cerr << "Argument memory address " 
+				<< address << " is  " << (end - allocationEnd)
+				<< " bytes beyond the argument memory block of " 
+				<< state->argumentSize << " bytes.\n";
+			std::cout << "\tNear: "
+				<< location( state->kernel->module, statement ) << "\n\n";
+			assertM(false, "Aborting execution.");
+		}	
+	}
 		
 	void __ocelot_tex_3d_fs( float* result, executive::LLVMContext* context, 
 		unsigned int index, unsigned int c0, unsigned int c1, unsigned int c2,

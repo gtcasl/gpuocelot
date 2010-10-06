@@ -36,7 +36,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 namespace translator
 {
@@ -541,7 +541,7 @@ namespace translator
 
 	void PTXToLLVMTranslator::_check( ir::PTXInstruction::AddressSpace space,
 		const ir::LLVMInstruction::Operand& address, unsigned int bytes,
-		unsigned int statement )
+		bool isArgument, unsigned int statement )
 	{
 		if( optimizationLevel != MemoryCheckOptimization 
 			&& optimizationLevel != ReportOptimization
@@ -573,7 +573,14 @@ namespace translator
 			}
 			case ir::PTXInstruction::Param:
 			{
-				call.name = "@__ocelot_check_param_memory_access";
+				if( isArgument )
+				{
+					call.name = "@__ocelot_check_argument_memory_access";
+				}
+				else
+				{
+					call.name = "@__ocelot_check_param_memory_access";
+				}
 				break;
 			}
 			default: assertM(false, "Invalid space " 
@@ -653,6 +660,9 @@ namespace translator
 		_llvmKernel->_statements.push_front( check );
 		
 		check.label = "__ocelot_check_param_memory_access";
+		_llvmKernel->_statements.push_front( check );
+		
+		check.label = "__ocelot_check_argument_memory_access";
 		_llvmKernel->_statements.push_front( check );
 	}
 
@@ -769,7 +779,7 @@ namespace translator
 	{
 		ir::LLVMBitcast bitcast;
 		
-		bitcast.a = _getMemoryBasePointer( ir::PTXInstruction::Local );
+		bitcast.a = _getMemoryBasePointer( ir::PTXInstruction::Local, false );
 
 		bitcast.d.type = ir::LLVMInstruction::Type( 
 			ir::LLVMInstruction::I32, ir::LLVMInstruction::Type::Pointer );
@@ -895,6 +905,13 @@ namespace translator
 			case ir::PTXOperand::Special:
 			{
 				op.name = _loadSpecialRegister( o.special, o.vIndex );
+				break;
+			}
+			case ir::PTXOperand::BitBucket:
+			{
+				std::stringstream stream;
+				stream << "%r_" << o.reg;
+				op.name = stream.str();
 				break;
 			}
 			case ir::PTXOperand::Invalid:
@@ -2296,6 +2313,11 @@ namespace translator
 	void PTXToLLVMTranslator::_translateExit( const ir::PTXInstruction& i )
 	{
 		_yield( -1, executive::LLVMExecutableKernel::InvalidCallType );
+
+		ir::LLVMBr branch;
+		branch.iftrue = "%exit";
+		
+		_add( branch );
 	}
 
 	void PTXToLLVMTranslator::_translateLd( const ir::PTXInstruction& i )
@@ -2335,21 +2357,21 @@ namespace translator
 				temp.type.type = _translate( i.d.type );
 				load.d.name = _tempRegister();
 				_check( i.addressSpace, load.a, load.alignment,
-					i.statementIndex );
+					i.a.isArgument, i.statementIndex );
 				_add( load );
 				_convert( temp, i.d.type, load.d, i.type );				
 			}
 			else
 			{
 				_check( i.addressSpace, load.a, load.alignment,
-					i.statementIndex );
+					i.a.isArgument, i.statementIndex );
 				_add( load );
 			}
 		}
 		else
 		{
 			_check( i.addressSpace, load.a, load.alignment,
-					i.statementIndex );
+					i.a.isArgument, i.statementIndex );
 			_add( load );
 		}
 		
@@ -2405,14 +2427,14 @@ namespace translator
 				temp.type.type = _translate( i.d.type );
 				load.d.name = _tempRegister();
 				_check( i.addressSpace, load.a, load.alignment,
-					i.statementIndex );
+					i.a.isArgument, i.statementIndex );
 				_add( load );
 				_convert( temp, i.d.type, load.d, i.type );				
 			}
 			else
 			{
 				_check( i.addressSpace, load.a, load.alignment,
-					i.statementIndex );
+					i.a.isArgument, i.statementIndex );
 				_add( load );
 			}
 		}
@@ -2437,7 +2459,7 @@ namespace translator
 				load.alignment = ir::PTXOperand::bytes( i.type );
 				load.a = get.d;
 				_check( i.addressSpace, load.a, load.alignment,
-						i.statementIndex );
+						i.a.isArgument, i.statementIndex );
 
 				if( _translate( i.d.type ) != _translate( i.type ) )
 				{
@@ -4501,7 +4523,8 @@ namespace translator
 			}
 		}
 		
-		_check( i.addressSpace, store.d, store.alignment, i.statementIndex );
+		_check( i.addressSpace, store.d, store.alignment,
+			i.d.isArgument, i.statementIndex );
 		_add( store );
 		#else
 		ir::LLVMStore store;
@@ -4533,7 +4556,7 @@ namespace translator
 			}
 
 			_check( i.addressSpace, store.d, 
-				store.alignment, i.statementIndex );
+				store.alignment, i.d.isArgument, i.statementIndex );
 			_add( store );
 		}
 		else
@@ -4568,7 +4591,7 @@ namespace translator
 				}
 
 				_check( i.addressSpace, store.d, 
-					store.alignment, i.statementIndex );
+					store.alignment, i.d.isArgument, i.statementIndex );
 				_add( store );
 			}
 		}
@@ -6635,7 +6658,7 @@ namespace translator
 	}
 	
 	ir::LLVMInstruction::Operand PTXToLLVMTranslator::_getMemoryBasePointer( 
-		ir::PTXInstruction::AddressSpace space )
+		ir::PTXInstruction::AddressSpace space, bool isArgument )
 	{
 		ir::LLVMGetelementptr get;
 		
@@ -6667,7 +6690,14 @@ namespace translator
 			}
 			case ir::PTXInstruction::Param:
 			{
-				get.indices.push_back( 7 );
+				if( isArgument )
+				{
+					get.indices.push_back( 8 );
+				}
+				else
+				{
+					get.indices.push_back( 7 );
+				}
 				break;
 			}
 			default:
@@ -6705,7 +6735,7 @@ namespace translator
 			getIndex.d.type.category = ir::LLVMInstruction::Type::Pointer;
 			getIndex.d.type.type = ir::LLVMInstruction::I8;
 		
-			getIndex.a = _getMemoryBasePointer( space );
+			getIndex.a = _getMemoryBasePointer( space, o.isArgument );
 			getIndex.indices.push_back( o.offset );
 		
 			_add( getIndex );
@@ -6714,7 +6744,7 @@ namespace translator
 		}
 		else
 		{
-			index = _getMemoryBasePointer( space );
+			index = _getMemoryBasePointer( space, o.isArgument );
 		}
 		
 		return index;
@@ -6843,7 +6873,7 @@ namespace translator
 			{
 				ir::LLVMPtrtoint toint;
 			
-				toint.a = _getMemoryBasePointer( space );
+				toint.a = _getMemoryBasePointer( space, o.isArgument );
 				toint.d.name = _tempRegister();
 				toint.d.type.category = ir::LLVMInstruction::Type::Element;
 				toint.d.type.type = reg.type.type;

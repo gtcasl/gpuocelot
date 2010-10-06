@@ -68,12 +68,6 @@ namespace executive {
 		bool initialize();
 	
 	protected:
-		
-		/*!
-			PTX Kernel
-		*/
-		ir::PTXKernel *ptxKernel;
-		
 		/*!
 			CUDA function refering to this kernel
 		*/

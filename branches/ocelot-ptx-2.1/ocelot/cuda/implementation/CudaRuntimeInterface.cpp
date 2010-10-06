@@ -27,21 +27,12 @@
 
 cuda::CudaRuntimeInterface * cuda::CudaRuntimeInterface::instance = 0;
 
-class CudaRuntimeInterfacePtr {
-public:
-	CudaRuntimeInterfacePtr() {
-
+static void destroyInstance() {
+	if (cuda::CudaRuntimeInterface::instance) {
+		delete cuda::CudaRuntimeInterface::instance;
+		cuda::CudaRuntimeInterface::instance = 0;
 	}
-
-	~CudaRuntimeInterfacePtr() {
-		if (cuda::CudaRuntimeInterface::instance) {
-			delete cuda::CudaRuntimeInterface::instance;
-			cuda::CudaRuntimeInterface::instance = 0;
-		}
-	}
-};
-
-static CudaRuntimeInterfacePtr cudaRuntimeInterfacePtrInstance;
+}
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -51,6 +42,7 @@ cuda::CudaRuntimeInterface * cuda::CudaRuntimeInterface::get() {
 			cuda::CudaRuntimeInterface::instance = new CudaRuntime;
 			cuda::CudaRuntimeInterface::instance->ocelotRuntime.configure(
 				api::OcelotConfiguration::get());
+			std::atexit(destroyInstance);
 		}
 		else {
 			assert(0 && "no CUDA runtime implementation matches what is requested");
@@ -516,6 +508,11 @@ cudaError_t cuda::CudaRuntimeInterface::cudaFuncGetAttributes(struct cudaFuncAtt
 	return cudaErrorNotYetImplemented;
 }
 
+cudaError_t cuda::CudaRuntimeInterface::cudaFuncSetCacheConfig(const char *func, 
+	enum cudaFuncCache cacheConfig) {
+	assert(0 && "unimplemented");
+	return cudaErrorNotYetImplemented;
+}
 
 
 cudaError_t cuda::CudaRuntimeInterface::cudaStreamCreate(cudaStream_t *pStream) {
@@ -697,6 +694,13 @@ cudaError_t cuda::CudaRuntimeInterface::cudaRuntimeGetVersion(int *runtimeVersio
 	assert(0 && "unimplemented");
 	return cudaErrorNotYetImplemented;
 }
+
+cudaError_t cuda::CudaRuntimeInterface::cudaGetExportTable(
+	const void **ppExportTable, const cudaUUID_t *pExportTableId) {
+	assert(0 && "unimplemented");
+	return cudaErrorNotYetImplemented;
+}
+
 
 void cuda::CudaRuntimeInterface::cudaMutexOperation( int lock ) {
 	assert(0 && "unimplemented");

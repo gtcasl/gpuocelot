@@ -107,6 +107,7 @@ namespace ir
 			ILOperand x() const;
 			ILOperand y() const;
 			ILOperand xy() const;
+			ILOperand xxxx() const;
 			ILOperand _y__() const;
 			//@}
 			

@@ -301,7 +301,7 @@ void ControlFlowGraph::remove_edge(edge_iterator edge) {
 	_edges.erase(edge);
 }
 
-ControlFlowGraph::edge_iterator ControlFlowGraph::split_edge(edge_iterator edge,
+ControlFlowGraph::EdgePair ControlFlowGraph::split_edge(edge_iterator edge,
 	const BasicBlock& newBlock) {
 	iterator head = edge->head;
 	iterator tail = edge->tail;
@@ -310,10 +310,10 @@ ControlFlowGraph::edge_iterator ControlFlowGraph::split_edge(edge_iterator edge,
 	remove_edge(edge);	
 
 	iterator block = insert_block(newBlock);
-	insert_edge(Edge(head, block, type));
-	edge_iterator newEdge = insert_edge(Edge(block, tail, type));	
+	edge_iterator firstEdge = insert_edge(Edge(head, block, type));
+	edge_iterator secondEdge = insert_edge(Edge(block, tail, type));	
 	
-	return newEdge;
+	return std::make_pair(firstEdge, secondEdge);
 }
 
 ControlFlowGraph::iterator ControlFlowGraph::split_block(iterator block, 

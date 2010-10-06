@@ -631,7 +631,9 @@ static std::ostream & write(std::ostream &stream, double value) {
 }
 
 std::string ir::PTXOperand::toString() const {
-	if( addressMode == Indirect ) {
+	if( addressMode == BitBucket ) {
+		return "_";
+	} else if( addressMode == Indirect ) {
 		std::stringstream stream;
 		if( offset < 0 ) {
 			if ( identifier != "" ) {
@@ -767,7 +769,10 @@ std::string ir::PTXOperand::toString() const {
 }
 
 std::string ir::PTXOperand::registerName() const {
-	assert( addressMode == Indirect || addressMode == Register );
+	assert( addressMode == Indirect || addressMode == Register
+		|| addressMode == BitBucket );
+	
+	if (addressMode == BitBucket) return "_";
 	
 	if( !identifier.empty() ) {
 		return identifier;

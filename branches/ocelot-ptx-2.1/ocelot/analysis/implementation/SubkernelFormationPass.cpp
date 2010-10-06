@@ -108,17 +108,17 @@ static unsigned int createRestorePoint(ir::PTXKernel& newKernel,
 	
 	ir::ControlFlowGraph::edge_iterator splitEdge = newKernel.cfg()->split_edge(
 		newEdge, ir::BasicBlock(newBlock->label + "_restore",
-		newKernel.cfg()->newId()));
+		newKernel.cfg()->newId())).second;
 
 	splitEdge->type = ir::BasicBlock::Edge::FallThrough;
 
 	ir::PTXInstruction* move = new ir::PTXInstruction(ir::PTXInstruction::Mov);
 
 	move->a = std::move(ir::PTXOperand(ir::PTXOperand::Address,
-		ir::PTXOperand::u64, "_Zocelot_spill_area"));
+		ir::PTXOperand::u32, "_Zocelot_spill_area"));
 	move->d = std::move(ir::PTXOperand(ir::PTXOperand::Register, 
-		ir::PTXOperand::u64, ptx.dfg()->newRegister()));
-	move->type = ir::PTXOperand::u64;
+		ir::PTXOperand::u32, ptx.dfg()->newRegister()));
+	move->type = ir::PTXOperand::u32;
 	
 	unsigned int offset = 0;
 
@@ -137,7 +137,7 @@ static unsigned int createRestorePoint(ir::PTXKernel& newKernel,
 		load->type = reg->type;
 
 		load->a = std::move(ir::PTXOperand(ir::PTXOperand::Indirect,
-			ir::PTXOperand::u64, move->d.reg, offset));
+			ir::PTXOperand::u32, move->d.reg, offset));
 		load->d = std::move(ir::PTXOperand(ir::PTXOperand::Register,
 			reg->type, reg->id));
 	
@@ -149,13 +149,13 @@ static unsigned int createRestorePoint(ir::PTXKernel& newKernel,
 	return offset;
 }
 
-static unsigned int createSavePoint(ir::PTXKernel& newKernel, ir::PTXKernel& ptx, 
-	ir::ControlFlowGraph::iterator newBlock, 
+static unsigned int createSavePoint(ir::PTXKernel& newKernel,
+	ir::PTXKernel& ptx, 
 	ir::ControlFlowGraph::iterator oldBlock,
 	ir::ControlFlowGraph::edge_iterator newEdge,
 	const DataflowGraph::IteratorMap& cfgToDfgMap)
 {
-	report("   Creating save point for edge '" << newBlock->label
+	report("   Creating save point for edge '" << newEdge->head->label
 		<< "' -> '" << oldBlock->label << "'");
 	
 	DataflowGraph::IteratorMap::const_iterator
@@ -164,16 +164,16 @@ static unsigned int createSavePoint(ir::PTXKernel& newKernel, ir::PTXKernel& ptx
 	// Possibly update the branch target
 	if(newEdge->type == ir::Edge::Branch)
 	{
-		assert(!newBlock->instructions.empty());
+		assert(!newEdge->head->instructions.empty());
 		ir::PTXInstruction* branch = static_cast<ir::PTXInstruction*>(
-			newBlock->instructions.back());
+			newEdge->head->instructions.back());
 	
 		branch->d.identifier += "_save";
 	}
 
 	ir::ControlFlowGraph::edge_iterator splitEdge = newKernel.cfg()->split_edge(
 		newEdge, ir::BasicBlock(oldBlock->label + "_save", 
-		newKernel.cfg()->newId()));
+		newKernel.cfg()->newId())).second;
 
 	unsigned int offset = 0;
 	
@@ -183,10 +183,10 @@ static unsigned int createSavePoint(ir::PTXKernel& newKernel, ir::PTXKernel& ptx
 			ir::PTXInstruction::Mov);
 
 		move->a = std::move(ir::PTXOperand(ir::PTXOperand::Address,
-			ir::PTXOperand::u64, "_Zocelot_spill_area"));
+			ir::PTXOperand::u32, "_Zocelot_spill_area"));
 		move->d = std::move(ir::PTXOperand(ir::PTXOperand::Register, 
-			ir::PTXOperand::u64, ptx.dfg()->newRegister()));
-		move->type = ir::PTXOperand::u64;
+			ir::PTXOperand::u32, ptx.dfg()->newRegister()));
+		move->type = ir::PTXOperand::u32;
 		
 		splitEdge->head->instructions.push_back(move);
 
@@ -203,7 +203,7 @@ static unsigned int createSavePoint(ir::PTXKernel& newKernel, ir::PTXKernel& ptx
 			store->type = reg->type;
 
 			store->d = std::move(ir::PTXOperand(ir::PTXOperand::Indirect,
-				ir::PTXOperand::u64, move->d.reg, offset));
+				ir::PTXOperand::u32, move->d.reg, offset));
 			store->a = std::move(ir::PTXOperand(ir::PTXOperand::Register,
 				reg->type, reg->id));
 	
@@ -216,10 +216,10 @@ static unsigned int createSavePoint(ir::PTXKernel& newKernel, ir::PTXKernel& ptx
 	ir::PTXInstruction* move = new ir::PTXInstruction(ir::PTXInstruction::Mov);
 
 	move->a = std::move(ir::PTXOperand(ir::PTXOperand::Address,
-		ir::PTXOperand::u64, "_Zocelot_resume_point"));
+		ir::PTXOperand::u32, "_Zocelot_resume_point"));
 	move->d = std::move(ir::PTXOperand(ir::PTXOperand::Register, 
-		ir::PTXOperand::u64, ptx.dfg()->newRegister()));
-	move->type = ir::PTXOperand::u64;
+		ir::PTXOperand::u32, ptx.dfg()->newRegister()));
+	move->type = ir::PTXOperand::u32;
 
 	splitEdge->head->instructions.push_back(move);
 
@@ -230,7 +230,7 @@ static unsigned int createSavePoint(ir::PTXKernel& newKernel, ir::PTXKernel& ptx
 	store->type = ir::PTXOperand::u32;
 
 	store->d = std::move(ir::PTXOperand(ir::PTXOperand::Indirect,
-		ir::PTXOperand::u64, move->d.reg));
+		ir::PTXOperand::u32, move->d.reg));
 	store->a = std::move(ir::PTXOperand(ir::PTXOperand::Immediate,
 		ir::PTXOperand::u32));
 	store->a.imm_uint = oldBlock->id;
@@ -331,7 +331,7 @@ static ir::ControlFlowGraph::iterator createRegion(
 			{
 				if(fallthroughToExit)
 				{
-					ir::ControlFlowGraph::edge_iterator splitEdge =
+					ir::ControlFlowGraph::edge_iterator exitEdge =
 						newKernel.cfg()->insert_edge(ir::Edge(
 						newHead->second, newKernel.cfg()->get_exit_block(), 
 						ir::Edge::Branch));
@@ -341,14 +341,17 @@ static ir::ControlFlowGraph::iterator createRegion(
 					branch->uni = true;
 					branch->d = std::move(ir::PTXOperand((*edge)->tail->label));
 
-					newEdge = newKernel.cfg()->split_edge(splitEdge,
+					ir::ControlFlowGraph::EdgePair splitEdge = 
+						newKernel.cfg()->split_edge(exitEdge,
 						ir::BasicBlock(newHead->second->label + "_bounce",
 						newKernel.cfg()->newId()));
 					
-					newEdge->type = ir::Edge::Branch;
-					newEdge->head->instructions.push_back(branch);
+					splitEdge.second->type = ir::Edge::Branch;
+					splitEdge.second->head->instructions.push_back(branch);
 					
-					splitEdge->type = ir::Edge::FallThrough;
+					splitEdge.first->type = ir::Edge::FallThrough;
+					
+					newEdge = splitEdge.second;
 				}
 				else
 				{
@@ -365,8 +368,7 @@ static ir::ControlFlowGraph::iterator createRegion(
 			}
 
 			spillRegionSize = std::max(spillRegionSize, 
-				createSavePoint(newKernel, ptx, newHead->second,
-				tail, newEdge, cfgToDfgMap));
+				createSavePoint(newKernel, ptx, tail, newEdge, cfgToDfgMap));
 			
 			// skip edges that go to an already created subkernel
 			if(alreadyAdded.count(tail) != 0) continue;
@@ -388,6 +390,8 @@ static ir::ControlFlowGraph::iterator createRegion(
 		}
 	}
 	
+	BlockSet restoredBlocks;
+	
 	report("   Merging entry points");
 	for(BlockSet::const_iterator block = inEdges.begin(); 
 		block != inEdges.end(); ++block)
@@ -400,6 +404,9 @@ static ir::ControlFlowGraph::iterator createRegion(
 			// skip edges not entering the region
 			ir::ControlFlowGraph::iterator tail = (*edge)->tail;
 			if(region.count(tail) == 0) continue;
+			
+			// skip edges targetting the same block
+			if(!restoredBlocks.insert(tail).second) continue;
 			
 			BlockMap::iterator newTail = oldToNewBlockMap.find(tail);
 			assert(newTail != oldToNewBlockMap.end());
@@ -509,8 +516,13 @@ static void updateTailCallTargets(
 	}
 }
 
-static void createScheduler(ir::PTXKernel& kernel, const BlockSet& inBlocks)
+static void createScheduler(ir::PTXKernel& kernel,
+	ir::PTXKernel& originalKernel)
 {
+	if(kernel.cfg()->begin()->out_edges.size() < 2) return;
+	
+	report("  Creating scheduler for subkernel '" << kernel.name << "'");
+	
 	BlockSet targets;
 	
 	ir::ControlFlowGraph::iterator scheduler = kernel.cfg()->insert_block(
@@ -519,10 +531,11 @@ static void createScheduler(ir::PTXKernel& kernel, const BlockSet& inBlocks)
 	ir::PTXInstruction* move = new ir::PTXInstruction(ir::PTXInstruction::Mov);
 
 	move->a = std::move(ir::PTXOperand(ir::PTXOperand::Address,
-		ir::PTXOperand::u64, "_Zocelot_resume_point"));
+		ir::PTXOperand::u32, "_Zocelot_resume_point"));
 	move->d = std::move(ir::PTXOperand(ir::PTXOperand::Register, 
-		ir::PTXOperand::u64, kernel.dfg()->newRegister()));
-
+		ir::PTXOperand::u32, originalKernel.dfg()->newRegister()));
+	move->type = ir::PTXOperand::u32;
+	
 	scheduler->instructions.push_back(move);
 
 	ir::PTXInstruction* load =
@@ -534,7 +547,7 @@ static void createScheduler(ir::PTXKernel& kernel, const BlockSet& inBlocks)
 	load->a = std::move(ir::PTXOperand(ir::PTXOperand::Indirect,
 		ir::PTXOperand::u32, move->d.reg));
 	load->d = std::move(ir::PTXOperand(ir::PTXOperand::Register,
-		ir::PTXOperand::u32, kernel.dfg()->newRegister()));
+		ir::PTXOperand::u32, originalKernel.dfg()->newRegister()));
 
 	scheduler->instructions.push_back(load);
 
@@ -549,6 +562,8 @@ static void createScheduler(ir::PTXKernel& kernel, const BlockSet& inBlocks)
 		
 		// don't add multiple paths to the same block
 		if(!targets.insert(newEdge.tail).second) continue;
+
+		report("   scheduling path to block '" << newEdge.tail->label << "'");
 
 		kernel.cfg()->insert_edge(newEdge);
 	}
@@ -575,8 +590,9 @@ static void createScheduler(ir::PTXKernel& kernel, const BlockSet& inBlocks)
 		compare->b.imm_uint = target->tail->id;
 
 		compare->d = std::move(ir::PTXOperand(ir::PTXOperand::Register,
-			ir::PTXOperand::pred, kernel.dfg()->newRegister()));
+			ir::PTXOperand::pred, originalKernel.dfg()->newRegister()));
 		compare->comparisonOperator = ir::PTXInstruction::Eq;
+		compare->type = ir::PTXOperand::u32;
 	
 		scheduler->instructions.push_back(compare);
 	
@@ -630,8 +646,9 @@ static void createScheduler(ir::PTXKernel& kernel, const BlockSet& inBlocks)
 	compare->b.imm_uint = target->tail->id;
 
 	compare->d = std::move(ir::PTXOperand(ir::PTXOperand::Register,
-		ir::PTXOperand::pred, kernel.dfg()->newRegister()));
+		ir::PTXOperand::pred, originalKernel.dfg()->newRegister()));
 	compare->comparisonOperator = ir::PTXInstruction::Eq;
+	compare->type = ir::PTXOperand::u32;
 	
 	scheduler->instructions.push_back(compare);
 	
@@ -787,10 +804,7 @@ void SubkernelFormationPass::ExtractKernelsPass::runOnKernel(ir::Kernel& k)
 		std::stringstream name;
 		name << originalName << "_split_" << kernelId++;
 
-		if(inEdges.size() > 1)
-		{
-			createScheduler(*newKernel, inEdges);
-		}
+		createScheduler(*newKernel, ptx);
 		
 		splitKernels.push_back(new ir::PTXKernel(name.str(), true, k.module));
 		encountered.clear();

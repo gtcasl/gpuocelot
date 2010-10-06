@@ -34,6 +34,7 @@ namespace ir
 	{
 		_cfg = new ControlFlowGraph;
 		constructCFG( *_cfg, start, end );
+		assignRegisters( *_cfg );
 	}
 
 	PTXKernel::PTXKernel( const PTXKernel& kernel ) : Kernel( kernel )
@@ -46,6 +47,7 @@ namespace ir
 		if( &kernel == this ) return *this;
 		
 		Kernel::operator=(kernel);
+		_function = kernel.function();
 
 		return *this;	
 	}
@@ -56,47 +58,80 @@ namespace ir
 
 		typedef std::unordered_set< analysis::DataflowGraph::RegisterId > 
 			RegisterSet;
-		assert( !_dfg->ssa() );
 
 		RegisterSet encountered;
 		RegisterSet predicates;
 			
 		RegisterVector regs;
 		
-		for( analysis::DataflowGraph::const_iterator block = _dfg->begin(); 
-			block != _dfg->end(); ++block  )
+		for( ControlFlowGraph::const_iterator block = cfg()->begin(); 
+			block != cfg()->end(); ++block )
 		{
-			report( " For block " << block->label() );
+			report( " For block " << block->label );
 						
-			for( analysis::DataflowGraph::InstructionVector::const_iterator 
-				instruction = block->instructions().begin(); 
-				instruction != block->instructions().end(); ++instruction )
+			for( ControlFlowGraph::InstructionList::const_iterator 
+				instruction = block->instructions.begin(); 
+				instruction != block->instructions.end(); ++instruction )
 			{
-				report( "  For instruction " << instruction->i->toString() );
+				report( "  For instruction " << (*instruction)->toString() );
+				
+				const ir::PTXInstruction& ptx = static_cast<
+					const ir::PTXInstruction&>(**instruction);
+				
+				if( ptx.opcode == ir::PTXInstruction::St ) continue;
+				
+				const ir::PTXOperand* operands[] = {&ptx.pq, &ptx.d};
 
-				typedef analysis::DataflowGraph::RegisterPointerVector
-					RegisterPointerVector;
-
-				for( RegisterPointerVector::const_iterator 
-					d = instruction->d.begin(); d != instruction->d.end(); ++d )
+				unsigned int limit = 2;
+				
+				if( ir::PTXInstruction::St == ptx.opcode )
 				{
-					if( d->type != ir::PTXOperand::pred )
+					limit = 1;
+				}
+				else if( ir::PTXInstruction::Bfi == ptx.opcode )
+				{
+					limit = 1;
+					operands[ 0 ] = &ptx.d;
+				}
+
+				for( unsigned int i = 0; i < 2; ++i )
+				{
+					const ir::PTXOperand& d = *operands[i];
+					
+					if( d.addressMode != ir::PTXOperand::Register ) continue;
+					
+					if( d.type != ir::PTXOperand::pred )
 					{
-						if( encountered.insert( *d->pointer ).second )
+						if( d.array.empty() )
 						{
-							report( "   Added %r" << *d->pointer );
-							analysis::DataflowGraph::Register live_reg( 
-								*d->pointer, d->type );
-							regs.push_back( live_reg );
+							if( encountered.insert( d.reg ).second )
+							{
+								report( "   Added %r" << d.reg );
+								analysis::DataflowGraph::Register live_reg( 
+									d.reg, d.type );
+								regs.push_back( live_reg );
+							}
+						}
+						else
+						{
+							for( PTXOperand::Array::const_iterator 
+								operand = d.array.begin(); 
+								operand != d.array.end(); ++operand )
+							{
+								report( "   Added %r" << operand->reg );
+								analysis::DataflowGraph::Register live_reg( 
+									operand->reg, operand->type );
+								regs.push_back( live_reg );
+							}
 						}
 					}
 					else
 					{
-						if( predicates.insert( *d->pointer ).second )
+						if( predicates.insert( d.reg ).second )
 						{
-							report( "   Added %p" << *d->pointer );
+							report( "   Added %p" << d.reg );
 							analysis::DataflowGraph::Register live_reg( 
-								*d->pointer, d->type );
+								d.reg, d.type );
 							regs.push_back( live_reg );
 						}
 					}
@@ -111,7 +146,6 @@ namespace ir
 	{
 		assertM(_cfg != 0, "Must create cfg before building dfg.");
 		if(_dfg) return _dfg;
-		assignRegisters( *_cfg );
 		_dfg = new analysis::DataflowGraph( *_cfg );
 		return _dfg;
 	}
@@ -442,19 +476,17 @@ namespace ir
 			stream << "\t" << parameter->second.toString() << "\n";
 		}
 		
-		if (_dfg != 0) {
-			RegisterVector regs = getReferencedRegisters();
-		
-			for (RegisterVector::const_iterator reg = regs.begin();
-				reg != regs.end(); ++reg) {
-				if (reg->type == PTXOperand::pred) {
-					stream << "\t.reg .pred %p" << reg->id << ";\n";
-				}
-				else {
-					stream << "\t.reg ." 
-						<< PTXOperand::toString( reg->type ) << " " 
-						<< "%r" << reg->id << ";\n";
-				}
+		RegisterVector regs = getReferencedRegisters();
+	
+		for (RegisterVector::const_iterator reg = regs.begin();
+			reg != regs.end(); ++reg) {
+			if (reg->type == PTXOperand::pred) {
+				stream << "\t.reg .pred %p" << reg->id << ";\n";
+			}
+			else {
+				stream << "\t.reg ." 
+					<< PTXOperand::toString( reg->type ) << " " 
+					<< "%r" << reg->id << ";\n";
 			}
 		}
 		

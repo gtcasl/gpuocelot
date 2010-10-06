@@ -1394,7 +1394,7 @@ namespace executive
 				<< " in module " << moduleName);
 		}
 		
-/*		if(kernel->sharedMemorySize() + sharedMemory > 
+		if(kernel->sharedMemorySize() + sharedMemory > 
 			(size_t)properties().sharedMemPerBlock)
 		{
 			Throw("Out of shared memory for kernel \""
@@ -1404,10 +1404,10 @@ namespace executive
 				<< properties().sharedMemPerBlock << " for device " 
 				<< properties().name);
 		}
-	*/	
+		
 		if(kernel->constMemorySize() > (size_t)properties().totalConstantMemory)
 		{
-			Throw("Out of shared memory for kernel \""
+			Throw("Out of constant memory for kernel \""
 				<< kernel->name << "\" : \n\tpreallocated "
 				<< kernel->constMemorySize() << " is greater than available " 
 				<< properties().totalConstantMemory << " for device " 
@@ -1526,11 +1526,6 @@ namespace executive
 		translator::Translator::OptimizationLevel level)
 	{
 		// TODO work in something with the PTX JIT optimization level here
-	}
-	
-	bool NVIDIAGPUDevice::requiresDataflowAnalysis() const
-	{
-		return true;
 	}
 	
 }

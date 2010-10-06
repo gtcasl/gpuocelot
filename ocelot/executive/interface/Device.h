@@ -309,11 +309,7 @@ namespace executive
 			/*! \brief Set the optimization level for kernels in this device */
 			virtual void setOptimizationLevel(
 				translator::Translator::OptimizationLevel level) = 0;
-		
-		public:
-			/*! \brief Does this device require dataflow analysis on kernels? */
-			virtual bool requiresDataflowAnalysis() const;
-		
+				
 		public:
 			/*! \brief Sets the device properties */
 			Device(unsigned int flags = 0);

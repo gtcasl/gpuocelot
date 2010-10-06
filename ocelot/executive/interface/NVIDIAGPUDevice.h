@@ -364,10 +364,6 @@ namespace executive
 			void setOptimizationLevel(translator::Translator::OptimizationLevel 
 				level);
 
-		public:
-			/*! \brief Does this device require dataflow analysis on kernels? */
-			bool requiresDataflowAnalysis() const;
-
 	};
 }
 

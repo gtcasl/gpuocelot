@@ -114,12 +114,42 @@ namespace ir
 		return "";
 	}
 		
-	LLVMInstruction::Operand::Operand( const std::string& n, bool c, 
-		const Type& t ) : name( n ), constant( c ), type( t )
+	LLVMInstruction::Operand::Operand( const std::string& n, const Type& t ) :
+		name( n ), constant( false ), type( t )
 	{
 	
 	}
 
+	LLVMInstruction::Operand::Operand( LLVMI64 value ) :
+		constant( true ), type( Type( I64, Type::Element ) )
+	{
+		i64 = value;
+	}
+
+	LLVMInstruction::Operand::Operand( LLVMI32 value ) :
+		constant( true ), type( Type( I32, Type::Element ) )
+	{
+		i32 = value;
+	}
+	
+	LLVMInstruction::Operand::Operand( LLVMF32 value ) :
+		constant( true ), type( Type( F32, Type::Element ) )
+	{
+		f32 = value;
+	}
+	
+	LLVMInstruction::Operand::Operand( LLVMF64 value ) :
+		constant( true ), type( Type( F64, Type::Element ) )
+	{
+		f64 = value;
+	}
+	
+	LLVMInstruction::Operand::Operand( LLVMI1 value ) :
+		constant( true ), type( Type( I1, Type::Element ) )
+	{
+		i1 = value;
+	}
+	
 	bool LLVMInstruction::Operand::valid() const
 	{
 		return type.category != Type::InvalidCategory;
@@ -342,14 +372,14 @@ namespace ir
 	{
 		switch( d )
 		{
-			case I1: return "i1"; break;
-			case I8: return "i8"; break;
-			case I16: return "i16"; break;
-			case I32: return "i32"; break;
-			case I64: return "i64"; break;
+			case I1:   return "i1"; break;
+			case I8:   return "i8"; break;
+			case I16:  return "i16"; break;
+			case I32:  return "i32"; break;
+			case I64:  return "i64"; break;
 			case I128: return "i128"; break;
-			case F32: return "float"; break;
-			case F64: return "double"; break;
+			case F32:  return "float"; break;
+			case F64:  return "double"; break;
 			case F128: return "fp128"; break;
 			default: break;
 		}
@@ -360,9 +390,9 @@ namespace ir
 	{
 		switch( cc )
 		{
-			case CCallingConvention: return "ccc"; break;
-			case FastCallingConvention: return "fastcc"; break;
-			case ColdCallingConvention: return "coldcc"; break;
+			case CCallingConvention:       return "ccc"; break;
+			case FastCallingConvention:    return "fastcc"; break;
+			case ColdCallingConvention:    return "coldcc"; break;
 			case DefaultCallingConvention: return ""; break;
 			case InvalidCallingConvention: return "INVALID_CC"; break;
 		}
@@ -373,14 +403,14 @@ namespace ir
 	{
 		switch( attribute )
 		{
-			case ZeroExtend: return "zeroext"; break;
-			case SignExtend: return "signext"; break;
-			case InRegister: return "inreg"; break;
-			case ByValue: return "byval"; break;
-			case StructureReturn: return "sret"; break;
-			case NoAlias: return "noalias"; break;
-			case NoCapture: return "nocapture"; break;
-			case Nested: return "nest"; break;
+			case ZeroExtend:                return "zeroext"; break;
+			case SignExtend:                return "signext"; break;
+			case InRegister:                return "inreg"; break;
+			case ByValue:                   return "byval"; break;
+			case StructureReturn:           return "sret"; break;
+			case NoAlias:                   return "noalias"; break;
+			case NoCapture:                 return "nocapture"; break;
+			case Nested:                    return "nest"; break;
 			case InvalidParameterAttribute: return ""; break;
 		}
 		return "";
@@ -391,27 +421,27 @@ namespace ir
 		switch( comp )
 		{
 			case False: return "false"; break;
-			case Oeq: return "oeq"; break;
-			case Ogt: return "ogt"; break;
-			case Oge: return "oge"; break;
-			case Olt: return "olt"; break;
-			case Ole: return "ole"; break;
-			case One: return "one"; break;
-			case Ord: return "ord"; break;
-			case Ueq: return "ueq"; break;
-			case Ugt: return "ugt"; break;
-			case Uge: return "uge"; break;
-			case Ult: return "ult"; break;
-			case Ule: return "ule"; break;
-			case Une: return "une"; break;
-			case Uno: return "uno"; break;
-			case True: return "true"; break;
-			case Eq: return "eq"; break;
-			case Ne: return "ne"; break;
-			case Sgt: return "sgt"; break;
-			case Sge: return "sge"; break;
-			case Slt: return "slt"; break;
-			case Sle: return "sle"; break;
+			case Oeq:   return "oeq"; break;
+			case Ogt:   return "ogt"; break;
+			case Oge:   return "oge"; break;
+			case Olt:   return "olt"; break;
+			case Ole:   return "ole"; break;
+			case One:   return "one"; break;
+			case Ord:   return "ord"; break;
+			case Ueq:   return "ueq"; break;
+			case Ugt:   return "ugt"; break;
+			case Uge:   return "uge"; break;
+			case Ult:   return "ult"; break;
+			case Ule:   return "ule"; break;
+			case Une:   return "une"; break;
+			case Uno:   return "uno"; break;
+			case True:  return "true"; break;
+			case Eq:    return "eq"; break;
+			case Ne:    return "ne"; break;
+			case Sgt:   return "sgt"; break;
+			case Sge:   return "sge"; break;
+			case Slt:   return "slt"; break;
+			case Sle:   return "sle"; break;
 		}
 		return "";
 	}

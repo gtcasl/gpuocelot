@@ -38,6 +38,7 @@ namespace ir {
 			Call,
 			Clz,
 			CNot,
+			CopySign,
 			Cos,
 			Cvt,
 			Cvta,
@@ -317,6 +318,9 @@ namespace ir {
 			
 			/*! Permute mode for prmt instructions */
 			PermuteMode permuteMode;
+			
+			/*! For call instructions, indicates a tail call */
+			bool tailCall;
 		};
 	
 		/*! If the instruction is predicated, the guard */

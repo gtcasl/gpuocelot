@@ -193,7 +193,7 @@ namespace analysis
 					const RegisterSet& aliveOut() const;
 					/*! \brief Get the fallthrough block */
 					BlockVector::iterator fallthrough() const;
-					/*! \brief Get the target block */
+					/*! \brief Get a list of target blocks */
 					const BlockPointerSet& targets() const;
 					/*! \brief Get a list of predecessor blocks */
 					const BlockPointerSet& predecessors() const;
@@ -230,6 +230,8 @@ namespace analysis
 			typedef BlockVector::size_type size_type;
 			/*! \brief Register set */
 			typedef Block::RegisterSet RegisterSet;
+			/*! \brief Register set iterator */
+			typedef RegisterSet::const_iterator register_iterator;
 
 			/*! \brief A vector of iterators */
 			typedef std::vector< iterator >	BlockPointerVector;
@@ -237,7 +239,10 @@ namespace analysis
 			typedef BlockPointerVector::iterator pointer_iterator;		
 			/*! \brief A reverse pointer to an iterator */
 			typedef BlockPointerVector::reverse_iterator 
-				reverse_pointer_iterator;		
+				reverse_pointer_iterator;
+			/*! \brief A map from cfg blocks to dfg equivalents */
+			typedef std::unordered_map< ir::ControlFlowGraph::iterator, 
+				iterator > IteratorMap;
 
 		private:
 			BlockVector _blocks;
@@ -276,9 +281,20 @@ namespace analysis
 			/*! \brief Insert a Block between two existing blocks.
 				\param predecessor An iterator to the previous block.
 				\return An iterator to the inserted block.
+				
 				Note that this insert splits the fallthrough edge
 			*/
 			iterator insert( iterator predecessor, const std::string& label );
+			/*! \brief Insert a Block between two existing blocks.
+				\param predecessor An iterator to the previous block.
+				\param successor An iterator to the next block.
+				\return An iterator to the inserted block
+				
+				Note that this insert splits the edge 
+					between predecessor and successor.
+			*/
+			iterator insert( iterator predecessor, iterator successor, 
+				const std::string& label );
 			/*! \brief Split a block into two starting at a given instruction,
 				the split instruction goes in the first block */
 			iterator split( iterator block, unsigned int instruction, 
@@ -324,7 +340,8 @@ namespace analysis
 		public:
 			/*! \brief Get an executable sequence of blocks */
 			BlockPointerVector executableSequence();
-
+			/*! \brief Get a map from CFG to DFG iterators */
+			IteratorMap getCFGtoDFGMap();
 	};
 
 	std::ostream& operator<<( std::ostream& out, const DataflowGraph& graph );

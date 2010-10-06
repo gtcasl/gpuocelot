@@ -171,4 +171,3 @@ int executive::Device::runtimeVersion() const {
 	return _runtimeVersion;
 }
 
-

@@ -3267,8 +3267,6 @@ void cuda::CudaRuntime::setOptimizationLevel(
 		(*device)->setOptimizationLevel(l);
 		(*device)->unselect();
 	}
-	
-	
 
 	_unlock();
 }

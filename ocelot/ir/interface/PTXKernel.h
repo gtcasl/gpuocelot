@@ -46,6 +46,14 @@ namespace ir
 			static RegisterMap assignRegisters(ControlFlowGraph& cfg);
 
 		public:
+			/*! \brief Constructs a blank new PTX kernel.
+			
+				\param name The name of the kernel
+				\param isFunction Is this a kernel or a function?
+			*/
+			PTXKernel(const std::string& name = "", bool isFunction = false,
+				const ir::Module* module = 0);
+			
 			/*! Constructs a kernel from an iterator into the PTXStatementVector
 
 				\param start iterator into start of kernel

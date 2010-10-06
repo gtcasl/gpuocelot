@@ -19,15 +19,6 @@ namespace ir
 			int z; //! z dimension
 		public:
 			Dim3(int X=1, int Y=1, int Z=1);
-			bool operator==(const Dim3 &d) const {
-				return d.x == x && d.y == y && d.z == z;
-			}
-			bool operator!=(const Dim3 &d) const {
-				return !(d == *this);
-			}
-			int size() const {
-				return x * y * z;
-			}
 	};
 
 }

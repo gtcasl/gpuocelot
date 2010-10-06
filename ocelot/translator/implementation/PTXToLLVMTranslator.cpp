@@ -780,11 +780,11 @@ namespace translator
 	ir::LLVMInstruction::Operand PTXToLLVMTranslator::_translate( 
 		const ir::PTXOperand& o )
 	{
-		ir::LLVMInstruction::Operand op( o.identifier, 
-			o.addressMode == ir::PTXOperand::Immediate );
-
+		ir::LLVMInstruction::Operand op( o.identifier );
+		op.constant = o.addressMode == ir::PTXOperand::Immediate;
+		
 		op.type.type = _translate( o.type );
-
+		
 		if( o.vec == ir::PTXOperand::v1 )
 		{
 			op.type.category = ir::LLVMInstruction::Type::Element;
@@ -808,15 +808,15 @@ namespace translator
 			{
 				switch( o.type )
 				{
-					case ir::PTXOperand::s8: /* fall through */
+					case ir::PTXOperand::s8:  /* fall through */
 					case ir::PTXOperand::s16: /* fall through */
 					case ir::PTXOperand::s32: /* fall through */
 					case ir::PTXOperand::s64: /* fall through */
-					case ir::PTXOperand::u8: /* fall through */
+					case ir::PTXOperand::u8:  /* fall through */
 					case ir::PTXOperand::u16: /* fall through */
 					case ir::PTXOperand::u32: /* fall through */
 					case ir::PTXOperand::u64: /* fall through */
-					case ir::PTXOperand::b8: /* fall through */
+					case ir::PTXOperand::b8:  /* fall through */
 					case ir::PTXOperand::b16: /* fall through */
 					case ir::PTXOperand::b32: /* fall through */
 					case ir::PTXOperand::b64:
@@ -1311,10 +1311,10 @@ namespace translator
 			}
 			else if ( i.carry & ir::PTXInstruction::CC )
 			{
-				ir::LLVMInstruction::Operand extendedA( _tempRegister(), false, 
+				ir::LLVMInstruction::Operand extendedA( _tempRegister(), 
 					ir::LLVMInstruction::Type( ir::LLVMInstruction::I64, 
 					ir::LLVMInstruction::Type::Element ) );
-				ir::LLVMInstruction::Operand extendedB( _tempRegister(), false, 
+				ir::LLVMInstruction::Operand extendedB( _tempRegister(),
 					ir::LLVMInstruction::Type( ir::LLVMInstruction::I64, 
 					ir::LLVMInstruction::Type::Element ) );
 				
@@ -1347,7 +1347,7 @@ namespace translator
 					_add( zext );					
 				}
 				
-				ir::LLVMInstruction::Operand extendedD( _tempRegister(), false, 
+				ir::LLVMInstruction::Operand extendedD( _tempRegister(),
 					ir::LLVMInstruction::Type( ir::LLVMInstruction::I64, 
 					ir::LLVMInstruction::Type::Element ) );
 				
@@ -1368,7 +1368,7 @@ namespace translator
 				
 				ir::LLVMLshr shift;
 				
-				shift.d = ir::LLVMInstruction::Operand ( _tempRegister(), false, 
+				shift.d = ir::LLVMInstruction::Operand ( _tempRegister(),
 					ir::LLVMInstruction::Type( ir::LLVMInstruction::I64, 
 					ir::LLVMInstruction::Type::Element ) );
 				shift.a = extendedD;
@@ -1382,7 +1382,7 @@ namespace translator
 				
 				ir::LLVMAnd mask;
 				
-				mask.d = ir::LLVMInstruction::Operand ( _tempRegister(), false, 
+				mask.d = ir::LLVMInstruction::Operand ( _tempRegister(),
 					ir::LLVMInstruction::Type( ir::LLVMInstruction::I64, 
 					ir::LLVMInstruction::Type::Element ) );
 				mask.a = shift.d;
@@ -1416,13 +1416,13 @@ namespace translator
 	{
 		if( i.carry & ir::PTXInstruction::CC )
 		{
-				ir::LLVMInstruction::Operand extendedA( _tempRegister(), false, 
+				ir::LLVMInstruction::Operand extendedA( _tempRegister(),
 					ir::LLVMInstruction::Type( ir::LLVMInstruction::I64, 
 					ir::LLVMInstruction::Type::Element ) );
-				ir::LLVMInstruction::Operand extendedB( _tempRegister(), false, 
+				ir::LLVMInstruction::Operand extendedB( _tempRegister(),
 					ir::LLVMInstruction::Type( ir::LLVMInstruction::I64, 
 					ir::LLVMInstruction::Type::Element ) );
-				ir::LLVMInstruction::Operand extendedC( _tempRegister(), false, 
+				ir::LLVMInstruction::Operand extendedC( _tempRegister(),
 					ir::LLVMInstruction::Type( ir::LLVMInstruction::I64, 
 					ir::LLVMInstruction::Type::Element ) );
 				
@@ -1465,10 +1465,10 @@ namespace translator
 					_add( zext );					
 				}
 				
-				ir::LLVMInstruction::Operand extendedDt( _tempRegister(), false, 
+				ir::LLVMInstruction::Operand extendedDt( _tempRegister(),
 					ir::LLVMInstruction::Type( ir::LLVMInstruction::I64, 
 					ir::LLVMInstruction::Type::Element ) );
-				ir::LLVMInstruction::Operand extendedD( _tempRegister(), false, 
+				ir::LLVMInstruction::Operand extendedD( _tempRegister(),
 					ir::LLVMInstruction::Type( ir::LLVMInstruction::I64, 
 					ir::LLVMInstruction::Type::Element ) );
 				
@@ -1495,7 +1495,7 @@ namespace translator
 				
 				ir::LLVMLshr shift;
 				
-				shift.d = ir::LLVMInstruction::Operand ( _tempRegister(), false, 
+				shift.d = ir::LLVMInstruction::Operand ( _tempRegister(),
 					ir::LLVMInstruction::Type( ir::LLVMInstruction::I64, 
 					ir::LLVMInstruction::Type::Element ) );
 				shift.a = extendedD;
@@ -1509,7 +1509,7 @@ namespace translator
 				
 				ir::LLVMAnd mask;
 				
-				mask.d = ir::LLVMInstruction::Operand ( _tempRegister(), false, 
+				mask.d = ir::LLVMInstruction::Operand ( _tempRegister(),
 					ir::LLVMInstruction::Type( ir::LLVMInstruction::I64, 
 					ir::LLVMInstruction::Type::Element ) );
 				mask.a = shift.d;
@@ -4114,10 +4114,10 @@ namespace translator
 			}
 			else if( i.carry & ir::PTXInstruction::CC )
 			{
-				ir::LLVMInstruction::Operand extendedA( _tempRegister(), false, 
+				ir::LLVMInstruction::Operand extendedA( _tempRegister(),
 					ir::LLVMInstruction::Type( ir::LLVMInstruction::I64, 
 					ir::LLVMInstruction::Type::Element ) );
-				ir::LLVMInstruction::Operand extendedB( _tempRegister(), false, 
+				ir::LLVMInstruction::Operand extendedB( _tempRegister(),
 					ir::LLVMInstruction::Type( ir::LLVMInstruction::I64, 
 					ir::LLVMInstruction::Type::Element ) );
 				
@@ -4150,7 +4150,7 @@ namespace translator
 					_add( zext );					
 				}
 				
-				ir::LLVMInstruction::Operand extendedD( _tempRegister(), false, 
+				ir::LLVMInstruction::Operand extendedD( _tempRegister(),
 					ir::LLVMInstruction::Type( ir::LLVMInstruction::I64, 
 					ir::LLVMInstruction::Type::Element ) );
 				
@@ -4171,7 +4171,7 @@ namespace translator
 				
 				ir::LLVMLshr shift;
 				
-				shift.d = ir::LLVMInstruction::Operand ( _tempRegister(), false, 
+				shift.d = ir::LLVMInstruction::Operand ( _tempRegister(),
 					ir::LLVMInstruction::Type( ir::LLVMInstruction::I64, 
 					ir::LLVMInstruction::Type::Element ) );
 				shift.a = extendedD;
@@ -4185,7 +4185,7 @@ namespace translator
 				
 				ir::LLVMAnd mask;
 				
-				mask.d = ir::LLVMInstruction::Operand ( _tempRegister(), false, 
+				mask.d = ir::LLVMInstruction::Operand ( _tempRegister(),
 					ir::LLVMInstruction::Type( ir::LLVMInstruction::I64, 
 					ir::LLVMInstruction::Type::Element ) );
 				mask.a = shift.d;
@@ -4219,13 +4219,13 @@ namespace translator
 	{	
 		if( i.carry & ir::PTXInstruction::CC )
 		{
-				ir::LLVMInstruction::Operand extendedA( _tempRegister(), false, 
+				ir::LLVMInstruction::Operand extendedA( _tempRegister(),
 					ir::LLVMInstruction::Type( ir::LLVMInstruction::I64, 
 					ir::LLVMInstruction::Type::Element ) );
-				ir::LLVMInstruction::Operand extendedB( _tempRegister(), false, 
+				ir::LLVMInstruction::Operand extendedB( _tempRegister(),
 					ir::LLVMInstruction::Type( ir::LLVMInstruction::I64, 
 					ir::LLVMInstruction::Type::Element ) );
-				ir::LLVMInstruction::Operand extendedC( _tempRegister(), false, 
+				ir::LLVMInstruction::Operand extendedC( _tempRegister(),
 					ir::LLVMInstruction::Type( ir::LLVMInstruction::I64, 
 					ir::LLVMInstruction::Type::Element ) );
 				
@@ -4268,10 +4268,10 @@ namespace translator
 					_add( zext );					
 				}
 				
-				ir::LLVMInstruction::Operand extendedDt( _tempRegister(), false, 
+				ir::LLVMInstruction::Operand extendedDt( _tempRegister(),
 					ir::LLVMInstruction::Type( ir::LLVMInstruction::I64, 
 					ir::LLVMInstruction::Type::Element ) );
-				ir::LLVMInstruction::Operand extendedD( _tempRegister(), false, 
+				ir::LLVMInstruction::Operand extendedD( _tempRegister(),
 					ir::LLVMInstruction::Type( ir::LLVMInstruction::I64, 
 					ir::LLVMInstruction::Type::Element ) );
 				
@@ -4300,7 +4300,7 @@ namespace translator
 				
 				ir::LLVMLshr shift;
 				
-				shift.d = ir::LLVMInstruction::Operand ( _tempRegister(), false, 
+				shift.d = ir::LLVMInstruction::Operand ( _tempRegister(),
 					ir::LLVMInstruction::Type( ir::LLVMInstruction::I64, 
 					ir::LLVMInstruction::Type::Element ) );
 				shift.a = extendedD;
@@ -4314,7 +4314,7 @@ namespace translator
 				
 				ir::LLVMAnd mask;
 				
-				mask.d = ir::LLVMInstruction::Operand ( _tempRegister(), false, 
+				mask.d = ir::LLVMInstruction::Operand ( _tempRegister(),
 					ir::LLVMInstruction::Type( ir::LLVMInstruction::I64, 
 					ir::LLVMInstruction::Type::Element ) );
 				mask.a = shift.d;

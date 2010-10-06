@@ -10,7 +10,7 @@
 #include <hydrazine/implementation/string.h>
 #include <hydrazine/implementation/debug.h>
 
-#include <unordered_set>
+#include <set>
 #include <stack>
 #include <queue>
 #include <algorithm>
@@ -25,6 +25,13 @@ namespace ir {
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
+
+class BlockSetCompare {
+public:
+	bool operator()(const ir::ControlFlowGraph::iterator &a_it, const ir::ControlFlowGraph::iterator &b_it) const {
+		return a_it->label < b_it->label;
+	}
+};
 
 BasicBlock::DotFormatter::DotFormatter() { }
 BasicBlock::DotFormatter::~DotFormatter() { }
@@ -447,7 +454,7 @@ void ControlFlowGraph::clear() {
 
 
 ControlFlowGraph::BlockPointerVector ControlFlowGraph::post_order_sequence() {
-	typedef std::unordered_set<iterator> BlockSet;
+	typedef std::set<iterator, BlockSetCompare> BlockSet;
 	typedef std::stack<iterator> Stack;
 	
 	report("Creating post order traversal");
@@ -491,7 +498,7 @@ ControlFlowGraph::BlockPointerVector ControlFlowGraph::post_order_sequence() {
 }
 
 ControlFlowGraph::BlockPointerVector ControlFlowGraph::pre_order_sequence() {
-	typedef std::unordered_set<iterator> BlockSet;
+	typedef std::set<iterator, BlockSetCompare> BlockSet;
 	typedef std::stack<iterator> Stack;
 	
 	BlockSet visited;
@@ -520,7 +527,7 @@ ControlFlowGraph::BlockPointerVector ControlFlowGraph::pre_order_sequence() {
 }
 
 ControlFlowGraph::BlockPointerVector ControlFlowGraph::executable_sequence() {
-	typedef std::unordered_set<iterator> BlockSet;
+	typedef std::set<iterator, BlockSetCompare> BlockSet;
 	BlockPointerVector sequence;
 	BlockSet unscheduled;
 

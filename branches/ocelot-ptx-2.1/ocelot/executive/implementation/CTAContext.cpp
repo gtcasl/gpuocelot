@@ -15,7 +15,14 @@
 
 #define REPORT_BASE 0
 
-executive::CTAContext::CTAContext(const executive::EmulatedKernel *k, executive::CooperativeThreadArray *c): kernel(k), cta(c) {
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+executive::CTAContext::CTAContext(
+	const executive::EmulatedKernel *k, 
+	executive::CooperativeThreadArray *c)
+		: kernel(k), cta(c) 
+{
+	
 	using namespace boost;
 	using namespace std;
 
@@ -34,6 +41,14 @@ executive::CTAContext::~CTAContext() {
 
 }
 
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+/*! Increments PCs of active threads as well as PC
+*/
+void executive::CTAContext::incrementPC() {
+	PC ++;
+}
+		
 bool executive::CTAContext::predicated(int threadID, const ir::PTXInstruction &instr) {
 	using namespace ir;
 	
@@ -49,11 +64,7 @@ bool executive::CTAContext::predicated(int threadID, const ir::PTXInstruction &i
 			break;
 		default:
 			{
-				report("CTAContext::predicated is actually inspecting a predicate register ..");
-
 				bool pred = cta->getRegAsPredicate(threadID, instr.pg.reg);
-				report("  with value " << pred);
-
 				on = ((pred && condition == PTXOperand::Pred) 
 					|| (!pred && condition == PTXOperand::InvPred));
 			}
@@ -63,4 +74,5 @@ bool executive::CTAContext::predicated(int threadID, const ir::PTXInstruction &i
 	return on;
 }
 
+/////////////////////////////////////////////////////////////////////////////////////////////////
 

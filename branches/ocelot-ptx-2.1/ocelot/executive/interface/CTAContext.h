@@ -9,9 +9,13 @@
 #ifndef EXECUTIVE_CTACONTEXT_H_INCLUDED
 #define EXECUTIVE_CTACONTEXT_H_INCLUDED
 
+#include <vector>
 #include <boost/dynamic_bitset.hpp>
+
 #include <ocelot/ir/interface/PTXOperand.h>
 #include <ocelot/ir/interface/Kernel.h>
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace executive {
 
@@ -44,8 +48,10 @@ namespace executive {
 		/*! Given a thread's ID, determine if the instruction should execute */
 		bool predicated(int threadID, const ir::PTXInstruction &instr);
 		
+		/*! Increments PCs of active threads as well as PC
+		*/
+		void incrementPC();
 	};
-
 }
 
 #endif

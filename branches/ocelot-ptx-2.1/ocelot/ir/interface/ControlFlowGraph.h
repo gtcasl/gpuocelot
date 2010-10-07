@@ -23,6 +23,7 @@ class BasicBlock {
 public:
 	/*! \brief A list of blocks */
 	typedef std::list< BasicBlock > BlockList;
+	typedef BlockList::iterator Pointer;
 
 	/*! \brief An edge connects two basic blocks */
 	class Edge {
@@ -48,7 +49,6 @@ public:
 	};
 
 	typedef std::list< Edge > EdgeList;
-	typedef BlockList::iterator Pointer;
 	typedef std::vector< Pointer > BlockPointerVector;
 	typedef std::vector< EdgeList::iterator > EdgePointerVector;
 	typedef std::list< Instruction* > InstructionList;

@@ -381,7 +381,8 @@ void ir::Module::extractPTXKernels() {
 		}
 		else if (statement.directive == PTXStatement::Const
 			|| statement.directive == PTXStatement::Global
-			|| statement.directive == PTXStatement::Shared) {
+			|| statement.directive == PTXStatement::Shared
+			|| (statement.directive == PTXStatement::Local && !inKernel)) {
 			assertM(_globals.count(statement.name) == 0, "Global operand '" 
 				<< statement.name << "' declared more than once." );
 

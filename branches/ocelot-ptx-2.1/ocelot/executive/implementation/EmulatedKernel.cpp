@@ -18,6 +18,8 @@
 #include <ocelot/executive/interface/RuntimeException.h>
 #include <ocelot/executive/interface/CooperativeThreadArray.h>
 
+#include <ocelot/ir/interface/HammockGraph.h>
+
 #include <ocelot/trace/interface/TraceGenerator.h>
 
 #include <assert.h>
@@ -171,8 +173,9 @@ void executive::EmulatedKernel::initialize() {
 	initializeLocalMemory();
 	invalidateCallTargets();
 }
-
+		
 void executive::EmulatedKernel::constructInstructionSequence() {
+
 	typedef std::unordered_map<ir::ControlFlowGraph::InstructionList::iterator, 
 		ir::ControlFlowGraph::InstructionList::iterator > InstructionMap;
 	typedef std::unordered_map<ir::ControlFlowGraph::InstructionList::iterator,
@@ -185,9 +188,8 @@ void executive::EmulatedKernel::constructInstructionSequence() {
 	functionEntryPoints.insert(std::make_pair(name, 0));
 
 	// visit basic blocks and add reconverge instructions
-	ir::ControlFlowGraph::BlockPointerVector 
-		bb_sequence = cfg()->executable_sequence();
-	
+	ir::ControlFlowGraph::BlockPointerVector bb_sequence = cfg()->executable_sequence();
+		
 	InstructionMap reconvergeTargets;
 	ReconvergeToBlockMap reconvergeSources;
 	
@@ -633,6 +635,8 @@ void executive::EmulatedKernel::initializeLocalMemory() {
 	unsigned int localOffset = 0;
 
 	map<string, unsigned int> label_map;
+	
+	report("Initialize local memory");
 	
 	if(module != 0) {
 		for(ir::Module::GlobalMap::const_iterator 

@@ -29,7 +29,7 @@
 #endif
 
 // global control for enabling reporting within the emulator
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 // if 0, only reconverge warps at syncthreads
 #define IDEAL_RECONVERGENCE 1

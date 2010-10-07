@@ -137,7 +137,7 @@
 %%
 
 nonEntryStatements : version | target | registerDeclaration | fileDeclaration 
-	| preprocessor | textureDeclaration | globalSharedDeclaration;
+	| preprocessor | textureDeclaration | globalSharedDeclaration | globalLocalDeclaration;
 
 nonEntryStatement : nonEntryStatements
 {
@@ -358,6 +358,13 @@ initializableDeclaration : initializable addressableVariablePrefix
 	state.initializableDeclaration( $<text>3, @3, @5 );
 	state.statementEnd( @3 );
 };
+
+globalLocalDeclaration:  externOrVisible TOKEN_LOCAL 
+	addressableVariablePrefix identifier arrayDimensions ';'
+{
+	state.locationAddress( $<value>2 );
+	state.initializableDeclaration( $<text>4, @4, @6 );
+}
 
 textureSpace : TOKEN_PARAM | TOKEN_GLOBAL;
 

@@ -86,7 +86,7 @@ int main() {
 	}
 	report("  compute mode: " << pi);
 	
-	result = cuModuleLoad(&module, "ocelot/cuda/test/driver/sequence.ptx");
+	result = cuModuleLoad(&module, "ocelot/cuda/test/driver/sequence2.ptx");
 	if (result != CUDA_SUCCESS) {
 		report("cuModuleLoad() failed: " << result);
 		return 1;

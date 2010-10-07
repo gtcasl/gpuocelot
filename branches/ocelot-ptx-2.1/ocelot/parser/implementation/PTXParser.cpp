@@ -685,7 +685,8 @@ namespace parser
 
 		assert( directive == ir::PTXStatement::Const 
 			|| directive == ir::PTXStatement::Global 
-			|| directive == ir::PTXStatement::Shared );
+			|| directive == ir::PTXStatement::Shared
+			|| directive == ir::PTXStatement::Local);
 
 		statement.directive = directive;
 		report( "   Name = " << name );

@@ -25,6 +25,7 @@ namespace ir
 			case End:                   return "end";
 			case EndIf:                 return "endif";
 			case EndLoop:               return "endloop";
+			case Exp:                   return "exp";
 			case Fence:                 return "fence";
 			case Iadd:                  return "iadd";
 			case Iand:                  return "iand";
@@ -32,6 +33,8 @@ namespace ir
 			case IfLogicalZ:            return "if_logicalz";
 			case Ige:                   return "ige";
 			case Ilt:                   return "ilt";
+			case Imax:                  return "imax";
+			case Imin:                  return "imin";
 			case Imul:                  return "imul";
 			case Ine:                   return "ine";
 			case Inegate:               return "inegate";
@@ -279,6 +282,15 @@ namespace ir
 		return new ILEndLoop(*this);
 	}
 
+	ILExp::ILExp() : ILUnaryInstruction(Exp)
+	{
+	}
+
+	Instruction *ILExp::clone(bool copy) const
+	{
+		return new ILExp(*this);
+	}
+
 	ILFence::ILFence() : ILInstruction(Fence), _threads(true), _lds(false)
 	{
 	}
@@ -372,6 +384,24 @@ namespace ir
 	Instruction *ILIlt::clone(bool copy) const
 	{
 		return new ILIlt(*this);
+	}
+
+	ILImax::ILImax() : ILBinaryInstruction(Imax)
+	{
+	}
+
+	Instruction *ILImax::clone(bool copy) const
+	{
+		return new ILImax(*this);
+	}
+
+	ILImin::ILImin() : ILBinaryInstruction(Imin)
+	{
+	}
+
+	Instruction *ILImin::clone(bool copy) const
+	{
+		return new ILImin(*this);
 	}
 
 	ILImul::ILImul() : ILBinaryInstruction(Imul)

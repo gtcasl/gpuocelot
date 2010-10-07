@@ -64,12 +64,15 @@ namespace translator
 			void _translateBra(const ir::PTXInstruction &i);
 			void _translateCvt(const ir::PTXInstruction &i);
 			void _translateDiv(const ir::PTXInstruction &i);
+			void _translateEx2(const ir::PTXInstruction &i);
 			void _translateExit(const ir::PTXInstruction &i);
 			void _translateLd(const ir::PTXInstruction &i);
 			void _translateLdSharedByte(const ir::PTXInstruction &i);
 			void _translateLdSharedDword(const ir::PTXInstruction &i);
 			void _translateLg2(const ir::PTXInstruction &i);
 			void _translateMad(const ir::PTXInstruction &i);
+			void _translateMax(const ir::PTXInstruction &i);
+			void _translateMin(const ir::PTXInstruction &i);
 			void _translateMov(const ir::PTXInstruction &i);
 			void _translateMul(const ir::PTXInstruction &i);
 			void _translateNeg(const ir::PTXInstruction &i);
@@ -83,11 +86,11 @@ namespace translator
 			void _translateShl(const ir::PTXInstruction &i);
 			void _translateShr(const ir::PTXInstruction &i);
 			void _translateSt(const ir::PTXInstruction &i);
-			void _translateStSharedByte(const ir::PTXInstruction &i);
-			void _translateStSharedDword(const ir::PTXInstruction &i);
 			void _translateSub(const ir::PTXInstruction &i);
 			void _translateXor(const ir::PTXInstruction& i);
 
+			void _translateStSharedByte(const ir::PTXInstruction &i);
+			void _translateStSharedDword(const ir::PTXInstruction &i);
 			ir::ILOperand _translateLiteral(int l);
 			ir::ILOperand _translateLiteral(float l);
 			std::string _translateConstantBuffer(const std::string &ident);

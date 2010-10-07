@@ -24,9 +24,10 @@
 namespace executive
 {
 	ATIExecutableKernel::ATIExecutableKernel(ir::Kernel &k, CALcontext *context,
-			CALevent *event, CALresource *uav0, CALresource *cb0, CALresource *cb1)
+			CALevent *event, CALresource *uav0, CALresource *cb0, 
+			CALresource *cb1, Device* d)
 		: 
-			ExecutableKernel(k), 
+			ExecutableKernel(k, d), 
 			_context(context),
 			_event(event),
 			_info(),
@@ -280,8 +281,8 @@ namespace executive
 		CalDriver()->calCtxSetMem(*_context, _uav0Name, _uav0Mem);
 
 		// uav1Name is binded to uav0Mem (for less-than-32bits memory ops)
-		CalDriver()->calModuleGetName(&_uav1Name, *_context, _module, "uav1");
-		CalDriver()->calCtxSetMem(*_context, _uav1Name, _uav0Mem);
+		//CalDriver()->calModuleGetName(&_uav1Name, *_context, _module, "uav1");
+		//CalDriver()->calCtxSetMem(*_context, _uav1Name, _uav0Mem);
 
 		CalDriver()->calCtxGetMem(&_cb0Mem, *_context, *_cb0Resource);
 		CalDriver()->calModuleGetName(&_cb0Name, *_context, _module, "cb0");
@@ -395,9 +396,72 @@ namespace executive
 		CalDriver()->calResUnmap(*_cb1Resource);
 	}
 
+	void ATIExecutableKernel::initializeGlobalMemory()
+	{
+		report("Initializing global variables for kernel " << name);
+
+		ir::ControlFlowGraph::iterator block;
+		for (block = cfg()->begin() ; block != cfg()->end() ; block++)
+		{
+			ir::ControlFlowGraph::InstructionList insts = block->instructions;
+			ir::ControlFlowGraph::InstructionList::iterator inst;
+			for (inst = insts.begin() ; inst != insts.end() ; inst++)
+			{
+				ir::PTXInstruction& ptx = 
+					static_cast<ir::PTXInstruction&>(**inst);
+
+				if (ptx.opcode == ir::PTXInstruction::Mov ||
+						ptx.opcode == ir::PTXInstruction::Ld ||
+						ptx.opcode == ir::PTXInstruction::St)
+				{
+					if (ptx.addressSpace != ir::PTXInstruction::Const && 
+							ptx.addressSpace != ir::PTXInstruction::Global)
+					{
+						continue;
+					}
+
+					ir::PTXOperand* operands[] = {&ptx.d, &ptx.a, &ptx.b, 
+						&ptx.c};
+
+					for (unsigned int i = 0 ; i != 4 ; i++)
+					{
+						ir::PTXOperand* operand = operands[i];
+
+						if (operand->addressMode != ir::PTXOperand::Address)
+							continue;
+
+						ir::Module::GlobalMap::const_iterator global = 
+							module->globals().find(operand->identifier);
+
+						if (global == module->globals().end())
+							continue;
+
+						Device::MemoryAllocation* allocation = 
+							device->getGlobalAllocation(module->path(),
+									global->first);
+
+						operand->addressMode = ir::PTXOperand::Immediate;
+						operand->imm_uint = 
+							(long long unsigned int)allocation->pointer() -
+							ATIGPUDevice::Uav0BaseAddr;
+
+						report("For instruction " << ptx.toString()
+								<< ", mapping constant label "
+								<< global->first << " to " << 
+								operand->imm_uint);
+					}
+				}
+			}
+		}
+	}
+
+	void ATIExecutableKernel::updateGlobals() {
+		initializeGlobalMemory();
+	}
+
 	void ATIExecutableKernel::updateMemory()
 	{
-		assertM(false, "Not implemented yet");
+		updateGlobals();
 	}
 
 	ExecutableKernel::TextureVector 

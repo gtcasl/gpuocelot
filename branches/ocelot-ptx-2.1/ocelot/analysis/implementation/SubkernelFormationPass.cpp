@@ -28,7 +28,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 // Standard Library Includes
 #include <queue>

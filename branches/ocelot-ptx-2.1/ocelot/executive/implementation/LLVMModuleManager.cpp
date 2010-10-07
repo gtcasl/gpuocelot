@@ -46,7 +46,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 namespace executive
 {
@@ -585,15 +585,13 @@ static void setupPTXMemoryReferences(ir::PTXKernel& kernel,
 	setupLocalMemoryReferences(kernel, metadata, parent);
 }
 
-static void translate(llvm::Module*& module, ir::PTXKernel& kernel)
+static void translate(llvm::Module*& module, ir::PTXKernel& kernel,
+	translator::Translator::OptimizationLevel optimization)
 {
 	assert(module == 0);
 
-	int level = api::OcelotConfiguration::get().executive.optimizationLevel;
-
 	report(" Translating kernel.");
-	translator::PTXToLLVMTranslator translator(
-		(translator::Translator::OptimizationLevel)level);
+	translator::PTXToLLVMTranslator translator(optimization);
 	ir::LLVMKernel* llvmKernel = static_cast<ir::LLVMKernel*>(
 		translator.translate(&kernel));
 	
@@ -791,9 +789,13 @@ LLVMModuleManager::KernelAndTranslation::MetaData*
 	optimizePTX(*_kernel, _optimizationLevel, _offsetId);
 	_metadata = generateMetadata(*_kernel, _optimizationLevel);
 	setupPTXMemoryReferences(*_kernel, _metadata, *_parent);
-	translate(_module, *_kernel);
+	translate(_module, *_kernel, _optimizationLevel);
 	
-	_kernel->dfg()->fromSsa();
+	if(_optimizationLevel == translator::Translator::ReportOptimization 
+		|| _optimizationLevel == translator::Translator::DebugOptimization)
+	{
+		_kernel->dfg()->fromSsa();
+	}
 	
 	optimize(*_module, _optimizationLevel);
 	codegen(_metadata->function, *_module, *_kernel);

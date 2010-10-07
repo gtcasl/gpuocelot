@@ -29,14 +29,14 @@
 #endif
 
 // global control for enabling reporting within the emulator
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 // if 0, only reconverge warps at syncthreads
 #define IDEAL_RECONVERGENCE 1
 
 // reporting for kernel instructions
 #define REPORT_STATIC_INSTRUCTIONS 1
-#define REPORT_DYNAMIC_INSTRUCTIONS 0
+#define REPORT_DYNAMIC_INSTRUCTIONS 1
 
 // reporting for register accesses
 #define REPORT_NTH_THREAD_ONLY 0

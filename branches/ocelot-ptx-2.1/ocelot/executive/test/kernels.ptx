@@ -1,24 +1,24 @@
 	.version 2.1
 	.target sm_20
 	// compiled with /usr/local/cuda/open64/lib//be
-	// nvopencc 3.1 built on 2010-04-27
+	// nvopencc 3.2 built on 2010-09-08
 
 	//-----------------------------------------------------------
-	// Compiling /tmp/tmpxft_00000b2d_00000000-7_kernels.cpp3.i (/tmp/ccBI#.iFWQMU)
+	// Compiling /tmp/tmpxft_000041ca_00000000-9_kernels.cpp3.i (/tmp/ccBI#.H4WGVs)
 	//-----------------------------------------------------------
 
 	//-----------------------------------------------------------
 	// Options:
 	//-----------------------------------------------------------
-	//  Target:ptx, ISA:sm_20, Endian:little, Pointer Size:32
+	//  Target:ptx, ISA:sm_20, Endian:little, Pointer Size:64
 	//  -O3	(Optimization level)
 	//  -g0	(Debug level)
 	//  -m2	(Report advisories)
 	//-----------------------------------------------------------
 
 	.file	1	"<command-line>"
-	.file	2	"/tmp/tmpxft_00000b2d_00000000-6_kernels.cudafe2.gpu"
-	.file	3	"/usr/lib/gcc/i486-linux-gnu/4.4.3/include/stddef.h"
+	.file	2	"/tmp/tmpxft_000041ca_00000000-8_kernels.cudafe2.gpu"
+	.file	3	"/usr/lib/gcc/x86_64-linux-gnu/4.4.3/include/stddef.h"
 	.file	4	"/usr/local/cuda/bin/../include/crt/device_runtime.h"
 	.file	5	"/usr/local/cuda/bin/../include/host_defines.h"
 	.file	6	"/usr/local/cuda/bin/../include/builtin_types.h"
@@ -32,7 +32,7 @@
 	.file	14	"/usr/include/bits/types.h"
 	.file	15	"/usr/include/time.h"
 	.file	16	"/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-	.file	17	"kernels.cu"
+	.file	17	"../../tests/ptx/synthetic/kernels.cu"
 	.file	18	"/usr/local/cuda/bin/../include/common_functions.h"
 	.file	19	"/usr/local/cuda/bin/../include/math_functions.h"
 	.file	20	"/usr/local/cuda/bin/../include/math_constants.h"
@@ -48,15 +48,16 @@
 	.const .align 4 .b8 __cudart_i2opi_f[24] = {65,144,67,60,153,149,98,219,192,221,52,245,209,87,39,252,41,21,68,78,110,131,249,162};
 
 	.entry _Z17k_sequenceLoopingPfi (
-		.param .u32 __cudaparm__Z17k_sequenceLoopingPfi_ptr,
+		.param .u64 __cudaparm__Z17k_sequenceLoopingPfi_ptr,
 		.param .s32 __cudaparm__Z17k_sequenceLoopingPfi_N)
 	{
-	.reg .u32 %r<89>;
+	.reg .u32 %r<79>;
+	.reg .u64 %rd<12>;
 	.reg .f32 %f<37>;
 	.reg .pred %p<14>;
-	.local .align 4 .b8 __cuda___cuda_result_168[28];
+	.local .align 4 .b8 __cuda___cuda_result_3212[28];
 	.loc	17	6	0
-$LBB1__Z17k_sequenceLoopingPfi:
+$LDWbegin__Z17k_sequenceLoopingPfi:
 	.loc	19	1702	0
 	cvt.s32.u32 	%r1, %tid.x;
 	cvt.rn.f32.s32 	%f1, %r1;
@@ -64,180 +65,184 @@ $LBB1__Z17k_sequenceLoopingPfi:
 	mov.f32 	%f3, 0f7f800000;     	// ((1.0F)/(0.0F))
 	setp.eq.f32 	%p1, %f2, %f3;
 	@!%p1 bra 	$Lt_0_11778;
+	.loc	19	1703	0
 	neg.f32 	%f4, %f1;
 	add.rn.f32 	%f5, %f1, %f4;
-	bra.uni 	$Lt_0_258;
+	bra.uni 	$LDWendi___isinff_177_1;
 $Lt_0_11778:
 	mov.f32 	%f6, 0f473ba700;     	// 48039
 	setp.gt.f32 	%p2, %f2, %f6;
 	@!%p2 bra 	$Lt_0_12290;
 	.loc	19	1396	0
-	mov.u32 	%r2, __cudart_i2opi_f;
-	mov.b32 	%r3, %f1;
-	and.b32 	%r4, %r3, -2147483648;
-	mov.s32 	%r5, %r4;
+	mov.b32 	%r2, %f1;
+	and.b32 	%r3, %r2, -2147483648;
+	mov.s32 	%r4, %r3;
 	.loc	19	24	0
-	mov.s32 	%r6, %r2;
-	add.u32 	%r7, %r2, 24;
-	mov.u32 	%r8, __cuda___cuda_result_168;
-	shl.b32 	%r9, %r3, 8;
-	or.b32 	%r10, %r9, -2147483648;
-	mov.u32 	%r11, 0;
+	shl.b32 	%r5, %r2, 8;
+	mov.u64 	%rd1, __cudart_i2opi_f;
+	mov.u64 	%rd2, __cuda___cuda_result_3212;
+	or.b32 	%r6, %r5, -2147483648;
+	mov.s32 	%r7, 0;
+	mov.u32 	%r8, 0;
 $Lt_0_13314:
 	.pragma "nounroll";
  //<loop> Loop body line 24, nesting depth: 1, iterations: 6
 	.loc	19	1410	0
-	ld.const.u32 	%r12, [%r6+0];
-	mul.lo.u32 	%r13, %r12, %r10;
-	add.u32 	%r14, %r13, %r11;
+	ld.const.u32 	%r9, [%rd1+0];
+	mul.lo.u32 	%r10, %r6, %r9;
+	add.u32 	%r11, %r10, %r8;
 	.loc	19	1411	0
-	set.gt.u32.u32 	%r15, %r13, %r14;
-	neg.s32 	%r16, %r15;
-	mul.hi.u32 	%r17, %r12, %r10;
-	add.u32 	%r11, %r16, %r17;
+	set.gt.u32.u32 	%r12, %r10, %r11;
+	neg.s32 	%r13, %r12;
+	mul.hi.u32 	%r14, %r9, %r6;
+	add.u32 	%r8, %r13, %r14;
 	.loc	19	1412	0
-	st.local.u32 	[%r8+0], %r14;
-	add.u32 	%r8, %r8, 4;
-	add.u32 	%r6, %r6, 4;
-	setp.ne.u32 	%p3, %r6, %r7;
+	st.local.u32 	[%rd2+0], %r11;
+	add.s32 	%r7, %r7, 1;
+	add.u64 	%rd2, %rd2, 4;
+	add.u64 	%rd1, %rd1, 4;
+	mov.u32 	%r15, 6;
+	setp.ne.s32 	%p3, %r7, %r15;
 	@%p3 bra 	$Lt_0_13314;
 	.loc	19	1414	0
-	st.local.u32 	[__cuda___cuda_result_168+24], %r11;
+	st.local.u32 	[__cuda___cuda_result_3212+24], %r8;
 	.loc	19	1419	0
-	shl.b32 	%r18, %r3, 1;
-	shr.u32 	%r19, %r18, 24;
-	sub.u32 	%r20, %r19, 128;
-	shr.u32 	%r21, %r20, 5;
-	mov.s32 	%r22, 4;
-	sub.s32 	%r23, %r22, %r21;
-	mul.lo.u32 	%r24, %r23, 4;
-	mov.u32 	%r25, __cuda___cuda_result_168;
-	add.u32 	%r26, %r24, %r25;
-	ld.local.u32 	%r11, [%r26+8];
+	shl.b32 	%r16, %r2, 1;
+	shr.u32 	%r17, %r16, 24;
+	sub.u32 	%r18, %r17, 128;
+	mov.u64 	%rd3, __cuda___cuda_result_3212;
+	shr.u32 	%r19, %r18, 5;
+	mov.s32 	%r20, 4;
+	sub.s32 	%r21, %r20, %r19;
+	cvt.s64.s32 	%rd4, %r21;
+	mul.wide.s32 	%rd5, %r21, 4;
+	add.u64 	%rd6, %rd3, %rd5;
+	ld.local.u32 	%r8, [%rd6+8];
 	.loc	19	1420	0
-	ld.local.u32 	%r27, [%r26+4];
-	and.b32 	%r28, %r20, 31;
-	mov.u32 	%r29, 0;
-	setp.eq.u32 	%p4, %r28, %r29;
+	ld.local.u32 	%r22, [%rd6+4];
+	and.b32 	%r23, %r18, 31;
+	mov.u32 	%r24, 0;
+	setp.eq.u32 	%p4, %r23, %r24;
 	@%p4 bra 	$Lt_0_13826;
 	.loc	19	1423	0
-	mov.s32 	%r30, 32;
-	sub.s32 	%r31, %r30, %r28;
-	shr.u32 	%r32, %r27, %r31;
-	shl.b32 	%r33, %r11, %r28;
-	add.u32 	%r11, %r32, %r33;
+	mov.s32 	%r25, 32;
+	sub.s32 	%r26, %r25, %r23;
+	shr.u32 	%r27, %r22, %r26;
+	shl.b32 	%r28, %r8, %r23;
+	add.u32 	%r8, %r27, %r28;
 	.loc	19	1424	0
-	ld.local.u32 	%r34, [%r26+0];
-	shr.u32 	%r35, %r34, %r31;
-	shl.b32 	%r36, %r27, %r28;
-	add.u32 	%r27, %r35, %r36;
+	ld.local.u32 	%r29, [%rd6+0];
+	shr.u32 	%r30, %r29, %r26;
+	shl.b32 	%r31, %r22, %r23;
+	add.u32 	%r22, %r30, %r31;
 $Lt_0_13826:
 	.loc	19	1426	0
-	shr.u32 	%r37, %r11, 30;
+	shr.u32 	%r7, %r8, 30;
 	.loc	19	1428	0
-	shr.u32 	%r38, %r27, 30;
-	shl.b32 	%r39, %r11, 2;
-	add.u32 	%r11, %r38, %r39;
+	shr.u32 	%r32, %r22, 30;
+	shl.b32 	%r33, %r8, 2;
+	add.u32 	%r8, %r32, %r33;
 	.loc	19	1429	0
-	shl.b32 	%r27, %r27, 2;
-	mov.u32 	%r40, 0;
-	setp.eq.u32 	%p5, %r27, %r40;
+	shl.b32 	%r22, %r22, 2;
+	mov.u32 	%r34, 0;
+	setp.eq.u32 	%p5, %r22, %r34;
 	@%p5 bra 	$Lt_0_14594;
 	.loc	19	1430	0
-	add.u32 	%r41, %r11, 1;
-	mov.u32 	%r42, -2147483648;
-	set.gt.u32.u32 	%r43, %r41, %r42;
-	neg.s32 	%r44, %r43;
+	add.u32 	%r35, %r8, 1;
+	mov.u32 	%r36, -2147483648;
+	set.gt.u32.u32 	%r37, %r35, %r36;
+	neg.s32 	%r38, %r37;
 	bra.uni 	$Lt_0_14338;
 $Lt_0_14594:
-	mov.u32 	%r45, -2147483648;
-	set.gt.u32.u32 	%r46, %r11, %r45;
-	neg.s32 	%r44, %r46;
+	mov.u32 	%r39, -2147483648;
+	set.gt.u32.u32 	%r40, %r8, %r39;
+	neg.s32 	%r38, %r40;
 $Lt_0_14338:
 	.loc	19	1431	0
-	add.u32 	%r47, %r37, %r44;
+	add.u32 	%r41, %r7, %r38;
 	.loc	19	1430	0
-	neg.s32 	%r48, %r47;
-	mov.u32 	%r49, 0;
-	setp.ne.u32 	%p6, %r4, %r49;
-	selp.s32 	%r50, %r48, %r47, %p6;
-	mov.u32 	%r51, 0;
-	setp.eq.u32 	%p7, %r44, %r51;
+	neg.s32 	%r42, %r41;
+	mov.u32 	%r43, 0;
+	setp.ne.u32 	%p6, %r3, %r43;
+	selp.s32 	%r7, %r42, %r41, %p6;
+	mov.u32 	%r44, 0;
+	setp.eq.u32 	%p7, %r38, %r44;
 	@%p7 bra 	$Lt_0_14850;
 	.loc	19	1436	0
-	neg.s32 	%r27, %r27;
+	neg.s32 	%r22, %r22;
 	.loc	19	1438	0
-	mov.u32 	%r52, 0;
-	set.eq.u32.u32 	%r53, %r27, %r52;
-	neg.s32 	%r54, %r53;
-	not.b32 	%r55, %r11;
-	add.u32 	%r11, %r54, %r55;
+	mov.u32 	%r45, 0;
+	set.eq.u32.u32 	%r46, %r22, %r45;
+	neg.s32 	%r47, %r46;
+	not.b32 	%r48, %r8;
+	add.u32 	%r8, %r47, %r48;
 	.loc	19	1439	0
-	xor.b32 	%r5, %r4, -2147483648;
+	xor.b32 	%r4, %r3, -2147483648;
 $Lt_0_14850:
 	.loc	19	1441	0
-	mov.s32 	%r56, %r50;
-	mov.u32 	%r57, 0;
-	setp.le.s32 	%p8, %r11, %r57;
+	mov.s32 	%r49, %r7;
+	mov.u32 	%r50, 0;
+	setp.le.s32 	%p8, %r8, %r50;
 	@%p8 bra 	$Lt_0_17410;
-	mov.u32 	%r58, 0;
+	mov.u32 	%r51, 0;
 $Lt_0_15874:
  //<loop> Loop body line 1441, nesting depth: 1, estimated iterations: unknown
 	.loc	19	1445	0
-	shr.u32 	%r59, %r27, 31;
-	shl.b32 	%r60, %r11, 1;
-	add.u32 	%r11, %r59, %r60;
+	shr.u32 	%r52, %r22, 31;
+	shl.b32 	%r53, %r8, 1;
+	add.u32 	%r8, %r52, %r53;
 	.loc	19	1446	0
-	shl.b32 	%r27, %r27, 1;
+	shl.b32 	%r22, %r22, 1;
 	.loc	19	1447	0
-	sub.u32 	%r58, %r58, 1;
-	mov.u32 	%r61, 0;
-	setp.gt.s32 	%p9, %r11, %r61;
+	sub.u32 	%r51, %r51, 1;
+	mov.u32 	%r54, 0;
+	setp.gt.s32 	%p9, %r8, %r54;
 	@%p9 bra 	$Lt_0_15874;
 	bra.uni 	$Lt_0_15362;
 $Lt_0_17410:
-	mov.u32 	%r58, 0;
+	mov.u32 	%r51, 0;
 $Lt_0_15362:
 	.loc	19	1449	0
-	mul.lo.u32 	%r27, %r11, -921707870;
+	mul.lo.u32 	%r22, %r8, -921707870;
 	.loc	19	1450	0
-	mov.s32 	%r62, -921707870;
-	mul.hi.u32 	%r11, %r11, %r62;
-	mov.u32 	%r63, 0;
-	setp.le.s32 	%p10, %r11, %r63;
+	mov.u32 	%r55, -921707870;
+	mul.hi.u32 	%r8, %r8, %r55;
+	mov.u32 	%r56, 0;
+	setp.le.s32 	%p10, %r8, %r56;
 	@%p10 bra 	$Lt_0_16386;
 	.loc	19	1452	0
-	shr.u32 	%r64, %r27, 31;
-	shl.b32 	%r65, %r11, 1;
-	add.u32 	%r11, %r64, %r65;
+	shr.u32 	%r57, %r22, 31;
+	shl.b32 	%r58, %r8, 1;
+	add.u32 	%r8, %r57, %r58;
 	.loc	19	1453	0
-	shl.b32 	%r27, %r27, 1;
+	shl.b32 	%r22, %r22, 1;
 	.loc	19	1454	0
-	sub.u32 	%r58, %r58, 1;
+	sub.u32 	%r51, %r51, 1;
 $Lt_0_16386:
 	.loc	19	1456	0
-	mov.u32 	%r66, 0;
-	set.ne.u32.u32 	%r67, %r27, %r66;
-	neg.s32 	%r68, %r67;
-	add.u32 	%r11, %r68, %r11;
-	shl.b32 	%r69, %r11, 24;
-	mov.s32 	%r70, 0;
-	set.lt.u32.s32 	%r71, %r69, %r70;
-	neg.s32 	%r72, %r71;
-	shr.u32 	%r73, %r11, 8;
-	add.u32 	%r74, %r58, 126;
-	shl.b32 	%r75, %r74, 23;
-	add.u32 	%r76, %r73, %r75;
-	add.u32 	%r77, %r72, %r76;
-	or.b32 	%r78, %r5, %r77;
-	mov.b32 	%f7, %r78;
-	bra.uni 	$Lt_0_514;
+	mov.u32 	%r59, 0;
+	set.ne.u32.u32 	%r60, %r22, %r59;
+	neg.s32 	%r61, %r60;
+	add.u32 	%r8, %r61, %r8;
+	.loc	19	1458	0
+	shl.b32 	%r62, %r8, 24;
+	mov.s32 	%r63, 0;
+	set.lt.u32.s32 	%r64, %r62, %r63;
+	neg.s32 	%r65, %r64;
+	shr.u32 	%r66, %r8, 8;
+	add.u32 	%r67, %r51, 126;
+	shl.b32 	%r68, %r67, 23;
+	add.u32 	%r69, %r66, %r68;
+	add.u32 	%r70, %r65, %r69;
+	or.b32 	%r71, %r4, %r70;
+	mov.b32 	%f7, %r71;
+	bra.uni 	$LDWendi___internal_fmad_177_2;
 $Lt_0_12290:
-	.loc	19	1470	0
+	.loc	19	1173	0
 	mov.f32 	%f8, 0f3f22f983;     	// 0.63662
 	mul.f32 	%f9, %f1, %f8;
-	cvt.rni.s32.f32 	%r79, %f9;
-	cvt.rn.f32.s32 	%f10, %r79;
+	cvt.rni.s32.f32 	%r72, %f9;
+	cvt.rn.f32.s32 	%f10, %r72;
 	neg.f32 	%f11, %f10;
 	mov.f32 	%f12, 0f2e85a309;    	// 6.0771e-11
 	mov.f32 	%f13, 0f39fdaa20;    	// 0.000483827
@@ -246,16 +251,17 @@ $Lt_0_12290:
 	fma.rn.f32 	%f16, %f11, %f13, %f15;
 	fma.rn.f32 	%f17, %f11, %f12, %f16;
 	.loc	19	1471	0
-	mov.s32 	%r56, %r79;
+	mov.s32 	%r49, %r72;
+	.loc	19	1472	0
 	mov.f32 	%f7, %f17;
-$Lt_0_514:
+$LDWendi___internal_fmad_177_2:
 	.loc	19	1705	0
-	add.s32 	%r80, %r56, 1;
+	add.s32 	%r73, %r49, 1;
 	mov.f32 	%f18, %f7;
 	mul.f32 	%f19, %f18, %f18;
-	and.b32 	%r81, %r80, 1;
-	mov.u32 	%r82, 0;
-	setp.eq.s32 	%p11, %r81, %r82;
+	and.b32 	%r74, %r73, 1;
+	mov.u32 	%r75, 0;
+	setp.eq.s32 	%p11, %r74, %r75;
 	@%p11 bra 	$Lt_0_17154;
 	.loc	19	1709	0
 	mov.f32 	%f20, 0f37ccf5ce;    	// 2.44332e-05
@@ -280,107 +286,115 @@ $Lt_0_17154:
 $Lt_0_16898:
 	.loc	19	1713	0
 	neg.f32 	%f35, %f28;
-	and.b32 	%r83, %r80, 2;
-	mov.s32 	%r84, 0;
-	setp.ne.s32 	%p12, %r83, %r84;
+	and.b32 	%r76, %r73, 2;
+	mov.s32 	%r77, 0;
+	setp.ne.s32 	%p12, %r76, %r77;
 	selp.f32 	%f28, %f35, %f28, %p12;
+	.loc	19	1716	0
 	mov.f32 	%f5, %f28;
-$Lt_0_258:
+$LDWendi___isinff_177_1:
 	.loc	17	8	0
-	ld.param.u32 	%r85, [__cudaparm__Z17k_sequenceLoopingPfi_ptr];
-	mul.lo.u32 	%r86, %r1, 4;
-	add.u32 	%r87, %r85, %r86;
-	st.global.f32 	[%r87+0], %f5;
+	ld.param.u64 	%rd7, [__cudaparm__Z17k_sequenceLoopingPfi_ptr];
+	cvt.s64.s32 	%rd8, %r1;
+	mul.wide.s32 	%rd9, %r1, 4;
+	add.u64 	%rd10, %rd7, %rd9;
+	st.global.f32 	[%rd10+0], %f5;
 	.loc	17	10	0
 	exit;
 $LDWend__Z17k_sequenceLoopingPfi:
 	} // _Z17k_sequenceLoopingPfi
 
 	.entry _Z21k_matrixVectorProductPKfS0_Pfii (
-		.param .u32 __cudaparm__Z21k_matrixVectorProductPKfS0_Pfii___val_paramA,
-		.param .u32 __cudaparm__Z21k_matrixVectorProductPKfS0_Pfii___val_paramV,
-		.param .u32 __cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_R,
+		.param .u64 __cudaparm__Z21k_matrixVectorProductPKfS0_Pfii___val_paramA,
+		.param .u64 __cudaparm__Z21k_matrixVectorProductPKfS0_Pfii___val_paramV,
+		.param .u64 __cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_R,
 		.param .s32 __cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_M,
 		.param .s32 __cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_N)
 	{
-	.reg .u32 %r<31>;
+	.reg .u32 %r<15>;
+	.reg .u64 %rd<22>;
 	.reg .f32 %f<6>;
 	.reg .pred %p<6>;
-	.shared .align 4 .b8 __cuda___cuda_local_var_24531_32_V_buffer56[32];
+	.shared .align 4 .b8 __cuda___cuda_local_var_27983_32_non_const_V_buffer72[32];
 	.loc	17	21	0
-$LBB1__Z21k_matrixVectorProductPKfS0_Pfii:
+$LDWbegin__Z21k_matrixVectorProductPKfS0_Pfii:
 	.loc	17	26	0
 	mov.u32 	%r1, %ntid.x;
 	mov.u32 	%r2, %ctaid.x;
 	mul.lo.u32 	%r3, %r2, %r1;
 	mov.u32 	%r4, %tid.x;
 	add.u32 	%r5, %r3, %r4;
-	mul.lo.u32 	%r6, %r5, 4;
-	ld.param.u32 	%r7, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii___val_paramA];
-	add.u32 	%r8, %r7, %r6;
+	cvt.u64.u32 	%rd1, %r5;
+	mul.wide.u32 	%rd2, %r5, 4;
+	ld.param.u64 	%rd3, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii___val_paramA];
+	add.u64 	%rd4, %rd3, %rd2;
 	.loc	17	27	0
-	mul.lo.u32 	%r9, %r4, 4;
-	ld.param.u32 	%r10, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii___val_paramV];
-	add.u32 	%r11, %r10, %r9;
-	ld.param.s32 	%r12, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_N];
-	mov.u32 	%r13, 0;
-	setp.le.s32 	%p1, %r12, %r13;
+	cvt.u64.u32 	%rd5, %r4;
+	mul.wide.u32 	%rd6, %r4, 4;
+	ld.param.u64 	%rd7, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii___val_paramV];
+	add.u64 	%rd8, %rd7, %rd6;
+	ld.param.s32 	%r6, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_N];
+	mov.u32 	%r7, 0;
+	setp.le.s32 	%p1, %r6, %r7;
 	@%p1 bra 	$Lt_1_4354;
-	mov.u32 	%r14, __cuda___cuda_local_var_24531_32_V_buffer56;
-	mov.u32 	%r15, 0;
-	setp.gt.u32 	%p2, %r1, %r15;
-	mul.lo.u32 	%r16, %r1, 4;
-	add.u32 	%r17, %r9, %r14;
-	mov.s32 	%r18, 0;
+	mov.u64 	%rd9, __cuda___cuda_local_var_27983_32_non_const_V_buffer72;
+	mov.u32 	%r8, 0;
+	setp.gt.u32 	%p2, %r1, %r8;
+	cvt.u64.u32 	%rd10, %r1;
+	add.u64 	%rd11, %rd6, %rd9;
+	mov.s32 	%r9, 0;
 	mov.f32 	%f1, 0f00000000;     	// 0
 $Lt_1_2818:
  //<loop> Loop body line 27, nesting depth: 1, estimated iterations: unknown
 	.loc	17	32	0
-	ld.global.f32 	%f2, [%r11+0];
-	st.shared.f32 	[%r17+0], %f2;
+	ld.global.f32 	%f2, [%rd8+0];
+	st.shared.f32 	[%rd11+0], %f2;
 	.loc	17	33	0
 	bar.sync 	0;
 	@!%p2 bra 	$Lt_1_3074;
  //<loop> Part of loop body line 27, head labeled $Lt_1_2818
-	mov.s32 	%r19, %r1;
-	mov.s32 	%r20, %r14;
-	add.u32 	%r21, %r16, %r14;
-	ld.param.u32 	%r22, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_M];
-	mul.lo.u32 	%r23, %r22, 4;
-	mov.s32 	%r24, %r8;
+	mov.s32 	%r10, %r1;
+	mov.s64 	%rd12, %rd9;
+	ld.param.s32 	%r11, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_M];
+	cvt.s64.s32 	%rd13, %r11;
+	mul.wide.s32 	%rd14, %r11, 4;
+	mov.s64 	%rd15, %rd4;
+	mov.s32 	%r12, 0;
  //<loop> Part of loop body line 27, head labeled $Lt_1_2818
-	mov.s32 	%r25, %r19;
+	mov.s32 	%r13, %r10;
 $Lt_1_3586:
  //<loop> Loop body line 33, nesting depth: 2, estimated iterations: unknown
 	.loc	17	37	0
-	ld.shared.f32 	%f3, [%r20+0];
-	ld.global.f32 	%f4, [%r24+0];
+	ld.shared.f32 	%f3, [%rd12+0];
+	ld.global.f32 	%f4, [%rd15+0];
 	fma.rn.f32 	%f1, %f3, %f4, %f1;
-	add.u32 	%r24, %r23, %r24;
-	add.u32 	%r20, %r20, 4;
-	setp.ne.u32 	%p3, %r20, %r21;
+	add.s32 	%r12, %r12, 1;
+	add.u64 	%rd15, %rd14, %rd15;
+	add.u64 	%rd12, %rd12, 4;
+	setp.ne.u32 	%p3, %r12, %r1;
 	@%p3 bra 	$Lt_1_3586;
  //<loop> Part of loop body line 27, head labeled $Lt_1_2818
-	mul.lo.u32 	%r26, %r22, %r1;
-	mul.lo.u32 	%r27, %r26, 4;
-	add.u32 	%r8, %r8, %r27;
+	mul.lo.u64 	%rd16, %rd13, %rd10;
+	mul.lo.u64 	%rd17, %rd16, 4;
+	add.u64 	%rd4, %rd4, %rd17;
 $Lt_1_3074:
  //<loop> Part of loop body line 27, head labeled $Lt_1_2818
 	.loc	17	40	0
-	add.u32 	%r11, %r16, %r11;
+	mul.lo.u64 	%rd18, %rd10, 4;
+	add.u64 	%rd8, %rd8, %rd18;
 	.loc	17	42	0
 	bar.sync 	0;
-	add.u32 	%r18, %r18, %r1;
-	setp.gt.s32 	%p4, %r12, %r18;
+	add.u32 	%r9, %r9, %r1;
+	setp.gt.s32 	%p4, %r6, %r9;
 	@%p4 bra 	$Lt_1_2818;
 	bra.uni 	$Lt_1_2306;
 $Lt_1_4354:
 	mov.f32 	%f1, 0f00000000;     	// 0
 $Lt_1_2306:
 	.loc	17	45	0
-	ld.param.u32 	%r28, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_R];
-	add.u32 	%r29, %r28, %r6;
-	st.global.f32 	[%r29+0], %f1;
+	ld.param.u64 	%rd19, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_R];
+	add.u64 	%rd20, %rd19, %rd2;
+	st.global.f32 	[%rd20+0], %f1;
 	.loc	17	46	0
 	exit;
 $LDWend__Z21k_matrixVectorProductPKfS0_Pfii:

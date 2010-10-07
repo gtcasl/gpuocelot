@@ -160,7 +160,7 @@ public:
 			param_A.arrayValues[0].val_u64 = (PTXU64)sequence;
 			param_B.arrayValues.resize(1);
 			param_B.arrayValues[0].val_u64 = (PTXU64)N;
-			kernel->updateParameterMemory();
+			kernel->updateArgumentMemory();
 
 			// launch the kernel
 			try {
@@ -262,7 +262,7 @@ public:
 			param_N.arrayValues.resize(1);
 			param_N.arrayValues[0].val_u64 = (PTXU64)N;
 			
-			kernel->updateParameterMemory();
+			kernel->updateArgumentMemory();
 
 			// launch the kernel
 			try {

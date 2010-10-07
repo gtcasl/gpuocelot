@@ -110,8 +110,6 @@ static unsigned int createRestorePoint(ir::PTXKernel& newKernel,
 		newEdge, ir::BasicBlock(newBlock->label + "_restore",
 		newKernel.cfg()->newId())).second;
 
-	splitEdge->type = ir::BasicBlock::Edge::FallThrough;
-
 	ir::PTXInstruction* move = new ir::PTXInstruction(ir::PTXInstruction::Mov);
 
 	move->a = std::move(ir::PTXOperand(ir::PTXOperand::Address,
@@ -144,6 +142,15 @@ static unsigned int createRestorePoint(ir::PTXKernel& newKernel,
 		splitEdge->head->instructions.push_back(load);
 	
 		offset += ir::PTXOperand::bytes(reg->type);
+	}
+	
+	if(splitEdge->type == ir::Edge::Branch)
+	{
+		ir::PTXInstruction* branch = new ir::PTXInstruction(
+			ir::PTXInstruction::Bra);
+		branch->uni = true;
+		branch->d = std::move(ir::PTXOperand(splitEdge->tail->label));
+		splitEdge->head->instructions.push_back(branch);
 	}
 	
 	return offset;
@@ -769,7 +776,7 @@ void SubkernelFormationPass::ExtractKernelsPass::runOnKernel(ir::Kernel& k)
 			inEdges.insert((*edge)->head);
 		}
 
-		// Blocks leaving the region become candidates for the next block
+		// Blocks leaving the region become candidates for the next subkernel
 		for(ir::ControlFlowGraph::const_edge_pointer_iterator 
 			edge = block->out_edges.begin(); 
 			edge != block->out_edges.end(); ++edge)

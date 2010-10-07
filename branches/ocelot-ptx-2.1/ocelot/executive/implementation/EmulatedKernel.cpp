@@ -342,27 +342,27 @@ void executive::EmulatedKernel::updateParamReferences() {
 }
 
 void executive::EmulatedKernel::initializeParameterMemory() {
-	report( "Initializing parameter memory for kernel " << name );
+	report( "Initializing argument memory for kernel " << name );
 	delete[] ParameterMemory;
 	ParameterMemory = 0;
 	_parameterMemorySize = 0;
 	if (!function()) {
 		for(ParameterVector::iterator i_it = arguments.begin();
 			i_it != arguments.end(); ++i_it) {
-			ir::Parameter& parameter = *i_it;
+			ir::Parameter& argument = *i_it;
 			// align parameter memory
-			unsigned int padding = parameter.getAlignment() 
-				- ( _parameterMemorySize % parameter.getAlignment() );
-			padding = (parameter.getAlignment() == padding) ? 0 : padding;
-			_parameterMemorySize += padding;
-			parameter.offset = _parameterMemorySize;
-			report( " Initializing memory for argument " << parameter.name 
-				<< " of size " << parameter.getSize() << " at offset "
-				<< _parameterMemorySize );
-			_parameterMemorySize += parameter.getSize();
+			unsigned int padding = argument.getAlignment() 
+				- ( _parameterMemorySize % argument.getAlignment() );
+			padding = (argument.getAlignment() == padding) ? 0 : padding;
+			_argumentMemorySize += padding;
+			argument.offset = _parameterMemorySize;
+			report( " Initializing memory for argument " << argument.name 
+				<< " of size " << argument.getSize() << " at offset "
+				<< _argumentMemorySize );
+			_argumentMemorySize += argument.getSize();
 		}
 	}
-	report(" Total parameter size is " << parameterMemorySize());
+	report(" Total argument size is " << argumentMemorySize());
 }
 
 bool executive::EmulatedKernel::checkMemoryAccess(const void* base, 
@@ -381,18 +381,18 @@ void executive::EmulatedKernel::updateArgumentMemory() {
 		unsigned int size = 0;
 		for(ParameterVector::iterator i_it = arguments.begin();
 			i_it != arguments.end(); ++i_it) {
-			ir::Parameter& parameter = *i_it;
-			unsigned int padding = parameter.getAlignment()
-				- (size % parameter.getAlignment());
-			padding = (parameter.getAlignment() == padding) ? 0 : padding;
+			ir::Parameter& argument = *i_it;
+			unsigned int padding = argument.getAlignment()
+				- (size % argument.getAlignment());
+			padding = (argument.getAlignment() == padding) ? 0 : padding;
 			size += padding;
 			for(ir::Parameter::ValueVector::iterator
-				v_it = parameter.arrayValues.begin();
-				v_it != parameter.arrayValues.end(); ++v_it) {
+				v_it = argument.arrayValues.begin();
+				v_it != argument.arrayValues.end(); ++v_it) {
 				assert(size < _argumentMemorySize);
 				memcpy(ParameterMemory + size, &v_it->val_b16,
-					parameter.getElementSize());
-				size += parameter.getElementSize();
+					argument.getElementSize());
+				size += argument.getElementSize();
 			}
 		}
 	}

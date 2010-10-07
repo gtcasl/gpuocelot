@@ -428,7 +428,7 @@ public:
 		param_A.arrayValues.resize(1);
 		param_A.arrayValues[0].val_u64 = (PTXU64)inputSequence;
 
-		kernel->updateParameterMemory();
+		kernel->updateArgumentMemory();
 
 		// launch the kernel
 		try {

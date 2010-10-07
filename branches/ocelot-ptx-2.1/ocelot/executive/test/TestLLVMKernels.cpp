@@ -9,6 +9,7 @@
 #define TEST_LLVM_KERNELS_CPP_INCLUDED
 
 #include <ocelot/executive/test/TestLLVMKernels.h>
+#include <ocelot/api/interface/OcelotConfiguration.h>
 #include <hydrazine/implementation/ArgumentParser.h>
 #include <cmath>
 
@@ -39,8 +40,10 @@ namespace test
 			return false;
 		}
 		
+		int level = api::OcelotConfiguration::get().executive.optimizationLevel;
+		
 		_loopingKernel = new executive::LLVMExecutableKernel( *kernel, 0, 
-			translator::Translator::BasicOptimization );
+			( translator::Translator::OptimizationLevel ) level );
 		_loopingKernel->setKernelShape( 8, 1, 1 );
 
 		kernel = _module.getKernel( "_Z21k_matrixVectorProductPKfS0_Pfii" );
@@ -52,7 +55,7 @@ namespace test
 		}
 		
 		_matrixMultiplyKernel = new executive::LLVMExecutableKernel( *kernel, 0, 
-			translator::Translator::BasicOptimization );
+			( translator::Translator::OptimizationLevel ) level );
 		_matrixMultiplyKernel->setKernelShape( 8, 1, 1 );
 		
 		return true;

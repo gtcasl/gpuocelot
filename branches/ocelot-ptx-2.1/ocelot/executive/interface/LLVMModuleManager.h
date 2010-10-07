@@ -94,7 +94,7 @@ public:
 		KernelAndTranslation(ir::PTXKernel* k = 0, 
 			translator::Translator::OptimizationLevel level = 
 			translator::Translator::NoOptimization,
-			const ir::PTXKernel* parent = 0);
+			const ir::PTXKernel* parent = 0, FunctionId offset = 0);
 
 	public:
 		void               unload();
@@ -107,6 +107,7 @@ public:
 		translator::Translator::OptimizationLevel _optimizationLevel;
 		MetaData*                                 _metadata;
 		const ir::PTXKernel*                      _parent;
+		FunctionId                                _offsetId;
 	};
 
 	typedef KernelAndTranslation::MetaData MetaData;

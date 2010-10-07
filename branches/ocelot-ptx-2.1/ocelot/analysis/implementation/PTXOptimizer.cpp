@@ -52,6 +52,12 @@ namespace analysis
 				registerCount );
 			manager.addPass( *pass );
 		}
+
+		if( passes & SubkernelFormation )
+		{
+			Pass* pass = new analysis::SubkernelFormationPass;
+			manager.addPass( *pass );
+		}
 		
 		if( passes & RemoveBarriers )
 		{
@@ -62,12 +68,6 @@ namespace analysis
 		if( passes & ReverseIfConversion )
 		{
 			Pass* pass = new analysis::ConvertPredicationToSelectPass;
-			manager.addPass( *pass );
-		}
-
-		if( passes & SubkernelFormation )
-		{
-			Pass* pass = new analysis::SubkernelFormationPass;
 			manager.addPass( *pass );
 		}
 		

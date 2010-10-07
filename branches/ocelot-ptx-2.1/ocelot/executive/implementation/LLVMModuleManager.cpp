@@ -15,6 +15,7 @@
 
 #include <ocelot/analysis/interface/SubkernelFormationPass.h>
 #include <ocelot/analysis/interface/ConvertPredicationToSelectPass.h>
+#include <ocelot/analysis/interface/RemoveBarrierPass.h>
 
 #include <ocelot/ir/interface/LLVMKernel.h>
 #include <ocelot/ir/interface/Module.h>
@@ -87,18 +88,25 @@ hydrazine::Thread::Id LLVMModuleManager::id()
 ////////////////////////////////////////////////////////////////////////////////
 // Helper Functions
 static void optimizePTX(ir::PTXKernel& kernel,
-	translator::Translator::OptimizationLevel optimization)
+	translator::Translator::OptimizationLevel optimization,
+	LLVMModuleManager::FunctionId id)
 {
 	report(" Building dataflow graph.");
 	kernel.dfg();
 
 	report(" Optimizing PTX");
-	analysis::ConvertPredicationToSelectPass pass;
+	analysis::ConvertPredicationToSelectPass convertPredicationToSelect;
+	analysis::RemoveBarrierPass              removeBarriers(id);
 	
 	report("  Running convert predication to select pass");
-	pass.initialize(*kernel.module);
-	pass.runOnKernel(kernel);
-	pass.finalize();
+	convertPredicationToSelect.initialize(*kernel.module);
+	convertPredicationToSelect.runOnKernel(kernel);
+	convertPredicationToSelect.finalize();
+	
+	report("  Running remove barriers pass");
+	removeBarriers.initialize(*kernel.module);
+	removeBarriers.runOnKernel(kernel);
+	removeBarriers.finalize();
 	
 	kernel.dfg()->toSsa();
 }
@@ -751,8 +759,9 @@ static void codegen(LLVMModuleManager::Function& function, llvm::Module& module,
 ////////////////////////////////////////////////////////////////////////////////
 // KernelAndTranslation
 LLVMModuleManager::KernelAndTranslation::KernelAndTranslation(ir::PTXKernel* k, 
-	translator::Translator::OptimizationLevel l, const ir::PTXKernel* p) : 
-	_kernel(k), _module(0), _optimizationLevel(l), _metadata(0), _parent(p)
+	translator::Translator::OptimizationLevel l, const ir::PTXKernel* p, 
+	FunctionId o) : _kernel(k), _module(0), _optimizationLevel(l),
+	_metadata(0), _parent(p), _offsetId(o)
 {
 
 }
@@ -779,10 +788,13 @@ LLVMModuleManager::KernelAndTranslation::MetaData*
 	
 	report("Translating PTX kernel '" << _kernel->name << "'");
 	
-	optimizePTX(*_kernel, _optimizationLevel);
+	optimizePTX(*_kernel, _optimizationLevel, _offsetId);
 	_metadata = generateMetadata(*_kernel, _optimizationLevel);
 	setupPTXMemoryReferences(*_kernel, _metadata, *_parent);
 	translate(_module, *_kernel);
+	
+	_kernel->dfg()->fromSsa();
+	
 	optimize(*_module, _optimizationLevel);
 	codegen(_metadata->function, *_module, *_kernel);
 		
@@ -939,7 +951,8 @@ void LLVMModuleManager::ModuleDatabase::loadModule(const ir::Module* module,
 			report(" adding subkernel '" << (*subkernel)->name 
 				<< "' at index " << (subkernels.size() + _kernels.size()));
 			subkernels.push_back(KernelAndTranslation(*subkernel,
-				level, kernel->first));
+				level, kernel->first, std::distance(
+				kernel->second.begin(), subkernel)));
 		}
 	}
 

@@ -734,6 +734,7 @@ void executive::EmulatedKernel::initializeConstMemory() {
 			constant[it->second.statement.name] = offset;
 		}
 	}
+
 	
 	report( "Total constant memory size is " << constantOffset );
 

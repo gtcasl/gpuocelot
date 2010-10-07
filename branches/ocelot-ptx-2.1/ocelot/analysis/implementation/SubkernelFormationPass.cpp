@@ -519,7 +519,11 @@ static void updateTailCallTargets(
 static void createScheduler(ir::PTXKernel& kernel,
 	ir::PTXKernel& originalKernel)
 {
-	if(kernel.cfg()->begin()->out_edges.size() < 2) return;
+	if(kernel.cfg()->begin()->out_edges.size() == 1)
+	{
+		kernel.cfg()->begin()->out_edges[0]->type = ir::Edge::FallThrough;
+		return;
+	}
 	
 	report("  Creating scheduler for subkernel '" << kernel.name << "'");
 	
@@ -643,8 +647,16 @@ static void createScheduler(ir::PTXKernel& kernel,
 	compare->a = load->d;
 	compare->b = std::move(ir::PTXOperand(ir::PTXOperand::Immediate,
 		ir::PTXOperand::u32));
-	compare->b.imm_uint = target->tail->id;
-
+		
+	if(target->tail->has_fallthrough_edge())
+	{
+		compare->b.imm_uint = target->tail->get_fallthrough_edge()->tail->id;
+	}
+	else
+	{
+		compare->b.imm_uint = target->tail->get_branch_edge()->tail->id;
+	}
+	
 	compare->d = std::move(ir::PTXOperand(ir::PTXOperand::Register,
 		ir::PTXOperand::pred, originalKernel.dfg()->newRegister()));
 	compare->comparisonOperator = ir::PTXInstruction::Eq;
@@ -796,6 +808,8 @@ void SubkernelFormationPass::ExtractKernelsPass::runOnKernel(ir::Kernel& k)
 			inEdges, entry, cfgToDfgMap, alreadyAdded);
 		alreadyAdded.insert(region.begin(), region.end());
 		
+		createScheduler(*newKernel, ptx);
+		
 		// restart with a new kernel if there are any blocks left
 		if(entry == ptx.cfg()->get_exit_block()) break;
 
@@ -804,8 +818,6 @@ void SubkernelFormationPass::ExtractKernelsPass::runOnKernel(ir::Kernel& k)
 		std::stringstream name;
 		name << originalName << "_split_" << kernelId++;
 
-		createScheduler(*newKernel, ptx);
-		
 		splitKernels.push_back(new ir::PTXKernel(name.str(), true, k.module));
 		encountered.clear();
 		inEdges.clear();

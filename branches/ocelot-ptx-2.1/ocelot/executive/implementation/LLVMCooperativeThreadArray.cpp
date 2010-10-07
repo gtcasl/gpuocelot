@@ -23,7 +23,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 namespace executive
 {
@@ -66,7 +66,8 @@ void LLVMCooperativeThreadArray::setup(const LLVMExecutableKernel& kernel)
 
 	_contexts.resize(threads);
 	_stacks.resize(threads);
-	_sharedMemory.resize(kernel.totalSharedMemorySize());
+	_sharedMemory.resize(kernel.externSharedMemorySize()
+		+ _functions[_nextFunction]->sharedSize);
 	_kernel = &kernel;
 
 	_freeContexts.resize(threads);
@@ -348,6 +349,9 @@ bool LLVMCooperativeThreadArray::_finishContext(unsigned int contextId)
 	
 	_guessFunction = nextFunction;
 
+	assertM(nextFunction < _queuedThreads.size(), "Next function " 
+		<< nextFunction << " is out of range of function table with "
+		<< _queuedThreads.size() << " entries.");
 	_queuedThreads[nextFunction].push_back(contextId);
 
 	if(nextFunction == 0)

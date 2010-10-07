@@ -335,7 +335,7 @@ namespace std
 	public:
 		size_t operator()( ir::ControlFlowGraph::iterator it ) const
 		{
-			return ( size_t )&( *it );
+			return ( size_t )it->id;
 		}
 	};
 
@@ -345,7 +345,7 @@ namespace std
 	public:
 		size_t operator()( ir::ControlFlowGraph::const_iterator it ) const
 		{
-			return ( size_t )&( *it );
+			return ( size_t )it->id;
 		}
 	};
 

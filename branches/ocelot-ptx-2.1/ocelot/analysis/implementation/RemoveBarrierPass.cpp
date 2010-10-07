@@ -26,20 +26,21 @@ namespace analysis
 	}
 	
 	void RemoveBarrierPass::_addSpillCode( DataflowGraph::iterator block, 
+		DataflowGraph::iterator target, 
 		const DataflowGraph::Block::RegisterSet& alive )
 	{
 		unsigned int bytes = 0;
 		
 		ir::PTXInstruction move ( ir::PTXInstruction::Mov );
 		
-		move.type = ir::PTXOperand::u64;
-		move.a.identifier = "__ocelot_remove_barrier_pass_stack";
+		move.type = ir::PTXOperand::u32;
+		move.a.identifier = "_Zocelot_spill_area";
 		move.a.addressMode = ir::PTXOperand::Address;
-		move.a.type = ir::PTXOperand::u64;
+		move.a.type = ir::PTXOperand::u32;
 		
 		move.d.reg = _tempRegister();
 		move.d.addressMode = ir::PTXOperand::Register;
-		move.d.type = ir::PTXOperand::u64;
+		move.d.type = ir::PTXOperand::u32;
 		
 		_kernel->dfg()->insert( block, move, block->instructions().size() - 1 );
 
@@ -57,7 +58,7 @@ namespace analysis
 
 			save.d.addressMode = ir::PTXOperand::Indirect;
 			save.d.reg = move.d.reg;
-			save.d.type = ir::PTXOperand::u64;
+			save.d.type = ir::PTXOperand::u32;
 			save.d.offset = bytes;
 			
 			bytes += ir::PTXOperand::bytes( save.type );
@@ -71,6 +72,32 @@ namespace analysis
 		}
 		
 		_spillBytes = std::max( bytes, _spillBytes );
+		
+		move.type = ir::PTXOperand::u32;
+		move.a.identifier = "_Zocelot_resume_point";
+		move.a.addressMode = ir::PTXOperand::Address;
+		move.a.type = ir::PTXOperand::u32;
+		
+		move.d.reg = _tempRegister();
+		move.d.addressMode = ir::PTXOperand::Register;
+		move.d.type = ir::PTXOperand::u32;
+		
+		_kernel->dfg()->insert( block, move, block->instructions().size() - 1 );
+		
+		ir::PTXInstruction save( ir::PTXInstruction::St );
+	
+		save.type = ir::PTXOperand::u32;
+		save.addressSpace = ir::PTXInstruction::Local;
+
+		save.d.addressMode = ir::PTXOperand::Indirect;
+		save.d.reg = move.d.reg;
+		save.d.type = ir::PTXOperand::u32;
+	
+		save.a.addressMode = ir::PTXOperand::Immediate;
+		save.a.type = ir::PTXOperand::u32;
+		save.a.imm_uint = target->id();
+		
+		_kernel->dfg()->insert( block, save, block->instructions().size() - 1 );
 	}
 	
 	void RemoveBarrierPass::_addRestoreCode( DataflowGraph::iterator block, 
@@ -80,14 +107,14 @@ namespace analysis
 	
 		ir::PTXInstruction move ( ir::PTXInstruction::Mov );
 		
-		move.type = ir::PTXOperand::u64;
-		move.a.identifier = "__ocelot_remove_barrier_pass_stack";
+		move.type = ir::PTXOperand::u32;
+		move.a.identifier = "_Zocelot_spill_area";
 		move.a.addressMode = ir::PTXOperand::Address;
-		move.a.type = ir::PTXOperand::u64;
+		move.a.type = ir::PTXOperand::u32;
 		
 		move.d.reg = _tempRegister();
 		move.d.addressMode = ir::PTXOperand::Register;
-		move.d.type = ir::PTXOperand::u64;
+		move.d.type = ir::PTXOperand::u32;
 	
 		for( DataflowGraph::Block::RegisterSet::const_iterator 
 			reg = alive.begin(); reg != alive.end(); ++reg )
@@ -100,7 +127,7 @@ namespace analysis
 			
 			load.a.addressMode = ir::PTXOperand::Indirect;
 			load.a.reg = move.d.reg;
-			load.a.type = ir::PTXOperand::u64;
+			load.a.type = ir::PTXOperand::u32;
 			load.a.offset = bytes;
 			
 			bytes += ir::PTXOperand::bytes( load.type );
@@ -119,21 +146,22 @@ namespace analysis
 	{
 		std::stringstream stream;
 		
-		stream << "$__ocelot_remove_barrier_entry_" << _reentryPoint;
+		stream << "$" << _kernel->name << "_barrier_"
+			<< _reentryPoint << "_scheduler";
 		
 		DataflowGraph::iterator entry = _kernel->dfg()->insert( 
 			_kernel->dfg()->begin(), stream.str() );
 				
 		ir::PTXInstruction move( ir::PTXInstruction::Mov );
 		
-		move.type = ir::PTXOperand::u64;
-		move.a.identifier = "__ocelot_remove_barrier_pass_syncpoint";
+		move.type = ir::PTXOperand::u32;
+		move.a.identifier = "_Zocelot_resume_point";
 		move.a.addressMode = ir::PTXOperand::Address;
 		move.a.type = ir::PTXOperand::u32;
 		
 		move.d.reg = _tempRegister();
 		move.d.addressMode = ir::PTXOperand::Register;
-		move.d.type = ir::PTXOperand::u64;
+		move.d.type = ir::PTXOperand::u32;
 		
 		_kernel->dfg()->insert( entry, move, 0 );
 
@@ -162,12 +190,11 @@ namespace analysis
 		
 		setp.b.addressMode = ir::PTXOperand::Immediate;
 		setp.b.type = ir::PTXOperand::u32;
-		setp.b.imm_uint = _reentryPoint;
+		setp.b.imm_uint = block->id();
 		
 		_kernel->dfg()->insert( entry, setp, 2 );
 		
-		ir::PTXInstruction branch( 
-			ir::PTXInstruction::Bra );
+		ir::PTXInstruction branch( ir::PTXInstruction::Bra );
 		
 		branch.d.addressMode = ir::PTXOperand::Label;
 		branch.d.identifier = block->label();
@@ -195,9 +222,13 @@ namespace analysis
 		report( "  Converting instruction " << instruction.toString() );
 
 		assert( instruction.opcode == ir::PTXInstruction::Bar );
-		instruction.opcode = ir::PTXInstruction::Ret;
-		instruction.reentryPoint = _reentryPoint;
-
+		instruction.opcode = ir::PTXInstruction::Call;
+		instruction.tailCall = true;
+		instruction.branchTargetInstruction = _kernelId;
+		instruction.a = ir::PTXOperand(
+			ir::PTXOperand::FunctionName, _kernel->name);
+		instruction.d.addressMode = ir::PTXOperand::Invalid;
+		
 		report( "   Converted to " << instruction.toString() );
 		
 		RegisterSet alive = block->alive( _instruction );
@@ -205,7 +236,7 @@ namespace analysis
 		DataflowGraph::iterator bottom = _kernel->dfg()->split( block, 
 			id + 1, false );
 
-		_addSpillCode( block, alive );
+		_addSpillCode( block, bottom, alive );
 		_addRestoreCode( bottom, alive );
 		
 		_kernel->dfg()->redirect( block, bottom, exitBlock );
@@ -223,8 +254,6 @@ namespace analysis
 				ir::PTXInstruction& >( *_instruction->i );
 			if( instruction.opcode == ir::PTXInstruction::Bar )
 			{
-				_barriers = true;
-				instruction.reentryPoint = _reentryPoint;
 				unsigned int bytes = _spillBytes;
 				_spillBytes = 1;
 				_removeBarrier( block, std::distance( 
@@ -242,30 +271,42 @@ namespace analysis
 		ir::PTXStatement syncVariable( ir::PTXStatement::Local );
 		
 		syncVariable.type = ir::PTXOperand::u32;
-		syncVariable.name = "__ocelot_remove_barrier_pass_syncpoint";
+		syncVariable.name = "_Zocelot_resume_point";
 		
 		_kernel->locals.insert( std::make_pair( syncVariable.name, 
 			ir::Local( syncVariable ) ) );
 
-		ir::PTXStatement stack( ir::PTXStatement::Local );
+		ir::Kernel::LocalMap::iterator stackLocal = _kernel->locals.find( 
+			"_Zocelot_spill_area" );
+
+		if( stackLocal == _kernel->locals.end() )
+		{
+			ir::PTXStatement stack( ir::PTXStatement::Local );
 		
-		stack.type = ir::PTXOperand::u8;
-		stack.name = "__ocelot_remove_barrier_pass_stack";
-		stack.array.stride.push_back( _spillBytes );
+			stack.type = ir::PTXOperand::b8;
+			stack.name = "_Zocelot_spill_area";
+			stack.array.stride.push_back( _spillBytes );
 		
-		_kernel->locals.insert( std::make_pair( stack.name, 
-			ir::Local( stack ) ) );
+			_kernel->locals.insert( std::make_pair( stack.name, 
+				ir::Local( stack ) ) );
+		}
+		else
+		{
+			stackLocal->second.elements = std::max( _spillBytes, 
+				stackLocal->second.elements );
+		}
 	}
 	
-	RemoveBarrierPass::RemoveBarrierPass()
-		: KernelPass( DataflowGraphAnalysis, "RemoveBarriersPass" )
+	RemoveBarrierPass::RemoveBarrierPass( unsigned int i )
+		: KernelPass( DataflowGraphAnalysis, "RemoveBarriersPass" ),
+		_kernelId( i )
 	{
 
 	}
 
 	void RemoveBarrierPass::initialize( const ir::Module& m )
 	{
-		_barriers = false;
+	
 	}
 	
 	void RemoveBarrierPass::runOnKernel( ir::Kernel& k )
@@ -290,16 +331,6 @@ namespace analysis
 	void RemoveBarrierPass::finalize( )
 	{
 	
-	}
-	
-	bool RemoveBarrierPass::barriers() const
-	{
-		return _barriers;
-	}
-	
-	std::string RemoveBarrierPass::resume() const
-	{
-		return "__ocelot_remove_barrier_pass_syncpoint";
 	}
 }
 

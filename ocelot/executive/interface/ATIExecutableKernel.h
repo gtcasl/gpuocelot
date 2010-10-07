@@ -20,7 +20,7 @@ namespace executive
 			/*! \brief Constructor */
 			ATIExecutableKernel(ir::Kernel &k, CALcontext *context, 
 					CALevent *event, CALresource *uav0, CALresource *cb0, 
-					CALresource *cb1);
+					CALresource *cb1, Device* d);
 
 			/*!	\brief Launch a kernel on a 2D grid */
 			void launchGrid(int width, int height);
@@ -51,6 +51,14 @@ namespace executive
 
 			/*! \brief Allocate shared memory */
 			void allocateSharedMemory();
+
+			/*! \brief Copies data from global objects into const and global
+			 * memory */
+			void updateGlobals();
+
+		protected:
+			/*! \brief Maps identifiers to const memory allocations */
+			void initializeGlobalMemory();
 
 		private:
 			/*! \brief Determine the padding required to satisfy alignment */

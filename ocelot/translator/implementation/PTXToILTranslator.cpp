@@ -210,10 +210,13 @@ namespace translator
 			case ir::PTXInstruction::Bra:   _translateBra(i);  break;
  			case ir::PTXInstruction::Cvt:   _translateCvt(i);  break;
 			case ir::PTXInstruction::Div:   _translateDiv(i);  break;
+			case ir::PTXInstruction::Ex2:   _translateEx2(i);  break;
  			case ir::PTXInstruction::Exit:  _translateExit(i); break;
  			case ir::PTXInstruction::Ld:    _translateLd(i);   break;
 			case ir::PTXInstruction::Lg2:   _translateLg2(i);  break;
 			case ir::PTXInstruction::Mad:   _translateMad(i);  break;
+			case ir::PTXInstruction::Max:   _translateMax(i);  break;
+			case ir::PTXInstruction::Min:   _translateMin(i);  break;
 			case ir::PTXInstruction::Mov:   _translateMov(i);  break;
  			case ir::PTXInstruction::Mul:   _translateMul(i);  break;
 			case ir::PTXInstruction::Mul24: _translateMul(i);  break;
@@ -371,6 +374,64 @@ namespace translator
 	{
 		switch (i.type)
 		{
+			case ir::PTXOperand::s32:
+			{
+				// There's no abs IL instruction for integers so we need
+				// to use logical operations
+				// mov r0x, i.a
+				// mov r1x, 31
+				// ishr r1x, r0x, r1x
+				// iadd r0x, r0x, r1x
+				// ixor r0x, r0x, r1x
+				// mov i.d, r0x
+
+				ir::ILOperand r0x = _tempRegister();
+				ir::ILOperand r1x = _tempRegister();
+
+				// mov r0x, i.a
+				{
+					ir::ILMov mov;
+					mov.d = r0x; mov.a = _translate(i.a);
+					_add(mov);
+				}
+
+				// mov r1x, 31
+				{
+					ir::ILMov mov;
+					mov.d = r1x; mov.a = _translateLiteral(31);
+					_add(mov);
+				}
+
+				// ishr r1x, r0x, r1x
+				{
+					ir::ILIshr ishr;
+					ishr.d = r1x; ishr.a = r0x; ishr.b = r1x;
+					_add(ishr);
+				}
+
+				// iadd r0x, r0x, r1x
+				{
+					ir::ILIadd iadd;
+					iadd.d = r0x; iadd.a = r0x; iadd.b = r1x;
+					_add(iadd);
+				}
+
+				// ixor r0x, r0x, r1x
+				{
+					ir::ILIxor ixor;
+					ixor.d = r0x; ixor.a = r0x; ixor.b = r1x;
+					_add(ixor);
+				}
+
+				// mov i.d, r0x
+				{
+					ir::ILMov mov;
+					mov.d = _translate(i.d); mov.a = r0x;
+					_add(mov);
+				}
+
+				break;
+			}
 			case ir::PTXOperand::f32:
 			{
 				ir::ILAbs abs;
@@ -685,6 +746,16 @@ namespace translator
 		_add(mov4);
 	}
 
+	void PTXToILTranslator::_translateEx2(const ir::PTXInstruction &i)
+	{
+		ir::ILExp exp;
+
+		exp.d = _translate(i.d);
+		exp.a = _translate(i.a);
+
+		_add(exp);
+	}
+
 	void PTXToILTranslator::_translateExit(const ir::PTXInstruction &i)
 	{
 		ir::ILEnd end;
@@ -706,6 +777,7 @@ namespace translator
 				break;
 			}
 			case ir::PTXInstruction::Global:
+			case ir::PTXInstruction::Const:
 			{
 				switch (i.vec)
 				{
@@ -857,8 +929,8 @@ namespace translator
 			}
 			default:
 			{
-				assertM(false, "Address Space " << i.addressSpace 
-						<< " not supported");
+				assertM(false, "Address Space not supported in "
+						<< i.toString());
 			}
 		}
 	}
@@ -989,6 +1061,28 @@ namespace translator
 		mad.d = _translate(i.d);
 
 		_add(mad);
+	}
+
+	void PTXToILTranslator::_translateMax(const ir::PTXInstruction &i)
+	{
+		ir::ILImax imax;
+
+		imax.d = _translate(i.d);
+		imax.a = _translate(i.a);
+		imax.b = _translate(i.b);
+
+		_add(imax);
+	}
+
+	void PTXToILTranslator::_translateMin(const ir::PTXInstruction &i)
+	{
+		ir::ILImin imin;
+
+		imin.d = _translate(i.d);
+		imin.a = _translate(i.a);
+		imin.b = _translate(i.b);
+
+		_add(imin);
 	}
 
 	void PTXToILTranslator::_translateMov(const ir::PTXInstruction &i)

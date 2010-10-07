@@ -29,6 +29,7 @@ namespace ir
 				End,
 				EndIf,
 				EndLoop,
+				Exp,
 				Fence,
 				Iadd,
 				Iand,
@@ -36,6 +37,8 @@ namespace ir
 				IfLogicalZ,
 				Ige,
 				Ilt,
+				Imax,
+				Imin,
 				Imul,
 				Ine,
 				Inegate,
@@ -261,6 +264,15 @@ namespace ir
 			Instruction *clone(bool copy=true) const;
 	};
 
+	class ILExp: public ILUnaryInstruction
+	{
+		public:
+			/*! \brief Default constructor */
+			ILExp();
+
+			Instruction *clone(bool copy=true) const;
+	};
+
 	class ILFence: public ILInstruction
 	{
 		public:
@@ -336,6 +348,24 @@ namespace ir
 		public:
 			/*! \brief Default constructor */
 			ILIlt();
+
+			Instruction *clone(bool copy=true) const;
+	};
+
+	class ILImax : public ILBinaryInstruction
+	{
+		public:
+			/*! \brief Default constructor */
+			ILImax();
+
+			Instruction *clone(bool copy=true) const;
+	};
+
+	class ILImin : public ILBinaryInstruction
+	{
+		public:
+			/*! \brief Default constructor */
+			ILImin();
 
 			Instruction *clone(bool copy=true) const;
 	};

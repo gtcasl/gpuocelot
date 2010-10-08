@@ -18,8 +18,6 @@
 #include <ocelot/executive/interface/RuntimeException.h>
 #include <ocelot/executive/interface/CooperativeThreadArray.h>
 
-#include <ocelot/ir/interface/HammockGraph.h>
-
 #include <ocelot/trace/interface/TraceGenerator.h>
 
 #include <assert.h>
@@ -33,9 +31,9 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
-#define REPORT_KERNEL_INSTRUCTIONS 1
+#define REPORT_KERNEL_INSTRUCTIONS 1l
 #define REPORT_LAUNCH_CONFIGURATION 1
 
 executive::EmulatedKernel::EmulatedKernel(
@@ -51,7 +49,7 @@ executive::EmulatedKernel::EmulatedKernel(
 		"Can only build an emulated kernel from a PTXKernel.");
 	
 	ISA = ir::Instruction::Emulated;
-	ConstMemory = ParameterMemory = 0;
+	ConstMemory = ArgumentMemory = 0;
 	if (_initialize) {
 		initialize();
 	}
@@ -95,6 +93,7 @@ void executive::EmulatedKernel::launchGrid(int width, int height) {
 	report("  static shared: " << sharedMemorySize() << " bytes");
 	report("  extern shared: " << externSharedMemorySize() << " bytes");
 	report("  total shared:  " << totalSharedMemorySize() << " bytes");
+	report("  argument: " << argumentMemorySize() << " bytes");
 	report("  param: " << parameterMemorySize() << " bytes");
 	report("  max threads: " << maxThreadsPerBlock() << " threads per block");
 	report("  registers: " << registerCount() << " registers");
@@ -158,8 +157,8 @@ void executive::EmulatedKernel::removeTraceGenerator(
 
 void executive::EmulatedKernel::freeAll() {
 	delete [] ConstMemory;
-	delete [] ParameterMemory;
-	ParameterMemory = ConstMemory = 0;
+	delete [] ArgumentMemory;
+	ArgumentMemory = ConstMemory = 0;
 }
 
 void executive::EmulatedKernel::initialize() {
@@ -167,7 +166,7 @@ void executive::EmulatedKernel::initialize() {
 	constructInstructionSequence();
 	initializeTextureMemory();
 	initializeSharedMemory();
-	initializeParameterMemory();
+	initializeArgumentMemory();
 	initializeStackMemory();
 	updateParamReferences();
 	initializeLocalMemory();
@@ -343,10 +342,10 @@ void executive::EmulatedKernel::updateParamReferences() {
 	}
 }
 
-void executive::EmulatedKernel::initializeParameterMemory() {
+void executive::EmulatedKernel::initializeArgumentMemory() {
 	report( "Initializing argument memory for kernel " << name );
-	delete[] ParameterMemory;
-	ParameterMemory = 0;
+	delete[] ArgumentMemory;
+	ArgumentMemory = 0;
 	_parameterMemorySize = 0;
 	if (!function()) {
 		for(ParameterVector::iterator i_it = arguments.begin();
@@ -364,6 +363,7 @@ void executive::EmulatedKernel::initializeParameterMemory() {
 			_argumentMemorySize += argument.getSize();
 		}
 	}
+	ArgumentMemory = new char[_argumentMemorySize];
 	report(" Total argument size is " << argumentMemorySize());
 }
 
@@ -377,9 +377,6 @@ void executive::EmulatedKernel::updateArgumentMemory() {
 	using namespace std;
 
 	if(!function()) {
-		delete[] ParameterMemory;
-		ParameterMemory = new char[_argumentMemorySize];
-	
 		unsigned int size = 0;
 		for(ParameterVector::iterator i_it = arguments.begin();
 			i_it != arguments.end(); ++i_it) {
@@ -392,7 +389,7 @@ void executive::EmulatedKernel::updateArgumentMemory() {
 				v_it = argument.arrayValues.begin();
 				v_it != argument.arrayValues.end(); ++v_it) {
 				assert(size < _argumentMemorySize);
-				memcpy(ParameterMemory + size, &v_it->val_b16,
+				memcpy(ArgumentMemory + size, &v_it->val_b16,
 					argument.getElementSize());
 				size += argument.getElementSize();
 			}
@@ -736,6 +733,7 @@ void executive::EmulatedKernel::initializeConstMemory() {
 			_computeOffset(it->second.statement, 
 				offset, constantOffset);						
 			constant[it->second.statement.name] = offset;
+
 		}
 	}
 

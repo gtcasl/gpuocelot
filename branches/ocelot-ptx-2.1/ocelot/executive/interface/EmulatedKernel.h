@@ -115,7 +115,7 @@ namespace executive {
 		void updateParamReferences();
 
 		/*!	Allocate parameter memory*/	
-		void initializeParameterMemory();
+		void initializeArgumentMemory();
 
 		/*!	Allocates arrays in shared memory and maps identifiers to 
 			allocations. */
@@ -146,8 +146,8 @@ namespace executive {
 		/*! A map of register name to register number */
 		ir::PTXKernel::RegisterMap registerMap;
 
-		/*!	Pointer to block of memory used to store parameter data */
-		char* ParameterMemory;
+		/*!	Pointer to block of memory used to store argument data */
+		char* ArgumentMemory;
 
 		/*!	Pointer to byte-addressable const memory */
 		char* ConstMemory;

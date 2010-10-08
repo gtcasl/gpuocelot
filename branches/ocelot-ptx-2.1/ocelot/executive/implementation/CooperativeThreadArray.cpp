@@ -29,7 +29,7 @@
 #endif
 
 // global control for enabling reporting within the emulator
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 // if 0, only reconverge warps at syncthreads
 #define IDEAL_RECONVERGENCE 1
@@ -39,7 +39,7 @@
 #define REPORT_DYNAMIC_INSTRUCTIONS 1
 
 // reporting for register accesses
-#define REPORT_NTH_THREAD_ONLY 0
+#define REPORT_NTH_THREAD_ONLY 1
 #define NTH_THREAD 0
 #define REPORT_REGISTER_READS 1
 #define REPORT_REGISTER_WRITES 1
@@ -4001,7 +4001,7 @@ void executive::CooperativeThreadArray::eval_Ld(CTAContext &context,
 			case PTXInstruction::Param:
 				{
 					if (instr.a.isArgument) {
-						source += (PTXU64) kernel->ParameterMemory;
+						source += (PTXU64) kernel->ArgumentMemory;
 					}
 					else {
 						source += (PTXU64) 
@@ -7361,7 +7361,7 @@ void executive::CooperativeThreadArray::eval_St(CTAContext &context,
 			case PTXInstruction::Param:
 				{
 					if (instr.d.isArgument) {
-						source += (PTXU64) kernel->ParameterMemory;
+						source += (PTXU64) kernel->ArgumentMemory;
 					}
 					else {
 						source += (PTXU64) 

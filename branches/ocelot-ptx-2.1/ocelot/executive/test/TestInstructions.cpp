@@ -3409,7 +3409,7 @@ public:
 		//
 
 		// we only need this to set values, the instruction itself sees it as just another address space
-		PTXU32 *space = (PTXU32 *)cta.kernel->ParameterMemory;
+		PTXU32 *space = (PTXU32 *)cta.kernel->ArgumentMemory;
 
 		ins.addressSpace = PTXInstruction::Param;
 

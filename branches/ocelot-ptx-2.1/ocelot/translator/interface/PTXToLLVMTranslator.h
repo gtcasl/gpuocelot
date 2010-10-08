@@ -174,6 +174,7 @@ namespace translator
 			void _addTextureCalls();
 			void _addAtomicCalls();
 			void _addMathCalls();
+			void _addLLVMIntrinsics();
 			void _addKernelPrefix();
 			void _addGlobalDeclarations();
 			void _addKernelSuffix();

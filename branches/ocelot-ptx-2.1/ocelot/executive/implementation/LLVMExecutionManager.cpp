@@ -69,7 +69,8 @@ void LLVMExecutionManager::Manager::launch(const LLVMExecutableKernel& kernel)
 
 	if(!LLVMModuleManager::isModuleLoaded(kernel.module->path()))
 	{
-		LLVMModuleManager::loadModule(kernel.module, kernel.optimization());	
+		LLVMModuleManager::loadModule(kernel.module, kernel.optimization(),
+			kernel.device);	
 	}
 	
 	for(WorkerVector::iterator worker = _workers.begin();

@@ -10,6 +10,7 @@
 // Ocelot Includes
 #include <ocelot/executive/interface/LLVMModuleManager.h>
 #include <ocelot/executive/interface/LLVMState.h>
+#include <ocelot/executive/interface/Device.h>
 
 #include <ocelot/translator/interface/PTXToLLVMTranslator.h>
 
@@ -54,9 +55,9 @@ namespace executive
 ////////////////////////////////////////////////////////////////////////////////
 // LLVMModuleManager
 void LLVMModuleManager::loadModule(const ir::Module* m, 
-	translator::Translator::OptimizationLevel l)
+	translator::Translator::OptimizationLevel l, Device* d)
 {
-	_database.loadModule(m, l);
+	_database.loadModule(m, l, d);
 }
 
 bool LLVMModuleManager::isModuleLoaded(const std::string& moduleName)
@@ -244,7 +245,6 @@ static void setupParameterMemoryReferences(ir::PTXKernel& kernel,
 	metadata->parameterSize = offset;
 
 	report("   total parameter memory size is " << metadata->parameterSize);
-
 }
 
 static void setupSharedMemoryReferences(ir::PTXKernel& kernel,
@@ -591,23 +591,25 @@ static void translate(llvm::Module*& module, ir::PTXKernel& kernel,
 	assert(module == 0);
 
 	report(" Translating kernel.");
+	
+	report("  Converting from PTX IR to LLVM IR.");
 	translator::PTXToLLVMTranslator translator(optimization);
 	ir::LLVMKernel* llvmKernel = static_cast<ir::LLVMKernel*>(
 		translator.translate(&kernel));
 	
-	report(" Assembling LLVM kernel.");
+	report("  Assembling LLVM kernel.");
 	llvmKernel->assemble();
 	llvm::SMDiagnostic error;
 
 	module = new llvm::Module(kernel.name.c_str(), llvm::getGlobalContext());
 
-	report(" Parsing LLVM assembly.");
+	report("  Parsing LLVM assembly.");
 	module = llvm::ParseAssemblyString(llvmKernel->code().c_str(), 
 		module, error, llvm::getGlobalContext());
 
 	if(module == 0)
 	{
-		report("  Parsing kernel failed, dumping code:\n" 
+		report("   Parsing kernel failed, dumping code:\n" 
 			<< llvmKernel->numberedCode());
 		std::string m;
 		llvm::raw_string_ostream message(m);
@@ -617,12 +619,12 @@ static void translate(llvm::Module*& module, ir::PTXKernel& kernel,
 		throw hydrazine::Exception(message.str());
 	}
 
-	report(" Checking llvm module for errors.");
+	report("  Checking llvm module for errors.");
 	std::string verifyError;
 	
 	if(llvm::verifyModule(*module, llvm::ReturnStatusAction, &verifyError))
 	{
-		report("  Checking kernel failed, dumping code:\n" 
+		report("   Checking kernel failed, dumping code:\n" 
 			<< llvmKernel->numberedCode());
 		delete llvmKernel;
 
@@ -737,12 +739,46 @@ static void optimize(llvm::Module& module,
 	#endif
 }
 
+
+static void link(llvm::Module& module, const ir::PTXKernel& kernel, 
+	Device* device)
+{
+	report("  Linking global variables.");
+	
+	#ifdef HAVE_LLVM
+	for(ir::Module::GlobalMap::const_iterator 
+		global = kernel.module->globals().begin(); 
+		global != kernel.module->globals().end(); ++global) 
+	{
+		if(global->second.statement.directive == ir::PTXStatement::Global) 
+		{
+			assert(device != 0);
+
+			llvm::GlobalValue* value = module.getNamedValue(global->first);
+			assertM(value != 0, "Global variable " << global->first 
+				<< " not found in llvm module.");
+			Device::MemoryAllocation* allocation = device->getGlobalAllocation( 
+				kernel.module->path(), global->first);
+			assert(allocation != 0);
+			report("  Binding global variable " << global->first 
+				<< " to " << allocation->pointer());
+			LLVMState::jit()->addGlobalMapping(value, allocation->pointer());
+		}
+	}
+	#endif
+}
+
 static void codegen(LLVMModuleManager::Function& function, llvm::Module& module,
-	const ir::PTXKernel& kernel)
+	const ir::PTXKernel& kernel, Device* device)
 {
 	report(" Generating native code.");
 	
+	#ifdef HAVE_LLVM
 	LLVMState::jit()->addModule(&module);
+
+	link(module, kernel, device);
+
+	report("  Invoking LLVM to Native JIT");
 
 	std::string name = "_Z_ocelotTranslated_" + kernel.name;
 	
@@ -751,15 +787,17 @@ static void codegen(LLVMModuleManager::Function& function, llvm::Module& module,
 	assertM(llvmFunction != 0, "Could not find function " + name);
 	function = hydrazine::bit_cast<LLVMModuleManager::Function>(
 		LLVMState::jit()->getPointerToFunction(llvmFunction));
+	#endif
 }
+
 ////////////////////////////////////////////////////////////////////////////////
 
 ////////////////////////////////////////////////////////////////////////////////
 // KernelAndTranslation
 LLVMModuleManager::KernelAndTranslation::KernelAndTranslation(ir::PTXKernel* k, 
 	translator::Translator::OptimizationLevel l, const ir::PTXKernel* p, 
-	FunctionId o) : _kernel(k), _module(0), _optimizationLevel(l),
-	_metadata(0), _parent(p), _offsetId(o)
+	FunctionId o, Device* d) : _kernel(k), _module(0),
+	_optimizationLevel(l), _metadata(0), _parent(p), _offsetId(o), _device(d)
 {
 
 }
@@ -791,6 +829,7 @@ LLVMModuleManager::KernelAndTranslation::MetaData*
 	setupPTXMemoryReferences(*_kernel, _metadata, *_parent);
 	translate(_module, *_kernel, _optimizationLevel);
 	
+	// Converting out of ssa makes the assembly easier to read
 	if(_optimizationLevel == translator::Translator::ReportOptimization 
 		|| _optimizationLevel == translator::Translator::DebugOptimization)
 	{
@@ -798,8 +837,8 @@ LLVMModuleManager::KernelAndTranslation::MetaData*
 	}
 	
 	optimize(*_module, _optimizationLevel);
-	codegen(_metadata->function, *_module, *_kernel);
-		
+	codegen(_metadata->function, *_module, *_kernel, _device);
+	
 	return _metadata;
 }
 
@@ -898,7 +937,7 @@ LLVMModuleManager::ModuleDatabase::ModuleDatabase()
 	
 	_barrierModule.load(ptx, "_ZOcelotBarrierModule");
 	
-	loadModule(&_barrierModule, translator::Translator::DebugOptimization);
+	loadModule(&_barrierModule, translator::Translator::DebugOptimization, 0);
 }
 
 LLVMModuleManager::ModuleDatabase::~ModuleDatabase()
@@ -920,7 +959,7 @@ LLVMModuleManager::ModuleDatabase::~ModuleDatabase()
 }
 
 void LLVMModuleManager::ModuleDatabase::loadModule(const ir::Module* module, 
-	translator::Translator::OptimizationLevel level)
+	translator::Translator::OptimizationLevel level, Device* device)
 {
 	assert(!isModuleLoaded(module->path()));
 
@@ -954,7 +993,7 @@ void LLVMModuleManager::ModuleDatabase::loadModule(const ir::Module* module,
 				<< "' at index " << (subkernels.size() + _kernels.size()));
 			subkernels.push_back(KernelAndTranslation(*subkernel,
 				level, kernel->first, std::distance(
-				kernel->second.begin(), subkernel)));
+				kernel->second.begin(), subkernel), device));
 		}
 	}
 

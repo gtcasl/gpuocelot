@@ -154,7 +154,7 @@ void LLVMCooperativeThreadArray::executeCta(unsigned int id)
 	}
 	warpList.clear();
 	
-	while(_freeContexts.size() != threads)
+	while(_freeContexts.size() + _reclaimedContexts.size() != threads)
 	{
 		_computeNextFunction();
 		
@@ -264,9 +264,9 @@ unsigned int LLVMCooperativeThreadArray::_initializeNewContext(
 	
 		LLVMContext& context = _contexts[contextId];
 	
-		context.tid.x = threadId % context.nctaid.x;
-		context.tid.y = (threadId / context.nctaid.x) % context.nctaid.y;
-		context.tid.z = threadId / (context.nctaid.x * context.nctaid.y);
+		context.tid.x = threadId % context.ntid.x;
+		context.tid.y = (threadId / context.ntid.x) % context.ntid.y;
+		context.tid.z = threadId / (context.ntid.x * context.ntid.y);
 	}	
 	
 	return contextId;

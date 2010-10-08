@@ -47,7 +47,7 @@ public:
 public:
 	/*! \brief Loads a module into the manager, kernels are now visible */
 	static void loadModule(const ir::Module* m,
-		translator::Translator::OptimizationLevel l);
+		translator::Translator::OptimizationLevel l, Device* device);
 
 	/*! \brief Is a module loaded? */
 	static bool isModuleLoaded(const std::string& moduleName);
@@ -94,7 +94,8 @@ public:
 		KernelAndTranslation(ir::PTXKernel* k = 0, 
 			translator::Translator::OptimizationLevel level = 
 			translator::Translator::NoOptimization,
-			const ir::PTXKernel* parent = 0, FunctionId offset = 0);
+			const ir::PTXKernel* parent = 0, FunctionId offset = 0,
+			Device* device = 0);
 
 	public:
 		void               unload();
@@ -108,6 +109,7 @@ public:
 		MetaData*                                 _metadata;
 		const ir::PTXKernel*                      _parent;
 		FunctionId                                _offsetId;
+		Device*                                   _device;
 	};
 
 	typedef KernelAndTranslation::MetaData MetaData;
@@ -172,7 +174,7 @@ private:
 	
 		/*! \brief Load module into the database */
 		void loadModule(const ir::Module* module,
-			translator::Translator::OptimizationLevel l);
+			translator::Translator::OptimizationLevel l, Device* device);
 	
 		/*! \brief Is a module loaded? */
 		bool isModuleLoaded(const std::string& moduleName);
@@ -188,9 +190,9 @@ private:
 		void execute();
 	
 	private:
-		ModuleMap    _modules;
-		KernelVector _kernels;
-		ir::Module   _barrierModule;
+		ModuleMap     _modules;
+		KernelVector  _kernels;
+		ir::Module    _barrierModule;
 	};
 	
 	static ModuleDatabase _database;

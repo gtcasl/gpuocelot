@@ -175,8 +175,20 @@ namespace trace
 			}
 			case ir::PTXInstruction::Local: checkLocalAccess( "Local", _dim,
 				_local, e, _kernel ); break;
-			case ir::PTXInstruction::Param: checkLocalAccess( "Parameter", _dim, 
-				_parameter, e, _kernel ); break;
+			case ir::PTXInstruction::Param:
+			{
+				if( e.instruction->a.isArgument )
+				{
+					checkLocalAccess( "Argument", _dim, 
+						_argument, e, _kernel );
+				}
+				else
+				{
+					checkLocalAccess( "Parameter", _dim, 
+						_parameter, e, _kernel );
+				}
+				break;
+			}
 			case ir::PTXInstruction::Shared: checkLocalAccess( "Shared", _dim, 	
 				_shared, e, _kernel ); break;
 			case ir::PTXInstruction::Const: checkLocalAccess( "Constant", _dim, 
@@ -215,6 +227,9 @@ namespace trace
 		
 		_local.base = 0;
 		_local.extent = kernel.localMemorySize();
+		
+		_argument.base = 0;
+		_argument.extent = kernel.argumentMemorySize();
 		
 		_kernel = static_cast< const executive::EmulatedKernel* >( &kernel );
 	}

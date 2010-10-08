@@ -3701,17 +3701,28 @@ namespace translator
 		if( i.type == ir::PTXOperand::b32 )
 		{
 			call.name = "@llvm.ctpop.i32";
+			call.d = _destination( i );
 		}
 		else
 		{
 			call.name = "@llvm.ctpop.i64";
+			call.d = ir::LLVMInstruction::Operand( _tempRegister(), 
+				ir::LLVMInstruction::Type( ir::LLVMInstruction::I64, 
+				ir::LLVMInstruction::Type::Element ) );
 		}
 		
-		call.d = _destination( i );
 		call.parameters.resize( 1 );
 		call.parameters[0] = _translate( i.a );
 		
 		_add( call );
+		
+		if( i.type != ir::PTXOperand::b32 )
+		{
+			ir::LLVMTrunc truncate;
+			
+			truncate.d = _destination( i );
+			truncate.a = call.d;
+		}
 	}
 
 	void PTXToLLVMTranslator::_translatePrmt( const ir::PTXInstruction& i )
@@ -7307,6 +7318,42 @@ namespace translator
 		
 		_llvmKernel->_statements.push_front( mul );
 	}
+
+	void PTXToLLVMTranslator::_addLLVMIntrinsics()
+	{
+		// @llvm.ctpop
+		ir::LLVMStatement ctpop( ir::LLVMStatement::FunctionDeclaration );
+
+		ctpop.label = "llvm.ctpop.i8";
+		ctpop.linkage = ir::LLVMStatement::InvalidLinkage;
+		ctpop.convention = ir::LLVMInstruction::DefaultCallingConvention;
+		ctpop.visibility = ir::LLVMStatement::Default;
+		
+		ctpop.operand.type.category = ir::LLVMInstruction::Type::Element;
+		ctpop.operand.type.type = ir::LLVMInstruction::I8;
+		
+		ctpop.parameters.resize( 1 );
+
+		ctpop.parameters[0].type.category = ir::LLVMInstruction::Type::Element;
+		ctpop.parameters[0].type.type = ir::LLVMInstruction::I8;
+
+		_llvmKernel->_statements.push_front( ctpop );
+
+		ctpop.label = "llvm.ctpop.i16";
+		ctpop.operand.type.type = ir::LLVMInstruction::I16;
+		ctpop.parameters[0].type.type = ir::LLVMInstruction::I16;
+		_llvmKernel->_statements.push_front( ctpop );
+
+		ctpop.label = "llvm.ctpop.i32";
+		ctpop.operand.type.type = ir::LLVMInstruction::I32;
+		ctpop.parameters[0].type.type = ir::LLVMInstruction::I32;
+		_llvmKernel->_statements.push_front( ctpop );
+
+		ctpop.label = "llvm.ctpop.i64";
+		ctpop.operand.type.type = ir::LLVMInstruction::I64;
+		ctpop.parameters[0].type.type = ir::LLVMInstruction::I64;
+		_llvmKernel->_statements.push_front( ctpop );
+	}
 	
 	void PTXToLLVMTranslator::_addKernelPrefix()
 	{
@@ -7410,8 +7457,7 @@ namespace translator
 		bfind.parameters[1].type.category = ir::LLVMInstruction::Type::Element;
 		bfind.parameters[1].type.type = ir::LLVMInstruction::I1;
 	
-		_llvmKernel->_statements.push_front( bfind );		
-		bfind.label = "__ocelot_popc_b64";
+		_llvmKernel->_statements.push_front( bfind );
 		bfind.parameters[0].type.type = ir::LLVMInstruction::I64;
 		bfind.label = "__ocelot_bfind_b64";
 		_llvmKernel->_statements.push_front( bfind );		
@@ -7473,6 +7519,7 @@ namespace translator
 		_addTextureCalls();
 		_addAtomicCalls();
 		_addMathCalls();
+		_addLLVMIntrinsics();
 
 		_llvmKernel->_statements.push_back( 
 			ir::LLVMStatement( ir::LLVMStatement::NewLine ) );

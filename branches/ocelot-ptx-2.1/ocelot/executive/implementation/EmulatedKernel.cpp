@@ -31,9 +31,9 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
-#define REPORT_KERNEL_INSTRUCTIONS 1l
+#define REPORT_KERNEL_INSTRUCTIONS 1
 #define REPORT_LAUNCH_CONFIGURATION 1
 
 executive::EmulatedKernel::EmulatedKernel(
@@ -356,7 +356,7 @@ void executive::EmulatedKernel::initializeArgumentMemory() {
 				- ( _parameterMemorySize % argument.getAlignment() );
 			padding = (argument.getAlignment() == padding) ? 0 : padding;
 			_argumentMemorySize += padding;
-			argument.offset = _parameterMemorySize;
+			argument.offset = _argumentMemorySize;
 			report( " Initializing memory for argument " << argument.name 
 				<< " of size " << argument.getSize() << " at offset "
 				<< _argumentMemorySize );

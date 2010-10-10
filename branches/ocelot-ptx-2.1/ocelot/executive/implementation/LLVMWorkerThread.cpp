@@ -35,11 +35,13 @@ public:
 		SetupCta,
 		LaunchCta,
 		FlushCta,
+		Exception,
 		Invalid,
 	};
 	
 public:
-	Type type;
+	Type        type;
+	std::string errorMessage;
 
 public:
 	union
@@ -47,6 +49,7 @@ public:
 		unsigned int ctaId;
 		const LLVMExecutableKernel* kernel;
 	};
+	
 };
 
 LLVMWorkerThread::LLVMWorkerThread()
@@ -78,6 +81,12 @@ void LLVMWorkerThread::setupCta(const LLVMExecutableKernel& kernel)
 	WorkerMessage* reply;
 	receive(reply);
 	assert(reply == &message);
+
+	if(message.type == WorkerMessage::Exception)
+	{
+		report("Re-throwing exception");
+		throw hydrazine::Exception(message.errorMessage);
+	}
 }
 
 void LLVMWorkerThread::launchCta(unsigned int ctaId)
@@ -93,6 +102,13 @@ void LLVMWorkerThread::finishCta()
 {
 	WorkerMessage* message;
 	receive(message);
+
+	if(message->type == WorkerMessage::Exception)
+	{
+		report("Re-throwing exception");
+		delete message;
+		throw hydrazine::Exception(message->errorMessage);
+	}
 	
 	delete message;
 }
@@ -100,13 +116,19 @@ void LLVMWorkerThread::finishCta()
 void LLVMWorkerThread::flushTranslatedKernels()
 {
 	WorkerMessage message;
-	message.type = WorkerMessage::SetupCta;
+	message.type = WorkerMessage::FlushCta;
 	
 	send(&message);
 	
 	WorkerMessage* reply;
 	receive(reply);
 	assert(reply == &message);	
+
+	if(message.type == WorkerMessage::Exception)
+	{
+		report("Re-throwing exception");
+		throw hydrazine::Exception(message.errorMessage);
+	}
 }
 
 LLVMModuleManager::FunctionId LLVMWorkerThread::getFunctionId(
@@ -123,6 +145,12 @@ LLVMModuleManager::FunctionId LLVMWorkerThread::getFunctionId(
 	LLVMModuleManager::GetFunctionMessage* reply = 0;
 	threadReceive(reply);
 	assert(reply == &message);
+	
+	if(message.type == LLVMModuleManager::DatabaseMessage::Exception)
+	{
+		report("Re-throwing exception");
+		throw hydrazine::Exception(message.errorMessage);
+	}
 	
 	return message.id;
 }
@@ -141,6 +169,12 @@ LLVMModuleManager::MetaData* LLVMWorkerThread::getFunctionMetaData(
 	threadReceive(reply);
 	assert(reply == &message);
 	
+	if(message.type == LLVMModuleManager::DatabaseMessage::Exception)
+	{
+		report("Re-throwing exception");
+		throw hydrazine::Exception(message.errorMessage);
+	}
+	
 	return message.metadata;
 }
 
@@ -154,34 +188,43 @@ void LLVMWorkerThread::execute()
 	threadReceive(message);
 	while(message->type != WorkerMessage::Kill)
 	{
-		switch(message->type)
+		try
 		{
-		case WorkerMessage::LaunchCta:
+			switch(message->type)
+			{
+			case WorkerMessage::LaunchCta:
+			{
+				report(" Launching CTA " << message->ctaId 
+					<< " on thread " << id() << ".");
+				cta.executeCta(message->ctaId);
+				threadSend(message);
+			}
+			break;
+			case WorkerMessage::SetupCta:
+			{
+				report(" Setting up CTA for kernel '" << message->kernel->name 
+					<< "' on thread " << id() << ".");
+				cta.setup(*message->kernel);
+				threadSend(message);
+			}
+			break;
+			case WorkerMessage::FlushCta:
+			{
+				report(" Flushing translation cache on thread " << id() << ".");
+				cta.flushTranslatedKernels();
+				threadSend(message);
+			}
+			break;
+			default: assertM(false, "Invalid message type.");
+			}
+		}
+		catch(const hydrazine::Exception& e)
 		{
-			report(" Launching CTA " << message->ctaId 
-				<< " on thread " << id() << ".");
-			cta.executeCta(message->ctaId);
+			report("Operation failed, replying with exception.");
+			message->type         = WorkerMessage::Exception;
+			message->errorMessage = e.what();
 			threadSend(message);
 		}
-		break;
-		case WorkerMessage::SetupCta:
-		{
-			report(" Setting up CTA for kernel '" << message->kernel->name 
-				<< "' on thread " << id() << ".");
-			cta.setup(*message->kernel);
-			threadSend(message);
-		}
-		break;
-		case WorkerMessage::FlushCta:
-		{
-			report(" Flushing translation cache on thread " << id() << ".");
-			cta.flushTranslatedKernels();
-			threadSend(message);
-		}
-		break;
-		default: assertM(false, "Invalid message type.");
-		}
-		
 		threadReceive(message);
 	}
 

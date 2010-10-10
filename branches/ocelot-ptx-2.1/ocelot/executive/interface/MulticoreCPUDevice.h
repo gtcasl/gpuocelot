@@ -23,6 +23,9 @@ namespace executive
 					/*! \brief Construct this based on a module */
 					Module(const ir::Module* m = 0, Device* d = 0);
 				
+					/*! \brief Destroy this, unload the module from caches */
+					~Module();
+				
 				public:
 					/*! \brief Get a specific LLVMExecutableKernel or 0 */
 					ExecutableKernel* getKernel(const std::string& name);

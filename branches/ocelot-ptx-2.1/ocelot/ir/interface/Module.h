@@ -178,6 +178,9 @@ namespace ir {
 		/*! Target string */
 		std::string _target;
 		
+		/*! Is the module currently loaded? */
+		bool _loaded;
+		
 		friend class executive::Executive;
 	};
 

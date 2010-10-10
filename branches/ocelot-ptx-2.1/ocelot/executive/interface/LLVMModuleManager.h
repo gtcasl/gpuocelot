@@ -122,6 +122,7 @@ public:
 			GetId,
 			GetFunction,
 			KillThread,
+			Exception,
 			Invalid
 		};
 	public:
@@ -135,6 +136,7 @@ public:
 		std::string kernelName;
 		FunctionId  id;
 		MetaData*   metadata;
+		std::string errorMessage;
 	};
 	
 private:

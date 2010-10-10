@@ -3722,6 +3722,8 @@ namespace translator
 			
 			truncate.d = _destination( i );
 			truncate.a = call.d;
+			
+			_add( truncate );
 		}
 	}
 

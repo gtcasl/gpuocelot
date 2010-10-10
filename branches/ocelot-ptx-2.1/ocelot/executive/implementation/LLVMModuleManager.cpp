@@ -616,6 +616,8 @@ static void translate(llvm::Module*& module, ir::PTXKernel& kernel,
 		message << "LLVM Parser failed: ";
 		error.Print(kernel.name.c_str(), message);
 
+		kernel.dfg()->fromSsa();
+
 		throw hydrazine::Exception(message.str());
 	}
 
@@ -627,6 +629,10 @@ static void translate(llvm::Module*& module, ir::PTXKernel& kernel,
 		report("   Checking kernel failed, dumping code:\n" 
 			<< llvmKernel->numberedCode());
 		delete llvmKernel;
+		delete module;
+		module = 0;
+
+		kernel.dfg()->fromSsa();
 
 		throw hydrazine::Exception("LLVM Verifier failed for kernel: " 
 			+ kernel.name + " : \"" + verifyError + "\"");
@@ -825,20 +831,46 @@ LLVMModuleManager::KernelAndTranslation::MetaData*
 	report("Translating PTX kernel '" << _kernel->name << "'");
 	
 	optimizePTX(*_kernel, _optimizationLevel, _offsetId);
-	_metadata = generateMetadata(*_kernel, _optimizationLevel);
-	setupPTXMemoryReferences(*_kernel, _metadata, *_parent);
-	translate(_module, *_kernel, _optimizationLevel);
 	
-	// Converting out of ssa makes the assembly easier to read
-	if(_optimizationLevel == translator::Translator::ReportOptimization 
-		|| _optimizationLevel == translator::Translator::DebugOptimization)
+	try
 	{
-		_kernel->dfg()->fromSsa();
+		_metadata = generateMetadata(*_kernel, _optimizationLevel);
+		setupPTXMemoryReferences(*_kernel, _metadata, *_parent);
+		translate(_module, *_kernel, _optimizationLevel);
+
+		// Converting out of ssa makes the assembly easier to read
+		if(_optimizationLevel == translator::Translator::ReportOptimization 
+			|| _optimizationLevel == translator::Translator::DebugOptimization)
+		{
+			_kernel->dfg()->fromSsa();
+		}
+	}
+	catch(...)
+	{
+		delete _metadata;
+		_metadata = 0;
+		throw;
 	}
 	
-	optimize(*_module, _optimizationLevel);
-	codegen(_metadata->function, *_module, *_kernel, _device);
-	
+	try
+	{
+		optimize(*_module, _optimizationLevel);
+		codegen(_metadata->function, *_module, *_kernel, _device);
+	}
+	catch(...)
+	{
+		llvm::Function* function = _module->getFunction(_kernel->name);
+
+		LLVMState::jit()->freeMachineCodeForFunction(function);
+
+		LLVMState::jit()->removeModule(_module);
+		delete _module;
+		delete _metadata;
+		_metadata = 0;
+		
+		throw;
+	}
+
 	return _metadata;
 }
 
@@ -1011,6 +1043,8 @@ bool LLVMModuleManager::ModuleDatabase::isModuleLoaded(
 void LLVMModuleManager::ModuleDatabase::unloadModule(
 	const std::string& moduleName)
 {
+	report("Unloading module '" << moduleName << "'");
+	
 	ModuleMap::iterator module = _modules.find(moduleName);
 	assert(module != _modules.end());
 
@@ -1069,19 +1103,29 @@ void LLVMModuleManager::ModuleDatabase::execute()
 	{
 		GetFunctionMessage* message = static_cast<GetFunctionMessage*>(m);
 		
-		if(message->type == DatabaseMessage::GetId)
+		try
 		{
-			ModuleMap::iterator module = _modules.find(message->moduleName);
-
-			if(module != _modules.end())
+			if(message->type == DatabaseMessage::GetId)
 			{
-				message->id = module->second.getFunctionId(message->kernelName);
+				ModuleMap::iterator module = _modules.find(message->moduleName);
+
+				if(module != _modules.end())
+				{
+					message->id = module->second.getFunctionId(
+						message->kernelName);
+				}
+			}
+			else
+			{
+				assert(message->id < _kernels.size());
+				message->metadata = _kernels[message->id].metadata();
 			}
 		}
-		else
+		catch(const hydrazine::Exception& e)
 		{
-			assert(message->id < _kernels.size());
-			message->metadata = _kernels[message->id].metadata();
+			report("Operation failed, replying with exception.");
+			message->type = DatabaseMessage::Exception;
+			message->errorMessage = e.what();
 		}
 		
 		threadSend(message, id);

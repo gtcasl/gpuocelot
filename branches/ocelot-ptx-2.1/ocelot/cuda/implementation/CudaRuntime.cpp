@@ -3241,12 +3241,12 @@ void cuda::CudaRuntime::unregisterModule(const std::string& name) {
 		Ocelot_Exception("Module - " << name << " - is not registered.");
 	}
 	
-	_modules.erase(module);
-	
 	for (DeviceVector::iterator device = _devices.begin(); 
 		device != _devices.end(); ++device) {
 		(*device)->unload(name);
 	}
+	
+	_modules.erase(module);
 	
 	_unlock();
 }

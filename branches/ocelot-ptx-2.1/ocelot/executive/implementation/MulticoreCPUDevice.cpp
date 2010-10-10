@@ -10,6 +10,7 @@
 // ocelot includes
 #include <ocelot/executive/interface/MulticoreCPUDevice.h>
 #include <ocelot/executive/interface/LLVMExecutableKernel.h>
+#include <ocelot/executive/interface/LLVMModuleManager.h>
 
 // hydrazine includes
 #include <hydrazine/interface/WindowsCompatibility.h>
@@ -28,6 +29,14 @@ namespace executive
 	
 	}
 
+	MulticoreCPUDevice::Module::~Module()
+	{
+		assert(ir->loaded());
+		
+		if(!LLVMModuleManager::isModuleLoaded(ir->path())) return;
+
+		LLVMModuleManager::unloadModule(ir->path());
+	}
 
 	ExecutableKernel* MulticoreCPUDevice::Module::getKernel(
 		const std::string& name)

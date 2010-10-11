@@ -29,7 +29,7 @@ check_PROGRAMS = TestLexer TestParser \
 	TestPTXToLLVMTranslator  TestGPUKernel  \
 	TestCudaGlobals TestCudaMalloc TestCudaTexture2D TestCudaTextureArray \
 	TestCudaSequence TestLLVMKernels TestDeviceSwitching \
-	TestRaceCondition TestMemoryCheck
+	TestRaceCondition TestMemoryCheck ExecuteInstrumentedKernel 
 EXTRA_PROGRAMS = Module PtxToLlvmTranslator PtxToIlTranslator DFG CFG PTXChecker
 lib_LTLIBRARIES = libocelot.la
 ################################################################################
@@ -49,6 +49,7 @@ libocelot_la_SOURCES = \
 	ocelot/analysis/implementation/RemoveBarrierPass.cpp \
 	ocelot/analysis/implementation/ConvertPredicationToSelectPass.cpp \
 	ocelot/analysis/implementation/LinearScanRegisterAllocationPass.cpp \
+    ocelot/analysis/implementation/CountBasicBlockExecutionPass.cpp \
 	ocelot/api/implementation/ocelot.cpp \
 	ocelot/api/implementation/OcelotRuntime.cpp \
 	ocelot/api/implementation/OcelotConfiguration.cpp \
@@ -138,7 +139,7 @@ OcelotConfig_LDFLAGS = -static
 ## PTXOptimizer
 PTXOptimizer_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
 PTXOptimizer_SOURCES = ocelot/analysis/implementation/PTXOptimizer.cpp
-PTXOptimizer_LDADD = libocelot.la
+PTXOptimizer_LDADD = libocelot.la 
 PTXOptimizer_LDFLAGS = -static
 ################################################################################
 
@@ -339,6 +340,15 @@ TestDeviceSwitching_LDFLAGS = -static
 ################################################################################
 
 ################################################################################
+## ExecuteInstrumentedKernel
+ExecuteInstrumentedKernel_CXXFLAGS = $(INCLUDE) -Wall -ansi \
+	-pedantic -Werror -std=c++0x
+ExecuteInstrumentedKernel_SOURCES = ocelot/analysis/test/ExecuteInstrumentedKernel.cpp
+ExecuteInstrumentedKernel_LDADD = libocelot.la $(LLVM_LDFLAGS)
+ExecuteInstrumentedKernel_LDFLAGS = -static
+################################################################################
+
+################################################################################
 ## Headers
 nobase_include_HEADERS = ocelot/api/interface/ocelot.h \
 	ocelot/api/interface/OcelotConfiguration.h \
@@ -385,6 +395,7 @@ nobase_include_HEADERS = ocelot/api/interface/ocelot.h \
 	ocelot/analysis/interface/SSAGraph.h \
 	ocelot/analysis/interface/ConvertPredicationToSelectPass.h \
 	ocelot/analysis/interface/LinearScanRegisterAllocationPass.h \
+    ocelot/analysis/interface/CountBasicBlockExecutionPass.h \
 	ocelot/analysis/interface/PTXOptimizer.h \
 	ocelot/analysis/interface/RemoveBarrierPass.h \
 	ocelot/analysis/interface/PassManager.h \

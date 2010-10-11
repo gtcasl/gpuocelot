@@ -130,6 +130,13 @@ namespace ir {
 		*/
 		Global* getGlobal(const std::string& name);
 
+        /*! \brief Adds a new global.
+			\param statement The statement representing 
+                the global being inserted, it will be owned
+				by the module.
+		*/
+		void insertGlobal(const PTXStatement &statement);		
+
 		/*! \brief Gets the module path */
 		const std::string& path() const;
 		

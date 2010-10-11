@@ -285,7 +285,14 @@ const ir::Module::StatementVector& ir::Module::statements() const {
 	assert( loaded() );
 	return _statements;
 }
-		
+
+void ir::Module::insertGlobal(const PTXStatement &statement) {
+	loadNow();
+	if(!_globals.insert(std::make_pair(statement.name, Global(statement))).second) {
+		throw hydrazine::Exception("Inserted duplicated global - " 
+			+ statement.name);
+	}
+}		
 
 ir::PTXKernel* ir::Module::getKernel(const std::string& kernelName) {
 	loadNow();

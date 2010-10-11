@@ -9,7 +9,7 @@
 			ignoreIrrelevantWrites: true
 		},
 		debugger: {
-			enabled: true,
+			enabled: false,
 			kernelFilter: "_Z13scalarProdGPUPfS_S_ii",
 			alwaysAttach: true
 		}
@@ -19,7 +19,7 @@
 		runtimeApiTrace: "trace/CudaAPI.trace"
 	},
 	executive: {
-		devices: [ nvidia ],
+		devices: [ emulated, llvm, nvidia, amd ],
 		optimizationLevel: basic,
 		workerThreadLimit: 2
 	}

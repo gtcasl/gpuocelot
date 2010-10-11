@@ -90,7 +90,8 @@ cuda::HostThreadContext::HostThreadContext(const HostThreadContext& c):
 	memcpy(parameterBlock, c.parameterBlock, parameterBlockSize);
 }
 
-cuda::HostThreadContext& cuda::HostThreadContext::operator=(const HostThreadContext& c) {
+cuda::HostThreadContext& cuda::HostThreadContext::operator=(
+	const HostThreadContext& c) {
 	if(&c == this) return *this;
 	selectedDevice = c.selectedDevice;
 	validDevices = c.validDevices;
@@ -109,7 +110,8 @@ cuda::HostThreadContext::HostThreadContext(HostThreadContext&& c):
 	*this = std::move(c);
 }
 
-cuda::HostThreadContext& cuda::HostThreadContext::operator=(HostThreadContext&& c) {
+cuda::HostThreadContext& cuda::HostThreadContext::operator=(
+	HostThreadContext&& c) {
 	if (this == &c) return *this;
 	std::swap(selectedDevice, c.selectedDevice);
 	std::swap(validDevices, c.validDevices);
@@ -132,7 +134,6 @@ void cuda::HostThreadContext::clear() {
 	validDevices.clear();
 	launchConfigurations.clear();
 	clearParameters();
-	persistentTraceGenerators.clear();
 	nextTraceGenerators.clear();
 }
 
@@ -3077,7 +3078,7 @@ void cuda::CudaRuntime::reset() {
 	_lock();
 	report("Resetting cuda runtime.");
 	HostThreadContext& thread = _getCurrentThread();
-	thread.clear();	
+	thread.clear();
 	_dimensions.clear();
 	
 	for(DeviceVector::iterator device = _devices.begin(); 

@@ -55,6 +55,7 @@
 %token<text> OPCODE_DIV OPCODE_ABS OPCODE_NEG OPCODE_MIN OPCODE_MAX
 %token<text> OPCODE_MAD OPCODE_SET OPCODE_SETP OPCODE_SELP OPCODE_SLCT
 %token<text> OPCODE_MOV OPCODE_ST OPCODE_CVT OPCODE_AND OPCODE_XOR OPCODE_OR
+%token<text> OPCODE_CVTA OPCODE_ISSPACE
 %token<text> OPCODE_BRA OPCODE_CALL OPCODE_RET OPCODE_EXIT OPCODE_TRAP 
 %token<text> OPCODE_BRKPT OPCODE_SUBC OPCODE_TEX OPCODE_LD OPCODE_BARSYNC 
 %token<text> OPCODE_ATOM OPCODE_RED OPCODE_NOT OPCODE_CNOT OPCODE_VOTE
@@ -248,11 +249,18 @@ addressSpace : addressSpaceIdentifier
 	state.addressSpace( $<value>1 );
 };
 
+pointerDataTypeId: TOKEN_U64 | TOKEN_U32;
+
 dataTypeId : TOKEN_U8 | TOKEN_U16 | TOKEN_U32 | TOKEN_U64 | TOKEN_S8 
 	| TOKEN_S16 | TOKEN_S32 | TOKEN_S64 | TOKEN_B8 | TOKEN_B16 | TOKEN_B32 
 	| TOKEN_B64 | TOKEN_F16 | TOKEN_F32 | TOKEN_F64 | TOKEN_PRED;
 
 dataType : dataTypeId
+{
+	state.dataType( $<value>1 );
+};
+
+pointerDataType : pointerDataTypeId
 {
 	state.dataType( $<value>1 );
 };
@@ -454,7 +462,7 @@ entryName : TOKEN_ENTRY identifier
 	state.entry( $<text>2, @1 );
 };
 
-entryDeclaration : entryName parameterList performanceDirectives
+entryDeclaration : entryName parameterList performanceDirectives | entryName
 {
 	state.entryDeclaration( @1 );
 };
@@ -616,6 +624,11 @@ calltargets : TOKEN_LABEL TOKEN_CALL_TARGETS identifierList ';'
 	state.callTargets( $<text>1, @1 );
 };
 
+pragma : TOKEN_PRAGMA TOKEN_STRING
+{
+	state.pragma( $<text>2 );
+};
+
 pragma : TOKEN_PRAGMA TOKEN_STRING ';'
 {
 	state.pragma( $<text>2 );
@@ -711,7 +724,7 @@ intRounding : TOKEN_RNI | TOKEN_RMI | TOKEN_RPI | TOKEN_RZI;
 
 instruction : ftzInstruction2 | ftzInstruction3 | approxInstruction2 
 	| basicInstruction3 | bfi | bfind | brev | branch | addOrSub | addCOrSubC 
-	| atom | bar | brkpt | clz | cvt | div | exit | ld | mad | mad24 | membar 
+	| atom | bar | brkpt | clz | cvt | cvta | div | exit | ld | mad | mad24 | membar 
 	| mov | mul24 | mul | notInstruction | pmevent | popc | prmt 
 	| rcpSqrtInstruction | red | ret | sad | selp | set | setp | slct | st 
 	| testp | tex | trap | vote;
@@ -745,6 +758,13 @@ optionalFtz : TOKEN_FTZ
 };
 
 optionalFtz : /* empty string */;
+
+optionalRzi : TOKEN_RZI
+{
+	state.modifier( $<value>1 );
+};
+
+optionalRzi : /* empty string */;
 
 optionalSaturate : TOKEN_SAT
 {
@@ -860,10 +880,21 @@ atomicOperation : atomicOperationId
 	state.atomic( $<value>1 );
 };
 
+/*
+	multiple orderings of modifiers for OptiX support
+*/
+
 atom : OPCODE_ATOM addressSpace atomicOperation dataType operand ',' '[' 
 	memoryOperand ']' ',' operand ';'
 {
 	state.instruction( $<text>1, $<value>4, 4 );
+};
+
+atom : OPCODE_ATOM atomicOperation dataType operand ',' '[' 
+	memoryOperand ']' ',' operand ';'
+{
+	state.addressSpace(TOKEN_GLOBAL);
+	state.instruction( $<text>1, $<value>3, 4 );
 };
 
 atom : OPCODE_ATOM addressSpace atomicOperation dataType operand ',' '[' 
@@ -922,11 +953,26 @@ cvtModifier : cvtModifier1 optionalFtz optionalSaturate
 	state.modifier( $<value>1 );
 };
 
+cvtModifier : optionalSaturate optionalRzi optionalFtz 
+{
+	state.modifier( $<value>1 );
+};
+
 cvt : OPCODE_CVT cvtModifier dataType dataType operand ',' operand ';'
 {
 	state.instruction( $<text>1, $<value>3, 3 );
 	state.relaxedConvert( $<value>4, @1 );
 };
+
+cvta : OPCODE_CVTA addressSpace pointerDataType operand ',' operand ';'
+{
+	state.instruction( $<text>1, $<value>3, 3 );
+};
+
+
+/*
+	multiple orderings of modifiers for OptiX support
+*/
 
 divFullModifier : TOKEN_FULL optionalFtz
 {
@@ -967,6 +1013,11 @@ ldModifier : TOKEN_VOLATILE addressSpace instructionVectorType
 };
 
 ldModifier : addressSpace instructionVectorType
+{
+	state.volatileFlag( false );
+};
+
+ldModifier : instructionVectorType  
 {
 	state.volatileFlag( false );
 };
@@ -1160,7 +1211,19 @@ selp : OPCODE_SELP dataType operand ',' operand ',' operand ',' operand ';'
 	state.instruction( $<text>1, $<value>2, 5 );
 };
 
+
+/*
+	multiple orderings of modifiers for OptiX support
+*/
+
 set : OPCODE_SET comparison optionalFtz dataType dataType operand ',' 
+	operand ',' operand ';'
+{
+	state.instruction( $<text>1, $<value>4, 4 );
+	state.convert( $<value>5, @1 );
+};
+
+set : OPCODE_SET optionalFtz comparison  dataType dataType operand ',' 
 	operand ',' operand ';'
 {
 	state.instruction( $<text>1, $<value>4, 4 );
@@ -1174,7 +1237,18 @@ set : OPCODE_SET comparison boolOperator optionalFtz dataType dataType operand
 	state.convert( $<value>6, @1 );
 };
 
+
+/*
+	multiple orderings of modifiers for OptiX support
+*/
+
 setp : OPCODE_SETP comparison optionalFtz dataType operand ',' operand ',' 
+	operand ';'
+{
+	state.instruction( $<text>1, $<value>4, 4 );
+};
+
+setp : OPCODE_SETP optionalFtz comparison  dataType operand ',' operand ',' 
 	operand ';'
 {
 	state.instruction( $<text>1, $<value>4, 4 );

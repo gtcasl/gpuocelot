@@ -5,6 +5,9 @@
 		with associated code for emulating its execution
 */
 
+
+#include <hydrazine/interface/Casts.h>
+
 #include <ocelot/ir/interface/PTXOperand.h>
 #include <ocelot/ir/interface/PTXInstruction.h>
 
@@ -346,6 +349,8 @@ void executive::CooperativeThreadArray::execute(const ir::Dim3& block) {
 				eval_Cos(context, instr); break;
 			case PTXInstruction::Cvt:
 				eval_Cvt(context, instr); break;
+			case PTXInstruction::Cvta:
+				eval_Cvta(context, instr); break;
 			case PTXInstruction::Div:
 				eval_Div(context, instr); break;
 			case PTXInstruction::Ex2:
@@ -354,10 +359,14 @@ void executive::CooperativeThreadArray::execute(const ir::Dim3& block) {
 				eval_Exit(context, instr); break;
 			case PTXInstruction::Fma:
 				eval_Fma(context, instr); break;
+			case PTXInstruction::Isspacep:
+				eval_Isspacep(context, instr); break;
 			case PTXInstruction::Ld:
 				eval_Ld(context, instr); break;
 			case PTXInstruction::Lg2:
 				eval_Lg2(context, instr); break;
+			case PTXInstruction::Ldu:
+				eval_Ldu(context, instr); break;
 			case PTXInstruction::Mad24:
 				eval_Mad24(context, instr); break;
 			case PTXInstruction::Mad:
@@ -3523,6 +3532,218 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context,
 /*!
 
 */
+void executive::CooperativeThreadArray::eval_Cvta(CTAContext &context, 
+	const PTXInstruction &instr) {
+		
+	trace();
+		
+	if (instr.toGeneric) {
+		// source operand has explicitly address space
+		
+		switch (instr.type) {
+		
+		case ir::PTXOperand::u32:
+		{
+			ir::PTXU32 addrSpaceBase = 0;
+			ir::PTXU32 addrSpaceSize = 0;
+			switch (instr.addressSpace) {
+				case ir::PTXInstruction::Global: // DO NOTHING
+					break;
+				case ir::PTXInstruction::Shared:
+				{
+					hydrazine::bit_cast(addrSpaceBase, functionCallStack.sharedMemoryPointer());
+					addrSpaceSize = hydrazine::bit_cast<ir::PTXU32>(functionCallStack.sharedMemorySize());
+				}
+					break;
+				case ir::PTXInstruction::Local:
+				{
+					addrSpaceSize = hydrazine::bit_cast<ir::PTXU32>(functionCallStack.localMemorySize());
+				}
+					break;
+				default:
+					throw RuntimeException(
+						"Cvta instruction cannot convert from specified address space to generic addresses",
+						context.PC, instr);
+					break;
+			}
+			
+			for (int tid = 0; tid < threadCount; tid++) {
+				if (!context.predicated(tid, instr)) {
+					continue;
+				}
+				ir::PTXU32 localMemPtr;
+				hydrazine::bit_cast(localMemPtr, functionCallStack.localMemoryPointer(tid));
+				ir::PTXU32 srcAddr = operandAsU32(tid, instr.a) + addrSpaceBase + 
+					(instr.addressSpace == ir::PTXInstruction::Local ? localMemPtr : 0);
+				if (srcAddr > addrSpaceBase + addrSpaceSize) {
+					throw RuntimeException(
+						"cvta instruction - resulting generic address does not fall in bounded region for address space",
+						context.PC, instr);
+					return;
+				}
+				setRegAsU32(tid, instr.d.reg, srcAddr);
+			}
+		}
+			break;
+		
+		case ir::PTXOperand::u64: 
+		{
+			ir::PTXU64 addrSpaceBase = 0;
+			ir::PTXU64 addrSpaceSize = 0;
+			switch (instr.addressSpace) {
+				case ir::PTXInstruction::Global: // DO NOTHING
+					break;
+				case ir::PTXInstruction::Shared:
+				{
+					hydrazine::bit_cast(addrSpaceBase, functionCallStack.sharedMemoryPointer());
+					addrSpaceSize = hydrazine::bit_cast<ir::PTXU64>(functionCallStack.sharedMemorySize());
+				}
+					break;
+				case ir::PTXInstruction::Local:
+				{
+					addrSpaceSize = hydrazine::bit_cast<ir::PTXU64>(functionCallStack.localMemorySize());
+				}
+					break;
+				default:
+					throw RuntimeException(
+						"Cvta instruction cannot convert from specified address space to generic addresses",
+						context.PC, instr);
+					break;
+			}
+			
+			for (int tid = 0; tid < threadCount; tid++) {
+				if (!context.predicated(tid, instr)) {
+					continue;
+				}
+				ir::PTXU64 srcAddr = operandAsU64(tid, instr.a) + addrSpaceBase + 
+					(instr.addressSpace == ir::PTXInstruction::Local ?
+						(PTXU64)functionCallStack.localMemoryPointer(tid) : 0);
+				if (srcAddr > addrSpaceBase + addrSpaceSize) {
+					throw RuntimeException(
+						"cvta instruction - resulting generic address does not fall in bounded region for address space",
+						context.PC, instr);
+					return;
+				}
+				setRegAsU64(tid, instr.d.reg, srcAddr);
+			}
+		}
+			break;
+			
+		default:
+			throw RuntimeException("cvta instruction not valid for specified data size", context.PC, instr);
+			break;
+		};
+	}
+	else {
+		// dest operand has explicitly address space
+		switch (instr.type) {
+		case ir::PTXOperand::u32:
+		{
+			ir::PTXU32 addrSpaceBase = 0;
+			ir::PTXU32 addrSpaceSize = 0;
+			switch (instr.addressSpace) {
+				case ir::PTXInstruction::Global: // DO NOTHING
+					break;
+				case ir::PTXInstruction::Shared:
+				{
+					hydrazine::bit_cast(addrSpaceBase, functionCallStack.sharedMemoryPointer());
+					addrSpaceSize = hydrazine::bit_cast<ir::PTXU32>(functionCallStack.sharedMemorySize());
+				}
+					break;
+				case ir::PTXInstruction::Local:
+				{
+					addrSpaceSize = hydrazine::bit_cast<ir::PTXU32>(functionCallStack.localMemorySize());
+				}
+					break;
+				default:
+					throw RuntimeException(
+						"Cvta instruction cannot convert from specified address space to generic addresses",
+						context.PC, instr);
+					break;
+			}
+			
+			for (int tid = 0; tid < threadCount; tid++) {
+				if (!context.predicated(tid, instr)) {
+					continue;
+				}
+				ir::PTXU32 srcAddr = operandAsU32(tid, instr.a);
+				ir::PTXU32 localAddrSpaceBase = addrSpaceBase + 
+					(instr.addressSpace == ir::PTXInstruction::Local ?
+						(PTXU64)functionCallStack.localMemoryPointer(tid) : 0);
+				
+				if (srcAddr < localAddrSpaceBase) {
+					throw RuntimeException("cvta instruction - source address is not part of addressed region",
+						context.PC, instr);
+					return;
+				}
+				srcAddr -= localAddrSpaceBase;
+				if (srcAddr >= addrSpaceSize) {
+					throw RuntimeException("cvta instruction - source address is not part of addressed region",
+						context.PC, instr);
+				}
+				setRegAsU32(tid, instr.d.reg, srcAddr);
+			}
+		}
+			break;
+		
+		case ir::PTXOperand::u64: 
+		{
+			ir::PTXU64 addrSpaceBase = 0;
+			ir::PTXU64 addrSpaceSize = 0;
+			switch (instr.addressSpace) {
+				case ir::PTXInstruction::Global: // DO NOTHING
+					break;
+				case ir::PTXInstruction::Shared:
+				{
+					hydrazine::bit_cast(addrSpaceBase, functionCallStack.sharedMemoryPointer());
+					addrSpaceSize = hydrazine::bit_cast<ir::PTXU64, size_t >(functionCallStack.sharedMemorySize());
+				}
+					break;
+				case ir::PTXInstruction::Local:
+				{
+					addrSpaceSize = hydrazine::bit_cast<ir::PTXU64, size_t >(functionCallStack.localMemorySize());
+				}
+					break;
+				default:
+					throw RuntimeException(
+						"Cvta instruction cannot convert from specified address space to generic addresses",
+						context.PC, instr);
+					break;
+			}
+			
+			for (int tid = 0; tid < threadCount; tid++) {
+				if (!context.predicated(tid, instr)) {
+					continue;
+				}
+				ir::PTXU64 srcAddr = operandAsU64(tid, instr.a);
+				ir::PTXU32 localAddrSpaceBase = addrSpaceBase + 
+					(instr.addressSpace == ir::PTXInstruction::Local ?
+						(PTXU64)functionCallStack.localMemoryPointer(tid) : 0);
+				if (srcAddr < localAddrSpaceBase) {
+					throw RuntimeException("cvta instruction - source address is not part of addressed region",
+						context.PC, instr);
+					return;
+				}
+				srcAddr -= localAddrSpaceBase;
+				if (srcAddr >= addrSpaceSize) {
+					throw RuntimeException("cvta instruction - source address is not part of addressed region",
+						context.PC, instr);
+				}
+				setRegAsU64(tid, instr.d.reg, srcAddr);
+			}
+		}
+			break;
+			
+		default:
+			throw RuntimeException("cvta instruction not valid for specified data size", context.PC, instr);
+			break;
+		};
+	}
+}
+
+/*!
+
+*/
 void executive::CooperativeThreadArray::eval_Div(CTAContext &context, const PTXInstruction &instr) {
 	trace();
 	if (instr.type == PTXOperand::f32) {
@@ -3663,7 +3884,9 @@ void executive::CooperativeThreadArray::eval_Exit(CTAContext &context, const PTX
 #endif
 }
 
+/*!
 
+*/
 void executive::CooperativeThreadArray::eval_Fma(CTAContext &context, const ir::PTXInstruction &instr) {
 	trace();
 	if (instr.type == PTXOperand::f32) {
@@ -3689,6 +3912,145 @@ void executive::CooperativeThreadArray::eval_Fma(CTAContext &context, const ir::
 	}
 }
 
+/*!
+
+*/
+void executive::CooperativeThreadArray::eval_Isspacep(CTAContext &context, const ir::PTXInstruction &instr) {
+	
+	trace();
+	switch (instr.addressSpace) {
+	case ir::PTXInstruction::Local:
+	{
+		if (sizeof(void *) == 4) {
+			for (int tid = 0; tid < threadCount; tid++) {
+				if (!context.predicated(tid, instr)) {
+					continue;
+				}
+				ir::PTXU32 ptr = operandAsU32(tid, instr.a);
+				ir::PTXU32 localMemPtr;
+				ir::PTXU32 localMemSize = functionCallStack.localMemorySize();
+				hydrazine::bit_cast(localMemPtr, functionCallStack.localMemoryPointer(tid));
+				if (ptr >= localMemPtr && localMemPtr + localMemSize > ptr) {
+					setRegAsPredicate(tid, instr.d.reg, 1);
+				}
+				else {
+					setRegAsPredicate(tid, instr.d.reg, 0);
+				}
+			} 
+		}
+		else {
+			for (int tid = 0; tid < threadCount; tid++) {
+				if (!context.predicated(tid, instr)) {
+					continue;
+				}
+				ir::PTXU64 ptr = operandAsU64(tid, instr.a);
+				ir::PTXU64 localMemPtr;
+				ir::PTXU64 localMemSize = functionCallStack.localMemorySize();
+				hydrazine::bit_cast(localMemPtr, functionCallStack.localMemoryPointer(tid));
+				if (ptr >= localMemPtr && localMemPtr + localMemSize > ptr) {
+					setRegAsPredicate(tid, instr.d.reg, 1);
+				}
+				else {
+					setRegAsPredicate(tid, instr.d.reg, 0);
+				}
+			} 
+		}
+	}
+		break;
+	case ir::PTXInstruction::Shared:
+	{
+		if (sizeof(void *) == 4) {
+			for (int tid = 0; tid < threadCount; tid++) {
+				if (!context.predicated(tid, instr)) {
+					continue;
+				}
+				ir::PTXU32 ptr = operandAsU32(tid, instr.a);
+				ir::PTXU32 sharedMemPtr;
+				ir::PTXU32 sharedMemSize = functionCallStack.sharedMemorySize();
+				hydrazine::bit_cast(sharedMemPtr, functionCallStack.sharedMemoryPointer());
+				if (ptr >= sharedMemPtr && sharedMemPtr + sharedMemSize > ptr) {
+					setRegAsPredicate(tid, instr.d.reg, 1);
+				}
+				else {
+					setRegAsPredicate(tid, instr.d.reg, 0);
+				}
+			} 
+		}
+		else {
+			for (int tid = 0; tid < threadCount; tid++) {
+				if (!context.predicated(tid, instr)) {
+					continue;
+				}
+				ir::PTXU64 ptr = operandAsU32(tid, instr.a);
+				ir::PTXU64 sharedMemPtr;
+				ir::PTXU64 sharedMemSize = functionCallStack.sharedMemorySize();
+				hydrazine::bit_cast(sharedMemPtr, functionCallStack.sharedMemoryPointer());
+				if (ptr >= sharedMemPtr && sharedMemPtr + sharedMemSize > ptr) {
+					setRegAsPredicate(tid, instr.d.reg, 1);
+				}
+				else {
+					setRegAsPredicate(tid, instr.d.reg, 0);
+				}
+			} 
+		}
+	}
+		break;
+	case ir::PTXInstruction::Global:
+	{
+		if (sizeof(void *) == 4) {
+			for (int tid = 0; tid < threadCount; tid++) {
+				if (!context.predicated(tid, instr)) {
+					continue;
+				}
+				ir::PTXU32 ptr = operandAsU32(tid, instr.a);
+				ir::PTXU32 localMemPtr;
+				ir::PTXU32 localMemSize = functionCallStack.localMemorySize();
+				ir::PTXU32 sharedMemPtr;
+				ir::PTXU32 sharedMemSize = functionCallStack.sharedMemorySize();
+				hydrazine::bit_cast(localMemPtr, functionCallStack.localMemoryPointer(tid));
+				hydrazine::bit_cast(sharedMemPtr, functionCallStack.sharedMemoryPointer());
+				if ((ptr >= sharedMemPtr && sharedMemPtr + sharedMemSize > ptr) ||
+					(ptr >= localMemPtr && localMemPtr + localMemSize > ptr)) {
+					setRegAsPredicate(tid, instr.d.reg, 0);
+				}
+				else {
+					setRegAsPredicate(tid, instr.d.reg, 1);
+				}
+			} 
+		}
+		else {
+			for (int tid = 0; tid < threadCount; tid++) {
+				if (!context.predicated(tid, instr)) {
+					continue;
+				}
+				ir::PTXU64 ptr = operandAsU64(tid, instr.a);
+				ir::PTXU64 localMemPtr;
+				ir::PTXU64 localMemSize = functionCallStack.localMemorySize();
+				ir::PTXU64 sharedMemPtr;
+				ir::PTXU64 sharedMemSize = functionCallStack.sharedMemorySize();
+				hydrazine::bit_cast(localMemPtr, functionCallStack.localMemoryPointer(tid));
+				hydrazine::bit_cast(sharedMemPtr, functionCallStack.sharedMemoryPointer());
+				if ((ptr >= sharedMemPtr && sharedMemPtr + sharedMemSize > ptr) ||
+					(ptr >= localMemPtr && localMemPtr + localMemSize > ptr)) {
+					setRegAsPredicate(tid, instr.d.reg, 0);
+				}
+				else {
+					setRegAsPredicate(tid, instr.d.reg, 1);
+				}
+			}
+		}
+	}
+		break;
+	default:
+		throw RuntimeException("isspacep - invalid address space for test", context.PC, instr);
+		break;
+	}
+
+}
+
+/*!
+
+*/
 void executive::CooperativeThreadArray::normalLoad(int threadID, 
 	const PTXInstruction &instr, const char* source) {
 	switch (instr.type) {
@@ -4034,6 +4396,120 @@ void executive::CooperativeThreadArray::eval_Ld(CTAContext &context,
 				throw RuntimeException("unsupported address space", 
 					context.PC, instr);
 		}
+
+		if(instr.d.vec == PTXOperand::v1) {
+			normalLoad(threadID, instr, source);		
+		}
+		else {
+			vectorLoad(threadID, instr, source, elementSize);
+		}
+	}
+}
+
+
+/*!
+
+*/
+void executive::CooperativeThreadArray::eval_Ldu(CTAContext &context, 
+	const PTXInstruction &instr) {
+
+	size_t elementSize = 0;
+
+	switch (instr.type) {
+		case PTXOperand::b8:		// fall through
+		case PTXOperand::s8:		// fall through
+		case PTXOperand::u8:
+			{
+				elementSize = sizeof(PTXU8);
+			}
+			break;
+		case PTXOperand::b16:		// fall through
+		case PTXOperand::s16:		// fall through
+		case PTXOperand::u16:
+			{
+				elementSize = sizeof(PTXU16);
+			}
+			break;
+		case PTXOperand::f32:		// fall through
+		case PTXOperand::b32:		// fall through
+		case PTXOperand::s32:		// fall through
+		case PTXOperand::u32:
+			{
+				elementSize = sizeof(PTXU32);
+			}
+			break;
+		case PTXOperand::f64:		// fall through
+		case PTXOperand::b64:		// fall through
+		case PTXOperand::s64:		// fall through
+		case PTXOperand::u64:
+			{
+				elementSize = sizeof(PTXU64);
+			}
+			break;
+		default:
+			throw RuntimeException("unsupported data type", context.PC, instr);
+	}
+
+	if (traceEvents) {
+		currentEvent.memory_size = elementSize;
+		for (int threadID = 0; threadID < threadCount; threadID++) {
+			if (!context.predicated(threadID, instr)) {
+				continue;
+			}
+
+			const char *source = 0;
+
+			switch (instr.a.addressMode) {
+				case PTXOperand::Indirect:
+					source += getRegAsU64(threadID, instr.a.reg);
+					break;
+				case PTXOperand::Address:
+				case PTXOperand::Immediate:
+					source += instr.a.imm_uint;
+					break;
+				default:
+					throw RuntimeException(
+						"unsupported address mode for source operand", 
+						context.PC, instr);
+			}
+
+			source += instr.a.offset;
+			currentEvent.memory_addresses.push_back((ir::PTXU64)source);
+		}
+	}
+
+	trace();
+	
+	if (instr.addressSpace != ir::PTXInstruction::Global &&
+		instr.addressSpace != ir::PTXInstruction::Generic) {
+		throw RuntimeException("ldu - only generic and .global address space supported", context.PC, instr);
+		return;
+	}
+
+	for (int threadID = 0; threadID < threadCount; threadID++) {
+		if (!context.predicated(threadID, instr)) {
+			continue;
+		}
+
+		const char *source = 0;
+
+		switch (instr.a.addressMode) {
+			case PTXOperand::Indirect:
+				source += getRegAsU64(threadID, instr.a.reg);
+				break;
+			case PTXOperand::Address:
+			case PTXOperand::Immediate:
+				source += instr.a.imm_uint;
+				break;
+			default:
+				throw RuntimeException(
+					"unsupported address mode for source operand", 
+					context.PC, instr);
+		}
+
+		source += instr.a.offset;
+		
+		// these should just work if we don't add any offsets to them since it's a generic pointer
 
 		if(instr.d.vec == PTXOperand::v1) {
 			normalLoad(threadID, instr, source);		

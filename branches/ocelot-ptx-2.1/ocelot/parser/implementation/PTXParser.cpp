@@ -327,7 +327,8 @@ namespace parser
 	
 		stream3 >> statement.minor;
 
-		if( statement.minor != 1 || statement.major != 2 )
+//		if( statement.minor != 1 || statement.major != 2 )
+		if(statement.major < 2 )
 		{
 			throw_exception( toString( location, *this ) 
 				<< "Cannot parse PTX version " << statement.major 
@@ -1517,7 +1518,9 @@ namespace parser
 		unsigned int operands )
 	{
 		report( "  Rule: instruction : " << opcode );
-
+		if (operandVector.size() != operands) {
+			report("  assert fail! operandVector.size() = " << operandVector.size() << ", operands: " << operands);
+		}
 		assert( operandVector.size() == operands );
 		_setImmediateTypes();
 
@@ -1962,6 +1965,8 @@ namespace parser
 				std::stringstream stream;
 				stream << token;
 				exception.message = "Got invalid data type " + stream.str();
+				report("PTXParser::tokenToDataType() exception - " << exception.what());
+				assert(0);
 				throw exception;
 				break;
 			}
@@ -2022,6 +2027,7 @@ namespace parser
 		if( string == "cnot" ) return ir::PTXInstruction::CNot;
 		if( string == "cos" ) return ir::PTXInstruction::Cos;
 		if( string == "cvt" ) return ir::PTXInstruction::Cvt;
+		if( string == "cvta" ) return ir::PTXInstruction::Cvta;
 		if( string == "div" ) return ir::PTXInstruction::Div;
 		if( string == "ex2" ) return ir::PTXInstruction::Ex2;
 		if( string == "exit" ) return ir::PTXInstruction::Exit;
@@ -2315,11 +2321,12 @@ namespace parser
 	
 		std::stringstream temp;
 		
+		report( "Parsing file " << fileName );
+		report( "Running 2.1 main parse pass." );
+		
 		parser::PTXLexer lexer( &input, &temp );
 		reset();
 		
-		report( "Parsing file " << fileName );
-		report( "Running 2.1 main parse pass." );
 		
 		try 
 		{
@@ -2342,6 +2349,8 @@ namespace parser
 				+ hydrazine::addLineNumbers(temp) + "\n" + e.message;
 			delete[] temp;
 			
+			report("parse error");
+			report(e.what());
 			throw e;
 		}
 	}

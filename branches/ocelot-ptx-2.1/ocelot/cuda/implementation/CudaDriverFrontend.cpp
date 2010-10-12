@@ -45,7 +45,7 @@
 #define CUDA_VERBOSE 1
 
 // whether debugging messages are printed
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -158,6 +158,9 @@ boost::thread::id cuda::CudaDriverFrontend::_getThreadId() {
 
 //! \brief locks and gets the thread's active context
 cuda::CudaDriverFrontend::Context * cuda::CudaDriverFrontend::_bind() {
+
+	std::cout << "  _bind()" << std::endl;
+
 	_lock();
 	return _getContext();
 }
@@ -165,6 +168,8 @@ cuda::CudaDriverFrontend::Context * cuda::CudaDriverFrontend::_bind() {
 //! \brief unlocks thread's active context
 void cuda::CudaDriverFrontend::_unbind() {
 	_unlock();
+	
+	std::cout << "  _unbind()" << std::endl;
 }
 
 
@@ -297,6 +302,7 @@ CUresult cuda::CudaDriverFrontend::cuDeviceComputeCapability(int *major, int *mi
 
 	*major = device->properties().major;
 	*minor = device->properties().minor;
+	
 	result = CUDA_SUCCESS;
 	_unlock();
 	return result;
@@ -336,20 +342,117 @@ CUresult cuda::CudaDriverFrontend::cuDeviceGetProperties(CUdevprop *prop, CUdevi
 CUresult cuda::CudaDriverFrontend::cuDeviceGetAttribute(int *pi, CUdevice_attribute attrib, 
 	CUdevice dev) {
 
-	CUresult result = CUDA_ERROR_NOT_FOUND;
+	CUresult result = CUDA_SUCCESS;
+	
 	_lock();
 
 	int ordinal = (int)dev;
 	executive::Device *device = _devices.at(ordinal);
 	assert(device);
 	switch (attrib) {
+		case CU_DEVICE_ATTRIBUTE_MAX_THREADS_PER_BLOCK:
+			*pi = 512;
+			break;
+		case CU_DEVICE_ATTRIBUTE_MAX_BLOCK_DIM_X :
+			*pi = 1024;
+			break;
+		case CU_DEVICE_ATTRIBUTE_MAX_BLOCK_DIM_Y:
+			*pi = 1024;
+			break;
+		case CU_DEVICE_ATTRIBUTE_MAX_BLOCK_DIM_Z:
+			*pi = 1024;
+			break;
+		case CU_DEVICE_ATTRIBUTE_MAX_GRID_DIM_X:
+			*pi = (1 << 20);
+			break;
+		case CU_DEVICE_ATTRIBUTE_MAX_GRID_DIM_Y:
+			*pi = (1 << 20);
+			break;
+		case CU_DEVICE_ATTRIBUTE_MAX_GRID_DIM_Z:
+			*pi = (1 << 20);
+			break;
+		case CU_DEVICE_ATTRIBUTE_MAX_SHARED_MEMORY_PER_BLOCK:
+			*pi = (1 << 16);
+			break;
+		case CU_DEVICE_ATTRIBUTE_TOTAL_CONSTANT_MEMORY:
+			*pi = (1 << 16);
+			break;
+		case CU_DEVICE_ATTRIBUTE_WARP_SIZE:
+			*pi = 32;
+			break;
+		case CU_DEVICE_ATTRIBUTE_MAX_PITCH:
+			*pi = (1 << 8);
+			break;
+		case CU_DEVICE_ATTRIBUTE_MAX_REGISTERS_PER_BLOCK:
+			*pi = (1 << 10);
+			break;
+		case CU_DEVICE_ATTRIBUTE_CLOCK_RATE:
+			*pi = (1000000);
+			break;
+		case CU_DEVICE_ATTRIBUTE_TEXTURE_ALIGNMENT:
+			*pi = (256);
+			break;
+		case CU_DEVICE_ATTRIBUTE_GPU_OVERLAP:
+			*pi = 0;
+			break;
+		case CU_DEVICE_ATTRIBUTE_MULTIPROCESSOR_COUNT:
+			*pi = 1;
+			break;
+		case CU_DEVICE_ATTRIBUTE_KERNEL_EXEC_TIMEOUT:
+			*pi = 1000;
+			break;
+		case CU_DEVICE_ATTRIBUTE_INTEGRATED:
+			*pi = 0;
+			break;
+		case CU_DEVICE_ATTRIBUTE_CAN_MAP_HOST_MEMORY:
+			*pi = 1;
+			break;
+			
 		case CU_DEVICE_ATTRIBUTE_COMPUTE_MODE:
 			*pi = CU_COMPUTEMODE_EXCLUSIVE;
-			result = CUDA_SUCCESS;
+			break;
+			
+		case CU_DEVICE_ATTRIBUTE_MAXIMUM_TEXTURE1D_WIDTH:
+			*pi = 4092;
+			break;
+		case CU_DEVICE_ATTRIBUTE_MAXIMUM_TEXTURE2D_WIDTH:
+			*pi = 4092;
+			break;
+		case CU_DEVICE_ATTRIBUTE_MAXIMUM_TEXTURE2D_HEIGHT:
+			*pi = 4092;
+			break;
+		case CU_DEVICE_ATTRIBUTE_MAXIMUM_TEXTURE3D_WIDTH:
+			*pi = 4092;
+			break;
+		case CU_DEVICE_ATTRIBUTE_MAXIMUM_TEXTURE3D_HEIGHT:
+			*pi = 4092;
+			break;
+		case CU_DEVICE_ATTRIBUTE_MAXIMUM_TEXTURE3D_DEPTH:
+			*pi = 4092;
+			break;
+		case CU_DEVICE_ATTRIBUTE_MAXIMUM_TEXTURE2D_ARRAY_WIDTH:
+			*pi = 4092;
+			break;
+		case CU_DEVICE_ATTRIBUTE_MAXIMUM_TEXTURE2D_ARRAY_HEIGHT:
+			*pi = 4092;
+			break;
+		case CU_DEVICE_ATTRIBUTE_MAXIMUM_TEXTURE2D_ARRAY_NUMSLICES:
+			*pi = 4092;
+			break;
+		case CU_DEVICE_ATTRIBUTE_SURFACE_ALIGNMENT:
+			*pi = 256;
+			break;
+		case CU_DEVICE_ATTRIBUTE_CONCURRENT_KERNELS:
+			*pi = 1;
+			break;
+		case CU_DEVICE_ATTRIBUTE_ECC_ENABLED:
+			*pi = 0;
 			break;
 		default:
 			*pi = 0;
-			assert(0 && "cuDeviceGetAttribute() - unsupported attribute requested");
+			result = CUDA_ERROR_NOT_FOUND;
+			report("cuDeviceGetAttribute() - unsupported attribute requested: " << attrib);
+			assert(0 && "cuDeviceGetAttribute() - unsupported attribute requested: ");
 			break;
 	}
 	
@@ -373,7 +476,6 @@ CUresult cuda::CudaDriverFrontend::cuCtxCreate(CUcontext *pctx, unsigned int fla
 	newContext->_device = _devices.at((int)dev);
 	*pctx = reinterpret_cast<CUcontext>(newContext);
 	_getThreadContextQueue().push_back(newContext);
-	
 	_unlock();
 	
 	return CUDA_SUCCESS;
@@ -405,6 +507,7 @@ CUresult cuda::CudaDriverFrontend::cuCtxAttach(CUcontext *pctx, unsigned int fla
 		context = queue.back();
 		++ context->_referenceCount;
 		*pctx = reinterpret_cast<CUcontext>(context);
+		result = CUDA_SUCCESS;
 	}
 	_unlock();
 	return result;
@@ -434,26 +537,33 @@ CUresult cuda::CudaDriverFrontend::cuCtxPushCurrent( CUcontext ctx ) {
 	Context *context = reinterpret_cast<Context *>(ctx);
 	ContextQueue &queue = _getThreadContextQueue();
 	queue.push_back(context);
+	report("    - pushed current, context stack has " << queue.size() << " elements");
 	_unlock();
+	
 	return result;
 }
 
 CUresult cuda::CudaDriverFrontend::cuCtxPopCurrent( CUcontext *pctx ) {
 	CUresult result = CUDA_ERROR_INVALID_CONTEXT;
+	
+	std::cout << "   - tid: " << boost::this_thread::get_id() << std::endl;
+	
 	_lock();
 	ContextQueue &queue = _getThreadContextQueue();
 	if (queue.size()) {
-		Context *context = queue.back();
-		if (context->_referenceCount == 1) {
-			queue.pop_back();
+		Context *context = queue.back();		
+		queue.pop_back();
+		if (pctx) {
 			*pctx = reinterpret_cast<CUcontext>(context);
-			result = CUDA_SUCCESS;
 		}
-		else {
-			result = CUDA_ERROR_INVALID_CONTEXT;
-		}
+		result = CUDA_SUCCESS;
+		report("    popped, context stack has " << queue.size() << " elements");
+	}
+	else {
+		report("  cuCtxPopCurrent() - no contexts");
 	}
 	_unlock();
+	report("  returning");
 	return result;
 }
 
@@ -542,11 +652,59 @@ CUresult cuda::CudaDriverFrontend::cuModuleLoadData(CUmodule *module,
 	return CUDA_ERROR_NOT_FOUND;
 }
 
-CUresult cuda::CudaDriverFrontend::cuModuleLoadDataEx(CUmodule *module, 
+CUresult cuda::CudaDriverFrontend::cuModuleLoadDataEx(CUmodule *cuModule, 
 	const void *image, unsigned int numOptions, 
 	CUjit_option *options, void **optionValues) {
-	assert(0 && "unimplemented");
-	return CUDA_ERROR_NOT_FOUND;
+	
+	report("   entered");
+	
+	CUresult result = CUDA_ERROR_NOT_FOUND;
+	Context *context = _bind();
+	if (context) {
+		report("  obtained context");
+		
+		std::stringstream ss;
+		ss << (const char *)image;
+		
+		std::stringstream modname;
+		modname << "ocelotModule" << context->_modules.size() << ".ptx";
+		
+		{
+			std::ofstream file(modname.str().c_str());
+			file << (const char *)image;
+		}
+	
+		ModuleMap::iterator module = context->_modules.insert(std::make_pair(modname.str(), ir::Module())).first;
+		
+		report("  created module, now loading..");
+		//
+		// TODO AKERR THE PROBLEM IS RIGHT HERE
+		//
+		if (module->second.load(ss, modname.str())) {
+			*cuModule = reinterpret_cast<CUmodule>(& module->second);
+			
+			report("  loaded PTX module, now loading into emulator");
+			
+			context->_getDevice().load(&module->second);
+			result = CUDA_SUCCESS;
+			
+			report("    load Successful");
+		}
+		else {
+			report("  load failed");
+			context->_modules.erase(module);
+			result = CUDA_ERROR_INVALID_VALUE;
+		}
+	}
+	else {
+		report("cuModuleLoadDataEx() - invalid context");
+		result = CUDA_ERROR_INVALID_CONTEXT;
+			report("    load failed");
+	}
+	report("  unbinding");
+	_unbind();
+	report("  returning");
+	return result;
 }
 
 CUresult cuda::CudaDriverFrontend::cuModuleLoadFatBinary(CUmodule *module, 
@@ -603,8 +761,38 @@ CUresult cuda::CudaDriverFrontend::cuModuleGetFunction(CUfunction *hfunc,
 
 CUresult cuda::CudaDriverFrontend::cuModuleGetGlobal(CUdeviceptr *dptr, 
 	unsigned int *bytes, CUmodule hmod, const char *name) {
-	assert(0 && "unimplemented");
-	return CUDA_ERROR_NOT_FOUND;
+
+	CUresult result = CUDA_ERROR_NOT_FOUND;
+	Context *context = _bind();
+	if (context) {
+		ir::Module *module = reinterpret_cast<ir::Module *>(hmod);
+		if (module) {
+			//
+			// get global
+			//
+			executive::Device::MemoryAllocation *allocation = 
+				context->_getDevice().getGlobalAllocation(module->path(), std::string(name));
+			if (allocation) {
+				*dptr = hydrazine::bit_cast<CUdeviceptr, void *>(allocation->pointer());
+				result = CUDA_SUCCESS;
+				report("  obtained global " << name << " at " << allocation->pointer());
+			}
+			else {
+				result = CUDA_ERROR_NOT_FOUND;
+				report("cuModuleGetGlobal(" << name << ") - failed to get allocation");
+			}
+		}
+		else {
+			result = CUDA_ERROR_INVALID_VALUE;
+			report("cuModuleGetGlobal() - invalid module");
+		}
+	}
+	else {
+		report("cuModuleGetGlobal() - context not valid");
+		result = CUDA_ERROR_INVALID_CONTEXT;
+	}
+	_unbind();
+	return result;
 }
 
 CUresult cuda::CudaDriverFrontend::cuModuleGetTexRef(CUtexref *pTexRef, CUmodule hmod, 
@@ -1347,34 +1535,33 @@ CUresult cuda::CudaDriverFrontend::cuLaunchGridAsync( CUfunction f, int grid_wid
 ***********************************/
 CUresult cuda::CudaDriverFrontend::cuEventCreate( CUevent *phEvent, 
 	unsigned int Flags ) {
-	assert(0 && "unimplemented");
-	return CUDA_ERROR_NOT_FOUND;
+	return CUDA_SUCCESS;
 }
 
 CUresult cuda::CudaDriverFrontend::cuEventRecord( CUevent hEvent, CUstream hStream ) {
-	assert(0 && "unimplemented");
-	return CUDA_ERROR_NOT_FOUND;
+
+	return CUDA_SUCCESS;
 }
 
 CUresult cuda::CudaDriverFrontend::cuEventQuery( CUevent hEvent ) {
-	assert(0 && "unimplemented");
-	return CUDA_ERROR_NOT_FOUND;
+
+	return CUDA_SUCCESS;
 }
 
 CUresult cuda::CudaDriverFrontend::cuEventSynchronize( CUevent hEvent ) {
-	assert(0 && "unimplemented");
-	return CUDA_ERROR_NOT_FOUND;
+
+	return CUDA_SUCCESS;
 }
 
 CUresult cuda::CudaDriverFrontend::cuEventDestroy( CUevent hEvent ) {
-	assert(0 && "unimplemented");
-	return CUDA_ERROR_NOT_FOUND;
+
+	return CUDA_SUCCESS;
 }
 
 CUresult cuda::CudaDriverFrontend::cuEventElapsedTime( float *pMilliseconds, 
 	CUevent hStart, CUevent hEnd ) {
-	assert(0 && "unimplemented");
-	return CUDA_ERROR_NOT_FOUND;
+
+	return CUDA_SUCCESS;
 }
 
 
@@ -1385,23 +1572,23 @@ CUresult cuda::CudaDriverFrontend::cuEventElapsedTime( float *pMilliseconds,
 ***********************************/
 CUresult cuda::CudaDriverFrontend::cuStreamCreate( CUstream *phStream, 
 	unsigned int Flags ) {
-	assert(0 && "unimplemented");
-	return CUDA_ERROR_NOT_FOUND;
+//	assert(0 && "unimplemented");
+	return CUDA_SUCCESS;
 }
 
 CUresult cuda::CudaDriverFrontend::cuStreamQuery( CUstream hStream ) {
-	assert(0 && "unimplemented");
-	return CUDA_ERROR_NOT_FOUND;
+
+	return CUDA_SUCCESS;
 }
 
 CUresult cuda::CudaDriverFrontend::cuStreamSynchronize( CUstream hStream ) {
-	assert(0 && "unimplemented");
-	return CUDA_ERROR_NOT_FOUND;
+
+	return CUDA_SUCCESS;
 }
 
 CUresult cuda::CudaDriverFrontend::cuStreamDestroy( CUstream hStream ) {
-	assert(0 && "unimplemented");
-	return CUDA_ERROR_NOT_FOUND;
+
+	return CUDA_SUCCESS;
 }
 
 
@@ -1461,15 +1648,29 @@ CUresult cuda::CudaDriverFrontend::cuGLInit() {
 
 CUresult cuda::CudaDriverFrontend::cuGLCtxCreate(CUcontext *pCtx, 
 	unsigned int Flags, CUdevice device) {
-	assert(0 && "unimplemented");
-	return CUDA_ERROR_NOT_FOUND;
+	return cuCtxCreate(pCtx, Flags, device);
 }
 
 CUresult cuda::CudaDriverFrontend::cuGraphicsGLRegisterBuffer( 
-	CUgraphicsResource *pCudaResource, unsigned int buffer, 
+	CUgraphicsResource *pCudaResource, unsigned int bufObj, 
 	unsigned int Flags ) {
-	assert(0 && "unimplemented");
-	return CUDA_ERROR_NOT_FOUND;
+	
+	CUresult result = CUDA_ERROR_NOT_FOUND;
+	Context *context = _bind();
+	if (context) {
+		if (context->_buffers.count(bufObj) == 0) {
+			void* graphic = context->_getDevice().glRegisterBuffer(bufObj, 0);
+			context->_buffers.insert(std::make_pair(bufObj, graphic));
+			result = CUDA_SUCCESS;
+		}
+	}
+	else {
+		report("  cuGraphicsGLRegisterBuffer() - invalid context");
+		result = CUDA_ERROR_INVALID_CONTEXT;
+	}
+	_unbind();
+	
+	return result;
 }
 
 CUresult cuda::CudaDriverFrontend::cuGraphicsGLRegisterImage( 

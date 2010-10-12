@@ -645,7 +645,7 @@ std::string ir::PTXInstruction::valid() const {
 					+ " cannot be assigned from " + PTXOperand::toString( type );
 			}
 			if( modifier & ftz ) {
-				if( PTXOperand::isInt( type ) ) {
+				if( !(PTXOperand::isFloat( type ) || PTXOperand::isFloat(a.type))) {
 					return toString( ftz ) 
 						+ " only valid for float point instructions.";
 				}
@@ -654,6 +654,15 @@ std::string ir::PTXInstruction::valid() const {
 				return "operand D type " + PTXOperand::toString( d.type ) 
 					+ " cannot be assigned to " + PTXOperand::toString( type ) 
 					+ ", not even for relaxed typed instructions.";
+			}
+			break;
+		}
+		case Cvta: {
+			if (!(type == PTXOperand::u32 || type == PTXOperand::u64)) {
+				return "invalid instruction type " + PTXOperand::toString(type);
+			}
+			if (!(addressSpace == Global || addressSpace == Local || addressSpace == Shared)) {
+				return "invalid address space " + toString(addressSpace);
 			}
 			break;
 		}
@@ -1831,6 +1840,11 @@ std::string ir::PTXInstruction::toString() const {
 			result += PTXOperand::toString( type ) + "." 
 				+ PTXOperand::toString( a.type ) + " " + d.toString() + ", " 
 				+ a.toString();
+			return result;
+		}
+		case Cvta: {
+			std::string result = guard() + "cvta." + toString(addressSpace) + "." + 
+				PTXOperand::toString(type) + d.toString() + ", " + a.toString();
 			return result;
 		}
 		case Div: {

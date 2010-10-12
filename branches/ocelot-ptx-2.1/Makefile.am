@@ -36,7 +36,7 @@ lib_LTLIBRARIES = libocelot.la
 
 ################################################################################
 ## libocelot
-libocelot_la_CXXFLAGS = $(LLVM_CFLAGS) $(INCLUDE) -Wall -ansi -Werror -std=c++0x
+libocelot_la_CXXFLAGS = $(LLVM_CFLAGS) $(INCLUDE) -Wall -ansi -Werror -std=c++0x  $(LLVM_LDFLAGS)
 libocelot_la_SOURCES = \
 	ocelot/parser/implementation/ptx.lpp \
 	ocelot/parser/implementation/ptxgrammar.ypp \

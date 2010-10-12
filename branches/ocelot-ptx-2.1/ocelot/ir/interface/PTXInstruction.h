@@ -148,6 +148,7 @@ namespace ir {
 			Param,
 			Shared,
 			Texture,
+			Generic,
 			AddressSpace_Invalid
 		};
 
@@ -359,6 +360,10 @@ namespace ir {
 			
 			/*! Is this a divide full instruction? */
 			bool divideFull;
+			
+			/*! If cvta instruction, indicates whether destination is generic address or
+				if source is generic address */
+			bool toGeneric;
 			
 			/*! If the instruction updates the CC, what is the CC register */
 			PTXOperand::RegisterType cc;

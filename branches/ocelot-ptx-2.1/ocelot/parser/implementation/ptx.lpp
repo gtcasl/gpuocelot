@@ -129,6 +129,8 @@ WHITESPACE [ \t]*
                                     return OPCODE_COS; }
 "cvt"                           { strlcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_CVT; }
+"cvta"                           { strlcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_CVTA; }
 "div"                           { strlcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_DIV; }
 "ex2"                           { strlcpy( yylval->text, yytext, 1024 ); \

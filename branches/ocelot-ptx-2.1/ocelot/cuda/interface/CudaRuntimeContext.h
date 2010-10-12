@@ -134,8 +134,9 @@ namespace cuda {
 	/*!	\brief Class allowing sharing of a fat binary among threads	*/
 	class FatBinaryContext {
 	public:
+		FatBinaryContext(const void *_ptr): cubin_ptr(_ptr) { }
 		//! pointer to CUBIN structure
-		void *cubin_ptr;
+		const void *cubin_ptr;
 		
 	public:
 		const char *name() const;

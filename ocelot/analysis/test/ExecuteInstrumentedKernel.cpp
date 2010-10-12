@@ -46,7 +46,7 @@ namespace test
 		
         size_t *counter;
         cudaGetSymbolAddress((void **) &counter, "__ocelot_basic_block_counter");
-        cudaMemcpyToSymbol("counter", &counter, sizeof( unsigned int ), 0, cudaMemcpyDeviceToHost);
+        cudaMemcpyToSymbol("counter", &counter, sizeof( size_t ), 0, cudaMemcpyDeviceToHost);
 		
         std::cout << "\n--------------- Basic Block Execution Count ---------------\n\n";
 
@@ -84,10 +84,9 @@ int main(int argc, char** argv)
 	parser.parse( "-v", "--verbose", test.verbose, false, 
 		"Print out information after the test has finished." );
     parser.parse( "-i", "--input", test.input, "",
-		"The ptx file to be optimized." );
+		"The instrumented ptx file." );
     parser.parse( "-m", "--module", test.moduleName, 
 		"", "The name of the instrumented module." );
-		
     parser.parse( "-k", "--kernel", test.kernelName, 
 		"", "The name of the instrumented kernel." );
 	parser.parse();

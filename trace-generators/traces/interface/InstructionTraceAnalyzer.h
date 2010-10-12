@@ -7,7 +7,7 @@
 #ifndef OCELOT_INTSTRUCTION_TRACE_ANALYZER_H_INCLUDED
 #define OCELOT_INTSTRUCTION_TRACE_ANALYZER_H_INCLUDED
 
-#include <ocelot/trace/interface/InstructionTraceGenerator.h>
+#include <traces/interface/InstructionTraceGenerator.h>
 #include <map>
 #include <deque>
 

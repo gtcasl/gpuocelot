@@ -6,7 +6,7 @@
 #ifndef MEMORY_TRACE_ANALYZER_H_INCLUDED
 #define MEMORY_TRACE_ANALYZER_H_INCLUDED
 
-#include <ocelot/trace/interface/MemoryTraceGenerator.h>
+#include <traces/interface/MemoryTraceGenerator.h>
 
 #include <deque>
 #include <string>

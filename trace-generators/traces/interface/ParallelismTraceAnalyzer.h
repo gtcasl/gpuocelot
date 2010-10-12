@@ -10,7 +10,7 @@
 #ifndef PARALLELISM_TRACE_ANALYZER_H_INCLUDED
 #define PARALLELISM_TRACE_ANALYZER_H_INCLUDED
 
-#include <ocelot/trace/interface/ParallelismTraceGenerator.h>
+#include <traces/interface/ParallelismTraceGenerator.h>
 #include <unordered_map>
 #include <deque>
 #include <map>

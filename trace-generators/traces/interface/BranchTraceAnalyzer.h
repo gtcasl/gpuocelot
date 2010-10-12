@@ -10,7 +10,7 @@
 #ifndef BRANCH_TRACE_ANALYZER_H_INCLUDED
 #define BRANCH_TRACE_ANALYZER_H_INCLUDED
 
-#include <ocelot/trace/interface/BranchTraceGenerator.h>
+#include <traces/interface/BranchTraceGenerator.h>
 #include <map>
 #include <deque>
 

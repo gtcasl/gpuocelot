@@ -9,7 +9,7 @@
 #ifndef TRACE_SHAREDCOMPUTATIONANALYZER_H_INCLUDED
 #define TRACE_SHAREDCOMPUTATIONANALYZER_H_INCLUDED
 
-#include <ocelot/trace/interface/SharedComputationGenerator.h>
+#include <traces/interface/SharedComputationGenerator.h>
 #include <string>
 #include <deque>
 #include <map>

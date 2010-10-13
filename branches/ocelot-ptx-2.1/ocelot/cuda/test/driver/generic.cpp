@@ -14,13 +14,16 @@ std::ostream & operator<<(std::ostream &out, CUresult r) {
 }
 
 int main() {
-	const int N = 4;
+	const int N = 9;
 	
 	int bytes = sizeof(int) * N;
 	int *A_cpu = 0;
 	CUdeviceptr A_gpu = 0;
 	
 	A_cpu = new int[N];
+	for (int i = 0; i < N; i++) {
+		A_cpu[i] = -1;
+	}
 	
 	CUresult result = cuInit(0);
 	if (result != CUDA_SUCCESS) {
@@ -81,7 +84,6 @@ int main() {
 	if (result != CUDA_SUCCESS) {
 		report("cuDeviceGetAttribute() failed: " << result);
 	}
-	report("  compute mode: " << pi);
 	
 	result = cuModuleLoad(&module, "ocelot/cuda/test/driver/generic.ptx");
 	if (result != CUDA_SUCCESS) {
@@ -143,9 +145,8 @@ int main() {
 	cuModuleUnload(module);
 	cuCtxDestroy(ctx);
 	
-	const char *ptr = (const char *)A_cpu;
 	for (int i = 0; i < 9; i++) {
-		std::cout << "[" << i << "] - " << (unsigned int)ptr[i] << "\n";
+		std::cout << "%p" << i << " - " << A_cpu[i] << "\n";
 	}
 	
 	delete [] A_cpu;

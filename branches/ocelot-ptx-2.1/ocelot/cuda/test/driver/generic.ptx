@@ -1,0 +1,45 @@
+	.version 2.1
+	.target sm_20
+.entry genericmemory (
+.param .u64 __cudaparm_genericmemory_A)
+{
+.reg .u32 %r<9>;
+.reg .u64 %rd<5>;
+.reg .pred %p<9>;
+.shared .u64 $rs;
+.local .u64 $rl;
+$BB_01:
+	mov.u32 %r1, %ctaid.x;
+	mov.u32 %r2, %ntid.x;
+	mul.lo.u32 %r3, %r1, %r2;
+	mov.u32 %r4, %tid.x;
+	add.u32 %r5, %r3, %r4;
+	ld.param.u64 %rd1, [__cudaparm_genericmemory_A];
+	cvta.global.u64 %rd2, %rd1;
+	cvta.shared.u64 %rd3, $rs;
+	cvta.local.u64 %rd4, $rl;
+	
+	isspacep.global %p0, %rd2;
+	isspacep.shared %p1, %rd3;
+	isspacep.local %p2, %rd4;
+	
+	isspacep.global %p3, %rd3;
+	isspacep.shared %p4, %rd4;
+	isspacep.local %p5, %rd2;
+	
+	isspacep.global %p6, %rd4;
+	isspacep.shared %p7, %rd2;
+	isspacep.local %p8, %rd3;
+	
+	@p0 st.global.u8 [%rd1], 1
+	@p1 st.global.u8 [%rd1+1], 1
+	@p2 st.global.u8 [%rd1+2], 1
+	@p3 st.global.u8 [%rd1+3], 1
+	@p4 st.global.u8 [%rd1+4], 1
+	@p5 st.global.u8 [%rd1+5], 1
+	@p7 st.global.u8 [%rd1+6], 1
+	@p8 st.global.u8 [%rd1+7], 1
+	
+$BB_02:
+	exit;
+}

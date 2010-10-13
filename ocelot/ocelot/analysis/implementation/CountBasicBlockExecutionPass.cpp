@@ -37,13 +37,13 @@ namespace analysis
         ir::PTXInstruction atomicAdd(ir::PTXInstruction::Atom);
         atomicAdd.atomicOperation = ir::PTXInstruction::AtomicAdd;
         atomicAdd.addressSpace = ir::PTXInstruction::Global; 
-        atomicAdd.type = ir::PTXOperand::u64;       
+        atomicAdd.type = (sizeof(size_t) == 8 ? ir::PTXOperand::u64: ir::PTXOperand::u32);       
         atomicAdd.a.addressMode = ir::PTXOperand::Address;
         atomicAdd.a.identifier = basicBlockCounterName();
         atomicAdd.a.offset = offset;
         atomicAdd.d.reg = registerId;
         atomicAdd.d.addressMode = ir::PTXOperand::Register;
-		atomicAdd.d.type = ir::PTXOperand::u64;		
+		atomicAdd.d.type = (sizeof(size_t) == 8 ? ir::PTXOperand::u64: ir::PTXOperand::u32);		
         atomicAdd.b.addressMode = ir::PTXOperand::Immediate;
         atomicAdd.b.imm_int = 1;
         
@@ -79,8 +79,8 @@ namespace analysis
 			    block != (kernel->second)->dfg()->end(); ++block )
 		        {
 			        _runOnBlock( (kernel->second), block, registerId, offset);
-                    /* incrementing offset by 8 since the counter is a .u64 */
-                    offset = offset + 8;                  
+                    /* incrementing offset based on size_t */
+                    offset = offset + sizeof(size_t);                  
 		        }
 	    }
 

@@ -741,6 +741,17 @@ std::string ir::PTXInstruction::valid() const {
 		case Exit: {
 			break;
 		}
+		case Fma: {
+			if (!(type == ir::PTXOperand::f32 || type == ir::PTXOperand::f64)) {
+				return "invalid instruction type " + PTXOperand::toString( type );
+			}
+			if( !PTXOperand::valid( type, d.type ) 
+				&& d.addressMode != PTXOperand::Immediate ) {
+				return "operand D type " + PTXOperand::toString( d.type ) 
+					+ " cannot be assigned to " + PTXOperand::toString( type );
+			}
+			break;
+		}
 		case Isspacep: {
 			if (!(addressSpace == PTXInstruction::Global || addressSpace == PTXInstruction::Shared
 				|| addressSpace == PTXInstruction::Local)) {
@@ -1880,6 +1891,12 @@ std::string ir::PTXInstruction::toString() const {
 		}
 		case Exit: {
 			return "exit";
+		}
+		case Fma: {
+			std::string result = guard() + "fma." + modifierString(modifier, carry) + 
+				PTXOperand::toString(type) + " " + d.toString() + ", " + a.toString() 
+				+ ", " + b.toString() + ", " + c.toString();
+			return result;
 		}
 		case Isspacep: {
 			std::string result = guard() + "isspace." + toString(addressSpace) 

@@ -411,6 +411,7 @@ namespace executive {
 		void eval_Bar(CTAContext &context, const ir::PTXInstruction &instr);
 		void eval_Bfi(CTAContext &context, const ir::PTXInstruction &instr);
 		void eval_Bfind(CTAContext &context, const ir::PTXInstruction &instr);
+		void eval_Bfe(CTAContext &context, const ir::PTXInstruction &instr);
 		void eval_Bra(CTAContext &context, const ir::PTXInstruction &instr);
 		void eval_Brev(CTAContext &context, const ir::PTXInstruction &instr);
 		void eval_Brkpt(CTAContext &context, const ir::PTXInstruction &instr);

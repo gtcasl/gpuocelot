@@ -23,6 +23,7 @@
 #include <climits>
 #include <cfloat>
 #include <cfenv> 
+#include <algorithm>
 
 #include <hydrazine/implementation/debug.h>
 #include <hydrazine/implementation/math.h>
@@ -2107,6 +2108,43 @@ void executive::CooperativeThreadArray::eval_Brev(CTAContext& context,
 	}
 	}
 }
+
+void executive::CooperativeThreadArray::eval_Bfe(CTAContext &context, const ir::PTXInstruction &instr) {
+	trace();
+	for (int tid = 0; tid < threadCount; tid++) {
+		if (!context.predicated(tid, instr)) {
+			continue;
+		}
+		bool size32bit = (instr.type == ir::PTXOperand::u32 || instr.type == ir::PTXOperand::s32);
+		bool isSigned = (instr.type == ir::PTXOperand::s32 || instr.type == ir::PTXOperand::s64);
+		
+		ir::PTXU32 msb = (size32bit ? 31 : 63);
+		ir::PTXU32 pos = operandAsU32(tid, instr.b);
+		ir::PTXU32 len = operandAsU32(tid, instr.c);
+		ir::PTXU32 sbit = 0;
+		ir::PTXU64 a = operandAsU64(tid, instr.a);
+		ir::PTXU64 mask = ((1 << len) - 1);
+		ir::PTXU64 result = 0;
+		
+		if (instr.type == ir::PTXOperand::s32 || instr.type == ir::PTXOperand::s64) {
+			ir::PTXU32 start = pos + len - 1;
+			ir::PTXU32 mbit = (start < msb ? msb : start);
+			sbit = ((a >> mbit) & 0x01);
+		}
+		
+		if (isSigned) {
+			result = (msb ? -1 : 0) & (~mask);
+		}
+		result |= ((a >> pos) & mask);
+		if (size32bit) {
+			setRegAsU32(tid, instr.d.reg, hydrazine::bit_cast<ir::PTXU32, ir::PTXU64>(result));
+		}
+		else {
+			setRegAsU64(tid, instr.d.reg, result);
+		}
+	}
+}
+
 /*!
 
 */

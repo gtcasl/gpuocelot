@@ -751,24 +751,17 @@ approximate : TOKEN_APPROX
 };
 
 approxInstruction2 : approxInstruction2Opcode approximate optionalFtz dataType 
-	operand ',' operand ';'
+		operand ',' operand ';'
 {
 	state.instruction( $<text>1, $<value>4, 3 );
 };
 
-optionalFtz : TOKEN_FTZ
+requiredFtz : TOKEN_FTZ
 {
 	state.modifier( $<value>1 );
 };
 
-optionalFtz : /* empty string */;
-
-optionalRzi : TOKEN_RZI
-{
-	state.modifier( $<value>1 );
-};
-
-optionalRzi : /* empty string */;
+optionalFtz : requiredFtz | /* empty string */;
 
 optionalSaturate : TOKEN_SAT
 {
@@ -970,7 +963,8 @@ cvtModifier : cvtModifier1 optionalFtz optionalSaturate
 	state.modifier( $<value>1 );
 };
 
-cvtModifier : optionalSaturate optionalRzi optionalFtz 
+// OPTIX:
+cvtModifier2 : TOKEN_SAT optionalFtz  | TOKEN_SAT intRounding optionalFtz | TOKEN_FTZ
 {
 	state.modifier( $<value>1 );
 };
@@ -981,10 +975,30 @@ cvt : OPCODE_CVT cvtModifier dataType dataType operand ',' operand ';'
 	state.relaxedConvert( $<value>4, @1 );
 };
 
+// OPTIX:
+// cvt.f32.f32	%pinhole_camera_f56, %pinhole_camera_f55;
+//
+cvt : OPCODE_CVT dataType dataType operand ',' operand ';'
+{
+	state.instruction( $<text>1, $<value>2, 3 );
+	state.relaxedConvert( $<value>3, @1 );
+};
+
+// OPTIX:
+// cvt.sat.ftz.f32.f32	%pinhole_camera_f56, %pinhole_camera_f55;
+// cvt.sat.rzi.ftz.u32.f32	%pinhole_camera_r12, %pinhole_camera_f58;
+//cvt.ftz.f32.u32 %pinhole_camera_f1, $rayIndex_x;
+cvt : OPCODE_CVT cvtModifier2 dataType dataType operand ',' operand ';'
+{
+	state.instruction( $<text>1, $<value>3, 3 );
+	state.relaxedConvert( $<value>4, @1 );
+};
+
 cvta : OPCODE_CVTA addressSpace pointerDataType operand ',' operand ';'
 {
 	state.instruction( $<text>1, $<value>3, 3 );
 };
+
 
 cvta : OPCODE_CVTA TOKEN_TO addressSpace pointerDataType operand ',' operand ';'
 {
@@ -996,10 +1010,6 @@ isspacep : OPCODE_ISSPACEP addressSpace operand ',' operand ';'
 {
 	state.instruction( $<text>1, TOKEN_U32, 3 );
 }
-
-/*
-	multiple orderings of modifiers for OptiX support
-*/
 
 divFullModifier : TOKEN_FULL optionalFtz
 {
@@ -1017,8 +1027,9 @@ divRnModifier : TOKEN_RN
 };
 
 divModifier : divFullModifier | divApproxModifier 
-	| divRnModifier | /* empty string */;
+	| divRnModifier | requiredFtz | /* empty string */;
 
+//OptiX: div.ftz.f32 %pinhole_camera_f5, %pinhole_camera_f1, %pinhole_camera_f2;
 div : OPCODE_DIV divModifier dataType operand ',' operand ',' operand ';'
 {
 	state.instruction( $<text>1, $<value>3, 4 );
@@ -1238,19 +1249,7 @@ selp : OPCODE_SELP dataType operand ',' operand ',' operand ',' operand ';'
 	state.instruction( $<text>1, $<value>2, 5 );
 };
 
-
-/*
-	multiple orderings of modifiers for OptiX support
-*/
-
 set : OPCODE_SET comparison optionalFtz dataType dataType operand ',' 
-	operand ',' operand ';'
-{
-	state.instruction( $<text>1, $<value>4, 4 );
-	state.convert( $<value>5, @1 );
-};
-
-set : OPCODE_SET optionalFtz comparison  dataType dataType operand ',' 
 	operand ',' operand ';'
 {
 	state.instruction( $<text>1, $<value>4, 4 );
@@ -1264,18 +1263,24 @@ set : OPCODE_SET comparison boolOperator optionalFtz dataType dataType operand
 	state.convert( $<value>6, @1 );
 };
 
-
-/*
-	multiple orderings of modifiers for OptiX support
-*/
-
-setp : OPCODE_SETP comparison optionalFtz dataType operand ',' operand ',' 
-	operand ';'
+// OPTIX
+//   set.ftz.ge.u32.f32	%closest_hit_radiance1_r45, %closest_hit_radiance1_f165, %closest_hit_radiance1_f166;
+set : OPCODE_SET requiredFtz comparison dataType dataType operand ',' 
+	operand ',' operand ';'
 {
 	state.instruction( $<text>1, $<value>4, 4 );
+	state.convert( $<value>5, @1 );
+};
+set : OPCODE_SET requiredFtz comparison boolOperator dataType dataType operand ',' 
+	operand ',' operand ';'
+{
+	state.instruction( $<text>1, $<value>5, 5 );
+	state.convert( $<value>6, @1 );;
 };
 
-setp : OPCODE_SETP optionalFtz comparison  dataType operand ',' operand ',' 
+
+
+setp : OPCODE_SETP comparison optionalFtz dataType operand ',' operand ',' 
 	operand ';'
 {
 	state.instruction( $<text>1, $<value>4, 4 );
@@ -1291,7 +1296,19 @@ setp : OPCODE_SETP comparison boolOperator optionalFtz dataType operand '|'
 	operand ',' operand ',' operand ',' operand ';'
 {
 	state.instruction( $<text>1, $<value>5, 6 );
-}; 
+};
+
+// OPTIX:
+//  setp.ftz.lt.f32	%pinhole_camera1_p26, %pinhole_camera1_f410, %pinhole_camera1_f411;
+setp: OPCODE_SETP requiredFtz comparison dataType operand ',' operand ',' operand ';'
+{
+	state.instruction( $<text>1, $<value>4, 4 );
+};
+// OPTIX
+setp: OPCODE_SETP requiredFtz comparison boolOperator dataType operand ',' operand ',' operand ';'
+{
+	state.instruction( $<text>1, $<value>5, 6 );
+};
 
 slct : OPCODE_SLCT optionalFtz dataType dataType operand ',' operand ',' 
 	operand ',' operand ';'

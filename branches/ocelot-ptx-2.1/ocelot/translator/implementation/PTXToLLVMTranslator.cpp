@@ -1070,6 +1070,7 @@ namespace translator
 			case ir::PTXInstruction::Div: _translateDiv( i ); break;
 			case ir::PTXInstruction::Ex2: _translateEx2( i ); break;
 			case ir::PTXInstruction::Exit: _translateExit( i ); break;
+			case ir::PTXInstruction::Fma: _translateMad( i ); break;
 			case ir::PTXInstruction::Ld: _translateLd( i ); break;
 			case ir::PTXInstruction::Lg2: _translateLg2( i ); break;
 			case ir::PTXInstruction::Mad24: _translateMad24( i ); break;

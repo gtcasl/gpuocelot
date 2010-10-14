@@ -174,15 +174,15 @@ namespace parser
 						YYLTYPE& one, YYLTYPE& two );
 					void textureDeclaration( int token, const std::string& name, 
 						YYLTYPE& location );
-					void parameterDeclaration( const std::string& name, 
+					void argumentDeclaration( const std::string& name, 
 						YYLTYPE& location );
 					
 					void openBrace( YYLTYPE& location );
 					void closeBrace( YYLTYPE& location );
-					void returnParameterListBegin( YYLTYPE& location );
-					void returnParameterListEnd( YYLTYPE& location );
-					void parameterListBegin( YYLTYPE& location );
-					void parameterListEnd( YYLTYPE& location );
+					void returnArgumentListBegin( YYLTYPE& location );
+					void returnArgumentListEnd( YYLTYPE& location );
+					void argumentListBegin( YYLTYPE& location );
+					void argumentListEnd( YYLTYPE& location );
 					
 					void functionBegin( YYLTYPE& location );
 					void functionName( const std::string& name, 

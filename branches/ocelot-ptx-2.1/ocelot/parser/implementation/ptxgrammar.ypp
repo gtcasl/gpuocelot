@@ -388,31 +388,31 @@ parameter : TOKEN_PARAM
 	state.locationAddress( $<value>1 );
 };
 
-parameterDeclaration : parameter addressableVariablePrefix identifier 
+argumentDeclaration : parameter addressableVariablePrefix identifier 
 	arrayDimensions
 {
 	state.attribute( false, false );
-	state.parameterDeclaration( $<text>3, @1 );
+	state.argumentDeclaration( $<text>3, @1 );
 };
 
-returnParameterListBegin : '('
+returnArgumentListBegin : '('
 {
-	state.returnParameterListBegin( @1 );
+	state.returnArgumentListBegin( @1 );
 };
 
-returnParameterListEnd : ')'
+returnArgumentListEnd : ')'
 {
-	state.returnParameterListEnd( @1 );
+	state.returnArgumentListEnd( @1 );
 };
 
-parameterListBegin : '('
+argumentListBegin : '('
 {
-	state.parameterListBegin( @1 );
+	state.argumentListBegin( @1 );
 };
 
-parameterListEnd : ')'
+argumentListEnd : ')'
 {
-	state.parameterListEnd( @1 );
+	state.argumentListEnd( @1 );
 };
 
 openBrace : '{'
@@ -425,15 +425,15 @@ closeBrace : '}'
 	state.closeBrace( @1 );
 };
 
-parameterListBody : parameterDeclaration;
-parameterListBody : /* empty string */;
-parameterListBody : parameterListBody ',' parameterDeclaration;
+argumentListBody : argumentDeclaration;
+argumentListBody : /* empty string */;
+argumentListBody : argumentListBody ',' argumentDeclaration;
 
-returnParameterList : returnParameterListBegin parameterListBody 
-	returnParameterListEnd;
-parameterList : parameterListBegin parameterListBody parameterListEnd;
+returnArgumentList : returnArgumentListBegin argumentListBody 
+	returnArgumentListEnd;
+argumentList : argumentListBegin argumentListBody argumentListEnd;
 
-optionalReturnParameterList : returnParameterList | /* empty string */;
+optionalReturnArgumentList : returnArgumentList | /* empty string */;
 
 functionBegin : TOKEN_FUNCTION
 {
@@ -445,14 +445,14 @@ functionName : identifier
 	state.functionName( $<text>1, @1 );
 };
 
-functionDeclaration : externOrVisible functionBegin optionalReturnParameterList 
-	functionName parameterList
+functionDeclaration : externOrVisible functionBegin optionalReturnArgumentList 
+	functionName argumentList
 {
 	state.functionDeclaration( @4, false );
 };
 
 functionBodyDefinition : externOrVisible functionBegin 
-	optionalReturnParameterList functionName parameterList
+	optionalReturnArgumentList functionName argumentList
 {
 	state.functionDeclaration( @4, true );
 };
@@ -464,7 +464,7 @@ entryName : TOKEN_ENTRY identifier
 	state.entry( $<text>2, @1 );
 };
 
-entryDeclaration : entryName parameterList performanceDirectives | entryName
+entryDeclaration : entryName argumentList performanceDirectives
 {
 	state.entryDeclaration( @1 );
 };
@@ -751,24 +751,24 @@ approximate : TOKEN_APPROX
 };
 
 approxInstruction2 : approxInstruction2Opcode approximate optionalFtz dataType 
-		operand ',' operand ';'
+	operand ',' operand ';'
 {
 	state.instruction( $<text>1, $<value>4, 3 );
 };
 
-requiredFtz : TOKEN_FTZ
+ftz : TOKEN_FTZ
 {
 	state.modifier( $<value>1 );
 };
 
-optionalFtz : requiredFtz | /* empty string */;
+optionalFtz : ftz | /* empty string */;
 
-optionalSaturate : TOKEN_SAT
+sat : TOKEN_SAT
 {
 	state.modifier( $<value>1 );
 };
 
-optionalSaturate : /* empty string */;
+optionalSaturate : sat | /* empty string */;
 
 ftzInstruction2Opcode : OPCODE_ABS | OPCODE_NEG;
 
@@ -811,10 +811,10 @@ returnOperandList : returnOperandList ',' returnOperand;
 
 optionalReturnOperandList : '(' returnOperandList ')' ',' | /* empty string */;
 
-callParameterList : callOperand;
-callParameterList : callParameterList ',' callOperand;
+callArgumentList : callOperand;
+callArgumentList : callArgumentList ',' callOperand;
 
-optionalPrototypeName : ',' '(' callParameterList ')' ',' identifier
+optionalPrototypeName : ',' '(' callArgumentList ')' ',' identifier
 {
 	state.callPrototypeName( $<text>6 );
 };
@@ -824,7 +824,7 @@ optionalPrototypeName : ',' identifier
 	state.callPrototypeName( $<text>2 );
 };
 
-optionalPrototypeName : ',' '(' callParameterList ')' | /* empty string */;
+optionalPrototypeName : ',' '(' callArgumentList ')' | /* empty string */;
 
 optionalUniOrTail : TOKEN_TAIL
 {
@@ -956,39 +956,24 @@ clz : OPCODE_CLZ dataType operand ',' operand ';'
 	state.instruction( $<text>1, $<value>2, 3 );
 };
 
-cvtModifier1 : floatRounding | intRounding;
-
-cvtModifier : cvtModifier1 optionalFtz optionalSaturate
+floatRoundingModifier : floatRounding
 {
 	state.modifier( $<value>1 );
 };
 
-// OPTIX:
-cvtModifier2 : TOKEN_SAT optionalFtz  | TOKEN_SAT intRounding optionalFtz | TOKEN_FTZ
+intRoundingModifier : intRounding
 {
 	state.modifier( $<value>1 );
 };
+
+cvtRoundingModifier : intRoundingModifier | floatRoundingModifier;
+
+cvtModifier : cvtRoundingModifier ftz sat;
+cvtModifier : sat cvtRoundingModifier ftz;
+cvtModifier : cvtRoundingModifier optionalFtz;
+cvtModifier : optionalFtz;
 
 cvt : OPCODE_CVT cvtModifier dataType dataType operand ',' operand ';'
-{
-	state.instruction( $<text>1, $<value>3, 3 );
-	state.relaxedConvert( $<value>4, @1 );
-};
-
-// OPTIX:
-// cvt.f32.f32	%pinhole_camera_f56, %pinhole_camera_f55;
-//
-cvt : OPCODE_CVT dataType dataType operand ',' operand ';'
-{
-	state.instruction( $<text>1, $<value>2, 3 );
-	state.relaxedConvert( $<value>3, @1 );
-};
-
-// OPTIX:
-// cvt.sat.ftz.f32.f32	%pinhole_camera_f56, %pinhole_camera_f55;
-// cvt.sat.rzi.ftz.u32.f32	%pinhole_camera_r12, %pinhole_camera_f58;
-//cvt.ftz.f32.u32 %pinhole_camera_f1, $rayIndex_x;
-cvt : OPCODE_CVT cvtModifier2 dataType dataType operand ',' operand ';'
 {
 	state.instruction( $<text>1, $<value>3, 3 );
 	state.relaxedConvert( $<value>4, @1 );
@@ -998,7 +983,6 @@ cvta : OPCODE_CVTA addressSpace pointerDataType operand ',' operand ';'
 {
 	state.instruction( $<text>1, $<value>3, 3 );
 };
-
 
 cvta : OPCODE_CVTA TOKEN_TO addressSpace pointerDataType operand ',' operand ';'
 {
@@ -1010,6 +994,10 @@ isspacep : OPCODE_ISSPACEP addressSpace operand ',' operand ';'
 {
 	state.instruction( $<text>1, TOKEN_U32, 3 );
 }
+
+/*
+	multiple orderings of modifiers for OptiX support
+*/
 
 divFullModifier : TOKEN_FULL optionalFtz
 {
@@ -1027,7 +1015,7 @@ divRnModifier : TOKEN_RN
 };
 
 divModifier : divFullModifier | divApproxModifier 
-	| divRnModifier | requiredFtz | /* empty string */;
+	| divRnModifier | ftz | /* empty string */;
 
 //OptiX: div.ftz.f32 %pinhole_camera_f5, %pinhole_camera_f1, %pinhole_camera_f2;
 div : OPCODE_DIV divModifier dataType operand ',' operand ',' operand ';'
@@ -1249,11 +1237,22 @@ selp : OPCODE_SELP dataType operand ',' operand ',' operand ',' operand ';'
 	state.instruction( $<text>1, $<value>2, 5 );
 };
 
-set : OPCODE_SET comparison optionalFtz dataType dataType operand ',' 
+
+/*
+	multiple orderings of modifiers for OptiX support
+
+ OPTIX
+  set.ftz.ge.u32.f32	%closest_hit_radiance1_r45, 
+  	%closest_hit_radiance1_f165, %closest_hit_radiance1_f166;
+*/
+setModifier : comparison optionalFtz;
+setModifier : ftz comparison;
+
+set : OPCODE_SET setModifier dataType dataType operand ',' 
 	operand ',' operand ';'
 {
-	state.instruction( $<text>1, $<value>4, 4 );
-	state.convert( $<value>5, @1 );
+	state.instruction( $<text>1, $<value>3, 4 );
+	state.convert( $<value>4, @1 );
 };
 
 set : OPCODE_SET comparison boolOperator optionalFtz dataType dataType operand 
@@ -1263,27 +1262,16 @@ set : OPCODE_SET comparison boolOperator optionalFtz dataType dataType operand
 	state.convert( $<value>6, @1 );
 };
 
-// OPTIX
-//   set.ftz.ge.u32.f32	%closest_hit_radiance1_r45, %closest_hit_radiance1_f165, %closest_hit_radiance1_f166;
-set : OPCODE_SET requiredFtz comparison dataType dataType operand ',' 
-	operand ',' operand ';'
-{
-	state.instruction( $<text>1, $<value>4, 4 );
-	state.convert( $<value>5, @1 );
-};
-set : OPCODE_SET requiredFtz comparison boolOperator dataType dataType operand ',' 
-	operand ',' operand ';'
-{
-	state.instruction( $<text>1, $<value>5, 5 );
-	state.convert( $<value>6, @1 );;
-};
+/*
+	multiple orderings of modifiers for OptiX support
+*/
+setpModifier : comparison optionalFtz;
+setpModifier : ftz comparison;
 
-
-
-setp : OPCODE_SETP comparison optionalFtz dataType operand ',' operand ',' 
+setp : OPCODE_SETP setpModifier dataType operand ',' operand ',' 
 	operand ';'
 {
-	state.instruction( $<text>1, $<value>4, 4 );
+	state.instruction( $<text>1, $<value>3, 4 );
 };
 
 setp : OPCODE_SETP comparison boolOperator optionalFtz dataType operand ',' 
@@ -1294,18 +1282,6 @@ setp : OPCODE_SETP comparison boolOperator optionalFtz dataType operand ','
 
 setp : OPCODE_SETP comparison boolOperator optionalFtz dataType operand '|' 
 	operand ',' operand ',' operand ',' operand ';'
-{
-	state.instruction( $<text>1, $<value>5, 6 );
-};
-
-// OPTIX:
-//  setp.ftz.lt.f32	%pinhole_camera1_p26, %pinhole_camera1_f410, %pinhole_camera1_f411;
-setp: OPCODE_SETP requiredFtz comparison dataType operand ',' operand ',' operand ';'
-{
-	state.instruction( $<text>1, $<value>4, 4 );
-};
-// OPTIX
-setp: OPCODE_SETP requiredFtz comparison boolOperator dataType operand ',' operand ',' operand ';'
 {
 	state.instruction( $<text>1, $<value>5, 6 );
 };
@@ -1396,4 +1372,3 @@ void yyerror( YYLTYPE* location, parser::PTXLexer& lexer,
 }
 
 }
-

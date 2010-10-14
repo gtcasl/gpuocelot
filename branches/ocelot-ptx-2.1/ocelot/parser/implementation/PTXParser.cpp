@@ -778,10 +778,10 @@ namespace parser
 			OperandWrapper( operand, _toAddressSpace( directive ) ) ) );
 	}
 
-	void PTXParser::State::parameterDeclaration( const std::string& name, 
+	void PTXParser::State::argumentDeclaration( const std::string& name, 
 		YYLTYPE& location )
 	{
-		report( "  Rule: parameter addressableVariablePrefix identifier " 
+		report( "  Rule: argument addressableVariablePrefix identifier " 
 			<< " arrayDimensions" );
 
 		assert( inEntry || inArgumentList || inReturnList );
@@ -797,7 +797,7 @@ namespace parser
 		if( operands.count( statement.name ) != 0 )
 		{
 			throw_exception( toString( location, *this ) 
-				<< "Parameter operand " << statement.name 
+				<< "Argument operand " << statement.name 
 				<< " already declared in this scope.", 
 				DuplicateDeclaration );
 		}
@@ -863,7 +863,7 @@ namespace parser
 		localOperands.clear();
 	}
 
-	void PTXParser::State::parameterListBegin( YYLTYPE& location )
+	void PTXParser::State::argumentListBegin( YYLTYPE& location )
 	{
 		report( "  Rule: '('" );
 		assert( !inArgumentList );
@@ -874,7 +874,7 @@ namespace parser
 		statementEnd( location );
 	}
 
-	void PTXParser::State::parameterListEnd( YYLTYPE& location )
+	void PTXParser::State::argumentListEnd( YYLTYPE& location )
 	{
 		report( "  Rule: ')'" );
 		assert( inArgumentList );
@@ -885,7 +885,7 @@ namespace parser
 		statementEnd( location );		
 	}
 
-	void PTXParser::State::returnParameterListBegin( YYLTYPE& location )
+	void PTXParser::State::returnArgumentListBegin( YYLTYPE& location )
 	{
 		report( "  Rule: '('" );
 		assert( !inReturnList );
@@ -896,7 +896,7 @@ namespace parser
 		statementEnd( location );
 	}
 
-	void PTXParser::State::returnParameterListEnd( YYLTYPE& location )
+	void PTXParser::State::returnArgumentListEnd( YYLTYPE& location )
 	{
 		report( "  Rule: ')'" );
 		assert( inReturnList );
@@ -930,7 +930,7 @@ namespace parser
 	void PTXParser::State::functionDeclaration( YYLTYPE& location, bool body )
 	{
 		report( "  Rule: externOrVisible functionBegin " << 
-			"optionalReturnParameterList identifier parameterList" );
+			"optionalReturnArgumentList identifier argumentList" );
 		
 		if( !body )
 		{
@@ -998,7 +998,7 @@ namespace parser
 	
 	void PTXParser::State::entryDeclaration( YYLTYPE& location )
 	{
-		report( "  Rule: entryName parameterList performanceDirectives" );
+		report( "  Rule: entryName argumentList performanceDirectives" );
 	
 		if( prototypes.count( statement.name ) != 0 )
 		{
@@ -1775,10 +1775,10 @@ namespace parser
 		localPrototypes.push_back( name );
 		localOperands.push_back( name );
 	
-		statement.directive = ir::PTXStatement::FunctionPrototype;
-		statement.returnTypes = prototype.returnTypes;
+		statement.directive     = ir::PTXStatement::FunctionPrototype;
+		statement.returnTypes   = prototype.returnTypes;
 		statement.argumentTypes = prototype.argumentTypes;
-		statement.name = prototype.name;
+		statement.name          = prototype.name;
 		
 		prototype.clear();
 	}
@@ -1971,8 +1971,6 @@ namespace parser
 				std::stringstream stream;
 				stream << token;
 				exception.message = "Got invalid data type " + stream.str();
-				report("PTXParser::tokenToDataType() exception - " << exception.what());
-				assert(0);
 				throw exception;
 				break;
 			}

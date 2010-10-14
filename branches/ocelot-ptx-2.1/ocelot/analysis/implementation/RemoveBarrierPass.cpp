@@ -257,7 +257,14 @@ namespace analysis
 		_addSpillCode( block, bottom, alive, isBarrier );
 		_addRestoreCode( bottom, alive );
 		
-		_kernel->dfg()->redirect( block, bottom, exitBlock );
+		if( isBarrier )
+		{
+			_kernel->dfg()->redirect( block, bottom, exitBlock );
+		}
+		else
+		{
+			
+		}
 		
 		_addEntryPoint( bottom );
 	}

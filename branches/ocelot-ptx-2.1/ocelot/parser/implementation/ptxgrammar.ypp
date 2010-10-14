@@ -90,7 +90,7 @@
 
 %token<value> TOKEN_HI TOKEN_LO TOKEN_AND TOKEN_OR TOKEN_XOR
 %token<value> TOKEN_RN TOKEN_RM TOKEN_RZ TOKEN_RP TOKEN_SAT TOKEN_VOLATILE
-%token<value> TOKEN_UNI TOKEN_ALIGN TOKEN_BYTE TOKEN_WIDE TOKEN_CARRY
+%token<value> TOKEN_TAIL TOKEN_UNI TOKEN_ALIGN TOKEN_BYTE TOKEN_WIDE TOKEN_CARRY
 %token<value> TOKEN_RNI TOKEN_RMI TOKEN_RZI TOKEN_RPI
 %token<value> TOKEN_FTZ TOKEN_APPROX TOKEN_FULL TOKEN_SHIFT_AMOUNT
 
@@ -602,7 +602,7 @@ returnType : TOKEN_PARAM dataTypeId identifier
 
 returnTypeListBody : returnType;
 returnTypeListBody : returnTypeListBody ',' returnType;
-returnTypeList : '(' returnTypeListBody ')';
+returnTypeList : '(' returnTypeListBody ')' | /* empty string */;
 
 argumentType : TOKEN_PARAM dataTypeId identifier
 {
@@ -611,7 +611,7 @@ argumentType : TOKEN_PARAM dataTypeId identifier
 
 argumentTypeListBody : argumentType;
 argumentTypeListBody : argumentTypeListBody ',' argumentType;
-argumentTypeList : '(' argumentTypeListBody ')';
+argumentTypeList : '(' argumentTypeListBody ')' | '(' ')';
 
 callprototype : TOKEN_LABEL TOKEN_CALL_PROTOTYPE returnTypeList identifier 
 	argumentTypeList ';'
@@ -817,15 +817,30 @@ optionalReturnOperandList : '(' returnOperandList ')' ',' | /* empty string */;
 callParameterList : callOperand;
 callParameterList : callParameterList ',' callOperand;
 
+optionalPrototypeName : ',' '(' callParameterList ')' ',' identifier
+{
+	state.callPrototypeName( $<text>6 );
+};
+
 optionalPrototypeName : ',' identifier
 {
 	state.callPrototypeName( $<text>2 );
 };
 
-optionalPrototypeName : /* empty string */;
+optionalPrototypeName : ',' '(' callParameterList ')' | /* empty string */;
 
-branch : OPCODE_CALL optionalUni optionalReturnOperandList identifier 
-	',' '(' callParameterList ')' optionalPrototypeName ';'
+optionalUniOrTail : TOKEN_TAIL
+{
+	state.tail( true );
+};
+
+optionalUniOrTail : optionalUni
+{
+	state.tail( false );
+};
+
+branch : OPCODE_CALL optionalUniOrTail optionalReturnOperandList identifier 
+	optionalPrototypeName ';'
 {
 	state.call( $<text>4, @1 );
 };

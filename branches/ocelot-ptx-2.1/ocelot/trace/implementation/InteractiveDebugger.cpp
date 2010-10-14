@@ -94,13 +94,31 @@ void InteractiveDebugger::event(const TraceEvent& event)
 		break;
 		case ir::PTXInstruction::Param:
 		{
-			if(*address + event.memory_size > _kernel->parameterMemorySize())
+			bool isArgument = event.instruction->opcode 
+				== ir::PTXInstruction::St ? event.instruction->d.isArgument 
+				: event.instruction->a.isArgument;
+			if(isArgument)
 			{
-				std::cout << "(ocelot-dbg) Parameter memory access " 
-					<< "violation at " << (void*)*address << " (" 
-					<< _event.memory_size << " bytes)\n";
+				if(*address + event.memory_size > _kernel->argumentMemorySize())
+				{
+					std::cout << "(ocelot-dbg) Argument memory access " 
+						<< "violation at " << (void*)*address << " (" 
+						<< _event.memory_size << " bytes)\n";
 
-				memoryError = true;
+					memoryError = true;
+				}
+			}
+			else
+			{
+				if(*address + event.memory_size
+					> _kernel->parameterMemorySize())
+				{
+					std::cout << "(ocelot-dbg) Parameter memory access " 
+						<< "violation at " << (void*)*address << " (" 
+						<< _event.memory_size << " bytes)\n";
+
+					memoryError = true;
+				}
 			}
 		}
 		break;

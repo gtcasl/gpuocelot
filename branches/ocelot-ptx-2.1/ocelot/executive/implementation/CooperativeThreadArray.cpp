@@ -2257,7 +2257,8 @@ void executive::CooperativeThreadArray::eval_Reconverge(CTAContext &context, con
 /*!
 
 */
-void executive::CooperativeThreadArray::eval_Brkpt(CTAContext &context, const PTXInstruction &instr) {
+void executive::CooperativeThreadArray::eval_Brkpt(CTAContext &context,
+	const PTXInstruction &instr) {
 	trace();
 	context.running = false;
 }
@@ -2333,7 +2334,7 @@ void executive::CooperativeThreadArray::eval_Call(CTAContext &context,
 
 			reportE(REPORT_CALL, 
 				"  call was taken, increasing stack size by (" 
-				<< targetKernel->parameterMemorySize() << " parameter) (" 
+				<< targetKernel->argumentMemorySize() << " parameter) (" 
 				<< targetKernel->registerCount() << " registers) (" 
 				<< targetKernel->localMemorySize() << " local memory) (" 
 				<< targetKernel->totalSharedMemorySize() 
@@ -5930,8 +5931,8 @@ void executive::CooperativeThreadArray::eval_Ret(CTAContext &context,
 				(char*)functionCallStack.stackFramePointer(threadID);
 			reportE(REPORT_RET, " For thread " << threadID << " copying " 
 				<< argument->toString() << " from new frame at " 
-				<< (void*) pointer << " to caller frame at " 
-				<< (void*) callerPointer );
+				<< offset << " to caller frame at " 
+				<< argument->offset );
 			std::memcpy(callerPointer + argument->offset, pointer + offset, 
 				ir::PTXOperand::bytes(argument->type));
 		}

@@ -27,7 +27,7 @@ namespace analysis
 	
 	void RemoveBarrierPass::_addSpillCode( DataflowGraph::iterator block, 
 		DataflowGraph::iterator target, 
-		const DataflowGraph::Block::RegisterSet& alive )
+		const DataflowGraph::Block::RegisterSet& alive, bool isBarrier )
 	{
 		unsigned int bytes = 0;
 		
@@ -98,6 +98,21 @@ namespace analysis
 		save.a.imm_uint = target->id();
 		
 		_kernel->dfg()->insert( block, save, block->instructions().size() - 1 );
+
+		if( isBarrier )
+		{
+			move.d.reg = _tempRegister();
+			move.a.identifier = "_Zocelot_barrier_next_kernel";
+		
+			_kernel->dfg()->insert( block, move,
+				block->instructions().size() - 1 );
+
+			save.d.reg = move.d.reg;
+			save.a.imm_uint = _kernelId;
+
+			_kernel->dfg()->insert( block, save,
+				block->instructions().size() - 1 );
+		}
 	}
 	
 	void RemoveBarrierPass::_addRestoreCode( DataflowGraph::iterator block, 
@@ -219,24 +234,27 @@ namespace analysis
 		ir::PTXInstruction& instruction = static_cast< ir::PTXInstruction& >( 
 			*_instruction->i );
 
-		report( "  Converting instruction " << instruction.toString() );
+		bool isBarrier = instruction.opcode == ir::PTXInstruction::Bar;
 
-		assert( instruction.opcode == ir::PTXInstruction::Bar );
-		instruction.opcode = ir::PTXInstruction::Call;
-		instruction.tailCall = true;
-		instruction.branchTargetInstruction = _kernelId;
-		instruction.a = ir::PTXOperand(
-			ir::PTXOperand::FunctionName, _kernel->name);
-		instruction.d.addressMode = ir::PTXOperand::Invalid;
-		
-		report( "   Converted to " << instruction.toString() );
+		if( isBarrier )
+		{
+			report( "  Converting instruction " << instruction.toString() );
+			instruction.opcode = ir::PTXInstruction::Call;
+			instruction.tailCall = true;
+			instruction.branchTargetInstruction = -1;
+			instruction.a = ir::PTXOperand(
+				ir::PTXOperand::FunctionName, "_ZOcelotBarrierKernel");
+			instruction.d.addressMode = ir::PTXOperand::Invalid;
+
+			report( "   Converted to " << instruction.toString() );		
+		}
 		
 		RegisterSet alive = block->alive( _instruction );
 		
 		DataflowGraph::iterator bottom = _kernel->dfg()->split( block, 
 			id + 1, false );
 
-		_addSpillCode( block, bottom, alive );
+		_addSpillCode( block, bottom, alive, isBarrier );
 		_addRestoreCode( bottom, alive );
 		
 		_kernel->dfg()->redirect( block, bottom, exitBlock );
@@ -252,7 +270,9 @@ namespace analysis
 		{
 			ir::PTXInstruction& instruction = static_cast< 
 				ir::PTXInstruction& >( *_instruction->i );
-			if( instruction.opcode == ir::PTXInstruction::Bar )
+			if( instruction.opcode == ir::PTXInstruction::Bar
+				|| ( instruction.opcode == ir::PTXInstruction::Call 
+					&& !instruction.tailCall ) )
 			{
 				unsigned int bytes = _spillBytes;
 				_spillBytes = 1;
@@ -268,17 +288,31 @@ namespace analysis
 
 	void RemoveBarrierPass::_addLocalVariables()
 	{
-		ir::PTXStatement syncVariable( ir::PTXStatement::Local );
+		if( _kernel->locals.count( "_Zocelot_resume_point" ) == 0 )
+		{
+			ir::PTXStatement syncVariable( ir::PTXStatement::Local );
 		
-		syncVariable.type = ir::PTXOperand::u32;
-		syncVariable.name = "_Zocelot_resume_point";
+			syncVariable.type = ir::PTXOperand::u32;
+			syncVariable.name = "_Zocelot_resume_point";
 		
-		_kernel->locals.insert( std::make_pair( syncVariable.name, 
-			ir::Local( syncVariable ) ) );
-
+			_kernel->locals.insert( std::make_pair( syncVariable.name, 
+				ir::Local( syncVariable ) ) );
+		}
+		
+		if( _kernel->locals.count( "_Zocelot_barrier_next_kernel" ) == 0 )
+		{
+			ir::PTXStatement nextVariable( ir::PTXStatement::Local );
+		
+			nextVariable.type = ir::PTXOperand::u32;
+			nextVariable.name = "_Zocelot_barrier_next_kernel";
+		
+			_kernel->locals.insert( std::make_pair( nextVariable.name, 
+				ir::Local( nextVariable ) ) );
+		}
+		
 		ir::Kernel::LocalMap::iterator stackLocal = _kernel->locals.find( 
 			"_Zocelot_spill_area" );
-
+		
 		if( stackLocal == _kernel->locals.end() )
 		{
 			ir::PTXStatement stack( ir::PTXStatement::Local );

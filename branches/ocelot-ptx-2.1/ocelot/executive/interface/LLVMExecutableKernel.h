@@ -33,6 +33,8 @@ public:
 		TailCall        = 0x1,
 		ReturnCall      = 0x2,
 		NormalCall      = 0x3,
+		ExitCall        = 0x4,
+		BarrierCall     = 0x5,
 		InvalidCallType = 0x0
 	};
 

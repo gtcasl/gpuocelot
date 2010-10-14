@@ -140,7 +140,7 @@ static void setupArgumentMemoryReferences(ir::PTXKernel& kernel,
 		report("   Argument " << argument->name << ", offset " << offset);
 		offset += argument->getSize();
 	}
-	
+
 	for(ir::ControlFlowGraph::iterator block = kernel.cfg()->begin(); 
 		block != kernel.cfg()->end(); ++block)
 	{
@@ -165,12 +165,11 @@ static void setupArgumentMemoryReferences(ir::PTXKernel& kernel,
 							operands[i]->identifier);
 						if(argument != offsets.end())
 						{
-							report("   For instruction \"" 
-								<< ptx.toString() << "\" mapping \"" 
-								<< argument->first << "\" to " 
-								<< (argument->second + operands[i]->offset));
-							operands[ i ]->offset += argument->second;
-							operands[ i ]->isArgument = true;
+							report("   For instruction \"" << ptx.toString() 
+								<< "\" mapping \"" << argument->first 
+								<< "\" to " << argument->second);
+							operands[i]->offset     = argument->second;
+							operands[i]->isArgument = true;
 						}
 					}
 				}
@@ -190,19 +189,52 @@ static void setupParameterMemoryReferences(ir::PTXKernel& kernel,
 	typedef std::unordered_map<std::string, unsigned int> OffsetMap;
 	report("  Setting up parameter memory references.");
 
-	unsigned int offset = 0;
+	metadata->parameterSize	= 0;
 	
 	OffsetMap offsets;
 	
-	for(ir::Kernel::ParameterMap::const_iterator
-		parameter = parent.parameters.begin();
-		parameter != parent.parameters.end(); ++parameter)
+	// Determine the order that parameters are passed as arguments to calls
+	for(ir::ControlFlowGraph::iterator block = kernel.cfg()->begin(); 
+		block != kernel.cfg()->end(); ++block)
 	{
-		pad(offset, parameter->second.getAlignment());
-		offsets.insert(std::make_pair(parameter->second.name, offset));
-		report("   Parameter " << parameter->second.name
-			<< ", offset " << offset);
-		offset += parameter->second.getSize();
+		for(ir::ControlFlowGraph::InstructionList::iterator 
+			instruction = block->instructions.begin(); 
+			instruction != block->instructions.end(); ++instruction)
+		{
+			ir::PTXInstruction& ptx = static_cast<
+				ir::PTXInstruction&>(**instruction);
+			if(ptx.opcode != ir::PTXInstruction::Call) continue;
+			
+			unsigned int offset = 0;
+			
+			report("   For arguments of call instruction '"
+				<< ptx.toString() << "'");
+			for (ir::PTXOperand::Array::const_iterator 
+				argument = ptx.d.array.begin();
+				argument != ptx.d.array.end(); ++argument) 
+			{
+				pad(offset, ir::PTXOperand::bytes(argument->type));
+				assert(offsets.count(argument->identifier) == 0);
+				offsets.insert(std::make_pair(argument->identifier, offset));
+				report("    mapping '" << argument->identifier
+					<< "' to " << offset);
+				offset += ir::PTXOperand::bytes(argument->type);
+			}
+			
+			for (ir::PTXOperand::Array::const_iterator 
+				argument = ptx.b.array.begin();
+				argument != ptx.b.array.end(); ++argument) 
+			{
+				pad(offset, ir::PTXOperand::bytes(argument->type));
+				assert(offsets.count(argument->identifier) == 0);
+				offsets.insert(std::make_pair(argument->identifier, offset));
+				report("    mapping '" << argument->identifier
+					<< "' to " << offset);
+				offset += ir::PTXOperand::bytes(argument->type);
+			}
+			
+			metadata->parameterSize = std::max(offset, metadata->parameterSize);
+		}
 	}
 	
 	for(ir::ControlFlowGraph::iterator block = kernel.cfg()->begin(); 
@@ -242,8 +274,6 @@ static void setupParameterMemoryReferences(ir::PTXKernel& kernel,
 		}
 	}
 	
-	metadata->parameterSize = offset;
-
 	report("   total parameter memory size is " << metadata->parameterSize);
 }
 
@@ -434,8 +464,7 @@ static void setupConstantMemoryReferences(ir::PTXKernel& kernel,
 		}
 	}
 
-	report("   Total constant memory size is "
-		<< metadata->constantSize << ".");
+	report("   Total constant memory size is " << metadata->constantSize);
 
 	for(ir::ControlFlowGraph::iterator block = kernel.cfg()->begin(); 
 		block != kernel.cfg()->end(); ++block)
@@ -472,8 +501,6 @@ static void setupConstantMemoryReferences(ir::PTXKernel& kernel,
 			}
 		}
 	}
-	
-	report("   total constant memory size is " << metadata->constantSize);
 }
 
 static void setupTextureMemoryReferences(ir::PTXKernel& kernel,
@@ -511,21 +538,42 @@ static void setupLocalMemoryReferences(ir::PTXKernel& kernel,
 	typedef std::unordered_map<std::string, unsigned int> OffsetMap;
 
 	OffsetMap offsets;
-
+	
 	// Reserve the first few 32-bit words
 	// [0] == subkernel-id
 	// [1] == call type
+	// [2] == barrier resume point if it exists
 	metadata->localSize = 8;
-
-	for(ir::Kernel::LocalMap::const_iterator local = parent.locals.begin(); 
-		local != parent.locals.end(); ++local)
+	
+	// give preference to barrier resume point
+	ir::Kernel::LocalMap::const_iterator local = parent.locals.find(
+		"_Zocelot_barrier_next_kernel");
+	if(local != parent.locals.end())
 	{
 		if(local->second.space == ir::PTXInstruction::Local)
 		{
 			report("   Found local local variable " 
 				<< local->second.name << " of size " 
 				<< local->second.getSize());
-					
+			
+			pad(metadata->localSize, local->second.alignment);
+			offsets.insert(std::make_pair(local->second.name,
+				metadata->localSize));
+			metadata->localSize += local->second.getSize();
+		}
+	}
+
+	for(ir::Kernel::LocalMap::const_iterator local = parent.locals.begin(); 
+		local != parent.locals.end(); ++local)
+	{
+		if(local->first == "_Zocelot_barrier_next_kernel") continue;
+		
+		if(local->second.space == ir::PTXInstruction::Local)
+		{
+			report("   Found local local variable " 
+				<< local->second.name << " of size " 
+				<< local->second.getSize());
+			
 			pad(metadata->localSize, local->second.alignment);
 			offsets.insert(std::make_pair(local->second.name,
 				metadata->localSize));
@@ -543,7 +591,7 @@ static void setupLocalMemoryReferences(ir::PTXKernel& kernel,
 			ir::PTXInstruction& ptx = static_cast<
 				ir::PTXInstruction&>(**instruction);
 			ir::PTXOperand* operands[] = {&ptx.d, &ptx.a, &ptx.b, &ptx.c};
-
+	
 			if(ptx.opcode == ir::PTXInstruction::Mov
 				|| ptx.opcode == ir::PTXInstruction::Ld
 				|| ptx.opcode == ir::PTXInstruction::St)
@@ -565,7 +613,7 @@ static void setupLocalMemoryReferences(ir::PTXKernel& kernel,
 					}
 				}
 			}
-		}       
+		}
 	}
 
     report("   Total local memory size is " << metadata->localSize << ".");
@@ -583,6 +631,40 @@ static void setupPTXMemoryReferences(ir::PTXKernel& kernel,
 	setupConstantMemoryReferences(kernel, metadata, parent);
 	setupTextureMemoryReferences(kernel, metadata, parent);
 	setupLocalMemoryReferences(kernel, metadata, parent);
+}
+
+static void setupCallTargets(ir::PTXKernel& kernel,
+	const LLVMModuleManager::ModuleDatabase& database)
+{
+	// replace all call instruction operands with kernel id
+	report("  Setting up targets of call instructions.");
+	for(ir::ControlFlowGraph::iterator block = kernel.cfg()->begin(); 
+		block != kernel.cfg()->end(); ++block)
+	{
+		for(ir::ControlFlowGraph::InstructionList::iterator 
+			instruction = block->instructions.begin(); 
+			instruction != block->instructions.end(); ++instruction)
+		{
+			ir::PTXInstruction& ptx = static_cast<
+				ir::PTXInstruction&>(**instruction);
+			if(ptx.opcode != ir::PTXInstruction::Call) continue;
+			if(ptx.tailCall) continue;
+			
+			if(ptx.a.addressMode == ir::PTXOperand::FunctionName)
+			{
+				LLVMModuleManager::FunctionId id = database.getFunctionId(
+					kernel.module->path(), ptx.a.identifier);
+				report("   setting target '" << ptx.a.identifier 
+					<< "' of instruction '" << ptx.toString()
+					<< "' to id " << id);
+				ptx.reentryPoint = id;
+			}
+			else
+			{
+				assertM(false, "Indirect calls not implemented yet.");
+			}
+		}
+	}
 }
 
 static void translate(llvm::Module*& module, ir::PTXKernel& kernel,
@@ -802,8 +884,9 @@ static void codegen(LLVMModuleManager::Function& function, llvm::Module& module,
 // KernelAndTranslation
 LLVMModuleManager::KernelAndTranslation::KernelAndTranslation(ir::PTXKernel* k, 
 	translator::Translator::OptimizationLevel l, const ir::PTXKernel* p, 
-	FunctionId o, Device* d) : _kernel(k), _module(0),
-	_optimizationLevel(l), _metadata(0), _parent(p), _offsetId(o), _device(d)
+	FunctionId o, Device* d, const ModuleDatabase* m) : _kernel(k), _module(0),
+	_optimizationLevel(l), _metadata(0), _parent(p), _offsetId(o), _device(d), 
+	_database(m)
 {
 
 }
@@ -836,6 +919,7 @@ LLVMModuleManager::KernelAndTranslation::MetaData*
 	{
 		_metadata = generateMetadata(*_kernel, _optimizationLevel);
 		setupPTXMemoryReferences(*_kernel, _metadata, *_parent);
+		setupCallTargets(*_kernel, *_database);
 		translate(_module, *_kernel, _optimizationLevel);
 
 		// Converting out of ssa makes the assembly easier to read
@@ -893,9 +977,9 @@ LLVMModuleManager::Module::Module(const KernelVector& kernels,
 }
 
 LLVMModuleManager::FunctionId LLVMModuleManager::Module::getFunctionId(
-	const std::string& kernelName)
+	const std::string& kernelName) const
 {
-	FunctionIdMap::iterator id = _ids.find(kernelName);
+	FunctionIdMap::const_iterator id = _ids.find(kernelName);
 	
 	assert(id != _ids.end());
 	
@@ -954,22 +1038,21 @@ LLVMModuleManager::ModuleDatabase::ModuleDatabase()
 	std::stringstream ptx;
 	
 	ptx << 
-		".entry OcelotBarrierKernel()\n"
+		".entry _ZOcelotBarrierKernel()\n"
 		"{\t\n"
-		"\t.reg .u32 %r<3>;\n"
-		"\t.local .u32 %_Zocelot_resume_point;\n"
-		"\t.local .u32 %_Zocelot_barrier_resume_point;\n"
+		"\t.reg .u32 %r<2>;\n"
+		"\t.local .u32 _Zocelot_barrier_next_kernel;\n"
 		"\tentry:\n"
-		"\tmov.u32 %r0, %_Zocelot_barrier_resume_point;\n"
+		"\tmov.u32 %r0, _Zocelot_barrier_next_kernel;\n"
 		"\tld.local.u32 %r1, [%r0];\n"
-		"\tmov.u32 %r0, %_Zocelot_resume_point;\n"
-		"\tst.local.u32 [%r0], %r1;\n"		
+		"BarrierPrototype: .callprototype _ ();\n"
+		"\tcall.tail %r1, BarrierPrototype;\n"
 		"\texit;\n"
 		"}\n";
 	
 	_barrierModule.load(ptx, "_ZOcelotBarrierModule");
 	
-	loadModule(&_barrierModule, translator::Translator::DebugOptimization, 0);
+	loadModule(&_barrierModule, translator::Translator::NoOptimization, 0);
 }
 
 LLVMModuleManager::ModuleDatabase::~ModuleDatabase()
@@ -1025,7 +1108,7 @@ void LLVMModuleManager::ModuleDatabase::loadModule(const ir::Module* module,
 				<< "' at index " << (subkernels.size() + _kernels.size()));
 			subkernels.push_back(KernelAndTranslation(*subkernel,
 				level, kernel->first, std::distance(
-				kernel->second.begin(), subkernel), device));
+				kernel->second.begin(), subkernel), device, this));
 		}
 	}
 
@@ -1091,6 +1174,15 @@ void LLVMModuleManager::ModuleDatabase::unloadModule(
 unsigned int LLVMModuleManager::ModuleDatabase::totalFunctionCount() const
 {
 	return _kernels.size();
+}
+
+LLVMModuleManager::FunctionId LLVMModuleManager::ModuleDatabase::getFunctionId(
+	const std::string& moduleName, const std::string& kernelName) const
+{
+	ModuleMap::const_iterator module = _modules.find(moduleName);
+
+	assert(module != _modules.end());
+	return module->second.getFunctionId(kernelName);
 }
 
 void LLVMModuleManager::ModuleDatabase::execute()

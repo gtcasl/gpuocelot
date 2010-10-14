@@ -1787,6 +1787,9 @@ std::string ir::PTXInstruction::toString() const {
 			if( uni ) {
 				result += ".uni";
 			}
+			else if( tailCall ) {
+				result += ".tail";
+			}
 			result += " ";
 			if( d.addressMode != PTXOperand::Invalid ) {
 				result += d.toString() + ", ";

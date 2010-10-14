@@ -46,6 +46,11 @@ unsigned int LLVMExecutionManager::threads()
 	return _manager.threads();
 }
 
+void LLVMExecutionManager::flushTranslatedKernels()
+{
+	return _manager.flushTranslatedKernels();
+}
+
 LLVMExecutionManager::Manager::~Manager()
 {
 	report("Tearing down LLVM worker threads.");
@@ -151,6 +156,16 @@ unsigned int LLVMExecutionManager::Manager::threads() const
 {
 	return _workers.size();
 }
+
+void LLVMExecutionManager::Manager::flushTranslatedKernels()
+{
+	for(WorkerVector::iterator worker = _workers.begin();
+		worker != _workers.end(); ++worker)
+	{
+		(*worker)->flushTranslatedKernels();
+	}
+}
+
 
 LLVMExecutionManager::Manager LLVMExecutionManager::_manager;
 

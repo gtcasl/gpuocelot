@@ -106,8 +106,9 @@ void LLVMWorkerThread::finishCta()
 	if(message->type == WorkerMessage::Exception)
 	{
 		report("Re-throwing exception");
+		hydrazine::Exception exception(message->errorMessage);
 		delete message;
-		throw hydrazine::Exception(message->errorMessage);
+		throw exception;
 	}
 	
 	delete message;

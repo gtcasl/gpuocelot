@@ -774,8 +774,8 @@ namespace translator
 		_llvmKernel->_statements.push_front( instruction );
 	}
 			
-	void PTXToLLVMTranslator::_yield( unsigned int continuation,
-		unsigned int type )
+	void PTXToLLVMTranslator::_yield( unsigned int type,
+		const ir::LLVMInstruction::Operand& continuation )
 	{
 		ir::LLVMBitcast bitcast;
 		
@@ -790,26 +790,28 @@ namespace translator
 		ir::LLVMStore store;
 	
 		store.d = bitcast.d;
-		store.a = ir::LLVMInstruction::Operand(
-			(ir::LLVMI32) continuation );
+		store.a = ir::LLVMInstruction::Operand( (ir::LLVMI32) type );
 			
 		_add( store );
 		
-		ir::LLVMGetelementptr get;
-			
-		get.a = bitcast.d;
-		get.d = ir::LLVMInstruction::Operand( _tempRegister(), 
-			ir::LLVMInstruction::Type( ir::LLVMInstruction::I32,
-			ir::LLVMInstruction::Type::Pointer ) );
-		get.indices.push_back( 1 );
+		if( type == executive::LLVMExecutableKernel::TailCall 
+			|| type == executive::LLVMExecutableKernel::NormalCall )
+		{
+			ir::LLVMGetelementptr get;
 		
-		_add( get );
+			get.a = bitcast.d;
+			get.d = ir::LLVMInstruction::Operand( _tempRegister(), 
+				ir::LLVMInstruction::Type( ir::LLVMInstruction::I32,
+				ir::LLVMInstruction::Type::Pointer ) );
+			get.indices.push_back( 1 );
 		
-		store.d = get.d;
-		store.a = ir::LLVMInstruction::Operand(
-			(ir::LLVMI32) type );
+			_add( get );
 		
-		_add( store );
+			store.d = get.d;
+			store.a = continuation;
+		
+			_add( store );
+		}
 	}
 
 	ir::LLVMInstruction::Operand PTXToLLVMTranslator::_translate( 
@@ -1087,7 +1089,7 @@ namespace translator
 			case ir::PTXInstruction::Rcp: _translateRcp( i ); break;
 			case ir::PTXInstruction::Red: _translateRed( i ); break;
 			case ir::PTXInstruction::Rem: _translateRem( i ); break;
-			case ir::PTXInstruction::Ret: _translateRet( i ); break;
+			case ir::PTXInstruction::Ret: _translateRet( i, block ); break;
 			case ir::PTXInstruction::Rsqrt: _translateRsqrt( i ); break;
 			case ir::PTXInstruction::Sad: _translateSad( i ); break;
 			case ir::PTXInstruction::SelP: _translateSelP( i ); break;
@@ -2146,18 +2148,41 @@ namespace translator
 	{
 		if( i.tailCall )
 		{
-			_yield( i.reentryPoint, executive::LLVMExecutableKernel::TailCall );
-			if( !block.targets().empty() )
+			if( i.a.addressMode == ir::PTXOperand::FunctionName )
 			{
-				ir::LLVMBr branch;
-				
-				branch.iftrue = "%" + (*block.targets().begin())->label();
-				_add( branch );
+				if( i.reentryPoint == -1 )
+				{
+					_yield( executive::LLVMExecutableKernel::BarrierCall );
+				}
+				else
+				{
+					_yield( executive::LLVMExecutableKernel::TailCall, 
+						ir::LLVMInstruction::Operand( 
+						(ir::LLVMI32) i.reentryPoint ) );
+				}
 			}
+			else
+			{
+				_yield( executive::LLVMExecutableKernel::TailCall,
+					_translate( i.a ) );
+			}
+		}
+		else if( i.a.addressMode == ir::PTXOperand::Register )
+		{
+			assertM( false, "Indirect calls not supported." );
 		}
 		else
 		{
-			assertM(false, "Only tail calls supported for now.");
+			_yield( executive::LLVMExecutableKernel::NormalCall,
+				ir::LLVMInstruction::Operand( (ir::LLVMI32) i.reentryPoint ) );
+		}
+
+		if( !block.targets().empty() )
+		{
+			ir::LLVMBr branch;
+			
+			branch.iftrue = "%" + (*block.targets().begin())->label();
+			_add( branch );
 		}
 	}
 
@@ -2168,17 +2193,30 @@ namespace translator
 		if( i.type == ir::PTXOperand::b32 )
 		{
 			call.name = "@llvm.ctlz.i32";
+			call.d = _destination( i );
 		}
 		else
 		{
 			call.name = "@llvm.ctlz.i64";
+			call.d = ir::LLVMInstruction::Operand( _tempRegister(), 
+				ir::LLVMInstruction::Type( ir::LLVMInstruction::I64, 
+				ir::LLVMInstruction::Type::Element ) );
 		}
 		
-		call.d = _destination( i );
 		call.parameters.resize( 1 );
 		call.parameters[0] = _translate( i.a );
 		
 		_add( call );
+		
+		if( i.type != ir::PTXOperand::b32 )
+		{
+			ir::LLVMTrunc truncate;
+			
+			truncate.d = _destination( i );
+			truncate.a = call.d;
+			
+			_add( truncate );
+		}
 	}
 
 	void PTXToLLVMTranslator::_translateCNot( const ir::PTXInstruction& i )
@@ -2312,7 +2350,7 @@ namespace translator
 
 	void PTXToLLVMTranslator::_translateExit( const ir::PTXInstruction& i )
 	{
-		_yield( -1, executive::LLVMExecutableKernel::InvalidCallType );
+		_yield( executive::LLVMExecutableKernel::ExitCall );
 
 		ir::LLVMBr branch;
 		branch.iftrue = "%exit";
@@ -3846,9 +3884,18 @@ namespace translator
 		}
 	}
 
-	void PTXToLLVMTranslator::_translateRet( const ir::PTXInstruction& i )
+	void PTXToLLVMTranslator::_translateRet( const ir::PTXInstruction& i, 
+		const analysis::DataflowGraph::Block& block )
 	{
-		_yield( i.reentryPoint, executive::LLVMExecutableKernel::ReturnCall );
+		_yield( executive::LLVMExecutableKernel::ReturnCall );
+
+		if( !block.targets().empty() )
+		{
+			ir::LLVMBr branch;
+			
+			branch.iftrue = "%" + (*block.targets().begin())->label();
+			_add( branch );
+		}
 	}
 
 	void PTXToLLVMTranslator::_translateRsqrt( const ir::PTXInstruction& i )
@@ -7355,6 +7402,39 @@ namespace translator
 		ctpop.operand.type.type = ir::LLVMInstruction::I64;
 		ctpop.parameters[0].type.type = ir::LLVMInstruction::I64;
 		_llvmKernel->_statements.push_front( ctpop );
+
+		// @llvm.ctlz
+		ir::LLVMStatement ctlz( ir::LLVMStatement::FunctionDeclaration );
+
+		ctlz.label      = "llvm.ctlz.i8";
+		ctlz.linkage    = ir::LLVMStatement::InvalidLinkage;
+		ctlz.convention = ir::LLVMInstruction::DefaultCallingConvention;
+		ctlz.visibility = ir::LLVMStatement::Default;
+		
+		ctlz.operand.type.category = ir::LLVMInstruction::Type::Element;
+		ctlz.operand.type.type     = ir::LLVMInstruction::I8;
+		
+		ctlz.parameters.resize( 1 );
+
+		ctlz.parameters[0].type.category = ir::LLVMInstruction::Type::Element;
+		ctlz.parameters[0].type.type     = ir::LLVMInstruction::I8;
+
+		_llvmKernel->_statements.push_front( ctlz );
+
+		ctlz.label = "llvm.ctlz.i16";
+		ctlz.operand.type.type = ir::LLVMInstruction::I16;
+		ctlz.parameters[0].type.type = ir::LLVMInstruction::I16;
+		_llvmKernel->_statements.push_front( ctlz );
+
+		ctlz.label = "llvm.ctlz.i32";
+		ctlz.operand.type.type = ir::LLVMInstruction::I32;
+		ctlz.parameters[0].type.type = ir::LLVMInstruction::I32;
+		_llvmKernel->_statements.push_front( ctlz );
+
+		ctlz.label = "llvm.ctlz.i64";
+		ctlz.operand.type.type = ir::LLVMInstruction::I64;
+		ctlz.parameters[0].type.type = ir::LLVMInstruction::I64;
+		_llvmKernel->_statements.push_front( ctlz );
 	}
 	
 	void PTXToLLVMTranslator::_addKernelPrefix()

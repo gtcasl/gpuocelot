@@ -44,7 +44,8 @@ namespace analysis
 			DataflowGraph::RegisterId _tempRegister( );
 			void _addSpillCode( DataflowGraph::iterator block, 
 				DataflowGraph::iterator target, 
-				const DataflowGraph::Block::RegisterSet& alive );
+				const DataflowGraph::Block::RegisterSet& alive,
+				bool isBarrier );
 			void _addRestoreCode( DataflowGraph::iterator block, 
 				const DataflowGraph::Block::RegisterSet& alive );
 			void _addEntryPoint( DataflowGraph::iterator block );

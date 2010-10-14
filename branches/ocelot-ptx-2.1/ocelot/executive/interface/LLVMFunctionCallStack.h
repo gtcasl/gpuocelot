@@ -17,23 +17,28 @@ namespace executive
 class LLVMFunctionCallStack
 {
 public:
-	void call(unsigned int localSize, unsigned int parameterSize);
+	void call(unsigned int localSize, unsigned int parameterSize, 
+		unsigned int functionId);
 	void returned();
+
+	void setKernelArgumentMemory(char* memory);
 
 	char* localMemory();
 	char* parameterMemory();
-	char* previousParameterMemory();
+	char* argumentMemory();
+	unsigned int functionId() const;
 
 private:
 	class ParameterAndLocalSize
 	{
 	public:
 		ParameterAndLocalSize(unsigned int localSize,
-			unsigned int parameterSize);
+			unsigned int parameterSize, unsigned int functionId);
 	
 	public:
 		unsigned int localSize;
 		unsigned int parameterSize;
+		unsigned int functionId;
 	};
 
 	typedef std::vector<char> DataVector;
@@ -42,6 +47,8 @@ private:
 private:
 	DataVector _stack;
 	SizeVector _sizes;
+	char*      _argumentMemory;
+
 };
 
 }

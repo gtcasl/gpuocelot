@@ -346,22 +346,20 @@ void executive::EmulatedKernel::initializeArgumentMemory() {
 	report( "Initializing argument memory for kernel " << name );
 	delete[] ArgumentMemory;
 	ArgumentMemory = 0;
-	_parameterMemorySize = 0;
-	if (!function()) {
-		for(ParameterVector::iterator i_it = arguments.begin();
-			i_it != arguments.end(); ++i_it) {
-			ir::Parameter& argument = *i_it;
-			// align parameter memory
-			unsigned int padding = argument.getAlignment() 
-				- ( _parameterMemorySize % argument.getAlignment() );
-			padding = (argument.getAlignment() == padding) ? 0 : padding;
-			_argumentMemorySize += padding;
-			argument.offset = _argumentMemorySize;
-			report( " Initializing memory for argument " << argument.name 
-				<< " of size " << argument.getSize() << " at offset "
-				<< _argumentMemorySize );
-			_argumentMemorySize += argument.getSize();
-		}
+	_argumentMemorySize = 0;
+	for(ParameterVector::iterator i_it = arguments.begin();
+		i_it != arguments.end(); ++i_it) {
+		ir::Parameter& argument = *i_it;
+		// align parameter memory
+		unsigned int padding = argument.getAlignment() 
+			- ( _parameterMemorySize % argument.getAlignment() );
+		padding = (argument.getAlignment() == padding) ? 0 : padding;
+		_argumentMemorySize += padding;
+		argument.offset = _argumentMemorySize;
+		report( " Initializing memory for argument " << argument.name 
+			<< " of size " << argument.getSize() << " at offset "
+			<< _argumentMemorySize );
+		_argumentMemorySize += argument.getSize();
 	}
 	ArgumentMemory = new char[_argumentMemorySize];
 	report(" Total argument size is " << argumentMemorySize());
@@ -914,7 +912,7 @@ void executive::EmulatedKernel::lazyLink(int callPC,
 	
 	if (instructions[callPC].opcode == ir::PTXInstruction::Call) {
 		instructions[callPC].a.stackMemorySize = 
-		kernel->argumentMemorySize();
+		kernel->parameterMemorySize();
 		instructions[callPC].a.localMemorySize = kernel->localMemorySize();
 		instructions[callPC].a.sharedMemorySize = kernel->sharedMemorySize();
 		instructions[callPC].a.registerCount = kernel->registerCount();
@@ -960,9 +958,9 @@ void executive::EmulatedKernel::initializeStackMemory() {
 	report("Initializing stack memory for kernel " << name);
 	
 	OffsetMap offsets;
-	
-	if (function()) {
-		for (ParameterVector::iterator i_it = arguments.begin();
+
+	if(function()) {
+		for(ParameterVector::iterator i_it = arguments.begin();
 			i_it != arguments.end(); ++i_it) {
 			ir::Parameter& parameter = *i_it;
 			// align parameter memory
@@ -973,8 +971,9 @@ void executive::EmulatedKernel::initializeStackMemory() {
 			parameter.offset = _parameterMemorySize;
 			offsets[parameter.name] = _parameterMemorySize;
 			report( " Initializing memory for stack parameter " 
-				<< parameter.name << " of size " << parameter.getSize() 
-				<< " at offset " << _parameterMemorySize );
+				<< parameter.name 
+				<< " of size " << parameter.getSize() << " at offset " 
+				<< _parameterMemorySize );
 			_parameterMemorySize += parameter.getSize();
 		}
 	}
@@ -1007,8 +1006,8 @@ void executive::EmulatedKernel::initializeStackMemory() {
 				argument != fi->d.array.end(); ++argument) {
 				offset = align(offset, ir::PTXOperand::bytes(argument->type));
 				argument->offset = offsets[argument->identifier];
-				report( "  For return argument " << argument->identifier 
-					<< " stack offset " << offset << " -> argument offset " 
+				report( "  For return argument '" << argument->identifier 
+					<< "' stack offset " << offset << " -> argument offset " 
 					<< argument->offset );
 				offset += ir::PTXOperand::bytes(argument->type);
 			}
@@ -1019,9 +1018,9 @@ void executive::EmulatedKernel::initializeStackMemory() {
 				argument != fi->b.array.end(); ++argument) {
 				offset = align(offset, ir::PTXOperand::bytes(argument->type));
 				argument->offset = offsets[argument->identifier];
-				report( "  For call argument " << argument->identifier 
-					<< " stack offset " << offset << " -> argument offset " 
-					<< argument->offset );
+				report( "  For call argument '" << argument->identifier 
+					<< "' argument offset " << argument->offset 
+					<< " -> stack offset " << offset );
 				offset += ir::PTXOperand::bytes(argument->type);
 			}
 			

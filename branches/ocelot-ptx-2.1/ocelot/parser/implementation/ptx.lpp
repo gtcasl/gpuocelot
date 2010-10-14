@@ -343,6 +343,8 @@ WHITESPACE [ \t]*
 ".approx"                       { yylval->value = TOKEN_APPROX; \
                                     return TOKEN_APPROX; }
 
+".tail"                         { yylval->value = TOKEN_TAIL; \
+                                    return TOKEN_TAIL; }
 ".uni"                          { yylval->value = TOKEN_UNI; return TOKEN_UNI; }
 ".byte"                         { yylval->value = TOKEN_BYTE; \
                                     return TOKEN_BYTE; }

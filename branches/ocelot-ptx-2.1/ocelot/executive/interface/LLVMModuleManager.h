@@ -67,6 +67,8 @@ public:
 	static hydrazine::Thread::Id id();
 	
 public:
+	class ModuleDatabase;
+
 	class KernelAndTranslation
 	{
 	public:
@@ -95,7 +97,7 @@ public:
 			translator::Translator::OptimizationLevel level = 
 			translator::Translator::NoOptimization,
 			const ir::PTXKernel* parent = 0, FunctionId offset = 0,
-			Device* device = 0);
+			Device* device = 0, const ModuleDatabase* database = 0);
 
 	public:
 		void               unload();
@@ -110,6 +112,7 @@ public:
 		const ir::PTXKernel*                      _parent;
 		FunctionId                                _offsetId;
 		Device*                                   _device;
+		const ModuleDatabase*                     _database;
 	};
 
 	typedef KernelAndTranslation::MetaData MetaData;
@@ -139,7 +142,7 @@ public:
 		std::string errorMessage;
 	};
 	
-private:
+public:
 	typedef std::unordered_map<std::string, FunctionId> FunctionIdMap;
 	typedef std::vector<KernelAndTranslation> KernelVector;
 	
@@ -149,7 +152,7 @@ private:
 		Module(const KernelVector& kernels, FunctionId nextId);
 	
 	public:
-		FunctionId getFunctionId(const std::string& kernelName);
+		FunctionId getFunctionId(const std::string& kernelName) const;
 		
 		FunctionId lowId() const;
 		FunctionId highId() const;
@@ -186,6 +189,11 @@ private:
 		
 		/*! \brief Gets the total number of functions in all modules */
 		unsigned int totalFunctionCount() const;
+	
+	public:
+		/*! \brief Get the id of a kernel by module and kernel name */
+		FunctionId getFunctionId(const std::string& moduleName,
+			const std::string& kernelName) const;
 
 	private:
 		/*! \brief The entry point to the thread */
@@ -197,6 +205,7 @@ private:
 		ir::Module    _barrierModule;
 	};
 	
+private:
 	static ModuleDatabase _database;
 };
 

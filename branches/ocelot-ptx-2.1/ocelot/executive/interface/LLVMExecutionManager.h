@@ -29,6 +29,9 @@ public:
 
 	/*! \brief Gets the current number of threads */
 	static unsigned int threads();
+		
+	/*! \brief Flush references to translated kernels */
+	static void flushTranslatedKernels();
 
 private:
 	/*! \brief A vector of created threads */

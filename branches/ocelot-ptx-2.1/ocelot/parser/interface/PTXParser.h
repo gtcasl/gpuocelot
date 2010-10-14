@@ -216,6 +216,7 @@ namespace parser
 					void guard();
 					void statementEnd( YYLTYPE& location );
 					
+					void tail( bool condition );
 					void uni( bool condition );
 					void carry( bool condition );
 					void modifier( int token );

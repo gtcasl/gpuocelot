@@ -57,7 +57,6 @@ void LLVMCooperativeThreadArray::setup(const LLVMExecutableKernel& kernel)
 	{
 		report("  Loading entry point into cache.");
 		_functions[_nextFunction] = _worker->getFunctionMetaData(_nextFunction);
-		_functionBase = _nextFunction;
 	}
 
 	const unsigned int threads = kernel.blockDim().x *
@@ -197,6 +196,7 @@ void LLVMCooperativeThreadArray::executeCta(unsigned int id)
 
 void LLVMCooperativeThreadArray::flushTranslatedKernels()
 {
+	report("Flushing translated kernels.");
 	_functions.clear();
 }
 
@@ -237,7 +237,8 @@ unsigned int LLVMCooperativeThreadArray::_initializeNewContext(
 		LLVMFunctionCallStack& stack          = _stacks[contextId];
 		LLVMModuleManager::MetaData& metadata = *_functions[_nextFunction];
 		
-		stack.call(metadata.localSize, metadata.parameterSize);
+		stack.setKernelArgumentMemory(_kernel->argumentMemory());
+		stack.call(metadata.localSize, metadata.parameterSize, _nextFunction);
 
 		context.nctaid.x  = _kernel->gridDim().x;
 		context.nctaid.y  = _kernel->gridDim().y;
@@ -252,7 +253,7 @@ unsigned int LLVMCooperativeThreadArray::_initializeNewContext(
 		context.tid.y     = (threadId / context.ntid.x) % context.ntid.y;
 		context.tid.z     = threadId / (context.ntid.x * context.ntid.y);
 		context.shared    = reinterpret_cast<char*>(_sharedMemory.data());
-		context.argument  = _kernel->argumentMemory();
+		context.argument  = stack.argumentMemory();
 		context.local     = stack.localMemory();
 		context.parameter = stack.parameterMemory();
 		context.constant  = _kernel->constantMemory();
@@ -317,6 +318,7 @@ void LLVMCooperativeThreadArray::_reclaimContext(unsigned int contextId)
 	if(_finishContext(contextId))
 	{
 		_reclaimedContexts.push_back(contextId);
+		report("    thread hit exit point, reclaiming context.");
 	}
 }
 
@@ -325,6 +327,9 @@ void LLVMCooperativeThreadArray::_destroyContext(unsigned int contextId)
 	if(_finishContext(contextId))
 	{
 		_freeContexts.push_back(contextId);
+		report("    thread hit exit point, destroying context.");
+		LLVMFunctionCallStack& stack = _stacks[contextId];
+		stack.returned();
 	}
 }
 
@@ -335,63 +340,95 @@ bool LLVMCooperativeThreadArray::_finishContext(unsigned int contextId)
 
 	unsigned int* localMemory = reinterpret_cast<unsigned int*>(context.local);
 	
-	unsigned int nextFunction = localMemory[0];
-	
 	report("   thread context " << contextId  << " finished.");
 	
-	if(nextFunction == (unsigned int)-1)
+	unsigned int callType     = localMemory[0];
+	unsigned int nextFunction = -1;
+
+	switch(callType)
 	{
-		report("    hit program exit point, destroying context.");
+	case LLVMExecutableKernel::ExitCall:
+	{
 		return true;
 	}
-	
-	nextFunction += _functionBase;
-	
+	break;
+	case LLVMExecutableKernel::BarrierCall:
+	{
+		assertM(0 < _queuedThreads.size(), "Next function " 
+			<< 0 << " is out of range of function table with "
+			<< _queuedThreads.size() << " entries.");
+		_queuedThreads[0].push_back(contextId);
+
+		report("     hit barrier, removing from scheduling pool.");
+		return false;
+	}
+	break;
+	case LLVMExecutableKernel::TailCall:
+	{
+		nextFunction = localMemory[1];
+		
+		// nothing happens here, we reuse the existing stack
+		report("     hit tail call, saving thread context at resume point "
+			<< nextFunction << ".");
+
+		// adjust the next function by the function base
+		nextFunction += stack.functionId();
+	}
+	break;
+	case LLVMExecutableKernel::NormalCall:
+	{
+		nextFunction = localMemory[1];
+
+		report("     hit function call, saving thread context at resume point "
+			<< nextFunction << ", pushing stack.");
+
+		if(_functions[nextFunction] == 0)
+		{
+			_functions[nextFunction] =
+				_worker->getFunctionMetaData(nextFunction);
+		}
+
+		LLVMModuleManager::MetaData& metadata = *_functions[nextFunction];
+
+		stack.call(metadata.localSize, metadata.parameterSize, nextFunction);
+		context.local     = stack.localMemory();
+		context.parameter = stack.parameterMemory();
+		context.argument  = stack.argumentMemory();
+	}
+	break;
+	case LLVMExecutableKernel::ReturnCall:
+	{
+		stack.returned();
+		nextFunction      = stack.functionId();
+		context.local     = stack.localMemory();
+		context.parameter = stack.parameterMemory();
+		context.argument  = stack.argumentMemory();
+
+		report("     hit return, saving thread context at resume point "
+			<< nextFunction << ", popping stack.");
+	}
+	break;
+	}
+
 	_guessFunction = nextFunction;
 
 	assertM(nextFunction < _queuedThreads.size(), "Next function " 
 		<< nextFunction << " is out of range of function table with "
 		<< _queuedThreads.size() << " entries.");
 	_queuedThreads[nextFunction].push_back(contextId);
-
-	if(nextFunction == 0)
-	{
-		return false;
-	}
-
-	unsigned int callType = localMemory[1];
-	switch(callType)
-	{
-	case LLVMExecutableKernel::TailCall:
-	{
-		// nothing happens here, we reuse the existing stack
-		report("     hit tail call, saving thread context at resume point "
-			<< nextFunction << ".");
-	}
-	break;
-	case LLVMExecutableKernel::NormalCall:
-	{
-		stack.call(localMemory[2], localMemory[3]);
-		context.local = stack.localMemory();
-		report("     hit function call, saving thread context at resume point "
-			<< nextFunction << ", pushing stack.");
-	}
-	break;
-	case LLVMExecutableKernel::ReturnCall:
-	{
-		stack.returned();
-		context.local = stack.localMemory();
-		report("     hit return, saving thread context at resume point "
-			<< nextFunction << ", popping stack.");
-	}
-	break;
-	}
 	
 	return false;
 }
 
 void LLVMCooperativeThreadArray::_destroyContexts()
 {
+	for(ThreadList::const_iterator context = _reclaimedContexts.begin();
+		context != _reclaimedContexts.end(); ++context)
+	{
+		LLVMFunctionCallStack& stack = _stacks[*context];
+		stack.returned();
+	}
+	
 	_freeContexts.insert(_freeContexts.end(), _reclaimedContexts.begin(), 
 		_reclaimedContexts.end());
 

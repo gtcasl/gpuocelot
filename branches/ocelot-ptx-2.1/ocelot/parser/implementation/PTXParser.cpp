@@ -1410,6 +1410,11 @@ namespace parser
 		operand.condition = ir::PTXOperand::PT;
 		operandVector.push_back( operand );
 	}
+
+	void PTXParser::State::tail( bool condition )
+	{
+		statement.instruction.tailCall = condition;
+	}
 	
 	void PTXParser::State::uni( bool condition )
 	{
@@ -1606,9 +1611,6 @@ namespace parser
 		
 		statement.instruction.a = operand->second.operand;
 	
-		// no parsed call instructions are tail calls
-		statement.instruction.tailCall = false;
-		
 		statement.instruction.d.addressMode = ir::PTXOperand::ArgumentList;
 		statement.instruction.b.addressMode = ir::PTXOperand::ArgumentList;
 

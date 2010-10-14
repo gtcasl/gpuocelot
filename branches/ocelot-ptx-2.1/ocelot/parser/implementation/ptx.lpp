@@ -139,6 +139,8 @@ WHITESPACE [ \t]*
                                     return OPCODE_EXIT; }
 "fma"                           { strlcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_FMA; }
+"isspacep"                      { strlcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_ISSPACEP; }
 "ld"                            { strlcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_LD; }
 "lg2"                           { strlcpy( yylval->text, yytext, 1024 ); \
@@ -415,6 +417,8 @@ WHITESPACE [ \t]*
 
 ".trap"                         { yylval->value = TOKEN_TRAP; \
                                     return TOKEN_TRAP; }
+".to"														{ yylval->value = TOKEN_TO; \
+																		return TOKEN_TO; }
 ".clamp"                        { yylval->value = TOKEN_CLAMP; \
                                     return TOKEN_CLAMP; }
 ".zero"                         { yylval->value = TOKEN_ZERO; \

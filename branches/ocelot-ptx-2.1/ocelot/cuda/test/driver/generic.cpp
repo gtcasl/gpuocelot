@@ -36,7 +36,6 @@ int main() {
 	if (result != CUDA_SUCCESS) {
 		report("cuDriverGetVersion() failed: " << result);
 	}
-	report("cuda driver version: " << driverVersion);
 	
 	int count = 0;
 	result = cuDeviceGetCount(&count);
@@ -44,7 +43,6 @@ int main() {
 		report("cuDeviceGetCount() failed: " << result);
 		return 1;
 	}
-	report("  " << count << " devices");
 	
 	CUdevice device;
 	result = cuDeviceGet(&device, 0);
@@ -59,7 +57,6 @@ int main() {
 		report("cuDeviceGetName() failed: " << result);
 		return 1;
 	}
-	report("using device '" << devName << "'");
 	
 	int major, minor;
 	result = cuDeviceComputeCapability(&major, &minor, device);
@@ -67,7 +64,6 @@ int main() {
 		report("cuDeviceComputeCapability() failed: " << result);
 		return 1;
 	}
-	report("  compute capability " << major << "." << minor);
 	
 	CUcontext ctx;
 	CUmodule module;
@@ -144,12 +140,18 @@ int main() {
 	
 	cuModuleUnload(module);
 	cuCtxDestroy(ctx);
-	
+
+	int errors = 0;
 	for (int i = 0; i < 9; i++) {
-		std::cout << "%p" << i << " - " << A_cpu[i] << "\n";
+		if (i < 3 && !A_cpu[i] || i >= 3 && A_cpu[i]) {
+			++errors;	
+			std::cout << "%p" << i << " - " << A_cpu[i] << "\n";
+		}
 	}
 	
 	delete [] A_cpu;
+	
+	std::cout << "Test: " << (!errors ? "Pass" : "FAIL") << std::endl;
 	
 	return 0;
 }

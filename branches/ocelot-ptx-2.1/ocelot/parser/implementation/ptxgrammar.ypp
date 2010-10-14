@@ -55,7 +55,7 @@
 %token<text> OPCODE_DIV OPCODE_ABS OPCODE_NEG OPCODE_MIN OPCODE_MAX
 %token<text> OPCODE_MAD OPCODE_SET OPCODE_SETP OPCODE_SELP OPCODE_SLCT
 %token<text> OPCODE_MOV OPCODE_ST OPCODE_CVT OPCODE_AND OPCODE_XOR OPCODE_OR
-%token<text> OPCODE_CVTA OPCODE_ISSPACE
+%token<text> OPCODE_CVTA OPCODE_ISSPACEP
 %token<text> OPCODE_BRA OPCODE_CALL OPCODE_RET OPCODE_EXIT OPCODE_TRAP 
 %token<text> OPCODE_BRKPT OPCODE_SUBC OPCODE_TEX OPCODE_LD OPCODE_BARSYNC 
 %token<text> OPCODE_ATOM OPCODE_RED OPCODE_NOT OPCODE_CNOT OPCODE_VOTE
@@ -93,6 +93,8 @@
 %token<value> TOKEN_TAIL TOKEN_UNI TOKEN_ALIGN TOKEN_BYTE TOKEN_WIDE TOKEN_CARRY
 %token<value> TOKEN_RNI TOKEN_RMI TOKEN_RZI TOKEN_RPI
 %token<value> TOKEN_FTZ TOKEN_APPROX TOKEN_FULL TOKEN_SHIFT_AMOUNT
+
+%token<value> TOKEN_TO
 
 %token<value> TOKEN_CALL_PROTOTYPE TOKEN_CALL_TARGETS
 
@@ -564,7 +566,9 @@ opcode : OPCODE_COS | OPCODE_SQRT | OPCODE_ADD | OPCODE_RSQRT | OPCODE_ADDC
 	| OPCODE_RCP | OPCODE_SIN | OPCODE_REM | OPCODE_MUL24 | OPCODE_MAD24
 	| OPCODE_DIV | OPCODE_ABS | OPCODE_NEG | OPCODE_MIN | OPCODE_MAX
 	| OPCODE_MAD | OPCODE_SET | OPCODE_SETP | OPCODE_SELP | OPCODE_SLCT
-	| OPCODE_MOV | OPCODE_ST | OPCODE_CVT | OPCODE_AND | OPCODE_XOR | OPCODE_OR
+	| OPCODE_MOV | OPCODE_ST 
+	| OPCODE_CVT | OPCODE_CVTA | OPCODE_ISSPACEP 
+	| OPCODE_AND | OPCODE_XOR | OPCODE_OR
 	| OPCODE_BRA | OPCODE_CALL | OPCODE_RET | OPCODE_EXIT | OPCODE_TRAP 
 	| OPCODE_BRKPT | OPCODE_SUBC | OPCODE_TEX | OPCODE_LD | OPCODE_BARSYNC 
 	| OPCODE_ATOM | OPCODE_RED | OPCODE_NOT | OPCODE_CNOT | OPCODE_VOTE
@@ -724,7 +728,7 @@ intRounding : TOKEN_RNI | TOKEN_RMI | TOKEN_RPI | TOKEN_RZI;
 
 instruction : ftzInstruction2 | ftzInstruction3 | approxInstruction2 
 	| basicInstruction3 | bfi | bfind | brev | branch | addOrSub | addCOrSubC 
-	| atom | bar | brkpt | clz | cvt | cvta | div | exit | ld | mad | mad24 | membar 
+	| atom | bar | brkpt | clz | cvt | cvta | isspacep | div | exit | ld | mad | mad24 | membar 
 	| mov | mul24 | mul | notInstruction | pmevent | popc | prmt 
 	| rcpSqrtInstruction | red | ret | sad | selp | set | setp | slct | st 
 	| testp | tex | trap | vote;
@@ -961,8 +965,6 @@ clz : OPCODE_CLZ dataType operand ',' operand ';'
 
 cvtModifier1 : floatRounding | intRounding;
 
-cvtModifier : optionalSaturate;
-
 cvtModifier : cvtModifier1 optionalFtz optionalSaturate
 {
 	state.modifier( $<value>1 );
@@ -984,6 +986,16 @@ cvta : OPCODE_CVTA addressSpace pointerDataType operand ',' operand ';'
 	state.instruction( $<text>1, $<value>3, 3 );
 };
 
+cvta : OPCODE_CVTA TOKEN_TO addressSpace pointerDataType operand ',' operand ';'
+{
+	state.instruction( $<text>1, $<value>3, 3 );
+	state.cvtaTo( $<value>4, @1 );
+};
+
+isspacep : OPCODE_ISSPACEP addressSpace operand ',' operand ';'
+{
+	state.instruction( $<text>1, TOKEN_U32, 3 );
+}
 
 /*
 	multiple orderings of modifiers for OptiX support

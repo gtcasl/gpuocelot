@@ -244,6 +244,7 @@ namespace parser
 						YYLTYPE& location );
 					void carryIn();
 					void relaxedConvert( int token, YYLTYPE& location );
+					void cvtaTo(int token, YYLTYPE& location);
 					void convert( int token, YYLTYPE& location );
 					void convertC( int token, YYLTYPE& location );
 					void convertD( int token, YYLTYPE& location );

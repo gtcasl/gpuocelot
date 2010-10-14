@@ -45,7 +45,7 @@
 #define CUDA_VERBOSE 1
 
 // whether debugging messages are printed
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -159,8 +159,9 @@ boost::thread::id cuda::CudaDriverFrontend::_getThreadId() {
 //! \brief locks and gets the thread's active context
 cuda::CudaDriverFrontend::Context * cuda::CudaDriverFrontend::_bind() {
 
+#if REPORT_BASE
 	std::cout << "  _bind()" << std::endl;
-
+#endif
 	_lock();
 	return _getContext();
 }
@@ -169,7 +170,9 @@ cuda::CudaDriverFrontend::Context * cuda::CudaDriverFrontend::_bind() {
 void cuda::CudaDriverFrontend::_unbind() {
 	_unlock();
 	
+#if REPORT_BASE
 	std::cout << "  _unbind()" << std::endl;
+#endif
 }
 
 

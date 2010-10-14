@@ -3538,7 +3538,8 @@ void executive::CooperativeThreadArray::eval_Cvta(CTAContext &context,
 		
 	trace();
 		
-	if (instr.toGeneric) {
+	if (!instr.toAddrSpace) {
+		// convert to generic address space
 		// source operand has explicitly address space
 		
 		switch (instr.type) {
@@ -3576,12 +3577,6 @@ void executive::CooperativeThreadArray::eval_Cvta(CTAContext &context,
 				hydrazine::bit_cast(localMemPtr, functionCallStack.localMemoryPointer(tid));
 				ir::PTXU32 srcAddr = operandAsU32(tid, instr.a) + addrSpaceBase + 
 					(instr.addressSpace == ir::PTXInstruction::Local ? localMemPtr : 0);
-				if (srcAddr > addrSpaceBase + addrSpaceSize) {
-					throw RuntimeException(
-						"cvta instruction - resulting generic address does not fall in bounded region for address space",
-						context.PC, instr);
-					return;
-				}
 				setRegAsU32(tid, instr.d.reg, srcAddr);
 			}
 		}
@@ -3619,12 +3614,6 @@ void executive::CooperativeThreadArray::eval_Cvta(CTAContext &context,
 				ir::PTXU64 srcAddr = operandAsU64(tid, instr.a) + addrSpaceBase + 
 					(instr.addressSpace == ir::PTXInstruction::Local ?
 						(PTXU64)functionCallStack.localMemoryPointer(tid) : 0);
-				if (srcAddr > addrSpaceBase + addrSpaceSize) {
-					throw RuntimeException(
-						"cvta instruction - resulting generic address does not fall in bounded region for address space",
-						context.PC, instr);
-					return;
-				}
 				setRegAsU64(tid, instr.d.reg, srcAddr);
 			}
 		}
@@ -3636,6 +3625,7 @@ void executive::CooperativeThreadArray::eval_Cvta(CTAContext &context,
 		};
 	}
 	else {
+		// convert FROM generic address
 		// dest operand has explicitly address space
 		switch (instr.type) {
 		case ir::PTXOperand::u32:
@@ -3672,13 +3662,13 @@ void executive::CooperativeThreadArray::eval_Cvta(CTAContext &context,
 					(instr.addressSpace == ir::PTXInstruction::Local ?
 						(PTXU64)functionCallStack.localMemoryPointer(tid) : 0);
 				
-				if (srcAddr < localAddrSpaceBase) {
+				if (srcAddr < localAddrSpaceBase && instr.addressSpace != ir::PTXInstruction::Global) {
 					throw RuntimeException("cvta instruction - source address is not part of addressed region",
 						context.PC, instr);
 					return;
 				}
 				srcAddr -= localAddrSpaceBase;
-				if (srcAddr >= addrSpaceSize) {
+				if (srcAddr >= addrSpaceSize && instr.addressSpace != ir::PTXInstruction::Global) {
 					throw RuntimeException("cvta instruction - source address is not part of addressed region",
 						context.PC, instr);
 				}
@@ -3720,13 +3710,13 @@ void executive::CooperativeThreadArray::eval_Cvta(CTAContext &context,
 				ir::PTXU32 localAddrSpaceBase = addrSpaceBase + 
 					(instr.addressSpace == ir::PTXInstruction::Local ?
 						(PTXU64)functionCallStack.localMemoryPointer(tid) : 0);
-				if (srcAddr < localAddrSpaceBase) {
+				if (srcAddr < localAddrSpaceBase && instr.addressSpace != ir::PTXInstruction::Global) {
 					throw RuntimeException("cvta instruction - source address is not part of addressed region",
 						context.PC, instr);
 					return;
 				}
 				srcAddr -= localAddrSpaceBase;
-				if (srcAddr >= addrSpaceSize) {
+				if (srcAddr >= addrSpaceSize && instr.addressSpace != ir::PTXInstruction::Global) {
 					throw RuntimeException("cvta instruction - source address is not part of addressed region",
 						context.PC, instr);
 				}

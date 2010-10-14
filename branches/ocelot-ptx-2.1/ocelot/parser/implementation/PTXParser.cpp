@@ -1685,6 +1685,10 @@ namespace parser
 	
 		statement.instruction.a.type = tokenToDataType( token );
 	}
+	
+	void PTXParser::State::cvtaTo(int token, YYLTYPE& location) {
+		statement.instruction.toAddrSpace = true;
+	}
 
 	void PTXParser::State::convert( int token, YYLTYPE& location )
 	{
@@ -2033,7 +2037,8 @@ namespace parser
 		if( string == "div" ) return ir::PTXInstruction::Div;
 		if( string == "ex2" ) return ir::PTXInstruction::Ex2;
 		if( string == "exit" ) return ir::PTXInstruction::Exit;
-		if( string == "fma" ) return ir::PTXInstruction::Mad;
+		if( string == "fma" ) return ir::PTXInstruction::Fma;
+		if( string == "isspacep" ) return ir::PTXInstruction::Isspacep;
 		if( string == "ld" ) return ir::PTXInstruction::Ld;
 		if( string == "lg2" ) return ir::PTXInstruction::Lg2;
 		if( string == "mad24" ) return ir::PTXInstruction::Mad24;

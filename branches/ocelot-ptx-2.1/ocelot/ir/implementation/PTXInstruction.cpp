@@ -317,6 +317,7 @@ ir::PTXInstruction::PTXInstruction( Opcode op, const PTXOperand& _d,
 	carry = None;
 	statementIndex = 0;
 	divideFull = false;
+	toAddrSpace = false;
 }
 
 ir::PTXInstruction::~PTXInstruction() {
@@ -738,6 +739,16 @@ std::string ir::PTXInstruction::valid() const {
 			break;
 		}
 		case Exit: {
+			break;
+		}
+		case Isspacep: {
+			if (!(addressSpace == PTXInstruction::Global || addressSpace == PTXInstruction::Shared
+				|| addressSpace == PTXInstruction::Local)) {
+				return "invalid address space " + toString(addressSpace);
+			}
+			if (!(d.addressMode == PTXOperand::Register && a.addressMode == PTXOperand::Register)) {
+				return "invalid address mode for operands";
+			}
 			break;
 		}
 		case Ld: {
@@ -1847,7 +1858,7 @@ std::string ir::PTXInstruction::toString() const {
 		}
 		case Cvta: {
 			std::string result = guard() + "cvta." + toString(addressSpace) + "." + 
-				PTXOperand::toString(type) + d.toString() + ", " + a.toString();
+				PTXOperand::toString(type) + " " + d.toString() + ", " + a.toString();
 			return result;
 		}
 		case Div: {
@@ -1869,6 +1880,11 @@ std::string ir::PTXInstruction::toString() const {
 		}
 		case Exit: {
 			return "exit";
+		}
+		case Isspacep: {
+			std::string result = guard() + "isspace." + toString(addressSpace) 
+				+ " " + d.toString() + ", " + a.toString();
+			return result;
 		}
 		case Ld: {
 			std::string result = guard() + "ld.";

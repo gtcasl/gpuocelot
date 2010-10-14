@@ -362,8 +362,8 @@ namespace ir {
 			bool divideFull;
 			
 			/*! If cvta instruction, indicates whether destination is generic address or
-				if source is generic address */
-			bool toGeneric;
+				if source is generic address - true if segmented address space, false if generic */
+			bool toAddrSpace;
 			
 			/*! If the instruction updates the CC, what is the CC register */
 			PTXOperand::RegisterType cc;

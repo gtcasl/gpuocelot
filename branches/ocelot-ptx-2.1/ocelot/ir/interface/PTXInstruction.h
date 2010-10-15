@@ -177,12 +177,22 @@ namespace ir {
 			ReductionMax,
 			ReductionOperation_Invalid
 		};
-
-		enum VoteMode {
-			All,
-			Any,
-			Uni,
-			VoteMode_Invalid
+		
+		enum CacheOperation {
+			Ca,
+			Cg,
+			Cs,
+			Cv,
+			Wb,
+			Wt,
+			CacheOperation_Invalid
+		};
+		
+		enum ClampOperation {
+			TrapOOB,	// avoid colliding with PTXInstruction::Opcode::Trap
+			Clamp,
+			Zero,
+			ClampOperation_Invalid
 		};
 
 		/*! comparison operator */
@@ -228,6 +238,12 @@ namespace ir {
 			FloatingPointMode_Invalid
 		};
 		
+		enum FormatMode {
+			Unformatted,
+			Formatted,
+			FormatNode_Invalid
+		};
+		
 		/*! Vector operation */
 		typedef PTXOperand::Vec Vec;
 		
@@ -248,6 +264,27 @@ namespace ir {
 			Geometry_Invalid
 		};
 
+		enum SurfaceQuery {
+			Width,
+			Height,
+			Depth,
+			ChannelDataType,
+			ChannelOrder,
+			NormalizedCoordinates,
+			SamplerFilterMode,
+			SamplerAddrMode0,
+			SamplerAddrMode1,
+			SamplerAddrMode2,
+			SurfaceQuery_Invalid
+		};
+
+		enum VoteMode {
+			All,
+			Any,
+			Uni,
+			VoteMode_Invalid
+		};
+		
 	public:
 		static std::string toString( Level );
 		static std::string toString( PermuteMode );
@@ -322,6 +359,13 @@ namespace ir {
 			
 			/*! For call instructions, indicates a tail call */
 			bool tailCall;
+			
+			/*! For txq and suq instruction, specifies texture or sampler attributes */
+			SurfaceQuery surfaceQuery;
+			
+			/*! For sust and suld instructions, indicates whether to store unformatted
+				binary datay or formatted store of a vector of 32-bit data */
+			FormatMode formatMode;
 		};
 	
 		/*! If the instruction is predicated, the guard */
@@ -354,10 +398,7 @@ namespace ir {
 
 			/*! Indicates whether the target address space is volatile */
 			Volatility volatility;
-			
-			/*! Geometry if this is a texture instruction */
-			Geometry geometry;
-			
+						
 			/*! Is this a divide full instruction? */
 			bool divideFull;
 			
@@ -367,7 +408,16 @@ namespace ir {
 			
 			/*! If the instruction updates the CC, what is the CC register */
 			PTXOperand::RegisterType cc;
+			
+			/*! indicates how loads, stores, and prefetches should take place  */
+			CacheOperation cacheOperation;
 		};
+		
+		/*! Geometry if this is a texture or surface instruction */
+		Geometry geometry;
+		
+		/*! how to handle out-of-bounds accesses */
+		ClampOperation clamp;
 
 		/*! Destination operand */
 		PTXOperand d;
@@ -381,12 +431,14 @@ namespace ir {
 		/*! Source operand c */
 		PTXOperand c;
 
+	public:
+	
 		/*  Runtime annotations 
 			
 			The following members are used to annotate the instruction 
 				at analysis time
 		*/
-	public:
+		
 		/*! \brief Index of post dominator instruction at which possibly 
 			divergent branches reconverge */
 		int reconvergeInstruction;

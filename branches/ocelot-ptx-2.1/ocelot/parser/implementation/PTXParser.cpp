@@ -2014,7 +2014,7 @@ namespace parser
 	}
 
 	ir::PTXInstruction::Opcode PTXParser::stringToOpcode( std::string string )
-	{
+	{ // | OPCODE_SULD | OPCODE_TXQ | OPCODE_SUST | OPCODE_SURED | OPCODE_SUQ
 		if( string == "abs" ) return ir::PTXInstruction::Abs; 
 		if( string == "add" ) return ir::PTXInstruction::Add;
 		if( string == "addc" ) return ir::PTXInstruction::AddC;
@@ -2071,6 +2071,11 @@ namespace parser
 		if( string == "st" ) return ir::PTXInstruction::St;
 		if( string == "sub" ) return ir::PTXInstruction::Sub;
 		if( string == "subc" ) return ir::PTXInstruction::SubC;
+		if( string == "suld") return ir::PTXInstruction::Suld;
+		if( string == "sust") return ir::PTXInstruction::Sust;
+		if( string == "sured") return ir::PTXInstruction::Sured;
+		if( string == "suq") return ir::PTXInstruction::Suq;
+		if( string == "txq") return ir::PTXInstruction::Txq;
 		if( string == "testp" ) return ir::PTXInstruction::TestP;
 		if( string == "tex" ) return ir::PTXInstruction::Tex;
 		if( string == "trap" ) return ir::PTXInstruction::Trap;

@@ -209,12 +209,22 @@ WHITESPACE [ \t]*
                                     return OPCODE_SUB; }
 "subc"                          { strlcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_SUBC; }
+"suld"                          { strlcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_SULD; }
+"sust"                          { strlcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_SUST; }
+"sured"                          { strlcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_SURED; }
+"suq"                          { strlcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_SUQ; }
 "testp"                         { strlcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_TESTP; }
 "tex"                           { strlcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_TEX; }
 "trap"                          { strlcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_TRAP; }
+"txq"                          { strlcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_TXQ; }
 "vote"                          { strlcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_VOTE; }
 "xor"                           { strlcpy( yylval->text, yytext, 1024 ); \

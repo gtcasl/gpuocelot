@@ -8676,6 +8676,12 @@ void executive::CooperativeThreadArray::eval_Trap(CTAContext &context, const PTX
 	context.running = false;
 }
 
+
+void executive::CooperativeThreadArray::eval_Txq(CTAContext &context, const ir::PTXInstruction &instr) {
+	trace();
+	
+}
+
 /*!
 
 */		

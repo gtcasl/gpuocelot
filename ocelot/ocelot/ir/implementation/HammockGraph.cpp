@@ -35,7 +35,7 @@ ir::HammockGraph::HammockGraph(ir::ControlFlowGraph * _cfg): type(Subgraph), cfg
 	for (BasicBlockTree::iterator dom_it = domTree.dominated.begin();
 		dom_it != domTree.dominated.end(); ++dom_it, n++ ) {
 		for (std::vector< int >::iterator dom_it_it = dom_it->begin(); dom_it_it != dom_it->end(); ++dom_it_it) {
-			idom.insert(std::make_pair<int,int>(n, *dom_it_it));
+			idom.insert(std::make_pair(n, *dom_it_it));
 		}
 	}
 	
@@ -44,7 +44,7 @@ ir::HammockGraph::HammockGraph(ir::ControlFlowGraph * _cfg): type(Subgraph), cfg
 	for (BasicBlockTree::iterator pdom_it = pdomTree.dominated.begin();
 		pdom_it != pdomTree.dominated.end(); ++pdom_it, p++ ) {
 		for (std::vector< int >::iterator pdom_it_it = pdom_it->begin(); pdom_it_it != pdom_it->end(); ++pdom_it_it) {
-			ipdom.insert(std::make_pair<int,int>((int)pdomTree.dominated.size() - 1 - p, (int)pdomTree.dominated.size() - 1 - *pdom_it_it));
+			ipdom.insert(std::make_pair((int)pdomTree.dominated.size() - 1 - p, (int)pdomTree.dominated.size() - 1 - *pdom_it_it));
 		}
 	}
 	
@@ -63,7 +63,7 @@ ir::HammockGraph::HammockGraph(ir::ControlFlowGraph * _cfg): type(Subgraph), cfg
 				
 				// TODO - ignore 2-node hammocks (i.e. u has exactly one out-edge [to v])
 				if (domTree.blocks[u]->successors.size() > 1) {			
-					hammocks.insert(std::make_pair<int,int>(u,v));
+					hammocks.insert(std::make_pair(u,v));
 				}
 			}
 		}

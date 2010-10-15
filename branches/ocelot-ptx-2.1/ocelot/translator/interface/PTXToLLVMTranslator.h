@@ -90,6 +90,7 @@ namespace translator
 				const analysis::DataflowGraph::Block& block );
 			void _translateClz( const ir::PTXInstruction& i );
 			void _translateCNot( const ir::PTXInstruction& i );
+			void _translateCopySign( const ir::PTXInstruction& i );
 			void _translateCos( const ir::PTXInstruction& i );
 			void _translateCvt( const ir::PTXInstruction& i );
 			void _translateDiv( const ir::PTXInstruction& i );

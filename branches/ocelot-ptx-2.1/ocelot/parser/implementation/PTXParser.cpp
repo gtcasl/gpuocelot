@@ -2029,6 +2029,7 @@ namespace parser
 		if( string == "call" ) return ir::PTXInstruction::Call;
 		if( string == "clz" ) return ir::PTXInstruction::Clz;
 		if( string == "cnot" ) return ir::PTXInstruction::CNot;
+		if( string == "copysign" ) return ir::PTXInstruction::CopySign;
 		if( string == "cos" ) return ir::PTXInstruction::Cos;
 		if( string == "cvt" ) return ir::PTXInstruction::Cvt;
 		if( string == "cvta" ) return ir::PTXInstruction::Cvta;

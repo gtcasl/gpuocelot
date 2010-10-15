@@ -613,6 +613,25 @@ std::string ir::PTXInstruction::valid() const {
 			}
 			break;
 		}
+		case CopySign : {
+			if( type != PTXOperand::f32 && type != PTXOperand::f64 ) {
+				return "invalid instruction type " 
+					+ PTXOperand::toString( type );
+			}			
+			if( !PTXOperand::valid( type, a.type ) ) {
+				return "operand A type " + PTXOperand::toString( a.type ) 
+					+ " cannot be assigned to " + PTXOperand::toString( type );
+			}			
+			if( !PTXOperand::valid( type, b.type ) ) {
+				return "operand B type " + PTXOperand::toString( b.type ) 
+					+ " cannot be assigned to " + PTXOperand::toString( type );
+			}			
+			if( !PTXOperand::valid( type, d.type ) ) {
+				return "operand D type " + PTXOperand::toString( d.type ) 
+					+ " cannot be assigned to " + PTXOperand::toString( type );
+			}
+			break;
+		}
 		case Cos: {
 			if( !( type == PTXOperand::f32 ) ) {
 				return "invalid instruction type " 
@@ -1833,12 +1852,14 @@ std::string ir::PTXInstruction::toString() const {
 			return guard() + "cnot." + PTXOperand::toString( type ) + " "
 				+ d.toString() + ", " + a.toString();
 		}
+		case CopySign: {
+			return guard() + "copysign." + PTXOperand::toString( type ) + " "
+				+ d.toString() + ", " + a.toString() + ", " + b.toString();
+		}
 		case Cos: {
-			std::string result = guard() + "cos.";
-			result += modifierString( modifier, carry );
-			result += PTXOperand::toString( type ) + " " + d.toString() 
+			return guard() + "cos." + modifierString( modifier, carry )
+				+ PTXOperand::toString( type ) + " " + d.toString()
 				+ ", " + a.toString();
-			return result;
 		}
 		case Cvt: {
 			std::string result = guard() + "cvt.";

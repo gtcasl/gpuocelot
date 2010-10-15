@@ -1065,6 +1065,7 @@ namespace translator
 			case ir::PTXInstruction::Call: _translateCall( i, block ); break;
 			case ir::PTXInstruction::Clz: _translateClz( i ); break;
 			case ir::PTXInstruction::CNot: _translateCNot( i ); break;
+			case ir::PTXInstruction::CopySign: _translateCopySign( i ); break;
 			case ir::PTXInstruction::Cos: _translateCos( i ); break;
 			case ir::PTXInstruction::Cvt: _translateCvt( i ); break;
 			case ir::PTXInstruction::Div: _translateDiv( i ); break;
@@ -2295,6 +2296,101 @@ namespace translator
 		_add( select );
 	}
 
+	void PTXToLLVMTranslator::_translateCopySign( const ir::PTXInstruction& i )
+	{
+		ir::LLVMBitcast castA;
+		ir::LLVMBitcast castB;
+		
+		castA.a = _translate( i.a );
+		castB.a = _translate( i.b );
+		
+		ir::LLVMAnd land;
+				
+		if( i.type == ir::PTXOperand::f32 )
+		{
+			castA.d = ir::LLVMInstruction::Operand( _tempRegister(),
+				ir::LLVMInstruction::Type( ir::LLVMInstruction::I32,
+				ir::LLVMInstruction::Type::Element ) );
+			castB.d = ir::LLVMInstruction::Operand( _tempRegister(),
+				ir::LLVMInstruction::Type( ir::LLVMInstruction::I32,
+				ir::LLVMInstruction::Type::Element ) );
+
+			land.d = ir::LLVMInstruction::Operand( _tempRegister(),
+				ir::LLVMInstruction::Type( ir::LLVMInstruction::I32,
+				ir::LLVMInstruction::Type::Element ) );
+			land.a = castA.d;			
+			land.b = ir::LLVMInstruction::Operand( (ir::LLVMI32) 0x80000000 );
+		}
+		else
+		{
+			castA.d = ir::LLVMInstruction::Operand( _tempRegister(),
+				ir::LLVMInstruction::Type( ir::LLVMInstruction::I64,
+				ir::LLVMInstruction::Type::Element ) );
+			castB.d = ir::LLVMInstruction::Operand( _tempRegister(),
+				ir::LLVMInstruction::Type( ir::LLVMInstruction::I64,
+				ir::LLVMInstruction::Type::Element ) );
+
+			land.d = ir::LLVMInstruction::Operand( _tempRegister(),
+				ir::LLVMInstruction::Type( ir::LLVMInstruction::I64,
+				ir::LLVMInstruction::Type::Element ) );
+			land.a = castA.d;			
+			land.b = ir::LLVMInstruction::Operand(
+				(ir::LLVMI64) 0x800000000000000ULL );
+		}
+
+		land.b.type.type = castA.d.type.type;
+
+		_add( castA );
+		_add( castB );
+		_add( land );		
+
+		ir::LLVMAnd land2;
+		
+		land2.d = ir::LLVMInstruction::Operand( _tempRegister(),
+			ir::LLVMInstruction::Type( _translate( i.type ),
+			ir::LLVMInstruction::Type::Element ) );
+		land2.a = _translate( i.b );
+
+		if( i.type == ir::PTXOperand::f32 )
+		{
+			land2.d = ir::LLVMInstruction::Operand( _tempRegister(),
+				ir::LLVMInstruction::Type( ir::LLVMInstruction::I32,
+				ir::LLVMInstruction::Type::Element ) );
+			land2.a = castB.d;			
+			land2.b = ir::LLVMInstruction::Operand( (ir::LLVMI32) 0x7fffffff );
+		}
+		else
+		{
+			land2.d = ir::LLVMInstruction::Operand( _tempRegister(),
+				ir::LLVMInstruction::Type( ir::LLVMInstruction::I64,
+				ir::LLVMInstruction::Type::Element ) );
+			land2.a = castB.d;			
+			land2.b = ir::LLVMInstruction::Operand(
+				(ir::LLVMI64) 0x7ffffffffffffffULL );
+		}
+
+		land2.b.type.type = castB.d.type.type;
+
+		_add( land2 );
+		
+		ir::LLVMOr lor;
+		
+		lor.d = ir::LLVMInstruction::Operand( _tempRegister(),
+			ir::LLVMInstruction::Type( castB.d.type.type,
+			ir::LLVMInstruction::Type::Element ) );
+		lor.a = land.d;
+		lor.b = land2.d;
+		
+		_add( lor );
+		
+		ir::LLVMBitcast castD;
+		
+		castD.d = _destination( i );
+		castD.a = lor.d;
+		
+		_add( castD );
+	}
+	
 	void PTXToLLVMTranslator::_translateCos( const ir::PTXInstruction& i )
 	{
 		ir::LLVMCall call;

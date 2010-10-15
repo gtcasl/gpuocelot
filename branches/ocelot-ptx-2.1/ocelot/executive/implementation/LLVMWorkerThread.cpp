@@ -36,7 +36,7 @@ public:
 		LaunchCta,
 		FlushCta,
 		Exception,
-		Invalid,
+		Invalid
 	};
 	
 public:

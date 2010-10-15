@@ -49,8 +49,8 @@
 %token<text> TOKEN_LABEL TOKEN_IDENTIFIER TOKEN_STRING
 %token<text> TOKEN_INV_PREDICATE_IDENTIFIER TOKEN_PREDICATE_IDENTIFIER
 
-%token<text> OPCODE_COS OPCODE_SQRT OPCODE_ADD OPCODE_RSQRT OPCODE_ADDC
-%token<text> OPCODE_MUL OPCODE_SAD OPCODE_SUB OPCODE_EX2 OPCODE_LG2
+%token<text> OPCODE_COPYSIGN OPCODE_COS OPCODE_SQRT OPCODE_ADD OPCODE_RSQRT
+%token<text> OPCODE_MUL OPCODE_SAD OPCODE_SUB OPCODE_EX2 OPCODE_LG2 OPCODE_ADDC
 %token<text> OPCODE_RCP OPCODE_SIN OPCODE_REM OPCODE_MUL24 OPCODE_MAD24
 %token<text> OPCODE_DIV OPCODE_ABS OPCODE_NEG OPCODE_MIN OPCODE_MAX
 %token<text> OPCODE_MAD OPCODE_SET OPCODE_SETP OPCODE_SELP OPCODE_SLCT
@@ -571,7 +571,7 @@ opcode : OPCODE_COS | OPCODE_SQRT | OPCODE_ADD | OPCODE_RSQRT | OPCODE_ADDC
 	| OPCODE_RCP | OPCODE_SIN | OPCODE_REM | OPCODE_MUL24 | OPCODE_MAD24
 	| OPCODE_DIV | OPCODE_ABS | OPCODE_NEG | OPCODE_MIN | OPCODE_MAX
 	| OPCODE_MAD | OPCODE_SET | OPCODE_SETP | OPCODE_SELP | OPCODE_SLCT
-	| OPCODE_MOV | OPCODE_ST 
+	| OPCODE_MOV | OPCODE_ST | OPCODE_COPYSIGN
 	| OPCODE_CVT | OPCODE_CVTA | OPCODE_ISSPACEP 
 	| OPCODE_AND | OPCODE_XOR | OPCODE_OR
 	| OPCODE_BRA | OPCODE_CALL | OPCODE_RET | OPCODE_EXIT | OPCODE_TRAP 
@@ -733,13 +733,13 @@ intRounding : TOKEN_RNI | TOKEN_RMI | TOKEN_RPI | TOKEN_RZI;
 
 instruction : ftzInstruction2 | ftzInstruction3 | approxInstruction2 
 	| basicInstruction3 | bfi | bfind | brev | branch | addOrSub | addCOrSubC 
-	| atom | bar | brkpt | clz | cvt | cvta | isspacep | div | exit | ld | mad | mad24 | membar 
-	| mov | mul24 | mul | notInstruction | pmevent | popc | prmt 
-	| rcpSqrtInstruction | red | ret | sad | selp | set | setp | slct | st 
-	| testp | tex | trap | vote;
+	| atom | bar | brkpt | clz | cvt | cvta | isspacep | div | exit
+	| ld | mad | mad24 | membar | mov | mul24 | mul | notInstruction | pmevent
+	| popc | prmt | rcpSqrtInstruction | red | ret | sad | selp | set | setp
+	| slct | st | testp | tex | trap | vote;
 
 basicInstruction3Opcode : OPCODE_AND | OPCODE_OR 
-	| OPCODE_REM | OPCODE_SHL | OPCODE_SHR | OPCODE_XOR;
+	| OPCODE_REM | OPCODE_SHL | OPCODE_SHR | OPCODE_XOR | OPCODE_COPYSIGN;
 
 basicInstruction3 : basicInstruction3Opcode dataType operand ',' operand ',' 
 	operand ';'
@@ -995,11 +995,6 @@ cvta : OPCODE_CVTA TOKEN_TO addressSpace pointerDataType operand ',' operand ';'
 	state.cvtaTo( $<value>4, @1 );
 };
 
-isspacep : OPCODE_ISSPACEP addressSpace operand ',' operand ';'
-{
-	state.instruction( $<text>1, TOKEN_U32, 3 );
-}
-
 /*
 	multiple orderings of modifiers for OptiX support
 */
@@ -1032,6 +1027,11 @@ exit : OPCODE_EXIT ';'
 {
 	state.instruction( $<text>1, 1 );
 };
+
+isspacep : OPCODE_ISSPACEP addressSpace operand ',' operand ';'
+{
+	state.instruction( $<text>1, TOKEN_U32, 3 );
+}
 
 ldModifier : TOKEN_VOLATILE addressSpace
 {

@@ -125,6 +125,8 @@ WHITESPACE [ \t]*
                                     return OPCODE_CLZ; }
 "cnot"                          { strlcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_CNOT; }
+"copysign"                      { strlcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_COPYSIGN; }
 "cos"                           { strlcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_COS; }
 "cvt"                           { strlcpy( yylval->text, yytext, 1024 ); \

@@ -103,6 +103,89 @@ char* uniformFloat(test::Test::MersenneTwister& generator)
 	return result;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// TEST COPYSIGN
+std::string testCopysign_PTX(ir::PTXOperand::DataType type)
+{
+	std::stringstream ptx;
+	
+	std::string typeString;
+	
+	if(type == ir::PTXOperand::f32)
+	{
+		typeString = ".f32";
+	}
+	else
+	{
+		typeString = ".f64";
+	}
+	
+	ptx << ".version 2.1\n";
+	ptx << "\n";
+	
+	ptx << ".entry test(.param .u64 out, .param .u64 in)   \n";
+	ptx << "{\t                                            \n";
+	ptx << "\t.reg .u64 %rIn, %rOut;                       \n";
+	ptx << "\t.reg " << typeString << " %f<3>;             \n";
+	ptx << "\tld.param.u64 %rIn, [in];                     \n";
+	ptx << "\tld.param.u64 %rOut, [out];                   \n";
+	ptx << "\tld.global" << typeString << " %f0, [%rIn];   \n";
+	ptx << "\tld.global" << typeString << " %f1, [%rIn + "
+		<< ir::PTXOperand::bytes(type) << "];              \n";
+	ptx << "\tcopysign" << typeString << " %f2, %f0, %f1;  \n";
+	ptx << "\tst.global" << typeString << " [%rOut], %f2;  \n";
+	ptx << "\texit;                                        \n";
+	ptx << "}                                              \n";
+	ptx << "                                               \n";
+	
+	return ptx.str();
+}
+
+template<typename type>
+void testCopysign_REF(void* output, void* input)
+{
+	static_assert(sizeof(type) == 4 || sizeof(type) == 8, "only f32/f64");
+	
+	type r0 = getParameter<type>(input, 0);
+	type r1 = getParameter<type>(input, sizeof(type));
+
+	if(sizeof(type) == 4)
+	{
+		const unsigned int bits = 31;
+		const unsigned int mask = 1 << bits;
+		unsigned int result = hydrazine::bit_cast<unsigned int>(r0) & mask;
+
+		result = result | ( hydrazine::bit_cast<unsigned int>(r1) & ~mask );
+
+		setParameter(output, 0, result);
+	}
+	else
+	{
+		const unsigned int bits = 63;
+		const long long unsigned int mask = (
+			(long long unsigned int) 1 << bits);
+		long long unsigned int result = hydrazine::bit_cast<
+			long long unsigned int>(r0) & mask;
+
+		result = result | ( hydrazine::bit_cast<
+			long long unsigned int>(r1) & ~mask );
+
+		setParameter(output, 0, result);
+	}
+}
+
+test::TestPTXAssembly::TypeVector testCopysign_IN(
+	test::TestPTXAssembly::DataType type)
+{
+	return test::TestPTXAssembly::TypeVector(2, type);
+}
+
+test::TestPTXAssembly::TypeVector testCopysign_OUT(
+	test::TestPTXAssembly::DataType type)
+{
+	return test::TestPTXAssembly::TypeVector(1, type);
+}
+////////////////////////////////////////////////////////////////////////////////
 
 ////////////////////////////////////////////////////////////////////////////////
 // TEST TESTP
@@ -2477,6 +2560,12 @@ namespace test
 			testTestp_PTX(ir::PTXOperand::f64, ir::PTXInstruction::SubNormal), 
 			testTestp_OUT(), testTestp_IN(FP64), uniformFloat<double, 1>, 1, 1);
 
+		add("TestCopysign-f32", testCopysign_REF<float>, 
+			testCopysign_PTX(ir::PTXOperand::f32), testCopysign_OUT(FP32), 
+			testCopysign_IN(FP32), uniformFloat<float, 2>, 1, 1);
+		add("TestCopysign-f64", testCopysign_REF<double>, 
+			testCopysign_PTX(ir::PTXOperand::f64), testCopysign_OUT(FP64), 
+			testCopysign_IN(FP64), uniformFloat<double, 2>, 1, 1);
 	}
 
 	TestPTXAssembly::TestPTXAssembly(hydrazine::Timer::Second l, 

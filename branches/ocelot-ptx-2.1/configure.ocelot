@@ -9,7 +9,7 @@
 		debugger: {
 			enabled: false,
 			kernelFilter: "_Z13scalarProdGPUPfS_S_ii",
-			alwaysAttach: false
+			alwaysAttach: true
 		}
 	},
 	cuda: {

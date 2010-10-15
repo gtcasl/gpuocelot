@@ -257,6 +257,13 @@ ir::PTXF32 executive::CooperativeThreadArray::sat(int modifier, ir::PTXF32 f) {
 	return f;
 }
 
+static ir::PTXF32 ftz(int modifier, ir::PTXF32 f) {
+	if (modifier & ir::PTXInstruction::ftz) {
+		return (!std::isnormal(f) ? 0 : f);
+	}
+	return f;
+}
+
 void executive::CooperativeThreadArray::trace() {
 	if (traceEvents) {
 		currentEvent.contextStackSize = (ir::PTXU32)runtimeStack.size();
@@ -1466,9 +1473,9 @@ void executive::CooperativeThreadArray::eval_Add(CTAContext &context, const PTXI
 	if (instr.type == PTXOperand::f32) {
 		for (int threadID = 0; threadID < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;
-			PTXF32 d, a = operandAsF32(threadID, instr.a), 
-				b = operandAsF32(threadID, instr.b);
-			d = sat(instr.modifier, a + b);
+			PTXF32 d, a = ftz(instr.modifier, operandAsF32(threadID, instr.a)), 
+				b = ftz(instr.modifier, operandAsF32(threadID, instr.b));
+			d = ftz(instr.modifier, sat(instr.modifier, a + b));
 			setRegAsF32(threadID, instr.d.reg, d);
 		}
 	}	

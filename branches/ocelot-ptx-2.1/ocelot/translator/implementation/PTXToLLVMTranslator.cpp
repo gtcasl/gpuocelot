@@ -1241,10 +1241,11 @@ namespace translator
 			add.a = _translate( i.a );
 			add.b = _translate( i.b );
 
-			if( i.modifier & ir::PTXInstruction::sat )
+			if( i.modifier & ir::PTXInstruction::sat
+				|| i.modifier & ir::PTXInstruction::ftz )
 			{
 				add.d = add.a;
-				add.a.name = _tempRegister();
+				add.d.name = _tempRegister();
 			}
 			else
 			{
@@ -1260,29 +1261,55 @@ namespace translator
 				compare.d.name = _tempRegister();
 				compare.d.type.type = ir::LLVMInstruction::I1;
 				compare.d.type.category = ir::LLVMInstruction::Type::Element;
-				compare.comparison = ir::LLVMInstruction::Ule;
+				compare.comparison = ir::LLVMInstruction::Ult;
 				compare.a = add.d;
 				compare.b.type.type = compare.a.type.type;
 				compare.b.type.category = ir::LLVMInstruction::Type::Element;
 				compare.b.constant = true;
-				if( compare.b.type.type == ir::LLVMInstruction::F32 )
-				{
-					compare.b.f32 = 0;
-				}
-				else
-				{
-					compare.b.f64 = 0;
-				}
+				compare.b.f32 = 0.0f;
 				
 				ir::LLVMSelect select;
 				
-				select.d = result;
+				select.d = ir::LLVMInstruction::Operand( _tempRegister(), 
+					ir::LLVMInstruction::Type( ir::LLVMInstruction::F32,
+					ir::LLVMInstruction::Type::Element ) );
 				select.condition = compare.d;
 				select.a = compare.b;
 				select.b = add.d;
 				
 				_add( compare );
 				_add( select );
+				
+				compare.d.name = _tempRegister();
+				compare.comparison = ir::LLVMInstruction::Ogt;
+				compare.b.f32  = 1.0f;
+				compare.a = add.d;
+				
+				select.b = select.d;
+				
+				if( i.modifier & ir::PTXInstruction::ftz )
+				{
+					select.d.name = _tempRegister();
+				}
+				else
+				{
+					select.d = result;
+				}
+				
+				select.condition = compare.d;
+				select.a = compare.b;
+				
+				_add( compare );
+				_add( select );
+				
+				if( i.modifier & ir::PTXInstruction::ftz )
+				{
+					_flushToZero( result, select.d );
+				}
+			}
+			else if( i.modifier & ir::PTXInstruction::ftz )
+			{
+				_flushToZero( result, add.d );
 			}
 		}
 		else
@@ -6583,61 +6610,67 @@ namespace translator
 		const ir::LLVMInstruction::Operand& d,
 		const ir::LLVMInstruction::Operand& a)
 	{
-		ir::LLVMFcmp isNan;
+		ir::LLVMFcmp less;
 		
-		isNan.d.type.type     = ir::LLVMInstruction::F32;
-		isNan.d.type.category = ir::LLVMInstruction::Type::Element;
-		isNan.d.name          = _tempRegister();
+		less.comparison = ir::LLVMInstruction::Olt;
 		
-		isNan.a.type.type     = ir::LLVMInstruction::F32;
-		isNan.a.type.category = ir::LLVMInstruction::Type::Element;
-		isNan.a.constant      = true;
-		isNan.a.i64           = 0;
+		less.d = ir::LLVMInstruction::Operand( _tempRegister(),
+			ir::LLVMInstruction::Type( ir::LLVMInstruction::I1, 
+			ir::LLVMInstruction::Type::Element ) );
+		less.a = a;
+		less.b = ir::LLVMInstruction::Operand( (ir::LLVMI64) 0 );
+		less.b.type.type = less.a.type.type;
 		
-		isNan.b = a;
-		
-		isNan.comparison = ir::LLVMInstruction::Uno;
-		
-		_add( isNan );
-		
-		ir::LLVMFcmp isInf;
-		
-		isInf.d.type.type     = ir::LLVMInstruction::I1;
-		isInf.d.type.category = ir::LLVMInstruction::Type::Element;
-		isInf.d.name          = _tempRegister();
-		
-		isInf.a.type.type     = ir::LLVMInstruction::F32;
-		isInf.a.type.category = ir::LLVMInstruction::Type::Element;
-		isInf.a.constant      = true;
-		isInf.a.i32           = hydrazine::bit_cast< ir::LLVMI32 >(
-			 std::numeric_limits<float>::infinity() );
-		
-		isInf.b = a;
+		_add( less );
 
-		isInf.comparison = ir::LLVMInstruction::Oeq;
+		ir::LLVMFsub subtract;
 		
-		_add( isInf );
+		subtract.d = ir::LLVMInstruction::Operand( _tempRegister(),
+			ir::LLVMInstruction::Type( less.a.type.type, 
+			ir::LLVMInstruction::Type::Element ) );
+		subtract.a = ir::LLVMInstruction::Operand( (ir::LLVMI64) 0 );
+		subtract.a.type.type = less.a.type.type;
+		subtract.b = less.a;
 		
-		ir::LLVMOr lor;
+		_add( subtract );
 		
-		lor.a = isInf.d;
-		lor.b = isNan.d;
-		
-		lor.d.type.type     = ir::LLVMInstruction::I1;
-		lor.d.type.category = ir::LLVMInstruction::Type::Element;
-		lor.d.name          = _tempRegister();
-	
 		ir::LLVMSelect select;
 		
-		select.d               = d;
-		select.condition       = lor.d;
-		select.a.type.type     = ir::LLVMInstruction::F32;
-		select.a.type.category = ir::LLVMInstruction::Type::Element;
-		select.a.constant      = true;
-		select.a.f32           = 0.0f;
-		select.b               = a;
+		select.condition = less.d;
+		
+		select.d = ir::LLVMInstruction::Operand( _tempRegister(),
+			ir::LLVMInstruction::Type( less.a.type.type, 
+			ir::LLVMInstruction::Type::Element ) );
+		select.a = subtract.d;
+		select.b = less.a;
 		
 		_add( select );
+		
+		ir::LLVMFcmp greaterEqual;
+		
+		greaterEqual.comparison = ir::LLVMInstruction::Olt;
+		
+		greaterEqual.d = ir::LLVMInstruction::Operand( _tempRegister(),
+			ir::LLVMInstruction::Type( ir::LLVMInstruction::I1, 
+			ir::LLVMInstruction::Type::Element ) );
+		greaterEqual.a = select.d;
+		
+		greaterEqual.b = ir::LLVMInstruction::Operand( 
+			(ir::LLVMI32) hydrazine::bit_cast< ir::LLVMI32 >(
+			std::numeric_limits<float>::min() ) );
+		
+		greaterEqual.b.type.type = less.a.type.type;
+		
+		_add( greaterEqual );
+
+		ir::LLVMSelect flush;
+		
+		flush.d = d;
+		flush.condition = greaterEqual.d;
+		flush.a = ir::LLVMInstruction::Operand( (ir::LLVMF32) 0.0f );
+		flush.b = a;
+		
+		_add( flush );
 	}
 
 	std::string PTXToLLVMTranslator::_tempRegister()

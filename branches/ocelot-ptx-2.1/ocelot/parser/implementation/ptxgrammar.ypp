@@ -730,8 +730,20 @@ guard : /* empty string */
 	state.guard();
 }
 
-floatRounding : TOKEN_RN | TOKEN_RM | TOKEN_RP | TOKEN_RZ;
-intRounding : TOKEN_RNI | TOKEN_RMI | TOKEN_RPI | TOKEN_RZI;
+floatRoundingToken : TOKEN_RN  | TOKEN_RM  | TOKEN_RP  | TOKEN_RZ;
+intRoundingToken   : TOKEN_RNI | TOKEN_RMI | TOKEN_RPI | TOKEN_RZI;
+
+floatRounding : floatRoundingToken
+{
+	state.modifier( $<value>1 );
+};
+
+intRounding : intRoundingToken
+{
+	state.modifier( $<value>1 );
+};
+
+optionalFloatRounding : floatRounding | /* empty string */;
 
 instruction : ftzInstruction2 | ftzInstruction3 | approxInstruction2 
 	| basicInstruction3 | bfi | bfind | brev | branch | addOrSub | addCOrSubC 
@@ -785,7 +797,7 @@ ftzInstruction2 : ftzInstruction2Opcode optionalFtz dataType operand ','
 	state.instruction( $<text>1, $<value>3, 3 );
 };
 
-ftzInstruction3Opcode : OPCODE_ADD | OPCODE_MAX | OPCODE_MIN | OPCODE_SUB;
+ftzInstruction3Opcode : OPCODE_MAX | OPCODE_MIN;
 
 ftzInstruction3 : ftzInstruction3Opcode optionalFtz dataType operand ',' 
 	operand ',' operand ';'
@@ -854,12 +866,7 @@ addModifier : TOKEN_CARRY
 	state.carry( true );
 };
 
-addModifier : TOKEN_SAT
-{
-	state.modifier( $<value>1 );
-};
-
-addModifier : floatRounding optionalFtz optionalSaturate
+addModifier : optionalFloatRounding optionalFtz optionalSaturate
 {
 	state.carry( false );
 };

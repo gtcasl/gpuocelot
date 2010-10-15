@@ -2168,6 +2168,15 @@ namespace translator
 				_yield( executive::LLVMExecutableKernel::TailCall,
 					_translate( i.a ) );
 			}
+			
+			if( !block.targets().empty() )
+			{
+				ir::LLVMBr branch;
+			
+				branch.iftrue = "%" + (*block.targets().begin())->label();
+			
+				_add( branch );
+			}
 		}
 		else
 		{

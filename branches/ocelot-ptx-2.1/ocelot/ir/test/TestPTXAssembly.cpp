@@ -119,7 +119,7 @@ char* uniformFloat(test::Test::MersenneTwister& generator)
 
 ////////////////////////////////////////////////////////////////////////////////
 // TEST FADD
-std::string testFadd_PTX(ir::PTXOperand::DataType type, int modifier)
+std::string testFadd_PTX(ir::PTXOperand::DataType type, int modifier, bool add)
 {
 	bool sat = modifier & ir::PTXInstruction::sat;
 	bool ftz = modifier & ir::PTXInstruction::ftz;
@@ -152,7 +152,14 @@ std::string testFadd_PTX(ir::PTXOperand::DataType type, int modifier)
 	ptx << "\tld.global" << typeString << " %f1, [%rIn + "
 		<< ir::PTXOperand::bytes(type) << "];              \n";
 	
-	ptx << "\tadd";
+	if(add)
+	{
+		ptx << "\tadd";
+	}
+	else
+	{
+		ptx << "\tsub";
+	}
 	
 	if(!roundingString.empty()) ptx << "." << roundingString;
 	
@@ -169,7 +176,7 @@ std::string testFadd_PTX(ir::PTXOperand::DataType type, int modifier)
 	return ptx.str();
 }
 
-template<typename type, int modifier>
+template<typename type, int modifier, bool add>
 void testFadd_REF(void* output, void* input)
 {
 	static_assert(sizeof(type) == 4 || sizeof(type) == 8, "only f32/f64 valid");
@@ -187,8 +194,18 @@ void testFadd_REF(void* output, void* input)
 		if(!std::isnormal(r1)) r1 = 0.0f;
 	}
 
-	type result = r0 + r1;
 
+	type result = 0;
+	
+	if(add)
+	{
+		result = r0 + r1;
+	}
+	else
+	{
+		result = r0 - r1;
+	}
+	
 	if(modifier & ir::PTXInstruction::ftz)
 	{
 		if(!std::isnormal(result)) result = 0.0f;
@@ -2682,25 +2699,50 @@ namespace test
 			testCopysign_PTX(ir::PTXOperand::f64), testCopysign_OUT(FP64), 
 			testCopysign_IN(FP64), uniformFloat<double, 2>, 1, 1);
 
-		add("TestAdd-f32", testFadd_REF<float, 0>, 
-			testFadd_PTX(ir::PTXOperand::f32, 0), testFadd_OUT(FP32), 
+		add("TestAdd-f32", testFadd_REF<float, 0, true>, 
+			testFadd_PTX(ir::PTXOperand::f32, 0, true), testFadd_OUT(FP32), 
 			testFadd_IN(FP32), uniformFloat<float, 2>, 1, 1);
-		add("TestAdd-f32-sat", testFadd_REF<float, ir::PTXInstruction::sat>, 
-			testFadd_PTX(ir::PTXOperand::f32, ir::PTXInstruction::sat),
+		add("TestAdd-f32-sat",
+			testFadd_REF<float, ir::PTXInstruction::sat, true>, 
+			testFadd_PTX(ir::PTXOperand::f32, ir::PTXInstruction::sat, true),
 			testFadd_OUT(FP32), testFadd_IN(FP32),
 			uniformFloat<float, 2>, 1, 1);
-		add("TestAdd-f32-ftz", testFadd_REF<float, ir::PTXInstruction::ftz>, 
-			testFadd_PTX(ir::PTXOperand::f32, ir::PTXInstruction::ftz),
+		add("TestAdd-f32-ftz",
+			testFadd_REF<float, ir::PTXInstruction::ftz, true>, 
+			testFadd_PTX(ir::PTXOperand::f32, ir::PTXInstruction::ftz, true),
 			testFadd_OUT(FP32), testFadd_IN(FP32),
 			uniformFloat<float, 2>, 1, 1);
 		add("TestAdd-f32-ftz-sat", testFadd_REF<float, 
-			ir::PTXInstruction::ftz | ir::PTXInstruction::sat>, 
+			ir::PTXInstruction::ftz | ir::PTXInstruction::sat, true>, 
 			testFadd_PTX(ir::PTXOperand::f32, 
-			ir::PTXInstruction::ftz | ir::PTXInstruction::sat),
+			ir::PTXInstruction::ftz | ir::PTXInstruction::sat, true),
 			testFadd_OUT(FP32), testFadd_IN(FP32),
 			uniformFloat<float, 2>, 1, 1);
-		add("TestAdd-f64", testFadd_REF<double, 0>, 
-			testFadd_PTX(ir::PTXOperand::f64, 0), testFadd_OUT(FP64), 
+		add("TestAdd-f64", testFadd_REF<double, 0, true>, 
+			testFadd_PTX(ir::PTXOperand::f64, 0, true), testFadd_OUT(FP64), 
+			testFadd_IN(FP64), uniformFloat<double, 2>, 1, 1);
+
+		add("TestSub-f32", testFadd_REF<float, 0, false>, 
+			testFadd_PTX(ir::PTXOperand::f32, 0, false), testFadd_OUT(FP32), 
+			testFadd_IN(FP32), uniformFloat<float, 2>, 1, 1);
+		add("TestSub-f32-sat",
+			testFadd_REF<float, ir::PTXInstruction::sat, false>, 
+			testFadd_PTX(ir::PTXOperand::f32, ir::PTXInstruction::sat, false),
+			testFadd_OUT(FP32), testFadd_IN(FP32),
+			uniformFloat<float, 2>, 1, 1);
+		add("TestSub-f32-ftz",
+			testFadd_REF<float, ir::PTXInstruction::ftz, false>, 
+			testFadd_PTX(ir::PTXOperand::f32, ir::PTXInstruction::ftz, false),
+			testFadd_OUT(FP32), testFadd_IN(FP32),
+			uniformFloat<float, 2>, 1, 1);
+		add("TestSub-f32-ftz-sat", testFadd_REF<float, 
+			ir::PTXInstruction::ftz | ir::PTXInstruction::sat, false>, 
+			testFadd_PTX(ir::PTXOperand::f32, 
+			ir::PTXInstruction::ftz | ir::PTXInstruction::sat, false),
+			testFadd_OUT(FP32), testFadd_IN(FP32),
+			uniformFloat<float, 2>, 1, 1);
+		add("TestSub-f64", testFadd_REF<double, 0, false>, 
+			testFadd_PTX(ir::PTXOperand::f64, 0, false), testFadd_OUT(FP64), 
 			testFadd_IN(FP64), uniformFloat<double, 2>, 1, 1);
 	}
 

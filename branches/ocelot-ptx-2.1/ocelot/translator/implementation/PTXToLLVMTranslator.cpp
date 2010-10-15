@@ -4867,10 +4867,22 @@ namespace translator
 		{
 			ir::LLVMFsub sub;
 		
-			sub.d = _destination( i );
+			ir::LLVMInstruction::Operand result = _destination( i );
+
 			sub.a = _translate( i.a );
 			sub.b = _translate( i.b );
 		
+			if( i.modifier & ir::PTXInstruction::sat
+				|| i.modifier & ir::PTXInstruction::ftz )
+			{
+				sub.d = sub.a;
+				sub.d.name = _tempRegister();
+			}
+			else
+			{
+				sub.d = result;
+			}
+
 			_add( sub );
 			
 			if( i.modifier & ir::PTXInstruction::sat )
@@ -4880,31 +4892,55 @@ namespace translator
 				compare.d.name = _tempRegister();
 				compare.d.type.type = ir::LLVMInstruction::I1;
 				compare.d.type.category = ir::LLVMInstruction::Type::Element;
-				compare.comparison = ir::LLVMInstruction::Ule;
+				compare.comparison = ir::LLVMInstruction::Ult;
 				compare.a = sub.d;
 				compare.b.type.type = compare.a.type.type;
 				compare.b.type.category = ir::LLVMInstruction::Type::Element;
 				compare.b.constant = true;
-				if( compare.b.type.type == ir::LLVMInstruction::F32 )
-				{
-					compare.b.f32 = 0;
-				}
-				else
-				{
-					compare.b.f64 = 0;
-				}
+				compare.b.f32 = 0.0f;
 				
 				ir::LLVMSelect select;
 				
-				select.d.name = _tempRegister();
-				select.d.type.type = sub.d.type.type;
-				select.d.type.category = sub.d.type.category;
+				select.d = ir::LLVMInstruction::Operand( _tempRegister(), 
+					ir::LLVMInstruction::Type( ir::LLVMInstruction::F32,
+					ir::LLVMInstruction::Type::Element ) );
 				select.condition = compare.d;
 				select.a = compare.b;
 				select.b = sub.d;
 				
 				_add( compare );
 				_add( select );
+				
+				compare.d.name = _tempRegister();
+				compare.comparison = ir::LLVMInstruction::Ogt;
+				compare.b.f32  = 1.0f;
+				compare.a = sub.d;
+				
+				select.b = select.d;
+				
+				if( i.modifier & ir::PTXInstruction::ftz )
+				{
+					select.d.name = _tempRegister();
+				}
+				else
+				{
+					select.d = result;
+				}
+				
+				select.condition = compare.d;
+				select.a = compare.b;
+				
+				_add( compare );
+				_add( select );
+				
+				if( i.modifier & ir::PTXInstruction::ftz )
+				{
+					_flushToZero( result, select.d );
+				}
+			}
+			else if( i.modifier & ir::PTXInstruction::ftz )
+			{
+				_flushToZero( result, sub.d );
 			}
 		}
 		else

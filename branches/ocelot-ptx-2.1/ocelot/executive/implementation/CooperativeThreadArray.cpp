@@ -7914,20 +7914,21 @@ void executive::CooperativeThreadArray::eval_St(CTAContext &context,
 
 }
 
-///////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 /*!
 
 */		
-void executive::CooperativeThreadArray::eval_Sub(CTAContext &context, const PTXInstruction &instr) {
+void executive::CooperativeThreadArray::eval_Sub(CTAContext &context,
+	const PTXInstruction &instr) {
 	trace();
 	if (instr.type == PTXOperand::f32) {
 		for (int threadID = 0; threadID < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;
 			
-			PTXF32 d, a = operandAsF32(threadID, instr.a), 
-				b = operandAsF32(threadID, instr.b);
-			d = sat(instr.modifier, a - b);
+			PTXF32 d, a = ftz(instr.modifier, operandAsF32(threadID, instr.a)), 
+				b = ftz(instr.modifier, operandAsF32(threadID, instr.b));
+			d = ftz(instr.modifier, sat(instr.modifier, a - b));
 			setRegAsF32(threadID, instr.d.reg, d);
 		}
 	}	

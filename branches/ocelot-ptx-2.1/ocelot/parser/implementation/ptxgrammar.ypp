@@ -469,6 +469,11 @@ entryDeclaration : entryName argumentList performanceDirectives
 	state.entryDeclaration( @1 );
 };
 
+entryDeclaration : entryName
+{
+	state.entryDeclaration( @1 );
+};
+
 entry : entryDeclaration openBrace entryStatements closeBrace;
 
 entryStatement : registerDeclaration | location | label | pragma 

@@ -237,7 +237,8 @@ unsigned int LLVMCooperativeThreadArray::_initializeNewContext(
 		LLVMFunctionCallStack& stack          = _stacks[contextId];
 		LLVMModuleManager::MetaData& metadata = *_functions[_nextFunction];
 		
-		stack.setKernelArgumentMemory(_kernel->argumentMemory());
+		stack.setKernelArgumentMemory(_kernel->argumentMemory(),
+			_kernel->argumentMemorySize());
 		stack.call(metadata.localSize, metadata.parameterSize, _nextFunction);
 
 		context.nctaid.x  = _kernel->gridDim().x;
@@ -391,18 +392,18 @@ bool LLVMCooperativeThreadArray::_finishContext(unsigned int contextId)
 		LLVMModuleManager::MetaData& metadata = *_functions[nextFunction];
 
 		stack.call(metadata.localSize, metadata.parameterSize, nextFunction);
-		context.local     = stack.localMemory();
-		context.parameter = stack.parameterMemory();
-		context.argument  = stack.argumentMemory();
+		context.local         = stack.localMemory();
+		context.parameter     = stack.parameterMemory();
+		context.argument      = stack.argumentMemory();
 	}
 	break;
 	case LLVMExecutableKernel::ReturnCall:
 	{
 		stack.returned();
-		nextFunction      = stack.functionId();
-		context.local     = stack.localMemory();
-		context.parameter = stack.parameterMemory();
-		context.argument  = stack.argumentMemory();
+		nextFunction          = stack.functionId();
+		context.local         = stack.localMemory();
+		context.parameter     = stack.parameterMemory();
+		context.argument      = stack.argumentMemory();
 
 		report("     hit return, saving thread context at resume point "
 			<< nextFunction << ", popping stack.");

@@ -302,7 +302,8 @@ namespace analysis
 			void redirect( iterator source, 
 				iterator destination, iterator newTarget );
 			/*! \brief Set the target of a block */
-			void target( iterator block, iterator target );
+			void target( iterator block, iterator target,
+				bool fallthrough = false );
 			/*! \brief Delete a block, joining predecessors and successors */
 			iterator erase( iterator block );
 			/*! \brief Revert back to a single entry and exit block */

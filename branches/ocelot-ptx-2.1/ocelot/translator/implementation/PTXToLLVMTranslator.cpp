@@ -2168,23 +2168,84 @@ namespace translator
 					_translate( i.a ) );
 			}
 		}
-		else if( i.a.addressMode == ir::PTXOperand::Register )
-		{
-			assertM( false, "Indirect calls not supported." );
-		}
 		else
 		{
-			_yield( executive::LLVMExecutableKernel::NormalCall,
-				ir::LLVMInstruction::Operand( (ir::LLVMI32) i.reentryPoint ) );
-		}
-
-		if( !block.targets().empty() )
-		{
 			ir::LLVMBr branch;
+		
+			std::string yieldLabel = "Ocelot_yield_" + block.label();
+		
+			branch.iftrue = "%" + yieldLabel;
+			if( block.fallthrough() != _ptx->dfg()->end() )
+			{
+				if( (*block.targets().begin()) != block.fallthrough() )
+				{
+					if( ir::PTXOperand::PT != i.pg.condition 
+						&& ir::PTXOperand::nPT != i.pg.condition )
+					{
+						branch.condition = _translate( i.pg );
+					}
+					else
+					{
+						branch.condition.type.category 
+							= ir::LLVMInstruction::Type::Element;
+						branch.condition.type.type = ir::LLVMInstruction::I1;
+						branch.condition.constant = true;
+			
+						if( ir::PTXOperand::PT == i.pg.condition )
+						{
+							branch.condition.i1 = true;
+						}
+						else
+						{
+							branch.condition.i1 = false;
+						}
+					}
+					branch.iffalse = "%" + block.fallthrough()->label();
+				}
+				if( i.pg.condition == ir::PTXOperand::InvPred )
+				{
+					std::swap( branch.iftrue, branch.iffalse );
+				}
+			}
+
+			_add( branch );
+			
+			_newBlock( yieldLabel );
+			
+			if( i.a.addressMode == ir::PTXOperand::Register )
+			{
+				ir::LLVMInstruction::Operand 
+					functionPointer = _translate( i.a );
+		
+				if( i.a.type != ir::PTXOperand::u32 )
+				{
+					ir::LLVMInstruction::Operand temp( _tempRegister(), 
+						ir::LLVMInstruction::Type( ir::LLVMInstruction::I32, 
+						ir::LLVMInstruction::Type::Element ) );
+			
+					_convert( temp, ir::PTXOperand::u32,
+						functionPointer, i.a.type );
+				
+					functionPointer = temp;
+				}
+			
+				_yield( executive::LLVMExecutableKernel::NormalCall,
+					functionPointer );			
+			}
+			else
+			{
+				_yield( executive::LLVMExecutableKernel::NormalCall,
+					ir::LLVMInstruction::Operand( 
+					(ir::LLVMI32) i.reentryPoint ) );
+			}
 			
 			branch.iftrue = "%" + (*block.targets().begin())->label();
-			_add( branch );
+			branch.condition.type.category 
+				= ir::LLVMInstruction::Type::InvalidCategory;
+			
+			_add(branch);
 		}
+
 	}
 
 	void PTXToLLVMTranslator::_translateClz( const ir::PTXInstruction& i )
@@ -3167,7 +3228,8 @@ namespace translator
 				{
 					case ir::PTXOperand::v1:
 					{
-						if( i.a.addressMode == ir::PTXOperand::Address )
+						if( i.a.addressMode == ir::PTXOperand::Address
+							|| i.a.addressMode == ir::PTXOperand::FunctionName )
 						{
 							if( i.addressSpace == ir::PTXInstruction::Global )
 							{
@@ -3186,8 +3248,16 @@ namespace translator
 								cast.a.type.category = cast.d.type.category;
 								cast.a.type.type = cast.d.type.type;
 								cast.a.constant = true;
-								cast.a.i64 = i.a.offset;
-			
+
+								if( i.a.addressMode == ir::PTXOperand::Address )
+								{
+									cast.a.i64 = i.a.offset;
+								}
+								else
+								{
+									cast.a.i64 = i.reentryPoint;
+								}
+
 								_add( cast );
 							}
 						}
@@ -5150,7 +5220,7 @@ namespace translator
 				ir::LLVMInstruction::Type::Element ) );
 			equal.a = _translate( i.a );
 			equal.b = ir::LLVMInstruction::Operand( (ir::LLVMI64) 0 );
-			equal.b.type.type = _translate( i.type );
+			equal.b.type.type = _translate( i.a.type );
 			
 			_add( equal );
 			
@@ -5192,7 +5262,7 @@ namespace translator
 			
 			ir::LLVMFcmp greaterEqual;
 			
-			less.comparison = ir::LLVMInstruction::Oge;
+			greaterEqual.comparison = ir::LLVMInstruction::Oge;
 			
 			greaterEqual.d = ir::LLVMInstruction::Operand( _tempRegister(),
 				ir::LLVMInstruction::Type( ir::LLVMInstruction::I1, 
@@ -5212,93 +5282,7 @@ namespace translator
 					std::numeric_limits<double>::min() ) );
 			}
 			
-			greaterEqual.b.type = equal.b.type.type;
-			
-			_add( greaterEqual );
-			
-			ir::LLVMOr lor;
-			
-			lor.a = greaterEqual.d;
-			lor.b = equal.d;
-			lor.d = _destination( i );
-			
-			_add( lor );
-		}
-		break;
-		case ir::PTXInstruction::SubNormal:
-		{
-			ir::LLVMFcmp equal;
-			
-			equal.comparison = ir::LLVMInstruction::Eq;
-			
-			equal.d = ir::LLVMInstruction::Operand( _tempRegister(),
-				ir::LLVMInstruction::Type( ir::LLVMInstruction::I1, 
-				ir::LLVMInstruction::Type::Element ) );
-			equal.a = _translate( i.a );
-			equal.b = ir::LLVMInstruction::Operand( (ir::LLVMI64) 0 );
-			equal.b.type.type = _translate( i.type );
-			
-			_add( equal );
-			
-			ir::LLVMFcmp less;
-			
-			less.comparison = ir::LLVMInstruction::Olt;
-			
-			less.d = ir::LLVMInstruction::Operand( _tempRegister(),
-				ir::LLVMInstruction::Type( ir::LLVMInstruction::I1, 
-				ir::LLVMInstruction::Type::Element ) );
-			less.a = equal.a;
-			less.b = ir::LLVMInstruction::Operand( (ir::LLVMI64) 0 );
-			less.b.type.type = equal.b.type.type;
-			
-			_add( less );
-
-			ir::LLVMFsub subtract;
-			
-			subtract.d = ir::LLVMInstruction::Operand( _tempRegister(),
-				ir::LLVMInstruction::Type( equal.b.type.type, 
-				ir::LLVMInstruction::Type::Element ) );
-			subtract.a = ir::LLVMInstruction::Operand( (ir::LLVMI64) 0 );
-			subtract.a.type.type = equal.b.type.type;
-			subtract.b = equal.a;
-			
-			_add( subtract );
-			
-			ir::LLVMSelect select;
-			
-			select.condition = less.d;
-			
-			select.d = ir::LLVMInstruction::Operand( _tempRegister(),
-				ir::LLVMInstruction::Type( equal.b.type.type, 
-				ir::LLVMInstruction::Type::Element ) );
-			select.a = subtract.d;
-			select.b = equal.a;
-			
-			_add( select );
-			
-			ir::LLVMFcmp greaterEqual;
-			
-			less.comparison = ir::LLVMInstruction::Olt;
-			
-			greaterEqual.d = ir::LLVMInstruction::Operand( _tempRegister(),
-				ir::LLVMInstruction::Type( ir::LLVMInstruction::I1, 
-				ir::LLVMInstruction::Type::Element ) );
-			greaterEqual.a = select.d;
-			
-			if( i.type == ir::PTXOperand::f32 )
-			{
-				greaterEqual.b = ir::LLVMInstruction::Operand( 
-					(ir::LLVMI64) hydrazine::bit_cast< ir::LLVMI32 >(
-					std::numeric_limits<float>::min() ) );
-			}
-			else
-			{
-				greaterEqual.b = ir::LLVMInstruction::Operand( 
-					(ir::LLVMI64) hydrazine::bit_cast< ir::LLVMI64 >(
-					std::numeric_limits<double>::min() ) );
-			}
-			
-			greaterEqual.b.type = equal.b.type.type;
+			greaterEqual.b.type.type = equal.b.type.type;
 			
 			_add( greaterEqual );
 			
@@ -5309,6 +5293,69 @@ namespace translator
 			land.d = _destination( i );
 			
 			_add( land );
+		}
+		break;
+		case ir::PTXInstruction::SubNormal:
+		{
+			ir::LLVMFcmp less;
+			
+			less.comparison = ir::LLVMInstruction::Olt;
+			
+			less.d = ir::LLVMInstruction::Operand( _tempRegister(),
+				ir::LLVMInstruction::Type( ir::LLVMInstruction::I1, 
+				ir::LLVMInstruction::Type::Element ) );
+			less.a = _translate( i.a );
+			less.b = ir::LLVMInstruction::Operand( (ir::LLVMI64) 0 );
+			less.b.type.type = less.a.type.type;
+			
+			_add( less );
+
+			ir::LLVMFsub subtract;
+			
+			subtract.d = ir::LLVMInstruction::Operand( _tempRegister(),
+				ir::LLVMInstruction::Type( less.a.type.type, 
+				ir::LLVMInstruction::Type::Element ) );
+			subtract.a = ir::LLVMInstruction::Operand( (ir::LLVMI64) 0 );
+			subtract.a.type.type = less.a.type.type;
+			subtract.b = less.a;
+			
+			_add( subtract );
+			
+			ir::LLVMSelect select;
+			
+			select.condition = less.d;
+			
+			select.d = ir::LLVMInstruction::Operand( _tempRegister(),
+				ir::LLVMInstruction::Type( less.a.type.type, 
+				ir::LLVMInstruction::Type::Element ) );
+			select.a = subtract.d;
+			select.b = less.a;
+			
+			_add( select );
+			
+			ir::LLVMFcmp greaterEqual;
+			
+			greaterEqual.comparison = ir::LLVMInstruction::Olt;
+			
+			greaterEqual.d = _destination( i );
+			greaterEqual.a = select.d;
+			
+			if( i.type == ir::PTXOperand::f32 )
+			{
+				greaterEqual.b = ir::LLVMInstruction::Operand( 
+					(ir::LLVMI64) hydrazine::bit_cast< ir::LLVMI32 >(
+					std::numeric_limits<float>::min() ) );
+			}
+			else
+			{
+				greaterEqual.b = ir::LLVMInstruction::Operand( 
+					(ir::LLVMI64) hydrazine::bit_cast< ir::LLVMI64 >(
+					std::numeric_limits<double>::min() ) );
+			}
+			
+			greaterEqual.b.type.type = less.a.type.type;
+			
+			_add( greaterEqual );
 		}
 		break;
 		default: assertM(false, "Invalid floating point mode.");

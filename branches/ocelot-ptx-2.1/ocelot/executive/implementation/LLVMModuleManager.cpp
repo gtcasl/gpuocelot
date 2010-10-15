@@ -647,7 +647,8 @@ static void setupCallTargets(ir::PTXKernel& kernel,
 		{
 			ir::PTXInstruction& ptx = static_cast<
 				ir::PTXInstruction&>(**instruction);
-			if(ptx.opcode != ir::PTXInstruction::Call) continue;
+			if(ptx.opcode != ir::PTXInstruction::Call 
+				&& ptx.opcode != ir::PTXInstruction::Mov) continue;
 			if(ptx.tailCall) continue;
 			
 			if(ptx.a.addressMode == ir::PTXOperand::FunctionName)
@@ -658,10 +659,6 @@ static void setupCallTargets(ir::PTXKernel& kernel,
 					<< "' of instruction '" << ptx.toString()
 					<< "' to id " << id);
 				ptx.reentryPoint = id;
-			}
-			else
-			{
-				assertM(false, "Indirect calls not implemented yet.");
 			}
 		}
 	}

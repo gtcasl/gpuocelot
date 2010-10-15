@@ -29,10 +29,12 @@ void LLVMFunctionCallStack::returned()
 	_sizes.pop_back();
 }
 
-void LLVMFunctionCallStack::setKernelArgumentMemory(char* memory)
+void LLVMFunctionCallStack::setKernelArgumentMemory(
+	char* memory, unsigned int size)
 {
 	assert(_stack.size() == 0);
 	_argumentMemory = memory;
+	_argumentSize   = size;
 }
 
 char* LLVMFunctionCallStack::localMemory()
@@ -55,6 +57,25 @@ char* LLVMFunctionCallStack::argumentMemory()
 	unsigned int previousParameterSize = _sizes[_sizes.size()-2].parameterSize;
 	return &_stack[_stack.size() - sizes.localSize - sizes.parameterSize
 		- previousParameterSize];
+}
+
+unsigned int LLVMFunctionCallStack::localSize() const
+{
+	const ParameterAndLocalSize& sizes = _sizes.back();
+	return sizes.localSize;
+}
+
+unsigned int LLVMFunctionCallStack::parameterSize() const
+{
+	const ParameterAndLocalSize& sizes = _sizes.back();
+	return sizes.parameterSize;
+}
+
+unsigned int LLVMFunctionCallStack::argumentSize() const
+{
+	if(_sizes.size() < 2) return _argumentSize;
+	
+	return _sizes[_sizes.size()-2].parameterSize;
 }
 
 unsigned int LLVMFunctionCallStack::functionId() const

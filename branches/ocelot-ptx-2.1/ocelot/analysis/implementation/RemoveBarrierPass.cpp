@@ -257,13 +257,11 @@ namespace analysis
 		_addSpillCode( block, bottom, alive, isBarrier );
 		_addRestoreCode( bottom, alive );
 		
-		if( isBarrier )
+		_kernel->dfg()->redirect( block, bottom, exitBlock );
+		
+		if( !isBarrier && instruction.pg.condition != ir::PTXOperand::PT )
 		{
-			_kernel->dfg()->redirect( block, bottom, exitBlock );
-		}
-		else
-		{
-			
+			_kernel->dfg()->target( block, bottom, true );
 		}
 		
 		_addEntryPoint( bottom );

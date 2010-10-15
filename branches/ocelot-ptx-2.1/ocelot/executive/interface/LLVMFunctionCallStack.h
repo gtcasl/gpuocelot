@@ -21,11 +21,16 @@ public:
 		unsigned int functionId);
 	void returned();
 
-	void setKernelArgumentMemory(char* memory);
+	void setKernelArgumentMemory(char* memory, unsigned int argumentSize);
 
 	char* localMemory();
 	char* parameterMemory();
 	char* argumentMemory();
+
+	unsigned int localSize() const;
+	unsigned int parameterSize() const;
+	unsigned int argumentSize() const;
+
 	unsigned int functionId() const;
 
 private:
@@ -45,9 +50,10 @@ private:
 	typedef std::vector<ParameterAndLocalSize> SizeVector;
 	
 private:
-	DataVector _stack;
-	SizeVector _sizes;
-	char*      _argumentMemory;
+	DataVector   _stack;
+	SizeVector   _sizes;
+	char*        _argumentMemory;
+	unsigned int _argumentSize;
 
 };
 

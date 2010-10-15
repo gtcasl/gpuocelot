@@ -602,7 +602,8 @@ namespace analysis
 		return current;
 	}
 	
-	void DataflowGraph::target( iterator block, iterator target )
+	void DataflowGraph::target( iterator block,
+		iterator target, bool fallthrough )
 	{
 		report( "Adding branch from " << block->label() 
 			<< " to " << target->label() );
@@ -615,8 +616,17 @@ namespace analysis
 			assert( target->_predecessors.count( block ) == 0 );
 			target->_predecessors.insert( block );
 			
-			_cfg->insert_edge( ir::ControlFlowGraph::Edge( block->_block, 
-				target->_block, ir::ControlFlowGraph::Edge::Branch ) );
+			if( fallthrough )
+			{
+				_cfg->insert_edge( ir::ControlFlowGraph::Edge( block->_block, 
+					target->_block, ir::ControlFlowGraph::Edge::FallThrough ) );
+				block->_fallthrough = target;
+			}
+			else
+			{
+				_cfg->insert_edge( ir::ControlFlowGraph::Edge( block->_block, 
+					target->_block, ir::ControlFlowGraph::Edge::Branch ) );
+			}
 		}
 	}
 

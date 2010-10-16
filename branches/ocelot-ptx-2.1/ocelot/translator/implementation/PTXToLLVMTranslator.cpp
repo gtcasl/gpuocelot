@@ -1256,55 +1256,17 @@ namespace translator
 			
 			if( i.modifier & ir::PTXInstruction::sat )
 			{
-				ir::LLVMFcmp compare;
-				
-				compare.d.name = _tempRegister();
-				compare.d.type.type = ir::LLVMInstruction::I1;
-				compare.d.type.category = ir::LLVMInstruction::Type::Element;
-				compare.comparison = ir::LLVMInstruction::Ult;
-				compare.a = add.d;
-				compare.b.type.type = compare.a.type.type;
-				compare.b.type.category = ir::LLVMInstruction::Type::Element;
-				compare.b.constant = true;
-				compare.b.f32 = 0.0f;
-				
-				ir::LLVMSelect select;
-				
-				select.d = ir::LLVMInstruction::Operand( _tempRegister(), 
-					ir::LLVMInstruction::Type( ir::LLVMInstruction::F32,
-					ir::LLVMInstruction::Type::Element ) );
-				select.condition = compare.d;
-				select.a = compare.b;
-				select.b = add.d;
-				
-				_add( compare );
-				_add( select );
-				
-				compare.d.name = _tempRegister();
-				compare.comparison = ir::LLVMInstruction::Ogt;
-				compare.b.f32  = 1.0f;
-				compare.a = add.d;
-				
-				select.b = select.d;
-				
 				if( i.modifier & ir::PTXInstruction::ftz )
 				{
-					select.d.name = _tempRegister();
+					ir::LLVMInstruction::Operand temp =
+						ir::LLVMInstruction::Operand( _tempRegister(),
+						add.d.type );
+					_saturate( temp, add.d );
+					_flushToZero( result, temp );
 				}
 				else
 				{
-					select.d = result;
-				}
-				
-				select.condition = compare.d;
-				select.a = compare.b;
-				
-				_add( compare );
-				_add( select );
-				
-				if( i.modifier & ir::PTXInstruction::ftz )
-				{
-					_flushToZero( result, select.d );
+					_saturate( result, add.d );
 				}
 			}
 			else if( i.modifier & ir::PTXInstruction::ftz )
@@ -2805,12 +2767,25 @@ namespace translator
 		{
 			ir::LLVMFmul mul;
 			ir::LLVMFadd add;
-			
-			add.d = _destination( i );			
-			mul.d = add.d;
-			mul.d.name = _tempRegister();
+
+			ir::LLVMInstruction::Operand result = _destination( i );
+
 			mul.a = _translate( i.a );
 			mul.b = _translate( i.b );
+
+			if( i.modifier & ir::PTXInstruction::sat
+				|| i.modifier & ir::PTXInstruction::ftz )
+			{
+				add.d = mul.a;
+				add.d.name = _tempRegister();
+			}
+			else
+			{
+				add.d = result;
+			}
+			
+			mul.d = add.d;
+			mul.d.name = _tempRegister();
 
 			_add( mul );
 
@@ -2818,6 +2793,26 @@ namespace translator
 			add.b = _translate( i.c );
 			
 			_add( add );
+
+			if( i.modifier & ir::PTXInstruction::sat )
+			{
+				if( i.modifier & ir::PTXInstruction::ftz )
+				{
+					ir::LLVMInstruction::Operand temp =
+						ir::LLVMInstruction::Operand( _tempRegister(),
+						add.d.type );
+					_saturate( temp, add.d );
+					_flushToZero( result, temp );
+				}
+				else
+				{
+					_saturate( result, add.d );
+				}
+			}
+			else if( i.modifier & ir::PTXInstruction::ftz )
+			{
+				_flushToZero( result, add.d );
+			}
 		}
 		else
 		{
@@ -3609,17 +3604,44 @@ namespace translator
 		if( ir::PTXOperand::isFloat( i.type ) )
 		{
 			ir::LLVMFmul mul;
-			
-			mul.d = _destination( i );
+		
+			ir::LLVMInstruction::Operand result = _destination( i );
+
 			mul.a = _translate( i.a );
 			mul.b = _translate( i.b );
-
-			if( i.modifier & ir::PTXInstruction::sat )
+		
+			if( i.modifier & ir::PTXInstruction::sat
+				|| i.modifier & ir::PTXInstruction::ftz )
 			{
-				assertM( false, "Saturate not supported for " << i.toString() );
+				mul.d = mul.a;
+				mul.d.name = _tempRegister();
+			}
+			else
+			{
+				mul.d = result;
 			}
 
 			_add( mul );
+			
+			if( i.modifier & ir::PTXInstruction::sat )
+			{
+				if( i.modifier & ir::PTXInstruction::ftz )
+				{
+					ir::LLVMInstruction::Operand temp =
+						ir::LLVMInstruction::Operand( _tempRegister(),
+						mul.d.type );
+					_saturate( temp, mul.d );
+					_flushToZero( result, temp );
+				}
+				else
+				{
+					_saturate( result, mul.d );
+				}
+			}
+			else if( i.modifier & ir::PTXInstruction::ftz )
+			{
+				_flushToZero( result, mul.d );
+			}
 		}
 		else
 		{
@@ -4887,55 +4909,17 @@ namespace translator
 			
 			if( i.modifier & ir::PTXInstruction::sat )
 			{
-				ir::LLVMFcmp compare;
-				
-				compare.d.name = _tempRegister();
-				compare.d.type.type = ir::LLVMInstruction::I1;
-				compare.d.type.category = ir::LLVMInstruction::Type::Element;
-				compare.comparison = ir::LLVMInstruction::Ult;
-				compare.a = sub.d;
-				compare.b.type.type = compare.a.type.type;
-				compare.b.type.category = ir::LLVMInstruction::Type::Element;
-				compare.b.constant = true;
-				compare.b.f32 = 0.0f;
-				
-				ir::LLVMSelect select;
-				
-				select.d = ir::LLVMInstruction::Operand( _tempRegister(), 
-					ir::LLVMInstruction::Type( ir::LLVMInstruction::F32,
-					ir::LLVMInstruction::Type::Element ) );
-				select.condition = compare.d;
-				select.a = compare.b;
-				select.b = sub.d;
-				
-				_add( compare );
-				_add( select );
-				
-				compare.d.name = _tempRegister();
-				compare.comparison = ir::LLVMInstruction::Ogt;
-				compare.b.f32  = 1.0f;
-				compare.a = sub.d;
-				
-				select.b = select.d;
-				
 				if( i.modifier & ir::PTXInstruction::ftz )
 				{
-					select.d.name = _tempRegister();
+					ir::LLVMInstruction::Operand temp =
+						ir::LLVMInstruction::Operand( _tempRegister(),
+						sub.d.type );
+					_saturate( temp, sub.d );
+					_flushToZero( result, temp );
 				}
 				else
 				{
-					select.d = result;
-				}
-				
-				select.condition = compare.d;
-				select.a = compare.b;
-				
-				_add( compare );
-				_add( select );
-				
-				if( i.modifier & ir::PTXInstruction::ftz )
-				{
-					_flushToZero( result, select.d );
+					_saturate( result, sub.d );
 				}
 			}
 			else if( i.modifier & ir::PTXInstruction::ftz )
@@ -6644,7 +6628,7 @@ namespace translator
 
 	void PTXToLLVMTranslator::_flushToZero(
 		const ir::LLVMInstruction::Operand& d,
-		const ir::LLVMInstruction::Operand& a)
+		const ir::LLVMInstruction::Operand& a )
 	{
 		ir::LLVMFcmp less;
 		
@@ -6707,6 +6691,48 @@ namespace translator
 		flush.b = a;
 		
 		_add( flush );
+	}
+
+	void PTXToLLVMTranslator::_saturate( const ir::LLVMInstruction::Operand& d,
+		const ir::LLVMInstruction::Operand& a )
+	{
+		ir::LLVMFcmp compare;
+		
+		compare.d.name = _tempRegister();
+		compare.d.type.type = ir::LLVMInstruction::I1;
+		compare.d.type.category = ir::LLVMInstruction::Type::Element;
+		compare.comparison = ir::LLVMInstruction::Ult;
+		compare.a = a;
+		compare.b.type.type = compare.a.type.type;
+		compare.b.type.category = ir::LLVMInstruction::Type::Element;
+		compare.b.constant = true;
+		compare.b.f32 = 0.0f;
+		
+		ir::LLVMSelect select;
+		
+		select.d = ir::LLVMInstruction::Operand( _tempRegister(), 
+			ir::LLVMInstruction::Type( ir::LLVMInstruction::F32,
+			ir::LLVMInstruction::Type::Element ) );
+		select.condition = compare.d;
+		select.a = compare.b;
+		select.b = a;
+		
+		_add( compare );
+		_add( select );
+		
+		compare.d.name = _tempRegister();
+		compare.comparison = ir::LLVMInstruction::Ogt;
+		compare.b.f32  = 1.0f;
+		compare.a = a;
+		
+		select.b = select.d;
+		
+		select.d = d;		
+		select.condition = compare.d;
+		select.a = compare.b;
+		
+		_add( compare );
+		_add( select );	
 	}
 
 	std::string PTXToLLVMTranslator::_tempRegister()

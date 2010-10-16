@@ -894,8 +894,9 @@ std::string ir::PTXInstruction::valid() const {
 					<< d.bytes();
 				return stream.str();
 			}
-			if( ( modifier & sat ) && ( type != PTXOperand::s32 ) ) {
-				return "saturate only valid for s32";
+			if( ( modifier & sat ) && ( type != PTXOperand::s32
+				&& type != PTXOperand::f32 ) ) {
+				return "saturate only valid for s32/f32";
 			}
 			if( modifier & ftz ) {
 				if( PTXOperand::isInt( type ) ) {

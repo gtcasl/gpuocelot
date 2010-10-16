@@ -26,7 +26,7 @@ bin_PROGRAMS = PTXOptimizer OcelotConfig
 check_PROGRAMS = TestLexer TestParser \
 	TestEmulator TestInstructions TestKernels \
 	TestDataflowGraph TestLLVMInstructions \
-	TestPTXToLLVMTranslator  TestGPUKernel  \
+	TestPTXToLLVMTranslator   \
 	TestCudaGlobals TestCudaMalloc TestCudaTexture2D TestCudaTextureArray \
 	TestCudaSequence TestLLVMKernels TestDeviceSwitching \
 	TestCalVectorScale TestPTXAssembly TestSequenceDriverAPI TestGenericMemory
@@ -217,14 +217,6 @@ TestKernels_LDFLAGS = -static
 ################################################################################
 
 ################################################################################
-## TestGPUKernel
-TestGPUKernel_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
-TestGPUKernel_SOURCES = ocelot/executive/test/TestGPUKernel.cpp
-TestGPUKernel_LDADD = libocelot.la $(LLVM_LDFLAGS)
-TestGPUKernel_LDFLAGS = -static
-################################################################################
-
-################################################################################
 ## PTXChecker
 PTXChecker_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
 PTXChecker_SOURCES = ocelot/executive/test/PTXChecker.cpp
@@ -398,7 +390,6 @@ nobase_include_HEADERS = ocelot/api/interface/ocelot.h \
 	ocelot/executive/test/TestEmulator.h \
 	ocelot/executive/test/sequence.ptx \
 	ocelot/executive/test/kernels.ptx \
-	ocelot/executive/test/TestGPUKernel.h \
 	ocelot/executive/test/TestLLVMKernels.h \
 	ocelot/cuda/interface/CudaRuntime.h \
 	ocelot/cuda/interface/CudaDriver.h \

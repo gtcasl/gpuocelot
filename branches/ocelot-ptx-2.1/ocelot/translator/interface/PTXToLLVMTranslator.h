@@ -146,6 +146,8 @@ namespace translator
 				ir::PTXOperand::DataType sType, int modifier = 0 );
 			void _flushToZero(const ir::LLVMInstruction::Operand& d, 
 				const ir::LLVMInstruction::Operand& a);
+			void _saturate(const ir::LLVMInstruction::Operand& d, 
+				const ir::LLVMInstruction::Operand& a);
 			
 			std::string _tempRegister();
 			std::string _loadSpecialRegister( 

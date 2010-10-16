@@ -118,6 +118,218 @@ char* uniformFloat(test::Test::MersenneTwister& generator)
 ////////////////////////////////////////////////////////////////////////////////
 
 ////////////////////////////////////////////////////////////////////////////////
+// TEST FMA
+std::string testFma_PTX(ir::PTXOperand::DataType type, int modifier, bool mad)
+{
+	bool sat = modifier & ir::PTXInstruction::sat;
+	bool ftz = modifier & ir::PTXInstruction::ftz;
+	std::string roundingString = ir::PTXInstruction::roundingMode(
+		(ir::PTXInstruction::Modifier) modifier);
+	
+	std::stringstream ptx;
+	
+	std::string typeString;
+	
+	if(type == ir::PTXOperand::f32)
+	{
+		typeString = ".f32";
+	}
+	else
+	{
+		typeString = ".f64";
+	}
+	
+	ptx << ".version 2.1\n";
+	ptx << "\n";
+	
+	ptx << ".entry test(.param .u64 out, .param .u64 in)   \n";
+	ptx << "{\t                                            \n";
+	ptx << "\t.reg .u64 %rIn, %rOut;                       \n";
+	ptx << "\t.reg " << typeString << " %f<4>;             \n";
+	ptx << "\tld.param.u64 %rIn, [in];                     \n";
+	ptx << "\tld.param.u64 %rOut, [out];                   \n";
+	ptx << "\tld.global" << typeString << " %f0, [%rIn];   \n";
+	ptx << "\tld.global" << typeString << " %f1, [%rIn + "
+		<< ir::PTXOperand::bytes(type) << "];              \n";
+	ptx << "\tld.global" << typeString << " %f2, [%rIn + "
+		<< 2 * ir::PTXOperand::bytes(type) << "];          \n";
+	
+	if(mad)
+	{
+		ptx << "\tmad.rn";
+	}
+	else
+	{
+		ptx << "\tfma";
+	}
+	
+	if(!roundingString.empty()) ptx << "." << roundingString;
+	
+	if(ftz) ptx << ".ftz";
+	if(sat) ptx << ".sat";
+	
+	ptx << typeString << " %f3, %f0, %f1, %f2;  \n";
+	
+	ptx << "\tst.global" << typeString << " [%rOut], %f3;  \n";
+	ptx << "\texit;                                        \n";
+	ptx << "}                                              \n";
+	ptx << "                                               \n";
+	
+	return ptx.str();
+}
+
+template<typename type, int modifier>
+void testFma_REF(void* output, void* input)
+{
+	static_assert(sizeof(type) == 4 || sizeof(type) == 8, "only f32/f64 valid");
+	static_assert(sizeof(type) != 8 || !(modifier & ir::PTXInstruction::sat),
+		"sat only valid for f32");
+	static_assert(sizeof(type) != 8 || !(modifier & ir::PTXInstruction::ftz),
+		"ftz only valid for f32");
+
+	type r0 = getParameter<type>(input, 0);
+	type r1 = getParameter<type>(input, sizeof(type));
+	type r2 = getParameter<type>(input, 2*sizeof(type));
+
+	if(modifier & ir::PTXInstruction::ftz)
+	{
+		if(!std::isnormal(r0)) r0 = 0.0f;
+		if(!std::isnormal(r1)) r1 = 0.0f;
+		if(!std::isnormal(r2)) r2 = 0.0f;
+	}
+
+	type result = r0 * r1 + r2;
+		
+	if(modifier & ir::PTXInstruction::ftz)
+	{
+		if(!std::isnormal(result)) result = 0.0f;
+	}
+	
+	if(modifier & ir::PTXInstruction::sat)
+	{
+		if(result < 0.0f) result = 0.0f;
+		if(result > 1.0f) result = 1.0f;
+		if(std::isnan(result)) result = 0.0f;
+	}
+	
+	setParameter(output, 0, result);
+}
+
+test::TestPTXAssembly::TypeVector testFma_IN(
+	test::TestPTXAssembly::DataType type)
+{
+	return test::TestPTXAssembly::TypeVector(3, type);
+}
+
+test::TestPTXAssembly::TypeVector testFma_OUT(
+	test::TestPTXAssembly::DataType type)
+{
+	return test::TestPTXAssembly::TypeVector(1, type);
+}
+////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////
+// TEST FMUL
+std::string testFmul_PTX(ir::PTXOperand::DataType type, int modifier)
+{
+	bool sat = modifier & ir::PTXInstruction::sat;
+	bool ftz = modifier & ir::PTXInstruction::ftz;
+	std::string roundingString = ir::PTXInstruction::roundingMode(
+		(ir::PTXInstruction::Modifier) modifier);
+	
+	std::stringstream ptx;
+	
+	std::string typeString;
+	
+	if(type == ir::PTXOperand::f32)
+	{
+		typeString = ".f32";
+	}
+	else
+	{
+		typeString = ".f64";
+	}
+	
+	ptx << ".version 2.1\n";
+	ptx << "\n";
+	
+	ptx << ".entry test(.param .u64 out, .param .u64 in)   \n";
+	ptx << "{\t                                            \n";
+	ptx << "\t.reg .u64 %rIn, %rOut;                       \n";
+	ptx << "\t.reg " << typeString << " %f<3>;             \n";
+	ptx << "\tld.param.u64 %rIn, [in];                     \n";
+	ptx << "\tld.param.u64 %rOut, [out];                   \n";
+	ptx << "\tld.global" << typeString << " %f0, [%rIn];   \n";
+	ptx << "\tld.global" << typeString << " %f1, [%rIn + "
+		<< ir::PTXOperand::bytes(type) << "];              \n";
+	
+	ptx << "\tmul";
+	
+	if(!roundingString.empty()) ptx << "." << roundingString;
+	
+	if(ftz) ptx << ".ftz";
+	if(sat) ptx << ".sat";
+	
+	ptx << typeString << " %f2, %f0, %f1;  \n";
+	
+	ptx << "\tst.global" << typeString << " [%rOut], %f2;  \n";
+	ptx << "\texit;                                        \n";
+	ptx << "}                                              \n";
+	ptx << "                                               \n";
+	
+	return ptx.str();
+}
+
+template<typename type, int modifier>
+void testFmul_REF(void* output, void* input)
+{
+	static_assert(sizeof(type) == 4 || sizeof(type) == 8, "only f32/f64 valid");
+	static_assert(sizeof(type) != 8 || !(modifier & ir::PTXInstruction::sat),
+		"sat only valid for f32");
+	static_assert(sizeof(type) != 8 || !(modifier & ir::PTXInstruction::ftz),
+		"ftz only valid for f32");
+
+	type r0 = getParameter<type>(input, 0);
+	type r1 = getParameter<type>(input, sizeof(type));
+
+	if(modifier & ir::PTXInstruction::ftz)
+	{
+		if(!std::isnormal(r0)) r0 = 0.0f;
+		if(!std::isnormal(r1)) r1 = 0.0f;
+	}
+
+
+	type result = r0 * r1;
+		
+	if(modifier & ir::PTXInstruction::ftz)
+	{
+		if(!std::isnormal(result)) result = 0.0f;
+	}
+	
+	if(modifier & ir::PTXInstruction::sat)
+	{
+		if(result < 0.0f) result = 0.0f;
+		if(result > 1.0f) result = 1.0f;
+		if(std::isnan(result)) result = 0.0f;
+	}
+	
+	setParameter(output, 0, result);
+}
+
+test::TestPTXAssembly::TypeVector testFmul_IN(
+	test::TestPTXAssembly::DataType type)
+{
+	return test::TestPTXAssembly::TypeVector(2, type);
+}
+
+test::TestPTXAssembly::TypeVector testFmul_OUT(
+	test::TestPTXAssembly::DataType type)
+{
+	return test::TestPTXAssembly::TypeVector(1, type);
+}
+////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////
 // TEST FADD
 std::string testFadd_PTX(ir::PTXOperand::DataType type, int modifier, bool add)
 {
@@ -232,7 +444,6 @@ test::TestPTXAssembly::TypeVector testFadd_OUT(
 {
 	return test::TestPTXAssembly::TypeVector(1, type);
 }
-
 ////////////////////////////////////////////////////////////////////////////////
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -2744,6 +2955,76 @@ namespace test
 		add("TestSub-f64", testFadd_REF<double, 0, false>, 
 			testFadd_PTX(ir::PTXOperand::f64, 0, false), testFadd_OUT(FP64), 
 			testFadd_IN(FP64), uniformFloat<double, 2>, 1, 1);
+
+		add("TestMul-f32", testFmul_REF<float, 0>, 
+			testFmul_PTX(ir::PTXOperand::f32, 0), testFmul_OUT(FP32), 
+			testFmul_IN(FP32), uniformFloat<float, 2>, 1, 1);
+		add("TestMul-f32-sat",
+			testFmul_REF<float, ir::PTXInstruction::sat>, 
+			testFmul_PTX(ir::PTXOperand::f32, ir::PTXInstruction::sat),
+			testFmul_OUT(FP32), testFmul_IN(FP32),
+			uniformFloat<float, 2>, 1, 1);
+		add("TestMul-f32-ftz",
+			testFmul_REF<float, ir::PTXInstruction::ftz>, 
+			testFmul_PTX(ir::PTXOperand::f32, ir::PTXInstruction::ftz),
+			testFmul_OUT(FP32), testFmul_IN(FP32),
+			uniformFloat<float, 2>, 1, 1);
+		add("TestMul-f32-ftz-sat", testFmul_REF<float, 
+			ir::PTXInstruction::ftz | ir::PTXInstruction::sat>, 
+			testFmul_PTX(ir::PTXOperand::f32, 
+			ir::PTXInstruction::ftz | ir::PTXInstruction::sat),
+			testFmul_OUT(FP32), testFmul_IN(FP32),
+			uniformFloat<float, 2>, 1, 1);
+		add("TestMul-f64", testFmul_REF<double, 0>, 
+			testFmul_PTX(ir::PTXOperand::f64, 0), testFmul_OUT(FP64), 
+			testFmul_IN(FP64), uniformFloat<double, 2>, 1, 1);
+
+		add("TestMad-f32", testFma_REF<float, 0>, 
+			testFma_PTX(ir::PTXOperand::f32, 0, true), testFma_OUT(FP32), 
+			testFma_IN(FP32), uniformFloat<float, 3>, 1, 1);
+		add("TestMad-f32-sat",
+			testFma_REF<float, ir::PTXInstruction::sat>, 
+			testFma_PTX(ir::PTXOperand::f32, ir::PTXInstruction::sat, true),
+			testFma_OUT(FP32), testFma_IN(FP32),
+			uniformFloat<float, 3>, 1, 1);
+		add("TestMad-f32-ftz",
+			testFma_REF<float, ir::PTXInstruction::ftz>, 
+			testFma_PTX(ir::PTXOperand::f32, ir::PTXInstruction::ftz, true),
+			testFma_OUT(FP32), testFma_IN(FP32),
+			uniformFloat<float, 3>, 1, 1);
+		add("TestMad-f32-ftz-sat", testFma_REF<float, 
+			ir::PTXInstruction::ftz | ir::PTXInstruction::sat>, 
+			testFma_PTX(ir::PTXOperand::f32, 
+			ir::PTXInstruction::ftz | ir::PTXInstruction::sat, true),
+			testFma_OUT(FP32), testFma_IN(FP32),
+			uniformFloat<float, 3>, 1, 1);
+		add("TestMad-f64", testFma_REF<double, 0>, 
+			testFma_PTX(ir::PTXOperand::f64, 0, true), testFma_OUT(FP64), 
+			testFma_IN(FP64), uniformFloat<double, 3>, 1, 1);
+
+
+		add("TestFma-f32", testFma_REF<float, 0>, 
+			testFma_PTX(ir::PTXOperand::f32, 0, false), testFma_OUT(FP32), 
+			testFma_IN(FP32), uniformFloat<float, 3>, 1, 1);
+		add("TestFma-f32-sat",
+			testFma_REF<float, ir::PTXInstruction::sat>, 
+			testFma_PTX(ir::PTXOperand::f32, ir::PTXInstruction::sat, false),
+			testFma_OUT(FP32), testFma_IN(FP32),
+			uniformFloat<float, 3>, 1, 1);
+		add("TestFma-f32-ftz",
+			testFma_REF<float, ir::PTXInstruction::ftz>, 
+			testFma_PTX(ir::PTXOperand::f32, ir::PTXInstruction::ftz, false),
+			testFma_OUT(FP32), testFma_IN(FP32),
+			uniformFloat<float, 3>, 1, 1);
+		add("TestFma-f32-ftz-sat", testFma_REF<float, 
+			ir::PTXInstruction::ftz | ir::PTXInstruction::sat>, 
+			testFma_PTX(ir::PTXOperand::f32, 
+			ir::PTXInstruction::ftz | ir::PTXInstruction::sat, false),
+			testFma_OUT(FP32), testFma_IN(FP32),
+			uniformFloat<float, 3>, 1, 1);
+		add("TestFma-f64", testFma_REF<double, 0>, 
+			testFma_PTX(ir::PTXOperand::f64, 0, false), testFma_OUT(FP64), 
+			testFma_IN(FP64), uniformFloat<double, 3>, 1, 1);
 	}
 
 	TestPTXAssembly::TestPTXAssembly(hydrazine::Timer::Second l, 
@@ -2818,7 +3099,7 @@ namespace test
 				timer.stop();
 			}
 			status << "Ran '" << test->name << "' for " 
-				<< i << " iterations.\n";	
+				<< i << " iterations.\n";
 		}
 		
 		return failures == 0;

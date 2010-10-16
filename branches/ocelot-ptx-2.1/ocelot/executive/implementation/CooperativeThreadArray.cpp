@@ -4768,14 +4768,12 @@ void executive::CooperativeThreadArray::eval_Mad(CTAContext &context, const PTXI
 		for (int threadID = 0; threadID < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;
 			PTXF32 d = 0,
-				a = operandAsF32(threadID, instr.a), 
-				b = operandAsF32(threadID, instr.b), 
-				c = operandAsF32(threadID, instr.c);
+				a = ftz(instr.modifier, operandAsF32(threadID, instr.a)), 
+				b = ftz(instr.modifier, operandAsF32(threadID, instr.b)), 
+				c = ftz(instr.modifier, operandAsF32(threadID, instr.c));
 
-			d = a * b + c;
-			if (instr.modifier & PTXInstruction::sat) {
-				if (d < 0) d = 0; else if (d > 1) d = 1;
-			}
+			d = ftz(instr.modifier, sat(instr.modifier, a * b + c));
+			
 			setRegAsF32(threadID, instr.d.reg, d);
 		}
 	} break;
@@ -5362,8 +5360,9 @@ void executive::CooperativeThreadArray::eval_Mul(CTAContext &context, const PTXI
 		for (int threadID = 0; threadID < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;
 			
-			PTXF32 d, a = operandAsF32(threadID, instr.a), b = operandAsF32(threadID, instr.b);
-			d = sat(instr.modifier, a * b);
+			PTXF32 d, a = ftz(instr.modifier, operandAsF32(threadID, instr.a)),
+				b = ftz(instr.modifier, operandAsF32(threadID, instr.b));
+			d = ftz(instr.modifier, sat(instr.modifier, a * b));
 			setRegAsF32(threadID, instr.d.reg, d);
 		}
 	}	

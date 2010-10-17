@@ -371,9 +371,11 @@ std::string cuda::CudaRuntime::_formatError( const std::string& message ) {
 }
 
 cuda::HostThreadContext& cuda::CudaRuntime::_getCurrentThread() {
-	HostThreadContextMap::iterator t = _threads.find(boost::this_thread::get_id());
+	HostThreadContextMap::iterator t = _threads.find(
+		boost::this_thread::get_id());
 	if (t == _threads.end()) {
-		report("Creating new context for thread " << boost::this_thread::get_id());
+		report("Creating new context for thread "
+			<< boost::this_thread::get_id());
 		t = _threads.insert(std::make_pair(boost::this_thread::get_id(), 
 			HostThreadContext())).first;
 	}
@@ -2031,8 +2033,7 @@ cudaError_t cuda::CudaRuntime::cudaSetDevice(int device) {
 		HostThreadContext& thread = _getCurrentThread();
 		thread.selectedDevice = device;
 		report("Setting device for thread " 
-			<< boost::this_thread::get_id() << " to " 
-			<< device);
+			<< boost::this_thread::get_id() << " to " << device);
 		result = cudaSuccess;
 	}
 
@@ -2451,9 +2452,14 @@ cudaError_t cuda::CudaRuntime::cudaLaunch(const char *entry) {
 cudaError_t cuda::CudaRuntime::cudaFuncGetAttributes(
 	struct cudaFuncAttributes *attr, const char *symbol) {
 	cudaError_t result = cudaErrorInvalidDeviceFunction;		
-	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
 
 	_lock();
+
+	_enumerateDevices();
+	if (_devices.empty()) {
+		_unlock();
+		return _setLastError(cudaErrorNoDevice);
+	}
 	
 	//
 	// go find the kernel and fill out its attributes

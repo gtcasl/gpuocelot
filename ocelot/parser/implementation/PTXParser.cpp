@@ -159,15 +159,7 @@ namespace parser
 	
 		stream3 >> statement.minor;
 
-		if( statement.minor == 0 && statement.major == 2 )
-		{
-			std::cerr << "==Ocelot== Warning: Support for PTX 2.0" 
-				<< " is currently experimental. " << std::endl 
-				<< "==Ocelot==  for PTX module - " << fileName << std::endl
-				<< "==Ocelot== Please report all errors to " 
-				<< "'http://groups.google.com/group/gpuocelot'" << std::endl;
-		}
-		else if( statement.minor != 4 || statement.major != 1 )
+		if( statement.minor != 4 || statement.major != 1 )
 		{
 			throw_exception( toString( location, *this ) 
 				<< "Cannot parse PTX version " << statement.major 

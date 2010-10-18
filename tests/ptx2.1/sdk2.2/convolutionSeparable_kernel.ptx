@@ -1,0 +1,399 @@
+	.version 2.1
+	.target sm_20
+	// compiled with /usr/local/cuda3.1/cuda/open64/lib//be
+	// nvopencc 3.1 built on 2010-06-07
+
+	.visible .func (.param .f32 __cudaretf__Z14convolutionRowILin1EEfPf) _Z14convolutionRowILin1EEfPf (.param .u64 __cudaparmf1__Z14convolutionRowILin1EEfPf)
+
+	.visible .func (.param .f32 __cudaretf__Z17convolutionColumnILin1EEfPf) _Z17convolutionColumnILin1EEfPf (.param .u64 __cudaparmf1__Z17convolutionColumnILin1EEfPf)
+
+	//-----------------------------------------------------------
+	// Compiling /tmp/tmpxft_0000169b_00000000-7_convolutionSeparable_kernel.cpp3.i (/tmp/ccBI#.6MwpI7)
+	//-----------------------------------------------------------
+
+	//-----------------------------------------------------------
+	// Options:
+	//-----------------------------------------------------------
+	//  Target:ptx, ISA:sm_20, Endian:little, Pointer Size:64
+	//  -O3	(Optimization level)
+	//  -g0	(Debug level)
+	//  -m2	(Report advisories)
+	//-----------------------------------------------------------
+
+	.file	1	"<command-line>"
+	.file	2	"/tmp/tmpxft_0000169b_00000000-6_convolutionSeparable_kernel.cudafe2.gpu"
+	.file	3	"/usr/lib/gcc/x86_64-linux-gnu/4.4.3/include/stddef.h"
+	.file	4	"/usr/local/cuda3.1/cuda/bin/../include/crt/device_runtime.h"
+	.file	5	"/usr/local/cuda3.1/cuda/bin/../include/host_defines.h"
+	.file	6	"/usr/local/cuda3.1/cuda/bin/../include/builtin_types.h"
+	.file	7	"/usr/local/cuda3.1/cuda/bin/../include/device_types.h"
+	.file	8	"/usr/local/cuda3.1/cuda/bin/../include/driver_types.h"
+	.file	9	"/usr/local/cuda3.1/cuda/bin/../include/surface_types.h"
+	.file	10	"/usr/local/cuda3.1/cuda/bin/../include/texture_types.h"
+	.file	11	"/usr/local/cuda3.1/cuda/bin/../include/vector_types.h"
+	.file	12	"/usr/local/cuda3.1/cuda/bin/../include/device_launch_parameters.h"
+	.file	13	"/usr/local/cuda3.1/cuda/bin/../include/crt/storage_class.h"
+	.file	14	"/usr/include/bits/types.h"
+	.file	15	"/usr/include/time.h"
+	.file	16	"/home/andrew/repositories/gpuocelot/tests/cuda2.2/tests/convolutionSeparable/convolutionSeparable_kernel.cu"
+	.file	17	"/usr/local/cuda3.1/cuda/bin/../include/common_functions.h"
+	.file	18	"/usr/local/cuda3.1/cuda/bin/../include/math_functions.h"
+	.file	19	"/usr/local/cuda3.1/cuda/bin/../include/math_constants.h"
+	.file	20	"/usr/local/cuda3.1/cuda/bin/../include/device_functions.h"
+	.file	21	"/usr/local/cuda3.1/cuda/bin/../include/sm_11_atomic_functions.h"
+	.file	22	"/usr/local/cuda3.1/cuda/bin/../include/sm_12_atomic_functions.h"
+	.file	23	"/usr/local/cuda3.1/cuda/bin/../include/sm_13_double_functions.h"
+	.file	24	"/usr/local/cuda3.1/cuda/bin/../include/sm_20_atomic_functions.h"
+	.file	25	"/usr/local/cuda3.1/cuda/bin/../include/sm_20_intrinsics.h"
+	.file	26	"/usr/local/cuda3.1/cuda/bin/../include/surface_functions.h"
+	.file	27	"/usr/local/cuda3.1/cuda/bin/../include/texture_fetch_functions.h"
+	.file	28	"/usr/local/cuda3.1/cuda/bin/../include/math_functions_dbl_ptx3.h"
+
+	.const .align 4 .b8 d_Kernel[68];
+
+	.visible .func (.param .f32 __cudaretf__Z14convolutionRowILin1EEfPf) _Z14convolutionRowILin1EEfPf (.param .u64 __cudaparmf1__Z14convolutionRowILin1EEfPf)
+	{
+	.reg .f32 %f<3>;
+	.loc	16	75	0
+$LDWbegin__Z14convolutionRowILin1EEfPf:
+	.loc	16	76	0
+	mov.f32 	%f1, 0f00000000;     	// 0
+	st.param.f32 	[__cudaretf__Z14convolutionRowILin1EEfPf], %f1;
+	ret;
+$LDWend__Z14convolutionRowILin1EEfPf:
+	} // _Z14convolutionRowILin1EEfPf
+
+	.visible .func (.param .f32 __cudaretf__Z17convolutionColumnILin1EEfPf) _Z17convolutionColumnILin1EEfPf (.param .u64 __cudaparmf1__Z17convolutionColumnILin1EEfPf)
+	{
+	.reg .f32 %f<3>;
+	.loc	16	85	0
+$LDWbegin__Z17convolutionColumnILin1EEfPf:
+	.loc	16	86	0
+	mov.f32 	%f1, 0f00000000;     	// 0
+	st.param.f32 	[__cudaretf__Z17convolutionColumnILin1EEfPf], %f1;
+	ret;
+$LDWend__Z17convolutionColumnILin1EEfPf:
+	} // _Z17convolutionColumnILin1EEfPf
+
+	.entry _Z17convolutionRowGPUPfS_ii (
+		.param .u64 __cudaparm__Z17convolutionRowGPUPfS_ii_d_Result,
+		.param .u64 __cudaparm__Z17convolutionRowGPUPfS_ii_d_Data,
+		.param .s32 __cudaparm__Z17convolutionRowGPUPfS_ii_dataW,
+		.param .s32 __cudaparm__Z17convolutionRowGPUPfS_ii_dataH)
+	{
+	.reg .u32 %r<29>;
+	.reg .u64 %rd<17>;
+	.reg .f32 %f<55>;
+	.reg .pred %p<5>;
+	.shared .align 4 .b8 __cuda___cuda_local_var_24067_35_data96[576];
+	.loc	16	98	0
+$LDWbegin__Z17convolutionRowGPUPfS_ii:
+	cvt.s32.u32 	%r1, %ctaid.x;
+	mov.s32 	%r2, 128;
+	mul24.lo.s32 	%r3, %r1, %r2;
+	ld.param.s32 	%r4, [__cudaparm__Z17convolutionRowGPUPfS_ii_dataW];
+	sub.s32 	%r5, %r4, 1;
+	sub.s32 	%r6, %r3, 8;
+	mov.u32 	%r7, %tid.x;
+	add.u32 	%r8, %r3, %r7;
+	sub.s32 	%r9, %r8, 16;
+	setp.gt.s32 	%p1, %r6, %r9;
+	@%p1 bra 	$Lt_2_3842;
+	mov.s32 	%r10, 0;
+	max.s32 	%r11, %r6, %r10;
+	set.ge.u32.s32 	%r12, %r9, %r11;
+	neg.s32 	%r13, %r12;
+	add.s32 	%r14, %r3, 135;
+	min.s32 	%r15, %r5, %r14;
+	set.le.u32.s32 	%r16, %r9, %r15;
+	neg.s32 	%r17, %r16;
+	and.b32 	%r18, %r13, %r17;
+	mov.u32 	%r19, 0;
+	setp.eq.s32 	%p2, %r18, %r19;
+	@%p2 bra 	$Lt_2_4610;
+	.loc	16	130	0
+	ld.param.u64 	%rd1, [__cudaparm__Z17convolutionRowGPUPfS_ii_d_Data];
+	cvt.s32.u32 	%r20, %ctaid.y;
+	mul24.lo.s32 	%r21, %r20, %r4;
+	add.s32 	%r22, %r8, %r21;
+	cvt.s64.s32 	%rd2, %r22;
+	mul.wide.s32 	%rd3, %r22, 4;
+	add.u64 	%rd4, %rd1, %rd3;
+	ld.global.f32 	%f1, [%rd4+-64];
+	bra.uni 	$Lt_2_4354;
+$Lt_2_4610:
+	mov.f32 	%f1, 0f00000000;     	// 0
+$Lt_2_4354:
+	mov.u64 	%rd5, __cuda___cuda_local_var_24067_35_data96;
+	cvt.s64.s32 	%rd6, %r7;
+	mul.wide.s32 	%rd7, %r7, 4;
+	add.u64 	%rd8, %rd5, %rd7;
+	st.shared.f32 	[%rd8+-32], %f1;
+$Lt_2_3842:
+	mov.u64 	%rd5, __cuda___cuda_local_var_24067_35_data96;
+	.loc	16	139	0
+	bar.sync 	0;
+	add.s32 	%r23, %r3, 127;
+	min.s32 	%r24, %r5, %r23;
+	setp.gt.s32 	%p3, %r8, %r24;
+	@%p3 bra 	$Lt_2_4866;
+	.loc	16	152	0
+	cvt.s64.s32 	%rd9, %r7;
+	mul.wide.s32 	%rd10, %r7, 4;
+	add.u64 	%rd11, %rd5, %rd10;
+	mov.f32 	%f2, 0f00000000;     	// 0
+	ld.const.f32 	%f3, [d_Kernel+64];
+	ld.shared.f32 	%f4, [%rd11+0];
+	fma.rn.f32 	%f5, %f3, %f4, %f2;
+	ld.const.f32 	%f6, [d_Kernel+60];
+	ld.shared.f32 	%f7, [%rd11+4];
+	fma.rn.f32 	%f8, %f6, %f7, %f5;
+	ld.const.f32 	%f9, [d_Kernel+56];
+	ld.shared.f32 	%f10, [%rd11+8];
+	fma.rn.f32 	%f11, %f9, %f10, %f8;
+	ld.const.f32 	%f12, [d_Kernel+52];
+	ld.shared.f32 	%f13, [%rd11+12];
+	fma.rn.f32 	%f14, %f12, %f13, %f11;
+	ld.const.f32 	%f15, [d_Kernel+48];
+	ld.shared.f32 	%f16, [%rd11+16];
+	fma.rn.f32 	%f17, %f15, %f16, %f14;
+	ld.const.f32 	%f18, [d_Kernel+44];
+	ld.shared.f32 	%f19, [%rd11+20];
+	fma.rn.f32 	%f20, %f18, %f19, %f17;
+	ld.const.f32 	%f21, [d_Kernel+40];
+	ld.shared.f32 	%f22, [%rd11+24];
+	fma.rn.f32 	%f23, %f21, %f22, %f20;
+	ld.const.f32 	%f24, [d_Kernel+36];
+	ld.shared.f32 	%f25, [%rd11+28];
+	fma.rn.f32 	%f26, %f24, %f25, %f23;
+	ld.const.f32 	%f27, [d_Kernel+32];
+	ld.shared.f32 	%f28, [%rd11+32];
+	fma.rn.f32 	%f29, %f27, %f28, %f26;
+	ld.const.f32 	%f30, [d_Kernel+28];
+	ld.shared.f32 	%f31, [%rd11+36];
+	fma.rn.f32 	%f32, %f30, %f31, %f29;
+	ld.const.f32 	%f33, [d_Kernel+24];
+	ld.shared.f32 	%f34, [%rd11+40];
+	fma.rn.f32 	%f35, %f33, %f34, %f32;
+	ld.const.f32 	%f36, [d_Kernel+20];
+	ld.shared.f32 	%f37, [%rd11+44];
+	fma.rn.f32 	%f38, %f36, %f37, %f35;
+	ld.const.f32 	%f39, [d_Kernel+16];
+	ld.shared.f32 	%f40, [%rd11+48];
+	fma.rn.f32 	%f41, %f39, %f40, %f38;
+	ld.const.f32 	%f42, [d_Kernel+12];
+	ld.shared.f32 	%f43, [%rd11+52];
+	fma.rn.f32 	%f44, %f42, %f43, %f41;
+	ld.const.f32 	%f45, [d_Kernel+8];
+	ld.shared.f32 	%f46, [%rd11+56];
+	fma.rn.f32 	%f47, %f45, %f46, %f44;
+	ld.const.f32 	%f48, [d_Kernel+4];
+	ld.shared.f32 	%f49, [%rd11+60];
+	fma.rn.f32 	%f50, %f48, %f49, %f47;
+	ld.const.f32 	%f51, [d_Kernel+0];
+	ld.shared.f32 	%f52, [%rd11+64];
+	fma.rn.f32 	%f53, %f51, %f52, %f50;
+	.loc	16	155	0
+	ld.param.u64 	%rd12, [__cudaparm__Z17convolutionRowGPUPfS_ii_d_Result];
+	cvt.s32.u32 	%r25, %ctaid.y;
+	mul24.lo.s32 	%r26, %r25, %r4;
+	add.s32 	%r27, %r8, %r26;
+	cvt.s64.s32 	%rd13, %r27;
+	mul.wide.s32 	%rd14, %r27, 4;
+	add.u64 	%rd15, %rd12, %rd14;
+	st.global.f32 	[%rd15+0], %f53;
+$Lt_2_4866:
+	.loc	16	157	0
+	exit;
+$LDWend__Z17convolutionRowGPUPfS_ii:
+	} // _Z17convolutionRowGPUPfS_ii
+
+	.entry _Z20convolutionColumnGPUPfS_iiii (
+		.param .u64 __cudaparm__Z20convolutionColumnGPUPfS_iiii_d_Result,
+		.param .u64 __cudaparm__Z20convolutionColumnGPUPfS_iiii_d_Data,
+		.param .s32 __cudaparm__Z20convolutionColumnGPUPfS_iiii_dataW,
+		.param .s32 __cudaparm__Z20convolutionColumnGPUPfS_iiii_dataH,
+		.param .s32 __cudaparm__Z20convolutionColumnGPUPfS_iiii_smemStride,
+		.param .s32 __cudaparm__Z20convolutionColumnGPUPfS_iiii_gmemStride)
+	{
+	.reg .u32 %r<45>;
+	.reg .u64 %rd<21>;
+	.reg .f32 %f<55>;
+	.reg .pred %p<7>;
+	.shared .align 4 .b8 __cuda___cuda_local_var_24139_35_data704[4096];
+	.loc	16	170	0
+$LDWbegin__Z20convolutionColumnGPUPfS_iiii:
+	.loc	16	190	0
+	cvt.s32.u32 	%r1, %tid.y;
+	mov.u32 	%r2, %tid.x;
+	mov.s32 	%r3, 16;
+	mul24.lo.s32 	%r4, %r1, %r3;
+	add.u32 	%r5, %r2, %r4;
+	.loc	16	191	0
+	cvt.s32.u32 	%r6, %ctaid.y;
+	mov.s32 	%r7, 48;
+	mul24.lo.s32 	%r8, %r6, %r7;
+	cvt.s32.u32 	%r9, %ctaid.x;
+	mov.s32 	%r10, 16;
+	mul24.lo.s32 	%r11, %r9, %r10;
+	add.u32 	%r12, %r8, %r1;
+	add.u32 	%r13, %r11, %r2;
+	sub.u32 	%r14, %r12, 8;
+	ld.param.s32 	%r15, [__cudaparm__Z20convolutionColumnGPUPfS_iiii_dataW];
+	mul24.lo.s32 	%r16, %r14, %r15;
+	add.s32 	%r17, %r13, %r16;
+	.loc	16	195	0
+	mov.s32 	%r18, %r14;
+	add.s32 	%r19, %r8, 55;
+	ld.param.s32 	%r20, [__cudaparm__Z20convolutionColumnGPUPfS_iiii_dataH];
+	setp.lt.s32 	%p1, %r19, %r14;
+	@%p1 bra 	$Lt_3_6914;
+	mov.u64 	%rd1, __cuda___cuda_local_var_24139_35_data704;
+	sub.s32 	%r21, %r20, 1;
+	ld.param.s32 	%r22, [__cudaparm__Z20convolutionColumnGPUPfS_iiii_smemStride];
+	cvt.s64.s32 	%rd2, %r22;
+	sub.s32 	%r23, %r8, 8;
+	mul.wide.s32 	%rd3, %r22, 4;
+	min.s32 	%r24, %r19, %r21;
+	mov.s32 	%r25, 0;
+	max.s32 	%r26, %r23, %r25;
+	cvt.s64.s32 	%rd4, %r5;
+	mul.wide.s32 	%rd5, %r5, 4;
+	add.u64 	%rd6, %rd1, %rd5;
+	mov.u32 	%r27, %ntid.y;
+	ld.param.s32 	%r28, [__cudaparm__Z20convolutionColumnGPUPfS_iiii_gmemStride];
+$Lt_3_4866:
+ //<loop> Loop body line 195, nesting depth: 1, estimated iterations: unknown
+	set.ge.u32.s32 	%r29, %r24, %r18;
+	neg.s32 	%r30, %r29;
+	set.le.u32.s32 	%r31, %r26, %r18;
+	neg.s32 	%r32, %r31;
+	and.b32 	%r33, %r30, %r32;
+	mov.u32 	%r34, 0;
+	setp.eq.s32 	%p2, %r33, %r34;
+	@%p2 bra 	$Lt_3_5378;
+ //<loop> Part of loop body line 195, head labeled $Lt_3_4866
+	.loc	16	196	0
+	ld.param.u64 	%rd7, [__cudaparm__Z20convolutionColumnGPUPfS_iiii_d_Data];
+	cvt.s64.s32 	%rd8, %r17;
+	mul.wide.s32 	%rd9, %r17, 4;
+	add.u64 	%rd10, %rd7, %rd9;
+	ld.global.f32 	%f1, [%rd10+0];
+	bra.uni 	$Lt_3_5122;
+$Lt_3_5378:
+ //<loop> Part of loop body line 195, head labeled $Lt_3_4866
+	mov.f32 	%f1, 0f00000000;     	// 0
+$Lt_3_5122:
+ //<loop> Part of loop body line 195, head labeled $Lt_3_4866
+	st.shared.f32 	[%rd6+0], %f1;
+	.loc	16	199	0
+	add.u64 	%rd6, %rd6, %rd3;
+	.loc	16	200	0
+	add.s32 	%r17, %r17, %r28;
+	add.u32 	%r18, %r18, %r27;
+	setp.ge.s32 	%p3, %r19, %r18;
+	@%p3 bra 	$Lt_3_4866;
+	bra.uni 	$Lt_3_4354;
+$Lt_3_6914:
+	sub.s32 	%r21, %r20, 1;
+	mov.u64 	%rd1, __cuda___cuda_local_var_24139_35_data704;
+$Lt_3_4354:
+	.loc	16	206	0
+	bar.sync 	0;
+	.loc	16	208	0
+	add.s32 	%r35, %r1, 8;
+	mov.s32 	%r36, 16;
+	mul24.lo.s32 	%r37, %r35, %r36;
+	add.u32 	%r5, %r2, %r37;
+	.loc	16	209	0
+	mul24.lo.s32 	%r38, %r12, %r15;
+	add.s32 	%r17, %r13, %r38;
+	.loc	16	212	0
+	mov.s32 	%r39, %r12;
+	add.s32 	%r40, %r8, 47;
+	min.s32 	%r41, %r40, %r21;
+	setp.lt.s32 	%p4, %r41, %r12;
+	@%p4 bra 	$Lt_3_5890;
+	ld.param.s32 	%r42, [__cudaparm__Z20convolutionColumnGPUPfS_iiii_smemStride];
+	cvt.s64.s32 	%rd11, %r42;
+	mul.wide.s32 	%rd3, %r42, 4;
+	ld.param.s32 	%r43, [__cudaparm__Z20convolutionColumnGPUPfS_iiii_gmemStride];
+	cvt.s64.s32 	%rd12, %r43;
+	mul.wide.s32 	%rd13, %r43, 4;
+	cvt.s64.s32 	%rd14, %r5;
+	mul.wide.s32 	%rd15, %r5, 4;
+	add.u64 	%rd6, %rd1, %rd15;
+	ld.param.u64 	%rd16, [__cudaparm__Z20convolutionColumnGPUPfS_iiii_d_Result];
+	cvt.s64.s32 	%rd17, %r17;
+	mul.wide.s32 	%rd18, %r17, 4;
+	add.u64 	%rd19, %rd16, %rd18;
+	mov.u32 	%r27, %ntid.y;
+$Lt_3_6402:
+ //<loop> Loop body line 212, nesting depth: 1, estimated iterations: unknown
+	.loc	16	224	0
+	mov.f32 	%f2, 0f00000000;     	// 0
+	ld.const.f32 	%f3, [d_Kernel+64];
+	ld.shared.f32 	%f4, [%rd6+-512];
+	fma.rn.f32 	%f5, %f3, %f4, %f2;
+	ld.const.f32 	%f6, [d_Kernel+60];
+	ld.shared.f32 	%f7, [%rd6+-448];
+	fma.rn.f32 	%f8, %f6, %f7, %f5;
+	ld.const.f32 	%f9, [d_Kernel+56];
+	ld.shared.f32 	%f10, [%rd6+-384];
+	fma.rn.f32 	%f11, %f9, %f10, %f8;
+	ld.const.f32 	%f12, [d_Kernel+52];
+	ld.shared.f32 	%f13, [%rd6+-320];
+	fma.rn.f32 	%f14, %f12, %f13, %f11;
+	ld.const.f32 	%f15, [d_Kernel+48];
+	ld.shared.f32 	%f16, [%rd6+-256];
+	fma.rn.f32 	%f17, %f15, %f16, %f14;
+	ld.const.f32 	%f18, [d_Kernel+44];
+	ld.shared.f32 	%f19, [%rd6+-192];
+	fma.rn.f32 	%f20, %f18, %f19, %f17;
+	ld.const.f32 	%f21, [d_Kernel+40];
+	ld.shared.f32 	%f22, [%rd6+-128];
+	fma.rn.f32 	%f23, %f21, %f22, %f20;
+	ld.const.f32 	%f24, [d_Kernel+36];
+	ld.shared.f32 	%f25, [%rd6+-64];
+	fma.rn.f32 	%f26, %f24, %f25, %f23;
+	ld.const.f32 	%f27, [d_Kernel+32];
+	ld.shared.f32 	%f28, [%rd6+0];
+	fma.rn.f32 	%f29, %f27, %f28, %f26;
+	ld.const.f32 	%f30, [d_Kernel+28];
+	ld.shared.f32 	%f31, [%rd6+64];
+	fma.rn.f32 	%f32, %f30, %f31, %f29;
+	ld.const.f32 	%f33, [d_Kernel+24];
+	ld.shared.f32 	%f34, [%rd6+128];
+	fma.rn.f32 	%f35, %f33, %f34, %f32;
+	ld.const.f32 	%f36, [d_Kernel+20];
+	ld.shared.f32 	%f37, [%rd6+192];
+	fma.rn.f32 	%f38, %f36, %f37, %f35;
+	ld.const.f32 	%f39, [d_Kernel+16];
+	ld.shared.f32 	%f40, [%rd6+256];
+	fma.rn.f32 	%f41, %f39, %f40, %f38;
+	ld.const.f32 	%f42, [d_Kernel+12];
+	ld.shared.f32 	%f43, [%rd6+320];
+	fma.rn.f32 	%f44, %f42, %f43, %f41;
+	ld.const.f32 	%f45, [d_Kernel+8];
+	ld.shared.f32 	%f46, [%rd6+384];
+	fma.rn.f32 	%f47, %f45, %f46, %f44;
+	ld.const.f32 	%f48, [d_Kernel+4];
+	ld.shared.f32 	%f49, [%rd6+448];
+	fma.rn.f32 	%f50, %f48, %f49, %f47;
+	ld.const.f32 	%f51, [d_Kernel+0];
+	ld.shared.f32 	%f52, [%rd6+512];
+	fma.rn.f32 	%f53, %f51, %f52, %f50;
+	st.global.f32 	[%rd19+0], %f53;
+	.loc	16	225	0
+	add.u64 	%rd6, %rd6, %rd3;
+	.loc	16	226	0
+	add.u64 	%rd19, %rd13, %rd19;
+	add.u32 	%r39, %r39, %r27;
+	setp.ge.s32 	%p5, %r41, %r39;
+	@%p5 bra 	$Lt_3_6402;
+$Lt_3_5890:
+	.loc	16	228	0
+	exit;
+$LDWend__Z20convolutionColumnGPUPfS_iiii:
+	} // _Z20convolutionColumnGPUPfS_iiii
+

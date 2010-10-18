@@ -1,0 +1,487 @@
+	.version 2.1
+	.target sm_20
+	// compiled with /usr/local/cuda3.1/cuda/open64/lib//be
+	// nvopencc 3.1 built on 2010-06-07
+
+	.visible .func (.param .s32 __cudaretf__Z12intersectBox3Ray6float3S0_PfS1_) _Z12intersectBox3Ray6float3S0_PfS1_ (.param .align 4 .b8 __cudaparmf1__Z12intersectBox3Ray6float3S0_PfS1_[24], .param .align 4 .b8 __cudaparmf2__Z12intersectBox3Ray6float3S0_PfS1_[12], .param .align 4 .b8 __cudaparmf3__Z12intersectBox3Ray6float3S0_PfS1_[12], .param .u64 __cudaparmf4__Z12intersectBox3Ray6float3S0_PfS1_, .param .u64 __cudaparmf5__Z12intersectBox3Ray6float3S0_PfS1_)
+
+	.visible .func (.param .align 4 .b8 __cudaretf__Z3mulRK8float3x4RK6float3[12]) _Z3mulRK8float3x4RK6float3 (.param .u64 __cudaparmf1__Z3mulRK8float3x4RK6float3, .param .u64 __cudaparmf2__Z3mulRK8float3x4RK6float3)
+
+	.visible .func (.param .align 16 .b8 __cudaretf__Z3mulRK8float3x4RK6float4[16]) _Z3mulRK8float3x4RK6float4 (.param .u64 __cudaparmf1__Z3mulRK8float3x4RK6float4, .param .u64 __cudaparmf2__Z3mulRK8float3x4RK6float4)
+
+	.visible .func (.param .u32 __cudaretf__Z14rgbaFloatToInt6float4) _Z14rgbaFloatToInt6float4 (.param .align 16 .b8 __cudaparmf1__Z14rgbaFloatToInt6float4[16])
+
+	//-----------------------------------------------------------
+	// Compiling /tmp/tmpxft_0000171b_00000000-7_volumeRender_kernel.cpp3.i (/tmp/ccBI#.WPW6bm)
+	//-----------------------------------------------------------
+
+	//-----------------------------------------------------------
+	// Options:
+	//-----------------------------------------------------------
+	//  Target:ptx, ISA:sm_20, Endian:little, Pointer Size:64
+	//  -O3	(Optimization level)
+	//  -g0	(Debug level)
+	//  -m2	(Report advisories)
+	//-----------------------------------------------------------
+
+	.file	1	"<command-line>"
+	.file	2	"/tmp/tmpxft_0000171b_00000000-6_volumeRender_kernel.cudafe2.gpu"
+	.file	3	"/home/andrew/repositories/gpuocelot/tests/cuda2.2/tests/volumeRender/volumeRender_kernel.cu"
+	.file	4	"/usr/lib/gcc/x86_64-linux-gnu/4.4.3/include/stddef.h"
+	.file	5	"/usr/local/cuda3.1/cuda/bin/../include/crt/device_runtime.h"
+	.file	6	"/usr/local/cuda3.1/cuda/bin/../include/host_defines.h"
+	.file	7	"/usr/local/cuda3.1/cuda/bin/../include/builtin_types.h"
+	.file	8	"/usr/local/cuda3.1/cuda/bin/../include/device_types.h"
+	.file	9	"/usr/local/cuda3.1/cuda/bin/../include/driver_types.h"
+	.file	10	"/usr/local/cuda3.1/cuda/bin/../include/surface_types.h"
+	.file	11	"/usr/local/cuda3.1/cuda/bin/../include/texture_types.h"
+	.file	12	"/usr/local/cuda3.1/cuda/bin/../include/vector_types.h"
+	.file	13	"/usr/local/cuda3.1/cuda/bin/../include/device_launch_parameters.h"
+	.file	14	"/usr/local/cuda3.1/cuda/bin/../include/crt/storage_class.h"
+	.file	15	"/usr/include/bits/types.h"
+	.file	16	"/usr/include/time.h"
+	.file	17	"/usr/local/cuda3.1/cuda/bin/../include/common_functions.h"
+	.file	18	"/usr/local/cuda3.1/cuda/bin/../include/math_functions.h"
+	.file	19	"/usr/local/cuda3.1/cuda/bin/../include/math_constants.h"
+	.file	20	"/usr/local/cuda3.1/cuda/bin/../include/device_functions.h"
+	.file	21	"/usr/local/cuda3.1/cuda/bin/../include/sm_11_atomic_functions.h"
+	.file	22	"/usr/local/cuda3.1/cuda/bin/../include/sm_12_atomic_functions.h"
+	.file	23	"/usr/local/cuda3.1/cuda/bin/../include/sm_13_double_functions.h"
+	.file	24	"/usr/local/cuda3.1/cuda/bin/../include/sm_20_atomic_functions.h"
+	.file	25	"/usr/local/cuda3.1/cuda/bin/../include/sm_20_intrinsics.h"
+	.file	26	"/usr/local/cuda3.1/cuda/bin/../include/surface_functions.h"
+	.file	27	"/usr/local/cuda3.1/cuda/bin/../include/texture_fetch_functions.h"
+	.file	28	"/usr/local/cuda3.1/cuda/bin/../include/math_functions_dbl_ptx3.h"
+
+	.global .texref tex;
+	.global .texref transferTex;
+	.global .align 16 .b8 c_invViewMatrix[48];
+
+	.visible .func (.param .s32 __cudaretf__Z12intersectBox3Ray6float3S0_PfS1_) _Z12intersectBox3Ray6float3S0_PfS1_ (.param .align 4 .b8 __cudaparmf1__Z12intersectBox3Ray6float3S0_PfS1_[24], .param .align 4 .b8 __cudaparmf2__Z12intersectBox3Ray6float3S0_PfS1_[12], .param .align 4 .b8 __cudaparmf3__Z12intersectBox3Ray6float3S0_PfS1_[12], .param .u64 __cudaparmf4__Z12intersectBox3Ray6float3S0_PfS1_, .param .u64 __cudaparmf5__Z12intersectBox3Ray6float3S0_PfS1_)
+	{
+	.reg .u32 %r<4>;
+	.reg .u64 %rd<6>;
+	.reg .f32 %f<53>;
+	.loc	3	61	0
+$LDWbegin__Z12intersectBox3Ray6float3S0_PfS1_:
+	ld.param.f32 	%f1, [__cudaparmf1__Z12intersectBox3Ray6float3S0_PfS1_+0];
+	mov.f32 	%f2, %f1;
+	ld.param.f32 	%f3, [__cudaparmf1__Z12intersectBox3Ray6float3S0_PfS1_+4];
+	mov.f32 	%f4, %f3;
+	ld.param.f32 	%f5, [__cudaparmf1__Z12intersectBox3Ray6float3S0_PfS1_+8];
+	mov.f32 	%f6, %f5;
+	ld.param.f32 	%f7, [__cudaparmf1__Z12intersectBox3Ray6float3S0_PfS1_+12];
+	mov.f32 	%f8, %f7;
+	ld.param.f32 	%f9, [__cudaparmf1__Z12intersectBox3Ray6float3S0_PfS1_+16];
+	mov.f32 	%f10, %f9;
+	ld.param.f32 	%f11, [__cudaparmf1__Z12intersectBox3Ray6float3S0_PfS1_+20];
+	mov.f32 	%f12, %f11;
+	ld.param.f32 	%f13, [__cudaparmf2__Z12intersectBox3Ray6float3S0_PfS1_+0];
+	mov.f32 	%f14, %f13;
+	ld.param.f32 	%f15, [__cudaparmf2__Z12intersectBox3Ray6float3S0_PfS1_+4];
+	mov.f32 	%f16, %f15;
+	ld.param.f32 	%f17, [__cudaparmf2__Z12intersectBox3Ray6float3S0_PfS1_+8];
+	mov.f32 	%f18, %f17;
+	ld.param.f32 	%f19, [__cudaparmf3__Z12intersectBox3Ray6float3S0_PfS1_+0];
+	mov.f32 	%f20, %f19;
+	ld.param.f32 	%f21, [__cudaparmf3__Z12intersectBox3Ray6float3S0_PfS1_+4];
+	mov.f32 	%f22, %f21;
+	ld.param.f32 	%f23, [__cudaparmf3__Z12intersectBox3Ray6float3S0_PfS1_+8];
+	mov.f32 	%f24, %f23;
+	ld.param.u64 	%rd1, [__cudaparmf4__Z12intersectBox3Ray6float3S0_PfS1_];
+	mov.s64 	%rd2, %rd1;
+	ld.param.u64 	%rd3, [__cudaparmf5__Z12intersectBox3Ray6float3S0_PfS1_];
+	mov.s64 	%rd4, %rd3;
+	.loc	3	75	0
+	rcp.rn.f32 	%f25, %f8;
+	sub.f32 	%f26, %f14, %f2;
+	sub.f32 	%f27, %f20, %f2;
+	rcp.rn.f32 	%f28, %f10;
+	sub.f32 	%f29, %f16, %f4;
+	sub.f32 	%f30, %f22, %f4;
+	rcp.rn.f32 	%f31, %f12;
+	sub.f32 	%f32, %f18, %f6;
+	sub.f32 	%f33, %f24, %f6;
+	mul.f32 	%f34, %f25, %f26;
+	mul.f32 	%f35, %f25, %f27;
+	mul.f32 	%f36, %f28, %f29;
+	mul.f32 	%f37, %f28, %f30;
+	mul.f32 	%f38, %f31, %f32;
+	mul.f32 	%f39, %f31, %f33;
+	min.f32 	%f40, %f34, %f35;
+	min.f32 	%f41, %f36, %f37;
+	min.f32 	%f42, %f38, %f39;
+	max.f32 	%f43, %f40, %f41;
+	max.f32 	%f44, %f40, %f42;
+	max.f32 	%f45, %f43, %f44;
+	st.f32 	[%rd2+0], %f45;
+	.loc	3	76	0
+	max.f32 	%f46, %f34, %f35;
+	max.f32 	%f47, %f36, %f37;
+	max.f32 	%f48, %f38, %f39;
+	min.f32 	%f49, %f46, %f47;
+	min.f32 	%f50, %f46, %f48;
+	min.f32 	%f51, %f49, %f50;
+	st.f32 	[%rd4+0], %f51;
+	.loc	3	78	0
+	set.lt.u32.f32 	%r1, %f45, %f51;
+	neg.s32 	%r2, %r1;
+	st.param.s32 	[__cudaretf__Z12intersectBox3Ray6float3S0_PfS1_], %r2;
+	ret;
+$LDWend__Z12intersectBox3Ray6float3S0_PfS1_:
+	} // _Z12intersectBox3Ray6float3S0_PfS1_
+
+	.visible .func (.param .align 4 .b8 __cudaretf__Z3mulRK8float3x4RK6float3[12]) _Z3mulRK8float3x4RK6float3 (.param .u64 __cudaparmf1__Z3mulRK8float3x4RK6float3, .param .u64 __cudaparmf2__Z3mulRK8float3x4RK6float3)
+	{
+	.reg .u64 %rd<6>;
+	.reg .f32 %f<23>;
+	.loc	3	84	0
+$LDWbegin__Z3mulRK8float3x4RK6float3:
+	ld.param.u64 	%rd1, [__cudaparmf1__Z3mulRK8float3x4RK6float3];
+	mov.s64 	%rd2, %rd1;
+	ld.param.u64 	%rd3, [__cudaparmf2__Z3mulRK8float3x4RK6float3];
+	mov.s64 	%rd4, %rd3;
+	.loc	3	89	0
+	ld.f32 	%f1, [%rd4+4];
+	ld.f32 	%f2, [%rd4+0];
+	ld.f32 	%f3, [%rd4+8];
+	ld.v4.f32 	{%f4,%f5,%f6,_}, [%rd2+0];
+	mul.f32 	%f7, %f5, %f1;
+	fma.rn.f32 	%f8, %f4, %f2, %f7;
+	fma.rn.f32 	%f9, %f6, %f3, %f8;
+	st.param.f32 	[__cudaretf__Z3mulRK8float3x4RK6float3+0], %f9;
+	ld.v4.f32 	{%f10,%f11,%f12,_}, [%rd2+16];
+	mul.f32 	%f13, %f11, %f1;
+	fma.rn.f32 	%f14, %f10, %f2, %f13;
+	fma.rn.f32 	%f15, %f12, %f3, %f14;
+	st.param.f32 	[__cudaretf__Z3mulRK8float3x4RK6float3+4], %f15;
+	ld.v4.f32 	{%f16,%f17,%f18,_}, [%rd2+32];
+	mul.f32 	%f19, %f17, %f1;
+	fma.rn.f32 	%f20, %f16, %f2, %f19;
+	fma.rn.f32 	%f21, %f18, %f3, %f20;
+	st.param.f32 	[__cudaretf__Z3mulRK8float3x4RK6float3+8], %f21;
+	ret;
+$LDWend__Z3mulRK8float3x4RK6float3:
+	} // _Z3mulRK8float3x4RK6float3
+
+	.visible .func (.param .align 16 .b8 __cudaretf__Z3mulRK8float3x4RK6float4[16]) _Z3mulRK8float3x4RK6float4 (.param .u64 __cudaparmf1__Z3mulRK8float3x4RK6float4, .param .u64 __cudaparmf2__Z3mulRK8float3x4RK6float4)
+	{
+	.reg .u64 %rd<6>;
+	.reg .f32 %f<31>;
+	.loc	3	95	0
+$LDWbegin__Z3mulRK8float3x4RK6float4:
+	ld.param.u64 	%rd1, [__cudaparmf1__Z3mulRK8float3x4RK6float4];
+	mov.s64 	%rd2, %rd1;
+	ld.param.u64 	%rd3, [__cudaparmf2__Z3mulRK8float3x4RK6float4];
+	mov.s64 	%rd4, %rd3;
+	ld.v4.f32 	{%f1,%f2,%f3,%f4}, [%rd4+0];
+	ld.v4.f32 	{%f5,%f6,%f7,%f8}, [%rd2+0];
+	.loc	3	101	0
+	mul.f32 	%f9, %f6, %f2;
+	fma.rn.f32 	%f10, %f1, %f5, %f9;
+	fma.rn.f32 	%f11, %f3, %f7, %f10;
+	fma.rn.f32 	%f12, %f4, %f8, %f11;
+	st.param.f32 	[__cudaretf__Z3mulRK8float3x4RK6float4+0], %f12;
+	ld.v4.f32 	{%f13,%f14,%f15,%f16}, [%rd2+16];
+	mul.f32 	%f17, %f14, %f2;
+	fma.rn.f32 	%f18, %f1, %f13, %f17;
+	fma.rn.f32 	%f19, %f3, %f15, %f18;
+	fma.rn.f32 	%f20, %f4, %f16, %f19;
+	st.param.f32 	[__cudaretf__Z3mulRK8float3x4RK6float4+4], %f20;
+	ld.v4.f32 	{%f21,%f22,%f23,%f24}, [%rd2+32];
+	mul.f32 	%f25, %f22, %f2;
+	fma.rn.f32 	%f26, %f1, %f21, %f25;
+	fma.rn.f32 	%f27, %f3, %f23, %f26;
+	fma.rn.f32 	%f28, %f4, %f24, %f27;
+	st.param.f32 	[__cudaretf__Z3mulRK8float3x4RK6float4+8], %f28;
+	mov.f32 	%f29, 0f3f800000;    	// 1
+	st.param.f32 	[__cudaretf__Z3mulRK8float3x4RK6float4+12], %f29;
+	ret;
+$LDWend__Z3mulRK8float3x4RK6float4:
+	} // _Z3mulRK8float3x4RK6float4
+
+	.visible .func (.param .u32 __cudaretf__Z14rgbaFloatToInt6float4) _Z14rgbaFloatToInt6float4 (.param .align 16 .b8 __cudaparmf1__Z14rgbaFloatToInt6float4[16])
+	{
+	.reg .u32 %r<12>;
+	.reg .f32 %f<22>;
+	.loc	3	105	0
+$LDWbegin__Z14rgbaFloatToInt6float4:
+	ld.param.f32 	%f1, [__cudaparmf1__Z14rgbaFloatToInt6float4+0];
+	mov.f32 	%f2, %f1;
+	ld.param.f32 	%f3, [__cudaparmf1__Z14rgbaFloatToInt6float4+4];
+	mov.f32 	%f4, %f3;
+	ld.param.f32 	%f5, [__cudaparmf1__Z14rgbaFloatToInt6float4+8];
+	mov.f32 	%f6, %f5;
+	ld.param.f32 	%f7, [__cudaparmf1__Z14rgbaFloatToInt6float4+12];
+	mov.f32 	%f8, %f7;
+	.loc	3	106	0
+	cvt.sat.f32.f32 	%f9, %f2;
+	.loc	3	107	0
+	cvt.sat.f32.f32 	%f10, %f4;
+	.loc	3	108	0
+	cvt.sat.f32.f32 	%f11, %f6;
+	.loc	3	109	0
+	cvt.sat.f32.f32 	%f12, %f8;
+	.loc	3	110	0
+	mov.f32 	%f13, 0f437f0000;    	// 255
+	mul.f32 	%f14, %f9, %f13;
+	cvt.rzi.u32.f32 	%r1, %f14;
+	mov.f32 	%f15, 0f437f0000;    	// 255
+	mul.f32 	%f16, %f10, %f15;
+	cvt.rzi.u32.f32 	%r2, %f16;
+	shl.b32 	%r3, %r2, 8;
+	or.b32 	%r4, %r1, %r3;
+	mov.f32 	%f17, 0f437f0000;    	// 255
+	mul.f32 	%f18, %f11, %f17;
+	cvt.rzi.u32.f32 	%r5, %f18;
+	shl.b32 	%r6, %r5, 16;
+	mov.f32 	%f19, 0f437f0000;    	// 255
+	mul.f32 	%f20, %f12, %f19;
+	cvt.rzi.u32.f32 	%r7, %f20;
+	shl.b32 	%r8, %r7, 24;
+	or.b32 	%r9, %r6, %r8;
+	or.b32 	%r10, %r4, %r9;
+	st.param.u32 	[__cudaretf__Z14rgbaFloatToInt6float4], %r10;
+	ret;
+$LDWend__Z14rgbaFloatToInt6float4:
+	} // _Z14rgbaFloatToInt6float4
+
+	.entry _Z8d_renderPjjjffff (
+		.param .u64 __cudaparm__Z8d_renderPjjjffff_d_output,
+		.param .u32 __cudaparm__Z8d_renderPjjjffff_imageW,
+		.param .u32 __cudaparm__Z8d_renderPjjjffff_imageH,
+		.param .f32 __cudaparm__Z8d_renderPjjjffff_density,
+		.param .f32 __cudaparm__Z8d_renderPjjjffff_brightness,
+		.param .f32 __cudaparm__Z8d_renderPjjjffff_transferOffset,
+		.param .f32 __cudaparm__Z8d_renderPjjjffff_transferScale)
+	{
+	.reg .u32 %r<39>;
+	.reg .u64 %rd<6>;
+	.reg .f32 %f<155>;
+	.reg .pred %p<7>;
+	.loc	3	116	0
+$LDWbegin__Z8d_renderPjjjffff:
+	.loc	3	132	0
+	mov.u32 	%r1, %ctaid.x;
+	mov.u32 	%r2, %ntid.x;
+	mul24.lo.u32 	%r3, %r1, %r2;
+	ld.param.u32 	%r4, [__cudaparm__Z8d_renderPjjjffff_imageW];
+	cvt.rn.f32.u32 	%f1, %r4;
+	mov.u32 	%r5, %ctaid.y;
+	mov.u32 	%r6, %ntid.y;
+	mul24.lo.u32 	%r7, %r5, %r6;
+	ld.param.u32 	%r8, [__cudaparm__Z8d_renderPjjjffff_imageH];
+	cvt.rn.f32.u32 	%f2, %r8;
+	mov.u32 	%r9, %tid.x;
+	add.u32 	%r10, %r9, %r3;
+	mov.u32 	%r11, %tid.y;
+	add.u32 	%r12, %r11, %r7;
+	cvt.rn.f32.u32 	%f3, %r10;
+	cvt.rn.f32.u32 	%f4, %r12;
+	div.rn.f32 	%f5, %f3, %f1;
+	div.rn.f32 	%f6, %f4, %f2;
+	add.f32 	%f7, %f5, %f5;
+	add.f32 	%f8, %f6, %f6;
+	mov.f32 	%f9, 0fbf800000;     	// -1
+	add.f32 	%f10, %f7, %f9;
+	mov.f32 	%f11, 0fbf800000;    	// -1
+	add.f32 	%f12, %f8, %f11;
+	mul.f32 	%f13, %f12, %f12;
+	fma.rn.f32 	%f14, %f10, %f10, %f13;
+	mov.f32 	%f15, 0f40800000;    	// 4
+	add.f32 	%f16, %f14, %f15;
+	rsqrt.approx.f32 	%f17, %f16;
+	mul.f32 	%f18, %f10, %f17;
+	mul.f32 	%f19, %f12, %f17;
+	mov.f32 	%f20, 0fc0000000;    	// -2
+	mul.f32 	%f21, %f17, %f20;
+	ld.global.v4.f32 	{%f22,%f23,%f24,%f25}, [c_invViewMatrix+0];
+	.loc	3	137	0
+	mul.f32 	%f26, %f23, %f19;
+	mov.f32 	%f27, 0f00000000;    	// 0
+	mov.f32 	%f28, 0f00000000;    	// 0
+	fma.rn.f32 	%f29, %f28, %f22, %f27;
+	ld.global.v4.f32 	{%f30,%f31,%f32,%f33}, [c_invViewMatrix+16];
+	mul.f32 	%f34, %f31, %f19;
+	mov.f32 	%f35, 0f00000000;    	// 0
+	mov.f32 	%f36, 0f00000000;    	// 0
+	fma.rn.f32 	%f37, %f36, %f30, %f35;
+	ld.global.v4.f32 	{%f38,%f39,%f40,%f41}, [c_invViewMatrix+32];
+	mul.f32 	%f42, %f39, %f19;
+	mov.f32 	%f43, 0f00000000;    	// 0
+	mov.f32 	%f44, 0f00000000;    	// 0
+	fma.rn.f32 	%f45, %f44, %f38, %f43;
+	fma.rn.f32 	%f46, %f22, %f18, %f26;
+	mov.f32 	%f47, 0f00000000;    	// 0
+	fma.rn.f32 	%f48, %f47, %f24, %f29;
+	fma.rn.f32 	%f49, %f30, %f18, %f34;
+	mov.f32 	%f50, 0f00000000;    	// 0
+	fma.rn.f32 	%f51, %f50, %f32, %f37;
+	fma.rn.f32 	%f52, %f38, %f18, %f42;
+	mov.f32 	%f53, 0f00000000;    	// 0
+	fma.rn.f32 	%f54, %f53, %f40, %f45;
+	fma.rn.f32 	%f55, %f24, %f21, %f46;
+	mov.f32 	%f56, 0f3f800000;    	// 1
+	fma.rn.f32 	%f57, %f56, %f25, %f48;
+	fma.rn.f32 	%f58, %f32, %f21, %f49;
+	mov.f32 	%f59, 0f3f800000;    	// 1
+	fma.rn.f32 	%f60, %f59, %f33, %f51;
+	fma.rn.f32 	%f61, %f40, %f21, %f52;
+	mov.f32 	%f62, 0f3f800000;    	// 1
+	fma.rn.f32 	%f63, %f62, %f41, %f54;
+	rcp.rn.f32 	%f64, %f55;
+	mov.f32 	%f65, 0f3f800000;    	// 1
+	sub.f32 	%f66, %f65, %f57;
+	mov.f32 	%f67, 0fbf800000;    	// -1
+	sub.f32 	%f68, %f67, %f57;
+	rcp.rn.f32 	%f69, %f58;
+	mov.f32 	%f70, 0f3f800000;    	// 1
+	sub.f32 	%f71, %f70, %f60;
+	mov.f32 	%f72, 0fbf800000;    	// -1
+	sub.f32 	%f73, %f72, %f60;
+	rcp.rn.f32 	%f74, %f61;
+	mov.f32 	%f75, 0f3f800000;    	// 1
+	sub.f32 	%f76, %f75, %f63;
+	mov.f32 	%f77, 0fbf800000;    	// -1
+	sub.f32 	%f78, %f77, %f63;
+	mul.f32 	%f79, %f64, %f66;
+	mul.f32 	%f80, %f64, %f68;
+	mul.f32 	%f81, %f69, %f71;
+	mul.f32 	%f82, %f69, %f73;
+	mul.f32 	%f83, %f74, %f76;
+	mul.f32 	%f84, %f74, %f78;
+	min.f32 	%f85, %f79, %f80;
+	max.f32 	%f86, %f79, %f80;
+	min.f32 	%f87, %f81, %f82;
+	max.f32 	%f88, %f81, %f82;
+	min.f32 	%f89, %f83, %f84;
+	max.f32 	%f90, %f83, %f84;
+	max.f32 	%f91, %f85, %f87;
+	min.f32 	%f92, %f86, %f88;
+	max.f32 	%f93, %f85, %f89;
+	min.f32 	%f94, %f86, %f90;
+	max.f32 	%f95, %f91, %f93;
+	min.f32 	%f96, %f92, %f94;
+	setp.lt.f32 	%p1, %f95, %f96;
+	@%p1 bra 	$Lt_4_4354;
+	bra.uni 	$LBB11__Z8d_renderPjjjffff;
+$Lt_4_4354:
+	.loc	3	143	0
+	mov.f32 	%f97, %f96;
+	mov.f32 	%f98, 0f00000000;    	// 0
+	setp.lt.f32 	%p2, %f95, %f98;
+	mov.f32 	%f99, 0f00000000;    	// 0
+	selp.f32 	%f100, %f99, %f95, %p2;
+	ld.param.f32 	%f101, [__cudaparm__Z8d_renderPjjjffff_density];
+	ld.param.f32 	%f102, [__cudaparm__Z8d_renderPjjjffff_transferOffset];
+	ld.param.f32 	%f103, [__cudaparm__Z8d_renderPjjjffff_transferScale];
+	mov.s32 	%r13, 0;
+	mov.f32 	%f104, 0f00000000;   	// 0
+	mov.f32 	%f105, 0f00000000;   	// 0
+	mov.f32 	%f106, 0f00000000;   	// 0
+	mov.f32 	%f107, 0f00000000;   	// 0
+$Lt_4_5378:
+ //<loop> Loop body line 143, nesting depth: 1, estimated iterations: 500
+	mov.f32 	%f108, 0f3f000000;   	// 0.5
+	fma.rn.f32 	%f109, %f97, %f55, %f57;
+	mov.f32 	%f110, 0f3f000000;   	// 0.5
+	fma.rn.f32 	%f111, %f109, %f110, %f108;
+	mov.f32 	%f112, 0f3f000000;   	// 0.5
+	fma.rn.f32 	%f113, %f97, %f58, %f60;
+	mov.f32 	%f114, 0f3f000000;   	// 0.5
+	fma.rn.f32 	%f115, %f113, %f114, %f112;
+	mov.f32 	%f116, 0f3f000000;   	// 0.5
+	fma.rn.f32 	%f117, %f97, %f61, %f63;
+	mov.f32 	%f118, 0f3f000000;   	// 0.5
+	fma.rn.f32 	%f119, %f117, %f118, %f116;
+	mov.f32 	%f120, 0f00000000;   	// 0
+	tex.3d.v4.u32.f32 {%r14,%r15,%r16,%r17},[tex,{%f111,%f115,%f119,%f120}];
+ //<loop> Part of loop body line 143, head labeled $Lt_4_5378
+	.loc	3	149	0
+	mov.s32 	%r18, %r14;
+	mov.b32 	%f121, %r18;
+	sub.f32 	%f122, %f121, %f102;
+	mul.f32 	%f123, %f103, %f122;
+	mov.f32 	%f124, 0f00000000;   	// 0
+	mov.f32 	%f125, 0f00000000;   	// 0
+	mov.f32 	%f126, 0f00000000;   	// 0
+	tex.1d.v4.f32.f32 {%f127,%f128,%f129,%f130},[transferTex,{%f123,%f124,%f125,%f126}];
+ //<loop> Part of loop body line 143, head labeled $Lt_4_5378
+	.loc	3	152	0
+	mov.f32 	%f131, %f127;
+	mov.f32 	%f132, %f128;
+	mov.f32 	%f133, %f129;
+	mov.f32 	%f134, %f130;
+	.loc	3	155	0
+	mul.f32 	%f135, %f134, %f101;
+	sub.f32 	%f136, %f131, %f107;
+	fma.rn.f32 	%f107, %f135, %f136, %f107;
+	sub.f32 	%f137, %f132, %f106;
+	fma.rn.f32 	%f106, %f135, %f137, %f106;
+	sub.f32 	%f138, %f133, %f105;
+	fma.rn.f32 	%f105, %f135, %f138, %f105;
+	sub.f32 	%f139, %f134, %f104;
+	fma.rn.f32 	%f104, %f135, %f139, %f104;
+	.loc	3	157	0
+	mov.f32 	%f140, 0fbc23d70a;   	// -0.01
+	add.f32 	%f97, %f97, %f140;
+	.loc	3	158	0
+	setp.gt.f32 	%p3, %f100, %f97;
+	@%p3 bra 	$Lt_4_258;
+ //<loop> Part of loop body line 143, head labeled $Lt_4_5378
+	.loc	3	144	0
+	add.s32 	%r13, %r13, 1;
+	mov.u32 	%r19, 500;
+	setp.ne.s32 	%p4, %r13, %r19;
+	@%p4 bra 	$Lt_4_5378;
+$Lt_4_258:
+	.loc	3	160	0
+	ld.param.f32 	%f141, [__cudaparm__Z8d_renderPjjjffff_brightness];
+	mul.f32 	%f107, %f141, %f107;
+	mul.f32 	%f106, %f141, %f106;
+	mul.f32 	%f105, %f141, %f105;
+	mul.f32 	%f104, %f141, %f104;
+	set.lt.u32.u32 	%r20, %r10, %r4;
+	neg.s32 	%r21, %r20;
+	set.lt.u32.u32 	%r22, %r12, %r8;
+	neg.s32 	%r23, %r22;
+	and.b32 	%r24, %r21, %r23;
+	mov.u32 	%r25, 0;
+	setp.eq.s32 	%p5, %r24, %r25;
+	@%p5 bra 	$LBB11__Z8d_renderPjjjffff;
+	.loc	3	165	0
+	cvt.sat.f32.f32 	%f142, %f107;
+	mov.f32 	%f143, 0f437f0000;   	// 255
+	mul.f32 	%f144, %f142, %f143;
+	cvt.rzi.u32.f32 	%r26, %f144;
+	cvt.sat.f32.f32 	%f145, %f106;
+	mov.f32 	%f146, 0f437f0000;   	// 255
+	mul.f32 	%f147, %f145, %f146;
+	cvt.rzi.u32.f32 	%r27, %f147;
+	shl.b32 	%r28, %r27, 8;
+	or.b32 	%r29, %r26, %r28;
+	cvt.sat.f32.f32 	%f148, %f104;
+	mov.f32 	%f149, 0f437f0000;   	// 255
+	mul.f32 	%f150, %f148, %f149;
+	cvt.rzi.u32.f32 	%r30, %f150;
+	shl.b32 	%r31, %r30, 24;
+	cvt.sat.f32.f32 	%f151, %f105;
+	mov.f32 	%f152, 0f437f0000;   	// 255
+	mul.f32 	%f153, %f151, %f152;
+	cvt.rzi.u32.f32 	%r32, %f153;
+	shl.b32 	%r33, %r32, 16;
+	or.b32 	%r34, %r31, %r33;
+	or.b32 	%r35, %r29, %r34;
+	ld.param.u64 	%rd1, [__cudaparm__Z8d_renderPjjjffff_d_output];
+	mul24.lo.u32 	%r36, %r12, %r4;
+	add.u32 	%r37, %r10, %r36;
+	cvt.u64.u32 	%rd2, %r37;
+	mul.wide.u32 	%rd3, %r37, 4;
+	add.u64 	%rd4, %rd1, %rd3;
+	st.global.u32 	[%rd4+0], %r35;
+$LBB11__Z8d_renderPjjjffff:
+	.loc	3	167	0
+	exit;
+$LDWend__Z8d_renderPjjjffff:
+	} // _Z8d_renderPjjjffff
+

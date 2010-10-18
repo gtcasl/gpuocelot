@@ -681,7 +681,8 @@ std::string ir::PTXInstruction::valid() const {
 						+ " only valid for float point instructions.";
 				}
 			}
-			if( !PTXOperand::relaxedValid( type, d.type ) ) {
+//			if( !PTXOperand::relaxedValid( type, d.type ) ) {
+			if (!d.relaxedValid(type)) {
 				return "operand D type " + PTXOperand::toString( d.type ) 
 					+ " cannot be assigned to " + PTXOperand::toString( type ) 
 					+ ", not even for relaxed typed instructions.";
@@ -792,6 +793,7 @@ std::string ir::PTXInstruction::valid() const {
 			}
 			break;
 		}
+		case Ldu: // fall through
 		case Ld: {
 			if( !( a.addressMode == PTXOperand::Register 
 				|| a.addressMode == PTXOperand::Address 
@@ -810,10 +812,11 @@ std::string ir::PTXInstruction::valid() const {
 				return "operand D must be a register not a " 
 					+ PTXOperand::toString( d.addressMode );
 			}
-			if( !PTXOperand::relaxedValid( type, d.type ) ) {
+//			if( !PTXOperand::relaxedValid( type, d.type ) ) {
+			if (!d.relaxedValid(type)) {
 				return "operand D type " + PTXOperand::toString( d.type ) 
 					+ " cannot be assigned to " + PTXOperand::toString( type ) 
-					+ ", not even for relaxed typed instructions.";
+					+ ", not even for relaxed typed instructions: -\n" + toString() + "\nd.addressMode: " + PTXOperand::toString(d.addressMode);
 			}
 			break;
 		}
@@ -1609,7 +1612,8 @@ std::string ir::PTXInstruction::valid() const {
 				&& a.addressMode != PTXOperand::Immediate ) {
 				return "operand A must be a register or immediate";
 			}
-			if( !PTXOperand::relaxedValid( type, a.type ) ) {
+//			if( !PTXOperand::relaxedValid( type, a.type ) ) {
+			if (!a.relaxedValid(type)) {
 				return "operand A type " + PTXOperand::toString( a.type ) 
 					+ " cannot be assigned to " + PTXOperand::toString( type ) 
 					+ ", not even for relaxed typed instructions.";
@@ -1959,6 +1963,21 @@ std::string ir::PTXInstruction::toString() const {
 		}
 		case Ld: {
 			std::string result = guard() + "ld.";
+			if( volatility == Volatile ) {
+				result += "volatile.";
+			}
+			if( addressSpace != AddressSpace_Invalid ) {
+				result += toString(addressSpace) + ".";
+			}
+			if( d.vec != PTXOperand::v1 ) {
+				result += toString( d.vec ) + ".";
+			}
+			result += PTXOperand::toString( type ) + " " + d.toString() + ", [" 
+				+ a.toString() + "]";
+			return result;
+		}
+		case Ldu: {
+			std::string result = guard() + "ldu.";
 			if( volatility == Volatile ) {
 				result += "volatile.";
 			}

@@ -1,0 +1,319 @@
+	.version 2.1
+	.target sm_20
+	// compiled with /usr/local/cuda3.1/cuda/open64/lib//be
+	// nvopencc 3.1 built on 2010-06-07
+
+	.visible .func _Z18complexMulAndScaleR6float2S_f (.param .u64 __cudaparmf1__Z18complexMulAndScaleR6float2S_f, .param .align 8 .b8 __cudaparmf2__Z18complexMulAndScaleR6float2S_f[8], .param .f32 __cudaparmf3__Z18complexMulAndScaleR6float2S_f)
+
+	//-----------------------------------------------------------
+	// Compiling /tmp/tmpxft_0000197f_00000000-7_convolutionFFT2D.cpp3.i (/tmp/ccBI#.KOoyTc)
+	//-----------------------------------------------------------
+
+	//-----------------------------------------------------------
+	// Options:
+	//-----------------------------------------------------------
+	//  Target:ptx, ISA:sm_20, Endian:little, Pointer Size:64
+	//  -O3	(Optimization level)
+	//  -g0	(Debug level)
+	//  -m2	(Report advisories)
+	//-----------------------------------------------------------
+
+	.file	1	"<command-line>"
+	.file	2	"/tmp/tmpxft_0000197f_00000000-6_convolutionFFT2D.cudafe2.gpu"
+	.file	3	"/usr/lib/gcc/x86_64-linux-gnu/4.4.3/include/stddef.h"
+	.file	4	"/usr/local/cuda3.1/cuda/bin/../include/crt/device_runtime.h"
+	.file	5	"/usr/local/cuda3.1/cuda/bin/../include/host_defines.h"
+	.file	6	"/usr/local/cuda3.1/cuda/bin/../include/builtin_types.h"
+	.file	7	"/usr/local/cuda3.1/cuda/bin/../include/device_types.h"
+	.file	8	"/usr/local/cuda3.1/cuda/bin/../include/driver_types.h"
+	.file	9	"/usr/local/cuda3.1/cuda/bin/../include/surface_types.h"
+	.file	10	"/usr/local/cuda3.1/cuda/bin/../include/texture_types.h"
+	.file	11	"/usr/local/cuda3.1/cuda/bin/../include/vector_types.h"
+	.file	12	"/usr/local/cuda3.1/cuda/bin/../include/device_launch_parameters.h"
+	.file	13	"/usr/local/cuda3.1/cuda/bin/../include/crt/storage_class.h"
+	.file	14	"/usr/include/bits/types.h"
+	.file	15	"/usr/include/time.h"
+	.file	16	"/home/andrew/repositories/gpuocelot/tests/cuda2.2/tests/convolutionFFT2D/convolutionFFT2D.cu"
+	.file	17	"/home/andrew/repositories/gpuocelot/tests/cuda2.2/tests/convolutionFFT2D/convolutionFFT2D_kernel.cu"
+	.file	18	"/usr/local/cuda3.1/cuda/bin/../include/common_functions.h"
+	.file	19	"/usr/local/cuda3.1/cuda/bin/../include/math_functions.h"
+	.file	20	"/usr/local/cuda3.1/cuda/bin/../include/math_constants.h"
+	.file	21	"/usr/local/cuda3.1/cuda/bin/../include/device_functions.h"
+	.file	22	"/usr/local/cuda3.1/cuda/bin/../include/sm_11_atomic_functions.h"
+	.file	23	"/usr/local/cuda3.1/cuda/bin/../include/sm_12_atomic_functions.h"
+	.file	24	"/usr/local/cuda3.1/cuda/bin/../include/sm_13_double_functions.h"
+	.file	25	"/usr/local/cuda3.1/cuda/bin/../include/sm_20_atomic_functions.h"
+	.file	26	"/usr/local/cuda3.1/cuda/bin/../include/sm_20_intrinsics.h"
+	.file	27	"/usr/local/cuda3.1/cuda/bin/../include/surface_functions.h"
+	.file	28	"/usr/local/cuda3.1/cuda/bin/../include/texture_fetch_functions.h"
+	.file	29	"/usr/local/cuda3.1/cuda/bin/../include/math_functions_dbl_ptx3.h"
+
+	.global .texref texKernel;
+	.global .texref texData;
+
+	.visible .func _Z18complexMulAndScaleR6float2S_f (.param .u64 __cudaparmf1__Z18complexMulAndScaleR6float2S_f, .param .align 8 .b8 __cudaparmf2__Z18complexMulAndScaleR6float2S_f[8], .param .f32 __cudaparmf3__Z18complexMulAndScaleR6float2S_f)
+	{
+	.reg .u64 %rd<4>;
+	.reg .f32 %f<17>;
+	.loc	17	110	0
+$LDWbegin__Z18complexMulAndScaleR6float2S_f:
+	ld.param.u64 	%rd1, [__cudaparmf1__Z18complexMulAndScaleR6float2S_f];
+	mov.s64 	%rd2, %rd1;
+	ld.param.f32 	%f1, [__cudaparmf2__Z18complexMulAndScaleR6float2S_f+0];
+	mov.f32 	%f2, %f1;
+	ld.param.f32 	%f3, [__cudaparmf2__Z18complexMulAndScaleR6float2S_f+4];
+	mov.f32 	%f4, %f3;
+	ld.param.f32 	%f5, [__cudaparmf3__Z18complexMulAndScaleR6float2S_f];
+	mov.f32 	%f6, %f5;
+	ld.v2.f32 	{%f7,%f8}, [%rd2+0];
+	.loc	17	111	0
+	mul.f32 	%f9, %f8, %f2;
+	fma.rn.f32 	%f10, %f7, %f4, %f9;
+	mul.f32 	%f11, %f6, %f10;
+	.loc	17	112	0
+	mul.f32 	%f12, %f8, %f4;
+	mul.f32 	%f13, %f7, %f2;
+	sub.f32 	%f14, %f13, %f12;
+	mul.f32 	%f15, %f6, %f14;
+	st.v2.f32 	[%rd2+0], {%f15,%f11};
+	.loc	17	113	0
+	ret;
+$LDWend__Z18complexMulAndScaleR6float2S_f:
+	} // _Z18complexMulAndScaleR6float2S_f
+
+	.entry _Z9padKernelP6float2iiiiii (
+		.param .u64 __cudaparm__Z9padKernelP6float2iiiiii_d_PaddedKernel,
+		.param .s32 __cudaparm__Z9padKernelP6float2iiiiii_fftW,
+		.param .s32 __cudaparm__Z9padKernelP6float2iiiiii_fftH,
+		.param .s32 __cudaparm__Z9padKernelP6float2iiiiii_kernelW,
+		.param .s32 __cudaparm__Z9padKernelP6float2iiiiii_kernelH,
+		.param .s32 __cudaparm__Z9padKernelP6float2iiiiii_kernelX,
+		.param .s32 __cudaparm__Z9padKernelP6float2iiiiii_kernelY)
+	{
+	.reg .u32 %r<34>;
+	.reg .u64 %rd<6>;
+	.reg .f32 %f<16>;
+	.reg .pred %p<5>;
+	.loc	17	54	0
+$LDWbegin__Z9padKernelP6float2iiiiii:
+	cvt.s32.u32 	%r1, %ntid.x;
+	cvt.s32.u32 	%r2, %ctaid.x;
+	mul24.lo.s32 	%r3, %r1, %r2;
+	cvt.s32.u32 	%r4, %ntid.y;
+	cvt.s32.u32 	%r5, %ctaid.y;
+	mul24.lo.s32 	%r6, %r4, %r5;
+	mov.u32 	%r7, %tid.x;
+	add.u32 	%r8, %r3, %r7;
+	mov.u32 	%r9, %tid.y;
+	add.u32 	%r10, %r6, %r9;
+	ld.param.s32 	%r11, [__cudaparm__Z9padKernelP6float2iiiiii_kernelW];
+	set.gt.u32.s32 	%r12, %r11, %r8;
+	neg.s32 	%r13, %r12;
+	ld.param.s32 	%r14, [__cudaparm__Z9padKernelP6float2iiiiii_kernelH];
+	set.gt.u32.s32 	%r15, %r14, %r10;
+	neg.s32 	%r16, %r15;
+	and.b32 	%r17, %r13, %r16;
+	mov.u32 	%r18, 0;
+	setp.eq.s32 	%p1, %r17, %r18;
+	@%p1 bra 	$Lt_1_2818;
+	cvt.rn.f32.s32 	%f1, %r8;
+	mov.f32 	%f2, 0f3f000000;     	// 0.5
+	add.f32 	%f3, %f1, %f2;
+	cvt.rn.f32.s32 	%f4, %r10;
+	mov.f32 	%f5, 0f3f000000;     	// 0.5
+	add.f32 	%f6, %f4, %f5;
+	mov.f32 	%f7, 0f00000000;     	// 0
+	mov.f32 	%f8, 0f00000000;     	// 0
+	tex.2d.v4.f32.f32 {%f9,%f10,%f11,%f12},[texKernel,{%f3,%f6,%f7,%f8}];
+	.loc	17	62	0
+	mov.f32 	%f13, %f9;
+	mov.f32 	%f14, %f10;
+	ld.param.s32 	%r19, [__cudaparm__Z9padKernelP6float2iiiiii_kernelX];
+	sub.s32 	%r20, %r8, %r19;
+	ld.param.s32 	%r21, [__cudaparm__Z9padKernelP6float2iiiiii_kernelY];
+	sub.s32 	%r22, %r10, %r21;
+	mov.s32 	%r23, 0;
+	setp.lt.s32 	%p2, %r20, %r23;
+	ld.param.s32 	%r24, [__cudaparm__Z9padKernelP6float2iiiiii_fftW];
+	add.s32 	%r25, %r20, %r24;
+	mov.s32 	%r26, 0;
+	setp.lt.s32 	%p3, %r22, %r26;
+	ld.param.s32 	%r27, [__cudaparm__Z9padKernelP6float2iiiiii_fftH];
+	add.s32 	%r28, %r27, %r22;
+	selp.s32 	%r29, %r28, %r22, %p3;
+	mul24.lo.s32 	%r30, %r29, %r24;
+	ld.param.u64 	%rd1, [__cudaparm__Z9padKernelP6float2iiiiii_d_PaddedKernel];
+	selp.s32 	%r31, %r25, %r20, %p2;
+	add.s32 	%r32, %r31, %r30;
+	cvt.s64.s32 	%rd2, %r32;
+	mul.wide.s32 	%rd3, %r32, 8;
+	add.u64 	%rd4, %rd1, %rd3;
+	st.global.v2.f32 	[%rd4+0], {%f13,%f14};
+$Lt_1_2818:
+	.loc	17	65	0
+	exit;
+$LDWend__Z9padKernelP6float2iiiiii:
+	} // _Z9padKernelP6float2iiiiii
+
+	.entry _Z7padDataP6float2iiiiiiii (
+		.param .u64 __cudaparm__Z7padDataP6float2iiiiiiii_d_PaddedData,
+		.param .s32 __cudaparm__Z7padDataP6float2iiiiiiii_fftW,
+		.param .s32 __cudaparm__Z7padDataP6float2iiiiiiii_fftH,
+		.param .s32 __cudaparm__Z7padDataP6float2iiiiiiii_dataW,
+		.param .s32 __cudaparm__Z7padDataP6float2iiiiiiii_dataH,
+		.param .s32 __cudaparm__Z7padDataP6float2iiiiiiii_kernelW,
+		.param .s32 __cudaparm__Z7padDataP6float2iiiiiiii_kernelH,
+		.param .s32 __cudaparm__Z7padDataP6float2iiiiiiii_kernelX,
+		.param .s32 __cudaparm__Z7padDataP6float2iiiiiiii_kernelY)
+	{
+	.reg .u32 %r<54>;
+	.reg .u64 %rd<6>;
+	.reg .f32 %f<16>;
+	.reg .pred %p<7>;
+	// __cuda_local_var_27027_9_dx = 16
+	// __cuda_local_var_27028_9_dy = 20
+	.loc	17	82	0
+$LDWbegin__Z7padDataP6float2iiiiiiii:
+	cvt.s32.u32 	%r1, %ntid.x;
+	cvt.s32.u32 	%r2, %ctaid.x;
+	mul24.lo.s32 	%r3, %r1, %r2;
+	cvt.s32.u32 	%r4, %ntid.y;
+	cvt.s32.u32 	%r5, %ctaid.y;
+	mul24.lo.s32 	%r6, %r4, %r5;
+	mov.u32 	%r7, %tid.x;
+	add.u32 	%r8, %r3, %r7;
+	mov.u32 	%r9, %tid.y;
+	add.u32 	%r10, %r6, %r9;
+	ld.param.s32 	%r11, [__cudaparm__Z7padDataP6float2iiiiiiii_fftW];
+	ld.param.s32 	%r12, [__cudaparm__Z7padDataP6float2iiiiiiii_fftH];
+	set.gt.u32.s32 	%r13, %r12, %r10;
+	neg.s32 	%r14, %r13;
+	set.gt.u32.s32 	%r15, %r11, %r8;
+	neg.s32 	%r16, %r15;
+	and.b32 	%r17, %r14, %r16;
+	mov.u32 	%r18, 0;
+	setp.eq.s32 	%p1, %r17, %r18;
+	@%p1 bra 	$Lt_2_6402;
+	.loc	17	92	0
+	ld.param.s32 	%r19, [__cudaparm__Z7padDataP6float2iiiiiiii_dataW];
+	mov.s32 	%r20, %r21;
+	setp.gt.s32 	%p2, %r19, %r8;
+	selp.s32 	%r22, %r8, %r20, %p2;
+	.loc	17	93	0
+	ld.param.s32 	%r23, [__cudaparm__Z7padDataP6float2iiiiiiii_dataH];
+	mov.s32 	%r24, %r25;
+	setp.gt.s32 	%p3, %r23, %r10;
+	selp.s32 	%r26, %r10, %r24, %p3;
+	.loc	17	94	0
+	ld.param.s32 	%r27, [__cudaparm__Z7padDataP6float2iiiiiiii_kernelX];
+	add.s32 	%r28, %r27, %r19;
+	sub.s32 	%r29, %r19, 1;
+	set.gt.u32.s32 	%r30, %r28, %r8;
+	neg.s32 	%r31, %r30;
+	set.le.u32.s32 	%r32, %r19, %r8;
+	neg.s32 	%r33, %r32;
+	and.b32 	%r34, %r31, %r33;
+	neg.s32 	%r35, %r34;
+	slct.s32.s32 	%r36, %r22, %r29, %r35;
+	.loc	17	95	0
+	ld.param.s32 	%r37, [__cudaparm__Z7padDataP6float2iiiiiiii_kernelY];
+	add.s32 	%r38, %r37, %r23;
+	sub.s32 	%r39, %r23, 1;
+	set.gt.u32.s32 	%r40, %r38, %r10;
+	neg.s32 	%r41, %r40;
+	set.le.u32.s32 	%r42, %r23, %r10;
+	neg.s32 	%r43, %r42;
+	and.b32 	%r44, %r41, %r43;
+	neg.s32 	%r45, %r44;
+	slct.s32.s32 	%r46, %r26, %r39, %r45;
+	.loc	17	96	0
+	mov.s32 	%r47, 0;
+	setp.le.s32 	%p4, %r28, %r8;
+	selp.s32 	%r48, %r47, %r36, %p4;
+	cvt.rn.f32.s32 	%f1, %r48;
+	mov.f32 	%f2, 0f3f000000;     	// 0.5
+	add.f32 	%f3, %f1, %f2;
+	mov.s32 	%r49, 0;
+	setp.le.s32 	%p5, %r38, %r10;
+	selp.s32 	%r50, %r49, %r46, %p5;
+	cvt.rn.f32.s32 	%f4, %r50;
+	mov.f32 	%f5, 0f3f000000;     	// 0.5
+	add.f32 	%f6, %f4, %f5;
+	mov.f32 	%f7, 0f00000000;     	// 0
+	mov.f32 	%f8, 0f00000000;     	// 0
+	tex.2d.v4.f32.f32 {%f9,%f10,%f11,%f12},[texData,{%f3,%f6,%f7,%f8}];
+	.loc	17	99	0
+	mov.f32 	%f13, %f9;
+	mov.f32 	%f14, %f10;
+	mul24.lo.s32 	%r51, %r10, %r11;
+	ld.param.u64 	%rd1, [__cudaparm__Z7padDataP6float2iiiiiiii_d_PaddedData];
+	add.s32 	%r52, %r51, %r8;
+	cvt.s64.s32 	%rd2, %r52;
+	mul.wide.s32 	%rd3, %r52, 8;
+	add.u64 	%rd4, %rd1, %rd3;
+	st.global.v2.f32 	[%rd4+0], {%f13,%f14};
+$Lt_2_6402:
+	.loc	17	102	0
+	exit;
+$LDWend__Z7padDataP6float2iiiiiiii:
+	} // _Z7padDataP6float2iiiiiiii
+
+	.entry _Z20modulateAndNormalizeP6float2S0_i (
+		.param .u64 __cudaparm__Z20modulateAndNormalizeP6float2S0_i_d_PaddedData,
+		.param .u64 __cudaparm__Z20modulateAndNormalizeP6float2S0_i_d_PaddedKernel,
+		.param .s32 __cudaparm__Z20modulateAndNormalizeP6float2S0_i_dataN)
+	{
+	.reg .u32 %r<11>;
+	.reg .u64 %rd<10>;
+	.reg .f32 %f<15>;
+	.reg .pred %p<4>;
+	.loc	17	118	0
+$LDWbegin__Z20modulateAndNormalizeP6float2S0_i:
+	.loc	17	124	0
+	cvt.s32.u32 	%r1, %ntid.x;
+	cvt.s32.u32 	%r2, %ctaid.x;
+	mul24.lo.s32 	%r3, %r1, %r2;
+	mov.u32 	%r4, %tid.x;
+	add.u32 	%r5, %r3, %r4;
+	mov.s32 	%r6, %r5;
+	ld.param.s32 	%r7, [__cudaparm__Z20modulateAndNormalizeP6float2S0_i_dataN];
+	setp.le.s32 	%p1, %r7, %r5;
+	@%p1 bra 	$Lt_3_1282;
+	cvt.rn.f32.s32 	%f1, %r7;
+	cvt.s32.u32 	%r8, %nctaid.x;
+	mul24.lo.s32 	%r9, %r1, %r8;
+	cvt.s64.s32 	%rd1, %r5;
+	mul.wide.s32 	%rd2, %r5, 8;
+	cvt.s64.s32 	%rd3, %r9;
+	rcp.rn.f32 	%f2, %f1;
+	ld.param.u64 	%rd4, [__cudaparm__Z20modulateAndNormalizeP6float2S0_i_d_PaddedKernel];
+	add.u64 	%rd5, %rd4, %rd2;
+	mul.wide.s32 	%rd6, %r9, 8;
+	ld.param.u64 	%rd7, [__cudaparm__Z20modulateAndNormalizeP6float2S0_i_d_PaddedData];
+	add.u64 	%rd8, %rd7, %rd2;
+$Lt_3_1794:
+ //<loop> Loop body line 111
+	ld.global.v2.f32 	{%f3,%f4}, [%rd5+0];
+	ld.global.v2.f32 	{%f5,%f6}, [%rd8+0];
+	.loc	17	111	0
+	mul.f32 	%f7, %f6, %f3;
+	fma.rn.f32 	%f8, %f5, %f4, %f7;
+	mul.f32 	%f9, %f2, %f8;
+	.loc	17	112	0
+	mul.f32 	%f10, %f6, %f4;
+	mul.f32 	%f11, %f5, %f3;
+	sub.f32 	%f12, %f11, %f10;
+	mul.f32 	%f13, %f2, %f12;
+	st.global.v2.f32 	[%rd8+0], {%f13,%f9};
+	.loc	17	125	0
+	add.s32 	%r6, %r9, %r6;
+	add.u64 	%rd8, %rd8, %rd6;
+	add.u64 	%rd5, %rd5, %rd6;
+	setp.lt.s32 	%p2, %r6, %r7;
+	@%p2 bra 	$Lt_3_1794;
+$Lt_3_1282:
+	.loc	17	126	0
+	exit;
+$LDWend__Z20modulateAndNormalizeP6float2S0_i:
+	} // _Z20modulateAndNormalizeP6float2S0_i
+

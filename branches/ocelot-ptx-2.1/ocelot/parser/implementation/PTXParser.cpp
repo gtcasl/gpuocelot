@@ -2044,6 +2044,7 @@ namespace parser
 		if( string == "fma" ) return ir::PTXInstruction::Fma;
 		if( string == "isspacep" ) return ir::PTXInstruction::Isspacep;
 		if( string == "ld" ) return ir::PTXInstruction::Ld;
+		if( string == "ldu" ) return ir::PTXInstruction::Ldu;
 		if( string == "lg2" ) return ir::PTXInstruction::Lg2;
 		if( string == "mad24" ) return ir::PTXInstruction::Mad24;
 		if( string == "mad" ) return ir::PTXInstruction::Mad;

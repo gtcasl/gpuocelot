@@ -147,6 +147,8 @@ WHITESPACE [ \t]*
                                     return OPCODE_ISSPACEP; }
 "ld"                            { strlcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_LD; }
+"ldu"                            { strlcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_LDU; }
 "lg2"                           { strlcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_LG2; }
 "membar"                        { strlcpy( yylval->text, yytext, 1024 ); \

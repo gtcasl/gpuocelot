@@ -55,7 +55,7 @@
 %token<text> OPCODE_DIV OPCODE_ABS OPCODE_NEG OPCODE_MIN OPCODE_MAX
 %token<text> OPCODE_MAD OPCODE_SET OPCODE_SETP OPCODE_SELP OPCODE_SLCT
 %token<text> OPCODE_MOV OPCODE_ST OPCODE_CVT OPCODE_AND OPCODE_XOR OPCODE_OR
-%token<text> OPCODE_CVTA OPCODE_ISSPACEP
+%token<text> OPCODE_CVTA OPCODE_ISSPACEP OPCODE_LDU
 %token<text> OPCODE_SULD OPCODE_TXQ OPCODE_SUST OPCODE_SURED OPCODE_SUQ
 %token<text> OPCODE_BRA OPCODE_CALL OPCODE_RET OPCODE_EXIT OPCODE_TRAP 
 %token<text> OPCODE_BRKPT OPCODE_SUBC OPCODE_TEX OPCODE_LD OPCODE_BARSYNC OPCODE_BAR
@@ -576,7 +576,7 @@ opcode : OPCODE_COS | OPCODE_SQRT | OPCODE_ADD | OPCODE_RSQRT | OPCODE_ADDC
 	| OPCODE_CVT | OPCODE_CVTA | OPCODE_ISSPACEP 
 	| OPCODE_AND | OPCODE_XOR | OPCODE_OR
 	| OPCODE_BRA | OPCODE_CALL | OPCODE_RET | OPCODE_EXIT | OPCODE_TRAP 
-	| OPCODE_BRKPT | OPCODE_SUBC | OPCODE_TEX | OPCODE_LD | OPCODE_BARSYNC 
+	| OPCODE_BRKPT | OPCODE_SUBC | OPCODE_TEX | OPCODE_LD | OPCODE_LDU | OPCODE_BARSYNC 
 	| OPCODE_SULD | OPCODE_TXQ | OPCODE_SUST | OPCODE_SURED | OPCODE_SUQ
 	| OPCODE_ATOM | OPCODE_RED | OPCODE_NOT | OPCODE_CNOT | OPCODE_VOTE
 	| OPCODE_SHR | OPCODE_SHL | OPCODE_MEMBAR | OPCODE_FMA | OPCODE_PMEVENT
@@ -748,7 +748,7 @@ optionalFloatRounding : floatRounding | /* empty string */;
 instruction : ftzInstruction2 | ftzInstruction3 | approxInstruction2 
 	| basicInstruction3 | bfi | bfind | brev | branch | addOrSub | addCOrSubC 
 	| atom | bar | brkpt | clz | cvt | cvta | isspacep | div | exit
-	| ld | mad | mad24 | membar | mov | mul24 | mul | notInstruction | pmevent
+	| ld | ldu | mad | mad24 | membar | mov | mul24 | mul | notInstruction | pmevent
 	| popc | prmt | rcpSqrtInstruction | red | ret | sad | selp | set | setp
 	| slct | st | testp | tex | trap | vote;
 
@@ -1005,6 +1005,7 @@ cvtModifier : cvtRoundingModifier ftz sat;
 cvtModifier : sat cvtRoundingModifier ftz;
 cvtModifier : cvtRoundingModifier optionalFtz;
 cvtModifier : optionalFtz;
+cvtModifier : sat;
 
 cvt : OPCODE_CVT cvtModifier dataType dataType operand ',' operand ';'
 {
@@ -1098,6 +1099,11 @@ ld : OPCODE_LD ldModifier dataType arrayOperand ',' '[' memoryOperand ']' ';'
 {
 	state.instruction( $<text>1, $<value>3, 3 );
 };
+
+ldu : OPCODE_LDU ldModifier dataType arrayOperand ',' '[' memoryOperand ']' ';'
+{
+	state.instruction( $<text>1, $<value>3, 3 );
+}
 
 hiOrLo : TOKEN_HI | TOKEN_LO;
 

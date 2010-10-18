@@ -341,6 +341,13 @@ bool ir::PTXOperand::valid( DataType destination, DataType source ) {
 	return false;
 }
 
+bool ir::PTXOperand::relaxedValid(DataType instructionType) const {
+		
+	if (identifier == "_") return true;
+	
+	return PTXOperand::relaxedValid(instructionType, type);
+}
+
 bool ir::PTXOperand::relaxedValid( DataType instructionType, 
 	DataType operand ) {
 	switch( instructionType ) {

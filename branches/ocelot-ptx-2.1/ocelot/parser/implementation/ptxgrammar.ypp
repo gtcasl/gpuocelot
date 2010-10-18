@@ -1018,13 +1018,15 @@ divApproxModifier : TOKEN_APPROX optionalFtz
 	state.modifier($<value>1);
 };
 
-divRnModifier : TOKEN_RN
+divRnModifier : TOKEN_RN optionalFtz
 {
 	state.modifier($<value>1);
 };
 
+divRnModifier : /* empty string */;
+
 divModifier : divFullModifier | divApproxModifier 
-	| divRnModifier | ftz | /* empty string */;
+	| divRnModifier;
 
 //OptiX: div.ftz.f32 %pinhole_camera_f5, %pinhole_camera_f1, %pinhole_camera_f2;
 div : OPCODE_DIV divModifier dataType operand ',' operand ',' operand ';'

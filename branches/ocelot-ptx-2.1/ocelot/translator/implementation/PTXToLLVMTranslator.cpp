@@ -2333,7 +2333,7 @@ namespace translator
 				ir::LLVMInstruction::Type::Element ) );
 			land.a = castA.d;			
 			land.b = ir::LLVMInstruction::Operand(
-				(ir::LLVMI64) 0x800000000000000ULL );
+				(ir::LLVMI64) 0x8000000000000000ULL );
 		}
 
 		land.b.type.type = castA.d.type.type;
@@ -2364,7 +2364,7 @@ namespace translator
 				ir::LLVMInstruction::Type::Element ) );
 			land2.a = castB.d;			
 			land2.b = ir::LLVMInstruction::Operand(
-				(ir::LLVMI64) 0x7ffffffffffffffULL );
+				(ir::LLVMI64) 0x7fffffffffffffffULL );
 		}
 
 		land2.b.type.type = castB.d.type.type;
@@ -2448,11 +2448,36 @@ namespace translator
 		{
 			ir::LLVMFdiv div;
 			
-			div.d = _destination( i );
-			div.a = _translate( i.a );
-			div.b = _translate( i.b );
+			ir::LLVMInstruction::Operand result = _destination( i );
 			
+			if( i.modifier & ir::PTXInstruction::ftz )
+			{
+				div.d = ir::LLVMInstruction::Operand( _tempRegister(), 
+					ir::LLVMInstruction::Type( ir::LLVMInstruction::F32, 
+					ir::LLVMInstruction::Type::Element ) );
+				div.a = ir::LLVMInstruction::Operand( _tempRegister(), 
+					ir::LLVMInstruction::Type( ir::LLVMInstruction::F32, 
+					ir::LLVMInstruction::Type::Element ) );
+				div.b = ir::LLVMInstruction::Operand( _tempRegister(), 
+					ir::LLVMInstruction::Type( ir::LLVMInstruction::F32, 
+					ir::LLVMInstruction::Type::Element ) );
+				
+				_flushToZero( div.a, _translate( i.a ) );
+				_flushToZero( div.b, _translate( i.b ) );
+			}
+			else
+			{
+				div.d = result;
+				div.a = _translate( i.a );
+				div.b = _translate( i.b );
+			}
+				
 			_add( div );
+		
+			if( i.modifier & ir::PTXInstruction::ftz )
+			{
+				_flushToZero( result, div.d );
+			}
 		}
 		else if( ir::PTXOperand::isSigned( i.type ) )
 		{
@@ -2770,9 +2795,24 @@ namespace translator
 
 			ir::LLVMInstruction::Operand result = _destination( i );
 
-			mul.a = _translate( i.a );
-			mul.b = _translate( i.b );
-
+			if( i.modifier & ir::PTXInstruction::ftz )
+			{
+				mul.a = ir::LLVMInstruction::Operand( _tempRegister(), 
+					ir::LLVMInstruction::Type( ir::LLVMInstruction::F32, 
+					ir::LLVMInstruction::Type::Element ) );
+				mul.b = ir::LLVMInstruction::Operand( _tempRegister(), 
+					ir::LLVMInstruction::Type( ir::LLVMInstruction::F32, 
+					ir::LLVMInstruction::Type::Element ) );
+				
+				_flushToZero( mul.a, _translate( i.a ) );
+				_flushToZero( mul.b, _translate( i.b ) );
+			}
+			else
+			{
+				mul.a = _translate( i.a );
+				mul.b = _translate( i.b );
+			}
+			
 			if( i.modifier & ir::PTXInstruction::sat
 				|| i.modifier & ir::PTXInstruction::ftz )
 			{
@@ -3607,14 +3647,30 @@ namespace translator
 		
 			ir::LLVMInstruction::Operand result = _destination( i );
 
-			mul.a = _translate( i.a );
-			mul.b = _translate( i.b );
-		
+			if( i.modifier & ir::PTXInstruction::ftz )
+			{
+				mul.a = ir::LLVMInstruction::Operand( _tempRegister(), 
+					ir::LLVMInstruction::Type( ir::LLVMInstruction::F32, 
+					ir::LLVMInstruction::Type::Element ) );
+				mul.b = ir::LLVMInstruction::Operand( _tempRegister(), 
+					ir::LLVMInstruction::Type( ir::LLVMInstruction::F32, 
+					ir::LLVMInstruction::Type::Element ) );
+				
+				_flushToZero( mul.a, _translate( i.a ) );
+				_flushToZero( mul.b, _translate( i.b ) );
+			}
+			else
+			{
+				mul.a = _translate( i.a );
+				mul.b = _translate( i.b );
+			}
+			
 			if( i.modifier & ir::PTXInstruction::sat
 				|| i.modifier & ir::PTXInstruction::ftz )
 			{
-				mul.d = mul.a;
-				mul.d.name = _tempRegister();
+				mul.d = ir::LLVMInstruction::Operand( _tempRegister(), 
+					ir::LLVMInstruction::Type( ir::LLVMInstruction::F32, 
+					ir::LLVMInstruction::Type::Element ) );
 			}
 			else
 			{
@@ -5442,8 +5498,41 @@ namespace translator
 			
 			land.a = greaterEqual.d;
 			land.b = equal.d;
-			land.d = _destination( i );
+			land.d = ir::LLVMInstruction::Operand( _tempRegister(),
+				ir::LLVMInstruction::Type( ir::LLVMInstruction::I1, 
+				ir::LLVMInstruction::Type::Element ) );
 			
+			_add( land );
+
+			ir::LLVMFcmp notInf;
+			
+			notInf.d = ir::LLVMInstruction::Operand( _tempRegister(),
+				ir::LLVMInstruction::Type( ir::LLVMInstruction::I1, 
+				ir::LLVMInstruction::Type::Element ) );
+			notInf.comparison = ir::LLVMInstruction::One;
+			notInf.a = select.d;
+
+			if( i.type == ir::PTXOperand::f32 )
+			{
+				notInf.b = ir::LLVMInstruction::Operand( 
+					(ir::LLVMI64) hydrazine::bit_cast< ir::LLVMI32 >(
+					std::numeric_limits<float>::infinity() ) );
+			}
+			else
+			{
+				notInf.b = ir::LLVMInstruction::Operand( 
+					(ir::LLVMI64) hydrazine::bit_cast< ir::LLVMI64 >(
+					std::numeric_limits<double>::infinity() ) );
+			}
+
+			notInf.b.type.type = equal.b.type.type;
+			
+			_add( notInf );
+			
+			land.b = notInf.d;
+			land.a = land.d;
+			land.d = _destination( i );
+
 			_add( land );
 		}
 		break;

@@ -252,14 +252,14 @@ ir::PTXU32 executive::CooperativeThreadArray::getSpecialValue(
 
 ir::PTXF32 executive::CooperativeThreadArray::sat(int modifier, ir::PTXF32 f) {
 	if (modifier & ir::PTXInstruction::sat) {
-		return (f <= 0 ? 0 : (f >= 1.0f ? 1.0f : f));
+		return (f <= 0 || std::isnan(f) ? 0 : (f >= 1.0f ? 1.0f : f));
 	}
 	return f;
 }
 
 static ir::PTXF32 ftz(int modifier, ir::PTXF32 f) {
 	if (modifier & ir::PTXInstruction::ftz) {
-		return (!std::isnormal(f) ? 0 : f);
+		return (!std::isnormal(f) && !std::isnan(f) && !std::isinf(f) ? 0 : f);
 	}
 	return f;
 }
@@ -2583,9 +2583,9 @@ void executive::CooperativeThreadArray::eval_CopySign(CTAContext &context, const
 			PTXF64 a = operandAsF64(tid, instr.a);
 			PTXF64 b = operandAsF64(tid, instr.b);
 			PTXU64 d = (hydrazine::bit_cast<PTXU64>(b)
-				& 0x7ffffffffffffffULL) | 
+				& 0x7fffffffffffffffULL) | 
 				(hydrazine::bit_cast<PTXU64>(a) 
-				& 0x800000000000000ULL);
+				& 0x8000000000000000ULL);
 
 			setRegAsF64(tid, instr.d.reg, 
 				hydrazine::bit_cast<PTXF64>(d));
@@ -3788,8 +3788,9 @@ void executive::CooperativeThreadArray::eval_Div(CTAContext &context, const PTXI
 		for (int threadID = 0; threadID < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;
 			
-			PTXF32 d, a = operandAsF32(threadID, instr.a), b = operandAsF32(threadID, instr.b);
-			d = sat(instr.modifier, a / b);
+			PTXF32 d, a = ftz(instr.modifier, operandAsF32(threadID, instr.a)),
+				b = ftz(instr.modifier, operandAsF32(threadID, instr.b));
+			d = ftz(instr.modifier, a / b);
 			setRegAsF32(threadID, instr.d.reg, d);
 		}
 	}	
@@ -3930,9 +3931,13 @@ void executive::CooperativeThreadArray::eval_Fma(CTAContext &context, const ir::
 	if (instr.type == PTXOperand::f32) {
 		for (int tid = 0; tid < threadCount; tid++) {
 			if (!context.predicated(tid, instr)) continue;
+			PTXF32 d = 0,
+				a = ftz(instr.modifier, operandAsF32(tid, instr.a)), 
+				b = ftz(instr.modifier, operandAsF32(tid, instr.b)), 
+				c = ftz(instr.modifier, operandAsF32(tid, instr.c));
+
+			d = ftz(instr.modifier, sat(instr.modifier, a * b + c));
 			
-			PTXF32 d, a = operandAsF32(tid, instr.a), b = operandAsF32(tid, instr.b), c = operandAsF32(tid, instr.c);
-			d = a * b + c;
 			setRegAsF32(tid, instr.d.reg, d);
 		}
 	}

@@ -27,13 +27,23 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 // HELPER FUNCTIONS
+template<typename T>
+bool issubnormal(T r0)
+{
+	return !std::isnormal(r0) && !std::isnan(r0) && !std::isinf(r0);
+}
+
 bool compareFloat(float a, float b)
 {
+	if(std::isnan(a) && std::isnan(b)) return true;
+
 	return a == b;
 }
 
 bool compareDouble(double a, double b)
 {
+	if(std::isnan(a) && std::isnan(b)) return true;
+
 	return a == b;
 }
 
@@ -81,14 +91,14 @@ char* uniformNonZero(test::Test::MersenneTwister& generator)
 template <typename type, unsigned int size>
 char* uniformFloat(test::Test::MersenneTwister& generator)
 {
-	type* allocation = new type[size];
-	char* result = (char*) allocation;
+	char* allocation = new char[size*sizeof(type)];
+	type* result = (type*) allocation;
 
-	for(unsigned int i = 0; i < size * sizeof(type); ++i)
+	for(unsigned int i = 0; i < size; ++i)
 	{
 		unsigned int fptype = generator();
 		
-		if(fptype & 0x1)
+		if(fptype & 0x100)
 		{
 			if(fptype & 0x10)
 			{
@@ -107,14 +117,139 @@ char* uniformFloat(test::Test::MersenneTwister& generator)
 			}
 			else
 			{
-				result[i] = hydrazine::bit_cast<type>(generator());
+				if(fptype & 0x1)
+				{
+					result[i] = hydrazine::bit_cast<type>(generator());
+				}
+				else
+				{
+					result[i] = (type)generator();
+				}
 			}
 		}
 	}
 	
-	return result;
+	return allocation;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////
+// TEST DIV
+std::string testFdiv_PTX(ir::PTXOperand::DataType type, int modifier)
+{
+	bool sat = modifier & ir::PTXInstruction::sat;
+	bool ftz = modifier & ir::PTXInstruction::ftz;
+	std::string roundingString = ir::PTXInstruction::roundingMode(
+		(ir::PTXInstruction::Modifier) modifier);
+	
+	std::stringstream ptx;
+	
+	std::string typeString;
+	
+	if(type == ir::PTXOperand::f32)
+	{
+		typeString = ".f32";
+	}
+	else
+	{
+		typeString = ".f64";
+	}
+	
+	ptx << ".version 2.1\n";
+	ptx << "\n";
+	
+	ptx << ".entry test(.param .u64 out, .param .u64 in)   \n";
+	ptx << "{\t                                            \n";
+	ptx << "\t.reg .u64 %rIn, %rOut;                       \n";
+	ptx << "\t.reg " << typeString << " %f<3>;             \n";
+	ptx << "\tld.param.u64 %rIn, [in];                     \n";
+	ptx << "\tld.param.u64 %rOut, [out];                   \n";
+	ptx << "\tld.global" << typeString << " %f0, [%rIn];   \n";
+	ptx << "\tld.global" << typeString << " %f1, [%rIn + "
+		<< ir::PTXOperand::bytes(type) << "];              \n";
+	
+	if(modifier & ir::PTXInstruction::approx)
+	{
+		ptx << "\tdiv.approx";
+	}
+	else if(modifier & ir::PTXInstruction::full)
+	{
+		ptx << "\tdiv.full";
+	}
+	else
+	{
+		ptx << "\tdiv.rn";
+	}
+	
+	if(!roundingString.empty()) ptx << "." << roundingString;
+	
+	if(ftz) ptx << ".ftz";
+	if(sat) ptx << ".sat";
+	
+	ptx << typeString << " %f2, %f0, %f1;  \n";
+	
+	ptx << "\tst.global" << typeString << " [%rOut], %f2;  \n";
+	ptx << "\texit;                                        \n";
+	ptx << "}                                              \n";
+	ptx << "                                               \n";
+	
+	return ptx.str();
+}
+
+template<typename type, int modifier>
+void testFdiv_REF(void* output, void* input)
+{
+	static_assert(sizeof(type) == 4 || sizeof(type) == 8, "only f32/f64 valid");
+	static_assert(sizeof(type) != 8 || !(modifier & ir::PTXInstruction::ftz),
+		"ftz only valid for f32");
+
+	type r0 = getParameter<type>(input, 0);
+	type r1 = getParameter<type>(input, sizeof(type));
+
+	if(modifier & ir::PTXInstruction::ftz)
+	{
+		if(issubnormal(r0)) r0 = 0.0f;
+		if(issubnormal(r1)) r1 = 0.0f;
+	}
+
+	type result = 0;
+	
+	if(modifier & ir::PTXInstruction::approx)
+	{
+		result = r0 * ( 1.0f / r1 );
+	}
+	else
+	{
+		result = r0 / r1;
+	}
+
+	if(modifier & ir::PTXInstruction::ftz)
+	{
+		if(issubnormal(result)) result = 0.0f;
+	}
+	
+	if(modifier & ir::PTXInstruction::sat)
+	{
+		if(result < 0.0f) result = 0.0f;
+		if(result > 1.0f) result = 1.0f;
+		if(std::isnan(result)) result = 0.0f;
+	}
+	
+	setParameter(output, 0, result);
+}
+
+test::TestPTXAssembly::TypeVector testFdiv_IN(
+	test::TestPTXAssembly::DataType type)
+{
+	return test::TestPTXAssembly::TypeVector(2, type);
+}
+
+test::TestPTXAssembly::TypeVector testFdiv_OUT(
+	test::TestPTXAssembly::DataType type)
+{
+	return test::TestPTXAssembly::TypeVector(1, type);
+}
 ////////////////////////////////////////////////////////////////////////////////
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -193,16 +328,16 @@ void testFma_REF(void* output, void* input)
 
 	if(modifier & ir::PTXInstruction::ftz)
 	{
-		if(!std::isnormal(r0)) r0 = 0.0f;
-		if(!std::isnormal(r1)) r1 = 0.0f;
-		if(!std::isnormal(r2)) r2 = 0.0f;
+		if(issubnormal(r0)) r0 = 0.0f;
+		if(issubnormal(r1)) r1 = 0.0f;
+		if(issubnormal(r2)) r2 = 0.0f;
 	}
 
 	type result = r0 * r1 + r2;
 		
 	if(modifier & ir::PTXInstruction::ftz)
 	{
-		if(!std::isnormal(result)) result = 0.0f;
+		if(issubnormal(result)) result = 0.0f;
 	}
 	
 	if(modifier & ir::PTXInstruction::sat)
@@ -294,8 +429,8 @@ void testFmul_REF(void* output, void* input)
 
 	if(modifier & ir::PTXInstruction::ftz)
 	{
-		if(!std::isnormal(r0)) r0 = 0.0f;
-		if(!std::isnormal(r1)) r1 = 0.0f;
+		if(issubnormal(r0)) r0 = 0.0f;
+		if(issubnormal(r1)) r1 = 0.0f;
 	}
 
 
@@ -303,7 +438,7 @@ void testFmul_REF(void* output, void* input)
 		
 	if(modifier & ir::PTXInstruction::ftz)
 	{
-		if(!std::isnormal(result)) result = 0.0f;
+		if(issubnormal(result)) result = 0.0f;
 	}
 	
 	if(modifier & ir::PTXInstruction::sat)
@@ -402,8 +537,8 @@ void testFadd_REF(void* output, void* input)
 
 	if(modifier & ir::PTXInstruction::ftz)
 	{
-		if(!std::isnormal(r0)) r0 = 0.0f;
-		if(!std::isnormal(r1)) r1 = 0.0f;
+		if(issubnormal(r0)) r0 = 0.0f;
+		if(issubnormal(r1)) r1 = 0.0f;
 	}
 
 
@@ -420,7 +555,7 @@ void testFadd_REF(void* output, void* input)
 	
 	if(modifier & ir::PTXInstruction::ftz)
 	{
-		if(!std::isnormal(result)) result = 0.0f;
+		if(issubnormal(result)) result = 0.0f;
 	}
 	
 	if(modifier & ir::PTXInstruction::sat)
@@ -583,7 +718,7 @@ void testTestP_REF(void* output, void* input)
 	default:
 	case ir::PTXInstruction::Finite:
 	{
-		condition = !std::isinf(r0);
+		condition = !std::isinf(r0) && !std::isnan(r0);
 	}
 	break;
 	case ir::PTXInstruction::Infinite:
@@ -608,7 +743,7 @@ void testTestP_REF(void* output, void* input)
 	break;
 	case ir::PTXInstruction::SubNormal:
 	{
-		condition = !std::isnormal(r0) && !std::isnan(r0) && !std::isinf(r0);
+		condition = issubnormal(r0);
 	}
 	break;
 	}
@@ -3002,7 +3137,6 @@ namespace test
 			testFma_PTX(ir::PTXOperand::f64, 0, true), testFma_OUT(FP64), 
 			testFma_IN(FP64), uniformFloat<double, 3>, 1, 1);
 
-
 		add("TestFma-f32", testFma_REF<float, 0>, 
 			testFma_PTX(ir::PTXOperand::f32, 0, false), testFma_OUT(FP32), 
 			testFma_IN(FP32), uniformFloat<float, 3>, 1, 1);
@@ -3025,6 +3159,40 @@ namespace test
 		add("TestFma-f64", testFma_REF<double, 0>, 
 			testFma_PTX(ir::PTXOperand::f64, 0, false), testFma_OUT(FP64), 
 			testFma_IN(FP64), uniformFloat<double, 3>, 1, 1);
+
+		add("TestDiv-f32", testFdiv_REF<float, 0>,
+			testFdiv_PTX(ir::PTXOperand::f32, 0), testFdiv_OUT(FP32), 
+			testFdiv_IN(FP32), uniformFloat<float, 2>, 1, 1);
+		add("TestDiv-f32-ftz", testFdiv_REF<float, ir::PTXInstruction::ftz>,
+			testFdiv_PTX(ir::PTXOperand::f32, ir::PTXInstruction::ftz), 
+			testFdiv_OUT(FP32), testFdiv_IN(FP32),
+			uniformFloat<float, 2>, 1, 1);
+		add("TestDiv-f32-approx",
+			testFdiv_REF<float, ir::PTXInstruction::approx>,
+			testFdiv_PTX(ir::PTXOperand::f32, ir::PTXInstruction::approx), 
+			testFdiv_OUT(FP32), testFdiv_IN(FP32),
+			uniformFloat<float, 2>, 1, 1);
+		add("TestDiv-f32-full", testFdiv_REF<float, ir::PTXInstruction::full>,
+			testFdiv_PTX(ir::PTXOperand::f32, ir::PTXInstruction::full), 
+			testFdiv_OUT(FP32), testFdiv_IN(FP32),
+			uniformFloat<float, 2>, 1, 1);
+		add("TestDiv-f32-approx-ftz",
+			testFdiv_REF<float,
+				ir::PTXInstruction::approx | ir::PTXInstruction::ftz>,
+			testFdiv_PTX(ir::PTXOperand::f32,
+				ir::PTXInstruction::approx | ir::PTXInstruction::ftz), 
+			testFdiv_OUT(FP32), testFdiv_IN(FP32),
+			uniformFloat<float, 2>, 1, 1);
+		add("TestDiv-f32-full-ftz", 
+			testFdiv_REF<float,
+				ir::PTXInstruction::full | ir::PTXInstruction::ftz>,
+			testFdiv_PTX(ir::PTXOperand::f32,
+				ir::PTXInstruction::full | ir::PTXInstruction::ftz), 
+			testFdiv_OUT(FP32), testFdiv_IN(FP32),
+			uniformFloat<float, 2>, 1, 1);
+		add("TestDiv-f64", testFdiv_REF<double, 0>,
+			testFdiv_PTX(ir::PTXOperand::f64, 0), testFdiv_OUT(FP64), 
+			testFdiv_IN(FP64), uniformFloat<double, 2>, 1, 1);
 	}
 
 	TestPTXAssembly::TestPTXAssembly(hydrazine::Timer::Second l, 

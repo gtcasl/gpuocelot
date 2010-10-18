@@ -166,6 +166,13 @@ namespace ir {
 			AtomicOperation_Invalid
 		};
 		
+		enum BarrierOperation {
+			BarSync,
+			BarArrive,
+			BarReduction,
+			BarrierOperation_invalid
+		};
+		
 		enum ReductionOperation {
 			ReductionAnd,
 			ReductionXor,
@@ -175,6 +182,7 @@ namespace ir {
 			ReductionDec,
 			ReductionMin,
 			ReductionMax,
+			ReductionPopc,
 			ReductionOperation_Invalid
 		};
 		
@@ -292,6 +300,7 @@ namespace ir {
 		static std::string toString( Vec );
 		static std::string toString( AddressSpace );
 		static std::string toString( AtomicOperation );
+		static std::string toString( BarrierOperation );
 		static std::string toString( ReductionOperation );
 		static std::string toString( CmpOp );
 		static std::string toString( BoolOp );
@@ -366,6 +375,9 @@ namespace ir {
 			/*! For sust and suld instructions, indicates whether to store unformatted
 				binary datay or formatted store of a vector of 32-bit data */
 			FormatMode formatMode;
+			
+			/*! Indicates which type of bar. instruction should be used */
+			BarrierOperation barrierOperation;
 		};
 	
 		/*! If the instruction is predicated, the guard */

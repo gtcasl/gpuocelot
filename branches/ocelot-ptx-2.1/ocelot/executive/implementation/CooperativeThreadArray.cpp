@@ -8691,7 +8691,7 @@ void executive::CooperativeThreadArray::eval_Trap(CTAContext &context, const PTX
 
 void executive::CooperativeThreadArray::eval_Txq(CTAContext &context, const ir::PTXInstruction &instr) {
 	trace();
-	
+	throw RuntimeException("Txq instruction not yet implemented", context.PC, instr);
 }
 
 /*!

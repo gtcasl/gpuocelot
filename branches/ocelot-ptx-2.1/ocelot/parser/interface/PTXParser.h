@@ -248,6 +248,7 @@ namespace parser
 					void convert( int token, YYLTYPE& location );
 					void convertC( int token, YYLTYPE& location );
 					void convertD( int token, YYLTYPE& location );
+					void barrierOperation( int token, YYLTYPE & location);
 					
 					void returnType( int token );
 					void argumentType( int token );
@@ -291,6 +292,7 @@ namespace parser
 			static ir::PTXInstruction::AtomicOperation 
 				tokenToAtomicOperation( int );
 			static ir::PTXInstruction::CmpOp tokenToCmpOp( int );
+			static ir::PTXInstruction::BarrierOperation tokenToBarrierOp(int);
 			static ir::PTXInstruction::BoolOp tokenToBoolOp( int );
 			static ir::PTXInstruction::Geometry tokenToGeometry( int );
 			static ir::PTXInstruction::VoteMode tokenToVoteMode( int );

@@ -58,7 +58,7 @@
 %token<text> OPCODE_CVTA OPCODE_ISSPACEP
 %token<text> OPCODE_SULD OPCODE_TXQ OPCODE_SUST OPCODE_SURED OPCODE_SUQ
 %token<text> OPCODE_BRA OPCODE_CALL OPCODE_RET OPCODE_EXIT OPCODE_TRAP 
-%token<text> OPCODE_BRKPT OPCODE_SUBC OPCODE_TEX OPCODE_LD OPCODE_BARSYNC 
+%token<text> OPCODE_BRKPT OPCODE_SUBC OPCODE_TEX OPCODE_LD OPCODE_BARSYNC OPCODE_BAR
 %token<text> OPCODE_ATOM OPCODE_RED OPCODE_NOT OPCODE_CNOT OPCODE_VOTE
 %token<text> OPCODE_SHR OPCODE_SHL OPCODE_FMA OPCODE_MEMBAR OPCODE_PMEVENT
 %token<text> OPCODE_POPC OPCODE_PRMT OPCODE_CLZ OPCODE_BFIND OPCODE_BREV 
@@ -119,7 +119,7 @@
 
 %token<value> TOKEN_TRAP TOKEN_CLAMP TOKEN_ZERO
 
-%token<value> TOKEN_ARRIVE TOKEN_RED TOKEN_POPC
+%token<value> TOKEN_ARRIVE TOKEN_RED TOKEN_POPC TOKEN_SYNC
 
 %token<value> TOKEN_BALLOT
 
@@ -950,7 +950,26 @@ bfind : OPCODE_BFIND shiftAmount dataType operand ',' operand ';'
 	state.instruction( $<text>1, $<value>3, 3 );
 };
 
+/*
+//
+// subsumed by more general rules for bar.{sync, arrive,red} instruction
+//
 bar : OPCODE_BARSYNC operand ';'
+{
+	state.instruction( $<text>1, 2 );
+};
+*/
+
+barrierOperation : TOKEN_ARRIVE | TOKEN_RED | TOKEN_SYNC
+{
+	state.barrierOperation( $<value>1, @1 );
+};
+
+optionalBarrierOperator : reductionOperation dataType | /* or nothing */ ;
+
+operandSequence: operand operandSequence | /* empty */ ;
+
+bar : OPCODE_BAR barrierOperation optionalBarrierOperator operandSequence ';'
 {
 	state.instruction( $<text>1, 2 );
 };

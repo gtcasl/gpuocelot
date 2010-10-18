@@ -1737,6 +1737,10 @@ namespace parser
 	
 		statement.instruction.d.type = tokenToDataType( token );
 	}
+	
+	void PTXParser::State::barrierOperation( int token, YYLTYPE & location) {
+		statement.instruction.barrierOperation = tokenToBarrierOp(token);
+	}
 
 	void PTXParser::State::returnType( int token )
 	{
@@ -2021,6 +2025,7 @@ namespace parser
 		if( string == "and" ) return ir::PTXInstruction::And;
 		if( string == "atom" ) return ir::PTXInstruction::Atom;
 		if( string == "bar.sync" ) return ir::PTXInstruction::Bar;
+		if( string == "bar" ) return ir::PTXInstruction::Bar;
 		if( string == "bfi" ) return ir::PTXInstruction::Bfi;
 		if( string == "bfind" ) return ir::PTXInstruction::Bfind;
 		if( string == "bra" ) return ir::PTXInstruction::Bra;
@@ -2155,6 +2160,7 @@ namespace parser
 			case TOKEN_DEC: return ir::PTXInstruction::ReductionDec; break;
 			case TOKEN_MIN: return ir::PTXInstruction::ReductionMin; break;
 			case TOKEN_MAX: return ir::PTXInstruction::ReductionMax; break;
+			case TOKEN_POPC: return ir::PTXInstruction::ReductionPopc; break;
 			default: break;
 		}
 		
@@ -2208,6 +2214,19 @@ namespace parser
 		}
 		
 		return ir::PTXInstruction::CmpOp_Invalid;	
+	}
+	
+	
+	ir::PTXInstruction::BarrierOperation PTXParser::tokenToBarrierOp(int token)
+	{
+		switch( token )
+		{
+			case TOKEN_ARRIVE: return ir::PTXInstruction::BarArrive;
+			case TOKEN_RED: return ir::PTXInstruction::BarReduction;
+			default:
+				break;
+		}
+		return ir::PTXInstruction::BarSync;
 	}
 	
 	ir::PTXInstruction::BoolOp PTXParser::tokenToBoolOp( int token )

@@ -154,6 +154,17 @@ std::string ir::PTXInstruction::toString( Modifier modifier ) {
 	return "";	
 }
 
+
+std::string ir::PTXInstruction::toString( BarrierOperation operation) {
+	switch (operation) {
+		case BarSync: return ".sync";
+		case BarArrive: return ".arrive";
+		case BarReduction: return ".red";
+		default: break;
+	}
+	return "";
+}
+
 std::string ir::PTXInstruction::toString( CmpOp operation ) {
 	switch( operation ) {
 		case Eq: return "eq";   break;
@@ -1796,7 +1807,28 @@ std::string ir::PTXInstruction::toString() const {
 			return result;
 		}
 		case Bar: {
-			return guard() + "bar.sync " + d.toString();
+			std::string result = guard() + "bar" + toString(barrierOperation);
+			ir::PTXOperand ir::PTXInstruction::* instrMembers [] = { 
+				&ir::PTXInstruction::d, 
+				&ir::PTXInstruction::a, 
+				&ir::PTXInstruction::b, 
+				&ir::PTXInstruction::c,
+				&ir::PTXInstruction::pq
+			};
+			switch (barrierOperation) {
+				case BarReduction: 
+				{
+					result += toString(reductionOperation) + PTXOperand::toString(type);
+				}
+				break;
+				default: break;
+			};
+			for (int i = 0; instrMembers[i] != &ir::PTXInstruction::pq; i++) {
+				if ((this->*instrMembers[i]).addressMode != ir::PTXOperand::Invalid) {
+					result += " " + (this->*instrMembers[i]).toString();
+				}
+			}
+			return result;
 		}
 		case Bfi: {
 			return guard() + "bfi." + PTXOperand::toString( type ) + " " 

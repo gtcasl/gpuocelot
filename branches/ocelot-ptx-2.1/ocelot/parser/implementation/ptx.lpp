@@ -76,6 +76,8 @@ TAB [\t]*
 SPACE [ ]*
 WHITESPACE [ \t]*
 
+/* "bar.sync"                      { strlcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_BARSYNC; } */
 /******************************************************************************/
 
 %%
@@ -107,8 +109,8 @@ WHITESPACE [ \t]*
                                     return OPCODE_ATOM; }
 "abs"                           { strlcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_ABS; }
-"bar.sync"                      { strlcpy( yylval->text, yytext, 1024 ); \
-                                    return OPCODE_BARSYNC; }
+"bar"                     			{ strlcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_BAR; }
 "bfi"                           { strlcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_BFI; }
 "bfind"                         { strlcpy( yylval->text, yytext, 1024 ); \
@@ -440,6 +442,8 @@ WHITESPACE [ \t]*
                                     return TOKEN_ARRIVE; }
 ".red"                          { yylval->value = TOKEN_RED; \
                                     return TOKEN_RED; }
+".sync"                          { yylval->value = TOKEN_SYNC; \
+                                    return TOKEN_SYNC; }
 ".popc"                         { yylval->value = TOKEN_POPC; \
                                     return TOKEN_POPC; }
 

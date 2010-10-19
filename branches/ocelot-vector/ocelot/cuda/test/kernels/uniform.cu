@@ -23,6 +23,13 @@ extern "C" __global__ void kernel_uniform_loop(float *A, float a, float *B, int 
 	}
 }
 
+extern "C" __global__ void kernel_nonuniform(float *A, int b) {
+	int tid = threadIdx.x + blockDim.x * blockIdx.x;
+	if ((tid + b) & 0x01) {
+		A[tid] = tid * b;
+	}
+}
+
 /*!
 
 */
@@ -57,6 +64,8 @@ int main() {
 
 	if (!errors) {
 		kernel_uniform<<< gridSize, blockSize >>>(A_gpu, A_k);
+		kernel_nonuniform<<< gridSize, blockSize >>>(A_gpu, 1);
+
 		cudaMemcpy(A_cpu, A_gpu, A_bytes, cudaMemcpyDeviceToHost);
 
 		for (int i = 0; i < N; i++) {

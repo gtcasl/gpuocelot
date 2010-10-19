@@ -106,6 +106,31 @@ analysis::LLVMUniformVectorization::DivergentBranch::DivergentBranch(
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
+#include <iostream>
+
+char analysis::LLVMInstructionCountingPass::ID = 0;
+
+analysis::LLVMInstructionCountingPass::LLVMInstructionCountingPass():
+	llvm::FunctionPass(ID) {
+
+}
+
+//! \brief entry point for pass
+bool analysis::LLVMInstructionCountingPass::runOnFunction(llvm::Function &F) {
+	llvm::Function::iterator bb_it = F.begin();
+	int instCount = 0;
+	for (; bb_it != F.end(); ++bb_it) {
+		llvm::BasicBlock::iterator inst_it = bb_it->begin();
+		for (; inst_it != bb_it->end(); ++inst_it) {
+			instCount ++;
+		}
+	}
+
+	std::cout << "function " << F.getNameStr() << "(): " << instCount << " instructions" << std::endl;
+	return true;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
 
 analysis::LLVMUniformVectorization::LLVMUniformVectorization(int _warpSize):
 	llvm::FunctionPass(ID),
@@ -158,7 +183,7 @@ void analysis::LLVMUniformVectorization::addWarpSynchronous(llvm::Function &F) {
 		createSchedulerBlock(translation);
 		updateSchedulerBlocks(translation);
 		
-		vectorize(translation);
+		//vectorize(translation);
 	}
 	
 	report("end vectorization " << translation.F->getNameStr() << "\n");
@@ -565,9 +590,10 @@ void analysis::LLVMUniformVectorization::resolveControlFlow(Translation &transla
 	}
 	
 	// insert handling code for potentially diverging branches
+	int index = 0;
 	for (DivergentBranchMap::iterator div_br_it = translation.divergingBranchMap.begin();
 		div_br_it != translation.divergingBranchMap.end(); ++div_br_it) {
-		handleDivergentBranch(translation, div_br_it->second);
+		handleDivergentBranch(translation, div_br_it->second, index ++);
 	}
 }
 
@@ -575,7 +601,7 @@ void analysis::LLVMUniformVectorization::resolveControlFlow(Translation &transla
 	\brief deals with a particular divergent branch
 */
 void analysis::LLVMUniformVectorization::handleDivergentBranch(Translation &translation, 
-	DivergentBranch &divergent) {
+	DivergentBranch &divergent, int index) {
 	
 	// we only know how to handle 1-bit integer conditions
 	llvm::TerminatorInst *scTerm = divergent.scalarBlock->getTerminator();
@@ -634,6 +660,14 @@ void analysis::LLVMUniformVectorization::handleDivergentBranch(Translation &tran
 		switchInst->addCase(constZero, succZero);
 		
 		// insert dummy return statement
+		std::vector<const llvm::Type *> args;
+		args.push_back(int32ty);
+		llvm::FunctionType *divFuncType = llvm::FunctionType::get(llvm::Type::getVoidTy(
+			translation.F->getContext()), args, false);
+		llvm::Constant *ocelotDivergenceException = translation.F->getParent()->getOrInsertFunction(
+			"__ocelot_divergence_exception", divFuncType);
+		llvm::CallInst::Create(ocelotDivergenceException, 
+			llvm::ConstantInt::get(int32ty, index), "", divergent.handler);
 		llvm::ReturnInst::Create(translation.F->getContext(), constZero32, divergent.handler);
 		
 		divergenceHandlerBranch(translation, divergent);

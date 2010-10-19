@@ -1,7 +1,7 @@
-# 1 "/tmp/tmpxft_0000085c_00000000-1_uniform.cudafe1.cpp"
+# 1 "/tmp/tmpxft_000034fa_00000000-1_uniform.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_0000085c_00000000-1_uniform.cudafe1.cpp"
+# 1 "/tmp/tmpxft_000034fa_00000000-1_uniform.cudafe1.cpp"
 # 1 "uniform.cu"
 # 46 "/usr/local/cuda3.1/cuda/bin/../include/device_types.h"
 # 149 "/usr/lib/gcc/x86_64-linux-gnu/4.4.3/include/stddef.h" 3
@@ -9001,127 +9001,131 @@ extern "C" void funlockfile(FILE *) throw();
 extern "C" void kernel_uniform(float *A, float a) ;
 # 18 "uniform.cu"
 extern "C" void kernel_uniform_loop(float *A, float a, float *B, int b) ;
-# 29 "uniform.cu"
+# 26 "uniform.cu"
+extern "C" void kernel_nonuniform(float *A, int b) ;
+# 36 "uniform.cu"
 int main() {
-# 30 "uniform.cu"
-const int N = 64;
-# 31 "uniform.cu"
-dim3 blockSize(32, 1);
-# 32 "uniform.cu"
-dim3 gridSize((N) / (blockSize.x), 1);
-# 34 "uniform.cu"
-float *A_gpu, *A_cpu, *B_cpu, *B_gpu;
-# 35 "uniform.cu"
-const int B = 5;
 # 37 "uniform.cu"
-size_t A_bytes = (sizeof(float) * (N));
+const int N = 64;
 # 38 "uniform.cu"
-size_t B_bytes = (sizeof(float) * (B));
-# 40 "uniform.cu"
-A_cpu = ((float *)malloc(A_bytes));
+dim3 blockSize(32, 1);
+# 39 "uniform.cu"
+dim3 gridSize((N) / (blockSize.x), 1);
 # 41 "uniform.cu"
-B_cpu = ((float *)malloc(B_bytes));
+float *A_gpu, *A_cpu, *B_cpu, *B_gpu;
 # 42 "uniform.cu"
-cudaMalloc((void **)(&A_gpu), A_bytes);
-# 43 "uniform.cu"
-cudaMalloc((void **)(&B_gpu), B_bytes);
+const int B = 5;
+# 44 "uniform.cu"
+size_t A_bytes = (sizeof(float) * (N));
 # 45 "uniform.cu"
-for (int i = 0; i < N; i++) {
-# 46 "uniform.cu"
-(A_cpu[i]) = (0);
+size_t B_bytes = (sizeof(float) * (B));
 # 47 "uniform.cu"
-if (i < B) {
+A_cpu = ((float *)malloc(A_bytes));
 # 48 "uniform.cu"
-(B_cpu[i]) = (3 * i);
+B_cpu = ((float *)malloc(B_bytes));
 # 49 "uniform.cu"
-}
+cudaMalloc((void **)(&A_gpu), A_bytes);
 # 50 "uniform.cu"
-}
+cudaMalloc((void **)(&B_gpu), B_bytes);
 # 52 "uniform.cu"
-cudaMemcpy(A_gpu, A_cpu, A_bytes, cudaMemcpyHostToDevice);
+for (int i = 0; i < N; i++) {
 # 53 "uniform.cu"
-cudaMemcpy(B_gpu, B_cpu, B_bytes, cudaMemcpyHostToDevice);
+(A_cpu[i]) = (0);
+# 54 "uniform.cu"
+if (i < B) {
 # 55 "uniform.cu"
-int errors = 0;
+(B_cpu[i]) = (3 * i);
 # 56 "uniform.cu"
-float A_k = (3);
-# 58 "uniform.cu"
-if (!(errors)) {
+}
+# 57 "uniform.cu"
+}
 # 59 "uniform.cu"
-cudaConfigureCall(gridSize, blockSize) ? ((void)0) : kernel_uniform(A_gpu, A_k);
+cudaMemcpy(A_gpu, A_cpu, A_bytes, cudaMemcpyHostToDevice);
 # 60 "uniform.cu"
-cudaMemcpy(A_cpu, A_gpu, A_bytes, cudaMemcpyDeviceToHost);
+cudaMemcpy(B_gpu, B_cpu, B_bytes, cudaMemcpyHostToDevice);
 # 62 "uniform.cu"
-for (int i = 0; i < N; i++) {
+int errors = 0;
 # 63 "uniform.cu"
-float expected = (A_k * i);
-# 64 "uniform.cu"
-float got = (A_cpu[i]);
+float A_k = (3);
 # 65 "uniform.cu"
-if (fabs(expected - got) > (9.999999747e-06F)) {
-# 66 "uniform.cu"
-++errors;
-# 67 "uniform.cu"
-printf("ERROR in kernel_uniform() - [%d] - expected: %f, got: %f\n", i, expected, got);
-# 68 "uniform.cu"
-if (errors >= 5) { goto cleanup; }
-# 69 "uniform.cu"
-}
-# 70 "uniform.cu"
-}
-# 71 "uniform.cu"
-}
-# 73 "uniform.cu"
 if (!(errors)) {
-# 74 "uniform.cu"
-cudaConfigureCall(gridSize, blockSize) ? ((void)0) : kernel_uniform_loop(A_gpu, A_k, B_gpu, B);
-# 75 "uniform.cu"
+# 66 "uniform.cu"
+cudaConfigureCall(gridSize, blockSize) ? ((void)0) : kernel_uniform(A_gpu, A_k);
+# 67 "uniform.cu"
+cudaConfigureCall(gridSize, blockSize) ? ((void)0) : kernel_nonuniform(A_gpu, 1);
+# 69 "uniform.cu"
 cudaMemcpy(A_cpu, A_gpu, A_bytes, cudaMemcpyDeviceToHost);
-# 77 "uniform.cu"
+# 71 "uniform.cu"
 for (int i = 0; i < N; i++) {
+# 72 "uniform.cu"
+float expected = (A_k * i);
+# 73 "uniform.cu"
+float got = (A_cpu[i]);
+# 74 "uniform.cu"
+if (fabs(expected - got) > (9.999999747e-06F)) {
+# 75 "uniform.cu"
+++errors;
+# 76 "uniform.cu"
+printf("ERROR in kernel_uniform() - [%d] - expected: %f, got: %f\n", i, expected, got);
+# 77 "uniform.cu"
+if (errors >= 5) { goto cleanup; }
 # 78 "uniform.cu"
-int expected = (A_k * i);
+}
 # 79 "uniform.cu"
-for (int b = 0; b < B; b++) {
+}
 # 80 "uniform.cu"
-expected += (B_cpu[b]);
-# 81 "uniform.cu"
 }
 # 82 "uniform.cu"
-int got = (A_cpu[i]);
+if (!(errors)) {
 # 83 "uniform.cu"
-if (expected != got) {
+cudaConfigureCall(gridSize, blockSize) ? ((void)0) : kernel_uniform_loop(A_gpu, A_k, B_gpu, B);
 # 84 "uniform.cu"
-++errors;
-# 85 "uniform.cu"
-printf("ERROR in kernel_uniform_loop() - [%d] - expected: %d, got: %d\n", i, expected, got);
+cudaMemcpy(A_cpu, A_gpu, A_bytes, cudaMemcpyDeviceToHost);
 # 86 "uniform.cu"
-if (errors >= 5) { goto cleanup; }
+for (int i = 0; i < N; i++) {
 # 87 "uniform.cu"
-}
+int expected = (A_k * i);
 # 88 "uniform.cu"
-}
+for (int b = 0; b < B; b++) {
 # 89 "uniform.cu"
+expected += (B_cpu[b]);
+# 90 "uniform.cu"
 }
 # 91 "uniform.cu"
-cleanup:;
+int got = (A_cpu[i]);
+# 92 "uniform.cu"
+if (expected != got) {
 # 93 "uniform.cu"
-printf("%s\n", (errors) ? ("FAILED") : ("Passed"));
+++errors;
+# 94 "uniform.cu"
+printf("ERROR in kernel_uniform_loop() - [%d] - expected: %d, got: %d\n", i, expected, got);
 # 95 "uniform.cu"
-cudaFree(A_gpu);
+if (errors >= 5) { goto cleanup; }
 # 96 "uniform.cu"
-cudaFree(B_gpu);
-# 97 "uniform.cu"
-free(A_cpu);
-# 98 "uniform.cu"
-free(B_cpu);
-# 100 "uniform.cu"
-return 0;
-# 101 "uniform.cu"
 }
-# 1 "/tmp/tmpxft_0000085c_00000000-1_uniform.cudafe1.stub.c"
-# 1 "/tmp/tmpxft_0000085c_00000000-1_uniform.cudafe1.stub.c" 1
-# 1 "/tmp/tmpxft_0000085c_00000000-3_uniform.fatbin.c" 1
+# 97 "uniform.cu"
+}
+# 98 "uniform.cu"
+}
+# 100 "uniform.cu"
+cleanup:;
+# 102 "uniform.cu"
+printf("%s\n", (errors) ? ("FAILED") : ("Passed"));
+# 104 "uniform.cu"
+cudaFree(A_gpu);
+# 105 "uniform.cu"
+cudaFree(B_gpu);
+# 106 "uniform.cu"
+free(A_cpu);
+# 107 "uniform.cu"
+free(B_cpu);
+# 109 "uniform.cu"
+return 0;
+# 110 "uniform.cu"
+}
+# 1 "/tmp/tmpxft_000034fa_00000000-1_uniform.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_000034fa_00000000-1_uniform.cudafe1.stub.c" 1
+# 1 "/tmp/tmpxft_000034fa_00000000-3_uniform.fatbin.c" 1
 # 1 "/usr/local/cuda3.1/cuda/bin/../include/__cudaFatFormat.h" 1
 # 83 "/usr/local/cuda3.1/cuda/bin/../include/__cudaFatFormat.h"
 extern "C" {
@@ -9199,7 +9203,7 @@ void __cudaFatFreePTX( char* ptx );
 
 
 }
-# 2 "/tmp/tmpxft_0000085c_00000000-3_uniform.fatbin.c" 2
+# 2 "/tmp/tmpxft_000034fa_00000000-3_uniform.fatbin.c" 2
 
 
 
@@ -9208,67 +9212,91 @@ asm(
 ".align 32\n"
 "__deviceText_$sm_10$:\n"
 ".quad 0x33010102464c457f,0x0000000000000002,0x0000000100be0002,0x0000000000000000\n"
-".quad 0x00000000000005f8,0x0000000000000040,0x00380040000a000a,0x0001000a00400005\n"
+".quad 0x0000000000000888,0x0000000000000040,0x00380040000a000a,0x0001000e00400007\n"
 ".quad 0x0000000000000000,0x0000000000000000,0x0000000000000000,0x0000000000000000\n"
 ".quad 0x0000000000000000,0x0000000000000000,0x0000000000000000,0x0000000000000000\n"
-".quad 0x0000000300000001,0x0000000000000000,0x0000000000000000,0x00000000000002c0\n"
-".quad 0x00000000000000d3,0x0000000000000000,0x0000000000000004,0x0000000000000000\n"
-".quad 0x000000030000000b,0x0000000000000000,0x0000000000000000,0x0000000000000393\n"
-".quad 0x0000000000000024,0x0000000000000000,0x0000000000000001,0x0000000000000000\n"
-".quad 0x0000000200000013,0x0000000000000000,0x0000000000000000,0x00000000000003b7\n"
-".quad 0x0000000000000150,0x0000000c00000002,0x0000000000000001,0x0000000000000018\n"
-".quad 0x000000010000007d,0x0000000000000006,0x0000000000000000,0x0000000000000507\n"
-".quad 0x0000000000000098,0x0500000900000003,0x0000000000000004,0x0000000000000000\n"
-".quad 0x00000001000000b6,0x0000000000000002,0x0000000000000000,0x000000000000059f\n"
+".quad 0x0000000300000001,0x0000000000000000,0x0000000000000000,0x00000000000003c0\n"
+".quad 0x0000000000000143,0x0000000000000000,0x0000000000000004,0x0000000000000000\n"
+".quad 0x000000030000000b,0x0000000000000000,0x0000000000000000,0x0000000000000503\n"
+".quad 0x0000000000000036,0x0000000000000000,0x0000000000000001,0x0000000000000000\n"
+".quad 0x0000000200000013,0x0000000000000000,0x0000000000000000,0x0000000000000539\n"
+".quad 0x00000000000001c8,0x0000001000000002,0x0000000000000001,0x0000000000000018\n"
+".quad 0x00000001000000ed,0x0000000000000006,0x0000000000000000,0x0000000000000701\n"
+".quad 0x0000000000000098,0x0500000d00000003,0x0000000000000004,0x0000000000000000\n"
+".quad 0x0000000100000126,0x0000000000000002,0x0000000000000000,0x0000000000000799\n"
 ".quad 0x0000000000000014,0x0000000400000000,0x0000000000000001,0x0000000000000000\n"
-".quad 0x0000000800000097,0x0000000000000003,0x0000000000000000,0x00000000000005b3\n"
+".quad 0x0000000800000107,0x0000000000000003,0x0000000000000000,0x00000000000007ad\n"
 ".quad 0x000000000000002c,0x0000000400000000,0x0000000000000004,0x0000000000000000\n"
-".quad 0x0000000100000036,0x0000000000000006,0x0000000000000000,0x00000000000005b3\n"
-".quad 0x0000000000000038,0x0200000600000003,0x0000000000000004,0x0000000000000000\n"
-".quad 0x0000000100000065,0x0000000000000002,0x0000000000000000,0x00000000000005eb\n"
+".quad 0x00000001000000a6,0x0000000000000006,0x0000000000000000,0x00000000000007ad\n"
+".quad 0x0000000000000038,0x0200000a00000003,0x0000000000000004,0x0000000000000000\n"
+".quad 0x00000001000000d5,0x0000000000000002,0x0000000000000000,0x00000000000007e5\n"
 ".quad 0x000000000000000c,0x0000000700000000,0x0000000000000001,0x0000000000000000\n"
-".quad 0x000000080000004b,0x0000000000000003,0x0000000000000000,0x00000000000005f7\n"
+".quad 0x00000008000000bb,0x0000000000000003,0x0000000000000000,0x00000000000007f1\n"
 ".quad 0x000000000000001c,0x0000000700000000,0x0000000000000004,0x0000000000000000\n"
+".quad 0x0000000100000036,0x0000000000000006,0x0000000000000000,0x00000000000007f1\n"
+".quad 0x0000000000000078,0x0400000600000003,0x0000000000000004,0x0000000000000000\n"
+".quad 0x0000000100000086,0x0000000000000002,0x0000000000000000,0x0000000000000869\n"
+".quad 0x0000000000000004,0x0000000a00000000,0x0000000000000004,0x0000000000000000\n"
+".quad 0x000000010000004e,0x0000000000000002,0x0000000000000000,0x000000000000086d\n"
+".quad 0x0000000000000018,0x0000000a00000000,0x0000000000000001,0x0000000000000000\n"
+".quad 0x0000000800000069,0x0000000000000003,0x0000000000000000,0x0000000000000885\n"
+".quad 0x000000000000001c,0x0000000a00000000,0x0000000000000004,0x0000000000000000\n"
 ".quad 0x7472747368732e00,0x747274732e006261,0x746d79732e006261,0x672e766e2e006261\n"
 ".quad 0x6e692e6c61626f6c,0x672e766e2e007469,0x742e006c61626f6c,0x6e72656b2e747865\n"
-".quad 0x6f66696e755f6c65,0x732e766e2e006d72,0x656b2e6465726168,0x696e755f6c656e72\n"
-".quad 0x766e2e006d726f66,0x656b2e6f666e692e,0x696e755f6c656e72,0x65742e006d726f66\n"
-".quad 0x656e72656b2e7478,0x726f66696e755f6c,0x2e00706f6f6c5f6d,0x65726168732e766e\n"
-".quad 0x6c656e72656b2e64,0x6d726f66696e755f,0x6e2e00706f6f6c5f,0x6b2e6f666e692e76\n"
-".quad 0x6e755f6c656e7265,0x6f6c5f6d726f6669,0x6e72656b0000706f,0x6f66696e755f6c65\n"
-".quad 0x656e72656b006d72,0x726f66696e755f6c,0x0000706f6f6c5f6d,0x0000000000000000\n"
-".quad 0x0000000000000000,0x0000000000000000,0x0000010003000000,0x0000000000000000\n"
-".quad 0x0000000000000000,0x0000020003000000,0x0000000000000000,0x0000000000000000\n"
-".quad 0x0000030003000000,0x0000000000000000,0x0000000000000000,0x0000000003000000\n"
-".quad 0x0000000000000000,0x0000000000000000,0x0000000003000000,0x0000000000000000\n"
-".quad 0x0000000000000000,0x0000070003000000,0x3800000000000000,0x0000000000000000\n"
-".quad 0x0000090003000000,0x0000000000000000,0x0000000000000000,0x0000080003000000\n"
-".quad 0x0000000000000000,0x0000000000000000,0x0000040003000000,0x9800000000000000\n"
-".quad 0x0000000000000000,0x0000060003000000,0x0000000000000000,0x0000000000000000\n"
-".quad 0x0000050003000000,0x0000000000000000,0x0100000000000000,0x0000071012000000\n"
-".quad 0x0000000000000000,0x1000000000000000,0x0000041012000000,0x0000000000000000\n"
-".quad 0x0500000000000000,0x050023c780100042,0x0104000780a00000,0x050020478060014c\n"
-".quad 0x01c4100780300200,0x0444014780a00000,0xfdc1006c082101e8,0x096c20c7c8307cd5\n"
-".quad 0x03a0c00780d00e02,0x0100000280300000,0x0d0423c7801000d0,0x110403c7801000f8\n"
-".quad 0x0d80c00780d00e00,0x0900000003200186,0xfd00008780b00008,0x016c2147c83003d5\n"
-".quad 0x0900000003200480,0x03a0c00780d00e02,0x01000002801000b0,0x04e0000001f00000\n"
-".quad 0x080000000000100b,0x1800000010000000,0x8010004205000000,0x80a00000050023c7\n"
-".quad 0x8060014c01040007,0x80a0000005002047,0x8030020001440147,0x00c1016c04c41007\n"
-".quad 0x81d00e00052100e8,0x0000080b04a0c007,0x0000000008000000,0x0000000500000006\n"
-".quad 0x00000000000005f8,0x0000000000000000,0x0000000000000000,0x0000000000000118\n"
-".quad 0x0000000000000118,0x0000000000000004,0x00000d0560000000,0x0000000000000507\n"
-".quad 0x0000000000000000,0x0000000000000000,0x00000000000000ac,0x00000000000000ac\n"
-".quad 0x0000000000000004,0x00000d0660000000,0x00000000000005b3,0x0000000000000000\n"
-".quad 0x0000000000000000,0x0000000000000000,0x000000000000002c,0x0000000000000004\n"
-".quad 0x00000c0560000000,0x00000000000005b3,0x0000000000000000,0x0000000000000000\n"
-".quad 0x0000000000000044,0x0000000000000044,0x0000000000000004,0x00000c0660000000\n"
-".quad 0x00000000000005f7,0x0000000000000000,0x0000000000000000,0x0000000000000000\n"
+".quad 0x6e756e6f6e5f6c65,0x6e2e006d726f6669,0x6b2e6f666e692e76,0x6f6e5f6c656e7265\n"
+".quad 0x6d726f66696e756e,0x6168732e766e2e00,0x6e72656b2e646572,0x6e756e6f6e5f6c65\n"
+".quad 0x6e2e006d726f6669,0x6174736e6f632e76,0x6e72656b2e31746e,0x6e756e6f6e5f6c65\n"
+".quad 0x742e006d726f6669,0x6e72656b2e747865,0x6f66696e755f6c65,0x732e766e2e006d72\n"
+".quad 0x656b2e6465726168,0x696e755f6c656e72,0x766e2e006d726f66,0x656b2e6f666e692e\n"
+".quad 0x696e755f6c656e72,0x65742e006d726f66,0x656e72656b2e7478,0x726f66696e755f6c\n"
+".quad 0x2e00706f6f6c5f6d,0x65726168732e766e,0x6c656e72656b2e64,0x6d726f66696e755f\n"
+".quad 0x6e2e00706f6f6c5f,0x6b2e6f666e692e76,0x6e755f6c656e7265,0x6f6c5f6d726f6669\n"
+".quad 0x6e72656b0000706f,0x6e756e6f6e5f6c65,0x656b006d726f6669,0x696e755f6c656e72\n"
+".quad 0x72656b006d726f66,0x66696e755f6c656e,0x706f6f6c5f6d726f,0x0000000000000000\n"
+".quad 0x0000000000000000,0x0000000000000000,0x0100030000000000,0x0000000000000000\n"
+".quad 0x0000000000000000,0x0200030000000000,0x0000000000000000,0x0000000000000000\n"
+".quad 0x0300030000000000,0x0000000000000000,0x0000000000000000,0x0000030000000000\n"
+".quad 0x0000000000000000,0x0000000000000000,0x0000030000000000,0x0000000000000000\n"
+".quad 0x0000000000000000,0x0a00030000000000,0x0000000000000000,0x0000000000007800\n"
+".quad 0x0c00030000000000,0x0000000000000000,0x0000000000000000,0x0d00030000000000\n"
+".quad 0x0000000000000000,0x0000000000000000,0x0b00030000000000,0x0000000000000000\n"
+".quad 0x0000000000000000,0x0700030000000000,0x0000000000000000,0x0000000000003800\n"
+".quad 0x0900030000000000,0x0000000000000000,0x0000000000000000,0x0800030000000000\n"
+".quad 0x0000000000000000,0x0000000000000000,0x0400030000000000,0x0000000000000000\n"
+".quad 0x0000000000009800,0x0600030000000000,0x0000000000000000,0x0000000000000000\n"
+".quad 0x0500030000000000,0x0000000000000000,0x0000000000000000,0x0a10120000000100\n"
+".quad 0x0000000000000000,0x0000000000000000,0x0710120000001300,0x0000000000000000\n"
+".quad 0x0000000000000000,0x0410120000002200,0x0000000000000000,0x0000000000000000\n"
+".quad 0x23c7801000420500,0x000780a000000500,0x20478060014c0104,0x1007803002000500\n"
+".quad 0x014780a0000001c4,0x006c082101e80444,0x20c7c8307cd5fdc1,0xc00780d00e02096c\n"
+".quad 0x00028030000003a0,0x23c7801000d00100,0x03c7801000f80d04,0xc00780d00e001104\n"
+".quad 0x0000032001860d80,0x008780b000080900,0x2147c83003d5fd00,0x000003200480016c\n"
+".quad 0xc00780d00e020900,0x0002801000b003a0,0x000001f000000100,0x00000000100b04e0\n"
+".quad 0x0000100000000800,0x0042050000001800,0x0000050023c78010,0x014c0104000780a0\n"
+".quad 0x0000050020478060,0x02000144014780a0,0x016c04c410078030,0x0e00052100e800c1\n"
+".quad 0x080b04a0c00781d0,0x0000080000000000,0x23c7801000420500,0x000780a000000500\n"
+".quad 0x20478060014c0504,0x2047802000cc0100,0x4007c8d08001fd04,0x0001003000000304\n"
+".quad 0x23c7801000cc0100,0x0007804003000904,0x0087806002020900,0x1007803010040d00\n"
+".quad 0x10078030020209c4,0x00c78060020005c4,0x2087802000c80100,0x014780a000020504\n"
+".quad 0xc00781d00e000544,0x080b0400000001a0,0x0000080000000000,0x01000800080d0400\n"
+".quad 0x0000000000000100,0x0000000500000006,0x0000000000000888,0x0000000000000000\n"
+".quad 0x0000000000000000,0x0000000000000188,0x0000000000000188,0x0000000000000004\n"
+".quad 0x0000120560000000,0x0000000000000701,0x0000000000000000,0x0000000000000000\n"
+".quad 0x00000000000000ac,0x00000000000000ac,0x0000000000000004,0x0000120660000000\n"
+".quad 0x00000000000007ad,0x0000000000000000,0x0000000000000000,0x0000000000000000\n"
+".quad 0x000000000000002c,0x0000000000000004,0x0000110560000000,0x00000000000007ad\n"
+".quad 0x0000000000000000,0x0000000000000000,0x0000000000000044,0x0000000000000044\n"
+".quad 0x0000000000000004,0x0000110660000000,0x00000000000007f1,0x0000000000000000\n"
+".quad 0x0000000000000000,0x0000000000000000,0x000000000000001c,0x0000000000000004\n"
+".quad 0x0000100560000000,0x00000000000007f1,0x0000000000000000,0x0000000000000000\n"
+".quad 0x0000000000000094,0x0000000000000094,0x0000000000000004,0x0000100660000000\n"
+".quad 0x0000000000000885,0x0000000000000000,0x0000000000000000,0x0000000000000000\n"
 ".quad 0x000000000000001c,0x0000000000000004,0x0000000000000000\n"
 ".text");
 
 extern "C" {
 
-extern const unsigned long long __deviceText_$sm_10$[227];
+extern const unsigned long long __deviceText_$sm_10$[323];
 
 }
 
@@ -9283,8 +9311,8 @@ asm(
 ".quad 0x2d36302d30313032,0x2d2f2f090a0a3730,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x43202f2f090a2d2d,0x676e696c69706d6f,0x6d742f706d742f20\n"
-".quad 0x3030305f74667870,0x30305f6335383030,0x372d303030303030,0x6d726f66696e755f\n"
-".quad 0x20692e337070632e,0x63632f706d742f28,0x61566f702e234942,0x2d2f2f090a293533\n"
+".quad 0x3030305f74667870,0x30305f6166343330,0x372d303030303030,0x6d726f66696e755f\n"
+".quad 0x20692e337070632e,0x63632f706d742f28,0x4b3332612e234942,0x2d2f2f090a295566\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2f2f090a0a2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
@@ -9299,7 +9327,7 @@ asm(
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x69662e090a0a2d2d,0x633c22093109656c\n"
 ".quad 0x6c2d646e616d6d6f,0x2e090a223e656e69,0x22093209656c6966,0x706d742f706d742f\n"
-".quad 0x303030305f746678,0x3030305f63353830,0x5f362d3030303030,0x2e6d726f66696e75\n"
+".quad 0x303030305f746678,0x3030305f61663433,0x5f362d3030303030,0x2e6d726f66696e75\n"
 ".quad 0x2e32656661647563,0x662e090a22757067,0x2f22093309656c69,0x2f62696c2f727375\n"
 ".quad 0x5f3638782f636367,0x78756e696c2d3436,0x342e342f756e672d,0x756c636e692f332e\n"
 ".quad 0x65646474732f6564,0x662e090a22682e66,0x2f22093409656c69,0x61636f6c2f727375\n"
@@ -9424,12 +9452,42 @@ asm(
 ".quad 0x40090a3b37722520,0x2061726220327025,0x315f315f744c2409,0x744c240a3b343937\n"
 ".quad 0x3a323832315f315f,0x3109636f6c2e090a,0x090a300934320937,0x4c240a3b74697865\n"
 ".quad 0x656b5f646e655744,0x696e755f6c656e72,0x6f6f6c5f6d726f66,0x2f2f207d090a3a70\n"
-".quad 0x5f6c656e72656b20,0x5f6d726f66696e75,0x00000a0a706f6f6c\n"
+".quad 0x5f6c656e72656b20,0x5f6d726f66696e75,0x2e090a0a706f6f6c,0x656b207972746e65\n"
+".quad 0x6e6f6e5f6c656e72,0x206d726f66696e75,0x7261702e09090a28,0x203436752e206d61\n"
+".quad 0x6170616475635f5f,0x656e72656b5f6d72,0x696e756e6f6e5f6c,0x0a2c415f6d726f66\n"
+".quad 0x6d617261702e0909,0x5f5f203233732e20,0x6d72617061647563,0x5f6c656e72656b5f\n"
+".quad 0x6f66696e756e6f6e,0x7b090a29625f6d72,0x2e206765722e090a,0x3c68722520363175\n"
+".quad 0x65722e090a3b3e34,0x25203233752e2067,0x090a3b3e30313c72,0x36752e206765722e\n"
+".quad 0x3e363c6472252034,0x206765722e090a3b,0x3c6625203233662e,0x65722e090a3b3e33\n"
+".quad 0x20646572702e2067,0x090a3b3e333c7025,0x09373109636f6c2e,0x444c240a30093632\n"
+".quad 0x6b5f6e6967656257,0x6f6e5f6c656e7265,0x6d726f66696e756e,0x752e766f6d090a3a\n"
+".quad 0x3168722509203631,0x646961746325202c,0x766f6d090a3b782e,0x722509203631752e\n"
+".quad 0x69746e25202c3268,0x756d090a3b782e64,0x752e656469772e6c,0x2c31722509203631\n"
+".quad 0x25202c3168722520,0x7663090a3b326872,0x31752e3233752e74,0x202c327225092036\n"
+".quad 0x0a3b782e64697425,0x3233752e64646109,0x25202c3372250920,0x3b317225202c3272\n"
+".quad 0x7261702e646c090a,0x09203233732e6d61,0x5f5f5b202c347225,0x6d72617061647563\n"
+".quad 0x5f6c656e72656b5f,0x6f66696e756e6f6e,0x090a3b5d625f6d72,0x203233732e646461\n"
+".quad 0x7225202c35722509,0x0a3b337225202c34,0x3233622e646e6109,0x25202c3672250920\n"
+".quad 0x090a3b31202c3572,0x203233752e766f6d,0x3b30202c37722509,0x652e70746573090a\n"
+".quad 0x2509203233732e71,0x2c367225202c3170,0x40090a3b37722520,0x2061726220317025\n"
+".quad 0x315f325f744c2409,0x646c090a3b363230,0x732e6d617261702e,0x2c34722509203233\n"
+".quad 0x616475635f5f5b20,0x72656b5f6d726170,0x756e6f6e5f6c656e,0x625f6d726f66696e\n"
+".quad 0x636f6c2e090a3b5d,0x3009393209373109,0x6f6c2e6c756d090a,0x722509203233732e\n"
+".quad 0x202c347225202c38,0x7663090a3b337225,0x3233662e6e722e74,0x662509203233732e\n"
+".quad 0x0a3b387225202c31,0x617261702e646c09,0x2509203436752e6d,0x5f5f5b202c316472\n"
+".quad 0x6d72617061647563,0x5f6c656e72656b5f,0x6f66696e756e6f6e,0x090a3b5d415f6d72\n"
+".quad 0x2e3436732e747663,0x6472250920323373,0x0a3b337225202c32,0x6469772e6c756d09\n"
+".quad 0x2509203233732e65,0x337225202c336472,0x6461090a3b34202c,0x2509203436752e64\n"
+".quad 0x647225202c346472,0x3b33647225202c31,0x6f6c672e7473090a,0x203233662e6c6162\n"
+".quad 0x302b346472255b09,0x0a3b316625202c5d,0x30315f325f744c24,0x6f6c2e090a3a3632\n"
+".quad 0x0931330937310963,0x3b74697865090a30,0x646e6557444c240a,0x5f6c656e72656b5f\n"
+".quad 0x6f66696e756e6f6e,0x2f207d090a3a6d72,0x6c656e72656b202f,0x66696e756e6f6e5f\n"
+".quad 0x0000000a0a6d726f\n"
 ".text");
 
 extern "C" {
 
-extern const unsigned long long __deviceText_$compute_10$[595];
+extern const unsigned long long __deviceText_$compute_10$[713];
 
 }
 
@@ -9441,8 +9499,8 @@ static __cudaFatElfEntry __elfEntries1 = {(char*)"sm_10", (char*)__deviceText_$s
 
 
 
-static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000004,0xa14f518d,(char*)"f0209f405626e2fc",(char*)"uniform.cu",(char*)" ",__ptxEntries,__cubinEntries,&__debugEntries0,0,0,0,0,0,0x7843ef86,&__elfEntries1};
-# 2 "/tmp/tmpxft_0000085c_00000000-1_uniform.cudafe1.stub.c" 2
+static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000004,0xa14f518d,(char*)"5e013040bf61ea83",(char*)"uniform.cu",(char*)" ",__ptxEntries,__cubinEntries,&__debugEntries0,0,0,0,0,0,0xaec04df3,&__elfEntries1};
+# 2 "/tmp/tmpxft_000034fa_00000000-1_uniform.cudafe1.stub.c" 2
 # 1 "/usr/local/cuda3.1/cuda/bin/../include/crt/host_runtime.h" 1
 # 93 "/usr/local/cuda3.1/cuda/bin/../include/crt/host_runtime.h"
 extern "C" {
@@ -9836,28 +9894,41 @@ extern __attribute__((__weak__)) unsigned long long int ullmax(unsigned long lon
 # 4997 "/usr/local/cuda3.1/cuda/bin/../include/math_functions.h" 2 3
 # 88 "/usr/local/cuda3.1/cuda/bin/../include/common_functions.h" 2
 # 166 "/usr/local/cuda3.1/cuda/bin/../include/crt/host_runtime.h" 2
-# 3 "/tmp/tmpxft_0000085c_00000000-1_uniform.cudafe1.stub.c" 2
+# 3 "/tmp/tmpxft_000034fa_00000000-1_uniform.cudafe1.stub.c" 2
 struct __T20 {float *__par0;float __par1;int __dummy_field;};
 struct __T21 {float *__par0;float __par1;float *__par2;int __par3;int __dummy_field;};
+struct __T22 {float *__par0;int __par1;int __dummy_field;};
 extern void __device_stub__Z14kernel_uniformPff(float *, float);
 extern void __device_stub__Z19kernel_uniform_loopPffS_i(float *, float, float *, int);
-static void __sti____cudaRegisterAll_42_tmpxft_0000085c_00000000_4_uniform_cpp1_ii_a18efc3c(void) __attribute__((__constructor__));
-void __device_stub__Z14kernel_uniformPff(float *__par0, float __par1){ struct __T20 *__T22;
-*(void**)(void*)&__T22 = (void*)0;if (cudaSetupArgument((void*)(char*)&__par0, sizeof(__par0), (size_t)&__T22->__par0) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par1, sizeof(__par1), (size_t)&__T22->__par1) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(float *, float))kernel_uniform)); (void)cudaLaunch(((char *)((void ( *)(float *, float))kernel_uniform))); };}
+extern void __device_stub__Z17kernel_nonuniformPfi(float *, int);
+static void __sti____cudaRegisterAll_42_tmpxft_000034fa_00000000_4_uniform_cpp1_ii_a18efc3c(void) __attribute__((__constructor__));
+void __device_stub__Z14kernel_uniformPff(float *__par0, float __par1){ struct __T20 *__T23;
+*(void**)(void*)&__T23 = (void*)0;if (cudaSetupArgument((void*)(char*)&__par0, sizeof(__par0), (size_t)&__T23->__par0) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par1, sizeof(__par1), (size_t)&__T23->__par1) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(float *, float))kernel_uniform)); (void)cudaLaunch(((char *)((void ( *)(float *, float))kernel_uniform))); };}
 void kernel_uniform( float *__cuda_0,float __cuda_1)
 # 10 "uniform.cu"
 {__device_stub__Z14kernel_uniformPff( __cuda_0,__cuda_1);
 
 
 }
-# 1 "/tmp/tmpxft_0000085c_00000000-1_uniform.cudafe1.stub.c"
-void __device_stub__Z19kernel_uniform_loopPffS_i( float *__par0, float __par1, float *__par2, int __par3) { struct __T21 *__T23;
-*(void**)(void*)&__T23 = (void*)0; if (cudaSetupArgument((void*)(char*)&__par0, sizeof(__par0), (size_t)&__T23->__par0) != cudaSuccess) return; if (cudaSetupArgument((void*)(char*)&__par1, sizeof(__par1), (size_t)&__T23->__par1) != cudaSuccess) return; if (cudaSetupArgument((void*)(char*)&__par2, sizeof(__par2), (size_t)&__T23->__par2) != cudaSuccess) return; if (cudaSetupArgument((void*)(char*)&__par3, sizeof(__par3), (size_t)&__T23->__par3) != cudaSuccess) return; { volatile static char *__f; __f = ((char *)((void ( *)(float *, float, float *, int))kernel_uniform_loop)); (void)cudaLaunch(((char *)((void ( *)(float *, float, float *, int))kernel_uniform_loop))); }; }
+# 1 "/tmp/tmpxft_000034fa_00000000-1_uniform.cudafe1.stub.c"
+void __device_stub__Z19kernel_uniform_loopPffS_i( float *__par0, float __par1, float *__par2, int __par3) { struct __T21 *__T24;
+*(void**)(void*)&__T24 = (void*)0; if (cudaSetupArgument((void*)(char*)&__par0, sizeof(__par0), (size_t)&__T24->__par0) != cudaSuccess) return; if (cudaSetupArgument((void*)(char*)&__par1, sizeof(__par1), (size_t)&__T24->__par1) != cudaSuccess) return; if (cudaSetupArgument((void*)(char*)&__par2, sizeof(__par2), (size_t)&__T24->__par2) != cudaSuccess) return; if (cudaSetupArgument((void*)(char*)&__par3, sizeof(__par3), (size_t)&__T24->__par3) != cudaSuccess) return; { volatile static char *__f; __f = ((char *)((void ( *)(float *, float, float *, int))kernel_uniform_loop)); (void)cudaLaunch(((char *)((void ( *)(float *, float, float *, int))kernel_uniform_loop))); }; }
 void kernel_uniform_loop( float *__cuda_0,float __cuda_1,float *__cuda_2,int __cuda_3)
 # 18 "uniform.cu"
 {__device_stub__Z19kernel_uniform_loopPffS_i( __cuda_0,__cuda_1,__cuda_2,__cuda_3);
 # 24 "uniform.cu"
 }
-# 1 "/tmp/tmpxft_0000085c_00000000-1_uniform.cudafe1.stub.c"
-static void __sti____cudaRegisterAll_42_tmpxft_0000085c_00000000_4_uniform_cpp1_ii_a18efc3c(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, float, float *, int))kernel_uniform_loop), (char*)"kernel_uniform_loop", "kernel_uniform_loop", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, float))kernel_uniform), (char*)"kernel_uniform", "kernel_uniform", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); }
-# 1 "/tmp/tmpxft_0000085c_00000000-1_uniform.cudafe1.stub.c" 2
+# 1 "/tmp/tmpxft_000034fa_00000000-1_uniform.cudafe1.stub.c"
+void __device_stub__Z17kernel_nonuniformPfi( float *__par0, int __par1) { struct __T22 *__T25;
+*(void**)(void*)&__T25 = (void*)0; if (cudaSetupArgument((void*)(char*)&__par0, sizeof(__par0), (size_t)&__T25->__par0) != cudaSuccess) return; if (cudaSetupArgument((void*)(char*)&__par1, sizeof(__par1), (size_t)&__T25->__par1) != cudaSuccess) return; { volatile static char *__f; __f = ((char *)((void ( *)(float *, int))kernel_nonuniform)); (void)cudaLaunch(((char *)((void ( *)(float *, int))kernel_nonuniform))); }; }
+void kernel_nonuniform( float *__cuda_0,int __cuda_1)
+# 26 "uniform.cu"
+{__device_stub__Z17kernel_nonuniformPfi( __cuda_0,__cuda_1);
+
+
+
+
+}
+# 1 "/tmp/tmpxft_000034fa_00000000-1_uniform.cudafe1.stub.c"
+static void __sti____cudaRegisterAll_42_tmpxft_000034fa_00000000_4_uniform_cpp1_ii_a18efc3c(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, int))kernel_nonuniform), (char*)"kernel_nonuniform", "kernel_nonuniform", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, float, float *, int))kernel_uniform_loop), (char*)"kernel_uniform_loop", "kernel_uniform_loop", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, float))kernel_uniform), (char*)"kernel_uniform", "kernel_uniform", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); }
+# 1 "/tmp/tmpxft_000034fa_00000000-1_uniform.cudafe1.stub.c" 2

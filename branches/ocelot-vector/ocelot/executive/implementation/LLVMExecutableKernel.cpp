@@ -27,7 +27,7 @@
 #include <hydrazine/implementation/debug.h>
 
 // Intel profiling
-#include </opt/intel/vtune/analyzer/include/JITProfiling.h>
+//#include </opt/intel/vtune/analyzer/include/JITProfiling.h>
 
 #ifdef REPORT_BASE
 #undef REPORT_BASE
@@ -114,6 +114,11 @@ extern "C"
 	void setRoundingMode( unsigned int mode )
 	{
 		assertM( mode == 0, "No support for setting exotic rounding modes." );
+	}
+
+	void __ocelot_divergence_exception(int count) {
+		std::cerr << "__ocelot_divergence_exception(" << count << ")" << std::endl;
+		assertM(0, "Divergence encountered in vectorized control flow - not yet handled");
 	}
 
 	float __ocelot_ex2Ftz( float f )
@@ -1908,9 +1913,35 @@ namespace executive
 
 		// experimental pass for uniform-control flow vectorization
 		
-		analysis::LLVMUniformVectorization *uniformVectorizationPass = new analysis::LLVMUniformVectorization;
+		analysis::LLVMUniformVectorization *uniformVectorizationPass = new 
+			analysis::LLVMUniformVectorization;
+
+		manager.add(llvm::createGVNPass());                   // Remove redundancies
+		manager.add(llvm::createMemCpyOptPass());             // Remove memcpy / form memset
+		manager.add(llvm::createSCCPPass());                  // Constant prop with SCCP
+
+		// Run instcombine after redundancy elimination to exploit opportunities
+		// opened up by them.
+		manager.add(llvm::createInstructionCombiningPass());
+		manager.add(llvm::createDeadStoreEliminationPass());  // Delete dead stores
+		manager.add(llvm::createAggressiveDCEPass());         // Delete dead instructions
+		manager.add(llvm::createCFGSimplificationPass());     // Merge & remove BBs
+		manager.add(new analysis::LLVMInstructionCountingPass);
 		manager.add(uniformVectorizationPass);
-		level = 2;
+
+			manager.add(llvm::createGVNPass());                   // Remove redundancies
+			manager.add(llvm::createMemCpyOptPass());             // Remove memcpy / form memset
+			manager.add(llvm::createSCCPPass());                  // Constant prop with SCCP
+
+			// Run instcombine after redundancy elimination to exploit opportunities
+			// opened up by them.
+			manager.add(llvm::createInstructionCombiningPass());
+			manager.add(llvm::createDeadStoreEliminationPass());  // Delete dead stores
+			manager.add(llvm::createAggressiveDCEPass());         // Delete dead instructions
+			manager.add(llvm::createCFGSimplificationPass());     // Merge & remove BBs
+		manager.add(new analysis::LLVMInstructionCountingPass);
+
+		level = 0;
 		
 		if (level == 0) {
 		

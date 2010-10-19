@@ -22,7 +22,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 namespace trace
 {
@@ -44,6 +44,7 @@ TraceConfiguration::TraceConfiguration()
 	warpSynchronous.enabled = false; 
 	performanceBound.enabled = false; 
 	convergence.enabled = false;
+	loadBalance = false;
 
 	try
 	{
@@ -66,6 +67,9 @@ TraceConfiguration::TraceConfiguration()
 			instruction = traceConfig.parse<bool>("instruction", false);
 			parallelism = traceConfig.parse<bool>("parallelism", false);
 			cacheSimulator = traceConfig.parse<bool>("cacheSimulator", false);
+			loadBalance = traceConfig.parse<bool>("loadBalance", false);
+			
+			report("loadBalance: " << loadBalance);
 
 			// more detailed configuration for this trace generator
 			hydrazine::json::Visitor warpSyncConfig =
@@ -207,6 +211,13 @@ TraceConfiguration::TraceConfiguration()
 		report("Creating convergence trace generator");
 		_convergence.database = database;
 		ocelot::addTraceGenerator(_convergence, true);
+	}
+	
+	if (loadBalance)
+	{
+		report("Creating load balance generator");
+		_loadBalance.database = database;
+		ocelot::addTraceGenerator(_loadBalance, true);
 	}
 }
 

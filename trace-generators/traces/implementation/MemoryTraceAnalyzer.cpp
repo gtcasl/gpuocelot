@@ -18,16 +18,6 @@
 #include <cfloat>
 #include <unordered_map>
 
-/*!
-Kernel _Z9matrixMulPfS_S_ii
- path: /home/andrew/repositories/casl/branches/projects/ocelot/traces/_Z9matrixMulPfS_S_ii_2_0.trace
- module: tests/cuda/MatrixMul/matrixMul.cu
-
-Kernel _Z13c2c_radix4_spifiPvS_i11tfStride_st
- path: /home/andrew/repositories/casl/branches/projects/ocelot/traces/_Z13c2c_radix4_spifiPvS_i11tfStride_st_2_0.trace
- module: /root/cuda-stuff/sw/rel/gpgpu/toolkit/r2.1/cufft/src/kernels/c2c_radix4.cu
-
-*/
 namespace trace {
 
 	/*!

@@ -16,6 +16,7 @@
 #include <traces/interface/CacheSimulator.h>
 #include <traces/interface/PerformanceBoundGenerator.h>
 #include <traces/interface/ConvergenceGenerator.h>
+#include <traces/interface/LoadBalanceGenerator.h>
 
 namespace trace
 {
@@ -104,6 +105,9 @@ namespace trace
 		
 		//! \brief trace::ConvergenceGenerator
 		Convergence convergence;
+		
+		//! \brief trace::LoadBalanceGenerator
+		bool loadBalance;
 	
 	public:
 		TraceConfiguration();
@@ -118,6 +122,7 @@ namespace trace
 		trace::WarpSynchronousGenerator _warpSynchronous;
 		trace::PerformanceBoundGenerator _performanceBound;
 		trace::ConvergenceGenerator _convergence;
+		trace::LoadBalanceGenerator _loadBalance;
 	};
 }
 

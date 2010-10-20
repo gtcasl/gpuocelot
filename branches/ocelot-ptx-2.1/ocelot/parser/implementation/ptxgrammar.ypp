@@ -78,7 +78,7 @@
 %token<value> TOKEN_SM21
 
 %token<value> TOKEN_CONST TOKEN_GLOBAL TOKEN_LOCAL TOKEN_PARAM TOKEN_PRAGMA 
-%token<value> TOKEN_REG TOKEN_SHARED TOKEN_SREG TOKEN_TEXREF TOKEN_CTA
+%token<value> TOKEN_REG TOKEN_SHARED TOKEN_TEXREF TOKEN_CTA
 %token<value> TOKEN_GL TOKEN_SYS
 
 %token<value> TOKEN_U32 TOKEN_S32 TOKEN_S8 TOKEN_S16 TOKEN_S64 TOKEN_U8 
@@ -244,8 +244,8 @@ target : TOKEN_TARGET targetElementList
 	state.target();
 };
 
-addressSpaceIdentifier : TOKEN_REG | TOKEN_SREG | TOKEN_CONST 
-	| TOKEN_GLOBAL | TOKEN_LOCAL | TOKEN_PARAM | TOKEN_SHARED;
+addressSpaceIdentifier : TOKEN_CONST | TOKEN_GLOBAL | TOKEN_LOCAL
+	| TOKEN_PARAM | TOKEN_SHARED;
 
 addressSpace : addressSpaceIdentifier
 {
@@ -1064,6 +1064,12 @@ isspacep : OPCODE_ISSPACEP addressSpace operand ',' operand ';'
 	state.instruction( $<text>1, TOKEN_U32, 3 );
 }
 
+ldModifier : TOKEN_VOLATILE
+{
+	state.noAddressSpace();
+	state.volatileFlag( true );
+};
+
 ldModifier : TOKEN_VOLATILE addressSpace
 {
 	state.volatileFlag( true );
@@ -1081,6 +1087,7 @@ ldModifier : addressSpace instructionVectorType
 
 ldModifier : instructionVectorType  
 {
+	state.noAddressSpace();
 	state.volatileFlag( false );
 };
 
@@ -1215,7 +1222,7 @@ rcpSqrtModifier : TOKEN_APPROX optionalFtz
 };
 
 rcpSqrtModifier : /* empty string */;
-rcpSqrtModifier : TOKEN_RN
+rcpSqrtModifier : TOKEN_RN optionalFtz
 {
 	state.modifier( $<value>1 );
 };
@@ -1254,7 +1261,7 @@ ret : OPCODE_RET optionalUni operand ';'
 
 comparisonId : TOKEN_EQ | TOKEN_NE | TOKEN_LT | TOKEN_LE | TOKEN_GT | TOKEN_GE
 	| TOKEN_LS | TOKEN_HS | TOKEN_EQU | TOKEN_NEU | TOKEN_LTU | TOKEN_LEU
-	| TOKEN_GTU | TOKEN_GEU | TOKEN_NUM | TOKEN_NAN;
+	| TOKEN_GTU | TOKEN_GEU | TOKEN_NUM | TOKEN_NAN | TOKEN_LO | TOKEN_HI;
 
 comparison : comparisonId
 {

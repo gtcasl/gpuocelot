@@ -277,8 +277,6 @@ WHITESPACE [ \t]*
                                     return TOKEN_SHARED;}
 ".shiftamt"                     { yylval->value = TOKEN_SHIFT_AMOUNT; \
                                     return TOKEN_SHIFT_AMOUNT;}
-".sreg"                         { yylval->value = TOKEN_SREG; \
-                                    return TOKEN_SREG; }
 ".target"                       { yylval->value = TOKEN_TARGET; \
                                     return TOKEN_TARGET; }
 ".texref"                       { yylval->value = TOKEN_TEXREF; \

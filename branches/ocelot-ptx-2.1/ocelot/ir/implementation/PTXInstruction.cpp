@@ -55,8 +55,6 @@ std::string ir::PTXInstruction::toString( Vec v ) {
 
 std::string ir::PTXInstruction::toString( AddressSpace space ) {
 	switch( space ) {
-		case Reg:
-		case SReg:    return "reg";    break;
 		case Const:   return "const";  break;
 		case Global:  return "global"; break;
 		case Local:   return "local";  break;
@@ -157,8 +155,8 @@ std::string ir::PTXInstruction::toString( Modifier modifier ) {
 
 std::string ir::PTXInstruction::toString( BarrierOperation operation) {
 	switch (operation) {
-		case BarSync: return ".sync";
-		case BarArrive: return ".arrive";
+		case BarSync:      return ".sync";
+		case BarArrive:    return ".arrive";
 		case BarReduction: return ".red";
 		default: break;
 	}
@@ -324,11 +322,10 @@ ir::PTXInstruction::PTXInstruction( Opcode op, const PTXOperand& _d,
 	vec = PTXOperand::v1;
 	pg.condition = PTXOperand::PT;
 	pg.type = PTXOperand::pred;
-	booleanOperator = BoolNop;
 	carry = None;
 	statementIndex = 0;
 	divideFull = false;
-	toAddrSpace = false;
+	tailCall = false;
 }
 
 ir::PTXInstruction::~PTXInstruction() {
@@ -681,8 +678,9 @@ std::string ir::PTXInstruction::valid() const {
 						+ " only valid for float point instructions.";
 				}
 			}
-//			if( !PTXOperand::relaxedValid( type, d.type ) ) {
-			if (!d.relaxedValid(type)) {
+			if( vec == PTXOperand::v1
+				&& PTXOperand::BitBucket != d.addressMode 
+				&& !PTXOperand::relaxedValid( type, d.type ) ) {
 				return "operand D type " + PTXOperand::toString( d.type ) 
 					+ " cannot be assigned to " + PTXOperand::toString( type ) 
 					+ ", not even for relaxed typed instructions.";
@@ -784,11 +782,13 @@ std::string ir::PTXInstruction::valid() const {
 			break;
 		}
 		case Isspacep: {
-			if (!(addressSpace == PTXInstruction::Global || addressSpace == PTXInstruction::Shared
+			if (!(addressSpace == PTXInstruction::Global
+				|| addressSpace == PTXInstruction::Shared
 				|| addressSpace == PTXInstruction::Local)) {
 				return "invalid address space " + toString(addressSpace);
 			}
-			if (!(d.addressMode == PTXOperand::Register && a.addressMode == PTXOperand::Register)) {
+			if (!(d.addressMode == PTXOperand::Register
+				&& a.addressMode == PTXOperand::Register)) {
 				return "invalid address mode for operands";
 			}
 			break;
@@ -803,20 +803,26 @@ std::string ir::PTXInstruction::valid() const {
 					+ PTXOperand::toString( a.addressMode ) 
 					+ " for operand A ";
 			}
+			if( addressSpace == AddressSpace_Invalid ) {
+				return "invalid address space";
+			}
 			if( addressSpace != Global && addressSpace != Shared 
-				&& volatility == Volatile ) {
+				&& volatility == Volatile && addressSpace != Generic ) {
 				return "only shared and global address spaces supported " 
-					+ std::string( "for volatile loads" );
+					"for volatile loads";
 			}
 			if( d.addressMode != PTXOperand::Register ) {
 				return "operand D must be a register not a " 
 					+ PTXOperand::toString( d.addressMode );
 			}
-//			if( !PTXOperand::relaxedValid( type, d.type ) ) {
-			if (!d.relaxedValid(type)) {
+			if( vec == PTXOperand::v1
+				&& PTXOperand::BitBucket != d.addressMode 
+				&& !PTXOperand::relaxedValid( type, d.type ) ) {
 				return "operand D type " + PTXOperand::toString( d.type ) 
 					+ " cannot be assigned to " + PTXOperand::toString( type ) 
-					+ ", not even for relaxed typed instructions: -\n" + toString() + "\nd.addressMode: " + PTXOperand::toString(d.addressMode);
+					+ ", not even for relaxed typed instructions: -\n" 
+					+ toString() + "\nd.addressMode: "
+					+ PTXOperand::toString(d.addressMode);
 			}
 			break;
 		}
@@ -1193,23 +1199,21 @@ std::string ir::PTXInstruction::valid() const {
 			break;
 		}
 		case Rcp: {
-			if( ( modifier & approx ) ) {
-				if( type != PTXOperand::f32 ) {
-					return "only f32 supported for approximate";
-				}
-			}
 			if( type != PTXOperand::f32 && type != PTXOperand::f64 ) {
 				return "invalid instruction type " 
 					+ PTXOperand::toString( type );
 			}
 			if( type == PTXOperand::f64 ) {
-				if( !( modifier & rn ) && !( modifier & rz ) 
+				if( modifier & ftz ) {
+					if( !( modifier & approx ) ) {
+						return "requires .approx.ftz for f64";
+					}
+				}
+				else if ( !( modifier & rn ) && !( modifier & rz ) 
 					&& !( modifier & rm ) && !( modifier & rp ) ) {
-					return "requires a rounding modifier";
+					return "rounding mode required";
 				}
-				if( !( modifier & rn ) ) {
-					return "only nearest rounding supported";
-				}
+			
 			}
 			if( !PTXOperand::valid( type, a.type ) 
 				&& a.addressMode != PTXOperand::Immediate ) {
@@ -1402,9 +1406,8 @@ std::string ir::PTXInstruction::valid() const {
 					+ " must be a predicate.";
 			}
 			if( modifier & ftz ) {
-				if( PTXOperand::isInt( type ) ) {
-					return toString( ftz ) 
-						+ " only valid for float point instructions.";
+				if( PTXOperand::isInt( a.type ) ) {
+					return " .ftz only valid when source is .f32.";
 				}
 			}
 			break;
@@ -1603,17 +1606,22 @@ std::string ir::PTXInstruction::valid() const {
 					+ PTXOperand::toString( d.addressMode ) 
 					+ " for operand D ";
 			}
-			if( ( addressSpace != Global && addressSpace != Shared ) 
+			if( addressSpace == AddressSpace_Invalid ) {
+				return "invalid address space";
+			}
+			if( ( addressSpace != Global && addressSpace != Shared
+				&& addressSpace != Generic ) 
 				&& volatility == Volatile ) {
 				return "only shared and global address spaces supported " 
-					+ std::string( "for volatile stores" );
+					"for volatile stores";
 			}
 			if( a.addressMode != PTXOperand::Register
 				&& a.addressMode != PTXOperand::Immediate ) {
 				return "operand A must be a register or immediate";
 			}
-//			if( !PTXOperand::relaxedValid( type, a.type ) ) {
-			if (!a.relaxedValid(type)) {
+			if( vec == PTXOperand::v1
+				&& PTXOperand::BitBucket != a.addressMode 
+				&& !PTXOperand::relaxedValid( type, a.type ) ) {
 				return "operand A type " + PTXOperand::toString( a.type ) 
 					+ " cannot be assigned to " + PTXOperand::toString( type ) 
 					+ ", not even for relaxed typed instructions.";
@@ -1966,7 +1974,7 @@ std::string ir::PTXInstruction::toString() const {
 			if( volatility == Volatile ) {
 				result += "volatile.";
 			}
-			if( addressSpace != AddressSpace_Invalid ) {
+			if( addressSpace != Generic ) {
 				result += toString(addressSpace) + ".";
 			}
 			if( d.vec != PTXOperand::v1 ) {
@@ -1981,7 +1989,7 @@ std::string ir::PTXInstruction::toString() const {
 			if( volatility == Volatile ) {
 				result += "volatile.";
 			}
-			if( addressSpace != AddressSpace_Invalid ) {
+			if( addressSpace != Generic ) {
 				result += toString(addressSpace) + ".";
 			}
 			if( d.vec != PTXOperand::v1 ) {
@@ -2118,6 +2126,7 @@ std::string ir::PTXInstruction::toString() const {
 			if( c.addressMode != PTXOperand::Invalid ) {
 				result += toString( booleanOperator ) + ".";
 			}
+			if( ftz & modifier ) result += "ftz.";
 			result += PTXOperand::toString( type ) + "." 
 				+ PTXOperand::toString( a.type ) + " " + d.toString() 
 				+ ", " + a.toString() + ", " + b.toString();
@@ -2174,7 +2183,7 @@ std::string ir::PTXInstruction::toString() const {
 			if( volatility == Volatile ) {
 				result += "volatile.";
 			}
-			if( addressSpace != AddressSpace_Invalid ) {
+			if( addressSpace != Generic ) {
 				result += toString(addressSpace) + ".";
 			}
 			if( a.vec != PTXOperand::v1 ) {

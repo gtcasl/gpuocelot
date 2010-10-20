@@ -2457,32 +2457,6 @@ public:
 				}
 			}
 		}
-
-		// f64
-		//
-		if (result) {
-			double freq = 2 * 3.14159 / (double)threadCount;
-
-			ins.opcode = PTXInstruction::Cos;
-			ins.type = PTXOperand::f64;
-			ins.a = reg("r1", PTXOperand::f64, 0);
-			ins.d = reg("r3", PTXOperand::f64, 2);
-
-			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsF64(i, 0, (PTXF64)((float)i * freq));
-				cta.setRegAsF64(i, 2, 0);
-			}
-			cta.eval_Cos(cta.runtimeStack.back(), ins);
-			for (int i = 0; i < threadCount; i++) {
-				if (std::fabs(cta.getRegAsF64(i, 2) - cos((float)i * freq)) > 0.1f) {
-					result = false;
-					status << "cos.f64 incorrect [" << i << "] - expected: " << cos((double)i * freq) 
-						<< ", got " << cta.getRegAsF64(i, 2) << "\n";
-					break;
-				}
-			}
-		}
-
 		return result;
 	}
 
@@ -2512,30 +2486,6 @@ public:
 					status << "sin.f32 incorrect [" << i << "] - expected: " 
 						<< (PTXF32)sin((float)i * freq) 
 						<< ", got " << cta.getRegAsF32(i, 2) << "\n";
-					break;
-				}
-			}
-		}
-
-		// f64
-		//
-		if (result) {
-			double freq = 2 * 3.14159 / (double)threadCount;
-
-			ins.type = PTXOperand::f64;
-			ins.a = reg("r1", PTXOperand::f64, 0);
-			ins.d = reg("r3", PTXOperand::f64, 2);
-
-			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsF64(i, 0, (PTXF64)((float)i * freq));
-				cta.setRegAsF64(i, 2, 0);
-			}
-			cta.eval_Sin(cta.runtimeStack.back(), ins);
-			for (int i = 0; i < threadCount; i++) {
-				if (std::fabs(cta.getRegAsF64(i, 2) - sin((float)i * freq)) > 0.1f) {
-					result = false;
-					status << "sin.f64 incorrect [" << i << "] - expected: " << sin((double)i * freq) 
-						<< ", got " << cta.getRegAsF64(i, 2) << "\n";
 					break;
 				}
 			}

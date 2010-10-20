@@ -165,7 +165,6 @@ namespace ir {
 		static unsigned int bytes(DataType);
 		static bool valid(DataType, DataType);
 		static bool relaxedValid(DataType instructionType, DataType);
-		bool relaxedValid(DataType instructionType) const;
 		
 	public:
 		PTXOperand();

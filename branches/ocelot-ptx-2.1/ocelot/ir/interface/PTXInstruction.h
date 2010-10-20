@@ -140,8 +140,6 @@ namespace ir {
 		};
 	
 		enum AddressSpace {
-			Reg = 0,
-			SReg,
 			Const,
 			Global,
 			Local,
@@ -344,13 +342,10 @@ namespace ir {
 		/*! indicates data type of instruction */
 		PTXOperand::DataType type;
 
-		/*! optionally writes carry-out value to condition code register */
-		CarryFlag carry;
+		/*! Flag containing one or more floating-point modifiers */
+		unsigned int modifier;
 
 		union {
-			/*! Flag containing one or more floating-point modifiers */
-			unsigned int modifier;
-
 			/*! Comparison operator */
 			CmpOp comparisonOperator;
 
@@ -369,11 +364,12 @@ namespace ir {
 			/*! For call instructions, indicates a tail call */
 			bool tailCall;
 			
-			/*! For txq and suq instruction, specifies texture or sampler attributes */
+			/*! For txq and suq instruction, specifies attributes */
 			SurfaceQuery surfaceQuery;
 			
-			/*! For sust and suld instructions, indicates whether to store unformatted
-				binary datay or formatted store of a vector of 32-bit data */
+			/*! For sust and suld instructions, indicates whether to store 
+				unformatted binary datay or formatted store of a vector
+				of 32-bit data */
 			FormatMode formatMode;
 			
 			/*! Indicates which type of bar. instruction should be used */
@@ -385,7 +381,7 @@ namespace ir {
 				
 		/*! Second destination register for SetP, otherwise unused */
 		PTXOperand pq;
-		
+
 		/*! Indicates whether target or source is a vector or scalar */
 		Vec vec;
 
@@ -414,22 +410,28 @@ namespace ir {
 			/*! Is this a divide full instruction? */
 			bool divideFull;
 			
-			/*! If cvta instruction, indicates whether destination is generic address or
-				if source is generic address - true if segmented address space, false if generic */
+			/*! If cvta instruction, indicates whether destination is 
+				generic address or if source is generic address - true if 
+				segmented address space, false if generic */
 			bool toAddrSpace;
 			
 			/*! If the instruction updates the CC, what is the CC register */
 			PTXOperand::RegisterType cc;
 			
-			/*! indicates how loads, stores, and prefetches should take place  */
+			/*! indicates how loads, stores, and prefetches should take place */
 			CacheOperation cacheOperation;
+		
+			/*! Geometry if this is a texture or surface instruction */
+			Geometry geometry;
 		};
+
+		union {
+			/*! optionally writes carry-out value to condition code register */
+			CarryFlag carry;
 		
-		/*! Geometry if this is a texture or surface instruction */
-		Geometry geometry;
-		
-		/*! how to handle out-of-bounds accesses */
-		ClampOperation clamp;
+			/*! how to handle out-of-bounds accesses */
+			ClampOperation clamp;
+		};
 
 		/*! Destination operand */
 		PTXOperand d;

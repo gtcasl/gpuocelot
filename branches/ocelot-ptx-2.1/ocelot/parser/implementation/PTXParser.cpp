@@ -174,68 +174,55 @@ namespace parser
 	void PTXParser::State::addSpecialRegisters()
 	{
 		operands.insert( std::make_pair( "%tid", OperandWrapper( 
-			ir::PTXOperand( ir::PTXOperand::tid, ir::PTXOperand::iAll ), 	
-			ir::PTXInstruction::SReg ) ) );
+			ir::PTXOperand( ir::PTXOperand::tid, ir::PTXOperand::iAll ) ) ) );
 		operands.insert( std::make_pair( "%ntid", OperandWrapper( 
-			ir::PTXOperand( ir::PTXOperand::ntid, ir::PTXOperand::iAll ), 	
-			ir::PTXInstruction::SReg ) ) );
+			ir::PTXOperand( ir::PTXOperand::ntid, ir::PTXOperand::iAll ) ) ) );
 		operands.insert( std::make_pair( "%laneid", OperandWrapper( 
-			ir::PTXOperand( ir::PTXOperand::laneId, ir::PTXOperand::ix ), 	
-			ir::PTXInstruction::SReg ) ) );
+			ir::PTXOperand( ir::PTXOperand::laneId, ir::PTXOperand::ix ) ) ) );
 		operands.insert( std::make_pair( "%nwarpid", OperandWrapper( 
-			ir::PTXOperand( ir::PTXOperand::nwarpId, ir::PTXOperand::ix ), 	
-			ir::PTXInstruction::SReg ) ) );
+			ir::PTXOperand( ir::PTXOperand::nwarpId, ir::PTXOperand::ix ) ) ) );
 		operands.insert( std::make_pair( "%ctaid", OperandWrapper( 
-			ir::PTXOperand( ir::PTXOperand::ctaId, ir::PTXOperand::iAll ), 	
-			ir::PTXInstruction::SReg ) ) );
+			ir::PTXOperand( ir::PTXOperand::ctaId, ir::PTXOperand::iAll ) ) ) );
 		operands.insert( std::make_pair( "%nctaid", OperandWrapper( 
-			ir::PTXOperand( ir::PTXOperand::nctaId, ir::PTXOperand::iAll ), 	
-			ir::PTXInstruction::SReg ) ) );
+			ir::PTXOperand( ir::PTXOperand::nctaId,
+			ir::PTXOperand::iAll ) ) ) );
 		operands.insert( std::make_pair( "%simd", OperandWrapper( 
-			ir::PTXOperand( ir::PTXOperand::smId, ir::PTXOperand::ix ), 	
-			ir::PTXInstruction::SReg ) ) );
+			ir::PTXOperand( ir::PTXOperand::smId, ir::PTXOperand::ix ) ) ) );
 		operands.insert( std::make_pair( "%nsmid", OperandWrapper( 
-			ir::PTXOperand( ir::PTXOperand::nsmId, ir::PTXOperand::ix ), 	
-			ir::PTXInstruction::SReg ) ) );
+			ir::PTXOperand( ir::PTXOperand::nsmId, ir::PTXOperand::ix ) ) ) );
 		operands.insert( std::make_pair( "%gridId", OperandWrapper( 
-			ir::PTXOperand( ir::PTXOperand::gridId, ir::PTXOperand::ix ), 	
-			ir::PTXInstruction::SReg ) ) );
+			ir::PTXOperand( ir::PTXOperand::gridId, ir::PTXOperand::ix ) ) ) );
 
 		operands.insert( std::make_pair( "%lanemask_eq", OperandWrapper( 
-			ir::PTXOperand( ir::PTXOperand::lanemask_eq, ir::PTXOperand::ix ), 	
-			ir::PTXInstruction::SReg ) ) );
+			ir::PTXOperand( ir::PTXOperand::lanemask_eq,
+			ir::PTXOperand::ix ) ) ) );
 		operands.insert( std::make_pair( "%lanemask_le", OperandWrapper( 
-			ir::PTXOperand( ir::PTXOperand::lanemask_le, ir::PTXOperand::ix ), 	
-			ir::PTXInstruction::SReg ) ) );
+			ir::PTXOperand( ir::PTXOperand::lanemask_le,
+			ir::PTXOperand::ix ) ) ) );
 		operands.insert( std::make_pair( "%lanemask_lt", OperandWrapper( 
-			ir::PTXOperand( ir::PTXOperand::lanemask_lt, ir::PTXOperand::ix ), 	
-			ir::PTXInstruction::SReg ) ) );
+			ir::PTXOperand( ir::PTXOperand::lanemask_lt,
+			ir::PTXOperand::ix ) ) ) );
 		operands.insert( std::make_pair( "%lanemask_ge", OperandWrapper( 
-			ir::PTXOperand( ir::PTXOperand::lanemask_ge, ir::PTXOperand::ix ), 	
-			ir::PTXInstruction::SReg ) ) );
+			ir::PTXOperand( ir::PTXOperand::lanemask_ge,
+			ir::PTXOperand::ix ) ) ) );
 		operands.insert( std::make_pair( "%lanemask_gt", OperandWrapper( 
-			ir::PTXOperand( ir::PTXOperand::lanemask_gt, ir::PTXOperand::ix ), 	
-			ir::PTXInstruction::SReg ) ) );
+			ir::PTXOperand( ir::PTXOperand::lanemask_gt,
+			ir::PTXOperand::ix ) ) ) );
 
 		operands.insert( std::make_pair( "%clock", OperandWrapper( 
-			ir::PTXOperand( ir::PTXOperand::clock, ir::PTXOperand::ix ), 	
-			ir::PTXInstruction::SReg ) ) );
+			ir::PTXOperand( ir::PTXOperand::clock, ir::PTXOperand::ix ) ) ) );
 		operands.insert( std::make_pair( "%clock64", OperandWrapper( 
 			ir::PTXOperand( ir::PTXOperand::clock64, ir::PTXOperand::ix, 
-			ir::PTXOperand::u64 ), ir::PTXInstruction::SReg ) ) );
+			ir::PTXOperand::u64 ) ) ) );
 
 		operands.insert( std::make_pair( "%pm0", OperandWrapper( 
-			ir::PTXOperand( ir::PTXOperand::pm0, ir::PTXOperand::ix ), 	
-			ir::PTXInstruction::SReg ) ) );
+			ir::PTXOperand( ir::PTXOperand::pm0, ir::PTXOperand::ix ) ) ) );
 		operands.insert( std::make_pair( "%pm1", OperandWrapper( 
-			ir::PTXOperand( ir::PTXOperand::pm1, ir::PTXOperand::ix ), 	
-			ir::PTXInstruction::SReg ) ) );
+			ir::PTXOperand( ir::PTXOperand::pm1, ir::PTXOperand::ix ) ) ) );
 		operands.insert( std::make_pair( "%pm2", OperandWrapper( 
-			ir::PTXOperand( ir::PTXOperand::pm2, ir::PTXOperand::ix ), 	
-			ir::PTXInstruction::SReg ) ) );
+			ir::PTXOperand( ir::PTXOperand::pm2, ir::PTXOperand::ix ) ) ) );
 		operands.insert( std::make_pair( "%pm3", OperandWrapper( 
-			ir::PTXOperand( ir::PTXOperand::pm3, ir::PTXOperand::ix ), 	
-			ir::PTXInstruction::SReg ) ) );
+			ir::PTXOperand( ir::PTXOperand::pm3, ir::PTXOperand::ix ) ) ) );
 
 		for( unsigned int i = 0; i < 32; ++i )
 		{
@@ -244,7 +231,7 @@ namespace parser
 			
 			operands.insert( std::make_pair( stream.str(), OperandWrapper( 
 				ir::PTXOperand( envReg( i ), ir::PTXOperand::ix, 
-				ir::PTXOperand::b32 ), ir::PTXInstruction::SReg ) ) );			
+				ir::PTXOperand::b32 ) ) ) );			
 		}
 	}
 
@@ -327,7 +314,6 @@ namespace parser
 	
 		stream3 >> statement.minor;
 
-//		if( statement.minor != 1 || statement.major != 2 )
 		if(statement.major < 2 )
 		{
 			throw_exception( toString( location, *this ) 
@@ -454,8 +440,7 @@ namespace parser
 	
 	void PTXParser::State::noAddressSpace()
 	{
-		statement.instruction.addressSpace 
-			= ir::PTXInstruction::AddressSpace_Invalid;
+		statement.instruction.addressSpace = ir::PTXInstruction::Generic;
 	}
 	
 	void PTXParser::State::addressSpace( int value )
@@ -1123,7 +1108,6 @@ namespace parser
 		{
 			if( mode->second.operand.addressMode == ir::PTXOperand::Address )
 			{
-				assert( mode->second.space != ir::PTXInstruction::Reg );
 				statement.instruction.addressSpace = mode->second.space;
 			}	
 			operand = mode->second.operand;
@@ -1523,10 +1507,8 @@ namespace parser
 		unsigned int operands )
 	{
 		report( "  Rule: instruction : " << opcode );
-		if (operandVector.size() != operands) {
-			report("  assert fail! operandVector.size() = " << operandVector.size() << ", operands: " << operands);
-		}
-		assert( operandVector.size() == operands );
+		assertM( operandVector.size() == operands, "operandVector.size() = " 
+			<< operandVector.size() << ", operands: " << operands );
 		_setImmediateTypes();
 
 		statement.directive = ir::PTXStatement::Instr;
@@ -2120,8 +2102,6 @@ namespace parser
 	{
 		switch( token )
 		{
-			case TOKEN_REG: return ir::PTXInstruction::Reg; break;
-			case TOKEN_SREG: return ir::PTXInstruction::SReg; break;
 			case TOKEN_CONST: return ir::PTXInstruction::Const; break;
 			case TOKEN_GLOBAL: return ir::PTXInstruction::Global; break;
 			case TOKEN_LOCAL: return ir::PTXInstruction::Local; break;

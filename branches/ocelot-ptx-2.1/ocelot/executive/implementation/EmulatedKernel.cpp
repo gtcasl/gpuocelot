@@ -315,7 +315,7 @@ void executive::EmulatedKernel::updateParamReferences() {
 		i_it = instructions.begin();
 		i_it != instructions.end(); ++i_it) {
 		ir::PTXInstruction& instr = *i_it;
-		if (instr.addressSpace == ir::PTXInstruction::Param ) {
+		if (instr.addressSpace == ir::PTXInstruction::Param) {
 			if (instr.opcode == ir::PTXInstruction::Ld 
 				&& instr.a.addressMode == ir::PTXOperand::Address) {
 				ir::Parameter &param = *getParameter(instr.a.identifier);
@@ -734,6 +734,7 @@ void executive::EmulatedKernel::initializeConstMemory() {
 
 		}
 	}
+
 
 	
 	report( "Total constant memory size is " << constantOffset );

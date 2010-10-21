@@ -147,7 +147,7 @@ namespace ir {
 			Shared,
 			Texture,
 			Generic,
-			AddressSpace_Invalid
+			AddressSpace_Invalid = 0
 		};
 
 		enum AtomicOperation {

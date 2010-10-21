@@ -165,13 +165,13 @@ std::string testSet_PTX(ir::PTXOperand::DataType dtype,
 	ptx << "\tld.global.u8 %b0, [%rIn + " 
 		<< 2 * ir::PTXOperand::bytes(stype) << "];         \n";
 	ptx << "\tcvt.u16.u8 %s0, %b0;                         \n";
-	ptx << "\tsetp.eq.u16 %p0, %s0, 0;                     \n";
+	ptx << "\tsetp.lt.u16 %p0, %s0, 128;                   \n";
 
 	ptx << "\tset." << ir::PTXInstruction::toString(cmpOp);
 
 	if(boolOp != ir::PTXInstruction::BoolOp_Invalid)
 	{
-		ptx << ir::PTXInstruction::toString(boolOp);
+		ptx << "." << ir::PTXInstruction::toString(boolOp);
 	}
 	
 	if(ftz) ptx << ".ftz";
@@ -211,7 +211,8 @@ void testSet_REF(void* output, void* input)
 {
 	stype r0 = getParameter<stype>(input, 0);
 	stype r1 = getParameter<stype>(input, sizeof(stype));
-	bool predicate = getParameter<bool>(input, 2 * sizeof(stype));
+	bool predicate = getParameter<unsigned char>(
+		input, 2 * sizeof(stype)) < 128;
 
 	if(ftz)
 	{
@@ -219,42 +220,44 @@ void testSet_REF(void* output, void* input)
 		if(issubnormal(r1)) r1 = 0.0f;
 	}
 
+	if(c == ir::PTXOperand::InvPred) predicate = !predicate;
+
 	bool comparison = false;
 	
 	switch(cmpOp)
 	{
 	case ir::PTXInstruction::Eq:
 	{
-		comparison = r0 == r1;
+		comparison = !std::isnan(r0) && !std::isnan(r1) && r0 == r1;
 		break;
 	}
 	case ir::PTXInstruction::Ne:
 	{
-		comparison = r0 != r1;
+		comparison = !std::isnan(r0) && !std::isnan(r1) && r0 != r1;
 		break;
 	}
 	case ir::PTXInstruction::Lo:
 	case ir::PTXInstruction::Lt:
 	{
-		comparison = r0 < r1;
+		comparison = !std::isnan(r0) && !std::isnan(r1) && r0 < r1;
 		break;
 	}
 	case ir::PTXInstruction::Ls:
 	case ir::PTXInstruction::Le:
 	{
-		comparison = r0 <= r1;
+		comparison = !std::isnan(r0) && !std::isnan(r1) && r0 <= r1;
 		break;
 	}
 	case ir::PTXInstruction::Hi:
 	case ir::PTXInstruction::Gt:
 	{
-		comparison = r0 > r1;
+		comparison = !std::isnan(r0) && !std::isnan(r1) && r0 > r1;
 		break;
 	}
 	case ir::PTXInstruction::Hs:
 	case ir::PTXInstruction::Ge:
 	{
-		comparison = r0 >= r1;
+		comparison = !std::isnan(r0) && !std::isnan(r1) && r0 >= r1;
 		break;
 	}
 	case ir::PTXInstruction::Equ:
@@ -294,7 +297,7 @@ void testSet_REF(void* output, void* input)
 	}
 	case ir::PTXInstruction::Nan:
 	{
-		comparison = std::isnan(r0) && std::isnan(r1);
+		comparison = std::isnan(r0) || std::isnan(r1);
 		break;
 	}
 	default: break;
@@ -4260,6 +4263,202 @@ namespace test
 			testSet_PTX(ir::PTXOperand::s32, ir::PTXOperand::s32,
 				ir::PTXOperand::Pred, ir::PTXInstruction::BoolOp_Invalid,
 				ir::PTXInstruction::Hs, false),
+			testSet_OUT(I32), testSet_IN(I32),
+			uniformRandom<char, 2*sizeof(int) + sizeof(bool)>, 1, 1);
+
+		add("TestSet-Eq-s32-f32",
+			testSet_REF<int, float, ir::PTXOperand::Pred, 
+				ir::PTXInstruction::BoolOp_Invalid, ir::PTXInstruction::Eq,
+				false>,
+			testSet_PTX(ir::PTXOperand::s32, ir::PTXOperand::f32,
+				ir::PTXOperand::Pred, ir::PTXInstruction::BoolOp_Invalid,
+				ir::PTXInstruction::Eq, false),
+			testSet_OUT(I32), testSet_IN(FP32),
+			uniformFloat<float, 3>, 1, 1);
+		add("TestSet-Ne-s32-f32",
+			testSet_REF<int, float, ir::PTXOperand::Pred, 
+				ir::PTXInstruction::BoolOp_Invalid, ir::PTXInstruction::Ne,
+				false>,
+			testSet_PTX(ir::PTXOperand::s32, ir::PTXOperand::f32,
+				ir::PTXOperand::Pred, ir::PTXInstruction::BoolOp_Invalid,
+				ir::PTXInstruction::Ne, false),
+			testSet_OUT(I32), testSet_IN(FP32),
+			uniformFloat<float, 3>, 1, 1);
+		add("TestSet-Lt-s32-f32",
+			testSet_REF<int, float, ir::PTXOperand::Pred, 
+				ir::PTXInstruction::BoolOp_Invalid, ir::PTXInstruction::Lt,
+				false>,
+			testSet_PTX(ir::PTXOperand::s32, ir::PTXOperand::f32,
+				ir::PTXOperand::Pred, ir::PTXInstruction::BoolOp_Invalid,
+				ir::PTXInstruction::Lt, false),
+			testSet_OUT(I32), testSet_IN(FP32),
+			uniformFloat<float, 3>, 1, 1);
+		add("TestSet-Le-s32-f32",
+			testSet_REF<int, float, ir::PTXOperand::Pred, 
+				ir::PTXInstruction::BoolOp_Invalid, ir::PTXInstruction::Le,
+				false>,
+			testSet_PTX(ir::PTXOperand::s32, ir::PTXOperand::f32,
+				ir::PTXOperand::Pred, ir::PTXInstruction::BoolOp_Invalid,
+				ir::PTXInstruction::Le, false),
+			testSet_OUT(I32), testSet_IN(FP32),
+			uniformFloat<float, 3>, 1, 1);
+		add("TestSet-Gt-s32-f32",
+			testSet_REF<int, float, ir::PTXOperand::Pred, 
+				ir::PTXInstruction::BoolOp_Invalid, ir::PTXInstruction::Gt,
+				false>,
+			testSet_PTX(ir::PTXOperand::s32, ir::PTXOperand::f32,
+				ir::PTXOperand::Pred, ir::PTXInstruction::BoolOp_Invalid,
+				ir::PTXInstruction::Gt, false),
+			testSet_OUT(I32), testSet_IN(FP32),
+			uniformFloat<float, 3>, 1, 1);
+		add("TestSet-Ge-s32-f32",
+			testSet_REF<int, float, ir::PTXOperand::Pred, 
+				ir::PTXInstruction::BoolOp_Invalid, ir::PTXInstruction::Ge,
+				false>,
+			testSet_PTX(ir::PTXOperand::s32, ir::PTXOperand::f32,
+				ir::PTXOperand::Pred, ir::PTXInstruction::BoolOp_Invalid,
+				ir::PTXInstruction::Ge, false),
+			testSet_OUT(I32), testSet_IN(FP32),
+			uniformFloat<float, 3>, 1, 1);
+		add("TestSet-Lo-s32-f32",
+			testSet_REF<int, float, ir::PTXOperand::Pred, 
+				ir::PTXInstruction::BoolOp_Invalid, ir::PTXInstruction::Lo,
+				false>,
+			testSet_PTX(ir::PTXOperand::s32, ir::PTXOperand::f32,
+				ir::PTXOperand::Pred, ir::PTXInstruction::BoolOp_Invalid,
+				ir::PTXInstruction::Lo, false),
+			testSet_OUT(I32), testSet_IN(FP32),
+			uniformFloat<float, 3>, 1, 1);
+		add("TestSet-Ls-s32-f32",
+			testSet_REF<int, float, ir::PTXOperand::Pred, 
+				ir::PTXInstruction::BoolOp_Invalid, ir::PTXInstruction::Ls,
+				false>,
+			testSet_PTX(ir::PTXOperand::s32, ir::PTXOperand::f32,
+				ir::PTXOperand::Pred, ir::PTXInstruction::BoolOp_Invalid,
+				ir::PTXInstruction::Ls, false),
+			testSet_OUT(I32), testSet_IN(FP32),
+			uniformFloat<float, 3>, 1, 1);
+		add("TestSet-Hi-s32-f32",
+			testSet_REF<int, float, ir::PTXOperand::Pred, 
+				ir::PTXInstruction::BoolOp_Invalid, ir::PTXInstruction::Hi,
+				false>,
+			testSet_PTX(ir::PTXOperand::s32, ir::PTXOperand::f32,
+				ir::PTXOperand::Pred, ir::PTXInstruction::BoolOp_Invalid,
+				ir::PTXInstruction::Hi, false),
+			testSet_OUT(I32), testSet_IN(FP32),
+			uniformFloat<float, 3>, 1, 1);
+		add("TestSet-Hs-s32-f32",
+			testSet_REF<int, float, ir::PTXOperand::Pred, 
+				ir::PTXInstruction::BoolOp_Invalid, ir::PTXInstruction::Hs,
+				false>,
+			testSet_PTX(ir::PTXOperand::s32, ir::PTXOperand::f32,
+				ir::PTXOperand::Pred, ir::PTXInstruction::BoolOp_Invalid,
+				ir::PTXInstruction::Hs, false),
+			testSet_OUT(I32), testSet_IN(FP32),
+			uniformFloat<float, 3>, 1, 1);
+		add("TestSet-Equ-s32-f32",
+			testSet_REF<int, float, ir::PTXOperand::Pred, 
+				ir::PTXInstruction::BoolOp_Invalid, ir::PTXInstruction::Equ,
+				false>,
+			testSet_PTX(ir::PTXOperand::s32, ir::PTXOperand::f32,
+				ir::PTXOperand::Pred, ir::PTXInstruction::BoolOp_Invalid,
+				ir::PTXInstruction::Equ, false),
+			testSet_OUT(I32), testSet_IN(FP32),
+			uniformFloat<float, 3>, 1, 1);
+		add("TestSet-Neu-s32-f32",
+			testSet_REF<int, float, ir::PTXOperand::Pred, 
+				ir::PTXInstruction::BoolOp_Invalid, ir::PTXInstruction::Neu,
+				false>,
+			testSet_PTX(ir::PTXOperand::s32, ir::PTXOperand::f32,
+				ir::PTXOperand::Pred, ir::PTXInstruction::BoolOp_Invalid,
+				ir::PTXInstruction::Neu, false),
+			testSet_OUT(I32), testSet_IN(FP32),
+			uniformFloat<float, 3>, 1, 1);
+		add("TestSet-Ltu-s32-f32",
+			testSet_REF<int, float, ir::PTXOperand::Pred, 
+				ir::PTXInstruction::BoolOp_Invalid, ir::PTXInstruction::Ltu,
+				false>,
+			testSet_PTX(ir::PTXOperand::s32, ir::PTXOperand::f32,
+				ir::PTXOperand::Pred, ir::PTXInstruction::BoolOp_Invalid,
+				ir::PTXInstruction::Ltu, false),
+			testSet_OUT(I32), testSet_IN(FP32),
+			uniformFloat<float, 3>, 1, 1);
+		add("TestSet-Leu-s32-f32",
+			testSet_REF<int, float, ir::PTXOperand::Pred, 
+				ir::PTXInstruction::BoolOp_Invalid, ir::PTXInstruction::Leu,
+				false>,
+			testSet_PTX(ir::PTXOperand::s32, ir::PTXOperand::f32,
+				ir::PTXOperand::Pred, ir::PTXInstruction::BoolOp_Invalid,
+				ir::PTXInstruction::Leu, false),
+			testSet_OUT(I32), testSet_IN(FP32),
+			uniformFloat<float, 3>, 1, 1);
+		add("TestSet-Gtu-s32-f32",
+			testSet_REF<int, float, ir::PTXOperand::Pred, 
+				ir::PTXInstruction::BoolOp_Invalid, ir::PTXInstruction::Gtu,
+				false>,
+			testSet_PTX(ir::PTXOperand::s32, ir::PTXOperand::f32,
+				ir::PTXOperand::Pred, ir::PTXInstruction::BoolOp_Invalid,
+				ir::PTXInstruction::Gtu, false),
+			testSet_OUT(I32), testSet_IN(FP32),
+			uniformFloat<float, 3>, 1, 1);
+		add("TestSet-Geu-s32-f32",
+			testSet_REF<int, float, ir::PTXOperand::Pred, 
+				ir::PTXInstruction::BoolOp_Invalid, ir::PTXInstruction::Geu,
+				false>,
+			testSet_PTX(ir::PTXOperand::s32, ir::PTXOperand::f32,
+				ir::PTXOperand::Pred, ir::PTXInstruction::BoolOp_Invalid,
+				ir::PTXInstruction::Geu, false),
+			testSet_OUT(I32), testSet_IN(FP32),
+			uniformFloat<float, 3>, 1, 1);
+		add("TestSet-Num-s32-f32",
+			testSet_REF<int, float, ir::PTXOperand::Pred, 
+				ir::PTXInstruction::BoolOp_Invalid, ir::PTXInstruction::Num,
+				false>,
+			testSet_PTX(ir::PTXOperand::s32, ir::PTXOperand::f32,
+				ir::PTXOperand::Pred, ir::PTXInstruction::BoolOp_Invalid,
+				ir::PTXInstruction::Num, false),
+			testSet_OUT(I32), testSet_IN(FP32),
+			uniformFloat<float, 3>, 1, 1);
+		add("TestSet-Nan-s32-f32",
+			testSet_REF<int, float, ir::PTXOperand::Pred, 
+				ir::PTXInstruction::BoolOp_Invalid, ir::PTXInstruction::Nan,
+				false>,
+			testSet_PTX(ir::PTXOperand::s32, ir::PTXOperand::f32,
+				ir::PTXOperand::Pred, ir::PTXInstruction::BoolOp_Invalid,
+				ir::PTXInstruction::Nan, false),
+			testSet_OUT(I32), testSet_IN(FP32),
+			uniformFloat<float, 3>, 1, 1);
+
+		add("TestSet-Lt-s32-s32-And",
+			testSet_REF<int, int, ir::PTXOperand::Pred, 
+				ir::PTXInstruction::BoolAnd, ir::PTXInstruction::Lt, false>,
+			testSet_PTX(ir::PTXOperand::s32, ir::PTXOperand::s32,
+				ir::PTXOperand::Pred, ir::PTXInstruction::BoolAnd,
+				ir::PTXInstruction::Lt, false),
+			testSet_OUT(I32), testSet_IN(I32),
+			uniformRandom<char, 2*sizeof(int) + sizeof(bool)>, 1, 1);
+		add("TestSet-Lt-s32-s32-Or",
+			testSet_REF<int, int, ir::PTXOperand::Pred, 
+				ir::PTXInstruction::BoolOr, ir::PTXInstruction::Lt, false>,
+			testSet_PTX(ir::PTXOperand::s32, ir::PTXOperand::s32,
+				ir::PTXOperand::Pred, ir::PTXInstruction::BoolOr,
+				ir::PTXInstruction::Lt, false),
+			testSet_OUT(I32), testSet_IN(I32),
+			uniformRandom<char, 2*sizeof(int) + sizeof(bool)>, 1, 1);
+		add("TestSet-Lt-s32-s32-Xor",
+			testSet_REF<int, int, ir::PTXOperand::Pred, 
+				ir::PTXInstruction::BoolXor, ir::PTXInstruction::Lt, false>,
+			testSet_PTX(ir::PTXOperand::s32, ir::PTXOperand::s32,
+				ir::PTXOperand::Pred, ir::PTXInstruction::BoolXor,
+				ir::PTXInstruction::Lt, false),
+			testSet_OUT(I32), testSet_IN(I32),
+			uniformRandom<char, 2*sizeof(int) + sizeof(bool)>, 1, 1);
+		add("TestSet-Lt-s32-s32-And-Inv",
+			testSet_REF<int, int, ir::PTXOperand::InvPred, 
+				ir::PTXInstruction::BoolAnd, ir::PTXInstruction::Lt, false>,
+			testSet_PTX(ir::PTXOperand::s32, ir::PTXOperand::s32,
+				ir::PTXOperand::InvPred, ir::PTXInstruction::BoolAnd,
+				ir::PTXInstruction::Lt, false),
 			testSet_OUT(I32), testSet_IN(I32),
 			uniformRandom<char, 2*sizeof(int) + sizeof(bool)>, 1, 1);
 	}

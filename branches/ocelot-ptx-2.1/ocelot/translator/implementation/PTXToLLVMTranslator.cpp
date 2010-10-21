@@ -4580,7 +4580,7 @@ namespace translator
 				{
 					ir::LLVMXor Xor;
 					
-					Xor.d = d;
+					Xor.d = comparison;
 					Xor.d.name = _tempRegister();
 					Xor.a = c;
 					Xor.b = comparison;
@@ -4614,8 +4614,8 @@ namespace translator
 		}
 		else if( ir::PTXOperand::f32 == i.type )
 		{
-			select.a.f32 = 1.0;
-			select.b.f32 = 0.0;		
+			select.a.f32 = 1.0f;
+			select.b.f32 = 0.0f;		
 		}
 		else
 		{

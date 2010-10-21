@@ -394,6 +394,8 @@ namespace executive {
 		ir::PTXB32 operandAsB32(int, const ir::PTXOperand &);
 		ir::PTXB64 operandAsB64(int, const ir::PTXOperand &);
 
+		bool operandAsPredicate(int, const ir::PTXOperand&);
+
 	private:
 		void normalStore(int, const ir::PTXInstruction &, char*);
 		void vectorStore(int, const ir::PTXInstruction &, char*, unsigned int);

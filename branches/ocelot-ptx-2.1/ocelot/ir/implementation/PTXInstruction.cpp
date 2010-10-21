@@ -324,8 +324,8 @@ ir::PTXInstruction::PTXInstruction( Opcode op, const PTXOperand& _d,
 	pg.type = PTXOperand::pred;
 	carry = None;
 	statementIndex = 0;
-	divideFull = false;
-	tailCall = false;
+	cc = 0;
+	addressSpace = AddressSpace_Invalid;
 }
 
 ir::PTXInstruction::~PTXInstruction() {

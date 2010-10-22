@@ -1,12 +1,12 @@
-# 1 "/tmp/tmpxft_000009cb_00000000-1_texture2D.cudafe1.cpp"
+# 1 "/tmp/tmpxft_0000154c_00000000-1_texture2D.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_000009cb_00000000-1_texture2D.cudafe1.cpp"
-# 1 "/home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/ocelot/cuda/test/textures/texture2D.cu"
+# 1 "/tmp/tmpxft_0000154c_00000000-1_texture2D.cudafe1.cpp"
+# 1 "texture2D.cu"
 # 46 "/usr/local/cuda3.1/cuda/bin/../include/device_types.h"
-# 149 "/usr/lib/gcc/x86_64-linux-gnu/4.4.1/include/stddef.h" 3
+# 149 "/usr/lib/gcc/x86_64-linux-gnu/4.4.3/include/stddef.h" 3
 typedef long ptrdiff_t;
-# 211 "/usr/lib/gcc/x86_64-linux-gnu/4.4.1/include/stddef.h" 3
+# 211 "/usr/lib/gcc/x86_64-linux-gnu/4.4.3/include/stddef.h" 3
 typedef unsigned long size_t;
 # 1 "/usr/local/cuda3.1/cuda/bin/../include/crt/host_runtime.h" 1 3
 # 69 "/usr/local/cuda3.1/cuda/bin/../include/crt/host_runtime.h" 3
@@ -785,7 +785,7 @@ typedef struct dim3 dim3;
 # 70 "/usr/local/cuda3.1/cuda/bin/../include/crt/host_runtime.h" 2 3
 # 1 "/usr/local/cuda3.1/cuda/bin/../include/crt/storage_class.h" 1 3
 # 71 "/usr/local/cuda3.1/cuda/bin/../include/crt/host_runtime.h" 2 3
-# 213 "/usr/lib/gcc/x86_64-linux-gnu/4.4.1/include/stddef.h" 2 3
+# 213 "/usr/lib/gcc/x86_64-linux-gnu/4.4.3/include/stddef.h" 2 3
 # 94 "/usr/local/cuda3.1/cuda/bin/../include/driver_types.h"
 # 156 "/usr/local/cuda3.1/cuda/bin/../include/driver_types.h"
 # 168 "/usr/local/cuda3.1/cuda/bin/../include/driver_types.h"
@@ -3049,55 +3049,55 @@ extern "C" __attribute__((weak)) int __signbitl(long double) throw() __attribute
 extern "C" long double fmal(long double, long double, long double) throw(); extern "C" long double __fmal(long double, long double, long double) throw();
 # 364 "/usr/include/bits/mathcalls.h" 3
 extern "C" long double scalbl(long double, long double) throw(); extern "C" long double __scalbl(long double, long double) throw();
-# 157 "/usr/include/math.h" 3
+# 161 "/usr/include/math.h" 3
 extern "C" { extern int signgam; }
-# 199 "/usr/include/math.h" 3
+# 203 "/usr/include/math.h" 3
 enum {
-# 200 "/usr/include/math.h" 3
-FP_NAN,
-# 202 "/usr/include/math.h" 3
-FP_INFINITE,
 # 204 "/usr/include/math.h" 3
-FP_ZERO,
+FP_NAN,
 # 206 "/usr/include/math.h" 3
-FP_SUBNORMAL,
+FP_INFINITE,
 # 208 "/usr/include/math.h" 3
-FP_NORMAL
+FP_ZERO,
 # 210 "/usr/include/math.h" 3
+FP_SUBNORMAL,
+# 212 "/usr/include/math.h" 3
+FP_NORMAL
+# 214 "/usr/include/math.h" 3
 };
-# 291 "/usr/include/math.h" 3
+# 302 "/usr/include/math.h" 3
 extern "C" { typedef
-# 285 "/usr/include/math.h" 3
-enum {
-# 286 "/usr/include/math.h" 3
-_IEEE_ = (-1),
-# 287 "/usr/include/math.h" 3
-_SVID_,
-# 288 "/usr/include/math.h" 3
-_XOPEN_,
-# 289 "/usr/include/math.h" 3
-_POSIX_,
-# 290 "/usr/include/math.h" 3
-_ISOC_
-# 291 "/usr/include/math.h" 3
-} _LIB_VERSION_TYPE; }
 # 296 "/usr/include/math.h" 3
-extern "C" { extern _LIB_VERSION_TYPE _LIB_VERSION; }
+enum {
+# 297 "/usr/include/math.h" 3
+_IEEE_ = (-1),
+# 298 "/usr/include/math.h" 3
+_SVID_,
+# 299 "/usr/include/math.h" 3
+_XOPEN_,
+# 300 "/usr/include/math.h" 3
+_POSIX_,
+# 301 "/usr/include/math.h" 3
+_ISOC_
+# 302 "/usr/include/math.h" 3
+} _LIB_VERSION_TYPE; }
 # 307 "/usr/include/math.h" 3
+extern "C" { extern _LIB_VERSION_TYPE _LIB_VERSION; }
+# 318 "/usr/include/math.h" 3
 extern "C" { struct __exception {
-# 312 "/usr/include/math.h" 3
+# 323 "/usr/include/math.h" 3
 int type;
-# 313 "/usr/include/math.h" 3
+# 324 "/usr/include/math.h" 3
 char *name;
-# 314 "/usr/include/math.h" 3
+# 325 "/usr/include/math.h" 3
 double arg1;
-# 315 "/usr/include/math.h" 3
+# 326 "/usr/include/math.h" 3
 double arg2;
-# 316 "/usr/include/math.h" 3
+# 327 "/usr/include/math.h" 3
 double retval;
-# 317 "/usr/include/math.h" 3
+# 328 "/usr/include/math.h" 3
 }; }
-# 320 "/usr/include/math.h" 3
+# 331 "/usr/include/math.h" 3
 extern "C" int matherr(__exception *) throw();
 # 67 "/usr/include/bits/waitstatus.h" 3
 extern "C" { union wait {
@@ -3302,7 +3302,7 @@ extern "C" { typedef
 # 68 "/usr/include/sys/select.h" 3
 struct {
 # 72 "/usr/include/sys/select.h" 3
-__fd_mask fds_bits[((1024) / ((8) * sizeof(__fd_mask)))];
+__fd_mask fds_bits[(1024 / (8 * ((int)sizeof(__fd_mask))))];
 # 78 "/usr/include/sys/select.h" 3
 } fd_set; }
 # 85 "/usr/include/sys/select.h" 3
@@ -3641,91 +3641,99 @@ extern "C" char *mktemp(char *) throw() __attribute__((nonnull(1)));
 extern "C" int mkstemp(char *) __attribute__((nonnull(1)));
 # 625 "/usr/include/stdlib.h" 3
 extern "C" int mkstemp64(char *) __attribute__((nonnull(1)));
-# 635 "/usr/include/stdlib.h" 3
+# 637 "/usr/include/stdlib.h" 3
+extern "C" int mkstemps(char *, int) __attribute__((nonnull(1)));
+# 647 "/usr/include/stdlib.h" 3
+extern "C" int mkstemps64(char *, int) __attribute__((nonnull(1)));
+# 658 "/usr/include/stdlib.h" 3
 extern "C" char *mkdtemp(char *) throw() __attribute__((nonnull(1)));
-# 646 "/usr/include/stdlib.h" 3
+# 669 "/usr/include/stdlib.h" 3
 extern "C" int mkostemp(char *, int) __attribute__((nonnull(1)));
-# 656 "/usr/include/stdlib.h" 3
+# 679 "/usr/include/stdlib.h" 3
 extern "C" int mkostemp64(char *, int) __attribute__((nonnull(1)));
-# 666 "/usr/include/stdlib.h" 3
+# 689 "/usr/include/stdlib.h" 3
+extern "C" int mkostemps(char *, int, int) __attribute__((nonnull(1)));
+# 701 "/usr/include/stdlib.h" 3
+extern "C" int mkostemps64(char *, int, int) __attribute__((nonnull(1)));
+# 712 "/usr/include/stdlib.h" 3
 extern "C" int system(const char *);
-# 673 "/usr/include/stdlib.h" 3
+# 719 "/usr/include/stdlib.h" 3
 extern "C" char *canonicalize_file_name(const char *) throw() __attribute__((nonnull(1)));
-# 683 "/usr/include/stdlib.h" 3
+# 729 "/usr/include/stdlib.h" 3
 extern "C" char *realpath(const char *__restrict__, char *__restrict__) throw();
-# 691 "/usr/include/stdlib.h" 3
+# 737 "/usr/include/stdlib.h" 3
 extern "C" { typedef int (*__compar_fn_t)(const void *, const void *); }
-# 694 "/usr/include/stdlib.h" 3
+# 740 "/usr/include/stdlib.h" 3
 extern "C" { typedef __compar_fn_t comparison_fn_t; }
-# 698 "/usr/include/stdlib.h" 3
+# 744 "/usr/include/stdlib.h" 3
 extern "C" { typedef int (*__compar_d_fn_t)(const void *, const void *, void *); }
-# 704 "/usr/include/stdlib.h" 3
+# 750 "/usr/include/stdlib.h" 3
 extern "C" void *bsearch(const void *, const void *, size_t, size_t, __compar_fn_t) __attribute__((nonnull(1))) __attribute__((nonnull(2))) __attribute__((nonnull(5)));
-# 710 "/usr/include/stdlib.h" 3
-extern "C" void qsort(void *, size_t, size_t, __compar_fn_t) __attribute__((nonnull(1))) __attribute__((nonnull(4)));
-# 713 "/usr/include/stdlib.h" 3
-extern "C" void qsort_r(void *, size_t, size_t, __compar_d_fn_t, void *) __attribute__((nonnull(1))) __attribute__((nonnull(4)));
-# 720 "/usr/include/stdlib.h" 3
-extern "C" __attribute__((weak)) int abs(int) throw() __attribute__((__const__));
-# 721 "/usr/include/stdlib.h" 3
-extern "C" __attribute__((weak)) long labs(long) throw() __attribute__((__const__));
-# 725 "/usr/include/stdlib.h" 3
-extern "C" __attribute__((weak)) long long llabs(long long) throw() __attribute__((__const__));
-# 734 "/usr/include/stdlib.h" 3
-extern "C" div_t div(int, int) throw() __attribute__((__const__));
-# 736 "/usr/include/stdlib.h" 3
-extern "C" ldiv_t ldiv(long, long) throw() __attribute__((__const__));
-# 742 "/usr/include/stdlib.h" 3
-extern "C" lldiv_t lldiv(long long, long long) throw() __attribute__((__const__));
 # 756 "/usr/include/stdlib.h" 3
-extern "C" char *ecvt(double, int, int *__restrict__, int *__restrict__) throw() __attribute__((nonnull(3))) __attribute__((nonnull(4)));
-# 762 "/usr/include/stdlib.h" 3
-extern "C" char *fcvt(double, int, int *__restrict__, int *__restrict__) throw() __attribute__((nonnull(3))) __attribute__((nonnull(4)));
-# 768 "/usr/include/stdlib.h" 3
-extern "C" char *gcvt(double, int, char *) throw() __attribute__((nonnull(3)));
-# 774 "/usr/include/stdlib.h" 3
-extern "C" char *qecvt(long double, int, int *__restrict__, int *__restrict__) throw() __attribute__((nonnull(3))) __attribute__((nonnull(4)));
-# 777 "/usr/include/stdlib.h" 3
-extern "C" char *qfcvt(long double, int, int *__restrict__, int *__restrict__) throw() __attribute__((nonnull(3))) __attribute__((nonnull(4)));
+extern "C" void qsort(void *, size_t, size_t, __compar_fn_t) __attribute__((nonnull(1))) __attribute__((nonnull(4)));
+# 759 "/usr/include/stdlib.h" 3
+extern "C" void qsort_r(void *, size_t, size_t, __compar_d_fn_t, void *) __attribute__((nonnull(1))) __attribute__((nonnull(4)));
+# 766 "/usr/include/stdlib.h" 3
+extern "C" __attribute__((weak)) int abs(int) throw() __attribute__((__const__));
+# 767 "/usr/include/stdlib.h" 3
+extern "C" __attribute__((weak)) long labs(long) throw() __attribute__((__const__));
+# 771 "/usr/include/stdlib.h" 3
+extern "C" __attribute__((weak)) long long llabs(long long) throw() __attribute__((__const__));
 # 780 "/usr/include/stdlib.h" 3
-extern "C" char *qgcvt(long double, int, char *) throw() __attribute__((nonnull(3)));
-# 786 "/usr/include/stdlib.h" 3
-extern "C" int ecvt_r(double, int, int *__restrict__, int *__restrict__, char *__restrict__, size_t) throw() __attribute__((nonnull(3))) __attribute__((nonnull(4))) __attribute__((nonnull(5)));
-# 789 "/usr/include/stdlib.h" 3
-extern "C" int fcvt_r(double, int, int *__restrict__, int *__restrict__, char *__restrict__, size_t) throw() __attribute__((nonnull(3))) __attribute__((nonnull(4))) __attribute__((nonnull(5)));
-# 793 "/usr/include/stdlib.h" 3
-extern "C" int qecvt_r(long double, int, int *__restrict__, int *__restrict__, char *__restrict__, size_t) throw() __attribute__((nonnull(3))) __attribute__((nonnull(4))) __attribute__((nonnull(5)));
-# 797 "/usr/include/stdlib.h" 3
-extern "C" int qfcvt_r(long double, int, int *__restrict__, int *__restrict__, char *__restrict__, size_t) throw() __attribute__((nonnull(3))) __attribute__((nonnull(4))) __attribute__((nonnull(5)));
+extern "C" div_t div(int, int) throw() __attribute__((__const__));
+# 782 "/usr/include/stdlib.h" 3
+extern "C" ldiv_t ldiv(long, long) throw() __attribute__((__const__));
+# 788 "/usr/include/stdlib.h" 3
+extern "C" lldiv_t lldiv(long long, long long) throw() __attribute__((__const__));
+# 802 "/usr/include/stdlib.h" 3
+extern "C" char *ecvt(double, int, int *__restrict__, int *__restrict__) throw() __attribute__((nonnull(3))) __attribute__((nonnull(4)));
 # 808 "/usr/include/stdlib.h" 3
+extern "C" char *fcvt(double, int, int *__restrict__, int *__restrict__) throw() __attribute__((nonnull(3))) __attribute__((nonnull(4)));
+# 814 "/usr/include/stdlib.h" 3
+extern "C" char *gcvt(double, int, char *) throw() __attribute__((nonnull(3)));
+# 820 "/usr/include/stdlib.h" 3
+extern "C" char *qecvt(long double, int, int *__restrict__, int *__restrict__) throw() __attribute__((nonnull(3))) __attribute__((nonnull(4)));
+# 823 "/usr/include/stdlib.h" 3
+extern "C" char *qfcvt(long double, int, int *__restrict__, int *__restrict__) throw() __attribute__((nonnull(3))) __attribute__((nonnull(4)));
+# 826 "/usr/include/stdlib.h" 3
+extern "C" char *qgcvt(long double, int, char *) throw() __attribute__((nonnull(3)));
+# 832 "/usr/include/stdlib.h" 3
+extern "C" int ecvt_r(double, int, int *__restrict__, int *__restrict__, char *__restrict__, size_t) throw() __attribute__((nonnull(3))) __attribute__((nonnull(4))) __attribute__((nonnull(5)));
+# 835 "/usr/include/stdlib.h" 3
+extern "C" int fcvt_r(double, int, int *__restrict__, int *__restrict__, char *__restrict__, size_t) throw() __attribute__((nonnull(3))) __attribute__((nonnull(4))) __attribute__((nonnull(5)));
+# 839 "/usr/include/stdlib.h" 3
+extern "C" int qecvt_r(long double, int, int *__restrict__, int *__restrict__, char *__restrict__, size_t) throw() __attribute__((nonnull(3))) __attribute__((nonnull(4))) __attribute__((nonnull(5)));
+# 843 "/usr/include/stdlib.h" 3
+extern "C" int qfcvt_r(long double, int, int *__restrict__, int *__restrict__, char *__restrict__, size_t) throw() __attribute__((nonnull(3))) __attribute__((nonnull(4))) __attribute__((nonnull(5)));
+# 854 "/usr/include/stdlib.h" 3
 extern "C" int mblen(const char *, size_t) throw();
-# 811 "/usr/include/stdlib.h" 3
+# 857 "/usr/include/stdlib.h" 3
 extern "C" int mbtowc(wchar_t *__restrict__, const char *__restrict__, size_t) throw();
-# 815 "/usr/include/stdlib.h" 3
-extern "C" int wctomb(char *, wchar_t) throw();
-# 819 "/usr/include/stdlib.h" 3
-extern "C" size_t mbstowcs(wchar_t *__restrict__, const char *__restrict__, size_t) throw();
-# 822 "/usr/include/stdlib.h" 3
-extern "C" size_t wcstombs(char *__restrict__, const wchar_t *__restrict__, size_t) throw();
-# 833 "/usr/include/stdlib.h" 3
-extern "C" int rpmatch(const char *) throw() __attribute__((nonnull(1)));
-# 844 "/usr/include/stdlib.h" 3
-extern "C" int getsubopt(char **__restrict__, char *const *__restrict__, char **__restrict__) throw() __attribute__((nonnull(1))) __attribute__((nonnull(2))) __attribute__((nonnull(3)));
-# 853 "/usr/include/stdlib.h" 3
-extern "C" void setkey(const char *) throw() __attribute__((nonnull(1)));
 # 861 "/usr/include/stdlib.h" 3
+extern "C" int wctomb(char *, wchar_t) throw();
+# 865 "/usr/include/stdlib.h" 3
+extern "C" size_t mbstowcs(wchar_t *__restrict__, const char *__restrict__, size_t) throw();
+# 868 "/usr/include/stdlib.h" 3
+extern "C" size_t wcstombs(char *__restrict__, const wchar_t *__restrict__, size_t) throw();
+# 879 "/usr/include/stdlib.h" 3
+extern "C" int rpmatch(const char *) throw() __attribute__((nonnull(1)));
+# 890 "/usr/include/stdlib.h" 3
+extern "C" int getsubopt(char **__restrict__, char *const *__restrict__, char **__restrict__) throw() __attribute__((nonnull(1))) __attribute__((nonnull(2))) __attribute__((nonnull(3)));
+# 899 "/usr/include/stdlib.h" 3
+extern "C" void setkey(const char *) throw() __attribute__((nonnull(1)));
+# 907 "/usr/include/stdlib.h" 3
 extern "C" int posix_openpt(int);
-# 869 "/usr/include/stdlib.h" 3
+# 915 "/usr/include/stdlib.h" 3
 extern "C" int grantpt(int) throw();
-# 873 "/usr/include/stdlib.h" 3
+# 919 "/usr/include/stdlib.h" 3
 extern "C" int unlockpt(int) throw();
-# 878 "/usr/include/stdlib.h" 3
+# 924 "/usr/include/stdlib.h" 3
 extern "C" char *ptsname(int) throw();
-# 885 "/usr/include/stdlib.h" 3
+# 931 "/usr/include/stdlib.h" 3
 extern "C" int ptsname_r(int, char *, size_t) throw() __attribute__((nonnull(2)));
-# 889 "/usr/include/stdlib.h" 3
+# 935 "/usr/include/stdlib.h" 3
 extern "C" int getpt();
-# 896 "/usr/include/stdlib.h" 3
+# 942 "/usr/include/stdlib.h" 3
 extern "C" int getloadavg(double [], int) throw() __attribute__((nonnull(1)));
 # 69 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
 namespace __gnu_cxx __attribute__((visibility("default"))) {
@@ -8597,7 +8605,7 @@ extern "C" { typedef int _G_int32_t; }
 extern "C" { typedef unsigned short _G_uint16_t; }
 # 56 "/usr/include/_G_config.h" 3
 extern "C" { typedef unsigned _G_uint32_t; }
-# 40 "/usr/lib/gcc/x86_64-linux-gnu/4.4.1/include/va.h" 3
+# 40 "/usr/lib/gcc/x86_64-linux-gnu/4.4.3/include/stdarg.h" 3
 extern "C" { typedef __builtin_va_list __gnuc_va_list; }
 # 170 "/usr/include/libio.h" 3
 struct _IO_jump_t; struct _IO_FILE;
@@ -8737,35 +8745,35 @@ extern "C" int __underflow(_IO_FILE *);
 extern "C" int __uflow(_IO_FILE *);
 # 418 "/usr/include/libio.h" 3
 extern "C" int __overflow(_IO_FILE *, int);
-# 458 "/usr/include/libio.h" 3
-extern "C" int _IO_getc(_IO_FILE *);
-# 459 "/usr/include/libio.h" 3
-extern "C" int _IO_putc(int, _IO_FILE *);
 # 460 "/usr/include/libio.h" 3
-extern "C" int _IO_feof(_IO_FILE *) throw();
+extern "C" int _IO_getc(_IO_FILE *);
 # 461 "/usr/include/libio.h" 3
-extern "C" int _IO_ferror(_IO_FILE *) throw();
+extern "C" int _IO_putc(int, _IO_FILE *);
+# 462 "/usr/include/libio.h" 3
+extern "C" int _IO_feof(_IO_FILE *) throw();
 # 463 "/usr/include/libio.h" 3
+extern "C" int _IO_ferror(_IO_FILE *) throw();
+# 465 "/usr/include/libio.h" 3
 extern "C" int _IO_peekc_locked(_IO_FILE *);
-# 469 "/usr/include/libio.h" 3
-extern "C" void _IO_flockfile(_IO_FILE *) throw();
-# 470 "/usr/include/libio.h" 3
-extern "C" void _IO_funlockfile(_IO_FILE *) throw();
 # 471 "/usr/include/libio.h" 3
+extern "C" void _IO_flockfile(_IO_FILE *) throw();
+# 472 "/usr/include/libio.h" 3
+extern "C" void _IO_funlockfile(_IO_FILE *) throw();
+# 473 "/usr/include/libio.h" 3
 extern "C" int _IO_ftrylockfile(_IO_FILE *) throw();
-# 488 "/usr/include/libio.h" 3
-extern "C" int _IO_vfscanf(_IO_FILE *__restrict__, const char *__restrict__, __gnuc_va_list, int *__restrict__);
 # 490 "/usr/include/libio.h" 3
-extern "C" int _IO_vfprintf(_IO_FILE *__restrict__, const char *__restrict__, __gnuc_va_list);
+extern "C" int _IO_vfscanf(_IO_FILE *__restrict__, const char *__restrict__, __gnuc_va_list, int *__restrict__);
 # 492 "/usr/include/libio.h" 3
+extern "C" int _IO_vfprintf(_IO_FILE *__restrict__, const char *__restrict__, __gnuc_va_list);
+# 494 "/usr/include/libio.h" 3
 extern "C" __ssize_t _IO_padn(_IO_FILE *, int, __ssize_t);
-# 493 "/usr/include/libio.h" 3
-extern "C" size_t _IO_sgetn(_IO_FILE *, void *, size_t);
 # 495 "/usr/include/libio.h" 3
+extern "C" size_t _IO_sgetn(_IO_FILE *, void *, size_t);
+# 497 "/usr/include/libio.h" 3
 extern "C" __off64_t _IO_seekoff(_IO_FILE *, __off64_t, int, int);
-# 496 "/usr/include/libio.h" 3
-extern "C" __off64_t _IO_seekpos(_IO_FILE *, __off64_t, int);
 # 498 "/usr/include/libio.h" 3
+extern "C" __off64_t _IO_seekpos(_IO_FILE *, __off64_t, int);
+# 500 "/usr/include/libio.h" 3
 extern "C" void _IO_free_backup_area(_IO_FILE *) throw();
 # 80 "/usr/include/stdio.h" 3
 extern "C" { typedef __gnuc_va_list va_list; }
@@ -8989,113 +8997,113 @@ extern "C" void flockfile(FILE *) throw();
 extern "C" int ftrylockfile(FILE *) throw();
 # 893 "/usr/include/stdio.h" 3
 extern "C" void funlockfile(FILE *) throw();
-# 19 "/home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/ocelot/cuda/test/textures/texture2D.cu"
+# 19 "texture2D.cu"
 static texture< float, 2, cudaReadModeElementType> Surface;
-# 25 "/home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/ocelot/cuda/test/textures/texture2D.cu"
+# 25 "texture2D.cu"
 void kernel(float *out, int width, int height) ;
-# 37 "/home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/ocelot/cuda/test/textures/texture2D.cu"
+# 37 "texture2D.cu"
 int main(int argc, char **arg) {
-# 38 "/home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/ocelot/cuda/test/textures/texture2D.cu"
+# 38 "texture2D.cu"
 int width = 64, height = 64;
-# 40 "/home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/ocelot/cuda/test/textures/texture2D.cu"
+# 40 "texture2D.cu"
 float *in_data_host, *out_data_host;
-# 41 "/home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/ocelot/cuda/test/textures/texture2D.cu"
+# 41 "texture2D.cu"
 float *in_data_gpu, *out_data_gpu;
-# 43 "/home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/ocelot/cuda/test/textures/texture2D.cu"
+# 43 "texture2D.cu"
 size_t bytes = ((width * height) * sizeof(float));
-# 44 "/home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/ocelot/cuda/test/textures/texture2D.cu"
+# 44 "texture2D.cu"
 in_data_host = ((float *)malloc(bytes));
-# 45 "/home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/ocelot/cuda/test/textures/texture2D.cu"
+# 45 "texture2D.cu"
 out_data_host = ((float *)malloc(bytes));
-# 48 "/home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/ocelot/cuda/test/textures/texture2D.cu"
+# 48 "texture2D.cu"
 for (int i = 0; i < height; i++) {
-# 49 "/home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/ocelot/cuda/test/textures/texture2D.cu"
+# 49 "texture2D.cu"
 for (int j = 0; j < width; j++) {
-# 50 "/home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/ocelot/cuda/test/textures/texture2D.cu"
+# 50 "texture2D.cu"
 (in_data_host[(i * width) + j]) = (((float)(((122 + (i * 3)) + (j * 2)) % 128)) / (128.0F));
-# 51 "/home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/ocelot/cuda/test/textures/texture2D.cu"
+# 51 "texture2D.cu"
 (out_data_host[(i * width) + j]) = (0);
-# 52 "/home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/ocelot/cuda/test/textures/texture2D.cu"
+# 52 "texture2D.cu"
 }
-# 53 "/home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/ocelot/cuda/test/textures/texture2D.cu"
+# 53 "texture2D.cu"
 }
-# 55 "/home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/ocelot/cuda/test/textures/texture2D.cu"
+# 55 "texture2D.cu"
 cudaChannelFormatDesc channelDesc = cudaCreateChannelDesc(32, 0, 0, 0, cudaChannelFormatKindFloat);
-# 56 "/home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/ocelot/cuda/test/textures/texture2D.cu"
+# 56 "texture2D.cu"
 cudaMalloc((void **)(&in_data_gpu), bytes);
-# 57 "/home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/ocelot/cuda/test/textures/texture2D.cu"
+# 57 "texture2D.cu"
 cudaMemcpy(in_data_gpu, in_data_host, bytes, cudaMemcpyHostToDevice);
-# 59 "/home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/ocelot/cuda/test/textures/texture2D.cu"
+# 59 "texture2D.cu"
 ((Surface.addressMode)[0]) = cudaAddressModeWrap;
-# 60 "/home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/ocelot/cuda/test/textures/texture2D.cu"
+# 60 "texture2D.cu"
 ((Surface.addressMode)[1]) = cudaAddressModeWrap;
-# 61 "/home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/ocelot/cuda/test/textures/texture2D.cu"
+# 61 "texture2D.cu"
 (Surface.filterMode) = cudaFilterModePoint;
-# 62 "/home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/ocelot/cuda/test/textures/texture2D.cu"
+# 62 "texture2D.cu"
 (Surface.normalized) = (false);
-# 64 "/home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/ocelot/cuda/test/textures/texture2D.cu"
+# 64 "texture2D.cu"
 if ((cudaBindTexture2D(0, &Surface, in_data_gpu, &channelDesc, width, height, width * sizeof(float))) != (cudaSuccess)) {
-# 65 "/home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/ocelot/cuda/test/textures/texture2D.cu"
+# 65 "texture2D.cu"
 printf("failed to bind texture: %s\n", cudaGetErrorString(cudaGetLastError()));
-# 66 "/home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/ocelot/cuda/test/textures/texture2D.cu"
+# 66 "texture2D.cu"
 free(in_data_host);
-# 67 "/home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/ocelot/cuda/test/textures/texture2D.cu"
+# 67 "texture2D.cu"
 free(out_data_host);
-# 68 "/home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/ocelot/cuda/test/textures/texture2D.cu"
+# 68 "texture2D.cu"
 cudaFree(in_data_gpu);
-# 69 "/home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/ocelot/cuda/test/textures/texture2D.cu"
+# 69 "texture2D.cu"
 return -2;
-# 70 "/home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/ocelot/cuda/test/textures/texture2D.cu"
+# 70 "texture2D.cu"
 }
-# 72 "/home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/ocelot/cuda/test/textures/texture2D.cu"
+# 72 "texture2D.cu"
 cudaMalloc((void **)(&out_data_gpu), bytes);
-# 74 "/home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/ocelot/cuda/test/textures/texture2D.cu"
+# 74 "texture2D.cu"
 dim3 grid(width / 16, height / 16), block(16, 16);
-# 76 "/home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/ocelot/cuda/test/textures/texture2D.cu"
+# 76 "texture2D.cu"
 cudaConfigureCall(grid, block) ? ((void)0) : kernel(out_data_gpu, width, height);
-# 78 "/home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/ocelot/cuda/test/textures/texture2D.cu"
+# 78 "texture2D.cu"
 cudaThreadSynchronize();
-# 80 "/home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/ocelot/cuda/test/textures/texture2D.cu"
+# 80 "texture2D.cu"
 cudaMemcpy(out_data_host, out_data_gpu, bytes, cudaMemcpyDeviceToHost);
-# 81 "/home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/ocelot/cuda/test/textures/texture2D.cu"
+# 81 "texture2D.cu"
 cudaFree(in_data_gpu);
-# 82 "/home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/ocelot/cuda/test/textures/texture2D.cu"
+# 82 "texture2D.cu"
 cudaFree(out_data_gpu);
-# 84 "/home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/ocelot/cuda/test/textures/texture2D.cu"
+# 84 "texture2D.cu"
 int errors = 0;
-# 85 "/home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/ocelot/cuda/test/textures/texture2D.cu"
+# 85 "texture2D.cu"
 for (int i = 0; (i < height) && (errors < 5); i++) {
-# 86 "/home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/ocelot/cuda/test/textures/texture2D.cu"
+# 86 "texture2D.cu"
 for (int j = 0; (j < width) && (errors < 5); j++) {
-# 87 "/home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/ocelot/cuda/test/textures/texture2D.cu"
+# 87 "texture2D.cu"
 float in = (in_data_host[(i * width) + j]);
-# 88 "/home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/ocelot/cuda/test/textures/texture2D.cu"
+# 88 "texture2D.cu"
 float out = (out_data_host[(i * width) + j]);
-# 89 "/home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/ocelot/cuda/test/textures/texture2D.cu"
+# 89 "texture2D.cu"
 if (fabs(in - out) > (0.001000000047F)) {
-# 90 "/home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/ocelot/cuda/test/textures/texture2D.cu"
+# 90 "texture2D.cu"
 ++errors;
-# 91 "/home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/ocelot/cuda/test/textures/texture2D.cu"
+# 91 "texture2D.cu"
 printf("(%d, %d) - in = %f, out = %f %s\n", i, j, in, out, (errors) ? ("***") : (""));
-# 92 "/home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/ocelot/cuda/test/textures/texture2D.cu"
+# 92 "texture2D.cu"
 }
-# 93 "/home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/ocelot/cuda/test/textures/texture2D.cu"
+# 93 "texture2D.cu"
 }
-# 94 "/home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/ocelot/cuda/test/textures/texture2D.cu"
+# 94 "texture2D.cu"
 }
-# 96 "/home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/ocelot/cuda/test/textures/texture2D.cu"
+# 96 "texture2D.cu"
 printf("Pass/Fail : %s\n", (errors) ? ("Fail") : ("Pass"));
-# 98 "/home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/ocelot/cuda/test/textures/texture2D.cu"
+# 98 "texture2D.cu"
 free(in_data_host);
-# 99 "/home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/ocelot/cuda/test/textures/texture2D.cu"
+# 99 "texture2D.cu"
 free(out_data_host);
-# 101 "/home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/ocelot/cuda/test/textures/texture2D.cu"
+# 101 "texture2D.cu"
 return (errors) ? (-1) : 0;
-# 102 "/home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/ocelot/cuda/test/textures/texture2D.cu"
+# 102 "texture2D.cu"
 }
-# 1 "/tmp/tmpxft_000009cb_00000000-1_texture2D.cudafe1.stub.c"
-# 1 "/tmp/tmpxft_000009cb_00000000-1_texture2D.cudafe1.stub.c" 1
-# 1 "/tmp/tmpxft_000009cb_00000000-3_texture2D.fatbin.c" 1
+# 1 "/tmp/tmpxft_0000154c_00000000-1_texture2D.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_0000154c_00000000-1_texture2D.cudafe1.stub.c" 1
+# 1 "/tmp/tmpxft_0000154c_00000000-3_texture2D.fatbin.c" 1
 # 1 "/usr/local/cuda3.1/cuda/bin/../include/__cudaFatFormat.h" 1
 # 83 "/usr/local/cuda3.1/cuda/bin/../include/__cudaFatFormat.h"
 extern "C" {
@@ -9173,9 +9181,134 @@ void __cudaFatFreePTX( char* ptx );
 
 
 }
-# 2 "/tmp/tmpxft_000009cb_00000000-3_texture2D.fatbin.c" 2
+# 2 "/tmp/tmpxft_0000154c_00000000-3_texture2D.fatbin.c" 2
 
 
+
+asm(
+".section .rodata\n"
+".align 32\n"
+"__deviceText_$compute_20$:\n"
+".quad 0x6f69737265762e09,0x2e090a312e32206e,0x7320746567726174,0x2f2f090a30325f6d\n"
+".quad 0x656c69706d6f6320,0x2f20687469772064,0x61636f6c2f727375,0x2e33616475632f6c\n"
+".quad 0x6f2f616475632f31,0x696c2f34366e6570,0x2f090a65622f2f62,0x6e65706f766e202f\n"
+".quad 0x6220312e33206363,0x206e6f20746c6975,0x2d36302d30313032,0x2d2f2f090a0a3730\n"
+".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
+".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x43202f2f090a2d2d\n"
+".quad 0x676e696c69706d6f,0x6d742f706d742f20,0x3030305f74667870,0x30305f6334353130\n"
+".quad 0x312d303030303030,0x7275747865745f30,0x337070632e443265,0x706d742f2820692e\n"
+".quad 0x462e23494263632f,0x090a2948626c6935,0x2d2d2d2d2d2d2f2f,0x2d2d2d2d2d2d2d2d\n"
+".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
+".quad 0x2d2d2d2d2d2d2d2d,0x090a0a2d2d2d2d2d,0x2d2d2d2d2d2d2f2f,0x2d2d2d2d2d2d2d2d\n"
+".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
+".quad 0x2d2d2d2d2d2d2d2d,0x2f090a2d2d2d2d2d,0x6e6f6974704f202f,0x2d2d2f2f090a3a73\n"
+".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
+".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x5420202f2f090a2d\n"
+".quad 0x74703a7465677261,0x733a415349202c78,0x6e45202c30325f6d,0x74696c3a6e616964\n"
+".quad 0x696f50202c656c74,0x7a6953207265746e,0x2f2f090a34363a65,0x4f2809334f2d2020\n"
+".quad 0x74617a696d697470,0x6576656c206e6f69,0x20202f2f090a296c,0x626544280930672d\n"
+".quad 0x6c6576656c206775,0x2d20202f2f090a29,0x6f7065522809326d,0x7369766461207472\n"
+".quad 0x090a29736569726f,0x2d2d2d2d2d2d2f2f,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
+".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
+".quad 0x090a0a2d2d2d2d2d,0x093109656c69662e,0x6e616d6d6f633c22,0x223e656e696c2d64\n"
+".quad 0x09656c69662e090a,0x2f706d742f220932,0x305f746678706d74,0x5f63343531303030\n"
+".quad 0x3030303030303030,0x75747865745f392d,0x6475632e44326572,0x7570672e32656661\n"
+".quad 0x656c69662e090a22,0x7273752f22093309,0x6363672f62696c2f,0x2d34365f3638782f\n"
+".quad 0x6e672d78756e696c,0x2f332e342e342f75,0x2f6564756c636e69,0x682e666564647473\n"
+".quad 0x656c69662e090a22,0x7273752f22093409,0x632f6c61636f6c2f,0x632f312e33616475\n"
+".quad 0x2f6e69622f616475,0x756c636e692f2e2e,0x642f7472632f6564,0x75725f6563697665\n"
+".quad 0x22682e656d69746e,0x09656c69662e090a,0x2f7273752f220935,0x75632f6c61636f6c\n"
+".quad 0x75632f312e336164,0x2e2f6e69622f6164,0x64756c636e692f2e,0x645f74736f682f65\n"
+".quad 0x682e73656e696665,0x656c69662e090a22,0x7273752f22093609,0x632f6c61636f6c2f\n"
+".quad 0x632f312e33616475,0x2f6e69622f616475,0x756c636e692f2e2e,0x746c6975622f6564\n"
+".quad 0x73657079745f6e69,0x69662e090a22682e,0x752f22093709656c,0x6c61636f6c2f7273\n"
+".quad 0x312e33616475632f,0x69622f616475632f,0x636e692f2e2e2f6e,0x7665642f6564756c\n"
+".quad 0x657079745f656369,0x662e090a22682e73,0x2f22093809656c69,0x61636f6c2f727375\n"
+".quad 0x2e33616475632f6c,0x622f616475632f31,0x6e692f2e2e2f6e69,0x72642f6564756c63\n"
+".quad 0x7079745f72657669,0x2e090a22682e7365,0x22093909656c6966,0x636f6c2f7273752f\n"
+".quad 0x33616475632f6c61,0x2f616475632f312e,0x692f2e2e2f6e6962,0x732f6564756c636e\n"
+".quad 0x745f656361667275,0x0a22682e73657079,0x3109656c69662e09,0x2f7273752f220930\n"
+".quad 0x75632f6c61636f6c,0x75632f312e336164,0x2e2f6e69622f6164,0x64756c636e692f2e\n"
+".quad 0x7275747865742f65,0x2e73657079745f65,0x6c69662e090a2268,0x752f220931310965\n"
+".quad 0x6c61636f6c2f7273,0x312e33616475632f,0x69622f616475632f,0x636e692f2e2e2f6e\n"
+".quad 0x6365762f6564756c,0x657079745f726f74,0x662e090a22682e73,0x2209323109656c69\n"
+".quad 0x636f6c2f7273752f,0x33616475632f6c61,0x2f616475632f312e,0x692f2e2e2f6e6962\n"
+".quad 0x642f6564756c636e,0x616c5f6563697665,0x7261705f68636e75,0x2e73726574656d61\n"
+".quad 0x6c69662e090a2268,0x752f220933310965,0x6c61636f6c2f7273,0x312e33616475632f\n"
+".quad 0x69622f616475632f,0x636e692f2e2e2f6e,0x7472632f6564756c,0x656761726f74732f\n"
+".quad 0x682e7373616c635f,0x656c69662e090a22,0x73752f2209343109,0x64756c636e692f72\n"
+".quad 0x742f737469622f65,0x0a22682e73657079,0x3109656c69662e09,0x2f7273752f220935\n"
+".quad 0x2f6564756c636e69,0x0a22682e656d6974,0x3109656c69662e09,0x7574786574220936\n"
+".quad 0x2275632e44326572,0x09656c69662e090a,0x7273752f22093731,0x632f6c61636f6c2f\n"
+".quad 0x632f312e33616475,0x2f6e69622f616475,0x756c636e692f2e2e,0x6f6d6d6f632f6564\n"
+".quad 0x6974636e75665f6e,0x090a22682e736e6f,0x383109656c69662e,0x6c2f7273752f2209\n"
+".quad 0x6475632f6c61636f,0x6475632f312e3361,0x2e2e2f6e69622f61,0x6564756c636e692f\n"
+".quad 0x75665f6874616d2f,0x2e736e6f6974636e,0x6c69662e090a2268,0x752f220939310965\n"
+".quad 0x6c61636f6c2f7273,0x312e33616475632f,0x69622f616475632f,0x636e692f2e2e2f6e\n"
+".quad 0x74616d2f6564756c,0x6174736e6f635f68,0x090a22682e73746e,0x303209656c69662e\n"
+".quad 0x6c2f7273752f2209,0x6475632f6c61636f,0x6475632f312e3361,0x2e2e2f6e69622f61\n"
+".quad 0x6564756c636e692f,0x5f6563697665642f,0x6e6f6974636e7566,0x662e090a22682e73\n"
+".quad 0x2209313209656c69,0x636f6c2f7273752f,0x33616475632f6c61,0x2f616475632f312e\n"
+".quad 0x692f2e2e2f6e6962,0x732f6564756c636e,0x6f74615f31315f6d,0x636e75665f63696d\n"
+".quad 0x22682e736e6f6974,0x09656c69662e090a,0x7273752f22093232,0x632f6c61636f6c2f\n"
+".quad 0x632f312e33616475,0x2f6e69622f616475,0x756c636e692f2e2e,0x32315f6d732f6564\n"
+".quad 0x5f63696d6f74615f,0x6e6f6974636e7566,0x662e090a22682e73,0x2209333209656c69\n"
+".quad 0x636f6c2f7273752f,0x33616475632f6c61,0x2f616475632f312e,0x692f2e2e2f6e6962\n"
+".quad 0x732f6564756c636e,0x756f645f33315f6d,0x636e75665f656c62,0x22682e736e6f6974\n"
+".quad 0x09656c69662e090a,0x7273752f22093432,0x632f6c61636f6c2f,0x632f312e33616475\n"
+".quad 0x2f6e69622f616475,0x756c636e692f2e2e,0x30325f6d732f6564,0x5f63696d6f74615f\n"
+".quad 0x6e6f6974636e7566,0x662e090a22682e73,0x2209353209656c69,0x636f6c2f7273752f\n"
+".quad 0x33616475632f6c61,0x2f616475632f312e,0x692f2e2e2f6e6962,0x732f6564756c636e\n"
+".quad 0x746e695f30325f6d,0x2e736369736e6972,0x6c69662e090a2268,0x752f220936320965\n"
+".quad 0x6c61636f6c2f7273,0x312e33616475632f,0x69622f616475632f,0x636e692f2e2e2f6e\n"
+".quad 0x7275732f6564756c,0x6e75665f65636166,0x682e736e6f697463,0x656c69662e090a22\n"
+".quad 0x73752f2209373209,0x2f6c61636f6c2f72,0x2f312e3361647563,0x6e69622f61647563\n"
+".quad 0x6c636e692f2e2e2f,0x747865742f656475,0x637465665f657275,0x6974636e75665f68\n"
+".quad 0x090a22682e736e6f,0x383209656c69662e,0x6c2f7273752f2209,0x6475632f6c61636f\n"
+".quad 0x6475632f312e3361,0x2e2e2f6e69622f61,0x6564756c636e692f,0x75665f6874616d2f\n"
+".quad 0x5f736e6f6974636e,0x337874705f6c6264,0x672e090a0a22682e,0x742e206c61626f6c\n"
+".quad 0x7553206665727865,0x0a0a3b6563616672,0x207972746e652e09,0x656e72656b365a5f\n"
+".quad 0x0a2820696966506c,0x6d617261702e0909,0x5f5f203436752e20,0x6d72617061647563\n"
+".quad 0x6e72656b365a5f5f,0x6f5f696966506c65,0x702e09090a2c7475,0x33732e206d617261\n"
+".quad 0x616475635f5f2032,0x365a5f5f6d726170,0x66506c656e72656b,0x68746469775f6969\n"
+".quad 0x7261702e09090a2c,0x203233732e206d61,0x6170616475635f5f,0x656b365a5f5f6d72\n"
+".quad 0x696966506c656e72,0x297468676965685f,0x65722e090a7b090a,0x25203233752e2067\n"
+".quad 0x090a3b3e35313c72,0x36752e206765722e,0x3e363c6472252034,0x206765722e090a3b\n"
+".quad 0x3c6625203233662e,0x6c2e090a3b3e3131,0x353209363109636f,0x6257444c240a3009\n"
+".quad 0x365a5f5f6e696765,0x66506c656e72656b,0x766f6d090a3a6969,0x722509203233752e\n"
+".quad 0x6961746325202c31,0x6f6d090a3b782e64,0x2509203233752e76,0x69746e25202c3272\n"
+".quad 0x756d090a3b782e64,0x3233752e6f6c2e6c,0x25202c3372250920,0x3b327225202c3172\n"
+".quad 0x33752e766f6d090a,0x202c347225092032,0x792e646961746325,0x752e766f6d090a3b\n"
+".quad 0x2c35722509203233,0x792e6469746e2520,0x6c2e6c756d090a3b,0x2509203233752e6f\n"
+".quad 0x2c347225202c3672,0x6d090a3b35722520,0x09203233752e766f,0x697425202c377225\n"
+".quad 0x6461090a3b782e64,0x2509203233752e64,0x2c377225202c3872,0x6d090a3b33722520\n"
+".quad 0x09203233752e766f,0x697425202c397225,0x6461090a3b792e64,0x2509203233752e64\n"
+".quad 0x397225202c303172,0x090a3b367225202c,0x662e6e722e747663,0x09203233752e3233\n"
+".quad 0x387225202c316625,0x722e747663090a3b,0x33752e3233662e6e,0x202c326625092032\n"
+".quad 0x6d090a3b30317225,0x09203233662e766f,0x306630202c336625,0x3b30303030303030\n"
+".quad 0x2f2f092020202020,0x2e766f6d090a3020,0x3466250920323366,0x303030306630202c\n"
+".quad 0x2020203b30303030,0x0a30202f2f092020,0x2e64322e78657409,0x662e3233662e3476\n"
+".quad 0x2c3566257b203233,0x2c3766252c366625,0x75535b2c7d386625,0x257b2c6563616672\n"
+".quad 0x252c3266252c3166,0x5d7d3466252c3366,0x09636f6c2e090a3b,0x0a30093033093631\n"
+".quad 0x3233662e766f6d09,0x25202c3966250920,0x6f6c2e090a3b3566,0x0932330936310963\n"
+".quad 0x61702e646c090a30,0x203436752e6d6172,0x5b202c3164722509,0x6170616475635f5f\n"
+".quad 0x656b365a5f5f6d72,0x696966506c656e72,0x090a3b5d74756f5f,0x6d617261702e646c\n"
+".quad 0x722509203233752e,0x635f5f5b202c3131,0x5f6d726170616475,0x656e72656b365a5f\n"
+".quad 0x69775f696966506c,0x6d090a3b5d687464,0x33752e6f6c2e6c75,0x2c32317225092032\n"
+".quad 0x25202c3131722520,0x6461090a3b303172,0x2509203233752e64,0x387225202c333172\n"
+".quad 0x0a3b32317225202c,0x3436752e74766309,0x722509203233752e,0x33317225202c3264\n"
+".quad 0x772e6c756d090a3b,0x203233752e656469,0x25202c3364722509,0x0a3b34202c333172\n"
+".quad 0x3436752e64646109,0x202c346472250920,0x7225202c31647225,0x2e7473090a3b3364\n"
+".quad 0x662e6c61626f6c67,0x6472255b09203233,0x6625202c5d302b34,0x636f6c2e090a3b39\n"
+".quad 0x3009333309363109,0x0a3b74697865090a,0x5f646e6557444c24,0x656e72656b365a5f\n"
+".quad 0x090a3a696966506c,0x365a5f202f2f207d,0x66506c656e72656b,0x000000000a0a6969\n"
+".text");
+
+extern "C" {
+
+extern const unsigned long long __deviceText_$compute_20$[452];
+
+}
 
 asm(
 ".section .rodata\n"
@@ -9234,134 +9367,6 @@ extern const unsigned long long __deviceText_$sm_20$[177];
 
 }
 
-asm(
-".section .rodata\n"
-".align 32\n"
-"__deviceText_$compute_20$:\n"
-".quad 0x6f69737265762e09,0x2e090a312e32206e,0x7320746567726174,0x2f2f090a30325f6d\n"
-".quad 0x656c69706d6f6320,0x2f20687469772064,0x61636f6c2f727375,0x2e33616475632f6c\n"
-".quad 0x6f2f616475632f31,0x696c2f34366e6570,0x2f090a65622f2f62,0x6e65706f766e202f\n"
-".quad 0x6220312e33206363,0x206e6f20746c6975,0x2d36302d30313032,0x2d2f2f090a0a3730\n"
-".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
-".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x43202f2f090a2d2d\n"
-".quad 0x676e696c69706d6f,0x6d742f706d742f20,0x3030305f74667870,0x30305f6263393030\n"
-".quad 0x372d303030303030,0x657275747865745f,0x2e337070632e4432,0x2f706d742f282069\n"
-".quad 0x464a2e2349426363,0x2f090a296c4c637a,0x2d2d2d2d2d2d2d2f,0x2d2d2d2d2d2d2d2d\n"
-".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
-".quad 0x2d2d2d2d2d2d2d2d,0x2f090a0a2d2d2d2d,0x2d2d2d2d2d2d2d2f,0x2d2d2d2d2d2d2d2d\n"
-".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
-".quad 0x2d2d2d2d2d2d2d2d,0x2f2f090a2d2d2d2d,0x736e6f6974704f20,0x2d2d2d2f2f090a3a\n"
-".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
-".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x615420202f2f090a\n"
-".quad 0x7874703a74656772,0x6d733a415349202c,0x646e45202c30325f,0x7474696c3a6e6169\n"
-".quad 0x6e696f50202c656c,0x657a695320726574,0x202f2f090a34363a,0x704f2809334f2d20\n"
-".quad 0x6974617a696d6974,0x6c6576656c206e6f,0x2d20202f2f090a29,0x7562654428093067\n"
-".quad 0x296c6576656c2067,0x6d2d20202f2f090a,0x726f706552280932,0x6f73697664612074\n"
-".quad 0x2f090a2973656972,0x2d2d2d2d2d2d2d2f,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
-".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
-".quad 0x2e090a0a2d2d2d2d,0x22093109656c6966,0x646e616d6d6f633c,0x0a223e656e696c2d\n"
-".quad 0x3209656c69662e09,0x742f706d742f2209,0x30305f746678706d,0x305f626339303030\n"
-".quad 0x2d30303030303030,0x7275747865745f36,0x616475632e443265,0x227570672e326566\n"
-".quad 0x09656c69662e090a,0x2f7273752f220933,0x2f6363672f62696c,0x6c2d34365f363878\n"
-".quad 0x756e672d78756e69,0x692f312e342e342f,0x732f6564756c636e,0x22682e6665646474\n"
-".quad 0x09656c69662e090a,0x2f7273752f220934,0x75632f6c61636f6c,0x75632f312e336164\n"
-".quad 0x2e2f6e69622f6164,0x64756c636e692f2e,0x65642f7472632f65,0x6e75725f65636976\n"
-".quad 0x0a22682e656d6974,0x3509656c69662e09,0x6c2f7273752f2209,0x6475632f6c61636f\n"
-".quad 0x6475632f312e3361,0x2e2e2f6e69622f61,0x6564756c636e692f,0x65645f74736f682f\n"
-".quad 0x22682e73656e6966,0x09656c69662e090a,0x2f7273752f220936,0x75632f6c61636f6c\n"
-".quad 0x75632f312e336164,0x2e2f6e69622f6164,0x64756c636e692f2e,0x69746c6975622f65\n"
-".quad 0x2e73657079745f6e,0x6c69662e090a2268,0x73752f2209370965,0x2f6c61636f6c2f72\n"
-".quad 0x2f312e3361647563,0x6e69622f61647563,0x6c636e692f2e2e2f,0x697665642f656475\n"
-".quad 0x73657079745f6563,0x69662e090a22682e,0x752f22093809656c,0x6c61636f6c2f7273\n"
-".quad 0x312e33616475632f,0x69622f616475632f,0x636e692f2e2e2f6e,0x6972642f6564756c\n"
-".quad 0x657079745f726576,0x662e090a22682e73,0x2f22093909656c69,0x61636f6c2f727375\n"
-".quad 0x2e33616475632f6c,0x622f616475632f31,0x6e692f2e2e2f6e69,0x75732f6564756c63\n"
-".quad 0x79745f6563616672,0x090a22682e736570,0x303109656c69662e,0x6c2f7273752f2209\n"
-".quad 0x6475632f6c61636f,0x6475632f312e3361,0x2e2e2f6e69622f61,0x6564756c636e692f\n"
-".quad 0x657275747865742f,0x682e73657079745f,0x656c69662e090a22,0x73752f2209313109\n"
-".quad 0x2f6c61636f6c2f72,0x2f312e3361647563,0x6e69622f61647563,0x6c636e692f2e2e2f\n"
-".quad 0x746365762f656475,0x73657079745f726f,0x69662e090a22682e,0x2f2209323109656c\n"
-".quad 0x61636f6c2f727375,0x2e33616475632f6c,0x622f616475632f31,0x6e692f2e2e2f6e69\n"
-".quad 0x65642f6564756c63,0x75616c5f65636976,0x617261705f68636e,0x682e73726574656d\n"
-".quad 0x656c69662e090a22,0x73752f2209333109,0x2f6c61636f6c2f72,0x2f312e3361647563\n"
-".quad 0x6e69622f61647563,0x6c636e692f2e2e2f,0x2f7472632f656475,0x5f656761726f7473\n"
-".quad 0x22682e7373616c63,0x09656c69662e090a,0x7273752f22093431,0x6564756c636e692f\n"
-".quad 0x79742f737469622f,0x090a22682e736570,0x353109656c69662e,0x692f7273752f2209\n"
-".quad 0x742f6564756c636e,0x090a22682e656d69,0x363109656c69662e,0x2f656d6f682f2209\n"
-".quad 0x722f776572646e61,0x726f7469736f7065,0x6f7570672f736569,0x72622f746f6c6563\n"
-".quad 0x6f2f736568636e61,0x74702d746f6c6563,0x636f2f312e322d78,0x6475632f746f6c65\n"
-".quad 0x742f747365742f61,0x2f73657275747865,0x3265727574786574,0x2e090a2275632e44\n"
-".quad 0x09373109656c6966,0x6f6c2f7273752f22,0x616475632f6c6163,0x616475632f312e33\n"
-".quad 0x2f2e2e2f6e69622f,0x2f6564756c636e69,0x665f6e6f6d6d6f63,0x736e6f6974636e75\n"
-".quad 0x69662e090a22682e,0x2f2209383109656c,0x61636f6c2f727375,0x2e33616475632f6c\n"
-".quad 0x622f616475632f31,0x6e692f2e2e2f6e69,0x616d2f6564756c63,0x74636e75665f6874\n"
-".quad 0x0a22682e736e6f69,0x3109656c69662e09,0x2f7273752f220939,0x75632f6c61636f6c\n"
-".quad 0x75632f312e336164,0x2e2f6e69622f6164,0x64756c636e692f2e,0x635f6874616d2f65\n"
-".quad 0x73746e6174736e6f,0x69662e090a22682e,0x2f2209303209656c,0x61636f6c2f727375\n"
-".quad 0x2e33616475632f6c,0x622f616475632f31,0x6e692f2e2e2f6e69,0x65642f6564756c63\n"
-".quad 0x6e75665f65636976,0x682e736e6f697463,0x656c69662e090a22,0x73752f2209313209\n"
-".quad 0x2f6c61636f6c2f72,0x2f312e3361647563,0x6e69622f61647563,0x6c636e692f2e2e2f\n"
-".quad 0x315f6d732f656475,0x63696d6f74615f31,0x6f6974636e75665f,0x2e090a22682e736e\n"
-".quad 0x09323209656c6966,0x6f6c2f7273752f22,0x616475632f6c6163,0x616475632f312e33\n"
-".quad 0x2f2e2e2f6e69622f,0x2f6564756c636e69,0x74615f32315f6d73,0x6e75665f63696d6f\n"
-".quad 0x682e736e6f697463,0x656c69662e090a22,0x73752f2209333209,0x2f6c61636f6c2f72\n"
-".quad 0x2f312e3361647563,0x6e69622f61647563,0x6c636e692f2e2e2f,0x315f6d732f656475\n"
-".quad 0x656c62756f645f33,0x6f6974636e75665f,0x2e090a22682e736e,0x09343209656c6966\n"
-".quad 0x6f6c2f7273752f22,0x616475632f6c6163,0x616475632f312e33,0x2f2e2e2f6e69622f\n"
-".quad 0x2f6564756c636e69,0x74615f30325f6d73,0x6e75665f63696d6f,0x682e736e6f697463\n"
-".quad 0x656c69662e090a22,0x73752f2209353209,0x2f6c61636f6c2f72,0x2f312e3361647563\n"
-".quad 0x6e69622f61647563,0x6c636e692f2e2e2f,0x325f6d732f656475,0x6e6972746e695f30\n"
-".quad 0x0a22682e73636973,0x3209656c69662e09,0x2f7273752f220936,0x75632f6c61636f6c\n"
-".quad 0x75632f312e336164,0x2e2f6e69622f6164,0x64756c636e692f2e,0x6361667275732f65\n"
-".quad 0x6974636e75665f65,0x090a22682e736e6f,0x373209656c69662e,0x6c2f7273752f2209\n"
-".quad 0x6475632f6c61636f,0x6475632f312e3361,0x2e2e2f6e69622f61,0x6564756c636e692f\n"
-".quad 0x657275747865742f,0x665f68637465665f,0x736e6f6974636e75,0x69662e090a22682e\n"
-".quad 0x2f2209383209656c,0x61636f6c2f727375,0x2e33616475632f6c,0x622f616475632f31\n"
-".quad 0x6e692f2e2e2f6e69,0x616d2f6564756c63,0x74636e75665f6874,0x6c62645f736e6f69\n"
-".quad 0x22682e337874705f,0x626f6c672e090a0a,0x727865742e206c61,0x6166727553206665\n"
-".quad 0x652e090a0a3b6563,0x365a5f207972746e,0x66506c656e72656b,0x2e09090a28206969\n"
-".quad 0x752e206d61726170,0x6475635f5f203436,0x5a5f5f6d72617061,0x506c656e72656b36\n"
-".quad 0x2c74756f5f696966,0x617261702e09090a,0x5f203233732e206d,0x726170616475635f\n"
-".quad 0x72656b365a5f5f6d,0x5f696966506c656e,0x090a2c6874646977,0x206d617261702e09\n"
-".quad 0x635f5f203233732e,0x5f6d726170616475,0x656e72656b365a5f,0x65685f696966506c\n"
-".quad 0x7b090a2974686769,0x2e206765722e090a,0x313c722520323375,0x65722e090a3b3e35\n"
-".quad 0x25203436752e2067,0x090a3b3e363c6472,0x33662e206765722e,0x3e31313c66252032\n"
-".quad 0x09636f6c2e090a3b,0x0a30093532093631,0x6967656257444c24,0x72656b365a5f5f6e\n"
-".quad 0x3a696966506c656e,0x33752e766f6d090a,0x202c317225092032,0x782e646961746325\n"
-".quad 0x752e766f6d090a3b,0x2c32722509203233,0x782e6469746e2520,0x6c2e6c756d090a3b\n"
-".quad 0x2509203233752e6f,0x2c317225202c3372,0x6d090a3b32722520,0x09203233752e766f\n"
-".quad 0x746325202c347225,0x090a3b792e646961,0x203233752e766f6d,0x6e25202c35722509\n"
-".quad 0x090a3b792e646974,0x752e6f6c2e6c756d,0x2c36722509203233,0x7225202c34722520\n"
-".quad 0x2e766f6d090a3b35,0x3772250920323375,0x782e64697425202c,0x752e646461090a3b\n"
-".quad 0x2c38722509203233,0x7225202c37722520,0x2e766f6d090a3b33,0x3972250920323375\n"
-".quad 0x792e64697425202c,0x752e646461090a3b,0x3031722509203233,0x25202c397225202c\n"
-".quad 0x747663090a3b3672,0x2e3233662e6e722e,0x3166250920323375,0x090a3b387225202c\n"
-".quad 0x662e6e722e747663,0x09203233752e3233,0x317225202c326625,0x2e766f6d090a3b30\n"
-".quad 0x3366250920323366,0x303030306630202c,0x2020203b30303030,0x0a30202f2f092020\n"
-".quad 0x3233662e766f6d09,0x30202c3466250920,0x3030303030303066,0x0920202020203b30\n"
-".quad 0x6574090a30202f2f,0x2e34762e64322e78,0x203233662e323366,0x3666252c3566257b\n"
-".quad 0x3866252c3766252c,0x61667275535b2c7d,0x2c3166257b2c6563,0x2c3366252c326625\n"
-".quad 0x090a3b5d7d346625,0x09363109636f6c2e,0x6f6d090a30093033,0x2509203233662e76\n"
-".quad 0x3b356625202c3966,0x3109636f6c2e090a,0x090a300932330936,0x6d617261702e646c\n"
-".quad 0x722509203436752e,0x635f5f5b202c3164,0x5f6d726170616475,0x656e72656b365a5f\n"
-".quad 0x756f5f696966506c,0x2e646c090a3b5d74,0x33752e6d61726170,0x2c31317225092032\n"
-".quad 0x616475635f5f5b20,0x365a5f5f6d726170,0x66506c656e72656b,0x68746469775f6969\n"
-".quad 0x2e6c756d090a3b5d,0x09203233752e6f6c,0x7225202c32317225,0x30317225202c3131\n"
-".quad 0x752e646461090a3b,0x3331722509203233,0x25202c387225202c,0x7663090a3b323172\n"
-".quad 0x33752e3436752e74,0x2c32647225092032,0x090a3b3331722520,0x656469772e6c756d\n"
-".quad 0x722509203233752e,0x33317225202c3364,0x6461090a3b34202c,0x2509203436752e64\n"
-".quad 0x647225202c346472,0x3b33647225202c31,0x6f6c672e7473090a,0x203233662e6c6162\n"
-".quad 0x302b346472255b09,0x0a3b396625202c5d,0x363109636f6c2e09,0x65090a3009333309\n"
-".quad 0x444c240a3b746978,0x365a5f5f646e6557,0x66506c656e72656b,0x2f207d090a3a6969\n"
-".quad 0x72656b365a5f202f,0x0a696966506c656e,0x000000000000000a\n"
-".text");
-
-extern "C" {
-
-extern const unsigned long long __deviceText_$compute_20$[463];
-
-}
-
 static __cudaFatPtxEntry __ptxEntries [] = {{(char*)"compute_20",(char*)__deviceText_$compute_20$},{0,0}};
 static __cudaFatCubinEntry __cubinEntries[] = {{0,0}};
 static __cudaFatDebugEntry __debugEntries0 = {0, 0, 0, 0} ;
@@ -9370,8 +9375,8 @@ static __cudaFatElfEntry __elfEntries1 = {(char*)"sm_20", (char*)__deviceText_$s
 
 
 
-static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000004,0xa14f518d,(char*)"0a1fc0ec71cf2255",(char*)"/home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/ocelot/cuda/test/textures/texture2D.cu",(char*)" ",__ptxEntries,__cubinEntries,&__debugEntries0,0,0,0,0,0,0xd0410b2d,&__elfEntries1};
-# 2 "/tmp/tmpxft_000009cb_00000000-1_texture2D.cudafe1.stub.c" 2
+static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000004,0xa14f518d,(char*)"7771eb686efefb49",(char*)"texture2D.cu",(char*)" ",__ptxEntries,__cubinEntries,&__debugEntries0,0,0,0,0,0,0xf7c930fe,&__elfEntries1};
+# 2 "/tmp/tmpxft_0000154c_00000000-1_texture2D.cudafe1.stub.c" 2
 # 1 "/usr/local/cuda3.1/cuda/bin/../include/crt/host_runtime.h" 1
 # 93 "/usr/local/cuda3.1/cuda/bin/../include/crt/host_runtime.h"
 extern "C" {
@@ -9765,17 +9770,17 @@ extern __attribute__((__weak__)) unsigned long long int ullmax(unsigned long lon
 # 5003 "/usr/local/cuda3.1/cuda/bin/../include/math_functions.h" 2 3
 # 88 "/usr/local/cuda3.1/cuda/bin/../include/common_functions.h" 2
 # 166 "/usr/local/cuda3.1/cuda/bin/../include/crt/host_runtime.h" 2
-# 3 "/tmp/tmpxft_000009cb_00000000-1_texture2D.cudafe1.stub.c" 2
+# 3 "/tmp/tmpxft_0000154c_00000000-1_texture2D.cudafe1.stub.c" 2
 struct __T20 {float *__par0;int __par1;int __par2;int __dummy_field;};
 extern void __device_stub__Z6kernelPfii(float *, int, int);
-static void __sti____cudaRegisterAll_44_tmpxft_000009cb_00000000_4_texture2D_cpp1_ii_Surface(void) __attribute__((__constructor__));
+static void __sti____cudaRegisterAll_44_tmpxft_0000154c_00000000_7_texture2D_cpp1_ii_Surface(void) __attribute__((__constructor__));
 void __device_stub__Z6kernelPfii(float *__par0, int __par1, int __par2){ struct __T20 *__T21;
 *(void**)(void*)&__T21 = (void*)0;if (cudaSetupArgument((void*)(char*)&__par0, sizeof(__par0), (size_t)&__T21->__par0) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par1, sizeof(__par1), (size_t)&__T21->__par1) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par2, sizeof(__par2), (size_t)&__T21->__par2) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(float *, int, int))kernel)); (void)cudaLaunch(((char *)((void ( *)(float *, int, int))kernel))); };}
 void kernel( float *__cuda_0,int __cuda_1,int __cuda_2)
-# 25 "/home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/ocelot/cuda/test/textures/texture2D.cu"
+# 25 "texture2D.cu"
 {__device_stub__Z6kernelPfii( __cuda_0,__cuda_1,__cuda_2);
-# 33 "/home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/ocelot/cuda/test/textures/texture2D.cu"
+# 33 "texture2D.cu"
 }
-# 1 "/tmp/tmpxft_000009cb_00000000-1_texture2D.cudafe1.stub.c"
-static void __sti____cudaRegisterAll_44_tmpxft_000009cb_00000000_4_texture2D_cpp1_ii_Surface(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, int, int))kernel), (char*)"_Z6kernelPfii", "_Z6kernelPfii", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterTexture(__cudaFatCubinHandle, (const struct textureReference*)&Surface, (const void**)"Surface", "Surface", 2, 0, 0); }
-# 1 "/tmp/tmpxft_000009cb_00000000-1_texture2D.cudafe1.stub.c" 2
+# 1 "/tmp/tmpxft_0000154c_00000000-1_texture2D.cudafe1.stub.c"
+static void __sti____cudaRegisterAll_44_tmpxft_0000154c_00000000_7_texture2D_cpp1_ii_Surface(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, int, int))kernel), (char*)"_Z6kernelPfii", "_Z6kernelPfii", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterTexture(__cudaFatCubinHandle, (const struct textureReference*)&Surface, (const void**)"Surface", "Surface", 2, 0, 0); }
+# 1 "/tmp/tmpxft_0000154c_00000000-1_texture2D.cudafe1.stub.c" 2

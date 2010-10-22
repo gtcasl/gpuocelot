@@ -398,7 +398,17 @@ void ir::Module::extractPTXKernels() {
 		else if (statement.directive == PTXStatement::Texref) {
 			assert(_textures.count(statement.name) == 0);
 			_textures.insert(std::make_pair(statement.name, 
-				Texture(statement.name)));
+				Texture(statement.name, Texture::Texref)));
+		}
+		else if (statement.directive == PTXStatement::Surfref) {
+			assert(_textures.count(statement.name) == 0);
+			_textures.insert(std::make_pair(statement.name, 
+				Texture(statement.name, Texture::Surfref)));
+		}
+		else if (statement.directive == PTXStatement::Samplerref) {
+			assert(_textures.count(statement.name) == 0);
+			_textures.insert(std::make_pair(statement.name, 
+				Texture(statement.name, Texture::Samplerref)));
 		}
 	}
 }

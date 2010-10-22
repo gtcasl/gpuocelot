@@ -78,7 +78,7 @@
 %token<value> TOKEN_SM21
 
 %token<value> TOKEN_CONST TOKEN_GLOBAL TOKEN_LOCAL TOKEN_PARAM TOKEN_PRAGMA 
-%token<value> TOKEN_REG TOKEN_SHARED TOKEN_TEXREF TOKEN_CTA
+%token<value> TOKEN_REG TOKEN_SHARED TOKEN_TEXREF TOKEN_CTA TOKEN_SURFREF TOKEN_SAMPLERREF
 %token<value> TOKEN_GL TOKEN_SYS
 
 %token<value> TOKEN_U32 TOKEN_S32 TOKEN_S8 TOKEN_S16 TOKEN_S64 TOKEN_U8 
@@ -113,9 +113,12 @@
 
 %token<value> TOKEN_L1 TOKEN_L2
 
+%token<value> TOKEN_B TOKEN_P
+
 %token<value> TOKEN_WIDTH TOKEN_DEPTH TOKEN_HEIGHT TOKEN_NORMALIZED_COORDS
 %token<value> TOKEN_FILTER_MODE TOKEN_ADDR_MODE_0 TOKEN_ADDR_MODE_1
 %token<value> TOKEN_ADDR_MODE_2
+%token<value> TOKEN_CHANNEL_DATA_TYPE TOKEN_CHANNEL_ORDER
 
 %token<value> TOKEN_TRAP TOKEN_CLAMP TOKEN_ZERO
 
@@ -141,7 +144,8 @@
 %%
 
 nonEntryStatements : version | target | registerDeclaration | fileDeclaration 
-	| preprocessor | textureDeclaration | globalSharedDeclaration | globalLocalDeclaration;
+	| preprocessor | samplerDeclaration | surfaceDeclaration | textureDeclaration 
+	| globalSharedDeclaration | globalLocalDeclaration;
 
 nonEntryStatement : nonEntryStatements
 {
@@ -382,6 +386,16 @@ textureSpace : TOKEN_PARAM | TOKEN_GLOBAL;
 textureDeclaration : externOrVisible textureSpace TOKEN_TEXREF identifier ';'
 {
 	state.textureDeclaration( $<value>2, $<text>4, @1 );
+};
+
+samplerDeclaration : externOrVisible textureSpace TOKEN_SAMPLERREF identifier ';'
+{
+	state.samplerDeclaration( $<value>2, $<text>4, @1 );
+};
+
+surfaceDeclaration : externOrVisible textureSpace TOKEN_SURFREF identifier ';'
+{
+	state.surfaceDeclaration( $<value>2, $<text>4, @1 );
 };
 
 parameter : TOKEN_PARAM
@@ -750,7 +764,7 @@ instruction : ftzInstruction2 | ftzInstruction3 | approxInstruction2
 	| atom | bar | brkpt | clz | cvt | cvta | isspacep | div | exit
 	| ld | ldu | mad | mad24 | membar | mov | mul24 | mul | notInstruction | pmevent
 	| popc | prmt | rcpSqrtInstruction | red | ret | sad | selp | set | setp
-	| slct | st | testp | tex | trap | vote;
+	| slct | st | suld | suq | sured | sust | testp | tex | trap | txq | vote;
 
 basicInstruction3Opcode : OPCODE_AND | OPCODE_OR 
 	| OPCODE_REM | OPCODE_SHL | OPCODE_SHR | OPCODE_XOR | OPCODE_COPYSIGN;
@@ -1363,6 +1377,60 @@ tex : OPCODE_TEX geometry TOKEN_V4 dataType dataType arrayOperand ',' '['
 // Surface sampling 
 // 
 
+surfaceQuery : TOKEN_WIDTH | TOKEN_HEIGHT | TOKEN_DEPTH | TOKEN_CHANNEL_DATA_TYPE 
+	| TOKEN_CHANNEL_ORDER | TOKEN_NORMALIZED_COORDS | TOKEN_FILTER_MODE | TOKEN_ADDR_MODE_0 |
+	TOKEN_ADDR_MODE_1 | TOKEN_ADDR_MODE_2
+{
+	state.surfaceQuery( $<value>1 );
+};
+
+txq : OPCODE_TXQ surfaceQuery dataType operand ',' '[' operand ']' ';'
+{
+	state.instruction( $<text>1, 3 );
+};
+
+suq : OPCODE_SUQ surfaceQuery dataType operand ',' '[' operand ']' ';'
+{
+	state.instruction( $<text>1, 3 );
+};
+
+optionalCacheOperation : TOKEN_CA | TOKEN_CG | TOKEN_CS | TOKEN_CV
+{
+	state.cacheOperation( $<value>1 );
+};
+
+clampOperation : TOKEN_CLAMP | TOKEN_ZERO | TOKEN_TRAP
+{
+	state.clampOperation( $<value>1 );
+};
+
+formatMode : TOKEN_B | TOKEN_P
+{
+	state.formatMode( $<value>1 );
+}
+
+suld : OPCODE_SULD formatMode geometry optionalCacheOperation 
+	instructionVectorType dataType clampOperation arrayOperand ',' 
+	'[' operand ',' arrayOperand ']' ';'
+{
+	state.instruction( $<text>1, 1);
+	state.convertD( $<value>7, @1 );
+}
+
+sust : OPCODE_SUST formatMode geometry optionalCacheOperation 
+	instructionVectorType dataType clampOperation '[' operand ',' arrayOperand ']' ','
+	arrayOperand ';'
+{
+	state.instruction( $<text>1, 1);
+	state.convertD( $<value>7, @1 );
+}
+
+sured : OPCODE_SURED formatMode reductionOperation geometry dataType clampOperation
+	'[' operand ',' arrayOperand ']' ',' arrayOperand ';'
+{
+	state.instruction( $<text>1, 1);
+	state.convertD( $<value>7, @1 );
+}
 
 //
 // End surface sampling 

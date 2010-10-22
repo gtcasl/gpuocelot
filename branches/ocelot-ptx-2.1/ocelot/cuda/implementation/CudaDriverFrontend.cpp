@@ -37,7 +37,6 @@
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
-
 // whether CUDA runtime catches exceptions thrown by Ocelot
 #define CATCH_RUNTIME_EXCEPTIONS 0
 
@@ -139,12 +138,12 @@ cuda::CudaDriverFrontend::Context * cuda::CudaDriverFrontend::_getContext() {
 
 //! \brief locks context thread map
 void cuda::CudaDriverFrontend::_lock() {
-	_mutex.lock();
+//	_mutex.lock();
 }
 
 //! \brief unlocks context thread map
 void cuda::CudaDriverFrontend::_unlock() {
-	_mutex.unlock();
+//	_mutex.unlock();
 }
 
 cuda::CudaDriverFrontend::ContextQueue & cuda::CudaDriverFrontend::_getThreadContextQueue() {
@@ -680,9 +679,7 @@ CUresult cuda::CudaDriverFrontend::cuModuleLoadDataEx(CUmodule *cuModule,
 		ModuleMap::iterator module = context->_modules.insert(std::make_pair(modname.str(), ir::Module())).first;
 		
 		report("  created module, now loading..");
-		//
-		// TODO AKERR THE PROBLEM IS RIGHT HERE
-		//
+
 		if (module->second.load(ss, modname.str())) {
 			*cuModule = reinterpret_cast<CUmodule>(& module->second);
 			

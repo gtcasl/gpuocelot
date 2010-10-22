@@ -271,12 +271,16 @@ WHITESPACE [ \t]*
                                     return TOKEN_PRAGMA; }
 ".reg"                          { yylval->value = TOKEN_REG; \
                                     return TOKEN_REG; }
+".samplerref"                   { yylval->value = TOKEN_SAMPLERREF; \
+                                    return TOKEN_SAMPLERREF; }
 ".section"                      { yylval->value = TOKEN_SECTION; \
                                     return TOKEN_SECTION; }
 ".shared"                       { yylval->value = TOKEN_SHARED; \
                                     return TOKEN_SHARED;}
 ".shiftamt"                     { yylval->value = TOKEN_SHIFT_AMOUNT; \
                                     return TOKEN_SHIFT_AMOUNT;}
+".surfref"	                   { yylval->value = TOKEN_SURFREF; \
+                                    return TOKEN_SURFREF; }
 ".target"                       { yylval->value = TOKEN_TARGET; \
                                     return TOKEN_TARGET; }
 ".texref"                       { yylval->value = TOKEN_TEXREF; \
@@ -394,12 +398,14 @@ WHITESPACE [ \t]*
 ".inc"                          { yylval->value = TOKEN_INC; return TOKEN_INC; }
 ".add"                          { yylval->value = TOKEN_ADD; return TOKEN_ADD; }
 ".cas"                          { yylval->value = TOKEN_CAS; return TOKEN_CAS; }
-".exch"                         { yylval->value = TOKEN_EXCH; \
-                                    return TOKEN_EXCH; }
+".exch"                         { yylval->value = TOKEN_EXCH; return TOKEN_EXCH; }
 
 ".1d"                           { yylval->value = TOKEN_1D; return TOKEN_1D; }
 ".2d"                           { yylval->value = TOKEN_2D; return TOKEN_2D; }
 ".3d"                           { yylval->value = TOKEN_3D; return TOKEN_3D; }
+
+".b"                          	{ yylval->value = TOKEN_B; return TOKEN_B; }
+".p"                           	{ yylval->value = TOKEN_P; return TOKEN_P; }
 
 ".ca"                           { yylval->value = TOKEN_CA; return TOKEN_CA; }
 ".wb"                           { yylval->value = TOKEN_WB; return TOKEN_WB; }
@@ -412,12 +418,9 @@ WHITESPACE [ \t]*
 ".L1"                           { yylval->value = TOKEN_L1; return TOKEN_L1; }
 ".L2"                           { yylval->value = TOKEN_L2; return TOKEN_L2; }
 
-".width"                        { yylval->value = TOKEN_WIDTH; \
-                                    return TOKEN_WIDTH; }
-".height"                       { yylval->value = TOKEN_HEIGHT; \
-                                    return TOKEN_HEIGHT; }
-".depth"                        { yylval->value = TOKEN_DEPTH; \
-                                    return TOKEN_DEPTH; }
+".width"                        { yylval->value = TOKEN_WIDTH; return TOKEN_WIDTH; }
+".height"                       { yylval->value = TOKEN_HEIGHT; return TOKEN_HEIGHT; }
+".depth"                        { yylval->value = TOKEN_DEPTH; return TOKEN_DEPTH; }
 ".normalized_coords"            { yylval->value = TOKEN_NORMALIZED_COORDS; \
                                     return TOKEN_NORMALIZED_COORDS; }
 ".filter_mode"                  { yylval->value = TOKEN_FILTER_MODE; \
@@ -428,7 +431,10 @@ WHITESPACE [ \t]*
                                     return TOKEN_ADDR_MODE_1; }
 ".addr_mode_2"                  { yylval->value = TOKEN_ADDR_MODE_2; \
                                     return TOKEN_ADDR_MODE_2; }
-
+".channel_data_type"						{ yylval->value = TOKEN_CHANNEL_DATA_TYPE; \
+																		return TOKEN_CHANNEL_DATA_TYPE; }
+".channel_order"								{ yylval->value = TOKEN_CHANNEL_ORDER; \
+																		return TOKEN_CHANNEL_ORDER; }
 ".trap"                         { yylval->value = TOKEN_TRAP; \
                                     return TOKEN_TRAP; }
 ".to"														{ yylval->value = TOKEN_TO; \
@@ -437,6 +443,7 @@ WHITESPACE [ \t]*
                                     return TOKEN_CLAMP; }
 ".zero"                         { yylval->value = TOKEN_ZERO; \
                                     return TOKEN_ZERO; }
+".width"
 
 ".arrive"                       { yylval->value = TOKEN_ARRIVE; \
                                     return TOKEN_ARRIVE; }

@@ -9,6 +9,7 @@
 #ifndef EXECUTIVE_CTACONTEXT_H_INCLUDED
 #define EXECUTIVE_CTACONTEXT_H_INCLUDED
 
+#include <iostream>
 #include <vector>
 #include <boost/dynamic_bitset.hpp>
 
@@ -21,6 +22,42 @@ namespace executive {
 
 	class EmulatedKernel;
 	class CooperativeThreadArray;
+	
+	class CTABarrier {
+	public:
+		CTABarrier() { }
+	
+		CTABarrier(size_t size): participating(size), arrived(size, 0) {
+		}
+		
+		void initialize(size_t size) {
+			arrived = boost::dynamic_bitset<>(size, 0);
+			participating = size;
+		}
+	
+		void setParticipating(size_t size) {
+			participating = size;
+		}
+	
+		/*! returns true if enough threads have reached the barrier */
+		bool satisfied() const {
+			return participating == arrived.count();
+		}
+		
+		void arrive(const boost::dynamic_bitset<> & threads) {
+			arrived |= threads;
+		}
+		
+		void clear() {
+			arrived.reset();
+		}
+		
+	public:
+	
+		size_t participating;
+	
+		boost::dynamic_bitset<> arrived;
+	};
 
 	class CTAContext {
 	public:

@@ -763,6 +763,52 @@ namespace parser
 			OperandWrapper( operand, _toAddressSpace( directive ) ) ) );
 	}
 
+	void PTXParser::State::surfaceDeclaration( int space, 
+		const std::string &name, YYLTYPE &location)
+	{
+		report( "  Rule: textureSpace TOKEN_SURFREF identifier ';'" );
+
+		statement.directive = ir::PTXStatement::Surfref;
+		statement.space = tokenToTextureSpace( space );
+		statement.name = name;
+
+		if( operands.count( statement.name ) != 0 ) 
+		{
+			throw_exception( toString( location, *this ) 
+				<< "Texture reference name " << statement.name 
+				<< " already declared in this scope.", 
+				DuplicateDeclaration );
+		}
+	
+		operand.identifier = statement.name;
+		operand.addressMode = ir::PTXOperand::Address;
+		operands.insert( std::make_pair( statement.name, 
+			OperandWrapper( operand, _toAddressSpace( directive ) ) ) );
+	}
+	
+	void PTXParser::State::samplerDeclaration( int space,
+		const std::string &name, YYLTYPE &location)
+	{
+		report( "  Rule: textureSpace TOKEN_SURFREF identifier ';'" );
+
+		statement.directive = ir::PTXStatement::Surfref;
+		statement.space = tokenToTextureSpace( space );
+		statement.name = name;
+
+		if( operands.count( statement.name ) != 0 ) 
+		{
+			throw_exception( toString( location, *this ) 
+				<< "Texture reference name " << statement.name 
+				<< " already declared in this scope.", 
+				DuplicateDeclaration );
+		}
+	
+		operand.identifier = statement.name;
+		operand.addressMode = ir::PTXOperand::Address;
+		operands.insert( std::make_pair( statement.name, 
+			OperandWrapper( operand, _toAddressSpace( directive ) ) ) );
+	}
+
 	void PTXParser::State::argumentDeclaration( const std::string& name, 
 		YYLTYPE& location )
 	{
@@ -1718,8 +1764,24 @@ namespace parser
 		statement.instruction.d.type = tokenToDataType( token );
 	}
 	
+	void PTXParser::State::cacheOperation(int token) {
+		statement.instruction.cacheOperation = tokenToCacheOperation(token);
+	}
+	
+	void PTXParser::State::clampOperation(int token) {
+		statement.instruction.clamp = tokenToClampOperation(token);
+	}
+	
 	void PTXParser::State::barrierOperation( int token, YYLTYPE & location) {
 		statement.instruction.barrierOperation = tokenToBarrierOp(token);
+	}
+	
+	void PTXParser::State::formatMode(int token) {
+		statement.instruction.formatMode = tokenToFormatMode(token);
+	}
+	
+	void PTXParser::State::surfaceQuery(int token) {
+		statement.instruction.surfaceQuery = tokenToSurfaceQuery(token);
 	}
 
 	void PTXParser::State::returnType( int token )
@@ -2195,6 +2257,60 @@ namespace parser
 		return ir::PTXInstruction::CmpOp_Invalid;	
 	}
 	
+	ir::PTXInstruction::CacheOperation PTXParser::tokenToCacheOperation(int token)
+	{
+		switch (token)
+		{
+			case TOKEN_CA: return ir::PTXInstruction::Ca;
+			case TOKEN_WB: return ir::PTXInstruction::Wb;
+			case TOKEN_CG: return ir::PTXInstruction::Cg;
+			case TOKEN_CS: return ir::PTXInstruction::Cs;
+			case TOKEN_CV: return ir::PTXInstruction::Cv;
+			case TOKEN_WT: return ir::PTXInstruction::Wt;
+			default: break;
+		}
+		return ir::PTXInstruction::CacheOperation_Invalid;
+	}
+	
+	ir::PTXInstruction::ClampOperation PTXParser::tokenToClampOperation(int token) {
+		switch (token)
+		{
+			case TOKEN_TRAP: return ir::PTXInstruction::TrapOOB;
+			case TOKEN_CLAMP: return ir::PTXInstruction::Clamp;
+			case TOKEN_ZERO: return ir::PTXInstruction::Zero;
+			default: break;
+		}
+		return ir::PTXInstruction::ClampOperation_Invalid;
+	}
+	
+	ir::PTXInstruction::FormatMode PTXParser::tokenToFormatMode(int token)
+	{
+		switch (token)
+		{
+			case TOKEN_B: return ir::PTXInstruction::Unformatted;
+			case TOKEN_P: return ir::PTXInstruction::Formatted;
+			default: break;
+		}
+		return ir::PTXInstruction::FormatMode_Invalid;
+	}
+	
+	ir::PTXInstruction::SurfaceQuery PTXParser::tokenToSurfaceQuery(int token) {
+		switch (token)
+		{
+			case TOKEN_WIDTH: return ir::PTXInstruction::Width;
+			case TOKEN_HEIGHT: return ir::PTXInstruction::Height;
+			case TOKEN_DEPTH: return ir::PTXInstruction::Depth;
+			case TOKEN_CHANNEL_DATA_TYPE: return ir::PTXInstruction::ChannelDataType;
+			case TOKEN_CHANNEL_ORDER: return ir::PTXInstruction::ChannelOrder;
+			case TOKEN_NORMALIZED_COORDS: return ir::PTXInstruction::NormalizedCoordinates;
+			case TOKEN_FILTER_MODE: return ir::PTXInstruction::SamplerFilterMode;
+			case TOKEN_ADDR_MODE_0: return ir::PTXInstruction::SamplerAddrMode0;
+			case TOKEN_ADDR_MODE_1: return ir::PTXInstruction::SamplerAddrMode1;
+			case TOKEN_ADDR_MODE_2: return ir::PTXInstruction::SamplerAddrMode2;
+			default: break;
+		}
+		return ir::PTXInstruction::SurfaceQuery_Invalid;
+	}
 	
 	ir::PTXInstruction::BarrierOperation PTXParser::tokenToBarrierOp(int token)
 	{

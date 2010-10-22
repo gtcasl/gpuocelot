@@ -98,6 +98,23 @@ std::string ir::PTXInstruction::toString( ReductionOperation operation ) {
 	return "";
 }
 
+std::string ir::PTXInstruction::toString( SurfaceQuery query ) {
+	switch (query) {
+		case Width: return "width";
+		case Height: return "height";
+		case Depth: return "depth";
+		case ChannelDataType: return "channel_data_type";
+		case ChannelOrder: return "channel_order";
+		case NormalizedCoordinates:  return "normalized_coords";
+		case SamplerFilterMode: return "filter_mode";
+		case SamplerAddrMode0: return "addr_mode_0";
+		case SamplerAddrMode1: return "addr_mode_1";
+		case SamplerAddrMode2: return "addr_mode_2";
+		default: break;
+	}
+	return "";
+}
+
 std::string ir::PTXInstruction::roundingMode( Modifier modifier ) {
 	switch( modifier ) {
 		case rn: return "rn"; break;
@@ -322,6 +339,7 @@ ir::PTXInstruction::PTXInstruction( Opcode op, const PTXOperand& _d,
 	vec = PTXOperand::v1;
 	pg.condition = PTXOperand::PT;
 	pg.type = PTXOperand::pred;
+	barrierOperation = BarSync;
 	carry = None;
 	statementIndex = 0;
 	cc = 0;
@@ -1730,6 +1748,21 @@ std::string ir::PTXInstruction::valid() const {
 			}
 			break;
 		}
+		case Txq: {
+			if (type != ir::PTXOperand::b32) {
+				return "data type must be .b32";
+			}
+			break;
+		}
+		case Suq: {
+			if (!(surfaceQuery == Width || surfaceQuery == Height || surfaceQuery == Depth)) {
+				return "surface query must be .width, .height, or .depth";
+			}
+			if (type != ir::PTXOperand::b32) {
+				return "data type must be .b32";
+			}
+			break;
+		}
 		case Trap: {
 			break;
 		}
@@ -2207,6 +2240,10 @@ std::string ir::PTXInstruction::toString() const {
 				+ d.toString() + ", " + a.toString() + ", " + b.toString();
 			return result;
 		}
+		case Suq: {
+			return guard() + "suq." + toString( surfaceQuery ) 
+				+ "." + PTXOperand::toString(type) + " " + d.toString() + ", " + a.toString();
+		}
 		case TestP: {
 			return guard() + "testp." + toString( floatingPointMode ) 
 				+ "." + PTXOperand::toString( type ) + " " + d.toString() + ", " 
@@ -2220,6 +2257,10 @@ std::string ir::PTXInstruction::toString() const {
 		}
 		case Trap: {
 			return guard() + "trap";
+		}
+		case Txq: {
+			return guard() + "txq." + toString( surfaceQuery ) 
+				+ "." + PTXOperand::toString(type) + " " + d.toString() + ", " + a.toString();
 		}
 		case Vote: {
 			return guard() + "vote." + toString( vote ) + ".pred " 

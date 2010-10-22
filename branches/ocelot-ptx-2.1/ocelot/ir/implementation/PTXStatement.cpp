@@ -379,6 +379,11 @@ namespace ir {
 				return stream.str();
 				break;
 			}
+			case Samplerref:
+			{
+				return "." + toString(space) + " .samplerref " + name + ";";
+				break;
+			}
 			case Section:
 				return ".section " + section_type + ", " + section_name;
 				break;
@@ -406,6 +411,10 @@ namespace ir {
 			case Target: {
 				return ".target " + hydrazine::toString( targets.begin(), 
 					targets.end(), ", " );
+				break;
+			}
+			case Surfref: {
+				return "." + toString(space) + " .surfref " + name + ";";
 				break;
 			}
 			case Texref: {

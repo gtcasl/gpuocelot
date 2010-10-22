@@ -26,6 +26,7 @@ namespace executive {
 	class CooperativeThreadArray {
 	public:
 		typedef std::vector<CTAContext> ContextStack;
+		typedef std::vector<CTABarrier> BarrierVector;
 		typedef std::vector<ir::PTXU64> RegisterFile;
 
 	public:
@@ -42,18 +43,25 @@ namespace executive {
 
 		/*! Destroys state associated with CTA */
 		~CooperativeThreadArray();
+		
+		void reset();
 
 		/*! Initializes the CTA and executes the kernel for a given block */
 		void execute(const ir::Dim3& block);
-
-		/*! Reset the state of the CTA */
-		void reset();
 		
 		/*! Jump to a specific PC for the current context */
 		void jumpToPC(int PC);
 
 		/* Get a snapshot of the current register file */
 		RegisterFile getCurrentRegisterFile() const;
+		
+	protected:
+	
+		/*! initializes elements of the CTA */
+		void initialize(const ir::Dim3 & block);
+		
+		/*! finishes execution of the CTA */
+		void finalize();
 
 	public:
 		/*! Dimensions of the cooperative thread array */
@@ -77,6 +85,9 @@ namespace executive {
 
 		/*! Function call stack */
 		EmulatorCallStack functionCallStack;
+		
+		/*! Vector of named barriers */
+		BarrierVector barriers;
 
 		/*! Counter incremented 4 times per instruction */
 		ir::PTXU64 clock;
@@ -462,7 +473,11 @@ namespace executive {
 		void eval_Sqrt(CTAContext &context, const ir::PTXInstruction &instr);		
 		void eval_St(CTAContext &context, const ir::PTXInstruction &instr);		
 		void eval_Sub(CTAContext &context, const ir::PTXInstruction &instr);	
-		void eval_SubC(CTAContext &context, const ir::PTXInstruction &instr);		
+		void eval_SubC(CTAContext &context, const ir::PTXInstruction &instr);
+		void eval_Suld(CTAContext &context, const ir::PTXInstruction &instr);
+		void eval_Sured(CTAContext &context, const ir::PTXInstruction &instr);
+		void eval_Sust(CTAContext &context, const ir::PTXInstruction &instr);
+		void eval_Suq(CTAContext &context, const ir::PTXInstruction &instr);
 		void eval_TestP(CTAContext &context, const ir::PTXInstruction &instr);
 		void eval_Tex(CTAContext &context, const ir::PTXInstruction &instr);
 		void eval_Trap(CTAContext &context, const ir::PTXInstruction &instr);

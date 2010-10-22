@@ -35,8 +35,12 @@
 // global control for enabling reporting within the emulator
 #define REPORT_BASE 0
 
-// if 0, only reconverge warps at syncthreads
-#define IDEAL_RECONVERGENCE 1
+// defines identifiers reconvergence mechanisms
+#define IPDOM_RECONVERGENCE 1
+#define BARRIER_RECONVERGENCE 2
+
+// selected reconvergence mechanism
+#define RECONVERGENCE_MECHANISM IPDOM_RECONVERGENCE
 
 // reporting for kernel instructions
 #define REPORT_STATIC_INSTRUCTIONS 1
@@ -272,13 +276,22 @@ void executive::CooperativeThreadArray::postTrace() {
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
-/*!
-	Called by the worker thread to evaluate a block
-*/
-void executive::CooperativeThreadArray::execute(const ir::Dim3& block) {
-	using namespace ir;
+void executive::CooperativeThreadArray::reset() {
 
-	bool running = true;
+	runtimeStack.clear();
+	runtimeStack.push_back(CTAContext(kernel, this));
+	
+	barriers.clear();
+	barriers.resize(16);	// PTX2.1
+	
+	size_t threads = runtimeStack.back().active.size();
+	for (BarrierVector::iterator bar_it = barriers.begin(); bar_it != barriers.end(); ++bar_it) {
+		bar_it->initialize(threads);
+	}
+}
+
+/*! initializes elements of the CTA */
+void executive::CooperativeThreadArray::initialize(const ir::Dim3 & block) {
 
 	counter = 0;
 	blockId = block;
@@ -286,9 +299,26 @@ void executive::CooperativeThreadArray::execute(const ir::Dim3& block) {
 	currentEvent.blockId = blockId;
 	currentEvent.gridDim = gridDim;
 	currentEvent.blockDim = blockDim;
+	
+	reset();
+}
 
+/*! finishes execution of the CTA */
+void executive::CooperativeThreadArray::finalize() {
+
+}
+
+/*!
+	Called by the worker thread to evaluate a block
+*/
+void executive::CooperativeThreadArray::execute(const ir::Dim3& block) {
+	using namespace ir;
+
+	initialize(block);
+	
+	bool running = true;
 	assert(runtimeStack.size());
-
+	
 	report("CooperativeThreadArray::execute called");
 	report("  block is " << block.x << ", " << block.y << ", " << block.z);
 	reportE(REPORT_STATIC_INSTRUCTIONS, "Running " << kernel->toString());
@@ -452,7 +482,7 @@ void executive::CooperativeThreadArray::execute(const ir::Dim3& block) {
 		// advance to next instruction if the current instruction wasn't a branch
 		if (instr.opcode != PTXInstruction::Bra && 
 			instr.opcode != PTXInstruction::Call && 
-#if IDEAL_RECONVERGENCE == 0
+#if RECONVERGENCE_MECHANISM == BARRIER_RECONVERGENCE
 			instr.opcode != PTXInstruction::Bar &&
 #endif
 			instr.opcode != PTXInstruction::Reconverge ) {
@@ -467,12 +497,9 @@ void executive::CooperativeThreadArray::execute(const ir::Dim3& block) {
 
 	} while (running);
 
-	report("kernel finished in " << counter << " instructions");
-}
+	finalize();
 
-void executive::CooperativeThreadArray::reset() {
-	runtimeStack.clear();
-	runtimeStack.push_back(CTAContext(kernel, this));
+	report("kernel finished in " << counter << " instructions");
 }
 
 void executive::CooperativeThreadArray::jumpToPC(int PC) {
@@ -2183,25 +2210,79 @@ void executive::CooperativeThreadArray::eval_Bfe(CTAContext &context, const ir::
 void executive::CooperativeThreadArray::eval_Bar(CTAContext& context, 
 	const PTXInstruction& instr) {
 	trace();
-#if IDEAL_RECONVERGENCE
-	if (context.active.count() < context.active.size()) {
-		// deadlock - not all threads reach synchronization barrier
+	
+	ir::PTXU32 barrierName = 0;
+	size_t participating = context.active.size();
+	
+	if (instr.a.addressMode == ir::PTXOperand::Immediate) {
+		barrierName = (ir::PTXU32)instr.a.imm_uint;
+	}
+	else if (instr.a.addressMode != ir::PTXOperand::Invalid) {
+		report("eval_Bar() - barrier name must be constant");
+		throw RuntimeException("barrier name must be a constant in this version of Ocelot PTX Emulator",
+			context.PC, instr);
+	}
+	
+	if (instr.b.addressMode != ir::PTXOperand::Invalid) {
+		if (instr.b.addressMode == ir::PTXOperand::Immediate) {
+			participating = (size_t)instr.b.imm_uint;
+		}
+		else {
+			report("eval_Bar() - number of threads participating in barrier must be constant");
+			throw RuntimeException(
+				"number of threads participating in barrier must be constant operand in this version of Ocelot",
+				context.PC, instr);
+		}
+	}
+	barriers[barrierName].setParticipating(participating);
+	barriers[barrierName].arrive(context.active);
+	
+	if (participating != context.active.size()) {
+		throw RuntimeException(
+			"Ocelot does not yet support partial-CTA barriers",
+			context.PC, instr);
+	}
+	
+	if (instr.barrierOperation == ir::PTXInstruction::BarSync) {
+#if RECONVERGENCE_MECHANISM == IPDOM_RECONVERGENCE
+		if (context.active.count() < context.active.size() ||
+			!barriers[barrierName].satisfied()) {
+			// deadlock - not all threads reach synchronization barrier
 #if REPORT_BAR
-		report(" Bar called - " << context.active.count() << " of " 
-			<< context.active.size() << " threads active");
+			report(" Bar called - " << context.active.count() << " of " 
+				<< context.active.size() << " threads active");
 #endif
-		throw RuntimeException("barrier deadlock at: " 
-			+ kernel->location(context.PC), context.PC, instr);
-	}
+			throw RuntimeException("barrier deadlock at: " 
+				+ kernel->location(context.PC), context.PC, instr);
+		}
+#elif RECONVERGENCE_MECHANISM == BARRIER_RECONVERGENCE
+		CTAContext continuation(context);
+		runtimeStack.pop_back();
+		if (runtimeStack.size() == 0) {
+		
+			if (!barriers[barrierName].satisfied()) {
+				throw RuntimeException("barrier deadlock at: " 
+					+ kernel->location(context.PC), context.PC, instr);
+			}
+		
+			continuation.active.set();
+			continuation.PC = context.PC + 1;
+			runtimeStack.push_back(continuation);
+			barriers[barrierName].clear();
+		}
 #else
-	CTAContext continuation(context);
-	runtimeStack.pop_back();
-	if (runtimeStack.size() == 0) {
-		continuation.active.set();
-		continuation.PC = context.PC + 1;
-		runtimeStack.push_back(continuation);
-	}
+#error "Undefined reconvergence mechanism"
 #endif
+	}
+	else if (instr.barrierOperation == ir::PTXInstruction::BarReduction) {
+	
+	}
+	else if (instr.barrierOperation == ir::PTXInstruction::BarArrive) {
+
+	}
+	else {
+		throw RuntimeException("unrecognized barrier operation", context.PC, instr);
+	}
 }
 
 void executive::CooperativeThreadArray::eval_Bra(CTAContext &context, const PTXInstruction &instr) {
@@ -2271,7 +2352,7 @@ void executive::CooperativeThreadArray::eval_Bra(CTAContext &context, const PTXI
 		
 		runtimeStack.pop_back();
 
-#if IDEAL_RECONVERGENCE
+#if RECONVERGENCE_MECHANISM == IPDOM_RECONVERGENCE
 		bool reconvergeContextAlreadyExists = false;
 		for(ContextStack::reverse_iterator si = runtimeStack.rbegin(); 
 			si != runtimeStack.rend(); ++si ) {
@@ -2317,10 +2398,11 @@ void executive::CooperativeThreadArray::eval_Reconverge(CTAContext &context, con
 		}
 	}
 #endif
-#if IDEAL_RECONVERGENCE
+#if RECONVERGENCE_MECHANISM == IPDOM_RECONVERGENCE
 	runtimeStack.pop_back();
-#else
+#elif RECONVERGENCE_MECHANISM == BARRIER_RECONVERGENCE
 	context.PC ++;
+#else
 #endif
 }
 
@@ -3941,10 +4023,11 @@ void executive::CooperativeThreadArray::eval_Ex2(CTAContext &context,
 
 */
 void executive::CooperativeThreadArray::eval_Exit(CTAContext &context, const PTXInstruction &instr) {
-#if IDEAL_RECONVERGENCE
+
+#if RECONVERGENCE_MECHANISM == IPDOM_RECONVERGENCE
 	eval_Bar(context, instr);
 	context.running = false;
-#else
+#elif RECONVERGENCE_MECHANISM == BARRIER_RECONVERGENCE
 	if (context.active.count() == context.active.size() || runtimeStack.size() == 1) {
 		trace();
 		context.running = false;
@@ -3952,6 +4035,7 @@ void executive::CooperativeThreadArray::eval_Exit(CTAContext &context, const PTX
 	else {
 		eval_Bar(context, instr);
 	}
+#else
 #endif
 }
 
@@ -8222,6 +8306,47 @@ void executive::CooperativeThreadArray::eval_SubC(CTAContext &context,
 	}
 }
 
+/*!
+	\brief load from surface memory
+*/
+void executive::CooperativeThreadArray::eval_Suld(CTAContext &context, const ir::PTXInstruction &instr) {
+	switch (instr.geometry) {
+	case ir::PTXInstruction::_1d:
+	{
+	}
+		break;
+	case ir::PTXInstruction::_2d:
+	{
+	
+	}
+		break;
+	case ir::PTXInstruction::_3d:
+	{
+	
+	}
+		break;
+	default:
+		throw RuntimeException("suld - invalid geometry", context.PC, instr);
+	}
+	throw RuntimeException("suld - not implemented", context.PC, instr);
+}
+
+void executive::CooperativeThreadArray::eval_Sured(CTAContext &context, const ir::PTXInstruction &instr) {
+	trace();
+	throw RuntimeException("sured - not implemented", context.PC, instr);
+}
+
+/*!
+	\brief store to surface memory
+*/
+void executive::CooperativeThreadArray::eval_Sust(CTAContext &context, const ir::PTXInstruction &instr) {
+	trace();
+	throw RuntimeException("sust - not implemented", context.PC, instr);
+}
+
+/*!
+
+*/
 void executive::CooperativeThreadArray::eval_TestP(CTAContext &context,
 	const ir::PTXInstruction &instr) {
 	trace();
@@ -8811,10 +8936,83 @@ void executive::CooperativeThreadArray::eval_Trap(CTAContext &context, const PTX
 	context.running = false;
 }
 
+void executive::CooperativeThreadArray::eval_Suq(CTAContext &context, const ir::PTXInstruction &instr) {
+	// this instruction is identical to txq except for surfaces which we don't distinguish from textures
+	eval_Txq(context, instr);
+}
 
 void executive::CooperativeThreadArray::eval_Txq(CTAContext &context, const ir::PTXInstruction &instr) {
 	trace();
-	throw RuntimeException("Txq instruction not yet implemented", context.PC, instr);
+	const ir::Texture& texture = *context.kernel->textures[instr.a.reg];
+	switch (instr.surfaceQuery) {
+	case ir::PTXInstruction::Width:	// fall through
+	case ir::PTXInstruction::Height:	// fall through
+	case ir::PTXInstruction::Depth:
+	{
+		int ir::Dim3::* dimensions[] = { &ir::Dim3::x, &ir::Dim3::y, &ir::Dim3::z };
+		for (int tid = 0; tid < threadCount; tid++) {
+			if (!context.predicated(tid, instr)) {
+				continue;
+			}
+			setRegAsU32(tid, instr.d.reg, texture.size.*dimensions[instr.surfaceQuery - ir::PTXInstruction::Width]);
+		}
+	}
+		break;
+	case ir::PTXInstruction::ChannelDataType:
+	{
+		for (int tid = 0; tid < threadCount; tid++) {
+			if (!context.predicated(tid, instr)) {
+				continue;
+			}
+			setRegAsU32(tid, instr.d.reg, texture.type);
+		}
+	}
+		break;
+	case ir::PTXInstruction::ChannelOrder:
+	{
+		for (int tid = 0; tid < threadCount; tid++) {
+			if (!context.predicated(tid, instr)) {
+				continue;
+			}
+		}
+		throw RuntimeException("txq.channel_order - unimplemented query mode", context.PC, instr);
+	}
+		break;
+	case ir::PTXInstruction::NormalizedCoordinates:
+	{
+		for (int tid = 0; tid < threadCount; tid++) {
+			if (!context.predicated(tid, instr)) {
+				continue;
+			}
+			setRegAsU32(tid, instr.d.reg, texture.normalize);
+		}
+	}
+		break;
+	case ir::PTXInstruction::SamplerFilterMode:
+	{
+		for (int tid = 0; tid < threadCount; tid++) {
+			if (!context.predicated(tid, instr)) {
+				continue;
+			}
+			setRegAsU32(tid, instr.d.reg, texture.interpolation);
+		}
+	}
+		break;
+	case ir::PTXInstruction::SamplerAddrMode0:	// fall through
+	case ir::PTXInstruction::SamplerAddrMode1:	// fall through
+	case ir::PTXInstruction::SamplerAddrMode2:
+	{
+		for (int tid = 0; tid < threadCount; tid++) {
+			if (!context.predicated(tid, instr)) {
+				continue;
+			}
+			setRegAsU32(tid, instr.d.reg, texture.addressMode[instr.surfaceQuery - ir::PTXInstruction::SamplerAddrMode0]);
+		}
+	}
+		break;
+	default:
+		throw RuntimeException("txq - unexpected surface or texture query mode", context.PC, instr);
+	}
 }
 
 /*!

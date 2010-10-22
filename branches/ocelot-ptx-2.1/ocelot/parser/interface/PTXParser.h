@@ -174,6 +174,8 @@ namespace parser
 						YYLTYPE& one, YYLTYPE& two );
 					void textureDeclaration( int token, const std::string& name, 
 						YYLTYPE& location );
+					void surfaceDeclaration( int token, const std::string &name, YYLTYPE &location);
+					void samplerDeclaration( int token, const std::string &name, YYLTYPE &location);
 					void argumentDeclaration( const std::string& name, 
 						YYLTYPE& location );
 					
@@ -247,6 +249,10 @@ namespace parser
 					void convertC( int token, YYLTYPE& location );
 					void convertD( int token, YYLTYPE& location );
 					void barrierOperation( int token, YYLTYPE & location);
+					void cacheOperation(int token );
+					void clampOperation(int token);
+					void formatMode(int token);
+					void surfaceQuery(int token);
 					
 					void returnType( int token );
 					void argumentType( int token );
@@ -291,6 +297,10 @@ namespace parser
 				tokenToAtomicOperation( int );
 			static ir::PTXInstruction::CmpOp tokenToCmpOp( int );
 			static ir::PTXInstruction::BarrierOperation tokenToBarrierOp(int);
+			static ir::PTXInstruction::CacheOperation tokenToCacheOperation(int);
+			static ir::PTXInstruction::ClampOperation tokenToClampOperation(int);
+			static ir::PTXInstruction::FormatMode tokenToFormatMode(int);
+			static ir::PTXInstruction::SurfaceQuery tokenToSurfaceQuery(int);
 			static ir::PTXInstruction::BoolOp tokenToBoolOp( int );
 			static ir::PTXInstruction::Geometry tokenToGeometry( int );
 			static ir::PTXInstruction::VoteMode tokenToVoteMode( int );

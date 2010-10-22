@@ -198,6 +198,7 @@ namespace ir {
 			TrapOOB,	// avoid colliding with PTXInstruction::Opcode::Trap
 			Clamp,
 			Zero,
+			Mirror,
 			ClampOperation_Invalid
 		};
 
@@ -247,7 +248,7 @@ namespace ir {
 		enum FormatMode {
 			Unformatted,
 			Formatted,
-			FormatNode_Invalid
+			FormatMode_Invalid
 		};
 		
 		/*! Vector operation */
@@ -300,6 +301,7 @@ namespace ir {
 		static std::string toString( AtomicOperation );
 		static std::string toString( BarrierOperation );
 		static std::string toString( ReductionOperation );
+		static std::string toString( SurfaceQuery );
 		static std::string toString( CmpOp );
 		static std::string toString( BoolOp );
 		static std::string roundingMode( Modifier );
@@ -345,7 +347,8 @@ namespace ir {
 		/*! Flag containing one or more floating-point modifiers */
 		unsigned int modifier;
 
-		union {
+//		union {
+
 			/*! Comparison operator */
 			CmpOp comparisonOperator;
 
@@ -374,7 +377,7 @@ namespace ir {
 			
 			/*! Indicates which type of bar. instruction should be used */
 			BarrierOperation barrierOperation;
-		};
+//		};
 	
 		/*! If the instruction is predicated, the guard */
 		PTXOperand pg;
@@ -385,7 +388,8 @@ namespace ir {
 		/*! Indicates whether target or source is a vector or scalar */
 		Vec vec;
 
-		union {
+//		union {
+
 			/*! If instruction type is atomic, select this atomic operation */
 			AtomicOperation atomicOperation;
 			
@@ -420,10 +424,10 @@ namespace ir {
 			
 			/*! indicates how loads, stores, and prefetches should take place */
 			CacheOperation cacheOperation;
+//		};
 		
-			/*! Geometry if this is a texture or surface instruction */
-			Geometry geometry;
-		};
+		/*! Geometry if this is a texture or surface instruction */
+		Geometry geometry;
 
 		union {
 			/*! optionally writes carry-out value to condition code register */

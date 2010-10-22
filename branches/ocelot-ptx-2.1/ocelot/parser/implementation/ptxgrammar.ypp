@@ -758,7 +758,7 @@ basicInstruction3Opcode : OPCODE_AND | OPCODE_OR
 basicInstruction3 : basicInstruction3Opcode dataType operand ',' operand ',' 
 	operand ';'
 {
-	state.instruction( $<text>1, $<value>2, 4 );
+	state.instruction( $<text>1, $<value>2 );
 };
 
 approxInstruction2Opcode : OPCODE_RSQRT | OPCODE_SIN | OPCODE_COS | OPCODE_LG2 
@@ -772,7 +772,7 @@ approximate : TOKEN_APPROX
 approxInstruction2 : approxInstruction2Opcode approximate optionalFtz dataType 
 	operand ',' operand ';'
 {
-	state.instruction( $<text>1, $<value>4, 3 );
+	state.instruction( $<text>1, $<value>4 );
 };
 
 ftz : TOKEN_FTZ
@@ -794,7 +794,7 @@ ftzInstruction2Opcode : OPCODE_ABS | OPCODE_NEG;
 ftzInstruction2 : ftzInstruction2Opcode optionalFtz dataType operand ',' 
 	operand ';'
 {
-	state.instruction( $<text>1, $<value>3, 3 );
+	state.instruction( $<text>1, $<value>3 );
 };
 
 ftzInstruction3Opcode : OPCODE_MAX | OPCODE_MIN;
@@ -802,7 +802,7 @@ ftzInstruction3Opcode : OPCODE_MAX | OPCODE_MIN;
 ftzInstruction3 : ftzInstruction3Opcode optionalFtz dataType operand ',' 
 	operand ',' operand ';'
 {
-	state.instruction( $<text>1, $<value>3, 4 );
+	state.instruction( $<text>1, $<value>3 );
 };
 
 optionalUni : /* empty string */
@@ -817,7 +817,7 @@ optionalUni : TOKEN_UNI
 
 branch : OPCODE_BRA optionalUni branchOperand ';'
 {
-	state.instruction( $<text>1, 2 );
+	state.instruction( $<text>1 );
 };
 
 returnOperand : callOperand
@@ -876,7 +876,7 @@ addOrSubOpcode : OPCODE_ADD | OPCODE_SUB;
 addOrSub : addOrSubOpcode addModifier dataType operand ',' operand ',' 
 	operand ';'
 {
-	state.instruction( $<text>1, $<value>3, 4 );
+	state.instruction( $<text>1, $<value>3 );
 };
 
 addCModifier : TOKEN_CARRY
@@ -895,7 +895,7 @@ addCOrSubC : addCOrSubCOpcode addCModifier dataType operand ',' operand
 	',' operand ';'
 {
 	state.carryIn();
-	state.instruction( $<text>1, $<value>3, 5 );
+	state.instruction( $<text>1, $<value>3 );
 };
 
 atomicOperationId : TOKEN_AND | TOKEN_OR | TOKEN_XOR | TOKEN_CAS | TOKEN_EXCH 
@@ -913,20 +913,20 @@ atomicOperation : atomicOperationId
 atom : OPCODE_ATOM addressSpace atomicOperation dataType operand ',' '[' 
 	memoryOperand ']' ',' operand ';'
 {
-	state.instruction( $<text>1, $<value>4, 4 );
+	state.instruction( $<text>1, $<value>4 );
 };
 
 atom : OPCODE_ATOM atomicOperation dataType operand ',' '[' 
 	memoryOperand ']' ',' operand ';'
 {
 	state.addressSpace(TOKEN_GLOBAL);
-	state.instruction( $<text>1, $<value>3, 4 );
+	state.instruction( $<text>1, $<value>3 );
 };
 
 atom : OPCODE_ATOM addressSpace atomicOperation dataType operand ',' '[' 
 	memoryOperand ']' ',' operand ',' operand ';'
 {
-	state.instruction( $<text>1, $<value>4, 5 );
+	state.instruction( $<text>1, $<value>4 );
 };
 
 shiftAmount : TOKEN_SHIFT_AMOUNT
@@ -942,23 +942,13 @@ shiftAmount : /* empty string */
 bfi : OPCODE_BFI dataType operand ',' operand ',' operand 
 	',' operand ',' operand ';'
 {
-	state.instruction( $<text>1, $<value>2, 6 );
+	state.instruction( $<text>1, $<value>2 );
 };
 
 bfind : OPCODE_BFIND shiftAmount dataType operand ',' operand ';'
 {
-	state.instruction( $<text>1, $<value>3, 3 );
+	state.instruction( $<text>1, $<value>3 );
 };
-
-/*
-//
-// subsumed by more general rules for bar.{sync, arrive,red} instruction
-//
-bar : OPCODE_BARSYNC operand ';'
-{
-	state.instruction( $<text>1, 2 );
-};
-*/
 
 barrierOperation : TOKEN_ARRIVE | TOKEN_RED | TOKEN_SYNC
 {
@@ -971,22 +961,22 @@ operandSequence: operand operandSequence | /* empty */ ;
 
 bar : OPCODE_BAR barrierOperation optionalBarrierOperator operandSequence ';'
 {
-	state.instruction( $<text>1, 2 );
+	state.instruction( $<text>1 );
 };
 
 brev : OPCODE_BREV dataType operand ',' operand ';'
 {
-	state.instruction( $<text>1, $<value>2, 3 );
+	state.instruction( $<text>1, $<value>2 );
 };
 
 brkpt : OPCODE_BRKPT ';'
 {
-	state.instruction( $<text>1, 1 );
+	state.instruction( $<text>1 );
 };
 
 clz : OPCODE_CLZ dataType operand ',' operand ';'
 {
-	state.instruction( $<text>1, $<value>2, 3 );
+	state.instruction( $<text>1, $<value>2 );
 };
 
 floatRoundingModifier : floatRounding
@@ -1009,18 +999,18 @@ cvtModifier : sat;
 
 cvt : OPCODE_CVT cvtModifier dataType dataType operand ',' operand ';'
 {
-	state.instruction( $<text>1, $<value>3, 3 );
+	state.instruction( $<text>1, $<value>3 );
 	state.relaxedConvert( $<value>4, @1 );
 };
 
 cvta : OPCODE_CVTA addressSpace pointerDataType operand ',' operand ';'
 {
-	state.instruction( $<text>1, $<value>3, 3 );
+	state.instruction( $<text>1, $<value>3 );
 };
 
 cvta : OPCODE_CVTA TOKEN_TO addressSpace pointerDataType operand ',' operand ';'
 {
-	state.instruction( $<text>1, $<value>3, 3 );
+	state.instruction( $<text>1, $<value>3 );
 	state.cvtaTo( $<value>4, @1 );
 };
 
@@ -1051,17 +1041,17 @@ divModifier : divFullModifier | divApproxModifier
 //OptiX: div.ftz.f32 %pinhole_camera_f5, %pinhole_camera_f1, %pinhole_camera_f2;
 div : OPCODE_DIV divModifier dataType operand ',' operand ',' operand ';'
 {
-	state.instruction( $<text>1, $<value>3, 4 );
+	state.instruction( $<text>1, $<value>3 );
 };
 
 exit : OPCODE_EXIT ';'
 {
-	state.instruction( $<text>1, 1 );
+	state.instruction( $<text>1 );
 };
 
 isspacep : OPCODE_ISSPACEP addressSpace operand ',' operand ';'
 {
-	state.instruction( $<text>1, TOKEN_U32, 3 );
+	state.instruction( $<text>1, TOKEN_U32 );
 }
 
 ldModifier : TOKEN_VOLATILE
@@ -1104,12 +1094,12 @@ ldModifier : /* empty string */
 
 ld : OPCODE_LD ldModifier dataType arrayOperand ',' '[' memoryOperand ']' ';'
 {
-	state.instruction( $<text>1, $<value>3, 3 );
+	state.instruction( $<text>1, $<value>3 );
 };
 
 ldu : OPCODE_LDU ldModifier dataType arrayOperand ',' '[' memoryOperand ']' ';'
 {
-	state.instruction( $<text>1, $<value>3, 3 );
+	state.instruction( $<text>1, $<value>3 );
 }
 
 hiOrLo : TOKEN_HI | TOKEN_LO;
@@ -1128,7 +1118,7 @@ madOpcode : OPCODE_MAD | OPCODE_FMA;
 mad : madOpcode mulModifier dataType operand ',' operand 
 	',' operand ',' operand ';'
 {
-	state.instruction( $<text>1, $<value>3, 5 );
+	state.instruction( $<text>1, $<value>3 );
 };
 
 mad24Modifier : optionalSaturate;
@@ -1141,7 +1131,7 @@ mad24Modifier : hiOrLo optionalSaturate
 mad24 : OPCODE_MAD24 mad24Modifier dataType operand ',' operand 
 	',' operand ',' operand ';'
 {
-	state.instruction( $<text>1, $<value>3, 5 );
+	state.instruction( $<text>1, $<value>3 );
 };
 
 membarSpaceType : TOKEN_GL | TOKEN_CTA;
@@ -1153,14 +1143,14 @@ membarSpace : membarSpaceType
 
 membar : OPCODE_MEMBAR membarSpace ';'
 {
-	state.instruction( $<text>1, 1 );
+	state.instruction( $<text>1 );
 };
 
 movSourceOperand : arrayOperand | offsetAddressableOperand;
 
 mov : OPCODE_MOV dataType arrayOperand ',' movSourceOperand ';'
 {
-	state.instruction( $<text>1, $<value>2, 3 );
+	state.instruction( $<text>1, $<value>2 );
 };
 
 mul24Modifier : /* empty string */;
@@ -1172,29 +1162,29 @@ mul24Modifier : hiOrLo
 
 mul24 : OPCODE_MUL24 mul24Modifier dataType operand ',' operand ',' operand ';'
 {
-	state.instruction( $<text>1, $<value>3, 4 );
+	state.instruction( $<text>1, $<value>3 );
 };
 
 mul : OPCODE_MUL mulModifier dataType operand ',' operand ',' operand ';'
 {
-	state.instruction( $<text>1, $<value>3, 4 );
+	state.instruction( $<text>1, $<value>3 );
 };
 
 notOpcode : OPCODE_CNOT | OPCODE_NOT;
 
 notInstruction : notOpcode dataType operand ',' operand ';'
 {
-	state.instruction( $<text>1, $<value>2, 3 );
+	state.instruction( $<text>1, $<value>2 );
 };
 
 pmevent : OPCODE_PMEVENT operand
 {
-	state.instruction( $<text>1, 2 );
+	state.instruction( $<text>1 );
 };
 
 popc : OPCODE_POPC dataType operand ',' operand ';'
 {
-	state.instruction( $<text>1, $<value>2, 3 );
+	state.instruction( $<text>1, $<value>2 );
 };
 
 permuteModeType : TOKEN_F4E | TOKEN_B4E | TOKEN_RC8 
@@ -1213,7 +1203,7 @@ permuteMode : /* empty string */
 prmt : OPCODE_PRMT dataType permuteMode operand ',' operand 
 	',' operand ',' operand ';'
 {
-	state.instruction( $<text>1, $<value>2, 5 );
+	state.instruction( $<text>1, $<value>2 );
 };
 
 rcpSqrtModifier : TOKEN_APPROX optionalFtz
@@ -1232,7 +1222,7 @@ rcpSqrtOpcode : OPCODE_RCP | OPCODE_SQRT;
 rcpSqrtInstruction : rcpSqrtOpcode rcpSqrtModifier dataType operand ',' 
 	operand ';'
 {
-	state.instruction( $<text>1, $<value>3, 3 );
+	state.instruction( $<text>1, $<value>3 );
 };
 
 reductionOperationId : TOKEN_AND | TOKEN_XOR | TOKEN_OR | TOKEN_ADD | TOKEN_INC
@@ -1246,17 +1236,17 @@ reductionOperation : reductionOperationId
 red : OPCODE_RED addressSpace reductionOperation dataType operand ',' 
 	operand ';'
 {
-	state.instruction( $<text>1, $<value>4, 3 );
+	state.instruction( $<text>1, $<value>4 );
 };
 
 ret : OPCODE_RET optionalUni ';'
 {
-	state.instruction( $<text>1, 1 );
+	state.instruction( $<text>1 );
 };
 
 ret : OPCODE_RET optionalUni operand ';'
 {
-	state.instruction( $<text>1, 2 );
+	state.instruction( $<text>1 );
 };
 
 comparisonId : TOKEN_EQ | TOKEN_NE | TOKEN_LT | TOKEN_LE | TOKEN_GT | TOKEN_GE
@@ -1277,12 +1267,12 @@ boolOperator : boolOperatorId
 
 sad : OPCODE_SAD dataType operand ',' operand ',' operand ',' operand ';'
 {
-	state.instruction( $<text>1, $<value>2, 5 );
+	state.instruction( $<text>1, $<value>2 );
 };
 
 selp : OPCODE_SELP dataType operand ',' operand ',' operand ',' operand ';'
 {
-	state.instruction( $<text>1, $<value>2, 5 );
+	state.instruction( $<text>1, $<value>2 );
 };
 
 
@@ -1299,14 +1289,14 @@ setModifier : ftz comparison;
 set : OPCODE_SET setModifier dataType dataType operand ',' 
 	operand ',' operand ';'
 {
-	state.instruction( $<text>1, $<value>3, 4 );
+	state.instruction( $<text>1, $<value>3 );
 	state.convert( $<value>4, @1 );
 };
 
 set : OPCODE_SET comparison boolOperator optionalFtz dataType dataType operand 
 	',' operand ',' operand ',' operand ';'
 {
-	state.instruction( $<text>1, $<value>5, 5 );
+	state.instruction( $<text>1, $<value>5 );
 	state.convert( $<value>6, @1 );
 };
 
@@ -1316,34 +1306,30 @@ set : OPCODE_SET comparison boolOperator optionalFtz dataType dataType operand
 setpModifier : comparison optionalFtz;
 setpModifier : ftz comparison;
 
-setp : OPCODE_SETP setpModifier dataType operand ',' operand ',' 
+predicatePair : operand '|' operand | operand;
+
+setp : OPCODE_SETP setpModifier dataType predicatePair ',' operand ',' 
 	operand ';'
 {
-	state.instruction( $<text>1, $<value>3, 4 );
+	state.instruction( $<text>1, $<value>3 );
 };
 
-setp : OPCODE_SETP comparison boolOperator optionalFtz dataType operand ',' 
-	operand ',' operand ',' operand ';'
+setp : OPCODE_SETP comparison boolOperator optionalFtz dataType predicatePair 
+	',' operand ',' operand ',' operand ';'
 {
-	state.instruction( $<text>1, $<value>5, 5 );
-};
-
-setp : OPCODE_SETP comparison boolOperator optionalFtz dataType operand '|' 
-	operand ',' operand ',' operand ',' operand ';'
-{
-	state.instruction( $<text>1, $<value>5, 6 );
+	state.instruction( $<text>1, $<value>5 );
 };
 
 slct : OPCODE_SLCT optionalFtz dataType dataType operand ',' operand ',' 
 	operand ',' operand ';'
 {
-	state.instruction( $<text>1, $<value>3, 5 );
+	state.instruction( $<text>1, $<value>3 );
 	state.convertC( $<value>4, @1 );
 };
 
 st : OPCODE_ST ldModifier dataType '[' memoryOperand ']' ',' arrayOperand ';'
 {
-	state.instruction( $<text>1, $<value>3, 3 );
+	state.instruction( $<text>1, $<value>3 );
 };
 
 geometryId : TOKEN_1D | TOKEN_2D | TOKEN_3D;
@@ -1363,7 +1349,7 @@ floatingPointMode : floatingPointModeType
 
 testp : OPCODE_TESTP floatingPointMode dataType operand ',' operand ';'
 {
-	state.instruction( $<text>1, $<value>3, 3 );
+	state.instruction( $<text>1, $<value>3 );
 };
 
 tex : OPCODE_TEX geometry TOKEN_V4 dataType dataType arrayOperand ',' '[' 
@@ -1384,7 +1370,7 @@ tex : OPCODE_TEX geometry TOKEN_V4 dataType dataType arrayOperand ',' '['
 
 trap : OPCODE_TRAP ';'
 {
-	state.instruction( $<text>1, 1 );
+	state.instruction( $<text>1 );
 };
 
 voteOperationId : TOKEN_ANY | TOKEN_ALL | TOKEN_UNI;
@@ -1396,7 +1382,7 @@ voteOperation : voteOperationId
 
 vote : OPCODE_VOTE voteOperation TOKEN_PRED operand ',' operand ';'
 {
-	state.instruction( $<text>1, TOKEN_PRED, 3 );
+	state.instruction( $<text>1, TOKEN_PRED );
 };
 
 %%

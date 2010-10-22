@@ -560,6 +560,8 @@ WHITESPACE [ \t]*
                                     yylval->text[1] = '\0'; return ('-'); }
 "!"                             { yylval->text[0] = '!'; 
                                     yylval->text[1] = '\0'; return ('!'); }
+"|"                             { yylval->text[0] = '|'; 
+                                    yylval->text[1] = '\0'; return ('|'); }
 "_"                             { yylval->text[0] = '_'; 
                                     yylval->text[1] = '\0'; return ('_'); }
 

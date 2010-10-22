@@ -140,14 +140,14 @@ namespace ir {
 		};
 	
 		enum AddressSpace {
+			AddressSpace_Invalid = 0,
 			Const,
 			Global,
 			Local,
 			Param,
 			Shared,
 			Texture,
-			Generic,
-			AddressSpace_Invalid = 0
+			Generic
 		};
 
 		enum AtomicOperation {

@@ -131,8 +131,426 @@ char* uniformFloat(test::Test::MersenneTwister& generator)
 	
 	return allocation;
 }
+////////////////////////////////////////////////////////////////////////////////
 
 ////////////////////////////////////////////////////////////////////////////////
+// TEST LOGICAL OPs
+
+////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////
+// TEST SLCT
+std::string testSlct_PTX(ir::PTXOperand::DataType type,
+	bool sourceFloat, bool ftz)
+{
+	std::stringstream ptx;
+
+	std::string typeString = "." + ir::PTXOperand::toString(type);
+
+	std::string cmpTypeString;
+	
+	if(sourceFloat)
+	{
+		cmpTypeString = ".f32";
+	}
+	else
+	{
+		cmpTypeString = ".s32";
+	}
+	
+	ptx << ".version 2.1\n";
+	ptx << "\n";
+	
+	ptx << ".entry test(.param .u64 out, .param .u64 in)   \n";
+	ptx << "{\t                                            \n";
+	ptx << "\t.reg .u64 %rIn, %rOut;                       \n";
+	ptx << "\t.reg " << typeString    << " %r<3>;          \n";
+	ptx << "\t.reg " << cmpTypeString << " %rc;            \n";
+	ptx << "\tld.param.u64 %rIn, [in];                     \n";
+	ptx << "\tld.param.u64 %rOut, [out];                   \n";
+	ptx << "\tld.global" << typeString << " %r0, [%rIn];   \n";
+	ptx << "\tld.global" << typeString << " %r1, [%rIn + " 
+		<< ir::PTXOperand::bytes(type) << "];              \n";
+	ptx << "\tld.global" << cmpTypeString << " %rc, [%rIn + " 
+		<< 2 * ir::PTXOperand::bytes(type) << "];          \n";
+
+	ptx << "\tslct";
+	if(ftz) ptx << ".ftz";
+	
+	ptx << typeString << cmpTypeString << " %r2, %r0, %r1, %rc; \n";
+	
+	ptx << "\tst.global" << typeString << " [%rOut], %r2;  \n";
+	ptx << "\texit;                                        \n";
+	ptx << "}                                              \n";
+	ptx << "                                               \n";
+	
+	return ptx.str();
+}
+
+template<typename type, bool sourceFloat, bool ftz>
+void testSlct_REF(void* output, void* input)
+{
+	type r0 = getParameter<type>(input, 0);
+	type r1 = getParameter<type>(input, sizeof(type));
+	bool predicate = false;
+	
+	if(sourceFloat)
+	{
+		float value = getParameter<float>(input, 2 * sizeof(type));
+	
+		if(ftz)
+		{
+			if(issubnormal(value)) value = 0;
+		}
+		
+		predicate = value >= 0.0f;
+	}
+	else
+	{
+		int value = getParameter<int>(input, 2 * sizeof(type));
+		
+		predicate = value >= 0;
+	}
+	
+	if(predicate)
+	{
+		setParameter(output, 0, r0);
+	}
+	else
+	{
+		setParameter(output, 0, r1);
+	}
+}
+
+test::TestPTXAssembly::TypeVector testSlct_IN(
+	test::TestPTXAssembly::DataType type, bool sourceFloat)
+{
+	test::TestPTXAssembly::TypeVector types(2, type);
+	
+	if(sourceFloat)
+	{
+		types.push_back(test::TestPTXAssembly::FP32);
+	}
+	else
+	{
+		types.push_back(test::TestPTXAssembly::I32);
+	}
+
+	return types;
+}
+
+test::TestPTXAssembly::TypeVector testSlct_OUT(
+	test::TestPTXAssembly::DataType type)
+{	
+	return test::TestPTXAssembly::TypeVector(1, type);
+}
+////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////
+// TEST SELP
+std::string testSelP_PTX(ir::PTXOperand::DataType type)
+{
+	std::stringstream ptx;
+
+	std::string typeString = "." + ir::PTXOperand::toString(type);
+	
+	ptx << ".version 2.1\n";
+	ptx << "\n";
+	
+	ptx << ".entry test(.param .u64 out, .param .u64 in)   \n";
+	ptx << "{\t                                            \n";
+	ptx << "\t.reg .u64 %rIn, %rOut;                       \n";
+	ptx << "\t.reg " << typeString << " %r<3>;             \n";
+	ptx << "\t.reg .b8 %b0;                                \n";
+	ptx << "\t.reg .u16 %s0;                               \n";
+	ptx << "\t.reg .pred %p0;                              \n";
+	ptx << "\tld.param.u64 %rIn, [in];                     \n";
+	ptx << "\tld.param.u64 %rOut, [out];                   \n";
+	ptx << "\tld.global" << typeString << " %r0, [%rIn];   \n";
+	ptx << "\tld.global" << typeString << " %r1, [%rIn + " 
+		<< ir::PTXOperand::bytes(type) << "];              \n";
+	ptx << "\tld.global.u8 %b0, [%rIn + " 
+		<< 2 * ir::PTXOperand::bytes(type) << "];          \n";
+	ptx << "\tcvt.u16.u8 %s0, %b0;                         \n";
+	ptx << "\tsetp.lt.u16 %p0, %s0, 128;                   \n";
+
+	ptx << "\tselp" << typeString << " %r2, %r0, %r1, %p0; \n";
+	
+	ptx << "\tst.global" << typeString << " [%rOut], %r2;  \n";
+	ptx << "\texit;                                        \n";
+	ptx << "}                                              \n";
+	ptx << "                                               \n";
+	
+	return ptx.str();
+}
+
+template<typename type>
+void testSelP_REF(void* output, void* input)
+{
+	type r0 = getParameter<type>(input, 0);
+	type r1 = getParameter<type>(input, sizeof(type));
+	bool predicate = getParameter<unsigned char>(
+		input, 2 * sizeof(type)) < 128;
+
+	
+	if(predicate)
+	{
+		setParameter(output, 0, r0);
+	}
+	else
+	{
+		setParameter(output, 0, r1);
+	}
+}
+
+test::TestPTXAssembly::TypeVector testSelP_IN(
+	test::TestPTXAssembly::DataType type)
+{
+	test::TestPTXAssembly::TypeVector types(2, type);
+	
+	types.push_back(test::TestPTXAssembly::I8);
+
+	return types;
+}
+
+test::TestPTXAssembly::TypeVector testSelP_OUT(
+	test::TestPTXAssembly::DataType type)
+{	
+	return test::TestPTXAssembly::TypeVector(1, type);
+}
+////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////
+// TEST SETP
+std::string testSetP_PTX(ir::PTXOperand::DataType stype,
+	ir::PTXOperand::PredicateCondition c, 
+	ir::PTXInstruction::BoolOp boolOp, ir::PTXInstruction::CmpOp cmpOp,
+	bool ftz, bool pq)
+{
+	std::stringstream ptx;
+
+	std::string sTypeString = "." + ir::PTXOperand::toString(stype);
+	
+	ptx << ".version 2.1\n";
+	ptx << "\n";
+	
+	ptx << ".entry test(.param .u64 out, .param .u64 in)   \n";
+	ptx << "{\t                                            \n";
+	ptx << "\t.reg .u64 %rIn, %rOut;                       \n";
+	ptx << "\t.reg " << sTypeString << " %rs<2>;           \n";
+	ptx << "\t.reg .u16 %rh<2>;                            \n";
+	ptx << "\t.reg .u8 %b0;                                \n";
+	ptx << "\t.reg .u8 %rd<2>;                             \n";
+	ptx << "\t.reg .u16 %s0;                               \n";
+	ptx << "\t.reg .pred %p<3>;                            \n";
+	ptx << "\tld.param.u64 %rIn, [in];                     \n";
+	ptx << "\tld.param.u64 %rOut, [out];                   \n";
+	ptx << "\tld.global" << sTypeString << " %rs0, [%rIn]; \n";
+	ptx << "\tld.global" << sTypeString << " %rs1, [%rIn + " 
+		<< ir::PTXOperand::bytes(stype) << "];             \n";
+	ptx << "\tld.global.u8 %b0, [%rIn + " 
+		<< 2 * ir::PTXOperand::bytes(stype) << "];         \n";
+	ptx << "\tcvt.u16.u8 %s0, %b0;                         \n";
+	ptx << "\tsetp.lt.u16 %p0, %s0, 128;                   \n";
+
+	ptx << "\tsetp." << ir::PTXInstruction::toString(cmpOp);
+
+	if(boolOp != ir::PTXInstruction::BoolOp_Invalid)
+	{
+		ptx << "." << ir::PTXInstruction::toString(boolOp);
+	}
+	
+	if(ftz) ptx << ".ftz";
+	
+	ptx << sTypeString;
+	
+	ptx << " %p1";
+	if(pq) ptx << " | %p2";
+
+	ptx << ", %rs0, %rs1";
+	
+	if(boolOp != ir::PTXInstruction::BoolOp_Invalid)
+	{
+		ptx << ", ";
+		
+		if(c == ir::PTXOperand::InvPred)
+		{
+			ptx << "!%p0";
+		}
+		else
+		{
+			ptx << "%p0";
+		}
+	}
+	
+	ptx << ";\n";
+	
+	ptx << "\tselp.u16 %rh0, 1, 0, %p1;                      \n";
+	ptx << "\tcvt.u8.u16 %rd0, %rh0;                         \n";
+	ptx << "\tst.global.u8 [%rOut], %rd0;                    \n";
+	if(pq)
+	{
+		ptx << "\tselp.u16   %rh1, 1, 0, %p2;                    \n";
+		ptx << "\tcvt.u8.u16 %rd1, %rh1;                         \n";
+		ptx << "\tst.global.u8 [%rOut + 1], %rd1;                \n";
+	}
+	ptx << "\texit;                                        \n";
+	ptx << "}                                              \n";
+	ptx << "                                               \n";
+	
+	return ptx.str();
+}
+
+template<typename stype, ir::PTXOperand::PredicateCondition c, 
+	ir::PTXInstruction::BoolOp boolOp, ir::PTXInstruction::CmpOp cmpOp,
+	bool ftz, bool pq>
+void testSetP_REF(void* output, void* input)
+{
+	stype r0 = getParameter<stype>(input, 0);
+	stype r1 = getParameter<stype>(input, sizeof(stype));
+	bool predicate = getParameter<unsigned char>(
+		input, 2 * sizeof(stype)) < 128;
+
+	if(ftz)
+	{
+		if(issubnormal(r0)) r0 = 0.0f;
+		if(issubnormal(r1)) r1 = 0.0f;
+	}
+
+	if(c == ir::PTXOperand::InvPred) predicate = !predicate;
+
+	bool comparison = false;
+	
+	switch(cmpOp)
+	{
+	case ir::PTXInstruction::Eq:
+	{
+		comparison = !std::isnan(r0) && !std::isnan(r1) && r0 == r1;
+		break;
+	}
+	case ir::PTXInstruction::Ne:
+	{
+		comparison = !std::isnan(r0) && !std::isnan(r1) && r0 != r1;
+		break;
+	}
+	case ir::PTXInstruction::Lo:
+	case ir::PTXInstruction::Lt:
+	{
+		comparison = !std::isnan(r0) && !std::isnan(r1) && r0 < r1;
+		break;
+	}
+	case ir::PTXInstruction::Ls:
+	case ir::PTXInstruction::Le:
+	{
+		comparison = !std::isnan(r0) && !std::isnan(r1) && r0 <= r1;
+		break;
+	}
+	case ir::PTXInstruction::Hi:
+	case ir::PTXInstruction::Gt:
+	{
+		comparison = !std::isnan(r0) && !std::isnan(r1) && r0 > r1;
+		break;
+	}
+	case ir::PTXInstruction::Hs:
+	case ir::PTXInstruction::Ge:
+	{
+		comparison = !std::isnan(r0) && !std::isnan(r1) && r0 >= r1;
+		break;
+	}
+	case ir::PTXInstruction::Equ:
+	{
+		comparison = std::isnan(r0) || std::isnan(r1) || r0 == r1;
+		break;
+	}
+	case ir::PTXInstruction::Neu:
+	{
+		comparison = std::isnan(r0) || std::isnan(r1) || r0 != r1;
+		break;
+	}
+	case ir::PTXInstruction::Ltu:
+	{
+		comparison = std::isnan(r0) || std::isnan(r1) || r0 < r1;
+		break;
+	}
+	case ir::PTXInstruction::Leu:
+	{
+		comparison = std::isnan(r0) || std::isnan(r1) || r0 <= r1;
+		break;
+	}
+	case ir::PTXInstruction::Gtu:
+	{
+		comparison = std::isnan(r0) || std::isnan(r1) || r0 > r1;
+		break;
+	}
+	case ir::PTXInstruction::Geu:
+	{
+		comparison = std::isnan(r0) || std::isnan(r1) || r0 >= r1;
+		break;
+	}
+	case ir::PTXInstruction::Num:
+	{
+		comparison = !std::isnan(r0) && !std::isnan(r1);
+		break;
+	}
+	case ir::PTXInstruction::Nan:
+	{
+		comparison = std::isnan(r0) || std::isnan(r1);
+		break;
+	}
+	default: break;
+	}
+
+	bool inverse = !comparison;
+	
+	switch(boolOp)
+	{
+	case ir::PTXInstruction::BoolAnd:
+	{
+		comparison = comparison && predicate;
+		inverse    = inverse    && predicate;
+		break;
+	}
+	case ir::PTXInstruction::BoolOr:
+	{
+		comparison = comparison || predicate;
+		inverse    = inverse    || predicate;
+		break;
+	}
+	case ir::PTXInstruction::BoolXor:
+	{
+		comparison = comparison ^ predicate;
+		inverse    = inverse    ^ predicate;
+		break;
+	}
+	default: break;
+	}
+	
+	setParameter(output, 0, comparison);
+	if(pq) setParameter(output, sizeof(bool), inverse);
+}
+
+test::TestPTXAssembly::TypeVector testSetP_IN(
+	test::TestPTXAssembly::DataType type)
+{
+	test::TestPTXAssembly::TypeVector types(2, type);
+	
+	types.push_back(test::TestPTXAssembly::I8);
+
+	return types;
+}
+
+test::TestPTXAssembly::TypeVector testSetP_OUT(bool pq)
+{
+	if(pq)
+	{
+		return test::TestPTXAssembly::TypeVector(2, test::TestPTXAssembly::I8);
+	}
+	else
+	{
+		return test::TestPTXAssembly::TypeVector(1, test::TestPTXAssembly::I8);
+	}
+}
+/////////////////////////////////////////////////////////////////////////////////
 
 ////////////////////////////////////////////////////////////////////////////////
 // TEST SET
@@ -4461,6 +4879,243 @@ namespace test
 				ir::PTXInstruction::Lt, false),
 			testSet_OUT(I32), testSet_IN(I32),
 			uniformRandom<char, 2*sizeof(int) + sizeof(bool)>, 1, 1);
+
+		add("TestSetP-lt-u16",
+			testSetP_REF<unsigned short, ir::PTXOperand::Pred, 
+				ir::PTXInstruction::BoolOp_Invalid, ir::PTXInstruction::Lt,
+				false, false>,
+			testSetP_PTX(ir::PTXOperand::u16, ir::PTXOperand::Pred, 
+				ir::PTXInstruction::BoolOp_Invalid, 
+				ir::PTXInstruction::Lt, false, false),
+			testSetP_OUT(false), testSetP_IN(I16),
+			uniformRandom<char, 2*sizeof(unsigned short) + sizeof(bool)>, 1, 1);
+		add("TestSetP-lt-u32",
+			testSetP_REF<unsigned int, ir::PTXOperand::Pred, 
+				ir::PTXInstruction::BoolOp_Invalid, ir::PTXInstruction::Lt,
+				false, false>,
+			testSetP_PTX(ir::PTXOperand::u32, ir::PTXOperand::Pred, 
+				ir::PTXInstruction::BoolOp_Invalid, 
+				ir::PTXInstruction::Lt, false, false),
+			testSetP_OUT(false), testSetP_IN(I32),
+			uniformRandom<char, 2*sizeof(unsigned int) + sizeof(bool)>, 1, 1);
+		add("TestSetP-lt-u32-pq",
+			testSetP_REF<unsigned int, ir::PTXOperand::Pred, 
+				ir::PTXInstruction::BoolOp_Invalid, ir::PTXInstruction::Lt,
+				false, true>,
+			testSetP_PTX(ir::PTXOperand::u32, ir::PTXOperand::Pred, 
+				ir::PTXInstruction::BoolOp_Invalid, 
+				ir::PTXInstruction::Lt, false, true),
+			testSetP_OUT(true), testSetP_IN(I32),
+			uniformRandom<char, 2*sizeof(unsigned int) + sizeof(bool)>, 1, 1);
+		add("TestSetP-lt-u64",
+			testSetP_REF<long long unsigned int, ir::PTXOperand::Pred, 
+				ir::PTXInstruction::BoolOp_Invalid, ir::PTXInstruction::Lt,
+				false, false>,
+			testSetP_PTX(ir::PTXOperand::u64, ir::PTXOperand::Pred, 
+				ir::PTXInstruction::BoolOp_Invalid, 
+				ir::PTXInstruction::Lt, false, false),
+			testSetP_OUT(false), testSetP_IN(I64),
+			uniformRandom<char,
+				2*sizeof(long long unsigned int) + sizeof(bool)>, 1, 1);
+		add("TestSetP-lt-s16",
+			testSetP_REF<short, ir::PTXOperand::Pred, 
+				ir::PTXInstruction::BoolOp_Invalid, ir::PTXInstruction::Lt,
+				false, false>,
+			testSetP_PTX(ir::PTXOperand::s16, ir::PTXOperand::Pred, 
+				ir::PTXInstruction::BoolOp_Invalid, 
+				ir::PTXInstruction::Lt, false, false),
+			testSetP_OUT(false), testSetP_IN(I16),
+			uniformRandom<char, 2*sizeof(short) + sizeof(bool)>, 1, 1);
+		add("TestSetP-lt-s32",
+			testSetP_REF<int, ir::PTXOperand::Pred, 
+				ir::PTXInstruction::BoolOp_Invalid, ir::PTXInstruction::Lt,
+				false, false>,
+			testSetP_PTX(ir::PTXOperand::s32, ir::PTXOperand::Pred, 
+				ir::PTXInstruction::BoolOp_Invalid, 
+				ir::PTXInstruction::Lt, false, false),
+			testSetP_OUT(false), testSetP_IN(I32),
+			uniformRandom<char, 2*sizeof(int) + sizeof(bool)>, 1, 1);
+		add("TestSetP-lt-s64",
+			testSetP_REF<long long int, ir::PTXOperand::Pred, 
+				ir::PTXInstruction::BoolOp_Invalid, ir::PTXInstruction::Lt,
+				false, false>,
+			testSetP_PTX(ir::PTXOperand::s64, ir::PTXOperand::Pred, 
+				ir::PTXInstruction::BoolOp_Invalid, 
+				ir::PTXInstruction::Lt, false, false),
+			testSetP_OUT(false), testSetP_IN(I64),
+			uniformRandom<char, 2*sizeof(long long int) + sizeof(bool)>, 1, 1);
+		add("TestSetP-lt-f32",
+			testSetP_REF<float, ir::PTXOperand::Pred, 
+				ir::PTXInstruction::BoolOp_Invalid, ir::PTXInstruction::Lt,
+				false, false>,
+			testSetP_PTX(ir::PTXOperand::f32, ir::PTXOperand::Pred, 
+				ir::PTXInstruction::BoolOp_Invalid, 
+				ir::PTXInstruction::Lt, false, false),
+			testSetP_OUT(false), testSetP_IN(FP32),
+			uniformRandom<char, 2*sizeof(float) + sizeof(bool)>, 1, 1);
+		add("TestSetP-lt-f64",
+			testSetP_REF<double, ir::PTXOperand::Pred, 
+				ir::PTXInstruction::BoolOp_Invalid, ir::PTXInstruction::Lt,
+				false, false>,
+			testSetP_PTX(ir::PTXOperand::f64, ir::PTXOperand::Pred, 
+				ir::PTXInstruction::BoolOp_Invalid, 
+				ir::PTXInstruction::Lt, false, false),
+			testSetP_OUT(false), testSetP_IN(FP64),
+			uniformRandom<char, 2*sizeof(double) + sizeof(bool)>, 1, 1);
+		
+		add("TestSetP-lt-u32-pq-and",
+			testSetP_REF<unsigned int, ir::PTXOperand::Pred, 
+				ir::PTXInstruction::BoolAnd, ir::PTXInstruction::Lt,
+				false, true>,
+			testSetP_PTX(ir::PTXOperand::u32, ir::PTXOperand::Pred, 
+				ir::PTXInstruction::BoolAnd, 
+				ir::PTXInstruction::Lt, false, true),
+			testSetP_OUT(true), testSetP_IN(I32),
+			uniformRandom<char, 2*sizeof(unsigned int) + sizeof(bool)>, 1, 1);
+		add("TestSetP-lt-u32-pq-or",
+			testSetP_REF<unsigned int, ir::PTXOperand::Pred, 
+				ir::PTXInstruction::BoolOr, ir::PTXInstruction::Lt,
+				false, true>,
+			testSetP_PTX(ir::PTXOperand::u32, ir::PTXOperand::Pred, 
+				ir::PTXInstruction::BoolOr, 
+				ir::PTXInstruction::Lt, false, true),
+			testSetP_OUT(true), testSetP_IN(I32),
+			uniformRandom<char, 2*sizeof(unsigned int) + sizeof(bool)>, 1, 1);
+		add("TestSetP-lt-u32-pq-xor",
+			testSetP_REF<unsigned int, ir::PTXOperand::Pred, 
+				ir::PTXInstruction::BoolXor, ir::PTXInstruction::Lt,
+				false, true>,
+			testSetP_PTX(ir::PTXOperand::u32, ir::PTXOperand::Pred, 
+				ir::PTXInstruction::BoolXor, 
+				ir::PTXInstruction::Lt, false, true),
+			testSetP_OUT(true), testSetP_IN(I32),
+			uniformRandom<char, 2*sizeof(unsigned int) + sizeof(bool)>, 1, 1);
+		add("TestSetP-lt-f32-pq-and-ftz",
+			testSetP_REF<float, ir::PTXOperand::Pred, 
+				ir::PTXInstruction::BoolAnd, ir::PTXInstruction::Lt,
+				true, true>,
+			testSetP_PTX(ir::PTXOperand::f32, ir::PTXOperand::Pred, 
+				ir::PTXInstruction::BoolAnd, 
+				ir::PTXInstruction::Lt, true, true),
+			testSetP_OUT(true), testSetP_IN(FP32),
+			uniformRandom<char, 2*sizeof(float) + sizeof(bool)>, 1, 1);
+		
+		add("TestSelp-u16", testSelP_REF<unsigned short>, 
+			testSelP_PTX(ir::PTXOperand::u16), 
+			testSelP_OUT(I16), testSelP_IN(I16), 
+			uniformRandom<char, 2*sizeof(unsigned short) + sizeof(bool)>, 1, 1);
+		add("TestSelp-u32", testSelP_REF<unsigned int>, 
+			testSelP_PTX(ir::PTXOperand::u32), 
+			testSelP_OUT(I32), testSelP_IN(I32), 
+			uniformRandom<char, 2*sizeof(unsigned int) + sizeof(bool)>, 1, 1);
+		add("TestSelp-u64", testSelP_REF<long long unsigned int>, 
+			testSelP_PTX(ir::PTXOperand::u64), 
+			testSelP_OUT(I64), testSelP_IN(I64), 
+			uniformRandom<char,
+				2*sizeof(long long unsigned int) + sizeof(bool)>, 1, 1);
+		add("TestSelp-s16", testSelP_REF<short>, 
+			testSelP_PTX(ir::PTXOperand::s16), 
+			testSelP_OUT(I16), testSelP_IN(I16), 
+			uniformRandom<char, 2*sizeof(short) + sizeof(bool)>, 1, 1);
+		add("TestSelp-s32", testSelP_REF<int>, 
+			testSelP_PTX(ir::PTXOperand::u32), 
+			testSelP_OUT(I32), testSelP_IN(I32), 
+			uniformRandom<char, 2*sizeof(int) + sizeof(bool)>, 1, 1);
+		add("TestSelp-s64", testSelP_REF<long long int>, 
+			testSelP_PTX(ir::PTXOperand::u64), 
+			testSelP_OUT(I64), testSelP_IN(I64), 
+			uniformRandom<char, 2*sizeof(long long int) + sizeof(bool)>, 1, 1);
+		add("TestSelp-f32", testSelP_REF<float>, 
+			testSelP_PTX(ir::PTXOperand::f32), 
+			testSelP_OUT(FP32), testSelP_IN(FP32), 
+			uniformFloat<float, 3>, 1, 1);
+		add("TestSelp-f64", testSelP_REF<double>, 
+			testSelP_PTX(ir::PTXOperand::u64), 
+			testSelP_OUT(I64), testSelP_IN(I64), 
+			uniformFloat<double, 3>, 1, 1);
+		
+		add("TestSlct-u16-s32", testSlct_REF<unsigned short, false, false>,
+			testSlct_PTX(ir::PTXOperand::u16, false, false),
+			testSlct_OUT(I16), testSlct_IN(I16, false),
+			uniformRandom<char, 2*sizeof(unsigned short)
+				+ sizeof(unsigned int)>, 1, 1);
+		add("TestSlct-u32-s32", testSlct_REF<unsigned int, false, false>,
+			testSlct_PTX(ir::PTXOperand::u32, false, false),
+			testSlct_OUT(I32), testSlct_IN(I32, false),
+			uniformRandom<char, 2*sizeof(unsigned int)
+				+ sizeof(unsigned int)>, 1, 1);
+		add("TestSlct-u64-s32", 
+			testSlct_REF<long long unsigned int, false, false>,
+			testSlct_PTX(ir::PTXOperand::u64, false, false),
+			testSlct_OUT(I64), testSlct_IN(I64, false),
+			uniformRandom<char, 2*sizeof(long long unsigned int)
+				+ sizeof(unsigned int)>, 1, 1);
+		add("TestSlct-s16-s32", testSlct_REF<short, false, false>,
+			testSlct_PTX(ir::PTXOperand::s16, false, false),
+			testSlct_OUT(I16), testSlct_IN(I16, false),
+			uniformRandom<char, 2*sizeof(short)	+ sizeof(unsigned int)>, 1, 1);
+		add("TestSlct-s32-s32", testSlct_REF<int, false, false>,
+			testSlct_PTX(ir::PTXOperand::u32, false, false),
+			testSlct_OUT(I32), testSlct_IN(I32, false),
+			uniformRandom<char, 2*sizeof(int) + sizeof(unsigned int)>, 1, 1);
+		add("TestSlct-s64-s32", 
+			testSlct_REF<long long int, false, false>,
+			testSlct_PTX(ir::PTXOperand::s64, false, false),
+			testSlct_OUT(I64), testSlct_IN(I64, false),
+			uniformRandom<char, 2*sizeof(long long int)
+				+ sizeof(unsigned int)>, 1, 1);
+		add("TestSlct-f32-s32", testSlct_REF<float, false, false>,
+			testSlct_PTX(ir::PTXOperand::f32, false, false),
+			testSlct_OUT(FP32), testSlct_IN(FP32, false),
+			uniformFloat<float, 3>, 1, 1);
+		add("TestSlct-f64-s32", testSlct_REF<double, false, false>,
+			testSlct_PTX(ir::PTXOperand::f64, false, false),
+			testSlct_OUT(FP64), testSlct_IN(FP64, false),
+			uniformFloat<double, 3>, 1, 1);
+
+		
+		add("TestSlct-u16-f32", testSlct_REF<unsigned short, true, false>,
+			testSlct_PTX(ir::PTXOperand::u16, true, false),
+			testSlct_OUT(I16), testSlct_IN(I16, true),
+			uniformRandom<char, 2*sizeof(unsigned short)
+				+ sizeof(unsigned int)>, 1, 1);
+		add("TestSlct-u32-f32", testSlct_REF<unsigned int, true, false>,
+			testSlct_PTX(ir::PTXOperand::u32, true, false),
+			testSlct_OUT(I32), testSlct_IN(I32, true),
+			uniformRandom<char, 2*sizeof(unsigned int)
+				+ sizeof(unsigned int)>, 1, 1);
+		add("TestSlct-u64-f32", 
+			testSlct_REF<long long unsigned int, true, false>,
+			testSlct_PTX(ir::PTXOperand::u64, true, false),
+			testSlct_OUT(I64), testSlct_IN(I64, true),
+			uniformRandom<char, 2*sizeof(long long unsigned int)
+				+ sizeof(unsigned int)>, 1, 1);
+		add("TestSlct-s16-f32", testSlct_REF<short, true, false>,
+			testSlct_PTX(ir::PTXOperand::s16, true, false),
+			testSlct_OUT(I16), testSlct_IN(I16, true),
+			uniformRandom<char, 2*sizeof(short)	+ sizeof(unsigned int)>, 1, 1);
+		add("TestSlct-s32-f32", testSlct_REF<int, true, false>,
+			testSlct_PTX(ir::PTXOperand::u32, true, false),
+			testSlct_OUT(I32), testSlct_IN(I32, true),
+			uniformRandom<char, 2*sizeof(int) + sizeof(unsigned int)>, 1, 1);
+		add("TestSlct-s64-f32", 
+			testSlct_REF<long long int, true, false>,
+			testSlct_PTX(ir::PTXOperand::s64, true, false),
+			testSlct_OUT(I64), testSlct_IN(I64, true),
+			uniformRandom<char, 2*sizeof(long long int)
+				+ sizeof(unsigned int)>, 1, 1);
+		add("TestSlct-f32-f32", testSlct_REF<float, true, false>,
+			testSlct_PTX(ir::PTXOperand::f32, true, false),
+			testSlct_OUT(FP32), testSlct_IN(FP32, true),
+			uniformFloat<float, 3>, 1, 1);
+		add("TestSlct-f64-f32", testSlct_REF<double, true, false>,
+			testSlct_PTX(ir::PTXOperand::f64, true, false),
+			testSlct_OUT(FP64), testSlct_IN(FP64, true),
+			uniformFloat<double, 3>, 1, 1);
+		add("TestSlct-f32-f32-ftz", testSlct_REF<float, true, true>,
+			testSlct_PTX(ir::PTXOperand::f32, true, true),
+			testSlct_OUT(FP32), testSlct_IN(FP32, true),
+			uniformFloat<float, 3>, 1, 1);
 	}
 
 	TestPTXAssembly::TestPTXAssembly(hydrazine::Timer::Second l, 
@@ -4479,12 +5134,13 @@ namespace test
 		GeneratorFunction generator, unsigned int threads, unsigned int ctas)
 	{
 		// TODO change this to std::tr1::regex when gcc gets its act together
-		if(!regularExpression.empty() && regularExpression != name) return;
+		if(!regularExpression.empty() &&
+			name.find(regularExpression) == std::string::npos) return;
 		
 		if(enumerate)
 		{
 			std::cout << name << "\n";
-			return;	
+			return;
 		}
 		
 		TestHandle test;

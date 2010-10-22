@@ -4662,28 +4662,33 @@ namespace translator
 		
 		ir::LLVMInstruction::Operand pd = d;
 		ir::LLVMInstruction::Operand pq;
-		
+		ir::LLVMXor Not;
+
 		if( i.pq.addressMode != ir::PTXOperand::Invalid )
 		{
 			pq = _translate( i.pq );
+
+			if( i.c.addressMode == ir::PTXOperand::Register )
+			{
+				Not.d = tempD;
+				Not.d.name = _tempRegister();
+			}
+			else
+			{
+				Not.d = pq;
+			}
+
+			Not.a = tempD;
+			Not.b.type.category = ir::LLVMInstruction::Type::Element;
+			Not.b.type.type = ir::LLVMInstruction::I1;
+			Not.b.constant = true;
+			Not.b.i1 = true;
+		
+			_add( Not );
 		}
 		
 		if( i.c.addressMode == ir::PTXOperand::Register )
 		{
-			ir::LLVMXor Not;
-
-			if( i.pq.addressMode != ir::PTXOperand::Invalid )
-			{
-				Not.d = tempD;
-				Not.d.name = _tempRegister();
-				Not.a = tempD;
-				Not.b.type.category = ir::LLVMInstruction::Type::Element;
-				Not.b.type.type = ir::LLVMInstruction::I1;
-				Not.b.constant = true;
-				Not.b.i1 = true;
-			
-				_add( Not );
-			}
 					
 			switch( i.booleanOperator )
 			{

@@ -234,10 +234,8 @@ namespace parser
 					void full();
 					
 					void instruction();
-					void instruction( const std::string& opcode, int dataType, 
-						unsigned int operands );
-					void instruction( const std::string& opcode, 
-						unsigned int operands );
+					void instruction( const std::string& opcode, int dataType );
+					void instruction( const std::string& opcode );
 					void tex( int dataType );
 					void callPrototypeName( const std::string& identifier );
 					void call( const std::string& identifier,

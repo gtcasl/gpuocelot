@@ -1503,12 +1503,10 @@ namespace parser
 		statement.instruction.statementIndex = statements.size();
 	}
 
-	void PTXParser::State::instruction( const std::string& opcode, int dataType, 
-		unsigned int operands )
+	void PTXParser::State::instruction( const std::string& opcode,
+		int dataType )
 	{
 		report( "  Rule: instruction : " << opcode );
-		assertM( operandVector.size() == operands, "operandVector.size() = " 
-			<< operandVector.size() << ", operands: " << operands );
 		_setImmediateTypes();
 
 		statement.directive = ir::PTXStatement::Instr;
@@ -1516,39 +1514,39 @@ namespace parser
 		statement.instruction.opcode = stringToOpcode( opcode );
 		statement.instruction.pg = operandVector[0];
 
-		if( operands == 6 )
+		unsigned int index = 1;
+
+		if( operandVector.size() > index )
 		{
-			statement.instruction.d  = operandVector[1];
-			statement.instruction.pq = operandVector[2];
-			statement.instruction.a  = operandVector[3];
-			statement.instruction.b  = operandVector[4];
-			statement.instruction.c  = operandVector[5];		
+			statement.instruction.d = operandVector[index++];
 		}
-		else
+
+		if( operandVector.size() > index )
 		{
-			if( operands >= 2 )
+			if( ( operandVector[ index ].type == ir::PTXOperand::pred
+				&& operandVector.size() > 4 ) || operandVector.size() == 6 )
 			{
-				statement.instruction.d = operandVector[1];
+				statement.instruction.pq = operandVector[index++];
 			}
-			if( operands >= 3 )
-			{
-				statement.instruction.a = operandVector[2];
-			}
-			if( operands >= 4 )
-			{
-				statement.instruction.b = operandVector[3];
-			}
-			if( operands >= 5 )
-			{
-				statement.instruction.c = operandVector[4];
-			}
+		}
+
+		if( operandVector.size() > index )
+		{
+			statement.instruction.a = operandVector[index++];
+		}
+		if( operandVector.size() > index )
+		{
+			statement.instruction.b = operandVector[index++];
+		}
+		if( operandVector.size() > index )
+		{
+			statement.instruction.c = operandVector[index++];
 		}
 	}
 	
-	void PTXParser::State::instruction( const std::string& opcode, 
-		unsigned int operands )
+	void PTXParser::State::instruction( const std::string& opcode )
 	{
-		instruction( opcode, TOKEN_B64, operands );
+		instruction( opcode, TOKEN_B64 );
 	}
 
 	void PTXParser::State::tex( int dataType )

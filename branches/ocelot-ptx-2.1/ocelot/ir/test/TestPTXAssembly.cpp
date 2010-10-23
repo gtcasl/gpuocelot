@@ -135,7 +135,264 @@ char* uniformFloat(test::Test::MersenneTwister& generator)
 
 ////////////////////////////////////////////////////////////////////////////////
 // TEST LOGICAL OPs
+std::string testLops_PTX(ir::PTXInstruction::Opcode opcode,
+	ir::PTXOperand::DataType type)
+{
+	std::stringstream ptx;
 
+	std::string typeString = "." + ir::PTXOperand::toString(type);
+
+	ptx << ".version 2.1\n";
+	ptx << "\n";
+	
+	ptx << ".entry test(.param .u64 out, .param .u64 in)   \n";
+	ptx << "{\t                                            \n";
+	ptx << "\t.reg .u64 %rIn, %rOut;                       \n";
+	if( opcode == ir::PTXInstruction::Shr 
+		|| opcode == ir::PTXInstruction::Shl )
+	{
+		ptx << "\t.reg " << typeString    << " %r0, %r2;   \n";
+		ptx << "\t.reg .u32 %r1;                           \n";
+	}
+	else
+	{
+		ptx << "\t.reg " << typeString    << " %r<3>;      \n";
+	}
+	ptx << "\tld.param.u64 %rIn, [in];                     \n";
+	ptx << "\tld.param.u64 %rOut, [out];                   \n";
+	
+	if(type == ir::PTXOperand::pred)
+	{
+		ptx << "\t.reg .u8  %rb<2>;                        \n";
+		ptx << "\t.reg .u16 %rs<2>;                        \n";
+		ptx << "\tld.global.u8 %rb0, [%rIn];               \n";
+		ptx << "\tcvt.u16.u8 %rs0, %rb0;                   \n";
+		ptx << "\tsetp.lt.u16 %r0, %rs0, 64;               \n";
+		if(opcode == ir::PTXInstruction::And
+			|| opcode == ir::PTXInstruction::Or
+			|| opcode == ir::PTXInstruction::Xor)
+		{
+			ptx << "\tld.global.u8 %rb1, [%rIn + " 
+				<< ir::PTXOperand::bytes(type) << "];          \n";
+			ptx << "\tcvt.u16.u8 %rs1, %rb1;                   \n";
+			ptx << "\tsetp.lt.u16 %r1, %rs1, 64;               \n";
+		}
+	}
+	else
+	{
+		ptx << "\tld.global" << typeString << " %r0, [%rIn];   \n";
+		if( opcode == ir::PTXInstruction::Shr 
+			|| opcode == ir::PTXInstruction::Shl )
+		{
+			ptx << "\tld.global.u32 %r1, [%rIn + " 
+				<< std::max(ir::PTXOperand::bytes(type), sizeof(unsigned int)) 
+				<< "];              \n";
+			ptx << "\trem.u32 %r1, %r1, " 
+				<< 8 * ir::PTXOperand::bytes(type) << ";\n";
+		}
+		else if(opcode == ir::PTXInstruction::And
+			|| opcode == ir::PTXInstruction::Or
+			|| opcode == ir::PTXInstruction::Xor)
+		{
+			ptx << "\tld.global" << typeString << " %r1, [%rIn + " 
+				<< ir::PTXOperand::bytes(type) << "];              \n";
+		}
+	}
+	
+	ptx << "\t" << ir::PTXInstruction::toString(opcode)
+		<< typeString << " %r2, %r0";
+
+	if(opcode == ir::PTXInstruction::And
+		|| opcode == ir::PTXInstruction::Or
+		|| opcode == ir::PTXInstruction::Xor
+		|| opcode == ir::PTXInstruction::Shr
+		|| opcode == ir::PTXInstruction::Shl)
+	{
+		ptx << ", %r1";
+	}
+
+	ptx << ";\n";
+
+	if(type == ir::PTXOperand::pred)
+	{
+		ptx << "\tselp.u16   %rs0, 1, 0, %r2;                    \n";
+		ptx << "\tcvt.u8.u16 %rb0, %rs0;                         \n";
+		ptx << "\tst.global.u8 [%rOut], %rb0;                    \n";
+	}
+	else
+	{
+		ptx << "\tst.global" << typeString << " [%rOut], %r2;    \n";
+	}
+	ptx << "\texit;                                        \n";
+	ptx << "}                                              \n";
+	ptx << "                                               \n";
+	
+	return ptx.str();
+}
+
+template<ir::PTXInstruction::Opcode opcode, typename type>
+void testLops_REF(void* output, void* input)
+{
+	typedef long long unsigned int U64;
+
+	switch(opcode)
+	{
+	case ir::PTXInstruction::And:
+	{
+		type r0 = getParameter<type>(input, 0);
+		type r1 = getParameter<type>(input, sizeof(type));
+
+		if(typeid(type) == typeid(bool))
+		{
+			r1 = r1 < 64;
+			r0 = r0 < 64;
+		}
+
+		U64 a = hydrazine::bit_cast<U64>(r0);
+		U64 b = hydrazine::bit_cast<U64>(r1);
+		
+		U64 d = a & b;
+		
+		setParameter(output, 0, hydrazine::bit_cast<type>(d));
+		break;
+	}
+	case ir::PTXInstruction::Or:
+	{
+		type r0 = getParameter<type>(input, 0);
+		type r1 = getParameter<type>(input, sizeof(type));
+
+		if(typeid(type) == typeid(bool))
+		{
+			r1 = r1 < 64;
+			r0 = r0 < 64;
+		}
+
+		U64 a = hydrazine::bit_cast<U64>(r0);
+		U64 b = hydrazine::bit_cast<U64>(r1);
+		
+		U64 d = a | b;
+		
+		setParameter(output, 0, hydrazine::bit_cast<type>(d));
+		break;
+	}
+	case ir::PTXInstruction::Xor:
+	{
+		type r0 = getParameter<type>(input, 0);
+		type r1 = getParameter<type>(input, sizeof(type));
+
+		if(typeid(type) == typeid(bool))
+		{
+			r1 = r1 < 64;
+			r0 = r0 < 64;
+		}
+
+		U64 a = hydrazine::bit_cast<U64>(r0);
+		U64 b = hydrazine::bit_cast<U64>(r1);
+		
+		U64 d = a ^ b;
+		
+		setParameter(output, 0, hydrazine::bit_cast<type>(d));
+		break;
+	}
+	case ir::PTXInstruction::Shr:
+	{
+		type r0 = getParameter<type>(input, 0);
+		unsigned int r1 = getParameter<unsigned int>(input,
+			std::max(sizeof(type), sizeof(unsigned int)));
+
+		if(typeid(type) == typeid(bool))
+		{
+			r1 = r1 < 64;
+			r0 = r0 < 64;
+		}
+
+		type d = r0 >> (r1 % (sizeof(type) * 8));
+		
+		setParameter(output, 0, d);
+		break;
+	}
+	case ir::PTXInstruction::Shl:
+	{
+		type r0 = getParameter<type>(input, 0);
+		unsigned int r1 = getParameter<unsigned int>(input,
+			std::max(sizeof(type), sizeof(unsigned int)));
+
+		type d = r0 << (r1 % (sizeof(type) * 8));
+		
+		setParameter(output, 0, d);
+		break;
+	}
+	case ir::PTXInstruction::Not:
+	{
+		type r0 = getParameter<type>(input, 0);
+
+		if(typeid(type) == typeid(bool))
+		{
+			r0 = r0 < 64;
+		}
+
+		U64 a = hydrazine::bit_cast<U64>(r0);
+		
+		U64 d = ~a;
+		
+		if(typeid(type) == typeid(bool))
+		{
+			d = d & 1;
+		}
+		
+		setParameter(output, 0, hydrazine::bit_cast<type>(d));
+		break;
+	}
+	case ir::PTXInstruction::CNot:
+	{
+		type r0 = getParameter<type>(input, 0);
+
+		if(typeid(type) == typeid(bool))
+		{
+			r0 = r0 < 64;
+		}
+
+		U64 a = hydrazine::bit_cast<U64>(r0);
+		
+		U64 d = a == 0 ? 1 : 0;
+		
+		setParameter(output, 0, hydrazine::bit_cast<type>(d));
+		break;
+	}
+	default: assertM(false, "Invalid opcode for logical op.");
+	}
+	
+}
+
+test::TestPTXAssembly::TypeVector testLops_IN(
+	ir::PTXInstruction::Opcode opcode, test::TestPTXAssembly::DataType type)
+{
+	if(opcode == ir::PTXInstruction::And
+		|| opcode == ir::PTXInstruction::Or
+		|| opcode == ir::PTXInstruction::Xor)
+	{
+		return test::TestPTXAssembly::TypeVector(2, type);
+	}
+	else if(opcode == ir::PTXInstruction::Shr
+		|| opcode == ir::PTXInstruction::Shl)
+	{
+		test::TestPTXAssembly::TypeVector types(1, type);
+		
+		types.push_back(test::TestPTXAssembly::I32);
+		
+		return types;
+	}
+	else
+	{
+		return test::TestPTXAssembly::TypeVector(1, type);
+	}
+}
+
+test::TestPTXAssembly::TypeVector testLops_OUT(
+	test::TestPTXAssembly::DataType type)
+{	
+	return test::TestPTXAssembly::TypeVector(1, type);
+}
 ////////////////////////////////////////////////////////////////////////////////
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -3399,6 +3656,13 @@ test::TestPTXAssembly::TypeVector testPrmt_OUT()
 
 namespace test
 {
+	static unsigned int align(unsigned int address, unsigned int bytes)
+	{
+		unsigned int remainder = address % bytes;
+		if(remainder == 0) return address;
+		return address + bytes - remainder;
+	}
+
 	unsigned int TestPTXAssembly::bytes(DataType t)
 	{
 		switch(t)
@@ -3423,12 +3687,14 @@ namespace test
 		for(TypeVector::const_iterator type = test.inputTypes.begin(); 
 			type != test.inputTypes.end(); ++type)
 		{
+			inputSize = align(inputSize, bytes(*type));
 			inputSize += bytes(*type);
 		}
 		
 		for(TypeVector::const_iterator type = test.outputTypes.begin(); 
 			type != test.outputTypes.end(); ++type)
 		{
+			outputSize = align(outputSize, bytes(*type));
 			outputSize += bytes(*type);
 		}
 		
@@ -5116,6 +5382,141 @@ namespace test
 			testSlct_PTX(ir::PTXOperand::f32, true, true),
 			testSlct_OUT(FP32), testSlct_IN(FP32, true),
 			uniformFloat<float, 3>, 1, 1);
+
+		add("TestAnd-pred", testLops_REF<ir::PTXInstruction::And, bool>,
+			testLops_PTX(ir::PTXInstruction::And, ir::PTXOperand::pred),
+			testLops_OUT(I8), testLops_IN(ir::PTXInstruction::And, I8),
+			uniformRandom<bool, 3>, 1, 1);
+		add("TestAnd-b16",
+			testLops_REF<ir::PTXInstruction::And, unsigned short>,
+			testLops_PTX(ir::PTXInstruction::And, ir::PTXOperand::b16),
+			testLops_OUT(I16), testLops_IN(ir::PTXInstruction::And, I16),
+			uniformRandom<unsigned short, 3>, 1, 1);
+		add("TestAnd-b32",
+			testLops_REF<ir::PTXInstruction::And, unsigned int>,
+			testLops_PTX(ir::PTXInstruction::And, ir::PTXOperand::b32),
+			testLops_OUT(I32), testLops_IN(ir::PTXInstruction::And, I32),
+			uniformRandom<unsigned int, 3>, 1, 1);
+		add("TestAnd-b64",
+			testLops_REF<ir::PTXInstruction::And, long long unsigned int>,
+			testLops_PTX(ir::PTXInstruction::And, ir::PTXOperand::b64),
+			testLops_OUT(I64), testLops_IN(ir::PTXInstruction::And, I64),
+			uniformRandom<long long unsigned int, 3>, 1, 1);
+		add("TestOr-pred", testLops_REF<ir::PTXInstruction::Or, bool>,
+			testLops_PTX(ir::PTXInstruction::Or, ir::PTXOperand::pred),
+			testLops_OUT(I8), testLops_IN(ir::PTXInstruction::Or, I8),
+			uniformRandom<bool, 3>, 1, 1);
+		add("TestOr-b16",
+			testLops_REF<ir::PTXInstruction::Or, unsigned short>,
+			testLops_PTX(ir::PTXInstruction::Or, ir::PTXOperand::b16),
+			testLops_OUT(I16), testLops_IN(ir::PTXInstruction::Or, I16),
+			uniformRandom<unsigned short, 3>, 1, 1);
+		add("TestOr-b32",
+			testLops_REF<ir::PTXInstruction::Or, unsigned int>,
+			testLops_PTX(ir::PTXInstruction::Or, ir::PTXOperand::b32),
+			testLops_OUT(I32), testLops_IN(ir::PTXInstruction::Or, I32),
+			uniformRandom<unsigned int, 3>, 1, 1);
+		add("TestOr-b64",
+			testLops_REF<ir::PTXInstruction::Or, long long unsigned int>,
+			testLops_PTX(ir::PTXInstruction::Or, ir::PTXOperand::b64),
+			testLops_OUT(I64), testLops_IN(ir::PTXInstruction::Or, I64),
+			uniformRandom<long long unsigned int, 3>, 1, 1);
+		add("TestXor-pred", testLops_REF<ir::PTXInstruction::Xor, bool>,
+			testLops_PTX(ir::PTXInstruction::Xor, ir::PTXOperand::pred),
+			testLops_OUT(I8), testLops_IN(ir::PTXInstruction::Xor, I8),
+			uniformRandom<bool, 3>, 1, 1);
+		add("TestXor-b16",
+			testLops_REF<ir::PTXInstruction::Xor, unsigned short>,
+			testLops_PTX(ir::PTXInstruction::Xor, ir::PTXOperand::b16),
+			testLops_OUT(I16), testLops_IN(ir::PTXInstruction::Xor, I16),
+			uniformRandom<unsigned short, 3>, 1, 1);
+		add("TestXor-b32",
+			testLops_REF<ir::PTXInstruction::Xor, unsigned int>,
+			testLops_PTX(ir::PTXInstruction::Xor, ir::PTXOperand::b32),
+			testLops_OUT(I32), testLops_IN(ir::PTXInstruction::Xor, I32),
+			uniformRandom<unsigned int, 3>, 1, 1);
+		add("TestXor-b64",
+			testLops_REF<ir::PTXInstruction::Xor, long long unsigned int>,
+			testLops_PTX(ir::PTXInstruction::Xor, ir::PTXOperand::b64),
+			testLops_OUT(I64), testLops_IN(ir::PTXInstruction::Xor, I64),
+			uniformRandom<long long unsigned int, 3>, 1, 1);
+		add("TestNot-pred", testLops_REF<ir::PTXInstruction::Not, bool>,
+			testLops_PTX(ir::PTXInstruction::Not, ir::PTXOperand::pred),
+			testLops_OUT(I8), testLops_IN(ir::PTXInstruction::Not, I8),
+			uniformRandom<bool, 2>, 1, 1);
+		add("TestNot-b16",
+			testLops_REF<ir::PTXInstruction::Not, unsigned short>,
+			testLops_PTX(ir::PTXInstruction::Not, ir::PTXOperand::b16),
+			testLops_OUT(I16), testLops_IN(ir::PTXInstruction::Not, I16),
+			uniformRandom<unsigned short, 2>, 1, 1);
+		add("TestNot-b32", testLops_REF<ir::PTXInstruction::Not, unsigned int>,
+			testLops_PTX(ir::PTXInstruction::Not, ir::PTXOperand::b32),
+			testLops_OUT(I32), testLops_IN(ir::PTXInstruction::Not, I32),
+			uniformRandom<unsigned int, 2>, 1, 1);
+		add("TestNot-b64",
+			testLops_REF<ir::PTXInstruction::Not, long long unsigned int>,
+			testLops_PTX(ir::PTXInstruction::Not, ir::PTXOperand::b64),
+			testLops_OUT(I64), testLops_IN(ir::PTXInstruction::Not, I64),
+			uniformRandom<long long unsigned int, 2>, 1, 1);
+		add("TestCNot-b16",
+			testLops_REF<ir::PTXInstruction::CNot, unsigned short>,
+			testLops_PTX(ir::PTXInstruction::CNot, ir::PTXOperand::b16),
+			testLops_OUT(I16), testLops_IN(ir::PTXInstruction::CNot, I16),
+			uniformRandom<unsigned short, 2>, 1, 1);
+		add("TestCNot-b32", testLops_REF<ir::PTXInstruction::CNot, unsigned int>,
+			testLops_PTX(ir::PTXInstruction::CNot, ir::PTXOperand::b32),
+			testLops_OUT(I32), testLops_IN(ir::PTXInstruction::CNot, I32),
+			uniformRandom<unsigned int, 2>, 1, 1);
+		add("TestCNot-b64",
+			testLops_REF<ir::PTXInstruction::CNot, long long unsigned int>,
+			testLops_PTX(ir::PTXInstruction::CNot, ir::PTXOperand::b64),
+			testLops_OUT(I64), testLops_IN(ir::PTXInstruction::CNot, I64),
+			uniformRandom<long long unsigned int, 2>, 1, 1);
+
+		add("TestShl-b16",
+			testLops_REF<ir::PTXInstruction::Shl, unsigned short>,
+			testLops_PTX(ir::PTXInstruction::Shl, ir::PTXOperand::b16),
+			testLops_OUT(I16), testLops_IN(ir::PTXInstruction::Shl, I16),
+			uniformRandom<unsigned short, 4>, 1, 1);
+		add("TestShl-b32", testLops_REF<ir::PTXInstruction::Shl, unsigned int>,
+			testLops_PTX(ir::PTXInstruction::Shl, ir::PTXOperand::b32),
+			testLops_OUT(I32), testLops_IN(ir::PTXInstruction::Shl, I32),
+			uniformRandom<unsigned int, 3>, 1, 1);
+		add("TestShl-b64",
+			testLops_REF<ir::PTXInstruction::Shl, long long unsigned int>,
+			testLops_PTX(ir::PTXInstruction::Shl, ir::PTXOperand::b64),
+			testLops_OUT(I64), testLops_IN(ir::PTXInstruction::Shl, I64),
+			uniformRandom<long long unsigned int, 3>, 1, 1);
+
+		add("TestShr-u16",
+			testLops_REF<ir::PTXInstruction::Shr, unsigned short>,
+			testLops_PTX(ir::PTXInstruction::Shr, ir::PTXOperand::u16),
+			testLops_OUT(I16), testLops_IN(ir::PTXInstruction::Shr, I16),
+			uniformRandom<unsigned short, 4>, 1, 1);
+		add("TestShr-u32", testLops_REF<ir::PTXInstruction::Shr, unsigned int>,
+			testLops_PTX(ir::PTXInstruction::Shr, ir::PTXOperand::u32),
+			testLops_OUT(I32), testLops_IN(ir::PTXInstruction::Shr, I32),
+			uniformRandom<unsigned int, 3>, 1, 1);
+		add("TestShr-u64",
+			testLops_REF<ir::PTXInstruction::Shr, long long unsigned int>,
+			testLops_PTX(ir::PTXInstruction::Shr, ir::PTXOperand::u64),
+			testLops_OUT(I64), testLops_IN(ir::PTXInstruction::Shr, I64),
+			uniformRandom<long long unsigned int, 3>, 1, 1);
+		add("TestShr-s16",
+			testLops_REF<ir::PTXInstruction::Shr, short>,
+			testLops_PTX(ir::PTXInstruction::Shr, ir::PTXOperand::s16),
+			testLops_OUT(I16), testLops_IN(ir::PTXInstruction::Shr, I16),
+			uniformRandom<short, 4>, 1, 1);
+		add("TestShr-s32", testLops_REF<ir::PTXInstruction::Shr, int>,
+			testLops_PTX(ir::PTXInstruction::Shr, ir::PTXOperand::s32),
+			testLops_OUT(I32), testLops_IN(ir::PTXInstruction::Shr, I32),
+			uniformRandom<int, 3>, 1, 1);
+		add("TestShr-s64",
+			testLops_REF<ir::PTXInstruction::Shr, long long int>,
+			testLops_PTX(ir::PTXInstruction::Shr, ir::PTXOperand::s64),
+			testLops_OUT(I64), testLops_IN(ir::PTXInstruction::Shr, I64),
+			uniformRandom<long long int, 3>, 1, 1);
+
 	}
 
 	TestPTXAssembly::TestPTXAssembly(hydrazine::Timer::Second l, 

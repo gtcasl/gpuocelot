@@ -347,7 +347,7 @@ namespace ir {
 		/*! Flag containing one or more floating-point modifiers */
 		unsigned int modifier;
 
-//		union {
+		union {
 
 			/*! Comparison operator */
 			CmpOp comparisonOperator;
@@ -377,7 +377,7 @@ namespace ir {
 			
 			/*! Indicates which type of bar. instruction should be used */
 			BarrierOperation barrierOperation;
-//		};
+		};
 	
 		/*! If the instruction is predicated, the guard */
 		PTXOperand pg;
@@ -388,7 +388,7 @@ namespace ir {
 		/*! Indicates whether target or source is a vector or scalar */
 		Vec vec;
 
-//		union {
+		union {
 
 			/*! If instruction type is atomic, select this atomic operation */
 			AtomicOperation atomicOperation;
@@ -424,7 +424,7 @@ namespace ir {
 			
 			/*! indicates how loads, stores, and prefetches should take place */
 			CacheOperation cacheOperation;
-//		};
+		};
 		
 		/*! Geometry if this is a texture or surface instruction */
 		Geometry geometry;

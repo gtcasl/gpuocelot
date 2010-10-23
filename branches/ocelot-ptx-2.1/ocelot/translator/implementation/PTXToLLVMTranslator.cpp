@@ -2296,14 +2296,27 @@ namespace translator
 
 	void PTXToLLVMTranslator::_translateCNot( const ir::PTXInstruction& i )
 	{
+		ir::LLVMIcmp cmp;
+	
+		cmp.d = ir::LLVMInstruction::Operand( _tempRegister(),
+			ir::LLVMInstruction::Type( ir::LLVMInstruction::I1, 
+			ir::LLVMInstruction::Type::Element ) );
+		cmp.a = _translate( i.a );
+		cmp.comparison = ir::LLVMInstruction::Eq;
+		cmp.b = ir::LLVMInstruction::Operand( (ir::LLVMI64) 0 );
+		cmp.b.type.type = cmp.a.type.type;
+		
+		_add( cmp );
+	
 		ir::LLVMSelect select;
+		
 		select.d = _destination( i );
-		select.condition = _translate( i.a );
-		select.a = select.condition;
+		select.condition = cmp.d;
+		select.a = cmp.a;
 		select.a.constant = true;
-		select.a.i64 = 0;
+		select.a.i64 = 1;
 		select.b = select.a;		
-		select.b.i64 = -1;
+		select.b.i64 = 0;
 	
 		_add( select );
 	}
@@ -4763,20 +4776,97 @@ namespace translator
 		
 		shift.d = _destination( i );
 		shift.a = _translate( i.a );
-		shift.b = _translate( i.b );
 		
+		if(ir::PTXOperand::bytes(i.b.type) > ir::PTXOperand::bytes(i.a.type))
+		{
+			ir::LLVMTrunc truncate;
+			
+			truncate.a = _translate( i.b );
+			truncate.d = ir::LLVMInstruction::Operand( _tempRegister(),
+				shift.a.type );
+
+			shift.b = truncate.d;
+			
+			_add( truncate );
+		}
+		else if( ir::PTXOperand::bytes(i.b.type) 
+			< ir::PTXOperand::bytes(i.a.type) )
+		{
+			ir::LLVMZext extend;
+			
+			extend.a = _translate( i.b );
+			extend.d = ir::LLVMInstruction::Operand( _tempRegister(),
+				shift.a.type );
+			
+			shift.b = extend.d;
+			
+			_add( extend );
+		}
+		else
+		{
+			shift.b = _translate( i.b );
+		}
+	
 		_add( shift );
 	}
 
 	void PTXToLLVMTranslator::_translateShr( const ir::PTXInstruction& i )
 	{
+		ir::LLVMInstruction::Operand a = _translate( i.a );
+		ir::LLVMInstruction::Operand b;
+
+		if(ir::PTXOperand::bytes(i.b.type) > ir::PTXOperand::bytes(i.a.type))
+		{
+			ir::LLVMTrunc truncate;
+			
+			truncate.a = _translate( i.b );
+			truncate.d = ir::LLVMInstruction::Operand( _tempRegister(),
+				a.type );
+
+			b = truncate.d;
+			
+			_add( truncate );
+		}
+		else if( ir::PTXOperand::bytes(i.b.type) 
+			< ir::PTXOperand::bytes(i.a.type) )
+		{
+			if( ir::PTXOperand::isSigned( i.type ) )
+			{
+				ir::LLVMSext extend;
+			
+				extend.a = _translate( i.b );
+				extend.d = ir::LLVMInstruction::Operand( _tempRegister(),
+					a.type );
+			
+				b = extend.d;
+			
+				_add( extend );
+			}
+			else
+			{
+				ir::LLVMZext extend;
+			
+				extend.a = _translate( i.b );
+				extend.d = ir::LLVMInstruction::Operand( _tempRegister(),
+					a.type );
+			
+				b = extend.d;
+			
+				_add( extend );
+			}
+		}
+		else
+		{
+			b = _translate( i.b );
+		}
+	
 		if( ir::PTXOperand::isSigned( i.type ) )
 		{
 			ir::LLVMAshr shift;
 			
 			shift.d = _destination( i );
-			shift.a = _translate( i.a );
-			shift.b = _translate( i.b );
+			shift.a = a;
+			shift.b = b;
 			
 			_add( shift );
 		}
@@ -4785,8 +4875,8 @@ namespace translator
 			ir::LLVMLshr shift;
 			
 			shift.d = _destination( i );
-			shift.a = _translate( i.a );
-			shift.b = _translate( i.b );
+			shift.a = a;
+			shift.b = b;
 			
 			_add( shift );
 		}

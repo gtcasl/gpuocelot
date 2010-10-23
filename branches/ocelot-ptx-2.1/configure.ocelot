@@ -17,7 +17,7 @@
 		runtimeApiTrace: "trace/CudaAPI.trace"
 	},
 	executive: {
-		devices: [ emulated ],
+		devices: [ emulated, llvm, nvidia, amd ],
 		optimizationLevel: none,
 		workerThreadLimit: 1
 	}

@@ -134,6 +134,73 @@ char* uniformFloat(test::Test::MersenneTwister& generator)
 ////////////////////////////////////////////////////////////////////////////////
 
 ////////////////////////////////////////////////////////////////////////////////
+// TEST MOV
+std::string testMov_PTX(ir::PTXOperand::DataType type)
+{
+	std::stringstream ptx;
+
+	std::string typeString = "." + ir::PTXOperand::toString(type);
+
+	ptx << ".version 2.1\n";
+	ptx << "\n";
+	
+	ptx << ".entry test(.param .u64 out, .param .u64 in)   \n";
+	ptx << "{\t                                            \n";
+	ptx << "\t.reg .u64 %rIn, %rOut;                       \n";
+	ptx << "\t.reg " << typeString    << " %r<2>;          \n";
+	ptx << "\tld.param.u64 %rIn, [in];                     \n";
+	ptx << "\tld.param.u64 %rOut, [out];                   \n";
+	
+	if(type == ir::PTXOperand::pred)
+	{
+		ptx << "\t.reg .u8  %rb0;                          \n";
+		ptx << "\t.reg .u16 %rs0;                          \n";
+		ptx << "\tld.global.u8 %rb0, [%rIn];               \n";
+		ptx << "\tcvt.u16.u8 %rs0, %rb0;                   \n";
+		ptx << "\tand.b16 %rs0, %rs0, 0x1;                 \n";
+		ptx << "\tsetp.ne.u16 %r0, %rs0, 0;                \n";
+		ptx << "\tmov" << typeString << " %r1, %r0;        \n";
+		ptx << "\tselp.u16   %rs0, 1, 0, %r1;              \n";
+		ptx << "\tcvt.u8.u16 %rb0, %rs0;                   \n";
+		ptx << "\tst.global.u8 [%rOut], %rb0;              \n";
+	}
+	else
+	{
+		ptx << "\tld.global" << typeString << " %r0, [%rIn];   \n";
+		ptx << "\tmov" << typeString << " %r1, %r0;            \n";
+		ptx << "\tst.global" << typeString << " [%rOut], %r1;  \n";
+	}
+	
+	ptx << "\texit;                                        \n";
+	ptx << "}                                              \n";
+	ptx << "                                               \n";
+	
+	return ptx.str();
+}
+
+template<typename type>
+void testMov_REF(void* output, void* input)
+{
+	type r0 = getParameter<type>(input, 0);
+
+	if(typeid(bool) == typeid(type))
+	{
+		r0 &= 0x1;
+	}
+
+	type r1 = r0;
+
+	setParameter(output, 0, r1);
+}
+
+test::TestPTXAssembly::TypeVector testMov_INOUT(
+	test::TestPTXAssembly::DataType type)
+{
+	return test::TestPTXAssembly::TypeVector(1, type);
+}
+////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////
 // TEST LOGICAL OPs
 std::string testLops_PTX(ir::PTXInstruction::Opcode opcode,
 	ir::PTXOperand::DataType type)
@@ -5517,6 +5584,33 @@ namespace test
 			testLops_OUT(I64), testLops_IN(ir::PTXInstruction::Shr, I64),
 			uniformRandom<long long int, 3>, 1, 1);
 
+		add("TestMov-pred", testMov_REF<bool>,
+			testMov_PTX(ir::PTXOperand::pred), testMov_INOUT(I8),
+			testMov_INOUT(I8), uniformRandom<bool, 1>, 1, 1);
+		add("TestMov-u16", testMov_REF<unsigned short>,
+			testMov_PTX(ir::PTXOperand::u16), testMov_INOUT(I16),
+			testMov_INOUT(I16), uniformRandom<unsigned short, 1>, 1, 1);
+		add("TestMov-u32", testMov_REF<unsigned int>,
+			testMov_PTX(ir::PTXOperand::u32), testMov_INOUT(I32),
+			testMov_INOUT(I32), uniformRandom<unsigned short, 1>, 1, 1);
+		add("TestMov-u64", testMov_REF<long long unsigned int>,
+			testMov_PTX(ir::PTXOperand::u64), testMov_INOUT(I64),
+			testMov_INOUT(I64), uniformRandom<long long unsigned int, 1>, 1, 1);
+		add("TestMov-s16", testMov_REF<short>,
+			testMov_PTX(ir::PTXOperand::s16), testMov_INOUT(I16),
+			testMov_INOUT(I16), uniformRandom<short, 1>, 1, 1);
+		add("TestMov-s32", testMov_REF<int>,
+			testMov_PTX(ir::PTXOperand::s32), testMov_INOUT(I32),
+			testMov_INOUT(I32), uniformRandom<int, 1>, 1, 1);
+		add("TestMov-s64", testMov_REF<long long int>,
+			testMov_PTX(ir::PTXOperand::s64), testMov_INOUT(I64),
+			testMov_INOUT(I64), uniformRandom<long long int, 1>, 1, 1);
+		add("TestMov-f32", testMov_REF<int>,
+			testMov_PTX(ir::PTXOperand::f32), testMov_INOUT(FP32),
+			testMov_INOUT(FP32), uniformFloat<float, 1>, 1, 1);
+		add("TestMov-f64", testMov_REF<long long int>,
+			testMov_PTX(ir::PTXOperand::f64), testMov_INOUT(FP64),
+			testMov_INOUT(FP64), uniformFloat<double, 1>, 1, 1);
 	}
 
 	TestPTXAssembly::TestPTXAssembly(hydrazine::Timer::Second l, 

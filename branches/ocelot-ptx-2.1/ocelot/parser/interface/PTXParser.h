@@ -172,10 +172,12 @@ namespace parser
 						const std::string& name );
 					void initializableDeclaration( const std::string& name, 
 						YYLTYPE& one, YYLTYPE& two );
-					void textureDeclaration( int token, const std::string& name, 
+					void textureDeclaration( int token,const std::string& name, 
 						YYLTYPE& location );
-					void surfaceDeclaration( int token, const std::string &name, YYLTYPE &location);
-					void samplerDeclaration( int token, const std::string &name, YYLTYPE &location);
+					void surfaceDeclaration( int token, 
+						const std::string &name, YYLTYPE &location);
+					void samplerDeclaration( int token, 
+						const std::string &name, YYLTYPE &location);
 					void argumentDeclaration( const std::string& name, 
 						YYLTYPE& location );
 					
@@ -208,6 +210,8 @@ namespace parser
 					void constantOperand( unsigned long long int value );
 					void constantOperand( float value );
 					void constantOperand( double value );
+					void indexedOperand( const std::string& name, 
+						YYLTYPE& location, long long int value );
 					void addressableOperand( const std::string& name, 
 						long long int value, YYLTYPE& location, 
 						bool invert );

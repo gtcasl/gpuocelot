@@ -3499,16 +3499,41 @@ namespace translator
 					case ir::PTXOperand::v1:
 					{
 						if( i.a.addressMode == ir::PTXOperand::Address
-							|| i.a.addressMode == ir::PTXOperand::FunctionName )
+							|| i.a.addressMode == ir::PTXOperand::FunctionName
+							|| i.a.addressMode == ir::PTXOperand::Indirect )
 						{
 							if( i.addressSpace == ir::PTXInstruction::Global )
 							{
 								ir::LLVMPtrtoint toint;
 				
 								toint.a = _getAddressableGlobalPointer( i.a );
-								toint.d = _destination( i );
+
+								if( i.a.offset == 0 )
+								{
+									toint.d = _destination( i );
 				
-								_add( toint );
+									_add( toint );
+								}
+								else
+								{
+									toint.d = ir::LLVMInstruction::Operand( 
+										_tempRegister(),
+										ir::LLVMInstruction::Type( 
+										_translate( i.type ), 
+										ir::LLVMInstruction::Type::Element ) );
+									
+									_add( toint );
+									
+									ir::LLVMAdd add;
+									
+									add.a          = toint.d;
+									add.d          = _destination( i );
+									add.b.constant = true;
+									add.b.type     = add.a.type;
+									add.b.i64      = i.a.offset;
+									
+									_add( add );
+								}
 							}
 							else
 							{

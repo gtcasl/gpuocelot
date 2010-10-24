@@ -1272,6 +1272,31 @@ namespace parser
 		operandVector.push_back( operand );
 	}
 	
+	void PTXParser::State::indexedOperand( const std::string& name, 
+		YYLTYPE& location, long long int index )
+	{
+		OperandMap::iterator mode = operands.find( name );
+		
+		if( mode == operands.end() )
+		{
+			throw_exception( toString( location, *this ) << "Operand " 
+				<< name << " not declared in this scope.", NoDeclaration );
+		}
+
+		operand.addressMode = ir::PTXOperand::Address;
+	
+		operand.identifier = name;
+		operand.vec = ir::PTXOperand::v1;
+		operand.array.clear();
+
+		operand.offset = (int) index * ir::PTXOperand::bytes(
+			mode->second.operand.type);
+		operand.type = mode->second.operand.type;
+	
+		operandVector.push_back( operand );	
+	}
+
+	
 	void PTXParser::State::addressableOperand( const std::string& name, 
 		long long int value, YYLTYPE& location, bool invert )
 	{

@@ -134,6 +134,142 @@ char* uniformFloat(test::Test::MersenneTwister& generator)
 ////////////////////////////////////////////////////////////////////////////////
 
 ////////////////////////////////////////////////////////////////////////////////
+// TEST MOV LABEL
+std::string testMovLabel_PTX(ir::PTXInstruction::AddressSpace space, bool index, 
+	ir::PTXInstruction::Vec v)
+{
+	std::stringstream ptx;
+
+	std::string spaceString = "." + ir::PTXInstruction::toString(space);
+	std::string vecString;
+	
+	if(v != ir::PTXOperand::v1)
+	{
+		vecString = "." + ir::PTXInstruction::toString(v);
+	}
+	
+	ptx << ".version 2.1\n";
+
+	if(space != ir::PTXInstruction::Param)
+	{	
+		if(index)
+		{
+			ptx << spaceString << " " << vecString << " .u32 global[2];\n";
+		}
+		else
+		{
+			ptx << spaceString << " " << vecString << " .u32 global;\n";
+		}
+	}
+
+	ptx << "\n";
+	
+	ptx << ".entry test(.param .u64 out, .param .u64 in)   \n";
+	ptx << "{\t                                            \n";
+
+	if(space == ir::PTXInstruction::Param)
+	{	
+		if(index)
+		{
+			ptx << spaceString << " " << vecString << " .u32 global[2];\n";
+		}
+		else
+		{
+			ptx << spaceString << " " << vecString << " .u32 global;\n";
+		}
+	}
+
+	ptx << "\t.reg .u64 %rIn, %rOut;                       \n";
+	ptx << "\t.reg .u32 %r<4>;                             \n";
+	ptx << "\t.reg .u64 %address;                          \n";
+	ptx << "\tld.param.u64 %rIn, [in];                     \n";
+	ptx << "\tld.param.u64 %rOut, [out];                   \n";
+	
+	ptx << "\tld.global.u32 %r0, [%rIn];                   \n";
+
+	if(index)
+	{
+		ptx << "\tmov.u64 %address, global[1];             \n";
+	}
+	else
+	{
+		ptx << "\tmov.u64 %address, global;                \n";
+	}
+
+	switch(v)
+	{
+	case ir::PTXOperand::v1:
+	{
+		ptx << "\tst" << spaceString << ".u32 [%address], %r0; \n";
+		break;
+	}
+	case ir::PTXOperand::v2:
+	{
+		ptx << "\tst" << spaceString << ".v2.u32 [%address], {%r0, %r0}; \n";
+		break;
+	}
+	case ir::PTXOperand::v4:
+	{
+		ptx << "\tst" << spaceString
+			<< ".v4.u32 [%address], {%r0, %r0, %r0, %r0}; \n";
+		break;
+	}
+	default: break;
+	}
+	
+	if(index)
+	{
+		ptx << "\tmov.u64 %address, global + 4;            \n";
+	}
+
+	switch(v)
+	{
+	case ir::PTXOperand::v1:
+	{
+		ptx << "\tld" << spaceString << ".u32 %r0, [%address]; \n";
+		break;
+	}
+	case ir::PTXOperand::v2:
+	{
+		ptx << "\tld" << spaceString << ".v2.u32 {%r0, %r1}, [%address]; \n";
+		ptx << "\tand.b32 %r0, %r0, %r1;\n";
+		break;
+	}
+	case ir::PTXOperand::v4:
+	{
+		ptx << "\tld" << spaceString 
+			<< ".v4.u32 {%r0, %r1, %r2, %r3}, [%address]; \n";
+		ptx << "\tand.b32 %r0, %r0, %r1;\n";
+		ptx << "\tand.b32 %r0, %r0, %r2;\n";
+		ptx << "\tand.b32 %r0, %r0, %r3;\n";
+	break;
+	}
+	default: break;
+	}
+
+	ptx << "\tst.global.u32 [%rOut], %r0;                  \n";
+	
+	ptx << "\texit;                                        \n";
+	ptx << "}                                              \n";
+	ptx << "                                               \n";
+	
+	return ptx.str();
+}
+
+void testMovLabel_REF(void* output, void* input)
+{
+	unsigned int r0 = getParameter<unsigned>(input, 0);
+
+	setParameter(output, 0, r0);
+}
+
+test::TestPTXAssembly::TypeVector testMovLabel_INOUT()
+{
+	return test::TestPTXAssembly::TypeVector(1, test::TestPTXAssembly::I32);
+}
+////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////
 // TEST MOV
 std::string testMov_PTX(ir::PTXOperand::DataType type)
 {
@@ -5611,6 +5747,82 @@ namespace test
 		add("TestMov-f64", testMov_REF<long long int>,
 			testMov_PTX(ir::PTXOperand::f64), testMov_INOUT(FP64),
 			testMov_INOUT(FP64), uniformFloat<double, 1>, 1, 1);
+
+		add("TestMovLabel-global-v1", testMovLabel_REF,
+			testMovLabel_PTX(ir::PTXInstruction::Global,
+				false, ir::PTXOperand::v1), 
+			testMovLabel_INOUT(), testMovLabel_INOUT(),
+			uniformFloat<unsigned int, 1>, 1, 1);
+		add("TestMovLabel-global-v1-index", testMovLabel_REF,
+			testMovLabel_PTX(ir::PTXInstruction::Global,
+				true, ir::PTXOperand::v1), 
+			testMovLabel_INOUT(), testMovLabel_INOUT(),
+			uniformFloat<unsigned int, 1>, 1, 1);
+		add("TestMovLabel-global-v2", testMovLabel_REF,
+			testMovLabel_PTX(ir::PTXInstruction::Global,
+				false, ir::PTXOperand::v2), 
+			testMovLabel_INOUT(), testMovLabel_INOUT(),
+			uniformFloat<unsigned int, 1>, 1, 1);
+		add("TestMovLabel-global-v4", testMovLabel_REF,
+			testMovLabel_PTX(ir::PTXInstruction::Global,
+				false, ir::PTXOperand::v4), 
+			testMovLabel_INOUT(), testMovLabel_INOUT(),
+			uniformFloat<unsigned int, 1>, 1, 1);
+		add("TestMovLabel-local-v1", testMovLabel_REF,
+			testMovLabel_PTX(ir::PTXInstruction::Local,
+				false, ir::PTXOperand::v1), 
+			testMovLabel_INOUT(), testMovLabel_INOUT(),
+			uniformFloat<unsigned int, 1>, 1, 1);
+		add("TestMovLabel-local-v1-index", testMovLabel_REF,
+			testMovLabel_PTX(ir::PTXInstruction::Local,
+				true, ir::PTXOperand::v1), 
+			testMovLabel_INOUT(), testMovLabel_INOUT(),
+			uniformFloat<unsigned int, 1>, 1, 1);
+		add("TestMovLabel-local-v2", testMovLabel_REF,
+			testMovLabel_PTX(ir::PTXInstruction::Local,
+				false, ir::PTXOperand::v2), 
+			testMovLabel_INOUT(), testMovLabel_INOUT(),
+			uniformFloat<unsigned int, 1>, 1, 1);
+		add("TestMovLabel-local-v4", testMovLabel_REF,
+			testMovLabel_PTX(ir::PTXInstruction::Local,
+				false, ir::PTXOperand::v4), 
+			testMovLabel_INOUT(), testMovLabel_INOUT(),
+			uniformFloat<unsigned int, 1>, 1, 1);
+		add("TestMovLabel-param-v1", testMovLabel_REF,
+			testMovLabel_PTX(ir::PTXInstruction::Param,
+				false, ir::PTXOperand::v1), 
+			testMovLabel_INOUT(), testMovLabel_INOUT(),
+			uniformFloat<unsigned int, 1>, 1, 1);
+		add("TestMovLabel-param-v1-index", testMovLabel_REF,
+			testMovLabel_PTX(ir::PTXInstruction::Param,
+				true, ir::PTXOperand::v1),
+			testMovLabel_INOUT(), testMovLabel_INOUT(),
+			uniformFloat<unsigned int, 1>, 1, 1);
+		add("TestMovLabel-param-v2", testMovLabel_REF,
+			testMovLabel_PTX(ir::PTXInstruction::Param,
+				false, ir::PTXOperand::v2), 
+			testMovLabel_INOUT(), testMovLabel_INOUT(),
+			uniformFloat<unsigned int, 1>, 1, 1);
+		add("TestMovLabel-param-v4", testMovLabel_REF,
+			testMovLabel_PTX(ir::PTXInstruction::Param,
+				false, ir::PTXOperand::v4), 
+			testMovLabel_INOUT(), testMovLabel_INOUT(),
+			uniformFloat<unsigned int, 1>, 1, 1);
+		add("TestMovLabel-shared-v1", testMovLabel_REF,
+			testMovLabel_PTX(ir::PTXInstruction::Shared,
+				false, ir::PTXOperand::v1),
+			testMovLabel_INOUT(), testMovLabel_INOUT(),
+			uniformFloat<unsigned int, 1>, 1, 1);
+		add("TestMovLabel-shared-v1-index", testMovLabel_REF,
+			testMovLabel_PTX(ir::PTXInstruction::Shared,
+				true, ir::PTXOperand::v1),
+			testMovLabel_INOUT(), testMovLabel_INOUT(),
+			uniformFloat<unsigned int, 1>, 1, 1);
+		add("TestMovLabel-shared-v4", testMovLabel_REF,
+			testMovLabel_PTX(ir::PTXInstruction::Shared,
+				false, ir::PTXOperand::v4),
+			testMovLabel_INOUT(), testMovLabel_INOUT(),
+			uniformFloat<unsigned int, 1>, 1, 1);
 	}
 
 	TestPTXAssembly::TestPTXAssembly(hydrazine::Timer::Second l, 

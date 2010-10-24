@@ -1160,7 +1160,12 @@ membar : OPCODE_MEMBAR membarSpace ';'
 	state.instruction( $<text>1 );
 };
 
-movSourceOperand : arrayOperand | offsetAddressableOperand;
+movIndexedOperand : identifier '[' TOKEN_DECIMAL_CONSTANT ']'
+{
+	state.indexedOperand( $<text>1, @1, $<value>3 );
+};
+
+movSourceOperand : arrayOperand | offsetAddressableOperand | movIndexedOperand;
 
 mov : OPCODE_MOV dataType arrayOperand ',' movSourceOperand ';'
 {
@@ -1377,9 +1382,10 @@ tex : OPCODE_TEX geometry TOKEN_V4 dataType dataType arrayOperand ',' '['
 // Surface sampling 
 // 
 
-surfaceQuery : TOKEN_WIDTH | TOKEN_HEIGHT | TOKEN_DEPTH | TOKEN_CHANNEL_DATA_TYPE 
-	| TOKEN_CHANNEL_ORDER | TOKEN_NORMALIZED_COORDS | TOKEN_FILTER_MODE | TOKEN_ADDR_MODE_0 |
-	TOKEN_ADDR_MODE_1 | TOKEN_ADDR_MODE_2
+surfaceQuery : TOKEN_WIDTH | TOKEN_HEIGHT | TOKEN_DEPTH
+	| TOKEN_CHANNEL_DATA_TYPE | TOKEN_CHANNEL_ORDER | TOKEN_NORMALIZED_COORDS
+	| TOKEN_FILTER_MODE | TOKEN_ADDR_MODE_0 | TOKEN_ADDR_MODE_1
+	| TOKEN_ADDR_MODE_2
 {
 	state.surfaceQuery( $<value>1 );
 };
@@ -1418,15 +1424,15 @@ suld : OPCODE_SULD formatMode geometry optionalCacheOperation
 }
 
 sust : OPCODE_SUST formatMode geometry optionalCacheOperation 
-	instructionVectorType dataType clampOperation '[' operand ',' arrayOperand ']' ','
-	arrayOperand ';'
+	instructionVectorType dataType clampOperation '[' operand ','
+	arrayOperand ']' ',' arrayOperand ';'
 {
 	state.instruction( $<text>1, 1);
 	state.convertD( $<value>7, @1 );
 }
 
-sured : OPCODE_SURED formatMode reductionOperation geometry dataType clampOperation
-	'[' operand ',' arrayOperand ']' ',' arrayOperand ';'
+sured : OPCODE_SURED formatMode reductionOperation geometry dataType
+	clampOperation '[' operand ',' arrayOperand ']' ',' arrayOperand ';'
 {
 	state.instruction( $<text>1, 1);
 	state.convertD( $<value>7, @1 );

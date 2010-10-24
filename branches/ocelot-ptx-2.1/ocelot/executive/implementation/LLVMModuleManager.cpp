@@ -114,10 +114,42 @@ static void optimizePTX(ir::PTXKernel& kernel,
 
 static unsigned int pad(unsigned int& size, unsigned int alignment)
 {
+	report("  Setting up global memory references.");
 	unsigned int padding = alignment - (size % alignment);
 	padding = (alignment == padding) ? 0 : padding;
 	size += padding;
 	return padding;
+}
+
+static void setupGlobalMemoryReferences(ir::PTXKernel& kernel,
+	const ir::PTXKernel& parent)
+{
+	for(ir::ControlFlowGraph::iterator block = kernel.cfg()->begin(); 
+		block != kernel.cfg()->end(); ++block)
+	{
+		for( ir::ControlFlowGraph::InstructionList::iterator 
+			instruction = block->instructions.begin(); 
+			instruction != block->instructions.end(); ++instruction )
+		{
+			ir::PTXInstruction& ptx = static_cast<
+				ir::PTXInstruction&>(**instruction);
+
+			if(ptx.opcode == ir::PTXInstruction::Mov 
+				&& (ptx.a.addressMode == ir::PTXOperand::Address
+				|| ptx.a.addressMode == ir::PTXOperand::Indirect))
+			{
+				ir::Module::GlobalMap::const_iterator 
+					global = parent.module->globals().find(ptx.a.identifier);
+				if(global == parent.module->globals().end()) continue;
+				if(global->second.statement.directive
+					!= ir::PTXStatement::Global) continue;
+					
+				ptx.addressSpace = ir::PTXInstruction::Global;				
+				report("   For instruction \"" << ptx.toString() 
+					<< "\" setting address space to global.");
+			}
+		}
+	}
 }
 
 static void setupArgumentMemoryReferences(ir::PTXKernel& kernel,
@@ -625,6 +657,7 @@ static void setupPTXMemoryReferences(ir::PTXKernel& kernel,
 {
 	report(" Setting up memory references for kernel variables.");
 	
+	setupGlobalMemoryReferences(kernel, parent);
 	setupArgumentMemoryReferences(kernel, metadata, parent);
 	setupParameterMemoryReferences(kernel, metadata, parent);
 	setupSharedMemoryReferences(kernel, metadata, parent);

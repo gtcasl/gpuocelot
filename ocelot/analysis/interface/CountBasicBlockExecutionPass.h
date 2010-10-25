@@ -22,8 +22,8 @@ namespace analysis
 	class CountBasicBlockExecutionPass : public ModulePass
 	{
 	    public:
-			/*! \brief The id of the basic block counter */
-			std::string basicBlockCounterName() const;
+			/*! \brief The id of the basic block counter base pointer */			
+             std::string basicBlockCounterBase() const;
 			
 		public:
 			CountBasicBlockExecutionPass();	
@@ -35,7 +35,8 @@ namespace analysis
 			void finalize( );
 
         private:
-			void _runOnBlock( ir::PTXKernel* kernel, DataflowGraph::iterator block, DataflowGraph::RegisterId registerId, unsigned int offset );
+            DataflowGraph::RegisterId _runOnEntryBlock( ir::PTXKernel* kernel, DataflowGraph::iterator block, DataflowGraph::RegisterId registerId);
+			void _runOnBlock( ir::PTXKernel* kernel, DataflowGraph::iterator block, DataflowGraph::RegisterId counterPtrRegId, DataflowGraph::RegisterId registerId, unsigned int offset );
 			
 	};
 }

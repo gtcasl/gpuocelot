@@ -30,6 +30,10 @@ namespace test
    
     bool ExecuteInstrumentedKernel::execute()
 	{ 
+        int ctas = 2;
+        int threads = 2;
+        int basicBlocks = 7;
+        
 		ocelot::reset();
 
         std::ifstream file(input);
@@ -40,22 +44,54 @@ namespace test
         
         ocelot::registerPTXModule(file, moduleName);        		
         
-    	cudaConfigureCall( dim3( 1, 1, 1 ), dim3( 1, 1, 1 ), 0, 0 );
+        size_t *counter = 0;
+        
+        cudaMalloc((void **) &counter, basicBlocks * threads * ctas * sizeof(size_t));
+        cudaMemset( counter, 0, basicBlocks * threads * ctas * sizeof( size_t ));
+        cudaMemcpyToSymbol("__ocelot_basic_block_counter_base", &counter, sizeof(*counter), 0, cudaMemcpyHostToDevice);
+        
+        std::cout << "__ocelot_basic_block_counter_base = " << (const void *)counter << "\n";      
+    
+    	cudaConfigureCall( dim3(ctas, 1, 1), dim3( threads, 1, 1), 0, 0 );
         
 		ocelot::launch( moduleName, kernelName );
-		
-        size_t *counter;
-        cudaGetSymbolAddress((void **) &counter, "__ocelot_basic_block_counter");
-        cudaMemcpyToSymbol("counter", &counter, sizeof( size_t ), 0, cudaMemcpyDeviceToHost);
-		
-        std::cout << "\n--------------- Basic Block Execution Count ---------------\n\n";
 
-        for(int i = 0; counter[i] != 0; i++) {
-            std::cout << "basic block " << (i + 1) << ": " << counter[i] << std::endl;
+        size_t *counterHost = new size_t[basicBlocks * threads * ctas];
+        cudaMemcpy(counterHost, counter, basicBlocks * threads * ctas * sizeof( size_t ), cudaMemcpyDeviceToHost);
+        
+        std::cout << "\n--------------- Basic Block Execution Count Per Thread ---------------\n\n";
+
+        int i = 0;
+        int j = 0;
+        int k = 0;
+        int *blockExecutionTotal = new int[basicBlocks];
+       
+        for(i = 0; i < basicBlocks; i++) {
+            blockExecutionTotal[i] = 0;
+        }
+
+        for(k = 1; k <= ctas; k++) {
+            std::cout << "CTA " << k << ":\n";
+            for(i = 0; i < threads; i++) {
+                std::cout << "Thread " << (i + 1) << ":\n";
+                for(j = 0; j < basicBlocks; j++) {
+                    std::cout << "basicBlock " << (j + 1) << ": " << counterHost[(i*basicBlocks * ctas) + j] << "\n";
+                    blockExecutionTotal[j] += counterHost[(i*basicBlocks * ctas) + j];
+                }
+            }   
+        }
+
+        std::cout << "\n\n--------------- Total Basic Block Execution Count ---------------\n\n";
+        for(i = 0; i < basicBlocks; i++) {
+            std::cout << "basicBlock " << i << ": " << blockExecutionTotal[i] << "\n";
         }
 
 		bool pass = true;
-		status << "Test Passed\n";		
+		status << "Test Passed\n";	
+        
+        delete[] counterHost;
+        delete[] blockExecutionTotal;
+        cudaFree(counter);	
 
 		return pass;
 	}

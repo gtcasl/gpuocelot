@@ -28,7 +28,7 @@ namespace analysis
 				InvalidPassType = 0x0,
 				RemoveBarriers = 0x1,
 				ReverseIfConversion = 0x2,
-                BasicBlockCount = 0x3
+                BasicBlockCount = 0x4
 			};
 	
 		public:

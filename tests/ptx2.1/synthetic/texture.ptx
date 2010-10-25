@@ -13,7 +13,7 @@
 	.param .s32 __cudaparm_sequence_N)
 {
 .reg .b64 %rl<4>;
-.reg .b32 %rw<4>;
+.reg .b32 %rw<5>;
 .reg .f32 %f<4>;
 .reg .u32 %r<9>;
 .reg .s32 %rs<4>;

@@ -21,7 +21,6 @@
 #include <ocelot/cuda/interface/cuda_runtime.h>
 
 #include <limits>
-
 #include <climits>
 #include <cmath>
 
@@ -506,7 +505,7 @@ std::string testLops_PTX(ir::PTXInstruction::Opcode opcode,
 			|| opcode == ir::PTXInstruction::Shl )
 		{
 			ptx << "\tld.global.u32 %r1, [%rIn + " 
-				<< std::max(ir::PTXOperand::bytes(type), sizeof(unsigned int)) 
+				<< std::max((size_t)ir::PTXOperand::bytes(type), sizeof(unsigned int)) 
 				<< "];              \n";
 			ptx << "\trem.u32 %r1, %r1, " 
 				<< 8 * ir::PTXOperand::bytes(type) << ";\n";

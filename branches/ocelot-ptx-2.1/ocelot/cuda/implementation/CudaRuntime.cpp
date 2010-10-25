@@ -86,7 +86,8 @@ cuda::HostThreadContext::HostThreadContext(const HostThreadContext& c):
 	parameterIndices(c.parameterIndices),
 	parameterSizes(c.parameterSizes),
 	persistentTraceGenerators(c.persistentTraceGenerators),
-	nextTraceGenerators(c.nextTraceGenerators) {
+	nextTraceGenerators(c.nextTraceGenerators),
+	ptxPasses(c.ptxPasses) {
 	memcpy(parameterBlock, c.parameterBlock, parameterBlockSize);
 }
 
@@ -100,6 +101,7 @@ cuda::HostThreadContext& cuda::HostThreadContext::operator=(const HostThreadCont
 	parameterSizes = c.parameterSizes;
 	persistentTraceGenerators = c.persistentTraceGenerators;
 	nextTraceGenerators = c.nextTraceGenerators;
+	ptxPasses = c.ptxPasses;
 	memcpy(parameterBlock, c.parameterBlock, parameterBlockSize);
 	return *this;
 }
@@ -120,6 +122,7 @@ cuda::HostThreadContext& cuda::HostThreadContext::operator=(HostThreadContext&& 
 	std::swap(parameterSizes, c.parameterSizes);
 	std::swap(persistentTraceGenerators, c.persistentTraceGenerators);
 	std::swap(nextTraceGenerators, c.nextTraceGenerators);
+	std::swap(ptxPasses, c.ptxPasses);
 	return *this;
 }
 
@@ -3005,9 +3008,7 @@ cudaError_t cuda::CudaRuntime::cudaGraphicsSubResourceGetMappedArray(
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
-void cuda::CudaRuntime::addTraceGenerator( trace::TraceGenerator& gen, 
-	bool persistent ) {
-
+void cuda::CudaRuntime::addTraceGenerator( trace::TraceGenerator& gen, bool persistent ) {
 	_lock();
 	HostThreadContext& thread = _getCurrentThread();
 	if (persistent) {
@@ -3024,6 +3025,40 @@ void cuda::CudaRuntime::clearTraceGenerators() {
 	HostThreadContext& thread = _getCurrentThread();
 	thread.persistentTraceGenerators.clear();
 	thread.nextTraceGenerators.clear();
+	_unlock();
+}
+
+void cuda::CudaRuntime::addPTXPass(analysis::Pass &pass) {
+	_lock();
+#if 0
+	HostThreadContext& thread = _getCurrentThread();
+
+	thread.ptxPersistentPassesList.push_back(&pass);
+#endif
+	_unlock();
+}
+
+void cuda::CudaRuntime::removePTXPass(analysis::Pass &pass) {
+	_lock();
+#if 0
+	HostThreadContext& thread = _getCurrentThread();
+
+	analysis::PassList::iterator p_it = thread.ptxPersistentPassesList.begin();
+	for (; p_it != thread.ptxPersistentPassesList.end(); ++p_it) {
+		if ((*p_it) == &pass) {
+			p_it = thread.ptxPersistentPassesList.erase(p_it);
+		}
+	}
+#endif
+	_unlock();
+}
+
+void cuda::CudaRuntime::clearPTXPasses() {
+	_lock();
+#if 0
+	HostThreadContext& thread = _getCurrentThread();
+	thread.ptxPersistentPassesList.clear();
+#endif
 	_unlock();
 }
 

@@ -1,7 +1,7 @@
 {
 	ocelot: "ocelot",
 	trace: { 
-		memoryChecker: true,
+		memoryChecker: false,
 		raceDetector: {
 			enabled: true,
 			ignoreIrrelevantWrites: true
@@ -17,7 +17,7 @@
 		runtimeApiTrace: "trace/CudaAPI.trace"
 	},
 	executive: {
-		devices: [ emulated, llvm, nvidia, amd ],
+		devices: [ emulated ],
 		optimizationLevel: none,
 		workerThreadLimit: 1
 	}

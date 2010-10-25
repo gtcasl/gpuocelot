@@ -115,6 +115,28 @@ std::string ir::PTXInstruction::toString( SurfaceQuery query ) {
 	return "";
 }
 
+std::string ir::PTXInstruction::toString( FormatMode mode ) {
+	switch (mode) {
+		case Unformatted: return ".b";
+		case Formatted: return ".p";
+		case FormatMode_Invalid: break;
+		default: break;
+	}
+	return "";
+}
+
+std::string ir::PTXInstruction::toString( ClampOperation clamp ) {
+	switch (clamp) {
+		case TrapOOB: return ".trap";
+		case Clamp: return ".clamp";
+		case Zero: return ".zero";
+		case Mirror: return ".mirror";
+		case ClampOperation_Invalid: break;
+		default: break;
+	}
+	return "";
+}
+
 std::string ir::PTXInstruction::roundingMode( Modifier modifier ) {
 	switch( modifier ) {
 		case rn: return "rn"; break;
@@ -1754,12 +1776,46 @@ std::string ir::PTXInstruction::valid() const {
 			}
 			break;
 		}
+		case Suld: {
+			if (formatMode == Formatted && !(type == ir::PTXOperand::b32 || type == ir::PTXOperand::u32 
+				|| type == ir::PTXOperand::s32 || type == ir::PTXOperand::f32)) {
+				return "sust.p - data type must be .b32, .u32, .s32, or .f32";
+			}
+			else if (formatMode == Unformatted && !(type == ir::PTXOperand::b8 || type == ir::PTXOperand::b16 
+				|| type == ir::PTXOperand::b32 || type == ir::PTXOperand::b64)) {
+				return "sust.b - data type must be .b8, .b16, .b32, or .b64";
+			}
+			break;
+		}
 		case Suq: {
 			if (!(surfaceQuery == Width || surfaceQuery == Height || surfaceQuery == Depth)) {
 				return "surface query must be .width, .height, or .depth";
 			}
 			if (type != ir::PTXOperand::b32) {
 				return "data type must be .b32";
+			}
+			break;
+		}
+		case Sured: {
+			if (!(reductionOperation == ReductionAdd || reductionOperation == ReductionMin 
+				|| reductionOperation == ReductionMax || reductionOperation == ReductionAnd
+				|| reductionOperation == ReductionOr)) {
+				return "reduction operation must be .add, .min, .max, .and, or .or";
+			}
+			if (!(type == ir::PTXOperand::u32 || type == ir::PTXOperand::u64 
+				|| type == ir::PTXOperand::s32 || type == ir::PTXOperand::b32)) {
+				return "data type must be .u32, .u64, .s32, or .b32";
+			}
+			break;
+		}
+		case Sust: {
+			if (formatMode == Formatted && !(type == ir::PTXOperand::b32 || type == ir::PTXOperand::u32 
+				|| type == ir::PTXOperand::s32 || type == ir::PTXOperand::f32)) {
+				return "sust.p - data type must be .b32, .u32, .s32, or .f32";
+			}
+			else if (formatMode == Unformatted && !(type == ir::PTXOperand::b8 || type == ir::PTXOperand::b16 
+				|| type == ir::PTXOperand::b32 || type == ir::PTXOperand::b64)) {
+				return "sust.b - data type must be .b8, .b16, .b32, or .b64";
 			}
 			break;
 		}
@@ -2240,9 +2296,24 @@ std::string ir::PTXInstruction::toString() const {
 				+ d.toString() + ", " + a.toString() + ", " + b.toString();
 			return result;
 		}
+		case Suld: {
+			return guard() + "suld" + toString(formatMode) + "." + toString(geometry) + "." 
+				+ toString(vec) + "." + PTXOperand::toString(type) + toString(clamp) +
+				" " + d.toString() + ", [" + a.toString() + ", " + b.toString() + "]";
+		}
 		case Suq: {
 			return guard() + "suq." + toString( surfaceQuery ) 
-				+ "." + PTXOperand::toString(type) + " " + d.toString() + ", " + a.toString();
+				+ "." + PTXOperand::toString(type) + " " + d.toString() + ", [" + a.toString() + "]";
+		}
+		case Sured: {
+			return guard() + "sured" + toString(formatMode) + "." + toString(reductionOperation) + "." +
+				toString(geometry) + "." + PTXOperand::toString(type) +  toString(clamp) + 
+				" [" + d.toString() + ", " + a.toString() + "], " + b.toString();
+		}
+		case Sust: {			
+			return guard() + "sust" + toString(formatMode) + "." + toString(geometry) + "." 
+				+ toString(vec) + "." + PTXOperand::toString(type) + toString(clamp) +
+				" [" + d.toString() +", " + a.toString() + "], " + b.toString();
 		}
 		case TestP: {
 			return guard() + "testp." + toString( floatingPointMode ) 
@@ -2260,7 +2331,7 @@ std::string ir::PTXInstruction::toString() const {
 		}
 		case Txq: {
 			return guard() + "txq." + toString( surfaceQuery ) 
-				+ "." + PTXOperand::toString(type) + " " + d.toString() + ", " + a.toString();
+				+ "." + PTXOperand::toString(type) + " " + d.toString() + ", [" + a.toString() + "]";
 		}
 		case Vote: {
 			return guard() + "vote." + toString( vote ) + ".pred " 

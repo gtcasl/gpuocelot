@@ -1064,7 +1064,7 @@ void LLVMModuleManager::Module::shiftId(FunctionId nextId)
 LLVMModuleManager::ModuleDatabase::ModuleDatabase()
 {
 	start();
-	
+#if 0
 	std::stringstream ptx;
 	
 	ptx << 
@@ -1083,6 +1083,7 @@ LLVMModuleManager::ModuleDatabase::ModuleDatabase()
 	_barrierModule.load(ptx, "_ZOcelotBarrierModule");
 	
 	loadModule(&_barrierModule, translator::Translator::NoOptimization, 0);
+#endif
 }
 
 LLVMModuleManager::ModuleDatabase::~ModuleDatabase()

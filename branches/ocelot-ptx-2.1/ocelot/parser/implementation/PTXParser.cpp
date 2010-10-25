@@ -103,7 +103,7 @@ namespace parser
 	}
 	
 	void PTXParser::State::_setImmediateTypes()
-	{
+	{		
 		ir::PTXOperand::DataType type = ir::PTXOperand::TypeSpecifier_invalid;
 		for( OperandVector::iterator operand = operandVector.begin(); 
 			operand != operandVector.end(); ++operand )
@@ -1348,6 +1348,8 @@ namespace parser
 				<< "\" has more than 4 elements.", InvalidArray );
 		}
 
+#if 0
+		// I don't think this is a valid check
 		if( identifiers.size() == 3 )
 		{
 			throw_exception( toString( location, *this ) 
@@ -1356,6 +1358,7 @@ namespace parser
 				identifiers.end(), "," ) 
 				<< "\" has exactly 3 elements.", InvalidArray );
 		}
+#endif
 	
 		if( mode == operands.end() )
 		{
@@ -1577,7 +1580,7 @@ namespace parser
 	void PTXParser::State::instruction( const std::string& opcode,
 		int dataType )
 	{
-		report( "  Rule: instruction : " << opcode );
+		
 		_setImmediateTypes();
 
 		statement.directive = ir::PTXStatement::Instr;
@@ -1586,7 +1589,7 @@ namespace parser
 		statement.instruction.pg = operandVector[0];
 
 		unsigned int index = 1;
-
+				
 		if( operandVector.size() > index )
 		{
 			statement.instruction.d = operandVector[index++];
@@ -1806,6 +1809,7 @@ namespace parser
 	}
 	
 	void PTXParser::State::surfaceQuery(int token) {
+		report("surfaceQuery(" << token << ")");
 		statement.instruction.surfaceQuery = tokenToSurfaceQuery(token);
 	}
 
@@ -2042,6 +2046,7 @@ namespace parser
 				std::stringstream stream;
 				stream << token;
 				exception.message = "Got invalid data type " + stream.str();
+				report("PTXParser::tokenToDataType(" << token << ") - " << exception.message);
 				throw exception;
 				break;
 			}
@@ -2312,6 +2317,7 @@ namespace parser
 	{
 		switch (token)
 		{
+			case TOKEN_Z: return ir::PTXInstruction::Unformatted;
 			case TOKEN_B: return ir::PTXInstruction::Unformatted;
 			case TOKEN_P: return ir::PTXInstruction::Formatted;
 			default: break;
@@ -2319,7 +2325,10 @@ namespace parser
 		return ir::PTXInstruction::FormatMode_Invalid;
 	}
 	
-	ir::PTXInstruction::SurfaceQuery PTXParser::tokenToSurfaceQuery(int token) {
+	ir::PTXInstruction::SurfaceQuery PTXParser::tokenToSurfaceQuery(int token)
+	{
+		report("tokenToSurfaceQuery(" << token << ")");
+		
 		switch (token)
 		{
 			case TOKEN_WIDTH: return ir::PTXInstruction::Width;

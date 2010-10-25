@@ -1388,55 +1388,65 @@ surfaceQuery : TOKEN_WIDTH | TOKEN_HEIGHT | TOKEN_DEPTH
 	| TOKEN_ADDR_MODE_2
 {
 	state.surfaceQuery( $<value>1 );
-};
+}
 
 txq : OPCODE_TXQ surfaceQuery dataType operand ',' '[' operand ']' ';'
 {
-	state.instruction( $<text>1, 3 );
+	state.surfaceQuery( $<value>2 );
+	state.instruction( $<text>1, $<value>3 );
 };
 
 suq : OPCODE_SUQ surfaceQuery dataType operand ',' '[' operand ']' ';'
 {
-	state.instruction( $<text>1, 3 );
+	state.instruction( $<text>1, $<value>3 );
+	state.surfaceQuery( $<value>2 );
 };
 
-optionalCacheOperation : TOKEN_CA | TOKEN_CG | TOKEN_CS | TOKEN_CV
+cacheOperation : TOKEN_CA | TOKEN_CG | TOKEN_CS | TOKEN_CV
 {
 	state.cacheOperation( $<value>1 );
 };
+
+optionalCacheOperation : cacheOperation | /* empty */;
 
 clampOperation : TOKEN_CLAMP | TOKEN_ZERO | TOKEN_TRAP
 {
 	state.clampOperation( $<value>1 );
 };
 
-formatMode : TOKEN_B | TOKEN_P
+formatMode : TOKEN_Z | TOKEN_P
 {
 	state.formatMode( $<value>1 );
-}
+};
 
 suld : OPCODE_SULD formatMode geometry optionalCacheOperation 
 	instructionVectorType dataType clampOperation arrayOperand ',' 
 	'[' operand ',' arrayOperand ']' ';'
 {
-	state.instruction( $<text>1, 1);
-	state.convertD( $<value>7, @1 );
-}
+	state.instruction( $<text>1, $<value>6 );
+	state.formatMode( $<value>2 );
+	state.clampOperation( $<value>7 );
+};
+
+
+// sust.b.3d.v2.b64.trap [surf_A, {%r0, %r1, %r2}], {%rl0, %rl1};
 
 sust : OPCODE_SUST formatMode geometry optionalCacheOperation 
 	instructionVectorType dataType clampOperation '[' operand ','
 	arrayOperand ']' ',' arrayOperand ';'
 {
-	state.instruction( $<text>1, 1);
-	state.convertD( $<value>7, @1 );
-}
+	state.instruction( $<text>1, $<value>6 );
+	state.formatMode( $<value>2 );
+	state.clampOperation( $<value>7 );
+};
 
 sured : OPCODE_SURED formatMode reductionOperation geometry dataType
 	clampOperation '[' operand ',' arrayOperand ']' ',' arrayOperand ';'
 {
-	state.instruction( $<text>1, 1);
-	state.convertD( $<value>7, @1 );
-}
+	state.instruction( $<text>1, $<value>5 );
+	state.formatMode( $<value>2 );
+	state.clampOperation( $<value>6 );
+};
 
 //
 // End surface sampling 

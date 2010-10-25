@@ -302,6 +302,8 @@ namespace ir {
 		static std::string toString( BarrierOperation );
 		static std::string toString( ReductionOperation );
 		static std::string toString( SurfaceQuery );
+		static std::string toString( FormatMode );
+		static std::string toString( ClampOperation );
 		static std::string toString( CmpOp );
 		static std::string toString( BoolOp );
 		static std::string roundingMode( Modifier );

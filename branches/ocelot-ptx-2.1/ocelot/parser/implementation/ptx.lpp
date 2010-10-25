@@ -404,7 +404,6 @@ WHITESPACE [ \t]*
 ".2d"                           { yylval->value = TOKEN_2D; return TOKEN_2D; }
 ".3d"                           { yylval->value = TOKEN_3D; return TOKEN_3D; }
 
-".b"                          	{ yylval->value = TOKEN_B; return TOKEN_B; }
 ".p"                           	{ yylval->value = TOKEN_P; return TOKEN_P; }
 
 ".ca"                           { yylval->value = TOKEN_CA; return TOKEN_CA; }

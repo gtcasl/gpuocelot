@@ -27,6 +27,18 @@ namespace ocelot
 	{
 		get()->clearTraceGenerators( );
 	}
+
+	void addPTXPass(analysis::Pass &pass) {
+		get()->addPTXPass(pass);
+	}
+
+	void removePTXPass(analysis::Pass &pass) {
+		get()->removePTXPass(pass);
+	}
+
+	void clearPTXPasses() {
+		get()->clearPTXPasses();
+	}
 	
 	void limitWorkerThreads( unsigned int limit )
 	{

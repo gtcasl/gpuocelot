@@ -6864,10 +6864,13 @@ namespace translator
 					case ir::PTXOperand::s64:
 					{
 						ir::LLVMFptosi fptosi;
-						fptosi.d = d;
+						fptosi.d = ir::LLVMInstruction::Operand( 
+							_tempRegister(), d.type );
 						fptosi.a = tempA;
 						
 						_add( fptosi );
+
+						_floatToIntSaturate( d, fptosi.d, tempA, true );
 						break;
 					}
 					case ir::PTXOperand::pred:
@@ -6881,10 +6884,13 @@ namespace translator
 					case ir::PTXOperand::u64:
 					{
 						ir::LLVMFptoui fptoui;
-						fptoui.d = d;
+						fptoui.d = ir::LLVMInstruction::Operand( 
+							_tempRegister(), d.type );
 						fptoui.a = tempA;
 						
 						_add( fptoui );
+
+						_floatToIntSaturate( d, fptoui.d, tempA, false );
 						break;
 					}
 					case ir::PTXOperand::f16:
@@ -6928,10 +6934,13 @@ namespace translator
 					case ir::PTXOperand::s64:
 					{
 						ir::LLVMFptosi fptosi;
-						fptosi.d = d;
+						fptosi.d = ir::LLVMInstruction::Operand( 
+							_tempRegister(), d.type );
 						fptosi.a = a;
 						
 						_add( fptosi );
+
+						_floatToIntSaturate( d, fptosi.d, a, true );
 						break;
 					}
 					case ir::PTXOperand::pred:
@@ -6945,10 +6954,13 @@ namespace translator
 					case ir::PTXOperand::u64:
 					{
 						ir::LLVMFptoui fptoui;
-						fptoui.d = d;
+						fptoui.d = ir::LLVMInstruction::Operand( 
+							_tempRegister(), d.type );
 						fptoui.a = a;
 						
 						_add( fptoui );
+
+						_floatToIntSaturate( d, fptoui.d, a, false );
 						break;
 					}
 					case ir::PTXOperand::f16:
@@ -7097,6 +7109,228 @@ namespace translator
 		
 		_add( compare );
 		_add( select );	
+	}
+
+	void PTXToLLVMTranslator::_floatToIntSaturate(
+		const ir::LLVMInstruction::Operand& d, 
+		const ir::LLVMInstruction::Operand& ftoint,
+		const ir::LLVMInstruction::Operand& f, bool isSigned)
+	{
+		ir::LLVMInstruction::Operand min( _tempRegister(), f.type );
+		ir::LLVMInstruction::Operand max( _tempRegister(), f.type );
+		ir::LLVMInstruction::Operand minInt( _tempRegister(), d.type );
+		ir::LLVMInstruction::Operand maxInt( _tempRegister(), d.type );
+		ir::LLVMInstruction::Operand lessThanMin( _tempRegister(),
+			ir::LLVMInstruction::Type( ir::LLVMInstruction::I1, 
+			ir::LLVMInstruction::Type::Element ) );
+		ir::LLVMInstruction::Operand greaterThanMax( _tempRegister(),
+			lessThanMin.type );
+		ir::LLVMInstruction::Operand nan( _tempRegister(), lessThanMin.type );
+
+		if( isSigned )
+		{
+			ir::LLVMSitofp sitofp;
+			
+			sitofp.d          = min;
+			sitofp.a.constant = true;
+			sitofp.a.type     = d.type;
+
+			switch( d.type.type )
+			{
+			case ir::LLVMInstruction::I1:
+			{
+				sitofp.a.i64 = 0;
+				break;
+			}
+			case ir::LLVMInstruction::I8:
+			{
+				sitofp.a.i64 = std::numeric_limits<char>::min();
+				break;
+			}
+			case ir::LLVMInstruction::I16:
+			{
+				sitofp.a.i64 = std::numeric_limits<short>::min();
+				break;
+			}
+			case ir::LLVMInstruction::I32:
+			{
+				sitofp.a.i64 = std::numeric_limits<int>::min();
+				break;
+			}
+			case ir::LLVMInstruction::I64:
+			{
+				sitofp.a.i64 = std::numeric_limits<long long int>::min();
+				break;
+			}
+			default: break;
+			}
+
+			minInt = sitofp.a;
+
+			_add( sitofp );
+			
+			sitofp.d = max;
+
+			switch( d.type.type )
+			{
+			case ir::LLVMInstruction::I1:
+			{
+				sitofp.a.i64 = 0;
+				break;
+			}
+			case ir::LLVMInstruction::I8:
+			{
+				sitofp.a.i64 = std::numeric_limits<char>::max();
+				break;
+			}
+			case ir::LLVMInstruction::I16:
+			{
+				sitofp.a.i64 = std::numeric_limits<short>::max();
+				break;
+			}
+			case ir::LLVMInstruction::I32:
+			{
+				sitofp.a.i64 = std::numeric_limits<int>::max();
+				break;
+			}
+			case ir::LLVMInstruction::I64:
+			{
+				sitofp.a.i64 = std::numeric_limits<long long int>::max();
+				break;
+			}
+			default: break;
+			}
+
+			maxInt = sitofp.a;
+
+			_add( sitofp );
+		}
+		else
+		{
+			ir::LLVMUitofp uitofp;
+			
+			uitofp.d          = min;
+			uitofp.a.constant = true;
+			uitofp.a.type     = d.type;
+
+			switch( d.type.type )
+			{
+			case ir::LLVMInstruction::I1:
+			{
+				uitofp.a.i64 = 1;
+				break;
+			}
+			case ir::LLVMInstruction::I8:
+			{
+				uitofp.a.i64 = std::numeric_limits<unsigned char>::min();
+				break;
+			}
+			case ir::LLVMInstruction::I16:
+			{
+				uitofp.a.i64 = std::numeric_limits<unsigned short>::min();
+				break;
+			}
+			case ir::LLVMInstruction::I32:
+			{
+				uitofp.a.i64 = std::numeric_limits<unsigned int>::min();
+				break;
+			}
+			case ir::LLVMInstruction::I64:
+			{
+				uitofp.a.i64 = std::numeric_limits<
+					long long unsigned int>::min();
+				break;
+			}
+			default: break;
+			}
+
+			minInt = uitofp.a;
+
+			_add( uitofp );
+			
+			uitofp.d = max;
+
+			switch( d.type.type )
+			{
+			case ir::LLVMInstruction::I1:
+			{
+				uitofp.a.i64 = 0;
+				break;
+			}
+			case ir::LLVMInstruction::I8:
+			{
+				uitofp.a.i64 = std::numeric_limits<unsigned char>::max();
+				break;
+			}
+			case ir::LLVMInstruction::I16:
+			{
+				uitofp.a.i64 = std::numeric_limits<unsigned short>::max();
+				break;
+			}
+			case ir::LLVMInstruction::I32:
+			{
+				uitofp.a.i64 = std::numeric_limits<unsigned int>::max();
+				break;
+			}
+			case ir::LLVMInstruction::I64:
+			{
+				uitofp.a.i64 = std::numeric_limits<
+					long long unsigned int>::max();
+				break;
+			}
+			default: break;
+			}
+			
+			maxInt = uitofp.a;
+			
+			_add( uitofp );
+		}
+		
+		ir::LLVMFcmp compare;
+		
+		compare.comparison = ir::LLVMInstruction::Olt;
+		
+		compare.d = lessThanMin;
+		compare.a = f;
+		compare.b = min;
+		
+		_add( compare );
+		
+		compare.comparison = ir::LLVMInstruction::Ogt;
+		
+		compare.d = greaterThanMax;
+		compare.a = f;
+		compare.b = max;
+		
+		_add( compare );
+		
+		compare.comparison = ir::LLVMInstruction::Uno;
+		compare.d = nan;
+		
+		_add( compare );
+		
+		ir::LLVMSelect select;
+		
+		select.condition = lessThanMin;
+		select.a = minInt;
+		select.b = ftoint;
+		select.d = ir::LLVMInstruction::Operand( _tempRegister(), d.type );
+
+		_add( select );
+		
+		select.condition = greaterThanMax;
+		select.a = maxInt;
+		select.b = select.d;
+		select.d = ir::LLVMInstruction::Operand( _tempRegister(), d.type );
+		
+		_add( select );
+		
+		select.condition = nan;
+		select.a.i64     = 0;
+		select.b         = select.d;
+		select.d         = d;
+		
+		_add( select );
 	}
 
 	std::string PTXToLLVMTranslator::_tempRegister()

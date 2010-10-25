@@ -165,6 +165,8 @@ namespace ir {
 		static unsigned int bytes(DataType);
 		static bool valid(DataType, DataType);
 		static bool relaxedValid(DataType instructionType, DataType);
+		static long long unsigned int maxInt(DataType type);
+		static long long unsigned int minInt(DataType type);
 		
 	public:
 		PTXOperand();

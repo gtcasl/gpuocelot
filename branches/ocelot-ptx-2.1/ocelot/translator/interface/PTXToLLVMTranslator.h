@@ -148,6 +148,9 @@ namespace translator
 				const ir::LLVMInstruction::Operand& a);
 			void _saturate(const ir::LLVMInstruction::Operand& d, 
 				const ir::LLVMInstruction::Operand& a);
+			void _floatToIntSaturate(const ir::LLVMInstruction::Operand& d, 
+				const ir::LLVMInstruction::Operand& ftoint,
+				const ir::LLVMInstruction::Operand& f, bool isSigned);
 			
 			std::string _tempRegister();
 			std::string _loadSpecialRegister( 

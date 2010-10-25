@@ -2781,7 +2781,7 @@ static Float round(Float a, int modifier) {
 	return fd;
 }
 
-static ir::PTXF32 round(ir::PTXF64 a, int modifier) { 
+static ir::PTXF32 toF32(ir::PTXF64 a, int modifier) { 
 	int mode = fegetround();
 	if (modifier & PTXInstruction::rn) {
 		fesetround(FE_TONEAREST);
@@ -3405,10 +3405,10 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context,
 							if (a != a) a = 0.0f;
 							PTXF32 fd = round(a, instr.modifier);
 							PTXU8 d = 0;
-							if( fd > UCHAR_MAX ) {
+							if(fd > UCHAR_MAX) {
 								d = UCHAR_MAX;
 							}
-							else if( fd < 0 ) {
+							else if(fd < 0) {
 								d = 0;
 							}
 							else {
@@ -3424,10 +3424,10 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context,
 							if (a != a) a = 0.0f;
 							PTXF32 fd = round(a, instr.modifier);
 							PTXU16 d = 0;
-							if( fd > USHRT_MAX ) {
+							if(fd > USHRT_MAX) {
 								d = USHRT_MAX;
 							}
-							else if( fd < 0 ) {
+							else if(fd < 0) {
 								d = 0;
 							}
 							else {
@@ -3443,10 +3443,10 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context,
 							if (a != a) a = 0.0f;
 							PTXF32 fd = round(a, instr.modifier);
 							PTXU32 d = 0;
-							if( fd > UINT_MAX ) {
+							if(fd > UINT_MAX) {
 								d = UINT_MAX;
 							}
-							else if( fd < 0 ) {
+							else if(fd < 0) {
 								d = 0;
 							}
 							else {
@@ -3460,8 +3460,17 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context,
 						{
 							PTXF32 a = operandAsF32(threadID, instr.a);
 							if (a != a) a = 0.0f;
-							PTXU64 d = round(a, instr.modifier);
-							d = min(ULLONG_MAX, d);
+							PTXF32 fd = round(a, instr.modifier);
+							PTXU64 d = 0;
+							if(fd > ULLONG_MAX) {
+								d = ULLONG_MAX;
+							}
+							else if(fd < 0) {
+								d = 0;
+							}
+							else {
+								d = fd;
+							}
 							setRegAsU64(threadID, instr.d.reg, d);
 						}
 						break;
@@ -3469,10 +3478,17 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context,
 						{
 							PTXF32 a = operandAsF32(threadID, instr.a);
 							if (a != a) a = 0.0f;
-							PTXS64 dd = round(a, instr.modifier);
+							PTXF32 fd = round(a, instr.modifier);
 							PTXS8 d = 0;
-							dd = min(CHAR_MAX, dd);
-							d = max(dd, CHAR_MIN);
+							if(fd > CHAR_MAX) {
+								d = CHAR_MAX;
+							}
+							else if(fd < CHAR_MIN) {
+								d = CHAR_MIN;
+							}
+							else {
+								d = fd;
+							}
 							setRegAsS64(threadID, instr.d.reg, d);
 						}
 						break;
@@ -3480,10 +3496,17 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context,
 						{
 							PTXF32 a = operandAsF32(threadID, instr.a);
 							if (a != a) a = 0.0f;
-							PTXS64 dd = round(a, instr.modifier);
+							PTXF32 fd = round(a, instr.modifier);
 							PTXS16 d = 0;
-							dd = min(SHRT_MAX, dd);
-							d = max(dd, SHRT_MIN);
+							if(fd > SHRT_MAX) {
+								d = SHRT_MAX;
+							}
+							else if(fd < SHRT_MIN) {
+								d = SHRT_MIN;
+							}
+							else {
+								d = fd;
+							}
 							setRegAsS64(threadID, instr.d.reg, d);
 						}
 						break;
@@ -3491,10 +3514,17 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context,
 						{
 							PTXF32 a = operandAsF32(threadID, instr.a);
 							if (a != a) a = 0.0f;
-							PTXS64 dd = round(a, instr.modifier);
+							PTXF32 fd = round(a, instr.modifier);
 							PTXS32 d = 0;
-							dd = min(INT_MAX, dd);
-							d = max(dd, INT_MIN);
+							if(fd > INT_MAX) {
+								d = INT_MAX;
+							}
+							else if(fd < INT_MIN) {
+								d = INT_MIN;
+							}
+							else {
+								d = fd;
+							}
 							setRegAsS64(threadID, instr.d.reg, d);
 						}
 						break;
@@ -3502,7 +3532,17 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context,
 						{
 							PTXF32 a = operandAsF32(threadID, instr.a);
 							if (a != a) a = 0.0f;
-							PTXS64 d = round(a, instr.modifier);
+							PTXF32 fd = round(a, instr.modifier);
+							PTXS64 d = 0;
+							if(fd > LLONG_MAX) {
+								d = LLONG_MAX;
+							}
+							else if(fd < LLONG_MIN) {
+								d = LLONG_MIN;
+							}
+							else {
+								d = fd;
+							}
 							setRegAsS64(threadID, instr.d.reg, d);
 						}
 						break;
@@ -3538,11 +3578,11 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context,
 							PTXF64 a = operandAsF64(threadID, instr.a);
 							if (a != a) a = 0.0f;
 							PTXF64 fd = round(a, instr.modifier);
-							PTXU16 d = 0;
-							if( fd > UCHAR_MAX ) {
+							PTXU8 d = 0;
+							if(fd > UCHAR_MAX) {
 								d = UCHAR_MAX;
 							}
-							else if( fd < 0 ) {
+							else if(fd < 0) {
 								d = 0;
 							}
 							else {
@@ -3558,10 +3598,10 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context,
 							if (a != a) a = 0.0f;
 							PTXF64 fd = round(a, instr.modifier);
 							PTXU16 d = 0;
-							if( fd > USHRT_MAX ) {
+							if(fd > USHRT_MAX) {
 								d = USHRT_MAX;
 							}
-							else if( fd < 0 ) {
+							else if(fd < 0) {
 								d = 0;
 							}
 							else {
@@ -3577,13 +3617,14 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context,
 							if (a != a) a = 0.0f;
 							PTXF64 fd = round(a, instr.modifier);
 							PTXU32 d = 0;
-							if( fd > UINT_MAX ) {
+							if(fd > UINT_MAX) {
 								d = UINT_MAX;
 							}
-							else if( fd < 0 ) {
+							else if(fd < 0) {
 								d = 0;
 							}
-							else {
+							else
+							{
 								d = fd;
 							}
 							setRegAsU64(threadID, instr.d.reg, d);
@@ -3594,8 +3635,18 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context,
 						{
 							PTXF64 a = operandAsF64(threadID, instr.a);
 							if (a != a) a = 0.0f;
-							PTXU64 d = round(a, instr.modifier);
-							d = min(ULLONG_MAX, d);
+							PTXF64 fd = round(a, instr.modifier);
+							PTXU64 d = 0;
+							if(fd > ULLONG_MAX) {
+								d = ULLONG_MAX;
+							}
+							else if(fd < 0) {
+								d = 0;
+							}
+							else
+							{
+								d = fd;
+							}
 							setRegAsU64(threadID, instr.d.reg, d);
 						}
 						break;
@@ -3605,8 +3656,15 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context,
 							if (a != a) a = 0.0;
 							a = round(a, instr.modifier);
 							PTXS8 d = 0;
-							a = min(CHAR_MAX, a);
-							d = max(a, CHAR_MIN);
+							if(a > CHAR_MAX) {
+								d = CHAR_MAX;
+							}
+							else if(a < CHAR_MIN) {
+								d = CHAR_MIN;
+							}
+							else {
+								d = a;
+							}
 							setRegAsS64(threadID, instr.d.reg, d);
 						}
 						break;
@@ -3616,8 +3674,15 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context,
 							if (a != a) a = 0.0;
 							a = round(a, instr.modifier);
 							PTXS16 d = 0;
-							a = min(SHRT_MAX, a);
-							d = max(a, SHRT_MIN);
+							if(a > SHRT_MAX) {
+								d = SHRT_MAX;
+							}
+							else if(a < SHRT_MIN) {
+								d = SHRT_MIN;
+							}
+							else {
+								d = a;
+							}
 							setRegAsS64(threadID, instr.d.reg, d);
 						}
 						break;
@@ -3627,8 +3692,15 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context,
 							if (a != a) a = 0.0;
 							a = round(a, instr.modifier);
 							PTXS32 d = 0;
-							a = min(INT_MAX, a);
-							d = max(a, INT_MIN);
+							if(a > INT_MAX) {
+								d = INT_MAX;
+							}
+							else if(a < INT_MIN) {
+								d = INT_MIN;
+							}
+							else {
+								d = a;
+							}
 							setRegAsS64(threadID, instr.d.reg, d);
 						}
 						break;
@@ -3636,14 +3708,24 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context,
 						{
 							PTXF64 a = operandAsF64(threadID, instr.a);
 							if (a != a) a = 0.0;
-							PTXS64 d = round(a, instr.modifier);
+							a = round(a, instr.modifier);
+							PTXS64 d = 0;
+							if(a > LLONG_MAX) {
+								d = LLONG_MAX;
+							}
+							else if(a < LLONG_MIN) {
+								d = LLONG_MIN;
+							}
+							else {
+								d = a;
+							}
 							setRegAsS64(threadID, instr.d.reg, d);
 						}
 						break;
 					case PTXOperand::f32: 
 						{
 							PTXF64 a = operandAsF64(threadID, instr.a);
-							a = round(a, instr.modifier);
+							a = toF32(a, instr.modifier);
 							if(instr.modifier & PTXInstruction::sat) {
 								if (a != a) a = 0.0;
 								a = min(1.0, a);
@@ -3662,8 +3744,7 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context,
 								a = min(1.0, a);
 								a = max(a, 0.0);
 							}
-							setRegAsF64(threadID, instr.d.reg, 
-								sat(instr.modifier, a));
+							setRegAsF64(threadID, instr.d.reg, a);
 						}
 						break;
 					default:
@@ -4061,7 +4142,8 @@ void executive::CooperativeThreadArray::eval_Fma(CTAContext &context, const ir::
 		for (int tid = 0; tid < threadCount; tid++) {
 			if (!context.predicated(tid, instr)) continue;
 			
-			PTXF64 d, a = operandAsF64(tid, instr.a), b = operandAsF64(tid, instr.b), c = operandAsF64(tid, instr.c);
+			PTXF64 d, a = operandAsF64(tid, instr.a),
+				b = operandAsF64(tid, instr.b), c = operandAsF64(tid, instr.c);
 			d = a * b + c;
 			setRegAsF64(tid, instr.d.reg, d);
 		}
@@ -4074,7 +4156,8 @@ void executive::CooperativeThreadArray::eval_Fma(CTAContext &context, const ir::
 /*!
 
 */
-void executive::CooperativeThreadArray::eval_Isspacep(CTAContext &context, const ir::PTXInstruction &instr) {
+void executive::CooperativeThreadArray::eval_Isspacep(CTAContext &context,
+	const ir::PTXInstruction &instr) {
 	
 	trace();
 	switch (instr.addressSpace) {
@@ -4088,7 +4171,8 @@ void executive::CooperativeThreadArray::eval_Isspacep(CTAContext &context, const
 				ir::PTXU32 ptr = operandAsU32(tid, instr.a);
 				ir::PTXU32 localMemPtr;
 				ir::PTXU32 localMemSize = functionCallStack.localMemorySize();
-				hydrazine::bit_cast(localMemPtr, functionCallStack.localMemoryPointer(tid));
+				hydrazine::bit_cast(localMemPtr,
+					functionCallStack.localMemoryPointer(tid));
 				if (ptr >= localMemPtr && localMemPtr + localMemSize > ptr) {
 					setRegAsPredicate(tid, instr.d.reg, 1);
 				}
@@ -4105,7 +4189,8 @@ void executive::CooperativeThreadArray::eval_Isspacep(CTAContext &context, const
 				ir::PTXU64 ptr = operandAsU64(tid, instr.a);
 				ir::PTXU64 localMemPtr;
 				ir::PTXU64 localMemSize = functionCallStack.localMemorySize();
-				hydrazine::bit_cast(localMemPtr, functionCallStack.localMemoryPointer(tid));
+				hydrazine::bit_cast(localMemPtr,
+					functionCallStack.localMemoryPointer(tid));
 				if (ptr >= localMemPtr && localMemPtr + localMemSize > ptr) {
 					setRegAsPredicate(tid, instr.d.reg, 1);
 				}
@@ -4126,7 +4211,8 @@ void executive::CooperativeThreadArray::eval_Isspacep(CTAContext &context, const
 				ir::PTXU32 ptr = operandAsU32(tid, instr.a);
 				ir::PTXU32 sharedMemPtr;
 				ir::PTXU32 sharedMemSize = functionCallStack.sharedMemorySize();
-				hydrazine::bit_cast(sharedMemPtr, functionCallStack.sharedMemoryPointer());
+				hydrazine::bit_cast(sharedMemPtr,
+					functionCallStack.sharedMemoryPointer());
 				if (ptr >= sharedMemPtr && sharedMemPtr + sharedMemSize > ptr) {
 					setRegAsPredicate(tid, instr.d.reg, 1);
 				}
@@ -4143,7 +4229,8 @@ void executive::CooperativeThreadArray::eval_Isspacep(CTAContext &context, const
 				ir::PTXU64 ptr = operandAsU32(tid, instr.a);
 				ir::PTXU64 sharedMemPtr;
 				ir::PTXU64 sharedMemSize = functionCallStack.sharedMemorySize();
-				hydrazine::bit_cast(sharedMemPtr, functionCallStack.sharedMemoryPointer());
+				hydrazine::bit_cast(sharedMemPtr,
+					functionCallStack.sharedMemoryPointer());
 				if (ptr >= sharedMemPtr && sharedMemPtr + sharedMemSize > ptr) {
 					setRegAsPredicate(tid, instr.d.reg, 1);
 				}
@@ -4166,10 +4253,13 @@ void executive::CooperativeThreadArray::eval_Isspacep(CTAContext &context, const
 				ir::PTXU32 localMemSize = functionCallStack.localMemorySize();
 				ir::PTXU32 sharedMemPtr;
 				ir::PTXU32 sharedMemSize = functionCallStack.sharedMemorySize();
-				hydrazine::bit_cast(localMemPtr, functionCallStack.localMemoryPointer(tid));
-				hydrazine::bit_cast(sharedMemPtr, functionCallStack.sharedMemoryPointer());
-				if ((ptr >= sharedMemPtr && sharedMemPtr + sharedMemSize > ptr) ||
-					(ptr >= localMemPtr && localMemPtr + localMemSize > ptr)) {
+				hydrazine::bit_cast(localMemPtr,
+					functionCallStack.localMemoryPointer(tid));
+				hydrazine::bit_cast(sharedMemPtr,
+					functionCallStack.sharedMemoryPointer());
+				if ((ptr >= sharedMemPtr && sharedMemPtr + sharedMemSize > ptr)
+					|| (ptr >= localMemPtr 
+					&& localMemPtr + localMemSize > ptr)) {
 					setRegAsPredicate(tid, instr.d.reg, 0);
 				}
 				else {
@@ -4187,10 +4277,13 @@ void executive::CooperativeThreadArray::eval_Isspacep(CTAContext &context, const
 				ir::PTXU64 localMemSize = functionCallStack.localMemorySize();
 				ir::PTXU64 sharedMemPtr;
 				ir::PTXU64 sharedMemSize = functionCallStack.sharedMemorySize();
-				hydrazine::bit_cast(localMemPtr, functionCallStack.localMemoryPointer(tid));
-				hydrazine::bit_cast(sharedMemPtr, functionCallStack.sharedMemoryPointer());
-				if ((ptr >= sharedMemPtr && sharedMemPtr + sharedMemSize > ptr) ||
-					(ptr >= localMemPtr && localMemPtr + localMemSize > ptr)) {
+				hydrazine::bit_cast(localMemPtr,
+					functionCallStack.localMemoryPointer(tid));
+				hydrazine::bit_cast(sharedMemPtr,
+					functionCallStack.sharedMemoryPointer());
+				if ((ptr >= sharedMemPtr && sharedMemPtr + sharedMemSize > ptr)
+					|| (ptr >= localMemPtr
+						&& localMemPtr + localMemSize > ptr)) {
 					setRegAsPredicate(tid, instr.d.reg, 0);
 				}
 				else {
@@ -4201,7 +4294,8 @@ void executive::CooperativeThreadArray::eval_Isspacep(CTAContext &context, const
 	}
 		break;
 	default:
-		throw RuntimeException("isspacep - invalid address space for test", context.PC, instr);
+		throw RuntimeException("isspacep - invalid address space for test",
+			context.PC, instr);
 		break;
 	}
 

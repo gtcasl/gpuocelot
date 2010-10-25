@@ -48,6 +48,13 @@ bool compareDouble(double a, double b)
 }
 
 template<typename T>
+bool isFloat()
+{
+	if(typeid(T) == typeid(float) || typeid(T) == typeid(double)) return true;
+	return false;
+}
+
+template<typename T>
 T getParameter(void* in, unsigned int offset)
 {
 	return *(T*)((char*)in + offset);
@@ -134,7 +141,118 @@ char* uniformFloat(test::Test::MersenneTwister& generator)
 ////////////////////////////////////////////////////////////////////////////////
 
 ////////////////////////////////////////////////////////////////////////////////
-// TEST MOV LABEL
+// TEST CVT
+std::string testCvt_PTX(ir::PTXOperand::DataType dtype, 
+	ir::PTXOperand::DataType stype, bool ftz, bool sat, bool round)
+{
+	std::stringstream ptx;
+
+	std::string sTypeString = "." + ir::PTXOperand::toString(stype);
+	std::string dTypeString = "." + ir::PTXOperand::toString(dtype);
+
+	ptx << ".version 2.1\n";
+	ptx << "\n";
+	
+	ptx << ".entry test(.param .u64 out, .param .u64 in)   \n";
+	ptx << "{\t                                            \n";
+	ptx << "\t.reg .u64 %rIn, %rOut;                       \n";
+	ptx << "\t.reg " << sTypeString    << " %rs;           \n";
+	ptx << "\t.reg " << dTypeString    << " %rd;           \n";
+	ptx << "\tld.param.u64 %rIn, [in];                     \n";
+	ptx << "\tld.param.u64 %rOut, [out];                   \n";
+	ptx << "\tld.global" << sTypeString << " %rs, [%rIn];   \n";
+
+	ptx << "\tcvt";
+	
+	if(round)
+	{
+		if(ir::PTXOperand::isFloat(stype))
+		{
+			ptx << ".rn";
+		}
+		else
+		{
+			ptx << ".rni";
+		}
+	}
+	
+	if(ftz) ptx << ".ftz";
+	if(sat) ptx << ".sat";
+	
+	ptx << dTypeString << sTypeString << " %rd, %rs;       \n";
+	
+	ptx << "\tst.global" << dTypeString << " [%rOut], %rd; \n";
+	ptx << "\texit;                                        \n";
+	ptx << "}                                              \n";
+	ptx << "                                               \n";
+	
+	return ptx.str();
+}
+
+template<typename dtype, typename stype, bool ftz, bool sat, bool round>
+void testCvt_REF(void* output, void* input)
+{
+	stype r0 = getParameter<stype>(input, 0);
+
+	if(isFloat<stype>() && !isFloat<dtype>())
+	{
+		if(isnan(r0)) r0 = (stype)0;
+	}
+
+	if(ftz)
+	{
+		if(issubnormal(r0)) r0 = (stype)0;
+	}
+
+	if(sat)
+	{
+		if(typeid(float) != typeid(dtype) && typeid(double) != typeid(dtype))
+		{
+			r0 = std::min((stype)std::numeric_limits<dtype>::max(), r0);
+			r0 = std::max((stype)std::numeric_limits<dtype>::min(), r0);
+		}
+	}
+
+	dtype r1 = r0;
+
+	if(isFloat<stype>() && !isFloat<dtype>())
+	{
+		if((stype)std::numeric_limits<dtype>::max() < r0)
+		{
+			r1 = std::numeric_limits<dtype>::max();
+		}
+		if((stype)std::numeric_limits<dtype>::min() > r0)
+		{
+			r1 = std::numeric_limits<dtype>::min();	
+		}
+	}
+	
+	if(sat)
+	{
+		if(typeid(float) == typeid(dtype))
+		{
+			r1 = std::min((dtype)1.0f, r1);
+			r1 = std::max((dtype)0.0f, r1);
+		}
+		else if(typeid(double) == typeid(dtype))
+		{
+			r1 = std::min((dtype)1.0, r1);
+			r1 = std::max((dtype)0.0, r1);
+		}
+	}
+	
+	setParameter(output, 0, r1);
+}
+
+test::TestPTXAssembly::TypeVector testCvt_INOUT(
+	test::TestPTXAssembly::DataType type)
+{
+	return test::TestPTXAssembly::TypeVector(1, type);
+}
+////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////
+// TEST MOV LABELS
 std::string testMovLabel_PTX(ir::PTXInstruction::AddressSpace space, bool index, 
 	ir::PTXInstruction::Vec v)
 {
@@ -5752,77 +5870,699 @@ namespace test
 			testMovLabel_PTX(ir::PTXInstruction::Global,
 				false, ir::PTXOperand::v1), 
 			testMovLabel_INOUT(), testMovLabel_INOUT(),
-			uniformFloat<unsigned int, 1>, 1, 1);
+			uniformRandom<unsigned int, 1>, 1, 1);
 		add("TestMovLabel-global-v1-index", testMovLabel_REF,
 			testMovLabel_PTX(ir::PTXInstruction::Global,
 				true, ir::PTXOperand::v1), 
 			testMovLabel_INOUT(), testMovLabel_INOUT(),
-			uniformFloat<unsigned int, 1>, 1, 1);
+			uniformRandom<unsigned int, 1>, 1, 1);
 		add("TestMovLabel-global-v2", testMovLabel_REF,
 			testMovLabel_PTX(ir::PTXInstruction::Global,
 				false, ir::PTXOperand::v2), 
 			testMovLabel_INOUT(), testMovLabel_INOUT(),
-			uniformFloat<unsigned int, 1>, 1, 1);
+			uniformRandom<unsigned int, 1>, 1, 1);
 		add("TestMovLabel-global-v4", testMovLabel_REF,
 			testMovLabel_PTX(ir::PTXInstruction::Global,
 				false, ir::PTXOperand::v4), 
 			testMovLabel_INOUT(), testMovLabel_INOUT(),
-			uniformFloat<unsigned int, 1>, 1, 1);
+			uniformRandom<unsigned int, 1>, 1, 1);
 		add("TestMovLabel-local-v1", testMovLabel_REF,
 			testMovLabel_PTX(ir::PTXInstruction::Local,
 				false, ir::PTXOperand::v1), 
 			testMovLabel_INOUT(), testMovLabel_INOUT(),
-			uniformFloat<unsigned int, 1>, 1, 1);
+			uniformRandom<unsigned int, 1>, 1, 1);
 		add("TestMovLabel-local-v1-index", testMovLabel_REF,
 			testMovLabel_PTX(ir::PTXInstruction::Local,
 				true, ir::PTXOperand::v1), 
 			testMovLabel_INOUT(), testMovLabel_INOUT(),
-			uniformFloat<unsigned int, 1>, 1, 1);
+			uniformRandom<unsigned int, 1>, 1, 1);
 		add("TestMovLabel-local-v2", testMovLabel_REF,
 			testMovLabel_PTX(ir::PTXInstruction::Local,
 				false, ir::PTXOperand::v2), 
 			testMovLabel_INOUT(), testMovLabel_INOUT(),
-			uniformFloat<unsigned int, 1>, 1, 1);
+			uniformRandom<unsigned int, 1>, 1, 1);
 		add("TestMovLabel-local-v4", testMovLabel_REF,
 			testMovLabel_PTX(ir::PTXInstruction::Local,
 				false, ir::PTXOperand::v4), 
 			testMovLabel_INOUT(), testMovLabel_INOUT(),
-			uniformFloat<unsigned int, 1>, 1, 1);
+			uniformRandom<unsigned int, 1>, 1, 1);
 		add("TestMovLabel-param-v1", testMovLabel_REF,
 			testMovLabel_PTX(ir::PTXInstruction::Param,
 				false, ir::PTXOperand::v1), 
 			testMovLabel_INOUT(), testMovLabel_INOUT(),
-			uniformFloat<unsigned int, 1>, 1, 1);
+			uniformRandom<unsigned int, 1>, 1, 1);
 		add("TestMovLabel-param-v1-index", testMovLabel_REF,
 			testMovLabel_PTX(ir::PTXInstruction::Param,
 				true, ir::PTXOperand::v1),
 			testMovLabel_INOUT(), testMovLabel_INOUT(),
-			uniformFloat<unsigned int, 1>, 1, 1);
+			uniformRandom<unsigned int, 1>, 1, 1);
 		add("TestMovLabel-param-v2", testMovLabel_REF,
 			testMovLabel_PTX(ir::PTXInstruction::Param,
 				false, ir::PTXOperand::v2), 
 			testMovLabel_INOUT(), testMovLabel_INOUT(),
-			uniformFloat<unsigned int, 1>, 1, 1);
+			uniformRandom<unsigned int, 1>, 1, 1);
 		add("TestMovLabel-param-v4", testMovLabel_REF,
 			testMovLabel_PTX(ir::PTXInstruction::Param,
 				false, ir::PTXOperand::v4), 
 			testMovLabel_INOUT(), testMovLabel_INOUT(),
-			uniformFloat<unsigned int, 1>, 1, 1);
+			uniformRandom<unsigned int, 1>, 1, 1);
 		add("TestMovLabel-shared-v1", testMovLabel_REF,
 			testMovLabel_PTX(ir::PTXInstruction::Shared,
 				false, ir::PTXOperand::v1),
 			testMovLabel_INOUT(), testMovLabel_INOUT(),
-			uniformFloat<unsigned int, 1>, 1, 1);
+			uniformRandom<unsigned int, 1>, 1, 1);
 		add("TestMovLabel-shared-v1-index", testMovLabel_REF,
 			testMovLabel_PTX(ir::PTXInstruction::Shared,
 				true, ir::PTXOperand::v1),
 			testMovLabel_INOUT(), testMovLabel_INOUT(),
-			uniformFloat<unsigned int, 1>, 1, 1);
+			uniformRandom<unsigned int, 1>, 1, 1);
 		add("TestMovLabel-shared-v4", testMovLabel_REF,
 			testMovLabel_PTX(ir::PTXInstruction::Shared,
 				false, ir::PTXOperand::v4),
 			testMovLabel_INOUT(), testMovLabel_INOUT(),
-			uniformFloat<unsigned int, 1>, 1, 1);
+			uniformRandom<unsigned int, 1>, 1, 1);
+
+		add("TestCvt-u8-u8",
+			testCvt_REF<unsigned char, unsigned char, false, false, false>,
+			testCvt_PTX(ir::PTXOperand::u8,
+				ir::PTXOperand::u8, false, false, false),
+			testCvt_INOUT(I8), testCvt_INOUT(I8),
+			uniformRandom<unsigned char, 1>, 1, 1);
+		add("TestCvt-u8-u16",
+			testCvt_REF<unsigned char, unsigned short, false, false, false>,
+			testCvt_PTX(ir::PTXOperand::u8,
+				ir::PTXOperand::u16, false, false, false),
+			testCvt_INOUT(I8), testCvt_INOUT(I16),
+			uniformRandom<unsigned short, 1>, 1, 1);
+		add("TestCvt-u8-u32",
+			testCvt_REF<unsigned char, unsigned int, false, false, false>,
+			testCvt_PTX(ir::PTXOperand::u8,
+				ir::PTXOperand::u32, false, false, false),
+			testCvt_INOUT(I8), testCvt_INOUT(I32),
+			uniformRandom<unsigned int, 1>, 1, 1);
+		add("TestCvt-u8-u64",
+			testCvt_REF<unsigned char, long long unsigned int,
+				false, false, false>,
+			testCvt_PTX(ir::PTXOperand::u8,
+				ir::PTXOperand::u64, false, false, false),
+			testCvt_INOUT(I8), testCvt_INOUT(I64),
+			uniformRandom<long long unsigned int, 1>, 1, 1);
+		add("TestCvt-u8-s8",
+			testCvt_REF<unsigned char, char, false, false, false>,
+			testCvt_PTX(ir::PTXOperand::u8,
+				ir::PTXOperand::s8, false, false, false),
+			testCvt_INOUT(I8), testCvt_INOUT(I8),
+			uniformRandom<char, 1>, 1, 1);
+		add("TestCvt-u8-s16",
+			testCvt_REF<unsigned char, short, false, false, false>,
+			testCvt_PTX(ir::PTXOperand::u8,
+				ir::PTXOperand::s16, false, false, false),
+			testCvt_INOUT(I8), testCvt_INOUT(I16),
+			uniformRandom<short, 1>, 1, 1);
+		add("TestCvt-u8-s32",
+			testCvt_REF<unsigned char, int, false, false, false>,
+			testCvt_PTX(ir::PTXOperand::u8,
+				ir::PTXOperand::s32, false, false, false),
+			testCvt_INOUT(I8), testCvt_INOUT(I32),
+			uniformRandom<int, 1>, 1, 1);
+		add("TestCvt-u8-s64",
+			testCvt_REF<unsigned char, long long int, false, false, false>,
+			testCvt_PTX(ir::PTXOperand::u8,
+				ir::PTXOperand::s64, false, false, false),
+			testCvt_INOUT(I8), testCvt_INOUT(I64),
+			uniformRandom<long long int, 1>, 1, 1);
+		add("TestCvt-u8-f32",
+			testCvt_REF<unsigned char, float, false, false, false>,
+			testCvt_PTX(ir::PTXOperand::u8,
+				ir::PTXOperand::f32, false, false, false),
+			testCvt_INOUT(I8), testCvt_INOUT(FP32),
+			uniformFloat<float, 1>, 1, 1);
+		add("TestCvt-u8-f64",
+			testCvt_REF<unsigned char, double, false, false, false>,
+			testCvt_PTX(ir::PTXOperand::u8,
+				ir::PTXOperand::f64, false, false, false),
+			testCvt_INOUT(I8), testCvt_INOUT(FP64),
+			uniformFloat<double, 1>, 1, 1);
+
+		add("TestCvt-u16-u8",
+			testCvt_REF<unsigned short, unsigned char, false, false, false>,
+			testCvt_PTX(ir::PTXOperand::u16,
+				ir::PTXOperand::u8, false, false, false),
+			testCvt_INOUT(I16), testCvt_INOUT(I8),
+			uniformRandom<unsigned char, 1>, 1, 1);
+		add("TestCvt-u16-u16",
+			testCvt_REF<unsigned short, unsigned short, false, false, false>,
+			testCvt_PTX(ir::PTXOperand::u16,
+				ir::PTXOperand::u16, false, false, false),
+			testCvt_INOUT(I16), testCvt_INOUT(I16),
+			uniformRandom<unsigned short, 1>, 1, 1);
+		add("TestCvt-u16-u32",
+			testCvt_REF<unsigned short, unsigned int, false, false, false>,
+			testCvt_PTX(ir::PTXOperand::u16,
+				ir::PTXOperand::u32, false, false, false),
+			testCvt_INOUT(I16), testCvt_INOUT(I32),
+			uniformRandom<unsigned int, 1>, 1, 1);
+		add("TestCvt-u16-u64",
+			testCvt_REF<unsigned short, long long unsigned int,
+				false, false, false>,
+			testCvt_PTX(ir::PTXOperand::u16,
+				ir::PTXOperand::u64, false, false, false),
+			testCvt_INOUT(I16), testCvt_INOUT(I64),
+			uniformRandom<long long unsigned int, 1>, 1, 1);
+		add("TestCvt-u16-s8",
+			testCvt_REF<unsigned short, char, false, false, false>,
+			testCvt_PTX(ir::PTXOperand::u16,
+				ir::PTXOperand::s8, false, false, false),
+			testCvt_INOUT(I16), testCvt_INOUT(I8),
+			uniformRandom<char, 1>, 1, 1);
+		add("TestCvt-u16-s16",
+			testCvt_REF<unsigned short, short, false, false, false>,
+			testCvt_PTX(ir::PTXOperand::u16,
+				ir::PTXOperand::s16, false, false, false),
+			testCvt_INOUT(I16), testCvt_INOUT(I16),
+			uniformRandom<short, 1>, 1, 1);
+		add("TestCvt-u16-s32",
+			testCvt_REF<unsigned short, int, false, false, false>,
+			testCvt_PTX(ir::PTXOperand::u16,
+				ir::PTXOperand::s32, false, false, false),
+			testCvt_INOUT(I16), testCvt_INOUT(I32),
+			uniformRandom<int, 1>, 1, 1);
+		add("TestCvt-u16-s64",
+			testCvt_REF<unsigned short, long long int, false, false, false>,
+			testCvt_PTX(ir::PTXOperand::u16,
+				ir::PTXOperand::s64, false, false, false),
+			testCvt_INOUT(I16), testCvt_INOUT(I64),
+			uniformRandom<long long int, 1>, 1, 1);
+		add("TestCvt-u16-f32",
+			testCvt_REF<unsigned short, float, false, false, false>,
+			testCvt_PTX(ir::PTXOperand::u16,
+				ir::PTXOperand::f32, false, false, false),
+			testCvt_INOUT(I16), testCvt_INOUT(FP32),
+			uniformFloat<float, 1>, 1, 1);
+		add("TestCvt-u16-f64",
+			testCvt_REF<unsigned short, double, false, false, false>,
+			testCvt_PTX(ir::PTXOperand::u16,
+				ir::PTXOperand::f64, false, false, false),
+			testCvt_INOUT(I16), testCvt_INOUT(FP64),
+			uniformFloat<double, 1>, 1, 1);
+
+		add("TestCvt-u32-u8",
+			testCvt_REF<unsigned int, unsigned char, false, false, false>,
+			testCvt_PTX(ir::PTXOperand::u32,
+				ir::PTXOperand::u8, false, false, false),
+			testCvt_INOUT(I32), testCvt_INOUT(I8),
+			uniformRandom<unsigned char, 1>, 1, 1);
+		add("TestCvt-u32-u16",
+			testCvt_REF<unsigned int, unsigned short, false, false, false>,
+			testCvt_PTX(ir::PTXOperand::u32,
+				ir::PTXOperand::u16, false, false, false),
+			testCvt_INOUT(I32), testCvt_INOUT(I16),
+			uniformRandom<unsigned short, 1>, 1, 1);
+		add("TestCvt-u32-u32",
+			testCvt_REF<unsigned int, unsigned int, false, false, false>,
+			testCvt_PTX(ir::PTXOperand::u32,
+				ir::PTXOperand::u32, false, false, false),
+			testCvt_INOUT(I32), testCvt_INOUT(I32),
+			uniformRandom<unsigned int, 1>, 1, 1);
+		add("TestCvt-u32-u64",
+			testCvt_REF<unsigned int, long long unsigned int,
+				false, false, false>,
+			testCvt_PTX(ir::PTXOperand::u32,
+				ir::PTXOperand::u64, false, false, false),
+			testCvt_INOUT(I32), testCvt_INOUT(I64),
+			uniformRandom<long long unsigned int, 1>, 1, 1);
+		add("TestCvt-u32-s8",
+			testCvt_REF<unsigned int, char, false, false, false>,
+			testCvt_PTX(ir::PTXOperand::u32,
+				ir::PTXOperand::s8, false, false, false),
+			testCvt_INOUT(I32), testCvt_INOUT(I8),
+			uniformRandom<char, 1>, 1, 1);
+		add("TestCvt-u32-s16",
+			testCvt_REF<unsigned int, short, false, false, false>,
+			testCvt_PTX(ir::PTXOperand::u32,
+				ir::PTXOperand::s16, false, false, false),
+			testCvt_INOUT(I32), testCvt_INOUT(I16),
+			uniformRandom<short, 1>, 1, 1);
+		add("TestCvt-u32-s32",
+			testCvt_REF<unsigned int, int, false, false, false>,
+			testCvt_PTX(ir::PTXOperand::u32,
+				ir::PTXOperand::s32, false, false, false),
+			testCvt_INOUT(I32), testCvt_INOUT(I32),
+			uniformRandom<int, 1>, 1, 1);
+		add("TestCvt-u32-s64",
+			testCvt_REF<unsigned int, long long int, false, false, false>,
+			testCvt_PTX(ir::PTXOperand::u32,
+				ir::PTXOperand::s64, false, false, false),
+			testCvt_INOUT(I32), testCvt_INOUT(I64),
+			uniformRandom<long long int, 1>, 1, 1);
+		add("TestCvt-u32-f32",
+			testCvt_REF<unsigned int, float, false, false, false>,
+			testCvt_PTX(ir::PTXOperand::u32,
+				ir::PTXOperand::f32, false, false, false),
+			testCvt_INOUT(I32), testCvt_INOUT(FP32),
+			uniformFloat<float, 1>, 1, 1);
+		add("TestCvt-u32-f64",
+			testCvt_REF<unsigned int, double, false, false, false>,
+			testCvt_PTX(ir::PTXOperand::u32,
+				ir::PTXOperand::f64, false, false, false),
+			testCvt_INOUT(I32), testCvt_INOUT(FP64),
+			uniformFloat<double, 1>, 1, 1);
+
+		add("TestCvt-u64-u8",
+			testCvt_REF<long long unsigned int, unsigned char,
+				false, false, false>,
+			testCvt_PTX(ir::PTXOperand::u64,
+				ir::PTXOperand::u8, false, false, false),
+			testCvt_INOUT(I64), testCvt_INOUT(I8),
+			uniformRandom<unsigned char, 1>, 1, 1);
+		add("TestCvt-u64-u16",
+			testCvt_REF<long long unsigned int,
+				unsigned short, false, false, false>,
+			testCvt_PTX(ir::PTXOperand::u64,
+				ir::PTXOperand::u16, false, false, false),
+			testCvt_INOUT(I64), testCvt_INOUT(I16),
+			uniformRandom<unsigned short, 1>, 1, 1);
+		add("TestCvt-u64-u32",
+			testCvt_REF<long long unsigned int, unsigned int,
+				false, false, false>,
+			testCvt_PTX(ir::PTXOperand::u64,
+				ir::PTXOperand::u32, false, false, false),
+			testCvt_INOUT(I64), testCvt_INOUT(I32),
+			uniformRandom<unsigned int, 1>, 1, 1);
+		add("TestCvt-u64-u64",
+			testCvt_REF<long long unsigned int, long long unsigned int,
+				false, false, false>,
+			testCvt_PTX(ir::PTXOperand::u64,
+				ir::PTXOperand::u64, false, false, false),
+			testCvt_INOUT(I64), testCvt_INOUT(I64),
+			uniformRandom<long long unsigned int, 1>, 1, 1);
+		add("TestCvt-u64-s8",
+			testCvt_REF<long long unsigned int, char, false, false, false>,
+			testCvt_PTX(ir::PTXOperand::u64,
+				ir::PTXOperand::s8, false, false, false),
+			testCvt_INOUT(I64), testCvt_INOUT(I8),
+			uniformRandom<char, 1>, 1, 1);
+		add("TestCvt-u64-s16",
+			testCvt_REF<long long unsigned int, short, false, false, false>,
+			testCvt_PTX(ir::PTXOperand::u64,
+				ir::PTXOperand::s16, false, false, false),
+			testCvt_INOUT(I64), testCvt_INOUT(I16),
+			uniformRandom<short, 1>, 1, 1);
+		add("TestCvt-u64-s32",
+			testCvt_REF<long long unsigned int, int, false, false, false>,
+			testCvt_PTX(ir::PTXOperand::u64,
+				ir::PTXOperand::s32, false, false, false),
+			testCvt_INOUT(I64), testCvt_INOUT(I32),
+			uniformRandom<int, 1>, 1, 1);
+		add("TestCvt-u64-s64",
+			testCvt_REF<long long unsigned int, long long int,
+				false, false, false>,
+			testCvt_PTX(ir::PTXOperand::u64,
+				ir::PTXOperand::s64, false, false, false),
+			testCvt_INOUT(I64), testCvt_INOUT(I64),
+			uniformRandom<long long int, 1>, 1, 1);
+		add("TestCvt-u64-f32",
+			testCvt_REF<long long unsigned int, float, false, false, false>,
+			testCvt_PTX(ir::PTXOperand::u64,
+				ir::PTXOperand::f32, false, false, false),
+			testCvt_INOUT(I64), testCvt_INOUT(FP32),
+			uniformFloat<float, 1>, 1, 1);
+		add("TestCvt-u64-f64",
+			testCvt_REF<long long unsigned int, double, false, false, false>,
+			testCvt_PTX(ir::PTXOperand::u64,
+				ir::PTXOperand::f64, false, false, false),
+			testCvt_INOUT(I64), testCvt_INOUT(FP64),
+			uniformFloat<double, 1>, 1, 1);
+
+		add("TestCvt-s8-u8",
+			testCvt_REF<char, unsigned char, false, false, false>,
+			testCvt_PTX(ir::PTXOperand::s8,
+				ir::PTXOperand::u8, false, false, false),
+			testCvt_INOUT(I8), testCvt_INOUT(I8),
+			uniformRandom<unsigned char, 1>, 1, 1);
+		add("TestCvt-s8-u16",
+			testCvt_REF<char, unsigned short, false, false, false>,
+			testCvt_PTX(ir::PTXOperand::s8,
+				ir::PTXOperand::u16, false, false, false),
+			testCvt_INOUT(I8), testCvt_INOUT(I16),
+			uniformRandom<unsigned short, 1>, 1, 1);
+		add("TestCvt-s8-u32",
+			testCvt_REF<char, unsigned int, false, false, false>,
+			testCvt_PTX(ir::PTXOperand::s8,
+				ir::PTXOperand::u32, false, false, false),
+			testCvt_INOUT(I8), testCvt_INOUT(I32),
+			uniformRandom<unsigned int, 1>, 1, 1);
+		add("TestCvt-s8-u64",
+			testCvt_REF<char, long long unsigned int, false, false, false>,
+			testCvt_PTX(ir::PTXOperand::s8,
+				ir::PTXOperand::u64, false, false, false),
+			testCvt_INOUT(I8), testCvt_INOUT(I64),
+			uniformRandom<long long unsigned int, 1>, 1, 1);
+		add("TestCvt-s8-s8",
+			testCvt_REF<char, char, false, false, false>,
+			testCvt_PTX(ir::PTXOperand::s8,
+				ir::PTXOperand::s8, false, false, false),
+			testCvt_INOUT(I8), testCvt_INOUT(I8),
+			uniformRandom<char, 1>, 1, 1);
+		add("TestCvt-s8-s16",
+			testCvt_REF<char, short, false, false, false>,
+			testCvt_PTX(ir::PTXOperand::s8,
+				ir::PTXOperand::s16, false, false, false),
+			testCvt_INOUT(I8), testCvt_INOUT(I16),
+			uniformRandom<short, 1>, 1, 1);
+		add("TestCvt-s8-s32",
+			testCvt_REF<char, int, false, false, false>,
+			testCvt_PTX(ir::PTXOperand::s8,
+				ir::PTXOperand::s32, false, false, false),
+			testCvt_INOUT(I8), testCvt_INOUT(I32),
+			uniformRandom<int, 1>, 1, 1);
+		add("TestCvt-s8-s64",
+			testCvt_REF<char, long long int, false, false, false>,
+			testCvt_PTX(ir::PTXOperand::s8,
+				ir::PTXOperand::s64, false, false, false),
+			testCvt_INOUT(I8), testCvt_INOUT(I64),
+			uniformRandom<long long int, 1>, 1, 1);
+		add("TestCvt-s8-f32",
+			testCvt_REF<char, float, false, false, false>,
+			testCvt_PTX(ir::PTXOperand::s8,
+				ir::PTXOperand::f32, false, false, false),
+			testCvt_INOUT(I8), testCvt_INOUT(FP32),
+			uniformFloat<float, 1>, 1, 1);
+		add("TestCvt-s8-f64",
+			testCvt_REF<char, double, false, false, false>,
+			testCvt_PTX(ir::PTXOperand::s8,
+				ir::PTXOperand::f64, false, false, false),
+			testCvt_INOUT(I8), testCvt_INOUT(FP64),
+			uniformFloat<double, 1>, 1, 1);
+
+		add("TestCvt-s16-u8",
+			testCvt_REF<short, unsigned char, false, false, false>,
+			testCvt_PTX(ir::PTXOperand::s16,
+				ir::PTXOperand::u8, false, false, false),
+			testCvt_INOUT(I16), testCvt_INOUT(I8),
+			uniformRandom<unsigned char, 1>, 1, 1);
+		add("TestCvt-s16-u16",
+			testCvt_REF<short, unsigned short, false, false, false>,
+			testCvt_PTX(ir::PTXOperand::s16,
+				ir::PTXOperand::u16, false, false, false),
+			testCvt_INOUT(I16), testCvt_INOUT(I16),
+			uniformRandom<unsigned short, 1>, 1, 1);
+		add("TestCvt-s16-u32",
+			testCvt_REF<short, unsigned int, false, false, false>,
+			testCvt_PTX(ir::PTXOperand::s16,
+				ir::PTXOperand::u32, false, false, false),
+			testCvt_INOUT(I16), testCvt_INOUT(I32),
+			uniformRandom<unsigned int, 1>, 1, 1);
+		add("TestCvt-s16-u64",
+			testCvt_REF<short, long long unsigned int, false, false, false>,
+			testCvt_PTX(ir::PTXOperand::s16,
+				ir::PTXOperand::u64, false, false, false),
+			testCvt_INOUT(I16), testCvt_INOUT(I64),
+			uniformRandom<long long unsigned int, 1>, 1, 1);
+		add("TestCvt-s16-s8",
+			testCvt_REF<short, char, false, false, false>,
+			testCvt_PTX(ir::PTXOperand::s16,
+				ir::PTXOperand::s8, false, false, false),
+			testCvt_INOUT(I16), testCvt_INOUT(I8),
+			uniformRandom<char, 1>, 1, 1);
+		add("TestCvt-s16-s16",
+			testCvt_REF<short, short, false, false, false>,
+			testCvt_PTX(ir::PTXOperand::s16,
+				ir::PTXOperand::s16, false, false, false),
+			testCvt_INOUT(I16), testCvt_INOUT(I16),
+			uniformRandom<short, 1>, 1, 1);
+		add("TestCvt-s16-s32",
+			testCvt_REF<short, int, false, false, false>,
+			testCvt_PTX(ir::PTXOperand::s16,
+				ir::PTXOperand::s32, false, false, false),
+			testCvt_INOUT(I16), testCvt_INOUT(I32),
+			uniformRandom<int, 1>, 1, 1);
+		add("TestCvt-s16-s64",
+			testCvt_REF<short, long long int, false, false, false>,
+			testCvt_PTX(ir::PTXOperand::s16,
+				ir::PTXOperand::s64, false, false, false),
+			testCvt_INOUT(I16), testCvt_INOUT(I64),
+			uniformRandom<long long int, 1>, 1, 1);
+		add("TestCvt-s16-f32",
+			testCvt_REF<short, float, false, false, false>,
+			testCvt_PTX(ir::PTXOperand::s16,
+				ir::PTXOperand::f32, false, false, false),
+			testCvt_INOUT(I16), testCvt_INOUT(FP32),
+			uniformFloat<float, 1>, 1, 1);
+		add("TestCvt-s16-f64",
+			testCvt_REF<short, double, false, false, false>,
+			testCvt_PTX(ir::PTXOperand::s16,
+				ir::PTXOperand::f64, false, false, false),
+			testCvt_INOUT(I16), testCvt_INOUT(FP64),
+			uniformFloat<double, 1>, 1, 1);
+
+		add("TestCvt-s32-u8",
+			testCvt_REF<int, unsigned char, false, false, false>,
+			testCvt_PTX(ir::PTXOperand::s32,
+				ir::PTXOperand::u8, false, false, false),
+			testCvt_INOUT(I32), testCvt_INOUT(I8),
+			uniformRandom<unsigned char, 1>, 1, 1);
+		add("TestCvt-s32-u16",
+			testCvt_REF<int, unsigned short, false, false, false>,
+			testCvt_PTX(ir::PTXOperand::s32,
+				ir::PTXOperand::u16, false, false, false),
+			testCvt_INOUT(I32), testCvt_INOUT(I16),
+			uniformRandom<unsigned short, 1>, 1, 1);
+		add("TestCvt-s32-u32",
+			testCvt_REF<int, unsigned int, false, false, false>,
+			testCvt_PTX(ir::PTXOperand::s32,
+				ir::PTXOperand::u32, false, false, false),
+			testCvt_INOUT(I32), testCvt_INOUT(I32),
+			uniformRandom<unsigned int, 1>, 1, 1);
+		add("TestCvt-s32-u64",
+			testCvt_REF<int, long long unsigned int, false, false, false>,
+			testCvt_PTX(ir::PTXOperand::s32,
+				ir::PTXOperand::u64, false, false, false),
+			testCvt_INOUT(I32), testCvt_INOUT(I64),
+			uniformRandom<long long unsigned int, 1>, 1, 1);
+		add("TestCvt-s32-s8",
+			testCvt_REF<int, char, false, false, false>,
+			testCvt_PTX(ir::PTXOperand::s32,
+				ir::PTXOperand::s8, false, false, false),
+			testCvt_INOUT(I32), testCvt_INOUT(I8),
+			uniformRandom<char, 1>, 1, 1);
+		add("TestCvt-s32-s16",
+			testCvt_REF<int, short, false, false, false>,
+			testCvt_PTX(ir::PTXOperand::s32,
+				ir::PTXOperand::s16, false, false, false),
+			testCvt_INOUT(I32), testCvt_INOUT(I16),
+			uniformRandom<short, 1>, 1, 1);
+		add("TestCvt-s32-s32",
+			testCvt_REF<int, int, false, false, false>,
+			testCvt_PTX(ir::PTXOperand::s32,
+				ir::PTXOperand::s32, false, false, false),
+			testCvt_INOUT(I32), testCvt_INOUT(I32),
+			uniformRandom<int, 1>, 1, 1);
+		add("TestCvt-s32-s64",
+			testCvt_REF<int, long long int, false, false, false>,
+			testCvt_PTX(ir::PTXOperand::s32,
+				ir::PTXOperand::s64, false, false, false),
+			testCvt_INOUT(I32), testCvt_INOUT(I64),
+			uniformRandom<long long int, 1>, 1, 1);
+		add("TestCvt-s32-f32",
+			testCvt_REF<int, float, false, false, false>,
+			testCvt_PTX(ir::PTXOperand::s32,
+				ir::PTXOperand::f32, false, false, false),
+			testCvt_INOUT(I32), testCvt_INOUT(FP32),
+			uniformFloat<float, 1>, 1, 1);
+		add("TestCvt-s32-f64",
+			testCvt_REF<int, double, false, false, false>,
+			testCvt_PTX(ir::PTXOperand::s32,
+				ir::PTXOperand::f64, false, false, false),
+			testCvt_INOUT(I32), testCvt_INOUT(FP64),
+			uniformFloat<double, 1>, 1, 1);
+
+		add("TestCvt-s64-u8",
+			testCvt_REF<long long int, unsigned char, false, false, false>,
+			testCvt_PTX(ir::PTXOperand::s64,
+				ir::PTXOperand::u8, false, false, false),
+			testCvt_INOUT(I64), testCvt_INOUT(I8),
+			uniformRandom<unsigned char, 1>, 1, 1);
+		add("TestCvt-s64-u16",
+			testCvt_REF<long long int, unsigned short, false, false, false>,
+			testCvt_PTX(ir::PTXOperand::s64,
+				ir::PTXOperand::u16, false, false, false),
+			testCvt_INOUT(I64), testCvt_INOUT(I16),
+			uniformRandom<unsigned short, 1>, 1, 1);
+		add("TestCvt-s64-u32",
+			testCvt_REF<long long int, unsigned int,
+				false, false, false>,
+			testCvt_PTX(ir::PTXOperand::s64,
+				ir::PTXOperand::u32, false, false, false),
+			testCvt_INOUT(I64), testCvt_INOUT(I32),
+			uniformRandom<unsigned int, 1>, 1, 1);
+		add("TestCvt-s64-u64",
+			testCvt_REF<long long int, long long unsigned int,
+				false, false, false>,
+			testCvt_PTX(ir::PTXOperand::s64,
+				ir::PTXOperand::u64, false, false, false),
+			testCvt_INOUT(I64), testCvt_INOUT(I64),
+			uniformRandom<long long unsigned int, 1>, 1, 1);
+		add("TestCvt-s64-s8",
+			testCvt_REF<long long int, char, false, false, false>,
+			testCvt_PTX(ir::PTXOperand::s64,
+				ir::PTXOperand::s8, false, false, false),
+			testCvt_INOUT(I64), testCvt_INOUT(I8),
+			uniformRandom<char, 1>, 1, 1);
+		add("TestCvt-s64-s16",
+			testCvt_REF<long long int, short, false, false, false>,
+			testCvt_PTX(ir::PTXOperand::s64,
+				ir::PTXOperand::s16, false, false, false),
+			testCvt_INOUT(I64), testCvt_INOUT(I16),
+			uniformRandom<short, 1>, 1, 1);
+		add("TestCvt-s64-s32",
+			testCvt_REF<long long int, int, false, false, false>,
+			testCvt_PTX(ir::PTXOperand::s64,
+				ir::PTXOperand::s32, false, false, false),
+			testCvt_INOUT(I64), testCvt_INOUT(I32),
+			uniformRandom<int, 1>, 1, 1);
+		add("TestCvt-s64-s64",
+			testCvt_REF<long long int, long long int,
+				false, false, false>,
+			testCvt_PTX(ir::PTXOperand::s64,
+				ir::PTXOperand::s64, false, false, false),
+			testCvt_INOUT(I64), testCvt_INOUT(I64),
+			uniformRandom<long long int, 1>, 1, 1);
+		add("TestCvt-s64-f32",
+			testCvt_REF<long long int, float, false, false, false>,
+			testCvt_PTX(ir::PTXOperand::s64,
+				ir::PTXOperand::f32, false, false, false),
+			testCvt_INOUT(I64), testCvt_INOUT(FP32),
+			uniformFloat<float, 1>, 1, 1);
+		add("TestCvt-s64-f64",
+			testCvt_REF<long long int, double, false, false, false>,
+			testCvt_PTX(ir::PTXOperand::s64,
+				ir::PTXOperand::f64, false, false, false),
+			testCvt_INOUT(I64), testCvt_INOUT(FP64),
+			uniformFloat<double, 1>, 1, 1);
+
+		add("TestCvt-f32-u8",
+			testCvt_REF<float, unsigned char, false, false, false>,
+			testCvt_PTX(ir::PTXOperand::f32,
+				ir::PTXOperand::u8, false, false, false),
+			testCvt_INOUT(FP32), testCvt_INOUT(I8),
+			uniformRandom<unsigned char, 1>, 1, 1);
+		add("TestCvt-f32-u16",
+			testCvt_REF<float, unsigned short, false, false, false>,
+			testCvt_PTX(ir::PTXOperand::f32,
+				ir::PTXOperand::u16, false, false, false),
+			testCvt_INOUT(FP32), testCvt_INOUT(I16),
+			uniformRandom<unsigned short, 1>, 1, 1);
+		add("TestCvt-f32-u32",
+			testCvt_REF<float, unsigned int, false, false, false>,
+			testCvt_PTX(ir::PTXOperand::f32,
+				ir::PTXOperand::u32, false, false, false),
+			testCvt_INOUT(FP32), testCvt_INOUT(I32),
+			uniformRandom<unsigned int, 1>, 1, 1);
+		add("TestCvt-f32-u64",
+			testCvt_REF<float, long long unsigned int, false, false, false>,
+			testCvt_PTX(ir::PTXOperand::f32,
+				ir::PTXOperand::u64, false, false, false),
+			testCvt_INOUT(FP32), testCvt_INOUT(I64),
+			uniformRandom<long long unsigned int, 1>, 1, 1);
+		add("TestCvt-f32-s8",
+			testCvt_REF<float, char, false, false, false>,
+			testCvt_PTX(ir::PTXOperand::f32,
+				ir::PTXOperand::s8, false, false, false),
+			testCvt_INOUT(FP32), testCvt_INOUT(I8),
+			uniformRandom<char, 1>, 1, 1);
+		add("TestCvt-f32-s16",
+			testCvt_REF<float, short, false, false, false>,
+			testCvt_PTX(ir::PTXOperand::f32,
+				ir::PTXOperand::s16, false, false, false),
+			testCvt_INOUT(FP32), testCvt_INOUT(I16),
+			uniformRandom<short, 1>, 1, 1);
+		add("TestCvt-f32-s32",
+			testCvt_REF<float, int, false, false, false>,
+			testCvt_PTX(ir::PTXOperand::f32,
+				ir::PTXOperand::s32, false, false, false),
+			testCvt_INOUT(FP32), testCvt_INOUT(I32),
+			uniformRandom<int, 1>, 1, 1);
+		add("TestCvt-f32-s64",
+			testCvt_REF<float, long long int, false, false, false>,
+			testCvt_PTX(ir::PTXOperand::f32,
+				ir::PTXOperand::s64, false, false, false),
+			testCvt_INOUT(FP32), testCvt_INOUT(I64),
+			uniformRandom<long long int, 1>, 1, 1);
+		add("TestCvt-f32-f32",
+			testCvt_REF<float, float, false, false, false>,
+			testCvt_PTX(ir::PTXOperand::f32,
+				ir::PTXOperand::f32, false, false, false),
+			testCvt_INOUT(FP32), testCvt_INOUT(FP32),
+			uniformFloat<float, 1>, 1, 1);
+		add("TestCvt-f32-f64",
+			testCvt_REF<float, double, false, false, false>,
+			testCvt_PTX(ir::PTXOperand::f32,
+				ir::PTXOperand::f64, false, false, false),
+			testCvt_INOUT(FP32), testCvt_INOUT(FP64),
+			uniformFloat<double, 1>, 1, 1);
+
+		add("TestCvt-f64-u8",
+			testCvt_REF<double, unsigned char, false, false, false>,
+			testCvt_PTX(ir::PTXOperand::f64,
+				ir::PTXOperand::u8, false, false, false),
+			testCvt_INOUT(FP64), testCvt_INOUT(I8),
+			uniformRandom<unsigned char, 1>, 1, 1);
+		add("TestCvt-f64-u16",
+			testCvt_REF<double, unsigned short, false, false, false>,
+			testCvt_PTX(ir::PTXOperand::f64,
+				ir::PTXOperand::u16, false, false, false),
+			testCvt_INOUT(FP64), testCvt_INOUT(I16),
+			uniformRandom<unsigned short, 1>, 1, 1);
+		add("TestCvt-f64-u32",
+			testCvt_REF<double, unsigned int, false, false, false>,
+			testCvt_PTX(ir::PTXOperand::f64,
+				ir::PTXOperand::u32, false, false, false),
+			testCvt_INOUT(FP64), testCvt_INOUT(I32),
+			uniformRandom<unsigned int, 1>, 1, 1);
+		add("TestCvt-f64-u64",
+			testCvt_REF<double, long long unsigned int, false, false, false>,
+			testCvt_PTX(ir::PTXOperand::f64,
+				ir::PTXOperand::u64, false, false, false),
+			testCvt_INOUT(FP64), testCvt_INOUT(I64),
+			uniformRandom<long long unsigned int, 1>, 1, 1);
+		add("TestCvt-f64-s8",
+			testCvt_REF<double, char, false, false, false>,
+			testCvt_PTX(ir::PTXOperand::f64,
+				ir::PTXOperand::s8, false, false, false),
+			testCvt_INOUT(FP64), testCvt_INOUT(I8),
+			uniformRandom<char, 1>, 1, 1);
+		add("TestCvt-f64-s16",
+			testCvt_REF<double, short, false, false, false>,
+			testCvt_PTX(ir::PTXOperand::f64,
+				ir::PTXOperand::s16, false, false, false),
+			testCvt_INOUT(FP64), testCvt_INOUT(I16),
+			uniformRandom<short, 1>, 1, 1);
+		add("TestCvt-f64-s32",
+			testCvt_REF<double, int, false, false, false>,
+			testCvt_PTX(ir::PTXOperand::f64,
+				ir::PTXOperand::s32, false, false, false),
+			testCvt_INOUT(FP64), testCvt_INOUT(I32),
+			uniformRandom<int, 1>, 1, 1);
+		add("TestCvt-f64-s64",
+			testCvt_REF<double, long long int,
+				false, false, false>,
+			testCvt_PTX(ir::PTXOperand::f64,
+				ir::PTXOperand::s64, false, false, false),
+			testCvt_INOUT(FP64), testCvt_INOUT(I64),
+			uniformRandom<long long int, 1>, 1, 1);
+		add("TestCvt-f64-f32",
+			testCvt_REF<double, float, false, false, false>,
+			testCvt_PTX(ir::PTXOperand::f64,
+				ir::PTXOperand::f32, false, false, false),
+			testCvt_INOUT(FP64), testCvt_INOUT(FP32),
+			uniformFloat<float, 1>, 1, 1);
+		add("TestCvt-f64-f64",
+			testCvt_REF<double, double, false, false, false>,
+			testCvt_PTX(ir::PTXOperand::f64,
+				ir::PTXOperand::f64, false, false, false),
+			testCvt_INOUT(FP64), testCvt_INOUT(FP64),
+			uniformFloat<double, 1>, 1, 1);
 	}
 
 	TestPTXAssembly::TestPTXAssembly(hydrazine::Timer::Second l, 

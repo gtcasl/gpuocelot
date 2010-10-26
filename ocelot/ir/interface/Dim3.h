@@ -19,6 +19,13 @@ namespace ir
 			int z; //! z dimension
 		public:
 			Dim3(int X=1, int Y=1, int Z=1);
+			
+			bool operator==(const ir::Dim3 &b) const {
+				return (x == b.x && y == b.y && z == b.z);
+			}
+			bool operator!=(const ir::Dim3 &b) const {
+				return !(x == b.x && y == b.y && z == b.z);
+			}
 	};
 
 }

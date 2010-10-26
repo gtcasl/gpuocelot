@@ -137,6 +137,8 @@ namespace parser
 					void ctapersm( int target, unsigned int ctas );
 					void maxnctapersm( unsigned int ctas );
 					void maxnctapersm();
+					void minnctapersm( unsigned int ctas );
+					void minnctapersm();
 				
 				public:
 					void preprocessor( int token );

@@ -72,8 +72,7 @@
 %token<value> TOKEN_FUNCTION TOKEN_STRUCT TOKEN_UNION TOKEN_TARGET TOKEN_VERSION
 %token<value> TOKEN_SECTION
 
-%token<value> TOKEN_MAXNREG TOKEN_MAXNTID TOKEN_MAXNCTAPERSM TOKEN_SM10
-%token<value> TOKEN_MINNCTAPERSM
+%token<value> TOKEN_MAXNREG TOKEN_MAXNTID TOKEN_MAXNCTAPERSM TOKEN_MINNCTAPERSM TOKEN_SM10
 %token<value> TOKEN_SM11 TOKEN_SM12 TOKEN_SM13 TOKEN_SM20 TOKEN_MAP_F64_TO_F32
 %token<value> TOKEN_SM21
 
@@ -538,6 +537,16 @@ ctapersm : shaderModel ':' TOKEN_DECIMAL_CONSTANT
 
 ctapersmList : ctapersm | ctapersmList ',' ctapersm;
 
+minnctapersm : TOKEN_MINNCTAPERSM TOKEN_DECIMAL_CONSTANT
+{
+	state.minnctapersm( $<value>2 );
+};
+
+minnctapersm : TOKEN_MINNCTAPERSM ctapersmList
+{
+	state.minnctapersm( );
+};
+
 maxnctapersm : TOKEN_MAXNCTAPERSM TOKEN_DECIMAL_CONSTANT
 {
 	state.maxnctapersm( $<value>2 );
@@ -548,7 +557,7 @@ maxnctapersm : TOKEN_MAXNCTAPERSM ctapersmList
 	state.maxnctapersm();
 };
 
-performanceDirective : maxnreg | maxntid | maxnctapersm;
+performanceDirective : maxnreg | maxntid | maxnctapersm | minnctapersm;
 performanceDirectiveList : performanceDirective
 	| performanceDirectiveList performanceDirective;
 performanceDirectives : /* empty string */ | performanceDirectiveList;
@@ -1427,9 +1436,6 @@ suld : OPCODE_SULD formatMode geometry optionalCacheOperation
 	state.formatMode( $<value>2 );
 	state.clampOperation( $<value>7 );
 };
-
-
-// sust.b.3d.v2.b64.trap [surf_A, {%r0, %r1, %r2}], {%rl0, %rl1};
 
 sust : OPCODE_SUST formatMode geometry optionalCacheOperation 
 	instructionVectorType dataType clampOperation '[' operand ','

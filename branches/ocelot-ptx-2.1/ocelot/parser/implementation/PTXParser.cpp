@@ -261,6 +261,16 @@ namespace parser
 		report( "  Rule: TOKEN_MAXNCTAPERSM ctapersmList" );
 	}
 
+	void PTXParser::State::minnctapersm( unsigned int ctas )
+	{
+		report( "  Rule: TOKEN_MINNCTAPERSM TOKEN_DECIMAL_CONSTANT" );
+	}
+	
+	void PTXParser::State::minnctapersm()
+	{
+		report( "  Rule: TOKEN_MINNCTAPERSM ctapersmList" );
+	}
+	
 	void PTXParser::State::preprocessor( int token )
 	{
 		throw_exception( "PTX preprocessor commands not supported in Ocelot.", 

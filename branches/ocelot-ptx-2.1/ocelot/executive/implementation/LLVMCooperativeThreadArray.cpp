@@ -50,13 +50,13 @@ void LLVMCooperativeThreadArray::setup(const LLVMExecutableKernel& kernel)
 	_functions.resize(LLVMModuleManager::totalFunctionCount(), 0);
 	_queuedThreads.resize(_functions.size());
 
-	_nextFunction = _worker->getFunctionId(kernel.module->path(), kernel.name);
+	_entryPoint = _worker->getFunctionId(kernel.module->path(), kernel.name);
 	report(" Entry point is function " << _nextFunction);
 
-	if(_functions[_nextFunction] == 0)
+	if(_functions[_entryPoint] == 0)
 	{
 		report("  Loading entry point into cache.");
-		_functions[_nextFunction] = _worker->getFunctionMetaData(_nextFunction);
+		_functions[_entryPoint] = _worker->getFunctionMetaData(_entryPoint);
 	}
 
 	const unsigned int threads = kernel.blockDim().x *
@@ -66,7 +66,7 @@ void LLVMCooperativeThreadArray::setup(const LLVMExecutableKernel& kernel)
 	_contexts.resize(threads);
 	_stacks.resize(threads);
 	_sharedMemory.resize(kernel.externSharedMemorySize()
-		+ _functions[_nextFunction]->sharedSize);
+		+ _functions[_entryPoint]->sharedSize);
 	_kernel = &kernel;
 
 	_freeContexts.resize(threads);
@@ -117,10 +117,13 @@ void LLVMCooperativeThreadArray::executeCta(unsigned int id)
 	report(" warp size:        " << _warpSize);
 	report(" full warps:       " << warps);
 	report(" remaining threas: " << remains);
+	report(" entry point:      " << _entryPoint);
 
 	ThreadList warpList;
 
 	unsigned int threadId = 0;
+
+	_nextFunction = _entryPoint;
 
 	for(unsigned int warp = 0; warp < warps; ++warp)
 	{

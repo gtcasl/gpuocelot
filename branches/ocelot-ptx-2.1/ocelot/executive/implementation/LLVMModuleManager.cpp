@@ -1064,7 +1064,6 @@ void LLVMModuleManager::Module::shiftId(FunctionId nextId)
 LLVMModuleManager::ModuleDatabase::ModuleDatabase()
 {
 	start();
-#if 0
 	std::stringstream ptx;
 	
 	ptx << 
@@ -1083,7 +1082,6 @@ LLVMModuleManager::ModuleDatabase::ModuleDatabase()
 	_barrierModule.load(ptx, "_ZOcelotBarrierModule");
 	
 	loadModule(&_barrierModule, translator::Translator::NoOptimization, 0);
-#endif
 }
 
 LLVMModuleManager::ModuleDatabase::~ModuleDatabase()
@@ -1171,6 +1169,8 @@ void LLVMModuleManager::ModuleDatabase::unloadModule(
 	FunctionId lowId  = module->second.lowId();
 	FunctionId highId = module->second.highId();
 
+	report(" Removing kernels between " << lowId << " and " << highId);
+	
 	KernelVector::iterator kernelStart = _kernels.begin();
 	KernelVector::iterator kernelEnd   = _kernels.begin();
 	std::advance(kernelEnd, lowId);
@@ -1178,7 +1178,7 @@ void LLVMModuleManager::ModuleDatabase::unloadModule(
 	KernelVector newKernels(kernelStart, kernelEnd);
 	
 	kernelStart = _kernels.begin();
-	std::advance(kernelStart, highId);
+	std::advance(kernelStart, highId+1);
 	
 	for(KernelVector::iterator unloaded = kernelEnd;
 		unloaded != kernelStart; ++unloaded)
@@ -1187,6 +1187,8 @@ void LLVMModuleManager::ModuleDatabase::unloadModule(
 	}
 	
 	newKernels.insert(newKernels.end(), kernelStart, _kernels.end());
+
+	report(" Removed " << (_kernels.size() - newKernels.size()) << " kernels.");
 
 	_kernels = std::move(newKernels);
 	

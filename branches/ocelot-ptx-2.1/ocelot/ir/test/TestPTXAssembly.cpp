@@ -10,6 +10,8 @@
 #include <ocelot/ir/test/TestPTXAssembly.h>
 #include <ocelot/ir/interface/PTXInstruction.h>
 
+#include <ocelot/executive/interface/TextureOperations.h>
+
 #include <ocelot/api/interface/ocelot.h>
 
 #include <hydrazine/interface/Casts.h>
@@ -88,7 +90,7 @@ char* uniformNonZero(test::Test::MersenneTwister& generator)
 	for(unsigned int i = 0; i < size * sizeof(type); ++i)
 	{
 		char value = generator();
-		result[i] = ( value == 0 ) ? 1 : value;
+		result[i] = (value == 0) ? 1 : value;
 	}
 	
 	return result;
@@ -136,6 +138,129 @@ char* uniformFloat(test::Test::MersenneTwister& generator)
 	}
 	
 	return allocation;
+}
+////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////
+// TEST TEXTURES
+std::string testTex_PTX(ir::PTXInstruction::Geometry dim,
+	ir::PTXOperand::DataType dtype,
+	ir::PTXOperand::DataType samplerType)
+{
+	std::stringstream ptx;
+
+	std::string samplerTypeString = "." + ir::PTXOperand::toString(samplerType);
+	std::string dTypeString       = "." + ir::PTXOperand::toString(dtype);
+
+	ptx << ".version 2.1\n";
+	ptx << ".global .texref Texture;\n";
+	
+	ptx << ".entry test(.param .u64 out, .param .u64 in)   \n";
+	ptx << "{\t                                            \n";
+	ptx << "\t.reg .u64 %rIn, %rOut;                       \n";
+	ptx << "\t.reg " << samplerTypeString << " %rs<4>;     \n";
+	ptx << "\t.reg " << dTypeString << " %rd<4>;           \n";
+	ptx << "\tld.param.u64 %rIn, [in];                     \n";
+	ptx << "\tld.param.u64 %rOut, [out];                   \n";
+	ptx << "\tld.global" << samplerTypeString << " %rs0, [%rIn];   \n";
+	if(dim >= ir::PTXInstruction::_2d)
+	{
+		ptx << "\tld.global" << samplerTypeString << " %rs1, [%rIn + "
+			<< ir::PTXOperand::bytes(samplerType) << "];   \n";
+	}
+	if(dim >= ir::PTXInstruction::_3d)
+	{
+		ptx << "\tld.global" << samplerTypeString << " %rs2, [%rIn + "
+			<< 2 * ir::PTXOperand::bytes(samplerType) << "];   \n";
+	}
+	
+	ptx << "\ttex." << ir::PTXInstruction::toString(dim) << ".v4"
+		<< dTypeString << samplerTypeString 
+		<< " {%rd0, %rd1, %rd2, %rd3}, [Texture, {%rs0";
+	
+	if(dim >= ir::PTXInstruction::_2d)
+	{
+		ptx << ", %rs1";
+	}
+	if(dim >= ir::PTXInstruction::_3d)
+	{
+		ptx << ", %rs2, %rs3}];\n";
+	}
+	
+	ptx << "\tst.global" << dTypeString << " [%rOut], %rd0;\n";
+	ptx << "\tst.global" << dTypeString << " [%rOut + " 
+		<< ir::PTXOperand::bytes(dtype) << "], %rd1;\n";
+	ptx << "\tst.global" << dTypeString << " [%rOut + " 
+		<< 2 * ir::PTXOperand::bytes(dtype) << "], %rd2;\n";
+	ptx << "\tst.global" << dTypeString << " [%rOut + " 
+		<< 3 * ir::PTXOperand::bytes(dtype) << "], %rd3;\n";
+	ptx << "\texit;                                        \n";
+	ptx << "}                                              \n";
+	ptx << "                                               \n";
+	
+	return ptx.str();
+}
+
+template<typename dtype, typename stype, ir::PTXInstruction::Geometry dim>
+void testTex_REF(void* output, void* input)
+{
+	stype r[3];
+
+	const ir::Texture& texture = *getParameter<const ir::Texture*>(input, 0);
+	
+	r[0] = getParameter<stype>(input, sizeof(const ir::Texture*));
+	
+	if(dim >= ir::PTXInstruction::_2d)
+	{
+		r[1] = getParameter<stype>(input,
+			sizeof(const ir::Texture*) + sizeof(stype));
+	}
+	if(dim == ir::PTXInstruction::_3d)
+	{
+		r[2] = getParameter<stype>(input,
+			sizeof(const ir::Texture*) + 2 * sizeof(stype));
+	}
+
+	dtype d[4];
+
+	if(dim == ir::PTXInstruction::_1d)
+	{
+		d[0] = executive::tex::sample<0, dtype>(texture, r[0]);
+		d[1] = executive::tex::sample<1, dtype>(texture, r[0]);
+		d[2] = executive::tex::sample<2, dtype>(texture, r[0]);
+		d[3] = executive::tex::sample<3, dtype>(texture, r[0]);
+	}
+	else if(dim == ir::PTXInstruction::_2d)
+	{
+		d[0] = executive::tex::sample<0, dtype>(texture, r[0], r[1]);
+		d[1] = executive::tex::sample<1, dtype>(texture, r[0], r[1]);
+		d[2] = executive::tex::sample<2, dtype>(texture, r[0], r[1]);
+		d[3] = executive::tex::sample<3, dtype>(texture, r[0], r[1]);
+	}
+	else
+	{
+		d[0] = executive::tex::sample<0, dtype>(texture, r[0], r[1], r[2]);
+		d[1] = executive::tex::sample<1, dtype>(texture, r[0], r[1], r[2]);
+		d[2] = executive::tex::sample<2, dtype>(texture, r[0], r[1], r[2]);
+		d[3] = executive::tex::sample<3, dtype>(texture, r[0], r[1], r[2]);
+	}
+	
+	setParameter(output, 0 * sizeof(dtype), d[0]);
+	setParameter(output, 1 * sizeof(dtype), d[1]);
+	setParameter(output, 2 * sizeof(dtype), d[2]);
+	setParameter(output, 3 * sizeof(dtype), d[3]);
+}
+
+test::TestPTXAssembly::TypeVector testTex_IN(
+	test::TestPTXAssembly::DataType type, ir::PTXInstruction::Geometry dim)
+{
+	return test::TestPTXAssembly::TypeVector(dim, type);
+}
+
+test::TestPTXAssembly::TypeVector testTex_OUT(
+	test::TestPTXAssembly::DataType type)
+{
+	return test::TestPTXAssembly::TypeVector(4, type);
 }
 ////////////////////////////////////////////////////////////////////////////////
 

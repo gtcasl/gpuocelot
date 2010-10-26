@@ -265,9 +265,9 @@ namespace ir {
 		
 		/*! geometry for textures */
 		enum Geometry {
-			_1d,
-			_2d,
-			_3d,
+			_1d = 1,
+			_2d = 2,
+			_3d = 3,
 			Geometry_Invalid
 		};
 

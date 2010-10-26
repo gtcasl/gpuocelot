@@ -127,10 +127,10 @@ std::string ir::PTXInstruction::toString( FormatMode mode ) {
 
 std::string ir::PTXInstruction::toString( ClampOperation clamp ) {
 	switch (clamp) {
-		case TrapOOB: return ".trap";
-		case Clamp: return ".clamp";
-		case Zero: return ".zero";
-		case Mirror: return ".mirror";
+		case TrapOOB:                return ".trap";
+		case Clamp:                  return ".clamp";
+		case Zero:                   return ".zero";
+		case Mirror:                 return ".mirror";
 		case ClampOperation_Invalid: break;
 		default: break;
 	}

@@ -97,7 +97,7 @@ static unsigned int createRestorePoint(ir::PTXKernel& newKernel,
 	ir::PTXKernel& ptx, ir::ControlFlowGraph::iterator newBlock, 
 	ir::ControlFlowGraph::iterator oldBlock, 
 	ir::ControlFlowGraph::edge_iterator newEdge,
-	const DataflowGraph::IteratorMap& cfgToDfgMap)
+	const DataflowGraph::IteratorMap& cfgToDfgMap, BlockSet& savedBlocks)
 {
 	report("   Creating restore point for block '" << newBlock->label << "'");
 
@@ -109,6 +109,9 @@ static unsigned int createRestorePoint(ir::PTXKernel& newKernel,
 	ir::ControlFlowGraph::edge_iterator splitEdge = newKernel.cfg()->split_edge(
 		newEdge, ir::BasicBlock(newBlock->label + "_restore",
 		newKernel.cfg()->newId())).second;
+
+	report("    restoring block wth id '" << splitEdge->head->id << "'");
+	savedBlocks.insert(splitEdge->head);
 
 	ir::PTXInstruction* move = new ir::PTXInstruction(ir::PTXInstruction::Mov);
 
@@ -262,7 +265,7 @@ static ir::ControlFlowGraph::iterator createRegion(
 	const BlockSet& region, const BlockSet& inEdges, 
 	ir::ControlFlowGraph::iterator entry,
 	const DataflowGraph::IteratorMap& cfgToDfgMap,
-	const BlockSet& alreadyAdded)
+	const BlockSet& alreadyAdded, BlockSet& savedBlocks)
 {
 	typedef std::vector<ir::Edge> EdgeVector;
 	typedef std::unordered_map<ir::ControlFlowGraph::iterator, 
@@ -273,7 +276,6 @@ static ir::ControlFlowGraph::iterator createRegion(
 	
 	ir::BasicBlock::EdgePointerVector deletedEdges;
 	EdgeVector newEdges;
-	BlockSet savedBlocks;
 	BlockMap oldToNewBlockMap;
 
 	// create the map of old to new blocks
@@ -425,7 +427,7 @@ static ir::ControlFlowGraph::iterator createRegion(
 			
 			spillRegionSize = std::max(spillRegionSize, 
 				createRestorePoint(newKernel, ptx, newTail->second, 
-				tail, newEdge, cfgToDfgMap));
+				tail, newEdge, cfgToDfgMap, savedBlocks));
 		}
 	}
 
@@ -524,7 +526,7 @@ static void updateTailCallTargets(
 }
 
 static void createScheduler(ir::PTXKernel& kernel,
-	ir::PTXKernel& originalKernel)
+	ir::PTXKernel& originalKernel, const BlockSet& savedBlocks)
 {
 	if(kernel.cfg()->begin()->out_edges.size() == 1)
 	{
@@ -598,7 +600,20 @@ static void createScheduler(ir::PTXKernel& kernel,
 		compare->a = load->d;
 		compare->b = std::move(ir::PTXOperand(ir::PTXOperand::Immediate,
 			ir::PTXOperand::u32));
-		compare->b.imm_uint = target->tail->id;
+
+		if(savedBlocks.count(target->tail) == 0)
+		{
+			compare->b.imm_uint = target->tail->id;
+		}
+		else if(target->tail->has_fallthrough_edge())
+		{
+			compare->b.imm_uint = 
+				target->tail->get_fallthrough_edge()->tail->id;
+		}
+		else
+		{
+			compare->b.imm_uint = target->tail->get_branch_edge()->tail->id;
+		}
 
 		compare->d = std::move(ir::PTXOperand(ir::PTXOperand::Register,
 			ir::PTXOperand::pred, originalKernel.dfg()->newRegister()));
@@ -655,7 +670,11 @@ static void createScheduler(ir::PTXKernel& kernel,
 	compare->b = std::move(ir::PTXOperand(ir::PTXOperand::Immediate,
 		ir::PTXOperand::u32));
 		
-	if(target->tail->has_fallthrough_edge())
+	if(savedBlocks.count(target->tail) == 0)
+	{
+		compare->b.imm_uint = target->tail->id;
+	}
+	else if(target->tail->has_fallthrough_edge())
 	{
 		compare->b.imm_uint = target->tail->get_fallthrough_edge()->tail->id;
 	}
@@ -728,6 +747,7 @@ void SubkernelFormationPass::ExtractKernelsPass::runOnKernel(ir::Kernel& k)
 	BlockSet encountered;
 	BlockSet alreadyAdded;
 	BlockSet inEdges;
+	BlockSet savedBlocks;
 	IdToSubkernelMap idToKernelMap;
 
 	unsigned int currentRegionSize = 0;
@@ -812,10 +832,10 @@ void SubkernelFormationPass::ExtractKernelsPass::runOnKernel(ir::Kernel& k)
 		if(currentRegionSize < _expectedRegionSize && !queue.empty()) continue;
 		
 		entry = createRegion(*newKernel, spillRegionSize, ptx, region,
-			inEdges, entry, cfgToDfgMap, alreadyAdded);
+			inEdges, entry, cfgToDfgMap, alreadyAdded, savedBlocks);
 		alreadyAdded.insert(region.begin(), region.end());
 		
-		createScheduler(*newKernel, ptx);
+		createScheduler(*newKernel, ptx, savedBlocks);
 		
 		// restart with a new kernel if there are any blocks left
 		if(entry == ptx.cfg()->get_exit_block()) break;
@@ -830,6 +850,7 @@ void SubkernelFormationPass::ExtractKernelsPass::runOnKernel(ir::Kernel& k)
 		inEdges.clear();
 		region.clear();
 		queue.clear();
+		savedBlocks.clear();
 		queue.push_back(entry);
 
 		newKernel = splitKernels.back();

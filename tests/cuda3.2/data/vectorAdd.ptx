@@ -1,0 +1,88 @@
+	.version 1.4
+	.target sm_10, map_f64_to_f32
+	// compiled with /usr/local/cuda3.2/cuda/open64/lib//be
+	// nvopencc 3.2 built on 2010-09-08
+
+	//-----------------------------------------------------------
+	// Compiling /tmp/tmpxft_000056c4_00000000-9_vectorAdd.cpp3.i (/tmp/ccBI#.RzjkNm)
+	//-----------------------------------------------------------
+
+	//-----------------------------------------------------------
+	// Options:
+	//-----------------------------------------------------------
+	//  Target:ptx, ISA:sm_10, Endian:little, Pointer Size:64
+	//  -O3	(Optimization level)
+	//  -g0	(Debug level)
+	//  -m2	(Report advisories)
+	//-----------------------------------------------------------
+
+	.file	1	"<command-line>"
+	.file	2	"/tmp/tmpxft_000056c4_00000000-8_vectorAdd.cudafe2.gpu"
+	.file	3	"/usr/lib/gcc/x86_64-linux-gnu/4.4.3/include/stddef.h"
+	.file	4	"/usr/local/cuda3.2/cuda/bin/../include/crt/device_runtime.h"
+	.file	5	"/usr/local/cuda3.2/cuda/bin/../include/host_defines.h"
+	.file	6	"/usr/local/cuda3.2/cuda/bin/../include/builtin_types.h"
+	.file	7	"/usr/local/cuda3.2/cuda/bin/../include/device_types.h"
+	.file	8	"/usr/local/cuda3.2/cuda/bin/../include/driver_types.h"
+	.file	9	"/usr/local/cuda3.2/cuda/bin/../include/surface_types.h"
+	.file	10	"/usr/local/cuda3.2/cuda/bin/../include/texture_types.h"
+	.file	11	"/usr/local/cuda3.2/cuda/bin/../include/vector_types.h"
+	.file	12	"/usr/local/cuda3.2/cuda/bin/../include/device_launch_parameters.h"
+	.file	13	"/usr/local/cuda3.2/cuda/bin/../include/crt/storage_class.h"
+	.file	14	"/usr/include/bits/types.h"
+	.file	15	"/usr/include/time.h"
+	.file	16	"/usr/local/cuda3.2/cuda/bin/../include/texture_fetch_functions.h"
+	.file	17	"/usr/local/cuda3.2/cuda/bin/../include/common_functions.h"
+	.file	18	"/usr/local/cuda3.2/cuda/bin/../include/math_functions.h"
+	.file	19	"/usr/local/cuda3.2/cuda/bin/../include/math_constants.h"
+	.file	20	"/usr/local/cuda3.2/cuda/bin/../include/device_functions.h"
+	.file	21	"/usr/local/cuda3.2/cuda/bin/../include/sm_11_atomic_functions.h"
+	.file	22	"/usr/local/cuda3.2/cuda/bin/../include/sm_12_atomic_functions.h"
+	.file	23	"/usr/local/cuda3.2/cuda/bin/../include/sm_13_double_functions.h"
+	.file	24	"/usr/local/cuda3.2/cuda/bin/../include/sm_20_atomic_functions.h"
+	.file	25	"/usr/local/cuda3.2/cuda/bin/../include/sm_20_intrinsics.h"
+	.file	26	"/usr/local/cuda3.2/cuda/bin/../include/surface_functions.h"
+	.file	27	"/usr/local/cuda3.2/cuda/bin/../include/math_functions_dbl_ptx1.h"
+	.file	28	"vectorAdd.cu"
+
+
+	.entry VecAdd (
+		.param .u64 __cudaparm_VecAdd_A,
+		.param .u64 __cudaparm_VecAdd_B,
+		.param .u64 __cudaparm_VecAdd_C,
+		.param .s32 __cudaparm_VecAdd_N)
+	{
+	.reg .u16 %rh<4>;
+	.reg .u32 %r<6>;
+	.reg .u64 %rd<10>;
+	.reg .f32 %f<5>;
+	.reg .pred %p<3>;
+	.loc	28	21	0
+$LDWbegin_VecAdd:
+	mov.u16 	%rh1, %ctaid.x;
+	mov.u16 	%rh2, %ntid.x;
+	mul.wide.u16 	%r1, %rh1, %rh2;
+	cvt.u32.u16 	%r2, %tid.x;
+	add.u32 	%r3, %r2, %r1;
+	ld.param.s32 	%r4, [__cudaparm_VecAdd_N];
+	setp.le.s32 	%p1, %r4, %r3;
+	@%p1 bra 	$Lt_0_1026;
+	.loc	28	25	0
+	cvt.s64.s32 	%rd1, %r3;
+	mul.wide.s32 	%rd2, %r3, 4;
+	ld.param.u64 	%rd3, [__cudaparm_VecAdd_A];
+	add.u64 	%rd4, %rd3, %rd2;
+	ld.global.f32 	%f1, [%rd4+0];
+	ld.param.u64 	%rd5, [__cudaparm_VecAdd_B];
+	add.u64 	%rd6, %rd5, %rd2;
+	ld.global.f32 	%f2, [%rd6+0];
+	add.f32 	%f3, %f1, %f2;
+	ld.param.u64 	%rd7, [__cudaparm_VecAdd_C];
+	add.u64 	%rd8, %rd7, %rd2;
+	st.global.f32 	[%rd8+0], %f3;
+$Lt_0_1026:
+	.loc	28	26	0
+	exit;
+$LDWend_VecAdd:
+	} // VecAdd
+

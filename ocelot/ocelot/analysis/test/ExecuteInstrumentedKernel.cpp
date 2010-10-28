@@ -32,7 +32,7 @@ namespace test
 	{ 
         int ctas = 2;
         int threads = 2;
-        int basicBlocks = 7;
+        int basicBlocks = 7; /* 5 basic blocks in original program, entry and exit blocks added by instrumentation */
         
 		ocelot::reset();
 
@@ -66,7 +66,7 @@ namespace test
         int k = 0;
         int *blockExecutionTotal = new int[basicBlocks];
        
-        for(i = 0; i < basicBlocks; i++) {
+        for(i = 0; i < (basicBlocks - 2); i++) {
             blockExecutionTotal[i] = 0;
         }
 
@@ -74,7 +74,7 @@ namespace test
             std::cout << "CTA " << k << ":\n";
             for(i = 0; i < threads; i++) {
                 std::cout << "Thread " << (i + 1) << ":\n";
-                for(j = 0; j < basicBlocks; j++) {
+                for(j = 0; j < (basicBlocks - 2); j++) {
                     std::cout << "basicBlock " << (j + 1) << ": " << counterHost[(i*basicBlocks * ctas) + j] << "\n";
                     blockExecutionTotal[j] += counterHost[(i*basicBlocks * ctas) + j];
                 }
@@ -82,7 +82,7 @@ namespace test
         }
 
         std::cout << "\n\n--------------- Total Basic Block Execution Count ---------------\n\n";
-        for(i = 0; i < basicBlocks; i++) {
+        for(i = 0; i < (basicBlocks - 2); i++) {
             std::cout << "basicBlock " << i << ": " << blockExecutionTotal[i] << "\n";
         }
 

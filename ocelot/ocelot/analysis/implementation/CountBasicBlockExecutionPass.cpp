@@ -244,6 +244,7 @@ namespace analysis
         DataflowGraph::RegisterId counterBase = kernel->dfg()->newRegister();
         ir::PTXInstruction mov(ir::PTXInstruction::Mov);
         mov.type = type;
+        mov.d.type = type;
         mov.d.addressMode = ir::PTXOperand::Register;
         mov.d.reg = counterBase;
         mov.a.addressMode = ir::PTXOperand::Address;
@@ -325,7 +326,7 @@ namespace analysis
      
 		ir::PTXStatement counter = ir::PTXStatement(ir::PTXStatement::Global);
         counter.name = basicBlockCounterBase();
-        counter.type = ir::PTXOperand::u64;
+        counter.type = (sizeof(size_t) == 8 ? ir::PTXOperand::u64: ir::PTXOperand::u32);
 
 
         /* Since the global counter array needs to be declared per module, we need to

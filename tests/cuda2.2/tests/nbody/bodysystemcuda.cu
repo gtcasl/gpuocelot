@@ -150,6 +150,7 @@ integrateNbodySystem(float* newPos, float* newVel,
             ((float4*)newPos, (float4*)newVel,
             (float4*)oldPos, (float4*)oldVel,
             deltaTime, damping, numBodies);
+            
     }
     
     // check if kernel invocation generated an error

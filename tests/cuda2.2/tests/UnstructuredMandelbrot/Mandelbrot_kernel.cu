@@ -121,13 +121,18 @@ __device__ inline void dsmul(float &c0, float &c1, const float a0, const float a
 #endif
 
 // The core Mandelbrot CUDA GPU calculation function
-#if 1
+
 // Unrolled version
 template<class T>
-__device__ inline void CalcMandelbrot(int* output, 
-	const T* xPos, const T yPos, 
-	const T xJParam, const T yJParam, const int crunch, 
-	const bool isJulia, const int points)
+__device__ inline void CalcMandelbrot(
+	int* output, 
+	const T* xPos, 
+	const T yPos, 
+	const T xJParam, 
+	const T yJParam, 
+	const int crunch, 
+	const bool isJulia, 
+	const int points)
 {
 	T x, y, xx, yy; 
     int i = crunch;
@@ -184,11 +189,16 @@ __device__ inline void CalcMandelbrot(int* output,
     } while (1);
 } // CalcMandelbrot
 
-#else
+
 
 template<class T>
-__device__ inline int CalcMandelbrot(const T xPos, const T yPos, const T xJParam, const T yJParam, const int crunch, 
-									 const isJulia)
+__device__ inline int CalcMandelbrot(
+	const T xPos,
+	const T yPos, 
+	const T xJParam, 
+	const T yJParam, 
+	const int crunch, 
+	const bool isJulia)
 {
 	T x, y, xx, yy, xC, yC ; 
 	if(isJulia) {
@@ -219,11 +229,17 @@ __device__ inline int CalcMandelbrot(const T xPos, const T yPos, const T xJParam
     return i; // i > 0 ? crunch - i : 0;
 } // CalcMandelbrot
 
-#endif
 
 // The core Mandelbrot calculation function in double-single precision
-__device__ inline int CalcMandelbrotDS(const float xPos0, const float xPos1, const float yPos0, const float yPos1, 
-									   const float xJParam, const float yJParam, const int crunch, const bool isJulia)
+__device__ inline int CalcMandelbrotDS(
+	const float xPos0, 
+	const float xPos1, 
+	const float yPos0, 
+	const float yPos1, 
+	const float xJParam, 
+	const float yJParam, 
+	const int crunch,
+	const bool isJulia)
 {
     float xx0, xx1;
     float yy0, yy1;

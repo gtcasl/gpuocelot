@@ -9,7 +9,7 @@
 ################################################################################
 ## Autoconf configuration
 ACLOCAL_AMFLAGS = -I m4
-OCELOT_LIBS = $(OCELOT_LDFLAGS) libsdk.la
+OCELOT_LIBS = $(OCELOT_LDFLAGS) libsdk.la -locelotTrace
 CUFFT_LIBS = -lcufft
 CUBLAS_LIBS = -lcublas
 CUDA_CFLAGS = -I $(srcdir)/sdk
@@ -25,7 +25,7 @@ check_PROGRAMS = AlignedTypes AsyncAPI BandwidthTest BicubicTexture \
 	DwtHaar1D Dxtc Eigenvalues FluidsGL FastWalshTransform Histogram256 \
 	Histogram64 ImageDenoising Mandelbrot MatrixMul MersenneTwister MonteCarlo \
 	MonteCarloMultiGPU Nbody OceanFFT Particles PostProcessGL \
-	QuasirandomGenerator \
+	QuasirandomGenerator UnstructuredMandelbrot \
 	RecursiveGaussian Reduction ScalarProd Scan ScanLargeArray \
 	SimpleAtomicIntrinsics SimpleCUBLAS SimpleCUFFT SimpleGL SimpleMultiGPU \
 	SimpleStreams SimpleTemplates SimpleTexture SimpleTexture3D \
@@ -263,13 +263,26 @@ ImageDenoising_LDFLAGS = -static
 ################################################################################
 ## Mandelbrot
 Mandelbrot_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
-Mandelbrot_SOURCES = tests/Mandelbrot/Mandelbrot_sm10.cu.cpp \
+Mandelbrot_SOURCES = tests/Mandelbrot/Mandelbrot.cpp \
+	tests/Mandelbrot/Mandelbrot_sm10.cu.cpp \
 	tests/Mandelbrot/Mandelbrot_sm13.cu.cpp \
-	tests/Mandelbrot/Mandelbrot.cpp \
 	tests/Mandelbrot/Mandelbrot_gold.cpp
 Mandelbrot_LDADD = $(OCELOT_LIBS)
 Mandelbrot_LDFLAGS = -static
 ################################################################################
+
+################################################################################
+## Mandelbrot
+UnstructuredMandelbrot_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
+UnstructuredMandelbrot_SOURCES = tests/UnstructuredMandelbrot/Mandelbrot.cpp \
+	tests/UnstructuredMandelbrot/Mandelbrot_sm10.cu.cpp \
+	tests/UnstructuredMandelbrot/Mandelbrot_sm13.cu.cpp \
+	tests/UnstructuredMandelbrot/Mandelbrot_gold.cpp
+UnstructuredMandelbrot_LDADD = $(OCELOT_LIBS)
+UnstructuredMandelbrot_LDFLAGS = -static
+################################################################################
+
+#		tests/UnstructuredMandelbrot/Mandelbrot_sm10.cu.cpp
 
 ################################################################################
 ## MatrixMul
@@ -772,6 +785,10 @@ regression/regression.log : check
 
 test : regression/regression.log
 
+query:
+	@echo $(CUDA_CFLAGS) 
+	@echo $(SDK_CFLAGS)
+	
 ################################################################################
 
 

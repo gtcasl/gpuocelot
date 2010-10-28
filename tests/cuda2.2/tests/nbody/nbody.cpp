@@ -110,7 +110,7 @@ NBodyParams demoParams[] =
 int numDemos = sizeof(demoParams) / sizeof(NBodyParams);
 bool cycleDemo = true;
 int activeDemo = 0;
-float demoTime = 5000.0f; // ms
+float demoTime = 40000.0f; // ms
 unsigned int demoTimer = 0;
 // run multiple iterations to compute an average sort time
 

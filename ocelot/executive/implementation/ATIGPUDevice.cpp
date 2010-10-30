@@ -64,8 +64,7 @@ namespace executive
 		CalDriver()->calCtxCreate(&_context, _device);
 
 		// Allocate uav0 resource
-		// TODO Define max resource allocation size
-		CALuint width = 400000;
+		CALuint width = Uav0Size;
 		CALuint flags = CAL_RESALLOC_GLOBAL_BUFFER;
 		CalDriver()->calResAllocLocal1D(
 				&_uav0Resource, 
@@ -218,6 +217,8 @@ namespace executive
 	{
 		assertM(!moduleName.empty(), "Invalid module name");
 
+		report("Getting global allocation " << moduleName << " : " << name);
+
 		ModuleMap::iterator module = _modules.find(moduleName);
 		if (module == _modules.end()) return 0;
 
@@ -242,14 +243,21 @@ namespace executive
 
 	Device::MemoryAllocation *ATIGPUDevice::allocate(size_t size)
 	{
-		// TODO Check uav0 size limits
+		// uav0 accesses should be aligned to 4
+		size_t aSize = AlignUp(size, 4);
+
+		// Check uav0 size limits
+		assertM(_uav0AllocPtr - Uav0BaseAddr + aSize < Uav0Size,
+				"Out of global memory: " << _uav0AllocPtr - Uav0BaseAddr
+				<< " + " << aSize
+				<< " greater than " << Uav0Size);
+
 		MemoryAllocation *allocation = 
 			new MemoryAllocation(&_uav0Resource, _uav0AllocPtr, size);
 		_uav0Allocations.insert(
 				std::make_pair(allocation->pointer(), allocation));
 
-		// uav0 accesses should be aligned to 4
-		_uav0AllocPtr += AlignUp(size, 4);
+		_uav0AllocPtr += aSize;
 
 		return allocation;
 	}
@@ -625,6 +633,15 @@ namespace executive
 				global != ir->globals().end(); ++global)
 		{
 			size_t size = global->second.statement.bytes();
+			size_t aSize = AlignUp(size, 4);
+
+			// Check uav0 size limits
+			assertM(
+				device->_uav0AllocPtr - ATIGPUDevice::Uav0BaseAddr + aSize 
+				< ATIGPUDevice::Uav0Size, "Out of global memory: " 
+				<< device->_uav0AllocPtr - ATIGPUDevice::Uav0BaseAddr
+				<< " + " << aSize
+				<< " greater than " << ATIGPUDevice::Uav0Size);
 
 			MemoryAllocation* allocation = new MemoryAllocation(
 					&(device->_uav0Resource), device->_uav0AllocPtr, size);
@@ -633,7 +650,7 @@ namespace executive
 			allocations.push_back(allocation);
 
 			// uav0 accesses should be aligned to 4
-			device->_uav0AllocPtr += AlignUp(size, 4);
+			device->_uav0AllocPtr += aSize;
 		}
 
 		return allocations;

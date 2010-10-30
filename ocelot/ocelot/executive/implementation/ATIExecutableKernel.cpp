@@ -356,39 +356,48 @@ namespace executive
 		int i = 0;
 		ParameterVector::const_iterator it;
 		for (it = parameters.begin(); it != parameters.end(); it++) {
-			assertM(it->arrayValues.size() == 1, 
-					"Array parameters not supported yet");
-			ir::Parameter::ValueType v = it->arrayValues[0];
+			assertM(it->arrayValues.size() <= 4, 
+					"Array parameter size greater than 4 not supported yet");
 
-			switch(it->type) {
-				case ir::PTXOperand::u64:
-				{
-					// CUDA pointers are 32-bits
-					assertM(v.val_u64 >> 32 == 0, "Pointer out of range");
-					cb1[i].x = v.val_u32 - ATIGPUDevice::Uav0BaseAddr; 
-					report("cb1[" << i << "] = {" << cb1[i].x << "}");
-					i++;
-					break;
-				}
-				case ir::PTXOperand::s32:
-				{
-					cb1[i].x = v.val_s32;
-					report("cb1[" << i << "] = {" << cb1[i].x << "}");
-					i++;
-					break;
-				}
-				case ir::PTXOperand::u32:
-				{
-					cb1[i].x = v.val_u32;
-					report("cb1[" << i << "] = {" << cb1[i].x << "}");
-					i++;
-					break;
-				}
-				default:
-				{
-					Throw("Parameter type " 
-							<< ir::PTXOperand::toString(it->type)
-							<< " not supported");
+			unsigned int j;
+			for (j = 0 ; j < it->arrayValues.size() ; j++)
+			{
+				ir::Parameter::ValueType v = it->arrayValues[j];
+
+				switch(it->type) {
+					case ir::PTXOperand::u64:
+					{
+						// CUDA pointers are 32-bits
+						assertM(v.val_u64 >> 32 == 0, 
+								"Pointer out of range");
+						cb1[i].x = v.val_u32 - ATIGPUDevice::Uav0BaseAddr; 
+						report("cb1[" << i << "] = {" << cb1[i].x << "}");
+						i++;
+						break;
+					}
+					case ir::PTXOperand::s8:
+					case ir::PTXOperand::s16:
+					case ir::PTXOperand::s32:
+					case ir::PTXOperand::u8:
+					case ir::PTXOperand::u16:
+					case ir::PTXOperand::u32:
+					case ir::PTXOperand::f16:
+					case ir::PTXOperand::f32:
+					case ir::PTXOperand::b8:
+					case ir::PTXOperand::b16:
+					case ir::PTXOperand::b32:
+					{
+						cb1[i].x = v.val_b32;
+						report("cb1[" << i << "] = {" << cb1[i].x << "}");
+						i++;
+						break;
+					}
+					default:
+						{
+							assertM(false, "Parameter type " 
+									<< ir::PTXOperand::toString(it->type)
+									<< " not supported");
+						}
 				}
 			}
 		}

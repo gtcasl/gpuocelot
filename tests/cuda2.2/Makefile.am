@@ -91,7 +91,7 @@ BinomialOptions_SOURCES = tests/binomialOptions/binomialOptions_SM10.cu.cpp \
 	tests/binomialOptions/binomialOptions_SM13.cu.cpp \
 	tests/binomialOptions/binomialOptions.cpp \
 	tests/binomialOptions/binomialOptions_gold.cpp
-BinomialOptions_LDADD = $(OCELOT_LIBS)  -locelotTrace
+BinomialOptions_LDADD = $(OCELOT_LIBS)
 BinomialOptions_LDFLAGS = -static
 ################################################################################
 
@@ -108,7 +108,7 @@ Bitonic_LDFLAGS = -static
 BlackScholes_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
 BlackScholes_SOURCES = tests/BlackScholes/BlackScholes.cu.cpp \
 	tests/BlackScholes/BlackScholes_gold.cpp
-BlackScholes_LDADD = $(OCELOT_LIBS) -locelotTrace
+BlackScholes_LDADD = $(OCELOT_LIBS)
 BlackScholes_LDFLAGS = -static
 ################################################################################
 
@@ -240,7 +240,7 @@ Histogram256_SOURCES = tests/histogram256/histogram256_SM10.cu.cpp \
 	tests/histogram256/histogram256_SM12.cu.cpp \
 	tests/histogram256/histogram256_gold.cpp \
 	tests/histogram256/histogram256.cpp
-Histogram256_LDADD = $(OCELOT_LIBS)  -locelotTrace
+Histogram256_LDADD = $(OCELOT_LIBS)
 Histogram256_LDFLAGS = -static
 ################################################################################
 
@@ -249,7 +249,7 @@ Histogram256_LDFLAGS = -static
 Histogram64_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
 Histogram64_SOURCES = tests/histogram64/histogram64.cu.cpp \
 	tests/histogram64/histogram64_gold.cpp
-Histogram64_LDADD = $(OCELOT_LIBS)  -locelotTrace
+Histogram64_LDADD = $(OCELOT_LIBS)
 Histogram64_LDFLAGS = -static
 ################################################################################
 
@@ -270,7 +270,7 @@ Mandelbrot_SOURCES = tests/Mandelbrot/Mandelbrot.cpp \
 	tests/Mandelbrot/Mandelbrot_sm10.cu.cpp \
 	tests/Mandelbrot/Mandelbrot_sm13.cu.cpp \
 	tests/Mandelbrot/Mandelbrot_gold.cpp
-Mandelbrot_LDADD = $(OCELOT_LIBS) -locelotTrace
+Mandelbrot_LDADD = $(OCELOT_LIBS)
 Mandelbrot_LDFLAGS = -static
 ################################################################################
 
@@ -302,7 +302,7 @@ MersenneTwister_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
 MersenneTwister_SOURCES = tests/MersenneTwister/MersenneTwister.cu.cpp \
 	tests/MersenneTwister/MersenneTwister_gold.cpp \
 	tests/MersenneTwister/genmtrand.c 
-MersenneTwister_LDADD = $(OCELOT_LIBS) -locelotTrace
+MersenneTwister_LDADD = $(OCELOT_LIBS)
 MersenneTwister_LDFLAGS = -static
 ################################################################################
 
@@ -357,7 +357,7 @@ Particles_SOURCES = tests/particles/particleSystem.cu.cpp \
 	tests/particles/particleSystem.cpp \
 	tests/particles/render_particles.cpp \
 	tests/particles/shaders.cpp
-Particles_LDADD = $(OCELOT_LIBS)  -locelotTrace
+Particles_LDADD = $(OCELOT_LIBS)
 Particles_LDFLAGS = -static
 ################################################################################
 
@@ -415,7 +415,7 @@ ScalarProd_LDFLAGS = -static
 Scan_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
 Scan_SOURCES = tests/scan/scan.cu.cpp \
 	tests/scan/scan_gold.cpp
-Scan_LDADD = $(OCELOT_LIBS) -locelotTrace
+Scan_LDADD = $(OCELOT_LIBS)
 Scan_LDFLAGS = -static
 ################################################################################
 
@@ -424,7 +424,7 @@ Scan_LDFLAGS = -static
 ScanLargeArray_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS) -D__DEVICE_EMULATION__
 ScanLargeArray_SOURCES = tests/scanLargeArray/scanLargeArray.cu.cpp \
 	tests/scanLargeArray/scan_gold.cpp
-ScanLargeArray_LDADD = $(OCELOT_LIBS)  -locelotTrace
+ScanLargeArray_LDADD = $(OCELOT_LIBS)
 ScanLargeArray_LDFLAGS = -static
 ################################################################################
 

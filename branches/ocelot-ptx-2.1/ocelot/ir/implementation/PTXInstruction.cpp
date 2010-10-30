@@ -1778,18 +1778,23 @@ std::string ir::PTXInstruction::valid() const {
 			break;
 		}
 		case Suld: {
-			if (formatMode == Formatted && !(type == ir::PTXOperand::b32 || type == ir::PTXOperand::u32 
-				|| type == ir::PTXOperand::s32 || type == ir::PTXOperand::f32)) {
+			if (formatMode == Formatted && !(type == ir::PTXOperand::b32
+				|| type == ir::PTXOperand::u32 
+				|| type == ir::PTXOperand::s32
+				|| type == ir::PTXOperand::f32)) {
 				return "sust.p - data type must be .b32, .u32, .s32, or .f32";
 			}
-			else if (formatMode == Unformatted && !(type == ir::PTXOperand::b8 || type == ir::PTXOperand::b16 
-				|| type == ir::PTXOperand::b32 || type == ir::PTXOperand::b64)) {
+			else if (formatMode == Unformatted && !(type == ir::PTXOperand::b8
+				|| type == ir::PTXOperand::b16 
+				|| type == ir::PTXOperand::b32
+				|| type == ir::PTXOperand::b64)) {
 				return "sust.b - data type must be .b8, .b16, .b32, or .b64";
 			}
 			break;
 		}
 		case Suq: {
-			if (!(surfaceQuery == Width || surfaceQuery == Height || surfaceQuery == Depth)) {
+			if (!(surfaceQuery == Width || surfaceQuery == Height
+				|| surfaceQuery == Depth)) {
 				return "surface query must be .width, .height, or .depth";
 			}
 			if (type != ir::PTXOperand::b32) {
@@ -1798,8 +1803,10 @@ std::string ir::PTXInstruction::valid() const {
 			break;
 		}
 		case Sured: {
-			if (!(reductionOperation == ReductionAdd || reductionOperation == ReductionMin 
-				|| reductionOperation == ReductionMax || reductionOperation == ReductionAnd
+			if (!(reductionOperation == ReductionAdd
+				|| reductionOperation == ReductionMin 
+				|| reductionOperation == ReductionMax
+				|| reductionOperation == ReductionAnd
 				|| reductionOperation == ReductionOr)) {
 				return "reduction operation must be .add, .min, .max, .and, or .or";
 			}
@@ -1810,12 +1817,16 @@ std::string ir::PTXInstruction::valid() const {
 			break;
 		}
 		case Sust: {
-			if (formatMode == Formatted && !(type == ir::PTXOperand::b32 || type == ir::PTXOperand::u32 
-				|| type == ir::PTXOperand::s32 || type == ir::PTXOperand::f32)) {
+			if (formatMode == Formatted && !(type == ir::PTXOperand::b32
+				|| type == ir::PTXOperand::u32 
+				|| type == ir::PTXOperand::s32
+				|| type == ir::PTXOperand::f32)) {
 				return "sust.p - data type must be .b32, .u32, .s32, or .f32";
 			}
-			else if (formatMode == Unformatted && !(type == ir::PTXOperand::b8 || type == ir::PTXOperand::b16 
-				|| type == ir::PTXOperand::b32 || type == ir::PTXOperand::b64)) {
+			else if (formatMode == Unformatted && !(type == ir::PTXOperand::b8
+				|| type == ir::PTXOperand::b16 
+				|| type == ir::PTXOperand::b32
+				|| type == ir::PTXOperand::b64)) {
 				return "sust.b - data type must be .b8, .b16, .b32, or .b64";
 			}
 			break;
@@ -1827,8 +1838,9 @@ std::string ir::PTXInstruction::valid() const {
 			if( vote != Ballot && d.type != PTXOperand::pred ) {
 				return "destination must be a predicate";
 			}
-			else if( vote == Ballot && d.type != PTXOperand::b32 ) {
-				return "destination must be b32 for .ballot";
+			else if( vote == Ballot &&
+				!PTXOperand::valid(d.type, PTXOperand::b32) ) {
+				return "destination must be assignable to b32 for .ballot";
 			}
 			if( a.type != PTXOperand::pred ) {
 				return "operand A must be a predicate";

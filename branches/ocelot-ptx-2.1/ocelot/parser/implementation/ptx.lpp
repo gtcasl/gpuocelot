@@ -417,9 +417,12 @@ WHITESPACE [ \t]*
 ".L1"                           { yylval->value = TOKEN_L1; return TOKEN_L1; }
 ".L2"                           { yylval->value = TOKEN_L2; return TOKEN_L2; }
 
-".width"                        { yylval->value = TOKEN_WIDTH; return TOKEN_WIDTH; }
-".height"                       { yylval->value = TOKEN_HEIGHT; return TOKEN_HEIGHT; }
-".depth"                        { yylval->value = TOKEN_DEPTH; return TOKEN_DEPTH; }
+".width"                        { yylval->value = TOKEN_WIDTH; \
+                                    return TOKEN_WIDTH; }
+".height"                       { yylval->value = TOKEN_HEIGHT; \
+                                    return TOKEN_HEIGHT; }
+".depth"                        { yylval->value = TOKEN_DEPTH; \
+                                    return TOKEN_DEPTH; }
 ".normalized_coords"            { yylval->value = TOKEN_NORMALIZED_COORDS; \
                                     return TOKEN_NORMALIZED_COORDS; }
 ".filter_mode"                  { yylval->value = TOKEN_FILTER_MODE; \
@@ -430,20 +433,17 @@ WHITESPACE [ \t]*
                                     return TOKEN_ADDR_MODE_1; }
 ".addr_mode_2"                  { yylval->value = TOKEN_ADDR_MODE_2; \
                                     return TOKEN_ADDR_MODE_2; }
-".channel_data_type"						{ yylval->value = TOKEN_CHANNEL_DATA_TYPE; \
-																		return TOKEN_CHANNEL_DATA_TYPE; }
-".channel_order"								{ yylval->value = TOKEN_CHANNEL_ORDER; \
-																		return TOKEN_CHANNEL_ORDER; }
+".channel_data_type"            { yylval->value = TOKEN_CHANNEL_DATA_TYPE; \
+                                    return TOKEN_CHANNEL_DATA_TYPE; }
+".channel_order"                { yylval->value = TOKEN_CHANNEL_ORDER; \
+                                    return TOKEN_CHANNEL_ORDER; }
 ".trap"                         { yylval->value = TOKEN_TRAP; \
                                     return TOKEN_TRAP; }
-".to"														{ yylval->value = TOKEN_TO; \
-																		return TOKEN_TO; }
-".clamp"                        { yylval->value = TOKEN_CLAMP; \
+".to"                           { yylval->value = TOKEN_TO; return TOKEN_TO; }
+".clamp"                        { yylval->value = TOKEN_CLAMP; 
                                     return TOKEN_CLAMP; }
 ".zero"                         { yylval->value = TOKEN_ZERO; \
                                     return TOKEN_ZERO; }
-".width"
-
 ".arrive"                       { yylval->value = TOKEN_ARRIVE; \
                                     return TOKEN_ARRIVE; }
 ".red"                          { yylval->value = TOKEN_RED; \

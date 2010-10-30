@@ -9,7 +9,7 @@
 ################################################################################
 ## Autoconf configuration
 ACLOCAL_AMFLAGS = -I m4
-OCELOT_LIBS = $(OCELOT_LDFLAGS) libsdk.la -locelotTrace
+OCELOT_LIBS = $(OCELOT_LDFLAGS) libsdk.la
 CUFFT_LIBS = -lcufft
 CUBLAS_LIBS = -lcublas
 CUDA_CFLAGS = -I $(srcdir)/sdk
@@ -23,8 +23,8 @@ check_PROGRAMS = AlignedTypes AsyncAPI BandwidthTest BicubicTexture \
 	BinomialOptions Bitonic BlackScholes BoxFilter Clock ConvolutionFFT2D \
 	ConvolutionSeparable ConvolutionTexture CppIntegration Dct8x8 DeviceQuery \
 	DwtHaar1D Dxtc Eigenvalues FluidsGL FastWalshTransform Histogram256 \
-	Histogram64 ImageDenoising Mandelbrot MatrixMul MersenneTwister MonteCarlo \
-	MonteCarloMultiGPU Nbody OceanFFT Particles PostProcessGL \
+	Histogram64 ImageDenoising Mandelbrot MatrixMul MersenneTwister \
+ Nbody OceanFFT Particles PostProcessGL \
 	QuasirandomGenerator UnstructuredMandelbrot \
 	RecursiveGaussian Reduction ScalarProd Scan ScanLargeArray \
 	SimpleAtomicIntrinsics SimpleCUBLAS SimpleCUFFT SimpleGL SimpleMultiGPU \
@@ -32,6 +32,9 @@ check_PROGRAMS = AlignedTypes AsyncAPI BandwidthTest BicubicTexture \
 	SimpleVoteIntrinsics SimpleZeroCopy SobelFilter SobolQRNG Template \
 	ThreadFenceReduction Transpose TransposeNew VolumeRender
 lib_LTLIBRARIES = libsdk.la
+#
+# 	MonteCarloMultiGPU MonteCarlo \
+#
 ################################################################################
 
 ################################################################################
@@ -88,7 +91,7 @@ BinomialOptions_SOURCES = tests/binomialOptions/binomialOptions_SM10.cu.cpp \
 	tests/binomialOptions/binomialOptions_SM13.cu.cpp \
 	tests/binomialOptions/binomialOptions.cpp \
 	tests/binomialOptions/binomialOptions_gold.cpp
-BinomialOptions_LDADD = $(OCELOT_LIBS)
+BinomialOptions_LDADD = $(OCELOT_LIBS)  -locelotTrace
 BinomialOptions_LDFLAGS = -static
 ################################################################################
 
@@ -105,7 +108,7 @@ Bitonic_LDFLAGS = -static
 BlackScholes_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
 BlackScholes_SOURCES = tests/BlackScholes/BlackScholes.cu.cpp \
 	tests/BlackScholes/BlackScholes_gold.cpp
-BlackScholes_LDADD = $(OCELOT_LIBS)
+BlackScholes_LDADD = $(OCELOT_LIBS) -locelotTrace
 BlackScholes_LDFLAGS = -static
 ################################################################################
 
@@ -237,7 +240,7 @@ Histogram256_SOURCES = tests/histogram256/histogram256_SM10.cu.cpp \
 	tests/histogram256/histogram256_SM12.cu.cpp \
 	tests/histogram256/histogram256_gold.cpp \
 	tests/histogram256/histogram256.cpp
-Histogram256_LDADD = $(OCELOT_LIBS)
+Histogram256_LDADD = $(OCELOT_LIBS)  -locelotTrace
 Histogram256_LDFLAGS = -static
 ################################################################################
 
@@ -246,7 +249,7 @@ Histogram256_LDFLAGS = -static
 Histogram64_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
 Histogram64_SOURCES = tests/histogram64/histogram64.cu.cpp \
 	tests/histogram64/histogram64_gold.cpp
-Histogram64_LDADD = $(OCELOT_LIBS)
+Histogram64_LDADD = $(OCELOT_LIBS)  -locelotTrace
 Histogram64_LDFLAGS = -static
 ################################################################################
 
@@ -267,7 +270,7 @@ Mandelbrot_SOURCES = tests/Mandelbrot/Mandelbrot.cpp \
 	tests/Mandelbrot/Mandelbrot_sm10.cu.cpp \
 	tests/Mandelbrot/Mandelbrot_sm13.cu.cpp \
 	tests/Mandelbrot/Mandelbrot_gold.cpp
-Mandelbrot_LDADD = $(OCELOT_LIBS)
+Mandelbrot_LDADD = $(OCELOT_LIBS) -locelotTrace
 Mandelbrot_LDFLAGS = -static
 ################################################################################
 
@@ -299,31 +302,31 @@ MersenneTwister_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
 MersenneTwister_SOURCES = tests/MersenneTwister/MersenneTwister.cu.cpp \
 	tests/MersenneTwister/MersenneTwister_gold.cpp \
 	tests/MersenneTwister/genmtrand.c 
-MersenneTwister_LDADD = $(OCELOT_LIBS)
+MersenneTwister_LDADD = $(OCELOT_LIBS) -locelotTrace
 MersenneTwister_LDFLAGS = -static
 ################################################################################
 
 ################################################################################
 ## MonteCarlo
-MonteCarlo_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
-MonteCarlo_SOURCES = tests/MonteCarlo/MonteCarlo_SM13.cu.cpp \
-	tests/MonteCarlo/MonteCarlo_SM10.cu.cpp \
-	tests/MonteCarlo/MonteCarlo_gold.cpp \
-	tests/MonteCarlo/MonteCarlo.cpp
-MonteCarlo_LDADD = $(OCELOT_LIBS)
-MonteCarlo_LDFLAGS = -static
+# MonteCarlo_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
+# MonteCarlo_SOURCES = tests/MonteCarlo/MonteCarlo_SM13.cu.cpp \
+# 	tests/MonteCarlo/MonteCarlo_SM10.cu.cpp \
+# 	tests/MonteCarlo/MonteCarlo_gold.cpp \
+# 	tests/MonteCarlo/MonteCarlo.cpp
+# MonteCarlo_LDADD = $(OCELOT_LIBS)
+# MonteCarlo_LDFLAGS = -static
 ################################################################################
 
 ################################################################################
 ## MonteCarloMultiGPU
-MonteCarloMultiGPU_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
-MonteCarloMultiGPU_SOURCES =  \
-	tests/MonteCarloMultiGPU/MonteCarlo_SM13.cu.cpp \
-	tests/MonteCarloMultiGPU/MonteCarlo_SM10.cu.cpp \
-	tests/MonteCarlo/MonteCarlo_gold.cpp \
-	tests/MonteCarlo/MonteCarlo.cpp
-MonteCarloMultiGPU_LDADD = $(OCELOT_LIBS)
-MonteCarloMultiGPU_LDFLAGS = -static
+# MonteCarloMultiGPU_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
+# MonteCarloMultiGPU_SOURCES =  \
+# 	tests/MonteCarloMultiGPU/MonteCarlo_SM13.cu.cpp \
+# 	tests/MonteCarloMultiGPU/MonteCarlo_SM10.cu.cpp \
+# 	tests/MonteCarlo/MonteCarlo_gold.cpp \
+# 	tests/MonteCarlo/MonteCarlo.cpp
+# MonteCarloMultiGPU_LDADD = $(OCELOT_LIBS)
+# MonteCarloMultiGPU_LDFLAGS = -static
 ################################################################################
 
 ################################################################################
@@ -354,7 +357,7 @@ Particles_SOURCES = tests/particles/particleSystem.cu.cpp \
 	tests/particles/particleSystem.cpp \
 	tests/particles/render_particles.cpp \
 	tests/particles/shaders.cpp
-Particles_LDADD = $(OCELOT_LIBS)
+Particles_LDADD = $(OCELOT_LIBS)  -locelotTrace
 Particles_LDFLAGS = -static
 ################################################################################
 
@@ -412,7 +415,7 @@ ScalarProd_LDFLAGS = -static
 Scan_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
 Scan_SOURCES = tests/scan/scan.cu.cpp \
 	tests/scan/scan_gold.cpp
-Scan_LDADD = $(OCELOT_LIBS)
+Scan_LDADD = $(OCELOT_LIBS) -locelotTrace
 Scan_LDFLAGS = -static
 ################################################################################
 
@@ -421,7 +424,7 @@ Scan_LDFLAGS = -static
 ScanLargeArray_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS) -D__DEVICE_EMULATION__
 ScanLargeArray_SOURCES = tests/scanLargeArray/scanLargeArray.cu.cpp \
 	tests/scanLargeArray/scan_gold.cpp
-ScanLargeArray_LDADD = $(OCELOT_LIBS)
+ScanLargeArray_LDADD = $(OCELOT_LIBS)  -locelotTrace
 ScanLargeArray_LDFLAGS = -static
 ################################################################################
 
@@ -773,6 +776,8 @@ EXTRA_DIST = data/regression_2_18.gold.dat \
 
 ################################################################################
 
+query:
+	@echo "OCELOT_LDFLAGS =" $(OCELOT_LDFLAGS)
 
 ################################################################################
 ## Regression tests

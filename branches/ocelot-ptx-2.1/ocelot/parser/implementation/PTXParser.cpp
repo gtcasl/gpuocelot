@@ -2399,9 +2399,10 @@ namespace parser
 	{
 		switch( token )
 		{
-			case TOKEN_ANY: return ir::PTXInstruction::Any; break;
-			case TOKEN_ALL: return ir::PTXInstruction::All; break;
-			case TOKEN_UNI: return ir::PTXInstruction::Uni; break;
+			case TOKEN_ANY:    return ir::PTXInstruction::Any;    break;
+			case TOKEN_ALL:    return ir::PTXInstruction::All;    break;
+			case TOKEN_UNI:    return ir::PTXInstruction::Uni;    break;
+			case TOKEN_BALLOT: return ir::PTXInstruction::Ballot; break;
 			default: break;
 		}
 		

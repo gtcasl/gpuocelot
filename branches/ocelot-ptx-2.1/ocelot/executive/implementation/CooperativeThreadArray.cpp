@@ -9112,78 +9112,94 @@ void executive::CooperativeThreadArray::eval_Txq(CTAContext &context, const ir::
 /*!
 
 */		
-void executive::CooperativeThreadArray::eval_Vote(CTAContext &context, const PTXInstruction &instr) {
+void executive::CooperativeThreadArray::eval_Vote(CTAContext &context,
+	const PTXInstruction &instr) {
 	trace();
-	if (instr.type != PTXOperand::pred || instr.d.type != PTXOperand::pred 
-		|| instr.a.type != PTXOperand::pred ) {
-		throw RuntimeException("Vote only supports predicates", 
-			context.PC, instr);
-	}
 	
-	bool a = true;
-	
-	switch (instr.vote) {
-		case ir::PTXInstruction::All:
-		{
-			for (int threadID = 0; threadID < threadCount; threadID++) {
-				if (!context.predicated(threadID, instr)) continue;
-				bool local = operandAsPredicate(threadID, instr.a);
-				if (instr.a.condition == ir::PTXOperand::InvPred) {
-					local = !local;
-				}
-				if (!local) {
-					a = false;
-					break;
-				}	
+	if (instr.vote == ir::PTXInstruction::Ballot) {
+		ir::PTXB32 result = 0;
+		for (int threadID = 0; threadID < threadCount; threadID++) {
+			if (!context.predicated(threadID, instr)) continue;
+			bool local = operandAsPredicate(threadID, instr.a);
+			if (instr.a.condition == ir::PTXOperand::InvPred) {
+				local = !local;
 			}
-			break;
+			
+			ir::PTXB32 b32Local = local ? 0x1 : 0x0;
+			
+			result = result | (b32Local << threadID);
 		}
-		case ir::PTXInstruction::Uni:
-		{
-			bool set = false;
-			bool value = false;
-			for (int threadID = 0; threadID < threadCount; threadID++) {
-				if (!context.predicated(threadID, instr)) continue;
-				bool local = operandAsPredicate(threadID, instr.a);
-				if (instr.a.condition == ir::PTXOperand::InvPred) {
-					local = !local;
-				}
-				if (!set) {
-					set = true;
-					value = local;
-				}
-				else {
-					if (value != local) {
+
+		for (int threadID = 0; threadID < threadCount; threadID++) {
+			if (!context.predicated(threadID, instr)) continue;
+			setRegAsB32(threadID, instr.d.reg, result);
+		}
+	}
+	else {
+		bool a = true;
+		switch (instr.vote) {
+			case ir::PTXInstruction::All:
+			{
+				for (int threadID = 0; threadID < threadCount; threadID++) {
+					if (!context.predicated(threadID, instr)) continue;
+					bool local = operandAsPredicate(threadID, instr.a);
+					if (instr.a.condition == ir::PTXOperand::InvPred) {
+						local = !local;
+					}
+					if (!local) {
 						a = false;
+						break;
+					}	
+				}
+				break;
+			}
+			case ir::PTXInstruction::Uni:
+			{
+				bool set = false;
+				bool value = false;
+				for (int threadID = 0; threadID < threadCount; threadID++) {
+					if (!context.predicated(threadID, instr)) continue;
+					bool local = operandAsPredicate(threadID, instr.a);
+					if (instr.a.condition == ir::PTXOperand::InvPred) {
+						local = !local;
+					}
+					if (!set) {
+						set = true;
+						value = local;
+					}
+					else {
+						if (value != local) {
+							a = false;
+						}
 					}
 				}
+				break;
 			}
-			break;
-		}
-		case ir::PTXInstruction::Any:
-		{
-			a = false;
-			for (int threadID = 0; threadID < threadCount; threadID++) {
-				if (!context.predicated(threadID, instr)) continue;
-				bool local = operandAsPredicate(threadID, instr.a);
-				if (instr.a.condition == ir::PTXOperand::InvPred) {
-					local = !local;
+			case ir::PTXInstruction::Any:
+			{
+				a = false;
+				for (int threadID = 0; threadID < threadCount; threadID++) {
+					if (!context.predicated(threadID, instr)) continue;
+					bool local = operandAsPredicate(threadID, instr.a);
+					if (instr.a.condition == ir::PTXOperand::InvPred) {
+						local = !local;
+					}
+					if (local) {
+						a = true;
+						break;
+					}
 				}
-				if (local) {
-					a = true;
-					break;
-				}
+				break;
 			}
-			break;
+			default:
+				throw RuntimeException("Invalid vote mode", 
+					context.PC, instr);
 		}
-		default:
-			throw RuntimeException("Invalid vote mode", 
-				context.PC, instr);
-	}
 
-	for (int threadID = 0; threadID < threadCount; threadID++) {
-		if (!context.predicated(threadID, instr)) continue;
-		setRegAsPredicate(threadID, instr.d.reg, a);
+		for (int threadID = 0; threadID < threadCount; threadID++) {
+			if (!context.predicated(threadID, instr)) continue;
+			setRegAsPredicate(threadID, instr.d.reg, a);
+		}
 	}	
 }
 

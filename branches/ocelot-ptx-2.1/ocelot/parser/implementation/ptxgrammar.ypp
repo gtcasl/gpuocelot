@@ -1463,7 +1463,7 @@ trap : OPCODE_TRAP ';'
 	state.instruction( $<text>1 );
 };
 
-voteOperationId : TOKEN_ANY | TOKEN_ALL | TOKEN_UNI;
+voteOperationId : TOKEN_ANY | TOKEN_ALL | TOKEN_UNI | TOKEN_BALLOT;
 
 voteOperation : voteOperationId
 {

@@ -289,6 +289,7 @@ namespace ir {
 			All,
 			Any,
 			Uni,
+			Ballot,
 			VoteMode_Invalid
 		};
 		

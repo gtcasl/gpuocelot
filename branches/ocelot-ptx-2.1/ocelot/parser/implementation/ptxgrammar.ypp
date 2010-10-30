@@ -1470,9 +1470,11 @@ voteOperation : voteOperationId
 	state.vote( $<value>1 );
 };
 
-vote : OPCODE_VOTE voteOperation TOKEN_PRED operand ',' operand ';'
+voteDataType : TOKEN_PRED | TOKEN_B32;
+
+vote : OPCODE_VOTE voteOperation voteDataType operand ',' operand ';'
 {
-	state.instruction( $<text>1, TOKEN_PRED );
+	state.instruction( $<text>1, $<value>3 );
 };
 
 %%

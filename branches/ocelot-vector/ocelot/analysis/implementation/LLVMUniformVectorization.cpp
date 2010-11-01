@@ -32,7 +32,7 @@
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
-char analysis::LLVMUniformVectorization::ID = 1;
+char analysis::LLVMUniformVectorization::ID = 0;
 
 std::string operator+(const std::string &str, llvm::Value *value) {
 	std::string valStr;
@@ -106,31 +106,6 @@ analysis::LLVMUniformVectorization::DivergentBranch::DivergentBranch(
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
-#include <iostream>
-
-char analysis::LLVMInstructionCountingPass::ID = 0;
-
-analysis::LLVMInstructionCountingPass::LLVMInstructionCountingPass():
-	llvm::FunctionPass(ID) {
-
-}
-
-//! \brief entry point for pass
-bool analysis::LLVMInstructionCountingPass::runOnFunction(llvm::Function &F) {
-	llvm::Function::iterator bb_it = F.begin();
-	int instCount = 0;
-	for (; bb_it != F.end(); ++bb_it) {
-		llvm::BasicBlock::iterator inst_it = bb_it->begin();
-		for (; inst_it != bb_it->end(); ++inst_it) {
-			instCount ++;
-		}
-	}
-
-	std::cout << "function " << F.getNameStr() << "(): " << instCount << " instructions" << std::endl;
-	return true;
-}
-
-//////////////////////////////////////////////////////////////////////////////////////////////////
 
 analysis::LLVMUniformVectorization::LLVMUniformVectorization(int _warpSize):
 	llvm::FunctionPass(ID),
@@ -142,7 +117,6 @@ analysis::LLVMUniformVectorization::LLVMUniformVectorization(int _warpSize):
 analysis::LLVMUniformVectorization::~LLVMUniformVectorization() {
 
 }
-
 
 //! \brief gets the name of the pass
 const char *analysis::LLVMUniformVectorization::getPassName() const {
@@ -165,15 +139,13 @@ bool analysis::LLVMUniformVectorization::runOnFunction(llvm::Function &F) {
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
-
 void analysis::LLVMUniformVectorization::addWarpSynchronous(llvm::Function &F) {
 	Translation translation(&F, warpSize);
 	
+	report("Vectorization: " << translation.F->getNameStr());
+	
 	if (LLVM_UNIFORMCONTROL_WARPSIZE > 1) {
-		report("Vectorization: " << translation.F->getNameStr());
-	
 		breadthFirstTraversal(translation.traversal, translation.F);
-	
 		addInterleavedInstructions(translation);
 		resolveDependencies(translation);
 	
@@ -181,12 +153,16 @@ void analysis::LLVMUniformVectorization::addWarpSynchronous(llvm::Function &F) {
 		updateLocalMemAddresses(translation);
 		resolveControlFlow(translation);
 		createSchedulerBlock(translation);
+	
 		updateSchedulerBlocks(translation);
-		
-		//vectorize(translation);
+		vectorize(translation);
 	}
 	
-	report("end vectorization " << translation.F->getNameStr() << "\n");
+	if (false) {
+		// debugging and analysis
+		debugEmitCFG(translation);
+		translation.F->getParent()->dump();
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -320,8 +296,7 @@ void analysis::LLVMUniformVectorization::resolveDependencies(Translation &transl
 
 		llvm::BasicBlock *srcBlock = *bb_it;
 		
-		// ignore empty blocks		
-		// ignore the warp-scheduler block
+		// ignore empty blocks ignore the warp-scheduler block
 		if (srcBlock->getNameStr() == "" ||
 			translation.warpSchedulerBlocks.find(srcBlock) != translation.warpSchedulerBlocks.end()) {
 			continue;
@@ -590,10 +565,9 @@ void analysis::LLVMUniformVectorization::resolveControlFlow(Translation &transla
 	}
 	
 	// insert handling code for potentially diverging branches
-	int index = 0;
 	for (DivergentBranchMap::iterator div_br_it = translation.divergingBranchMap.begin();
 		div_br_it != translation.divergingBranchMap.end(); ++div_br_it) {
-		handleDivergentBranch(translation, div_br_it->second, index ++);
+		handleDivergentBranch(translation, div_br_it->second);
 	}
 }
 
@@ -601,7 +575,7 @@ void analysis::LLVMUniformVectorization::resolveControlFlow(Translation &transla
 	\brief deals with a particular divergent branch
 */
 void analysis::LLVMUniformVectorization::handleDivergentBranch(Translation &translation, 
-	DivergentBranch &divergent, int index) {
+	DivergentBranch &divergent) {
 	
 	// we only know how to handle 1-bit integer conditions
 	llvm::TerminatorInst *scTerm = divergent.scalarBlock->getTerminator();
@@ -660,14 +634,6 @@ void analysis::LLVMUniformVectorization::handleDivergentBranch(Translation &tran
 		switchInst->addCase(constZero, succZero);
 		
 		// insert dummy return statement
-		std::vector<const llvm::Type *> args;
-		args.push_back(int32ty);
-		llvm::FunctionType *divFuncType = llvm::FunctionType::get(llvm::Type::getVoidTy(
-			translation.F->getContext()), args, false);
-		llvm::Constant *ocelotDivergenceException = translation.F->getParent()->getOrInsertFunction(
-			"__ocelot_divergence_exception", divFuncType);
-		llvm::CallInst::Create(ocelotDivergenceException, 
-			llvm::ConstantInt::get(int32ty, index), "", divergent.handler);
 		llvm::ReturnInst::Create(translation.F->getContext(), constZero32, divergent.handler);
 		
 		divergenceHandlerBranch(translation, divergent);
@@ -795,39 +761,8 @@ bool analysis::LLVMUniformVectorization::VectorizedInstruction::isVectorizable()
 		llvm::Instruction *inst = replicated[0];
 		llvm::BinaryOperator *binOp = llvm::dyn_cast<llvm::BinaryOperator>(inst);
 		bool isFloatOrDouble = inst->getType()->isFloatTy() || inst->getType()->isDoubleTy();
-		bool isInteger = inst->getType()->isIntegerTy();
-		bool isPrimitiveType = (isInteger || isFloatOrDouble);
-		
 		if (binOp && isFloatOrDouble) {
 			return true;
-		}
-		
-		llvm::CallInst *callInst = llvm::dyn_cast<llvm::CallInst>(inst);
-		if (callInst && isFloatOrDouble) {
-			// it's probably vectorizable
-			const char *str[] = {
-				"__ocelot_sqrtf",
-				"__ocelot_sinf",
-				"__ocelot_cosf",
-				0, 0
-			};
-
-			std::string calleeName = callInst->getCalledFunction()->getNameStr();
-			for (int n = 0; str[n]; n++) {
-				if (str[n] == calleeName) {
-					return true;
-				}
-			}
-		}
-
-		llvm::CastInst *castInst = llvm::dyn_cast<llvm::CastInst>(inst);
-		if (castInst && (isFloatOrDouble || (isInteger && castInst->getSrcTy()->isIntegerTy()))) {
-			return false;
-		}
-
-		llvm::CmpInst *cmpInst = llvm::dyn_cast<llvm::CmpInst>(inst);
-		if (cmpInst && isPrimitiveType) {
-			return false;
 		}
 	}
 	return res;
@@ -877,7 +812,6 @@ llvm::Instruction *analysis::LLVMUniformVectorization::Translation::getInstructi
 	else if (constant) {
 		// it's a constant, so pack it into a vector
 				// it's already replicated, so pack into a vector
-
 		llvm::VectorType *vecType = llvm::VectorType::get(inst->getType(), warpSize);
 		llvm::Value *vectorValue = llvm::UndefValue::get(vecType);
 		for (int tid = 0; tid < warpSize; tid++) {
@@ -949,77 +883,15 @@ void analysis::LLVMUniformVectorization::Translation::vectorize(llvm::Instructio
 
 		report(" IS Vectorizable: " << inst);
 
+		InstructionVector operands;
+		for (unsigned int op = 0; op < inst->getNumOperands(); ++op) {
+			operands.push_back(getInstructionAsVectorized(inst->getOperand(op), before));
+		}
 		llvm::BinaryOperator *binOp = llvm::dyn_cast<llvm::BinaryOperator>(inst);
-		llvm::CastInst *castInst = llvm::dyn_cast<llvm::CastInst>(inst);
-		llvm::CallInst *callInst = llvm::dyn_cast<llvm::CallInst>(inst);
-		llvm::CmpInst *cmpInst = llvm::dyn_cast<llvm::CmpInst>(inst);
 		if (binOp) {
-			InstructionVector operands;
-			for (unsigned int op = 0; op < inst->getNumOperands(); ++op) {
-				operands.push_back(getInstructionAsVectorized(inst->getOperand(op), before));
-			}
 			llvm::BinaryOperator *vecOp = llvm::BinaryOperator::Create(binOp->getOpcode(), 
 				operands[0], operands[1], "", before);
 			ws_it->second.vector = vecOp;
-		}
-		else if (castInst) {
-			report("cast instruction: (" << inst->getNumOperands() << " operands) -  operand[0] - " 
-				<< inst->getOperand(0));
-			llvm::VectorType *destType = llvm::VectorType::get(castInst->getDestTy(), warpSize);
-			llvm::Instruction *operand = getInstructionAsVectorized(inst->getOperand(0), before);
-			llvm::CastInst *vecInst = llvm::CastInst::Create(castInst->getOpcode(), operand,
-				destType, "", before);
-			ws_it->second.vector = vecInst;
-		}
-		else if (cmpInst) {
-			report("compare instruction");
-			InstructionVector operands;
-			for (unsigned int op = 0; op < inst->getNumOperands(); op++) {
-				operands.push_back(getInstructionAsVectorized(inst->getOperand(op), before));
-			}
-			llvm::CmpInst *vecOp = llvm::CmpInst::Create(cmpInst->getOpcode(), cmpInst->getPredicate(),
-				operands[0], operands[1], "", before);
-			ws_it->second.vector = vecOp;
-		}
-		else if (callInst) {
-			// it's a call instruction
-			std::string calleeName = callInst->getCalledFunction()->getNameStr();
-
-			report(" call instruction: " << calleeName);
-
-			const char *str[] = {
-				"__ocelot_sqrtf", "llvm.sqrt.v4f32",
-				"__ocelot_sinf", "llvm.sin.v4f32",
-				"__ocelot_cosf", "llvm.cos.v4f32",
-				0, 0
-			};
-			llvm::Function *funcIntrinsic = 0;
-			for (int n = 0; str[n]; n+=2) {
-				if (calleeName == str[n]) {
-					funcIntrinsic = F->getParent()->getFunction(std::string(str[n+1]));
-					if (!funcIntrinsic) {
-						llvm::VectorType *vecType = llvm::VectorType::get(inst->getType(), warpSize);
-						std::vector< const llvm::Type *> args;
-						args.push_back(vecType);
-						llvm::FunctionType *funcType = llvm::FunctionType::get(vecType, args, false);
-						funcIntrinsic = llvm::Function::Create(funcType, 
-							llvm::GlobalValue::ExternalLinkage, str[n+1], F->getParent());
-					}
-					assert(funcIntrinsic && "failed to get identified intrinsic");
-					break;
-				}
-			}
-			assert(funcIntrinsic && "failed to identify intrinsic");
-			std::vector< llvm::Value *> args;
-
-			report("  getting vector operands:");
-			for (unsigned int op = 1; op < inst->getNumOperands(); ++op) {
-				report("    operand [" << op << "]: " << inst->getOperand(op));
-				args.push_back(getInstructionAsVectorized(inst->getOperand(op), before));
-			}
-			report("  created");
-			llvm::CallInst *vecCallInst = llvm::CallInst::Create(funcIntrinsic, args.begin(), args.end(), "", before);
-			ws_it->second.vector = vecCallInst;
 		}
 		else {
 			throw hydrazine::Exception("Unhandled vectorizable LLVM instruction");
@@ -1027,7 +899,6 @@ void analysis::LLVMUniformVectorization::Translation::vectorize(llvm::Instructio
 
 		report("VECTORIZED SOMETHING!");
 
-		report("  extracting from " << ws_it->second.vector);
 		InstructionVector extracted;
 		for (int tid = 0; tid < warpSize; tid++) {
 			llvm::Constant *idx = llvm::ConstantInt::get(tyInt32, tid);

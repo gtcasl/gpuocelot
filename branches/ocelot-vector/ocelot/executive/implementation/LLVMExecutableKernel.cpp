@@ -1913,33 +1913,14 @@ namespace executive
 
 		// experimental pass for uniform-control flow vectorization
 		
-		analysis::LLVMUniformVectorization *uniformVectorizationPass = new 
-			analysis::LLVMUniformVectorization;
-
+		analysis::LLVMUniformVectorization *uniformVectorizationPass = new analysis::LLVMUniformVectorization;
+		
+		manager.add(uniformVectorizationPass);
+		
 		manager.add(llvm::createGVNPass());                   // Remove redundancies
 		manager.add(llvm::createMemCpyOptPass());             // Remove memcpy / form memset
 		manager.add(llvm::createSCCPPass());                  // Constant prop with SCCP
 
-		// Run instcombine after redundancy elimination to exploit opportunities
-		// opened up by them.
-		manager.add(llvm::createInstructionCombiningPass());
-		manager.add(llvm::createDeadStoreEliminationPass());  // Delete dead stores
-		manager.add(llvm::createAggressiveDCEPass());         // Delete dead instructions
-		manager.add(llvm::createCFGSimplificationPass());     // Merge & remove BBs
-		manager.add(new analysis::LLVMInstructionCountingPass);
-		manager.add(uniformVectorizationPass);
-
-			manager.add(llvm::createGVNPass());                   // Remove redundancies
-			manager.add(llvm::createMemCpyOptPass());             // Remove memcpy / form memset
-			manager.add(llvm::createSCCPPass());                  // Constant prop with SCCP
-
-			// Run instcombine after redundancy elimination to exploit opportunities
-			// opened up by them.
-			manager.add(llvm::createInstructionCombiningPass());
-			manager.add(llvm::createDeadStoreEliminationPass());  // Delete dead stores
-			manager.add(llvm::createAggressiveDCEPass());         // Delete dead instructions
-			manager.add(llvm::createCFGSimplificationPass());     // Merge & remove BBs
-		manager.add(new analysis::LLVMInstructionCountingPass);
 
 		level = 0;
 		

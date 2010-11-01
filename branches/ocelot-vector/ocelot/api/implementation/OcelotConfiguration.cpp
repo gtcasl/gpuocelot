@@ -96,21 +96,26 @@ static void initializeTrace(api::OcelotConfiguration::TraceGeneration &trace,
 	trace.enabled = config.parse<bool>("enabled", true);
 	trace.database = config.parse<std::string>("database", "trace/database.trace");
 
-	// enable/disable flags
-	trace.inPlaceTraces = config.parse<bool>("inPlaceTraces", false);
-	trace.memory = config.parse<bool>("memory", false);
-	trace.branch = config.parse<bool>("branch", false);
-	trace.sharedComputation = config.parse<bool>("sharedComputation", false);
-	trace.instruction = config.parse<bool>("instruction", false);
-	trace.parallelism = config.parse<bool>("parallelism", false);
-	trace.cacheSimulator = config.parse<bool>("cacheSimulator", false);
-	trace.memoryChecker = config.parse<bool>("memoryChecker", true);
-	trace.raceDetector = config.parse<bool>("raceDetector", true);
+	try {
+		// enable/disable flags
+		trace.inPlaceTraces = config.parse<bool>("inPlaceTraces", false);
+		trace.memory = config.parse<bool>("memory", false);
+		trace.branch = config.parse<bool>("branch", false);
+		trace.sharedComputation = config.parse<bool>("sharedComputation", false);
+		trace.instruction = config.parse<bool>("instruction", false);
+		trace.parallelism = config.parse<bool>("parallelism", false);
+		trace.cacheSimulator = config.parse<bool>("cacheSimulator", false);
+		trace.memoryChecker = config.parse<bool>("memoryChecker", true);
+		trace.raceDetector = config.parse<bool>("raceDetector", true);
 
-	// more detailed configuration for this trace generator
-	hydrazine::json::Visitor warpSyncConfig = config["warpSynchronous"];
-	trace.warpSynchronous.enabled = warpSyncConfig.parse<bool>("enabled", false);
-	trace.warpSynchronous.emitHotPaths = warpSyncConfig.parse<bool>("emitHotPaths", false);
+		// more detailed configuration for this trace generator
+		hydrazine::json::Visitor warpSyncConfig = config["warpSynchronous"];
+		trace.warpSynchronous.enabled = warpSyncConfig.parse<bool>("enabled", false);
+		trace.warpSynchronous.emitHotPaths = warpSyncConfig.parse<bool>("emitHotPaths", false);
+	}
+	catch (hydrazine::Exception exp) {
+		report("api::OcelotConfiguration::initializeTrace() exception: " << exp.what());
+	}
 }
 
 api::OcelotConfiguration::CudaRuntimeImplementation::CudaRuntimeImplementation():

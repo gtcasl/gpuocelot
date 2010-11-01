@@ -16,10 +16,6 @@
 // Ocelot includes
 
 // Hydrazine includes
-/*
-#define __STDC_LIMIT_MACROS
-#define __STDC_CONSTANT_MACROS
-*/
 
 // LLVM includes
 #include <llvm/Module.h>
@@ -30,19 +26,6 @@
 
 namespace analysis
 {
-
-	class LLVMInstructionCountingPass: public llvm::FunctionPass {
-	public:
-
-		LLVMInstructionCountingPass();
-
-		//! \brief entry point for pass
-		virtual bool runOnFunction(llvm::Function &F);
-
-	public:
-
-		static char ID;
-	};
 
 	/*!
 		\brief pass applied to kernels with completely uniform control flow for warps of a given
@@ -97,6 +80,10 @@ namespace analysis
 				\brief basic block handling the event of a dynamic divergent branch
 			*/
 			llvm::BasicBlock *handler;
+			
+			/*!
+				
+			*/
 		};
 		
 		typedef std::map< llvm::BasicBlock *, DivergentBranch > DivergentBranchMap;
@@ -271,7 +258,7 @@ namespace analysis
 		/*!
 			\brief deals with a particular divergent branch
 		*/
-		void handleDivergentBranch(Translation &translation, DivergentBranch &divergent, int counter=0);
+		void handleDivergentBranch(Translation &translation, DivergentBranch &divergent);
 		
 		/*!
 			\brief emit spill code or handler for a branch known to be divergent

@@ -76,7 +76,7 @@ then
 		AC_DEFINE(HAVE_LLVM, [1], ["Define to 1 if llvm is installed"])
 		AC_SUBST(LLVM_CFLAGS, $(llvm-config --cppflags))
 		AC_SUBST(LLVM_LDFLAGS, "$(llvm-config --ldflags --libs core jit native \
-			asmparser instcombine | tr '\n' ' ') -rdynamic")
+			asmparser instcombine engine backend | tr '\n' ' ') -rdynamic")
 	else
 		AC_WARN(LLVM Support Not Enabled: version $LLVM_VERSION found but \
 			requires 2.8svn )

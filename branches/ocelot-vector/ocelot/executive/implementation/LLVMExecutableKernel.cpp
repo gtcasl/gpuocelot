@@ -85,6 +85,8 @@
 #define _isinf(x) std::isinf(x)
 #endif
 
+extern "C" void  ocelotTranslated_FloatComputeBound(void *);
+
 template < typename T >
 static void __report( executive::LLVMContext* context, 
 	T value, const bool read )
@@ -1920,9 +1922,6 @@ namespace executive
 		manager.add(llvm::createGVNPass());                   // Remove redundancies
 		manager.add(llvm::createMemCpyOptPass());             // Remove memcpy / form memset
 		manager.add(llvm::createSCCPPass());                  // Constant prop with SCCP
-
-
-		level = 0;
 		
 		if (level == 0) {
 		
@@ -1978,6 +1977,8 @@ namespace executive
 		report("end optimization");
 	}
 	
+
+		
 	void LLVMExecutableKernel::_optimize()
 	{
 		#ifdef HAVE_LLVM
@@ -2017,8 +2018,14 @@ namespace executive
 		llvm::MachineCodeInfo machineInfo;
 		_state.jit->runJITOnFunction(function, &machineInfo);
 		
+		/*
 		_function.function = hydrazine::bit_cast<JITedFunction::Pointer>(machineInfo.address());
 		assertM(_function.function, "Could not JIT function _Z_ocelotTranslated_" + name);
+		*/
+		
+
+		
+		_function.function = (JITedFunction::Pointer)ocelotTranslated_FloatComputeBound;
 							
 		/*
 		_function.function = hydrazine::bit_cast< JITedFunction::Pointer >( 

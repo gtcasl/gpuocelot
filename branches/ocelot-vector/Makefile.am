@@ -32,13 +32,14 @@ check_PROGRAMS = TestLexer TestParser \
 	TestCudaSequence TestCudaTextureFilters TestLLVMKernels TestDeviceSwitching \
 	MemoryTraceAnalyzer InstructionTraceAnalyzer BranchTraceAnalyzer \
 	ParallelismTraceAnalyzer SharedComputationAnalyzer \
-	Module PtxToLlvmTranslator DFG CFG TestUniform
+	Module PtxToLlvmTranslator DFG CFG TestUniform ComputeBound
 lib_LTLIBRARIES = libocelot.la
 ################################################################################
 
 ################################################################################
 ## libocelot
 libocelot_la_CXXFLAGS = $(LLVM_CFLAGS) $(INCLUDE) -Wall -ansi -Werror -std=c++0x
+libocelot_LA_X = computeBound.o
 libocelot_la_SOURCES = \
 	ocelot/analysis/implementation/DataflowGraph.cpp \
 	ocelot/analysis/implementation/SSAGraph.cpp \
@@ -151,6 +152,15 @@ DFG_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
 DFG_SOURCES = ocelot/analysis/test/DFG.cpp
 DFG_LDADD = libocelot.la $(LLVM_LDFLAGS)
 DFG_LDFLAGS = -static
+################################################################################
+
+
+################################################################################
+## DFG
+ComputeBound_CXXFLAGS = -Wall -ansi
+ComputeBound_SOURCES = ocelot/analysis/test/ComputeBound.cu.cpp
+ComputeBound_LDADD = libocelot.la $(LLVM_LDFLAGS)
+ComputeBound_LDFLAGS = -static
 ################################################################################
 
 ################################################################################

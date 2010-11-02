@@ -34,7 +34,7 @@
 	executive: {
 		devices: [ llvm ],
 		optimizationLevel: basic,
-		workerThreadLimit: 1
+		workerThreadLimit: 4
 	}
 }
 

@@ -85,7 +85,7 @@
 #define _isinf(x) std::isinf(x)
 #endif
 
-extern "C" void  ocelotTranslated_FloatComputeBound(void *);
+extern "C" void  _Z_ocelotTranslated_FloatComputeBound(void *);
 
 template < typename T >
 static void __report( executive::LLVMContext* context, 
@@ -2018,14 +2018,11 @@ namespace executive
 		llvm::MachineCodeInfo machineInfo;
 		_state.jit->runJITOnFunction(function, &machineInfo);
 		
-		/*
+
 		_function.function = hydrazine::bit_cast<JITedFunction::Pointer>(machineInfo.address());
 		assertM(_function.function, "Could not JIT function _Z_ocelotTranslated_" + name);
-		*/
-		
 
-		
-		_function.function = (JITedFunction::Pointer)ocelotTranslated_FloatComputeBound;
+		//_function.function = (JITedFunction::Pointer)_Z_ocelotTranslated_FloatComputeBound;
 							
 		/*
 		_function.function = hydrazine::bit_cast< JITedFunction::Pointer >( 
@@ -2645,7 +2642,7 @@ namespace executive
 		_gridDim.x = x;
 		_gridDim.y = y;
 		
-#define DISPLAY_RUNTIME 0
+#define DISPLAY_RUNTIME 1
 		
 #if DISPLAY_RUNTIME == 1
 		// set a timer

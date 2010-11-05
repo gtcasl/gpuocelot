@@ -14,17 +14,19 @@
 	p3 = p3 * c + d; q3 = q3 + c; p4 = p4 * d + e; q4 = q4 + d; }
 #define BLOCK3 { p1 = p1 * a; p2 = p2 * b; p3 = p3 * c; p4 = p4 * d; }
 #define BLOCK4 { p1 = p1 * a + a; p2 = p2 * b + b; p3 = p3 * c + c; p4 = p4 * d + d; }
+#define BLOCK5 { p1 = p1 * a; q1 = q1 + a; p2 = p2 * b; q2 = q2 + b; \
+	p3 = p3 * c; q3 = q3 + c; p4 = p4 * d; q4 = q4 + d; }
 
-#define BLOCKN BLOCK1
+#define BLOCKN BLOCK5
 
 #define GROUP1 BLOCKN BLOCKN BLOCKN BLOCKN
 #define GROUP2 GROUP1 GROUP1 GROUP1 GROUP1
 #define GROUP4 GROUP2 GROUP2 GROUP2 GROUP2
 #define GROUP8 GROUP4 GROUP4 GROUP4 GROUP4
 
-#define MADs 2048
-#define ADDs 0
-#define MULs 0
+#define MADs 0
+#define ADDs 2048
+#define MULs 2048
 extern "C" __global__ void FloatComputeBound(
 	float *A, 
 	const float a, const float b, const float c, const float d, const float e, bool store) {
@@ -82,14 +84,15 @@ void run(const int M) {
 	double GFLOPsPerSec = (GFLOPs / s);
 	
 	// CTAs, GFLOPs/second, GFLOPs, ms
-	printf("%d, %f\n", M, GFLOPsPerSec );
+	printf("%d\t\t\t%f\n", M, GFLOPsPerSec );
 	
 	free(A_cpu);
 	cudaFree(A_gpu);
 }
 
 int main() {
-	for (int i = 1; i < 50; i++) {
+	printf("# blocks\t\t\tGFLOPs/second\n");
+	for (int i = 1; i < 12; i++) {
 		run(i);
 	}
 	return 0;

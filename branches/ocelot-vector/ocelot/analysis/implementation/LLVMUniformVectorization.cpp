@@ -118,6 +118,7 @@ analysis::LLVMUniformVectorization::~LLVMUniformVectorization() {
 
 }
 
+
 //! \brief gets the name of the pass
 const char *analysis::LLVMUniformVectorization::getPassName() const {
 	return "Ocelot LLVM Uniform Vectorization";
@@ -139,6 +140,7 @@ bool analysis::LLVMUniformVectorization::runOnFunction(llvm::Function &F) {
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
+
 void analysis::LLVMUniformVectorization::addWarpSynchronous(llvm::Function &F) {
 	Translation translation(&F, warpSize);
 	
@@ -158,11 +160,11 @@ void analysis::LLVMUniformVectorization::addWarpSynchronous(llvm::Function &F) {
 		vectorize(translation);
 	}
 	
-	if (false) {
-		// debugging and analysis
-		debugEmitCFG(translation);
-		translation.F->getParent()->dump();
-	}
+	report("end vectorization " << translation.F->getNameStr() << "\n");
+	
+	// debugging
+	//debugEmitCFG(translation);
+	//translation.F->getParent()->dump();
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -296,7 +298,8 @@ void analysis::LLVMUniformVectorization::resolveDependencies(Translation &transl
 
 		llvm::BasicBlock *srcBlock = *bb_it;
 		
-		// ignore empty blocks ignore the warp-scheduler block
+		// ignore empty blocks		
+		// ignore the warp-scheduler block
 		if (srcBlock->getNameStr() == "" ||
 			translation.warpSchedulerBlocks.find(srcBlock) != translation.warpSchedulerBlocks.end()) {
 			continue;
@@ -761,9 +764,32 @@ bool analysis::LLVMUniformVectorization::VectorizedInstruction::isVectorizable()
 		llvm::Instruction *inst = replicated[0];
 		llvm::BinaryOperator *binOp = llvm::dyn_cast<llvm::BinaryOperator>(inst);
 		bool isFloatOrDouble = inst->getType()->isFloatTy() || inst->getType()->isDoubleTy();
-		if (binOp && isFloatOrDouble) {
+		if (binOp && (isFloatOrDouble)) {
 			return true;
 		}
+		llvm::CallInst *callInst = llvm::dyn_cast<llvm::CallInst>(inst);
+		if (callInst && isFloatOrDouble) {
+			// it's probably vectorizable
+			const char *str[] = {
+				"__ocelot_sqrtf",
+				"__ocelot_sinf",
+				"__ocelot_cosf",
+				0, 0
+			};
+
+			std::string calleeName = callInst->getCalledFunction()->getNameStr();
+			for (int n = 0; str[n]; n++) {
+				if (str[n] == calleeName) {
+					return true;
+				}
+			}
+		}
+/*
+		llvm::CastInst *castInst = llvm::dyn_cast<llvm::CastInst>(inst);
+		if (castInst) {
+			return true;
+		}
+*/
 	}
 	return res;
 }
@@ -883,15 +909,56 @@ void analysis::LLVMUniformVectorization::Translation::vectorize(llvm::Instructio
 
 		report(" IS Vectorizable: " << inst);
 
-		InstructionVector operands;
-		for (unsigned int op = 0; op < inst->getNumOperands(); ++op) {
-			operands.push_back(getInstructionAsVectorized(inst->getOperand(op), before));
-		}
 		llvm::BinaryOperator *binOp = llvm::dyn_cast<llvm::BinaryOperator>(inst);
+		llvm::CallInst *callInst = llvm::dyn_cast<llvm::CallInst>(inst);
 		if (binOp) {
+			InstructionVector operands;
+			for (unsigned int op = 0; op < inst->getNumOperands(); ++op) {
+				operands.push_back(getInstructionAsVectorized(inst->getOperand(op), before));
+			}
 			llvm::BinaryOperator *vecOp = llvm::BinaryOperator::Create(binOp->getOpcode(), 
 				operands[0], operands[1], "", before);
 			ws_it->second.vector = vecOp;
+		}
+		else if (callInst) {
+			// it's a call instruction
+			std::string calleeName = callInst->getCalledFunction()->getNameStr();
+
+			report(" call instruction: " << calleeName);
+
+			const char *str[] = {
+				"__ocelot_sqrtf", "llvm.sqrt.f32",
+				"__ocelot_sinf", "llvm.sin.f32",
+				"__ocelot_cosf", "llvm.cos.f32",
+				0, 0
+			};
+			llvm::Function *funcIntrinsic = 0;
+			for (int n = 0; str[n]; n+=2) {
+				if (calleeName == str[n]) {
+					funcIntrinsic = F->getParent()->getFunction(std::string(str[n+1]));
+					if (!funcIntrinsic) {
+						llvm::VectorType *vecType = llvm::VectorType::get(inst->getType(), warpSize);
+						std::vector< const llvm::Type *> args;
+						args.push_back(vecType);
+						llvm::FunctionType *funcType = llvm::FunctionType::get(vecType, args, false);
+						funcIntrinsic = llvm::Function::Create(funcType, 
+							llvm::GlobalValue::ExternalLinkage, str[n+1], F->getParent());
+					}
+					assert(funcIntrinsic && "failed to get identified intrinsic");
+					break;
+				}
+			}
+			assert(funcIntrinsic && "failed to identify intrinsic");
+			std::vector< llvm::Value *> args;
+
+			report("  getting vector operands:");
+			for (unsigned int op = 0; op < inst->getNumOperands() - 1; ++op) {
+				report("    operand [" << op << "]: " << inst->getOperand(op));
+				args.push_back(getInstructionAsVectorized(inst->getOperand(op), before));
+			}
+			report("  created");
+			llvm::CallInst *vecCallInst = llvm::CallInst::Create(funcIntrinsic, args.begin(), args.end(), "", before);
+			ws_it->second.vector = vecCallInst;
 		}
 		else {
 			throw hydrazine::Exception("Unhandled vectorizable LLVM instruction");
@@ -957,4 +1024,5 @@ void analysis::LLVMUniformVectorization::vectorize(Translation &translation) {
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
+
 

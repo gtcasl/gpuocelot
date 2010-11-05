@@ -237,6 +237,13 @@ enum cudaFuncCache
   cudaFuncCachePreferL1     = 2     ///< Prefer larger L1 cache and smaller shared memory
 };
 
+enum cudaLimit
+{
+    cudaLimitStackSize      = 0x00, //< GPU thread stack size
+    cudaLimitPrintfFifoSize = 0x01, //< GPU printf FIFO size
+    cudaLimitMallocHeapSize = 0x02  //< GPU malloc heap size
+};
+
 struct uint3 {
 	unsigned int x, y, z;
 };

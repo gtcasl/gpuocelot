@@ -58,15 +58,20 @@ int main(int argc, char *arg[]) {
 	
 	cudaMemcpy(A_gpu, A_host, bytes, cudaMemcpyHostToDevice);
 	
-	printf("A_gpu = 0x%x\n", A_gpu);
+	printf("A_host = 0x%x\n", (void *)A_host);
+	printf("A_gpu = 0x%x\n", (void *)A_gpu);
 
 	dim3 grid((N+31)/32,1);
 	dim3 block(32, 1);
 	
 	sequence<<< grid, block >>>(A_gpu, N);
+	
+	printf("cudaMemcpy(0x%x, 0x%x) - APP\n", (void *)A_host, (void *)A_gpu);
 	cudaMemcpy(A_host, A_gpu, bytes, cudaMemcpyDeviceToHost);
-	for (int i = 0; i < N; i++) {
+	for (int i = 0; i < N && errors < 5; i++) {
 		if (A_host[i] != 2*i) {
+			
+			printf("ERROR 1 [%d] - expected: %d, got: %d\n", i, 2*i, A_host[i]);
 			++errors;
 		}
 	}
@@ -104,7 +109,7 @@ int main(int argc, char *arg[]) {
 		}
 		int got = A_host[i];
 		if (b != got) {
-			printf("ERROR 1 [%d] - expected: %d, got: %d\n", i, b, got);
+			printf("ERROR 2 [%d] - expected: %d, got: %d\n", i, b, got);
 			++errors;
 		}
 	}

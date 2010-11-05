@@ -494,6 +494,10 @@ regression/ocelotRegression.log : check
 		-l regression/ocelotRegression.log -v
 
 test : ocelotTest
+
+query:
+	@echo $(LLVM_LDFLAGS)
+
 ################################################################################
 
 ################################################################################

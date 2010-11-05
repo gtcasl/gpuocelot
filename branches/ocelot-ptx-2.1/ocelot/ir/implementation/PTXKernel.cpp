@@ -447,7 +447,7 @@ namespace ir
 			<< hydrazine::Version().toString() << "\n*/\n";
 	
 		stream << ".entry " << name;
-		if (parameters.size()) {
+		if (arguments.size()) {
 			stream << "(";
 			for( ParameterVector::const_iterator parameter = arguments.begin();
 				parameter != arguments.end(); ++parameter) {

@@ -30,9 +30,10 @@
 #endif
 
 #define checkError(x) if((_lastError = x) != CUDA_SUCCESS) { \
+	report("exception"); \
 	throw hydrazine::Exception("Cuda Driver Error - " #x + \
 		driver::toString(_lastError)); }
-#define Throw(x) {std::stringstream s; s << x; \
+#define Throw(x) {std::stringstream s; s << x; report(s.str()); \
 	throw hydrazine::Exception(s.str()); }
 
 // Turn on report messages
@@ -226,6 +227,7 @@ namespace executive
 	void NVIDIAGPUDevice::MemoryAllocation::copy(size_t offset, 
 		const void* src, size_t s)
 	{
+		report("NVIDIAGPUDevice::..::copy() 1");
 		assert(offset + s <= size());
 		if(host())
 		{
@@ -241,6 +243,7 @@ namespace executive
 	void NVIDIAGPUDevice::MemoryAllocation::copy(void* dst, 
 		size_t offset, size_t s) const
 	{
+		report("NVIDIAGPUDevice::..::copy() 2 - is host? " << host() << ", " << s << " bytes");
 		assert(offset + s <= size());
 		if(host())
 		{
@@ -271,9 +274,11 @@ namespace executive
 	void NVIDIAGPUDevice::MemoryAllocation::copy(Device::MemoryAllocation* a, 
 		size_t toOffset, size_t fromOffset, size_t s) const
 	{
+		report("NVIDIAGPUDevice::..::copy() 3");
 		MemoryAllocation* allocation = static_cast<MemoryAllocation*>(a);
 		assert(fromOffset + s <= size());
 		assert(toOffset + s <= allocation->size());
+		
 		
 		if(host())
 		{
@@ -346,17 +351,23 @@ namespace executive
 		reportE(REPORT_PTX, " Binary is:\n" 
 			<< hydrazine::addLineNumbers(stream.str()));
 		
-		CUjit_option options[] = {CU_JIT_ERROR_LOG_BUFFER, 
-			CU_JIT_ERROR_LOG_BUFFER_SIZE_BYTES};
+		CUjit_option options[] = {
+			CU_JIT_ERROR_LOG_BUFFER, 
+			CU_JIT_ERROR_LOG_BUFFER_SIZE_BYTES, 
+			CU_JIT_TARGET
+		};
 		const int errorLogSize = 2048;
 		int errorLogActualSize = errorLogSize;
 		char errorLogBuffer[errorLogSize];
 		memset(errorLogBuffer, 0, errorLogSize);
 
-		void* optionValues[2] = {(void*)errorLogBuffer, 
-			(void*)errorLogActualSize};
+		void* optionValues[3] = {
+			(void*)errorLogBuffer, 
+			(void*)errorLogActualSize, 
+			(void*)CU_TARGET_COMPUTE_20
+		};
 		CUresult result = driver::cuModuleLoadDataEx(&_handle, 
-			stream.str().c_str(), 2, options, optionValues);
+			stream.str().c_str(), 3, options, optionValues);
 		
 		if(result != CUDA_SUCCESS)
 		{

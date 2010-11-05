@@ -35,7 +35,7 @@
 #define CATCH_RUNTIME_EXCEPTIONS 0
 
 // whether verbose error messages are printed
-#define CUDA_VERBOSE 1
+#define CUDA_VERBOSE 0
 
 // whether debugging messages are printed
 #define REPORT_BASE 0
@@ -195,12 +195,15 @@ size_t cuda::Dimension::pitch() const {
 
 void cuda::CudaRuntime::_memcpy(void* dst, const void* src, size_t count, 
 	enum cudaMemcpyKind kind) {
+	
 	switch(kind) {
 		case cudaMemcpyHostToHost: {
+			report("  _memcpy(" << (void *)dst << ", " << src << ", " << count << " bytes) h-to-h");
 			memcpy(dst, src, count);
 		}
 		break;
 		case cudaMemcpyDeviceToHost: {
+			report("  _memcpy(" << (void *)dst << ", " << src << ", " << count << " bytes) d-to-h");
 			if (!_getDevice().checkMemoryAccess(src, count)) {
 				_release();
 				_memoryError(src, count, "cudaMemcpy");
@@ -213,6 +216,7 @@ void cuda::CudaRuntime::_memcpy(void* dst, const void* src, size_t count,
 		}
 		break;
 		case cudaMemcpyDeviceToDevice: {
+			report("  _memcpy(" << (void *)dst << ", " << src << ", " << count << " bytes) d-to-d");
 			if (!_getDevice().checkMemoryAccess(src, count)) {
 				_release();
 				_memoryError(src, count, "cudaMemcpy");
@@ -233,6 +237,7 @@ void cuda::CudaRuntime::_memcpy(void* dst, const void* src, size_t count,
 		}
 		break;
 		case cudaMemcpyHostToDevice: {
+			report("  _memcpy(" << (void *)dst << ", " << src << ", " << count << " bytes) h-to-d");
 			if (!_getDevice().checkMemoryAccess(dst, count)) {
 				_release();
 				_memoryError(dst, count, "cudaMemcpy");
@@ -519,8 +524,10 @@ void cuda::CudaRuntime::cudaUnregisterFatBinary(void **fatCubinHandle) {
 	//  for that
 	size_t handle = (size_t)fatCubinHandle;
 	if (handle >= _fatBinaries.size()) {
+		/*
 		Ocelot_Exception("cudaUnregisterFatBinary(" << handle 
 			<< ") - invalid handle.");
+			*/
 	}
 }
 

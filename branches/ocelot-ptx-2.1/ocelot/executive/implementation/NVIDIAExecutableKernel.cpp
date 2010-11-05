@@ -41,7 +41,7 @@ executive::NVIDIAExecutableKernel::NVIDIAExecutableKernel(
 	report("NVIDIAExecutableKernel()");
 	this->ISA = ir::Instruction::SASS;
 	
-	_parameterMemorySize = mapArgumentOffsets();
+	_argumentMemorySize = mapArgumentOffsets();
 		
 	cuda::CudaDriver::cuFuncGetAttribute((int*)&_registerCount, 
 		CU_FUNC_ATTRIBUTE_NUM_REGS, cuFunction);
@@ -71,6 +71,9 @@ void executive::NVIDIAExecutableKernel::launchGrid(int width, int height) {
 	if (result != CUDA_SUCCESS) {
 		report("  - cuLaunchGrid() failed: " << result);
 		throw hydrazine::Exception("cuLaunchGrid() failed ");
+	}
+	else {
+		report("  - cuLaunchGrid() succeeded");
 	}
 }
 

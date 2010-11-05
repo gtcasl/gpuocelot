@@ -23,11 +23,13 @@ int main(int argc, char *arg[]) {
 	int devices = 0;
 	cudaGetDeviceCount(&devices);
 	
+	int errors = 0;
 	for (int device = 0; device != devices; ++device) {
 		cudaDeviceProp properties;
 		cudaGetDeviceProperties(&properties, device);
 		printf("cudaSetDevice() - %d - %s \n", device, properties.name);
 		cudaSetDevice(device);
+		errors = 0;
 		
 		if (cudaMalloc((void **)&results_gpu, bytes) != cudaSuccess) {
 			printf("cudaMalloc() failed to allocate %d bytes on device\n", (int)bytes);
@@ -91,7 +93,6 @@ int main(int argc, char *arg[]) {
 		}
 		cudaMemcpy(results_cpu, results_gpu, bytes, cudaMemcpyDeviceToHost);
 	
-		int errors = 0;
 		for (int i = 0; i < N; i++) {
 			float expected = 3.14159f * (float)(i % 128);
 			float got = results_cpu[i];

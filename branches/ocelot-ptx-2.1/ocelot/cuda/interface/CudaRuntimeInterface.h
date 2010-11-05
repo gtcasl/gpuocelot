@@ -347,6 +347,7 @@ namespace cuda {
 
 		virtual cudaError_t cudaThreadExit(void);
 		virtual cudaError_t cudaThreadSynchronize(void);
+		virtual cudaError_t cudaThreadSetLimit(enum cudaLimit limit, size_t value);
 
 		/*
 			Version accessors

@@ -243,7 +243,7 @@ void ir::Module::writeIR( std::ostream& stream ) const {
 		<< " - to output stream.");
 
 	stream << ".version 2.1\n";
-	stream << ".target sm_21\n";
+	stream << ".target sm_20\n";
 
 	stream << "/* Module " << _modulePath << " */\n\n";
 	

@@ -238,12 +238,15 @@ namespace parser
 	void PTXParser::State::maxnreg( unsigned int regs )
 	{
 		report( "  Rule: TOKEN_MAXNREG TOKEN_DECIMAL_CONSTANT" );
+		statement.directive = ir::PTXStatement::Maxnreg;
 	}
 	
 	void PTXParser::State::maxntid( unsigned int tidx, unsigned int tidy, 
 		unsigned int tidz )
 	{
 		report( "  Rule: TOKEN_MAXNTID TOKEN_DECIMAL_CONSTANT" );
+		statement.directive = ir::PTXStatement::Maxntid;
+		
 	}
 	
 	void PTXParser::State::ctapersm( int target, unsigned int ctas )
@@ -254,21 +257,31 @@ namespace parser
 	void PTXParser::State::maxnctapersm( unsigned int ctas )
 	{
 		report( "  Rule: TOKEN_MAXNCTAPERSM TOKEN_DECIMAL_CONSTANT" );
+		ir::PTXStatement::Data data;
+		data.u32 = ctas;
+		statement.directive = ir::PTXStatement::Maxnctapersm;
+		statement.array.values.push_back(data);
 	}
 	
 	void PTXParser::State::maxnctapersm()
 	{
 		report( "  Rule: TOKEN_MAXNCTAPERSM ctapersmList" );
+		statement.directive = ir::PTXStatement::Maxnctapersm;
 	}
 
 	void PTXParser::State::minnctapersm( unsigned int ctas )
 	{
 		report( "  Rule: TOKEN_MINNCTAPERSM TOKEN_DECIMAL_CONSTANT" );
+		ir::PTXStatement::Data data;
+		data.u32 = ctas;
+		statement.directive = ir::PTXStatement::Minnctapersm;
+		statement.array.values.push_back(data);
 	}
 	
 	void PTXParser::State::minnctapersm()
 	{
 		report( "  Rule: TOKEN_MINNCTAPERSM ctapersmList" );
+		statement.directive = ir::PTXStatement::Minnctapersm;
 	}
 	
 	void PTXParser::State::preprocessor( int token )

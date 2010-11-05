@@ -14,6 +14,30 @@
 
 namespace ir {
 
+	static void write(std::ostream &out, const ir::PTXStatement::ArrayVector & values, ir::PTXOperand::DataType type) {
+		ir::PTXStatement::ArrayVector::const_iterator it = values.begin();
+		for (int n = 0; it != values.end(); ++it, ++n) {
+			out << (n ? ", " : "");
+			switch (type) {
+				case ir::PTXOperand::s8: out << it->s8; break;
+				case ir::PTXOperand::s16: out << it->s16; break;
+				case ir::PTXOperand::s32: out << it->s32; break;
+				case ir::PTXOperand::s64: out << it->s64;  break;
+				case ir::PTXOperand::u8: out << it->u8; break;
+				case ir::PTXOperand::u16: out << it->u16; break;
+				case ir::PTXOperand::u32: out << it->u32; break;
+				case ir::PTXOperand::u64: out << it->u64; break;
+				case ir::PTXOperand::f32: out << it->f32; break;
+				case ir::PTXOperand::f64: out << it->f64; break;
+				case ir::PTXOperand::b8: out << it->b8; break;
+				case ir::PTXOperand::b16: out << it->b16; break;
+				case ir::PTXOperand::b32: out << it->b32; break;
+				case ir::PTXOperand::b64: out << it->b64; break;
+				default: break;
+			}
+		}
+	}
+
 	std::string PTXStatement::StaticArray::dimensions() const {
 		if( stride.size() == 0 ) {
 			return "";
@@ -337,6 +361,36 @@ namespace ir {
 				return stream.str();
 				break;
 			}
+			
+			case Maxnreg: {
+				std::stringstream ss;
+				ss << ".maxnreg ";
+				write(ss, array.values, ir::PTXOperand::u32);
+				ss << ";";
+				return ss.str();
+				break;
+			}
+			case Maxntid: {
+				std::stringstream ss;
+				ss << ".maxntid ";
+				write(ss, array.values, ir::PTXOperand::u32);
+				ss << ";";
+				return ss.str();
+			}
+			case Maxnctapersm: {
+				std::stringstream ss;
+				ss << ".maxnctapersm ";
+				write(ss, array.values, ir::PTXOperand::u32);
+				ss << ";";
+				return ss.str();
+			}
+			case Minnctapersm: {
+				std::stringstream ss;
+				ss << ".minnctapersm ";
+				write(ss, array.values, ir::PTXOperand::u32);
+				ss << ";";
+				return ss.str();
+			}
 			case Param: {
 				assert( array.values.empty() );
 				std::stringstream stream;
@@ -378,6 +432,13 @@ namespace ir {
 				stream << ";";
 				return stream.str();
 				break;
+			}
+			case Reqntid: {
+				std::stringstream ss;
+				ss << ".reqntid ";
+				write(ss, array.values, ir::PTXOperand::u32);
+				ss << ";";
+				return ss.str();
 			}
 			case Samplerref:
 			{
@@ -445,7 +506,9 @@ namespace ir {
 				break;
 			case Directive_invalid:
 				return "";
-				break;		
+				break;
+			default:
+				break;
 		}
 		return "";
 	

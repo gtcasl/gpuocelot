@@ -695,6 +695,11 @@ cudaError_t cuda::CudaRuntimeInterface::cudaThreadSynchronize(void) {
 	return cudaErrorNotYetImplemented;
 }
 
+cudaError_t cuda::CudaRuntimeInterface::cudaThreadSetLimit(enum cudaLimit limit, size_t value) {
+	assert(0 && "unimplemented");
+	return cudaErrorNotYetImplemented;
+}
+
 cudaError_t cuda::CudaRuntimeInterface::cudaDriverGetVersion(int *driverVersion) {
 	assert(0 && "unimplemented");
 	return cudaErrorNotYetImplemented;

@@ -1,0 +1,476 @@
+/*! \file ptx.lpp
+	\date Wednesday January 14, 2009
+	\author Gregory Diamos
+	\brief The flex lexical description of the PTX language
+*/
+
+/******************************************************************************/
+/* DEFINITIONS                                                                */
+
+%option yylineno
+%option noyywrap
+%option yyclass="parser::PTXLexer"
+%option prefix="ptx"
+
+%{
+	
+	#ifndef PTX_LPP_INCLUDED
+	#define PTX_LPP_INCLUDED
+
+	#include <hydrazine/implementation/macros.h>
+	#include <hydrazine/implementation/string.h>
+	#include <ocelot/parser/interface/PTXLexer.h>
+	#include <cassert>
+	#include <sstream>
+	#include <cstring>
+	
+	void strlcpy( char* destination, const char* source, unsigned int max );
+	
+	// Convert binary string to uint
+	long long unsigned int binaryToUint( const std::string& );
+	
+%}
+
+SPECIAL_REGISTER ("%ctaid."[xyz]|"%ntid."[xyz]|"%gridid"|"%nctaid."[xyz]|"%tid."[xyz]|"%laneid"|"%warpid"|"%simd"|"%nsimd"|"%pm"[1234]|"WARP_SZ")
+
+BIT [01]
+NON_ZERO_DIGIT [1-9]
+BINARY_CONSTANT (0[bB][{BIT}]+)
+DECIMAL_CONSTANT ("-"?{NON_ZERO_DIGIT}[[:digit:]]*)
+HEX_CONSTANT (0[xX][[:xdigit:]]+)
+SINGLE_CONSTANT (0[dDfF][[:xdigit:]]{8})
+DOUBLE_CONSTANT (0[dDfF][[:xdigit:]]{16})
+OCT_CONSTANT (0[01234567]*)
+
+UNSIGNED_BINARY_CONSTANT {BINARY_CONSTANT}U
+UNSIGNED_DECIMAL_CONSTANT {DECIMAL_CONSTANT}U
+UNSIGNED_HEX_CONSTANT {HEX_CONSTANT}U
+UNSIGNED_OCT_CONSTANT {OCT_CONSTANT}U
+
+STRING_FIRST ([^\"\\\n]|(\\['\"?\\abfnrtv])
+STRING_SECOND {STRING_FIRST}|(\\([0123456]{1,3}))|(\\x[[:xdigit:]]+)
+
+STRING L?\"{STRING_SECOND}|(\\u([[:xdigit:]]{4}))|(\\U([[:xdigit:]]{8})))*\"
+COMMENT ("/*"([^*]|"*"[^/])*"*/")|("/"(\\\n)*"/"[^\n]*)
+
+DSEQ ([[:digit:]]+)
+DSEQ_OPT ([[:digit:]]*)
+FRAC (({DSEQ_OPT}"."{DSEQ})|{DSEQ}".")
+EXP ([eE][+-]?{DSEQ})
+EXP_OPT ({EXP}?)
+FSUFF [flFL]
+FSUFF_OPT ({FSUFF}?)
+HPREF (0[xX])
+HDSEQ ([[:xdigit:]]+)
+HDSEQ_OPT ([[:xdigit:]]*)
+HFRAC (({HDSEQ_OPT}"."{HDSEQ})|({HDSEQ}"."))
+BEXP ([pP][+-]?{DSEQ})
+DFC (({FRAC}{EXP_OPT}{FSUFF_OPT})|({DSEQ}{EXP}{FSUFF_OPT}))
+HFC (({HPREF}{HFRAC}{BEXP}{FSUFF_OPT})|({HPREF}{HDSEQ}{BEXP}{FSUFF_OPT}))
+FLOAT_CONSTANT ({DFC}|{HFC})
+
+FOLLOWSYM  [[:alnum:]_$]
+IDENTIFIER ([[:alpha:]]{FOLLOWSYM}*|[_$%]{FOLLOWSYM}+)
+
+NEW_LINE ([\n]*)
+TAB [\t]*
+SPACE [ ]*
+WHITESPACE [ \t]*
+
+/******************************************************************************/
+
+%%
+                                    
+"#include"                      { yylval->value = PREPROCESSOR_INCLUDE; \
+                                    return PREPROCESSOR_INCLUDE; }
+"#define"                       { yylval->value = PREPROCESSOR_DEFINE; \
+                                    return PREPROCESSOR_DEFINE; }
+"#if"                           { yylval->value = PREPROCESSOR_IF; \
+                                    return PREPROCESSOR_IF; }
+"#ifdef"                        { yylval->value = PREPROCESSOR_IFDEF; \
+                                    return PREPROCESSOR_IFDEF; }
+"#else"                         { yylval->value = PREPROCESSOR_ELSE; \
+                                    return PREPROCESSOR_ELSE; }
+"#endif"                        { yylval->value = PREPROCESSOR_ENDIF; \
+                                    return PREPROCESSOR_ENDIF; }
+"#line"                         { yylval->value = PREPROCESSOR_LINE; \
+                                    return PREPROCESSOR_LINE; }
+"#file"                         { yylval->value = PREPROCESSOR_FILE; \
+                                    return PREPROCESSOR_FILE; }
+
+"add"                           { strlcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_ADD; }
+"addc"                          { strlcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_ADDC; }
+"and"                           { strlcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_AND; }
+"atom"                          { strlcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_ATOM; }
+"abs"                           { strlcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_ABS; }
+"bar.sync"                      { strlcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_BARSYNC; }
+"bra"                           { strlcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_BRA; }
+"brkpt"                         { strlcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_BRKPT; }
+"call"                          { strlcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_CALL; }
+"cnot"                          { strlcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_CNOT; }
+"cos"                           { strlcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_COS; }
+"cvt"                           { strlcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_CVT; }
+"div"                           { strlcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_DIV; }
+"ex2"                           { strlcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_EX2; }
+"exit"                          { strlcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_EXIT; }
+"fma"                           { strlcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_FMA; }
+"ld"                            { strlcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_LD; }
+"lg2"                           { strlcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_LG2; }
+"membar"                        { strlcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_MEMBAR; }
+"min"                           { strlcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_MIN; }
+"mad"                           { strlcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_MAD; }
+"mad24"                         { strlcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_MAD24; }
+"max"                           { strlcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_MAX; }
+"mov"                           { strlcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_MOV; }
+"mul"                           { strlcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_MUL; }
+"mul24"                         { strlcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_MUL24; }
+"neg"                           { strlcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_NEG; }
+"not"                           { strlcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_NOT; }
+"or"                            { strlcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_OR; }
+"pmevent"                       { strlcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_PMEVENT; }
+"rcp"                           { strlcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_RCP; }
+"red"                           { strlcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_RED; }
+"rem"                           { strlcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_REM; }
+"ret"                           { strlcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_RET; }
+"rsqrt"                         { strlcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_RSQRT; }
+"sad"                           { strlcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_SAD; }
+"selp"                          { strlcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_SELP; }
+"set"                           { strlcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_SET; }
+"setp"                          { strlcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_SETP; }
+"shl"                           { strlcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_SHL; }
+"shr"                           { strlcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_SHR; }
+"sin"                           { strlcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_SIN; }
+"slct"                          { strlcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_SLCT; }
+"sqrt"                          { strlcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_SQRT; }
+"st"                            { strlcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_ST; }
+"sub"                           { strlcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_SUB; }
+"subc"                          { strlcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_SUBC; }
+"tex"                           { strlcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_TEX; }
+"trap"                          { strlcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_TRAP; }
+"vote"                          { strlcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_VOTE; }
+"xor"                           { strlcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_XOR; }
+
+
+".entry"                        { yylval->value = TOKEN_ENTRY; \
+                                    return TOKEN_ENTRY; }
+".extern"                       { yylval->value = TOKEN_EXTERN; \
+                                    return TOKEN_EXTERN; }
+".file"                         { yylval->value = TOKEN_FILE; \
+                                    return TOKEN_FILE; }
+".visible"                      { yylval->value = TOKEN_VISIBLE; \
+                                    return TOKEN_VISIBLE; }
+".loc"                          { yylval->value = TOKEN_LOC; \
+                                    return TOKEN_LOC; }
+".func"                         { yylval->value = TOKEN_FUNCTION; \
+                                    return TOKEN_FUNCTION; }
+".struct"                       { yylval->value = TOKEN_STRUCT; \
+                                    return TOKEN_STRUCT; }
+".union"                        { yylval->value = TOKEN_UNION; \
+                                    return TOKEN_UNION; }
+".target"                       { yylval->value = TOKEN_TARGET; \
+                                    return TOKEN_TARGET; }
+".version"                      { yylval->value = TOKEN_VERSION; \
+                                    return TOKEN_VERSION; }
+".section"                      { yylval->value = TOKEN_SECTION; \
+                                    return TOKEN_SECTION; }
+
+".const"                        { yylval->value = TOKEN_CONST; \
+                                    return TOKEN_CONST; }
+".global"                       { yylval->value = TOKEN_GLOBAL; \
+                                    return TOKEN_GLOBAL; }
+".local"                        { yylval->value = TOKEN_LOCAL; \
+                                    return TOKEN_LOCAL; }
+".param"                        { yylval->value = TOKEN_PARAM; \
+                                    return TOKEN_PARAM; }
+".reg"                          { yylval->value = TOKEN_REG; \
+                                    return TOKEN_REG; }
+".shared"                       { yylval->value = TOKEN_SHARED; \
+                                    return TOKEN_SHARED;}
+".sreg"                         { yylval->value = TOKEN_SREG; \
+                                    return TOKEN_SREG; }
+".tex"                          { yylval->value = TOKEN_TEX; \
+                                    return TOKEN_TEX; }
+".surf"                         { yylval->value = TOKEN_SURF; \
+                                    return TOKEN_SURF; }
+".cta"                          { yylval->value = TOKEN_CTA; 
+                                    return TOKEN_CTA; }
+".gl"                           { yylval->value = TOKEN_GL; 
+                                    return TOKEN_GL; }
+
+".maxnreg"                      { yylval->value = TOKEN_MAXNREG; 
+                                    return TOKEN_MAXNREG; }
+".maxntid"                      { yylval->value = TOKEN_MAXNTID; 
+                                    return TOKEN_MAXNTID; }
+".maxnctapersm"                 { yylval->value = TOKEN_MAXNCTAPERSM; 
+                                    return TOKEN_MAXNCTAPERSM; }
+
+"sm_10"                         { yylval->value = TOKEN_SM10; 
+                                    return TOKEN_SM10; }
+"sm_11"                         { yylval->value = TOKEN_SM11; 
+                                    return TOKEN_SM11; }
+"sm_12"                         { yylval->value = TOKEN_SM12; 
+                                    return TOKEN_SM12; }
+"sm_13"                         { yylval->value = TOKEN_SM13; 
+                                    return TOKEN_SM13; }
+"sm_20"                         { yylval->value = TOKEN_SM20; 
+                                    return TOKEN_SM20; }
+"map_f64_to_f32"                { yylval->value = TOKEN_MAP_F64_TO_F32; 
+                                    return TOKEN_MAP_F64_TO_F32; }
+
+".u32"				            { yylval->value = TOKEN_U32; return TOKEN_U32; }
+".s32"				            { yylval->value = TOKEN_S32; return TOKEN_S32; }
+".s8"				            { yylval->value = TOKEN_S8; return TOKEN_S8; }
+".s16"			            	{ yylval->value = TOKEN_S16; return TOKEN_S16; }
+".s64"			            	{ yylval->value = TOKEN_S64; return TOKEN_S64; }
+".u8"			            	{ yylval->value = TOKEN_U8; return TOKEN_U8; }
+".u16"			            	{ yylval->value = TOKEN_U16; return TOKEN_U16; }
+".u64"			            	{ yylval->value = TOKEN_U64; return TOKEN_U64; }
+".b8"			            	{ yylval->value = TOKEN_B8; return TOKEN_B8; }
+".b16"			            	{ yylval->value = TOKEN_B16; return TOKEN_B16; }
+".b32"			            	{ yylval->value = TOKEN_B32; return TOKEN_B32; }
+".b64"			            	{ yylval->value = TOKEN_B64; return TOKEN_B64; }
+".f16"			            	{ yylval->value = TOKEN_F16; return TOKEN_F16; }
+".f64"			            	{ yylval->value = TOKEN_F64; return TOKEN_F64; }
+".f32"			            	{ yylval->value = TOKEN_F32; return TOKEN_F32; }
+".pred"		                    { yylval->value = TOKEN_PRED; \
+                                    return TOKEN_PRED; }
+
+".eq"                           { yylval->value = TOKEN_EQ; return TOKEN_EQ; }
+".ne"                           { yylval->value = TOKEN_NE; return TOKEN_NE; }
+".lt"                           { yylval->value = TOKEN_LT; return TOKEN_LT; }
+".le"                           { yylval->value = TOKEN_LE; return TOKEN_LE; }
+".gt"                           { yylval->value = TOKEN_GT; return TOKEN_GT; }
+".ge"                           { yylval->value = TOKEN_GE; return TOKEN_GE; }
+".ls"                           { yylval->value = TOKEN_LS; return TOKEN_LS; }
+".hs"                           { yylval->value = TOKEN_HS; return TOKEN_HS; }
+".equ"                          { yylval->value = TOKEN_EQU; return TOKEN_EQU; }
+".neu"                          { yylval->value = TOKEN_NEU; return TOKEN_NEU; }
+".ltu"                          { yylval->value = TOKEN_LTU; return TOKEN_LTU; }
+".leu"                          { yylval->value = TOKEN_LEU; return TOKEN_LEU; }
+".gtu"                          { yylval->value = TOKEN_GTU; return TOKEN_GTU; }
+".geu"                          { yylval->value = TOKEN_GEU; return TOKEN_GEU; }
+".num"                          { yylval->value = TOKEN_NUM; return TOKEN_NUM; }
+".nan"                          { yylval->value = TOKEN_NAN; return TOKEN_NAN; }
+
+".and"                          { yylval->value = TOKEN_AND; return TOKEN_AND; }
+".or"                           { yylval->value = TOKEN_OR; return TOKEN_OR; }
+".xor"                          { yylval->value = TOKEN_XOR; return TOKEN_XOR; }
+
+".hi"                           { yylval->value = TOKEN_HI; return TOKEN_HI; }
+".lo"                           { yylval->value = TOKEN_LO; return TOKEN_LO; }
+".rn"                           { yylval->value = TOKEN_RN; return TOKEN_RN; }
+".rm"                           { yylval->value = TOKEN_RM; return TOKEN_RM; }
+".rz"                           { yylval->value = TOKEN_RZ; return TOKEN_RZ; }
+".rp"                           { yylval->value = TOKEN_RP; return TOKEN_RP; }
+".rni"                          { yylval->value = TOKEN_RNI; return TOKEN_RNI; }
+".rmi"                          { yylval->value = TOKEN_RMI; return TOKEN_RMI; }
+".rzi"                          { yylval->value = TOKEN_RZI; return TOKEN_RZI; }
+".rpi"                          { yylval->value = TOKEN_RPI; return TOKEN_RPI; }
+".sat"                          { yylval->value = TOKEN_SAT; return TOKEN_SAT; }
+".ftz"                          { yylval->value = TOKEN_FTZ; return TOKEN_FTZ; }
+".approx"                       { yylval->value = TOKEN_APPROX; \
+                                    return TOKEN_APPROX; }
+
+".uni"                          { yylval->value = TOKEN_UNI; return TOKEN_UNI; }
+".align"                        { yylval->value = TOKEN_ALIGN; \
+                                    return TOKEN_ALIGN; }
+".byte"                         { yylval->value = TOKEN_BYTE; \
+                                    return TOKEN_BYTE; }
+".wide"                         { yylval->value = TOKEN_WIDE; \
+                                    return TOKEN_WIDE; }
+".cc"                           { yylval->value = TOKEN_CARRY; \
+                                    return TOKEN_CARRY; }
+".volatile"                     { yylval->value = TOKEN_VOLATILE; \
+                                    return TOKEN_VOLATILE; }
+".full"                         { yylval->value = TOKEN_FULL; \
+                                    return TOKEN_FULL; }
+
+".v2"                           { yylval->value = TOKEN_V2; return TOKEN_V2; }
+".v4"                           { yylval->value = TOKEN_V4; return TOKEN_V4; }
+
+".any"                          { yylval->value = TOKEN_ANY; return TOKEN_ANY; }
+".all"                          { yylval->value = TOKEN_ALL; return TOKEN_ALL; }
+
+".min"                          { yylval->value = TOKEN_MIN; return TOKEN_MIN; }
+".max"                          { yylval->value = TOKEN_MAX; return TOKEN_MAX; }
+".dec"                          { yylval->value = TOKEN_DEC; return TOKEN_DEC; }
+".inc"                          { yylval->value = TOKEN_INC; return TOKEN_INC; }
+".add"                          { yylval->value = TOKEN_ADD; return TOKEN_ADD; }
+".cas"                          { yylval->value = TOKEN_CAS; return TOKEN_CAS; }
+".exch"                         { yylval->value = TOKEN_EXCH; \
+                                    return TOKEN_EXCH; }
+
+".1d"                           { yylval->value = TOKEN_1D; return TOKEN_1D; }
+".2d"                           { yylval->value = TOKEN_2D; return TOKEN_2D; }
+".3d"                           { yylval->value = TOKEN_3D; return TOKEN_3D; }
+
+{DECIMAL_CONSTANT}              { std::stringstream stream; stream << yytext; \
+                                    stream >> yylval->value; \
+                                    return TOKEN_DECIMAL_CONSTANT; }
+{BINARY_CONSTANT}               { yylval->value = binaryToUint( yytext ); \
+                                    return TOKEN_DECIMAL_CONSTANT; }
+{HEX_CONSTANT}                  { std::stringstream stream; \
+                                    stream << std::hex; stream << yytext; \
+                                    stream >> yylval->value; \
+                                    return TOKEN_DECIMAL_CONSTANT; }
+{OCT_CONSTANT}                  { std::stringstream stream; \
+                                    stream << std::oct; stream << yytext; \
+                                    stream >> yylval->value; \
+                                    return TOKEN_DECIMAL_CONSTANT; }
+
+{UNSIGNED_DECIMAL_CONSTANT}     { std::stringstream stream; stream << yytext; \
+                                    stream >> yylval->uvalue; \
+                                    return TOKEN_DECIMAL_CONSTANT; }
+{UNSIGNED_BINARY_CONSTANT}      { yylval->uvalue = binaryToUint( yytext ); \
+                                    return TOKEN_DECIMAL_CONSTANT; }
+{UNSIGNED_HEX_CONSTANT}         { std::stringstream stream; \
+                                    stream << std::hex; stream << yytext; \
+                                    stream >> yylval->uvalue; \
+                                    return TOKEN_DECIMAL_CONSTANT; }
+{UNSIGNED_OCT_CONSTANT}         { std::stringstream stream; \
+                                    stream << std::oct; stream << yytext; \
+                                    stream >> yylval->uvalue; \
+                                    return TOKEN_DECIMAL_CONSTANT; }
+
+{SINGLE_CONSTANT}               { yytext[1] = 'x'; std::stringstream stream; \
+                                    stream << std::hex << yytext; \
+                                    stream >> yylval->uvalue; \
+                                    return TOKEN_SINGLE_CONSTANT; }
+{DOUBLE_CONSTANT}               { yytext[1] = 'x'; std::stringstream stream; \
+                                    stream << std::hex << yytext; \
+                                    stream >> yylval->uvalue; \
+                                    return TOKEN_DOUBLE_CONSTANT; }                  
+{FLOAT_CONSTANT}                { std::stringstream stream; stream << yytext; \
+                                    stream >> yylval->doubleFloat; \
+                                    return TOKEN_DOUBLE_CONSTANT; }
+
+{SPECIAL_REGISTER}              { strlcpy( yylval->text, yytext, 1024 ); \
+                                    return TOKEN_SPECIAL_REGISTER; }
+"%clock"                        { strlcpy( yylval->text, yytext, 1024 ); \
+                                    return TOKEN_CLOCK; }
+{IDENTIFIER}":"                 { strlcpy( yylval->text, yytext, \
+                                    MIN( strlen( yytext ), 1024 ) ); \
+                                    return TOKEN_LABEL; }
+@{IDENTIFIER}                   { strlcpy( yylval->text, yytext + 1, 1024 ); \
+                                    return TOKEN_PREDICATE_IDENTIFIER; }
+@!{IDENTIFIER}                  { strlcpy( yylval->text, yytext + 2, 1024 ); \
+                                    return TOKEN_INV_PREDICATE_IDENTIFIER; }
+{IDENTIFIER}                    { strlcpy( yylval->text, yytext, 1024 ); \
+                                    return TOKEN_IDENTIFIER;}
+{STRING}                        { strlcpy( yylval->text, yytext + 1, \
+                                    MIN( strlen( yytext ) - 1, 1024 ) ); \
+                                    return TOKEN_STRING;}
+
+{COMMENT}                       { nextColumn += strlen( yytext ); }
+{TAB}                           { nextColumn += strlen( yytext ) * 4; }
+{SPACE}                         { nextColumn += strlen( yytext ); }
+{NEW_LINE}                      { nextColumn = 1; }
+
+","                             { yylval->text[0] = ','; 
+                                    yylval->text[1] = '\0'; return (','); }
+";"                             { yylval->text[0] = ';'; 
+                                    yylval->text[1] = '\0'; return (';'); }
+"."                             { yylval->text[0] = '.'; 
+                                    yylval->text[1] = '\0'; return ('.'); }
+"{"                             { yylval->text[0] = '{'; 
+                                    yylval->text[1] = '\0'; return ('{'); }
+"}"                             { yylval->text[0] = '}'; 
+                                    yylval->text[1] = '\0'; return ('}'); }
+"["                             { yylval->text[0] = '['; 
+                                    yylval->text[1] = '\0'; return ('['); }
+"]"                             { yylval->text[0] = ']'; 
+                                    yylval->text[1] = '\0'; return (']'); }
+"("                             { yylval->text[0] = '('; 
+                                    yylval->text[1] = '\0'; return ('('); }
+")"                             { yylval->text[0] = ')'; 
+                                    yylval->text[1] = '\0'; return (')'); }
+"<"                             { yylval->text[0] = '<'; 
+                                    yylval->text[1] = '\0'; return ('<'); }
+"+"                             { yylval->text[0] = '+'; 
+                                    yylval->text[1] = '\0'; return ('+'); }
+">"                             { yylval->text[0] = '>'; 
+                                    yylval->text[1] = '\0'; return ('>'); }
+"="                             { yylval->text[0] = '='; 
+                                    yylval->text[1] = '\0'; return ('='); }
+"-"                             { yylval->text[0] = '-'; 
+                                    yylval->text[1] = '\0'; return ('-'); }
+"!"                             { yylval->text[0] = '!'; 
+                                    yylval->text[1] = '\0'; return ('!'); }
+"_"                             { yylval->text[0] = '_'; 
+                                    yylval->text[1] = '\0'; return ('_'); }
+
+%%
+
+/******************************************************************************/
+/* USER CODE                                                                  */
+
+int yywrap() 
+{
+	return 1;
+}
+
+long long unsigned int binaryToUint( const std::string& string )
+{
+	return hydrazine::binaryToUint( string );
+}
+
+void strlcpy( char* destination, const char* source, unsigned int max )
+{
+	return hydrazine::strlcpy( destination, source, max );
+}
+
+#endif
+
+/******************************************************************************/
+

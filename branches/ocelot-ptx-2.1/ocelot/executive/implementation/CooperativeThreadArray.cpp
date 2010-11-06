@@ -3977,7 +3977,12 @@ void executive::CooperativeThreadArray::eval_Div(CTAContext &context,
 			
 			PTXF32 d, a = ftz(instr.modifier, operandAsF32(threadID, instr.a)),
 				b = ftz(instr.modifier, operandAsF32(threadID, instr.b));
-			d = ftz(instr.modifier, a / b);
+			if(ir::PTXInstruction::approx & instr.modifier) {
+				d = a * (1.0f / b);
+			}
+			else {
+				d = ftz(instr.modifier, a / b);
+			}
 			setRegAsF32(threadID, instr.d.reg, d);
 		}
 	}	
@@ -8554,7 +8559,6 @@ void executive::CooperativeThreadArray::eval_Tex(CTAContext &context,
 	}
 	for (int threadID = 0; threadID < threadCount; threadID++) {
 		if (!context.predicated(threadID, instr)) continue;
-		PTXB8 *address = 0;
 		
 		switch (instr.geometry) {
 			case ir::PTXInstruction::_1d:
@@ -8566,21 +8570,13 @@ void executive::CooperativeThreadArray::eval_Tex(CTAContext &context,
 							assert(instr.d.array.size()==4);
 							PTXS32 c = getRegAsS32(threadID, 
 								instr.c.array[0].reg);
-							PTXU32 d0 = tex::sample<0,PTXU32>(texture, c, address);
+							PTXU32 d0 = tex::sample<0,PTXU32>(texture, c);
+							PTXU32 d1 = tex::sample<1,PTXU32>(texture, c);
+							PTXU32 d2 = tex::sample<2,PTXU32>(texture, c);
+							PTXU32 d3 = tex::sample<3,PTXU32>(texture, c);
 							if (traceEvents) {
-								currentEvent.memory_addresses.push_back((PTXU64)address);
-							}
-							PTXU32 d1 = tex::sample<1,PTXU32>(texture, c, address);
-							if (traceEvents) {
-								currentEvent.memory_addresses.push_back((PTXU64)address);
-							}
-							PTXU32 d2 = tex::sample<2,PTXU32>(texture, c, address);
-							if (traceEvents) {
-								currentEvent.memory_addresses.push_back((PTXU64)address);
-							}
-							PTXU32 d3 = tex::sample<3,PTXU32>(texture, c, address);
-							if (traceEvents) {
-								currentEvent.memory_addresses.push_back((PTXU64)address);
+								tex::addresses(texture, c,
+									currentEvent.memory_addresses);
 							}
 							setRegAsU32(threadID, instr.d.array[0].reg, d0);
 							setRegAsU32(threadID, instr.d.array[1].reg, d1);
@@ -8592,21 +8588,13 @@ void executive::CooperativeThreadArray::eval_Tex(CTAContext &context,
 							assert(instr.d.array.size()==4);
 							PTXF32 c = getRegAsF32(threadID, 
 								instr.c.array[0].reg);
-							PTXU32 d0 = tex::sample<0,PTXU32>(texture, c, address);
+							PTXU32 d0 = tex::sample<0,PTXU32>(texture, c);
+							PTXU32 d1 = tex::sample<1,PTXU32>(texture, c);
+							PTXU32 d2 = tex::sample<2,PTXU32>(texture, c);
+							PTXU32 d3 = tex::sample<3,PTXU32>(texture, c);
 							if (traceEvents) {
-								currentEvent.memory_addresses.push_back((PTXU64)address);
-							}
-							PTXU32 d1 = tex::sample<1,PTXU32>(texture, c, address);
-							if (traceEvents) {
-								currentEvent.memory_addresses.push_back((PTXU64)address);
-							}
-							PTXU32 d2 = tex::sample<2,PTXU32>(texture, c, address);
-							if (traceEvents) {
-								currentEvent.memory_addresses.push_back((PTXU64)address);
-							}
-							PTXU32 d3 = tex::sample<3,PTXU32>(texture, c, address);
-							if (traceEvents) {
-								currentEvent.memory_addresses.push_back((PTXU64)address);
+								tex::addresses(texture, c,
+									currentEvent.memory_addresses);
 							}
 							setRegAsU32(threadID, instr.d.array[0].reg, d0);
 							setRegAsU32(threadID, instr.d.array[1].reg, d1);
@@ -8627,21 +8615,13 @@ void executive::CooperativeThreadArray::eval_Tex(CTAContext &context,
 							assert(instr.d.array.size()==4);
 							PTXS32 c = getRegAsS32(threadID, 
 								instr.c.array[0].reg);
-							PTXS32 d0 = tex::sample<0,PTXS32>(texture, c, address);
+							PTXS32 d0 = tex::sample<0,PTXS32>(texture, c);
+							PTXS32 d1 = tex::sample<1,PTXS32>(texture, c);
+							PTXS32 d2 = tex::sample<2,PTXS32>(texture, c);
+							PTXS32 d3 = tex::sample<3,PTXS32>(texture, c);
 							if (traceEvents) {
-								currentEvent.memory_addresses.push_back((PTXU64)address);
-							}
-							PTXS32 d1 = tex::sample<1,PTXS32>(texture, c, address);
-							if (traceEvents) {
-								currentEvent.memory_addresses.push_back((PTXU64)address);
-							}
-							PTXS32 d2 = tex::sample<2,PTXS32>(texture, c, address);
-							if (traceEvents) {
-								currentEvent.memory_addresses.push_back((PTXU64)address);
-							}
-							PTXS32 d3 = tex::sample<3,PTXS32>(texture, c, address);
-							if (traceEvents) {
-								currentEvent.memory_addresses.push_back((PTXU64)address);
+								tex::addresses(texture, c,
+									currentEvent.memory_addresses);
 							}
 							setRegAsS32(threadID, instr.d.array[0].reg, d0);
 							setRegAsS32(threadID, instr.d.array[1].reg, d1);
@@ -8653,21 +8633,13 @@ void executive::CooperativeThreadArray::eval_Tex(CTAContext &context,
 							assert(instr.d.array.size()==4);
 							PTXF32 c = getRegAsF32(threadID, 
 								instr.c.array[0].reg);
-							PTXS32 d0 = tex::sample<0,PTXS32>(texture, c, address);
+							PTXS32 d0 = tex::sample<0,PTXS32>(texture, c);
+							PTXS32 d1 = tex::sample<1,PTXS32>(texture, c);
+							PTXS32 d2 = tex::sample<2,PTXS32>(texture, c);
+							PTXS32 d3 = tex::sample<3,PTXS32>(texture, c);
 							if (traceEvents) {
-								currentEvent.memory_addresses.push_back((PTXU64)address);
-							}
-							PTXS32 d1 = tex::sample<1,PTXS32>(texture, c, address);
-							if (traceEvents) {
-								currentEvent.memory_addresses.push_back((PTXU64)address);
-							}
-							PTXS32 d2 = tex::sample<2,PTXS32>(texture, c, address);
-							if (traceEvents) {
-								currentEvent.memory_addresses.push_back((PTXU64)address);
-							}
-							PTXS32 d3 = tex::sample<3,PTXS32>(texture, c, address);
-							if (traceEvents) {
-								currentEvent.memory_addresses.push_back((PTXU64)address);
+								tex::addresses(texture, c,
+									currentEvent.memory_addresses);
 							}
 							setRegAsS32(threadID, instr.d.array[0].reg, d0);
 							setRegAsS32(threadID, instr.d.array[1].reg, d1);
@@ -8692,6 +8664,10 @@ void executive::CooperativeThreadArray::eval_Tex(CTAContext &context,
 							PTXF32 d1 = tex::sample<1,PTXF32>(texture, c);
 							PTXF32 d2 = tex::sample<2,PTXF32>(texture, c);
 							PTXF32 d3 = tex::sample<3,PTXF32>(texture, c);
+							if (traceEvents) {
+								tex::addresses(texture, c,
+									currentEvent.memory_addresses);
+							}
 							setRegAsF32(threadID, instr.d.array[0].reg, d0);
 							setRegAsF32(threadID, instr.d.array[1].reg, d1);
 							setRegAsF32(threadID, instr.d.array[2].reg, d2);
@@ -8702,21 +8678,13 @@ void executive::CooperativeThreadArray::eval_Tex(CTAContext &context,
 							assert(instr.d.array.size()==4);
 							PTXF32 c = getRegAsF32(threadID, 
 								instr.c.array[0].reg);
-							PTXF32 d0 = tex::sample<0,PTXF32>(texture, c, address);
+							PTXF32 d0 = tex::sample<0,PTXF32>(texture, c);
+							PTXF32 d1 = tex::sample<1,PTXF32>(texture, c);
+							PTXF32 d2 = tex::sample<2,PTXF32>(texture, c);
+							PTXF32 d3 = tex::sample<3,PTXF32>(texture, c);
 							if (traceEvents) {
-								currentEvent.memory_addresses.push_back((PTXU64)address);
-							}
-							PTXF32 d1 = tex::sample<1,PTXF32>(texture, c, address);
-							if (traceEvents) {
-								currentEvent.memory_addresses.push_back((PTXU64)address);
-							}
-							PTXF32 d2 = tex::sample<2,PTXF32>(texture, c, address);
-							if (traceEvents) {
-								currentEvent.memory_addresses.push_back((PTXU64)address);
-							}
-							PTXF32 d3 = tex::sample<3,PTXF32>(texture, c, address);
-							if (traceEvents) {
-								currentEvent.memory_addresses.push_back((PTXU64)address);
+								tex::addresses(texture, c,
+									currentEvent.memory_addresses);
 							}
 							setRegAsF32(threadID, instr.d.array[0].reg, d0);
 							setRegAsF32(threadID, instr.d.array[1].reg, d1);
@@ -8752,6 +8720,10 @@ void executive::CooperativeThreadArray::eval_Tex(CTAContext &context,
 							PTXU32 d1 = tex::sample<1,PTXU32>(texture, c0, c1);
 							PTXU32 d2 = tex::sample<2,PTXU32>(texture, c0, c1);
 							PTXU32 d3 = tex::sample<3,PTXU32>(texture, c0, c1);
+							if (traceEvents) {
+								tex::addresses(texture, c0, c1,
+									currentEvent.memory_addresses);
+							}
 							setRegAsU32(threadID, instr.d.array[0].reg, d0);
 							setRegAsU32(threadID, instr.d.array[1].reg, d1);
 							setRegAsU32(threadID, instr.d.array[2].reg, d2);
@@ -8768,6 +8740,10 @@ void executive::CooperativeThreadArray::eval_Tex(CTAContext &context,
 							PTXU32 d1 = tex::sample<1,PTXU32>(texture, c0, c1);
 							PTXU32 d2 = tex::sample<2,PTXU32>(texture, c0, c1);
 							PTXU32 d3 = tex::sample<3,PTXU32>(texture, c0, c1);
+							if (traceEvents) {
+								tex::addresses(texture, c0, c1,
+									currentEvent.memory_addresses);
+							}
 							setRegAsU32(threadID, instr.d.array[0].reg, d0);
 							setRegAsU32(threadID, instr.d.array[1].reg, d1);
 							setRegAsU32(threadID, instr.d.array[2].reg, d2);
@@ -8793,6 +8769,10 @@ void executive::CooperativeThreadArray::eval_Tex(CTAContext &context,
 							PTXS32 d1 = tex::sample<1,PTXS32>(texture, c0, c1);
 							PTXS32 d2 = tex::sample<2,PTXS32>(texture, c0, c1);
 							PTXS32 d3 = tex::sample<3,PTXS32>(texture, c0, c1);
+							if (traceEvents) {
+								tex::addresses(texture, c0, c1,
+									currentEvent.memory_addresses);
+							}
 							setRegAsS32(threadID, instr.d.array[0].reg, d0);
 							setRegAsS32(threadID, instr.d.array[1].reg, d1);
 							setRegAsS32(threadID, instr.d.array[2].reg, d2);
@@ -8809,6 +8789,10 @@ void executive::CooperativeThreadArray::eval_Tex(CTAContext &context,
 							PTXS32 d1 = tex::sample<1,PTXS32>(texture, c0, c1);
 							PTXS32 d2 = tex::sample<2,PTXS32>(texture, c0, c1);
 							PTXS32 d3 = tex::sample<3,PTXS32>(texture, c0, c1);
+							if (traceEvents) {
+								tex::addresses(texture, c0, c1,
+									currentEvent.memory_addresses);
+							}
 							setRegAsS32(threadID, instr.d.array[0].reg, d0);
 							setRegAsS32(threadID, instr.d.array[1].reg, d1);
 							setRegAsS32(threadID, instr.d.array[2].reg, d2);
@@ -8834,6 +8818,10 @@ void executive::CooperativeThreadArray::eval_Tex(CTAContext &context,
 							PTXF32 d1 = tex::sample<1,PTXF32>(texture, c0, c1);
 							PTXF32 d2 = tex::sample<2,PTXF32>(texture, c0, c1);
 							PTXF32 d3 = tex::sample<3,PTXF32>(texture, c0, c1);
+							if (traceEvents) {
+								tex::addresses(texture, c0, c1,
+									currentEvent.memory_addresses);
+							}
 							setRegAsF32(threadID, instr.d.array[0].reg, d0);
 							setRegAsF32(threadID, instr.d.array[1].reg, d1);
 							setRegAsF32(threadID, instr.d.array[2].reg, d2);
@@ -8850,6 +8838,10 @@ void executive::CooperativeThreadArray::eval_Tex(CTAContext &context,
 							PTXF32 d1 = tex::sample<1,PTXF32>(texture, c0, c1);
 							PTXF32 d2 = tex::sample<2,PTXF32>(texture, c0, c1);
 							PTXF32 d3 = tex::sample<3,PTXF32>(texture, c0, c1);
+							if (traceEvents) {
+								tex::addresses(texture, c0, c1,
+									currentEvent.memory_addresses);
+							}
 							setRegAsF32(threadID, instr.d.array[0].reg, d0);
 							setRegAsF32(threadID, instr.d.array[1].reg, d1);
 							setRegAsF32(threadID, instr.d.array[2].reg, d2);
@@ -8882,10 +8874,18 @@ void executive::CooperativeThreadArray::eval_Tex(CTAContext &context,
 								instr.c.array[1].reg);
 							PTXS32 c2 = getRegAsS32(threadID, 
 								instr.c.array[2].reg);
-							PTXU32 d0 = tex::sample<0,PTXU32>(texture, c0, c1, c2);
-							PTXU32 d1 = tex::sample<1,PTXU32>(texture, c0, c1, c2);
-							PTXU32 d2 = tex::sample<2,PTXU32>(texture, c0, c1, c2);
-							PTXU32 d3 = tex::sample<3,PTXU32>(texture, c0, c1, c2);
+							PTXU32 d0 = tex::sample<0,PTXU32>(
+								texture, c0, c1, c2);
+							PTXU32 d1 = tex::sample<1,PTXU32>(
+								texture, c0, c1, c2);
+							PTXU32 d2 = tex::sample<2,PTXU32>(
+								texture, c0, c1, c2);
+							PTXU32 d3 = tex::sample<3,PTXU32>(
+								texture, c0, c1, c2);
+							if (traceEvents) {
+								tex::addresses(texture, c0, c1, c2,
+									currentEvent.memory_addresses);
+							}
 							setRegAsU32(threadID, instr.d.array[0].reg, d0);
 							setRegAsU32(threadID, instr.d.array[1].reg, d1);
 							setRegAsU32(threadID, instr.d.array[2].reg, d2);
@@ -8900,10 +8900,18 @@ void executive::CooperativeThreadArray::eval_Tex(CTAContext &context,
 								instr.c.array[1].reg);
 							PTXF32 c2 = getRegAsF32(threadID, 
 								instr.c.array[2].reg);
-							PTXU32 d0 = tex::sample<0,PTXU32>(texture, c0, c1, c2);
-							PTXU32 d1 = tex::sample<1,PTXU32>(texture, c0, c1, c2);
-							PTXU32 d2 = tex::sample<2,PTXU32>(texture, c0, c1, c2);
-							PTXU32 d3 = tex::sample<3,PTXU32>(texture, c0, c1, c2);
+							PTXU32 d0 = tex::sample<0,PTXU32>(
+								texture, c0, c1, c2);
+							PTXU32 d1 = tex::sample<1,PTXU32>(
+								texture, c0, c1, c2);
+							PTXU32 d2 = tex::sample<2,PTXU32>(
+								texture, c0, c1, c2);
+							PTXU32 d3 = tex::sample<3,PTXU32>(
+								texture, c0, c1, c2);
+							if (traceEvents) {
+								tex::addresses(texture, c0, c1, c2,
+									currentEvent.memory_addresses);
+							}
 							setRegAsU32(threadID, instr.d.array[0].reg, d0);
 							setRegAsU32(threadID, instr.d.array[1].reg, d1);
 							setRegAsU32(threadID, instr.d.array[2].reg, d2);
@@ -8927,10 +8935,18 @@ void executive::CooperativeThreadArray::eval_Tex(CTAContext &context,
 								instr.c.array[1].reg);
 							PTXS32 c2 = getRegAsS32(threadID, 
 								instr.c.array[2].reg);
-							PTXS32 d0 = tex::sample<0,PTXS32>(texture, c0, c1, c2);
-							PTXS32 d1 = tex::sample<1,PTXS32>(texture, c0, c1, c2);
-							PTXS32 d2 = tex::sample<2,PTXS32>(texture, c0, c1, c2);
-							PTXS32 d3 = tex::sample<3,PTXS32>(texture, c0, c1, c2);
+							PTXS32 d0 = tex::sample<0,PTXS32>(
+								texture, c0, c1, c2);
+							PTXS32 d1 = tex::sample<1,PTXS32>(
+								texture, c0, c1, c2);
+							PTXS32 d2 = tex::sample<2,PTXS32>(
+								texture, c0, c1, c2);
+							PTXS32 d3 = tex::sample<3,PTXS32>(
+								texture, c0, c1, c2);
+							if (traceEvents) {
+								tex::addresses(texture, c0, c1, c2,
+									currentEvent.memory_addresses);
+							}
 							setRegAsS32(threadID, instr.d.array[0].reg, d0);
 							setRegAsS32(threadID, instr.d.array[1].reg, d1);
 							setRegAsS32(threadID, instr.d.array[2].reg, d2);
@@ -8945,10 +8961,18 @@ void executive::CooperativeThreadArray::eval_Tex(CTAContext &context,
 								instr.c.array[1].reg);
 							PTXF32 c2 = getRegAsF32(threadID, 
 								instr.c.array[2].reg);
-							PTXS32 d0 = tex::sample<0,PTXS32>(texture, c0, c1, c2);
-							PTXS32 d1 = tex::sample<1,PTXS32>(texture, c0, c1, c2);
-							PTXS32 d2 = tex::sample<2,PTXS32>(texture, c0, c1, c2);
-							PTXS32 d3 = tex::sample<3,PTXS32>(texture, c0, c1, c2);
+							PTXS32 d0 = tex::sample<0,PTXS32>(
+								texture, c0, c1, c2);
+							PTXS32 d1 = tex::sample<1,PTXS32>(
+								texture, c0, c1, c2);
+							PTXS32 d2 = tex::sample<2,PTXS32>(
+								texture, c0, c1, c2);
+							PTXS32 d3 = tex::sample<3,PTXS32>(
+								texture, c0, c1, c2);
+							if (traceEvents) {
+								tex::addresses(texture, c0, c1, c2,
+									currentEvent.memory_addresses);
+							}
 							setRegAsS32(threadID, instr.d.array[0].reg, d0);
 							setRegAsS32(threadID, instr.d.array[1].reg, d1);
 							setRegAsS32(threadID, instr.d.array[2].reg, d2);
@@ -8972,10 +8996,18 @@ void executive::CooperativeThreadArray::eval_Tex(CTAContext &context,
 								instr.c.array[1].reg);
 							PTXS32 c2 = getRegAsS32(threadID, 
 								instr.c.array[2].reg);
-							PTXF32 d0 = tex::sample<0,PTXF32>(texture, c0, c1, c2);
-							PTXF32 d1 = tex::sample<1,PTXF32>(texture, c0, c1, c2);
-							PTXF32 d2 = tex::sample<2,PTXF32>(texture, c0, c1, c2);
-							PTXF32 d3 = tex::sample<3,PTXF32>(texture, c0, c1, c2);
+							PTXF32 d0 = tex::sample<0,PTXF32>(
+								texture, c0, c1, c2);
+							PTXF32 d1 = tex::sample<1,PTXF32>(
+								texture, c0, c1, c2);
+							PTXF32 d2 = tex::sample<2,PTXF32>(
+								texture, c0, c1, c2);
+							PTXF32 d3 = tex::sample<3,PTXF32>(
+								texture, c0, c1, c2);
+							if (traceEvents) {
+								tex::addresses(texture, c0, c1, c2,
+									currentEvent.memory_addresses);
+							}
 							setRegAsF32(threadID, instr.d.array[0].reg, d0);
 							setRegAsF32(threadID, instr.d.array[1].reg, d1);
 							setRegAsF32(threadID, instr.d.array[2].reg, d2);
@@ -8990,10 +9022,18 @@ void executive::CooperativeThreadArray::eval_Tex(CTAContext &context,
 								instr.c.array[1].reg);
 							PTXF32 c2 = getRegAsF32(threadID, 
 								instr.c.array[2].reg);
-							PTXF32 d0 = tex::sample<0,PTXF32>(texture, c0, c1, c2);
-							PTXF32 d1 = tex::sample<1,PTXF32>(texture, c0, c1, c2);
-							PTXF32 d2 = tex::sample<2,PTXF32>(texture, c0, c1, c2);
-							PTXF32 d3 = tex::sample<3,PTXF32>(texture, c0, c1, c2);
+							PTXF32 d0 = tex::sample<0,PTXF32>(
+								texture, c0, c1, c2);
+							PTXF32 d1 = tex::sample<1,PTXF32>(
+								texture, c0, c1, c2);
+							PTXF32 d2 = tex::sample<2,PTXF32>(
+								texture, c0, c1, c2);
+							PTXF32 d3 = tex::sample<3,PTXF32>(
+								texture, c0, c1, c2);
+							if (traceEvents) {
+								tex::addresses(texture, c0, c1, c2,
+									currentEvent.memory_addresses);
+							}
 							setRegAsF32(threadID, instr.d.array[0].reg, d0);
 							setRegAsF32(threadID, instr.d.array[1].reg, d1);
 							setRegAsF32(threadID, instr.d.array[2].reg, d2);

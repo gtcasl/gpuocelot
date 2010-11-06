@@ -36,7 +36,8 @@ lib_LTLIBRARIES = libocelot.la
 
 ################################################################################
 ## libocelot
-libocelot_la_CXXFLAGS = $(LLVM_CFLAGS) $(INCLUDE) -Wall -ansi -Werror -std=c++0x  $(LLVM_LDFLAGS)
+libocelot_la_CXXFLAGS = $(LLVM_CFLAGS) $(INCLUDE) -Wall -ansi -Werror \
+	-std=c++0x $(LLVM_LDFLAGS)
 libocelot_la_SOURCES = \
 	ocelot/parser/implementation/ptx.lpp \
 	ocelot/parser/implementation/ptxgrammar.ypp \
@@ -387,6 +388,7 @@ nobase_include_HEADERS = ocelot/api/interface/ocelot.h \
 	ocelot/executive/interface/LLVMWorkerThread.h \
 	ocelot/executive/interface/LLVMCooperativeThreadArray.h \
 	ocelot/executive/interface/LLVMFunctionCallStack.h \
+	ocelot/executive/interface/EmulatorCallStack.h \
 	ocelot/executive/test/TestEmulator.h \
 	ocelot/executive/test/sequence.ptx \
 	ocelot/executive/test/kernels.ptx \

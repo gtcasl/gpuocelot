@@ -9,6 +9,7 @@
 #define TEXTURE_OPERATIONS_H_INCLUDED
 
 #include <ocelot/ir/interface/Texture.h>
+#include <ocelot/trace/interface/TraceEvent.h>
 
 #include <math.h>
 #include <float.h>
@@ -23,9 +24,11 @@ namespace executive
 	/*! \brief A namespace for texture sampling instructions */
 	namespace tex
 	{
-		
 		ir::PTXF64 wrap( ir::PTXF64 b, unsigned int limit, 
 			ir::Texture::AddressMode mode );
+
+		ir::PTXF32 channelReadF32( const ir::Texture& texture, 
+			unsigned int shift, unsigned int mask, unsigned int index );
 
 		template<typename D> D channelRead( const ir::Texture& texture, 
 			unsigned int shift, unsigned int mask, unsigned int index )
@@ -39,38 +42,11 @@ namespace executive
 			return value;
 		}
 
-		ir::PTXF32 channelReadF32( const ir::Texture& texture, 
-			unsigned int shift, unsigned int mask, unsigned int index );
-
-
-		template<typename D> D channelRead( const ir::Texture& texture, 
-			unsigned int shift, unsigned int mask, unsigned int index, 
-			ir::PTXB8*& address )
+		template<unsigned int dim>
+		void getShiftAndMask( unsigned int &shift, ir::PTXB64& mask,
+			const ir::Texture& texture )
 		{
-			unsigned int bits = texture.x + texture.y + texture.z + texture.w;
-			unsigned int bytes = bits / 8;
-			unsigned int offset = shift / 8;
-			D value = *((D*)(address = ((ir::PTXB8*) texture.data) 
-				+ index*bytes + offset) );
-			value &= mask;
-			return value;
-		}
-
-		ir::PTXF32 channelReadF32( const ir::Texture& texture, 
-			unsigned int shift, unsigned int mask, unsigned int index, 
-			ir::PTXB8*& address );
-
-		/*!
-			\brief sample in one dimension
-		*/
-		template<unsigned int dim, typename D, typename B>
-		D sample( const ir::Texture& texture,
-			B b0, ir::PTXB8* &address ) 
-		{
-			D d = 0;
-			ir::PTXF64 b = ( ir::PTXF64 ) b0;
-			ir::PTXB64 mask = 1;
-			unsigned int shift;
+			mask = 1;
 
 			switch (dim) 
 			{
@@ -93,7 +69,19 @@ namespace executive
 				default: assert("Invalid texture index" == 0); 
 					break;
 			}
-	
+		}
+
+		/*! \brief sample in one dimension */
+		template<unsigned int dim, typename D, typename B>
+		D sample( const ir::Texture& texture, B b0 ) 
+		{
+			D d = 0;
+			ir::PTXF64 b = ( ir::PTXF64 ) b0;
+			ir::PTXB64 mask;
+			unsigned int shift;
+
+			getShiftAndMask<dim>(shift, mask, texture);
+
 			if (texture.normalize) 
 			{
 				b = b * texture.size.x;
@@ -107,22 +95,22 @@ namespace executive
 				switch (texture.type) {
 					case ir::Texture::Unsigned:
 					{
-						ir::PTXU32 result = channelRead<ir::PTXU32>(texture, shift, 
-							mask, windex, address);
+						ir::PTXU32 result = channelRead<ir::PTXU32>(texture, 
+							shift, mask, windex);
 						d = result;
 						break;
 					}
 					case ir::Texture::Signed:
 					{
 						ir::PTXS32 result = channelRead<ir::PTXS32>(texture, 
-							shift, mask, windex, address);
+							shift, mask, windex);
 						d = result;
 						break;
 					}
 					case ir::Texture::Float:
 					{
 						ir::PTXF32 result = channelReadF32(texture, 
-							shift, mask, windex, address);
+							shift, mask, windex);
 						d = result;
 						break;
 					}
@@ -142,8 +130,8 @@ namespace executive
 				switch (texture.type) {
 					case ir::Texture::Unsigned:
 					{
-						ir::PTXU64 result = channelRead<ir::PTXU32>(texture, shift, 
-							mask, wlow) * (high - b);
+						ir::PTXU64 result = channelRead<ir::PTXU32>(texture,
+							shift, mask, wlow) * (high - b);
 						result += channelRead<ir::PTXU32>(texture, shift, 
 							mask, whigh) * (b - low);
 						d = result;
@@ -151,8 +139,8 @@ namespace executive
 					}
 					case ir::Texture::Signed:
 					{
-						ir::PTXS64 result = channelRead<ir::PTXS32>(texture, shift, 
-							mask, wlow) * (high - b);
+						ir::PTXS64 result = channelRead<ir::PTXS32>(texture,
+							shift, mask, wlow) * (high - b);
 						result += channelRead<ir::PTXS32>(texture, shift, mask, 
 							whigh) * (b - low);
 						d = result;
@@ -181,45 +169,15 @@ namespace executive
 			return d;
 		}
 
-
+		/*!	\brief sample in 2 dimensions */
 		template<unsigned int dim, typename D, typename B>
-		D sample(const ir::Texture& texture, B b0) 
-		{
-			ir::PTXB8* dummy;
-			return sample<dim, D>( texture, b0, dummy );
-		}
-
-		/*!
-			\brief sample in 2 dimensions
-		*/
-		template<unsigned int dim, typename D, typename B>
-		D sample(const ir::Texture& texture, 
-			B b0, B b1) {
+		D sample(const ir::Texture& texture, B b0, B b1) {
 			D d = 0;
 			ir::PTXF64 b[2] = { ( ir::PTXF64 ) b0, ( ir::PTXF64 ) b1 };
-			ir::PTXB64 mask = 1;
+			ir::PTXB64 mask;
 			unsigned int shift;
 
-			switch (dim) {
-				case 0: mask <<= (texture.x);
-					--mask;
-					shift = 0; 
-					break;
-				case 1: mask <<= (texture.y);
-					--mask;
-					shift = texture.x;
-					break;
-				case 2: mask <<= (texture.z);
-					--mask;
-					shift = texture.x + texture.y; 
-					break;
-				case 3: mask <<= (texture.w);
-					--mask;
-					shift = texture.z + texture.y + texture.x; 
-					break;
-				default: assert("Invalid texture index" == 0); 
-					break;
-			}
+			getShiftAndMask<dim>(shift, mask, texture);
 	
 			if (texture.normalize) {
 				b[0] = b[0] * texture.size.x;
@@ -353,34 +311,14 @@ namespace executive
 
 
 		template<unsigned int dim, typename D, typename B>
-		D sample(const ir::Texture& texture, 
-			B b0, B b1, B b2) {
+		D sample(const ir::Texture& texture, B b0, B b1, B b2) {
 			D d = 0;
 			ir::PTXF64 b[3] = {( ir::PTXF64 ) b0, ( ir::PTXF64 ) b1, 
 				( ir::PTXF64 ) b2};
-			ir::PTXB64 mask = 1;
+			ir::PTXB64 mask;
 			unsigned int shift;
 
-			switch (dim) {
-				case 0: mask <<= (texture.x);
-					--mask;
-					shift = 0;
-					break;
-				case 1: mask <<= (texture.y);
-					--mask;
-					shift = texture.x;
-					break;
-				case 2: mask <<= (texture.z);
-					--mask;
-					shift = texture.x + texture.y;
-					break;
-				case 3: mask <<= (texture.w);
-					--mask;
-					shift = texture.z + texture.y + texture.x;
-					break;
-				default: assert("Invalid texture index" == 0); 
-					break;
-			}
+			getShiftAndMask<dim>(shift, mask, texture);
 	
 			if (texture.normalize) {
 				b[0] = b[0] * texture.size.x;
@@ -392,9 +330,12 @@ namespace executive
 				ir::PTXF64 index[3] = { (ir::PTXF64)b[0], (ir::PTXF64)b[1], 
 					(ir::PTXF64)b[2]};
 				unsigned int windex[3];
-				windex[0] = wrap(index[0], texture.size.x, texture.addressMode[0]);
-				windex[1] = wrap(index[1], texture.size.y, texture.addressMode[1]);
-				windex[2] = wrap(index[2], texture.size.z, texture.addressMode[2]);
+				windex[0] = wrap(index[0], texture.size.x,
+					texture.addressMode[0]);
+				windex[1] = wrap(index[1], texture.size.y,
+					texture.addressMode[1]);
+				windex[2] = wrap(index[2], texture.size.z,
+					texture.addressMode[2]);
 				switch (texture.type) {
 					case ir::Texture::Unsigned:
 					{
@@ -614,6 +555,14 @@ namespace executive
 	
 			return d;
 		}
+		
+		void addresses( const ir::Texture& texture, ir::PTXF64 b0,
+			trace::TraceEvent::U64Vector& );
+		void addresses( const ir::Texture& texture, ir::PTXF64 b0,
+			ir::PTXF64 b1, trace::TraceEvent::U64Vector& );
+		void addresses( const ir::Texture& texture, ir::PTXF64 b0,
+			ir::PTXF64 b1, ir::PTXF64 b2, trace::TraceEvent::U64Vector& );
+		
 	}
 }
 

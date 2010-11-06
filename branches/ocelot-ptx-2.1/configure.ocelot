@@ -1,7 +1,9 @@
 {
 	ocelot: "ocelot",
 	trace: { 
-		memoryChecker: false,
+		database: "traces/database.trace",
+		memory: true,
+		memoryChecker: true,
 		raceDetector: {
 			enabled: true,
 			ignoreIrrelevantWrites: true
@@ -17,7 +19,7 @@
 		runtimeApiTrace: "trace/CudaAPI.trace"
 	},
 	executive: {
-		devices: [ nvidia ],
+		devices: [ emulated ],
 		optimizationLevel: none,
 		workerThreadLimit: 1
 	}

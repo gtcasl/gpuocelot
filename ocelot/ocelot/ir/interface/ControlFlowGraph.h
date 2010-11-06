@@ -229,10 +229,11 @@ public:
 		\param edge existing edge to split
 		\param newblock new BasicBlock to insert into CFG and create an edge 
 			from
-		\return implicily created edge from newblock->tail with same type as 
-			edge [may need modifying]
+		\return implicily created edges (head->newblock, newblock->tail) with 
+			same type as edge [may need modifying]
 	*/
-	edge_iterator split_edge(edge_iterator edge, const BasicBlock& newBlock);
+	std::pair<edge_iterator, edge_iterator> split_edge(edge_iterator edge, 
+		const BasicBlock& newBlock);
 
 	/*! \brief Splits a basic block into two such that there is a fallthrough
 		edge from the original block to the newly split block.

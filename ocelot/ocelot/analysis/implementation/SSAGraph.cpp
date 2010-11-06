@@ -240,6 +240,8 @@ namespace analysis
 		_updateOut();
 		
 		report( " Graph is now in full SSA form." );
+		
+		_graph._maxRegister = current;
 	}
 	
 	void SSAGraph::fromSsa()
@@ -397,7 +399,7 @@ namespace analysis
 			}
 			
 			fi->_aliveIn = std::move( newAlive );
-		}		
+		}
 		
 	}
 }

@@ -1,21 +1,3 @@
-/*
- * =====================================================================================
- *
- *       Filename:  StructuralAnalysis.cpp
- *
- *    Description:  
- *
- *        Version:  1.0
- *        Created:  2010/11/6 14:24:57
- *       Revision:  none
- *       Compiler:  gcc
- *
- *         Author:  Haicheng Wu  
- *        Company:  Georgia Institute of Technology
- *
- * =====================================================================================
- */
-
 #include <ocelot/analysis/interface/StructuralAnalysis.h>
 #include <ocelot/ir/interface/PTXKernel.h>
 
@@ -31,9 +13,9 @@ namespace analysis {
   // buildSimpleCFG - Build a Simple CFG out of the LLVM CFG
   void StructuralAnalysis::buildSimpleCFG(NodeSetTy &N) {
     // Create a simple CFG node for every Basic Block
-    for(DataflowGraph::iterator i = _kernel->dfg()->begin(), 
-                                e = _kernel->dfg()->end();
-                                i != e; ++i) {
+    for(ir::ControlFlowGraph::iterator i = _kernel->cfg()->begin(), 
+                                       e = _kernel->cfg()->end();
+                                       i != e; ++i) {
       NodeTy *n = new NodeTy;
       n->isCombined = false;
       n->BB = i;
@@ -41,39 +23,36 @@ namespace analysis {
       n->isLoopHeader = false;
       n->loopExitNode = NULL;
       n->parentNode = NULL;
-   
+      
       N.insert(n);
       BB2NodeMap[i] = n;
     }
   
     // Setup the edges of the simple CFG
-    for(DataflowGraph::iterator i = _kernel->dfg()->begin(), 
-                                e = _kernel->dfg()->end();
-                                i != e; ++i) {
+    for(ir::ControlFlowGraph::iterator i = _kernel->cfg()->begin(), 
+                                       e = _kernel->cfg()->end();
+                                       i != e; ++i) {
       NodeTy *n = BB2NodeMap[i];
   
       // Setup the predecessor of every node
-      DataflowGraph::BlockPointerSet PredSet = i->predecessors();
+      ir::ControlFlowGraph::BlockPointerVector PredVec = i->predecessors;
 
-      for (DataflowGraph::BlockPointerSet::iterator PI = PredSet.begin(), E = PredSet.end(); PI != E; ++PI) {
+      for (ir::ControlFlowGraph::BlockPointerVector::iterator PI = PredVec.begin(), E = PredVec.end(); PI != E; ++PI) {
         NodeTy *p = BB2NodeMap[*PI];
         n->predNode.insert(p);
       }
   
       // Setup the successor of every node
-      DataflowGraph::BlockPointerSet SuccSet = i->targets();
+      ir::ControlFlowGraph::BlockPointerVector SuccVec = i->successors;
 
-      for (DataflowGraph::BlockPointerSet::iterator SI = SuccSet.begin(), E = SuccSet.end(); SI != E; ++SI) {
+      for (ir::ControlFlowGraph::BlockPointerVector::iterator SI = SuccVec.begin(), E = SuccVec.end(); SI != E; ++SI) {
         NodeTy *s = BB2NodeMap[*SI];
         n->succNode.insert(s);
       }
-
-      DataflowGraph::BlockVector::iterator fallthrough = i->fallthrough();
-      n->succNode.insert(BB2NodeMap[fallthrough]);
     }
   
     // Remove unreachable node
-    NodeTy *entry = BB2NodeMap[_kernel->dfg()->begin()];
+    NodeTy *entry = BB2NodeMap[_kernel->cfg()->get_entry_block()];
   
     deleteUnreachableNodes(N, entry); 
   }
@@ -233,7 +212,7 @@ namespace analysis {
                              e = x->succNode.end();
                              i != e; ++i) { 
       NodeTy *y = *i;
-  
+
       if (visit.count(y) == 0) {
         DFSPostorder(N, y);
         edge2ClassMap[std::make_pair(x, y)] = TREE;
@@ -1292,10 +1271,10 @@ namespace analysis {
     }
   }
  
-  // mapNode2BB - Return the corresponding DataflowGraph::iterator of the node
-  DataflowGraph::iterator StructuralAnalysis::mapNode2BB(NodeTy *node) {
+  // mapNode2BB - Return the corresponding ir::BasicBlock * of the node
+  ir::ControlFlowGraph::iterator StructuralAnalysis::mapNode2BB(NodeTy *node) {
     NodeTy *tmpNode = node;
-    DataflowGraph::iterator bb;
+    ir::ControlFlowGraph::iterator bb;
   
     while (tmpNode->isCombined) 
       tmpNode = tmpNode->entryNode;
@@ -1306,7 +1285,7 @@ namespace analysis {
   }
   
   // mapBB2Node - Return the corresponding sturcture node of the basic block
-  NodeTy * StructuralAnalysis::mapBB2Node(DataflowGraph::iterator bb) {
+  NodeTy * StructuralAnalysis::mapBB2Node(ir::ControlFlowGraph::iterator bb) {
     NodeTy *node, *tmpNode;
   
     node = BB2NodeMap[bb];
@@ -1365,7 +1344,7 @@ namespace analysis {
     findBB(node, BBVec);
   
     for (BBSetTy::iterator i = BBVec->begin(), e = BBVec->end(); i != e; ++i)
-      std::cerr << (*i)->label() << "\t";
+      std::cerr << (*i)->label << "\t";
   }
 
   // findUnstructuredBR - Record the branch and remove it from CFG 
@@ -1377,15 +1356,15 @@ namespace analysis {
     findBB(dstNode, dstNodeVec);
   
     for (BBSetTy::iterator SRCI = srcNodeVec->begin(), SRCE = srcNodeVec->end(); SRCI != SRCE; ++SRCI) {
-      DataflowGraph::iterator srcBB= *SRCI;
+      ir::ControlFlowGraph::iterator srcBB= *SRCI;
   
-      DataflowGraph::BlockPointerSet SuccSet = srcBB->targets();
+      ir::ControlFlowGraph::BlockPointerVector SuccVec = srcBB->successors;
 
-      for (DataflowGraph::BlockPointerSet::iterator SI = SuccSet.begin(), E = SuccSet.end(); SI != E; ++SI) {
-        DataflowGraph::iterator succ = *SI;
+      for (ir::ControlFlowGraph::BlockPointerVector::iterator SI = SuccVec.begin(), E = SuccVec.end(); SI != E; ++SI) {
+        ir::ControlFlowGraph::iterator succ = *SI;
   
         for (BBSetTy::iterator DSTI = dstNodeVec->begin(), DSTE = dstNodeVec->end(); DSTI != DSTE; ++DSTI) {
-          DataflowGraph::iterator dstBB = *DSTI;
+          ir::ControlFlowGraph::iterator dstBB = *DSTI;
   
           if (*DSTI == succ) {
             if (isGoto)
@@ -1394,20 +1373,6 @@ namespace analysis {
             if (needForwardCopy)
               dstNode->incomingForwardBR.push_back(std::make_pair(srcBB, dstBB));
           }
-        }
-      }
-
-      DataflowGraph::BlockVector::iterator fallthrough = srcBB->fallthrough();
-
-      for (BBSetTy::iterator DSTI = dstNodeVec->begin(), DSTE = dstNodeVec->end(); DSTI != DSTE; ++DSTI) {
-        DataflowGraph::iterator dstBB = *DSTI;
-
-        if (*DSTI == fallthrough) {
-          if (isGoto)
-            unstructuredBRVec.push_back(std::make_pair(srcBB, dstBB));
-
-          if (needForwardCopy)
-            dstNode->incomingForwardBR.push_back(std::make_pair(srcBB, dstBB));
         }
       }
     }   
@@ -1438,7 +1403,7 @@ namespace analysis {
     report("\nUnstructured Branches:");
     
     for (EdgeVecTy::iterator i = unstructuredBRVec.begin(), e = unstructuredBRVec.end(); i != e; ++i) 
-       report("\t" << i->first->label() << "\t" << i->second->label());
+       report("\t" << i->first->label << "\t" << i->second->label);
   
     report("");
   }
@@ -1465,7 +1430,7 @@ namespace analysis {
   }
   
   //findEntryBB - find the entry Basic Block of the node
-  DataflowGraph::iterator StructuralAnalysis::findEntryBB (NodeTy *node) {
+  ir::ControlFlowGraph::iterator StructuralAnalysis::findEntryBB (NodeTy *node) {
     if (!node->isCombined) 
       return node->BB;
     else 
@@ -1479,32 +1444,26 @@ namespace analysis {
     else {
       if ((node->nodeType == NaturalLoop || node->nodeType == SelfLoop) && node->containedBB.size() > 1) {
         for (BBSetTy::iterator i = node->containedBB.begin(), e = node->containedBB.end(); i != e; ++i) {
-          DataflowGraph::iterator BB = *i;
+          ir::ControlFlowGraph::iterator BB = *i;
   
           if (BB != node->entryBB) {
-            DataflowGraph::BlockPointerSet PredSet = BB->predecessors();
+            ir::ControlFlowGraph::BlockPointerVector PredVec = BB->predecessors;
 
-            for (DataflowGraph::BlockPointerSet::iterator PI = PredSet.begin(), E = PredSet.end(); PI != E; ++PI) {
-              DataflowGraph::iterator Pred = *PI;
+            for (ir::ControlFlowGraph::BlockPointerVector::iterator PI = PredVec.begin(), E = PredVec.end(); PI != E; ++PI) {
+              ir::ControlFlowGraph::iterator Pred = *PI;
    
                if (node->containedBB.count(Pred) == 0)
                  node->incomingBR.push_back(std::make_pair(Pred, BB));
             }
  
-            DataflowGraph::BlockPointerSet SuccSet = BB->targets();
+            ir::ControlFlowGraph::BlockPointerVector SuccVec = BB->successors;
 
-            for (DataflowGraph::BlockPointerSet::iterator SI = SuccSet.begin(), E = SuccSet.end(); SI != E; ++SI) {
-              DataflowGraph::iterator Succ = *SI;
+            for (ir::ControlFlowGraph::BlockPointerVector::iterator SI = SuccVec.begin(), E = SuccVec.end(); SI != E; ++SI) {
+              ir::ControlFlowGraph::iterator Succ = *SI;
   
               if (node->containedBB.count(Succ) == 0 && Succ != node->exitBB)
                 node->outgoingBR.push_back(std::make_pair(BB, Succ));
             }
-
-            DataflowGraph::BlockVector::iterator fallthrough = BB->fallthrough();
-
-            if (node->containedBB.count(fallthrough) == 0 && fallthrough != node->exitBB)
-              node->outgoingBR.push_back(std::make_pair(BB, fallthrough));
-
           }
         }
       }
@@ -1541,12 +1500,11 @@ namespace analysis {
   
   void StructuralAnalysis::runOnKernel(ir::Kernel& k) {
     _kernel = static_cast< ir::PTXKernel* >( &k );
-    _kernel->dfg()->compute();
   
     // build a Simple CFG out of the LLVM CFG
     buildSimpleCFG(Net);
   
-    NodeTy *entry = BB2NodeMap[_kernel->dfg()->begin()];
+    NodeTy *entry = BB2NodeMap[_kernel->cfg()->get_entry_block()];
   
     bool debug = false;
     

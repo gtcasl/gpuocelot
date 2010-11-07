@@ -16,26 +16,28 @@
 #define LLVM_ANALYSIS_STRUCTURALANALYSIS_H
 
 #include <ocelot/analysis/interface/Pass.h>
-#include <ocelot/analysis/interface/DataflowGraph.h>
+#include <ocelot/ir/interface/ControlFlowGraph.h>
 #include <set>
 #include <vector>
 #include <map>
-
+#include <unordered_map>
+#include <unordered_set>
 
 namespace ir {
   class PTXKernel;
+  class ControlFlowGraph;
 }
 
 namespace analysis {
   typedef enum {TREE, FORWARD, BACK, CROSS} EdgeClass;
   
-  typedef std::pair<DataflowGraph::iterator, DataflowGraph::iterator> EdgeLLVMTy;
+  typedef std::pair<ir::ControlFlowGraph::iterator, ir::ControlFlowGraph::iterator> EdgeLLVMTy;
   
   typedef std::vector<EdgeLLVMTy> EdgeVecTy;
   
-  typedef std::unordered_set<DataflowGraph::iterator> BBSetTy;
+  typedef std::unordered_set<ir::ControlFlowGraph::iterator> BBSetTy;
   
-  typedef std::vector<DataflowGraph::iterator *> BBVecTy;
+  typedef std::vector<ir::ControlFlowGraph::iterator> BBVecTy;
   
   // Types defined in Fig 7.38 of Muchnick book
   typedef enum {
@@ -52,7 +54,7 @@ namespace analysis {
   // NodeTy - This type is used for the CFG node
   typedef struct Node {
     bool isCombined; // Whether it is an original or combined from original 
-    DataflowGraph::iterator BB;  // Map to the corresponding DataflowGraph::iterator if it is original
+    ir::ControlFlowGraph::iterator BB;  // Map to the corresponding ir::BasicBlock * if it is original
     std::set<struct Node *> predNode; // Predecessor of the node
     std::set<struct Node *> succNode; // Successor of the node
     struct Node *entryNode;                 // If isCombined is true,it points to the entry of the nodeset
@@ -60,9 +62,9 @@ namespace analysis {
     std::set<struct Node *> childNode; // Child Nodes in Control Tree
     EdgeVecTy outgoingBR;  // Outgoing Branches of a loop
     EdgeVecTy incomingBR;  // Incoming Branches of a loop
-    DataflowGraph::iterator entryBB;   // The entry Basic Block
-    DataflowGraph::iterator exitBB;    // The exit Basic Block
-    BBSetTy containedBB;            // DataflowGraph::iterator s contained in this node
+    ir::ControlFlowGraph::iterator entryBB;   // The entry Basic Block
+    ir::ControlFlowGraph::iterator exitBB;    // The exit Basic Block
+    BBSetTy containedBB;            // ir::BasicBlock * s contained in this node
     EdgeVecTy incomingForwardBR;      // The shared code of an unstructured branch 
     RegionTy nodeType;        // The type of the node
     bool isLoopHeader;
@@ -72,8 +74,8 @@ namespace analysis {
   // NodeSetTy - used to holds nodes in a set 
   typedef std::set<NodeTy *> NodeSetTy;
   
-  // BB2NodeMapTy - Map DataflowGraph::iterator to NodeTy
-  typedef std::unordered_map<DataflowGraph::iterator, NodeTy *> BB2NodeMapTy;
+  // BB2NodeMapTy - Map ir::BasicBlock * to NodeTy
+  typedef std::unordered_map<ir::ControlFlowGraph::iterator, NodeTy *> BB2NodeMapTy;
   
   typedef std::map<NodeTy *, NodeTy *> Node2NodeMapTy;
   
@@ -92,7 +94,7 @@ namespace analysis {
   // StructuralAnalysis - This class holds all the methods and data structures 
   class StructuralAnalysis : public KernelPass {
   public:
-    StructuralAnalysis() : KernelPass(DataflowGraphAnalysis, "StructuralAnalysis") {}
+    StructuralAnalysis() : KernelPass() {}
     void initialize(const ir::Module& m) {};
     void runOnKernel(ir::Kernel& k);
     void finalize() {};
@@ -117,7 +119,7 @@ namespace analysis {
     // edge2ClassMap - map the edge to its class
     Edge2ClassMapTy edge2ClassMap;
 
-    // BB2NodeMap - This var is used to find the Node from DataflowGraph::iterator ;
+    // BB2NodeMap - This var is used to find the Node from ir::BasicBlock * ;
     BB2NodeMapTy BB2NodeMap;
 
     // buildSimpleCFG - Build a Simple CFG out of the LLVM CFG
@@ -167,11 +169,11 @@ namespace analysis {
     // compact - Compact nodes in nset into n;
     void compact(NodeSetTy &N, NodeTy *n, NodeSetTy &nset);
 
-    //mapNode2BB - Return the corresponding DataflowGraph::iterator of the node
-    DataflowGraph::iterator mapNode2BB(NodeTy *node);
+    //mapNode2BB - Return the corresponding ir::BasicBlock * of the node
+    ir::ControlFlowGraph::iterator mapNode2BB(NodeTy *node);
 
     // mapBB2Node - Return the corresponding sturcture node of the basic block
-    NodeTy *mapBB2Node(DataflowGraph::iterator bb); 
+    NodeTy *mapBB2Node(ir::ControlFlowGraph::iterator bb); 
 
     // dumpCTNode - Dump one Control Node
     void dumpCTNode(NodeTy *n);
@@ -186,7 +188,7 @@ namespace analysis {
     void findBB (NodeTy *node, BBSetTy *nodeVec);
 
     // findEntryBB - find the entry Basic Block of the node
-    DataflowGraph::iterator findEntryBB (NodeTy *node);
+    ir::ControlFlowGraph::iterator findEntryBB (NodeTy *node);
 
     // dumpUnstructuredBR - Dump all found unstructured branches
     void dumpUnstructuredBR();

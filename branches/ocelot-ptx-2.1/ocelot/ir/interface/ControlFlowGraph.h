@@ -183,12 +183,16 @@ public:
 	typedef BasicBlock::InstructionList InstructionList;
 
 	/*! \brief maps a basic block [by label] to a coloring */
-	typedef std::unordered_map< std::string, unsigned int > BasicBlockColorMap;
+	typedef std::unordered_map<std::string, unsigned int> BasicBlockColorMap;
 
 public:
 	ControlFlowGraph();
 	~ControlFlowGraph();
 
+public:
+	/*! \brief Get the name of an edge type */
+	static std::string toString( Edge::Type t );
+	
 public:
 	/*! Make sure that the next call to newId will return a unique id */
 	void computeNewBlockId();
@@ -204,6 +208,10 @@ public:
 
 	/*!	Inserts a basic block into the CFG */
 	iterator insert_block(const BasicBlock& b);
+	
+	/*! Duplicates the selected block, inserts it in an unconnected state,
+		returns an iterator to the newly created block */
+	iterator clone_block(iterator block);
 	
 	/*! Removes a basic block and associated edges. Any blocks dominated by
 		block are now unreachable but still part of the graph.
@@ -273,9 +281,6 @@ public:
 	/*! \brief Clears all basic blocks and edges in the CFG.*/
 	void clear();
 	
-	/*! \brief Get the name of an edge type */
-	static std::string toString( Edge::Type t );
-	
 	/*! returns an ordered sequence of the nodes of the CFG including entry 
 		and exit that would be encountered by a pre order traversal
 	*/
@@ -317,7 +322,7 @@ public:
 
 private:
 	BlockList _blocks;
-	EdgeList _edges;
+	EdgeList  _edges;
 
 	iterator _entry;
 	iterator _exit;

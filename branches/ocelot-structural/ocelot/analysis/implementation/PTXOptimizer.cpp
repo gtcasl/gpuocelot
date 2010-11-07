@@ -12,6 +12,7 @@
 #include <ocelot/analysis/interface/CountBasicBlockExecutionPass.h>
 #include <ocelot/analysis/interface/LinearScanRegisterAllocationPass.h>
 #include <ocelot/analysis/interface/RemoveBarrierPass.h>
+#include <ocelot/analysis/interface/StructuralAnalysis.h>
 #include <ocelot/analysis/interface/ConvertPredicationToSelectPass.h>
 #include <ocelot/ir/interface/Module.h>
 
@@ -55,6 +56,12 @@ namespace analysis
 		if( passes & RemoveBarriers )
 		{
 			Pass* pass = new analysis::RemoveBarrierPass;
+			manager.addPass( *pass );
+		}
+
+		if( passes & StructuralAnalysis )
+		{
+			Pass* pass = new analysis::StructuralAnalysis;
 			manager.addPass( *pass );
 		}
 
@@ -125,7 +132,12 @@ static int parsePassTypes( const std::string& passList )
 			report( "  Matched remove-barriers." );
 			types |= analysis::PTXOptimizer::RemoveBarriers;
 		}
-		else if( *pass == "reverse-if-conversion" )
+		else if( *pass == "structural-analysis" )
+		{
+			report( "  Matched structural-analysis" );
+			types |= analysis::PTXOptimizer::StructuralAnalysis;
+		}
+	else if( *pass == "reverse-if-conversion" )
 		{
 			report( "  Matched reverse-if-conversion." );
 			types |= analysis::PTXOptimizer::ReverseIfConversion;

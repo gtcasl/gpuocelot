@@ -47,6 +47,7 @@ libocelot_la_SOURCES = \
 	ocelot/analysis/implementation/PassManager.cpp \
 	ocelot/analysis/implementation/Pass.cpp \
 	ocelot/analysis/implementation/RemoveBarrierPass.cpp \
+	ocelot/analysis/implementation/StructuralAnalysis.cpp \
 	ocelot/analysis/implementation/ConvertPredicationToSelectPass.cpp \
 	ocelot/analysis/implementation/LinearScanRegisterAllocationPass.cpp \
     ocelot/analysis/implementation/CountBasicBlockExecutionPass.cpp \
@@ -398,6 +399,7 @@ nobase_include_HEADERS = ocelot/api/interface/ocelot.h \
     ocelot/analysis/interface/CountBasicBlockExecutionPass.h \
 	ocelot/analysis/interface/PTXOptimizer.h \
 	ocelot/analysis/interface/RemoveBarrierPass.h \
+	ocelot/analysis/interface/StructuralAnalysis.h \
 	ocelot/analysis/interface/PassManager.h \
 	ocelot/analysis/test/TestDataflowGraph.h \
 	ocelot/ir/interface/Kernel.h \

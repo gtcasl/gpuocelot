@@ -196,7 +196,7 @@ namespace analysis {
       if (debug) {
         dumpCTNode(p);
         dumpUnstructuredBR();
-        report("********************");
+        std::cerr << "********************\n";
       }
   
       assertM(change != false, "Cannot reduce any more in structural analysis");
@@ -1400,12 +1400,12 @@ namespace analysis {
   
   // dumpUnstructuredBR - Dump all found unstructured branches
   void StructuralAnalysis::dumpUnstructuredBR() {
-    report("\nUnstructured Branches:");
+    std::cerr << "\nUnstructured Branches:\n";
     
     for (EdgeVecTy::iterator i = unstructuredBRVec.begin(), e = unstructuredBRVec.end(); i != e; ++i) 
-       report("\t" << i->first->label << "\t" << i->second->label);
+       std::cerr << "\t" << i->first->label << "\t" << i->second->label << "\n";
   
-    report("");
+    std::cerr << "\n";
   }
   
   //Return true if after erasing edge src->dst, dst is still reachable from entry
@@ -1500,7 +1500,9 @@ namespace analysis {
   
   void StructuralAnalysis::runOnKernel(ir::Kernel& k) {
     _kernel = static_cast< ir::PTXKernel* >( &k );
-  
+
+    std::cerr << _kernel->name <<":\n";
+ 
     // build a Simple CFG out of the LLVM CFG
     buildSimpleCFG(Net);
   

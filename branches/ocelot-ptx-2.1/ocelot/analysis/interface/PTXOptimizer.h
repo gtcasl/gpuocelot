@@ -28,7 +28,8 @@ namespace analysis
 				InvalidPassType = 0x0,
 				RemoveBarriers = 0x1,
 				ReverseIfConversion = 0x2,
-				SubkernelFormation = 0x4
+				SubkernelFormation = 0x4,
+				StructuralAnalysis = 0x8
 			};
 	
 		public:

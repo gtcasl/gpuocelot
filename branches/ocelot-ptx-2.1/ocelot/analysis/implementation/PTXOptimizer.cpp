@@ -11,6 +11,7 @@
 #include <ocelot/analysis/interface/PassManager.h>
 #include <ocelot/analysis/interface/LinearScanRegisterAllocationPass.h>
 #include <ocelot/analysis/interface/RemoveBarrierPass.h>
+#include <ocelot/analysis/interface/StructuralAnalysis.h>
 #include <ocelot/analysis/interface/ConvertPredicationToSelectPass.h>
 #include <ocelot/analysis/interface/SubkernelFormationPass.h>
 
@@ -62,6 +63,12 @@ namespace analysis
 		if( passes & RemoveBarriers )
 		{
 			Pass* pass = new analysis::RemoveBarrierPass;
+			manager.addPass( *pass );
+		}
+
+		if( passes & StructuralAnalysis )
+		{
+			Pass* pass = new analysis::StructuralAnalysis;
 			manager.addPass( *pass );
 		}
 
@@ -130,6 +137,11 @@ static int parsePassTypes( const std::string& passList )
 		{
 			report( "  Matched reverse-if-conversion." );
 			types |= analysis::PTXOptimizer::ReverseIfConversion;
+		}
+		else if( *pass == "structural-analysis" )
+		{
+			report( "  Matched structural-analysis." );
+			types |= analysis::PTXOptimizer::StructuralAnalysis;
 		}
 		else if( *pass == "subkernel-formation" )
 		{

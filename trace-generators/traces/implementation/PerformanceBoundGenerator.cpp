@@ -27,7 +27,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 #define REPORT_KERNEL_INSTRUCTIONS 0
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -38,6 +38,7 @@ unsigned int trace::PerformanceBoundGenerator::_counter = 0;
 
 trace::PerformanceBoundGenerator::Counter::Counter():
 	memoryDemand(0),
+	warpInstructions(0),
 	instructions(0),
 	flops(0),
 	sharedBytes(0),
@@ -70,6 +71,7 @@ std::ostream & operator <<(std::ostream &out,
 		out << " | shared mem demand: " << formatInteger(counter.sharedBytes) << " bytes ";
 		out << " | shared conflicts: " << formatInteger(counter.bankConflicts) << " ";
 	}
+	out << " | warp instr: " << formatInteger(counter.warpInstructions) << " ";
 	out << " | dynamic instr: " << formatInteger(counter.instructions) << " ";
 	out << " | FLOPs: " << formatInteger(counter.flops) << " ";
 	if (counter.memoryDemand) {
@@ -287,22 +289,47 @@ void trace::PerformanceBoundGenerator::finish() {
 			formatter.maxEvents = opit->second.instructions;
 		}
 	}
-
-	boost::filesystem::path path( database );
-	path = path.parent_path();
-	path = boost::filesystem::system_complete( path );
-	ss << path.string() << "/" << _entry.program << "_" << _entry.name << "_" 
-		<< _counter << "_perf.dot";
 	
-	std::string filename = ss.str();
+	if (outputFormat == Output_append_csv) {
 	
-	ir::ControlFlowGraph *controlFlowGraph = const_cast<ir::ControlFlowGraph*>(kernel->cfg());
-	std::ofstream cfgFile(filename.c_str());
-	cfgFile << "/*\n";
-	cfgFile << "     kernel: " << " kernel-name " << "\n";
-	cfgFile << "*/\n";
+		//
+		// append kernel aggregate results
+		//
+		boost::filesystem::path path(database);
+		path = path.parent_path();
+		path = boost::filesystem::system_complete(path);
+		ss << path.string() << "/performance-bound-results.txt";
+		std::ofstream resultsFile(ss.str().c_str(), std::ios_base::app);
+	
+		const char *app = getenv("APPLICATION");
+		const char *reconverge = getenv("RECONVERGE");
+		
+		app = (app ? app: "unknown-app");
+		reconverge = (reconverge ? reconverge : "unknown-reconverge");
+	
+		resultsFile << app << ", " << reconverge << ", " << _entry.name << ", " << _counter << ", "
+			<< counterMap["entry"].warpInstructions << ", " 
+			<< counterMap["entry"].instructions << std::endl;
 
-	controlFlowGraph->write(cfgFile, formatter);
+	}
+	else if (outputFormat == Output_dot) {
+	
+		boost::filesystem::path path( database );
+		path = path.parent_path();
+		path = boost::filesystem::system_complete( path );
+		ss << path.string() << "/" << _entry.program << "_" << _entry.name << "_" 
+			<< _counter << "_perf.dot";
+	
+		std::string filename = ss.str();
+	
+		ir::ControlFlowGraph *controlFlowGraph = const_cast<ir::ControlFlowGraph*>(kernel->cfg());
+		std::ofstream cfgFile(filename.c_str());
+		cfgFile << "/*\n";
+		cfgFile << "     kernel: " << " kernel-name " << "\n";
+		cfgFile << "*/\n";
+
+		controlFlowGraph->write(cfgFile, formatter);
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -320,8 +347,12 @@ void trace::PerformanceBoundGenerator::event(const trace::TraceEvent &event) {
 		return;  // counter not found
 	}
 	
-	report(bbLabel << " - " << event.instruction->toString() << " - " << event.active.count() << " active threads");
+	/*
+	report(bbLabel << " - " << event.instruction->toString() << " - " 
+		<< event.active.count() << " active threads");
+	*/
 	
+	op->second.warpInstructions ++;
 	op->second.instructions += event.active.count();
 	
 	if (isFlop(*event.instruction)) {
@@ -329,12 +360,12 @@ void trace::PerformanceBoundGenerator::event(const trace::TraceEvent &event) {
 	}
 	
 	if (isGlobalMemoryOp(*event.instruction)) {
-		op->second.memoryDemand += computeMemoryDemand(event, protocol);
+		//op->second.memoryDemand += computeMemoryDemand(event, protocol);
 	}
 	
-	int conflicts = 0;
-	op->second.sharedBytes += computeSharedDemand(event, &conflicts);
-	op->second.bankConflicts += conflicts;
+	//int conflicts = 0;
+	//op->second.sharedBytes += computeSharedDemand(event, &conflicts);
+	//op->second.bankConflicts += conflicts;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////

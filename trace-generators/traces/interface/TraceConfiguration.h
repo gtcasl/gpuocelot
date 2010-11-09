@@ -51,6 +51,8 @@ namespace trace
 			
 			/*! \brief if true, a PDF is constructed from the DOT file */
 			bool render;
+			
+			PerformanceBoundGenerator::OutputFormat outputFormat;
 		};
 		
 		/*! \brief configuration properties for ConvergenceGenerator */

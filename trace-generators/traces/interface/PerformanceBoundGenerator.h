@@ -30,6 +30,12 @@ namespace trace {
 			Protocol_ideal,
 			Protocol_invalid
 		};
+		
+		enum OutputFormat {
+			Output_dot,			//! output: dot
+			Output_append_csv,	//! output: csv
+			Output_invalid
+		};
 	
 		class Counter {
 		public:
@@ -37,6 +43,7 @@ namespace trace {
 			
 			Counter & operator += (const Counter &c) {
 				memoryDemand += c.memoryDemand;
+				warpInstructions += c.warpInstructions;
 				instructions += c.instructions;
 				flops += c.flops;
 				sharedBytes += c.sharedBytes;
@@ -48,6 +55,9 @@ namespace trace {
 		
 			//! \brief bytes transferred to or from global memory [including texture samples]
 			size_t memoryDemand;
+			
+			//! \brief warp instructions
+			size_t warpInstructions;
 			
 			//! \brief dynamic instructions
 			size_t instructions;
@@ -114,6 +124,9 @@ namespace trace {
 		//! \brief specifies the active memory coalescing protocol to employ
 		CoalescingProtocol protocol;
 		
+		//! \brief specifies the output format of the trace generator: [ dot, csv ]
+		OutputFormat outputFormat;
+		
 		//! \brief kernel
 		const executive::EmulatedKernel * kernel;
 
@@ -122,7 +135,6 @@ namespace trace {
 		
 		/*!	\brief Entry for the current kernel	*/
 		KernelEntry _entry;
-		
 	
 		//! \brief maps basic blocks onto performance counters
 		OperationCounterMap counterMap;

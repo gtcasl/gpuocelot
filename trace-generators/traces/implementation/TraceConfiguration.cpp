@@ -22,7 +22,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 namespace trace
 {
@@ -68,8 +68,6 @@ TraceConfiguration::TraceConfiguration()
 			parallelism = traceConfig.parse<bool>("parallelism", false);
 			cacheSimulator = traceConfig.parse<bool>("cacheSimulator", false);
 			loadBalance = traceConfig.parse<bool>("loadBalance", false);
-			
-			report("loadBalance: " << loadBalance);
 
 			// more detailed configuration for this trace generator
 			hydrazine::json::Visitor warpSyncConfig =
@@ -91,8 +89,20 @@ TraceConfiguration::TraceConfiguration()
 				performanceBound.render = perfConfig.parse<bool>("render", false);
 				std::string protocol = 
 					perfConfig.parse<std::string>("protocol", "sm_20");
+				std::string output = 
+					perfConfig.parse<std::string>("output", "dot");
+				
+				
+				performanceBound.outputFormat = PerformanceBoundGenerator::Output_dot;
+				if (output == "dot") {
+					performanceBound.outputFormat = PerformanceBoundGenerator::Output_dot;
+				}
+				else if (output == "csv") {
+					performanceBound.outputFormat = PerformanceBoundGenerator::Output_append_csv;
+				}
+				
 				performanceBound.protocol =
-					PerformanceBoundGenerator::Protocol_invalid;
+					PerformanceBoundGenerator::Protocol_ideal;
 				if(protocol == "sm_10")
 				{
 					performanceBound.protocol =
@@ -127,6 +137,7 @@ TraceConfiguration::TraceConfiguration()
 				{
 					std::cerr << "Invalid protocol '" << protocol << "'\n";
 				}
+				report("performanceBound.enabled = " << (performanceBound.enabled ? "true":"false"));
 			}
 	
 			hydrazine::json::Visitor convConfig = traceConfig["convergence"];
@@ -203,6 +214,7 @@ TraceConfiguration::TraceConfiguration()
 		_performanceBound.database = database;
 		_performanceBound.protocol = performanceBound.protocol;
 		_performanceBound.render = performanceBound.render;
+		_performanceBound.outputFormat = performanceBound.outputFormat;
 		ocelot::addTraceGenerator(_performanceBound, true);
 	}
 

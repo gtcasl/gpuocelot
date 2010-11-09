@@ -25,6 +25,8 @@ namespace executive {
 		CTAContext(const EmulatedKernel *kernel, CooperativeThreadArray *cta);
 
 		~CTAContext();
+		
+		bool operator<(const CTAContext &ctx) { return PC < ctx.PC; }
 
 		/*! Program counter - index into PTXInstruction vector */
 		int PC;

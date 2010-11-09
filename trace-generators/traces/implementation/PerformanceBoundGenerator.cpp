@@ -42,7 +42,11 @@ trace::PerformanceBoundGenerator::Counter::Counter():
 	instructions(0),
 	flops(0),
 	sharedBytes(0),
-	bankConflicts(0)
+	bankConflicts(0),
+	stackVisitEnd(0),
+	stackVisitMiddle(0),
+	stackInsert(0),
+	stackMerge(0)
 {
 
 }
@@ -77,6 +81,13 @@ std::ostream & operator <<(std::ostream &out,
 	if (counter.memoryDemand) {
 		out << " | FLOPs per word: " << (double)counter.flops / (double)(counter.memoryDemand) * 4.0 << " ";
 		out << " | OPs per byte: " << (double)counter.instructions / (double)(counter.memoryDemand) << " ";
+	}
+
+	if (counter.stackVisitEnd) {
+		out << " | stack visit end: " << counter.stackVisitEnd << " ";
+		out << " | stack visit middle: " << counter.stackVisitMiddle << " ";
+		out << " | stack inserts: " << counter.stackInsert << " ";
+		out << " | stack merges: " << counter.stackMerge;
 	}
 
 	return out;
@@ -307,9 +318,14 @@ void trace::PerformanceBoundGenerator::finish() {
 		app = (app ? app: "unknown-app");
 		reconverge = (reconverge ? reconverge : "unknown-reconverge");
 	
+		// appliction, reconvergence method, kernel name, counter, warp instructions, dynamic scalar instructions, 
 		resultsFile << app << ", " << reconverge << ", " << _entry.name << ", " << _counter << ", "
 			<< counterMap["entry"].warpInstructions << ", " 
-			<< counterMap["entry"].instructions << std::endl;
+			<< counterMap["entry"].instructions << ", "
+			<< counterMap["entry"].stackVisitEnd << ", "
+			<< counterMap["entry"].stackVisitMiddle << ", "
+			<< counterMap["entry"].stackInsert << ", "
+			<< counterMap["entry"].stackMerge << std::endl;
 
 	}
 	else if (outputFormat == Output_dot) {
@@ -352,8 +368,18 @@ void trace::PerformanceBoundGenerator::event(const trace::TraceEvent &event) {
 		<< event.active.count() << " active threads");
 	*/
 	
-	op->second.warpInstructions ++;
+	if (event.instruction->opcode != ir::PTXInstruction::Reconverge) {
+		op->second.warpInstructions ++;
+	}
+	
 	op->second.instructions += event.active.count();
+	
+	if (event.instruction->opcode == ir::PTXInstruction::Bra) {
+		op->second.stackVisitEnd += event.stackVisitEnd;
+		op->second.stackVisitMiddle += event.stackVisitMiddle;
+		op->second.stackInsert += event.stackInsert;
+		op->second.stackMerge += event.stackMerge;
+	}
 	
 	if (isFlop(*event.instruction)) {
 		op->second.flops += event.active.count();

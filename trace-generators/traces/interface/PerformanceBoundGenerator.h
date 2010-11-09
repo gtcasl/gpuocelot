@@ -48,6 +48,12 @@ namespace trace {
 				flops += c.flops;
 				sharedBytes += c.sharedBytes;
 				bankConflicts += c.bankConflicts;
+				
+				stackVisitEnd += c.stackVisitEnd;
+				stackVisitMiddle += c.stackVisitMiddle;
+				stackInsert += c.stackInsert;
+				stackMerge += c.stackMerge;
+				
 				return *this;
 			}
 			
@@ -73,6 +79,14 @@ namespace trace {
 					thread in the half-warp - efficiency of shared memory access
 			*/
 			size_t bankConflicts;
+			
+			size_t stackVisitEnd;
+		
+			size_t stackVisitMiddle;
+		
+			size_t stackInsert;
+		
+			size_t stackMerge;
 		};
 		
 		//! \brief maps basic block label to operation counters

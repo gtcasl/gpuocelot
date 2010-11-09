@@ -228,7 +228,7 @@ __global__ void Mandelbrot1_sm13(uchar4 *dst, const int imageW, const int imageH
 			    const T yPos = (T)iy * scale + yOff;
     			      
 			    // Calculate the Mandelbrot index for the current location
-			    int m = 0;//CalcMandelbrot(xPos, yPos, xJP, yJP, crunch, isJ);
+			    int m = CalcMandelbrot(xPos, yPos, xJP, yJP, crunch, isJ);
 			    m = m > 0 ? crunch - m : 0;
     	        
 			    // Convert the Mandelbrot index into a color
@@ -364,7 +364,7 @@ void RunMandelbrot0_sm13(uchar4 *dst, const int imageW, const int imageH, const 
 						 const int animationFrame, const int mode, const int numSMs, const bool isJ)
 {
     dim3 threads(BLOCKDIM_X/16, BLOCKDIM_Y);
-    dim3 grid(iDivUp(imageW, BLOCKDIM_X/16), iDivUp(imageH, BLOCKDIM_Y));
+    dim3 grid(iDivUp(imageW, BLOCKDIM_X), iDivUp(imageH, BLOCKDIM_Y));
 
     // zero block counter
     unsigned int hBlockCounter = 0;

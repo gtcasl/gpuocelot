@@ -20,6 +20,7 @@
 #include <climits>
 #include <cfloat>
 #include <cfenv> 
+#include <algorithm>
 
 #include <hydrazine/implementation/debug.h>
 #include <hydrazine/implementation/math.h>
@@ -32,7 +33,7 @@
 #define SORTED_PREDICATE_STACK_RECONVERGENCE 4
 
 // specify reconvergence mechanism here
-#define RECONVERGENCE_MECHANISM  BARRIER_RECONVERGENCE
+#define RECONVERGENCE_MECHANISM  IPDOM_RECONVERGENCE
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -51,7 +52,7 @@
 #define REPORT_NTH_THREAD_ONLY 1
 #define NTH_THREAD 0
 #define REPORT_REGISTER_READS 0
-#define REPORT_REGISTER_WRITES 0
+#define REPORT_REGISTER_WRITES 1
 
 // individually turn on or off reporting for particular instructions
 #define REPORT_ABS 1
@@ -69,7 +70,7 @@
 #define REPORT_DIV 1
 #define REPORT_EX2 1
 #define REPORT_EXIT 1
-#define REPORT_LD 0
+#define REPORT_LD 1
 #define REPORT_LG2 1
 #define REPORT_MAD24 1
 #define REPORT_MAD 1
@@ -192,7 +193,7 @@ void executive::CooperativeThreadArray::initialize(ir::Dim3 grid, bool trace ) {
 	clock = 0;
 	gridDim = grid;
 	traceEvents = trace;
-#if RECONVERGENCE_MECHANISM == GEN6_RECONVERGENCE
+#if RECONVERGENCE_MECHANISM == GEN6_RECONVERGENCE || RECONVERGENCE_MECHANISM == SORTED_PREDICATE_STACK_RECONVERGENCE
 	threadPCs.resize(runtimeStack.back().active.size(), runtimeStack.back().PC);
 #endif
 }
@@ -430,7 +431,7 @@ void executive::CooperativeThreadArray::execute(const ir::Dim3& block) {
 
 		// advance to next instruction if the current instruction wasn't a branch
 		if (instr.opcode != PTXInstruction::Bra && 
-#if RECONVERGENCE_MECHANISM == BARRIER_RECONVERGENCE
+#if RECONVERGENCE_MECHANISM == BARRIER_RECONVERGENCE || RECONVERGENCE_MECHANISM == SORTED_PREDICATE_STACK_RECONVERGENCE
 			instr.opcode != PTXInstruction::Bar &&
 #endif
 			instr.opcode != PTXInstruction::Reconverge ) {
@@ -440,7 +441,8 @@ void executive::CooperativeThreadArray::execute(const ir::Dim3& block) {
 		
 		// GEN6 must manually increment the warp PC if instructions are branch or reconverge
 
-#if RECONVERGENCE_MECHANISM == GEN6_RECONVERGENCE
+#if RECONVERGENCE_MECHANISM == GEN6_RECONVERGENCE \
+|| RECONVERGENCE_MECHANISM == SORTED_PREDICATE_STACK_RECONVERGENCE
 		if (instr.opcode != PTXInstruction::Bra && instr.opcode != PTXInstruction::Exit) {
 			//
 			// these instruction handlers will have to update each thread's PC individually
@@ -1946,12 +1948,13 @@ void executive::CooperativeThreadArray::eval_Bar(CTAContext& context,
 		runtimeStack.push_back(continuation);
 	}
 #elif RECONVERGENCE_MECHANISM == SORTED_PREDICATE_STACK_RECONVERGENCE
-	if (context.active.count() == context.active.size()) {
-		report("Barrier reached by convergent context");
-	}
-	else {
-		report("Sorted predicate stack reconvergence mechanism failed");
-		assert(0 && "Sorted predicate stack reconvergence mechanism failed");
+	// barrier reconvergence with the sorted predicate stack
+	CTAContext continuation(context);
+	runtimeStack.pop_back();
+	if (runtimeStack.size() == 0) {
+		continuation.active.set();
+		continuation.PC = context.PC + 1;
+		runtimeStack.push_back(continuation);
 	}
 #elif RECONVERGENCE_MECHANISM == GEN6_RECONVERGENCE
 	if (context.active.count() != context.active.size()) {
@@ -2004,7 +2007,7 @@ void executive::CooperativeThreadArray::eval_Bra(CTAContext &context, const PTXI
 	report("  reconverge PC " << instr.reconvergeInstruction);
 #endif
 
-	if (instr.uni) {
+	if (instr.uni && (RECONVERGENCE_MECHANISM != SORTED_PREDICATE_STACK_RECONVERGENCE)) {
 #if REPORT_BRA
 		report("   uniform branching");
 #endif
@@ -2095,9 +2098,15 @@ void executive::CooperativeThreadArray::eval_Bra(CTAContext &context, const PTXI
 			ctxCount ++;
 		}	
 		
+		// insert, preserving descending order of context stack
 		for (int ctx = 0; ctx < ctxCount; ctx++) {
 			for (Stack::iterator s_it = runtimeStack.begin(); true; ++s_it) {
-				if (s_it == runtimeStack.end() || s_it->PC > branchContexts[ctxStart+ctx].PC) {
+				if (s_it == runtimeStack.end()) {
+					runtimeStack.insert(s_it, branchContexts[ctxStart+ctx]);
+					break;
+				}
+				else if (s_it->PC < branchContexts[ctxStart+ctx].PC) {
+					++s_it;
 					runtimeStack.insert(s_it, branchContexts[ctxStart+ctx]);
 					break;
 				}
@@ -2107,6 +2116,27 @@ void executive::CooperativeThreadArray::eval_Bra(CTAContext &context, const PTXI
 					break;
 				}
 			}
+		}
+		
+		// assert sorted property
+		Stack::iterator s_it = runtimeStack.begin(), c_it = runtimeStack.begin();
+		assert(c_it != runtimeStack.end());
+		++c_it;
+		bool sorted = true;
+		for (; c_it != runtimeStack.end(); ++s_it, ++c_it) {
+			if (s_it->PC < c_it->PC) {
+				sorted = false; break;
+			}
+			//assert(s_it->PC > c_it->PC && "failed to assert sorted property of runtime stack");
+		}
+		
+		if (!sorted) {
+			std::cout << "runtime context stack not sorted:\n";
+			c_it = runtimeStack.begin();
+			for (; c_it != runtimeStack.end(); ++c_it) {
+				std::cout << "  " << c_it->PC << std::endl;
+			}
+			assert(0 && "runtime context stack not sorted");
 		}
 		
 #elif RECONVERGENCE_MECHANISM == GEN6_RECONVERGENCE

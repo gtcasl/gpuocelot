@@ -308,7 +308,7 @@ TestCudaTextureArray_LDFLAGS = -static
 ##
 TestCudaSequence_CXXFLAGS = $(SDK_CFLAGS)
 TestCudaSequence_SOURCES = ocelot/cuda/test/kernels/sequence.cu.cpp
-TestCudaSequence_LDADD = libocelot.la $(LLVM_LDFLAGS)
+TestCudaSequence_LDADD = libocelot.la $(LLVM_LDFLAGS) -locelotTrace
 TestCudaSequence_LDFLAGS = -static
 ################################################################################
 

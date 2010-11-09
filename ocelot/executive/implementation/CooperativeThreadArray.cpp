@@ -2086,38 +2086,88 @@ void executive::CooperativeThreadArray::eval_Bra(CTAContext &context, const PTXI
 		// insert branch target with greatest PC onto stack, and resume with branch target with
 		// least PC
 		//
-		CTAContext branchContexts[2];
-		int ctxCount = 0, ctxStart = 0;
+		CTAContext branchContexts[3];
+		int ctxCount = 0, ctxStart = 1;
 		
+		// insert the largest PC first
 		if (branchContext.active.any()) {
 			branchContexts[ctxStart+ctxCount] = branchContext;
 			ctxCount ++;
 		}
 		if (fallthroughContext.active.any()) {
-			branchContexts[ctxStart+ctxCount] = fallthroughContext;
+			int ctxInsert = ctxStart;
+			if (ctxCount) {
+				if (branchContext.PC > fallthroughContext.PC) {
+					ctxInsert = 2;
+				}
+				else {
+					ctxInsert = 0;
+					ctxStart = 0;
+				}
+			}
+			branchContexts[ctxInsert] = fallthroughContext;
 			ctxCount ++;
 		}	
+				
+		currentEvent.stackVisitEnd = 0;
+		currentEvent.stackVisitMiddle = 0;
+		currentEvent.stackInsert = 0;
+		currentEvent.stackMerge = 0;
 		
-		// insert, preserving descending order of context stack
+		//
+		// preserve invariant runtimeStack is in descending order
+		//
+		// insert sorted
 		for (int ctx = 0; ctx < ctxCount; ctx++) {
 			for (Stack::iterator s_it = runtimeStack.begin(); true; ++s_it) {
 				if (s_it == runtimeStack.end()) {
 					runtimeStack.insert(s_it, branchContexts[ctxStart+ctx]);
+					++currentEvent.stackVisitEnd;
+					++currentEvent.stackInsert;
 					break;
 				}
 				else if (s_it->PC < branchContexts[ctxStart+ctx].PC) {
-					++s_it;
 					runtimeStack.insert(s_it, branchContexts[ctxStart+ctx]);
+					if (s_it == runtimeStack.begin()) {
+						++currentEvent.stackVisitEnd;
+					}
+					else {
+						++currentEvent.stackVisitMiddle;
+					}
+					++currentEvent.stackInsert;
 					break;
 				}
 				else if (s_it->PC == branchContexts[ctxStart+ctx].PC) {
 					// merge with existing contexts if one exists
 					s_it->active |= branchContexts[ctxStart+ctx].active;
+					
+					Stack::iterator next_it = s_it;
+					++next_it;
+					if (next_it == runtimeStack.end()) {
+						++currentEvent.stackVisitEnd;
+					}
+					else {
+						++currentEvent.stackVisitMiddle;
+					}
+					++currentEvent.stackMerge;
 					break;
 				}
 			}
 		}
 		
+		if (currentEvent.stackVisitMiddle) {
+			std::cout << "\n[PC " << context.PC << "]  " << instr.toString() << "\n";
+			std::cout << "insert into the middle of the context stack:\n";
+			for (Stack::iterator s_it = runtimeStack.begin(); s_it != runtimeStack.end(); ++s_it) {
+				std::cout << "   " << s_it->PC;
+				if (branchContext.active.any() && s_it->PC == branchContext.PC) { std::cout << "  [branch target]"; }
+				if (fallthroughContext.active.any() && s_it->PC == fallthroughContext.PC) { std::cout << "  [fallthrough target]"; }
+				std::cout << "\n";
+			}
+			std::cout << std::endl;
+		}
+		
+#if 0
 		// assert sorted property
 		Stack::iterator s_it = runtimeStack.begin(), c_it = runtimeStack.begin();
 		assert(c_it != runtimeStack.end());
@@ -2127,7 +2177,6 @@ void executive::CooperativeThreadArray::eval_Bra(CTAContext &context, const PTXI
 			if (s_it->PC < c_it->PC) {
 				sorted = false; break;
 			}
-			//assert(s_it->PC > c_it->PC && "failed to assert sorted property of runtime stack");
 		}
 		
 		if (!sorted) {
@@ -2138,6 +2187,7 @@ void executive::CooperativeThreadArray::eval_Bra(CTAContext &context, const PTXI
 			}
 			assert(0 && "runtime context stack not sorted");
 		}
+#endif
 		
 #elif RECONVERGENCE_MECHANISM == GEN6_RECONVERGENCE
 		runtimeStack.push_back(unmodifiedContext);

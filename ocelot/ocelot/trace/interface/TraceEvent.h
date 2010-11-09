@@ -105,6 +105,14 @@ namespace trace {
 		*/
 		ir::Dim3 blockDim;
 
+		ir::PTXU32 stackVisitEnd;
+		
+		ir::PTXU32 stackVisitMiddle;
+		
+		ir::PTXU32 stackInsert;
+		
+		ir::PTXU32 stackMerge;
+
 	public:
 	
 		/*!

@@ -13,7 +13,11 @@ trace::TraceEvent::TraceEvent():
 	blockId(0, 0, 0),
 	PC(0),
 	gridDim(0, 0, 0),
-	blockDim(0, 0, 0)
+	blockDim(0, 0, 0),
+	stackVisitEnd(0),
+	stackVisitMiddle(0),
+	stackInsert(0),
+	stackMerge(0)
 {
 
 }

@@ -70,7 +70,7 @@
 #define REPORT_DIV 1
 #define REPORT_EX2 1
 #define REPORT_EXIT 1
-#define REPORT_LD 1
+#define REPORT_LD 0
 #define REPORT_LG2 1
 #define REPORT_MAD24 1
 #define REPORT_MAD 1
@@ -2127,7 +2127,6 @@ void executive::CooperativeThreadArray::eval_Bra(CTAContext &context, const PTXI
 					break;
 				}
 				else if (s_it->PC < branchContexts[ctxStart+ctx].PC) {
-					runtimeStack.insert(s_it, branchContexts[ctxStart+ctx]);
 					if (s_it == runtimeStack.begin()) {
 						++currentEvent.stackVisitEnd;
 					}
@@ -2135,6 +2134,7 @@ void executive::CooperativeThreadArray::eval_Bra(CTAContext &context, const PTXI
 						++currentEvent.stackVisitMiddle;
 					}
 					++currentEvent.stackInsert;
+					runtimeStack.insert(s_it, branchContexts[ctxStart+ctx]);
 					break;
 				}
 				else if (s_it->PC == branchContexts[ctxStart+ctx].PC) {
@@ -2143,7 +2143,7 @@ void executive::CooperativeThreadArray::eval_Bra(CTAContext &context, const PTXI
 					
 					Stack::iterator next_it = s_it;
 					++next_it;
-					if (next_it == runtimeStack.end()) {
+					if (next_it == runtimeStack.end() || s_it == runtimeStack.begin()) {
 						++currentEvent.stackVisitEnd;
 					}
 					else {
@@ -2156,38 +2156,15 @@ void executive::CooperativeThreadArray::eval_Bra(CTAContext &context, const PTXI
 		}
 		
 		if (currentEvent.stackVisitMiddle) {
-			std::cout << "\n[PC " << context.PC << "]  " << instr.toString() << "\n";
-			std::cout << "insert into the middle of the context stack:\n";
+			report("\n[PC " << context.PC << "]  " << instr.toString());
+			report("insert into the middle of the context stack:");
 			for (Stack::iterator s_it = runtimeStack.begin(); s_it != runtimeStack.end(); ++s_it) {
-				std::cout << "   " << s_it->PC;
-				if (branchContext.active.any() && s_it->PC == branchContext.PC) { std::cout << "  [branch target]"; }
-				if (fallthroughContext.active.any() && s_it->PC == fallthroughContext.PC) { std::cout << "  [fallthrough target]"; }
-				std::cout << "\n";
+				report("   " << s_it->PC);
+				if (branchContext.active.any() && s_it->PC == branchContext.PC) { report("  [branch target]"); }
+				if (fallthroughContext.active.any() && s_it->PC == fallthroughContext.PC) { report("  [fallthrough target]"); }
 			}
-			std::cout << std::endl;
+			report(" ");
 		}
-		
-#if 0
-		// assert sorted property
-		Stack::iterator s_it = runtimeStack.begin(), c_it = runtimeStack.begin();
-		assert(c_it != runtimeStack.end());
-		++c_it;
-		bool sorted = true;
-		for (; c_it != runtimeStack.end(); ++s_it, ++c_it) {
-			if (s_it->PC < c_it->PC) {
-				sorted = false; break;
-			}
-		}
-		
-		if (!sorted) {
-			std::cout << "runtime context stack not sorted:\n";
-			c_it = runtimeStack.begin();
-			for (; c_it != runtimeStack.end(); ++c_it) {
-				std::cout << "  " << c_it->PC << std::endl;
-			}
-			assert(0 && "runtime context stack not sorted");
-		}
-#endif
 		
 #elif RECONVERGENCE_MECHANISM == GEN6_RECONVERGENCE
 		runtimeStack.push_back(unmodifiedContext);

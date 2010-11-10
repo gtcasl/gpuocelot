@@ -154,6 +154,10 @@ namespace analysis {
     //such that all the nodes in it are in I and false otherwise
     bool path(NodeTy *n, NodeTy *m, NodeSetTy &I, NodeTy *esc);
 
+    // path(n, m, I, src, dst ) - Return true if there is a path from from n to m 
+    //such that all the nodes in it are in I without going through edge src->dst and false otherwise
+    bool path(NodeTy *n, NodeTy *m, NodeSetTy &I, NodeTy *src, NodeTy *dst);
+
     // compact - Compact nodes in nset into n;
     void compact(NodeSetTy &N, NodeTy *n, NodeSetTy &nset);
 

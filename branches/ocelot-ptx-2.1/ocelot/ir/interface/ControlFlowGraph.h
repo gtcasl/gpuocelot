@@ -211,7 +211,7 @@ public:
 	
 	/*! Duplicates the selected block, inserts it in an unconnected state,
 		returns an iterator to the newly created block */
-	iterator clone_block(iterator block);
+	iterator clone_block(iterator block, std::string suffix);
 	
 	/*! Removes a basic block and associated edges. Any blocks dominated by
 		block are now unreachable but still part of the graph.

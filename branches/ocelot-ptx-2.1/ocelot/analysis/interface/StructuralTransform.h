@@ -34,6 +34,8 @@ namespace analysis {
     void finalize() {};
 
   private:
+    int index;
+
     typedef std::unordered_map<ir::ControlFlowGraph::iterator, ir::ControlFlowGraph::iterator> ValueToValueMapTy;
 
     ir::PTXKernel* _kernel;

@@ -1251,6 +1251,28 @@ namespace analysis {
   
     return false;
   }
+
+  // path(n, m, I, src, dst ) - Return true if there is a path from from n to m 
+  //such that all the nodes in it are in I without going through edge src->dst and false otherwise
+  bool StructuralAnalysis::path(NodeTy *n, NodeTy *m, NodeSetTy &I, NodeTy *src, NodeTy *dst) {
+    visitPath[n] = true;
+  
+    if (n == m) return true;
+  
+    for (NodeSetTy::iterator i = n->succNode.begin(),
+                             e = n->succNode.end();
+                             i != e; ++i)
+      if (I.count(*i) > 0 && !visitPath[*i]) {
+        if (*i == dst && n == src) continue;
+  
+        if (*i == m)
+          return true;
+        else
+          if (path(*i, m, I, src, dst)) return true;
+      }
+  
+    return false;
+  }
   
   // compact - Compact nodes in nset into n;
   void StructuralAnalysis::compact(NodeSetTy &N, NodeTy *n, NodeSetTy &nset/*, bool addSelfEdge*/) {
@@ -1416,23 +1438,9 @@ namespace analysis {
   
   //Return true if after erasing edge src->dst, dst is still reachable from entry
   bool StructuralAnalysis::isStillReachableFromEntry(NodeSetTy &N, NodeTy *entry, NodeTy *dstNode, NodeTy *srcNode) {
-    if (srcNode != entry) {
-      visitPath.clear();
-  
-      return path(entry, dstNode, N, srcNode);
-    } else {
-      if (entry->succNode.size() <= 1)
-        return false;
-      else {
-        for (NodeSetTy::iterator i = entry->succNode.begin(),
-                                 e = entry->succNode.end();
-                                 i != e; ++i)
-          if (path(*i, dstNode, N, entry)) 
-            return true; 
-      }
-    }
-     
-    return false;
+    visitPath.clear();
+
+    return path(entry, dstNode, N, srcNode, dstNode);
   }
   
   //findEntryBB - find the entry Basic Block of the node

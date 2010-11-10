@@ -39,10 +39,13 @@ unsigned int trace::PerformanceBoundGenerator::_counter = 0;
 trace::PerformanceBoundGenerator::Counter::Counter():
 	memoryDemand(0),
 	warpInstructions(0),
+	branchInstructions(0),
 	instructions(0),
 	flops(0),
 	sharedBytes(0),
 	bankConflicts(0),
+	stackDepth(0),
+	stackVisitNodes(0),
 	stackVisitEnd(0),
 	stackVisitMiddle(0),
 	stackInsert(0),
@@ -82,7 +85,12 @@ std::ostream & operator <<(std::ostream &out,
 		out << " | FLOPs per word: " << (double)counter.flops / (double)(counter.memoryDemand) * 4.0 << " ";
 		out << " | OPs per byte: " << (double)counter.instructions / (double)(counter.memoryDemand) << " ";
 	}
-
+	if (counter.stackDepth) {
+		out << " | avg stack depth: " << (double)counter.stackDepth / (double)counter.warpInstructions << " ";
+	}
+	if (counter.stackVisitNodes && counter.branchInstructions) {
+		out << " | avg stack iterations: " << (double)counter.stackVisitNodes / (double)counter.branchInstructions << " ";
+	}
 	if (counter.stackVisitEnd) {
 		out << " | stack visit end: " << counter.stackVisitEnd << " ";
 		out << " | stack visit middle: " << counter.stackVisitMiddle << " ";
@@ -325,7 +333,16 @@ void trace::PerformanceBoundGenerator::finish() {
 			<< counterMap["entry"].stackVisitEnd << ", "
 			<< counterMap["entry"].stackVisitMiddle << ", "
 			<< counterMap["entry"].stackInsert << ", "
-			<< counterMap["entry"].stackMerge << std::endl;
+			<< counterMap["entry"].stackMerge << ", "
+			<< (double)counterMap["entry"].stackDepth / (double)counterMap["entry"].warpInstructions << ", ";
+			
+		if (counterMap["entry"].branchInstructions) {
+			resultsFile << counterMap["entry"].stackVisitNodes / (double)counterMap["entry"].branchInstructions;
+		}
+		else {
+			resultsFile << 0;
+		}
+		resultsFile	<< std::endl;
 
 	}
 	else if (outputFormat == Output_dot) {
@@ -370,15 +387,17 @@ void trace::PerformanceBoundGenerator::event(const trace::TraceEvent &event) {
 	
 	if (event.instruction->opcode != ir::PTXInstruction::Reconverge) {
 		op->second.warpInstructions ++;
+		op->second.stackDepth += event.contextStackSize;
+		op->second.instructions += event.active.count();
 	}
 	
-	op->second.instructions += event.active.count();
-	
 	if (event.instruction->opcode == ir::PTXInstruction::Bra) {
+		op->second.branchInstructions ++;
 		op->second.stackVisitEnd += event.stackVisitEnd;
 		op->second.stackVisitMiddle += event.stackVisitMiddle;
 		op->second.stackInsert += event.stackInsert;
 		op->second.stackMerge += event.stackMerge;
+		op->second.stackVisitNodes += event.stackVisitNodes;
 	}
 	
 	if (isFlop(*event.instruction)) {

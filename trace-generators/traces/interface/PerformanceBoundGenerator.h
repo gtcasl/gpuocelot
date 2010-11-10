@@ -44,11 +44,14 @@ namespace trace {
 			Counter & operator += (const Counter &c) {
 				memoryDemand += c.memoryDemand;
 				warpInstructions += c.warpInstructions;
+				branchInstructions += c.branchInstructions;
 				instructions += c.instructions;
 				flops += c.flops;
 				sharedBytes += c.sharedBytes;
 				bankConflicts += c.bankConflicts;
 				
+				stackDepth += c.stackDepth;
+				stackVisitNodes += c.stackVisitNodes;
 				stackVisitEnd += c.stackVisitEnd;
 				stackVisitMiddle += c.stackVisitMiddle;
 				stackInsert += c.stackInsert;
@@ -65,6 +68,9 @@ namespace trace {
 			//! \brief warp instructions
 			size_t warpInstructions;
 			
+			//! \brief number of branch instructions
+			size_t branchInstructions;
+			
 			//! \brief dynamic instructions
 			size_t instructions;
 			
@@ -79,7 +85,11 @@ namespace trace {
 					thread in the half-warp - efficiency of shared memory access
 			*/
 			size_t bankConflicts;
+
+			size_t stackDepth;
 			
+			size_t stackVisitNodes;	
+
 			size_t stackVisitEnd;
 		
 			size_t stackVisitMiddle;

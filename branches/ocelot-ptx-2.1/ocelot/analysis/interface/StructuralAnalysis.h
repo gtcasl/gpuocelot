@@ -17,6 +17,10 @@
 
 #include <ocelot/analysis/interface/Pass.h>
 #include <ocelot/ir/interface/ControlFlowGraph.h>
+#include <ocelot/ir/interface/PTXKernel.h>
+
+#include <hydrazine/implementation/debug.h>
+
 #include <set>
 #include <vector>
 #include <map>
@@ -25,18 +29,13 @@
 
 namespace ir {
   class PTXKernel;
-  class ControlFlowGraph;
 }
 
 namespace analysis {
   typedef enum {TREE, FORWARD, BACK, CROSS} EdgeClass;
-  
   typedef std::pair<ir::ControlFlowGraph::iterator, ir::ControlFlowGraph::iterator> EdgeLLVMTy;
-  
   typedef std::vector<EdgeLLVMTy> EdgeVecTy;
-  
   typedef std::unordered_set<ir::ControlFlowGraph::iterator> BBSetTy;
-  
   typedef std::vector<ir::ControlFlowGraph::iterator> BBVecTy;
   
   // Types defined in Fig 7.38 of Muchnick book
@@ -73,36 +72,25 @@ namespace analysis {
   
   // NodeSetTy - used to holds nodes in a set 
   typedef std::set<NodeTy *> NodeSetTy;
-  
-  // BB2NodeMapTy - Map ir::BasicBlock * to NodeTy
   typedef std::unordered_map<ir::ControlFlowGraph::iterator, NodeTy *> BB2NodeMapTy;
-  
   typedef std::map<NodeTy *, NodeTy *> Node2NodeMapTy;
-  
   typedef std::map<NodeTy *, RegionTy> Node2RegionTyMapTy;
-  
   typedef std::map<NodeTy *, NodeSetTy *> Node2NodeSetMapTy;
-  
   typedef std::pair<NodeTy *, NodeTy *> EdgeTy;
-  
   typedef std::map<EdgeTy, EdgeClass> Edge2ClassMapTy;
-  
   typedef std::set<EdgeTy> EdgeSetTy;
-  
   typedef std::map<NodeTy *, bool> VisitMapTy;
 
   // StructuralAnalysis - This class holds all the methods and data structures 
-  class StructuralAnalysis : public KernelPass {
+  class StructuralAnalysis {
   public:
-    StructuralAnalysis() : KernelPass() {}
-    void initialize(const ir::Module& m) {};
-    void runOnKernel(ir::Kernel& k);
-    void finalize() {};
-
+    StructuralAnalysis() {}
+    void runOnKernel(ir::PTXKernel *k);
     NodeSetTy Net;
-    
+  
     // unstructuredBRVec - store the detected unstructured branches
     EdgeVecTy unstructuredBRVec;
+
 
   private:
     ir::PTXKernel* _kernel;

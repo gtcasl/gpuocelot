@@ -1,13 +1,18 @@
+//- llvm/Transform/Ocelot/StructuralAnalysis.h - Structural Analysis - *C++ -*-// 
+// 
+//                     The LLVM Compiler Infrastructure 
+// 
+// This file is distributed under the University of Illinois Open Source 
+// License. See LICENSE.TXT for details. 
+// 
+//===----------------------------------------------------------------------===// 
+// 
+// This file defines the class of Structural Analysis which will return the 
+// control tree and unstructured branches of a function 
+// 
+//===----------------------------------------------------------------------===// 
+ 
 #include <ocelot/analysis/interface/StructuralAnalysis.h>
-#include <ocelot/ir/interface/PTXKernel.h>
-
-#include <hydrazine/implementation/debug.h>
-
-#ifdef REPORT_BASE
-#undef REPORT_BASE
-#endif
-
-#define REPORT_BASE 0
 
 namespace analysis {
   // buildSimpleCFG - Build a Simple CFG out of the LLVM CFG
@@ -1058,6 +1063,7 @@ namespace analysis {
     node->parentNode = NULL;
   
     if (exitNode) node->exitBB = findEntryBB(exitNode);
+    else node->exitBB = _kernel->cfg()->end();
   
     for (NodeSetTy::iterator i = nodeSet.begin(), e = nodeSet.end(); i != e; ++i)
       findBB(*i, &(node->containedBB));
@@ -1498,8 +1504,8 @@ namespace analysis {
     }
   }
   
-  void StructuralAnalysis::runOnKernel(ir::Kernel& k) {
-    _kernel = static_cast< ir::PTXKernel* >( &k );
+  void StructuralAnalysis::runOnKernel(ir::PTXKernel *k) {
+    _kernel = k;
 
     std::cerr << _kernel->name <<":\n";
  

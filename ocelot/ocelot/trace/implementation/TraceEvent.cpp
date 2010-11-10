@@ -14,6 +14,7 @@ trace::TraceEvent::TraceEvent():
 	PC(0),
 	gridDim(0, 0, 0),
 	blockDim(0, 0, 0),
+	stackVisitNodes(0),
 	stackVisitEnd(0),
 	stackVisitMiddle(0),
 	stackInsert(0),

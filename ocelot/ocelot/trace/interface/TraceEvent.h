@@ -104,6 +104,8 @@ namespace trace {
 				dimensions of the kernel block that generated the event
 		*/
 		ir::Dim3 blockDim;
+		
+		ir::PTXU32 stackVisitNodes;
 
 		ir::PTXU32 stackVisitEnd;
 		

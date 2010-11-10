@@ -33,7 +33,7 @@
 #define SORTED_PREDICATE_STACK_RECONVERGENCE 4
 
 // specify reconvergence mechanism here
-#define RECONVERGENCE_MECHANISM  IPDOM_RECONVERGENCE
+#define RECONVERGENCE_MECHANISM IPDOM_RECONVERGENCE
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -46,7 +46,7 @@
 
 // reporting for kernel instructions
 #define REPORT_STATIC_INSTRUCTIONS 1
-#define REPORT_DYNAMIC_INSTRUCTIONS 0
+#define REPORT_DYNAMIC_INSTRUCTIONS 1
 
 // reporting for register accesses
 #define REPORT_NTH_THREAD_ONLY 1
@@ -285,7 +285,7 @@ void executive::CooperativeThreadArray::execute(const ir::Dim3& block) {
 	currentEvent.blockDim = blockDim;
 	
 	assert(runtimeStack.size());
-
+	
 	report("CooperativeThreadArray::execute called");
 	report("  block is " << block.x << ", " << block.y << ", " << block.z);
 	reportE(REPORT_STATIC_INSTRUCTIONS, "Running " << kernel->toString());
@@ -427,8 +427,7 @@ void executive::CooperativeThreadArray::execute(const ir::Dim3& block) {
 					<< " not supported.");
 				break;
 		}
-
-
+	
 		// advance to next instruction if the current instruction wasn't a branch
 		if (instr.opcode != PTXInstruction::Bra && 
 #if RECONVERGENCE_MECHANISM == BARRIER_RECONVERGENCE || RECONVERGENCE_MECHANISM == SORTED_PREDICATE_STACK_RECONVERGENCE
@@ -2214,7 +2213,12 @@ void executive::CooperativeThreadArray::eval_Reconverge(CTAContext &context, con
 #endif
 
 #if RECONVERGENCE_MECHANISM == IPDOM_RECONVERGENCE
-	runtimeStack.pop_back();
+	if(runtimeStack.size() > 1)	{
+		runtimeStack.pop_back();
+	}
+	else {
+		context.PC ++;
+	}
 #elif RECONVERGENCE_MECHANISM == BARRIER_RECONVERGENCE
 	context.PC ++;
 #elif RECONVERGENCE_MECHANISM == SORTED_PREDICATE_STACK_RECONVERGENCE

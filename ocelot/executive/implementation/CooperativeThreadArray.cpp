@@ -33,7 +33,7 @@
 #define SORTED_PREDICATE_STACK_RECONVERGENCE 4
 
 // specify reconvergence mechanism here
-#define RECONVERGENCE_MECHANISM IPDOM_RECONVERGENCE
+#define RECONVERGENCE_MECHANISM BARRIER_RECONVERGENCE
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -2107,7 +2107,8 @@ void executive::CooperativeThreadArray::eval_Bra(CTAContext &context, const PTXI
 			branchContexts[ctxInsert] = fallthroughContext;
 			ctxCount ++;
 		}	
-				
+
+		currentEvent.stackVisitNodes = 0;
 		currentEvent.stackVisitEnd = 0;
 		currentEvent.stackVisitMiddle = 0;
 		currentEvent.stackInsert = 0;
@@ -2118,16 +2119,19 @@ void executive::CooperativeThreadArray::eval_Bra(CTAContext &context, const PTXI
 		//
 		// insert sorted
 		for (int ctx = 0; ctx < ctxCount; ctx++) {
-			for (Stack::iterator s_it = runtimeStack.begin(); true; ++s_it) {
+			size_t nodes = 1;
+			for (Stack::iterator s_it = runtimeStack.begin(); true; ++s_it, nodes++) {
 				if (s_it == runtimeStack.end()) {
 					runtimeStack.insert(s_it, branchContexts[ctxStart+ctx]);
 					++currentEvent.stackVisitEnd;
+					nodes = 1;
 					++currentEvent.stackInsert;
 					break;
 				}
 				else if (s_it->PC < branchContexts[ctxStart+ctx].PC) {
 					if (s_it == runtimeStack.begin()) {
 						++currentEvent.stackVisitEnd;
+						nodes = 1;
 					}
 					else {
 						++currentEvent.stackVisitMiddle;
@@ -2144,6 +2148,7 @@ void executive::CooperativeThreadArray::eval_Bra(CTAContext &context, const PTXI
 					++next_it;
 					if (next_it == runtimeStack.end() || s_it == runtimeStack.begin()) {
 						++currentEvent.stackVisitEnd;
+						nodes = 1;
 					}
 					else {
 						++currentEvent.stackVisitMiddle;
@@ -2152,6 +2157,7 @@ void executive::CooperativeThreadArray::eval_Bra(CTAContext &context, const PTXI
 					break;
 				}
 			}
+			currentEvent.stackVisitNodes += nodes;
 		}
 		
 		if (currentEvent.stackVisitMiddle) {

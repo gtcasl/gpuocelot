@@ -192,6 +192,8 @@ namespace ir
 		ControlFlowGraph::Edge edge(cfg.get_entry_block(), block, 
 			ControlFlowGraph::Edge::FallThrough);
 	
+		bool hasExit = false;
+	
 		unsigned int statementIndex = 0;
 		for( ; kernelStart != kernelEnd; ++kernelStart, ++statementIndex ) 
 		{
@@ -231,7 +233,7 @@ namespace ir
 				{
 					last_inserted_block = block;
 					// dont't add fall through edges for unconditional branches
-					if (edge.type != ControlFlowGraph::Edge::Invalid ) {
+					if (edge.type != ControlFlowGraph::Edge::Invalid) {
 						cfg.insert_edge(edge);
 					}
 					edge.head = block;
@@ -247,8 +249,10 @@ namespace ir
 						edge.type = ControlFlowGraph::Edge::Invalid;
 					}
 				}
-				else if( statement.instruction.opcode == PTXInstruction::Exit )
+				else if(statement.instruction.opcode == PTXInstruction::Exit)
 				{
+					assertM(!hasExit, "Duplicate exit block.");
+					hasExit = true;
 					last_inserted_block = block;
 					if (edge.type != ControlFlowGraph::Edge::Invalid) {
 						cfg.insert_edge(edge);
@@ -256,7 +260,9 @@ namespace ir
 					edge.head = block;
 					edge.tail = cfg.get_exit_block();
 					edge.type = ControlFlowGraph::Edge::FallThrough;
-
+					
+					cfg.insert_edge(edge);
+					
 					block = cfg.insert_block(
 						ControlFlowGraph::BasicBlock("", cfg.newId()));
 					edge.type = ControlFlowGraph::Edge::Invalid;
@@ -287,37 +293,13 @@ namespace ir
 			if (edge.type != ControlFlowGraph::Edge::Invalid) {
 				cfg.insert_edge(edge);
 			}
-			edge.head = block;
-			edge.tail = cfg.get_exit_block();
-			edge.type = ControlFlowGraph::Edge::FallThrough;
-			cfg.insert_edge(edge);
 		}
 		else 
 		{
-			if(last_inserted_block!=cfg.end()) 
-			{
-				// make sure there is a fall through edge from the last 
-				// inserted block to the exit node
-				ControlFlowGraph::edge_iterator ft_e = cfg.edges_end();
-				for( ControlFlowGraph::edge_pointer_iterator 
-					it = last_inserted_block->out_edges.begin(); 
-					it != last_inserted_block->out_edges.end(); ++it )
-				{
-					if( (*it)->type == ControlFlowGraph::Edge::FallThrough 
-						&& (*it)->tail == cfg.get_exit_block() )
-					{
-						ft_e = (*it);
-						break;
-					}
-				}
-				if( ft_e == cfg.edges_end() )
-				{
-					cfg.insert_edge(ControlFlowGraph::Edge(last_inserted_block, 
-						cfg.get_exit_block()));
-				}
-			}
 			cfg.remove_block(block);
 		}
+
+		assertM(hasExit, "No exit point from the kernel found.");
 
 		// go back and add edges for basic blocks terminating in branches
 		for( BlockPointerVector::iterator it = branchBlocks.begin();

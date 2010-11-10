@@ -28,7 +28,8 @@ namespace ir {
 
 class BlockSetCompare {
 public:
-	bool operator()(const ir::ControlFlowGraph::iterator &a_it, const ir::ControlFlowGraph::iterator &b_it) const {
+	bool operator()(const ir::ControlFlowGraph::iterator &a_it,
+		const ir::ControlFlowGraph::iterator &b_it) const {
 		return a_it->label < b_it->label;
 	}
 };
@@ -453,6 +454,127 @@ void ControlFlowGraph::clear() {
 	_nextId = 2;
 }
 
+ControlFlowGraph::BlockPointerVector ControlFlowGraph::topological_sequence() {
+	typedef std::set<iterator, BlockSetCompare> BlockSet;
+	typedef std::queue<iterator> Queue;
+	
+	report("Creating topological order traversal");
+	BlockSet visited;
+	BlockPointerVector sequence;
+	Queue queue;
+	
+	queue.push(get_entry_block());
+
+	while (true) {
+		iterator current = queue.front();
+		queue.pop();
+		visited.insert(current);
+		sequence.push_back(current);
+		report(" Adding block " << current->label);
+
+		for (pointer_iterator block = current->successors.begin();
+			block != current->successors.end(); ++block) {
+			bool noDependencies = true;
+		
+			for (pointer_iterator pred = (*block)->predecessors.begin(); 
+				pred != (*block)->predecessors.end(); ++pred) {
+				if (visited.count(*pred) == 0) {
+					noDependencies = false;
+					break;
+				}
+			}
+			
+			if(noDependencies) {
+				queue.push(*block);
+			}
+		}
+		
+		if(sequence.size() == size()) break;
+
+		if(queue.empty()) {
+			for (pointer_iterator block = sequence.begin();
+				block != sequence.end(); ++block) {
+				for (pointer_iterator successor = (*block)->successors.begin();
+					successor != (*block)->successors.end(); ++successor) {
+					
+					if (visited.count(*successor) == 0) {
+						queue.push(*successor);
+						break;
+					}		
+				}
+				if(!queue.empty()) {
+					break;
+				}
+			}
+			
+			assert(!queue.empty());
+		}
+	}
+
+	return sequence;
+}
+
+
+ControlFlowGraph::BlockPointerVector
+	ControlFlowGraph::reverse_topological_sequence() {
+	typedef std::set<iterator, BlockSetCompare> BlockSet;
+	typedef std::queue<iterator> Queue;
+	
+	report("Creating reverse topological order traversal");
+	BlockSet visited;
+	BlockPointerVector sequence;
+	Queue queue;
+	
+	queue.push(get_exit_block());
+
+	while (true) {
+		iterator current = queue.front();
+		queue.pop();
+		visited.insert(current);
+		sequence.push_back(current);
+		report(" Adding block " << current->label);
+
+		for (pointer_iterator block = current->predecessors.begin();
+			block != current->predecessors.end(); ++block) {
+			bool noDependencies = true;
+		
+			for (pointer_iterator successor = (*block)->successors.begin(); 
+				successor != (*block)->successors.end(); ++successor) {
+				if (visited.count(*successor) == 0) {
+					noDependencies = false;
+					break;
+				}
+			}
+			
+			if(noDependencies) {
+				queue.push(*block);
+			}
+		}
+		
+		if(sequence.size() == size()) break;
+		
+		if(queue.empty()) {
+			for (pointer_iterator block = sequence.begin();
+				block != sequence.end(); ++block) {
+				for (pointer_iterator pred = (*block)->predecessors.begin();
+					pred != (*block)->predecessors.end(); ++pred) {
+					
+					if (visited.count(*pred) == 0) {
+						queue.push(*pred);
+						break;
+					}		
+				}
+				if(!queue.empty()) {
+					break;
+				}
+			}
+			
+			assert(!queue.empty());
+		}
+	}
+
+	return sequence;
+}
 
 ControlFlowGraph::BlockPointerVector ControlFlowGraph::post_order_sequence() {
 	typedef std::set<iterator, BlockSetCompare> BlockSet;

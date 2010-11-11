@@ -370,8 +370,11 @@ createIndicesCompaction( T* s_compaction_list_exc,
   
     if (tid < d) {
       
-      unsigned int  ai = offset*(2*tid+1)-1;
-      unsigned int  bi = offset*(2*tid+2)-1;
+      unsigned int  ai = offset*(2*tid+1);
+      unsigned int  bi = offset*(2*tid+2);
+
+	  ai = ai > 0 ? ai - 1 : 0;
+	  bi = bi > 0 ? bi - 1 : 0;
 
       s_compaction_list_exc[bi] =   s_compaction_list_exc[bi] 
                                   + s_compaction_list_exc[ai];

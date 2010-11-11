@@ -1,4 +1,4 @@
-/*  \file testShortCircuit.cpp
+/*  \file TestShortCircuit.cu
 	\author Gregory Diamos <gregory.diamos@gatech.edu>
 	\date Tuesday November 9, 2010
 	\brief A CUDA assembly test for short-circuiting control flow.

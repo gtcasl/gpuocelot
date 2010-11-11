@@ -1,24 +1,19 @@
 {
 	ocelot: "ocelot",
-	version: "1.1.520",
 	trace: { 
-		enabled: false,
-		database: "traces/database.trace",
-		memory: false,
-		branch: false,
-		sharedComputation: false,
-		instruction: false,
-		parallelism: false,
-		cacheSimulator: false,
 		memoryChecker: true,
-		raceDetector: true,
-		warpSynchronous: {
+		raceDetector: {
+			enabled: false,
+			ignoreIrrelevantWrites: true
+		},
+		debugger: {
 			enabled: true,
-			emitHotPaths: true
+			kernelFilter: "_ZN6thrust6detail6device4cuda6detail4b40c13SrtsScanSpineIvEEvPjS6_j",
+			alwaysAttach: false
 		}
 	},
 	cuda: {
-		implementation: "CudaRuntime",
+		implementation: CudaRuntime,
 		runtimeApiTrace: "trace/CudaAPI.trace"
 	},
 	executive: {

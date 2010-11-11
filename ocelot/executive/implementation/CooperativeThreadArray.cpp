@@ -33,7 +33,7 @@
 #define SORTED_PREDICATE_STACK_RECONVERGENCE 4
 
 // specify reconvergence mechanism here
-#define RECONVERGENCE_MECHANISM BARRIER_RECONVERGENCE
+#define RECONVERGENCE_MECHANISM IPDOM_RECONVERGENCE
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 

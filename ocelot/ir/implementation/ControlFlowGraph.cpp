@@ -24,7 +24,7 @@
 namespace ir {
 
 
-/////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 class BlockSetCompare {
 public:
@@ -69,7 +69,7 @@ std::string BasicBlock::DotFormatter::toString(
 		= block->instructions.begin();	
 	for (; instrs != block->instructions.end(); ++instrs) {
 		out << " | " 
-		<< hydrazine::toGraphVizParsableLabel((*instrs)->toString());
+			<< hydrazine::toGraphVizParsableLabel((*instrs)->toString());
 	}
 	out << "}\"]";
 
@@ -90,7 +90,7 @@ std::string BasicBlock::DotFormatter::toString(
 	return out.str();
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 BasicBlock::Edge::Edge(BlockList::iterator h, 
 	BlockList::iterator t, Type y) : head(h), tail(t), type(y) {
@@ -465,10 +465,29 @@ ControlFlowGraph::BlockPointerVector ControlFlowGraph::topological_sequence() {
 	
 	queue.push(get_entry_block());
 
-	while (true) {
+	while (sequence.size() != size()) {
+		if(queue.empty()) {
+			for (pointer_iterator block = sequence.begin();
+				block != sequence.end(); ++block) {
+				for (pointer_iterator successor = (*block)->successors.begin();
+					successor != (*block)->successors.end(); ++successor) {
+					
+					if (visited.count(*successor) == 0) {
+						queue.push(*successor);
+						break;
+					}		
+				}
+				if(!queue.empty()) {
+					break;
+				}
+			}
+			
+			assert(!queue.empty());
+		}
+		
 		iterator current = queue.front();
 		queue.pop();
-		visited.insert(current);
+		if(!visited.insert(current).second) continue;
 		sequence.push_back(current);
 		report(" Adding block " << current->label);
 
@@ -488,27 +507,6 @@ ControlFlowGraph::BlockPointerVector ControlFlowGraph::topological_sequence() {
 				queue.push(*block);
 			}
 		}
-		
-		if(sequence.size() == size()) break;
-
-		if(queue.empty()) {
-			for (pointer_iterator block = sequence.begin();
-				block != sequence.end(); ++block) {
-				for (pointer_iterator successor = (*block)->successors.begin();
-					successor != (*block)->successors.end(); ++successor) {
-					
-					if (visited.count(*successor) == 0) {
-						queue.push(*successor);
-						break;
-					}		
-				}
-				if(!queue.empty()) {
-					break;
-				}
-			}
-			
-			assert(!queue.empty());
-		}
 	}
 
 	return sequence;
@@ -527,10 +525,29 @@ ControlFlowGraph::BlockPointerVector
 	
 	queue.push(get_exit_block());
 
-	while (true) {
+	while (sequence.size() != size()) {
+		if(queue.empty()) {
+			for (pointer_iterator block = sequence.begin();
+				block != sequence.end(); ++block) {
+				for (pointer_iterator pred = (*block)->predecessors.begin();
+					pred != (*block)->predecessors.end(); ++pred) {
+					
+					if (visited.count(*pred) == 0) {
+						queue.push(*pred);
+						break;
+					}		
+				}
+				if(!queue.empty()) {
+					break;
+				}
+			}
+			
+			assert(!queue.empty());
+		}
+		
 		iterator current = queue.front();
 		queue.pop();
-		visited.insert(current);
+		if(!visited.insert(current).second) continue;
 		sequence.push_back(current);
 		report(" Adding block " << current->label);
 
@@ -549,27 +566,6 @@ ControlFlowGraph::BlockPointerVector
 			if(noDependencies) {
 				queue.push(*block);
 			}
-		}
-		
-		if(sequence.size() == size()) break;
-		
-		if(queue.empty()) {
-			for (pointer_iterator block = sequence.begin();
-				block != sequence.end(); ++block) {
-				for (pointer_iterator pred = (*block)->predecessors.begin();
-					pred != (*block)->predecessors.end(); ++pred) {
-					
-					if (visited.count(*pred) == 0) {
-						queue.push(*pred);
-						break;
-					}		
-				}
-				if(!queue.empty()) {
-					break;
-				}
-			}
-			
-			assert(!queue.empty());
 		}
 	}
 

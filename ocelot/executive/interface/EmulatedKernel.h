@@ -25,6 +25,7 @@ namespace executive {
 	public:
 		typedef std::vector< ir::PTXInstruction > PTXInstructionVector;
 		typedef std::map< int, std::string > ProgramCounterBlockMap;
+		typedef std::map< std::string, std::pair<int, int> > BlockRangeMap;
 		typedef std::vector<ir::PTXU64> RegisterFile;
 
 	private:
@@ -144,11 +145,14 @@ namespace executive {
 		/*! Maps program counters of header instructions to basic block label */
 		ProgramCounterBlockMap branchTargetsToBlock;
 		
-		/*! maps the program counter of the terminating instructions to owning basic block */
+		/*! maps a PC to the basic block it terminates */
 		ProgramCounterBlockMap basicBlockMap;
 		
 		/*! maps a PC to the basic block it starts */
 		ProgramCounterBlockMap basicBlockPC;
+		
+		/*! maps a block label to the PCs of the first and last instructions in the block */
+		BlockRangeMap blockPCRange;
 
 		/*!	Packed vector of mapped textures */
 		TextureVector textures;
@@ -177,6 +181,9 @@ namespace executive {
 		/*!	\brief gets the basic block label owning the instruction 
 			specified by the PC */
 		std::string getInstructionBlock(int PC) const;
+		
+		/*! \brief accessor for obtaining PCs of first and last instructions in a block */
+		std::pair<int,int> getBlockRange(const std::string &label) const;
 	};
 
 }

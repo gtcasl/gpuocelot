@@ -29,6 +29,8 @@
 #include <hydrazine/implementation/string.h>
 #include <hydrazine/implementation/debug.h>
 
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
 #ifdef REPORT_BASE
 #undef REPORT_BASE
 #endif
@@ -37,6 +39,16 @@
 
 #define REPORT_KERNEL_INSTRUCTIONS 1
 #define REPORT_LAUNCH_CONFIGURATION 0
+
+#define IPDOM_RECONVERGENCE 1
+#define BARRIER_RECONVERGENCE 2
+#define GEN6_RECONVERGENCE 3
+#define SORTED_PREDICATE_STACK_RECONVERGENCE 4
+
+// specify reconvergence mechanism here
+#define RECONVERGENCE_MECHANISM IPDOM_RECONVERGENCE
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
 
 executive::EmulatedKernel::EmulatedKernel(
 	ir::Kernel* kernel, 
@@ -300,6 +312,7 @@ void executive::EmulatedKernel::constructInstructionSequence() {
 		bb_it != bb_sequence.end(); ++bb_it) {
 		branchTargetsToBlock[(int)instructions.size()] = (*bb_it)->label;
 		int n = 0;
+		blockPCRange[(*bb_it)->label].first = (int)instructions.size();
 		for (ir::ControlFlowGraph::InstructionList::iterator 
 			i_it = (*bb_it)->instructions.begin(); 
 			i_it != (*bb_it)->instructions.end(); ++i_it, ++n) {
@@ -316,6 +329,7 @@ void executive::EmulatedKernel::constructInstructionSequence() {
 			if (!n) { basicBlockPC[ptx.pc] = (*bb_it)->label; }
 			instructions.push_back(ptx);
 		}
+		blockPCRange[(*bb_it)->label].second = (int)lastPC;
 
 		if (n) {
 			basicBlockMap[lastPC] = (*bb_it)->label;
@@ -966,5 +980,10 @@ std::string executive::EmulatedKernel::getInstructionBlock(int PC) const {
 	}
 	
 	return "";
+}
+
+/*! \brief accessor for obtaining PCs of first and last instructions in a block */
+std::pair<int,int> executive::EmulatedKernel::getBlockRange(const std::string &label) const { 
+	return blockPCRange.at(label); 
 }
 

@@ -17,6 +17,7 @@
 #include <traces/interface/PerformanceBoundGenerator.h>
 #include <traces/interface/ConvergenceGenerator.h>
 #include <traces/interface/LoadBalanceGenerator.h>
+#include <traces/interface/ControlFlowVisualizer.h>
 
 namespace trace
 {
@@ -28,6 +29,8 @@ namespace trace
 		class WarpSynchronous 
 		{
 		public:
+			WarpSynchronous() : enabled(false), emitHotPaths(false), csv("warpsynchronous.csv") { }
+			
 			//! \brief whether trace generator is enabled
 			bool enabled;
 
@@ -43,6 +46,9 @@ namespace trace
 		*/
 		class PerformanceBound {
 		public:
+			PerformanceBound(): enabled(false), protocol(PerformanceBoundGenerator::Protocol_sm_20), 
+				render(false), outputFormat(PerformanceBoundGenerator::Output_dot) {} 
+		
 			/*! \brief Enable the performance bound trace generator */
 			bool enabled;
 			
@@ -58,6 +64,8 @@ namespace trace
 		/*! \brief configuration properties for ConvergenceGenerator */
 		class Convergence {
 		public:
+			Convergence() : enabled(false), logfile("convergence"), dot(false), render(false) { }
+		
 			//! \brief indicates trace generator is enabled
 			bool enabled;
 			
@@ -69,6 +77,18 @@ namespace trace
 			
 			//! \brief if true, a PDF is constructed from the DOT file
 			bool render;
+		};
+		
+		/*! \brief configuration of ControlFlowVisualizer */
+		class ControlFlow {
+		public:
+			ControlFlow(): enabled(false), allInstructions(false) { }
+			
+			//! \brief whether its enabled
+			bool enabled;
+			
+			//! \brief if false, only branch and reconverge instructions are displayed
+			bool allInstructions;
 		};
 
 	public:
@@ -110,6 +130,8 @@ namespace trace
 		
 		//! \brief trace::LoadBalanceGenerator
 		bool loadBalance;
+		
+		ControlFlow controlFlowVisualizer;
 	
 	public:
 		TraceConfiguration();
@@ -125,6 +147,7 @@ namespace trace
 		trace::PerformanceBoundGenerator _performanceBound;
 		trace::ConvergenceGenerator _convergence;
 		trace::LoadBalanceGenerator _loadBalance;
+		trace::ControlFlowVisualizer _controlFlowVisualizer;
 	};
 }
 

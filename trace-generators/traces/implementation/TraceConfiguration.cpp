@@ -149,6 +149,12 @@ TraceConfiguration::TraceConfiguration()
 				convergence.dot = convConfig.parse<bool>("dot", false);
 				convergence.render = convConfig.parse<bool>("render", false);
 			}
+			
+			hydrazine::json::Visitor cfgConfig = traceConfig["controlFlowVisualizer"];
+			if (!cfgConfig.is_null()) {
+				controlFlowVisualizer.enabled = cfgConfig.parse<bool>("enabled", false);
+				controlFlowVisualizer.allInstructions = cfgConfig.parse<bool>("allInstructions", false);
+			}
 		}
 	}
 	catch(const hydrazine::Exception& exp) 
@@ -230,6 +236,13 @@ TraceConfiguration::TraceConfiguration()
 		report("Creating load balance generator");
 		_loadBalance.database = database;
 		ocelot::addTraceGenerator(_loadBalance, true);
+	}
+	
+	if (controlFlowVisualizer.enabled) {
+		report("Creating ControlFlowVisualizer generator");
+		_controlFlowVisualizer.database = database;
+		_controlFlowVisualizer.allInstructions = controlFlowVisualizer.allInstructions;
+		ocelot::addTraceGenerator(_controlFlowVisualizer, true);
 	}
 }
 

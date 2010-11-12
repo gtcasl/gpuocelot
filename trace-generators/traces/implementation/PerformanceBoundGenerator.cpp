@@ -40,6 +40,7 @@ trace::PerformanceBoundGenerator::Counter::Counter():
 	memoryDemand(0),
 	warpInstructions(0),
 	branchInstructions(0),
+	noopInstructions(0),
 	instructions(0),
 	flops(0),
 	sharedBytes(0),
@@ -49,7 +50,8 @@ trace::PerformanceBoundGenerator::Counter::Counter():
 	stackVisitEnd(0),
 	stackVisitMiddle(0),
 	stackInsert(0),
-	stackMerge(0)
+	stackMerge(0),
+	conservativeBranches(0)
 {
 
 }
@@ -95,7 +97,13 @@ std::ostream & operator <<(std::ostream &out,
 		out << " | stack visit end: " << counter.stackVisitEnd << " ";
 		out << " | stack visit middle: " << counter.stackVisitMiddle << " ";
 		out << " | stack inserts: " << counter.stackInsert << " ";
-		out << " | stack merges: " << counter.stackMerge;
+		out << " | stack merges: " << counter.stackMerge << " ";
+	}
+	if (counter.conservativeBranches) {
+		out << " | " << counter.conservativeBranches << " ";
+	}
+	if (counter.noopInstructions) {
+		out << " | " << counter.noopInstructions << " ";
 	}
 
 	return out;
@@ -342,6 +350,9 @@ void trace::PerformanceBoundGenerator::finish() {
 		else {
 			resultsFile << 0;
 		}
+		
+		resultsFile << ", " << counterMap["entry"].conservativeBranches << ", " << counterMap["entry"].noopInstructions;
+		
 		resultsFile	<< std::endl;
 
 	}
@@ -390,6 +401,10 @@ void trace::PerformanceBoundGenerator::event(const trace::TraceEvent &event) {
 		op->second.stackDepth += event.contextStackSize;
 		op->second.instructions += event.active.count();
 	}
+	else if (!event.active.count()) {
+		op->second.noopInstructions ++;
+	}
+	
 	
 	if (event.instruction->opcode == ir::PTXInstruction::Bra) {
 		op->second.branchInstructions ++;
@@ -398,6 +413,7 @@ void trace::PerformanceBoundGenerator::event(const trace::TraceEvent &event) {
 		op->second.stackInsert += event.stackInsert;
 		op->second.stackMerge += event.stackMerge;
 		op->second.stackVisitNodes += event.stackVisitNodes;
+		op->second.conservativeBranches += event.conservativeBranches;
 	}
 	
 	if (isFlop(*event.instruction)) {

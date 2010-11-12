@@ -45,6 +45,7 @@ namespace trace {
 				memoryDemand += c.memoryDemand;
 				warpInstructions += c.warpInstructions;
 				branchInstructions += c.branchInstructions;
+				noopInstructions += c.noopInstructions;
 				instructions += c.instructions;
 				flops += c.flops;
 				sharedBytes += c.sharedBytes;
@@ -56,6 +57,7 @@ namespace trace {
 				stackVisitMiddle += c.stackVisitMiddle;
 				stackInsert += c.stackInsert;
 				stackMerge += c.stackMerge;
+				conservativeBranches += c.conservativeBranches;
 				
 				return *this;
 			}
@@ -70,6 +72,9 @@ namespace trace {
 			
 			//! \brief number of branch instructions
 			size_t branchInstructions;
+			
+			//! \brief number of no-op instructions
+			size_t noopInstructions;
 			
 			//! \brief dynamic instructions
 			size_t instructions;
@@ -97,6 +102,8 @@ namespace trace {
 			size_t stackInsert;
 		
 			size_t stackMerge;
+			
+			size_t conservativeBranches;
 		};
 		
 		//! \brief maps basic block label to operation counters

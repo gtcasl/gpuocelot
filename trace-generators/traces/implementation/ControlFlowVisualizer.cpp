@@ -66,10 +66,11 @@ public:
 		out << "shape=record,label=\"{";
 
 		std::pair<int,int> blockRange = generator->kernel->getBlockRange(block->label);
+		std::pair<int,int> threadFrontier = generator->kernel->threadFrontiers.at(blockRange.second);
 		
 		out << hydrazine::toGraphVizParsableLabel(block->label);
 		out << " | PCs: [" << blockRange.first << " ,  " << blockRange.second << "] ";
-		
+		out << " | thread frontier: [" << threadFrontier.first << " - " << threadFrontier.second << "] ";
 		for (int i = blockRange.first; i <= blockRange.second; i++) {
 			const ir::PTXInstruction & instr = generator->kernel->instructions.at(i);
 			if (instr.opcode == ir::PTXInstruction::Bra) {

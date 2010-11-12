@@ -45,7 +45,7 @@ __global__ void Mandelbrot0_sm13(uchar4 *dst, const int imageW,
         const int iy = blockDim.y * blockY + threadIdx.y;
 		const int ix = (blockDim.x * blockX + threadIdx.x)
 			* pointsPerThread;
-		const int points = min(ix + pointsPerThread, imageW) - ix;
+		const int points = min(ix + pointsPerThread, imageW) - min(ix, imageW);
 
         if ((points > 0) && (iy < imageH)) {
 		    // Calculate the location
@@ -363,8 +363,8 @@ void RunMandelbrot0_sm13(uchar4 *dst, const int imageW, const int imageH, const 
 						 const double xjp, const double yjp, const double scale, const uchar4 colors, const int frame, 
 						 const int animationFrame, const int mode, const int numSMs, const bool isJ)
 {
-    dim3 threads(BLOCKDIM_X/16, BLOCKDIM_Y);
-    dim3 grid(iDivUp(imageW, BLOCKDIM_X), iDivUp(imageH, BLOCKDIM_Y));
+    dim3 threads(BLOCKDIM_X, BLOCKDIM_Y);
+    dim3 grid(iDivUp(iDivUp(imageW, BLOCKDIM_X),16), iDivUp(imageH, BLOCKDIM_Y));
 
     // zero block counter
     unsigned int hBlockCounter = 0;

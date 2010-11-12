@@ -158,7 +158,7 @@ __device__ inline void CalcMandelbrot(
 		xx = 0 ;
 	}
 
-    do {
+    while (point != points) {
        	if ((--i <= 0) || (xx + yy > T(4.0))) {
 			output[point] = i;
 
@@ -186,7 +186,7 @@ __device__ inline void CalcMandelbrot(
         x = xx - yy + xC;
         yy = y * y;
         xx = x * x;
-    } while (1);
+    };
 } // CalcMandelbrot
 
 

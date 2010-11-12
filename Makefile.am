@@ -318,7 +318,7 @@ TestCudaSequence_LDFLAGS = -static
 ##
 TestLoopExit_CXXFLAGS = $(SDK_CFLAGS)
 TestLoopExit_SOURCES = ocelot/cuda/test/kernels/loopExit.cu.cpp
-TestLoopExit_LDADD = libocelot.la $(LLVM_LDFLAGS)
+TestLoopExit_LDADD = libocelot.la $(LLVM_LDFLAGS) -locelotTrace
 TestLoopExit_LDFLAGS = -static
 ################################################################################
 

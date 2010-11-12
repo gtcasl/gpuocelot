@@ -315,6 +315,7 @@ void executive::CooperativeThreadArray::execute(const ir::Dim3& block) {
 			currentEvent.PC = context.PC;
 			currentEvent.instruction = &instr;
 			currentEvent.active = context.active;
+			currentEvent.conservativeBranches = 0;
 		}
 		
 		switch (instr.opcode) {
@@ -2120,6 +2121,7 @@ void executive::CooperativeThreadArray::eval_Bra(CTAContext &context, const PTXI
 		currentEvent.stackVisitMiddle = 0;
 		currentEvent.stackInsert = 0;
 		currentEvent.stackMerge = 0;
+		currentEvent.conservativeBranches = 0;
 		
 		//
 		// preserve invariant runtimeStack is in descending order

@@ -13,6 +13,12 @@
 			kernelFilter: "_Z13scalarProdGPUPfS_S_ii",
 			alwaysAttach: true
 		},
+		performanceBound: {
+			enabled: true,
+			protocol: sm_20,
+			render: false,
+			output: csv
+		},
 		controlFlowVisualizer: {
 			enabled: true,
 			allInstructions: false

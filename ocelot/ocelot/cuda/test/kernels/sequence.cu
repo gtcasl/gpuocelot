@@ -34,7 +34,7 @@ extern "C" __global__ void testShr(int *A, const int *B) {
 
 int main(int argc, char *arg[]) {
 
-	const int N = 1024;
+	const int N = 32;
 	int *A_host, *A_gpu =0;
 	int errors = 0;
 

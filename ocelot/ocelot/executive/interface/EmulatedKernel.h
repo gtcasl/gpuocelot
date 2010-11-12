@@ -26,6 +26,7 @@ namespace executive {
 		typedef std::vector< ir::PTXInstruction > PTXInstructionVector;
 		typedef std::map< int, std::string > ProgramCounterBlockMap;
 		typedef std::map< std::string, std::pair<int, int> > BlockRangeMap;
+		typedef std::map< int, std::pair< int, int > > ThreadFrontierMap;
 		typedef std::vector<ir::PTXU64> RegisterFile;
 
 	private:
@@ -94,9 +95,6 @@ namespace executive {
 		/*!	On construction, allocates registers by computing live ranges */
 		void registerAllocation();
 
-		/*! If requested, computes thread frontiers and lays out blocks  */
-		ir::ControlFlowGraph::BlockPointerVector computeThreadFrontiers();
-
 		/*!	Produces a packed vector of instructions, updates each operand, 
 			and changes labels to indices.
 		*/
@@ -153,6 +151,9 @@ namespace executive {
 		
 		/*! maps a block label to the PCs of the first and last instructions in the block */
 		BlockRangeMap blockPCRange;
+		
+		/*! maps a basic block terminator PC onto that block's thread frontier */
+		ThreadFrontierMap threadFrontiers;
 
 		/*!	Packed vector of mapped textures */
 		TextureVector textures;

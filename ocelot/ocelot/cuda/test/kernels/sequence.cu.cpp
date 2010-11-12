@@ -1,8 +1,8 @@
-# 1 "/tmp/tmpxft_00006733_00000000-1_sequence.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00002deb_00000000-1_sequence.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_00006733_00000000-1_sequence.cudafe1.cpp"
-# 1 "/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/sequence.cu"
+# 1 "/tmp/tmpxft_00002deb_00000000-1_sequence.cudafe1.cpp"
+# 1 "sequence.cu"
 # 46 "/usr/local/cuda3.1/cuda/bin/../include/device_types.h"
 # 149 "/usr/lib/gcc/x86_64-linux-gnu/4.4.3/include/stddef.h" 3
 typedef long ptrdiff_t;
@@ -8605,7 +8605,7 @@ extern "C" { typedef int _G_int32_t; }
 extern "C" { typedef unsigned short _G_uint16_t; }
 # 56 "/usr/include/_G_config.h" 3
 extern "C" { typedef unsigned _G_uint32_t; }
-# 40 "/usr/lib/gcc/x86_64-linux-gnu/4.4.3/include/va.h" 3
+# 40 "/usr/lib/gcc/x86_64-linux-gnu/4.4.3/include/stdarg.h" 3
 extern "C" { typedef __builtin_va_list __gnuc_va_list; }
 # 170 "/usr/include/libio.h" 3
 struct _IO_jump_t; struct _IO_FILE;
@@ -8997,139 +8997,139 @@ extern "C" void flockfile(FILE *) throw();
 extern "C" int ftrylockfile(FILE *) throw();
 # 893 "/usr/include/stdio.h" 3
 extern "C" void funlockfile(FILE *) throw();
-# 12 "/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/sequence.cu"
+# 12 "sequence.cu"
 extern "C" void sequence(int *A, int N) ;
-# 19 "/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/sequence.cu"
+# 19 "sequence.cu"
 extern "C" void testShr(int *A, const int *B) ;
-# 35 "/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/sequence.cu"
+# 35 "sequence.cu"
 int main(int argc, char *arg[]) {
-# 37 "/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/sequence.cu"
-const int N = 1024;
-# 38 "/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/sequence.cu"
+# 37 "sequence.cu"
+const int N = 32;
+# 38 "sequence.cu"
 int *A_host, *A_gpu = (0);
-# 39 "/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/sequence.cu"
+# 39 "sequence.cu"
 int errors = 0;
-# 41 "/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/sequence.cu"
+# 41 "sequence.cu"
 size_t bytes = (sizeof(int) * (N));
-# 43 "/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/sequence.cu"
+# 43 "sequence.cu"
 if ((cudaMalloc((void **)(&A_gpu), bytes)) != (cudaSuccess)) {
-# 44 "/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/sequence.cu"
+# 44 "sequence.cu"
 printf("cudaMalloc() - failed to allocate %d bytes on device\n", (int)bytes);
-# 45 "/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/sequence.cu"
+# 45 "sequence.cu"
 return -1;
-# 46 "/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/sequence.cu"
+# 46 "sequence.cu"
 }
-# 48 "/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/sequence.cu"
+# 48 "sequence.cu"
 A_host = ((int *)malloc(bytes));
-# 49 "/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/sequence.cu"
+# 49 "sequence.cu"
 for (int i = 0; i < N; i++) {
-# 50 "/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/sequence.cu"
+# 50 "sequence.cu"
 (A_host[i]) = (-1);
-# 51 "/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/sequence.cu"
+# 51 "sequence.cu"
 }
-# 53 "/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/sequence.cu"
+# 53 "sequence.cu"
 cudaMemcpy(A_gpu, A_host, bytes, cudaMemcpyHostToDevice);
-# 55 "/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/sequence.cu"
+# 55 "sequence.cu"
 dim3 grid((N + 31) / 32, 1);
-# 56 "/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/sequence.cu"
+# 56 "sequence.cu"
 dim3 block(32, 1);
-# 57 "/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/sequence.cu"
+# 57 "sequence.cu"
 cudaConfigureCall(grid, block) ? ((void)0) : sequence(A_gpu, N);
-# 58 "/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/sequence.cu"
+# 58 "sequence.cu"
 cudaMemcpy(A_host, A_gpu, bytes, cudaMemcpyDeviceToHost);
-# 59 "/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/sequence.cu"
+# 59 "sequence.cu"
 for (int i = 0; i < N; i++) {
-# 60 "/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/sequence.cu"
+# 60 "sequence.cu"
 if ((A_host[i]) != (2 * i)) {
-# 61 "/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/sequence.cu"
+# 61 "sequence.cu"
 ++errors;
-# 62 "/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/sequence.cu"
+# 62 "sequence.cu"
 }
-# 63 "/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/sequence.cu"
+# 63 "sequence.cu"
 }
-# 65 "/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/sequence.cu"
+# 65 "sequence.cu"
 int *B_gpu = (0);
-# 66 "/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/sequence.cu"
+# 66 "sequence.cu"
 if ((cudaMalloc((void **)(&B_gpu), bytes)) != (cudaSuccess)) {
-# 67 "/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/sequence.cu"
+# 67 "sequence.cu"
 printf("cudaMalloc() - failed to allocate %d bytes on device\n", (int)bytes);
-# 68 "/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/sequence.cu"
+# 68 "sequence.cu"
 cudaFree(A_gpu);
-# 69 "/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/sequence.cu"
+# 69 "sequence.cu"
 free(A_host);
-# 70 "/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/sequence.cu"
+# 70 "sequence.cu"
 return -1;
-# 71 "/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/sequence.cu"
+# 71 "sequence.cu"
 }
-# 73 "/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/sequence.cu"
+# 73 "sequence.cu"
 cudaConfigureCall(grid, block) ? ((void)0) : sequence(A_gpu, N);
-# 74 "/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/sequence.cu"
+# 74 "sequence.cu"
 cudaConfigureCall(grid, block) ? ((void)0) : testShr(B_gpu, A_gpu);
-# 76 "/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/sequence.cu"
+# 76 "sequence.cu"
 if ((cudaMemcpy(A_host, B_gpu, bytes, cudaMemcpyDeviceToHost)) != (cudaSuccess)) {
-# 77 "/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/sequence.cu"
+# 77 "sequence.cu"
 printf("cudaMemcpy(A, B) - failed to copy %d bytes from device to host\n", (int)bytes);
-# 78 "/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/sequence.cu"
+# 78 "sequence.cu"
 cudaFree(A_gpu);
-# 79 "/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/sequence.cu"
+# 79 "sequence.cu"
 cudaFree(B_gpu);
-# 80 "/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/sequence.cu"
+# 80 "sequence.cu"
 free(A_host);
-# 81 "/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/sequence.cu"
+# 81 "sequence.cu"
 }
-# 83 "/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/sequence.cu"
+# 83 "sequence.cu"
 for (int i = 0; (errors < 5) && (i < N); ++i) {
-# 84 "/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/sequence.cu"
+# 84 "sequence.cu"
 int b;
-# 85 "/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/sequence.cu"
+# 85 "sequence.cu"
 if (i & 1) {
-# 86 "/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/sequence.cu"
+# 86 "sequence.cu"
 b = (((i ^ 1) * 2) * 2);
-# 87 "/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/sequence.cu"
+# 87 "sequence.cu"
 } else
-# 88 "/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/sequence.cu"
+# 88 "sequence.cu"
 {
-# 89 "/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/sequence.cu"
+# 89 "sequence.cu"
 b = (((i ^ 1) * 2) * 3);
-# 90 "/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/sequence.cu"
+# 90 "sequence.cu"
 }
-# 91 "/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/sequence.cu"
+# 91 "sequence.cu"
 int got = (A_host[i]);
-# 92 "/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/sequence.cu"
+# 92 "sequence.cu"
 if (b != got) {
-# 93 "/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/sequence.cu"
+# 93 "sequence.cu"
 printf("ERROR 1 [%d] - expected: %d, got: %d\n", i, b, got);
-# 94 "/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/sequence.cu"
+# 94 "sequence.cu"
 ++errors;
-# 95 "/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/sequence.cu"
+# 95 "sequence.cu"
 }
-# 96 "/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/sequence.cu"
+# 96 "sequence.cu"
 }
-# 98 "/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/sequence.cu"
+# 98 "sequence.cu"
 cudaFree(B_gpu);
-# 99 "/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/sequence.cu"
+# 99 "sequence.cu"
 cudaFree(A_gpu);
-# 100 "/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/sequence.cu"
+# 100 "sequence.cu"
 free(A_host);
-# 103 "/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/sequence.cu"
+# 103 "sequence.cu"
 if (errors) {
-# 104 "/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/sequence.cu"
+# 104 "sequence.cu"
 printf("Pass/Fail : Fail\n");
-# 105 "/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/sequence.cu"
+# 105 "sequence.cu"
 } else
-# 106 "/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/sequence.cu"
+# 106 "sequence.cu"
 {
-# 107 "/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/sequence.cu"
+# 107 "sequence.cu"
 printf("Pass/Fail : Pass\n");
-# 108 "/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/sequence.cu"
+# 108 "sequence.cu"
 }
-# 110 "/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/sequence.cu"
+# 110 "sequence.cu"
 return 0;
-# 111 "/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/sequence.cu"
+# 111 "sequence.cu"
 }
-# 1 "/tmp/tmpxft_00006733_00000000-1_sequence.cudafe1.stub.c"
-# 1 "/tmp/tmpxft_00006733_00000000-1_sequence.cudafe1.stub.c" 1
-# 1 "/tmp/tmpxft_00006733_00000000-3_sequence.fatbin.c" 1
+# 1 "/tmp/tmpxft_00002deb_00000000-1_sequence.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00002deb_00000000-1_sequence.cudafe1.stub.c" 1
+# 1 "/tmp/tmpxft_00002deb_00000000-3_sequence.fatbin.c" 1
 # 1 "/usr/local/cuda3.1/cuda/bin/../include/__cudaFatFormat.h" 1
 # 83 "/usr/local/cuda3.1/cuda/bin/../include/__cudaFatFormat.h"
 extern "C" {
@@ -9207,7 +9207,7 @@ void __cudaFatFreePTX( char* ptx );
 
 
 }
-# 2 "/tmp/tmpxft_00006733_00000000-3_sequence.fatbin.c" 2
+# 2 "/tmp/tmpxft_00002deb_00000000-3_sequence.fatbin.c" 2
 
 
 
@@ -9293,8 +9293,8 @@ asm(
 ".quad 0x2d36302d30313032,0x2d2f2f090a0a3730,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x43202f2f090a2d2d,0x676e696c69706d6f,0x6d742f706d742f20\n"
-".quad 0x3030305f74667870,0x30305f3333373630,0x372d303030303030,0x636e65757165735f\n"
-".quad 0x692e337070632e65,0x632f706d742f2820,0x4656502e23494263,0x2f2f090a29687446\n"
+".quad 0x3030305f74667870,0x30305f6265643230,0x372d303030303030,0x636e65757165735f\n"
+".quad 0x692e337070632e65,0x632f706d742f2820,0x546c642e23494263,0x2f2f090a29364571\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2f2f090a0a2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
@@ -9309,7 +9309,7 @@ asm(
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x662e090a0a2d2d2d,0x3c22093109656c69\n"
 ".quad 0x2d646e616d6d6f63,0x090a223e656e696c,0x093209656c69662e,0x6d742f706d742f22\n"
-".quad 0x3030305f74667870,0x30305f3333373630,0x362d303030303030,0x636e65757165735f\n"
+".quad 0x3030305f74667870,0x30305f6265643230,0x362d303030303030,0x636e65757165735f\n"
 ".quad 0x6566616475632e65,0x090a227570672e32,0x093309656c69662e,0x696c2f7273752f22\n"
 ".quad 0x38782f6363672f62,0x6e696c2d34365f36,0x342f756e672d7875,0x636e692f332e342e\n"
 ".quad 0x6474732f6564756c,0x090a22682e666564,0x093409656c69662e,0x6f6c2f7273752f22\n"
@@ -9338,105 +9338,103 @@ asm(
 ".quad 0x2209353109656c69,0x636e692f7273752f,0x6d69742f6564756c,0x662e090a22682e65\n"
 ".quad 0x2209363109656c69,0x636f6c2f7273752f,0x33616475632f6c61,0x2f616475632f312e\n"
 ".quad 0x692f2e2e2f6e6962,0x742f6564756c636e,0x665f657275747865,0x6e75665f68637465\n"
-".quad 0x682e736e6f697463,0x656c69662e090a22,0x6f682f2209373109,0x6572646e612f656d\n"
-".quad 0x69736f7065722f77,0x672f736569726f74,0x746f6c65636f7570,0x2f746f6c65636f2f\n"
-".quad 0x632f746f6c65636f,0x747365742f616475,0x736c656e72656b2f,0x636e65757165732f\n"
-".quad 0x2e090a2275632e65,0x09383109656c6966,0x6f6c2f7273752f22,0x616475632f6c6163\n"
-".quad 0x616475632f312e33,0x2f2e2e2f6e69622f,0x2f6564756c636e69,0x665f6e6f6d6d6f63\n"
-".quad 0x736e6f6974636e75,0x69662e090a22682e,0x2f2209393109656c,0x61636f6c2f727375\n"
+".quad 0x682e736e6f697463,0x656c69662e090a22,0x7165732209373109,0x75632e65636e6575\n"
+".quad 0x656c69662e090a22,0x73752f2209383109,0x2f6c61636f6c2f72,0x2f312e3361647563\n"
+".quad 0x6e69622f61647563,0x6c636e692f2e2e2f,0x6d6d6f632f656475,0x74636e75665f6e6f\n"
+".quad 0x0a22682e736e6f69,0x3109656c69662e09,0x2f7273752f220939,0x75632f6c61636f6c\n"
+".quad 0x75632f312e336164,0x2e2f6e69622f6164,0x64756c636e692f2e,0x665f6874616d2f65\n"
+".quad 0x736e6f6974636e75,0x69662e090a22682e,0x2f2209303209656c,0x61636f6c2f727375\n"
 ".quad 0x2e33616475632f6c,0x622f616475632f31,0x6e692f2e2e2f6e69,0x616d2f6564756c63\n"
-".quad 0x74636e75665f6874,0x0a22682e736e6f69,0x3209656c69662e09,0x2f7273752f220930\n"
+".quad 0x74736e6f635f6874,0x0a22682e73746e61,0x3209656c69662e09,0x2f7273752f220931\n"
 ".quad 0x75632f6c61636f6c,0x75632f312e336164,0x2e2f6e69622f6164,0x64756c636e692f2e\n"
-".quad 0x635f6874616d2f65,0x73746e6174736e6f,0x69662e090a22682e,0x2f2209313209656c\n"
-".quad 0x61636f6c2f727375,0x2e33616475632f6c,0x622f616475632f31,0x6e692f2e2e2f6e69\n"
-".quad 0x65642f6564756c63,0x6e75665f65636976,0x682e736e6f697463,0x656c69662e090a22\n"
-".quad 0x73752f2209323209,0x2f6c61636f6c2f72,0x2f312e3361647563,0x6e69622f61647563\n"
-".quad 0x6c636e692f2e2e2f,0x315f6d732f656475,0x63696d6f74615f31,0x6f6974636e75665f\n"
-".quad 0x2e090a22682e736e,0x09333209656c6966,0x6f6c2f7273752f22,0x616475632f6c6163\n"
-".quad 0x616475632f312e33,0x2f2e2e2f6e69622f,0x2f6564756c636e69,0x74615f32315f6d73\n"
-".quad 0x6e75665f63696d6f,0x682e736e6f697463,0x656c69662e090a22,0x73752f2209343209\n"
-".quad 0x2f6c61636f6c2f72,0x2f312e3361647563,0x6e69622f61647563,0x6c636e692f2e2e2f\n"
-".quad 0x315f6d732f656475,0x656c62756f645f33,0x6f6974636e75665f,0x2e090a22682e736e\n"
-".quad 0x09353209656c6966,0x6f6c2f7273752f22,0x616475632f6c6163,0x616475632f312e33\n"
-".quad 0x2f2e2e2f6e69622f,0x2f6564756c636e69,0x74615f30325f6d73,0x6e75665f63696d6f\n"
-".quad 0x682e736e6f697463,0x656c69662e090a22,0x73752f2209363209,0x2f6c61636f6c2f72\n"
-".quad 0x2f312e3361647563,0x6e69622f61647563,0x6c636e692f2e2e2f,0x325f6d732f656475\n"
-".quad 0x6e6972746e695f30,0x0a22682e73636973,0x3209656c69662e09,0x2f7273752f220937\n"
-".quad 0x75632f6c61636f6c,0x75632f312e336164,0x2e2f6e69622f6164,0x64756c636e692f2e\n"
-".quad 0x6361667275732f65,0x6974636e75665f65,0x090a22682e736e6f,0x383209656c69662e\n"
-".quad 0x6c2f7273752f2209,0x6475632f6c61636f,0x6475632f312e3361,0x2e2e2f6e69622f61\n"
-".quad 0x6564756c636e692f,0x75665f6874616d2f,0x5f736e6f6974636e,0x317874705f6c6264\n"
-".quad 0x2e090a0a0a22682e,0x6573207972746e65,0x282065636e657571,0x617261702e09090a\n"
-".quad 0x5f203436752e206d,0x726170616475635f,0x6e65757165735f6d,0x09090a2c415f6563\n"
-".quad 0x2e206d617261702e,0x75635f5f20323373,0x735f6d7261706164,0x5f65636e65757165\n"
-".quad 0x2e090a7b090a294e,0x3631752e20676572,0x3b3e343c68722520,0x2e206765722e090a\n"
-".quad 0x373c722520323375,0x6765722e090a3b3e,0x7225203436752e20,0x2e090a3b3e363c64\n"
-".quad 0x6572702e20676572,0x3b3e333c70252064,0x3109636f6c2e090a,0x240a300932310937\n"
-".quad 0x6e6967656257444c,0x636e65757165735f,0x2e766f6d090a3a65,0x6872250920363175\n"
-".quad 0x6961746325202c31,0x6f6d090a3b782e64,0x2509203631752e76,0x746e25202c326872\n"
-".quad 0x6d090a3b782e6469,0x2e656469772e6c75,0x3172250920363175,0x202c31687225202c\n"
-".quad 0x63090a3b32687225,0x752e3233752e7476,0x2c32722509203631,0x3b782e6469742520\n"
-".quad 0x33752e646461090a,0x202c337225092032,0x317225202c327225,0x61702e646c090a3b\n"
-".quad 0x203233732e6d6172,0x5f5b202c34722509,0x726170616475635f,0x6e65757165735f6d\n"
-".quad 0x090a3b5d4e5f6563,0x2e656c2e70746573,0x3170250920323373,0x25202c347225202c\n"
-".quad 0x702540090a3b3372,0x2409206172622031,0x3230315f305f744c,0x636f6c2e090a3b36\n"
-".quad 0x3009353109373109,0x6f6c2e6c756d090a,0x722509203233732e,0x202c337225202c35\n"
-".quad 0x702e646c090a3b32,0x3436752e6d617261,0x202c316472250920,0x70616475635f5f5b\n"
-".quad 0x757165735f6d7261,0x3b5d415f65636e65,0x36732e747663090a,0x2509203233732e34\n"
-".quad 0x337225202c326472,0x772e6c756d090a3b,0x203233732e656469,0x25202c3364722509\n"
-".quad 0x090a3b34202c3372,0x203436752e646461,0x25202c3464722509,0x647225202c316472\n"
-".quad 0x672e7473090a3b33,0x33732e6c61626f6c,0x346472255b092032,0x357225202c5d302b\n"
-".quad 0x5f305f744c240a3b,0x2e090a3a36323031,0x3109373109636f6c,0x697865090a300937\n"
-".quad 0x6557444c240a3b74,0x65757165735f646e,0x207d090a3a65636e,0x6575716573202f2f\n"
-".quad 0x652e090a0a65636e,0x736574207972746e,0x090a282072685374,0x206d617261702e09\n"
-".quad 0x635f5f203436752e,0x5f6d726170616475,0x5f72685374736574,0x61702e09090a2c41\n"
-".quad 0x3436752e206d6172,0x70616475635f5f20,0x747365745f6d7261,0x090a29425f726853\n"
+".quad 0x6563697665642f65,0x6f6974636e75665f,0x2e090a22682e736e,0x09323209656c6966\n"
+".quad 0x6f6c2f7273752f22,0x616475632f6c6163,0x616475632f312e33,0x2f2e2e2f6e69622f\n"
+".quad 0x2f6564756c636e69,0x74615f31315f6d73,0x6e75665f63696d6f,0x682e736e6f697463\n"
+".quad 0x656c69662e090a22,0x73752f2209333209,0x2f6c61636f6c2f72,0x2f312e3361647563\n"
+".quad 0x6e69622f61647563,0x6c636e692f2e2e2f,0x315f6d732f656475,0x63696d6f74615f32\n"
+".quad 0x6f6974636e75665f,0x2e090a22682e736e,0x09343209656c6966,0x6f6c2f7273752f22\n"
+".quad 0x616475632f6c6163,0x616475632f312e33,0x2f2e2e2f6e69622f,0x2f6564756c636e69\n"
+".quad 0x6f645f33315f6d73,0x6e75665f656c6275,0x682e736e6f697463,0x656c69662e090a22\n"
+".quad 0x73752f2209353209,0x2f6c61636f6c2f72,0x2f312e3361647563,0x6e69622f61647563\n"
+".quad 0x6c636e692f2e2e2f,0x325f6d732f656475,0x63696d6f74615f30,0x6f6974636e75665f\n"
+".quad 0x2e090a22682e736e,0x09363209656c6966,0x6f6c2f7273752f22,0x616475632f6c6163\n"
+".quad 0x616475632f312e33,0x2f2e2e2f6e69622f,0x2f6564756c636e69,0x6e695f30325f6d73\n"
+".quad 0x736369736e697274,0x69662e090a22682e,0x2f2209373209656c,0x61636f6c2f727375\n"
+".quad 0x2e33616475632f6c,0x622f616475632f31,0x6e692f2e2e2f6e69,0x75732f6564756c63\n"
+".quad 0x75665f6563616672,0x2e736e6f6974636e,0x6c69662e090a2268,0x752f220938320965\n"
+".quad 0x6c61636f6c2f7273,0x312e33616475632f,0x69622f616475632f,0x636e692f2e2e2f6e\n"
+".quad 0x74616d2f6564756c,0x6974636e75665f68,0x5f6c62645f736e6f,0x0a22682e31787470\n"
+".quad 0x72746e652e090a0a,0x6e65757165732079,0x2e09090a28206563,0x752e206d61726170\n"
+".quad 0x6475635f5f203436,0x65735f6d72617061,0x415f65636e657571,0x7261702e09090a2c\n"
+".quad 0x203233732e206d61,0x6170616475635f5f,0x65757165735f6d72,0x090a294e5f65636e\n"
 ".quad 0x206765722e090a7b,0x687225203631752e,0x722e090a3b3e343c,0x203233752e206765\n"
-".quad 0x0a3b3e31313c7225,0x752e206765722e09,0x313c647225203436,0x65722e090a3b3e35\n"
-".quad 0x20646572702e2067,0x090a3b3e333c7025,0x206465726168732e,0x34206e67696c612e\n"
-".quad 0x635f5f2038622e20,0x75635f5f5f616475,0x6c61636f6c5f6164,0x3032325f7261765f\n"
-".quad 0x74735f30335f3532,0x5b3233656761726f,0x090a3b5d34323031,0x09373109636f6c2e\n"
-".quad 0x444c240a30093931,0x745f6e6967656257,0x0a3a726853747365,0x3436752e766f6d09\n"
-".quad 0x202c316472250920,0x5f5f616475635f5f,0x6f6c5f616475635f,0x5f7261765f6c6163\n"
-".quad 0x30335f3532303232,0x656761726f74735f,0x6f6c2e090a3b3233,0x0934320937310963\n"
-".quad 0x752e747663090a30,0x09203631752e3233,0x697425202c317225,0x6f6d090a3b782e64\n"
-".quad 0x2509203631752e76,0x746325202c316872,0x090a3b782e646961,0x203631752e766f6d\n"
-".quad 0x25202c3268722509,0x0a3b782e6469746e,0x6469772e6c756d09,0x2509203631752e65\n"
-".quad 0x31687225202c3272,0x0a3b32687225202c,0x3233752e64646109,0x25202c3372250920\n"
-".quad 0x3b327225202c3172,0x36732e747663090a,0x2509203233732e34,0x337225202c326472\n"
-".quad 0x772e6c756d090a3b,0x203233732e656469,0x25202c3364722509,0x090a3b34202c3372\n"
-".quad 0x6d617261702e646c,0x722509203436752e,0x635f5f5b202c3464,0x5f6d726170616475\n"
-".quad 0x5f72685374736574,0x646461090a3b5d42,0x722509203436752e,0x34647225202c3564\n"
-".quad 0x0a3b33647225202c,0x626f6c672e646c09,0x09203233732e6c61,0x72255b202c347225\n"
-".quad 0x090a3b5d302b3564,0x2e3436752e747663,0x6472250920323375,0x0a3b317225202c36\n"
-".quad 0x6469772e6c756d09,0x2509203233752e65,0x317225202c376472,0x6461090a3b34202c\n"
-".quad 0x2509203436752e64,0x647225202c386472,0x3b37647225202c31,0x6168732e7473090a\n"
-".quad 0x203233732e646572,0x302b386472255b09,0x0a3b347225202c5d,0x373109636f6c2e09\n"
-".quad 0x62090a3009353209,0x20636e79732e7261,0x726f78090a3b3009,0x722509203233622e\n"
-".quad 0x202c317225202c35,0x2e747663090a3b31,0x203233752e343675,0x25202c3964722509\n"
-".quad 0x6c756d090a3b3572,0x33752e656469772e,0x3031647225092032,0x34202c357225202c\n"
-".quad 0x752e646461090a3b,0x3164722509203436,0x2c31647225202c31,0x0a3b303164722520\n"
-".quad 0x726168732e646c09,0x09203233732e6465,0x72255b202c367225,0x0a3b5d302b313164\n"
-".quad 0x3233622e646e6109,0x25202c3772250920,0x090a3b31202c3372,0x203233752e766f6d\n"
-".quad 0x3b30202c38722509,0x652e70746573090a,0x2509203233732e71,0x2c377225202c3170\n"
-".quad 0x40090a3b38722520,0x2061726220317025,0x315f315f744c2409,0x646c090a3b323832\n"
-".quad 0x2e6465726168732e,0x3672250920323373,0x31316472255b202c,0x6c2e090a3b5d302b\n"
-".quad 0x373209373109636f,0x2e6c756d090a3009,0x09203233732e6f6c,0x367225202c397225\n"
-".quad 0x7262090a3b32202c,0x240920696e752e61,0x3230315f315f744c,0x315f744c240a3b36\n"
-".quad 0x090a3a323832315f,0x09373109636f6c2e,0x646c090a30093532,0x2e6465726168732e\n"
-".quad 0x3672250920323373,0x31316472255b202c,0x6c2e090a3b5d302b,0x303309373109636f\n"
-".quad 0x2e6c756d090a3009,0x09203233732e6f6c,0x367225202c397225,0x744c240a3b33202c\n"
-".quad 0x3a363230315f315f,0x3109636f6c2e090a,0x090a300932330937,0x6d617261702e646c\n"
-".quad 0x722509203436752e,0x5f5f5b202c323164,0x6d72617061647563,0x726853747365745f\n"
-".quad 0x6461090a3b5d415f,0x2509203436752e64,0x7225202c33316472,0x647225202c323164\n"
-".quad 0x672e7473090a3b33,0x33732e6c61626f6c,0x316472255b092032,0x7225202c5d302b33\n"
-".quad 0x636f6c2e090a3b39,0x3009333309373109,0x0a3b74697865090a,0x5f646e6557444c24\n"
-".quad 0x3a72685374736574,0x74202f2f207d090a,0x0a0a726853747365,0x0000000000000000\n"
+".quad 0x090a3b3e373c7225,0x36752e206765722e,0x3e363c6472252034,0x206765722e090a3b\n"
+".quad 0x702520646572702e,0x6c2e090a3b3e333c,0x323109373109636f,0x6257444c240a3009\n"
+".quad 0x7165735f6e696765,0x090a3a65636e6575,0x203631752e766f6d,0x25202c3168722509\n"
+".quad 0x3b782e6469617463,0x31752e766f6d090a,0x2c32687225092036,0x782e6469746e2520\n"
+".quad 0x772e6c756d090a3b,0x203631752e656469,0x7225202c31722509,0x32687225202c3168\n"
+".quad 0x752e747663090a3b,0x09203631752e3233,0x697425202c327225,0x6461090a3b782e64\n"
+".quad 0x2509203233752e64,0x2c327225202c3372,0x6c090a3b31722520,0x2e6d617261702e64\n"
+".quad 0x3472250920323373,0x6475635f5f5b202c,0x65735f6d72617061,0x4e5f65636e657571\n"
+".quad 0x70746573090a3b5d,0x203233732e656c2e,0x7225202c31702509,0x0a3b337225202c34\n"
+".quad 0x7262203170254009,0x305f744c24092061,0x090a3b363230315f,0x09373109636f6c2e\n"
+".quad 0x756d090a30093531,0x3233732e6f6c2e6c,0x25202c3572250920,0x090a3b32202c3372\n"
+".quad 0x6d617261702e646c,0x722509203436752e,0x635f5f5b202c3164,0x5f6d726170616475\n"
+".quad 0x65636e6575716573,0x7663090a3b5d415f,0x33732e3436732e74,0x2c32647225092032\n"
+".quad 0x6d090a3b33722520,0x2e656469772e6c75,0x6472250920323373,0x202c337225202c33\n"
+".quad 0x2e646461090a3b34,0x6472250920343675,0x2c31647225202c34,0x090a3b3364722520\n"
+".quad 0x61626f6c672e7473,0x5b09203233732e6c,0x2c5d302b34647225,0x4c240a3b35722520\n"
+".quad 0x363230315f305f74,0x09636f6c2e090a3a,0x0a30093731093731,0x240a3b7469786509\n"
+".quad 0x735f646e6557444c,0x3a65636e65757165,0x73202f2f207d090a,0x0a65636e65757165\n"
+".quad 0x7972746e652e090a,0x7268537473657420,0x61702e09090a2820,0x3436752e206d6172\n"
+".quad 0x70616475635f5f20,0x747365745f6d7261,0x090a2c415f726853,0x206d617261702e09\n"
+".quad 0x635f5f203436752e,0x5f6d726170616475,0x5f72685374736574,0x2e090a7b090a2942\n"
+".quad 0x3631752e20676572,0x3b3e343c68722520,0x2e206765722e090a,0x313c722520323375\n"
+".quad 0x65722e090a3b3e31,0x25203436752e2067,0x0a3b3e35313c6472,0x702e206765722e09\n"
+".quad 0x333c702520646572,0x6168732e090a3b3e,0x696c612e20646572,0x38622e2034206e67\n"
+".quad 0x5f616475635f5f20,0x6c5f616475635f5f,0x7261765f6c61636f,0x335f35323032325f\n"
+".quad 0x6761726f74735f30,0x343230315b323365,0x636f6c2e090a3b5d,0x3009393109373109\n"
+".quad 0x67656257444c240a,0x53747365745f6e69,0x766f6d090a3a7268,0x722509203436752e\n"
+".quad 0x75635f5f202c3164,0x6475635f5f5f6164,0x5f6c61636f6c5f61,0x323032325f726176\n"
+".quad 0x6f74735f30335f35,0x0a3b323365676172,0x373109636f6c2e09,0x63090a3009343209\n"
+".quad 0x752e3233752e7476,0x2c31722509203631,0x3b782e6469742520,0x31752e766f6d090a\n"
+".quad 0x2c31687225092036,0x2e64696174632520,0x2e766f6d090a3b78,0x6872250920363175\n"
+".quad 0x6469746e25202c32,0x6c756d090a3b782e,0x31752e656469772e,0x202c327225092036\n"
+".quad 0x7225202c31687225,0x646461090a3b3268,0x722509203233752e,0x202c317225202c33\n"
+".quad 0x7663090a3b327225,0x33732e3436732e74,0x2c32647225092032,0x6d090a3b33722520\n"
+".quad 0x2e656469772e6c75,0x6472250920323373,0x202c337225202c33,0x702e646c090a3b34\n"
+".quad 0x3436752e6d617261,0x202c346472250920,0x70616475635f5f5b,0x747365745f6d7261\n"
+".quad 0x0a3b5d425f726853,0x3436752e64646109,0x202c356472250920,0x7225202c34647225\n"
+".quad 0x2e646c090a3b3364,0x732e6c61626f6c67,0x2c34722509203233,0x302b356472255b20\n"
+".quad 0x2e747663090a3b5d,0x203233752e343675,0x25202c3664722509,0x6c756d090a3b3172\n"
+".quad 0x33752e656469772e,0x2c37647225092032,0x3b34202c31722520,0x36752e646461090a\n"
+".quad 0x2c38647225092034,0x25202c3164722520,0x7473090a3b376472,0x2e6465726168732e\n"
+".quad 0x72255b0920323373,0x25202c5d302b3864,0x6f6c2e090a3b3472,0x0935320937310963\n"
+".quad 0x732e726162090a30,0x0a3b300920636e79,0x3233622e726f7809,0x25202c3572250920\n"
+".quad 0x090a3b31202c3172,0x2e3436752e747663,0x6472250920323375,0x0a3b357225202c39\n"
+".quad 0x6469772e6c756d09,0x2509203233752e65,0x7225202c30316472,0x61090a3b34202c35\n"
+".quad 0x09203436752e6464,0x25202c3131647225,0x647225202c316472,0x2e646c090a3b3031\n"
+".quad 0x732e646572616873,0x2c36722509203233,0x2b31316472255b20,0x646e61090a3b5d30\n"
+".quad 0x722509203233622e,0x202c337225202c37,0x2e766f6d090a3b31,0x3872250920323375\n"
+".quad 0x6573090a3b30202c,0x33732e71652e7074,0x202c317025092032,0x387225202c377225\n"
+".quad 0x2031702540090a3b,0x744c240920617262,0x3b323832315f315f,0x6168732e646c090a\n"
+".quad 0x203233732e646572,0x255b202c36722509,0x3b5d302b31316472,0x3109636f6c2e090a\n"
+".quad 0x090a300937320937,0x732e6f6c2e6c756d,0x2c39722509203233,0x3b32202c36722520\n"
+".quad 0x6e752e617262090a,0x315f744c24092069,0x240a3b363230315f,0x3832315f315f744c\n"
+".quad 0x636f6c2e090a3a32,0x3009353209373109,0x6168732e646c090a,0x203233732e646572\n"
+".quad 0x255b202c36722509,0x3b5d302b31316472,0x3109636f6c2e090a,0x090a300930330937\n"
+".quad 0x732e6f6c2e6c756d,0x2c39722509203233,0x3b33202c36722520,0x315f315f744c240a\n"
+".quad 0x6c2e090a3a363230,0x323309373109636f,0x702e646c090a3009,0x3436752e6d617261\n"
+".quad 0x2c32316472250920,0x616475635f5f5b20,0x7365745f6d726170,0x3b5d415f72685374\n"
+".quad 0x36752e646461090a,0x3331647225092034,0x2c3231647225202c,0x090a3b3364722520\n"
+".quad 0x61626f6c672e7473,0x5b09203233732e6c,0x5d302b3331647225,0x090a3b397225202c\n"
+".quad 0x09373109636f6c2e,0x7865090a30093333,0x57444c240a3b7469,0x747365745f646e65\n"
+".quad 0x207d090a3a726853,0x5374736574202f2f,0x000000000a0a7268\n"
 ".text");
 
 extern "C" {
 
-extern const unsigned long long __deviceText_$compute_10$[584];
+extern const unsigned long long __deviceText_$compute_10$[575];
 
 }
 
@@ -9448,8 +9446,8 @@ static __cudaFatElfEntry __elfEntries1 = {(char*)"sm_10", (char*)__deviceText_$s
 
 
 
-static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000004,0xa14f518d,(char*)"5abac479fd2ae792",(char*)"/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/sequence.cu",(char*)" ",__ptxEntries,__cubinEntries,&__debugEntries0,0,0,0,0,0,0x0b5e8760,&__elfEntries1};
-# 2 "/tmp/tmpxft_00006733_00000000-1_sequence.cudafe1.stub.c" 2
+static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000004,0xa14f518d,(char*)"583e4c8c1d9e8374",(char*)"sequence.cu",(char*)" ",__ptxEntries,__cubinEntries,&__debugEntries0,0,0,0,0,0,0xd62087ef,&__elfEntries1};
+# 2 "/tmp/tmpxft_00002deb_00000000-1_sequence.cudafe1.stub.c" 2
 # 1 "/usr/local/cuda3.1/cuda/bin/../include/crt/host_runtime.h" 1
 # 93 "/usr/local/cuda3.1/cuda/bin/../include/crt/host_runtime.h"
 extern "C" {
@@ -9843,30 +9841,30 @@ extern __attribute__((__weak__)) unsigned long long int ullmax(unsigned long lon
 # 4997 "/usr/local/cuda3.1/cuda/bin/../include/math_functions.h" 2 3
 # 88 "/usr/local/cuda3.1/cuda/bin/../include/common_functions.h" 2
 # 166 "/usr/local/cuda3.1/cuda/bin/../include/crt/host_runtime.h" 2
-# 3 "/tmp/tmpxft_00006733_00000000-1_sequence.cudafe1.stub.c" 2
+# 3 "/tmp/tmpxft_00002deb_00000000-1_sequence.cudafe1.stub.c" 2
 struct __T20 {int *__par0;int __par1;int __dummy_field;};
 struct __T21 {int *__par0;const int *__par1;int __dummy_field;};
 extern void __device_stub__Z8sequencePii(int *, int);
 extern void __device_stub__Z7testShrPiPKi(int *, const int *);
-static void __sti____cudaRegisterAll_43_tmpxft_00006733_00000000_4_sequence_cpp1_ii_sequence(void) __attribute__((__constructor__));
+static void __sti____cudaRegisterAll_43_tmpxft_00002deb_00000000_4_sequence_cpp1_ii_sequence(void) __attribute__((__constructor__));
 void __device_stub__Z8sequencePii(int *__par0, int __par1){ struct __T20 *__T22;
 *(void**)(void*)&__T22 = (void*)0;if (cudaSetupArgument((void*)(char*)&__par0, sizeof(__par0), (size_t)&__T22->__par0) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par1, sizeof(__par1), (size_t)&__T22->__par1) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(int *, int))sequence)); (void)cudaLaunch(((char *)((void ( *)(int *, int))sequence))); };}
 void sequence( int *__cuda_0,int __cuda_1)
-# 12 "/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/sequence.cu"
+# 12 "sequence.cu"
 {__device_stub__Z8sequencePii( __cuda_0,__cuda_1);
 
 
 
 
 }
-# 1 "/tmp/tmpxft_00006733_00000000-1_sequence.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00002deb_00000000-1_sequence.cudafe1.stub.c"
 void __device_stub__Z7testShrPiPKi( int *__par0, const int *__par1) { struct __T21 *__T23;
 *(void**)(void*)&__T23 = (void*)0; if (cudaSetupArgument((void*)(char*)&__par0, sizeof(__par0), (size_t)&__T23->__par0) != cudaSuccess) return; if (cudaSetupArgument((void*)(char*)&__par1, sizeof(__par1), (size_t)&__T23->__par1) != cudaSuccess) return; { volatile static char *__f; __f = ((char *)((void ( *)(int *, const int *))testShr)); (void)cudaLaunch(((char *)((void ( *)(int *, const int *))testShr))); }; }
 void testShr( int *__cuda_0,const int *__cuda_1)
-# 19 "/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/sequence.cu"
+# 19 "sequence.cu"
 {__device_stub__Z7testShrPiPKi( __cuda_0,__cuda_1);
-# 33 "/home/andrew/repositories/gpuocelot/ocelot/ocelot/cuda/test/kernels/sequence.cu"
+# 33 "sequence.cu"
 }
-# 1 "/tmp/tmpxft_00006733_00000000-1_sequence.cudafe1.stub.c"
-static void __sti____cudaRegisterAll_43_tmpxft_00006733_00000000_4_sequence_cpp1_ii_sequence(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(int *, const int *))testShr), (char*)"testShr", "testShr", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(int *, int))sequence), (char*)"sequence", "sequence", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); }
-# 1 "/tmp/tmpxft_00006733_00000000-1_sequence.cudafe1.stub.c" 2
+# 1 "/tmp/tmpxft_00002deb_00000000-1_sequence.cudafe1.stub.c"
+static void __sti____cudaRegisterAll_43_tmpxft_00002deb_00000000_4_sequence_cpp1_ii_sequence(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(int *, const int *))testShr), (char*)"testShr", "testShr", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(int *, int))sequence), (char*)"sequence", "sequence", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); }
+# 1 "/tmp/tmpxft_00002deb_00000000-1_sequence.cudafe1.stub.c" 2

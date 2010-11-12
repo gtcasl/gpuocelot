@@ -46,7 +46,7 @@
 
 // reporting for kernel instructions
 #define REPORT_STATIC_INSTRUCTIONS 0
-#define REPORT_DYNAMIC_INSTRUCTIONS 0
+#define REPORT_DYNAMIC_INSTRUCTIONS 1
 
 // reporting for register accesses
 #define REPORT_NTH_THREAD_ONLY 1
@@ -1956,7 +1956,8 @@ void executive::CooperativeThreadArray::eval_Bar(CTAContext& context,
 		runtimeStack.push_back(continuation);
 	}
 #elif RECONVERGENCE_MECHANISM == GEN6_RECONVERGENCE
-	if (context.active.count() != context.active.size()) {
+	size_t activeThreads = context.active.count();
+	if (activeThreads && activeThreads != context.active.size()) {
 		std::cout << "warp PC: " << context.PC << "\n";
 		for (size_t tid = 0; tid < context.active.size(); tid++) {
 			std::cout << " " << threadPCs[tid];
@@ -1979,7 +1980,8 @@ void executive::CooperativeThreadArray::eval_Bra(CTAContext &context, const PTXI
 
 	dynamic_bitset<> branch = context.active;
 	dynamic_bitset<> fall_through(branch.size(), 0);
-
+	bool uniformlyTaken = false;
+	
 	// determine divergence
 	for (int i = 0; i < threadCount; i++) {
 		if (context.predicated(i, instr)) {
@@ -1991,6 +1993,10 @@ void executive::CooperativeThreadArray::eval_Bra(CTAContext &context, const PTXI
 			fall_through[i] = context.active[i];
 			branch[i] = false;
 		}
+	}
+	
+	if ((fall_through.count() && !branch.count()) || (!fall_through.count() && branch.count())) {
+		uniformlyTaken = true;
 	}
 
 	if (traceEvents) {
@@ -2006,7 +2012,8 @@ void executive::CooperativeThreadArray::eval_Bra(CTAContext &context, const PTXI
 	report("  reconverge PC " << instr.reconvergeInstruction);
 #endif
 
-	if (instr.uni && (RECONVERGENCE_MECHANISM != SORTED_PREDICATE_STACK_RECONVERGENCE)) {
+	if (instr.uni && (RECONVERGENCE_MECHANISM != SORTED_PREDICATE_STACK_RECONVERGENCE) &&
+		(RECONVERGENCE_MECHANISM != GEN6_RECONVERGENCE)) {
 #if REPORT_BRA
 		report("   uniform branching");
 #endif
@@ -2174,6 +2181,11 @@ void executive::CooperativeThreadArray::eval_Bra(CTAContext &context, const PTXI
 #elif RECONVERGENCE_MECHANISM == GEN6_RECONVERGENCE
 		runtimeStack.push_back(unmodifiedContext);
 		
+		if (!context.active.count()) { 
+			runtimeStack.back().PC ++;
+			return; 
+		}
+		
 		//
 		// assign PCs for participating threads then compute the minimum PC for the warp
 		//
@@ -2194,19 +2206,52 @@ void executive::CooperativeThreadArray::eval_Bra(CTAContext &context, const PTXI
 			report("  earliest: " << tf_it->second.first);
 			report("  latest:   " << tf_it->second.second);
 			
-			int fallthroughTargetPC = runtimeStack.back().PC + 1;
-			int targetPC = fallthroughTargetPC;
-			if (tf_it->second.first < fallthroughTargetPC) {
-				targetPC = tf_it->second.first;
-				report("Conservative branch");
+			int currentPC = runtimeStack.back().PC;
+			int branchTargetPC = instr.branchTargetInstruction;
+			int fallthroughTargetPC = currentPC + 1;
+			int targetPC = fallthroughTargetPC;			
+			
+			if (branch.count() && branchTargetPC < targetPC) {
+				// taken backward branch
+				if (branchTargetPC > tf_it->second.first) {
+					targetPC = tf_it->second.first;
+				}
+				else {
+					targetPC = branchTargetPC;
+				}
 			}
+			else {
+				// forward branch
+				bool activeAtFallthrough = (fall_through.count());
+				for (size_t tid=0; !activeAtFallthrough && tid < runtimeStack.back().active.size(); tid++) {
+					if (threadPCs[tid] == fallthroughTargetPC) {
+						activeAtFallthrough = true;
+						break;
+					}
+				}
+				if (activeAtFallthrough) {
+					targetPC = fallthroughTargetPC;
+				}
+				else if (branchTargetPC > tf_it->second.first) {
+					targetPC = tf_it->second.first;
+				}
+				else {
+					targetPC = branchTargetPC;
+				}
+			}
+			
+			if (targetPC != minPC) {
+				// this is a conservative branch and will result in no-ops
+				currentEvent.conservativeBranches ++;
+				report(" conservative branch ");
+			}
+			
 			runtimeStack.back().PC = targetPC;
 		}
 		else {
 			report("Thread frontier not found at divergent branch for PC " << context.PC);
 			throw RuntimeException("Thread frontier not found  at divergent branch", context.PC, instr);
 		}
-		
 		
 #else
 		report("Unimplemented reconvergence mechanism");

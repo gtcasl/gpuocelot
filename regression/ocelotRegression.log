@@ -21,471 +21,10 @@ INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestCud
 INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestCudaTexture2D 
 INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestCudaSequence 
 INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestKernels 
-INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestCudaTexture2D
-INFO     Test completed in 0.053426027298 seconds
-INFO      It produced the following output:
-(0.002416) EmulatedKernel.cpp:62:   Created emulated kernel _Z6kernelPfii
-(0.002438) EmulatedKernel.cpp:463:  Allocating registers
-(0.002577) EmulatedKernel.cpp:466:   Allocated 26 registers
-(0.002586) EmulatedKernel.cpp:213:  Constructing emulated instruction sequence.
-(0.002599) EmulatedKernel.cpp:223:   Adding reconverge instructions
-(0.002607) EmulatedKernel.cpp:284:   Packing instructions into a vector
-(0.002633) EmulatedKernel.cpp:301:    pc 0: mov.u16 %r0, %ctaid.x
-(0.002648) EmulatedKernel.cpp:301:    pc 1: mov.u16 %r1, %ntid.x
-(0.002665) EmulatedKernel.cpp:301:    pc 2: mul.wide.u16 %r2, %r0, %r1
-(0.002677) EmulatedKernel.cpp:301:    pc 3: mov.u16 %r3, %ctaid.y
-(0.002688) EmulatedKernel.cpp:301:    pc 4: mov.u16 %r4, %ntid.y
-(0.002704) EmulatedKernel.cpp:301:    pc 5: mul.wide.u16 %r5, %r3, %r4
-(0.002718) EmulatedKernel.cpp:301:    pc 6: cvt.u32.u16 %r6, %tid.x
-(0.002734) EmulatedKernel.cpp:301:    pc 7: add.u32 %r7, %r6, %r2
-(0.002745) EmulatedKernel.cpp:301:    pc 8: cvt.u32.u16 %r8, %tid.y
-(0.002762) EmulatedKernel.cpp:301:    pc 9: add.u32 %r9, %r8, %r5
-(0.002775) EmulatedKernel.cpp:301:    pc 10: cvt.rn.f32.u32 %r10, %r7
-(0.002788) EmulatedKernel.cpp:301:    pc 11: cvt.rn.f32.u32 %r11, %r9
-(0.002804) EmulatedKernel.cpp:301:    pc 12: mov.f32 %r12, 0f00000000
-(0.002816) EmulatedKernel.cpp:301:    pc 13: mov.f32 %r13, 0f00000000
-(0.002848) EmulatedKernel.cpp:301:    pc 14: tex.2d.v4.f32.f32 {%r14, %r15, %r16, %r17}, [surface, {%r10, %r11, %r12, %r13}]
-(0.002861) EmulatedKernel.cpp:301:    pc 15: mov.f32 %r18, %r14
-(0.002876) EmulatedKernel.cpp:301:    pc 16: ld.param.u64 %r19, [__cudaparm__Z6kernelPfii_out]
-(0.002895) EmulatedKernel.cpp:301:    pc 17: ld.param.u32 %r20, [__cudaparm__Z6kernelPfii_width]
-(0.002909) EmulatedKernel.cpp:301:    pc 18: mul.lo.u32 %r21, %r20, %r9
-(0.002923) EmulatedKernel.cpp:301:    pc 19: add.u32 %r22, %r7, %r21
-(0.002936) EmulatedKernel.cpp:301:    pc 20: cvt.u64.u32 %r23, %r22
-(0.002950) EmulatedKernel.cpp:301:    pc 21: mul.lo.u64 %r24, %r23, 4
-(0.002964) EmulatedKernel.cpp:301:    pc 22: add.u64 %r25, %r19, %r24
-(0.002980) EmulatedKernel.cpp:301:    pc 23: st.global.f32 [%r25 + 0], %r18
-(0.002988) EmulatedKernel.cpp:301:    pc 24: exit
-(0.002996) EmulatedKernel.cpp:320:   Updating branch targets and reconverge points
-(0.003006) EmulatedKernel.cpp:874:  
-
-Initializing texture variables for kernel _Z6kernelPfii
-(0.003016) EmulatedKernel.cpp:898:  updated fi->a.reg = 0
-(0.003024) EmulatedKernel.cpp:902:  Registered indices:
-(0.003030) EmulatedKernel.cpp:908:    surface: 0 - type: 2 - data: 0x1383c80
-(0.003041) EmulatedKernel.cpp:506:  Initializing shared memory for kernel _Z6kernelPfii
-(0.003054) EmulatedKernel.cpp:624:  Padding shared memory by 0 bytes to handle 1 byte alignment requirement.
-(0.003062) EmulatedKernel.cpp:637:  Total shared memory size is 0
-(0.003070) EmulatedKernel.cpp:402:  Initializing parameter memory for kernel _Z6kernelPfii
-(0.003077) EmulatedKernel.cpp:409:   Initializing memory for paramter __cudaparm__Z6kernelPfii_out of size 8
-(0.003086) EmulatedKernel.cpp:409:   Initializing memory for paramter __cudaparm__Z6kernelPfii_width of size 4
-(0.003093) EmulatedKernel.cpp:409:   Initializing memory for paramter __cudaparm__Z6kernelPfii_height of size 4
-(0.003108) EmulatedKernel.cpp:716:  Initializing constant variables for kernel _Z6kernelPfii
-(0.003115) EmulatedKernel.cpp:736:  Total constant memory size is 0
-(0.003122) EmulatedKernel.cpp:801:  Initializing global variables for kernel _Z6kernelPfii
-(0.003130) EmulatedKernel.cpp:148:  Setting external shared memory size to 0
-(0.003139) EmulatedKernel.cpp:92:   EmulatedKernel::launchGrid called for _Z6kernelPfii
-(0.003146) EmulatedKernel.cpp:93:     26 registers
-Pass/Fail : Pass
-
-INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestCudaSequence
-INFO     Test completed in 0.0534942150116 seconds
-INFO      It produced the following output:
-(0.000000) TraceConfiguration.cpp:242:  Creating ControlFlowVisualizer generator
-(0.002570) EmulatedKernel.cpp:62:   Created emulated kernel sequence
-(0.002582) EmulatedKernel.cpp:463:  Allocating registers
-(0.002654) EmulatedKernel.cpp:466:   Allocated 12 registers
-(0.002663) EmulatedKernel.cpp:213:  Constructing emulated instruction sequence.
-(0.002680) EmulatedKernel.cpp:223:   Adding reconverge instructions
-(0.002718) EmulatedKernel.cpp:261:    Getting post dominator block $BB_1_0004 of instruction @%p6 bra $BB_1_0004
-(0.002727) EmulatedKernel.cpp:284:   Packing instructions into a vector
-(0.002746) EmulatedKernel.cpp:301:    pc 0: mov.u16 %r0, %ctaid.x
-(0.002761) EmulatedKernel.cpp:301:    pc 1: mov.u16 %r1, %ntid.x
-(0.002778) EmulatedKernel.cpp:301:    pc 2: mul.wide.u16 %r2, %r0, %r1
-(0.002795) EmulatedKernel.cpp:301:    pc 3: cvt.u32.u16 %r3, %tid.x
-(0.002811) EmulatedKernel.cpp:301:    pc 4: add.u32 %r4, %r3, %r2
-(0.002828) EmulatedKernel.cpp:301:    pc 5: ld.param.s32 %r5, [__cudaparm_sequence_N]
-(0.002848) EmulatedKernel.cpp:301:    pc 6: setp.le.s32 %p6, %r5, %r4
-(0.002858) EmulatedKernel.cpp:301:    pc 7: @%p6 bra $BB_1_0004
-(0.002876) EmulatedKernel.cpp:301:    pc 8: mul.lo.s32 %r7, %r4, 2
-(0.002892) EmulatedKernel.cpp:301:    pc 9: ld.param.u64 %r8, [__cudaparm_sequence_A]
-(0.002905) EmulatedKernel.cpp:301:    pc 10: cvt.s64.s32 %r9, %r4
-(0.002920) EmulatedKernel.cpp:301:    pc 11: mul.wide.s32 %r10, %r4, 4
-(0.002934) EmulatedKernel.cpp:301:    pc 12: add.u64 %r11, %r8, %r10
-(0.002949) EmulatedKernel.cpp:301:    pc 13: st.global.s32 [%r11 + 0], %r7
-(0.002959) EmulatedKernel.cpp:301:    pc 14: reconverge
-(0.002967) EmulatedKernel.cpp:301:    pc 15: exit
-(0.002976) EmulatedKernel.cpp:320:   Updating branch targets and reconverge points
-(0.002986) EmulatedKernel.cpp:330:    Instruction @%p6 bra $BB_1_0004
-(0.002993) EmulatedKernel.cpp:339:     reconverge at 14
-(0.003001) EmulatedKernel.cpp:347:     target at 14
-(0.003010) EmulatedKernel.cpp:358:  block '$BB_1_0002' at PC 0
-(0.003017) EmulatedKernel.cpp:359:    successors: 
-(0.003023) EmulatedKernel.cpp:363:     - PC: 14
-(0.003030) EmulatedKernel.cpp:363:     - PC: 8
-(0.003038) EmulatedKernel.cpp:370:    frontier: 8 - 14
-(0.003046) EmulatedKernel.cpp:874:  
-
-Initializing texture variables for kernel sequence
-(0.003053) EmulatedKernel.cpp:902:  Registered indices:
-(0.003062) EmulatedKernel.cpp:506:  Initializing shared memory for kernel sequence
-(0.003073) EmulatedKernel.cpp:624:  Padding shared memory by 0 bytes to handle 1 byte alignment requirement.
-(0.003080) EmulatedKernel.cpp:637:  Total shared memory size is 0
-(0.003089) EmulatedKernel.cpp:402:  Initializing parameter memory for kernel sequence
-(0.003095) EmulatedKernel.cpp:409:   Initializing memory for paramter __cudaparm_sequence_A of size 8
-(0.003104) EmulatedKernel.cpp:409:   Initializing memory for paramter __cudaparm_sequence_N of size 4
-(0.003119) EmulatedKernel.cpp:716:  Initializing constant variables for kernel sequence
-(0.003126) EmulatedKernel.cpp:736:  Total constant memory size is 0
-(0.003133) EmulatedKernel.cpp:801:  Initializing global variables for kernel sequence
-(0.003141) EmulatedKernel.cpp:148:  Setting external shared memory size to 0
-(0.003150) EmulatedKernel.cpp:92:   EmulatedKernel::launchGrid called for sequence
-(0.003157) EmulatedKernel.cpp:93:     12 registers
-(0.003169) ControlFlowVisualizer.cpp:121:  initialize('sequence')
-(0.003227) ControlFlowVisualizer.cpp:167:    writing to '/home/andrew/repositories/gpuocelot/ocelot/traces/_sequence_1_cfg.dot'
-(0.003849) EmulatedKernel.cpp:716:  Initializing constant variables for kernel sequence
-(0.003857) EmulatedKernel.cpp:736:  Total constant memory size is 0
-(0.003864) EmulatedKernel.cpp:801:  Initializing global variables for kernel sequence
-(0.003872) EmulatedKernel.cpp:148:  Setting external shared memory size to 0
-(0.003880) EmulatedKernel.cpp:92:   EmulatedKernel::launchGrid called for sequence
-(0.003886) EmulatedKernel.cpp:93:     12 registers
-(0.003893) ControlFlowVisualizer.cpp:121:  initialize('sequence')
-(0.003923) ControlFlowVisualizer.cpp:167:    writing to '/home/andrew/repositories/gpuocelot/ocelot/traces/_sequence_2_cfg.dot'
-(0.004522) EmulatedKernel.cpp:62:   Created emulated kernel testShr
-(0.004529) EmulatedKernel.cpp:463:  Allocating registers
-(0.004684) EmulatedKernel.cpp:466:   Allocated 25 registers
-(0.004691) EmulatedKernel.cpp:213:  Constructing emulated instruction sequence.
-(0.004703) EmulatedKernel.cpp:223:   Adding reconverge instructions
-(0.004725) EmulatedKernel.cpp:261:    Getting post dominator block $BB_2_0005 of instruction @%p21 bra $BB_2_0004
-(0.004733) EmulatedKernel.cpp:284:   Packing instructions into a vector
-(0.004746) EmulatedKernel.cpp:301:    pc 0: mov.u64 %r0, __cuda___cuda_local_var_22025_30_storage32
-(0.004759) EmulatedKernel.cpp:301:    pc 1: cvt.u32.u16 %r1, %tid.x
-(0.004771) EmulatedKernel.cpp:301:    pc 2: mov.u16 %r2, %ctaid.x
-(0.004783) EmulatedKernel.cpp:301:    pc 3: mov.u16 %r3, %ntid.x
-(0.004798) EmulatedKernel.cpp:301:    pc 4: mul.wide.u16 %r4, %r2, %r3
-(0.004817) EmulatedKernel.cpp:301:    pc 5: add.u32 %r5, %r1, %r4
-(0.004830) EmulatedKernel.cpp:301:    pc 6: cvt.s64.s32 %r6, %r5
-(0.004845) EmulatedKernel.cpp:301:    pc 7: mul.wide.s32 %r7, %r5, 4
-(0.004858) EmulatedKernel.cpp:301:    pc 8: ld.param.u64 %r8, [__cudaparm_testShr_B]
-(0.004882) EmulatedKernel.cpp:301:    pc 9: add.u64 %r9, %r8, %r7
-(0.004896) EmulatedKernel.cpp:301:    pc 10: ld.global.s32 %r10, [%r9 + 0]
-(0.004909) EmulatedKernel.cpp:301:    pc 11: cvt.u64.u32 %r11, %r1
-(0.004924) EmulatedKernel.cpp:301:    pc 12: mul.wide.u32 %r12, %r1, 4
-(0.004938) EmulatedKernel.cpp:301:    pc 13: add.u64 %r13, %r0, %r12
-(0.004951) EmulatedKernel.cpp:301:    pc 14: st.shared.s32 [%r13 + 0], %r10
-(0.004960) EmulatedKernel.cpp:301:    pc 15: bar.sync 0
-(0.004976) EmulatedKernel.cpp:301:    pc 16: xor.b32 %r14, %r1, 1
-(0.005001) EmulatedKernel.cpp:301:    pc 17: cvt.u64.u32 %r15, %r14
-(0.005016) EmulatedKernel.cpp:301:    pc 18: mul.wide.u32 %r16, %r14, 4
-(0.005030) EmulatedKernel.cpp:301:    pc 19: add.u64 %r17, %r0, %r16
-(0.005043) EmulatedKernel.cpp:301:    pc 20: ld.shared.s32 %r18, [%r17 + 0]
-(0.005057) EmulatedKernel.cpp:301:    pc 21: and.b32 %r19, %r5, 1
-(0.005069) EmulatedKernel.cpp:301:    pc 22: mov.u32 %r20, 0
-(0.005084) EmulatedKernel.cpp:301:    pc 23: setp.eq.s32 %p21, %r19, %r20
-(0.005094) EmulatedKernel.cpp:301:    pc 24: @%p21 bra $BB_2_0004
-(0.005109) EmulatedKernel.cpp:301:    pc 25: ld.shared.s32 %r18, [%r17 + 0]
-(0.005125) EmulatedKernel.cpp:301:    pc 26: mul.lo.s32 %r22, %r18, 2
-(0.005135) EmulatedKernel.cpp:301:    pc 27: bra.uni $BB_2_0005
-(0.005150) EmulatedKernel.cpp:301:    pc 28: ld.shared.s32 %r18, [%r17 + 0]
-(0.005165) EmulatedKernel.cpp:301:    pc 29: mul.lo.s32 %r22, %r18, 3
-(0.005174) EmulatedKernel.cpp:301:    pc 30: reconverge
-(0.005187) EmulatedKernel.cpp:301:    pc 31: ld.param.u64 %r23, [__cudaparm_testShr_A]
-(0.005201) EmulatedKernel.cpp:301:    pc 32: add.u64 %r24, %r23, %r7
-(0.005232) EmulatedKernel.cpp:301:    pc 33: st.global.s32 [%r24 + 0], %r22
-(0.005239) EmulatedKernel.cpp:301:    pc 34: exit
-(0.005248) EmulatedKernel.cpp:320:   Updating branch targets and reconverge points
-(0.005258) EmulatedKernel.cpp:330:    Instruction @%p21 bra $BB_2_0004
-(0.005265) EmulatedKernel.cpp:339:     reconverge at 30
-(0.005271) EmulatedKernel.cpp:347:     target at 28
-(0.005278) EmulatedKernel.cpp:358:  block '$BB_2_0002' at PC 0
-(0.005284) EmulatedKernel.cpp:359:    successors: 
-(0.005291) EmulatedKernel.cpp:363:     - PC: 28
-(0.005297) EmulatedKernel.cpp:363:     - PC: 25
-(0.005304) EmulatedKernel.cpp:370:    frontier: 25 - 28
-(0.005312) EmulatedKernel.cpp:330:    Instruction bra.uni $BB_2_0005
-(0.005318) EmulatedKernel.cpp:347:     target at 30
-(0.005325) EmulatedKernel.cpp:358:  block '$BB_2_0003' at PC 25
-(0.005331) EmulatedKernel.cpp:359:    successors: 
-(0.005337) EmulatedKernel.cpp:363:     - PC: 30
-(0.005344) EmulatedKernel.cpp:363:     - PC: 28
-(0.005351) EmulatedKernel.cpp:370:    frontier: 28 - 30
-(0.005358) EmulatedKernel.cpp:874:  
-
-Initializing texture variables for kernel testShr
-(0.005365) EmulatedKernel.cpp:902:  Registered indices:
-(0.005383) EmulatedKernel.cpp:506:  Initializing shared memory for kernel testShr
-(0.005394) EmulatedKernel.cpp:558:  Found local shared variable __cuda___cuda_local_var_22025_30_storage32 at offset 0 with alignment 4 of size 1024
-(0.005407) EmulatedKernel.cpp:610:  For instruction mov.u64 %r0, __cuda___cuda_local_var_22025_30_storage32, mapping shared label __cuda___cuda_local_var_22025_30_storage32 to 0
-(0.005416) EmulatedKernel.cpp:624:  Padding shared memory by 0 bytes to handle 1 byte alignment requirement.
-(0.005423) EmulatedKernel.cpp:637:  Total shared memory size is 1024
-(0.005430) EmulatedKernel.cpp:402:  Initializing parameter memory for kernel testShr
-(0.005436) EmulatedKernel.cpp:409:   Initializing memory for paramter __cudaparm_testShr_A of size 8
-(0.005443) EmulatedKernel.cpp:409:   Initializing memory for paramter __cudaparm_testShr_B of size 8
-(0.005451) EmulatedKernel.cpp:716:  Initializing constant variables for kernel testShr
-(0.005458) EmulatedKernel.cpp:736:  Total constant memory size is 0
-(0.005465) EmulatedKernel.cpp:801:  Initializing global variables for kernel testShr
-(0.005473) EmulatedKernel.cpp:148:  Setting external shared memory size to 0
-(0.005480) EmulatedKernel.cpp:92:   EmulatedKernel::launchGrid called for testShr
-(0.005486) EmulatedKernel.cpp:93:     25 registers
-(0.005496) ControlFlowVisualizer.cpp:121:  initialize('testShr')
-(0.005526) ControlFlowVisualizer.cpp:167:    writing to '/home/andrew/repositories/gpuocelot/ocelot/traces/_testShr_3_cfg.dot'
-Pass/Fail : Pass
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestCudaTextureArray 
 INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestKernels
-INFO     Test completed in 0.0530869960785 seconds
+INFO     Test completed in 0.0516262054443 seconds
 INFO      It produced the following output:
-(0.006120) EmulatedKernel.cpp:62:   Created emulated kernel _Z19k_sequenceDivergentPf
-(0.006139) EmulatedKernel.cpp:463:  Allocating registers
-(0.006220) EmulatedKernel.cpp:466:   Allocated 13 registers
-(0.006228) EmulatedKernel.cpp:213:  Constructing emulated instruction sequence.
-(0.006246) EmulatedKernel.cpp:223:   Adding reconverge instructions
-(0.006280) EmulatedKernel.cpp:261:    Getting post dominator block $BB_3_0005 of instruction @%p10 bra $BB_3_0004
-(0.006291) EmulatedKernel.cpp:284:   Packing instructions into a vector
-(0.006312) EmulatedKernel.cpp:301:    pc 0: cvt.u32.u16 %r0, %tid.x
-(0.006329) EmulatedKernel.cpp:301:    pc 1: cvt.rn.f32.u32 %r1, %r0
-(0.006347) EmulatedKernel.cpp:301:    pc 2: mov.f32 %r2, 0f3d800000
-(0.006366) EmulatedKernel.cpp:301:    pc 3: mul.f32 %r3, %r1, %r2
-(0.006382) EmulatedKernel.cpp:301:    pc 4: ld.param.u64 %r4, [__cudaparm__Z19k_sequenceDivergentPf_ptr]
-(0.006396) EmulatedKernel.cpp:301:    pc 5: cvt.u64.u32 %r5, %r0
-(0.006410) EmulatedKernel.cpp:301:    pc 6: mul.lo.u64 %r6, %r5, 4
-(0.006423) EmulatedKernel.cpp:301:    pc 7: add.u64 %r7, %r4, %r6
-(0.006437) EmulatedKernel.cpp:301:    pc 8: and.b32 %r8, %r0, 1
-(0.006452) EmulatedKernel.cpp:301:    pc 9: mov.u32 %r9, 0
-(0.006467) EmulatedKernel.cpp:301:    pc 10: setp.eq.u32 %p10, %r8, %r9
-(0.006477) EmulatedKernel.cpp:301:    pc 11: @%p10 bra $BB_3_0004
-(0.006492) EmulatedKernel.cpp:301:    pc 12: cos.approx.f32 %r11, %r3
-(0.006505) EmulatedKernel.cpp:301:    pc 13: st.global.f32 [%r7 + 0], %r11
-(0.006515) EmulatedKernel.cpp:301:    pc 14: bra.uni $BB_3_0005
-(0.006530) EmulatedKernel.cpp:301:    pc 15: sin.approx.f32 %r12, %r3
-(0.006543) EmulatedKernel.cpp:301:    pc 16: st.global.f32 [%r7 + 0], %r12
-(0.006563) EmulatedKernel.cpp:301:    pc 17: reconverge
-(0.006571) EmulatedKernel.cpp:301:    pc 18: exit
-(0.006579) EmulatedKernel.cpp:320:   Updating branch targets and reconverge points
-(0.006591) EmulatedKernel.cpp:330:    Instruction @%p10 bra $BB_3_0004
-(0.006598) EmulatedKernel.cpp:339:     reconverge at 17
-(0.006604) EmulatedKernel.cpp:347:     target at 15
-(0.006610) EmulatedKernel.cpp:358:  block '$BB_3_0002' at PC 0
-(0.006617) EmulatedKernel.cpp:359:    successors: 
-(0.006623) EmulatedKernel.cpp:363:     - PC: 15
-(0.006629) EmulatedKernel.cpp:363:     - PC: 12
-(0.006637) EmulatedKernel.cpp:370:    frontier: 12 - 15
-(0.006646) EmulatedKernel.cpp:330:    Instruction bra.uni $BB_3_0005
-(0.006652) EmulatedKernel.cpp:347:     target at 17
-(0.006659) EmulatedKernel.cpp:358:  block '$BB_3_0003' at PC 12
-(0.006665) EmulatedKernel.cpp:359:    successors: 
-(0.006671) EmulatedKernel.cpp:363:     - PC: 17
-(0.006677) EmulatedKernel.cpp:363:     - PC: 15
-(0.006683) EmulatedKernel.cpp:370:    frontier: 15 - 17
-(0.006691) EmulatedKernel.cpp:874:  
-
-Initializing texture variables for kernel _Z19k_sequenceDivergentPf
-(0.006699) EmulatedKernel.cpp:902:  Registered indices:
-(0.006707) EmulatedKernel.cpp:506:  Initializing shared memory for kernel _Z19k_sequenceDivergentPf
-(0.006718) EmulatedKernel.cpp:624:  Padding shared memory by 0 bytes to handle 1 byte alignment requirement.
-(0.006725) EmulatedKernel.cpp:637:  Total shared memory size is 0
-(0.006732) EmulatedKernel.cpp:402:  Initializing parameter memory for kernel _Z19k_sequenceDivergentPf
-(0.006738) EmulatedKernel.cpp:409:   Initializing memory for paramter __cudaparm__Z19k_sequenceDivergentPf_ptr of size 8
-(0.006782) EmulatedKernel.cpp:62:   Created emulated kernel _Z17k_sequenceLoopingPfi
-(0.006790) EmulatedKernel.cpp:463:  Allocating registers
-(0.006921) EmulatedKernel.cpp:466:   Allocated 20 registers
-(0.006928) EmulatedKernel.cpp:213:  Constructing emulated instruction sequence.
-(0.006942) EmulatedKernel.cpp:223:   Adding reconverge instructions
-(0.006970) EmulatedKernel.cpp:261:    Getting post dominator block $BB_4_0008 of instruction @%p3 bra $BB_4_0008
-(0.006982) EmulatedKernel.cpp:261:    Getting post dominator block $BB_4_0007 of instruction @%p16 bra $BB_4_0006
-(0.007009) EmulatedKernel.cpp:284:   Packing instructions into a vector
-(0.007022) EmulatedKernel.cpp:301:    pc 0: cvt.s32.u16 %r0, %tid.x
-(0.007075) EmulatedKernel.cpp:301:    pc 1: mov.s32 %r1, %r0
-(0.007089) EmulatedKernel.cpp:301:    pc 2: ld.param.s32 %r2, [__cudaparm__Z17k_sequenceLoopingPfi_N]
-(0.007106) EmulatedKernel.cpp:301:    pc 3: setp.le.s32 %p3, %r2, %r0
-(0.007116) EmulatedKernel.cpp:301:    pc 4: @%p3 bra $BB_4_0008
-(0.007134) EmulatedKernel.cpp:301:    pc 5: cvt.u32.u16 %r4, %ntid.x
-(0.007147) EmulatedKernel.cpp:301:    pc 6: cvt.u64.s32 %r5, %r0
-(0.007162) EmulatedKernel.cpp:301:    pc 7: mul.lo.u64 %r6, %r5, 4
-(0.007174) EmulatedKernel.cpp:301:    pc 8: cvt.s64.u32 %r7, %r4
-(0.007195) EmulatedKernel.cpp:301:    pc 9: mul.lo.u64 %r8, %r7, 4
-(0.007207) EmulatedKernel.cpp:301:    pc 10: ld.param.u64 %r9, [__cudaparm__Z17k_sequenceLoopingPfi_ptr]
-(0.007222) EmulatedKernel.cpp:301:    pc 11: cvt.rn.f32.s32 %r10, %r1
-(0.007235) EmulatedKernel.cpp:301:    pc 12: mov.f32 %r11, 0f3d800000
-(0.007248) EmulatedKernel.cpp:301:    pc 13: mul.f32 %r12, %r10, %r11
-(0.007261) EmulatedKernel.cpp:301:    pc 14: add.u64 %r13, %r6, %r9
-(0.007275) EmulatedKernel.cpp:301:    pc 15: and.b32 %r14, %r1, 1
-(0.007287) EmulatedKernel.cpp:301:    pc 16: mov.u32 %r15, 0
-(0.007310) EmulatedKernel.cpp:301:    pc 17: setp.eq.u32 %p16, %r14, %r15
-(0.007321) EmulatedKernel.cpp:301:    pc 18: @%p16 bra $BB_4_0006
-(0.007336) EmulatedKernel.cpp:301:    pc 19: cos.approx.f32 %r17, %r12
-(0.007349) EmulatedKernel.cpp:301:    pc 20: st.global.f32 [%r13 + 0], %r17
-(0.007358) EmulatedKernel.cpp:301:    pc 21: bra.uni $BB_4_0007
-(0.007371) EmulatedKernel.cpp:301:    pc 22: sin.approx.f32 %r18, %r12
-(0.007617) EmulatedKernel.cpp:301:    pc 23: st.global.f32 [%r13 + 0], %r18
-(0.007629) EmulatedKernel.cpp:301:    pc 24: reconverge
-(0.007643) EmulatedKernel.cpp:301:    pc 25: add.u32 %r1, %r1, %r4
-(0.007657) EmulatedKernel.cpp:301:    pc 26: add.u64 %r6, %r6, %r8
-(0.007671) EmulatedKernel.cpp:301:    pc 27: setp.lt.s32 %p19, %r1, %r2
-(0.007681) EmulatedKernel.cpp:301:    pc 28: @%p19 bra $BB_4_0004
-(0.007691) EmulatedKernel.cpp:301:    pc 29: reconverge
-(0.007698) EmulatedKernel.cpp:301:    pc 30: exit
-(0.007707) EmulatedKernel.cpp:320:   Updating branch targets and reconverge points
-(0.007716) EmulatedKernel.cpp:330:    Instruction @%p3 bra $BB_4_0008
-(0.007723) EmulatedKernel.cpp:339:     reconverge at 29
-(0.007730) EmulatedKernel.cpp:347:     target at 29
-(0.007736) EmulatedKernel.cpp:358:  block '$BB_4_0002' at PC 0
-(0.007743) EmulatedKernel.cpp:359:    successors: 
-(0.007749) EmulatedKernel.cpp:363:     - PC: 29
-(0.007756) EmulatedKernel.cpp:363:     - PC: 5
-(0.007762) EmulatedKernel.cpp:370:    frontier: 5 - 29
-(0.007772) EmulatedKernel.cpp:330:    Instruction @%p16 bra $BB_4_0006
-(0.007778) EmulatedKernel.cpp:339:     reconverge at 24
-(0.007785) EmulatedKernel.cpp:347:     target at 22
-(0.007791) EmulatedKernel.cpp:358:  block '$BB_4_0004' at PC 11
-(0.007798) EmulatedKernel.cpp:359:    successors: 
-(0.007804) EmulatedKernel.cpp:363:     - PC: 22
-(0.007811) EmulatedKernel.cpp:363:     - PC: 19
-(0.007817) EmulatedKernel.cpp:370:    frontier: 5 - 29
-(0.007825) EmulatedKernel.cpp:330:    Instruction bra.uni $BB_4_0007
-(0.007832) EmulatedKernel.cpp:347:     target at 24
-(0.007839) EmulatedKernel.cpp:358:  block '$BB_4_0005' at PC 19
-(0.007845) EmulatedKernel.cpp:359:    successors: 
-(0.007851) EmulatedKernel.cpp:363:     - PC: 24
-(0.007858) EmulatedKernel.cpp:363:     - PC: 22
-(0.007864) EmulatedKernel.cpp:370:    frontier: 5 - 29
-(0.007874) EmulatedKernel.cpp:330:    Instruction @%p19 bra $BB_4_0004
-(0.007881) EmulatedKernel.cpp:339:     reconverge at 29
-(0.007887) EmulatedKernel.cpp:347:     target at 11
-(0.007894) EmulatedKernel.cpp:358:  block '$BB_4_0007' at PC 24
-(0.007900) EmulatedKernel.cpp:359:    successors: 
-(0.007906) EmulatedKernel.cpp:363:     - PC: 29
-(0.007913) EmulatedKernel.cpp:370:    frontier: 5 - 29
-(0.007921) EmulatedKernel.cpp:874:  
-
-Initializing texture variables for kernel _Z17k_sequenceLoopingPfi
-(0.007927) EmulatedKernel.cpp:902:  Registered indices:
-(0.007934) EmulatedKernel.cpp:506:  Initializing shared memory for kernel _Z17k_sequenceLoopingPfi
-(0.007959) EmulatedKernel.cpp:624:  Padding shared memory by 0 bytes to handle 1 byte alignment requirement.
-(0.007966) EmulatedKernel.cpp:637:  Total shared memory size is 0
-(0.007973) EmulatedKernel.cpp:402:  Initializing parameter memory for kernel _Z17k_sequenceLoopingPfi
-(0.007980) EmulatedKernel.cpp:409:   Initializing memory for paramter __cudaparm__Z17k_sequenceLoopingPfi_ptr of size 8
-(0.007987) EmulatedKernel.cpp:409:   Initializing memory for paramter __cudaparm__Z17k_sequenceLoopingPfi_N of size 4
-(0.008058) EmulatedKernel.cpp:62:   Created emulated kernel _Z21k_matrixVectorProductPKfS0_Pfii
-(0.008065) EmulatedKernel.cpp:463:  Allocating registers
-(0.008333) EmulatedKernel.cpp:466:   Allocated 41 registers
-(0.008341) EmulatedKernel.cpp:213:  Constructing emulated instruction sequence.
-(0.008357) EmulatedKernel.cpp:223:   Adding reconverge instructions
-(0.008394) EmulatedKernel.cpp:261:    Getting post dominator block $BB_6_0010 of instruction @%p15 bra $BB_6_0010
-(0.008407) EmulatedKernel.cpp:261:    Getting post dominator block $BB_6_0008 of instruction @!%p19 bra $BB_6_0008
-(0.008421) EmulatedKernel.cpp:261:    Getting post dominator block $BB_6_0007 of instruction @%p35 bra $BB_6_0006
-(0.008433) EmulatedKernel.cpp:261:    Getting post dominator block $BB_6_0009 of instruction @%p38 bra $BB_6_0004
-(0.008441) EmulatedKernel.cpp:284:   Packing instructions into a vector
-(0.008454) EmulatedKernel.cpp:301:    pc 0: cvt.u32.u16 %r0, %ntid.x
-(0.008467) EmulatedKernel.cpp:301:    pc 1: cvt.u32.u16 %r1, %ctaid.x
-(0.008483) EmulatedKernel.cpp:301:    pc 2: mul.lo.u32 %r2, %r1, %r0
-(0.008495) EmulatedKernel.cpp:301:    pc 3: cvt.u32.u16 %r3, %tid.x
-(0.008509) EmulatedKernel.cpp:301:    pc 4: add.u32 %r4, %r2, %r3
-(0.008525) EmulatedKernel.cpp:301:    pc 5: cvt.u64.u32 %r5, %r4
-(0.008540) EmulatedKernel.cpp:301:    pc 6: mul.lo.u64 %r6, %r5, 4
-(0.008552) EmulatedKernel.cpp:301:    pc 7: ld.param.u64 %r7, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii___val_paramA]
-(0.008566) EmulatedKernel.cpp:301:    pc 8: add.u64 %r8, %r7, %r6
-(0.008584) EmulatedKernel.cpp:301:    pc 9: cvt.u64.u32 %r9, %r3
-(0.008599) EmulatedKernel.cpp:301:    pc 10: mul.lo.u64 %r10, %r9, 4
-(0.008612) EmulatedKernel.cpp:301:    pc 11: ld.param.u64 %r11, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii___val_paramV]
-(0.008625) EmulatedKernel.cpp:301:    pc 12: add.u64 %r12, %r11, %r10
-(0.008638) EmulatedKernel.cpp:301:    pc 13: ld.param.s32 %r13, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_N]
-(0.008649) EmulatedKernel.cpp:301:    pc 14: mov.u32 %r14, 0
-(0.008664) EmulatedKernel.cpp:301:    pc 15: setp.le.s32 %p15, %r13, %r14
-(0.008681) EmulatedKernel.cpp:301:    pc 16: mov.f32 %r16, 0f00000000
-(0.008701) EmulatedKernel.cpp:301:    pc 17: @%p15 bra $BB_6_0010
-(0.008715) EmulatedKernel.cpp:301:    pc 18: mov.u64 %r17, __cuda_V_buffer80
-(0.008727) EmulatedKernel.cpp:301:    pc 19: mov.u32 %r18, 0
-(0.008741) EmulatedKernel.cpp:301:    pc 20: setp.gt.u32 %p19, %r0, %r18
-(0.008754) EmulatedKernel.cpp:301:    pc 21: cvt.u64.u32 %r20, %r0
-(0.008768) EmulatedKernel.cpp:301:    pc 22: mul.lo.u64 %r21, %r20, 4
-(0.008782) EmulatedKernel.cpp:301:    pc 23: add.u64 %r22, %r10, %r17
-(0.008794) EmulatedKernel.cpp:301:    pc 24: mov.s32 %r23, 0
-(0.008808) EmulatedKernel.cpp:301:    pc 25: ld.global.f32 %r24, [%r12 + 0]
-(0.008821) EmulatedKernel.cpp:301:    pc 26: st.shared.f32 [%r22 + 0], %r24
-(0.008831) EmulatedKernel.cpp:301:    pc 27: bar.sync 0
-(0.008841) EmulatedKernel.cpp:301:    pc 28: @!%p19 bra $BB_6_0008
-(0.008854) EmulatedKernel.cpp:301:    pc 29: mov.s32 %r25, %r0
-(0.008867) EmulatedKernel.cpp:301:    pc 30: ld.param.s32 %r26, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_M]
-(0.008879) EmulatedKernel.cpp:301:    pc 31: cvt.u64.s32 %r27, %r26
-(0.008893) EmulatedKernel.cpp:301:    pc 32: mul.lo.u64 %r28, %r27, 4
-(0.008929) EmulatedKernel.cpp:301:    pc 33: mov.s64 %r29, %r17
-(0.008941) EmulatedKernel.cpp:301:    pc 34: mov.s64 %r30, %r8
-(0.008952) EmulatedKernel.cpp:301:    pc 35: mov.s32 %r31, 0
-(0.008964) EmulatedKernel.cpp:301:    pc 36: mov.s32 %r32, %r25
-(0.008994) EmulatedKernel.cpp:301:    pc 37: ld.global.f32 %r33, [%r30 + 0]
-(0.009008) EmulatedKernel.cpp:301:    pc 38: ld.shared.f32 %r34, [%r29 + 0]
-(0.009024) EmulatedKernel.cpp:301:    pc 39: mad.f32 %r16, %r33, %r34, %r16
-(0.009037) EmulatedKernel.cpp:301:    pc 40: add.s32 %r31, %r31, 1
-(0.009051) EmulatedKernel.cpp:301:    pc 41: add.u64 %r29, %r29, 4
-(0.009064) EmulatedKernel.cpp:301:    pc 42: add.u64 %r30, %r28, %r30
-(0.009079) EmulatedKernel.cpp:301:    pc 43: setp.ne.u32 %p35, %r31, %r0
-(0.009089) EmulatedKernel.cpp:301:    pc 44: @%p35 bra $BB_6_0006
-(0.009098) EmulatedKernel.cpp:301:    pc 45: reconverge
-(0.009115) EmulatedKernel.cpp:301:    pc 46: mul.lo.u64 %r36, %r20, %r27
-(0.009129) EmulatedKernel.cpp:301:    pc 47: mul.lo.u64 %r37, %r36, 4
-(0.009142) EmulatedKernel.cpp:301:    pc 48: add.u64 %r8, %r8, %r37
-(0.009152) EmulatedKernel.cpp:301:    pc 49: reconverge
-(0.009166) EmulatedKernel.cpp:301:    pc 50: add.u64 %r12, %r21, %r12
-(0.009175) EmulatedKernel.cpp:301:    pc 51: bar.sync 0
-(0.009188) EmulatedKernel.cpp:301:    pc 52: add.u32 %r23, %r23, %r0
-(0.009202) EmulatedKernel.cpp:301:    pc 53: setp.gt.s32 %p38, %r13, %r23
-(0.009212) EmulatedKernel.cpp:301:    pc 54: @%p38 bra $BB_6_0004
-(0.009221) EmulatedKernel.cpp:301:    pc 55: reconverge
-(0.009229) EmulatedKernel.cpp:301:    pc 56: bra.uni $BB_6_0010
-(0.009238) EmulatedKernel.cpp:301:    pc 57: reconverge
-(0.009250) EmulatedKernel.cpp:301:    pc 58: ld.param.u64 %r39, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_R]
-(0.009264) EmulatedKernel.cpp:301:    pc 59: add.u64 %r40, %r39, %r6
-(0.009276) EmulatedKernel.cpp:301:    pc 60: st.global.f32 [%r40 + 0], %r16
-(0.009284) EmulatedKernel.cpp:301:    pc 61: exit
-(0.009292) EmulatedKernel.cpp:320:   Updating branch targets and reconverge points
-(0.009302) EmulatedKernel.cpp:330:    Instruction @%p15 bra $BB_6_0010
-(0.009308) EmulatedKernel.cpp:339:     reconverge at 57
-(0.009315) EmulatedKernel.cpp:347:     target at 57
-(0.009321) EmulatedKernel.cpp:358:  block '$BB_6_0002' at PC 0
-(0.009327) EmulatedKernel.cpp:359:    successors: 
-(0.009333) EmulatedKernel.cpp:363:     - PC: 57
-(0.009340) EmulatedKernel.cpp:363:     - PC: 18
-(0.009346) EmulatedKernel.cpp:370:    frontier: 18 - 57
-(0.009356) EmulatedKernel.cpp:330:    Instruction @!%p19 bra $BB_6_0008
-(0.009363) EmulatedKernel.cpp:339:     reconverge at 49
-(0.009369) EmulatedKernel.cpp:347:     target at 49
-(0.009375) EmulatedKernel.cpp:358:  block '$BB_6_0004' at PC 25
-(0.009382) EmulatedKernel.cpp:359:    successors: 
-(0.009388) EmulatedKernel.cpp:363:     - PC: 49
-(0.009394) EmulatedKernel.cpp:363:     - PC: 29
-(0.009401) EmulatedKernel.cpp:370:    frontier: 18 - 57
-(0.009410) EmulatedKernel.cpp:330:    Instruction @%p35 bra $BB_6_0006
-(0.009417) EmulatedKernel.cpp:339:     reconverge at 45
-(0.009423) EmulatedKernel.cpp:347:     target at 37
-(0.009429) EmulatedKernel.cpp:358:  block '$BB_6_0006' at PC 37
-(0.009436) EmulatedKernel.cpp:359:    successors: 
-(0.009442) EmulatedKernel.cpp:363:     - PC: 45
-(0.009448) EmulatedKernel.cpp:370:    frontier: 18 - 57
-(0.009458) EmulatedKernel.cpp:330:    Instruction @%p38 bra $BB_6_0004
-(0.009464) EmulatedKernel.cpp:339:     reconverge at 55
-(0.009470) EmulatedKernel.cpp:347:     target at 25
-(0.009477) EmulatedKernel.cpp:358:  block '$BB_6_0008' at PC 49
-(0.009483) EmulatedKernel.cpp:359:    successors: 
-(0.009489) EmulatedKernel.cpp:363:     - PC: 55
-(0.009496) EmulatedKernel.cpp:370:    frontier: 18 - 57
-(0.009504) EmulatedKernel.cpp:330:    Instruction bra.uni $BB_6_0010
-(0.009510) EmulatedKernel.cpp:347:     target at 57
-(0.009517) EmulatedKernel.cpp:358:  block '$BB_6_0009' at PC 55
-(0.009523) EmulatedKernel.cpp:359:    successors: 
-(0.009529) EmulatedKernel.cpp:363:     - PC: 57
-(0.009535) EmulatedKernel.cpp:363:     - PC: 57
-(0.009541) EmulatedKernel.cpp:370:    frontier: 18 - 57
-(0.009549) EmulatedKernel.cpp:874:  
-
-Initializing texture variables for kernel _Z21k_matrixVectorProductPKfS0_Pfii
-(0.009556) EmulatedKernel.cpp:902:  Registered indices:
-(0.009562) EmulatedKernel.cpp:506:  Initializing shared memory for kernel _Z21k_matrixVectorProductPKfS0_Pfii
-(0.009583) EmulatedKernel.cpp:558:  Found local shared variable __cuda_V_buffer80 at offset 0 with alignment 4 of size 32
-(0.009598) EmulatedKernel.cpp:610:  For instruction mov.u64 %r17, __cuda_V_buffer80, mapping shared label __cuda_V_buffer80 to 0
-(0.009607) EmulatedKernel.cpp:624:  Padding shared memory by 0 bytes to handle 1 byte alignment requirement.
-(0.009614) EmulatedKernel.cpp:637:  Total shared memory size is 32
-(0.009620) EmulatedKernel.cpp:402:  Initializing parameter memory for kernel _Z21k_matrixVectorProductPKfS0_Pfii
-(0.009627) EmulatedKernel.cpp:409:   Initializing memory for paramter __cudaparm__Z21k_matrixVectorProductPKfS0_Pfii___val_paramA of size 8
-(0.009633) EmulatedKernel.cpp:409:   Initializing memory for paramter __cudaparm__Z21k_matrixVectorProductPKfS0_Pfii___val_paramV of size 8
-(0.009640) EmulatedKernel.cpp:409:   Initializing memory for paramter __cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_R of size 8
-(0.009646) EmulatedKernel.cpp:409:   Initializing memory for paramter __cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_M of size 4
-(0.009652) EmulatedKernel.cpp:409:   Initializing memory for paramter __cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_N of size 4
-(0.009767) EmulatedKernel.cpp:92:   EmulatedKernel::launchGrid called for _Z19k_sequenceDivergentPf
-(0.009774) EmulatedKernel.cpp:93:     13 registers
-Kernel launch time was 7.24792e-05s (72293 ticks)
-(0.010007) EmulatedKernel.cpp:92:   EmulatedKernel::launchGrid called for _Z17k_sequenceLoopingPfi
-(0.010015) EmulatedKernel.cpp:93:     20 registers
-(0.010420) EmulatedKernel.cpp:92:   EmulatedKernel::launchGrid called for _Z21k_matrixVectorProductPKfS0_Pfii
-(0.010427) EmulatedKernel.cpp:93:     41 registers
+Kernel launch time was 5.57899e-05s (55755 ticks)
 Pass/Fail : Pass
 
 
@@ -494,8 +33,8 @@ Name : TestKernels
 Description: 
 
 
-Test Seed : 1289576736
-Test time : 0.0103273
+Test Seed : 1289593364
+Test time : 0.00778365
 
 Status : Test output:
 divergent control flow succeeded
@@ -505,9 +44,21 @@ looping kernel succeeded
 
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestDataflowGraph 
+INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestCudaSequence
+INFO     Test completed in 0.0669250488281 seconds
+INFO      It produced the following output:
+(0.000000) TraceConfiguration.cpp:242:  Creating ControlFlowVisualizer generator
+(0.002773) ControlFlowVisualizer.cpp:122:  initialize('sequence')
+(0.002837) ControlFlowVisualizer.cpp:168:    writing to '/home/andrew/repositories/gpuocelot/ocelot/traces/_sequence_1_cfg.dot'
+(0.003136) ControlFlowVisualizer.cpp:122:  initialize('sequence')
+(0.003187) ControlFlowVisualizer.cpp:168:    writing to '/home/andrew/repositories/gpuocelot/ocelot/traces/_sequence_2_cfg.dot'
+(0.003574) ControlFlowVisualizer.cpp:122:  initialize('testShr')
+(0.003607) ControlFlowVisualizer.cpp:168:    writing to '/home/andrew/repositories/gpuocelot/ocelot/traces/_testShr_3_cfg.dot'
+Pass/Fail : Pass
+
 INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestLexer 
 INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestCudaMalloc
-INFO     Test completed in 0.0738251209259 seconds
+INFO     Test completed in 0.0728211402893 seconds
 INFO      It produced the following output:
 test_malloc(256, 128)
 PASSED
@@ -524,66 +75,15 @@ PASSED
 [8] final free
 Pass/Fail : Pass
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestLLVMInstructions 
-INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestCudaTextureArray
-INFO     Test completed in 0.0476551055908 seconds
+INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestCudaTextureArray 
+INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestCudaTexture2D
+INFO     Test completed in 0.0825338363647 seconds
 INFO      It produced the following output:
-(0.002307) EmulatedKernel.cpp:62:   Created emulated kernel _Z6kernelPfii
-(0.002328) EmulatedKernel.cpp:463:  Allocating registers
-(0.002463) EmulatedKernel.cpp:466:   Allocated 26 registers
-(0.002472) EmulatedKernel.cpp:213:  Constructing emulated instruction sequence.
-(0.002485) EmulatedKernel.cpp:223:   Adding reconverge instructions
-(0.002493) EmulatedKernel.cpp:284:   Packing instructions into a vector
-(0.002519) EmulatedKernel.cpp:301:    pc 0: mov.u16 %r0, %ctaid.x
-(0.002534) EmulatedKernel.cpp:301:    pc 1: mov.u16 %r1, %ntid.x
-(0.002550) EmulatedKernel.cpp:301:    pc 2: mul.wide.u16 %r2, %r0, %r1
-(0.002563) EmulatedKernel.cpp:301:    pc 3: mov.u16 %r3, %ctaid.y
-(0.002573) EmulatedKernel.cpp:301:    pc 4: mov.u16 %r4, %ntid.y
-(0.002590) EmulatedKernel.cpp:301:    pc 5: mul.wide.u16 %r5, %r3, %r4
-(0.002735) EmulatedKernel.cpp:301:    pc 6: cvt.u32.u16 %r6, %tid.x
-(0.002752) EmulatedKernel.cpp:301:    pc 7: add.u32 %r7, %r6, %r2
-(0.002764) EmulatedKernel.cpp:301:    pc 8: cvt.u32.u16 %r8, %tid.y
-(0.002780) EmulatedKernel.cpp:301:    pc 9: add.u32 %r9, %r8, %r5
-(0.002794) EmulatedKernel.cpp:301:    pc 10: cvt.rn.f32.u32 %r10, %r7
-(0.002806) EmulatedKernel.cpp:301:    pc 11: cvt.rn.f32.u32 %r11, %r9
-(0.002823) EmulatedKernel.cpp:301:    pc 12: mov.f32 %r12, 0f00000000
-(0.002835) EmulatedKernel.cpp:301:    pc 13: mov.f32 %r13, 0f00000000
-(0.002865) EmulatedKernel.cpp:301:    pc 14: tex.2d.v4.f32.f32 {%r14, %r15, %r16, %r17}, [surface, {%r10, %r11, %r12, %r13}]
-(0.002878) EmulatedKernel.cpp:301:    pc 15: mov.f32 %r18, %r14
-(0.002892) EmulatedKernel.cpp:301:    pc 16: ld.param.u64 %r19, [__cudaparm__Z6kernelPfii_out]
-(0.002911) EmulatedKernel.cpp:301:    pc 17: ld.param.u32 %r20, [__cudaparm__Z6kernelPfii_width]
-(0.002925) EmulatedKernel.cpp:301:    pc 18: mul.lo.u32 %r21, %r20, %r9
-(0.002939) EmulatedKernel.cpp:301:    pc 19: add.u32 %r22, %r7, %r21
-(0.002952) EmulatedKernel.cpp:301:    pc 20: cvt.u64.u32 %r23, %r22
-(0.002966) EmulatedKernel.cpp:301:    pc 21: mul.lo.u64 %r24, %r23, 4
-(0.002980) EmulatedKernel.cpp:301:    pc 22: add.u64 %r25, %r19, %r24
-(0.002995) EmulatedKernel.cpp:301:    pc 23: st.global.f32 [%r25 + 0], %r18
-(0.003003) EmulatedKernel.cpp:301:    pc 24: exit
-(0.003012) EmulatedKernel.cpp:320:   Updating branch targets and reconverge points
-(0.003021) EmulatedKernel.cpp:874:  
-
-Initializing texture variables for kernel _Z6kernelPfii
-(0.003032) EmulatedKernel.cpp:898:  updated fi->a.reg = 0
-(0.003039) EmulatedKernel.cpp:902:  Registered indices:
-(0.003045) EmulatedKernel.cpp:908:    surface: 0 - type: 2 - data: 0x3061c80
-(0.003057) EmulatedKernel.cpp:506:  Initializing shared memory for kernel _Z6kernelPfii
-(0.003068) EmulatedKernel.cpp:624:  Padding shared memory by 0 bytes to handle 1 byte alignment requirement.
-(0.003075) EmulatedKernel.cpp:637:  Total shared memory size is 0
-(0.003084) EmulatedKernel.cpp:402:  Initializing parameter memory for kernel _Z6kernelPfii
-(0.003091) EmulatedKernel.cpp:409:   Initializing memory for paramter __cudaparm__Z6kernelPfii_out of size 8
-(0.003099) EmulatedKernel.cpp:409:   Initializing memory for paramter __cudaparm__Z6kernelPfii_width of size 4
-(0.003105) EmulatedKernel.cpp:409:   Initializing memory for paramter __cudaparm__Z6kernelPfii_height of size 4
-(0.003120) EmulatedKernel.cpp:716:  Initializing constant variables for kernel _Z6kernelPfii
-(0.003127) EmulatedKernel.cpp:736:  Total constant memory size is 0
-(0.003134) EmulatedKernel.cpp:801:  Initializing global variables for kernel _Z6kernelPfii
-(0.003143) EmulatedKernel.cpp:148:  Setting external shared memory size to 0
-(0.003151) EmulatedKernel.cpp:92:   EmulatedKernel::launchGrid called for _Z6kernelPfii
-(0.003158) EmulatedKernel.cpp:93:     26 registers
 Pass/Fail : Pass
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestDeviceSwitching 
+INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestLLVMInstructions 
 INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestLLVMInstructions
-INFO     Test completed in 0.0349371433258 seconds
+INFO     Test completed in 0.0444149971008 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -597,8 +97,8 @@ Description: A test for the assembly code generation and automatic
              check, compare to references from the LLVM manual.
 
 
-Test Seed : 1289576736
-Test time : 0.000851393
+Test Seed : 1289593364
+Test time : 0.000861168
 
 Status :  Checked instruction "<result> = add i32 4, %var"
 Add Instruction Passed
@@ -729,91 +229,16 @@ Zext Instruction Passed
 
 
 
+INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestDeviceSwitching 
+INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestCudaTextureArray
+INFO     Test completed in 0.0765161514282 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
 INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestLLVMKernels 
 INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestDeviceSwitching
-INFO     Test completed in 0.035630941391 seconds
+INFO     Test completed in 0.0347239971161 seconds
 INFO      It produced the following output:
-(0.000994) EmulatedKernel.cpp:62:   Created emulated kernel increment
-(0.001015) EmulatedKernel.cpp:463:  Allocating registers
-(0.001042) EmulatedKernel.cpp:466:   Allocated 3 registers
-(0.001051) EmulatedKernel.cpp:213:  Constructing emulated instruction sequence.
-(0.001065) EmulatedKernel.cpp:223:   Adding reconverge instructions
-(0.001072) EmulatedKernel.cpp:284:   Packing instructions into a vector
-(0.001107) EmulatedKernel.cpp:301:    pc 0: ld.param.u64 %r0, [memory]
-(0.001126) EmulatedKernel.cpp:301:    pc 1: ld.global.u32 %r1, [%r0 + 0]
-(0.001147) EmulatedKernel.cpp:301:    pc 2: add.u32 %r2, %r1, 1
-(0.001165) EmulatedKernel.cpp:301:    pc 3: st.global.u32 [%r0 + 0], %r2
-(0.001175) EmulatedKernel.cpp:301:    pc 4: exit
-(0.001189) EmulatedKernel.cpp:320:   Updating branch targets and reconverge points
-(0.001199) EmulatedKernel.cpp:874:  
-
-Initializing texture variables for kernel increment
-(0.001207) EmulatedKernel.cpp:902:  Registered indices:
-(0.001216) EmulatedKernel.cpp:506:  Initializing shared memory for kernel increment
-(0.001227) EmulatedKernel.cpp:624:  Padding shared memory by 0 bytes to handle 1 byte alignment requirement.
-(0.001235) EmulatedKernel.cpp:637:  Total shared memory size is 0
-(0.001245) EmulatedKernel.cpp:402:  Initializing parameter memory for kernel increment
-(0.001252) EmulatedKernel.cpp:409:   Initializing memory for paramter memory of size 8
-(0.001269) EmulatedKernel.cpp:716:  Initializing constant variables for kernel increment
-(0.001276) EmulatedKernel.cpp:736:  Total constant memory size is 0
-(0.001284) EmulatedKernel.cpp:801:  Initializing global variables for kernel increment
-(0.001292) EmulatedKernel.cpp:148:  Setting external shared memory size to 0
-(0.001301) EmulatedKernel.cpp:92:   EmulatedKernel::launchGrid called for increment
-(0.001308) EmulatedKernel.cpp:93:     3 registers
-(0.001589) EmulatedKernel.cpp:62:   Created emulated kernel increment
-(0.001597) EmulatedKernel.cpp:463:  Allocating registers
-(0.001621) EmulatedKernel.cpp:466:   Allocated 3 registers
-(0.001629) EmulatedKernel.cpp:213:  Constructing emulated instruction sequence.
-(0.001639) EmulatedKernel.cpp:223:   Adding reconverge instructions
-(0.001647) EmulatedKernel.cpp:284:   Packing instructions into a vector
-(0.001661) EmulatedKernel.cpp:301:    pc 0: ld.param.u64 %r0, [memory]
-(0.001676) EmulatedKernel.cpp:301:    pc 1: ld.global.u32 %r1, [%r0 + 0]
-(0.001692) EmulatedKernel.cpp:301:    pc 2: add.u32 %r2, %r1, 1
-(0.001708) EmulatedKernel.cpp:301:    pc 3: st.global.u32 [%r0 + 0], %r2
-(0.001718) EmulatedKernel.cpp:301:    pc 4: exit
-(0.001732) EmulatedKernel.cpp:320:   Updating branch targets and reconverge points
-(0.001740) EmulatedKernel.cpp:874:  
-
-Initializing texture variables for kernel increment
-(0.001747) EmulatedKernel.cpp:902:  Registered indices:
-(0.001754) EmulatedKernel.cpp:506:  Initializing shared memory for kernel increment
-(0.001762) EmulatedKernel.cpp:624:  Padding shared memory by 0 bytes to handle 1 byte alignment requirement.
-(0.001769) EmulatedKernel.cpp:637:  Total shared memory size is 0
-(0.001776) EmulatedKernel.cpp:402:  Initializing parameter memory for kernel increment
-(0.001783) EmulatedKernel.cpp:409:   Initializing memory for paramter memory of size 8
-(0.001792) EmulatedKernel.cpp:716:  Initializing constant variables for kernel increment
-(0.001799) EmulatedKernel.cpp:736:  Total constant memory size is 0
-(0.001806) EmulatedKernel.cpp:801:  Initializing global variables for kernel increment
-(0.001813) EmulatedKernel.cpp:148:  Setting external shared memory size to 0
-(0.001821) EmulatedKernel.cpp:92:   EmulatedKernel::launchGrid called for increment
-(0.001827) EmulatedKernel.cpp:93:     3 registers
-(0.002179) EmulatedKernel.cpp:62:   Created emulated kernel increment
-(0.002188) EmulatedKernel.cpp:463:  Allocating registers
-(0.002215) EmulatedKernel.cpp:466:   Allocated 3 registers
-(0.002223) EmulatedKernel.cpp:213:  Constructing emulated instruction sequence.
-(0.002234) EmulatedKernel.cpp:223:   Adding reconverge instructions
-(0.002242) EmulatedKernel.cpp:284:   Packing instructions into a vector
-(0.002305) EmulatedKernel.cpp:301:    pc 0: ld.param.u64 %r0, [memory]
-(0.002321) EmulatedKernel.cpp:301:    pc 1: ld.global.u32 %r1, [%r0 + 0]
-(0.002338) EmulatedKernel.cpp:301:    pc 2: add.u32 %r2, %r1, 1
-(0.002355) EmulatedKernel.cpp:301:    pc 3: st.global.u32 [%r0 + 0], %r2
-(0.002366) EmulatedKernel.cpp:301:    pc 4: exit
-(0.002378) EmulatedKernel.cpp:320:   Updating branch targets and reconverge points
-(0.002386) EmulatedKernel.cpp:874:  
-
-Initializing texture variables for kernel increment
-(0.002393) EmulatedKernel.cpp:902:  Registered indices:
-(0.002401) EmulatedKernel.cpp:506:  Initializing shared memory for kernel increment
-(0.002410) EmulatedKernel.cpp:624:  Padding shared memory by 0 bytes to handle 1 byte alignment requirement.
-(0.002418) EmulatedKernel.cpp:637:  Total shared memory size is 0
-(0.002425) EmulatedKernel.cpp:402:  Initializing parameter memory for kernel increment
-(0.002433) EmulatedKernel.cpp:409:   Initializing memory for paramter memory of size 8
-(0.002442) EmulatedKernel.cpp:716:  Initializing constant variables for kernel increment
-(0.002449) EmulatedKernel.cpp:736:  Total constant memory size is 0
-(0.002457) EmulatedKernel.cpp:801:  Initializing global variables for kernel increment
-(0.002465) EmulatedKernel.cpp:148:  Setting external shared memory size to 0
-(0.002472) EmulatedKernel.cpp:92:   EmulatedKernel::launchGrid called for increment
-(0.002479) EmulatedKernel.cpp:93:     3 registers
 Pass/Fail : Pass
 
 
@@ -831,8 +256,8 @@ Description: A unit test for the ability of the CUDA runtime to switch
              parallel.
 
 
-Test Seed : 1289576736
-Test time : 0.00231576
+Test Seed : 1289593364
+Test time : 0.00181937
 
 Status : Test Point 1 Passed
 Test Point 2 Passed
@@ -842,126 +267,8 @@ Test Point 3 Passed
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestEmulator 
 INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestEmulator
-INFO     Test completed in 0.0324969291687 seconds
+INFO     Test completed in 0.0363669395447 seconds
 INFO      It produced the following output:
-(0.002380) EmulatedKernel.cpp:62:   Created emulated kernel _Z17k_simple_sequencePi
-(0.002400) EmulatedKernel.cpp:463:  Allocating registers
-(0.002465) EmulatedKernel.cpp:466:   Allocated 11 registers
-(0.002473) EmulatedKernel.cpp:213:  Constructing emulated instruction sequence.
-(0.002490) EmulatedKernel.cpp:223:   Adding reconverge instructions
-(0.002497) EmulatedKernel.cpp:284:   Packing instructions into a vector
-(0.002528) EmulatedKernel.cpp:301:    pc 0: cvt.u32.u16 %r0, %tid.x
-(0.002543) EmulatedKernel.cpp:301:    pc 1: mov.u16 %r1, %ctaid.x
-(0.002555) EmulatedKernel.cpp:301:    pc 2: mov.u16 %r2, %ntid.x
-(0.002641) EmulatedKernel.cpp:301:    pc 3: mul.wide.u16 %r3, %r1, %r2
-(0.002657) EmulatedKernel.cpp:301:    pc 4: add.u32 %r4, %r0, %r3
-(0.002675) EmulatedKernel.cpp:301:    pc 5: mul.lo.s32 %r5, %r4, 2
-(0.002689) EmulatedKernel.cpp:301:    pc 6: add.s32 %r6, %r5, 1
-(0.002703) EmulatedKernel.cpp:301:    pc 7: ld.param.u64 %r7, [__cudaparm__Z17k_simple_sequencePi_A]
-(0.002715) EmulatedKernel.cpp:301:    pc 8: cvt.u64.s32 %r8, %r4
-(0.002733) EmulatedKernel.cpp:301:    pc 9: mul.lo.u64 %r9, %r8, 4
-(0.002746) EmulatedKernel.cpp:301:    pc 10: add.u64 %r10, %r7, %r9
-(0.002759) EmulatedKernel.cpp:301:    pc 11: st.global.s32 [%r10 + 0], %r6
-(0.002767) EmulatedKernel.cpp:301:    pc 12: exit
-(0.002775) EmulatedKernel.cpp:320:   Updating branch targets and reconverge points
-(0.002784) EmulatedKernel.cpp:874:  
-
-Initializing texture variables for kernel _Z17k_simple_sequencePi
-(0.002791) EmulatedKernel.cpp:902:  Registered indices:
-(0.002800) EmulatedKernel.cpp:506:  Initializing shared memory for kernel _Z17k_simple_sequencePi
-(0.002810) EmulatedKernel.cpp:624:  Padding shared memory by 0 bytes to handle 1 byte alignment requirement.
-(0.002818) EmulatedKernel.cpp:637:  Total shared memory size is 0
-(0.002827) EmulatedKernel.cpp:402:  Initializing parameter memory for kernel _Z17k_simple_sequencePi
-(0.002834) EmulatedKernel.cpp:409:   Initializing memory for paramter __cudaparm__Z17k_simple_sequencePi_A of size 8
-(0.002887) EmulatedKernel.cpp:62:   Created emulated kernel _Z17k_simple_sequencePi
-(0.002894) EmulatedKernel.cpp:463:  Allocating registers
-(0.002959) EmulatedKernel.cpp:466:   Allocated 11 registers
-(0.002965) EmulatedKernel.cpp:213:  Constructing emulated instruction sequence.
-(0.002975) EmulatedKernel.cpp:223:   Adding reconverge instructions
-(0.002981) EmulatedKernel.cpp:284:   Packing instructions into a vector
-(0.002994) EmulatedKernel.cpp:301:    pc 0: cvt.u32.u16 %r0, %tid.x
-(0.003006) EmulatedKernel.cpp:301:    pc 1: mov.u16 %r1, %ctaid.x
-(0.003017) EmulatedKernel.cpp:301:    pc 2: mov.u16 %r2, %ntid.x
-(0.003034) EmulatedKernel.cpp:301:    pc 3: mul.wide.u16 %r3, %r1, %r2
-(0.003048) EmulatedKernel.cpp:301:    pc 4: add.u32 %r4, %r0, %r3
-(0.003064) EmulatedKernel.cpp:301:    pc 5: mul.lo.s32 %r5, %r4, 2
-(0.003078) EmulatedKernel.cpp:301:    pc 6: add.s32 %r6, %r5, 1
-(0.003090) EmulatedKernel.cpp:301:    pc 7: ld.param.u64 %r7, [__cudaparm__Z17k_simple_sequencePi_A]
-(0.003103) EmulatedKernel.cpp:301:    pc 8: cvt.u64.s32 %r8, %r4
-(0.003120) EmulatedKernel.cpp:301:    pc 9: mul.lo.u64 %r9, %r8, 4
-(0.003134) EmulatedKernel.cpp:301:    pc 10: add.u64 %r10, %r7, %r9
-(0.003146) EmulatedKernel.cpp:301:    pc 11: st.global.s32 [%r10 + 0], %r6
-(0.003154) EmulatedKernel.cpp:301:    pc 12: exit
-(0.003162) EmulatedKernel.cpp:320:   Updating branch targets and reconverge points
-(0.003169) EmulatedKernel.cpp:874:  
-
-Initializing texture variables for kernel _Z17k_simple_sequencePi
-(0.003175) EmulatedKernel.cpp:902:  Registered indices:
-(0.003182) EmulatedKernel.cpp:506:  Initializing shared memory for kernel _Z17k_simple_sequencePi
-(0.003190) EmulatedKernel.cpp:624:  Padding shared memory by 0 bytes to handle 1 byte alignment requirement.
-(0.003197) EmulatedKernel.cpp:637:  Total shared memory size is 0
-(0.003203) EmulatedKernel.cpp:402:  Initializing parameter memory for kernel _Z17k_simple_sequencePi
-(0.003210) EmulatedKernel.cpp:409:   Initializing memory for paramter __cudaparm__Z17k_simple_sequencePi_A of size 8
-(0.003247) EmulatedKernel.cpp:62:   Created emulated kernel _Z17k_simple_sequencePi
-(0.003300) EmulatedKernel.cpp:463:  Allocating registers
-(0.003363) EmulatedKernel.cpp:466:   Allocated 11 registers
-(0.003370) EmulatedKernel.cpp:213:  Constructing emulated instruction sequence.
-(0.003379) EmulatedKernel.cpp:223:   Adding reconverge instructions
-(0.003386) EmulatedKernel.cpp:284:   Packing instructions into a vector
-(0.003398) EmulatedKernel.cpp:301:    pc 0: cvt.u32.u16 %r0, %tid.x
-(0.003410) EmulatedKernel.cpp:301:    pc 1: mov.u16 %r1, %ctaid.x
-(0.003421) EmulatedKernel.cpp:301:    pc 2: mov.u16 %r2, %ntid.x
-(0.003437) EmulatedKernel.cpp:301:    pc 3: mul.wide.u16 %r3, %r1, %r2
-(0.003450) EmulatedKernel.cpp:301:    pc 4: add.u32 %r4, %r0, %r3
-(0.003467) EmulatedKernel.cpp:301:    pc 5: mul.lo.s32 %r5, %r4, 2
-(0.003481) EmulatedKernel.cpp:301:    pc 6: add.s32 %r6, %r5, 1
-(0.003494) EmulatedKernel.cpp:301:    pc 7: ld.param.u64 %r7, [__cudaparm__Z17k_simple_sequencePi_A]
-(0.003506) EmulatedKernel.cpp:301:    pc 8: cvt.u64.s32 %r8, %r4
-(0.003523) EmulatedKernel.cpp:301:    pc 9: mul.lo.u64 %r9, %r8, 4
-(0.003537) EmulatedKernel.cpp:301:    pc 10: add.u64 %r10, %r7, %r9
-(0.003550) EmulatedKernel.cpp:301:    pc 11: st.global.s32 [%r10 + 0], %r6
-(0.003557) EmulatedKernel.cpp:301:    pc 12: exit
-(0.003565) EmulatedKernel.cpp:320:   Updating branch targets and reconverge points
-(0.003572) EmulatedKernel.cpp:874:  
-
-Initializing texture variables for kernel _Z17k_simple_sequencePi
-(0.003579) EmulatedKernel.cpp:902:  Registered indices:
-(0.003585) EmulatedKernel.cpp:506:  Initializing shared memory for kernel _Z17k_simple_sequencePi
-(0.003593) EmulatedKernel.cpp:624:  Padding shared memory by 0 bytes to handle 1 byte alignment requirement.
-(0.003600) EmulatedKernel.cpp:637:  Total shared memory size is 0
-(0.003607) EmulatedKernel.cpp:402:  Initializing parameter memory for kernel _Z17k_simple_sequencePi
-(0.003614) EmulatedKernel.cpp:409:   Initializing memory for paramter __cudaparm__Z17k_simple_sequencePi_A of size 8
-(0.003648) EmulatedKernel.cpp:62:   Created emulated kernel _Z17k_simple_sequencePi
-(0.003655) EmulatedKernel.cpp:463:  Allocating registers
-(0.003719) EmulatedKernel.cpp:466:   Allocated 11 registers
-(0.003726) EmulatedKernel.cpp:213:  Constructing emulated instruction sequence.
-(0.003734) EmulatedKernel.cpp:223:   Adding reconverge instructions
-(0.003741) EmulatedKernel.cpp:284:   Packing instructions into a vector
-(0.003753) EmulatedKernel.cpp:301:    pc 0: cvt.u32.u16 %r0, %tid.x
-(0.003765) EmulatedKernel.cpp:301:    pc 1: mov.u16 %r1, %ctaid.x
-(0.003776) EmulatedKernel.cpp:301:    pc 2: mov.u16 %r2, %ntid.x
-(0.003792) EmulatedKernel.cpp:301:    pc 3: mul.wide.u16 %r3, %r1, %r2
-(0.003806) EmulatedKernel.cpp:301:    pc 4: add.u32 %r4, %r0, %r3
-(0.003822) EmulatedKernel.cpp:301:    pc 5: mul.lo.s32 %r5, %r4, 2
-(0.003836) EmulatedKernel.cpp:301:    pc 6: add.s32 %r6, %r5, 1
-(0.003848) EmulatedKernel.cpp:301:    pc 7: ld.param.u64 %r7, [__cudaparm__Z17k_simple_sequencePi_A]
-(0.003861) EmulatedKernel.cpp:301:    pc 8: cvt.u64.s32 %r8, %r4
-(0.003878) EmulatedKernel.cpp:301:    pc 9: mul.lo.u64 %r9, %r8, 4
-(0.003892) EmulatedKernel.cpp:301:    pc 10: add.u64 %r10, %r7, %r9
-(0.003905) EmulatedKernel.cpp:301:    pc 11: st.global.s32 [%r10 + 0], %r6
-(0.003912) EmulatedKernel.cpp:301:    pc 12: exit
-(0.003920) EmulatedKernel.cpp:320:   Updating branch targets and reconverge points
-(0.003927) EmulatedKernel.cpp:874:  
-
-Initializing texture variables for kernel _Z17k_simple_sequencePi
-(0.003934) EmulatedKernel.cpp:902:  Registered indices:
-(0.003940) EmulatedKernel.cpp:506:  Initializing shared memory for kernel _Z17k_simple_sequencePi
-(0.003948) EmulatedKernel.cpp:624:  Padding shared memory by 0 bytes to handle 1 byte alignment requirement.
-(0.003955) EmulatedKernel.cpp:637:  Total shared memory size is 0
-(0.003962) EmulatedKernel.cpp:402:  Initializing parameter memory for kernel _Z17k_simple_sequencePi
-(0.003968) EmulatedKernel.cpp:409:   Initializing memory for paramter __cudaparm__Z17k_simple_sequencePi_A of size 8
-(0.003976) EmulatedKernel.cpp:92:   EmulatedKernel::launchGrid called for _Z17k_simple_sequencePi
-(0.003994) EmulatedKernel.cpp:93:     11 registers
 Pass/Fail : Pass
 
 
@@ -970,8 +277,8 @@ Name : TestEmulator
 Description: 
 
 
-Test Seed : 1289576736
-Test time : 0.00388622
+Test Seed : 1289593364
+Test time : 0.00263929
 
 Status : Test output:
 11 registers
@@ -985,7 +292,7 @@ Full kernel test passed
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestPTXToLLVMTranslator 
 INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestLLVMKernels
-INFO     Test completed in 0.083359003067 seconds
+INFO     Test completed in 0.0909519195557 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -997,8 +304,8 @@ Description: A unit test for the LLVM executive runtime. Test Points: 1)
              loop. 3) Execute a matrix multiply kernel.
 
 
-Test Seed : 1289576736
-Test time : 0.0490539
+Test Seed : 1289593364
+Test time : 0.0445199
 
 Status : A = [
  1 0 0 0 0 0 0 0 ;
@@ -1035,7 +342,7 @@ R = [
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestParser 
 INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestLexer
-INFO     Test completed in 8.86059594154 seconds
+INFO     Test completed in 9.24928307533 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -1047,8 +354,8 @@ Description: Tests for the PTX lexer. Test Point 1: Scan a PTX file and
              two sets of tokens match
 
 
-Test Seed : 1289576736
-Test time : 8.81401
+Test Seed : 1289593364
+Test time : 9.20917
 
 Status : For file ../tests/ptx/sdk2.2/simpleTexture.ptx, Test Point 1 (Scan): Passed
 For file ../tests/ptx/sdk2.2/simpleAtomicIntrinsics.ptx, Test Point 1 (Scan): Passed
@@ -1220,98 +527,15 @@ For file ../tests/ptx/synthetic/barrier.ptx, Test Point 1 (Scan): Passed
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestCudaGlobals 
 INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestCudaGlobals
-INFO     Test completed in 0.0366690158844 seconds
+INFO     Test completed in 0.0332369804382 seconds
 INFO      It produced the following output:
 cudaSetDevice() - 0 - Ocelot PTX Emulator 
-(0.002339) EmulatedKernel.cpp:62:   Created emulated kernel copyFromGlobal
-(0.002354) EmulatedKernel.cpp:463:  Allocating registers
-(0.002456) EmulatedKernel.cpp:466:   Allocated 19 registers
-(0.002465) EmulatedKernel.cpp:213:  Constructing emulated instruction sequence.
-(0.002481) EmulatedKernel.cpp:223:   Adding reconverge instructions
-(0.002489) EmulatedKernel.cpp:284:   Packing instructions into a vector
-(0.002524) EmulatedKernel.cpp:301:    pc 0: cvt.u32.u16 %r0, %tid.x
-(0.002542) EmulatedKernel.cpp:301:    pc 1: mov.u16 %r1, %ctaid.x
-(0.002554) EmulatedKernel.cpp:301:    pc 2: mov.u16 %r2, %ntid.x
-(0.002571) EmulatedKernel.cpp:301:    pc 3: mul.wide.u16 %r3, %r1, %r2
-(0.002587) EmulatedKernel.cpp:301:    pc 4: add.u32 %r4, %r0, %r3
-(0.002606) EmulatedKernel.cpp:301:    pc 5: shr.s32 %r5, %r4, 31
-(0.002619) EmulatedKernel.cpp:301:    pc 6: mov.s32 %r6, 127
-(0.002634) EmulatedKernel.cpp:301:    pc 7: and.b32 %r7, %r5, %r6
-(0.002647) EmulatedKernel.cpp:301:    pc 8: add.s32 %r8, %r7, %r4
-(0.002664) EmulatedKernel.cpp:301:    pc 9: shr.s32 %r9, %r8, 7
-(0.002678) EmulatedKernel.cpp:301:    pc 10: mul.lo.s32 %r10, %r9, 128
-(0.002692) EmulatedKernel.cpp:301:    pc 11: sub.s32 %r11, %r4, %r10
-(0.002705) EmulatedKernel.cpp:301:    pc 12: cvt.rn.f32.s32 %r12, %r11
-(0.002721) EmulatedKernel.cpp:301:    pc 13: ld.global.f32 %r13, [Pi]
-(0.002734) EmulatedKernel.cpp:301:    pc 14: mul.f32 %r14, %r12, %r13
-(0.002746) EmulatedKernel.cpp:301:    pc 15: ld.param.u64 %r15, [__cudaparm_copyFromGlobal_result]
-(0.002759) EmulatedKernel.cpp:301:    pc 16: cvt.u64.s32 %r16, %r4
-(0.002778) EmulatedKernel.cpp:301:    pc 17: mul.lo.u64 %r17, %r16, 4
-(0.002791) EmulatedKernel.cpp:301:    pc 18: add.u64 %r18, %r15, %r17
-(0.002804) EmulatedKernel.cpp:301:    pc 19: st.global.f32 [%r18 + 0], %r14
-(0.002811) EmulatedKernel.cpp:301:    pc 20: exit
-(0.002820) EmulatedKernel.cpp:320:   Updating branch targets and reconverge points
-(0.002829) EmulatedKernel.cpp:874:  
-
-Initializing texture variables for kernel copyFromGlobal
-(0.002836) EmulatedKernel.cpp:902:  Registered indices:
-(0.002846) EmulatedKernel.cpp:506:  Initializing shared memory for kernel copyFromGlobal
-(0.002856) EmulatedKernel.cpp:624:  Padding shared memory by 0 bytes to handle 1 byte alignment requirement.
-(0.002864) EmulatedKernel.cpp:637:  Total shared memory size is 0
-(0.002873) EmulatedKernel.cpp:402:  Initializing parameter memory for kernel copyFromGlobal
-(0.002880) EmulatedKernel.cpp:409:   Initializing memory for paramter __cudaparm_copyFromGlobal_result of size 8
-(0.002896) EmulatedKernel.cpp:716:  Initializing constant variables for kernel copyFromGlobal
-(0.002903) EmulatedKernel.cpp:736:  Total constant memory size is 0
-(0.002910) EmulatedKernel.cpp:801:  Initializing global variables for kernel copyFromGlobal
-(0.002917) EmulatedKernel.cpp:808:   Found global variable Pi
-(0.002931) EmulatedKernel.cpp:845:  Mapping global label Pi to 0x163d800 for instruction ld.global.f32 %r13, [Pi]
-(0.002940) EmulatedKernel.cpp:148:  Setting external shared memory size to 0
-(0.002949) EmulatedKernel.cpp:92:   EmulatedKernel::launchGrid called for copyFromGlobal
-(0.002956) EmulatedKernel.cpp:93:     19 registers
-(0.003046) EmulatedKernel.cpp:716:  Initializing constant variables for kernel copyFromGlobal
-(0.003054) EmulatedKernel.cpp:736:  Total constant memory size is 0
-(0.003060) EmulatedKernel.cpp:801:  Initializing global variables for kernel copyFromGlobal
-(0.003067) EmulatedKernel.cpp:808:   Found global variable Pi
-(0.003080) EmulatedKernel.cpp:845:  Mapping global label Pi to 0x163d800 for instruction ld.global.f32 %r13, [Pi]
-(0.003088) EmulatedKernel.cpp:148:  Setting external shared memory size to 0
-(0.003095) EmulatedKernel.cpp:92:   EmulatedKernel::launchGrid called for copyFromGlobal
-(0.003101) EmulatedKernel.cpp:93:     19 registers
 Pass/Fail : Pass
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestInstructions 
 INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestInstructions
-INFO     Test completed in 0.0359189510345 seconds
+INFO     Test completed in 0.0374760627747 seconds
 INFO      It produced the following output:
-(0.002326) EmulatedKernel.cpp:62:   Created emulated kernel _Z17k_simple_sequencePi
-(0.002348) EmulatedKernel.cpp:463:  Allocating registers
-(0.002410) EmulatedKernel.cpp:466:   Allocated 11 registers
-(0.002419) EmulatedKernel.cpp:213:  Constructing emulated instruction sequence.
-(0.002437) EmulatedKernel.cpp:223:   Adding reconverge instructions
-(0.002445) EmulatedKernel.cpp:284:   Packing instructions into a vector
-(0.002472) EmulatedKernel.cpp:301:    pc 0: cvt.u32.u16 %r0, %tid.x
-(0.002489) EmulatedKernel.cpp:301:    pc 1: mov.u16 %r1, %ctaid.x
-(0.002501) EmulatedKernel.cpp:301:    pc 2: mov.u16 %r2, %ntid.x
-(0.002521) EmulatedKernel.cpp:301:    pc 3: mul.wide.u16 %r3, %r1, %r2
-(0.002537) EmulatedKernel.cpp:301:    pc 4: add.u32 %r4, %r0, %r3
-(0.002554) EmulatedKernel.cpp:301:    pc 5: mul.lo.s32 %r5, %r4, 2
-(0.002568) EmulatedKernel.cpp:301:    pc 6: add.s32 %r6, %r5, 1
-(0.002584) EmulatedKernel.cpp:301:    pc 7: ld.param.u64 %r7, [__cudaparm__Z17k_simple_sequencePi_A]
-(0.002597) EmulatedKernel.cpp:301:    pc 8: cvt.u64.s32 %r8, %r4
-(0.002614) EmulatedKernel.cpp:301:    pc 9: mul.lo.u64 %r9, %r8, 4
-(0.002628) EmulatedKernel.cpp:301:    pc 10: add.u64 %r10, %r7, %r9
-(0.002641) EmulatedKernel.cpp:301:    pc 11: st.global.s32 [%r10 + 0], %r6
-(0.002648) EmulatedKernel.cpp:301:    pc 12: exit
-(0.002656) EmulatedKernel.cpp:320:   Updating branch targets and reconverge points
-(0.002666) EmulatedKernel.cpp:874:  
-
-Initializing texture variables for kernel _Z17k_simple_sequencePi
-(0.002673) EmulatedKernel.cpp:902:  Registered indices:
-(0.002681) EmulatedKernel.cpp:506:  Initializing shared memory for kernel _Z17k_simple_sequencePi
-(0.002692) EmulatedKernel.cpp:624:  Padding shared memory by 0 bytes to handle 1 byte alignment requirement.
-(0.002700) EmulatedKernel.cpp:637:  Total shared memory size is 0
-(0.002708) EmulatedKernel.cpp:402:  Initializing parameter memory for kernel _Z17k_simple_sequencePi
-(0.002715) EmulatedKernel.cpp:409:   Initializing memory for paramter __cudaparm__Z17k_simple_sequencePi_A of size 8
-(0.002727) EmulatedKernel.cpp:148:  Setting external shared memory size to 64
 Pass/Fail : Pass
 
 
@@ -1320,8 +544,8 @@ Name : TestInstructions
 Description: 
 
 
-Test Seed : 1289576745
-Test time : 0.000364065
+Test Seed : 1289593374
+Test time : 0.000387192
 
 Status : Test output:
 Accessors test passed.
@@ -1338,7 +562,7 @@ pass: control flow instructions
 
 
 INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestParser
-INFO     Test completed in 14.2283380032 seconds
+INFO     Test completed in 15.0636150837 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -1351,8 +575,8 @@ Description: A test for the PTXParser class. Test Points: 1) Load a PTX file
              generating a new module, compare both to make sure that they match.
 
 
-Test Seed : 1289576736
-Test time : 14.1945
+Test Seed : 1289593365
+Test time : 15.0249
 
 Status : For file ../tests/ptx/sdk2.2/simpleTexture.ptx, Test Point 1 (Parse): Passed
 For file ../tests/ptx/sdk2.2/simpleAtomicIntrinsics.ptx, Test Point 1 (Parse): Passed
@@ -1608,7 +832,7 @@ For file ../tests/ptx/synthetic/barrier.ptx, Test Point 1 (Parse): Passed
 
 
 INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestPTXToLLVMTranslator
-INFO     Test completed in 19.8827829361 seconds
+INFO     Test completed in 20.9998149872 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -1621,8 +845,8 @@ Description: This is a basic test that just tries to get through a
              translate them.
 
 
-Test Seed : 1289576736
-Test time : 19.8491
+Test Seed : 1289593365
+Test time : 20.9677
 
 Status : For file ../tests/ptx/sdk2.2/simpleTexture.ptx, Test Point 1 (Translate): Passed
 For file ../tests/ptx/sdk2.2/simpleAtomicIntrinsics.ptx, Test Point 1 (Translate): Passed
@@ -1878,7 +1102,7 @@ For file ../tests/ptx/synthetic/barrier.ptx, Test Point 1 (Translate): Passed
 
 
 INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestDataflowGraph
-INFO     Test completed in 22.1316919327 seconds
+INFO     Test completed in 22.1578950882 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -1893,8 +1117,8 @@ Description: A test for the DataflowGraph class. Test Points: 1)
              ranges spanning blocks are consistent.
 
 
-Test Seed : 1289576736
-Test time : 22.0888
+Test Seed : 1289593364
+Test time : 22.1166
 
 Status : Testing Generic Dataflow
  For File: ../tests/ptx/sdk2.2/simpleTexture.ptx
@@ -5711,21 +4935,21 @@ Testing SSA then back Dataflow
 
 INFO     
 Passing tests:
- (14.228s) : /home/andrew/repositories/gpuocelot/ocelot/TestParser : Passed
- (0.036s) : /home/andrew/repositories/gpuocelot/ocelot/TestInstructions : Passed
- (0.032s) : /home/andrew/repositories/gpuocelot/ocelot/TestEmulator : Passed
- (0.053s) : /home/andrew/repositories/gpuocelot/ocelot/TestCudaSequence : Passed
- (0.048s) : /home/andrew/repositories/gpuocelot/ocelot/TestCudaTextureArray : Passed
- (22.132s) : /home/andrew/repositories/gpuocelot/ocelot/TestDataflowGraph : Passed
- (19.883s) : /home/andrew/repositories/gpuocelot/ocelot/TestPTXToLLVMTranslator : Passed
- (0.035s) : /home/andrew/repositories/gpuocelot/ocelot/TestLLVMInstructions : Passed
- (0.053s) : /home/andrew/repositories/gpuocelot/ocelot/TestCudaTexture2D : Passed
- (0.053s) : /home/andrew/repositories/gpuocelot/ocelot/TestKernels : Passed
- (8.861s) : /home/andrew/repositories/gpuocelot/ocelot/TestLexer : Passed
- (0.037s) : /home/andrew/repositories/gpuocelot/ocelot/TestCudaGlobals : Passed
- (0.074s) : /home/andrew/repositories/gpuocelot/ocelot/TestCudaMalloc : Passed
- (0.083s) : /home/andrew/repositories/gpuocelot/ocelot/TestLLVMKernels : Passed
- (0.036s) : /home/andrew/repositories/gpuocelot/ocelot/TestDeviceSwitching : Passed
+ (15.064s) : /home/andrew/repositories/gpuocelot/ocelot/TestParser : Passed
+ (0.037s) : /home/andrew/repositories/gpuocelot/ocelot/TestInstructions : Passed
+ (0.036s) : /home/andrew/repositories/gpuocelot/ocelot/TestEmulator : Passed
+ (0.067s) : /home/andrew/repositories/gpuocelot/ocelot/TestCudaSequence : Passed
+ (0.077s) : /home/andrew/repositories/gpuocelot/ocelot/TestCudaTextureArray : Passed
+ (22.158s) : /home/andrew/repositories/gpuocelot/ocelot/TestDataflowGraph : Passed
+ (21.000s) : /home/andrew/repositories/gpuocelot/ocelot/TestPTXToLLVMTranslator : Passed
+ (0.044s) : /home/andrew/repositories/gpuocelot/ocelot/TestLLVMInstructions : Passed
+ (0.083s) : /home/andrew/repositories/gpuocelot/ocelot/TestCudaTexture2D : Passed
+ (0.052s) : /home/andrew/repositories/gpuocelot/ocelot/TestKernels : Passed
+ (9.249s) : /home/andrew/repositories/gpuocelot/ocelot/TestLexer : Passed
+ (0.033s) : /home/andrew/repositories/gpuocelot/ocelot/TestCudaGlobals : Passed
+ (0.073s) : /home/andrew/repositories/gpuocelot/ocelot/TestCudaMalloc : Passed
+ (0.091s) : /home/andrew/repositories/gpuocelot/ocelot/TestLLVMKernels : Passed
+ (0.035s) : /home/andrew/repositories/gpuocelot/ocelot/TestDeviceSwitching : Passed
 
 Failing tests:
 

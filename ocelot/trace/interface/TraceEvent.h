@@ -114,6 +114,8 @@ namespace trace {
 		ir::PTXU32 stackInsert;
 		
 		ir::PTXU32 stackMerge;
+		
+		ir::PTXU32 conservativeBranches;
 
 	public:
 	

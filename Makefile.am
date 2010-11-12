@@ -29,7 +29,8 @@ check_PROGRAMS = TestLexer TestParser \
 	TestPTXToLLVMTranslator  TestGPUKernel  \
 	TestCudaGlobals TestCudaMalloc TestCudaTexture2D TestCudaTextureArray \
 	TestCudaSequence TestLLVMKernels TestDeviceSwitching \
-	TestRaceCondition TestMemoryCheck ExecuteInstrumentedKernel 
+	TestRaceCondition TestMemoryCheck ExecuteInstrumentedKernel \
+	TestLoopExit
 EXTRA_PROGRAMS = Module PtxToLlvmTranslator PtxToIlTranslator DFG CFG PTXChecker
 lib_LTLIBRARIES = libocelot.la
 ################################################################################
@@ -308,8 +309,17 @@ TestCudaTextureArray_LDFLAGS = -static
 ##
 TestCudaSequence_CXXFLAGS = $(SDK_CFLAGS)
 TestCudaSequence_SOURCES = ocelot/cuda/test/kernels/sequence.cu.cpp
-TestCudaSequence_LDADD = libocelot.la $(LLVM_LDFLAGS) -locelotTrace
+TestCudaSequence_LDADD = libocelot.la $(LLVM_LDFLAGS)
 TestCudaSequence_LDFLAGS = -static
+################################################################################
+
+################################################################################
+##
+##
+TestLoopExit_CXXFLAGS = $(SDK_CFLAGS)
+TestLoopExit_SOURCES = ocelot/cuda/test/kernels/loopExit.cu.cpp
+TestLoopExit_LDADD = libocelot.la $(LLVM_LDFLAGS)
+TestLoopExit_LDFLAGS = -static
 ################################################################################
 
 ################################################################################

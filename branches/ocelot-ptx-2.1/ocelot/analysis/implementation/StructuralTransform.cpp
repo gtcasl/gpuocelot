@@ -359,52 +359,101 @@ namespace analysis {
           std::pair<ir::ControlFlowGraph::iterator, ir::ControlFlowGraph::iterator> ValuePair = *VMI;
           ir::BasicBlock::EdgePointerVector edges = ValuePair.first->out_edges;
 
-          for (ir::BasicBlock::EdgePointerVector::iterator ei = edges.begin(), ee = edges.end(); ei != ee; ++ei) {
+          if (edges.size() == 1) {
+            ir::BasicBlock::EdgePointerVector::iterator ei = edges.begin();
             ValueToValueMapTy::iterator it = ValueMap.find((*ei)->tail);
-       
-            if (it != ValueMap.end()) {
-              ir::PTXInstruction *term = static_cast<ir::PTXInstruction *>(ValuePair.second->instructions.back());
- 
-              if (term->opcode == ir::PTXInstruction::Bra) {
-                _kernel->cfg()->insert_edge(ir::ControlFlowGraph::Edge(ValuePair.second, (*it).second, (*ei)->type));
 
-                if (term->d.identifier == (*ei)->tail->label) 
-                  term->d = std::move(ir::PTXOperand((*it).second->label));
-              } else {
-                ir::PTXInstruction* branch = new ir::PTXInstruction(ir::PTXInstruction::Bra);
-                branch->uni = true;
-                branch->d = std::move(ir::PTXOperand((*it).second->label));
-                ValuePair.second->instructions.push_back(branch);
-                _kernel->cfg()->insert_edge(ir::ControlFlowGraph::Edge(ValuePair.second, (*it).second, ir::Edge::Branch));
-              }
-            } else { 
+            // found in ValueMap
+            if (it != ValueMap.end()) {
+              _kernel->cfg()->insert_edge(ir::ControlFlowGraph::Edge(ValuePair.second, (*it).second, (*ei)->type));
+
+              ir::PTXInstruction *term = static_cast<ir::PTXInstruction *>(ValuePair.second->instructions.back());
+
+              if (term->opcode == ir::PTXInstruction::Bra && term->d.identifier == (*ei)->tail->label)
+                term->d = std::move(ir::PTXOperand((*it).second->label));
+            } 
+            // not found in ValueMap
+            else {
               ir::PTXInstruction *term = static_cast<ir::PTXInstruction *>(ValuePair.second->instructions.back());
               _kernel->cfg()->insert_edge(ir::ControlFlowGraph::Edge(ValuePair.second, (*ei)->tail, ir::Edge::Branch));
 
-              if (term->opcode == ir::PTXInstruction::Bra) {
-                if (term->d.identifier != (*ei)->tail->label) {
-                  switch(term->pg.condition) {
-                  case ir::PTXOperand::Pred:
-                    term->pg.condition = ir::PTXOperand::InvPred;
-                    break;
-                  case ir::PTXOperand::InvPred:
-                    term->pg.condition = ir::PTXOperand::Pred;
-                    break;
-                  case ir::PTXOperand::PT:
-                    term->pg.condition = ir::PTXOperand::nPT;
-                    break;
-                  case ir::PTXOperand::nPT:
-                    term->pg.condition = ir::PTXOperand::PT;
-                    break;
-                  }
-      
-                  term->d = std::move(ir::PTXOperand((*ei)->tail->label));
+              if ((*ei)->type == ir::Edge::FallThrough) {
+                if (term->opcode != ir::PTXInstruction::Bra) { 
+                  ir::PTXInstruction* branch = new ir::PTXInstruction(ir::PTXInstruction::Bra);
+                  branch->uni = true;
+                  branch->d = std::move(ir::PTXOperand((*ei)->tail->label));
+                  ValuePair.second->instructions.push_back(branch);
                 }
-              } else {
-                ir::PTXInstruction* branch = new ir::PTXInstruction(ir::PTXInstruction::Bra);
-                branch->uni = true;
-                branch->d = std::move(ir::PTXOperand((*ei)->tail->label));
-                ValuePair.second->instructions.push_back(branch);
+              } 
+            }
+          } else if (edges.size() == 2) {
+            ir::BasicBlock::EdgePointerVector::iterator ei = edges.begin();
+            ir::BasicBlock::EdgePointerVector::iterator ei1 = ei;
+            ++ei;
+            ir::BasicBlock::EdgePointerVector::iterator ei2 = ei;
+
+            ValueToValueMapTy::iterator it1 = ValueMap.find((*ei1)->tail);
+            ValueToValueMapTy::iterator it2 = ValueMap.find((*ei2)->tail);
+
+            // both found in ValueMap
+            if (it1 != ValueMap.end() && it2 != ValueMap.end()) {
+              _kernel->cfg()->insert_edge(ir::ControlFlowGraph::Edge(ValuePair.second, (*it1).second, (*ei1)->type));
+              _kernel->cfg()->insert_edge(ir::ControlFlowGraph::Edge(ValuePair.second, (*it2).second, (*ei2)->type));
+
+              ir::PTXInstruction *term = static_cast<ir::PTXInstruction *>(ValuePair.second->instructions.back());
+
+              if (term->opcode == ir::PTXInstruction::Bra) {
+                if (term->d.identifier == (*ei1)->tail->label)
+                  term->d = std::move(ir::PTXOperand((*it1).second->label));
+                else if (term->d.identifier == (*ei2)->tail->label)
+                  term->d = std::move(ir::PTXOperand((*it2).second->label));
+              }
+            } 
+            // edge 1 is found in ValueMap & edge 2 is not
+            else if (it1 != ValueMap.end() && it2 == ValueMap.end()) {
+              _kernel->cfg()->insert_edge(ir::ControlFlowGraph::Edge(ValuePair.second, (*it1).second, ir::Edge::FallThrough));
+              _kernel->cfg()->insert_edge(ir::ControlFlowGraph::Edge(ValuePair.second, (*ei2)->tail, ir::Edge::Branch));
+
+              ir::PTXInstruction *term = static_cast<ir::PTXInstruction *>(ValuePair.second->instructions.back());
+
+              if (term->opcode == ir::PTXInstruction::Bra) {
+                if (term->d.identifier == (*ei1)->tail->label)
+                  term->d = std::move(ir::PTXOperand((*ei2)->tail->label));
+             }
+            }
+            // edge 2 is found in ValueMap & edge 1 is not
+            else if (it1 == ValueMap.end() && it2 != ValueMap.end()) {
+              _kernel->cfg()->insert_edge(ir::ControlFlowGraph::Edge(ValuePair.second, (*it2).second, ir::Edge::FallThrough));
+              _kernel->cfg()->insert_edge(ir::ControlFlowGraph::Edge(ValuePair.second, (*ei1)->tail, ir::Edge::Branch));
+
+              ir::PTXInstruction *term = static_cast<ir::PTXInstruction *>(ValuePair.second->instructions.back());
+
+              if (term->opcode == ir::PTXInstruction::Bra) {
+                if (term->d.identifier == (*ei2)->tail->label)
+                  term->d = std::move(ir::PTXOperand((*ei1)->tail->label));
+              }
+            }
+            // neither is in ValueMap 
+            else if (it1 == ValueMap.end() && it2 == ValueMap.end()) {
+              ir::PTXInstruction *term = static_cast<ir::PTXInstruction *>(ValuePair.second->instructions.back());
+
+              if ((*ei1)->type == ir::Edge::Branch && (*ei2)->type == ir::Edge::FallThrough) {
+                _kernel->cfg()->insert_edge(ir::ControlFlowGraph::Edge(ValuePair.second, (*ei1)->tail, ir::Edge::FallThrough));
+                _kernel->cfg()->insert_edge(ir::ControlFlowGraph::Edge(ValuePair.second, (*ei2)->tail, ir::Edge::Branch));
+
+                if (term->opcode == ir::PTXInstruction::Bra) {
+                  if (term->d.identifier == (*ei1)->tail->label)
+                    term->d = std::move(ir::PTXOperand((*ei2)->tail->label));
+                }
+              }
+              else if ((*ei1)->type == ir::Edge::FallThrough && (*ei2)->type == ir::Edge::Branch) {
+                _kernel->cfg()->insert_edge(ir::ControlFlowGraph::Edge(ValuePair.second, (*ei1)->tail, ir::Edge::Branch));
+                _kernel->cfg()->insert_edge(ir::ControlFlowGraph::Edge(ValuePair.second, (*ei2)->tail, ir::Edge::FallThrough));
+
+                if (term->opcode == ir::PTXInstruction::Bra) {
+                  if (term->d.identifier == (*ei2)->tail->label)
+                    term->d = std::move(ir::PTXOperand((*ei1)->tail->label));
+                }
               }
             }
           }
@@ -418,27 +467,8 @@ namespace analysis {
             _kernel->cfg()->remove_edge(i->first->get_branch_edge());
             _kernel->cfg()->insert_edge(ir::ControlFlowGraph::Edge(i->first, ValueMap[i->second], ir::Edge::Branch)); 
           } else if (i->first->get_fallthrough_edge()->tail == i->second) {
-            switch(bra->pg.condition) {
-            case ir::PTXOperand::Pred:
-              bra->pg.condition = ir::PTXOperand::InvPred;
-              break;
-            case ir::PTXOperand::InvPred:
-              bra->pg.condition = ir::PTXOperand::Pred;
-              break;
-            case ir::PTXOperand::PT:
-              bra->pg.condition = ir::PTXOperand::nPT;
-              break;
-            case ir::PTXOperand::nPT:
-              bra->pg.condition = ir::PTXOperand::PT;
-              break;
-            }
-
-            bra->d = std::move(ir::PTXOperand(ValueMap[i->second]->label));
-
             _kernel->cfg()->remove_edge(i->first->get_fallthrough_edge());
-            ir::BasicBlock::EdgeList::iterator tmpEdge = i->first->get_branch_edge();
-            tmpEdge->type = ir::Edge::FallThrough;
-            _kernel->cfg()->insert_edge(ir::ControlFlowGraph::Edge(i->first, ValueMap[i->second], ir::Edge::Branch)); 
+            _kernel->cfg()->insert_edge(ir::ControlFlowGraph::Edge(i->first, ValueMap[i->second], ir::Edge::FallThrough)); 
           }
         }
       } 

@@ -12,6 +12,10 @@
 			enabled: false,
 			kernelFilter: "_Z13scalarProdGPUPfS_S_ii",
 			alwaysAttach: true
+		},
+		controlFlowVisualizer: {
+			enabled: true,
+			allInstructions: false
 		}
 	},
 	cuda: {
@@ -19,7 +23,7 @@
 		runtimeApiTrace: "trace/CudaAPI.trace"
 	},
 	executive: {
-		devices: [ emulated, llvm, nvidia, amd ],
+		devices: [ emulated ],
 		optimizationLevel: basic,
 		workerThreadLimit: 2
 	}

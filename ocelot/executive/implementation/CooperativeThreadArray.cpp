@@ -45,7 +45,7 @@
 #define REPORT_BASE 0
 
 // reporting for kernel instructions
-#define REPORT_STATIC_INSTRUCTIONS 1
+#define REPORT_STATIC_INSTRUCTIONS 0
 #define REPORT_DYNAMIC_INSTRUCTIONS 0
 
 // reporting for register accesses
@@ -2187,7 +2187,27 @@ void executive::CooperativeThreadArray::eval_Bra(CTAContext &context, const PTXI
 			}
 		}
 		
-		runtimeStack.back().PC = minPC;
+		EmulatedKernel::ThreadFrontierMap::const_iterator tf_it = kernel->threadFrontiers.find(context.PC);
+		if (tf_it != kernel->threadFrontiers.end()) {
+			// conservative branch here?
+			report("thread frontier of block with divergent branch at PC: " << context.PC);
+			report("  earliest: " << tf_it->second.first);
+			report("  latest:   " << tf_it->second.second);
+			
+			int fallthroughTargetPC = runtimeStack.back().PC + 1;
+			int targetPC = fallthroughTargetPC;
+			if (tf_it->second.first < fallthroughTargetPC) {
+				targetPC = tf_it->second.first;
+				report("Conservative branch");
+			}
+			runtimeStack.back().PC = targetPC;
+		}
+		else {
+			report("Thread frontier not found at divergent branch for PC " << context.PC);
+			throw RuntimeException("Thread frontier not found  at divergent branch", context.PC, instr);
+		}
+		
+		
 #else
 		report("Unimplemented reconvergence mechanism");
 		throw RuntimeException("Undefined reconvergence mechanism", context.PC, instr);

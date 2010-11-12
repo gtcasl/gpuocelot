@@ -4,10 +4,16 @@
 	\brief implements the Kernel base class
 */
 
+// C++ includes
+#include <assert.h>
+#include <math.h>
 #include <vector>
 #include <map>
 #include <unordered_set>
+#include <algorithm>
+#include <cstring>
 
+// Ocelot includes
 #include <ocelot/ir/interface/Parameter.h>
 #include <ocelot/ir/interface/Module.h>
 #include <ocelot/ir/interface/ControlFlowGraph.h>
@@ -18,14 +24,9 @@
 #include <ocelot/executive/interface/RuntimeException.h>
 #include <ocelot/executive/interface/CooperativeThreadArray.h>
 #include <ocelot/ir/interface/HammockGraph.h>
-
 #include <ocelot/trace/interface/TraceGenerator.h>
 
-#include <assert.h>
-#include <math.h>
-
-#include <cstring>
-
+// Hydrazine includes
 #include <hydrazine/implementation/string.h>
 #include <hydrazine/implementation/debug.h>
 
@@ -37,8 +38,9 @@
 
 #define REPORT_BASE 0
 
-#define REPORT_KERNEL_INSTRUCTIONS 1
+#define REPORT_KERNEL_INSTRUCTIONS 0
 #define REPORT_LAUNCH_CONFIGURATION 0
+#define REPORT_THREAD_FRONTIERS 1
 
 #define IPDOM_RECONVERGENCE 1
 #define BARRIER_RECONVERGENCE 2
@@ -202,21 +204,6 @@ public:
 	}
 };
 
-/*!
-	\brief computes thread frontiers prior to instruction layout
-*/
-ir::ControlFlowGraph::BlockPointerVector executive::EmulatedKernel::computeThreadFrontiers() {
-	ir::ControlFlowGraph::BlockPointerVector blockSequence;
-	
-	ir::ControlFlowGraph *cfg = this->cfg();
-	ir::HammockGraph hammockGraph(cfg);
-	
-	
-
-	
-	return cfg->executable_sequence();
-}
-
 void executive::EmulatedKernel::constructInstructionSequence() {
 	typedef std::unordered_map<ir::ControlFlowGraph::InstructionList::iterator, 
 		ir::ControlFlowGraph::InstructionList::iterator > InstructionMap;
@@ -228,23 +215,11 @@ void executive::EmulatedKernel::constructInstructionSequence() {
 
 	// visit basic blocks and add reconverge instructions
 	ir::ControlFlowGraph::BlockPointerVector bb_sequence = cfg()->executable_sequence();
-
-#if 0
-	{
-		DotFormatterBlockLabel formatter;
-		
-		std::stringstream ss;
-		ss << name << ".dot";
-		std::ofstream file(ss.str().c_str());
-		cfg()->write(file, formatter);
-		
-		std::cout << "\n" << name << ":\n";
-		ir::HammockGraph hammockGraph(cfg());
-	}
-#endif	
 	
 	InstructionMap reconvergeTargets;
 	ReconvergeToBlockMap reconvergeSources;
+	
+	threadFrontiers.clear();
 	
 	report(" Adding reconverge instructions");
 	// Create reconverge instructions
@@ -295,6 +270,7 @@ void executive::EmulatedKernel::constructInstructionSequence() {
 				}
 			}
 		}
+		
 #elif RECONVERGENCE_MECHANISM == SORTED_PREDICATE_STACK_RECONVERGENCE
 		// every basic block with multiple predecessors gets a reconverge instruction
 		if ((*bb_it)->predecessors.size() > 1) {
@@ -330,11 +306,17 @@ void executive::EmulatedKernel::constructInstructionSequence() {
 			instructions.push_back(ptx);
 		}
 		blockPCRange[(*bb_it)->label].second = (int)lastPC;
+		
+		// trivial TF
+		threadFrontiers[(int)lastPC] = std::make_pair<int,int>((int)lastPC, (int)lastPC);
 
 		if (n) {
 			basicBlockMap[lastPC] = (*bb_it)->label;
 		}
 	}
+
+
+	std::set< int > targets;	// set of branch targets
 
 	report( " Updating branch targets and reconverge points" );
 	unsigned int id = 0;
@@ -364,6 +346,35 @@ void executive::EmulatedKernel::constructInstructionSequence() {
 				assert(branch != ids.end());
 				instructions[id].branchTargetInstruction = branch->second;
 				report("   target at " << branch->second);
+				
+				// thread frontier algorithm
+				std::pair<int,int> blockRange = blockPCRange[(*bb_it)->label];
+				std::set< int >::iterator target_it = targets.find(blockRange.first);
+				if (target_it != targets.end()) {
+					targets.erase(target_it);
+				}
+				
+				int successors[2] = { instructions[id].branchTargetInstruction, blockPCRange[(*bb_it)->label].second + 1 };
+				
+#if REPORT_THREAD_FRONTIERS == 1
+				report("block '" << (*bb_it)->label << "' at PC " << blockRange.first);
+				report("  successors: ");
+#endif
+				for (int i = 0; i < 2; i++) {
+					if (successors[i] > blockRange.first) {
+						targets.insert(successors[i]);
+#if REPORT_THREAD_FRONTIERS == 1
+						report("   - PC: " << successors[i]);
+#endif
+					}
+				}
+				assert(targets.size());
+				threadFrontiers[blockRange.second].first = *std::min_element(targets.begin(), targets.end()) ; // min of targets
+				threadFrontiers[blockRange.second].second = *std::max_element(targets.begin(), targets.end()) ; // max of targets
+#if REPORT_THREAD_FRONTIERS == 1
+				report("  frontier: " << threadFrontiers[blockRange.second].first << " - "
+					<< threadFrontiers[blockRange.second].second);
+#endif
 			}
 		}
 	}
@@ -986,4 +997,5 @@ std::string executive::EmulatedKernel::getInstructionBlock(int PC) const {
 std::pair<int,int> executive::EmulatedKernel::getBlockRange(const std::string &label) const { 
 	return blockPCRange.at(label); 
 }
+
 

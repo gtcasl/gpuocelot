@@ -18,7 +18,8 @@ trace::TraceEvent::TraceEvent():
 	stackVisitEnd(0),
 	stackVisitMiddle(0),
 	stackInsert(0),
-	stackMerge(0)
+	stackMerge(0),
+	conservativeBranches(0)
 {
 
 }

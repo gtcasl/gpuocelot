@@ -40,7 +40,7 @@
 
 #define REPORT_KERNEL_INSTRUCTIONS 0
 #define REPORT_LAUNCH_CONFIGURATION 0
-#define REPORT_THREAD_FRONTIERS 1
+#define REPORT_THREAD_FRONTIERS 0
 
 #define IPDOM_RECONVERGENCE 1
 #define BARRIER_RECONVERGENCE 2
@@ -308,7 +308,7 @@ void executive::EmulatedKernel::constructInstructionSequence() {
 		blockPCRange[(*bb_it)->label].second = (int)lastPC;
 		
 		// trivial TF
-		threadFrontiers[(int)lastPC] = std::make_pair<int,int>((int)lastPC, (int)lastPC);
+		threadFrontiers[(int)lastPC] = std::make_pair<int,int>((int)lastPC+1, (int)lastPC+1);
 
 		if (n) {
 			basicBlockMap[lastPC] = (*bb_it)->label;
@@ -325,7 +325,16 @@ void executive::EmulatedKernel::constructInstructionSequence() {
 		for (ir::ControlFlowGraph::InstructionList::iterator 
 			i_it = (*bb_it)->instructions.begin(); 
 			i_it != (*bb_it)->instructions.end(); ++i_it, ++id) {
-			ir::PTXInstruction& ptx = static_cast<ir::PTXInstruction&>(**i_it);
+			ir::PTXInstruction& ptx = static_cast<ir::PTXInstruction&>(**i_it);				
+			
+			// thread frontier algorithm
+			std::pair<int,int> blockRange = blockPCRange[(*bb_it)->label];
+			std::set< int >::iterator target_it = targets.find(blockRange.first);
+			if (target_it != targets.end()) {
+				targets.erase(target_it);
+			}
+				
+				
 			if (ptx.opcode == ir::PTXInstruction::Bra) {
 #if RECONVERGENCE_MECHANISM == IPDOM_RECONVERGENCE
 				report( "  Instruction " << ptx.toString() );
@@ -346,31 +355,30 @@ void executive::EmulatedKernel::constructInstructionSequence() {
 				assert(branch != ids.end());
 				instructions[id].branchTargetInstruction = branch->second;
 				report("   target at " << branch->second);
-				
-				// thread frontier algorithm
-				std::pair<int,int> blockRange = blockPCRange[(*bb_it)->label];
-				std::set< int >::iterator target_it = targets.find(blockRange.first);
-				if (target_it != targets.end()) {
-					targets.erase(target_it);
-				}
-				
+
 				int successors[2] = { instructions[id].branchTargetInstruction, blockPCRange[(*bb_it)->label].second + 1 };
+				
+				if (targets.size()) {
+					threadFrontiers[blockRange.second].first = *std::min_element(targets.begin(), targets.end()) ; // min of targets
+					threadFrontiers[blockRange.second].second = *std::max_element(targets.begin(), targets.end()) ; // max of targets
+				}
 				
 #if REPORT_THREAD_FRONTIERS == 1
 				report("block '" << (*bb_it)->label << "' at PC " << blockRange.first);
 				report("  successors: ");
+				
 #endif
 				for (int i = 0; i < 2; i++) {
 					if (successors[i] > blockRange.first) {
 						targets.insert(successors[i]);
 #if REPORT_THREAD_FRONTIERS == 1
-						report("   - PC: " << successors[i]);
+						std::cout << (*bb_it)->label << std::endl;
+						std::cout << "   - PC: " << successors[i] << std::endl;
 #endif
 					}
 				}
-				assert(targets.size());
-				threadFrontiers[blockRange.second].first = *std::min_element(targets.begin(), targets.end()) ; // min of targets
-				threadFrontiers[blockRange.second].second = *std::max_element(targets.begin(), targets.end()) ; // max of targets
+				
+				
 #if REPORT_THREAD_FRONTIERS == 1
 				report("  frontier: " << threadFrontiers[blockRange.second].first << " - "
 					<< threadFrontiers[blockRange.second].second);

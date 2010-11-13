@@ -111,26 +111,24 @@ namespace analysis {
 
         ir::PTXInstruction* move1 = new ir::PTXInstruction(ir::PTXInstruction::Mov);
         move1->a = std::move(ir::PTXOperand(ir::PTXOperand::Immediate,
-                ir::PTXOperand::u32, 0));
+                ir::PTXOperand::u32, 0x0));
+        move1->a.imm_uint = 0;
         move1->d = std::move(ir::PTXOperand(ir::PTXOperand::Register,
                 ir::PTXOperand::u32, fp));
         move1->type = ir::PTXOperand::u32;
-        ir::BasicBlock::InstructionList ILEntry = _kernel->cfg()->get_entry_block()->instructions;
-        ir::BasicBlock::InstructionList::iterator ILi = ILEntry.end();
-        ILi--;
-        ILEntry.insert(ILi, move1);
+        ir::BasicBlock::InstructionList& ILEntry = _kernel->cfg()->get_entry_block()->instructions;
+        ILEntry.push_front(move1); 
          
         // 2. replace branch to targe t by if (B) then {fp = true; exit}
         ir::PTXInstruction* move2 = new ir::PTXInstruction(ir::PTXInstruction::Mov);
         move2->a = std::move(ir::PTXOperand(ir::PTXOperand::Immediate,
-                ir::PTXOperand::u32, 1));
+                ir::PTXOperand::u32, 0x1));
+        move2->a.imm_uint = 1;
         move2->d = std::move(ir::PTXOperand(ir::PTXOperand::Register,
                 ir::PTXOperand::u32, fp));
         move2->type = ir::PTXOperand::u32;
-        ir::ControlFlowGraph::InstructionList ILBR = i->first->instructions;
-        ir::BasicBlock::InstructionList::iterator ILBRi = ILEntry.end();
-        ILBRi--;
-        ILBR.insert(ILBRi, move2);
+        ir::ControlFlowGraph::InstructionList &ILBR = i->first->instructions;
+        ILBR.push_front(move2);
   
         // 3. After loop, insert if (fp) goto t
         ir::ControlFlowGraph::iterator NewCmpBB = _kernel->cfg()->insert_block(ir::BasicBlock(i->first->label + "_cmp",
@@ -142,8 +140,10 @@ namespace analysis {
                   ir::PTXOperand::u32, fp));
           setp->b = std::move(ir::PTXOperand(ir::PTXOperand::Immediate,
                   ir::PTXOperand::u32, 1));
+          setp->b.imm_uint = 1;
           setp->d = std::move(ir::PTXOperand(ir::PTXOperand::Register,
                   ir::PTXOperand::u32, _kernel->dfg()->newRegister()));
+          setp->d.type = ir::PTXOperand::pred;
           setp->type = ir::PTXOperand::u32;
           setp->comparisonOperator = ir::PTXInstruction::Eq;
           NewCmpBB->instructions.push_back(setp);
@@ -204,7 +204,8 @@ namespace analysis {
             if (found1 && found2) {
               _kernel->cfg()->remove_edge(*ei1);
               _kernel->cfg()->remove_edge(*ei2);
-  
+              _kernel->cfg()->insert_edge(ir::ControlFlowGraph::Edge(BB, (*it1).second, ir::Edge::Branch)); 
+ 
               ir::PTXInstruction *term = static_cast<ir::PTXInstruction *>(BB->instructions.back());
   
               if (term->opcode == ir::PTXInstruction::Bra) {
@@ -214,27 +215,29 @@ namespace analysis {
             } 
             // edge 1 is found in ValueMap & edge 2 is not
             else if (found1 && !found2) {
-//              _kernel->cfg()->insert_edge(ir::ControlFlowGraph::Edge(ValuePair.second, (*it1).second, ir::Edge::FallThrough));
-//              _kernel->cfg()->insert_edge(ir::ControlFlowGraph::Edge(ValuePair.second, (*ei2)->tail, ir::Edge::Branch));
-//  
-//              ir::PTXInstruction *term = static_cast<ir::PTXInstruction *>(ValuePair.second->instructions.back());
-//  
-//              if (term->opcode == ir::PTXInstruction::Bra) {
-//                if (term->d.identifier == (*ei1)->tail->label)
-//                  term->d = std::move(ir::PTXOperand((*ei2)->tail->label));
-//              }
+              _kernel->cfg()->insert_edge(ir::ControlFlowGraph::Edge(BB, (*it1).second, (*ei1)->type));
+  
+              ir::PTXInstruction *term = static_cast<ir::PTXInstruction *>(BB->instructions.back());
+  
+              if (term->opcode == ir::PTXInstruction::Bra) {
+                if (term->d.identifier == (*ei1)->tail->label)
+                  term->d = std::move(ir::PTXOperand((*it1).second->label));
+              }
+              
+              _kernel->cfg()->remove_edge(*ei1);
             }
             // edge 2 is found in ValueMap & edge 1 is not
             else if (!found1 && found2) {
-//              _kernel->cfg()->insert_edge(ir::ControlFlowGraph::Edge(ValuePair.second, (*it2).second, ir::Edge::FallThrough));
-//              _kernel->cfg()->insert_edge(ir::ControlFlowGraph::Edge(ValuePair.second, (*ei1)->tail, ir::Edge::Branch));
-//  
-//              ir::PTXInstruction *term = static_cast<ir::PTXInstruction *>(ValuePair.second->instructions.back());
-//  
-//              if (term->opcode == ir::PTXInstruction::Bra) {
-//                if (term->d.identifier == (*ei2)->tail->label)
-//                  term->d = std::move(ir::PTXOperand((*ei1)->tail->label));
-//              }
+              _kernel->cfg()->insert_edge(ir::ControlFlowGraph::Edge(BB, (*it2).second, (*ei2)->type));
+  
+              ir::PTXInstruction *term = static_cast<ir::PTXInstruction *>(BB->instructions.back());
+  
+              if (term->opcode == ir::PTXInstruction::Bra) {
+                if (term->d.identifier == (*ei2)->tail->label)
+                  term->d = std::move(ir::PTXOperand((*it2).second->label));
+              }
+              
+              _kernel->cfg()->remove_edge(*ei2);
             }
           }
         }
@@ -281,7 +284,7 @@ namespace analysis {
       // Clone BasicBlocks to the new function
       for (BBSetTy::iterator BI = N->containedBB.begin(), BE = N->containedBB.end(); BI != BE; ++BI){
         ir::ControlFlowGraph::iterator BB = *BI;
-        char tmp[5];
+        char tmp[20];
         sprintf(tmp, "_backward%d", index++);
         ir::ControlFlowGraph::iterator ClonedBB = _kernel->cfg()->clone_block(BB, tmp);
         ValueMap[BB] = ClonedBB;
@@ -319,6 +322,7 @@ namespace analysis {
                 branch->uni = true;
                 branch->d = std::move(ir::PTXOperand((*ei)->tail->label));
                 ValuePair.second->instructions.push_back(branch);
+                _kernel->cfg()->remove_edge(*ei); 
               }
             } 
           }
@@ -446,7 +450,7 @@ namespace analysis {
         // Clone BasicBlocks to the new function
         for (BBSetTy::iterator BI = N->containedBB.begin(), BE = N->containedBB.end(); BI != BE; ++BI){
           ir::ControlFlowGraph::iterator BB = *BI;
-          char tmp[5];
+          char tmp[20];
           sprintf(tmp, "_forward%d", index++);
           ir::ControlFlowGraph::iterator ClonedBB = _kernel->cfg()->clone_block(BB, tmp);
           ValueMap[BB] = ClonedBB;
@@ -482,6 +486,7 @@ namespace analysis {
                   branch->uni = true;
                   branch->d = std::move(ir::PTXOperand((*ei)->tail->label));
                   ValuePair.second->instructions.push_back(branch);
+                  _kernel->cfg()->remove_edge(*ei);
                 }
               } 
             }
@@ -569,6 +574,14 @@ namespace analysis {
             _kernel->cfg()->remove_edge(i->first->get_fallthrough_edge());
             _kernel->cfg()->insert_edge(ir::ControlFlowGraph::Edge(i->first, ValueMap[i->second], ir::Edge::FallThrough)); 
           }
+        } else {
+          _kernel->cfg()->insert_edge(ir::ControlFlowGraph::Edge(i->first, ValueMap[i->second], ir::Edge::Branch));
+
+          ir::PTXInstruction* branch = new ir::PTXInstruction(ir::PTXInstruction::Bra);
+          branch->uni = true;
+          branch->d = std::move(ir::PTXOperand(ValueMap[i->second]->label));
+          i->first->instructions.push_back(branch);
+          _kernel->cfg()->remove_edge(i->first->get_fallthrough_edge()); 
         }
       } 
   

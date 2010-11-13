@@ -11,6 +11,7 @@
 #include <hydrazine/implementation/debug.h>
 
 #include <set>
+#include <unordered_set>
 #include <stack>
 #include <queue>
 #include <algorithm>
@@ -20,6 +21,11 @@
 #endif
 
 #define REPORT_BASE 0
+
+#define FAST_RANDOM_LAYOUT 1
+#define PRESERVE_SOURCE_LAYOUT 2
+
+#define LAYOUT_SCHEME PRESERVE_SOURCE_LAYOUT
 
 namespace ir {
 
@@ -482,7 +488,7 @@ ControlFlowGraph::BlockPointerVector ControlFlowGraph::topological_sequence() {
 				}
 			}
 			
-			assert(!queue.empty());
+			if(queue.empty()) break; // The remaining blocks are unreachable
 		}
 		
 		iterator current = queue.front();
@@ -542,7 +548,7 @@ ControlFlowGraph::BlockPointerVector
 				}
 			}
 			
-			assert(!queue.empty());
+			if(queue.empty()) break; // The remaining blocks are unreachable
 		}
 		
 		iterator current = queue.front();
@@ -646,7 +652,13 @@ ControlFlowGraph::BlockPointerVector ControlFlowGraph::pre_order_sequence() {
 }
 
 ControlFlowGraph::BlockPointerVector ControlFlowGraph::executable_sequence() {
-	typedef std::set<iterator, BlockSetCompare> BlockSet;
+	#if LAYOUT_SCHEME == FAST_RANDOM_LAYOUT
+		typedef std::unordered_set<iterator> BlockSet;
+	#elif LAYOUT_SCHEME == PRESERVE_SOURCE_LAYOUT
+		typedef std::set<iterator, BlockSetCompare> BlockSet;	
+	#else
+		#error "Invalid layout scheme."
+	#endif
 	BlockPointerVector sequence;
 	BlockSet unscheduled;
 

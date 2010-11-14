@@ -9,7 +9,6 @@
 
 #include <ocelot/analysis/interface/PTXOptimizer.h>
 #include <ocelot/analysis/interface/PassManager.h>
-#include <ocelot/analysis/interface/CountBasicBlockExecutionPass.h>
 #include <ocelot/analysis/interface/LinearScanRegisterAllocationPass.h>
 #include <ocelot/analysis/interface/RemoveBarrierPass.h>
 #include <ocelot/analysis/interface/ConvertPredicationToSelectPass.h>
@@ -63,12 +62,6 @@ namespace analysis
 			Pass* pass = new analysis::ConvertPredicationToSelectPass;
 			manager.addPass( *pass );
 		}
-
-        if( passes & BasicBlockCount )
-        {
-            Pass *pass = new analysis::CountBasicBlockExecutionPass;
-			manager.addPass( *pass );
-        }
 
 		if( input.empty() )
 		{
@@ -129,11 +122,6 @@ static int parsePassTypes( const std::string& passList )
 		{
 			report( "  Matched reverse-if-conversion." );
 			types |= analysis::PTXOptimizer::ReverseIfConversion;
-		}
-        else if( *pass == "basic-block-count" )
-		{
-			report( "  Matched basic-block-count." );
-			types |= analysis::PTXOptimizer::BasicBlockCount;
 		}
 		else if( !pass->empty() )
 		{

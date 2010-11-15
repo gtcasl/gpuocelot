@@ -108,6 +108,7 @@ libocelot_la_SOURCES = \
 	ocelot/executive/implementation/ATIExecutableKernel.cpp \
 	ocelot/executive/implementation/RuntimeException.cpp \
 	ocelot/executive/implementation/CooperativeThreadArray.cpp \
+	ocelot/executive/implementation/ReconvergenceMechanism.cpp \
 	ocelot/executive/implementation/LLVMExecutableKernel.cpp \
 	ocelot/executive/implementation/LLVMContext.cpp \
 	ocelot/executive/implementation/TextureOperations.cpp \
@@ -316,7 +317,7 @@ TestCudaSequence_LDFLAGS = -static
 ##
 TestLoopExit_CXXFLAGS = $(SDK_CFLAGS)
 TestLoopExit_SOURCES = ocelot/cuda/test/kernels/loopExit.cu.cpp
-TestLoopExit_LDADD = libocelot.la $(LLVM_LDFLAGS) -locelotTrace
+TestLoopExit_LDADD = libocelot.la $(LLVM_LDFLAGS)
 TestLoopExit_LDFLAGS = -static
 ################################################################################
 
@@ -354,6 +355,7 @@ nobase_include_HEADERS = ocelot/api/interface/ocelot.h \
 	ocelot/api/interface/OcelotRuntime.h \
 	ocelot/api/test/TestDeviceSwitching.h \
 	ocelot/executive/interface/CooperativeThreadArray.h \
+	ocelot/executive/interface/ReconvergenceMechanism.h \
 	ocelot/executive/interface/EmulatedKernel.h \
 	ocelot/executive/interface/RuntimeException.h \
 	ocelot/executive/interface/Device.h \

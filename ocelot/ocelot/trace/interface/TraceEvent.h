@@ -15,6 +15,30 @@
 /*! \brief A namespace for trace generation related classes */
 namespace trace {
 
+	/*!
+		\brief trace events concerned specifically with thread divergence and reconvergence
+	*/
+	class ReconvergenceTraceEvent {
+	public:
+		ReconvergenceTraceEvent();
+			
+	public:
+		ir::PTXU32 stackVisitNodes;
+
+		ir::PTXU32 stackVisitEnd;
+		
+		ir::PTXU32 stackVisitMiddle;
+		
+		ir::PTXU32 stackInsert;
+		
+		ir::PTXU32 stackMerge;
+		
+		bool conservativeBranch;
+	};
+
+	/*!
+		\brief main trace event class
+	*/
 	class TraceEvent : hydrazine::Stringable {
 	public:
 		typedef std::vector< ir::PTXU64 > U64Vector;
@@ -105,17 +129,10 @@ namespace trace {
 		*/
 		ir::Dim3 blockDim;
 		
-		ir::PTXU32 stackVisitNodes;
-
-		ir::PTXU32 stackVisitEnd;
-		
-		ir::PTXU32 stackVisitMiddle;
-		
-		ir::PTXU32 stackInsert;
-		
-		ir::PTXU32 stackMerge;
-		
-		ir::PTXU32 conservativeBranches;
+		/*!
+			\brief event capturing just events related to thread divergence and reconvergence
+		*/
+		ReconvergenceTraceEvent reconvergence;
 
 	public:
 	

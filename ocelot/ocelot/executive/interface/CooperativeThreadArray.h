@@ -13,6 +13,7 @@
 
 #include <deque>
 #include <ocelot/executive/interface/CTAContext.h>
+#include <ocelot/executive/interface/ReconvergenceMechanism.h>
 #include <ocelot/ir/interface/PTXOperand.h>
 #include <ocelot/ir/interface/Kernel.h>
 #include <ocelot/ir/interface/Texture.h>
@@ -28,6 +29,11 @@ namespace executive {
 		typedef std::deque <CTAContext> Stack;
 		typedef std::vector <int> ThreadIdVector;
 		typedef std::vector<ir::PTXU64> RegisterFileType;
+		
+		
+	private:
+	
+		CooperativeThreadArray & operator=(const CooperativeThreadArray &);
 
 	public:
 		/*!
@@ -65,6 +71,11 @@ namespace executive {
 			does not attempt to delete them.
 		*/
 		void clear();
+		
+		/*!
+			gets the active context of the cooperative thread array
+		*/
+		CTAContext & getActiveContext();
 
 	public:
 	
@@ -125,15 +136,10 @@ namespace executive {
 		char *LocalMemory;
 
 		/*!
-			Stack containing the active thread mask and the program counter
+			\brief abstraction for reconvergence mechanism
 		*/
-		Stack runtimeStack;
+		ReconvergenceMechanism *reconvergenceMechanism;
 		
-		/*!
-			\brief vector of thread PCs
-		*/
-		ThreadIdVector threadPCs;
-
 		/*!
 			Counter incremented 4 times per instruction
 		*/

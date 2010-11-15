@@ -318,8 +318,7 @@ void executive::CooperativeThreadArray::execute(const ir::Dim3& block) {
 			<< context.active.count() << "]" );
 
 		if (traceEvents) {
-			currentEvent.memory_size = 0;
-			currentEvent.memory_addresses.clear();
+			currentEvent.reset();
 			currentEvent.PC = context.PC;
 			currentEvent.instruction = &instr;
 			currentEvent.active = context.active;

@@ -32,6 +32,15 @@ namespace executive {
 	public:
 		typedef std::deque<CTAContext> RuntimeStack;
 			
+		enum Type {
+			Reconverge_IPDOM,
+			Reconverge_Barrier,
+			Reconverge_TFGen6,
+			Reconverge_TFSortedStack,
+			Reconverge_default,
+			Reconverge_unknown
+		};
+			
 	public:
 		ReconvergenceMechanism(const executive::EmulatedKernel *kernel, CooperativeThreadArray *cta);
 		ReconvergenceMechanism(CooperativeThreadArray *cta);
@@ -76,12 +85,20 @@ namespace executive {
 		//! \brief gets the active context
 		virtual executive::CTAContext & getContext();
 		
-		/*!
-			\brief gets the stack size
-		*/
+		//! \brief gets the stack size
 		const size_t stackSize() const;
+		
+		//! \brief gets the reconvergence mechanism type
+		Type getType() const { return type; }
+
+		//! \brief gets a string-representation of the type
+		static std::string toString(Type type);
 
 	public:
+	
+		//! \brief dynamic type information for convergence mechanism
+		Type type;
+	
 		//! \brief emulated kernel instance
 		const EmulatedKernel *kernel;
 		

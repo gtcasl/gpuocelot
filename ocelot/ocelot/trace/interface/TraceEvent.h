@@ -21,7 +21,12 @@ namespace trace {
 	class ReconvergenceTraceEvent {
 	public:
 		ReconvergenceTraceEvent();
-			
+		
+		/*!
+			\brief resets instruction-specific events to their 'off' state
+		*/
+		void reset();
+		
 	public:
 		ir::PTXU32 stackVisitNodes;
 
@@ -69,6 +74,13 @@ namespace trace {
 			const U64Vector & memory_addresses,
 			ir::PTXU32 memory_size,
 			ir::PTXU32 ctxStackSize = 1);
+
+		/*!
+			\brief resets instruction-specific events to their 'off' state
+		*/
+		void reset();
+
+	public:
 
 		/*!
 			ID of the block that generated the event

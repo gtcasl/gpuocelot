@@ -33,7 +33,7 @@
 #define SORTED_PREDICATE_STACK_RECONVERGENCE 4
 
 // specify reconvergence mechanism here
-#define RECONVERGENCE_MECHANISM SORTED_PREDICATE_STACK_RECONVERGENCE
+#define RECONVERGENCE_MECHANISM IPDOM_RECONVERGENCE
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -315,7 +315,6 @@ void executive::CooperativeThreadArray::execute(const ir::Dim3& block) {
 			currentEvent.PC = context.PC;
 			currentEvent.instruction = &instr;
 			currentEvent.active = context.active;
-			currentEvent.conservativeBranches = 0;
 		}
 		
 		switch (instr.opcode) {

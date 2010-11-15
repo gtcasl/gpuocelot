@@ -21,10 +21,802 @@ INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestCud
 INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestCudaTexture2D 
 INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestCudaSequence 
 INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestKernels 
-INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestKernels
-INFO     Test completed in 0.0516262054443 seconds
+INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestCudaTexture2D
+INFO     Test completed in 0.0518841743469 seconds
 INFO      It produced the following output:
-Kernel launch time was 5.57899e-05s (55755 ticks)
+(0.002519) CooperativeThreadArray.cpp:289:  CooperativeThreadArray::execute called
+(0.002542) CooperativeThreadArray.cpp:290:    block is 0, 0, 0
+(0.002562) CooperativeThreadArray.cpp:310:   [PC: 0, counter: 0] mov.u16 %r0, %ctaid.x [stack 1] [active 256]
+(0.002586) CooperativeThreadArray.cpp:310:   [PC: 1, counter: 1] mov.u16 %r1, %ntid.x [stack 1] [active 256]
+(0.002606) CooperativeThreadArray.cpp:310:   [PC: 2, counter: 2] mul.wide.u16 %r2, %r0, %r1 [stack 1] [active 256]
+(0.002624) CooperativeThreadArray.cpp:310:   [PC: 3, counter: 3] mov.u16 %r3, %ctaid.y [stack 1] [active 256]
+(0.002637) CooperativeThreadArray.cpp:310:   [PC: 4, counter: 4] mov.u16 %r4, %ntid.y [stack 1] [active 256]
+(0.002654) CooperativeThreadArray.cpp:310:   [PC: 5, counter: 5] mul.wide.u16 %r5, %r3, %r4 [stack 1] [active 256]
+(0.002671) CooperativeThreadArray.cpp:310:   [PC: 6, counter: 6] cvt.u32.u16 %r6, %tid.x [stack 1] [active 256]
+(0.002695) CooperativeThreadArray.cpp:310:   [PC: 7, counter: 7] add.u32 %r7, %r6, %r2 [stack 1] [active 256]
+(0.002713) CooperativeThreadArray.cpp:310:   [PC: 8, counter: 8] cvt.u32.u16 %r8, %tid.y [stack 1] [active 256]
+(0.002732) CooperativeThreadArray.cpp:310:   [PC: 9, counter: 9] add.u32 %r9, %r8, %r5 [stack 1] [active 256]
+(0.002749) CooperativeThreadArray.cpp:310:   [PC: 10, counter: 10] cvt.rn.f32.u32 %r10, %r7 [stack 1] [active 256]
+(0.002791) CooperativeThreadArray.cpp:310:   [PC: 11, counter: 11] cvt.rn.f32.u32 %r11, %r9 [stack 1] [active 256]
+(0.002829) CooperativeThreadArray.cpp:310:   [PC: 12, counter: 12] mov.f32 %r12, 0f00000000 [stack 1] [active 256]
+(0.002845) CooperativeThreadArray.cpp:310:   [PC: 13, counter: 13] mov.f32 %r13, 0f00000000 [stack 1] [active 256]
+(0.002878) CooperativeThreadArray.cpp:310:   [PC: 14, counter: 14] tex.2d.v4.f32.f32 {%r14, %r15, %r16, %r17}, [surface, {%r10, %r11, %r12, %r13}] [stack 1] [active 256]
+(0.002942) CooperativeThreadArray.cpp:310:   [PC: 15, counter: 15] mov.f32 %r18, %r14 [stack 1] [active 256]
+(0.002960) CooperativeThreadArray.cpp:310:   [PC: 16, counter: 16] ld.param.u64 %r19, [__cudaparm__Z6kernelPfii_out] [stack 1] [active 256]
+(0.002990) CooperativeThreadArray.cpp:310:   [PC: 17, counter: 17] ld.param.u32 %r20, [__cudaparm__Z6kernelPfii_width + 8] [stack 1] [active 256]
+(0.003012) CooperativeThreadArray.cpp:310:   [PC: 18, counter: 18] mul.lo.u32 %r21, %r20, %r9 [stack 1] [active 256]
+(0.003030) CooperativeThreadArray.cpp:310:   [PC: 19, counter: 19] add.u32 %r22, %r7, %r21 [stack 1] [active 256]
+(0.003047) CooperativeThreadArray.cpp:310:   [PC: 20, counter: 20] cvt.u64.u32 %r23, %r22 [stack 1] [active 256]
+(0.003065) CooperativeThreadArray.cpp:310:   [PC: 21, counter: 21] mul.lo.u64 %r24, %r23, 4 [stack 1] [active 256]
+(0.003083) CooperativeThreadArray.cpp:310:   [PC: 22, counter: 22] add.u64 %r25, %r19, %r24 [stack 1] [active 256]
+(0.003102) CooperativeThreadArray.cpp:310:   [PC: 23, counter: 23] st.global.f32 [%r25 + 0], %r18 [stack 1] [active 256]
+(0.003123) CooperativeThreadArray.cpp:310:   [PC: 24, counter: 24] exit [stack 1] [active 256]
+(0.003131) CooperativeThreadArray.cpp:464:  kernel finished in 25 instructions
+(0.003149) CooperativeThreadArray.cpp:289:  CooperativeThreadArray::execute called
+(0.003156) CooperativeThreadArray.cpp:290:    block is 0, 1, 0
+(0.003167) CooperativeThreadArray.cpp:310:   [PC: 0, counter: 0] mov.u16 %r0, %ctaid.x [stack 1] [active 256]
+(0.003181) CooperativeThreadArray.cpp:310:   [PC: 1, counter: 1] mov.u16 %r1, %ntid.x [stack 1] [active 256]
+(0.003198) CooperativeThreadArray.cpp:310:   [PC: 2, counter: 2] mul.wide.u16 %r2, %r0, %r1 [stack 1] [active 256]
+(0.003212) CooperativeThreadArray.cpp:310:   [PC: 3, counter: 3] mov.u16 %r3, %ctaid.y [stack 1] [active 256]
+(0.003225) CooperativeThreadArray.cpp:310:   [PC: 4, counter: 4] mov.u16 %r4, %ntid.y [stack 1] [active 256]
+(0.003242) CooperativeThreadArray.cpp:310:   [PC: 5, counter: 5] mul.wide.u16 %r5, %r3, %r4 [stack 1] [active 256]
+(0.003256) CooperativeThreadArray.cpp:310:   [PC: 6, counter: 6] cvt.u32.u16 %r6, %tid.x [stack 1] [active 256]
+(0.003275) CooperativeThreadArray.cpp:310:   [PC: 7, counter: 7] add.u32 %r7, %r6, %r2 [stack 1] [active 256]
+(0.003322) CooperativeThreadArray.cpp:310:   [PC: 8, counter: 8] cvt.u32.u16 %r8, %tid.y [stack 1] [active 256]
+(0.003342) CooperativeThreadArray.cpp:310:   [PC: 9, counter: 9] add.u32 %r9, %r8, %r5 [stack 1] [active 256]
+(0.003359) CooperativeThreadArray.cpp:310:   [PC: 10, counter: 10] cvt.rn.f32.u32 %r10, %r7 [stack 1] [active 256]
+(0.003394) CooperativeThreadArray.cpp:310:   [PC: 11, counter: 11] cvt.rn.f32.u32 %r11, %r9 [stack 1] [active 256]
+(0.003428) CooperativeThreadArray.cpp:310:   [PC: 12, counter: 12] mov.f32 %r12, 0f00000000 [stack 1] [active 256]
+(0.003444) CooperativeThreadArray.cpp:310:   [PC: 13, counter: 13] mov.f32 %r13, 0f00000000 [stack 1] [active 256]
+(0.003474) CooperativeThreadArray.cpp:310:   [PC: 14, counter: 14] tex.2d.v4.f32.f32 {%r14, %r15, %r16, %r17}, [surface, {%r10, %r11, %r12, %r13}] [stack 1] [active 256]
+(0.003529) CooperativeThreadArray.cpp:310:   [PC: 15, counter: 15] mov.f32 %r18, %r14 [stack 1] [active 256]
+(0.003545) CooperativeThreadArray.cpp:310:   [PC: 16, counter: 16] ld.param.u64 %r19, [__cudaparm__Z6kernelPfii_out] [stack 1] [active 256]
+(0.003569) CooperativeThreadArray.cpp:310:   [PC: 17, counter: 17] ld.param.u32 %r20, [__cudaparm__Z6kernelPfii_width + 8] [stack 1] [active 256]
+(0.003591) CooperativeThreadArray.cpp:310:   [PC: 18, counter: 18] mul.lo.u32 %r21, %r20, %r9 [stack 1] [active 256]
+(0.003609) CooperativeThreadArray.cpp:310:   [PC: 19, counter: 19] add.u32 %r22, %r7, %r21 [stack 1] [active 256]
+(0.003626) CooperativeThreadArray.cpp:310:   [PC: 20, counter: 20] cvt.u64.u32 %r23, %r22 [stack 1] [active 256]
+(0.003645) CooperativeThreadArray.cpp:310:   [PC: 21, counter: 21] mul.lo.u64 %r24, %r23, 4 [stack 1] [active 256]
+(0.003662) CooperativeThreadArray.cpp:310:   [PC: 22, counter: 22] add.u64 %r25, %r19, %r24 [stack 1] [active 256]
+(0.003679) CooperativeThreadArray.cpp:310:   [PC: 23, counter: 23] st.global.f32 [%r25 + 0], %r18 [stack 1] [active 256]
+(0.003699) CooperativeThreadArray.cpp:310:   [PC: 24, counter: 24] exit [stack 1] [active 256]
+(0.003707) CooperativeThreadArray.cpp:464:  kernel finished in 25 instructions
+(0.003722) CooperativeThreadArray.cpp:289:  CooperativeThreadArray::execute called
+(0.003729) CooperativeThreadArray.cpp:290:    block is 0, 2, 0
+(0.003740) CooperativeThreadArray.cpp:310:   [PC: 0, counter: 0] mov.u16 %r0, %ctaid.x [stack 1] [active 256]
+(0.003754) CooperativeThreadArray.cpp:310:   [PC: 1, counter: 1] mov.u16 %r1, %ntid.x [stack 1] [active 256]
+(0.003770) CooperativeThreadArray.cpp:310:   [PC: 2, counter: 2] mul.wide.u16 %r2, %r0, %r1 [stack 1] [active 256]
+(0.003785) CooperativeThreadArray.cpp:310:   [PC: 3, counter: 3] mov.u16 %r3, %ctaid.y [stack 1] [active 256]
+(0.003798) CooperativeThreadArray.cpp:310:   [PC: 4, counter: 4] mov.u16 %r4, %ntid.y [stack 1] [active 256]
+(0.003814) CooperativeThreadArray.cpp:310:   [PC: 5, counter: 5] mul.wide.u16 %r5, %r3, %r4 [stack 1] [active 256]
+(0.003829) CooperativeThreadArray.cpp:310:   [PC: 6, counter: 6] cvt.u32.u16 %r6, %tid.x [stack 1] [active 256]
+(0.003847) CooperativeThreadArray.cpp:310:   [PC: 7, counter: 7] add.u32 %r7, %r6, %r2 [stack 1] [active 256]
+(0.003862) CooperativeThreadArray.cpp:310:   [PC: 8, counter: 8] cvt.u32.u16 %r8, %tid.y [stack 1] [active 256]
+(0.003881) CooperativeThreadArray.cpp:310:   [PC: 9, counter: 9] add.u32 %r9, %r8, %r5 [stack 1] [active 256]
+(0.003898) CooperativeThreadArray.cpp:310:   [PC: 10, counter: 10] cvt.rn.f32.u32 %r10, %r7 [stack 1] [active 256]
+(0.003933) CooperativeThreadArray.cpp:310:   [PC: 11, counter: 11] cvt.rn.f32.u32 %r11, %r9 [stack 1] [active 256]
+(0.003967) CooperativeThreadArray.cpp:310:   [PC: 12, counter: 12] mov.f32 %r12, 0f00000000 [stack 1] [active 256]
+(0.003983) CooperativeThreadArray.cpp:310:   [PC: 13, counter: 13] mov.f32 %r13, 0f00000000 [stack 1] [active 256]
+(0.004012) CooperativeThreadArray.cpp:310:   [PC: 14, counter: 14] tex.2d.v4.f32.f32 {%r14, %r15, %r16, %r17}, [surface, {%r10, %r11, %r12, %r13}] [stack 1] [active 256]
+(0.004067) CooperativeThreadArray.cpp:310:   [PC: 15, counter: 15] mov.f32 %r18, %r14 [stack 1] [active 256]
+(0.004092) CooperativeThreadArray.cpp:310:   [PC: 16, counter: 16] ld.param.u64 %r19, [__cudaparm__Z6kernelPfii_out] [stack 1] [active 256]
+(0.004116) CooperativeThreadArray.cpp:310:   [PC: 17, counter: 17] ld.param.u32 %r20, [__cudaparm__Z6kernelPfii_width + 8] [stack 1] [active 256]
+(0.004138) CooperativeThreadArray.cpp:310:   [PC: 18, counter: 18] mul.lo.u32 %r21, %r20, %r9 [stack 1] [active 256]
+(0.004156) CooperativeThreadArray.cpp:310:   [PC: 19, counter: 19] add.u32 %r22, %r7, %r21 [stack 1] [active 256]
+(0.004173) CooperativeThreadArray.cpp:310:   [PC: 20, counter: 20] cvt.u64.u32 %r23, %r22 [stack 1] [active 256]
+(0.004191) CooperativeThreadArray.cpp:310:   [PC: 21, counter: 21] mul.lo.u64 %r24, %r23, 4 [stack 1] [active 256]
+(0.004209) CooperativeThreadArray.cpp:310:   [PC: 22, counter: 22] add.u64 %r25, %r19, %r24 [stack 1] [active 256]
+(0.004225) CooperativeThreadArray.cpp:310:   [PC: 23, counter: 23] st.global.f32 [%r25 + 0], %r18 [stack 1] [active 256]
+(0.004245) CooperativeThreadArray.cpp:310:   [PC: 24, counter: 24] exit [stack 1] [active 256]
+(0.004253) CooperativeThreadArray.cpp:464:  kernel finished in 25 instructions
+(0.004268) CooperativeThreadArray.cpp:289:  CooperativeThreadArray::execute called
+(0.004275) CooperativeThreadArray.cpp:290:    block is 0, 3, 0
+(0.004286) CooperativeThreadArray.cpp:310:   [PC: 0, counter: 0] mov.u16 %r0, %ctaid.x [stack 1] [active 256]
+(0.004300) CooperativeThreadArray.cpp:310:   [PC: 1, counter: 1] mov.u16 %r1, %ntid.x [stack 1] [active 256]
+(0.004317) CooperativeThreadArray.cpp:310:   [PC: 2, counter: 2] mul.wide.u16 %r2, %r0, %r1 [stack 1] [active 256]
+(0.004331) CooperativeThreadArray.cpp:310:   [PC: 3, counter: 3] mov.u16 %r3, %ctaid.y [stack 1] [active 256]
+(0.004344) CooperativeThreadArray.cpp:310:   [PC: 4, counter: 4] mov.u16 %r4, %ntid.y [stack 1] [active 256]
+(0.004360) CooperativeThreadArray.cpp:310:   [PC: 5, counter: 5] mul.wide.u16 %r5, %r3, %r4 [stack 1] [active 256]
+(0.004375) CooperativeThreadArray.cpp:310:   [PC: 6, counter: 6] cvt.u32.u16 %r6, %tid.x [stack 1] [active 256]
+(0.004394) CooperativeThreadArray.cpp:310:   [PC: 7, counter: 7] add.u32 %r7, %r6, %r2 [stack 1] [active 256]
+(0.004409) CooperativeThreadArray.cpp:310:   [PC: 8, counter: 8] cvt.u32.u16 %r8, %tid.y [stack 1] [active 256]
+(0.004428) CooperativeThreadArray.cpp:310:   [PC: 9, counter: 9] add.u32 %r9, %r8, %r5 [stack 1] [active 256]
+(0.004445) CooperativeThreadArray.cpp:310:   [PC: 10, counter: 10] cvt.rn.f32.u32 %r10, %r7 [stack 1] [active 256]
+(0.004480) CooperativeThreadArray.cpp:310:   [PC: 11, counter: 11] cvt.rn.f32.u32 %r11, %r9 [stack 1] [active 256]
+(0.004514) CooperativeThreadArray.cpp:310:   [PC: 12, counter: 12] mov.f32 %r12, 0f00000000 [stack 1] [active 256]
+(0.004530) CooperativeThreadArray.cpp:310:   [PC: 13, counter: 13] mov.f32 %r13, 0f00000000 [stack 1] [active 256]
+(0.004560) CooperativeThreadArray.cpp:310:   [PC: 14, counter: 14] tex.2d.v4.f32.f32 {%r14, %r15, %r16, %r17}, [surface, {%r10, %r11, %r12, %r13}] [stack 1] [active 256]
+(0.004614) CooperativeThreadArray.cpp:310:   [PC: 15, counter: 15] mov.f32 %r18, %r14 [stack 1] [active 256]
+(0.004629) CooperativeThreadArray.cpp:310:   [PC: 16, counter: 16] ld.param.u64 %r19, [__cudaparm__Z6kernelPfii_out] [stack 1] [active 256]
+(0.004653) CooperativeThreadArray.cpp:310:   [PC: 17, counter: 17] ld.param.u32 %r20, [__cudaparm__Z6kernelPfii_width + 8] [stack 1] [active 256]
+(0.004675) CooperativeThreadArray.cpp:310:   [PC: 18, counter: 18] mul.lo.u32 %r21, %r20, %r9 [stack 1] [active 256]
+(0.004693) CooperativeThreadArray.cpp:310:   [PC: 19, counter: 19] add.u32 %r22, %r7, %r21 [stack 1] [active 256]
+(0.004710) CooperativeThreadArray.cpp:310:   [PC: 20, counter: 20] cvt.u64.u32 %r23, %r22 [stack 1] [active 256]
+(0.004728) CooperativeThreadArray.cpp:310:   [PC: 21, counter: 21] mul.lo.u64 %r24, %r23, 4 [stack 1] [active 256]
+(0.004746) CooperativeThreadArray.cpp:310:   [PC: 22, counter: 22] add.u64 %r25, %r19, %r24 [stack 1] [active 256]
+(0.004771) CooperativeThreadArray.cpp:310:   [PC: 23, counter: 23] st.global.f32 [%r25 + 0], %r18 [stack 1] [active 256]
+(0.004792) CooperativeThreadArray.cpp:310:   [PC: 24, counter: 24] exit [stack 1] [active 256]
+(0.004801) CooperativeThreadArray.cpp:464:  kernel finished in 25 instructions
+(0.004816) CooperativeThreadArray.cpp:289:  CooperativeThreadArray::execute called
+(0.004823) CooperativeThreadArray.cpp:290:    block is 1, 0, 0
+(0.004834) CooperativeThreadArray.cpp:310:   [PC: 0, counter: 0] mov.u16 %r0, %ctaid.x [stack 1] [active 256]
+(0.004848) CooperativeThreadArray.cpp:310:   [PC: 1, counter: 1] mov.u16 %r1, %ntid.x [stack 1] [active 256]
+(0.004865) CooperativeThreadArray.cpp:310:   [PC: 2, counter: 2] mul.wide.u16 %r2, %r0, %r1 [stack 1] [active 256]
+(0.004879) CooperativeThreadArray.cpp:310:   [PC: 3, counter: 3] mov.u16 %r3, %ctaid.y [stack 1] [active 256]
+(0.004892) CooperativeThreadArray.cpp:310:   [PC: 4, counter: 4] mov.u16 %r4, %ntid.y [stack 1] [active 256]
+(0.004908) CooperativeThreadArray.cpp:310:   [PC: 5, counter: 5] mul.wide.u16 %r5, %r3, %r4 [stack 1] [active 256]
+(0.004923) CooperativeThreadArray.cpp:310:   [PC: 6, counter: 6] cvt.u32.u16 %r6, %tid.x [stack 1] [active 256]
+(0.004941) CooperativeThreadArray.cpp:310:   [PC: 7, counter: 7] add.u32 %r7, %r6, %r2 [stack 1] [active 256]
+(0.004957) CooperativeThreadArray.cpp:310:   [PC: 8, counter: 8] cvt.u32.u16 %r8, %tid.y [stack 1] [active 256]
+(0.004976) CooperativeThreadArray.cpp:310:   [PC: 9, counter: 9] add.u32 %r9, %r8, %r5 [stack 1] [active 256]
+(0.004993) CooperativeThreadArray.cpp:310:   [PC: 10, counter: 10] cvt.rn.f32.u32 %r10, %r7 [stack 1] [active 256]
+(0.005027) CooperativeThreadArray.cpp:310:   [PC: 11, counter: 11] cvt.rn.f32.u32 %r11, %r9 [stack 1] [active 256]
+(0.005061) CooperativeThreadArray.cpp:310:   [PC: 12, counter: 12] mov.f32 %r12, 0f00000000 [stack 1] [active 256]
+(0.005077) CooperativeThreadArray.cpp:310:   [PC: 13, counter: 13] mov.f32 %r13, 0f00000000 [stack 1] [active 256]
+(0.005106) CooperativeThreadArray.cpp:310:   [PC: 14, counter: 14] tex.2d.v4.f32.f32 {%r14, %r15, %r16, %r17}, [surface, {%r10, %r11, %r12, %r13}] [stack 1] [active 256]
+(0.005161) CooperativeThreadArray.cpp:310:   [PC: 15, counter: 15] mov.f32 %r18, %r14 [stack 1] [active 256]
+(0.005177) CooperativeThreadArray.cpp:310:   [PC: 16, counter: 16] ld.param.u64 %r19, [__cudaparm__Z6kernelPfii_out] [stack 1] [active 256]
+(0.005201) CooperativeThreadArray.cpp:310:   [PC: 17, counter: 17] ld.param.u32 %r20, [__cudaparm__Z6kernelPfii_width + 8] [stack 1] [active 256]
+(0.005222) CooperativeThreadArray.cpp:310:   [PC: 18, counter: 18] mul.lo.u32 %r21, %r20, %r9 [stack 1] [active 256]
+(0.005240) CooperativeThreadArray.cpp:310:   [PC: 19, counter: 19] add.u32 %r22, %r7, %r21 [stack 1] [active 256]
+(0.005257) CooperativeThreadArray.cpp:310:   [PC: 20, counter: 20] cvt.u64.u32 %r23, %r22 [stack 1] [active 256]
+(0.005275) CooperativeThreadArray.cpp:310:   [PC: 21, counter: 21] mul.lo.u64 %r24, %r23, 4 [stack 1] [active 256]
+(0.005293) CooperativeThreadArray.cpp:310:   [PC: 22, counter: 22] add.u64 %r25, %r19, %r24 [stack 1] [active 256]
+(0.005309) CooperativeThreadArray.cpp:310:   [PC: 23, counter: 23] st.global.f32 [%r25 + 0], %r18 [stack 1] [active 256]
+(0.005329) CooperativeThreadArray.cpp:310:   [PC: 24, counter: 24] exit [stack 1] [active 256]
+(0.005337) CooperativeThreadArray.cpp:464:  kernel finished in 25 instructions
+(0.005352) CooperativeThreadArray.cpp:289:  CooperativeThreadArray::execute called
+(0.005359) CooperativeThreadArray.cpp:290:    block is 1, 1, 0
+(0.005370) CooperativeThreadArray.cpp:310:   [PC: 0, counter: 0] mov.u16 %r0, %ctaid.x [stack 1] [active 256]
+(0.005383) CooperativeThreadArray.cpp:310:   [PC: 1, counter: 1] mov.u16 %r1, %ntid.x [stack 1] [active 256]
+(0.005400) CooperativeThreadArray.cpp:310:   [PC: 2, counter: 2] mul.wide.u16 %r2, %r0, %r1 [stack 1] [active 256]
+(0.005414) CooperativeThreadArray.cpp:310:   [PC: 3, counter: 3] mov.u16 %r3, %ctaid.y [stack 1] [active 256]
+(0.005427) CooperativeThreadArray.cpp:310:   [PC: 4, counter: 4] mov.u16 %r4, %ntid.y [stack 1] [active 256]
+(0.005453) CooperativeThreadArray.cpp:310:   [PC: 5, counter: 5] mul.wide.u16 %r5, %r3, %r4 [stack 1] [active 256]
+(0.005469) CooperativeThreadArray.cpp:310:   [PC: 6, counter: 6] cvt.u32.u16 %r6, %tid.x [stack 1] [active 256]
+(0.005487) CooperativeThreadArray.cpp:310:   [PC: 7, counter: 7] add.u32 %r7, %r6, %r2 [stack 1] [active 256]
+(0.005502) CooperativeThreadArray.cpp:310:   [PC: 8, counter: 8] cvt.u32.u16 %r8, %tid.y [stack 1] [active 256]
+(0.005522) CooperativeThreadArray.cpp:310:   [PC: 9, counter: 9] add.u32 %r9, %r8, %r5 [stack 1] [active 256]
+(0.005539) CooperativeThreadArray.cpp:310:   [PC: 10, counter: 10] cvt.rn.f32.u32 %r10, %r7 [stack 1] [active 256]
+(0.005574) CooperativeThreadArray.cpp:310:   [PC: 11, counter: 11] cvt.rn.f32.u32 %r11, %r9 [stack 1] [active 256]
+(0.005608) CooperativeThreadArray.cpp:310:   [PC: 12, counter: 12] mov.f32 %r12, 0f00000000 [stack 1] [active 256]
+(0.005624) CooperativeThreadArray.cpp:310:   [PC: 13, counter: 13] mov.f32 %r13, 0f00000000 [stack 1] [active 256]
+(0.005654) CooperativeThreadArray.cpp:310:   [PC: 14, counter: 14] tex.2d.v4.f32.f32 {%r14, %r15, %r16, %r17}, [surface, {%r10, %r11, %r12, %r13}] [stack 1] [active 256]
+(0.005707) CooperativeThreadArray.cpp:310:   [PC: 15, counter: 15] mov.f32 %r18, %r14 [stack 1] [active 256]
+(0.005723) CooperativeThreadArray.cpp:310:   [PC: 16, counter: 16] ld.param.u64 %r19, [__cudaparm__Z6kernelPfii_out] [stack 1] [active 256]
+(0.005747) CooperativeThreadArray.cpp:310:   [PC: 17, counter: 17] ld.param.u32 %r20, [__cudaparm__Z6kernelPfii_width + 8] [stack 1] [active 256]
+(0.005769) CooperativeThreadArray.cpp:310:   [PC: 18, counter: 18] mul.lo.u32 %r21, %r20, %r9 [stack 1] [active 256]
+(0.005787) CooperativeThreadArray.cpp:310:   [PC: 19, counter: 19] add.u32 %r22, %r7, %r21 [stack 1] [active 256]
+(0.005804) CooperativeThreadArray.cpp:310:   [PC: 20, counter: 20] cvt.u64.u32 %r23, %r22 [stack 1] [active 256]
+(0.005823) CooperativeThreadArray.cpp:310:   [PC: 21, counter: 21] mul.lo.u64 %r24, %r23, 4 [stack 1] [active 256]
+(0.005840) CooperativeThreadArray.cpp:310:   [PC: 22, counter: 22] add.u64 %r25, %r19, %r24 [stack 1] [active 256]
+(0.005857) CooperativeThreadArray.cpp:310:   [PC: 23, counter: 23] st.global.f32 [%r25 + 0], %r18 [stack 1] [active 256]
+(0.005877) CooperativeThreadArray.cpp:310:   [PC: 24, counter: 24] exit [stack 1] [active 256]
+(0.005885) CooperativeThreadArray.cpp:464:  kernel finished in 25 instructions
+(0.005901) CooperativeThreadArray.cpp:289:  CooperativeThreadArray::execute called
+(0.005908) CooperativeThreadArray.cpp:290:    block is 1, 2, 0
+(0.005919) CooperativeThreadArray.cpp:310:   [PC: 0, counter: 0] mov.u16 %r0, %ctaid.x [stack 1] [active 256]
+(0.005933) CooperativeThreadArray.cpp:310:   [PC: 1, counter: 1] mov.u16 %r1, %ntid.x [stack 1] [active 256]
+(0.005949) CooperativeThreadArray.cpp:310:   [PC: 2, counter: 2] mul.wide.u16 %r2, %r0, %r1 [stack 1] [active 256]
+(0.005964) CooperativeThreadArray.cpp:310:   [PC: 3, counter: 3] mov.u16 %r3, %ctaid.y [stack 1] [active 256]
+(0.005977) CooperativeThreadArray.cpp:310:   [PC: 4, counter: 4] mov.u16 %r4, %ntid.y [stack 1] [active 256]
+(0.005994) CooperativeThreadArray.cpp:310:   [PC: 5, counter: 5] mul.wide.u16 %r5, %r3, %r4 [stack 1] [active 256]
+(0.006008) CooperativeThreadArray.cpp:310:   [PC: 6, counter: 6] cvt.u32.u16 %r6, %tid.x [stack 1] [active 256]
+(0.006027) CooperativeThreadArray.cpp:310:   [PC: 7, counter: 7] add.u32 %r7, %r6, %r2 [stack 1] [active 256]
+(0.006042) CooperativeThreadArray.cpp:310:   [PC: 8, counter: 8] cvt.u32.u16 %r8, %tid.y [stack 1] [active 256]
+(0.006061) CooperativeThreadArray.cpp:310:   [PC: 9, counter: 9] add.u32 %r9, %r8, %r5 [stack 1] [active 256]
+(0.006078) CooperativeThreadArray.cpp:310:   [PC: 10, counter: 10] cvt.rn.f32.u32 %r10, %r7 [stack 1] [active 256]
+(0.006113) CooperativeThreadArray.cpp:310:   [PC: 11, counter: 11] cvt.rn.f32.u32 %r11, %r9 [stack 1] [active 256]
+(0.006147) CooperativeThreadArray.cpp:310:   [PC: 12, counter: 12] mov.f32 %r12, 0f00000000 [stack 1] [active 256]
+(0.006171) CooperativeThreadArray.cpp:310:   [PC: 13, counter: 13] mov.f32 %r13, 0f00000000 [stack 1] [active 256]
+(0.006201) CooperativeThreadArray.cpp:310:   [PC: 14, counter: 14] tex.2d.v4.f32.f32 {%r14, %r15, %r16, %r17}, [surface, {%r10, %r11, %r12, %r13}] [stack 1] [active 256]
+(0.006255) CooperativeThreadArray.cpp:310:   [PC: 15, counter: 15] mov.f32 %r18, %r14 [stack 1] [active 256]
+(0.006271) CooperativeThreadArray.cpp:310:   [PC: 16, counter: 16] ld.param.u64 %r19, [__cudaparm__Z6kernelPfii_out] [stack 1] [active 256]
+(0.006295) CooperativeThreadArray.cpp:310:   [PC: 17, counter: 17] ld.param.u32 %r20, [__cudaparm__Z6kernelPfii_width + 8] [stack 1] [active 256]
+(0.006316) CooperativeThreadArray.cpp:310:   [PC: 18, counter: 18] mul.lo.u32 %r21, %r20, %r9 [stack 1] [active 256]
+(0.006334) CooperativeThreadArray.cpp:310:   [PC: 19, counter: 19] add.u32 %r22, %r7, %r21 [stack 1] [active 256]
+(0.006351) CooperativeThreadArray.cpp:310:   [PC: 20, counter: 20] cvt.u64.u32 %r23, %r22 [stack 1] [active 256]
+(0.006369) CooperativeThreadArray.cpp:310:   [PC: 21, counter: 21] mul.lo.u64 %r24, %r23, 4 [stack 1] [active 256]
+(0.006387) CooperativeThreadArray.cpp:310:   [PC: 22, counter: 22] add.u64 %r25, %r19, %r24 [stack 1] [active 256]
+(0.006403) CooperativeThreadArray.cpp:310:   [PC: 23, counter: 23] st.global.f32 [%r25 + 0], %r18 [stack 1] [active 256]
+(0.006423) CooperativeThreadArray.cpp:310:   [PC: 24, counter: 24] exit [stack 1] [active 256]
+(0.006431) CooperativeThreadArray.cpp:464:  kernel finished in 25 instructions
+(0.006446) CooperativeThreadArray.cpp:289:  CooperativeThreadArray::execute called
+(0.006453) CooperativeThreadArray.cpp:290:    block is 1, 3, 0
+(0.006464) CooperativeThreadArray.cpp:310:   [PC: 0, counter: 0] mov.u16 %r0, %ctaid.x [stack 1] [active 256]
+(0.006478) CooperativeThreadArray.cpp:310:   [PC: 1, counter: 1] mov.u16 %r1, %ntid.x [stack 1] [active 256]
+(0.006495) CooperativeThreadArray.cpp:310:   [PC: 2, counter: 2] mul.wide.u16 %r2, %r0, %r1 [stack 1] [active 256]
+(0.006509) CooperativeThreadArray.cpp:310:   [PC: 3, counter: 3] mov.u16 %r3, %ctaid.y [stack 1] [active 256]
+(0.006522) CooperativeThreadArray.cpp:310:   [PC: 4, counter: 4] mov.u16 %r4, %ntid.y [stack 1] [active 256]
+(0.006538) CooperativeThreadArray.cpp:310:   [PC: 5, counter: 5] mul.wide.u16 %r5, %r3, %r4 [stack 1] [active 256]
+(0.006553) CooperativeThreadArray.cpp:310:   [PC: 6, counter: 6] cvt.u32.u16 %r6, %tid.x [stack 1] [active 256]
+(0.006572) CooperativeThreadArray.cpp:310:   [PC: 7, counter: 7] add.u32 %r7, %r6, %r2 [stack 1] [active 256]
+(0.006587) CooperativeThreadArray.cpp:310:   [PC: 8, counter: 8] cvt.u32.u16 %r8, %tid.y [stack 1] [active 256]
+(0.006606) CooperativeThreadArray.cpp:310:   [PC: 9, counter: 9] add.u32 %r9, %r8, %r5 [stack 1] [active 256]
+(0.006623) CooperativeThreadArray.cpp:310:   [PC: 10, counter: 10] cvt.rn.f32.u32 %r10, %r7 [stack 1] [active 256]
+(0.006658) CooperativeThreadArray.cpp:310:   [PC: 11, counter: 11] cvt.rn.f32.u32 %r11, %r9 [stack 1] [active 256]
+(0.006692) CooperativeThreadArray.cpp:310:   [PC: 12, counter: 12] mov.f32 %r12, 0f00000000 [stack 1] [active 256]
+(0.006707) CooperativeThreadArray.cpp:310:   [PC: 13, counter: 13] mov.f32 %r13, 0f00000000 [stack 1] [active 256]
+(0.006737) CooperativeThreadArray.cpp:310:   [PC: 14, counter: 14] tex.2d.v4.f32.f32 {%r14, %r15, %r16, %r17}, [surface, {%r10, %r11, %r12, %r13}] [stack 1] [active 256]
+(0.006791) CooperativeThreadArray.cpp:310:   [PC: 15, counter: 15] mov.f32 %r18, %r14 [stack 1] [active 256]
+(0.006806) CooperativeThreadArray.cpp:310:   [PC: 16, counter: 16] ld.param.u64 %r19, [__cudaparm__Z6kernelPfii_out] [stack 1] [active 256]
+(0.006830) CooperativeThreadArray.cpp:310:   [PC: 17, counter: 17] ld.param.u32 %r20, [__cudaparm__Z6kernelPfii_width + 8] [stack 1] [active 256]
+(0.006851) CooperativeThreadArray.cpp:310:   [PC: 18, counter: 18] mul.lo.u32 %r21, %r20, %r9 [stack 1] [active 256]
+(0.006870) CooperativeThreadArray.cpp:310:   [PC: 19, counter: 19] add.u32 %r22, %r7, %r21 [stack 1] [active 256]
+(0.006895) CooperativeThreadArray.cpp:310:   [PC: 20, counter: 20] cvt.u64.u32 %r23, %r22 [stack 1] [active 256]
+(0.006914) CooperativeThreadArray.cpp:310:   [PC: 21, counter: 21] mul.lo.u64 %r24, %r23, 4 [stack 1] [active 256]
+(0.006932) CooperativeThreadArray.cpp:310:   [PC: 22, counter: 22] add.u64 %r25, %r19, %r24 [stack 1] [active 256]
+(0.006948) CooperativeThreadArray.cpp:310:   [PC: 23, counter: 23] st.global.f32 [%r25 + 0], %r18 [stack 1] [active 256]
+(0.006968) CooperativeThreadArray.cpp:310:   [PC: 24, counter: 24] exit [stack 1] [active 256]
+(0.006976) CooperativeThreadArray.cpp:464:  kernel finished in 25 instructions
+(0.006991) CooperativeThreadArray.cpp:289:  CooperativeThreadArray::execute called
+(0.006998) CooperativeThreadArray.cpp:290:    block is 2, 0, 0
+(0.007009) CooperativeThreadArray.cpp:310:   [PC: 0, counter: 0] mov.u16 %r0, %ctaid.x [stack 1] [active 256]
+(0.007023) CooperativeThreadArray.cpp:310:   [PC: 1, counter: 1] mov.u16 %r1, %ntid.x [stack 1] [active 256]
+(0.007040) CooperativeThreadArray.cpp:310:   [PC: 2, counter: 2] mul.wide.u16 %r2, %r0, %r1 [stack 1] [active 256]
+(0.007054) CooperativeThreadArray.cpp:310:   [PC: 3, counter: 3] mov.u16 %r3, %ctaid.y [stack 1] [active 256]
+(0.007067) CooperativeThreadArray.cpp:310:   [PC: 4, counter: 4] mov.u16 %r4, %ntid.y [stack 1] [active 256]
+(0.007083) CooperativeThreadArray.cpp:310:   [PC: 5, counter: 5] mul.wide.u16 %r5, %r3, %r4 [stack 1] [active 256]
+(0.007098) CooperativeThreadArray.cpp:310:   [PC: 6, counter: 6] cvt.u32.u16 %r6, %tid.x [stack 1] [active 256]
+(0.007117) CooperativeThreadArray.cpp:310:   [PC: 7, counter: 7] add.u32 %r7, %r6, %r2 [stack 1] [active 256]
+(0.007132) CooperativeThreadArray.cpp:310:   [PC: 8, counter: 8] cvt.u32.u16 %r8, %tid.y [stack 1] [active 256]
+(0.007151) CooperativeThreadArray.cpp:310:   [PC: 9, counter: 9] add.u32 %r9, %r8, %r5 [stack 1] [active 256]
+(0.007168) CooperativeThreadArray.cpp:310:   [PC: 10, counter: 10] cvt.rn.f32.u32 %r10, %r7 [stack 1] [active 256]
+(0.007203) CooperativeThreadArray.cpp:310:   [PC: 11, counter: 11] cvt.rn.f32.u32 %r11, %r9 [stack 1] [active 256]
+(0.007237) CooperativeThreadArray.cpp:310:   [PC: 12, counter: 12] mov.f32 %r12, 0f00000000 [stack 1] [active 256]
+(0.007252) CooperativeThreadArray.cpp:310:   [PC: 13, counter: 13] mov.f32 %r13, 0f00000000 [stack 1] [active 256]
+(0.007282) CooperativeThreadArray.cpp:310:   [PC: 14, counter: 14] tex.2d.v4.f32.f32 {%r14, %r15, %r16, %r17}, [surface, {%r10, %r11, %r12, %r13}] [stack 1] [active 256]
+(0.007337) CooperativeThreadArray.cpp:310:   [PC: 15, counter: 15] mov.f32 %r18, %r14 [stack 1] [active 256]
+(0.007353) CooperativeThreadArray.cpp:310:   [PC: 16, counter: 16] ld.param.u64 %r19, [__cudaparm__Z6kernelPfii_out] [stack 1] [active 256]
+(0.007377) CooperativeThreadArray.cpp:310:   [PC: 17, counter: 17] ld.param.u32 %r20, [__cudaparm__Z6kernelPfii_width + 8] [stack 1] [active 256]
+(0.007398) CooperativeThreadArray.cpp:310:   [PC: 18, counter: 18] mul.lo.u32 %r21, %r20, %r9 [stack 1] [active 256]
+(0.007416) CooperativeThreadArray.cpp:310:   [PC: 19, counter: 19] add.u32 %r22, %r7, %r21 [stack 1] [active 256]
+(0.007433) CooperativeThreadArray.cpp:310:   [PC: 20, counter: 20] cvt.u64.u32 %r23, %r22 [stack 1] [active 256]
+(0.007451) CooperativeThreadArray.cpp:310:   [PC: 21, counter: 21] mul.lo.u64 %r24, %r23, 4 [stack 1] [active 256]
+(0.007468) CooperativeThreadArray.cpp:310:   [PC: 22, counter: 22] add.u64 %r25, %r19, %r24 [stack 1] [active 256]
+(0.007484) CooperativeThreadArray.cpp:310:   [PC: 23, counter: 23] st.global.f32 [%r25 + 0], %r18 [stack 1] [active 256]
+(0.007505) CooperativeThreadArray.cpp:310:   [PC: 24, counter: 24] exit [stack 1] [active 256]
+(0.007513) CooperativeThreadArray.cpp:464:  kernel finished in 25 instructions
+(0.007528) CooperativeThreadArray.cpp:289:  CooperativeThreadArray::execute called
+(0.007535) CooperativeThreadArray.cpp:290:    block is 2, 1, 0
+(0.007546) CooperativeThreadArray.cpp:310:   [PC: 0, counter: 0] mov.u16 %r0, %ctaid.x [stack 1] [active 256]
+(0.007560) CooperativeThreadArray.cpp:310:   [PC: 1, counter: 1] mov.u16 %r1, %ntid.x [stack 1] [active 256]
+(0.007585) CooperativeThreadArray.cpp:310:   [PC: 2, counter: 2] mul.wide.u16 %r2, %r0, %r1 [stack 1] [active 256]
+(0.007600) CooperativeThreadArray.cpp:310:   [PC: 3, counter: 3] mov.u16 %r3, %ctaid.y [stack 1] [active 256]
+(0.007613) CooperativeThreadArray.cpp:310:   [PC: 4, counter: 4] mov.u16 %r4, %ntid.y [stack 1] [active 256]
+(0.007630) CooperativeThreadArray.cpp:310:   [PC: 5, counter: 5] mul.wide.u16 %r5, %r3, %r4 [stack 1] [active 256]
+(0.007645) CooperativeThreadArray.cpp:310:   [PC: 6, counter: 6] cvt.u32.u16 %r6, %tid.x [stack 1] [active 256]
+(0.007663) CooperativeThreadArray.cpp:310:   [PC: 7, counter: 7] add.u32 %r7, %r6, %r2 [stack 1] [active 256]
+(0.007679) CooperativeThreadArray.cpp:310:   [PC: 8, counter: 8] cvt.u32.u16 %r8, %tid.y [stack 1] [active 256]
+(0.007698) CooperativeThreadArray.cpp:310:   [PC: 9, counter: 9] add.u32 %r9, %r8, %r5 [stack 1] [active 256]
+(0.007715) CooperativeThreadArray.cpp:310:   [PC: 10, counter: 10] cvt.rn.f32.u32 %r10, %r7 [stack 1] [active 256]
+(0.007750) CooperativeThreadArray.cpp:310:   [PC: 11, counter: 11] cvt.rn.f32.u32 %r11, %r9 [stack 1] [active 256]
+(0.007784) CooperativeThreadArray.cpp:310:   [PC: 12, counter: 12] mov.f32 %r12, 0f00000000 [stack 1] [active 256]
+(0.007800) CooperativeThreadArray.cpp:310:   [PC: 13, counter: 13] mov.f32 %r13, 0f00000000 [stack 1] [active 256]
+(0.007829) CooperativeThreadArray.cpp:310:   [PC: 14, counter: 14] tex.2d.v4.f32.f32 {%r14, %r15, %r16, %r17}, [surface, {%r10, %r11, %r12, %r13}] [stack 1] [active 256]
+(0.007883) CooperativeThreadArray.cpp:310:   [PC: 15, counter: 15] mov.f32 %r18, %r14 [stack 1] [active 256]
+(0.007899) CooperativeThreadArray.cpp:310:   [PC: 16, counter: 16] ld.param.u64 %r19, [__cudaparm__Z6kernelPfii_out] [stack 1] [active 256]
+(0.007923) CooperativeThreadArray.cpp:310:   [PC: 17, counter: 17] ld.param.u32 %r20, [__cudaparm__Z6kernelPfii_width + 8] [stack 1] [active 256]
+(0.007944) CooperativeThreadArray.cpp:310:   [PC: 18, counter: 18] mul.lo.u32 %r21, %r20, %r9 [stack 1] [active 256]
+(0.007962) CooperativeThreadArray.cpp:310:   [PC: 19, counter: 19] add.u32 %r22, %r7, %r21 [stack 1] [active 256]
+(0.007980) CooperativeThreadArray.cpp:310:   [PC: 20, counter: 20] cvt.u64.u32 %r23, %r22 [stack 1] [active 256]
+(0.007998) CooperativeThreadArray.cpp:310:   [PC: 21, counter: 21] mul.lo.u64 %r24, %r23, 4 [stack 1] [active 256]
+(0.008015) CooperativeThreadArray.cpp:310:   [PC: 22, counter: 22] add.u64 %r25, %r19, %r24 [stack 1] [active 256]
+(0.008032) CooperativeThreadArray.cpp:310:   [PC: 23, counter: 23] st.global.f32 [%r25 + 0], %r18 [stack 1] [active 256]
+(0.008052) CooperativeThreadArray.cpp:310:   [PC: 24, counter: 24] exit [stack 1] [active 256]
+(0.008060) CooperativeThreadArray.cpp:464:  kernel finished in 25 instructions
+(0.008075) CooperativeThreadArray.cpp:289:  CooperativeThreadArray::execute called
+(0.008082) CooperativeThreadArray.cpp:290:    block is 2, 2, 0
+(0.008093) CooperativeThreadArray.cpp:310:   [PC: 0, counter: 0] mov.u16 %r0, %ctaid.x [stack 1] [active 256]
+(0.008107) CooperativeThreadArray.cpp:310:   [PC: 1, counter: 1] mov.u16 %r1, %ntid.x [stack 1] [active 256]
+(0.008123) CooperativeThreadArray.cpp:310:   [PC: 2, counter: 2] mul.wide.u16 %r2, %r0, %r1 [stack 1] [active 256]
+(0.008138) CooperativeThreadArray.cpp:310:   [PC: 3, counter: 3] mov.u16 %r3, %ctaid.y [stack 1] [active 256]
+(0.008151) CooperativeThreadArray.cpp:310:   [PC: 4, counter: 4] mov.u16 %r4, %ntid.y [stack 1] [active 256]
+(0.008167) CooperativeThreadArray.cpp:310:   [PC: 5, counter: 5] mul.wide.u16 %r5, %r3, %r4 [stack 1] [active 256]
+(0.008182) CooperativeThreadArray.cpp:310:   [PC: 6, counter: 6] cvt.u32.u16 %r6, %tid.x [stack 1] [active 256]
+(0.008201) CooperativeThreadArray.cpp:310:   [PC: 7, counter: 7] add.u32 %r7, %r6, %r2 [stack 1] [active 256]
+(0.008216) CooperativeThreadArray.cpp:310:   [PC: 8, counter: 8] cvt.u32.u16 %r8, %tid.y [stack 1] [active 256]
+(0.008235) CooperativeThreadArray.cpp:310:   [PC: 9, counter: 9] add.u32 %r9, %r8, %r5 [stack 1] [active 256]
+(0.008260) CooperativeThreadArray.cpp:310:   [PC: 10, counter: 10] cvt.rn.f32.u32 %r10, %r7 [stack 1] [active 256]
+(0.008296) CooperativeThreadArray.cpp:310:   [PC: 11, counter: 11] cvt.rn.f32.u32 %r11, %r9 [stack 1] [active 256]
+(0.008330) CooperativeThreadArray.cpp:310:   [PC: 12, counter: 12] mov.f32 %r12, 0f00000000 [stack 1] [active 256]
+(0.008345) CooperativeThreadArray.cpp:310:   [PC: 13, counter: 13] mov.f32 %r13, 0f00000000 [stack 1] [active 256]
+(0.008375) CooperativeThreadArray.cpp:310:   [PC: 14, counter: 14] tex.2d.v4.f32.f32 {%r14, %r15, %r16, %r17}, [surface, {%r10, %r11, %r12, %r13}] [stack 1] [active 256]
+(0.008429) CooperativeThreadArray.cpp:310:   [PC: 15, counter: 15] mov.f32 %r18, %r14 [stack 1] [active 256]
+(0.008444) CooperativeThreadArray.cpp:310:   [PC: 16, counter: 16] ld.param.u64 %r19, [__cudaparm__Z6kernelPfii_out] [stack 1] [active 256]
+(0.008468) CooperativeThreadArray.cpp:310:   [PC: 17, counter: 17] ld.param.u32 %r20, [__cudaparm__Z6kernelPfii_width + 8] [stack 1] [active 256]
+(0.008489) CooperativeThreadArray.cpp:310:   [PC: 18, counter: 18] mul.lo.u32 %r21, %r20, %r9 [stack 1] [active 256]
+(0.008507) CooperativeThreadArray.cpp:310:   [PC: 19, counter: 19] add.u32 %r22, %r7, %r21 [stack 1] [active 256]
+(0.008524) CooperativeThreadArray.cpp:310:   [PC: 20, counter: 20] cvt.u64.u32 %r23, %r22 [stack 1] [active 256]
+(0.008543) CooperativeThreadArray.cpp:310:   [PC: 21, counter: 21] mul.lo.u64 %r24, %r23, 4 [stack 1] [active 256]
+(0.008560) CooperativeThreadArray.cpp:310:   [PC: 22, counter: 22] add.u64 %r25, %r19, %r24 [stack 1] [active 256]
+(0.008576) CooperativeThreadArray.cpp:310:   [PC: 23, counter: 23] st.global.f32 [%r25 + 0], %r18 [stack 1] [active 256]
+(0.008596) CooperativeThreadArray.cpp:310:   [PC: 24, counter: 24] exit [stack 1] [active 256]
+(0.008604) CooperativeThreadArray.cpp:464:  kernel finished in 25 instructions
+(0.008620) CooperativeThreadArray.cpp:289:  CooperativeThreadArray::execute called
+(0.008627) CooperativeThreadArray.cpp:290:    block is 2, 3, 0
+(0.008638) CooperativeThreadArray.cpp:310:   [PC: 0, counter: 0] mov.u16 %r0, %ctaid.x [stack 1] [active 256]
+(0.008652) CooperativeThreadArray.cpp:310:   [PC: 1, counter: 1] mov.u16 %r1, %ntid.x [stack 1] [active 256]
+(0.008668) CooperativeThreadArray.cpp:310:   [PC: 2, counter: 2] mul.wide.u16 %r2, %r0, %r1 [stack 1] [active 256]
+(0.008682) CooperativeThreadArray.cpp:310:   [PC: 3, counter: 3] mov.u16 %r3, %ctaid.y [stack 1] [active 256]
+(0.008696) CooperativeThreadArray.cpp:310:   [PC: 4, counter: 4] mov.u16 %r4, %ntid.y [stack 1] [active 256]
+(0.008712) CooperativeThreadArray.cpp:310:   [PC: 5, counter: 5] mul.wide.u16 %r5, %r3, %r4 [stack 1] [active 256]
+(0.008727) CooperativeThreadArray.cpp:310:   [PC: 6, counter: 6] cvt.u32.u16 %r6, %tid.x [stack 1] [active 256]
+(0.008746) CooperativeThreadArray.cpp:310:   [PC: 7, counter: 7] add.u32 %r7, %r6, %r2 [stack 1] [active 256]
+(0.008761) CooperativeThreadArray.cpp:310:   [PC: 8, counter: 8] cvt.u32.u16 %r8, %tid.y [stack 1] [active 256]
+(0.008780) CooperativeThreadArray.cpp:310:   [PC: 9, counter: 9] add.u32 %r9, %r8, %r5 [stack 1] [active 256]
+(0.008797) CooperativeThreadArray.cpp:310:   [PC: 10, counter: 10] cvt.rn.f32.u32 %r10, %r7 [stack 1] [active 256]
+(0.008832) CooperativeThreadArray.cpp:310:   [PC: 11, counter: 11] cvt.rn.f32.u32 %r11, %r9 [stack 1] [active 256]
+(0.008866) CooperativeThreadArray.cpp:310:   [PC: 12, counter: 12] mov.f32 %r12, 0f00000000 [stack 1] [active 256]
+(0.008881) CooperativeThreadArray.cpp:310:   [PC: 13, counter: 13] mov.f32 %r13, 0f00000000 [stack 1] [active 256]
+(0.008911) CooperativeThreadArray.cpp:310:   [PC: 14, counter: 14] tex.2d.v4.f32.f32 {%r14, %r15, %r16, %r17}, [surface, {%r10, %r11, %r12, %r13}] [stack 1] [active 256]
+(0.008965) CooperativeThreadArray.cpp:310:   [PC: 15, counter: 15] mov.f32 %r18, %r14 [stack 1] [active 256]
+(0.008980) CooperativeThreadArray.cpp:310:   [PC: 16, counter: 16] ld.param.u64 %r19, [__cudaparm__Z6kernelPfii_out] [stack 1] [active 256]
+(0.009004) CooperativeThreadArray.cpp:310:   [PC: 17, counter: 17] ld.param.u32 %r20, [__cudaparm__Z6kernelPfii_width + 8] [stack 1] [active 256]
+(0.009034) CooperativeThreadArray.cpp:310:   [PC: 18, counter: 18] mul.lo.u32 %r21, %r20, %r9 [stack 1] [active 256]
+(0.009053) CooperativeThreadArray.cpp:310:   [PC: 19, counter: 19] add.u32 %r22, %r7, %r21 [stack 1] [active 256]
+(0.009070) CooperativeThreadArray.cpp:310:   [PC: 20, counter: 20] cvt.u64.u32 %r23, %r22 [stack 1] [active 256]
+(0.009088) CooperativeThreadArray.cpp:310:   [PC: 21, counter: 21] mul.lo.u64 %r24, %r23, 4 [stack 1] [active 256]
+(0.009105) CooperativeThreadArray.cpp:310:   [PC: 22, counter: 22] add.u64 %r25, %r19, %r24 [stack 1] [active 256]
+(0.009122) CooperativeThreadArray.cpp:310:   [PC: 23, counter: 23] st.global.f32 [%r25 + 0], %r18 [stack 1] [active 256]
+(0.009142) CooperativeThreadArray.cpp:310:   [PC: 24, counter: 24] exit [stack 1] [active 256]
+(0.009150) CooperativeThreadArray.cpp:464:  kernel finished in 25 instructions
+(0.009166) CooperativeThreadArray.cpp:289:  CooperativeThreadArray::execute called
+(0.009173) CooperativeThreadArray.cpp:290:    block is 3, 0, 0
+(0.009184) CooperativeThreadArray.cpp:310:   [PC: 0, counter: 0] mov.u16 %r0, %ctaid.x [stack 1] [active 256]
+(0.009197) CooperativeThreadArray.cpp:310:   [PC: 1, counter: 1] mov.u16 %r1, %ntid.x [stack 1] [active 256]
+(0.009214) CooperativeThreadArray.cpp:310:   [PC: 2, counter: 2] mul.wide.u16 %r2, %r0, %r1 [stack 1] [active 256]
+(0.009228) CooperativeThreadArray.cpp:310:   [PC: 3, counter: 3] mov.u16 %r3, %ctaid.y [stack 1] [active 256]
+(0.009241) CooperativeThreadArray.cpp:310:   [PC: 4, counter: 4] mov.u16 %r4, %ntid.y [stack 1] [active 256]
+(0.009258) CooperativeThreadArray.cpp:310:   [PC: 5, counter: 5] mul.wide.u16 %r5, %r3, %r4 [stack 1] [active 256]
+(0.009273) CooperativeThreadArray.cpp:310:   [PC: 6, counter: 6] cvt.u32.u16 %r6, %tid.x [stack 1] [active 256]
+(0.009291) CooperativeThreadArray.cpp:310:   [PC: 7, counter: 7] add.u32 %r7, %r6, %r2 [stack 1] [active 256]
+(0.009306) CooperativeThreadArray.cpp:310:   [PC: 8, counter: 8] cvt.u32.u16 %r8, %tid.y [stack 1] [active 256]
+(0.009325) CooperativeThreadArray.cpp:310:   [PC: 9, counter: 9] add.u32 %r9, %r8, %r5 [stack 1] [active 256]
+(0.009342) CooperativeThreadArray.cpp:310:   [PC: 10, counter: 10] cvt.rn.f32.u32 %r10, %r7 [stack 1] [active 256]
+(0.009377) CooperativeThreadArray.cpp:310:   [PC: 11, counter: 11] cvt.rn.f32.u32 %r11, %r9 [stack 1] [active 256]
+(0.009411) CooperativeThreadArray.cpp:310:   [PC: 12, counter: 12] mov.f32 %r12, 0f00000000 [stack 1] [active 256]
+(0.009427) CooperativeThreadArray.cpp:310:   [PC: 13, counter: 13] mov.f32 %r13, 0f00000000 [stack 1] [active 256]
+(0.009456) CooperativeThreadArray.cpp:310:   [PC: 14, counter: 14] tex.2d.v4.f32.f32 {%r14, %r15, %r16, %r17}, [surface, {%r10, %r11, %r12, %r13}] [stack 1] [active 256]
+(0.009511) CooperativeThreadArray.cpp:310:   [PC: 15, counter: 15] mov.f32 %r18, %r14 [stack 1] [active 256]
+(0.009527) CooperativeThreadArray.cpp:310:   [PC: 16, counter: 16] ld.param.u64 %r19, [__cudaparm__Z6kernelPfii_out] [stack 1] [active 256]
+(0.009551) CooperativeThreadArray.cpp:310:   [PC: 17, counter: 17] ld.param.u32 %r20, [__cudaparm__Z6kernelPfii_width + 8] [stack 1] [active 256]
+(0.009573) CooperativeThreadArray.cpp:310:   [PC: 18, counter: 18] mul.lo.u32 %r21, %r20, %r9 [stack 1] [active 256]
+(0.009591) CooperativeThreadArray.cpp:310:   [PC: 19, counter: 19] add.u32 %r22, %r7, %r21 [stack 1] [active 256]
+(0.009608) CooperativeThreadArray.cpp:310:   [PC: 20, counter: 20] cvt.u64.u32 %r23, %r22 [stack 1] [active 256]
+(0.009626) CooperativeThreadArray.cpp:310:   [PC: 21, counter: 21] mul.lo.u64 %r24, %r23, 4 [stack 1] [active 256]
+(0.009643) CooperativeThreadArray.cpp:310:   [PC: 22, counter: 22] add.u64 %r25, %r19, %r24 [stack 1] [active 256]
+(0.009659) CooperativeThreadArray.cpp:310:   [PC: 23, counter: 23] st.global.f32 [%r25 + 0], %r18 [stack 1] [active 256]
+(0.009679) CooperativeThreadArray.cpp:310:   [PC: 24, counter: 24] exit [stack 1] [active 256]
+(0.009687) CooperativeThreadArray.cpp:464:  kernel finished in 25 instructions
+(0.009710) CooperativeThreadArray.cpp:289:  CooperativeThreadArray::execute called
+(0.009718) CooperativeThreadArray.cpp:290:    block is 3, 1, 0
+(0.009729) CooperativeThreadArray.cpp:310:   [PC: 0, counter: 0] mov.u16 %r0, %ctaid.x [stack 1] [active 256]
+(0.009743) CooperativeThreadArray.cpp:310:   [PC: 1, counter: 1] mov.u16 %r1, %ntid.x [stack 1] [active 256]
+(0.009760) CooperativeThreadArray.cpp:310:   [PC: 2, counter: 2] mul.wide.u16 %r2, %r0, %r1 [stack 1] [active 256]
+(0.009774) CooperativeThreadArray.cpp:310:   [PC: 3, counter: 3] mov.u16 %r3, %ctaid.y [stack 1] [active 256]
+(0.009787) CooperativeThreadArray.cpp:310:   [PC: 4, counter: 4] mov.u16 %r4, %ntid.y [stack 1] [active 256]
+(0.009803) CooperativeThreadArray.cpp:310:   [PC: 5, counter: 5] mul.wide.u16 %r5, %r3, %r4 [stack 1] [active 256]
+(0.009819) CooperativeThreadArray.cpp:310:   [PC: 6, counter: 6] cvt.u32.u16 %r6, %tid.x [stack 1] [active 256]
+(0.009837) CooperativeThreadArray.cpp:310:   [PC: 7, counter: 7] add.u32 %r7, %r6, %r2 [stack 1] [active 256]
+(0.009852) CooperativeThreadArray.cpp:310:   [PC: 8, counter: 8] cvt.u32.u16 %r8, %tid.y [stack 1] [active 256]
+(0.009872) CooperativeThreadArray.cpp:310:   [PC: 9, counter: 9] add.u32 %r9, %r8, %r5 [stack 1] [active 256]
+(0.009889) CooperativeThreadArray.cpp:310:   [PC: 10, counter: 10] cvt.rn.f32.u32 %r10, %r7 [stack 1] [active 256]
+(0.009923) CooperativeThreadArray.cpp:310:   [PC: 11, counter: 11] cvt.rn.f32.u32 %r11, %r9 [stack 1] [active 256]
+(0.009958) CooperativeThreadArray.cpp:310:   [PC: 12, counter: 12] mov.f32 %r12, 0f00000000 [stack 1] [active 256]
+(0.009973) CooperativeThreadArray.cpp:310:   [PC: 13, counter: 13] mov.f32 %r13, 0f00000000 [stack 1] [active 256]
+(0.010003) CooperativeThreadArray.cpp:310:   [PC: 14, counter: 14] tex.2d.v4.f32.f32 {%r14, %r15, %r16, %r17}, [surface, {%r10, %r11, %r12, %r13}] [stack 1] [active 256]
+(0.010057) CooperativeThreadArray.cpp:310:   [PC: 15, counter: 15] mov.f32 %r18, %r14 [stack 1] [active 256]
+(0.010073) CooperativeThreadArray.cpp:310:   [PC: 16, counter: 16] ld.param.u64 %r19, [__cudaparm__Z6kernelPfii_out] [stack 1] [active 256]
+(0.010097) CooperativeThreadArray.cpp:310:   [PC: 17, counter: 17] ld.param.u32 %r20, [__cudaparm__Z6kernelPfii_width + 8] [stack 1] [active 256]
+(0.010118) CooperativeThreadArray.cpp:310:   [PC: 18, counter: 18] mul.lo.u32 %r21, %r20, %r9 [stack 1] [active 256]
+(0.010136) CooperativeThreadArray.cpp:310:   [PC: 19, counter: 19] add.u32 %r22, %r7, %r21 [stack 1] [active 256]
+(0.010164) CooperativeThreadArray.cpp:310:   [PC: 20, counter: 20] cvt.u64.u32 %r23, %r22 [stack 1] [active 256]
+(0.010183) CooperativeThreadArray.cpp:310:   [PC: 21, counter: 21] mul.lo.u64 %r24, %r23, 4 [stack 1] [active 256]
+(0.010201) CooperativeThreadArray.cpp:310:   [PC: 22, counter: 22] add.u64 %r25, %r19, %r24 [stack 1] [active 256]
+(0.010218) CooperativeThreadArray.cpp:310:   [PC: 23, counter: 23] st.global.f32 [%r25 + 0], %r18 [stack 1] [active 256]
+(0.010239) CooperativeThreadArray.cpp:310:   [PC: 24, counter: 24] exit [stack 1] [active 256]
+(0.010247) CooperativeThreadArray.cpp:464:  kernel finished in 25 instructions
+(0.010262) CooperativeThreadArray.cpp:289:  CooperativeThreadArray::execute called
+(0.010269) CooperativeThreadArray.cpp:290:    block is 3, 2, 0
+(0.010280) CooperativeThreadArray.cpp:310:   [PC: 0, counter: 0] mov.u16 %r0, %ctaid.x [stack 1] [active 256]
+(0.010293) CooperativeThreadArray.cpp:310:   [PC: 1, counter: 1] mov.u16 %r1, %ntid.x [stack 1] [active 256]
+(0.010310) CooperativeThreadArray.cpp:310:   [PC: 2, counter: 2] mul.wide.u16 %r2, %r0, %r1 [stack 1] [active 256]
+(0.010324) CooperativeThreadArray.cpp:310:   [PC: 3, counter: 3] mov.u16 %r3, %ctaid.y [stack 1] [active 256]
+(0.010338) CooperativeThreadArray.cpp:310:   [PC: 4, counter: 4] mov.u16 %r4, %ntid.y [stack 1] [active 256]
+(0.010354) CooperativeThreadArray.cpp:310:   [PC: 5, counter: 5] mul.wide.u16 %r5, %r3, %r4 [stack 1] [active 256]
+(0.010369) CooperativeThreadArray.cpp:310:   [PC: 6, counter: 6] cvt.u32.u16 %r6, %tid.x [stack 1] [active 256]
+(0.010387) CooperativeThreadArray.cpp:310:   [PC: 7, counter: 7] add.u32 %r7, %r6, %r2 [stack 1] [active 256]
+(0.010411) CooperativeThreadArray.cpp:310:   [PC: 8, counter: 8] cvt.u32.u16 %r8, %tid.y [stack 1] [active 256]
+(0.010430) CooperativeThreadArray.cpp:310:   [PC: 9, counter: 9] add.u32 %r9, %r8, %r5 [stack 1] [active 256]
+(0.010448) CooperativeThreadArray.cpp:310:   [PC: 10, counter: 10] cvt.rn.f32.u32 %r10, %r7 [stack 1] [active 256]
+(0.010482) CooperativeThreadArray.cpp:310:   [PC: 11, counter: 11] cvt.rn.f32.u32 %r11, %r9 [stack 1] [active 256]
+(0.010517) CooperativeThreadArray.cpp:310:   [PC: 12, counter: 12] mov.f32 %r12, 0f00000000 [stack 1] [active 256]
+(0.010532) CooperativeThreadArray.cpp:310:   [PC: 13, counter: 13] mov.f32 %r13, 0f00000000 [stack 1] [active 256]
+(0.010561) CooperativeThreadArray.cpp:310:   [PC: 14, counter: 14] tex.2d.v4.f32.f32 {%r14, %r15, %r16, %r17}, [surface, {%r10, %r11, %r12, %r13}] [stack 1] [active 256]
+(0.010615) CooperativeThreadArray.cpp:310:   [PC: 15, counter: 15] mov.f32 %r18, %r14 [stack 1] [active 256]
+(0.010631) CooperativeThreadArray.cpp:310:   [PC: 16, counter: 16] ld.param.u64 %r19, [__cudaparm__Z6kernelPfii_out] [stack 1] [active 256]
+(0.010654) CooperativeThreadArray.cpp:310:   [PC: 17, counter: 17] ld.param.u32 %r20, [__cudaparm__Z6kernelPfii_width + 8] [stack 1] [active 256]
+(0.010676) CooperativeThreadArray.cpp:310:   [PC: 18, counter: 18] mul.lo.u32 %r21, %r20, %r9 [stack 1] [active 256]
+(0.010694) CooperativeThreadArray.cpp:310:   [PC: 19, counter: 19] add.u32 %r22, %r7, %r21 [stack 1] [active 256]
+(0.010711) CooperativeThreadArray.cpp:310:   [PC: 20, counter: 20] cvt.u64.u32 %r23, %r22 [stack 1] [active 256]
+(0.010729) CooperativeThreadArray.cpp:310:   [PC: 21, counter: 21] mul.lo.u64 %r24, %r23, 4 [stack 1] [active 256]
+(0.010746) CooperativeThreadArray.cpp:310:   [PC: 22, counter: 22] add.u64 %r25, %r19, %r24 [stack 1] [active 256]
+(0.010763) CooperativeThreadArray.cpp:310:   [PC: 23, counter: 23] st.global.f32 [%r25 + 0], %r18 [stack 1] [active 256]
+(0.010783) CooperativeThreadArray.cpp:310:   [PC: 24, counter: 24] exit [stack 1] [active 256]
+(0.010791) CooperativeThreadArray.cpp:464:  kernel finished in 25 instructions
+(0.010806) CooperativeThreadArray.cpp:289:  CooperativeThreadArray::execute called
+(0.010813) CooperativeThreadArray.cpp:290:    block is 3, 3, 0
+(0.010824) CooperativeThreadArray.cpp:310:   [PC: 0, counter: 0] mov.u16 %r0, %ctaid.x [stack 1] [active 256]
+(0.010838) CooperativeThreadArray.cpp:310:   [PC: 1, counter: 1] mov.u16 %r1, %ntid.x [stack 1] [active 256]
+(0.010854) CooperativeThreadArray.cpp:310:   [PC: 2, counter: 2] mul.wide.u16 %r2, %r0, %r1 [stack 1] [active 256]
+(0.010868) CooperativeThreadArray.cpp:310:   [PC: 3, counter: 3] mov.u16 %r3, %ctaid.y [stack 1] [active 256]
+(0.010881) CooperativeThreadArray.cpp:310:   [PC: 4, counter: 4] mov.u16 %r4, %ntid.y [stack 1] [active 256]
+(0.010898) CooperativeThreadArray.cpp:310:   [PC: 5, counter: 5] mul.wide.u16 %r5, %r3, %r4 [stack 1] [active 256]
+(0.010913) CooperativeThreadArray.cpp:310:   [PC: 6, counter: 6] cvt.u32.u16 %r6, %tid.x [stack 1] [active 256]
+(0.010931) CooperativeThreadArray.cpp:310:   [PC: 7, counter: 7] add.u32 %r7, %r6, %r2 [stack 1] [active 256]
+(0.010947) CooperativeThreadArray.cpp:310:   [PC: 8, counter: 8] cvt.u32.u16 %r8, %tid.y [stack 1] [active 256]
+(0.010966) CooperativeThreadArray.cpp:310:   [PC: 9, counter: 9] add.u32 %r9, %r8, %r5 [stack 1] [active 256]
+(0.010983) CooperativeThreadArray.cpp:310:   [PC: 10, counter: 10] cvt.rn.f32.u32 %r10, %r7 [stack 1] [active 256]
+(0.011018) CooperativeThreadArray.cpp:310:   [PC: 11, counter: 11] cvt.rn.f32.u32 %r11, %r9 [stack 1] [active 256]
+(0.011052) CooperativeThreadArray.cpp:310:   [PC: 12, counter: 12] mov.f32 %r12, 0f00000000 [stack 1] [active 256]
+(0.011067) CooperativeThreadArray.cpp:310:   [PC: 13, counter: 13] mov.f32 %r13, 0f00000000 [stack 1] [active 256]
+(0.011097) CooperativeThreadArray.cpp:310:   [PC: 14, counter: 14] tex.2d.v4.f32.f32 {%r14, %r15, %r16, %r17}, [surface, {%r10, %r11, %r12, %r13}] [stack 1] [active 256]
+(0.011159) CooperativeThreadArray.cpp:310:   [PC: 15, counter: 15] mov.f32 %r18, %r14 [stack 1] [active 256]
+(0.011175) CooperativeThreadArray.cpp:310:   [PC: 16, counter: 16] ld.param.u64 %r19, [__cudaparm__Z6kernelPfii_out] [stack 1] [active 256]
+(0.011199) CooperativeThreadArray.cpp:310:   [PC: 17, counter: 17] ld.param.u32 %r20, [__cudaparm__Z6kernelPfii_width + 8] [stack 1] [active 256]
+(0.011220) CooperativeThreadArray.cpp:310:   [PC: 18, counter: 18] mul.lo.u32 %r21, %r20, %r9 [stack 1] [active 256]
+(0.011239) CooperativeThreadArray.cpp:310:   [PC: 19, counter: 19] add.u32 %r22, %r7, %r21 [stack 1] [active 256]
+(0.011256) CooperativeThreadArray.cpp:310:   [PC: 20, counter: 20] cvt.u64.u32 %r23, %r22 [stack 1] [active 256]
+(0.011274) CooperativeThreadArray.cpp:310:   [PC: 21, counter: 21] mul.lo.u64 %r24, %r23, 4 [stack 1] [active 256]
+(0.011292) CooperativeThreadArray.cpp:310:   [PC: 22, counter: 22] add.u64 %r25, %r19, %r24 [stack 1] [active 256]
+(0.011308) CooperativeThreadArray.cpp:310:   [PC: 23, counter: 23] st.global.f32 [%r25 + 0], %r18 [stack 1] [active 256]
+(0.011328) CooperativeThreadArray.cpp:310:   [PC: 24, counter: 24] exit [stack 1] [active 256]
+(0.011336) CooperativeThreadArray.cpp:464:  kernel finished in 25 instructions
+Pass/Fail : Pass
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestDataflowGraph 
+INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestCudaSequence
+INFO     Test completed in 0.0535800457001 seconds
+INFO      It produced the following output:
+(0.002960) CooperativeThreadArray.cpp:289:  CooperativeThreadArray::execute called
+(0.002981) CooperativeThreadArray.cpp:290:    block is 0, 0, 0
+(0.002999) CooperativeThreadArray.cpp:310:   [PC: 0, counter: 0] mov.u16 %r0, %ctaid.x [stack 1] [active 32]
+(0.003019) CooperativeThreadArray.cpp:310:   [PC: 1, counter: 1] mov.u16 %r1, %ntid.x [stack 1] [active 32]
+(0.003037) CooperativeThreadArray.cpp:310:   [PC: 2, counter: 2] mul.wide.u16 %r2, %r0, %r1 [stack 1] [active 32]
+(0.003057) CooperativeThreadArray.cpp:310:   [PC: 3, counter: 3] cvt.u32.u16 %r3, %tid.x [stack 1] [active 32]
+(0.003077) CooperativeThreadArray.cpp:310:   [PC: 4, counter: 4] add.u32 %r4, %r3, %r2 [stack 1] [active 32]
+(0.003096) CooperativeThreadArray.cpp:310:   [PC: 5, counter: 5] ld.param.s32 %r5, [__cudaparm_sequence_N + 8] [stack 1] [active 32]
+(0.003124) CooperativeThreadArray.cpp:310:   [PC: 6, counter: 6] setp.le.s32 %p6, %r5, %r4 [stack 1] [active 32]
+(0.003140) CooperativeThreadArray.cpp:310:   [PC: 7, counter: 7] @%p6 bra $BB_1_0004 [stack 1] [active 32]
+(0.003159) CooperativeThreadArray.cpp:310:   [PC: 8, counter: 8] mul.lo.s32 %r7, %r4, 2 [stack 2] [active 32]
+(0.003173) CooperativeThreadArray.cpp:310:   [PC: 9, counter: 9] ld.param.u64 %r8, [__cudaparm_sequence_A] [stack 2] [active 32]
+(0.003188) CooperativeThreadArray.cpp:310:   [PC: 10, counter: 10] cvt.s64.s32 %r9, %r4 [stack 2] [active 32]
+(0.003207) CooperativeThreadArray.cpp:310:   [PC: 11, counter: 11] mul.wide.s32 %r10, %r4, 4 [stack 2] [active 32]
+(0.003223) CooperativeThreadArray.cpp:310:   [PC: 12, counter: 12] add.u64 %r11, %r8, %r10 [stack 2] [active 32]
+(0.003240) CooperativeThreadArray.cpp:310:   [PC: 13, counter: 13] st.global.s32 [%r11 + 0], %r7 [stack 2] [active 32]
+(0.003253) CooperativeThreadArray.cpp:310:   [PC: 14, counter: 14] reconverge [stack 2] [active 32]
+(0.003261) CooperativeThreadArray.cpp:310:   [PC: 15, counter: 15] exit [stack 1] [active 32]
+(0.003270) CooperativeThreadArray.cpp:464:  kernel finished in 16 instructions
+(0.003292) CooperativeThreadArray.cpp:289:  CooperativeThreadArray::execute called
+(0.003300) CooperativeThreadArray.cpp:290:    block is 0, 0, 0
+(0.003311) CooperativeThreadArray.cpp:310:   [PC: 0, counter: 0] mov.u16 %r0, %ctaid.x [stack 1] [active 32]
+(0.003323) CooperativeThreadArray.cpp:310:   [PC: 1, counter: 1] mov.u16 %r1, %ntid.x [stack 1] [active 32]
+(0.003339) CooperativeThreadArray.cpp:310:   [PC: 2, counter: 2] mul.wide.u16 %r2, %r0, %r1 [stack 1] [active 32]
+(0.003352) CooperativeThreadArray.cpp:310:   [PC: 3, counter: 3] cvt.u32.u16 %r3, %tid.x [stack 1] [active 32]
+(0.003367) CooperativeThreadArray.cpp:310:   [PC: 4, counter: 4] add.u32 %r4, %r3, %r2 [stack 1] [active 32]
+(0.003382) CooperativeThreadArray.cpp:310:   [PC: 5, counter: 5] ld.param.s32 %r5, [__cudaparm_sequence_N + 8] [stack 1] [active 32]
+(0.003401) CooperativeThreadArray.cpp:310:   [PC: 6, counter: 6] setp.le.s32 %p6, %r5, %r4 [stack 1] [active 32]
+(0.003413) CooperativeThreadArray.cpp:310:   [PC: 7, counter: 7] @%p6 bra $BB_1_0004 [stack 1] [active 32]
+(0.003431) CooperativeThreadArray.cpp:310:   [PC: 8, counter: 8] mul.lo.s32 %r7, %r4, 2 [stack 2] [active 32]
+(0.003445) CooperativeThreadArray.cpp:310:   [PC: 9, counter: 9] ld.param.u64 %r8, [__cudaparm_sequence_A] [stack 2] [active 32]
+(0.003460) CooperativeThreadArray.cpp:310:   [PC: 10, counter: 10] cvt.s64.s32 %r9, %r4 [stack 2] [active 32]
+(0.003476) CooperativeThreadArray.cpp:310:   [PC: 11, counter: 11] mul.wide.s32 %r10, %r4, 4 [stack 2] [active 32]
+(0.003491) CooperativeThreadArray.cpp:310:   [PC: 12, counter: 12] add.u64 %r11, %r8, %r10 [stack 2] [active 32]
+(0.003506) CooperativeThreadArray.cpp:310:   [PC: 13, counter: 13] st.global.s32 [%r11 + 0], %r7 [stack 2] [active 32]
+(0.003516) CooperativeThreadArray.cpp:310:   [PC: 14, counter: 14] reconverge [stack 2] [active 32]
+(0.003524) CooperativeThreadArray.cpp:310:   [PC: 15, counter: 15] exit [stack 1] [active 32]
+(0.003532) CooperativeThreadArray.cpp:464:  kernel finished in 16 instructions
+(0.003815) CooperativeThreadArray.cpp:289:  CooperativeThreadArray::execute called
+(0.003857) CooperativeThreadArray.cpp:290:    block is 0, 0, 0
+(0.003870) CooperativeThreadArray.cpp:310:   [PC: 0, counter: 0] mov.u64 %r0, __cuda___cuda_local_var_22025_30_storage32 [stack 1] [active 32]
+(0.003883) CooperativeThreadArray.cpp:310:   [PC: 1, counter: 1] cvt.u32.u16 %r1, %tid.x [stack 1] [active 32]
+(0.003896) CooperativeThreadArray.cpp:310:   [PC: 2, counter: 2] mov.u16 %r2, %ctaid.x [stack 1] [active 32]
+(0.003908) CooperativeThreadArray.cpp:310:   [PC: 3, counter: 3] mov.u16 %r3, %ntid.x [stack 1] [active 32]
+(0.003923) CooperativeThreadArray.cpp:310:   [PC: 4, counter: 4] mul.wide.u16 %r4, %r2, %r3 [stack 1] [active 32]
+(0.003938) CooperativeThreadArray.cpp:310:   [PC: 5, counter: 5] add.u32 %r5, %r1, %r4 [stack 1] [active 32]
+(0.003952) CooperativeThreadArray.cpp:310:   [PC: 6, counter: 6] cvt.s64.s32 %r6, %r5 [stack 1] [active 32]
+(0.003968) CooperativeThreadArray.cpp:310:   [PC: 7, counter: 7] mul.wide.s32 %r7, %r5, 4 [stack 1] [active 32]
+(0.003983) CooperativeThreadArray.cpp:310:   [PC: 8, counter: 8] ld.param.u64 %r8, [__cudaparm_testShr_B + 8] [stack 1] [active 32]
+(0.004001) CooperativeThreadArray.cpp:310:   [PC: 9, counter: 9] add.u64 %r9, %r8, %r7 [stack 1] [active 32]
+(0.004016) CooperativeThreadArray.cpp:310:   [PC: 10, counter: 10] ld.global.s32 %r10, [%r9 + 0] [stack 1] [active 32]
+(0.004032) CooperativeThreadArray.cpp:310:   [PC: 11, counter: 11] cvt.u64.u32 %r11, %r1 [stack 1] [active 32]
+(0.004048) CooperativeThreadArray.cpp:310:   [PC: 12, counter: 12] mul.wide.u32 %r12, %r1, 4 [stack 1] [active 32]
+(0.004063) CooperativeThreadArray.cpp:310:   [PC: 13, counter: 13] add.u64 %r13, %r0, %r12 [stack 1] [active 32]
+(0.004078) CooperativeThreadArray.cpp:310:   [PC: 14, counter: 14] st.shared.s32 [%r13 + 0], %r10 [stack 1] [active 32]
+(0.004092) CooperativeThreadArray.cpp:310:   [PC: 15, counter: 15] bar.sync 0 [stack 1] [active 32]
+(0.004110) CooperativeThreadArray.cpp:310:   [PC: 16, counter: 16] xor.b32 %r14, %r1, 1 [stack 1] [active 32]
+(0.004127) CooperativeThreadArray.cpp:310:   [PC: 17, counter: 17] cvt.u64.u32 %r15, %r14 [stack 1] [active 32]
+(0.004143) CooperativeThreadArray.cpp:310:   [PC: 18, counter: 18] mul.wide.u32 %r16, %r14, 4 [stack 1] [active 32]
+(0.004158) CooperativeThreadArray.cpp:310:   [PC: 19, counter: 19] add.u64 %r17, %r0, %r16 [stack 1] [active 32]
+(0.004173) CooperativeThreadArray.cpp:310:   [PC: 20, counter: 20] ld.shared.s32 %r18, [%r17 + 0] [stack 1] [active 32]
+(0.004190) CooperativeThreadArray.cpp:310:   [PC: 21, counter: 21] and.b32 %r19, %r5, 1 [stack 1] [active 32]
+(0.004204) CooperativeThreadArray.cpp:310:   [PC: 22, counter: 22] mov.u32 %r20, 0 [stack 1] [active 32]
+(0.004220) CooperativeThreadArray.cpp:310:   [PC: 23, counter: 23] setp.eq.s32 %p21, %r19, %r20 [stack 1] [active 32]
+(0.004233) CooperativeThreadArray.cpp:310:   [PC: 24, counter: 24] @%p21 bra $BB_2_0004 [stack 1] [active 32]
+(0.004250) CooperativeThreadArray.cpp:310:   [PC: 25, counter: 25] ld.shared.s32 %r18, [%r17 + 0] [stack 3] [active 16]
+(0.004267) CooperativeThreadArray.cpp:310:   [PC: 26, counter: 26] mul.lo.s32 %r22, %r18, 2 [stack 3] [active 16]
+(0.004278) CooperativeThreadArray.cpp:310:   [PC: 27, counter: 27] bra.uni $BB_2_0005 [stack 3] [active 16]
+(0.004288) CooperativeThreadArray.cpp:310:   [PC: 30, counter: 28] reconverge [stack 3] [active 16]
+(0.004302) CooperativeThreadArray.cpp:310:   [PC: 28, counter: 29] ld.shared.s32 %r18, [%r17 + 0] [stack 2] [active 16]
+(0.004319) CooperativeThreadArray.cpp:310:   [PC: 29, counter: 30] mul.lo.s32 %r22, %r18, 3 [stack 2] [active 16]
+(0.004328) CooperativeThreadArray.cpp:310:   [PC: 30, counter: 31] reconverge [stack 2] [active 16]
+(0.004341) CooperativeThreadArray.cpp:310:   [PC: 31, counter: 32] ld.param.u64 %r23, [__cudaparm_testShr_A] [stack 1] [active 32]
+(0.004357) CooperativeThreadArray.cpp:310:   [PC: 32, counter: 33] add.u64 %r24, %r23, %r7 [stack 1] [active 32]
+(0.004372) CooperativeThreadArray.cpp:310:   [PC: 33, counter: 34] st.global.s32 [%r24 + 0], %r22 [stack 1] [active 32]
+(0.004382) CooperativeThreadArray.cpp:310:   [PC: 34, counter: 35] exit [stack 1] [active 32]
+(0.004401) CooperativeThreadArray.cpp:464:  kernel finished in 36 instructions
+Pass/Fail : Pass
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestLexer 
+INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestKernels
+INFO     Test completed in 0.0547890663147 seconds
+INFO      It produced the following output:
+(0.007118) CooperativeThreadArray.cpp:289:  CooperativeThreadArray::execute called
+(0.007138) CooperativeThreadArray.cpp:290:    block is 0, 0, 0
+(0.007152) CooperativeThreadArray.cpp:310:   [PC: 0, counter: 0] cvt.u32.u16 %r0, %tid.x [stack 1] [active 8]
+(0.007173) CooperativeThreadArray.cpp:310:   [PC: 1, counter: 1] cvt.rn.f32.u32 %r1, %r0 [stack 1] [active 8]
+(0.007193) CooperativeThreadArray.cpp:310:   [PC: 2, counter: 2] mov.f32 %r2, 0f3d800000 [stack 1] [active 8]
+(0.007210) CooperativeThreadArray.cpp:310:   [PC: 3, counter: 3] mul.f32 %r3, %r1, %r2 [stack 1] [active 8]
+(0.007226) CooperativeThreadArray.cpp:310:   [PC: 4, counter: 4] ld.param.u64 %r4, [__cudaparm__Z19k_sequenceDivergentPf_ptr] [stack 1] [active 8]
+(0.007243) CooperativeThreadArray.cpp:310:   [PC: 5, counter: 5] cvt.u64.u32 %r5, %r0 [stack 1] [active 8]
+(0.007259) CooperativeThreadArray.cpp:310:   [PC: 6, counter: 6] mul.lo.u64 %r6, %r5, 4 [stack 1] [active 8]
+(0.007273) CooperativeThreadArray.cpp:310:   [PC: 7, counter: 7] add.u64 %r7, %r4, %r6 [stack 1] [active 8]
+(0.007290) CooperativeThreadArray.cpp:310:   [PC: 8, counter: 8] and.b32 %r8, %r0, 1 [stack 1] [active 8]
+(0.007304) CooperativeThreadArray.cpp:310:   [PC: 9, counter: 9] mov.u32 %r9, 0 [stack 1] [active 8]
+(0.007319) CooperativeThreadArray.cpp:310:   [PC: 10, counter: 10] setp.eq.u32 %p10, %r8, %r9 [stack 1] [active 8]
+(0.007333) CooperativeThreadArray.cpp:310:   [PC: 11, counter: 11] @%p10 bra $BB_3_0004 [stack 1] [active 8]
+(0.007349) CooperativeThreadArray.cpp:310:   [PC: 12, counter: 12] cos.approx.f32 %r11, %r3 [stack 3] [active 4]
+(0.007370) CooperativeThreadArray.cpp:310:   [PC: 13, counter: 13] st.global.f32 [%r7 + 0], %r11 [stack 3] [active 4]
+(0.007381) CooperativeThreadArray.cpp:310:   [PC: 14, counter: 14] bra.uni $BB_3_0005 [stack 3] [active 4]
+(0.007389) CooperativeThreadArray.cpp:310:   [PC: 17, counter: 15] reconverge [stack 3] [active 4]
+(0.007402) CooperativeThreadArray.cpp:310:   [PC: 15, counter: 16] sin.approx.f32 %r12, %r3 [stack 2] [active 4]
+(0.007420) CooperativeThreadArray.cpp:310:   [PC: 16, counter: 17] st.global.f32 [%r7 + 0], %r12 [stack 2] [active 4]
+(0.007428) CooperativeThreadArray.cpp:310:   [PC: 17, counter: 18] reconverge [stack 2] [active 4]
+(0.007436) CooperativeThreadArray.cpp:310:   [PC: 18, counter: 19] exit [stack 1] [active 8]
+(0.007443) CooperativeThreadArray.cpp:464:  kernel finished in 20 instructions
+Kernel launch time was 0.000350952s (351056 ticks)
+(0.007632) CooperativeThreadArray.cpp:289:  CooperativeThreadArray::execute called
+(0.007639) CooperativeThreadArray.cpp:290:    block is 0, 0, 0
+(0.007651) CooperativeThreadArray.cpp:310:   [PC: 0, counter: 0] cvt.s32.u16 %r0, %tid.x [stack 1] [active 8]
+(0.007664) CooperativeThreadArray.cpp:310:   [PC: 1, counter: 1] mov.s32 %r1, %r0 [stack 1] [active 8]
+(0.007679) CooperativeThreadArray.cpp:310:   [PC: 2, counter: 2] ld.param.s32 %r2, [__cudaparm__Z17k_sequenceLoopingPfi_N + 8] [stack 1] [active 8]
+(0.007694) CooperativeThreadArray.cpp:310:   [PC: 3, counter: 3] setp.le.s32 %p3, %r2, %r0 [stack 1] [active 8]
+(0.007704) CooperativeThreadArray.cpp:310:   [PC: 4, counter: 4] @%p3 bra $BB_4_0008 [stack 1] [active 8]
+(0.007718) CooperativeThreadArray.cpp:310:   [PC: 5, counter: 5] cvt.u32.u16 %r4, %ntid.x [stack 2] [active 8]
+(0.007732) CooperativeThreadArray.cpp:310:   [PC: 6, counter: 6] cvt.u64.s32 %r5, %r0 [stack 2] [active 8]
+(0.007747) CooperativeThreadArray.cpp:310:   [PC: 7, counter: 7] mul.lo.u64 %r6, %r5, 4 [stack 2] [active 8]
+(0.007760) CooperativeThreadArray.cpp:310:   [PC: 8, counter: 8] cvt.s64.u32 %r7, %r4 [stack 2] [active 8]
+(0.007775) CooperativeThreadArray.cpp:310:   [PC: 9, counter: 9] mul.lo.u64 %r8, %r7, 4 [stack 2] [active 8]
+(0.007788) CooperativeThreadArray.cpp:310:   [PC: 10, counter: 10] ld.param.u64 %r9, [__cudaparm__Z17k_sequenceLoopingPfi_ptr] [stack 2] [active 8]
+(0.007802) CooperativeThreadArray.cpp:310:   [PC: 11, counter: 11] cvt.rn.f32.s32 %r10, %r1 [stack 2] [active 8]
+(0.007815) CooperativeThreadArray.cpp:310:   [PC: 12, counter: 12] mov.f32 %r11, 0f3d800000 [stack 2] [active 8]
+(0.007846) CooperativeThreadArray.cpp:310:   [PC: 13, counter: 13] mul.f32 %r12, %r10, %r11 [stack 2] [active 8]
+(0.007861) CooperativeThreadArray.cpp:310:   [PC: 14, counter: 14] add.u64 %r13, %r6, %r9 [stack 2] [active 8]
+(0.007875) CooperativeThreadArray.cpp:310:   [PC: 15, counter: 15] and.b32 %r14, %r1, 1 [stack 2] [active 8]
+(0.007888) CooperativeThreadArray.cpp:310:   [PC: 16, counter: 16] mov.u32 %r15, 0 [stack 2] [active 8]
+(0.007903) CooperativeThreadArray.cpp:310:   [PC: 17, counter: 17] setp.eq.u32 %p16, %r14, %r15 [stack 2] [active 8]
+(0.007914) CooperativeThreadArray.cpp:310:   [PC: 18, counter: 18] @%p16 bra $BB_4_0006 [stack 2] [active 8]
+(0.007929) CooperativeThreadArray.cpp:310:   [PC: 19, counter: 19] cos.approx.f32 %r17, %r12 [stack 4] [active 4]
+(0.007943) CooperativeThreadArray.cpp:310:   [PC: 20, counter: 20] st.global.f32 [%r13 + 0], %r17 [stack 4] [active 4]
+(0.007952) CooperativeThreadArray.cpp:310:   [PC: 21, counter: 21] bra.uni $BB_4_0007 [stack 4] [active 4]
+(0.007961) CooperativeThreadArray.cpp:310:   [PC: 24, counter: 22] reconverge [stack 4] [active 4]
+(0.007973) CooperativeThreadArray.cpp:310:   [PC: 22, counter: 23] sin.approx.f32 %r18, %r12 [stack 3] [active 4]
+(0.007987) CooperativeThreadArray.cpp:310:   [PC: 23, counter: 24] st.global.f32 [%r13 + 0], %r18 [stack 3] [active 4]
+(0.007995) CooperativeThreadArray.cpp:310:   [PC: 24, counter: 25] reconverge [stack 3] [active 4]
+(0.008009) CooperativeThreadArray.cpp:310:   [PC: 25, counter: 26] add.u32 %r1, %r1, %r4 [stack 2] [active 8]
+(0.008023) CooperativeThreadArray.cpp:310:   [PC: 26, counter: 27] add.u64 %r6, %r6, %r8 [stack 2] [active 8]
+(0.008038) CooperativeThreadArray.cpp:310:   [PC: 27, counter: 28] setp.lt.s32 %p19, %r1, %r2 [stack 2] [active 8]
+(0.008049) CooperativeThreadArray.cpp:310:   [PC: 28, counter: 29] @%p19 bra $BB_4_0004 [stack 2] [active 8]
+(0.008064) CooperativeThreadArray.cpp:310:   [PC: 11, counter: 30] cvt.rn.f32.s32 %r10, %r1 [stack 2] [active 8]
+(0.008077) CooperativeThreadArray.cpp:310:   [PC: 12, counter: 31] mov.f32 %r11, 0f3d800000 [stack 2] [active 8]
+(0.008092) CooperativeThreadArray.cpp:310:   [PC: 13, counter: 32] mul.f32 %r12, %r10, %r11 [stack 2] [active 8]
+(0.008106) CooperativeThreadArray.cpp:310:   [PC: 14, counter: 33] add.u64 %r13, %r6, %r9 [stack 2] [active 8]
+(0.008120) CooperativeThreadArray.cpp:310:   [PC: 15, counter: 34] and.b32 %r14, %r1, 1 [stack 2] [active 8]
+(0.008132) CooperativeThreadArray.cpp:310:   [PC: 16, counter: 35] mov.u32 %r15, 0 [stack 2] [active 8]
+(0.008148) CooperativeThreadArray.cpp:310:   [PC: 17, counter: 36] setp.eq.u32 %p16, %r14, %r15 [stack 2] [active 8]
+(0.008158) CooperativeThreadArray.cpp:310:   [PC: 18, counter: 37] @%p16 bra $BB_4_0006 [stack 2] [active 8]
+(0.008173) CooperativeThreadArray.cpp:310:   [PC: 19, counter: 38] cos.approx.f32 %r17, %r12 [stack 4] [active 4]
+(0.008187) CooperativeThreadArray.cpp:310:   [PC: 20, counter: 39] st.global.f32 [%r13 + 0], %r17 [stack 4] [active 4]
+(0.008196) CooperativeThreadArray.cpp:310:   [PC: 21, counter: 40] bra.uni $BB_4_0007 [stack 4] [active 4]
+(0.008204) CooperativeThreadArray.cpp:310:   [PC: 24, counter: 41] reconverge [stack 4] [active 4]
+(0.008217) CooperativeThreadArray.cpp:310:   [PC: 22, counter: 42] sin.approx.f32 %r18, %r12 [stack 3] [active 4]
+(0.008231) CooperativeThreadArray.cpp:310:   [PC: 23, counter: 43] st.global.f32 [%r13 + 0], %r18 [stack 3] [active 4]
+(0.008239) CooperativeThreadArray.cpp:310:   [PC: 24, counter: 44] reconverge [stack 3] [active 4]
+(0.008253) CooperativeThreadArray.cpp:310:   [PC: 25, counter: 45] add.u32 %r1, %r1, %r4 [stack 2] [active 8]
+(0.008267) CooperativeThreadArray.cpp:310:   [PC: 26, counter: 46] add.u64 %r6, %r6, %r8 [stack 2] [active 8]
+(0.008282) CooperativeThreadArray.cpp:310:   [PC: 27, counter: 47] setp.lt.s32 %p19, %r1, %r2 [stack 2] [active 8]
+(0.008292) CooperativeThreadArray.cpp:310:   [PC: 28, counter: 48] @%p19 bra $BB_4_0004 [stack 2] [active 8]
+(0.008308) CooperativeThreadArray.cpp:310:   [PC: 11, counter: 49] cvt.rn.f32.s32 %r10, %r1 [stack 2] [active 8]
+(0.008332) CooperativeThreadArray.cpp:310:   [PC: 12, counter: 50] mov.f32 %r11, 0f3d800000 [stack 2] [active 8]
+(0.008347) CooperativeThreadArray.cpp:310:   [PC: 13, counter: 51] mul.f32 %r12, %r10, %r11 [stack 2] [active 8]
+(0.008361) CooperativeThreadArray.cpp:310:   [PC: 14, counter: 52] add.u64 %r13, %r6, %r9 [stack 2] [active 8]
+(0.008376) CooperativeThreadArray.cpp:310:   [PC: 15, counter: 53] and.b32 %r14, %r1, 1 [stack 2] [active 8]
+(0.008389) CooperativeThreadArray.cpp:310:   [PC: 16, counter: 54] mov.u32 %r15, 0 [stack 2] [active 8]
+(0.008404) CooperativeThreadArray.cpp:310:   [PC: 17, counter: 55] setp.eq.u32 %p16, %r14, %r15 [stack 2] [active 8]
+(0.008415) CooperativeThreadArray.cpp:310:   [PC: 18, counter: 56] @%p16 bra $BB_4_0006 [stack 2] [active 8]
+(0.008430) CooperativeThreadArray.cpp:310:   [PC: 19, counter: 57] cos.approx.f32 %r17, %r12 [stack 4] [active 4]
+(0.008444) CooperativeThreadArray.cpp:310:   [PC: 20, counter: 58] st.global.f32 [%r13 + 0], %r17 [stack 4] [active 4]
+(0.008453) CooperativeThreadArray.cpp:310:   [PC: 21, counter: 59] bra.uni $BB_4_0007 [stack 4] [active 4]
+(0.008461) CooperativeThreadArray.cpp:310:   [PC: 24, counter: 60] reconverge [stack 4] [active 4]
+(0.008474) CooperativeThreadArray.cpp:310:   [PC: 22, counter: 61] sin.approx.f32 %r18, %r12 [stack 3] [active 4]
+(0.008487) CooperativeThreadArray.cpp:310:   [PC: 23, counter: 62] st.global.f32 [%r13 + 0], %r18 [stack 3] [active 4]
+(0.008495) CooperativeThreadArray.cpp:310:   [PC: 24, counter: 63] reconverge [stack 3] [active 4]
+(0.008509) CooperativeThreadArray.cpp:310:   [PC: 25, counter: 64] add.u32 %r1, %r1, %r4 [stack 2] [active 8]
+(0.008523) CooperativeThreadArray.cpp:310:   [PC: 26, counter: 65] add.u64 %r6, %r6, %r8 [stack 2] [active 8]
+(0.008538) CooperativeThreadArray.cpp:310:   [PC: 27, counter: 66] setp.lt.s32 %p19, %r1, %r2 [stack 2] [active 8]
+(0.008549) CooperativeThreadArray.cpp:310:   [PC: 28, counter: 67] @%p19 bra $BB_4_0004 [stack 2] [active 8]
+(0.008564) CooperativeThreadArray.cpp:310:   [PC: 11, counter: 68] cvt.rn.f32.s32 %r10, %r1 [stack 2] [active 8]
+(0.008578) CooperativeThreadArray.cpp:310:   [PC: 12, counter: 69] mov.f32 %r11, 0f3d800000 [stack 2] [active 8]
+(0.008592) CooperativeThreadArray.cpp:310:   [PC: 13, counter: 70] mul.f32 %r12, %r10, %r11 [stack 2] [active 8]
+(0.008606) CooperativeThreadArray.cpp:310:   [PC: 14, counter: 71] add.u64 %r13, %r6, %r9 [stack 2] [active 8]
+(0.008621) CooperativeThreadArray.cpp:310:   [PC: 15, counter: 72] and.b32 %r14, %r1, 1 [stack 2] [active 8]
+(0.008633) CooperativeThreadArray.cpp:310:   [PC: 16, counter: 73] mov.u32 %r15, 0 [stack 2] [active 8]
+(0.008648) CooperativeThreadArray.cpp:310:   [PC: 17, counter: 74] setp.eq.u32 %p16, %r14, %r15 [stack 2] [active 8]
+(0.008659) CooperativeThreadArray.cpp:310:   [PC: 18, counter: 75] @%p16 bra $BB_4_0006 [stack 2] [active 8]
+(0.008674) CooperativeThreadArray.cpp:310:   [PC: 19, counter: 76] cos.approx.f32 %r17, %r12 [stack 4] [active 4]
+(0.008687) CooperativeThreadArray.cpp:310:   [PC: 20, counter: 77] st.global.f32 [%r13 + 0], %r17 [stack 4] [active 4]
+(0.008697) CooperativeThreadArray.cpp:310:   [PC: 21, counter: 78] bra.uni $BB_4_0007 [stack 4] [active 4]
+(0.008705) CooperativeThreadArray.cpp:310:   [PC: 24, counter: 79] reconverge [stack 4] [active 4]
+(0.008718) CooperativeThreadArray.cpp:310:   [PC: 22, counter: 80] sin.approx.f32 %r18, %r12 [stack 3] [active 4]
+(0.008731) CooperativeThreadArray.cpp:310:   [PC: 23, counter: 81] st.global.f32 [%r13 + 0], %r18 [stack 3] [active 4]
+(0.008739) CooperativeThreadArray.cpp:310:   [PC: 24, counter: 82] reconverge [stack 3] [active 4]
+(0.008753) CooperativeThreadArray.cpp:310:   [PC: 25, counter: 83] add.u32 %r1, %r1, %r4 [stack 2] [active 8]
+(0.008767) CooperativeThreadArray.cpp:310:   [PC: 26, counter: 84] add.u64 %r6, %r6, %r8 [stack 2] [active 8]
+(0.008783) CooperativeThreadArray.cpp:310:   [PC: 27, counter: 85] setp.lt.s32 %p19, %r1, %r2 [stack 2] [active 8]
+(0.008793) CooperativeThreadArray.cpp:310:   [PC: 28, counter: 86] @%p19 bra $BB_4_0004 [stack 2] [active 8]
+(0.008819) CooperativeThreadArray.cpp:310:   [PC: 11, counter: 87] cvt.rn.f32.s32 %r10, %r1 [stack 2] [active 8]
+(0.008833) CooperativeThreadArray.cpp:310:   [PC: 12, counter: 88] mov.f32 %r11, 0f3d800000 [stack 2] [active 8]
+(0.008847) CooperativeThreadArray.cpp:310:   [PC: 13, counter: 89] mul.f32 %r12, %r10, %r11 [stack 2] [active 8]
+(0.008862) CooperativeThreadArray.cpp:310:   [PC: 14, counter: 90] add.u64 %r13, %r6, %r9 [stack 2] [active 8]
+(0.008877) CooperativeThreadArray.cpp:310:   [PC: 15, counter: 91] and.b32 %r14, %r1, 1 [stack 2] [active 8]
+(0.008889) CooperativeThreadArray.cpp:310:   [PC: 16, counter: 92] mov.u32 %r15, 0 [stack 2] [active 8]
+(0.008904) CooperativeThreadArray.cpp:310:   [PC: 17, counter: 93] setp.eq.u32 %p16, %r14, %r15 [stack 2] [active 8]
+(0.008915) CooperativeThreadArray.cpp:310:   [PC: 18, counter: 94] @%p16 bra $BB_4_0006 [stack 2] [active 8]
+(0.008929) CooperativeThreadArray.cpp:310:   [PC: 19, counter: 95] cos.approx.f32 %r17, %r12 [stack 4] [active 4]
+(0.008945) CooperativeThreadArray.cpp:310:   [PC: 20, counter: 96] st.global.f32 [%r13 + 0], %r17 [stack 4] [active 4]
+(0.008955) CooperativeThreadArray.cpp:310:   [PC: 21, counter: 97] bra.uni $BB_4_0007 [stack 4] [active 4]
+(0.008963) CooperativeThreadArray.cpp:310:   [PC: 24, counter: 98] reconverge [stack 4] [active 4]
+(0.008976) CooperativeThreadArray.cpp:310:   [PC: 22, counter: 99] sin.approx.f32 %r18, %r12 [stack 3] [active 4]
+(0.008989) CooperativeThreadArray.cpp:310:   [PC: 23, counter: 100] st.global.f32 [%r13 + 0], %r18 [stack 3] [active 4]
+(0.008997) CooperativeThreadArray.cpp:310:   [PC: 24, counter: 101] reconverge [stack 3] [active 4]
+(0.009012) CooperativeThreadArray.cpp:310:   [PC: 25, counter: 102] add.u32 %r1, %r1, %r4 [stack 2] [active 8]
+(0.009026) CooperativeThreadArray.cpp:310:   [PC: 26, counter: 103] add.u64 %r6, %r6, %r8 [stack 2] [active 8]
+(0.009041) CooperativeThreadArray.cpp:310:   [PC: 27, counter: 104] setp.lt.s32 %p19, %r1, %r2 [stack 2] [active 8]
+(0.009052) CooperativeThreadArray.cpp:310:   [PC: 28, counter: 105] @%p19 bra $BB_4_0004 [stack 2] [active 8]
+(0.009061) CooperativeThreadArray.cpp:310:   [PC: 29, counter: 106] reconverge [stack 2] [active 8]
+(0.009069) CooperativeThreadArray.cpp:310:   [PC: 30, counter: 107] exit [stack 1] [active 8]
+(0.009076) CooperativeThreadArray.cpp:464:  kernel finished in 108 instructions
+(0.009471) CooperativeThreadArray.cpp:289:  CooperativeThreadArray::execute called
+(0.009478) CooperativeThreadArray.cpp:290:    block is 0, 0, 0
+(0.009490) CooperativeThreadArray.cpp:310:   [PC: 0, counter: 0] cvt.u32.u16 %r0, %ntid.x [stack 1] [active 8]
+(0.009503) CooperativeThreadArray.cpp:310:   [PC: 1, counter: 1] cvt.u32.u16 %r1, %ctaid.x [stack 1] [active 8]
+(0.009518) CooperativeThreadArray.cpp:310:   [PC: 2, counter: 2] mul.lo.u32 %r2, %r1, %r0 [stack 1] [active 8]
+(0.009530) CooperativeThreadArray.cpp:310:   [PC: 3, counter: 3] cvt.u32.u16 %r3, %tid.x [stack 1] [active 8]
+(0.009544) CooperativeThreadArray.cpp:310:   [PC: 4, counter: 4] add.u32 %r4, %r2, %r3 [stack 1] [active 8]
+(0.009557) CooperativeThreadArray.cpp:310:   [PC: 5, counter: 5] cvt.u64.u32 %r5, %r4 [stack 1] [active 8]
+(0.009572) CooperativeThreadArray.cpp:310:   [PC: 6, counter: 6] mul.lo.u64 %r6, %r5, 4 [stack 1] [active 8]
+(0.009586) CooperativeThreadArray.cpp:310:   [PC: 7, counter: 7] ld.param.u64 %r7, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii___val_paramA] [stack 1] [active 8]
+(0.009600) CooperativeThreadArray.cpp:310:   [PC: 8, counter: 8] add.u64 %r8, %r7, %r6 [stack 1] [active 8]
+(0.009613) CooperativeThreadArray.cpp:310:   [PC: 9, counter: 9] cvt.u64.u32 %r9, %r3 [stack 1] [active 8]
+(0.009628) CooperativeThreadArray.cpp:310:   [PC: 10, counter: 10] mul.lo.u64 %r10, %r9, 4 [stack 1] [active 8]
+(0.009642) CooperativeThreadArray.cpp:310:   [PC: 11, counter: 11] ld.param.u64 %r11, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii___val_paramV + 8] [stack 1] [active 8]
+(0.009657) CooperativeThreadArray.cpp:310:   [PC: 12, counter: 12] add.u64 %r12, %r11, %r10 [stack 1] [active 8]
+(0.009681) CooperativeThreadArray.cpp:310:   [PC: 13, counter: 13] ld.param.s32 %r13, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_N + 28] [stack 1] [active 8]
+(0.009695) CooperativeThreadArray.cpp:310:   [PC: 14, counter: 14] mov.u32 %r14, 0 [stack 1] [active 8]
+(0.009710) CooperativeThreadArray.cpp:310:   [PC: 15, counter: 15] setp.le.s32 %p15, %r13, %r14 [stack 1] [active 8]
+(0.009723) CooperativeThreadArray.cpp:310:   [PC: 16, counter: 16] mov.f32 %r16, 0f00000000 [stack 1] [active 8]
+(0.009734) CooperativeThreadArray.cpp:310:   [PC: 17, counter: 17] @%p15 bra $BB_6_0010 [stack 1] [active 8]
+(0.009748) CooperativeThreadArray.cpp:310:   [PC: 18, counter: 18] mov.u64 %r17, __cuda_V_buffer80 [stack 2] [active 8]
+(0.009760) CooperativeThreadArray.cpp:310:   [PC: 19, counter: 19] mov.u32 %r18, 0 [stack 2] [active 8]
+(0.009776) CooperativeThreadArray.cpp:310:   [PC: 20, counter: 20] setp.gt.u32 %p19, %r0, %r18 [stack 2] [active 8]
+(0.009789) CooperativeThreadArray.cpp:310:   [PC: 21, counter: 21] cvt.u64.u32 %r20, %r0 [stack 2] [active 8]
+(0.009804) CooperativeThreadArray.cpp:310:   [PC: 22, counter: 22] mul.lo.u64 %r21, %r20, 4 [stack 2] [active 8]
+(0.009818) CooperativeThreadArray.cpp:310:   [PC: 23, counter: 23] add.u64 %r22, %r10, %r17 [stack 2] [active 8]
+(0.009831) CooperativeThreadArray.cpp:310:   [PC: 24, counter: 24] mov.s32 %r23, 0 [stack 2] [active 8]
+(0.009845) CooperativeThreadArray.cpp:310:   [PC: 25, counter: 25] ld.global.f32 %r24, [%r12 + 0] [stack 2] [active 8]
+(0.009859) CooperativeThreadArray.cpp:310:   [PC: 26, counter: 26] st.shared.f32 [%r22 + 0], %r24 [stack 2] [active 8]
+(0.009868) CooperativeThreadArray.cpp:310:   [PC: 27, counter: 27] bar.sync 0 [stack 2] [active 8]
+(0.009879) CooperativeThreadArray.cpp:310:   [PC: 28, counter: 28] @!%p19 bra $BB_6_0008 [stack 2] [active 8]
+(0.009893) CooperativeThreadArray.cpp:310:   [PC: 29, counter: 29] mov.s32 %r25, %r0 [stack 3] [active 8]
+(0.009908) CooperativeThreadArray.cpp:310:   [PC: 30, counter: 30] ld.param.s32 %r26, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_M + 24] [stack 3] [active 8]
+(0.009921) CooperativeThreadArray.cpp:310:   [PC: 31, counter: 31] cvt.u64.s32 %r27, %r26 [stack 3] [active 8]
+(0.009936) CooperativeThreadArray.cpp:310:   [PC: 32, counter: 32] mul.lo.u64 %r28, %r27, 4 [stack 3] [active 8]
+(0.009948) CooperativeThreadArray.cpp:310:   [PC: 33, counter: 33] mov.s64 %r29, %r17 [stack 3] [active 8]
+(0.009961) CooperativeThreadArray.cpp:310:   [PC: 34, counter: 34] mov.s64 %r30, %r8 [stack 3] [active 8]
+(0.009973) CooperativeThreadArray.cpp:310:   [PC: 35, counter: 35] mov.s32 %r31, 0 [stack 3] [active 8]
+(0.009985) CooperativeThreadArray.cpp:310:   [PC: 36, counter: 36] mov.s32 %r32, %r25 [stack 3] [active 8]
+(0.009999) CooperativeThreadArray.cpp:310:   [PC: 37, counter: 37] ld.global.f32 %r33, [%r30 + 0] [stack 3] [active 8]
+(0.010013) CooperativeThreadArray.cpp:310:   [PC: 38, counter: 38] ld.shared.f32 %r34, [%r29 + 0] [stack 3] [active 8]
+(0.010029) CooperativeThreadArray.cpp:310:   [PC: 39, counter: 39] mad.f32 %r16, %r33, %r34, %r16 [stack 3] [active 8]
+(0.010045) CooperativeThreadArray.cpp:310:   [PC: 40, counter: 40] add.s32 %r31, %r31, 1 [stack 3] [active 8]
+(0.010059) CooperativeThreadArray.cpp:310:   [PC: 41, counter: 41] add.u64 %r29, %r29, 4 [stack 3] [active 8]
+(0.010073) CooperativeThreadArray.cpp:310:   [PC: 42, counter: 42] add.u64 %r30, %r28, %r30 [stack 3] [active 8]
+(0.010088) CooperativeThreadArray.cpp:310:   [PC: 43, counter: 43] setp.ne.u32 %p35, %r31, %r0 [stack 3] [active 8]
+(0.010099) CooperativeThreadArray.cpp:310:   [PC: 44, counter: 44] @%p35 bra $BB_6_0006 [stack 3] [active 8]
+(0.010114) CooperativeThreadArray.cpp:310:   [PC: 37, counter: 45] ld.global.f32 %r33, [%r30 + 0] [stack 4] [active 8]
+(0.010128) CooperativeThreadArray.cpp:310:   [PC: 38, counter: 46] ld.shared.f32 %r34, [%r29 + 0] [stack 4] [active 8]
+(0.010144) CooperativeThreadArray.cpp:310:   [PC: 39, counter: 47] mad.f32 %r16, %r33, %r34, %r16 [stack 4] [active 8]
+(0.010158) CooperativeThreadArray.cpp:310:   [PC: 40, counter: 48] add.s32 %r31, %r31, 1 [stack 4] [active 8]
+(0.010182) CooperativeThreadArray.cpp:310:   [PC: 41, counter: 49] add.u64 %r29, %r29, 4 [stack 4] [active 8]
+(0.010196) CooperativeThreadArray.cpp:310:   [PC: 42, counter: 50] add.u64 %r30, %r28, %r30 [stack 4] [active 8]
+(0.010211) CooperativeThreadArray.cpp:310:   [PC: 43, counter: 51] setp.ne.u32 %p35, %r31, %r0 [stack 4] [active 8]
+(0.010222) CooperativeThreadArray.cpp:310:   [PC: 44, counter: 52] @%p35 bra $BB_6_0006 [stack 4] [active 8]
+(0.010237) CooperativeThreadArray.cpp:310:   [PC: 37, counter: 53] ld.global.f32 %r33, [%r30 + 0] [stack 4] [active 8]
+(0.010251) CooperativeThreadArray.cpp:310:   [PC: 38, counter: 54] ld.shared.f32 %r34, [%r29 + 0] [stack 4] [active 8]
+(0.010267) CooperativeThreadArray.cpp:310:   [PC: 39, counter: 55] mad.f32 %r16, %r33, %r34, %r16 [stack 4] [active 8]
+(0.010281) CooperativeThreadArray.cpp:310:   [PC: 40, counter: 56] add.s32 %r31, %r31, 1 [stack 4] [active 8]
+(0.010295) CooperativeThreadArray.cpp:310:   [PC: 41, counter: 57] add.u64 %r29, %r29, 4 [stack 4] [active 8]
+(0.010309) CooperativeThreadArray.cpp:310:   [PC: 42, counter: 58] add.u64 %r30, %r28, %r30 [stack 4] [active 8]
+(0.010324) CooperativeThreadArray.cpp:310:   [PC: 43, counter: 59] setp.ne.u32 %p35, %r31, %r0 [stack 4] [active 8]
+(0.010335) CooperativeThreadArray.cpp:310:   [PC: 44, counter: 60] @%p35 bra $BB_6_0006 [stack 4] [active 8]
+(0.010350) CooperativeThreadArray.cpp:310:   [PC: 37, counter: 61] ld.global.f32 %r33, [%r30 + 0] [stack 4] [active 8]
+(0.010364) CooperativeThreadArray.cpp:310:   [PC: 38, counter: 62] ld.shared.f32 %r34, [%r29 + 0] [stack 4] [active 8]
+(0.010380) CooperativeThreadArray.cpp:310:   [PC: 39, counter: 63] mad.f32 %r16, %r33, %r34, %r16 [stack 4] [active 8]
+(0.010394) CooperativeThreadArray.cpp:310:   [PC: 40, counter: 64] add.s32 %r31, %r31, 1 [stack 4] [active 8]
+(0.010408) CooperativeThreadArray.cpp:310:   [PC: 41, counter: 65] add.u64 %r29, %r29, 4 [stack 4] [active 8]
+(0.010422) CooperativeThreadArray.cpp:310:   [PC: 42, counter: 66] add.u64 %r30, %r28, %r30 [stack 4] [active 8]
+(0.010437) CooperativeThreadArray.cpp:310:   [PC: 43, counter: 67] setp.ne.u32 %p35, %r31, %r0 [stack 4] [active 8]
+(0.010448) CooperativeThreadArray.cpp:310:   [PC: 44, counter: 68] @%p35 bra $BB_6_0006 [stack 4] [active 8]
+(0.010462) CooperativeThreadArray.cpp:310:   [PC: 37, counter: 69] ld.global.f32 %r33, [%r30 + 0] [stack 4] [active 8]
+(0.010476) CooperativeThreadArray.cpp:310:   [PC: 38, counter: 70] ld.shared.f32 %r34, [%r29 + 0] [stack 4] [active 8]
+(0.010492) CooperativeThreadArray.cpp:310:   [PC: 39, counter: 71] mad.f32 %r16, %r33, %r34, %r16 [stack 4] [active 8]
+(0.010506) CooperativeThreadArray.cpp:310:   [PC: 40, counter: 72] add.s32 %r31, %r31, 1 [stack 4] [active 8]
+(0.010520) CooperativeThreadArray.cpp:310:   [PC: 41, counter: 73] add.u64 %r29, %r29, 4 [stack 4] [active 8]
+(0.010535) CooperativeThreadArray.cpp:310:   [PC: 42, counter: 74] add.u64 %r30, %r28, %r30 [stack 4] [active 8]
+(0.010550) CooperativeThreadArray.cpp:310:   [PC: 43, counter: 75] setp.ne.u32 %p35, %r31, %r0 [stack 4] [active 8]
+(0.010560) CooperativeThreadArray.cpp:310:   [PC: 44, counter: 76] @%p35 bra $BB_6_0006 [stack 4] [active 8]
+(0.010575) CooperativeThreadArray.cpp:310:   [PC: 37, counter: 77] ld.global.f32 %r33, [%r30 + 0] [stack 4] [active 8]
+(0.010589) CooperativeThreadArray.cpp:310:   [PC: 38, counter: 78] ld.shared.f32 %r34, [%r29 + 0] [stack 4] [active 8]
+(0.010604) CooperativeThreadArray.cpp:310:   [PC: 39, counter: 79] mad.f32 %r16, %r33, %r34, %r16 [stack 4] [active 8]
+(0.010618) CooperativeThreadArray.cpp:310:   [PC: 40, counter: 80] add.s32 %r31, %r31, 1 [stack 4] [active 8]
+(0.010633) CooperativeThreadArray.cpp:310:   [PC: 41, counter: 81] add.u64 %r29, %r29, 4 [stack 4] [active 8]
+(0.010647) CooperativeThreadArray.cpp:310:   [PC: 42, counter: 82] add.u64 %r30, %r28, %r30 [stack 4] [active 8]
+(0.010662) CooperativeThreadArray.cpp:310:   [PC: 43, counter: 83] setp.ne.u32 %p35, %r31, %r0 [stack 4] [active 8]
+(0.010672) CooperativeThreadArray.cpp:310:   [PC: 44, counter: 84] @%p35 bra $BB_6_0006 [stack 4] [active 8]
+(0.010696) CooperativeThreadArray.cpp:310:   [PC: 37, counter: 85] ld.global.f32 %r33, [%r30 + 0] [stack 4] [active 8]
+(0.010710) CooperativeThreadArray.cpp:310:   [PC: 38, counter: 86] ld.shared.f32 %r34, [%r29 + 0] [stack 4] [active 8]
+(0.010726) CooperativeThreadArray.cpp:310:   [PC: 39, counter: 87] mad.f32 %r16, %r33, %r34, %r16 [stack 4] [active 8]
+(0.010741) CooperativeThreadArray.cpp:310:   [PC: 40, counter: 88] add.s32 %r31, %r31, 1 [stack 4] [active 8]
+(0.010755) CooperativeThreadArray.cpp:310:   [PC: 41, counter: 89] add.u64 %r29, %r29, 4 [stack 4] [active 8]
+(0.010769) CooperativeThreadArray.cpp:310:   [PC: 42, counter: 90] add.u64 %r30, %r28, %r30 [stack 4] [active 8]
+(0.010784) CooperativeThreadArray.cpp:310:   [PC: 43, counter: 91] setp.ne.u32 %p35, %r31, %r0 [stack 4] [active 8]
+(0.010795) CooperativeThreadArray.cpp:310:   [PC: 44, counter: 92] @%p35 bra $BB_6_0006 [stack 4] [active 8]
+(0.010810) CooperativeThreadArray.cpp:310:   [PC: 37, counter: 93] ld.global.f32 %r33, [%r30 + 0] [stack 4] [active 8]
+(0.010824) CooperativeThreadArray.cpp:310:   [PC: 38, counter: 94] ld.shared.f32 %r34, [%r29 + 0] [stack 4] [active 8]
+(0.010840) CooperativeThreadArray.cpp:310:   [PC: 39, counter: 95] mad.f32 %r16, %r33, %r34, %r16 [stack 4] [active 8]
+(0.010854) CooperativeThreadArray.cpp:310:   [PC: 40, counter: 96] add.s32 %r31, %r31, 1 [stack 4] [active 8]
+(0.010868) CooperativeThreadArray.cpp:310:   [PC: 41, counter: 97] add.u64 %r29, %r29, 4 [stack 4] [active 8]
+(0.010883) CooperativeThreadArray.cpp:310:   [PC: 42, counter: 98] add.u64 %r30, %r28, %r30 [stack 4] [active 8]
+(0.010898) CooperativeThreadArray.cpp:310:   [PC: 43, counter: 99] setp.ne.u32 %p35, %r31, %r0 [stack 4] [active 8]
+(0.010908) CooperativeThreadArray.cpp:310:   [PC: 44, counter: 100] @%p35 bra $BB_6_0006 [stack 4] [active 8]
+(0.010918) CooperativeThreadArray.cpp:310:   [PC: 45, counter: 101] reconverge [stack 4] [active 8]
+(0.010932) CooperativeThreadArray.cpp:310:   [PC: 46, counter: 102] mul.lo.u64 %r36, %r20, %r27 [stack 3] [active 8]
+(0.010947) CooperativeThreadArray.cpp:310:   [PC: 47, counter: 103] mul.lo.u64 %r37, %r36, 4 [stack 3] [active 8]
+(0.010961) CooperativeThreadArray.cpp:310:   [PC: 48, counter: 104] add.u64 %r8, %r8, %r37 [stack 3] [active 8]
+(0.010969) CooperativeThreadArray.cpp:310:   [PC: 49, counter: 105] reconverge [stack 3] [active 8]
+(0.010983) CooperativeThreadArray.cpp:310:   [PC: 50, counter: 106] add.u64 %r12, %r21, %r12 [stack 2] [active 8]
+(0.010993) CooperativeThreadArray.cpp:310:   [PC: 51, counter: 107] bar.sync 0 [stack 2] [active 8]
+(0.011007) CooperativeThreadArray.cpp:310:   [PC: 52, counter: 108] add.u32 %r23, %r23, %r0 [stack 2] [active 8]
+(0.011022) CooperativeThreadArray.cpp:310:   [PC: 53, counter: 109] setp.gt.s32 %p38, %r13, %r23 [stack 2] [active 8]
+(0.011033) CooperativeThreadArray.cpp:310:   [PC: 54, counter: 110] @%p38 bra $BB_6_0004 [stack 2] [active 8]
+(0.011042) CooperativeThreadArray.cpp:310:   [PC: 55, counter: 111] reconverge [stack 3] [active 8]
+(0.011051) CooperativeThreadArray.cpp:310:   [PC: 56, counter: 112] bra.uni $BB_6_0010 [stack 2] [active 8]
+(0.011059) CooperativeThreadArray.cpp:310:   [PC: 57, counter: 113] reconverge [stack 2] [active 8]
+(0.011073) CooperativeThreadArray.cpp:310:   [PC: 58, counter: 114] ld.param.u64 %r39, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_R + 16] [stack 1] [active 8]
+(0.011087) CooperativeThreadArray.cpp:310:   [PC: 59, counter: 115] add.u64 %r40, %r39, %r6 [stack 1] [active 8]
+(0.011101) CooperativeThreadArray.cpp:310:   [PC: 60, counter: 116] st.global.f32 [%r40 + 0], %r16 [stack 1] [active 8]
+(0.011109) CooperativeThreadArray.cpp:310:   [PC: 61, counter: 117] exit [stack 1] [active 8]
+(0.011116) CooperativeThreadArray.cpp:464:  kernel finished in 118 instructions
 Pass/Fail : Pass
 
 
@@ -33,8 +825,8 @@ Name : TestKernels
 Description: 
 
 
-Test Seed : 1289593364
-Test time : 0.00778365
+Test Seed : 1289841367
+Test time : 0.010988
 
 Status : Test output:
 divergent control flow succeeded
@@ -43,22 +835,9 @@ looping kernel succeeded
 
 
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestDataflowGraph 
-INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestCudaSequence
-INFO     Test completed in 0.0669250488281 seconds
-INFO      It produced the following output:
-(0.000000) TraceConfiguration.cpp:242:  Creating ControlFlowVisualizer generator
-(0.002773) ControlFlowVisualizer.cpp:122:  initialize('sequence')
-(0.002837) ControlFlowVisualizer.cpp:168:    writing to '/home/andrew/repositories/gpuocelot/ocelot/traces/_sequence_1_cfg.dot'
-(0.003136) ControlFlowVisualizer.cpp:122:  initialize('sequence')
-(0.003187) ControlFlowVisualizer.cpp:168:    writing to '/home/andrew/repositories/gpuocelot/ocelot/traces/_sequence_2_cfg.dot'
-(0.003574) ControlFlowVisualizer.cpp:122:  initialize('testShr')
-(0.003607) ControlFlowVisualizer.cpp:168:    writing to '/home/andrew/repositories/gpuocelot/ocelot/traces/_testShr_3_cfg.dot'
-Pass/Fail : Pass
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestLexer 
+INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestLLVMInstructions 
 INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestCudaMalloc
-INFO     Test completed in 0.0728211402893 seconds
+INFO     Test completed in 0.0793039798737 seconds
 INFO      It produced the following output:
 test_malloc(256, 128)
 PASSED
@@ -75,15 +854,9 @@ PASSED
 [8] final free
 Pass/Fail : Pass
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestCudaTextureArray 
-INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestCudaTexture2D
-INFO     Test completed in 0.0825338363647 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestLLVMInstructions 
+INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestLLVMKernels 
 INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestLLVMInstructions
-INFO     Test completed in 0.0444149971008 seconds
+INFO     Test completed in 0.0382709503174 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -97,8 +870,8 @@ Description: A test for the assembly code generation and automatic
              check, compare to references from the LLVM manual.
 
 
-Test Seed : 1289593364
-Test time : 0.000861168
+Test Seed : 1289841367
+Test time : 0.00088644
 
 Status :  Checked instruction "<result> = add i32 4, %var"
 Add Instruction Passed
@@ -229,46 +1002,26 @@ Zext Instruction Passed
 
 
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestDeviceSwitching 
-INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestCudaTextureArray
-INFO     Test completed in 0.0765161514282 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestLLVMKernels 
-INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestDeviceSwitching
-INFO     Test completed in 0.0347239971161 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-
-Name : TestDeviceSwitching
-
-Description: A unit test for the ability of the CUDA runtime to switch 
-             between devices and use multiple threads Test Points: 1) In a single 
-             threaded application, iterate across all devices launching the same 
-             simple kernel each time 2) Test context migration support in 
-             ocelot. Iterate across all devices, launching a simple kernel that 
-             updates shared variable. Use the context switch mechanism to 
-             migrate the shared data. 3) Test multi-threading support. Launch one 
-             host thread to allocate memory, pass pointers to worker 
-             threads, each of which should launch independent kernels in 
-             parallel.
-
-
-Test Seed : 1289593364
-Test time : 0.00181937
-
-Status : Test Point 1 Passed
-Test Point 2 Passed
-Test Point 3 Passed
-
-
-
 INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestEmulator 
 INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestEmulator
-INFO     Test completed in 0.0363669395447 seconds
+INFO     Test completed in 0.0400679111481 seconds
 INFO      It produced the following output:
+(0.002789) CooperativeThreadArray.cpp:289:  CooperativeThreadArray::execute called
+(0.002812) CooperativeThreadArray.cpp:290:    block is 0, 0, 0
+(0.002833) CooperativeThreadArray.cpp:310:   [PC: 0, counter: 0] cvt.u32.u16 %r0, %tid.x [stack 1] [active 32]
+(0.002851) CooperativeThreadArray.cpp:310:   [PC: 1, counter: 1] mov.u16 %r1, %ctaid.x [stack 1] [active 32]
+(0.002865) CooperativeThreadArray.cpp:310:   [PC: 2, counter: 2] mov.u16 %r2, %ntid.x [stack 1] [active 32]
+(0.002880) CooperativeThreadArray.cpp:310:   [PC: 3, counter: 3] mul.wide.u16 %r3, %r1, %r2 [stack 1] [active 32]
+(0.002898) CooperativeThreadArray.cpp:310:   [PC: 4, counter: 4] add.u32 %r4, %r0, %r3 [stack 1] [active 32]
+(0.002915) CooperativeThreadArray.cpp:310:   [PC: 5, counter: 5] mul.lo.s32 %r5, %r4, 2 [stack 1] [active 32]
+(0.002930) CooperativeThreadArray.cpp:310:   [PC: 6, counter: 6] add.s32 %r6, %r5, 1 [stack 1] [active 32]
+(0.002946) CooperativeThreadArray.cpp:310:   [PC: 7, counter: 7] ld.param.u64 %r7, [__cudaparm__Z17k_simple_sequencePi_A] [stack 1] [active 32]
+(0.002959) CooperativeThreadArray.cpp:310:   [PC: 8, counter: 8] cvt.u64.s32 %r8, %r4 [stack 1] [active 32]
+(0.002976) CooperativeThreadArray.cpp:310:   [PC: 9, counter: 9] mul.lo.u64 %r9, %r8, 4 [stack 1] [active 32]
+(0.002990) CooperativeThreadArray.cpp:310:   [PC: 10, counter: 10] add.u64 %r10, %r7, %r9 [stack 1] [active 32]
+(0.003004) CooperativeThreadArray.cpp:310:   [PC: 11, counter: 11] st.global.s32 [%r10 + 0], %r6 [stack 1] [active 32]
+(0.003012) CooperativeThreadArray.cpp:310:   [PC: 12, counter: 12] exit [stack 1] [active 32]
+(0.003020) CooperativeThreadArray.cpp:464:  kernel finished in 13 instructions
 Pass/Fail : Pass
 
 
@@ -277,8 +1030,8 @@ Name : TestEmulator
 Description: 
 
 
-Test Seed : 1289593364
-Test time : 0.00263929
+Test Seed : 1289841367
+Test time : 0.00288844
 
 Status : Test output:
 11 registers
@@ -292,7 +1045,7 @@ Full kernel test passed
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestPTXToLLVMTranslator 
 INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestLLVMKernels
-INFO     Test completed in 0.0909519195557 seconds
+INFO     Test completed in 0.0823979377747 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -304,8 +1057,8 @@ Description: A unit test for the LLVM executive runtime. Test Points: 1)
              loop. 3) Execute a matrix multiply kernel.
 
 
-Test Seed : 1289593364
-Test time : 0.0445199
+Test Seed : 1289841367
+Test time : 0.0456743
 
 Status : A = [
  1 0 0 0 0 0 0 0 ;
@@ -342,7 +1095,7 @@ R = [
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestParser 
 INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestLexer
-INFO     Test completed in 9.24928307533 seconds
+INFO     Test completed in 8.40265893936 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -354,8 +1107,8 @@ Description: Tests for the PTX lexer. Test Point 1: Scan a PTX file and
              two sets of tokens match
 
 
-Test Seed : 1289593364
-Test time : 9.20917
+Test Seed : 1289841367
+Test time : 8.36683
 
 Status : For file ../tests/ptx/sdk2.2/simpleTexture.ptx, Test Point 1 (Scan): Passed
 For file ../tests/ptx/sdk2.2/simpleAtomicIntrinsics.ptx, Test Point 1 (Scan): Passed
@@ -527,14 +1280,570 @@ For file ../tests/ptx/synthetic/barrier.ptx, Test Point 1 (Scan): Passed
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestCudaGlobals 
 INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestCudaGlobals
-INFO     Test completed in 0.0332369804382 seconds
+INFO     Test completed in 0.0350501537323 seconds
 INFO      It produced the following output:
 cudaSetDevice() - 0 - Ocelot PTX Emulator 
+(0.002480) CooperativeThreadArray.cpp:289:  CooperativeThreadArray::execute called
+(0.002498) CooperativeThreadArray.cpp:290:    block is 0, 0, 0
+(0.002524) CooperativeThreadArray.cpp:310:   [PC: 0, counter: 0] cvt.u32.u16 %r0, %tid.x [stack 1] [active 64]
+(0.002546) CooperativeThreadArray.cpp:310:   [PC: 1, counter: 1] mov.u16 %r1, %ctaid.x [stack 1] [active 64]
+(0.002561) CooperativeThreadArray.cpp:310:   [PC: 2, counter: 2] mov.u16 %r2, %ntid.x [stack 1] [active 64]
+(0.002577) CooperativeThreadArray.cpp:310:   [PC: 3, counter: 3] mul.wide.u16 %r3, %r1, %r2 [stack 1] [active 64]
+(0.002597) CooperativeThreadArray.cpp:310:   [PC: 4, counter: 4] add.u32 %r4, %r0, %r3 [stack 1] [active 64]
+(0.002617) CooperativeThreadArray.cpp:310:   [PC: 5, counter: 5] shr.s32 %r5, %r4, 31 [stack 1] [active 64]
+(0.002632) CooperativeThreadArray.cpp:310:   [PC: 6, counter: 6] mov.s32 %r6, 127 [stack 1] [active 64]
+(0.002649) CooperativeThreadArray.cpp:310:   [PC: 7, counter: 7] and.b32 %r7, %r5, %r6 [stack 1] [active 64]
+(0.002667) CooperativeThreadArray.cpp:310:   [PC: 8, counter: 8] add.s32 %r8, %r7, %r4 [stack 1] [active 64]
+(0.002683) CooperativeThreadArray.cpp:310:   [PC: 9, counter: 9] shr.s32 %r9, %r8, 7 [stack 1] [active 64]
+(0.002698) CooperativeThreadArray.cpp:310:   [PC: 10, counter: 10] mul.lo.s32 %r10, %r9, 128 [stack 1] [active 64]
+(0.002714) CooperativeThreadArray.cpp:310:   [PC: 11, counter: 11] sub.s32 %r11, %r4, %r10 [stack 1] [active 64]
+(0.002729) CooperativeThreadArray.cpp:310:   [PC: 12, counter: 12] cvt.rn.f32.s32 %r12, %r11 [stack 1] [active 64]
+(0.002754) CooperativeThreadArray.cpp:310:   [PC: 13, counter: 13] ld.global.f32 %r13, [Pi] [stack 1] [active 64]
+(0.002779) CooperativeThreadArray.cpp:310:   [PC: 14, counter: 14] mul.f32 %r14, %r12, %r13 [stack 1] [active 64]
+(0.002793) CooperativeThreadArray.cpp:310:   [PC: 15, counter: 15] ld.param.u64 %r15, [__cudaparm_copyFromGlobal_result] [stack 1] [active 64]
+(0.002809) CooperativeThreadArray.cpp:310:   [PC: 16, counter: 16] cvt.u64.s32 %r16, %r4 [stack 1] [active 64]
+(0.002825) CooperativeThreadArray.cpp:310:   [PC: 17, counter: 17] mul.lo.u64 %r17, %r16, 4 [stack 1] [active 64]
+(0.002841) CooperativeThreadArray.cpp:310:   [PC: 18, counter: 18] add.u64 %r18, %r15, %r17 [stack 1] [active 64]
+(0.002857) CooperativeThreadArray.cpp:310:   [PC: 19, counter: 19] st.global.f32 [%r18 + 0], %r14 [stack 1] [active 64]
+(0.002872) CooperativeThreadArray.cpp:310:   [PC: 20, counter: 20] exit [stack 1] [active 64]
+(0.002882) CooperativeThreadArray.cpp:464:  kernel finished in 21 instructions
+(0.002908) CooperativeThreadArray.cpp:289:  CooperativeThreadArray::execute called
+(0.002916) CooperativeThreadArray.cpp:290:    block is 0, 0, 0
+(0.002928) CooperativeThreadArray.cpp:310:   [PC: 0, counter: 0] cvt.u32.u16 %r0, %tid.x [stack 1] [active 64]
+(0.002940) CooperativeThreadArray.cpp:310:   [PC: 1, counter: 1] mov.u16 %r1, %ctaid.x [stack 1] [active 64]
+(0.002952) CooperativeThreadArray.cpp:310:   [PC: 2, counter: 2] mov.u16 %r2, %ntid.x [stack 1] [active 64]
+(0.002968) CooperativeThreadArray.cpp:310:   [PC: 3, counter: 3] mul.wide.u16 %r3, %r1, %r2 [stack 1] [active 64]
+(0.002983) CooperativeThreadArray.cpp:310:   [PC: 4, counter: 4] add.u32 %r4, %r0, %r3 [stack 1] [active 64]
+(0.002998) CooperativeThreadArray.cpp:310:   [PC: 5, counter: 5] shr.s32 %r5, %r4, 31 [stack 1] [active 64]
+(0.003011) CooperativeThreadArray.cpp:310:   [PC: 6, counter: 6] mov.s32 %r6, 127 [stack 1] [active 64]
+(0.003027) CooperativeThreadArray.cpp:310:   [PC: 7, counter: 7] and.b32 %r7, %r5, %r6 [stack 1] [active 64]
+(0.003042) CooperativeThreadArray.cpp:310:   [PC: 8, counter: 8] add.s32 %r8, %r7, %r4 [stack 1] [active 64]
+(0.003057) CooperativeThreadArray.cpp:310:   [PC: 9, counter: 9] shr.s32 %r9, %r8, 7 [stack 1] [active 64]
+(0.003073) CooperativeThreadArray.cpp:310:   [PC: 10, counter: 10] mul.lo.s32 %r10, %r9, 128 [stack 1] [active 64]
+(0.003088) CooperativeThreadArray.cpp:310:   [PC: 11, counter: 11] sub.s32 %r11, %r4, %r10 [stack 1] [active 64]
+(0.003102) CooperativeThreadArray.cpp:310:   [PC: 12, counter: 12] cvt.rn.f32.s32 %r12, %r11 [stack 1] [active 64]
+(0.003167) CooperativeThreadArray.cpp:310:   [PC: 13, counter: 13] ld.global.f32 %r13, [Pi] [stack 1] [active 64]
+(0.003187) CooperativeThreadArray.cpp:310:   [PC: 14, counter: 14] mul.f32 %r14, %r12, %r13 [stack 1] [active 64]
+(0.003201) CooperativeThreadArray.cpp:310:   [PC: 15, counter: 15] ld.param.u64 %r15, [__cudaparm_copyFromGlobal_result] [stack 1] [active 64]
+(0.003217) CooperativeThreadArray.cpp:310:   [PC: 16, counter: 16] cvt.u64.s32 %r16, %r4 [stack 1] [active 64]
+(0.003233) CooperativeThreadArray.cpp:310:   [PC: 17, counter: 17] mul.lo.u64 %r17, %r16, 4 [stack 1] [active 64]
+(0.003248) CooperativeThreadArray.cpp:310:   [PC: 18, counter: 18] add.u64 %r18, %r15, %r17 [stack 1] [active 64]
+(0.003263) CooperativeThreadArray.cpp:310:   [PC: 19, counter: 19] st.global.f32 [%r18 + 0], %r14 [stack 1] [active 64]
+(0.003274) CooperativeThreadArray.cpp:310:   [PC: 20, counter: 20] exit [stack 1] [active 64]
+(0.003282) CooperativeThreadArray.cpp:464:  kernel finished in 21 instructions
 Pass/Fail : Pass
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestCudaTextureArray 
+INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestCudaTextureArray
+INFO     Test completed in 0.0498888492584 seconds
+INFO      It produced the following output:
+(0.002580) CooperativeThreadArray.cpp:289:  CooperativeThreadArray::execute called
+(0.002602) CooperativeThreadArray.cpp:290:    block is 0, 0, 0
+(0.002622) CooperativeThreadArray.cpp:310:   [PC: 0, counter: 0] mov.u16 %r0, %ctaid.x [stack 1] [active 256]
+(0.002646) CooperativeThreadArray.cpp:310:   [PC: 1, counter: 1] mov.u16 %r1, %ntid.x [stack 1] [active 256]
+(0.002664) CooperativeThreadArray.cpp:310:   [PC: 2, counter: 2] mul.wide.u16 %r2, %r0, %r1 [stack 1] [active 256]
+(0.002682) CooperativeThreadArray.cpp:310:   [PC: 3, counter: 3] mov.u16 %r3, %ctaid.y [stack 1] [active 256]
+(0.002696) CooperativeThreadArray.cpp:310:   [PC: 4, counter: 4] mov.u16 %r4, %ntid.y [stack 1] [active 256]
+(0.002712) CooperativeThreadArray.cpp:310:   [PC: 5, counter: 5] mul.wide.u16 %r5, %r3, %r4 [stack 1] [active 256]
+(0.002730) CooperativeThreadArray.cpp:310:   [PC: 6, counter: 6] cvt.u32.u16 %r6, %tid.x [stack 1] [active 256]
+(0.002755) CooperativeThreadArray.cpp:310:   [PC: 7, counter: 7] add.u32 %r7, %r6, %r2 [stack 1] [active 256]
+(0.002773) CooperativeThreadArray.cpp:310:   [PC: 8, counter: 8] cvt.u32.u16 %r8, %tid.y [stack 1] [active 256]
+(0.002793) CooperativeThreadArray.cpp:310:   [PC: 9, counter: 9] add.u32 %r9, %r8, %r5 [stack 1] [active 256]
+(0.002810) CooperativeThreadArray.cpp:310:   [PC: 10, counter: 10] cvt.rn.f32.u32 %r10, %r7 [stack 1] [active 256]
+(0.002851) CooperativeThreadArray.cpp:310:   [PC: 11, counter: 11] cvt.rn.f32.u32 %r11, %r9 [stack 1] [active 256]
+(0.002889) CooperativeThreadArray.cpp:310:   [PC: 12, counter: 12] mov.f32 %r12, 0f00000000 [stack 1] [active 256]
+(0.002905) CooperativeThreadArray.cpp:310:   [PC: 13, counter: 13] mov.f32 %r13, 0f00000000 [stack 1] [active 256]
+(0.002940) CooperativeThreadArray.cpp:310:   [PC: 14, counter: 14] tex.2d.v4.f32.f32 {%r14, %r15, %r16, %r17}, [surface, {%r10, %r11, %r12, %r13}] [stack 1] [active 256]
+(0.003005) CooperativeThreadArray.cpp:310:   [PC: 15, counter: 15] mov.f32 %r18, %r14 [stack 1] [active 256]
+(0.003023) CooperativeThreadArray.cpp:310:   [PC: 16, counter: 16] ld.param.u64 %r19, [__cudaparm__Z6kernelPfii_out] [stack 1] [active 256]
+(0.003054) CooperativeThreadArray.cpp:310:   [PC: 17, counter: 17] ld.param.u32 %r20, [__cudaparm__Z6kernelPfii_width + 8] [stack 1] [active 256]
+(0.003076) CooperativeThreadArray.cpp:310:   [PC: 18, counter: 18] mul.lo.u32 %r21, %r20, %r9 [stack 1] [active 256]
+(0.003093) CooperativeThreadArray.cpp:310:   [PC: 19, counter: 19] add.u32 %r22, %r7, %r21 [stack 1] [active 256]
+(0.003110) CooperativeThreadArray.cpp:310:   [PC: 20, counter: 20] cvt.u64.u32 %r23, %r22 [stack 1] [active 256]
+(0.003128) CooperativeThreadArray.cpp:310:   [PC: 21, counter: 21] mul.lo.u64 %r24, %r23, 4 [stack 1] [active 256]
+(0.003145) CooperativeThreadArray.cpp:310:   [PC: 22, counter: 22] add.u64 %r25, %r19, %r24 [stack 1] [active 256]
+(0.003164) CooperativeThreadArray.cpp:310:   [PC: 23, counter: 23] st.global.f32 [%r25 + 0], %r18 [stack 1] [active 256]
+(0.003188) CooperativeThreadArray.cpp:310:   [PC: 24, counter: 24] exit [stack 1] [active 256]
+(0.003196) CooperativeThreadArray.cpp:464:  kernel finished in 25 instructions
+(0.003212) CooperativeThreadArray.cpp:289:  CooperativeThreadArray::execute called
+(0.003219) CooperativeThreadArray.cpp:290:    block is 0, 1, 0
+(0.003230) CooperativeThreadArray.cpp:310:   [PC: 0, counter: 0] mov.u16 %r0, %ctaid.x [stack 1] [active 256]
+(0.003244) CooperativeThreadArray.cpp:310:   [PC: 1, counter: 1] mov.u16 %r1, %ntid.x [stack 1] [active 256]
+(0.003261) CooperativeThreadArray.cpp:310:   [PC: 2, counter: 2] mul.wide.u16 %r2, %r0, %r1 [stack 1] [active 256]
+(0.003275) CooperativeThreadArray.cpp:310:   [PC: 3, counter: 3] mov.u16 %r3, %ctaid.y [stack 1] [active 256]
+(0.003289) CooperativeThreadArray.cpp:310:   [PC: 4, counter: 4] mov.u16 %r4, %ntid.y [stack 1] [active 256]
+(0.003306) CooperativeThreadArray.cpp:310:   [PC: 5, counter: 5] mul.wide.u16 %r5, %r3, %r4 [stack 1] [active 256]
+(0.003320) CooperativeThreadArray.cpp:310:   [PC: 6, counter: 6] cvt.u32.u16 %r6, %tid.x [stack 1] [active 256]
+(0.003339) CooperativeThreadArray.cpp:310:   [PC: 7, counter: 7] add.u32 %r7, %r6, %r2 [stack 1] [active 256]
+(0.003392) CooperativeThreadArray.cpp:310:   [PC: 8, counter: 8] cvt.u32.u16 %r8, %tid.y [stack 1] [active 256]
+(0.003411) CooperativeThreadArray.cpp:310:   [PC: 9, counter: 9] add.u32 %r9, %r8, %r5 [stack 1] [active 256]
+(0.003428) CooperativeThreadArray.cpp:310:   [PC: 10, counter: 10] cvt.rn.f32.u32 %r10, %r7 [stack 1] [active 256]
+(0.003463) CooperativeThreadArray.cpp:310:   [PC: 11, counter: 11] cvt.rn.f32.u32 %r11, %r9 [stack 1] [active 256]
+(0.003497) CooperativeThreadArray.cpp:310:   [PC: 12, counter: 12] mov.f32 %r12, 0f00000000 [stack 1] [active 256]
+(0.003512) CooperativeThreadArray.cpp:310:   [PC: 13, counter: 13] mov.f32 %r13, 0f00000000 [stack 1] [active 256]
+(0.003543) CooperativeThreadArray.cpp:310:   [PC: 14, counter: 14] tex.2d.v4.f32.f32 {%r14, %r15, %r16, %r17}, [surface, {%r10, %r11, %r12, %r13}] [stack 1] [active 256]
+(0.003597) CooperativeThreadArray.cpp:310:   [PC: 15, counter: 15] mov.f32 %r18, %r14 [stack 1] [active 256]
+(0.003613) CooperativeThreadArray.cpp:310:   [PC: 16, counter: 16] ld.param.u64 %r19, [__cudaparm__Z6kernelPfii_out] [stack 1] [active 256]
+(0.003638) CooperativeThreadArray.cpp:310:   [PC: 17, counter: 17] ld.param.u32 %r20, [__cudaparm__Z6kernelPfii_width + 8] [stack 1] [active 256]
+(0.003659) CooperativeThreadArray.cpp:310:   [PC: 18, counter: 18] mul.lo.u32 %r21, %r20, %r9 [stack 1] [active 256]
+(0.003677) CooperativeThreadArray.cpp:310:   [PC: 19, counter: 19] add.u32 %r22, %r7, %r21 [stack 1] [active 256]
+(0.003694) CooperativeThreadArray.cpp:310:   [PC: 20, counter: 20] cvt.u64.u32 %r23, %r22 [stack 1] [active 256]
+(0.003711) CooperativeThreadArray.cpp:310:   [PC: 21, counter: 21] mul.lo.u64 %r24, %r23, 4 [stack 1] [active 256]
+(0.003729) CooperativeThreadArray.cpp:310:   [PC: 22, counter: 22] add.u64 %r25, %r19, %r24 [stack 1] [active 256]
+(0.003745) CooperativeThreadArray.cpp:310:   [PC: 23, counter: 23] st.global.f32 [%r25 + 0], %r18 [stack 1] [active 256]
+(0.003767) CooperativeThreadArray.cpp:310:   [PC: 24, counter: 24] exit [stack 1] [active 256]
+(0.003775) CooperativeThreadArray.cpp:464:  kernel finished in 25 instructions
+(0.003790) CooperativeThreadArray.cpp:289:  CooperativeThreadArray::execute called
+(0.003797) CooperativeThreadArray.cpp:290:    block is 0, 2, 0
+(0.003808) CooperativeThreadArray.cpp:310:   [PC: 0, counter: 0] mov.u16 %r0, %ctaid.x [stack 1] [active 256]
+(0.003821) CooperativeThreadArray.cpp:310:   [PC: 1, counter: 1] mov.u16 %r1, %ntid.x [stack 1] [active 256]
+(0.003839) CooperativeThreadArray.cpp:310:   [PC: 2, counter: 2] mul.wide.u16 %r2, %r0, %r1 [stack 1] [active 256]
+(0.003853) CooperativeThreadArray.cpp:310:   [PC: 3, counter: 3] mov.u16 %r3, %ctaid.y [stack 1] [active 256]
+(0.003866) CooperativeThreadArray.cpp:310:   [PC: 4, counter: 4] mov.u16 %r4, %ntid.y [stack 1] [active 256]
+(0.003883) CooperativeThreadArray.cpp:310:   [PC: 5, counter: 5] mul.wide.u16 %r5, %r3, %r4 [stack 1] [active 256]
+(0.003897) CooperativeThreadArray.cpp:310:   [PC: 6, counter: 6] cvt.u32.u16 %r6, %tid.x [stack 1] [active 256]
+(0.003916) CooperativeThreadArray.cpp:310:   [PC: 7, counter: 7] add.u32 %r7, %r6, %r2 [stack 1] [active 256]
+(0.003931) CooperativeThreadArray.cpp:310:   [PC: 8, counter: 8] cvt.u32.u16 %r8, %tid.y [stack 1] [active 256]
+(0.003950) CooperativeThreadArray.cpp:310:   [PC: 9, counter: 9] add.u32 %r9, %r8, %r5 [stack 1] [active 256]
+(0.003967) CooperativeThreadArray.cpp:310:   [PC: 10, counter: 10] cvt.rn.f32.u32 %r10, %r7 [stack 1] [active 256]
+(0.004002) CooperativeThreadArray.cpp:310:   [PC: 11, counter: 11] cvt.rn.f32.u32 %r11, %r9 [stack 1] [active 256]
+(0.004035) CooperativeThreadArray.cpp:310:   [PC: 12, counter: 12] mov.f32 %r12, 0f00000000 [stack 1] [active 256]
+(0.004050) CooperativeThreadArray.cpp:310:   [PC: 13, counter: 13] mov.f32 %r13, 0f00000000 [stack 1] [active 256]
+(0.004081) CooperativeThreadArray.cpp:310:   [PC: 14, counter: 14] tex.2d.v4.f32.f32 {%r14, %r15, %r16, %r17}, [surface, {%r10, %r11, %r12, %r13}] [stack 1] [active 256]
+(0.004136) CooperativeThreadArray.cpp:310:   [PC: 15, counter: 15] mov.f32 %r18, %r14 [stack 1] [active 256]
+(0.004160) CooperativeThreadArray.cpp:310:   [PC: 16, counter: 16] ld.param.u64 %r19, [__cudaparm__Z6kernelPfii_out] [stack 1] [active 256]
+(0.004185) CooperativeThreadArray.cpp:310:   [PC: 17, counter: 17] ld.param.u32 %r20, [__cudaparm__Z6kernelPfii_width + 8] [stack 1] [active 256]
+(0.004206) CooperativeThreadArray.cpp:310:   [PC: 18, counter: 18] mul.lo.u32 %r21, %r20, %r9 [stack 1] [active 256]
+(0.004224) CooperativeThreadArray.cpp:310:   [PC: 19, counter: 19] add.u32 %r22, %r7, %r21 [stack 1] [active 256]
+(0.004241) CooperativeThreadArray.cpp:310:   [PC: 20, counter: 20] cvt.u64.u32 %r23, %r22 [stack 1] [active 256]
+(0.004258) CooperativeThreadArray.cpp:310:   [PC: 21, counter: 21] mul.lo.u64 %r24, %r23, 4 [stack 1] [active 256]
+(0.004276) CooperativeThreadArray.cpp:310:   [PC: 22, counter: 22] add.u64 %r25, %r19, %r24 [stack 1] [active 256]
+(0.004292) CooperativeThreadArray.cpp:310:   [PC: 23, counter: 23] st.global.f32 [%r25 + 0], %r18 [stack 1] [active 256]
+(0.004314) CooperativeThreadArray.cpp:310:   [PC: 24, counter: 24] exit [stack 1] [active 256]
+(0.004322) CooperativeThreadArray.cpp:464:  kernel finished in 25 instructions
+(0.004337) CooperativeThreadArray.cpp:289:  CooperativeThreadArray::execute called
+(0.004344) CooperativeThreadArray.cpp:290:    block is 0, 3, 0
+(0.004354) CooperativeThreadArray.cpp:310:   [PC: 0, counter: 0] mov.u16 %r0, %ctaid.x [stack 1] [active 256]
+(0.004368) CooperativeThreadArray.cpp:310:   [PC: 1, counter: 1] mov.u16 %r1, %ntid.x [stack 1] [active 256]
+(0.004385) CooperativeThreadArray.cpp:310:   [PC: 2, counter: 2] mul.wide.u16 %r2, %r0, %r1 [stack 1] [active 256]
+(0.004399) CooperativeThreadArray.cpp:310:   [PC: 3, counter: 3] mov.u16 %r3, %ctaid.y [stack 1] [active 256]
+(0.004413) CooperativeThreadArray.cpp:310:   [PC: 4, counter: 4] mov.u16 %r4, %ntid.y [stack 1] [active 256]
+(0.004429) CooperativeThreadArray.cpp:310:   [PC: 5, counter: 5] mul.wide.u16 %r5, %r3, %r4 [stack 1] [active 256]
+(0.004444) CooperativeThreadArray.cpp:310:   [PC: 6, counter: 6] cvt.u32.u16 %r6, %tid.x [stack 1] [active 256]
+(0.004462) CooperativeThreadArray.cpp:310:   [PC: 7, counter: 7] add.u32 %r7, %r6, %r2 [stack 1] [active 256]
+(0.004478) CooperativeThreadArray.cpp:310:   [PC: 8, counter: 8] cvt.u32.u16 %r8, %tid.y [stack 1] [active 256]
+(0.004497) CooperativeThreadArray.cpp:310:   [PC: 9, counter: 9] add.u32 %r9, %r8, %r5 [stack 1] [active 256]
+(0.004514) CooperativeThreadArray.cpp:310:   [PC: 10, counter: 10] cvt.rn.f32.u32 %r10, %r7 [stack 1] [active 256]
+(0.004548) CooperativeThreadArray.cpp:310:   [PC: 11, counter: 11] cvt.rn.f32.u32 %r11, %r9 [stack 1] [active 256]
+(0.004582) CooperativeThreadArray.cpp:310:   [PC: 12, counter: 12] mov.f32 %r12, 0f00000000 [stack 1] [active 256]
+(0.004597) CooperativeThreadArray.cpp:310:   [PC: 13, counter: 13] mov.f32 %r13, 0f00000000 [stack 1] [active 256]
+(0.004627) CooperativeThreadArray.cpp:310:   [PC: 14, counter: 14] tex.2d.v4.f32.f32 {%r14, %r15, %r16, %r17}, [surface, {%r10, %r11, %r12, %r13}] [stack 1] [active 256]
+(0.004682) CooperativeThreadArray.cpp:310:   [PC: 15, counter: 15] mov.f32 %r18, %r14 [stack 1] [active 256]
+(0.004697) CooperativeThreadArray.cpp:310:   [PC: 16, counter: 16] ld.param.u64 %r19, [__cudaparm__Z6kernelPfii_out] [stack 1] [active 256]
+(0.004722) CooperativeThreadArray.cpp:310:   [PC: 17, counter: 17] ld.param.u32 %r20, [__cudaparm__Z6kernelPfii_width + 8] [stack 1] [active 256]
+(0.004743) CooperativeThreadArray.cpp:310:   [PC: 18, counter: 18] mul.lo.u32 %r21, %r20, %r9 [stack 1] [active 256]
+(0.004761) CooperativeThreadArray.cpp:310:   [PC: 19, counter: 19] add.u32 %r22, %r7, %r21 [stack 1] [active 256]
+(0.004777) CooperativeThreadArray.cpp:310:   [PC: 20, counter: 20] cvt.u64.u32 %r23, %r22 [stack 1] [active 256]
+(0.004795) CooperativeThreadArray.cpp:310:   [PC: 21, counter: 21] mul.lo.u64 %r24, %r23, 4 [stack 1] [active 256]
+(0.004812) CooperativeThreadArray.cpp:310:   [PC: 22, counter: 22] add.u64 %r25, %r19, %r24 [stack 1] [active 256]
+(0.004837) CooperativeThreadArray.cpp:310:   [PC: 23, counter: 23] st.global.f32 [%r25 + 0], %r18 [stack 1] [active 256]
+(0.004860) CooperativeThreadArray.cpp:310:   [PC: 24, counter: 24] exit [stack 1] [active 256]
+(0.004868) CooperativeThreadArray.cpp:464:  kernel finished in 25 instructions
+(0.004883) CooperativeThreadArray.cpp:289:  CooperativeThreadArray::execute called
+(0.004889) CooperativeThreadArray.cpp:290:    block is 1, 0, 0
+(0.004901) CooperativeThreadArray.cpp:310:   [PC: 0, counter: 0] mov.u16 %r0, %ctaid.x [stack 1] [active 256]
+(0.004914) CooperativeThreadArray.cpp:310:   [PC: 1, counter: 1] mov.u16 %r1, %ntid.x [stack 1] [active 256]
+(0.004931) CooperativeThreadArray.cpp:310:   [PC: 2, counter: 2] mul.wide.u16 %r2, %r0, %r1 [stack 1] [active 256]
+(0.004945) CooperativeThreadArray.cpp:310:   [PC: 3, counter: 3] mov.u16 %r3, %ctaid.y [stack 1] [active 256]
+(0.004959) CooperativeThreadArray.cpp:310:   [PC: 4, counter: 4] mov.u16 %r4, %ntid.y [stack 1] [active 256]
+(0.004976) CooperativeThreadArray.cpp:310:   [PC: 5, counter: 5] mul.wide.u16 %r5, %r3, %r4 [stack 1] [active 256]
+(0.004990) CooperativeThreadArray.cpp:310:   [PC: 6, counter: 6] cvt.u32.u16 %r6, %tid.x [stack 1] [active 256]
+(0.005009) CooperativeThreadArray.cpp:310:   [PC: 7, counter: 7] add.u32 %r7, %r6, %r2 [stack 1] [active 256]
+(0.005024) CooperativeThreadArray.cpp:310:   [PC: 8, counter: 8] cvt.u32.u16 %r8, %tid.y [stack 1] [active 256]
+(0.005043) CooperativeThreadArray.cpp:310:   [PC: 9, counter: 9] add.u32 %r9, %r8, %r5 [stack 1] [active 256]
+(0.005060) CooperativeThreadArray.cpp:310:   [PC: 10, counter: 10] cvt.rn.f32.u32 %r10, %r7 [stack 1] [active 256]
+(0.005095) CooperativeThreadArray.cpp:310:   [PC: 11, counter: 11] cvt.rn.f32.u32 %r11, %r9 [stack 1] [active 256]
+(0.005129) CooperativeThreadArray.cpp:310:   [PC: 12, counter: 12] mov.f32 %r12, 0f00000000 [stack 1] [active 256]
+(0.005144) CooperativeThreadArray.cpp:310:   [PC: 13, counter: 13] mov.f32 %r13, 0f00000000 [stack 1] [active 256]
+(0.005174) CooperativeThreadArray.cpp:310:   [PC: 14, counter: 14] tex.2d.v4.f32.f32 {%r14, %r15, %r16, %r17}, [surface, {%r10, %r11, %r12, %r13}] [stack 1] [active 256]
+(0.005229) CooperativeThreadArray.cpp:310:   [PC: 15, counter: 15] mov.f32 %r18, %r14 [stack 1] [active 256]
+(0.005244) CooperativeThreadArray.cpp:310:   [PC: 16, counter: 16] ld.param.u64 %r19, [__cudaparm__Z6kernelPfii_out] [stack 1] [active 256]
+(0.005269) CooperativeThreadArray.cpp:310:   [PC: 17, counter: 17] ld.param.u32 %r20, [__cudaparm__Z6kernelPfii_width + 8] [stack 1] [active 256]
+(0.005290) CooperativeThreadArray.cpp:310:   [PC: 18, counter: 18] mul.lo.u32 %r21, %r20, %r9 [stack 1] [active 256]
+(0.005308) CooperativeThreadArray.cpp:310:   [PC: 19, counter: 19] add.u32 %r22, %r7, %r21 [stack 1] [active 256]
+(0.005324) CooperativeThreadArray.cpp:310:   [PC: 20, counter: 20] cvt.u64.u32 %r23, %r22 [stack 1] [active 256]
+(0.005341) CooperativeThreadArray.cpp:310:   [PC: 21, counter: 21] mul.lo.u64 %r24, %r23, 4 [stack 1] [active 256]
+(0.005358) CooperativeThreadArray.cpp:310:   [PC: 22, counter: 22] add.u64 %r25, %r19, %r24 [stack 1] [active 256]
+(0.005374) CooperativeThreadArray.cpp:310:   [PC: 23, counter: 23] st.global.f32 [%r25 + 0], %r18 [stack 1] [active 256]
+(0.005396) CooperativeThreadArray.cpp:310:   [PC: 24, counter: 24] exit [stack 1] [active 256]
+(0.005404) CooperativeThreadArray.cpp:464:  kernel finished in 25 instructions
+(0.005419) CooperativeThreadArray.cpp:289:  CooperativeThreadArray::execute called
+(0.005426) CooperativeThreadArray.cpp:290:    block is 1, 1, 0
+(0.005436) CooperativeThreadArray.cpp:310:   [PC: 0, counter: 0] mov.u16 %r0, %ctaid.x [stack 1] [active 256]
+(0.005450) CooperativeThreadArray.cpp:310:   [PC: 1, counter: 1] mov.u16 %r1, %ntid.x [stack 1] [active 256]
+(0.005467) CooperativeThreadArray.cpp:310:   [PC: 2, counter: 2] mul.wide.u16 %r2, %r0, %r1 [stack 1] [active 256]
+(0.005481) CooperativeThreadArray.cpp:310:   [PC: 3, counter: 3] mov.u16 %r3, %ctaid.y [stack 1] [active 256]
+(0.005494) CooperativeThreadArray.cpp:310:   [PC: 4, counter: 4] mov.u16 %r4, %ntid.y [stack 1] [active 256]
+(0.005520) CooperativeThreadArray.cpp:310:   [PC: 5, counter: 5] mul.wide.u16 %r5, %r3, %r4 [stack 1] [active 256]
+(0.005536) CooperativeThreadArray.cpp:310:   [PC: 6, counter: 6] cvt.u32.u16 %r6, %tid.x [stack 1] [active 256]
+(0.005554) CooperativeThreadArray.cpp:310:   [PC: 7, counter: 7] add.u32 %r7, %r6, %r2 [stack 1] [active 256]
+(0.005569) CooperativeThreadArray.cpp:310:   [PC: 8, counter: 8] cvt.u32.u16 %r8, %tid.y [stack 1] [active 256]
+(0.005588) CooperativeThreadArray.cpp:310:   [PC: 9, counter: 9] add.u32 %r9, %r8, %r5 [stack 1] [active 256]
+(0.005605) CooperativeThreadArray.cpp:310:   [PC: 10, counter: 10] cvt.rn.f32.u32 %r10, %r7 [stack 1] [active 256]
+(0.005640) CooperativeThreadArray.cpp:310:   [PC: 11, counter: 11] cvt.rn.f32.u32 %r11, %r9 [stack 1] [active 256]
+(0.005674) CooperativeThreadArray.cpp:310:   [PC: 12, counter: 12] mov.f32 %r12, 0f00000000 [stack 1] [active 256]
+(0.005689) CooperativeThreadArray.cpp:310:   [PC: 13, counter: 13] mov.f32 %r13, 0f00000000 [stack 1] [active 256]
+(0.005719) CooperativeThreadArray.cpp:310:   [PC: 14, counter: 14] tex.2d.v4.f32.f32 {%r14, %r15, %r16, %r17}, [surface, {%r10, %r11, %r12, %r13}] [stack 1] [active 256]
+(0.005773) CooperativeThreadArray.cpp:310:   [PC: 15, counter: 15] mov.f32 %r18, %r14 [stack 1] [active 256]
+(0.005788) CooperativeThreadArray.cpp:310:   [PC: 16, counter: 16] ld.param.u64 %r19, [__cudaparm__Z6kernelPfii_out] [stack 1] [active 256]
+(0.005813) CooperativeThreadArray.cpp:310:   [PC: 17, counter: 17] ld.param.u32 %r20, [__cudaparm__Z6kernelPfii_width + 8] [stack 1] [active 256]
+(0.005834) CooperativeThreadArray.cpp:310:   [PC: 18, counter: 18] mul.lo.u32 %r21, %r20, %r9 [stack 1] [active 256]
+(0.005852) CooperativeThreadArray.cpp:310:   [PC: 19, counter: 19] add.u32 %r22, %r7, %r21 [stack 1] [active 256]
+(0.005869) CooperativeThreadArray.cpp:310:   [PC: 20, counter: 20] cvt.u64.u32 %r23, %r22 [stack 1] [active 256]
+(0.005886) CooperativeThreadArray.cpp:310:   [PC: 21, counter: 21] mul.lo.u64 %r24, %r23, 4 [stack 1] [active 256]
+(0.005903) CooperativeThreadArray.cpp:310:   [PC: 22, counter: 22] add.u64 %r25, %r19, %r24 [stack 1] [active 256]
+(0.005920) CooperativeThreadArray.cpp:310:   [PC: 23, counter: 23] st.global.f32 [%r25 + 0], %r18 [stack 1] [active 256]
+(0.005942) CooperativeThreadArray.cpp:310:   [PC: 24, counter: 24] exit [stack 1] [active 256]
+(0.005950) CooperativeThreadArray.cpp:464:  kernel finished in 25 instructions
+(0.005965) CooperativeThreadArray.cpp:289:  CooperativeThreadArray::execute called
+(0.005972) CooperativeThreadArray.cpp:290:    block is 1, 2, 0
+(0.005983) CooperativeThreadArray.cpp:310:   [PC: 0, counter: 0] mov.u16 %r0, %ctaid.x [stack 1] [active 256]
+(0.005996) CooperativeThreadArray.cpp:310:   [PC: 1, counter: 1] mov.u16 %r1, %ntid.x [stack 1] [active 256]
+(0.006014) CooperativeThreadArray.cpp:310:   [PC: 2, counter: 2] mul.wide.u16 %r2, %r0, %r1 [stack 1] [active 256]
+(0.006028) CooperativeThreadArray.cpp:310:   [PC: 3, counter: 3] mov.u16 %r3, %ctaid.y [stack 1] [active 256]
+(0.006041) CooperativeThreadArray.cpp:310:   [PC: 4, counter: 4] mov.u16 %r4, %ntid.y [stack 1] [active 256]
+(0.006058) CooperativeThreadArray.cpp:310:   [PC: 5, counter: 5] mul.wide.u16 %r5, %r3, %r4 [stack 1] [active 256]
+(0.006073) CooperativeThreadArray.cpp:310:   [PC: 6, counter: 6] cvt.u32.u16 %r6, %tid.x [stack 1] [active 256]
+(0.006091) CooperativeThreadArray.cpp:310:   [PC: 7, counter: 7] add.u32 %r7, %r6, %r2 [stack 1] [active 256]
+(0.006106) CooperativeThreadArray.cpp:310:   [PC: 8, counter: 8] cvt.u32.u16 %r8, %tid.y [stack 1] [active 256]
+(0.006125) CooperativeThreadArray.cpp:310:   [PC: 9, counter: 9] add.u32 %r9, %r8, %r5 [stack 1] [active 256]
+(0.006142) CooperativeThreadArray.cpp:310:   [PC: 10, counter: 10] cvt.rn.f32.u32 %r10, %r7 [stack 1] [active 256]
+(0.006176) CooperativeThreadArray.cpp:310:   [PC: 11, counter: 11] cvt.rn.f32.u32 %r11, %r9 [stack 1] [active 256]
+(0.006211) CooperativeThreadArray.cpp:310:   [PC: 12, counter: 12] mov.f32 %r12, 0f00000000 [stack 1] [active 256]
+(0.006234) CooperativeThreadArray.cpp:310:   [PC: 13, counter: 13] mov.f32 %r13, 0f00000000 [stack 1] [active 256]
+(0.006265) CooperativeThreadArray.cpp:310:   [PC: 14, counter: 14] tex.2d.v4.f32.f32 {%r14, %r15, %r16, %r17}, [surface, {%r10, %r11, %r12, %r13}] [stack 1] [active 256]
+(0.006319) CooperativeThreadArray.cpp:310:   [PC: 15, counter: 15] mov.f32 %r18, %r14 [stack 1] [active 256]
+(0.006334) CooperativeThreadArray.cpp:310:   [PC: 16, counter: 16] ld.param.u64 %r19, [__cudaparm__Z6kernelPfii_out] [stack 1] [active 256]
+(0.006359) CooperativeThreadArray.cpp:310:   [PC: 17, counter: 17] ld.param.u32 %r20, [__cudaparm__Z6kernelPfii_width + 8] [stack 1] [active 256]
+(0.006380) CooperativeThreadArray.cpp:310:   [PC: 18, counter: 18] mul.lo.u32 %r21, %r20, %r9 [stack 1] [active 256]
+(0.006398) CooperativeThreadArray.cpp:310:   [PC: 19, counter: 19] add.u32 %r22, %r7, %r21 [stack 1] [active 256]
+(0.006414) CooperativeThreadArray.cpp:310:   [PC: 20, counter: 20] cvt.u64.u32 %r23, %r22 [stack 1] [active 256]
+(0.006432) CooperativeThreadArray.cpp:310:   [PC: 21, counter: 21] mul.lo.u64 %r24, %r23, 4 [stack 1] [active 256]
+(0.006449) CooperativeThreadArray.cpp:310:   [PC: 22, counter: 22] add.u64 %r25, %r19, %r24 [stack 1] [active 256]
+(0.006465) CooperativeThreadArray.cpp:310:   [PC: 23, counter: 23] st.global.f32 [%r25 + 0], %r18 [stack 1] [active 256]
+(0.006487) CooperativeThreadArray.cpp:310:   [PC: 24, counter: 24] exit [stack 1] [active 256]
+(0.006495) CooperativeThreadArray.cpp:464:  kernel finished in 25 instructions
+(0.006510) CooperativeThreadArray.cpp:289:  CooperativeThreadArray::execute called
+(0.006516) CooperativeThreadArray.cpp:290:    block is 1, 3, 0
+(0.006527) CooperativeThreadArray.cpp:310:   [PC: 0, counter: 0] mov.u16 %r0, %ctaid.x [stack 1] [active 256]
+(0.006541) CooperativeThreadArray.cpp:310:   [PC: 1, counter: 1] mov.u16 %r1, %ntid.x [stack 1] [active 256]
+(0.006558) CooperativeThreadArray.cpp:310:   [PC: 2, counter: 2] mul.wide.u16 %r2, %r0, %r1 [stack 1] [active 256]
+(0.006572) CooperativeThreadArray.cpp:310:   [PC: 3, counter: 3] mov.u16 %r3, %ctaid.y [stack 1] [active 256]
+(0.006585) CooperativeThreadArray.cpp:310:   [PC: 4, counter: 4] mov.u16 %r4, %ntid.y [stack 1] [active 256]
+(0.006602) CooperativeThreadArray.cpp:310:   [PC: 5, counter: 5] mul.wide.u16 %r5, %r3, %r4 [stack 1] [active 256]
+(0.006617) CooperativeThreadArray.cpp:310:   [PC: 6, counter: 6] cvt.u32.u16 %r6, %tid.x [stack 1] [active 256]
+(0.006635) CooperativeThreadArray.cpp:310:   [PC: 7, counter: 7] add.u32 %r7, %r6, %r2 [stack 1] [active 256]
+(0.006650) CooperativeThreadArray.cpp:310:   [PC: 8, counter: 8] cvt.u32.u16 %r8, %tid.y [stack 1] [active 256]
+(0.006669) CooperativeThreadArray.cpp:310:   [PC: 9, counter: 9] add.u32 %r9, %r8, %r5 [stack 1] [active 256]
+(0.006686) CooperativeThreadArray.cpp:310:   [PC: 10, counter: 10] cvt.rn.f32.u32 %r10, %r7 [stack 1] [active 256]
+(0.006721) CooperativeThreadArray.cpp:310:   [PC: 11, counter: 11] cvt.rn.f32.u32 %r11, %r9 [stack 1] [active 256]
+(0.006755) CooperativeThreadArray.cpp:310:   [PC: 12, counter: 12] mov.f32 %r12, 0f00000000 [stack 1] [active 256]
+(0.006770) CooperativeThreadArray.cpp:310:   [PC: 13, counter: 13] mov.f32 %r13, 0f00000000 [stack 1] [active 256]
+(0.006800) CooperativeThreadArray.cpp:310:   [PC: 14, counter: 14] tex.2d.v4.f32.f32 {%r14, %r15, %r16, %r17}, [surface, {%r10, %r11, %r12, %r13}] [stack 1] [active 256]
+(0.006853) CooperativeThreadArray.cpp:310:   [PC: 15, counter: 15] mov.f32 %r18, %r14 [stack 1] [active 256]
+(0.006868) CooperativeThreadArray.cpp:310:   [PC: 16, counter: 16] ld.param.u64 %r19, [__cudaparm__Z6kernelPfii_out] [stack 1] [active 256]
+(0.006893) CooperativeThreadArray.cpp:310:   [PC: 17, counter: 17] ld.param.u32 %r20, [__cudaparm__Z6kernelPfii_width + 8] [stack 1] [active 256]
+(0.006914) CooperativeThreadArray.cpp:310:   [PC: 18, counter: 18] mul.lo.u32 %r21, %r20, %r9 [stack 1] [active 256]
+(0.006932) CooperativeThreadArray.cpp:310:   [PC: 19, counter: 19] add.u32 %r22, %r7, %r21 [stack 1] [active 256]
+(0.006956) CooperativeThreadArray.cpp:310:   [PC: 20, counter: 20] cvt.u64.u32 %r23, %r22 [stack 1] [active 256]
+(0.006975) CooperativeThreadArray.cpp:310:   [PC: 21, counter: 21] mul.lo.u64 %r24, %r23, 4 [stack 1] [active 256]
+(0.006992) CooperativeThreadArray.cpp:310:   [PC: 22, counter: 22] add.u64 %r25, %r19, %r24 [stack 1] [active 256]
+(0.007008) CooperativeThreadArray.cpp:310:   [PC: 23, counter: 23] st.global.f32 [%r25 + 0], %r18 [stack 1] [active 256]
+(0.007031) CooperativeThreadArray.cpp:310:   [PC: 24, counter: 24] exit [stack 1] [active 256]
+(0.007039) CooperativeThreadArray.cpp:464:  kernel finished in 25 instructions
+(0.007053) CooperativeThreadArray.cpp:289:  CooperativeThreadArray::execute called
+(0.007060) CooperativeThreadArray.cpp:290:    block is 2, 0, 0
+(0.007071) CooperativeThreadArray.cpp:310:   [PC: 0, counter: 0] mov.u16 %r0, %ctaid.x [stack 1] [active 256]
+(0.007085) CooperativeThreadArray.cpp:310:   [PC: 1, counter: 1] mov.u16 %r1, %ntid.x [stack 1] [active 256]
+(0.007102) CooperativeThreadArray.cpp:310:   [PC: 2, counter: 2] mul.wide.u16 %r2, %r0, %r1 [stack 1] [active 256]
+(0.007117) CooperativeThreadArray.cpp:310:   [PC: 3, counter: 3] mov.u16 %r3, %ctaid.y [stack 1] [active 256]
+(0.007130) CooperativeThreadArray.cpp:310:   [PC: 4, counter: 4] mov.u16 %r4, %ntid.y [stack 1] [active 256]
+(0.007146) CooperativeThreadArray.cpp:310:   [PC: 5, counter: 5] mul.wide.u16 %r5, %r3, %r4 [stack 1] [active 256]
+(0.007161) CooperativeThreadArray.cpp:310:   [PC: 6, counter: 6] cvt.u32.u16 %r6, %tid.x [stack 1] [active 256]
+(0.007180) CooperativeThreadArray.cpp:310:   [PC: 7, counter: 7] add.u32 %r7, %r6, %r2 [stack 1] [active 256]
+(0.007195) CooperativeThreadArray.cpp:310:   [PC: 8, counter: 8] cvt.u32.u16 %r8, %tid.y [stack 1] [active 256]
+(0.007214) CooperativeThreadArray.cpp:310:   [PC: 9, counter: 9] add.u32 %r9, %r8, %r5 [stack 1] [active 256]
+(0.007230) CooperativeThreadArray.cpp:310:   [PC: 10, counter: 10] cvt.rn.f32.u32 %r10, %r7 [stack 1] [active 256]
+(0.007265) CooperativeThreadArray.cpp:310:   [PC: 11, counter: 11] cvt.rn.f32.u32 %r11, %r9 [stack 1] [active 256]
+(0.007299) CooperativeThreadArray.cpp:310:   [PC: 12, counter: 12] mov.f32 %r12, 0f00000000 [stack 1] [active 256]
+(0.007313) CooperativeThreadArray.cpp:310:   [PC: 13, counter: 13] mov.f32 %r13, 0f00000000 [stack 1] [active 256]
+(0.007344) CooperativeThreadArray.cpp:310:   [PC: 14, counter: 14] tex.2d.v4.f32.f32 {%r14, %r15, %r16, %r17}, [surface, {%r10, %r11, %r12, %r13}] [stack 1] [active 256]
+(0.007398) CooperativeThreadArray.cpp:310:   [PC: 15, counter: 15] mov.f32 %r18, %r14 [stack 1] [active 256]
+(0.007414) CooperativeThreadArray.cpp:310:   [PC: 16, counter: 16] ld.param.u64 %r19, [__cudaparm__Z6kernelPfii_out] [stack 1] [active 256]
+(0.007438) CooperativeThreadArray.cpp:310:   [PC: 17, counter: 17] ld.param.u32 %r20, [__cudaparm__Z6kernelPfii_width + 8] [stack 1] [active 256]
+(0.007459) CooperativeThreadArray.cpp:310:   [PC: 18, counter: 18] mul.lo.u32 %r21, %r20, %r9 [stack 1] [active 256]
+(0.007477) CooperativeThreadArray.cpp:310:   [PC: 19, counter: 19] add.u32 %r22, %r7, %r21 [stack 1] [active 256]
+(0.007493) CooperativeThreadArray.cpp:310:   [PC: 20, counter: 20] cvt.u64.u32 %r23, %r22 [stack 1] [active 256]
+(0.007511) CooperativeThreadArray.cpp:310:   [PC: 21, counter: 21] mul.lo.u64 %r24, %r23, 4 [stack 1] [active 256]
+(0.007527) CooperativeThreadArray.cpp:310:   [PC: 22, counter: 22] add.u64 %r25, %r19, %r24 [stack 1] [active 256]
+(0.007544) CooperativeThreadArray.cpp:310:   [PC: 23, counter: 23] st.global.f32 [%r25 + 0], %r18 [stack 1] [active 256]
+(0.007566) CooperativeThreadArray.cpp:310:   [PC: 24, counter: 24] exit [stack 1] [active 256]
+(0.007573) CooperativeThreadArray.cpp:464:  kernel finished in 25 instructions
+(0.007588) CooperativeThreadArray.cpp:289:  CooperativeThreadArray::execute called
+(0.007595) CooperativeThreadArray.cpp:290:    block is 2, 1, 0
+(0.007606) CooperativeThreadArray.cpp:310:   [PC: 0, counter: 0] mov.u16 %r0, %ctaid.x [stack 1] [active 256]
+(0.007619) CooperativeThreadArray.cpp:310:   [PC: 1, counter: 1] mov.u16 %r1, %ntid.x [stack 1] [active 256]
+(0.007645) CooperativeThreadArray.cpp:310:   [PC: 2, counter: 2] mul.wide.u16 %r2, %r0, %r1 [stack 1] [active 256]
+(0.007659) CooperativeThreadArray.cpp:310:   [PC: 3, counter: 3] mov.u16 %r3, %ctaid.y [stack 1] [active 256]
+(0.007673) CooperativeThreadArray.cpp:310:   [PC: 4, counter: 4] mov.u16 %r4, %ntid.y [stack 1] [active 256]
+(0.007689) CooperativeThreadArray.cpp:310:   [PC: 5, counter: 5] mul.wide.u16 %r5, %r3, %r4 [stack 1] [active 256]
+(0.007704) CooperativeThreadArray.cpp:310:   [PC: 6, counter: 6] cvt.u32.u16 %r6, %tid.x [stack 1] [active 256]
+(0.007723) CooperativeThreadArray.cpp:310:   [PC: 7, counter: 7] add.u32 %r7, %r6, %r2 [stack 1] [active 256]
+(0.007738) CooperativeThreadArray.cpp:310:   [PC: 8, counter: 8] cvt.u32.u16 %r8, %tid.y [stack 1] [active 256]
+(0.007766) CooperativeThreadArray.cpp:310:   [PC: 9, counter: 9] add.u32 %r9, %r8, %r5 [stack 1] [active 256]
+(0.007783) CooperativeThreadArray.cpp:310:   [PC: 10, counter: 10] cvt.rn.f32.u32 %r10, %r7 [stack 1] [active 256]
+(0.007818) CooperativeThreadArray.cpp:310:   [PC: 11, counter: 11] cvt.rn.f32.u32 %r11, %r9 [stack 1] [active 256]
+(0.007852) CooperativeThreadArray.cpp:310:   [PC: 12, counter: 12] mov.f32 %r12, 0f00000000 [stack 1] [active 256]
+(0.007867) CooperativeThreadArray.cpp:310:   [PC: 13, counter: 13] mov.f32 %r13, 0f00000000 [stack 1] [active 256]
+(0.007898) CooperativeThreadArray.cpp:310:   [PC: 14, counter: 14] tex.2d.v4.f32.f32 {%r14, %r15, %r16, %r17}, [surface, {%r10, %r11, %r12, %r13}] [stack 1] [active 256]
+(0.007951) CooperativeThreadArray.cpp:310:   [PC: 15, counter: 15] mov.f32 %r18, %r14 [stack 1] [active 256]
+(0.007967) CooperativeThreadArray.cpp:310:   [PC: 16, counter: 16] ld.param.u64 %r19, [__cudaparm__Z6kernelPfii_out] [stack 1] [active 256]
+(0.007992) CooperativeThreadArray.cpp:310:   [PC: 17, counter: 17] ld.param.u32 %r20, [__cudaparm__Z6kernelPfii_width + 8] [stack 1] [active 256]
+(0.008013) CooperativeThreadArray.cpp:310:   [PC: 18, counter: 18] mul.lo.u32 %r21, %r20, %r9 [stack 1] [active 256]
+(0.008031) CooperativeThreadArray.cpp:310:   [PC: 19, counter: 19] add.u32 %r22, %r7, %r21 [stack 1] [active 256]
+(0.008047) CooperativeThreadArray.cpp:310:   [PC: 20, counter: 20] cvt.u64.u32 %r23, %r22 [stack 1] [active 256]
+(0.008065) CooperativeThreadArray.cpp:310:   [PC: 21, counter: 21] mul.lo.u64 %r24, %r23, 4 [stack 1] [active 256]
+(0.008082) CooperativeThreadArray.cpp:310:   [PC: 22, counter: 22] add.u64 %r25, %r19, %r24 [stack 1] [active 256]
+(0.008098) CooperativeThreadArray.cpp:310:   [PC: 23, counter: 23] st.global.f32 [%r25 + 0], %r18 [stack 1] [active 256]
+(0.008121) CooperativeThreadArray.cpp:310:   [PC: 24, counter: 24] exit [stack 1] [active 256]
+(0.008128) CooperativeThreadArray.cpp:464:  kernel finished in 25 instructions
+(0.008143) CooperativeThreadArray.cpp:289:  CooperativeThreadArray::execute called
+(0.008150) CooperativeThreadArray.cpp:290:    block is 2, 2, 0
+(0.008161) CooperativeThreadArray.cpp:310:   [PC: 0, counter: 0] mov.u16 %r0, %ctaid.x [stack 1] [active 256]
+(0.008175) CooperativeThreadArray.cpp:310:   [PC: 1, counter: 1] mov.u16 %r1, %ntid.x [stack 1] [active 256]
+(0.008192) CooperativeThreadArray.cpp:310:   [PC: 2, counter: 2] mul.wide.u16 %r2, %r0, %r1 [stack 1] [active 256]
+(0.008206) CooperativeThreadArray.cpp:310:   [PC: 3, counter: 3] mov.u16 %r3, %ctaid.y [stack 1] [active 256]
+(0.008219) CooperativeThreadArray.cpp:310:   [PC: 4, counter: 4] mov.u16 %r4, %ntid.y [stack 1] [active 256]
+(0.008236) CooperativeThreadArray.cpp:310:   [PC: 5, counter: 5] mul.wide.u16 %r5, %r3, %r4 [stack 1] [active 256]
+(0.008250) CooperativeThreadArray.cpp:310:   [PC: 6, counter: 6] cvt.u32.u16 %r6, %tid.x [stack 1] [active 256]
+(0.008269) CooperativeThreadArray.cpp:310:   [PC: 7, counter: 7] add.u32 %r7, %r6, %r2 [stack 1] [active 256]
+(0.008285) CooperativeThreadArray.cpp:310:   [PC: 8, counter: 8] cvt.u32.u16 %r8, %tid.y [stack 1] [active 256]
+(0.008303) CooperativeThreadArray.cpp:310:   [PC: 9, counter: 9] add.u32 %r9, %r8, %r5 [stack 1] [active 256]
+(0.008330) CooperativeThreadArray.cpp:310:   [PC: 10, counter: 10] cvt.rn.f32.u32 %r10, %r7 [stack 1] [active 256]
+(0.008365) CooperativeThreadArray.cpp:310:   [PC: 11, counter: 11] cvt.rn.f32.u32 %r11, %r9 [stack 1] [active 256]
+(0.008399) CooperativeThreadArray.cpp:310:   [PC: 12, counter: 12] mov.f32 %r12, 0f00000000 [stack 1] [active 256]
+(0.008414) CooperativeThreadArray.cpp:310:   [PC: 13, counter: 13] mov.f32 %r13, 0f00000000 [stack 1] [active 256]
+(0.008445) CooperativeThreadArray.cpp:310:   [PC: 14, counter: 14] tex.2d.v4.f32.f32 {%r14, %r15, %r16, %r17}, [surface, {%r10, %r11, %r12, %r13}] [stack 1] [active 256]
+(0.008498) CooperativeThreadArray.cpp:310:   [PC: 15, counter: 15] mov.f32 %r18, %r14 [stack 1] [active 256]
+(0.008514) CooperativeThreadArray.cpp:310:   [PC: 16, counter: 16] ld.param.u64 %r19, [__cudaparm__Z6kernelPfii_out] [stack 1] [active 256]
+(0.008538) CooperativeThreadArray.cpp:310:   [PC: 17, counter: 17] ld.param.u32 %r20, [__cudaparm__Z6kernelPfii_width + 8] [stack 1] [active 256]
+(0.008559) CooperativeThreadArray.cpp:310:   [PC: 18, counter: 18] mul.lo.u32 %r21, %r20, %r9 [stack 1] [active 256]
+(0.008577) CooperativeThreadArray.cpp:310:   [PC: 19, counter: 19] add.u32 %r22, %r7, %r21 [stack 1] [active 256]
+(0.008594) CooperativeThreadArray.cpp:310:   [PC: 20, counter: 20] cvt.u64.u32 %r23, %r22 [stack 1] [active 256]
+(0.008611) CooperativeThreadArray.cpp:310:   [PC: 21, counter: 21] mul.lo.u64 %r24, %r23, 4 [stack 1] [active 256]
+(0.008628) CooperativeThreadArray.cpp:310:   [PC: 22, counter: 22] add.u64 %r25, %r19, %r24 [stack 1] [active 256]
+(0.008644) CooperativeThreadArray.cpp:310:   [PC: 23, counter: 23] st.global.f32 [%r25 + 0], %r18 [stack 1] [active 256]
+(0.008667) CooperativeThreadArray.cpp:310:   [PC: 24, counter: 24] exit [stack 1] [active 256]
+(0.008674) CooperativeThreadArray.cpp:464:  kernel finished in 25 instructions
+(0.008689) CooperativeThreadArray.cpp:289:  CooperativeThreadArray::execute called
+(0.008696) CooperativeThreadArray.cpp:290:    block is 2, 3, 0
+(0.008707) CooperativeThreadArray.cpp:310:   [PC: 0, counter: 0] mov.u16 %r0, %ctaid.x [stack 1] [active 256]
+(0.008721) CooperativeThreadArray.cpp:310:   [PC: 1, counter: 1] mov.u16 %r1, %ntid.x [stack 1] [active 256]
+(0.008737) CooperativeThreadArray.cpp:310:   [PC: 2, counter: 2] mul.wide.u16 %r2, %r0, %r1 [stack 1] [active 256]
+(0.008752) CooperativeThreadArray.cpp:310:   [PC: 3, counter: 3] mov.u16 %r3, %ctaid.y [stack 1] [active 256]
+(0.008765) CooperativeThreadArray.cpp:310:   [PC: 4, counter: 4] mov.u16 %r4, %ntid.y [stack 1] [active 256]
+(0.008782) CooperativeThreadArray.cpp:310:   [PC: 5, counter: 5] mul.wide.u16 %r5, %r3, %r4 [stack 1] [active 256]
+(0.008797) CooperativeThreadArray.cpp:310:   [PC: 6, counter: 6] cvt.u32.u16 %r6, %tid.x [stack 1] [active 256]
+(0.008815) CooperativeThreadArray.cpp:310:   [PC: 7, counter: 7] add.u32 %r7, %r6, %r2 [stack 1] [active 256]
+(0.008831) CooperativeThreadArray.cpp:310:   [PC: 8, counter: 8] cvt.u32.u16 %r8, %tid.y [stack 1] [active 256]
+(0.008849) CooperativeThreadArray.cpp:310:   [PC: 9, counter: 9] add.u32 %r9, %r8, %r5 [stack 1] [active 256]
+(0.008867) CooperativeThreadArray.cpp:310:   [PC: 10, counter: 10] cvt.rn.f32.u32 %r10, %r7 [stack 1] [active 256]
+(0.008901) CooperativeThreadArray.cpp:310:   [PC: 11, counter: 11] cvt.rn.f32.u32 %r11, %r9 [stack 1] [active 256]
+(0.008935) CooperativeThreadArray.cpp:310:   [PC: 12, counter: 12] mov.f32 %r12, 0f00000000 [stack 1] [active 256]
+(0.008950) CooperativeThreadArray.cpp:310:   [PC: 13, counter: 13] mov.f32 %r13, 0f00000000 [stack 1] [active 256]
+(0.008980) CooperativeThreadArray.cpp:310:   [PC: 14, counter: 14] tex.2d.v4.f32.f32 {%r14, %r15, %r16, %r17}, [surface, {%r10, %r11, %r12, %r13}] [stack 1] [active 256]
+(0.009034) CooperativeThreadArray.cpp:310:   [PC: 15, counter: 15] mov.f32 %r18, %r14 [stack 1] [active 256]
+(0.009049) CooperativeThreadArray.cpp:310:   [PC: 16, counter: 16] ld.param.u64 %r19, [__cudaparm__Z6kernelPfii_out] [stack 1] [active 256]
+(0.009074) CooperativeThreadArray.cpp:310:   [PC: 17, counter: 17] ld.param.u32 %r20, [__cudaparm__Z6kernelPfii_width + 8] [stack 1] [active 256]
+(0.009104) CooperativeThreadArray.cpp:310:   [PC: 18, counter: 18] mul.lo.u32 %r21, %r20, %r9 [stack 1] [active 256]
+(0.009122) CooperativeThreadArray.cpp:310:   [PC: 19, counter: 19] add.u32 %r22, %r7, %r21 [stack 1] [active 256]
+(0.009138) CooperativeThreadArray.cpp:310:   [PC: 20, counter: 20] cvt.u64.u32 %r23, %r22 [stack 1] [active 256]
+(0.009156) CooperativeThreadArray.cpp:310:   [PC: 21, counter: 21] mul.lo.u64 %r24, %r23, 4 [stack 1] [active 256]
+(0.009173) CooperativeThreadArray.cpp:310:   [PC: 22, counter: 22] add.u64 %r25, %r19, %r24 [stack 1] [active 256]
+(0.009190) CooperativeThreadArray.cpp:310:   [PC: 23, counter: 23] st.global.f32 [%r25 + 0], %r18 [stack 1] [active 256]
+(0.009212) CooperativeThreadArray.cpp:310:   [PC: 24, counter: 24] exit [stack 1] [active 256]
+(0.009220) CooperativeThreadArray.cpp:464:  kernel finished in 25 instructions
+(0.009235) CooperativeThreadArray.cpp:289:  CooperativeThreadArray::execute called
+(0.009242) CooperativeThreadArray.cpp:290:    block is 3, 0, 0
+(0.009253) CooperativeThreadArray.cpp:310:   [PC: 0, counter: 0] mov.u16 %r0, %ctaid.x [stack 1] [active 256]
+(0.009266) CooperativeThreadArray.cpp:310:   [PC: 1, counter: 1] mov.u16 %r1, %ntid.x [stack 1] [active 256]
+(0.009283) CooperativeThreadArray.cpp:310:   [PC: 2, counter: 2] mul.wide.u16 %r2, %r0, %r1 [stack 1] [active 256]
+(0.009298) CooperativeThreadArray.cpp:310:   [PC: 3, counter: 3] mov.u16 %r3, %ctaid.y [stack 1] [active 256]
+(0.009311) CooperativeThreadArray.cpp:310:   [PC: 4, counter: 4] mov.u16 %r4, %ntid.y [stack 1] [active 256]
+(0.009327) CooperativeThreadArray.cpp:310:   [PC: 5, counter: 5] mul.wide.u16 %r5, %r3, %r4 [stack 1] [active 256]
+(0.009342) CooperativeThreadArray.cpp:310:   [PC: 6, counter: 6] cvt.u32.u16 %r6, %tid.x [stack 1] [active 256]
+(0.009361) CooperativeThreadArray.cpp:310:   [PC: 7, counter: 7] add.u32 %r7, %r6, %r2 [stack 1] [active 256]
+(0.009377) CooperativeThreadArray.cpp:310:   [PC: 8, counter: 8] cvt.u32.u16 %r8, %tid.y [stack 1] [active 256]
+(0.009395) CooperativeThreadArray.cpp:310:   [PC: 9, counter: 9] add.u32 %r9, %r8, %r5 [stack 1] [active 256]
+(0.009412) CooperativeThreadArray.cpp:310:   [PC: 10, counter: 10] cvt.rn.f32.u32 %r10, %r7 [stack 1] [active 256]
+(0.009447) CooperativeThreadArray.cpp:310:   [PC: 11, counter: 11] cvt.rn.f32.u32 %r11, %r9 [stack 1] [active 256]
+(0.009480) CooperativeThreadArray.cpp:310:   [PC: 12, counter: 12] mov.f32 %r12, 0f00000000 [stack 1] [active 256]
+(0.009495) CooperativeThreadArray.cpp:310:   [PC: 13, counter: 13] mov.f32 %r13, 0f00000000 [stack 1] [active 256]
+(0.009526) CooperativeThreadArray.cpp:310:   [PC: 14, counter: 14] tex.2d.v4.f32.f32 {%r14, %r15, %r16, %r17}, [surface, {%r10, %r11, %r12, %r13}] [stack 1] [active 256]
+(0.009580) CooperativeThreadArray.cpp:310:   [PC: 15, counter: 15] mov.f32 %r18, %r14 [stack 1] [active 256]
+(0.009596) CooperativeThreadArray.cpp:310:   [PC: 16, counter: 16] ld.param.u64 %r19, [__cudaparm__Z6kernelPfii_out] [stack 1] [active 256]
+(0.009620) CooperativeThreadArray.cpp:310:   [PC: 17, counter: 17] ld.param.u32 %r20, [__cudaparm__Z6kernelPfii_width + 8] [stack 1] [active 256]
+(0.009641) CooperativeThreadArray.cpp:310:   [PC: 18, counter: 18] mul.lo.u32 %r21, %r20, %r9 [stack 1] [active 256]
+(0.009659) CooperativeThreadArray.cpp:310:   [PC: 19, counter: 19] add.u32 %r22, %r7, %r21 [stack 1] [active 256]
+(0.009675) CooperativeThreadArray.cpp:310:   [PC: 20, counter: 20] cvt.u64.u32 %r23, %r22 [stack 1] [active 256]
+(0.009693) CooperativeThreadArray.cpp:310:   [PC: 21, counter: 21] mul.lo.u64 %r24, %r23, 4 [stack 1] [active 256]
+(0.009710) CooperativeThreadArray.cpp:310:   [PC: 22, counter: 22] add.u64 %r25, %r19, %r24 [stack 1] [active 256]
+(0.009726) CooperativeThreadArray.cpp:310:   [PC: 23, counter: 23] st.global.f32 [%r25 + 0], %r18 [stack 1] [active 256]
+(0.009748) CooperativeThreadArray.cpp:310:   [PC: 24, counter: 24] exit [stack 1] [active 256]
+(0.009756) CooperativeThreadArray.cpp:464:  kernel finished in 25 instructions
+(0.009778) CooperativeThreadArray.cpp:289:  CooperativeThreadArray::execute called
+(0.009785) CooperativeThreadArray.cpp:290:    block is 3, 1, 0
+(0.009796) CooperativeThreadArray.cpp:310:   [PC: 0, counter: 0] mov.u16 %r0, %ctaid.x [stack 1] [active 256]
+(0.009810) CooperativeThreadArray.cpp:310:   [PC: 1, counter: 1] mov.u16 %r1, %ntid.x [stack 1] [active 256]
+(0.009827) CooperativeThreadArray.cpp:310:   [PC: 2, counter: 2] mul.wide.u16 %r2, %r0, %r1 [stack 1] [active 256]
+(0.009841) CooperativeThreadArray.cpp:310:   [PC: 3, counter: 3] mov.u16 %r3, %ctaid.y [stack 1] [active 256]
+(0.009854) CooperativeThreadArray.cpp:310:   [PC: 4, counter: 4] mov.u16 %r4, %ntid.y [stack 1] [active 256]
+(0.009871) CooperativeThreadArray.cpp:310:   [PC: 5, counter: 5] mul.wide.u16 %r5, %r3, %r4 [stack 1] [active 256]
+(0.009886) CooperativeThreadArray.cpp:310:   [PC: 6, counter: 6] cvt.u32.u16 %r6, %tid.x [stack 1] [active 256]
+(0.009905) CooperativeThreadArray.cpp:310:   [PC: 7, counter: 7] add.u32 %r7, %r6, %r2 [stack 1] [active 256]
+(0.009920) CooperativeThreadArray.cpp:310:   [PC: 8, counter: 8] cvt.u32.u16 %r8, %tid.y [stack 1] [active 256]
+(0.009938) CooperativeThreadArray.cpp:310:   [PC: 9, counter: 9] add.u32 %r9, %r8, %r5 [stack 1] [active 256]
+(0.009955) CooperativeThreadArray.cpp:310:   [PC: 10, counter: 10] cvt.rn.f32.u32 %r10, %r7 [stack 1] [active 256]
+(0.009990) CooperativeThreadArray.cpp:310:   [PC: 11, counter: 11] cvt.rn.f32.u32 %r11, %r9 [stack 1] [active 256]
+(0.010024) CooperativeThreadArray.cpp:310:   [PC: 12, counter: 12] mov.f32 %r12, 0f00000000 [stack 1] [active 256]
+(0.010039) CooperativeThreadArray.cpp:310:   [PC: 13, counter: 13] mov.f32 %r13, 0f00000000 [stack 1] [active 256]
+(0.010069) CooperativeThreadArray.cpp:310:   [PC: 14, counter: 14] tex.2d.v4.f32.f32 {%r14, %r15, %r16, %r17}, [surface, {%r10, %r11, %r12, %r13}] [stack 1] [active 256]
+(0.010122) CooperativeThreadArray.cpp:310:   [PC: 15, counter: 15] mov.f32 %r18, %r14 [stack 1] [active 256]
+(0.010138) CooperativeThreadArray.cpp:310:   [PC: 16, counter: 16] ld.param.u64 %r19, [__cudaparm__Z6kernelPfii_out] [stack 1] [active 256]
+(0.010162) CooperativeThreadArray.cpp:310:   [PC: 17, counter: 17] ld.param.u32 %r20, [__cudaparm__Z6kernelPfii_width + 8] [stack 1] [active 256]
+(0.010184) CooperativeThreadArray.cpp:310:   [PC: 18, counter: 18] mul.lo.u32 %r21, %r20, %r9 [stack 1] [active 256]
+(0.010201) CooperativeThreadArray.cpp:310:   [PC: 19, counter: 19] add.u32 %r22, %r7, %r21 [stack 1] [active 256]
+(0.010218) CooperativeThreadArray.cpp:310:   [PC: 20, counter: 20] cvt.u64.u32 %r23, %r22 [stack 1] [active 256]
+(0.010236) CooperativeThreadArray.cpp:310:   [PC: 21, counter: 21] mul.lo.u64 %r24, %r23, 4 [stack 1] [active 256]
+(0.010253) CooperativeThreadArray.cpp:310:   [PC: 22, counter: 22] add.u64 %r25, %r19, %r24 [stack 1] [active 256]
+(0.010269) CooperativeThreadArray.cpp:310:   [PC: 23, counter: 23] st.global.f32 [%r25 + 0], %r18 [stack 1] [active 256]
+(0.010292) CooperativeThreadArray.cpp:310:   [PC: 24, counter: 24] exit [stack 1] [active 256]
+(0.010299) CooperativeThreadArray.cpp:464:  kernel finished in 25 instructions
+(0.010314) CooperativeThreadArray.cpp:289:  CooperativeThreadArray::execute called
+(0.010321) CooperativeThreadArray.cpp:290:    block is 3, 2, 0
+(0.010332) CooperativeThreadArray.cpp:310:   [PC: 0, counter: 0] mov.u16 %r0, %ctaid.x [stack 1] [active 256]
+(0.010346) CooperativeThreadArray.cpp:310:   [PC: 1, counter: 1] mov.u16 %r1, %ntid.x [stack 1] [active 256]
+(0.010363) CooperativeThreadArray.cpp:310:   [PC: 2, counter: 2] mul.wide.u16 %r2, %r0, %r1 [stack 1] [active 256]
+(0.010377) CooperativeThreadArray.cpp:310:   [PC: 3, counter: 3] mov.u16 %r3, %ctaid.y [stack 1] [active 256]
+(0.010390) CooperativeThreadArray.cpp:310:   [PC: 4, counter: 4] mov.u16 %r4, %ntid.y [stack 1] [active 256]
+(0.010407) CooperativeThreadArray.cpp:310:   [PC: 5, counter: 5] mul.wide.u16 %r5, %r3, %r4 [stack 1] [active 256]
+(0.010422) CooperativeThreadArray.cpp:310:   [PC: 6, counter: 6] cvt.u32.u16 %r6, %tid.x [stack 1] [active 256]
+(0.010440) CooperativeThreadArray.cpp:310:   [PC: 7, counter: 7] add.u32 %r7, %r6, %r2 [stack 1] [active 256]
+(0.010464) CooperativeThreadArray.cpp:310:   [PC: 8, counter: 8] cvt.u32.u16 %r8, %tid.y [stack 1] [active 256]
+(0.010484) CooperativeThreadArray.cpp:310:   [PC: 9, counter: 9] add.u32 %r9, %r8, %r5 [stack 1] [active 256]
+(0.010500) CooperativeThreadArray.cpp:310:   [PC: 10, counter: 10] cvt.rn.f32.u32 %r10, %r7 [stack 1] [active 256]
+(0.010535) CooperativeThreadArray.cpp:310:   [PC: 11, counter: 11] cvt.rn.f32.u32 %r11, %r9 [stack 1] [active 256]
+(0.010569) CooperativeThreadArray.cpp:310:   [PC: 12, counter: 12] mov.f32 %r12, 0f00000000 [stack 1] [active 256]
+(0.010584) CooperativeThreadArray.cpp:310:   [PC: 13, counter: 13] mov.f32 %r13, 0f00000000 [stack 1] [active 256]
+(0.010614) CooperativeThreadArray.cpp:310:   [PC: 14, counter: 14] tex.2d.v4.f32.f32 {%r14, %r15, %r16, %r17}, [surface, {%r10, %r11, %r12, %r13}] [stack 1] [active 256]
+(0.010668) CooperativeThreadArray.cpp:310:   [PC: 15, counter: 15] mov.f32 %r18, %r14 [stack 1] [active 256]
+(0.010683) CooperativeThreadArray.cpp:310:   [PC: 16, counter: 16] ld.param.u64 %r19, [__cudaparm__Z6kernelPfii_out] [stack 1] [active 256]
+(0.010708) CooperativeThreadArray.cpp:310:   [PC: 17, counter: 17] ld.param.u32 %r20, [__cudaparm__Z6kernelPfii_width + 8] [stack 1] [active 256]
+(0.010729) CooperativeThreadArray.cpp:310:   [PC: 18, counter: 18] mul.lo.u32 %r21, %r20, %r9 [stack 1] [active 256]
+(0.010746) CooperativeThreadArray.cpp:310:   [PC: 19, counter: 19] add.u32 %r22, %r7, %r21 [stack 1] [active 256]
+(0.010763) CooperativeThreadArray.cpp:310:   [PC: 20, counter: 20] cvt.u64.u32 %r23, %r22 [stack 1] [active 256]
+(0.010780) CooperativeThreadArray.cpp:310:   [PC: 21, counter: 21] mul.lo.u64 %r24, %r23, 4 [stack 1] [active 256]
+(0.010797) CooperativeThreadArray.cpp:310:   [PC: 22, counter: 22] add.u64 %r25, %r19, %r24 [stack 1] [active 256]
+(0.010813) CooperativeThreadArray.cpp:310:   [PC: 23, counter: 23] st.global.f32 [%r25 + 0], %r18 [stack 1] [active 256]
+(0.010835) CooperativeThreadArray.cpp:310:   [PC: 24, counter: 24] exit [stack 1] [active 256]
+(0.010843) CooperativeThreadArray.cpp:464:  kernel finished in 25 instructions
+(0.010857) CooperativeThreadArray.cpp:289:  CooperativeThreadArray::execute called
+(0.010864) CooperativeThreadArray.cpp:290:    block is 3, 3, 0
+(0.010875) CooperativeThreadArray.cpp:310:   [PC: 0, counter: 0] mov.u16 %r0, %ctaid.x [stack 1] [active 256]
+(0.010888) CooperativeThreadArray.cpp:310:   [PC: 1, counter: 1] mov.u16 %r1, %ntid.x [stack 1] [active 256]
+(0.010906) CooperativeThreadArray.cpp:310:   [PC: 2, counter: 2] mul.wide.u16 %r2, %r0, %r1 [stack 1] [active 256]
+(0.010920) CooperativeThreadArray.cpp:310:   [PC: 3, counter: 3] mov.u16 %r3, %ctaid.y [stack 1] [active 256]
+(0.010933) CooperativeThreadArray.cpp:310:   [PC: 4, counter: 4] mov.u16 %r4, %ntid.y [stack 1] [active 256]
+(0.010950) CooperativeThreadArray.cpp:310:   [PC: 5, counter: 5] mul.wide.u16 %r5, %r3, %r4 [stack 1] [active 256]
+(0.010964) CooperativeThreadArray.cpp:310:   [PC: 6, counter: 6] cvt.u32.u16 %r6, %tid.x [stack 1] [active 256]
+(0.010983) CooperativeThreadArray.cpp:310:   [PC: 7, counter: 7] add.u32 %r7, %r6, %r2 [stack 1] [active 256]
+(0.010998) CooperativeThreadArray.cpp:310:   [PC: 8, counter: 8] cvt.u32.u16 %r8, %tid.y [stack 1] [active 256]
+(0.011017) CooperativeThreadArray.cpp:310:   [PC: 9, counter: 9] add.u32 %r9, %r8, %r5 [stack 1] [active 256]
+(0.011034) CooperativeThreadArray.cpp:310:   [PC: 10, counter: 10] cvt.rn.f32.u32 %r10, %r7 [stack 1] [active 256]
+(0.011068) CooperativeThreadArray.cpp:310:   [PC: 11, counter: 11] cvt.rn.f32.u32 %r11, %r9 [stack 1] [active 256]
+(0.011102) CooperativeThreadArray.cpp:310:   [PC: 12, counter: 12] mov.f32 %r12, 0f00000000 [stack 1] [active 256]
+(0.011117) CooperativeThreadArray.cpp:310:   [PC: 13, counter: 13] mov.f32 %r13, 0f00000000 [stack 1] [active 256]
+(0.011147) CooperativeThreadArray.cpp:310:   [PC: 14, counter: 14] tex.2d.v4.f32.f32 {%r14, %r15, %r16, %r17}, [surface, {%r10, %r11, %r12, %r13}] [stack 1] [active 256]
+(0.011209) CooperativeThreadArray.cpp:310:   [PC: 15, counter: 15] mov.f32 %r18, %r14 [stack 1] [active 256]
+(0.011225) CooperativeThreadArray.cpp:310:   [PC: 16, counter: 16] ld.param.u64 %r19, [__cudaparm__Z6kernelPfii_out] [stack 1] [active 256]
+(0.011249) CooperativeThreadArray.cpp:310:   [PC: 17, counter: 17] ld.param.u32 %r20, [__cudaparm__Z6kernelPfii_width + 8] [stack 1] [active 256]
+(0.011271) CooperativeThreadArray.cpp:310:   [PC: 18, counter: 18] mul.lo.u32 %r21, %r20, %r9 [stack 1] [active 256]
+(0.011288) CooperativeThreadArray.cpp:310:   [PC: 19, counter: 19] add.u32 %r22, %r7, %r21 [stack 1] [active 256]
+(0.011305) CooperativeThreadArray.cpp:310:   [PC: 20, counter: 20] cvt.u64.u32 %r23, %r22 [stack 1] [active 256]
+(0.011323) CooperativeThreadArray.cpp:310:   [PC: 21, counter: 21] mul.lo.u64 %r24, %r23, 4 [stack 1] [active 256]
+(0.011340) CooperativeThreadArray.cpp:310:   [PC: 22, counter: 22] add.u64 %r25, %r19, %r24 [stack 1] [active 256]
+(0.011356) CooperativeThreadArray.cpp:310:   [PC: 23, counter: 23] st.global.f32 [%r25 + 0], %r18 [stack 1] [active 256]
+(0.011378) CooperativeThreadArray.cpp:310:   [PC: 24, counter: 24] exit [stack 1] [active 256]
+(0.011386) CooperativeThreadArray.cpp:464:  kernel finished in 25 instructions
+Pass/Fail : Pass
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestDeviceSwitching 
+INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestDeviceSwitching
+INFO     Test completed in 0.0385060310364 seconds
+INFO      It produced the following output:
+(0.001150) CooperativeThreadArray.cpp:289:  CooperativeThreadArray::execute called
+(0.001172) CooperativeThreadArray.cpp:290:    block is 0, 0, 0
+(0.001194) CooperativeThreadArray.cpp:310:   [PC: 0, counter: 0] ld.param.u64 %r0, [memory] [stack 1] [active 1]
+(0.001222) CooperativeThreadArray.cpp:310:   [PC: 1, counter: 1] ld.global.u32 %r1, [%r0 + 0] [stack 1] [active 1]
+(0.001247) CooperativeThreadArray.cpp:310:   [PC: 2, counter: 2] add.u32 %r2, %r1, 1 [stack 1] [active 1]
+(0.001267) CooperativeThreadArray.cpp:310:   [PC: 3, counter: 3] st.global.u32 [%r0 + 0], %r2 [stack 1] [active 1]
+(0.001279) CooperativeThreadArray.cpp:310:   [PC: 4, counter: 4] exit [stack 1] [active 1]
+(0.001287) CooperativeThreadArray.cpp:464:  kernel finished in 5 instructions
+(0.001584) CooperativeThreadArray.cpp:289:  CooperativeThreadArray::execute called
+(0.001592) CooperativeThreadArray.cpp:290:    block is 0, 0, 0
+(0.001605) CooperativeThreadArray.cpp:310:   [PC: 0, counter: 0] ld.param.u64 %r0, [memory] [stack 1] [active 1]
+(0.001621) CooperativeThreadArray.cpp:310:   [PC: 1, counter: 1] ld.global.u32 %r1, [%r0 + 0] [stack 1] [active 1]
+(0.001637) CooperativeThreadArray.cpp:310:   [PC: 2, counter: 2] add.u32 %r2, %r1, 1 [stack 1] [active 1]
+(0.001650) CooperativeThreadArray.cpp:310:   [PC: 3, counter: 3] st.global.u32 [%r0 + 0], %r2 [stack 1] [active 1]
+(0.001659) CooperativeThreadArray.cpp:310:   [PC: 4, counter: 4] exit [stack 1] [active 1]
+(0.001667) CooperativeThreadArray.cpp:464:  kernel finished in 5 instructions
+(0.002064) CooperativeThreadArray.cpp:289:  CooperativeThreadArray::execute called
+(0.002073) CooperativeThreadArray.cpp:290:    block is 0, 0, 0
+(0.002090) CooperativeThreadArray.cpp:310:   [PC: 0, counter: 0] ld.param.u64 %r0, [memory] [stack 1] [active 1]
+(0.002106) CooperativeThreadArray.cpp:310:   [PC: 1, counter: 1] ld.global.u32 %r1, [%r0 + 0] [stack 1] [active 1]
+(0.002123) CooperativeThreadArray.cpp:310:   [PC: 2, counter: 2] add.u32 %r2, %r1, 1 [stack 1] [active 1]
+(0.002137) CooperativeThreadArray.cpp:310:   [PC: 3, counter: 3] st.global.u32 [%r0 + 0], %r2 [stack 1] [active 1]
+(0.002146) CooperativeThreadArray.cpp:310:   [PC: 4, counter: 4] exit [stack 1] [active 1]
+(0.002154) CooperativeThreadArray.cpp:464:  kernel finished in 5 instructions
+Pass/Fail : Pass
+
+
+Name : TestDeviceSwitching
+
+Description: A unit test for the ability of the CUDA runtime to switch 
+             between devices and use multiple threads Test Points: 1) In a single 
+             threaded application, iterate across all devices launching the same 
+             simple kernel each time 2) Test context migration support in 
+             ocelot. Iterate across all devices, launching a simple kernel that 
+             updates shared variable. Use the context switch mechanism to 
+             migrate the shared data. 3) Test multi-threading support. Launch one 
+             host thread to allocate memory, pass pointers to worker 
+             threads, each of which should launch independent kernels in 
+             parallel.
+
+
+Test Seed : 1289841376
+Test time : 0.0019958
+
+Status : Test Point 1 Passed
+Test Point 2 Passed
+Test Point 3 Passed
+
+
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestInstructions 
 INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestInstructions
-INFO     Test completed in 0.0374760627747 seconds
+INFO     Test completed in 0.0362770557404 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -544,8 +1853,8 @@ Name : TestInstructions
 Description: 
 
 
-Test Seed : 1289593374
-Test time : 0.000387192
+Test Seed : 1289841376
+Test time : 0.000365734
 
 Status : Test output:
 Accessors test passed.
@@ -562,7 +1871,7 @@ pass: control flow instructions
 
 
 INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestParser
-INFO     Test completed in 15.0636150837 seconds
+INFO     Test completed in 14.2028720379 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -575,8 +1884,8 @@ Description: A test for the PTXParser class. Test Points: 1) Load a PTX file
              generating a new module, compare both to make sure that they match.
 
 
-Test Seed : 1289593365
-Test time : 15.0249
+Test Seed : 1289841367
+Test time : 14.1703
 
 Status : For file ../tests/ptx/sdk2.2/simpleTexture.ptx, Test Point 1 (Parse): Passed
 For file ../tests/ptx/sdk2.2/simpleAtomicIntrinsics.ptx, Test Point 1 (Parse): Passed
@@ -832,7 +2141,7 @@ For file ../tests/ptx/synthetic/barrier.ptx, Test Point 1 (Parse): Passed
 
 
 INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestPTXToLLVMTranslator
-INFO     Test completed in 20.9998149872 seconds
+INFO     Test completed in 20.5140240192 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -845,8 +2154,8 @@ Description: This is a basic test that just tries to get through a
              translate them.
 
 
-Test Seed : 1289593365
-Test time : 20.9677
+Test Seed : 1289841367
+Test time : 20.4777
 
 Status : For file ../tests/ptx/sdk2.2/simpleTexture.ptx, Test Point 1 (Translate): Passed
 For file ../tests/ptx/sdk2.2/simpleAtomicIntrinsics.ptx, Test Point 1 (Translate): Passed
@@ -1102,7 +2411,7 @@ For file ../tests/ptx/synthetic/barrier.ptx, Test Point 1 (Translate): Passed
 
 
 INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestDataflowGraph
-INFO     Test completed in 22.1578950882 seconds
+INFO     Test completed in 21.6046979427 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -1117,8 +2426,8 @@ Description: A test for the DataflowGraph class. Test Points: 1)
              ranges spanning blocks are consistent.
 
 
-Test Seed : 1289593364
-Test time : 22.1166
+Test Seed : 1289841367
+Test time : 21.5604
 
 Status : Testing Generic Dataflow
  For File: ../tests/ptx/sdk2.2/simpleTexture.ptx
@@ -4935,21 +6244,21 @@ Testing SSA then back Dataflow
 
 INFO     
 Passing tests:
- (15.064s) : /home/andrew/repositories/gpuocelot/ocelot/TestParser : Passed
- (0.037s) : /home/andrew/repositories/gpuocelot/ocelot/TestInstructions : Passed
- (0.036s) : /home/andrew/repositories/gpuocelot/ocelot/TestEmulator : Passed
- (0.067s) : /home/andrew/repositories/gpuocelot/ocelot/TestCudaSequence : Passed
- (0.077s) : /home/andrew/repositories/gpuocelot/ocelot/TestCudaTextureArray : Passed
- (22.158s) : /home/andrew/repositories/gpuocelot/ocelot/TestDataflowGraph : Passed
- (21.000s) : /home/andrew/repositories/gpuocelot/ocelot/TestPTXToLLVMTranslator : Passed
- (0.044s) : /home/andrew/repositories/gpuocelot/ocelot/TestLLVMInstructions : Passed
- (0.083s) : /home/andrew/repositories/gpuocelot/ocelot/TestCudaTexture2D : Passed
- (0.052s) : /home/andrew/repositories/gpuocelot/ocelot/TestKernels : Passed
- (9.249s) : /home/andrew/repositories/gpuocelot/ocelot/TestLexer : Passed
- (0.033s) : /home/andrew/repositories/gpuocelot/ocelot/TestCudaGlobals : Passed
- (0.073s) : /home/andrew/repositories/gpuocelot/ocelot/TestCudaMalloc : Passed
- (0.091s) : /home/andrew/repositories/gpuocelot/ocelot/TestLLVMKernels : Passed
- (0.035s) : /home/andrew/repositories/gpuocelot/ocelot/TestDeviceSwitching : Passed
+ (14.203s) : /home/andrew/repositories/gpuocelot/ocelot/TestParser : Passed
+ (0.036s) : /home/andrew/repositories/gpuocelot/ocelot/TestInstructions : Passed
+ (0.040s) : /home/andrew/repositories/gpuocelot/ocelot/TestEmulator : Passed
+ (0.054s) : /home/andrew/repositories/gpuocelot/ocelot/TestCudaSequence : Passed
+ (0.050s) : /home/andrew/repositories/gpuocelot/ocelot/TestCudaTextureArray : Passed
+ (21.605s) : /home/andrew/repositories/gpuocelot/ocelot/TestDataflowGraph : Passed
+ (0.039s) : /home/andrew/repositories/gpuocelot/ocelot/TestDeviceSwitching : Passed
+ (0.038s) : /home/andrew/repositories/gpuocelot/ocelot/TestLLVMInstructions : Passed
+ (0.052s) : /home/andrew/repositories/gpuocelot/ocelot/TestCudaTexture2D : Passed
+ (0.055s) : /home/andrew/repositories/gpuocelot/ocelot/TestKernels : Passed
+ (8.403s) : /home/andrew/repositories/gpuocelot/ocelot/TestLexer : Passed
+ (0.035s) : /home/andrew/repositories/gpuocelot/ocelot/TestCudaGlobals : Passed
+ (0.079s) : /home/andrew/repositories/gpuocelot/ocelot/TestCudaMalloc : Passed
+ (0.082s) : /home/andrew/repositories/gpuocelot/ocelot/TestLLVMKernels : Passed
+ (20.514s) : /home/andrew/repositories/gpuocelot/ocelot/TestPTXToLLVMTranslator : Passed
 
 Failing tests:
 

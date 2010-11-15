@@ -14,13 +14,13 @@
 			alwaysAttach: true
 		},
 		performanceBound: {
-			enabled: true,
+			enabled: false,
 			protocol: sm_20,
 			render: false,
 			output: csv
 		},
 		controlFlowVisualizer: {
-			enabled: true,
+			enabled: false,
 			allInstructions: false
 		}
 	},

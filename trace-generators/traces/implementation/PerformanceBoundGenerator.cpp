@@ -335,23 +335,22 @@ void trace::PerformanceBoundGenerator::finish() {
 		reconverge = (reconverge ? reconverge : "unknown-reconverge");
 	
 		// appliction, reconvergence method, kernel name, counter, warp instructions, dynamic scalar instructions, 
-		resultsFile << app << ", " << reconverge << ", " << _entry.name << ", " << _counter << ", "
+		resultsFile 
+			<< app << ", " 
+			<< reconverge
+			<< _entry.name << ", " 
+			<< _counter << ", "
 			<< counterMap["entry"].warpInstructions << ", " 
 			<< counterMap["entry"].instructions << ", "
 			<< counterMap["entry"].stackVisitEnd << ", "
 			<< counterMap["entry"].stackVisitMiddle << ", "
 			<< counterMap["entry"].stackInsert << ", "
 			<< counterMap["entry"].stackMerge << ", "
-			<< (double)counterMap["entry"].stackDepth / (double)counterMap["entry"].warpInstructions << ", ";
-			
-		if (counterMap["entry"].branchInstructions) {
-			resultsFile << counterMap["entry"].stackVisitNodes / (double)counterMap["entry"].branchInstructions;
-		}
-		else {
-			resultsFile << 0;
-		}
-		
-		resultsFile << ", " << counterMap["entry"].conservativeBranches << ", " << counterMap["entry"].noopInstructions;
+			<< (double)counterMap["entry"].stackDepth / (double)counterMap["entry"].warpInstructions << ", "
+			<< counterMap["entry"].branchInstructions << ", "
+			<< counterMap["entry"].stackVisitNodes << ", "
+			<< counterMap["entry"].conservativeBranches << ", "
+			<< counterMap["entry"].noopInstructions;
 		
 		resultsFile	<< std::endl;
 
@@ -408,12 +407,12 @@ void trace::PerformanceBoundGenerator::event(const trace::TraceEvent &event) {
 	
 	if (event.instruction->opcode == ir::PTXInstruction::Bra) {
 		op->second.branchInstructions ++;
-		op->second.stackVisitEnd += event.stackVisitEnd;
-		op->second.stackVisitMiddle += event.stackVisitMiddle;
-		op->second.stackInsert += event.stackInsert;
-		op->second.stackMerge += event.stackMerge;
-		op->second.stackVisitNodes += event.stackVisitNodes;
-		op->second.conservativeBranches += event.conservativeBranches;
+		op->second.stackVisitEnd += event.reconvergence.stackVisitEnd;
+		op->second.stackVisitMiddle += event.reconvergence.stackVisitMiddle;
+		op->second.stackInsert += event.reconvergence.stackInsert;
+		op->second.stackMerge += event.reconvergence.stackMerge;
+		op->second.stackVisitNodes += event.reconvergence.stackVisitNodes;
+		op->second.conservativeBranches += (event.reconvergence.conservativeBranch ? 1 : 0);
 	}
 	
 	if (isFlop(*event.instruction)) {

@@ -22,6 +22,15 @@ trace::ReconvergenceTraceEvent::ReconvergenceTraceEvent():
 
 }
 
+void trace::ReconvergenceTraceEvent::reset() {
+	stackVisitNodes = 0;
+	stackVisitEnd = 0;
+	stackVisitMiddle = 0;
+	stackInsert = 0;
+	stackMerge = 0;
+	conservativeBranch = false;
+}
+
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
 trace::TraceEvent::TraceEvent():
@@ -55,6 +64,12 @@ trace::TraceEvent::TraceEvent(
 	blockDim(0, 0, 0)
 {
 
+}
+
+void trace::TraceEvent::reset() {
+	reconvergence.reset();
+	memory_size = 0;
+	memory_addresses.clear();
 }
 
 std::string trace::TraceEvent::toString() const

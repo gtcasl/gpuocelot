@@ -39,6 +39,7 @@
 executive::ReconvergenceMechanism::ReconvergenceMechanism(
 	const EmulatedKernel *_kernel, CooperativeThreadArray *_cta)
 : 
+	type(Reconverge_default),
 	kernel(_kernel),
 	cta(_cta)
 {
@@ -47,6 +48,7 @@ executive::ReconvergenceMechanism::ReconvergenceMechanism(
 executive::ReconvergenceMechanism::ReconvergenceMechanism(
 	 CooperativeThreadArray *_cta)
 : 
+	type(Reconverge_default),
 	kernel(0),
 	cta(_cta)
 {
@@ -121,6 +123,22 @@ const size_t executive::ReconvergenceMechanism::stackSize() const {
 	return runtimeStack.size();
 }
 
+
+//! \brief gets a string-representation of the type
+std::string executive::ReconvergenceMechanism::toString(Type type) {
+	switch (type) {
+	case Reconverge_IPDOM: return "ipdom";
+	case Reconverge_Barrier: return "barrier";
+	case Reconverge_TFGen6: return "tf-gen6";
+	case Reconverge_TFSortedStack: return "tf-sorted-stack";
+	case Reconverge_default: return "default-reconverge";
+	case Reconverge_unknown:
+	default:
+		break;
+	}
+	return "unknown-reconverge";
+}
+
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
 executive::ReconvergenceIPDOM::ReconvergenceIPDOM(const EmulatedKernel *_kernel, 
@@ -128,7 +146,7 @@ executive::ReconvergenceIPDOM::ReconvergenceIPDOM(const EmulatedKernel *_kernel,
 : 
 	ReconvergenceMechanism(_kernel, cta)
 {
-
+	type = Reconverge_IPDOM;
 }
 
 bool executive::ReconvergenceIPDOM::eval_Bra(executive::CTAContext &context, 
@@ -238,7 +256,7 @@ executive::ReconvergenceBarrier::ReconvergenceBarrier(const EmulatedKernel *_ker
 : 
 	ReconvergenceMechanism(_kernel, cta)
 {
-
+	type = Reconverge_Barrier;
 }
 
 bool executive::ReconvergenceBarrier::eval_Bra(executive::CTAContext &context, 
@@ -332,7 +350,7 @@ executive::ReconvergenceTFGen6::ReconvergenceTFGen6(const EmulatedKernel *_kerne
 : 
 	ReconvergenceMechanism(_kernel, cta)
 {
-
+	type = Reconverge_TFGen6;
 }
 
 void executive::ReconvergenceTFGen6::initialize() {
@@ -512,6 +530,7 @@ executive::ReconvergenceTFSortedStack::ReconvergenceTFSortedStack(const Emulated
 : 
 	ReconvergenceMechanism(_kernel, cta)
 {
+	type = Reconverge_TFSortedStack;
 }
 
 void executive::ReconvergenceTFSortedStack::evalPredicate(executive::CTAContext &context) {

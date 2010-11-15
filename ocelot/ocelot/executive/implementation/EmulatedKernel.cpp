@@ -40,7 +40,7 @@
 
 #define REPORT_KERNEL_INSTRUCTIONS 0
 #define REPORT_LAUNCH_CONFIGURATION 0
-#define REPORT_THREAD_FRONTIERS 0
+#define REPORT_THREAD_FRONTIERS 1
 
 #define IPDOM_RECONVERGENCE 1
 #define BARRIER_RECONVERGENCE 2
@@ -301,11 +301,13 @@ void executive::EmulatedKernel::constructInstructionSequence() {
 #if REPORT_KERNEL_INSTRUCTIONS
 			report("  pc " << ptx.pc << ": " << ptx.toString() );
 #endif
-			lastPC = instructions.size();
+			lastPC = ptx.pc;
 			if (!n) { basicBlockPC[ptx.pc] = (*bb_it)->label; }
 			instructions.push_back(ptx);
 		}
 		blockPCRange[(*bb_it)->label].second = (int)lastPC;
+		
+		report("  blockPCRange[" << (*bb_it)->label << "] = " << lastPC);
 		
 		// trivial TF
 		threadFrontiers[(int)lastPC] = std::make_pair<int,int>((int)lastPC+1, (int)lastPC+1);
@@ -318,7 +320,7 @@ void executive::EmulatedKernel::constructInstructionSequence() {
 
 	std::set< int > targets;	// set of branch targets
 
-	report( " Updating branch targets and reconverge points" );
+	report( "\n\n    Updating branch targets and reconverge points" );
 	unsigned int id = 0;
 	for (ir::ControlFlowGraph::pointer_iterator bb_it = bb_sequence.begin();
 		bb_it != bb_sequence.end(); ++bb_it) {
@@ -334,10 +336,9 @@ void executive::EmulatedKernel::constructInstructionSequence() {
 				targets.erase(target_it);
 			}
 				
-				
 			if (ptx.opcode == ir::PTXInstruction::Bra) {
 #if RECONVERGENCE_MECHANISM == IPDOM_RECONVERGENCE
-				report( "  Instruction " << ptx.toString() );
+				//report( "  Instruction " << ptx.toString() );
 				if (!ptx.uni) {
 					InstructionMap::iterator 
 						reconverge = reconvergeTargets.find(i_it);
@@ -346,7 +347,7 @@ void executive::EmulatedKernel::constructInstructionSequence() {
 						target = ids.find(reconverge->second);
 					assert(target != ids.end());
 					instructions[id].reconvergeInstruction = target->second;
-					report("   reconverge at " << target->second);
+					//report("   reconverge at " << target->second);
 				}
 #endif
 				
@@ -354,35 +355,24 @@ void executive::EmulatedKernel::constructInstructionSequence() {
 					(*bb_it)->get_branch_edge()->tail->instructions.begin());
 				assert(branch != ids.end());
 				instructions[id].branchTargetInstruction = branch->second;
-				report("   target at " << branch->second);
+				//report("   target at " << branch->second);
 
 				int successors[2] = { instructions[id].branchTargetInstruction, blockPCRange[(*bb_it)->label].second + 1 };
 				
 				if (targets.size()) {
 					threadFrontiers[blockRange.second].first = *std::min_element(targets.begin(), targets.end()) ; // min of targets
 					threadFrontiers[blockRange.second].second = *std::max_element(targets.begin(), targets.end()) ; // max of targets
+#if REPORT_THREAD_FRONTIERS == 1
+					report("  frontier: " << threadFrontiers[blockRange.second].first << " - "
+						<< threadFrontiers[blockRange.second].second << "\n");
+#endif
 				}
 				
-#if REPORT_THREAD_FRONTIERS == 1
-				report("block '" << (*bb_it)->label << "' at PC " << blockRange.first);
-				report("  successors: ");
-				
-#endif
 				for (int i = 0; i < 2; i++) {
 					if (successors[i] > blockRange.first) {
 						targets.insert(successors[i]);
-#if REPORT_THREAD_FRONTIERS == 1
-						std::cout << (*bb_it)->label << std::endl;
-						std::cout << "   - PC: " << successors[i] << std::endl;
-#endif
 					}
 				}
-				
-				
-#if REPORT_THREAD_FRONTIERS == 1
-				report("  frontier: " << threadFrontiers[blockRange.second].first << " - "
-					<< threadFrontiers[blockRange.second].second);
-#endif
 			}
 		}
 	}

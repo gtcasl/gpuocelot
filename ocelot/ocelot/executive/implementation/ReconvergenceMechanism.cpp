@@ -302,7 +302,6 @@ void executive::ReconvergenceBarrier::eval_Bar(executive::CTAContext &context,
 
 void executive::ReconvergenceBarrier::eval_Reconverge(executive::CTAContext &context, 
 	const ir::PTXInstruction &instr) {
-	context.PC ++;
 }
 
 void executive::ReconvergenceBarrier::eval_Exit(executive::CTAContext &context, 
@@ -319,9 +318,7 @@ bool executive::ReconvergenceBarrier::nextInstruction(executive::CTAContext &con
 	const ir::PTXInstruction &instr) {
 
 	// advance to next instruction if the current instruction wasn't a branch
-	if (instr.opcode != ir::PTXInstruction::Bra && instr.opcode != ir::PTXInstruction::Bar &&
-		instr.opcode != ir::PTXInstruction::Reconverge ) {
-		
+	if (instr.opcode != ir::PTXInstruction::Bra && instr.opcode != ir::PTXInstruction::Bar) {
 		context.PC++;
 	}
 	return context.running;
@@ -356,8 +353,11 @@ bool executive::ReconvergenceTFGen6::eval_Bra(executive::CTAContext &context,
 
 	bool isDivergent = true;
 
+	report("eval_Bra([PC " << context.PC << "])");
+
 	if (!context.active.count()) { 
 		context.PC ++;
+		return false;
 	}
 
 	CTAContext branchContext(context), fallthroughContext(context), 
@@ -384,6 +384,7 @@ bool executive::ReconvergenceTFGen6::eval_Bra(executive::CTAContext &context,
 		}
 	}
 	
+	report("   again? eval_Bra([PC " << context.PC << "])");
 	EmulatedKernel::ThreadFrontierMap::const_iterator tf_it = kernel->threadFrontiers.find(context.PC);
 	if (tf_it != kernel->threadFrontiers.end()) {
 		// conservative branch here?
@@ -446,6 +447,7 @@ void executive::ReconvergenceTFGen6::eval_Bar(executive::CTAContext &context,
 
 	if (!context.active.count()) { 
 		context.PC ++;
+		return;
 	}
 	
 	size_t activeThreads = context.active.count();
@@ -467,6 +469,10 @@ void executive::ReconvergenceTFGen6::eval_Reconverge(executive::CTAContext &cont
 
 void executive::ReconvergenceTFGen6::eval_Exit(executive::CTAContext &context, 
 	const ir::PTXInstruction &instr) {
+	if (!context.active.count()) { 
+		context.PC ++;
+		return;
+	}
 	if (runtimeStack.size() == 1 || context.active.count() == context.active.size()) {
 		context.running = false;
 	}
@@ -479,7 +485,9 @@ bool executive::ReconvergenceTFGen6::nextInstruction(executive::CTAContext &cont
 	const ir::PTXInstruction &instr) {
 	
 	// advance to next instruction if the current instruction wasn't a branch
-	if (instr.opcode != ir::PTXInstruction::Bra && instr.opcode != ir::PTXInstruction::Reconverge ) {
+	if (instr.opcode != ir::PTXInstruction::Bra && instr.opcode != ir::PTXInstruction::Reconverge 
+		&& instr.opcode != ir::PTXInstruction::Exit) {
+		
 		context.PC++;
 	}
 	

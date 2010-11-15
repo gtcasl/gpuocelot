@@ -28,7 +28,7 @@ namespace analysis {
       n->isLoopHeader = false;
       n->loopExitNode = NULL;
       n->parentNode = NULL;
-      
+      n->isBackEdge = false;      
       N.insert(n);
       BB2NodeMap[i] = n;
     }
@@ -111,13 +111,18 @@ namespace analysis {
    
         // Locate an acyclic region, if present
         if (n->isLoopHeader && n->loopExitNode) {
-          NodeTy *tmpNode = n->loopExitNode;
+          visitPath.clear();
   
-          while(tmpNode->parentNode) tmpNode = tmpNode->parentNode;
-  
-          n->succNode.erase(tmpNode);
-          tmpNode->predNode.erase(n);
-          n->loopExitNode = tmpNode;
+          if (path(n, n->loopExitNode, N, NULL)) {
+            NodeTy *tmpNode = n->loopExitNode;
+    
+            while(tmpNode->parentNode) tmpNode = tmpNode->parentNode;
+    
+            n->succNode.erase(tmpNode);
+            tmpNode->predNode.erase(n);
+            n->loopExitNode = tmpNode;
+          } else
+            n->loopExitNode = NULL;
         }
           
         rType = acyclicRegionType(N, n, nodeSet, &entryNode, &exitNode, entry);
@@ -176,35 +181,140 @@ namespace analysis {
             for (NodeSetTy::iterator pi = node->predNode.begin(),
                                      pe = node->predNode.end();
                                      pi != pe; ++pi) {
-              NodeTy *preNode = *pi;
+              NodeTy *predNode = *pi;
   
-              if (postTree[preNode] < min) min = postTree[preNode];
+              if (postTree[predNode] < min) min = postTree[predNode];
             }
   
             for (NodeSetTy::iterator pi = node->predNode.begin(),
                                      pe = node->predNode.end();
                                      pi != pe; ++pi) {
-              NodeTy *preNode = *pi;
+              NodeTy *predNode = *pi;
   
-              if (postTree[preNode] != min) {
-                if (isStillReachableFromEntry(N, entry, node, preNode)) {
-                  findUnstructuredBR(N, preNode, node, true, true);
+              if (postTree[predNode] != min) {
+                if (isStillReachableFromEntry(N, entry, node, predNode)) {
+                  findUnstructuredBR(N, predNode, node, true, true);
                   change = true;
                 }
               }
             }
   
-            break;
+            if (change) break;
           }
         } 
       }
+
+      if (!change) {
+        for (int i = 1; i <= postMax; i++) {
+          NodeTy *node = post[i];
+        
+          if (node->predNode.size() > 1 && !node->isBackEdge) {
+            NodeTy *tmpNode = NULL;
+            bool processThisNode = true;
+  
+            for (NodeSetTy::iterator pi = node->predNode.begin(),
+                                     pe = node->predNode.end();
+                                     pi != pe; ++pi) {
+              NodeTy *predNode = *pi;
+
+              if (edge2ClassMap[std::make_pair(predNode, node)] == BACK) {
+                processThisNode = false;
+
+                break;
+              }
+
+              if (tmpNode == NULL) 
+                tmpNode = predNode;
+              else {
+                visitPath.clear();
+  
+                if (path(tmpNode, predNode, N, node)) 
+                  continue;
+                else { 
+                  visitPath.clear();
+
+                  if (path(predNode, tmpNode, N, node))
+                    tmpNode = predNode;
+                  else {
+                    processThisNode = false;
+
+                    break;
+                  }
+                }
+              }
+            }
+ 
+            if (processThisNode) {
+              for (NodeSetTy::iterator pi = node->predNode.begin(),
+                                       pe = node->predNode.end();
+                                       pi != pe; ++pi) {
+                NodeTy *predNode = *pi;
+  
+                if (predNode == tmpNode) {
+                  if (isStillReachableFromEntry(N, entry, node, predNode)) {
+                    findUnstructuredBR(N, predNode, node, true, true);
+                    change = true;
+                  }
+                }
+              }
+
+              if (change) break;
+            }
+          }
+        } 
+      }
+
+      if (!change) {
+        for (int i = 1; i <= postMax; i++) {
+          NodeTy *node = post[i];
+        
+          if (node->predNode.size() > 1 && !node->isBackEdge) {
+            bool processThisNode = true;
+            int min = postMax + 1;
+  
+            for (NodeSetTy::iterator pi = node->predNode.begin(),
+                                     pe = node->predNode.end();
+                                     pi != pe; ++pi) {
+              NodeTy *predNode = *pi;
+ 
+              if (edge2ClassMap[std::make_pair(predNode, node)] == BACK) {
+                processThisNode = false;
+
+                break;
+              }
+ 
+              if (postTree[predNode] < min) min = postTree[predNode];
+            }
+
+            if (processThisNode) {
+
+              for (NodeSetTy::iterator pi = node->predNode.begin(),
+                                       pe = node->predNode.end();
+                                       pi != pe; ++pi) {
+                NodeTy *predNode = *pi;
+    
+                if (postTree[predNode] != min) {
+                  if (isStillReachableFromEntry(N, entry, node, predNode)) {
+                    findUnstructuredBR(N, predNode, node, true, true);
+                    change = true;
+                  }
+                }
+              }
+ 
+              if (change) break;
+            }
+          }
+        } 
+      }
+
       if (debug) {
         dumpCTNode(p);
         dumpUnstructuredBR();
+        printf("%ld\n", N.size());
         std::cerr << "********************\n";
       }
   
-      assertM(change != false, "Cannot reduce any more in structural analysis");
+      assertM(change != false, "Cannot reduce any more in structural analysis ");
     } while (N.size() != 1);
   }
   
@@ -1056,10 +1166,15 @@ namespace analysis {
   
     replace(N, node, nodeSet/*, addSelfEdge*/);
     node->isCombined = true;
-    node->entryNode = entryNode;
-    node->entryBB = findEntryBB(entryNode);
+
+    if (entryNode) {
+      node->entryNode = entryNode;
+      node->entryBB = findEntryBB(entryNode);
+    }
+
     node->isLoopHeader = false;
     node->loopExitNode = NULL;
+    node->isBackEdge = false;
     node->parentNode = NULL;
   
     if (exitNode) node->exitBB = findEntryBB(exitNode);
@@ -1184,6 +1299,7 @@ namespace analysis {
    
     *exitNode = mainExitNode;
     loopHeaderNode->isLoopHeader = true;
+    backEdgeNode->isBackEdge = true;
     loopHeaderNode->loopExitNode = mainExitNode;
   
     return improperFlag; 
@@ -1450,7 +1566,13 @@ namespace analysis {
     else 
       return findEntryBB(node->entryNode);
   }
-  
+ 
+  void StructuralAnalysis::cleanupUnreachable() {
+    for (NodeSetTy::iterator i = unreachableNodeSet.begin(), e = unreachableNodeSet.end(); i != e; ++i) {
+      cleanup(*i);
+    }
+  }
+
   // clean - fill in the element of incoming branches and outgoing branches
   void StructuralAnalysis::cleanup(NodeTy *node) {
     if (!node->isCombined) 
@@ -1491,7 +1613,7 @@ namespace analysis {
   
   // deleteUnreachableNode - delete nodes that is no longer reachable from the entry
   void StructuralAnalysis::deleteUnreachableNodes(NodeSetTy &N, NodeTy *entry) {
-    for(NodeSetTy::iterator i = N.begin(), e = N.end(); i != e; i++) {
+    for(NodeSetTy::iterator i = N.begin(), e = N.end(); i != e; ++i) {
       visitPath.clear();
       NodeTy *node = *i;
   
@@ -1507,7 +1629,59 @@ namespace analysis {
                                  si != se; ++si)
           (*si)->predNode.erase(node);
   
+        unreachableNodeSet.insert(node);
+
         N.erase(node);
+      }
+    }
+  }
+ 
+  void StructuralAnalysis::reconstructUnreachable() {
+BEGIN:
+    bool merge = false;
+
+    for (NodeSetTy::iterator i = unreachableNodeSet.begin(), e = unreachableNodeSet.end(); i != e; ++i) {
+      NodeTy *node1 = *i;
+
+      for (NodeSetTy::iterator ii = unreachableNodeSet.begin(), ee = unreachableNodeSet.end(); ii != ee; ++ii) {
+        NodeTy *node2 = *i;
+
+        if (node1 == node2) continue;
+
+        for (NodeSetTy::iterator pi = node1->predNode.begin(),
+                                 pe = node1->predNode.end();
+                                 pi != pe; ++pi) {
+          NodeTy *pred = *pi;
+           
+          if ((pred->isCombined && node2->containedBB.count(pred->entryBB) > 0)
+            || (!pred->isCombined && node2->containedBB.count(pred->BB) > 0)) {
+             pred->succNode.insert(node1);          
+             merge = true;
+          }
+        }  
+      
+        for (NodeSetTy::iterator si = node1->succNode.begin(),
+                                 se = node1->succNode.end();
+                                 si != se; ++si) {
+          NodeTy *succ = *si;
+
+          if ((succ->isCombined && node2->containedBB.count(succ->entryBB) > 0)
+            || (!succ->isCombined && node2->containedBB.count(succ->BB) > 0)) {
+             succ->predNode.insert(node1);          
+             merge = true; 
+          }
+        }  
+
+        if (merge) {
+          NodeSetTy nodeSet;
+          
+          nodeSet.insert(node1);
+          nodeSet.insert(node2);
+
+          reduce(unreachableNodeSet, Unreachable, nodeSet, NULL, NULL);
+
+          goto BEGIN;
+        } 
       }
     }
   }
@@ -1528,8 +1702,12 @@ namespace analysis {
     structuralAnalysis(Net, entry, debug);
   
     cleanup(*(Net.begin()));
-  
-    dumpCTNode(*(Net.begin()));
+
+    reconstructUnreachable();
+ 
+    cleanupUnreachable();
+ 
+//    dumpCTNode(*(Net.begin()));
   
     dumpUnstructuredBR();
   

@@ -47,7 +47,8 @@ namespace analysis {
     Case,
     SelfLoop,
     NaturalLoop,
-    Improper
+    Improper,
+    Unreachable
   } RegionTy;
   
   // NodeTy - This type is used for the CFG node
@@ -67,6 +68,7 @@ namespace analysis {
     EdgeVecTy incomingForwardBR;      // The shared code of an unstructured branch 
     RegionTy nodeType;        // The type of the node
     bool isLoopHeader;
+    bool isBackEdge;
     struct Node *loopExitNode;
   } NodeTy;
   
@@ -91,7 +93,11 @@ namespace analysis {
     // unstructuredBRVec - store the detected unstructured branches
     EdgeVecTy unstructuredBRVec;
 
+    // BB2NodeMap - This var is used to find the Node from ir::BasicBlock * ;
+    BB2NodeMapTy BB2NodeMap;
 
+    NodeSetTy unreachableNodeSet;
+   
   private:
     ir::PTXKernel* _kernel;
 
@@ -108,7 +114,7 @@ namespace analysis {
     Edge2ClassMapTy edge2ClassMap;
 
     // BB2NodeMap - This var is used to find the Node from ir::BasicBlock * ;
-    BB2NodeMapTy BB2NodeMap;
+//    BB2NodeMapTy BB2NodeMap;
 
     // buildSimpleCFG - Build a Simple CFG out of the LLVM CFG
     void buildSimpleCFG(NodeSetTy &N);
@@ -190,6 +196,10 @@ namespace analysis {
 
     // clean - fill in the element of incoming branches and outgoing branches
     void cleanup(NodeTy *node);
+
+    void cleanupUnreachable();
+
+    void reconstructUnreachable();
 
     // deleteUnreachableNode - delete nodes that is no longer reachable from the entry
     void deleteUnreachableNodes(NodeSetTy &N, NodeTy *entry);

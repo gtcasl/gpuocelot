@@ -92,19 +92,91 @@ namespace analysis {
  
     return NewBB;
   }
-  
+ 
   // Algorithm 2 of Zhang's paper -- elimination of outgoing branches
   bool StructuralTransform::Cut(NodeTy *N) {
     bool change = false; 
   
     for (NodeSetTy::iterator i = N->childNode.begin(), e = N->childNode.end(); i != e; ++i) 
       change |= Cut(*i);
-    
+    if (!stopCut)
     if (N->isCombined && (N->nodeType == NaturalLoop || N->nodeType == SelfLoop) && N->containedBB.size() > 1 && N->outgoingBR.size() > 0) {
       change = true;
   
       ir::ControlFlowGraph::iterator TopExitBB = N->exitBB;
-     
+
+      for (BBSetTy::iterator i = N->entryNode->containedBB.begin(), e = N->entryNode->containedBB.end(); i != e; ++i) {
+        ir::ControlFlowGraph::iterator BB = *i;
+        ir::BasicBlock::EdgePointerVector edges = BB->out_edges;
+    
+        if (edges.size() == 2) {
+          ir::PTXInstruction *bra = static_cast<ir::PTXInstruction *>(BB->instructions.back());
+      
+          if (bra->opcode == ir::PTXInstruction::Bra) {
+            if (BB->get_fallthrough_edge()->tail == TopExitBB) {
+              switch(bra->pg.condition) {
+              case ir::PTXOperand::Pred:
+                bra->pg.condition = ir::PTXOperand::InvPred;
+                break;
+              case ir::PTXOperand::InvPred:
+                bra->pg.condition = ir::PTXOperand::Pred;
+                break;
+              case ir::PTXOperand::PT:
+                bra->pg.condition = ir::PTXOperand::nPT;
+                break;
+              case ir::PTXOperand::nPT:
+                bra->pg.condition = ir::PTXOperand::PT;
+                break;
+              }
+      
+              bra->d = std::move(ir::PTXOperand(TopExitBB->label));
+      
+              _kernel->cfg()->remove_edge(BB->get_fallthrough_edge());
+              _kernel->cfg()->insert_edge(ir::ControlFlowGraph::Edge(BB, BB->get_branch_edge()->tail, ir::Edge::FallThrough));
+              _kernel->cfg()->remove_edge(BB->get_branch_edge());
+              _kernel->cfg()->insert_edge(ir::ControlFlowGraph::Edge(BB, TopExitBB, ir::Edge::Branch)); 
+            }
+          }
+        }
+      }
+    
+      for (EdgeVecTy::iterator i = N->outgoingBR.begin(), e = N->outgoingBR.end(); i != e; ++i) {
+        if (SA.BB2NodeMap[(i->first)]->isBackEdge) continue;
+
+        ir::ControlFlowGraph::iterator BB = i->first;
+        ir::BasicBlock::EdgePointerVector edges = BB->out_edges;
+    
+        if (edges.size() == 2) {
+          ir::PTXInstruction *bra = static_cast<ir::PTXInstruction *>(BB->instructions.back());
+      
+          if (bra->opcode == ir::PTXInstruction::Bra) {
+            if (BB->get_fallthrough_edge()->tail == i->second) {
+              switch(bra->pg.condition) {
+              case ir::PTXOperand::Pred:
+                bra->pg.condition = ir::PTXOperand::InvPred;
+                break;
+              case ir::PTXOperand::InvPred:
+                bra->pg.condition = ir::PTXOperand::Pred;
+                break;
+              case ir::PTXOperand::PT:
+                bra->pg.condition = ir::PTXOperand::nPT;
+                break;
+              case ir::PTXOperand::nPT:
+                bra->pg.condition = ir::PTXOperand::PT;
+                break;
+              }
+      
+              bra->d = std::move(ir::PTXOperand(i->second->label));
+      
+              _kernel->cfg()->remove_edge(BB->get_fallthrough_edge());
+              _kernel->cfg()->insert_edge(ir::ControlFlowGraph::Edge(BB, BB->get_branch_edge()->tail, ir::Edge::FallThrough));
+              _kernel->cfg()->remove_edge(BB->get_branch_edge());
+              _kernel->cfg()->insert_edge(ir::ControlFlowGraph::Edge(BB, i->second, ir::Edge::Branch)); 
+            }
+          }
+        }
+      }
+ 
       for (EdgeVecTy::iterator i = N->outgoingBR.begin(), e = N->outgoingBR.end(); i != e; ++i) {
         // 1. Before loop, insert fp = false
         DataflowGraph::RegisterId fp = _kernel->dfg()->newRegister();  
@@ -129,40 +201,27 @@ namespace analysis {
         move2->type = ir::PTXOperand::u32;
         ir::ControlFlowGraph::InstructionList &ILBR = i->first->instructions;
         ILBR.push_front(move2);
+
+        ir::ControlFlowGraph::BlockPointerVector SuccVec = i->first->successors;
+  
+        for (ir::ControlFlowGraph::BlockPointerVector::iterator SI = SuccVec.begin(), E = SuccVec.end(); SI != E; ++SI) {
+          if (N->containedBB.count(*SI) == 0) continue;
+
+          ir::PTXInstruction* move = new ir::PTXInstruction(ir::PTXInstruction::Mov);
+          move->a = std::move(ir::PTXOperand(ir::PTXOperand::Immediate,
+                  ir::PTXOperand::u32, 0x0));
+          move->a.imm_uint = 0;
+          move->d = std::move(ir::PTXOperand(ir::PTXOperand::Register,
+                  ir::PTXOperand::u32, fp));
+          move->type = ir::PTXOperand::u32;
+          ir::BasicBlock::InstructionList& ILSucc = (*SI)->instructions;
+          ILSucc.push_front(move); 
+        }
   
         // 3. After loop, insert if (fp) goto t
         ir::ControlFlowGraph::iterator NewCmpBB = _kernel->cfg()->insert_block(ir::BasicBlock(i->first->label + "_cmp",
                   _kernel->cfg()->newId()));
-
-        if (TopExitBB != _kernel->cfg()->end()) {
-          ir::PTXInstruction* setp = new ir::PTXInstruction(ir::PTXInstruction::SetP);
-          setp->a = std::move(ir::PTXOperand(ir::PTXOperand::Register,
-                  ir::PTXOperand::u32, fp));
-          setp->b = std::move(ir::PTXOperand(ir::PTXOperand::Immediate,
-                  ir::PTXOperand::u32, 1));
-          setp->b.imm_uint = 1;
-          setp->d = std::move(ir::PTXOperand(ir::PTXOperand::Register,
-                  ir::PTXOperand::u32, _kernel->dfg()->newRegister()));
-          setp->d.type = ir::PTXOperand::pred;
-          setp->type = ir::PTXOperand::u32;
-          setp->comparisonOperator = ir::PTXInstruction::Eq;
-          NewCmpBB->instructions.push_back(setp);
-
-          ir::PTXInstruction* bra = new ir::PTXInstruction(ir::PTXInstruction::Bra);
-          bra->d = std::move(ir::PTXOperand(i->second->label));
-          bra->pg = setp->d;
-          NewCmpBB->instructions.push_back(bra);
-          _kernel->cfg()->insert_edge(ir::ControlFlowGraph::Edge(NewCmpBB, i->second, ir::Edge::Branch));
-          _kernel->cfg()->insert_edge(ir::ControlFlowGraph::Edge(NewCmpBB, TopExitBB, ir::Edge::FallThrough));
-        }
-        else {
-          ir::PTXInstruction* bra = new ir::PTXInstruction(ir::PTXInstruction::Bra);
-          bra->d = std::move(ir::PTXOperand(i->second->label));
-          bra->uni = true;
-          NewCmpBB->instructions.push_back(bra);
-          _kernel->cfg()->insert_edge(ir::ControlFlowGraph::Edge(NewCmpBB, i->second, ir::Edge::Branch));
-        }
-  
+ 
         // ValueMap
         ValueToValueMapTy ValueMap;
         ValueMap[i->second] = NewCmpBB;    
@@ -187,6 +246,8 @@ namespace analysis {
   
               if (term->opcode == ir::PTXInstruction::Bra && term->d.identifier == (*ei)->tail->label)
                 term->d = std::move(ir::PTXOperand((*it).second->label));
+
+              _kernel->cfg()->remove_edge(*ei);
             } 
           } else if (edges.size() == 2) {
             ir::BasicBlock::EdgePointerVector::iterator ei = edges.begin();
@@ -241,13 +302,43 @@ namespace analysis {
             }
           }
         }
-  
+ 
+        if (TopExitBB != _kernel->cfg()->end()) {
+          ir::PTXInstruction* setp = new ir::PTXInstruction(ir::PTXInstruction::SetP);
+          setp->a = std::move(ir::PTXOperand(ir::PTXOperand::Register,
+                  ir::PTXOperand::u32, fp));
+          setp->b = std::move(ir::PTXOperand(ir::PTXOperand::Immediate,
+                  ir::PTXOperand::u32, 1));
+          setp->b.imm_uint = 1;
+          setp->d = std::move(ir::PTXOperand(ir::PTXOperand::Register,
+                  ir::PTXOperand::u32, _kernel->dfg()->newRegister()));
+          setp->d.type = ir::PTXOperand::pred;
+          setp->type = ir::PTXOperand::u32;
+          setp->comparisonOperator = ir::PTXInstruction::Eq;
+          NewCmpBB->instructions.push_back(setp);
+
+          ir::PTXInstruction* bra = new ir::PTXInstruction(ir::PTXInstruction::Bra);
+          bra->d = std::move(ir::PTXOperand(i->second->label));
+          bra->pg = setp->d;
+          NewCmpBB->instructions.push_back(bra);
+          _kernel->cfg()->insert_edge(ir::ControlFlowGraph::Edge(NewCmpBB, i->second, ir::Edge::Branch));
+          _kernel->cfg()->insert_edge(ir::ControlFlowGraph::Edge(NewCmpBB, TopExitBB, ir::Edge::FallThrough));
+        }
+        else {
+          ir::PTXInstruction* bra = new ir::PTXInstruction(ir::PTXInstruction::Bra);
+          bra->d = std::move(ir::PTXOperand(i->second->label));
+          bra->uni = true;
+          NewCmpBB->instructions.push_back(bra);
+          _kernel->cfg()->insert_edge(ir::ControlFlowGraph::Edge(NewCmpBB, i->second, ir::Edge::Branch));
+        }
+ 
+ 
         TopExitBB = NewCmpBB;
       }
   
       if (N->exitBB == _kernel->cfg()->end()) 
         _kernel->cfg()->insert_edge(ir::ControlFlowGraph::Edge(N->entryBB, TopExitBB, ir::Edge::Dummy)); 
-
+      stopCut = true;
       return change;
     } 
   
@@ -322,7 +413,6 @@ namespace analysis {
                 branch->uni = true;
                 branch->d = std::move(ir::PTXOperand((*ei)->tail->label));
                 ValuePair.second->instructions.push_back(branch);
-                _kernel->cfg()->remove_edge(*ei); 
               }
             } 
           }
@@ -486,7 +576,6 @@ namespace analysis {
                   branch->uni = true;
                   branch->d = std::move(ir::PTXOperand((*ei)->tail->label));
                   ValuePair.second->instructions.push_back(branch);
-                  _kernel->cfg()->remove_edge(*ei);
                 }
               } 
             }
@@ -599,11 +688,45 @@ namespace analysis {
     SA.runOnKernel(_kernel);
   
     while (SA.unstructuredBRVec.size() > 0) {
+      for (ir::ControlFlowGraph::iterator i = _kernel->cfg()->begin(), e = _kernel->cfg()->end(); i != e; ++i) {
+        ir::BasicBlock::EdgePointerVector edges = i->out_edges;
+    
+        if (edges.size() == 1) {
+          ir::PTXInstruction *term = static_cast<ir::PTXInstruction *>(i->instructions.back());
+      
+          if (term->opcode != ir::PTXInstruction::Bra) {
+            ir::PTXInstruction* branch = new ir::PTXInstruction(ir::PTXInstruction::Bra);
+            branch->uni = true;
+            branch->d = std::move(ir::PTXOperand((*(edges.begin()))->tail->label));
+            i->instructions.push_back(branch);
+     
+            _kernel->cfg()->insert_edge(ir::ControlFlowGraph::Edge(i, (*(edges.begin()))->tail, ir::Edge::Branch)); 
+            _kernel->cfg()->remove_edge(i->get_fallthrough_edge());
+          }
+        }
+      }
+
       NodeTy *entry = *(SA.Net.begin()); 
-  
-      if (Cut(entry)) {
+
+      stopCut = false;  
+
+      for (NodeSetTy::iterator i = SA.unreachableNodeSet.begin(), e = SA.unreachableNodeSet.end(); i != e; ++i) {
+        if (Cut(*i)) {
+          change = true;
+
+          goto ANALYSIS;
+        }
+      }
+
+      if (ForwardCopy(entry)) {
         change = true;
   
+        goto ANALYSIS;
+      }
+
+      if (Cut(entry)) {
+        change = true;
+
         goto ANALYSIS;
       }
   
@@ -613,15 +736,12 @@ namespace analysis {
         goto ANALYSIS;
       }
   
-      if (ForwardCopy(entry)) {
-        change = true;
-  
-        goto ANALYSIS;
-      }
   
   ANALYSIS:
       SA.unstructuredBRVec.clear();
   
+      SA.unreachableNodeSet.clear();
+
       SA.Net.clear();
    
       SA.runOnKernel(_kernel);

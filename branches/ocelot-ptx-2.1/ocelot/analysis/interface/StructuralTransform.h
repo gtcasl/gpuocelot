@@ -54,6 +54,8 @@ namespace analysis {
     // Algorithm 4 of Zhang's paper -- elimination of Forward branches
     bool ForwardCopy(NodeTy *N);
 
+    bool stopCut;
+
     class StructuralAnalysis SA;
   };
 }

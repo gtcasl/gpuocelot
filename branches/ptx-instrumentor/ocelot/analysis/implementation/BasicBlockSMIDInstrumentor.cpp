@@ -1,17 +1,17 @@
-/*! \file BasicBlockExecutionCountInstrumentor.cpp
-	\date Saturday November 13, 2010
+/*! \file BasicBlockSMIDInstrumentor.cpp
+	\date Sunday November 14, 2010
 	\author Naila Farooqui <naila@cc.gatech.edu>
-	\brief The source file for the BasicBlockExecutionCountInstrumentor class.
+	\brief The source file for the BasicBlockSMIDInstrumentor class.
 */
 
-#ifndef BASIC_BLOCK_EXECUTION_COUNT_INSTRUMENTOR_CPP_INCLUDED
-#define BASIC_BLOCK_EXECUTION_COUNT_INSTRUMENTOR_CPP_INCLUDED
+#ifndef BASIC_BLOCK_SMID_INSTRUMENTOR_CPP_INCLUDED
+#define BASIC_BLOCK_SMID_INSTRUMENTOR_CPP_INCLUDED
 
-#include <ocelot/analysis/interface/BasicBlockExecutionCountInstrumentor.h>
+#include <ocelot/analysis/interface/BasicBlockSMIDInstrumentor.h>
 
 #include <ocelot/cuda/interface/cuda_runtime.h>
 
-#include <ocelot/analysis/interface/BasicBlockExecutionCountPass.h>
+#include <ocelot/analysis/interface/BasicBlockSMIDPass.h>
 #include <ocelot/ir/interface/Module.h>
 
 #include <hydrazine/implementation/ArgumentParser.h>
@@ -22,7 +22,7 @@
 
 namespace analysis
 {
-    void BasicBlockExecutionCountInstrumentor::initialize() {
+    void BasicBlockSMIDInstrumentor::initialize() {
         
 
         basicBlocks = module->getKernel(kernelName)->cfg()->size();
@@ -32,22 +32,22 @@ namespace analysis
         cudaMalloc((void **) &counter, basicBlocks * ctas * threads * sizeof(size_t));
         cudaMemset( counter, 0, basicBlocks * ctas * threads * sizeof( size_t ));
 
-        cudaMemcpyToSymbol(((BasicBlockExecutionCountPass *)pass)->basicBlockCounterBase().c_str(), &counter, sizeof(*counter), 0, cudaMemcpyHostToDevice);
+        cudaMemcpyToSymbol(((BasicBlockSMIDPass *)pass)->basicBlockCounterBase().c_str(), &counter, sizeof(*counter), 0, cudaMemcpyHostToDevice);
 
         cudaConfigureCall( dim3(ctas, 1, 1), dim3( threads, 1, 1), 0, 0 );      
     }
 
-    analysis::Pass *BasicBlockExecutionCountInstrumentor::createPass() {
-        return new analysis::BasicBlockExecutionCountPass;
+    analysis::Pass *BasicBlockSMIDInstrumentor::createPass() {
+        return new analysis::BasicBlockSMIDPass;
     }
 
-    void BasicBlockExecutionCountInstrumentor::finalize() {
+    void BasicBlockSMIDInstrumentor::finalize() {
 
         size_t *counterHost = new size_t[basicBlocks * threads * ctas];
         cudaMemcpy(counterHost, counter, basicBlocks * threads * ctas * sizeof( size_t ), cudaMemcpyDeviceToHost);
         
         std::cout << "\n\n" << kernelName << ":\n";
-        std::cout << "\n--------------- Basic Block Execution Count Per Thread ---------------\n\n";
+        std::cout << "\n--------------- Basic Block SM (Processor) ID Per Thread ---------------\n\n";
 
         unsigned int i = 0;
         unsigned int j = 0;
@@ -67,11 +67,11 @@ namespace analysis
         cudaFree(counter);
     }
 
-    BasicBlockExecutionCountInstrumentor::BasicBlockExecutionCountInstrumentor() {
+    BasicBlockSMIDInstrumentor::BasicBlockSMIDInstrumentor() {
 
     }
 
-    BasicBlockExecutionCountInstrumentor::BasicBlockExecutionCountInstrumentor(const std::string input, const std::string output, unsigned int ctas, unsigned int threads )
+    BasicBlockSMIDInstrumentor::BasicBlockSMIDInstrumentor(const std::string input, const std::string output, unsigned int ctas, unsigned int threads )
     {
         PTXInstrumentor::input = input;
         PTXInstrumentor::output = output;

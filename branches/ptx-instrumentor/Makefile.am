@@ -51,7 +51,9 @@ libocelot_la_SOURCES = \
 	ocelot/analysis/implementation/RemoveBarrierPass.cpp \
 	ocelot/analysis/implementation/ConvertPredicationToSelectPass.cpp \
 	ocelot/analysis/implementation/LinearScanRegisterAllocationPass.cpp \
-    ocelot/analysis/implementation/CountBasicBlockExecutionPass.cpp \
+    ocelot/analysis/implementation/BasicBlockInstrumentationPass.cpp \
+    ocelot/analysis/implementation/BasicBlockExecutionCountPass.cpp \
+    ocelot/analysis/implementation/BasicBlockSMIDPass.cpp \
 	ocelot/api/implementation/ocelot.cpp \
 	ocelot/api/implementation/OcelotRuntime.cpp \
 	ocelot/api/implementation/OcelotConfiguration.cpp \
@@ -150,7 +152,8 @@ PTXOptimizer_LDFLAGS = -static
 ExecuteInstrumentedKernel_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
 ExecuteInstrumentedKernel_SOURCES = ocelot/analysis/implementation/ExecuteInstrumentedKernel.cpp \
     ocelot/analysis/implementation/PTXInstrumentor.cpp \
-    ocelot/analysis/implementation/BasicBlockExecutionCountInstrumentor.cpp     
+    ocelot/analysis/implementation/BasicBlockExecutionCountInstrumentor.cpp \
+    ocelot/analysis/implementation/BasicBlockSMIDInstrumentor.cpp    
 ExecuteInstrumentedKernel_LDADD = libocelot.la 
 ExecuteInstrumentedKernel_LDFLAGS = -static
 ################################################################################
@@ -407,7 +410,9 @@ nobase_include_HEADERS = ocelot/api/interface/ocelot.h \
 	ocelot/analysis/interface/SSAGraph.h \
 	ocelot/analysis/interface/ConvertPredicationToSelectPass.h \
 	ocelot/analysis/interface/LinearScanRegisterAllocationPass.h \
-    ocelot/analysis/interface/CountBasicBlockExecutionPass.h \
+    ocelot/analysis/interface/BasicBlockInstrumentationPass.h \
+    ocelot/analysis/interface/BasicBlockExecutionCountPass.h \
+    ocelot/analysis/interface/BasicBlockSMIDPass.h \
 	ocelot/analysis/interface/PTXOptimizer.h \
 	ocelot/analysis/interface/RemoveBarrierPass.h \
 	ocelot/analysis/interface/PassManager.h \

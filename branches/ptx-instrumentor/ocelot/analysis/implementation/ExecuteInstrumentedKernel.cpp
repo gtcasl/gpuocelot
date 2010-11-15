@@ -11,6 +11,7 @@
 
 #include <ocelot/analysis/interface/PTXInstrumentor.h>
 #include <ocelot/analysis/interface/BasicBlockExecutionCountInstrumentor.h>
+#include <ocelot/analysis/interface/BasicBlockSMIDInstrumentor.h>
 
 #include <hydrazine/implementation/ArgumentParser.h>
 #include <hydrazine/implementation/string.h>
@@ -33,6 +34,11 @@ namespace analysis
 	    {
 		    report( "  Matched basic-block-count." );
 		    instrumentor = new analysis::BasicBlockExecutionCountInstrumentor(input, output, ctas, threads);
+	    }
+        else if( pass == "basic-block-sm" )
+	    {
+		    report( "  Matched basic-block-sm." );
+		    instrumentor = new analysis::BasicBlockSMIDInstrumentor(input, output, ctas, threads);
 	    }
 	    else 
 	    {

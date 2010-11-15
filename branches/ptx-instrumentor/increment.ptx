@@ -1,0 +1,46 @@
+.version 1.4
+    .target sm_13, sm_10
+
+.global .u64 result[1];        
+
+.entry increment()
+{
+	.reg .u64 %r<8>;
+	.reg .pred %L0;
+    .reg .pred %L3;
+	
+        mov.u64 %r4, 0;
+        mov.u64 %r5, 0;
+        mov.s64 %r0, 0;
+        setp.ge.u64 %L0, %r0, 37;
+        @%L0 bra L2;
+    L1: 
+        mov.u64 %r1, 0;
+        setp.ge.u64 %L3, %r1, 253;
+        @%L3 bra L4;
+    L5: 
+        mul.lo.u64 %r2, %r0, 1000;
+        add.u64 %r3, %r2, %r1;
+        add.u64 %r5, %r5, %r3;
+        add.u64 %r1, %r1, 1;
+        setp.lt.u64 %L3, %r1, 253;
+        @%L3 bra L5;
+    L4: 
+		add.u64 %r0, %r0, 1;
+        add.u64 %r4, %r4, 1;
+        setp.lt.u64 %L0, %r0, 37;
+        @%L0 bra L1;
+	L2:
+        mov.u64 %r6, 9361;
+        div.rn.u64 %r7, %r5, %r6;
+        st.global.u64 [result], %r7;     
+        exit;
+}
+
+.entry single()
+{
+    .reg .u64 %r0;
+    
+    mov.u64 %r0, 10;
+    exit;
+}

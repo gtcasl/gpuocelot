@@ -1,13 +1,13 @@
-/*! \file CountBasicBlockExecutionPass.cpp
-	\date Wednesday October 6, 2010
+/*! \file BasicBlockInstrumentationPass.cpp
+	\date Sunday November 14, 2010
 	\author Naila Farooqui <naila@cc.gatech.edu>
-	\brief The source file for the CountBasicBlockExecutionPass class
+	\brief The source file for the BasicBlockInstrumentationPass class
 */
 
-#ifndef COUNT_BASIC_BLOCK_EXECUTION_PASS_CPP_INCLUDED
-#define COUNT_BASIC_BLOCK_EXECUTION_PASS_CPP_INCLUDED
+#ifndef BASIC_BLOCK_INSTRUMENTATION_PASS_CPP_INCLUDED
+#define BASIC_BLOCK_INSTRUMENTATION_PASS_CPP_INCLUDED
 
-#include <ocelot/analysis/interface/CountBasicBlockExecutionPass.h>
+#include <ocelot/analysis/interface/BasicBlockInstrumentationPass.h>
 #include <ocelot/ir/interface/Module.h>
 #include <ocelot/ir/interface/PTXStatement.h>
 #include <ocelot/ir/interface/PTXKernel.h>
@@ -23,13 +23,7 @@
 
 namespace analysis
 {
-    CountBasicBlockExecutionPass::CountBasicBlockExecutionPass()
-		: ModulePass( DataflowGraphAnalysis, "CountBasicBlockExecutionPass" )
-	{
-
-	}
-
-    DataflowGraph::RegisterId CountBasicBlockExecutionPass::_runOnEntryBlock( ir::PTXKernel* kernel, DataflowGraph::iterator block) {
+    DataflowGraph::RegisterId BasicBlockInstrumentationPass::_runOnEntryBlock( ir::PTXKernel* kernel, DataflowGraph::iterator block) {
 
         /* The entry block adds the insrumented ptx. In order to maintain a counter-per-thread for
             each basic block, I need to calculate the thread counter offset. I do this using the following:
@@ -278,49 +272,7 @@ namespace analysis
 
     }
 
-    void CountBasicBlockExecutionPass::_runOnBlock( ir::PTXKernel* kernel, DataflowGraph::iterator block, DataflowGraph::RegisterId counterPtrRegId, DataflowGraph::RegisterId registerId, unsigned int offset)
-	{
-
-        /* Load, increment, and store back the result into the
-            global counter */
-        ir::PTXInstruction ld(ir::PTXInstruction::Ld);
-        ld.addressSpace = ir::PTXInstruction::Global; 
-        ld.type = (sizeof(size_t) == 8 ? ir::PTXOperand::u64: ir::PTXOperand::u32);       
-        ld.a.addressMode = ir::PTXOperand::Indirect;
-        ld.a.reg = counterPtrRegId;
-        ld.a.offset = offset;
-        ld.d.reg = registerId;
-        ld.d.addressMode = ir::PTXOperand::Register;
-		ld.d.type = (sizeof(size_t) == 8 ? ir::PTXOperand::u64: ir::PTXOperand::u32);		
-        
-        ir::PTXInstruction add(ir::PTXInstruction::Add);
-        add.addressSpace = ir::PTXInstruction::Global; 
-        add.type = (sizeof(size_t) == 8 ? ir::PTXOperand::u64: ir::PTXOperand::u32); 
-        add.a.addressMode = ir::PTXOperand::Register;    
-        add.d = ld.d;
-        add.a = ld.d;
-        add.b.type = (sizeof(size_t) == 8 ? ir::PTXOperand::u64: ir::PTXOperand::u32);	
-        add.b.addressMode = ir::PTXOperand::Immediate;
-        add.b.imm_int = 1;
-        
-
-        ir::PTXInstruction st(ir::PTXInstruction::St);
-        st.addressSpace = ir::PTXInstruction::Global; 
-        st.type = (sizeof(size_t) == 8 ? ir::PTXOperand::u64: ir::PTXOperand::u32);       
-        st.d = ld.a;
-        st.a = ld.d;
-        
-        /* Need to insert in the beginning of the basic block.
-            Since basic blocks usually end with branches, it
-            wouldn't make sense to insert these instructions at the end. */
-   
-        kernel->dfg()->insert( block, ld, 0 );  
-        kernel->dfg()->insert( block, add, 1 ); 
-        kernel->dfg()->insert( block, st, 2 ); 
-
-	}
-	
-	void CountBasicBlockExecutionPass::runOnModule( ir::Module& m )
+	void BasicBlockInstrumentationPass::runOnModule( ir::Module& m )
 	{
 		report( "Adding global variable to " << m.path() );
      
@@ -335,7 +287,7 @@ namespace analysis
         unsigned int basicBlockCount = 0;
         for (ir::Module::KernelMap::const_iterator kernel = m.kernels().begin(); 
 		    kernel != m.kernels().end(); ++kernel) {
-            basicBlockCount += (kernel->second)->cfg()->size();
+            //basicBlockCount += (kernel->second)->cfg()->size();
             /* creating a new register per kernel for maintaining the count information -- 
                 the same register can be reused so need to only create one per kernel and 
                 pass its id along. */
@@ -355,9 +307,12 @@ namespace analysis
             for( analysis::DataflowGraph::iterator block = ++((kernel->second)->dfg()->begin()); 
 			    block != (kernel->second)->dfg()->end(); ++block )
 		        {
-                   _runOnBlock( (kernel->second), block, counterPtrRegId, registerId, offset);
-                    /* incrementing offset based on size_t */
-                    offset = offset + sizeof(size_t);                  
+                   if(!block->instructions().empty()){
+                        basicBlockCount++;
+                        _runOnBlock( (kernel->second), block, counterPtrRegId, registerId, offset);
+                        /* incrementing offset based on size_t */
+                        offset = offset + sizeof(size_t);                 
+                    } 
 		        }
 	    }
 
@@ -365,17 +320,17 @@ namespace analysis
         m.insertGlobal(counter);
 	}
 
-    void CountBasicBlockExecutionPass::initialize( const ir::Module& m )
+    void BasicBlockInstrumentationPass::initialize( const ir::Module& m )
 	{
     
 	}
 
-    void CountBasicBlockExecutionPass::finalize( )
+    void BasicBlockInstrumentationPass::finalize( )
 	{
 	
 	}
 
-    std::string CountBasicBlockExecutionPass::basicBlockCounterBase() const
+    std::string BasicBlockInstrumentationPass::basicBlockCounterBase() const
 	{
 		return "__ocelot_basic_block_counter_base";
 	}

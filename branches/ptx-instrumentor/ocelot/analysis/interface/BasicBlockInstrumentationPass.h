@@ -1,11 +1,11 @@
-/*! \file CountBasicBlockExecutionPass.h
+/*! \file BasicBlockInstrumentationPass.h
 	\author Naila Farooqui <naila@cc.gatech.edu>
-	\date Wednesday October 6, 2010
-	\brief The header file for the CountBasicBlockExecutionPass class.
+	\date Sunday November 14, 2010
+	\brief The header file for the BasicBlockInstrumentationPass class.
 */
 
-#ifndef COUNT_BASIC_BLOCK_EXECUTION_PASS_H_INCLUDED
-#define COUNT_BASIC_BLOCK_EXECUTION_PASS_H_INCLUDED
+#ifndef BASIC_BLOCK_INSTRUMENTATION_PASS_H_INCLUDED
+#define BASIC_BLOCK_INSTRUMENTATION_PASS_H_INCLUDED
 
 #include <ocelot/analysis/interface/DataflowGraph.h>
 #include <ocelot/ir/interface/PTXKernel.h>
@@ -18,15 +18,14 @@ namespace ir
 
 namespace analysis
 {
-	/*! \brief Implements the basic block execution counter */
-	class CountBasicBlockExecutionPass : public ModulePass
+	/*! \brief Implements the generic basic block counter instrumentation */
+	class BasicBlockInstrumentationPass : public ModulePass
 	{
 	    public:
 			/*! \brief The id of the basic block counter base pointer */			
              std::string basicBlockCounterBase() const;
 
 		public:
-			CountBasicBlockExecutionPass();	
 			/*! \brief Initialize the pass using a specific module */
 			void initialize( const ir::Module& m );
 			/*! \brief Run the pass on a specific module */
@@ -34,9 +33,9 @@ namespace analysis
 			/*! \brief Finalize the pass */
 			void finalize( );
 
-        private:
+        protected:
             DataflowGraph::RegisterId _runOnEntryBlock( ir::PTXKernel* kernel, DataflowGraph::iterator block);
-			void _runOnBlock( ir::PTXKernel* kernel, DataflowGraph::iterator block, DataflowGraph::RegisterId counterPtrRegId, DataflowGraph::RegisterId registerId, unsigned int offset );
+			virtual void _runOnBlock( ir::PTXKernel* kernel, DataflowGraph::iterator block, DataflowGraph::RegisterId counterPtrRegId, DataflowGraph::RegisterId registerId, unsigned int offset ) = 0;
 			
 	};
 }

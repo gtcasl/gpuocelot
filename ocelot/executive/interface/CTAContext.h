@@ -10,6 +10,8 @@
 #define EXECUTIVE_CTACONTEXT_H_INCLUDED
 
 #include <boost/dynamic_bitset.hpp>
+
+#include <ocelot/ir/interface/Dim3.h>
 #include <ocelot/ir/interface/PTXOperand.h>
 #include <ocelot/ir/interface/Kernel.h>
 
@@ -22,7 +24,7 @@ namespace executive {
 	public:
 		CTAContext() { }
 		
-		CTAContext(const EmulatedKernel *kernel, CooperativeThreadArray *cta);
+		CTAContext(const ir::Dim3 blockDim, CooperativeThreadArray *cta);
 
 		~CTAContext();
 		
@@ -36,9 +38,6 @@ namespace executive {
 
 		/*! Thread mask with a 1 indicating activity */
 		boost::dynamic_bitset<> active;
-
-		/*! Pointer to owning kernel */
-		const EmulatedKernel *kernel;
 
 		/*! Pointer to owning CTA */
 		CooperativeThreadArray *cta;

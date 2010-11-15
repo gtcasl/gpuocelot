@@ -36,10 +36,28 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
-executive::ReconvergenceMechanism::ReconvergenceMechanism(EmulatedKernel *_kernel): kernel(_kernel) {
+executive::ReconvergenceMechanism::ReconvergenceMechanism(
+	const EmulatedKernel *_kernel, CooperativeThreadArray *_cta)
+: 
+	kernel(_kernel),
+	cta(_cta)
+{
+}
+
+executive::ReconvergenceMechanism::ReconvergenceMechanism(
+	 CooperativeThreadArray *_cta)
+: 
+	kernel(0),
+	cta(_cta)
+{
 
 }
-		
+
+void executive::ReconvergenceMechanism::initialize() {
+	CTAContext context(cta->blockDim, cta);
+	runtimeStack.clear();
+	runtimeStack.push_back(context);
+}
 
 //! \brief gets the active context
 executive::CTAContext & executive::ReconvergenceMechanism::getContext() {
@@ -60,9 +78,6 @@ bool executive::ReconvergenceMechanism::eval_Bra(executive::CTAContext &context,
 	const boost::dynamic_bitset<> & branch, 
 	const boost::dynamic_bitset<> & fallthrough) {
 
-	throw RuntimeException("eval_Bra() - handler not implemented in ReconvergenceMechanism", 
-		context.PC, instr );
-
 	return false;
 }
 
@@ -72,8 +87,6 @@ bool executive::ReconvergenceMechanism::eval_Bra(executive::CTAContext &context,
 void executive::ReconvergenceMechanism::eval_Bar(executive::CTAContext &context, 
 	const ir::PTXInstruction &instr) {
 
-	throw RuntimeException("eval_Bar() - handler not implemented in ReconvergenceMechanism", 
-		context.PC, instr );
 }
 
 /*!
@@ -82,25 +95,39 @@ void executive::ReconvergenceMechanism::eval_Bar(executive::CTAContext &context,
 void executive::ReconvergenceMechanism::eval_Reconverge(executive::CTAContext &context, 
 	const ir::PTXInstruction &instr) {
 
-	throw RuntimeException("eval_Reconverge() - handler not implemented in ReconvergenceMechanism", 
-		context.PC, instr );
+}
+
+void executive::ReconvergenceMechanism::eval_Exit(executive::CTAContext &context, 
+	const ir::PTXInstruction &instr) {
+	context.running = false;
 }
 
 /*! 
 	\brief updates the active context to the next instruction
 */
-void executive::ReconvergenceMechanism::nextInstruction(executive::CTAContext &context, 
+bool executive::ReconvergenceMechanism::nextInstruction(executive::CTAContext &context, 
 	const ir::PTXInstruction &instr) {
 
 	if (instr.opcode != ir::PTXInstruction::Reconverge) {
 		context.PC ++;
 	}
+	return context.running;
+}
+
+/*!
+	\brief gets the stack size
+*/
+const size_t executive::ReconvergenceMechanism::stackSize() const {
+	return runtimeStack.size();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
-executive::ReconvergenceIPDOM::ReconvergenceIPDOM(EmulatedKernel *_kernel): 
-	ReconvergenceMechanism(_kernel) {
+executive::ReconvergenceIPDOM::ReconvergenceIPDOM(const EmulatedKernel *_kernel, 
+	CooperativeThreadArray *cta)
+: 
+	ReconvergenceMechanism(_kernel, cta)
+{
 
 }
 
@@ -158,14 +185,6 @@ bool executive::ReconvergenceIPDOM::eval_Bra(executive::CTAContext &context,
 		}
 	}
 
-#if REPORT_BASE && REPORT_BRA
-	if (isDivergent) {
-		report("   divergent branching");
-	}
-	else {
-		report("   uniform branching");
-	}
-#endif
 	return isDivergent;
 }
 
@@ -196,19 +215,29 @@ void executive::ReconvergenceIPDOM::eval_Reconverge(executive::CTAContext &conte
 	}
 }
 
-void executive::ReconvergenceIPDOM::nextInstruction(executive::CTAContext &context, 
+void executive::ReconvergenceIPDOM::eval_Exit(executive::CTAContext &context, 
+	const ir::PTXInstruction &instr) {
+	eval_Bar(context, instr);
+	context.running = false;
+}
+
+bool executive::ReconvergenceIPDOM::nextInstruction(executive::CTAContext &context, 
 	const ir::PTXInstruction &instr) {
 
 	// advance to next instruction if the current instruction wasn't a branch
 	if (instr.opcode != ir::PTXInstruction::Bra && instr.opcode != ir::PTXInstruction::Reconverge ) {
 		context.PC++;
 	}
+	return context.running;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
-executive::ReconvergenceBarrier::ReconvergenceBarrier(EmulatedKernel *_kernel): 
-	ReconvergenceMechanism(_kernel) {
+executive::ReconvergenceBarrier::ReconvergenceBarrier(const EmulatedKernel *_kernel, 
+	CooperativeThreadArray *cta)
+: 
+	ReconvergenceMechanism(_kernel, cta)
+{
 
 }
 
@@ -256,15 +285,6 @@ bool executive::ReconvergenceBarrier::eval_Bra(executive::CTAContext &context,
 		isDivergent = true;
 	}
 	
-#if REPORT_BASE && REPORT_BRA
-	if (isDivergent) {
-		report("   uniform branching");
-	
-	}
-	else {
-		report("   divergent branching");
-	}
-#endif
 	return isDivergent;
 }
 
@@ -285,7 +305,17 @@ void executive::ReconvergenceBarrier::eval_Reconverge(executive::CTAContext &con
 	context.PC ++;
 }
 
-void executive::ReconvergenceBarrier::nextInstruction(executive::CTAContext &context, 
+void executive::ReconvergenceBarrier::eval_Exit(executive::CTAContext &context, 
+	const ir::PTXInstruction &instr) {
+	if (context.active.count() == context.active.size() || runtimeStack.size() == 1) {
+		context.running = false;
+	}
+	else {
+		eval_Bar(context, instr);
+	}
+}
+
+bool executive::ReconvergenceBarrier::nextInstruction(executive::CTAContext &context, 
 	const ir::PTXInstruction &instr) {
 
 	// advance to next instruction if the current instruction wasn't a branch
@@ -294,15 +324,23 @@ void executive::ReconvergenceBarrier::nextInstruction(executive::CTAContext &con
 		
 		context.PC++;
 	}
+	return context.running;
 }
 
 		
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
+executive::ReconvergenceTFGen6::ReconvergenceTFGen6(const EmulatedKernel *_kernel, 
+	CooperativeThreadArray *cta)
+: 
+	ReconvergenceMechanism(_kernel, cta)
+{
 
-executive::ReconvergenceTFGen6::ReconvergenceTFGen6(EmulatedKernel *_kernel): 
-	ReconvergenceMechanism(_kernel) {
+}
 
+void executive::ReconvergenceTFGen6::initialize() {
+	ReconvergenceMechanism::initialize();
+	threadPCs.resize(runtimeStack.back().active.size(), runtimeStack.back().PC);
 }
 
 void executive::ReconvergenceTFGen6::evalPredicate(executive::CTAContext &context) {
@@ -318,6 +356,10 @@ bool executive::ReconvergenceTFGen6::eval_Bra(executive::CTAContext &context,
 
 	bool isDivergent = true;
 
+	if (!context.active.count()) { 
+		context.PC ++;
+	}
+
 	CTAContext branchContext(context), fallthroughContext(context), 
 		reconvergeContext(context);
 
@@ -328,11 +370,6 @@ bool executive::ReconvergenceTFGen6::eval_Bra(executive::CTAContext &context,
 	fallthroughContext.PC++;
 	
 	reconvergeContext.PC = instr.reconvergeInstruction + 1;
-	
-	if (!context.active.count()) { 
-		runtimeStack.back().PC ++;
-		return false; 
-	}
 	
 	//
 	// assign PCs for participating threads then compute the minimum PC for the warp
@@ -400,15 +437,6 @@ bool executive::ReconvergenceTFGen6::eval_Bra(executive::CTAContext &context,
 		report("Thread frontier not found at divergent branch for PC " << context.PC);
 		throw RuntimeException("Thread frontier not found  at divergent branch", context.PC, instr);
 	}
-	
-#if REPORT_BASE && REPORT_BRA
-	if (isDivergent) {
-		report("   uniform branching");
-	}
-	else {
-		report("   divergent branching");
-	}
-#endif
 
 	return isDivergent;
 }
@@ -416,6 +444,10 @@ bool executive::ReconvergenceTFGen6::eval_Bra(executive::CTAContext &context,
 void executive::ReconvergenceTFGen6::eval_Bar(executive::CTAContext &context, 
 	const ir::PTXInstruction &instr) {
 
+	if (!context.active.count()) { 
+		context.PC ++;
+	}
+	
 	size_t activeThreads = context.active.count();
 	if (activeThreads && activeThreads != context.active.size()) {
 		report("warp PC: " << context.PC);
@@ -433,7 +465,17 @@ void executive::ReconvergenceTFGen6::eval_Reconverge(executive::CTAContext &cont
 	context.PC ++;
 }
 
-void executive::ReconvergenceTFGen6::nextInstruction(executive::CTAContext &context, 
+void executive::ReconvergenceTFGen6::eval_Exit(executive::CTAContext &context, 
+	const ir::PTXInstruction &instr) {
+	if (runtimeStack.size() == 1 || context.active.count() == context.active.size()) {
+		context.running = false;
+	}
+	else {
+		runtimeStack.pop_back();
+	}
+}
+
+bool executive::ReconvergenceTFGen6::nextInstruction(executive::CTAContext &context, 
 	const ir::PTXInstruction &instr) {
 	
 	// advance to next instruction if the current instruction wasn't a branch
@@ -452,13 +494,16 @@ void executive::ReconvergenceTFGen6::nextInstruction(executive::CTAContext &cont
 			}
 		}
 	}
+	return context.running;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
-executive::ReconvergenceTFSortedStack::ReconvergenceTFSortedStack(EmulatedKernel *_kernel): 
-	ReconvergenceMechanism(_kernel) {
-
+executive::ReconvergenceTFSortedStack::ReconvergenceTFSortedStack(const EmulatedKernel *_kernel, 
+	CooperativeThreadArray *cta)
+: 
+	ReconvergenceMechanism(_kernel, cta)
+{
 }
 
 void executive::ReconvergenceTFSortedStack::evalPredicate(executive::CTAContext &context) {
@@ -474,7 +519,6 @@ bool executive::ReconvergenceTFSortedStack::eval_Bra(executive::CTAContext &cont
 	
 	CTAContext branchContext(context), fallthroughContext(context), 
 		reconvergeContext(context);
-			
 
 	branchContext.active = branch;
 	branchContext.PC = instr.branchTargetInstruction;
@@ -617,7 +661,17 @@ void executive::ReconvergenceTFSortedStack::eval_Reconverge(executive::CTAContex
 	runtimeStack.back().PC ++;
 }
 
-void executive::ReconvergenceTFSortedStack::nextInstruction(executive::CTAContext &context,
+void executive::ReconvergenceTFSortedStack::eval_Exit(executive::CTAContext &context, 
+	const ir::PTXInstruction &instr) {
+	if (runtimeStack.size() == 1 || context.active.count() == context.active.size()) {
+		context.running = false;
+	}
+	else {
+		runtimeStack.pop_back();
+	}
+}
+
+bool executive::ReconvergenceTFSortedStack::nextInstruction(executive::CTAContext &context,
 	const ir::PTXInstruction &instr) {
 
 	// advance to next instruction if the current instruction wasn't a branch
@@ -626,6 +680,7 @@ void executive::ReconvergenceTFSortedStack::nextInstruction(executive::CTAContex
 		instr.opcode != ir::PTXInstruction::Reconverge ) {
 		context.PC++;
 	}
+	return context.running;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////

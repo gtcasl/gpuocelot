@@ -23,6 +23,7 @@
 namespace executive {
 
 	class EmulatedKernel;
+	class CooperativeThreadArray;
 
 	/*!
 		\brief base class for abstract reconvergence mechanism within emulator
@@ -30,13 +31,15 @@ namespace executive {
 	class ReconvergenceMechanism {
 	public:
 		typedef std::deque<CTAContext> RuntimeStack;
-	
+			
 	public:
-		ReconvergenceMechanism(executive::EmulatedKernel *kernel);
+		ReconvergenceMechanism(const executive::EmulatedKernel *kernel, CooperativeThreadArray *cta);
+		ReconvergenceMechanism(CooperativeThreadArray *cta);
 		
 	public:
-		//! \brief gets the active context
-		virtual executive::CTAContext & getContext();
+	
+		//! \brief initializes the reconvergence mechanism
+		virtual void initialize();
 	
 		//! \brief updates the predicate mask of the active context before instructions execute
 		virtual void evalPredicate(executive::CTAContext &context);
@@ -56,24 +59,41 @@ namespace executive {
 		virtual void eval_Bar(executive::CTAContext &context, const ir::PTXInstruction &instr);
 		
 		/*!
-			\brief implements reconverge instructions
+			\brief implements reconverge instruction
 		*/
 		virtual void eval_Reconverge(executive::CTAContext &context, const ir::PTXInstruction &instr);
+		
+		/*!
+			\brief implements exit instruction
+		*/
+		virtual void eval_Exit(executive::CTAContext &context, const ir::PTXInstruction &instr);
 
 		/*! 
 			\brief updates the active context to the next instruction
 		*/
-		virtual void nextInstruction(executive::CTAContext &context, const ir::PTXInstruction &instr);
+		virtual bool nextInstruction(executive::CTAContext &context, const ir::PTXInstruction &instr);
+		
+		//! \brief gets the active context
+		virtual executive::CTAContext & getContext();
+		
+		/*!
+			\brief gets the stack size
+		*/
+		const size_t stackSize() const;
 
 	public:
 		//! \brief emulated kernel instance
-		EmulatedKernel *kernel;
+		const EmulatedKernel *kernel;
+		
+		//! \brief executing CTA
+		CooperativeThreadArray *cta;
 	
 		//! \brief context stack
 		RuntimeStack runtimeStack;
 		
 		//! \brief events specifically related to thread divergence and reconvergence
 		trace::ReconvergenceTraceEvent currentEvent;
+		
 	};
 
 	//
@@ -82,7 +102,8 @@ namespace executive {
 	
 	class ReconvergenceIPDOM: public ReconvergenceMechanism {
 	public:
-		ReconvergenceIPDOM(executive::EmulatedKernel *kernel);
+	
+		ReconvergenceIPDOM(const executive::EmulatedKernel *kernel, CooperativeThreadArray *cta);
 		
 		virtual bool eval_Bra(executive::CTAContext &context, 
 			const ir::PTXInstruction &instr, 
@@ -90,13 +111,14 @@ namespace executive {
 			const boost::dynamic_bitset<> & fallthrough);
 		virtual void eval_Bar(executive::CTAContext &context, const ir::PTXInstruction &instr);
 		virtual void eval_Reconverge(executive::CTAContext &context, const ir::PTXInstruction &instr);
-		virtual void nextInstruction(executive::CTAContext &context, const ir::PTXInstruction &instr);
+		virtual void eval_Exit(executive::CTAContext &context, const ir::PTXInstruction &instr);
+		virtual bool nextInstruction(executive::CTAContext &context, const ir::PTXInstruction &instr);
 	};
 	
 	class ReconvergenceBarrier: public ReconvergenceMechanism {
 	public:
 
-		ReconvergenceBarrier(executive::EmulatedKernel *kernel);
+		ReconvergenceBarrier(const executive::EmulatedKernel *kernel, CooperativeThreadArray *cta);
 		
 		virtual bool eval_Bra(executive::CTAContext &context, 
 			const ir::PTXInstruction &instr, 
@@ -104,7 +126,8 @@ namespace executive {
 			const boost::dynamic_bitset<> & fallthrough);
 		virtual void eval_Bar(executive::CTAContext &context, const ir::PTXInstruction &instr);
 		virtual void eval_Reconverge(executive::CTAContext &context, const ir::PTXInstruction &instr);
-		virtual void nextInstruction(executive::CTAContext &context, const ir::PTXInstruction &instr);
+		virtual void eval_Exit(executive::CTAContext &context, const ir::PTXInstruction &instr);
+		virtual bool nextInstruction(executive::CTAContext &context, const ir::PTXInstruction &instr);
 	};
 	
 	
@@ -113,8 +136,9 @@ namespace executive {
 		typedef std::vector <int> ThreadIdVector;
 		
 	public:
-		ReconvergenceTFGen6(executive::EmulatedKernel *kernel);
+		ReconvergenceTFGen6(const executive::EmulatedKernel *kernel, CooperativeThreadArray *cta);
 	
+		virtual void initialize();
 		virtual void evalPredicate(executive::CTAContext &context);
 		virtual bool eval_Bra(executive::CTAContext &context, 
 			const ir::PTXInstruction &instr, 
@@ -122,7 +146,8 @@ namespace executive {
 			const boost::dynamic_bitset<> & fallthrough);
 		virtual void eval_Bar(executive::CTAContext &context, const ir::PTXInstruction &instr);
 		virtual void eval_Reconverge(executive::CTAContext &context, const ir::PTXInstruction &instr);
-		virtual void nextInstruction(executive::CTAContext &context, const ir::PTXInstruction &instr);
+		virtual void eval_Exit(executive::CTAContext &context, const ir::PTXInstruction &instr);
+		virtual bool nextInstruction(executive::CTAContext &context, const ir::PTXInstruction &instr);
 		
 	public:
 	
@@ -132,7 +157,7 @@ namespace executive {
 	
 	class ReconvergenceTFSortedStack: public ReconvergenceMechanism {
 	public:
-		ReconvergenceTFSortedStack(executive::EmulatedKernel *kernel);
+		ReconvergenceTFSortedStack(const executive::EmulatedKernel *kernel, CooperativeThreadArray *cta);
 	
 		virtual void evalPredicate(executive::CTAContext &context);
 		virtual bool eval_Bra(executive::CTAContext &context, 
@@ -141,7 +166,8 @@ namespace executive {
 			const boost::dynamic_bitset<> & fallthrough);
 		virtual void eval_Bar(executive::CTAContext &context, const ir::PTXInstruction &instr);
 		virtual void eval_Reconverge(executive::CTAContext &context, const ir::PTXInstruction &instr);
-		virtual void nextInstruction(executive::CTAContext &context, const ir::PTXInstruction &instr);
+		virtual void eval_Exit(executive::CTAContext &context, const ir::PTXInstruction &instr);
+		virtual bool nextInstruction(executive::CTAContext &context, const ir::PTXInstruction &instr);
 	};
 }
 

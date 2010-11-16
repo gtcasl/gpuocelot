@@ -78,7 +78,7 @@ namespace ir
 
 		RegisterSet encountered;
 		RegisterSet predicates;
-			
+		RegisterSet addedRegisters;
 		RegisterVector regs;
 		
 		for( ControlFlowGraph::const_iterator block = cfg()->begin(); 
@@ -92,12 +92,17 @@ namespace ir
 			{
 				report( "  For instruction " << (*instruction)->toString() );
 				
+				bool detailed = false;
+				if ((*instruction)->toString() == "mov.pred %p187, %p186") {
+					detailed = true;
+				}
+				
 				const ir::PTXInstruction& ptx = static_cast<
 					const ir::PTXInstruction&>(**instruction);
 				
 				if( ptx.opcode == ir::PTXInstruction::St ) continue;
 				
-				const ir::PTXOperand* operands[] = {&ptx.pq, &ptx.d};
+				const ir::PTXOperand* operands[] = {&ptx.pq, &ptx.d, &ptx.a};
 
 				unsigned int limit = 2;
 				
@@ -111,7 +116,7 @@ namespace ir
 					operands[ 0 ] = &ptx.d;
 				}
 
-				for( unsigned int i = 0; i < 2; ++i )
+				for( unsigned int i = 0; i < 3; ++i )
 				{
 					const ir::PTXOperand& d = *operands[i];
 					
@@ -126,7 +131,10 @@ namespace ir
 								report( "   Added %r" << d.reg );
 								analysis::DataflowGraph::Register live_reg( 
 									d.reg, d.type );
-								regs.push_back( live_reg );
+								if (addedRegisters.find(live_reg.id) == addedRegisters.end()) {
+									regs.push_back( live_reg );
+									addedRegisters.insert(live_reg.id);
+								}
 							}
 						}
 						else
@@ -138,7 +146,10 @@ namespace ir
 								report( "   Added %r" << operand->reg );
 								analysis::DataflowGraph::Register live_reg( 
 									operand->reg, operand->type );
-								regs.push_back( live_reg );
+								if (addedRegisters.find(live_reg.id) == addedRegisters.end()) {
+									regs.push_back( live_reg );
+									addedRegisters.insert(live_reg.id);
+								}
 							}
 						}
 					}
@@ -149,12 +160,17 @@ namespace ir
 							report( "   Added %p" << d.reg );
 							analysis::DataflowGraph::Register live_reg( 
 								d.reg, d.type );
-							regs.push_back( live_reg );
+							if (addedRegisters.find(live_reg.id) == addedRegisters.end()) {
+								regs.push_back( live_reg );
+								addedRegisters.insert(live_reg.id);
+							}
 						}
 					}
 				}
 			}
 		}
+		
+		// dead code elimintation step?
 		
 		return regs;
 	}

@@ -19,6 +19,16 @@
 			render: false,
 			output: csv
 		},
+		cacheSimulator: {
+			enabled: false,
+			writebackTime: 50,
+			cacheSize: 8192,
+			lineSize: 64,
+			hitTime: 1,
+			missTime: 200,
+			associativity: 1,
+			instructionMemory: true
+		},
 		controlFlowVisualizer: {
 			enabled: false,
 			allInstructions: false
@@ -29,7 +39,7 @@
 		runtimeApiTrace: "trace/CudaAPI.trace"
 	},
 	executive: {
-		devices: [ emulated ],
+		devices: [ nvidia, emulated, llvm, amd ],
 		optimizationLevel: basic,
 		workerThreadLimit: 2
 	}

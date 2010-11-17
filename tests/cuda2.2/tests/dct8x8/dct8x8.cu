@@ -74,10 +74,10 @@ texture<float, 2, cudaReadModeElementType> TexSrc;
 
 
 // includes kernels
-#include "dct8x8_kernel1.cu"
-#include "dct8x8_kernel2.cu"
-#include "dct8x8_kernel_short.cu"
-#include "dct8x8_kernel_quantization.cu"
+#include "dct8x8_kernel1.cuh"
+#include "dct8x8_kernel2.cuh"
+#include "dct8x8_kernel_short.cuh"
+#include "dct8x8_kernel_quantization.cuh"
 
 
 /**

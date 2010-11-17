@@ -30,7 +30,7 @@
 #define _PRESCAN_CU_
 
 // includes, kernels
-#include <scanLargeArray_kernel.cu>
+#include <scanLargeArray_kernel.cuh>
 #include <assert.h>
 
 inline bool 

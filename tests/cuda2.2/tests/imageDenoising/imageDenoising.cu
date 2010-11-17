@@ -101,10 +101,10 @@ cudaArray *a_Src;
 ////////////////////////////////////////////////////////////////////////////////
 // Filtering kernels
 ////////////////////////////////////////////////////////////////////////////////
-#include "imageDenoising_copy_kernel.cu"
-#include "imageDenoising_knn_kernel.cu"
-#include "imageDenoising_nlm_kernel.cu"
-#include "imageDenoising_nlm2_kernel.cu"
+#include "imageDenoising_copy_kernel.cuh"
+#include "imageDenoising_knn_kernel.cuh"
+#include "imageDenoising_nlm_kernel.cuh"
+#include "imageDenoising_nlm2_kernel.cuh"
 
 extern "C"
 cudaError_t CUDA_Bind2TextureArray()

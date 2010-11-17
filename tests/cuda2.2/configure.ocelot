@@ -1,7 +1,7 @@
 {
 	ocelot: "ocelot",
 	trace: { 
-		memoryChecker: true,
+		memoryChecker: false,
 		raceDetector: {
 			enabled: false,
 			ignoreIrrelevantWrites: true
@@ -33,7 +33,7 @@
 	},
 	executive: {
 		devices: [ emulated ],
-		optimizationLevel: basic,
+		optimizationLevel: none,
 		workerThreadLimit: 2
 	}
 }

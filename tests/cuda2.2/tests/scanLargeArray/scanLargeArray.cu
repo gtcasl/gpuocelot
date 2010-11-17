@@ -38,7 +38,7 @@
 #include <cutil_inline.h>
 
 // includes, kernels
-#include <scan.cu>  // defines prescanArray()
+#include <scan.cuh>  // defines prescanArray()
 
 ////////////////////////////////////////////////////////////////////////////////
 // declaration, forward

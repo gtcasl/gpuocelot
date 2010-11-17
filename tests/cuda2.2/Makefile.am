@@ -9,7 +9,7 @@
 ################################################################################
 ## Autoconf configuration
 ACLOCAL_AMFLAGS = -I m4
-OCELOT_LIBS = $(OCELOT_LDFLAGS) libsdk.la -locelotTrace
+OCELOT_LIBS = $(OCELOT_LDFLAGS) libsdk.la
 CUFFT_LIBS = -lcufft
 CUBLAS_LIBS = -lcublas
 CUDA_CFLAGS = -I $(srcdir)/sdk
@@ -275,17 +275,16 @@ Mandelbrot_LDFLAGS = -static
 ################################################################################
 
 ################################################################################
-## Mandelbrot
+## UnstructuredMandelbrot
 UnstructuredMandelbrot_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
-UnstructuredMandelbrot_SOURCES = tests/UnstructuredMandelbrot/Mandelbrot.cpp \
+UnstructuredMandelbrot_SOURCES = \
 	tests/UnstructuredMandelbrot/Mandelbrot_sm10.cu.cpp \
 	tests/UnstructuredMandelbrot/Mandelbrot_sm13.cu.cpp \
+	tests/UnstructuredMandelbrot/Mandelbrot.cpp \
 	tests/UnstructuredMandelbrot/Mandelbrot_gold.cpp
 UnstructuredMandelbrot_LDADD = $(OCELOT_LIBS)
 UnstructuredMandelbrot_LDFLAGS = -static
 ################################################################################
-
-#		tests/UnstructuredMandelbrot/Mandelbrot_sm10.cu.cpp
 
 ################################################################################
 ## MatrixMul
@@ -776,6 +775,9 @@ EXTRA_DIST = data/regression_2_18.gold.dat \
 
 ################################################################################
 
+query:
+	@echo "OCELOT_LDFLAGS =" $(OCELOT_LDFLAGS)
+
 ################################################################################
 ## Regression tests
 regression/regression.log : check
@@ -786,7 +788,7 @@ regression/regression.log : check
 		-l regression/regression.log -v
 
 test : regression/regression.log
-	
+
 ################################################################################
 
 

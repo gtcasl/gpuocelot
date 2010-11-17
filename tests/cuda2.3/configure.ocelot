@@ -6,6 +6,16 @@
 			enabled: false,
 			ignoreIrrelevantWrites: true
 		},
+		cacheSimulator: {
+			enabled: false,
+			writebackTime: 50,
+			cacheSize: 8192,
+			lineSize: 64,
+			hitTime: 1,
+			missTime: 200,
+			associativity: 1,
+			instructionMemory: 1
+		},
 		debugger: {
 			enabled: true,
 			kernelFilter: "_ZN6thrust6detail6device4cuda6detail4b40c13SrtsScanSpineIvEEvPjS6_j",

@@ -24,16 +24,77 @@
 namespace trace 
 {
 
+	CacheSimulator::CacheWay::CacheWay(ir::PTXU64 t, bool d) : dirty(d), tag(t)
+	{
+	
+	}
+
+	CacheSimulator::CacheEntry::CacheEntry(unsigned int a) : _associativity(a)
+	{
+	
+	}
+			
+	bool CacheSimulator::CacheEntry::write(ir::PTXU64 tag, bool& writeback)
+	{
+		for(WayList::iterator way = _ways.begin();
+			way != _ways.end(); ++way)
+		{
+			if(way->tag == tag)
+			{
+				_ways.erase(way);
+				_ways.push_back(CacheWay(tag, true));
+				writeback = false;
+				return true;
+			}
+		}
+		
+		// miss
+		if(_ways.size() == _associativity)
+		{
+			writeback = _ways.front().dirty;
+			_ways.erase(_ways.begin());
+		}
+		
+		_ways.push_back(CacheWay(tag, true));
+		
+		return false;
+	}
+
+	bool CacheSimulator::CacheEntry::read(ir::PTXU64 tag, bool& writeback)
+	{
+		for(WayList::iterator way = _ways.begin();
+			way != _ways.end(); ++way)
+		{
+			if(way->tag == tag)
+			{
+				CacheWay newEntry(tag, way->dirty);
+				_ways.erase(way);
+				_ways.push_back(newEntry);
+				writeback = false;
+				return true;
+			}
+		}
+		
+		// miss
+		if(_ways.size() == _associativity)
+		{
+			writeback = _ways.front().dirty;
+			_ways.erase(_ways.begin());
+		}
+		
+		_ways.push_back(CacheWay(tag, false));
+		
+		return false;
+	}
+
 	CacheSimulator::CacheSimulator() 
 	{
-		
-		writebackTime=50;
-		addressWidth=64;
-		cacheSize=8192;
-		lineSize=64;
-		hitTime=1;
-		missTime=200;
-		ways=1;
+		writebackTime = 50;
+		cacheSize     = 8192;
+		lineSize      = 64;
+		hitTime       = 1;
+		missTime      = 200;
+		associativity = 1;
 	}
 
 	CacheSimulator::~CacheSimulator() 
@@ -47,104 +108,86 @@ namespace trace
 	*/
 	void CacheSimulator::initialize(const executive::ExecutableKernel& kernel) 
 	{
-		_time=0;
+		_time         = 0;
+		_missCount    = 0;
+		_hitCount     = 0;
+		_missLatency  = 0;
+		_hitLatency   = 0;
+		_memoryAccess = 0;
 
-		_missCount=0;
-		_hitCount=0;
-		_missLatency=0;
-		_hitLatency=0;
-	
-		_memoryAccess=0;
+		unsigned int sets = cacheSize / (lineSize * associativity);
 
-		_cache.resize(cacheSize / (lineSize * ways) );
-		for(CacheContainer::iterator i = _cache.begin(); i!= _cache.end(); ++i)
-		{
-			i->valid = false;
-			i->dirty = false;
-		}
+		_cache.resize(sets, CacheEntry(associativity));
 		//report( "Initializing trace generator for kernel " << kernel->name );
 	}
 
 	void CacheSimulator::lookupEntry(int setNumber, int tag, bool accessType)
 	{
-		if( ! _cache[setNumber].valid) //miss
+		bool writeback = false;
+		if(accessType)
 		{
-			++_missCount;
-			
-			_missLatency += missTime;
-			_time +=missTime;
-			
-			_cache[setNumber].valid = true;
-			_cache[setNumber].tag = tag;
-			if(accessType)
-			{
-				_cache[setNumber].dirty = true;
-			}
-		}
-		
-		else if (_cache[setNumber].valid) // go ahead and check the tag
-		{
-			if(_cache[setNumber].tag == tag) //hit
-			{
-				++_hitCount;
-				_hitLatency+=hitTime;
-				_time +=hitTime;
-				
-				if(accessType)
-				{
-					_cache[setNumber].dirty = true;//maybe redundant here?
-				}
-
-			}
-			
-			else
+			if(!_cache[setNumber].write(tag, writeback))
 			{
 				++_missCount;
+			
 				_missLatency += missTime;
-				_time +=missTime;
-				_cache[setNumber].tag = tag;
+				_time        += missTime;
 				
-				if(accessType) //write miss
+				if(writeback)
 				{
-					if(_cache[setNumber].dirty)
-					{
-						_time+=writebackTime;//do we need this if we're over writing?
-					}
-					_cache[setNumber].dirty = true;
+					_time += writebackTime;
 				}
+			}
+			else
+			{
+				++_hitCount;
+				_hitLatency += hitTime;
+				_time       += hitTime;
+			}
+		}
+		else
+		{
+			if(!_cache[setNumber].read(tag, writeback))
+			{
+				++_missCount;
+			
+				_missLatency += missTime;
+				_time        += missTime;
 				
-				else //read miss
+				if(writeback)
 				{
-					//check dirty bit, if set writeback and then load
-					if(_cache[setNumber].dirty)
-					{
-						_time+=writebackTime; //???????????????
-					}
+					_time += writebackTime;
 				}
-							
-			}		
+			}
+			else
+			{
+				++_hitCount;
+
+				_hitLatency += hitTime;
+				_time       += hitTime;
+			}
 		}
 	}
 	
 	long long unsigned int CacheSimulator::getTag(ir::PTXU64 addressAccessed)
 	{
-		int shiftAmount = std::log2( cacheSize / lineSize ) 
-			+ std::log2(lineSize); 
+		int shiftAmount = std::log2( cacheSize / (lineSize * associativity) ) 
+			+ std::log2((lineSize * associativity)); 
 		addressAccessed >>= shiftAmount;		
 		return addressAccessed;
 	}
 	
 	int CacheSimulator::findSet(ir::PTXU64 addressAccessed)
 	{
-		addressAccessed >>= (int)std::log2(lineSize);
+		addressAccessed >>= (int)std::log2((lineSize * associativity));
 
-		ir::PTXU64 mask = (cacheSize / lineSize) - 1;
+		ir::PTXU64 mask = (cacheSize / (lineSize * associativity)) - 1;
 		return addressAccessed & mask;
 	}
 
 	int CacheSimulator::getOffset(ir::PTXU64 addressAccessed)
 	{
-		ir::PTXU64 mask = lineSize - 1;
+		ir::PTXU64 mask = (lineSize * associativity) - 1;
 		return addressAccessed & mask;				
 	}
 	
@@ -154,12 +197,12 @@ namespace trace
 	{
 		unsigned int offset;
 		offset = getOffset(addressAccessed);
-		if(offset+bytesAccessed > lineSize)
+		if(offset+bytesAccessed > (lineSize * associativity))
 		{
-			return false;
+			return true;
 		}
 
-		return true;
+		return false;
 	}
 	
 	void CacheSimulator::read(ir::PTXU64 addressAccessed, 
@@ -167,14 +210,13 @@ namespace trace
 	{
 		long long unsigned int tag;
 		int setNumber;
-		assertM(cachelineSplit(addressAccessed, bytesAccessed), 
+		assertM(!cachelineSplit(addressAccessed, bytesAccessed), 
 			" Access accross split cache lines is not supported at this time.");
 		//get tags, which set to look etc
 		tag = getTag(addressAccessed);
 		setNumber = findSet(addressAccessed);
 		
 		lookupEntry(setNumber, tag, false);
-	
 	}
 	
 	void CacheSimulator::write(ir::PTXU64 addressAccessed, 
@@ -182,7 +224,7 @@ namespace trace
 	{
 		long long unsigned int tag;
 		int setNumber;
-		assertM(cachelineSplit(addressAccessed, bytesAccessed), 
+		assertM(!cachelineSplit(addressAccessed, bytesAccessed), 
 			" Access accross split cache lines is not supported at this time.");
 
 		//get tags, which set to look etc
@@ -190,7 +232,6 @@ namespace trace
 		setNumber = findSet(addressAccessed);
 		
 		lookupEntry(setNumber, tag, true);
-		
 	}
 		
 	/*!
@@ -198,27 +239,36 @@ namespace trace
 	*/
 	void CacheSimulator::event(const TraceEvent & event) 
 	{
-		if(!event.memory_addresses.empty())
+		if(instructionMemory)
 		{
-			_memoryAccess+=event.memory_addresses.size();
-			
-			if(event.instruction->opcode == ir::PTXInstruction::St) //write
+			_memoryAccess+=4;
+		
+			read(event.PC*4, 4);
+		}
+		else
+		{
+			if(!event.memory_addresses.empty())
 			{
-				for(TraceEvent::U64Vector::const_iterator 
-					i = event.memory_addresses.begin(); 
-					i != event.memory_addresses.end(); ++i)
+				_memoryAccess+=event.memory_addresses.size();
+		
+				if(event.instruction->opcode == ir::PTXInstruction::St) //write
 				{
-					write(*i, event.memory_size);
-				}	
-			}
-			else
-			{
-				for(TraceEvent::U64Vector::const_iterator 
-					i = event.memory_addresses.begin(); 
-					i != event.memory_addresses.end(); ++i)
+					for(TraceEvent::U64Vector::const_iterator 
+						i = event.memory_addresses.begin(); 
+						i != event.memory_addresses.end(); ++i)
+					{
+						write(*i, event.memory_size);
+					}	
+				}
+				else
 				{
-					read(*i, event.memory_size);
-				}	
+					for(TraceEvent::U64Vector::const_iterator 
+						i = event.memory_addresses.begin(); 
+						i != event.memory_addresses.end(); ++i)
+					{
+						read(*i, event.memory_size);
+					}	
+				}
 			}
 		}
 		//report( "Default Trace: " << event.toString() );
@@ -227,7 +277,7 @@ namespace trace
 	void CacheSimulator::finish() 
 	{
 		_cache.clear();
-		std::cout << "Miss Rate: " << (_missCount+0.0)/_memoryAccess << "\n";	
+		std::cout << "Miss Rate: " << (_missCount+0.0)/(_missCount + _hitCount) << "\n";	
 		std::cout << "Miss Latency: " << _missLatency<< "\n";
 		std::cout << "Hit Latency: " << _hitLatency<< "\n";
 		std::cout << "Total time for memory accesses: " << _time<< "\n";

@@ -8,8 +8,23 @@
 		},
 		debugger: {
 			enabled: false,
-			kernelFilter: "_Z13scalarProdGPUPfS_S_ii",
-			alwaysAttach: false
+			kernelFilter: "_ZN6thrust6detail6device4cuda6detail4b40c13SrtsScanSpineIvEEvPjS6_j",
+			alwaysAttach: true
+		},
+		cacheSimulator: {
+			enabled: false,
+			writebackTime: 50,
+			cacheSize: 4096,
+			lineSize: 256,
+			hitTime: 1,
+			missTime: 1,
+			associativity: 4,
+			instructionMemory: true
+		},
+		performanceBound: {
+			enabled: true,
+			protocol: "sm_20",
+			output: csv
 		}
 	},
 	cuda: {

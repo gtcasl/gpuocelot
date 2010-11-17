@@ -67,6 +67,7 @@ api::OcelotConfiguration::TraceGeneration::RaceDetector::RaceDetector():
 
 }
 api::OcelotConfiguration::TraceGeneration::Debugger::Debugger():
+        enabled(false),
         kernelFilter(""),
         alwaysAttach(false)
 {

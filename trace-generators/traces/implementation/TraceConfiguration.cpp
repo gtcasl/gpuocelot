@@ -40,7 +40,6 @@ TraceConfiguration::TraceConfiguration()
 	branch = false;
 	parallelism = false;
 	instruction = false;
-	cacheSimulator = false;
 	warpSynchronous.enabled = false; 
 	performanceBound.enabled = false; 
 	convergence.enabled = false;
@@ -66,7 +65,6 @@ TraceConfiguration::TraceConfiguration()
 				"sharedComputation", false);
 			instruction = traceConfig.parse<bool>("instruction", false);
 			parallelism = traceConfig.parse<bool>("parallelism", false);
-			cacheSimulator = traceConfig.parse<bool>("cacheSimulator", false);
 			loadBalance = traceConfig.parse<bool>("loadBalance", false);
 
 			// more detailed configuration for this trace generator
@@ -79,7 +77,30 @@ TraceConfiguration::TraceConfiguration()
 				warpSynchronous.emitHotPaths = warpSyncConfig.parse<bool>(
 					"emitHotPaths", false);
 			}
-	
+			
+			hydrazine::json::Visitor cacheConfig =
+				traceConfig["cacheSimulator"];
+			if(!cacheConfig.is_null()) 
+			{
+				cacheSimulator.enabled = cacheConfig.parse<bool>(
+					"enabled", false);
+				
+				cacheSimulator.writebackTime = cacheConfig.parse<int>(
+					"writebackTime", 50);
+				cacheSimulator.cacheSize = cacheConfig.parse<int>(
+					"cacheSize", 8192);
+				cacheSimulator.lineSize = cacheConfig.parse<int>(
+					"lineSize", 64);
+				cacheSimulator.hitTime = cacheConfig.parse<int>(
+					"hitTime", 1);
+				cacheSimulator.missTime = cacheConfig.parse<int>(
+					"missTime", 200);
+				cacheSimulator.associativity = cacheConfig.parse<int>(
+					"associativity", 1);
+				cacheSimulator.instructionMemory = cacheConfig.parse<bool>(
+					"instructionMemory", false);
+			}
+			
 			hydrazine::json::Visitor perfConfig =
 				traceConfig["performanceBound"];
 			if(!perfConfig.is_null()) 
@@ -200,10 +221,19 @@ TraceConfiguration::TraceConfiguration()
 		ocelot::addTraceGenerator(_instructionTraceGenerator, true);
 	}
 
-	if(cacheSimulator)
+	if(cacheSimulator.enabled)
 	{
 		report( "Creating cache simulator" );
 		_cacheSimulator.database = database;
+
+		_cacheSimulator.writebackTime     = cacheSimulator.writebackTime;
+		_cacheSimulator.cacheSize         = cacheSimulator.cacheSize;
+		_cacheSimulator.lineSize          = cacheSimulator.lineSize;
+		_cacheSimulator.hitTime           = cacheSimulator.hitTime;
+		_cacheSimulator.missTime          = cacheSimulator.missTime;
+		_cacheSimulator.associativity     = cacheSimulator.associativity;
+		_cacheSimulator.instructionMemory = cacheSimulator.instructionMemory;
+
 		ocelot::addTraceGenerator(_cacheSimulator, true);	
 	}
 

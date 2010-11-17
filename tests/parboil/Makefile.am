@@ -9,7 +9,7 @@
 ################################################################################
 ## Autoconf configuration
 ACLOCAL_AMFLAGS = -I m4
-OCELOT_LIBS = $(OCELOT_LDFLAGS) libparboil.la
+OCELOT_LIBS = $(OCELOT_LDFLAGS) libparboil.la -locelotTrace
 CUDA_CFLAGS = -I $(srcdir)/parboil
 ################################################################################
 

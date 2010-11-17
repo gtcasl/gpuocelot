@@ -63,14 +63,6 @@ extern "C" __global__ void exception_in_loop(int iterations)
 		unsigned int result = 0;
 		goto Function_Begin;
 
-	Function_Return:	
-		output[threadIdx.x] = result;
-		return;
-
-	Catch_Label:
-		output[threadIdx.x] = (unsigned int)-1; // error occurred
-		return;
-
 	Function_Begin:
 		for(unsigned int i = 0; i < threadIdx.x; ++i)
 		{
@@ -84,16 +76,8 @@ extern "C" __global__ void exception_in_loop(int iterations)
 		}
 		
 		goto Function_Return;
-}
 
 
-extern "C" __global__ void exception_in_conditional()
-{
-	goto Try_Label;
-	
-	Try_Label:
-		unsigned int result = 0;
-		goto Function_Begin;
 
 	Function_Return:	
 		output[threadIdx.x] = result;
@@ -102,6 +86,15 @@ extern "C" __global__ void exception_in_conditional()
 	Catch_Label:
 		output[threadIdx.x] = (unsigned int)-1; // error occurred
 		return;
+}
+
+extern "C" __global__ void exception_in_conditional()
+{
+	goto Try_Label;
+	
+	Try_Label:
+		unsigned int result = 0;
+		goto Function_Begin;
 
 	Function_Begin:
 		if(input[threadIdx.x] > 0)
@@ -116,6 +109,14 @@ extern "C" __global__ void exception_in_conditional()
 		}
 		
 		goto Function_Return;
+
+	Function_Return:	
+		output[threadIdx.x] = result;
+		return;
+
+	Catch_Label:
+		output[threadIdx.x] = (unsigned int)-1; // error occurred
+		return;
 }
 
 int main(int argc, char** argv)

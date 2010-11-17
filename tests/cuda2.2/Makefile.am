@@ -9,7 +9,7 @@
 ################################################################################
 ## Autoconf configuration
 ACLOCAL_AMFLAGS = -I m4
-OCELOT_LIBS = $(OCELOT_LDFLAGS) libsdk.la
+OCELOT_LIBS = $(OCELOT_LDFLAGS) libsdk.la -locelotTrace
 CUFFT_LIBS = -lcufft
 CUBLAS_LIBS = -lcublas
 CUDA_CFLAGS = -I $(srcdir)/sdk
@@ -776,9 +776,6 @@ EXTRA_DIST = data/regression_2_18.gold.dat \
 
 ################################################################################
 
-query:
-	@echo "OCELOT_LDFLAGS =" $(OCELOT_LDFLAGS)
-
 ################################################################################
 ## Regression tests
 regression/regression.log : check
@@ -789,10 +786,6 @@ regression/regression.log : check
 		-l regression/regression.log -v
 
 test : regression/regression.log
-
-query:
-	@echo $(CUDA_CFLAGS) 
-	@echo $(SDK_CFLAGS)
 	
 ################################################################################
 

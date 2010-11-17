@@ -3,7 +3,7 @@
 #include "Mandelbrot_kernel.h"
 
 // The dimensions of the thread block
-#define BLOCKDIM_X 32
+#define BLOCKDIM_X 16
 #define BLOCKDIM_Y 16
 
 #define ABS(n) ((n) < 0 ? -(n) : (n))

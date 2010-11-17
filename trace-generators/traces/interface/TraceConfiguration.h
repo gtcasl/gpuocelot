@@ -90,6 +90,34 @@ namespace trace
 			//! \brief if false, only branch and reconverge instructions are displayed
 			bool allInstructions;
 		};
+		
+		class CacheSimulator {
+		public:
+			//! \brief Enable the cache simulator
+			bool enabled;
+			
+			//! \brief How many blocking cycles for dirty writebacks
+			unsigned int writebackTime;
+			
+			//! \brief total cache size in bytes
+			unsigned int cacheSize;
+			
+			//! \brief total line size in bytes
+			unsigned int lineSize;
+			
+			//! \brief access time per hit
+			unsigned int hitTime;
+			
+			//! \brief access time per miss
+			unsigned int missTime;
+			
+			//! \brief associativity
+			unsigned int associativity;
+			
+			//! \brief Cache instruction memory rather than data memory
+			bool instructionMemory;
+			
+		};
 
 	public:
 		static TraceConfiguration Singleton;
@@ -116,14 +144,14 @@ namespace trace
 		//! \brief trace::InstructionTraceGenerator
 		bool instruction;
 
-		//! \brief trace::CacheSimulator
-		bool cacheSimulator;
-
 		//! \brief warp synchronous trace generator
 		WarpSynchronous warpSynchronous;
 		
 		//! \brief performance bound generator
 		PerformanceBound performanceBound;
+		
+		//! \brief cache simulator trace generator
+		CacheSimulator cacheSimulator;
 		
 		//! \brief trace::ConvergenceGenerator
 		Convergence convergence;

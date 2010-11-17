@@ -30,6 +30,9 @@ namespace analysis
             /*! \brief The name of kernel being instrumented */
 			std::string kernelName;        
 
+            /*! \brief The name of the instrumentation pass */
+            std::string passName;
+
             /*! \brief The instrumentation pass */
             analysis::Pass *pass;
             

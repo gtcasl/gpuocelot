@@ -1,11 +1,11 @@
-/*! \file BasicBlockSMIDInstrumentor.h
-	\date Sunday November 14, 2010
+/*! \file BasicBlockInstrumentor.h
+	\date Monday November 15, 2010
 	\author Naila Farooqui <naila@cc.gatech.edu>
-	\brief The header file for BasicBlockSMIDInstrumentor
+	\brief The header file for BasicBlockInstrumentor
 */
 
-#ifndef BASIC_BLOCK_SMID_INSTRUMENTOR_H_INCLUDED
-#define BASIC_BLOCK_SMID_INSTRUMENTOR_H_INCLUDED
+#ifndef BASIC_BLOCK_INSTRUMENTOR_H_INCLUDED
+#define BASIC_BLOCK_INSTRUMENTOR_H_INCLUDED
 
 #include <string>
 #include <ocelot/ir/interface/Module.h>
@@ -14,8 +14,8 @@
 
 namespace analysis
 {
-	/*! \brief Able to run the CountBasicBlockExecutionPass over PTX modules */
-	class BasicBlockSMIDInstrumentor : public analysis::PTXInstrumentor
+	/*! \brief Able to run the basic block instrumentation passes over PTX modules */
+	class BasicBlockInstrumentor : public analysis::PTXInstrumentor
 	{
 		public:
 			
@@ -24,13 +24,16 @@ namespace analysis
 
             /*! \brief The number of basic blocks */
             unsigned int basicBlocks;
+        
+            /*! \brief The description of the specified pass */
+            std::string description;
 			
 		public:
 			/*! \brief The default constructor */
-			BasicBlockSMIDInstrumentor();
+			BasicBlockInstrumentor();
 
             /*! \brief The constructor that sets the defaults */
-            BasicBlockSMIDInstrumentor(const std::string input, const std::string output, unsigned int ctas, unsigned int threads );
+            BasicBlockInstrumentor(const std::string input, const std::string output, unsigned int ctas, unsigned int threads );
 
             /*! \brief The initialize method performs any necessary CUDA runtime initialization prior to instrumentation */
             void initialize();

@@ -10,8 +10,8 @@
 #include <ocelot/analysis/interface/ExecuteInstrumentedKernel.h>
 
 #include <ocelot/analysis/interface/PTXInstrumentor.h>
-#include <ocelot/analysis/interface/BasicBlockExecutionCountInstrumentor.h>
-#include <ocelot/analysis/interface/BasicBlockSMIDInstrumentor.h>
+#include <ocelot/analysis/interface/BasicBlockInstrumentor.h>
+#include <ocelot/analysis/interface/KernelClockSMInstrumentor.h>
 
 #include <hydrazine/implementation/ArgumentParser.h>
 #include <hydrazine/implementation/string.h>
@@ -27,27 +27,30 @@
 
 namespace analysis
 {
-    void ExecuteInstrumentedKernel::execute( const std::string &input, const std::string &output, unsigned int ctas, unsigned int threads, const std::string& pass)
+    void ExecuteInstrumentedKernel::execute( const std::string &input, const std::string &output, unsigned int ctas, unsigned int threads, const std::string &pass)
     {
-        analysis::PTXInstrumentor *instrumentor;
-	    if( pass == "basic-block-count" )
-	    {
-		    report( "  Matched basic-block-count." );
-		    instrumentor = new analysis::BasicBlockExecutionCountInstrumentor(input, output, ctas, threads);
-	    }
-        else if( pass == "basic-block-sm" )
-	    {
-		    report( "  Matched basic-block-sm." );
-		    instrumentor = new analysis::BasicBlockSMIDInstrumentor(input, output, ctas, threads);
-	    }
-	    else 
-	    {
-		    std::cout << "==Ocelot== Warning: Unknown pass name - '" << pass 
-			    << "'\n";
-            return;
-	    }
+        analysis::PTXInstrumentor *instrumentor = NULL;
 
+        if( input.empty() )
+		{
+			std::cout << "No input file name given.  Bailing out." << std::endl;
+			return;
+		}
+
+        if( pass.empty() )
+		{
+			std::cout << "No instrumentation pass info given.  Bailing out." << std::endl;
+			return;
+		}
+        else if(pass == "basic-block-count") {
+            instrumentor = new analysis::BasicBlockInstrumentor(input, output, ctas, threads);
+        }
+        else if(pass == "kernel-clock-sm") {
+            instrumentor = new analysis::KernelClockSMInstrumentor(input, output, ctas, threads);
+        }
+        
         instrumentor->instrument();    
+
         delete instrumentor;
     }
 }

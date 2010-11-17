@@ -9,7 +9,7 @@
 			ignoreIrrelevantWrites: true
 		},
 		debugger: {
-			enabled: false,
+			enabled: true,
 			kernelFilter: "_Z13scalarProdGPUPfS_S_ii",
 			alwaysAttach: true
 		},

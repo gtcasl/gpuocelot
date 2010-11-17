@@ -30,7 +30,7 @@ namespace analysis
 		
 		public:
 			KernelClockSMPass();
-            std::string kernelClockSMCounter() const;
+            std::string kernelClockSMInfo() const;
 			
 		public:
 			/*! \brief Initialize the pass using a specific module */

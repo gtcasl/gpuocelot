@@ -24,6 +24,13 @@
 namespace analysis
 {
     void KernelClockSMInstrumentor::initialize() {
+              
+        clock_sm_info = 0;
+
+        cudaMalloc((void **) &clock_sm_info, 2 * ctas * sizeof(size_t));
+        cudaMemset( clock_sm_info, 0, 2 * ctas * sizeof( size_t ));
+
+        cudaMemcpyToSymbol(((KernelClockSMPass *)pass)->kernelClockSMInfo().c_str(), &clock_sm_info, sizeof(size_t *), 0, cudaMemcpyHostToDevice);
 
         cudaConfigureCall( dim3(ctas, 1, 1), dim3( threads, 1, 1), 0, 0 );             
     }
@@ -34,17 +41,20 @@ namespace analysis
 
     void KernelClockSMInstrumentor::finalize() {
 
-        size_t *counterHost = new size_t[2];
-        cudaMemcpyFromSymbol((void *) counterHost, ((KernelClockSMPass *)pass)->kernelClockSMCounter().c_str(), 2 * sizeof(size_t), 0, cudaMemcpyDeviceToHost);       
+        size_t *clockSMInfoHost = new size_t[2 * ctas];
+        cudaMemcpy(clockSMInfoHost, clock_sm_info, 2 * ctas * sizeof( size_t ), cudaMemcpyDeviceToHost);      
         
         std::cout << "\n\n" << kernelName << ":\n";
         std::cout << "\n--------------- " << description << " ---------------\n\n";
 
-        std::cout << "Clock Cycles: " << counterHost[0] << std::endl;
-        std::cout << "SM (Processor) ID: " << counterHost[1] << std::endl;
+        for(unsigned int i = 0; i < ctas; i++) {
+            std::cout << "CTA " << i << ":\n";
+            std::cout << "Clock Cycles: " << clockSMInfoHost[(i * ctas) + 0] << std::endl;
+            std::cout << "SM (Processor) ID: " << clockSMInfoHost[(i * ctas) + 1] << std::endl;
+        }
 
-        delete[] counterHost;
-
+        delete[] clockSMInfoHost;
+        cudaFree(clock_sm_info);
     }
 
     KernelClockSMInstrumentor::KernelClockSMInstrumentor() : description("Kernel Clock Cycle and SM (Processor) ID") {

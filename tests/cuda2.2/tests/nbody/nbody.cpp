@@ -47,6 +47,7 @@
 #include <math.h>
 #include <cutil_inline.h>
 #include <cutil_gl_inline.h>
+#include <sys/time.h>
 
 #include "bodysystemcuda.h"
 #include "bodysystemcpu.h"
@@ -132,8 +133,11 @@ bool bShowSliders = true;
 // fps
 static int fpsCount = 0;
 static int fpsLimit = 20;
+
 //unsigned int timer = 0;
 cudaEvent_t startEvent, stopEvent;
+
+struct timeval startTime, stopTime;
 
 ParticleRenderer *renderer = 0;
 
@@ -371,13 +375,19 @@ void display()
     if (fpsCount >= fpsLimit) 
     {
         char fps[256];
+        float milliseconds = 0;
     
         // stop timer
+        /*
         cutilSafeCall(cudaEventRecord(stopEvent, 0));  
         cutilSafeCall(cudaEventSynchronize(stopEvent));
-
-        float milliseconds = 0;
         cutilSafeCall( cudaEventElapsedTime(&milliseconds, startEvent, stopEvent));
+        */
+        
+        gettimeofday(&stopTime, 0);
+        milliseconds = (float)(stopTime.tv_sec - startTime.tv_sec) * 1000.0f + 
+        	(float)(stopTime.tv_usec - startTime.tv_usec) / 1000.0f;
+
         
         milliseconds /= (float)fpsCount;
         double interactionsPerSecond = 0;
@@ -395,7 +405,8 @@ void display()
         if (bPause) fpsLimit = 0;
         
         // restart timer
-        cutilSafeCall(cudaEventRecord(startEvent, 0));
+        //cutilSafeCall(cudaEventRecord(startEvent, 0));
+        gettimeofday(&startTime, 0);
     }
 
     glutReportErrors();

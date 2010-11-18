@@ -525,6 +525,20 @@ static void updateTailCallTargets(
 	}
 }
 
+#if 0
+static void emitCFGSuccinct(const ir::ControlFlowGraph *cfg) {
+	std::cout << "\nControl flow graph succinct:" << std::endl;
+
+	// duplicate edges using the block_map
+	for (ir::ControlFlowGraph::const_edge_iterator e_it = cfg->edges_begin(); 
+		e_it != cfg->edges_end(); ++e_it) {
+
+		std::cout << "  " << e_it->head->label << " -> " << e_it->tail->label << " [" << e_it->type << "]" << std::endl;
+
+	}
+}
+#endif
+
 static void createScheduler(ir::PTXKernel& kernel,
 	ir::PTXKernel& originalKernel, const BlockSet& savedBlocks)
 {
@@ -576,7 +590,9 @@ static void createScheduler(ir::PTXKernel& kernel,
 		// don't add multiple paths to the same block
 		if(!targets.insert(newEdge.tail).second) continue;
 
-		report("   scheduling path to block '" << newEdge.tail->label << "'");
+		report("   scheduling path to block '" << newEdge.tail->label << "' from block '" << newEdge.head->label << "'");
+		report("      - former edge type [" << (*edge)->type << "]");
+		report("      - new edge type [" << newEdge.type << "]");
 
 		kernel.cfg()->insert_edge(newEdge);
 	}
@@ -657,11 +673,24 @@ static void createScheduler(ir::PTXKernel& kernel,
 		scheduler = newScheduler;
 	}
 	
+	
 	// Add compare and branch instructions
 	ir::ControlFlowGraph::edge_iterator target = scheduler->out_edges[0];
 	ir::ControlFlowGraph::edge_iterator fallthrough = scheduler->out_edges[1];
+		
+	// add dummy block to enable the fallthrough edge from the scheduler to branch anywhere
+	ir::ControlFlowGraph::iterator trampoline = kernel.cfg()->insert_block(
+		ir::BasicBlock(kernel.name + "_scheduler_trampoline", kernel.cfg()->newId()));
+		
+	ir::ControlFlowGraph::iterator fallthroughTarget = fallthrough->tail;
 	
-	fallthrough->type = ir::Edge::FallThrough;
+	kernel.cfg()->insert_edge(ir::Edge(scheduler, trampoline, ir::Edge::FallThrough));
+	kernel.cfg()->insert_edge(ir::Edge(trampoline, fallthrough->tail, ir::Edge::Branch));
+	kernel.cfg()->remove_edge(fallthrough);
+	
+	ir::PTXInstruction *trampolineBra = new ir::PTXInstruction(ir::PTXInstruction::Bra);
+	trampolineBra->d = std::move(ir::PTXOperand(fallthroughTarget->label));
+	trampoline->instructions.push_back(trampolineBra);
 	
 	ir::PTXInstruction* compare = new ir::PTXInstruction(
 		ir::PTXInstruction::SetP);

@@ -29,7 +29,8 @@ check_PROGRAMS = TestLexer TestParser \
 	TestPTXToLLVMTranslator   \
 	TestCudaGlobals TestCudaMalloc TestCudaTexture2D TestCudaTextureArray \
 	TestCudaSequence TestLLVMKernels TestDeviceSwitching \
-	TestCalVectorScale TestPTXAssembly TestSequenceDriverAPI TestGenericMemory
+	TestCalVectorScale TestPTXAssembly TestSequenceDriverAPI TestGenericMemory \
+	TestFunctionCall
 EXTRA_PROGRAMS = Module PtxToIlTranslator DFG CFG PTXChecker
 lib_LTLIBRARIES = libocelot.la
 ################################################################################
@@ -350,6 +351,14 @@ TestPTXAssembly_CXXFLAGS = $(INCLUDE) -Wall -ansi \
 TestPTXAssembly_SOURCES = ocelot/ir/test/TestPTXAssembly.cpp
 TestPTXAssembly_LDADD = libocelot.la $(LLVM_LDFLAGS)
 TestPTXAssembly_LDFLAGS = -static
+################################################################################
+
+################################################################################
+## TestFunctionCall
+TestFunctionCall_CXXFLAGS = $(INCLUDE) -std=c++0x
+TestFunctionCall_SOURCES = ocelot/cuda/test/functions/simpleFunc.cu.cpp
+TestFunctionCall_LDADD = libocelot.la $(LLVM_LDFLAGS)
+TestFunctionCall_LDFLAGS = -static
 ################################################################################
 
 ################################################################################

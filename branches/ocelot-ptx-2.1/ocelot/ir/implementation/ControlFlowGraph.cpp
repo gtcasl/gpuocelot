@@ -593,6 +593,9 @@ ControlFlowGraph::BlockPointerVector ControlFlowGraph::executable_sequence() {
 ControlFlowGraph & ControlFlowGraph::operator=(const 
 	ControlFlowGraph &cfg) {
 	report( "Copying cfg" );
+	
+	report("\nControlFlowGraph::operator=()");
+	
 	typedef std::unordered_map<const_iterator, iterator> BlockMap;
 	BlockMap block_map;
 	
@@ -615,14 +618,19 @@ ControlFlowGraph & ControlFlowGraph::operator=(const
 		}
 	}
 
-
+	report("Edges:");
+	
 	// duplicate edges using the block_map
 	for (const_edge_iterator e_it = cfg.edges_begin(); 
 		e_it != cfg.edges_end(); ++e_it) {
 		assert( block_map.count( e_it->head ) );
 		assert( block_map.count( e_it->tail ) );
+		
+		report("\n  " << e_it->head->label << " -> " << e_it->tail->label << " [" << e_it->type << "]");
+		
 		insert_edge(Edge(block_map[e_it->head], 
 			block_map[e_it->tail], e_it->type));
+		report("\n");
 	}
 	
 	return *this;

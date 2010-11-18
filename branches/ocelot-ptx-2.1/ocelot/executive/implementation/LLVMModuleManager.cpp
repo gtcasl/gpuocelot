@@ -854,6 +854,7 @@ static void optimize(llvm::Module& module,
 		manager.add(llvm::createCFGSimplificationPass());
 	}
 	manager.run(module);
+	
 	#endif
 }
 

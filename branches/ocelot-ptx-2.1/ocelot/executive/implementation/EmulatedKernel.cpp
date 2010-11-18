@@ -4,10 +4,15 @@
 	\brief implements the Kernel base class
 */
 
+// C++ includes
+#include <assert.h>
+#include <math.h>
 #include <vector>
 #include <map>
 #include <unordered_set>
+#include <cstring>
 
+// Ocelot includes
 #include <ocelot/ir/interface/Parameter.h>
 #include <ocelot/ir/interface/Module.h>
 #include <ocelot/ir/interface/ControlFlowGraph.h>
@@ -17,15 +22,12 @@
 #include <ocelot/executive/interface/Device.h>
 #include <ocelot/executive/interface/RuntimeException.h>
 #include <ocelot/executive/interface/CooperativeThreadArray.h>
-
 #include <ocelot/trace/interface/TraceGenerator.h>
 
-#include <assert.h>
-#include <math.h>
-
-#include <cstring>
-
+// Hydrazine includes
 #include <hydrazine/implementation/debug.h>
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
 
 #ifdef REPORT_BASE
 #undef REPORT_BASE
@@ -35,6 +37,8 @@
 
 #define REPORT_KERNEL_INSTRUCTIONS 1
 #define REPORT_LAUNCH_CONFIGURATION 1
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
 
 executive::EmulatedKernel::EmulatedKernel(
 	ir::Kernel* kernel, 
@@ -1162,4 +1166,6 @@ std::string executive::EmulatedKernel::getInstructionBlock(int PC) const {
 	
 	return "";
 }
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
 

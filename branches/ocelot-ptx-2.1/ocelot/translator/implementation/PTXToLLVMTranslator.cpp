@@ -8544,6 +8544,7 @@ namespace translator
 			"Kernel must a PTXKernel to translate to an LLVMKernel" );
 		
 		_ptx = static_cast< const ir::PTXKernel* >( k );
+		
 		_llvmKernel = new ir::LLVMKernel( *k );
 		
 		_translateInstructions();

@@ -16,6 +16,17 @@ extern "C" __global__ void sequence(int *A, int N) {
 	}
 }
 
+extern "C" __global__ void testShareSimple(int *A) {
+	int i = threadIdx.x + blockIdx.x * blockDim.x;
+	__shared__ int Share[32];
+	
+	int a = A[i];
+	Share[threadIdx.x] = a;
+	__syncthreads();
+	A[i] = Share[threadIdx.x ^ 1];
+	A[i] = Share[31 - threadIdx.x];
+}
+
 extern "C" __global__ void testShr(int *A, const int *B) {
 	int i = threadIdx.x + blockIdx.x * blockDim.x;
 	int b;
@@ -81,40 +92,74 @@ int main(int argc, char *arg[]) {
 	cudaMemcpy(A_host, A_gpu, bytes, cudaMemcpyDeviceToHost);
 	grid.x *= 4;
 
-	int *B_gpu = 0;
-	if (cudaMalloc((void **)&B_gpu, bytes) != cudaSuccess) {
-		printf("cudaMalloc() - failed to allocate %d bytes on device\n", (int)bytes);
-		cudaFree(A_gpu);
-		free(A_host);
-		return -1;
+#if 0
+	if (!errors) {
+		sequence<<< grid, block >>>(A_gpu, N);
+		
+		printf("\n\n\n\n\n\n");
+		
+		testShareSimple<<< grid, block >>>(A_gpu);
+		if (cudaMemcpy(A_host, A_gpu, bytes, cudaMemcpyDeviceToHost) != cudaSuccess) {
+			printf("cudaMemcpy(A, A) - failed to copy %d bytes from device to host\n", (int)bytes);
+			cudaFree(A_gpu);
+			free(A_host);
+		}
+	
+		for (int i = 0; i < N; i++) {
+//			int p = i + 31 - 2 * (i % 32);
+			int p = i;
+			if (p & 0x01) {
+				p --;
+			}
+			else {
+				p ++;
+			}
+			int expected = p * 2;
+			int got = A_host[i];
+			if (expected != got) {
+				printf("ERROR 2 [%d] - expected: %d, got: %d\n", i, expected, got);
+				++errors;
+			}
+		}
 	}
+#endif
 	
-	sequence<<< grid, block >>>(A_gpu, N);
-	testShr<<< grid, block >>>(B_gpu, A_gpu);
+	if (!errors) {
+		int *B_gpu = 0;
+		if (cudaMalloc((void **)&B_gpu, bytes) != cudaSuccess) {
+			printf("cudaMalloc() - failed to allocate %d bytes on device\n", (int)bytes);
+			cudaFree(A_gpu);
+			free(A_host);
+			return -1;
+		}
 	
-	if (cudaMemcpy(A_host, B_gpu, bytes, cudaMemcpyDeviceToHost) != cudaSuccess) {
-		printf("cudaMemcpy(A, B) - failed to copy %d bytes from device to host\n", (int)bytes);
-		cudaFree(A_gpu);
+		sequence<<< grid, block >>>(A_gpu, N);
+		testShr<<< grid, block >>>(B_gpu, A_gpu);
+	
+		if (cudaMemcpy(A_host, B_gpu, bytes, cudaMemcpyDeviceToHost) != cudaSuccess) {
+			printf("cudaMemcpy(A, B) - failed to copy %d bytes from device to host\n", (int)bytes);
+			cudaFree(A_gpu);
+			cudaFree(B_gpu);
+			free(A_host);
+		}
+	
+		for (int i = 0; (errors < 5) && i < N; ++i) {
+			int b;
+			if (i & 1) {
+				b = (i ^ 1) * 2 * 2;
+			}
+			else {
+				b = (i ^ 1) * 2 * 3;
+			}
+			int got = A_host[i];
+			if (b != got) {
+				printf("ERROR 3 [%d] - expected: %d, got: %d\n", i, b, got);
+				++errors;
+			}
+		}
 		cudaFree(B_gpu);
-		free(A_host);
-	}
-	
-	for (int i = 0; (errors < 5) && i < N; ++i) {
-		int b;
-		if (i & 1) {
-			b = (i ^ 1) * 2 * 2;
-		}
-		else {
-			b = (i ^ 1) * 2 * 3;
-		}
-		int got = A_host[i];
-		if (b != got) {
-			printf("ERROR 2 [%d] - expected: %d, got: %d\n", i, b, got);
-			++errors;
-		}
 	}
 
-	cudaFree(B_gpu);
 	cudaFree(A_gpu);
 	free(A_host);
 

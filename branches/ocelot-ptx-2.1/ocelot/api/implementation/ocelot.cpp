@@ -28,15 +28,18 @@ namespace ocelot
 		get()->clearTraceGenerators( );
 	}
 
-	void addPTXPass(analysis::Pass &pass) {
+	void addPTXPass(analysis::Pass &pass) 
+	{
 		get()->addPTXPass(pass);
 	}
 
-	void removePTXPass(analysis::Pass &pass) {
+	void removePTXPass(analysis::Pass &pass) 
+	{
 		get()->removePTXPass(pass);
 	}
 
-	void clearPTXPasses() {
+	void clearPTXPasses() 
+	{
 		get()->clearPTXPasses();
 	}
 	

@@ -310,7 +310,7 @@ namespace analysis {
       if (debug) {
         dumpCTNode(p);
         dumpUnstructuredBR();
-        printf("%ld\n", N.size());
+        printf("%ld\n", (long int)N.size());
         std::cerr << "********************\n";
       }
   

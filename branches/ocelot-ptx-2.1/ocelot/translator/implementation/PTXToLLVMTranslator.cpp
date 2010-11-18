@@ -3834,7 +3834,7 @@ namespace translator
 				ir::LLVMInstruction::Operand extendedA = _translate( i.a );
 				ir::LLVMInstruction::Operand extendedB = _translate( i.b );
 				
-				if( ir::PTXOperand::isSigned( i.a.type ) )
+				if( ir::PTXOperand::isSigned( i.type ) )
 				{
 					if( i.a.addressMode != ir::PTXOperand::Immediate )
 					{

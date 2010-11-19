@@ -5491,6 +5491,13 @@ void executive::CooperativeThreadArray::eval_Mov_sreg(CTAContext &context,
 			setRegAsU32(threadID, instr.d.reg, d);			
 		}
 	}
+	else if (instr.type == PTXOperand::s32) {
+		for (int threadID = 0; threadID < threadCount; threadID++) {
+			if (!context.predicated(threadID, instr)) continue;
+			PTXS32 d = operandAsS32(threadID, instr.a);
+			setRegAsS32(threadID, instr.d.reg, d);			
+		}
+	}
 	else {
 		throw RuntimeException("unsupported data type", context.PC, instr);
 	}

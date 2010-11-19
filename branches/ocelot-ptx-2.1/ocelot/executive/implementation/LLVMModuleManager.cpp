@@ -88,30 +88,7 @@ hydrazine::Thread::Id LLVMModuleManager::id()
 
 ////////////////////////////////////////////////////////////////////////////////
 // Helper Functions
-static void optimizePTX(ir::PTXKernel& kernel,
-	translator::Translator::OptimizationLevel optimization,
-	LLVMModuleManager::FunctionId id)
-{
-	report(" Building dataflow graph.");
-	kernel.dfg();
-
-	report(" Optimizing PTX");
-	analysis::ConvertPredicationToSelectPass convertPredicationToSelect;
-	analysis::RemoveBarrierPass              removeBarriers(id);
-	
-	report("  Running convert predication to select pass");
-	convertPredicationToSelect.initialize(*kernel.module);
-	convertPredicationToSelect.runOnKernel(kernel);
-	convertPredicationToSelect.finalize();
-	
-	report("  Running remove barriers pass");
-	removeBarriers.initialize(*kernel.module);
-	removeBarriers.runOnKernel(kernel);
-	removeBarriers.finalize();
-	
-	kernel.dfg()->toSsa();
-}
-
+#ifdef HAVE_LLVM
 static unsigned int pad(unsigned int& size, unsigned int alignment)
 {
 	report("  Setting up global memory references.");
@@ -666,6 +643,30 @@ static void setupPTXMemoryReferences(ir::PTXKernel& kernel,
 	setupLocalMemoryReferences(kernel, metadata, parent);
 }
 
+static void optimizePTX(ir::PTXKernel& kernel,
+	translator::Translator::OptimizationLevel optimization,
+	LLVMModuleManager::FunctionId id)
+{
+	report(" Building dataflow graph.");
+	kernel.dfg();
+
+	report(" Optimizing PTX");
+	analysis::ConvertPredicationToSelectPass convertPredicationToSelect;
+	analysis::RemoveBarrierPass              removeBarriers(id);
+	
+	report("  Running convert predication to select pass");
+	convertPredicationToSelect.initialize(*kernel.module);
+	convertPredicationToSelect.runOnKernel(kernel);
+	convertPredicationToSelect.finalize();
+	
+	report("  Running remove barriers pass");
+	removeBarriers.initialize(*kernel.module);
+	removeBarriers.runOnKernel(kernel);
+	removeBarriers.finalize();
+	
+	kernel.dfg()->toSsa();
+}
+
 static void setupCallTargets(ir::PTXKernel& kernel,
 	const LLVMModuleManager::ModuleDatabase& database)
 {
@@ -785,7 +786,7 @@ static void optimize(llvm::Module& module,
 {
 	report(" Optimizing kernel at level " 
 		<< translator::Translator::toString(optimization));
-	#ifdef HAVE_LLVM
+
     unsigned int level = 0;
     bool space         = false;
 
@@ -854,8 +855,6 @@ static void optimize(llvm::Module& module,
 		manager.add(llvm::createCFGSimplificationPass());
 	}
 	manager.run(module);
-	
-	#endif
 }
 
 
@@ -864,7 +863,6 @@ static void link(llvm::Module& module, const ir::PTXKernel& kernel,
 {
 	report("  Linking global variables.");
 	
-	#ifdef HAVE_LLVM
 	for(ir::Module::GlobalMap::const_iterator 
 		global = kernel.module->globals().begin(); 
 		global != kernel.module->globals().end(); ++global) 
@@ -884,7 +882,6 @@ static void link(llvm::Module& module, const ir::PTXKernel& kernel,
 			LLVMState::jit()->addGlobalMapping(value, allocation->pointer());
 		}
 	}
-	#endif
 }
 
 static void codegen(LLVMModuleManager::Function& function, llvm::Module& module,
@@ -892,7 +889,6 @@ static void codegen(LLVMModuleManager::Function& function, llvm::Module& module,
 {
 	report(" Generating native code.");
 	
-	#ifdef HAVE_LLVM
 	LLVMState::jit()->addModule(&module);
 
 	link(module, kernel, device);
@@ -906,8 +902,8 @@ static void codegen(LLVMModuleManager::Function& function, llvm::Module& module,
 	assertM(llvmFunction != 0, "Could not find function " + name);
 	function = hydrazine::bit_cast<LLVMModuleManager::Function>(
 		LLVMState::jit()->getPointerToFunction(llvmFunction));
-	#endif
 }
+#endif
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -924,6 +920,7 @@ LLVMModuleManager::KernelAndTranslation::KernelAndTranslation(ir::PTXKernel* k,
 
 void LLVMModuleManager::KernelAndTranslation::unload()
 {
+	#ifdef HAVE_LLVM
 	if(_metadata == 0) return;
 	assert(_module != 0);
 
@@ -935,11 +932,15 @@ void LLVMModuleManager::KernelAndTranslation::unload()
 	delete _module;
 	delete _kernel;
 	delete _metadata;
+	#else
+	assertM(false, "LLVM support not compiled into ocelot.");
+	#endif
 }
 
 LLVMModuleManager::KernelAndTranslation::MetaData*
 	LLVMModuleManager::KernelAndTranslation::metadata()
 {
+	#ifdef HAVE_LLVM
 	if(_metadata != 0) return _metadata;
 	
 	report("Translating PTX kernel '" << _kernel->name << "'");
@@ -987,6 +988,9 @@ LLVMModuleManager::KernelAndTranslation::MetaData*
 	}
 
 	return _metadata;
+	#else
+	assertM(false, "LLVM support not compiled into ocelot.");
+	#endif
 }
 
 const std::string& LLVMModuleManager::KernelAndTranslation::name() const

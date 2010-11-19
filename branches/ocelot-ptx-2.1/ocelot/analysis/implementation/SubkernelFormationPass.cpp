@@ -528,9 +528,10 @@ static void updateTailCallTargets(
 static void createScheduler(ir::PTXKernel& kernel,
 	ir::PTXKernel& originalKernel, const BlockSet& savedBlocks)
 {
-	if(kernel.cfg()->begin()->out_edges.size() == 1)
+	if(kernel.cfg()->get_entry_block()->out_edges.size() == 1)
 	{
-		kernel.cfg()->begin()->out_edges[0]->type = ir::Edge::FallThrough;
+		kernel.cfg()->get_entry_block()->out_edges[0]->type
+			= ir::Edge::FallThrough;
 		return;
 	}
 	
@@ -807,14 +808,12 @@ void SubkernelFormationPass::ExtractKernelsPass::runOnKernel(ir::Kernel& k)
 			edge = block->in_edges.begin(); 
 			edge != block->in_edges.end(); ++edge)
 		{
-			// skip already encountered blocks
-			if(!encountered.insert((*edge)->head).second) continue;
 			// skip the entry block
 			if((*edge)->head == ptx.cfg()->get_entry_block()) continue;
 			
 			inEdges.insert((*edge)->head);
 		}
-
+		
 		// Blocks leaving the region become candidates for the next subkernel
 		for(ir::ControlFlowGraph::const_edge_pointer_iterator 
 			edge = block->out_edges.begin(); 

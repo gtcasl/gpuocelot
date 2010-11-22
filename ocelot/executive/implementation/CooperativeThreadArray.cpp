@@ -3136,7 +3136,9 @@ void executive::CooperativeThreadArray::eval_Ex2(CTAContext &context, const PTXI
 /*!
 
 */
-void executive::CooperativeThreadArray::eval_Exit(CTAContext &context, const PTXInstruction &instr) {
+void executive::CooperativeThreadArray::eval_Exit(CTAContext &context,
+	const PTXInstruction &instr) {
+	trace();
 	reconvergenceMechanism->eval_Exit(context, instr);
 }
 

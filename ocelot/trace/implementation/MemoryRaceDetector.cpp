@@ -173,7 +173,12 @@ namespace trace
 	
 	void MemoryRaceDetector::event( const TraceEvent& event )
 	{
-		if( event.instruction->addressSpace == ir::PTXInstruction::Shared )
+		if( event.instruction->opcode == ir::PTXInstruction::Bar 
+			|| event.instruction->opcode == ir::PTXInstruction::Exit )
+		{
+			_barrier();
+		}
+		else if( event.instruction->addressSpace == ir::PTXInstruction::Shared )
 		{
 			if( event.instruction->opcode == ir::PTXInstruction::Ld )
 			{
@@ -183,11 +188,6 @@ namespace trace
 			{
 				_write( event );
 			}
-		}
-		else if( event.instruction->opcode == ir::PTXInstruction::Bar 
-			|| event.instruction->opcode == ir::PTXInstruction::Exit )
-		{
-			_barrier();
 		}
 	}
 	

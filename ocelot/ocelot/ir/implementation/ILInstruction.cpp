@@ -21,6 +21,7 @@ namespace ir
 			case And:                   return "and";
 			case Break:                 return "break";
 			case Cmov_Logical:          return "cmov_logical";
+			case Div:                   return "div";
 			case Else:                  return "else";
 			case End:                   return "end";
 			case EndIf:                 return "endif";
@@ -30,6 +31,7 @@ namespace ir
 			case Iadd:                  return "iadd";
 			case Iand:                  return "iand";
 			case Ieq:                   return "ieq";
+			case IfLogicalNZ:            return "if_logicalnz";
 			case IfLogicalZ:            return "if_logicalz";
 			case Ige:                   return "ige";
 			case Ilt:                   return "ilt";
@@ -49,10 +51,12 @@ namespace ir
 			case Lds_Read_Add_Resource: return "lds_read_add_resource(1)";
 			case Lds_Store_Id:          return "lds_store_id(1)";
 			case Log_Vec:               return "log_vec";
+			case Lt:                    return "lt";
 			case Mad:                   return "mad";
 			case Mov:                   return "mov";
 			case Mul:                   return "mul";
 			case Rcp:                   return "rcp";
+			case Round_Nearest:         return "round_nearest";
 			case Sub:                   return "sub";
 			case Uav_Arena_Load_Id:     return "uav_arena_load_id(1)";
 			case Uav_Arena_Store_Id:    return "uav_arena_store_id(1)";
@@ -65,6 +69,7 @@ namespace ir
 			case Udiv:                  return "udiv";
 			case Umul:                  return "umul";
 			case Ushr:                  return "ushr";
+			case UtoF:                  return "utof";
 			case WhileLoop:             return "whileloop";
 			case InvalidOpcode:         return "INVALID_OPCODE";
 			default:
@@ -204,6 +209,15 @@ namespace ir
 	Instruction *ILCmov_Logical::clone(bool copy) const
 	{
 		return new ILCmov_Logical(*this);
+	}
+
+	ILDiv::ILDiv() : ILBinaryInstruction(Div)
+	{
+	}
+
+	Instruction *ILDiv::clone(bool copy) const
+	{
+		return new ILDiv(*this);
 	}
 
 	ILElse::ILElse() : ILInstruction(Else)
@@ -347,6 +361,25 @@ namespace ir
 	Instruction *ILIeq::clone(bool copy) const
 	{
 		return new ILIeq(*this);
+	}
+
+	ILIfLogicalNZ::ILIfLogicalNZ() : ILInstruction(IfLogicalNZ)
+	{
+	}
+
+	std::string ILIfLogicalNZ::toString() const
+	{
+		return ILInstruction::toString(opcode) + " " + a.toString();
+	}
+
+	std::string ILIfLogicalNZ::valid() const
+	{
+		assertM(false, "Not implemented yet");
+	}
+
+	Instruction *ILIfLogicalNZ::clone(bool copy) const
+	{
+		return new ILIfLogicalNZ(*this);
 	}
 
 	ILIfLogicalZ::ILIfLogicalZ() : ILInstruction(IfLogicalZ)
@@ -559,6 +592,15 @@ namespace ir
 		return new ILLog_Vec(*this);
 	}
 
+	ILLt::ILLt() : ILBinaryInstruction(Lt)
+	{
+	}
+
+	Instruction *ILLt::clone(bool copy) const
+	{
+		return new ILLt(*this);
+	}
+
 	ILMad::ILMad() : ILTrinaryInstruction(Mad)
 	{
 	}
@@ -593,6 +635,15 @@ namespace ir
 	Instruction *ILRcp::clone(bool copy) const
 	{
 		return new ILRcp(*this);
+	}
+
+	ILRound_Nearest::ILRound_Nearest() : ILUnaryInstruction(Round_Nearest)
+	{
+	}
+
+	Instruction *ILRound_Nearest::clone(bool copy) const
+	{
+		return new ILRound_Nearest(*this);
 	}
 
 	ILSub::ILSub() : ILBinaryInstruction(Sub)
@@ -723,6 +774,15 @@ namespace ir
 	Instruction *ILUshr::clone(bool copy) const
 	{
 		return new ILUshr(*this);
+	}
+
+	ILUtoF::ILUtoF() : ILUnaryInstruction(UtoF)
+	{
+	}
+
+	Instruction *ILUtoF::clone(bool copy) const
+	{
+		return new ILUtoF(*this);
 	}
 
 	ILWhileLoop::ILWhileLoop() : ILInstruction(WhileLoop)

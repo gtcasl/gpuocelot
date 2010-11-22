@@ -25,6 +25,7 @@ namespace ir
 				And,
 				Break,
 				Cmov_Logical,
+				Div,
 				Else,
 				End,
 				EndIf,
@@ -34,6 +35,7 @@ namespace ir
 				Iadd,
 				Iand,
 				Ieq,
+				IfLogicalNZ,
 				IfLogicalZ,
 				Ige,
 				Ilt,
@@ -53,10 +55,12 @@ namespace ir
 				Lds_Read_Add_Resource,
 				Lds_Store_Id,
 				Log_Vec,
+				Lt,
 				Mad,
 				Mov,
 				Mul,
 				Rcp,
+				Round_Nearest,
 				Sub,
 				Uav_Arena_Load_Id,
 				Uav_Arena_Store_Id,
@@ -69,6 +73,7 @@ namespace ir
 				Udiv,
 				Umul,
 				Ushr,
+				UtoF,
 				WhileLoop,
 				InvalidOpcode
 			};
@@ -220,6 +225,15 @@ namespace ir
 			Instruction *clone(bool copy=true) const;
 	};
 
+	class ILDiv : public ILBinaryInstruction
+	{
+		public:
+			/*! \brief Default constructor */
+			ILDiv();
+
+			Instruction *clone(bool copy=true) const;
+	};
+
 	class ILElse : public ILInstruction
 	{
 		public:
@@ -317,6 +331,20 @@ namespace ir
 			/*! \brief Default constructor */
 			ILIeq();
 
+			Instruction *clone(bool copy=true) const;
+	};
+
+	class ILIfLogicalNZ : public ILInstruction
+	{
+		public:
+			/*! \brief The first source operand */
+			ILOperand a;
+
+			/*! \brief Default constructor */
+			ILIfLogicalNZ();
+
+			std::string toString() const;
+			std::string valid() const;
 			Instruction *clone(bool copy=true) const;
 	};
 
@@ -500,6 +528,15 @@ namespace ir
 			Instruction *clone(bool copy=true) const;
 	};
 
+	class ILLt : public ILBinaryInstruction
+	{
+		public:
+			/*! \brief Default constructor */
+			ILLt();
+
+			Instruction *clone(bool copy=true) const;
+	};
+
 	class ILMad : public ILTrinaryInstruction
 	{
 		public:
@@ -532,6 +569,15 @@ namespace ir
 		public:
 			/*! \brief Default constructor */
 			ILRcp();
+
+			Instruction *clone(bool copy=true) const;
+	};
+
+	class ILRound_Nearest : public ILUnaryInstruction
+	{
+		public:
+			/*! \brief Default constructor */
+			ILRound_Nearest();
 
 			Instruction *clone(bool copy=true) const;
 	};
@@ -646,6 +692,15 @@ namespace ir
 		public:
 			/*! \brief Default constructor */
 			ILUshr();
+
+			Instruction *clone(bool copy=true) const;
+	};
+
+	class ILUtoF: public ILUnaryInstruction
+	{
+		public:
+			/*! \brief Default constructor */
+			ILUtoF();
 
 			Instruction *clone(bool copy=true) const;
 	};

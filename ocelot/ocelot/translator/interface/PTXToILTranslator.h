@@ -95,6 +95,16 @@ namespace translator
 			ir::ILOperand _translateLiteral(float l);
 			std::string _translateConstantBuffer(const std::string &ident);
 
+			void _translateIDiv(const ir::PTXInstruction &i);
+			void _translateFDiv(const ir::PTXInstruction &i);
+
+			void _translateISetP(const ir::PTXInstruction &i);
+			void _translateFSetP(const ir::PTXInstruction &i);
+
+			void _convertSrc(const ir::PTXInstruction &i);
+			void _convert(const ir::PTXInstruction &i);
+			void _convertDst(const ir::PTXInstruction &i);
+
 			void _addKernelPrefix();
 
 			ir::ILOperand _tempRegister();

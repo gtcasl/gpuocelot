@@ -1,8 +1,8 @@
-# 1 "/tmp/tmpxft_000013be_00000000-1_simpleZeroCopy.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00000c8e_00000000-1_simpleZeroCopy.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_000013be_00000000-1_simpleZeroCopy.cudafe1.cpp"
-# 1 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
+# 1 "/tmp/tmpxft_00000c8e_00000000-1_simpleZeroCopy.cudafe1.cpp"
+# 1 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
 # 46 "/usr/local/cuda/bin/../include/device_types.h"
 # 149 "/usr/lib/gcc/i686-linux-gnu/4.4.5/include/stddef.h" 3
 typedef long ptrdiff_t;
@@ -11361,168 +11361,168 @@ printf(" -> CUDA %s Toolkit\n", sNVCCReq);
 printf(" -> %s NVIDIA Display Driver.\n", sDriverReq);
 # 18 "sdk/cutil_inline.h"
 }
-# 43 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
+# 43 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
 void vectorAddGPU(float *a, float *b, float *c, int N) ;
-# 50 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
+# 50 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
 int main(int argc, char **argv)
-# 51 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
+# 51 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
 {
-# 52 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
+# 52 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
 int n, nelem, idev, deviceCount;
-# 53 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
+# 53 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
 char *device = (__null);
-# 54 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
+# 54 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
 unsigned flags;
-# 55 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
+# 55 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
 size_t bytes;
-# 56 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
+# 56 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
 float *a, *b, *c;
-# 57 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
+# 57 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
 float *d_a, *d_b, *d_c;
-# 58 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
+# 58 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
 float errorNorm, refNorm, ref, diff;
-# 59 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
+# 59 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
 cudaDeviceProp deviceProp;
-# 61 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
+# 61 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
 if (cutCheckCmdLineFlag(argc, (const char **)argv, "help"))
-# 62 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
+# 62 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
 {
-# 63 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
+# 63 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
 printf("Usage:  simpleZeroCopy [OPTION]\n\n");
-# 64 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
+# 64 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
 printf("Options:\n");
-# 65 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
+# 65 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
 printf("  --device=[device #]  Specify the device to be used\n");
-# 66 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
+# 66 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
 __cutilExit(argc, argv);
-# 67 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
+# 67 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
 }
-# 71 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
+# 71 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
 if (cutGetCmdLineArgumentstr(argc, (const char **)argv, "device", &device))
-# 72 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
+# 72 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
 {
-# 73 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
+# 73 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
 cudaGetDeviceCount(&deviceCount);
-# 74 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
+# 74 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
 idev = atoi(device);
-# 75 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
+# 75 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
 if ((idev >= deviceCount) || (idev < 0))
-# 76 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
+# 76 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
 {
-# 77 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
+# 77 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
 fprintf(stderr, "Invalid device number %d, using default device 0.\n", idev);
-# 79 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
+# 79 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
 idev = 0;
-# 80 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
+# 80 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
 }
-# 81 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
+# 81 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
 } else
-# 83 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
+# 83 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
 {
-# 84 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
+# 84 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
 idev = 0;
-# 85 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
+# 85 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
 }
-# 87 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
-__cudaSafeCall(cudaSetDevice(idev), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu", 87);
-# 92 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
-__cudaSafeCall(cudaGetDeviceProperties(&deviceProp, idev), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu", 92);
-# 95 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
+# 87 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
+__cudaSafeCall(cudaSetDevice(idev), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu", 87);
+# 92 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
+__cudaSafeCall(cudaGetDeviceProperties(&deviceProp, idev), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu", 92);
+# 95 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
 if (!(deviceProp.canMapHostMemory))
-# 96 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
+# 96 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
 {
-# 97 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
+# 97 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
 fprintf(stderr, "Device %d cannot map host memory!\n", idev);
-# 98 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
+# 98 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
 printf("Test PASSED");
-# 99 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
+# 99 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
 __cutilExit(argc, argv);
-# 100 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
+# 100 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
 }
-# 101 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
-__cudaSafeCall(cudaSetDeviceFlags(8), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu", 101);
-# 110 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
+# 101 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
+__cudaSafeCall(cudaSetDeviceFlags(8), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu", 101);
+# 110 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
 nelem = 1048576;
-# 111 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
+# 111 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
 bytes = (nelem * sizeof(float));
-# 113 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
+# 113 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
 flags = (2);
-# 114 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
-__cudaSafeCall(cudaHostAlloc((void **)(&a), bytes, flags), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu", 114);
-# 115 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
-__cudaSafeCall(cudaHostAlloc((void **)(&b), bytes, flags), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu", 115);
-# 116 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
-__cudaSafeCall(cudaHostAlloc((void **)(&c), bytes, flags), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu", 116);
-# 120 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
+# 114 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
+__cudaSafeCall(cudaHostAlloc((void **)(&a), bytes, flags), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu", 114);
+# 115 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
+__cudaSafeCall(cudaHostAlloc((void **)(&b), bytes, flags), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu", 115);
+# 116 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
+__cudaSafeCall(cudaHostAlloc((void **)(&c), bytes, flags), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu", 116);
+# 120 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
 for (n = 0; n < nelem; n++)
-# 121 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
+# 121 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
 {
-# 122 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
+# 122 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
 (a[n]) = ((rand()) / ((float)2147483647));
-# 123 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
+# 123 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
 (b[n]) = ((rand()) / ((float)2147483647));
-# 124 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
+# 124 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
 }
-# 130 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
-__cudaSafeCall(cudaHostGetDevicePointer((void **)(&d_a), (void *)a, 0), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu", 130);
-# 131 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
-__cudaSafeCall(cudaHostGetDevicePointer((void **)(&d_b), (void *)b, 0), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu", 131);
-# 132 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
-__cudaSafeCall(cudaHostGetDevicePointer((void **)(&d_c), (void *)c, 0), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu", 132);
-# 137 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
+# 130 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
+__cudaSafeCall(cudaHostGetDevicePointer((void **)(&d_a), (void *)a, 0), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu", 130);
+# 131 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
+__cudaSafeCall(cudaHostGetDevicePointer((void **)(&d_b), (void *)b, 0), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu", 131);
+# 132 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
+__cudaSafeCall(cudaHostGetDevicePointer((void **)(&d_c), (void *)c, 0), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu", 132);
+# 137 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
 printf("Adding vectors using mapped CPU memory...\n");
-# 138 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
+# 138 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
 dim3 block(256);
-# 139 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
+# 139 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
 dim3 grid((unsigned)ceil(nelem / ((float)(block.x))));
-# 140 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
+# 140 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
 cudaConfigureCall(grid, block) ? ((void)0) : vectorAddGPU(d_a, d_b, d_c, nelem);
-# 141 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
-__cudaSafeCall(cudaThreadSynchronize(), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu", 141);
-# 142 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
-__cutilCheckMsg("vectorAddGPU() execution failed", "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu", 142);
-# 146 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
+# 141 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
+__cudaSafeCall(cudaThreadSynchronize(), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu", 141);
+# 142 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
+__cutilCheckMsg("vectorAddGPU() execution failed", "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu", 142);
+# 146 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
 printf("Checking the results...\n");
-# 147 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
+# 147 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
 errorNorm = (0.0F);
-# 148 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
+# 148 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
 refNorm = (0.0F);
-# 149 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
+# 149 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
 for (n = 0; n < nelem; n++)
-# 150 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
+# 150 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
 {
-# 151 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
+# 151 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
 ref = ((a[n]) + (b[n]));
-# 152 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
+# 152 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
 diff = ((c[n]) - ref);
-# 153 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
+# 153 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
 errorNorm += (diff * diff);
-# 154 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
+# 154 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
 refNorm += (ref * ref);
-# 155 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
+# 155 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
 }
-# 156 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
+# 156 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
 errorNorm = ((float)sqrt((double)errorNorm));
-# 157 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
+# 157 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
 refNorm = ((float)sqrt((double)refNorm));
-# 161 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
+# 161 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
 printf("Releasing CPU memory...\n");
-# 163 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
-__cudaSafeCall(cudaFreeHost(a), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu", 163);
-# 164 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
-__cudaSafeCall(cudaFreeHost(b), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu", 164);
-# 165 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
-__cudaSafeCall(cudaFreeHost(c), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu", 165);
-# 168 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
+# 163 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
+__cudaSafeCall(cudaFreeHost(a), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu", 163);
+# 164 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
+__cudaSafeCall(cudaFreeHost(b), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu", 164);
+# 165 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
+__cudaSafeCall(cudaFreeHost(c), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu", 165);
+# 168 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
 cudaThreadExit();
-# 170 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
+# 170 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
 printf("Test %s\n", ((errorNorm / refNorm) < (9.999999975e-07F)) ? ("PASSED") : ("FAILED"));
-# 172 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
+# 172 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
 __cutilExit(argc, argv); return 0;
-# 173 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
+# 173 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
 }
-# 1 "/tmp/tmpxft_000013be_00000000-1_simpleZeroCopy.cudafe1.stub.c"
-# 1 "/tmp/tmpxft_000013be_00000000-1_simpleZeroCopy.cudafe1.stub.c" 1
+# 1 "/tmp/tmpxft_00000c8e_00000000-1_simpleZeroCopy.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00000c8e_00000000-1_simpleZeroCopy.cudafe1.stub.c" 1
 # 1 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 1
 # 91 "/usr/local/cuda/bin/../include/crt/host_runtime.h"
 extern "C" {
@@ -11924,8 +11924,8 @@ extern __attribute__((__weak__)) unsigned long long int ullmax(unsigned long lon
 
 
 #pragma pack()
-# 2 "/tmp/tmpxft_000013be_00000000-1_simpleZeroCopy.cudafe1.stub.c" 2
-# 1 "/tmp/tmpxft_000013be_00000000-3_simpleZeroCopy.fatbin.c" 1
+# 2 "/tmp/tmpxft_00000c8e_00000000-1_simpleZeroCopy.cudafe1.stub.c" 2
+# 1 "/tmp/tmpxft_00000c8e_00000000-3_simpleZeroCopy.fatbin.c" 1
 # 1 "/usr/local/cuda/bin/../include/__cudaFatFormat.h" 1
 # 83 "/usr/local/cuda/bin/../include/__cudaFatFormat.h"
 extern "C" {
@@ -12003,88 +12003,94 @@ void __cudaFatFreePTX( char* ptx );
 
 
 }
-# 2 "/tmp/tmpxft_000013be_00000000-3_simpleZeroCopy.fatbin.c" 2
+# 2 "/tmp/tmpxft_00000c8e_00000000-3_simpleZeroCopy.fatbin.c" 2
 
 asm(
 ".section .rodata\n"
 ".align 32\n"
-"__deviceText_$sm_13$:\n"
-".quad 0x33010102464c457f,0x0000000000000002,0x0000000100be0002,0x0000000000000000\n"
-".quad 0x0000000000000460,0x0000000000000040,0x00380040000d010d,0x0001000700400003\n"
+"__deviceText_$sm_21$:\n"
+".quad 0x33010102464c457f,0x0000000000000004,0x0000000100be0002,0x0000000000000000\n"
+".quad 0x000000000000055c,0x0000000000000040,0x0038004000140115,0x0001000800400002\n"
 ".quad 0x0000000000000000,0x0000000000000000,0x0000000000000000,0x0000000000000000\n"
 ".quad 0x0000000000000000,0x0000000000000000,0x0000000000000000,0x0000000000000000\n"
-".quad 0x0000000300000001,0x0000000000000000,0x0000000000000000,0x0000000000000200\n"
-".quad 0x0000000000000098,0x0000000000000000,0x0000000000000004,0x0000000000000000\n"
-".quad 0x000000030000000b,0x0000000000000000,0x0000000000000000,0x0000000000000298\n"
+".quad 0x0000000300000001,0x0000000000000000,0x0000000000000000,0x0000000000000240\n"
+".quad 0x00000000000000a4,0x0000000000000000,0x0000000000000004,0x0000000000000000\n"
+".quad 0x000000030000000b,0x0000000000000000,0x0000000000000000,0x00000000000002e4\n"
 ".quad 0x0000000000000019,0x0000000000000000,0x0000000000000001,0x0000000000000000\n"
-".quad 0x0000000200000013,0x0000000000000000,0x0000000000000000,0x00000000000002b1\n"
-".quad 0x00000000000000f0,0x0000000900000002,0x0000000000000001,0x0000000000000018\n"
-".quad 0x0000000100000036,0x0000000000000006,0x0000000000000000,0x00000000000003a1\n"
-".quad 0x0000000000000058,0x0400000600000003,0x0000000000000004,0x0000000000000000\n"
-".quad 0x0000000100000054,0x0000000000000002,0x0000000000000000,0x00000000000003f9\n"
-".quad 0x0000000000000064,0x0000000400000000,0x0000000000000001,0x0000000000000000\n"
-".quad 0x0000000800000075,0x0000000000000003,0x0000000000000000,0x000000000000045d\n"
-".quad 0x000000000000002c,0x0000000400000000,0x0000000000000004,0x0000000000000000\n"
+".quad 0x0000000200000013,0x0000000000000000,0x0000000000000000,0x00000000000002fd\n"
+".quad 0x0000000000000108,0x0000000a00000002,0x0000000000000001,0x0000000000000018\n"
+".quad 0x0000000100000036,0x0000000000000006,0x0000000000000000,0x0000000000000405\n"
+".quad 0x0000000000000090,0x0a00000600000003,0x0000000000000004,0x0000000000000000\n"
+".quad 0x000000010000007e,0x0000000000000002,0x0000000000000000,0x0000000000000495\n"
+".quad 0x000000000000003c,0x0000000400000000,0x0000000000000004,0x0000000000000000\n"
+".quad 0x0000000100000054,0x0000000000000002,0x0000000000000000,0x00000000000004d1\n"
+".quad 0x0000000000000070,0x0000000400000000,0x0000000000000001,0x0000000000000000\n"
+".quad 0x0000000100000075,0x0000000000000002,0x0000000000000000,0x0000000000000541\n"
+".quad 0x0000000000000018,0x0000000000000000,0x0000000000000001,0x0000000000000000\n"
 ".quad 0x7472747368732e00,0x747274732e006261,0x746d79732e006261,0x672e766e2e006261\n"
 ".quad 0x6e692e6c61626f6c,0x672e766e2e007469,0x742e006c61626f6c,0x32315a5f2e747865\n"
 ".quad 0x6441726f74636576,0x5f53665055504764,0x2e766e2e00695f53,0x315a5f2e6f666e69\n"
-".quad 0x41726f7463657632,0x5366505550476464,0x766e2e00695f535f,0x2e6465726168732e\n"
-".quad 0x7463657632315a5f,0x555047646441726f,0x00695f535f536650,0x63657632315a5f00\n"
-".quad 0x5047646441726f74,0x695f535f53665055,0x0000000000000000,0x0000000000000000\n"
-".quad 0x0000000000000000,0x0100030000000000,0x0000000000000000,0x0000000000000000\n"
-".quad 0x0200030000000000,0x0000000000000000,0x0000000000000000,0x0300030000000000\n"
-".quad 0x0000000000000000,0x0000000000000000,0x0000030000000000,0x0000000000000000\n"
-".quad 0x0000000000000000,0x0000030000000000,0x0000000000000000,0x0000000000000000\n"
-".quad 0x0400030000000000,0x0000000000000000,0x0000000000005800,0x0500030000000000\n"
-".quad 0x0000000000000000,0x0000000000000000,0x0600030000000000,0x0000000000000000\n"
-".quad 0x0000000000000000,0x0410120000000100,0x0000000000000000,0x0000000000000000\n"
-".quad 0x0047801000020500,0x000780a000000540,0x20478060014c0104,0x20c7c83000d5fd00\n"
-".quad 0x000280300000036c,0x1007803002000900,0x02ec0c2102e800c4,0xc00780d00e000521\n"
-".quad 0xc00780d00e060180,0x02f000b000020480,0xc00781d00e000521,0x00000000100b04a0\n"
-".quad 0x0000100000000800,0x1c18030000001800,0xffffff000c170400,0x13f00000180003ff\n"
-".quad 0xffffff000c170400,0x23f00000100002ff,0xffffff000c170400,0x23f00000080001ff\n"
-".quad 0xffffff000c170400,0x23f00000000000ff,0x01000800080d0400,0x0000000000000100\n"
-".quad 0x0000000500000006,0x0000000000000460,0x0000000000000000,0x0000000000000000\n"
-".quad 0x00000000000000a8,0x00000000000000a8,0x0000000000000004,0x0000090560000000\n"
-".quad 0x00000000000003a1,0x0000000000000000,0x0000000000000000,0x00000000000000bc\n"
-".quad 0x00000000000000bc,0x0000000000000004,0x0000090660000000,0x000000000000045d\n"
-".quad 0x0000000000000000,0x0000000000000000,0x0000000000000000,0x000000000000002c\n"
-".quad 0x0000000000000004,0x0000000000000000\n"
+".quad 0x41726f7463657632,0x5366505550476464,0x766e2e00695f535f,0x6e2e006f666e692e\n"
+".quad 0x6174736e6f632e76,0x32315a5f2e30746e,0x6441726f74636576,0x5f53665055504764\n"
+".quad 0x315a5f0000695f53,0x41726f7463657632,0x5366505550476464,0x00000000695f535f\n"
+".quad 0x0000000000000000,0x0000000000000000,0x0000000000000000,0x0000000001000300\n"
+".quad 0x0000000000000000,0x0000000000000000,0x0000000002000300,0x0000000000000000\n"
+".quad 0x0000000000000000,0x0000000003000300,0x0000000000000000,0x0000000000000000\n"
+".quad 0x0000000000000300,0x0000000000000000,0x0000000000000000,0x0000000000000300\n"
+".quad 0x0000000000000000,0x0000000000000000,0x0000000004000300,0x0000900000000000\n"
+".quad 0x0000000000000000,0x0000000006000300,0x0000000000000000,0x0000000000000000\n"
+".quad 0x0000000007000300,0x0000000000000000,0x0000000000000000,0x0000000005000300\n"
+".quad 0x0000000000000000,0x0000010000000000,0x0000000004101200,0x0000900000000000\n"
+".quad 0x005de40000000000,0x001c042800440400,0x009c042c00000094,0x001c032c00000084\n"
+".quad 0x01dc232004400020,0x0001e71b0e4000e0,0x021de28000000000,0x011c031800000010\n"
+".quad 0xf15c432011800080,0x019c034800400093,0x40dc8520118000a0,0xf1dc438400000000\n"
+".quad 0x021c0348004000b3,0x609c8520118000c0,0xf25c438400000000,0x301c0048004000d3\n"
+".quad 0x801c855000000008,0x001de79400000000,0x0000008000000000,0x0000000000000000\n"
+".quad 0x0000000000000000,0x0000000000000000,0x0000000000000000,0x0000000000000000\n"
+".quad 0x0000000000000000,0x0000000000000000,0x00000000100c0400,0x0000100000000800\n"
+".quad 0x080a040000001800,0x1c00200000000900,0x0c1704001c190300,0x180003ffffffff00\n"
+".quad 0x0c17040011f00000,0x100002ffffffff00,0x0c17040021f00000,0x080001ffffffff00\n"
+".quad 0x0c17040021f00000,0x000000ffffffff00,0x080d040021f00000,0x0000010001000c00\n"
+".quad 0x00000a0008120400,0x0811040000000000,0x0000000000000a00,0x0000000600000000\n"
+".quad 0x0000055c00000005,0x0000000000000000,0x0000000000000000,0x0000007000000000\n"
+".quad 0x0000007000000000,0x0000000400000000,0x6000000000000000,0x0000040500000a05\n"
+".quad 0x0000000000000000,0x0000000000000000,0x0000013c00000000,0x0000013c00000000\n"
+".quad 0x0000000400000000,0x0000000000000000\n"
 ".text");
 
 extern "C" {
 
-extern const unsigned long long __deviceText_$sm_13$[162];
+extern const unsigned long long __deviceText_$sm_21$[186];
 
 }
 
 asm(
 ".section .rodata\n"
 ".align 32\n"
-"__deviceText_$compute_13$:\n"
-".quad 0x6f69737265762e09,0x2e090a342e31206e,0x7320746567726174,0x2f2f090a33315f6d\n"
+"__deviceText_$compute_20$:\n"
+".quad 0x6f69737265762e09,0x2e090a322e32206e,0x7320746567726174,0x2f2f090a30325f6d\n"
 ".quad 0x656c69706d6f6320,0x2f20687469772064,0x61636f6c2f727375,0x6f2f616475632f6c\n"
 ".quad 0x696c2f34366e6570,0x2f090a65622f2f62,0x6e65706f766e202f,0x6220322e33206363\n"
 ".quad 0x206e6f20746c6975,0x2d39302d30313032,0x2d2f2f090a0a3930,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x43202f2f090a2d2d,0x676e696c69706d6f\n"
-".quad 0x6d742f706d742f20,0x3030305f74667870,0x30305f6562333130,0x372d303030303030\n"
+".quad 0x6d742f706d742f20,0x3030305f74667870,0x30305f6538633030,0x372d303030303030\n"
 ".quad 0x5a656c706d69735f,0x2e79706f436f7265,0x2820692e33707063,0x4263632f706d742f\n"
-".quad 0x6f594b51692e2349,0x2d2d2f2f090a2953,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
+".quad 0x384a487a362e2349,0x2d2d2f2f090a2972,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2f2f090a0a2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x704f202f2f090a2d,0x090a3a736e6f6974,0x2d2d2d2d2d2d2f2f\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2f090a2d2d2d2d2d,0x656772615420202f\n"
-".quad 0x49202c7874703a74,0x33315f6d733a4153,0x6e6169646e45202c,0x2c656c7474696c3a\n"
+".quad 0x49202c7874703a74,0x30325f6d733a4153,0x6e6169646e45202c,0x2c656c7474696c3a\n"
 ".quad 0x7265746e696f5020,0x34363a657a695320,0x4f2d20202f2f090a,0x6d6974704f280933\n"
 ".quad 0x206e6f6974617a69,0x090a296c6576656c,0x0930672d20202f2f,0x6c20677562654428\n"
 ".quad 0x2f090a296c657665,0x2809326d2d20202f,0x612074726f706552,0x6569726f73697664\n"
 ".quad 0x2d2d2f2f090a2973,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x6c69662e090a0a2d,0x6f633c2209310965,0x696c2d646e616d6d,0x662e090a223e656e\n"
-".quad 0x2f22093209656c69,0x78706d742f706d74,0x31303030305f7466,0x303030305f656233\n"
+".quad 0x2f22093209656c69,0x78706d742f706d74,0x30303030305f7466,0x303030305f653863\n"
 ".quad 0x735f362d30303030,0x72655a656c706d69,0x75632e79706f436f,0x70672e3265666164\n"
 ".quad 0x6c69662e090a2275,0x73752f2209330965,0x63672f62696c2f72,0x6c2d363836692f63\n"
 ".quad 0x756e672d78756e69,0x692f352e342e342f,0x732f6564756c636e,0x22682e6665646474\n"
@@ -12134,76 +12140,75 @@ asm(
 ".quad 0x662e090a22682e73,0x2209373209656c69,0x636f6c2f7273752f,0x2f616475632f6c61\n"
 ".quad 0x692f2e2e2f6e6962,0x6d2f6564756c636e,0x636e75665f687461,0x62645f736e6f6974\n"
 ".quad 0x682e337874705f6c,0x656c69662e090a22,0x6f682f2209383209,0x616d726f6e2f656d\n"
-".quad 0x6f6b636568632f6c,0x636f7570672f7475,0x7365742f746f6c65,0x32616475632f7374\n"
-".quad 0x73747365742f322e,0x5a656c706d69732f,0x2f79706f436f7265,0x655a656c706d6973\n"
-".quad 0x632e79706f436f72,0x652e090a0a0a2275,0x315a5f207972746e,0x41726f7463657632\n"
-".quad 0x5366505550476464,0x090a2820695f535f,0x206d617261702e09,0x635f5f203436752e\n"
-".quad 0x5f6d726170616475,0x7463657632315a5f,0x555047646441726f,0x5f695f535f536650\n"
-".quad 0x61702e09090a2c61,0x3436752e206d6172,0x70616475635f5f20,0x32315a5f5f6d7261\n"
-".quad 0x6441726f74636576,0x5f53665055504764,0x090a2c625f695f53,0x206d617261702e09\n"
+".quad 0x6f6b636568632f6c,0x636f7570672f7475,0x7365742f746f6c65,0x322d7874702d7374\n"
+".quad 0x32616475632f312e,0x73747365742f322e,0x5a656c706d69732f,0x2f79706f436f7265\n"
+".quad 0x655a656c706d6973,0x632e79706f436f72,0x652e090a0a0a2275,0x315a5f207972746e\n"
+".quad 0x41726f7463657632,0x5366505550476464,0x090a2820695f535f,0x206d617261702e09\n"
 ".quad 0x635f5f203436752e,0x5f6d726170616475,0x7463657632315a5f,0x555047646441726f\n"
-".quad 0x5f695f535f536650,0x61702e09090a2c63,0x3233732e206d6172,0x70616475635f5f20\n"
-".quad 0x32315a5f5f6d7261,0x6441726f74636576,0x5f53665055504764,0x090a294e5f695f53\n"
-".quad 0x206765722e090a7b,0x687225203631752e,0x722e090a3b3e343c,0x203233752e206765\n"
-".quad 0x090a3b3e373c7225,0x36752e206765722e,0x3e393c6472252034,0x206765722e090a3b\n"
-".quad 0x3c6625203233662e,0x65722e090a3b3e35,0x20646572702e2067,0x090a3b3e333c7025\n"
-".quad 0x09383209636f6c2e,0x444c240a30093334,0x5f5f6e6967656257,0x6f7463657632315a\n"
-".quad 0x5055504764644172,0x0a3a695f535f5366,0x3631752e766f6d09,0x202c316872250920\n"
-".quad 0x782e646961746325,0x752e766f6d090a3b,0x3268722509203631,0x2e6469746e25202c\n"
-".quad 0x2e6c756d090a3b78,0x3631752e65646977,0x25202c3172250920,0x687225202c316872\n"
-".quad 0x2e747663090a3b32,0x203631752e323375,0x7425202c32722509,0x61090a3b782e6469\n"
-".quad 0x09203233752e6464,0x327225202c337225,0x090a3b317225202c,0x6d617261702e646c\n"
-".quad 0x722509203233732e,0x75635f5f5b202c34,0x5f5f6d7261706164,0x6f7463657632315a\n"
-".quad 0x5055504764644172,0x4e5f695f535f5366,0x70746573090a3b5d,0x203233732e656c2e\n"
-".quad 0x7225202c31702509,0x0a3b337225202c34,0x7262203170254009,0x305f744c24092061\n"
-".quad 0x090a3b363230315f,0x09383209636f6c2e,0x756d090a30093734,0x3233752e6f6c2e6c\n"
-".quad 0x25202c3572250920,0x090a3b34202c3372,0x2e3436752e747663,0x6472250920323375\n"
-".quad 0x0a3b357225202c31,0x617261702e646c09,0x2509203436752e6d,0x5f5f5b202c326472\n"
-".quad 0x6d72617061647563,0x63657632315a5f5f,0x5047646441726f74,0x695f535f53665055\n"
-".quad 0x6461090a3b5d615f,0x2509203436752e64,0x647225202c336472,0x3b31647225202c32\n"
-".quad 0x6f6c672e646c090a,0x203233662e6c6162,0x255b202c31662509,0x0a3b5d302b336472\n"
-".quad 0x617261702e646c09,0x2509203436752e6d,0x5f5f5b202c346472,0x6d72617061647563\n"
-".quad 0x63657632315a5f5f,0x5047646441726f74,0x695f535f53665055,0x6461090a3b5d625f\n"
-".quad 0x2509203436752e64,0x647225202c356472,0x3b31647225202c34,0x6f6c672e646c090a\n"
-".quad 0x203233662e6c6162,0x255b202c32662509,0x0a3b5d302b356472,0x3233662e64646109\n"
-".quad 0x25202c3366250920,0x3b326625202c3166,0x7261702e646c090a,0x09203436752e6d61\n"
-".quad 0x5f5b202c36647225,0x726170616475635f,0x657632315a5f5f6d,0x47646441726f7463\n"
-".quad 0x5f535f5366505550,0x61090a3b5d635f69,0x09203436752e6464,0x7225202c37647225\n"
-".quad 0x31647225202c3664,0x6c672e7473090a3b,0x3233662e6c61626f,0x2b376472255b0920\n"
-".quad 0x3b336625202c5d30,0x315f305f744c240a,0x6c2e090a3a363230,0x383409383209636f\n"
-".quad 0x74697865090a3009,0x6e6557444c240a3b,0x657632315a5f5f64,0x47646441726f7463\n"
-".quad 0x5f535f5366505550,0x2f2f207d090a3a69,0x63657632315a5f20,0x5047646441726f74\n"
-".quad 0x695f535f53665055,0x0000000000000a0a\n"
+".quad 0x5f695f535f536650,0x61702e09090a2c61,0x3436752e206d6172,0x70616475635f5f20\n"
+".quad 0x32315a5f5f6d7261,0x6441726f74636576,0x5f53665055504764,0x090a2c625f695f53\n"
+".quad 0x206d617261702e09,0x635f5f203436752e,0x5f6d726170616475,0x7463657632315a5f\n"
+".quad 0x555047646441726f,0x5f695f535f536650,0x61702e09090a2c63,0x3233732e206d6172\n"
+".quad 0x70616475635f5f20,0x32315a5f5f6d7261,0x6441726f74636576,0x5f53665055504764\n"
+".quad 0x090a294e5f695f53,0x206765722e090a7b,0x3c7225203233752e,0x65722e090a3b3e39\n"
+".quad 0x25203436752e2067,0x090a3b3e393c6472,0x33662e206765722e,0x3b3e353c66252032\n"
+".quad 0x2e206765722e090a,0x3c70252064657270,0x6f6c2e090a3b3e33,0x0933340938320963\n"
+".quad 0x656257444c240a30,0x32315a5f5f6e6967,0x6441726f74636576,0x5f53665055504764\n"
+".quad 0x6f6d090a3a695f53,0x2509203233752e76,0x61746325202c3172,0x6d090a3b782e6469\n"
+".quad 0x09203233752e766f,0x746e25202c327225,0x6d090a3b782e6469,0x33752e6f6c2e6c75\n"
+".quad 0x202c337225092032,0x327225202c317225,0x752e766f6d090a3b,0x2c34722509203233\n"
+".quad 0x3b782e6469742520,0x33752e646461090a,0x202c357225092032,0x337225202c347225\n"
+".quad 0x61702e646c090a3b,0x203233732e6d6172,0x5f5b202c36722509,0x726170616475635f\n"
+".quad 0x657632315a5f5f6d,0x47646441726f7463,0x5f535f5366505550,0x73090a3b5d4e5f69\n"
+".quad 0x732e656c2e707465,0x2c31702509203233,0x7225202c36722520,0x31702540090a3b35\n"
+".quad 0x4c24092061726220,0x363230315f305f74,0x09636f6c2e090a3b,0x0a30093734093832\n"
+".quad 0x2e6f6c2e6c756d09,0x3772250920323375,0x34202c357225202c,0x752e747663090a3b\n"
+".quad 0x09203233752e3436,0x7225202c31647225,0x702e646c090a3b37,0x3436752e6d617261\n"
+".quad 0x202c326472250920,0x70616475635f5f5b,0x32315a5f5f6d7261,0x6441726f74636576\n"
+".quad 0x5f53665055504764,0x0a3b5d615f695f53,0x3436752e64646109,0x202c336472250920\n"
+".quad 0x7225202c32647225,0x2e646c090a3b3164,0x662e6c61626f6c67,0x2c31662509203233\n"
+".quad 0x302b336472255b20,0x702e646c090a3b5d,0x3436752e6d617261,0x202c346472250920\n"
+".quad 0x70616475635f5f5b,0x32315a5f5f6d7261,0x6441726f74636576,0x5f53665055504764\n"
+".quad 0x0a3b5d625f695f53,0x3436752e64646109,0x202c356472250920,0x7225202c34647225\n"
+".quad 0x2e646c090a3b3164,0x662e6c61626f6c67,0x2c32662509203233,0x302b356472255b20\n"
+".quad 0x2e646461090a3b5d,0x3366250920323366,0x25202c316625202c,0x2e646c090a3b3266\n"
+".quad 0x36752e6d61726170,0x2c36647225092034,0x616475635f5f5b20,0x315a5f5f6d726170\n"
+".quad 0x41726f7463657632,0x5366505550476464,0x3b5d635f695f535f,0x36752e646461090a\n"
+".quad 0x2c37647225092034,0x25202c3664722520,0x7473090a3b316472,0x2e6c61626f6c672e\n"
+".quad 0x72255b0920323366,0x25202c5d302b3764,0x5f744c240a3b3366,0x0a3a363230315f30\n"
+".quad 0x383209636f6c2e09,0x65090a3009383409,0x444c240a3b746978,0x315a5f5f646e6557\n"
+".quad 0x41726f7463657632,0x5366505550476464,0x7d090a3a695f535f,0x32315a5f202f2f20\n"
+".quad 0x6441726f74636576,0x5f53665055504764,0x0000000a0a695f53\n"
 ".text");
 
 extern "C" {
 
-extern const unsigned long long __deviceText_$compute_13$[446];
+extern const unsigned long long __deviceText_$compute_20$[443];
 
 }
 
-static __cudaFatPtxEntry __ptxEntries [] = {{(char*)"compute_13",(char*)__deviceText_$compute_13$},{0,0}};
+static __cudaFatPtxEntry __ptxEntries [] = {{(char*)"compute_20",(char*)__deviceText_$compute_20$},{0,0}};
 static __cudaFatCubinEntry __cubinEntries[] = {{0,0}};
 static __cudaFatDebugEntry __debugEntries0 = {0, 0, 0, 0} ;
 static __cudaFatElfEntry __elfEntries0 = {0, 0, 0, 0} ;
-static __cudaFatElfEntry __elfEntries1 = {(char*)"sm_13", (char*)__deviceText_$sm_13$, &__elfEntries0, (unsigned int)sizeof(__deviceText_$sm_13$)};
+static __cudaFatElfEntry __elfEntries1 = {(char*)"sm_21", (char*)__deviceText_$sm_21$, &__elfEntries0, (unsigned int)sizeof(__deviceText_$sm_21$)};
 
 
 
-static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000004,0xa14f518d,(char*)"b8f0f9c079f981af",(char*)"/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu",(char*)" ",__ptxEntries,__cubinEntries,&__debugEntries0,0,0,0,0,0,0xa8bb6ff5,&__elfEntries1};
-# 3 "/tmp/tmpxft_000013be_00000000-1_simpleZeroCopy.cudafe1.stub.c" 2
+static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000004,0xa14f518d,(char*)"734a03a17fd53aa6",(char*)"/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu",(char*)" ",__ptxEntries,__cubinEntries,&__debugEntries0,0,0,0,0,0,0x2d2beddc,&__elfEntries1};
+# 3 "/tmp/tmpxft_00000c8e_00000000-1_simpleZeroCopy.cudafe1.stub.c" 2
 struct __T20 {float *__par0;float *__par1;float *__par2;int __par3;int __dummy_field;};
 extern void __device_stub__Z12vectorAddGPUPfS_S_i(float *, float *, float *, int);
-static void __sti____cudaRegisterAll_49_tmpxft_000013be_00000000_4_simpleZeroCopy_cpp1_ii_99ae23d1(void) __attribute__((__constructor__));
+static void __sti____cudaRegisterAll_49_tmpxft_00000c8e_00000000_4_simpleZeroCopy_cpp1_ii_99ae23d1(void) __attribute__((__constructor__));
 void __device_stub__Z12vectorAddGPUPfS_S_i(float *__par0, float *__par1, float *__par2, int __par3){ struct __T20 *__T21 = 0;
 if (cudaSetupArgument((void*)(char*)&__par0, sizeof(__par0), (size_t)&__T21->__par0) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par1, sizeof(__par1), (size_t)&__T21->__par1) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par2, sizeof(__par2), (size_t)&__T21->__par2) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par3, sizeof(__par3), (size_t)&__T21->__par3) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(float *, float *, float *, int))vectorAddGPU)); (void)cudaLaunch(((char *)((void ( *)(float *, float *, float *, int))vectorAddGPU))); };}
 void vectorAddGPU( float *__cuda_0,float *__cuda_1,float *__cuda_2,int __cuda_3)
-# 44 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
+# 44 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleZeroCopy/simpleZeroCopy.cu"
 {__device_stub__Z12vectorAddGPUPfS_S_i( __cuda_0,__cuda_1,__cuda_2,__cuda_3);
 
 
 
 }
-# 1 "/tmp/tmpxft_000013be_00000000-1_simpleZeroCopy.cudafe1.stub.c"
-static void __sti____cudaRegisterAll_49_tmpxft_000013be_00000000_4_simpleZeroCopy_cpp1_ii_99ae23d1(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, float *, float *, int))vectorAddGPU), (char*)"_Z12vectorAddGPUPfS_S_i", "_Z12vectorAddGPUPfS_S_i", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); }
-# 1 "/tmp/tmpxft_000013be_00000000-1_simpleZeroCopy.cudafe1.stub.c" 2
+# 1 "/tmp/tmpxft_00000c8e_00000000-1_simpleZeroCopy.cudafe1.stub.c"
+static void __sti____cudaRegisterAll_49_tmpxft_00000c8e_00000000_4_simpleZeroCopy_cpp1_ii_99ae23d1(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, float *, float *, int))vectorAddGPU), (char*)"_Z12vectorAddGPUPfS_S_i", "_Z12vectorAddGPUPfS_S_i", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); }
+# 1 "/tmp/tmpxft_00000c8e_00000000-1_simpleZeroCopy.cudafe1.stub.c" 2

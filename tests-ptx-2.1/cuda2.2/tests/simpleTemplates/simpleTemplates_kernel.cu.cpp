@@ -1,8 +1,8 @@
-# 1 "/tmp/tmpxft_00000ad1_00000000-1_simpleTemplates_kernel.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00000913_00000000-1_simpleTemplates_kernel.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_00000ad1_00000000-1_simpleTemplates_kernel.cudafe1.cpp"
-# 1 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleTemplates/simpleTemplates_kernel.cu"
+# 1 "/tmp/tmpxft_00000913_00000000-1_simpleTemplates_kernel.cudafe1.cpp"
+# 1 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleTemplates/simpleTemplates_kernel.cu"
 # 46 "/usr/local/cuda/bin/../include/device_types.h"
 # 149 "/usr/lib/gcc/i686-linux-gnu/4.4.5/include/stddef.h" 3
 typedef long ptrdiff_t;
@@ -9561,96 +9561,96 @@ extern "C" void flockfile(FILE *) throw();
 extern "C" int ftrylockfile(FILE *) throw();
 # 913 "/usr/include/stdio.h" 3
 extern "C" void funlockfile(FILE *) throw();
-# 71 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleTemplates/sharedmem.cuh"
+# 71 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleTemplates/sharedmem.cuh"
 template< class T>
-# 72 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleTemplates/sharedmem.cuh"
+# 72 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleTemplates/sharedmem.cuh"
 struct SharedMemory {
-# 75 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleTemplates/sharedmem.cuh"
+# 75 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleTemplates/sharedmem.cuh"
 T *getPointer() {int volatile ___ = 1;
-# 79 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleTemplates/sharedmem.cuh"
+# 79 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleTemplates/sharedmem.cuh"
 exit(___);}
-# 80 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleTemplates/sharedmem.cuh"
+# 80 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleTemplates/sharedmem.cuh"
 };
-# 87 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleTemplates/sharedmem.cuh"
+# 87 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleTemplates/sharedmem.cuh"
 template<> struct SharedMemory< int> {
-# 89 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleTemplates/sharedmem.cuh"
+# 89 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleTemplates/sharedmem.cuh"
 int *getPointer() {int volatile ___ = 1;exit(___);}
-# 90 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleTemplates/sharedmem.cuh"
+# 90 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleTemplates/sharedmem.cuh"
 };
-# 93 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleTemplates/sharedmem.cuh"
+# 93 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleTemplates/sharedmem.cuh"
 template<> struct SharedMemory< unsigned> {
-# 95 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleTemplates/sharedmem.cuh"
+# 95 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleTemplates/sharedmem.cuh"
 unsigned *getPointer() {int volatile ___ = 1;exit(___);}
-# 96 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleTemplates/sharedmem.cuh"
+# 96 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleTemplates/sharedmem.cuh"
 };
-# 99 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleTemplates/sharedmem.cuh"
+# 99 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleTemplates/sharedmem.cuh"
 template<> struct SharedMemory< char> {
-# 101 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleTemplates/sharedmem.cuh"
+# 101 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleTemplates/sharedmem.cuh"
 char *getPointer() {int volatile ___ = 1;exit(___);}
-# 102 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleTemplates/sharedmem.cuh"
+# 102 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleTemplates/sharedmem.cuh"
 };
-# 105 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleTemplates/sharedmem.cuh"
+# 105 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleTemplates/sharedmem.cuh"
 template<> struct SharedMemory< unsigned char> {
-# 107 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleTemplates/sharedmem.cuh"
+# 107 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleTemplates/sharedmem.cuh"
 unsigned char *getPointer() {int volatile ___ = 1;exit(___);}
-# 108 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleTemplates/sharedmem.cuh"
+# 108 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleTemplates/sharedmem.cuh"
 };
-# 111 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleTemplates/sharedmem.cuh"
+# 111 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleTemplates/sharedmem.cuh"
 template<> struct SharedMemory< short> {
-# 113 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleTemplates/sharedmem.cuh"
+# 113 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleTemplates/sharedmem.cuh"
 short *getPointer() {int volatile ___ = 1;exit(___);}
-# 114 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleTemplates/sharedmem.cuh"
+# 114 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleTemplates/sharedmem.cuh"
 };
-# 117 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleTemplates/sharedmem.cuh"
+# 117 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleTemplates/sharedmem.cuh"
 template<> struct SharedMemory< unsigned short> {
-# 119 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleTemplates/sharedmem.cuh"
+# 119 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleTemplates/sharedmem.cuh"
 unsigned short *getPointer() {int volatile ___ = 1;exit(___);}
-# 120 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleTemplates/sharedmem.cuh"
+# 120 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleTemplates/sharedmem.cuh"
 };
-# 123 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleTemplates/sharedmem.cuh"
+# 123 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleTemplates/sharedmem.cuh"
 template<> struct SharedMemory< long> {
-# 125 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleTemplates/sharedmem.cuh"
+# 125 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleTemplates/sharedmem.cuh"
 long *getPointer() {int volatile ___ = 1;exit(___);}
-# 126 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleTemplates/sharedmem.cuh"
+# 126 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleTemplates/sharedmem.cuh"
 };
-# 129 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleTemplates/sharedmem.cuh"
+# 129 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleTemplates/sharedmem.cuh"
 template<> struct SharedMemory< unsigned long> {
-# 131 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleTemplates/sharedmem.cuh"
+# 131 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleTemplates/sharedmem.cuh"
 unsigned long *getPointer() {int volatile ___ = 1;exit(___);}
-# 132 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleTemplates/sharedmem.cuh"
+# 132 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleTemplates/sharedmem.cuh"
 };
-# 135 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleTemplates/sharedmem.cuh"
+# 135 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleTemplates/sharedmem.cuh"
 template<> struct SharedMemory< bool> {
-# 137 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleTemplates/sharedmem.cuh"
+# 137 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleTemplates/sharedmem.cuh"
 bool *getPointer() {int volatile ___ = 1;exit(___);}
-# 138 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleTemplates/sharedmem.cuh"
+# 138 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleTemplates/sharedmem.cuh"
 };
-# 141 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleTemplates/sharedmem.cuh"
+# 141 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleTemplates/sharedmem.cuh"
 template<> struct SharedMemory< float> {
-# 143 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleTemplates/sharedmem.cuh"
+# 143 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleTemplates/sharedmem.cuh"
 float *getPointer() {int volatile ___ = 1;exit(___);}
-# 144 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleTemplates/sharedmem.cuh"
+# 144 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleTemplates/sharedmem.cuh"
 };
-# 147 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleTemplates/sharedmem.cuh"
+# 147 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleTemplates/sharedmem.cuh"
 template<> struct SharedMemory< double> {
-# 149 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleTemplates/sharedmem.cuh"
+# 149 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleTemplates/sharedmem.cuh"
 double *getPointer() {int volatile ___ = 1;exit(___);}
-# 150 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleTemplates/sharedmem.cuh"
+# 150 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleTemplates/sharedmem.cuh"
 };
-# 48 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleTemplates/simpleTemplates_kernel.cu"
+# 48 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleTemplates/simpleTemplates_kernel.cu"
 template< class T> static void
-# 50 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleTemplates/simpleTemplates_kernel.cu"
+# 50 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleTemplates/simpleTemplates_kernel.cu"
 __wrapper__device_stub_testKernel(T *&g_idata, T *&g_odata) ;
-# 48 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleTemplates/simpleTemplates_kernel.cu"
+# 48 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleTemplates/simpleTemplates_kernel.cu"
 template< class T> void
-# 50 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleTemplates/simpleTemplates_kernel.cu"
+# 50 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleTemplates/simpleTemplates_kernel.cu"
 testKernel(T *g_idata, T *g_odata)
-# 51 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleTemplates/simpleTemplates_kernel.cu"
+# 51 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleTemplates/simpleTemplates_kernel.cu"
 {__wrapper__device_stub_testKernel<T>(g_idata,g_odata);
-# 73 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleTemplates/simpleTemplates_kernel.cu"
+# 73 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleTemplates/simpleTemplates_kernel.cu"
 }
-# 1 "/tmp/tmpxft_00000ad1_00000000-1_simpleTemplates_kernel.cudafe1.stub.c"
-# 1 "/tmp/tmpxft_00000ad1_00000000-1_simpleTemplates_kernel.cudafe1.stub.c" 1
+# 1 "/tmp/tmpxft_00000913_00000000-1_simpleTemplates_kernel.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00000913_00000000-1_simpleTemplates_kernel.cudafe1.stub.c" 1
 # 1 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 1
 # 91 "/usr/local/cuda/bin/../include/crt/host_runtime.h"
 extern "C" {
@@ -10039,9 +10039,9 @@ extern __attribute__((__weak__)) unsigned long long int ullmax(unsigned long lon
 {
   return a > b ? a : b;
 }
-# 5000 "/usr/local/cuda/bin/../include/math_functions.h" 3
-# 1 "/usr/local/cuda/bin/../include/math_functions_dbl_ptx1.h" 1 3
-# 5001 "/usr/local/cuda/bin/../include/math_functions.h" 2 3
+# 5006 "/usr/local/cuda/bin/../include/math_functions.h" 3
+# 1 "/usr/local/cuda/bin/../include/math_functions_dbl_ptx3.h" 1 3
+# 5007 "/usr/local/cuda/bin/../include/math_functions.h" 2 3
 # 91 "/usr/local/cuda/bin/../include/common_functions.h" 2
 # 164 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 2
 
@@ -10052,8 +10052,8 @@ extern __attribute__((__weak__)) unsigned long long int ullmax(unsigned long lon
 
 
 #pragma pack()
-# 2 "/tmp/tmpxft_00000ad1_00000000-1_simpleTemplates_kernel.cudafe1.stub.c" 2
-# 1 "/tmp/tmpxft_00000ad1_00000000-3_simpleTemplates_kernel.fatbin.c" 1
+# 2 "/tmp/tmpxft_00000913_00000000-1_simpleTemplates_kernel.cudafe1.stub.c" 2
+# 1 "/tmp/tmpxft_00000913_00000000-3_simpleTemplates_kernel.fatbin.c" 1
 # 1 "/usr/local/cuda/bin/../include/__cudaFatFormat.h" 1
 # 83 "/usr/local/cuda/bin/../include/__cudaFatFormat.h"
 extern "C" {
@@ -10131,99 +10131,14 @@ void __cudaFatFreePTX( char* ptx );
 
 
 }
-# 2 "/tmp/tmpxft_00000ad1_00000000-3_simpleTemplates_kernel.fatbin.c" 2
+# 2 "/tmp/tmpxft_00000913_00000000-3_simpleTemplates_kernel.fatbin.c" 2
 
 asm(
 ".section .rodata\n"
 ".align 32\n"
-"__deviceText_$compute_10$:\n"
-".quad 0x6f69737265762e09,0x2e090a342e31206e,0x7320746567726174,0x616d202c30315f6d\n"
-".quad 0x6f745f3436665f70,0x2f2f090a3233665f,0x656c69706d6f6320,0x2f20687469772064\n"
-".quad 0x61636f6c2f727375,0x6f2f616475632f6c,0x696c2f34366e6570,0x2f090a65622f2f62\n"
-".quad 0x6e65706f766e202f,0x6220322e33206363,0x206e6f20746c6975,0x2d39302d30313032\n"
-".quad 0x2d2f2f090a0a3930,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
-".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
-".quad 0x43202f2f090a2d2d,0x676e696c69706d6f,0x6d742f706d742f20,0x3030305f74667870\n"
-".quad 0x30305f3164613030,0x372d303030303030,0x54656c706d69735f,0x736574616c706d65\n"
-".quad 0x2e6c656e72656b5f,0x2820692e33707063,0x4263632f706d742f,0x50634e624c2e2349\n"
-".quad 0x2d2d2f2f090a2971,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
-".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
-".quad 0x2d2d2f2f090a0a2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
-".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
-".quad 0x704f202f2f090a2d,0x090a3a736e6f6974,0x2d2d2d2d2d2d2f2f,0x2d2d2d2d2d2d2d2d\n"
-".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
-".quad 0x2d2d2d2d2d2d2d2d,0x2f090a2d2d2d2d2d,0x656772615420202f,0x49202c7874703a74\n"
-".quad 0x30315f6d733a4153,0x6e6169646e45202c,0x2c656c7474696c3a,0x7265746e696f5020\n"
-".quad 0x34363a657a695320,0x4f2d20202f2f090a,0x6d6974704f280933,0x206e6f6974617a69\n"
-".quad 0x090a296c6576656c,0x0930672d20202f2f,0x6c20677562654428,0x2f090a296c657665\n"
-".quad 0x2809326d2d20202f,0x612074726f706552,0x6569726f73697664,0x2d2d2f2f090a2973\n"
-".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
-".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x6c69662e090a0a2d\n"
-".quad 0x6f633c2209310965,0x696c2d646e616d6d,0x662e090a223e656e,0x2f22093209656c69\n"
-".quad 0x78706d742f706d74,0x30303030305f7466,0x303030305f316461,0x735f362d30303030\n"
-".quad 0x6d6554656c706d69,0x6b5f736574616c70,0x75632e6c656e7265,0x70672e3265666164\n"
-".quad 0x6c69662e090a2275,0x73752f2209330965,0x63672f62696c2f72,0x6c2d363836692f63\n"
-".quad 0x756e672d78756e69,0x692f352e342e342f,0x732f6564756c636e,0x22682e6665646474\n"
-".quad 0x09656c69662e090a,0x2f7273752f220934,0x75632f6c61636f6c,0x2e2f6e69622f6164\n"
-".quad 0x64756c636e692f2e,0x65642f7472632f65,0x6e75725f65636976,0x0a22682e656d6974\n"
-".quad 0x3509656c69662e09,0x6c2f7273752f2209,0x6475632f6c61636f,0x2e2e2f6e69622f61\n"
-".quad 0x6564756c636e692f,0x65645f74736f682f,0x22682e73656e6966,0x09656c69662e090a\n"
-".quad 0x2f7273752f220936,0x75632f6c61636f6c,0x2e2f6e69622f6164,0x64756c636e692f2e\n"
-".quad 0x69746c6975622f65,0x2e73657079745f6e,0x6c69662e090a2268,0x73752f2209370965\n"
-".quad 0x2f6c61636f6c2f72,0x6e69622f61647563,0x6c636e692f2e2e2f,0x697665642f656475\n"
-".quad 0x73657079745f6563,0x69662e090a22682e,0x752f22093809656c,0x6c61636f6c2f7273\n"
-".quad 0x69622f616475632f,0x636e692f2e2e2f6e,0x6972642f6564756c,0x657079745f726576\n"
-".quad 0x662e090a22682e73,0x2f22093909656c69,0x61636f6c2f727375,0x622f616475632f6c\n"
-".quad 0x6e692f2e2e2f6e69,0x75732f6564756c63,0x79745f6563616672,0x090a22682e736570\n"
-".quad 0x303109656c69662e,0x6c2f7273752f2209,0x6475632f6c61636f,0x2e2e2f6e69622f61\n"
-".quad 0x6564756c636e692f,0x657275747865742f,0x682e73657079745f,0x656c69662e090a22\n"
-".quad 0x73752f2209313109,0x2f6c61636f6c2f72,0x6e69622f61647563,0x6c636e692f2e2e2f\n"
-".quad 0x746365762f656475,0x73657079745f726f,0x69662e090a22682e,0x2f2209323109656c\n"
-".quad 0x61636f6c2f727375,0x622f616475632f6c,0x6e692f2e2e2f6e69,0x65642f6564756c63\n"
-".quad 0x75616c5f65636976,0x617261705f68636e,0x682e73726574656d,0x656c69662e090a22\n"
-".quad 0x73752f2209333109,0x2f6c61636f6c2f72,0x6e69622f61647563,0x6c636e692f2e2e2f\n"
-".quad 0x2f7472632f656475,0x5f656761726f7473,0x22682e7373616c63,0x09656c69662e090a\n"
-".quad 0x7273752f22093431,0x6564756c636e692f,0x79742f737469622f,0x090a22682e736570\n"
-".quad 0x353109656c69662e,0x692f7273752f2209,0x742f6564756c636e,0x090a22682e656d69\n"
-".quad 0x363109656c69662e,0x6c2f7273752f2209,0x6475632f6c61636f,0x2e2e2f6e69622f61\n"
-".quad 0x6564756c636e692f,0x5f6e6f6d6d6f632f,0x6e6f6974636e7566,0x662e090a22682e73\n"
-".quad 0x2209373109656c69,0x636f6c2f7273752f,0x2f616475632f6c61,0x692f2e2e2f6e6962\n"
-".quad 0x6d2f6564756c636e,0x636e75665f687461,0x22682e736e6f6974,0x09656c69662e090a\n"
-".quad 0x7273752f22093831,0x632f6c61636f6c2f,0x2f6e69622f616475,0x756c636e692f2e2e\n"
-".quad 0x5f6874616d2f6564,0x746e6174736e6f63,0x662e090a22682e73,0x2209393109656c69\n"
-".quad 0x636f6c2f7273752f,0x2f616475632f6c61,0x692f2e2e2f6e6962,0x642f6564756c636e\n"
-".quad 0x75665f6563697665,0x2e736e6f6974636e,0x6c69662e090a2268,0x752f220930320965\n"
-".quad 0x6c61636f6c2f7273,0x69622f616475632f,0x636e692f2e2e2f6e,0x5f6d732f6564756c\n"
-".quad 0x696d6f74615f3131,0x6974636e75665f63,0x090a22682e736e6f,0x313209656c69662e\n"
-".quad 0x6c2f7273752f2209,0x6475632f6c61636f,0x2e2e2f6e69622f61,0x6564756c636e692f\n"
-".quad 0x615f32315f6d732f,0x75665f63696d6f74,0x2e736e6f6974636e,0x6c69662e090a2268\n"
-".quad 0x752f220932320965,0x6c61636f6c2f7273,0x69622f616475632f,0x636e692f2e2e2f6e\n"
-".quad 0x5f6d732f6564756c,0x6c62756f645f3331,0x6974636e75665f65,0x090a22682e736e6f\n"
-".quad 0x333209656c69662e,0x6c2f7273752f2209,0x6475632f6c61636f,0x2e2e2f6e69622f61\n"
-".quad 0x6564756c636e692f,0x615f30325f6d732f,0x75665f63696d6f74,0x2e736e6f6974636e\n"
-".quad 0x6c69662e090a2268,0x752f220934320965,0x6c61636f6c2f7273,0x69622f616475632f\n"
-".quad 0x636e692f2e2e2f6e,0x5f6d732f6564756c,0x6972746e695f3032,0x22682e736369736e\n"
-".quad 0x09656c69662e090a,0x7273752f22093532,0x632f6c61636f6c2f,0x2f6e69622f616475\n"
-".quad 0x756c636e692f2e2e,0x61667275732f6564,0x74636e75665f6563,0x0a22682e736e6f69\n"
-".quad 0x3209656c69662e09,0x2f7273752f220936,0x75632f6c61636f6c,0x2e2f6e69622f6164\n"
-".quad 0x64756c636e692f2e,0x7275747865742f65,0x5f68637465665f65,0x6e6f6974636e7566\n"
-".quad 0x662e090a22682e73,0x2209373209656c69,0x636f6c2f7273752f,0x2f616475632f6c61\n"
-".quad 0x692f2e2e2f6e6962,0x6d2f6564756c636e,0x636e75665f687461,0x62645f736e6f6974\n"
-".quad 0x682e317874705f6c,0x000000000a0a0a22\n"
-".text");
-
-extern "C" {
-
-extern const unsigned long long __deviceText_$compute_10$[290];
-
-}
-
-asm(
-".section .rodata\n"
-".align 32\n"
-"__deviceText_$sm_10$:\n"
-".quad 0x33010102464c457f,0x0000000000000002,0x0000000100be0002,0x0000000000000000\n"
-".quad 0x0000000000000208,0x0000000000000040,0x00380040000a010a,0x0001000400400002\n"
+"__deviceText_$sm_21$:\n"
+".quad 0x33010102464c457f,0x0000000000000004,0x0000000100be0002,0x0000000000000000\n"
+".quad 0x0000000000000208,0x0000000000000040,0x0038004000140115,0x0001000400400002\n"
 ".quad 0x0000000000000000,0x0000000000000000,0x0000000000000000,0x0000000000000000\n"
 ".quad 0x0000000000000000,0x0000000000000000,0x0000000000000000,0x0000000000000000\n"
 ".quad 0x0000000300000001,0x0000000000000000,0x0000000000000000,0x0000000000000140\n"
@@ -10246,20 +10161,104 @@ asm(
 
 extern "C" {
 
-extern const unsigned long long __deviceText_$sm_10$[80];
+extern const unsigned long long __deviceText_$sm_21$[80];
 
 }
 
-static __cudaFatPtxEntry __ptxEntries [] = {{(char*)"compute_10",(char*)__deviceText_$compute_10$},{0,0}};
+asm(
+".section .rodata\n"
+".align 32\n"
+"__deviceText_$compute_20$:\n"
+".quad 0x6f69737265762e09,0x2e090a322e32206e,0x7320746567726174,0x2f2f090a30325f6d\n"
+".quad 0x656c69706d6f6320,0x2f20687469772064,0x61636f6c2f727375,0x6f2f616475632f6c\n"
+".quad 0x696c2f34366e6570,0x2f090a65622f2f62,0x6e65706f766e202f,0x6220322e33206363\n"
+".quad 0x206e6f20746c6975,0x2d39302d30313032,0x2d2f2f090a0a3930,0x2d2d2d2d2d2d2d2d\n"
+".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
+".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x43202f2f090a2d2d,0x676e696c69706d6f\n"
+".quad 0x6d742f706d742f20,0x3030305f74667870,0x30305f3331393030,0x372d303030303030\n"
+".quad 0x54656c706d69735f,0x736574616c706d65,0x2e6c656e72656b5f,0x2820692e33707063\n"
+".quad 0x4263632f706d742f,0x31663251632e2349,0x2d2d2f2f090a2954,0x2d2d2d2d2d2d2d2d\n"
+".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
+".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2f2f090a0a2d,0x2d2d2d2d2d2d2d2d\n"
+".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
+".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x704f202f2f090a2d,0x090a3a736e6f6974\n"
+".quad 0x2d2d2d2d2d2d2f2f,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
+".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2f090a2d2d2d2d2d\n"
+".quad 0x656772615420202f,0x49202c7874703a74,0x30325f6d733a4153,0x6e6169646e45202c\n"
+".quad 0x2c656c7474696c3a,0x7265746e696f5020,0x34363a657a695320,0x4f2d20202f2f090a\n"
+".quad 0x6d6974704f280933,0x206e6f6974617a69,0x090a296c6576656c,0x0930672d20202f2f\n"
+".quad 0x6c20677562654428,0x2f090a296c657665,0x2809326d2d20202f,0x612074726f706552\n"
+".quad 0x6569726f73697664,0x2d2d2f2f090a2973,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
+".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
+".quad 0x2d2d2d2d2d2d2d2d,0x6c69662e090a0a2d,0x6f633c2209310965,0x696c2d646e616d6d\n"
+".quad 0x662e090a223e656e,0x2f22093209656c69,0x78706d742f706d74,0x30303030305f7466\n"
+".quad 0x303030305f333139,0x735f362d30303030,0x6d6554656c706d69,0x6b5f736574616c70\n"
+".quad 0x75632e6c656e7265,0x70672e3265666164,0x6c69662e090a2275,0x73752f2209330965\n"
+".quad 0x63672f62696c2f72,0x6c2d363836692f63,0x756e672d78756e69,0x692f352e342e342f\n"
+".quad 0x732f6564756c636e,0x22682e6665646474,0x09656c69662e090a,0x2f7273752f220934\n"
+".quad 0x75632f6c61636f6c,0x2e2f6e69622f6164,0x64756c636e692f2e,0x65642f7472632f65\n"
+".quad 0x6e75725f65636976,0x0a22682e656d6974,0x3509656c69662e09,0x6c2f7273752f2209\n"
+".quad 0x6475632f6c61636f,0x2e2e2f6e69622f61,0x6564756c636e692f,0x65645f74736f682f\n"
+".quad 0x22682e73656e6966,0x09656c69662e090a,0x2f7273752f220936,0x75632f6c61636f6c\n"
+".quad 0x2e2f6e69622f6164,0x64756c636e692f2e,0x69746c6975622f65,0x2e73657079745f6e\n"
+".quad 0x6c69662e090a2268,0x73752f2209370965,0x2f6c61636f6c2f72,0x6e69622f61647563\n"
+".quad 0x6c636e692f2e2e2f,0x697665642f656475,0x73657079745f6563,0x69662e090a22682e\n"
+".quad 0x752f22093809656c,0x6c61636f6c2f7273,0x69622f616475632f,0x636e692f2e2e2f6e\n"
+".quad 0x6972642f6564756c,0x657079745f726576,0x662e090a22682e73,0x2f22093909656c69\n"
+".quad 0x61636f6c2f727375,0x622f616475632f6c,0x6e692f2e2e2f6e69,0x75732f6564756c63\n"
+".quad 0x79745f6563616672,0x090a22682e736570,0x303109656c69662e,0x6c2f7273752f2209\n"
+".quad 0x6475632f6c61636f,0x2e2e2f6e69622f61,0x6564756c636e692f,0x657275747865742f\n"
+".quad 0x682e73657079745f,0x656c69662e090a22,0x73752f2209313109,0x2f6c61636f6c2f72\n"
+".quad 0x6e69622f61647563,0x6c636e692f2e2e2f,0x746365762f656475,0x73657079745f726f\n"
+".quad 0x69662e090a22682e,0x2f2209323109656c,0x61636f6c2f727375,0x622f616475632f6c\n"
+".quad 0x6e692f2e2e2f6e69,0x65642f6564756c63,0x75616c5f65636976,0x617261705f68636e\n"
+".quad 0x682e73726574656d,0x656c69662e090a22,0x73752f2209333109,0x2f6c61636f6c2f72\n"
+".quad 0x6e69622f61647563,0x6c636e692f2e2e2f,0x2f7472632f656475,0x5f656761726f7473\n"
+".quad 0x22682e7373616c63,0x09656c69662e090a,0x7273752f22093431,0x6564756c636e692f\n"
+".quad 0x79742f737469622f,0x090a22682e736570,0x353109656c69662e,0x692f7273752f2209\n"
+".quad 0x742f6564756c636e,0x090a22682e656d69,0x363109656c69662e,0x6c2f7273752f2209\n"
+".quad 0x6475632f6c61636f,0x2e2e2f6e69622f61,0x6564756c636e692f,0x5f6e6f6d6d6f632f\n"
+".quad 0x6e6f6974636e7566,0x662e090a22682e73,0x2209373109656c69,0x636f6c2f7273752f\n"
+".quad 0x2f616475632f6c61,0x692f2e2e2f6e6962,0x6d2f6564756c636e,0x636e75665f687461\n"
+".quad 0x22682e736e6f6974,0x09656c69662e090a,0x7273752f22093831,0x632f6c61636f6c2f\n"
+".quad 0x2f6e69622f616475,0x756c636e692f2e2e,0x5f6874616d2f6564,0x746e6174736e6f63\n"
+".quad 0x662e090a22682e73,0x2209393109656c69,0x636f6c2f7273752f,0x2f616475632f6c61\n"
+".quad 0x692f2e2e2f6e6962,0x642f6564756c636e,0x75665f6563697665,0x2e736e6f6974636e\n"
+".quad 0x6c69662e090a2268,0x752f220930320965,0x6c61636f6c2f7273,0x69622f616475632f\n"
+".quad 0x636e692f2e2e2f6e,0x5f6d732f6564756c,0x696d6f74615f3131,0x6974636e75665f63\n"
+".quad 0x090a22682e736e6f,0x313209656c69662e,0x6c2f7273752f2209,0x6475632f6c61636f\n"
+".quad 0x2e2e2f6e69622f61,0x6564756c636e692f,0x615f32315f6d732f,0x75665f63696d6f74\n"
+".quad 0x2e736e6f6974636e,0x6c69662e090a2268,0x752f220932320965,0x6c61636f6c2f7273\n"
+".quad 0x69622f616475632f,0x636e692f2e2e2f6e,0x5f6d732f6564756c,0x6c62756f645f3331\n"
+".quad 0x6974636e75665f65,0x090a22682e736e6f,0x333209656c69662e,0x6c2f7273752f2209\n"
+".quad 0x6475632f6c61636f,0x2e2e2f6e69622f61,0x6564756c636e692f,0x615f30325f6d732f\n"
+".quad 0x75665f63696d6f74,0x2e736e6f6974636e,0x6c69662e090a2268,0x752f220934320965\n"
+".quad 0x6c61636f6c2f7273,0x69622f616475632f,0x636e692f2e2e2f6e,0x5f6d732f6564756c\n"
+".quad 0x6972746e695f3032,0x22682e736369736e,0x09656c69662e090a,0x7273752f22093532\n"
+".quad 0x632f6c61636f6c2f,0x2f6e69622f616475,0x756c636e692f2e2e,0x61667275732f6564\n"
+".quad 0x74636e75665f6563,0x0a22682e736e6f69,0x3209656c69662e09,0x2f7273752f220936\n"
+".quad 0x75632f6c61636f6c,0x2e2f6e69622f6164,0x64756c636e692f2e,0x7275747865742f65\n"
+".quad 0x5f68637465665f65,0x6e6f6974636e7566,0x662e090a22682e73,0x2209373209656c69\n"
+".quad 0x636f6c2f7273752f,0x2f616475632f6c61,0x692f2e2e2f6e6962,0x6d2f6564756c636e\n"
+".quad 0x636e75665f687461,0x62645f736e6f6974,0x682e337874705f6c,0x000000000a0a0a22\n"
+".text");
+
+extern "C" {
+
+extern const unsigned long long __deviceText_$compute_20$[288];
+
+}
+
+static __cudaFatPtxEntry __ptxEntries [] = {{(char*)"compute_20",(char*)__deviceText_$compute_20$},{0,0}};
 static __cudaFatCubinEntry __cubinEntries[] = {{0,0}};
 static __cudaFatDebugEntry __debugEntries0 = {0, 0, 0, 0} ;
 static __cudaFatElfEntry __elfEntries0 = {0, 0, 0, 0} ;
-static __cudaFatElfEntry __elfEntries1 = {(char*)"sm_10", (char*)__deviceText_$sm_10$, &__elfEntries0, (unsigned int)sizeof(__deviceText_$sm_10$)};
+static __cudaFatElfEntry __elfEntries1 = {(char*)"sm_21", (char*)__deviceText_$sm_21$, &__elfEntries0, (unsigned int)sizeof(__deviceText_$sm_21$)};
 
 
 
-static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000004,0xa14f518d,(char*)"e28d1a614093fd7a",(char*)"/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleTemplates/simpleTemplates_kernel.cu",(char*)" ",__ptxEntries,__cubinEntries,&__debugEntries0,0,0,0,0,0,0x99a82931,&__elfEntries1};
-# 3 "/tmp/tmpxft_00000ad1_00000000-1_simpleTemplates_kernel.cudafe1.stub.c" 2
-static void __sti____cudaRegisterAll_57_tmpxft_00000ad1_00000000_4_simpleTemplates_kernel_cpp1_ii_411a4a10(void) __attribute__((__constructor__));
-static void __sti____cudaRegisterAll_57_tmpxft_00000ad1_00000000_4_simpleTemplates_kernel_cpp1_ii_411a4a10(void){__cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil);}
-# 1 "/tmp/tmpxft_00000ad1_00000000-1_simpleTemplates_kernel.cudafe1.stub.c" 2
+static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000004,0xa14f518d,(char*)"c6cc72287104c20a",(char*)"/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleTemplates/simpleTemplates_kernel.cu",(char*)" ",__ptxEntries,__cubinEntries,&__debugEntries0,0,0,0,0,0,0xbc3a3d82,&__elfEntries1};
+# 3 "/tmp/tmpxft_00000913_00000000-1_simpleTemplates_kernel.cudafe1.stub.c" 2
+static void __sti____cudaRegisterAll_57_tmpxft_00000913_00000000_4_simpleTemplates_kernel_cpp1_ii_1db7e6a3(void) __attribute__((__constructor__));
+static void __sti____cudaRegisterAll_57_tmpxft_00000913_00000000_4_simpleTemplates_kernel_cpp1_ii_1db7e6a3(void){__cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil);}
+# 1 "/tmp/tmpxft_00000913_00000000-1_simpleTemplates_kernel.cudafe1.stub.c" 2

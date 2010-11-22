@@ -1,8 +1,8 @@
-# 1 "/tmp/tmpxft_00000d11_00000000-1_simpleStreams.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00000b56_00000000-1_simpleStreams.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_00000d11_00000000-1_simpleStreams.cudafe1.cpp"
-# 1 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 1 "/tmp/tmpxft_00000b56_00000000-1_simpleStreams.cudafe1.cpp"
+# 1 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 # 46 "/usr/local/cuda/bin/../include/device_types.h"
 # 149 "/usr/lib/gcc/i686-linux-gnu/4.4.5/include/stddef.h" 3
 typedef long ptrdiff_t;
@@ -11361,238 +11361,238 @@ printf(" -> CUDA %s Toolkit\n", sNVCCReq);
 printf(" -> %s NVIDIA Display Driver.\n", sDriverReq);
 # 18 "sdk/cutil_inline.h"
 }
-# 59 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 59 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 void init_array(int *g_data, int *factor, int num_iterations) ;
-# 67 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 67 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 int correct_data(int *a, const int n, const int c)
-# 68 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 68 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 {
-# 69 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 69 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 for (int i = 0; i < n; i++) {
-# 70 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 70 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 if ((a[i]) != c)
-# 71 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 71 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 {
-# 72 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 72 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 printf("%d: %d %d\n", i, a[i], c);
-# 73 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 73 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 return 0;
-# 74 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 74 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 } }
-# 76 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 76 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 return 1;
-# 77 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 77 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 }
-# 79 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 79 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 int main(int argc, char *argv[])
-# 80 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 80 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 {
-# 81 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 81 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 int cuda_device = 0;
-# 82 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 82 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 int nstreams = 4;
-# 83 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 83 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 int nreps = 10;
-# 84 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 84 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 int n = ((16 * 1024) * 1024);
-# 85 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 85 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 int nbytes = (n * sizeof(int));
-# 86 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 86 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 dim3 threads, blocks;
-# 87 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 87 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 float elapsed_time, time_memcpy, time_kernel;
-# 89 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 89 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 int niterations;
-# 91 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 91 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 if (argc > 1) {
-# 92 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 92 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 cuda_device = atoi(argv[1]); }
-# 95 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 95 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 n = 4096;
-# 99 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 99 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 int num_devices = 0;
-# 100 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
-__cudaSafeCall(cudaGetDeviceCount(&num_devices), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu", 100);
-# 101 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 100 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+__cudaSafeCall(cudaGetDeviceCount(&num_devices), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu", 100);
+# 101 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 if (0 == num_devices)
-# 102 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 102 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 {
-# 103 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 103 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 printf("your system does not have a CUDA capable device\n");
-# 104 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 104 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 return 1;
-# 105 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 105 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 }
-# 108 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 108 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 if (cuda_device >= num_devices)
-# 109 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 109 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 {
-# 110 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 110 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 printf("choose device ID between 0 and %d\n", num_devices - 1);
-# 111 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 111 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 return 1;
-# 112 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 112 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 }
-# 114 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 114 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 cudaSetDevice(cuda_device);
-# 116 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 116 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 cudaDeviceProp device_properties;
-# 118 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
-__cudaSafeCall(cudaGetDeviceProperties(&device_properties, cuda_device), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu", 118);
-# 119 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 118 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+__cudaSafeCall(cudaGetDeviceProperties(&device_properties, cuda_device), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu", 118);
+# 119 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 if ((1 == (device_properties.major)) && ((device_properties.minor) < 1)) {
-# 120 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 120 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 printf("%s does not have compute capability 1.1 or later\n\n", device_properties.name); }
-# 121 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 121 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 if ((device_properties.minor) > 1) {
-# 122 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 122 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 niterations = 5; } else {
-# 124 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 124 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 niterations = 1; }
-# 126 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 126 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 printf("running on: %s\n\n", device_properties.name);
-# 129 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 129 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 int c = 5;
-# 130 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 130 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 int *a = (0);
-# 132 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
-__cudaSafeCall(cudaMallocHost((void **)(&a), nbytes), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu", 132);
-# 135 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 132 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+__cudaSafeCall(cudaMallocHost((void **)(&a), nbytes), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu", 132);
+# 135 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 int *d_a = (0), *d_c = (0);
-# 136 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
-__cudaSafeCall(cudaMalloc((void **)(&d_a), nbytes), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu", 136);
-# 137 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
-__cudaSafeCall(cudaMalloc((void **)(&d_c), sizeof(int)), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu", 137);
-# 138 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
-__cudaSafeCall(cudaMemcpy(d_c, &c, sizeof(int), cudaMemcpyHostToDevice), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu", 138);
-# 141 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 136 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+__cudaSafeCall(cudaMalloc((void **)(&d_a), nbytes), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu", 136);
+# 137 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+__cudaSafeCall(cudaMalloc((void **)(&d_c), sizeof(int)), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu", 137);
+# 138 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+__cudaSafeCall(cudaMemcpy(d_c, &c, sizeof(int), cudaMemcpyHostToDevice), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu", 138);
+# 141 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 cudaStream_t *streams = ((cudaStream_t *)malloc(nstreams * sizeof(cudaStream_t)));
-# 142 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 142 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 for (int i = 0; i < nstreams; i++) {
-# 143 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
-__cudaSafeCall(cudaStreamCreate(&(streams[i])), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu", 143); }
-# 146 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 143 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+__cudaSafeCall(cudaStreamCreate(&(streams[i])), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu", 143); }
+# 146 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 cudaEvent_t start_event, stop_event;
-# 147 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
-__cudaSafeCall(cudaEventCreate(&start_event), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu", 147);
-# 148 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
-__cudaSafeCall(cudaEventCreate(&stop_event), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu", 148);
-# 151 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 147 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+__cudaSafeCall(cudaEventCreate(&start_event), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu", 147);
+# 148 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+__cudaSafeCall(cudaEventCreate(&stop_event), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu", 148);
+# 151 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 cudaEventRecord(start_event, 0);
-# 152 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 152 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 cudaMemcpyAsync(a, d_a, nbytes, cudaMemcpyDeviceToHost, streams[0]);
-# 153 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 153 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 cudaEventRecord(stop_event, 0);
-# 154 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 154 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 cudaEventSynchronize(stop_event);
-# 155 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
-__cudaSafeCall(cudaEventElapsedTime(&time_memcpy, start_event, stop_event), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu", 155);
-# 156 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 155 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+__cudaSafeCall(cudaEventElapsedTime(&time_memcpy, start_event, stop_event), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu", 155);
+# 156 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 printf("memcopy:\t%.2f\n", time_memcpy);
-# 159 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 159 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 threads = dim3(512, 1);
-# 160 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 160 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 blocks = dim3(n / (threads.x), 1);
-# 161 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 161 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 cudaEventRecord(start_event, 0);
-# 162 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 162 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 cudaConfigureCall(blocks, threads, 0, streams[0]) ? ((void)0) : init_array(d_a, d_c, niterations);
-# 163 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 163 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 cudaEventRecord(stop_event, 0);
-# 164 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 164 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 cudaEventSynchronize(stop_event);
-# 165 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
-__cudaSafeCall(cudaEventElapsedTime(&time_kernel, start_event, stop_event), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu", 165);
-# 166 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 165 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+__cudaSafeCall(cudaEventElapsedTime(&time_kernel, start_event, stop_event), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu", 165);
+# 166 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 printf("kernel:\t\t%.2f\n", time_kernel);
-# 170 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 170 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 threads = dim3(512, 1);
-# 171 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 171 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 blocks = dim3(n / (threads.x), 1);
-# 172 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 172 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 cudaEventRecord(start_event, 0);
-# 173 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 173 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 for (int k = 0; k < nreps; k++)
-# 174 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 174 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 {
-# 175 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 175 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 cudaConfigureCall(blocks, threads) ? ((void)0) : init_array(d_a, d_c, niterations);
-# 176 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 176 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 cudaMemcpy(a, d_a, nbytes, cudaMemcpyDeviceToHost);
-# 177 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 177 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 }
-# 178 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 178 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 cudaEventRecord(stop_event, 0);
-# 179 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 179 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 cudaEventSynchronize(stop_event);
-# 180 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
-__cudaSafeCall(cudaEventElapsedTime(&elapsed_time, start_event, stop_event), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu", 180);
-# 181 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 180 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+__cudaSafeCall(cudaEventElapsedTime(&elapsed_time, start_event, stop_event), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu", 180);
+# 181 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 printf("non-streamed:\t%.2f (%.2f expected)\n", elapsed_time / nreps, time_kernel + time_memcpy);
-# 185 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 185 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 threads = dim3(512, 1);
-# 186 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 186 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 blocks = dim3(n / (nstreams * (threads.x)), 1);
-# 187 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 187 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 memset(a, 255, nbytes);
-# 188 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 188 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 cudaMemset(d_a, 0, nbytes);
-# 189 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 189 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 cudaEventRecord(start_event, 0);
-# 190 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 190 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 for (int k = 0; k < nreps; k++)
-# 191 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 191 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 {
-# 193 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 193 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 for (int i = 0; i < nstreams; i++) {
-# 194 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 194 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 cudaConfigureCall(blocks, threads, 0, streams[i]) ? ((void)0) : init_array(d_a + ((i * n) / nstreams), d_c, niterations); }
-# 198 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 198 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 for (int i = 0; i < nstreams; i++) {
-# 199 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 199 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 cudaMemcpyAsync(a + ((i * n) / nstreams), d_a + ((i * n) / nstreams), nbytes / nstreams, cudaMemcpyDeviceToHost, streams[i]); }
-# 200 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 200 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 }
-# 201 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 201 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 cudaEventRecord(stop_event, 0);
-# 202 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 202 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 cudaEventSynchronize(stop_event);
-# 203 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
-__cudaSafeCall(cudaEventElapsedTime(&elapsed_time, start_event, stop_event), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu", 203);
-# 204 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 203 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+__cudaSafeCall(cudaEventElapsedTime(&elapsed_time, start_event, stop_event), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu", 203);
+# 204 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 printf("%d streams:\t%.2f (%.2f expected with compute capability 1.1 or later)\n", nstreams, elapsed_time / nreps, time_kernel + (time_memcpy / nstreams));
-# 207 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 207 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 printf("-------------------------------\n");
-# 208 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 208 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 if (correct_data(a, n, (c * nreps) * niterations)) {
-# 209 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 209 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 printf("Test PASSED\n"); } else {
-# 211 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 211 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 printf("Test FAILED\n"); }
-# 214 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 214 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 for (int i = 0; i < nstreams; i++) {
-# 215 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 215 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 cudaStreamDestroy(streams[i]); }
-# 216 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 216 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 cudaEventDestroy(start_event);
-# 217 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 217 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 cudaEventDestroy(stop_event);
-# 218 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 218 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 cudaFreeHost(a);
-# 219 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 219 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 cudaFree(d_a);
-# 220 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 220 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 cudaFree(d_c);
-# 222 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 222 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 cudaThreadExit();
-# 224 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 224 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 __cutilExit(argc, argv);
-# 226 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 226 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 return 0;
-# 227 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 227 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 }
-# 1 "/tmp/tmpxft_00000d11_00000000-1_simpleStreams.cudafe1.stub.c"
-# 1 "/tmp/tmpxft_00000d11_00000000-1_simpleStreams.cudafe1.stub.c" 1
+# 1 "/tmp/tmpxft_00000b56_00000000-1_simpleStreams.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00000b56_00000000-1_simpleStreams.cudafe1.stub.c" 1
 # 1 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 1
 # 91 "/usr/local/cuda/bin/../include/crt/host_runtime.h"
 extern "C" {
@@ -11981,9 +11981,9 @@ extern __attribute__((__weak__)) unsigned long long int ullmax(unsigned long lon
 {
   return a > b ? a : b;
 }
-# 5000 "/usr/local/cuda/bin/../include/math_functions.h" 3
-# 1 "/usr/local/cuda/bin/../include/math_functions_dbl_ptx1.h" 1 3
-# 5001 "/usr/local/cuda/bin/../include/math_functions.h" 2 3
+# 5006 "/usr/local/cuda/bin/../include/math_functions.h" 3
+# 1 "/usr/local/cuda/bin/../include/math_functions_dbl_ptx3.h" 1 3
+# 5007 "/usr/local/cuda/bin/../include/math_functions.h" 2 3
 # 91 "/usr/local/cuda/bin/../include/common_functions.h" 2
 # 164 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 2
 
@@ -11994,8 +11994,8 @@ extern __attribute__((__weak__)) unsigned long long int ullmax(unsigned long lon
 
 
 #pragma pack()
-# 2 "/tmp/tmpxft_00000d11_00000000-1_simpleStreams.cudafe1.stub.c" 2
-# 1 "/tmp/tmpxft_00000d11_00000000-3_simpleStreams.fatbin.c" 1
+# 2 "/tmp/tmpxft_00000b56_00000000-1_simpleStreams.cudafe1.stub.c" 2
+# 1 "/tmp/tmpxft_00000b56_00000000-3_simpleStreams.fatbin.c" 1
 # 1 "/usr/local/cuda/bin/../include/__cudaFatFormat.h" 1
 # 83 "/usr/local/cuda/bin/../include/__cudaFatFormat.h"
 extern "C" {
@@ -12073,217 +12073,214 @@ void __cudaFatFreePTX( char* ptx );
 
 
 }
-# 2 "/tmp/tmpxft_00000d11_00000000-3_simpleStreams.fatbin.c" 2
+# 2 "/tmp/tmpxft_00000b56_00000000-3_simpleStreams.fatbin.c" 2
 
 asm(
 ".section .rodata\n"
 ".align 32\n"
-"__deviceText_$compute_10$:\n"
-".quad 0x6f69737265762e09,0x2e090a342e31206e,0x7320746567726174,0x616d202c30315f6d\n"
-".quad 0x6f745f3436665f70,0x2f2f090a3233665f,0x656c69706d6f6320,0x2f20687469772064\n"
-".quad 0x61636f6c2f727375,0x6f2f616475632f6c,0x696c2f34366e6570,0x2f090a65622f2f62\n"
-".quad 0x6e65706f766e202f,0x6220322e33206363,0x206e6f20746c6975,0x2d39302d30313032\n"
-".quad 0x2d2f2f090a0a3930,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
-".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
-".quad 0x43202f2f090a2d2d,0x676e696c69706d6f,0x6d742f706d742f20,0x3030305f74667870\n"
-".quad 0x30305f3131643030,0x372d303030303030,0x53656c706d69735f,0x632e736d61657274\n"
-".quad 0x2f2820692e337070,0x494263632f706d74,0x4369486872692e23,0x2d2d2d2f2f090a29\n"
-".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
-".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2f2f090a0a\n"
-".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
-".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x74704f202f2f090a\n"
-".quad 0x2f090a3a736e6f69,0x2d2d2d2d2d2d2d2f,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
-".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
-".quad 0x2f2f090a2d2d2d2d,0x7465677261542020,0x5349202c7874703a,0x2c30315f6d733a41\n"
-".quad 0x3a6e6169646e4520,0x202c656c7474696c,0x207265746e696f50,0x0a34363a657a6953\n"
-".quad 0x334f2d20202f2f09,0x696d6974704f2809,0x6c206e6f6974617a,0x2f090a296c657665\n"
-".quad 0x280930672d20202f,0x656c206775626544,0x2f2f090a296c6576,0x522809326d2d2020\n"
-".quad 0x64612074726f7065,0x736569726f736976,0x2d2d2d2f2f090a29,0x2d2d2d2d2d2d2d2d\n"
-".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
-".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x656c69662e090a0a,0x6d6f633c22093109\n"
-".quad 0x6e696c2d646e616d,0x69662e090a223e65,0x742f22093209656c,0x6678706d742f706d\n"
-".quad 0x6430303030305f74,0x30303030305f3131,0x69735f362d303030,0x65727453656c706d\n"
-".quad 0x616475632e736d61,0x227570672e326566,0x09656c69662e090a,0x2f7273752f220933\n"
-".quad 0x2f6363672f62696c,0x6e696c2d36383669,0x342f756e672d7875,0x636e692f352e342e\n"
-".quad 0x6474732f6564756c,0x090a22682e666564,0x093409656c69662e,0x6f6c2f7273752f22\n"
-".quad 0x616475632f6c6163,0x2f2e2e2f6e69622f,0x2f6564756c636e69,0x697665642f747263\n"
-".quad 0x69746e75725f6563,0x2e090a22682e656d,0x22093509656c6966,0x636f6c2f7273752f\n"
-".quad 0x2f616475632f6c61,0x692f2e2e2f6e6962,0x682f6564756c636e,0x696665645f74736f\n"
-".quad 0x090a22682e73656e,0x093609656c69662e,0x6f6c2f7273752f22,0x616475632f6c6163\n"
-".quad 0x2f2e2e2f6e69622f,0x2f6564756c636e69,0x5f6e69746c697562,0x22682e7365707974\n"
-".quad 0x09656c69662e090a,0x2f7273752f220937,0x75632f6c61636f6c,0x2e2f6e69622f6164\n"
-".quad 0x64756c636e692f2e,0x6563697665642f65,0x682e73657079745f,0x656c69662e090a22\n"
-".quad 0x7273752f22093809,0x632f6c61636f6c2f,0x2f6e69622f616475,0x756c636e692f2e2e\n"
-".quad 0x65766972642f6564,0x2e73657079745f72,0x6c69662e090a2268,0x73752f2209390965\n"
-".quad 0x2f6c61636f6c2f72,0x6e69622f61647563,0x6c636e692f2e2e2f,0x667275732f656475\n"
-".quad 0x657079745f656361,0x662e090a22682e73,0x2209303109656c69,0x636f6c2f7273752f\n"
-".quad 0x2f616475632f6c61,0x692f2e2e2f6e6962,0x742f6564756c636e,0x745f657275747865\n"
-".quad 0x0a22682e73657079,0x3109656c69662e09,0x2f7273752f220931,0x75632f6c61636f6c\n"
-".quad 0x2e2f6e69622f6164,0x64756c636e692f2e,0x726f746365762f65,0x682e73657079745f\n"
-".quad 0x656c69662e090a22,0x73752f2209323109,0x2f6c61636f6c2f72,0x6e69622f61647563\n"
-".quad 0x6c636e692f2e2e2f,0x697665642f656475,0x636e75616c5f6563,0x656d617261705f68\n"
-".quad 0x0a22682e73726574,0x3109656c69662e09,0x2f7273752f220933,0x75632f6c61636f6c\n"
-".quad 0x2e2f6e69622f6164,0x64756c636e692f2e,0x74732f7472632f65,0x6c635f656761726f\n"
-".quad 0x090a22682e737361,0x343109656c69662e,0x692f7273752f2209,0x622f6564756c636e\n"
-".quad 0x657079742f737469,0x662e090a22682e73,0x2209353109656c69,0x636e692f7273752f\n"
-".quad 0x6d69742f6564756c,0x662e090a22682e65,0x2209363109656c69,0x636f6c2f7273752f\n"
-".quad 0x2f616475632f6c61,0x692f2e2e2f6e6962,0x742f6564756c636e,0x665f657275747865\n"
-".quad 0x6e75665f68637465,0x682e736e6f697463,0x656c69662e090a22,0x73752f2209373109\n"
-".quad 0x2f6c61636f6c2f72,0x6e69622f61647563,0x6c636e692f2e2e2f,0x6d6d6f632f656475\n"
-".quad 0x74636e75665f6e6f,0x0a22682e736e6f69,0x3109656c69662e09,0x2f7273752f220938\n"
-".quad 0x75632f6c61636f6c,0x2e2f6e69622f6164,0x64756c636e692f2e,0x665f6874616d2f65\n"
-".quad 0x736e6f6974636e75,0x69662e090a22682e,0x2f2209393109656c,0x61636f6c2f727375\n"
-".quad 0x622f616475632f6c,0x6e692f2e2e2f6e69,0x616d2f6564756c63,0x74736e6f635f6874\n"
-".quad 0x0a22682e73746e61,0x3209656c69662e09,0x2f7273752f220930,0x75632f6c61636f6c\n"
-".quad 0x2e2f6e69622f6164,0x64756c636e692f2e,0x6563697665642f65,0x6f6974636e75665f\n"
-".quad 0x2e090a22682e736e,0x09313209656c6966,0x6f6c2f7273752f22,0x616475632f6c6163\n"
-".quad 0x2f2e2e2f6e69622f,0x2f6564756c636e69,0x74615f31315f6d73,0x6e75665f63696d6f\n"
-".quad 0x682e736e6f697463,0x656c69662e090a22,0x73752f2209323209,0x2f6c61636f6c2f72\n"
-".quad 0x6e69622f61647563,0x6c636e692f2e2e2f,0x315f6d732f656475,0x63696d6f74615f32\n"
-".quad 0x6f6974636e75665f,0x2e090a22682e736e,0x09333209656c6966,0x6f6c2f7273752f22\n"
-".quad 0x616475632f6c6163,0x2f2e2e2f6e69622f,0x2f6564756c636e69,0x6f645f33315f6d73\n"
-".quad 0x6e75665f656c6275,0x682e736e6f697463,0x656c69662e090a22,0x73752f2209343209\n"
-".quad 0x2f6c61636f6c2f72,0x6e69622f61647563,0x6c636e692f2e2e2f,0x325f6d732f656475\n"
-".quad 0x63696d6f74615f30,0x6f6974636e75665f,0x2e090a22682e736e,0x09353209656c6966\n"
-".quad 0x6f6c2f7273752f22,0x616475632f6c6163,0x2f2e2e2f6e69622f,0x2f6564756c636e69\n"
-".quad 0x6e695f30325f6d73,0x736369736e697274,0x69662e090a22682e,0x2f2209363209656c\n"
-".quad 0x61636f6c2f727375,0x622f616475632f6c,0x6e692f2e2e2f6e69,0x75732f6564756c63\n"
-".quad 0x75665f6563616672,0x2e736e6f6974636e,0x6c69662e090a2268,0x752f220937320965\n"
-".quad 0x6c61636f6c2f7273,0x69622f616475632f,0x636e692f2e2e2f6e,0x74616d2f6564756c\n"
-".quad 0x6974636e75665f68,0x5f6c62645f736e6f,0x0a22682e31787470,0x3209656c69662e09\n"
-".quad 0x656d6f682f220938,0x2f6c616d726f6e2f,0x74756f6b63656863,0x6c65636f7570672f\n"
-".quad 0x73747365742f746f,0x322e32616475632f,0x732f73747365742f,0x727453656c706d69\n"
-".quad 0x6d69732f736d6165,0x6165727453656c70,0x0a0a2275632e736d,0x7972746e652e090a\n"
-".quad 0x696e6930315a5f20,0x5079617272615f74,0x090a2820695f5369,0x206d617261702e09\n"
-".quad 0x635f5f203436752e,0x5f6d726170616475,0x74696e6930315a5f,0x695079617272615f\n"
-".quad 0x61645f675f695f53,0x702e09090a2c6174,0x36752e206d617261,0x616475635f5f2034\n"
-".quad 0x315a5f5f6d726170,0x72615f74696e6930,0x695f536950796172,0x2c726f746361665f\n"
-".quad 0x617261702e09090a,0x5f203233732e206d,0x726170616475635f,0x6e6930315a5f5f6d\n"
-".quad 0x79617272615f7469,0x756e5f695f536950,0x7461726574695f6d,0x7b090a29736e6f69\n"
-".quad 0x2e206765722e090a,0x3c68722520363175,0x65722e090a3b3e34,0x25203233752e2067\n"
-".quad 0x090a3b3e33313c72,0x36752e206765722e,0x3e363c6472252034,0x206765722e090a3b\n"
-".quad 0x702520646572702e,0x6c2e090a3b3e343c,0x393509383209636f,0x6257444c240a3009\n"
-".quad 0x315a5f5f6e696765,0x72615f74696e6930,0x695f536950796172,0x61702e646c090a3a\n"
-".quad 0x203233732e6d6172,0x5f5b202c31722509,0x726170616475635f,0x6e6930315a5f5f6d\n"
-".quad 0x79617272615f7469,0x756e5f695f536950,0x7461726574695f6d,0x090a3b5d736e6f69\n"
-".quad 0x203233752e766f6d,0x3b30202c32722509,0x6c2e70746573090a,0x2509203233732e65\n"
-".quad 0x2c317225202c3170,0x40090a3b32722520,0x2061726220317025,0x315f305f744c2409\n"
-".quad 0x646c090a3b323832,0x732e6d617261702e,0x2c31722509203233,0x616475635f5f5b20\n"
-".quad 0x315a5f5f6d726170,0x72615f74696e6930,0x695f536950796172,0x6574695f6d756e5f\n"
-".quad 0x5d736e6f69746172,0x732e766f6d090a3b,0x2c33722509203233,0x6d090a3b31722520\n"
-".quad 0x09203631752e766f,0x6325202c31687225,0x0a3b782e64696174,0x3631752e766f6d09\n"
-".quad 0x202c326872250920,0x3b782e6469746e25,0x69772e6c756d090a,0x09203631752e6564\n"
-".quad 0x687225202c347225,0x3b32687225202c31,0x33752e747663090a,0x2509203631752e32\n"
-".quad 0x64697425202c3572,0x646461090a3b782e,0x722509203233752e,0x202c357225202c36\n"
-".quad 0x756d090a3b347225,0x3233752e6f6c2e6c,0x25202c3772250920,0x090a3b34202c3672\n"
-".quad 0x2e3436752e747663,0x6472250920323375,0x0a3b377225202c31,0x617261702e646c09\n"
-".quad 0x2509203436752e6d,0x5f5f5b202c326472,0x6d72617061647563,0x696e6930315a5f5f\n"
-".quad 0x5079617272615f74,0x645f675f695f5369,0x61090a3b5d617461,0x09203436752e6464\n"
-".quad 0x7225202c33647225,0x32647225202c3164,0x6c672e646c090a3b,0x3233732e6c61626f\n"
-".quad 0x5b202c3872250920,0x3b5d302b33647225,0x7261702e646c090a,0x09203436752e6d61\n"
-".quad 0x5f5b202c34647225,0x726170616475635f,0x6e6930315a5f5f6d,0x79617272615f7469\n"
-".quad 0x61665f695f536950,0x090a3b5d726f7463,0x203233732e766f6d,0x3b30202c39722509\n"
-".quad 0x33732e766f6d090a,0x2c30317225092032,0x4c240a3b33722520,0x343937315f305f74\n"
-".quad 0x6f6c3c2f2f200a3a,0x706f6f4c203e706f,0x696c2079646f6220,0x6e202c393520656e\n"
-".quad 0x6420676e69747365,0x2c31203a68747065,0x74616d6974736520,0x6172657469206465\n"
-".quad 0x75203a736e6f6974,0x090a6e776f6e6b6e,0x6d617261702e646c,0x722509203436752e\n"
-".quad 0x635f5f5b202c3464,0x5f6d726170616475,0x74696e6930315a5f,0x695079617272615f\n"
-".quad 0x746361665f695f53,0x6c2e090a3b5d726f,0x343609383209636f,0x672e646c090a3009\n"
-".quad 0x33732e6c61626f6c,0x2c31317225092032,0x302b346472255b20,0x2e646461090a3b5d\n"
-".quad 0x3872250920323373,0x202c31317225202c,0x7473090a3b387225,0x2e6c61626f6c672e\n"
-".quad 0x72255b0920323373,0x25202c5d302b3364,0x646461090a3b3872,0x722509203233732e\n"
-".quad 0x202c397225202c39,0x636f6c2e090a3b31,0x3009393509383209,0x7261702e646c090a\n"
-".quad 0x09203233732e6d61,0x5f5f5b202c317225,0x6d72617061647563,0x696e6930315a5f5f\n"
-".quad 0x5079617272615f74,0x6d756e5f695f5369,0x697461726574695f,0x2e090a3b5d736e6f\n"
-".quad 0x3609383209636f6c,0x746573090a300934,0x3233732e656e2e70,0x25202c3270250920\n"
-".quad 0x3b397225202c3172,0x622032702540090a,0x5f744c2409206172,0x0a3b343937315f30\n"
-".quad 0x32315f305f744c24,0x6f6c2e090a3a3238,0x0935360938320963,0x3b74697865090a30\n"
-".quad 0x646e6557444c240a,0x696e6930315a5f5f,0x5079617272615f74,0x7d090a3a695f5369\n"
-".quad 0x30315a5f202f2f20,0x7272615f74696e69,0x0a695f5369507961,0x000000000000000a\n"
-".text");
-
-extern "C" {
-
-extern const unsigned long long __deviceText_$compute_10$[484];
-
-}
-
-asm(
-".section .rodata\n"
-".align 32\n"
-"__deviceText_$sm_10$:\n"
-".quad 0x33010102464c457f,0x0000000000000002,0x0000000100be0002,0x0000000000000000\n"
-".quad 0x0000000000000460,0x0000000000000040,0x00380040000a010a,0x0001000700400003\n"
+"__deviceText_$sm_21$:\n"
+".quad 0x33010102464c457f,0x0000000000000004,0x0000000100be0002,0x0000000000000000\n"
+".quad 0x0000000000000534,0x0000000000000040,0x0038004000140115,0x0001000800400002\n"
 ".quad 0x0000000000000000,0x0000000000000000,0x0000000000000000,0x0000000000000000\n"
 ".quad 0x0000000000000000,0x0000000000000000,0x0000000000000000,0x0000000000000000\n"
-".quad 0x0000000300000001,0x0000000000000000,0x0000000000000000,0x0000000000000200\n"
-".quad 0x000000000000008c,0x0000000000000000,0x0000000000000004,0x0000000000000000\n"
-".quad 0x000000030000000b,0x0000000000000000,0x0000000000000000,0x000000000000028c\n"
+".quad 0x0000000300000001,0x0000000000000000,0x0000000000000000,0x0000000000000240\n"
+".quad 0x0000000000000098,0x0000000000000000,0x0000000000000004,0x0000000000000000\n"
+".quad 0x000000030000000b,0x0000000000000000,0x0000000000000000,0x00000000000002d8\n"
 ".quad 0x0000000000000015,0x0000000000000000,0x0000000000000001,0x0000000000000000\n"
-".quad 0x0000000200000013,0x0000000000000000,0x0000000000000000,0x00000000000002a1\n"
-".quad 0x00000000000000f0,0x0000000900000002,0x0000000000000001,0x0000000000000018\n"
-".quad 0x0000000100000036,0x0000000000000006,0x0000000000000000,0x0000000000000391\n"
-".quad 0x0000000000000088,0x0400000600000003,0x0000000000000004,0x0000000000000000\n"
-".quad 0x0000000100000050,0x0000000000000002,0x0000000000000000,0x0000000000000419\n"
-".quad 0x0000000000000044,0x0000000400000000,0x0000000000000001,0x0000000000000000\n"
-".quad 0x000000080000006d,0x0000000000000003,0x0000000000000000,0x000000000000045d\n"
-".quad 0x0000000000000024,0x0000000400000000,0x0000000000000004,0x0000000000000000\n"
+".quad 0x0000000200000013,0x0000000000000000,0x0000000000000000,0x00000000000002ed\n"
+".quad 0x0000000000000108,0x0000000a00000002,0x0000000000000001,0x0000000000000018\n"
+".quad 0x0000000100000036,0x0000000000000006,0x0000000000000000,0x00000000000003f5\n"
+".quad 0x00000000000000a0,0x0800000600000003,0x0000000000000004,0x0000000000000000\n"
+".quad 0x0000000100000076,0x0000000000000002,0x0000000000000000,0x0000000000000495\n"
+".quad 0x0000000000000034,0x0000000400000000,0x0000000000000004,0x0000000000000000\n"
+".quad 0x0000000100000059,0x0000000000000002,0x0000000000000000,0x00000000000004c9\n"
+".quad 0x0000000000000050,0x0000000400000000,0x0000000000000001,0x0000000000000000\n"
+".quad 0x0000000100000050,0x0000000000000002,0x0000000000000000,0x0000000000000519\n"
+".quad 0x0000000000000018,0x0000000000000000,0x0000000000000001,0x0000000000000000\n"
 ".quad 0x7472747368732e00,0x747274732e006261,0x746d79732e006261,0x672e766e2e006261\n"
 ".quad 0x6e692e6c61626f6c,0x672e766e2e007469,0x742e006c61626f6c,0x30315a5f2e747865\n"
-".quad 0x7272615f74696e69,0x00695f5369507961,0x6f666e692e766e2e,0x696e6930315a5f2e\n"
-".quad 0x5079617272615f74,0x766e2e00695f5369,0x2e6465726168732e,0x74696e6930315a5f\n"
-".quad 0x695079617272615f,0x315a5f0000695f53,0x72615f74696e6930,0x695f536950796172\n"
-".quad 0x0000000000000000,0x0000000000000000,0x0000000000000000,0x0100030000000000\n"
-".quad 0x0000000000000000,0x0000000000000000,0x0200030000000000,0x0000000000000000\n"
-".quad 0x0000000000000000,0x0300030000000000,0x0000000000000000,0x0000000000000000\n"
-".quad 0x0000030000000000,0x0000000000000000,0x0000000000000000,0x0000030000000000\n"
-".quad 0x0000000000000000,0x0000000000000000,0x0400030000000000,0x0000000000000000\n"
-".quad 0x0000000000008800,0x0500030000000000,0x0000000000000000,0x0000000000000000\n"
-".quad 0x0600030000000000,0x0000000000000000,0x0000000000000000,0x0410120000000100\n"
-".quad 0x0000000000000000,0x0000000000000000,0x20c7c8307cd1fd00,0x000280300000036c\n"
-".quad 0x23c7801000420500,0x000780a000000500,0x20478060014c0104,0x1007803002000100\n"
-".quad 0x2007802000c805c4,0x03c7801000f80d04,0xc00780d00e020904,0x23c7801000cc0180\n"
-".quad 0xc00780d00e000104,0x0000032001860d80,0x0087802000000900,0x2147c83003d1fd04\n"
-".quad 0xc00780d00e02096c,0x00028010009003a0,0x000001f000000100,0x000000000c0b04e0\n"
-".quad 0x0000100000000800,0x0c17040014180300,0x100002ffffffff00,0x0c17040013f00000\n"
-".quad 0x080001ffffffff00,0x0c17040023f00000,0x000000ffffffff00,0x0000000023f00000\n"
-".quad 0x0000000500000006,0x0000000000000460,0x0000000000000000,0x0000000000000000\n"
-".quad 0x00000000000000a8,0x00000000000000a8,0x0000000000000004,0x0000090560000000\n"
-".quad 0x0000000000000391,0x0000000000000000,0x0000000000000000,0x00000000000000cc\n"
-".quad 0x00000000000000cc,0x0000000000000004,0x0000090660000000,0x000000000000045d\n"
-".quad 0x0000000000000000,0x0000000000000000,0x0000000000000000,0x0000000000000024\n"
-".quad 0x0000000000000004,0x0000000000000000\n"
+".quad 0x7272615f74696e69,0x00695f5369507961,0x6f666e692e766e2e,0x666e692e766e2e00\n"
+".quad 0x6e6930315a5f2e6f,0x79617272615f7469,0x6e2e00695f536950,0x6174736e6f632e76\n"
+".quad 0x30315a5f2e30746e,0x7272615f74696e69,0x00695f5369507961,0x696e6930315a5f00\n"
+".quad 0x5079617272615f74,0x00000000695f5369,0x0000000000000000,0x0000000000000000\n"
+".quad 0x0000000000000000,0x0000000001000300,0x0000000000000000,0x0000000000000000\n"
+".quad 0x0000000002000300,0x0000000000000000,0x0000000000000000,0x0000000003000300\n"
+".quad 0x0000000000000000,0x0000000000000000,0x0000000000000300,0x0000000000000000\n"
+".quad 0x0000000000000000,0x0000000000000300,0x0000000000000000,0x0000000000000000\n"
+".quad 0x0000000004000300,0x0000a00000000000,0x0000000000000000,0x0000000007000300\n"
+".quad 0x0000000000000000,0x0000000000000000,0x0000000006000300,0x0000000000000000\n"
+".quad 0x0000000000000000,0x0000000005000300,0x0000000000000000,0x0000010000000000\n"
+".quad 0x0000000004101200,0x0000a00000000000,0x005de40000000000,0xf1dc232800440400\n"
+".quad 0x0001e71b0e4000c3,0x00dde48000000000,0x001c042800400080,0x009c042c00000094\n"
+".quad 0x001c032c00000084,0x011c032004400020,0xf15c432007c00010,0x009de44800400093\n"
+".quad 0x401c8528000000fc,0x019de48400000000,0x01dde428004000a0,0x209c0328004000b0\n"
+".quad 0x60dc854800c00004,0x21dc238400000000,0x301c031a8e4000c0,0x401c854800000000\n"
+".quad 0x0001e79400000000,0x001de74003ffff00,0x0000008000000000,0x0000000000000000\n"
+".quad 0x0000000000000000,0x0000000000000000,0x0000000000000000,0x0000000000000000\n"
+".quad 0x0000000000000000,0x000000000c0c0400,0x0000100000000800,0x00000900080a0400\n"
+".quad 0x1419030014002000,0xffffff000c170400,0x11f00000100002ff,0xffffff000c170400\n"
+".quad 0x21f00000080001ff,0xffffff000c170400,0x21f00000000000ff,0x00000a0008120400\n"
+".quad 0x0811040000000000,0x0000000000000a00,0x0000000600000000,0x0000053400000005\n"
+".quad 0x0000000000000000,0x0000000000000000,0x0000007000000000,0x0000007000000000\n"
+".quad 0x0000000400000000,0x6000000000000000,0x000003f500000a05,0x0000000000000000\n"
+".quad 0x0000000000000000,0x0000012400000000,0x0000012400000000,0x0000000400000000\n"
+".quad 0x0000000000000000\n"
 ".text");
 
 extern "C" {
 
-extern const unsigned long long __deviceText_$sm_10$[162];
+extern const unsigned long long __deviceText_$sm_21$[181];
 
 }
 
-static __cudaFatPtxEntry __ptxEntries [] = {{(char*)"compute_10",(char*)__deviceText_$compute_10$},{0,0}};
+asm(
+".section .rodata\n"
+".align 32\n"
+"__deviceText_$compute_20$:\n"
+".quad 0x6f69737265762e09,0x2e090a322e32206e,0x7320746567726174,0x2f2f090a30325f6d\n"
+".quad 0x656c69706d6f6320,0x2f20687469772064,0x61636f6c2f727375,0x6f2f616475632f6c\n"
+".quad 0x696c2f34366e6570,0x2f090a65622f2f62,0x6e65706f766e202f,0x6220322e33206363\n"
+".quad 0x206e6f20746c6975,0x2d39302d30313032,0x2d2f2f090a0a3930,0x2d2d2d2d2d2d2d2d\n"
+".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
+".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x43202f2f090a2d2d,0x676e696c69706d6f\n"
+".quad 0x6d742f706d742f20,0x3030305f74667870,0x30305f3635623030,0x372d303030303030\n"
+".quad 0x53656c706d69735f,0x632e736d61657274,0x2f2820692e337070,0x494263632f706d74\n"
+".quad 0x4d4f314e6a6a2e23,0x2d2d2d2f2f090a29,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
+".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
+".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2f2f090a0a,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
+".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
+".quad 0x2d2d2d2d2d2d2d2d,0x74704f202f2f090a,0x2f090a3a736e6f69,0x2d2d2d2d2d2d2d2f\n"
+".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
+".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2f2f090a2d2d2d2d,0x7465677261542020\n"
+".quad 0x5349202c7874703a,0x2c30325f6d733a41,0x3a6e6169646e4520,0x202c656c7474696c\n"
+".quad 0x207265746e696f50,0x0a34363a657a6953,0x334f2d20202f2f09,0x696d6974704f2809\n"
+".quad 0x6c206e6f6974617a,0x2f090a296c657665,0x280930672d20202f,0x656c206775626544\n"
+".quad 0x2f2f090a296c6576,0x522809326d2d2020,0x64612074726f7065,0x736569726f736976\n"
+".quad 0x2d2d2d2f2f090a29,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
+".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
+".quad 0x656c69662e090a0a,0x6d6f633c22093109,0x6e696c2d646e616d,0x69662e090a223e65\n"
+".quad 0x742f22093209656c,0x6678706d742f706d,0x6230303030305f74,0x30303030305f3635\n"
+".quad 0x69735f362d303030,0x65727453656c706d,0x616475632e736d61,0x227570672e326566\n"
+".quad 0x09656c69662e090a,0x2f7273752f220933,0x2f6363672f62696c,0x6e696c2d36383669\n"
+".quad 0x342f756e672d7875,0x636e692f352e342e,0x6474732f6564756c,0x090a22682e666564\n"
+".quad 0x093409656c69662e,0x6f6c2f7273752f22,0x616475632f6c6163,0x2f2e2e2f6e69622f\n"
+".quad 0x2f6564756c636e69,0x697665642f747263,0x69746e75725f6563,0x2e090a22682e656d\n"
+".quad 0x22093509656c6966,0x636f6c2f7273752f,0x2f616475632f6c61,0x692f2e2e2f6e6962\n"
+".quad 0x682f6564756c636e,0x696665645f74736f,0x090a22682e73656e,0x093609656c69662e\n"
+".quad 0x6f6c2f7273752f22,0x616475632f6c6163,0x2f2e2e2f6e69622f,0x2f6564756c636e69\n"
+".quad 0x5f6e69746c697562,0x22682e7365707974,0x09656c69662e090a,0x2f7273752f220937\n"
+".quad 0x75632f6c61636f6c,0x2e2f6e69622f6164,0x64756c636e692f2e,0x6563697665642f65\n"
+".quad 0x682e73657079745f,0x656c69662e090a22,0x7273752f22093809,0x632f6c61636f6c2f\n"
+".quad 0x2f6e69622f616475,0x756c636e692f2e2e,0x65766972642f6564,0x2e73657079745f72\n"
+".quad 0x6c69662e090a2268,0x73752f2209390965,0x2f6c61636f6c2f72,0x6e69622f61647563\n"
+".quad 0x6c636e692f2e2e2f,0x667275732f656475,0x657079745f656361,0x662e090a22682e73\n"
+".quad 0x2209303109656c69,0x636f6c2f7273752f,0x2f616475632f6c61,0x692f2e2e2f6e6962\n"
+".quad 0x742f6564756c636e,0x745f657275747865,0x0a22682e73657079,0x3109656c69662e09\n"
+".quad 0x2f7273752f220931,0x75632f6c61636f6c,0x2e2f6e69622f6164,0x64756c636e692f2e\n"
+".quad 0x726f746365762f65,0x682e73657079745f,0x656c69662e090a22,0x73752f2209323109\n"
+".quad 0x2f6c61636f6c2f72,0x6e69622f61647563,0x6c636e692f2e2e2f,0x697665642f656475\n"
+".quad 0x636e75616c5f6563,0x656d617261705f68,0x0a22682e73726574,0x3109656c69662e09\n"
+".quad 0x2f7273752f220933,0x75632f6c61636f6c,0x2e2f6e69622f6164,0x64756c636e692f2e\n"
+".quad 0x74732f7472632f65,0x6c635f656761726f,0x090a22682e737361,0x343109656c69662e\n"
+".quad 0x692f7273752f2209,0x622f6564756c636e,0x657079742f737469,0x662e090a22682e73\n"
+".quad 0x2209353109656c69,0x636e692f7273752f,0x6d69742f6564756c,0x662e090a22682e65\n"
+".quad 0x2209363109656c69,0x636f6c2f7273752f,0x2f616475632f6c61,0x692f2e2e2f6e6962\n"
+".quad 0x742f6564756c636e,0x665f657275747865,0x6e75665f68637465,0x682e736e6f697463\n"
+".quad 0x656c69662e090a22,0x73752f2209373109,0x2f6c61636f6c2f72,0x6e69622f61647563\n"
+".quad 0x6c636e692f2e2e2f,0x6d6d6f632f656475,0x74636e75665f6e6f,0x0a22682e736e6f69\n"
+".quad 0x3109656c69662e09,0x2f7273752f220938,0x75632f6c61636f6c,0x2e2f6e69622f6164\n"
+".quad 0x64756c636e692f2e,0x665f6874616d2f65,0x736e6f6974636e75,0x69662e090a22682e\n"
+".quad 0x2f2209393109656c,0x61636f6c2f727375,0x622f616475632f6c,0x6e692f2e2e2f6e69\n"
+".quad 0x616d2f6564756c63,0x74736e6f635f6874,0x0a22682e73746e61,0x3209656c69662e09\n"
+".quad 0x2f7273752f220930,0x75632f6c61636f6c,0x2e2f6e69622f6164,0x64756c636e692f2e\n"
+".quad 0x6563697665642f65,0x6f6974636e75665f,0x2e090a22682e736e,0x09313209656c6966\n"
+".quad 0x6f6c2f7273752f22,0x616475632f6c6163,0x2f2e2e2f6e69622f,0x2f6564756c636e69\n"
+".quad 0x74615f31315f6d73,0x6e75665f63696d6f,0x682e736e6f697463,0x656c69662e090a22\n"
+".quad 0x73752f2209323209,0x2f6c61636f6c2f72,0x6e69622f61647563,0x6c636e692f2e2e2f\n"
+".quad 0x315f6d732f656475,0x63696d6f74615f32,0x6f6974636e75665f,0x2e090a22682e736e\n"
+".quad 0x09333209656c6966,0x6f6c2f7273752f22,0x616475632f6c6163,0x2f2e2e2f6e69622f\n"
+".quad 0x2f6564756c636e69,0x6f645f33315f6d73,0x6e75665f656c6275,0x682e736e6f697463\n"
+".quad 0x656c69662e090a22,0x73752f2209343209,0x2f6c61636f6c2f72,0x6e69622f61647563\n"
+".quad 0x6c636e692f2e2e2f,0x325f6d732f656475,0x63696d6f74615f30,0x6f6974636e75665f\n"
+".quad 0x2e090a22682e736e,0x09353209656c6966,0x6f6c2f7273752f22,0x616475632f6c6163\n"
+".quad 0x2f2e2e2f6e69622f,0x2f6564756c636e69,0x6e695f30325f6d73,0x736369736e697274\n"
+".quad 0x69662e090a22682e,0x2f2209363209656c,0x61636f6c2f727375,0x622f616475632f6c\n"
+".quad 0x6e692f2e2e2f6e69,0x75732f6564756c63,0x75665f6563616672,0x2e736e6f6974636e\n"
+".quad 0x6c69662e090a2268,0x752f220937320965,0x6c61636f6c2f7273,0x69622f616475632f\n"
+".quad 0x636e692f2e2e2f6e,0x74616d2f6564756c,0x6974636e75665f68,0x5f6c62645f736e6f\n"
+".quad 0x0a22682e33787470,0x3209656c69662e09,0x656d6f682f220938,0x2f6c616d726f6e2f\n"
+".quad 0x74756f6b63656863,0x6c65636f7570672f,0x73747365742f746f,0x312e322d7874702d\n"
+".quad 0x322e32616475632f,0x732f73747365742f,0x727453656c706d69,0x6d69732f736d6165\n"
+".quad 0x6165727453656c70,0x0a0a2275632e736d,0x7972746e652e090a,0x696e6930315a5f20\n"
+".quad 0x5079617272615f74,0x090a2820695f5369,0x206d617261702e09,0x635f5f203436752e\n"
+".quad 0x5f6d726170616475,0x74696e6930315a5f,0x695079617272615f,0x61645f675f695f53\n"
+".quad 0x702e09090a2c6174,0x36752e206d617261,0x616475635f5f2034,0x315a5f5f6d726170\n"
+".quad 0x72615f74696e6930,0x695f536950796172,0x2c726f746361665f,0x617261702e09090a\n"
+".quad 0x5f203233732e206d,0x726170616475635f,0x6e6930315a5f5f6d,0x79617272615f7469\n"
+".quad 0x756e5f695f536950,0x7461726574695f6d,0x7b090a29736e6f69,0x2e206765722e090a\n"
+".quad 0x313c722520323375,0x65722e090a3b3e35,0x25203436752e2067,0x090a3b3e363c6472\n"
+".quad 0x72702e206765722e,0x3e343c7025206465,0x09636f6c2e090a3b,0x0a30093935093832\n"
+".quad 0x6967656257444c24,0x6e6930315a5f5f6e,0x79617272615f7469,0x090a3a695f536950\n"
+".quad 0x6d617261702e646c,0x722509203233732e,0x75635f5f5b202c31,0x5f5f6d7261706164\n"
+".quad 0x5f74696e6930315a,0x5369507961727261,0x695f6d756e5f695f,0x6e6f697461726574\n"
+".quad 0x766f6d090a3b5d73,0x722509203233752e,0x73090a3b30202c32,0x732e656c2e707465\n"
+".quad 0x2c31702509203233,0x7225202c31722520,0x31702540090a3b32,0x4c24092061726220\n"
+".quad 0x323832315f305f74,0x732e766f6d090a3b,0x2c33722509203233,0x6d090a3b31722520\n"
+".quad 0x09203233752e766f,0x746325202c347225,0x090a3b782e646961,0x203233752e766f6d\n"
+".quad 0x6e25202c35722509,0x090a3b782e646974,0x752e6f6c2e6c756d,0x2c36722509203233\n"
+".quad 0x7225202c34722520,0x2e766f6d090a3b35,0x3772250920323375,0x782e64697425202c\n"
+".quad 0x752e646461090a3b,0x2c38722509203233,0x7225202c37722520,0x2e6c756d090a3b36\n"
+".quad 0x09203233752e6f6c,0x387225202c397225,0x7663090a3b34202c,0x33752e3436752e74\n"
+".quad 0x2c31647225092032,0x6c090a3b39722520,0x2e6d617261702e64,0x6472250920343675\n"
+".quad 0x75635f5f5b202c32,0x5f5f6d7261706164,0x5f74696e6930315a,0x5369507961727261\n"
+".quad 0x7461645f675f695f,0x646461090a3b5d61,0x722509203436752e,0x31647225202c3364\n"
+".quad 0x0a3b32647225202c,0x626f6c672e646c09,0x09203233732e6c61,0x255b202c30317225\n"
+".quad 0x0a3b5d302b336472,0x617261702e646c09,0x2509203436752e6d,0x5f5f5b202c346472\n"
+".quad 0x6d72617061647563,0x696e6930315a5f5f,0x5079617272615f74,0x6361665f695f5369\n"
+".quad 0x6d090a3b5d726f74,0x09203233732e766f,0x3b30202c31317225,0x33732e766f6d090a\n"
+".quad 0x2c32317225092032,0x4c240a3b33722520,0x343937315f305f74,0x6f6c3c2f2f200a3a\n"
+".quad 0x706f6f4c203e706f,0x696c2079646f6220,0x6e202c393520656e,0x6420676e69747365\n"
+".quad 0x2c31203a68747065,0x74616d6974736520,0x6172657469206465,0x75203a736e6f6974\n"
+".quad 0x090a6e776f6e6b6e,0x09383209636f6c2e,0x646c090a30093436,0x2e6c61626f6c672e\n"
+".quad 0x3172250920323373,0x346472255b202c33,0x6461090a3b5d302b,0x2509203233732e64\n"
+".quad 0x317225202c303172,0x3b30317225202c33,0x6f6c672e7473090a,0x203233732e6c6162\n"
+".quad 0x302b336472255b09,0x3b30317225202c5d,0x33732e646461090a,0x2c31317225092032\n"
+".quad 0x31202c3131722520,0x2e70746573090a3b,0x09203233732e656e,0x317225202c327025\n"
+".quad 0x0a3b31317225202c,0x7262203270254009,0x305f744c24092061,0x240a3b343937315f\n"
+".quad 0x3832315f305f744c,0x636f6c2e090a3a32,0x3009353609383209,0x0a3b74697865090a\n"
+".quad 0x5f646e6557444c24,0x74696e6930315a5f,0x695079617272615f,0x207d090a3a695f53\n"
+".quad 0x6930315a5f202f2f,0x617272615f74696e,0x0a0a695f53695079,0x0000000000000000\n"
+".text");
+
+extern "C" {
+
+extern const unsigned long long __deviceText_$compute_20$[452];
+
+}
+
+static __cudaFatPtxEntry __ptxEntries [] = {{(char*)"compute_20",(char*)__deviceText_$compute_20$},{0,0}};
 static __cudaFatCubinEntry __cubinEntries[] = {{0,0}};
 static __cudaFatDebugEntry __debugEntries0 = {0, 0, 0, 0} ;
 static __cudaFatElfEntry __elfEntries0 = {0, 0, 0, 0} ;
-static __cudaFatElfEntry __elfEntries1 = {(char*)"sm_10", (char*)__deviceText_$sm_10$, &__elfEntries0, (unsigned int)sizeof(__deviceText_$sm_10$)};
+static __cudaFatElfEntry __elfEntries1 = {(char*)"sm_21", (char*)__deviceText_$sm_21$, &__elfEntries0, (unsigned int)sizeof(__deviceText_$sm_21$)};
 
 
 
-static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000004,0xa14f518d,(char*)"c574bd60c81ac1e9",(char*)"/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu",(char*)" ",__ptxEntries,__cubinEntries,&__debugEntries0,0,0,0,0,0,0x379fdcf6,&__elfEntries1};
-# 3 "/tmp/tmpxft_00000d11_00000000-1_simpleStreams.cudafe1.stub.c" 2
+static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000004,0xa14f518d,(char*)"b3f53caa6b73f6cf",(char*)"/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu",(char*)" ",__ptxEntries,__cubinEntries,&__debugEntries0,0,0,0,0,0,0x1a8498d1,&__elfEntries1};
+# 3 "/tmp/tmpxft_00000b56_00000000-1_simpleStreams.cudafe1.stub.c" 2
 struct __T20 {int *__par0;int *__par1;int __par2;int __dummy_field;};
 extern void __device_stub__Z10init_arrayPiS_i(int *, int *, int);
-static void __sti____cudaRegisterAll_48_tmpxft_00000d11_00000000_4_simpleStreams_cpp1_ii_2e3ff9cd(void) __attribute__((__constructor__));
+static void __sti____cudaRegisterAll_48_tmpxft_00000b56_00000000_4_simpleStreams_cpp1_ii_2e3ff9cd(void) __attribute__((__constructor__));
 void __device_stub__Z10init_arrayPiS_i(int *__par0, int *__par1, int __par2){ struct __T20 *__T21 = 0;
 if (cudaSetupArgument((void*)(char*)&__par0, sizeof(__par0), (size_t)&__T21->__par0) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par1, sizeof(__par1), (size_t)&__T21->__par1) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par2, sizeof(__par2), (size_t)&__T21->__par2) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(int *, int *, int))init_array)); (void)cudaLaunch(((char *)((void ( *)(int *, int *, int))init_array))); };}
 void init_array( int *__cuda_0,int *__cuda_1,int __cuda_2)
-# 60 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+# 60 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleStreams/simpleStreams.cu"
 {__device_stub__Z10init_arrayPiS_i( __cuda_0,__cuda_1,__cuda_2);
 
 
 
 
 }
-# 1 "/tmp/tmpxft_00000d11_00000000-1_simpleStreams.cudafe1.stub.c"
-static void __sti____cudaRegisterAll_48_tmpxft_00000d11_00000000_4_simpleStreams_cpp1_ii_2e3ff9cd(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(int *, int *, int))init_array), (char*)"_Z10init_arrayPiS_i", "_Z10init_arrayPiS_i", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); }
-# 1 "/tmp/tmpxft_00000d11_00000000-1_simpleStreams.cudafe1.stub.c" 2
+# 1 "/tmp/tmpxft_00000b56_00000000-1_simpleStreams.cudafe1.stub.c"
+static void __sti____cudaRegisterAll_48_tmpxft_00000b56_00000000_4_simpleStreams_cpp1_ii_2e3ff9cd(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(int *, int *, int))init_array), (char*)"_Z10init_arrayPiS_i", "_Z10init_arrayPiS_i", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); }
+# 1 "/tmp/tmpxft_00000b56_00000000-1_simpleStreams.cudafe1.stub.c" 2

@@ -1,8 +1,8 @@
-# 1 "/tmp/tmpxft_00003078_00000000-1_main.cudafe1.cpp"
+# 1 "/tmp/tmpxft_0000165d_00000000-1_main.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_00003078_00000000-1_main.cudafe1.cpp"
-# 1 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 1 "/tmp/tmpxft_0000165d_00000000-1_main.cudafe1.cpp"
+# 1 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 # 46 "/usr/local/cuda/bin/../include/device_types.h"
 # 149 "/usr/lib/gcc/i686-linux-gnu/4.4.5/include/stddef.h" 3
 typedef long ptrdiff_t;
@@ -11361,470 +11361,470 @@ printf(" -> CUDA %s Toolkit\n", sNVCCReq);
 printf(" -> %s NVIDIA Display Driver.\n", sDriverReq);
 # 18 "sdk/cutil_inline.h"
 }
-# 41 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/structs.h"
+# 41 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/structs.h"
 struct InputData {
-# 44 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/structs.h"
+# 44 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/structs.h"
 float *a;
-# 46 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/structs.h"
+# 46 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/structs.h"
 float *b;
-# 49 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/structs.h"
+# 49 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/structs.h"
 float *g_a;
-# 51 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/structs.h"
+# 51 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/structs.h"
 float *g_b;
-# 54 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/structs.h"
+# 54 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/structs.h"
 float *g_b_raw;
-# 56 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/structs.h"
+# 56 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/structs.h"
 };
-# 58 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/structs.h"
+# 58 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/structs.h"
 struct ResultDataSmall {
-# 61 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/structs.h"
+# 61 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/structs.h"
 float *eigenvalues;
-# 64 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/structs.h"
+# 64 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/structs.h"
 float *g_left;
-# 67 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/structs.h"
+# 67 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/structs.h"
 float *g_right;
-# 70 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/structs.h"
+# 70 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/structs.h"
 unsigned *g_left_count;
-# 73 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/structs.h"
+# 73 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/structs.h"
 unsigned *g_right_count;
-# 76 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/structs.h"
+# 76 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/structs.h"
 unsigned *g_converged;
-# 80 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/structs.h"
+# 80 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/structs.h"
 unsigned mat_size_f;
-# 81 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/structs.h"
+# 81 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/structs.h"
 unsigned mat_size_ui;
-# 83 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/structs.h"
+# 83 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/structs.h"
 float *zero_f;
-# 84 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/structs.h"
+# 84 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/structs.h"
 unsigned *zero_ui;
-# 85 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/structs.h"
+# 85 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/structs.h"
 };
-# 88 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/structs.h"
+# 88 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/structs.h"
 struct ResultDataLarge {
-# 91 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/structs.h"
+# 91 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/structs.h"
 unsigned *g_num_one;
-# 95 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/structs.h"
+# 95 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/structs.h"
 unsigned *g_num_blocks_mult;
-# 99 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/structs.h"
+# 99 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/structs.h"
 float *g_left_one;
-# 103 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/structs.h"
+# 103 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/structs.h"
 float *g_right_one;
-# 107 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/structs.h"
+# 107 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/structs.h"
 unsigned *g_pos_one;
-# 111 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/structs.h"
+# 111 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/structs.h"
 float *g_left_mult;
-# 115 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/structs.h"
+# 115 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/structs.h"
 float *g_right_mult;
-# 119 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/structs.h"
+# 119 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/structs.h"
 unsigned *g_left_count_mult;
-# 123 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/structs.h"
+# 123 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/structs.h"
 unsigned *g_right_count_mult;
-# 127 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/structs.h"
+# 127 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/structs.h"
 unsigned *g_blocks_mult;
-# 131 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/structs.h"
+# 131 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/structs.h"
 unsigned *g_blocks_mult_sum;
-# 135 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/structs.h"
+# 135 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/structs.h"
 float *g_lambda_mult;
-# 139 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/structs.h"
+# 139 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/structs.h"
 unsigned *g_pos_mult;
-# 141 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/structs.h"
+# 141 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/structs.h"
 };
-# 64 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/matlab.h"
+# 64 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/matlab.h"
 extern "C" void writeTridiagSymMatlab(const char *, float *, float *, float *, const unsigned);
-# 76 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/matlab.h"
+# 76 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/matlab.h"
 template< class T, class S> void writeMatrixMatlab(T &, const char *, S *&, const unsigned);
-# 88 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/matlab.h"
+# 88 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/matlab.h"
 template< class T, class S> void writeVectorMatlab(T &, const char *, S *&, const unsigned);
-# 102 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/matlab.h"
+# 102 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/matlab.h"
 template< class T, class S> void
-# 104 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/matlab.h"
+# 104 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/matlab.h"
 writeMatrixMatlab(T &file, const char *mat_name, S *&
-# 105 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/matlab.h"
+# 105 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/matlab.h"
 mat, const unsigned mat_size) {
-# 107 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/matlab.h"
+# 107 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/matlab.h"
 const unsigned pitch = (sizeof(S) * mat_size);
-# 109 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/matlab.h"
+# 109 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/matlab.h"
 (file << mat_name) << " = [";
-# 110 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/matlab.h"
+# 110 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/matlab.h"
 for (unsigned i = (0); i < mat_size; ++i) {
-# 111 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/matlab.h"
+# 111 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/matlab.h"
 for (unsigned j = (0); j < mat_size; ++j) {
-# 113 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/matlab.h"
+# 113 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/matlab.h"
 (file << getMatrix(mat, pitch, i, j)) << " ";
-# 114 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/matlab.h"
+# 114 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/matlab.h"
 }
-# 115 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/matlab.h"
+# 115 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/matlab.h"
 if (i != (mat_size - (1))) {
-# 116 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/matlab.h"
+# 116 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/matlab.h"
 file << "; ";
-# 117 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/matlab.h"
+# 117 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/matlab.h"
 }
-# 118 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/matlab.h"
+# 118 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/matlab.h"
 }
-# 119 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/matlab.h"
+# 119 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/matlab.h"
 file << "];\n";
-# 120 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/matlab.h"
+# 120 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/matlab.h"
 }
-# 129 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/matlab.h"
+# 129 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/matlab.h"
 template< class T, class S> void
-# 131 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/matlab.h"
+# 131 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/matlab.h"
 writeVectorMatlab(T &file, const char *vec_name, S *&
-# 132 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/matlab.h"
+# 132 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/matlab.h"
 vec, const unsigned vec_len)
-# 133 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/matlab.h"
+# 133 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/matlab.h"
 {
-# 134 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/matlab.h"
+# 134 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/matlab.h"
 (file << vec_name) << " = [";
-# 135 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/matlab.h"
+# 135 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/matlab.h"
 for (unsigned i = (0); i < vec_len; ++i) {
-# 136 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/matlab.h"
+# 136 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/matlab.h"
 (file << (vec[i])) << " ";
-# 137 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/matlab.h"
+# 137 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/matlab.h"
 }
-# 138 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/matlab.h"
+# 138 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/matlab.h"
 file << "];\n";
-# 139 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/matlab.h"
+# 139 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/matlab.h"
 }
-# 44 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/util.h"
+# 44 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/util.h"
 template< class T> inline void
-# 46 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/util.h"
+# 46 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/util.h"
 freePtr(T *&ptr) {
-# 48 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/util.h"
+# 48 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/util.h"
 if (__null != ptr) {
-# 49 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/util.h"
+# 49 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/util.h"
 free(ptr);
-# 50 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/util.h"
+# 50 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/util.h"
 ptr = __null;
-# 51 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/util.h"
+# 51 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/util.h"
 }
-# 52 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/util.h"
+# 52 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/util.h"
 }
-# 57 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/util.h"
+# 57 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/util.h"
 template< class T> T
-# 62 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/util.h"
+# 62 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/util.h"
 min(const T &lhs, const T &rhs) {
-# 64 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/util.h"
+# 64 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/util.h"
 return (lhs < rhs) ? lhs : rhs;
-# 65 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/util.h"
+# 65 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/util.h"
 }
-# 70 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/util.h"
+# 70 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/util.h"
 template< class T> T
-# 75 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/util.h"
+# 75 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/util.h"
 max(const T &lhs, const T &rhs) {
-# 77 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/util.h"
+# 77 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/util.h"
 return (lhs < rhs) ? rhs : lhs;
-# 78 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/util.h"
+# 78 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/util.h"
 }
-# 83 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/util.h"
+# 83 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/util.h"
 template< class T> T
-# 88 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/util.h"
+# 88 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/util.h"
 sign_i(const T &val) {
-# 89 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/util.h"
+# 89 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/util.h"
 return (val < 0) ? (-1) : 1;
-# 90 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/util.h"
+# 90 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/util.h"
 }
-# 99 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/util.h"
+# 99 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/util.h"
 inline float sign_f(const float &val) {
-# 100 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/util.h"
+# 100 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/util.h"
 return (val < (0.0F)) ? (-(1.0F)) : (1.0F);
-# 101 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/util.h"
+# 101 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/util.h"
 }
-# 110 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/util.h"
+# 110 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/util.h"
 inline double sign_d(const double &val) {
-# 111 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/util.h"
+# 111 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/util.h"
 return (val < (0.0)) ? (-(1.0)) : (1.0);
-# 112 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/util.h"
+# 112 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/util.h"
 }
-# 117 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/util.h"
+# 117 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/util.h"
 template< class T> void
-# 122 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/util.h"
+# 122 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/util.h"
 swap(T &lhs, T &rhs) {
-# 124 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/util.h"
+# 124 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/util.h"
 T temp = rhs;
-# 125 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/util.h"
+# 125 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/util.h"
 rhs = lhs;
-# 126 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/util.h"
+# 126 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/util.h"
 lhs = temp;
-# 127 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/util.h"
+# 127 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/util.h"
 }
-# 136 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/util.h"
+# 136 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/util.h"
 extern "C" { inline unsigned getNumBlocksLinear(const unsigned num_threads, const unsigned
-# 137 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/util.h"
+# 137 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/util.h"
 num_threads_block)
-# 138 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/util.h"
+# 138 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/util.h"
 {
-# 139 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/util.h"
+# 139 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/util.h"
 const unsigned block_rem = (((num_threads % num_threads_block) != (0)) ? 1 : 0);
-# 141 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/util.h"
+# 141 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/util.h"
 return (num_threads / num_threads_block) + block_rem;
-# 142 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/util.h"
+# 142 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/util.h"
 } }
-# 50 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/gerschgorin.h"
+# 50 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/gerschgorin.h"
 extern "C" void computeGerschgorin(float *, float *, unsigned, float &, float &);
-# 55 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_small.cuh"
+# 55 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_small.cuh"
 extern "C" void computeEigenvaluesSmallMatrix(const InputData &, ResultDataSmall &, const unsigned, const float, const float, const float, const unsigned);
-# 67 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_small.cuh"
+# 67 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_small.cuh"
 extern "C" void initResultSmallMatrix(ResultDataSmall &, const unsigned);
-# 74 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_small.cuh"
+# 74 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_small.cuh"
 extern "C" void cleanupResultSmallMatrix(ResultDataSmall &);
-# 85 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_small.cuh"
+# 85 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_small.cuh"
 extern "C" void processResultSmallMatrix(const InputData &, const ResultDataSmall &, const unsigned, const char *);
-# 54 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_large.cuh"
+# 54 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_large.cuh"
 extern "C" void computeEigenvaluesLargeMatrix(const InputData &, const ResultDataLarge &, const unsigned, const float, const float, const float, const unsigned);
-# 65 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_large.cuh"
+# 65 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_large.cuh"
 extern "C" void initResultDataLargeMatrix(ResultDataLarge &, const unsigned);
-# 72 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_large.cuh"
+# 72 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_large.cuh"
 extern "C" void cleanupResultDataLargeMatrix(ResultDataLarge &);
-# 83 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_large.cuh"
+# 83 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_large.cuh"
 extern "C" void processResultDataLargeMatrix(const InputData &, const ResultDataLarge &, const unsigned, const char *, const unsigned, char *);
-# 60 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 60 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 void runTest(int, char **);
-# 66 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 66 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 int main(int argc, char **argv)
-# 67 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 67 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 {
-# 68 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 68 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 runTest(argc, argv);
-# 70 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 70 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 __cutilExit(argc, argv); return 0;
-# 71 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 71 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 }
-# 82 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 82 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 void initInputData(InputData &input, char *exec_path, const unsigned
-# 83 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 83 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 mat_size, const unsigned user_defined)
-# 84 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 84 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 {
-# 86 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 86 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 (input.a) = ((float *)malloc(sizeof(float) * mat_size));
-# 87 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 87 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 (input.b) = ((float *)malloc(sizeof(float) * mat_size));
-# 89 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 89 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 if ((1) == user_defined) {
-# 92 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 92 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 srand(278217421);
-# 94 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 94 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 for (unsigned i = (0); i < mat_size; ++i) {
-# 95 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 95 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 ((input.a)[i]) = ((float)((2.0) * ((((double)rand()) / ((double)2147483647)) - (0.5))));
-# 97 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 97 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 ((input.b)[i]) = ((float)((2.0) * ((((double)rand()) / ((double)2147483647)) - (0.5))));
-# 99 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 99 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 }
-# 104 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 104 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 ((input.b)[0]) = (0.0F);
-# 105 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 105 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 } else
-# 106 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 106 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 {
-# 109 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 109 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 unsigned input_data_size = mat_size;
-# 110 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 110 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 char *diag_path = cutFindFilePath("diagonal.dat", exec_path);
-# 111 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
-__cutilCondition((0) != diag_path, (char *)("/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"), 111);
-# 112 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
-__cutilCheckError(cutReadFilef(diag_path, &(input.a), &input_data_size), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu", 112);
-# 114 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 111 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
+__cutilCondition((0) != diag_path, (char *)("/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"), 111);
+# 112 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
+__cutilCheckError(cutReadFilef(diag_path, &(input.a), &input_data_size), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu", 112);
+# 114 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 char *sdiag_path = cutFindFilePath("superdiagonal.dat", exec_path);
-# 115 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
-__cutilCondition((0) != sdiag_path, (char *)("/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"), 115);
-# 116 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
-__cutilCheckError(cutReadFilef(sdiag_path, &(input.b), &input_data_size, 1), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu", 117);
-# 119 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 115 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
+__cutilCondition((0) != sdiag_path, (char *)("/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"), 115);
+# 116 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
+__cutilCheckError(cutReadFilef(sdiag_path, &(input.b), &input_data_size, 1), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu", 117);
+# 119 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 cutFree(diag_path);
-# 120 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 120 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 cutFree(sdiag_path);
-# 121 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 121 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 }
-# 124 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
-__cudaSafeCall(cudaMalloc((void **)(&(input.g_a)), sizeof(float) * mat_size), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu", 124);
-# 125 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
-__cudaSafeCall(cudaMalloc((void **)(&(input.g_b_raw)), sizeof(float) * mat_size), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu", 125);
-# 128 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
-__cudaSafeCall(cudaMemcpy(input.g_a, input.a, sizeof(float) * mat_size, cudaMemcpyHostToDevice), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu", 128);
-# 129 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
-__cudaSafeCall(cudaMemcpy(input.g_b_raw, input.b, sizeof(float) * mat_size, cudaMemcpyHostToDevice), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu", 129);
-# 131 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 124 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
+__cudaSafeCall(cudaMalloc((void **)(&(input.g_a)), sizeof(float) * mat_size), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu", 124);
+# 125 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
+__cudaSafeCall(cudaMalloc((void **)(&(input.g_b_raw)), sizeof(float) * mat_size), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu", 125);
+# 128 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
+__cudaSafeCall(cudaMemcpy(input.g_a, input.a, sizeof(float) * mat_size, cudaMemcpyHostToDevice), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu", 128);
+# 129 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
+__cudaSafeCall(cudaMemcpy(input.g_b_raw, input.b, sizeof(float) * mat_size, cudaMemcpyHostToDevice), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu", 129);
+# 131 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 (input.g_b) = ((input.g_b_raw) + 1);
-# 132 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 132 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 }
-# 139 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 139 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 void cleanupInputData(InputData &input) {
-# 141 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 141 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 freePtr(input.a);
-# 142 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 142 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 freePtr(input.b);
-# 144 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
-__cudaSafeCall(cudaFree(input.g_a), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu", 144);
-# 145 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 144 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
+__cudaSafeCall(cudaFree(input.g_a), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu", 144);
+# 145 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 (input.g_a) = (__null);
-# 146 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
-__cudaSafeCall(cudaFree(input.g_b_raw), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu", 146);
-# 147 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 146 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
+__cudaSafeCall(cudaFree(input.g_b_raw), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu", 146);
+# 147 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 (input.g_b_raw) = (__null);
-# 148 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 148 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 (input.g_b) = (__null);
-# 149 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 149 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 }
-# 159 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 159 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 void getMatrixSize(int argc, char **argv, unsigned &
-# 160 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 160 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 mat_size, unsigned &user_defined)
-# 161 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 161 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 {
-# 162 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 162 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 int temp = (-1);
-# 163 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 163 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 cutGetCmdLineArgumenti(argc, (const char **)argv, "matrix-size", &temp);
-# 164 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 164 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 if (temp > 0) {
-# 166 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 166 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 mat_size = ((unsigned)temp);
-# 168 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
-__cutilCondition(mat_size < (1 << 16), (char *)("/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"), 168);
-# 170 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 168 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
+__cutilCondition(mat_size < (1 << 16), (char *)("/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"), 168);
+# 170 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 user_defined = (1);
-# 171 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 171 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 }
-# 173 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 173 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 printf("Matrix size: %i x %i\n", mat_size, mat_size);
-# 174 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 174 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 }
-# 184 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 184 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 void getPrecision(int argc, char **argv, float &precision) {
-# 186 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 186 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 float temp = (-(1.0F));
-# 187 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 187 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 cutGetCmdLineArgumentf(argc, (const char **)argv, "precision", &temp);
-# 188 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 188 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 if (temp > (0.0F)) {
-# 189 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 189 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 precision = temp;
-# 190 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 190 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 }
-# 192 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 192 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 printf("Precision: %f\n", precision);
-# 193 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 193 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 }
-# 203 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 203 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 void getItersTiming(int argc, char **argv, unsigned &iters_timing) {
-# 205 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 205 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 int temp = (-1);
-# 206 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 206 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 cutGetCmdLineArgumenti(argc, (const char **)argv, "iters-timing", &temp);
-# 207 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 207 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 if (temp > 0) {
-# 208 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 208 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 iters_timing = temp;
-# 209 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 209 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 }
-# 211 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 211 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 printf("Iterations to be timed: %i\n", iters_timing);
-# 212 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 212 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 }
-# 223 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 223 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 void getResultFilename(int argc, char **argv, char *&filename) {
-# 225 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 225 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 char *temp = (__null);
-# 226 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 226 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 cutGetCmdLineArgumentstr(argc, (const char **)argv, "filename-result", &temp);
-# 228 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 228 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 if ((__null) != temp) {
-# 230 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 230 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 filename = ((char *)malloc(sizeof(char) * strlen(temp)));
-# 231 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 231 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 strcpy(filename, temp);
-# 233 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 233 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 cutFree(temp);
-# 234 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 234 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 }
-# 236 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 236 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 printf("Result filename: \'%s\'\n", filename);
-# 237 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 237 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 }
-# 243 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 243 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 void runTest(int argc, char **argv) {
-# 246 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 246 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 if (cutCheckCmdLineFlag(argc, (const char **)argv, "device")) {
-# 247 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 247 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 cutilDeviceInit(argc, argv); } else {
-# 249 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 249 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 cudaSetDevice(cutGetMaxGflopsDeviceId()); }
-# 251 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 251 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 unsigned timer = (0);
-# 252 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 252 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 unsigned timer_total = (0);
-# 253 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
-__cutilCheckError(cutCreateTimer(&timer), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu", 253);
-# 254 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
-__cutilCheckError(cutCreateTimer(&timer_total), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu", 254);
-# 257 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 253 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
+__cutilCheckError(cutCreateTimer(&timer), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu", 253);
+# 254 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
+__cutilCheckError(cutCreateTimer(&timer_total), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu", 254);
+# 257 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 unsigned mat_size = (2048);
-# 259 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 259 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 unsigned user_defined = (0);
-# 261 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 261 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 float precision = (9.999999747e-06F);
-# 263 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 263 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 unsigned iters_timing = (1);
-# 267 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 267 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 char *result_file = ((char *)("eigenvalues.dat"));
-# 270 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 270 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 getMatrixSize(argc, argv, mat_size, user_defined);
-# 273 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 273 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 getPrecision(argc, argv, precision);
-# 276 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 276 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 getItersTiming(argc, argv, iters_timing);
-# 279 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 279 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 getResultFilename(argc, argv, result_file);
-# 282 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 282 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 InputData input;
-# 283 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 283 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 initInputData(input, argv[0], mat_size, user_defined);
-# 286 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 286 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 float lg = (3.402823466e+38F);
-# 287 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 287 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 float ug = (-(3.402823466e+38F));
-# 288 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 288 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 computeGerschgorin(input.a, (input.b) + 1, mat_size, lg, ug);
-# 289 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 289 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 printf("Gerschgorin interval: %f / %f\n", lg, ug);
-# 292 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 292 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 if (mat_size <= (512)) {
-# 295 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 295 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 ResultDataSmall result;
-# 296 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 296 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 initResultSmallMatrix(result, mat_size);
-# 299 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 299 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 computeEigenvaluesSmallMatrix(input, result, mat_size, lg, ug, precision, iters_timing);
-# 304 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 304 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 processResultSmallMatrix(input, result, mat_size, result_file);
-# 307 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 307 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 cleanupResultSmallMatrix(result);
-# 308 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 308 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 } else
-# 309 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 309 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 {
-# 312 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 312 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 ResultDataLarge result;
-# 313 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 313 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 initResultDataLargeMatrix(result, mat_size);
-# 316 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 316 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 computeEigenvaluesLargeMatrix(input, result, mat_size, precision, lg, ug, iters_timing);
-# 322 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 322 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 processResultDataLargeMatrix(input, result, mat_size, result_file, user_defined, argv[0]);
-# 326 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 326 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 cleanupResultDataLargeMatrix(result);
-# 327 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 327 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 }
-# 329 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 329 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 cleanupInputData(input);
-# 331 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 331 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 cudaThreadExit();
-# 332 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu"
+# 332 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu"
 }
-# 1 "/tmp/tmpxft_00003078_00000000-1_main.cudafe1.stub.c"
-# 1 "/tmp/tmpxft_00003078_00000000-1_main.cudafe1.stub.c" 1
+# 1 "/tmp/tmpxft_0000165d_00000000-1_main.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_0000165d_00000000-1_main.cudafe1.stub.c" 1
 # 1 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 1
 # 91 "/usr/local/cuda/bin/../include/crt/host_runtime.h"
 extern "C" {
@@ -12226,8 +12226,8 @@ extern __attribute__((__weak__)) unsigned long long int ullmax(unsigned long lon
 
 
 #pragma pack()
-# 2 "/tmp/tmpxft_00003078_00000000-1_main.cudafe1.stub.c" 2
-# 1 "/tmp/tmpxft_00003078_00000000-3_main.fatbin.c" 1
+# 2 "/tmp/tmpxft_0000165d_00000000-1_main.cudafe1.stub.c" 2
+# 1 "/tmp/tmpxft_0000165d_00000000-3_main.fatbin.c" 1
 # 1 "/usr/local/cuda/bin/../include/__cudaFatFormat.h" 1
 # 83 "/usr/local/cuda/bin/../include/__cudaFatFormat.h"
 extern "C" {
@@ -12305,14 +12305,14 @@ void __cudaFatFreePTX( char* ptx );
 
 
 }
-# 2 "/tmp/tmpxft_00003078_00000000-3_main.fatbin.c" 2
+# 2 "/tmp/tmpxft_0000165d_00000000-3_main.fatbin.c" 2
 
 asm(
 ".section .rodata\n"
 ".align 32\n"
-"__deviceText_$sm_13$:\n"
-".quad 0x33010102464c457f,0x0000000000000002,0x0000000100be0002,0x0000000000000000\n"
-".quad 0x0000000000000208,0x0000000000000040,0x00380040000d010d,0x0001000400400002\n"
+"__deviceText_$sm_21$:\n"
+".quad 0x33010102464c457f,0x0000000000000004,0x0000000100be0002,0x0000000000000000\n"
+".quad 0x0000000000000208,0x0000000000000040,0x0038004000140115,0x0001000400400002\n"
 ".quad 0x0000000000000000,0x0000000000000000,0x0000000000000000,0x0000000000000000\n"
 ".quad 0x0000000000000000,0x0000000000000000,0x0000000000000000,0x0000000000000000\n"
 ".quad 0x0000000300000001,0x0000000000000000,0x0000000000000000,0x0000000000000140\n"
@@ -12335,22 +12335,22 @@ asm(
 
 extern "C" {
 
-extern const unsigned long long __deviceText_$sm_13$[80];
+extern const unsigned long long __deviceText_$sm_21$[80];
 
 }
 
 asm(
 ".section .rodata\n"
 ".align 32\n"
-"__deviceText_$compute_13$:\n"
-".quad 0x6f69737265762e09,0x2e090a342e31206e,0x7320746567726174,0x2f2f090a33315f6d\n"
+"__deviceText_$compute_20$:\n"
+".quad 0x6f69737265762e09,0x2e090a322e32206e,0x7320746567726174,0x2f2f090a30325f6d\n"
 ".quad 0x656c69706d6f6320,0x2f20687469772064,0x61636f6c2f727375,0x6f2f616475632f6c\n"
 ".quad 0x696c2f34366e6570,0x2f090a65622f2f62,0x6e65706f766e202f,0x6220322e33206363\n"
 ".quad 0x206e6f20746c6975,0x2d39302d30313032,0x2d2f2f090a0a3930,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x43202f2f090a2d2d,0x676e696c69706d6f\n"
-".quad 0x6d742f706d742f20,0x3030305f74667870,0x30305f3837303330,0x372d303030303030\n"
-".quad 0x70632e6e69616d5f,0x742f2820692e3370,0x23494263632f706d,0x29456f744b42342e\n"
+".quad 0x6d742f706d742f20,0x3030305f74667870,0x30305f6435363130,0x372d303030303030\n"
+".quad 0x70632e6e69616d5f,0x742f2820692e3370,0x23494263632f706d,0x296d50415850692e\n"
 ".quad 0x2d2d2d2d2f2f090a,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x0a2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2f2f090a,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
@@ -12358,14 +12358,14 @@ asm(
 ".quad 0x6974704f202f2f09,0x2f2f090a3a736e6f,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x202f2f090a2d2d2d,0x3a74656772615420,0x415349202c787470\n"
-".quad 0x202c33315f6d733a,0x6c3a6e6169646e45,0x50202c656c747469,0x53207265746e696f\n"
+".quad 0x202c30325f6d733a,0x6c3a6e6169646e45,0x50202c656c747469,0x53207265746e696f\n"
 ".quad 0x090a34363a657a69,0x09334f2d20202f2f,0x7a696d6974704f28,0x656c206e6f697461\n"
 ".quad 0x2f2f090a296c6576,0x44280930672d2020,0x76656c2067756265,0x202f2f090a296c65\n"
 ".quad 0x65522809326d2d20,0x7664612074726f70,0x29736569726f7369,0x2d2d2d2d2f2f090a\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x0a2d2d2d2d2d2d2d,0x09656c69662e090a\n"
 ".quad 0x6d6d6f633c220931,0x656e696c2d646e61,0x6c69662e090a223e,0x6d742f2209320965\n"
-".quad 0x746678706d742f70,0x373033303030305f,0x3030303030305f38,0x69616d5f362d3030\n"
+".quad 0x746678706d742f70,0x353631303030305f,0x3030303030305f64,0x69616d5f362d3030\n"
 ".quad 0x6566616475632e6e,0x090a227570672e32,0x093309656c69662e,0x696c2f7273752f22\n"
 ".quad 0x36692f6363672f62,0x78756e696c2d3638,0x342e342f756e672d,0x756c636e692f352e\n"
 ".quad 0x65646474732f6564,0x662e090a22682e66,0x2f22093409656c69,0x61636f6c2f727375\n"
@@ -12418,20 +12418,20 @@ asm(
 
 extern "C" {
 
-extern const unsigned long long __deviceText_$compute_13$[284];
+extern const unsigned long long __deviceText_$compute_20$[284];
 
 }
 
-static __cudaFatPtxEntry __ptxEntries [] = {{(char*)"compute_13",(char*)__deviceText_$compute_13$},{0,0}};
+static __cudaFatPtxEntry __ptxEntries [] = {{(char*)"compute_20",(char*)__deviceText_$compute_20$},{0,0}};
 static __cudaFatCubinEntry __cubinEntries[] = {{0,0}};
 static __cudaFatDebugEntry __debugEntries0 = {0, 0, 0, 0} ;
 static __cudaFatElfEntry __elfEntries0 = {0, 0, 0, 0} ;
-static __cudaFatElfEntry __elfEntries1 = {(char*)"sm_13", (char*)__deviceText_$sm_13$, &__elfEntries0, (unsigned int)sizeof(__deviceText_$sm_13$)};
+static __cudaFatElfEntry __elfEntries1 = {(char*)"sm_21", (char*)__deviceText_$sm_21$, &__elfEntries0, (unsigned int)sizeof(__deviceText_$sm_21$)};
 
 
 
-static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000004,0xa14f518d,(char*)"ab86d18fe903a157",(char*)"/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/main.cu",(char*)" ",__ptxEntries,__cubinEntries,&__debugEntries0,0,0,0,0,0,0x749acea3,&__elfEntries1};
-# 3 "/tmp/tmpxft_00003078_00000000-1_main.cudafe1.stub.c" 2
-static void __sti____cudaRegisterAll_39_tmpxft_00003078_00000000_4_main_cpp1_ii_main(void) __attribute__((__constructor__));
-static void __sti____cudaRegisterAll_39_tmpxft_00003078_00000000_4_main_cpp1_ii_main(void){__cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil);}
-# 1 "/tmp/tmpxft_00003078_00000000-1_main.cudafe1.stub.c" 2
+static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000004,0xa14f518d,(char*)"6673f800d059d12a",(char*)"/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/main.cu",(char*)" ",__ptxEntries,__cubinEntries,&__debugEntries0,0,0,0,0,0,0xc4021a9b,&__elfEntries1};
+# 3 "/tmp/tmpxft_0000165d_00000000-1_main.cudafe1.stub.c" 2
+static void __sti____cudaRegisterAll_39_tmpxft_0000165d_00000000_4_main_cpp1_ii_main(void) __attribute__((__constructor__));
+static void __sti____cudaRegisterAll_39_tmpxft_0000165d_00000000_4_main_cpp1_ii_main(void){__cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil);}
+# 1 "/tmp/tmpxft_0000165d_00000000-1_main.cudafe1.stub.c" 2

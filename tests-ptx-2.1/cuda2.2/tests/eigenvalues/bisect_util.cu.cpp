@@ -1,8 +1,8 @@
-# 1 "/tmp/tmpxft_0000314a_00000000-1_bisect_util.cudafe1.cpp"
+# 1 "/tmp/tmpxft_0000172f_00000000-1_bisect_util.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_0000314a_00000000-1_bisect_util.cudafe1.cpp"
-# 1 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 1 "/tmp/tmpxft_0000172f_00000000-1_bisect_util.cudafe1.cpp"
+# 1 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 # 46 "/usr/local/cuda/bin/../include/device_types.h"
 # 149 "/usr/lib/gcc/i686-linux-gnu/4.4.5/include/stddef.h" 3
 typedef long ptrdiff_t;
@@ -9119,264 +9119,264 @@ cudaError_t err = cudaGetChannelDesc(&desc, array);
 return (err == (cudaSuccess)) ? cudaBindSurfaceToArray(surf, array, desc) : err;
 # 1038 "/usr/local/cuda/bin/../include/cuda_runtime.h"
 }
-# 44 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/util.h"
+# 44 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/util.h"
 template< class T> inline void
-# 46 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/util.h"
+# 46 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/util.h"
 freePtr(T *&ptr) {
-# 48 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/util.h"
+# 48 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/util.h"
 if (__null != ptr) {
-# 49 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/util.h"
+# 49 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/util.h"
 free(ptr);
-# 50 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/util.h"
+# 50 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/util.h"
 ptr = __null;
-# 51 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/util.h"
+# 51 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/util.h"
 }
-# 52 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/util.h"
+# 52 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/util.h"
 }
-# 57 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/util.h"
+# 57 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/util.h"
 template< class T> T
-# 62 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/util.h"
+# 62 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/util.h"
 min(const T &lhs, const T &rhs) {
-# 64 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/util.h"
+# 64 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/util.h"
 return (lhs < rhs) ? lhs : rhs;
-# 65 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/util.h"
+# 65 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/util.h"
 }
-# 70 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/util.h"
+# 70 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/util.h"
 template< class T> T
-# 75 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/util.h"
+# 75 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/util.h"
 max(const T &lhs, const T &rhs) {
-# 77 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/util.h"
+# 77 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/util.h"
 return (lhs < rhs) ? rhs : lhs;
-# 78 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/util.h"
+# 78 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/util.h"
 }
-# 83 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/util.h"
+# 83 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/util.h"
 template< class T> T
-# 88 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/util.h"
+# 88 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/util.h"
 sign_i(const T &val) {
-# 89 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/util.h"
+# 89 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/util.h"
 return (val < 0) ? (-1) : 1;
-# 90 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/util.h"
+# 90 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/util.h"
 }
-# 99 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/util.h"
+# 99 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/util.h"
 inline float sign_f(const float &val) {
-# 100 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/util.h"
+# 100 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/util.h"
 return (val < (0.0F)) ? (-(1.0F)) : (1.0F);
-# 101 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/util.h"
+# 101 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/util.h"
 }
-# 110 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/util.h"
+# 110 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/util.h"
 inline double sign_d(const double &val) {
-# 111 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/util.h"
+# 111 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/util.h"
 return (val < (0.0)) ? (-(1.0)) : (1.0);
-# 112 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/util.h"
+# 112 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/util.h"
 }
-# 117 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/util.h"
+# 117 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/util.h"
 template< class T> void
-# 122 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/util.h"
+# 122 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/util.h"
 swap(T &lhs, T &rhs) {
-# 124 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/util.h"
+# 124 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/util.h"
 T temp = rhs;
-# 125 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/util.h"
+# 125 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/util.h"
 rhs = lhs;
-# 126 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/util.h"
+# 126 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/util.h"
 lhs = temp;
-# 127 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/util.h"
+# 127 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/util.h"
 }
-# 136 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/util.h"
+# 136 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/util.h"
 extern "C" { inline unsigned getNumBlocksLinear(const unsigned num_threads, const unsigned
-# 137 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/util.h"
+# 137 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/util.h"
 num_threads_block)
-# 138 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/util.h"
+# 138 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/util.h"
 {
-# 139 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/util.h"
+# 139 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/util.h"
 const unsigned block_rem = (((num_threads % num_threads_block) != (0)) ? 1 : 0);
-# 141 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/util.h"
+# 141 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/util.h"
 return (num_threads / num_threads_block) + block_rem;
-# 142 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/util.h"
+# 142 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/util.h"
 } }
-# 51 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 51 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 __attribute__((unused)) inline int floorPow2(int n) {int volatile ___ = 1;
-# 61 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 61 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 exit(___);}
-# 69 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 69 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 __attribute__((unused)) inline int ceilPow2(int n) {int volatile ___ = 1;
-# 79 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 79 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 exit(___);}
-# 89 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 89 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 __attribute__((unused)) inline float computeMidpoint(const float left, const float right) {int volatile ___ = 1;
-# 100 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 100 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 exit(___);}
-# 117 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 117 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 template< class S, class T> __attribute__((unused)) void
-# 120 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 120 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 storeInterval(unsigned addr, float *
-# 121 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 121 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 s_left, float *s_right, T *
-# 122 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 122 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 s_left_count, T *s_right_count, float
-# 123 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 123 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 left, float right, S
-# 124 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 124 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 left_count, S right_count, float
-# 125 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 125 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 precision)
-# 126 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 126 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 {int volatile ___ = 1;
-# 148 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 148 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 exit(___);}
-# 170 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 170 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 __attribute__((unused)) inline unsigned computeNumSmallerEigenvals(float *g_d, float *g_s, const unsigned n, const float
-# 171 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 171 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 x, const unsigned
-# 172 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 172 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 tid, const unsigned
-# 173 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 173 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 num_intervals_active, float *
-# 174 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 174 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 s_d, float *s_s, unsigned
-# 175 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 175 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 converged)
-# 177 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 177 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 {int volatile ___ = 1;
-# 205 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 205 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 exit(___);}
-# 227 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 227 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 __attribute__((unused)) inline unsigned computeNumSmallerEigenvalsLarge(float *g_d, float *g_s, const unsigned n, const float
-# 228 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 228 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 x, const unsigned
-# 229 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 229 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 tid, const unsigned
-# 230 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 230 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 num_intervals_active, float *
-# 231 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 231 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 s_d, float *s_s, unsigned
-# 232 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 232 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 converged)
-# 234 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 234 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 {int volatile ___ = 1;
-# 271 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 271 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 exit(___);}
-# 298 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 298 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 template< class S, class T> __attribute__((unused)) void
-# 301 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 301 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 storeNonEmptyIntervals(unsigned addr, const unsigned
-# 302 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 302 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 num_threads_active, float *
-# 303 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 303 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 s_left, float *s_right, T *
-# 304 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 304 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 s_left_count, T *s_right_count, float
-# 305 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 305 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 left, float mid, float right, const S
-# 306 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 306 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 left_count, const S
-# 307 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 307 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 mid_count, const S
-# 308 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 308 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 right_count, float
-# 309 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 309 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 precision, unsigned &
-# 310 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 310 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 compact_second_chunk, T *
-# 311 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 311 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 s_compaction_list_exc, unsigned &
-# 312 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 312 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 is_active_second)
-# 313 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 313 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 {int volatile ___ = 1;
-# 346 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 346 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 exit(___);}
-# 357 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 357 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 template< class T> __attribute__((unused)) void
-# 360 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 360 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 createIndicesCompaction(T *s_compaction_list_exc, unsigned
-# 361 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 361 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 num_threads_compaction) {int volatile ___ = 1;
-# 404 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 404 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 exit(___);}
-# 423 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 423 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 template< class T> __attribute__((unused)) void
-# 426 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 426 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 compactIntervals(float *s_left, float *s_right, T *
-# 427 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 427 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 s_left_count, T *s_right_count, float
-# 428 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 428 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 mid, float right, unsigned
-# 429 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 429 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 mid_count, unsigned right_count, T *
-# 430 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 430 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 s_compaction_list, unsigned
-# 431 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 431 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 num_threads_active, unsigned
-# 432 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 432 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 is_active_second)
-# 433 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 433 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 {int volatile ___ = 1;
-# 447 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 447 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 exit(___);}
-# 470 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 470 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 template< class T, class S> __attribute__((unused)) void
-# 473 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 473 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 storeIntervalConverged(float *s_left, float *s_right, T *
-# 474 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 474 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 s_left_count, T *s_right_count, float &
-# 475 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 475 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 left, float &mid, float &right, S &
-# 476 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 476 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 left_count, S &mid_count, S &right_count, T *
-# 477 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 477 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 s_compaction_list_exc, unsigned &
-# 478 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 478 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 compact_second_chunk, const unsigned
-# 479 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 479 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 num_threads_active)
-# 480 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 480 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 {int volatile ___ = 1;
-# 515 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 515 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 exit(___);}
-# 517 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 517 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 template< class T, class S> __attribute__((unused)) void
-# 520 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 520 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 storeIntervalConverged(float *s_left, float *s_right, T *
-# 521 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 521 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 s_left_count, T *s_right_count, float &
-# 522 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 522 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 left, float &mid, float &right, S &
-# 523 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 523 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 left_count, S &mid_count, S &right_count, T *
-# 524 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 524 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 s_compaction_list_exc, unsigned &
-# 525 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 525 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 compact_second_chunk, const unsigned
-# 526 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 526 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 num_threads_active, unsigned &
-# 527 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 527 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 is_active_second)
-# 528 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 528 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 {int volatile ___ = 1;
-# 563 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 563 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 exit(___);}
-# 582 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 582 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 template< class T> __attribute__((unused)) void
-# 585 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 585 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 subdivideActiveInterval(const unsigned tid, float *
-# 586 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 586 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 s_left, float *s_right, T *
-# 587 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 587 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 s_left_count, T *s_right_count, const unsigned
-# 588 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 588 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 num_threads_active, float &
-# 589 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 589 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 left, float &right, unsigned &
-# 590 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 590 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 left_count, unsigned &right_count, float &
-# 591 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 591 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 mid, unsigned &all_threads_converged)
-# 592 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 592 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 {int volatile ___ = 1;
-# 614 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+# 614 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu"
 exit(___);}
-# 1 "/tmp/tmpxft_0000314a_00000000-1_bisect_util.cudafe1.stub.c"
-# 1 "/tmp/tmpxft_0000314a_00000000-1_bisect_util.cudafe1.stub.c" 1
+# 1 "/tmp/tmpxft_0000172f_00000000-1_bisect_util.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_0000172f_00000000-1_bisect_util.cudafe1.stub.c" 1
 # 1 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 1
 # 91 "/usr/local/cuda/bin/../include/crt/host_runtime.h"
 extern "C" {
@@ -9778,8 +9778,8 @@ extern __attribute__((__weak__)) unsigned long long int ullmax(unsigned long lon
 
 
 #pragma pack()
-# 2 "/tmp/tmpxft_0000314a_00000000-1_bisect_util.cudafe1.stub.c" 2
-# 1 "/tmp/tmpxft_0000314a_00000000-3_bisect_util.fatbin.c" 1
+# 2 "/tmp/tmpxft_0000172f_00000000-1_bisect_util.cudafe1.stub.c" 2
+# 1 "/tmp/tmpxft_0000172f_00000000-3_bisect_util.fatbin.c" 1
 # 1 "/usr/local/cuda/bin/../include/__cudaFatFormat.h" 1
 # 83 "/usr/local/cuda/bin/../include/__cudaFatFormat.h"
 extern "C" {
@@ -9857,14 +9857,14 @@ void __cudaFatFreePTX( char* ptx );
 
 
 }
-# 2 "/tmp/tmpxft_0000314a_00000000-3_bisect_util.fatbin.c" 2
+# 2 "/tmp/tmpxft_0000172f_00000000-3_bisect_util.fatbin.c" 2
 
 asm(
 ".section .rodata\n"
 ".align 32\n"
-"__deviceText_$sm_13$:\n"
-".quad 0x33010102464c457f,0x0000000000000002,0x0000000100be0002,0x0000000000000000\n"
-".quad 0x0000000000000208,0x0000000000000040,0x00380040000d010d,0x0001000400400002\n"
+"__deviceText_$sm_21$:\n"
+".quad 0x33010102464c457f,0x0000000000000004,0x0000000100be0002,0x0000000000000000\n"
+".quad 0x0000000000000208,0x0000000000000040,0x0038004000140115,0x0001000400400002\n"
 ".quad 0x0000000000000000,0x0000000000000000,0x0000000000000000,0x0000000000000000\n"
 ".quad 0x0000000000000000,0x0000000000000000,0x0000000000000000,0x0000000000000000\n"
 ".quad 0x0000000300000001,0x0000000000000000,0x0000000000000000,0x0000000000000140\n"
@@ -9887,37 +9887,37 @@ asm(
 
 extern "C" {
 
-extern const unsigned long long __deviceText_$sm_13$[80];
+extern const unsigned long long __deviceText_$sm_21$[80];
 
 }
 
 asm(
 ".section .rodata\n"
 ".align 32\n"
-"__deviceText_$compute_13$:\n"
-".quad 0x6f69737265762e09,0x2e090a342e31206e,0x7320746567726174,0x2f2f090a33315f6d\n"
+"__deviceText_$compute_20$:\n"
+".quad 0x6f69737265762e09,0x2e090a322e32206e,0x7320746567726174,0x2f2f090a30325f6d\n"
 ".quad 0x656c69706d6f6320,0x2f20687469772064,0x61636f6c2f727375,0x6f2f616475632f6c\n"
 ".quad 0x696c2f34366e6570,0x2f090a65622f2f62,0x6e65706f766e202f,0x6220322e33206363\n"
 ".quad 0x206e6f20746c6975,0x2d39302d30313032,0x2d2f2f090a0a3930,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x43202f2f090a2d2d,0x676e696c69706d6f\n"
-".quad 0x6d742f706d742f20,0x3030305f74667870,0x30305f6134313330,0x372d303030303030\n"
+".quad 0x6d742f706d742f20,0x3030305f74667870,0x30305f6632373130,0x372d303030303030\n"
 ".quad 0x5f7463657369625f,0x7070632e6c697475,0x6d742f2820692e33,0x2e23494263632f70\n"
-".quad 0x0a29774854703051,0x2d2d2d2d2d2f2f09,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
+".quad 0x0a29787a587a5632,0x2d2d2d2d2d2f2f09,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x0a0a2d2d2d2d2d2d,0x2d2d2d2d2d2f2f09,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x090a2d2d2d2d2d2d,0x6f6974704f202f2f,0x2d2f2f090a3a736e,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x20202f2f090a2d2d,0x703a746567726154\n"
-".quad 0x3a415349202c7874,0x45202c33315f6d73,0x696c3a6e6169646e,0x6f50202c656c7474\n"
+".quad 0x3a415349202c7874,0x45202c30325f6d73,0x696c3a6e6169646e,0x6f50202c656c7474\n"
 ".quad 0x6953207265746e69,0x2f090a34363a657a,0x2809334f2d20202f,0x617a696d6974704f\n"
 ".quad 0x76656c206e6f6974,0x202f2f090a296c65,0x6544280930672d20,0x6576656c20677562\n"
 ".quad 0x20202f2f090a296c,0x7065522809326d2d,0x697664612074726f,0x0a29736569726f73\n"
 ".quad 0x2d2d2d2d2d2f2f09,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x0a0a2d2d2d2d2d2d\n"
 ".quad 0x3109656c69662e09,0x616d6d6f633c2209,0x3e656e696c2d646e,0x656c69662e090a22\n"
-".quad 0x706d742f22093209,0x5f746678706d742f,0x6134313330303030,0x303030303030305f\n"
+".quad 0x706d742f22093209,0x5f746678706d742f,0x6632373130303030,0x303030303030305f\n"
 ".quad 0x657369625f362d30,0x2e6c6974755f7463,0x2e32656661647563,0x662e090a22757067\n"
 ".quad 0x2f22093309656c69,0x2f62696c2f727375,0x363836692f636367,0x672d78756e696c2d\n"
 ".quad 0x352e342e342f756e,0x6564756c636e692f,0x2e6665646474732f,0x6c69662e090a2268\n"
@@ -9971,20 +9971,20 @@ asm(
 
 extern "C" {
 
-extern const unsigned long long __deviceText_$compute_13$[285];
+extern const unsigned long long __deviceText_$compute_20$[285];
 
 }
 
-static __cudaFatPtxEntry __ptxEntries [] = {{(char*)"compute_13",(char*)__deviceText_$compute_13$},{0,0}};
+static __cudaFatPtxEntry __ptxEntries [] = {{(char*)"compute_20",(char*)__deviceText_$compute_20$},{0,0}};
 static __cudaFatCubinEntry __cubinEntries[] = {{0,0}};
 static __cudaFatDebugEntry __debugEntries0 = {0, 0, 0, 0} ;
 static __cudaFatElfEntry __elfEntries0 = {0, 0, 0, 0} ;
-static __cudaFatElfEntry __elfEntries1 = {(char*)"sm_13", (char*)__deviceText_$sm_13$, &__elfEntries0, (unsigned int)sizeof(__deviceText_$sm_13$)};
+static __cudaFatElfEntry __elfEntries1 = {(char*)"sm_21", (char*)__deviceText_$sm_21$, &__elfEntries0, (unsigned int)sizeof(__deviceText_$sm_21$)};
 
 
 
-static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000004,0xa14f518d,(char*)"022126d15f622d97",(char*)"/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu",(char*)" ",__ptxEntries,__cubinEntries,&__debugEntries0,0,0,0,0,0,0x75878765,&__elfEntries1};
-# 3 "/tmp/tmpxft_0000314a_00000000-1_bisect_util.cudafe1.stub.c" 2
-static void __sti____cudaRegisterAll_46_tmpxft_0000314a_00000000_4_bisect_util_cpp1_ii_8859fb2d(void) __attribute__((__constructor__));
-static void __sti____cudaRegisterAll_46_tmpxft_0000314a_00000000_4_bisect_util_cpp1_ii_8859fb2d(void){__cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil);}
-# 1 "/tmp/tmpxft_0000314a_00000000-1_bisect_util.cudafe1.stub.c" 2
+static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000004,0xa14f518d,(char*)"dba7c955800c67cc",(char*)"/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu",(char*)" ",__ptxEntries,__cubinEntries,&__debugEntries0,0,0,0,0,0,0xa0b77451,&__elfEntries1};
+# 3 "/tmp/tmpxft_0000172f_00000000-1_bisect_util.cudafe1.stub.c" 2
+static void __sti____cudaRegisterAll_46_tmpxft_0000172f_00000000_4_bisect_util_cpp1_ii_1cabc0c6(void) __attribute__((__constructor__));
+static void __sti____cudaRegisterAll_46_tmpxft_0000172f_00000000_4_bisect_util_cpp1_ii_1cabc0c6(void){__cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil);}
+# 1 "/tmp/tmpxft_0000172f_00000000-1_bisect_util.cudafe1.stub.c" 2

@@ -1,8 +1,8 @@
-# 1 "/tmp/tmpxft_0000162e_00000000-1_Mandelbrot_kernel.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00000f05_00000000-1_Mandelbrot_kernel.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_0000162e_00000000-1_Mandelbrot_kernel.cudafe1.cpp"
-# 1 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
+# 1 "/tmp/tmpxft_00000f05_00000000-1_Mandelbrot_kernel.cudafe1.cpp"
+# 1 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 # 46 "/usr/local/cuda/bin/../include/device_types.h"
 # 149 "/usr/lib/gcc/i686-linux-gnu/4.4.5/include/stddef.h" 3
 typedef long ptrdiff_t;
@@ -11361,132 +11361,132 @@ printf(" -> CUDA %s Toolkit\n", sNVCCReq);
 printf(" -> %s NVIDIA Display Driver.\n", sDriverReq);
 # 18 "sdk/cutil_inline.h"
 }
-# 6 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.h"
+# 6 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.h"
 extern "C" void RunMandelbrot0_sm10(uchar4 *, const int, const int, const int, const double, const double, const float, const float, const double, const uchar4, const int, const int, const int, const bool);
-# 9 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.h"
+# 9 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.h"
 extern "C" void RunMandelbrot1_sm10(uchar4 *, const int, const int, const int, const double, const double, const float, const float, const double, const uchar4, const int, const int, const int, const bool);
-# 13 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.h"
+# 13 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.h"
 extern "C" void RunMandelbrot0_sm13(uchar4 *, const int, const int, const int, const double, const double, const double, const double, const double, const uchar4, const int, const int, const int, const int, const bool);
-# 16 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.h"
+# 16 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.h"
 extern "C" void RunMandelbrot1_sm13(uchar4 *, const int, const int, const int, const double, const double, const double, const double, const double, const uchar4, const int, const int, const int, const int, const bool);
-# 20 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.h"
+# 20 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.h"
 extern "C" int inEmulationMode();
-# 15 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
+# 15 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 inline void dsdeq(float &a0, float &a1, double b)
-# 16 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
+# 16 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 {
-# 17 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
+# 17 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 a0 = ((float)b);
-# 18 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
+# 18 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 a1 = ((float)(b - a0));
-# 19 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
+# 19 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 }
-# 22 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
+# 22 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 __attribute__((unused)) inline void dsfeq(float &a0, float &a1, float b)
-# 23 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
+# 23 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 {int volatile ___ = 1;
-# 26 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
+# 26 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 exit(___);}
-# 29 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
+# 29 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 __attribute__((unused)) inline void dsadd(float &c0, float &c1, const float a0, const float a1, const float b0, const float b1)
-# 30 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
+# 30 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 {int volatile ___ = 1;
-# 39 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
+# 39 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 exit(___);}
-# 42 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
+# 42 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 __attribute__((unused)) inline void dssub(float &c0, float &c1, const float a0, const float a1, const float b0, const float b1)
-# 43 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
+# 43 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 {int volatile ___ = 1;
-# 52 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
+# 52 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 exit(___);}
-# 57 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
+# 57 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 __attribute__((unused)) inline void dsmul(float &c0, float &c1, const float a0, const float a1, const float b0, const float b1)
-# 58 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
+# 58 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 {int volatile ___ = 1;
-# 82 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
+# 82 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 exit(___);}
-# 126 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
+# 126 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 template< class T> __attribute__((unused)) inline void
-# 127 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
+# 127 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 CalcMandelbrot(int *
-# 128 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
+# 128 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 output, const T *
-# 129 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
+# 129 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 xPos, const T
-# 130 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
+# 130 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 yPos, const T
-# 131 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
+# 131 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 xJParam, const T
-# 132 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
+# 132 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 yJParam, const int
-# 133 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
+# 133 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 crunch, const bool
-# 134 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
+# 134 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 isJulia, const int
-# 135 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
+# 135 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 points)
-# 136 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
+# 136 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 {int volatile ___ = 1;
-# 190 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
+# 190 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 exit(___);}
-# 194 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
+# 194 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 template< class T> __attribute__((unused)) inline int
-# 195 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
+# 195 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 CalcMandelbrot(const T
-# 196 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
+# 196 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 xPos, const T
-# 197 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
+# 197 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 yPos, const T
-# 198 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
+# 198 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 xJParam, const T
-# 199 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
+# 199 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 yJParam, const int
-# 200 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
+# 200 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 crunch, const bool
-# 201 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
+# 201 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 isJulia)
-# 202 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
+# 202 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 {int volatile ___ = 1;
-# 230 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
+# 230 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 exit(___);}
-# 234 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
+# 234 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 __attribute__((unused)) inline int CalcMandelbrotDS(const float
-# 235 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
+# 235 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 xPos0, const float
-# 236 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
+# 236 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 xPos1, const float
-# 237 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
+# 237 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 yPos0, const float
-# 238 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
+# 238 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 yPos1, const float
-# 239 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
+# 239 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 xJParam, const float
-# 240 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
+# 240 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 yJParam, const int
-# 241 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
+# 241 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 crunch, const bool
-# 242 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
+# 242 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 isJulia)
-# 243 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
+# 243 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 {int volatile ___ = 1;
-# 293 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
+# 293 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 exit(___);}
-# 297 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
+# 297 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 __attribute__((unused)) inline int CheckColors(const uchar4 &color0, const uchar4 &color1)
-# 298 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
+# 298 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 {int volatile ___ = 1;
-# 303 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
+# 303 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 exit(___);}
-# 308 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
+# 308 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 inline int iDivUp(int a, int b)
-# 309 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
+# 309 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 {
-# 310 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
+# 310 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 return ((a % b) != 0) ? ((a / b) + 1) : (a / b);
-# 311 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
+# 311 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 }
-# 1 "/tmp/tmpxft_0000162e_00000000-1_Mandelbrot_kernel.cudafe1.stub.c"
-# 1 "/tmp/tmpxft_0000162e_00000000-1_Mandelbrot_kernel.cudafe1.stub.c" 1
+# 1 "/tmp/tmpxft_00000f05_00000000-1_Mandelbrot_kernel.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00000f05_00000000-1_Mandelbrot_kernel.cudafe1.stub.c" 1
 # 1 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 1
 # 91 "/usr/local/cuda/bin/../include/crt/host_runtime.h"
 extern "C" {
@@ -11888,8 +11888,8 @@ extern __attribute__((__weak__)) unsigned long long int ullmax(unsigned long lon
 
 
 #pragma pack()
-# 2 "/tmp/tmpxft_0000162e_00000000-1_Mandelbrot_kernel.cudafe1.stub.c" 2
-# 1 "/tmp/tmpxft_0000162e_00000000-3_Mandelbrot_kernel.fatbin.c" 1
+# 2 "/tmp/tmpxft_00000f05_00000000-1_Mandelbrot_kernel.cudafe1.stub.c" 2
+# 1 "/tmp/tmpxft_00000f05_00000000-3_Mandelbrot_kernel.fatbin.c" 1
 # 1 "/usr/local/cuda/bin/../include/__cudaFatFormat.h" 1
 # 83 "/usr/local/cuda/bin/../include/__cudaFatFormat.h"
 extern "C" {
@@ -11967,67 +11967,35 @@ void __cudaFatFreePTX( char* ptx );
 
 
 }
-# 2 "/tmp/tmpxft_0000162e_00000000-3_Mandelbrot_kernel.fatbin.c" 2
+# 2 "/tmp/tmpxft_00000f05_00000000-3_Mandelbrot_kernel.fatbin.c" 2
 
 asm(
 ".section .rodata\n"
 ".align 32\n"
-"__deviceText_$sm_13$:\n"
-".quad 0x33010102464c457f,0x0000000000000002,0x0000000100be0002,0x0000000000000000\n"
-".quad 0x0000000000000208,0x0000000000000040,0x00380040000d010d,0x0001000400400002\n"
-".quad 0x0000000000000000,0x0000000000000000,0x0000000000000000,0x0000000000000000\n"
-".quad 0x0000000000000000,0x0000000000000000,0x0000000000000000,0x0000000000000000\n"
-".quad 0x0000000300000001,0x0000000000000000,0x0000000000000000,0x0000000000000140\n"
-".quad 0x0000000000000036,0x0000000000000000,0x0000000000000004,0x0000000000000000\n"
-".quad 0x000000030000000b,0x0000000000000000,0x0000000000000000,0x0000000000000176\n"
-".quad 0x0000000000000001,0x0000000000000000,0x0000000000000001,0x0000000000000000\n"
-".quad 0x0000000200000013,0x0000000000000000,0x0000000000000000,0x0000000000000177\n"
-".quad 0x0000000000000090,0x0000000600000002,0x0000000000000001,0x0000000000000018\n"
-".quad 0x7472747368732e00,0x747274732e006261,0x746d79732e006261,0x672e766e2e006261\n"
-".quad 0x6e692e6c61626f6c,0x672e766e2e007469,0x0000006c61626f6c,0x0000000000000000\n"
-".quad 0x0000000000000000,0x0000000000000000,0x0000010003000000,0x0000000000000000\n"
-".quad 0x0000000000000000,0x0000020003000000,0x0000000000000000,0x0000000000000000\n"
-".quad 0x0000030003000000,0x0000000000000000,0x0000000000000000,0x0000000003000000\n"
-".quad 0x0000000000000000,0x0000000000000000,0x0000000003000000,0x0000000000000000\n"
-".quad 0x0000000000000000,0x0000000500000006,0x0000000000000208,0x0000000000000000\n"
-".quad 0x0000000000000000,0x0000000000000070,0x0000000000000070,0x0000000000000004\n"
-".quad 0x0000000560000000,0x0000000000000000,0x0000000000000000,0x0000000000000000\n"
-".quad 0x0000000000000207,0x0000000000000207,0x0000000000000004,0x0000000000000000\n"
-".text");
-
-extern "C" {
-
-extern const unsigned long long __deviceText_$sm_13$[80];
-
-}
-
-asm(
-".section .rodata\n"
-".align 32\n"
-"__deviceText_$compute_13$:\n"
-".quad 0x6f69737265762e09,0x2e090a342e31206e,0x7320746567726174,0x2f2f090a33315f6d\n"
+"__deviceText_$compute_20$:\n"
+".quad 0x6f69737265762e09,0x2e090a322e32206e,0x7320746567726174,0x2f2f090a30325f6d\n"
 ".quad 0x656c69706d6f6320,0x2f20687469772064,0x61636f6c2f727375,0x6f2f616475632f6c\n"
 ".quad 0x696c2f34366e6570,0x2f090a65622f2f62,0x6e65706f766e202f,0x6220322e33206363\n"
 ".quad 0x206e6f20746c6975,0x2d39302d30313032,0x2d2f2f090a0a3930,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x43202f2f090a2d2d,0x676e696c69706d6f\n"
-".quad 0x6d742f706d742f20,0x3030305f74667870,0x30305f6532363130,0x372d303030303030\n"
+".quad 0x6d742f706d742f20,0x3030305f74667870,0x30305f3530663030,0x372d303030303030\n"
 ".quad 0x626c65646e614d5f,0x6e72656b5f746f72,0x2e337070632e6c65,0x2f706d742f282069\n"
-".quad 0x65672e2349426363,0x2f090a2952355434,0x2d2d2d2d2d2d2d2f,0x2d2d2d2d2d2d2d2d\n"
+".quad 0x426b2e2349426363,0x2f090a29416e6868,0x2d2d2d2d2d2d2d2f,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2f090a0a2d2d2d2d,0x2d2d2d2d2d2d2d2f,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2f2f090a2d2d2d2d,0x736e6f6974704f20,0x2d2d2d2f2f090a3a\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x615420202f2f090a\n"
-".quad 0x7874703a74656772,0x6d733a415349202c,0x646e45202c33315f,0x7474696c3a6e6169\n"
+".quad 0x7874703a74656772,0x6d733a415349202c,0x646e45202c30325f,0x7474696c3a6e6169\n"
 ".quad 0x6e696f50202c656c,0x657a695320726574,0x202f2f090a34363a,0x704f2809334f2d20\n"
 ".quad 0x6974617a696d6974,0x6c6576656c206e6f,0x2d20202f2f090a29,0x7562654428093067\n"
 ".quad 0x296c6576656c2067,0x6d2d20202f2f090a,0x726f706552280932,0x6f73697664612074\n"
 ".quad 0x2f090a2973656972,0x2d2d2d2d2d2d2d2f,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2e090a0a2d2d2d2d,0x22093109656c6966,0x646e616d6d6f633c,0x0a223e656e696c2d\n"
-".quad 0x3209656c69662e09,0x742f706d742f2209,0x30305f746678706d,0x305f653236313030\n"
+".quad 0x3209656c69662e09,0x742f706d742f2209,0x30305f746678706d,0x305f353066303030\n"
 ".quad 0x2d30303030303030,0x6c65646e614d5f36,0x72656b5f746f7262,0x616475632e6c656e\n"
 ".quad 0x227570672e326566,0x09656c69662e090a,0x2f7273752f220933,0x2f6363672f62696c\n"
 ".quad 0x6e696c2d36383669,0x342f756e672d7875,0x636e692f352e342e,0x6474732f6564756c\n"
@@ -12081,20 +12049,52 @@ asm(
 
 extern "C" {
 
-extern const unsigned long long __deviceText_$compute_13$[287];
+extern const unsigned long long __deviceText_$compute_20$[287];
 
 }
 
-static __cudaFatPtxEntry __ptxEntries [] = {{(char*)"compute_13",(char*)__deviceText_$compute_13$},{0,0}};
+asm(
+".section .rodata\n"
+".align 32\n"
+"__deviceText_$sm_21$:\n"
+".quad 0x33010102464c457f,0x0000000000000004,0x0000000100be0002,0x0000000000000000\n"
+".quad 0x0000000000000208,0x0000000000000040,0x0038004000140115,0x0001000400400002\n"
+".quad 0x0000000000000000,0x0000000000000000,0x0000000000000000,0x0000000000000000\n"
+".quad 0x0000000000000000,0x0000000000000000,0x0000000000000000,0x0000000000000000\n"
+".quad 0x0000000300000001,0x0000000000000000,0x0000000000000000,0x0000000000000140\n"
+".quad 0x0000000000000036,0x0000000000000000,0x0000000000000004,0x0000000000000000\n"
+".quad 0x000000030000000b,0x0000000000000000,0x0000000000000000,0x0000000000000176\n"
+".quad 0x0000000000000001,0x0000000000000000,0x0000000000000001,0x0000000000000000\n"
+".quad 0x0000000200000013,0x0000000000000000,0x0000000000000000,0x0000000000000177\n"
+".quad 0x0000000000000090,0x0000000600000002,0x0000000000000001,0x0000000000000018\n"
+".quad 0x7472747368732e00,0x747274732e006261,0x746d79732e006261,0x672e766e2e006261\n"
+".quad 0x6e692e6c61626f6c,0x672e766e2e007469,0x0000006c61626f6c,0x0000000000000000\n"
+".quad 0x0000000000000000,0x0000000000000000,0x0000010003000000,0x0000000000000000\n"
+".quad 0x0000000000000000,0x0000020003000000,0x0000000000000000,0x0000000000000000\n"
+".quad 0x0000030003000000,0x0000000000000000,0x0000000000000000,0x0000000003000000\n"
+".quad 0x0000000000000000,0x0000000000000000,0x0000000003000000,0x0000000000000000\n"
+".quad 0x0000000000000000,0x0000000500000006,0x0000000000000208,0x0000000000000000\n"
+".quad 0x0000000000000000,0x0000000000000070,0x0000000000000070,0x0000000000000004\n"
+".quad 0x0000000560000000,0x0000000000000000,0x0000000000000000,0x0000000000000000\n"
+".quad 0x0000000000000207,0x0000000000000207,0x0000000000000004,0x0000000000000000\n"
+".text");
+
+extern "C" {
+
+extern const unsigned long long __deviceText_$sm_21$[80];
+
+}
+
+static __cudaFatPtxEntry __ptxEntries [] = {{(char*)"compute_20",(char*)__deviceText_$compute_20$},{0,0}};
 static __cudaFatCubinEntry __cubinEntries[] = {{0,0}};
 static __cudaFatDebugEntry __debugEntries0 = {0, 0, 0, 0} ;
 static __cudaFatElfEntry __elfEntries0 = {0, 0, 0, 0} ;
-static __cudaFatElfEntry __elfEntries1 = {(char*)"sm_13", (char*)__deviceText_$sm_13$, &__elfEntries0, (unsigned int)sizeof(__deviceText_$sm_13$)};
+static __cudaFatElfEntry __elfEntries1 = {(char*)"sm_21", (char*)__deviceText_$sm_21$, &__elfEntries0, (unsigned int)sizeof(__deviceText_$sm_21$)};
 
 
 
-static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000004,0xa14f518d,(char*)"be5e04354019febb",(char*)"/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu",(char*)" ",__ptxEntries,__cubinEntries,&__debugEntries0,0,0,0,0,0,0x3c5731e0,&__elfEntries1};
-# 3 "/tmp/tmpxft_0000162e_00000000-1_Mandelbrot_kernel.cudafe1.stub.c" 2
-static void __sti____cudaRegisterAll_52_tmpxft_0000162e_00000000_4_Mandelbrot_kernel_cpp1_ii_e6bcf4e2(void) __attribute__((__constructor__));
-static void __sti____cudaRegisterAll_52_tmpxft_0000162e_00000000_4_Mandelbrot_kernel_cpp1_ii_e6bcf4e2(void){__cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil);}
-# 1 "/tmp/tmpxft_0000162e_00000000-1_Mandelbrot_kernel.cudafe1.stub.c" 2
+static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000004,0xa14f518d,(char*)"be7211bfe3bc3708",(char*)"/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu",(char*)" ",__ptxEntries,__cubinEntries,&__debugEntries0,0,0,0,0,0,0xed989234,&__elfEntries1};
+# 3 "/tmp/tmpxft_00000f05_00000000-1_Mandelbrot_kernel.cudafe1.stub.c" 2
+static void __sti____cudaRegisterAll_52_tmpxft_00000f05_00000000_4_Mandelbrot_kernel_cpp1_ii_cc5fd757(void) __attribute__((__constructor__));
+static void __sti____cudaRegisterAll_52_tmpxft_00000f05_00000000_4_Mandelbrot_kernel_cpp1_ii_cc5fd757(void){__cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil);}
+# 1 "/tmp/tmpxft_00000f05_00000000-1_Mandelbrot_kernel.cudafe1.stub.c" 2

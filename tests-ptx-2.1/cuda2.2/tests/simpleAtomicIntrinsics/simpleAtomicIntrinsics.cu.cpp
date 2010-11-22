@@ -1,8 +1,8 @@
-# 1 "/tmp/tmpxft_00001a1f_00000000-1_simpleAtomicIntrinsics.cudafe1.cpp"
+# 1 "/tmp/tmpxft_0000131c_00000000-1_simpleAtomicIntrinsics.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_00001a1f_00000000-1_simpleAtomicIntrinsics.cudafe1.cpp"
-# 1 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
+# 1 "/tmp/tmpxft_0000131c_00000000-1_simpleAtomicIntrinsics.cudafe1.cpp"
+# 1 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
 # 46 "/usr/local/cuda/bin/../include/device_types.h"
 # 149 "/usr/lib/gcc/i686-linux-gnu/4.4.5/include/stddef.h" 3
 typedef long ptrdiff_t;
@@ -11361,120 +11361,120 @@ printf(" -> CUDA %s Toolkit\n", sNVCCReq);
 printf(" -> %s NVIDIA Display Driver.\n", sDriverReq);
 # 18 "sdk/cutil_inline.h"
 }
-# 47 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics_kernel.cu"
+# 47 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics_kernel.cu"
 void testKernel(int *g_odata) ;
-# 54 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
+# 54 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
 void runTest(int, char **);
-# 57 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
+# 57 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
 extern "C" int computeGold(int *, const int);
-# 63 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
+# 63 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
 int main(int argc, char **argv)
-# 64 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
+# 64 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
 {
-# 65 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
+# 65 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
 runTest(argc, argv);
-# 67 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
+# 67 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
 __cutilExit(argc, argv); return 0;
-# 68 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
+# 68 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
 }
-# 74 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
+# 74 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
 void runTest(int argc, char **argv)
-# 75 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
+# 75 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
 {
-# 76 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
+# 76 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
 cudaDeviceProp deviceProp;
-# 77 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
+# 77 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
 (deviceProp.major) = 0;
-# 78 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
+# 78 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
 (deviceProp.minor) = 0;
-# 79 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
+# 79 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
 int dev;
-# 82 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
+# 82 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
 if (cutCheckCmdLineFlag(argc, (const char **)argv, "device")) {
-# 83 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
+# 83 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
 cutilDeviceInit(argc, argv); } else {
-# 85 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
+# 85 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
 cudaSetDevice(dev = cutGetMaxGflopsDeviceId()); }
-# 87 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
-__cudaSafeCall(cudaChooseDevice(&dev, &deviceProp), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu", 87);
-# 88 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
-__cudaSafeCall(cudaGetDeviceProperties(&deviceProp, dev), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu", 88);
-# 90 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
+# 87 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
+__cudaSafeCall(cudaChooseDevice(&dev, &deviceProp), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu", 87);
+# 88 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
+__cudaSafeCall(cudaGetDeviceProperties(&deviceProp, dev), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu", 88);
+# 90 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
 if (((deviceProp.major) > 1) || ((deviceProp.minor) > 0))
-# 91 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
+# 91 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
 {
-# 92 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
+# 92 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
 printf("Using Device %d: \"%s\"\n", dev, deviceProp.name);
-# 93 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
+# 93 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
 } else
-# 95 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
+# 95 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
 {
-# 96 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
+# 96 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
 printf("There is no device supporting CUDA compute capability 1.1.\n");
-# 97 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
+# 97 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
 printf("TEST PASSED");
-# 98 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
+# 98 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
 cudaThreadExit();
-# 99 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
+# 99 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
 __cutilExit(argc, argv);
-# 100 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
+# 100 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
 }
-# 102 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
+# 102 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
 unsigned timer = (0);
-# 103 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
-__cutilCheckError(cutCreateTimer(&timer), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu", 103);
-# 104 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
-__cutilCheckError(cutStartTimer(timer), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu", 104);
-# 106 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
+# 103 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
+__cutilCheckError(cutCreateTimer(&timer), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu", 103);
+# 104 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
+__cutilCheckError(cutStartTimer(timer), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu", 104);
+# 106 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
 unsigned numThreads = (256);
-# 107 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
+# 107 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
 unsigned numBlocks = (64);
-# 108 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
+# 108 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
 unsigned numData = (11);
-# 109 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
+# 109 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
 unsigned memSize = (sizeof(int) * numData);
-# 112 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
+# 112 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
 int *h_odata = ((int *)malloc(memSize));
-# 115 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
+# 115 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
 for (unsigned i = (0); i < numData; i++) {
-# 116 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
+# 116 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
 (h_odata[i]) = 0; }
-# 119 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
+# 119 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
 (h_odata[8]) = ((h_odata[10]) = 255);
-# 122 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
+# 122 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
 int *d_odata;
-# 123 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
-__cudaSafeCall(cudaMalloc((void **)(&d_odata), memSize), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu", 123);
-# 125 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
-__cudaSafeCall(cudaMemcpy(d_odata, h_odata, memSize, cudaMemcpyHostToDevice), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu", 125);
-# 129 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
+# 123 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
+__cudaSafeCall(cudaMalloc((void **)(&d_odata), memSize), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu", 123);
+# 125 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
+__cudaSafeCall(cudaMemcpy(d_odata, h_odata, memSize, cudaMemcpyHostToDevice), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu", 125);
+# 129 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
 cudaConfigureCall(numBlocks, numThreads) ? ((void)0) : testKernel(d_odata);
-# 130 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
-__cutilCheckMsg("Kernel execution failed", "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu", 130);
-# 132 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
-__cudaSafeCall(cudaMemcpy(h_odata, d_odata, memSize, cudaMemcpyDeviceToHost), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu", 132);
-# 134 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
-__cutilCheckError(cutStopTimer(timer), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu", 134);
-# 135 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
+# 130 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
+__cutilCheckMsg("Kernel execution failed", "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu", 130);
+# 132 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
+__cudaSafeCall(cudaMemcpy(h_odata, d_odata, memSize, cudaMemcpyDeviceToHost), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu", 132);
+# 134 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
+__cutilCheckError(cutStopTimer(timer), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu", 134);
+# 135 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
 printf("Processing time: %f (ms)\n", cutGetTimerValue(timer));
-# 136 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
-__cutilCheckError(cutDeleteTimer(timer), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu", 136);
-# 139 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
+# 136 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
+__cutilCheckError(cutDeleteTimer(timer), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu", 136);
+# 139 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
 if (computeGold(h_odata, numThreads * numBlocks)) {
-# 140 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
+# 140 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
 printf("Test PASSED\n"); } else {
-# 142 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
+# 142 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
 printf("Test FAILED\n"); }
-# 145 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
+# 145 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
 free(h_odata);
-# 146 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
-__cudaSafeCall(cudaFree(d_odata), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu", 146);
-# 148 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
+# 146 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
+__cudaSafeCall(cudaFree(d_odata), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu", 146);
+# 148 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
 cudaThreadExit();
-# 149 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
+# 149 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu"
 }
-# 1 "/tmp/tmpxft_00001a1f_00000000-1_simpleAtomicIntrinsics.cudafe1.stub.c"
-# 1 "/tmp/tmpxft_00001a1f_00000000-1_simpleAtomicIntrinsics.cudafe1.stub.c" 1
+# 1 "/tmp/tmpxft_0000131c_00000000-1_simpleAtomicIntrinsics.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_0000131c_00000000-1_simpleAtomicIntrinsics.cudafe1.stub.c" 1
 # 1 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 1
 # 91 "/usr/local/cuda/bin/../include/crt/host_runtime.h"
 extern "C" {
@@ -11876,8 +11876,8 @@ extern __attribute__((__weak__)) unsigned long long int ullmax(unsigned long lon
 
 
 #pragma pack()
-# 2 "/tmp/tmpxft_00001a1f_00000000-1_simpleAtomicIntrinsics.cudafe1.stub.c" 2
-# 1 "/tmp/tmpxft_00001a1f_00000000-3_simpleAtomicIntrinsics.fatbin.c" 1
+# 2 "/tmp/tmpxft_0000131c_00000000-1_simpleAtomicIntrinsics.cudafe1.stub.c" 2
+# 1 "/tmp/tmpxft_0000131c_00000000-3_simpleAtomicIntrinsics.fatbin.c" 1
 # 1 "/usr/local/cuda/bin/../include/__cudaFatFormat.h" 1
 # 83 "/usr/local/cuda/bin/../include/__cudaFatFormat.h"
 extern "C" {
@@ -11955,83 +11955,28 @@ void __cudaFatFreePTX( char* ptx );
 
 
 }
-# 2 "/tmp/tmpxft_00001a1f_00000000-3_simpleAtomicIntrinsics.fatbin.c" 2
+# 2 "/tmp/tmpxft_0000131c_00000000-3_simpleAtomicIntrinsics.fatbin.c" 2
 
 asm(
 ".section .rodata\n"
 ".align 32\n"
-"__deviceText_$sm_13$:\n"
-".quad 0x33010102464c457f,0x0000000000000002,0x0000000100be0002,0x0000000000000000\n"
-".quad 0x00000000000004b4,0x0000000000000040,0x00380040000d010d,0x0001000700400003\n"
-".quad 0x0000000000000000,0x0000000000000000,0x0000000000000000,0x0000000000000000\n"
-".quad 0x0000000000000000,0x0000000000000000,0x0000000000000000,0x0000000000000000\n"
-".quad 0x0000000300000001,0x0000000000000000,0x0000000000000000,0x0000000000000200\n"
-".quad 0x0000000000000083,0x0000000000000000,0x0000000000000004,0x0000000000000000\n"
-".quad 0x000000030000000b,0x0000000000000000,0x0000000000000000,0x0000000000000283\n"
-".quad 0x0000000000000012,0x0000000000000000,0x0000000000000001,0x0000000000000000\n"
-".quad 0x0000000200000013,0x0000000000000000,0x0000000000000000,0x0000000000000295\n"
-".quad 0x00000000000000f0,0x0000000900000002,0x0000000000000001,0x0000000000000018\n"
-".quad 0x0000000100000036,0x0000000000000006,0x0000000000000000,0x0000000000000385\n"
-".quad 0x0000000000000110,0x0400000600000003,0x0000000000000004,0x0000000000000000\n"
-".quad 0x000000010000004d,0x0000000000000002,0x0000000000000000,0x0000000000000495\n"
-".quad 0x000000000000001c,0x0000000400000000,0x0000000000000001,0x0000000000000000\n"
-".quad 0x0000000800000067,0x0000000000000003,0x0000000000000000,0x00000000000004b1\n"
-".quad 0x0000000000000018,0x0000000400000000,0x0000000000000004,0x0000000000000000\n"
-".quad 0x7472747368732e00,0x747274732e006261,0x746d79732e006261,0x672e766e2e006261\n"
-".quad 0x6e692e6c61626f6c,0x672e766e2e007469,0x742e006c61626f6c,0x30315a5f2e747865\n"
-".quad 0x6e72654b74736574,0x766e2e0069506c65,0x5a5f2e6f666e692e,0x654b747365743031\n"
-".quad 0x2e0069506c656e72,0x65726168732e766e,0x657430315a5f2e64,0x6c656e72654b7473\n"
-".quad 0x30315a5f00006950,0x6e72654b74736574,0x0000000069506c65,0x0000000000000000\n"
-".quad 0x0000000000000000,0x0000000000000000,0x0000000001000300,0x0000000000000000\n"
-".quad 0x0000000000000000,0x0000000002000300,0x0000000000000000,0x0000000000000000\n"
-".quad 0x0000000003000300,0x0000000000000000,0x0000000000000000,0x0000000000000300\n"
-".quad 0x0000000000000000,0x0000000000000000,0x0000000000000300,0x0000000000000000\n"
-".quad 0x0000000000000000,0x0000000004000300,0x0001100000000000,0x0000000000000000\n"
-".quad 0x0000000005000300,0x0000000000000000,0x0000000000000000,0x0000000006000300\n"
-".quad 0x0000000000000000,0x0000010000000000,0x0000000004101200,0x0000000000000000\n"
-".quad 0x0008050000000000,0x0a80094400c78010,0x0e02090000000310,0x04e805c0e00780d0\n"
-".quad 0x3680090000000321,0x0002050fffffff10,0x00000d4000478010,0x0e020904000780a0\n"
-".quad 0x014c01c0e00780d0,0x08e8050020c78060,0x0e02010000000321,0x0ce805c0c00784d0\n"
-".quad 0x0e02010000000321,0x10e805c0e00798d0,0x0e02010000000321,0x14e805c0e0079cd0\n"
-".quad 0x1180090000000321,0x0e02090000000310,0x18e805c0c00790d0,0x0980090000000321\n"
-".quad 0x0e02090000000b10,0x1ce805c0c00794d0,0x3f80090000000321,0x01000d0fffffff20\n"
-".quad 0x020205c410078030,0x20e805e0c00788d7,0x07860d0000000321,0x0180090000000320\n"
-".quad 0x0e020d0000000310,0x24e805c0c007a8d0,0x0004090000000321,0x0e0209c400078030\n"
-".quad 0x28e805c0c007acd0,0x0e02010000000321,0x040b04c0c007b1d0,0x0818030000000000\n"
-".quad 0xffffff000c170400,0x23f00000000000ff,0x0000000600000000,0x000004b400000005\n"
-".quad 0x0000000000000000,0x0000000000000000,0x000000a800000000,0x000000a800000000\n"
-".quad 0x0000000400000000,0x6000000000000000,0x0000038500000905,0x0000000000000000\n"
-".quad 0x0000000000000000,0x0000012c00000000,0x0000012c00000000,0x0000000400000000\n"
-".quad 0x6000000000000000,0x000004b100000906,0x0000000000000000,0x0000000000000000\n"
-".quad 0x0000000000000000,0x0000001800000000,0x0000000400000000,0x0000000000000000\n"
-".text");
-
-extern "C" {
-
-extern const unsigned long long __deviceText_$sm_13$[172];
-
-}
-
-asm(
-".section .rodata\n"
-".align 32\n"
-"__deviceText_$compute_13$:\n"
-".quad 0x6f69737265762e09,0x2e090a342e31206e,0x7320746567726174,0x2f2f090a33315f6d\n"
+"__deviceText_$compute_20$:\n"
+".quad 0x6f69737265762e09,0x2e090a322e32206e,0x7320746567726174,0x2f2f090a30325f6d\n"
 ".quad 0x656c69706d6f6320,0x2f20687469772064,0x61636f6c2f727375,0x6f2f616475632f6c\n"
 ".quad 0x696c2f34366e6570,0x2f090a65622f2f62,0x6e65706f766e202f,0x6220322e33206363\n"
 ".quad 0x206e6f20746c6975,0x2d39302d30313032,0x2d2f2f090a0a3930,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x43202f2f090a2d2d,0x676e696c69706d6f\n"
-".quad 0x6d742f706d742f20,0x3030305f74667870,0x30305f6631613130,0x372d303030303030\n"
+".quad 0x6d742f706d742f20,0x3030305f74667870,0x30305f6331333130,0x372d303030303030\n"
 ".quad 0x41656c706d69735f,0x746e4963696d6f74,0x2e736369736e6972,0x2820692e33707063\n"
-".quad 0x4263632f706d742f,0x49386b615a2e2349,0x2d2d2f2f090a2958,0x2d2d2d2d2d2d2d2d\n"
+".quad 0x4263632f706d742f,0x6e684d67332e2349,0x2d2d2f2f090a296a,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2f2f090a0a2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x704f202f2f090a2d,0x090a3a736e6f6974\n"
 ".quad 0x2d2d2d2d2d2d2f2f,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2f090a2d2d2d2d2d\n"
-".quad 0x656772615420202f,0x49202c7874703a74,0x33315f6d733a4153,0x6e6169646e45202c\n"
+".quad 0x656772615420202f,0x49202c7874703a74,0x30325f6d733a4153,0x6e6169646e45202c\n"
 ".quad 0x2c656c7474696c3a,0x7265746e696f5020,0x34363a657a695320,0x4f2d20202f2f090a\n"
 ".quad 0x6d6974704f280933,0x206e6f6974617a69,0x090a296c6576656c,0x0930672d20202f2f\n"
 ".quad 0x6c20677562654428,0x2f090a296c657665,0x2809326d2d20202f,0x612074726f706552\n"
@@ -12039,7 +11984,7 @@ asm(
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x6c69662e090a0a2d,0x6f633c2209310965,0x696c2d646e616d6d\n"
 ".quad 0x662e090a223e656e,0x2f22093209656c69,0x78706d742f706d74,0x31303030305f7466\n"
-".quad 0x303030305f663161,0x735f362d30303030,0x6f7441656c706d69,0x6972746e4963696d\n"
+".quad 0x303030305f633133,0x735f362d30303030,0x6f7441656c706d69,0x6972746e4963696d\n"
 ".quad 0x75632e736369736e,0x70672e3265666164,0x6c69662e090a2275,0x73752f2209330965\n"
 ".quad 0x63672f62696c2f72,0x6c2d363836692f63,0x756e672d78756e69,0x692f352e342e342f\n"
 ".quad 0x732f6564756c636e,0x22682e6665646474,0x09656c69662e090a,0x2f7273752f220934\n"
@@ -12089,84 +12034,141 @@ asm(
 ".quad 0x636f6c2f7273752f,0x2f616475632f6c61,0x692f2e2e2f6e6962,0x6d2f6564756c636e\n"
 ".quad 0x636e75665f687461,0x62645f736e6f6974,0x682e337874705f6c,0x656c69662e090a22\n"
 ".quad 0x6f682f2209383209,0x616d726f6e2f656d,0x6f6b636568632f6c,0x636f7570672f7475\n"
-".quad 0x7365742f746f6c65,0x32616475632f7374,0x73747365742f322e,0x41656c706d69732f\n"
-".quad 0x746e4963696d6f74,0x2f736369736e6972,0x7441656c706d6973,0x72746e4963696d6f\n"
-".quad 0x6b5f736369736e69,0x75632e6c656e7265,0x6e652e090a0a0a22,0x30315a5f20797274\n"
-".quad 0x6e72654b74736574,0x090a282069506c65,0x206d617261702e09,0x635f5f203436752e\n"
-".quad 0x5f6d726170616475,0x7473657430315a5f,0x69506c656e72654b,0x617461646f5f675f\n"
-".quad 0x722e090a7b090a29,0x203631752e206765,0x0a3b3e343c687225,0x752e206765722e09\n"
-".quad 0x34323c7225203233,0x6765722e090a3b3e,0x7225203436752e20,0x090a3b3e33313c64\n"
-".quad 0x09383209636f6c2e,0x444c240a30093734,0x5f5f6e6967656257,0x4b7473657430315a\n"
-".quad 0x3a69506c656e7265,0x3109636f6c2e090a,0x0a30093430310936,0x617261702e646c09\n"
-".quad 0x2509203436752e6d,0x5f5f5b202c316472,0x6d72617061647563,0x73657430315a5f5f\n"
-".quad 0x506c656e72654b74,0x7461646f5f675f69,0x766f6d090a3b5d61,0x722509203233732e\n"
-".quad 0x090a3b3031202c31,0x6f6c672e6d6f7461,0x2e6464612e6c6162,0x3272250920323373\n"
-".quad 0x5d316472255b202c,0x090a3b317225202c,0x09363109636f6c2e,0x61090a3009343131\n"
-".quad 0x09203436752e6464,0x7225202c32647225,0x090a3b34202c3164,0x203233732e766f6d\n"
-".quad 0x312d202c33722509,0x6d6f7461090a3b30,0x2e6c61626f6c672e,0x203233732e646461\n"
-".quad 0x255b202c34722509,0x7225202c5d326472,0x636f6c2e090a3b33,0x0934323109363109\n"
-".quad 0x752e766f6d090a30,0x3168722509203631,0x646961746325202c,0x766f6d090a3b782e\n"
-".quad 0x722509203631752e,0x69746e25202c3268,0x756d090a3b782e64,0x752e656469772e6c\n"
-".quad 0x2c35722509203631,0x25202c3168722520,0x7663090a3b326872,0x31752e3233752e74\n"
-".quad 0x202c367225092036,0x0a3b782e64697425,0x3233752e64646109,0x25202c3772250920\n"
-".quad 0x3b357225202c3672,0x36752e646461090a,0x2c33647225092034,0x38202c3164722520\n"
-".quad 0x2e6d6f7461090a3b,0x652e6c61626f6c67,0x203233622e686378,0x255b202c38722509\n"
-".quad 0x7225202c5d336472,0x636f6c2e090a3b37,0x0939343109363109,0x752e646461090a30\n"
-".quad 0x3464722509203436,0x202c31647225202c,0x6f7461090a3b3231,0x6c61626f6c672e6d\n"
-".quad 0x3233732e78616d2e,0x5b202c3972250920,0x25202c5d34647225,0x6f6c2e090a3b3772\n"
-".quad 0x3933310936310963,0x2e646461090a3009,0x6472250920343675,0x2c31647225202c35\n"
-".quad 0x7461090a3b363120,0x61626f6c672e6d6f,0x33732e6e696d2e6c,0x2c30317225092032\n"
-".quad 0x2c5d356472255b20,0x2e090a3b37722520,0x3109363109636f6c,0x6461090a30093935\n"
-".quad 0x2509203436752e64,0x647225202c366472,0x090a3b3032202c31,0x203233752e766f6d\n"
-".quad 0x31202c3131722509,0x6d6f7461090a3b37,0x2e6c61626f6c672e,0x203233752e636e69\n"
-".quad 0x5b202c3231722509,0x25202c5d36647225,0x6c2e090a3b313172,0x363109363109636f\n"
-".quad 0x646461090a300934,0x722509203436752e,0x31647225202c3764,0x6d090a3b3432202c\n"
-".quad 0x09203233752e766f,0x3331202c33317225,0x6d6f7461090a3b37,0x2e6c61626f6c672e\n"
-".quad 0x203233752e636564,0x5b202c3431722509,0x25202c5d37647225,0x6c2e090a3b333172\n"
-".quad 0x393109363109636f,0x646461090a300939,0x722509203436752e,0x31647225202c3864\n"
-".quad 0x73090a3b3832202c,0x09203233732e6275,0x7225202c35317225,0x61090a3b31202c37\n"
-".quad 0x626f6c672e6d6f74,0x622e7361632e6c61,0x3631722509203233,0x5d386472255b202c\n"
-".quad 0x202c35317225202c,0x6c2e090a3b377225,0x363109363109636f,0x646461090a300939\n"
-".quad 0x722509203436752e,0x31647225202c3964,0x6d090a3b3233202c,0x33752e6f6c2e6c75\n"
-".quad 0x2c37317225092032,0x3b32202c37722520,0x33732e646461090a,0x2c38317225092032\n"
-".quad 0x37202c3731722520,0x2e6d6f7461090a3b,0x612e6c61626f6c67,0x09203233622e646e\n"
-".quad 0x255b202c39317225,0x7225202c5d396472,0x6f6c2e090a3b3831,0x3937310936310963\n"
-".quad 0x2e646461090a3009,0x6472250920343675,0x31647225202c3031,0x73090a3b3633202c\n"
-".quad 0x09203233622e6c68,0x2c31202c30327225,0x61090a3b37722520,0x626f6c672e6d6f74\n"
-".quad 0x33622e726f2e6c61,0x2c31327225092032,0x5d30316472255b20,0x0a3b30327225202c\n"
-".quad 0x363109636f6c2e09,0x090a300939383109,0x203436752e646461,0x202c313164722509\n"
-".quad 0x3034202c31647225,0x2e6d6f7461090a3b,0x782e6c61626f6c67,0x09203233622e726f\n"
-".quad 0x255b202c32327225,0x25202c5d31316472,0x6f6c2e090a3b3772,0x0930390938320963\n"
-".quad 0x3b74697865090a30,0x646e6557444c240a,0x73657430315a5f5f,0x506c656e72654b74\n"
-".quad 0x2f2f207d090a3a69,0x73657430315a5f20,0x506c656e72654b74,0x00000000000a0a69\n"
+".quad 0x7365742f746f6c65,0x322d7874702d7374,0x32616475632f312e,0x73747365742f322e\n"
+".quad 0x41656c706d69732f,0x746e4963696d6f74,0x2f736369736e6972,0x7441656c706d6973\n"
+".quad 0x72746e4963696d6f,0x6b5f736369736e69,0x75632e6c656e7265,0x6e652e090a0a0a22\n"
+".quad 0x30315a5f20797274,0x6e72654b74736574,0x090a282069506c65,0x206d617261702e09\n"
+".quad 0x635f5f203436752e,0x5f6d726170616475,0x7473657430315a5f,0x69506c656e72654b\n"
+".quad 0x617461646f5f675f,0x722e090a7b090a29,0x203233752e206765,0x0a3b3e36323c7225\n"
+".quad 0x752e206765722e09,0x313c647225203436,0x6f6c2e090a3b3e33,0x0937340938320963\n"
+".quad 0x656257444c240a30,0x30315a5f5f6e6967,0x6e72654b74736574,0x2e090a3a69506c65\n"
+".quad 0x3109363109636f6c,0x646c090a30093430,0x752e6d617261702e,0x3164722509203436\n"
+".quad 0x6475635f5f5b202c,0x5a5f5f6d72617061,0x654b747365743031,0x675f69506c656e72\n"
+".quad 0x3b5d617461646f5f,0x33732e766f6d090a,0x202c317225092032,0x6f7461090a3b3031\n"
+".quad 0x6c61626f6c672e6d,0x3233732e6464612e,0x5b202c3272250920,0x25202c5d31647225\n"
+".quad 0x6f6c2e090a3b3172,0x3431310936310963,0x2e646461090a3009,0x6472250920343675\n"
+".quad 0x2c31647225202c32,0x766f6d090a3b3420,0x722509203233732e,0x0a3b30312d202c33\n"
+".quad 0x6c672e6d6f746109,0x6464612e6c61626f,0x722509203233732e,0x326472255b202c34\n"
+".quad 0x0a3b337225202c5d,0x363109636f6c2e09,0x090a300934323109,0x203233752e766f6d\n"
+".quad 0x6325202c35722509,0x0a3b782e64696174,0x3233752e766f6d09,0x25202c3672250920\n"
+".quad 0x0a3b782e6469746e,0x2e6f6c2e6c756d09,0x3772250920323375,0x25202c357225202c\n"
+".quad 0x766f6d090a3b3672,0x722509203233752e,0x2e64697425202c38,0x2e646461090a3b78\n"
+".quad 0x3972250920323375,0x25202c387225202c,0x646461090a3b3772,0x722509203436752e\n"
+".quad 0x31647225202c3364,0x7461090a3b38202c,0x61626f6c672e6d6f,0x622e686378652e6c\n"
+".quad 0x3031722509203233,0x5d336472255b202c,0x090a3b397225202c,0x09363109636f6c2e\n"
+".quad 0x61090a3009393431,0x09203436752e6464,0x7225202c34647225,0x0a3b3231202c3164\n"
+".quad 0x6c672e6d6f746109,0x78616d2e6c61626f,0x722509203233732e,0x6472255b202c3131\n"
+".quad 0x3b397225202c5d34,0x3109636f6c2e090a,0x0a30093933310936,0x3436752e64646109\n"
+".quad 0x202c356472250920,0x3631202c31647225,0x2e6d6f7461090a3b,0x6d2e6c61626f6c67\n"
+".quad 0x09203233732e6e69,0x255b202c32317225,0x7225202c5d356472,0x636f6c2e090a3b39\n"
+".quad 0x0939353109363109,0x752e646461090a30,0x3664722509203436,0x202c31647225202c\n"
+".quad 0x766f6d090a3b3032,0x722509203233752e,0x0a3b3731202c3331,0x6c672e6d6f746109\n"
+".quad 0x636e692e6c61626f,0x722509203233752e,0x6472255b202c3431,0x33317225202c5d36\n"
+".quad 0x09636f6c2e090a3b,0x3009343631093631,0x36752e646461090a,0x2c37647225092034\n"
+".quad 0x32202c3164722520,0x2e766f6d090a3b34,0x3172250920323375,0x0a3b373331202c35\n"
+".quad 0x6c672e6d6f746109,0x6365642e6c61626f,0x722509203233752e,0x6472255b202c3631\n"
+".quad 0x35317225202c5d37,0x09636f6c2e090a3b,0x3009393931093631,0x36752e646461090a\n"
+".quad 0x2c38647225092034,0x32202c3164722520,0x2e627573090a3b38,0x3172250920323373\n"
+".quad 0x202c397225202c37,0x6d6f7461090a3b31,0x2e6c61626f6c672e,0x203233622e736163\n"
+".quad 0x5b202c3831722509,0x25202c5d38647225,0x397225202c373172,0x09636f6c2e090a3b\n"
+".quad 0x3009393631093631,0x36752e646461090a,0x2c39647225092034,0x33202c3164722520\n"
+".quad 0x2e6c756d090a3b32,0x09203233752e6f6c,0x7225202c39317225,0x61090a3b32202c39\n"
+".quad 0x09203233732e6464,0x7225202c30327225,0x090a3b37202c3931,0x6f6c672e6d6f7461\n"
+".quad 0x2e646e612e6c6162,0x3272250920323362,0x396472255b202c31,0x3b30327225202c5d\n"
+".quad 0x3109636f6c2e090a,0x0a30093937310936,0x3436752e64646109,0x2c30316472250920\n"
+".quad 0x33202c3164722520,0x2e6c6873090a3b36,0x3272250920323362,0x7225202c31202c32\n"
+".quad 0x6d6f7461090a3b39,0x2e6c61626f6c672e,0x09203233622e726f,0x255b202c33327225\n"
+".quad 0x25202c5d30316472,0x6c2e090a3b323272,0x383109363109636f,0x646461090a300939\n"
+".quad 0x722509203436752e,0x647225202c313164,0x090a3b3034202c31,0x6f6c672e6d6f7461\n"
+".quad 0x2e726f782e6c6162,0x3272250920323362,0x316472255b202c34,0x3b397225202c5d31\n"
+".quad 0x3209636f6c2e090a,0x090a300930390938,0x4c240a3b74697865,0x5a5f5f646e655744\n"
+".quad 0x654b747365743031,0x0a3a69506c656e72,0x5a5f202f2f207d09,0x654b747365743031\n"
+".quad 0x0a0a69506c656e72,0x0000000000000000\n"
 ".text");
 
 extern "C" {
 
-extern const unsigned long long __deviceText_$compute_13$[492];
+extern const unsigned long long __deviceText_$compute_20$[490];
 
 }
 
-static __cudaFatPtxEntry __ptxEntries [] = {{(char*)"compute_13",(char*)__deviceText_$compute_13$},{0,0}};
+asm(
+".section .rodata\n"
+".align 32\n"
+"__deviceText_$sm_21$:\n"
+".quad 0x33010102464c457f,0x0000000000000004,0x0000000100be0002,0x0000000000000000\n"
+".quad 0x0000000000000524,0x0000000000000040,0x0038004000140115,0x0001000800400002\n"
+".quad 0x0000000000000000,0x0000000000000000,0x0000000000000000,0x0000000000000000\n"
+".quad 0x0000000000000000,0x0000000000000000,0x0000000000000000,0x0000000000000000\n"
+".quad 0x0000000300000001,0x0000000000000000,0x0000000000000000,0x0000000000000240\n"
+".quad 0x000000000000008f,0x0000000000000000,0x0000000000000004,0x0000000000000000\n"
+".quad 0x000000030000000b,0x0000000000000000,0x0000000000000000,0x00000000000002cf\n"
+".quad 0x0000000000000012,0x0000000000000000,0x0000000000000001,0x0000000000000000\n"
+".quad 0x0000000200000013,0x0000000000000000,0x0000000000000000,0x00000000000002e1\n"
+".quad 0x0000000000000108,0x0000000a00000002,0x0000000000000001,0x0000000000000018\n"
+".quad 0x0000000100000036,0x0000000000000006,0x0000000000000000,0x00000000000003e9\n"
+".quad 0x00000000000000d0,0x0600000600000003,0x0000000000000004,0x0000000000000000\n"
+".quad 0x0000000100000070,0x0000000000000002,0x0000000000000000,0x00000000000004b9\n"
+".quad 0x0000000000000028,0x0000000400000000,0x0000000000000004,0x0000000000000000\n"
+".quad 0x0000000100000056,0x0000000000000002,0x0000000000000000,0x00000000000004e1\n"
+".quad 0x0000000000000028,0x0000000400000000,0x0000000000000001,0x0000000000000000\n"
+".quad 0x000000010000004d,0x0000000000000002,0x0000000000000000,0x0000000000000509\n"
+".quad 0x0000000000000018,0x0000000000000000,0x0000000000000001,0x0000000000000000\n"
+".quad 0x7472747368732e00,0x747274732e006261,0x746d79732e006261,0x672e766e2e006261\n"
+".quad 0x6e692e6c61626f6c,0x672e766e2e007469,0x742e006c61626f6c,0x30315a5f2e747865\n"
+".quad 0x6e72654b74736574,0x766e2e0069506c65,0x6e2e006f666e692e,0x5f2e6f666e692e76\n"
+".quad 0x4b7473657430315a,0x0069506c656e7265,0x736e6f632e766e2e,0x5a5f2e30746e6174\n"
+".quad 0x654b747365743031,0x000069506c656e72,0x7473657430315a5f,0x69506c656e72654b\n"
+".quad 0x0000000000000000,0x0000000000000000,0x0000000000000000,0x0100030000000000\n"
+".quad 0x0000000000000000,0x0000000000000000,0x0200030000000000,0x0000000000000000\n"
+".quad 0x0000000000000000,0x0300030000000000,0x0000000000000000,0x0000000000000000\n"
+".quad 0x0000030000000000,0x0000000000000000,0x0000000000000000,0x0000030000000000\n"
+".quad 0x0000000000000000,0x0000000000000000,0x0400030000000000,0x0000000000000000\n"
+".quad 0x000000000000d000,0x0700030000000000,0x0000000000000000,0x0000000000000000\n"
+".quad 0x0600030000000000,0x0000000000000000,0x0000000000000000,0x0500030000000000\n"
+".quad 0x0000000000000000,0x0000000000000000,0x0410120000000100,0x0000000000000000\n"
+".quad 0x000000000000d000,0x00440400005de400,0x00000094001c0428,0x0040009000dde42c\n"
+".quad 0x00000084009c0428,0x04400020001c032c,0x00000028015de220,0x00400080009de418\n"
+".quad 0x00fffffc011c0328,0x7ff80020201d0548,0x01f80070211d2554,0xffffffd8011de254\n"
+".quad 0x00000000215e051b,0x00000044015de21c,0x00000010211e0518,0x00000224011de21c\n"
+".quad 0x00000050215c6518,0x00000004015de214,0x00000060211c8518,0x00c0001c011c2314\n"
+".quad 0x00000030201e4540,0x00000040201e251c,0x000000a0201ce51c,0x00000000501c0314\n"
+".quad 0x00000080211ca560,0x00000090201cc514,0x00000000001de714,0x0000000000000080\n"
+".quad 0x0000000000000000,0x0000000000000000,0x0000000000000000,0x0000000000000000\n"
+".quad 0x00000000040c0400,0x00000900080a0400,0x0819030008002000,0xffffff000c170400\n"
+".quad 0x21f00000000000ff,0x00000a0008120400,0x0811040000000000,0x0000000000000a00\n"
+".quad 0x0000000600000000,0x0000052400000005,0x0000000000000000,0x0000000000000000\n"
+".quad 0x0000007000000000,0x0000007000000000,0x0000000400000000,0x6000000000000000\n"
+".quad 0x000003e900000a05,0x0000000000000000,0x0000000000000000,0x0000012000000000\n"
+".quad 0x0000012000000000,0x0000000400000000,0x0000000000000000\n"
+".text");
+
+extern "C" {
+
+extern const unsigned long long __deviceText_$sm_21$[179];
+
+}
+
+static __cudaFatPtxEntry __ptxEntries [] = {{(char*)"compute_20",(char*)__deviceText_$compute_20$},{0,0}};
 static __cudaFatCubinEntry __cubinEntries[] = {{0,0}};
 static __cudaFatDebugEntry __debugEntries0 = {0, 0, 0, 0} ;
 static __cudaFatElfEntry __elfEntries0 = {0, 0, 0, 0} ;
-static __cudaFatElfEntry __elfEntries1 = {(char*)"sm_13", (char*)__deviceText_$sm_13$, &__elfEntries0, (unsigned int)sizeof(__deviceText_$sm_13$)};
+static __cudaFatElfEntry __elfEntries1 = {(char*)"sm_21", (char*)__deviceText_$sm_21$, &__elfEntries0, (unsigned int)sizeof(__deviceText_$sm_21$)};
 
 
 
-static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000004,0xa14f518d,(char*)"2feeeebdb87e64f9",(char*)"/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu",(char*)" ",__ptxEntries,__cubinEntries,&__debugEntries0,0,0,0,0,0,0x2d2beddc,&__elfEntries1};
-# 3 "/tmp/tmpxft_00001a1f_00000000-1_simpleAtomicIntrinsics.cudafe1.stub.c" 2
+static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000004,0xa14f518d,(char*)"2835cbbfab1bd507",(char*)"/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics.cu",(char*)" ",__ptxEntries,__cubinEntries,&__debugEntries0,0,0,0,0,0,0x3fdf4d63,&__elfEntries1};
+# 3 "/tmp/tmpxft_0000131c_00000000-1_simpleAtomicIntrinsics.cudafe1.stub.c" 2
 struct __T20 {int *__par0;int __dummy_field;};
 extern void __device_stub__Z10testKernelPi(int *);
-static void __sti____cudaRegisterAll_57_tmpxft_00001a1f_00000000_4_simpleAtomicIntrinsics_cpp1_ii_cab170b3(void) __attribute__((__constructor__));
+static void __sti____cudaRegisterAll_57_tmpxft_0000131c_00000000_4_simpleAtomicIntrinsics_cpp1_ii_cab170b3(void) __attribute__((__constructor__));
 void __device_stub__Z10testKernelPi(int *__par0){ struct __T20 *__T21 = 0;
 if (cudaSetupArgument((void*)(char*)&__par0, sizeof(__par0), (size_t)&__T21->__par0) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(int *))testKernel)); (void)cudaLaunch(((char *)((void ( *)(int *))testKernel))); };}
 void testKernel( int *__cuda_0)
-# 48 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics_kernel.cu"
+# 48 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics_kernel.cu"
 {__device_stub__Z10testKernelPi( __cuda_0);
-# 90 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics_kernel.cu"
+# 90 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleAtomicIntrinsics/simpleAtomicIntrinsics_kernel.cu"
 }
-# 1 "/tmp/tmpxft_00001a1f_00000000-1_simpleAtomicIntrinsics.cudafe1.stub.c"
-static void __sti____cudaRegisterAll_57_tmpxft_00001a1f_00000000_4_simpleAtomicIntrinsics_cpp1_ii_cab170b3(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(int *))testKernel), (char*)"_Z10testKernelPi", "_Z10testKernelPi", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); }
-# 1 "/tmp/tmpxft_00001a1f_00000000-1_simpleAtomicIntrinsics.cudafe1.stub.c" 2
+# 1 "/tmp/tmpxft_0000131c_00000000-1_simpleAtomicIntrinsics.cudafe1.stub.c"
+static void __sti____cudaRegisterAll_57_tmpxft_0000131c_00000000_4_simpleAtomicIntrinsics_cpp1_ii_cab170b3(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(int *))testKernel), (char*)"_Z10testKernelPi", "_Z10testKernelPi", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); }
+# 1 "/tmp/tmpxft_0000131c_00000000-1_simpleAtomicIntrinsics.cudafe1.stub.c" 2

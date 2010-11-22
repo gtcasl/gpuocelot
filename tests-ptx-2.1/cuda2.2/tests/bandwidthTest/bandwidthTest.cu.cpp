@@ -1,8 +1,8 @@
-# 1 "/tmp/tmpxft_00000b07_00000000-1_bandwidthTest.cudafe1.cpp"
+# 1 "/tmp/tmpxft_0000094c_00000000-1_bandwidthTest.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_00000b07_00000000-1_bandwidthTest.cudafe1.cpp"
-# 1 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 1 "/tmp/tmpxft_0000094c_00000000-1_bandwidthTest.cudafe1.cpp"
+# 1 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 # 46 "/usr/local/cuda/bin/../include/device_types.h"
 # 149 "/usr/lib/gcc/i686-linux-gnu/4.4.5/include/stddef.h" 3
 typedef long ptrdiff_t;
@@ -11361,1202 +11361,1202 @@ printf(" -> CUDA %s Toolkit\n", sNVCCReq);
 printf(" -> %s NVIDIA Display Driver.\n", sDriverReq);
 # 18 "sdk/cutil_inline.h"
 }
-# 80 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 80 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 enum testMode { QUICK_MODE, RANGE_MODE, SHMOO_MODE};
-# 81 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 81 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 enum memcpyKind { DEVICE_TO_HOST, HOST_TO_DEVICE, DEVICE_TO_DEVICE};
-# 82 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 82 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 enum printMode { USER_READABLE, CSV};
-# 83 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 83 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 enum memoryMode { PINNED, PAGEABLE};
-# 86 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 86 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 static bool bDontUseGPUTiming;
-# 90 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 90 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 void runTest(const int, const char **);
-# 91 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 91 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 void testBandwidth(unsigned, unsigned, unsigned, testMode, memcpyKind, printMode, memoryMode, int, int, bool);
-# 93 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 93 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 void testBandwidthQuick(unsigned, memcpyKind, printMode, memoryMode, int, int, bool);
-# 94 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 94 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 void testBandwidthRange(unsigned, unsigned, unsigned, memcpyKind, printMode, memoryMode, int, int, bool);
-# 96 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 96 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 void testBandwidthShmoo(memcpyKind, printMode, memoryMode, int, int, bool);
-# 97 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 97 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 float testDeviceToHostTransfer(unsigned, memoryMode, bool);
-# 98 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 98 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 float testHostToDeviceTransfer(unsigned, memoryMode, bool);
-# 99 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 99 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 float testDeviceToDeviceTransfer(unsigned);
-# 100 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 100 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 void printResultsReadable(unsigned *, float *, unsigned);
-# 101 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 101 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 void printResultsCSV(unsigned *, float *, unsigned);
-# 102 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 102 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 void printHelp();
-# 108 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 108 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 int main(int argc, char **argv)
-# 109 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 109 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 110 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 110 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 runTest(argc, (const char **)argv);
-# 111 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 111 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 __cutilExit(argc, argv); return 0;
-# 112 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 112 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 }
-# 117 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 117 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 void runTest(const int argc, const char **argv)
-# 118 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 118 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 119 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 119 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 int start = (32 * (1 << 20));
-# 120 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 120 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 int end = (32 * (1 << 20));
-# 121 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 121 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 int startDevice = 0;
-# 122 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 122 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 int endDevice = 0;
-# 123 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 123 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 int increment = (1 << 22);
-# 124 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 124 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 testMode mode = QUICK_MODE;
-# 125 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 125 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 bool htod = false;
-# 126 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 126 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 bool dtoh = false;
-# 127 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 127 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 bool dtod = false;
-# 128 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 128 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 bool wc = false;
-# 129 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 129 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 char *modeStr;
-# 130 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 130 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 char *device = (__null);
-# 131 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 131 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 printMode printmode = USER_READABLE;
-# 132 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 132 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 char *memModeStr = (__null);
-# 133 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 133 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 memoryMode memMode = PAGEABLE;
-# 136 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 136 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 if (cutCheckCmdLineFlag(argc, argv, "help"))
-# 137 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 137 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 138 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 138 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 printHelp();
-# 139 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 139 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 return;
-# 140 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 140 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 }
-# 142 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 142 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 if (cutCheckCmdLineFlag(argc, argv, "csv"))
-# 143 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 143 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 144 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 144 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 printmode = CSV;
-# 145 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 145 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 }
-# 147 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 147 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 if (cutGetCmdLineArgumentstr(argc, argv, "memory", &memModeStr))
-# 148 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 148 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 149 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 149 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 if (strcmp(memModeStr, "pageable") == 0)
-# 150 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 150 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 151 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 151 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 memMode = PAGEABLE;
-# 152 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 152 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 } else {
-# 153 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 153 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 if (strcmp(memModeStr, "pinned") == 0)
-# 154 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 154 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 155 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 155 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 memMode = PINNED;
-# 156 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 156 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 } else
-# 158 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 158 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 159 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 159 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 printf("Invalid memory mode - valid modes are pageable or pinned\n");
-# 160 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 160 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 printf("See --help for more information\n");
-# 161 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 161 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 return;
-# 162 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 162 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 } }
-# 163 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 163 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 } else
-# 165 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 165 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 167 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 167 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 memMode = PAGEABLE;
-# 168 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 168 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 }
-# 170 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 170 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 if (cutGetCmdLineArgumentstr(argc, argv, "device", &device))
-# 171 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 171 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 172 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 172 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 int deviceCount;
-# 173 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 173 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 cudaGetDeviceCount(&deviceCount);
-# 174 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 174 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 if (deviceCount == 0)
-# 175 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 175 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 176 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 176 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 printf("!!!!!No devices found!!!!!\n");
-# 177 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 177 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 return;
-# 178 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 178 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 }
-# 179 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 179 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 if (strcmp(device, "all") == 0)
-# 180 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 180 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 181 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 181 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 printf("\n!!!!!Cumulative Bandwidth to be computed from all the devices !!!!!!\n\n");
-# 182 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 182 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 startDevice = 0;
-# 183 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 183 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 endDevice = (deviceCount - 1);
-# 184 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 184 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 } else
-# 186 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 186 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 187 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 187 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 startDevice = (endDevice = atoi(device));
-# 188 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 188 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 if ((startDevice >= deviceCount) || (startDevice < 0))
-# 189 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 189 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 190 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 190 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 printf("\n!!!!!Invalid GPU number %d given hence default gpu %d will be used !!!!!\n", startDevice, 0);
-# 191 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 191 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 startDevice = (endDevice = 0);
-# 192 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 192 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 }
-# 193 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 193 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 }
-# 194 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 194 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 }
-# 195 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 195 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 printf("Running on......\n");
-# 196 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 196 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 for (int currentDevice = startDevice; currentDevice <= endDevice; currentDevice++)
-# 197 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 197 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 198 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 198 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 cudaDeviceProp deviceProp;
-# 199 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 199 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 cudaGetDeviceProperties(&deviceProp, currentDevice);
-# 200 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 200 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 printf("      device %d:%s\n", currentDevice, deviceProp.name);
-# 201 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 201 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 }
-# 203 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 203 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 if (cutGetCmdLineArgumentstr(argc, argv, "mode", &modeStr))
-# 204 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 204 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 206 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 206 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 if (strcmp(modeStr, "quick") == 0)
-# 207 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 207 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 208 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 208 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 mode = QUICK_MODE;
-# 209 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 209 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 } else {
-# 210 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 210 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 if (strcmp(modeStr, "shmoo") == 0)
-# 211 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 211 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 212 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 212 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 mode = SHMOO_MODE;
-# 213 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 213 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 } else {
-# 214 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 214 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 if (strcmp(modeStr, "range") == 0)
-# 215 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 215 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 216 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 216 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 mode = RANGE_MODE;
-# 217 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 217 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 } else
-# 219 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 219 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 220 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 220 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 printf("Invalid mode - valid modes are quick, range, or shmoo\n");
-# 221 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 221 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 printf("See --help for more information\n");
-# 222 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 222 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 return;
-# 223 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 223 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 } } }
-# 224 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 224 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 } else
-# 226 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 226 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 228 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 228 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 mode = QUICK_MODE;
-# 229 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 229 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 }
-# 231 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 231 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 if (cutCheckCmdLineFlag(argc, argv, "htod")) {
-# 232 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 232 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 htod = true; }
-# 233 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 233 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 if (cutCheckCmdLineFlag(argc, argv, "dtoh")) {
-# 234 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 234 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 dtoh = true; }
-# 235 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 235 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 if (cutCheckCmdLineFlag(argc, argv, "dtod")) {
-# 236 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 236 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 dtod = true; }
-# 238 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 238 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 if (cutCheckCmdLineFlag(argc, argv, "wc")) {
-# 239 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 239 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 wc = true; }
-# 241 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 241 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 if (cutCheckCmdLineFlag(argc, argv, "cputiming")) {
-# 242 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 242 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 bDontUseGPUTiming = true; }
-# 244 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 244 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 if (((!htod) && (!dtoh)) && (!dtod))
-# 245 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 245 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 247 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 247 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 htod = true;
-# 248 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 248 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 dtoh = true;
-# 249 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 249 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 dtod = true;
-# 250 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 250 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 }
-# 252 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 252 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 if ((RANGE_MODE) == mode)
-# 253 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 253 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 254 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 254 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 if (cutGetCmdLineArgumenti(argc, argv, "start", &start))
-# 255 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 255 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 256 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 256 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 if (start <= 0)
-# 257 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 257 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 258 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 258 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 printf("Illegal argument - start must be greater than zero\n");
-# 259 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 259 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 return;
-# 260 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 260 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 }
-# 261 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 261 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 } else
-# 263 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 263 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 264 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 264 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 printf("Must specify a starting size in range mode\n");
-# 265 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 265 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 printf("See --help for more information\n");
-# 266 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 266 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 return;
-# 267 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 267 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 }
-# 269 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 269 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 if (cutGetCmdLineArgumenti(argc, argv, "end", &end))
-# 270 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 270 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 271 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 271 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 if (end <= 0)
-# 272 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 272 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 273 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 273 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 printf("Illegal argument - end must be greater than zero\n");
-# 274 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 274 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 return;
-# 275 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 275 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 }
-# 277 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 277 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 if (start > end)
-# 278 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 278 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 279 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 279 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 printf("Illegal argument - start is greater than end\n");
-# 280 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 280 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 return;
-# 281 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 281 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 }
-# 282 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 282 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 } else
-# 284 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 284 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 285 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 285 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 printf("Must specify an end size in range mode.\n");
-# 286 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 286 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 printf("See --help for more information\n");
-# 287 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 287 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 return;
-# 288 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 288 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 }
-# 291 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 291 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 if (cutGetCmdLineArgumenti(argc, argv, "increment", &increment))
-# 292 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 292 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 293 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 293 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 if (increment <= 0)
-# 294 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 294 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 295 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 295 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 printf("Illegal argument - increment must be greater than zero\n");
-# 296 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 296 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 return;
-# 297 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 297 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 }
-# 298 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 298 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 } else
-# 300 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 300 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 301 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 301 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 printf("Must specify an increment in user mode\n");
-# 302 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 302 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 printf("See --help for more information\n");
-# 303 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 303 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 return;
-# 304 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 304 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 }
-# 305 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 305 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 }
-# 307 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 307 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 if (htod)
-# 308 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 308 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 309 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 309 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 testBandwidth((unsigned)start, (unsigned)end, (unsigned)increment, mode, HOST_TO_DEVICE, printmode, memMode, startDevice, endDevice, wc);
-# 311 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 311 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 }
-# 312 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 312 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 if (dtoh)
-# 313 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 313 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 314 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 314 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 testBandwidth((unsigned)start, (unsigned)end, (unsigned)increment, mode, DEVICE_TO_HOST, printmode, memMode, startDevice, endDevice, wc);
-# 316 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 316 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 }
-# 317 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 317 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 if (dtod)
-# 318 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 318 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 319 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 319 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 testBandwidth((unsigned)start, (unsigned)end, (unsigned)increment, mode, DEVICE_TO_DEVICE, printmode, memMode, startDevice, endDevice, wc);
-# 321 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 321 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 }
-# 323 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 323 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 printf("&&&& Test PASSED\n");
-# 325 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 325 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 cutFree(memModeStr);
-# 328 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 328 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 }
-# 334 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 334 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 void testBandwidth(unsigned start, unsigned end, unsigned increment, testMode
-# 335 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 335 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 mode, memcpyKind kind, printMode printmode, memoryMode memMode, int startDevice, int endDevice, bool wc)
-# 336 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 336 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 337 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 337 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 switch (mode)
-# 338 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 338 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 339 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 339 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 case QUICK_MODE:
-# 340 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 340 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 printf("Quick Mode\n");
-# 341 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 341 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 testBandwidthQuick(32 * (1 << 20), kind, printmode, memMode, startDevice, endDevice, wc);
-# 342 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 342 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 break;
-# 343 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 343 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 case RANGE_MODE:
-# 344 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 344 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 printf("Range Mode\n");
-# 345 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 345 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 testBandwidthRange(start, end, increment, kind, printmode, memMode, startDevice, endDevice, wc);
-# 346 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 346 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 break;
-# 347 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 347 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 case SHMOO_MODE:
-# 348 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 348 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 printf("Shmoo Mode\n");
-# 349 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 349 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 testBandwidthShmoo(kind, printmode, memMode, startDevice, endDevice, wc);
-# 350 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 350 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 break;
-# 351 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 351 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 default:
-# 352 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 352 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 printf("Invalid testing mode\n");
-# 353 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 353 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 break;
-# 354 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 354 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 }
-# 356 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 356 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 }
-# 362 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 362 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 void testBandwidthQuick(unsigned size, memcpyKind kind, printMode printmode, memoryMode memMode, int startDevice, int endDevice, bool wc)
-# 363 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 363 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 364 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 364 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 testBandwidthRange(size, size, 1 << 22, kind, printmode, memMode, startDevice, endDevice, wc);
-# 365 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 365 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 }
-# 371 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 371 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 void testBandwidthRange(unsigned start, unsigned end, unsigned increment, memcpyKind
-# 372 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 372 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 kind, printMode printmode, memoryMode memMode, int startDevice, int endDevice, bool wc)
-# 373 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 373 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 375 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 375 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 unsigned count = ((1) + ((end - start) / increment));
-# 377 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 377 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 unsigned *memSizes = ((unsigned *)malloc(count * sizeof(unsigned)));
-# 378 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 378 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 float *bandwidths = ((float *)malloc(count * sizeof(float)));
-# 381 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 381 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 switch (kind)
-# 382 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 382 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 383 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 383 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 case DEVICE_TO_HOST: printf("Device to Host Bandwidth for ");
-# 384 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 384 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 break;
-# 385 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 385 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 case HOST_TO_DEVICE: printf("Host to Device Bandwidth for ");
-# 386 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 386 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 break;
-# 387 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 387 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 case DEVICE_TO_DEVICE: printf("Device to Device Bandwidth\n");
-# 388 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 388 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 break;
-# 389 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 389 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 }
-# 390 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 390 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 if ((DEVICE_TO_DEVICE) != kind)
-# 391 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 391 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 { switch (memMode)
-# 392 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 392 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 393 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 393 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 case PAGEABLE: printf("Pageable memory\n");
-# 394 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 394 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 break;
-# 395 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 395 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 case PINNED: printf("Pinned memory\n");
-# 396 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 396 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 if (wc) { printf("Write-Combined memory enabled\n"); }
-# 397 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 397 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 break;
-# 398 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 398 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 }
-# 399 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 399 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 }
-# 402 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 402 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 for (int i = 0; i < count; i++) {
-# 403 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 403 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 (bandwidths[i]) = (0.0F); }
-# 406 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 406 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 for (int currentDevice = startDevice; currentDevice <= endDevice; currentDevice++)
-# 407 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 407 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 408 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 408 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 cudaSetDevice(currentDevice);
-# 410 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 410 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 for (unsigned i = (0); i < count; i++)
-# 411 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 411 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 413 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 413 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 (memSizes[i]) = (start + (i * increment));
-# 414 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 414 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 switch (kind)
-# 415 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 415 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 416 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 416 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 case DEVICE_TO_HOST: (bandwidths[i]) = testDeviceToHostTransfer(memSizes[i], memMode, wc);
-# 417 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 417 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 break;
-# 418 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 418 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 case HOST_TO_DEVICE: (bandwidths[i]) = testHostToDeviceTransfer(memSizes[i], memMode, wc);
-# 419 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 419 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 break;
-# 420 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 420 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 case DEVICE_TO_DEVICE: (bandwidths[i]) = testDeviceToDeviceTransfer(memSizes[i]);
-# 421 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 421 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 break;
-# 422 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 422 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 }
-# 423 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 423 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 printf(".");
-# 424 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 424 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 }
-# 425 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 425 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 cudaThreadExit();
-# 426 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 426 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 }
-# 427 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 427 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 printf("\n");
-# 430 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 430 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 if (printmode == (CSV))
-# 431 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 431 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 432 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 432 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 printResultsCSV(memSizes, bandwidths, count);
-# 433 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 433 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 } else
-# 435 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 435 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 436 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 436 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 printResultsReadable(memSizes, bandwidths, count);
-# 437 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 437 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 }
-# 440 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 440 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 free(memSizes);
-# 441 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 441 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 free(bandwidths);
-# 442 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 442 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 }
-# 448 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 448 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 void testBandwidthShmoo(memcpyKind kind, printMode printmode, memoryMode memMode, int startDevice, int endDevice, bool wc)
-# 449 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 449 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 451 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 451 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 switch (kind)
-# 452 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 452 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 453 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 453 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 case DEVICE_TO_HOST: printf("Device to Host Bandwidth for ");
-# 454 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 454 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 break;
-# 455 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 455 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 case HOST_TO_DEVICE: printf("Host to Device Bandwidth for ");
-# 456 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 456 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 break;
-# 457 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 457 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 case DEVICE_TO_DEVICE: printf("Device to Device Bandwidth\n");
-# 458 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 458 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 break;
-# 459 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 459 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 }
-# 460 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 460 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 if ((DEVICE_TO_DEVICE) != kind)
-# 461 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 461 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 { switch (memMode)
-# 462 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 462 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 463 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 463 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 case PAGEABLE: printf("Pageable memory\n");
-# 464 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 464 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 break;
-# 465 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 465 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 case PINNED: printf("Pinned memory\n");
-# 466 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 466 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 if (wc) { printf("Write-Combined memory enabled\n"); }
-# 467 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 467 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 break;
-# 468 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 468 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 }
-# 469 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 469 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 }
-# 472 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 472 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 unsigned count = (((((((1 + ((20 * (1 << 10)) / (1 << 10))) + (((50 * (1 << 10)) - (20 * (1 << 10))) / (1 << 11))) + (((100 * (1 << 10)) - (50 * (1 << 10))) / (10 * (1 << 10)))) + (((1 << 20) - (100 * (1 << 10))) / (100 * (1 << 10)))) + (((1 << 24) - (1 << 20)) / (1 << 20))) + (((1 << 25) - (1 << 24)) / (1 << 21))) + (((1 << 26) - (1 << 25)) / (1 << 22)));
-# 480 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 480 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 unsigned *memSizes = ((unsigned *)malloc(count * sizeof(unsigned)));
-# 481 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 481 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 float *bandwidths = ((float *)malloc(count * sizeof(float)));
-# 485 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 485 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 for (int i = 0; i < count; i++) {
-# 486 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 486 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 (bandwidths[i]) = (0.0F); }
-# 489 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 489 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 for (int currentDevice = startDevice; currentDevice <= endDevice; currentDevice++)
-# 490 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 490 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 491 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 491 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 cudaSetDevice(currentDevice);
-# 493 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 493 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 int iteration = 0;
-# 494 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 494 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 unsigned memSize = (0);
-# 495 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 495 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 while (memSize <= (1 << 26))
-# 496 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 496 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 497 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 497 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 if (memSize < (20 * (1 << 10)))
-# 498 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 498 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 499 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 499 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 memSize += (1 << 10);
-# 500 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 500 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 } else {
-# 501 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 501 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 if (memSize < (50 * (1 << 10)))
-# 502 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 502 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 503 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 503 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 memSize += (1 << 11);
-# 504 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 504 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 } else { if (memSize < (100 * (1 << 10)))
-# 505 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 505 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 506 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 506 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 memSize += (10 * (1 << 10));
-# 507 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 507 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 } else { if (memSize < (1 << 20))
-# 508 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 508 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 509 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 509 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 memSize += (100 * (1 << 10));
-# 510 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 510 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 } else { if (memSize < (1 << 24))
-# 511 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 511 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 512 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 512 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 memSize += (1 << 20);
-# 513 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 513 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 } else { if (memSize < (1 << 25))
-# 514 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 514 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 515 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 515 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 memSize += (1 << 21);
-# 516 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 516 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 } else
-# 517 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 517 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 518 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 518 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 memSize += (1 << 22);
-# 519 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 519 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 } } } } } }
-# 521 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 521 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 (memSizes[iteration]) = memSize;
-# 522 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 522 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 switch (kind)
-# 523 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 523 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 524 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 524 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 case DEVICE_TO_HOST: (bandwidths[iteration]) += testDeviceToHostTransfer(memSizes[iteration], memMode, wc);
-# 525 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 525 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 break;
-# 526 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 526 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 case HOST_TO_DEVICE: (bandwidths[iteration]) += testHostToDeviceTransfer(memSizes[iteration], memMode, wc);
-# 527 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 527 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 break;
-# 528 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 528 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 case DEVICE_TO_DEVICE: (bandwidths[iteration]) += testDeviceToDeviceTransfer(memSizes[iteration]);
-# 529 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 529 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 break;
-# 530 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 530 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 }
-# 531 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 531 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 iteration++;
-# 532 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 532 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 printf(".");
-# 533 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 533 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 }
-# 534 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 534 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 }
-# 536 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 536 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 printf("\n");
-# 539 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 539 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 if ((CSV) == printmode)
-# 540 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 540 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 541 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 541 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 printResultsCSV(memSizes, bandwidths, count);
-# 542 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 542 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 } else
-# 544 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 544 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 545 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 545 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 printResultsReadable(memSizes, bandwidths, count);
-# 546 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 546 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 }
-# 549 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 549 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 free(memSizes);
-# 550 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 550 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 free(bandwidths);
-# 551 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 551 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 }
-# 557 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 557 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 float testDeviceToHostTransfer(unsigned memSize, memoryMode memMode, bool wc)
-# 558 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 558 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 559 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 559 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 unsigned timer = (0);
-# 560 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 560 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 float elapsedTimeInMs = (0.0F);
-# 561 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 561 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 float bandwidthInMBs = (0.0F);
-# 562 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 562 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 unsigned char *h_idata = (__null);
-# 563 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 563 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 unsigned char *h_odata = (__null);
-# 564 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 564 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 cudaEvent_t start, stop;
-# 566 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
-__cutilCheckError(cutCreateTimer(&timer), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 566);
-# 567 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
-__cudaSafeCall(cudaEventCreate(&start), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 567);
-# 568 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
-__cudaSafeCall(cudaEventCreate(&stop), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 568);
-# 571 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 566 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+__cutilCheckError(cutCreateTimer(&timer), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 566);
+# 567 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+__cudaSafeCall(cudaEventCreate(&start), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 567);
+# 568 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+__cudaSafeCall(cudaEventCreate(&stop), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 568);
+# 571 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 if ((PINNED) == memMode)
-# 572 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 572 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 575 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
-__cudaSafeCall(cudaHostAlloc((void **)(&h_idata), memSize, wc ? 4 : 0), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 575);
-# 576 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
-__cudaSafeCall(cudaHostAlloc((void **)(&h_odata), memSize, wc ? 4 : 0), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 576);
-# 581 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 575 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+__cudaSafeCall(cudaHostAlloc((void **)(&h_idata), memSize, wc ? 4 : 0), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 575);
+# 576 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+__cudaSafeCall(cudaHostAlloc((void **)(&h_odata), memSize, wc ? 4 : 0), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 576);
+# 581 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 } else
-# 583 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 583 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 585 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 585 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 h_idata = ((unsigned char *)malloc(memSize));
-# 586 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 586 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 h_odata = ((unsigned char *)malloc(memSize));
-# 587 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 587 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 }
-# 589 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 589 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 for (unsigned i = (0); i < (memSize / sizeof(unsigned char)); i++)
-# 590 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 590 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 591 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 591 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 (h_idata[i]) = ((unsigned char)(i & (255)));
-# 592 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 592 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 }
-# 595 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 595 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 unsigned char *d_idata;
-# 596 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
-__cudaSafeCall(cudaMalloc((void **)(&d_idata), memSize), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 596);
-# 599 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
-__cudaSafeCall(cudaMemcpy(d_idata, h_idata, memSize, cudaMemcpyHostToDevice), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 600);
-# 603 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
-__cutilCheckError(cutStartTimer(timer), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 603);
-# 604 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
-__cudaSafeCall(cudaEventRecord(start, 0), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 604);
-# 605 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 596 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+__cudaSafeCall(cudaMalloc((void **)(&d_idata), memSize), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 596);
+# 599 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+__cudaSafeCall(cudaMemcpy(d_idata, h_idata, memSize, cudaMemcpyHostToDevice), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 600);
+# 603 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+__cutilCheckError(cutStartTimer(timer), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 603);
+# 604 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+__cudaSafeCall(cudaEventRecord(start, 0), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 604);
+# 605 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 if ((PINNED) == memMode)
-# 606 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 606 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 607 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 607 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 for (unsigned i = (0); i < (10); i++)
-# 608 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 608 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 609 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
-__cudaSafeCall(cudaMemcpyAsync(h_odata, d_idata, memSize, cudaMemcpyDeviceToHost, 0), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 610);
-# 611 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 609 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+__cudaSafeCall(cudaMemcpyAsync(h_odata, d_idata, memSize, cudaMemcpyDeviceToHost, 0), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 610);
+# 611 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 }
-# 612 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 612 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 } else
-# 614 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 614 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 615 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 615 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 for (unsigned i = (0); i < (10); i++)
-# 616 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 616 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 617 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
-__cudaSafeCall(cudaMemcpy(h_odata, d_idata, memSize, cudaMemcpyDeviceToHost), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 618);
-# 619 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 617 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+__cudaSafeCall(cudaMemcpy(h_odata, d_idata, memSize, cudaMemcpyDeviceToHost), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 618);
+# 619 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 }
-# 620 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 620 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 }
-# 621 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
-__cudaSafeCall(cudaEventRecord(stop, 0), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 621);
-# 624 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
-__cudaSafeCall(cudaThreadSynchronize(), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 624);
-# 626 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
-__cutilCheckError(cutStopTimer(timer), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 626);
-# 627 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
-__cudaSafeCall(cudaEventElapsedTime(&elapsedTimeInMs, start, stop), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 627);
-# 628 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 621 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+__cudaSafeCall(cudaEventRecord(stop, 0), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 621);
+# 624 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+__cudaSafeCall(cudaThreadSynchronize(), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 624);
+# 626 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+__cutilCheckError(cutStopTimer(timer), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 626);
+# 627 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+__cudaSafeCall(cudaEventElapsedTime(&elapsedTimeInMs, start, stop), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 627);
+# 628 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 if (((PINNED) != memMode) || bDontUseGPUTiming)
-# 629 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 629 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 630 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 630 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 elapsedTimeInMs = cutGetTimerValue(timer);
-# 631 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 631 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 }
-# 634 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 634 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 bandwidthInMBs = ((((1000.0F) * memSize) * ((float)10)) / (elapsedTimeInMs * ((float)(1 << 20))));
-# 638 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
-__cudaSafeCall(cudaEventDestroy(stop), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 638);
-# 639 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
-__cudaSafeCall(cudaEventDestroy(start), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 639);
-# 640 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
-__cutilCheckError(cutDeleteTimer(timer), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 640);
-# 641 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 638 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+__cudaSafeCall(cudaEventDestroy(stop), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 638);
+# 639 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+__cudaSafeCall(cudaEventDestroy(start), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 639);
+# 640 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+__cutilCheckError(cutDeleteTimer(timer), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 640);
+# 641 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 if ((PINNED) == memMode)
-# 642 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 642 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 643 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
-__cudaSafeCall(cudaFreeHost(h_idata), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 643);
-# 644 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
-__cudaSafeCall(cudaFreeHost(h_odata), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 644);
-# 645 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 643 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+__cudaSafeCall(cudaFreeHost(h_idata), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 643);
+# 644 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+__cudaSafeCall(cudaFreeHost(h_odata), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 644);
+# 645 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 } else
-# 647 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 647 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 648 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 648 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 free(h_idata);
-# 649 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 649 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 free(h_odata);
-# 650 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 650 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 }
-# 651 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
-__cudaSafeCall(cudaFree(d_idata), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 651);
-# 653 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 651 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+__cudaSafeCall(cudaFree(d_idata), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 651);
+# 653 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 return bandwidthInMBs;
-# 654 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 654 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 }
-# 660 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 660 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 float testHostToDeviceTransfer(unsigned memSize, memoryMode memMode, bool wc)
-# 661 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 661 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 662 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 662 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 unsigned timer = (0);
-# 663 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 663 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 float elapsedTimeInMs = (0.0F);
-# 664 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 664 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 float bandwidthInMBs = (0.0F);
-# 665 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 665 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 cudaEvent_t start, stop;
-# 666 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
-__cutilCheckError(cutCreateTimer(&timer), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 666);
-# 667 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
-__cudaSafeCall(cudaEventCreate(&start), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 667);
-# 668 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
-__cudaSafeCall(cudaEventCreate(&stop), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 668);
-# 671 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 666 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+__cutilCheckError(cutCreateTimer(&timer), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 666);
+# 667 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+__cudaSafeCall(cudaEventCreate(&start), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 667);
+# 668 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+__cudaSafeCall(cudaEventCreate(&stop), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 668);
+# 671 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 unsigned char *h_odata = (__null);
-# 672 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 672 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 if ((PINNED) == memMode)
-# 673 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 673 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 676 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
-__cudaSafeCall(cudaHostAlloc((void **)(&h_odata), memSize, wc ? 4 : 0), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 676);
-# 681 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 676 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+__cudaSafeCall(cudaHostAlloc((void **)(&h_odata), memSize, wc ? 4 : 0), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 676);
+# 681 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 } else
-# 683 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 683 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 685 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 685 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 h_odata = ((unsigned char *)malloc(memSize));
-# 686 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 686 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 }
-# 687 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 687 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 unsigned char *h_cacheClear1 = ((unsigned char *)malloc(1 << 24));
-# 688 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 688 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 unsigned char *h_cacheClear2 = ((unsigned char *)malloc(1 << 24));
-# 690 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 690 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 for (unsigned i = (0); i < (memSize / sizeof(unsigned char)); i++)
-# 691 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 691 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 692 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 692 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 (h_odata[i]) = ((unsigned char)(i & (255)));
-# 693 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 693 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 }
-# 694 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 694 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 for (unsigned i = (0); i < ((1 << 24) / sizeof(unsigned char)); i++)
-# 695 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 695 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 696 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 696 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 (h_cacheClear1[i]) = ((unsigned char)(i & (255)));
-# 697 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 697 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 (h_cacheClear2[i]) = ((unsigned char)((255) - (i & (255))));
-# 698 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 698 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 }
-# 701 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 701 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 unsigned char *d_idata;
-# 702 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
-__cudaSafeCall(cudaMalloc((void **)(&d_idata), memSize), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 702);
-# 704 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
-__cutilCheckError(cutStartTimer(timer), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 704);
-# 705 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
-__cudaSafeCall(cudaEventRecord(start, 0), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 705);
-# 707 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 702 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+__cudaSafeCall(cudaMalloc((void **)(&d_idata), memSize), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 702);
+# 704 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+__cutilCheckError(cutStartTimer(timer), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 704);
+# 705 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+__cudaSafeCall(cudaEventRecord(start, 0), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 705);
+# 707 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 if ((PINNED) == memMode)
-# 708 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 708 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 709 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 709 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 for (unsigned i = (0); i < (10); i++)
-# 710 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 710 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 711 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
-__cudaSafeCall(cudaMemcpyAsync(d_idata, h_odata, memSize, cudaMemcpyHostToDevice, 0), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 712);
-# 713 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 711 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+__cudaSafeCall(cudaMemcpyAsync(d_idata, h_odata, memSize, cudaMemcpyHostToDevice, 0), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 712);
+# 713 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 }
-# 714 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 714 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 } else
-# 715 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 715 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 716 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 716 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 for (unsigned i = (0); i < (10); i++)
-# 717 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 717 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 718 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
-__cudaSafeCall(cudaMemcpy(d_idata, h_odata, memSize, cudaMemcpyHostToDevice), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 719);
-# 720 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 718 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+__cudaSafeCall(cudaMemcpy(d_idata, h_odata, memSize, cudaMemcpyHostToDevice), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 719);
+# 720 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 }
-# 721 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 721 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 }
-# 723 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
-__cudaSafeCall(cudaEventRecord(stop, 0), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 723);
-# 724 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
-__cudaSafeCall(cudaThreadSynchronize(), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 724);
-# 726 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
-__cutilCheckError(cutStopTimer(timer), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 726);
-# 727 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
-__cudaSafeCall(cudaEventElapsedTime(&elapsedTimeInMs, start, stop), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 727);
-# 728 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 723 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+__cudaSafeCall(cudaEventRecord(stop, 0), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 723);
+# 724 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+__cudaSafeCall(cudaThreadSynchronize(), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 724);
+# 726 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+__cutilCheckError(cutStopTimer(timer), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 726);
+# 727 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+__cudaSafeCall(cudaEventElapsedTime(&elapsedTimeInMs, start, stop), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 727);
+# 728 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 if (((PINNED) != memMode) || bDontUseGPUTiming)
-# 729 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 729 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 730 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 730 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 elapsedTimeInMs = cutGetTimerValue(timer);
-# 731 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 731 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 }
-# 732 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
-__cutilCheckError(cutResetTimer(timer), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 732);
-# 735 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 732 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+__cutilCheckError(cutResetTimer(timer), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 732);
+# 735 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 bandwidthInMBs = ((((1000.0F) * memSize) * ((float)10)) / (elapsedTimeInMs * ((float)(1 << 20))));
-# 739 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
-__cudaSafeCall(cudaEventDestroy(stop), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 739);
-# 740 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
-__cudaSafeCall(cudaEventDestroy(start), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 740);
-# 741 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
-__cutilCheckError(cutDeleteTimer(timer), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 741);
-# 742 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 739 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+__cudaSafeCall(cudaEventDestroy(stop), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 739);
+# 740 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+__cudaSafeCall(cudaEventDestroy(start), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 740);
+# 741 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+__cutilCheckError(cutDeleteTimer(timer), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 741);
+# 742 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 if ((PINNED) == memMode)
-# 743 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 743 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 744 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
-__cudaSafeCall(cudaFreeHost(h_odata), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 744);
-# 745 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 744 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+__cudaSafeCall(cudaFreeHost(h_odata), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 744);
+# 745 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 } else
-# 747 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 747 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 748 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 748 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 free(h_odata);
-# 749 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 749 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 }
-# 750 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 750 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 free(h_cacheClear1);
-# 751 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 751 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 free(h_cacheClear2);
-# 752 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
-__cudaSafeCall(cudaFree(d_idata), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 752);
-# 754 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 752 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+__cudaSafeCall(cudaFree(d_idata), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 752);
+# 754 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 return bandwidthInMBs;
-# 755 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 755 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 }
-# 761 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 761 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 float testDeviceToDeviceTransfer(unsigned memSize)
-# 762 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 762 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 763 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 763 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 unsigned timer = (0);
-# 764 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 764 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 float elapsedTimeInMs = (0.0F);
-# 765 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 765 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 float bandwidthInMBs = (0.0F);
-# 766 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 766 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 cudaEvent_t start, stop;
-# 768 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
-__cutilCheckError(cutCreateTimer(&timer), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 768);
-# 769 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
-__cudaSafeCall(cudaEventCreate(&start), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 769);
-# 770 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
-__cudaSafeCall(cudaEventCreate(&stop), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 770);
-# 773 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 768 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+__cutilCheckError(cutCreateTimer(&timer), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 768);
+# 769 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+__cudaSafeCall(cudaEventCreate(&start), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 769);
+# 770 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+__cudaSafeCall(cudaEventCreate(&stop), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 770);
+# 773 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 unsigned char *h_idata = ((unsigned char *)malloc(memSize));
-# 775 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 775 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 for (unsigned i = (0); i < (memSize / sizeof(unsigned char)); i++)
-# 776 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 776 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 777 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 777 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 (h_idata[i]) = ((unsigned char)(i & (255)));
-# 778 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 778 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 }
-# 781 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 781 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 unsigned char *d_idata;
-# 782 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
-__cudaSafeCall(cudaMalloc((void **)(&d_idata), memSize), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 782);
-# 783 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 782 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+__cudaSafeCall(cudaMalloc((void **)(&d_idata), memSize), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 782);
+# 783 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 unsigned char *d_odata;
-# 784 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
-__cudaSafeCall(cudaMalloc((void **)(&d_odata), memSize), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 784);
-# 787 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
-__cudaSafeCall(cudaMemcpy(d_idata, h_idata, memSize, cudaMemcpyHostToDevice), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 788);
-# 791 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
-__cutilCheckError(cutStartTimer(timer), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 791);
-# 792 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
-__cudaSafeCall(cudaEventRecord(start, 0), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 792);
-# 793 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 784 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+__cudaSafeCall(cudaMalloc((void **)(&d_odata), memSize), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 784);
+# 787 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+__cudaSafeCall(cudaMemcpy(d_idata, h_idata, memSize, cudaMemcpyHostToDevice), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 788);
+# 791 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+__cutilCheckError(cutStartTimer(timer), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 791);
+# 792 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+__cudaSafeCall(cudaEventRecord(start, 0), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 792);
+# 793 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 for (unsigned i = (0); i < (10); i++)
-# 794 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 794 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 795 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
-__cudaSafeCall(cudaMemcpy(d_odata, d_idata, memSize, cudaMemcpyDeviceToDevice), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 796);
-# 797 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 795 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+__cudaSafeCall(cudaMemcpy(d_odata, d_idata, memSize, cudaMemcpyDeviceToDevice), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 796);
+# 797 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 }
-# 798 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
-__cudaSafeCall(cudaEventRecord(stop, 0), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 798);
-# 803 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
-__cudaSafeCall(cudaThreadSynchronize(), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 803);
-# 806 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
-__cutilCheckError(cutStopTimer(timer), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 806);
-# 807 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
-__cudaSafeCall(cudaEventElapsedTime(&elapsedTimeInMs, start, stop), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 807);
-# 808 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 798 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+__cudaSafeCall(cudaEventRecord(stop, 0), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 798);
+# 803 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+__cudaSafeCall(cudaThreadSynchronize(), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 803);
+# 806 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+__cutilCheckError(cutStopTimer(timer), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 806);
+# 807 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+__cudaSafeCall(cudaEventElapsedTime(&elapsedTimeInMs, start, stop), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 807);
+# 808 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 if (bDontUseGPUTiming)
-# 809 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 809 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 810 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 810 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 elapsedTimeInMs = cutGetTimerValue(timer);
-# 811 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 811 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 }
-# 814 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 814 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 bandwidthInMBs = (((2.0F) * (((1000.0F) * memSize) * ((float)10))) / (elapsedTimeInMs * ((float)(1 << 20))));
-# 818 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
-__cutilCheckError(cutDeleteTimer(timer), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 818);
-# 819 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 818 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+__cutilCheckError(cutDeleteTimer(timer), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 818);
+# 819 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 free(h_idata);
-# 820 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
-__cudaSafeCall(cudaEventDestroy(stop), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 820);
-# 821 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
-__cudaSafeCall(cudaEventDestroy(start), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 821);
-# 822 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
-__cudaSafeCall(cudaFree(d_idata), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 822);
-# 823 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
-__cudaSafeCall(cudaFree(d_odata), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 823);
-# 825 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 820 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+__cudaSafeCall(cudaEventDestroy(stop), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 820);
+# 821 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+__cudaSafeCall(cudaEventDestroy(start), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 821);
+# 822 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+__cudaSafeCall(cudaFree(d_idata), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 822);
+# 823 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+__cudaSafeCall(cudaFree(d_odata), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu", 823);
+# 825 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 return bandwidthInMBs;
-# 826 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 826 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 }
-# 831 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 831 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 void printResultsReadable(unsigned *memSizes, float *bandwidths, unsigned count)
-# 832 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 832 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 833 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 833 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 printf("Transfer Size (Bytes)\tBandwidth(MB/s)\n");
-# 834 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 834 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 for (unsigned i = (0); i < count; i++)
-# 835 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 835 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 836 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 836 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 printf("%9u\t\t%.1f\n", memSizes[i], bandwidths[i]);
-# 837 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 837 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 }
-# 838 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 838 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 printf("\n");
-# 839 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 839 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 fflush(stdout);
-# 840 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 840 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 }
-# 845 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 845 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 void printResultsCSV(unsigned *memSizes, float *bandwidths, unsigned count)
-# 846 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 846 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 847 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 847 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 printf("Transfer size (Bytes),");
-# 848 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 848 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 for (unsigned i = (0); i < count; i++)
-# 849 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 849 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 850 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 850 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 printf("%u,", memSizes[i]);
-# 851 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 851 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 }
-# 852 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 852 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 printf("\n");
-# 854 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 854 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 printf("Bandwidth (MB/s),");
-# 855 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 855 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 for (unsigned i = (0); i < count; i++)
-# 856 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 856 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 857 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 857 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 printf("%.1f,", bandwidths[i]);
-# 858 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 858 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 }
-# 859 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 859 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 printf("\n\n");
-# 860 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 860 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 fflush(stdout);
-# 861 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 861 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 }
-# 866 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 866 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 void printHelp()
-# 867 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 867 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 {
-# 868 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 868 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 printf("Usage:  bandwidthTest [OPTION]...\n");
-# 869 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 869 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 printf("Test the bandwidth for device to host, host to device, and device to device transfers\n");
-# 870 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 870 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 printf("\n");
-# 871 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 871 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 printf("Example:  measure the bandwidth of device to host pinned memory copies in the range 1024 Bytes to 102400 Bytes in 1024 Byte incr" "ements\n");
-# 872 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 872 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 printf("./bandwidthTest --memory=pinned --mode=range --start=1024 --end=102400 --increment=1024 --dtoh\n");
-# 874 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 874 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 printf("\n");
-# 875 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 875 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 printf("Options:\n");
-# 876 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 876 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 printf("--help\tDisplay this help menu\n");
-# 877 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 877 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 printf("--csv\tPrint results as a CSV\n");
-# 878 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 878 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 printf("--device=[deviceno]\tSpecify the device device to be used\n");
-# 879 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 879 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 printf("  all - compute cumulative bandwidth on all the devices\n");
-# 880 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 880 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 printf("  0,1,2,...,n - Specify any particular device to be used\n");
-# 881 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 881 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 printf("--memory=[MEMMODE]\tSpecify which memory mode to use\n");
-# 882 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 882 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 printf("  pageable - pageable memory\n");
-# 883 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 883 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 printf("  pinned   - non-pageable system memory\n");
-# 884 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 884 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 printf("--mode=[MODE]\tSpecify the mode to use\n");
-# 885 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 885 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 printf("  quick - performs a quick measurement\n");
-# 886 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 886 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 printf("  range - measures a user-specified range of values\n");
-# 887 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 887 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 printf("  shmoo - performs an intense shmoo of a large range of values\n");
-# 889 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 889 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 printf("--htod\tMeasure host to device transfers\n");
-# 890 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 890 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 printf("--dtoh\tMeasure device to host transfers\n");
-# 891 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 891 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 printf("--dtod\tMeasure device to device transfers\n");
-# 893 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 893 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 printf("--wc\tAllocate pinned memory as write-combined\n");
-# 895 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 895 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 printf("--cputiming\tForce CPU-based timing always\n");
-# 897 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 897 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 printf("Range mode options\n");
-# 898 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 898 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 printf("--start=[SIZE]\tStarting transfer size in bytes\n");
-# 899 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 899 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 printf("--end=[SIZE]\tEnding transfer size in bytes\n");
-# 900 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 900 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 printf("--increment=[SIZE]\tIncrement size in bytes\n");
-# 901 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
+# 901 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu"
 }
-# 1 "/tmp/tmpxft_00000b07_00000000-1_bandwidthTest.cudafe1.stub.c"
-# 1 "/tmp/tmpxft_00000b07_00000000-1_bandwidthTest.cudafe1.stub.c" 1
+# 1 "/tmp/tmpxft_0000094c_00000000-1_bandwidthTest.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_0000094c_00000000-1_bandwidthTest.cudafe1.stub.c" 1
 # 1 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 1
 # 91 "/usr/local/cuda/bin/../include/crt/host_runtime.h"
 extern "C" {
@@ -12945,9 +12945,9 @@ extern __attribute__((__weak__)) unsigned long long int ullmax(unsigned long lon
 {
   return a > b ? a : b;
 }
-# 5000 "/usr/local/cuda/bin/../include/math_functions.h" 3
-# 1 "/usr/local/cuda/bin/../include/math_functions_dbl_ptx1.h" 1 3
-# 5001 "/usr/local/cuda/bin/../include/math_functions.h" 2 3
+# 5006 "/usr/local/cuda/bin/../include/math_functions.h" 3
+# 1 "/usr/local/cuda/bin/../include/math_functions_dbl_ptx3.h" 1 3
+# 5007 "/usr/local/cuda/bin/../include/math_functions.h" 2 3
 # 91 "/usr/local/cuda/bin/../include/common_functions.h" 2
 # 164 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 2
 
@@ -12958,8 +12958,8 @@ extern __attribute__((__weak__)) unsigned long long int ullmax(unsigned long lon
 
 
 #pragma pack()
-# 2 "/tmp/tmpxft_00000b07_00000000-1_bandwidthTest.cudafe1.stub.c" 2
-# 1 "/tmp/tmpxft_00000b07_00000000-3_bandwidthTest.fatbin.c" 1
+# 2 "/tmp/tmpxft_0000094c_00000000-1_bandwidthTest.cudafe1.stub.c" 2
+# 1 "/tmp/tmpxft_0000094c_00000000-3_bandwidthTest.fatbin.c" 1
 # 1 "/usr/local/cuda/bin/../include/__cudaFatFormat.h" 1
 # 83 "/usr/local/cuda/bin/../include/__cudaFatFormat.h"
 extern "C" {
@@ -13037,98 +13037,14 @@ void __cudaFatFreePTX( char* ptx );
 
 
 }
-# 2 "/tmp/tmpxft_00000b07_00000000-3_bandwidthTest.fatbin.c" 2
+# 2 "/tmp/tmpxft_0000094c_00000000-3_bandwidthTest.fatbin.c" 2
 
 asm(
 ".section .rodata\n"
 ".align 32\n"
-"__deviceText_$compute_10$:\n"
-".quad 0x6f69737265762e09,0x2e090a342e31206e,0x7320746567726174,0x616d202c30315f6d\n"
-".quad 0x6f745f3436665f70,0x2f2f090a3233665f,0x656c69706d6f6320,0x2f20687469772064\n"
-".quad 0x61636f6c2f727375,0x6f2f616475632f6c,0x696c2f34366e6570,0x2f090a65622f2f62\n"
-".quad 0x6e65706f766e202f,0x6220322e33206363,0x206e6f20746c6975,0x2d39302d30313032\n"
-".quad 0x2d2f2f090a0a3930,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
-".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
-".quad 0x43202f2f090a2d2d,0x676e696c69706d6f,0x6d742f706d742f20,0x3030305f74667870\n"
-".quad 0x30305f3730623030,0x372d303030303030,0x646977646e61625f,0x632e747365546874\n"
-".quad 0x2f2820692e337070,0x494263632f706d74,0x494d6b7578652e23,0x2d2d2d2f2f090a29\n"
-".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
-".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2f2f090a0a\n"
-".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
-".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x74704f202f2f090a\n"
-".quad 0x2f090a3a736e6f69,0x2d2d2d2d2d2d2d2f,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
-".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
-".quad 0x2f2f090a2d2d2d2d,0x7465677261542020,0x5349202c7874703a,0x2c30315f6d733a41\n"
-".quad 0x3a6e6169646e4520,0x202c656c7474696c,0x207265746e696f50,0x0a34363a657a6953\n"
-".quad 0x334f2d20202f2f09,0x696d6974704f2809,0x6c206e6f6974617a,0x2f090a296c657665\n"
-".quad 0x280930672d20202f,0x656c206775626544,0x2f2f090a296c6576,0x522809326d2d2020\n"
-".quad 0x64612074726f7065,0x736569726f736976,0x2d2d2d2f2f090a29,0x2d2d2d2d2d2d2d2d\n"
-".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
-".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x656c69662e090a0a,0x6d6f633c22093109\n"
-".quad 0x6e696c2d646e616d,0x69662e090a223e65,0x742f22093209656c,0x6678706d742f706d\n"
-".quad 0x6230303030305f74,0x30303030305f3730,0x61625f362d303030,0x546874646977646e\n"
-".quad 0x616475632e747365,0x227570672e326566,0x09656c69662e090a,0x2f7273752f220933\n"
-".quad 0x2f6363672f62696c,0x6e696c2d36383669,0x342f756e672d7875,0x636e692f352e342e\n"
-".quad 0x6474732f6564756c,0x090a22682e666564,0x093409656c69662e,0x6f6c2f7273752f22\n"
-".quad 0x616475632f6c6163,0x2f2e2e2f6e69622f,0x2f6564756c636e69,0x697665642f747263\n"
-".quad 0x69746e75725f6563,0x2e090a22682e656d,0x22093509656c6966,0x636f6c2f7273752f\n"
-".quad 0x2f616475632f6c61,0x692f2e2e2f6e6962,0x682f6564756c636e,0x696665645f74736f\n"
-".quad 0x090a22682e73656e,0x093609656c69662e,0x6f6c2f7273752f22,0x616475632f6c6163\n"
-".quad 0x2f2e2e2f6e69622f,0x2f6564756c636e69,0x5f6e69746c697562,0x22682e7365707974\n"
-".quad 0x09656c69662e090a,0x2f7273752f220937,0x75632f6c61636f6c,0x2e2f6e69622f6164\n"
-".quad 0x64756c636e692f2e,0x6563697665642f65,0x682e73657079745f,0x656c69662e090a22\n"
-".quad 0x7273752f22093809,0x632f6c61636f6c2f,0x2f6e69622f616475,0x756c636e692f2e2e\n"
-".quad 0x65766972642f6564,0x2e73657079745f72,0x6c69662e090a2268,0x73752f2209390965\n"
-".quad 0x2f6c61636f6c2f72,0x6e69622f61647563,0x6c636e692f2e2e2f,0x667275732f656475\n"
-".quad 0x657079745f656361,0x662e090a22682e73,0x2209303109656c69,0x636f6c2f7273752f\n"
-".quad 0x2f616475632f6c61,0x692f2e2e2f6e6962,0x742f6564756c636e,0x745f657275747865\n"
-".quad 0x0a22682e73657079,0x3109656c69662e09,0x2f7273752f220931,0x75632f6c61636f6c\n"
-".quad 0x2e2f6e69622f6164,0x64756c636e692f2e,0x726f746365762f65,0x682e73657079745f\n"
-".quad 0x656c69662e090a22,0x73752f2209323109,0x2f6c61636f6c2f72,0x6e69622f61647563\n"
-".quad 0x6c636e692f2e2e2f,0x697665642f656475,0x636e75616c5f6563,0x656d617261705f68\n"
-".quad 0x0a22682e73726574,0x3109656c69662e09,0x2f7273752f220933,0x75632f6c61636f6c\n"
-".quad 0x2e2f6e69622f6164,0x64756c636e692f2e,0x74732f7472632f65,0x6c635f656761726f\n"
-".quad 0x090a22682e737361,0x343109656c69662e,0x692f7273752f2209,0x622f6564756c636e\n"
-".quad 0x657079742f737469,0x662e090a22682e73,0x2209353109656c69,0x636e692f7273752f\n"
-".quad 0x6d69742f6564756c,0x662e090a22682e65,0x2209363109656c69,0x636f6c2f7273752f\n"
-".quad 0x2f616475632f6c61,0x692f2e2e2f6e6962,0x632f6564756c636e,0x75665f6e6f6d6d6f\n"
-".quad 0x2e736e6f6974636e,0x6c69662e090a2268,0x752f220937310965,0x6c61636f6c2f7273\n"
-".quad 0x69622f616475632f,0x636e692f2e2e2f6e,0x74616d2f6564756c,0x6974636e75665f68\n"
-".quad 0x090a22682e736e6f,0x383109656c69662e,0x6c2f7273752f2209,0x6475632f6c61636f\n"
-".quad 0x2e2e2f6e69622f61,0x6564756c636e692f,0x6f635f6874616d2f,0x2e73746e6174736e\n"
-".quad 0x6c69662e090a2268,0x752f220939310965,0x6c61636f6c2f7273,0x69622f616475632f\n"
-".quad 0x636e692f2e2e2f6e,0x7665642f6564756c,0x636e75665f656369,0x22682e736e6f6974\n"
-".quad 0x09656c69662e090a,0x7273752f22093032,0x632f6c61636f6c2f,0x2f6e69622f616475\n"
-".quad 0x756c636e692f2e2e,0x31315f6d732f6564,0x5f63696d6f74615f,0x6e6f6974636e7566\n"
-".quad 0x662e090a22682e73,0x2209313209656c69,0x636f6c2f7273752f,0x2f616475632f6c61\n"
-".quad 0x692f2e2e2f6e6962,0x732f6564756c636e,0x6f74615f32315f6d,0x636e75665f63696d\n"
-".quad 0x22682e736e6f6974,0x09656c69662e090a,0x7273752f22093232,0x632f6c61636f6c2f\n"
-".quad 0x2f6e69622f616475,0x756c636e692f2e2e,0x33315f6d732f6564,0x5f656c62756f645f\n"
-".quad 0x6e6f6974636e7566,0x662e090a22682e73,0x2209333209656c69,0x636f6c2f7273752f\n"
-".quad 0x2f616475632f6c61,0x692f2e2e2f6e6962,0x732f6564756c636e,0x6f74615f30325f6d\n"
-".quad 0x636e75665f63696d,0x22682e736e6f6974,0x09656c69662e090a,0x7273752f22093432\n"
-".quad 0x632f6c61636f6c2f,0x2f6e69622f616475,0x756c636e692f2e2e,0x30325f6d732f6564\n"
-".quad 0x736e6972746e695f,0x090a22682e736369,0x353209656c69662e,0x6c2f7273752f2209\n"
-".quad 0x6475632f6c61636f,0x2e2e2f6e69622f61,0x6564756c636e692f,0x656361667275732f\n"
-".quad 0x6f6974636e75665f,0x2e090a22682e736e,0x09363209656c6966,0x6f6c2f7273752f22\n"
-".quad 0x616475632f6c6163,0x2f2e2e2f6e69622f,0x2f6564756c636e69,0x5f65727574786574\n"
-".quad 0x75665f6863746566,0x2e736e6f6974636e,0x6c69662e090a2268,0x752f220937320965\n"
-".quad 0x6c61636f6c2f7273,0x69622f616475632f,0x636e692f2e2e2f6e,0x74616d2f6564756c\n"
-".quad 0x6974636e75665f68,0x5f6c62645f736e6f,0x0a22682e31787470,0x0000000000000a0a\n"
-".text");
-
-extern "C" {
-
-extern const unsigned long long __deviceText_$compute_10$[288];
-
-}
-
-asm(
-".section .rodata\n"
-".align 32\n"
-"__deviceText_$sm_10$:\n"
-".quad 0x33010102464c457f,0x0000000000000002,0x0000000100be0002,0x0000000000000000\n"
-".quad 0x0000000000000208,0x0000000000000040,0x00380040000a010a,0x0001000400400002\n"
+"__deviceText_$sm_21$:\n"
+".quad 0x33010102464c457f,0x0000000000000004,0x0000000100be0002,0x0000000000000000\n"
+".quad 0x0000000000000208,0x0000000000000040,0x0038004000140115,0x0001000400400002\n"
 ".quad 0x0000000000000000,0x0000000000000000,0x0000000000000000,0x0000000000000000\n"
 ".quad 0x0000000000000000,0x0000000000000000,0x0000000000000000,0x0000000000000000\n"
 ".quad 0x0000000300000001,0x0000000000000000,0x0000000000000000,0x0000000000000140\n"
@@ -13151,20 +13067,104 @@ asm(
 
 extern "C" {
 
-extern const unsigned long long __deviceText_$sm_10$[80];
+extern const unsigned long long __deviceText_$sm_21$[80];
 
 }
 
-static __cudaFatPtxEntry __ptxEntries [] = {{(char*)"compute_10",(char*)__deviceText_$compute_10$},{0,0}};
+asm(
+".section .rodata\n"
+".align 32\n"
+"__deviceText_$compute_20$:\n"
+".quad 0x6f69737265762e09,0x2e090a322e32206e,0x7320746567726174,0x2f2f090a30325f6d\n"
+".quad 0x656c69706d6f6320,0x2f20687469772064,0x61636f6c2f727375,0x6f2f616475632f6c\n"
+".quad 0x696c2f34366e6570,0x2f090a65622f2f62,0x6e65706f766e202f,0x6220322e33206363\n"
+".quad 0x206e6f20746c6975,0x2d39302d30313032,0x2d2f2f090a0a3930,0x2d2d2d2d2d2d2d2d\n"
+".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
+".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x43202f2f090a2d2d,0x676e696c69706d6f\n"
+".quad 0x6d742f706d742f20,0x3030305f74667870,0x30305f6334393030,0x372d303030303030\n"
+".quad 0x646977646e61625f,0x632e747365546874,0x2f2820692e337070,0x494263632f706d74\n"
+".quad 0x486b41627a392e23,0x2d2d2d2f2f090a29,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
+".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
+".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2f2f090a0a,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
+".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
+".quad 0x2d2d2d2d2d2d2d2d,0x74704f202f2f090a,0x2f090a3a736e6f69,0x2d2d2d2d2d2d2d2f\n"
+".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
+".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2f2f090a2d2d2d2d,0x7465677261542020\n"
+".quad 0x5349202c7874703a,0x2c30325f6d733a41,0x3a6e6169646e4520,0x202c656c7474696c\n"
+".quad 0x207265746e696f50,0x0a34363a657a6953,0x334f2d20202f2f09,0x696d6974704f2809\n"
+".quad 0x6c206e6f6974617a,0x2f090a296c657665,0x280930672d20202f,0x656c206775626544\n"
+".quad 0x2f2f090a296c6576,0x522809326d2d2020,0x64612074726f7065,0x736569726f736976\n"
+".quad 0x2d2d2d2f2f090a29,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
+".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
+".quad 0x656c69662e090a0a,0x6d6f633c22093109,0x6e696c2d646e616d,0x69662e090a223e65\n"
+".quad 0x742f22093209656c,0x6678706d742f706d,0x3930303030305f74,0x30303030305f6334\n"
+".quad 0x61625f362d303030,0x546874646977646e,0x616475632e747365,0x227570672e326566\n"
+".quad 0x09656c69662e090a,0x2f7273752f220933,0x2f6363672f62696c,0x6e696c2d36383669\n"
+".quad 0x342f756e672d7875,0x636e692f352e342e,0x6474732f6564756c,0x090a22682e666564\n"
+".quad 0x093409656c69662e,0x6f6c2f7273752f22,0x616475632f6c6163,0x2f2e2e2f6e69622f\n"
+".quad 0x2f6564756c636e69,0x697665642f747263,0x69746e75725f6563,0x2e090a22682e656d\n"
+".quad 0x22093509656c6966,0x636f6c2f7273752f,0x2f616475632f6c61,0x692f2e2e2f6e6962\n"
+".quad 0x682f6564756c636e,0x696665645f74736f,0x090a22682e73656e,0x093609656c69662e\n"
+".quad 0x6f6c2f7273752f22,0x616475632f6c6163,0x2f2e2e2f6e69622f,0x2f6564756c636e69\n"
+".quad 0x5f6e69746c697562,0x22682e7365707974,0x09656c69662e090a,0x2f7273752f220937\n"
+".quad 0x75632f6c61636f6c,0x2e2f6e69622f6164,0x64756c636e692f2e,0x6563697665642f65\n"
+".quad 0x682e73657079745f,0x656c69662e090a22,0x7273752f22093809,0x632f6c61636f6c2f\n"
+".quad 0x2f6e69622f616475,0x756c636e692f2e2e,0x65766972642f6564,0x2e73657079745f72\n"
+".quad 0x6c69662e090a2268,0x73752f2209390965,0x2f6c61636f6c2f72,0x6e69622f61647563\n"
+".quad 0x6c636e692f2e2e2f,0x667275732f656475,0x657079745f656361,0x662e090a22682e73\n"
+".quad 0x2209303109656c69,0x636f6c2f7273752f,0x2f616475632f6c61,0x692f2e2e2f6e6962\n"
+".quad 0x742f6564756c636e,0x745f657275747865,0x0a22682e73657079,0x3109656c69662e09\n"
+".quad 0x2f7273752f220931,0x75632f6c61636f6c,0x2e2f6e69622f6164,0x64756c636e692f2e\n"
+".quad 0x726f746365762f65,0x682e73657079745f,0x656c69662e090a22,0x73752f2209323109\n"
+".quad 0x2f6c61636f6c2f72,0x6e69622f61647563,0x6c636e692f2e2e2f,0x697665642f656475\n"
+".quad 0x636e75616c5f6563,0x656d617261705f68,0x0a22682e73726574,0x3109656c69662e09\n"
+".quad 0x2f7273752f220933,0x75632f6c61636f6c,0x2e2f6e69622f6164,0x64756c636e692f2e\n"
+".quad 0x74732f7472632f65,0x6c635f656761726f,0x090a22682e737361,0x343109656c69662e\n"
+".quad 0x692f7273752f2209,0x622f6564756c636e,0x657079742f737469,0x662e090a22682e73\n"
+".quad 0x2209353109656c69,0x636e692f7273752f,0x6d69742f6564756c,0x662e090a22682e65\n"
+".quad 0x2209363109656c69,0x636f6c2f7273752f,0x2f616475632f6c61,0x692f2e2e2f6e6962\n"
+".quad 0x632f6564756c636e,0x75665f6e6f6d6d6f,0x2e736e6f6974636e,0x6c69662e090a2268\n"
+".quad 0x752f220937310965,0x6c61636f6c2f7273,0x69622f616475632f,0x636e692f2e2e2f6e\n"
+".quad 0x74616d2f6564756c,0x6974636e75665f68,0x090a22682e736e6f,0x383109656c69662e\n"
+".quad 0x6c2f7273752f2209,0x6475632f6c61636f,0x2e2e2f6e69622f61,0x6564756c636e692f\n"
+".quad 0x6f635f6874616d2f,0x2e73746e6174736e,0x6c69662e090a2268,0x752f220939310965\n"
+".quad 0x6c61636f6c2f7273,0x69622f616475632f,0x636e692f2e2e2f6e,0x7665642f6564756c\n"
+".quad 0x636e75665f656369,0x22682e736e6f6974,0x09656c69662e090a,0x7273752f22093032\n"
+".quad 0x632f6c61636f6c2f,0x2f6e69622f616475,0x756c636e692f2e2e,0x31315f6d732f6564\n"
+".quad 0x5f63696d6f74615f,0x6e6f6974636e7566,0x662e090a22682e73,0x2209313209656c69\n"
+".quad 0x636f6c2f7273752f,0x2f616475632f6c61,0x692f2e2e2f6e6962,0x732f6564756c636e\n"
+".quad 0x6f74615f32315f6d,0x636e75665f63696d,0x22682e736e6f6974,0x09656c69662e090a\n"
+".quad 0x7273752f22093232,0x632f6c61636f6c2f,0x2f6e69622f616475,0x756c636e692f2e2e\n"
+".quad 0x33315f6d732f6564,0x5f656c62756f645f,0x6e6f6974636e7566,0x662e090a22682e73\n"
+".quad 0x2209333209656c69,0x636f6c2f7273752f,0x2f616475632f6c61,0x692f2e2e2f6e6962\n"
+".quad 0x732f6564756c636e,0x6f74615f30325f6d,0x636e75665f63696d,0x22682e736e6f6974\n"
+".quad 0x09656c69662e090a,0x7273752f22093432,0x632f6c61636f6c2f,0x2f6e69622f616475\n"
+".quad 0x756c636e692f2e2e,0x30325f6d732f6564,0x736e6972746e695f,0x090a22682e736369\n"
+".quad 0x353209656c69662e,0x6c2f7273752f2209,0x6475632f6c61636f,0x2e2e2f6e69622f61\n"
+".quad 0x6564756c636e692f,0x656361667275732f,0x6f6974636e75665f,0x2e090a22682e736e\n"
+".quad 0x09363209656c6966,0x6f6c2f7273752f22,0x616475632f6c6163,0x2f2e2e2f6e69622f\n"
+".quad 0x2f6564756c636e69,0x5f65727574786574,0x75665f6863746566,0x2e736e6f6974636e\n"
+".quad 0x6c69662e090a2268,0x752f220937320965,0x6c61636f6c2f7273,0x69622f616475632f\n"
+".quad 0x636e692f2e2e2f6e,0x74616d2f6564756c,0x6974636e75665f68,0x5f6c62645f736e6f\n"
+".quad 0x0a22682e33787470,0x0000000000000a0a\n"
+".text");
+
+extern "C" {
+
+extern const unsigned long long __deviceText_$compute_20$[286];
+
+}
+
+static __cudaFatPtxEntry __ptxEntries [] = {{(char*)"compute_20",(char*)__deviceText_$compute_20$},{0,0}};
 static __cudaFatCubinEntry __cubinEntries[] = {{0,0}};
 static __cudaFatDebugEntry __debugEntries0 = {0, 0, 0, 0} ;
 static __cudaFatElfEntry __elfEntries0 = {0, 0, 0, 0} ;
-static __cudaFatElfEntry __elfEntries1 = {(char*)"sm_10", (char*)__deviceText_$sm_10$, &__elfEntries0, (unsigned int)sizeof(__deviceText_$sm_10$)};
+static __cudaFatElfEntry __elfEntries1 = {(char*)"sm_21", (char*)__deviceText_$sm_21$, &__elfEntries0, (unsigned int)sizeof(__deviceText_$sm_21$)};
 
 
 
-static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000004,0xa14f518d,(char*)"ce493ac3da957c3e",(char*)"/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/bandwidthTest/bandwidthTest.cu",(char*)" ",__ptxEntries,__cubinEntries,&__debugEntries0,0,0,0,0,0,0x78eb309f,&__elfEntries1};
-# 3 "/tmp/tmpxft_00000b07_00000000-1_bandwidthTest.cudafe1.stub.c" 2
-static void __sti____cudaRegisterAll_48_tmpxft_00000b07_00000000_4_bandwidthTest_cpp1_ii_main(void) __attribute__((__constructor__));
-static void __sti____cudaRegisterAll_48_tmpxft_00000b07_00000000_4_bandwidthTest_cpp1_ii_main(void){__cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil);}
-# 1 "/tmp/tmpxft_00000b07_00000000-1_bandwidthTest.cudafe1.stub.c" 2
+static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000004,0xa14f518d,(char*)"578bcd5dc1ba0868",(char*)"/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/bandwidthTest/bandwidthTest.cu",(char*)" ",__ptxEntries,__cubinEntries,&__debugEntries0,0,0,0,0,0,0xec1ea57d,&__elfEntries1};
+# 3 "/tmp/tmpxft_0000094c_00000000-1_bandwidthTest.cudafe1.stub.c" 2
+static void __sti____cudaRegisterAll_48_tmpxft_0000094c_00000000_4_bandwidthTest_cpp1_ii_main(void) __attribute__((__constructor__));
+static void __sti____cudaRegisterAll_48_tmpxft_0000094c_00000000_4_bandwidthTest_cpp1_ii_main(void){__cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil);}
+# 1 "/tmp/tmpxft_0000094c_00000000-1_bandwidthTest.cudafe1.stub.c" 2

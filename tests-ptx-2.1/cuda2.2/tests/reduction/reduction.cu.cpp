@@ -1,8 +1,8 @@
-# 1 "/tmp/tmpxft_00001847_00000000-1_reduction.cudafe1.cpp"
+# 1 "/tmp/tmpxft_0000110f_00000000-1_reduction.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_00001847_00000000-1_reduction.cudafe1.cpp"
-# 1 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 1 "/tmp/tmpxft_0000110f_00000000-1_reduction.cudafe1.cpp"
+# 1 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 # 46 "/usr/local/cuda/bin/../include/device_types.h"
 # 149 "/usr/lib/gcc/i686-linux-gnu/4.4.5/include/stddef.h" 3
 typedef long ptrdiff_t;
@@ -11361,600 +11361,600 @@ printf(" -> CUDA %s Toolkit\n", sNVCCReq);
 printf(" -> %s NVIDIA Display Driver.\n", sDriverReq);
 # 18 "sdk/cutil_inline.h"
 }
-# 4 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.h"
+# 4 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.h"
 template< class T> void reduce_sm10(int, int, int, int, T *, T *);
-# 8 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.h"
+# 8 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.h"
 template< class T> void reduce_sm13(int, int, int, int, T *, T *);
-# 71 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 71 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 enum ReduceType {
-# 73 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 73 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 REDUCE_INT,
-# 74 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 74 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 REDUCE_FLOAT,
-# 75 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 75 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 REDUCE_DOUBLE
-# 76 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 76 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 };
-# 80 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 80 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 template< class T> void runTest(int, char **, ReduceType);
-# 88 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 88 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 extern "C" bool isPow2(unsigned x)
-# 89 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 89 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 {
-# 90 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 90 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 return (x & (x - (1))) == (0);
-# 91 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 91 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 }
-# 98 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 98 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 int main(int argc, char **argv)
-# 99 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 99 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 {
-# 100 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 100 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 char *typeChoice;
-# 101 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 101 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 cutGetCmdLineArgumentstr(argc, (const char **)argv, "type", &typeChoice);
-# 103 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 103 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 if ((0) == typeChoice)
-# 104 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 104 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 {
-# 105 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 105 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 typeChoice = ((char *)malloc((4) * sizeof(char)));
-# 106 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 106 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 strcpy(typeChoice, "int");
-# 107 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 107 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 }
-# 109 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 109 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 ReduceType datatype = REDUCE_INT;
-# 111 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 111 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 if (!(strcasecmp(typeChoice, "float"))) {
-# 112 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 112 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 datatype = REDUCE_FLOAT; } else {
-# 113 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 113 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 if (!(strcasecmp(typeChoice, "double"))) {
-# 114 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 114 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 datatype = REDUCE_DOUBLE; } else {
-# 116 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 116 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 datatype = REDUCE_INT; } }
-# 118 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 118 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 printf("Reducing array of type %s.\n", typeChoice);
-# 120 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 120 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 cudaDeviceProp deviceProp;
-# 121 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 121 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 (deviceProp.major) = 1;
-# 122 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 122 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 (deviceProp.minor) = 0;
-# 123 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 123 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 int desiredMinorRevision = 0;
-# 125 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 125 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 if (datatype == (REDUCE_DOUBLE))
-# 126 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 126 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 {
-# 127 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 127 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 (deviceProp.minor) = 3;
-# 128 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 128 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 desiredMinorRevision = 3;
-# 129 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 129 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 }
-# 131 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 131 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 int dev;
-# 133 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
-__cudaSafeCallNoSync(cudaChooseDevice(&dev, &deviceProp), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu", 133);
-# 134 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
-__cudaSafeCallNoSync(cudaGetDeviceProperties(&deviceProp, dev), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu", 134);
-# 136 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 133 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
+__cudaSafeCallNoSync(cudaChooseDevice(&dev, &deviceProp), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu", 133);
+# 134 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
+__cudaSafeCallNoSync(cudaGetDeviceProperties(&deviceProp, dev), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu", 134);
+# 136 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 if (((deviceProp.major) > 1) || ((deviceProp.minor) >= desiredMinorRevision))
-# 137 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 137 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 {
-# 138 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 138 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 printf("Using Device %d: \"%s\"\n", dev, deviceProp.name);
-# 139 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
-__cudaSafeCallNoSync(cudaSetDevice(dev), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu", 139);
-# 140 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 139 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
+__cudaSafeCallNoSync(cudaSetDevice(dev), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu", 139);
+# 140 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 } else {
-# 141 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 141 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 if (desiredMinorRevision == 3)
-# 142 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 142 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 {
-# 143 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 143 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 printf("There is no device supporting compute capability %d.%d.\n\n", 1, desiredMinorRevision);
-# 145 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 145 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 printf("TEST PASSED");
-# 146 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 146 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 cudaThreadExit();
-# 147 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 147 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 __cutilExit(argc, argv);
-# 148 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 148 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 } }
-# 150 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 150 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 switch (datatype)
-# 151 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 151 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 {
-# 152 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 152 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 default:
-# 153 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 153 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 case REDUCE_INT:
-# 154 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 154 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 runTest< int> (argc, argv, datatype);
-# 155 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 155 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 break;
-# 156 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 156 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 case REDUCE_FLOAT:
-# 157 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 157 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 runTest< float> (argc, argv, datatype);
-# 158 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 158 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 break;
-# 159 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 159 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 case REDUCE_DOUBLE:
-# 160 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 160 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 runTest< double> (argc, argv, datatype);
-# 161 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 161 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 break;
-# 162 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 162 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 }
-# 164 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 164 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 cudaThreadExit();
-# 165 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 165 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 __cutilExit(argc, argv); return 0;
-# 166 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 166 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 }
-# 176 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 176 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 template< class T> T
-# 177 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 177 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 reduceCPU(T *data, int size)
-# 178 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 178 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 {
-# 179 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 179 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 T sum = (data[0]);
-# 180 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 180 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 T c = ((T)(0.0));
-# 181 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 181 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 for (int i = 1; i < size; i++)
-# 182 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 182 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 {
-# 183 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 183 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 T y = ((data[i]) - c);
-# 184 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 184 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 T t = (sum + y);
-# 185 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 185 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 c = ((t - sum) - y);
-# 186 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 186 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 sum = t;
-# 187 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 187 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 }
-# 188 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 188 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 return sum;
-# 189 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 189 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 }
-# 191 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 191 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 unsigned nextPow2(unsigned x) {
-# 192 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 192 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 --x;
-# 193 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 193 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 x |= (x >> 1);
-# 194 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 194 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 x |= (x >> 2);
-# 195 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 195 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 x |= (x >> 4);
-# 196 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 196 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 x |= (x >> 8);
-# 197 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 197 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 x |= (x >> 16);
-# 198 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 198 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 return ++x;
-# 199 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 199 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 }
-# 208 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 208 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 void getNumBlocksAndThreads(int whichKernel, int n, int maxBlocks, int maxThreads, int &blocks, int &threads)
-# 209 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 209 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 {
-# 213 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 213 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 if (whichKernel < 3)
-# 214 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 214 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 {
-# 215 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 215 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 threads = ((n < maxThreads) ? nextPow2(n) : (maxThreads));
-# 216 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 216 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 blocks = (((n + threads) - 1) / threads);
-# 217 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 217 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 } else
-# 219 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 219 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 {
-# 220 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 220 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 threads = ((n < (maxThreads * 2)) ? nextPow2((n + 1) / 2) : (maxThreads));
-# 221 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 221 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 blocks = ((n + ((threads * 2) - 1)) / (threads * 2));
-# 222 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 222 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 }
-# 225 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 225 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 if (whichKernel == 6) {
-# 226 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 226 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 blocks = min(maxBlocks, blocks); }
-# 227 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 227 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 }
-# 233 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 233 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 template< class T> T
-# 234 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 234 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 benchmarkReduce(int n, int
-# 235 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 235 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 numThreads, int
-# 236 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 236 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 numBlocks, int
-# 237 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 237 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 maxThreads, int
-# 238 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 238 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 maxBlocks, int
-# 239 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 239 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 whichKernel, int
-# 240 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 240 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 testIterations, bool
-# 241 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 241 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 cpuFinalReduction, int
-# 242 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 242 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 cpuFinalThreshold, unsigned
-# 243 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 243 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 timer, bool
-# 244 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 244 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 useSM13, T *
-# 245 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 245 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 h_odata, T *
-# 246 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 246 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 d_idata, T *
-# 247 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 247 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 d_odata)
-# 248 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 248 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 {
-# 249 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 249 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 T gpu_result = 0;
-# 250 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 250 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 bool needReadBack = true;
-# 252 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 252 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 for (int i = 0; i < testIterations; ++i)
-# 253 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 253 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 {
-# 254 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 254 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 gpu_result = 0;
-# 256 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 256 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 cudaThreadSynchronize();
-# 257 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
-__cutilCheckError(cutStartTimer(timer), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu", 257);
-# 260 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 257 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
+__cutilCheckError(cutStartTimer(timer), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu", 257);
+# 260 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 if (useSM13) {
-# 261 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 261 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 reduce_sm13< T> (n, numThreads, numBlocks, whichKernel, d_idata, d_odata); } else {
-# 263 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 263 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 reduce_sm10< T> (n, numThreads, numBlocks, whichKernel, d_idata, d_odata); }
-# 266 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
-__cutilCheckMsg("Kernel execution failed", "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu", 266);
-# 268 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 266 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
+__cutilCheckMsg("Kernel execution failed", "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu", 266);
+# 268 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 if (cpuFinalReduction)
-# 269 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 269 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 {
-# 272 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
-__cudaSafeCallNoSync(cudaMemcpy(h_odata, d_odata, numBlocks * sizeof(T), cudaMemcpyDeviceToHost), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu", 272);
-# 274 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 272 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
+__cudaSafeCallNoSync(cudaMemcpy(h_odata, d_odata, numBlocks * sizeof(T), cudaMemcpyDeviceToHost), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu", 272);
+# 274 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 for (int i = 0; i < numBlocks; i++)
-# 275 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 275 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 {
-# 276 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 276 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 gpu_result += (h_odata[i]);
-# 277 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 277 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 }
-# 279 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 279 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 needReadBack = false;
-# 280 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 280 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 } else
-# 282 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 282 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 {
-# 284 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 284 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 int s = numBlocks;
-# 285 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 285 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 int kernel = ((whichKernel == 6) ? 5 : whichKernel);
-# 286 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 286 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 while (s > cpuFinalThreshold)
-# 287 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 287 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 {
-# 288 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 288 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 int threads = 0, blocks = 0;
-# 289 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 289 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 getNumBlocksAndThreads(kernel, s, maxBlocks, maxThreads, blocks, threads);
-# 291 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 291 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 if (useSM13) {
-# 292 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 292 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 reduce_sm13< T> (s, threads, blocks, kernel, d_odata, d_odata); } else {
-# 294 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 294 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 reduce_sm10< T> (s, threads, blocks, kernel, d_odata, d_odata); }
-# 296 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 296 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 if (kernel < 3) {
-# 297 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 297 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 s = (((s + threads) - 1) / threads); } else {
-# 299 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 299 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 s = ((s + ((threads * 2) - 1)) / (threads * 2)); }
-# 300 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 300 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 }
-# 302 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 302 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 if (s > 1)
-# 303 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 303 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 {
-# 305 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
-__cudaSafeCallNoSync(cudaMemcpy(h_odata, d_odata, s * sizeof(T), cudaMemcpyDeviceToHost), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu", 305);
-# 307 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 305 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
+__cudaSafeCallNoSync(cudaMemcpy(h_odata, d_odata, s * sizeof(T), cudaMemcpyDeviceToHost), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu", 305);
+# 307 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 for (int i = 0; i < s; i++)
-# 308 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 308 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 {
-# 309 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 309 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 gpu_result += (h_odata[i]);
-# 310 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 310 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 }
-# 312 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 312 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 needReadBack = false;
-# 313 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 313 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 }
-# 314 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 314 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 }
-# 316 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 316 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 cudaThreadSynchronize();
-# 317 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
-__cutilCheckError(cutStopTimer(timer), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu", 317);
-# 318 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 317 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
+__cutilCheckError(cutStopTimer(timer), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu", 317);
+# 318 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 }
-# 320 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 320 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 if (needReadBack)
-# 321 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 321 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 {
-# 323 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
-__cudaSafeCallNoSync(cudaMemcpy(&gpu_result, d_odata, sizeof(T), cudaMemcpyDeviceToHost), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu", 323);
-# 324 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 323 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
+__cudaSafeCallNoSync(cudaMemcpy(&gpu_result, d_odata, sizeof(T), cudaMemcpyDeviceToHost), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu", 323);
+# 324 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 }
-# 326 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 326 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 return gpu_result;
-# 327 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 327 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 }
-# 335 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 335 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 template< class T> void
-# 336 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 336 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 shmoo(int minN, int maxN, int maxThreads, int maxBlocks, ReduceType datatype)
-# 337 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 337 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 {
-# 338 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 338 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 bool useSM13 = (datatype == (REDUCE_DOUBLE));
-# 341 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 341 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 unsigned bytes = (maxN * sizeof(T));
-# 343 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 343 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 T *h_idata = ((T *)malloc(bytes));
-# 345 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 345 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 for (int i = 0; i < maxN; i++) {
-# 347 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 347 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 if (datatype == (REDUCE_INT)) {
-# 348 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 348 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 (h_idata[i]) = ((T)(rand() & 255)); } else {
-# 350 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 350 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 (h_idata[i]) = ((rand() & 255) / ((T)2147483647)); }
-# 351 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 351 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 }
-# 353 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 353 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 int maxNumBlocks = (maxN / maxThreads);
-# 356 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 356 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 T *h_odata = ((T *)malloc(maxNumBlocks * sizeof(T)));
-# 359 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 359 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 T *d_idata = (__null);
-# 360 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 360 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 T *d_odata = (__null);
-# 362 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
-__cudaSafeCallNoSync(cudaMalloc((void **)(&d_idata), bytes), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu", 362);
-# 363 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
-__cudaSafeCallNoSync(cudaMalloc((void **)(&d_odata), maxNumBlocks * sizeof(T)), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu", 363);
-# 366 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
-__cudaSafeCallNoSync(cudaMemcpy(d_idata, h_idata, bytes, cudaMemcpyHostToDevice), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu", 366);
-# 367 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
-__cudaSafeCallNoSync(cudaMemcpy(d_odata, h_idata, maxNumBlocks * sizeof(T), cudaMemcpyHostToDevice), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu", 367);
-# 380 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 362 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
+__cudaSafeCallNoSync(cudaMalloc((void **)(&d_idata), bytes), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu", 362);
+# 363 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
+__cudaSafeCallNoSync(cudaMalloc((void **)(&d_odata), maxNumBlocks * sizeof(T)), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu", 363);
+# 366 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
+__cudaSafeCallNoSync(cudaMemcpy(d_idata, h_idata, bytes, cudaMemcpyHostToDevice), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu", 366);
+# 367 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
+__cudaSafeCallNoSync(cudaMemcpy(d_odata, h_idata, maxNumBlocks * sizeof(T), cudaMemcpyHostToDevice), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu", 367);
+# 380 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 int testIterations = 1;
-# 383 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 383 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 unsigned timer = (0);
-# 384 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
-__cutilCheckError(cutCreateTimer(&timer), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu", 384);
-# 387 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 384 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
+__cutilCheckError(cutCreateTimer(&timer), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu", 384);
+# 387 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 printf("Time in milliseconds for various numbers of elements for each kernel\n");
-# 388 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 388 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 printf("\n\n");
-# 389 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 389 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 printf("Kernel");
-# 390 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 390 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 for (int i = minN; i <= maxN; i *= 2)
-# 391 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 391 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 {
-# 392 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 392 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 printf(", %d", i);
-# 393 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 393 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 }
-# 395 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 395 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 for (int kernel = 0; kernel < 7; kernel++)
-# 396 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 396 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 {
-# 397 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 397 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 printf("\n");
-# 398 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 398 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 printf("%d", kernel);
-# 399 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 399 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 for (int i = minN; i <= maxN; i *= 2)
-# 400 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 400 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 {
-# 401 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 401 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 cutResetTimer(timer);
-# 402 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 402 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 int numBlocks = 0;
-# 403 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 403 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 int numThreads = 0;
-# 404 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 404 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 getNumBlocksAndThreads(kernel, i, maxBlocks, maxThreads, numBlocks, numThreads);
-# 407 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 407 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 benchmarkReduce(i, numThreads, numBlocks, maxThreads, maxBlocks, kernel, testIterations, false, 1, timer, useSM13, h_odata, d_idata, d_odata);
-# 410 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 410 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 float reduceTime = cutGetAverageTimerValue(timer);
-# 411 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 411 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 printf(", %f", reduceTime);
-# 412 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 412 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 }
-# 414 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 414 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 }
-# 417 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
-__cutilCheckError(cutDeleteTimer(timer), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu", 417);
-# 418 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 417 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
+__cutilCheckError(cutDeleteTimer(timer), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu", 417);
+# 418 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 free(h_idata);
-# 419 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 419 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 free(h_odata);
-# 421 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
-__cudaSafeCallNoSync(cudaFree(d_idata), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu", 421);
-# 422 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
-__cudaSafeCallNoSync(cudaFree(d_odata), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu", 422);
-# 423 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 421 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
+__cudaSafeCallNoSync(cudaFree(d_idata), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu", 421);
+# 422 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
+__cudaSafeCallNoSync(cudaFree(d_odata), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu", 422);
+# 423 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 }
-# 428 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 428 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 template< class T> void
-# 430 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 430 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 runTest(int argc, char **argv, ReduceType datatype)
-# 431 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 431 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 {
-# 432 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 432 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 int size = (1 << 20);
-# 433 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 433 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 int maxThreads = 128;
-# 434 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 434 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 int whichKernel = 6;
-# 435 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 435 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 int maxBlocks = 64;
-# 436 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 436 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 bool cpuFinalReduction = false;
-# 437 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 437 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 int cpuFinalThreshold = 1;
-# 439 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 439 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 cutGetCmdLineArgumenti(argc, (const char **)argv, "n", &size);
-# 440 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 440 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 cutGetCmdLineArgumenti(argc, (const char **)argv, "threads", &maxThreads);
-# 441 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 441 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 cutGetCmdLineArgumenti(argc, (const char **)argv, "kernel", &whichKernel);
-# 442 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 442 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 cutGetCmdLineArgumenti(argc, (const char **)argv, "maxblocks", &maxBlocks);
-# 444 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 444 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 printf("%d elements\n", size);
-# 445 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 445 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 printf("%d threads (max)\n", maxThreads);
-# 447 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 447 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 cpuFinalReduction = ((cutCheckCmdLineFlag(argc, (const char **)argv, "cpufinal")) == (CUTTrue));
-# 448 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 448 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 cutGetCmdLineArgumenti(argc, (const char **)argv, "cputhresh", &cpuFinalThreshold);
-# 450 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 450 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 bool runShmoo = ((cutCheckCmdLineFlag(argc, (const char **)argv, "shmoo")) == (CUTTrue));
-# 452 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 452 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 if (runShmoo)
-# 453 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 453 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 {
-# 454 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 454 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 shmoo< T> (1, 33554432, maxThreads, maxBlocks, datatype);
-# 455 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 455 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 } else
-# 457 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 457 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 {
-# 460 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 460 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 unsigned bytes = (size * sizeof(T));
-# 462 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 462 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 T *h_idata = ((T *)malloc(bytes));
-# 464 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 464 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 for (int i = 0; i < size; i++)
-# 465 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 465 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 {
-# 467 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 467 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 if (datatype == (REDUCE_INT)) {
-# 468 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 468 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 (h_idata[i]) = ((T)(rand() & 255)); } else {
-# 470 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 470 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 (h_idata[i]) = ((rand() & 255) / ((T)2147483647)); }
-# 471 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 471 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 }
-# 473 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 473 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 int numBlocks = 0;
-# 474 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 474 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 int numThreads = 0;
-# 475 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 475 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 getNumBlocksAndThreads(whichKernel, size, maxBlocks, maxThreads, numBlocks, numThreads);
-# 476 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 476 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 if (numBlocks == 1) { cpuFinalThreshold = 1; }
-# 479 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 479 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 T *h_odata = ((T *)malloc(numBlocks * sizeof(T)));
-# 481 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 481 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 printf("%d blocks\n", numBlocks);
-# 484 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 484 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 T *d_idata = (__null);
-# 485 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 485 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 T *d_odata = (__null);
-# 487 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
-__cudaSafeCallNoSync(cudaMalloc((void **)(&d_idata), bytes), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu", 487);
-# 488 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
-__cudaSafeCallNoSync(cudaMalloc((void **)(&d_odata), numBlocks * sizeof(T)), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu", 488);
-# 491 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
-__cudaSafeCallNoSync(cudaMemcpy(d_idata, h_idata, bytes, cudaMemcpyHostToDevice), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu", 491);
-# 492 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
-__cudaSafeCallNoSync(cudaMemcpy(d_odata, h_idata, numBlocks * sizeof(T), cudaMemcpyHostToDevice), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu", 492);
-# 503 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 487 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
+__cudaSafeCallNoSync(cudaMalloc((void **)(&d_idata), bytes), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu", 487);
+# 488 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
+__cudaSafeCallNoSync(cudaMalloc((void **)(&d_odata), numBlocks * sizeof(T)), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu", 488);
+# 491 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
+__cudaSafeCallNoSync(cudaMemcpy(d_idata, h_idata, bytes, cudaMemcpyHostToDevice), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu", 491);
+# 492 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
+__cudaSafeCallNoSync(cudaMemcpy(d_odata, h_idata, numBlocks * sizeof(T), cudaMemcpyHostToDevice), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu", 492);
+# 503 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 int testIterations = 1;
-# 506 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 506 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 unsigned timer = (0);
-# 507 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
-__cutilCheckError(cutCreateTimer(&timer), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu", 507);
-# 509 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 507 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
+__cutilCheckError(cutCreateTimer(&timer), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu", 507);
+# 509 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 T gpu_result = 0;
-# 511 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 511 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 gpu_result = benchmarkReduce< T> (size, numThreads, numBlocks, maxThreads, maxBlocks, whichKernel, testIterations, cpuFinalReduction, cpuFinalThreshold, timer, datatype == (REDUCE_DOUBLE), h_odata, d_idata, d_odata);
-# 516 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 516 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 float reduceTime = cutGetAverageTimerValue(timer);
-# 517 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 517 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 printf("Average time: %f ms\n", reduceTime);
-# 518 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 518 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 printf("Bandwidth:    %f GB/s\n\n", (size * sizeof(int)) / (reduceTime * (1000000.0)));
-# 521 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 521 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 T cpu_result = (reduceCPU< T> (h_idata, size));
-# 523 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 523 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 if (datatype == (REDUCE_INT))
-# 524 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 524 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 {
-# 525 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 525 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 printf("GPU result = %d\n", gpu_result);
-# 526 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 526 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 printf("CPU result = %d\n", cpu_result);
-# 528 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 528 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 printf("TEST %s\n", (gpu_result == cpu_result) ? ("PASSED") : ("FAILED"));
-# 529 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 529 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 } else
-# 531 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 531 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 {
-# 532 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 532 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 printf("GPU result = %0.12f\n", gpu_result);
-# 533 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 533 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 printf("CPU result = %0.12f\n", cpu_result);
-# 535 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 535 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 double threshold = ((datatype == (REDUCE_FLOAT)) ? ((1.000000000000000021e-08) * size) : (9.999999999999999799e-13));
-# 536 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 536 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 double diff = abs(((double)gpu_result) - ((double)cpu_result));
-# 537 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 537 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 printf("TEST %s\n", (diff < threshold) ? ("PASSED") : ("FAILED"));
-# 538 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 538 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 }
-# 543 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
-__cutilCheckError(cutDeleteTimer(timer), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu", 543);
-# 544 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 543 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
+__cutilCheckError(cutDeleteTimer(timer), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu", 543);
+# 544 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 free(h_idata);
-# 545 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 545 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 free(h_odata);
-# 547 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
-__cudaSafeCallNoSync(cudaFree(d_idata), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu", 547);
-# 548 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
-__cudaSafeCallNoSync(cudaFree(d_odata), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu", 548);
-# 549 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 547 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
+__cudaSafeCallNoSync(cudaFree(d_idata), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu", 547);
+# 548 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
+__cudaSafeCallNoSync(cudaFree(d_odata), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu", 548);
+# 549 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 }
-# 550 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu"
+# 550 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu"
 }
-# 1 "/tmp/tmpxft_00001847_00000000-1_reduction.cudafe1.stub.c"
-# 1 "/tmp/tmpxft_00001847_00000000-1_reduction.cudafe1.stub.c" 1
+# 1 "/tmp/tmpxft_0000110f_00000000-1_reduction.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_0000110f_00000000-1_reduction.cudafe1.stub.c" 1
 # 1 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 1
 # 91 "/usr/local/cuda/bin/../include/crt/host_runtime.h"
 extern "C" {
@@ -12356,8 +12356,8 @@ extern __attribute__((__weak__)) unsigned long long int ullmax(unsigned long lon
 
 
 #pragma pack()
-# 2 "/tmp/tmpxft_00001847_00000000-1_reduction.cudafe1.stub.c" 2
-# 1 "/tmp/tmpxft_00001847_00000000-3_reduction.fatbin.c" 1
+# 2 "/tmp/tmpxft_0000110f_00000000-1_reduction.cudafe1.stub.c" 2
+# 1 "/tmp/tmpxft_0000110f_00000000-3_reduction.fatbin.c" 1
 # 1 "/usr/local/cuda/bin/../include/__cudaFatFormat.h" 1
 # 83 "/usr/local/cuda/bin/../include/__cudaFatFormat.h"
 extern "C" {
@@ -12435,14 +12435,14 @@ void __cudaFatFreePTX( char* ptx );
 
 
 }
-# 2 "/tmp/tmpxft_00001847_00000000-3_reduction.fatbin.c" 2
+# 2 "/tmp/tmpxft_0000110f_00000000-3_reduction.fatbin.c" 2
 
 asm(
 ".section .rodata\n"
 ".align 32\n"
-"__deviceText_$sm_13$:\n"
-".quad 0x33010102464c457f,0x0000000000000002,0x0000000100be0002,0x0000000000000000\n"
-".quad 0x0000000000000208,0x0000000000000040,0x00380040000d010d,0x0001000400400002\n"
+"__deviceText_$sm_21$:\n"
+".quad 0x33010102464c457f,0x0000000000000004,0x0000000100be0002,0x0000000000000000\n"
+".quad 0x0000000000000208,0x0000000000000040,0x0038004000140115,0x0001000400400002\n"
 ".quad 0x0000000000000000,0x0000000000000000,0x0000000000000000,0x0000000000000000\n"
 ".quad 0x0000000000000000,0x0000000000000000,0x0000000000000000,0x0000000000000000\n"
 ".quad 0x0000000300000001,0x0000000000000000,0x0000000000000000,0x0000000000000140\n"
@@ -12465,37 +12465,37 @@ asm(
 
 extern "C" {
 
-extern const unsigned long long __deviceText_$sm_13$[80];
+extern const unsigned long long __deviceText_$sm_21$[80];
 
 }
 
 asm(
 ".section .rodata\n"
 ".align 32\n"
-"__deviceText_$compute_13$:\n"
-".quad 0x6f69737265762e09,0x2e090a342e31206e,0x7320746567726174,0x2f2f090a33315f6d\n"
+"__deviceText_$compute_20$:\n"
+".quad 0x6f69737265762e09,0x2e090a322e32206e,0x7320746567726174,0x2f2f090a30325f6d\n"
 ".quad 0x656c69706d6f6320,0x2f20687469772064,0x61636f6c2f727375,0x6f2f616475632f6c\n"
 ".quad 0x696c2f34366e6570,0x2f090a65622f2f62,0x6e65706f766e202f,0x6220322e33206363\n"
 ".quad 0x206e6f20746c6975,0x2d39302d30313032,0x2d2f2f090a0a3930,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x43202f2f090a2d2d,0x676e696c69706d6f\n"
-".quad 0x6d742f706d742f20,0x3030305f74667870,0x30305f3734383130,0x372d303030303030\n"
-".quad 0x697463756465725f,0x2e337070632e6e6f,0x2f706d742f282069,0x34652e2349426363\n"
-".quad 0x2f090a2948437764,0x2d2d2d2d2d2d2d2f,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
+".quad 0x6d742f706d742f20,0x3030305f74667870,0x30305f6630313130,0x372d303030303030\n"
+".quad 0x697463756465725f,0x2e337070632e6e6f,0x2f706d742f282069,0x45722e2349426363\n"
+".quad 0x2f090a294769364f,0x2d2d2d2d2d2d2d2f,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2f090a0a2d2d2d2d,0x2d2d2d2d2d2d2d2f,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2f2f090a2d2d2d2d,0x736e6f6974704f20,0x2d2d2d2f2f090a3a,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x615420202f2f090a,0x7874703a74656772\n"
-".quad 0x6d733a415349202c,0x646e45202c33315f,0x7474696c3a6e6169,0x6e696f50202c656c\n"
+".quad 0x6d733a415349202c,0x646e45202c30325f,0x7474696c3a6e6169,0x6e696f50202c656c\n"
 ".quad 0x657a695320726574,0x202f2f090a34363a,0x704f2809334f2d20,0x6974617a696d6974\n"
 ".quad 0x6c6576656c206e6f,0x2d20202f2f090a29,0x7562654428093067,0x296c6576656c2067\n"
 ".quad 0x6d2d20202f2f090a,0x726f706552280932,0x6f73697664612074,0x2f090a2973656972\n"
 ".quad 0x2d2d2d2d2d2d2d2f,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2e090a0a2d2d2d2d\n"
 ".quad 0x22093109656c6966,0x646e616d6d6f633c,0x0a223e656e696c2d,0x3209656c69662e09\n"
-".quad 0x742f706d742f2209,0x30305f746678706d,0x305f373438313030,0x2d30303030303030\n"
+".quad 0x742f706d742f2209,0x30305f746678706d,0x305f663031313030,0x2d30303030303030\n"
 ".quad 0x7463756465725f36,0x616475632e6e6f69,0x227570672e326566,0x09656c69662e090a\n"
 ".quad 0x2f7273752f220933,0x2f6363672f62696c,0x6e696c2d36383669,0x342f756e672d7875\n"
 ".quad 0x636e692f352e342e,0x6474732f6564756c,0x090a22682e666564,0x093409656c69662e\n"
@@ -12549,20 +12549,20 @@ asm(
 
 extern "C" {
 
-extern const unsigned long long __deviceText_$compute_13$[285];
+extern const unsigned long long __deviceText_$compute_20$[285];
 
 }
 
-static __cudaFatPtxEntry __ptxEntries [] = {{(char*)"compute_13",(char*)__deviceText_$compute_13$},{0,0}};
+static __cudaFatPtxEntry __ptxEntries [] = {{(char*)"compute_20",(char*)__deviceText_$compute_20$},{0,0}};
 static __cudaFatCubinEntry __cubinEntries[] = {{0,0}};
 static __cudaFatDebugEntry __debugEntries0 = {0, 0, 0, 0} ;
 static __cudaFatElfEntry __elfEntries0 = {0, 0, 0, 0} ;
-static __cudaFatElfEntry __elfEntries1 = {(char*)"sm_13", (char*)__deviceText_$sm_13$, &__elfEntries0, (unsigned int)sizeof(__deviceText_$sm_13$)};
+static __cudaFatElfEntry __elfEntries1 = {(char*)"sm_21", (char*)__deviceText_$sm_21$, &__elfEntries0, (unsigned int)sizeof(__deviceText_$sm_21$)};
 
 
 
-static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000004,0xa14f518d,(char*)"a0a3b97dacbbd011",(char*)"/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/reduction/reduction.cu",(char*)" ",__ptxEntries,__cubinEntries,&__debugEntries0,0,0,0,0,0,0x5bbd3d62,&__elfEntries1};
-# 3 "/tmp/tmpxft_00001847_00000000-1_reduction.cudafe1.stub.c" 2
-static void __sti____cudaRegisterAll_44_tmpxft_00001847_00000000_4_reduction_cpp1_ii_isPow2(void) __attribute__((__constructor__));
-static void __sti____cudaRegisterAll_44_tmpxft_00001847_00000000_4_reduction_cpp1_ii_isPow2(void){__cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil);}
-# 1 "/tmp/tmpxft_00001847_00000000-1_reduction.cudafe1.stub.c" 2
+static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000004,0xa14f518d,(char*)"978d023d185ce94c",(char*)"/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/reduction/reduction.cu",(char*)" ",__ptxEntries,__cubinEntries,&__debugEntries0,0,0,0,0,0,0x3853da20,&__elfEntries1};
+# 3 "/tmp/tmpxft_0000110f_00000000-1_reduction.cudafe1.stub.c" 2
+static void __sti____cudaRegisterAll_44_tmpxft_0000110f_00000000_4_reduction_cpp1_ii_isPow2(void) __attribute__((__constructor__));
+static void __sti____cudaRegisterAll_44_tmpxft_0000110f_00000000_4_reduction_cpp1_ii_isPow2(void){__cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil);}
+# 1 "/tmp/tmpxft_0000110f_00000000-1_reduction.cudafe1.stub.c" 2

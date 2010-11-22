@@ -1,8 +1,8 @@
-# 1 "/tmp/tmpxft_00001c5b_00000000-1_simpleVoteIntrinsics.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00001559_00000000-1_simpleVoteIntrinsics.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_00001c5b_00000000-1_simpleVoteIntrinsics.cudafe1.cpp"
-# 1 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 1 "/tmp/tmpxft_00001559_00000000-1_simpleVoteIntrinsics.cudafe1.cpp"
+# 1 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 # 46 "/usr/local/cuda/bin/../include/device_types.h"
 # 149 "/usr/lib/gcc/i686-linux-gnu/4.4.5/include/stddef.h" 3
 typedef long ptrdiff_t;
@@ -11361,320 +11361,320 @@ printf(" -> CUDA %s Toolkit\n", sNVCCReq);
 printf(" -> %s NVIDIA Display Driver.\n", sDriverReq);
 # 18 "sdk/cutil_inline.h"
 }
-# 48 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVote_kernel.cu"
+# 48 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVote_kernel.cu"
 void VoteAnyKernel1(unsigned *input, unsigned *result, int size) ;
-# 58 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVote_kernel.cu"
+# 58 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVote_kernel.cu"
 void VoteAllKernel2(unsigned *input, unsigned *result, int size) ;
-# 67 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVote_kernel.cu"
+# 67 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVote_kernel.cu"
 void VoteAnyKernel3(bool *info, int warp_size) ;
-# 53 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 53 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 void genVoteTestPattern(unsigned *VOTE_PATTERN, int size)
-# 54 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 54 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 {
-# 56 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 56 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 for (int i = 0; i < (size / 4); i++) {
-# 57 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 57 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 (VOTE_PATTERN[i]) = (0); }
-# 60 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 60 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 for (int i = ((2 * size) / 8); i < ((4 * size) / 8); i++) {
-# 61 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 61 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 (VOTE_PATTERN[i]) = ((i & 1) ? i : 0); }
-# 64 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 64 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 for (int i = ((2 * size) / 4); i < ((3 * size) / 4); i++) {
-# 65 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 65 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 (VOTE_PATTERN[i]) = ((i & 1) ? 0 : i); }
-# 68 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 68 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 for (int i = ((3 * size) / 4); i < ((4 * size) / 4); i++) {
-# 69 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 69 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 (VOTE_PATTERN[i]) = 4294967295U; }
-# 70 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 70 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 }
-# 72 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 72 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 int checkErrors1(unsigned *h_result, int start, int end, int warp_size, char *voteType)
-# 73 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 73 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 {
-# 74 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 74 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 int i, sum = 0;
-# 76 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 76 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 for ((sum = 0), (i = start); i < end; i++) {
-# 77 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 77 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 sum += (h_result[i]);
-# 78 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 78 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 }
-# 79 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 79 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 if (sum > 0) {
-# 80 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 80 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 printf("\t<%s>[%d - %d] = ", voteType, start, end - 1);
-# 81 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 81 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 for (i = start; i < end; i++) {
-# 82 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 82 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 printf("%d", h_result[i]);
-# 83 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 83 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 }
-# 84 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 84 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 printf(" - FAILED!\n", sum);
-# 85 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 85 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 }
-# 86 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 86 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 return sum > 0;
-# 87 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 87 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 }
-# 89 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 89 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 int checkErrors2(unsigned *h_result, int start, int end, int warp_size, char *voteType)
-# 90 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 90 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 {
-# 91 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 91 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 int i, sum = 0;
-# 93 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 93 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 for ((sum = 0), (i = start); i < end; i++) {
-# 94 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 94 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 sum += (h_result[i]);
-# 95 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 95 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 }
-# 96 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 96 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 if (sum != warp_size) {
-# 97 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 97 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 printf("\t<%s>[%d - %d] = ", voteType, start, end - 1);
-# 98 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 98 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 for (i = start; i < end; i++) {
-# 99 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 99 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 printf("%d", h_result[i]);
-# 100 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 100 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 }
-# 101 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 101 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 printf(" - FAILED!\n");
-# 102 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 102 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 }
-# 103 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 103 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 return sum != warp_size;
-# 104 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 104 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 }
-# 108 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 108 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 int checkResultsVoteAnyKernel1(unsigned *h_result, int size, int warp_size)
-# 109 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 109 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 {
-# 110 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 110 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 int error_count = 0;
-# 112 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 112 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 error_count += checkErrors1(h_result, 0, (4 * warp_size) / 4, warp_size, (char *)("Vote.Any"));
-# 113 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 113 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 error_count += checkErrors2(h_result, (4 * warp_size) / 4, ((2 * 4) * warp_size) / 4, warp_size, (char *)("Vote.Any"));
-# 114 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 114 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 error_count += checkErrors2(h_result, ((2 * 4) * warp_size) / 4, ((3 * 4) * warp_size) / 4, warp_size, (char *)("Vote.Any"));
-# 115 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 115 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 error_count += checkErrors2(h_result, ((3 * 4) * warp_size) / 4, ((4 * 4) * warp_size) / 4, warp_size, (char *)("Vote.Any"));
-# 117 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 117 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 return error_count;
-# 118 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 118 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 }
-# 121 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 121 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 int checkResultsVoteAllKernel2(unsigned *h_result, int size, int warp_size)
-# 122 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 122 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 {
-# 123 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 123 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 int error_count = 0;
-# 126 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 126 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 error_count += checkErrors1(h_result, 0, (4 * warp_size) / 4, warp_size, (char *)("Vote.All"));
-# 127 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 127 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 error_count += checkErrors2(h_result, (4 * warp_size) / 4, ((2 * 4) * warp_size) / 4, warp_size, (char *)("Vote.All"));
-# 128 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 128 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 error_count += checkErrors2(h_result, ((2 * 4) * warp_size) / 4, ((3 * 4) * warp_size) / 4, warp_size, (char *)("Vote.All"));
-# 129 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 129 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 error_count += checkErrors2(h_result, ((3 * 4) * warp_size) / 4, ((4 * 4) * warp_size) / 4, warp_size, (char *)("Vote.All"));
-# 136 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 136 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 return error_count;
-# 137 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 137 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 }
-# 140 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 140 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 int checkResultsVoteAnyKernel3(bool *hinfo, int size)
-# 141 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 141 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 {
-# 142 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 142 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 int i, error_count = 0;
-# 145 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 145 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 for (i = 0; i < (size * 3); i++) {
-# 147 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 147 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 if ((i >= 0) && (i < size)) {
-# 148 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 148 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 if ((hinfo[i]) != (false)) {
-# 149 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 149 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 error_count++;
-# 150 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 150 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 }
-# 151 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 151 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 } else { if ((i >= size) && (i < (2 * size))) {
-# 152 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 152 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 if ((hinfo[i]) != (true)) {
-# 153 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 153 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 error_count++;
-# 154 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 154 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 }
-# 155 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 155 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 } else { if ((i >= (2 * size)) && (i < (3 * size))) {
-# 156 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 156 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 if ((hinfo[i]) != (true)) {
-# 157 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 157 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 error_count++;
-# 158 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 158 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 }
-# 159 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 159 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 } } }
-# 160 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 160 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 }
-# 185 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 185 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 printf((error_count == 0) ? ("\tPASSED!\n") : ("\tFAILED!\n"));
-# 186 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 186 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 return error_count;
-# 187 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 187 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 }
-# 189 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 189 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 int main(int argc, char **argv)
-# 190 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 190 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 {
-# 191 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 191 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 unsigned *h_input, *h_result;
-# 192 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 192 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 unsigned *d_input, *d_result;
-# 194 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 194 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 bool *dinfo = (__null), *hinfo = (__null);
-# 195 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 195 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 int error_count[3] = {0, 0, 0};
-# 197 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 197 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 cudaDeviceProp deviceProp;
-# 198 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 198 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 int dev, warp_size;
-# 201 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 201 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 if (cutCheckCmdLineFlag(argc, (const char **)argv, "device")) {
-# 202 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 202 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 cutilDeviceInit(argc, argv); } else {
-# 204 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 204 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 cudaSetDevice(dev = cutGetMaxGflopsDeviceId()); }
-# 206 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
-__cudaSafeCall(cudaChooseDevice(&dev, &deviceProp), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu", 206);
-# 207 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
-__cudaSafeCall(cudaGetDeviceProperties(&deviceProp, 0), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu", 207);
-# 210 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 206 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+__cudaSafeCall(cudaChooseDevice(&dev, &deviceProp), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu", 206);
+# 207 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+__cudaSafeCall(cudaGetDeviceProperties(&deviceProp, 0), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu", 207);
+# 210 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 warp_size = 1;
-# 225 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 225 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 h_input = ((unsigned *)malloc((4 * warp_size) * sizeof(unsigned)));
-# 226 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 226 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 h_result = ((unsigned *)malloc((4 * warp_size) * sizeof(unsigned)));
-# 227 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
-__cudaSafeCall(cudaMalloc((void **)(&d_input), (4 * warp_size) * sizeof(unsigned)), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu", 227);
-# 228 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
-__cudaSafeCall(cudaMalloc((void **)(&d_result), (4 * warp_size) * sizeof(unsigned)), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu", 228);
-# 229 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 227 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+__cudaSafeCall(cudaMalloc((void **)(&d_input), (4 * warp_size) * sizeof(unsigned)), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu", 227);
+# 228 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+__cudaSafeCall(cudaMalloc((void **)(&d_result), (4 * warp_size) * sizeof(unsigned)), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu", 228);
+# 229 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 genVoteTestPattern(h_input, 4 * warp_size);
-# 230 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
-__cudaSafeCall(cudaMemcpy(d_input, h_input, (4 * warp_size) * sizeof(unsigned), cudaMemcpyHostToDevice), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu", 230);
-# 233 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 230 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+__cudaSafeCall(cudaMemcpy(d_input, h_input, (4 * warp_size) * sizeof(unsigned), cudaMemcpyHostToDevice), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu", 230);
+# 233 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 printf("[VOTE Kernel Test 1/3]\n");
-# 234 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 234 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 printf("\tRunning <<Vote.Any>> kernel1 ...\n");
-# 235 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 235 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 {
-# 236 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
-__cudaSafeCall(cudaThreadSynchronize(), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu", 236);
-# 237 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 236 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+__cudaSafeCall(cudaThreadSynchronize(), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu", 236);
+# 237 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 dim3 gridBlock(4, 1);
-# 238 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 238 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 dim3 threadBlock(warp_size, 1);
-# 239 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 239 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 cudaConfigureCall(gridBlock, threadBlock) ? ((void)0) : VoteAnyKernel1(d_input, d_result, 4 * warp_size);
-# 240 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
-__cutilCheckMsg("VoteAnyKernel() execution failed\n", "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu", 240);
-# 241 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
-__cudaSafeCall(cudaThreadSynchronize(), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu", 241);
-# 242 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 240 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+__cutilCheckMsg("VoteAnyKernel() execution failed\n", "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu", 240);
+# 241 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+__cudaSafeCall(cudaThreadSynchronize(), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu", 241);
+# 242 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 }
-# 243 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
-__cudaSafeCall(cudaMemcpy(h_result, d_result, (4 * warp_size) * sizeof(unsigned), cudaMemcpyDeviceToHost), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu", 243);
-# 244 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 243 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+__cudaSafeCall(cudaMemcpy(h_result, d_result, (4 * warp_size) * sizeof(unsigned), cudaMemcpyDeviceToHost), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu", 243);
+# 244 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 ((error_count)[0]) += checkResultsVoteAnyKernel1(h_result, 4 * warp_size, warp_size);
-# 247 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 247 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 printf("\n[VOTE Kernel Test 2/3]\n");
-# 248 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 248 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 printf("\tRunning <<Vote.All>> kernel2 ...\n");
-# 249 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 249 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 {
-# 250 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
-__cudaSafeCall(cudaThreadSynchronize(), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu", 250);
-# 251 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 250 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+__cudaSafeCall(cudaThreadSynchronize(), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu", 250);
+# 251 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 dim3 gridBlock(4, 1);
-# 252 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 252 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 dim3 threadBlock(warp_size, 1);
-# 253 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 253 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 cudaConfigureCall(gridBlock, threadBlock) ? ((void)0) : VoteAllKernel2(d_input, d_result, 4 * warp_size);
-# 254 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
-__cutilCheckMsg("VoteAllKernel() execution failed\n", "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu", 254);
-# 255 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
-__cudaSafeCall(cudaThreadSynchronize(), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu", 255);
-# 256 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 254 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+__cutilCheckMsg("VoteAllKernel() execution failed\n", "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu", 254);
+# 255 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+__cudaSafeCall(cudaThreadSynchronize(), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu", 255);
+# 256 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 }
-# 257 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
-__cudaSafeCall(cudaMemcpy(h_result, d_result, (4 * warp_size) * sizeof(unsigned), cudaMemcpyDeviceToHost), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu", 257);
-# 258 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 257 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+__cudaSafeCall(cudaMemcpy(h_result, d_result, (4 * warp_size) * sizeof(unsigned), cudaMemcpyDeviceToHost), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu", 257);
+# 258 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 ((error_count)[1]) += checkResultsVoteAllKernel2(h_result, 4 * warp_size, warp_size);
-# 261 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 261 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 hinfo = ((bool *)calloc((warp_size * 3) * 3, sizeof(bool)));
-# 262 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 262 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 cudaMalloc((void **)(&dinfo), ((warp_size * 3) * 3) * sizeof(bool));
-# 263 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 263 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 cudaMemcpy(dinfo, hinfo, ((warp_size * 3) * 3) * sizeof(bool), cudaMemcpyHostToDevice);
-# 266 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 266 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 printf("\n[VOTE Kernel Test 3/3]\n");
-# 267 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 267 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 printf("\tRunning <<Vote.Any>> kernel3 ...\n");
-# 268 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 268 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 {
-# 269 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
-__cudaSafeCall(cudaThreadSynchronize(), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu", 269);
-# 270 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 269 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+__cudaSafeCall(cudaThreadSynchronize(), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu", 269);
+# 270 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 cudaConfigureCall(3, warp_size) ? ((void)0) : VoteAnyKernel3(dinfo, warp_size);
-# 271 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
-__cudaSafeCall(cudaThreadSynchronize(), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu", 271);
-# 272 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 271 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+__cudaSafeCall(cudaThreadSynchronize(), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu", 271);
+# 272 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 }
-# 274 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 274 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 cudaMemcpy(hinfo, dinfo, ((warp_size * 3) * 3) * sizeof(bool), cudaMemcpyDeviceToHost);
-# 277 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 277 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 ((error_count)[2]) = checkResultsVoteAnyKernel3(hinfo, warp_size * 3);
-# 279 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 279 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 printf("\n");
-# 280 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 280 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 if (((((error_count)[0]) == 0) && (((error_count)[1]) == 0)) && (((error_count)[2]) == 0))
-# 283 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 283 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 {
-# 284 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 284 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 printf("TEST PASSED\n");
-# 285 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 285 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 } else
-# 286 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 286 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 {
-# 287 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 287 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 printf("TEST FAILED\n");
-# 288 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 288 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 }
-# 291 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
-__cudaSafeCall(cudaFree(d_input), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu", 291);
-# 292 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
-__cudaSafeCall(cudaFree(d_result), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu", 292);
-# 293 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 291 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+__cudaSafeCall(cudaFree(d_input), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu", 291);
+# 292 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+__cudaSafeCall(cudaFree(d_result), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu", 292);
+# 293 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 free(h_input);
-# 294 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 294 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 free(h_result);
-# 297 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 297 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 free(hinfo); cudaFree(dinfo);
-# 299 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 299 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 printf("\tShutting down...\n");
-# 300 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 300 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 cudaThreadExit();
-# 301 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 301 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 __cutilExit(argc, argv); return 0;
-# 302 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
+# 302 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu"
 }
-# 1 "/tmp/tmpxft_00001c5b_00000000-1_simpleVoteIntrinsics.cudafe1.stub.c"
-# 1 "/tmp/tmpxft_00001c5b_00000000-1_simpleVoteIntrinsics.cudafe1.stub.c" 1
+# 1 "/tmp/tmpxft_00001559_00000000-1_simpleVoteIntrinsics.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00001559_00000000-1_simpleVoteIntrinsics.cudafe1.stub.c" 1
 # 1 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 1
 # 91 "/usr/local/cuda/bin/../include/crt/host_runtime.h"
 extern "C" {
@@ -12076,8 +12076,8 @@ extern __attribute__((__weak__)) unsigned long long int ullmax(unsigned long lon
 
 
 #pragma pack()
-# 2 "/tmp/tmpxft_00001c5b_00000000-1_simpleVoteIntrinsics.cudafe1.stub.c" 2
-# 1 "/tmp/tmpxft_00001c5b_00000000-3_simpleVoteIntrinsics.fatbin.c" 1
+# 2 "/tmp/tmpxft_00001559_00000000-1_simpleVoteIntrinsics.cudafe1.stub.c" 2
+# 1 "/tmp/tmpxft_00001559_00000000-3_simpleVoteIntrinsics.fatbin.c" 1
 # 1 "/usr/local/cuda/bin/../include/__cudaFatFormat.h" 1
 # 83 "/usr/local/cuda/bin/../include/__cudaFatFormat.h"
 extern "C" {
@@ -12155,149 +12155,36 @@ void __cudaFatFreePTX( char* ptx );
 
 
 }
-# 2 "/tmp/tmpxft_00001c5b_00000000-3_simpleVoteIntrinsics.fatbin.c" 2
+# 2 "/tmp/tmpxft_00001559_00000000-3_simpleVoteIntrinsics.fatbin.c" 2
 
 asm(
 ".section .rodata\n"
 ".align 32\n"
-"__deviceText_$sm_13$:\n"
-".quad 0x33010102464c457f,0x0000000000000002,0x0000000100be0002,0x0000000000000000\n"
-".quad 0x0000000000000b00,0x0000000000000040,0x00380040000d010d,0x0001001000400007\n"
-".quad 0x0000000000000000,0x0000000000000000,0x0000000000000000,0x0000000000000000\n"
-".quad 0x0000000000000000,0x0000000000000000,0x0000000000000000,0x0000000000000000\n"
-".quad 0x0000000300000001,0x0000000000000000,0x0000000000000000,0x0000000000000440\n"
-".quad 0x00000000000001c6,0x0000000000000000,0x0000000000000004,0x0000000000000000\n"
-".quad 0x000000030000000b,0x0000000000000000,0x0000000000000000,0x0000000000000606\n"
-".quad 0x0000000000000047,0x0000000000000000,0x0000000000000001,0x0000000000000000\n"
-".quad 0x0000000200000013,0x0000000000000000,0x0000000000000000,0x000000000000064d\n"
-".quad 0x00000000000001f8,0x0000001200000002,0x0000000000000001,0x0000000000000018\n"
-".quad 0x00000001000000b0,0x0000000000000006,0x0000000000000000,0x0000000000000845\n"
-".quad 0x0000000000000080,0x0300000a00000003,0x0000000000000004,0x0000000000000000\n"
-".quad 0x00000001000001a0,0x0000000000000002,0x0000000000000000,0x00000000000008c5\n"
-".quad 0x0000000000000004,0x0000000400000000,0x0000000000000004,0x0000000000000000\n"
-".quad 0x00000001000000ce,0x0000000000000002,0x0000000000000000,0x00000000000008c9\n"
-".quad 0x0000000000000044,0x0000000400000000,0x0000000000000001,0x0000000000000000\n"
-".quad 0x000000080000017d,0x0000000000000003,0x0000000000000000,0x000000000000090d\n"
-".quad 0x0000000000000024,0x0000000400000000,0x0000000000000004,0x0000000000000000\n"
-".quad 0x0000000100000071,0x0000000000000006,0x0000000000000000,0x000000000000090d\n"
-".quad 0x0000000000000080,0x0300000800000003,0x0000000000000004,0x0000000000000000\n"
-".quad 0x0000000100000112,0x0000000000000002,0x0000000000000000,0x000000000000098d\n"
-".quad 0x0000000000000004,0x0000000800000000,0x0000000000000004,0x0000000000000000\n"
-".quad 0x000000010000008f,0x0000000000000002,0x0000000000000000,0x0000000000000991\n"
-".quad 0x0000000000000044,0x0000000800000000,0x0000000000000001,0x0000000000000000\n"
-".quad 0x00000008000000ef,0x0000000000000003,0x0000000000000000,0x00000000000009d5\n"
-".quad 0x0000000000000024,0x0000000800000000,0x0000000000000004,0x0000000000000000\n"
-".quad 0x0000000100000036,0x0000000000000006,0x0000000000000000,0x00000000000009d5\n"
-".quad 0x00000000000000e8,0x0500000600000003,0x0000000000000004,0x0000000000000000\n"
-".quad 0x0000000100000159,0x0000000000000002,0x0000000000000000,0x0000000000000abd\n"
-".quad 0x0000000000000004,0x0000000c00000000,0x0000000000000004,0x0000000000000000\n"
-".quad 0x0000000100000052,0x0000000000000002,0x0000000000000000,0x0000000000000ac1\n"
-".quad 0x000000000000003c,0x0000000c00000000,0x0000000000000001,0x0000000000000000\n"
-".quad 0x0000000800000138,0x0000000000000003,0x0000000000000000,0x0000000000000afd\n"
-".quad 0x000000000000001c,0x0000000c00000000,0x0000000000000004,0x0000000000000000\n"
-".quad 0x7472747368732e00,0x747274732e006261,0x746d79732e006261,0x672e766e2e006261\n"
-".quad 0x6e692e6c61626f6c,0x672e766e2e007469,0x742e006c61626f6c,0x34315a5f2e747865\n"
-".quad 0x4b796e4165746f56,0x6250336c656e7265,0x6e692e766e2e0069,0x5634315a5f2e6f66\n"
-".quad 0x654b796e4165746f,0x696250336c656e72,0x5f2e747865742e00,0x4165746f5634315a\n"
-".quad 0x6c656e72654b6c6c,0x2e00695f536a5032,0x2e6f666e692e766e,0x65746f5634315a5f\n"
-".quad 0x656e72654b6c6c41,0x00695f536a50326c,0x5a5f2e747865742e,0x6e4165746f563431\n"
-".quad 0x316c656e72654b79,0x6e2e00695f536a50,0x5f2e6f666e692e76,0x4165746f5634315a\n"
-".quad 0x6c656e72654b796e,0x2e00695f536a5031,0x65726168732e766e,0x6f5634315a5f2e64\n"
-".quad 0x72654b6c6c416574,0x5f536a50326c656e,0x6f632e766e2e0069,0x2e31746e6174736e\n"
-".quad 0x65746f5634315a5f,0x656e72654b6c6c41,0x00695f536a50326c,0x726168732e766e2e\n"
-".quad 0x5634315a5f2e6465,0x654b796e4165746f,0x696250336c656e72,0x6e6f632e766e2e00\n"
-".quad 0x5f2e31746e617473,0x4165746f5634315a,0x6c656e72654b796e,0x766e2e0069625033\n"
-".quad 0x2e6465726168732e,0x65746f5634315a5f,0x656e72654b796e41,0x00695f536a50316c\n"
-".quad 0x736e6f632e766e2e,0x5a5f2e31746e6174,0x6e4165746f563431,0x316c656e72654b79\n"
-".quad 0x5f0000695f536a50,0x4165746f5634315a,0x6c656e72654b796e,0x315a5f0069625033\n"
-".quad 0x6c6c4165746f5634,0x50326c656e72654b,0x315a5f00695f536a,0x796e4165746f5634\n"
-".quad 0x50316c656e72654b,0x00000000695f536a,0x0000000000000000,0x0000000000000000\n"
-".quad 0x0000000000000000,0x0000000001000300,0x0000000000000000,0x0000000000000000\n"
-".quad 0x0000000002000300,0x0000000000000000,0x0000000000000000,0x0000000003000300\n"
-".quad 0x0000000000000000,0x0000000000000000,0x0000000000000300,0x0000000000000000\n"
-".quad 0x0000000000000000,0x0000000000000300,0x0000000000000000,0x0000000000000000\n"
-".quad 0x000000000c000300,0x0000e80000000000,0x0000000000000000,0x000000000e000300\n"
-".quad 0x0000000000000000,0x0000000000000000,0x0000000008000300,0x0000800000000000\n"
-".quad 0x0000000000000000,0x000000000a000300,0x0000000000000000,0x0000000000000000\n"
-".quad 0x0000000004000300,0x0000800000000000,0x0000000000000000,0x0000000006000300\n"
-".quad 0x0000000000000000,0x0000000000000000,0x000000000b000300,0x0000000000000000\n"
-".quad 0x0000000000000000,0x0000000009000300,0x0000000000000000,0x0000000000000000\n"
-".quad 0x000000000f000300,0x0000000000000000,0x0000000000000000,0x000000000d000300\n"
-".quad 0x0000000000000000,0x0000000000000000,0x0000000007000300,0x0000000000000000\n"
-".quad 0x0000000000000000,0x0000000005000300,0x0000000000000000,0x0000010000000000\n"
-".quad 0x000000000c101200,0x0000000000000000,0x0000170000000000,0x0000000008101200\n"
-".quad 0x0000000000000000,0x00002f0000000000,0x0000000004101200,0x0000000000000000\n"
-".quad 0x0002050000000000,0x0000054000478010,0x014c0104000780a0,0x0200050020478060\n"
-".quad 0x00c801c410078030,0x0e00010420478020,0x7c000180c00780d0,0x0000016401478030\n"
-".quad 0x0001fd2c014780a0,0x00f8012c0147c8a0,0x0002010403c78010,0x000001600002c010\n"
-".quad 0x0000092440c28010,0x00cc012c014780a0,0x0004050420478020,0x0e00052c014780a0\n"
-".quad 0x000001a0c00781d0,0x000000000c0b0400,0x0000100000000800,0x0c17040014180300\n"
-".quad 0x100002ffffffff00,0x0c17040013f00000,0x080001ffffffff00,0x0c17040023f00000\n"
-".quad 0x000000ffffffff00,0x0002050023f00000,0x0000054000478010,0x014c0104000780a0\n"
-".quad 0x0200050020478060,0x00c801c410078030,0x0e00010420478020,0x7c000180c00780d0\n"
-".quad 0x0000016401478030,0x0001fd2c014780a0,0x00f8012c0147c8a0,0x0004010403c78010\n"
-".quad 0x000001600002c010,0x0000092440c28010,0x00cc012c014780a0,0x0004050420478020\n"
-".quad 0x0e00052c014780a0,0x000001a0c00781d0,0x000000000c0b0400,0x0000100000000800\n"
-".quad 0x0c17040014180300,0x100002ffffffff00,0x0c17040013f00000,0x080001ffffffff00\n"
-".quad 0x0c17040023f00000,0x000000ffffffff00,0x01cc050023f00000,0x00cc09c430078030\n"
-".quad 0x1f04050420478020,0x80020dec10078030,0x00020504400780d0,0x0000054000478010\n"
-".quad 0x00060904000780a0,0x014c050400878020,0x0104010020478060,0x010001ec10078030\n"
-".quad 0x80000d6c00c78030,0x0007fd04400780d0,0x00f8012c0147c8a0,0x0002010403c78010\n"
-".quad 0x000001600002d010,0x0102092440d28010,0x000011c410078030,0x0004012c014780a0\n"
-".quad 0x0008090400478020,0x00c80128014780a0,0x0006110420078020,0x0e000508014780a0\n"
-".quad 0x018005a0200780d0,0x0004010000000320,0x0e0209600002c010,0x000003a0200780d0\n"
-".quad 0x0280050000050030,0x0100010000000320,0x0e02010000000310,0x000001a0200781d0\n"
-".quad 0x00000000080b0400,0x0c18030000000800,0xffffff000c170400,0x13f00000080001ff\n"
-".quad 0xffffff000c170400,0x23f00000000000ff,0x01000800080d0400,0x0000000000000100\n"
-".quad 0x0000000500000006,0x0000000000000b00,0x0000000000000000,0x0000000000000000\n"
-".quad 0x0000000000000188,0x0000000000000188,0x0000000000000004,0x0000140560000000\n"
-".quad 0x0000000000000845,0x0000000000000000,0x0000000000000000,0x00000000000000c8\n"
-".quad 0x00000000000000c8,0x0000000000000004,0x0000140660000000,0x000000000000090d\n"
-".quad 0x0000000000000000,0x0000000000000000,0x0000000000000000,0x0000000000000024\n"
-".quad 0x0000000000000004,0x0000130560000000,0x000000000000090d,0x0000000000000000\n"
-".quad 0x0000000000000000,0x00000000000000c8,0x00000000000000c8,0x0000000000000004\n"
-".quad 0x0000130660000000,0x00000000000009d5,0x0000000000000000,0x0000000000000000\n"
-".quad 0x0000000000000000,0x0000000000000024,0x0000000000000004,0x0000120560000000\n"
-".quad 0x00000000000009d5,0x0000000000000000,0x0000000000000000,0x0000000000000128\n"
-".quad 0x0000000000000128,0x0000000000000004,0x0000120660000000,0x0000000000000afd\n"
-".quad 0x0000000000000000,0x0000000000000000,0x0000000000000000,0x000000000000001c\n"
-".quad 0x0000000000000004,0x0000000000000000\n"
-".text");
-
-extern "C" {
-
-extern const unsigned long long __deviceText_$sm_13$[402];
-
-}
-
-asm(
-".section .rodata\n"
-".align 32\n"
-"__deviceText_$compute_13$:\n"
-".quad 0x6f69737265762e09,0x2e090a342e31206e,0x7320746567726174,0x2f2f090a33315f6d\n"
+"__deviceText_$compute_20$:\n"
+".quad 0x6f69737265762e09,0x2e090a322e32206e,0x7320746567726174,0x2f2f090a30325f6d\n"
 ".quad 0x656c69706d6f6320,0x2f20687469772064,0x61636f6c2f727375,0x6f2f616475632f6c\n"
 ".quad 0x696c2f34366e6570,0x2f090a65622f2f62,0x6e65706f766e202f,0x6220322e33206363\n"
 ".quad 0x206e6f20746c6975,0x2d39302d30313032,0x2d2f2f090a0a3930,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x43202f2f090a2d2d,0x676e696c69706d6f\n"
-".quad 0x6d742f706d742f20,0x3030305f74667870,0x30305f6235633130,0x372d303030303030\n"
+".quad 0x6d742f706d742f20,0x3030305f74667870,0x30305f3935353130,0x372d303030303030\n"
 ".quad 0x56656c706d69735f,0x6972746e4965746f,0x70632e736369736e,0x742f2820692e3370\n"
-".quad 0x23494263632f706d,0x295169757552302e,0x2d2d2d2d2f2f090a,0x2d2d2d2d2d2d2d2d\n"
+".quad 0x23494263632f706d,0x294950634772682e,0x2d2d2d2d2f2f090a,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x0a2d2d2d2d2d2d2d,0x2d2d2d2d2f2f090a,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x0a2d2d2d2d2d2d2d,0x6974704f202f2f09,0x2f2f090a3a736e6f\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x202f2f090a2d2d2d\n"
-".quad 0x3a74656772615420,0x415349202c787470,0x202c33315f6d733a,0x6c3a6e6169646e45\n"
+".quad 0x3a74656772615420,0x415349202c787470,0x202c30325f6d733a,0x6c3a6e6169646e45\n"
 ".quad 0x50202c656c747469,0x53207265746e696f,0x090a34363a657a69,0x09334f2d20202f2f\n"
 ".quad 0x7a696d6974704f28,0x656c206e6f697461,0x2f2f090a296c6576,0x44280930672d2020\n"
 ".quad 0x76656c2067756265,0x202f2f090a296c65,0x65522809326d2d20,0x7664612074726f70\n"
 ".quad 0x29736569726f7369,0x2d2d2d2d2f2f090a,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x0a2d2d2d2d2d2d2d,0x09656c69662e090a,0x6d6d6f633c220931,0x656e696c2d646e61\n"
-".quad 0x6c69662e090a223e,0x6d742f2209320965,0x746678706d742f70,0x356331303030305f\n"
-".quad 0x3030303030305f62,0x6d69735f362d3030,0x4965746f56656c70,0x6369736e6972746e\n"
+".quad 0x6c69662e090a223e,0x6d742f2209320965,0x746678706d742f70,0x353531303030305f\n"
+".quad 0x3030303030305f39,0x6d69735f362d3030,0x4965746f56656c70,0x6369736e6972746e\n"
 ".quad 0x6566616475632e73,0x090a227570672e32,0x093309656c69662e,0x696c2f7273752f22\n"
 ".quad 0x36692f6363672f62,0x78756e696c2d3638,0x342e342f756e672d,0x756c636e692f352e\n"
 ".quad 0x65646474732f6564,0x662e090a22682e66,0x2f22093409656c69,0x61636f6c2f727375\n"
@@ -12325,201 +12212,306 @@ asm(
 ".quad 0x69622f616475632f,0x636e692f2e2e2f6e,0x7865742f6564756c,0x7465665f65727574\n"
 ".quad 0x74636e75665f6863,0x0a22682e736e6f69,0x3109656c69662e09,0x656d6f682f220937\n"
 ".quad 0x2f6c616d726f6e2f,0x74756f6b63656863,0x6c65636f7570672f,0x73747365742f746f\n"
-".quad 0x322e32616475632f,0x732f73747365742f,0x746f56656c706d69,0x736e6972746e4965\n"
-".quad 0x706d69732f736369,0x6b5f65746f56656c,0x75632e6c656e7265,0x656c69662e090a22\n"
-".quad 0x73752f2209383109,0x2f6c61636f6c2f72,0x6e69622f61647563,0x6c636e692f2e2e2f\n"
-".quad 0x6d6d6f632f656475,0x74636e75665f6e6f,0x0a22682e736e6f69,0x3109656c69662e09\n"
-".quad 0x2f7273752f220939,0x75632f6c61636f6c,0x2e2f6e69622f6164,0x64756c636e692f2e\n"
-".quad 0x665f6874616d2f65,0x736e6f6974636e75,0x69662e090a22682e,0x2f2209303209656c\n"
-".quad 0x61636f6c2f727375,0x622f616475632f6c,0x6e692f2e2e2f6e69,0x616d2f6564756c63\n"
-".quad 0x74736e6f635f6874,0x0a22682e73746e61,0x3209656c69662e09,0x2f7273752f220931\n"
-".quad 0x75632f6c61636f6c,0x2e2f6e69622f6164,0x64756c636e692f2e,0x6563697665642f65\n"
-".quad 0x6f6974636e75665f,0x2e090a22682e736e,0x09323209656c6966,0x6f6c2f7273752f22\n"
-".quad 0x616475632f6c6163,0x2f2e2e2f6e69622f,0x2f6564756c636e69,0x74615f31315f6d73\n"
-".quad 0x6e75665f63696d6f,0x682e736e6f697463,0x656c69662e090a22,0x73752f2209333209\n"
-".quad 0x2f6c61636f6c2f72,0x6e69622f61647563,0x6c636e692f2e2e2f,0x315f6d732f656475\n"
-".quad 0x63696d6f74615f32,0x6f6974636e75665f,0x2e090a22682e736e,0x09343209656c6966\n"
+".quad 0x312e322d7874702d,0x322e32616475632f,0x732f73747365742f,0x746f56656c706d69\n"
+".quad 0x736e6972746e4965,0x706d69732f736369,0x6b5f65746f56656c,0x75632e6c656e7265\n"
+".quad 0x656c69662e090a22,0x73752f2209383109,0x2f6c61636f6c2f72,0x6e69622f61647563\n"
+".quad 0x6c636e692f2e2e2f,0x6d6d6f632f656475,0x74636e75665f6e6f,0x0a22682e736e6f69\n"
+".quad 0x3109656c69662e09,0x2f7273752f220939,0x75632f6c61636f6c,0x2e2f6e69622f6164\n"
+".quad 0x64756c636e692f2e,0x665f6874616d2f65,0x736e6f6974636e75,0x69662e090a22682e\n"
+".quad 0x2f2209303209656c,0x61636f6c2f727375,0x622f616475632f6c,0x6e692f2e2e2f6e69\n"
+".quad 0x616d2f6564756c63,0x74736e6f635f6874,0x0a22682e73746e61,0x3209656c69662e09\n"
+".quad 0x2f7273752f220931,0x75632f6c61636f6c,0x2e2f6e69622f6164,0x64756c636e692f2e\n"
+".quad 0x6563697665642f65,0x6f6974636e75665f,0x2e090a22682e736e,0x09323209656c6966\n"
 ".quad 0x6f6c2f7273752f22,0x616475632f6c6163,0x2f2e2e2f6e69622f,0x2f6564756c636e69\n"
-".quad 0x6f645f33315f6d73,0x6e75665f656c6275,0x682e736e6f697463,0x656c69662e090a22\n"
-".quad 0x73752f2209353209,0x2f6c61636f6c2f72,0x6e69622f61647563,0x6c636e692f2e2e2f\n"
-".quad 0x325f6d732f656475,0x63696d6f74615f30,0x6f6974636e75665f,0x2e090a22682e736e\n"
-".quad 0x09363209656c6966,0x6f6c2f7273752f22,0x616475632f6c6163,0x2f2e2e2f6e69622f\n"
-".quad 0x2f6564756c636e69,0x6e695f30325f6d73,0x736369736e697274,0x69662e090a22682e\n"
-".quad 0x2f2209373209656c,0x61636f6c2f727375,0x622f616475632f6c,0x6e692f2e2e2f6e69\n"
-".quad 0x75732f6564756c63,0x75665f6563616672,0x2e736e6f6974636e,0x6c69662e090a2268\n"
-".quad 0x752f220938320965,0x6c61636f6c2f7273,0x69622f616475632f,0x636e692f2e2e2f6e\n"
-".quad 0x74616d2f6564756c,0x6974636e75665f68,0x5f6c62645f736e6f,0x0a22682e33787470\n"
-".quad 0x72746e652e090a0a,0x6f5634315a5f2079,0x72654b796e416574,0x5f536a50316c656e\n"
-".quad 0x702e09090a282069,0x36752e206d617261,0x616475635f5f2034,0x315a5f5f6d726170\n"
-".quad 0x796e4165746f5634,0x50316c656e72654b,0x706e695f695f536a,0x702e09090a2c7475\n"
-".quad 0x36752e206d617261,0x616475635f5f2034,0x315a5f5f6d726170,0x796e4165746f5634\n"
-".quad 0x50316c656e72654b,0x7365725f695f536a,0x2e09090a2c746c75,0x732e206d61726170\n"
-".quad 0x6475635f5f203233,0x5a5f5f6d72617061,0x6e4165746f563431,0x316c656e72654b79\n"
-".quad 0x69735f695f536a50,0x090a7b090a29657a,0x31752e206765722e,0x3e343c6872252036\n"
-".quad 0x206765722e090a3b,0x767225203233752e,0x6765722e090a3b31,0x7225203233752e20\n"
-".quad 0x2e090a3b3e36313c,0x3436752e20676572,0x3b3e373c64722520,0x2e206765722e090a\n"
-".quad 0x3c70252064657270,0x6f6c2e090a3b3e34,0x0938340937310963,0x656257444c240a30\n"
-".quad 0x34315a5f5f6e6967,0x4b796e4165746f56,0x6a50316c656e7265,0x6c2e090a3a695f53\n"
-".quad 0x323509373109636f,0x2e766f6d090a3009,0x6872250920363175,0x6961746325202c31\n"
-".quad 0x6f6d090a3b782e64,0x2509203631752e76,0x746e25202c326872,0x6d090a3b782e6469\n"
-".quad 0x2e656469772e6c75,0x3172250920363175,0x202c31687225202c,0x63090a3b32687225\n"
-".quad 0x752e3233752e7476,0x2c32722509203631,0x3b782e6469742520,0x33752e646461090a\n"
-".quad 0x202c337225092032,0x317225202c327225,0x6c2e6c756d090a3b,0x2509203233752e6f\n"
-".quad 0x2c337225202c3472,0x747663090a3b3420,0x3233752e3436752e,0x202c316472250920\n"
-".quad 0x646c090a3b347225,0x752e6d617261702e,0x3264722509203436,0x6475635f5f5b202c\n"
-".quad 0x5a5f5f6d72617061,0x6e4165746f563431,0x316c656e72654b79,0x6e695f695f536a50\n"
-".quad 0x61090a3b5d747570,0x09203436752e6464,0x7225202c33647225,0x31647225202c3264\n"
-".quad 0x6c672e646c090a3b,0x3233752e6c61626f,0x5b202c3572250920,0x3b5d302b33647225\n"
-".quad 0x33752e766f6d090a,0x202c367225092032,0x2e746573090a3b30,0x752e3233752e656e\n"
-".quad 0x2c37722509203233,0x7225202c35722520,0x2e67656e090a3b36,0x3872250920323373\n"
-".quad 0x090a3b377225202c,0x203233752e766f6d,0x3b30202c39722509,0x6e2e70746573090a\n"
-".quad 0x2509203233752e65,0x2c387225202c3170,0x76090a3b39722520,0x2e796e612e65746f\n"
-".quad 0x7025092064657270,0x0a3b317025202c32,0x33752e706c657309,0x2c30317225092032\n"
-".quad 0x25202c30202c3120,0x766f6d090a3b3270,0x722509203233732e,0x30317225202c3131\n"
-".quad 0x732e766f6d090a3b,0x3231722509203233,0x6573090a3b30202c,0x3233752e656e2e74\n"
-".quad 0x722509203233732e,0x31317225202c3331,0x0a3b32317225202c,0x3233732e67656e09\n"
-".quad 0x202c343172250920,0x6c090a3b33317225,0x2e6d617261702e64,0x6472250920343675\n"
-".quad 0x75635f5f5b202c34,0x5f5f6d7261706164,0x4165746f5634315a,0x6c656e72654b796e\n"
-".quad 0x725f695f536a5031,0x0a3b5d746c757365,0x3436752e64646109,0x202c356472250920\n"
-".quad 0x7225202c34647225,0x2e7473090a3b3164,0x752e6c61626f6c67,0x6472255b09203233\n"
-".quad 0x7225202c5d302b35,0x6f6c2e090a3b3431,0x0933350937310963,0x3b74697865090a30\n"
-".quad 0x646e6557444c240a,0x746f5634315a5f5f,0x6e72654b796e4165,0x695f536a50316c65\n"
-".quad 0x202f2f207d090a3a,0x65746f5634315a5f,0x656e72654b796e41,0x0a695f536a50316c\n"
-".quad 0x7972746e652e090a,0x746f5634315a5f20,0x6e72654b6c6c4165,0x695f536a50326c65\n"
-".quad 0x61702e09090a2820,0x3436752e206d6172,0x70616475635f5f20,0x34315a5f5f6d7261\n"
-".quad 0x4b6c6c4165746f56,0x6a50326c656e7265,0x75706e695f695f53,0x61702e09090a2c74\n"
-".quad 0x3436752e206d6172,0x70616475635f5f20,0x34315a5f5f6d7261,0x4b6c6c4165746f56\n"
-".quad 0x6a50326c656e7265,0x757365725f695f53,0x702e09090a2c746c,0x33732e206d617261\n"
-".quad 0x616475635f5f2032,0x315a5f5f6d726170,0x6c6c4165746f5634,0x50326c656e72654b\n"
-".quad 0x7a69735f695f536a,0x2e090a7b090a2965,0x3631752e20676572,0x3b3e343c68722520\n"
-".quad 0x2e206765722e090a,0x3176722520323375,0x206765722e090a3b,0x3c7225203233752e\n"
-".quad 0x722e090a3b3e3631,0x203436752e206765,0x0a3b3e373c647225,0x702e206765722e09\n"
-".quad 0x343c702520646572,0x636f6c2e090a3b3e,0x3009383509373109,0x67656257444c240a\n"
-".quad 0x5634315a5f5f6e69,0x654b6c6c4165746f,0x536a50326c656e72,0x6f6c2e090a3a695f\n"
-".quad 0x0932360937310963,0x752e766f6d090a30,0x3168722509203631,0x646961746325202c\n"
-".quad 0x766f6d090a3b782e,0x722509203631752e,0x69746e25202c3268,0x756d090a3b782e64\n"
-".quad 0x752e656469772e6c,0x2c31722509203631,0x25202c3168722520,0x7663090a3b326872\n"
-".quad 0x31752e3233752e74,0x202c327225092036,0x0a3b782e64697425,0x3233752e64646109\n"
-".quad 0x25202c3372250920,0x3b317225202c3272,0x6f6c2e6c756d090a,0x722509203233752e\n"
-".quad 0x202c337225202c34,0x2e747663090a3b34,0x203233752e343675,0x25202c3164722509\n"
-".quad 0x2e646c090a3b3472,0x36752e6d61726170,0x2c32647225092034,0x616475635f5f5b20\n"
-".quad 0x315a5f5f6d726170,0x6c6c4165746f5634,0x50326c656e72654b,0x706e695f695f536a\n"
-".quad 0x6461090a3b5d7475,0x2509203436752e64,0x647225202c336472,0x3b31647225202c32\n"
-".quad 0x6f6c672e646c090a,0x203233752e6c6162,0x255b202c35722509,0x0a3b5d302b336472\n"
-".quad 0x3233752e766f6d09,0x30202c3672250920,0x6e2e746573090a3b,0x33752e3233752e65\n"
-".quad 0x202c377225092032,0x367225202c357225,0x732e67656e090a3b,0x2c38722509203233\n"
-".quad 0x6d090a3b37722520,0x09203233752e766f,0x0a3b30202c397225,0x656e2e7074657309\n"
-".quad 0x702509203233752e,0x202c387225202c31,0x6f76090a3b397225,0x702e6c6c612e6574\n"
-".quad 0x3270250920646572,0x090a3b317025202c,0x3233752e706c6573,0x202c303172250920\n"
-".quad 0x7025202c30202c31,0x2e766f6d090a3b32,0x3172250920323373,0x3b30317225202c31\n"
-".quad 0x33732e766f6d090a,0x2c32317225092032,0x746573090a3b3020,0x2e3233752e656e2e\n"
-".quad 0x3172250920323373,0x2c31317225202c33,0x090a3b3231722520,0x203233732e67656e\n"
-".quad 0x25202c3431722509,0x646c090a3b333172,0x752e6d617261702e,0x3464722509203436\n"
-".quad 0x6475635f5f5b202c,0x5a5f5f6d72617061,0x6c4165746f563431,0x326c656e72654b6c\n"
-".quad 0x65725f695f536a50,0x090a3b5d746c7573,0x203436752e646461,0x25202c3564722509\n"
-".quad 0x647225202c346472,0x672e7473090a3b31,0x33752e6c61626f6c,0x356472255b092032\n"
-".quad 0x317225202c5d302b,0x636f6c2e090a3b34,0x3009333609373109,0x0a3b74697865090a\n"
-".quad 0x5f646e6557444c24,0x65746f5634315a5f,0x656e72654b6c6c41,0x3a695f536a50326c\n"
-".quad 0x5f202f2f207d090a,0x4165746f5634315a,0x6c656e72654b6c6c,0x0a0a695f536a5032\n"
-".quad 0x207972746e652e09,0x65746f5634315a5f,0x656e72654b796e41,0x0a2820696250336c\n"
-".quad 0x6d617261702e0909,0x5f5f203436752e20,0x6d72617061647563,0x746f5634315a5f5f\n"
-".quad 0x6e72654b796e4165,0x695f696250336c65,0x2e09090a2c6f666e,0x732e206d61726170\n"
-".quad 0x6475635f5f203233,0x5a5f5f6d72617061,0x6e4165746f563431,0x336c656e72654b79\n"
-".quad 0x707261775f696250,0x090a29657a69735f,0x206765722e090a7b,0x687225203631752e\n"
-".quad 0x722e090a3b3e353c,0x203233752e206765,0x2e090a3b31767225,0x3233752e20676572\n"
-".quad 0x3b3e34323c722520,0x2e206765722e090a,0x3c64722520343675,0x65722e090a3b3e35\n"
-".quad 0x20646572702e2067,0x090a3b3e383c7025,0x09373109636f6c2e,0x444c240a30093736\n"
-".quad 0x5f5f6e6967656257,0x4165746f5634315a,0x6c656e72654b796e,0x2e090a3a69625033\n"
-".quad 0x3709373109636f6c,0x2e646c090a300933,0x33732e6d61726170,0x202c317225092032\n"
-".quad 0x70616475635f5f5b,0x34315a5f5f6d7261,0x4b796e4165746f56,0x6250336c656e7265\n"
-".quad 0x735f707261775f69,0x6d090a3b5d657a69,0x33732e6f6c2e6c75,0x202c327225092032\n"
-".quad 0x0a3b33202c317225,0x3631752e766f6d09,0x202c316872250920,0x782e646961746325\n"
-".quad 0x752e766f6d090a3b,0x3268722509203631,0x2e6469746e25202c,0x2e6c756d090a3b78\n"
-".quad 0x3631752e65646977,0x25202c3372250920,0x687225202c316872,0x2e726873090a3b32\n"
-".quad 0x3472250920323373,0x33202c327225202c,0x2e766f6d090a3b31,0x3572250920323373\n"
-".quad 0x6e61090a3b31202c,0x2509203233622e64,0x2c347225202c3672,0x61090a3b35722520\n"
-".quad 0x09203233732e6464,0x367225202c377225,0x090a3b327225202c,0x203233732e726873\n"
-".quad 0x7225202c38722509,0x63090a3b31202c37,0x752e3233752e7476,0x2c39722509203631\n"
-".quad 0x3b782e6469742520,0x33752e646461090a,0x2c30317225092032,0x7225202c39722520\n"
-".quad 0x70746573090a3b33,0x203233732e656c2e,0x7225202c31702509,0x3b30317225202c38\n"
-".quad 0x732e706c6573090a,0x3131722509203233,0x202c30202c31202c,0x6f6d090a3b317025\n"
-".quad 0x2509203233752e76,0x0a3b30202c323172,0x656e2e7074657309,0x702509203233752e\n"
-".quad 0x2c31317225202c32,0x090a3b3231722520,0x796e612e65746f76,0x250920646572702e\n"
-".quad 0x3b327025202c3370,0x752e706c6573090a,0x3331722509203233,0x202c30202c31202c\n"
-".quad 0x6f6d090a3b337025,0x2509203233732e76,0x317225202c343172,0x2e6c756d090a3b33\n"
-".quad 0x09203233732e6f6c,0x7225202c35317225,0x090a3b33202c3031,0x2e3436752e747663\n"
-".quad 0x6472250920323375,0x3b35317225202c31,0x7261702e646c090a,0x09203436752e6d61\n"
-".quad 0x5f5b202c32647225,0x726170616475635f,0x6f5634315a5f5f6d,0x72654b796e416574\n"
-".quad 0x5f696250336c656e,0x090a3b5d6f666e69,0x203436752e646461,0x25202c3364722509\n"
-".quad 0x647225202c316472,0x2e766f6d090a3b32,0x3172250920323373,0x73090a3b30202c36\n"
-".quad 0x33752e656e2e7465,0x2509203233732e32,0x317225202c373172,0x3b36317225202c34\n"
-".quad 0x33732e67656e090a,0x2c38317225092032,0x090a3b3731722520,0x61626f6c672e7473\n"
-".quad 0x255b092038732e6c,0x202c5d302b336472,0x2e090a3b38317225,0x3709373109636f6c\n"
-".quad 0x2e7473090a300936,0x732e6c61626f6c67,0x336472255b092038,0x317225202c5d312b\n"
-".quad 0x636f6c2e090a3b31,0x3009383709373109,0x33752e766f6d090a,0x2c39317225092032\n"
-".quad 0x746573090a3b3020,0x3233752e656e2e70,0x25202c3470250920,0x317225202c313172\n"
-".quad 0x65746f76090a3b39,0x6572702e6c6c612e,0x202c357025092064,0x6573090a3b347025\n"
-".quad 0x09203233752e706c,0x2c31202c30327225,0x3b357025202c3020,0x33732e766f6d090a\n"
-".quad 0x2c31327225092032,0x090a3b3032722520,0x203233752e766f6d,0x30202c3232722509\n"
-".quad 0x2e70746573090a3b,0x09203233732e7165,0x327225202c367025,0x3b32327225202c31\n"
-".quad 0x622036702540090a,0x5f744c2409206172,0x0a3b363230315f32,0x373109636f6c2e09\n"
-".quad 0x6d090a3009393709,0x09203631732e766f,0x3b31202c33687225,0x6f6c672e7473090a\n"
-".quad 0x092038732e6c6162,0x5d322b336472255b,0x0a3b33687225202c,0x30315f325f744c24\n"
-".quad 0x6f6c2e090a3a3632,0x0931380937310963,0x3b74697865090a30,0x646e6557444c240a\n"
-".quad 0x746f5634315a5f5f,0x6e72654b796e4165,0x0a3a696250336c65,0x5a5f202f2f207d09\n"
-".quad 0x6e4165746f563431,0x336c656e72654b79,0x0000000a0a696250\n"
+".quad 0x74615f31315f6d73,0x6e75665f63696d6f,0x682e736e6f697463,0x656c69662e090a22\n"
+".quad 0x73752f2209333209,0x2f6c61636f6c2f72,0x6e69622f61647563,0x6c636e692f2e2e2f\n"
+".quad 0x315f6d732f656475,0x63696d6f74615f32,0x6f6974636e75665f,0x2e090a22682e736e\n"
+".quad 0x09343209656c6966,0x6f6c2f7273752f22,0x616475632f6c6163,0x2f2e2e2f6e69622f\n"
+".quad 0x2f6564756c636e69,0x6f645f33315f6d73,0x6e75665f656c6275,0x682e736e6f697463\n"
+".quad 0x656c69662e090a22,0x73752f2209353209,0x2f6c61636f6c2f72,0x6e69622f61647563\n"
+".quad 0x6c636e692f2e2e2f,0x325f6d732f656475,0x63696d6f74615f30,0x6f6974636e75665f\n"
+".quad 0x2e090a22682e736e,0x09363209656c6966,0x6f6c2f7273752f22,0x616475632f6c6163\n"
+".quad 0x2f2e2e2f6e69622f,0x2f6564756c636e69,0x6e695f30325f6d73,0x736369736e697274\n"
+".quad 0x69662e090a22682e,0x2f2209373209656c,0x61636f6c2f727375,0x622f616475632f6c\n"
+".quad 0x6e692f2e2e2f6e69,0x75732f6564756c63,0x75665f6563616672,0x2e736e6f6974636e\n"
+".quad 0x6c69662e090a2268,0x752f220938320965,0x6c61636f6c2f7273,0x69622f616475632f\n"
+".quad 0x636e692f2e2e2f6e,0x74616d2f6564756c,0x6974636e75665f68,0x5f6c62645f736e6f\n"
+".quad 0x0a22682e33787470,0x72746e652e090a0a,0x6f5634315a5f2079,0x72654b796e416574\n"
+".quad 0x5f536a50316c656e,0x702e09090a282069,0x36752e206d617261,0x616475635f5f2034\n"
+".quad 0x315a5f5f6d726170,0x796e4165746f5634,0x50316c656e72654b,0x706e695f695f536a\n"
+".quad 0x702e09090a2c7475,0x36752e206d617261,0x616475635f5f2034,0x315a5f5f6d726170\n"
+".quad 0x796e4165746f5634,0x50316c656e72654b,0x7365725f695f536a,0x2e09090a2c746c75\n"
+".quad 0x732e206d61726170,0x6475635f5f203233,0x5a5f5f6d72617061,0x6e4165746f563431\n"
+".quad 0x316c656e72654b79,0x69735f695f536a50,0x090a7b090a29657a,0x33752e206765722e\n"
+".quad 0x3e38313c72252032,0x206765722e090a3b,0x647225203436752e,0x722e090a3b3e373c\n"
+".quad 0x646572702e206765,0x0a3b3e343c702520,0x373109636f6c2e09,0x4c240a3009383409\n"
+".quad 0x5f6e696765625744,0x65746f5634315a5f,0x656e72654b796e41,0x3a695f536a50316c\n"
+".quad 0x3109636f6c2e090a,0x090a300932350937,0x203233752e766f6d,0x6325202c31722509\n"
+".quad 0x0a3b782e64696174,0x3233752e766f6d09,0x25202c3272250920,0x0a3b782e6469746e\n"
+".quad 0x2e6f6c2e6c756d09,0x3372250920323375,0x25202c317225202c,0x766f6d090a3b3272\n"
+".quad 0x722509203233752e,0x2e64697425202c34,0x2e646461090a3b78,0x3572250920323375\n"
+".quad 0x25202c347225202c,0x6c756d090a3b3372,0x203233752e6f6c2e,0x7225202c36722509\n"
+".quad 0x63090a3b34202c35,0x752e3436752e7476,0x3164722509203233,0x090a3b367225202c\n"
+".quad 0x6d617261702e646c,0x722509203436752e,0x635f5f5b202c3264,0x5f6d726170616475\n"
+".quad 0x65746f5634315a5f,0x656e72654b796e41,0x5f695f536a50316c,0x0a3b5d7475706e69\n"
+".quad 0x3436752e64646109,0x202c336472250920,0x7225202c32647225,0x2e646c090a3b3164\n"
+".quad 0x752e6c61626f6c67,0x2c37722509203233,0x302b336472255b20,0x2e766f6d090a3b5d\n"
+".quad 0x3872250920323375,0x6573090a3b30202c,0x3233752e656e2e74,0x722509203233752e\n"
+".quad 0x202c377225202c39,0x656e090a3b387225,0x2509203233732e67,0x397225202c303172\n"
+".quad 0x752e766f6d090a3b,0x3131722509203233,0x6573090a3b30202c,0x33752e656e2e7074\n"
+".quad 0x202c317025092032,0x7225202c30317225,0x746f76090a3b3131,0x72702e796e612e65\n"
+".quad 0x2c32702509206465,0x73090a3b31702520,0x203233752e706c65,0x31202c3231722509\n"
+".quad 0x327025202c30202c,0x732e766f6d090a3b,0x3331722509203233,0x0a3b32317225202c\n"
+".quad 0x3233732e766f6d09,0x202c343172250920,0x2e746573090a3b30,0x732e3233752e656e\n"
+".quad 0x3531722509203233,0x202c33317225202c,0x6e090a3b34317225,0x09203233732e6765\n"
+".quad 0x7225202c36317225,0x2e646c090a3b3531,0x36752e6d61726170,0x2c34647225092034\n"
+".quad 0x616475635f5f5b20,0x315a5f5f6d726170,0x796e4165746f5634,0x50316c656e72654b\n"
+".quad 0x7365725f695f536a,0x61090a3b5d746c75,0x09203436752e6464,0x7225202c35647225\n"
+".quad 0x31647225202c3464,0x6c672e7473090a3b,0x3233752e6c61626f,0x2b356472255b0920\n"
+".quad 0x36317225202c5d30,0x09636f6c2e090a3b,0x0a30093335093731,0x240a3b7469786509\n"
+".quad 0x5f5f646e6557444c,0x4165746f5634315a,0x6c656e72654b796e,0x0a3a695f536a5031\n"
+".quad 0x5a5f202f2f207d09,0x6e4165746f563431,0x316c656e72654b79,0x090a0a695f536a50\n"
+".quad 0x5f207972746e652e,0x4165746f5634315a,0x6c656e72654b6c6c,0x2820695f536a5032\n"
+".quad 0x617261702e09090a,0x5f203436752e206d,0x726170616475635f,0x6f5634315a5f5f6d\n"
+".quad 0x72654b6c6c416574,0x5f536a50326c656e,0x2c7475706e695f69,0x617261702e09090a\n"
+".quad 0x5f203436752e206d,0x726170616475635f,0x6f5634315a5f5f6d,0x72654b6c6c416574\n"
+".quad 0x5f536a50326c656e,0x746c757365725f69,0x7261702e09090a2c,0x203233732e206d61\n"
+".quad 0x6170616475635f5f,0x5634315a5f5f6d72,0x654b6c6c4165746f,0x536a50326c656e72\n"
+".quad 0x29657a69735f695f,0x65722e090a7b090a,0x25203233752e2067,0x090a3b3e38313c72\n"
+".quad 0x36752e206765722e,0x3e373c6472252034,0x206765722e090a3b,0x702520646572702e\n"
+".quad 0x6c2e090a3b3e343c,0x383509373109636f,0x6257444c240a3009,0x315a5f5f6e696765\n"
+".quad 0x6c6c4165746f5634,0x50326c656e72654b,0x2e090a3a695f536a,0x3609373109636f6c\n"
+".quad 0x766f6d090a300932,0x722509203233752e,0x6961746325202c31,0x6f6d090a3b782e64\n"
+".quad 0x2509203233752e76,0x69746e25202c3272,0x756d090a3b782e64,0x3233752e6f6c2e6c\n"
+".quad 0x25202c3372250920,0x3b327225202c3172,0x33752e766f6d090a,0x202c347225092032\n"
+".quad 0x0a3b782e64697425,0x3233752e64646109,0x25202c3572250920,0x3b337225202c3472\n"
+".quad 0x6f6c2e6c756d090a,0x722509203233752e,0x202c357225202c36,0x2e747663090a3b34\n"
+".quad 0x203233752e343675,0x25202c3164722509,0x2e646c090a3b3672,0x36752e6d61726170\n"
+".quad 0x2c32647225092034,0x616475635f5f5b20,0x315a5f5f6d726170,0x6c6c4165746f5634\n"
+".quad 0x50326c656e72654b,0x706e695f695f536a,0x6461090a3b5d7475,0x2509203436752e64\n"
+".quad 0x647225202c336472,0x3b31647225202c32,0x6f6c672e646c090a,0x203233752e6c6162\n"
+".quad 0x255b202c37722509,0x0a3b5d302b336472,0x3233752e766f6d09,0x30202c3872250920\n"
+".quad 0x6e2e746573090a3b,0x33752e3233752e65,0x202c397225092032,0x387225202c377225\n"
+".quad 0x732e67656e090a3b,0x3031722509203233,0x090a3b397225202c,0x203233752e766f6d\n"
+".quad 0x30202c3131722509,0x2e70746573090a3b,0x09203233752e656e,0x317225202c317025\n"
+".quad 0x3b31317225202c30,0x612e65746f76090a,0x20646572702e6c6c,0x7025202c32702509\n"
+".quad 0x706c6573090a3b31,0x722509203233752e,0x30202c31202c3231,0x090a3b327025202c\n"
+".quad 0x203233732e766f6d,0x25202c3331722509,0x6f6d090a3b323172,0x2509203233732e76\n"
+".quad 0x0a3b30202c343172,0x2e656e2e74657309,0x203233732e323375,0x25202c3531722509\n"
+".quad 0x317225202c333172,0x2e67656e090a3b34,0x3172250920323373,0x3b35317225202c36\n"
+".quad 0x7261702e646c090a,0x09203436752e6d61,0x5f5b202c34647225,0x726170616475635f\n"
+".quad 0x6f5634315a5f5f6d,0x72654b6c6c416574,0x5f536a50326c656e,0x746c757365725f69\n"
+".quad 0x2e646461090a3b5d,0x6472250920343675,0x2c34647225202c35,0x090a3b3164722520\n"
+".quad 0x61626f6c672e7473,0x5b09203233752e6c,0x2c5d302b35647225,0x090a3b3631722520\n"
+".quad 0x09373109636f6c2e,0x7865090a30093336,0x57444c240a3b7469,0x34315a5f5f646e65\n"
+".quad 0x4b6c6c4165746f56,0x6a50326c656e7265,0x207d090a3a695f53,0x5634315a5f202f2f\n"
+".quad 0x654b6c6c4165746f,0x536a50326c656e72,0x6e652e090a0a695f,0x34315a5f20797274\n"
+".quad 0x4b796e4165746f56,0x6250336c656e7265,0x702e09090a282069,0x36752e206d617261\n"
+".quad 0x616475635f5f2034,0x315a5f5f6d726170,0x796e4165746f5634,0x50336c656e72654b\n"
+".quad 0x2c6f666e695f6962,0x617261702e09090a,0x5f203233732e206d,0x726170616475635f\n"
+".quad 0x6f5634315a5f5f6d,0x72654b796e416574,0x5f696250336c656e,0x7a69735f70726177\n"
+".quad 0x2e090a7b090a2965,0x3233752e20676572,0x3b3e37323c722520,0x2e206765722e090a\n"
+".quad 0x3c64722520343675,0x65722e090a3b3e35,0x20646572702e2067,0x090a3b3e383c7025\n"
+".quad 0x09373109636f6c2e,0x444c240a30093736,0x5f5f6e6967656257,0x4165746f5634315a\n"
+".quad 0x6c656e72654b796e,0x2e090a3a69625033,0x3709373109636f6c,0x2e646c090a300933\n"
+".quad 0x33732e6d61726170,0x202c317225092032,0x70616475635f5f5b,0x34315a5f5f6d7261\n"
+".quad 0x4b796e4165746f56,0x6250336c656e7265,0x735f707261775f69,0x6d090a3b5d657a69\n"
+".quad 0x33732e6f6c2e6c75,0x202c327225092032,0x0a3b33202c317225,0x3233752e766f6d09\n"
+".quad 0x25202c3372250920,0x3b782e6469617463,0x33752e766f6d090a,0x202c347225092032\n"
+".quad 0x3b782e6469746e25,0x6f6c2e6c756d090a,0x722509203233752e,0x202c337225202c35\n"
+".quad 0x6873090a3b347225,0x2509203233732e72,0x2c327225202c3672,0x6f6d090a3b313320\n"
+".quad 0x2509203233732e76,0x090a3b31202c3772,0x203233622e646e61,0x7225202c38722509\n"
+".quad 0x0a3b377225202c36,0x3233732e64646109,0x25202c3972250920,0x3b327225202c3872\n"
+".quad 0x33732e726873090a,0x2c30317225092032,0x3b31202c39722520,0x33752e766f6d090a\n"
+".quad 0x2c31317225092032,0x3b782e6469742520,0x33752e646461090a,0x2c32317225092032\n"
+".quad 0x25202c3131722520,0x746573090a3b3572,0x3233732e656c2e70,0x25202c3170250920\n"
+".quad 0x317225202c303172,0x706c6573090a3b32,0x722509203233732e,0x30202c31202c3331\n"
+".quad 0x090a3b317025202c,0x203233752e766f6d,0x30202c3431722509,0x2e70746573090a3b\n"
+".quad 0x09203233752e656e,0x317225202c327025,0x3b34317225202c33,0x612e65746f76090a\n"
+".quad 0x20646572702e796e,0x7025202c33702509,0x706c6573090a3b32,0x722509203233752e\n"
+".quad 0x30202c31202c3531,0x090a3b337025202c,0x203233732e766f6d,0x25202c3631722509\n"
+".quad 0x756d090a3b353172,0x3233732e6f6c2e6c,0x202c373172250920,0x3b33202c32317225\n"
+".quad 0x36752e747663090a,0x2509203233752e34,0x317225202c316472,0x702e646c090a3b37\n"
+".quad 0x3436752e6d617261,0x202c326472250920,0x70616475635f5f5b,0x34315a5f5f6d7261\n"
+".quad 0x4b796e4165746f56,0x6250336c656e7265,0x3b5d6f666e695f69,0x36752e646461090a\n"
+".quad 0x2c33647225092034,0x25202c3164722520,0x6f6d090a3b326472,0x2509203233732e76\n"
+".quad 0x0a3b30202c383172,0x2e656e2e74657309,0x203233732e323375,0x25202c3931722509\n"
+".quad 0x317225202c363172,0x2e67656e090a3b38,0x3272250920323373,0x3b39317225202c30\n"
+".quad 0x6f6c672e7473090a,0x092038732e6c6162,0x5d302b336472255b,0x0a3b30327225202c\n"
+".quad 0x373109636f6c2e09,0x73090a3009363709,0x6c61626f6c672e74,0x72255b092038732e\n"
+".quad 0x25202c5d312b3364,0x6c2e090a3b333172,0x383709373109636f,0x2e766f6d090a3009\n"
+".quad 0x3272250920323375,0x73090a3b30202c31,0x752e656e2e707465,0x2c34702509203233\n"
+".quad 0x25202c3331722520,0x6f76090a3b313272,0x702e6c6c612e6574,0x3570250920646572\n"
+".quad 0x090a3b347025202c,0x3233752e706c6573,0x202c323272250920,0x7025202c30202c31\n"
+".quad 0x2e766f6d090a3b35,0x3272250920323373,0x3b32327225202c33,0x33752e766f6d090a\n"
+".quad 0x2c34327225092032,0x746573090a3b3020,0x3233732e71652e70,0x25202c3670250920\n"
+".quad 0x327225202c333272,0x36702540090a3b34,0x4c24092061726220,0x363230315f325f74\n"
+".quad 0x09636f6c2e090a3b,0x0a30093937093731,0x3233732e766f6d09,0x202c353272250920\n"
+".quad 0x672e7473090a3b31,0x38732e6c61626f6c,0x2b336472255b0920,0x35327225202c5d32\n"
+".quad 0x5f325f744c240a3b,0x2e090a3a36323031,0x3809373109636f6c,0x697865090a300931\n"
+".quad 0x6557444c240a3b74,0x5634315a5f5f646e,0x654b796e4165746f,0x696250336c656e72\n"
+".quad 0x202f2f207d090a3a,0x65746f5634315a5f,0x656e72654b796e41,0x000a0a696250336c\n"
 ".text");
 
 extern "C" {
 
-extern const unsigned long long __deviceText_$compute_13$[775];
+extern const unsigned long long __deviceText_$compute_20$[760];
 
 }
 
-static __cudaFatPtxEntry __ptxEntries [] = {{(char*)"compute_13",(char*)__deviceText_$compute_13$},{0,0}};
+asm(
+".section .rodata\n"
+".align 32\n"
+"__deviceText_$sm_21$:\n"
+".quad 0x33010102464c457f,0x0000000000000004,0x0000000100be0002,0x0000000000000000\n"
+".quad 0x0000000000000b2c,0x0000000000000040,0x0038004000140115,0x0001000f00400004\n"
+".quad 0x0000000000000000,0x0000000000000000,0x0000000000000000,0x0000000000000000\n"
+".quad 0x0000000000000000,0x0000000000000000,0x0000000000000000,0x0000000000000000\n"
+".quad 0x0000000300000001,0x0000000000000000,0x0000000000000000,0x0000000000000400\n"
+".quad 0x000000000000018d,0x0000000000000000,0x0000000000000004,0x0000000000000000\n"
+".quad 0x000000030000000b,0x0000000000000000,0x0000000000000000,0x000000000000058d\n"
+".quad 0x0000000000000047,0x0000000000000000,0x0000000000000001,0x0000000000000000\n"
+".quad 0x0000000200000013,0x0000000000000000,0x0000000000000000,0x00000000000005d4\n"
+".quad 0x00000000000001e0,0x0000001100000002,0x0000000000000001,0x0000000000000018\n"
+".quad 0x00000001000000b9,0x0000000000000006,0x0000000000000000,0x00000000000007b4\n"
+".quad 0x0000000000000078,0x0600000b00000003,0x0000000000000004,0x0000000000000000\n"
+".quad 0x0000000100000167,0x0000000000000002,0x0000000000000000,0x000000000000082c\n"
+".quad 0x0000000000000034,0x0000000400000000,0x0000000000000004,0x0000000000000000\n"
+".quad 0x00000001000000d7,0x0000000000000002,0x0000000000000000,0x0000000000000860\n"
+".quad 0x0000000000000050,0x0000000400000000,0x0000000000000001,0x0000000000000000\n"
+".quad 0x000000010000007a,0x0000000000000006,0x0000000000000000,0x00000000000008b0\n"
+".quad 0x0000000000000078,0x0600000900000003,0x0000000000000004,0x0000000000000000\n"
+".quad 0x00000001000000f8,0x0000000000000002,0x0000000000000000,0x0000000000000928\n"
+".quad 0x0000000000000034,0x0000000700000000,0x0000000000000004,0x0000000000000000\n"
+".quad 0x0000000100000098,0x0000000000000002,0x0000000000000000,0x000000000000095c\n"
+".quad 0x0000000000000050,0x0000000700000000,0x0000000000000001,0x0000000000000000\n"
+".quad 0x0000000100000036,0x0000000000000006,0x0000000000000000,0x00000000000009ac\n"
+".quad 0x00000000000000c0,0x0600000600000003,0x0000000000000004,0x0000000000000000\n"
+".quad 0x0000000100000143,0x0000000000000002,0x0000000000000000,0x0000000000000a6c\n"
+".quad 0x000000000000002c,0x0000000a00000000,0x0000000000000004,0x0000000000000000\n"
+".quad 0x000000010000011e,0x0000000000000002,0x0000000000000000,0x0000000000000a98\n"
+".quad 0x0000000000000004,0x0000000a00000000,0x0000000000000004,0x0000000000000000\n"
+".quad 0x0000000100000052,0x0000000000000002,0x0000000000000000,0x0000000000000a9c\n"
+".quad 0x0000000000000048,0x0000000a00000000,0x0000000000000001,0x0000000000000000\n"
+".quad 0x0000000100000071,0x0000000000000002,0x0000000000000000,0x0000000000000ae4\n"
+".quad 0x0000000000000048,0x0000000000000000,0x0000000000000001,0x0000000000000000\n"
+".quad 0x7472747368732e00,0x747274732e006261,0x746d79732e006261,0x672e766e2e006261\n"
+".quad 0x6e692e6c61626f6c,0x672e766e2e007469,0x742e006c61626f6c,0x34315a5f2e747865\n"
+".quad 0x4b796e4165746f56,0x6250336c656e7265,0x6e692e766e2e0069,0x5634315a5f2e6f66\n"
+".quad 0x654b796e4165746f,0x696250336c656e72,0x666e692e766e2e00,0x2e747865742e006f\n"
+".quad 0x65746f5634315a5f,0x656e72654b6c6c41,0x00695f536a50326c,0x6f666e692e766e2e\n"
+".quad 0x746f5634315a5f2e,0x6e72654b6c6c4165,0x695f536a50326c65,0x5f2e747865742e00\n"
+".quad 0x4165746f5634315a,0x6c656e72654b796e,0x2e00695f536a5031,0x2e6f666e692e766e\n"
+".quad 0x65746f5634315a5f,0x656e72654b796e41,0x00695f536a50316c,0x736e6f632e766e2e\n"
+".quad 0x5a5f2e30746e6174,0x6c4165746f563431,0x326c656e72654b6c,0x6e2e00695f536a50\n"
+".quad 0x6174736e6f632e76,0x315a5f2e3631746e,0x796e4165746f5634,0x50336c656e72654b\n"
+".quad 0x632e766e2e006962,0x30746e6174736e6f,0x746f5634315a5f2e,0x6e72654b796e4165\n"
+".quad 0x2e00696250336c65,0x74736e6f632e766e,0x315a5f2e30746e61,0x796e4165746f5634\n"
+".quad 0x50316c656e72654b,0x5a5f0000695f536a,0x6e4165746f563431,0x336c656e72654b79\n"
+".quad 0x34315a5f00696250,0x4b6c6c4165746f56,0x6a50326c656e7265,0x34315a5f00695f53\n"
+".quad 0x4b796e4165746f56,0x6a50316c656e7265,0x0000000000695f53,0x0000000000000000\n"
+".quad 0x0000000000000000,0x0000000000000000,0x0000000000010003,0x0000000000000000\n"
+".quad 0x0000000000000000,0x0000000000020003,0x0000000000000000,0x0000000000000000\n"
+".quad 0x0000000000030003,0x0000000000000000,0x0000000000000000,0x0000000000000003\n"
+".quad 0x0000000000000000,0x0000000000000000,0x0000000000000003,0x0000000000000000\n"
+".quad 0x0000000000000000,0x00000000000a0003,0x000000c000000000,0x0000000000000000\n"
+".quad 0x00000000000d0003,0x0000000000000000,0x0000000000000000,0x00000000000e0003\n"
+".quad 0x0000000000000000,0x0000000000000000,0x0000000000070003,0x0000007800000000\n"
+".quad 0x0000000000000000,0x0000000000090003,0x0000000000000000,0x0000000000000000\n"
+".quad 0x0000000000040003,0x0000007800000000,0x0000000000000000,0x0000000000060003\n"
+".quad 0x0000000000000000,0x0000000000000000,0x0000000000080003,0x0000000000000000\n"
+".quad 0x0000000000000000,0x00000000000c0003,0x0000000000000000,0x0000000000000000\n"
+".quad 0x00000000000b0003,0x0000000000000000,0x0000000000000000,0x0000000000050003\n"
+".quad 0x0000000000000000,0x0000000100000000,0x00000000000a1012,0x000000c000000000\n"
+".quad 0x0000001700000000,0x0000000000071012,0x0000007800000000,0x0000002f00000000\n"
+".quad 0x0000000000041012,0x0000007800000000,0x00005de400000000,0x94001c0428004404\n"
+".quad 0x1000dde22c000000,0x84009c0418000000,0x20009c032c000000,0x80211c0320044000\n"
+".quad 0x93f15c4320078000,0x00401c8548004000,0xa0209c0384000000,0xb3f0dc4320078000\n"
+".quad 0xfc01dc0348004000,0x000fdc241a8e0000,0x07f01c0448000000,0x00201c852010c000\n"
+".quad 0x00001de794000000,0x0000000080000000,0x0000000000000000,0x0000000000000000\n"
+".quad 0x0000000000000000,0x0000000000000000,0x0000000000000000,0x0000000000000000\n"
+".quad 0x00000000000c0c04,0x0000001000000008,0x0000001000080a04,0x0014190300140020\n"
+".quad 0xffffffff000c1704,0x0011f00000100002,0xffffffff000c1704,0x0021f00000080001\n"
+".quad 0xffffffff000c1704,0x0021f00000000000,0x2800440400005de4,0x2c00000094001c04\n"
+".quad 0x180000001000dde2,0x2c00000084009c04,0x2004400020009c03,0x2007800080211c03\n"
+".quad 0x4800400093f15c43,0x8400000000401c85,0x20078000a0209c03,0x48004000b3f0dc43\n"
+".quad 0x1a8e0000fc01dc03,0x48000000000fdc04,0x2010c00007f01c04,0x9400000000201c85\n"
+".quad 0x8000000000001de7,0x0000000000000000,0x0000000000000000,0x0000000000000000\n"
+".quad 0x0000000000000000,0x0000000000000000,0x0000000000000000,0x000c0c0400000000\n"
+".quad 0x0000000800000000,0x00080a0400000010,0x001400200000000d,0x000c170400141903\n"
+".quad 0x00100002ffffffff,0x000c17040011f000,0x00080001ffffffff,0x000c17040021f000\n"
+".quad 0x00000000ffffffff,0x00005de40021f000,0x00001de428004404,0x0c015de240000000\n"
+".quad 0x94009c0418000000,0xa0501ca32c000000,0x84011c0450004000,0x7c00dc232c000000\n"
+".quad 0x20209c035800c000,0x0430dc0320084000,0x80211ca36800c000,0x00301c03200b8000\n"
+".quad 0x93f15c4348000000,0x04001c2348004000,0x0801dc235800c000,0x07f09c04198e0000\n"
+".quad 0x000fdc242010c000,0x07f01c0448400000,0x000fdc042012c000,0x04409c2548800000\n"
+".quad 0x00401c2594000000,0x000029e794000000,0x04001de280000000,0x08401c2518000000\n"
+".quad 0x00001de794000000,0x0000000080000000,0x0000000000000000,0x0000000000000000\n"
+".quad 0x0000000000000000,0x0000000000000000,0x0000000000000000,0x00080c0400000001\n"
+".quad 0x0000000800000000,0x0000000f00080a04,0x000c1903000c0020,0xffffffff000c1704\n"
+".quad 0x0011f00000080001,0xffffffff000c1704,0x0021f00000000000,0x0001000c00080d04\n"
+".quad 0x0008120400000001,0x0000000000000013,0x0000001300081104,0x0008120400000000\n"
+".quad 0x0000000000000012,0x0000001200081104,0x0008120400000000,0x0000000000000011\n"
+".quad 0x0000001100081104,0x0000000600000000,0x00000b2c00000005,0x0000000000000000\n"
+".quad 0x0000000000000000,0x000000e000000000,0x000000e000000000,0x0000000400000000\n"
+".quad 0x6000000000000000,0x000007b400001305,0x0000000000000000,0x0000000000000000\n"
+".quad 0x000000fc00000000,0x000000fc00000000,0x0000000400000000,0x6000000000000000\n"
+".quad 0x000008b000001205,0x0000000000000000,0x0000000000000000,0x000000fc00000000\n"
+".quad 0x000000fc00000000,0x0000000400000000,0x6000000000000000,0x000009ac00001105\n"
+".quad 0x0000000000000000,0x0000000000000000,0x0000013800000000,0x0000013800000000\n"
+".quad 0x0000000400000000,0x0000000000000000\n"
+".text");
+
+extern "C" {
+
+extern const unsigned long long __deviceText_$sm_21$[386];
+
+}
+
+static __cudaFatPtxEntry __ptxEntries [] = {{(char*)"compute_20",(char*)__deviceText_$compute_20$},{0,0}};
 static __cudaFatCubinEntry __cubinEntries[] = {{0,0}};
 static __cudaFatDebugEntry __debugEntries0 = {0, 0, 0, 0} ;
 static __cudaFatElfEntry __elfEntries0 = {0, 0, 0, 0} ;
-static __cudaFatElfEntry __elfEntries1 = {(char*)"sm_13", (char*)__deviceText_$sm_13$, &__elfEntries0, (unsigned int)sizeof(__deviceText_$sm_13$)};
+static __cudaFatElfEntry __elfEntries1 = {(char*)"sm_21", (char*)__deviceText_$sm_21$, &__elfEntries0, (unsigned int)sizeof(__deviceText_$sm_21$)};
 
 
 
-static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000004,0xa14f518d,(char*)"5ee0f89a1292890a",(char*)"/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu",(char*)" ",__ptxEntries,__cubinEntries,&__debugEntries0,0,0,0,0,0,0x39055ada,&__elfEntries1};
-# 3 "/tmp/tmpxft_00001c5b_00000000-1_simpleVoteIntrinsics.cudafe1.stub.c" 2
+static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000004,0xa14f518d,(char*)"fa80c102fb452dec",(char*)"/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVoteIntrinsics.cu",(char*)" ",__ptxEntries,__cubinEntries,&__debugEntries0,0,0,0,0,0,0x5ac2aa0d,&__elfEntries1};
+# 3 "/tmp/tmpxft_00001559_00000000-1_simpleVoteIntrinsics.cudafe1.stub.c" 2
 struct __T20 {unsigned *__par0;unsigned *__par1;int __par2;int __dummy_field;};
 struct __T21 {unsigned *__par0;unsigned *__par1;int __par2;int __dummy_field;};
 struct __T22 {char *__par0;int __par1;int __dummy_field;};
 extern void __device_stub__Z14VoteAnyKernel1PjS_i(unsigned *, unsigned *, int);
 extern void __device_stub__Z14VoteAllKernel2PjS_i(unsigned *, unsigned *, int);
 extern void __device_stub__Z14VoteAnyKernel3Pbi(bool *, int);
-static void __sti____cudaRegisterAll_55_tmpxft_00001c5b_00000000_4_simpleVoteIntrinsics_cpp1_ii_9a59ed6c(void) __attribute__((__constructor__));
+static void __sti____cudaRegisterAll_55_tmpxft_00001559_00000000_4_simpleVoteIntrinsics_cpp1_ii_9a59ed6c(void) __attribute__((__constructor__));
 void __device_stub__Z14VoteAnyKernel1PjS_i(unsigned *__par0, unsigned *__par1, int __par2){ struct __T20 *__T23 = 0;
 if (cudaSetupArgument((void*)(char*)&__par0, sizeof(__par0), (size_t)&__T23->__par0) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par1, sizeof(__par1), (size_t)&__T23->__par1) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par2, sizeof(__par2), (size_t)&__T23->__par2) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(unsigned *, unsigned *, int))VoteAnyKernel1)); (void)cudaLaunch(((char *)((void ( *)(unsigned *, unsigned *, int))VoteAnyKernel1))); };}
 void VoteAnyKernel1( unsigned *__cuda_0,unsigned *__cuda_1,int __cuda_2)
-# 49 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVote_kernel.cu"
+# 49 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVote_kernel.cu"
 {__device_stub__Z14VoteAnyKernel1PjS_i( __cuda_0,__cuda_1,__cuda_2);
 
 
 
 }
-# 1 "/tmp/tmpxft_00001c5b_00000000-1_simpleVoteIntrinsics.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00001559_00000000-1_simpleVoteIntrinsics.cudafe1.stub.c"
 void __device_stub__Z14VoteAllKernel2PjS_i( unsigned *__par0, unsigned *__par1, int __par2) { struct __T21 *__T24 = 0;
 if (cudaSetupArgument((void*)(char*)&__par0, sizeof(__par0), (size_t)&__T24->__par0) != cudaSuccess) return; if (cudaSetupArgument((void*)(char*)&__par1, sizeof(__par1), (size_t)&__T24->__par1) != cudaSuccess) return; if (cudaSetupArgument((void*)(char*)&__par2, sizeof(__par2), (size_t)&__T24->__par2) != cudaSuccess) return; { volatile static char *__f; __f = ((char *)((void ( *)(unsigned *, unsigned *, int))VoteAllKernel2)); (void)cudaLaunch(((char *)((void ( *)(unsigned *, unsigned *, int))VoteAllKernel2))); }; }
 void VoteAllKernel2( unsigned *__cuda_0,unsigned *__cuda_1,int __cuda_2)
-# 59 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVote_kernel.cu"
+# 59 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVote_kernel.cu"
 {__device_stub__Z14VoteAllKernel2PjS_i( __cuda_0,__cuda_1,__cuda_2);
 
 
 
 }
-# 1 "/tmp/tmpxft_00001c5b_00000000-1_simpleVoteIntrinsics.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00001559_00000000-1_simpleVoteIntrinsics.cudafe1.stub.c"
 void __device_stub__Z14VoteAnyKernel3Pbi( bool *__par0, int __par1) { struct __T22 *__T25 = 0;
 if (cudaSetupArgument((void*)(char*)&__par0, sizeof(__par0), (size_t)&__T25->__par0) != cudaSuccess) return; if (cudaSetupArgument((void*)(char*)&__par1, sizeof(__par1), (size_t)&__T25->__par1) != cudaSuccess) return; { volatile static char *__f; __f = ((char *)((void ( *)(bool *, int))VoteAnyKernel3)); (void)cudaLaunch(((char *)((void ( *)(bool *, int))VoteAnyKernel3))); }; }
 void VoteAnyKernel3( bool *__cuda_0,int __cuda_1)
-# 68 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVote_kernel.cu"
+# 68 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVote_kernel.cu"
 {__device_stub__Z14VoteAnyKernel3Pbi( __cuda_0,__cuda_1);
-# 81 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVote_kernel.cu"
+# 81 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleVoteIntrinsics/simpleVote_kernel.cu"
 }
-# 1 "/tmp/tmpxft_00001c5b_00000000-1_simpleVoteIntrinsics.cudafe1.stub.c"
-static void __sti____cudaRegisterAll_55_tmpxft_00001c5b_00000000_4_simpleVoteIntrinsics_cpp1_ii_9a59ed6c(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(bool *, int))VoteAnyKernel3), (char*)"_Z14VoteAnyKernel3Pbi", "_Z14VoteAnyKernel3Pbi", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(unsigned *, unsigned *, int))VoteAllKernel2), (char*)"_Z14VoteAllKernel2PjS_i", "_Z14VoteAllKernel2PjS_i", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(unsigned *, unsigned *, int))VoteAnyKernel1), (char*)"_Z14VoteAnyKernel1PjS_i", "_Z14VoteAnyKernel1PjS_i", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); }
-# 1 "/tmp/tmpxft_00001c5b_00000000-1_simpleVoteIntrinsics.cudafe1.stub.c" 2
+# 1 "/tmp/tmpxft_00001559_00000000-1_simpleVoteIntrinsics.cudafe1.stub.c"
+static void __sti____cudaRegisterAll_55_tmpxft_00001559_00000000_4_simpleVoteIntrinsics_cpp1_ii_9a59ed6c(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(bool *, int))VoteAnyKernel3), (char*)"_Z14VoteAnyKernel3Pbi", "_Z14VoteAnyKernel3Pbi", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(unsigned *, unsigned *, int))VoteAllKernel2), (char*)"_Z14VoteAllKernel2PjS_i", "_Z14VoteAllKernel2PjS_i", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(unsigned *, unsigned *, int))VoteAnyKernel1), (char*)"_Z14VoteAnyKernel1PjS_i", "_Z14VoteAnyKernel1PjS_i", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); }
+# 1 "/tmp/tmpxft_00001559_00000000-1_simpleVoteIntrinsics.cudafe1.stub.c" 2

@@ -1,8 +1,8 @@
-# 1 "/tmp/tmpxft_0000126e_00000000-1_asyncAPI.cudafe1.cpp"
+# 1 "/tmp/tmpxft_0000124c_00000000-1_asyncAPI.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_0000126e_00000000-1_asyncAPI.cudafe1.cpp"
-# 1 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/asyncAPI/asyncAPI.cu"
+# 1 "/tmp/tmpxft_0000124c_00000000-1_asyncAPI.cudafe1.cpp"
+# 1 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/asyncAPI/asyncAPI.cu"
 # 46 "/usr/local/cuda/bin/../include/device_types.h"
 # 149 "/usr/lib/gcc/i686-linux-gnu/4.4.5/include/stddef.h" 3
 typedef long ptrdiff_t;
@@ -11361,130 +11361,130 @@ printf(" -> CUDA %s Toolkit\n", sNVCCReq);
 printf(" -> %s NVIDIA Display Driver.\n", sDriverReq);
 # 18 "sdk/cutil_inline.h"
 }
-# 48 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/asyncAPI/asyncAPI.cu"
+# 48 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/asyncAPI/asyncAPI.cu"
 void increment_kernel(int *g_data, int inc_value) ;
-# 54 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/asyncAPI/asyncAPI.cu"
+# 54 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/asyncAPI/asyncAPI.cu"
 int correct_output(int *data, const int n, const int x)
-# 55 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/asyncAPI/asyncAPI.cu"
+# 55 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/asyncAPI/asyncAPI.cu"
 {
-# 56 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/asyncAPI/asyncAPI.cu"
+# 56 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/asyncAPI/asyncAPI.cu"
 for (int i = 0; i < n; i++) {
-# 57 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/asyncAPI/asyncAPI.cu"
+# 57 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/asyncAPI/asyncAPI.cu"
 if ((data[i]) != x) {
-# 58 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/asyncAPI/asyncAPI.cu"
+# 58 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/asyncAPI/asyncAPI.cu"
 return 0; } }
-# 59 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/asyncAPI/asyncAPI.cu"
+# 59 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/asyncAPI/asyncAPI.cu"
 return 1;
-# 60 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/asyncAPI/asyncAPI.cu"
+# 60 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/asyncAPI/asyncAPI.cu"
 }
-# 62 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/asyncAPI/asyncAPI.cu"
+# 62 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/asyncAPI/asyncAPI.cu"
 int main(int argc, char *argv[])
-# 63 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/asyncAPI/asyncAPI.cu"
+# 63 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/asyncAPI/asyncAPI.cu"
 {
-# 64 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/asyncAPI/asyncAPI.cu"
+# 64 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/asyncAPI/asyncAPI.cu"
 if (cutCheckCmdLineFlag(argc, (const char **)argv, "device")) {
-# 65 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/asyncAPI/asyncAPI.cu"
+# 65 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/asyncAPI/asyncAPI.cu"
 cutilDeviceInit(argc, argv); } else {
-# 67 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/asyncAPI/asyncAPI.cu"
+# 67 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/asyncAPI/asyncAPI.cu"
 cudaSetDevice(cutGetMaxGflopsDeviceId()); }
-# 69 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/asyncAPI/asyncAPI.cu"
+# 69 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/asyncAPI/asyncAPI.cu"
 int n = ((16 * 1024) * 1024);
-# 70 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/asyncAPI/asyncAPI.cu"
+# 70 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/asyncAPI/asyncAPI.cu"
 int nbytes = (n * sizeof(int));
-# 71 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/asyncAPI/asyncAPI.cu"
+# 71 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/asyncAPI/asyncAPI.cu"
 int value = 26;
-# 74 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/asyncAPI/asyncAPI.cu"
+# 74 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/asyncAPI/asyncAPI.cu"
 n = 1024;
-# 78 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/asyncAPI/asyncAPI.cu"
+# 78 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/asyncAPI/asyncAPI.cu"
 int *a = (0);
-# 79 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/asyncAPI/asyncAPI.cu"
-__cudaSafeCall(cudaMallocHost((void **)(&a), nbytes), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/asyncAPI/asyncAPI.cu", 79);
-# 80 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/asyncAPI/asyncAPI.cu"
+# 79 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/asyncAPI/asyncAPI.cu"
+__cudaSafeCall(cudaMallocHost((void **)(&a), nbytes), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/asyncAPI/asyncAPI.cu", 79);
+# 80 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/asyncAPI/asyncAPI.cu"
 memset(a, 0, nbytes);
-# 83 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/asyncAPI/asyncAPI.cu"
+# 83 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/asyncAPI/asyncAPI.cu"
 int *d_a = (0);
-# 84 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/asyncAPI/asyncAPI.cu"
-__cudaSafeCall(cudaMalloc((void **)(&d_a), nbytes), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/asyncAPI/asyncAPI.cu", 84);
-# 85 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/asyncAPI/asyncAPI.cu"
-__cudaSafeCall(cudaMemset(d_a, 255, nbytes), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/asyncAPI/asyncAPI.cu", 85);
-# 88 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/asyncAPI/asyncAPI.cu"
+# 84 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/asyncAPI/asyncAPI.cu"
+__cudaSafeCall(cudaMalloc((void **)(&d_a), nbytes), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/asyncAPI/asyncAPI.cu", 84);
+# 85 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/asyncAPI/asyncAPI.cu"
+__cudaSafeCall(cudaMemset(d_a, 255, nbytes), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/asyncAPI/asyncAPI.cu", 85);
+# 88 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/asyncAPI/asyncAPI.cu"
 dim3 threads = dim3(512, 1);
-# 89 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/asyncAPI/asyncAPI.cu"
+# 89 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/asyncAPI/asyncAPI.cu"
 dim3 blocks = dim3(n / (threads.x), 1);
-# 92 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/asyncAPI/asyncAPI.cu"
+# 92 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/asyncAPI/asyncAPI.cu"
 cudaEvent_t start, stop;
-# 93 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/asyncAPI/asyncAPI.cu"
-__cudaSafeCall(cudaEventCreate(&start), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/asyncAPI/asyncAPI.cu", 93);
-# 94 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/asyncAPI/asyncAPI.cu"
-__cudaSafeCall(cudaEventCreate(&stop), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/asyncAPI/asyncAPI.cu", 94);
-# 96 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/asyncAPI/asyncAPI.cu"
+# 93 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/asyncAPI/asyncAPI.cu"
+__cudaSafeCall(cudaEventCreate(&start), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/asyncAPI/asyncAPI.cu", 93);
+# 94 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/asyncAPI/asyncAPI.cu"
+__cudaSafeCall(cudaEventCreate(&stop), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/asyncAPI/asyncAPI.cu", 94);
+# 96 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/asyncAPI/asyncAPI.cu"
 unsigned timer;
-# 97 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/asyncAPI/asyncAPI.cu"
-__cutilCheckError(cutCreateTimer(&timer), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/asyncAPI/asyncAPI.cu", 97);
-# 98 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/asyncAPI/asyncAPI.cu"
-__cutilCheckError(cutResetTimer(timer), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/asyncAPI/asyncAPI.cu", 98);
-# 99 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/asyncAPI/asyncAPI.cu"
-__cudaSafeCall(cudaThreadSynchronize(), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/asyncAPI/asyncAPI.cu", 99);
-# 100 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/asyncAPI/asyncAPI.cu"
+# 97 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/asyncAPI/asyncAPI.cu"
+__cutilCheckError(cutCreateTimer(&timer), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/asyncAPI/asyncAPI.cu", 97);
+# 98 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/asyncAPI/asyncAPI.cu"
+__cutilCheckError(cutResetTimer(timer), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/asyncAPI/asyncAPI.cu", 98);
+# 99 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/asyncAPI/asyncAPI.cu"
+__cudaSafeCall(cudaThreadSynchronize(), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/asyncAPI/asyncAPI.cu", 99);
+# 100 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/asyncAPI/asyncAPI.cu"
 float gpu_time = (0.0F);
-# 103 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/asyncAPI/asyncAPI.cu"
-__cutilCheckError(cutStartTimer(timer), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/asyncAPI/asyncAPI.cu", 103);
-# 104 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/asyncAPI/asyncAPI.cu"
+# 103 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/asyncAPI/asyncAPI.cu"
+__cutilCheckError(cutStartTimer(timer), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/asyncAPI/asyncAPI.cu", 103);
+# 104 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/asyncAPI/asyncAPI.cu"
 cudaEventRecord(start, 0);
-# 105 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/asyncAPI/asyncAPI.cu"
+# 105 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/asyncAPI/asyncAPI.cu"
 cudaMemcpyAsync(d_a, a, nbytes, cudaMemcpyHostToDevice, 0);
-# 106 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/asyncAPI/asyncAPI.cu"
+# 106 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/asyncAPI/asyncAPI.cu"
 cudaConfigureCall(blocks, threads, 0, 0) ? ((void)0) : increment_kernel(d_a, value);
-# 107 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/asyncAPI/asyncAPI.cu"
+# 107 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/asyncAPI/asyncAPI.cu"
 cudaMemcpyAsync(a, d_a, nbytes, cudaMemcpyDeviceToHost, 0);
-# 108 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/asyncAPI/asyncAPI.cu"
+# 108 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/asyncAPI/asyncAPI.cu"
 cudaEventRecord(stop, 0);
-# 109 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/asyncAPI/asyncAPI.cu"
-__cutilCheckError(cutStopTimer(timer), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/asyncAPI/asyncAPI.cu", 109);
-# 112 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/asyncAPI/asyncAPI.cu"
+# 109 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/asyncAPI/asyncAPI.cu"
+__cutilCheckError(cutStopTimer(timer), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/asyncAPI/asyncAPI.cu", 109);
+# 112 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/asyncAPI/asyncAPI.cu"
 unsigned long counter = (0);
-# 113 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/asyncAPI/asyncAPI.cu"
+# 113 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/asyncAPI/asyncAPI.cu"
 while ((cudaEventQuery(stop)) == (cudaErrorNotReady))
-# 114 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/asyncAPI/asyncAPI.cu"
+# 114 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/asyncAPI/asyncAPI.cu"
 {
-# 115 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/asyncAPI/asyncAPI.cu"
+# 115 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/asyncAPI/asyncAPI.cu"
 counter++;
-# 116 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/asyncAPI/asyncAPI.cu"
+# 116 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/asyncAPI/asyncAPI.cu"
 }
-# 117 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/asyncAPI/asyncAPI.cu"
-__cudaSafeCall(cudaEventElapsedTime(&gpu_time, start, stop), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/asyncAPI/asyncAPI.cu", 117);
-# 120 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/asyncAPI/asyncAPI.cu"
+# 117 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/asyncAPI/asyncAPI.cu"
+__cudaSafeCall(cudaEventElapsedTime(&gpu_time, start, stop), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/asyncAPI/asyncAPI.cu", 117);
+# 120 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/asyncAPI/asyncAPI.cu"
 printf("time spent executing by the GPU: %.2f\n", gpu_time);
-# 121 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/asyncAPI/asyncAPI.cu"
+# 121 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/asyncAPI/asyncAPI.cu"
 printf("time spent by CPU in CUDA calls: %.2f\n", cutGetTimerValue(timer));
-# 122 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/asyncAPI/asyncAPI.cu"
+# 122 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/asyncAPI/asyncAPI.cu"
 printf("CPU executed %d iterations while waiting for GPU to finish\n", counter);
-# 125 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/asyncAPI/asyncAPI.cu"
+# 125 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/asyncAPI/asyncAPI.cu"
 printf("--------------------------------------------------------------\n");
-# 126 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/asyncAPI/asyncAPI.cu"
+# 126 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/asyncAPI/asyncAPI.cu"
 if (correct_output(a, n, value)) {
-# 127 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/asyncAPI/asyncAPI.cu"
+# 127 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/asyncAPI/asyncAPI.cu"
 printf("Test PASSED\n"); } else {
-# 129 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/asyncAPI/asyncAPI.cu"
+# 129 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/asyncAPI/asyncAPI.cu"
 printf("Test FAILED\n"); }
-# 132 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/asyncAPI/asyncAPI.cu"
-__cudaSafeCall(cudaEventDestroy(start), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/asyncAPI/asyncAPI.cu", 132);
-# 133 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/asyncAPI/asyncAPI.cu"
-__cudaSafeCall(cudaEventDestroy(stop), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/asyncAPI/asyncAPI.cu", 133);
-# 134 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/asyncAPI/asyncAPI.cu"
-__cudaSafeCall(cudaFreeHost(a), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/asyncAPI/asyncAPI.cu", 134);
-# 135 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/asyncAPI/asyncAPI.cu"
-__cudaSafeCall(cudaFree(d_a), "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/asyncAPI/asyncAPI.cu", 135);
-# 137 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/asyncAPI/asyncAPI.cu"
+# 132 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/asyncAPI/asyncAPI.cu"
+__cudaSafeCall(cudaEventDestroy(start), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/asyncAPI/asyncAPI.cu", 132);
+# 133 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/asyncAPI/asyncAPI.cu"
+__cudaSafeCall(cudaEventDestroy(stop), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/asyncAPI/asyncAPI.cu", 133);
+# 134 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/asyncAPI/asyncAPI.cu"
+__cudaSafeCall(cudaFreeHost(a), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/asyncAPI/asyncAPI.cu", 134);
+# 135 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/asyncAPI/asyncAPI.cu"
+__cudaSafeCall(cudaFree(d_a), "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/asyncAPI/asyncAPI.cu", 135);
+# 137 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/asyncAPI/asyncAPI.cu"
 cudaThreadExit();
-# 139 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/asyncAPI/asyncAPI.cu"
+# 139 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/asyncAPI/asyncAPI.cu"
 __cutilExit(argc, argv);
-# 141 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/asyncAPI/asyncAPI.cu"
+# 141 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/asyncAPI/asyncAPI.cu"
 return 0;
-# 142 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/asyncAPI/asyncAPI.cu"
+# 142 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/asyncAPI/asyncAPI.cu"
 }
-# 1 "/tmp/tmpxft_0000126e_00000000-1_asyncAPI.cudafe1.stub.c"
-# 1 "/tmp/tmpxft_0000126e_00000000-1_asyncAPI.cudafe1.stub.c" 1
+# 1 "/tmp/tmpxft_0000124c_00000000-1_asyncAPI.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_0000124c_00000000-1_asyncAPI.cudafe1.stub.c" 1
 # 1 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 1
 # 91 "/usr/local/cuda/bin/../include/crt/host_runtime.h"
 extern "C" {
@@ -11886,8 +11886,8 @@ extern __attribute__((__weak__)) unsigned long long int ullmax(unsigned long lon
 
 
 #pragma pack()
-# 2 "/tmp/tmpxft_0000126e_00000000-1_asyncAPI.cudafe1.stub.c" 2
-# 1 "/tmp/tmpxft_0000126e_00000000-3_asyncAPI.fatbin.c" 1
+# 2 "/tmp/tmpxft_0000124c_00000000-1_asyncAPI.cudafe1.stub.c" 2
+# 1 "/tmp/tmpxft_0000124c_00000000-3_asyncAPI.fatbin.c" 1
 # 1 "/usr/local/cuda/bin/../include/__cudaFatFormat.h" 1
 # 83 "/usr/local/cuda/bin/../include/__cudaFatFormat.h"
 extern "C" {
@@ -11965,85 +11965,90 @@ void __cudaFatFreePTX( char* ptx );
 
 
 }
-# 2 "/tmp/tmpxft_0000126e_00000000-3_asyncAPI.fatbin.c" 2
+# 2 "/tmp/tmpxft_0000124c_00000000-3_asyncAPI.fatbin.c" 2
 
 asm(
 ".section .rodata\n"
 ".align 32\n"
-"__deviceText_$sm_13$:\n"
-".quad 0x33010102464c457f,0x0000000000000002,0x0000000100be0002,0x0000000000000000\n"
-".quad 0x0000000000000414,0x0000000000000040,0x00380040000d010d,0x0001000700400003\n"
+"__deviceText_$sm_21$:\n"
+".quad 0x33010102464c457f,0x0000000000000004,0x0000000100be0002,0x0000000000000000\n"
+".quad 0x00000000000004e0,0x0000000000000040,0x0038004000140115,0x0001000800400002\n"
 ".quad 0x0000000000000000,0x0000000000000000,0x0000000000000000,0x0000000000000000\n"
 ".quad 0x0000000000000000,0x0000000000000000,0x0000000000000000,0x0000000000000000\n"
-".quad 0x0000000300000001,0x0000000000000000,0x0000000000000000,0x0000000000000200\n"
-".quad 0x0000000000000098,0x0000000000000000,0x0000000000000004,0x0000000000000000\n"
-".quad 0x000000030000000b,0x0000000000000000,0x0000000000000000,0x0000000000000298\n"
+".quad 0x0000000300000001,0x0000000000000000,0x0000000000000000,0x0000000000000240\n"
+".quad 0x00000000000000a4,0x0000000000000000,0x0000000000000004,0x0000000000000000\n"
+".quad 0x000000030000000b,0x0000000000000000,0x0000000000000000,0x00000000000002e4\n"
 ".quad 0x0000000000000019,0x0000000000000000,0x0000000000000001,0x0000000000000000\n"
-".quad 0x0000000200000013,0x0000000000000000,0x0000000000000000,0x00000000000002b1\n"
-".quad 0x00000000000000f0,0x0000000900000002,0x0000000000000001,0x0000000000000018\n"
-".quad 0x0000000100000036,0x0000000000000006,0x0000000000000000,0x00000000000003a1\n"
-".quad 0x0000000000000040,0x0200000600000003,0x0000000000000004,0x0000000000000000\n"
-".quad 0x0000000100000054,0x0000000000000002,0x0000000000000000,0x00000000000003e1\n"
-".quad 0x0000000000000030,0x0000000400000000,0x0000000000000001,0x0000000000000000\n"
-".quad 0x0000000800000075,0x0000000000000003,0x0000000000000000,0x0000000000000411\n"
-".quad 0x000000000000001c,0x0000000400000000,0x0000000000000004,0x0000000000000000\n"
+".quad 0x0000000200000013,0x0000000000000000,0x0000000000000000,0x00000000000002fd\n"
+".quad 0x0000000000000108,0x0000000a00000002,0x0000000000000001,0x0000000000000018\n"
+".quad 0x0000000100000036,0x0000000000000006,0x0000000000000000,0x0000000000000405\n"
+".quad 0x0000000000000058,0x0400000600000003,0x0000000000000004,0x0000000000000000\n"
+".quad 0x000000010000007e,0x0000000000000002,0x0000000000000000,0x000000000000045d\n"
+".quad 0x000000000000002c,0x0000000400000000,0x0000000000000004,0x0000000000000000\n"
+".quad 0x000000010000005d,0x0000000000000002,0x0000000000000000,0x0000000000000489\n"
+".quad 0x000000000000003c,0x0000000400000000,0x0000000000000001,0x0000000000000000\n"
+".quad 0x0000000100000054,0x0000000000000002,0x0000000000000000,0x00000000000004c5\n"
+".quad 0x0000000000000018,0x0000000000000000,0x0000000000000001,0x0000000000000000\n"
 ".quad 0x7472747368732e00,0x747274732e006261,0x746d79732e006261,0x672e766e2e006261\n"
 ".quad 0x6e692e6c61626f6c,0x672e766e2e007469,0x742e006c61626f6c,0x36315a5f2e747865\n"
-".quad 0x6e656d6572636e69,0x6c656e72656b5f74,0x2e766e2e00696950,0x315a5f2e6f666e69\n"
-".quad 0x656d6572636e6936,0x656e72656b5f746e,0x766e2e006969506c,0x2e6465726168732e\n"
-".quad 0x72636e6936315a5f,0x656b5f746e656d65,0x006969506c656e72,0x636e6936315a5f00\n"
-".quad 0x6b5f746e656d6572,0x6969506c656e7265,0x0000000000000000,0x0000000000000000\n"
-".quad 0x0000000000000000,0x0100030000000000,0x0000000000000000,0x0000000000000000\n"
-".quad 0x0200030000000000,0x0000000000000000,0x0000000000000000,0x0300030000000000\n"
-".quad 0x0000000000000000,0x0000000000000000,0x0000030000000000,0x0000000000000000\n"
-".quad 0x0000000000000000,0x0000030000000000,0x0000000000000000,0x0000000000000000\n"
-".quad 0x0400030000000000,0x0000000000000000,0x0000000000004000,0x0500030000000000\n"
-".quad 0x0000000000000000,0x0000000000000000,0x0600030000000000,0x0000000000000000\n"
-".quad 0x0000000000000000,0x0410120000000100,0x0000000000000000,0x0000000000000000\n"
-".quad 0x0047801000020500,0x000780a000000540,0x20478060014c0104,0x1007803002000100\n"
-".quad 0x2007802000c805c4,0xc00780d00e020104,0x2007802000cc0180,0xc00781d00e020104\n"
-".quad 0x00000000080b04a0,0x0c18030000000800,0xffffff000c170400,0x13f00000080001ff\n"
-".quad 0xffffff000c170400,0x23f00000000000ff,0x0000000600000000,0x0000041400000005\n"
-".quad 0x0000000000000000,0x0000000000000000,0x000000a800000000,0x000000a800000000\n"
-".quad 0x0000000400000000,0x6000000000000000,0x000003a100000905,0x0000000000000000\n"
-".quad 0x0000000000000000,0x0000007000000000,0x0000007000000000,0x0000000400000000\n"
-".quad 0x6000000000000000,0x0000041100000906,0x0000000000000000,0x0000000000000000\n"
-".quad 0x0000000000000000,0x0000001c00000000,0x0000000400000000,0x0000000000000000\n"
+".quad 0x6e656d6572636e69,0x6c656e72656b5f74,0x2e766e2e00696950,0x766e2e006f666e69\n"
+".quad 0x5a5f2e6f666e692e,0x6d6572636e693631,0x6e72656b5f746e65,0x6e2e006969506c65\n"
+".quad 0x6174736e6f632e76,0x36315a5f2e30746e,0x6e656d6572636e69,0x6c656e72656b5f74\n"
+".quad 0x315a5f0000696950,0x656d6572636e6936,0x656e72656b5f746e,0x000000006969506c\n"
+".quad 0x0000000000000000,0x0000000000000000,0x0000000000000000,0x0000000001000300\n"
+".quad 0x0000000000000000,0x0000000000000000,0x0000000002000300,0x0000000000000000\n"
+".quad 0x0000000000000000,0x0000000003000300,0x0000000000000000,0x0000000000000000\n"
+".quad 0x0000000000000300,0x0000000000000000,0x0000000000000000,0x0000000000000300\n"
+".quad 0x0000000000000000,0x0000000000000000,0x0000000004000300,0x0000580000000000\n"
+".quad 0x0000000000000000,0x0000000007000300,0x0000000000000000,0x0000000000000000\n"
+".quad 0x0000000006000300,0x0000000000000000,0x0000000000000000,0x0000000005000300\n"
+".quad 0x0000000000000000,0x0000010000000000,0x0000000004101200,0x0000580000000000\n"
+".quad 0x005de40000000000,0x001c042800440400,0x00dde42c00000094,0x009c042800400080\n"
+".quad 0x001c032c00000084,0x009c032004400020,0xf0dc432007c00010,0x201c854800400093\n"
+".quad 0x001c038400000000,0x201c8548004000a0,0x001de79400000000,0x0000008000000000\n"
+".quad 0x0000000000000000,0x0000000000000000,0x0000000000000000,0x0000000000000000\n"
+".quad 0x0000000000000000,0x00000000080c0400,0x080a040000000800,0x0c00200000000900\n"
+".quad 0x0c1704000c190300,0x080001ffffffff00,0x0c17040011f00000,0x000000ffffffff00\n"
+".quad 0x0812040021f00000,0x0000000000000a00,0x00000a0008110400,0x0000000000000000\n"
+".quad 0x0000000500000006,0x00000000000004e0,0x0000000000000000,0x0000000000000000\n"
+".quad 0x0000000000000070,0x0000000000000070,0x0000000000000004,0x00000a0560000000\n"
+".quad 0x0000000000000405,0x0000000000000000,0x0000000000000000,0x00000000000000c0\n"
+".quad 0x00000000000000c0,0x0000000000000004,0x0000000000000000\n"
 ".text");
 
 extern "C" {
 
-extern const unsigned long long __deviceText_$sm_13$[152];
+extern const unsigned long long __deviceText_$sm_21$[171];
 
 }
 
 asm(
 ".section .rodata\n"
 ".align 32\n"
-"__deviceText_$compute_13$:\n"
-".quad 0x6f69737265762e09,0x2e090a342e31206e,0x7320746567726174,0x2f2f090a33315f6d\n"
+"__deviceText_$compute_20$:\n"
+".quad 0x6f69737265762e09,0x2e090a322e32206e,0x7320746567726174,0x2f2f090a30325f6d\n"
 ".quad 0x656c69706d6f6320,0x2f20687469772064,0x61636f6c2f727375,0x6f2f616475632f6c\n"
 ".quad 0x696c2f34366e6570,0x2f090a65622f2f62,0x6e65706f766e202f,0x6220322e33206363\n"
 ".quad 0x206e6f20746c6975,0x2d39302d30313032,0x2d2f2f090a0a3930,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x43202f2f090a2d2d,0x676e696c69706d6f\n"
-".quad 0x6d742f706d742f20,0x3030305f74667870,0x30305f6536323130,0x372d303030303030\n"
-".quad 0x5041636e7973615f,0x692e337070632e49,0x632f706d742f2820,0x5075702e23494263\n"
-".quad 0x2f2f090a29355269,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
+".quad 0x6d742f706d742f20,0x3030305f74667870,0x30305f6334323130,0x372d303030303030\n"
+".quad 0x5041636e7973615f,0x692e337070632e49,0x632f706d742f2820,0x7559722e23494263\n"
+".quad 0x2f2f090a29314978,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2f2f090a0a2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x202f2f090a2d2d2d,0x3a736e6f6974704f,0x2d2d2d2d2f2f090a,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x0a2d2d2d2d2d2d2d,0x72615420202f2f09,0x2c7874703a746567\n"
-".quad 0x5f6d733a41534920,0x69646e45202c3331,0x6c7474696c3a6e61,0x746e696f50202c65\n"
+".quad 0x5f6d733a41534920,0x69646e45202c3032,0x6c7474696c3a6e61,0x746e696f50202c65\n"
 ".quad 0x3a657a6953207265,0x20202f2f090a3436,0x74704f2809334f2d,0x6f6974617a696d69\n"
 ".quad 0x296c6576656c206e,0x672d20202f2f090a,0x6775626544280930,0x0a296c6576656c20\n"
 ".quad 0x326d2d20202f2f09,0x74726f7065522809,0x726f736976646120,0x2f2f090a29736569\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x662e090a0a2d2d2d\n"
 ".quad 0x3c22093109656c69,0x2d646e616d6d6f63,0x090a223e656e696c,0x093209656c69662e\n"
-".quad 0x6d742f706d742f22,0x3030305f74667870,0x30305f6536323130,0x362d303030303030\n"
+".quad 0x6d742f706d742f22,0x3030305f74667870,0x30305f6334323130,0x362d303030303030\n"
 ".quad 0x5041636e7973615f,0x6566616475632e49,0x090a227570672e32,0x093309656c69662e\n"
 ".quad 0x696c2f7273752f22,0x36692f6363672f62,0x78756e696c2d3638,0x342e342f756e672d\n"
 ".quad 0x756c636e692f352e,0x65646474732f6564,0x662e090a22682e66,0x2f22093409656c69\n"
@@ -12093,62 +12098,61 @@ asm(
 ".quad 0x7273752f22093732,0x632f6c61636f6c2f,0x2f6e69622f616475,0x756c636e692f2e2e\n"
 ".quad 0x5f6874616d2f6564,0x6e6f6974636e7566,0x74705f6c62645f73,0x2e090a22682e3378\n"
 ".quad 0x09383209656c6966,0x6e2f656d6f682f22,0x68632f6c616d726f,0x672f74756f6b6365\n"
-".quad 0x746f6c65636f7570,0x632f73747365742f,0x742f322e32616475,0x7973612f73747365\n"
-".quad 0x73612f495041636e,0x632e495041636e79,0x652e090a0a0a2275,0x315a5f207972746e\n"
-".quad 0x656d6572636e6936,0x656e72656b5f746e,0x090a28206969506c,0x206d617261702e09\n"
-".quad 0x635f5f203436752e,0x5f6d726170616475,0x72636e6936315a5f,0x656b5f746e656d65\n"
-".quad 0x5f6969506c656e72,0x0a2c617461645f67,0x6d617261702e0909,0x5f5f203233732e20\n"
+".quad 0x746f6c65636f7570,0x702d73747365742f,0x632f312e322d7874,0x742f322e32616475\n"
+".quad 0x7973612f73747365,0x73612f495041636e,0x632e495041636e79,0x652e090a0a0a2275\n"
+".quad 0x315a5f207972746e,0x656d6572636e6936,0x656e72656b5f746e,0x090a28206969506c\n"
+".quad 0x206d617261702e09,0x635f5f203436752e,0x5f6d726170616475,0x72636e6936315a5f\n"
+".quad 0x656b5f746e656d65,0x5f6969506c656e72,0x0a2c617461645f67,0x6d617261702e0909\n"
+".quad 0x5f5f203233732e20,0x6d72617061647563,0x636e6936315a5f5f,0x6b5f746e656d6572\n"
+".quad 0x6969506c656e7265,0x6c61765f636e695f,0x090a7b090a296575,0x33752e206765722e\n"
+".quad 0x3e31313c72252032,0x206765722e090a3b,0x647225203436752e,0x6c2e090a3b3e353c\n"
+".quad 0x383409383209636f,0x6257444c240a3009,0x315a5f5f6e696765,0x656d6572636e6936\n"
+".quad 0x656e72656b5f746e,0x2e090a3a6969506c,0x3509383209636f6c,0x766f6d090a300931\n"
+".quad 0x722509203233752e,0x6961746325202c31,0x6f6d090a3b782e64,0x2509203233752e76\n"
+".quad 0x69746e25202c3272,0x756d090a3b782e64,0x3233752e6f6c2e6c,0x25202c3372250920\n"
+".quad 0x3b327225202c3172,0x33752e766f6d090a,0x202c347225092032,0x0a3b782e64697425\n"
+".quad 0x3233752e64646109,0x25202c3572250920,0x3b337225202c3472,0x6f6c2e6c756d090a\n"
+".quad 0x722509203233752e,0x202c357225202c36,0x2e747663090a3b34,0x203233752e343675\n"
+".quad 0x25202c3164722509,0x2e646c090a3b3672,0x36752e6d61726170,0x2c32647225092034\n"
+".quad 0x616475635f5f5b20,0x315a5f5f6d726170,0x656d6572636e6936,0x656e72656b5f746e\n"
+".quad 0x645f675f6969506c,0x61090a3b5d617461,0x09203436752e6464,0x7225202c33647225\n"
+".quad 0x32647225202c3164,0x6c672e646c090a3b,0x3233732e6c61626f,0x5b202c3772250920\n"
+".quad 0x3b5d302b33647225,0x7261702e646c090a,0x09203233732e6d61,0x5f5f5b202c387225\n"
 ".quad 0x6d72617061647563,0x636e6936315a5f5f,0x6b5f746e656d6572,0x6969506c656e7265\n"
-".quad 0x6c61765f636e695f,0x090a7b090a296575,0x31752e206765722e,0x3e343c6872252036\n"
-".quad 0x206765722e090a3b,0x3c7225203233752e,0x65722e090a3b3e39,0x25203436752e2067\n"
-".quad 0x090a3b3e353c6472,0x09383209636f6c2e,0x444c240a30093834,0x5f5f6e6967656257\n"
-".quad 0x6572636e6936315a,0x72656b5f746e656d,0x0a3a6969506c656e,0x383209636f6c2e09\n"
-".quad 0x6d090a3009313509,0x09203631752e766f,0x6325202c31687225,0x0a3b782e64696174\n"
-".quad 0x3631752e766f6d09,0x202c326872250920,0x3b782e6469746e25,0x69772e6c756d090a\n"
-".quad 0x09203631752e6564,0x687225202c317225,0x3b32687225202c31,0x33752e747663090a\n"
-".quad 0x2509203631752e32,0x64697425202c3272,0x646461090a3b782e,0x722509203233752e\n"
-".quad 0x202c327225202c33,0x756d090a3b317225,0x3233752e6f6c2e6c,0x25202c3472250920\n"
-".quad 0x090a3b34202c3372,0x2e3436752e747663,0x6472250920323375,0x0a3b347225202c31\n"
-".quad 0x617261702e646c09,0x2509203436752e6d,0x5f5f5b202c326472,0x6d72617061647563\n"
-".quad 0x636e6936315a5f5f,0x6b5f746e656d6572,0x6969506c656e7265,0x5d617461645f675f\n"
-".quad 0x752e646461090a3b,0x3364722509203436,0x202c31647225202c,0x6c090a3b32647225\n"
-".quad 0x6c61626f6c672e64,0x722509203233732e,0x336472255b202c35,0x646c090a3b5d302b\n"
-".quad 0x732e6d617261702e,0x2c36722509203233,0x616475635f5f5b20,0x315a5f5f6d726170\n"
-".quad 0x656d6572636e6936,0x656e72656b5f746e,0x636e695f6969506c,0x3b5d65756c61765f\n"
-".quad 0x33732e646461090a,0x202c377225092032,0x367225202c357225,0x6c672e7473090a3b\n"
-".quad 0x3233732e6c61626f,0x2b336472255b0920,0x3b377225202c5d30,0x3209636f6c2e090a\n"
-".quad 0x090a300932350938,0x4c240a3b74697865,0x5a5f5f646e655744,0x6d6572636e693631\n"
-".quad 0x6e72656b5f746e65,0x090a3a6969506c65,0x315a5f202f2f207d,0x656d6572636e6936\n"
-".quad 0x656e72656b5f746e,0x00000a0a6969506c\n"
+".quad 0x6c61765f636e695f,0x6461090a3b5d6575,0x2509203233732e64,0x2c377225202c3972\n"
+".quad 0x73090a3b38722520,0x6c61626f6c672e74,0x255b09203233732e,0x202c5d302b336472\n"
+".quad 0x6c2e090a3b397225,0x323509383209636f,0x74697865090a3009,0x6e6557444c240a3b\n"
+".quad 0x6e6936315a5f5f64,0x5f746e656d657263,0x69506c656e72656b,0x2f2f207d090a3a69\n"
+".quad 0x636e6936315a5f20,0x6b5f746e656d6572,0x6969506c656e7265,0x0000000000000a0a\n"
 ".text");
 
 extern "C" {
 
-extern const unsigned long long __deviceText_$compute_13$[394];
+extern const unsigned long long __deviceText_$compute_20$[392];
 
 }
 
-static __cudaFatPtxEntry __ptxEntries [] = {{(char*)"compute_13",(char*)__deviceText_$compute_13$},{0,0}};
+static __cudaFatPtxEntry __ptxEntries [] = {{(char*)"compute_20",(char*)__deviceText_$compute_20$},{0,0}};
 static __cudaFatCubinEntry __cubinEntries[] = {{0,0}};
 static __cudaFatDebugEntry __debugEntries0 = {0, 0, 0, 0} ;
 static __cudaFatElfEntry __elfEntries0 = {0, 0, 0, 0} ;
-static __cudaFatElfEntry __elfEntries1 = {(char*)"sm_13", (char*)__deviceText_$sm_13$, &__elfEntries0, (unsigned int)sizeof(__deviceText_$sm_13$)};
+static __cudaFatElfEntry __elfEntries1 = {(char*)"sm_21", (char*)__deviceText_$sm_21$, &__elfEntries0, (unsigned int)sizeof(__deviceText_$sm_21$)};
 
 
 
-static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000004,0xa14f518d,(char*)"7ea9b0f2146337f7",(char*)"/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/asyncAPI/asyncAPI.cu",(char*)" ",__ptxEntries,__cubinEntries,&__debugEntries0,0,0,0,0,0,0x9edb961d,&__elfEntries1};
-# 3 "/tmp/tmpxft_0000126e_00000000-1_asyncAPI.cudafe1.stub.c" 2
+static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000004,0xa14f518d,(char*)"d1c3a7516d64ae77",(char*)"/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/asyncAPI/asyncAPI.cu",(char*)" ",__ptxEntries,__cubinEntries,&__debugEntries0,0,0,0,0,0,0x62916fad,&__elfEntries1};
+# 3 "/tmp/tmpxft_0000124c_00000000-1_asyncAPI.cudafe1.stub.c" 2
 struct __T20 {int *__par0;int __par1;int __dummy_field;};
 extern void __device_stub__Z16increment_kernelPii(int *, int);
-static void __sti____cudaRegisterAll_43_tmpxft_0000126e_00000000_4_asyncAPI_cpp1_ii_a7f3d470(void) __attribute__((__constructor__));
+static void __sti____cudaRegisterAll_43_tmpxft_0000124c_00000000_4_asyncAPI_cpp1_ii_a7f3d470(void) __attribute__((__constructor__));
 void __device_stub__Z16increment_kernelPii(int *__par0, int __par1){ struct __T20 *__T21 = 0;
 if (cudaSetupArgument((void*)(char*)&__par0, sizeof(__par0), (size_t)&__T21->__par0) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par1, sizeof(__par1), (size_t)&__T21->__par1) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(int *, int))increment_kernel)); (void)cudaLaunch(((char *)((void ( *)(int *, int))increment_kernel))); };}
 void increment_kernel( int *__cuda_0,int __cuda_1)
-# 49 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/asyncAPI/asyncAPI.cu"
+# 49 "/home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/asyncAPI/asyncAPI.cu"
 {__device_stub__Z16increment_kernelPii( __cuda_0,__cuda_1);
 
 
 }
-# 1 "/tmp/tmpxft_0000126e_00000000-1_asyncAPI.cudafe1.stub.c"
-static void __sti____cudaRegisterAll_43_tmpxft_0000126e_00000000_4_asyncAPI_cpp1_ii_a7f3d470(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(int *, int))increment_kernel), (char*)"_Z16increment_kernelPii", "_Z16increment_kernelPii", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); }
-# 1 "/tmp/tmpxft_0000126e_00000000-1_asyncAPI.cudafe1.stub.c" 2
+# 1 "/tmp/tmpxft_0000124c_00000000-1_asyncAPI.cudafe1.stub.c"
+static void __sti____cudaRegisterAll_43_tmpxft_0000124c_00000000_4_asyncAPI_cpp1_ii_a7f3d470(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(int *, int))increment_kernel), (char*)"_Z16increment_kernelPii", "_Z16increment_kernelPii", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); }
+# 1 "/tmp/tmpxft_0000124c_00000000-1_asyncAPI.cudafe1.stub.c" 2

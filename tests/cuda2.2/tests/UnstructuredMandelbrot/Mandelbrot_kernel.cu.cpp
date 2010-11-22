@@ -1,13 +1,13 @@
-# 1 "/tmp/tmpxft_00001f45_00000000-1_Mandelbrot_kernel.cudafe1.cpp"
+# 1 "/tmp/tmpxft_0000162e_00000000-1_Mandelbrot_kernel.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_00001f45_00000000-1_Mandelbrot_kernel.cudafe1.cpp"
-# 1 "Mandelbrot_kernel.cu"
+# 1 "/tmp/tmpxft_0000162e_00000000-1_Mandelbrot_kernel.cudafe1.cpp"
+# 1 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 # 46 "/usr/local/cuda/bin/../include/device_types.h"
 # 149 "/usr/lib/gcc/i686-linux-gnu/4.4.5/include/stddef.h" 3
-typedef int ptrdiff_t;
+typedef long ptrdiff_t;
 # 211 "/usr/lib/gcc/i686-linux-gnu/4.4.5/include/stddef.h" 3
-typedef unsigned size_t;
+typedef unsigned long size_t;
 # 1 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 1 3
 # 69 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 3
 # 1 "/usr/local/cuda/bin/../include/builtin_types.h" 1 3
@@ -1678,86 +1678,6 @@ int e = (((int)sizeof(unsigned)) * 8);
 return cudaCreateChannelDesc(e, e, e, e, cudaChannelFormatKindUnsigned);
 # 303 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 }
-# 307 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-template<> inline cudaChannelFormatDesc cudaCreateChannelDesc< long> ()
-# 308 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-{
-# 309 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-int e = (((int)sizeof(long)) * 8);
-# 311 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-return cudaCreateChannelDesc(e, 0, 0, 0, cudaChannelFormatKindSigned);
-# 312 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-}
-# 314 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-template<> inline cudaChannelFormatDesc cudaCreateChannelDesc< unsigned long> ()
-# 315 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-{
-# 316 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-int e = (((int)sizeof(unsigned long)) * 8);
-# 318 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-return cudaCreateChannelDesc(e, 0, 0, 0, cudaChannelFormatKindUnsigned);
-# 319 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-}
-# 321 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-template<> inline cudaChannelFormatDesc cudaCreateChannelDesc< long1> ()
-# 322 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-{
-# 323 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-int e = (((int)sizeof(long)) * 8);
-# 325 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-return cudaCreateChannelDesc(e, 0, 0, 0, cudaChannelFormatKindSigned);
-# 326 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-}
-# 328 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-template<> inline cudaChannelFormatDesc cudaCreateChannelDesc< ulong1> ()
-# 329 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-{
-# 330 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-int e = (((int)sizeof(unsigned long)) * 8);
-# 332 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-return cudaCreateChannelDesc(e, 0, 0, 0, cudaChannelFormatKindUnsigned);
-# 333 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-}
-# 335 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-template<> inline cudaChannelFormatDesc cudaCreateChannelDesc< long2> ()
-# 336 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-{
-# 337 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-int e = (((int)sizeof(long)) * 8);
-# 339 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-return cudaCreateChannelDesc(e, e, 0, 0, cudaChannelFormatKindSigned);
-# 340 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-}
-# 342 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-template<> inline cudaChannelFormatDesc cudaCreateChannelDesc< ulong2> ()
-# 343 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-{
-# 344 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-int e = (((int)sizeof(unsigned long)) * 8);
-# 346 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-return cudaCreateChannelDesc(e, e, 0, 0, cudaChannelFormatKindUnsigned);
-# 347 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-}
-# 349 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-template<> inline cudaChannelFormatDesc cudaCreateChannelDesc< long4> ()
-# 350 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-{
-# 351 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-int e = (((int)sizeof(long)) * 8);
-# 353 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-return cudaCreateChannelDesc(e, e, e, e, cudaChannelFormatKindSigned);
-# 354 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-}
-# 356 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-template<> inline cudaChannelFormatDesc cudaCreateChannelDesc< ulong4> ()
-# 357 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-{
-# 358 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-int e = (((int)sizeof(unsigned long)) * 8);
-# 360 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-return cudaCreateChannelDesc(e, e, e, e, cudaChannelFormatKindUnsigned);
-# 361 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-}
 # 365 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 template<> inline cudaChannelFormatDesc cudaCreateChannelDesc< float> ()
 # 366 "/usr/local/cuda/bin/../include/channel_descriptor.h"
@@ -2418,16 +2338,16 @@ extern "C" { typedef unsigned short __uint16_t; }
 extern "C" { typedef signed int __int32_t; }
 # 42 "/usr/include/bits/types.h" 3
 extern "C" { typedef unsigned __uint32_t; }
-# 47 "/usr/include/bits/types.h" 3
-extern "C" { typedef signed long long __int64_t; }
-# 48 "/usr/include/bits/types.h" 3
-extern "C" { typedef unsigned long long __uint64_t; }
-# 56 "/usr/include/bits/types.h" 3
-extern "C" { typedef long long __quad_t; }
-# 57 "/usr/include/bits/types.h" 3
-extern "C" { typedef unsigned long long __u_quad_t; }
+# 44 "/usr/include/bits/types.h" 3
+extern "C" { typedef signed long __int64_t; }
+# 45 "/usr/include/bits/types.h" 3
+extern "C" { typedef unsigned long __uint64_t; }
+# 53 "/usr/include/bits/types.h" 3
+extern "C" { typedef long __quad_t; }
+# 54 "/usr/include/bits/types.h" 3
+extern "C" { typedef unsigned long __u_quad_t; }
 # 134 "/usr/include/bits/types.h" 3
-extern "C" { typedef __u_quad_t __dev_t; }
+extern "C" { typedef unsigned long __dev_t; }
 # 135 "/usr/include/bits/types.h" 3
 extern "C" { typedef unsigned __uid_t; }
 # 136 "/usr/include/bits/types.h" 3
@@ -2435,15 +2355,15 @@ extern "C" { typedef unsigned __gid_t; }
 # 137 "/usr/include/bits/types.h" 3
 extern "C" { typedef unsigned long __ino_t; }
 # 138 "/usr/include/bits/types.h" 3
-extern "C" { typedef __u_quad_t __ino64_t; }
+extern "C" { typedef unsigned long __ino64_t; }
 # 139 "/usr/include/bits/types.h" 3
 extern "C" { typedef unsigned __mode_t; }
 # 140 "/usr/include/bits/types.h" 3
-extern "C" { typedef unsigned __nlink_t; }
+extern "C" { typedef unsigned long __nlink_t; }
 # 141 "/usr/include/bits/types.h" 3
 extern "C" { typedef long __off_t; }
 # 142 "/usr/include/bits/types.h" 3
-extern "C" { typedef __quad_t __off64_t; }
+extern "C" { typedef long __off64_t; }
 # 143 "/usr/include/bits/types.h" 3
 extern "C" { typedef int __pid_t; }
 # 144 "/usr/include/bits/types.h" 3
@@ -2453,7 +2373,7 @@ extern "C" { typedef long __clock_t; }
 # 146 "/usr/include/bits/types.h" 3
 extern "C" { typedef unsigned long __rlim_t; }
 # 147 "/usr/include/bits/types.h" 3
-extern "C" { typedef __u_quad_t __rlim64_t; }
+extern "C" { typedef unsigned long __rlim64_t; }
 # 148 "/usr/include/bits/types.h" 3
 extern "C" { typedef unsigned __id_t; }
 # 149 "/usr/include/bits/types.h" 3
@@ -2477,17 +2397,17 @@ extern "C" { typedef long __blksize_t; }
 # 169 "/usr/include/bits/types.h" 3
 extern "C" { typedef long __blkcnt_t; }
 # 170 "/usr/include/bits/types.h" 3
-extern "C" { typedef __quad_t __blkcnt64_t; }
+extern "C" { typedef long __blkcnt64_t; }
 # 173 "/usr/include/bits/types.h" 3
 extern "C" { typedef unsigned long __fsblkcnt_t; }
 # 174 "/usr/include/bits/types.h" 3
-extern "C" { typedef __u_quad_t __fsblkcnt64_t; }
+extern "C" { typedef unsigned long __fsblkcnt64_t; }
 # 177 "/usr/include/bits/types.h" 3
 extern "C" { typedef unsigned long __fsfilcnt_t; }
 # 178 "/usr/include/bits/types.h" 3
-extern "C" { typedef __u_quad_t __fsfilcnt64_t; }
+extern "C" { typedef unsigned long __fsfilcnt64_t; }
 # 180 "/usr/include/bits/types.h" 3
-extern "C" { typedef int __ssize_t; }
+extern "C" { typedef long __ssize_t; }
 # 184 "/usr/include/bits/types.h" 3
 extern "C" { typedef __off64_t __loff_t; }
 # 185 "/usr/include/bits/types.h" 3
@@ -2495,7 +2415,7 @@ extern "C" { typedef __quad_t *__qaddr_t; }
 # 186 "/usr/include/bits/types.h" 3
 extern "C" { typedef char *__caddr_t; }
 # 189 "/usr/include/bits/types.h" 3
-extern "C" { typedef int __intptr_t; }
+extern "C" { typedef long __intptr_t; }
 # 192 "/usr/include/bits/types.h" 3
 extern "C" { typedef unsigned __socklen_t; }
 # 60 "/usr/include/time.h" 3
@@ -2938,10 +2858,10 @@ extern "C" __attribute__((weak)) int __isinfl(long double) throw() __attribute__
 extern "C" __attribute__((weak)) int __isnanl(long double) throw() __attribute__((__const__));
 # 455 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((weak)) int __finitel(long double) throw() __attribute__((__const__));
-# 38 "/usr/include/bits/mathdef.h" 3
-extern "C" { typedef long double float_t; }
-# 40 "/usr/include/bits/mathdef.h" 3
-extern "C" { typedef long double double_t; }
+# 31 "/usr/include/bits/mathdef.h" 3
+extern "C" { typedef float float_t; }
+# 32 "/usr/include/bits/mathdef.h" 3
+extern "C" { typedef double double_t; }
 # 55 "/usr/include/bits/mathcalls.h" 3
 extern "C" __attribute__((weak)) double acos(double) throw(); extern "C" double __acos(double) throw();
 # 57 "/usr/include/bits/mathcalls.h" 3
@@ -3631,7 +3551,7 @@ extern "C" { typedef short int16_t; }
 # 197 "/usr/include/sys/types.h" 3
 extern "C" { typedef int int32_t; }
 # 198 "/usr/include/sys/types.h" 3
-extern "C" { typedef long long int64_t; }
+extern "C" { typedef long int64_t; }
 # 201 "/usr/include/sys/types.h" 3
 extern "C" { typedef unsigned char u_int8_t; }
 # 202 "/usr/include/sys/types.h" 3
@@ -3639,7 +3559,7 @@ extern "C" { typedef unsigned short u_int16_t; }
 # 203 "/usr/include/sys/types.h" 3
 extern "C" { typedef unsigned u_int32_t; }
 # 204 "/usr/include/sys/types.h" 3
-extern "C" { typedef unsigned long long u_int64_t; }
+extern "C" { typedef unsigned long u_int64_t; }
 # 206 "/usr/include/sys/types.h" 3
 extern "C" { typedef int register_t; }
 # 24 "/usr/include/bits/sigset.h" 3
@@ -3705,19 +3625,21 @@ extern "C" { typedef
 # 54 "/usr/include/bits/pthreadtypes.h" 3
 union {
 # 55 "/usr/include/bits/pthreadtypes.h" 3
-char __size[36];
+char __size[56];
 # 56 "/usr/include/bits/pthreadtypes.h" 3
 long __align;
 # 57 "/usr/include/bits/pthreadtypes.h" 3
 } pthread_attr_t; }
-# 70 "/usr/include/bits/pthreadtypes.h" 3
+# 65 "/usr/include/bits/pthreadtypes.h" 3
 extern "C" { typedef
-# 67 "/usr/include/bits/pthreadtypes.h" 3
-struct __pthread_internal_slist {
-# 69 "/usr/include/bits/pthreadtypes.h" 3
-__pthread_internal_slist *__next;
-# 70 "/usr/include/bits/pthreadtypes.h" 3
-} __pthread_slist_t; }
+# 61 "/usr/include/bits/pthreadtypes.h" 3
+struct __pthread_internal_list {
+# 63 "/usr/include/bits/pthreadtypes.h" 3
+__pthread_internal_list *__prev;
+# 64 "/usr/include/bits/pthreadtypes.h" 3
+__pthread_internal_list *__next;
+# 65 "/usr/include/bits/pthreadtypes.h" 3
+} __pthread_list_t; }
 # 104 "/usr/include/bits/pthreadtypes.h" 3
 extern "C" { typedef
 # 77 "/usr/include/bits/pthreadtypes.h" 3
@@ -3730,22 +3652,18 @@ int __lock;
 unsigned __count;
 # 82 "/usr/include/bits/pthreadtypes.h" 3
 int __owner;
+# 84 "/usr/include/bits/pthreadtypes.h" 3
+unsigned __nusers;
 # 88 "/usr/include/bits/pthreadtypes.h" 3
 int __kind;
-# 94 "/usr/include/bits/pthreadtypes.h" 3
-unsigned __nusers;
-# 96 "/usr/include/bits/pthreadtypes.h" 3
-union {
-# 97 "/usr/include/bits/pthreadtypes.h" 3
+# 90 "/usr/include/bits/pthreadtypes.h" 3
 int __spins;
-# 98 "/usr/include/bits/pthreadtypes.h" 3
-__pthread_slist_t __list;
-# 99 "/usr/include/bits/pthreadtypes.h" 3
-};
+# 91 "/usr/include/bits/pthreadtypes.h" 3
+__pthread_list_t __list;
 # 101 "/usr/include/bits/pthreadtypes.h" 3
 } __data;
 # 102 "/usr/include/bits/pthreadtypes.h" 3
-char __size[24];
+char __size[40];
 # 103 "/usr/include/bits/pthreadtypes.h" 3
 long __align;
 # 104 "/usr/include/bits/pthreadtypes.h" 3
@@ -3808,34 +3726,34 @@ extern "C" { typedef int pthread_once_t; }
 extern "C" { typedef
 # 151 "/usr/include/bits/pthreadtypes.h" 3
 union {
-# 171 "/usr/include/bits/pthreadtypes.h" 3
+# 154 "/usr/include/bits/pthreadtypes.h" 3
 struct {
-# 172 "/usr/include/bits/pthreadtypes.h" 3
+# 155 "/usr/include/bits/pthreadtypes.h" 3
 int __lock;
-# 173 "/usr/include/bits/pthreadtypes.h" 3
+# 156 "/usr/include/bits/pthreadtypes.h" 3
 unsigned __nr_readers;
-# 174 "/usr/include/bits/pthreadtypes.h" 3
+# 157 "/usr/include/bits/pthreadtypes.h" 3
 unsigned __readers_wakeup;
-# 175 "/usr/include/bits/pthreadtypes.h" 3
+# 158 "/usr/include/bits/pthreadtypes.h" 3
 unsigned __writer_wakeup;
-# 176 "/usr/include/bits/pthreadtypes.h" 3
+# 159 "/usr/include/bits/pthreadtypes.h" 3
 unsigned __nr_readers_queued;
-# 177 "/usr/include/bits/pthreadtypes.h" 3
+# 160 "/usr/include/bits/pthreadtypes.h" 3
 unsigned __nr_writers_queued;
-# 180 "/usr/include/bits/pthreadtypes.h" 3
-unsigned char __flags;
-# 181 "/usr/include/bits/pthreadtypes.h" 3
-unsigned char __shared;
-# 182 "/usr/include/bits/pthreadtypes.h" 3
-unsigned char __pad1;
-# 183 "/usr/include/bits/pthreadtypes.h" 3
-unsigned char __pad2;
-# 184 "/usr/include/bits/pthreadtypes.h" 3
+# 161 "/usr/include/bits/pthreadtypes.h" 3
 int __writer;
-# 185 "/usr/include/bits/pthreadtypes.h" 3
+# 162 "/usr/include/bits/pthreadtypes.h" 3
+int __shared;
+# 163 "/usr/include/bits/pthreadtypes.h" 3
+unsigned long __pad1;
+# 164 "/usr/include/bits/pthreadtypes.h" 3
+unsigned long __pad2;
+# 167 "/usr/include/bits/pthreadtypes.h" 3
+unsigned __flags;
+# 168 "/usr/include/bits/pthreadtypes.h" 3
 } __data;
 # 187 "/usr/include/bits/pthreadtypes.h" 3
-char __size[32];
+char __size[56];
 # 188 "/usr/include/bits/pthreadtypes.h" 3
 long __align;
 # 189 "/usr/include/bits/pthreadtypes.h" 3
@@ -3857,7 +3775,7 @@ extern "C" { typedef
 # 207 "/usr/include/bits/pthreadtypes.h" 3
 union {
 # 208 "/usr/include/bits/pthreadtypes.h" 3
-char __size[20];
+char __size[32];
 # 209 "/usr/include/bits/pthreadtypes.h" 3
 long __align;
 # 210 "/usr/include/bits/pthreadtypes.h" 3
@@ -6593,54 +6511,6 @@ template<> __attribute__((unused)) inline ulonglong2 surf1Dread(surface< void, 1
 {int volatile ___ = 1;
 # 322 "/usr/local/cuda/bin/../include/surface_functions.h"
 exit(___);}
-# 327 "/usr/local/cuda/bin/../include/surface_functions.h"
-template<> __attribute__((unused)) inline long surf1Dread(surface< void, 1> surf, int x, cudaSurfaceBoundaryMode mode)
-# 328 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 330 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 333 "/usr/local/cuda/bin/../include/surface_functions.h"
-template<> __attribute__((unused)) inline unsigned long surf1Dread(surface< void, 1> surf, int x, cudaSurfaceBoundaryMode mode)
-# 334 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 336 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 339 "/usr/local/cuda/bin/../include/surface_functions.h"
-template<> __attribute__((unused)) inline long1 surf1Dread(surface< void, 1> surf, int x, cudaSurfaceBoundaryMode mode)
-# 340 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 342 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 345 "/usr/local/cuda/bin/../include/surface_functions.h"
-template<> __attribute__((unused)) inline ulong1 surf1Dread(surface< void, 1> surf, int x, cudaSurfaceBoundaryMode mode)
-# 346 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 348 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 351 "/usr/local/cuda/bin/../include/surface_functions.h"
-template<> __attribute__((unused)) inline long2 surf1Dread(surface< void, 1> surf, int x, cudaSurfaceBoundaryMode mode)
-# 352 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 356 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 359 "/usr/local/cuda/bin/../include/surface_functions.h"
-template<> __attribute__((unused)) inline ulong2 surf1Dread(surface< void, 1> surf, int x, cudaSurfaceBoundaryMode mode)
-# 360 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 364 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 367 "/usr/local/cuda/bin/../include/surface_functions.h"
-template<> __attribute__((unused)) inline long4 surf1Dread(surface< void, 1> surf, int x, cudaSurfaceBoundaryMode mode)
-# 368 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 372 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 375 "/usr/local/cuda/bin/../include/surface_functions.h"
-template<> __attribute__((unused)) inline ulong4 surf1Dread(surface< void, 1> surf, int x, cudaSurfaceBoundaryMode mode)
-# 376 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 380 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
 # 385 "/usr/local/cuda/bin/../include/surface_functions.h"
 template<> __attribute__((unused)) inline float surf1Dread(surface< void, 1> surf, int x, cudaSurfaceBoundaryMode mode)
 # 386 "/usr/local/cuda/bin/../include/surface_functions.h"
@@ -6875,54 +6745,6 @@ template<> __attribute__((unused)) inline ulonglong2 surf2Dread(surface< void, 2
 {int volatile ___ = 1;
 # 682 "/usr/local/cuda/bin/../include/surface_functions.h"
 exit(___);}
-# 687 "/usr/local/cuda/bin/../include/surface_functions.h"
-template<> __attribute__((unused)) inline long surf2Dread(surface< void, 2> surf, int x, int y, cudaSurfaceBoundaryMode mode)
-# 688 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 690 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 693 "/usr/local/cuda/bin/../include/surface_functions.h"
-template<> __attribute__((unused)) inline unsigned long surf2Dread(surface< void, 2> surf, int x, int y, cudaSurfaceBoundaryMode mode)
-# 694 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 696 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 699 "/usr/local/cuda/bin/../include/surface_functions.h"
-template<> __attribute__((unused)) inline long1 surf2Dread(surface< void, 2> surf, int x, int y, cudaSurfaceBoundaryMode mode)
-# 700 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 702 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 705 "/usr/local/cuda/bin/../include/surface_functions.h"
-template<> __attribute__((unused)) inline ulong1 surf2Dread(surface< void, 2> surf, int x, int y, cudaSurfaceBoundaryMode mode)
-# 706 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 708 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 711 "/usr/local/cuda/bin/../include/surface_functions.h"
-template<> __attribute__((unused)) inline long2 surf2Dread(surface< void, 2> surf, int x, int y, cudaSurfaceBoundaryMode mode)
-# 712 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 716 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 719 "/usr/local/cuda/bin/../include/surface_functions.h"
-template<> __attribute__((unused)) inline ulong2 surf2Dread(surface< void, 2> surf, int x, int y, cudaSurfaceBoundaryMode mode)
-# 720 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 724 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 727 "/usr/local/cuda/bin/../include/surface_functions.h"
-template<> __attribute__((unused)) inline long4 surf2Dread(surface< void, 2> surf, int x, int y, cudaSurfaceBoundaryMode mode)
-# 728 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 732 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 735 "/usr/local/cuda/bin/../include/surface_functions.h"
-template<> __attribute__((unused)) inline ulong4 surf2Dread(surface< void, 2> surf, int x, int y, cudaSurfaceBoundaryMode mode)
-# 736 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 740 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
 # 745 "/usr/local/cuda/bin/../include/surface_functions.h"
 template<> __attribute__((unused)) inline float surf2Dread(surface< void, 2> surf, int x, int y, cudaSurfaceBoundaryMode mode)
 # 746 "/usr/local/cuda/bin/../include/surface_functions.h"
@@ -7148,54 +6970,6 @@ __attribute__((unused)) static inline void surf1Dwrite(ulonglong2 val, surface< 
 # 997 "/usr/local/cuda/bin/../include/surface_functions.h"
 {int volatile ___ = 1;
 # 999 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 1003 "/usr/local/cuda/bin/../include/surface_functions.h"
-__attribute__((unused)) static inline void surf1Dwrite(long val, surface< void, 1> surf, int x, cudaSurfaceBoundaryMode mode = cudaBoundaryModeTrap)
-# 1004 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 1006 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 1008 "/usr/local/cuda/bin/../include/surface_functions.h"
-__attribute__((unused)) static inline void surf1Dwrite(unsigned long val, surface< void, 1> surf, int x, cudaSurfaceBoundaryMode mode = cudaBoundaryModeTrap)
-# 1009 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 1011 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 1013 "/usr/local/cuda/bin/../include/surface_functions.h"
-__attribute__((unused)) static inline void surf1Dwrite(long1 val, surface< void, 1> surf, int x, cudaSurfaceBoundaryMode mode = cudaBoundaryModeTrap)
-# 1014 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 1016 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 1018 "/usr/local/cuda/bin/../include/surface_functions.h"
-__attribute__((unused)) static inline void surf1Dwrite(ulong1 val, surface< void, 1> surf, int x, cudaSurfaceBoundaryMode mode = cudaBoundaryModeTrap)
-# 1019 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 1021 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 1023 "/usr/local/cuda/bin/../include/surface_functions.h"
-__attribute__((unused)) static inline void surf1Dwrite(long2 val, surface< void, 1> surf, int x, cudaSurfaceBoundaryMode mode = cudaBoundaryModeTrap)
-# 1024 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 1026 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 1028 "/usr/local/cuda/bin/../include/surface_functions.h"
-__attribute__((unused)) static inline void surf1Dwrite(ulong2 val, surface< void, 1> surf, int x, cudaSurfaceBoundaryMode mode = cudaBoundaryModeTrap)
-# 1029 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 1031 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 1033 "/usr/local/cuda/bin/../include/surface_functions.h"
-__attribute__((unused)) static inline void surf1Dwrite(long4 val, surface< void, 1> surf, int x, cudaSurfaceBoundaryMode mode = cudaBoundaryModeTrap)
-# 1034 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 1036 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 1038 "/usr/local/cuda/bin/../include/surface_functions.h"
-__attribute__((unused)) static inline void surf1Dwrite(ulong4 val, surface< void, 1> surf, int x, cudaSurfaceBoundaryMode mode = cudaBoundaryModeTrap)
-# 1039 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 1041 "/usr/local/cuda/bin/../include/surface_functions.h"
 exit(___);}
 # 1045 "/usr/local/cuda/bin/../include/surface_functions.h"
 __attribute__((unused)) static inline void surf1Dwrite(float val, surface< void, 1> surf, int x, cudaSurfaceBoundaryMode mode = cudaBoundaryModeTrap)
@@ -7423,54 +7197,6 @@ __attribute__((unused)) static inline void surf2Dwrite(ulonglong2 val, surface< 
 {int volatile ___ = 1;
 # 1292 "/usr/local/cuda/bin/../include/surface_functions.h"
 exit(___);}
-# 1296 "/usr/local/cuda/bin/../include/surface_functions.h"
-__attribute__((unused)) static inline void surf2Dwrite(long val, surface< void, 2> surf, int x, int y, cudaSurfaceBoundaryMode mode = cudaBoundaryModeTrap)
-# 1297 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 1299 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 1301 "/usr/local/cuda/bin/../include/surface_functions.h"
-__attribute__((unused)) static inline void surf2Dwrite(unsigned long val, surface< void, 2> surf, int x, int y, cudaSurfaceBoundaryMode mode = cudaBoundaryModeTrap)
-# 1302 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 1304 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 1306 "/usr/local/cuda/bin/../include/surface_functions.h"
-__attribute__((unused)) static inline void surf2Dwrite(long1 val, surface< void, 2> surf, int x, int y, cudaSurfaceBoundaryMode mode = cudaBoundaryModeTrap)
-# 1307 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 1309 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 1311 "/usr/local/cuda/bin/../include/surface_functions.h"
-__attribute__((unused)) static inline void surf2Dwrite(ulong1 val, surface< void, 2> surf, int x, int y, cudaSurfaceBoundaryMode mode = cudaBoundaryModeTrap)
-# 1312 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 1314 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 1316 "/usr/local/cuda/bin/../include/surface_functions.h"
-__attribute__((unused)) static inline void surf2Dwrite(long2 val, surface< void, 2> surf, int x, int y, cudaSurfaceBoundaryMode mode = cudaBoundaryModeTrap)
-# 1317 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 1319 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 1321 "/usr/local/cuda/bin/../include/surface_functions.h"
-__attribute__((unused)) static inline void surf2Dwrite(ulong2 val, surface< void, 2> surf, int x, int y, cudaSurfaceBoundaryMode mode = cudaBoundaryModeTrap)
-# 1322 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 1324 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 1326 "/usr/local/cuda/bin/../include/surface_functions.h"
-__attribute__((unused)) static inline void surf2Dwrite(long4 val, surface< void, 2> surf, int x, int y, cudaSurfaceBoundaryMode mode = cudaBoundaryModeTrap)
-# 1327 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 1329 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 1331 "/usr/local/cuda/bin/../include/surface_functions.h"
-__attribute__((unused)) static inline void surf2Dwrite(ulong4 val, surface< void, 2> surf, int x, int y, cudaSurfaceBoundaryMode mode = cudaBoundaryModeTrap)
-# 1332 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 1334 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
 # 1338 "/usr/local/cuda/bin/../include/surface_functions.h"
 __attribute__((unused)) static inline void surf2Dwrite(float val, surface< void, 2> surf, int x, int y, cudaSurfaceBoundaryMode mode = cudaBoundaryModeTrap)
 # 1339 "/usr/local/cuda/bin/../include/surface_functions.h"
@@ -7656,54 +7382,6 @@ __attribute__((unused)) static inline uint4 tex1Dfetch(texture< uint4, 1, cudaRe
 # 265 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 {int volatile ___ = 1;
 # 269 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 279 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline long tex1Dfetch(texture< long, 1, cudaReadModeElementType> t, int x)
-# 280 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 284 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 286 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline unsigned long tex1Dfetch(texture< unsigned long, 1, cudaReadModeElementType> t, int x)
-# 287 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 291 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 293 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline long1 tex1Dfetch(texture< long1, 1, cudaReadModeElementType> t, int x)
-# 294 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 298 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 300 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline ulong1 tex1Dfetch(texture< ulong1, 1, cudaReadModeElementType> t, int x)
-# 301 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 305 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 307 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline long2 tex1Dfetch(texture< long2, 1, cudaReadModeElementType> t, int x)
-# 308 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 312 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 314 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline ulong2 tex1Dfetch(texture< ulong2, 1, cudaReadModeElementType> t, int x)
-# 315 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 319 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 321 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline long4 tex1Dfetch(texture< long4, 1, cudaReadModeElementType> t, int x)
-# 322 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 326 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 328 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline ulong4 tex1Dfetch(texture< ulong4, 1, cudaReadModeElementType> t, int x)
-# 329 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 333 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 exit(___);}
 # 343 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 __attribute__((unused)) static inline float tex1Dfetch(texture< float, 1, cudaReadModeElementType> t, int x)
@@ -7981,54 +7659,6 @@ __attribute__((unused)) static inline uint4 tex1D(texture< uint4, 1, cudaReadMod
 {int volatile ___ = 1;
 # 718 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 exit(___);}
-# 734 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline long tex1D(texture< long, 1, cudaReadModeElementType> t, float x)
-# 735 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 739 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 741 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline unsigned long tex1D(texture< unsigned long, 1, cudaReadModeElementType> t, float x)
-# 742 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 746 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 748 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline long1 tex1D(texture< long1, 1, cudaReadModeElementType> t, float x)
-# 749 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 753 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 755 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline ulong1 tex1D(texture< ulong1, 1, cudaReadModeElementType> t, float x)
-# 756 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 760 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 762 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline long2 tex1D(texture< long2, 1, cudaReadModeElementType> t, float x)
-# 763 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 767 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 769 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline ulong2 tex1D(texture< ulong2, 1, cudaReadModeElementType> t, float x)
-# 770 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 774 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 776 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline long4 tex1D(texture< long4, 1, cudaReadModeElementType> t, float x)
-# 777 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 781 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 783 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline ulong4 tex1D(texture< ulong4, 1, cudaReadModeElementType> t, float x)
-# 784 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 788 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
 # 798 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 __attribute__((unused)) static inline float tex1D(texture< float, 1, cudaReadModeElementType> t, float x)
 # 799 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
@@ -8305,54 +7935,6 @@ __attribute__((unused)) static inline uint4 tex2D(texture< uint4, 2, cudaReadMod
 {int volatile ___ = 1;
 # 1173 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 exit(___);}
-# 1183 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline long tex2D(texture< long, 2, cudaReadModeElementType> t, float x, float y)
-# 1184 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 1188 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 1190 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline unsigned long tex2D(texture< unsigned long, 2, cudaReadModeElementType> t, float x, float y)
-# 1191 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 1195 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 1197 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline long1 tex2D(texture< long1, 2, cudaReadModeElementType> t, float x, float y)
-# 1198 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 1202 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 1204 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline ulong1 tex2D(texture< ulong1, 2, cudaReadModeElementType> t, float x, float y)
-# 1205 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 1209 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 1211 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline long2 tex2D(texture< long2, 2, cudaReadModeElementType> t, float x, float y)
-# 1212 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 1216 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 1218 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline ulong2 tex2D(texture< ulong2, 2, cudaReadModeElementType> t, float x, float y)
-# 1219 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 1223 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 1225 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline long4 tex2D(texture< long4, 2, cudaReadModeElementType> t, float x, float y)
-# 1226 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 1230 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 1232 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline ulong4 tex2D(texture< ulong4, 2, cudaReadModeElementType> t, float x, float y)
-# 1233 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 1237 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
 # 1247 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 __attribute__((unused)) static inline float tex2D(texture< float, 2, cudaReadModeElementType> t, float x, float y)
 # 1248 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
@@ -8628,54 +8210,6 @@ __attribute__((unused)) static inline uint4 tex3D(texture< uint4, 3, cudaReadMod
 # 1618 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 {int volatile ___ = 1;
 # 1622 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 1632 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline long tex3D(texture< long, 3, cudaReadModeElementType> t, float x, float y, float z)
-# 1633 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 1637 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 1639 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline unsigned long tex3D(texture< unsigned long, 3, cudaReadModeElementType> t, float x, float y, float z)
-# 1640 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 1644 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 1646 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline long1 tex3D(texture< long1, 3, cudaReadModeElementType> t, float x, float y, float z)
-# 1647 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 1651 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 1653 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline ulong1 tex3D(texture< ulong1, 3, cudaReadModeElementType> t, float x, float y, float z)
-# 1654 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 1658 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 1660 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline long2 tex3D(texture< long2, 3, cudaReadModeElementType> t, float x, float y, float z)
-# 1661 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 1665 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 1667 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline ulong2 tex3D(texture< ulong2, 3, cudaReadModeElementType> t, float x, float y, float z)
-# 1668 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 1672 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 1674 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline long4 tex3D(texture< long4, 3, cudaReadModeElementType> t, float x, float y, float z)
-# 1675 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 1679 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 1681 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline ulong4 tex3D(texture< ulong4, 3, cudaReadModeElementType> t, float x, float y, float z)
-# 1682 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 1686 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 exit(___);}
 # 1696 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 __attribute__((unused)) static inline float tex3D(texture< float, 3, cudaReadModeElementType> t, float x, float y, float z)
@@ -9635,7 +9169,7 @@ extern "C" { typedef int _G_int32_t; }
 extern "C" { typedef unsigned short _G_uint16_t; }
 # 56 "/usr/include/_G_config.h" 3
 extern "C" { typedef unsigned _G_uint32_t; }
-# 40 "/usr/lib/gcc/i686-linux-gnu/4.4.5/include/stdarg.h" 3
+# 40 "/usr/lib/gcc/i686-linux-gnu/4.4.5/include/va.h" 3
 extern "C" { typedef __builtin_va_list __gnuc_va_list; }
 # 170 "/usr/include/libio.h" 3
 struct _IO_jump_t; struct _IO_FILE;
@@ -10027,8 +9561,8 @@ extern "C" void flockfile(FILE *) throw();
 extern "C" int ftrylockfile(FILE *) throw();
 # 913 "/usr/include/stdio.h" 3
 extern "C" void funlockfile(FILE *) throw();
-# 130 "/usr/local/cuda/bin/../include/cuda.h"
-extern "C" { typedef unsigned CUdeviceptr; }
+# 128 "/usr/local/cuda/bin/../include/cuda.h"
+extern "C" { typedef unsigned long long CUdeviceptr; }
 # 135 "/usr/local/cuda/bin/../include/cuda.h"
 extern "C" { typedef int CUdevice; }
 # 136 "/usr/local/cuda/bin/../include/cuda.h"
@@ -10853,125 +10387,125 @@ extern "C" CUresult cuGraphicsMapResources(unsigned, CUgraphicsResource *, CUstr
 extern "C" CUresult cuGraphicsUnmapResources(unsigned, CUgraphicsResource *, CUstream);
 # 6101 "/usr/local/cuda/bin/../include/cuda.h"
 extern "C" CUresult cuGetExportTable(const void **, const CUuuid *);
-# 64 "../../sdk/cutil.h"
+# 64 "sdk/cutil.h"
 enum CUTBoolean {
-# 66 "../../sdk/cutil.h"
+# 66 "sdk/cutil.h"
 CUTFalse,
-# 67 "../../sdk/cutil.h"
+# 67 "sdk/cutil.h"
 CUTTrue
-# 68 "../../sdk/cutil.h"
+# 68 "sdk/cutil.h"
 };
-# 76 "../../sdk/cutil.h"
+# 76 "sdk/cutil.h"
 extern "C" void cutFree(void *);
-# 94 "../../sdk/cutil.h"
+# 94 "sdk/cutil.h"
 extern "C" void cutCheckBankAccess(unsigned, unsigned, unsigned, unsigned, unsigned, unsigned, const char *, const int, const char *, const int);
-# 107 "../../sdk/cutil.h"
+# 107 "sdk/cutil.h"
 extern "C" char *cutFindFilePath(const char *, const char *);
-# 122 "../../sdk/cutil.h"
+# 122 "sdk/cutil.h"
 extern "C" CUTBoolean cutReadFilef(const char *, float **, unsigned *, bool = false);
-# 138 "../../sdk/cutil.h"
+# 138 "sdk/cutil.h"
 extern "C" CUTBoolean cutReadFiled(const char *, double **, unsigned *, bool = false);
-# 154 "../../sdk/cutil.h"
+# 154 "sdk/cutil.h"
 extern "C" CUTBoolean cutReadFilei(const char *, int **, unsigned *, bool = false);
-# 169 "../../sdk/cutil.h"
+# 169 "sdk/cutil.h"
 extern "C" CUTBoolean cutReadFileui(const char *, unsigned **, unsigned *, bool = false);
-# 185 "../../sdk/cutil.h"
+# 185 "sdk/cutil.h"
 extern "C" CUTBoolean cutReadFileb(const char *, char **, unsigned *, bool = false);
-# 201 "../../sdk/cutil.h"
+# 201 "sdk/cutil.h"
 extern "C" CUTBoolean cutReadFileub(const char *, unsigned char **, unsigned *, bool = false);
-# 215 "../../sdk/cutil.h"
+# 215 "sdk/cutil.h"
 extern "C" CUTBoolean cutWriteFilef(const char *, const float *, unsigned, const float, bool = false);
-# 229 "../../sdk/cutil.h"
+# 229 "sdk/cutil.h"
 extern "C" CUTBoolean cutWriteFiled(const char *, const float *, unsigned, const double, bool = false);
-# 241 "../../sdk/cutil.h"
+# 241 "sdk/cutil.h"
 extern "C" CUTBoolean cutWriteFilei(const char *, const int *, unsigned, bool = false);
-# 253 "../../sdk/cutil.h"
+# 253 "sdk/cutil.h"
 extern "C" CUTBoolean cutWriteFileui(const char *, const unsigned *, unsigned, bool = false);
-# 265 "../../sdk/cutil.h"
+# 265 "sdk/cutil.h"
 extern "C" CUTBoolean cutWriteFileb(const char *, const char *, unsigned, bool = false);
-# 277 "../../sdk/cutil.h"
+# 277 "sdk/cutil.h"
 extern "C" CUTBoolean cutWriteFileub(const char *, const unsigned char *, unsigned, bool = false);
-# 293 "../../sdk/cutil.h"
+# 293 "sdk/cutil.h"
 extern "C" CUTBoolean cutLoadPGMub(const char *, unsigned char **, unsigned *, unsigned *);
-# 306 "../../sdk/cutil.h"
+# 306 "sdk/cutil.h"
 extern "C" CUTBoolean cutLoadPPMub(const char *, unsigned char **, unsigned *, unsigned *);
-# 320 "../../sdk/cutil.h"
+# 320 "sdk/cutil.h"
 extern "C" CUTBoolean cutLoadPPM4ub(const char *, unsigned char **, unsigned *, unsigned *);
-# 336 "../../sdk/cutil.h"
+# 336 "sdk/cutil.h"
 extern "C" CUTBoolean cutLoadPGMi(const char *, unsigned **, unsigned *, unsigned *);
-# 352 "../../sdk/cutil.h"
+# 352 "sdk/cutil.h"
 extern "C" CUTBoolean cutLoadPGMs(const char *, unsigned short **, unsigned *, unsigned *);
-# 367 "../../sdk/cutil.h"
+# 367 "sdk/cutil.h"
 extern "C" CUTBoolean cutLoadPGMf(const char *, float **, unsigned *, unsigned *);
-# 379 "../../sdk/cutil.h"
+# 379 "sdk/cutil.h"
 extern "C" CUTBoolean cutSavePGMub(const char *, unsigned char *, unsigned, unsigned);
-# 391 "../../sdk/cutil.h"
+# 391 "sdk/cutil.h"
 extern "C" CUTBoolean cutSavePPMub(const char *, unsigned char *, unsigned, unsigned);
-# 404 "../../sdk/cutil.h"
+# 404 "sdk/cutil.h"
 extern "C" CUTBoolean cutSavePPM4ub(const char *, unsigned char *, unsigned, unsigned);
-# 416 "../../sdk/cutil.h"
+# 416 "sdk/cutil.h"
 extern "C" CUTBoolean cutSavePGMi(const char *, unsigned *, unsigned, unsigned);
-# 428 "../../sdk/cutil.h"
+# 428 "sdk/cutil.h"
 extern "C" CUTBoolean cutSavePGMs(const char *, unsigned short *, unsigned, unsigned);
-# 440 "../../sdk/cutil.h"
+# 440 "sdk/cutil.h"
 extern "C" CUTBoolean cutSavePGMf(const char *, float *, unsigned, unsigned);
-# 461 "../../sdk/cutil.h"
+# 461 "sdk/cutil.h"
 extern "C" CUTBoolean cutCheckCmdLineFlag(const int, const char **, const char *);
-# 475 "../../sdk/cutil.h"
+# 475 "sdk/cutil.h"
 extern "C" CUTBoolean cutGetCmdLineArgumenti(const int, const char **, const char *, int *);
-# 489 "../../sdk/cutil.h"
+# 489 "sdk/cutil.h"
 extern "C" CUTBoolean cutGetCmdLineArgumentf(const int, const char **, const char *, float *);
-# 503 "../../sdk/cutil.h"
+# 503 "sdk/cutil.h"
 extern "C" CUTBoolean cutGetCmdLineArgumentstr(const int, const char **, const char *, char **);
-# 518 "../../sdk/cutil.h"
+# 518 "sdk/cutil.h"
 extern "C" CUTBoolean cutGetCmdLineArgumentListstr(const int, const char **, const char *, char **, unsigned *);
-# 532 "../../sdk/cutil.h"
+# 532 "sdk/cutil.h"
 extern "C" CUTBoolean cutCheckCondition(int, const char *, const int);
-# 544 "../../sdk/cutil.h"
+# 544 "sdk/cutil.h"
 extern "C" CUTBoolean cutComparef(const float *, const float *, const unsigned);
-# 557 "../../sdk/cutil.h"
+# 557 "sdk/cutil.h"
 extern "C" CUTBoolean cutComparei(const int *, const int *, const unsigned);
-# 571 "../../sdk/cutil.h"
+# 571 "sdk/cutil.h"
 extern "C" CUTBoolean cutCompareuit(const unsigned *, const unsigned *, const unsigned, const float, const float);
-# 584 "../../sdk/cutil.h"
+# 584 "sdk/cutil.h"
 extern "C" CUTBoolean cutCompareub(const unsigned char *, const unsigned char *, const unsigned);
-# 599 "../../sdk/cutil.h"
+# 599 "sdk/cutil.h"
 extern "C" CUTBoolean cutCompareubt(const unsigned char *, const unsigned char *, const unsigned, const float, const float);
-# 613 "../../sdk/cutil.h"
+# 613 "sdk/cutil.h"
 extern "C" CUTBoolean cutCompareube(const unsigned char *, const unsigned char *, const unsigned, const float);
-# 627 "../../sdk/cutil.h"
+# 627 "sdk/cutil.h"
 extern "C" CUTBoolean cutComparefe(const float *, const float *, const unsigned, const float);
-# 642 "../../sdk/cutil.h"
+# 642 "sdk/cutil.h"
 extern "C" CUTBoolean cutComparefet(const float *, const float *, const unsigned, const float, const float);
-# 657 "../../sdk/cutil.h"
+# 657 "sdk/cutil.h"
 extern "C" CUTBoolean cutCompareL2fe(const float *, const float *, const unsigned, const float);
-# 672 "../../sdk/cutil.h"
+# 672 "sdk/cutil.h"
 extern "C" CUTBoolean cutComparePPM(const char *, const char *, const float, const float, bool = false);
-# 685 "../../sdk/cutil.h"
+# 685 "sdk/cutil.h"
 extern "C" CUTBoolean cutCreateTimer(unsigned *);
-# 694 "../../sdk/cutil.h"
+# 694 "sdk/cutil.h"
 extern "C" CUTBoolean cutDeleteTimer(unsigned);
-# 702 "../../sdk/cutil.h"
+# 702 "sdk/cutil.h"
 extern "C" CUTBoolean cutStartTimer(const unsigned);
-# 710 "../../sdk/cutil.h"
+# 710 "sdk/cutil.h"
 extern "C" CUTBoolean cutStopTimer(const unsigned);
-# 718 "../../sdk/cutil.h"
+# 718 "sdk/cutil.h"
 extern "C" CUTBoolean cutResetTimer(const unsigned);
-# 727 "../../sdk/cutil.h"
+# 727 "sdk/cutil.h"
 extern "C" float cutGetTimerValue(const unsigned);
-# 738 "../../sdk/cutil.h"
+# 738 "sdk/cutil.h"
 extern "C" float cutGetAverageTimerValue(const unsigned);
-# 19 "../../sdk/cutil_inline_bankchecker.h"
+# 19 "sdk/cutil_inline_bankchecker.h"
 inline void __cutilBankChecker(unsigned tidx, unsigned tidy, unsigned tidz, unsigned
-# 20 "../../sdk/cutil_inline_bankchecker.h"
+# 20 "sdk/cutil_inline_bankchecker.h"
 bdimx, unsigned bdimy, unsigned bdimz, char *
-# 21 "../../sdk/cutil_inline_bankchecker.h"
+# 21 "sdk/cutil_inline_bankchecker.h"
 aname, int index, char *file, int line)
-# 22 "../../sdk/cutil_inline_bankchecker.h"
+# 22 "sdk/cutil_inline_bankchecker.h"
 {
-# 23 "../../sdk/cutil_inline_bankchecker.h"
+# 23 "sdk/cutil_inline_bankchecker.h"
 cutCheckBankAccess(tidx, tidy, tidz, bdimx, bdimy, bdimz, file, line, aname, index);
-# 24 "../../sdk/cutil_inline_bankchecker.h"
+# 24 "sdk/cutil_inline_bankchecker.h"
 }
 # 46 "/usr/local/cuda/bin/../include/cuComplex.h"
 extern "C" { typedef float2 cuFloatComplex; }
@@ -11441,518 +10975,518 @@ extern "C" cufftResult cufftExecZ2D(cufftHandle, cufftDoubleComplex *, cufftDoub
 extern "C" cufftResult cufftSetStream(cufftHandle, cudaStream_t);
 # 187 "/usr/local/cuda/bin/../include/cufft.h"
 extern "C" cufftResult cufftSetCompatibilityMode(cufftHandle, cufftCompatibility);
-# 22 "../../sdk/cutil_inline_runtime.h"
+# 22 "sdk/cutil_inline_runtime.h"
 inline void __cutilCondition(int val, char *file, int line)
-# 23 "../../sdk/cutil_inline_runtime.h"
+# 23 "sdk/cutil_inline_runtime.h"
 {
-# 24 "../../sdk/cutil_inline_runtime.h"
+# 24 "sdk/cutil_inline_runtime.h"
 if ((CUTFalse) == (cutCheckCondition(val, file, line))) {
-# 25 "../../sdk/cutil_inline_runtime.h"
+# 25 "sdk/cutil_inline_runtime.h"
 exit(1);
-# 26 "../../sdk/cutil_inline_runtime.h"
+# 26 "sdk/cutil_inline_runtime.h"
 }
-# 27 "../../sdk/cutil_inline_runtime.h"
+# 27 "sdk/cutil_inline_runtime.h"
 }
-# 29 "../../sdk/cutil_inline_runtime.h"
+# 29 "sdk/cutil_inline_runtime.h"
 inline void __cutilExit(int argc, char **argv)
-# 30 "../../sdk/cutil_inline_runtime.h"
+# 30 "sdk/cutil_inline_runtime.h"
 {
-# 31 "../../sdk/cutil_inline_runtime.h"
+# 31 "sdk/cutil_inline_runtime.h"
 if (!(cutCheckCmdLineFlag(argc, (const char **)argv, "noprompt"))) {
-# 32 "../../sdk/cutil_inline_runtime.h"
+# 32 "sdk/cutil_inline_runtime.h"
 printf("\nPress ENTER to exit...\n");
-# 33 "../../sdk/cutil_inline_runtime.h"
+# 33 "sdk/cutil_inline_runtime.h"
 fflush(stdout);
-# 34 "../../sdk/cutil_inline_runtime.h"
+# 34 "sdk/cutil_inline_runtime.h"
 fflush(stderr);
-# 35 "../../sdk/cutil_inline_runtime.h"
+# 35 "sdk/cutil_inline_runtime.h"
 getchar();
-# 36 "../../sdk/cutil_inline_runtime.h"
+# 36 "sdk/cutil_inline_runtime.h"
 }
-# 37 "../../sdk/cutil_inline_runtime.h"
+# 37 "sdk/cutil_inline_runtime.h"
 exit(0);
-# 38 "../../sdk/cutil_inline_runtime.h"
+# 38 "sdk/cutil_inline_runtime.h"
 }
-# 41 "../../sdk/cutil_inline_runtime.h"
+# 41 "sdk/cutil_inline_runtime.h"
 inline int cutGetMaxGflopsDeviceId()
-# 42 "../../sdk/cutil_inline_runtime.h"
+# 42 "sdk/cutil_inline_runtime.h"
 {
-# 43 "../../sdk/cutil_inline_runtime.h"
+# 43 "sdk/cutil_inline_runtime.h"
 int device_count = 0;
-# 44 "../../sdk/cutil_inline_runtime.h"
+# 44 "sdk/cutil_inline_runtime.h"
 cudaGetDeviceCount(&device_count);
-# 46 "../../sdk/cutil_inline_runtime.h"
+# 46 "sdk/cutil_inline_runtime.h"
 cudaDeviceProp device_properties;
-# 47 "../../sdk/cutil_inline_runtime.h"
+# 47 "sdk/cutil_inline_runtime.h"
 int max_gflops_device = 0;
-# 48 "../../sdk/cutil_inline_runtime.h"
+# 48 "sdk/cutil_inline_runtime.h"
 int max_gflops = 0;
-# 50 "../../sdk/cutil_inline_runtime.h"
+# 50 "sdk/cutil_inline_runtime.h"
 int current_device = 0;
-# 51 "../../sdk/cutil_inline_runtime.h"
+# 51 "sdk/cutil_inline_runtime.h"
 cudaGetDeviceProperties(&device_properties, current_device);
-# 52 "../../sdk/cutil_inline_runtime.h"
+# 52 "sdk/cutil_inline_runtime.h"
 max_gflops = ((device_properties.multiProcessorCount) * (device_properties.clockRate));
-# 53 "../../sdk/cutil_inline_runtime.h"
+# 53 "sdk/cutil_inline_runtime.h"
 ++current_device;
-# 55 "../../sdk/cutil_inline_runtime.h"
+# 55 "sdk/cutil_inline_runtime.h"
 while (current_device < device_count)
-# 56 "../../sdk/cutil_inline_runtime.h"
+# 56 "sdk/cutil_inline_runtime.h"
 {
-# 57 "../../sdk/cutil_inline_runtime.h"
+# 57 "sdk/cutil_inline_runtime.h"
 cudaGetDeviceProperties(&device_properties, current_device);
-# 58 "../../sdk/cutil_inline_runtime.h"
+# 58 "sdk/cutil_inline_runtime.h"
 int gflops = ((device_properties.multiProcessorCount) * (device_properties.clockRate));
-# 59 "../../sdk/cutil_inline_runtime.h"
+# 59 "sdk/cutil_inline_runtime.h"
 if (gflops > max_gflops)
-# 60 "../../sdk/cutil_inline_runtime.h"
+# 60 "sdk/cutil_inline_runtime.h"
 {
-# 61 "../../sdk/cutil_inline_runtime.h"
+# 61 "sdk/cutil_inline_runtime.h"
 max_gflops = gflops;
-# 62 "../../sdk/cutil_inline_runtime.h"
+# 62 "sdk/cutil_inline_runtime.h"
 max_gflops_device = current_device;
-# 63 "../../sdk/cutil_inline_runtime.h"
+# 63 "sdk/cutil_inline_runtime.h"
 }
-# 64 "../../sdk/cutil_inline_runtime.h"
+# 64 "sdk/cutil_inline_runtime.h"
 ++current_device;
-# 65 "../../sdk/cutil_inline_runtime.h"
+# 65 "sdk/cutil_inline_runtime.h"
 }
-# 67 "../../sdk/cutil_inline_runtime.h"
+# 67 "sdk/cutil_inline_runtime.h"
 return max_gflops_device;
-# 68 "../../sdk/cutil_inline_runtime.h"
+# 68 "sdk/cutil_inline_runtime.h"
 }
-# 70 "../../sdk/cutil_inline_runtime.h"
+# 70 "sdk/cutil_inline_runtime.h"
 inline void __cudaSafeCallNoSync(cudaError err, const char *file, const int line)
-# 71 "../../sdk/cutil_inline_runtime.h"
+# 71 "sdk/cutil_inline_runtime.h"
 {
-# 72 "../../sdk/cutil_inline_runtime.h"
+# 72 "sdk/cutil_inline_runtime.h"
 if ((cudaSuccess) != err) {
-# 73 "../../sdk/cutil_inline_runtime.h"
+# 73 "sdk/cutil_inline_runtime.h"
 fprintf(stderr, "cudaSafeCallNoSync() Runtime API error in file <%s>, line %i : %s.\n", file, line, cudaGetErrorString(err));
-# 75 "../../sdk/cutil_inline_runtime.h"
+# 75 "sdk/cutil_inline_runtime.h"
 exit(-1);
-# 76 "../../sdk/cutil_inline_runtime.h"
+# 76 "sdk/cutil_inline_runtime.h"
 }
-# 77 "../../sdk/cutil_inline_runtime.h"
+# 77 "sdk/cutil_inline_runtime.h"
 }
-# 79 "../../sdk/cutil_inline_runtime.h"
+# 79 "sdk/cutil_inline_runtime.h"
 inline void __cudaSafeCall(cudaError err, const char *file, const int line)
-# 80 "../../sdk/cutil_inline_runtime.h"
+# 80 "sdk/cutil_inline_runtime.h"
 {
-# 81 "../../sdk/cutil_inline_runtime.h"
+# 81 "sdk/cutil_inline_runtime.h"
 if ((cudaSuccess) != err) {
-# 82 "../../sdk/cutil_inline_runtime.h"
+# 82 "sdk/cutil_inline_runtime.h"
 fprintf(stderr, "cudaSafeCall() Runtime API error in file <%s>, line %i : %s.\n", file, line, cudaGetErrorString(err));
-# 84 "../../sdk/cutil_inline_runtime.h"
+# 84 "sdk/cutil_inline_runtime.h"
 exit(-1);
-# 85 "../../sdk/cutil_inline_runtime.h"
+# 85 "sdk/cutil_inline_runtime.h"
 }
-# 86 "../../sdk/cutil_inline_runtime.h"
+# 86 "sdk/cutil_inline_runtime.h"
 }
-# 88 "../../sdk/cutil_inline_runtime.h"
+# 88 "sdk/cutil_inline_runtime.h"
 inline void __cudaSafeThreadSync(const char *file, const int line)
-# 89 "../../sdk/cutil_inline_runtime.h"
+# 89 "sdk/cutil_inline_runtime.h"
 {
-# 90 "../../sdk/cutil_inline_runtime.h"
+# 90 "sdk/cutil_inline_runtime.h"
 cudaError err = cudaThreadSynchronize();
-# 91 "../../sdk/cutil_inline_runtime.h"
+# 91 "sdk/cutil_inline_runtime.h"
 if ((cudaSuccess) != err) {
-# 92 "../../sdk/cutil_inline_runtime.h"
+# 92 "sdk/cutil_inline_runtime.h"
 fprintf(stderr, "cudaThreadSynchronize() Driver API error in file \'%s\' in line %i : %s.\n", file, line, cudaGetErrorString(err));
-# 94 "../../sdk/cutil_inline_runtime.h"
+# 94 "sdk/cutil_inline_runtime.h"
 exit(-1);
-# 95 "../../sdk/cutil_inline_runtime.h"
+# 95 "sdk/cutil_inline_runtime.h"
 }
-# 96 "../../sdk/cutil_inline_runtime.h"
+# 96 "sdk/cutil_inline_runtime.h"
 }
-# 98 "../../sdk/cutil_inline_runtime.h"
+# 98 "sdk/cutil_inline_runtime.h"
 inline void __cufftSafeCall(cufftResult err, const char *file, const int line)
-# 99 "../../sdk/cutil_inline_runtime.h"
+# 99 "sdk/cutil_inline_runtime.h"
 {
-# 100 "../../sdk/cutil_inline_runtime.h"
+# 100 "sdk/cutil_inline_runtime.h"
 if ((CUFFT_SUCCESS) != err) {
-# 101 "../../sdk/cutil_inline_runtime.h"
+# 101 "sdk/cutil_inline_runtime.h"
 fprintf(stderr, "cufftSafeCall() CUFFT error in file <%s>, line %i.\n", file, line);
-# 103 "../../sdk/cutil_inline_runtime.h"
+# 103 "sdk/cutil_inline_runtime.h"
 exit(-1);
-# 104 "../../sdk/cutil_inline_runtime.h"
+# 104 "sdk/cutil_inline_runtime.h"
 }
-# 105 "../../sdk/cutil_inline_runtime.h"
+# 105 "sdk/cutil_inline_runtime.h"
 }
-# 107 "../../sdk/cutil_inline_runtime.h"
+# 107 "sdk/cutil_inline_runtime.h"
 inline void __cutilCheckError(CUTBoolean err, const char *file, const int line)
-# 108 "../../sdk/cutil_inline_runtime.h"
+# 108 "sdk/cutil_inline_runtime.h"
 {
-# 109 "../../sdk/cutil_inline_runtime.h"
+# 109 "sdk/cutil_inline_runtime.h"
 if ((CUTTrue) != err) {
-# 110 "../../sdk/cutil_inline_runtime.h"
+# 110 "sdk/cutil_inline_runtime.h"
 fprintf(stderr, "CUTIL CUDA error in file <%s>, line %i.\n", file, line);
-# 112 "../../sdk/cutil_inline_runtime.h"
+# 112 "sdk/cutil_inline_runtime.h"
 exit(-1);
-# 113 "../../sdk/cutil_inline_runtime.h"
+# 113 "sdk/cutil_inline_runtime.h"
 }
-# 114 "../../sdk/cutil_inline_runtime.h"
+# 114 "sdk/cutil_inline_runtime.h"
 }
-# 116 "../../sdk/cutil_inline_runtime.h"
+# 116 "sdk/cutil_inline_runtime.h"
 inline void __cutilCheckMsg(const char *errorMessage, const char *file, const int line)
-# 117 "../../sdk/cutil_inline_runtime.h"
+# 117 "sdk/cutil_inline_runtime.h"
 {
-# 118 "../../sdk/cutil_inline_runtime.h"
+# 118 "sdk/cutil_inline_runtime.h"
 cudaError_t err = cudaGetLastError();
-# 119 "../../sdk/cutil_inline_runtime.h"
+# 119 "sdk/cutil_inline_runtime.h"
 if ((cudaSuccess) != err) {
-# 120 "../../sdk/cutil_inline_runtime.h"
+# 120 "sdk/cutil_inline_runtime.h"
 fprintf(stderr, "cutilCheckMsg() CUTIL CUDA error: %s in file <%s>, line %i : %s.\n", errorMessage, file, line, cudaGetErrorString(err));
-# 122 "../../sdk/cutil_inline_runtime.h"
+# 122 "sdk/cutil_inline_runtime.h"
 exit(-1);
-# 123 "../../sdk/cutil_inline_runtime.h"
+# 123 "sdk/cutil_inline_runtime.h"
 }
-# 132 "../../sdk/cutil_inline_runtime.h"
+# 132 "sdk/cutil_inline_runtime.h"
 }
-# 133 "../../sdk/cutil_inline_runtime.h"
+# 133 "sdk/cutil_inline_runtime.h"
 inline void __cutilSafeMalloc(void *pointer, const char *file, const int line)
-# 134 "../../sdk/cutil_inline_runtime.h"
+# 134 "sdk/cutil_inline_runtime.h"
 {
-# 135 "../../sdk/cutil_inline_runtime.h"
+# 135 "sdk/cutil_inline_runtime.h"
 if (!(pointer)) {
-# 136 "../../sdk/cutil_inline_runtime.h"
+# 136 "sdk/cutil_inline_runtime.h"
 fprintf(stderr, "cutilSafeMalloc host malloc failure in file <%s>, line %i\n", file, line);
-# 138 "../../sdk/cutil_inline_runtime.h"
+# 138 "sdk/cutil_inline_runtime.h"
 exit(-1);
-# 139 "../../sdk/cutil_inline_runtime.h"
+# 139 "sdk/cutil_inline_runtime.h"
 }
-# 140 "../../sdk/cutil_inline_runtime.h"
+# 140 "sdk/cutil_inline_runtime.h"
 }
-# 145 "../../sdk/cutil_inline_runtime.h"
+# 145 "sdk/cutil_inline_runtime.h"
 inline void cutilDeviceInit(int ARGC, char **ARGV)
-# 146 "../../sdk/cutil_inline_runtime.h"
+# 146 "sdk/cutil_inline_runtime.h"
 {
-# 147 "../../sdk/cutil_inline_runtime.h"
+# 147 "sdk/cutil_inline_runtime.h"
 int deviceCount;
-# 148 "../../sdk/cutil_inline_runtime.h"
-__cudaSafeCallNoSync(cudaGetDeviceCount(&deviceCount), "../../sdk/cutil_inline_runtime.h", 148);
-# 149 "../../sdk/cutil_inline_runtime.h"
+# 148 "sdk/cutil_inline_runtime.h"
+__cudaSafeCallNoSync(cudaGetDeviceCount(&deviceCount), "sdk/cutil_inline_runtime.h", 148);
+# 149 "sdk/cutil_inline_runtime.h"
 if (deviceCount == 0) {
-# 150 "../../sdk/cutil_inline_runtime.h"
+# 150 "sdk/cutil_inline_runtime.h"
 fprintf(stderr, "CUTIL CUDA error: no devices supporting CUDA.\n");
-# 151 "../../sdk/cutil_inline_runtime.h"
+# 151 "sdk/cutil_inline_runtime.h"
 exit(-1);
-# 152 "../../sdk/cutil_inline_runtime.h"
+# 152 "sdk/cutil_inline_runtime.h"
 }
-# 153 "../../sdk/cutil_inline_runtime.h"
+# 153 "sdk/cutil_inline_runtime.h"
 int dev = 0;
-# 154 "../../sdk/cutil_inline_runtime.h"
+# 154 "sdk/cutil_inline_runtime.h"
 cutGetCmdLineArgumenti(ARGC, (const char **)ARGV, "device", &dev);
-# 155 "../../sdk/cutil_inline_runtime.h"
+# 155 "sdk/cutil_inline_runtime.h"
 if (dev < 0) { dev = 0; } if (dev > (deviceCount - 1)) { dev = (deviceCount - 1); }
-# 157 "../../sdk/cutil_inline_runtime.h"
+# 157 "sdk/cutil_inline_runtime.h"
 cudaDeviceProp deviceProp;
-# 158 "../../sdk/cutil_inline_runtime.h"
-__cudaSafeCallNoSync(cudaGetDeviceProperties(&deviceProp, dev), "../../sdk/cutil_inline_runtime.h", 158);
-# 159 "../../sdk/cutil_inline_runtime.h"
+# 158 "sdk/cutil_inline_runtime.h"
+__cudaSafeCallNoSync(cudaGetDeviceProperties(&deviceProp, dev), "sdk/cutil_inline_runtime.h", 158);
+# 159 "sdk/cutil_inline_runtime.h"
 if ((deviceProp.major) < 1) {
-# 160 "../../sdk/cutil_inline_runtime.h"
+# 160 "sdk/cutil_inline_runtime.h"
 fprintf(stderr, "cutil error: device does not support CUDA.\n");
-# 161 "../../sdk/cutil_inline_runtime.h"
+# 161 "sdk/cutil_inline_runtime.h"
 exit(-1); }
-# 163 "../../sdk/cutil_inline_runtime.h"
+# 163 "sdk/cutil_inline_runtime.h"
 if ((cutCheckCmdLineFlag(ARGC, (const char **)ARGV, "quiet")) == (CUTFalse)) {
-# 164 "../../sdk/cutil_inline_runtime.h"
+# 164 "sdk/cutil_inline_runtime.h"
 fprintf(stderr, "Using device %d: %s\n", dev, deviceProp.name); }
-# 165 "../../sdk/cutil_inline_runtime.h"
-__cudaSafeCall(cudaSetDevice(dev), "../../sdk/cutil_inline_runtime.h", 165);
-# 166 "../../sdk/cutil_inline_runtime.h"
+# 165 "sdk/cutil_inline_runtime.h"
+__cudaSafeCall(cudaSetDevice(dev), "sdk/cutil_inline_runtime.h", 165);
+# 166 "sdk/cutil_inline_runtime.h"
 }
-# 171 "../../sdk/cutil_inline_runtime.h"
+# 171 "sdk/cutil_inline_runtime.h"
 inline void cutilCudaCheckCtxLost(const char *errorMessage, const char *file, const int line)
-# 172 "../../sdk/cutil_inline_runtime.h"
+# 172 "sdk/cutil_inline_runtime.h"
 {
-# 173 "../../sdk/cutil_inline_runtime.h"
+# 173 "sdk/cutil_inline_runtime.h"
 cudaError_t err = cudaGetLastError();
-# 174 "../../sdk/cutil_inline_runtime.h"
+# 174 "sdk/cutil_inline_runtime.h"
 if ((cudaSuccess) != err) {
-# 175 "../../sdk/cutil_inline_runtime.h"
+# 175 "sdk/cutil_inline_runtime.h"
 fprintf(stderr, "CUDA error: %s in file \'%s\' in line %i : %s.\n", errorMessage, file, line, cudaGetErrorString(err));
-# 177 "../../sdk/cutil_inline_runtime.h"
+# 177 "sdk/cutil_inline_runtime.h"
 exit(-1);
-# 178 "../../sdk/cutil_inline_runtime.h"
+# 178 "sdk/cutil_inline_runtime.h"
 }
-# 179 "../../sdk/cutil_inline_runtime.h"
+# 179 "sdk/cutil_inline_runtime.h"
 err = cudaThreadSynchronize();
-# 180 "../../sdk/cutil_inline_runtime.h"
+# 180 "sdk/cutil_inline_runtime.h"
 if ((cudaSuccess) != err) {
-# 181 "../../sdk/cutil_inline_runtime.h"
+# 181 "sdk/cutil_inline_runtime.h"
 fprintf(stderr, "CCUDA error: %s in file \'%s\' in line %i : %s.\n", errorMessage, file, line, cudaGetErrorString(err));
-# 183 "../../sdk/cutil_inline_runtime.h"
+# 183 "sdk/cutil_inline_runtime.h"
 exit(-1);
-# 184 "../../sdk/cutil_inline_runtime.h"
+# 184 "sdk/cutil_inline_runtime.h"
 }
-# 185 "../../sdk/cutil_inline_runtime.h"
+# 185 "sdk/cutil_inline_runtime.h"
 }
-# 16 "../../sdk/cutil_inline_drvapi.h"
+# 16 "sdk/cutil_inline_drvapi.h"
 inline void __cuSafeCallNoSync(CUresult err, const char *file, const int line)
-# 17 "../../sdk/cutil_inline_drvapi.h"
+# 17 "sdk/cutil_inline_drvapi.h"
 {
-# 18 "../../sdk/cutil_inline_drvapi.h"
+# 18 "sdk/cutil_inline_drvapi.h"
 if ((CUDA_SUCCESS) != err) {
-# 19 "../../sdk/cutil_inline_drvapi.h"
+# 19 "sdk/cutil_inline_drvapi.h"
 fprintf(stderr, "cuSafeCallNoSync() Driver API error = %04d from file <%s>, line %i.\n", err, file, line);
-# 21 "../../sdk/cutil_inline_drvapi.h"
+# 21 "sdk/cutil_inline_drvapi.h"
 exit(-1);
-# 22 "../../sdk/cutil_inline_drvapi.h"
+# 22 "sdk/cutil_inline_drvapi.h"
 }
-# 23 "../../sdk/cutil_inline_drvapi.h"
+# 23 "sdk/cutil_inline_drvapi.h"
 }
-# 24 "../../sdk/cutil_inline_drvapi.h"
+# 24 "sdk/cutil_inline_drvapi.h"
 inline void __cuSafeCall(CUresult err, const char *file, const int line)
-# 25 "../../sdk/cutil_inline_drvapi.h"
+# 25 "sdk/cutil_inline_drvapi.h"
 {
-# 26 "../../sdk/cutil_inline_drvapi.h"
+# 26 "sdk/cutil_inline_drvapi.h"
 __cuSafeCallNoSync(err, file, line);
-# 27 "../../sdk/cutil_inline_drvapi.h"
+# 27 "sdk/cutil_inline_drvapi.h"
 }
-# 29 "../../sdk/cutil_inline_drvapi.h"
+# 29 "sdk/cutil_inline_drvapi.h"
 inline void __cuCtxSync(const char *file, const int line)
-# 30 "../../sdk/cutil_inline_drvapi.h"
+# 30 "sdk/cutil_inline_drvapi.h"
 {
-# 31 "../../sdk/cutil_inline_drvapi.h"
+# 31 "sdk/cutil_inline_drvapi.h"
 CUresult err = cuCtxSynchronize();
-# 32 "../../sdk/cutil_inline_drvapi.h"
+# 32 "sdk/cutil_inline_drvapi.h"
 if ((CUDA_SUCCESS) != err) {
-# 33 "../../sdk/cutil_inline_drvapi.h"
+# 33 "sdk/cutil_inline_drvapi.h"
 fprintf(stderr, "cuCtxSynchronize() API error = %04d in file <%s>, line %i.\n", err, file, line);
-# 35 "../../sdk/cutil_inline_drvapi.h"
+# 35 "sdk/cutil_inline_drvapi.h"
 exit(-1);
-# 36 "../../sdk/cutil_inline_drvapi.h"
+# 36 "sdk/cutil_inline_drvapi.h"
 }
-# 37 "../../sdk/cutil_inline_drvapi.h"
+# 37 "sdk/cutil_inline_drvapi.h"
 }
-# 39 "../../sdk/cutil_inline_drvapi.h"
+# 39 "sdk/cutil_inline_drvapi.h"
 inline void __cuCheckMsg(const char *msg, const char *file, const int line)
-# 40 "../../sdk/cutil_inline_drvapi.h"
+# 40 "sdk/cutil_inline_drvapi.h"
 {
-# 41 "../../sdk/cutil_inline_drvapi.h"
+# 41 "sdk/cutil_inline_drvapi.h"
 CUresult err = cuCtxSynchronize();
-# 42 "../../sdk/cutil_inline_drvapi.h"
+# 42 "sdk/cutil_inline_drvapi.h"
 if ((CUDA_SUCCESS) != err) {
-# 43 "../../sdk/cutil_inline_drvapi.h"
+# 43 "sdk/cutil_inline_drvapi.h"
 fprintf(stderr, "cutilDrvCheckMsg -> %s", msg);
-# 44 "../../sdk/cutil_inline_drvapi.h"
+# 44 "sdk/cutil_inline_drvapi.h"
 fprintf(stderr, "cutilDrvCheckMsg -> cuCtxSynchronize API error = %04d in file <%s>, line %i.\n", err, file, line);
-# 46 "../../sdk/cutil_inline_drvapi.h"
+# 46 "sdk/cutil_inline_drvapi.h"
 exit(-1);
-# 47 "../../sdk/cutil_inline_drvapi.h"
+# 47 "sdk/cutil_inline_drvapi.h"
 }
-# 48 "../../sdk/cutil_inline_drvapi.h"
+# 48 "sdk/cutil_inline_drvapi.h"
 }
-# 54 "../../sdk/cutil_inline_drvapi.h"
+# 54 "sdk/cutil_inline_drvapi.h"
 inline void cutilDeviceInitDrv(int cuDevice, int ARGC, char **ARGV)
-# 55 "../../sdk/cutil_inline_drvapi.h"
+# 55 "sdk/cutil_inline_drvapi.h"
 {
-# 56 "../../sdk/cutil_inline_drvapi.h"
+# 56 "sdk/cutil_inline_drvapi.h"
 cuDevice = 0;
-# 57 "../../sdk/cutil_inline_drvapi.h"
+# 57 "sdk/cutil_inline_drvapi.h"
 int deviceCount = 0;
-# 58 "../../sdk/cutil_inline_drvapi.h"
+# 58 "sdk/cutil_inline_drvapi.h"
 CUresult err = cuInit(0);
-# 59 "../../sdk/cutil_inline_drvapi.h"
+# 59 "sdk/cutil_inline_drvapi.h"
 if ((CUDA_SUCCESS) == err) {
-# 60 "../../sdk/cutil_inline_drvapi.h"
-__cuSafeCallNoSync(cuDeviceGetCount(&deviceCount), "../../sdk/cutil_inline_drvapi.h", 60); }
-# 61 "../../sdk/cutil_inline_drvapi.h"
+# 60 "sdk/cutil_inline_drvapi.h"
+__cuSafeCallNoSync(cuDeviceGetCount(&deviceCount), "sdk/cutil_inline_drvapi.h", 60); }
+# 61 "sdk/cutil_inline_drvapi.h"
 if (deviceCount == 0) {
-# 62 "../../sdk/cutil_inline_drvapi.h"
+# 62 "sdk/cutil_inline_drvapi.h"
 fprintf(stderr, "CUTIL DeviceInitDrv error: no devices supporting CUDA\n");
-# 63 "../../sdk/cutil_inline_drvapi.h"
+# 63 "sdk/cutil_inline_drvapi.h"
 exit(-1);
-# 64 "../../sdk/cutil_inline_drvapi.h"
+# 64 "sdk/cutil_inline_drvapi.h"
 }
-# 65 "../../sdk/cutil_inline_drvapi.h"
+# 65 "sdk/cutil_inline_drvapi.h"
 int dev = 0;
-# 66 "../../sdk/cutil_inline_drvapi.h"
+# 66 "sdk/cutil_inline_drvapi.h"
 cutGetCmdLineArgumenti(ARGC, (const char **)ARGV, "device", &dev);
-# 67 "../../sdk/cutil_inline_drvapi.h"
+# 67 "sdk/cutil_inline_drvapi.h"
 if (dev < 0) { dev = 0; }
-# 68 "../../sdk/cutil_inline_drvapi.h"
+# 68 "sdk/cutil_inline_drvapi.h"
 if (dev > (deviceCount - 1)) { dev = (deviceCount - 1); }
-# 69 "../../sdk/cutil_inline_drvapi.h"
-__cuSafeCallNoSync(cuDeviceGet(&cuDevice, dev), "../../sdk/cutil_inline_drvapi.h", 69);
-# 70 "../../sdk/cutil_inline_drvapi.h"
+# 69 "sdk/cutil_inline_drvapi.h"
+__cuSafeCallNoSync(cuDeviceGet(&cuDevice, dev), "sdk/cutil_inline_drvapi.h", 69);
+# 70 "sdk/cutil_inline_drvapi.h"
 char name[100];
-# 71 "../../sdk/cutil_inline_drvapi.h"
+# 71 "sdk/cutil_inline_drvapi.h"
 cuDeviceGetName(name, 100, cuDevice);
-# 72 "../../sdk/cutil_inline_drvapi.h"
+# 72 "sdk/cutil_inline_drvapi.h"
 if ((cutCheckCmdLineFlag(ARGC, (const char **)ARGV, "quiet")) == (CUTFalse)) {
-# 73 "../../sdk/cutil_inline_drvapi.h"
+# 73 "sdk/cutil_inline_drvapi.h"
 fprintf(stderr, "Using device %d: %s\n", dev, name); }
-# 74 "../../sdk/cutil_inline_drvapi.h"
+# 74 "sdk/cutil_inline_drvapi.h"
 }
-# 78 "../../sdk/cutil_inline_drvapi.h"
+# 78 "sdk/cutil_inline_drvapi.h"
 inline void cutilDrvCudaCheckCtxLost(const char *errorMessage, const char *file, const int line)
-# 79 "../../sdk/cutil_inline_drvapi.h"
+# 79 "sdk/cutil_inline_drvapi.h"
 {
-# 80 "../../sdk/cutil_inline_drvapi.h"
+# 80 "sdk/cutil_inline_drvapi.h"
 CUresult err = cuCtxSynchronize();
-# 81 "../../sdk/cutil_inline_drvapi.h"
+# 81 "sdk/cutil_inline_drvapi.h"
 if ((CUDA_ERROR_INVALID_CONTEXT) != err) {
-# 82 "../../sdk/cutil_inline_drvapi.h"
+# 82 "sdk/cutil_inline_drvapi.h"
 fprintf(stderr, "Cuda error: %s in file \'%s\' in line %i\n", errorMessage, file, line);
-# 84 "../../sdk/cutil_inline_drvapi.h"
+# 84 "sdk/cutil_inline_drvapi.h"
 exit(-1);
-# 85 "../../sdk/cutil_inline_drvapi.h"
+# 85 "sdk/cutil_inline_drvapi.h"
 }
-# 86 "../../sdk/cutil_inline_drvapi.h"
+# 86 "sdk/cutil_inline_drvapi.h"
 err = cuCtxSynchronize();
-# 87 "../../sdk/cutil_inline_drvapi.h"
+# 87 "sdk/cutil_inline_drvapi.h"
 if ((CUDA_SUCCESS) != err) {
-# 88 "../../sdk/cutil_inline_drvapi.h"
+# 88 "sdk/cutil_inline_drvapi.h"
 fprintf(stderr, "Cuda error: %s in file \'%s\' in line %i\n", errorMessage, file, line);
-# 90 "../../sdk/cutil_inline_drvapi.h"
+# 90 "sdk/cutil_inline_drvapi.h"
 exit(-1);
-# 91 "../../sdk/cutil_inline_drvapi.h"
+# 91 "sdk/cutil_inline_drvapi.h"
 }
-# 92 "../../sdk/cutil_inline_drvapi.h"
+# 92 "sdk/cutil_inline_drvapi.h"
 }
-# 12 "../../sdk/cutil_inline.h"
+# 12 "sdk/cutil_inline.h"
 inline void print_NVCC_min_spec(const char *sSDKsample, const char *sNVCCReq, const char *sDriverReq)
-# 13 "../../sdk/cutil_inline.h"
+# 13 "sdk/cutil_inline.h"
 {
-# 14 "../../sdk/cutil_inline.h"
+# 14 "sdk/cutil_inline.h"
 printf("CUDA %d.%02d Toolkit built this project.\n", 3020 / 1000, 3020 % 100);
-# 15 "../../sdk/cutil_inline.h"
+# 15 "sdk/cutil_inline.h"
 printf("  [ %s ] requirements:\n", sSDKsample);
-# 16 "../../sdk/cutil_inline.h"
+# 16 "sdk/cutil_inline.h"
 printf(" -> CUDA %s Toolkit\n", sNVCCReq);
-# 17 "../../sdk/cutil_inline.h"
+# 17 "sdk/cutil_inline.h"
 printf(" -> %s NVIDIA Display Driver.\n", sDriverReq);
-# 18 "../../sdk/cutil_inline.h"
+# 18 "sdk/cutil_inline.h"
 }
-# 6 "Mandelbrot_kernel.h"
+# 6 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.h"
 extern "C" void RunMandelbrot0_sm10(uchar4 *, const int, const int, const int, const double, const double, const float, const float, const double, const uchar4, const int, const int, const int, const bool);
-# 9 "Mandelbrot_kernel.h"
+# 9 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.h"
 extern "C" void RunMandelbrot1_sm10(uchar4 *, const int, const int, const int, const double, const double, const float, const float, const double, const uchar4, const int, const int, const int, const bool);
-# 13 "Mandelbrot_kernel.h"
+# 13 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.h"
 extern "C" void RunMandelbrot0_sm13(uchar4 *, const int, const int, const int, const double, const double, const double, const double, const double, const uchar4, const int, const int, const int, const int, const bool);
-# 16 "Mandelbrot_kernel.h"
+# 16 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.h"
 extern "C" void RunMandelbrot1_sm13(uchar4 *, const int, const int, const int, const double, const double, const double, const double, const double, const uchar4, const int, const int, const int, const int, const bool);
-# 20 "Mandelbrot_kernel.h"
+# 20 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.h"
 extern "C" int inEmulationMode();
-# 15 "Mandelbrot_kernel.cu"
+# 15 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 inline void dsdeq(float &a0, float &a1, double b)
-# 16 "Mandelbrot_kernel.cu"
+# 16 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 {
-# 17 "Mandelbrot_kernel.cu"
+# 17 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 a0 = ((float)b);
-# 18 "Mandelbrot_kernel.cu"
+# 18 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 a1 = ((float)(b - a0));
-# 19 "Mandelbrot_kernel.cu"
+# 19 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 }
-# 22 "Mandelbrot_kernel.cu"
+# 22 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 __attribute__((unused)) inline void dsfeq(float &a0, float &a1, float b)
-# 23 "Mandelbrot_kernel.cu"
+# 23 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 {int volatile ___ = 1;
-# 26 "Mandelbrot_kernel.cu"
+# 26 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 exit(___);}
-# 29 "Mandelbrot_kernel.cu"
+# 29 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 __attribute__((unused)) inline void dsadd(float &c0, float &c1, const float a0, const float a1, const float b0, const float b1)
-# 30 "Mandelbrot_kernel.cu"
+# 30 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 {int volatile ___ = 1;
-# 39 "Mandelbrot_kernel.cu"
+# 39 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 exit(___);}
-# 42 "Mandelbrot_kernel.cu"
+# 42 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 __attribute__((unused)) inline void dssub(float &c0, float &c1, const float a0, const float a1, const float b0, const float b1)
-# 43 "Mandelbrot_kernel.cu"
+# 43 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 {int volatile ___ = 1;
-# 52 "Mandelbrot_kernel.cu"
+# 52 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 exit(___);}
-# 57 "Mandelbrot_kernel.cu"
+# 57 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 __attribute__((unused)) inline void dsmul(float &c0, float &c1, const float a0, const float a1, const float b0, const float b1)
-# 58 "Mandelbrot_kernel.cu"
+# 58 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 {int volatile ___ = 1;
-# 82 "Mandelbrot_kernel.cu"
+# 82 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 exit(___);}
-# 126 "Mandelbrot_kernel.cu"
+# 126 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 template< class T> __attribute__((unused)) inline void
-# 127 "Mandelbrot_kernel.cu"
+# 127 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 CalcMandelbrot(int *
-# 128 "Mandelbrot_kernel.cu"
+# 128 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 output, const T *
-# 129 "Mandelbrot_kernel.cu"
+# 129 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 xPos, const T
-# 130 "Mandelbrot_kernel.cu"
+# 130 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 yPos, const T
-# 131 "Mandelbrot_kernel.cu"
+# 131 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 xJParam, const T
-# 132 "Mandelbrot_kernel.cu"
+# 132 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 yJParam, const int
-# 133 "Mandelbrot_kernel.cu"
+# 133 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 crunch, const bool
-# 134 "Mandelbrot_kernel.cu"
+# 134 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 isJulia, const int
-# 135 "Mandelbrot_kernel.cu"
+# 135 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 points)
-# 136 "Mandelbrot_kernel.cu"
+# 136 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 {int volatile ___ = 1;
-# 190 "Mandelbrot_kernel.cu"
+# 190 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 exit(___);}
-# 194 "Mandelbrot_kernel.cu"
+# 194 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 template< class T> __attribute__((unused)) inline int
-# 195 "Mandelbrot_kernel.cu"
+# 195 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 CalcMandelbrot(const T
-# 196 "Mandelbrot_kernel.cu"
+# 196 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 xPos, const T
-# 197 "Mandelbrot_kernel.cu"
+# 197 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 yPos, const T
-# 198 "Mandelbrot_kernel.cu"
+# 198 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 xJParam, const T
-# 199 "Mandelbrot_kernel.cu"
+# 199 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 yJParam, const int
-# 200 "Mandelbrot_kernel.cu"
+# 200 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 crunch, const bool
-# 201 "Mandelbrot_kernel.cu"
+# 201 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 isJulia)
-# 202 "Mandelbrot_kernel.cu"
+# 202 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 {int volatile ___ = 1;
-# 230 "Mandelbrot_kernel.cu"
+# 230 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 exit(___);}
-# 234 "Mandelbrot_kernel.cu"
+# 234 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 __attribute__((unused)) inline int CalcMandelbrotDS(const float
-# 235 "Mandelbrot_kernel.cu"
+# 235 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 xPos0, const float
-# 236 "Mandelbrot_kernel.cu"
+# 236 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 xPos1, const float
-# 237 "Mandelbrot_kernel.cu"
+# 237 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 yPos0, const float
-# 238 "Mandelbrot_kernel.cu"
+# 238 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 yPos1, const float
-# 239 "Mandelbrot_kernel.cu"
+# 239 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 xJParam, const float
-# 240 "Mandelbrot_kernel.cu"
+# 240 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 yJParam, const int
-# 241 "Mandelbrot_kernel.cu"
+# 241 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 crunch, const bool
-# 242 "Mandelbrot_kernel.cu"
+# 242 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 isJulia)
-# 243 "Mandelbrot_kernel.cu"
+# 243 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 {int volatile ___ = 1;
-# 293 "Mandelbrot_kernel.cu"
+# 293 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 exit(___);}
-# 297 "Mandelbrot_kernel.cu"
+# 297 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 __attribute__((unused)) inline int CheckColors(const uchar4 &color0, const uchar4 &color1)
-# 298 "Mandelbrot_kernel.cu"
+# 298 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 {int volatile ___ = 1;
-# 303 "Mandelbrot_kernel.cu"
+# 303 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 exit(___);}
-# 308 "Mandelbrot_kernel.cu"
+# 308 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 inline int iDivUp(int a, int b)
-# 309 "Mandelbrot_kernel.cu"
+# 309 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 {
-# 310 "Mandelbrot_kernel.cu"
+# 310 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 return ((a % b) != 0) ? ((a / b) + 1) : (a / b);
-# 311 "Mandelbrot_kernel.cu"
+# 311 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu"
 }
-# 1 "/tmp/tmpxft_00001f45_00000000-1_Mandelbrot_kernel.cudafe1.stub.c"
-# 1 "/tmp/tmpxft_00001f45_00000000-1_Mandelbrot_kernel.cudafe1.stub.c" 1
+# 1 "/tmp/tmpxft_0000162e_00000000-1_Mandelbrot_kernel.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_0000162e_00000000-1_Mandelbrot_kernel.cudafe1.stub.c" 1
 # 1 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 1
 # 91 "/usr/local/cuda/bin/../include/crt/host_runtime.h"
 extern "C" {
@@ -12354,8 +11888,8 @@ extern __attribute__((__weak__)) unsigned long long int ullmax(unsigned long lon
 
 
 #pragma pack()
-# 2 "/tmp/tmpxft_00001f45_00000000-1_Mandelbrot_kernel.cudafe1.stub.c" 2
-# 1 "/tmp/tmpxft_00001f45_00000000-3_Mandelbrot_kernel.fatbin.c" 1
+# 2 "/tmp/tmpxft_0000162e_00000000-1_Mandelbrot_kernel.cudafe1.stub.c" 2
+# 1 "/tmp/tmpxft_0000162e_00000000-3_Mandelbrot_kernel.fatbin.c" 1
 # 1 "/usr/local/cuda/bin/../include/__cudaFatFormat.h" 1
 # 83 "/usr/local/cuda/bin/../include/__cudaFatFormat.h"
 extern "C" {
@@ -12433,128 +11967,134 @@ void __cudaFatFreePTX( char* ptx );
 
 
 }
-# 2 "/tmp/tmpxft_00001f45_00000000-3_Mandelbrot_kernel.fatbin.c" 2
+# 2 "/tmp/tmpxft_0000162e_00000000-3_Mandelbrot_kernel.fatbin.c" 2
 
 asm(
 ".section .rodata\n"
 ".align 32\n"
-"__deviceText_$sm_20$:\n"
-".quad 0x33010101464c457f,0x0000000000000004,0x0000000100be0002,0x0000016c00000000\n"
-".quad 0x0014011400000034,0x0028000200200034,0x0000000000010004,0x0000000000000000\n"
-".quad 0x0000000000000000,0x0000000000000000,0x0000000000000000,0x0000000100000000\n"
-".quad 0x0000000000000003,0x000000d400000000,0x0000000000000036,0x0000000400000000\n"
-".quad 0x0000000b00000000,0x0000000000000003,0x0000010a00000000,0x0000000000000001\n"
-".quad 0x0000000100000000,0x0000001300000000,0x0000000000000002,0x0000010b00000000\n"
-".quad 0x0000000200000060,0x0000000100000006,0x68732e0000000010,0x2e00626174727473\n"
-".quad 0x2e00626174727473,0x2e006261746d7973,0x61626f6c672e766e,0x2e0074696e692e6c\n"
-".quad 0x61626f6c672e766e,0x000000000000006c,0x0000000000000000,0x0000000000000000\n"
-".quad 0x0300000000000000,0x0000000000000100,0x0300000000000000,0x0000000000000200\n"
-".quad 0x0300000000000000,0x0000000000000300,0x0300000000000000,0x0000000000000000\n"
-".quad 0x0300000000000000,0x0000000600000000,0x000000000000016c,0x0000004000000000\n"
-".quad 0x0000000500000040,0x6000000000000004,0x0000000000000000,0x0000016b00000000\n"
-".quad 0x000000050000016b,0x0000000000000004\n"
+"__deviceText_$sm_13$:\n"
+".quad 0x33010102464c457f,0x0000000000000002,0x0000000100be0002,0x0000000000000000\n"
+".quad 0x0000000000000208,0x0000000000000040,0x00380040000d010d,0x0001000400400002\n"
+".quad 0x0000000000000000,0x0000000000000000,0x0000000000000000,0x0000000000000000\n"
+".quad 0x0000000000000000,0x0000000000000000,0x0000000000000000,0x0000000000000000\n"
+".quad 0x0000000300000001,0x0000000000000000,0x0000000000000000,0x0000000000000140\n"
+".quad 0x0000000000000036,0x0000000000000000,0x0000000000000004,0x0000000000000000\n"
+".quad 0x000000030000000b,0x0000000000000000,0x0000000000000000,0x0000000000000176\n"
+".quad 0x0000000000000001,0x0000000000000000,0x0000000000000001,0x0000000000000000\n"
+".quad 0x0000000200000013,0x0000000000000000,0x0000000000000000,0x0000000000000177\n"
+".quad 0x0000000000000090,0x0000000600000002,0x0000000000000001,0x0000000000000018\n"
+".quad 0x7472747368732e00,0x747274732e006261,0x746d79732e006261,0x672e766e2e006261\n"
+".quad 0x6e692e6c61626f6c,0x672e766e2e007469,0x0000006c61626f6c,0x0000000000000000\n"
+".quad 0x0000000000000000,0x0000000000000000,0x0000010003000000,0x0000000000000000\n"
+".quad 0x0000000000000000,0x0000020003000000,0x0000000000000000,0x0000000000000000\n"
+".quad 0x0000030003000000,0x0000000000000000,0x0000000000000000,0x0000000003000000\n"
+".quad 0x0000000000000000,0x0000000000000000,0x0000000003000000,0x0000000000000000\n"
+".quad 0x0000000000000000,0x0000000500000006,0x0000000000000208,0x0000000000000000\n"
+".quad 0x0000000000000000,0x0000000000000070,0x0000000000000070,0x0000000000000004\n"
+".quad 0x0000000560000000,0x0000000000000000,0x0000000000000000,0x0000000000000000\n"
+".quad 0x0000000000000207,0x0000000000000207,0x0000000000000004,0x0000000000000000\n"
 ".text");
 
 extern "C" {
 
-extern const unsigned long long __deviceText_$sm_20$[54];
+extern const unsigned long long __deviceText_$sm_13$[80];
 
 }
 
 asm(
 ".section .rodata\n"
 ".align 32\n"
-"__deviceText_$compute_20$:\n"
-".quad 0x6f69737265762e09,0x2e090a322e32206e,0x7320746567726174,0x2f2f090a30325f6d\n"
+"__deviceText_$compute_13$:\n"
+".quad 0x6f69737265762e09,0x2e090a342e31206e,0x7320746567726174,0x2f2f090a33315f6d\n"
 ".quad 0x656c69706d6f6320,0x2f20687469772064,0x61636f6c2f727375,0x6f2f616475632f6c\n"
 ".quad 0x696c2f34366e6570,0x2f090a65622f2f62,0x6e65706f766e202f,0x6220322e33206363\n"
 ".quad 0x206e6f20746c6975,0x2d39302d30313032,0x2d2f2f090a0a3930,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x43202f2f090a2d2d,0x676e696c69706d6f\n"
-".quad 0x6d742f706d742f20,0x3030305f74667870,0x30305f3534663130,0x312d303030303030\n"
-".quad 0x6c65646e614d5f33,0x72656b5f746f7262,0x337070632e6c656e,0x706d742f2820692e\n"
-".quad 0x562e23494263632f,0x090a294249683851,0x2d2d2d2d2d2d2f2f,0x2d2d2d2d2d2d2d2d\n"
+".quad 0x6d742f706d742f20,0x3030305f74667870,0x30305f6532363130,0x372d303030303030\n"
+".quad 0x626c65646e614d5f,0x6e72656b5f746f72,0x2e337070632e6c65,0x2f706d742f282069\n"
+".quad 0x65672e2349426363,0x2f090a2952355434,0x2d2d2d2d2d2d2d2f,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
-".quad 0x2d2d2d2d2d2d2d2d,0x090a0a2d2d2d2d2d,0x2d2d2d2d2d2d2f2f,0x2d2d2d2d2d2d2d2d\n"
+".quad 0x2d2d2d2d2d2d2d2d,0x2f090a0a2d2d2d2d,0x2d2d2d2d2d2d2d2f,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
-".quad 0x2d2d2d2d2d2d2d2d,0x2f090a2d2d2d2d2d,0x6e6f6974704f202f,0x2d2d2f2f090a3a73\n"
+".quad 0x2d2d2d2d2d2d2d2d,0x2f2f090a2d2d2d2d,0x736e6f6974704f20,0x2d2d2d2f2f090a3a\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
-".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x5420202f2f090a2d\n"
-".quad 0x74703a7465677261,0x733a415349202c78,0x6e45202c30325f6d,0x74696c3a6e616964\n"
-".quad 0x696f50202c656c74,0x7a6953207265746e,0x2f2f090a32333a65,0x4f2809334f2d2020\n"
-".quad 0x74617a696d697470,0x6576656c206e6f69,0x20202f2f090a296c,0x626544280930672d\n"
-".quad 0x6c6576656c206775,0x2d20202f2f090a29,0x6f7065522809326d,0x7369766461207472\n"
-".quad 0x090a29736569726f,0x2d2d2d2d2d2d2f2f,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
+".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x615420202f2f090a\n"
+".quad 0x7874703a74656772,0x6d733a415349202c,0x646e45202c33315f,0x7474696c3a6e6169\n"
+".quad 0x6e696f50202c656c,0x657a695320726574,0x202f2f090a34363a,0x704f2809334f2d20\n"
+".quad 0x6974617a696d6974,0x6c6576656c206e6f,0x2d20202f2f090a29,0x7562654428093067\n"
+".quad 0x296c6576656c2067,0x6d2d20202f2f090a,0x726f706552280932,0x6f73697664612074\n"
+".quad 0x2f090a2973656972,0x2d2d2d2d2d2d2d2f,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
-".quad 0x090a0a2d2d2d2d2d,0x093109656c69662e,0x6e616d6d6f633c22,0x223e656e696c2d64\n"
-".quad 0x09656c69662e090a,0x2f706d742f220932,0x305f746678706d74,0x5f35346631303030\n"
-".quad 0x3030303030303030,0x646e614d5f32312d,0x6b5f746f72626c65,0x75632e6c656e7265\n"
-".quad 0x70672e3265666164,0x6c69662e090a2275,0x73752f2209330965,0x63672f62696c2f72\n"
-".quad 0x6c2d363836692f63,0x756e672d78756e69,0x692f352e342e342f,0x732f6564756c636e\n"
-".quad 0x22682e6665646474,0x09656c69662e090a,0x2f7273752f220934,0x75632f6c61636f6c\n"
-".quad 0x2e2f6e69622f6164,0x64756c636e692f2e,0x65642f7472632f65,0x6e75725f65636976\n"
-".quad 0x0a22682e656d6974,0x3509656c69662e09,0x6c2f7273752f2209,0x6475632f6c61636f\n"
-".quad 0x2e2e2f6e69622f61,0x6564756c636e692f,0x65645f74736f682f,0x22682e73656e6966\n"
-".quad 0x09656c69662e090a,0x2f7273752f220936,0x75632f6c61636f6c,0x2e2f6e69622f6164\n"
-".quad 0x64756c636e692f2e,0x69746c6975622f65,0x2e73657079745f6e,0x6c69662e090a2268\n"
-".quad 0x73752f2209370965,0x2f6c61636f6c2f72,0x6e69622f61647563,0x6c636e692f2e2e2f\n"
-".quad 0x697665642f656475,0x73657079745f6563,0x69662e090a22682e,0x752f22093809656c\n"
-".quad 0x6c61636f6c2f7273,0x69622f616475632f,0x636e692f2e2e2f6e,0x6972642f6564756c\n"
-".quad 0x657079745f726576,0x662e090a22682e73,0x2f22093909656c69,0x61636f6c2f727375\n"
-".quad 0x622f616475632f6c,0x6e692f2e2e2f6e69,0x75732f6564756c63,0x79745f6563616672\n"
-".quad 0x090a22682e736570,0x303109656c69662e,0x6c2f7273752f2209,0x6475632f6c61636f\n"
-".quad 0x2e2e2f6e69622f61,0x6564756c636e692f,0x657275747865742f,0x682e73657079745f\n"
-".quad 0x656c69662e090a22,0x73752f2209313109,0x2f6c61636f6c2f72,0x6e69622f61647563\n"
-".quad 0x6c636e692f2e2e2f,0x746365762f656475,0x73657079745f726f,0x69662e090a22682e\n"
-".quad 0x2f2209323109656c,0x61636f6c2f727375,0x622f616475632f6c,0x6e692f2e2e2f6e69\n"
-".quad 0x65642f6564756c63,0x75616c5f65636976,0x617261705f68636e,0x682e73726574656d\n"
-".quad 0x656c69662e090a22,0x73752f2209333109,0x2f6c61636f6c2f72,0x6e69622f61647563\n"
-".quad 0x6c636e692f2e2e2f,0x2f7472632f656475,0x5f656761726f7473,0x22682e7373616c63\n"
-".quad 0x09656c69662e090a,0x7273752f22093431,0x6564756c636e692f,0x79742f737469622f\n"
-".quad 0x090a22682e736570,0x353109656c69662e,0x692f7273752f2209,0x742f6564756c636e\n"
-".quad 0x090a22682e656d69,0x363109656c69662e,0x6c2f7273752f2209,0x6475632f6c61636f\n"
-".quad 0x2e2e2f6e69622f61,0x6564756c636e692f,0x5f6e6f6d6d6f632f,0x6e6f6974636e7566\n"
-".quad 0x662e090a22682e73,0x2209373109656c69,0x636f6c2f7273752f,0x2f616475632f6c61\n"
-".quad 0x692f2e2e2f6e6962,0x6d2f6564756c636e,0x636e75665f687461,0x22682e736e6f6974\n"
-".quad 0x09656c69662e090a,0x7273752f22093831,0x632f6c61636f6c2f,0x2f6e69622f616475\n"
-".quad 0x756c636e692f2e2e,0x5f6874616d2f6564,0x746e6174736e6f63,0x662e090a22682e73\n"
-".quad 0x2209393109656c69,0x636f6c2f7273752f,0x2f616475632f6c61,0x692f2e2e2f6e6962\n"
-".quad 0x642f6564756c636e,0x75665f6563697665,0x2e736e6f6974636e,0x6c69662e090a2268\n"
-".quad 0x752f220930320965,0x6c61636f6c2f7273,0x69622f616475632f,0x636e692f2e2e2f6e\n"
-".quad 0x5f6d732f6564756c,0x696d6f74615f3131,0x6974636e75665f63,0x090a22682e736e6f\n"
-".quad 0x313209656c69662e,0x6c2f7273752f2209,0x6475632f6c61636f,0x2e2e2f6e69622f61\n"
-".quad 0x6564756c636e692f,0x615f32315f6d732f,0x75665f63696d6f74,0x2e736e6f6974636e\n"
-".quad 0x6c69662e090a2268,0x752f220932320965,0x6c61636f6c2f7273,0x69622f616475632f\n"
-".quad 0x636e692f2e2e2f6e,0x5f6d732f6564756c,0x6c62756f645f3331,0x6974636e75665f65\n"
-".quad 0x090a22682e736e6f,0x333209656c69662e,0x6c2f7273752f2209,0x6475632f6c61636f\n"
-".quad 0x2e2e2f6e69622f61,0x6564756c636e692f,0x615f30325f6d732f,0x75665f63696d6f74\n"
-".quad 0x2e736e6f6974636e,0x6c69662e090a2268,0x752f220934320965,0x6c61636f6c2f7273\n"
-".quad 0x69622f616475632f,0x636e692f2e2e2f6e,0x5f6d732f6564756c,0x6972746e695f3032\n"
-".quad 0x22682e736369736e,0x09656c69662e090a,0x7273752f22093532,0x632f6c61636f6c2f\n"
-".quad 0x2f6e69622f616475,0x756c636e692f2e2e,0x61667275732f6564,0x74636e75665f6563\n"
-".quad 0x0a22682e736e6f69,0x3209656c69662e09,0x2f7273752f220936,0x75632f6c61636f6c\n"
-".quad 0x2e2f6e69622f6164,0x64756c636e692f2e,0x7275747865742f65,0x5f68637465665f65\n"
-".quad 0x6e6f6974636e7566,0x662e090a22682e73,0x2209373209656c69,0x636f6c2f7273752f\n"
-".quad 0x2f616475632f6c61,0x692f2e2e2f6e6962,0x6d2f6564756c636e,0x636e75665f687461\n"
-".quad 0x62645f736e6f6974,0x682e337874705f6c,0x000000000a0a0a22\n"
+".quad 0x2e090a0a2d2d2d2d,0x22093109656c6966,0x646e616d6d6f633c,0x0a223e656e696c2d\n"
+".quad 0x3209656c69662e09,0x742f706d742f2209,0x30305f746678706d,0x305f653236313030\n"
+".quad 0x2d30303030303030,0x6c65646e614d5f36,0x72656b5f746f7262,0x616475632e6c656e\n"
+".quad 0x227570672e326566,0x09656c69662e090a,0x2f7273752f220933,0x2f6363672f62696c\n"
+".quad 0x6e696c2d36383669,0x342f756e672d7875,0x636e692f352e342e,0x6474732f6564756c\n"
+".quad 0x090a22682e666564,0x093409656c69662e,0x6f6c2f7273752f22,0x616475632f6c6163\n"
+".quad 0x2f2e2e2f6e69622f,0x2f6564756c636e69,0x697665642f747263,0x69746e75725f6563\n"
+".quad 0x2e090a22682e656d,0x22093509656c6966,0x636f6c2f7273752f,0x2f616475632f6c61\n"
+".quad 0x692f2e2e2f6e6962,0x682f6564756c636e,0x696665645f74736f,0x090a22682e73656e\n"
+".quad 0x093609656c69662e,0x6f6c2f7273752f22,0x616475632f6c6163,0x2f2e2e2f6e69622f\n"
+".quad 0x2f6564756c636e69,0x5f6e69746c697562,0x22682e7365707974,0x09656c69662e090a\n"
+".quad 0x2f7273752f220937,0x75632f6c61636f6c,0x2e2f6e69622f6164,0x64756c636e692f2e\n"
+".quad 0x6563697665642f65,0x682e73657079745f,0x656c69662e090a22,0x7273752f22093809\n"
+".quad 0x632f6c61636f6c2f,0x2f6e69622f616475,0x756c636e692f2e2e,0x65766972642f6564\n"
+".quad 0x2e73657079745f72,0x6c69662e090a2268,0x73752f2209390965,0x2f6c61636f6c2f72\n"
+".quad 0x6e69622f61647563,0x6c636e692f2e2e2f,0x667275732f656475,0x657079745f656361\n"
+".quad 0x662e090a22682e73,0x2209303109656c69,0x636f6c2f7273752f,0x2f616475632f6c61\n"
+".quad 0x692f2e2e2f6e6962,0x742f6564756c636e,0x745f657275747865,0x0a22682e73657079\n"
+".quad 0x3109656c69662e09,0x2f7273752f220931,0x75632f6c61636f6c,0x2e2f6e69622f6164\n"
+".quad 0x64756c636e692f2e,0x726f746365762f65,0x682e73657079745f,0x656c69662e090a22\n"
+".quad 0x73752f2209323109,0x2f6c61636f6c2f72,0x6e69622f61647563,0x6c636e692f2e2e2f\n"
+".quad 0x697665642f656475,0x636e75616c5f6563,0x656d617261705f68,0x0a22682e73726574\n"
+".quad 0x3109656c69662e09,0x2f7273752f220933,0x75632f6c61636f6c,0x2e2f6e69622f6164\n"
+".quad 0x64756c636e692f2e,0x74732f7472632f65,0x6c635f656761726f,0x090a22682e737361\n"
+".quad 0x343109656c69662e,0x692f7273752f2209,0x622f6564756c636e,0x657079742f737469\n"
+".quad 0x662e090a22682e73,0x2209353109656c69,0x636e692f7273752f,0x6d69742f6564756c\n"
+".quad 0x662e090a22682e65,0x2209363109656c69,0x636f6c2f7273752f,0x2f616475632f6c61\n"
+".quad 0x692f2e2e2f6e6962,0x632f6564756c636e,0x75665f6e6f6d6d6f,0x2e736e6f6974636e\n"
+".quad 0x6c69662e090a2268,0x752f220937310965,0x6c61636f6c2f7273,0x69622f616475632f\n"
+".quad 0x636e692f2e2e2f6e,0x74616d2f6564756c,0x6974636e75665f68,0x090a22682e736e6f\n"
+".quad 0x383109656c69662e,0x6c2f7273752f2209,0x6475632f6c61636f,0x2e2e2f6e69622f61\n"
+".quad 0x6564756c636e692f,0x6f635f6874616d2f,0x2e73746e6174736e,0x6c69662e090a2268\n"
+".quad 0x752f220939310965,0x6c61636f6c2f7273,0x69622f616475632f,0x636e692f2e2e2f6e\n"
+".quad 0x7665642f6564756c,0x636e75665f656369,0x22682e736e6f6974,0x09656c69662e090a\n"
+".quad 0x7273752f22093032,0x632f6c61636f6c2f,0x2f6e69622f616475,0x756c636e692f2e2e\n"
+".quad 0x31315f6d732f6564,0x5f63696d6f74615f,0x6e6f6974636e7566,0x662e090a22682e73\n"
+".quad 0x2209313209656c69,0x636f6c2f7273752f,0x2f616475632f6c61,0x692f2e2e2f6e6962\n"
+".quad 0x732f6564756c636e,0x6f74615f32315f6d,0x636e75665f63696d,0x22682e736e6f6974\n"
+".quad 0x09656c69662e090a,0x7273752f22093232,0x632f6c61636f6c2f,0x2f6e69622f616475\n"
+".quad 0x756c636e692f2e2e,0x33315f6d732f6564,0x5f656c62756f645f,0x6e6f6974636e7566\n"
+".quad 0x662e090a22682e73,0x2209333209656c69,0x636f6c2f7273752f,0x2f616475632f6c61\n"
+".quad 0x692f2e2e2f6e6962,0x732f6564756c636e,0x6f74615f30325f6d,0x636e75665f63696d\n"
+".quad 0x22682e736e6f6974,0x09656c69662e090a,0x7273752f22093432,0x632f6c61636f6c2f\n"
+".quad 0x2f6e69622f616475,0x756c636e692f2e2e,0x30325f6d732f6564,0x736e6972746e695f\n"
+".quad 0x090a22682e736369,0x353209656c69662e,0x6c2f7273752f2209,0x6475632f6c61636f\n"
+".quad 0x2e2e2f6e69622f61,0x6564756c636e692f,0x656361667275732f,0x6f6974636e75665f\n"
+".quad 0x2e090a22682e736e,0x09363209656c6966,0x6f6c2f7273752f22,0x616475632f6c6163\n"
+".quad 0x2f2e2e2f6e69622f,0x2f6564756c636e69,0x5f65727574786574,0x75665f6863746566\n"
+".quad 0x2e736e6f6974636e,0x6c69662e090a2268,0x752f220937320965,0x6c61636f6c2f7273\n"
+".quad 0x69622f616475632f,0x636e692f2e2e2f6e,0x74616d2f6564756c,0x6974636e75665f68\n"
+".quad 0x5f6c62645f736e6f,0x0a22682e33787470,0x0000000000000a0a\n"
 ".text");
 
 extern "C" {
 
-extern const unsigned long long __deviceText_$compute_20$[287];
+extern const unsigned long long __deviceText_$compute_13$[287];
 
 }
 
-static __cudaFatPtxEntry __ptxEntries [] = {{(char*)"compute_20",(char*)__deviceText_$compute_20$},{0,0}};
+static __cudaFatPtxEntry __ptxEntries [] = {{(char*)"compute_13",(char*)__deviceText_$compute_13$},{0,0}};
 static __cudaFatCubinEntry __cubinEntries[] = {{0,0}};
 static __cudaFatDebugEntry __debugEntries0 = {0, 0, 0, 0} ;
 static __cudaFatElfEntry __elfEntries0 = {0, 0, 0, 0} ;
-static __cudaFatElfEntry __elfEntries1 = {(char*)"sm_20", (char*)__deviceText_$sm_20$, &__elfEntries0, (unsigned int)sizeof(__deviceText_$sm_20$)};
+static __cudaFatElfEntry __elfEntries1 = {(char*)"sm_13", (char*)__deviceText_$sm_13$, &__elfEntries0, (unsigned int)sizeof(__deviceText_$sm_13$)};
 
 
 
-static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000004,0xa14f518d,(char*)"9659271c4cdc5041",(char*)"Mandelbrot_kernel.cu",(char*)" ",__ptxEntries,__cubinEntries,&__debugEntries0,0,0,0,0,0,0x31b79e74,&__elfEntries1};
-# 3 "/tmp/tmpxft_00001f45_00000000-1_Mandelbrot_kernel.cudafe1.stub.c" 2
-static void __sti____cudaRegisterAll_53_tmpxft_00001f45_00000000_10_Mandelbrot_kernel_cpp1_ii_46f767e1(void) __attribute__((__constructor__));
-static void __sti____cudaRegisterAll_53_tmpxft_00001f45_00000000_10_Mandelbrot_kernel_cpp1_ii_46f767e1(void){__cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil);}
-# 1 "/tmp/tmpxft_00001f45_00000000-1_Mandelbrot_kernel.cudafe1.stub.c" 2
+static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000004,0xa14f518d,(char*)"be5e04354019febb",(char*)"/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/UnstructuredMandelbrot/Mandelbrot_kernel.cu",(char*)" ",__ptxEntries,__cubinEntries,&__debugEntries0,0,0,0,0,0,0x3c5731e0,&__elfEntries1};
+# 3 "/tmp/tmpxft_0000162e_00000000-1_Mandelbrot_kernel.cudafe1.stub.c" 2
+static void __sti____cudaRegisterAll_52_tmpxft_0000162e_00000000_4_Mandelbrot_kernel_cpp1_ii_e6bcf4e2(void) __attribute__((__constructor__));
+static void __sti____cudaRegisterAll_52_tmpxft_0000162e_00000000_4_Mandelbrot_kernel_cpp1_ii_e6bcf4e2(void){__cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil);}
+# 1 "/tmp/tmpxft_0000162e_00000000-1_Mandelbrot_kernel.cudafe1.stub.c" 2

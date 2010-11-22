@@ -141,7 +141,7 @@ __global__ void RandomGPU(
 // NPerRng must be even.
 ////////////////////////////////////////////////////////////////////////////////
 #define PI 3.14159265358979f
-__device__ void BoxMuller(float& u1, float& u2){
+inline __device__ void BoxMuller(float& u1, float& u2){
     float   r = sqrtf(-2.0f * logf(u1));
     float phi = 2 * PI * u2;
     u1 = r * __cosf(phi);

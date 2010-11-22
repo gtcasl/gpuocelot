@@ -1,13 +1,13 @@
-# 1 "/tmp/tmpxft_00005d94_00000000-1_simpleTexture.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00000963_00000000-1_simpleTexture.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_00005d94_00000000-1_simpleTexture.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00000963_00000000-1_simpleTexture.cudafe1.cpp"
 # 1 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleTexture/simpleTexture.cu"
 # 46 "/usr/local/cuda/bin/../include/device_types.h"
 # 149 "/usr/lib/gcc/i686-linux-gnu/4.4.5/include/stddef.h" 3
-typedef int ptrdiff_t;
+typedef long ptrdiff_t;
 # 211 "/usr/lib/gcc/i686-linux-gnu/4.4.5/include/stddef.h" 3
-typedef unsigned size_t;
+typedef unsigned long size_t;
 # 1 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 1 3
 # 69 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 3
 # 1 "/usr/local/cuda/bin/../include/builtin_types.h" 1 3
@@ -1678,86 +1678,6 @@ int e = (((int)sizeof(unsigned)) * 8);
 return cudaCreateChannelDesc(e, e, e, e, cudaChannelFormatKindUnsigned);
 # 303 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 }
-# 307 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-template<> inline cudaChannelFormatDesc cudaCreateChannelDesc< long> ()
-# 308 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-{
-# 309 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-int e = (((int)sizeof(long)) * 8);
-# 311 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-return cudaCreateChannelDesc(e, 0, 0, 0, cudaChannelFormatKindSigned);
-# 312 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-}
-# 314 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-template<> inline cudaChannelFormatDesc cudaCreateChannelDesc< unsigned long> ()
-# 315 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-{
-# 316 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-int e = (((int)sizeof(unsigned long)) * 8);
-# 318 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-return cudaCreateChannelDesc(e, 0, 0, 0, cudaChannelFormatKindUnsigned);
-# 319 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-}
-# 321 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-template<> inline cudaChannelFormatDesc cudaCreateChannelDesc< long1> ()
-# 322 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-{
-# 323 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-int e = (((int)sizeof(long)) * 8);
-# 325 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-return cudaCreateChannelDesc(e, 0, 0, 0, cudaChannelFormatKindSigned);
-# 326 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-}
-# 328 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-template<> inline cudaChannelFormatDesc cudaCreateChannelDesc< ulong1> ()
-# 329 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-{
-# 330 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-int e = (((int)sizeof(unsigned long)) * 8);
-# 332 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-return cudaCreateChannelDesc(e, 0, 0, 0, cudaChannelFormatKindUnsigned);
-# 333 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-}
-# 335 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-template<> inline cudaChannelFormatDesc cudaCreateChannelDesc< long2> ()
-# 336 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-{
-# 337 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-int e = (((int)sizeof(long)) * 8);
-# 339 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-return cudaCreateChannelDesc(e, e, 0, 0, cudaChannelFormatKindSigned);
-# 340 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-}
-# 342 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-template<> inline cudaChannelFormatDesc cudaCreateChannelDesc< ulong2> ()
-# 343 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-{
-# 344 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-int e = (((int)sizeof(unsigned long)) * 8);
-# 346 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-return cudaCreateChannelDesc(e, e, 0, 0, cudaChannelFormatKindUnsigned);
-# 347 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-}
-# 349 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-template<> inline cudaChannelFormatDesc cudaCreateChannelDesc< long4> ()
-# 350 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-{
-# 351 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-int e = (((int)sizeof(long)) * 8);
-# 353 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-return cudaCreateChannelDesc(e, e, e, e, cudaChannelFormatKindSigned);
-# 354 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-}
-# 356 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-template<> inline cudaChannelFormatDesc cudaCreateChannelDesc< ulong4> ()
-# 357 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-{
-# 358 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-int e = (((int)sizeof(unsigned long)) * 8);
-# 360 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-return cudaCreateChannelDesc(e, e, e, e, cudaChannelFormatKindUnsigned);
-# 361 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-}
 # 365 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 template<> inline cudaChannelFormatDesc cudaCreateChannelDesc< float> ()
 # 366 "/usr/local/cuda/bin/../include/channel_descriptor.h"
@@ -2418,16 +2338,16 @@ extern "C" { typedef unsigned short __uint16_t; }
 extern "C" { typedef signed int __int32_t; }
 # 42 "/usr/include/bits/types.h" 3
 extern "C" { typedef unsigned __uint32_t; }
-# 47 "/usr/include/bits/types.h" 3
-extern "C" { typedef signed long long __int64_t; }
-# 48 "/usr/include/bits/types.h" 3
-extern "C" { typedef unsigned long long __uint64_t; }
-# 56 "/usr/include/bits/types.h" 3
-extern "C" { typedef long long __quad_t; }
-# 57 "/usr/include/bits/types.h" 3
-extern "C" { typedef unsigned long long __u_quad_t; }
+# 44 "/usr/include/bits/types.h" 3
+extern "C" { typedef signed long __int64_t; }
+# 45 "/usr/include/bits/types.h" 3
+extern "C" { typedef unsigned long __uint64_t; }
+# 53 "/usr/include/bits/types.h" 3
+extern "C" { typedef long __quad_t; }
+# 54 "/usr/include/bits/types.h" 3
+extern "C" { typedef unsigned long __u_quad_t; }
 # 134 "/usr/include/bits/types.h" 3
-extern "C" { typedef __u_quad_t __dev_t; }
+extern "C" { typedef unsigned long __dev_t; }
 # 135 "/usr/include/bits/types.h" 3
 extern "C" { typedef unsigned __uid_t; }
 # 136 "/usr/include/bits/types.h" 3
@@ -2435,15 +2355,15 @@ extern "C" { typedef unsigned __gid_t; }
 # 137 "/usr/include/bits/types.h" 3
 extern "C" { typedef unsigned long __ino_t; }
 # 138 "/usr/include/bits/types.h" 3
-extern "C" { typedef __u_quad_t __ino64_t; }
+extern "C" { typedef unsigned long __ino64_t; }
 # 139 "/usr/include/bits/types.h" 3
 extern "C" { typedef unsigned __mode_t; }
 # 140 "/usr/include/bits/types.h" 3
-extern "C" { typedef unsigned __nlink_t; }
+extern "C" { typedef unsigned long __nlink_t; }
 # 141 "/usr/include/bits/types.h" 3
 extern "C" { typedef long __off_t; }
 # 142 "/usr/include/bits/types.h" 3
-extern "C" { typedef __quad_t __off64_t; }
+extern "C" { typedef long __off64_t; }
 # 143 "/usr/include/bits/types.h" 3
 extern "C" { typedef int __pid_t; }
 # 144 "/usr/include/bits/types.h" 3
@@ -2453,7 +2373,7 @@ extern "C" { typedef long __clock_t; }
 # 146 "/usr/include/bits/types.h" 3
 extern "C" { typedef unsigned long __rlim_t; }
 # 147 "/usr/include/bits/types.h" 3
-extern "C" { typedef __u_quad_t __rlim64_t; }
+extern "C" { typedef unsigned long __rlim64_t; }
 # 148 "/usr/include/bits/types.h" 3
 extern "C" { typedef unsigned __id_t; }
 # 149 "/usr/include/bits/types.h" 3
@@ -2477,17 +2397,17 @@ extern "C" { typedef long __blksize_t; }
 # 169 "/usr/include/bits/types.h" 3
 extern "C" { typedef long __blkcnt_t; }
 # 170 "/usr/include/bits/types.h" 3
-extern "C" { typedef __quad_t __blkcnt64_t; }
+extern "C" { typedef long __blkcnt64_t; }
 # 173 "/usr/include/bits/types.h" 3
 extern "C" { typedef unsigned long __fsblkcnt_t; }
 # 174 "/usr/include/bits/types.h" 3
-extern "C" { typedef __u_quad_t __fsblkcnt64_t; }
+extern "C" { typedef unsigned long __fsblkcnt64_t; }
 # 177 "/usr/include/bits/types.h" 3
 extern "C" { typedef unsigned long __fsfilcnt_t; }
 # 178 "/usr/include/bits/types.h" 3
-extern "C" { typedef __u_quad_t __fsfilcnt64_t; }
+extern "C" { typedef unsigned long __fsfilcnt64_t; }
 # 180 "/usr/include/bits/types.h" 3
-extern "C" { typedef int __ssize_t; }
+extern "C" { typedef long __ssize_t; }
 # 184 "/usr/include/bits/types.h" 3
 extern "C" { typedef __off64_t __loff_t; }
 # 185 "/usr/include/bits/types.h" 3
@@ -2495,7 +2415,7 @@ extern "C" { typedef __quad_t *__qaddr_t; }
 # 186 "/usr/include/bits/types.h" 3
 extern "C" { typedef char *__caddr_t; }
 # 189 "/usr/include/bits/types.h" 3
-extern "C" { typedef int __intptr_t; }
+extern "C" { typedef long __intptr_t; }
 # 192 "/usr/include/bits/types.h" 3
 extern "C" { typedef unsigned __socklen_t; }
 # 60 "/usr/include/time.h" 3
@@ -2938,10 +2858,10 @@ extern "C" __attribute__((weak)) int __isinfl(long double) throw() __attribute__
 extern "C" __attribute__((weak)) int __isnanl(long double) throw() __attribute__((__const__));
 # 455 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((weak)) int __finitel(long double) throw() __attribute__((__const__));
-# 38 "/usr/include/bits/mathdef.h" 3
-extern "C" { typedef long double float_t; }
-# 40 "/usr/include/bits/mathdef.h" 3
-extern "C" { typedef long double double_t; }
+# 31 "/usr/include/bits/mathdef.h" 3
+extern "C" { typedef float float_t; }
+# 32 "/usr/include/bits/mathdef.h" 3
+extern "C" { typedef double double_t; }
 # 55 "/usr/include/bits/mathcalls.h" 3
 extern "C" __attribute__((weak)) double acos(double) throw(); extern "C" double __acos(double) throw();
 # 57 "/usr/include/bits/mathcalls.h" 3
@@ -3631,7 +3551,7 @@ extern "C" { typedef short int16_t; }
 # 197 "/usr/include/sys/types.h" 3
 extern "C" { typedef int int32_t; }
 # 198 "/usr/include/sys/types.h" 3
-extern "C" { typedef long long int64_t; }
+extern "C" { typedef long int64_t; }
 # 201 "/usr/include/sys/types.h" 3
 extern "C" { typedef unsigned char u_int8_t; }
 # 202 "/usr/include/sys/types.h" 3
@@ -3639,7 +3559,7 @@ extern "C" { typedef unsigned short u_int16_t; }
 # 203 "/usr/include/sys/types.h" 3
 extern "C" { typedef unsigned u_int32_t; }
 # 204 "/usr/include/sys/types.h" 3
-extern "C" { typedef unsigned long long u_int64_t; }
+extern "C" { typedef unsigned long u_int64_t; }
 # 206 "/usr/include/sys/types.h" 3
 extern "C" { typedef int register_t; }
 # 24 "/usr/include/bits/sigset.h" 3
@@ -3705,19 +3625,21 @@ extern "C" { typedef
 # 54 "/usr/include/bits/pthreadtypes.h" 3
 union {
 # 55 "/usr/include/bits/pthreadtypes.h" 3
-char __size[36];
+char __size[56];
 # 56 "/usr/include/bits/pthreadtypes.h" 3
 long __align;
 # 57 "/usr/include/bits/pthreadtypes.h" 3
 } pthread_attr_t; }
-# 70 "/usr/include/bits/pthreadtypes.h" 3
+# 65 "/usr/include/bits/pthreadtypes.h" 3
 extern "C" { typedef
-# 67 "/usr/include/bits/pthreadtypes.h" 3
-struct __pthread_internal_slist {
-# 69 "/usr/include/bits/pthreadtypes.h" 3
-__pthread_internal_slist *__next;
-# 70 "/usr/include/bits/pthreadtypes.h" 3
-} __pthread_slist_t; }
+# 61 "/usr/include/bits/pthreadtypes.h" 3
+struct __pthread_internal_list {
+# 63 "/usr/include/bits/pthreadtypes.h" 3
+__pthread_internal_list *__prev;
+# 64 "/usr/include/bits/pthreadtypes.h" 3
+__pthread_internal_list *__next;
+# 65 "/usr/include/bits/pthreadtypes.h" 3
+} __pthread_list_t; }
 # 104 "/usr/include/bits/pthreadtypes.h" 3
 extern "C" { typedef
 # 77 "/usr/include/bits/pthreadtypes.h" 3
@@ -3730,22 +3652,18 @@ int __lock;
 unsigned __count;
 # 82 "/usr/include/bits/pthreadtypes.h" 3
 int __owner;
+# 84 "/usr/include/bits/pthreadtypes.h" 3
+unsigned __nusers;
 # 88 "/usr/include/bits/pthreadtypes.h" 3
 int __kind;
-# 94 "/usr/include/bits/pthreadtypes.h" 3
-unsigned __nusers;
-# 96 "/usr/include/bits/pthreadtypes.h" 3
-union {
-# 97 "/usr/include/bits/pthreadtypes.h" 3
+# 90 "/usr/include/bits/pthreadtypes.h" 3
 int __spins;
-# 98 "/usr/include/bits/pthreadtypes.h" 3
-__pthread_slist_t __list;
-# 99 "/usr/include/bits/pthreadtypes.h" 3
-};
+# 91 "/usr/include/bits/pthreadtypes.h" 3
+__pthread_list_t __list;
 # 101 "/usr/include/bits/pthreadtypes.h" 3
 } __data;
 # 102 "/usr/include/bits/pthreadtypes.h" 3
-char __size[24];
+char __size[40];
 # 103 "/usr/include/bits/pthreadtypes.h" 3
 long __align;
 # 104 "/usr/include/bits/pthreadtypes.h" 3
@@ -3808,34 +3726,34 @@ extern "C" { typedef int pthread_once_t; }
 extern "C" { typedef
 # 151 "/usr/include/bits/pthreadtypes.h" 3
 union {
-# 171 "/usr/include/bits/pthreadtypes.h" 3
+# 154 "/usr/include/bits/pthreadtypes.h" 3
 struct {
-# 172 "/usr/include/bits/pthreadtypes.h" 3
+# 155 "/usr/include/bits/pthreadtypes.h" 3
 int __lock;
-# 173 "/usr/include/bits/pthreadtypes.h" 3
+# 156 "/usr/include/bits/pthreadtypes.h" 3
 unsigned __nr_readers;
-# 174 "/usr/include/bits/pthreadtypes.h" 3
+# 157 "/usr/include/bits/pthreadtypes.h" 3
 unsigned __readers_wakeup;
-# 175 "/usr/include/bits/pthreadtypes.h" 3
+# 158 "/usr/include/bits/pthreadtypes.h" 3
 unsigned __writer_wakeup;
-# 176 "/usr/include/bits/pthreadtypes.h" 3
+# 159 "/usr/include/bits/pthreadtypes.h" 3
 unsigned __nr_readers_queued;
-# 177 "/usr/include/bits/pthreadtypes.h" 3
+# 160 "/usr/include/bits/pthreadtypes.h" 3
 unsigned __nr_writers_queued;
-# 180 "/usr/include/bits/pthreadtypes.h" 3
-unsigned char __flags;
-# 181 "/usr/include/bits/pthreadtypes.h" 3
-unsigned char __shared;
-# 182 "/usr/include/bits/pthreadtypes.h" 3
-unsigned char __pad1;
-# 183 "/usr/include/bits/pthreadtypes.h" 3
-unsigned char __pad2;
-# 184 "/usr/include/bits/pthreadtypes.h" 3
+# 161 "/usr/include/bits/pthreadtypes.h" 3
 int __writer;
-# 185 "/usr/include/bits/pthreadtypes.h" 3
+# 162 "/usr/include/bits/pthreadtypes.h" 3
+int __shared;
+# 163 "/usr/include/bits/pthreadtypes.h" 3
+unsigned long __pad1;
+# 164 "/usr/include/bits/pthreadtypes.h" 3
+unsigned long __pad2;
+# 167 "/usr/include/bits/pthreadtypes.h" 3
+unsigned __flags;
+# 168 "/usr/include/bits/pthreadtypes.h" 3
 } __data;
 # 187 "/usr/include/bits/pthreadtypes.h" 3
-char __size[32];
+char __size[56];
 # 188 "/usr/include/bits/pthreadtypes.h" 3
 long __align;
 # 189 "/usr/include/bits/pthreadtypes.h" 3
@@ -3857,7 +3775,7 @@ extern "C" { typedef
 # 207 "/usr/include/bits/pthreadtypes.h" 3
 union {
 # 208 "/usr/include/bits/pthreadtypes.h" 3
-char __size[20];
+char __size[32];
 # 209 "/usr/include/bits/pthreadtypes.h" 3
 long __align;
 # 210 "/usr/include/bits/pthreadtypes.h" 3
@@ -6593,54 +6511,6 @@ template<> __attribute__((unused)) inline ulonglong2 surf1Dread(surface< void, 1
 {int volatile ___ = 1;
 # 322 "/usr/local/cuda/bin/../include/surface_functions.h"
 exit(___);}
-# 327 "/usr/local/cuda/bin/../include/surface_functions.h"
-template<> __attribute__((unused)) inline long surf1Dread(surface< void, 1> surf, int x, cudaSurfaceBoundaryMode mode)
-# 328 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 330 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 333 "/usr/local/cuda/bin/../include/surface_functions.h"
-template<> __attribute__((unused)) inline unsigned long surf1Dread(surface< void, 1> surf, int x, cudaSurfaceBoundaryMode mode)
-# 334 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 336 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 339 "/usr/local/cuda/bin/../include/surface_functions.h"
-template<> __attribute__((unused)) inline long1 surf1Dread(surface< void, 1> surf, int x, cudaSurfaceBoundaryMode mode)
-# 340 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 342 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 345 "/usr/local/cuda/bin/../include/surface_functions.h"
-template<> __attribute__((unused)) inline ulong1 surf1Dread(surface< void, 1> surf, int x, cudaSurfaceBoundaryMode mode)
-# 346 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 348 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 351 "/usr/local/cuda/bin/../include/surface_functions.h"
-template<> __attribute__((unused)) inline long2 surf1Dread(surface< void, 1> surf, int x, cudaSurfaceBoundaryMode mode)
-# 352 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 356 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 359 "/usr/local/cuda/bin/../include/surface_functions.h"
-template<> __attribute__((unused)) inline ulong2 surf1Dread(surface< void, 1> surf, int x, cudaSurfaceBoundaryMode mode)
-# 360 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 364 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 367 "/usr/local/cuda/bin/../include/surface_functions.h"
-template<> __attribute__((unused)) inline long4 surf1Dread(surface< void, 1> surf, int x, cudaSurfaceBoundaryMode mode)
-# 368 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 372 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 375 "/usr/local/cuda/bin/../include/surface_functions.h"
-template<> __attribute__((unused)) inline ulong4 surf1Dread(surface< void, 1> surf, int x, cudaSurfaceBoundaryMode mode)
-# 376 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 380 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
 # 385 "/usr/local/cuda/bin/../include/surface_functions.h"
 template<> __attribute__((unused)) inline float surf1Dread(surface< void, 1> surf, int x, cudaSurfaceBoundaryMode mode)
 # 386 "/usr/local/cuda/bin/../include/surface_functions.h"
@@ -6875,54 +6745,6 @@ template<> __attribute__((unused)) inline ulonglong2 surf2Dread(surface< void, 2
 {int volatile ___ = 1;
 # 682 "/usr/local/cuda/bin/../include/surface_functions.h"
 exit(___);}
-# 687 "/usr/local/cuda/bin/../include/surface_functions.h"
-template<> __attribute__((unused)) inline long surf2Dread(surface< void, 2> surf, int x, int y, cudaSurfaceBoundaryMode mode)
-# 688 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 690 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 693 "/usr/local/cuda/bin/../include/surface_functions.h"
-template<> __attribute__((unused)) inline unsigned long surf2Dread(surface< void, 2> surf, int x, int y, cudaSurfaceBoundaryMode mode)
-# 694 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 696 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 699 "/usr/local/cuda/bin/../include/surface_functions.h"
-template<> __attribute__((unused)) inline long1 surf2Dread(surface< void, 2> surf, int x, int y, cudaSurfaceBoundaryMode mode)
-# 700 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 702 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 705 "/usr/local/cuda/bin/../include/surface_functions.h"
-template<> __attribute__((unused)) inline ulong1 surf2Dread(surface< void, 2> surf, int x, int y, cudaSurfaceBoundaryMode mode)
-# 706 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 708 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 711 "/usr/local/cuda/bin/../include/surface_functions.h"
-template<> __attribute__((unused)) inline long2 surf2Dread(surface< void, 2> surf, int x, int y, cudaSurfaceBoundaryMode mode)
-# 712 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 716 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 719 "/usr/local/cuda/bin/../include/surface_functions.h"
-template<> __attribute__((unused)) inline ulong2 surf2Dread(surface< void, 2> surf, int x, int y, cudaSurfaceBoundaryMode mode)
-# 720 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 724 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 727 "/usr/local/cuda/bin/../include/surface_functions.h"
-template<> __attribute__((unused)) inline long4 surf2Dread(surface< void, 2> surf, int x, int y, cudaSurfaceBoundaryMode mode)
-# 728 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 732 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 735 "/usr/local/cuda/bin/../include/surface_functions.h"
-template<> __attribute__((unused)) inline ulong4 surf2Dread(surface< void, 2> surf, int x, int y, cudaSurfaceBoundaryMode mode)
-# 736 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 740 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
 # 745 "/usr/local/cuda/bin/../include/surface_functions.h"
 template<> __attribute__((unused)) inline float surf2Dread(surface< void, 2> surf, int x, int y, cudaSurfaceBoundaryMode mode)
 # 746 "/usr/local/cuda/bin/../include/surface_functions.h"
@@ -7148,54 +6970,6 @@ __attribute__((unused)) static inline void surf1Dwrite(ulonglong2 val, surface< 
 # 997 "/usr/local/cuda/bin/../include/surface_functions.h"
 {int volatile ___ = 1;
 # 999 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 1003 "/usr/local/cuda/bin/../include/surface_functions.h"
-__attribute__((unused)) static inline void surf1Dwrite(long val, surface< void, 1> surf, int x, cudaSurfaceBoundaryMode mode = cudaBoundaryModeTrap)
-# 1004 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 1006 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 1008 "/usr/local/cuda/bin/../include/surface_functions.h"
-__attribute__((unused)) static inline void surf1Dwrite(unsigned long val, surface< void, 1> surf, int x, cudaSurfaceBoundaryMode mode = cudaBoundaryModeTrap)
-# 1009 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 1011 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 1013 "/usr/local/cuda/bin/../include/surface_functions.h"
-__attribute__((unused)) static inline void surf1Dwrite(long1 val, surface< void, 1> surf, int x, cudaSurfaceBoundaryMode mode = cudaBoundaryModeTrap)
-# 1014 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 1016 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 1018 "/usr/local/cuda/bin/../include/surface_functions.h"
-__attribute__((unused)) static inline void surf1Dwrite(ulong1 val, surface< void, 1> surf, int x, cudaSurfaceBoundaryMode mode = cudaBoundaryModeTrap)
-# 1019 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 1021 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 1023 "/usr/local/cuda/bin/../include/surface_functions.h"
-__attribute__((unused)) static inline void surf1Dwrite(long2 val, surface< void, 1> surf, int x, cudaSurfaceBoundaryMode mode = cudaBoundaryModeTrap)
-# 1024 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 1026 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 1028 "/usr/local/cuda/bin/../include/surface_functions.h"
-__attribute__((unused)) static inline void surf1Dwrite(ulong2 val, surface< void, 1> surf, int x, cudaSurfaceBoundaryMode mode = cudaBoundaryModeTrap)
-# 1029 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 1031 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 1033 "/usr/local/cuda/bin/../include/surface_functions.h"
-__attribute__((unused)) static inline void surf1Dwrite(long4 val, surface< void, 1> surf, int x, cudaSurfaceBoundaryMode mode = cudaBoundaryModeTrap)
-# 1034 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 1036 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 1038 "/usr/local/cuda/bin/../include/surface_functions.h"
-__attribute__((unused)) static inline void surf1Dwrite(ulong4 val, surface< void, 1> surf, int x, cudaSurfaceBoundaryMode mode = cudaBoundaryModeTrap)
-# 1039 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 1041 "/usr/local/cuda/bin/../include/surface_functions.h"
 exit(___);}
 # 1045 "/usr/local/cuda/bin/../include/surface_functions.h"
 __attribute__((unused)) static inline void surf1Dwrite(float val, surface< void, 1> surf, int x, cudaSurfaceBoundaryMode mode = cudaBoundaryModeTrap)
@@ -7423,54 +7197,6 @@ __attribute__((unused)) static inline void surf2Dwrite(ulonglong2 val, surface< 
 {int volatile ___ = 1;
 # 1292 "/usr/local/cuda/bin/../include/surface_functions.h"
 exit(___);}
-# 1296 "/usr/local/cuda/bin/../include/surface_functions.h"
-__attribute__((unused)) static inline void surf2Dwrite(long val, surface< void, 2> surf, int x, int y, cudaSurfaceBoundaryMode mode = cudaBoundaryModeTrap)
-# 1297 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 1299 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 1301 "/usr/local/cuda/bin/../include/surface_functions.h"
-__attribute__((unused)) static inline void surf2Dwrite(unsigned long val, surface< void, 2> surf, int x, int y, cudaSurfaceBoundaryMode mode = cudaBoundaryModeTrap)
-# 1302 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 1304 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 1306 "/usr/local/cuda/bin/../include/surface_functions.h"
-__attribute__((unused)) static inline void surf2Dwrite(long1 val, surface< void, 2> surf, int x, int y, cudaSurfaceBoundaryMode mode = cudaBoundaryModeTrap)
-# 1307 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 1309 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 1311 "/usr/local/cuda/bin/../include/surface_functions.h"
-__attribute__((unused)) static inline void surf2Dwrite(ulong1 val, surface< void, 2> surf, int x, int y, cudaSurfaceBoundaryMode mode = cudaBoundaryModeTrap)
-# 1312 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 1314 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 1316 "/usr/local/cuda/bin/../include/surface_functions.h"
-__attribute__((unused)) static inline void surf2Dwrite(long2 val, surface< void, 2> surf, int x, int y, cudaSurfaceBoundaryMode mode = cudaBoundaryModeTrap)
-# 1317 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 1319 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 1321 "/usr/local/cuda/bin/../include/surface_functions.h"
-__attribute__((unused)) static inline void surf2Dwrite(ulong2 val, surface< void, 2> surf, int x, int y, cudaSurfaceBoundaryMode mode = cudaBoundaryModeTrap)
-# 1322 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 1324 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 1326 "/usr/local/cuda/bin/../include/surface_functions.h"
-__attribute__((unused)) static inline void surf2Dwrite(long4 val, surface< void, 2> surf, int x, int y, cudaSurfaceBoundaryMode mode = cudaBoundaryModeTrap)
-# 1327 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 1329 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 1331 "/usr/local/cuda/bin/../include/surface_functions.h"
-__attribute__((unused)) static inline void surf2Dwrite(ulong4 val, surface< void, 2> surf, int x, int y, cudaSurfaceBoundaryMode mode = cudaBoundaryModeTrap)
-# 1332 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 1334 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
 # 1338 "/usr/local/cuda/bin/../include/surface_functions.h"
 __attribute__((unused)) static inline void surf2Dwrite(float val, surface< void, 2> surf, int x, int y, cudaSurfaceBoundaryMode mode = cudaBoundaryModeTrap)
 # 1339 "/usr/local/cuda/bin/../include/surface_functions.h"
@@ -7656,54 +7382,6 @@ __attribute__((unused)) static inline uint4 tex1Dfetch(texture< uint4, 1, cudaRe
 # 265 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 {int volatile ___ = 1;
 # 269 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 279 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline long tex1Dfetch(texture< long, 1, cudaReadModeElementType> t, int x)
-# 280 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 284 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 286 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline unsigned long tex1Dfetch(texture< unsigned long, 1, cudaReadModeElementType> t, int x)
-# 287 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 291 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 293 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline long1 tex1Dfetch(texture< long1, 1, cudaReadModeElementType> t, int x)
-# 294 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 298 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 300 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline ulong1 tex1Dfetch(texture< ulong1, 1, cudaReadModeElementType> t, int x)
-# 301 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 305 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 307 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline long2 tex1Dfetch(texture< long2, 1, cudaReadModeElementType> t, int x)
-# 308 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 312 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 314 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline ulong2 tex1Dfetch(texture< ulong2, 1, cudaReadModeElementType> t, int x)
-# 315 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 319 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 321 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline long4 tex1Dfetch(texture< long4, 1, cudaReadModeElementType> t, int x)
-# 322 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 326 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 328 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline ulong4 tex1Dfetch(texture< ulong4, 1, cudaReadModeElementType> t, int x)
-# 329 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 333 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 exit(___);}
 # 343 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 __attribute__((unused)) static inline float tex1Dfetch(texture< float, 1, cudaReadModeElementType> t, int x)
@@ -7981,54 +7659,6 @@ __attribute__((unused)) static inline uint4 tex1D(texture< uint4, 1, cudaReadMod
 {int volatile ___ = 1;
 # 718 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 exit(___);}
-# 734 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline long tex1D(texture< long, 1, cudaReadModeElementType> t, float x)
-# 735 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 739 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 741 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline unsigned long tex1D(texture< unsigned long, 1, cudaReadModeElementType> t, float x)
-# 742 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 746 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 748 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline long1 tex1D(texture< long1, 1, cudaReadModeElementType> t, float x)
-# 749 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 753 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 755 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline ulong1 tex1D(texture< ulong1, 1, cudaReadModeElementType> t, float x)
-# 756 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 760 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 762 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline long2 tex1D(texture< long2, 1, cudaReadModeElementType> t, float x)
-# 763 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 767 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 769 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline ulong2 tex1D(texture< ulong2, 1, cudaReadModeElementType> t, float x)
-# 770 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 774 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 776 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline long4 tex1D(texture< long4, 1, cudaReadModeElementType> t, float x)
-# 777 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 781 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 783 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline ulong4 tex1D(texture< ulong4, 1, cudaReadModeElementType> t, float x)
-# 784 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 788 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
 # 798 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 __attribute__((unused)) static inline float tex1D(texture< float, 1, cudaReadModeElementType> t, float x)
 # 799 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
@@ -8305,54 +7935,6 @@ __attribute__((unused)) static inline uint4 tex2D(texture< uint4, 2, cudaReadMod
 {int volatile ___ = 1;
 # 1173 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 exit(___);}
-# 1183 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline long tex2D(texture< long, 2, cudaReadModeElementType> t, float x, float y)
-# 1184 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 1188 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 1190 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline unsigned long tex2D(texture< unsigned long, 2, cudaReadModeElementType> t, float x, float y)
-# 1191 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 1195 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 1197 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline long1 tex2D(texture< long1, 2, cudaReadModeElementType> t, float x, float y)
-# 1198 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 1202 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 1204 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline ulong1 tex2D(texture< ulong1, 2, cudaReadModeElementType> t, float x, float y)
-# 1205 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 1209 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 1211 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline long2 tex2D(texture< long2, 2, cudaReadModeElementType> t, float x, float y)
-# 1212 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 1216 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 1218 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline ulong2 tex2D(texture< ulong2, 2, cudaReadModeElementType> t, float x, float y)
-# 1219 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 1223 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 1225 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline long4 tex2D(texture< long4, 2, cudaReadModeElementType> t, float x, float y)
-# 1226 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 1230 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 1232 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline ulong4 tex2D(texture< ulong4, 2, cudaReadModeElementType> t, float x, float y)
-# 1233 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 1237 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
 # 1247 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 __attribute__((unused)) static inline float tex2D(texture< float, 2, cudaReadModeElementType> t, float x, float y)
 # 1248 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
@@ -8628,54 +8210,6 @@ __attribute__((unused)) static inline uint4 tex3D(texture< uint4, 3, cudaReadMod
 # 1618 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 {int volatile ___ = 1;
 # 1622 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 1632 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline long tex3D(texture< long, 3, cudaReadModeElementType> t, float x, float y, float z)
-# 1633 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 1637 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 1639 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline unsigned long tex3D(texture< unsigned long, 3, cudaReadModeElementType> t, float x, float y, float z)
-# 1640 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 1644 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 1646 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline long1 tex3D(texture< long1, 3, cudaReadModeElementType> t, float x, float y, float z)
-# 1647 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 1651 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 1653 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline ulong1 tex3D(texture< ulong1, 3, cudaReadModeElementType> t, float x, float y, float z)
-# 1654 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 1658 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 1660 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline long2 tex3D(texture< long2, 3, cudaReadModeElementType> t, float x, float y, float z)
-# 1661 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 1665 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 1667 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline ulong2 tex3D(texture< ulong2, 3, cudaReadModeElementType> t, float x, float y, float z)
-# 1668 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 1672 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 1674 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline long4 tex3D(texture< long4, 3, cudaReadModeElementType> t, float x, float y, float z)
-# 1675 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 1679 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 1681 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline ulong4 tex3D(texture< ulong4, 3, cudaReadModeElementType> t, float x, float y, float z)
-# 1682 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 1686 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 exit(___);}
 # 1696 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 __attribute__((unused)) static inline float tex3D(texture< float, 3, cudaReadModeElementType> t, float x, float y, float z)
@@ -10027,8 +9561,8 @@ extern "C" void flockfile(FILE *) throw();
 extern "C" int ftrylockfile(FILE *) throw();
 # 913 "/usr/include/stdio.h" 3
 extern "C" void funlockfile(FILE *) throw();
-# 130 "/usr/local/cuda/bin/../include/cuda.h"
-extern "C" { typedef unsigned CUdeviceptr; }
+# 128 "/usr/local/cuda/bin/../include/cuda.h"
+extern "C" { typedef unsigned long long CUdeviceptr; }
 # 135 "/usr/local/cuda/bin/../include/cuda.h"
 extern "C" { typedef int CUdevice; }
 # 136 "/usr/local/cuda/bin/../include/cuda.h"
@@ -10853,125 +10387,125 @@ extern "C" CUresult cuGraphicsMapResources(unsigned, CUgraphicsResource *, CUstr
 extern "C" CUresult cuGraphicsUnmapResources(unsigned, CUgraphicsResource *, CUstream);
 # 6101 "/usr/local/cuda/bin/../include/cuda.h"
 extern "C" CUresult cuGetExportTable(const void **, const CUuuid *);
-# 64 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 64 "sdk/cutil.h"
 enum CUTBoolean {
-# 66 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 66 "sdk/cutil.h"
 CUTFalse,
-# 67 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 67 "sdk/cutil.h"
 CUTTrue
-# 68 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 68 "sdk/cutil.h"
 };
-# 76 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 76 "sdk/cutil.h"
 extern "C" void cutFree(void *);
-# 94 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 94 "sdk/cutil.h"
 extern "C" void cutCheckBankAccess(unsigned, unsigned, unsigned, unsigned, unsigned, unsigned, const char *, const int, const char *, const int);
-# 107 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 107 "sdk/cutil.h"
 extern "C" char *cutFindFilePath(const char *, const char *);
-# 122 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 122 "sdk/cutil.h"
 extern "C" CUTBoolean cutReadFilef(const char *, float **, unsigned *, bool = false);
-# 138 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 138 "sdk/cutil.h"
 extern "C" CUTBoolean cutReadFiled(const char *, double **, unsigned *, bool = false);
-# 154 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 154 "sdk/cutil.h"
 extern "C" CUTBoolean cutReadFilei(const char *, int **, unsigned *, bool = false);
-# 169 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 169 "sdk/cutil.h"
 extern "C" CUTBoolean cutReadFileui(const char *, unsigned **, unsigned *, bool = false);
-# 185 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 185 "sdk/cutil.h"
 extern "C" CUTBoolean cutReadFileb(const char *, char **, unsigned *, bool = false);
-# 201 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 201 "sdk/cutil.h"
 extern "C" CUTBoolean cutReadFileub(const char *, unsigned char **, unsigned *, bool = false);
-# 215 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 215 "sdk/cutil.h"
 extern "C" CUTBoolean cutWriteFilef(const char *, const float *, unsigned, const float, bool = false);
-# 229 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 229 "sdk/cutil.h"
 extern "C" CUTBoolean cutWriteFiled(const char *, const float *, unsigned, const double, bool = false);
-# 241 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 241 "sdk/cutil.h"
 extern "C" CUTBoolean cutWriteFilei(const char *, const int *, unsigned, bool = false);
-# 253 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 253 "sdk/cutil.h"
 extern "C" CUTBoolean cutWriteFileui(const char *, const unsigned *, unsigned, bool = false);
-# 265 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 265 "sdk/cutil.h"
 extern "C" CUTBoolean cutWriteFileb(const char *, const char *, unsigned, bool = false);
-# 277 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 277 "sdk/cutil.h"
 extern "C" CUTBoolean cutWriteFileub(const char *, const unsigned char *, unsigned, bool = false);
-# 293 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 293 "sdk/cutil.h"
 extern "C" CUTBoolean cutLoadPGMub(const char *, unsigned char **, unsigned *, unsigned *);
-# 306 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 306 "sdk/cutil.h"
 extern "C" CUTBoolean cutLoadPPMub(const char *, unsigned char **, unsigned *, unsigned *);
-# 320 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 320 "sdk/cutil.h"
 extern "C" CUTBoolean cutLoadPPM4ub(const char *, unsigned char **, unsigned *, unsigned *);
-# 336 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 336 "sdk/cutil.h"
 extern "C" CUTBoolean cutLoadPGMi(const char *, unsigned **, unsigned *, unsigned *);
-# 352 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 352 "sdk/cutil.h"
 extern "C" CUTBoolean cutLoadPGMs(const char *, unsigned short **, unsigned *, unsigned *);
-# 367 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 367 "sdk/cutil.h"
 extern "C" CUTBoolean cutLoadPGMf(const char *, float **, unsigned *, unsigned *);
-# 379 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 379 "sdk/cutil.h"
 extern "C" CUTBoolean cutSavePGMub(const char *, unsigned char *, unsigned, unsigned);
-# 391 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 391 "sdk/cutil.h"
 extern "C" CUTBoolean cutSavePPMub(const char *, unsigned char *, unsigned, unsigned);
-# 404 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 404 "sdk/cutil.h"
 extern "C" CUTBoolean cutSavePPM4ub(const char *, unsigned char *, unsigned, unsigned);
-# 416 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 416 "sdk/cutil.h"
 extern "C" CUTBoolean cutSavePGMi(const char *, unsigned *, unsigned, unsigned);
-# 428 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 428 "sdk/cutil.h"
 extern "C" CUTBoolean cutSavePGMs(const char *, unsigned short *, unsigned, unsigned);
-# 440 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 440 "sdk/cutil.h"
 extern "C" CUTBoolean cutSavePGMf(const char *, float *, unsigned, unsigned);
-# 461 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 461 "sdk/cutil.h"
 extern "C" CUTBoolean cutCheckCmdLineFlag(const int, const char **, const char *);
-# 475 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 475 "sdk/cutil.h"
 extern "C" CUTBoolean cutGetCmdLineArgumenti(const int, const char **, const char *, int *);
-# 489 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 489 "sdk/cutil.h"
 extern "C" CUTBoolean cutGetCmdLineArgumentf(const int, const char **, const char *, float *);
-# 503 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 503 "sdk/cutil.h"
 extern "C" CUTBoolean cutGetCmdLineArgumentstr(const int, const char **, const char *, char **);
-# 518 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 518 "sdk/cutil.h"
 extern "C" CUTBoolean cutGetCmdLineArgumentListstr(const int, const char **, const char *, char **, unsigned *);
-# 532 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 532 "sdk/cutil.h"
 extern "C" CUTBoolean cutCheckCondition(int, const char *, const int);
-# 544 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 544 "sdk/cutil.h"
 extern "C" CUTBoolean cutComparef(const float *, const float *, const unsigned);
-# 557 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 557 "sdk/cutil.h"
 extern "C" CUTBoolean cutComparei(const int *, const int *, const unsigned);
-# 571 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 571 "sdk/cutil.h"
 extern "C" CUTBoolean cutCompareuit(const unsigned *, const unsigned *, const unsigned, const float, const float);
-# 584 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 584 "sdk/cutil.h"
 extern "C" CUTBoolean cutCompareub(const unsigned char *, const unsigned char *, const unsigned);
-# 599 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 599 "sdk/cutil.h"
 extern "C" CUTBoolean cutCompareubt(const unsigned char *, const unsigned char *, const unsigned, const float, const float);
-# 613 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 613 "sdk/cutil.h"
 extern "C" CUTBoolean cutCompareube(const unsigned char *, const unsigned char *, const unsigned, const float);
-# 627 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 627 "sdk/cutil.h"
 extern "C" CUTBoolean cutComparefe(const float *, const float *, const unsigned, const float);
-# 642 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 642 "sdk/cutil.h"
 extern "C" CUTBoolean cutComparefet(const float *, const float *, const unsigned, const float, const float);
-# 657 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 657 "sdk/cutil.h"
 extern "C" CUTBoolean cutCompareL2fe(const float *, const float *, const unsigned, const float);
-# 672 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 672 "sdk/cutil.h"
 extern "C" CUTBoolean cutComparePPM(const char *, const char *, const float, const float, bool = false);
-# 685 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 685 "sdk/cutil.h"
 extern "C" CUTBoolean cutCreateTimer(unsigned *);
-# 694 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 694 "sdk/cutil.h"
 extern "C" CUTBoolean cutDeleteTimer(unsigned);
-# 702 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 702 "sdk/cutil.h"
 extern "C" CUTBoolean cutStartTimer(const unsigned);
-# 710 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 710 "sdk/cutil.h"
 extern "C" CUTBoolean cutStopTimer(const unsigned);
-# 718 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 718 "sdk/cutil.h"
 extern "C" CUTBoolean cutResetTimer(const unsigned);
-# 727 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 727 "sdk/cutil.h"
 extern "C" float cutGetTimerValue(const unsigned);
-# 738 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 738 "sdk/cutil.h"
 extern "C" float cutGetAverageTimerValue(const unsigned);
-# 19 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_bankchecker.h"
+# 19 "sdk/cutil_inline_bankchecker.h"
 inline void __cutilBankChecker(unsigned tidx, unsigned tidy, unsigned tidz, unsigned
-# 20 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_bankchecker.h"
+# 20 "sdk/cutil_inline_bankchecker.h"
 bdimx, unsigned bdimy, unsigned bdimz, char *
-# 21 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_bankchecker.h"
+# 21 "sdk/cutil_inline_bankchecker.h"
 aname, int index, char *file, int line)
-# 22 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_bankchecker.h"
+# 22 "sdk/cutil_inline_bankchecker.h"
 {
-# 23 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_bankchecker.h"
+# 23 "sdk/cutil_inline_bankchecker.h"
 cutCheckBankAccess(tidx, tidy, tidz, bdimx, bdimy, bdimz, file, line, aname, index);
-# 24 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_bankchecker.h"
+# 24 "sdk/cutil_inline_bankchecker.h"
 }
 # 46 "/usr/local/cuda/bin/../include/cuComplex.h"
 extern "C" { typedef float2 cuFloatComplex; }
@@ -11441,391 +10975,391 @@ extern "C" cufftResult cufftExecZ2D(cufftHandle, cufftDoubleComplex *, cufftDoub
 extern "C" cufftResult cufftSetStream(cufftHandle, cudaStream_t);
 # 187 "/usr/local/cuda/bin/../include/cufft.h"
 extern "C" cufftResult cufftSetCompatibilityMode(cufftHandle, cufftCompatibility);
-# 22 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 22 "sdk/cutil_inline_runtime.h"
 inline void __cutilCondition(int val, char *file, int line)
-# 23 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 23 "sdk/cutil_inline_runtime.h"
 {
-# 24 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 24 "sdk/cutil_inline_runtime.h"
 if ((CUTFalse) == (cutCheckCondition(val, file, line))) {
-# 25 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 25 "sdk/cutil_inline_runtime.h"
 exit(1);
-# 26 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 26 "sdk/cutil_inline_runtime.h"
 }
-# 27 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 27 "sdk/cutil_inline_runtime.h"
 }
-# 29 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 29 "sdk/cutil_inline_runtime.h"
 inline void __cutilExit(int argc, char **argv)
-# 30 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 30 "sdk/cutil_inline_runtime.h"
 {
-# 31 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 31 "sdk/cutil_inline_runtime.h"
 if (!(cutCheckCmdLineFlag(argc, (const char **)argv, "noprompt"))) {
-# 32 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 32 "sdk/cutil_inline_runtime.h"
 printf("\nPress ENTER to exit...\n");
-# 33 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 33 "sdk/cutil_inline_runtime.h"
 fflush(stdout);
-# 34 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 34 "sdk/cutil_inline_runtime.h"
 fflush(stderr);
-# 35 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 35 "sdk/cutil_inline_runtime.h"
 getchar();
-# 36 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 36 "sdk/cutil_inline_runtime.h"
 }
-# 37 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 37 "sdk/cutil_inline_runtime.h"
 exit(0);
-# 38 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 38 "sdk/cutil_inline_runtime.h"
 }
-# 41 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 41 "sdk/cutil_inline_runtime.h"
 inline int cutGetMaxGflopsDeviceId()
-# 42 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 42 "sdk/cutil_inline_runtime.h"
 {
-# 43 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 43 "sdk/cutil_inline_runtime.h"
 int device_count = 0;
-# 44 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 44 "sdk/cutil_inline_runtime.h"
 cudaGetDeviceCount(&device_count);
-# 46 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 46 "sdk/cutil_inline_runtime.h"
 cudaDeviceProp device_properties;
-# 47 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 47 "sdk/cutil_inline_runtime.h"
 int max_gflops_device = 0;
-# 48 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 48 "sdk/cutil_inline_runtime.h"
 int max_gflops = 0;
-# 50 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 50 "sdk/cutil_inline_runtime.h"
 int current_device = 0;
-# 51 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 51 "sdk/cutil_inline_runtime.h"
 cudaGetDeviceProperties(&device_properties, current_device);
-# 52 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 52 "sdk/cutil_inline_runtime.h"
 max_gflops = ((device_properties.multiProcessorCount) * (device_properties.clockRate));
-# 53 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 53 "sdk/cutil_inline_runtime.h"
 ++current_device;
-# 55 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 55 "sdk/cutil_inline_runtime.h"
 while (current_device < device_count)
-# 56 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 56 "sdk/cutil_inline_runtime.h"
 {
-# 57 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 57 "sdk/cutil_inline_runtime.h"
 cudaGetDeviceProperties(&device_properties, current_device);
-# 58 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 58 "sdk/cutil_inline_runtime.h"
 int gflops = ((device_properties.multiProcessorCount) * (device_properties.clockRate));
-# 59 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 59 "sdk/cutil_inline_runtime.h"
 if (gflops > max_gflops)
-# 60 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 60 "sdk/cutil_inline_runtime.h"
 {
-# 61 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 61 "sdk/cutil_inline_runtime.h"
 max_gflops = gflops;
-# 62 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 62 "sdk/cutil_inline_runtime.h"
 max_gflops_device = current_device;
-# 63 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 63 "sdk/cutil_inline_runtime.h"
 }
-# 64 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 64 "sdk/cutil_inline_runtime.h"
 ++current_device;
-# 65 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 65 "sdk/cutil_inline_runtime.h"
 }
-# 67 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 67 "sdk/cutil_inline_runtime.h"
 return max_gflops_device;
-# 68 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 68 "sdk/cutil_inline_runtime.h"
 }
-# 70 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 70 "sdk/cutil_inline_runtime.h"
 inline void __cudaSafeCallNoSync(cudaError err, const char *file, const int line)
-# 71 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 71 "sdk/cutil_inline_runtime.h"
 {
-# 72 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 72 "sdk/cutil_inline_runtime.h"
 if ((cudaSuccess) != err) {
-# 73 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 73 "sdk/cutil_inline_runtime.h"
 fprintf(stderr, "cudaSafeCallNoSync() Runtime API error in file <%s>, line %i : %s.\n", file, line, cudaGetErrorString(err));
-# 75 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 75 "sdk/cutil_inline_runtime.h"
 exit(-1);
-# 76 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 76 "sdk/cutil_inline_runtime.h"
 }
-# 77 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 77 "sdk/cutil_inline_runtime.h"
 }
-# 79 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 79 "sdk/cutil_inline_runtime.h"
 inline void __cudaSafeCall(cudaError err, const char *file, const int line)
-# 80 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 80 "sdk/cutil_inline_runtime.h"
 {
-# 81 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 81 "sdk/cutil_inline_runtime.h"
 if ((cudaSuccess) != err) {
-# 82 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 82 "sdk/cutil_inline_runtime.h"
 fprintf(stderr, "cudaSafeCall() Runtime API error in file <%s>, line %i : %s.\n", file, line, cudaGetErrorString(err));
-# 84 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 84 "sdk/cutil_inline_runtime.h"
 exit(-1);
-# 85 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 85 "sdk/cutil_inline_runtime.h"
 }
-# 86 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 86 "sdk/cutil_inline_runtime.h"
 }
-# 88 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 88 "sdk/cutil_inline_runtime.h"
 inline void __cudaSafeThreadSync(const char *file, const int line)
-# 89 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 89 "sdk/cutil_inline_runtime.h"
 {
-# 90 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 90 "sdk/cutil_inline_runtime.h"
 cudaError err = cudaThreadSynchronize();
-# 91 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 91 "sdk/cutil_inline_runtime.h"
 if ((cudaSuccess) != err) {
-# 92 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 92 "sdk/cutil_inline_runtime.h"
 fprintf(stderr, "cudaThreadSynchronize() Driver API error in file \'%s\' in line %i : %s.\n", file, line, cudaGetErrorString(err));
-# 94 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 94 "sdk/cutil_inline_runtime.h"
 exit(-1);
-# 95 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 95 "sdk/cutil_inline_runtime.h"
 }
-# 96 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 96 "sdk/cutil_inline_runtime.h"
 }
-# 98 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 98 "sdk/cutil_inline_runtime.h"
 inline void __cufftSafeCall(cufftResult err, const char *file, const int line)
-# 99 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 99 "sdk/cutil_inline_runtime.h"
 {
-# 100 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 100 "sdk/cutil_inline_runtime.h"
 if ((CUFFT_SUCCESS) != err) {
-# 101 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 101 "sdk/cutil_inline_runtime.h"
 fprintf(stderr, "cufftSafeCall() CUFFT error in file <%s>, line %i.\n", file, line);
-# 103 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 103 "sdk/cutil_inline_runtime.h"
 exit(-1);
-# 104 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 104 "sdk/cutil_inline_runtime.h"
 }
-# 105 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 105 "sdk/cutil_inline_runtime.h"
 }
-# 107 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 107 "sdk/cutil_inline_runtime.h"
 inline void __cutilCheckError(CUTBoolean err, const char *file, const int line)
-# 108 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 108 "sdk/cutil_inline_runtime.h"
 {
-# 109 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 109 "sdk/cutil_inline_runtime.h"
 if ((CUTTrue) != err) {
-# 110 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 110 "sdk/cutil_inline_runtime.h"
 fprintf(stderr, "CUTIL CUDA error in file <%s>, line %i.\n", file, line);
-# 112 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 112 "sdk/cutil_inline_runtime.h"
 exit(-1);
-# 113 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 113 "sdk/cutil_inline_runtime.h"
 }
-# 114 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 114 "sdk/cutil_inline_runtime.h"
 }
-# 116 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 116 "sdk/cutil_inline_runtime.h"
 inline void __cutilCheckMsg(const char *errorMessage, const char *file, const int line)
-# 117 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 117 "sdk/cutil_inline_runtime.h"
 {
-# 118 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 118 "sdk/cutil_inline_runtime.h"
 cudaError_t err = cudaGetLastError();
-# 119 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 119 "sdk/cutil_inline_runtime.h"
 if ((cudaSuccess) != err) {
-# 120 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 120 "sdk/cutil_inline_runtime.h"
 fprintf(stderr, "cutilCheckMsg() CUTIL CUDA error: %s in file <%s>, line %i : %s.\n", errorMessage, file, line, cudaGetErrorString(err));
-# 122 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 122 "sdk/cutil_inline_runtime.h"
 exit(-1);
-# 123 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 123 "sdk/cutil_inline_runtime.h"
 }
-# 132 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 132 "sdk/cutil_inline_runtime.h"
 }
-# 133 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 133 "sdk/cutil_inline_runtime.h"
 inline void __cutilSafeMalloc(void *pointer, const char *file, const int line)
-# 134 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 134 "sdk/cutil_inline_runtime.h"
 {
-# 135 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 135 "sdk/cutil_inline_runtime.h"
 if (!(pointer)) {
-# 136 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 136 "sdk/cutil_inline_runtime.h"
 fprintf(stderr, "cutilSafeMalloc host malloc failure in file <%s>, line %i\n", file, line);
-# 138 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 138 "sdk/cutil_inline_runtime.h"
 exit(-1);
-# 139 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 139 "sdk/cutil_inline_runtime.h"
 }
-# 140 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 140 "sdk/cutil_inline_runtime.h"
 }
-# 145 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 145 "sdk/cutil_inline_runtime.h"
 inline void cutilDeviceInit(int ARGC, char **ARGV)
-# 146 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 146 "sdk/cutil_inline_runtime.h"
 {
-# 147 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 147 "sdk/cutil_inline_runtime.h"
 int deviceCount;
-# 148 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
-__cudaSafeCallNoSync(cudaGetDeviceCount(&deviceCount), "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h", 148);
-# 149 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 148 "sdk/cutil_inline_runtime.h"
+__cudaSafeCallNoSync(cudaGetDeviceCount(&deviceCount), "sdk/cutil_inline_runtime.h", 148);
+# 149 "sdk/cutil_inline_runtime.h"
 if (deviceCount == 0) {
-# 150 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 150 "sdk/cutil_inline_runtime.h"
 fprintf(stderr, "CUTIL CUDA error: no devices supporting CUDA.\n");
-# 151 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 151 "sdk/cutil_inline_runtime.h"
 exit(-1);
-# 152 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 152 "sdk/cutil_inline_runtime.h"
 }
-# 153 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 153 "sdk/cutil_inline_runtime.h"
 int dev = 0;
-# 154 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 154 "sdk/cutil_inline_runtime.h"
 cutGetCmdLineArgumenti(ARGC, (const char **)ARGV, "device", &dev);
-# 155 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 155 "sdk/cutil_inline_runtime.h"
 if (dev < 0) { dev = 0; } if (dev > (deviceCount - 1)) { dev = (deviceCount - 1); }
-# 157 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 157 "sdk/cutil_inline_runtime.h"
 cudaDeviceProp deviceProp;
-# 158 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
-__cudaSafeCallNoSync(cudaGetDeviceProperties(&deviceProp, dev), "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h", 158);
-# 159 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 158 "sdk/cutil_inline_runtime.h"
+__cudaSafeCallNoSync(cudaGetDeviceProperties(&deviceProp, dev), "sdk/cutil_inline_runtime.h", 158);
+# 159 "sdk/cutil_inline_runtime.h"
 if ((deviceProp.major) < 1) {
-# 160 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 160 "sdk/cutil_inline_runtime.h"
 fprintf(stderr, "cutil error: device does not support CUDA.\n");
-# 161 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 161 "sdk/cutil_inline_runtime.h"
 exit(-1); }
-# 163 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 163 "sdk/cutil_inline_runtime.h"
 if ((cutCheckCmdLineFlag(ARGC, (const char **)ARGV, "quiet")) == (CUTFalse)) {
-# 164 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 164 "sdk/cutil_inline_runtime.h"
 fprintf(stderr, "Using device %d: %s\n", dev, deviceProp.name); }
-# 165 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
-__cudaSafeCall(cudaSetDevice(dev), "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h", 165);
-# 166 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 165 "sdk/cutil_inline_runtime.h"
+__cudaSafeCall(cudaSetDevice(dev), "sdk/cutil_inline_runtime.h", 165);
+# 166 "sdk/cutil_inline_runtime.h"
 }
-# 171 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 171 "sdk/cutil_inline_runtime.h"
 inline void cutilCudaCheckCtxLost(const char *errorMessage, const char *file, const int line)
-# 172 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 172 "sdk/cutil_inline_runtime.h"
 {
-# 173 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 173 "sdk/cutil_inline_runtime.h"
 cudaError_t err = cudaGetLastError();
-# 174 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 174 "sdk/cutil_inline_runtime.h"
 if ((cudaSuccess) != err) {
-# 175 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 175 "sdk/cutil_inline_runtime.h"
 fprintf(stderr, "CUDA error: %s in file \'%s\' in line %i : %s.\n", errorMessage, file, line, cudaGetErrorString(err));
-# 177 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 177 "sdk/cutil_inline_runtime.h"
 exit(-1);
-# 178 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 178 "sdk/cutil_inline_runtime.h"
 }
-# 179 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 179 "sdk/cutil_inline_runtime.h"
 err = cudaThreadSynchronize();
-# 180 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 180 "sdk/cutil_inline_runtime.h"
 if ((cudaSuccess) != err) {
-# 181 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 181 "sdk/cutil_inline_runtime.h"
 fprintf(stderr, "CCUDA error: %s in file \'%s\' in line %i : %s.\n", errorMessage, file, line, cudaGetErrorString(err));
-# 183 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 183 "sdk/cutil_inline_runtime.h"
 exit(-1);
-# 184 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 184 "sdk/cutil_inline_runtime.h"
 }
-# 185 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 185 "sdk/cutil_inline_runtime.h"
 }
-# 16 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 16 "sdk/cutil_inline_drvapi.h"
 inline void __cuSafeCallNoSync(CUresult err, const char *file, const int line)
-# 17 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 17 "sdk/cutil_inline_drvapi.h"
 {
-# 18 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 18 "sdk/cutil_inline_drvapi.h"
 if ((CUDA_SUCCESS) != err) {
-# 19 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 19 "sdk/cutil_inline_drvapi.h"
 fprintf(stderr, "cuSafeCallNoSync() Driver API error = %04d from file <%s>, line %i.\n", err, file, line);
-# 21 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 21 "sdk/cutil_inline_drvapi.h"
 exit(-1);
-# 22 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 22 "sdk/cutil_inline_drvapi.h"
 }
-# 23 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 23 "sdk/cutil_inline_drvapi.h"
 }
-# 24 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 24 "sdk/cutil_inline_drvapi.h"
 inline void __cuSafeCall(CUresult err, const char *file, const int line)
-# 25 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 25 "sdk/cutil_inline_drvapi.h"
 {
-# 26 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 26 "sdk/cutil_inline_drvapi.h"
 __cuSafeCallNoSync(err, file, line);
-# 27 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 27 "sdk/cutil_inline_drvapi.h"
 }
-# 29 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 29 "sdk/cutil_inline_drvapi.h"
 inline void __cuCtxSync(const char *file, const int line)
-# 30 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 30 "sdk/cutil_inline_drvapi.h"
 {
-# 31 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 31 "sdk/cutil_inline_drvapi.h"
 CUresult err = cuCtxSynchronize();
-# 32 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 32 "sdk/cutil_inline_drvapi.h"
 if ((CUDA_SUCCESS) != err) {
-# 33 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 33 "sdk/cutil_inline_drvapi.h"
 fprintf(stderr, "cuCtxSynchronize() API error = %04d in file <%s>, line %i.\n", err, file, line);
-# 35 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 35 "sdk/cutil_inline_drvapi.h"
 exit(-1);
-# 36 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 36 "sdk/cutil_inline_drvapi.h"
 }
-# 37 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 37 "sdk/cutil_inline_drvapi.h"
 }
-# 39 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 39 "sdk/cutil_inline_drvapi.h"
 inline void __cuCheckMsg(const char *msg, const char *file, const int line)
-# 40 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 40 "sdk/cutil_inline_drvapi.h"
 {
-# 41 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 41 "sdk/cutil_inline_drvapi.h"
 CUresult err = cuCtxSynchronize();
-# 42 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 42 "sdk/cutil_inline_drvapi.h"
 if ((CUDA_SUCCESS) != err) {
-# 43 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 43 "sdk/cutil_inline_drvapi.h"
 fprintf(stderr, "cutilDrvCheckMsg -> %s", msg);
-# 44 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 44 "sdk/cutil_inline_drvapi.h"
 fprintf(stderr, "cutilDrvCheckMsg -> cuCtxSynchronize API error = %04d in file <%s>, line %i.\n", err, file, line);
-# 46 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 46 "sdk/cutil_inline_drvapi.h"
 exit(-1);
-# 47 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 47 "sdk/cutil_inline_drvapi.h"
 }
-# 48 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 48 "sdk/cutil_inline_drvapi.h"
 }
-# 54 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 54 "sdk/cutil_inline_drvapi.h"
 inline void cutilDeviceInitDrv(int cuDevice, int ARGC, char **ARGV)
-# 55 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 55 "sdk/cutil_inline_drvapi.h"
 {
-# 56 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 56 "sdk/cutil_inline_drvapi.h"
 cuDevice = 0;
-# 57 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 57 "sdk/cutil_inline_drvapi.h"
 int deviceCount = 0;
-# 58 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 58 "sdk/cutil_inline_drvapi.h"
 CUresult err = cuInit(0);
-# 59 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 59 "sdk/cutil_inline_drvapi.h"
 if ((CUDA_SUCCESS) == err) {
-# 60 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
-__cuSafeCallNoSync(cuDeviceGetCount(&deviceCount), "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h", 60); }
-# 61 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 60 "sdk/cutil_inline_drvapi.h"
+__cuSafeCallNoSync(cuDeviceGetCount(&deviceCount), "sdk/cutil_inline_drvapi.h", 60); }
+# 61 "sdk/cutil_inline_drvapi.h"
 if (deviceCount == 0) {
-# 62 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 62 "sdk/cutil_inline_drvapi.h"
 fprintf(stderr, "CUTIL DeviceInitDrv error: no devices supporting CUDA\n");
-# 63 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 63 "sdk/cutil_inline_drvapi.h"
 exit(-1);
-# 64 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 64 "sdk/cutil_inline_drvapi.h"
 }
-# 65 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 65 "sdk/cutil_inline_drvapi.h"
 int dev = 0;
-# 66 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 66 "sdk/cutil_inline_drvapi.h"
 cutGetCmdLineArgumenti(ARGC, (const char **)ARGV, "device", &dev);
-# 67 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 67 "sdk/cutil_inline_drvapi.h"
 if (dev < 0) { dev = 0; }
-# 68 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 68 "sdk/cutil_inline_drvapi.h"
 if (dev > (deviceCount - 1)) { dev = (deviceCount - 1); }
-# 69 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
-__cuSafeCallNoSync(cuDeviceGet(&cuDevice, dev), "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h", 69);
-# 70 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 69 "sdk/cutil_inline_drvapi.h"
+__cuSafeCallNoSync(cuDeviceGet(&cuDevice, dev), "sdk/cutil_inline_drvapi.h", 69);
+# 70 "sdk/cutil_inline_drvapi.h"
 char name[100];
-# 71 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 71 "sdk/cutil_inline_drvapi.h"
 cuDeviceGetName(name, 100, cuDevice);
-# 72 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 72 "sdk/cutil_inline_drvapi.h"
 if ((cutCheckCmdLineFlag(ARGC, (const char **)ARGV, "quiet")) == (CUTFalse)) {
-# 73 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 73 "sdk/cutil_inline_drvapi.h"
 fprintf(stderr, "Using device %d: %s\n", dev, name); }
-# 74 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 74 "sdk/cutil_inline_drvapi.h"
 }
-# 78 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 78 "sdk/cutil_inline_drvapi.h"
 inline void cutilDrvCudaCheckCtxLost(const char *errorMessage, const char *file, const int line)
-# 79 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 79 "sdk/cutil_inline_drvapi.h"
 {
-# 80 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 80 "sdk/cutil_inline_drvapi.h"
 CUresult err = cuCtxSynchronize();
-# 81 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 81 "sdk/cutil_inline_drvapi.h"
 if ((CUDA_ERROR_INVALID_CONTEXT) != err) {
-# 82 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 82 "sdk/cutil_inline_drvapi.h"
 fprintf(stderr, "Cuda error: %s in file \'%s\' in line %i\n", errorMessage, file, line);
-# 84 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 84 "sdk/cutil_inline_drvapi.h"
 exit(-1);
-# 85 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 85 "sdk/cutil_inline_drvapi.h"
 }
-# 86 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 86 "sdk/cutil_inline_drvapi.h"
 err = cuCtxSynchronize();
-# 87 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 87 "sdk/cutil_inline_drvapi.h"
 if ((CUDA_SUCCESS) != err) {
-# 88 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 88 "sdk/cutil_inline_drvapi.h"
 fprintf(stderr, "Cuda error: %s in file \'%s\' in line %i\n", errorMessage, file, line);
-# 90 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 90 "sdk/cutil_inline_drvapi.h"
 exit(-1);
-# 91 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 91 "sdk/cutil_inline_drvapi.h"
 }
-# 92 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 92 "sdk/cutil_inline_drvapi.h"
 }
-# 12 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline.h"
+# 12 "sdk/cutil_inline.h"
 inline void print_NVCC_min_spec(const char *sSDKsample, const char *sNVCCReq, const char *sDriverReq)
-# 13 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline.h"
+# 13 "sdk/cutil_inline.h"
 {
-# 14 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline.h"
+# 14 "sdk/cutil_inline.h"
 printf("CUDA %d.%02d Toolkit built this project.\n", 3020 / 1000, 3020 % 100);
-# 15 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline.h"
+# 15 "sdk/cutil_inline.h"
 printf("  [ %s ] requirements:\n", sSDKsample);
-# 16 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline.h"
+# 16 "sdk/cutil_inline.h"
 printf(" -> CUDA %s Toolkit\n", sNVCCReq);
-# 17 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline.h"
+# 17 "sdk/cutil_inline.h"
 printf(" -> %s NVIDIA Display Driver.\n", sDriverReq);
-# 18 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline.h"
+# 18 "sdk/cutil_inline.h"
 }
 # 34 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleTexture/simpleTexture_kernel.cu"
 static texture< float, 2, cudaReadModeElementType> tex;
@@ -12013,8 +11547,8 @@ exit(0);
 cudaThreadExit();
 # 204 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleTexture/simpleTexture.cu"
 }
-# 1 "/tmp/tmpxft_00005d94_00000000-1_simpleTexture.cudafe1.stub.c"
-# 1 "/tmp/tmpxft_00005d94_00000000-1_simpleTexture.cudafe1.stub.c" 1
+# 1 "/tmp/tmpxft_00000963_00000000-1_simpleTexture.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00000963_00000000-1_simpleTexture.cudafe1.stub.c" 1
 # 1 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 1
 # 91 "/usr/local/cuda/bin/../include/crt/host_runtime.h"
 extern "C" {
@@ -12403,9 +11937,9 @@ extern __attribute__((__weak__)) unsigned long long int ullmax(unsigned long lon
 {
   return a > b ? a : b;
 }
-# 5006 "/usr/local/cuda/bin/../include/math_functions.h" 3
-# 1 "/usr/local/cuda/bin/../include/math_functions_dbl_ptx3.h" 1 3
-# 5007 "/usr/local/cuda/bin/../include/math_functions.h" 2 3
+# 5000 "/usr/local/cuda/bin/../include/math_functions.h" 3
+# 1 "/usr/local/cuda/bin/../include/math_functions_dbl_ptx1.h" 1 3
+# 5001 "/usr/local/cuda/bin/../include/math_functions.h" 2 3
 # 91 "/usr/local/cuda/bin/../include/common_functions.h" 2
 # 164 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 2
 
@@ -12416,8 +11950,8 @@ extern __attribute__((__weak__)) unsigned long long int ullmax(unsigned long lon
 
 
 #pragma pack()
-# 2 "/tmp/tmpxft_00005d94_00000000-1_simpleTexture.cudafe1.stub.c" 2
-# 1 "/tmp/tmpxft_00005d94_00000000-3_simpleTexture.fatbin.c" 1
+# 2 "/tmp/tmpxft_00000963_00000000-1_simpleTexture.cudafe1.stub.c" 2
+# 1 "/tmp/tmpxft_00000963_00000000-3_simpleTexture.fatbin.c" 1
 # 1 "/usr/local/cuda/bin/../include/__cudaFatFormat.h" 1
 # 83 "/usr/local/cuda/bin/../include/__cudaFatFormat.h"
 extern "C" {
@@ -12495,1155 +12029,1213 @@ void __cudaFatFreePTX( char* ptx );
 
 
 }
-# 2 "/tmp/tmpxft_00005d94_00000000-3_simpleTexture.fatbin.c" 2
+# 2 "/tmp/tmpxft_00000963_00000000-3_simpleTexture.fatbin.c" 2
 
 asm(
 ".section .rodata\n"
 ".align 32\n"
-"__deviceText_$compute_20$:\n"
-".quad 0x6f69737265762e09,0x2e090a322e32206e,0x7320746567726174,0x2f2f090a30325f6d\n"
-".quad 0x656c69706d6f6320,0x2f20687469772064,0x61636f6c2f727375,0x6f2f616475632f6c\n"
-".quad 0x696c2f34366e6570,0x2f090a65622f2f62,0x6e65706f766e202f,0x6220322e33206363\n"
-".quad 0x206e6f20746c6975,0x2d39302d30313032,0x2d2f2f090a0a3930,0x2d2d2d2d2d2d2d2d\n"
+"__deviceText_$compute_10$:\n"
+".quad 0x6f69737265762e09,0x2e090a342e31206e,0x7320746567726174,0x616d202c30315f6d\n"
+".quad 0x6f745f3436665f70,0x2f2f090a3233665f,0x656c69706d6f6320,0x2f20687469772064\n"
+".quad 0x61636f6c2f727375,0x6f2f616475632f6c,0x696c2f34366e6570,0x2f090a65622f2f62\n"
+".quad 0x6e65706f766e202f,0x6220322e33206363,0x206e6f20746c6975,0x2d39302d30313032\n"
+".quad 0x2d2f2f090a0a3930,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
-".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x43202f2f090a2d2d,0x676e696c69706d6f\n"
-".quad 0x6d742f706d742f20,0x3030305f74667870,0x30305f3439643530,0x372d303030303030\n"
-".quad 0x54656c706d69735f,0x632e657275747865,0x2f2820692e337070,0x494263632f706d74\n"
-".quad 0x624f69776f6e2e23,0x2d2d2d2f2f090a29,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
+".quad 0x43202f2f090a2d2d,0x676e696c69706d6f,0x6d742f706d742f20,0x3030305f74667870\n"
+".quad 0x30305f3336393030,0x372d303030303030,0x54656c706d69735f,0x632e657275747865\n"
+".quad 0x2f2820692e337070,0x494263632f706d74,0x67694a6659352e23,0x2d2d2d2f2f090a29\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
-".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2f2f090a0a,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
+".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2f2f090a0a\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
-".quad 0x2d2d2d2d2d2d2d2d,0x74704f202f2f090a,0x2f090a3a736e6f69,0x2d2d2d2d2d2d2d2f\n"
+".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x74704f202f2f090a\n"
+".quad 0x2f090a3a736e6f69,0x2d2d2d2d2d2d2d2f,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
-".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2f2f090a2d2d2d2d,0x7465677261542020\n"
-".quad 0x5349202c7874703a,0x2c30325f6d733a41,0x3a6e6169646e4520,0x202c656c7474696c\n"
-".quad 0x207265746e696f50,0x0a32333a657a6953,0x334f2d20202f2f09,0x696d6974704f2809\n"
-".quad 0x6c206e6f6974617a,0x2f090a296c657665,0x280930672d20202f,0x656c206775626544\n"
-".quad 0x2f2f090a296c6576,0x522809326d2d2020,0x64612074726f7065,0x736569726f736976\n"
-".quad 0x2d2d2d2f2f090a29,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
+".quad 0x2f2f090a2d2d2d2d,0x7465677261542020,0x5349202c7874703a,0x2c30315f6d733a41\n"
+".quad 0x3a6e6169646e4520,0x202c656c7474696c,0x207265746e696f50,0x0a34363a657a6953\n"
+".quad 0x334f2d20202f2f09,0x696d6974704f2809,0x6c206e6f6974617a,0x2f090a296c657665\n"
+".quad 0x280930672d20202f,0x656c206775626544,0x2f2f090a296c6576,0x522809326d2d2020\n"
+".quad 0x64612074726f7065,0x736569726f736976,0x2d2d2d2f2f090a29,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
-".quad 0x656c69662e090a0a,0x6d6f633c22093109,0x6e696c2d646e616d,0x69662e090a223e65\n"
-".quad 0x742f22093209656c,0x6678706d742f706d,0x6435303030305f74,0x30303030305f3439\n"
-".quad 0x69735f362d303030,0x74786554656c706d,0x616475632e657275,0x227570672e326566\n"
-".quad 0x09656c69662e090a,0x2f7273752f220933,0x2f6363672f62696c,0x6e696c2d36383669\n"
-".quad 0x342f756e672d7875,0x636e692f352e342e,0x6474732f6564756c,0x090a22682e666564\n"
-".quad 0x093409656c69662e,0x6f6c2f7273752f22,0x616475632f6c6163,0x2f2e2e2f6e69622f\n"
-".quad 0x2f6564756c636e69,0x697665642f747263,0x69746e75725f6563,0x2e090a22682e656d\n"
-".quad 0x22093509656c6966,0x636f6c2f7273752f,0x2f616475632f6c61,0x692f2e2e2f6e6962\n"
-".quad 0x682f6564756c636e,0x696665645f74736f,0x090a22682e73656e,0x093609656c69662e\n"
-".quad 0x6f6c2f7273752f22,0x616475632f6c6163,0x2f2e2e2f6e69622f,0x2f6564756c636e69\n"
-".quad 0x5f6e69746c697562,0x22682e7365707974,0x09656c69662e090a,0x2f7273752f220937\n"
-".quad 0x75632f6c61636f6c,0x2e2f6e69622f6164,0x64756c636e692f2e,0x6563697665642f65\n"
-".quad 0x682e73657079745f,0x656c69662e090a22,0x7273752f22093809,0x632f6c61636f6c2f\n"
-".quad 0x2f6e69622f616475,0x756c636e692f2e2e,0x65766972642f6564,0x2e73657079745f72\n"
-".quad 0x6c69662e090a2268,0x73752f2209390965,0x2f6c61636f6c2f72,0x6e69622f61647563\n"
-".quad 0x6c636e692f2e2e2f,0x667275732f656475,0x657079745f656361,0x662e090a22682e73\n"
-".quad 0x2209303109656c69,0x636f6c2f7273752f,0x2f616475632f6c61,0x692f2e2e2f6e6962\n"
-".quad 0x742f6564756c636e,0x745f657275747865,0x0a22682e73657079,0x3109656c69662e09\n"
-".quad 0x2f7273752f220931,0x75632f6c61636f6c,0x2e2f6e69622f6164,0x64756c636e692f2e\n"
-".quad 0x726f746365762f65,0x682e73657079745f,0x656c69662e090a22,0x73752f2209323109\n"
-".quad 0x2f6c61636f6c2f72,0x6e69622f61647563,0x6c636e692f2e2e2f,0x697665642f656475\n"
-".quad 0x636e75616c5f6563,0x656d617261705f68,0x0a22682e73726574,0x3109656c69662e09\n"
-".quad 0x2f7273752f220933,0x75632f6c61636f6c,0x2e2f6e69622f6164,0x64756c636e692f2e\n"
-".quad 0x74732f7472632f65,0x6c635f656761726f,0x090a22682e737361,0x343109656c69662e\n"
-".quad 0x692f7273752f2209,0x622f6564756c636e,0x657079742f737469,0x662e090a22682e73\n"
-".quad 0x2209353109656c69,0x636e692f7273752f,0x6d69742f6564756c,0x662e090a22682e65\n"
-".quad 0x2209363109656c69,0x6f6e2f656d6f682f,0x6568632f6c616d72,0x70672f74756f6b63\n"
-".quad 0x2f746f6c65636f75,0x75632f7374736574,0x65742f322e326164,0x706d69732f737473\n"
-".quad 0x727574786554656c,0x656c706d69732f65,0x5f65727574786554,0x632e6c656e72656b\n"
-".quad 0x6c69662e090a2275,0x752f220937310965,0x6c61636f6c2f7273,0x69622f616475632f\n"
-".quad 0x636e692f2e2e2f6e,0x6d6f632f6564756c,0x636e75665f6e6f6d,0x22682e736e6f6974\n"
-".quad 0x09656c69662e090a,0x7273752f22093831,0x632f6c61636f6c2f,0x2f6e69622f616475\n"
-".quad 0x756c636e692f2e2e,0x5f6874616d2f6564,0x6e6f6974636e7566,0x662e090a22682e73\n"
-".quad 0x2209393109656c69,0x636f6c2f7273752f,0x2f616475632f6c61,0x692f2e2e2f6e6962\n"
-".quad 0x6d2f6564756c636e,0x736e6f635f687461,0x22682e73746e6174,0x09656c69662e090a\n"
-".quad 0x7273752f22093032,0x632f6c61636f6c2f,0x2f6e69622f616475,0x756c636e692f2e2e\n"
-".quad 0x63697665642f6564,0x6974636e75665f65,0x090a22682e736e6f,0x313209656c69662e\n"
+".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x656c69662e090a0a,0x6d6f633c22093109\n"
+".quad 0x6e696c2d646e616d,0x69662e090a223e65,0x742f22093209656c,0x6678706d742f706d\n"
+".quad 0x3930303030305f74,0x30303030305f3336,0x69735f362d303030,0x74786554656c706d\n"
+".quad 0x616475632e657275,0x227570672e326566,0x09656c69662e090a,0x2f7273752f220933\n"
+".quad 0x2f6363672f62696c,0x6e696c2d36383669,0x342f756e672d7875,0x636e692f352e342e\n"
+".quad 0x6474732f6564756c,0x090a22682e666564,0x093409656c69662e,0x6f6c2f7273752f22\n"
+".quad 0x616475632f6c6163,0x2f2e2e2f6e69622f,0x2f6564756c636e69,0x697665642f747263\n"
+".quad 0x69746e75725f6563,0x2e090a22682e656d,0x22093509656c6966,0x636f6c2f7273752f\n"
+".quad 0x2f616475632f6c61,0x692f2e2e2f6e6962,0x682f6564756c636e,0x696665645f74736f\n"
+".quad 0x090a22682e73656e,0x093609656c69662e,0x6f6c2f7273752f22,0x616475632f6c6163\n"
+".quad 0x2f2e2e2f6e69622f,0x2f6564756c636e69,0x5f6e69746c697562,0x22682e7365707974\n"
+".quad 0x09656c69662e090a,0x2f7273752f220937,0x75632f6c61636f6c,0x2e2f6e69622f6164\n"
+".quad 0x64756c636e692f2e,0x6563697665642f65,0x682e73657079745f,0x656c69662e090a22\n"
+".quad 0x7273752f22093809,0x632f6c61636f6c2f,0x2f6e69622f616475,0x756c636e692f2e2e\n"
+".quad 0x65766972642f6564,0x2e73657079745f72,0x6c69662e090a2268,0x73752f2209390965\n"
+".quad 0x2f6c61636f6c2f72,0x6e69622f61647563,0x6c636e692f2e2e2f,0x667275732f656475\n"
+".quad 0x657079745f656361,0x662e090a22682e73,0x2209303109656c69,0x636f6c2f7273752f\n"
+".quad 0x2f616475632f6c61,0x692f2e2e2f6e6962,0x742f6564756c636e,0x745f657275747865\n"
+".quad 0x0a22682e73657079,0x3109656c69662e09,0x2f7273752f220931,0x75632f6c61636f6c\n"
+".quad 0x2e2f6e69622f6164,0x64756c636e692f2e,0x726f746365762f65,0x682e73657079745f\n"
+".quad 0x656c69662e090a22,0x73752f2209323109,0x2f6c61636f6c2f72,0x6e69622f61647563\n"
+".quad 0x6c636e692f2e2e2f,0x697665642f656475,0x636e75616c5f6563,0x656d617261705f68\n"
+".quad 0x0a22682e73726574,0x3109656c69662e09,0x2f7273752f220933,0x75632f6c61636f6c\n"
+".quad 0x2e2f6e69622f6164,0x64756c636e692f2e,0x74732f7472632f65,0x6c635f656761726f\n"
+".quad 0x090a22682e737361,0x343109656c69662e,0x692f7273752f2209,0x622f6564756c636e\n"
+".quad 0x657079742f737469,0x662e090a22682e73,0x2209353109656c69,0x636e692f7273752f\n"
+".quad 0x6d69742f6564756c,0x662e090a22682e65,0x2209363109656c69,0x6f6e2f656d6f682f\n"
+".quad 0x6568632f6c616d72,0x70672f74756f6b63,0x2f746f6c65636f75,0x75632f7374736574\n"
+".quad 0x65742f322e326164,0x706d69732f737473,0x727574786554656c,0x656c706d69732f65\n"
+".quad 0x5f65727574786554,0x632e6c656e72656b,0x6c69662e090a2275,0x752f220937310965\n"
+".quad 0x6c61636f6c2f7273,0x69622f616475632f,0x636e692f2e2e2f6e,0x6d6f632f6564756c\n"
+".quad 0x636e75665f6e6f6d,0x22682e736e6f6974,0x09656c69662e090a,0x7273752f22093831\n"
+".quad 0x632f6c61636f6c2f,0x2f6e69622f616475,0x756c636e692f2e2e,0x5f6874616d2f6564\n"
+".quad 0x6e6f6974636e7566,0x662e090a22682e73,0x2209393109656c69,0x636f6c2f7273752f\n"
+".quad 0x2f616475632f6c61,0x692f2e2e2f6e6962,0x6d2f6564756c636e,0x736e6f635f687461\n"
+".quad 0x22682e73746e6174,0x09656c69662e090a,0x7273752f22093032,0x632f6c61636f6c2f\n"
+".quad 0x2f6e69622f616475,0x756c636e692f2e2e,0x63697665642f6564,0x6974636e75665f65\n"
+".quad 0x090a22682e736e6f,0x313209656c69662e,0x6c2f7273752f2209,0x6475632f6c61636f\n"
+".quad 0x2e2e2f6e69622f61,0x6564756c636e692f,0x615f31315f6d732f,0x75665f63696d6f74\n"
+".quad 0x2e736e6f6974636e,0x6c69662e090a2268,0x752f220932320965,0x6c61636f6c2f7273\n"
+".quad 0x69622f616475632f,0x636e692f2e2e2f6e,0x5f6d732f6564756c,0x696d6f74615f3231\n"
+".quad 0x6974636e75665f63,0x090a22682e736e6f,0x333209656c69662e,0x6c2f7273752f2209\n"
+".quad 0x6475632f6c61636f,0x2e2e2f6e69622f61,0x6564756c636e692f,0x645f33315f6d732f\n"
+".quad 0x75665f656c62756f,0x2e736e6f6974636e,0x6c69662e090a2268,0x752f220934320965\n"
+".quad 0x6c61636f6c2f7273,0x69622f616475632f,0x636e692f2e2e2f6e,0x5f6d732f6564756c\n"
+".quad 0x696d6f74615f3032,0x6974636e75665f63,0x090a22682e736e6f,0x353209656c69662e\n"
 ".quad 0x6c2f7273752f2209,0x6475632f6c61636f,0x2e2e2f6e69622f61,0x6564756c636e692f\n"
-".quad 0x615f31315f6d732f,0x75665f63696d6f74,0x2e736e6f6974636e,0x6c69662e090a2268\n"
-".quad 0x752f220932320965,0x6c61636f6c2f7273,0x69622f616475632f,0x636e692f2e2e2f6e\n"
-".quad 0x5f6d732f6564756c,0x696d6f74615f3231,0x6974636e75665f63,0x090a22682e736e6f\n"
-".quad 0x333209656c69662e,0x6c2f7273752f2209,0x6475632f6c61636f,0x2e2e2f6e69622f61\n"
-".quad 0x6564756c636e692f,0x645f33315f6d732f,0x75665f656c62756f,0x2e736e6f6974636e\n"
-".quad 0x6c69662e090a2268,0x752f220934320965,0x6c61636f6c2f7273,0x69622f616475632f\n"
-".quad 0x636e692f2e2e2f6e,0x5f6d732f6564756c,0x696d6f74615f3032,0x6974636e75665f63\n"
-".quad 0x090a22682e736e6f,0x353209656c69662e,0x6c2f7273752f2209,0x6475632f6c61636f\n"
-".quad 0x2e2e2f6e69622f61,0x6564756c636e692f,0x695f30325f6d732f,0x6369736e6972746e\n"
-".quad 0x662e090a22682e73,0x2209363209656c69,0x636f6c2f7273752f,0x2f616475632f6c61\n"
-".quad 0x692f2e2e2f6e6962,0x732f6564756c636e,0x665f656361667275,0x736e6f6974636e75\n"
-".quad 0x69662e090a22682e,0x2f2209373209656c,0x61636f6c2f727375,0x622f616475632f6c\n"
-".quad 0x6e692f2e2e2f6e69,0x65742f6564756c63,0x65665f6572757478,0x636e75665f686374\n"
-".quad 0x22682e736e6f6974,0x09656c69662e090a,0x7273752f22093832,0x632f6c61636f6c2f\n"
-".quad 0x2f6e69622f616475,0x756c636e692f2e2e,0x5f6874616d2f6564,0x6e6f6974636e7566\n"
-".quad 0x74705f6c62645f73,0x090a0a22682e3378,0x206c61626f6c672e,0x206665727865742e\n"
-".quad 0x632e090a3b786574,0x6c612e2074736e6f,0x622e2034206e6769,0x616475635f5f2038\n"
-".quad 0x69706f32695f7472,0x3d205d34325b665f,0x3434312c35367b20,0x312c30362c37362c\n"
-".quad 0x392c3934312c3335,0x39312c3931322c38,0x32352c3132322c32,0x3930322c3534322c\n"
-".quad 0x322c39332c37382c,0x31322c31342c3235,0x312c38372c38362c,0x322c3133312c3031\n"
-".quad 0x3b7d3236312c3934,0x72746e652e090a0a,0x727435315a5f2079,0x4b6d726f66736e61\n"
-".quad 0x6966506c656e7265,0x2e09090a28206669,0x752e206d61726170,0x6475635f5f203233\n"
-".quad 0x5a5f5f6d72617061,0x66736e6172743531,0x656e72654b6d726f,0x675f66696966506c\n"
-".quad 0x0a2c617461646f5f,0x6d617261702e0909,0x5f5f203233732e20,0x6d72617061647563\n"
-".quad 0x61727435315a5f5f,0x654b6d726f66736e,0x696966506c656e72,0x2c68746469775f66\n"
-".quad 0x617261702e09090a,0x5f203233732e206d,0x726170616475635f,0x727435315a5f5f6d\n"
-".quad 0x4b6d726f66736e61,0x6966506c656e7265,0x68676965685f6669,0x61702e09090a2c74\n"
-".quad 0x3233662e206d6172,0x70616475635f5f20,0x35315a5f5f6d7261,0x726f66736e617274\n"
-".quad 0x506c656e72654b6d,0x6568745f66696966,0x090a7b090a296174,0x33752e206765722e\n"
-".quad 0x3738323c72252032,0x6765722e090a3b3e,0x6625203233662e20,0x090a3b3e3434313c\n"
-".quad 0x72702e206765722e,0x30353c7025206465,0x636f6c2e090a3b3e,0x67696c612e206c61\n"
-".quad 0x2038622e2034206e,0x725f616475635f5f,0x36315f746c757365,0x2e090a3b5d38325b\n"
-".quad 0x612e206c61636f6c,0x2e2034206e67696c,0x6475635f5f203862,0x746c757365725f61\n"
-".quad 0x3b5d38325b34345f,0x3109636f6c2e090a,0x240a300931340936,0x6e6967656257444c\n"
-".quad 0x61727435315a5f5f,0x654b6d726f66736e,0x696966506c656e72,0x636f6c2e090a3a66\n"
-".quad 0x3230373109383109,0x702e646c090a3009,0x3233662e6d617261,0x5b202c3166250920\n"
+".quad 0x695f30325f6d732f,0x6369736e6972746e,0x662e090a22682e73,0x2209363209656c69\n"
+".quad 0x636f6c2f7273752f,0x2f616475632f6c61,0x692f2e2e2f6e6962,0x732f6564756c636e\n"
+".quad 0x665f656361667275,0x736e6f6974636e75,0x69662e090a22682e,0x2f2209373209656c\n"
+".quad 0x61636f6c2f727375,0x622f616475632f6c,0x6e692f2e2e2f6e69,0x65742f6564756c63\n"
+".quad 0x65665f6572757478,0x636e75665f686374,0x22682e736e6f6974,0x09656c69662e090a\n"
+".quad 0x7273752f22093832,0x632f6c61636f6c2f,0x2f6e69622f616475,0x756c636e692f2e2e\n"
+".quad 0x5f6874616d2f6564,0x6e6f6974636e7566,0x74705f6c62645f73,0x090a0a22682e3178\n"
+".quad 0x36752e207865742e,0x090a3b7865742034,0x2e2074736e6f632e,0x2034206e67696c61\n"
+".quad 0x75635f5f2038622e,0x6f32695f74726164,0x5d34325b665f6970,0x312c35367b203d20\n"
+".quad 0x30362c37362c3434,0x3934312c3335312c,0x2c3931322c38392c,0x2c3132322c323931\n"
+".quad 0x322c3534322c3235,0x39332c37382c3930,0x2c31342c3235322c,0x38372c38362c3132\n"
+".quad 0x3133312c3031312c,0x3236312c3934322c,0x6e652e090a0a3b7d,0x35315a5f20797274\n"
+".quad 0x726f66736e617274,0x506c656e72654b6d,0x090a282066696966,0x206d617261702e09\n"
+".quad 0x635f5f203436752e,0x5f6d726170616475,0x6e61727435315a5f,0x72654b6d726f6673\n"
+".quad 0x66696966506c656e,0x617461646f5f675f,0x7261702e09090a2c,0x203233732e206d61\n"
 ".quad 0x6170616475635f5f,0x7435315a5f5f6d72,0x6d726f66736e6172,0x66506c656e72654b\n"
-".quad 0x746568745f666969,0x736261090a3b5d61,0x662509203233662e,0x0a3b316625202c32\n"
-".quad 0x3233662e766f6d09,0x30202c3366250920,0x3030303038663766,0x0920202020203b30\n"
-".quad 0x302e312828202f2f,0x46302e30282f2946,0x70746573090a2929,0x203233662e71652e\n"
-".quad 0x6625202c31702509,0x0a3b336625202c32,0x6220317025214009,0x5f744c2409206172\n"
-".quad 0x3b30353836345f30,0x3109636f6c2e090a,0x3009333037310938,0x33662e67656e090a\n"
-".quad 0x202c346625092032,0x6461090a3b316625,0x3233662e6e722e64,0x25202c3566250920\n"
-".quad 0x3b346625202c3166,0x33752e766f6d090a,0x202c317225092032,0x7472616475635f5f\n"
-".quad 0x665f69706f32695f,0x752e766f6d090a3b,0x2c32722509203233,0x5f616475635f5f20\n"
-".quad 0x315f746c75736572,0x2e617262090a3b36,0x444c240920696e75,0x5f5f5f69646e6557\n"
-".quad 0x315f66666e697369,0x240a3b33315f3737,0x3836345f305f744c,0x766f6d090a3a3035\n"
-".quad 0x662509203233662e,0x3337346630202c36,0x20203b3030376162,0x34202f2f09202020\n"
-".quad 0x6573090a39333038,0x33662e74672e7074,0x202c327025092032,0x366625202c326625\n"
-".quad 0x3270252140090a3b,0x4c24092061726220,0x363337345f305f74,0x636f6c2e090a3b32\n"
-".quad 0x3639333109383109,0x2e766f6d090a3009,0x3172250920323375,0x616475635f5f202c\n"
-".quad 0x69706f32695f7472,0x766f6d090a3b665f,0x722509203233622e,0x0a3b316625202c33\n"
-".quad 0x3233622e646e6109,0x25202c3472250920,0x3431322d202c3372,0x3b38343633383437\n"
-".quad 0x33732e766f6d090a,0x202c357225092032,0x6c2e090a3b347225,0x343209383109636f\n"
-".quad 0x2e6c6873090a3009,0x3672250920323362,0x38202c337225202c,0x732e766f6d090a3b\n"
-".quad 0x2c37722509203233,0x61090a3b31722520,0x09203233752e6464,0x317225202c387225\n"
-".quad 0x6d090a3b3432202c,0x09203233752e766f,0x635f5f202c397225,0x757365725f616475\n"
-".quad 0x090a3b36315f746c,0x09203233622e726f,0x7225202c30317225,0x373431322d202c36\n"
-".quad 0x0a3b383436333834,0x3233752e766f6d09,0x202c313172250920,0x305f744c240a3b30\n"
-".quad 0x0a3a36383338345f,0x616d676172702e09,0x6f726e756f6e2220,0x2f2f200a3b226c6c\n"
+".quad 0x746469775f666969,0x61702e09090a2c68,0x3233732e206d6172,0x70616475635f5f20\n"
+".quad 0x35315a5f5f6d7261,0x726f66736e617274,0x506c656e72654b6d,0x6965685f66696966\n"
+".quad 0x2e09090a2c746867,0x662e206d61726170,0x6475635f5f203233,0x5a5f5f6d72617061\n"
+".quad 0x66736e6172743531,0x656e72654b6d726f,0x745f66696966506c,0x7b090a2961746568\n"
+".quad 0x2e206765722e090a,0x3c68722520363175,0x65722e090a3b3e36,0x25203233752e2067\n"
+".quad 0x0a3b3e3038323c72,0x752e206765722e09,0x323c647225203436,0x65722e090a3b3e32\n"
+".quad 0x25203233662e2067,0x0a3b3e3834313c66,0x702e206765722e09,0x353c702520646572\n"
+".quad 0x6f6c2e090a3b3e30,0x696c612e206c6163,0x38622e2034206e67,0x5f616475635f5f20\n"
+".quad 0x725f616475635f5f,0x36315f746c757365,0x0a3b5d38325b3032,0x206c61636f6c2e09\n"
+".quad 0x34206e67696c612e,0x635f5f2038622e20,0x75635f5f5f616475,0x6c757365725f6164\n"
+".quad 0x325b383434345f74,0x6f6c2e090a3b5d38,0x0931340936310963,0x656257444c240a30\n"
+".quad 0x35315a5f5f6e6967,0x726f66736e617274,0x506c656e72654b6d,0x2e090a3a66696966\n"
+".quad 0x3109383109636f6c,0x6c090a3009323037,0x2e6d617261702e64,0x3166250920323366\n"
+".quad 0x6475635f5f5b202c,0x5a5f5f6d72617061,0x66736e6172743531,0x656e72654b6d726f\n"
+".quad 0x745f66696966506c,0x090a3b5d61746568,0x203233662e736261,0x6625202c32662509\n"
+".quad 0x2e766f6d090a3b31,0x3366250920323366,0x303866376630202c,0x2020203b30303030\n"
+".quad 0x2828202f2f092020,0x30282f2946302e31,0x73090a292946302e,0x662e71652e707465\n"
+".quad 0x2c31702509203233,0x6625202c32662520,0x70252140090a3b33,0x2409206172622031\n"
+".quad 0x3836345f305f744c,0x2e646c090a3b3035,0x33662e6d61726170,0x202c316625092032\n"
+".quad 0x70616475635f5f5b,0x35315a5f5f6d7261,0x726f66736e617274,0x506c656e72654b6d\n"
+".quad 0x6568745f66696966,0x6c2e090a3b5d6174,0x373109383109636f,0x656e090a30093330\n"
+".quad 0x2509203233662e67,0x3b316625202c3466,0x6e722e646461090a,0x662509203233662e\n"
+".quad 0x202c316625202c35,0x6f6d090a3b346625,0x2509203436752e76,0x635f5f202c316472\n"
+".quad 0x75635f5f5f616475,0x6c757365725f6164,0x0a3b303236315f74,0x3436752e766f6d09\n"
+".quad 0x202c326472250920,0x7472616475635f5f,0x665f69706f32695f,0x752e617262090a3b\n"
+".quad 0x57444c240920696e,0x695f5f5f69646e65,0x30325f66666e6973,0x4c240a3b33315f33\n"
+".quad 0x353836345f305f74,0x2e766f6d090a3a30,0x3666250920323366,0x623337346630202c\n"
+".quad 0x2020203b30303761,0x3834202f2f092020,0x746573090a393330,0x3233662e74672e70\n"
+".quad 0x25202c3270250920,0x3b366625202c3266,0x203270252140090a,0x744c240920617262\n"
+".quad 0x32363337345f305f,0x09636f6c2e090a3b,0x0936393331093831,0x752e766f6d090a30\n"
+".quad 0x3264722509203436,0x616475635f5f202c,0x69706f32695f7472,0x6f6c2e090a3b665f\n"
+".quad 0x3037310938310963,0x2e646c090a300932,0x33662e6d61726170,0x202c316625092032\n"
+".quad 0x70616475635f5f5b,0x35315a5f5f6d7261,0x726f66736e617274,0x506c656e72654b6d\n"
+".quad 0x6568745f66696966,0x6c2e090a3b5d6174,0x333109383109636f,0x6f6d090a30093639\n"
+".quad 0x2509203233622e76,0x3b316625202c3172,0x33622e646e61090a,0x202c327225092032\n"
+".quad 0x31322d202c317225,0x3834363338343734,0x732e766f6d090a3b,0x2c33722509203233\n"
+".quad 0x2e090a3b32722520,0x3209383109636f6c,0x6c6873090a300934,0x722509203233622e\n"
+".quad 0x202c317225202c34,0x622e726f090a3b38,0x2c35722509203233,0x322d202c34722520\n"
+".quad 0x3436333834373431,0x2e766f6d090a3b38,0x6472250920343673,0x3b32647225202c33\n"
+".quad 0x36752e766f6d090a,0x2c34647225092034,0x5f616475635f5f20,0x725f616475635f5f\n"
+".quad 0x36315f746c757365,0x766f6d090a3b3032,0x722509203233732e,0x6d090a3b30202c36\n"
+".quad 0x09203233752e766f,0x0a3b30202c377225,0x38345f305f744c24,0x2f2f200a3a363833\n"
 ".quad 0x4c203e706f6f6c3c,0x79646f6220706f6f,0x343220656e696c20,0x6e697473656e202c\n"
 ".quad 0x3a68747065642067,0x72657469202c3120,0x203a736e6f697461,0x09636f6c2e090a36\n"
-".quad 0x0930313431093831,0x6f632e646c090a30,0x203233752e74736e,0x5b202c3231722509\n"
-".quad 0x0a3b5d302b377225,0x2e6f6c2e6c756d09,0x3172250920323375,0x2c32317225202c33\n"
-".quad 0x090a3b3031722520,0x203233752e646461,0x25202c3431722509,0x317225202c333172\n"
-".quad 0x636f6c2e090a3b31,0x3131343109383109,0x2e746573090a3009,0x752e3233752e7467\n"
-".quad 0x3531722509203233,0x202c33317225202c,0x6e090a3b34317225,0x09203233732e6765\n"
-".quad 0x7225202c36317225,0x6c756d090a3b3531,0x203233752e69682e,0x25202c3731722509\n"
-".quad 0x317225202c323172,0x2e646461090a3b30,0x3172250920323375,0x2c36317225202c31\n"
-".quad 0x090a3b3731722520,0x09383109636f6c2e,0x090a300932313431,0x6c61636f6c2e7473\n"
-".quad 0x255b09203233752e,0x25202c5d302b3972,0x6461090a3b343172,0x2509203233752e64\n"
-".quad 0x2c397225202c3972,0x646461090a3b3420,0x722509203233752e,0x202c377225202c37\n"
-".quad 0x70746573090a3b34,0x203233752e656e2e,0x7225202c33702509,0x0a3b387225202c37\n"
-".quad 0x7262203370254009,0x305f744c24092061,0x0a3b36383338345f,0x383109636f6c2e09\n"
-".quad 0x0a30093431343109,0x3233752e766f6d09,0x5f202c3272250920,0x65725f616475635f\n"
-".quad 0x3b36315f746c7573,0x636f6c2e7473090a,0x09203233752e6c61,0x5f616475635f5f5b\n"
-".quad 0x315f746c75736572,0x25202c5d34322b36,0x6c2e090a3b313172,0x343109383109636f\n"
-".quad 0x6873090a30093931,0x2509203233622e6c,0x337225202c383172,0x6873090a3b31202c\n"
-".quad 0x2509203233752e72,0x317225202c393172,0x090a3b3432202c38,0x203233752e627573\n"
-".quad 0x25202c3032722509,0x383231202c393172,0x752e726873090a3b,0x3132722509203233\n"
-".quad 0x202c30327225202c,0x2e766f6d090a3b35,0x3272250920323373,0x73090a3b34202c32\n"
-".quad 0x09203233732e6275,0x7225202c33327225,0x31327225202c3232,0x6c2e6c756d090a3b\n"
-".quad 0x2509203233752e6f,0x327225202c343272,0x61090a3b34202c33,0x09203233752e6464\n"
-".quad 0x7225202c35327225,0x3b327225202c3432,0x636f6c2e646c090a,0x09203233752e6c61\n"
-".quad 0x255b202c31317225,0x0a3b5d382b353272,0x383109636f6c2e09,0x0a30093032343109\n"
-".quad 0x61636f6c2e646c09,0x2509203233752e6c,0x72255b202c363272,0x090a3b5d342b3532\n"
-".quad 0x203233622e646e61,0x25202c3732722509,0x3b3133202c303272,0x33752e766f6d090a\n"
-".quad 0x2c38327225092032,0x746573090a3b3020,0x3233752e71652e70,0x25202c3470250920\n"
-".quad 0x327225202c373272,0x34702540090a3b38,0x4c24092061726220,0x393838345f305f74\n"
-".quad 0x636f6c2e090a3b38,0x3332343109383109,0x2e766f6d090a3009,0x3272250920323373\n"
-".quad 0x090a3b3233202c39,0x203233732e627573,0x25202c3033722509,0x327225202c393272\n"
-".quad 0x2e726873090a3b37,0x3372250920323375,0x2c36327225202c31,0x090a3b3033722520\n"
-".quad 0x203233622e6c6873,0x25202c3233722509,0x327225202c313172,0x2e646461090a3b37\n"
-".quad 0x3172250920323375,0x2c31337225202c31,0x090a3b3233722520,0x09383109636f6c2e\n"
-".quad 0x090a300934323431,0x6c61636f6c2e646c,0x722509203233752e,0x3272255b202c3333\n"
-".quad 0x73090a3b5d302b35,0x09203233752e7268,0x7225202c34337225,0x30337225202c3333\n"
-".quad 0x622e6c6873090a3b,0x3533722509203233,0x202c36327225202c,0x61090a3b37327225\n"
-".quad 0x09203233752e6464,0x7225202c36327225,0x35337225202c3433,0x5f305f744c240a3b\n"
-".quad 0x090a3a3839383834,0x09383109636f6c2e,0x090a300936323431,0x203233752e726873\n"
-".quad 0x25202c3633722509,0x3b3033202c313172,0x3109636f6c2e090a,0x3009383234310938\n"
-".quad 0x33752e726873090a,0x2c37337225092032,0x33202c3632722520,0x2e6c6873090a3b30\n"
-".quad 0x3372250920323362,0x2c31317225202c38,0x646461090a3b3220,0x722509203233752e\n"
-".quad 0x37337225202c3131,0x0a3b38337225202c,0x383109636f6c2e09,0x0a30093932343109\n"
-".quad 0x3233622e6c687309,0x202c363272250920,0x3b32202c36327225,0x33752e766f6d090a\n"
-".quad 0x2c39337225092032,0x746573090a3b3020,0x3233752e71652e70,0x25202c3570250920\n"
-".quad 0x337225202c363272,0x35702540090a3b39,0x4c24092061726220,0x363639345f305f74\n"
-".quad 0x636f6c2e090a3b36,0x3033343109383109,0x2e646461090a3009,0x3472250920323375\n"
-".quad 0x2c31317225202c30,0x766f6d090a3b3120,0x722509203233752e,0x3431322d202c3134\n"
-".quad 0x3b38343633383437,0x74672e746573090a,0x3233752e3233752e,0x202c323472250920\n"
-".quad 0x7225202c30347225,0x67656e090a3b3134,0x722509203233732e,0x32347225202c3334\n"
-".quad 0x752e617262090a3b,0x5f744c240920696e,0x3b30313439345f30,0x345f305f744c240a\n"
-".quad 0x6d090a3a36363639,0x09203233752e766f,0x322d202c34347225,0x3436333834373431\n"
-".quad 0x2e746573090a3b38,0x752e3233752e7467,0x3534722509203233,0x202c31317225202c\n"
-".quad 0x6e090a3b34347225,0x09203233732e6765,0x7225202c33347225,0x5f744c240a3b3534\n"
-".quad 0x3a30313439345f30,0x3109636f6c2e090a,0x3009313334310938,0x33752e646461090a\n"
-".quad 0x2c36347225092032,0x25202c3633722520,0x6c2e090a3b333472,0x343109383109636f\n"
-".quad 0x656e090a30093033,0x2509203233732e67,0x347225202c373472,0x2e766f6d090a3b36\n"
-".quad 0x3472250920323375,0x73090a3b30202c38,0x752e656e2e707465,0x2c36702509203233\n"
-".quad 0x7225202c34722520,0x6c6573090a3b3834,0x2509203233732e70,0x347225202c363372\n"
-".quad 0x2c36347225202c37,0x6d090a3b36702520,0x09203233752e766f,0x3b30202c39347225\n"
-".quad 0x652e70746573090a,0x2509203233752e71,0x33347225202c3770,0x0a3b39347225202c\n"
-".quad 0x7262203770254009,0x305f744c24092061,0x0a3b32323939345f,0x383109636f6c2e09\n"
-".quad 0x0a30093633343109,0x3233732e67656e09,0x202c363272250920,0x2e090a3b36327225\n"
-".quad 0x3109383109636f6c,0x6d090a3009383334,0x09203233752e766f,0x3b30202c30357225\n"
-".quad 0x71652e746573090a,0x3233752e3233752e,0x202c313572250920,0x7225202c36327225\n"
-".quad 0x67656e090a3b3035,0x722509203233732e,0x31357225202c3235,0x622e746f6e090a3b\n"
-".quad 0x3335722509203233,0x0a3b31317225202c,0x3233752e64646109,0x202c313172250920\n"
-".quad 0x7225202c32357225,0x6f6c2e090a3b3335,0x3334310938310963,0x726f78090a300939\n"
-".quad 0x722509203233622e,0x202c347225202c35,0x333834373431322d,0x744c240a3b383436\n"
-".quad 0x32323939345f305f,0x09636f6c2e090a3a,0x0931343431093831,0x732e766f6d090a30\n"
-".quad 0x3435722509203233,0x0a3b36337225202c,0x3233752e766f6d09,0x202c353572250920\n"
-".quad 0x70746573090a3b30,0x203233732e656c2e,0x7225202c38702509,0x35357225202c3131\n"
-".quad 0x2038702540090a3b,0x744c240920617262,0x38373339365f305f,0x752e766f6d090a3b\n"
-".quad 0x3635722509203233,0x744c240a3b30202c,0x36343930355f305f,0x6f6c3c2f2f200a3a\n"
+".quad 0x0930313431093831,0x6f632e646c090a30,0x203233752e74736e,0x255b202c38722509\n"
+".quad 0x0a3b5d302b336472,0x2e6f6c2e6c756d09,0x3972250920323375,0x25202c387225202c\n"
+".quad 0x646461090a3b3572,0x722509203233752e,0x2c397225202c3031,0x2e090a3b37722520\n"
+".quad 0x3109383109636f6c,0x73090a3009313134,0x33752e74672e7465,0x2509203233752e32\n"
+".quad 0x397225202c313172,0x0a3b30317225202c,0x3233732e67656e09,0x202c323172250920\n"
+".quad 0x6d090a3b31317225,0x33752e69682e6c75,0x2c33317225092032,0x7225202c38722520\n"
+".quad 0x2e646461090a3b35,0x3772250920323375,0x202c32317225202c,0x2e090a3b33317225\n"
+".quad 0x3109383109636f6c,0x73090a3009323134,0x2e6c61636f6c2e74,0x72255b0920323375\n"
+".quad 0x25202c5d302b3464,0x6461090a3b303172,0x2509203233732e64,0x2c367225202c3672\n"
+".quad 0x646461090a3b3120,0x722509203436752e,0x34647225202c3464,0x6461090a3b34202c\n"
+".quad 0x2509203436752e64,0x647225202c336472,0x6d090a3b34202c33,0x09203233752e766f\n"
+".quad 0x3b36202c34317225,0x6e2e70746573090a,0x2509203233732e65,0x2c367225202c3370\n"
+".quad 0x090a3b3431722520,0x6172622033702540,0x5f305f744c240920,0x090a3b3638333834\n"
+".quad 0x09383109636f6c2e,0x090a300934313431,0x203436752e766f6d,0x5f202c3164722509\n"
+".quad 0x5f5f5f616475635f,0x7365725f61647563,0x303236315f746c75,0x6f6c2e7473090a3b\n"
+".quad 0x203233752e6c6163,0x616475635f5f5b09,0x5f616475635f5f5f,0x315f746c75736572\n"
+".quad 0x2c5d34322b303236,0x2e090a3b37722520,0x3109383109636f6c,0x73090a3009393134\n"
+".quad 0x09203233622e6c68,0x7225202c35317225,0x73090a3b31202c31,0x09203233752e7268\n"
+".quad 0x7225202c36317225,0x0a3b3432202c3531,0x3233752e62757309,0x202c373172250920\n"
+".quad 0x3231202c36317225,0x2e726873090a3b38,0x3172250920323375,0x2c37317225202c38\n"
+".quad 0x766f6d090a3b3520,0x722509203233732e,0x090a3b34202c3931,0x203233732e627573\n"
+".quad 0x25202c3032722509,0x317225202c393172,0x2e747663090a3b38,0x203233732e343673\n"
+".quad 0x25202c3564722509,0x756d090a3b303272,0x732e656469772e6c,0x3664722509203233\n"
+".quad 0x202c30327225202c,0x2e646461090a3b34,0x6472250920343675,0x2c31647225202c37\n"
+".quad 0x090a3b3664722520,0x6c61636f6c2e646c,0x722509203233752e,0x376472255b202c37\n"
+".quad 0x6c2e090a3b5d382b,0x343109383109636f,0x646c090a30093032,0x752e6c61636f6c2e\n"
+".quad 0x3132722509203233,0x2b376472255b202c,0x646e61090a3b5d34,0x722509203233622e\n"
+".quad 0x37317225202c3232,0x6d090a3b3133202c,0x09203233752e766f,0x3b30202c33327225\n"
+".quad 0x652e70746573090a,0x2509203233752e71,0x32327225202c3470,0x0a3b33327225202c\n"
+".quad 0x7262203470254009,0x305f744c24092061,0x0a3b38393838345f,0x383109636f6c2e09\n"
+".quad 0x0a30093332343109,0x3233732e766f6d09,0x202c343272250920,0x627573090a3b3233\n"
+".quad 0x722509203233732e,0x34327225202c3532,0x0a3b32327225202c,0x3233752e72687309\n"
+".quad 0x202c363272250920,0x7225202c31327225,0x6c6873090a3b3532,0x722509203233622e\n"
+".quad 0x2c377225202c3732,0x090a3b3232722520,0x203233752e646461,0x7225202c37722509\n"
+".quad 0x37327225202c3632,0x09636f6c2e090a3b,0x0934323431093831,0x6f6c2e646c090a30\n"
+".quad 0x203233752e6c6163,0x5b202c3832722509,0x3b5d302b37647225,0x33752e726873090a\n"
+".quad 0x2c39327225092032,0x25202c3832722520,0x6873090a3b353272,0x2509203233622e6c\n"
+".quad 0x327225202c303372,0x3b32327225202c31,0x33752e646461090a,0x2c31327225092032\n"
+".quad 0x25202c3932722520,0x744c240a3b303372,0x38393838345f305f,0x09636f6c2e090a3a\n"
+".quad 0x0936323431093831,0x752e726873090a30,0x2c36722509203233,0x3033202c37722520\n"
+".quad 0x09636f6c2e090a3b,0x0938323431093831,0x752e726873090a30,0x3133722509203233\n"
+".quad 0x202c31327225202c,0x6c6873090a3b3033,0x722509203233622e,0x2c377225202c3233\n"
+".quad 0x646461090a3b3220,0x722509203233752e,0x2c31337225202c37,0x090a3b3233722520\n"
+".quad 0x09383109636f6c2e,0x090a300939323431,0x203233622e6c6873,0x25202c3132722509\n"
+".quad 0x0a3b32202c313272,0x3233752e766f6d09,0x202c333372250920,0x70746573090a3b30\n"
+".quad 0x203233752e71652e,0x7225202c35702509,0x33337225202c3132,0x2035702540090a3b\n"
+".quad 0x744c240920617262,0x36363639345f305f,0x09636f6c2e090a3b,0x0930333431093831\n"
+".quad 0x752e646461090a30,0x3433722509203233,0x31202c377225202c,0x752e766f6d090a3b\n"
+".quad 0x3533722509203233,0x34373431322d202c,0x090a3b3834363338,0x752e74672e746573\n"
+".quad 0x09203233752e3233,0x7225202c36337225,0x35337225202c3433,0x732e67656e090a3b\n"
+".quad 0x3733722509203233,0x0a3b36337225202c,0x696e752e61726209,0x5f305f744c240920\n"
+".quad 0x240a3b3031343934,0x3639345f305f744c,0x766f6d090a3a3636,0x722509203233752e\n"
+".quad 0x3431322d202c3833,0x3b38343633383437,0x74672e746573090a,0x3233752e3233752e\n"
+".quad 0x202c393372250920,0x337225202c377225,0x2e67656e090a3b38,0x3372250920323373\n"
+".quad 0x3b39337225202c37,0x345f305f744c240a,0x2e090a3a30313439,0x3109383109636f6c\n"
+".quad 0x61090a3009313334,0x09203233752e6464,0x7225202c30347225,0x3b37337225202c36\n"
+".quad 0x3109636f6c2e090a,0x3009303334310938,0x33732e67656e090a,0x2c31347225092032\n"
+".quad 0x090a3b3034722520,0x203233752e766f6d,0x30202c3234722509,0x2e70746573090a3b\n"
+".quad 0x09203233752e656e,0x327225202c367025,0x0a3b32347225202c,0x33732e706c657309\n"
+".quad 0x202c367225092032,0x7225202c31347225,0x3b367025202c3034,0x33752e766f6d090a\n"
+".quad 0x2c33347225092032,0x746573090a3b3020,0x3233752e71652e70,0x25202c3770250920\n"
+".quad 0x347225202c373372,0x37702540090a3b33,0x4c24092061726220,0x323939345f305f74\n"
+".quad 0x636f6c2e090a3b32,0x3633343109383109,0x2e67656e090a3009,0x3272250920323373\n"
+".quad 0x3b31327225202c31,0x3109636f6c2e090a,0x3009383334310938,0x33752e766f6d090a\n"
+".quad 0x2c34347225092032,0x746573090a3b3020,0x2e3233752e71652e,0x3472250920323375\n"
+".quad 0x2c31327225202c35,0x090a3b3434722520,0x203233732e67656e,0x25202c3634722509\n"
+".quad 0x6f6e090a3b353472,0x2509203233622e74,0x377225202c373472,0x752e646461090a3b\n"
+".quad 0x2c37722509203233,0x25202c3634722520,0x6c2e090a3b373472,0x343109383109636f\n"
+".quad 0x6f78090a30093933,0x2509203233622e72,0x2c327225202c3372,0x3834373431322d20\n"
+".quad 0x4c240a3b38343633,0x323939345f305f74,0x636f6c2e090a3a32,0x3134343109383109\n"
+".quad 0x2e766f6d090a3009,0x3472250920323373,0x0a3b367225202c38,0x3233752e766f6d09\n"
+".quad 0x202c393472250920,0x70746573090a3b30,0x203233732e656c2e,0x7225202c38702509\n"
+".quad 0x3b39347225202c37,0x622038702540090a,0x5f744c2409206172,0x3b38373339365f30\n"
+".quad 0x33752e766f6d090a,0x2c30357225092032,0x5f744c240a3b3020,0x3a36343930355f30\n"
+".quad 0x6f6f6c3c2f2f200a,0x20706f6f4c203e70,0x6e696c2079646f62,0x202c313434312065\n"
+".quad 0x20676e697473656e,0x31203a6874706564,0x616d69747365202c,0x7265746920646574\n"
+".quad 0x203a736e6f697461,0x0a6e776f6e6b6e75,0x383109636f6c2e09,0x0a30093534343109\n"
+".quad 0x3233752e72687309,0x202c313572250920,0x3133202c31327225,0x622e6c6873090a3b\n"
+".quad 0x3235722509203233,0x31202c377225202c,0x752e646461090a3b,0x2c37722509203233\n"
+".quad 0x25202c3135722520,0x6c2e090a3b323572,0x343109383109636f,0x6873090a30093634\n"
+".quad 0x2509203233622e6c,0x327225202c313272,0x2e090a3b31202c31,0x3109383109636f6c\n"
+".quad 0x73090a3009373434,0x09203233752e6275,0x7225202c30357225,0x090a3b31202c3035\n"
+".quad 0x203233752e766f6d,0x30202c3335722509,0x2e70746573090a3b,0x09203233732e7467\n"
+".quad 0x377225202c397025,0x0a3b33357225202c,0x7262203970254009,0x305f744c24092061\n"
+".quad 0x0a3b36343930355f,0x696e752e61726209,0x5f305f744c240920,0x240a3b3433343035\n"
+".quad 0x3339365f305f744c,0x766f6d090a3a3837,0x722509203233752e,0x240a3b30202c3035\n"
+".quad 0x3430355f305f744c,0x6f6c2e090a3a3433,0x3434310938310963,0x6c756d090a300939\n"
+".quad 0x203233752e6f6c2e,0x25202c3132722509,0x3132392d202c3772,0x0a3b303738373037\n"
+".quad 0x383109636f6c2e09,0x0a30093035343109,0x3233752e766f6d09,0x202c343572250920\n"
+".quad 0x383730373132392d,0x6c756d090a3b3037,0x203233752e69682e,0x7225202c37722509\n"
+".quad 0x3b34357225202c37,0x33752e766f6d090a,0x2c35357225092032,0x746573090a3b3020\n"
+".quad 0x3233732e656c2e70,0x202c303170250920,0x357225202c377225,0x31702540090a3b35\n"
+".quad 0x2409206172622030,0x3431355f305f744c,0x6f6c2e090a3b3835,0x3534310938310963\n"
+".quad 0x726873090a300932,0x722509203233752e,0x31327225202c3635,0x73090a3b3133202c\n"
+".quad 0x09203233622e6c68,0x7225202c37357225,0x61090a3b31202c37,0x09203233752e6464\n"
+".quad 0x357225202c377225,0x3b37357225202c36,0x3109636f6c2e090a,0x3009333534310938\n"
+".quad 0x33622e6c6873090a,0x2c31327225092032,0x31202c3132722520,0x09636f6c2e090a3b\n"
+".quad 0x0934353431093831,0x752e627573090a30,0x3035722509203233,0x202c30357225202c\n"
+".quad 0x305f744c240a3b31,0x0a3a38353431355f,0x383109636f6c2e09,0x0a30093635343109\n"
+".quad 0x3233752e766f6d09,0x202c383572250920,0x2e746573090a3b30,0x752e3233752e656e\n"
+".quad 0x3935722509203233,0x202c31327225202c,0x6e090a3b38357225,0x09203233732e6765\n"
+".quad 0x7225202c30367225,0x646461090a3b3935,0x722509203233752e,0x2c30367225202c37\n"
+".quad 0x2e090a3b37722520,0x3109383109636f6c,0x73090a3009383534,0x09203233622e6c68\n"
+".quad 0x7225202c31367225,0x090a3b3432202c37,0x203233732e766f6d,0x30202c3236722509\n"
+".quad 0x6c2e746573090a3b,0x33732e3233752e74,0x2c33367225092032,0x25202c3136722520\n"
+".quad 0x656e090a3b323672,0x2509203233732e67,0x367225202c343672,0x2e726873090a3b33\n"
+".quad 0x3672250920323375,0x202c377225202c35,0x2e646461090a3b38,0x3672250920323375\n"
+".quad 0x2c30357225202c36,0x73090a3b36323120,0x09203233622e6c68,0x7225202c37367225\n"
+".quad 0x0a3b3332202c3636,0x3233752e64646109,0x202c383672250920,0x7225202c35367225\n"
+".quad 0x646461090a3b3736,0x722509203233752e,0x34367225202c3936,0x0a3b38367225202c\n"
+".quad 0x203233622e726f09,0x25202c3037722509,0x39367225202c3372,0x622e766f6d090a3b\n"
+".quad 0x2c37662509203233,0x090a3b3037722520,0x20696e752e617262,0x646e6557444c2409\n"
+".quad 0x65746e695f5f5f69,0x616d665f6c616e72,0x34315f3330325f64,0x5f305f744c240a3b\n"
+".quad 0x090a3a3236333734,0x09383109636f6c2e,0x090a300931373431,0x203233662e766f6d\n"
+".quad 0x6630202c38662509,0x3338396632326633,0x2f0920202020203b,0x363633362e30202f\n"
+".quad 0x09636f6c2e090a32,0x0932303731093831,0x61702e646c090a30,0x203233662e6d6172\n"
+".quad 0x5f5b202c31662509,0x726170616475635f,0x727435315a5f5f6d,0x4b6d726f66736e61\n"
+".quad 0x6966506c656e7265,0x61746568745f6669,0x636f6c2e090a3b5d,0x3137343109383109\n"
+".quad 0x2e6c756d090a3009,0x3966250920323366,0x25202c316625202c,0x747663090a3b3866\n"
+".quad 0x3233732e696e722e,0x722509203233662e,0x3b396625202c3137,0x33732e766f6d090a\n"
+".quad 0x2c38347225092032,0x090a3b3137722520,0x09383109636f6c2e,0x090a300932373431\n"
+".quad 0x662e6e722e747663,0x09203233732e3233,0x7225202c30316625,0x67656e090a3b3137\n"
+".quad 0x662509203233662e,0x30316625202c3131,0x662e766f6d090a3b,0x3231662509203233\n"
+".quad 0x396366336630202c,0x2020203b30303030,0x352e31202f2f0920,0x616d090a31333037\n"
+".quad 0x2509203233662e64,0x316625202c333166,0x2c31316625202c32,0x6d090a3b31662520\n"
+".quad 0x09203233662e766f,0x6630202c34316625,0x3030303864663933,0x2f2f09202020203b\n"
+".quad 0x38343030302e3020,0x616d090a33313533,0x2509203233662e64,0x316625202c353166\n"
+".quad 0x2c31316625202c34,0x090a3b3331662520,0x203233662e766f6d,0x30202c3631662509\n"
+".quad 0x3030383861343366,0x2f09202020203b30,0x353833312e33202f,0x6d090a37302d6536\n"
+".quad 0x09203233662e6461,0x6625202c37316625,0x31316625202c3631,0x0a3b35316625202c\n"
+".quad 0x3233662e766f6d09,0x202c383166250920,0x3361353865326630,0x09202020203b3930\n"
+".quad 0x3737302e36202f2f,0x6d090a31312d6531,0x09203233662e6461,0x316625202c376625\n"
+".quad 0x2c31316625202c38,0x090a3b3731662520,0x203436752e766f6d,0x5f202c3164722509\n"
+".quad 0x5f5f5f616475635f,0x7365725f61647563,0x303236315f746c75,0x752e766f6d090a3b\n"
+".quad 0x3264722509203436,0x616475635f5f202c,0x69706f32695f7472,0x57444c240a3b665f\n"
+".quad 0x695f5f5f69646e65,0x5f6c616e7265746e,0x3330325f64616d66,0x6c2e090a3a34315f\n"
+".quad 0x373109383109636f,0x6461090a30093530,0x2509203233732e64,0x347225202c323772\n"
+".quad 0x6d090a3b31202c38,0x09203233662e6c75,0x6625202c39316625,0x0a3b376625202c37\n"
+".quad 0x3233622e646e6109,0x202c333772250920,0x3b31202c32377225,0x33752e766f6d090a\n"
+".quad 0x2c34377225092032,0x746573090a3b3020,0x3233732e71652e70,0x202c313170250920\n"
+".quad 0x7225202c33377225,0x702540090a3b3437,0x0920617262203131,0x32355f305f744c24\n"
+".quad 0x6c2e090a3b363232,0x373109383109636f,0x6f6d090a30093930,0x2509203233662e76\n"
+".quad 0x336630202c303266,0x3b30303030303866,0x202f2f0920202020,0x662e766f6d090a31\n"
+".quad 0x3132662509203233,0x303066626630202c,0x2020203b30303030,0x2e302d202f2f0920\n"
+".quad 0x662e766f6d090a35,0x3232662509203233,0x613264336630202c,0x2020203b35616161\n"
+".quad 0x302e30202f2f0920,0x090a363636363134,0x203233662e766f6d,0x30202c3332662509\n"
+".quad 0x3136303662616266,0x2f09202020203b61,0x3130302e302d202f,0x6d090a3337383833\n"
+".quad 0x09203233662e766f,0x6630202c34326625,0x6563356663633733,0x2f2f09202020203b\n"
+".quad 0x32333334342e3220,0x616d090a35302d65,0x2509203233662e64,0x326625202c353266\n"
+".quad 0x2c39316625202c34,0x090a3b3332662520,0x203233662e64616d,0x25202c3632662509\n"
+".quad 0x326625202c393166,0x3b32326625202c35,0x33662e64616d090a,0x2c37326625092032\n"
+".quad 0x25202c3931662520,0x326625202c363266,0x2e64616d090a3b31,0x3266250920323366\n"
+".quad 0x2c39316625202c38,0x25202c3732662520,0x7262090a3b303266,0x240920696e752e61\n"
+".quad 0x3931355f305f744c,0x5f744c240a3b3037,0x3a36323232355f30,0x3109636f6c2e090a\n"
+".quad 0x3009313137310938,0x33662e766f6d090a,0x2c39326625092032,0x6161326562663020\n"
+".quad 0x202020203b336161,0x312e302d202f2f09,0x6d090a3736363636,0x09203233662e766f\n"
+".quad 0x6630202c30336625,0x6539333838306333,0x2f2f09202020203b,0x33333830302e3020\n"
+".quad 0x766f6d090a363132,0x662509203233662e,0x39626630202c3133,0x203b396631616334\n"
+".quad 0x2d202f2f09202020,0x3539313030302e30,0x64616d090a333531,0x662509203233662e\n"
+".quad 0x31336625202c3233,0x202c39316625202c,0x6d090a3b30336625,0x09203233662e6461\n"
+".quad 0x6625202c33336625,0x32336625202c3931,0x0a3b39326625202c,0x3233662e6c756d09\n"
+".quad 0x202c343366250920,0x6625202c39316625,0x64616d090a3b3333,0x662509203233662e\n"
+".quad 0x34336625202c3832,0x25202c376625202c,0x5f744c240a3b3766,0x3a30373931355f30\n"
+".quad 0x3109636f6c2e090a,0x3009333137310938,0x33662e67656e090a,0x2c35336625092032\n"
+".quad 0x090a3b3832662520,0x203233622e646e61,0x25202c3537722509,0x0a3b32202c323772\n"
+".quad 0x3233732e766f6d09,0x202c363772250920,0x70746573090a3b30,0x203233732e656e2e\n"
+".quad 0x25202c3231702509,0x377225202c353772,0x706c6573090a3b36,0x662509203233662e\n"
+".quad 0x35336625202c3832,0x202c38326625202c,0x2e090a3b32317025,0x3109383109636f6c\n"
+".quad 0x6d090a3009363137,0x09203233662e766f,0x326625202c356625,0x6557444c240a3b38\n"
+".quad 0x73695f5f5f69646e,0x3330325f66666e69,0x6c2e090a3a33315f,0x363109383109636f\n"
+".quad 0x6f6d090a30093833,0x2509203233662e76,0x306630202c363366,0x3b30303030303030\n"
+".quad 0x202f2f0920202020,0x09636f6c2e090a30,0x0932303731093831,0x61702e646c090a30\n"
+".quad 0x203233662e6d6172,0x5f5b202c31662509,0x726170616475635f,0x727435315a5f5f6d\n"
+".quad 0x4b6d726f66736e61,0x6966506c656e7265,0x61746568745f6669,0x636f6c2e090a3b5d\n"
+".quad 0x3833363109383109,0x70746573090a3009,0x203233662e71652e,0x25202c3331702509\n"
+".quad 0x36336625202c3166,0x2e706c6573090a3b,0x3772250920323373,0x2c30202c31202c37\n"
+".quad 0x090a3b3331702520,0x3233732e706c6573,0x202c383772250920,0x7025202c30202c31\n"
+".quad 0x622e726f090a3b31,0x3937722509203233,0x202c37377225202c,0x6d090a3b38377225\n"
+".quad 0x09203233752e766f,0x3b30202c30387225,0x652e70746573090a,0x2509203233732e71\n"
+".quad 0x377225202c343170,0x3b30387225202c39,0x203431702540090a,0x744c240920617262\n"
+".quad 0x32383432355f305f,0x09636f6c2e090a3b,0x0939333631093831,0x662e766f6d090a30\n"
+".quad 0x3733662509203233,0x303030306630202c,0x2020203b30303030,0x090a30202f2f0920\n"
+".quad 0x09383109636f6c2e,0x090a300932303731,0x6d617261702e646c,0x662509203233662e\n"
+".quad 0x75635f5f5b202c31,0x5f5f6d7261706164,0x736e61727435315a,0x6e72654b6d726f66\n"
+".quad 0x5f66696966506c65,0x0a3b5d6174656874,0x383109636f6c2e09,0x0a30093933363109\n"
+".quad 0x2e6e722e6c756d09,0x3366250920323366,0x202c316625202c38,0x6d090a3b37336625\n"
+".quad 0x09203436752e766f,0x5f5f202c38647225,0x635f5f5f61647563,0x757365725f616475\n"
+".quad 0x3b383434345f746c,0x6e752e617262090a,0x6557444c24092069,0x73695f5f5f69646e\n"
+".quad 0x3330325f66666e69,0x5f744c240a3b395f,0x3a32383432355f30,0x33662e766f6d090a\n"
+".quad 0x2c39336625092032,0x6162333734663020,0x202020203b303037,0x33303834202f2f09\n"
+".quad 0x2e70746573090a39,0x09203233662e7467,0x6625202c35317025,0x3b39336625202c32\n"
+".quad 0x353170252140090a,0x4c24092061726220,0x393932355f305f74,0x636f6c2e090a3b34\n"
+".quad 0x3230373109383109,0x702e646c090a3009,0x3233662e6d617261,0x5b202c3166250920\n"
+".quad 0x6170616475635f5f,0x7435315a5f5f6d72,0x6d726f66736e6172,0x66506c656e72654b\n"
+".quad 0x746568745f666969,0x6f6c2e090a3b5d61,0x3933310938310963,0x766f6d090a300936\n"
+".quad 0x722509203233622e,0x0a3b316625202c31,0x3233622e646e6109,0x25202c3272250920\n"
+".quad 0x3431322d202c3172,0x3b38343633383437,0x33732e766f6d090a,0x2c31387225092032\n"
+".quad 0x2e090a3b32722520,0x3209383109636f6c,0x6c6873090a300934,0x722509203233622e\n"
+".quad 0x202c317225202c34,0x622e726f090a3b38,0x2c35722509203233,0x322d202c34722520\n"
+".quad 0x3436333834373431,0x2e766f6d090a3b38,0x6472250920343673,0x3b32647225202c39\n"
+".quad 0x36752e766f6d090a,0x3031647225092034,0x616475635f5f202c,0x5f616475635f5f5f\n"
+".quad 0x345f746c75736572,0x6f6d090a3b383434,0x2509203233732e76,0x0a3b30202c323872\n"
+".quad 0x3233752e766f6d09,0x202c333872250920,0x305f744c240a3b30,0x0a3a38313034355f\n"
+".quad 0x706f6f6c3c2f2f20,0x6220706f6f4c203e,0x656e696c2079646f,0x73656e202c343220\n"
+".quad 0x70656420676e6974,0x69202c31203a6874,0x6e6f697461726574,0x6c2e090a36203a73\n"
+".quad 0x343109383109636f,0x646c090a30093031,0x752e74736e6f632e,0x3438722509203233\n"
+".quad 0x2b396472255b202c,0x6c756d090a3b5d30,0x203233752e6f6c2e,0x25202c3538722509\n"
+".quad 0x357225202c343872,0x752e646461090a3b,0x3638722509203233,0x202c35387225202c\n"
+".quad 0x2e090a3b33387225,0x3109383109636f6c,0x73090a3009313134,0x33752e74672e7465\n"
+".quad 0x2509203233752e32,0x387225202c373872,0x3b36387225202c35,0x33732e67656e090a\n"
+".quad 0x2c38387225092032,0x090a3b3738722520,0x752e69682e6c756d,0x3938722509203233\n"
+".quad 0x202c34387225202c,0x6461090a3b357225,0x2509203233752e64,0x387225202c333872\n"
+".quad 0x3b39387225202c38,0x3109636f6c2e090a,0x3009323134310938,0x636f6c2e7473090a\n"
+".quad 0x09203233752e6c61,0x302b30316472255b,0x3b36387225202c5d,0x33732e646461090a\n"
+".quad 0x2c32387225092032,0x31202c3238722520,0x752e646461090a3b,0x3164722509203436\n"
+".quad 0x3031647225202c30,0x6461090a3b34202c,0x2509203436752e64,0x647225202c396472\n"
+".quad 0x6d090a3b34202c39,0x09203233752e766f,0x3b36202c30397225,0x6e2e70746573090a\n"
+".quad 0x2509203233732e65,0x387225202c363170,0x3b30397225202c32,0x203631702540090a\n"
+".quad 0x744c240920617262,0x38313034355f305f,0x09636f6c2e090a3b,0x0934313431093831\n"
+".quad 0x752e766f6d090a30,0x3864722509203436,0x616475635f5f202c,0x5f616475635f5f5f\n"
+".quad 0x345f746c75736572,0x7473090a3b383434,0x752e6c61636f6c2e,0x635f5f5b09203233\n"
+".quad 0x75635f5f5f616475,0x6c757365725f6164,0x322b383434345f74,0x33387225202c5d34\n"
+".quad 0x09636f6c2e090a3b,0x0939313431093831,0x622e6c6873090a30,0x3139722509203233\n"
+".quad 0x31202c317225202c,0x752e726873090a3b,0x3631722509203233,0x202c31397225202c\n"
+".quad 0x627573090a3b3432,0x722509203233752e,0x36317225202c3731,0x090a3b383231202c\n"
+".quad 0x203233752e726873,0x25202c3239722509,0x0a3b35202c373172,0x3233732e766f6d09\n"
+".quad 0x202c333972250920,0x2e627573090a3b34,0x3972250920323373,0x2c33397225202c34\n"
+".quad 0x090a3b3239722520,0x2e3436732e747663,0x6472250920323373,0x34397225202c3131\n"
+".quad 0x772e6c756d090a3b,0x203233732e656469,0x202c323164722509,0x3b34202c34397225\n"
+".quad 0x36752e646461090a,0x3331647225092034,0x202c38647225202c,0x090a3b3231647225\n"
+".quad 0x6c61636f6c2e646c,0x722509203233752e,0x6472255b202c3338,0x090a3b5d382b3331\n"
+".quad 0x09383109636f6c2e,0x090a300930323431,0x6c61636f6c2e646c,0x722509203233752e\n"
+".quad 0x6472255b202c3539,0x090a3b5d342b3331,0x203233622e646e61,0x25202c3232722509\n"
+".quad 0x3b3133202c373172,0x33752e766f6d090a,0x2c36397225092032,0x746573090a3b3020\n"
+".quad 0x3233752e71652e70,0x202c373170250920,0x7225202c32327225,0x702540090a3b3639\n"
+".quad 0x0920617262203731,0x34355f305f744c24,0x6c2e090a3b303335,0x343109383109636f\n"
+".quad 0x6f6d090a30093332,0x2509203233732e76,0x3b3233202c373972,0x33732e627573090a\n"
+".quad 0x2c35327225092032,0x25202c3739722520,0x6873090a3b323272,0x2509203233752e72\n"
+".quad 0x397225202c383972,0x3b35327225202c35,0x33622e6c6873090a,0x2c39397225092032\n"
+".quad 0x25202c3338722520,0x6461090a3b323272,0x2509203233752e64,0x397225202c333872\n"
+".quad 0x3b39397225202c38,0x3109636f6c2e090a,0x3009343234310938,0x636f6c2e646c090a\n"
+".quad 0x09203233752e6c61,0x5b202c3030317225,0x5d302b3331647225,0x752e726873090a3b\n"
+".quad 0x3031722509203233,0x3030317225202c31,0x0a3b35327225202c,0x3233622e6c687309\n"
+".quad 0x2c32303172250920,0x25202c3539722520,0x6461090a3b323272,0x2509203233752e64\n"
+".quad 0x317225202c353972,0x30317225202c3130,0x305f744c240a3b32,0x0a3a30333534355f\n"
+".quad 0x383109636f6c2e09,0x0a30093632343109,0x3233752e72687309,0x202c323872250920\n"
+".quad 0x3033202c33387225,0x09636f6c2e090a3b,0x0938323431093831,0x752e726873090a30\n"
+".quad 0x3031722509203233,0x2c35397225202c33,0x6873090a3b303320,0x2509203233622e6c\n"
+".quad 0x7225202c34303172,0x090a3b32202c3338,0x203233752e646461,0x25202c3338722509\n"
+".quad 0x7225202c33303172,0x6c2e090a3b343031,0x343109383109636f,0x6873090a30093932\n"
+".quad 0x2509203233622e6c,0x397225202c353972,0x6d090a3b32202c35,0x09203233752e766f\n"
+".quad 0x30202c3530317225,0x2e70746573090a3b,0x09203233752e7165,0x7225202c38317025\n"
+".quad 0x30317225202c3539,0x31702540090a3b35,0x2409206172622038,0x3235355f305f744c\n"
+".quad 0x6f6c2e090a3b3839,0x3334310938310963,0x646461090a300930,0x722509203233752e\n"
+".quad 0x387225202c363031,0x6d090a3b31202c33,0x09203233752e766f,0x2d202c3730317225\n"
+".quad 0x3633383437343132,0x746573090a3b3834,0x2e3233752e74672e,0x3172250920323375\n"
+".quad 0x30317225202c3830,0x3730317225202c36,0x732e67656e090a3b,0x3031722509203233\n"
+".quad 0x3830317225202c39,0x752e617262090a3b,0x5f744c240920696e,0x3b32343035355f30\n"
+".quad 0x355f305f744c240a,0x6d090a3a38393235,0x09203233752e766f,0x2d202c3031317225\n"
+".quad 0x3633383437343132,0x746573090a3b3834,0x2e3233752e74672e,0x3172250920323375\n"
+".quad 0x33387225202c3131,0x3b3031317225202c,0x33732e67656e090a,0x3930317225092032\n"
+".quad 0x3b3131317225202c,0x355f305f744c240a,0x2e090a3a32343035,0x3109383109636f6c\n"
+".quad 0x61090a3009313334,0x09203233752e6464,0x25202c3231317225,0x317225202c323872\n"
+".quad 0x6f6c2e090a3b3930,0x3334310938310963,0x67656e090a300930,0x722509203233732e\n"
+".quad 0x317225202c333131,0x766f6d090a3b3231,0x722509203233752e,0x0a3b30202c343131\n"
+".quad 0x656e2e7074657309,0x702509203233752e,0x2c327225202c3931,0x0a3b343131722520\n"
+".quad 0x33732e706c657309,0x2c32387225092032,0x202c333131722520,0x25202c3231317225\n"
+".quad 0x6f6d090a3b393170,0x2509203233752e76,0x3b30202c35313172,0x652e70746573090a\n"
+".quad 0x2509203233752e71,0x317225202c303270,0x31317225202c3930,0x32702540090a3b35\n"
+".quad 0x2409206172622030,0x3535355f305f744c,0x6f6c2e090a3b3435,0x3334310938310963\n"
+".quad 0x67656e090a300936,0x722509203233732e,0x35397225202c3539,0x09636f6c2e090a3b\n"
+".quad 0x0938333431093831,0x752e766f6d090a30,0x3131722509203233,0x73090a3b30202c36\n"
+".quad 0x33752e71652e7465,0x2509203233752e32,0x7225202c37313172,0x31317225202c3539\n"
+".quad 0x2e67656e090a3b36,0x3172250920323373,0x31317225202c3831,0x2e746f6e090a3b37\n"
+".quad 0x3172250920323362,0x33387225202c3931,0x752e646461090a3b,0x3338722509203233\n"
+".quad 0x2c3831317225202c,0x0a3b393131722520,0x383109636f6c2e09,0x0a30093933343109\n"
+".quad 0x3233622e726f7809,0x202c313872250920,0x31322d202c327225,0x3834363338343734\n"
+".quad 0x5f305f744c240a3b,0x090a3a3435353535,0x09383109636f6c2e,0x090a300931343431\n"
+".quad 0x203233732e766f6d,0x202c303231722509,0x6d090a3b32387225,0x09203233752e766f\n"
+".quad 0x30202c3132317225,0x2e70746573090a3b,0x09203233732e656c,0x7225202c31327025\n"
+".quad 0x32317225202c3338,0x32702540090a3b31,0x2409206172622031,0x3639365f305f744c\n"
+".quad 0x766f6d090a3b3433,0x722509203233752e,0x0a3b30202c323231,0x36355f305f744c24\n"
+".quad 0x2f2f200a3a383735,0x4c203e706f6f6c3c,0x79646f6220706f6f,0x343120656e696c20\n"
+".quad 0x7473656e202c3134,0x7470656420676e69,0x7365202c31203a68,0x20646574616d6974\n"
+".quad 0x6f69746172657469,0x6e6b6e75203a736e,0x6f6c2e090a6e776f,0x3434310938310963\n"
+".quad 0x726873090a300935,0x722509203233752e,0x397225202c333231,0x090a3b3133202c35\n"
+".quad 0x203233622e6c6873,0x202c343231722509,0x3b31202c33387225,0x33752e646461090a\n"
+".quad 0x2c33387225092032,0x202c333231722520,0x090a3b3432317225,0x09383109636f6c2e\n"
+".quad 0x090a300936343431,0x203233622e6c6873,0x25202c3539722509,0x0a3b31202c353972\n"
+".quad 0x383109636f6c2e09,0x0a30093734343109,0x3233752e62757309,0x2c32323172250920\n"
+".quad 0x202c323231722520,0x2e766f6d090a3b31,0x3172250920323375,0x090a3b30202c3532\n"
+".quad 0x2e74672e70746573,0x3270250920323373,0x2c33387225202c32,0x0a3b353231722520\n"
+".quad 0x6220323270254009,0x5f744c2409206172,0x3b38373536355f30,0x6e752e617262090a\n"
+".quad 0x305f744c24092069,0x0a3b36363036355f,0x39365f305f744c24,0x6f6d090a3a343336\n"
+".quad 0x2509203233752e76,0x3b30202c32323172,0x355f305f744c240a,0x2e090a3a36363036\n"
+".quad 0x3109383109636f6c,0x6d090a3009393434,0x33752e6f6c2e6c75,0x2c35397225092032\n"
+".quad 0x2d202c3338722520,0x3738373037313239,0x636f6c2e090a3b30,0x3035343109383109\n"
+".quad 0x2e766f6d090a3009,0x3172250920323375,0x3132392d202c3632,0x0a3b303738373037\n"
+".quad 0x2e69682e6c756d09,0x3872250920323375,0x2c33387225202c33,0x0a3b363231722520\n"
+".quad 0x3233752e766f6d09,0x2c37323172250920,0x746573090a3b3020,0x3233732e656c2e70\n"
+".quad 0x202c333270250920,0x7225202c33387225,0x2540090a3b373231,0x2061726220333270\n"
+".quad 0x355f305f744c2409,0x2e090a3b30393037,0x3109383109636f6c,0x73090a3009323534\n"
+".quad 0x09203233752e7268,0x25202c3832317225,0x3b3133202c353972,0x33622e6c6873090a\n"
+".quad 0x3932317225092032,0x202c33387225202c,0x2e646461090a3b31,0x3872250920323375\n"
+".quad 0x3832317225202c33,0x3b3932317225202c,0x3109636f6c2e090a,0x3009333534310938\n"
+".quad 0x33622e6c6873090a,0x2c35397225092032,0x31202c3539722520,0x09636f6c2e090a3b\n"
+".quad 0x0934353431093831,0x752e627573090a30,0x3231722509203233,0x3232317225202c32\n"
+".quad 0x744c240a3b31202c,0x30393037355f305f,0x09636f6c2e090a3a,0x0936353431093831\n"
+".quad 0x752e766f6d090a30,0x3331722509203233,0x73090a3b30202c30,0x33752e656e2e7465\n"
+".quad 0x2509203233752e32,0x7225202c31333172,0x33317225202c3539,0x2e67656e090a3b30\n"
+".quad 0x3172250920323373,0x33317225202c3233,0x2e646461090a3b31,0x3872250920323375\n"
+".quad 0x3233317225202c33,0x0a3b33387225202c,0x383109636f6c2e09,0x0a30093835343109\n"
+".quad 0x3233622e6c687309,0x2c33333172250920,0x32202c3338722520,0x2e766f6d090a3b34\n"
+".quad 0x3172250920323373,0x090a3b30202c3433,0x752e746c2e746573,0x09203233732e3233\n"
+".quad 0x25202c3533317225,0x7225202c33333172,0x656e090a3b343331,0x2509203233732e67\n"
+".quad 0x7225202c36333172,0x6873090a3b353331,0x2509203233752e72,0x7225202c37333172\n"
+".quad 0x090a3b38202c3338,0x203233752e646461,0x202c383331722509,0x31202c3232317225\n"
+".quad 0x6c6873090a3b3632,0x722509203233622e,0x317225202c393331,0x0a3b3332202c3833\n"
+".quad 0x3233752e64646109,0x2c30343172250920,0x202c373331722520,0x090a3b3933317225\n"
+".quad 0x203233752e646461,0x202c313431722509,0x25202c3633317225,0x6f090a3b30343172\n"
+".quad 0x2509203233622e72,0x7225202c32343172,0x34317225202c3138,0x2e766f6d090a3b31\n"
+".quad 0x3466250920323362,0x3234317225202c30,0x752e617262090a3b,0x57444c240920696e\n"
+".quad 0x695f5f5f69646e65,0x5f6c616e7265746e,0x3330325f64616d66,0x744c240a3b30315f\n"
+".quad 0x34393932355f305f,0x09636f6c2e090a3a,0x0931373431093831,0x662e766f6d090a30\n"
+".quad 0x3134662509203233,0x323266336630202c,0x2020203b33383966,0x362e30202f2f0920\n"
+".quad 0x6c2e090a32363633,0x373109383109636f,0x646c090a30093230,0x662e6d617261702e\n"
+".quad 0x2c31662509203233,0x616475635f5f5b20,0x315a5f5f6d726170,0x6f66736e61727435\n"
+".quad 0x6c656e72654b6d72,0x68745f6669696650,0x2e090a3b5d617465,0x3109383109636f6c\n"
+".quad 0x6d090a3009313734,0x09203233662e6c75,0x316625202c396625,0x0a3b31346625202c\n"
+".quad 0x696e722e74766309,0x3233662e3233732e,0x202c313772250920,0x6f6d090a3b396625\n"
+".quad 0x2509203233732e76,0x7225202c30323172,0x6f6c2e090a3b3137,0x3734310938310963\n"
+".quad 0x747663090a300932,0x2e3233662e6e722e,0x3166250920323373,0x3b31377225202c30\n"
+".quad 0x33662e67656e090a,0x2c31316625092032,0x090a3b3031662520,0x203233662e766f6d\n"
+".quad 0x30202c3234662509,0x3030303963663366,0x2f09202020203b30,0x333037352e31202f\n"
+".quad 0x662e64616d090a31,0x3334662509203233,0x202c32346625202c,0x6625202c31316625\n"
+".quad 0x2e766f6d090a3b31,0x3466250920323366,0x6639336630202c34,0x20203b3030303864\n"
+".quad 0x2e30202f2f092020,0x3135333834303030,0x662e64616d090a33,0x3534662509203233\n"
+".quad 0x202c34346625202c,0x6625202c31316625,0x766f6d090a3b3334,0x662509203233662e\n"
+".quad 0x34336630202c3634,0x203b303030383861,0x33202f2f09202020,0x2d6536353833312e\n"
+".quad 0x2e64616d090a3730,0x3466250920323366,0x2c36346625202c37,0x25202c3131662520\n"
+".quad 0x6f6d090a3b353466,0x2509203233662e76,0x326630202c383466,0x3b39303361353865\n"
+".quad 0x202f2f0920202020,0x2d65313737302e36,0x2e64616d090a3131,0x3466250920323366\n"
+".quad 0x2c38346625202c30,0x25202c3131662520,0x6f6d090a3b373466,0x2509203436752e76\n"
+".quad 0x635f5f202c386472,0x75635f5f5f616475,0x6c757365725f6164,0x0a3b383434345f74\n"
+".quad 0x69646e6557444c24,0x7265746e695f5f5f,0x64616d665f6c616e,0x3a30315f3330325f\n"
+".quad 0x3109636f6c2e090a,0x3009313436310938,0x33662e6c756d090a,0x2c39346625092032\n"
+".quad 0x25202c3034662520,0x6e61090a3b303466,0x2509203233622e64,0x7225202c33343172\n"
+".quad 0x0a3b31202c303231,0x3233752e766f6d09,0x2c34343172250920,0x746573090a3b3020\n"
+".quad 0x3233732e71652e70,0x202c343270250920,0x25202c3334317225,0x40090a3b34343172\n"
+".quad 0x6172622034327025,0x5f305f744c240920,0x090a3b3835383735,0x09383109636f6c2e\n"
+".quad 0x090a300934343631,0x203233662e766f6d,0x30202c3035662509,0x3030303038663366\n"
+".quad 0x2f09202020203b30,0x766f6d090a31202f,0x662509203233662e,0x66626630202c3135\n"
+".quad 0x203b303030303030,0x2d202f2f09202020,0x766f6d090a352e30,0x662509203233662e\n"
+".quad 0x64336630202c3235,0x203b356161616132,0x30202f2f09202020,0x363636363134302e\n"
+".quad 0x33662e766f6d090a,0x2c33356625092032,0x3036626162663020,0x202020203b613136\n"
+".quad 0x302e302d202f2f09,0x0a33373838333130,0x3233662e766f6d09,0x202c343566250920\n"
+".quad 0x3566636337336630,0x09202020203b6563,0x3334342e32202f2f,0x090a35302d653233\n"
+".quad 0x203233662e64616d,0x25202c3535662509,0x346625202c343566,0x3b33356625202c39\n"
+".quad 0x33662e64616d090a,0x2c36356625092032,0x25202c3934662520,0x356625202c353566\n"
+".quad 0x2e64616d090a3b32,0x3566250920323366,0x2c39346625202c37,0x25202c3635662520\n"
+".quad 0x616d090a3b313566,0x2509203233662e64,0x346625202c383566,0x2c37356625202c39\n"
+".quad 0x090a3b3035662520,0x20696e752e617262,0x355f305f744c2409,0x4c240a3b32303637\n"
+".quad 0x353837355f305f74,0x636f6c2e090a3a38,0x3634363109383109,0x2e766f6d090a3009\n"
+".quad 0x3566250920323366,0x3265626630202c39,0x20203b3361616161,0x302d202f2f092020\n"
+".quad 0x0a3736363636312e,0x3233662e766f6d09,0x202c303666250920,0x3338383063336630\n"
+".quad 0x09202020203b6539,0x3830302e30202f2f,0x6d090a3631323333,0x09203233662e766f\n"
+".quad 0x6630202c31366625,0x3966316163343962,0x2f2f09202020203b,0x313030302e302d20\n"
+".quad 0x6d090a3335313539,0x09203233662e6461,0x6625202c32366625,0x39346625202c3136\n"
+".quad 0x0a3b30366625202c,0x3233662e64616d09,0x202c333666250920,0x6625202c39346625\n"
+".quad 0x39356625202c3236,0x662e6c756d090a3b,0x3436662509203233,0x202c39346625202c\n"
+".quad 0x6d090a3b33366625,0x09203233662e6461,0x6625202c38356625,0x30346625202c3436\n"
+".quad 0x0a3b30346625202c,0x37355f305f744c24,0x6c2e090a3a323036,0x363109383109636f\n"
+".quad 0x656e090a30093834,0x2509203233662e67,0x356625202c353666,0x2e646e61090a3b38\n"
+".quad 0x3172250920323362,0x32317225202c3534,0x6d090a3b32202c30,0x09203233732e766f\n"
+".quad 0x30202c3634317225,0x2e70746573090a3b,0x09203233732e656e,0x7225202c35327025\n"
+".quad 0x317225202c353431,0x6c6573090a3b3634,0x2509203233662e70,0x366625202c383566\n"
+".quad 0x2c38356625202c35,0x090a3b3532702520,0x09383109636f6c2e,0x090a300931353631\n"
+".quad 0x203233662e766f6d,0x25202c3833662509,0x444c240a3b383566,0x5f5f5f69646e6557\n"
+".quad 0x325f66666e697369,0x2e090a3a395f3330,0x3509363109636f6c,0x766f6d090a300933\n"
+".quad 0x722509203631752e,0x61746325202c3168,0x6d090a3b792e6469,0x09203631752e766f\n"
+".quad 0x6e25202c32687225,0x090a3b792e646974,0x656469772e6c756d,0x722509203631752e\n"
+".quad 0x687225202c373431,0x3b32687225202c31,0x7261702e646c090a,0x09203233732e6d61\n"
+".quad 0x5b202c3834317225,0x6170616475635f5f,0x7435315a5f5f6d72,0x6d726f66736e6172\n"
+".quad 0x66506c656e72654b,0x676965685f666969,0x7663090a3b5d7468,0x3233662e6e722e74\n"
+".quad 0x662509203233732e,0x34317225202c3636,0x2e766f6d090a3b38,0x6872250920363175\n"
+".quad 0x6961746325202c33,0x6f6d090a3b782e64,0x2509203631752e76,0x746e25202c346872\n"
+".quad 0x6d090a3b782e6469,0x2e656469772e6c75,0x3172250920363175,0x33687225202c3934\n"
+".quad 0x0a3b34687225202c,0x617261702e646c09,0x2509203233732e6d,0x5f5b202c30353172\n"
+".quad 0x726170616475635f,0x727435315a5f5f6d,0x4b6d726f66736e61,0x6966506c656e7265\n"
+".quad 0x68746469775f6669,0x2e747663090a3b5d,0x732e3233662e6e72,0x3736662509203233\n"
+".quad 0x3b3035317225202c,0x33752e747663090a,0x2509203631752e32,0x7425202c31353172\n"
+".quad 0x61090a3b792e6469,0x09203233752e6464,0x25202c3235317225,0x7225202c31353172\n"
+".quad 0x7663090a3b373431,0x31752e3233752e74,0x3335317225092036,0x782e64697425202c\n"
+".quad 0x752e646461090a3b,0x3531722509203233,0x3335317225202c34,0x3b3934317225202c\n"
+".quad 0x6e722e747663090a,0x3233752e3233662e,0x202c383666250920,0x090a3b3235317225\n"
+".quad 0x662e6e722e747663,0x09203233752e3233,0x7225202c39366625,0x6964090a3b343531\n"
+".quad 0x662e6c6c75662e76,0x3037662509203233,0x202c38366625202c,0x64090a3b36366625\n"
+".quad 0x2e6c6c75662e7669,0x3766250920323366,0x2c39366625202c31,0x090a3b3736662520\n"
+".quad 0x203233662e766f6d,0x30202c3237662509,0x3030303030666266,0x2f09202020203b30\n"
+".quad 0x090a352e302d202f,0x203233662e646461,0x25202c3337662509,0x376625202c303766\n"
+".quad 0x2e766f6d090a3b32,0x3766250920323366,0x3066626630202c34,0x20203b3030303030\n"
+".quad 0x302d202f2f092020,0x2e646461090a352e,0x3766250920323366,0x2c31376625202c35\n"
+".quad 0x090a3b3437662520,0x203233662e6c756d,0x25202c3637662509,0x376625202c383366\n"
+".quad 0x2e6c756d090a3b33,0x3766250920323366,0x2c35376625202c37,0x73090a3b35662520\n"
+".quad 0x09203233662e6275,0x6625202c38376625,0x36376625202c3737,0x662e766f6d090a3b\n"
+".quad 0x3937662509203233,0x303066336630202c,0x2020203b30303030,0x352e30202f2f0920\n"
+".quad 0x33662e646461090a,0x2c30386625092032,0x25202c3837662520,0x6c2e090a3b393766\n"
+".quad 0x373109383109636f,0x2140090a30093230,0x2061726220317025,0x355f305f744c2409\n"
+".quad 0x6c090a3b34313138,0x2e6d617261702e64,0x3166250920323366,0x6475635f5f5b202c\n"
+".quad 0x5a5f5f6d72617061,0x66736e6172743531,0x656e72654b6d726f,0x745f66696966506c\n"
+".quad 0x090a3b5d61746568,0x09383109636f6c2e,0x090a300933303731,0x203233662e67656e\n"
+".quad 0x25202c3138662509,0x646461090a3b3166,0x203233662e6e722e,0x25202c3238662509\n"
+".quad 0x31386625202c3166,0x752e617262090a3b,0x57444c240920696e,0x695f5f5f69646e65\n"
+".quad 0x30325f66666e6973,0x744c240a3b355f33,0x34313138355f305f,0x662e766f6d090a3a\n"
+".quad 0x3338662509203233,0x623337346630202c,0x2020203b30303761,0x303834202f2f0920\n"
+".quad 0x70746573090a3933,0x203233662e74672e,0x25202c3632702509,0x33386625202c3266\n"
+".quad 0x3270252140090a3b,0x2409206172622036,0x3638355f305f744c,0x6f6c2e090a3b3632\n"
+".quad 0x3037310938310963,0x2e646c090a300932,0x33662e6d61726170,0x202c316625092032\n"
+".quad 0x70616475635f5f5b,0x35315a5f5f6d7261,0x726f66736e617274,0x506c656e72654b6d\n"
+".quad 0x6568745f66696966,0x6c2e090a3b5d6174,0x333109383109636f,0x6f6d090a30093639\n"
+".quad 0x2509203233622e76,0x3b316625202c3172,0x33622e646e61090a,0x202c327225092032\n"
+".quad 0x31322d202c317225,0x3834363338343734,0x732e766f6d090a3b,0x2c33722509203233\n"
+".quad 0x2e090a3b32722520,0x3209383109636f6c,0x6c6873090a300934,0x722509203233622e\n"
+".quad 0x202c317225202c34,0x622e726f090a3b38,0x2c35722509203233,0x322d202c34722520\n"
+".quad 0x3436333834373431,0x2e766f6d090a3b38,0x6472250920343673,0x3b32647225202c33\n"
+".quad 0x36752e766f6d090a,0x2c34647225092034,0x5f616475635f5f20,0x725f616475635f5f\n"
+".quad 0x36315f746c757365,0x766f6d090a3b3032,0x722509203233732e,0x6d090a3b30202c36\n"
+".quad 0x09203233752e766f,0x0a3b30202c377225,0x39355f305f744c24,0x2f2f200a3a303536\n"
+".quad 0x4c203e706f6f6c3c,0x79646f6220706f6f,0x343220656e696c20,0x6e697473656e202c\n"
+".quad 0x3a68747065642067,0x72657469202c3120,0x203a736e6f697461,0x09636f6c2e090a36\n"
+".quad 0x0930313431093831,0x6f632e646c090a30,0x203233752e74736e,0x202c353531722509\n"
+".quad 0x5d302b336472255b,0x6c2e6c756d090a3b,0x2509203233752e6f,0x7225202c36353172\n"
+".quad 0x357225202c353531,0x752e646461090a3b,0x3531722509203233,0x3635317225202c37\n"
+".quad 0x090a3b377225202c,0x09383109636f6c2e,0x090a300931313431,0x752e74672e746573\n"
+".quad 0x09203233752e3233,0x25202c3835317225,0x7225202c36353172,0x656e090a3b373531\n"
+".quad 0x2509203233732e67,0x7225202c39353172,0x756d090a3b383531,0x3233752e69682e6c\n"
+".quad 0x2c30363172250920,0x202c353531722520,0x6461090a3b357225,0x2509203233752e64\n"
+".quad 0x35317225202c3772,0x3036317225202c39,0x09636f6c2e090a3b,0x0932313431093831\n"
+".quad 0x6f6c2e7473090a30,0x203233752e6c6163,0x302b346472255b09,0x3735317225202c5d\n"
+".quad 0x732e646461090a3b,0x2c36722509203233,0x3b31202c36722520,0x36752e646461090a\n"
+".quad 0x2c34647225092034,0x34202c3464722520,0x752e646461090a3b,0x3364722509203436\n"
+".quad 0x202c33647225202c,0x2e766f6d090a3b34,0x3172250920323375,0x090a3b36202c3136\n"
+".quad 0x2e656e2e70746573,0x3270250920323373,0x202c367225202c37,0x090a3b3136317225\n"
+".quad 0x7262203732702540,0x305f744c24092061,0x0a3b30353639355f,0x383109636f6c2e09\n"
+".quad 0x0a30093431343109,0x61636f6c2e747309,0x5b09203233752e6c,0x5f5f616475635f5f\n"
+".quad 0x65725f616475635f,0x3236315f746c7573,0x25202c5d34322b30,0x6f6c2e090a3b3772\n"
+".quad 0x3134310938310963,0x6c6873090a300939,0x722509203233622e,0x317225202c323631\n"
+".quad 0x6873090a3b31202c,0x2509203233752e72,0x317225202c363172,0x0a3b3432202c3236\n"
+".quad 0x3233752e62757309,0x202c373172250920,0x3231202c36317225,0x2e726873090a3b38\n"
+".quad 0x3172250920323375,0x37317225202c3336,0x6f6d090a3b35202c,0x2509203233732e76\n"
+".quad 0x3b34202c34363172,0x33732e627573090a,0x3536317225092032,0x2c3436317225202c\n"
+".quad 0x0a3b333631722520,0x3436732e74766309,0x722509203233732e,0x317225202c343164\n"
+".quad 0x6c756d090a3b3536,0x33732e656469772e,0x3531647225092032,0x2c3536317225202c\n"
+".quad 0x646461090a3b3420,0x722509203436752e,0x31647225202c3764,0x3b3531647225202c\n"
+".quad 0x636f6c2e646c090a,0x09203233752e6c61,0x72255b202c377225,0x090a3b5d382b3764\n"
+".quad 0x09383109636f6c2e,0x090a300930323431,0x6c61636f6c2e646c,0x722509203233752e\n"
+".quad 0x6472255b202c3132,0x61090a3b5d342b37,0x09203233622e646e,0x7225202c32327225\n"
+".quad 0x0a3b3133202c3731,0x3233752e766f6d09,0x2c36363172250920,0x746573090a3b3020\n"
+".quad 0x3233752e71652e70,0x202c383270250920,0x7225202c32327225,0x2540090a3b363631\n"
+".quad 0x2061726220383270,0x365f305f744c2409,0x2e090a3b32363130,0x3109383109636f6c\n"
+".quad 0x6d090a3009333234,0x09203233732e766f,0x33202c3736317225,0x2e627573090a3b32\n"
+".quad 0x3272250920323373,0x3736317225202c35,0x0a3b32327225202c,0x3233752e72687309\n"
+".quad 0x2c38363172250920,0x25202c3132722520,0x6873090a3b353272,0x2509203233622e6c\n"
+".quad 0x7225202c39363172,0x3b32327225202c37,0x33752e646461090a,0x202c377225092032\n"
+".quad 0x25202c3836317225,0x2e090a3b39363172,0x3109383109636f6c,0x6c090a3009343234\n"
+".quad 0x2e6c61636f6c2e64,0x3172250920323375,0x6472255b202c3037,0x73090a3b5d302b37\n"
+".quad 0x09203233752e7268,0x25202c3137317225,0x7225202c30373172,0x6c6873090a3b3532\n"
+".quad 0x722509203233622e,0x327225202c323731,0x3b32327225202c31,0x33752e646461090a\n"
+".quad 0x2c31327225092032,0x202c313731722520,0x240a3b3237317225,0x3130365f305f744c\n"
+".quad 0x6f6c2e090a3a3236,0x3234310938310963,0x726873090a300936,0x722509203233752e\n"
+".quad 0x202c377225202c36,0x6f6c2e090a3b3033,0x3234310938310963,0x726873090a300938\n"
+".quad 0x722509203233752e,0x327225202c333731,0x090a3b3033202c31,0x203233622e6c6873\n"
+".quad 0x202c343731722509,0x0a3b32202c377225,0x3233752e64646109,0x25202c3772250920\n"
+".quad 0x7225202c33373172,0x6c2e090a3b343731,0x343109383109636f,0x6873090a30093932\n"
+".quad 0x2509203233622e6c,0x327225202c313272,0x6d090a3b32202c31,0x09203233752e766f\n"
+".quad 0x30202c3537317225,0x2e70746573090a3b,0x09203233752e7165,0x7225202c39327025\n"
+".quad 0x37317225202c3132,0x32702540090a3b35,0x2409206172622039,0x3930365f305f744c\n"
+".quad 0x6f6c2e090a3b3033,0x3334310938310963,0x646461090a300930,0x722509203233752e\n"
+".quad 0x377225202c363731,0x6f6d090a3b31202c,0x2509203233752e76,0x322d202c37373172\n"
+".quad 0x3436333834373431,0x2e746573090a3b38,0x752e3233752e7467,0x3731722509203233\n"
+".quad 0x3637317225202c38,0x3b3737317225202c,0x33732e67656e090a,0x3937317225092032\n"
+".quad 0x3b3837317225202c,0x6e752e617262090a,0x305f744c24092069,0x0a3b34373630365f\n"
+".quad 0x30365f305f744c24,0x6f6d090a3a303339,0x2509203233752e76,0x322d202c30383172\n"
+".quad 0x3436333834373431,0x2e746573090a3b38,0x752e3233752e7467,0x3831722509203233\n"
+".quad 0x202c377225202c31,0x090a3b3038317225,0x203233732e67656e,0x202c393731722509\n"
+".quad 0x240a3b3138317225,0x3630365f305f744c,0x6f6c2e090a3a3437,0x3334310938310963\n"
+".quad 0x646461090a300931,0x722509203233752e,0x367225202c323831,0x3b3937317225202c\n"
+".quad 0x3109636f6c2e090a,0x3009303334310938,0x33732e67656e090a,0x3338317225092032\n"
+".quad 0x3b3238317225202c,0x33752e766f6d090a,0x3438317225092032,0x6573090a3b30202c\n"
+".quad 0x33752e656e2e7074,0x2c30337025092032,0x7225202c32722520,0x6573090a3b343831\n"
+".quad 0x09203233732e706c,0x317225202c367225,0x38317225202c3338,0x3b30337025202c32\n"
+".quad 0x33752e766f6d090a,0x3538317225092032,0x6573090a3b30202c,0x33752e71652e7074\n"
+".quad 0x2c31337025092032,0x202c393731722520,0x090a3b3538317225,0x7262203133702540\n"
+".quad 0x305f744c24092061,0x0a3b36383131365f,0x383109636f6c2e09,0x0a30093633343109\n"
+".quad 0x3233732e67656e09,0x202c313272250920,0x2e090a3b31327225,0x3109383109636f6c\n"
+".quad 0x6d090a3009383334,0x09203233752e766f,0x30202c3638317225,0x652e746573090a3b\n"
+".quad 0x33752e3233752e71,0x3738317225092032,0x202c31327225202c,0x090a3b3638317225\n"
+".quad 0x203233732e67656e,0x202c383831722509,0x090a3b3738317225,0x203233622e746f6e\n"
+".quad 0x202c393831722509,0x6461090a3b377225,0x2509203233752e64,0x38317225202c3772\n"
+".quad 0x3938317225202c38,0x09636f6c2e090a3b,0x0939333431093831,0x622e726f78090a30\n"
+".quad 0x2c33722509203233,0x322d202c32722520,0x3436333834373431,0x305f744c240a3b38\n"
+".quad 0x0a3a36383131365f,0x383109636f6c2e09,0x0a30093134343109,0x3233732e766f6d09\n"
+".quad 0x202c383472250920,0x6f6d090a3b367225,0x2509203233752e76,0x3b30202c30393172\n"
+".quad 0x6c2e70746573090a,0x2509203233732e65,0x377225202c323370,0x3b3039317225202c\n"
+".quad 0x203233702540090a,0x744c240920617262,0x30393839365f305f,0x752e766f6d090a3b\n"
+".quad 0x3035722509203233,0x744c240a3b30202c,0x30313232365f305f,0x6f6c3c2f2f200a3a\n"
 ".quad 0x706f6f4c203e706f,0x696c2079646f6220,0x2c3134343120656e,0x676e697473656e20\n"
 ".quad 0x203a687470656420,0x6d69747365202c31,0x6574692064657461,0x3a736e6f69746172\n"
 ".quad 0x6e776f6e6b6e7520,0x3109636f6c2e090a,0x3009353434310938,0x33752e726873090a\n"
-".quad 0x2c37357225092032,0x33202c3632722520,0x2e6c6873090a3b31,0x3572250920323362\n"
-".quad 0x2c31317225202c38,0x646461090a3b3120,0x722509203233752e,0x37357225202c3131\n"
-".quad 0x0a3b38357225202c,0x383109636f6c2e09,0x0a30093634343109,0x3233622e6c687309\n"
-".quad 0x202c363272250920,0x3b31202c36327225,0x3109636f6c2e090a,0x3009373434310938\n"
-".quad 0x33752e627573090a,0x2c36357225092032,0x31202c3635722520,0x752e766f6d090a3b\n"
-".quad 0x3935722509203233,0x6573090a3b30202c,0x33732e74672e7074,0x202c397025092032\n"
-".quad 0x7225202c31317225,0x702540090a3b3935,0x2409206172622039,0x3930355f305f744c\n"
-".quad 0x617262090a3b3634,0x4c240920696e752e,0x333430355f305f74,0x305f744c240a3b34\n"
-".quad 0x0a3a38373339365f,0x3233752e766f6d09,0x202c363572250920,0x305f744c240a3b30\n"
-".quad 0x0a3a34333430355f,0x383109636f6c2e09,0x0a30093934343109,0x2e6f6c2e6c756d09\n"
-".quad 0x3272250920323375,0x2c31317225202c36,0x3730373132392d20,0x6c2e090a3b303738\n"
-".quad 0x343109383109636f,0x6f6d090a30093035,0x2509203233752e76,0x32392d202c303672\n"
-".quad 0x3b30373837303731,0x69682e6c756d090a,0x722509203233752e,0x31317225202c3131\n"
-".quad 0x0a3b30367225202c,0x3233752e766f6d09,0x202c313672250920,0x70746573090a3b30\n"
-".quad 0x203233732e656c2e,0x25202c3031702509,0x367225202c313172,0x31702540090a3b31\n"
-".quad 0x2409206172622030,0x3431355f305f744c,0x6f6c2e090a3b3835,0x3534310938310963\n"
-".quad 0x726873090a300932,0x722509203233752e,0x36327225202c3236,0x73090a3b3133202c\n"
-".quad 0x09203233622e6c68,0x7225202c33367225,0x090a3b31202c3131,0x203233752e646461\n"
-".quad 0x25202c3131722509,0x367225202c323672,0x636f6c2e090a3b33,0x3335343109383109\n"
-".quad 0x2e6c6873090a3009,0x3272250920323362,0x2c36327225202c36,0x6f6c2e090a3b3120\n"
-".quad 0x3534310938310963,0x627573090a300934,0x722509203233752e,0x36357225202c3635\n"
-".quad 0x744c240a3b31202c,0x38353431355f305f,0x09636f6c2e090a3a,0x0936353431093831\n"
-".quad 0x752e766f6d090a30,0x3436722509203233,0x6573090a3b30202c,0x3233752e656e2e74\n"
-".quad 0x722509203233752e,0x36327225202c3536,0x0a3b34367225202c,0x3233732e67656e09\n"
-".quad 0x202c363672250920,0x61090a3b35367225,0x09203233752e6464,0x7225202c31317225\n"
-".quad 0x31317225202c3636,0x09636f6c2e090a3b,0x0938353431093831,0x622e6c6873090a30\n"
-".quad 0x3736722509203233,0x202c31317225202c,0x766f6d090a3b3432,0x722509203233732e\n"
-".quad 0x090a3b30202c3836,0x752e746c2e746573,0x09203233732e3233,0x7225202c39367225\n"
-".quad 0x38367225202c3736,0x732e67656e090a3b,0x3037722509203233,0x0a3b39367225202c\n"
-".quad 0x3233752e72687309,0x202c313772250920,0x3b38202c31317225,0x33752e646461090a\n"
-".quad 0x2c32377225092032,0x31202c3635722520,0x6c6873090a3b3632,0x722509203233622e\n"
-".quad 0x32377225202c3337,0x61090a3b3332202c,0x09203233752e6464,0x7225202c34377225\n"
-".quad 0x33377225202c3137,0x752e646461090a3b,0x3537722509203233,0x202c30377225202c\n"
-".quad 0x6f090a3b34377225,0x2509203233622e72,0x357225202c363772,0x0a3b35377225202c\n"
-".quad 0x3233622e766f6d09,0x25202c3766250920,0x7262090a3b363772,0x240920696e752e61\n"
-".quad 0x5f69646e6557444c,0x6e7265746e695f5f,0x5f64616d665f6c61,0x0a3b34315f373731\n"
-".quad 0x37345f305f744c24,0x6c2e090a3a323633,0x343109383109636f,0x6f6d090a30093137\n"
-".quad 0x2509203233662e76,0x66336630202c3866,0x203b333839663232,0x202f2f0920202020\n"
-".quad 0x0a32363633362e30,0x3233662e6c756d09,0x25202c3966250920,0x3b386625202c3166\n"
-".quad 0x6e722e747663090a,0x33662e3233732e69,0x2c37377225092032,0x6d090a3b39662520\n"
-".quad 0x09203233732e766f,0x7225202c34357225,0x6f6c2e090a3b3737,0x3734310938310963\n"
-".quad 0x747663090a300932,0x2e3233662e6e722e,0x3166250920323373,0x3b37377225202c30\n"
-".quad 0x33662e67656e090a,0x2c31316625092032,0x090a3b3031662520,0x203233662e766f6d\n"
-".quad 0x30202c3231662509,0x3033613538653266,0x2f09202020203b39,0x313737302e36202f\n"
-".quad 0x6f6d090a31312d65,0x2509203233662e76,0x336630202c333166,0x3b30326161646639\n"
-".quad 0x202f2f0920202020,0x3338343030302e30,0x766f6d090a373238,0x662509203233662e\n"
-".quad 0x66336630202c3431,0x203b303030303963,0x31202f2f09202020,0x090a31333037352e\n"
-".quad 0x662e6e722e616d66,0x3531662509203233,0x202c31316625202c,0x6625202c34316625\n"
-".quad 0x2e616d66090a3b31,0x09203233662e6e72,0x6625202c36316625,0x33316625202c3131\n"
-".quad 0x0a3b35316625202c,0x2e6e722e616d6609,0x3766250920323366,0x202c31316625202c\n"
-".quad 0x6625202c32316625,0x766f6d090a3b3631,0x722509203233752e,0x6475635f5f202c31\n"
-".quad 0x706f32695f747261,0x6f6d090a3b665f69,0x2509203233752e76,0x75635f5f202c3272\n"
-".quad 0x6c757365725f6164,0x4c240a3b36315f74,0x5f5f69646e655744,0x616e7265746e695f\n"
-".quad 0x315f64616d665f6c,0x090a3a34315f3737,0x09383109636f6c2e,0x090a300935303731\n"
-".quad 0x203233732e646461,0x25202c3837722509,0x0a3b31202c343572,0x3233662e766f6d09\n"
-".quad 0x202c373166250920,0x756d090a3b376625,0x2509203233662e6c,0x316625202c383166\n"
-".quad 0x3b37316625202c37,0x33622e646e61090a,0x2c39377225092032,0x31202c3837722520\n"
-".quad 0x752e766f6d090a3b,0x3038722509203233,0x6573090a3b30202c,0x33732e71652e7074\n"
-".quad 0x2c31317025092032,0x25202c3937722520,0x2540090a3b303872,0x2061726220313170\n"
-".quad 0x355f305f744c2409,0x2e090a3b36323232,0x3109383109636f6c,0x6d090a3009393037\n"
-".quad 0x09203233662e766f,0x6630202c39316625,0x6563356663633733,0x2f2f09202020203b\n"
-".quad 0x32333334342e3220,0x6f6d090a35302d65,0x2509203233662e76,0x626630202c303266\n"
-".quad 0x3b61313630366261,0x202f2f0920202020,0x38333130302e302d,0x616d66090a333738\n"
-".quad 0x203233662e6e722e,0x25202c3132662509,0x316625202c393166,0x3b30326625202c38\n"
-".quad 0x33662e766f6d090a,0x2c32326625092032,0x6161326433663020,0x202020203b356161\n"
-".quad 0x34302e30202f2f09,0x66090a3636363631,0x33662e6e722e616d,0x2c33326625092032\n"
-".quad 0x25202c3132662520,0x326625202c383166,0x2e766f6d090a3b32,0x3266250920323366\n"
-".quad 0x3066626630202c34,0x20203b3030303030,0x302d202f2f092020,0x2e616d66090a352e\n"
-".quad 0x09203233662e6e72,0x6625202c35326625,0x38316625202c3332,0x0a3b34326625202c\n"
-".quad 0x3233662e766f6d09,0x202c363266250920,0x3030303866336630,0x09202020203b3030\n"
-".quad 0x6d66090a31202f2f,0x3233662e6e722e61,0x202c373266250920,0x6625202c35326625\n"
-".quad 0x36326625202c3831,0x752e617262090a3b,0x5f744c240920696e,0x3b30373931355f30\n"
-".quad 0x355f305f744c240a,0x2e090a3a36323232,0x3109383109636f6c,0x6d090a3009313137\n"
-".quad 0x09203233662e766f,0x6630202c38326625,0x3966316163343962,0x2f2f09202020203b\n"
-".quad 0x313030302e302d20,0x6d090a3335313539,0x09203233662e766f,0x6630202c39326625\n"
-".quad 0x6539333838306333,0x2f2f09202020203b,0x33333830302e3020,0x616d66090a363132\n"
-".quad 0x203233662e6e722e,0x25202c3033662509,0x316625202c383266,0x3b39326625202c38\n"
-".quad 0x33662e766f6d090a,0x2c31336625092032,0x6161326562663020,0x202020203b336161\n"
-".quad 0x312e302d202f2f09,0x66090a3736363636,0x33662e6e722e616d,0x2c32336625092032\n"
-".quad 0x25202c3033662520,0x336625202c383166,0x2e6c756d090a3b31,0x3366250920323366\n"
-".quad 0x2c38316625202c33,0x090a3b3233662520,0x662e6e722e616d66,0x3732662509203233\n"
-".quad 0x202c33336625202c,0x6625202c37316625,0x5f744c240a3b3731,0x3a30373931355f30\n"
-".quad 0x3109636f6c2e090a,0x3009333137310938,0x33662e67656e090a,0x2c34336625092032\n"
-".quad 0x090a3b3732662520,0x203233622e646e61,0x25202c3138722509,0x0a3b32202c383772\n"
-".quad 0x3233732e766f6d09,0x202c323872250920,0x70746573090a3b30,0x203233732e656e2e\n"
-".quad 0x25202c3231702509,0x387225202c313872,0x706c6573090a3b32,0x662509203233662e\n"
-".quad 0x34336625202c3732,0x202c37326625202c,0x2e090a3b32317025,0x3109383109636f6c\n"
-".quad 0x6d090a3009363137,0x09203233662e766f,0x326625202c356625,0x6557444c240a3b37\n"
-".quad 0x73695f5f5f69646e,0x3737315f66666e69,0x6c2e090a3a33315f,0x363109383109636f\n"
-".quad 0x6f6d090a30093833,0x2509203233662e76,0x306630202c353366,0x3b30303030303030\n"
-".quad 0x202f2f0920202020,0x2e70746573090a30,0x09203233662e7165,0x6625202c33317025\n"
-".quad 0x3b35336625202c31,0x732e706c6573090a,0x3338722509203233,0x202c30202c31202c\n"
-".quad 0x73090a3b33317025,0x203233732e706c65,0x31202c3438722509,0x317025202c30202c\n"
-".quad 0x33622e726f090a3b,0x2c35387225092032,0x25202c3338722520,0x6f6d090a3b343872\n"
-".quad 0x2509203233752e76,0x0a3b30202c363872,0x71652e7074657309,0x702509203233732e\n"
-".quad 0x35387225202c3431,0x0a3b36387225202c,0x6220343170254009,0x5f744c2409206172\n"
-".quad 0x3b32383432355f30,0x3109636f6c2e090a,0x3009393336310938,0x33662e766f6d090a\n"
-".quad 0x2c36336625092032,0x3030303030663020,0x202020203b303030,0x6d090a30202f2f09\n"
-".quad 0x33662e6e722e6c75,0x2c37336625092032,0x6625202c31662520,0x766f6d090a3b3633\n"
-".quad 0x722509203233752e,0x75635f5f202c3738,0x6c757365725f6164,0x62090a3b34345f74\n"
-".quad 0x0920696e752e6172,0x69646e6557444c24,0x666e6973695f5f5f,0x3b395f3737315f66\n"
-".quad 0x355f305f744c240a,0x6d090a3a32383432,0x09203233662e766f,0x6630202c38336625\n"
-".quad 0x3030376162333734,0x2f2f09202020203b,0x090a393330383420,0x2e74672e70746573\n"
-".quad 0x3170250920323366,0x202c326625202c35,0x40090a3b38336625,0x7262203531702521\n"
-".quad 0x305f744c24092061,0x0a3b34393932355f,0x383109636f6c2e09,0x0a30093639333109\n"
-".quad 0x3233622e766f6d09,0x25202c3372250920,0x646e61090a3b3166,0x722509203233622e\n"
-".quad 0x202c337225202c34,0x333834373431322d,0x6f6d090a3b383436,0x2509203233732e76\n"
-".quad 0x347225202c383872,0x09636f6c2e090a3b,0x0a30093432093831,0x3233622e6c687309\n"
-".quad 0x25202c3672250920,0x090a3b38202c3372,0x203233732e766f6d,0x25202c3938722509\n"
-".quad 0x646461090a3b3172,0x722509203233752e,0x202c317225202c38,0x766f6d090a3b3432\n"
-".quad 0x722509203233752e,0x75635f5f202c3039,0x6c757365725f6164,0x6f090a3b34345f74\n"
-".quad 0x2509203233622e72,0x367225202c303172,0x34373431322d202c,0x090a3b3834363338\n"
-".quad 0x203233752e766f6d,0x30202c3139722509,0x5f305f744c240a3b,0x090a3a3831303435\n"
-".quad 0x20616d676172702e,0x6c6f726e756f6e22,0x3c2f2f200a3b226c,0x6f4c203e706f6f6c\n"
-".quad 0x2079646f6220706f,0x2c343220656e696c,0x676e697473656e20,0x203a687470656420\n"
-".quad 0x6172657469202c31,0x36203a736e6f6974,0x3109636f6c2e090a,0x3009303134310938\n"
-".quad 0x6e6f632e646c090a,0x09203233752e7473,0x255b202c32397225,0x0a3b5d302b393872\n"
-".quad 0x2e6f6c2e6c756d09,0x3972250920323375,0x2c32397225202c33,0x090a3b3031722520\n"
-".quad 0x203233752e646461,0x25202c3439722509,0x397225202c333972,0x636f6c2e090a3b31\n"
-".quad 0x3131343109383109,0x2e746573090a3009,0x752e3233752e7467,0x3539722509203233\n"
-".quad 0x202c33397225202c,0x6e090a3b34397225,0x09203233732e6765,0x7225202c36397225\n"
-".quad 0x6c756d090a3b3539,0x203233752e69682e,0x25202c3739722509,0x317225202c323972\n"
-".quad 0x2e646461090a3b30,0x3972250920323375,0x2c36397225202c31,0x090a3b3739722520\n"
-".quad 0x09383109636f6c2e,0x090a300932313431,0x6c61636f6c2e7473,0x255b09203233752e\n"
-".quad 0x202c5d302b303972,0x61090a3b34397225,0x09203233752e6464,0x7225202c30397225\n"
-".quad 0x090a3b34202c3039,0x203233752e646461,0x25202c3938722509,0x0a3b34202c393872\n"
-".quad 0x656e2e7074657309,0x702509203233752e,0x39387225202c3631,0x090a3b387225202c\n"
-".quad 0x7262203631702540,0x305f744c24092061,0x0a3b38313034355f,0x383109636f6c2e09\n"
-".quad 0x0a30093431343109,0x3233752e766f6d09,0x202c373872250920,0x725f616475635f5f\n"
-".quad 0x34345f746c757365,0x6f6c2e7473090a3b,0x203233752e6c6163,0x616475635f5f5b09\n"
-".quad 0x5f746c757365725f,0x202c5d34322b3434,0x2e090a3b31397225,0x3109383109636f6c\n"
-".quad 0x73090a3009393134,0x09203233622e6c68,0x7225202c38397225,0x73090a3b31202c33\n"
-".quad 0x09203233752e7268,0x7225202c39317225,0x0a3b3432202c3839,0x3233752e62757309\n"
-".quad 0x202c303272250920,0x3231202c39317225,0x2e726873090a3b38,0x3272250920323375\n"
-".quad 0x2c30327225202c31,0x766f6d090a3b3520,0x722509203233732e,0x090a3b34202c3939\n"
-".quad 0x203233732e627573,0x25202c3332722509,0x327225202c393972,0x2e6c756d090a3b31\n"
-".quad 0x09203233752e6f6c,0x7225202c34327225,0x090a3b34202c3332,0x203233752e646461\n"
-".quad 0x202c303031722509,0x7225202c34327225,0x2e646c090a3b3738,0x33752e6c61636f6c\n"
-".quad 0x2c31397225092032,0x2b30303172255b20,0x6f6c2e090a3b5d38,0x3234310938310963\n"
-".quad 0x2e646c090a300930,0x33752e6c61636f6c,0x3130317225092032,0x30303172255b202c\n"
-".quad 0x6e61090a3b5d342b,0x2509203233622e64,0x327225202c373272,0x090a3b3133202c30\n"
-".quad 0x203233752e766f6d,0x202c323031722509,0x70746573090a3b30,0x203233752e71652e\n"
-".quad 0x25202c3731702509,0x317225202c373272,0x702540090a3b3230,0x0920617262203731\n"
-".quad 0x34355f305f744c24,0x6c2e090a3b303335,0x343109383109636f,0x6f6d090a30093332\n"
-".quad 0x2509203233732e76,0x3233202c33303172,0x732e627573090a3b,0x3033722509203233\n"
-".quad 0x2c3330317225202c,0x090a3b3732722520,0x203233752e726873,0x202c343031722509\n"
-".quad 0x25202c3130317225,0x6873090a3b303372,0x2509203233622e6c,0x7225202c35303172\n"
-".quad 0x37327225202c3139,0x752e646461090a3b,0x3139722509203233,0x2c3430317225202c\n"
-".quad 0x0a3b353031722520,0x383109636f6c2e09,0x0a30093432343109,0x61636f6c2e646c09\n"
-".quad 0x2509203233752e6c,0x255b202c36303172,0x3b5d302b30303172,0x33752e726873090a\n"
-".quad 0x3730317225092032,0x2c3630317225202c,0x090a3b3033722520,0x203233622e6c6873\n"
-".quad 0x202c383031722509,0x25202c3130317225,0x6461090a3b373272,0x2509203233752e64\n"
-".quad 0x7225202c31303172,0x317225202c373031,0x5f744c240a3b3830,0x3a30333534355f30\n"
-".quad 0x3109636f6c2e090a,0x3009363234310938,0x33752e726873090a,0x3930317225092032\n"
-".quad 0x202c31397225202c,0x6f6c2e090a3b3033,0x3234310938310963,0x726873090a300938\n"
-".quad 0x722509203233752e,0x317225202c303131,0x0a3b3033202c3130,0x3233622e6c687309\n"
-".quad 0x2c31313172250920,0x32202c3139722520,0x752e646461090a3b,0x3139722509203233\n"
-".quad 0x2c3031317225202c,0x0a3b313131722520,0x383109636f6c2e09,0x0a30093932343109\n"
-".quad 0x3233622e6c687309,0x2c31303172250920,0x202c313031722520,0x2e766f6d090a3b32\n"
-".quad 0x3172250920323375,0x090a3b30202c3231,0x2e71652e70746573,0x3170250920323375\n"
-".quad 0x3130317225202c38,0x3b3231317225202c,0x203831702540090a,0x744c240920617262\n"
-".quad 0x38393235355f305f,0x09636f6c2e090a3b,0x0930333431093831,0x752e646461090a30\n"
-".quad 0x3131722509203233,0x2c31397225202c33,0x766f6d090a3b3120,0x722509203233752e\n"
-".quad 0x31322d202c343131,0x3834363338343734,0x672e746573090a3b,0x33752e3233752e74\n"
-".quad 0x3531317225092032,0x2c3331317225202c,0x0a3b343131722520,0x3233732e67656e09\n"
-".quad 0x2c36313172250920,0x0a3b353131722520,0x696e752e61726209,0x5f305f744c240920\n"
-".quad 0x240a3b3234303535,0x3235355f305f744c,0x766f6d090a3a3839,0x722509203233752e\n"
-".quad 0x31322d202c373131,0x3834363338343734,0x672e746573090a3b,0x33752e3233752e74\n"
-".quad 0x3831317225092032,0x202c31397225202c,0x090a3b3731317225,0x203233732e67656e\n"
-".quad 0x202c363131722509,0x240a3b3831317225,0x3035355f305f744c,0x6f6c2e090a3a3234\n"
-".quad 0x3334310938310963,0x646461090a300931,0x722509203233752e,0x317225202c393131\n"
-".quad 0x31317225202c3930,0x636f6c2e090a3b36,0x3033343109383109,0x2e67656e090a3009\n"
-".quad 0x3172250920323373,0x31317225202c3032,0x2e766f6d090a3b39,0x3172250920323375\n"
-".quad 0x090a3b30202c3132,0x2e656e2e70746573,0x3170250920323375,0x202c347225202c39\n"
-".quad 0x090a3b3132317225,0x3233732e706c6573,0x2c39303172250920,0x202c303231722520\n"
-".quad 0x25202c3931317225,0x6f6d090a3b393170,0x2509203233752e76,0x3b30202c32323172\n"
-".quad 0x652e70746573090a,0x2509203233752e71,0x317225202c303270,0x32317225202c3631\n"
-".quad 0x32702540090a3b32,0x2409206172622030,0x3535355f305f744c,0x6f6c2e090a3b3435\n"
-".quad 0x3334310938310963,0x67656e090a300936,0x722509203233732e,0x317225202c313031\n"
-".quad 0x6f6c2e090a3b3130,0x3334310938310963,0x766f6d090a300938,0x722509203233752e\n"
-".quad 0x0a3b30202c333231,0x2e71652e74657309,0x203233752e323375,0x202c343231722509\n"
-".quad 0x25202c3130317225,0x6e090a3b33323172,0x09203233732e6765,0x25202c3532317225\n"
-".quad 0x6e090a3b34323172,0x09203233622e746f,0x25202c3632317225,0x6461090a3b313972\n"
-".quad 0x2509203233752e64,0x317225202c313972,0x32317225202c3532,0x636f6c2e090a3b36\n"
-".quad 0x3933343109383109,0x2e726f78090a3009,0x3872250920323362,0x202c347225202c38\n"
-".quad 0x333834373431322d,0x744c240a3b383436,0x34353535355f305f,0x09636f6c2e090a3a\n"
-".quad 0x0931343431093831,0x732e766f6d090a30,0x3231722509203233,0x3930317225202c37\n"
-".quad 0x752e766f6d090a3b,0x3231722509203233,0x73090a3b30202c38,0x732e656c2e707465\n"
-".quad 0x3132702509203233,0x202c31397225202c,0x090a3b3832317225,0x7262203132702540\n"
-".quad 0x305f744c24092061,0x0a3b34333639365f,0x3233752e766f6d09,0x2c39323172250920\n"
-".quad 0x5f744c240a3b3020,0x3a38373536355f30,0x6f6f6c3c2f2f200a,0x20706f6f4c203e70\n"
-".quad 0x6e696c2079646f62,0x202c313434312065,0x20676e697473656e,0x31203a6874706564\n"
-".quad 0x616d69747365202c,0x7265746920646574,0x203a736e6f697461,0x0a6e776f6e6b6e75\n"
-".quad 0x383109636f6c2e09,0x0a30093534343109,0x3233752e72687309,0x2c30333172250920\n"
-".quad 0x202c313031722520,0x6c6873090a3b3133,0x722509203233622e,0x397225202c313331\n"
-".quad 0x61090a3b31202c31,0x09203233752e6464,0x7225202c31397225,0x317225202c303331\n"
-".quad 0x6f6c2e090a3b3133,0x3434310938310963,0x6c6873090a300936,0x722509203233622e\n"
-".quad 0x317225202c313031,0x090a3b31202c3130,0x09383109636f6c2e,0x090a300937343431\n"
-".quad 0x203233752e627573,0x202c393231722509,0x31202c3932317225,0x752e766f6d090a3b\n"
-".quad 0x3331722509203233,0x73090a3b30202c32,0x732e74672e707465,0x3232702509203233\n"
-".quad 0x202c31397225202c,0x090a3b3233317225,0x7262203232702540,0x305f744c24092061\n"
-".quad 0x0a3b38373536355f,0x696e752e61726209,0x5f305f744c240920,0x240a3b3636303635\n"
-".quad 0x3639365f305f744c,0x766f6d090a3a3433,0x722509203233752e,0x0a3b30202c393231\n"
-".quad 0x36355f305f744c24,0x6c2e090a3a363630,0x343109383109636f,0x756d090a30093934\n"
-".quad 0x3233752e6f6c2e6c,0x2c31303172250920,0x2d202c3139722520,0x3738373037313239\n"
-".quad 0x636f6c2e090a3b30,0x3035343109383109,0x2e766f6d090a3009,0x3172250920323375\n"
-".quad 0x3132392d202c3333,0x0a3b303738373037,0x2e69682e6c756d09,0x3972250920323375\n"
-".quad 0x2c31397225202c31,0x0a3b333331722520,0x3233752e766f6d09,0x2c34333172250920\n"
-".quad 0x746573090a3b3020,0x3233732e656c2e70,0x202c333270250920,0x7225202c31397225\n"
-".quad 0x2540090a3b343331,0x2061726220333270,0x355f305f744c2409,0x2e090a3b30393037\n"
-".quad 0x3109383109636f6c,0x73090a3009323534,0x09203233752e7268,0x25202c3533317225\n"
-".quad 0x3133202c31303172,0x622e6c6873090a3b,0x3331722509203233,0x2c31397225202c36\n"
-".quad 0x646461090a3b3120,0x722509203233752e,0x33317225202c3139,0x3633317225202c35\n"
-".quad 0x09636f6c2e090a3b,0x0933353431093831,0x622e6c6873090a30,0x3031722509203233\n"
-".quad 0x3130317225202c31,0x6c2e090a3b31202c,0x343109383109636f,0x7573090a30093435\n"
-".quad 0x2509203233752e62,0x7225202c39323172,0x0a3b31202c393231,0x37355f305f744c24\n"
-".quad 0x6c2e090a3a303930,0x343109383109636f,0x6f6d090a30093635,0x2509203233752e76\n"
-".quad 0x3b30202c37333172,0x656e2e746573090a,0x3233752e3233752e,0x2c38333172250920\n"
-".quad 0x202c313031722520,0x090a3b3733317225,0x203233732e67656e,0x202c393331722509\n"
-".quad 0x090a3b3833317225,0x203233752e646461,0x25202c3139722509,0x7225202c39333172\n"
-".quad 0x6f6c2e090a3b3139,0x3534310938310963,0x6c6873090a300938,0x722509203233622e\n"
-".quad 0x397225202c303431,0x090a3b3432202c31,0x203233732e766f6d,0x202c313431722509\n"
-".quad 0x2e746573090a3b30,0x732e3233752e746c,0x3431722509203233,0x3034317225202c32\n"
-".quad 0x3b3134317225202c,0x33732e67656e090a,0x3334317225092032,0x3b3234317225202c\n"
-".quad 0x33752e726873090a,0x3434317225092032,0x202c31397225202c,0x2e646461090a3b38\n"
-".quad 0x3172250920323375,0x32317225202c3534,0x0a3b363231202c39,0x3233622e6c687309\n"
-".quad 0x2c36343172250920,0x202c353431722520,0x646461090a3b3332,0x722509203233752e\n"
-".quad 0x317225202c373431,0x34317225202c3434,0x2e646461090a3b36,0x3172250920323375\n"
-".quad 0x34317225202c3834,0x3734317225202c33,0x33622e726f090a3b,0x3934317225092032\n"
-".quad 0x202c38387225202c,0x090a3b3834317225,0x203233622e766f6d,0x25202c3933662509\n"
-".quad 0x62090a3b39343172,0x0920696e752e6172,0x69646e6557444c24,0x7265746e695f5f5f\n"
-".quad 0x64616d665f6c616e,0x3b30315f3737315f,0x355f305f744c240a,0x2e090a3a34393932\n"
-".quad 0x3109383109636f6c,0x6d090a3009313734,0x09203233662e766f,0x6630202c30346625\n"
-".quad 0x3338396632326633,0x2f2f09202020203b,0x32363633362e3020,0x33662e6c756d090a\n"
-".quad 0x202c396625092032,0x346625202c316625,0x2e747663090a3b30,0x2e3233732e696e72\n"
-".quad 0x3772250920323366,0x0a3b396625202c37,0x3233732e766f6d09,0x2c37323172250920\n"
-".quad 0x090a3b3737722520,0x09383109636f6c2e,0x090a300932373431,0x662e6e722e747663\n"
-".quad 0x09203233732e3233,0x7225202c30316625,0x67656e090a3b3737,0x662509203233662e\n"
-".quad 0x30316625202c3131,0x662e766f6d090a3b,0x3134662509203233,0x353865326630202c\n"
-".quad 0x2020203b39303361,0x302e36202f2f0920,0x0a31312d65313737,0x3233662e766f6d09\n"
-".quad 0x202c323466250920,0x6161646639336630,0x09202020203b3032,0x3030302e30202f2f\n"
-".quad 0x090a373238333834,0x203233662e766f6d,0x30202c3334662509,0x3030303963663366\n"
-".quad 0x2f09202020203b30,0x333037352e31202f,0x722e616d66090a31,0x2509203233662e6e\n"
-".quad 0x316625202c343466,0x2c33346625202c31,0x66090a3b31662520,0x33662e6e722e616d\n"
-".quad 0x2c35346625092032,0x25202c3131662520,0x346625202c323466,0x2e616d66090a3b34\n"
-".quad 0x09203233662e6e72,0x6625202c39336625,0x31346625202c3131,0x0a3b35346625202c\n"
-".quad 0x3233752e766f6d09,0x202c373872250920,0x725f616475635f5f,0x34345f746c757365\n"
-".quad 0x6e6557444c240a3b,0x746e695f5f5f6964,0x6d665f6c616e7265,0x315f3737315f6461\n"
-".quad 0x636f6c2e090a3a30,0x3134363109383109,0x2e766f6d090a3009,0x3466250920323366\n"
-".quad 0x3b39336625202c36,0x33662e6c756d090a,0x2c37346625092032,0x25202c3634662520\n"
-".quad 0x6e61090a3b363466,0x2509203233622e64,0x7225202c30353172,0x0a3b31202c373231\n"
-".quad 0x3233752e766f6d09,0x2c31353172250920,0x746573090a3b3020,0x3233732e71652e70\n"
-".quad 0x202c343270250920,0x25202c3035317225,0x40090a3b31353172,0x6172622034327025\n"
-".quad 0x5f305f744c240920,0x090a3b3835383735,0x09383109636f6c2e,0x090a300934343631\n"
-".quad 0x203233662e766f6d,0x30202c3834662509,0x6335666363373366,0x2f09202020203b65\n"
-".quad 0x333334342e32202f,0x6d090a35302d6532,0x09203233662e766f,0x6630202c39346625\n"
-".quad 0x6131363036626162,0x2f2f09202020203b,0x333130302e302d20,0x6d66090a33373838\n"
-".quad 0x3233662e6e722e61,0x202c303566250920,0x6625202c38346625,0x39346625202c3734\n"
-".quad 0x662e766f6d090a3b,0x3135662509203233,0x613264336630202c,0x2020203b35616161\n"
-".quad 0x302e30202f2f0920,0x090a363636363134,0x662e6e722e616d66,0x3235662509203233\n"
-".quad 0x202c30356625202c,0x6625202c37346625,0x766f6d090a3b3135,0x662509203233662e\n"
-".quad 0x66626630202c3335,0x203b303030303030,0x2d202f2f09202020,0x616d66090a352e30\n"
-".quad 0x203233662e6e722e,0x25202c3435662509,0x346625202c323566,0x3b33356625202c37\n"
-".quad 0x33662e766f6d090a,0x2c35356625092032,0x3030386633663020,0x202020203b303030\n"
-".quad 0x66090a31202f2f09,0x33662e6e722e616d,0x2c36356625092032,0x25202c3435662520\n"
-".quad 0x356625202c373466,0x2e617262090a3b35,0x744c240920696e75,0x32303637355f305f\n"
-".quad 0x5f305f744c240a3b,0x090a3a3835383735,0x09383109636f6c2e,0x090a300936343631\n"
-".quad 0x203233662e766f6d,0x30202c3735662509,0x6631616334396266,0x2f09202020203b39\n"
-".quad 0x3030302e302d202f,0x090a333531353931,0x203233662e766f6d,0x30202c3835662509\n"
-".quad 0x3933383830633366,0x2f09202020203b65,0x333830302e30202f,0x6d66090a36313233\n"
-".quad 0x3233662e6e722e61,0x202c393566250920,0x6625202c37356625,0x38356625202c3734\n"
-".quad 0x662e766f6d090a3b,0x3036662509203233,0x613265626630202c,0x2020203b33616161\n"
-".quad 0x2e302d202f2f0920,0x090a373636363631,0x662e6e722e616d66,0x3136662509203233\n"
-".quad 0x202c39356625202c,0x6625202c37346625,0x6c756d090a3b3036,0x662509203233662e\n"
-".quad 0x37346625202c3236,0x0a3b31366625202c,0x2e6e722e616d6609,0x3566250920323366\n"
-".quad 0x2c32366625202c36,0x25202c3634662520,0x744c240a3b363466,0x32303637355f305f\n"
-".quad 0x09636f6c2e090a3a,0x0938343631093831,0x662e67656e090a30,0x3336662509203233\n"
-".quad 0x0a3b36356625202c,0x3233622e646e6109,0x2c32353172250920,0x202c373231722520\n"
-".quad 0x2e766f6d090a3b32,0x3172250920323373,0x090a3b30202c3335,0x2e656e2e70746573\n"
-".quad 0x3270250920323373,0x3235317225202c35,0x3b3335317225202c,0x662e706c6573090a\n"
-".quad 0x3635662509203233,0x202c33366625202c,0x7025202c36356625,0x6f6c2e090a3b3532\n"
-".quad 0x3536310938310963,0x766f6d090a300931,0x662509203233662e,0x36356625202c3733\n"
-".quad 0x6e6557444c240a3b,0x6973695f5f5f6964,0x5f3737315f66666e,0x636f6c2e090a3a39\n"
-".quad 0x3009333509363109,0x33752e766f6d090a,0x3435317225092032,0x646961746325202c\n"
-".quad 0x766f6d090a3b792e,0x722509203233752e,0x746e25202c353531,0x6d090a3b792e6469\n"
-".quad 0x33752e6f6c2e6c75,0x3635317225092032,0x2c3435317225202c,0x0a3b353531722520\n"
-".quad 0x617261702e646c09,0x2509203233732e6d,0x5f5b202c37353172,0x726170616475635f\n"
-".quad 0x727435315a5f5f6d,0x4b6d726f66736e61,0x6966506c656e7265,0x68676965685f6669\n"
-".quad 0x747663090a3b5d74,0x2e3233662e6e722e,0x3666250920323373,0x3735317225202c34\n"
-".quad 0x752e766f6d090a3b,0x3531722509203233,0x6961746325202c38,0x6f6d090a3b782e64\n"
-".quad 0x2509203233752e76,0x6e25202c39353172,0x090a3b782e646974,0x752e6f6c2e6c756d\n"
-".quad 0x3631722509203233,0x3835317225202c30,0x3b3935317225202c,0x7261702e646c090a\n"
-".quad 0x09203233732e6d61,0x5b202c3136317225,0x6170616475635f5f,0x7435315a5f5f6d72\n"
-".quad 0x6d726f66736e6172,0x66506c656e72654b,0x746469775f666969,0x747663090a3b5d68\n"
-".quad 0x2e3233662e6e722e,0x3666250920323373,0x3136317225202c35,0x752e766f6d090a3b\n"
-".quad 0x3631722509203233,0x2e64697425202c32,0x2e646461090a3b79,0x3172250920323375\n"
-".quad 0x36317225202c3336,0x3635317225202c32,0x752e766f6d090a3b,0x3631722509203233\n"
-".quad 0x2e64697425202c34,0x2e646461090a3b78,0x3172250920323375,0x36317225202c3536\n"
-".quad 0x3036317225202c34,0x722e747663090a3b,0x33752e3233662e6e,0x2c36366625092032\n"
-".quad 0x0a3b333631722520,0x2e6e722e74766309,0x203233752e323366,0x25202c3736662509\n"
-".quad 0x64090a3b35363172,0x33662e6e722e7669,0x2c38366625092032,0x25202c3636662520\n"
-".quad 0x6964090a3b343666,0x3233662e6e722e76,0x202c393666250920,0x6625202c37366625\n"
-".quad 0x766f6d090a3b3536,0x662509203233662e,0x66626630202c3037,0x203b303030303030\n"
-".quad 0x2d202f2f09202020,0x646461090a352e30,0x662509203233662e,0x38366625202c3137\n"
-".quad 0x0a3b30376625202c,0x3233662e766f6d09,0x202c323766250920,0x3030303066626630\n"
-".quad 0x09202020203b3030,0x0a352e302d202f2f,0x3233662e64646109,0x202c333766250920\n"
-".quad 0x6625202c39366625,0x6c756d090a3b3237,0x662509203233662e,0x37336625202c3437\n"
-".quad 0x0a3b31376625202c,0x3233662e6c756d09,0x202c353766250920,0x6625202c33376625\n"
-".quad 0x2e627573090a3b35,0x3766250920323366,0x2c35376625202c36,0x090a3b3437662520\n"
-".quad 0x203233662e766f6d,0x30202c3737662509,0x3030303030663366,0x2f09202020203b30\n"
-".quad 0x61090a352e30202f,0x09203233662e6464,0x6625202c38376625,0x37376625202c3637\n"
-".quad 0x09636f6c2e090a3b,0x0932303731093831,0x3170252140090a30,0x4c24092061726220\n"
-".quad 0x313138355f305f74,0x636f6c2e090a3b34,0x3330373109383109,0x2e67656e090a3009\n"
-".quad 0x3766250920323366,0x0a3b316625202c39,0x2e6e722e64646109,0x3866250920323366\n"
-".quad 0x202c316625202c30,0x62090a3b39376625,0x0920696e752e6172,0x69646e6557444c24\n"
-".quad 0x666e6973695f5f5f,0x3b355f3737315f66,0x355f305f744c240a,0x6d090a3a34313138\n"
-".quad 0x09203233662e766f,0x6630202c31386625,0x3030376162333734,0x2f2f09202020203b\n"
-".quad 0x090a393330383420,0x2e74672e70746573,0x3270250920323366,0x202c326625202c36\n"
-".quad 0x40090a3b31386625,0x7262203632702521,0x305f744c24092061,0x0a3b36323638355f\n"
-".quad 0x383109636f6c2e09,0x0a30093639333109,0x3233622e766f6d09,0x25202c3372250920\n"
-".quad 0x646e61090a3b3166,0x722509203233622e,0x202c337225202c34,0x333834373431322d\n"
-".quad 0x6f6d090a3b383436,0x2509203233732e76,0x3b347225202c3572,0x3109636f6c2e090a\n"
-".quad 0x090a300934320938,0x203233622e6c6873,0x7225202c36722509,0x6d090a3b38202c33\n"
-".quad 0x09203233732e766f,0x317225202c377225,0x752e646461090a3b,0x2c38722509203233\n"
-".quad 0x3432202c31722520,0x752e766f6d090a3b,0x2c39722509203233,0x5f616475635f5f20\n"
-".quad 0x315f746c75736572,0x622e726f090a3b36,0x3031722509203233,0x2d202c367225202c\n"
-".quad 0x3633383437343132,0x766f6d090a3b3834,0x722509203233752e,0x240a3b30202c3131\n"
-".quad 0x3639355f305f744c,0x72702e090a3a3035,0x6f6e2220616d6761,0x3b226c6c6f726e75\n"
-".quad 0x6f6f6c3c2f2f200a,0x20706f6f4c203e70,0x6e696c2079646f62,0x656e202c34322065\n"
-".quad 0x656420676e697473,0x202c31203a687470,0x6f69746172657469,0x2e090a36203a736e\n"
-".quad 0x3109383109636f6c,0x6c090a3009303134,0x2e74736e6f632e64,0x3172250920323375\n"
-".quad 0x3772255b202c3636,0x756d090a3b5d302b,0x3233752e6f6c2e6c,0x2c37363172250920\n"
-".quad 0x202c363631722520,0x61090a3b30317225,0x09203233752e6464,0x25202c3836317225\n"
-".quad 0x7225202c37363172,0x6f6c2e090a3b3131,0x3134310938310963,0x746573090a300931\n"
-".quad 0x2e3233752e74672e,0x3172250920323375,0x36317225202c3936,0x3836317225202c37\n"
-".quad 0x732e67656e090a3b,0x3731722509203233,0x3936317225202c30,0x682e6c756d090a3b\n"
-".quad 0x2509203233752e69,0x7225202c31373172,0x317225202c363631,0x2e646461090a3b30\n"
-".quad 0x3172250920323375,0x3037317225202c31,0x3b3137317225202c,0x3109636f6c2e090a\n"
-".quad 0x3009323134310938,0x636f6c2e7473090a,0x09203233752e6c61,0x2c5d302b3972255b\n"
-".quad 0x0a3b383631722520,0x3233752e64646109,0x25202c3972250920,0x090a3b34202c3972\n"
-".quad 0x203233752e646461,0x7225202c37722509,0x73090a3b34202c37,0x752e656e2e707465\n"
-".quad 0x3732702509203233,0x25202c377225202c,0x702540090a3b3872,0x0920617262203732\n"
-".quad 0x39355f305f744c24,0x6c2e090a3b303536,0x343109383109636f,0x7473090a30093431\n"
-".quad 0x752e6c61636f6c2e,0x635f5f5b09203233,0x757365725f616475,0x34322b36315f746c\n"
-".quad 0x3b31317225202c5d,0x3109636f6c2e090a,0x3009393134310938,0x33622e6c6873090a\n"
-".quad 0x3237317225092032,0x31202c337225202c,0x752e726873090a3b,0x3931722509203233\n"
-".quad 0x2c3237317225202c,0x7573090a3b343220,0x2509203233752e62,0x317225202c303272\n"
-".quad 0x0a3b383231202c39,0x3233752e72687309,0x202c313272250920,0x3b35202c30327225\n"
-".quad 0x33732e766f6d090a,0x3337317225092032,0x7573090a3b34202c,0x2509203233732e62\n"
-".quad 0x317225202c333272,0x31327225202c3337,0x6c2e6c756d090a3b,0x2509203233752e6f\n"
-".quad 0x327225202c343272,0x61090a3b34202c33,0x09203233752e6464,0x7225202c35327225\n"
-".quad 0x3b327225202c3432,0x636f6c2e646c090a,0x09203233752e6c61,0x255b202c31317225\n"
-".quad 0x0a3b5d382b353272,0x383109636f6c2e09,0x0a30093032343109,0x61636f6c2e646c09\n"
-".quad 0x2509203233752e6c,0x72255b202c363272,0x090a3b5d342b3532,0x203233622e646e61\n"
-".quad 0x25202c3732722509,0x3b3133202c303272,0x33752e766f6d090a,0x3437317225092032\n"
-".quad 0x6573090a3b30202c,0x33752e71652e7074,0x2c38327025092032,0x25202c3732722520\n"
-".quad 0x40090a3b34373172,0x6172622038327025,0x5f305f744c240920,0x090a3b3236313036\n"
-".quad 0x09383109636f6c2e,0x090a300933323431,0x203233732e766f6d,0x202c353731722509\n"
-".quad 0x627573090a3b3233,0x722509203233732e,0x37317225202c3033,0x3b37327225202c35\n"
-".quad 0x33752e726873090a,0x3637317225092032,0x202c36327225202c,0x73090a3b30337225\n"
-".quad 0x09203233622e6c68,0x25202c3737317225,0x327225202c313172,0x2e646461090a3b37\n"
-".quad 0x3172250920323375,0x3637317225202c31,0x3b3737317225202c,0x3109636f6c2e090a\n"
-".quad 0x3009343234310938,0x636f6c2e646c090a,0x09203233752e6c61,0x5b202c3837317225\n"
-".quad 0x3b5d302b35327225,0x33752e726873090a,0x3937317225092032,0x2c3837317225202c\n"
-".quad 0x090a3b3033722520,0x203233622e6c6873,0x202c303831722509,0x7225202c36327225\n"
-".quad 0x646461090a3b3732,0x722509203233752e,0x37317225202c3632,0x3038317225202c39\n"
-".quad 0x5f305f744c240a3b,0x090a3a3236313036,0x09383109636f6c2e,0x090a300936323431\n"
-".quad 0x203233752e726873,0x25202c3633722509,0x3b3033202c313172,0x3109636f6c2e090a\n"
-".quad 0x3009383234310938,0x33752e726873090a,0x3138317225092032,0x202c36327225202c\n"
-".quad 0x6c6873090a3b3033,0x722509203233622e,0x317225202c323831,0x61090a3b32202c31\n"
-".quad 0x09203233752e6464,0x7225202c31317225,0x317225202c313831,0x6f6c2e090a3b3238\n"
-".quad 0x3234310938310963,0x6c6873090a300939,0x722509203233622e,0x36327225202c3632\n"
-".quad 0x6f6d090a3b32202c,0x2509203233752e76,0x3b30202c33383172,0x652e70746573090a\n"
-".quad 0x2509203233752e71,0x327225202c393270,0x3338317225202c36,0x3932702540090a3b\n"
-".quad 0x4c24092061726220,0x333930365f305f74,0x636f6c2e090a3b30,0x3033343109383109\n"
-".quad 0x2e646461090a3009,0x3172250920323375,0x31317225202c3438,0x6f6d090a3b31202c\n"
-".quad 0x2509203233752e76,0x322d202c35383172,0x3436333834373431,0x2e746573090a3b38\n"
-".quad 0x752e3233752e7467,0x3831722509203233,0x3438317225202c36,0x3b3538317225202c\n"
-".quad 0x33732e67656e090a,0x3738317225092032,0x3b3638317225202c,0x6e752e617262090a\n"
-".quad 0x305f744c24092069,0x0a3b34373630365f,0x30365f305f744c24,0x6f6d090a3a303339\n"
-".quad 0x2509203233752e76,0x322d202c38383172,0x3436333834373431,0x2e746573090a3b38\n"
-".quad 0x752e3233752e7467,0x3831722509203233,0x2c31317225202c39,0x0a3b383831722520\n"
-".quad 0x3233732e67656e09,0x2c37383172250920,0x0a3b393831722520,0x30365f305f744c24\n"
-".quad 0x6c2e090a3a343736,0x343109383109636f,0x6461090a30093133,0x2509203233752e64\n"
-".quad 0x7225202c30393172,0x38317225202c3633,0x636f6c2e090a3b37,0x3033343109383109\n"
-".quad 0x2e67656e090a3009,0x3172250920323373,0x39317225202c3139,0x2e766f6d090a3b30\n"
-".quad 0x3172250920323375,0x090a3b30202c3239,0x2e656e2e70746573,0x3370250920323375\n"
-".quad 0x202c347225202c30,0x090a3b3239317225,0x3233732e706c6573,0x202c363372250920\n"
-".quad 0x25202c3139317225,0x7025202c30393172,0x766f6d090a3b3033,0x722509203233752e\n"
-".quad 0x0a3b30202c333931,0x71652e7074657309,0x702509203233752e,0x38317225202c3133\n"
-".quad 0x3339317225202c37,0x3133702540090a3b,0x4c24092061726220,0x383131365f305f74\n"
-".quad 0x636f6c2e090a3b36,0x3633343109383109,0x2e67656e090a3009,0x3272250920323373\n"
-".quad 0x3b36327225202c36,0x3109636f6c2e090a,0x3009383334310938,0x33752e766f6d090a\n"
-".quad 0x3439317225092032,0x6573090a3b30202c,0x3233752e71652e74,0x722509203233752e\n"
-".quad 0x327225202c353931,0x3439317225202c36,0x732e67656e090a3b,0x3931722509203233\n"
-".quad 0x3539317225202c36,0x622e746f6e090a3b,0x3931722509203233,0x3b31317225202c37\n"
-".quad 0x33752e646461090a,0x2c31317225092032,0x202c363931722520,0x090a3b3739317225\n"
-".quad 0x09383109636f6c2e,0x090a300939333431,0x203233622e726f78,0x7225202c35722509\n"
-".quad 0x373431322d202c34,0x0a3b383436333834,0x31365f305f744c24,0x6c2e090a3a363831\n"
-".quad 0x343109383109636f,0x6f6d090a30093134,0x2509203233732e76,0x337225202c343572\n"
-".quad 0x2e766f6d090a3b36,0x3172250920323375,0x090a3b30202c3839,0x2e656c2e70746573\n"
-".quad 0x3370250920323373,0x2c31317225202c32,0x0a3b383931722520,0x6220323370254009\n"
-".quad 0x5f744c2409206172,0x3b30393839365f30,0x33752e766f6d090a,0x2c36357225092032\n"
-".quad 0x5f744c240a3b3020,0x3a30313232365f30,0x6f6f6c3c2f2f200a,0x20706f6f4c203e70\n"
-".quad 0x6e696c2079646f62,0x202c313434312065,0x20676e697473656e,0x31203a6874706564\n"
-".quad 0x616d69747365202c,0x7265746920646574,0x203a736e6f697461,0x0a6e776f6e6b6e75\n"
-".quad 0x383109636f6c2e09,0x0a30093534343109,0x3233752e72687309,0x2c39393172250920\n"
-".quad 0x33202c3632722520,0x2e6c6873090a3b31,0x3272250920323362,0x31317225202c3030\n"
-".quad 0x6461090a3b31202c,0x2509203233752e64,0x317225202c313172,0x30327225202c3939\n"
-".quad 0x636f6c2e090a3b30,0x3634343109383109,0x2e6c6873090a3009,0x3272250920323362\n"
-".quad 0x2c36327225202c36,0x6f6c2e090a3b3120,0x3434310938310963,0x627573090a300937\n"
-".quad 0x722509203233752e,0x36357225202c3635,0x6f6d090a3b31202c,0x2509203233752e76\n"
-".quad 0x3b30202c31303272,0x672e70746573090a,0x2509203233732e74,0x317225202c333370\n"
-".quad 0x3130327225202c31,0x3333702540090a3b,0x4c24092061726220,0x313232365f305f74\n"
-".quad 0x2e617262090a3b30,0x744c240920696e75,0x38393631365f305f,0x5f305f744c240a3b\n"
-".quad 0x090a3a3039383936,0x203233752e766f6d,0x30202c3635722509,0x5f305f744c240a3b\n"
-".quad 0x090a3a3839363136,0x09383109636f6c2e,0x090a300939343431,0x752e6f6c2e6c756d\n"
-".quad 0x3632722509203233,0x202c31317225202c,0x383730373132392d,0x6f6c2e090a3b3037\n"
-".quad 0x3534310938310963,0x766f6d090a300930,0x722509203233752e,0x32392d202c323032\n"
-".quad 0x3b30373837303731,0x69682e6c756d090a,0x722509203233752e,0x31317225202c3131\n"
-".quad 0x3b3230327225202c,0x33752e766f6d090a,0x3330327225092032,0x6573090a3b30202c\n"
-".quad 0x33732e656c2e7074,0x2c34337025092032,0x25202c3131722520,0x40090a3b33303272\n"
-".quad 0x6172622034337025,0x5f305f744c240920,0x090a3b3232373236,0x09383109636f6c2e\n"
-".quad 0x090a300932353431,0x203233752e726873,0x202c343032722509,0x3133202c36327225\n"
-".quad 0x622e6c6873090a3b,0x3032722509203233,0x2c31317225202c35,0x646461090a3b3120\n"
-".quad 0x722509203233752e,0x30327225202c3131,0x3530327225202c34,0x09636f6c2e090a3b\n"
-".quad 0x0933353431093831,0x622e6c6873090a30,0x3632722509203233,0x202c36327225202c\n"
+".quad 0x3139317225092032,0x202c31327225202c,0x6c6873090a3b3133,0x722509203233622e\n"
+".quad 0x377225202c323931,0x6461090a3b31202c,0x2509203233752e64,0x39317225202c3772\n"
+".quad 0x3239317225202c31,0x09636f6c2e090a3b,0x0936343431093831,0x622e6c6873090a30\n"
+".quad 0x3132722509203233,0x202c31327225202c,0x636f6c2e090a3b31,0x3734343109383109\n"
+".quad 0x2e627573090a3009,0x3572250920323375,0x2c30357225202c30,0x766f6d090a3b3120\n"
+".quad 0x722509203233752e,0x0a3b30202c333931,0x74672e7074657309,0x702509203233732e\n"
+".quad 0x2c377225202c3333,0x0a3b333931722520,0x6220333370254009,0x5f744c2409206172\n"
+".quad 0x3b30313232365f30,0x6e752e617262090a,0x305f744c24092069,0x0a3b38393631365f\n"
+".quad 0x39365f305f744c24,0x6f6d090a3a303938,0x2509203233752e76,0x0a3b30202c303572\n"
+".quad 0x31365f305f744c24,0x6c2e090a3a383936,0x343109383109636f,0x756d090a30093934\n"
+".quad 0x3233752e6f6c2e6c,0x202c313272250920,0x32392d202c377225,0x3b30373837303731\n"
+".quad 0x3109636f6c2e090a,0x3009303534310938,0x33752e766f6d090a,0x3439317225092032\n"
+".quad 0x30373132392d202c,0x6d090a3b30373837,0x33752e69682e6c75,0x202c377225092032\n"
+".quad 0x317225202c377225,0x766f6d090a3b3439,0x722509203233752e,0x0a3b30202c353931\n"
+".quad 0x656c2e7074657309,0x702509203233732e,0x2c377225202c3433,0x0a3b353931722520\n"
+".quad 0x6220343370254009,0x5f744c2409206172,0x3b32323732365f30,0x3109636f6c2e090a\n"
+".quad 0x3009323534310938,0x33752e726873090a,0x3639317225092032,0x202c31327225202c\n"
+".quad 0x6c6873090a3b3133,0x722509203233622e,0x377225202c373931,0x6461090a3b31202c\n"
+".quad 0x2509203233752e64,0x39317225202c3772,0x3739317225202c36,0x09636f6c2e090a3b\n"
+".quad 0x0933353431093831,0x622e6c6873090a30,0x3132722509203233,0x202c31327225202c\n"
 ".quad 0x636f6c2e090a3b31,0x3435343109383109,0x2e627573090a3009,0x3572250920323375\n"
-".quad 0x2c36357225202c36,0x5f744c240a3b3120,0x3a32323732365f30,0x3109636f6c2e090a\n"
-".quad 0x3009363534310938,0x33752e766f6d090a,0x3630327225092032,0x6573090a3b30202c\n"
-".quad 0x3233752e656e2e74,0x722509203233752e,0x327225202c373032,0x3630327225202c36\n"
-".quad 0x732e67656e090a3b,0x3032722509203233,0x3730327225202c38,0x752e646461090a3b\n"
-".quad 0x3131722509203233,0x2c3830327225202c,0x090a3b3131722520,0x09383109636f6c2e\n"
-".quad 0x090a300938353431,0x203233622e6c6873,0x202c393032722509,0x3432202c31317225\n"
-".quad 0x732e766f6d090a3b,0x3132722509203233,0x73090a3b30202c30,0x33752e746c2e7465\n"
-".quad 0x2509203233732e32,0x7225202c31313272,0x327225202c393032,0x67656e090a3b3031\n"
-".quad 0x722509203233732e,0x327225202c323132,0x726873090a3b3131,0x722509203233752e\n"
-".quad 0x317225202c333132,0x61090a3b38202c31,0x09203233752e6464,0x25202c3431327225\n"
-".quad 0x363231202c363572,0x622e6c6873090a3b,0x3132722509203233,0x3431327225202c35\n"
-".quad 0x61090a3b3332202c,0x09203233752e6464,0x25202c3631327225,0x7225202c33313272\n"
-".quad 0x6461090a3b353132,0x2509203233752e64,0x7225202c37313272,0x327225202c323132\n"
-".quad 0x2e726f090a3b3631,0x3272250920323362,0x2c357225202c3831,0x0a3b373132722520\n"
-".quad 0x3233622e766f6d09,0x25202c3766250920,0x62090a3b38313272,0x0920696e752e6172\n"
-".quad 0x69646e6557444c24,0x7265746e695f5f5f,0x64616d665f6c616e,0x0a3b365f3737315f\n"
-".quad 0x38355f305f744c24,0x6c2e090a3a363236,0x343109383109636f,0x6f6d090a30093137\n"
-".quad 0x2509203233662e76,0x336630202c323866,0x3b33383966323266,0x202f2f0920202020\n"
-".quad 0x0a32363633362e30,0x3233662e6c756d09,0x25202c3966250920,0x32386625202c3166\n"
-".quad 0x722e747663090a3b,0x662e3233732e696e,0x3737722509203233,0x090a3b396625202c\n"
-".quad 0x203233732e766f6d,0x25202c3435722509,0x6c2e090a3b373772,0x343109383109636f\n"
-".quad 0x7663090a30093237,0x3233662e6e722e74,0x662509203233732e,0x37377225202c3031\n"
-".quad 0x662e67656e090a3b,0x3131662509203233,0x0a3b30316625202c,0x3233662e766f6d09\n"
-".quad 0x202c333866250920,0x3361353865326630,0x09202020203b3930,0x3737302e36202f2f\n"
-".quad 0x6d090a31312d6531,0x09203233662e766f,0x6630202c34386625,0x3032616164663933\n"
-".quad 0x2f2f09202020203b,0x38343030302e3020,0x6f6d090a37323833,0x2509203233662e76\n"
+".quad 0x2c30357225202c30,0x5f744c240a3b3120,0x3a32323732365f30,0x3109636f6c2e090a\n"
+".quad 0x3009363534310938,0x33752e766f6d090a,0x3839317225092032,0x6573090a3b30202c\n"
+".quad 0x3233752e656e2e74,0x722509203233752e,0x327225202c393931,0x3839317225202c31\n"
+".quad 0x732e67656e090a3b,0x3032722509203233,0x3939317225202c30,0x752e646461090a3b\n"
+".quad 0x2c37722509203233,0x202c303032722520,0x6c2e090a3b377225,0x343109383109636f\n"
+".quad 0x6873090a30093835,0x2509203233622e6c,0x7225202c31303272,0x090a3b3432202c37\n"
+".quad 0x203233732e766f6d,0x202c323032722509,0x2e746573090a3b30,0x732e3233752e746c\n"
+".quad 0x3032722509203233,0x3130327225202c33,0x3b3230327225202c,0x33732e67656e090a\n"
+".quad 0x3430327225092032,0x3b3330327225202c,0x33752e726873090a,0x3530327225092032\n"
+".quad 0x38202c377225202c,0x752e646461090a3b,0x3032722509203233,0x2c30357225202c36\n"
+".quad 0x73090a3b36323120,0x09203233622e6c68,0x25202c3730327225,0x3332202c36303272\n"
+".quad 0x752e646461090a3b,0x3032722509203233,0x3530327225202c38,0x3b3730327225202c\n"
+".quad 0x33752e646461090a,0x3930327225092032,0x2c3430327225202c,0x0a3b383032722520\n"
+".quad 0x203233622e726f09,0x202c303132722509,0x327225202c337225,0x766f6d090a3b3930\n"
+".quad 0x662509203233622e,0x3031327225202c37,0x752e617262090a3b,0x57444c240920696e\n"
+".quad 0x695f5f5f69646e65,0x5f6c616e7265746e,0x3330325f64616d66,0x5f744c240a3b365f\n"
+".quad 0x3a36323638355f30,0x3109636f6c2e090a,0x3009313734310938,0x33662e766f6d090a\n"
+".quad 0x2c34386625092032,0x6632326633663020,0x202020203b333839,0x33362e30202f2f09\n"
+".quad 0x6f6c2e090a323636,0x3037310938310963,0x2e646c090a300932,0x33662e6d61726170\n"
+".quad 0x202c316625092032,0x70616475635f5f5b,0x35315a5f5f6d7261,0x726f66736e617274\n"
+".quad 0x506c656e72654b6d,0x6568745f66696966,0x6c2e090a3b5d6174,0x343109383109636f\n"
+".quad 0x756d090a30093137,0x2509203233662e6c,0x2c316625202c3966,0x090a3b3438662520\n"
+".quad 0x2e696e722e747663,0x203233662e323373,0x25202c3137722509,0x766f6d090a3b3966\n"
+".quad 0x722509203233732e,0x31377225202c3834,0x09636f6c2e090a3b,0x0932373431093831\n"
+".quad 0x722e747663090a30,0x33732e3233662e6e,0x2c30316625092032,0x090a3b3137722520\n"
+".quad 0x203233662e67656e,0x25202c3131662509,0x6f6d090a3b303166,0x2509203233662e76\n"
 ".quad 0x336630202c353866,0x3b30303030396366,0x202f2f0920202020,0x0a31333037352e31\n"
-".quad 0x2e6e722e616d6609,0x3866250920323366,0x2c31316625202c36,0x25202c3538662520\n"
-".quad 0x616d66090a3b3166,0x203233662e6e722e,0x25202c3738662509,0x386625202c313166\n"
-".quad 0x3b36386625202c34,0x6e722e616d66090a,0x662509203233662e,0x2c31316625202c37\n"
-".quad 0x25202c3338662520,0x444c240a3b373866,0x5f5f5f69646e6557,0x6c616e7265746e69\n"
-".quad 0x37315f64616d665f,0x6c2e090a3a365f37,0x373109383109636f,0x6461090a30093530\n"
-".quad 0x2509203233732e64,0x357225202c383772,0x6d090a3b31202c34,0x09203233662e766f\n"
-".quad 0x6625202c38386625,0x2e6c756d090a3b37,0x3166250920323366,0x2c38386625202c38\n"
-".quad 0x090a3b3838662520,0x203233622e646e61,0x202c393132722509,0x3b31202c38377225\n"
-".quad 0x33752e766f6d090a,0x3032327225092032,0x6573090a3b30202c,0x33732e71652e7074\n"
-".quad 0x2c35337025092032,0x202c393132722520,0x090a3b3032327225,0x7262203533702540\n"
-".quad 0x305f744c24092061,0x0a3b30393433365f,0x383109636f6c2e09,0x0a30093930373109\n"
-".quad 0x3233662e766f6d09,0x202c393866250920,0x3566636337336630,0x09202020203b6563\n"
-".quad 0x3334342e32202f2f,0x090a35302d653233,0x203233662e766f6d,0x30202c3039662509\n"
-".quad 0x3136303662616266,0x2f09202020203b61,0x3130302e302d202f,0x66090a3337383833\n"
-".quad 0x33662e6e722e616d,0x2c31396625092032,0x25202c3938662520,0x396625202c383166\n"
-".quad 0x2e766f6d090a3b30,0x3966250920323366,0x3264336630202c32,0x20203b3561616161\n"
-".quad 0x2e30202f2f092020,0x0a36363636313430,0x2e6e722e616d6609,0x3966250920323366\n"
-".quad 0x2c31396625202c33,0x25202c3831662520,0x6f6d090a3b323966,0x2509203233662e76\n"
-".quad 0x626630202c343966,0x3b30303030303066,0x202f2f0920202020,0x6d66090a352e302d\n"
-".quad 0x3233662e6e722e61,0x202c353966250920,0x6625202c33396625,0x34396625202c3831\n"
-".quad 0x662e766f6d090a3b,0x3639662509203233,0x303866336630202c,0x2020203b30303030\n"
-".quad 0x090a31202f2f0920,0x662e6e722e616d66,0x3732662509203233,0x202c35396625202c\n"
-".quad 0x6625202c38316625,0x617262090a3b3639,0x4c240920696e752e,0x333233365f305f74\n"
-".quad 0x305f744c240a3b34,0x0a3a30393433365f,0x383109636f6c2e09,0x0a30093131373109\n"
-".quad 0x3233662e766f6d09,0x202c373966250920,0x3161633439626630,0x09202020203b3966\n"
-".quad 0x30302e302d202f2f,0x0a33353135393130,0x3233662e766f6d09,0x202c383966250920\n"
-".quad 0x3338383063336630,0x09202020203b6539,0x3830302e30202f2f,0x66090a3631323333\n"
-".quad 0x33662e6e722e616d,0x2c39396625092032,0x25202c3739662520,0x396625202c383166\n"
-".quad 0x2e766f6d090a3b38,0x3166250920323366,0x65626630202c3030,0x203b336161616132\n"
-".quad 0x302d202f2f092020,0x0a3736363636312e,0x2e6e722e616d6609,0x3166250920323366\n"
-".quad 0x39396625202c3130,0x202c38316625202c,0x090a3b3030316625,0x203233662e6c756d\n"
-".quad 0x202c323031662509,0x6625202c38316625,0x6d66090a3b313031,0x3233662e6e722e61\n"
-".quad 0x202c373266250920,0x25202c3230316625,0x386625202c383866,0x305f744c240a3b38\n"
-".quad 0x0a3a34333233365f,0x383109636f6c2e09,0x0a30093331373109,0x3233662e67656e09\n"
-".quad 0x2c33303166250920,0x090a3b3732662520,0x203233622e646e61,0x202c313232722509\n"
-".quad 0x3b32202c38377225,0x33732e766f6d090a,0x3232327225092032,0x6573090a3b30202c\n"
-".quad 0x33732e656e2e7074,0x2c36337025092032,0x202c313232722520,0x090a3b3232327225\n"
-".quad 0x3233662e706c6573,0x202c373266250920,0x25202c3330316625,0x337025202c373266\n"
-".quad 0x636f6c2e090a3b36,0x3631373109383109,0x2e766f6d090a3009,0x3866250920323366\n"
-".quad 0x3b37326625202c30,0x646e6557444c240a,0x6e6973695f5f5f69,0x355f3737315f6666\n"
-".quad 0x09636f6c2e090a3a,0x0938333631093831,0x752e766f6d090a30,0x3232722509203233\n"
-".quad 0x73090a3b30202c33,0x732e71652e707465,0x3733702509203233,0x202c35387225202c\n"
-".quad 0x090a3b3332327225,0x7262203733702540,0x305f744c24092061,0x0a3b36343733365f\n"
-".quad 0x383109636f6c2e09,0x0a30093933363109,0x3233662e766f6d09,0x2c34303166250920\n"
-".quad 0x3030303030663020,0x092020203b303030,0x756d090a30202f2f,0x3233662e6e722e6c\n"
-".quad 0x202c373366250920,0x316625202c316625,0x617262090a3b3430,0x4c240920696e752e\n"
-".quad 0x5f5f69646e655744,0x5f66666e6973695f,0x240a3b315f373731,0x3733365f305f744c\n"
-".quad 0x766f6d090a3a3634,0x662509203233662e,0x346630202c353031,0x3b30303761623337\n"
-".quad 0x34202f2f09202020,0x6573090a39333038,0x33662e74672e7074,0x2c38337025092032\n"
-".quad 0x6625202c32662520,0x2140090a3b353031,0x6172622038337025,0x5f305f744c240920\n"
-".quad 0x090a3b3835323436,0x09383109636f6c2e,0x090a300936393331,0x203233622e766f6d\n"
-".quad 0x6625202c33722509,0x2e646e61090a3b31,0x3472250920323362,0x2d202c337225202c\n"
-".quad 0x3633383437343132,0x766f6d090a3b3834,0x722509203233732e,0x3b347225202c3838\n"
-".quad 0x3109636f6c2e090a,0x090a300934320938,0x203233622e6c6873,0x7225202c36722509\n"
-".quad 0x6d090a3b38202c33,0x09203233732e766f,0x7225202c39387225,0x2e646461090a3b31\n"
-".quad 0x3872250920323375,0x32202c317225202c,0x2e766f6d090a3b34,0x3972250920323375\n"
-".quad 0x6475635f5f202c30,0x746c757365725f61,0x726f090a3b34345f,0x722509203233622e\n"
-".quad 0x2c367225202c3031,0x3834373431322d20,0x6d090a3b38343633,0x09203233752e766f\n"
-".quad 0x3b30202c31397225,0x365f305f744c240a,0x2e090a3a32383235,0x2220616d67617270\n"
-".quad 0x6c6c6f726e756f6e,0x6c3c2f2f200a3b22,0x6f6f4c203e706f6f,0x6c2079646f622070\n"
-".quad 0x202c343220656e69,0x20676e697473656e,0x31203a6874706564,0x746172657469202c\n"
-".quad 0x0a36203a736e6f69,0x383109636f6c2e09,0x0a30093031343109,0x736e6f632e646c09\n"
-".quad 0x2509203233752e74,0x255b202c34323272,0x0a3b5d302b393872,0x2e6f6c2e6c756d09\n"
-".quad 0x3272250920323375,0x32327225202c3532,0x3b30317225202c34,0x33752e646461090a\n"
-".quad 0x3632327225092032,0x2c3532327225202c,0x090a3b3139722520,0x09383109636f6c2e\n"
-".quad 0x090a300931313431,0x752e74672e746573,0x09203233752e3233,0x25202c3732327225\n"
-".quad 0x7225202c35323272,0x656e090a3b363232,0x2509203233732e67,0x7225202c38323272\n"
-".quad 0x756d090a3b373232,0x3233752e69682e6c,0x2c39323272250920,0x202c343232722520\n"
-".quad 0x61090a3b30317225,0x09203233752e6464,0x7225202c31397225,0x327225202c383232\n"
-".quad 0x6f6c2e090a3b3932,0x3134310938310963,0x2e7473090a300932,0x33752e6c61636f6c\n"
-".quad 0x303972255b092032,0x327225202c5d302b,0x646461090a3b3632,0x722509203233752e\n"
-".quad 0x30397225202c3039,0x6461090a3b34202c,0x2509203233752e64,0x387225202c393872\n"
-".quad 0x73090a3b34202c39,0x752e656e2e707465,0x3933702509203233,0x202c39387225202c\n"
-".quad 0x2540090a3b387225,0x2061726220393370,0x365f305f744c2409,0x2e090a3b32383235\n"
-".quad 0x3109383109636f6c,0x73090a3009343134,0x2e6c61636f6c2e74,0x5f5f5b0920323375\n"
-".quad 0x7365725f61647563,0x322b34345f746c75,0x31397225202c5d34,0x09636f6c2e090a3b\n"
-".quad 0x0939313431093831,0x622e6c6873090a30,0x3332722509203233,0x202c337225202c30\n"
-".quad 0x2e726873090a3b31,0x3172250920323375,0x3033327225202c39,0x73090a3b3432202c\n"
-".quad 0x09203233752e6275,0x7225202c30327225,0x3b383231202c3931,0x33752e726873090a\n"
-".quad 0x2c31327225092032,0x35202c3032722520,0x732e766f6d090a3b,0x3332722509203233\n"
-".quad 0x73090a3b34202c31,0x09203233732e6275,0x7225202c33327225,0x327225202c313332\n"
-".quad 0x2e6c756d090a3b31,0x09203233752e6f6c,0x7225202c34327225,0x090a3b34202c3332\n"
-".quad 0x203233752e646461,0x202c303031722509,0x7225202c34327225,0x2e646c090a3b3738\n"
-".quad 0x33752e6c61636f6c,0x2c31397225092032,0x2b30303172255b20,0x6f6c2e090a3b5d38\n"
-".quad 0x3234310938310963,0x2e646c090a300930,0x33752e6c61636f6c,0x3130317225092032\n"
-".quad 0x30303172255b202c,0x6e61090a3b5d342b,0x2509203233622e64,0x327225202c373272\n"
-".quad 0x090a3b3133202c30,0x203233752e766f6d,0x202c323332722509,0x70746573090a3b30\n"
-".quad 0x203233752e71652e,0x25202c3034702509,0x327225202c373272,0x702540090a3b3233\n"
-".quad 0x0920617262203034,0x35365f305f744c24,0x6c2e090a3b343937,0x343109383109636f\n"
-".quad 0x6f6d090a30093332,0x2509203233732e76,0x3233202c33333272,0x732e627573090a3b\n"
-".quad 0x3033722509203233,0x2c3333327225202c,0x090a3b3732722520,0x203233752e726873\n"
-".quad 0x202c343332722509,0x25202c3130317225,0x6873090a3b303372,0x2509203233622e6c\n"
-".quad 0x7225202c35333272,0x37327225202c3139,0x752e646461090a3b,0x3139722509203233\n"
-".quad 0x2c3433327225202c,0x0a3b353332722520,0x383109636f6c2e09,0x0a30093432343109\n"
-".quad 0x61636f6c2e646c09,0x2509203233752e6c,0x255b202c36333272,0x3b5d302b30303172\n"
-".quad 0x33752e726873090a,0x3733327225092032,0x2c3633327225202c,0x090a3b3033722520\n"
-".quad 0x203233622e6c6873,0x202c383332722509,0x25202c3130317225,0x6461090a3b373272\n"
-".quad 0x2509203233752e64,0x7225202c31303172,0x327225202c373332,0x5f744c240a3b3833\n"
-".quad 0x3a34393735365f30,0x3109636f6c2e090a,0x3009363234310938,0x33752e726873090a\n"
-".quad 0x3930317225092032,0x202c31397225202c,0x6f6c2e090a3b3033,0x3234310938310963\n"
-".quad 0x726873090a300938,0x722509203233752e,0x317225202c393332,0x0a3b3033202c3130\n"
-".quad 0x3233622e6c687309,0x2c30343272250920,0x32202c3139722520,0x752e646461090a3b\n"
-".quad 0x3139722509203233,0x2c3933327225202c,0x0a3b303432722520,0x383109636f6c2e09\n"
-".quad 0x0a30093932343109,0x3233622e6c687309,0x2c31303172250920,0x202c313031722520\n"
-".quad 0x2e766f6d090a3b32,0x3272250920323375,0x090a3b30202c3134,0x2e71652e70746573\n"
-".quad 0x3470250920323375,0x3130317225202c31,0x3b3134327225202c,0x203134702540090a\n"
-".quad 0x744c240920617262,0x32363536365f305f,0x09636f6c2e090a3b,0x0930333431093831\n"
-".quad 0x752e646461090a30,0x3432722509203233,0x2c31397225202c32,0x766f6d090a3b3120\n"
-".quad 0x722509203233752e,0x31322d202c333432,0x3834363338343734,0x672e746573090a3b\n"
-".quad 0x33752e3233752e74,0x3434327225092032,0x2c3234327225202c,0x0a3b333432722520\n"
-".quad 0x3233732e67656e09,0x2c35343272250920,0x0a3b343432722520,0x696e752e61726209\n"
-".quad 0x5f305f744c240920,0x240a3b3630333636,0x3536365f305f744c,0x766f6d090a3a3236\n"
-".quad 0x722509203233752e,0x31322d202c363432,0x3834363338343734,0x672e746573090a3b\n"
-".quad 0x33752e3233752e74,0x3734327225092032,0x202c31397225202c,0x090a3b3634327225\n"
-".quad 0x203233732e67656e,0x202c353432722509,0x240a3b3734327225,0x3336365f305f744c\n"
-".quad 0x6f6c2e090a3a3630,0x3334310938310963,0x646461090a300931,0x722509203233752e\n"
-".quad 0x317225202c383432,0x34327225202c3930,0x636f6c2e090a3b35,0x3033343109383109\n"
-".quad 0x2e67656e090a3009,0x3272250920323373,0x34327225202c3934,0x2e766f6d090a3b38\n"
-".quad 0x3272250920323375,0x090a3b30202c3035,0x2e656e2e70746573,0x3470250920323375\n"
-".quad 0x202c347225202c32,0x090a3b3035327225,0x3233732e706c6573,0x2c39303172250920\n"
-".quad 0x202c393432722520,0x25202c3834327225,0x6f6d090a3b323470,0x2509203233752e76\n"
-".quad 0x3b30202c31353272,0x652e70746573090a,0x2509203233752e71,0x327225202c333470\n"
-".quad 0x35327225202c3534,0x34702540090a3b31,0x2409206172622033,0x3836365f305f744c\n"
-".quad 0x6f6c2e090a3b3831,0x3334310938310963,0x67656e090a300936,0x722509203233732e\n"
-".quad 0x317225202c313031,0x6f6c2e090a3b3130,0x3334310938310963,0x766f6d090a300938\n"
-".quad 0x722509203233752e,0x0a3b30202c323532,0x2e71652e74657309,0x203233752e323375\n"
-".quad 0x202c333532722509,0x25202c3130317225,0x6e090a3b32353272,0x09203233732e6765\n"
-".quad 0x25202c3435327225,0x6e090a3b33353272,0x09203233622e746f,0x25202c3535327225\n"
-".quad 0x6461090a3b313972,0x2509203233752e64,0x327225202c313972,0x35327225202c3435\n"
-".quad 0x636f6c2e090a3b35,0x3933343109383109,0x2e726f78090a3009,0x3872250920323362\n"
-".quad 0x202c347225202c38,0x333834373431322d,0x744c240a3b383436,0x38313836365f305f\n"
-".quad 0x09636f6c2e090a3a,0x0931343431093831,0x732e766f6d090a30,0x3231722509203233\n"
-".quad 0x3930317225202c37,0x752e766f6d090a3b,0x3532722509203233,0x73090a3b30202c36\n"
-".quad 0x732e656c2e707465,0x3434702509203233,0x202c31397225202c,0x090a3b3635327225\n"
-".quad 0x7262203434702540,0x305f744c24092061,0x0a3b36343130375f,0x3233752e766f6d09\n"
-".quad 0x2c39323172250920,0x5f744c240a3b3020,0x3a32343837365f30,0x6f6f6c3c2f2f200a\n"
-".quad 0x20706f6f4c203e70,0x6e696c2079646f62,0x202c313434312065,0x20676e697473656e\n"
-".quad 0x31203a6874706564,0x616d69747365202c,0x7265746920646574,0x203a736e6f697461\n"
-".quad 0x0a6e776f6e6b6e75,0x383109636f6c2e09,0x0a30093534343109,0x3233752e72687309\n"
-".quad 0x2c37353272250920,0x202c313031722520,0x6c6873090a3b3133,0x722509203233622e\n"
-".quad 0x397225202c383532,0x61090a3b31202c31,0x09203233752e6464,0x7225202c31397225\n"
-".quad 0x327225202c373532,0x6f6c2e090a3b3835,0x3434310938310963,0x6c6873090a300936\n"
-".quad 0x722509203233622e,0x317225202c313031,0x090a3b31202c3130,0x09383109636f6c2e\n"
-".quad 0x090a300937343431,0x203233752e627573,0x202c393231722509,0x31202c3932317225\n"
-".quad 0x752e766f6d090a3b,0x3532722509203233,0x73090a3b30202c39,0x732e74672e707465\n"
-".quad 0x3534702509203233,0x202c31397225202c,0x090a3b3935327225,0x7262203534702540\n"
-".quad 0x305f744c24092061,0x0a3b32343837365f,0x696e752e61726209,0x5f305f744c240920\n"
-".quad 0x240a3b3033333736,0x3130375f305f744c,0x766f6d090a3a3634,0x722509203233752e\n"
-".quad 0x0a3b30202c393231,0x37365f305f744c24,0x6c2e090a3a303333,0x343109383109636f\n"
-".quad 0x756d090a30093934,0x3233752e6f6c2e6c,0x2c31303172250920,0x2d202c3139722520\n"
-".quad 0x3738373037313239,0x636f6c2e090a3b30,0x3035343109383109,0x2e766f6d090a3009\n"
-".quad 0x3272250920323375,0x3132392d202c3036,0x0a3b303738373037,0x2e69682e6c756d09\n"
-".quad 0x3972250920323375,0x2c31397225202c31,0x0a3b303632722520,0x3233752e766f6d09\n"
-".quad 0x2c31363272250920,0x746573090a3b3020,0x3233732e656c2e70,0x202c363470250920\n"
-".quad 0x7225202c31397225,0x2540090a3b313632,0x2061726220363470,0x365f305f744c2409\n"
-".quad 0x2e090a3b34353338,0x3109383109636f6c,0x73090a3009323534,0x09203233752e7268\n"
-".quad 0x25202c3236327225,0x3133202c31303172,0x622e6c6873090a3b,0x3632722509203233\n"
-".quad 0x2c31397225202c33,0x646461090a3b3120,0x722509203233752e,0x36327225202c3139\n"
-".quad 0x3336327225202c32,0x09636f6c2e090a3b,0x0933353431093831,0x622e6c6873090a30\n"
-".quad 0x3031722509203233,0x3130317225202c31,0x6c2e090a3b31202c,0x343109383109636f\n"
-".quad 0x7573090a30093435,0x2509203233752e62,0x7225202c39323172,0x0a3b31202c393231\n"
-".quad 0x38365f305f744c24,0x6c2e090a3a343533,0x343109383109636f,0x6f6d090a30093635\n"
-".quad 0x2509203233752e76,0x3b30202c34363272,0x656e2e746573090a,0x3233752e3233752e\n"
-".quad 0x2c35363272250920,0x202c313031722520,0x090a3b3436327225,0x203233732e67656e\n"
-".quad 0x202c363632722509,0x090a3b3536327225,0x203233752e646461,0x25202c3139722509\n"
-".quad 0x7225202c36363272,0x6f6c2e090a3b3139,0x3534310938310963,0x6c6873090a300938\n"
-".quad 0x722509203233622e,0x397225202c373632,0x090a3b3432202c31,0x203233732e766f6d\n"
-".quad 0x202c383632722509,0x2e746573090a3b30,0x732e3233752e746c,0x3632722509203233\n"
-".quad 0x3736327225202c39,0x3b3836327225202c,0x33732e67656e090a,0x3037327225092032\n"
-".quad 0x3b3936327225202c,0x33752e726873090a,0x3137327225092032,0x202c31397225202c\n"
-".quad 0x2e646461090a3b38,0x3272250920323375,0x32317225202c3237,0x0a3b363231202c39\n"
-".quad 0x3233622e6c687309,0x2c33373272250920,0x202c323732722520,0x646461090a3b3332\n"
-".quad 0x722509203233752e,0x327225202c343732,0x37327225202c3137,0x2e646461090a3b33\n"
-".quad 0x3272250920323375,0x37327225202c3537,0x3437327225202c30,0x33622e726f090a3b\n"
-".quad 0x3637327225092032,0x202c38387225202c,0x090a3b3537327225,0x203233622e766f6d\n"
-".quad 0x25202c3933662509,0x62090a3b36373272,0x0920696e752e6172,0x69646e6557444c24\n"
-".quad 0x7265746e695f5f5f,0x64616d665f6c616e,0x0a3b325f3737315f,0x34365f305f744c24\n"
-".quad 0x6c2e090a3a383532,0x343109383109636f,0x6f6d090a30093137,0x2509203233662e76\n"
-".quad 0x6630202c36303166,0x3338396632326633,0x202f2f092020203b,0x0a32363633362e30\n"
-".quad 0x3233662e6c756d09,0x25202c3966250920,0x30316625202c3166,0x2e747663090a3b36\n"
-".quad 0x2e3233732e696e72,0x3772250920323366,0x0a3b396625202c37,0x3233732e766f6d09\n"
-".quad 0x2c37323172250920,0x090a3b3737722520,0x09383109636f6c2e,0x090a300932373431\n"
-".quad 0x662e6e722e747663,0x09203233732e3233,0x7225202c30316625,0x67656e090a3b3737\n"
-".quad 0x662509203233662e,0x30316625202c3131,0x662e766f6d090a3b,0x3031662509203233\n"
-".quad 0x3865326630202c37,0x20203b3930336135,0x302e36202f2f0920,0x0a31312d65313737\n"
-".quad 0x3233662e766f6d09,0x2c38303166250920,0x6164663933663020,0x092020203b303261\n"
-".quad 0x3030302e30202f2f,0x090a373238333834,0x203233662e766f6d,0x202c393031662509\n"
-".quad 0x3030396366336630,0x2f092020203b3030,0x333037352e31202f,0x722e616d66090a31\n"
-".quad 0x2509203233662e6e,0x6625202c30313166,0x30316625202c3131,0x0a3b316625202c39\n"
-".quad 0x2e6e722e616d6609,0x3166250920323366,0x31316625202c3131,0x2c3830316625202c\n"
-".quad 0x0a3b303131662520,0x2e6e722e616d6609,0x3366250920323366,0x2c31316625202c39\n"
-".quad 0x202c373031662520,0x240a3b3131316625,0x5f69646e6557444c,0x6e7265746e695f5f\n"
-".quad 0x5f64616d665f6c61,0x090a3a325f373731,0x09383109636f6c2e,0x090a300931343631\n"
-".quad 0x203233662e766f6d,0x202c323131662509,0x6d090a3b39336625,0x09203233662e6c75\n"
-".quad 0x6625202c37346625,0x316625202c323131,0x646e61090a3b3231,0x722509203233622e\n"
-".quad 0x317225202c373732,0x090a3b31202c3732,0x203233752e766f6d,0x202c383732722509\n"
-".quad 0x70746573090a3b30,0x203233732e71652e,0x25202c3734702509,0x7225202c37373272\n"
-".quad 0x2540090a3b383732,0x2061726220373470,0x365f305f744c2409,0x2e090a3b32323139\n"
-".quad 0x3109383109636f6c,0x6d090a3009343436,0x09203233662e766f,0x30202c3331316625\n"
-".quad 0x6335666363373366,0x2f2f092020203b65,0x32333334342e3220,0x6f6d090a35302d65\n"
-".quad 0x2509203233662e76,0x6630202c34313166,0x6131363036626162,0x202f2f092020203b\n"
-".quad 0x38333130302e302d,0x616d66090a333738,0x203233662e6e722e,0x202c353131662509\n"
-".quad 0x25202c3331316625,0x316625202c373466,0x766f6d090a3b3431,0x662509203233662e\n"
-".quad 0x336630202c363131,0x3b35616161613264,0x30202f2f09202020,0x363636363134302e\n"
-".quad 0x6e722e616d66090a,0x662509203233662e,0x316625202c373131,0x37346625202c3531\n"
-".quad 0x3b3631316625202c,0x33662e766f6d090a,0x3831316625092032,0x303066626630202c\n"
-".quad 0x2020203b30303030,0x352e302d202f2f09,0x6e722e616d66090a,0x662509203233662e\n"
-".quad 0x316625202c393131,0x37346625202c3731,0x3b3831316625202c,0x33662e766f6d090a\n"
-".quad 0x3032316625092032,0x303866336630202c,0x2020203b30303030,0x66090a31202f2f09\n"
-".quad 0x33662e6e722e616d,0x2c36356625092032,0x202c393131662520,0x6625202c37346625\n"
-".quad 0x7262090a3b303231,0x240920696e752e61,0x3838365f305f744c,0x5f744c240a3b3636\n"
-".quad 0x3a32323139365f30,0x3109636f6c2e090a,0x3009363436310938,0x33662e766f6d090a\n"
-".quad 0x3132316625092032,0x633439626630202c,0x2020203b39663161,0x302e302d202f2f09\n"
-".quad 0x3335313539313030,0x33662e766f6d090a,0x3232316625092032,0x383063336630202c\n"
-".quad 0x2020203b65393338,0x30302e30202f2f09,0x090a363132333338,0x662e6e722e616d66\n"
-".quad 0x3231662509203233,0x3132316625202c33,0x202c37346625202c,0x090a3b3232316625\n"
-".quad 0x203233662e766f6d,0x202c343231662509,0x6161613265626630,0x2f092020203b3361\n"
-".quad 0x3636312e302d202f,0x616d66090a373636,0x203233662e6e722e,0x202c353231662509\n"
-".quad 0x25202c3332316625,0x316625202c373466,0x6c756d090a3b3432,0x662509203233662e\n"
-".quad 0x346625202c363231,0x3532316625202c37,0x722e616d66090a3b,0x2509203233662e6e\n"
-".quad 0x316625202c363566,0x31316625202c3632,0x3231316625202c32,0x5f305f744c240a3b\n"
-".quad 0x090a3a3636383836,0x09383109636f6c2e,0x090a300938343631,0x203233662e67656e\n"
-".quad 0x202c373231662509,0x61090a3b36356625,0x09203233622e646e,0x25202c3937327225\n"
-".quad 0x3b32202c37323172,0x33732e766f6d090a,0x3038327225092032,0x6573090a3b30202c\n"
-".quad 0x33732e656e2e7074,0x2c38347025092032,0x202c393732722520,0x090a3b3038327225\n"
-".quad 0x3233662e706c6573,0x202c363566250920,0x25202c3732316625,0x347025202c363566\n"
-".quad 0x636f6c2e090a3b38,0x3135363109383109,0x2e766f6d090a3009,0x3366250920323366\n"
-".quad 0x3b36356625202c37,0x646e6557444c240a,0x6e6973695f5f5f69,0x315f3737315f6666\n"
-".quad 0x09636f6c2e090a3a,0x0a30093435093631,0x3233662e766f6d09,0x2c38323166250920\n"
-".quad 0x090a3b3837662520,0x203233662e6c756d,0x202c393231662509,0x6625202c30386625\n"
-".quad 0x616d66090a3b3137,0x203233662e6e722e,0x202c303331662509,0x6625202c33376625\n"
-".quad 0x32316625202c3733,0x2e766f6d090a3b39,0x3166250920323366,0x66336630202c3133\n"
-".quad 0x203b303030303030,0x2e30202f2f092020,0x662e646461090a35,0x3331662509203233\n"
-".quad 0x3033316625202c32,0x3b3133316625202c,0x33662e766f6d090a,0x3333316625092032\n"
-".quad 0x3b3233316625202c,0x33662e766f6d090a,0x3433316625092032,0x303030306630202c\n"
-".quad 0x2020203b30303030,0x6d090a30202f2f09,0x09203233662e766f,0x25202c3533316625\n"
-".quad 0x6d090a3b34333166,0x09203233662e766f,0x30202c3633316625,0x3030303030303066\n"
-".quad 0x2f2f092020203b30,0x2e766f6d090a3020,0x3166250920323366,0x33316625202c3733\n"
-".quad 0x2e786574090a3b36,0x33662e34762e6432,0x257b203233662e32,0x3166252c38333166\n"
-".quad 0x30343166252c3933,0x2c7d31343166252c,0x66257b2c7865745b,0x333166252c383231\n"
-".quad 0x2c35333166252c33,0x3b5d7d3733316625,0x3109636f6c2e090a,0x090a300937350936\n"
-".quad 0x203233662e766f6d,0x202c323431662509,0x090a3b3833316625,0x6d617261702e646c\n"
-".quad 0x722509203233752e,0x5f5f5b202c313832,0x6d72617061647563,0x61727435315a5f5f\n"
-".quad 0x654b6d726f66736e,0x696966506c656e72,0x7461646f5f675f66,0x6c756d090a3b5d61\n"
-".quad 0x203233752e6f6c2e,0x202c323832722509,0x25202c3136317225,0x61090a3b33363172\n"
-".quad 0x09203233752e6464,0x25202c3338327225,0x7225202c35363172,0x756d090a3b323832\n"
-".quad 0x3233752e6f6c2e6c,0x2c34383272250920,0x202c333832722520,0x2e646461090a3b34\n"
-".quad 0x3272250920323375,0x38327225202c3538,0x3438327225202c31,0x6c672e7473090a3b\n"
-".quad 0x3233662e6c61626f,0x35383272255b0920,0x316625202c5d302b,0x6f6c2e090a3b3234\n"
-".quad 0x0938350936310963,0x3b74697865090a30,0x646e6557444c240a,0x61727435315a5f5f\n"
-".quad 0x654b6d726f66736e,0x696966506c656e72,0x2f2f207d090a3a66,0x61727435315a5f20\n"
-".quad 0x654b6d726f66736e,0x696966506c656e72,0x00000000000a0a66\n"
+".quad 0x3233662e64616d09,0x202c363866250920,0x6625202c35386625,0x3b316625202c3131\n"
+".quad 0x33662e766f6d090a,0x2c37386625092032,0x3864663933663020,0x202020203b303030\n"
+".quad 0x30302e30202f2f09,0x0a33313533383430,0x3233662e64616d09,0x202c383866250920\n"
+".quad 0x6625202c37386625,0x36386625202c3131,0x662e766f6d090a3b,0x3938662509203233\n"
+".quad 0x386134336630202c,0x2020203b30303038,0x312e33202f2f0920,0x37302d6536353833\n"
+".quad 0x33662e64616d090a,0x2c30396625092032,0x25202c3938662520,0x386625202c313166\n"
+".quad 0x2e766f6d090a3b38,0x3966250920323366,0x3865326630202c31,0x20203b3930336135\n"
+".quad 0x2e36202f2f092020,0x31312d6531373730,0x33662e64616d090a,0x202c376625092032\n"
+".quad 0x6625202c31396625,0x30396625202c3131,0x6e6557444c240a3b,0x746e695f5f5f6964\n"
+".quad 0x6d665f6c616e7265,0x365f3330325f6461,0x09636f6c2e090a3a,0x0935303731093831\n"
+".quad 0x732e646461090a30,0x3237722509203233,0x202c38347225202c,0x2e6c756d090a3b31\n"
+".quad 0x3166250920323366,0x202c376625202c39,0x6e61090a3b376625,0x2509203233622e64\n"
+".quad 0x7225202c31313272,0x090a3b31202c3237,0x203233752e766f6d,0x202c323132722509\n"
+".quad 0x70746573090a3b30,0x203233732e71652e,0x25202c3533702509,0x7225202c31313272\n"
+".quad 0x2540090a3b323132,0x2061726220353370,0x365f305f744c2409,0x2e090a3b30393433\n"
+".quad 0x3109383109636f6c,0x6d090a3009393037,0x09203233662e766f,0x6630202c32396625\n"
+".quad 0x3030303030386633,0x2f2f09202020203b,0x2e766f6d090a3120,0x3966250920323366\n"
+".quad 0x3066626630202c33,0x20203b3030303030,0x302d202f2f092020,0x2e766f6d090a352e\n"
+".quad 0x3966250920323366,0x3264336630202c34,0x20203b3561616161,0x2e30202f2f092020\n"
+".quad 0x0a36363636313430,0x3233662e766f6d09,0x202c353966250920,0x3630366261626630\n"
+".quad 0x09202020203b6131,0x30302e302d202f2f,0x090a333738383331,0x203233662e766f6d\n"
+".quad 0x30202c3639662509,0x6335666363373366,0x2f09202020203b65,0x333334342e32202f\n"
+".quad 0x6d090a35302d6532,0x09203233662e6461,0x6625202c37396625,0x39316625202c3639\n"
+".quad 0x0a3b35396625202c,0x3233662e64616d09,0x202c383966250920,0x6625202c39316625\n"
+".quad 0x34396625202c3739,0x662e64616d090a3b,0x3939662509203233,0x202c39316625202c\n"
+".quad 0x6625202c38396625,0x64616d090a3b3339,0x662509203233662e,0x39316625202c3832\n"
+".quad 0x202c39396625202c,0x62090a3b32396625,0x0920696e752e6172,0x33365f305f744c24\n"
+".quad 0x744c240a3b343332,0x30393433365f305f,0x09636f6c2e090a3a,0x0931313731093831\n"
+".quad 0x662e766f6d090a30,0x3031662509203233,0x3265626630202c30,0x20203b3361616161\n"
+".quad 0x2e302d202f2f0920,0x090a373636363631,0x203233662e766f6d,0x202c313031662509\n"
+".quad 0x3338383063336630,0x2f092020203b6539,0x333830302e30202f,0x6f6d090a36313233\n"
+".quad 0x2509203233662e76,0x6630202c32303166,0x3966316163343962,0x202f2f092020203b\n"
+".quad 0x39313030302e302d,0x616d090a33353135,0x2509203233662e64,0x6625202c33303166\n"
+".quad 0x316625202c323031,0x3130316625202c39,0x662e64616d090a3b,0x3031662509203233\n"
+".quad 0x2c39316625202c34,0x202c333031662520,0x090a3b3030316625,0x203233662e6c756d\n"
+".quad 0x202c353031662509,0x6625202c39316625,0x616d090a3b343031,0x2509203233662e64\n"
+".quad 0x316625202c383266,0x2c376625202c3530,0x4c240a3b37662520,0x333233365f305f74\n"
+".quad 0x636f6c2e090a3a34,0x3331373109383109,0x2e67656e090a3009,0x3166250920323366\n"
+".quad 0x38326625202c3630,0x622e646e61090a3b,0x3132722509203233,0x2c32377225202c33\n"
+".quad 0x766f6d090a3b3220,0x722509203233732e,0x0a3b30202c343132,0x656e2e7074657309\n"
+".quad 0x702509203233732e,0x31327225202c3633,0x3431327225202c33,0x2e706c6573090a3b\n"
+".quad 0x3266250920323366,0x3630316625202c38,0x202c38326625202c,0x2e090a3b36337025\n"
+".quad 0x3109383109636f6c,0x6d090a3009363137,0x09203233662e766f,0x6625202c32386625\n"
+".quad 0x57444c240a3b3832,0x695f5f5f69646e65,0x30325f66666e6973,0x6c2e090a3a355f33\n"
+".quad 0x363109383109636f,0x6f6d090a30093833,0x2509203233752e76,0x3b30202c35313272\n"
+".quad 0x652e70746573090a,0x2509203233732e71,0x377225202c373370,0x3531327225202c39\n"
+".quad 0x3733702540090a3b,0x4c24092061726220,0x343733365f305f74,0x636f6c2e090a3b36\n"
+".quad 0x3933363109383109,0x2e766f6d090a3009,0x3166250920323366,0x30306630202c3730\n"
+".quad 0x203b303030303030,0x0a30202f2f092020,0x383109636f6c2e09,0x0a30093230373109\n"
+".quad 0x617261702e646c09,0x2509203233662e6d,0x635f5f5b202c3166,0x5f6d726170616475\n"
+".quad 0x6e61727435315a5f,0x72654b6d726f6673,0x66696966506c656e,0x3b5d61746568745f\n"
+".quad 0x3109636f6c2e090a,0x3009393336310938,0x6e722e6c756d090a,0x662509203233662e\n"
+".quad 0x2c316625202c3833,0x0a3b373031662520,0x696e752e61726209,0x6e6557444c240920\n"
+".quad 0x6973695f5f5f6964,0x5f3330325f66666e,0x305f744c240a3b31,0x0a3a36343733365f\n"
+".quad 0x3233662e766f6d09,0x2c38303166250920,0x6162333734663020,0x092020203b303037\n"
+".quad 0x3933303834202f2f,0x672e70746573090a,0x2509203233662e74,0x326625202c383370\n"
+".quad 0x3b3830316625202c,0x383370252140090a,0x4c24092061726220,0x353234365f305f74\n"
+".quad 0x636f6c2e090a3b38,0x3230373109383109,0x702e646c090a3009,0x3233662e6d617261\n"
+".quad 0x5b202c3166250920,0x6170616475635f5f,0x7435315a5f5f6d72,0x6d726f66736e6172\n"
+".quad 0x66506c656e72654b,0x746568745f666969,0x6f6c2e090a3b5d61,0x3933310938310963\n"
+".quad 0x766f6d090a300936,0x722509203233622e,0x0a3b316625202c31,0x3233622e646e6109\n"
+".quad 0x25202c3272250920,0x3431322d202c3172,0x3b38343633383437,0x33732e766f6d090a\n"
+".quad 0x2c31387225092032,0x2e090a3b32722520,0x3209383109636f6c,0x6c6873090a300934\n"
+".quad 0x722509203233622e,0x202c317225202c34,0x622e726f090a3b38,0x2c35722509203233\n"
+".quad 0x322d202c34722520,0x3436333834373431,0x2e766f6d090a3b38,0x6472250920343673\n"
+".quad 0x3b32647225202c39,0x36752e766f6d090a,0x3031647225092034,0x616475635f5f202c\n"
+".quad 0x5f616475635f5f5f,0x345f746c75736572,0x6f6d090a3b383434,0x2509203233732e76\n"
+".quad 0x0a3b30202c323872,0x3233752e766f6d09,0x202c333872250920,0x305f744c240a3b30\n"
+".quad 0x0a3a32383235365f,0x706f6f6c3c2f2f20,0x6220706f6f4c203e,0x656e696c2079646f\n"
+".quad 0x73656e202c343220,0x70656420676e6974,0x69202c31203a6874,0x6e6f697461726574\n"
+".quad 0x6c2e090a36203a73,0x343109383109636f,0x646c090a30093031,0x752e74736e6f632e\n"
+".quad 0x3132722509203233,0x396472255b202c36,0x756d090a3b5d302b,0x3233752e6f6c2e6c\n"
+".quad 0x2c37313272250920,0x202c363132722520,0x6461090a3b357225,0x2509203233752e64\n"
+".quad 0x7225202c38313272,0x387225202c373132,0x636f6c2e090a3b33,0x3131343109383109\n"
+".quad 0x2e746573090a3009,0x752e3233752e7467,0x3132722509203233,0x3731327225202c39\n"
+".quad 0x3b3831327225202c,0x33732e67656e090a,0x3032327225092032,0x3b3931327225202c\n"
+".quad 0x69682e6c756d090a,0x722509203233752e,0x327225202c313232,0x3b357225202c3631\n"
+".quad 0x33752e646461090a,0x2c33387225092032,0x202c303232722520,0x090a3b3132327225\n"
+".quad 0x09383109636f6c2e,0x090a300932313431,0x6c61636f6c2e7473,0x255b09203233752e\n"
+".quad 0x2c5d302b30316472,0x0a3b383132722520,0x3233732e64646109,0x202c323872250920\n"
+".quad 0x3b31202c32387225,0x36752e646461090a,0x3031647225092034,0x2c3031647225202c\n"
+".quad 0x646461090a3b3420,0x722509203436752e,0x39647225202c3964,0x6f6d090a3b34202c\n"
+".quad 0x2509203233752e76,0x3b36202c32323272,0x6e2e70746573090a,0x2509203233732e65\n"
+".quad 0x387225202c393370,0x3232327225202c32,0x3933702540090a3b,0x4c24092061726220\n"
+".quad 0x383235365f305f74,0x636f6c2e090a3b32,0x3431343109383109,0x6c2e7473090a3009\n"
+".quad 0x3233752e6c61636f,0x6475635f5f5b0920,0x616475635f5f5f61,0x5f746c757365725f\n"
+".quad 0x5d34322b38343434,0x0a3b33387225202c,0x383109636f6c2e09,0x0a30093931343109\n"
+".quad 0x3233622e6c687309,0x2c33323272250920,0x3b31202c31722520,0x33752e726873090a\n"
+".quad 0x2c36317225092032,0x202c333232722520,0x627573090a3b3432,0x722509203233752e\n"
+".quad 0x36317225202c3731,0x090a3b383231202c,0x203233752e726873,0x202c343232722509\n"
+".quad 0x3b35202c37317225,0x33732e766f6d090a,0x3532327225092032,0x7573090a3b34202c\n"
+".quad 0x2509203233732e62,0x7225202c36323272,0x327225202c353232,0x747663090a3b3432\n"
+".quad 0x3233732e3436732e,0x2c36316472250920,0x0a3b363232722520,0x6469772e6c756d09\n"
+".quad 0x2509203233732e65,0x7225202c37316472,0x0a3b34202c363232,0x3436752e64646109\n"
+".quad 0x2c33316472250920,0x25202c3864722520,0x6c090a3b37316472,0x2e6c61636f6c2e64\n"
+".quad 0x3872250920323375,0x316472255b202c33,0x2e090a3b5d382b33,0x3109383109636f6c\n"
+".quad 0x6c090a3009303234,0x2e6c61636f6c2e64,0x3972250920323375,0x316472255b202c35\n"
+".quad 0x61090a3b5d342b33,0x09203233622e646e,0x7225202c32327225,0x0a3b3133202c3731\n"
+".quad 0x3233752e766f6d09,0x2c37323272250920,0x746573090a3b3020,0x3233752e71652e70\n"
+".quad 0x202c303470250920,0x7225202c32327225,0x2540090a3b373232,0x2061726220303470\n"
+".quad 0x365f305f744c2409,0x2e090a3b34393735,0x3109383109636f6c,0x6d090a3009333234\n"
+".quad 0x09203233732e766f,0x33202c3832327225,0x2e627573090a3b32,0x3272250920323373\n"
+".quad 0x3832327225202c35,0x0a3b32327225202c,0x3233752e72687309,0x2c39323272250920\n"
+".quad 0x25202c3539722520,0x6873090a3b353272,0x2509203233622e6c,0x7225202c30333272\n"
+".quad 0x32327225202c3338,0x752e646461090a3b,0x3338722509203233,0x2c3932327225202c\n"
+".quad 0x0a3b303332722520,0x383109636f6c2e09,0x0a30093432343109,0x61636f6c2e646c09\n"
+".quad 0x2509203233752e6c,0x255b202c31333272,0x3b5d302b33316472,0x33752e726873090a\n"
+".quad 0x3233327225092032,0x2c3133327225202c,0x090a3b3532722520,0x203233622e6c6873\n"
+".quad 0x202c333332722509,0x7225202c35397225,0x646461090a3b3232,0x722509203233752e\n"
+".quad 0x33327225202c3539,0x3333327225202c32,0x5f305f744c240a3b,0x090a3a3439373536\n"
+".quad 0x09383109636f6c2e,0x090a300936323431,0x203233752e726873,0x25202c3238722509\n"
+".quad 0x3b3033202c333872,0x3109636f6c2e090a,0x3009383234310938,0x33752e726873090a\n"
+".quad 0x3433327225092032,0x202c35397225202c,0x6c6873090a3b3033,0x722509203233622e\n"
+".quad 0x387225202c353332,0x61090a3b32202c33,0x09203233752e6464,0x7225202c33387225\n"
+".quad 0x327225202c343332,0x6f6c2e090a3b3533,0x3234310938310963,0x6c6873090a300939\n"
+".quad 0x722509203233622e,0x35397225202c3539,0x6f6d090a3b32202c,0x2509203233752e76\n"
+".quad 0x3b30202c36333272,0x652e70746573090a,0x2509203233752e71,0x397225202c313470\n"
+".quad 0x3633327225202c35,0x3134702540090a3b,0x4c24092061726220,0x363536365f305f74\n"
+".quad 0x636f6c2e090a3b32,0x3033343109383109,0x2e646461090a3009,0x3272250920323375\n"
+".quad 0x33387225202c3733,0x6f6d090a3b31202c,0x2509203233752e76,0x322d202c38333272\n"
+".quad 0x3436333834373431,0x2e746573090a3b38,0x752e3233752e7467,0x3332722509203233\n"
+".quad 0x3733327225202c39,0x3b3833327225202c,0x33732e67656e090a,0x3034327225092032\n"
+".quad 0x3b3933327225202c,0x6e752e617262090a,0x305f744c24092069,0x0a3b36303336365f\n"
+".quad 0x36365f305f744c24,0x6f6d090a3a323635,0x2509203233752e76,0x322d202c31343272\n"
+".quad 0x3436333834373431,0x2e746573090a3b38,0x752e3233752e7467,0x3432722509203233\n"
+".quad 0x2c33387225202c32,0x0a3b313432722520,0x3233732e67656e09,0x2c30343272250920\n"
+".quad 0x0a3b323432722520,0x36365f305f744c24,0x6c2e090a3a363033,0x343109383109636f\n"
+".quad 0x6461090a30093133,0x2509203233752e64,0x7225202c33343272,0x34327225202c3238\n"
+".quad 0x636f6c2e090a3b30,0x3033343109383109,0x2e67656e090a3009,0x3272250920323373\n"
+".quad 0x34327225202c3434,0x2e766f6d090a3b33,0x3272250920323375,0x090a3b30202c3534\n"
+".quad 0x2e656e2e70746573,0x3470250920323375,0x202c327225202c32,0x090a3b3534327225\n"
+".quad 0x3233732e706c6573,0x202c323872250920,0x25202c3434327225,0x7025202c33343272\n"
+".quad 0x766f6d090a3b3234,0x722509203233752e,0x0a3b30202c363432,0x71652e7074657309\n"
+".quad 0x702509203233752e,0x34327225202c3334,0x3634327225202c30,0x3334702540090a3b\n"
+".quad 0x4c24092061726220,0x313836365f305f74,0x636f6c2e090a3b38,0x3633343109383109\n"
+".quad 0x2e67656e090a3009,0x3972250920323373,0x3b35397225202c35,0x3109636f6c2e090a\n"
+".quad 0x3009383334310938,0x33752e766f6d090a,0x3734327225092032,0x6573090a3b30202c\n"
+".quad 0x3233752e71652e74,0x722509203233752e,0x397225202c383432,0x3734327225202c35\n"
+".quad 0x732e67656e090a3b,0x3432722509203233,0x3834327225202c39,0x622e746f6e090a3b\n"
+".quad 0x3532722509203233,0x3b33387225202c30,0x33752e646461090a,0x2c33387225092032\n"
+".quad 0x202c393432722520,0x090a3b3035327225,0x09383109636f6c2e,0x090a300939333431\n"
+".quad 0x203233622e726f78,0x25202c3138722509,0x3431322d202c3272,0x3b38343633383437\n"
+".quad 0x365f305f744c240a,0x2e090a3a38313836,0x3109383109636f6c,0x6d090a3009313434\n"
+".quad 0x09203233732e766f,0x25202c3032317225,0x6f6d090a3b323872,0x2509203233752e76\n"
+".quad 0x3b30202c31353272,0x6c2e70746573090a,0x2509203233732e65,0x387225202c343470\n"
+".quad 0x3135327225202c33,0x3434702540090a3b,0x4c24092061726220,0x343130375f305f74\n"
+".quad 0x2e766f6d090a3b36,0x3172250920323375,0x240a3b30202c3232,0x3837365f305f744c\n"
+".quad 0x3c2f2f200a3a3234,0x6f4c203e706f6f6c,0x2079646f6220706f,0x34343120656e696c\n"
+".quad 0x697473656e202c31,0x687470656420676e,0x747365202c31203a,0x6920646574616d69\n"
+".quad 0x6e6f697461726574,0x6f6e6b6e75203a73,0x636f6c2e090a6e77,0x3534343109383109\n"
+".quad 0x2e726873090a3009,0x3272250920323375,0x35397225202c3235,0x73090a3b3133202c\n"
+".quad 0x09203233622e6c68,0x25202c3335327225,0x0a3b31202c333872,0x3233752e64646109\n"
+".quad 0x202c333872250920,0x25202c3235327225,0x2e090a3b33353272,0x3109383109636f6c\n"
+".quad 0x73090a3009363434,0x09203233622e6c68,0x7225202c35397225,0x090a3b31202c3539\n"
+".quad 0x09383109636f6c2e,0x090a300937343431,0x203233752e627573,0x202c323231722509\n"
+".quad 0x31202c3232317225,0x752e766f6d090a3b,0x3532722509203233,0x73090a3b30202c34\n"
+".quad 0x732e74672e707465,0x3534702509203233,0x202c33387225202c,0x090a3b3435327225\n"
+".quad 0x7262203534702540,0x305f744c24092061,0x0a3b32343837365f,0x696e752e61726209\n"
+".quad 0x5f305f744c240920,0x240a3b3033333736,0x3130375f305f744c,0x766f6d090a3a3634\n"
+".quad 0x722509203233752e,0x0a3b30202c323231,0x37365f305f744c24,0x6c2e090a3a303333\n"
+".quad 0x343109383109636f,0x756d090a30093934,0x3233752e6f6c2e6c,0x202c353972250920\n"
+".quad 0x392d202c33387225,0x3037383730373132,0x09636f6c2e090a3b,0x0930353431093831\n"
+".quad 0x752e766f6d090a30,0x3532722509203233,0x373132392d202c35,0x090a3b3037383730\n"
+".quad 0x752e69682e6c756d,0x3338722509203233,0x202c33387225202c,0x090a3b3535327225\n"
+".quad 0x203233752e766f6d,0x202c363532722509,0x70746573090a3b30,0x203233732e656c2e\n"
+".quad 0x25202c3634702509,0x327225202c333872,0x702540090a3b3635,0x0920617262203634\n"
+".quad 0x38365f305f744c24,0x6c2e090a3b343533,0x343109383109636f,0x6873090a30093235\n"
+".quad 0x2509203233752e72,0x7225202c37353272,0x0a3b3133202c3539,0x3233622e6c687309\n"
+".quad 0x2c38353272250920,0x31202c3338722520,0x752e646461090a3b,0x3338722509203233\n"
+".quad 0x2c3735327225202c,0x0a3b383532722520,0x383109636f6c2e09,0x0a30093335343109\n"
+".quad 0x3233622e6c687309,0x202c353972250920,0x3b31202c35397225,0x3109636f6c2e090a\n"
+".quad 0x3009343534310938,0x33752e627573090a,0x3232317225092032,0x2c3232317225202c\n"
+".quad 0x5f744c240a3b3120,0x3a34353338365f30,0x3109636f6c2e090a,0x3009363534310938\n"
+".quad 0x33752e766f6d090a,0x3935327225092032,0x6573090a3b30202c,0x3233752e656e2e74\n"
+".quad 0x722509203233752e,0x397225202c303632,0x3935327225202c35,0x732e67656e090a3b\n"
+".quad 0x3632722509203233,0x3036327225202c31,0x752e646461090a3b,0x3338722509203233\n"
+".quad 0x2c3136327225202c,0x090a3b3338722520,0x09383109636f6c2e,0x090a300938353431\n"
+".quad 0x203233622e6c6873,0x202c323632722509,0x3432202c33387225,0x732e766f6d090a3b\n"
+".quad 0x3632722509203233,0x73090a3b30202c33,0x33752e746c2e7465,0x2509203233732e32\n"
+".quad 0x7225202c34363272,0x327225202c323632,0x67656e090a3b3336,0x722509203233732e\n"
+".quad 0x327225202c353632,0x726873090a3b3436,0x722509203233752e,0x387225202c363632\n"
+".quad 0x61090a3b38202c33,0x09203233752e6464,0x25202c3736327225,0x3231202c32323172\n"
+".quad 0x2e6c6873090a3b36,0x3272250920323362,0x36327225202c3836,0x090a3b3332202c37\n"
+".quad 0x203233752e646461,0x202c393632722509,0x25202c3636327225,0x61090a3b38363272\n"
+".quad 0x09203233752e6464,0x25202c3037327225,0x7225202c35363272,0x726f090a3b393632\n"
+".quad 0x722509203233622e,0x387225202c313732,0x3037327225202c31,0x622e766f6d090a3b\n"
+".quad 0x3034662509203233,0x3b3137327225202c,0x6e752e617262090a,0x6557444c24092069\n"
+".quad 0x6e695f5f5f69646e,0x665f6c616e726574,0x5f3330325f64616d,0x305f744c240a3b32\n"
+".quad 0x0a3a38353234365f,0x383109636f6c2e09,0x0a30093137343109,0x3233662e766f6d09\n"
+".quad 0x2c39303166250920,0x6632326633663020,0x092020203b333839,0x3633362e30202f2f\n"
+".quad 0x636f6c2e090a3236,0x3230373109383109,0x702e646c090a3009,0x3233662e6d617261\n"
+".quad 0x5b202c3166250920,0x6170616475635f5f,0x7435315a5f5f6d72,0x6d726f66736e6172\n"
+".quad 0x66506c656e72654b,0x746568745f666969,0x6f6c2e090a3b5d61,0x3734310938310963\n"
+".quad 0x6c756d090a300931,0x662509203233662e,0x202c316625202c39,0x090a3b3930316625\n"
+".quad 0x2e696e722e747663,0x203233662e323373,0x25202c3137722509,0x766f6d090a3b3966\n"
+".quad 0x722509203233732e,0x377225202c303231,0x636f6c2e090a3b31,0x3237343109383109\n"
+".quad 0x2e747663090a3009,0x732e3233662e6e72,0x3031662509203233,0x0a3b31377225202c\n"
+".quad 0x3233662e67656e09,0x202c313166250920,0x6d090a3b30316625,0x09203233662e766f\n"
+".quad 0x30202c3031316625,0x3030303963663366,0x2f2f092020203b30,0x31333037352e3120\n"
+".quad 0x33662e64616d090a,0x3131316625092032,0x2c3031316625202c,0x25202c3131662520\n"
+".quad 0x766f6d090a3b3166,0x662509203233662e,0x336630202c323131,0x3b30303038646639\n"
+".quad 0x30202f2f09202020,0x353338343030302e,0x2e64616d090a3331,0x3166250920323366\n"
+".quad 0x31316625202c3331,0x2c31316625202c32,0x0a3b313131662520,0x3233662e766f6d09\n"
+".quad 0x2c34313166250920,0x3838613433663020,0x092020203b303030,0x3833312e33202f2f\n"
+".quad 0x090a37302d653635,0x203233662e64616d,0x202c353131662509,0x25202c3431316625\n"
+".quad 0x316625202c313166,0x766f6d090a3b3331,0x662509203233662e,0x326630202c363131\n"
+".quad 0x3b39303361353865,0x36202f2f09202020,0x312d65313737302e,0x662e64616d090a31\n"
+".quad 0x3034662509203233,0x2c3631316625202c,0x25202c3131662520,0x4c240a3b35313166\n"
+".quad 0x5f5f69646e655744,0x616e7265746e695f,0x325f64616d665f6c,0x2e090a3a325f3330\n"
+".quad 0x3109383109636f6c,0x6d090a3009313436,0x09203233662e6c75,0x6625202c39346625\n"
+".quad 0x30346625202c3034,0x622e646e61090a3b,0x3732722509203233,0x3032317225202c32\n"
+".quad 0x6f6d090a3b31202c,0x2509203233752e76,0x3b30202c33373272,0x652e70746573090a\n"
+".quad 0x2509203233732e71,0x327225202c373470,0x37327225202c3237,0x34702540090a3b33\n"
+".quad 0x2409206172622037,0x3139365f305f744c,0x6f6c2e090a3b3232,0x3436310938310963\n"
+".quad 0x766f6d090a300934,0x662509203233662e,0x336630202c373131,0x3b30303030303866\n"
+".quad 0x31202f2f09202020,0x33662e766f6d090a,0x3831316625092032,0x303066626630202c\n"
+".quad 0x2020203b30303030,0x352e302d202f2f09,0x33662e766f6d090a,0x3931316625092032\n"
+".quad 0x613264336630202c,0x2020203b35616161,0x34302e30202f2f09,0x6d090a3636363631\n"
+".quad 0x09203233662e766f,0x30202c3032316625,0x3136303662616266,0x2f2f092020203b61\n"
+".quad 0x333130302e302d20,0x6f6d090a33373838,0x2509203233662e76,0x6630202c31323166\n"
+".quad 0x6563356663633733,0x202f2f092020203b,0x6532333334342e32,0x64616d090a35302d\n"
+".quad 0x662509203233662e,0x316625202c323231,0x39346625202c3132,0x3b3032316625202c\n"
+".quad 0x33662e64616d090a,0x3332316625092032,0x202c39346625202c,0x25202c3232316625\n"
+".quad 0x6d090a3b39313166,0x09203233662e6461,0x25202c3432316625,0x316625202c393466\n"
+".quad 0x31316625202c3332,0x2e64616d090a3b38,0x3566250920323366,0x2c39346625202c38\n"
+".quad 0x202c343231662520,0x090a3b3731316625,0x20696e752e617262,0x365f305f744c2409\n"
+".quad 0x4c240a3b36363838,0x323139365f305f74,0x636f6c2e090a3a32,0x3634363109383109\n"
+".quad 0x2e766f6d090a3009,0x3166250920323366,0x65626630202c3532,0x203b336161616132\n"
+".quad 0x302d202f2f092020,0x0a3736363636312e,0x3233662e766f6d09,0x2c36323166250920\n"
+".quad 0x3838306333663020,0x092020203b653933,0x3830302e30202f2f,0x6d090a3631323333\n"
+".quad 0x09203233662e766f,0x30202c3732316625,0x6631616334396266,0x2f2f092020203b39\n"
+".quad 0x313030302e302d20,0x6d090a3335313539,0x09203233662e6461,0x25202c3832316625\n"
+".quad 0x6625202c37323166,0x32316625202c3934,0x2e64616d090a3b36,0x3166250920323366\n"
+".quad 0x39346625202c3932,0x2c3832316625202c,0x0a3b353231662520,0x3233662e6c756d09\n"
+".quad 0x2c30333166250920,0x25202c3934662520,0x6d090a3b39323166,0x09203233662e6461\n"
+".quad 0x6625202c38356625,0x346625202c303331,0x3b30346625202c30,0x365f305f744c240a\n"
+".quad 0x2e090a3a36363838,0x3109383109636f6c,0x6e090a3009383436,0x09203233662e6765\n"
+".quad 0x25202c3133316625,0x6e61090a3b383566,0x2509203233622e64,0x7225202c34373272\n"
+".quad 0x0a3b32202c303231,0x3233732e766f6d09,0x2c35373272250920,0x746573090a3b3020\n"
+".quad 0x3233732e656e2e70,0x202c383470250920,0x25202c3437327225,0x73090a3b35373272\n"
+".quad 0x203233662e706c65,0x25202c3835662509,0x6625202c31333166,0x38347025202c3835\n"
+".quad 0x09636f6c2e090a3b,0x0931353631093831,0x662e766f6d090a30,0x3833662509203233\n"
+".quad 0x0a3b38356625202c,0x69646e6557444c24,0x666e6973695f5f5f,0x3a315f3330325f66\n"
+".quad 0x3109636f6c2e090a,0x090a300934350936,0x203233662e766f6d,0x202c323331662509\n"
+".quad 0x6d090a3b30386625,0x09203233662e6c75,0x25202c3333316625,0x376625202c323866\n"
+".quad 0x2e64616d090a3b33,0x3166250920323366,0x35376625202c3433,0x202c38336625202c\n"
+".quad 0x090a3b3333316625,0x203233662e766f6d,0x202c353331662509,0x3030303066336630\n"
+".quad 0x2f092020203b3030,0x61090a352e30202f,0x09203233662e6464,0x25202c3633316625\n"
+".quad 0x6625202c34333166,0x6f6d090a3b353331,0x2509203233662e76,0x6625202c37333166\n"
+".quad 0x6f6d090a3b363331,0x2509203233662e76,0x6630202c38333166,0x3030303030303030\n"
+".quad 0x202f2f092020203b,0x662e766f6d090a30,0x3331662509203233,0x3833316625202c39\n"
+".quad 0x662e766f6d090a3b,0x3431662509203233,0x3030306630202c30,0x20203b3030303030\n"
+".quad 0x090a30202f2f0920,0x203233662e766f6d,0x202c313431662509,0x090a3b3034316625\n"
+".quad 0x762e64322e786574,0x33662e3233662e34,0x32343166257b2032,0x252c33343166252c\n"
+".quad 0x3166252c34343166,0x7865745b2c7d3534,0x2c32333166257b2c,0x66252c3733316625\n"
+".quad 0x343166252c393331,0x6c2e090a3b5d7d31,0x373509363109636f,0x2e766f6d090a3009\n"
+".quad 0x3166250920323366,0x34316625202c3634,0x636f6c2e090a3b32,0x3009333509363109\n"
+".quad 0x7261702e646c090a,0x09203233732e6d61,0x5b202c3035317225,0x6170616475635f5f\n"
+".quad 0x7435315a5f5f6d72,0x6d726f66736e6172,0x66506c656e72654b,0x746469775f666969\n"
+".quad 0x6f6c2e090a3b5d68,0x0937350936310963,0x6c2e6c756d090a30,0x2509203233752e6f\n"
+".quad 0x7225202c36373272,0x317225202c303531,0x646461090a3b3235,0x722509203233752e\n"
+".quad 0x317225202c373732,0x37327225202c3435,0x2e6c756d090a3b36,0x09203233752e6f6c\n"
+".quad 0x25202c3837327225,0x3b34202c37373272,0x36752e747663090a,0x2509203233752e34\n"
+".quad 0x7225202c38316472,0x646c090a3b383732,0x752e6d617261702e,0x3164722509203436\n"
+".quad 0x75635f5f5b202c39,0x5f5f6d7261706164,0x736e61727435315a,0x6e72654b6d726f66\n"
+".quad 0x5f66696966506c65,0x5d617461646f5f67,0x752e646461090a3b,0x3264722509203436\n"
+".quad 0x3831647225202c30,0x3b3931647225202c,0x6f6c672e7473090a,0x203233662e6c6162\n"
+".quad 0x2b30326472255b09,0x34316625202c5d30,0x636f6c2e090a3b36,0x3009383509363109\n"
+".quad 0x0a3b74697865090a,0x5f646e6557444c24,0x6e61727435315a5f,0x72654b6d726f6673\n"
+".quad 0x66696966506c656e,0x202f2f207d090a3a,0x6e61727435315a5f,0x72654b6d726f6673\n"
+".quad 0x66696966506c656e,0x0000000000000a0a\n"
 ".text");
 
 extern "C" {
 
-extern const unsigned long long __deviceText_$compute_20$[3611];
+extern const unsigned long long __deviceText_$compute_10$[3822];
 
 }
 
 asm(
 ".section .rodata\n"
 ".align 32\n"
-"__deviceText_$sm_20$:\n"
-".quad 0x33010101464c457f,0x0000000000000004,0x0000000100be0002,0x0000194000000000\n"
-".quad 0x0014011400000034,0x0028000400200034,0x000000000001000b,0x0000000000000000\n"
-".quad 0x0000000000000000,0x0000000000000000,0x0000000000000000,0x0000000100000000\n"
-".quad 0x0000000000000003,0x000001ec00000000,0x0000000000000100,0x0000000400000000\n"
-".quad 0x0000000b00000000,0x0000000000000003,0x000002ec00000000,0x0000000000000046\n"
-".quad 0x0000000100000000,0x0000001300000000,0x0000000000000002,0x0000033200000000\n"
-".quad 0x0000000200000110,0x000000010000000d,0x0000003600000010,0x0000000600000001\n"
-".quad 0x0000044200000000,0x00000003000013c8,0x0000000419000006,0x000000cb00000000\n"
-".quad 0x0000000200000001,0x0000180a00000000,0x0000000000000030,0x0000000400000004\n"
-".quad 0x000000a300000000,0x0000000200000001,0x0000183a00000000,0x000000000000002c\n"
-".quad 0x0000000400000004,0x0000005500000000,0x0000000200000001,0x0000186600000000\n"
-".quad 0x000000000000007c,0x0000000100000004,0x0000008000000000,0x0000000300000008\n"
-".quad 0x000018e200000000,0x0000000000000004,0x0000000400000004,0x000000f200000000\n"
-".quad 0x0000000200000001,0x000018e200000000,0x0000000000000018,0x0000000400000000\n"
-".quad 0x0000007700000000,0x0000000200000001,0x000018fa00000000,0x0000000000000044\n"
-".quad 0x0000000100000000,0x68732e0000000000,0x2e00626174727473,0x2e00626174727473\n"
-".quad 0x2e006261746d7973,0x61626f6c672e766e,0x2e0074696e692e6c,0x61626f6c672e766e\n"
-".quad 0x2e747865742e006c,0x6e61727435315a5f,0x72654b6d726f6673,0x66696966506c656e\n"
-".quad 0x666e692e766e2e00,0x727435315a5f2e6f,0x4b6d726f66736e61,0x6966506c656e7265\n"
-".quad 0x692e766e2e006669,0x2e766e2e006f666e,0x5a5f2e6c61636f6c,0x66736e6172743531\n"
-".quad 0x656e72654b6d726f,0x2e0066696966506c,0x74736e6f632e766e,0x5a5f2e3631746e61\n"
-".quad 0x66736e6172743531,0x656e72654b6d726f,0x2e0066696966506c,0x74736e6f632e766e\n"
-".quad 0x315a5f2e30746e61,0x6f66736e61727435,0x6c656e72654b6d72,0x6e2e006669696650\n"
-".quad 0x6174736e6f632e76,0x315a5f000032746e,0x6f66736e61727435,0x6c656e72654b6d72\n"
-".quad 0x5f5f006669696650,0x326d735f61647563,0x6e725f7669645f30,0x786574003233665f\n"
-".quad 0x72616475635f5f00,0x5f69706f32695f74,0x0000000000000066,0x0000000000000000\n"
-".quad 0x0000000000000000,0x0003000000000000,0x0000000000000001,0x0003000000000000\n"
-".quad 0x0000000000000002,0x0003000000000000,0x0000000000000003,0x0003000000000000\n"
-".quad 0x0000000000000000,0x0003000000000000,0x0000000000000000,0x0003000013c80000\n"
-".quad 0x0000000000000004,0x0003000000000000,0x0000000000000007,0x0003000000000000\n"
-".quad 0x000000000000000a,0x0003000000000000,0x0000000000000008,0x0003000000000000\n"
-".quad 0x0000000000000006,0x0003000000000000,0x0000000000000005,0x0003000000000000\n"
-".quad 0x0000000000010009,0x1012000010580000,0x10580000001a0004,0x0012000003700000\n"
-".quad 0x0000000000310004,0x001a000000000000,0x0000000000350000,0x0011000000180000\n"
-".quad 0x440400005de40009,0x4000b005dde42800,0xc00100105d032800,0xdfe00171dc804800\n"
-".quad 0x0000800021e7210e,0x4000b0001de44000,0xc0002010dc032800,0x4000b0009d004800\n"
-".quad 0x000ee0001de75000,0xee9c00001de24000,0x4000b001dc40191c,0x000b200021e7208e\n"
-".quad 0x4000b0001de44000,0xc0002010dc032800,0x0000fc009de44800,0xc00020011c032800\n"
-".quad 0x0000fc015de46000,0x400004001c032800,0x000000411c426800,0x080000219c863a00\n"
-".quad 0xc00010209c031400,0x00001061dc034800,0xc0006021dc035000,0x000014721c031a8e\n"
-".quad 0x000000321c854800,0x000020715c03c800,0x000010615d43120e,0xc0001030dc03200a\n"
-".quad 0xfffec00001e74800,0x4000b0009de44003,0xc0002010dc032800,0x000080115c854800\n"
-".quad 0xc00004209c03c800,0xc00060209c036000,0xfffe00209c035800,0xc00014211c034800\n"
-".quad 0xc0007c219c035800,0xc00010411e036800,0x0000fc61dc034800,0x00000c411c43190e\n"
-".quad 0x00002041dc854000,0x000010409c85c000,0x0001000081e7c000,0x0000004120854000\n"
-".quad 0xc00080616203c000,0x00001871e0034800,0x00001821a0036000,0x00001420a0036000\n"
-".quad 0x0000144120035800,0x00001c21e0035800,0x00001840a0034800,0xc00008219c034800\n"
-".quad 0xc00078211c036000,0xc00078709c035800,0x0000fc61dc035800,0x000010721c43190e\n"
-".quad 0x0000800001e74000,0xc00004811c034000,0x40000441dc034800,0xc00007f11c041a0e\n"
-".quad 0x000040001de72010,0x40000481dc034000,0xc00007f11c041a0e,0x000010209c032010\n"
-".quad 0x000009211f844800,0x000008409c031c00,0x0000a000a1e73280,0x0000192183844000\n"
-".quad 0x000023f141c31c00,0x0000000000826800,0x0000fc6100033a00,0x000014420203110e\n"
-".quad 0x0000fc81dc234800,0x0001000001e7198e,0x0000fc011de44000,0xc0007c615c032800\n"
-".quad 0xfffffc411c035800,0xc00004619c034800,0x000014821c236000,0x0000fc81dc234000\n"
-".quad 0xffff400001e71a0e,0x000020001de74003,0x0000fc011de44000,0x40001481dc432800\n"
-".quad 0x3f6a88819c025000,0x0000fc71dc231324,0x0000800081e7198e,0xc0007c6160034000\n"
-".quad 0xfffffc4120035800,0xc0000461a0034800,0x00001471e0236000,0x0000fc615c034000\n"
-".quad 0x00001c515e03128e,0xc001f841dc034800,0xc00020519c034800,0xc00060511c035800\n"
-".quad 0x000018715ee36000,0x0000fc411c234000,0x000014411e03108e,0x000010001c434800\n"
-".quad 0x000100001de76800,0x4000b000dde44000,0x400024301c002800,0x000001209c845800\n"
-".quad 0x000009201e041400,0xcff24000de001800,0x400034011e003006,0xc0002010dc033006\n"
-".quad 0x400044001e004800,0xc00004211c033008,0xc00004409c034800,0x0000fc21dc236800\n"
-".quad 0x000000009c001a8e,0x0000c000a1e75800,0xd818680001e24000,0x4000542000001aea\n"
-".quad 0x8000640000003000,0x8000740000003004,0x8000840000003004,0x0000a00081e73004\n"
-".quad 0x220e780161e24000,0x40009421600018f0,0x8000a4516000300a,0x00001420a0003004\n"
-".quad 0x0000002020005800,0xc00008409c033000,0x000001211d046800,0x000000409c231000\n"
-".quad 0xdfe00171dc803284,0x4000b3f1dc00210e,0x00001c061c042120,0x0000600021e7080e\n"
-".quad 0xc00090145c034000,0x4000b3f41c004800,0x000ec0001de75800,0xee9c00001de24000\n"
-".quad 0x4000b001dc40191c,0x000b200021e7208e,0x4000b0001de44000,0xc00090119c032800\n"
-".quad 0x0000fc015de44800,0xc0002001dc032800,0x0000fc011de46000,0x400004001c032800\n"
-".quad 0x000000729c426800,0x08000051dc863a00,0xc00010515c031400,0x000028721c034800\n"
-".quad 0xc0006051dc035000,0x000010825c031a8e,0x000000625c854800,0x000024811c03c800\n"
-".quad 0x000028711d43120e,0xc00010619c032008,0xfffec00001e74800,0x4000b0015de44003\n"
-".quad 0xc00090145c032800,0x0000f0111c854800,0xc00004515c03c800,0xc00060515c036000\n"
-".quad 0xfffe00515c035800,0xc00014519c034800,0xc0007c51dc035800,0xc00010619e036800\n"
-".quad 0x0000fc71dc034800,0x000044615c43190e,0x000020525c854000,0x000010519c85c000\n"
-".quad 0x0001000081e7c000,0x0000005120854000,0xc00080722203c000,0x00001c9260034800\n"
-".quad 0x00001c61e0036000,0x00002061a0036000,0x0000204120035800,0x0000246260035800\n"
-".quad 0x00001c41a0034800,0xc00008615c034800,0xc00078619c036000,0xc00078911c035800\n"
-".quad 0x0000fc51dc035800,0x000018925c43190e,0x0000800001e74000,0xc00004919c034000\n"
-".quad 0x40000461dc034800,0xc00007f19c041a0e,0x000040001de72010,0x40000491dc034000\n"
-".quad 0xc00007f19c041a0e,0x000018411c032010,0x000011219f844800,0x000010611c031c00\n"
-".quad 0x0000a000a1e73280,0x0000152143844000,0x000027f1c1c31c00,0x0000000000826800\n"
-".quad 0x0000fc5180033a00,0x00001c624203110e,0x0000fc91dc234800,0x0001000001e7198e\n"
-".quad 0x0000fc019de44000,0xc0007c51dc032800,0xfffffc619c035800,0xc00004515c034800\n"
-".quad 0x00001c925c236000,0x0000fc91dc234000,0xffff400001e71a0e,0x000020001de74003\n"
-".quad 0x0000fc019de44000,0x400014921c432800,0x3f6a8891dc025000,0x0000fc81dc231324\n"
-".quad 0x0000800081e7198e,0xc0007c7160034000,0xfffffc61a0035800,0xc0000471e0034800\n"
-".quad 0x0000148220236000,0x0000fc715c034000,0xc001f861dc03128e,0x000020515e034800\n"
-".quad 0xc00020519c034800,0xc00060515c035800,0x000018719ee36000,0x0000fc515c234000\n"
-".quad 0x000018515e03108e,0x000014001c434800,0x000100001de76800,0x4000b0015de44000\n"
-".quad 0xc00090145c032800,0x400024501c004800,0x000001211c845800,0x000011201e041400\n"
-".quad 0xcff240015e001800,0x400034015e00300a,0x400044001e00300a,0xc00004415c03300a\n"
-".quad 0x0000fc51dc236800,0x000000015c001a8e,0x0000c000a1e75800,0xd818680001e24000\n"
-".quad 0x4000545000001aea,0x8000640000003000,0x800074000000300a,0x800084000000300a\n"
-".quad 0x0000a00081e7300a,0x220e7801a1e24000,0x40009451a00018f0,0x8000a461a000300c\n"
-".quad 0x000018516000300a,0x0000005020005800,0xc00008411c033000,0x000001215d046800\n"
-".quad 0x000000541c231000,0x000094011c043288,0x000084019c042c00,0x000098001c042c00\n"
-".quad 0x000088015c042c00,0x400020459c032c00,0x400091249e04200c,0x400030055c031800\n"
-".quad 0x4000a1215e04200a,0x00005924dc041800,0x000055211c041800,0x0020600100071800\n"
-".quad 0x000010051de45000,0x000048015de42800,0x00004c011de42800,0x001fe00100072800\n"
-".quad 0xefc000401c005000,0xefc001411c005000,0xdfe00171dc805000,0x000008009c00210e\n"
-".quad 0x000011009e005800,0xcfc000209c003004,0x0000600021e75000,0x4000b000dde44000\n"
-".quad 0x4000b030dd002800,0x000ea0001de75000,0xee9c00015de24000,0x4000b051dc40191c\n"
-".quad 0x000b000021e7208e,0x4000b0015de44000,0xc0002012dc032800,0x0000fc031de44800\n"
-".quad 0xc0002051dc032800,0x0000fc019de46000,0x400004515c032800,0x000000729c426800\n"
-".quad 0x080000c1dc863a00,0xc00010c31c031400,0x000028721c034800,0xc00060c1dc035000\n"
-".quad 0x000018825c031a8e,0x000000b25c854800,0x000024819c03c800,0x000028719d43120e\n"
-".quad 0xc00010b2dc03200c,0xfffec00001e74800,0x4000b001dde44003,0x000080119c852800\n"
-".quad 0xc0000471dc03c800,0xc0006071dc036000,0xfffe0071dc035800,0xc00014721c034800\n"
-".quad 0xc0007c71dc035800,0xc00010821e036800,0x0000fc71dc034800,0x00000c80dc43190e\n"
-".quad 0x000020321c854000,0x000010329c85c000,0x0001000081e7c000,0x00000030e0854000\n"
-".quad 0xc0008071a203c000,0x00001c8220034800,0x00001ca260036000,0x000018a1e0036000\n"
-".quad 0x00001830e0035800,0x0000207220035800,0x00002432a0034800,0xc00008a19c034800\n"
-".quad 0xc00078a0dc036000,0xc0007881dc035800,0x0000fc61dc035800,0x00000c829c43190e\n"
-".quad 0x0000800001e74000,0xc00004a0dc034000,0x40000431dc034800,0xc00007f0dc041a0e\n"
-".quad 0x000040001de72010,0x400004a1dc034000,0xc00007f0dc041a0e,0x00000c70dc032010\n"
-".quad 0x00000d21df844800,0x00000c70dc031c00,0x0000a000a1e7328a,0x0000192183844000\n"
-".quad 0x00002bf201c31c00,0x0000005140826800,0x0000fc61c0033a00,0x000020728203110e\n"
-".quad 0x0000fca1dc234800,0x0001000001e7198e,0x0000fc021de44000,0xc0007c61dc032800\n"
-".quad 0xfffffc821c035800,0xc00004619c034800,0x00001ca29c236000,0x0000fca1dc234000\n"
-".quad 0xffff400001e71a0e,0x000020001de74003,0x0000fc021de44000,0x400014a25c432800\n"
-".quad 0x3f6a88a1dc025000,0x0000fc91dc231324,0x0000800081e7198e,0xc0007c71a0034000\n"
-".quad 0xfffffc8220035800,0xc0000471e0034800,0x0000189260236000,0x0000fc719c034000\n"
-".quad 0xc001f8821c03128e,0x000024619e034800,0xc0002061dc034800,0xc00060619c035800\n"
-".quad 0x00001c81dee36000,0x0000fc619c234000,0x00001c619e03108e,0x00001851dc434800\n"
-".quad 0x0000e0001de76800,0x4000b0019de44000,0x40002460dc002800,0x00000d20dc845800\n"
-".quad 0x00000d215e041400,0xcff240519e001800,0x400034519e00300c,0x40004451de00300c\n"
-".quad 0xc0000430dc03300c,0x00001c719c004800,0xc00004315c035800,0x0000fc51dc236800\n"
-".quad 0x0000c000a1e71a8e,0xd818680141e24000,0x4000546140001aea,0x800064514000300a\n"
-".quad 0x800074514000300c,0x800084514000300c,0x0000a00081e7300c,0x220e780161e24000\n"
-".quad 0x40009461600018f0,0x8000a4516000300a,0x000014616000300c,0x00001c5160005800\n"
-".quad 0xc0000830dc03300e,0x000015219d046800,0x00001460dc231000,0x0000fd81dc033286\n"
-".quad 0x0000400021e71a8e,0x4000b3f15c004000,0x000e80001de75800,0xee9c00015de24000\n"
-".quad 0x4000b051dc40191c,0x000b000021e7208e,0x4000b0015de44000,0xc00090129c032800\n"
-".quad 0x0000fc02dde44800,0xc0002051dc032800,0x0000fc019de46000,0x400004515c032800\n"
-".quad 0x000000731c426800,0x080000b1dc863a00,0xc00010b2dc031400,0x000030721c034800\n"
-".quad 0xc00060b1dc035000,0x000018825c031a8e,0x000000a25c854800,0x000024819c03c800\n"
-".quad 0x000030719d43120e,0xc00010a29c03200c,0xfffec00001e74800,0x4000b001dde44003\n"
-".quad 0x0000f0119c852800,0xc0000471dc03c800,0xc0006071dc036000,0xfffe0071dc035800\n"
-".quad 0xc00014721c034800,0xc0007c725c035800,0xc00010821e036800,0x0000fc91dc034800\n"
-".quad 0x00004481dc43190e,0x000020729c854000,0x000010731c85c000,0x0001000081e7c000\n"
-".quad 0x00000071a0854000,0xc00080922203c000,0x000024a2a0034800,0x000024c2e0036000\n"
-".quad 0x000020c260036000,0x00002061a0035800,0x00002892a0035800,0x00002c6320034800\n"
-".quad 0xc00008c1dc034800,0xc00078c19c036000,0xc00078a21c035800,0x0000fc71dc035800\n"
-".quad 0x000018a2dc43190e,0x0000800001e74000,0xc00004b19c034000,0x40000461dc034800\n"
-".quad 0xc00007f19c041a0e,0x000040001de72010,0x400004b1dc034000,0xc00007f19c041a0e\n"
-".quad 0x000018819c032010,0x000019221f844800,0x000018819c031c00,0x0000a000a1e7328a\n"
-".quad 0x00001d21c3844000,0x00002ff241c31c00,0x0000005140826800,0x0000fc7200033a00\n"
-".quad 0x00002482c203110e,0x0000fcb1dc234800,0x0001000001e7198e,0x0000fc025de44000\n"
-".quad 0xc0007c721c032800,0xfffffc925c035800,0xc0000471dc034800,0x000020b2dc236000\n"
-".quad 0x0000fcb1dc234000,0xffff400001e71a0e,0x000020001de74003,0x0000fc025de44000\n"
-".quad 0x400014b29c432800,0x3f6a88b21c025000,0x0000fca1dc231324,0x0000800081e7198e\n"
-".quad 0xc0007c81e0034000,0xfffffc9260035800,0xc000048220034800,0x00001ca2a0236000\n"
-".quad 0x0000fc81dc034000,0xc001f8925c03128e,0x00002871de034800,0xc00020721c034800\n"
-".quad 0xc0006071dc035800,0x000020921ee36000,0x0000fc71dc234000,0x00002071de03108e\n"
-".quad 0x00001c521c434800,0x0000e0001de76800,0x4000b001dde44000,0x400024715c002800\n"
-".quad 0x000015219c845800,0x000019215e041400,0xcff24051de001800,0x40003451de00300e\n"
-".quad 0x400044521e00300e,0xc00004615c03300e,0x00002081dc006800,0x0000fc51dc235800\n"
-".quad 0x0000c000a1e71a8e,0xd818680141e24000,0x4000547140001aea,0x800064514000300a\n"
-".quad 0x800074514000300e,0x80008451c000300e,0x0000a00081e7300e,0x220e780161e24000\n"
-".quad 0x40009471600018f0,0x8000a4516000300a,0x000014716000300e,0x00002051e0005800\n"
-".quad 0xc00008615c033010,0x00001d219d046800,0x00001c615c231000,0x00001030dc00328a\n"
-".quad 0x000014001c005800,0xcfc00000dc003006,0x4000fc201c865000,0x400091509c038010\n"
-".quad 0x400080209c43202c,0x000000201c854000,0x000000001de79000,0xc00004401c038000\n"
-".quad 0xc00004519c036000,0xc00060001c036000,0xc00060619c035800,0xfffffc001c035800\n"
-".quad 0xfffffc619c034800,0xc003f401dc034800,0xc003f461dc031a0e,0x0005200021e71a20\n"
-".quad 0xdfe00041dc804000,0x00001121dc44298e,0x0000600021e71080,0xdfe00051dc804000\n"
-".quad 0x000015221c44298e,0x0000400001e71080,0x000014411c204000,0x000b80001de75000\n"
-".quad 0xc00004425c034000,0xc00004529c036000,0x0000fc93dc036000,0x0000fca5dc03190e\n"
-".quad 0x00000811dc04190e,0x0000800001e70c0e,0xdfe00077dc004000,0xdfe00081dc00290e\n"
-".quad 0x000080002de7290e,0x0000600021e74000,0x000000001de24000,0x000014011c001bff\n"
-".quad 0x0009e0001de7c800,0x00004401dc044000,0x0000600021e70c0e,0x000010501c834000\n"
-".quad 0x000000011c026800,0x000940001de73a00,0x00004831dc044000,0x0000800021e70c0e\n"
-".quad 0x000010501c834000,0x000000001c026800,0x000000011c423a00,0x000880001de739fe\n"
-".quad 0x0000fc03dc234000,0x0000fc61dc231b0e,0xffff0001e5e21b0e,0xd7e0004124001bff\n"
-".quad 0x0000fc01c5e4307e,0x0000800001e72800,0xd7e000515c004000,0xc0010071dc03307e\n"
-".quad 0x000020001de74800,0x0000fc01dde44000,0xfffe08625c032800,0xfffe08021c034800\n"
-".quad 0x000018001d034800,0x000014915ee34800,0x000010811ee34100,0x000010521c004100\n"
-".quad 0x000020425c00c800,0x000024529e00307e,0x000020a25c003008,0x000024515e003012\n"
-".quad 0x000020511c003008,0xc00004429c033012,0xc00060a19c036000,0x000018001c035800\n"
-".quad 0x00000071dc034800,0xfffffc701c034800,0xc003f401dc034800,0x0000600001e71a0e\n"
-".quad 0x000018701d034000,0x000010011ee34800,0x0004a0001de74000,0xc003f871dc234000\n"
-".quad 0x0000600001e7198e,0x000000401c024000,0x000000011c423a00,0x000400001de739fe\n"
-".quad 0x0000fc71dc234000,0x0003c00001e71a0e,0xffffa071dc234000,0x0000400001e71b0e\n"
-".quad 0x000000411c024000,0x000340001de73a00,0x000020529c004000,0x000020519c003112\n"
-".quad 0x000020515c003092,0x00001d225f843192,0x000000401c021c00,0x000018a11c003a00\n"
-".quad 0xfffffc515c021e8e,0x0000fc91dc233801,0x00001d221f84190e,0x000011211f841c00\n"
-".quad 0x000000525c421c00,0x0000a00081e73802,0xc000807160034000,0x0000149160034800\n"
-".quad 0x0000209260036000,0xc00007f160035800,0x000014412043310a,0xc00078915c036800\n"
-".quad 0xc0007c519c036000,0xc00004915c035800,0x000018411c436800,0x000010511c036800\n"
-".quad 0xc00004915c036800,0x0000fc41dc035800,0xc000045140031a8e,0x000014011c434800\n"
-".quad 0x000000001de76800,0x0000000000009000,0x0000000000000000,0x0000000000000000\n"
-".quad 0x0000000000000000,0x0000000000000000,0x0000000000000000,0xdaa2800000000000\n"
-".quad 0xaa203f22f983c90f,0xf5ce2e85a30939fd,0x00003d2aaaa537cc,0xa1f93f800000bf00\n"
-".quad 0x0c04be2aaaa3b94c,0x0004000000000010,0x000c000000080000,0x000f000802040000\n"
-".quad 0x0a04000000000000,0x00200000000b0008,0x1704001019030010,0x0003ffffffff000c\n"
-".quad 0x17040011f000000c,0x0002ffffffff000c,0x17040011f0000008,0x0001ffffffff000c\n"
-".quad 0x17040011f0000004,0x0000ffffffff000c,0x0d040011f0000000,0x000c000e00a80008\n"
-".quad 0x95993c4390410000,0x57d1f534ddc0db62,0x836e4e441529fc27,0x000f00100704a2f9\n"
-".quad 0xffffffffffff0000,0x1204ffffffffffff,0x00000000000e0008,0x000e000811040000\n"
-".quad 0x1204000000000000,0x00400000000d0008,0x000d000811040000,0x0000000000400000\n"
-".quad 0x0000194000000006,0x0000000000000000,0x0000008000000080,0x0000000400000005\n"
-".quad 0x0000044260000000,0x0000000000000000,0x000014a0000014a0,0x0000000400000d05\n"
-".quad 0x000018e260000000,0x0000000000000000,0x0000000400000000,0x0000000400000d06\n"
-".quad 0x000018e200000001,0x0000000000000000,0x0000001800000018,0x0000000400000005\n"
-".quad 0x0000000000000000\n"
+"__deviceText_$sm_10$:\n"
+".quad 0x33010102464c457f,0x0000000000000002,0x0000000100be0002,0x0000000000000000\n"
+".quad 0x0000000000001988,0x0000000000000040,0x00380040000a010a,0x0001000b00400004\n"
+".quad 0x0000000000000000,0x0000000000000000,0x0000000000000000,0x0000000000000000\n"
+".quad 0x0000000000000000,0x0000000000000000,0x0000000000000000,0x0000000000000000\n"
+".quad 0x0000000300000001,0x0000000000000000,0x0000000000000000,0x0000000000000300\n"
+".quad 0x00000000000000fc,0x0000000000000000,0x0000000000000004,0x0000000000000000\n"
+".quad 0x000000030000000b,0x0000000000000000,0x0000000000000000,0x00000000000003fc\n"
+".quad 0x000000000000002f,0x0000000000000000,0x0000000000000001,0x0000000000000000\n"
+".quad 0x0000000200000013,0x0000000000000000,0x0000000000000000,0x000000000000042b\n"
+".quad 0x0000000000000180,0x0000000d00000002,0x0000000000000001,0x0000000000000018\n"
+".quad 0x0000000100000036,0x0000000000000006,0x0000000000000000,0x00000000000005ab\n"
+".quad 0x00000000000012f8,0x0f00000600000003,0x0000000000000004,0x0000000000000000\n"
+".quad 0x00000001000000c7,0x0000000000000002,0x0000000000000000,0x00000000000018a3\n"
+".quad 0x0000000000000054,0x0000000400000000,0x0000000000000004,0x0000000000000000\n"
+".quad 0x0000000100000055,0x0000000000000002,0x0000000000000000,0x00000000000018f7\n"
+".quad 0x0000000000000064,0x0000000400000000,0x0000000000000001,0x0000000000000000\n"
+".quad 0x0000000800000080,0x0000000000000003,0x0000000000000000,0x000000000000195b\n"
+".quad 0x0000000000000024,0x0000000400000000,0x0000000000000004,0x0000000000000000\n"
+".quad 0x00000008000000a4,0x0000000000000003,0x0000000000000000,0x000000000000195b\n"
+".quad 0x0000000000000038,0x0000000400000000,0x0000000000000004,0x0000000000000000\n"
+".quad 0x00000001000000ee,0x0000000000000002,0x0000000000000000,0x000000000000195b\n"
+".quad 0x0000000000000018,0x0000000000000000,0x0000000000000004,0x0000000000000000\n"
+".quad 0x0000000100000077,0x0000000000000002,0x0000000000000000,0x0000000000001973\n"
+".quad 0x0000000000000014,0x0000000000000000,0x0000000000000001,0x0000000000000000\n"
+".quad 0x7472747368732e00,0x747274732e006261,0x746d79732e006261,0x672e766e2e006261\n"
+".quad 0x6e692e6c61626f6c,0x672e766e2e007469,0x742e006c61626f6c,0x35315a5f2e747865\n"
+".quad 0x726f66736e617274,0x506c656e72654b6d,0x766e2e0066696966,0x5a5f2e6f666e692e\n"
+".quad 0x66736e6172743531,0x656e72654b6d726f,0x2e0066696966506c,0x006f666e692e766e\n"
+".quad 0x726168732e766e2e,0x7435315a5f2e6465,0x6d726f66736e6172,0x66506c656e72654b\n"
+".quad 0x2e766e2e00666969,0x5a5f2e6c61636f6c,0x66736e6172743531,0x656e72654b6d726f\n"
+".quad 0x2e0066696966506c,0x74736e6f632e766e,0x315a5f2e31746e61,0x6f66736e61727435\n"
+".quad 0x6c656e72654b6d72,0x6e2e006669696650,0x6174736e6f632e76,0x315a5f000030746e\n"
+".quad 0x6f66736e61727435,0x6c656e72654b6d72,0x6574006669696650,0x616475635f5f0078\n"
+".quad 0x69706f32695f7472,0x000000000000665f,0x0000000000000000,0x0000000000000000\n"
+".quad 0x0300000000000000,0x0000000000000100,0x0000000000000000,0x0300000000000000\n"
+".quad 0x0000000000000200,0x0000000000000000,0x0300000000000000,0x0000000000000300\n"
+".quad 0x0000000000000000,0x0300000000000000,0x0000000000000000,0x0000000000000000\n"
+".quad 0x0300000000000000,0x0000000000000000,0x0000000000000000,0x0300000000000000\n"
+".quad 0x0000000000000400,0x00000012f8000000,0x0300000000000000,0x0000000000000600\n"
+".quad 0x0000000000000000,0x0300000000000000,0x0000000000000a00,0x0000000000000000\n"
+".quad 0x0300000000000000,0x0000000000000700,0x0000000000000000,0x0300000000000000\n"
+".quad 0x0000000000000800,0x0000000000000000,0x0300000000000000,0x0000000000000500\n"
+".quad 0x0000000000000000,0x0300000000000000,0x0000000000000900,0x0000000000000000\n"
+".quad 0x1200000001000000,0x0000000000000410,0x0000000000000000,0x1a0000001a000000\n"
+".quad 0x0000000000000000,0x0000000000000000,0x110000001e000000,0x0000000000000900\n"
+".quad 0x0000000018000000,0xd0b080d005000000,0xc8a00003fd607087,0x80a000d0110c0147\n"
+".quad 0x0010007003c43047,0x801000d005000011,0x80b000d0050423c7,0x801008f003082047\n"
+".quad 0xd8b08109fd000007,0x0010075003604107,0x800000f805000011,0x80d082d005c00007\n"
+".quad 0x803008d009046007,0x801000f815c43007,0x801000f8190403c7,0x80d082040d0403c7\n"
+".quad 0x8014000009044047,0x804007081d2400c7,0x8060060a21000007,0xd060060a1d0001c7\n"
+".quad 0x80301010210001c7,0x8030100e25c41007,0x8030100e1dc41007,0x8060060821e41007\n"
+".quad 0xe8600609fd000207,0x8021000e1d000247,0x8020001019044118,0x0320018a15040187\n"
+".quad 0x8060070a1d000000,0x80300610090c01e7,0x80d4000019640107,0xd830830bfd60c007\n"
+".quad 0x80300004196c4147,0x80d40008050401c7,0x801000f003200007,0x803001d009000012\n"
+".quad 0x8030180409c43007,0xfb20008415e41007,0x8030050a090fffff,0x033000840de41007\n"
+".quad 0x033004841d000000,0x80d0003019000000,0x800002060960c007,0x80d8003009c00007\n"
+".quad 0x80d800280d40c007,0x8000020e0540c007,0xd0d0850a15c00007,0x0010037003044007\n"
+".quad 0x80d4000019000011,0x0330208a1d40c007,0x8030050421000000,0x8030070609c40007\n"
+".quad 0x8030050615e40007,0x8020000409c40007,0x8030070c0d040207,0x802000060de40007\n"
+".quad 0x803002041d040147,0x80301e0619c41007,0xd030020615e41007,0x8020000c0dc41007\n"
+".quad 0x80301e04090401c7,0x8021000619e41007,0x8030820c19044296,0x80a0000c19644116\n"
+".quad 0x00308206192c0156,0x00a0000c19644111,0x80200004092c0151,0xd8307c03fd040187\n"
+".quad 0x033000841d640147,0x8010000e09000000,0xd8307c0dfd0403d2,0x801004c003640087\n"
+".quad 0x0330008a15000012,0x80d0030019000000,0x80307c0a0d0402c7,0x803000060d640087\n"
+".quad 0x80d0820205040187,0xd8307c07fd044087,0x80100570036c00c7,0x801000f819000012\n"
+".quad 0x803001061d0403c7,0x80301f0a0dc41007,0x802000060de41007,0xd8307c07fd0401c7\n"
+".quad 0xff203f8c196c0107,0x8030010a150fffff,0x801004f003c41007,0x8010058003000012\n"
+".quad 0x801000f819000007,0xab102280150403c7,0x80400b0c210c90fd,0xd0600a0e1d000007\n"
+".quad 0x8030100e25000207,0x8030100e1dc41007,0xe8600a0dfde41007,0x8021000e1d000247\n"
+".quad 0x80600a0e21044118,0x80600b0e1d000207,0x80301010210c01e7,0xd8307c0ffdc41007\n"
+".quad 0x80600a0c0d6c00c7,0x801006a003000207,0x8030010e1d000012,0x80301f0615c41007\n"
+".quad 0x8020000a1de41007,0xff203f8c190401c7,0x803001060d0fffff,0x80307c060dc41007\n"
+".quad 0x07203e8c15640147,0x803000060d000000,0x8030170a190401c7,0x8030080615c41007\n"
+".quad 0x803018060de41007,0x8020000a15c41007,0x80307c060d040187,0x803000060d6c0047\n"
+".quad 0x80d0030205040147,0x801007d003040047,0x9bc1037005000007,0x80a000020903f22f\n"
+".quad 0x801000d0058c0047,0x80a000040d0423c7,0x03e0008605440147,0x03e000860503fc90\n"
+".quad 0x03e0008605039fd8,0x33e0098605034a88,0x032001840d02e85a,0xd8d08a07fd000000\n"
+".quad 0x80c0010215044007,0x0010087003000007,0x63101a8005000011,0x5fe00e0a050bab60\n"
+".quad 0x80e1010a05037ccf,0x80e1010a05004307,0x80e1010a09004347,0x801008c003004387\n"
+".quad 0x3b101e8009000007,0x1fe0390a0903c088,0x80e1020a090b94ca,0x80c0020a09004407\n"
+".quad 0x80e0010409000007,0xd8d09107fd000047,0x8010000405044007,0x80a00004050403c7\n"
+".quad 0xd8b07cd1fde40052,0x801000f80d602087,0x801000f8090403c7,0x801000140d0403c7\n"
+".quad 0x80100014092440d2,0xd0d00206152440c2,0x0010098003040047,0x80c07cd009000011\n"
+".quad 0x8010121003002007,0xd8b08109fd000007,0x0010108003604107,0x03101c8009000011\n"
+".quad 0x8000000405000000,0x800000f809c00007,0x80d082d00dc00007,0x803008d009046007\n"
+".quad 0x801000f81dc43007,0x801000f8210403c7,0x80d08204190403c7,0x801a000209044047\n"
+".quad 0x80400d08252400c7,0x80600c0a29000007,0xd0600c0a25000247,0x8030101429000247\n"
+".quad 0x803010122dc41007,0x8030101225c41007,0x80600c0829e41007,0xe8600c09fd000287\n"
+".quad 0x80210012250002c7,0x8020001421044118,0x80600d0a25040207,0x0320018e1d0c0267\n"
+".quad 0x8030081409000000,0x80d4000021640107,0xd830830ffd60c007,0x80300004216c4147\n"
+".quad 0x80d4000805040247,0x80100a2003200007,0x803001d009000012,0x8030180409c43007\n"
+".quad 0xfb2000841de41007,0x8030050e090fffff,0x0330008419e41007,0x0330048425000000\n"
+".quad 0x80d0006821000000,0x8000020c0960c007,0x80d8006809c00007,0x80d800601940c007\n"
+".quad 0x800002120540c007,0xd0d0850e1dc00007,0x00100ca003044007,0x80d4003821000011\n"
+".quad 0x0330208e2540c007,0x8030070429000000,0x8030090c09c40007,0x8030070c1de40007\n"
+".quad 0x8020000409c40007,0x8030091019040287,0x8020000c19e40007,0x80300204250401c7\n"
+".quad 0x80301e0c21c41007,0xd030020c1de41007,0x8020001019c41007,0x80301e0409040247\n"
+".quad 0x8021000c21e41007,0x8030821021044296,0x80a0001021644116,0x0030820c212c0156\n"
+".quad 0x00a0001021644111,0x80200004092c0151,0xd8307c07fd040207,0x0330008425640147\n"
+".quad 0x8010001209000000,0xd8307c11fd0403d2,0x80100df003640087,0x0330008e1d000012\n"
+".quad 0x80d0060021000000,0x80307c0e190402c7,0x8030000c19640087,0x80d082060d040207\n"
+".quad 0xd8307c0dfd044087,0x80100ea0036c00c7,0x801000f821000012,0x8030010c250403c7\n"
+".quad 0x80301f0e19c41007,0x8020000c19e41007,0xd8307c0dfd040247,0xff203f90216c0107\n"
+".quad 0x8030010e1d0fffff,0x80100e2003c41007,0x80100eb003000012,0x801000f821000007\n"
+".quad 0xab1022801d0403c7,0x80400f18290c90fd,0xd0600e1a25000007,0x803010122d000287\n"
+".quad 0x8030101225c41007,0xe8600e19fde41007,0x80210012250002c7,0x80600e1a29044118\n"
+".quad 0x80600f1a25000287,0x80301014290c0267,0xd8307c13fdc41007,0x80600e18196c00c7\n"
+".quad 0x80100fd003000287,0x8030011225000012,0x80301f0c1dc41007,0x8020000e25e41007\n"
+".quad 0xff203f9021040247,0x8030010c190fffff,0x80307c0c19c41007,0x07203e901d640147\n"
+".quad 0x8030000c19000000,0x8030170e21040247,0x8030080c1dc41007,0x8030180c19e41007\n"
+".quad 0x8020000e1dc41007,0x80307c0c19040207,0x8030000c196c0047,0x80d006060d0401c7\n"
+".quad 0x8010110003040047,0x9bc1037009000007,0x80a000040903f22f,0x801000d00d8c0047\n"
+".quad 0x80a00004190423c7,0x03e0008c0d440147,0x03e0008c0d03fc90,0x03e0008c0d039fd8\n"
+".quad 0x33e0098c0d034a88,0xd8d08a05fd02e85a,0x80c003061d044007,0x0010119003000007\n"
+".quad 0x63101a800d000011,0x5fe00e0e0d0bab60,0x80e1030e0d037ccf,0x80e1030e0d004307\n"
+".quad 0x80e1030e0d004347,0x801011e003004387,0x3b101e8019000007,0x1fe0390e1903c088\n"
+".quad 0x80e1060e190b94ca,0x80c0060e19004407,0x80e0030c0d000007,0xd8d09105fd0000c7\n"
+".quad 0x8010000609044007,0x80a00006090403c7,0x80d0a4021de40052,0x0411002218004007\n"
+".quad 0x80a0000019110024,0x80a0000e1d040007,0x80a000ce25040007,0x8060064c19442147\n"
+".quad 0x8060014e0d002187,0xd8b09313fd0021c7,0x80a000cc01605107,0x80a0000c1d442147\n"
+".quad 0x80a0000621440047,0x80c0941021440047,0x80c0941225004016,0x8090001225004016\n"
+".quad 0xd8b09301fd000007,0x20c0091024605107,0x80c094102110008e,0x80c0940001004016\n"
+".quad 0x8090000001004016,0x03b000121d000007,0x80e10010210bf000,0x80c0020e01004347\n"
+".quad 0x80e0011001000007,0x03b0000001080007,0x001013d00303f000,0x801000d005000001\n"
+".quad 0x80b000d0050423c7,0x80101c5003082047,0xc8b08109fd000007,0x00101ab003604107\n"
+".quad 0x800000f805000001,0x80d082d025c00007,0x803008d005046007,0x801000f829c43007\n"
+".quad 0x801000f8310403c7,0x80d08202090403c7,0x8014000005044047,0x804005042d2400c7\n"
+".quad 0x8060040635000007,0x8030101a350002c7,0x8060040435c41007,0x8020001a39000347\n"
+".quad 0x80300e1a31040307,0x80d4000039640107,0xc06004062d60c007,0x80301016350002c7\n"
+".quad 0xd8600405fdc41007,0x803010162d000347,0x802100162de41007,0x8060050605044108\n"
+".quad 0x03200194290c02d7,0xc8308315fd000000,0x80300018316c4147,0x80d4000805040047\n"
+".quad 0x8010145003200007,0x803001d005000002,0x8030180205c43007,0xfb20008229e41007\n"
+".quad 0x80300514050fffff,0x0330008209e41007,0x033004822d000000,0x80d0003031000000\n"
+".quad 0x800002040960c007,0x80d8003009c00007,0x80d800280540c007,0x800002160540c007\n"
+".quad 0xc0d0851429c00007,0x001016d003044007,0x80d400002d000001,0x033020943140c007\n"
+".quad 0x80300a0409000000,0x80300a0229c40007,0x80300c0205c40007,0x8020000209e40007\n"
+".quad 0x80300c1605040087,0x8020000205e40007,0x8030020431040287,0x80301e0229c41007\n"
+".quad 0xc03002022de41007,0x8020001405c41007,0x80301e0429040307,0x8021000209e41007\n"
+".quad 0x8030820409044286,0x80a0000409644106,0x00308202092c0146,0x00a0000409644101\n"
+".quad 0x80200014292c0141,0xd8307c05fd040087,0xc8307c13fd640087,0x0330009409640147\n"
+".quad 0x8010000429000000,0x80101820030403c2,0x033000962d000012,0x80d0010009000000\n"
+".quad 0x80307c16050402c7,0x8030000205640087,0x80d0821225040087,0xc8307c03fd044087\n"
+".quad 0x801018d0036c00c7,0x801000f831000002,0x80300102090403c7,0x80301f1605c41007\n"
+".quad 0x8020000205e41007,0xc8307c03fd040087,0xff203f98316c0107,0x803001162d0fffff\n"
+".quad 0x8010185003c41007,0x801018e003000002,0x801000f831000007,0xab102280090403c7\n"
+".quad 0x804005042d0c90fd,0x8060040639000007,0xc0600406350002c7,0x8030101c2d0002c7\n"
+".quad 0x8030101a39c41007,0x806004042dc41007,0xd8600405fd0002c7,0x8030101a35000387\n"
+".quad 0x8021001a35e41007,0x8060050605044108,0xc8307c03fd0c0357,0x80101a00036c00c7\n"
+".quad 0x8030010209000002,0x80301f1605c41007,0x8020000205e41007,0xff203f9831040087\n"
+".quad 0x803001162d0fffff,0x80307c1609c41007,0x07203e982d640147,0x8030000405000000\n"
+".quad 0x803017162d040047,0x8030080209c41007,0x8030180205e41007,0x8020000409c41007\n"
+".quad 0x80307c02050402c7,0x80300002056c0047,0x80d0011205040087,0x80101b3003040047\n"
+".quad 0x9bc1037005000007,0x80a000022903f22f,0x801000d0058c0047,0x80a00014090423c7\n"
+".quad 0x03e0008405440147,0x03e000840503fc90,0x03e0008405039fd8,0x33e0098405034a88\n"
+".quad 0x032001942502e85a,0xc8d08a13fd000000,0x80c0010229044007,0x00101bd003000007\n"
+".quad 0x63101a8005000001,0x5fe00e14050bab60,0x80e1011405037ccf,0x80e1011405004307\n"
+".quad 0x80e1011409004347,0x80101c2003004387,0x3b101e8009000007,0x1fe039140903c088\n"
+".quad 0x80e10214090b94ca,0x80c0021409004407,0x80e0010409000007,0xc8d09113fd000047\n"
+".quad 0x8010000405044007,0x80a00004050403c7,0xc8307c0bfde40042,0x80101c90036c0087\n"
+".quad 0x80c07cd011000002,0x8010252003002007,0xc8b08109fd000007,0x0010239003604107\n"
+".quad 0x03101c8009000001,0x8000000405000000,0x800000f809c00007,0x80d082d025c00007\n"
+".quad 0x803008d009046007,0x801000f815c43007,0x801000f82d0403c7,0x80d08204110403c7\n"
+".quad 0x801a000209044047,0x80400908292400c7,0x8060080a31000007,0x8030101831000287\n"
+".quad 0x8060080831c41007,0x8020001835000307,0x80300d182d0402c7,0x80d4000035640107\n"
+".quad 0xc060080a2960c007,0x8030101431000287,0xd8600809fdc41007,0x8030101429000307\n"
+".quad 0x8021001429e41007,0x0320018a15044108,0x8060090a09000000,0xc830830bfd0c0297\n"
+".quad 0x803000162d6c4147,0x80d4000805040087,0x80101d3003200007,0x803001d009000002\n"
+".quad 0x8030180409c43007,0xfb20008415e41007,0x8030050a090fffff,0x0330008411e41007\n"
+".quad 0x0330048429000000,0x80d000682d000000,0x800002080960c007,0x80d8006809c00007\n"
+".quad 0x80d800601140c007,0x800002140540c007,0xc0d0850a15c00007,0x00101fb003044007\n"
+".quad 0x80d4003829000001,0x0330208a2d40c007,0x8030050431000000,0x80300b0809c40007\n"
+".quad 0x8030050815e40007,0x8020000409c40007,0x80300b1411040307,0x8020000811e40007\n"
+".quad 0x803002042d040147,0x80301e0829c41007,0xc030020815e41007,0x8020001411c41007\n"
+".quad 0x80301e04090402c7,0x8021000829e41007,0x8030821429044286,0x80a0001429644106\n"
+".quad 0x00308208292c0146,0x00a0001429644101,0x80200004092c0141,0xc8307c13fd040287\n"
+".quad 0x033000842d640147,0x8010001609000000,0xc8307c15fd0403c2,0x8010210003640087\n"
+".quad 0x0330008a15000002,0x80d0040029000000,0x80307c0a110402c7,0x8030000811640087\n"
+".quad 0x80d0821225040287,0xc8307c09fd044087,0x801021b0036c00c7,0x801000f829000002\n"
+".quad 0x803001082d0403c7,0x80301f0a11c41007,0x8020000811e41007,0xc8307c09fd0402c7\n"
+".quad 0xff203f94296c0107,0x8030010a150fffff,0x8010213003c41007,0x801021c003000002\n"
+".quad 0x801000f829000007,0xab102280150403c7,0x80400b102d0c90fd,0x80600a1231000007\n"
+".quad 0xc0600a12350002c7,0x803010182d0002c7,0x8030101a31c41007,0x80600a102dc41007\n"
+".quad 0xd8600a11fd0002c7,0x8030101a31000307,0x8021001831e41007,0x80600b1211044108\n"
+".quad 0xc8307c09fd0c0317,0x801022e0036c00c7,0x8030010815000002,0x80301f1611c41007\n"
+".quad 0x8020000811e41007,0xff203f9429040147,0x803001162d0fffff,0x80307c1615c41007\n"
+".quad 0x07203e9429640147,0x8030000a11000000,0x8030171429040107,0x8030080815c41007\n"
+".quad 0x8030180811e41007,0x8020000a15c41007,0x80307c0811040287,0x80300008116c0047\n"
+".quad 0x80d0041211040147,0x8010241003040047,0x9bc1037009000007,0x80a000040903f22f\n"
+".quad 0x801000d0118c0047,0x80a00004150423c7,0x03e0008a11440147,0x03e0008a1103fc90\n"
+".quad 0x03e0008a11039fd8,0x33e0098a11034a88,0xc8d08a05fd02e85a,0x80c0040825044007\n"
+".quad 0x001024a003000007,0x63101a8011000001,0x5fe00e12110bab60,0x80e1041211037ccf\n"
+".quad 0x80e1041211004307,0x80e1041215004347,0x801024f003004387,0x3b101e8015000007\n"
+".quad 0x1fe039121503c088,0x80e10512150b94ca,0x80c0051215004407,0x80e0040a15000007\n"
+".quad 0xc8d09105fd000107,0x8010000a11044007,0x80a0000a110403c7,0x801000cc09e40042\n"
+".quad 0x80400708150423c7,0x8060060a15000007,0x8030100a15000147,0x80c007021dc41007\n"
+".quad 0x8060060805000007,0x80e004100d000147,0x80200002090001c7,0x03b0000605040187\n"
+".quad 0x84f240000103f000,0x8030020409000007,0x802000c809c41007,0x81d00e0401042087\n"
+".quad 0x007f800000a0c007,0x0680000000473ba7,0x1f00010000000000,0x003fc90000000000\n"
+".quad 0x0934a8800039fd80,0xce000000012e85a3,0x003d2aaaa537ccf5,0xf93f800000bf0000\n"
+".quad 0x02be2aaaa3b94ca1,0x00000003ff000000,0x043e8000007e8000,0x080000000000100b\n"
+".quad 0x100000000c000000,0x0e00080204000000,0x0300000000000000,0xff000c1704001418\n"
+".quad 0x0000100003ffffff,0xff000c17040013f0,0x00000c0002ffffff,0xff000c17040013f0\n"
+".quad 0x0000080001ffffff,0xff000c17040013f0,0x0000000000ffffff,0x993c4390410023f0\n"
+".quad 0xd1f534ddc0db6295,0x6e4e441529fc2757,0x0e00100704a2f983,0xffffffffff000000\n"
+".quad 0x00ffffffffffffff,0x0000000500000006,0x0000000000001988,0x0000000000000000\n"
+".quad 0x0000000000000000,0x00000000000000e0,0x00000000000000e0,0x0000000000000004\n"
+".quad 0x00000d0560000000,0x00000000000005ab,0x0000000000000000,0x0000000000000000\n"
+".quad 0x00000000000013b0,0x00000000000013b0,0x0000000000000004,0x00000d0660000000\n"
+".quad 0x000000000000195b,0x0000000000000000,0x0000000000000000,0x0000000000000000\n"
+".quad 0x000000000000005c,0x0000000000000004,0x0000000500000001,0x000000000000195b\n"
+".quad 0x0000000000000000,0x0000000000000000,0x0000000000000018,0x0000000000000018\n"
+".quad 0x0000000000000004,0x0000000000000000\n"
 ".text");
 
 extern "C" {
 
-extern const unsigned long long __deviceText_$sm_20$[825];
+extern const unsigned long long __deviceText_$sm_10$[846];
 
 }
 
-static __cudaFatPtxEntry __ptxEntries [] = {{(char*)"compute_20",(char*)__deviceText_$compute_20$},{0,0}};
+static __cudaFatPtxEntry __ptxEntries [] = {{(char*)"compute_10",(char*)__deviceText_$compute_10$},{0,0}};
 static __cudaFatCubinEntry __cubinEntries[] = {{0,0}};
 static __cudaFatDebugEntry __debugEntries0 = {0, 0, 0, 0} ;
 static __cudaFatElfEntry __elfEntries0 = {0, 0, 0, 0} ;
-static __cudaFatElfEntry __elfEntries1 = {(char*)"sm_20", (char*)__deviceText_$sm_20$, &__elfEntries0, (unsigned int)sizeof(__deviceText_$sm_20$)};
+static __cudaFatElfEntry __elfEntries1 = {(char*)"sm_10", (char*)__deviceText_$sm_10$, &__elfEntries0, (unsigned int)sizeof(__deviceText_$sm_10$)};
 
 
 
-static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000004,0xa14f518d,(char*)"cb075f7baace770c",(char*)"/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleTexture/simpleTexture.cu",(char*)" ",__ptxEntries,__cubinEntries,&__debugEntries0,0,0,0,0,0,0x1bc1de8c,&__elfEntries1};
-# 3 "/tmp/tmpxft_00005d94_00000000-1_simpleTexture.cudafe1.stub.c" 2
+static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000004,0xa14f518d,(char*)"70be1674c952cff6",(char*)"/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleTexture/simpleTexture.cu",(char*)" ",__ptxEntries,__cubinEntries,&__debugEntries0,0,0,0,0,0,0x30393bf2,&__elfEntries1};
+# 3 "/tmp/tmpxft_00000963_00000000-1_simpleTexture.cudafe1.stub.c" 2
 struct __T20 {float *__par0;int __par1;int __par2;float __par3;int __dummy_field;};
 extern void __device_stub__Z15transformKernelPfiif(float *, int, int, float);
-static void __sti____cudaRegisterAll_48_tmpxft_00005d94_00000000_4_simpleTexture_cpp1_ii_tex(void) __attribute__((__constructor__));
+static void __sti____cudaRegisterAll_48_tmpxft_00000963_00000000_4_simpleTexture_cpp1_ii_tex(void) __attribute__((__constructor__));
 void __device_stub__Z15transformKernelPfiif(float *__par0, int __par1, int __par2, float __par3){ struct __T20 *__T21 = 0;
 if (cudaSetupArgument((void*)(char*)&__par0, sizeof(__par0), (size_t)&__T21->__par0) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par1, sizeof(__par1), (size_t)&__T21->__par1) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par2, sizeof(__par2), (size_t)&__T21->__par2) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par3, sizeof(__par3), (size_t)&__T21->__par3) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(float *, int, int, float))transformKernel)); (void)cudaLaunch(((char *)((void ( *)(float *, int, int, float))transformKernel))); };}
 void transformKernel( float *__cuda_0,int __cuda_1,int __cuda_2,float __cuda_3)
@@ -13651,6 +13243,6 @@ void transformKernel( float *__cuda_0,int __cuda_1,int __cuda_2,float __cuda_3)
 {__device_stub__Z15transformKernelPfiif( __cuda_0,__cuda_1,__cuda_2,__cuda_3);
 # 58 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleTexture/simpleTexture_kernel.cu"
 }
-# 1 "/tmp/tmpxft_00005d94_00000000-1_simpleTexture.cudafe1.stub.c"
-static void __sti____cudaRegisterAll_48_tmpxft_00005d94_00000000_4_simpleTexture_cpp1_ii_tex(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, int, int, float))transformKernel), (char*)"_Z15transformKernelPfiif", "_Z15transformKernelPfiif", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterTexture(__cudaFatCubinHandle, (const struct textureReference*)&tex, (const void**)"tex", "tex", 2, 0, 0); }
-# 1 "/tmp/tmpxft_00005d94_00000000-1_simpleTexture.cudafe1.stub.c" 2
+# 1 "/tmp/tmpxft_00000963_00000000-1_simpleTexture.cudafe1.stub.c"
+static void __sti____cudaRegisterAll_48_tmpxft_00000963_00000000_4_simpleTexture_cpp1_ii_tex(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, int, int, float))transformKernel), (char*)"_Z15transformKernelPfiif", "_Z15transformKernelPfiif", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterTexture(__cudaFatCubinHandle, (const struct textureReference*)&tex, (const void**)"tex", "tex", 2, 0, 0); }
+# 1 "/tmp/tmpxft_00000963_00000000-1_simpleTexture.cudafe1.stub.c" 2

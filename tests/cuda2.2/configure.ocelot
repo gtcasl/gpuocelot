@@ -1,9 +1,9 @@
 {
 	ocelot: "ocelot",
 	trace: { 
-		memoryChecker: false,
+		memoryChecker: true,
 		raceDetector: {
-			enabled: false,
+			enabled: true,
 			ignoreIrrelevantWrites: true
 		},
 		debugger: {
@@ -22,7 +22,7 @@
 			instructionMemory: true
 		},
 		performanceBound: {
-			enabled: true,
+			enabled: false,
 			protocol: "sm_20",
 			output: csv
 		}

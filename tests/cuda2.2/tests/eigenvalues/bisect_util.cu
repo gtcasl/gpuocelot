@@ -85,7 +85,7 @@ ceilPow2(int n) {
 //! @param right  right / upper limit of interval
 ////////////////////////////////////////////////////////////////////////////////
 __device__ 
-float 
+inline float 
 computeMidpoint( const float left, const float right) {
 
   float mid;
@@ -166,7 +166,7 @@ storeInterval( unsigned int addr,
 //!         is count does not have to be computed)
 ////////////////////////////////////////////////////////////////////////////////
 __device__ 
-unsigned int
+inline unsigned int
 computeNumSmallerEigenvals( float* g_d, float* g_s, const unsigned int n, 
                             const float x, 
                             const unsigned int tid,
@@ -223,7 +223,7 @@ computeNumSmallerEigenvals( float* g_d, float* g_s, const unsigned int n,
 //!         is count does not have to be computed)
 ////////////////////////////////////////////////////////////////////////////////
 __device__ 
-unsigned int
+inline unsigned int
 computeNumSmallerEigenvalsLarge( float* g_d, float* g_s, const unsigned int n, 
                                  const float x, 
                                  const unsigned int tid,

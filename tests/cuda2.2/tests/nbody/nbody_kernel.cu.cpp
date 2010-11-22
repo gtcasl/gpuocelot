@@ -1,13 +1,13 @@
-# 1 "/tmp/tmpxft_00006f1f_00000000-1_nbody_kernel.cudafe1.cpp"
+# 1 "/tmp/tmpxft_000020a3_00000000-1_nbody_kernel.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_00006f1f_00000000-1_nbody_kernel.cudafe1.cpp"
+# 1 "/tmp/tmpxft_000020a3_00000000-1_nbody_kernel.cudafe1.cpp"
 # 1 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/nbody/nbody_kernel.cu"
 # 46 "/usr/local/cuda/bin/../include/device_types.h"
 # 149 "/usr/lib/gcc/i686-linux-gnu/4.4.5/include/stddef.h" 3
-typedef int ptrdiff_t;
+typedef long ptrdiff_t;
 # 211 "/usr/lib/gcc/i686-linux-gnu/4.4.5/include/stddef.h" 3
-typedef unsigned size_t;
+typedef unsigned long size_t;
 # 1 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 1 3
 # 69 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 3
 # 1 "/usr/local/cuda/bin/../include/builtin_types.h" 1 3
@@ -1678,86 +1678,6 @@ int e = (((int)sizeof(unsigned)) * 8);
 return cudaCreateChannelDesc(e, e, e, e, cudaChannelFormatKindUnsigned);
 # 303 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 }
-# 307 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-template<> inline cudaChannelFormatDesc cudaCreateChannelDesc< long> ()
-# 308 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-{
-# 309 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-int e = (((int)sizeof(long)) * 8);
-# 311 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-return cudaCreateChannelDesc(e, 0, 0, 0, cudaChannelFormatKindSigned);
-# 312 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-}
-# 314 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-template<> inline cudaChannelFormatDesc cudaCreateChannelDesc< unsigned long> ()
-# 315 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-{
-# 316 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-int e = (((int)sizeof(unsigned long)) * 8);
-# 318 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-return cudaCreateChannelDesc(e, 0, 0, 0, cudaChannelFormatKindUnsigned);
-# 319 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-}
-# 321 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-template<> inline cudaChannelFormatDesc cudaCreateChannelDesc< long1> ()
-# 322 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-{
-# 323 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-int e = (((int)sizeof(long)) * 8);
-# 325 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-return cudaCreateChannelDesc(e, 0, 0, 0, cudaChannelFormatKindSigned);
-# 326 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-}
-# 328 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-template<> inline cudaChannelFormatDesc cudaCreateChannelDesc< ulong1> ()
-# 329 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-{
-# 330 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-int e = (((int)sizeof(unsigned long)) * 8);
-# 332 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-return cudaCreateChannelDesc(e, 0, 0, 0, cudaChannelFormatKindUnsigned);
-# 333 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-}
-# 335 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-template<> inline cudaChannelFormatDesc cudaCreateChannelDesc< long2> ()
-# 336 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-{
-# 337 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-int e = (((int)sizeof(long)) * 8);
-# 339 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-return cudaCreateChannelDesc(e, e, 0, 0, cudaChannelFormatKindSigned);
-# 340 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-}
-# 342 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-template<> inline cudaChannelFormatDesc cudaCreateChannelDesc< ulong2> ()
-# 343 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-{
-# 344 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-int e = (((int)sizeof(unsigned long)) * 8);
-# 346 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-return cudaCreateChannelDesc(e, e, 0, 0, cudaChannelFormatKindUnsigned);
-# 347 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-}
-# 349 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-template<> inline cudaChannelFormatDesc cudaCreateChannelDesc< long4> ()
-# 350 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-{
-# 351 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-int e = (((int)sizeof(long)) * 8);
-# 353 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-return cudaCreateChannelDesc(e, e, e, e, cudaChannelFormatKindSigned);
-# 354 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-}
-# 356 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-template<> inline cudaChannelFormatDesc cudaCreateChannelDesc< ulong4> ()
-# 357 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-{
-# 358 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-int e = (((int)sizeof(unsigned long)) * 8);
-# 360 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-return cudaCreateChannelDesc(e, e, e, e, cudaChannelFormatKindUnsigned);
-# 361 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-}
 # 365 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 template<> inline cudaChannelFormatDesc cudaCreateChannelDesc< float> ()
 # 366 "/usr/local/cuda/bin/../include/channel_descriptor.h"
@@ -2418,16 +2338,16 @@ extern "C" { typedef unsigned short __uint16_t; }
 extern "C" { typedef signed int __int32_t; }
 # 42 "/usr/include/bits/types.h" 3
 extern "C" { typedef unsigned __uint32_t; }
-# 47 "/usr/include/bits/types.h" 3
-extern "C" { typedef signed long long __int64_t; }
-# 48 "/usr/include/bits/types.h" 3
-extern "C" { typedef unsigned long long __uint64_t; }
-# 56 "/usr/include/bits/types.h" 3
-extern "C" { typedef long long __quad_t; }
-# 57 "/usr/include/bits/types.h" 3
-extern "C" { typedef unsigned long long __u_quad_t; }
+# 44 "/usr/include/bits/types.h" 3
+extern "C" { typedef signed long __int64_t; }
+# 45 "/usr/include/bits/types.h" 3
+extern "C" { typedef unsigned long __uint64_t; }
+# 53 "/usr/include/bits/types.h" 3
+extern "C" { typedef long __quad_t; }
+# 54 "/usr/include/bits/types.h" 3
+extern "C" { typedef unsigned long __u_quad_t; }
 # 134 "/usr/include/bits/types.h" 3
-extern "C" { typedef __u_quad_t __dev_t; }
+extern "C" { typedef unsigned long __dev_t; }
 # 135 "/usr/include/bits/types.h" 3
 extern "C" { typedef unsigned __uid_t; }
 # 136 "/usr/include/bits/types.h" 3
@@ -2435,15 +2355,15 @@ extern "C" { typedef unsigned __gid_t; }
 # 137 "/usr/include/bits/types.h" 3
 extern "C" { typedef unsigned long __ino_t; }
 # 138 "/usr/include/bits/types.h" 3
-extern "C" { typedef __u_quad_t __ino64_t; }
+extern "C" { typedef unsigned long __ino64_t; }
 # 139 "/usr/include/bits/types.h" 3
 extern "C" { typedef unsigned __mode_t; }
 # 140 "/usr/include/bits/types.h" 3
-extern "C" { typedef unsigned __nlink_t; }
+extern "C" { typedef unsigned long __nlink_t; }
 # 141 "/usr/include/bits/types.h" 3
 extern "C" { typedef long __off_t; }
 # 142 "/usr/include/bits/types.h" 3
-extern "C" { typedef __quad_t __off64_t; }
+extern "C" { typedef long __off64_t; }
 # 143 "/usr/include/bits/types.h" 3
 extern "C" { typedef int __pid_t; }
 # 144 "/usr/include/bits/types.h" 3
@@ -2453,7 +2373,7 @@ extern "C" { typedef long __clock_t; }
 # 146 "/usr/include/bits/types.h" 3
 extern "C" { typedef unsigned long __rlim_t; }
 # 147 "/usr/include/bits/types.h" 3
-extern "C" { typedef __u_quad_t __rlim64_t; }
+extern "C" { typedef unsigned long __rlim64_t; }
 # 148 "/usr/include/bits/types.h" 3
 extern "C" { typedef unsigned __id_t; }
 # 149 "/usr/include/bits/types.h" 3
@@ -2477,17 +2397,17 @@ extern "C" { typedef long __blksize_t; }
 # 169 "/usr/include/bits/types.h" 3
 extern "C" { typedef long __blkcnt_t; }
 # 170 "/usr/include/bits/types.h" 3
-extern "C" { typedef __quad_t __blkcnt64_t; }
+extern "C" { typedef long __blkcnt64_t; }
 # 173 "/usr/include/bits/types.h" 3
 extern "C" { typedef unsigned long __fsblkcnt_t; }
 # 174 "/usr/include/bits/types.h" 3
-extern "C" { typedef __u_quad_t __fsblkcnt64_t; }
+extern "C" { typedef unsigned long __fsblkcnt64_t; }
 # 177 "/usr/include/bits/types.h" 3
 extern "C" { typedef unsigned long __fsfilcnt_t; }
 # 178 "/usr/include/bits/types.h" 3
-extern "C" { typedef __u_quad_t __fsfilcnt64_t; }
+extern "C" { typedef unsigned long __fsfilcnt64_t; }
 # 180 "/usr/include/bits/types.h" 3
-extern "C" { typedef int __ssize_t; }
+extern "C" { typedef long __ssize_t; }
 # 184 "/usr/include/bits/types.h" 3
 extern "C" { typedef __off64_t __loff_t; }
 # 185 "/usr/include/bits/types.h" 3
@@ -2495,7 +2415,7 @@ extern "C" { typedef __quad_t *__qaddr_t; }
 # 186 "/usr/include/bits/types.h" 3
 extern "C" { typedef char *__caddr_t; }
 # 189 "/usr/include/bits/types.h" 3
-extern "C" { typedef int __intptr_t; }
+extern "C" { typedef long __intptr_t; }
 # 192 "/usr/include/bits/types.h" 3
 extern "C" { typedef unsigned __socklen_t; }
 # 60 "/usr/include/time.h" 3
@@ -2938,10 +2858,10 @@ extern "C" __attribute__((weak)) int __isinfl(long double) throw() __attribute__
 extern "C" __attribute__((weak)) int __isnanl(long double) throw() __attribute__((__const__));
 # 455 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((weak)) int __finitel(long double) throw() __attribute__((__const__));
-# 38 "/usr/include/bits/mathdef.h" 3
-extern "C" { typedef long double float_t; }
-# 40 "/usr/include/bits/mathdef.h" 3
-extern "C" { typedef long double double_t; }
+# 31 "/usr/include/bits/mathdef.h" 3
+extern "C" { typedef float float_t; }
+# 32 "/usr/include/bits/mathdef.h" 3
+extern "C" { typedef double double_t; }
 # 55 "/usr/include/bits/mathcalls.h" 3
 extern "C" __attribute__((weak)) double acos(double) throw(); extern "C" double __acos(double) throw();
 # 57 "/usr/include/bits/mathcalls.h" 3
@@ -3631,7 +3551,7 @@ extern "C" { typedef short int16_t; }
 # 197 "/usr/include/sys/types.h" 3
 extern "C" { typedef int int32_t; }
 # 198 "/usr/include/sys/types.h" 3
-extern "C" { typedef long long int64_t; }
+extern "C" { typedef long int64_t; }
 # 201 "/usr/include/sys/types.h" 3
 extern "C" { typedef unsigned char u_int8_t; }
 # 202 "/usr/include/sys/types.h" 3
@@ -3639,7 +3559,7 @@ extern "C" { typedef unsigned short u_int16_t; }
 # 203 "/usr/include/sys/types.h" 3
 extern "C" { typedef unsigned u_int32_t; }
 # 204 "/usr/include/sys/types.h" 3
-extern "C" { typedef unsigned long long u_int64_t; }
+extern "C" { typedef unsigned long u_int64_t; }
 # 206 "/usr/include/sys/types.h" 3
 extern "C" { typedef int register_t; }
 # 24 "/usr/include/bits/sigset.h" 3
@@ -3705,19 +3625,21 @@ extern "C" { typedef
 # 54 "/usr/include/bits/pthreadtypes.h" 3
 union {
 # 55 "/usr/include/bits/pthreadtypes.h" 3
-char __size[36];
+char __size[56];
 # 56 "/usr/include/bits/pthreadtypes.h" 3
 long __align;
 # 57 "/usr/include/bits/pthreadtypes.h" 3
 } pthread_attr_t; }
-# 70 "/usr/include/bits/pthreadtypes.h" 3
+# 65 "/usr/include/bits/pthreadtypes.h" 3
 extern "C" { typedef
-# 67 "/usr/include/bits/pthreadtypes.h" 3
-struct __pthread_internal_slist {
-# 69 "/usr/include/bits/pthreadtypes.h" 3
-__pthread_internal_slist *__next;
-# 70 "/usr/include/bits/pthreadtypes.h" 3
-} __pthread_slist_t; }
+# 61 "/usr/include/bits/pthreadtypes.h" 3
+struct __pthread_internal_list {
+# 63 "/usr/include/bits/pthreadtypes.h" 3
+__pthread_internal_list *__prev;
+# 64 "/usr/include/bits/pthreadtypes.h" 3
+__pthread_internal_list *__next;
+# 65 "/usr/include/bits/pthreadtypes.h" 3
+} __pthread_list_t; }
 # 104 "/usr/include/bits/pthreadtypes.h" 3
 extern "C" { typedef
 # 77 "/usr/include/bits/pthreadtypes.h" 3
@@ -3730,22 +3652,18 @@ int __lock;
 unsigned __count;
 # 82 "/usr/include/bits/pthreadtypes.h" 3
 int __owner;
+# 84 "/usr/include/bits/pthreadtypes.h" 3
+unsigned __nusers;
 # 88 "/usr/include/bits/pthreadtypes.h" 3
 int __kind;
-# 94 "/usr/include/bits/pthreadtypes.h" 3
-unsigned __nusers;
-# 96 "/usr/include/bits/pthreadtypes.h" 3
-union {
-# 97 "/usr/include/bits/pthreadtypes.h" 3
+# 90 "/usr/include/bits/pthreadtypes.h" 3
 int __spins;
-# 98 "/usr/include/bits/pthreadtypes.h" 3
-__pthread_slist_t __list;
-# 99 "/usr/include/bits/pthreadtypes.h" 3
-};
+# 91 "/usr/include/bits/pthreadtypes.h" 3
+__pthread_list_t __list;
 # 101 "/usr/include/bits/pthreadtypes.h" 3
 } __data;
 # 102 "/usr/include/bits/pthreadtypes.h" 3
-char __size[24];
+char __size[40];
 # 103 "/usr/include/bits/pthreadtypes.h" 3
 long __align;
 # 104 "/usr/include/bits/pthreadtypes.h" 3
@@ -3808,34 +3726,34 @@ extern "C" { typedef int pthread_once_t; }
 extern "C" { typedef
 # 151 "/usr/include/bits/pthreadtypes.h" 3
 union {
-# 171 "/usr/include/bits/pthreadtypes.h" 3
+# 154 "/usr/include/bits/pthreadtypes.h" 3
 struct {
-# 172 "/usr/include/bits/pthreadtypes.h" 3
+# 155 "/usr/include/bits/pthreadtypes.h" 3
 int __lock;
-# 173 "/usr/include/bits/pthreadtypes.h" 3
+# 156 "/usr/include/bits/pthreadtypes.h" 3
 unsigned __nr_readers;
-# 174 "/usr/include/bits/pthreadtypes.h" 3
+# 157 "/usr/include/bits/pthreadtypes.h" 3
 unsigned __readers_wakeup;
-# 175 "/usr/include/bits/pthreadtypes.h" 3
+# 158 "/usr/include/bits/pthreadtypes.h" 3
 unsigned __writer_wakeup;
-# 176 "/usr/include/bits/pthreadtypes.h" 3
+# 159 "/usr/include/bits/pthreadtypes.h" 3
 unsigned __nr_readers_queued;
-# 177 "/usr/include/bits/pthreadtypes.h" 3
+# 160 "/usr/include/bits/pthreadtypes.h" 3
 unsigned __nr_writers_queued;
-# 180 "/usr/include/bits/pthreadtypes.h" 3
-unsigned char __flags;
-# 181 "/usr/include/bits/pthreadtypes.h" 3
-unsigned char __shared;
-# 182 "/usr/include/bits/pthreadtypes.h" 3
-unsigned char __pad1;
-# 183 "/usr/include/bits/pthreadtypes.h" 3
-unsigned char __pad2;
-# 184 "/usr/include/bits/pthreadtypes.h" 3
+# 161 "/usr/include/bits/pthreadtypes.h" 3
 int __writer;
-# 185 "/usr/include/bits/pthreadtypes.h" 3
+# 162 "/usr/include/bits/pthreadtypes.h" 3
+int __shared;
+# 163 "/usr/include/bits/pthreadtypes.h" 3
+unsigned long __pad1;
+# 164 "/usr/include/bits/pthreadtypes.h" 3
+unsigned long __pad2;
+# 167 "/usr/include/bits/pthreadtypes.h" 3
+unsigned __flags;
+# 168 "/usr/include/bits/pthreadtypes.h" 3
 } __data;
 # 187 "/usr/include/bits/pthreadtypes.h" 3
-char __size[32];
+char __size[56];
 # 188 "/usr/include/bits/pthreadtypes.h" 3
 long __align;
 # 189 "/usr/include/bits/pthreadtypes.h" 3
@@ -3857,7 +3775,7 @@ extern "C" { typedef
 # 207 "/usr/include/bits/pthreadtypes.h" 3
 union {
 # 208 "/usr/include/bits/pthreadtypes.h" 3
-char __size[20];
+char __size[32];
 # 209 "/usr/include/bits/pthreadtypes.h" 3
 long __align;
 # 210 "/usr/include/bits/pthreadtypes.h" 3
@@ -6593,54 +6511,6 @@ template<> __attribute__((unused)) inline ulonglong2 surf1Dread(surface< void, 1
 {int volatile ___ = 1;
 # 322 "/usr/local/cuda/bin/../include/surface_functions.h"
 exit(___);}
-# 327 "/usr/local/cuda/bin/../include/surface_functions.h"
-template<> __attribute__((unused)) inline long surf1Dread(surface< void, 1> surf, int x, cudaSurfaceBoundaryMode mode)
-# 328 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 330 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 333 "/usr/local/cuda/bin/../include/surface_functions.h"
-template<> __attribute__((unused)) inline unsigned long surf1Dread(surface< void, 1> surf, int x, cudaSurfaceBoundaryMode mode)
-# 334 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 336 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 339 "/usr/local/cuda/bin/../include/surface_functions.h"
-template<> __attribute__((unused)) inline long1 surf1Dread(surface< void, 1> surf, int x, cudaSurfaceBoundaryMode mode)
-# 340 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 342 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 345 "/usr/local/cuda/bin/../include/surface_functions.h"
-template<> __attribute__((unused)) inline ulong1 surf1Dread(surface< void, 1> surf, int x, cudaSurfaceBoundaryMode mode)
-# 346 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 348 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 351 "/usr/local/cuda/bin/../include/surface_functions.h"
-template<> __attribute__((unused)) inline long2 surf1Dread(surface< void, 1> surf, int x, cudaSurfaceBoundaryMode mode)
-# 352 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 356 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 359 "/usr/local/cuda/bin/../include/surface_functions.h"
-template<> __attribute__((unused)) inline ulong2 surf1Dread(surface< void, 1> surf, int x, cudaSurfaceBoundaryMode mode)
-# 360 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 364 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 367 "/usr/local/cuda/bin/../include/surface_functions.h"
-template<> __attribute__((unused)) inline long4 surf1Dread(surface< void, 1> surf, int x, cudaSurfaceBoundaryMode mode)
-# 368 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 372 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 375 "/usr/local/cuda/bin/../include/surface_functions.h"
-template<> __attribute__((unused)) inline ulong4 surf1Dread(surface< void, 1> surf, int x, cudaSurfaceBoundaryMode mode)
-# 376 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 380 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
 # 385 "/usr/local/cuda/bin/../include/surface_functions.h"
 template<> __attribute__((unused)) inline float surf1Dread(surface< void, 1> surf, int x, cudaSurfaceBoundaryMode mode)
 # 386 "/usr/local/cuda/bin/../include/surface_functions.h"
@@ -6875,54 +6745,6 @@ template<> __attribute__((unused)) inline ulonglong2 surf2Dread(surface< void, 2
 {int volatile ___ = 1;
 # 682 "/usr/local/cuda/bin/../include/surface_functions.h"
 exit(___);}
-# 687 "/usr/local/cuda/bin/../include/surface_functions.h"
-template<> __attribute__((unused)) inline long surf2Dread(surface< void, 2> surf, int x, int y, cudaSurfaceBoundaryMode mode)
-# 688 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 690 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 693 "/usr/local/cuda/bin/../include/surface_functions.h"
-template<> __attribute__((unused)) inline unsigned long surf2Dread(surface< void, 2> surf, int x, int y, cudaSurfaceBoundaryMode mode)
-# 694 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 696 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 699 "/usr/local/cuda/bin/../include/surface_functions.h"
-template<> __attribute__((unused)) inline long1 surf2Dread(surface< void, 2> surf, int x, int y, cudaSurfaceBoundaryMode mode)
-# 700 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 702 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 705 "/usr/local/cuda/bin/../include/surface_functions.h"
-template<> __attribute__((unused)) inline ulong1 surf2Dread(surface< void, 2> surf, int x, int y, cudaSurfaceBoundaryMode mode)
-# 706 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 708 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 711 "/usr/local/cuda/bin/../include/surface_functions.h"
-template<> __attribute__((unused)) inline long2 surf2Dread(surface< void, 2> surf, int x, int y, cudaSurfaceBoundaryMode mode)
-# 712 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 716 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 719 "/usr/local/cuda/bin/../include/surface_functions.h"
-template<> __attribute__((unused)) inline ulong2 surf2Dread(surface< void, 2> surf, int x, int y, cudaSurfaceBoundaryMode mode)
-# 720 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 724 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 727 "/usr/local/cuda/bin/../include/surface_functions.h"
-template<> __attribute__((unused)) inline long4 surf2Dread(surface< void, 2> surf, int x, int y, cudaSurfaceBoundaryMode mode)
-# 728 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 732 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 735 "/usr/local/cuda/bin/../include/surface_functions.h"
-template<> __attribute__((unused)) inline ulong4 surf2Dread(surface< void, 2> surf, int x, int y, cudaSurfaceBoundaryMode mode)
-# 736 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 740 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
 # 745 "/usr/local/cuda/bin/../include/surface_functions.h"
 template<> __attribute__((unused)) inline float surf2Dread(surface< void, 2> surf, int x, int y, cudaSurfaceBoundaryMode mode)
 # 746 "/usr/local/cuda/bin/../include/surface_functions.h"
@@ -7148,54 +6970,6 @@ __attribute__((unused)) static inline void surf1Dwrite(ulonglong2 val, surface< 
 # 997 "/usr/local/cuda/bin/../include/surface_functions.h"
 {int volatile ___ = 1;
 # 999 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 1003 "/usr/local/cuda/bin/../include/surface_functions.h"
-__attribute__((unused)) static inline void surf1Dwrite(long val, surface< void, 1> surf, int x, cudaSurfaceBoundaryMode mode = cudaBoundaryModeTrap)
-# 1004 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 1006 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 1008 "/usr/local/cuda/bin/../include/surface_functions.h"
-__attribute__((unused)) static inline void surf1Dwrite(unsigned long val, surface< void, 1> surf, int x, cudaSurfaceBoundaryMode mode = cudaBoundaryModeTrap)
-# 1009 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 1011 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 1013 "/usr/local/cuda/bin/../include/surface_functions.h"
-__attribute__((unused)) static inline void surf1Dwrite(long1 val, surface< void, 1> surf, int x, cudaSurfaceBoundaryMode mode = cudaBoundaryModeTrap)
-# 1014 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 1016 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 1018 "/usr/local/cuda/bin/../include/surface_functions.h"
-__attribute__((unused)) static inline void surf1Dwrite(ulong1 val, surface< void, 1> surf, int x, cudaSurfaceBoundaryMode mode = cudaBoundaryModeTrap)
-# 1019 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 1021 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 1023 "/usr/local/cuda/bin/../include/surface_functions.h"
-__attribute__((unused)) static inline void surf1Dwrite(long2 val, surface< void, 1> surf, int x, cudaSurfaceBoundaryMode mode = cudaBoundaryModeTrap)
-# 1024 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 1026 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 1028 "/usr/local/cuda/bin/../include/surface_functions.h"
-__attribute__((unused)) static inline void surf1Dwrite(ulong2 val, surface< void, 1> surf, int x, cudaSurfaceBoundaryMode mode = cudaBoundaryModeTrap)
-# 1029 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 1031 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 1033 "/usr/local/cuda/bin/../include/surface_functions.h"
-__attribute__((unused)) static inline void surf1Dwrite(long4 val, surface< void, 1> surf, int x, cudaSurfaceBoundaryMode mode = cudaBoundaryModeTrap)
-# 1034 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 1036 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 1038 "/usr/local/cuda/bin/../include/surface_functions.h"
-__attribute__((unused)) static inline void surf1Dwrite(ulong4 val, surface< void, 1> surf, int x, cudaSurfaceBoundaryMode mode = cudaBoundaryModeTrap)
-# 1039 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 1041 "/usr/local/cuda/bin/../include/surface_functions.h"
 exit(___);}
 # 1045 "/usr/local/cuda/bin/../include/surface_functions.h"
 __attribute__((unused)) static inline void surf1Dwrite(float val, surface< void, 1> surf, int x, cudaSurfaceBoundaryMode mode = cudaBoundaryModeTrap)
@@ -7423,54 +7197,6 @@ __attribute__((unused)) static inline void surf2Dwrite(ulonglong2 val, surface< 
 {int volatile ___ = 1;
 # 1292 "/usr/local/cuda/bin/../include/surface_functions.h"
 exit(___);}
-# 1296 "/usr/local/cuda/bin/../include/surface_functions.h"
-__attribute__((unused)) static inline void surf2Dwrite(long val, surface< void, 2> surf, int x, int y, cudaSurfaceBoundaryMode mode = cudaBoundaryModeTrap)
-# 1297 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 1299 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 1301 "/usr/local/cuda/bin/../include/surface_functions.h"
-__attribute__((unused)) static inline void surf2Dwrite(unsigned long val, surface< void, 2> surf, int x, int y, cudaSurfaceBoundaryMode mode = cudaBoundaryModeTrap)
-# 1302 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 1304 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 1306 "/usr/local/cuda/bin/../include/surface_functions.h"
-__attribute__((unused)) static inline void surf2Dwrite(long1 val, surface< void, 2> surf, int x, int y, cudaSurfaceBoundaryMode mode = cudaBoundaryModeTrap)
-# 1307 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 1309 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 1311 "/usr/local/cuda/bin/../include/surface_functions.h"
-__attribute__((unused)) static inline void surf2Dwrite(ulong1 val, surface< void, 2> surf, int x, int y, cudaSurfaceBoundaryMode mode = cudaBoundaryModeTrap)
-# 1312 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 1314 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 1316 "/usr/local/cuda/bin/../include/surface_functions.h"
-__attribute__((unused)) static inline void surf2Dwrite(long2 val, surface< void, 2> surf, int x, int y, cudaSurfaceBoundaryMode mode = cudaBoundaryModeTrap)
-# 1317 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 1319 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 1321 "/usr/local/cuda/bin/../include/surface_functions.h"
-__attribute__((unused)) static inline void surf2Dwrite(ulong2 val, surface< void, 2> surf, int x, int y, cudaSurfaceBoundaryMode mode = cudaBoundaryModeTrap)
-# 1322 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 1324 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 1326 "/usr/local/cuda/bin/../include/surface_functions.h"
-__attribute__((unused)) static inline void surf2Dwrite(long4 val, surface< void, 2> surf, int x, int y, cudaSurfaceBoundaryMode mode = cudaBoundaryModeTrap)
-# 1327 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 1329 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 1331 "/usr/local/cuda/bin/../include/surface_functions.h"
-__attribute__((unused)) static inline void surf2Dwrite(ulong4 val, surface< void, 2> surf, int x, int y, cudaSurfaceBoundaryMode mode = cudaBoundaryModeTrap)
-# 1332 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 1334 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
 # 1338 "/usr/local/cuda/bin/../include/surface_functions.h"
 __attribute__((unused)) static inline void surf2Dwrite(float val, surface< void, 2> surf, int x, int y, cudaSurfaceBoundaryMode mode = cudaBoundaryModeTrap)
 # 1339 "/usr/local/cuda/bin/../include/surface_functions.h"
@@ -7656,54 +7382,6 @@ __attribute__((unused)) static inline uint4 tex1Dfetch(texture< uint4, 1, cudaRe
 # 265 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 {int volatile ___ = 1;
 # 269 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 279 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline long tex1Dfetch(texture< long, 1, cudaReadModeElementType> t, int x)
-# 280 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 284 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 286 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline unsigned long tex1Dfetch(texture< unsigned long, 1, cudaReadModeElementType> t, int x)
-# 287 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 291 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 293 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline long1 tex1Dfetch(texture< long1, 1, cudaReadModeElementType> t, int x)
-# 294 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 298 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 300 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline ulong1 tex1Dfetch(texture< ulong1, 1, cudaReadModeElementType> t, int x)
-# 301 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 305 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 307 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline long2 tex1Dfetch(texture< long2, 1, cudaReadModeElementType> t, int x)
-# 308 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 312 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 314 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline ulong2 tex1Dfetch(texture< ulong2, 1, cudaReadModeElementType> t, int x)
-# 315 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 319 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 321 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline long4 tex1Dfetch(texture< long4, 1, cudaReadModeElementType> t, int x)
-# 322 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 326 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 328 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline ulong4 tex1Dfetch(texture< ulong4, 1, cudaReadModeElementType> t, int x)
-# 329 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 333 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 exit(___);}
 # 343 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 __attribute__((unused)) static inline float tex1Dfetch(texture< float, 1, cudaReadModeElementType> t, int x)
@@ -7981,54 +7659,6 @@ __attribute__((unused)) static inline uint4 tex1D(texture< uint4, 1, cudaReadMod
 {int volatile ___ = 1;
 # 718 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 exit(___);}
-# 734 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline long tex1D(texture< long, 1, cudaReadModeElementType> t, float x)
-# 735 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 739 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 741 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline unsigned long tex1D(texture< unsigned long, 1, cudaReadModeElementType> t, float x)
-# 742 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 746 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 748 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline long1 tex1D(texture< long1, 1, cudaReadModeElementType> t, float x)
-# 749 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 753 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 755 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline ulong1 tex1D(texture< ulong1, 1, cudaReadModeElementType> t, float x)
-# 756 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 760 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 762 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline long2 tex1D(texture< long2, 1, cudaReadModeElementType> t, float x)
-# 763 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 767 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 769 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline ulong2 tex1D(texture< ulong2, 1, cudaReadModeElementType> t, float x)
-# 770 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 774 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 776 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline long4 tex1D(texture< long4, 1, cudaReadModeElementType> t, float x)
-# 777 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 781 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 783 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline ulong4 tex1D(texture< ulong4, 1, cudaReadModeElementType> t, float x)
-# 784 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 788 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
 # 798 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 __attribute__((unused)) static inline float tex1D(texture< float, 1, cudaReadModeElementType> t, float x)
 # 799 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
@@ -8305,54 +7935,6 @@ __attribute__((unused)) static inline uint4 tex2D(texture< uint4, 2, cudaReadMod
 {int volatile ___ = 1;
 # 1173 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 exit(___);}
-# 1183 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline long tex2D(texture< long, 2, cudaReadModeElementType> t, float x, float y)
-# 1184 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 1188 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 1190 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline unsigned long tex2D(texture< unsigned long, 2, cudaReadModeElementType> t, float x, float y)
-# 1191 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 1195 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 1197 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline long1 tex2D(texture< long1, 2, cudaReadModeElementType> t, float x, float y)
-# 1198 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 1202 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 1204 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline ulong1 tex2D(texture< ulong1, 2, cudaReadModeElementType> t, float x, float y)
-# 1205 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 1209 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 1211 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline long2 tex2D(texture< long2, 2, cudaReadModeElementType> t, float x, float y)
-# 1212 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 1216 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 1218 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline ulong2 tex2D(texture< ulong2, 2, cudaReadModeElementType> t, float x, float y)
-# 1219 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 1223 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 1225 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline long4 tex2D(texture< long4, 2, cudaReadModeElementType> t, float x, float y)
-# 1226 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 1230 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 1232 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline ulong4 tex2D(texture< ulong4, 2, cudaReadModeElementType> t, float x, float y)
-# 1233 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 1237 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
 # 1247 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 __attribute__((unused)) static inline float tex2D(texture< float, 2, cudaReadModeElementType> t, float x, float y)
 # 1248 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
@@ -8628,54 +8210,6 @@ __attribute__((unused)) static inline uint4 tex3D(texture< uint4, 3, cudaReadMod
 # 1618 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 {int volatile ___ = 1;
 # 1622 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 1632 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline long tex3D(texture< long, 3, cudaReadModeElementType> t, float x, float y, float z)
-# 1633 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 1637 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 1639 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline unsigned long tex3D(texture< unsigned long, 3, cudaReadModeElementType> t, float x, float y, float z)
-# 1640 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 1644 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 1646 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline long1 tex3D(texture< long1, 3, cudaReadModeElementType> t, float x, float y, float z)
-# 1647 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 1651 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 1653 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline ulong1 tex3D(texture< ulong1, 3, cudaReadModeElementType> t, float x, float y, float z)
-# 1654 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 1658 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 1660 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline long2 tex3D(texture< long2, 3, cudaReadModeElementType> t, float x, float y, float z)
-# 1661 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 1665 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 1667 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline ulong2 tex3D(texture< ulong2, 3, cudaReadModeElementType> t, float x, float y, float z)
-# 1668 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 1672 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 1674 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline long4 tex3D(texture< long4, 3, cudaReadModeElementType> t, float x, float y, float z)
-# 1675 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 1679 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 1681 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline ulong4 tex3D(texture< ulong4, 3, cudaReadModeElementType> t, float x, float y, float z)
-# 1682 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 1686 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 exit(___);}
 # 1696 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 __attribute__((unused)) static inline float tex3D(texture< float, 3, cudaReadModeElementType> t, float x, float y, float z)
@@ -9631,8 +9165,8 @@ numBodies)
 {__wrapper__device_stub_integrateBodies<multithreadBodies>(newPos,newVel,oldPos,oldVel,deltaTime,damping,numBodies);
 # 236 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/nbody/nbody_kernel.cu"
 }
-# 1 "/tmp/tmpxft_00006f1f_00000000-1_nbody_kernel.cudafe1.stub.c"
-# 1 "/tmp/tmpxft_00006f1f_00000000-1_nbody_kernel.cudafe1.stub.c" 1
+# 1 "/tmp/tmpxft_000020a3_00000000-1_nbody_kernel.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_000020a3_00000000-1_nbody_kernel.cudafe1.stub.c" 1
 # 1 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 1
 # 91 "/usr/local/cuda/bin/../include/crt/host_runtime.h"
 extern "C" {
@@ -10034,8 +9568,8 @@ extern __attribute__((__weak__)) unsigned long long int ullmax(unsigned long lon
 
 
 #pragma pack()
-# 2 "/tmp/tmpxft_00006f1f_00000000-1_nbody_kernel.cudafe1.stub.c" 2
-# 1 "/tmp/tmpxft_00006f1f_00000000-3_nbody_kernel.fatbin.c" 1
+# 2 "/tmp/tmpxft_000020a3_00000000-1_nbody_kernel.cudafe1.stub.c" 2
+# 1 "/tmp/tmpxft_000020a3_00000000-3_nbody_kernel.fatbin.c" 1
 # 1 "/usr/local/cuda/bin/../include/__cudaFatFormat.h" 1
 # 83 "/usr/local/cuda/bin/../include/__cudaFatFormat.h"
 extern "C" {
@@ -10113,364 +9647,144 @@ void __cudaFatFreePTX( char* ptx );
 
 
 }
-# 2 "/tmp/tmpxft_00006f1f_00000000-3_nbody_kernel.fatbin.c" 2
+# 2 "/tmp/tmpxft_000020a3_00000000-3_nbody_kernel.fatbin.c" 2
 
 asm(
 ".section .rodata\n"
 ".align 32\n"
-"__deviceText_$compute_20$:\n"
-".quad 0x6f69737265762e09,0x2e090a322e32206e,0x7320746567726174,0x2f2f090a30325f6d\n"
+"__deviceText_$sm_13$:\n"
+".quad 0x33010102464c457f,0x0000000000000002,0x0000000100be0002,0x0000000000000000\n"
+".quad 0x000000000000029c,0x0000000000000040,0x00380040000d010d,0x0001000500400002\n"
+".quad 0x0000000000000000,0x0000000000000000,0x0000000000000000,0x0000000000000000\n"
+".quad 0x0000000000000000,0x0000000000000000,0x0000000000000000,0x0000000000000000\n"
+".quad 0x0000000300000001,0x0000000000000000,0x0000000000000000,0x0000000000000180\n"
+".quad 0x0000000000000044,0x0000000000000000,0x0000000000000004,0x0000000000000000\n"
+".quad 0x000000030000000b,0x0000000000000000,0x0000000000000000,0x00000000000001c4\n"
+".quad 0x0000000000000012,0x0000000000000000,0x0000000000000001,0x0000000000000000\n"
+".quad 0x0000000200000013,0x0000000000000000,0x0000000000000000,0x00000000000001d6\n"
+".quad 0x00000000000000c0,0x0000000700000002,0x0000000000000001,0x0000000000000018\n"
+".quad 0x0000000100000036,0x0000000000000002,0x0000000000000000,0x0000000000000296\n"
+".quad 0x0000000000000004,0x0000000000000000,0x0000000000000004,0x0000000000000000\n"
+".quad 0x7472747368732e00,0x747274732e006261,0x746d79732e006261,0x672e766e2e006261\n"
+".quad 0x6e692e6c61626f6c,0x672e766e2e007469,0x6e2e006c61626f6c,0x6174736e6f632e76\n"
+".quad 0x666f73000030746e,0x7153676e696e6574,0x0000006465726175,0x0000000000000000\n"
+".quad 0x0000000000000000,0x0000000000000000,0x0000000100030000,0x0000000000000000\n"
+".quad 0x0000000000000000,0x0000000200030000,0x0000000000000000,0x0000000000000000\n"
+".quad 0x0000000300030000,0x0000000000000000,0x0000000000000000,0x0000000000030000\n"
+".quad 0x0000000000000000,0x0000000000000000,0x0000000000030000,0x0000000000000000\n"
+".quad 0x0000000000000000,0x0000000400030000,0x0000000000000000,0x0001000000000000\n"
+".quad 0x0000000400110000,0x0004000000000000,0x0000000000000000,0x0000000600000000\n"
+".quad 0x0000029c00000005,0x0000000000000000,0x0000000000000000,0x0000007000000000\n"
+".quad 0x0000007000000000,0x0000000400000000,0x0000000100000000,0x0000029600000005\n"
+".quad 0x0000000000000000,0x0000000000000000,0x0000000400000000,0x0000000400000000\n"
+".quad 0x0000000400000000,0x0000000000000000\n"
+".text");
+
+extern "C" {
+
+extern const unsigned long long __deviceText_$sm_13$[98];
+
+}
+
+asm(
+".section .rodata\n"
+".align 32\n"
+"__deviceText_$compute_13$:\n"
+".quad 0x6f69737265762e09,0x2e090a342e31206e,0x7320746567726174,0x2f2f090a33315f6d\n"
 ".quad 0x656c69706d6f6320,0x2f20687469772064,0x61636f6c2f727375,0x6f2f616475632f6c\n"
 ".quad 0x696c2f34366e6570,0x2f090a65622f2f62,0x6e65706f766e202f,0x6220322e33206363\n"
-".quad 0x206e6f20746c6975,0x2d39302d30313032,0x69762e090a0a3930,0x662e20656c626973\n"
-".quad 0x61702e2820636e75,0x696c612e206d6172,0x38622e2034206e67,0x72616475635f5f20\n"
-".quad 0x39315a5f5f667465,0x79646f4279646f62,0x7463617265746e49,0x616f6c66366e6f69\n"
-".quad 0x74616f6c66363374,0x5d32315b5f305334,0x6f6239315a5f2029,0x6e4979646f427964\n"
-".quad 0x6f69746361726574,0x3374616f6c66366e,0x533474616f6c6636,0x7261702e28205f30\n"
-".quad 0x67696c612e206d61,0x2038622e2034206e,0x6170616475635f5f,0x315a5f5f31666d72\n"
-".quad 0x646f4279646f6239,0x63617265746e4979,0x6f6c66366e6f6974,0x616f6c6636337461\n"
-".quad 0x32315b5f30533474,0x617261702e202c5d,0x6e67696c612e206d,0x2038622e20363120\n"
-".quad 0x6170616475635f5f,0x315a5f5f32666d72,0x646f4279646f6239,0x63617265746e4979\n"
-".quad 0x6f6c66366e6f6974,0x616f6c6636337461,0x36315b5f30533474,0x617261702e202c5d\n"
-".quad 0x6e67696c612e206d,0x2038622e20363120,0x6170616475635f5f,0x315a5f5f33666d72\n"
-".quad 0x646f4279646f6239,0x63617265746e4979,0x6f6c66366e6f6974,0x616f6c6636337461\n"
-".quad 0x36315b5f30533474,0x69762e090a0a295d,0x662e20656c626973,0x61702e2820636e75\n"
-".quad 0x696c612e206d6172,0x38622e2034206e67,0x72616475635f5f20,0x31315a5f5f667465\n"
-".quad 0x7461746976617267,0x616f6c66366e6f69,0x74616f6c66363474,0x5f20295d32315b33\n"
-".quad 0x697661726731315a,0x66366e6f69746174,0x6c66363474616f6c,0x702e28203374616f\n"
-".quad 0x6c612e206d617261,0x2e203631206e6769,0x6475635f5f203862,0x5f31666d72617061\n"
-".quad 0x7661726731315a5f,0x366e6f6974617469,0x66363474616f6c66,0x36315b3374616f6c\n"
-".quad 0x617261702e202c5d,0x6e67696c612e206d,0x5f2038622e203420,0x726170616475635f\n"
-".quad 0x31315a5f5f32666d,0x7461746976617267,0x616f6c66366e6f69,0x74616f6c66363474\n"
-".quad 0x0a0a295d32315b33,0x2d2d2d2d2d2f2f09,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
+".quad 0x206e6f20746c6975,0x2d39302d30313032,0x2d2f2f090a0a3930,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
-".quad 0x090a2d2d2d2d2d2d,0x69706d6f43202f2f,0x6d742f20676e696c,0x746678706d742f70\n"
-".quad 0x316636303030305f,0x3030303030305f66,0x6f626e5f372d3030,0x656e72656b5f7964\n"
-".quad 0x692e337070632e6c,0x632f706d742f2820,0x3730512e23494263,0x2f2f090a29306b6d\n"
+".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x43202f2f090a2d2d,0x676e696c69706d6f\n"
+".quad 0x6d742f706d742f20,0x3030305f74667870,0x30305f3361303230,0x372d303030303030\n"
+".quad 0x6b5f79646f626e5f,0x70632e6c656e7265,0x742f2820692e3370,0x23494263632f706d\n"
+".quad 0x294744737747382e,0x2d2d2d2d2f2f090a,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
-".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2f2f090a0a2d2d2d\n"
+".quad 0x0a2d2d2d2d2d2d2d,0x2d2d2d2d2f2f090a,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
-".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x202f2f090a2d2d2d\n"
-".quad 0x3a736e6f6974704f,0x2d2d2d2d2f2f090a,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
+".quad 0x0a2d2d2d2d2d2d2d,0x6974704f202f2f09,0x2f2f090a3a736e6f,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
-".quad 0x0a2d2d2d2d2d2d2d,0x72615420202f2f09,0x2c7874703a746567,0x5f6d733a41534920\n"
-".quad 0x69646e45202c3032,0x6c7474696c3a6e61,0x746e696f50202c65,0x3a657a6953207265\n"
-".quad 0x20202f2f090a3233,0x74704f2809334f2d,0x6f6974617a696d69,0x296c6576656c206e\n"
-".quad 0x672d20202f2f090a,0x6775626544280930,0x0a296c6576656c20,0x326d2d20202f2f09\n"
-".quad 0x74726f7065522809,0x726f736976646120,0x2f2f090a29736569,0x2d2d2d2d2d2d2d2d\n"
-".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
-".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x662e090a0a2d2d2d,0x3c22093109656c69\n"
-".quad 0x2d646e616d6d6f63,0x090a223e656e696c,0x093209656c69662e,0x6d742f706d742f22\n"
-".quad 0x3030305f74667870,0x30305f6631663630,0x362d303030303030,0x6b5f79646f626e5f\n"
-".quad 0x75632e6c656e7265,0x70672e3265666164,0x6c69662e090a2275,0x73752f2209330965\n"
-".quad 0x63672f62696c2f72,0x6c2d363836692f63,0x756e672d78756e69,0x692f352e342e342f\n"
-".quad 0x732f6564756c636e,0x22682e6665646474,0x09656c69662e090a,0x2f7273752f220934\n"
-".quad 0x75632f6c61636f6c,0x2e2f6e69622f6164,0x64756c636e692f2e,0x65642f7472632f65\n"
-".quad 0x6e75725f65636976,0x0a22682e656d6974,0x3509656c69662e09,0x6c2f7273752f2209\n"
-".quad 0x6475632f6c61636f,0x2e2e2f6e69622f61,0x6564756c636e692f,0x65645f74736f682f\n"
-".quad 0x22682e73656e6966,0x09656c69662e090a,0x2f7273752f220936,0x75632f6c61636f6c\n"
-".quad 0x2e2f6e69622f6164,0x64756c636e692f2e,0x69746c6975622f65,0x2e73657079745f6e\n"
-".quad 0x6c69662e090a2268,0x73752f2209370965,0x2f6c61636f6c2f72,0x6e69622f61647563\n"
-".quad 0x6c636e692f2e2e2f,0x697665642f656475,0x73657079745f6563,0x69662e090a22682e\n"
-".quad 0x752f22093809656c,0x6c61636f6c2f7273,0x69622f616475632f,0x636e692f2e2e2f6e\n"
-".quad 0x6972642f6564756c,0x657079745f726576,0x662e090a22682e73,0x2f22093909656c69\n"
-".quad 0x61636f6c2f727375,0x622f616475632f6c,0x6e692f2e2e2f6e69,0x75732f6564756c63\n"
-".quad 0x79745f6563616672,0x090a22682e736570,0x303109656c69662e,0x6c2f7273752f2209\n"
-".quad 0x6475632f6c61636f,0x2e2e2f6e69622f61,0x6564756c636e692f,0x657275747865742f\n"
-".quad 0x682e73657079745f,0x656c69662e090a22,0x73752f2209313109,0x2f6c61636f6c2f72\n"
-".quad 0x6e69622f61647563,0x6c636e692f2e2e2f,0x746365762f656475,0x73657079745f726f\n"
-".quad 0x69662e090a22682e,0x2f2209323109656c,0x61636f6c2f727375,0x622f616475632f6c\n"
-".quad 0x6e692f2e2e2f6e69,0x65642f6564756c63,0x75616c5f65636976,0x617261705f68636e\n"
-".quad 0x682e73726574656d,0x656c69662e090a22,0x73752f2209333109,0x2f6c61636f6c2f72\n"
-".quad 0x6e69622f61647563,0x6c636e692f2e2e2f,0x2f7472632f656475,0x5f656761726f7473\n"
-".quad 0x22682e7373616c63,0x09656c69662e090a,0x7273752f22093431,0x6564756c636e692f\n"
-".quad 0x79742f737469622f,0x090a22682e736570,0x353109656c69662e,0x692f7273752f2209\n"
-".quad 0x742f6564756c636e,0x090a22682e656d69,0x363109656c69662e,0x2f656d6f682f2209\n"
-".quad 0x632f6c616d726f6e,0x2f74756f6b636568,0x6f6c65636f757067,0x2f73747365742f74\n"
-".quad 0x2f322e3261647563,0x626e2f7374736574,0x646f626e2f79646f,0x6c656e72656b5f79\n"
-".quad 0x662e090a2275632e,0x2209373109656c69,0x636f6c2f7273752f,0x2f616475632f6c61\n"
-".quad 0x692f2e2e2f6e6962,0x632f6564756c636e,0x75665f6e6f6d6d6f,0x2e736e6f6974636e\n"
-".quad 0x6c69662e090a2268,0x752f220938310965,0x6c61636f6c2f7273,0x69622f616475632f\n"
-".quad 0x636e692f2e2e2f6e,0x74616d2f6564756c,0x6974636e75665f68,0x090a22682e736e6f\n"
-".quad 0x393109656c69662e,0x6c2f7273752f2209,0x6475632f6c61636f,0x2e2e2f6e69622f61\n"
-".quad 0x6564756c636e692f,0x6f635f6874616d2f,0x2e73746e6174736e,0x6c69662e090a2268\n"
-".quad 0x752f220930320965,0x6c61636f6c2f7273,0x69622f616475632f,0x636e692f2e2e2f6e\n"
-".quad 0x7665642f6564756c,0x636e75665f656369,0x22682e736e6f6974,0x09656c69662e090a\n"
-".quad 0x7273752f22093132,0x632f6c61636f6c2f,0x2f6e69622f616475,0x756c636e692f2e2e\n"
-".quad 0x31315f6d732f6564,0x5f63696d6f74615f,0x6e6f6974636e7566,0x662e090a22682e73\n"
-".quad 0x2209323209656c69,0x636f6c2f7273752f,0x2f616475632f6c61,0x692f2e2e2f6e6962\n"
-".quad 0x732f6564756c636e,0x6f74615f32315f6d,0x636e75665f63696d,0x22682e736e6f6974\n"
-".quad 0x09656c69662e090a,0x7273752f22093332,0x632f6c61636f6c2f,0x2f6e69622f616475\n"
-".quad 0x756c636e692f2e2e,0x33315f6d732f6564,0x5f656c62756f645f,0x6e6f6974636e7566\n"
-".quad 0x662e090a22682e73,0x2209343209656c69,0x636f6c2f7273752f,0x2f616475632f6c61\n"
-".quad 0x692f2e2e2f6e6962,0x732f6564756c636e,0x6f74615f30325f6d,0x636e75665f63696d\n"
-".quad 0x22682e736e6f6974,0x09656c69662e090a,0x7273752f22093532,0x632f6c61636f6c2f\n"
-".quad 0x2f6e69622f616475,0x756c636e692f2e2e,0x30325f6d732f6564,0x736e6972746e695f\n"
-".quad 0x090a22682e736369,0x363209656c69662e,0x6c2f7273752f2209,0x6475632f6c61636f\n"
-".quad 0x2e2e2f6e69622f61,0x6564756c636e692f,0x656361667275732f,0x6f6974636e75665f\n"
-".quad 0x2e090a22682e736e,0x09373209656c6966,0x6f6c2f7273752f22,0x616475632f6c6163\n"
-".quad 0x2f2e2e2f6e69622f,0x2f6564756c636e69,0x5f65727574786574,0x75665f6863746566\n"
-".quad 0x2e736e6f6974636e,0x6c69662e090a2268,0x752f220938320965,0x6c61636f6c2f7273\n"
-".quad 0x69622f616475632f,0x636e692f2e2e2f6e,0x74616d2f6564756c,0x6974636e75665f68\n"
-".quad 0x5f6c62645f736e6f,0x0a22682e33787470,0x74736e6f632e090a,0x6f73203233662e20\n"
-".quad 0x53676e696e657466,0x0a3b646572617571,0x62697369762e090a,0x636e75662e20656c\n"
-".quad 0x6d617261702e2820,0x206e67696c612e20,0x5f5f2038622e2034,0x6674657261647563\n"
-".quad 0x646f6239315a5f5f,0x746e4979646f4279,0x6e6f697463617265,0x363374616f6c6636\n"
-".quad 0x30533474616f6c66,0x5f20295d32315b5f,0x4279646f6239315a,0x7265746e4979646f\n"
-".quad 0x66366e6f69746361,0x6c66363374616f6c,0x205f30533474616f,0x206d617261702e28\n"
-".quad 0x34206e67696c612e,0x635f5f2038622e20,0x666d726170616475,0x6f6239315a5f5f31\n"
-".quad 0x6e4979646f427964,0x6f69746361726574,0x3374616f6c66366e,0x533474616f6c6636\n"
-".quad 0x202c5d32315b5f30,0x2e206d617261702e,0x3631206e67696c61,0x635f5f2038622e20\n"
-".quad 0x666d726170616475,0x6f6239315a5f5f32,0x6e4979646f427964,0x6f69746361726574\n"
-".quad 0x3374616f6c66366e,0x533474616f6c6636,0x202c5d36315b5f30,0x2e206d617261702e\n"
-".quad 0x3631206e67696c61,0x635f5f2038622e20,0x666d726170616475,0x6f6239315a5f5f33\n"
-".quad 0x6e4979646f427964,0x6f69746361726574,0x3374616f6c66366e,0x533474616f6c6636\n"
-".quad 0x0a295d36315b5f30,0x6765722e090a7b09,0x6625203233662e20,0x2e090a3b3e31343c\n"
-".quad 0x3509363109636f6c,0x57444c240a300933,0x5a5f5f6e69676562,0x6f4279646f623931\n"
-".quad 0x617265746e497964,0x6c66366e6f697463,0x6f6c66363374616f,0x0a3a5f3053347461\n"
-".quad 0x617261702e646c09,0x2509203233662e6d,0x635f5f5b202c3166,0x666d726170616475\n"
-".quad 0x6f6239315a5f5f31,0x6e4979646f427964,0x6f69746361726574,0x3374616f6c66366e\n"
-".quad 0x533474616f6c6636,0x090a3b5d302b5f30,0x203233662e766f6d,0x6625202c32662509\n"
-".quad 0x702e646c090a3b31,0x3233662e6d617261,0x5b202c3366250920,0x6170616475635f5f\n"
-".quad 0x315a5f5f31666d72,0x646f4279646f6239,0x63617265746e4979,0x6f6c66366e6f6974\n"
-".quad 0x616f6c6636337461,0x5d342b5f30533474,0x662e766f6d090a3b,0x2c34662509203233\n"
-".quad 0x6c090a3b33662520,0x2e6d617261702e64,0x3566250920323366,0x6475635f5f5b202c\n"
-".quad 0x5f31666d72617061,0x79646f6239315a5f,0x65746e4979646f42,0x366e6f6974636172\n"
-".quad 0x66363374616f6c66,0x5f30533474616f6c,0x6f6d090a3b5d382b,0x2509203233662e76\n"
-".quad 0x3b356625202c3666,0x7261702e646c090a,0x09203233662e6d61,0x5f5f5b202c376625\n"
-".quad 0x6d72617061647563,0x6239315a5f5f3266,0x4979646f4279646f,0x697463617265746e\n"
-".quad 0x74616f6c66366e6f,0x3474616f6c663633,0x0a3b5d302b5f3053,0x3233662e766f6d09\n"
-".quad 0x25202c3866250920,0x2e646c090a3b3766,0x33662e6d61726170,0x202c396625092032\n"
-".quad 0x70616475635f5f5b,0x5a5f5f32666d7261,0x6f4279646f623931,0x617265746e497964\n"
-".quad 0x6c66366e6f697463,0x6f6c66363374616f,0x342b5f3053347461,0x2e766f6d090a3b5d\n"
-".quad 0x3166250920323366,0x0a3b396625202c30,0x617261702e646c09,0x2509203233662e6d\n"
-".quad 0x5f5f5b202c313166,0x6d72617061647563,0x6239315a5f5f3266,0x4979646f4279646f\n"
-".quad 0x697463617265746e,0x74616f6c66366e6f,0x3474616f6c663633,0x0a3b5d382b5f3053\n"
-".quad 0x3233662e766f6d09,0x202c323166250920,0x6c090a3b31316625,0x2e6d617261702e64\n"
-".quad 0x3166250920323366,0x75635f5f5b202c33,0x33666d7261706164,0x646f6239315a5f5f\n"
-".quad 0x746e4979646f4279,0x6e6f697463617265,0x363374616f6c6636,0x30533474616f6c66\n"
-".quad 0x6d090a3b5d302b5f,0x09203233662e766f,0x6625202c34316625,0x2e646c090a3b3331\n"
-".quad 0x33662e6d61726170,0x2c35316625092032,0x616475635f5f5b20,0x5f5f33666d726170\n"
-".quad 0x4279646f6239315a,0x7265746e4979646f,0x66366e6f69746361,0x6c66363374616f6c\n"
-".quad 0x2b5f30533474616f,0x766f6d090a3b5d34,0x662509203233662e,0x35316625202c3631\n"
-".quad 0x61702e646c090a3b,0x203233662e6d6172,0x5b202c3731662509,0x6170616475635f5f\n"
-".quad 0x315a5f5f33666d72,0x646f4279646f6239,0x63617265746e4979,0x6f6c66366e6f6974\n"
-".quad 0x616f6c6636337461,0x5d382b5f30533474,0x662e766f6d090a3b,0x3831662509203233\n"
-".quad 0x0a3b37316625202c,0x617261702e646c09,0x2509203233662e6d,0x5f5f5b202c393166\n"
-".quad 0x6d72617061647563,0x6239315a5f5f3366,0x4979646f4279646f,0x697463617265746e\n"
-".quad 0x74616f6c66366e6f,0x3474616f6c663633,0x3b5d32312b5f3053,0x33662e766f6d090a\n"
-".quad 0x2c30326625092032,0x090a3b3931662520,0x09363109636f6c2e,0x7573090a30093637\n"
-".quad 0x2509203233662e62,0x386625202c313266,0x0a3b34316625202c,0x3233662e62757309\n"
-".quad 0x202c323266250920,0x6625202c30316625,0x627573090a3b3631,0x662509203233662e\n"
-".quad 0x32316625202c3332,0x0a3b38316625202c,0x3233662e6c756d09,0x202c343266250920\n"
-".quad 0x6625202c32326625,0x616d66090a3b3232,0x203233662e6e722e,0x25202c3532662509\n"
-".quad 0x326625202c313266,0x3b34326625202c31,0x6e722e616d66090a,0x662509203233662e\n"
-".quad 0x33326625202c3632,0x202c33326625202c,0x6c090a3b35326625,0x2e74736e6f632e64\n"
-".quad 0x3266250920323366,0x74666f735b202c37,0x757153676e696e65,0x090a3b5d64657261\n"
-".quad 0x203233662e646461,0x25202c3832662509,0x326625202c373266,0x74727173090a3b36\n"
-".quad 0x203233662e6e722e,0x25202c3932662509,0x6372090a3b383266,0x3233662e6e722e70\n"
-".quad 0x202c303366250920,0x6d090a3b39326625,0x09203233662e6c75,0x6625202c31336625\n"
-".quad 0x30336625202c3033,0x662e6c756d090a3b,0x3233662509203233,0x202c30336625202c\n"
-".quad 0x6d090a3b31336625,0x09203233662e6c75,0x6625202c33336625,0x30326625202c3233\n"
-".quad 0x722e616d66090a3b,0x2509203233662e6e,0x326625202c343366,0x2c33336625202c31\n"
-".quad 0x2e090a3b32662520,0x3709363109636f6c,0x616d66090a300937,0x203233662e6e722e\n"
-".quad 0x25202c3533662509,0x326625202c333366,0x0a3b346625202c32,0x363109636f6c2e09\n"
-".quad 0x66090a3009383709,0x33662e6e722e616d,0x2c36336625092032,0x25202c3333662520\n"
-".quad 0x366625202c333266,0x09636f6c2e090a3b,0x0a30093038093631,0x3233662e766f6d09\n"
-".quad 0x202c373366250920,0x73090a3b34336625,0x2e6d617261702e74,0x5f5f5b0920323366\n"
-".quad 0x6674657261647563,0x646f6239315a5f5f,0x746e4979646f4279,0x6e6f697463617265\n"
-".quad 0x363374616f6c6636,0x30533474616f6c66,0x6625202c5d302b5f,0x766f6d090a3b3733\n"
-".quad 0x662509203233662e,0x35336625202c3833,0x61702e7473090a3b,0x203233662e6d6172\n"
-".quad 0x616475635f5f5b09,0x315a5f5f66746572,0x646f4279646f6239,0x63617265746e4979\n"
-".quad 0x6f6c66366e6f6974,0x616f6c6636337461,0x5d342b5f30533474,0x0a3b38336625202c\n"
-".quad 0x3233662e766f6d09,0x202c393366250920,0x73090a3b36336625,0x2e6d617261702e74\n"
-".quad 0x5f5f5b0920323366,0x6674657261647563,0x646f6239315a5f5f,0x746e4979646f4279\n"
-".quad 0x6e6f697463617265,0x363374616f6c6636,0x30533474616f6c66,0x6625202c5d382b5f\n"
-".quad 0x746572090a3b3933,0x6e6557444c240a3b,0x6f6239315a5f5f64,0x6e4979646f427964\n"
-".quad 0x6f69746361726574,0x3374616f6c66366e,0x533474616f6c6636,0x2f207d090a3a5f30\n"
-".quad 0x6f6239315a5f202f,0x6e4979646f427964,0x6f69746361726574,0x3374616f6c66366e\n"
-".quad 0x533474616f6c6636,0x7478652e090a5f30,0x6168732e096e7265,0x696c612e20646572\n"
-".quad 0x622e203631206e67,0x6465726168732038,0x0a0a3b5d5b736f50,0x6c62697369762e09\n"
-".quad 0x20636e75662e2065,0x206d617261702e28,0x34206e67696c612e,0x635f5f2038622e20\n"
-".quad 0x5f66746572616475,0x7661726731315a5f,0x366e6f6974617469,0x66363474616f6c66\n"
-".quad 0x32315b3374616f6c,0x6731315a5f20295d,0x6974617469766172,0x74616f6c66366e6f\n"
-".quad 0x3374616f6c663634,0x6d617261702e2820,0x206e67696c612e20,0x5f2038622e203631\n"
-".quad 0x726170616475635f,0x31315a5f5f31666d,0x7461746976617267,0x616f6c66366e6f69\n"
-".quad 0x74616f6c66363474,0x2e202c5d36315b33,0x612e206d61726170,0x2e2034206e67696c\n"
-".quad 0x6475635f5f203862,0x5f32666d72617061,0x7661726731315a5f,0x366e6f6974617469\n"
-".quad 0x66363474616f6c66,0x32315b3374616f6c,0x2e090a7b090a295d,0x3233752e20676572\n"
-".quad 0x3b3e38313c722520,0x2e206765722e090a,0x393c662520323366,0x65722e090a3b3e32\n"
-".quad 0x20646572702e2067,0x090a3b3e343c7025,0x09363109636f6c2e,0x444c240a30093638\n"
-".quad 0x5f5f6e6967656257,0x697661726731315a,0x66366e6f69746174,0x6c66363474616f6c\n"
-".quad 0x6c090a3a3374616f,0x2e6d617261702e64,0x3166250920323366,0x6475635f5f5b202c\n"
-".quad 0x5f31666d72617061,0x7661726731315a5f,0x366e6f6974617469,0x66363474616f6c66\n"
-".quad 0x5d302b3374616f6c,0x662e766f6d090a3b,0x2c32662509203233,0x6c090a3b31662520\n"
-".quad 0x2e6d617261702e64,0x3366250920323366,0x6475635f5f5b202c,0x5f31666d72617061\n"
-".quad 0x7661726731315a5f,0x366e6f6974617469,0x66363474616f6c66,0x5d342b3374616f6c\n"
-".quad 0x662e766f6d090a3b,0x2c34662509203233,0x6c090a3b33662520,0x2e6d617261702e64\n"
-".quad 0x3566250920323366,0x6475635f5f5b202c,0x5f31666d72617061,0x7661726731315a5f\n"
-".quad 0x366e6f6974617469,0x66363474616f6c66,0x5d382b3374616f6c,0x662e766f6d090a3b\n"
-".quad 0x2c36662509203233,0x6c090a3b35662520,0x2e6d617261702e64,0x3766250920323366\n"
-".quad 0x6475635f5f5b202c,0x5f31666d72617061,0x7661726731315a5f,0x366e6f6974617469\n"
-".quad 0x66363474616f6c66,0x32312b3374616f6c,0x2e766f6d090a3b5d,0x3866250920323366\n"
-".quad 0x090a3b376625202c,0x6d617261702e646c,0x662509203233662e,0x75635f5f5b202c39\n"
-".quad 0x32666d7261706164,0x61726731315a5f5f,0x6e6f697461746976,0x363474616f6c6636\n"
-".quad 0x302b3374616f6c66,0x2e766f6d090a3b5d,0x3166250920323366,0x0a3b396625202c30\n"
-".quad 0x617261702e646c09,0x2509203233662e6d,0x5f5f5b202c313166,0x6d72617061647563\n"
-".quad 0x6731315a5f5f3266,0x6974617469766172,0x74616f6c66366e6f,0x3374616f6c663634\n"
-".quad 0x6f6d090a3b5d342b,0x2509203233662e76,0x316625202c323166,0x702e646c090a3b31\n"
-".quad 0x3233662e6d617261,0x202c333166250920,0x70616475635f5f5b,0x5a5f5f32666d7261\n"
-".quad 0x7469766172673131,0x6c66366e6f697461,0x6f6c66363474616f,0x0a3b5d382b337461\n"
-".quad 0x3233662e766f6d09,0x202c343166250920,0x6d090a3b33316625,0x09203233752e766f\n"
-".quad 0x746e25202c317225,0x6d090a3b782e6469,0x09203233752e766f,0x0a3b30202c327225\n"
-".quad 0x71652e7074657309,0x702509203233752e,0x202c317225202c31,0x2540090a3b327225\n"
-".quad 0x0920617262203170,0x32315f315f744c24,0x646461090a3b3238,0x722509203233752e\n"
-".quad 0x202c317225202c33,0x2e726873090a3b33,0x3472250920323373,0x33202c337225202c\n"
-".quad 0x2e766f6d090a3b31,0x3572250920323373,0x6e61090a3b33202c,0x2509203233622e64\n"
-".quad 0x2c347225202c3672,0x61090a3b35722520,0x09203233732e6464,0x367225202c377225\n"
-".quad 0x090a3b337225202c,0x203233732e726873,0x7225202c38722509,0x6d090a3b32202c37\n"
-".quad 0x09203233752e766f,0x697425202c397225,0x756d090a3b792e64,0x3233752e6f6c2e6c\n"
-".quad 0x202c303172250920,0x317225202c397225,0x6c2e6c756d090a3b,0x2509203233752e6f\n"
-".quad 0x317225202c313172,0x090a3b3631202c30,0x203233752e766f6d,0x73202c3231722509\n"
-".quad 0x736f506465726168,0x752e646461090a3b,0x3331722509203233,0x202c31317225202c\n"
-".quad 0x6c090a3b32317225,0x2e74736e6f632e64,0x3166250920323366,0x74666f735b202c35\n"
-".quad 0x757153676e696e65,0x090a3b5d64657261,0x203233752e766f6d,0x30202c3431722509\n"
-".quad 0x732e766f6d090a3b,0x3531722509203233,0x240a3b387225202c,0x3937315f315f744c\n"
-".quad 0x6c3c2f2f200a3a34,0x6f6f4c203e706f6f,0x6c2079646f622070,0x202c363820656e69\n"
-".quad 0x20676e697473656e,0x31203a6874706564,0x616d69747365202c,0x7265746920646574\n"
-".quad 0x203a736e6f697461,0x0a6e776f6e6b6e75,0x726168732e646c09,0x33662e34762e6465\n"
-".quad 0x363166257b092032,0x66252c373166252c,0x5b202c7d5f2c3831,0x3b5d302b33317225\n"
-".quad 0x6168732e646c090a,0x662e34762e646572,0x3166257b09203233,0x252c303266252c39\n"
-".quad 0x202c7d5f2c313266,0x36312b333172255b,0x636f6c2e090a3b5d,0x3009363709363109\n"
-".quad 0x33662e627573090a,0x2c32326625092032,0x25202c3631662520,0x627573090a3b3266\n"
-".quad 0x662509203233662e,0x37316625202c3332,0x090a3b346625202c,0x203233662e627573\n"
-".quad 0x25202c3432662509,0x366625202c383166,0x662e627573090a3b,0x3532662509203233\n"
-".quad 0x202c39316625202c,0x7573090a3b326625,0x2509203233662e62,0x326625202c363266\n"
-".quad 0x0a3b346625202c30,0x3233662e62757309,0x202c373266250920,0x6625202c31326625\n"
-".quad 0x2e6c756d090a3b36,0x3266250920323366,0x2c33326625202c38,0x090a3b3332662520\n"
-".quad 0x203233662e6c756d,0x25202c3932662509,0x326625202c363266,0x2e616d66090a3b36\n"
-".quad 0x09203233662e6e72,0x6625202c30336625,0x32326625202c3232,0x0a3b38326625202c\n"
-".quad 0x2e6e722e616d6609,0x3366250920323366,0x2c35326625202c31,0x25202c3532662520\n"
-".quad 0x6d66090a3b393266,0x3233662e6e722e61,0x202c323366250920,0x6625202c34326625\n"
-".quad 0x30336625202c3432,0x722e616d66090a3b,0x2509203233662e6e,0x326625202c333366\n"
-".quad 0x2c37326625202c37,0x090a3b3133662520,0x203233662e646461,0x25202c3433662509\n"
-".quad 0x316625202c323366,0x2e646461090a3b35,0x3366250920323366,0x2c33336625202c35\n"
-".quad 0x090a3b3531662520,0x2e6e722e74727173,0x3366250920323366,0x3b34336625202c36\n"
-".quad 0x722e74727173090a,0x2509203233662e6e,0x336625202c373366,0x2e706372090a3b35\n"
-".quad 0x09203233662e6e72,0x6625202c38336625,0x706372090a3b3633,0x203233662e6e722e\n"
-".quad 0x25202c3933662509,0x756d090a3b373366,0x2509203233662e6c,0x336625202c303466\n"
-".quad 0x3b38336625202c38,0x33662e6c756d090a,0x2c31346625092032,0x25202c3933662520\n"
-".quad 0x756d090a3b393366,0x2509203233662e6c,0x336625202c323466,0x3b30346625202c38\n"
-".quad 0x33662e6c756d090a,0x2c33346625092032,0x25202c3933662520,0x756d090a3b313466\n"
-".quad 0x2509203233662e6c,0x346625202c343466,0x0a3b386625202c32,0x3233662e6c756d09\n"
-".quad 0x202c353466250920,0x6625202c33346625,0x2e616d66090a3b38,0x09203233662e6e72\n"
-".quad 0x6625202c36346625,0x34346625202c3232,0x0a3b30316625202c,0x2e6e722e616d6609\n"
-".quad 0x3466250920323366,0x2c35326625202c37,0x25202c3534662520,0x6c2e090a3b363466\n"
-".quad 0x373709363109636f,0x2e616d66090a3009,0x09203233662e6e72,0x6625202c38346625\n"
-".quad 0x33326625202c3434,0x0a3b32316625202c,0x2e6e722e616d6609,0x3466250920323366\n"
-".quad 0x2c35346625202c39,0x25202c3632662520,0x6c2e090a3b383466,0x383709363109636f\n"
-".quad 0x2e616d66090a3009,0x09203233662e6e72,0x6625202c30356625,0x34326625202c3434\n"
-".quad 0x0a3b34316625202c,0x2e6e722e616d6609,0x3566250920323366,0x2c35346625202c31\n"
-".quad 0x25202c3732662520,0x646c090a3b303566,0x2e6465726168732e,0x09203233662e3476\n"
-".quad 0x66252c323566257b,0x2c343566252c3335,0x3172255b202c7d5f,0x090a3b5d32332b33\n"
-".quad 0x09363109636f6c2e,0x61090a3009383131,0x09203233752e6464,0x7225202c36317225\n"
-".quad 0x090a3b34202c3431,0x203233732e766f6d,0x25202c3431722509,0x6461090a3b363172\n"
-".quad 0x2509203233752e64,0x317225202c333172,0x090a3b3436202c33,0x65726168732e646c\n"
-".quad 0x3233662e34762e64,0x2c353566257b0920,0x3566252c36356625,0x255b202c7d5f2c37\n"
-".quad 0x5d36312d2b333172,0x09636f6c2e090a3b,0x0a30093637093631,0x3233662e62757309\n"
-".quad 0x202c383566250920,0x6625202c32356625,0x2e627573090a3b32,0x3566250920323366\n"
-".quad 0x2c33356625202c39,0x73090a3b34662520,0x09203233662e6275,0x6625202c30366625\n"
-".quad 0x3b366625202c3435,0x33662e627573090a,0x2c31366625092032,0x25202c3535662520\n"
-".quad 0x627573090a3b3266,0x662509203233662e,0x36356625202c3236,0x090a3b346625202c\n"
-".quad 0x203233662e627573,0x25202c3336662509,0x366625202c373566,0x662e6c756d090a3b\n"
-".quad 0x3436662509203233,0x202c39356625202c,0x6d090a3b39356625,0x09203233662e6c75\n"
-".quad 0x6625202c35366625,0x32366625202c3236,0x722e616d66090a3b,0x2509203233662e6e\n"
-".quad 0x356625202c363666,0x2c38356625202c38,0x090a3b3436662520,0x662e6e722e616d66\n"
-".quad 0x3736662509203233,0x202c31366625202c,0x6625202c31366625,0x616d66090a3b3536\n"
-".quad 0x203233662e6e722e,0x25202c3836662509,0x366625202c303666,0x3b36366625202c30\n"
-".quad 0x6e722e616d66090a,0x662509203233662e,0x33366625202c3936,0x202c33366625202c\n"
-".quad 0x61090a3b37366625,0x09203233662e6464,0x6625202c30376625,0x35316625202c3836\n"
-".quad 0x662e646461090a3b,0x3137662509203233,0x202c39366625202c,0x73090a3b35316625\n"
-".quad 0x662e6e722e747271,0x3237662509203233,0x0a3b30376625202c,0x6e722e7472717309\n"
-".quad 0x662509203233662e,0x31376625202c3337,0x722e706372090a3b,0x2509203233662e6e\n"
-".quad 0x376625202c343766,0x2e706372090a3b32,0x09203233662e6e72,0x6625202c35376625\n"
-".quad 0x6c756d090a3b3337,0x662509203233662e,0x34376625202c3637,0x0a3b34376625202c\n"
-".quad 0x3233662e6c756d09,0x202c373766250920,0x6625202c35376625,0x6c756d090a3b3537\n"
-".quad 0x662509203233662e,0x34376625202c3837,0x0a3b36376625202c,0x3233662e6c756d09\n"
-".quad 0x202c393766250920,0x6625202c35376625,0x6c756d090a3b3737,0x662509203233662e\n"
-".quad 0x38376625202c3038,0x090a3b386625202c,0x203233662e6c756d,0x25202c3138662509\n"
-".quad 0x386625202c393766,0x722e616d66090a3b,0x2509203233662e6e,0x356625202c323866\n"
-".quad 0x2c30386625202c38,0x090a3b3734662520,0x662e6e722e616d66,0x3338662509203233\n"
-".quad 0x202c31366625202c,0x6625202c31386625,0x6f6c2e090a3b3238,0x0937370936310963\n"
-".quad 0x722e616d66090a30,0x2509203233662e6e,0x386625202c343866,0x2c39356625202c30\n"
-".quad 0x090a3b3934662520,0x662e6e722e616d66,0x3538662509203233,0x202c31386625202c\n"
-".quad 0x6625202c32366625,0x6f6c2e090a3b3438,0x0938370936310963,0x722e616d66090a30\n"
-".quad 0x2509203233662e6e,0x386625202c363866,0x2c30366625202c30,0x090a3b3135662520\n"
-".quad 0x662e6e722e616d66,0x3738662509203233,0x202c31386625202c,0x6625202c33366625\n"
-".quad 0x6f6c2e090a3b3638,0x3831310936310963,0x2e766f6d090a3009,0x3166250920323366\n"
-".quad 0x3b33386625202c30,0x33662e766f6d090a,0x2c32316625092032,0x090a3b3538662520\n"
-".quad 0x203233662e766f6d,0x25202c3431662509,0x6573090a3b373866,0x33752e746c2e7074\n"
-".quad 0x202c327025092032,0x7225202c36317225,0x32702540090a3b31,0x4c24092061726220\n"
-".quad 0x343937315f315f74,0x5f315f744c240a3b,0x2e090a3a32383231,0x3109363109636f6c\n"
-".quad 0x6f6d090a30093033,0x2509203233662e76,0x316625202c383866,0x702e7473090a3b30\n"
-".quad 0x3233662e6d617261,0x6475635f5f5b0920,0x5a5f5f6674657261,0x7469766172673131\n"
-".quad 0x6c66366e6f697461,0x6f6c66363474616f,0x202c5d302b337461,0x6d090a3b38386625\n"
-".quad 0x09203233662e766f,0x6625202c39386625,0x2e7473090a3b3231,0x33662e6d61726170\n"
-".quad 0x75635f5f5b092032,0x5f5f667465726164,0x697661726731315a,0x66366e6f69746174\n"
-".quad 0x6c66363474616f6c,0x2c5d342b3374616f,0x090a3b3938662520,0x203233662e766f6d\n"
-".quad 0x25202c3039662509,0x7473090a3b343166,0x662e6d617261702e,0x635f5f5b09203233\n"
-".quad 0x5f66746572616475,0x7661726731315a5f,0x366e6f6974617469,0x66363474616f6c66\n"
-".quad 0x5d382b3374616f6c,0x0a3b30396625202c,0x4c240a3b74657209,0x5a5f5f646e655744\n"
-".quad 0x7469766172673131,0x6c66366e6f697461,0x6f6c66363474616f,0x207d090a3a337461\n"
-".quad 0x6731315a5f202f2f,0x6974617469766172,0x74616f6c66366e6f,0x3374616f6c663634\n"
-".quad 0x0000000000000a0a\n"
+".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x202f2f090a2d2d2d,0x3a74656772615420\n"
+".quad 0x415349202c787470,0x202c33315f6d733a,0x6c3a6e6169646e45,0x50202c656c747469\n"
+".quad 0x53207265746e696f,0x090a34363a657a69,0x09334f2d20202f2f,0x7a696d6974704f28\n"
+".quad 0x656c206e6f697461,0x2f2f090a296c6576,0x44280930672d2020,0x76656c2067756265\n"
+".quad 0x202f2f090a296c65,0x65522809326d2d20,0x7664612074726f70,0x29736569726f7369\n"
+".quad 0x2d2d2d2d2f2f090a,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
+".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x0a2d2d2d2d2d2d2d\n"
+".quad 0x09656c69662e090a,0x6d6d6f633c220931,0x656e696c2d646e61,0x6c69662e090a223e\n"
+".quad 0x6d742f2209320965,0x746678706d742f70,0x613032303030305f,0x3030303030305f33\n"
+".quad 0x6f626e5f362d3030,0x656e72656b5f7964,0x6566616475632e6c,0x090a227570672e32\n"
+".quad 0x093309656c69662e,0x696c2f7273752f22,0x36692f6363672f62,0x78756e696c2d3638\n"
+".quad 0x342e342f756e672d,0x756c636e692f352e,0x65646474732f6564,0x662e090a22682e66\n"
+".quad 0x2f22093409656c69,0x61636f6c2f727375,0x622f616475632f6c,0x6e692f2e2e2f6e69\n"
+".quad 0x72632f6564756c63,0x6563697665642f74,0x656d69746e75725f,0x69662e090a22682e\n"
+".quad 0x752f22093509656c,0x6c61636f6c2f7273,0x69622f616475632f,0x636e692f2e2e2f6e\n"
+".quad 0x736f682f6564756c,0x656e696665645f74,0x662e090a22682e73,0x2f22093609656c69\n"
+".quad 0x61636f6c2f727375,0x622f616475632f6c,0x6e692f2e2e2f6e69,0x75622f6564756c63\n"
+".quad 0x79745f6e69746c69,0x090a22682e736570,0x093709656c69662e,0x6f6c2f7273752f22\n"
+".quad 0x616475632f6c6163,0x2f2e2e2f6e69622f,0x2f6564756c636e69,0x745f656369766564\n"
+".quad 0x0a22682e73657079,0x3809656c69662e09,0x6c2f7273752f2209,0x6475632f6c61636f\n"
+".quad 0x2e2e2f6e69622f61,0x6564756c636e692f,0x5f7265766972642f,0x22682e7365707974\n"
+".quad 0x09656c69662e090a,0x2f7273752f220939,0x75632f6c61636f6c,0x2e2f6e69622f6164\n"
+".quad 0x64756c636e692f2e,0x6361667275732f65,0x2e73657079745f65,0x6c69662e090a2268\n"
+".quad 0x752f220930310965,0x6c61636f6c2f7273,0x69622f616475632f,0x636e692f2e2e2f6e\n"
+".quad 0x7865742f6564756c,0x7079745f65727574,0x2e090a22682e7365,0x09313109656c6966\n"
+".quad 0x6f6c2f7273752f22,0x616475632f6c6163,0x2f2e2e2f6e69622f,0x2f6564756c636e69\n"
+".quad 0x745f726f74636576,0x0a22682e73657079,0x3109656c69662e09,0x2f7273752f220932\n"
+".quad 0x75632f6c61636f6c,0x2e2f6e69622f6164,0x64756c636e692f2e,0x6563697665642f65\n"
+".quad 0x5f68636e75616c5f,0x6574656d61726170,0x2e090a22682e7372,0x09333109656c6966\n"
+".quad 0x6f6c2f7273752f22,0x616475632f6c6163,0x2f2e2e2f6e69622f,0x2f6564756c636e69\n"
+".quad 0x726f74732f747263,0x73616c635f656761,0x662e090a22682e73,0x2209343109656c69\n"
+".quad 0x636e692f7273752f,0x7469622f6564756c,0x2e73657079742f73,0x6c69662e090a2268\n"
+".quad 0x752f220935310965,0x756c636e692f7273,0x2e656d69742f6564,0x6c69662e090a2268\n"
+".quad 0x682f220936310965,0x6d726f6e2f656d6f,0x6b636568632f6c61,0x6f7570672f74756f\n"
+".quad 0x65742f746f6c6563,0x616475632f737473,0x747365742f322e32,0x2f79646f626e2f73\n"
+".quad 0x656b5f79646f626e,0x2275632e6c656e72,0x09656c69662e090a,0x7273752f22093731\n"
+".quad 0x632f6c61636f6c2f,0x2f6e69622f616475,0x756c636e692f2e2e,0x6f6d6d6f632f6564\n"
+".quad 0x6974636e75665f6e,0x090a22682e736e6f,0x383109656c69662e,0x6c2f7273752f2209\n"
+".quad 0x6475632f6c61636f,0x2e2e2f6e69622f61,0x6564756c636e692f,0x75665f6874616d2f\n"
+".quad 0x2e736e6f6974636e,0x6c69662e090a2268,0x752f220939310965,0x6c61636f6c2f7273\n"
+".quad 0x69622f616475632f,0x636e692f2e2e2f6e,0x74616d2f6564756c,0x6174736e6f635f68\n"
+".quad 0x090a22682e73746e,0x303209656c69662e,0x6c2f7273752f2209,0x6475632f6c61636f\n"
+".quad 0x2e2e2f6e69622f61,0x6564756c636e692f,0x5f6563697665642f,0x6e6f6974636e7566\n"
+".quad 0x662e090a22682e73,0x2209313209656c69,0x636f6c2f7273752f,0x2f616475632f6c61\n"
+".quad 0x692f2e2e2f6e6962,0x732f6564756c636e,0x6f74615f31315f6d,0x636e75665f63696d\n"
+".quad 0x22682e736e6f6974,0x09656c69662e090a,0x7273752f22093232,0x632f6c61636f6c2f\n"
+".quad 0x2f6e69622f616475,0x756c636e692f2e2e,0x32315f6d732f6564,0x5f63696d6f74615f\n"
+".quad 0x6e6f6974636e7566,0x662e090a22682e73,0x2209333209656c69,0x636f6c2f7273752f\n"
+".quad 0x2f616475632f6c61,0x692f2e2e2f6e6962,0x732f6564756c636e,0x756f645f33315f6d\n"
+".quad 0x636e75665f656c62,0x22682e736e6f6974,0x09656c69662e090a,0x7273752f22093432\n"
+".quad 0x632f6c61636f6c2f,0x2f6e69622f616475,0x756c636e692f2e2e,0x30325f6d732f6564\n"
+".quad 0x5f63696d6f74615f,0x6e6f6974636e7566,0x662e090a22682e73,0x2209353209656c69\n"
+".quad 0x636f6c2f7273752f,0x2f616475632f6c61,0x692f2e2e2f6e6962,0x732f6564756c636e\n"
+".quad 0x746e695f30325f6d,0x2e736369736e6972,0x6c69662e090a2268,0x752f220936320965\n"
+".quad 0x6c61636f6c2f7273,0x69622f616475632f,0x636e692f2e2e2f6e,0x7275732f6564756c\n"
+".quad 0x6e75665f65636166,0x682e736e6f697463,0x656c69662e090a22,0x73752f2209373209\n"
+".quad 0x2f6c61636f6c2f72,0x6e69622f61647563,0x6c636e692f2e2e2f,0x747865742f656475\n"
+".quad 0x637465665f657275,0x6974636e75665f68,0x090a22682e736e6f,0x383209656c69662e\n"
+".quad 0x6c2f7273752f2209,0x6475632f6c61636f,0x2e2e2f6e69622f61,0x6564756c636e692f\n"
+".quad 0x75665f6874616d2f,0x5f736e6f6974636e,0x337874705f6c6264,0x652e090a0a22682e\n"
+".quad 0x732e096e72657478,0x612e206465726168,0x203631206e67696c,0x726168732038622e\n"
+".quad 0x3b5d5b736f506465,0x74736e6f632e090a,0x6f73203233662e20,0x53676e696e657466\n"
+".quad 0x0a3b646572617571,0x000000000000000a\n"
 ".text");
 
 extern "C" {
 
-extern const unsigned long long __deviceText_$compute_20$[1217];
+extern const unsigned long long __deviceText_$compute_13$[306];
 
 }
 
-asm(
-".section .rodata\n"
-".align 32\n"
-"__deviceText_$sm_20$:\n"
-".quad 0x33010101464c457f,0x0000000000000004,0x0000000100be0002,0x000001d800000000\n"
-".quad 0x0014011400000034,0x0028000200200034,0x0000000000010005,0x0000000000000000\n"
-".quad 0x0000000000000000,0x0000000000000000,0x0000000000000000,0x0000000100000000\n"
-".quad 0x0000000000000003,0x000000fc00000000,0x0000000000000044,0x0000000400000000\n"
-".quad 0x0000000b00000000,0x0000000000000003,0x0000014000000000,0x0000000000000012\n"
-".quad 0x0000000100000000,0x0000001300000000,0x0000000000000002,0x0000015200000000\n"
-".quad 0x0000000200000080,0x0000000100000007,0x0000003600000010,0x0000000200000001\n"
-".quad 0x000001d200000000,0x0000000000000004,0x0000000400000000,0x68732e0000000000\n"
-".quad 0x2e00626174727473,0x2e00626174727473,0x2e006261746d7973,0x61626f6c672e766e\n"
-".quad 0x2e0074696e692e6c,0x61626f6c672e766e,0x6f632e766e2e006c,0x0032746e6174736e\n"
-".quad 0x696e6574666f7300,0x657261757153676e,0x0000000000000064,0x0000000000000000\n"
-".quad 0x0000000000000000,0x0003000000000000,0x0000000000000001,0x0003000000000000\n"
-".quad 0x0000000000000002,0x0003000000000000,0x0000000000000003,0x0003000000000000\n"
-".quad 0x0000000000000000,0x0003000000000000,0x0000000000000000,0x0003000000000000\n"
-".quad 0x0000000000010004,0x0011000000040000,0x0000000000000004,0x000001d800000006\n"
-".quad 0x0000000000000000,0x0000004000000040,0x0000000400000005,0x000001d200000001\n"
-".quad 0x0000000000000000,0x0000000400000004,0x0000000400000005,0x0000000000000000\n"
-".text");
-
-extern "C" {
-
-extern const unsigned long long __deviceText_$sm_20$[68];
-
-}
-
-static __cudaFatPtxEntry __ptxEntries [] = {{(char*)"compute_20",(char*)__deviceText_$compute_20$},{0,0}};
+static __cudaFatPtxEntry __ptxEntries [] = {{(char*)"compute_13",(char*)__deviceText_$compute_13$},{0,0}};
 static __cudaFatCubinEntry __cubinEntries[] = {{0,0}};
 static __cudaFatDebugEntry __debugEntries0 = {0, 0, 0, 0} ;
 static __cudaFatElfEntry __elfEntries0 = {0, 0, 0, 0} ;
-static __cudaFatElfEntry __elfEntries1 = {(char*)"sm_20", (char*)__deviceText_$sm_20$, &__elfEntries0, (unsigned int)sizeof(__deviceText_$sm_20$)};
+static __cudaFatElfEntry __elfEntries1 = {(char*)"sm_13", (char*)__deviceText_$sm_13$, &__elfEntries0, (unsigned int)sizeof(__deviceText_$sm_13$)};
 
 
 
-static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000004,0xa14f518d,(char*)"46359f161dc5b18f",(char*)"/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/nbody/nbody_kernel.cu",(char*)" ",__ptxEntries,__cubinEntries,&__debugEntries0,0,0,0,0,0,0x7843ef86,&__elfEntries1};
-# 3 "/tmp/tmpxft_00006f1f_00000000-1_nbody_kernel.cudafe1.stub.c" 2
-static void __sti____cudaRegisterAll_47_tmpxft_00006f1f_00000000_4_nbody_kernel_cpp1_ii_0d741ed4(void) __attribute__((__constructor__));
-static void __sti____cudaRegisterAll_47_tmpxft_00006f1f_00000000_4_nbody_kernel_cpp1_ii_0d741ed4(void){__cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil);__cudaRegisterVar(__cudaFatCubinHandle, (char*)&softeningSquared, (char*)"softeningSquared", "softeningSquared", 0, 4, 1, 0);}
-# 1 "/tmp/tmpxft_00006f1f_00000000-1_nbody_kernel.cudafe1.stub.c" 2
+static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000004,0xa14f518d,(char*)"e04227f21e9e5103",(char*)"/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/nbody/nbody_kernel.cu",(char*)" ",__ptxEntries,__cubinEntries,&__debugEntries0,0,0,0,0,0,0xf055b1b9,&__elfEntries1};
+# 3 "/tmp/tmpxft_000020a3_00000000-1_nbody_kernel.cudafe1.stub.c" 2
+static void __sti____cudaRegisterAll_47_tmpxft_000020a3_00000000_4_nbody_kernel_cpp1_ii_0d741ed4(void) __attribute__((__constructor__));
+static void __sti____cudaRegisterAll_47_tmpxft_000020a3_00000000_4_nbody_kernel_cpp1_ii_0d741ed4(void){__cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil);__cudaRegisterVar(__cudaFatCubinHandle, (char*)&softeningSquared, (char*)"softeningSquared", "softeningSquared", 0, 4, 1, 0);}
+# 1 "/tmp/tmpxft_000020a3_00000000-1_nbody_kernel.cudafe1.stub.c" 2

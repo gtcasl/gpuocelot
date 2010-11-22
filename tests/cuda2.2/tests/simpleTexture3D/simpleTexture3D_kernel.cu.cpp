@@ -1,13 +1,13 @@
-# 1 "/tmp/tmpxft_00006962_00000000-1_simpleTexture3D_kernel.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00001aef_00000000-1_simpleTexture3D_kernel.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_00006962_00000000-1_simpleTexture3D_kernel.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00001aef_00000000-1_simpleTexture3D_kernel.cudafe1.cpp"
 # 1 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleTexture3D/simpleTexture3D_kernel.cu"
 # 46 "/usr/local/cuda/bin/../include/device_types.h"
 # 149 "/usr/lib/gcc/i686-linux-gnu/4.4.5/include/stddef.h" 3
-typedef int ptrdiff_t;
+typedef long ptrdiff_t;
 # 211 "/usr/lib/gcc/i686-linux-gnu/4.4.5/include/stddef.h" 3
-typedef unsigned size_t;
+typedef unsigned long size_t;
 # 1 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 1 3
 # 69 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 3
 # 1 "/usr/local/cuda/bin/../include/builtin_types.h" 1 3
@@ -1678,86 +1678,6 @@ int e = (((int)sizeof(unsigned)) * 8);
 return cudaCreateChannelDesc(e, e, e, e, cudaChannelFormatKindUnsigned);
 # 303 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 }
-# 307 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-template<> inline cudaChannelFormatDesc cudaCreateChannelDesc< long> ()
-# 308 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-{
-# 309 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-int e = (((int)sizeof(long)) * 8);
-# 311 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-return cudaCreateChannelDesc(e, 0, 0, 0, cudaChannelFormatKindSigned);
-# 312 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-}
-# 314 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-template<> inline cudaChannelFormatDesc cudaCreateChannelDesc< unsigned long> ()
-# 315 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-{
-# 316 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-int e = (((int)sizeof(unsigned long)) * 8);
-# 318 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-return cudaCreateChannelDesc(e, 0, 0, 0, cudaChannelFormatKindUnsigned);
-# 319 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-}
-# 321 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-template<> inline cudaChannelFormatDesc cudaCreateChannelDesc< long1> ()
-# 322 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-{
-# 323 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-int e = (((int)sizeof(long)) * 8);
-# 325 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-return cudaCreateChannelDesc(e, 0, 0, 0, cudaChannelFormatKindSigned);
-# 326 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-}
-# 328 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-template<> inline cudaChannelFormatDesc cudaCreateChannelDesc< ulong1> ()
-# 329 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-{
-# 330 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-int e = (((int)sizeof(unsigned long)) * 8);
-# 332 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-return cudaCreateChannelDesc(e, 0, 0, 0, cudaChannelFormatKindUnsigned);
-# 333 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-}
-# 335 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-template<> inline cudaChannelFormatDesc cudaCreateChannelDesc< long2> ()
-# 336 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-{
-# 337 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-int e = (((int)sizeof(long)) * 8);
-# 339 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-return cudaCreateChannelDesc(e, e, 0, 0, cudaChannelFormatKindSigned);
-# 340 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-}
-# 342 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-template<> inline cudaChannelFormatDesc cudaCreateChannelDesc< ulong2> ()
-# 343 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-{
-# 344 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-int e = (((int)sizeof(unsigned long)) * 8);
-# 346 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-return cudaCreateChannelDesc(e, e, 0, 0, cudaChannelFormatKindUnsigned);
-# 347 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-}
-# 349 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-template<> inline cudaChannelFormatDesc cudaCreateChannelDesc< long4> ()
-# 350 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-{
-# 351 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-int e = (((int)sizeof(long)) * 8);
-# 353 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-return cudaCreateChannelDesc(e, e, e, e, cudaChannelFormatKindSigned);
-# 354 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-}
-# 356 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-template<> inline cudaChannelFormatDesc cudaCreateChannelDesc< ulong4> ()
-# 357 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-{
-# 358 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-int e = (((int)sizeof(unsigned long)) * 8);
-# 360 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-return cudaCreateChannelDesc(e, e, e, e, cudaChannelFormatKindUnsigned);
-# 361 "/usr/local/cuda/bin/../include/channel_descriptor.h"
-}
 # 365 "/usr/local/cuda/bin/../include/channel_descriptor.h"
 template<> inline cudaChannelFormatDesc cudaCreateChannelDesc< float> ()
 # 366 "/usr/local/cuda/bin/../include/channel_descriptor.h"
@@ -2418,16 +2338,16 @@ extern "C" { typedef unsigned short __uint16_t; }
 extern "C" { typedef signed int __int32_t; }
 # 42 "/usr/include/bits/types.h" 3
 extern "C" { typedef unsigned __uint32_t; }
-# 47 "/usr/include/bits/types.h" 3
-extern "C" { typedef signed long long __int64_t; }
-# 48 "/usr/include/bits/types.h" 3
-extern "C" { typedef unsigned long long __uint64_t; }
-# 56 "/usr/include/bits/types.h" 3
-extern "C" { typedef long long __quad_t; }
-# 57 "/usr/include/bits/types.h" 3
-extern "C" { typedef unsigned long long __u_quad_t; }
+# 44 "/usr/include/bits/types.h" 3
+extern "C" { typedef signed long __int64_t; }
+# 45 "/usr/include/bits/types.h" 3
+extern "C" { typedef unsigned long __uint64_t; }
+# 53 "/usr/include/bits/types.h" 3
+extern "C" { typedef long __quad_t; }
+# 54 "/usr/include/bits/types.h" 3
+extern "C" { typedef unsigned long __u_quad_t; }
 # 134 "/usr/include/bits/types.h" 3
-extern "C" { typedef __u_quad_t __dev_t; }
+extern "C" { typedef unsigned long __dev_t; }
 # 135 "/usr/include/bits/types.h" 3
 extern "C" { typedef unsigned __uid_t; }
 # 136 "/usr/include/bits/types.h" 3
@@ -2435,15 +2355,15 @@ extern "C" { typedef unsigned __gid_t; }
 # 137 "/usr/include/bits/types.h" 3
 extern "C" { typedef unsigned long __ino_t; }
 # 138 "/usr/include/bits/types.h" 3
-extern "C" { typedef __u_quad_t __ino64_t; }
+extern "C" { typedef unsigned long __ino64_t; }
 # 139 "/usr/include/bits/types.h" 3
 extern "C" { typedef unsigned __mode_t; }
 # 140 "/usr/include/bits/types.h" 3
-extern "C" { typedef unsigned __nlink_t; }
+extern "C" { typedef unsigned long __nlink_t; }
 # 141 "/usr/include/bits/types.h" 3
 extern "C" { typedef long __off_t; }
 # 142 "/usr/include/bits/types.h" 3
-extern "C" { typedef __quad_t __off64_t; }
+extern "C" { typedef long __off64_t; }
 # 143 "/usr/include/bits/types.h" 3
 extern "C" { typedef int __pid_t; }
 # 144 "/usr/include/bits/types.h" 3
@@ -2453,7 +2373,7 @@ extern "C" { typedef long __clock_t; }
 # 146 "/usr/include/bits/types.h" 3
 extern "C" { typedef unsigned long __rlim_t; }
 # 147 "/usr/include/bits/types.h" 3
-extern "C" { typedef __u_quad_t __rlim64_t; }
+extern "C" { typedef unsigned long __rlim64_t; }
 # 148 "/usr/include/bits/types.h" 3
 extern "C" { typedef unsigned __id_t; }
 # 149 "/usr/include/bits/types.h" 3
@@ -2477,17 +2397,17 @@ extern "C" { typedef long __blksize_t; }
 # 169 "/usr/include/bits/types.h" 3
 extern "C" { typedef long __blkcnt_t; }
 # 170 "/usr/include/bits/types.h" 3
-extern "C" { typedef __quad_t __blkcnt64_t; }
+extern "C" { typedef long __blkcnt64_t; }
 # 173 "/usr/include/bits/types.h" 3
 extern "C" { typedef unsigned long __fsblkcnt_t; }
 # 174 "/usr/include/bits/types.h" 3
-extern "C" { typedef __u_quad_t __fsblkcnt64_t; }
+extern "C" { typedef unsigned long __fsblkcnt64_t; }
 # 177 "/usr/include/bits/types.h" 3
 extern "C" { typedef unsigned long __fsfilcnt_t; }
 # 178 "/usr/include/bits/types.h" 3
-extern "C" { typedef __u_quad_t __fsfilcnt64_t; }
+extern "C" { typedef unsigned long __fsfilcnt64_t; }
 # 180 "/usr/include/bits/types.h" 3
-extern "C" { typedef int __ssize_t; }
+extern "C" { typedef long __ssize_t; }
 # 184 "/usr/include/bits/types.h" 3
 extern "C" { typedef __off64_t __loff_t; }
 # 185 "/usr/include/bits/types.h" 3
@@ -2495,7 +2415,7 @@ extern "C" { typedef __quad_t *__qaddr_t; }
 # 186 "/usr/include/bits/types.h" 3
 extern "C" { typedef char *__caddr_t; }
 # 189 "/usr/include/bits/types.h" 3
-extern "C" { typedef int __intptr_t; }
+extern "C" { typedef long __intptr_t; }
 # 192 "/usr/include/bits/types.h" 3
 extern "C" { typedef unsigned __socklen_t; }
 # 60 "/usr/include/time.h" 3
@@ -2938,10 +2858,10 @@ extern "C" __attribute__((weak)) int __isinfl(long double) throw() __attribute__
 extern "C" __attribute__((weak)) int __isnanl(long double) throw() __attribute__((__const__));
 # 455 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" __attribute__((weak)) int __finitel(long double) throw() __attribute__((__const__));
-# 38 "/usr/include/bits/mathdef.h" 3
-extern "C" { typedef long double float_t; }
-# 40 "/usr/include/bits/mathdef.h" 3
-extern "C" { typedef long double double_t; }
+# 31 "/usr/include/bits/mathdef.h" 3
+extern "C" { typedef float float_t; }
+# 32 "/usr/include/bits/mathdef.h" 3
+extern "C" { typedef double double_t; }
 # 55 "/usr/include/bits/mathcalls.h" 3
 extern "C" __attribute__((weak)) double acos(double) throw(); extern "C" double __acos(double) throw();
 # 57 "/usr/include/bits/mathcalls.h" 3
@@ -3631,7 +3551,7 @@ extern "C" { typedef short int16_t; }
 # 197 "/usr/include/sys/types.h" 3
 extern "C" { typedef int int32_t; }
 # 198 "/usr/include/sys/types.h" 3
-extern "C" { typedef long long int64_t; }
+extern "C" { typedef long int64_t; }
 # 201 "/usr/include/sys/types.h" 3
 extern "C" { typedef unsigned char u_int8_t; }
 # 202 "/usr/include/sys/types.h" 3
@@ -3639,7 +3559,7 @@ extern "C" { typedef unsigned short u_int16_t; }
 # 203 "/usr/include/sys/types.h" 3
 extern "C" { typedef unsigned u_int32_t; }
 # 204 "/usr/include/sys/types.h" 3
-extern "C" { typedef unsigned long long u_int64_t; }
+extern "C" { typedef unsigned long u_int64_t; }
 # 206 "/usr/include/sys/types.h" 3
 extern "C" { typedef int register_t; }
 # 24 "/usr/include/bits/sigset.h" 3
@@ -3705,19 +3625,21 @@ extern "C" { typedef
 # 54 "/usr/include/bits/pthreadtypes.h" 3
 union {
 # 55 "/usr/include/bits/pthreadtypes.h" 3
-char __size[36];
+char __size[56];
 # 56 "/usr/include/bits/pthreadtypes.h" 3
 long __align;
 # 57 "/usr/include/bits/pthreadtypes.h" 3
 } pthread_attr_t; }
-# 70 "/usr/include/bits/pthreadtypes.h" 3
+# 65 "/usr/include/bits/pthreadtypes.h" 3
 extern "C" { typedef
-# 67 "/usr/include/bits/pthreadtypes.h" 3
-struct __pthread_internal_slist {
-# 69 "/usr/include/bits/pthreadtypes.h" 3
-__pthread_internal_slist *__next;
-# 70 "/usr/include/bits/pthreadtypes.h" 3
-} __pthread_slist_t; }
+# 61 "/usr/include/bits/pthreadtypes.h" 3
+struct __pthread_internal_list {
+# 63 "/usr/include/bits/pthreadtypes.h" 3
+__pthread_internal_list *__prev;
+# 64 "/usr/include/bits/pthreadtypes.h" 3
+__pthread_internal_list *__next;
+# 65 "/usr/include/bits/pthreadtypes.h" 3
+} __pthread_list_t; }
 # 104 "/usr/include/bits/pthreadtypes.h" 3
 extern "C" { typedef
 # 77 "/usr/include/bits/pthreadtypes.h" 3
@@ -3730,22 +3652,18 @@ int __lock;
 unsigned __count;
 # 82 "/usr/include/bits/pthreadtypes.h" 3
 int __owner;
+# 84 "/usr/include/bits/pthreadtypes.h" 3
+unsigned __nusers;
 # 88 "/usr/include/bits/pthreadtypes.h" 3
 int __kind;
-# 94 "/usr/include/bits/pthreadtypes.h" 3
-unsigned __nusers;
-# 96 "/usr/include/bits/pthreadtypes.h" 3
-union {
-# 97 "/usr/include/bits/pthreadtypes.h" 3
+# 90 "/usr/include/bits/pthreadtypes.h" 3
 int __spins;
-# 98 "/usr/include/bits/pthreadtypes.h" 3
-__pthread_slist_t __list;
-# 99 "/usr/include/bits/pthreadtypes.h" 3
-};
+# 91 "/usr/include/bits/pthreadtypes.h" 3
+__pthread_list_t __list;
 # 101 "/usr/include/bits/pthreadtypes.h" 3
 } __data;
 # 102 "/usr/include/bits/pthreadtypes.h" 3
-char __size[24];
+char __size[40];
 # 103 "/usr/include/bits/pthreadtypes.h" 3
 long __align;
 # 104 "/usr/include/bits/pthreadtypes.h" 3
@@ -3808,34 +3726,34 @@ extern "C" { typedef int pthread_once_t; }
 extern "C" { typedef
 # 151 "/usr/include/bits/pthreadtypes.h" 3
 union {
-# 171 "/usr/include/bits/pthreadtypes.h" 3
+# 154 "/usr/include/bits/pthreadtypes.h" 3
 struct {
-# 172 "/usr/include/bits/pthreadtypes.h" 3
+# 155 "/usr/include/bits/pthreadtypes.h" 3
 int __lock;
-# 173 "/usr/include/bits/pthreadtypes.h" 3
+# 156 "/usr/include/bits/pthreadtypes.h" 3
 unsigned __nr_readers;
-# 174 "/usr/include/bits/pthreadtypes.h" 3
+# 157 "/usr/include/bits/pthreadtypes.h" 3
 unsigned __readers_wakeup;
-# 175 "/usr/include/bits/pthreadtypes.h" 3
+# 158 "/usr/include/bits/pthreadtypes.h" 3
 unsigned __writer_wakeup;
-# 176 "/usr/include/bits/pthreadtypes.h" 3
+# 159 "/usr/include/bits/pthreadtypes.h" 3
 unsigned __nr_readers_queued;
-# 177 "/usr/include/bits/pthreadtypes.h" 3
+# 160 "/usr/include/bits/pthreadtypes.h" 3
 unsigned __nr_writers_queued;
-# 180 "/usr/include/bits/pthreadtypes.h" 3
-unsigned char __flags;
-# 181 "/usr/include/bits/pthreadtypes.h" 3
-unsigned char __shared;
-# 182 "/usr/include/bits/pthreadtypes.h" 3
-unsigned char __pad1;
-# 183 "/usr/include/bits/pthreadtypes.h" 3
-unsigned char __pad2;
-# 184 "/usr/include/bits/pthreadtypes.h" 3
+# 161 "/usr/include/bits/pthreadtypes.h" 3
 int __writer;
-# 185 "/usr/include/bits/pthreadtypes.h" 3
+# 162 "/usr/include/bits/pthreadtypes.h" 3
+int __shared;
+# 163 "/usr/include/bits/pthreadtypes.h" 3
+unsigned long __pad1;
+# 164 "/usr/include/bits/pthreadtypes.h" 3
+unsigned long __pad2;
+# 167 "/usr/include/bits/pthreadtypes.h" 3
+unsigned __flags;
+# 168 "/usr/include/bits/pthreadtypes.h" 3
 } __data;
 # 187 "/usr/include/bits/pthreadtypes.h" 3
-char __size[32];
+char __size[56];
 # 188 "/usr/include/bits/pthreadtypes.h" 3
 long __align;
 # 189 "/usr/include/bits/pthreadtypes.h" 3
@@ -3857,7 +3775,7 @@ extern "C" { typedef
 # 207 "/usr/include/bits/pthreadtypes.h" 3
 union {
 # 208 "/usr/include/bits/pthreadtypes.h" 3
-char __size[20];
+char __size[32];
 # 209 "/usr/include/bits/pthreadtypes.h" 3
 long __align;
 # 210 "/usr/include/bits/pthreadtypes.h" 3
@@ -6593,54 +6511,6 @@ template<> __attribute__((unused)) inline ulonglong2 surf1Dread(surface< void, 1
 {int volatile ___ = 1;
 # 322 "/usr/local/cuda/bin/../include/surface_functions.h"
 exit(___);}
-# 327 "/usr/local/cuda/bin/../include/surface_functions.h"
-template<> __attribute__((unused)) inline long surf1Dread(surface< void, 1> surf, int x, cudaSurfaceBoundaryMode mode)
-# 328 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 330 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 333 "/usr/local/cuda/bin/../include/surface_functions.h"
-template<> __attribute__((unused)) inline unsigned long surf1Dread(surface< void, 1> surf, int x, cudaSurfaceBoundaryMode mode)
-# 334 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 336 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 339 "/usr/local/cuda/bin/../include/surface_functions.h"
-template<> __attribute__((unused)) inline long1 surf1Dread(surface< void, 1> surf, int x, cudaSurfaceBoundaryMode mode)
-# 340 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 342 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 345 "/usr/local/cuda/bin/../include/surface_functions.h"
-template<> __attribute__((unused)) inline ulong1 surf1Dread(surface< void, 1> surf, int x, cudaSurfaceBoundaryMode mode)
-# 346 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 348 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 351 "/usr/local/cuda/bin/../include/surface_functions.h"
-template<> __attribute__((unused)) inline long2 surf1Dread(surface< void, 1> surf, int x, cudaSurfaceBoundaryMode mode)
-# 352 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 356 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 359 "/usr/local/cuda/bin/../include/surface_functions.h"
-template<> __attribute__((unused)) inline ulong2 surf1Dread(surface< void, 1> surf, int x, cudaSurfaceBoundaryMode mode)
-# 360 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 364 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 367 "/usr/local/cuda/bin/../include/surface_functions.h"
-template<> __attribute__((unused)) inline long4 surf1Dread(surface< void, 1> surf, int x, cudaSurfaceBoundaryMode mode)
-# 368 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 372 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 375 "/usr/local/cuda/bin/../include/surface_functions.h"
-template<> __attribute__((unused)) inline ulong4 surf1Dread(surface< void, 1> surf, int x, cudaSurfaceBoundaryMode mode)
-# 376 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 380 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
 # 385 "/usr/local/cuda/bin/../include/surface_functions.h"
 template<> __attribute__((unused)) inline float surf1Dread(surface< void, 1> surf, int x, cudaSurfaceBoundaryMode mode)
 # 386 "/usr/local/cuda/bin/../include/surface_functions.h"
@@ -6875,54 +6745,6 @@ template<> __attribute__((unused)) inline ulonglong2 surf2Dread(surface< void, 2
 {int volatile ___ = 1;
 # 682 "/usr/local/cuda/bin/../include/surface_functions.h"
 exit(___);}
-# 687 "/usr/local/cuda/bin/../include/surface_functions.h"
-template<> __attribute__((unused)) inline long surf2Dread(surface< void, 2> surf, int x, int y, cudaSurfaceBoundaryMode mode)
-# 688 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 690 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 693 "/usr/local/cuda/bin/../include/surface_functions.h"
-template<> __attribute__((unused)) inline unsigned long surf2Dread(surface< void, 2> surf, int x, int y, cudaSurfaceBoundaryMode mode)
-# 694 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 696 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 699 "/usr/local/cuda/bin/../include/surface_functions.h"
-template<> __attribute__((unused)) inline long1 surf2Dread(surface< void, 2> surf, int x, int y, cudaSurfaceBoundaryMode mode)
-# 700 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 702 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 705 "/usr/local/cuda/bin/../include/surface_functions.h"
-template<> __attribute__((unused)) inline ulong1 surf2Dread(surface< void, 2> surf, int x, int y, cudaSurfaceBoundaryMode mode)
-# 706 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 708 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 711 "/usr/local/cuda/bin/../include/surface_functions.h"
-template<> __attribute__((unused)) inline long2 surf2Dread(surface< void, 2> surf, int x, int y, cudaSurfaceBoundaryMode mode)
-# 712 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 716 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 719 "/usr/local/cuda/bin/../include/surface_functions.h"
-template<> __attribute__((unused)) inline ulong2 surf2Dread(surface< void, 2> surf, int x, int y, cudaSurfaceBoundaryMode mode)
-# 720 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 724 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 727 "/usr/local/cuda/bin/../include/surface_functions.h"
-template<> __attribute__((unused)) inline long4 surf2Dread(surface< void, 2> surf, int x, int y, cudaSurfaceBoundaryMode mode)
-# 728 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 732 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 735 "/usr/local/cuda/bin/../include/surface_functions.h"
-template<> __attribute__((unused)) inline ulong4 surf2Dread(surface< void, 2> surf, int x, int y, cudaSurfaceBoundaryMode mode)
-# 736 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 740 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
 # 745 "/usr/local/cuda/bin/../include/surface_functions.h"
 template<> __attribute__((unused)) inline float surf2Dread(surface< void, 2> surf, int x, int y, cudaSurfaceBoundaryMode mode)
 # 746 "/usr/local/cuda/bin/../include/surface_functions.h"
@@ -7148,54 +6970,6 @@ __attribute__((unused)) static inline void surf1Dwrite(ulonglong2 val, surface< 
 # 997 "/usr/local/cuda/bin/../include/surface_functions.h"
 {int volatile ___ = 1;
 # 999 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 1003 "/usr/local/cuda/bin/../include/surface_functions.h"
-__attribute__((unused)) static inline void surf1Dwrite(long val, surface< void, 1> surf, int x, cudaSurfaceBoundaryMode mode = cudaBoundaryModeTrap)
-# 1004 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 1006 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 1008 "/usr/local/cuda/bin/../include/surface_functions.h"
-__attribute__((unused)) static inline void surf1Dwrite(unsigned long val, surface< void, 1> surf, int x, cudaSurfaceBoundaryMode mode = cudaBoundaryModeTrap)
-# 1009 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 1011 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 1013 "/usr/local/cuda/bin/../include/surface_functions.h"
-__attribute__((unused)) static inline void surf1Dwrite(long1 val, surface< void, 1> surf, int x, cudaSurfaceBoundaryMode mode = cudaBoundaryModeTrap)
-# 1014 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 1016 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 1018 "/usr/local/cuda/bin/../include/surface_functions.h"
-__attribute__((unused)) static inline void surf1Dwrite(ulong1 val, surface< void, 1> surf, int x, cudaSurfaceBoundaryMode mode = cudaBoundaryModeTrap)
-# 1019 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 1021 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 1023 "/usr/local/cuda/bin/../include/surface_functions.h"
-__attribute__((unused)) static inline void surf1Dwrite(long2 val, surface< void, 1> surf, int x, cudaSurfaceBoundaryMode mode = cudaBoundaryModeTrap)
-# 1024 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 1026 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 1028 "/usr/local/cuda/bin/../include/surface_functions.h"
-__attribute__((unused)) static inline void surf1Dwrite(ulong2 val, surface< void, 1> surf, int x, cudaSurfaceBoundaryMode mode = cudaBoundaryModeTrap)
-# 1029 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 1031 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 1033 "/usr/local/cuda/bin/../include/surface_functions.h"
-__attribute__((unused)) static inline void surf1Dwrite(long4 val, surface< void, 1> surf, int x, cudaSurfaceBoundaryMode mode = cudaBoundaryModeTrap)
-# 1034 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 1036 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 1038 "/usr/local/cuda/bin/../include/surface_functions.h"
-__attribute__((unused)) static inline void surf1Dwrite(ulong4 val, surface< void, 1> surf, int x, cudaSurfaceBoundaryMode mode = cudaBoundaryModeTrap)
-# 1039 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 1041 "/usr/local/cuda/bin/../include/surface_functions.h"
 exit(___);}
 # 1045 "/usr/local/cuda/bin/../include/surface_functions.h"
 __attribute__((unused)) static inline void surf1Dwrite(float val, surface< void, 1> surf, int x, cudaSurfaceBoundaryMode mode = cudaBoundaryModeTrap)
@@ -7423,54 +7197,6 @@ __attribute__((unused)) static inline void surf2Dwrite(ulonglong2 val, surface< 
 {int volatile ___ = 1;
 # 1292 "/usr/local/cuda/bin/../include/surface_functions.h"
 exit(___);}
-# 1296 "/usr/local/cuda/bin/../include/surface_functions.h"
-__attribute__((unused)) static inline void surf2Dwrite(long val, surface< void, 2> surf, int x, int y, cudaSurfaceBoundaryMode mode = cudaBoundaryModeTrap)
-# 1297 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 1299 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 1301 "/usr/local/cuda/bin/../include/surface_functions.h"
-__attribute__((unused)) static inline void surf2Dwrite(unsigned long val, surface< void, 2> surf, int x, int y, cudaSurfaceBoundaryMode mode = cudaBoundaryModeTrap)
-# 1302 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 1304 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 1306 "/usr/local/cuda/bin/../include/surface_functions.h"
-__attribute__((unused)) static inline void surf2Dwrite(long1 val, surface< void, 2> surf, int x, int y, cudaSurfaceBoundaryMode mode = cudaBoundaryModeTrap)
-# 1307 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 1309 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 1311 "/usr/local/cuda/bin/../include/surface_functions.h"
-__attribute__((unused)) static inline void surf2Dwrite(ulong1 val, surface< void, 2> surf, int x, int y, cudaSurfaceBoundaryMode mode = cudaBoundaryModeTrap)
-# 1312 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 1314 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 1316 "/usr/local/cuda/bin/../include/surface_functions.h"
-__attribute__((unused)) static inline void surf2Dwrite(long2 val, surface< void, 2> surf, int x, int y, cudaSurfaceBoundaryMode mode = cudaBoundaryModeTrap)
-# 1317 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 1319 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 1321 "/usr/local/cuda/bin/../include/surface_functions.h"
-__attribute__((unused)) static inline void surf2Dwrite(ulong2 val, surface< void, 2> surf, int x, int y, cudaSurfaceBoundaryMode mode = cudaBoundaryModeTrap)
-# 1322 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 1324 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 1326 "/usr/local/cuda/bin/../include/surface_functions.h"
-__attribute__((unused)) static inline void surf2Dwrite(long4 val, surface< void, 2> surf, int x, int y, cudaSurfaceBoundaryMode mode = cudaBoundaryModeTrap)
-# 1327 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 1329 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
-# 1331 "/usr/local/cuda/bin/../include/surface_functions.h"
-__attribute__((unused)) static inline void surf2Dwrite(ulong4 val, surface< void, 2> surf, int x, int y, cudaSurfaceBoundaryMode mode = cudaBoundaryModeTrap)
-# 1332 "/usr/local/cuda/bin/../include/surface_functions.h"
-{int volatile ___ = 1;
-# 1334 "/usr/local/cuda/bin/../include/surface_functions.h"
-exit(___);}
 # 1338 "/usr/local/cuda/bin/../include/surface_functions.h"
 __attribute__((unused)) static inline void surf2Dwrite(float val, surface< void, 2> surf, int x, int y, cudaSurfaceBoundaryMode mode = cudaBoundaryModeTrap)
 # 1339 "/usr/local/cuda/bin/../include/surface_functions.h"
@@ -7656,54 +7382,6 @@ __attribute__((unused)) static inline uint4 tex1Dfetch(texture< uint4, 1, cudaRe
 # 265 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 {int volatile ___ = 1;
 # 269 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 279 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline long tex1Dfetch(texture< long, 1, cudaReadModeElementType> t, int x)
-# 280 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 284 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 286 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline unsigned long tex1Dfetch(texture< unsigned long, 1, cudaReadModeElementType> t, int x)
-# 287 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 291 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 293 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline long1 tex1Dfetch(texture< long1, 1, cudaReadModeElementType> t, int x)
-# 294 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 298 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 300 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline ulong1 tex1Dfetch(texture< ulong1, 1, cudaReadModeElementType> t, int x)
-# 301 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 305 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 307 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline long2 tex1Dfetch(texture< long2, 1, cudaReadModeElementType> t, int x)
-# 308 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 312 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 314 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline ulong2 tex1Dfetch(texture< ulong2, 1, cudaReadModeElementType> t, int x)
-# 315 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 319 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 321 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline long4 tex1Dfetch(texture< long4, 1, cudaReadModeElementType> t, int x)
-# 322 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 326 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 328 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline ulong4 tex1Dfetch(texture< ulong4, 1, cudaReadModeElementType> t, int x)
-# 329 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 333 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 exit(___);}
 # 343 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 __attribute__((unused)) static inline float tex1Dfetch(texture< float, 1, cudaReadModeElementType> t, int x)
@@ -7981,54 +7659,6 @@ __attribute__((unused)) static inline uint4 tex1D(texture< uint4, 1, cudaReadMod
 {int volatile ___ = 1;
 # 718 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 exit(___);}
-# 734 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline long tex1D(texture< long, 1, cudaReadModeElementType> t, float x)
-# 735 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 739 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 741 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline unsigned long tex1D(texture< unsigned long, 1, cudaReadModeElementType> t, float x)
-# 742 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 746 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 748 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline long1 tex1D(texture< long1, 1, cudaReadModeElementType> t, float x)
-# 749 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 753 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 755 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline ulong1 tex1D(texture< ulong1, 1, cudaReadModeElementType> t, float x)
-# 756 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 760 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 762 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline long2 tex1D(texture< long2, 1, cudaReadModeElementType> t, float x)
-# 763 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 767 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 769 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline ulong2 tex1D(texture< ulong2, 1, cudaReadModeElementType> t, float x)
-# 770 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 774 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 776 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline long4 tex1D(texture< long4, 1, cudaReadModeElementType> t, float x)
-# 777 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 781 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 783 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline ulong4 tex1D(texture< ulong4, 1, cudaReadModeElementType> t, float x)
-# 784 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 788 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
 # 798 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 __attribute__((unused)) static inline float tex1D(texture< float, 1, cudaReadModeElementType> t, float x)
 # 799 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
@@ -8305,54 +7935,6 @@ __attribute__((unused)) static inline uint4 tex2D(texture< uint4, 2, cudaReadMod
 {int volatile ___ = 1;
 # 1173 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 exit(___);}
-# 1183 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline long tex2D(texture< long, 2, cudaReadModeElementType> t, float x, float y)
-# 1184 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 1188 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 1190 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline unsigned long tex2D(texture< unsigned long, 2, cudaReadModeElementType> t, float x, float y)
-# 1191 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 1195 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 1197 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline long1 tex2D(texture< long1, 2, cudaReadModeElementType> t, float x, float y)
-# 1198 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 1202 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 1204 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline ulong1 tex2D(texture< ulong1, 2, cudaReadModeElementType> t, float x, float y)
-# 1205 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 1209 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 1211 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline long2 tex2D(texture< long2, 2, cudaReadModeElementType> t, float x, float y)
-# 1212 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 1216 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 1218 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline ulong2 tex2D(texture< ulong2, 2, cudaReadModeElementType> t, float x, float y)
-# 1219 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 1223 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 1225 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline long4 tex2D(texture< long4, 2, cudaReadModeElementType> t, float x, float y)
-# 1226 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 1230 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 1232 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline ulong4 tex2D(texture< ulong4, 2, cudaReadModeElementType> t, float x, float y)
-# 1233 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 1237 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
 # 1247 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 __attribute__((unused)) static inline float tex2D(texture< float, 2, cudaReadModeElementType> t, float x, float y)
 # 1248 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
@@ -8628,54 +8210,6 @@ __attribute__((unused)) static inline uint4 tex3D(texture< uint4, 3, cudaReadMod
 # 1618 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 {int volatile ___ = 1;
 # 1622 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 1632 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline long tex3D(texture< long, 3, cudaReadModeElementType> t, float x, float y, float z)
-# 1633 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 1637 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 1639 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline unsigned long tex3D(texture< unsigned long, 3, cudaReadModeElementType> t, float x, float y, float z)
-# 1640 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 1644 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 1646 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline long1 tex3D(texture< long1, 3, cudaReadModeElementType> t, float x, float y, float z)
-# 1647 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 1651 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 1653 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline ulong1 tex3D(texture< ulong1, 3, cudaReadModeElementType> t, float x, float y, float z)
-# 1654 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 1658 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 1660 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline long2 tex3D(texture< long2, 3, cudaReadModeElementType> t, float x, float y, float z)
-# 1661 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 1665 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 1667 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline ulong2 tex3D(texture< ulong2, 3, cudaReadModeElementType> t, float x, float y, float z)
-# 1668 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 1672 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 1674 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline long4 tex3D(texture< long4, 3, cudaReadModeElementType> t, float x, float y, float z)
-# 1675 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 1679 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-exit(___);}
-# 1681 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-__attribute__((unused)) static inline ulong4 tex3D(texture< ulong4, 3, cudaReadModeElementType> t, float x, float y, float z)
-# 1682 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
-{int volatile ___ = 1;
-# 1686 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 exit(___);}
 # 1696 "/usr/local/cuda/bin/../include/texture_fetch_functions.h"
 __attribute__((unused)) static inline float tex3D(texture< float, 3, cudaReadModeElementType> t, float x, float y, float z)
@@ -10027,8 +9561,8 @@ extern "C" void flockfile(FILE *) throw();
 extern "C" int ftrylockfile(FILE *) throw();
 # 913 "/usr/include/stdio.h" 3
 extern "C" void funlockfile(FILE *) throw();
-# 130 "/usr/local/cuda/bin/../include/cuda.h"
-extern "C" { typedef unsigned CUdeviceptr; }
+# 128 "/usr/local/cuda/bin/../include/cuda.h"
+extern "C" { typedef unsigned long long CUdeviceptr; }
 # 135 "/usr/local/cuda/bin/../include/cuda.h"
 extern "C" { typedef int CUdevice; }
 # 136 "/usr/local/cuda/bin/../include/cuda.h"
@@ -10853,125 +10387,125 @@ extern "C" CUresult cuGraphicsMapResources(unsigned, CUgraphicsResource *, CUstr
 extern "C" CUresult cuGraphicsUnmapResources(unsigned, CUgraphicsResource *, CUstream);
 # 6101 "/usr/local/cuda/bin/../include/cuda.h"
 extern "C" CUresult cuGetExportTable(const void **, const CUuuid *);
-# 64 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 64 "sdk/cutil.h"
 enum CUTBoolean {
-# 66 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 66 "sdk/cutil.h"
 CUTFalse,
-# 67 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 67 "sdk/cutil.h"
 CUTTrue
-# 68 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 68 "sdk/cutil.h"
 };
-# 76 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 76 "sdk/cutil.h"
 extern "C" void cutFree(void *);
-# 94 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 94 "sdk/cutil.h"
 extern "C" void cutCheckBankAccess(unsigned, unsigned, unsigned, unsigned, unsigned, unsigned, const char *, const int, const char *, const int);
-# 107 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 107 "sdk/cutil.h"
 extern "C" char *cutFindFilePath(const char *, const char *);
-# 122 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 122 "sdk/cutil.h"
 extern "C" CUTBoolean cutReadFilef(const char *, float **, unsigned *, bool = false);
-# 138 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 138 "sdk/cutil.h"
 extern "C" CUTBoolean cutReadFiled(const char *, double **, unsigned *, bool = false);
-# 154 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 154 "sdk/cutil.h"
 extern "C" CUTBoolean cutReadFilei(const char *, int **, unsigned *, bool = false);
-# 169 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 169 "sdk/cutil.h"
 extern "C" CUTBoolean cutReadFileui(const char *, unsigned **, unsigned *, bool = false);
-# 185 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 185 "sdk/cutil.h"
 extern "C" CUTBoolean cutReadFileb(const char *, char **, unsigned *, bool = false);
-# 201 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 201 "sdk/cutil.h"
 extern "C" CUTBoolean cutReadFileub(const char *, unsigned char **, unsigned *, bool = false);
-# 215 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 215 "sdk/cutil.h"
 extern "C" CUTBoolean cutWriteFilef(const char *, const float *, unsigned, const float, bool = false);
-# 229 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 229 "sdk/cutil.h"
 extern "C" CUTBoolean cutWriteFiled(const char *, const float *, unsigned, const double, bool = false);
-# 241 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 241 "sdk/cutil.h"
 extern "C" CUTBoolean cutWriteFilei(const char *, const int *, unsigned, bool = false);
-# 253 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 253 "sdk/cutil.h"
 extern "C" CUTBoolean cutWriteFileui(const char *, const unsigned *, unsigned, bool = false);
-# 265 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 265 "sdk/cutil.h"
 extern "C" CUTBoolean cutWriteFileb(const char *, const char *, unsigned, bool = false);
-# 277 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 277 "sdk/cutil.h"
 extern "C" CUTBoolean cutWriteFileub(const char *, const unsigned char *, unsigned, bool = false);
-# 293 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 293 "sdk/cutil.h"
 extern "C" CUTBoolean cutLoadPGMub(const char *, unsigned char **, unsigned *, unsigned *);
-# 306 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 306 "sdk/cutil.h"
 extern "C" CUTBoolean cutLoadPPMub(const char *, unsigned char **, unsigned *, unsigned *);
-# 320 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 320 "sdk/cutil.h"
 extern "C" CUTBoolean cutLoadPPM4ub(const char *, unsigned char **, unsigned *, unsigned *);
-# 336 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 336 "sdk/cutil.h"
 extern "C" CUTBoolean cutLoadPGMi(const char *, unsigned **, unsigned *, unsigned *);
-# 352 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 352 "sdk/cutil.h"
 extern "C" CUTBoolean cutLoadPGMs(const char *, unsigned short **, unsigned *, unsigned *);
-# 367 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 367 "sdk/cutil.h"
 extern "C" CUTBoolean cutLoadPGMf(const char *, float **, unsigned *, unsigned *);
-# 379 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 379 "sdk/cutil.h"
 extern "C" CUTBoolean cutSavePGMub(const char *, unsigned char *, unsigned, unsigned);
-# 391 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 391 "sdk/cutil.h"
 extern "C" CUTBoolean cutSavePPMub(const char *, unsigned char *, unsigned, unsigned);
-# 404 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 404 "sdk/cutil.h"
 extern "C" CUTBoolean cutSavePPM4ub(const char *, unsigned char *, unsigned, unsigned);
-# 416 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 416 "sdk/cutil.h"
 extern "C" CUTBoolean cutSavePGMi(const char *, unsigned *, unsigned, unsigned);
-# 428 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 428 "sdk/cutil.h"
 extern "C" CUTBoolean cutSavePGMs(const char *, unsigned short *, unsigned, unsigned);
-# 440 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 440 "sdk/cutil.h"
 extern "C" CUTBoolean cutSavePGMf(const char *, float *, unsigned, unsigned);
-# 461 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 461 "sdk/cutil.h"
 extern "C" CUTBoolean cutCheckCmdLineFlag(const int, const char **, const char *);
-# 475 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 475 "sdk/cutil.h"
 extern "C" CUTBoolean cutGetCmdLineArgumenti(const int, const char **, const char *, int *);
-# 489 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 489 "sdk/cutil.h"
 extern "C" CUTBoolean cutGetCmdLineArgumentf(const int, const char **, const char *, float *);
-# 503 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 503 "sdk/cutil.h"
 extern "C" CUTBoolean cutGetCmdLineArgumentstr(const int, const char **, const char *, char **);
-# 518 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 518 "sdk/cutil.h"
 extern "C" CUTBoolean cutGetCmdLineArgumentListstr(const int, const char **, const char *, char **, unsigned *);
-# 532 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 532 "sdk/cutil.h"
 extern "C" CUTBoolean cutCheckCondition(int, const char *, const int);
-# 544 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 544 "sdk/cutil.h"
 extern "C" CUTBoolean cutComparef(const float *, const float *, const unsigned);
-# 557 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 557 "sdk/cutil.h"
 extern "C" CUTBoolean cutComparei(const int *, const int *, const unsigned);
-# 571 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 571 "sdk/cutil.h"
 extern "C" CUTBoolean cutCompareuit(const unsigned *, const unsigned *, const unsigned, const float, const float);
-# 584 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 584 "sdk/cutil.h"
 extern "C" CUTBoolean cutCompareub(const unsigned char *, const unsigned char *, const unsigned);
-# 599 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 599 "sdk/cutil.h"
 extern "C" CUTBoolean cutCompareubt(const unsigned char *, const unsigned char *, const unsigned, const float, const float);
-# 613 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 613 "sdk/cutil.h"
 extern "C" CUTBoolean cutCompareube(const unsigned char *, const unsigned char *, const unsigned, const float);
-# 627 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 627 "sdk/cutil.h"
 extern "C" CUTBoolean cutComparefe(const float *, const float *, const unsigned, const float);
-# 642 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 642 "sdk/cutil.h"
 extern "C" CUTBoolean cutComparefet(const float *, const float *, const unsigned, const float, const float);
-# 657 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 657 "sdk/cutil.h"
 extern "C" CUTBoolean cutCompareL2fe(const float *, const float *, const unsigned, const float);
-# 672 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 672 "sdk/cutil.h"
 extern "C" CUTBoolean cutComparePPM(const char *, const char *, const float, const float, bool = false);
-# 685 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 685 "sdk/cutil.h"
 extern "C" CUTBoolean cutCreateTimer(unsigned *);
-# 694 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 694 "sdk/cutil.h"
 extern "C" CUTBoolean cutDeleteTimer(unsigned);
-# 702 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 702 "sdk/cutil.h"
 extern "C" CUTBoolean cutStartTimer(const unsigned);
-# 710 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 710 "sdk/cutil.h"
 extern "C" CUTBoolean cutStopTimer(const unsigned);
-# 718 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 718 "sdk/cutil.h"
 extern "C" CUTBoolean cutResetTimer(const unsigned);
-# 727 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 727 "sdk/cutil.h"
 extern "C" float cutGetTimerValue(const unsigned);
-# 738 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil.h"
+# 738 "sdk/cutil.h"
 extern "C" float cutGetAverageTimerValue(const unsigned);
-# 19 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_bankchecker.h"
+# 19 "sdk/cutil_inline_bankchecker.h"
 inline void __cutilBankChecker(unsigned tidx, unsigned tidy, unsigned tidz, unsigned
-# 20 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_bankchecker.h"
+# 20 "sdk/cutil_inline_bankchecker.h"
 bdimx, unsigned bdimy, unsigned bdimz, char *
-# 21 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_bankchecker.h"
+# 21 "sdk/cutil_inline_bankchecker.h"
 aname, int index, char *file, int line)
-# 22 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_bankchecker.h"
+# 22 "sdk/cutil_inline_bankchecker.h"
 {
-# 23 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_bankchecker.h"
+# 23 "sdk/cutil_inline_bankchecker.h"
 cutCheckBankAccess(tidx, tidy, tidz, bdimx, bdimy, bdimz, file, line, aname, index);
-# 24 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_bankchecker.h"
+# 24 "sdk/cutil_inline_bankchecker.h"
 }
 # 46 "/usr/local/cuda/bin/../include/cuComplex.h"
 extern "C" { typedef float2 cuFloatComplex; }
@@ -11441,1475 +10975,1475 @@ extern "C" cufftResult cufftExecZ2D(cufftHandle, cufftDoubleComplex *, cufftDoub
 extern "C" cufftResult cufftSetStream(cufftHandle, cudaStream_t);
 # 187 "/usr/local/cuda/bin/../include/cufft.h"
 extern "C" cufftResult cufftSetCompatibilityMode(cufftHandle, cufftCompatibility);
-# 22 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 22 "sdk/cutil_inline_runtime.h"
 inline void __cutilCondition(int val, char *file, int line)
-# 23 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 23 "sdk/cutil_inline_runtime.h"
 {
-# 24 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 24 "sdk/cutil_inline_runtime.h"
 if ((CUTFalse) == (cutCheckCondition(val, file, line))) {
-# 25 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 25 "sdk/cutil_inline_runtime.h"
 exit(1);
-# 26 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 26 "sdk/cutil_inline_runtime.h"
 }
-# 27 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 27 "sdk/cutil_inline_runtime.h"
 }
-# 29 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 29 "sdk/cutil_inline_runtime.h"
 inline void __cutilExit(int argc, char **argv)
-# 30 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 30 "sdk/cutil_inline_runtime.h"
 {
-# 31 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 31 "sdk/cutil_inline_runtime.h"
 if (!(cutCheckCmdLineFlag(argc, (const char **)argv, "noprompt"))) {
-# 32 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 32 "sdk/cutil_inline_runtime.h"
 printf("\nPress ENTER to exit...\n");
-# 33 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 33 "sdk/cutil_inline_runtime.h"
 fflush(stdout);
-# 34 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 34 "sdk/cutil_inline_runtime.h"
 fflush(stderr);
-# 35 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 35 "sdk/cutil_inline_runtime.h"
 getchar();
-# 36 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 36 "sdk/cutil_inline_runtime.h"
 }
-# 37 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 37 "sdk/cutil_inline_runtime.h"
 exit(0);
-# 38 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 38 "sdk/cutil_inline_runtime.h"
 }
-# 41 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 41 "sdk/cutil_inline_runtime.h"
 inline int cutGetMaxGflopsDeviceId()
-# 42 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 42 "sdk/cutil_inline_runtime.h"
 {
-# 43 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 43 "sdk/cutil_inline_runtime.h"
 int device_count = 0;
-# 44 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 44 "sdk/cutil_inline_runtime.h"
 cudaGetDeviceCount(&device_count);
-# 46 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 46 "sdk/cutil_inline_runtime.h"
 cudaDeviceProp device_properties;
-# 47 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 47 "sdk/cutil_inline_runtime.h"
 int max_gflops_device = 0;
-# 48 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 48 "sdk/cutil_inline_runtime.h"
 int max_gflops = 0;
-# 50 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 50 "sdk/cutil_inline_runtime.h"
 int current_device = 0;
-# 51 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 51 "sdk/cutil_inline_runtime.h"
 cudaGetDeviceProperties(&device_properties, current_device);
-# 52 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 52 "sdk/cutil_inline_runtime.h"
 max_gflops = ((device_properties.multiProcessorCount) * (device_properties.clockRate));
-# 53 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 53 "sdk/cutil_inline_runtime.h"
 ++current_device;
-# 55 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 55 "sdk/cutil_inline_runtime.h"
 while (current_device < device_count)
-# 56 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 56 "sdk/cutil_inline_runtime.h"
 {
-# 57 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 57 "sdk/cutil_inline_runtime.h"
 cudaGetDeviceProperties(&device_properties, current_device);
-# 58 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 58 "sdk/cutil_inline_runtime.h"
 int gflops = ((device_properties.multiProcessorCount) * (device_properties.clockRate));
-# 59 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 59 "sdk/cutil_inline_runtime.h"
 if (gflops > max_gflops)
-# 60 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 60 "sdk/cutil_inline_runtime.h"
 {
-# 61 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 61 "sdk/cutil_inline_runtime.h"
 max_gflops = gflops;
-# 62 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 62 "sdk/cutil_inline_runtime.h"
 max_gflops_device = current_device;
-# 63 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 63 "sdk/cutil_inline_runtime.h"
 }
-# 64 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 64 "sdk/cutil_inline_runtime.h"
 ++current_device;
-# 65 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 65 "sdk/cutil_inline_runtime.h"
 }
-# 67 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 67 "sdk/cutil_inline_runtime.h"
 return max_gflops_device;
-# 68 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 68 "sdk/cutil_inline_runtime.h"
 }
-# 70 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 70 "sdk/cutil_inline_runtime.h"
 inline void __cudaSafeCallNoSync(cudaError err, const char *file, const int line)
-# 71 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 71 "sdk/cutil_inline_runtime.h"
 {
-# 72 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 72 "sdk/cutil_inline_runtime.h"
 if ((cudaSuccess) != err) {
-# 73 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 73 "sdk/cutil_inline_runtime.h"
 fprintf(stderr, "cudaSafeCallNoSync() Runtime API error in file <%s>, line %i : %s.\n", file, line, cudaGetErrorString(err));
-# 75 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 75 "sdk/cutil_inline_runtime.h"
 exit(-1);
-# 76 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 76 "sdk/cutil_inline_runtime.h"
 }
-# 77 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 77 "sdk/cutil_inline_runtime.h"
 }
-# 79 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 79 "sdk/cutil_inline_runtime.h"
 inline void __cudaSafeCall(cudaError err, const char *file, const int line)
-# 80 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 80 "sdk/cutil_inline_runtime.h"
 {
-# 81 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 81 "sdk/cutil_inline_runtime.h"
 if ((cudaSuccess) != err) {
-# 82 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 82 "sdk/cutil_inline_runtime.h"
 fprintf(stderr, "cudaSafeCall() Runtime API error in file <%s>, line %i : %s.\n", file, line, cudaGetErrorString(err));
-# 84 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 84 "sdk/cutil_inline_runtime.h"
 exit(-1);
-# 85 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 85 "sdk/cutil_inline_runtime.h"
 }
-# 86 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 86 "sdk/cutil_inline_runtime.h"
 }
-# 88 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 88 "sdk/cutil_inline_runtime.h"
 inline void __cudaSafeThreadSync(const char *file, const int line)
-# 89 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 89 "sdk/cutil_inline_runtime.h"
 {
-# 90 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 90 "sdk/cutil_inline_runtime.h"
 cudaError err = cudaThreadSynchronize();
-# 91 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 91 "sdk/cutil_inline_runtime.h"
 if ((cudaSuccess) != err) {
-# 92 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 92 "sdk/cutil_inline_runtime.h"
 fprintf(stderr, "cudaThreadSynchronize() Driver API error in file \'%s\' in line %i : %s.\n", file, line, cudaGetErrorString(err));
-# 94 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 94 "sdk/cutil_inline_runtime.h"
 exit(-1);
-# 95 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 95 "sdk/cutil_inline_runtime.h"
 }
-# 96 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 96 "sdk/cutil_inline_runtime.h"
 }
-# 98 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 98 "sdk/cutil_inline_runtime.h"
 inline void __cufftSafeCall(cufftResult err, const char *file, const int line)
-# 99 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 99 "sdk/cutil_inline_runtime.h"
 {
-# 100 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 100 "sdk/cutil_inline_runtime.h"
 if ((CUFFT_SUCCESS) != err) {
-# 101 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 101 "sdk/cutil_inline_runtime.h"
 fprintf(stderr, "cufftSafeCall() CUFFT error in file <%s>, line %i.\n", file, line);
-# 103 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 103 "sdk/cutil_inline_runtime.h"
 exit(-1);
-# 104 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 104 "sdk/cutil_inline_runtime.h"
 }
-# 105 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 105 "sdk/cutil_inline_runtime.h"
 }
-# 107 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 107 "sdk/cutil_inline_runtime.h"
 inline void __cutilCheckError(CUTBoolean err, const char *file, const int line)
-# 108 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 108 "sdk/cutil_inline_runtime.h"
 {
-# 109 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 109 "sdk/cutil_inline_runtime.h"
 if ((CUTTrue) != err) {
-# 110 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 110 "sdk/cutil_inline_runtime.h"
 fprintf(stderr, "CUTIL CUDA error in file <%s>, line %i.\n", file, line);
-# 112 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 112 "sdk/cutil_inline_runtime.h"
 exit(-1);
-# 113 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 113 "sdk/cutil_inline_runtime.h"
 }
-# 114 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 114 "sdk/cutil_inline_runtime.h"
 }
-# 116 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 116 "sdk/cutil_inline_runtime.h"
 inline void __cutilCheckMsg(const char *errorMessage, const char *file, const int line)
-# 117 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 117 "sdk/cutil_inline_runtime.h"
 {
-# 118 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 118 "sdk/cutil_inline_runtime.h"
 cudaError_t err = cudaGetLastError();
-# 119 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 119 "sdk/cutil_inline_runtime.h"
 if ((cudaSuccess) != err) {
-# 120 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 120 "sdk/cutil_inline_runtime.h"
 fprintf(stderr, "cutilCheckMsg() CUTIL CUDA error: %s in file <%s>, line %i : %s.\n", errorMessage, file, line, cudaGetErrorString(err));
-# 122 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 122 "sdk/cutil_inline_runtime.h"
 exit(-1);
-# 123 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 123 "sdk/cutil_inline_runtime.h"
 }
-# 132 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 132 "sdk/cutil_inline_runtime.h"
 }
-# 133 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 133 "sdk/cutil_inline_runtime.h"
 inline void __cutilSafeMalloc(void *pointer, const char *file, const int line)
-# 134 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 134 "sdk/cutil_inline_runtime.h"
 {
-# 135 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 135 "sdk/cutil_inline_runtime.h"
 if (!(pointer)) {
-# 136 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 136 "sdk/cutil_inline_runtime.h"
 fprintf(stderr, "cutilSafeMalloc host malloc failure in file <%s>, line %i\n", file, line);
-# 138 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 138 "sdk/cutil_inline_runtime.h"
 exit(-1);
-# 139 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 139 "sdk/cutil_inline_runtime.h"
 }
-# 140 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 140 "sdk/cutil_inline_runtime.h"
 }
-# 145 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 145 "sdk/cutil_inline_runtime.h"
 inline void cutilDeviceInit(int ARGC, char **ARGV)
-# 146 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 146 "sdk/cutil_inline_runtime.h"
 {
-# 147 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 147 "sdk/cutil_inline_runtime.h"
 int deviceCount;
-# 148 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
-__cudaSafeCallNoSync(cudaGetDeviceCount(&deviceCount), "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h", 148);
-# 149 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 148 "sdk/cutil_inline_runtime.h"
+__cudaSafeCallNoSync(cudaGetDeviceCount(&deviceCount), "sdk/cutil_inline_runtime.h", 148);
+# 149 "sdk/cutil_inline_runtime.h"
 if (deviceCount == 0) {
-# 150 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 150 "sdk/cutil_inline_runtime.h"
 fprintf(stderr, "CUTIL CUDA error: no devices supporting CUDA.\n");
-# 151 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 151 "sdk/cutil_inline_runtime.h"
 exit(-1);
-# 152 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 152 "sdk/cutil_inline_runtime.h"
 }
-# 153 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 153 "sdk/cutil_inline_runtime.h"
 int dev = 0;
-# 154 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 154 "sdk/cutil_inline_runtime.h"
 cutGetCmdLineArgumenti(ARGC, (const char **)ARGV, "device", &dev);
-# 155 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 155 "sdk/cutil_inline_runtime.h"
 if (dev < 0) { dev = 0; } if (dev > (deviceCount - 1)) { dev = (deviceCount - 1); }
-# 157 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 157 "sdk/cutil_inline_runtime.h"
 cudaDeviceProp deviceProp;
-# 158 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
-__cudaSafeCallNoSync(cudaGetDeviceProperties(&deviceProp, dev), "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h", 158);
-# 159 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 158 "sdk/cutil_inline_runtime.h"
+__cudaSafeCallNoSync(cudaGetDeviceProperties(&deviceProp, dev), "sdk/cutil_inline_runtime.h", 158);
+# 159 "sdk/cutil_inline_runtime.h"
 if ((deviceProp.major) < 1) {
-# 160 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 160 "sdk/cutil_inline_runtime.h"
 fprintf(stderr, "cutil error: device does not support CUDA.\n");
-# 161 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 161 "sdk/cutil_inline_runtime.h"
 exit(-1); }
-# 163 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 163 "sdk/cutil_inline_runtime.h"
 if ((cutCheckCmdLineFlag(ARGC, (const char **)ARGV, "quiet")) == (CUTFalse)) {
-# 164 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 164 "sdk/cutil_inline_runtime.h"
 fprintf(stderr, "Using device %d: %s\n", dev, deviceProp.name); }
-# 165 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
-__cudaSafeCall(cudaSetDevice(dev), "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h", 165);
-# 166 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 165 "sdk/cutil_inline_runtime.h"
+__cudaSafeCall(cudaSetDevice(dev), "sdk/cutil_inline_runtime.h", 165);
+# 166 "sdk/cutil_inline_runtime.h"
 }
-# 171 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 171 "sdk/cutil_inline_runtime.h"
 inline void cutilCudaCheckCtxLost(const char *errorMessage, const char *file, const int line)
-# 172 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 172 "sdk/cutil_inline_runtime.h"
 {
-# 173 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 173 "sdk/cutil_inline_runtime.h"
 cudaError_t err = cudaGetLastError();
-# 174 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 174 "sdk/cutil_inline_runtime.h"
 if ((cudaSuccess) != err) {
-# 175 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 175 "sdk/cutil_inline_runtime.h"
 fprintf(stderr, "CUDA error: %s in file \'%s\' in line %i : %s.\n", errorMessage, file, line, cudaGetErrorString(err));
-# 177 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 177 "sdk/cutil_inline_runtime.h"
 exit(-1);
-# 178 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 178 "sdk/cutil_inline_runtime.h"
 }
-# 179 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 179 "sdk/cutil_inline_runtime.h"
 err = cudaThreadSynchronize();
-# 180 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 180 "sdk/cutil_inline_runtime.h"
 if ((cudaSuccess) != err) {
-# 181 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 181 "sdk/cutil_inline_runtime.h"
 fprintf(stderr, "CCUDA error: %s in file \'%s\' in line %i : %s.\n", errorMessage, file, line, cudaGetErrorString(err));
-# 183 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 183 "sdk/cutil_inline_runtime.h"
 exit(-1);
-# 184 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 184 "sdk/cutil_inline_runtime.h"
 }
-# 185 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_runtime.h"
+# 185 "sdk/cutil_inline_runtime.h"
 }
-# 16 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 16 "sdk/cutil_inline_drvapi.h"
 inline void __cuSafeCallNoSync(CUresult err, const char *file, const int line)
-# 17 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 17 "sdk/cutil_inline_drvapi.h"
 {
-# 18 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 18 "sdk/cutil_inline_drvapi.h"
 if ((CUDA_SUCCESS) != err) {
-# 19 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 19 "sdk/cutil_inline_drvapi.h"
 fprintf(stderr, "cuSafeCallNoSync() Driver API error = %04d from file <%s>, line %i.\n", err, file, line);
-# 21 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 21 "sdk/cutil_inline_drvapi.h"
 exit(-1);
-# 22 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 22 "sdk/cutil_inline_drvapi.h"
 }
-# 23 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 23 "sdk/cutil_inline_drvapi.h"
 }
-# 24 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 24 "sdk/cutil_inline_drvapi.h"
 inline void __cuSafeCall(CUresult err, const char *file, const int line)
-# 25 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 25 "sdk/cutil_inline_drvapi.h"
 {
-# 26 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 26 "sdk/cutil_inline_drvapi.h"
 __cuSafeCallNoSync(err, file, line);
-# 27 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 27 "sdk/cutil_inline_drvapi.h"
 }
-# 29 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 29 "sdk/cutil_inline_drvapi.h"
 inline void __cuCtxSync(const char *file, const int line)
-# 30 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 30 "sdk/cutil_inline_drvapi.h"
 {
-# 31 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 31 "sdk/cutil_inline_drvapi.h"
 CUresult err = cuCtxSynchronize();
-# 32 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 32 "sdk/cutil_inline_drvapi.h"
 if ((CUDA_SUCCESS) != err) {
-# 33 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 33 "sdk/cutil_inline_drvapi.h"
 fprintf(stderr, "cuCtxSynchronize() API error = %04d in file <%s>, line %i.\n", err, file, line);
-# 35 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 35 "sdk/cutil_inline_drvapi.h"
 exit(-1);
-# 36 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 36 "sdk/cutil_inline_drvapi.h"
 }
-# 37 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 37 "sdk/cutil_inline_drvapi.h"
 }
-# 39 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 39 "sdk/cutil_inline_drvapi.h"
 inline void __cuCheckMsg(const char *msg, const char *file, const int line)
-# 40 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 40 "sdk/cutil_inline_drvapi.h"
 {
-# 41 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 41 "sdk/cutil_inline_drvapi.h"
 CUresult err = cuCtxSynchronize();
-# 42 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 42 "sdk/cutil_inline_drvapi.h"
 if ((CUDA_SUCCESS) != err) {
-# 43 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 43 "sdk/cutil_inline_drvapi.h"
 fprintf(stderr, "cutilDrvCheckMsg -> %s", msg);
-# 44 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 44 "sdk/cutil_inline_drvapi.h"
 fprintf(stderr, "cutilDrvCheckMsg -> cuCtxSynchronize API error = %04d in file <%s>, line %i.\n", err, file, line);
-# 46 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 46 "sdk/cutil_inline_drvapi.h"
 exit(-1);
-# 47 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 47 "sdk/cutil_inline_drvapi.h"
 }
-# 48 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 48 "sdk/cutil_inline_drvapi.h"
 }
-# 54 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 54 "sdk/cutil_inline_drvapi.h"
 inline void cutilDeviceInitDrv(int cuDevice, int ARGC, char **ARGV)
-# 55 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 55 "sdk/cutil_inline_drvapi.h"
 {
-# 56 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 56 "sdk/cutil_inline_drvapi.h"
 cuDevice = 0;
-# 57 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 57 "sdk/cutil_inline_drvapi.h"
 int deviceCount = 0;
-# 58 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 58 "sdk/cutil_inline_drvapi.h"
 CUresult err = cuInit(0);
-# 59 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 59 "sdk/cutil_inline_drvapi.h"
 if ((CUDA_SUCCESS) == err) {
-# 60 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
-__cuSafeCallNoSync(cuDeviceGetCount(&deviceCount), "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h", 60); }
-# 61 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 60 "sdk/cutil_inline_drvapi.h"
+__cuSafeCallNoSync(cuDeviceGetCount(&deviceCount), "sdk/cutil_inline_drvapi.h", 60); }
+# 61 "sdk/cutil_inline_drvapi.h"
 if (deviceCount == 0) {
-# 62 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 62 "sdk/cutil_inline_drvapi.h"
 fprintf(stderr, "CUTIL DeviceInitDrv error: no devices supporting CUDA\n");
-# 63 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 63 "sdk/cutil_inline_drvapi.h"
 exit(-1);
-# 64 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 64 "sdk/cutil_inline_drvapi.h"
 }
-# 65 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 65 "sdk/cutil_inline_drvapi.h"
 int dev = 0;
-# 66 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 66 "sdk/cutil_inline_drvapi.h"
 cutGetCmdLineArgumenti(ARGC, (const char **)ARGV, "device", &dev);
-# 67 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 67 "sdk/cutil_inline_drvapi.h"
 if (dev < 0) { dev = 0; }
-# 68 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 68 "sdk/cutil_inline_drvapi.h"
 if (dev > (deviceCount - 1)) { dev = (deviceCount - 1); }
-# 69 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
-__cuSafeCallNoSync(cuDeviceGet(&cuDevice, dev), "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h", 69);
-# 70 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 69 "sdk/cutil_inline_drvapi.h"
+__cuSafeCallNoSync(cuDeviceGet(&cuDevice, dev), "sdk/cutil_inline_drvapi.h", 69);
+# 70 "sdk/cutil_inline_drvapi.h"
 char name[100];
-# 71 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 71 "sdk/cutil_inline_drvapi.h"
 cuDeviceGetName(name, 100, cuDevice);
-# 72 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 72 "sdk/cutil_inline_drvapi.h"
 if ((cutCheckCmdLineFlag(ARGC, (const char **)ARGV, "quiet")) == (CUTFalse)) {
-# 73 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 73 "sdk/cutil_inline_drvapi.h"
 fprintf(stderr, "Using device %d: %s\n", dev, name); }
-# 74 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 74 "sdk/cutil_inline_drvapi.h"
 }
-# 78 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 78 "sdk/cutil_inline_drvapi.h"
 inline void cutilDrvCudaCheckCtxLost(const char *errorMessage, const char *file, const int line)
-# 79 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 79 "sdk/cutil_inline_drvapi.h"
 {
-# 80 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 80 "sdk/cutil_inline_drvapi.h"
 CUresult err = cuCtxSynchronize();
-# 81 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 81 "sdk/cutil_inline_drvapi.h"
 if ((CUDA_ERROR_INVALID_CONTEXT) != err) {
-# 82 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 82 "sdk/cutil_inline_drvapi.h"
 fprintf(stderr, "Cuda error: %s in file \'%s\' in line %i\n", errorMessage, file, line);
-# 84 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 84 "sdk/cutil_inline_drvapi.h"
 exit(-1);
-# 85 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 85 "sdk/cutil_inline_drvapi.h"
 }
-# 86 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 86 "sdk/cutil_inline_drvapi.h"
 err = cuCtxSynchronize();
-# 87 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 87 "sdk/cutil_inline_drvapi.h"
 if ((CUDA_SUCCESS) != err) {
-# 88 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 88 "sdk/cutil_inline_drvapi.h"
 fprintf(stderr, "Cuda error: %s in file \'%s\' in line %i\n", errorMessage, file, line);
-# 90 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 90 "sdk/cutil_inline_drvapi.h"
 exit(-1);
-# 91 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 91 "sdk/cutil_inline_drvapi.h"
 }
-# 92 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline_drvapi.h"
+# 92 "sdk/cutil_inline_drvapi.h"
 }
-# 12 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline.h"
+# 12 "sdk/cutil_inline.h"
 inline void print_NVCC_min_spec(const char *sSDKsample, const char *sNVCCReq, const char *sDriverReq)
-# 13 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline.h"
+# 13 "sdk/cutil_inline.h"
 {
-# 14 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline.h"
+# 14 "sdk/cutil_inline.h"
 printf("CUDA %d.%02d Toolkit built this project.\n", 3020 / 1000, 3020 % 100);
-# 15 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline.h"
+# 15 "sdk/cutil_inline.h"
 printf("  [ %s ] requirements:\n", sSDKsample);
-# 16 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline.h"
+# 16 "sdk/cutil_inline.h"
 printf(" -> CUDA %s Toolkit\n", sNVCCReq);
-# 17 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline.h"
+# 17 "sdk/cutil_inline.h"
 printf(" -> %s NVIDIA Display Driver.\n", sDriverReq);
-# 18 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_inline.h"
+# 18 "sdk/cutil_inline.h"
 }
-# 49 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 49 "sdk/cutil_math.h"
 extern "C" { typedef unsigned uint; }
-# 50 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 50 "sdk/cutil_math.h"
 extern "C" { typedef unsigned short ushort; }
-# 85 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 85 "sdk/cutil_math.h"
 inline float lerp(float a, float b, float t)
-# 86 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 86 "sdk/cutil_math.h"
 {
-# 87 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 87 "sdk/cutil_math.h"
 return a + (t * (b - a));
-# 88 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 88 "sdk/cutil_math.h"
 }
-# 91 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 91 "sdk/cutil_math.h"
 inline float clamp(float f, float a, float b)
-# 92 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 92 "sdk/cutil_math.h"
 {
-# 93 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 93 "sdk/cutil_math.h"
 return fmaxf(a, fminf(f, b));
-# 94 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 94 "sdk/cutil_math.h"
 }
-# 100 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 100 "sdk/cutil_math.h"
 inline int2 operator-(int2 &a)
-# 101 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 101 "sdk/cutil_math.h"
 {
-# 102 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 102 "sdk/cutil_math.h"
 return make_int2(-(a.x), -(a.y));
-# 103 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 103 "sdk/cutil_math.h"
 }
-# 106 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 106 "sdk/cutil_math.h"
 inline int2 operator+(int2 a, int2 b)
-# 107 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 107 "sdk/cutil_math.h"
 {
-# 108 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 108 "sdk/cutil_math.h"
 return make_int2((a.x) + (b.x), (a.y) + (b.y));
-# 109 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 109 "sdk/cutil_math.h"
 }
-# 110 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 110 "sdk/cutil_math.h"
 inline void operator+=(int2 &a, int2 b)
-# 111 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 111 "sdk/cutil_math.h"
 {
-# 112 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 112 "sdk/cutil_math.h"
 (a.x) += (b.x); (a.y) += (b.y);
-# 113 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 113 "sdk/cutil_math.h"
 }
-# 116 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 116 "sdk/cutil_math.h"
 inline int2 operator-(int2 a, int2 b)
-# 117 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 117 "sdk/cutil_math.h"
 {
-# 118 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 118 "sdk/cutil_math.h"
 return make_int2((a.x) - (b.x), (a.y) - (b.y));
-# 119 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 119 "sdk/cutil_math.h"
 }
-# 120 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 120 "sdk/cutil_math.h"
 inline void operator-=(int2 &a, int2 b)
-# 121 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 121 "sdk/cutil_math.h"
 {
-# 122 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 122 "sdk/cutil_math.h"
 (a.x) -= (b.x); (a.y) -= (b.y);
-# 123 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 123 "sdk/cutil_math.h"
 }
-# 126 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 126 "sdk/cutil_math.h"
 inline int2 operator*(int2 a, int2 b)
-# 127 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 127 "sdk/cutil_math.h"
 {
-# 128 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 128 "sdk/cutil_math.h"
 return make_int2((a.x) * (b.x), (a.y) * (b.y));
-# 129 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 129 "sdk/cutil_math.h"
 }
-# 130 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 130 "sdk/cutil_math.h"
 inline int2 operator*(int2 a, int s)
-# 131 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 131 "sdk/cutil_math.h"
 {
-# 132 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 132 "sdk/cutil_math.h"
 return make_int2((a.x) * s, (a.y) * s);
-# 133 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 133 "sdk/cutil_math.h"
 }
-# 134 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 134 "sdk/cutil_math.h"
 inline int2 operator*(int s, int2 a)
-# 135 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 135 "sdk/cutil_math.h"
 {
-# 136 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 136 "sdk/cutil_math.h"
 return make_int2((a.x) * s, (a.y) * s);
-# 137 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 137 "sdk/cutil_math.h"
 }
-# 138 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 138 "sdk/cutil_math.h"
 inline void operator*=(int2 &a, int s)
-# 139 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 139 "sdk/cutil_math.h"
 {
-# 140 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 140 "sdk/cutil_math.h"
 (a.x) *= s; (a.y) *= s;
-# 141 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 141 "sdk/cutil_math.h"
 }
-# 147 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 147 "sdk/cutil_math.h"
 inline float2 make_float2(float s)
-# 148 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 148 "sdk/cutil_math.h"
 {
-# 149 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 149 "sdk/cutil_math.h"
 return make_float2(s, s);
-# 150 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 150 "sdk/cutil_math.h"
 }
-# 151 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 151 "sdk/cutil_math.h"
 inline float2 make_float2(int2 a)
-# 152 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 152 "sdk/cutil_math.h"
 {
-# 153 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 153 "sdk/cutil_math.h"
 return make_float2((float)(a.x), (float)(a.y));
-# 154 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 154 "sdk/cutil_math.h"
 }
-# 157 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 157 "sdk/cutil_math.h"
 inline float2 operator-(float2 &a)
-# 158 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 158 "sdk/cutil_math.h"
 {
-# 159 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 159 "sdk/cutil_math.h"
 return make_float2(-(a.x), -(a.y));
-# 160 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 160 "sdk/cutil_math.h"
 }
-# 163 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 163 "sdk/cutil_math.h"
 inline float2 operator+(float2 a, float2 b)
-# 164 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 164 "sdk/cutil_math.h"
 {
-# 165 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 165 "sdk/cutil_math.h"
 return make_float2((a.x) + (b.x), (a.y) + (b.y));
-# 166 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 166 "sdk/cutil_math.h"
 }
-# 167 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 167 "sdk/cutil_math.h"
 inline void operator+=(float2 &a, float2 b)
-# 168 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 168 "sdk/cutil_math.h"
 {
-# 169 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 169 "sdk/cutil_math.h"
 (a.x) += (b.x); (a.y) += (b.y);
-# 170 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 170 "sdk/cutil_math.h"
 }
-# 173 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 173 "sdk/cutil_math.h"
 inline float2 operator-(float2 a, float2 b)
-# 174 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 174 "sdk/cutil_math.h"
 {
-# 175 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 175 "sdk/cutil_math.h"
 return make_float2((a.x) - (b.x), (a.y) - (b.y));
-# 176 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 176 "sdk/cutil_math.h"
 }
-# 177 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 177 "sdk/cutil_math.h"
 inline void operator-=(float2 &a, float2 b)
-# 178 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 178 "sdk/cutil_math.h"
 {
-# 179 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 179 "sdk/cutil_math.h"
 (a.x) -= (b.x); (a.y) -= (b.y);
-# 180 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 180 "sdk/cutil_math.h"
 }
-# 183 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 183 "sdk/cutil_math.h"
 inline float2 operator*(float2 a, float2 b)
-# 184 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 184 "sdk/cutil_math.h"
 {
-# 185 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 185 "sdk/cutil_math.h"
 return make_float2((a.x) * (b.x), (a.y) * (b.y));
-# 186 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 186 "sdk/cutil_math.h"
 }
-# 187 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 187 "sdk/cutil_math.h"
 inline float2 operator*(float2 a, float s)
-# 188 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 188 "sdk/cutil_math.h"
 {
-# 189 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 189 "sdk/cutil_math.h"
 return make_float2((a.x) * s, (a.y) * s);
-# 190 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 190 "sdk/cutil_math.h"
 }
-# 191 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 191 "sdk/cutil_math.h"
 inline float2 operator*(float s, float2 a)
-# 192 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 192 "sdk/cutil_math.h"
 {
-# 193 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 193 "sdk/cutil_math.h"
 return make_float2((a.x) * s, (a.y) * s);
-# 194 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 194 "sdk/cutil_math.h"
 }
-# 195 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 195 "sdk/cutil_math.h"
 inline void operator*=(float2 &a, float s)
-# 196 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 196 "sdk/cutil_math.h"
 {
-# 197 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 197 "sdk/cutil_math.h"
 (a.x) *= s; (a.y) *= s;
-# 198 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 198 "sdk/cutil_math.h"
 }
-# 201 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 201 "sdk/cutil_math.h"
 inline float2 operator/(float2 a, float2 b)
-# 202 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 202 "sdk/cutil_math.h"
 {
-# 203 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 203 "sdk/cutil_math.h"
 return make_float2((a.x) / (b.x), (a.y) / (b.y));
-# 204 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 204 "sdk/cutil_math.h"
 }
-# 205 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 205 "sdk/cutil_math.h"
 inline float2 operator/(float2 a, float s)
-# 206 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 206 "sdk/cutil_math.h"
 {
-# 207 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 207 "sdk/cutil_math.h"
 float inv = ((1.0F) / s);
-# 208 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 208 "sdk/cutil_math.h"
 return (a * inv);
-# 209 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 209 "sdk/cutil_math.h"
 }
-# 210 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 210 "sdk/cutil_math.h"
 inline float2 operator/(float s, float2 a)
-# 211 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 211 "sdk/cutil_math.h"
 {
-# 212 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 212 "sdk/cutil_math.h"
 float inv = ((1.0F) / s);
-# 213 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 213 "sdk/cutil_math.h"
 return (a * inv);
-# 214 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 214 "sdk/cutil_math.h"
 }
-# 215 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 215 "sdk/cutil_math.h"
 inline void operator/=(float2 &a, float s)
-# 216 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 216 "sdk/cutil_math.h"
 {
-# 217 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 217 "sdk/cutil_math.h"
 float inv = ((1.0F) / s);
-# 218 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 218 "sdk/cutil_math.h"
 ((a) *= inv);
-# 219 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 219 "sdk/cutil_math.h"
 }
-# 222 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 222 "sdk/cutil_math.h"
 inline float2 lerp(float2 a, float2 b, float t)
-# 223 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 223 "sdk/cutil_math.h"
 {
-# 224 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 224 "sdk/cutil_math.h"
 return (a + ((t * ((b - a)))));
-# 225 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 225 "sdk/cutil_math.h"
 }
-# 228 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 228 "sdk/cutil_math.h"
 inline float2 clamp(float2 v, float a, float b)
-# 229 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 229 "sdk/cutil_math.h"
 {
-# 230 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 230 "sdk/cutil_math.h"
 return make_float2(clamp(v.x, a, b), clamp(v.y, a, b));
-# 231 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 231 "sdk/cutil_math.h"
 }
-# 233 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 233 "sdk/cutil_math.h"
 inline float2 clamp(float2 v, float2 a, float2 b)
-# 234 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 234 "sdk/cutil_math.h"
 {
-# 235 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 235 "sdk/cutil_math.h"
 return make_float2(clamp(v.x, a.x, b.x), clamp(v.y, a.y, b.y));
-# 236 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 236 "sdk/cutil_math.h"
 }
-# 239 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 239 "sdk/cutil_math.h"
 inline float dot(float2 a, float2 b)
-# 240 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 240 "sdk/cutil_math.h"
 {
-# 241 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 241 "sdk/cutil_math.h"
 return ((a.x) * (b.x)) + ((a.y) * (b.y));
-# 242 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 242 "sdk/cutil_math.h"
 }
-# 245 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 245 "sdk/cutil_math.h"
 inline float length(float2 v)
-# 246 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 246 "sdk/cutil_math.h"
 {
-# 247 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 247 "sdk/cutil_math.h"
 return sqrtf(dot(v, v));
-# 248 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 248 "sdk/cutil_math.h"
 }
-# 251 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 251 "sdk/cutil_math.h"
 inline float2 normalize(float2 v)
-# 252 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 252 "sdk/cutil_math.h"
 {
-# 253 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 253 "sdk/cutil_math.h"
 float invLen = rsqrtf(dot(v, v));
-# 254 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 254 "sdk/cutil_math.h"
 return (v * invLen);
-# 255 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 255 "sdk/cutil_math.h"
 }
-# 258 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 258 "sdk/cutil_math.h"
 inline float2 floor(const float2 v)
-# 259 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 259 "sdk/cutil_math.h"
 {
-# 260 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 260 "sdk/cutil_math.h"
 return make_float2(floor(v.x), floor(v.y));
-# 261 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 261 "sdk/cutil_math.h"
 }
-# 264 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 264 "sdk/cutil_math.h"
 inline float2 reflect(float2 i, float2 n)
-# 265 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 265 "sdk/cutil_math.h"
 {
-# 266 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 266 "sdk/cutil_math.h"
 return (i - ((((((2.0F)) * n)) * (dot(n, i)))));
-# 267 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 267 "sdk/cutil_math.h"
 }
-# 270 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 270 "sdk/cutil_math.h"
 inline float2 fabs(float2 v)
-# 271 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 271 "sdk/cutil_math.h"
 {
-# 272 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 272 "sdk/cutil_math.h"
 return make_float2(fabs(v.x), fabs(v.y));
-# 273 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 273 "sdk/cutil_math.h"
 }
-# 279 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 279 "sdk/cutil_math.h"
 inline float3 make_float3(float s)
-# 280 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 280 "sdk/cutil_math.h"
 {
-# 281 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 281 "sdk/cutil_math.h"
 return make_float3(s, s, s);
-# 282 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 282 "sdk/cutil_math.h"
 }
-# 283 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 283 "sdk/cutil_math.h"
 inline float3 make_float3(float2 a)
-# 284 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 284 "sdk/cutil_math.h"
 {
-# 285 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 285 "sdk/cutil_math.h"
 return make_float3(a.x, a.y, (0.0F));
-# 286 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 286 "sdk/cutil_math.h"
 }
-# 287 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 287 "sdk/cutil_math.h"
 inline float3 make_float3(float2 a, float s)
-# 288 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 288 "sdk/cutil_math.h"
 {
-# 289 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 289 "sdk/cutil_math.h"
 return make_float3(a.x, a.y, s);
-# 290 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 290 "sdk/cutil_math.h"
 }
-# 291 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 291 "sdk/cutil_math.h"
 inline float3 make_float3(float4 a)
-# 292 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 292 "sdk/cutil_math.h"
 {
-# 293 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 293 "sdk/cutil_math.h"
 return make_float3(a.x, a.y, a.z);
-# 294 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 294 "sdk/cutil_math.h"
 }
-# 295 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 295 "sdk/cutil_math.h"
 inline float3 make_float3(int3 a)
-# 296 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 296 "sdk/cutil_math.h"
 {
-# 297 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 297 "sdk/cutil_math.h"
 return make_float3((float)(a.x), (float)(a.y), (float)(a.z));
-# 298 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 298 "sdk/cutil_math.h"
 }
-# 301 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 301 "sdk/cutil_math.h"
 inline float3 operator-(float3 &a)
-# 302 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 302 "sdk/cutil_math.h"
 {
-# 303 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 303 "sdk/cutil_math.h"
 return make_float3(-(a.x), -(a.y), -(a.z));
-# 304 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 304 "sdk/cutil_math.h"
 }
-# 307 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 307 "sdk/cutil_math.h"
 static inline float3 fminf(float3 a, float3 b)
-# 308 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 308 "sdk/cutil_math.h"
 {
-# 309 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 309 "sdk/cutil_math.h"
 return make_float3(fminf(a.x, b.x), fminf(a.y, b.y), fminf(a.z, b.z));
-# 310 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 310 "sdk/cutil_math.h"
 }
-# 313 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 313 "sdk/cutil_math.h"
 static inline float3 fmaxf(float3 a, float3 b)
-# 314 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 314 "sdk/cutil_math.h"
 {
-# 315 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 315 "sdk/cutil_math.h"
 return make_float3(fmaxf(a.x, b.x), fmaxf(a.y, b.y), fmaxf(a.z, b.z));
-# 316 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 316 "sdk/cutil_math.h"
 }
-# 319 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 319 "sdk/cutil_math.h"
 inline float3 operator+(float3 a, float3 b)
-# 320 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 320 "sdk/cutil_math.h"
 {
-# 321 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 321 "sdk/cutil_math.h"
 return make_float3((a.x) + (b.x), (a.y) + (b.y), (a.z) + (b.z));
-# 322 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 322 "sdk/cutil_math.h"
 }
-# 323 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 323 "sdk/cutil_math.h"
 inline float3 operator+(float3 a, float b)
-# 324 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 324 "sdk/cutil_math.h"
 {
-# 325 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 325 "sdk/cutil_math.h"
 return make_float3((a.x) + b, (a.y) + b, (a.z) + b);
-# 326 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 326 "sdk/cutil_math.h"
 }
-# 327 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 327 "sdk/cutil_math.h"
 inline void operator+=(float3 &a, float3 b)
-# 328 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 328 "sdk/cutil_math.h"
 {
-# 329 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 329 "sdk/cutil_math.h"
 (a.x) += (b.x); (a.y) += (b.y); (a.z) += (b.z);
-# 330 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 330 "sdk/cutil_math.h"
 }
-# 333 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 333 "sdk/cutil_math.h"
 inline float3 operator-(float3 a, float3 b)
-# 334 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 334 "sdk/cutil_math.h"
 {
-# 335 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 335 "sdk/cutil_math.h"
 return make_float3((a.x) - (b.x), (a.y) - (b.y), (a.z) - (b.z));
-# 336 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 336 "sdk/cutil_math.h"
 }
-# 337 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 337 "sdk/cutil_math.h"
 inline float3 operator-(float3 a, float b)
-# 338 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 338 "sdk/cutil_math.h"
 {
-# 339 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 339 "sdk/cutil_math.h"
 return make_float3((a.x) - b, (a.y) - b, (a.z) - b);
-# 340 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 340 "sdk/cutil_math.h"
 }
-# 341 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 341 "sdk/cutil_math.h"
 inline void operator-=(float3 &a, float3 b)
-# 342 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 342 "sdk/cutil_math.h"
 {
-# 343 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 343 "sdk/cutil_math.h"
 (a.x) -= (b.x); (a.y) -= (b.y); (a.z) -= (b.z);
-# 344 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 344 "sdk/cutil_math.h"
 }
-# 347 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 347 "sdk/cutil_math.h"
 inline float3 operator*(float3 a, float3 b)
-# 348 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 348 "sdk/cutil_math.h"
 {
-# 349 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 349 "sdk/cutil_math.h"
 return make_float3((a.x) * (b.x), (a.y) * (b.y), (a.z) * (b.z));
-# 350 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 350 "sdk/cutil_math.h"
 }
-# 351 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 351 "sdk/cutil_math.h"
 inline float3 operator*(float3 a, float s)
-# 352 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 352 "sdk/cutil_math.h"
 {
-# 353 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 353 "sdk/cutil_math.h"
 return make_float3((a.x) * s, (a.y) * s, (a.z) * s);
-# 354 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 354 "sdk/cutil_math.h"
 }
-# 355 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 355 "sdk/cutil_math.h"
 inline float3 operator*(float s, float3 a)
-# 356 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 356 "sdk/cutil_math.h"
 {
-# 357 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 357 "sdk/cutil_math.h"
 return make_float3((a.x) * s, (a.y) * s, (a.z) * s);
-# 358 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 358 "sdk/cutil_math.h"
 }
-# 359 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 359 "sdk/cutil_math.h"
 inline void operator*=(float3 &a, float s)
-# 360 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 360 "sdk/cutil_math.h"
 {
-# 361 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 361 "sdk/cutil_math.h"
 (a.x) *= s; (a.y) *= s; (a.z) *= s;
-# 362 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 362 "sdk/cutil_math.h"
 }
-# 365 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 365 "sdk/cutil_math.h"
 inline float3 operator/(float3 a, float3 b)
-# 366 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 366 "sdk/cutil_math.h"
 {
-# 367 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 367 "sdk/cutil_math.h"
 return make_float3((a.x) / (b.x), (a.y) / (b.y), (a.z) / (b.z));
-# 368 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 368 "sdk/cutil_math.h"
 }
-# 369 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 369 "sdk/cutil_math.h"
 inline float3 operator/(float3 a, float s)
-# 370 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 370 "sdk/cutil_math.h"
 {
-# 371 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 371 "sdk/cutil_math.h"
 float inv = ((1.0F) / s);
-# 372 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 372 "sdk/cutil_math.h"
 return (a * inv);
-# 373 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 373 "sdk/cutil_math.h"
 }
-# 374 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 374 "sdk/cutil_math.h"
 inline float3 operator/(float s, float3 a)
-# 375 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 375 "sdk/cutil_math.h"
 {
-# 376 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 376 "sdk/cutil_math.h"
 float inv = ((1.0F) / s);
-# 377 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 377 "sdk/cutil_math.h"
 return (a * inv);
-# 378 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 378 "sdk/cutil_math.h"
 }
-# 379 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 379 "sdk/cutil_math.h"
 inline void operator/=(float3 &a, float s)
-# 380 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 380 "sdk/cutil_math.h"
 {
-# 381 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 381 "sdk/cutil_math.h"
 float inv = ((1.0F) / s);
-# 382 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 382 "sdk/cutil_math.h"
 ((a) *= inv);
-# 383 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 383 "sdk/cutil_math.h"
 }
-# 386 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 386 "sdk/cutil_math.h"
 inline float3 lerp(float3 a, float3 b, float t)
-# 387 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 387 "sdk/cutil_math.h"
 {
-# 388 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 388 "sdk/cutil_math.h"
 return (a + ((t * ((b - a)))));
-# 389 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 389 "sdk/cutil_math.h"
 }
-# 392 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 392 "sdk/cutil_math.h"
 inline float3 clamp(float3 v, float a, float b)
-# 393 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 393 "sdk/cutil_math.h"
 {
-# 394 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 394 "sdk/cutil_math.h"
 return make_float3(clamp(v.x, a, b), clamp(v.y, a, b), clamp(v.z, a, b));
-# 395 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 395 "sdk/cutil_math.h"
 }
-# 397 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 397 "sdk/cutil_math.h"
 inline float3 clamp(float3 v, float3 a, float3 b)
-# 398 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 398 "sdk/cutil_math.h"
 {
-# 399 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 399 "sdk/cutil_math.h"
 return make_float3(clamp(v.x, a.x, b.x), clamp(v.y, a.y, b.y), clamp(v.z, a.z, b.z));
-# 400 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 400 "sdk/cutil_math.h"
 }
-# 403 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 403 "sdk/cutil_math.h"
 inline float dot(float3 a, float3 b)
-# 404 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 404 "sdk/cutil_math.h"
 {
-# 405 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 405 "sdk/cutil_math.h"
 return (((a.x) * (b.x)) + ((a.y) * (b.y))) + ((a.z) * (b.z));
-# 406 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 406 "sdk/cutil_math.h"
 }
-# 409 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 409 "sdk/cutil_math.h"
 inline float3 cross(float3 a, float3 b)
-# 410 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 410 "sdk/cutil_math.h"
 {
-# 411 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 411 "sdk/cutil_math.h"
 return make_float3(((a.y) * (b.z)) - ((a.z) * (b.y)), ((a.z) * (b.x)) - ((a.x) * (b.z)), ((a.x) * (b.y)) - ((a.y) * (b.x)));
-# 412 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 412 "sdk/cutil_math.h"
 }
-# 415 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 415 "sdk/cutil_math.h"
 inline float length(float3 v)
-# 416 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 416 "sdk/cutil_math.h"
 {
-# 417 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 417 "sdk/cutil_math.h"
 return sqrtf(dot(v, v));
-# 418 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 418 "sdk/cutil_math.h"
 }
-# 421 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 421 "sdk/cutil_math.h"
 inline float3 normalize(float3 v)
-# 422 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 422 "sdk/cutil_math.h"
 {
-# 423 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 423 "sdk/cutil_math.h"
 float invLen = rsqrtf(dot(v, v));
-# 424 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 424 "sdk/cutil_math.h"
 return (v * invLen);
-# 425 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 425 "sdk/cutil_math.h"
 }
-# 428 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 428 "sdk/cutil_math.h"
 inline float3 floor(const float3 v)
-# 429 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 429 "sdk/cutil_math.h"
 {
-# 430 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 430 "sdk/cutil_math.h"
 return make_float3(floor(v.x), floor(v.y), floor(v.z));
-# 431 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 431 "sdk/cutil_math.h"
 }
-# 434 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 434 "sdk/cutil_math.h"
 inline float3 reflect(float3 i, float3 n)
-# 435 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 435 "sdk/cutil_math.h"
 {
-# 436 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 436 "sdk/cutil_math.h"
 return (i - ((((((2.0F)) * n)) * (dot(n, i)))));
-# 437 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 437 "sdk/cutil_math.h"
 }
-# 440 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 440 "sdk/cutil_math.h"
 inline float3 fabs(float3 v)
-# 441 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 441 "sdk/cutil_math.h"
 {
-# 442 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 442 "sdk/cutil_math.h"
 return make_float3(fabs(v.x), fabs(v.y), fabs(v.z));
-# 443 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 443 "sdk/cutil_math.h"
 }
-# 449 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 449 "sdk/cutil_math.h"
 inline float4 make_float4(float s)
-# 450 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 450 "sdk/cutil_math.h"
 {
-# 451 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 451 "sdk/cutil_math.h"
 return make_float4(s, s, s, s);
-# 452 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 452 "sdk/cutil_math.h"
 }
-# 453 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 453 "sdk/cutil_math.h"
 inline float4 make_float4(float3 a)
-# 454 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 454 "sdk/cutil_math.h"
 {
-# 455 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 455 "sdk/cutil_math.h"
 return make_float4(a.x, a.y, a.z, (0.0F));
-# 456 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 456 "sdk/cutil_math.h"
 }
-# 457 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 457 "sdk/cutil_math.h"
 inline float4 make_float4(float3 a, float w)
-# 458 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 458 "sdk/cutil_math.h"
 {
-# 459 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 459 "sdk/cutil_math.h"
 return make_float4(a.x, a.y, a.z, w);
-# 460 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 460 "sdk/cutil_math.h"
 }
-# 461 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 461 "sdk/cutil_math.h"
 inline float4 make_float4(int4 a)
-# 462 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 462 "sdk/cutil_math.h"
 {
-# 463 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 463 "sdk/cutil_math.h"
 return make_float4((float)(a.x), (float)(a.y), (float)(a.z), (float)(a.w));
-# 464 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 464 "sdk/cutil_math.h"
 }
-# 467 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 467 "sdk/cutil_math.h"
 inline float4 operator-(float4 &a)
-# 468 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 468 "sdk/cutil_math.h"
 {
-# 469 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 469 "sdk/cutil_math.h"
 return make_float4(-(a.x), -(a.y), -(a.z), -(a.w));
-# 470 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 470 "sdk/cutil_math.h"
 }
-# 473 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 473 "sdk/cutil_math.h"
 static inline float4 fminf(float4 a, float4 b)
-# 474 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 474 "sdk/cutil_math.h"
 {
-# 475 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 475 "sdk/cutil_math.h"
 return make_float4(fminf(a.x, b.x), fminf(a.y, b.y), fminf(a.z, b.z), fminf(a.w, b.w));
-# 476 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 476 "sdk/cutil_math.h"
 }
-# 479 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 479 "sdk/cutil_math.h"
 static inline float4 fmaxf(float4 a, float4 b)
-# 480 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 480 "sdk/cutil_math.h"
 {
-# 481 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 481 "sdk/cutil_math.h"
 return make_float4(fmaxf(a.x, b.x), fmaxf(a.y, b.y), fmaxf(a.z, b.z), fmaxf(a.w, b.w));
-# 482 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 482 "sdk/cutil_math.h"
 }
-# 485 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 485 "sdk/cutil_math.h"
 inline float4 operator+(float4 a, float4 b)
-# 486 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 486 "sdk/cutil_math.h"
 {
-# 487 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 487 "sdk/cutil_math.h"
 return make_float4((a.x) + (b.x), (a.y) + (b.y), (a.z) + (b.z), (a.w) + (b.w));
-# 488 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 488 "sdk/cutil_math.h"
 }
-# 489 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 489 "sdk/cutil_math.h"
 inline void operator+=(float4 &a, float4 b)
-# 490 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 490 "sdk/cutil_math.h"
 {
-# 491 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 491 "sdk/cutil_math.h"
 (a.x) += (b.x); (a.y) += (b.y); (a.z) += (b.z); (a.w) += (b.w);
-# 492 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 492 "sdk/cutil_math.h"
 }
-# 495 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 495 "sdk/cutil_math.h"
 inline float4 operator-(float4 a, float4 b)
-# 496 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 496 "sdk/cutil_math.h"
 {
-# 497 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 497 "sdk/cutil_math.h"
 return make_float4((a.x) - (b.x), (a.y) - (b.y), (a.z) - (b.z), (a.w) - (b.w));
-# 498 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 498 "sdk/cutil_math.h"
 }
-# 499 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 499 "sdk/cutil_math.h"
 inline void operator-=(float4 &a, float4 b)
-# 500 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 500 "sdk/cutil_math.h"
 {
-# 501 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 501 "sdk/cutil_math.h"
 (a.x) -= (b.x); (a.y) -= (b.y); (a.z) -= (b.z); (a.w) -= (b.w);
-# 502 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 502 "sdk/cutil_math.h"
 }
-# 505 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 505 "sdk/cutil_math.h"
 inline float4 operator*(float4 a, float s)
-# 506 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 506 "sdk/cutil_math.h"
 {
-# 507 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 507 "sdk/cutil_math.h"
 return make_float4((a.x) * s, (a.y) * s, (a.z) * s, (a.w) * s);
-# 508 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 508 "sdk/cutil_math.h"
 }
-# 509 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 509 "sdk/cutil_math.h"
 inline float4 operator*(float s, float4 a)
-# 510 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 510 "sdk/cutil_math.h"
 {
-# 511 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 511 "sdk/cutil_math.h"
 return make_float4((a.x) * s, (a.y) * s, (a.z) * s, (a.w) * s);
-# 512 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 512 "sdk/cutil_math.h"
 }
-# 513 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 513 "sdk/cutil_math.h"
 inline void operator*=(float4 &a, float s)
-# 514 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 514 "sdk/cutil_math.h"
 {
-# 515 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 515 "sdk/cutil_math.h"
 (a.x) *= s; (a.y) *= s; (a.z) *= s; (a.w) *= s;
-# 516 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 516 "sdk/cutil_math.h"
 }
-# 519 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 519 "sdk/cutil_math.h"
 inline float4 operator/(float4 a, float4 b)
-# 520 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 520 "sdk/cutil_math.h"
 {
-# 521 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 521 "sdk/cutil_math.h"
 return make_float4((a.x) / (b.x), (a.y) / (b.y), (a.z) / (b.z), (a.w) / (b.w));
-# 522 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 522 "sdk/cutil_math.h"
 }
-# 523 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 523 "sdk/cutil_math.h"
 inline float4 operator/(float4 a, float s)
-# 524 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 524 "sdk/cutil_math.h"
 {
-# 525 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 525 "sdk/cutil_math.h"
 float inv = ((1.0F) / s);
-# 526 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 526 "sdk/cutil_math.h"
 return (a * inv);
-# 527 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 527 "sdk/cutil_math.h"
 }
-# 528 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 528 "sdk/cutil_math.h"
 inline float4 operator/(float s, float4 a)
-# 529 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 529 "sdk/cutil_math.h"
 {
-# 530 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 530 "sdk/cutil_math.h"
 float inv = ((1.0F) / s);
-# 531 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 531 "sdk/cutil_math.h"
 return (a * inv);
-# 532 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 532 "sdk/cutil_math.h"
 }
-# 533 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 533 "sdk/cutil_math.h"
 inline void operator/=(float4 &a, float s)
-# 534 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 534 "sdk/cutil_math.h"
 {
-# 535 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 535 "sdk/cutil_math.h"
 float inv = ((1.0F) / s);
-# 536 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 536 "sdk/cutil_math.h"
 ((a) *= inv);
-# 537 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 537 "sdk/cutil_math.h"
 }
-# 540 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 540 "sdk/cutil_math.h"
 inline float4 lerp(float4 a, float4 b, float t)
-# 541 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 541 "sdk/cutil_math.h"
 {
-# 542 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 542 "sdk/cutil_math.h"
 return (a + ((t * ((b - a)))));
-# 543 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 543 "sdk/cutil_math.h"
 }
-# 546 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 546 "sdk/cutil_math.h"
 inline float4 clamp(float4 v, float a, float b)
-# 547 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 547 "sdk/cutil_math.h"
 {
-# 548 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 548 "sdk/cutil_math.h"
 return make_float4(clamp(v.x, a, b), clamp(v.y, a, b), clamp(v.z, a, b), clamp(v.w, a, b));
-# 549 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 549 "sdk/cutil_math.h"
 }
-# 551 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 551 "sdk/cutil_math.h"
 inline float4 clamp(float4 v, float4 a, float4 b)
-# 552 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 552 "sdk/cutil_math.h"
 {
-# 553 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 553 "sdk/cutil_math.h"
 return make_float4(clamp(v.x, a.x, b.x), clamp(v.y, a.y, b.y), clamp(v.z, a.z, b.z), clamp(v.w, a.w, b.w));
-# 554 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 554 "sdk/cutil_math.h"
 }
-# 557 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 557 "sdk/cutil_math.h"
 inline float dot(float4 a, float4 b)
-# 558 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 558 "sdk/cutil_math.h"
 {
-# 559 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 559 "sdk/cutil_math.h"
 return ((((a.x) * (b.x)) + ((a.y) * (b.y))) + ((a.z) * (b.z))) + ((a.w) * (b.w));
-# 560 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 560 "sdk/cutil_math.h"
 }
-# 563 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 563 "sdk/cutil_math.h"
 inline float length(float4 r)
-# 564 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 564 "sdk/cutil_math.h"
 {
-# 565 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 565 "sdk/cutil_math.h"
 return sqrtf(dot(r, r));
-# 566 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 566 "sdk/cutil_math.h"
 }
-# 569 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 569 "sdk/cutil_math.h"
 inline float4 normalize(float4 v)
-# 570 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 570 "sdk/cutil_math.h"
 {
-# 571 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 571 "sdk/cutil_math.h"
 float invLen = rsqrtf(dot(v, v));
-# 572 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 572 "sdk/cutil_math.h"
 return (v * invLen);
-# 573 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 573 "sdk/cutil_math.h"
 }
-# 576 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 576 "sdk/cutil_math.h"
 inline float4 floor(const float4 v)
-# 577 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 577 "sdk/cutil_math.h"
 {
-# 578 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 578 "sdk/cutil_math.h"
 return make_float4(floor(v.x), floor(v.y), floor(v.z), floor(v.w));
-# 579 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 579 "sdk/cutil_math.h"
 }
-# 582 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 582 "sdk/cutil_math.h"
 inline float4 fabs(float4 v)
-# 583 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 583 "sdk/cutil_math.h"
 {
-# 584 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 584 "sdk/cutil_math.h"
 return make_float4(fabs(v.x), fabs(v.y), fabs(v.z), fabs(v.w));
-# 585 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 585 "sdk/cutil_math.h"
 }
-# 591 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 591 "sdk/cutil_math.h"
 inline int3 make_int3(int s)
-# 592 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 592 "sdk/cutil_math.h"
 {
-# 593 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 593 "sdk/cutil_math.h"
 return make_int3(s, s, s);
-# 594 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 594 "sdk/cutil_math.h"
 }
-# 595 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 595 "sdk/cutil_math.h"
 inline int3 make_int3(float3 a)
-# 596 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 596 "sdk/cutil_math.h"
 {
-# 597 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 597 "sdk/cutil_math.h"
 return make_int3((int)(a.x), (int)(a.y), (int)(a.z));
-# 598 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 598 "sdk/cutil_math.h"
 }
-# 601 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 601 "sdk/cutil_math.h"
 inline int3 operator-(int3 &a)
-# 602 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 602 "sdk/cutil_math.h"
 {
-# 603 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 603 "sdk/cutil_math.h"
 return make_int3(-(a.x), -(a.y), -(a.z));
-# 604 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 604 "sdk/cutil_math.h"
 }
-# 607 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 607 "sdk/cutil_math.h"
 inline int3 min(int3 a, int3 b)
-# 608 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 608 "sdk/cutil_math.h"
 {
-# 609 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 609 "sdk/cutil_math.h"
 return make_int3(min(a.x, b.x), min(a.y, b.y), min(a.z, b.z));
-# 610 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 610 "sdk/cutil_math.h"
 }
-# 613 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 613 "sdk/cutil_math.h"
 inline int3 max(int3 a, int3 b)
-# 614 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 614 "sdk/cutil_math.h"
 {
-# 615 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 615 "sdk/cutil_math.h"
 return make_int3(max(a.x, b.x), max(a.y, b.y), max(a.z, b.z));
-# 616 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 616 "sdk/cutil_math.h"
 }
-# 619 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 619 "sdk/cutil_math.h"
 inline int3 operator+(int3 a, int3 b)
-# 620 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 620 "sdk/cutil_math.h"
 {
-# 621 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 621 "sdk/cutil_math.h"
 return make_int3((a.x) + (b.x), (a.y) + (b.y), (a.z) + (b.z));
-# 622 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 622 "sdk/cutil_math.h"
 }
-# 623 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 623 "sdk/cutil_math.h"
 inline void operator+=(int3 &a, int3 b)
-# 624 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 624 "sdk/cutil_math.h"
 {
-# 625 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 625 "sdk/cutil_math.h"
 (a.x) += (b.x); (a.y) += (b.y); (a.z) += (b.z);
-# 626 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 626 "sdk/cutil_math.h"
 }
-# 629 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 629 "sdk/cutil_math.h"
 inline int3 operator-(int3 a, int3 b)
-# 630 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 630 "sdk/cutil_math.h"
 {
-# 631 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 631 "sdk/cutil_math.h"
 return make_int3((a.x) - (b.x), (a.y) - (b.y), (a.z) - (b.z));
-# 632 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 632 "sdk/cutil_math.h"
 }
-# 634 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 634 "sdk/cutil_math.h"
 inline void operator-=(int3 &a, int3 b)
-# 635 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 635 "sdk/cutil_math.h"
 {
-# 636 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 636 "sdk/cutil_math.h"
 (a.x) -= (b.x); (a.y) -= (b.y); (a.z) -= (b.z);
-# 637 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 637 "sdk/cutil_math.h"
 }
-# 640 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 640 "sdk/cutil_math.h"
 inline int3 operator*(int3 a, int3 b)
-# 641 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 641 "sdk/cutil_math.h"
 {
-# 642 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 642 "sdk/cutil_math.h"
 return make_int3((a.x) * (b.x), (a.y) * (b.y), (a.z) * (b.z));
-# 643 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 643 "sdk/cutil_math.h"
 }
-# 644 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 644 "sdk/cutil_math.h"
 inline int3 operator*(int3 a, int s)
-# 645 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 645 "sdk/cutil_math.h"
 {
-# 646 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 646 "sdk/cutil_math.h"
 return make_int3((a.x) * s, (a.y) * s, (a.z) * s);
-# 647 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 647 "sdk/cutil_math.h"
 }
-# 648 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 648 "sdk/cutil_math.h"
 inline int3 operator*(int s, int3 a)
-# 649 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 649 "sdk/cutil_math.h"
 {
-# 650 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 650 "sdk/cutil_math.h"
 return make_int3((a.x) * s, (a.y) * s, (a.z) * s);
-# 651 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 651 "sdk/cutil_math.h"
 }
-# 652 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 652 "sdk/cutil_math.h"
 inline void operator*=(int3 &a, int s)
-# 653 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 653 "sdk/cutil_math.h"
 {
-# 654 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 654 "sdk/cutil_math.h"
 (a.x) *= s; (a.y) *= s; (a.z) *= s;
-# 655 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 655 "sdk/cutil_math.h"
 }
-# 658 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 658 "sdk/cutil_math.h"
 inline int3 operator/(int3 a, int3 b)
-# 659 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 659 "sdk/cutil_math.h"
 {
-# 660 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 660 "sdk/cutil_math.h"
 return make_int3((a.x) / (b.x), (a.y) / (b.y), (a.z) / (b.z));
-# 661 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 661 "sdk/cutil_math.h"
 }
-# 662 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 662 "sdk/cutil_math.h"
 inline int3 operator/(int3 a, int s)
-# 663 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 663 "sdk/cutil_math.h"
 {
-# 664 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 664 "sdk/cutil_math.h"
 return make_int3((a.x) / s, (a.y) / s, (a.z) / s);
-# 665 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 665 "sdk/cutil_math.h"
 }
-# 666 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 666 "sdk/cutil_math.h"
 inline int3 operator/(int s, int3 a)
-# 667 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 667 "sdk/cutil_math.h"
 {
-# 668 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 668 "sdk/cutil_math.h"
 return make_int3((a.x) / s, (a.y) / s, (a.z) / s);
-# 669 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 669 "sdk/cutil_math.h"
 }
-# 670 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 670 "sdk/cutil_math.h"
 inline void operator/=(int3 &a, int s)
-# 671 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 671 "sdk/cutil_math.h"
 {
-# 672 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 672 "sdk/cutil_math.h"
 (a.x) /= s; (a.y) /= s; (a.z) /= s;
-# 673 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 673 "sdk/cutil_math.h"
 }
-# 676 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 676 "sdk/cutil_math.h"
 inline int clamp(int f, int a, int b)
-# 677 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 677 "sdk/cutil_math.h"
 {
-# 678 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 678 "sdk/cutil_math.h"
 return max(a, min(f, b));
-# 679 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 679 "sdk/cutil_math.h"
 }
-# 681 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 681 "sdk/cutil_math.h"
 inline int3 clamp(int3 v, int a, int b)
-# 682 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 682 "sdk/cutil_math.h"
 {
-# 683 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 683 "sdk/cutil_math.h"
 return make_int3(clamp(v.x, a, b), clamp(v.y, a, b), clamp(v.z, a, b));
-# 684 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 684 "sdk/cutil_math.h"
 }
-# 686 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 686 "sdk/cutil_math.h"
 inline int3 clamp(int3 v, int3 a, int3 b)
-# 687 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 687 "sdk/cutil_math.h"
 {
-# 688 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 688 "sdk/cutil_math.h"
 return make_int3(clamp(v.x, a.x, b.x), clamp(v.y, a.y, b.y), clamp(v.z, a.z, b.z));
-# 689 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 689 "sdk/cutil_math.h"
 }
-# 696 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 696 "sdk/cutil_math.h"
 inline uint3 make_uint3(uint s)
-# 697 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 697 "sdk/cutil_math.h"
 {
-# 698 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 698 "sdk/cutil_math.h"
 return make_uint3(s, s, s);
-# 699 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 699 "sdk/cutil_math.h"
 }
-# 700 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 700 "sdk/cutil_math.h"
 inline uint3 make_uint3(float3 a)
-# 701 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 701 "sdk/cutil_math.h"
 {
-# 702 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 702 "sdk/cutil_math.h"
 return make_uint3((uint)(a.x), (uint)(a.y), (uint)(a.z));
-# 703 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 703 "sdk/cutil_math.h"
 }
-# 706 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 706 "sdk/cutil_math.h"
 inline uint3 min(uint3 a, uint3 b)
-# 707 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 707 "sdk/cutil_math.h"
 {
-# 708 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 708 "sdk/cutil_math.h"
 return make_uint3(min(a.x, b.x), min(a.y, b.y), min(a.z, b.z));
-# 709 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 709 "sdk/cutil_math.h"
 }
-# 712 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 712 "sdk/cutil_math.h"
 inline uint3 max(uint3 a, uint3 b)
-# 713 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 713 "sdk/cutil_math.h"
 {
-# 714 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 714 "sdk/cutil_math.h"
 return make_uint3(max(a.x, b.x), max(a.y, b.y), max(a.z, b.z));
-# 715 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 715 "sdk/cutil_math.h"
 }
-# 718 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 718 "sdk/cutil_math.h"
 inline uint3 operator+(uint3 a, uint3 b)
-# 719 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 719 "sdk/cutil_math.h"
 {
-# 720 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 720 "sdk/cutil_math.h"
 return make_uint3((a.x) + (b.x), (a.y) + (b.y), (a.z) + (b.z));
-# 721 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 721 "sdk/cutil_math.h"
 }
-# 722 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 722 "sdk/cutil_math.h"
 inline void operator+=(uint3 &a, uint3 b)
-# 723 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 723 "sdk/cutil_math.h"
 {
-# 724 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 724 "sdk/cutil_math.h"
 (a.x) += (b.x); (a.y) += (b.y); (a.z) += (b.z);
-# 725 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 725 "sdk/cutil_math.h"
 }
-# 728 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 728 "sdk/cutil_math.h"
 inline uint3 operator-(uint3 a, uint3 b)
-# 729 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 729 "sdk/cutil_math.h"
 {
-# 730 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 730 "sdk/cutil_math.h"
 return make_uint3((a.x) - (b.x), (a.y) - (b.y), (a.z) - (b.z));
-# 731 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 731 "sdk/cutil_math.h"
 }
-# 733 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 733 "sdk/cutil_math.h"
 inline void operator-=(uint3 &a, uint3 b)
-# 734 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 734 "sdk/cutil_math.h"
 {
-# 735 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 735 "sdk/cutil_math.h"
 (a.x) -= (b.x); (a.y) -= (b.y); (a.z) -= (b.z);
-# 736 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 736 "sdk/cutil_math.h"
 }
-# 739 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 739 "sdk/cutil_math.h"
 inline uint3 operator*(uint3 a, uint3 b)
-# 740 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 740 "sdk/cutil_math.h"
 {
-# 741 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 741 "sdk/cutil_math.h"
 return make_uint3((a.x) * (b.x), (a.y) * (b.y), (a.z) * (b.z));
-# 742 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 742 "sdk/cutil_math.h"
 }
-# 743 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 743 "sdk/cutil_math.h"
 inline uint3 operator*(uint3 a, uint s)
-# 744 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 744 "sdk/cutil_math.h"
 {
-# 745 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 745 "sdk/cutil_math.h"
 return make_uint3((a.x) * s, (a.y) * s, (a.z) * s);
-# 746 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 746 "sdk/cutil_math.h"
 }
-# 747 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 747 "sdk/cutil_math.h"
 inline uint3 operator*(uint s, uint3 a)
-# 748 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 748 "sdk/cutil_math.h"
 {
-# 749 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 749 "sdk/cutil_math.h"
 return make_uint3((a.x) * s, (a.y) * s, (a.z) * s);
-# 750 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 750 "sdk/cutil_math.h"
 }
-# 751 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 751 "sdk/cutil_math.h"
 inline void operator*=(uint3 &a, uint s)
-# 752 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 752 "sdk/cutil_math.h"
 {
-# 753 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 753 "sdk/cutil_math.h"
 (a.x) *= s; (a.y) *= s; (a.z) *= s;
-# 754 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 754 "sdk/cutil_math.h"
 }
-# 757 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 757 "sdk/cutil_math.h"
 inline uint3 operator/(uint3 a, uint3 b)
-# 758 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 758 "sdk/cutil_math.h"
 {
-# 759 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 759 "sdk/cutil_math.h"
 return make_uint3((a.x) / (b.x), (a.y) / (b.y), (a.z) / (b.z));
-# 760 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 760 "sdk/cutil_math.h"
 }
-# 761 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 761 "sdk/cutil_math.h"
 inline uint3 operator/(uint3 a, uint s)
-# 762 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 762 "sdk/cutil_math.h"
 {
-# 763 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 763 "sdk/cutil_math.h"
 return make_uint3((a.x) / s, (a.y) / s, (a.z) / s);
-# 764 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 764 "sdk/cutil_math.h"
 }
-# 765 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 765 "sdk/cutil_math.h"
 inline uint3 operator/(uint s, uint3 a)
-# 766 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 766 "sdk/cutil_math.h"
 {
-# 767 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 767 "sdk/cutil_math.h"
 return make_uint3((a.x) / s, (a.y) / s, (a.z) / s);
-# 768 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 768 "sdk/cutil_math.h"
 }
-# 769 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 769 "sdk/cutil_math.h"
 inline void operator/=(uint3 &a, uint s)
-# 770 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 770 "sdk/cutil_math.h"
 {
-# 771 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 771 "sdk/cutil_math.h"
 (a.x) /= s; (a.y) /= s; (a.z) /= s;
-# 772 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 772 "sdk/cutil_math.h"
 }
-# 775 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 775 "sdk/cutil_math.h"
 inline uint clamp(uint f, uint a, uint b)
-# 776 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 776 "sdk/cutil_math.h"
 {
-# 777 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 777 "sdk/cutil_math.h"
 return max(a, min(f, b));
-# 778 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 778 "sdk/cutil_math.h"
 }
-# 780 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 780 "sdk/cutil_math.h"
 inline uint3 clamp(uint3 v, uint a, uint b)
-# 781 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 781 "sdk/cutil_math.h"
 {
-# 782 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 782 "sdk/cutil_math.h"
 return make_uint3(clamp(v.x, a, b), clamp(v.y, a, b), clamp(v.z, a, b));
-# 783 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 783 "sdk/cutil_math.h"
 }
-# 785 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 785 "sdk/cutil_math.h"
 inline uint3 clamp(uint3 v, uint3 a, uint3 b)
-# 786 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 786 "sdk/cutil_math.h"
 {
-# 787 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 787 "sdk/cutil_math.h"
 return make_uint3(clamp(v.x, a.x, b.x), clamp(v.y, a.y, b.y), clamp(v.z, a.z, b.z));
-# 788 "/home/normal/checkout/gpuocelot/tests/cuda2.2/sdk/cutil_math.h"
+# 788 "sdk/cutil_math.h"
 }
 # 42 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleTexture3D/simpleTexture3D_kernel.cu"
 extern "C" { typedef unsigned uint; }
@@ -12971,8 +12505,8 @@ extern "C" void render_kernel(dim3 gridSize, dim3 blockSize, uint *d_output, uin
 cudaConfigureCall(gridSize, blockSize) ? ((void)0) : d_render(d_output, imageW, imageH, w);
 # 104 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleTexture3D/simpleTexture3D_kernel.cu"
 }
-# 1 "/tmp/tmpxft_00006962_00000000-1_simpleTexture3D_kernel.cudafe1.stub.c"
-# 1 "/tmp/tmpxft_00006962_00000000-1_simpleTexture3D_kernel.cudafe1.stub.c" 1
+# 1 "/tmp/tmpxft_00001aef_00000000-1_simpleTexture3D_kernel.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00001aef_00000000-1_simpleTexture3D_kernel.cudafe1.stub.c" 1
 # 1 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 1
 # 91 "/usr/local/cuda/bin/../include/crt/host_runtime.h"
 extern "C" {
@@ -13374,8 +12908,8 @@ extern __attribute__((__weak__)) unsigned long long int ullmax(unsigned long lon
 
 
 #pragma pack()
-# 2 "/tmp/tmpxft_00006962_00000000-1_simpleTexture3D_kernel.cudafe1.stub.c" 2
-# 1 "/tmp/tmpxft_00006962_00000000-3_simpleTexture3D_kernel.fatbin.c" 1
+# 2 "/tmp/tmpxft_00001aef_00000000-1_simpleTexture3D_kernel.cudafe1.stub.c" 2
+# 1 "/tmp/tmpxft_00001aef_00000000-3_simpleTexture3D_kernel.fatbin.c" 1
 # 1 "/usr/local/cuda/bin/../include/__cudaFatFormat.h" 1
 # 83 "/usr/local/cuda/bin/../include/__cudaFatFormat.h"
 extern "C" {
@@ -13453,36 +12987,102 @@ void __cudaFatFreePTX( char* ptx );
 
 
 }
-# 2 "/tmp/tmpxft_00006962_00000000-3_simpleTexture3D_kernel.fatbin.c" 2
+# 2 "/tmp/tmpxft_00001aef_00000000-3_simpleTexture3D_kernel.fatbin.c" 2
 
 asm(
 ".section .rodata\n"
 ".align 32\n"
-"__deviceText_$compute_20$:\n"
-".quad 0x6f69737265762e09,0x2e090a322e32206e,0x7320746567726174,0x2f2f090a30325f6d\n"
+"__deviceText_$sm_13$:\n"
+".quad 0x33010102464c457f,0x0000000000000002,0x0000000100be0002,0x0000000000000000\n"
+".quad 0x0000000000000614,0x0000000000000040,0x00380040000d010d,0x0001000900400003\n"
+".quad 0x0000000000000000,0x0000000000000000,0x0000000000000000,0x0000000000000000\n"
+".quad 0x0000000000000000,0x0000000000000000,0x0000000000000000,0x0000000000000000\n"
+".quad 0x0000000300000001,0x0000000000000000,0x0000000000000000,0x0000000000000280\n"
+".quad 0x00000000000000ab,0x0000000000000000,0x0000000000000004,0x0000000000000000\n"
+".quad 0x000000030000000b,0x0000000000000000,0x0000000000000000,0x000000000000032b\n"
+".quad 0x0000000000000016,0x0000000000000000,0x0000000000000001,0x0000000000000000\n"
+".quad 0x0000000200000013,0x0000000000000000,0x0000000000000000,0x0000000000000341\n"
+".quad 0x0000000000000138,0x0000000b00000002,0x0000000000000001,0x0000000000000018\n"
+".quad 0x0000000100000036,0x0000000000000006,0x0000000000000000,0x0000000000000479\n"
+".quad 0x0000000000000108,0x0700000600000003,0x0000000000000004,0x0000000000000000\n"
+".quad 0x000000010000008c,0x0000000000000002,0x0000000000000000,0x0000000000000581\n"
+".quad 0x000000000000000c,0x0000000400000000,0x0000000000000004,0x0000000000000000\n"
+".quad 0x000000010000004d,0x0000000000000002,0x0000000000000000,0x000000000000058d\n"
+".quad 0x0000000000000070,0x0000000400000000,0x0000000000000001,0x0000000000000000\n"
+".quad 0x0000000800000070,0x0000000000000003,0x0000000000000000,0x00000000000005fd\n"
+".quad 0x0000000000000024,0x0000000400000000,0x0000000000000004,0x0000000000000000\n"
+".quad 0x0000000100000067,0x0000000000000002,0x0000000000000000,0x00000000000005fd\n"
+".quad 0x0000000000000014,0x0000000000000000,0x0000000000000001,0x0000000000000000\n"
+".quad 0x7472747368732e00,0x747274732e006261,0x746d79732e006261,0x672e766e2e006261\n"
+".quad 0x6e692e6c61626f6c,0x672e766e2e007469,0x742e006c61626f6c,0x64385a5f2e747865\n"
+".quad 0x507265646e65725f,0x766e2e00666a6a6a,0x5a5f2e6f666e692e,0x65646e65725f6438\n"
+".quad 0x2e00666a6a6a5072,0x006f666e692e766e,0x726168732e766e2e,0x5f64385a5f2e6465\n"
+".quad 0x6a507265646e6572,0x2e766e2e00666a6a,0x746e6174736e6f63,0x725f64385a5f2e31\n"
+".quad 0x6a6a507265646e65,0x64385a5f0000666a,0x507265646e65725f,0x78657400666a6a6a\n"
+".quad 0x0000000000000000,0x0000000000000000,0x0000000000000000,0x0100030000000000\n"
+".quad 0x0000000000000000,0x0000000000000000,0x0200030000000000,0x0000000000000000\n"
+".quad 0x0000000000000000,0x0300030000000000,0x0000000000000000,0x0000000000000000\n"
+".quad 0x0000030000000000,0x0000000000000000,0x0000000000000000,0x0000030000000000\n"
+".quad 0x0000000000000000,0x0000000000000000,0x0400030000000000,0x0000000000000000\n"
+".quad 0x0000000000010800,0x0600030000000000,0x0000000000000000,0x0000000000000000\n"
+".quad 0x0800030000000000,0x0000000000000000,0x0000000000000000,0x0700030000000000\n"
+".quad 0x0000000000000000,0x0000000000000000,0x0500030000000000,0x0000000000000000\n"
+".quad 0x0000000000000000,0x0410120000000100,0x0000000000000000,0x0000000000000000\n"
+".quad 0x00001a0000001200,0x0000000000000000,0x0000000000000000,0x200780a0004c0900\n"
+".quad 0x200780a000420d04,0x200780a0004e1104,0x400780d080023104,0x000780a000000100\n"
+".quad 0x204780a000cc0504,0x200780a000441544,0x000780a000181904,0x0007806003040d04\n"
+".quad 0x5107c8b08103fd60,0x0187806005081160,0x004780a000060160,0x400680c082000144\n"
+".quad 0x400680c082020500,0x204780a000ce0900,0x0007809000020544,0x5107c8b08105fd00\n"
+".quad 0x000780c001000160,0x004780a000080500,0x400680c082020544,0x400680c082040900\n"
+".quad 0x0007809000040900,0x2107c83003cdfd00,0x00f008c002020464,0x2102c83004cffd11\n"
+".quad 0x000784f280000164,0x0001003000000300,0x20c7806004cc0500,0x37f003c000000960\n"
+".quad 0x1007803002020104,0x064780a0000405c4,0x2007802000c80184,0xc00781d00e000504\n"
+".quad 0x800000000003ffa0,0x100b043e8000007e,0x0000080000000000,0x0000100000000c00\n"
+".quad 0x00000c0008020400,0x1418030000000000,0xffffff000c170400,0x13f00000100003ff\n"
+".quad 0xffffff000c170400,0x13f000000c0002ff,0xffffff000c170400,0x13f00000080001ff\n"
+".quad 0xffffff000c170400,0x23f00000000000ff,0x01000800080d0400,0x1007040000000100\n"
+".quad 0xffffff0000000c00,0xffffffffffffffff,0x00000006000000ff,0x0000061400000005\n"
+".quad 0x0000000000000000,0x0000000000000000,0x000000a800000000,0x000000a800000000\n"
+".quad 0x0000000400000000,0x6000000000000000,0x0000047900000b05,0x0000000000000000\n"
+".quad 0x0000000000000000,0x0000018400000000,0x0000018400000000,0x0000000400000000\n"
+".quad 0x6000000000000000,0x000005fd00000b06,0x0000000000000000,0x0000000000000000\n"
+".quad 0x0000000000000000,0x0000002400000000,0x0000000400000000,0x0000000000000000\n"
+".text");
+
+extern "C" {
+
+extern const unsigned long long __deviceText_$sm_13$[216];
+
+}
+
+asm(
+".section .rodata\n"
+".align 32\n"
+"__deviceText_$compute_13$:\n"
+".quad 0x6f69737265762e09,0x2e090a342e31206e,0x7320746567726174,0x2f2f090a33315f6d\n"
 ".quad 0x656c69706d6f6320,0x2f20687469772064,0x61636f6c2f727375,0x6f2f616475632f6c\n"
 ".quad 0x696c2f34366e6570,0x2f090a65622f2f62,0x6e65706f766e202f,0x6220322e33206363\n"
 ".quad 0x206e6f20746c6975,0x2d39302d30313032,0x2d2f2f090a0a3930,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x43202f2f090a2d2d,0x676e696c69706d6f\n"
-".quad 0x6d742f706d742f20,0x3030305f74667870,0x30305f3236393630,0x372d303030303030\n"
+".quad 0x6d742f706d742f20,0x3030305f74667870,0x30305f6665613130,0x372d303030303030\n"
 ".quad 0x54656c706d69735f,0x4433657275747865,0x2e6c656e72656b5f,0x2820692e33707063\n"
-".quad 0x4263632f706d742f,0x356a656b792e2349,0x2d2d2f2f090a2947,0x2d2d2d2d2d2d2d2d\n"
+".quad 0x4263632f706d742f,0x346d48366e2e2349,0x2d2d2f2f090a2931,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2f2f090a0a2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x704f202f2f090a2d,0x090a3a736e6f6974\n"
 ".quad 0x2d2d2d2d2d2d2f2f,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2f090a2d2d2d2d2d\n"
-".quad 0x656772615420202f,0x49202c7874703a74,0x30325f6d733a4153,0x6e6169646e45202c\n"
-".quad 0x2c656c7474696c3a,0x7265746e696f5020,0x32333a657a695320,0x4f2d20202f2f090a\n"
+".quad 0x656772615420202f,0x49202c7874703a74,0x33315f6d733a4153,0x6e6169646e45202c\n"
+".quad 0x2c656c7474696c3a,0x7265746e696f5020,0x34363a657a695320,0x4f2d20202f2f090a\n"
 ".quad 0x6d6974704f280933,0x206e6f6974617a69,0x090a296c6576656c,0x0930672d20202f2f\n"
 ".quad 0x6c20677562654428,0x2f090a296c657665,0x2809326d2d20202f,0x612074726f706552\n"
 ".quad 0x6569726f73697664,0x2d2d2f2f090a2973,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x6c69662e090a0a2d,0x6f633c2209310965,0x696c2d646e616d6d\n"
-".quad 0x662e090a223e656e,0x2f22093209656c69,0x78706d742f706d74,0x36303030305f7466\n"
-".quad 0x303030305f323639,0x735f362d30303030,0x786554656c706d69,0x6b5f443365727574\n"
+".quad 0x662e090a223e656e,0x2f22093209656c69,0x78706d742f706d74,0x31303030305f7466\n"
+".quad 0x303030305f666561,0x735f362d30303030,0x786554656c706d69,0x6b5f443365727574\n"
 ".quad 0x75632e6c656e7265,0x70672e3265666164,0x6c69662e090a2275,0x73752f2209330965\n"
 ".quad 0x63672f62696c2f72,0x6c2d363836692f63,0x756e672d78756e69,0x692f352e342e342f\n"
 ".quad 0x732f6564756c636e,0x22682e6665646474,0x09656c69662e090a,0x2f7273752f220934\n"
@@ -13534,167 +13134,95 @@ asm(
 ".quad 0x747865742f656475,0x637465665f657275,0x6974636e75665f68,0x090a22682e736e6f\n"
 ".quad 0x383209656c69662e,0x6c2f7273752f2209,0x6475632f6c61636f,0x2e2e2f6e69622f61\n"
 ".quad 0x6564756c636e692f,0x75665f6874616d2f,0x5f736e6f6974636e,0x337874705f6c6264\n"
-".quad 0x672e090a0a22682e,0x742e206c61626f6c,0x6574206665727865,0x6e652e090a0a3b78\n"
-".quad 0x64385a5f20797274,0x507265646e65725f,0x090a2820666a6a6a,0x206d617261702e09\n"
+".quad 0x742e090a0a22682e,0x203436752e207865,0x2e090a0a3b786574,0x5a5f207972746e65\n"
+".quad 0x65646e65725f6438,0x2820666a6a6a5072,0x617261702e09090a,0x5f203436752e206d\n"
+".quad 0x726170616475635f,0x725f64385a5f5f6d,0x6a6a507265646e65,0x74756f5f645f666a\n"
+".quad 0x2e09090a2c747570,0x752e206d61726170,0x6475635f5f203233,0x5a5f5f6d72617061\n"
+".quad 0x65646e65725f6438,0x695f666a6a6a5072,0x090a2c576567616d,0x206d617261702e09\n"
 ".quad 0x635f5f203233752e,0x5f6d726170616475,0x6e65725f64385a5f,0x666a6a6a50726564\n"
-".quad 0x757074756f5f645f,0x61702e09090a2c74,0x3233752e206d6172,0x70616475635f5f20\n"
-".quad 0x64385a5f5f6d7261,0x507265646e65725f,0x616d695f666a6a6a,0x2e09090a2c576567\n"
-".quad 0x752e206d61726170,0x6475635f5f203233,0x5a5f5f6d72617061,0x65646e65725f6438\n"
-".quad 0x695f666a6a6a5072,0x090a2c486567616d,0x206d617261702e09,0x635f5f203233662e\n"
-".quad 0x5f6d726170616475,0x6e65725f64385a5f,0x666a6a6a50726564,0x090a7b090a29775f\n"
-".quad 0x33752e206765722e,0x3e31333c72252032,0x206765722e090a3b,0x3c6625203233662e\n"
-".quad 0x722e090a3b3e3731,0x646572702e206765,0x0a3b3e333c702520,0x363109636f6c2e09\n"
-".quad 0x4c240a3009303509,0x5f6e696765625744,0x6e65725f64385a5f,0x666a6a6a50726564\n"
-".quad 0x09636f6c2e090a3a,0x0a30093635093631,0x3233752e766f6d09,0x25202c3172250920\n"
-".quad 0x3b782e6469617463,0x33752e766f6d090a,0x202c327225092032,0x3b782e6469746e25\n"
-".quad 0x2e34326c756d090a,0x09203233752e6f6c,0x317225202c337225,0x090a3b327225202c\n"
-".quad 0x203233752e766f6d,0x6325202c34722509,0x0a3b792e64696174,0x3233752e766f6d09\n"
-".quad 0x25202c3572250920,0x0a3b792e6469746e,0x6c2e34326c756d09,0x2509203233752e6f\n"
-".quad 0x2c347225202c3672,0x6d090a3b35722520,0x09203233752e766f,0x697425202c377225\n"
-".quad 0x6461090a3b782e64,0x2509203233752e64,0x2c377225202c3872,0x6d090a3b33722520\n"
-".quad 0x09203233752e766f,0x697425202c397225,0x6461090a3b792e64,0x2509203233752e64\n"
-".quad 0x397225202c303172,0x090a3b367225202c,0x6d617261702e646c,0x722509203233752e\n"
-".quad 0x635f5f5b202c3131,0x5f6d726170616475,0x6e65725f64385a5f,0x666a6a6a50726564\n"
-".quad 0x5d486567616d695f,0x61702e646c090a3b,0x203233752e6d6172,0x5b202c3231722509\n"
-".quad 0x6170616475635f5f,0x5f64385a5f5f6d72,0x6a507265646e6572,0x67616d695f666a6a\n"
-".quad 0x7663090a3b5d5765,0x3233662e6e722e74,0x662509203233752e,0x0a3b387225202c31\n"
-".quad 0x2e6e722e74766309,0x203233752e323366,0x7225202c32662509,0x766964090a3b3231\n"
-".quad 0x203233662e6e722e,0x6625202c33662509,0x0a3b326625202c31,0x3233662e766f6d09\n"
-".quad 0x25202c3466250920,0x747663090a3b3366,0x2e3233662e6e722e,0x3566250920323375\n"
-".quad 0x0a3b30317225202c,0x2e6e722e74766309,0x203233752e323366,0x7225202c36662509\n"
-".quad 0x766964090a3b3131,0x203233662e6e722e,0x6625202c37662509,0x0a3b366625202c35\n"
-".quad 0x3233662e766f6d09,0x25202c3866250920,0x2e646c090a3b3766,0x33662e6d61726170\n"
-".quad 0x202c396625092032,0x70616475635f5f5b,0x64385a5f5f6d7261,0x507265646e65725f\n"
-".quad 0x3b5d775f666a6a6a,0x33662e766f6d090a,0x2c30316625092032,0x6d090a3b39662520\n"
-".quad 0x09203233662e766f,0x6630202c31316625,0x3030303030303030,0x2f2f09202020203b\n"
-".quad 0x2e766f6d090a3020,0x3166250920323366,0x3b31316625202c32,0x64332e786574090a\n"
-".quad 0x2e3233752e34762e,0x3172257b20323366,0x252c343172252c33,0x363172252c353172\n"
-".quad 0x7b2c7865745b2c7d,0x2c3866252c346625,0x3166252c30316625,0x6c2e090a3b5d7d32\n"
-".quad 0x383509363109636f,0x2e766f6d090a3009,0x3172250920323373,0x3b33317225202c37\n"
+".quad 0x2c486567616d695f,0x617261702e09090a,0x5f203233662e206d,0x726170616475635f\n"
+".quad 0x725f64385a5f5f6d,0x6a6a507265646e65,0x7b090a29775f666a,0x2e206765722e090a\n"
+".quad 0x323c722520323375,0x65722e090a3b3e39,0x25203436752e2067,0x090a3b3e353c6472\n"
+".quad 0x33662e206765722e,0x3e37313c66252032,0x206765722e090a3b,0x702520646572702e\n"
+".quad 0x6c2e090a3b3e333c,0x303509363109636f,0x6257444c240a3009,0x385a5f5f6e696765\n"
+".quad 0x7265646e65725f64,0x090a3a666a6a6a50,0x09363109636f6c2e,0x7663090a30093635\n"
+".quad 0x31752e3233752e74,0x202c317225092036,0x782e646961746325,0x752e747663090a3b\n"
+".quad 0x09203631752e3233,0x746e25202c327225,0x6d090a3b782e6469,0x2e6f6c2e34326c75\n"
+".quad 0x3372250920323375,0x25202c317225202c,0x747663090a3b3272,0x3631752e3233752e\n"
+".quad 0x25202c3472250920,0x3b792e6469617463,0x33752e747663090a,0x2509203631752e32\n"
+".quad 0x69746e25202c3572,0x756d090a3b792e64,0x752e6f6c2e34326c,0x2c36722509203233\n"
+".quad 0x7225202c34722520,0x2e747663090a3b35,0x203631752e323375,0x7425202c37722509\n"
+".quad 0x61090a3b782e6469,0x09203233752e6464,0x377225202c387225,0x090a3b337225202c\n"
+".quad 0x2e3233752e747663,0x3972250920363175,0x792e64697425202c,0x752e646461090a3b\n"
+".quad 0x3031722509203233,0x25202c397225202c,0x2e646c090a3b3672,0x33752e6d61726170\n"
+".quad 0x2c31317225092032,0x616475635f5f5b20,0x385a5f5f6d726170,0x7265646e65725f64\n"
+".quad 0x6d695f666a6a6a50,0x090a3b5d48656761,0x6d617261702e646c,0x722509203233752e\n"
+".quad 0x635f5f5b202c3231,0x5f6d726170616475,0x6e65725f64385a5f,0x666a6a6a50726564\n"
+".quad 0x5d576567616d695f,0x722e747663090a3b,0x33752e3233662e6e,0x202c316625092032\n"
+".quad 0x7663090a3b387225,0x3233662e6e722e74,0x662509203233752e,0x3b32317225202c32\n"
+".quad 0x75662e766964090a,0x09203233662e6c6c,0x316625202c336625,0x090a3b326625202c\n"
+".quad 0x203233662e766f6d,0x6625202c34662509,0x2e747663090a3b33,0x752e3233662e6e72\n"
+".quad 0x2c35662509203233,0x090a3b3031722520,0x662e6e722e747663,0x09203233752e3233\n"
+".quad 0x317225202c366625,0x2e766964090a3b31,0x3233662e6c6c7566,0x25202c3766250920\n"
+".quad 0x3b366625202c3566,0x33662e766f6d090a,0x202c386625092032,0x646c090a3b376625\n"
+".quad 0x662e6d617261702e,0x2c39662509203233,0x616475635f5f5b20,0x385a5f5f6d726170\n"
+".quad 0x7265646e65725f64,0x5d775f666a6a6a50,0x662e766f6d090a3b,0x3031662509203233\n"
+".quad 0x090a3b396625202c,0x203233662e766f6d,0x30202c3131662509,0x3030303030303066\n"
+".quad 0x2f09202020203b30,0x766f6d090a30202f,0x662509203233662e,0x31316625202c3231\n"
+".quad 0x332e786574090a3b,0x3233752e34762e64,0x72257b203233662e,0x2c343172252c3331\n"
+".quad 0x3172252c35317225,0x2c7865745b2c7d36,0x3866252c3466257b,0x66252c303166252c\n"
+".quad 0x2e090a3b5d7d3231,0x3509363109636f6c,0x766f6d090a300938,0x722509203233732e\n"
+".quad 0x33317225202c3731,0x09636f6c2e090a3b,0x0a30093635093631,0x617261702e646c09\n"
+".quad 0x2509203233752e6d,0x5f5f5b202c323172,0x6d72617061647563,0x65725f64385a5f5f\n"
+".quad 0x6a6a6a507265646e,0x576567616d695f66,0x636f6c2e090a3b5d,0x3009383509363109\n"
 ".quad 0x746c2e746573090a,0x3233752e3233752e,0x202c383172250920,0x317225202c387225\n"
-".quad 0x2e67656e090a3b32,0x3172250920323373,0x3b38317225202c39,0x746c2e746573090a\n"
-".quad 0x3233752e3233752e,0x202c303272250920,0x7225202c30317225,0x67656e090a3b3131\n"
-".quad 0x722509203233732e,0x30327225202c3132,0x622e646e61090a3b,0x3232722509203233\n"
-".quad 0x202c39317225202c,0x6d090a3b31327225,0x09203233752e766f,0x3b30202c33327225\n"
-".quad 0x652e70746573090a,0x2509203233732e71,0x32327225202c3170,0x0a3b33327225202c\n"
-".quad 0x7262203170254009,0x305f744c24092061,0x090a3b323832315f,0x09363109636f6c2e\n"
-".quad 0x6f6d090a30093336,0x2509203233622e76,0x317225202c333166,0x2e766f6d090a3b37\n"
-".quad 0x3166250920323366,0x3733346630202c34,0x20203b3030303066,0x3532202f2f092020\n"
-".quad 0x662e6c756d090a35,0x3531662509203233,0x202c33316625202c,0x63090a3b34316625\n"
-".quad 0x752e697a722e7476,0x09203233662e3233,0x6625202c34327225,0x2e646c090a3b3531\n"
-".quad 0x33752e6d61726170,0x2c35327225092032,0x616475635f5f5b20,0x385a5f5f6d726170\n"
-".quad 0x7265646e65725f64,0x5f645f666a6a6a50,0x3b5d74757074756f,0x2e34326c756d090a\n"
-".quad 0x09203233752e6f6c,0x7225202c36327225,0x32317225202c3031,0x752e646461090a3b\n"
-".quad 0x3732722509203233,0x25202c387225202c,0x756d090a3b363272,0x3233752e6f6c2e6c\n"
-".quad 0x202c383272250920,0x3b34202c37327225,0x33752e646461090a,0x2c39327225092032\n"
-".quad 0x25202c3532722520,0x7473090a3b383272,0x2e6c61626f6c672e,0x72255b0920323375\n"
-".quad 0x25202c5d302b3932,0x744c240a3b343272,0x3a323832315f305f,0x3109636f6c2e090a\n"
-".quad 0x090a300935360936,0x4c240a3b74697865,0x5a5f5f646e655744,0x65646e65725f6438\n"
-".quad 0x0a3a666a6a6a5072,0x5a5f202f2f207d09,0x65646e65725f6438,0x0a0a666a6a6a5072\n"
-".quad 0x0000000000000000\n"
+".quad 0x2e67656e090a3b32,0x3172250920323373,0x3b38317225202c39,0x3109636f6c2e090a\n"
+".quad 0x090a300936350936,0x6d617261702e646c,0x722509203233752e,0x635f5f5b202c3131\n"
+".quad 0x5f6d726170616475,0x6e65725f64385a5f,0x666a6a6a50726564,0x5d486567616d695f\n"
+".quad 0x09636f6c2e090a3b,0x0a30093835093631,0x2e746c2e74657309,0x203233752e323375\n"
+".quad 0x25202c3032722509,0x317225202c303172,0x2e67656e090a3b31,0x3272250920323373\n"
+".quad 0x3b30327225202c31,0x33622e646e61090a,0x2c32327225092032,0x25202c3931722520\n"
+".quad 0x6f6d090a3b313272,0x2509203233752e76,0x0a3b30202c333272,0x71652e7074657309\n"
+".quad 0x702509203233732e,0x2c32327225202c31,0x090a3b3332722520,0x6172622031702540\n"
+".quad 0x5f305f744c240920,0x2e090a3b32383231,0x3609363109636f6c,0x766f6d090a300933\n"
+".quad 0x662509203233622e,0x37317225202c3331,0x662e766f6d090a3b,0x3431662509203233\n"
+".quad 0x663733346630202c,0x2020203b30303030,0x353532202f2f0920,0x33662e6c756d090a\n"
+".quad 0x2c35316625092032,0x25202c3331662520,0x7663090a3b343166,0x33752e697a722e74\n"
+".quad 0x2509203233662e32,0x316625202c343272,0x636f6c2e090a3b35,0x3009363509363109\n"
+".quad 0x7261702e646c090a,0x09203233752e6d61,0x5f5b202c32317225,0x726170616475635f\n"
+".quad 0x725f64385a5f5f6d,0x6a6a507265646e65,0x6567616d695f666a,0x6f6c2e090a3b5d57\n"
+".quad 0x0933360936310963,0x34326c756d090a30,0x203233752e6f6c2e,0x25202c3532722509\n"
+".quad 0x317225202c303172,0x2e646461090a3b32,0x3272250920323375,0x202c387225202c36\n"
+".quad 0x6d090a3b35327225,0x33752e6f6c2e6c75,0x2c37327225092032,0x34202c3632722520\n"
+".quad 0x752e747663090a3b,0x09203233752e3436,0x7225202c31647225,0x2e646c090a3b3732\n"
+".quad 0x36752e6d61726170,0x2c32647225092034,0x616475635f5f5b20,0x385a5f5f6d726170\n"
+".quad 0x7265646e65725f64,0x5f645f666a6a6a50,0x3b5d74757074756f,0x36752e646461090a\n"
+".quad 0x2c33647225092034,0x25202c3164722520,0x7473090a3b326472,0x2e6c61626f6c672e\n"
+".quad 0x72255b0920323375,0x25202c5d302b3364,0x744c240a3b343272,0x3a323832315f305f\n"
+".quad 0x3109636f6c2e090a,0x090a300935360936,0x4c240a3b74697865,0x5a5f5f646e655744\n"
+".quad 0x65646e65725f6438,0x0a3a666a6a6a5072,0x5a5f202f2f207d09,0x65646e65725f6438\n"
+".quad 0x0a0a666a6a6a5072,0x0000000000000000\n"
 ".text");
 
 extern "C" {
 
-extern const unsigned long long __deviceText_$compute_20$[529];
+extern const unsigned long long __deviceText_$compute_13$[570];
 
 }
 
-asm(
-".section .rodata\n"
-".align 32\n"
-"__deviceText_$sm_20$:\n"
-".quad 0x33010101464c457f,0x0000000000000004,0x0000000100be0002,0x0000087800000000\n"
-".quad 0x0014011400000034,0x0028000200200034,0x0000000000010008,0x0000000000000000\n"
-".quad 0x0000000000000000,0x0000000000000000,0x0000000000000000,0x0000000100000000\n"
-".quad 0x0000000000000003,0x0000017400000000,0x000000000000008f,0x0000000400000000\n"
-".quad 0x0000000b00000000,0x0000000000000003,0x0000020300000000,0x000000000000002d\n"
-".quad 0x0000000100000000,0x0000001300000000,0x0000000000000002,0x0000023000000000\n"
-".quad 0x00000002000000d0,0x000000010000000a,0x0000003600000010,0x0000000600000001\n"
-".quad 0x0000030000000000,0x0000000300000488,0x0000000413000006,0x0000007000000000\n"
-".quad 0x0000000200000001,0x0000078800000000,0x0000000000000030,0x0000000400000004\n"
-".quad 0x0000004d00000000,0x0000000200000001,0x000007b800000000,0x000000000000007c\n"
-".quad 0x0000000100000004,0x0000006700000000,0x0000000200000001,0x0000083400000000\n"
-".quad 0x0000000000000044,0x0000000100000000,0x68732e0000000000,0x2e00626174727473\n"
-".quad 0x2e00626174727473,0x2e006261746d7973,0x61626f6c672e766e,0x2e0074696e692e6c\n"
-".quad 0x61626f6c672e766e,0x2e747865742e006c,0x6e65725f64385a5f,0x666a6a6a50726564\n"
-".quad 0x666e692e766e2e00,0x725f64385a5f2e6f,0x6a6a507265646e65,0x692e766e2e00666a\n"
-".quad 0x2e766e2e006f666e,0x746e6174736e6f63,0x725f64385a5f2e30,0x6a6a507265646e65\n"
-".quad 0x64385a5f0000666a,0x507265646e65725f,0x635f5f00666a6a6a,0x30326d735f616475\n"
-".quad 0x5f6e725f7669645f,0x0078657400323366,0x0000000000000000,0x0000000000000000\n"
-".quad 0x0000000000000000,0x0001000300000000,0x0000000000000000,0x0002000300000000\n"
-".quad 0x0000000000000000,0x0003000300000000,0x0000000000000000,0x0000000300000000\n"
-".quad 0x0000000000000000,0x0000000300000000,0x0000000000000000,0x0004000300000488\n"
-".quad 0x0000000000000000,0x0006000300000000,0x0000000000000000,0x0007000300000000\n"
-".quad 0x0000000000000000,0x0005000300000000,0x0000000000000001,0x0004101200000118\n"
-".quad 0x0000011800000012,0x0004001200000370,0x0000000000000029,0x0000001a00000000\n"
-".quad 0x2800440400005de4,0x2c00000094001c04,0x2800400020009de4,0x2c0000009800dc04\n"
-".quad 0x2800400030019de4,0x2c00000084015c04,0x7000c06000001c03,0x7000c06000209c03\n"
-".quad 0x2c0000008801dc04,0x7000c06000311c03,0x7000c06000619c03,0x200a00000800dc03\n"
-".quad 0x1800400091215c04,0x200e000018409c03,0x180000000d211c04,0x5000000260010007\n"
-".quad 0x2800000010041de4,0x18004000a1215c04,0x1800000009211c04,0x50000001e0010007\n"
-".quad 0x2800000010045de4,0x28004000b0049de4,0x80204000fd001c86,0x188e4000a021dc03\n"
-".quad 0x188040009031dc03,0x80000000000021e7,0x2800400090011de4,0x7000c06000209c03\n"
-".quad 0x5800d0dfc0001c00,0x7000c06000411c03,0x1406000001201c04,0x2006000010209c03\n"
-".quad 0x4000400080209c43,0x9000000000201c85,0x8000000000001de7,0x6000c00004401c03\n"
-".quad 0x6000c00004519c03,0x5800c00060001c03,0x5800c00060619c03,0x4800fffffc001c03\n"
-".quad 0x4800fffffc619c03,0x1a0ec003f401dc03,0x1a20c003f461dc03,0x40000005200021e7\n"
-".quad 0x298edfe00041dc80,0x108000001121dc44,0x40000000600021e7,0x298edfe00051dc80\n"
-".quad 0x1080000015221c44,0x40000000400001e7,0x5000000014411c20,0x4000000b80001de7\n"
-".quad 0x6000c00004425c03,0x6000c00004529c03,0x190e0000fc93dc03,0x190e0000fca5dc03\n"
-".quad 0x0c0e00000811dc04,0x40000000800001e7,0x290edfe00077dc00,0x290edfe00081dc00\n"
-".quad 0x4000000080002de7,0x40000000600021e7,0x1bff000000001de2,0xc800000014011c00\n"
-".quad 0x40000009e0001de7,0x0c0e00004401dc04,0x40000000600021e7,0x6800000010501c83\n"
-".quad 0x3a00000000011c02,0x4000000940001de7,0x0c0e00004831dc04,0x40000000800021e7\n"
-".quad 0x6800000010501c83,0x3a00000000001c02,0x39fe000000011c42,0x4000000880001de7\n"
-".quad 0x1b0e0000fc01dc23,0x1b0e0000fc63dc23,0x1bffffff0001e1e2,0x307ed7e000412000\n"
-".quad 0x28000000fc01c1e4,0x40000000800005e7,0x307ed7e000515c00,0x4800c0010071dc03\n"
-".quad 0x4000000020001de7,0x28000000fc01dde4,0x4800fffe08625c03,0x4800fffe08021c03\n"
-".quad 0x4800000018001d03,0x4100000014915ee3,0x4100000010811ee3,0xc800000010521c00\n"
-".quad 0x307e000020425c00,0x3008000024529e00,0x3012000020a25c00,0x3008000024515e00\n"
-".quad 0x3012000020511c00,0x6000c00004429c03,0x5800c00060a19c03,0x4800000018001c03\n"
-".quad 0x480000000071dc03,0x4800fffffc701c03,0x1a0ec003f401dc03,0x40000000600001e7\n"
-".quad 0x4800000018701d03,0x4000000010011ee3,0x40000004a0001de7,0x198ec003f871dc23\n"
-".quad 0x40000000600001e7,0x3a00000000401c02,0x39fe000000011c42,0x4000000400001de7\n"
-".quad 0x1a0e0000fc71dc23,0x40000003c00001e7,0x1b0effffa071dc23,0x40000000400001e7\n"
-".quad 0x3a00000000411c02,0x4000000340001de7,0x3112000020529c00,0x3092000020519c00\n"
-".quad 0x3192000020515c00,0x1c0000001d225f84,0x3a00000000401c02,0x1e8e000018a11c00\n"
-".quad 0x3801fffffc515c02,0x190e0000fc91dc23,0x1c0000001d221f84,0x1c00000011211f84\n"
-".quad 0x3802000000525c42,0x40000000a00081e7,0x4800c00080716003,0x6000000014916003\n"
-".quad 0x5800000020926003,0x310ac00007f16003,0x6800000014412043,0x6000c00078915c03\n"
-".quad 0x5800c0007c519c03,0x6800c00004915c03,0x6800000018411c43,0x6800000010511c03\n"
-".quad 0x5800c00004915c03,0x1a8e0000fc41dc03,0x4800c00004514003,0x6800000014011c43\n"
-".quad 0x9000000000001de7,0x0000000000000000,0x0000000000000000,0x0000000000000000\n"
-".quad 0x0000000000000000,0x0000000000000000,0x0000000000000000,0x0000000000100c04\n"
-".quad 0x0000000800000004,0x000802040000000c,0x000000000000000c,0x0000000900080a04\n"
-".quad 0x0010190300100020,0xffffffff000c1704,0x0011f000000c0003,0xffffffff000c1704\n"
-".quad 0x0011f00000080002,0xffffffff000c1704,0x0011f00000040001,0xffffffff000c1704\n"
-".quad 0x0011f00000000000,0x000e00a800080d04,0x001007040000000c,0xffffffff0000000c\n"
-".quad 0xffffffffffffffff,0x0000000b00081204,0x0008110400000000,0x000000000000000b\n"
-".quad 0x0000000a00081204,0x0008110400000000,0x000000000000000a,0x0000087800000006\n"
-".quad 0x0000000000000000,0x0000004000000040,0x0000000400000005,0x0000030060000000\n"
-".quad 0x0000000000000000,0x0000053400000534,0x0000000400000a05,0x0000000000000000\n"
-".text");
-
-extern "C" {
-
-extern const unsigned long long __deviceText_$sm_20$[280];
-
-}
-
-static __cudaFatPtxEntry __ptxEntries [] = {{(char*)"compute_20",(char*)__deviceText_$compute_20$},{0,0}};
+static __cudaFatPtxEntry __ptxEntries [] = {{(char*)"compute_13",(char*)__deviceText_$compute_13$},{0,0}};
 static __cudaFatCubinEntry __cubinEntries[] = {{0,0}};
 static __cudaFatDebugEntry __debugEntries0 = {0, 0, 0, 0} ;
 static __cudaFatElfEntry __elfEntries0 = {0, 0, 0, 0} ;
-static __cudaFatElfEntry __elfEntries1 = {(char*)"sm_20", (char*)__deviceText_$sm_20$, &__elfEntries0, (unsigned int)sizeof(__deviceText_$sm_20$)};
+static __cudaFatElfEntry __elfEntries1 = {(char*)"sm_13", (char*)__deviceText_$sm_13$, &__elfEntries0, (unsigned int)sizeof(__deviceText_$sm_13$)};
 
 
 
-static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000004,0xa14f518d,(char*)"90b55b424423cefd",(char*)"/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleTexture3D/simpleTexture3D_kernel.cu",(char*)" ",__ptxEntries,__cubinEntries,&__debugEntries0,0,0,0,0,0,0xf0916be2,&__elfEntries1};
-# 3 "/tmp/tmpxft_00006962_00000000-1_simpleTexture3D_kernel.cudafe1.stub.c" 2
+static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000004,0xa14f518d,(char*)"109314317673ae40",(char*)"/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleTexture3D/simpleTexture3D_kernel.cu",(char*)" ",__ptxEntries,__cubinEntries,&__debugEntries0,0,0,0,0,0,0xed989234,&__elfEntries1};
+# 3 "/tmp/tmpxft_00001aef_00000000-1_simpleTexture3D_kernel.cudafe1.stub.c" 2
 struct __T20 {uint *__par0;uint __par1;uint __par2;float __par3;int __dummy_field;};
 extern void __device_stub__Z8d_renderPjjjf(uint *, uint, uint, float);
-static void __sti____cudaRegisterAll_57_tmpxft_00006962_00000000_4_simpleTexture3D_kernel_cpp1_ii_tex(void) __attribute__((__constructor__));
+static void __sti____cudaRegisterAll_57_tmpxft_00001aef_00000000_4_simpleTexture3D_kernel_cpp1_ii_tex(void) __attribute__((__constructor__));
 void __device_stub__Z8d_renderPjjjf(uint *__par0, uint __par1, uint __par2, float __par3){ struct __T20 *__T21 = 0;
 if (cudaSetupArgument((void*)(char*)&__par0, sizeof(__par0), (size_t)&__T21->__par0) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par1, sizeof(__par1), (size_t)&__T21->__par1) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par2, sizeof(__par2), (size_t)&__T21->__par2) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par3, sizeof(__par3), (size_t)&__T21->__par3) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(uint *, uint, uint, float))d_render)); (void)cudaLaunch(((char *)((void ( *)(uint *, uint, uint, float))d_render))); };}
 void d_render( uint *__cuda_0,uint __cuda_1,uint __cuda_2,float __cuda_3)
@@ -13702,6 +13230,6 @@ void d_render( uint *__cuda_0,uint __cuda_1,uint __cuda_2,float __cuda_3)
 {__device_stub__Z8d_renderPjjjf( __cuda_0,__cuda_1,__cuda_2,__cuda_3);
 # 65 "/home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleTexture3D/simpleTexture3D_kernel.cu"
 }
-# 1 "/tmp/tmpxft_00006962_00000000-1_simpleTexture3D_kernel.cudafe1.stub.c"
-static void __sti____cudaRegisterAll_57_tmpxft_00006962_00000000_4_simpleTexture3D_kernel_cpp1_ii_tex(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(uint *, uint, uint, float))d_render), (char*)"_Z8d_renderPjjjf", "_Z8d_renderPjjjf", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterTexture(__cudaFatCubinHandle, (const struct textureReference*)&tex, (const void**)"tex", "tex", 3, 1, 0); }
-# 1 "/tmp/tmpxft_00006962_00000000-1_simpleTexture3D_kernel.cudafe1.stub.c" 2
+# 1 "/tmp/tmpxft_00001aef_00000000-1_simpleTexture3D_kernel.cudafe1.stub.c"
+static void __sti____cudaRegisterAll_57_tmpxft_00001aef_00000000_4_simpleTexture3D_kernel_cpp1_ii_tex(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(uint *, uint, uint, float))d_render), (char*)"_Z8d_renderPjjjf", "_Z8d_renderPjjjf", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterTexture(__cudaFatCubinHandle, (const struct textureReference*)&tex, (const void**)"tex", "tex", 3, 1, 0); }
+# 1 "/tmp/tmpxft_00001aef_00000000-1_simpleTexture3D_kernel.cudafe1.stub.c" 2

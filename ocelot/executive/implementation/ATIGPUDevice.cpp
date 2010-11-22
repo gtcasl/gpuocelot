@@ -448,7 +448,6 @@ namespace executive
 		kernel.updateParameterMemory();
 		kernel.updateMemory();
 		kernel.launchGrid(grid.x, grid.y);
-		synchronize();
 	}
 
 	cudaFuncAttributes ATIGPUDevice::getAttributes(const std::string& module, 

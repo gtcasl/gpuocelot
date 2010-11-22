@@ -118,9 +118,25 @@ namespace translator
 		
 		_translate(cond);
 
-		ir::ILIfLogicalZ if_logicalz;
-		if_logicalz.a = _translate(bra.pg);
-		_add(if_logicalz);
+		switch (bra.pg.condition)
+		{
+			case ir::PTXOperand::Pred:
+			{
+				ir::ILIfLogicalZ if_logicalz;
+				if_logicalz.a = _translate(bra.pg);
+				_add(if_logicalz);
+				break;
+			}
+			case ir::PTXOperand::InvPred:
+			{
+				ir::ILIfLogicalNZ if_logicalnz;
+				if_logicalnz.a = _translate(bra.pg);
+				_add(if_logicalnz);
+				break;
+			}
+			default: assertM(false, "Invalid predicate condition");
+
+		}
 
 		_translate(ifthen->ifTrue());
 
@@ -143,9 +159,26 @@ namespace translator
 		
 		_translate(cond);
 
-		ir::ILIfLogicalZ if_logicalz;
-		if_logicalz.a = _translate(bra.pg);
-		_add(if_logicalz);
+		switch (bra.pg.condition)
+		{
+			case ir::PTXOperand::Pred:
+			{
+				ir::ILIfLogicalZ if_logicalz;
+				if_logicalz.a = _translate(bra.pg);
+				_add(if_logicalz);
+				break;
+			}
+			case ir::PTXOperand::InvPred:
+			{
+				ir::ILIfLogicalNZ if_logicalnz;
+				if_logicalnz.a = _translate(bra.pg);
+				_add(if_logicalnz);
+				break;
+			}
+			default: assertM(false, "Invalid predicate condition");
+
+		}
+
 		_translate(ifthenelse->ifTrue());
 
 		_add(ir::ILElse());
@@ -250,6 +283,7 @@ namespace translator
 		{
 			case ir::PTXOperand::Register:
 			case ir::PTXOperand::Indirect:
+			case ir::PTXOperand::BitBucket:
 			{
 				op.addressMode = ir::ILOperand::Register;
 				op.identifier = _translate(o.reg);
@@ -298,7 +332,7 @@ namespace translator
 			default:
 			{
 				assertM(false, "Address Mode " 
-						<< o.addressMode << " not supported");
+						<< o.toString(o.addressMode) << " not supported");
 			}
 		}
 
@@ -636,17 +670,240 @@ namespace translator
 		// do nothing (bra instructions are handled using the control tree)
 	}
 
+	void PTXToILTranslator::_convertSrc(const ir::PTXInstruction &i)
+	{
+	}
+
+	void PTXToILTranslator::_convert(const ir::PTXInstruction &i)
+	{
+		switch (i.a.type)
+		{
+			case ir::PTXOperand::s32:
+			{
+				switch (i.type)
+				{
+					case ir::PTXOperand::s64:
+					{
+						// sext
+						ir::ILMov mov;
+						mov.a = _translate(i.a);
+						mov.d = _translate(i.d);
+						_add(mov);
+						return;
+					}
+					case ir::PTXOperand::u64:
+					{
+						// sext
+						ir::ILMov mov;
+						mov.a = _translate(i.a);
+						mov.d = _translate(i.d);
+						_add(mov);
+						return;
+					}
+					default: break;
+				}
+				break;
+			}
+			case ir::PTXOperand::u16:
+			{
+				switch (i.type)
+				{
+					case ir::PTXOperand::s32:
+					case ir::PTXOperand::u32:
+					case ir::PTXOperand::u64:
+					{
+						// zext
+						ir::ILMov mov;
+						mov.a = _translate(i.a);
+						mov.d = _translate(i.d);
+						_add(mov);
+						return;
+					}
+					default: break;
+				}
+				break;
+			}
+			case ir::PTXOperand::u32:
+			{
+				switch (i.type)
+				{
+					case ir::PTXOperand::s64:
+					case ir::PTXOperand::u64:
+					{
+						// zext
+						ir::ILMov mov;
+						mov.a = _translate(i.a);
+						mov.d = _translate(i.d);
+						_add(mov);
+						return;
+					}
+					case ir::PTXOperand::f32:
+					{
+						// utof
+						if(i.modifier & ir::PTXInstruction::rn)
+						{
+							ir::ILUtoF utof;
+							utof.d = _translate(i.d);
+							utof.a = _translate(i.a);
+							_add(utof);
+							return;
+						}
+						break;
+					}
+					default: break;
+				}
+				break;
+			}
+			case ir::PTXOperand::u64:
+			{
+				switch (i.type)
+				{
+					case ir::PTXOperand::u32:
+					{
+						// chop
+						ir::ILMov mov;
+						mov.a = _translate(i.a);
+						mov.d = _translate(i.d);
+						_add(mov);
+						return;
+					}
+					default: break;
+				}
+				break;
+			}
+			default: break;
+		}
+
+		assertM(false, "Opcode \"" << i.toString() << "\" not supported");
+	}
+
+	void PTXToILTranslator::_convertDst(const ir::PTXInstruction &i)
+	{
+		switch (i.type)
+		{
+			case ir::PTXOperand::s32:
+			{
+				switch (i.d.type)
+				{
+					case ir::PTXOperand::u32:
+					{
+						// allowed, no conversion needed
+						break;
+					}
+					default:
+					{
+						assertM(false,
+								"Destination operand conversion from \""
+								<< ir::PTXOperand::toString(i.type)
+								<< "\" to \""
+								<< ir::PTXOperand::toString(i.d.type)
+								<< "\" not supported");
+					}
+				}
+				break;
+			}
+			case ir::PTXOperand::s64:
+			{
+				switch (i.d.type)
+				{
+					case ir::PTXOperand::u64: break;
+					default:
+					{
+						assertM(false,
+								"Destination operand conversion from \""
+								<< ir::PTXOperand::toString(i.type)
+								<< "\" to \""
+								<< ir::PTXOperand::toString(i.d.type)
+								<< "\" not supported");
+					}
+				}
+				break;
+			}
+			case ir::PTXOperand::u32:
+			{
+				switch (i.d.type)
+				{
+					case ir::PTXOperand::u32: break;
+					default:
+					{
+						assertM(false,
+								"Destination operand conversion from \""
+								<< ir::PTXOperand::toString(i.type)
+								<< "\" to \""
+								<< ir::PTXOperand::toString(i.d.type)
+								<< "\" not supported");
+					}
+				}
+				break;
+			}
+			case ir::PTXOperand::u64:
+			{
+				switch (i.d.type)
+				{
+					case ir::PTXOperand::u64: break;
+					default:
+					{
+						assertM(false,
+								"Destination operand conversion from \""
+								<< ir::PTXOperand::toString(i.type)
+								<< "\" to \""
+								<< ir::PTXOperand::toString(i.d.type)
+								<< "\" not supported");
+					}
+				}
+				break;
+			}
+			case ir::PTXOperand::f32:
+			{
+				switch (i.d.type)
+				{
+					case ir::PTXOperand::f32: break;
+					default:
+					{
+						assertM(false,
+								"Destination operand conversion from \""
+								<< ir::PTXOperand::toString(i.type)
+								<< "\" to \""
+								<< ir::PTXOperand::toString(i.d.type)
+								<< "\" not supported");
+					}
+				}
+				break;
+			}
+			default:
+			{
+				assertM(false,
+						"Destination operand conversion from \""
+						<< ir::PTXOperand::toString(i.type)
+						<< "\" to \""
+						<< ir::PTXOperand::toString(i.d.type)
+						<< "\" not supported");
+			}
+		}
+	}
+
 	void PTXToILTranslator::_translateCvt(const ir::PTXInstruction &i)
 	{
-		ir::ILMov mov;
-
-		mov.a = _translate(i.a);
-		mov.d = _translate(i.d);
-
-		_add(mov);
+		_convertSrc(i);
+		_convert(i);
+		_convertDst(i);
 	}
 
 	void PTXToILTranslator::_translateDiv(const ir::PTXInstruction &i)
+	{
+		switch (i.type)
+		{
+			case ir::PTXOperand::s32: _translateIDiv(i); break;
+			case ir::PTXOperand::f32: _translateFDiv(i); break;
+			default:
+			{
+				assertM(false, "Opcode \"" << i.toString()
+						<< "\" not supported");
+			}
+		}
+	}
+
+	void PTXToILTranslator::_translateIDiv(const ir::PTXInstruction &i)
 	{
 		// There is no signed integer division in IL so we need to use this 
 		// macro based on unsigned integer division:
@@ -744,6 +1001,17 @@ namespace translator
 		ir::ILMov mov4;
 		mov4.d = _translate(i.d); mov4.a = r0x;
 		_add(mov4);
+	}
+
+	void PTXToILTranslator::_translateFDiv(const ir::PTXInstruction &i)
+	{
+		ir::ILDiv div;
+
+		div.d = _translate(i.d);
+		div.a = _translate(i.a);
+		div.b = _translate(i.b);
+
+		_add(div);
 	}
 
 	void PTXToILTranslator::_translateEx2(const ir::PTXInstruction &i)
@@ -1366,6 +1634,22 @@ namespace translator
 
 	void PTXToILTranslator::_translateSetP(const ir::PTXInstruction &i)
 	{
+		switch (i.type)
+		{
+			case ir::PTXOperand::s32:
+			case ir::PTXOperand::u32:
+			case ir::PTXOperand::u64: _translateISetP(i); break;
+			case ir::PTXOperand::f32: _translateFSetP(i); break;
+			default:
+			{
+				assertM(false, "Opcode \"" << i.toString()
+						<< "\" not supported");
+			}
+		}
+	}
+
+	void PTXToILTranslator::_translateISetP(const ir::PTXInstruction &i)
+	{
 		switch (i.comparisonOperator)
 		{
 			case ir::PTXInstruction::Eq:
@@ -1439,6 +1723,44 @@ namespace translator
 				ilt.d = _translate(i.d);
 
 				_add(ilt);
+
+				break;
+			}
+			default:
+			{
+				assertM(false, "comparisonOperator "
+						<< ir::PTXInstruction::toString(i.comparisonOperator)
+						<< " not supported");
+			}
+		}
+	}
+
+	void PTXToILTranslator::_translateFSetP(const ir::PTXInstruction &i)
+	{
+		switch (i.comparisonOperator)
+		{
+			case ir::PTXInstruction::Lt:
+			{
+				ir::ILLt lt;
+
+				lt.a = _translate(i.a);
+				lt.b = _translate(i.b);
+				lt.d = _translate(i.d);
+
+				_add(lt);
+
+				break;
+			}
+			case ir::PTXInstruction::Gt:
+			{
+				// IL doesn't have gt but it has lt so switch a & b operands
+				ir::ILLt lt;
+
+				lt.a = _translate(i.b);
+				lt.b = _translate(i.a);
+				lt.d = _translate(i.d);
+
+				_add(lt);
 
 				break;
 			}
@@ -1954,8 +2276,6 @@ namespace translator
 			ILiteralMap::const_iterator it;
 			for (it = _intLiterals.begin() ; it != _intLiterals.end() ; it++) 
 			{
-				report("Added statement 'dcl_literal " << it->second
-						<< ", " << (int)it->first << "'");
 				ir::ILStatement dcl_literal(ir::ILStatement::LiteralDcl);
 
 				dcl_literal.operands.resize(2);
@@ -1967,6 +2287,8 @@ namespace translator
 				dcl_literal.operands[1].type = ir::ILOperand::I32;
 
 				_ilKernel->_statements.push_front(dcl_literal);
+
+				report("Added statement \"" << dcl_literal.toString() << "\"");
 			}
 		}
 
@@ -1974,8 +2296,6 @@ namespace translator
 			FLiteralMap::const_iterator it;
 			for (it = _floatLiterals.begin() ; it != _floatLiterals.end() ; it++) 
 			{
-				report("Added statement 'dcl_literal " << it->second
-						<< ", " << (float)it->first << "'");
 				ir::ILStatement dcl_literal(ir::ILStatement::LiteralDcl);
 
 				dcl_literal.operands.resize(2);
@@ -1987,6 +2307,8 @@ namespace translator
 				dcl_literal.operands[1].type = ir::ILOperand::F32;
 
 				_ilKernel->_statements.push_front(dcl_literal);
+
+				report("Added statement \"" << dcl_literal.toString() << "\"");
 			}
 		}
 

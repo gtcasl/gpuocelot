@@ -12,6 +12,9 @@
 #include <hydrazine/implementation/debug.h>
 #include <hydrazine/implementation/Exception.h>
 
+#include <sys/time.h>
+#include <stdio.h>
+
 #ifdef REPORT_BASE
 #undef REPORT_BASE
 #endif
@@ -307,6 +310,9 @@ namespace executive
 		pg.gridSize  = gridSize;
 		CalDriver()->calCtxRunProgramGrid(_event, *_context, &pg);
 
+		// synchronize
+		while(*_event && !CalDriver()->calCtxIsEventDone(*_context, *_event));
+
 		// clean up
 		// release memory handles
 		CalDriver()->calCtxReleaseMem(*_context, _uav0Mem);
@@ -370,7 +376,8 @@ namespace executive
 						// CUDA pointers are 32-bits
 						assertM(v.val_u64 >> 32 == 0, 
 								"Pointer out of range");
-						cb1[i].x = v.val_u32 - ATIGPUDevice::Uav0BaseAddr; 
+						cb1[i].x = (v.val_u32 < ATIGPUDevice::Uav0BaseAddr) ? 
+							0 : v.val_u32 - ATIGPUDevice::Uav0BaseAddr; 
 						report("cb1[" << i << "] = {" << cb1[i].x << "}");
 						i++;
 						break;

@@ -85,7 +85,18 @@ namespace ir
 				switch (type)
 				{
 					case I32: stream << imm_int; break;
-					case F32: stream << imm_float; break;
+					case F32: 
+					{
+						union
+						{
+							float f;
+							int i;
+						} convert;
+						
+						convert.f = imm_float;
+						stream << "0x" << std::hex << convert.i; 
+						break;
+					}
 					default: assertM(false, "Invalid data type");
 				}
 				return stream.str();	

@@ -1,0 +1,300 @@
+	.version 2.1
+	.target sm_20
+	// compiled with /usr/local/cuda3.1/cuda/open64/lib//be
+	// nvopencc 3.1 built on 2010-06-07
+
+	.visible .func (.param .f32 __cudaretf__Z15computeMidpointff) _Z15computeMidpointff (.param .f32 __cudaparmf1__Z15computeMidpointff, .param .f32 __cudaparmf2__Z15computeMidpointff)
+
+	.visible .func (.param .u32 __cudaretf__Z26computeNumSmallerEigenvalsPfS_jfjjS_S_j) _Z26computeNumSmallerEigenvalsPfS_jfjjS_S_j (.param .u64 __cudaparmf1__Z26computeNumSmallerEigenvalsPfS_jfjjS_S_j, .param .u64 __cudaparmf2__Z26computeNumSmallerEigenvalsPfS_jfjjS_S_j, .param .u32 __cudaparmf3__Z26computeNumSmallerEigenvalsPfS_jfjjS_S_j, .param .f32 __cudaparmf4__Z26computeNumSmallerEigenvalsPfS_jfjjS_S_j, .param .u32 __cudaparmf5__Z26computeNumSmallerEigenvalsPfS_jfjjS_S_j, .param .u32 __cudaparmf6__Z26computeNumSmallerEigenvalsPfS_jfjjS_S_j, .param .u64 __cudaparmf7__Z26computeNumSmallerEigenvalsPfS_jfjjS_S_j, .param .u64 __cudaparmf8__Z26computeNumSmallerEigenvalsPfS_jfjjS_S_j, .param .u32 __cudaparmf9__Z26computeNumSmallerEigenvalsPfS_jfjjS_S_j)
+
+	.visible .func (.param .u32 __cudaretf__Z31computeNumSmallerEigenvalsLargePfS_jfjjS_S_j) _Z31computeNumSmallerEigenvalsLargePfS_jfjjS_S_j (.param .u64 __cudaparmf1__Z31computeNumSmallerEigenvalsLargePfS_jfjjS_S_j, .param .u64 __cudaparmf2__Z31computeNumSmallerEigenvalsLargePfS_jfjjS_S_j, .param .u32 __cudaparmf3__Z31computeNumSmallerEigenvalsLargePfS_jfjjS_S_j, .param .f32 __cudaparmf4__Z31computeNumSmallerEigenvalsLargePfS_jfjjS_S_j, .param .u32 __cudaparmf5__Z31computeNumSmallerEigenvalsLargePfS_jfjjS_S_j, .param .u32 __cudaparmf6__Z31computeNumSmallerEigenvalsLargePfS_jfjjS_S_j, .param .u64 __cudaparmf7__Z31computeNumSmallerEigenvalsLargePfS_jfjjS_S_j, .param .u64 __cudaparmf8__Z31computeNumSmallerEigenvalsLargePfS_jfjjS_S_j, .param .u32 __cudaparmf9__Z31computeNumSmallerEigenvalsLargePfS_jfjjS_S_j)
+
+	//-----------------------------------------------------------
+	// Compiling /tmp/tmpxft_0000173b_00000000-7_bisect_util.cpp3.i (/tmp/ccBI#.bQGCj6)
+	//-----------------------------------------------------------
+
+	//-----------------------------------------------------------
+	// Options:
+	//-----------------------------------------------------------
+	//  Target:ptx, ISA:sm_20, Endian:little, Pointer Size:64
+	//  -O3	(Optimization level)
+	//  -g0	(Debug level)
+	//  -m2	(Report advisories)
+	//-----------------------------------------------------------
+
+	.file	1	"<command-line>"
+	.file	2	"/tmp/tmpxft_0000173b_00000000-6_bisect_util.cudafe2.gpu"
+	.file	3	"/usr/lib/gcc/x86_64-linux-gnu/4.4.3/include/stddef.h"
+	.file	4	"/usr/local/cuda3.1/cuda/bin/../include/crt/device_runtime.h"
+	.file	5	"/usr/local/cuda3.1/cuda/bin/../include/host_defines.h"
+	.file	6	"/usr/local/cuda3.1/cuda/bin/../include/builtin_types.h"
+	.file	7	"/usr/local/cuda3.1/cuda/bin/../include/device_types.h"
+	.file	8	"/usr/local/cuda3.1/cuda/bin/../include/driver_types.h"
+	.file	9	"/usr/local/cuda3.1/cuda/bin/../include/surface_types.h"
+	.file	10	"/usr/local/cuda3.1/cuda/bin/../include/texture_types.h"
+	.file	11	"/usr/local/cuda3.1/cuda/bin/../include/vector_types.h"
+	.file	12	"/usr/local/cuda3.1/cuda/bin/../include/device_launch_parameters.h"
+	.file	13	"/usr/local/cuda3.1/cuda/bin/../include/crt/storage_class.h"
+	.file	14	"/usr/include/bits/types.h"
+	.file	15	"/usr/include/time.h"
+	.file	16	"/home/andrew/repositories/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu"
+	.file	17	"/usr/local/cuda3.1/cuda/bin/../include/common_functions.h"
+	.file	18	"/usr/local/cuda3.1/cuda/bin/../include/math_functions.h"
+	.file	19	"/usr/local/cuda3.1/cuda/bin/../include/math_constants.h"
+	.file	20	"/usr/local/cuda3.1/cuda/bin/../include/device_functions.h"
+	.file	21	"/usr/local/cuda3.1/cuda/bin/../include/sm_11_atomic_functions.h"
+	.file	22	"/usr/local/cuda3.1/cuda/bin/../include/sm_12_atomic_functions.h"
+	.file	23	"/usr/local/cuda3.1/cuda/bin/../include/sm_13_double_functions.h"
+	.file	24	"/usr/local/cuda3.1/cuda/bin/../include/sm_20_atomic_functions.h"
+	.file	25	"/usr/local/cuda3.1/cuda/bin/../include/sm_20_intrinsics.h"
+	.file	26	"/usr/local/cuda3.1/cuda/bin/../include/surface_functions.h"
+	.file	27	"/usr/local/cuda3.1/cuda/bin/../include/texture_fetch_functions.h"
+	.file	28	"/usr/local/cuda3.1/cuda/bin/../include/math_functions_dbl_ptx3.h"
+
+
+	.visible .func (.param .f32 __cudaretf__Z15computeMidpointff) _Z15computeMidpointff (.param .f32 __cudaparmf1__Z15computeMidpointff, .param .f32 __cudaparmf2__Z15computeMidpointff)
+	{
+	.reg .u32 %r<4>;
+	.reg .f32 %f<15>;
+	.reg .pred %p<4>;
+	.loc	16	89	0
+$LDWbegin__Z15computeMidpointff:
+	ld.param.f32 	%f1, [__cudaparmf1__Z15computeMidpointff];
+	mov.f32 	%f2, %f1;
+	ld.param.f32 	%f3, [__cudaparmf2__Z15computeMidpointff];
+	mov.f32 	%f4, %f3;
+	mov.f32 	%f5, 0f00000000;     	// 0
+	setp.lt.f32 	%p1, %f2, %f5;
+	mov.f32 	%f6, 0f00000000;     	// 0
+	setp.lt.f32 	%p2, %f4, %f6;
+	@!%p2 bra 	$Lt_0_2818;
+	.loc	16	92	0
+	selp.s32 	%r1, 1, 0, %p1;
+	bra.uni 	$Lt_0_2562;
+$Lt_0_2818:
+	selp.s32 	%r1, 0, 1, %p1;
+$Lt_0_2562:
+	.loc	16	99	0
+	sub.f32 	%f7, %f4, %f2;
+	mov.f32 	%f8, 0f3f000000;     	// 0.5
+	fma.rn.f32 	%f9, %f7, %f8, %f2;
+	add.f32 	%f10, %f2, %f4;
+	mov.f32 	%f11, 0f3f000000;    	// 0.5
+	mul.f32 	%f12, %f10, %f11;
+	neg.s32 	%r2, %r1;
+	slct.f32.s32 	%f13, %f12, %f9, %r2;
+	st.param.f32 	[__cudaretf__Z15computeMidpointff], %f13;
+	ret;
+$LDWend__Z15computeMidpointff:
+	} // _Z15computeMidpointff
+
+	.visible .func (.param .u32 __cudaretf__Z26computeNumSmallerEigenvalsPfS_jfjjS_S_j) _Z26computeNumSmallerEigenvalsPfS_jfjjS_S_j (.param .u64 __cudaparmf1__Z26computeNumSmallerEigenvalsPfS_jfjjS_S_j, .param .u64 __cudaparmf2__Z26computeNumSmallerEigenvalsPfS_jfjjS_S_j, .param .u32 __cudaparmf3__Z26computeNumSmallerEigenvalsPfS_jfjjS_S_j, .param .f32 __cudaparmf4__Z26computeNumSmallerEigenvalsPfS_jfjjS_S_j, .param .u32 __cudaparmf5__Z26computeNumSmallerEigenvalsPfS_jfjjS_S_j, .param .u32 __cudaparmf6__Z26computeNumSmallerEigenvalsPfS_jfjjS_S_j, .param .u64 __cudaparmf7__Z26computeNumSmallerEigenvalsPfS_jfjjS_S_j, .param .u64 __cudaparmf8__Z26computeNumSmallerEigenvalsPfS_jfjjS_S_j, .param .u32 __cudaparmf9__Z26computeNumSmallerEigenvalsPfS_jfjjS_S_j)
+	{
+	.reg .u32 %r<26>;
+	.reg .u64 %rd<18>;
+	.reg .f32 %f<13>;
+	.reg .pred %p<6>;
+	.loc	16	177	0
+$LDWbegin__Z26computeNumSmallerEigenvalsPfS_jfjjS_S_j:
+	ld.param.u64 	%rd1, [__cudaparmf1__Z26computeNumSmallerEigenvalsPfS_jfjjS_S_j];
+	mov.s64 	%rd2, %rd1;
+	ld.param.u64 	%rd3, [__cudaparmf2__Z26computeNumSmallerEigenvalsPfS_jfjjS_S_j];
+	mov.s64 	%rd4, %rd3;
+	ld.param.u32 	%r1, [__cudaparmf3__Z26computeNumSmallerEigenvalsPfS_jfjjS_S_j];
+	mov.s32 	%r2, %r1;
+	ld.param.f32 	%f1, [__cudaparmf4__Z26computeNumSmallerEigenvalsPfS_jfjjS_S_j];
+	mov.f32 	%f2, %f1;
+	ld.param.u32 	%r3, [__cudaparmf5__Z26computeNumSmallerEigenvalsPfS_jfjjS_S_j];
+	mov.s32 	%r4, %r3;
+	ld.param.u32 	%r5, [__cudaparmf6__Z26computeNumSmallerEigenvalsPfS_jfjjS_S_j];
+	mov.s32 	%r6, %r5;
+	ld.param.u64 	%rd5, [__cudaparmf7__Z26computeNumSmallerEigenvalsPfS_jfjjS_S_j];
+	mov.s64 	%rd6, %rd5;
+	ld.param.u64 	%rd7, [__cudaparmf8__Z26computeNumSmallerEigenvalsPfS_jfjjS_S_j];
+	mov.s64 	%rd8, %rd7;
+	ld.param.u32 	%r7, [__cudaparmf9__Z26computeNumSmallerEigenvalsPfS_jfjjS_S_j];
+	mov.s32 	%r8, %r7;
+	.loc	16	182	0
+	mov.u32 	%r9, %tid.x;
+	setp.le.u32 	%p1, %r2, %r9;
+	@%p1 bra 	$Lt_1_3586;
+	.loc	16	186	0
+	cvt.u64.u32 	%rd9, %r9;
+	mul.wide.u32 	%rd10, %r9, 4;
+	add.u64 	%rd11, %rd10, %rd2;
+	ld.f32 	%f3, [%rd11+0];
+	add.u64 	%rd12, %rd10, %rd6;
+	st.f32 	[%rd12+0], %f3;
+	.loc	16	187	0
+	add.u64 	%rd13, %rd10, %rd4;
+	ld.f32 	%f4, [%rd13+-4];
+	add.u64 	%rd14, %rd10, %rd8;
+	st.f32 	[%rd14+0], %f4;
+$Lt_1_3586:
+	.loc	16	190	0
+	bar.sync 	0;
+	mov.u32 	%r10, 0;
+	set.eq.u32.u32 	%r11, %r8, %r10;
+	neg.s32 	%r12, %r11;
+	set.lt.u32.u32 	%r13, %r4, %r6;
+	neg.s32 	%r14, %r13;
+	and.b32 	%r15, %r12, %r14;
+	mov.u32 	%r16, 0;
+	setp.eq.s32 	%p2, %r15, %r16;
+	@%p2 bra 	$Lt_1_4354;
+	mov.u32 	%r17, 0;
+	setp.eq.u32 	%p3, %r2, %r17;
+	@%p3 bra 	$Lt_1_5634;
+	mov.s32 	%r18, %r2;
+	mov.s64 	%rd15, %rd6;
+	mov.s64 	%rd16, %rd8;
+	mov.u32 	%r19, 0;
+	mov.u32 	%r20, 0;
+	mov.f32 	%f5, 0f3f800000;     	// 1
+	mov.s32 	%r21, %r18;
+$Lt_1_5122:
+ //<loop> Loop body line 190, nesting depth: 1, estimated iterations: unknown
+	.loc	16	198	0
+	ld.f32 	%f6, [%rd16+0];
+	ld.f32 	%f7, [%rd15+0];
+	sub.f32 	%f8, %f7, %f2;
+	mul.f32 	%f9, %f6, %f6;
+	div.rn.f32 	%f10, %f9, %f5;
+	sub.f32 	%f5, %f8, %f10;
+	.loc	16	199	0
+	mov.f32 	%f11, 0f00000000;    	// 0
+	set.lt.u32.f32 	%r22, %f5, %f11;
+	neg.s32 	%r23, %r22;
+	add.u32 	%r20, %r20, %r23;
+	add.u32 	%r19, %r19, 1;
+	add.u64 	%rd16, %rd16, 4;
+	add.u64 	%rd15, %rd15, 4;
+	setp.ne.u32 	%p4, %r2, %r19;
+	@%p4 bra 	$Lt_1_5122;
+	bra.uni 	$Lt_1_4098;
+$Lt_1_5634:
+	mov.u32 	%r20, 0;
+	bra.uni 	$Lt_1_4098;
+$Lt_1_4354:
+	mov.u32 	%r20, 0;
+$Lt_1_4098:
+	.loc	16	204	0
+	mov.s32 	%r24, %r20;
+	st.param.u32 	[__cudaretf__Z26computeNumSmallerEigenvalsPfS_jfjjS_S_j], %r24;
+	ret;
+$LDWend__Z26computeNumSmallerEigenvalsPfS_jfjjS_S_j:
+	} // _Z26computeNumSmallerEigenvalsPfS_jfjjS_S_j
+
+	.visible .func (.param .u32 __cudaretf__Z31computeNumSmallerEigenvalsLargePfS_jfjjS_S_j) _Z31computeNumSmallerEigenvalsLargePfS_jfjjS_S_j (.param .u64 __cudaparmf1__Z31computeNumSmallerEigenvalsLargePfS_jfjjS_S_j, .param .u64 __cudaparmf2__Z31computeNumSmallerEigenvalsLargePfS_jfjjS_S_j, .param .u32 __cudaparmf3__Z31computeNumSmallerEigenvalsLargePfS_jfjjS_S_j, .param .f32 __cudaparmf4__Z31computeNumSmallerEigenvalsLargePfS_jfjjS_S_j, .param .u32 __cudaparmf5__Z31computeNumSmallerEigenvalsLargePfS_jfjjS_S_j, .param .u32 __cudaparmf6__Z31computeNumSmallerEigenvalsLargePfS_jfjjS_S_j, .param .u64 __cudaparmf7__Z31computeNumSmallerEigenvalsLargePfS_jfjjS_S_j, .param .u64 __cudaparmf8__Z31computeNumSmallerEigenvalsLargePfS_jfjjS_S_j, .param .u32 __cudaparmf9__Z31computeNumSmallerEigenvalsLargePfS_jfjjS_S_j)
+	{
+	.reg .u32 %r<23>;
+	.reg .u64 %rd<21>;
+	.reg .f32 %f<13>;
+	.reg .pred %p<8>;
+	.loc	16	234	0
+$LDWbegin__Z31computeNumSmallerEigenvalsLargePfS_jfjjS_S_j:
+	ld.param.u64 	%rd1, [__cudaparmf1__Z31computeNumSmallerEigenvalsLargePfS_jfjjS_S_j];
+	mov.s64 	%rd2, %rd1;
+	ld.param.u64 	%rd3, [__cudaparmf2__Z31computeNumSmallerEigenvalsLargePfS_jfjjS_S_j];
+	mov.s64 	%rd4, %rd3;
+	ld.param.u32 	%r1, [__cudaparmf3__Z31computeNumSmallerEigenvalsLargePfS_jfjjS_S_j];
+	mov.s32 	%r2, %r1;
+	ld.param.f32 	%f1, [__cudaparmf4__Z31computeNumSmallerEigenvalsLargePfS_jfjjS_S_j];
+	mov.f32 	%f2, %f1;
+	ld.param.u32 	%r3, [__cudaparmf5__Z31computeNumSmallerEigenvalsLargePfS_jfjjS_S_j];
+	mov.s32 	%r4, %r3;
+	ld.param.u32 	%r5, [__cudaparmf6__Z31computeNumSmallerEigenvalsLargePfS_jfjjS_S_j];
+	mov.s32 	%r6, %r5;
+	ld.param.u64 	%rd5, [__cudaparmf7__Z31computeNumSmallerEigenvalsLargePfS_jfjjS_S_j];
+	mov.s64 	%rd6, %rd5;
+	ld.param.u64 	%rd7, [__cudaparmf8__Z31computeNumSmallerEigenvalsLargePfS_jfjjS_S_j];
+	mov.s64 	%rd8, %rd7;
+	.loc	16	238	0
+	mov.s32 	%r7, %r2;
+	mov.u32 	%r8, 0;
+	setp.eq.u32 	%p1, %r2, %r8;
+	@%p1 bra 	$Lt_2_7426;
+	setp.lt.u32 	%p2, %r4, %r6;
+	mov.u32 	%r9, %ntid.x;
+	mov.u32 	%r10, %tid.x;
+	mov.u32 	%r11, 0;
+	mov.u32 	%r12, 0;
+	mov.f32 	%f3, 0f3f800000;     	// 1
+$Lt_2_4866:
+ //<loop> Loop body line 238, nesting depth: 1, estimated iterations: unknown
+	.loc	16	243	0
+	bar.sync 	0;
+	add.u32 	%r13, %r10, %r11;
+	setp.le.u32 	%p3, %r2, %r13;
+	@%p3 bra 	$Lt_2_5122;
+ //<loop> Part of loop body line 238, head labeled $Lt_2_4866
+	.loc	16	248	0
+	cvt.u64.u32 	%rd9, %r10;
+	mul.wide.u32 	%rd10, %r10, 4;
+	cvt.u64.u32 	%rd11, %r11;
+	add.u64 	%rd12, %rd11, %rd9;
+	mul.lo.u64 	%rd13, %rd12, 4;
+	add.u64 	%rd14, %rd13, %rd2;
+	ld.f32 	%f4, [%rd14+0];
+	add.u64 	%rd15, %rd10, %rd6;
+	st.f32 	[%rd15+0], %f4;
+	.loc	16	249	0
+	add.u64 	%rd16, %rd13, %rd4;
+	ld.f32 	%f5, [%rd16+-4];
+	add.u64 	%rd17, %rd10, %rd8;
+	st.f32 	[%rd17+0], %f5;
+$Lt_2_5122:
+ //<loop> Part of loop body line 238, head labeled $Lt_2_4866
+	.loc	16	252	0
+	bar.sync 	0;
+	@!%p2 bra 	$Lt_2_6146;
+ //<loop> Part of loop body line 238, head labeled $Lt_2_4866
+	min.u32 	%r14, %r7, %r9;
+	mov.u32 	%r15, 0;
+	setp.eq.u32 	%p4, %r14, %r15;
+	@%p4 bra 	$Lt_2_6146;
+ //<loop> Part of loop body line 238, head labeled $Lt_2_4866
+	mov.s32 	%r16, %r14;
+	mov.s64 	%rd18, %rd6;
+	mov.s64 	%rd19, %rd8;
+	mov.u32 	%r17, 0;
+ //<loop> Part of loop body line 238, head labeled $Lt_2_4866
+	mov.s32 	%r18, %r16;
+$Lt_2_6658:
+ //<loop> Loop body line 252, nesting depth: 2, estimated iterations: unknown
+	.loc	16	260	0
+	ld.f32 	%f6, [%rd19+0];
+	ld.f32 	%f7, [%rd18+0];
+	sub.f32 	%f8, %f7, %f2;
+	mul.f32 	%f9, %f6, %f6;
+	div.rn.f32 	%f10, %f9, %f3;
+	sub.f32 	%f3, %f8, %f10;
+	.loc	16	262	0
+	mov.f32 	%f11, 0f00000000;    	// 0
+	set.lt.u32.f32 	%r19, %f3, %f11;
+	neg.s32 	%r20, %r19;
+	add.u32 	%r12, %r12, %r20;
+	add.u32 	%r17, %r17, 1;
+	add.u64 	%rd19, %rd19, 4;
+	add.u64 	%rd18, %rd18, 4;
+	setp.ne.u32 	%p5, %r14, %r17;
+	@%p5 bra 	$Lt_2_6658;
+$Lt_2_6146:
+$Lt_2_5634:
+ //<loop> Part of loop body line 238, head labeled $Lt_2_4866
+	.loc	16	267	0
+	sub.u32 	%r7, %r7, %r9;
+	add.u32 	%r11, %r9, %r11;
+	setp.gt.u32 	%p6, %r2, %r11;
+	@%p6 bra 	$Lt_2_4866;
+	bra.uni 	$Lt_2_4354;
+$Lt_2_7426:
+	mov.u32 	%r12, 0;
+$Lt_2_4354:
+	.loc	16	270	0
+	mov.s32 	%r21, %r12;
+	st.param.u32 	[__cudaretf__Z31computeNumSmallerEigenvalsLargePfS_jfjjS_S_j], %r21;
+	ret;
+$LDWend__Z31computeNumSmallerEigenvalsLargePfS_jfjjS_S_j:
+	} // _Z31computeNumSmallerEigenvalsLargePfS_jfjjS_S_j
+

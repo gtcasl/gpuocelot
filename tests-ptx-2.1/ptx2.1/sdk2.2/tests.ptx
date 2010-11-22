@@ -1,0 +1,133 @@
+	.version 2.1
+	.target sm_20
+	// compiled with /usr/local/cuda3.1/cuda/open64/lib//be
+	// nvopencc 3.1 built on 2010-06-07
+
+	.visible .func _Z11sortColors3PfP6float3Pi (.param .u64 __cudaparmf1__Z11sortColors3PfP6float3Pi, .param .u64 __cudaparmf2__Z11sortColors3PfP6float3Pi, .param .u64 __cudaparmf3__Z11sortColors3PfP6float3Pi)
+
+	//-----------------------------------------------------------
+	// Compiling /tmp/tmpxft_00002180_00000000-7_tests.cpp3.i (/tmp/ccBI#.tuF347)
+	//-----------------------------------------------------------
+
+	//-----------------------------------------------------------
+	// Options:
+	//-----------------------------------------------------------
+	//  Target:ptx, ISA:sm_20, Endian:little, Pointer Size:64
+	//  -O3	(Optimization level)
+	//  -g0	(Debug level)
+	//  -m2	(Report advisories)
+	//-----------------------------------------------------------
+
+	.file	1	"<command-line>"
+	.file	2	"/tmp/tmpxft_00002180_00000000-6_tests.cudafe2.gpu"
+	.file	3	"/usr/lib/gcc/x86_64-linux-gnu/4.4.3/include/stddef.h"
+	.file	4	"/usr/local/cuda3.1/cuda/bin/../include/crt/device_runtime.h"
+	.file	5	"/usr/local/cuda3.1/cuda/bin/../include/host_defines.h"
+	.file	6	"/usr/local/cuda3.1/cuda/bin/../include/builtin_types.h"
+	.file	7	"/usr/local/cuda3.1/cuda/bin/../include/device_types.h"
+	.file	8	"/usr/local/cuda3.1/cuda/bin/../include/driver_types.h"
+	.file	9	"/usr/local/cuda3.1/cuda/bin/../include/surface_types.h"
+	.file	10	"/usr/local/cuda3.1/cuda/bin/../include/texture_types.h"
+	.file	11	"/usr/local/cuda3.1/cuda/bin/../include/vector_types.h"
+	.file	12	"/usr/local/cuda3.1/cuda/bin/../include/device_launch_parameters.h"
+	.file	13	"/usr/local/cuda3.1/cuda/bin/../include/crt/storage_class.h"
+	.file	14	"/usr/include/bits/types.h"
+	.file	15	"/usr/include/time.h"
+	.file	16	"/home/andrew/repositories/gpuocelot/tests/cuda2.2/tests/dxtc/tests.cu"
+	.file	17	"/usr/local/cuda3.1/cuda/bin/../include/common_functions.h"
+	.file	18	"/usr/local/cuda3.1/cuda/bin/../include/math_functions.h"
+	.file	19	"/usr/local/cuda3.1/cuda/bin/../include/math_constants.h"
+	.file	20	"/usr/local/cuda3.1/cuda/bin/../include/device_functions.h"
+	.file	21	"/usr/local/cuda3.1/cuda/bin/../include/sm_11_atomic_functions.h"
+	.file	22	"/usr/local/cuda3.1/cuda/bin/../include/sm_12_atomic_functions.h"
+	.file	23	"/usr/local/cuda3.1/cuda/bin/../include/sm_13_double_functions.h"
+	.file	24	"/usr/local/cuda3.1/cuda/bin/../include/sm_20_atomic_functions.h"
+	.file	25	"/usr/local/cuda3.1/cuda/bin/../include/sm_20_intrinsics.h"
+	.file	26	"/usr/local/cuda3.1/cuda/bin/../include/surface_functions.h"
+	.file	27	"/usr/local/cuda3.1/cuda/bin/../include/texture_fetch_functions.h"
+	.file	28	"/usr/local/cuda3.1/cuda/bin/../include/math_functions_dbl_ptx3.h"
+
+
+	.visible .func _Z11sortColors3PfP6float3Pi (.param .u64 __cudaparmf1__Z11sortColors3PfP6float3Pi, .param .u64 __cudaparmf2__Z11sortColors3PfP6float3Pi, .param .u64 __cudaparmf3__Z11sortColors3PfP6float3Pi)
+	{
+	.reg .u32 %r<14>;
+	.reg .u64 %rd<10>;
+	.reg .f32 %f<9>;
+	.reg .pred %p<8>;
+	.loc	16	6	0
+$LDWbegin__Z11sortColors3PfP6float3Pi:
+	ld.param.u64 	%rd1, [__cudaparmf1__Z11sortColors3PfP6float3Pi];
+	mov.s64 	%rd2, %rd1;
+	ld.param.u64 	%rd3, [__cudaparmf3__Z11sortColors3PfP6float3Pi];
+	mov.s64 	%rd4, %rd3;
+	.loc	16	9	0
+	cvt.s32.u32 	%r1, %tid.x;
+	cvt.s64.s32 	%rd5, %r1;
+	mul.wide.s32 	%rd6, %r1, 4;
+	add.u64 	%rd7, %rd6, %rd4;
+	st.s32 	[%rd7+0], %r1;
+	and.b32 	%r2, %r1, 1;
+	mov.s32 	%r3, 0;
+	setp.ne.s32 	%p1, %r1, %r3;
+	mov.s32 	%r4, 15;
+	setp.ne.s32 	%p2, %r1, %r4;
+	selp.s32 	%r5, 1, 0, %p1;
+	selp.s32 	%r6, 1, 0, %p2;
+	add.u64 	%rd8, %rd6, %rd2;
+	and.b32 	%r7, %r5, %r6;
+	ld.f32 	%f1, [%rd8+0];
+	mov.s32 	%r8, 0;
+$Lt_0_4866:
+ //<loop> Loop body line 9, nesting depth: 1, iterations: 8
+	mov.u32 	%r9, 0;
+	setp.eq.s32 	%p3, %r2, %r9;
+	@%p3 bra 	$Lt_0_5378;
+ //<loop> Part of loop body line 9, head labeled $Lt_0_4866
+	.loc	16	16	0
+	ld.f32 	%f2, [%rd8+4];
+	min.f32 	%f3, %f2, %f1;
+	bra.uni 	$Lt_0_5122;
+$Lt_0_5378:
+ //<loop> Part of loop body line 9, head labeled $Lt_0_4866
+	.loc	16	17	0
+	ld.f32 	%f4, [%rd8+-4];
+	max.f32 	%f3, %f4, %f1;
+$Lt_0_5122:
+ //<loop> Part of loop body line 9, head labeled $Lt_0_4866
+	.loc	16	18	0
+	mov.f32 	%f5, %f3;
+	mov.f32 	%f1, %f5;
+	st.f32 	[%rd8+0], %f5;
+	mov.u32 	%r10, 0;
+	setp.eq.s32 	%p4, %r7, %r10;
+	@%p4 bra 	$Lt_0_5634;
+ //<loop> Part of loop body line 9, head labeled $Lt_0_4866
+	mov.u32 	%r11, 0;
+	setp.eq.s32 	%p5, %r2, %r11;
+	@%p5 bra 	$Lt_0_6402;
+ //<loop> Part of loop body line 9, head labeled $Lt_0_4866
+	.loc	16	22	0
+	ld.f32 	%f6, [%rd8+-4];
+	max.f32 	%f3, %f6, %f5;
+	bra.uni 	$Lt_0_6146;
+$Lt_0_6402:
+ //<loop> Part of loop body line 9, head labeled $Lt_0_4866
+	.loc	16	23	0
+	ld.f32 	%f7, [%rd8+4];
+	min.f32 	%f3, %f7, %f5;
+$Lt_0_6146:
+ //<loop> Part of loop body line 9, head labeled $Lt_0_4866
+	.loc	16	24	0
+	mov.f32 	%f1, %f3;
+	st.f32 	[%rd8+0], %f1;
+$Lt_0_5634:
+ //<loop> Part of loop body line 9, head labeled $Lt_0_4866
+	add.s32 	%r8, %r8, 1;
+	mov.u32 	%r12, 8;
+	setp.ne.s32 	%p6, %r8, %r12;
+	@%p6 bra 	$Lt_0_4866;
+	.loc	16	51	0
+	ret;
+$LDWend__Z11sortColors3PfP6float3Pi:
+	} // _Z11sortColors3PfP6float3Pi
+

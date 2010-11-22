@@ -1,0 +1,174 @@
+	.version 2.1
+	.target sm_20
+	// compiled with /usr/local/cuda3.1/cuda/open64/lib//be
+	// nvopencc 3.1 built on 2010-06-07
+
+	//-----------------------------------------------------------
+	// Compiling /tmp/tmpxft_00002294_00000000-7_dct8x8_kernel_quantization.cpp3.i (/tmp/ccBI#.D51rL2)
+	//-----------------------------------------------------------
+
+	//-----------------------------------------------------------
+	// Options:
+	//-----------------------------------------------------------
+	//  Target:ptx, ISA:sm_20, Endian:little, Pointer Size:64
+	//  -O3	(Optimization level)
+	//  -g0	(Debug level)
+	//  -m2	(Report advisories)
+	//-----------------------------------------------------------
+
+	.file	1	"<command-line>"
+	.file	2	"/tmp/tmpxft_00002294_00000000-6_dct8x8_kernel_quantization.cudafe2.gpu"
+	.file	3	"/usr/lib/gcc/x86_64-linux-gnu/4.4.3/include/stddef.h"
+	.file	4	"/usr/local/cuda3.1/cuda/bin/../include/crt/device_runtime.h"
+	.file	5	"/usr/local/cuda3.1/cuda/bin/../include/host_defines.h"
+	.file	6	"/usr/local/cuda3.1/cuda/bin/../include/builtin_types.h"
+	.file	7	"/usr/local/cuda3.1/cuda/bin/../include/device_types.h"
+	.file	8	"/usr/local/cuda3.1/cuda/bin/../include/driver_types.h"
+	.file	9	"/usr/local/cuda3.1/cuda/bin/../include/surface_types.h"
+	.file	10	"/usr/local/cuda3.1/cuda/bin/../include/texture_types.h"
+	.file	11	"/usr/local/cuda3.1/cuda/bin/../include/vector_types.h"
+	.file	12	"/usr/local/cuda3.1/cuda/bin/../include/device_launch_parameters.h"
+	.file	13	"/usr/local/cuda3.1/cuda/bin/../include/crt/storage_class.h"
+	.file	14	"/usr/include/bits/types.h"
+	.file	15	"/usr/include/time.h"
+	.file	16	"/home/andrew/repositories/gpuocelot/tests/cuda2.2/tests/dct8x8/dct8x8_kernel_quantization.cu"
+	.file	17	"/usr/local/cuda3.1/cuda/bin/../include/common_functions.h"
+	.file	18	"/usr/local/cuda3.1/cuda/bin/../include/math_functions.h"
+	.file	19	"/usr/local/cuda3.1/cuda/bin/../include/math_constants.h"
+	.file	20	"/usr/local/cuda3.1/cuda/bin/../include/device_functions.h"
+	.file	21	"/usr/local/cuda3.1/cuda/bin/../include/sm_11_atomic_functions.h"
+	.file	22	"/usr/local/cuda3.1/cuda/bin/../include/sm_12_atomic_functions.h"
+	.file	23	"/usr/local/cuda3.1/cuda/bin/../include/sm_13_double_functions.h"
+	.file	24	"/usr/local/cuda3.1/cuda/bin/../include/sm_20_atomic_functions.h"
+	.file	25	"/usr/local/cuda3.1/cuda/bin/../include/sm_20_intrinsics.h"
+	.file	26	"/usr/local/cuda3.1/cuda/bin/../include/surface_functions.h"
+	.file	27	"/usr/local/cuda3.1/cuda/bin/../include/texture_fetch_functions.h"
+	.file	28	"/usr/local/cuda3.1/cuda/bin/../include/math_functions_dbl_ptx3.h"
+
+	.const .align 2 .b8 Q[128] = {32,0,33,0,51,0,81,0,66,0,39,0,34,0,17,0,33,0,36,0,48,0,47,0,28,0,23,0,12,0,12,0,51,0,48,0,47,0,28,0,23,0,12,0,12,0,12,0,81,0,47,0,28,0,23,0,12,0,12,0,12,0,12,0,66,0,28,0,23,0,12,0,12,0,12,0,12,0,12,0,39,0,23,0,12,0,12,0,12,0,12,0,12,0,12,0,34,0,12,0,12,0,12,0,12,0,12,0,12,0,12,0,17,0,12,0,12,0,12,0,12,0,12,0,12,0,12,0};
+
+	.entry _Z27CUDAkernelQuantizationFloatPfi (
+		.param .u64 __cudaparm__Z27CUDAkernelQuantizationFloatPfi_SrcDst,
+		.param .s32 __cudaparm__Z27CUDAkernelQuantizationFloatPfi_Stride)
+	{
+	.reg .u32 %r<19>;
+	.reg .u64 %rd<10>;
+	.reg .f32 %f<13>;
+	.reg .pred %p<4>;
+	.loc	16	75	0
+$LDWbegin__Z27CUDAkernelQuantizationFloatPfi:
+	.loc	16	86	0
+	cvt.s32.u32 	%r1, %ctaid.x;
+	mul.lo.s32 	%r2, %r1, 8;
+	cvt.s32.u32 	%r3, %ctaid.y;
+	mul.lo.s32 	%r4, %r3, 8;
+	cvt.s32.u32 	%r5, %tid.y;
+	add.s32 	%r6, %r4, %r5;
+	ld.param.s32 	%r7, [__cudaparm__Z27CUDAkernelQuantizationFloatPfi_Stride];
+	mul.lo.s32 	%r8, %r7, %r6;
+	cvt.s32.u32 	%r9, %tid.x;
+	ld.param.u64 	%rd1, [__cudaparm__Z27CUDAkernelQuantizationFloatPfi_SrcDst];
+	add.s32 	%r10, %r2, %r8;
+	add.s32 	%r11, %r9, %r10;
+	cvt.s64.s32 	%rd2, %r11;
+	mul.wide.s32 	%rd3, %r11, 4;
+	add.u64 	%rd4, %rd1, %rd3;
+	ld.global.f32 	%f1, [%rd4+0];
+	.loc	18	2817	0
+	mov.u64 	%rd5, Q;
+	mul.lo.s32 	%r12, %r5, 8;
+	add.s32 	%r13, %r9, %r12;
+	cvt.s64.s32 	%rd6, %r13;
+	mul.wide.s32 	%rd7, %r13, 2;
+	add.u64 	%rd8, %rd5, %rd7;
+	ld.const.s16 	%r14, [%rd8+0];
+	cvt.rn.f32.s32 	%f2, %r14;
+	div.rn.f32 	%f3, %f1, %f2;
+	mov.b32 	%r15, %f3;
+	and.b32 	%r16, %r15, -2147483648;
+	or.b32 	%r17, %r16, 1056964608;
+	mov.b32 	%f4, %r17;
+	.loc	18	2818	0
+	add.f32 	%f5, %f3, %f4;
+	cvt.rzi.f32.f32 	%f6, %f5;
+	.loc	16	75	0
+	abs.f32 	%f7, %f3;
+	mov.f32 	%f8, 0f4b000000;     	// 8.38861e+06
+	setp.gt.f32 	%p1, %f7, %f8;
+	selp.f32 	%f9, %f3, %f6, %p1;
+	mov.f32 	%f10, 0f3f000000;    	// 0.5
+	setp.lt.f32 	%p2, %f7, %f10;
+	@!%p2 bra 	$Lt_0_1794;
+	.loc	18	2820	0
+	cvt.rzi.f32.f32 	%f9, %f3;
+$Lt_0_1794:
+	.loc	16	94	0
+	mul.f32 	%f11, %f2, %f9;
+	st.global.f32 	[%rd4+0], %f11;
+	.loc	16	95	0
+	exit;
+$LDWend__Z27CUDAkernelQuantizationFloatPfi:
+	} // _Z27CUDAkernelQuantizationFloatPfi
+
+	.entry _Z27CUDAkernelQuantizationShortPsi (
+		.param .u64 __cudaparm__Z27CUDAkernelQuantizationShortPsi_SrcDst,
+		.param .s32 __cudaparm__Z27CUDAkernelQuantizationShortPsi_Stride)
+	{
+	.reg .u32 %r<25>;
+	.reg .u64 %rd<10>;
+	.reg .pred %p<3>;
+	.loc	16	108	0
+$LDWbegin__Z27CUDAkernelQuantizationShortPsi:
+	.loc	16	119	0
+	cvt.s32.u32 	%r1, %ctaid.x;
+	mul.lo.s32 	%r2, %r1, 8;
+	cvt.s32.u32 	%r3, %ctaid.y;
+	mul.lo.s32 	%r4, %r3, 8;
+	cvt.s32.u32 	%r5, %tid.y;
+	add.s32 	%r6, %r4, %r5;
+	ld.param.s32 	%r7, [__cudaparm__Z27CUDAkernelQuantizationShortPsi_Stride];
+	mul.lo.s32 	%r8, %r7, %r6;
+	cvt.s32.u32 	%r9, %tid.x;
+	ld.param.u64 	%rd1, [__cudaparm__Z27CUDAkernelQuantizationShortPsi_SrcDst];
+	add.s32 	%r10, %r2, %r8;
+	add.s32 	%r11, %r9, %r10;
+	cvt.s64.s32 	%rd2, %r11;
+	mul.wide.s32 	%rd3, %r11, 2;
+	add.u64 	%rd4, %rd1, %rd3;
+	ld.global.s16 	%r12, [%rd4+0];
+	mov.u64 	%rd5, Q;
+	mul.lo.s32 	%r13, %r5, 8;
+	add.s32 	%r14, %r9, %r13;
+	cvt.s64.s32 	%rd6, %r14;
+	mul.wide.s32 	%rd7, %r14, 2;
+	add.u64 	%rd8, %rd5, %rd7;
+	ld.const.s16 	%r15, [%rd8+0];
+	shr.s32 	%r16, %r15, 1;
+	mov.u32 	%r17, 0;
+	setp.ge.s32 	%p1, %r12, %r17;
+	@%p1 bra 	$Lt_1_1282;
+	.loc	16	126	0
+	sub.s32 	%r18, %r16, %r12;
+	cvt.s16.s32 	%r19, %r18;
+	.loc	16	127	0
+	div.s32 	%r20, %r19, %r15;
+	.loc	16	128	0
+	neg.s32 	%r12, %r20;
+	bra.uni 	$Lt_1_1026;
+$Lt_1_1282:
+	.loc	16	132	0
+	add.s32 	%r21, %r12, %r16;
+	cvt.s16.s32 	%r22, %r21;
+	.loc	16	133	0
+	div.s32 	%r12, %r22, %r15;
+$Lt_1_1026:
+	.loc	16	135	0
+	bar.sync 	0;
+	.loc	16	140	0
+	mul.lo.s32 	%r23, %r12, %r15;
+	st.global.s16 	[%rd4+0], %r23;
+	.loc	16	141	0
+	exit;
+$LDWend__Z27CUDAkernelQuantizationShortPsi:
+	} // _Z27CUDAkernelQuantizationShortPsi
+

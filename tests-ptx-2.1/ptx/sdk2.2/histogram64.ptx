@@ -1,0 +1,319 @@
+	.version 1.4
+	.target sm_10, map_f64_to_f32
+	// compiled with /usr/local/cuda/open64/lib//be
+	// nvopencc built on 2009-04-09
+
+	.reg .u32 %ra<17>;
+	.reg .u64 %rda<17>;
+	.reg .f32 %fa<17>;
+	.reg .f64 %fda<17>;
+	.reg .u32 %rv<5>;
+	.reg .u64 %rdv<5>;
+	.reg .f32 %fv<5>;
+	.reg .f64 %fdv<5>;
+
+
+	//-----------------------------------------------------------
+	// Compiling histogram64.cpp3.i (/tmp/ccBI#.2gyOph)
+	//-----------------------------------------------------------
+
+	//-----------------------------------------------------------
+	// Options:
+	//-----------------------------------------------------------
+	//  Target:ptx, ISA:sm_10, Endian:little, Pointer Size:64
+	//  -O3	(Optimization level)
+	//  -g0	(Debug level)
+	//  -m2	(Report advisories)
+	//-----------------------------------------------------------
+
+	.file	1	"<command-line>"
+	.file	2	"histogram64.cudafe2.gpu"
+	.file	3	"/usr/lib/gcc/x86_64-linux-gnu/4.3.3/include/stddef.h"
+	.file	4	"/home/normal/cuda/bin/../include/crt/device_runtime.h"
+	.file	5	"/home/normal/cuda/bin/../include/host_defines.h"
+	.file	6	"/home/normal/cuda/bin/../include/builtin_types.h"
+	.file	7	"/home/normal/cuda/bin/../include/device_types.h"
+	.file	8	"/home/normal/cuda/bin/../include/driver_types.h"
+	.file	9	"/home/normal/cuda/bin/../include/texture_types.h"
+	.file	10	"/home/normal/cuda/bin/../include/vector_types.h"
+	.file	11	"/home/normal/cuda/bin/../include/device_launch_parameters.h"
+	.file	12	"/home/normal/cuda/bin/../include/crt/storage_class.h"
+	.file	13	"/usr/include/bits/types.h"
+	.file	14	"/usr/include/time.h"
+	.file	15	"histogram64_kernel.cuh"
+	.file	16	"/home/normal/cuda/bin/../include/common_functions.h"
+	.file	17	"/home/normal/cuda/bin/../include/crt/func_macro.h"
+	.file	18	"/home/normal/cuda/bin/../include/math_functions.h"
+	.file	19	"/home/normal/cuda/bin/../include/device_functions.h"
+	.file	20	"/home/normal/cuda/bin/../include/math_constants.h"
+	.file	21	"/home/normal/cuda/bin/../include/sm_11_atomic_functions.h"
+	.file	22	"/home/normal/cuda/bin/../include/sm_12_atomic_functions.h"
+	.file	23	"/home/normal/cuda/bin/../include/sm_13_double_functions.h"
+	.file	24	"/home/normal/cuda/bin/../include/common_types.h"
+	.file	25	"/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+	.file	26	"/home/normal/cuda/bin/../include/math_functions_dbl_ptx1.h"
+
+
+	.entry _Z17histogram64KernelPjS_i (
+		.param .u64 __cudaparm__Z17histogram64KernelPjS_i_d_Result,
+		.param .u64 __cudaparm__Z17histogram64KernelPjS_i_d_Data,
+		.param .s32 __cudaparm__Z17histogram64KernelPjS_i_dataN)
+	{
+	.reg .u16 %rh<10>;
+	.reg .u32 %r<69>;
+	.reg .u64 %rd<26>;
+	.reg .pred %p<7>;
+	.shared .align 1 .b8 __cuda_s_Hist20[4096];
+	.loc	15	76	0
+$LBB1__Z17histogram64KernelPjS_i:
+	mov.u64 	%rd1, __cuda_s_Hist20;	// 
+	.loc	15	93	0
+	cvt.u32.u16 	%r1, %tid.x;     	// 
+	cvt.u64.u32 	%rd2, %r1;       	// 
+	mul.lo.u64 	%rd3, %rd2, 4;    	// 
+	add.u64 	%rd4, %rd1, %rd3;    	// 
+	mov.u32 	%r2, 0;              	// 
+	st.shared.u32 	[%rd4+0], %r2; 	// id:92 __cuda_s_Hist20+0x0
+	mov.u32 	%r3, 0;              	// 
+	st.shared.u32 	[%rd4+256], %r3;	// id:93 __cuda_s_Hist20+0x0
+	mov.u32 	%r4, 0;              	// 
+	st.shared.u32 	[%rd4+512], %r4;	// id:94 __cuda_s_Hist20+0x0
+	mov.u32 	%r5, 0;              	// 
+	st.shared.u32 	[%rd4+768], %r5;	// id:95 __cuda_s_Hist20+0x0
+	mov.u32 	%r6, 0;              	// 
+	st.shared.u32 	[%rd4+1024], %r6;	// id:96 __cuda_s_Hist20+0x0
+	mov.u32 	%r7, 0;              	// 
+	st.shared.u32 	[%rd4+1280], %r7;	// id:97 __cuda_s_Hist20+0x0
+	mov.u32 	%r8, 0;              	// 
+	st.shared.u32 	[%rd4+1536], %r8;	// id:98 __cuda_s_Hist20+0x0
+	mov.u32 	%r9, 0;              	// 
+	st.shared.u32 	[%rd4+1792], %r9;	// id:99 __cuda_s_Hist20+0x0
+	mov.u32 	%r10, 0;             	// 
+	st.shared.u32 	[%rd4+2048], %r10;	// id:100 __cuda_s_Hist20+0x0
+	mov.u32 	%r11, 0;             	// 
+	st.shared.u32 	[%rd4+2304], %r11;	// id:101 __cuda_s_Hist20+0x0
+	mov.u32 	%r12, 0;             	// 
+	st.shared.u32 	[%rd4+2560], %r12;	// id:102 __cuda_s_Hist20+0x0
+	mov.u32 	%r13, 0;             	// 
+	st.shared.u32 	[%rd4+2816], %r13;	// id:103 __cuda_s_Hist20+0x0
+	mov.u32 	%r14, 0;             	// 
+	st.shared.u32 	[%rd4+3072], %r14;	// id:104 __cuda_s_Hist20+0x0
+	mov.u32 	%r15, 0;             	// 
+	st.shared.u32 	[%rd4+3328], %r15;	// id:105 __cuda_s_Hist20+0x0
+	mov.u32 	%r16, 0;             	// 
+	st.shared.u32 	[%rd4+3584], %r16;	// id:106 __cuda_s_Hist20+0x0
+	mov.u32 	%r17, 0;             	// 
+	st.shared.u32 	[%rd4+3840], %r17;	// id:107 __cuda_s_Hist20+0x0
+	.loc	15	95	0
+	bar.sync 	0;                  	// 
+	.loc	15	102	0
+	cvt.s32.u16 	%r18, %ntid.x;   	// 
+	cvt.s32.u16 	%r19, %ctaid.x;  	// 
+	mul24.lo.s32 	%r20, %r19, %r18;	// 
+	add.u32 	%r21, %r20, %r1;     	// 
+	mov.s32 	%r22, %r21;          	// 
+	ld.param.s32 	%r23, [__cudaparm__Z17histogram64KernelPjS_i_dataN];	// id:88 __cudaparm__Z17histogram64KernelPjS_i_dataN+0x0
+	setp.le.s32 	%p1, %r23, %r21; 	// 
+	@%p1 bra 	$Lt_0_4866;         	// 
+	and.b32 	%r24, %r1, 15;       	// 
+	and.b32 	%r25, %r1, -64;      	// 
+	shl.b32 	%r26, %r1, 26;       	// 
+	shr.u32 	%r27, %r26, 30;      	// 
+	cvt.s32.u16 	%r28, %nctaid.x; 	// 
+	mul24.lo.s32 	%r29, %r18, %r28;	// 
+	shl.b32 	%r30, %r24, 2;       	// 
+	cvt.s64.s32 	%rd5, %r29;      	// 
+	or.b32 	%r31, %r25, %r30;     	// 
+	ld.param.u64 	%rd6, [__cudaparm__Z17histogram64KernelPjS_i_d_Data];	// id:109 __cudaparm__Z17histogram64KernelPjS_i_d_Data+0x0
+	cvt.u64.s32 	%rd7, %r21;      	// 
+	mul.lo.u64 	%rd8, %rd7, 4;    	// 
+	add.u64 	%rd9, %rd6, %rd8;    	// 
+	mul.lo.u64 	%rd10, %rd5, 4;   	// 
+	or.b32 	%r32, %r27, %r31;     	// 
+$Lt_0_5378:
+ //<loop> Loop body line 103
+	.loc	15	103	0
+	ld.global.u32 	%r33, [%rd9+0];	// id:110
+	.loc	15	104	0
+	shl.b32 	%r34, %r33, 24;      	// 
+	shr.u32 	%r35, %r34, 26;      	// 
+	mov.s32 	%r36, 64;            	// 
+	mul24.lo.s32 	%r37, %r35, %r36;	// 
+	add.s32 	%r38, %r37, %r32;    	// 
+	cvt.u64.s32 	%rd11, %r38;     	// 
+	add.u64 	%rd12, %rd11, %rd1;  	// 
+	ld.shared.u8 	%rh1, [%rd12+0];	// id:111 __cuda_s_Hist20+0x0
+	add.u16 	%rh2, %rh1, 1;       	// 
+	st.shared.u8 	[%rd12+0], %rh2;	// id:112 __cuda_s_Hist20+0x0
+	.loc	15	105	0
+	shl.b32 	%r39, %r33, 16;      	// 
+	shr.u32 	%r40, %r39, 26;      	// 
+	mov.s32 	%r41, 64;            	// 
+	mul24.lo.s32 	%r42, %r40, %r41;	// 
+	add.s32 	%r43, %r42, %r32;    	// 
+	cvt.u64.s32 	%rd13, %r43;     	// 
+	add.u64 	%rd14, %rd13, %rd1;  	// 
+	ld.shared.u8 	%rh3, [%rd14+0];	// id:113 __cuda_s_Hist20+0x0
+	add.u16 	%rh4, %rh3, 1;       	// 
+	st.shared.u8 	[%rd14+0], %rh4;	// id:114 __cuda_s_Hist20+0x0
+	.loc	15	106	0
+	shl.b32 	%r44, %r33, 8;       	// 
+	shr.u32 	%r45, %r44, 26;      	// 
+	mov.s32 	%r46, 64;            	// 
+	mul24.lo.s32 	%r47, %r45, %r46;	// 
+	add.s32 	%r48, %r47, %r32;    	// 
+	cvt.u64.s32 	%rd15, %r48;     	// 
+	add.u64 	%rd16, %rd15, %rd1;  	// 
+	ld.shared.u8 	%rh5, [%rd16+0];	// id:115 __cuda_s_Hist20+0x0
+	add.u16 	%rh6, %rh5, 1;       	// 
+	st.shared.u8 	[%rd16+0], %rh6;	// id:116 __cuda_s_Hist20+0x0
+	.loc	15	107	0
+	shr.u32 	%r49, %r33, 26;      	// 
+	mov.s32 	%r50, 64;            	// 
+	mul24.lo.s32 	%r51, %r49, %r50;	// 
+	add.s32 	%r52, %r51, %r32;    	// 
+	cvt.u64.s32 	%rd17, %r52;     	// 
+	add.u64 	%rd18, %rd17, %rd1;  	// 
+	ld.shared.u8 	%rh7, [%rd18+0];	// id:117 __cuda_s_Hist20+0x0
+	add.u16 	%rh8, %rh7, 1;       	// 
+	st.shared.u8 	[%rd18+0], %rh8;	// id:118 __cuda_s_Hist20+0x0
+	add.s32 	%r22, %r29, %r22;    	// 
+	add.u64 	%rd9, %rd9, %rd10;   	// 
+	setp.lt.s32 	%p2, %r22, %r23; 	// 
+	@%p2 bra 	$Lt_0_5378;         	// 
+$Lt_0_4866:
+	.loc	15	110	0
+	bar.sync 	0;                  	// 
+	mov.u32 	%r53, 63;            	// 
+	setp.gt.u32 	%p3, %r1, %r53;  	// 
+	@%p3 bra 	$Lt_0_5890;         	// 
+	.loc	15	125	0
+	and.b32 	%r54, %r1, 15;       	// 
+	mul24.lo.u32 	%r55, %r54, 4;  	// 
+	mov.s32 	%r56, 64;            	// 
+	mul24.lo.s32 	%r57, %r1, %r56;	// 
+	mov.s32 	%r58, 0;             	// 
+	mov.u32 	%r59, 0;             	// 
+$Lt_0_6914:
+ //<loop> Loop body line 125, nesting depth: 1, iterations: 64
+	.loc	15	126	0
+	add.s32 	%r60, %r57, %r55;    	// 
+	cvt.u64.s32 	%rd19, %r60;     	// 
+	add.u64 	%rd20, %rd19, %rd1;  	// 
+	ld.shared.u8 	%r61, [%rd20+0];	// id:119 __cuda_s_Hist20+0x0
+	add.u32 	%r59, %r61, %r59;    	// 
+	mov.s32 	%r62, 0;             	// 
+	add.s32 	%r63, %r55, 1;       	// 
+	mov.s32 	%r64, 63;            	// 
+	setp.eq.s32 	%p4, %r55, %r64; 	// 
+	selp.s32 	%r55, %r62, %r63, %p4;	// 
+	add.s32 	%r58, %r58, 1;       	// 
+	mov.u32 	%r65, 64;            	// 
+	setp.ne.s32 	%p5, %r58, %r65; 	// 
+	@%p5 bra 	$Lt_0_6914;         	// 
+	.loc	15	133	0
+	ld.param.u64 	%rd21, [__cudaparm__Z17histogram64KernelPjS_i_d_Result];	// id:120 __cudaparm__Z17histogram64KernelPjS_i_d_Result+0x0
+	mul24.lo.u32 	%r66, %r19, 64; 	// 
+	add.u32 	%r67, %r1, %r66;     	// 
+	cvt.u64.u32 	%rd22, %r67;     	// 
+	mul.lo.u64 	%rd23, %rd22, 4;  	// 
+	add.u64 	%rd24, %rd21, %rd23; 	// 
+	st.global.u32 	[%rd24+0], %r59;	// id:121
+$Lt_0_5890:
+	.loc	15	136	0
+	exit;                         	// 
+$LDWend__Z17histogram64KernelPjS_i:
+	} // _Z17histogram64KernelPjS_i
+
+	.entry _Z22mergeHistogram64KernelPjS_j (
+		.param .u64 __cudaparm__Z22mergeHistogram64KernelPjS_j_d_Histogram,
+		.param .u64 __cudaparm__Z22mergeHistogram64KernelPjS_j_d_PartialHistograms,
+		.param .u32 __cudaparm__Z22mergeHistogram64KernelPjS_j_blockN)
+	{
+	.reg .u32 %r<27>;
+	.reg .u64 %rd<17>;
+	.reg .pred %p<7>;
+	.shared .align 4 .b8 __cuda_data4140[1024];
+	.loc	15	150	0
+$LBB1__Z22mergeHistogram64KernelPjS_j:
+	.loc	15	155	0
+	cvt.u32.u16 	%r1, %tid.x;     	// 
+	ld.param.u32 	%r2, [__cudaparm__Z22mergeHistogram64KernelPjS_j_blockN];	// id:38 __cudaparm__Z22mergeHistogram64KernelPjS_j_blockN+0x0
+	setp.ge.u32 	%p1, %r1, %r2;   	// 
+	mov.u32 	%r3, 0;              	// 
+	@%p1 bra 	$Lt_1_6914;         	// 
+	sub.u32 	%r4, %r2, %r1;       	// 
+	add.u32 	%r5, %r4, 255;       	// 
+	shr.s32 	%r6, %r5, 31;        	// 
+	mov.s32 	%r7, 255;            	// 
+	and.b32 	%r8, %r6, %r7;       	// 
+	add.s32 	%r9, %r8, %r5;       	// 
+	shr.s32 	%r10, %r9, 8;        	// 
+	mul24.lo.u32 	%r11, %r1, 64;  	// 
+	mul.lo.u32 	%r12, %r2, 64;    	// 
+	ld.param.u64 	%rd1, [__cudaparm__Z22mergeHistogram64KernelPjS_j_d_PartialHistograms];	// id:41 __cudaparm__Z22mergeHistogram64KernelPjS_j_d_PartialHistograms+0x0
+	cvt.u32.u16 	%r13, %ctaid.x;  	// 
+	add.u32 	%r14, %r13, %r11;    	// 
+	cvt.u64.u32 	%rd2, %r14;      	// 
+	mul.lo.u64 	%rd3, %rd2, 4;    	// 
+	add.u64 	%rd4, %rd1, %rd3;    	// 
+	mov.s32 	%r15, %r10;          	// 
+$Lt_1_4354:
+ //<loop> Loop body line 155, nesting depth: 1, estimated iterations: unknown
+	.loc	15	156	0
+	ld.global.u32 	%r16, [%rd4+0];	// id:43
+	add.u32 	%r3, %r16, %r3;      	// 
+	add.u32 	%r11, %r11, 16384;   	// 
+	add.u64 	%rd4, %rd4, 65536;   	// 
+	setp.lt.u32 	%p2, %r11, %r12; 	// 
+	@%p2 bra 	$Lt_1_4354;         	// 
+	bra.uni 	$Lt_1_3842;          	// 
+$Lt_1_6914:
+$Lt_1_3842:
+	mov.u64 	%rd5, __cuda_data4140;	// 
+	.loc	15	157	0
+	cvt.u64.u32 	%rd6, %r1;       	// 
+	mul.lo.u64 	%rd7, %rd6, 4;    	// 
+	add.u64 	%rd8, %rd5, %rd7;    	// 
+	st.shared.u32 	[%rd8+0], %r3; 	// id:44 __cuda_data4140+0x0
+	mov.u32 	%r17, 128;           	// 
+$Lt_1_5378:
+ //<loop> Loop body line 157, nesting depth: 1, estimated iterations: unknown
+	.loc	15	160	0
+	bar.sync 	0;                  	// 
+	setp.ge.u32 	%p3, %r1, %r17;  	// 
+	@%p3 bra 	$Lt_1_5634;         	// 
+ //<loop> Part of loop body line 157, head labeled $Lt_1_5378
+	.loc	15	162	0
+	ld.shared.u32 	%r18, [%rd8+0];	// id:45 __cuda_data4140+0x0
+	add.u32 	%r19, %r1, %r17;     	// 
+	cvt.u64.u32 	%rd9, %r19;      	// 
+	mul.lo.u64 	%rd10, %rd9, 4;   	// 
+	add.u64 	%rd11, %rd5, %rd10;  	// 
+	ld.shared.u32 	%r20, [%rd11+0];	// id:46 __cuda_data4140+0x0
+	add.u32 	%r21, %r18, %r20;    	// 
+	st.shared.u32 	[%rd8+0], %r21;	// id:47 __cuda_data4140+0x0
+$Lt_1_5634:
+ //<loop> Part of loop body line 157, head labeled $Lt_1_5378
+	.loc	15	159	0
+	shr.u32 	%r17, %r17, 1;       	// 
+	mov.u32 	%r22, 0;             	// 
+	setp.ne.u32 	%p4, %r17, %r22; 	// 
+	@%p4 bra 	$Lt_1_5378;         	// 
+	mov.u32 	%r23, 0;             	// 
+	setp.ne.u32 	%p5, %r1, %r23;  	// 
+	@%p5 bra 	$Lt_1_6402;         	// 
+	.loc	15	166	0
+	ld.shared.s32 	%r24, [__cuda_data4140+0];	// id:48 __cuda_data4140+0x0
+	ld.param.u64 	%rd12, [__cudaparm__Z22mergeHistogram64KernelPjS_j_d_Histogram];	// id:49 __cudaparm__Z22mergeHistogram64KernelPjS_j_d_Histogram+0x0
+	cvt.u32.u16 	%r25, %ctaid.x;  	// 
+	cvt.u64.u32 	%rd13, %r25;     	// 
+	mul.lo.u64 	%rd14, %rd13, 4;  	// 
+	add.u64 	%rd15, %rd12, %rd14; 	// 
+	st.global.u32 	[%rd15+0], %r24;	// id:50
+$Lt_1_6402:
+	.loc	15	167	0
+	exit;                         	// 
+$LDWend__Z22mergeHistogram64KernelPjS_j:
+	} // _Z22mergeHistogram64KernelPjS_j
+

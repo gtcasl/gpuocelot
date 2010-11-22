@@ -1,0 +1,57 @@
+<ocelot>
+	<OcelotRuntime>
+		<TraceDatabase>
+			"traces/database.trace"
+		</TraceDatabase>
+		<UseInPlaceTraces>
+			0
+		</UseInPlaceTraces>
+		<UseMemoryTraceGenerator>
+			0
+		</UseMemoryTraceGenerator>
+		<UseBranchTraceGenerator>
+			0
+		</UseBranchTraceGenerator>
+		<UseSharedComputationGenerator>
+			0
+		</UseSharedComputationGenerator>
+		<UseParallelismTraceGenerator>
+			0
+		</UseParallelismTraceGenerator>
+		<UseInstructionTraceGenerator>
+			0
+		</UseInstructionTraceGenerator>
+	</OcelotRuntime>
+	<CudaRuntime>
+		<CudaRuntimeImplementation>
+			CudaRuntimeBase
+		</CudaRuntimeImplementation>
+		<TraceGeneratingCudaRuntime>
+			<CudaRuntimeApiTraceFile>
+				"traces/CudaApi.trace"
+			</CudaRuntimeApiTraceFile>
+		</TraceGeneratingCudaRuntime>
+	</CudaRuntime>
+</ocelot>
+<cuda>
+	<CudaRuntime>
+		<DefaultDeviceId>
+			0
+		</DefaultDeviceId>
+		<PreferredISA>
+			Emulated
+		</PreferredISA>
+		<OptimizationLevel>
+			none
+		</OptimizationLevel>
+		<DisableGPUDevices>
+			1
+		</DisableGPUDevices>
+		<DisableLLVMDevices>
+			0
+		</DisableLLVMDevices>
+		<DisableEmulatorDevices>
+			0
+		</DisableEmulatorDevices>
+	</CudaRuntime>
+</cuda>

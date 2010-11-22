@@ -1,0 +1,68 @@
+.version 2.1
+.target sm_20
+
+//
+// several declarations to be used in subsequent instructions
+//
+.global .texref tex_A;
+.global .samplerref sampler_A;
+.global .surfref surf_A;
+
+.entry sequence (
+	.param .u64 __cudaparm_sequence_A,
+	.param .s32 __cudaparm_sequence_N)
+{
+.reg .b64 %rl<4>;
+.reg .b32 %rw<5>;
+.reg .f32 %f<4>;
+.reg .u32 %r<9>;
+.reg .s32 %rs<4>;
+.reg .u64 %rd<6>;
+.reg .pred %p<3>;
+.loc	28	6	0
+
+$BB_0001:
+	//
+	// some nonsensical instructions to demonstrate parser and IR
+	//
+	tex.3d.v4.s32.s32 {%rs0, %rs1, %rs2, %rs3}, [tex_A, {%rs0, %rs1, %rs2, %rs3}];
+//	tex.1d.v4.s32.s32 {%rs0, %rs1, %rs2, %rs3}, [tex_A, sampler_A, {%rs0}];
+	suq.width.b32 %rw0, [surf_A];
+	txq.width.b32 %rw0, [tex_A];
+	txq.filter_mode.b32 %rw0, [tex_A];
+	txq.addr_mode_0.b32 %rw0, [sampler_A];
+	
+	sured.b.add.2d.u32.trap [surf_A, { %r0, %r1}], %r0;
+	sured.p.min.1d.b32.trap [surf_A, { %r0 }], %rw4;
+	sust.b.3d.v2.b64.trap [surf_A, {%r0, %r1, %r2}], {%rl0, %rl1};
+	sust.p.1d.v4.f32.trap [surf_A, {%r0}], {%f0, %f1, %f2, %f3};
+	suld.b.3d.v2.b64.trap {%rl0, %rl1}, [surf_A, {%r0, %r1, %r2}];
+	suld.p.1d.v4.f32.trap {%f0, %f1, %f2, %f3}, [surf_A, {%r0}];
+	
+	sured.b.add.2d.u32.clamp [surf_A, { %r0, %r1}], %r0;
+	sured.p.min.1d.b32.zero [surf_A, { %r0 }], %rw4;
+	sust.b.3d.v2.b64.clamp [surf_A, {%r0, %r1, %r2}], {%rl0, %rl1};
+	sust.p.1d.v4.f32.zero [surf_A, {%r0}], {%f0, %f1, %f2, %f3};
+
+$LDWbegin_sequence:
+mov.u32 	%r1, %ctaid.x;
+mov.u32 	%r2, %ntid.x;
+mul.lo.u32 	%r3, %r1, %r2;
+mov.u32 	%r4, %tid.x;
+add.u32 	%r5, %r4, %r3;
+ld.param.s32 	%r6, [__cudaparm_sequence_N];
+setp.le.s32 	%p1, %r6, %r5;
+@%p1 bra 	$Lt_0_1026;
+.loc	28	9	0
+add.s32 	%r7, %r5, 1;
+ld.param.u64 	%rd1, [__cudaparm_sequence_A];
+cvt.s64.s32 	%rd2, %r5;
+mul.wide.s32 	%rd3, %r5, 4;
+add.u64 	%rd4, %rd1, %rd3;
+st.global.s32 	[%rd4+0], %r7;
+$Lt_0_1026:
+.loc	28	11	0
+exit;
+$LDWend_sequence:
+} // sequence
+

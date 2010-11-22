@@ -1,0 +1,241 @@
+	.version 1.4
+	.target sm_11, map_f64_to_f32
+	// compiled with /usr/local/cuda/open64/lib//be
+	// nvopencc built on 2009-04-09
+
+	.reg .u32 %ra<17>;
+	.reg .u64 %rda<17>;
+	.reg .f32 %fa<17>;
+	.reg .f64 %fda<17>;
+	.reg .u32 %rv<5>;
+	.reg .u64 %rdv<5>;
+	.reg .f32 %fv<5>;
+	.reg .f64 %fdv<5>;
+
+
+	//-----------------------------------------------------------
+	// Compiling histogram256_SM11.cpp3.i (/tmp/ccBI#.yGBB4L)
+	//-----------------------------------------------------------
+
+	//-----------------------------------------------------------
+	// Options:
+	//-----------------------------------------------------------
+	//  Target:ptx, ISA:sm_11, Endian:little, Pointer Size:64
+	//  -O3	(Optimization level)
+	//  -g0	(Debug level)
+	//  -m2	(Report advisories)
+	//-----------------------------------------------------------
+
+	.file	1	"<command-line>"
+	.file	2	"histogram256_SM11.cudafe2.gpu"
+	.file	3	"/usr/lib/gcc/x86_64-linux-gnu/4.3.3/include/stddef.h"
+	.file	4	"/home/normal/cuda/bin/../include/crt/device_runtime.h"
+	.file	5	"/home/normal/cuda/bin/../include/host_defines.h"
+	.file	6	"/home/normal/cuda/bin/../include/builtin_types.h"
+	.file	7	"/home/normal/cuda/bin/../include/device_types.h"
+	.file	8	"/home/normal/cuda/bin/../include/driver_types.h"
+	.file	9	"/home/normal/cuda/bin/../include/texture_types.h"
+	.file	10	"/home/normal/cuda/bin/../include/vector_types.h"
+	.file	11	"/home/normal/cuda/bin/../include/device_launch_parameters.h"
+	.file	12	"/home/normal/cuda/bin/../include/crt/storage_class.h"
+	.file	13	"/usr/include/bits/types.h"
+	.file	14	"/usr/include/time.h"
+	.file	15	"/home/normal/cuda/bin/../include/sm_11_atomic_functions.h"
+	.file	16	"histogram256_kernel.cuh"
+	.file	17	"/home/normal/cuda/bin/../include/common_functions.h"
+	.file	18	"/home/normal/cuda/bin/../include/crt/func_macro.h"
+	.file	19	"/home/normal/cuda/bin/../include/math_functions.h"
+	.file	20	"/home/normal/cuda/bin/../include/device_functions.h"
+	.file	21	"/home/normal/cuda/bin/../include/math_constants.h"
+	.file	22	"/home/normal/cuda/bin/../include/sm_12_atomic_functions.h"
+	.file	23	"/home/normal/cuda/bin/../include/sm_13_double_functions.h"
+	.file	24	"/home/normal/cuda/bin/../include/common_types.h"
+	.file	25	"/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+	.file	26	"/home/normal/cuda/bin/../include/math_functions_dbl_ptx1.h"
+
+
+	.entry _Z18histogram256KernelPjS_i (
+		.param .u64 __cudaparm__Z18histogram256KernelPjS_i_d_Result,
+		.param .u64 __cudaparm__Z18histogram256KernelPjS_i_d_Data,
+		.param .s32 __cudaparm__Z18histogram256KernelPjS_i_dataN)
+	{
+	.reg .u32 %r<56>;
+	.reg .u64 %rd<37>;
+	.reg .pred %p<12>;
+	.shared .align 4 .b8 __cuda_s_Hist20[6144];
+	.loc	16	105	0
+$LBB1__Z18histogram256KernelPjS_i:
+	.loc	16	131	0
+	cvt.u32.u16 	%r1, %tid.x;     	// 
+	mov.s32 	%r2, %r1;            	// 
+	cvt.s32.u16 	%r3, %ntid.x;    	// 
+	mov.u32 	%r4, 1535;           	// 
+	setp.gt.s32 	%p1, %r1, %r4;   	// 
+	@%p1 bra 	$Lt_0_7426;         	// 
+	mov.u64 	%rd1, __cuda_s_Hist20;	// 
+	cvt.u64.s32 	%rd2, %r1;       	// 
+	cvt.s64.s32 	%rd3, %r3;       	// 
+	mul.lo.u64 	%rd4, %rd2, 4;    	// 
+	mul.lo.u64 	%rd5, %rd3, 4;    	// 
+	add.u64 	%rd6, %rd4, %rd1;    	// 
+$Lt_0_7938:
+ //<loop> Loop body line 131, nesting depth: 1, estimated iterations: unknown
+	.loc	16	132	0
+	mov.u32 	%r5, 0;              	// 
+	st.volatile.shared.u32 	[%rd6+0], %r5;	// id:128 __cuda_s_Hist20+0x0
+	add.u32 	%r2, %r2, %r3;       	// 
+	add.u64 	%rd6, %rd6, %rd5;    	// 
+	mov.u32 	%r6, 1535;           	// 
+	setp.le.s32 	%p2, %r2, %r6;   	// 
+	@%p2 bra 	$Lt_0_7938;         	// 
+$Lt_0_7426:
+	mov.u64 	%rd1, __cuda_s_Hist20;	// 
+	.loc	16	135	0
+	bar.sync 	0;                  	// 
+	.loc	16	136	0
+	cvt.s32.u16 	%r7, %ctaid.x;   	// 
+	mul24.lo.s32 	%r8, %r7, %r3;  	// 
+	add.u32 	%r9, %r8, %r1;       	// 
+	mov.s32 	%r10, %r9;           	// 
+	ld.param.s32 	%r11, [__cudaparm__Z18histogram256KernelPjS_i_dataN];	// id:125 __cudaparm__Z18histogram256KernelPjS_i_dataN+0x0
+	setp.le.s32 	%p3, %r11, %r9;  	// 
+	@%p3 bra 	$Lt_0_8450;         	// 
+	shl.b32 	%r12, %r1, 27;       	// 
+	cvt.s32.u16 	%r13, %nctaid.x; 	// 
+	mul24.lo.s32 	%r14, %r3, %r13;	// 
+	cvt.s64.s32 	%rd7, %r14;      	// 
+	ld.param.u64 	%rd8, [__cudaparm__Z18histogram256KernelPjS_i_d_Data];	// id:131 __cudaparm__Z18histogram256KernelPjS_i_d_Data+0x0
+	cvt.u64.s32 	%rd9, %r9;       	// 
+	mul.lo.u64 	%rd10, %rd9, 4;   	// 
+	add.u64 	%rd11, %rd8, %rd10;  	// 
+	mul.lo.u64 	%rd12, %rd7, 4;   	// 
+	shr.u32 	%r15, %r1, 5;        	// 
+	mul.lo.u32 	%r16, %r15, 256;  	// 
+	cvt.u64.s32 	%rd13, %r16;     	// 
+	mul.lo.u64 	%rd14, %rd13, 4;  	// 
+	add.u64 	%rd15, %rd1, %rd14;  	// 
+$Lt_0_8962:
+ //<loop> Loop body line 137
+	.loc	16	137	0
+	ld.global.u32 	%r17, [%rd11+0];	// id:132
+	and.b32 	%r18, %r17, 255;     	// 
+	cvt.u64.u32 	%rd16, %r18;     	// 
+	mul.lo.u64 	%rd17, %rd16, 4;  	// 
+	add.u64 	%rd18, %rd15, %rd17; 	// 
+$Lt_0_9474:
+ //<loop> Loop body line 139
+	.loc	16	139	0
+	ld.volatile.shared.u32 	%r19, [%rd18+0];	// id:133 __cuda_s_Hist20+0x0
+	and.b32 	%r20, %r19, 134217727;	// 
+	add.u32 	%r21, %r20, 1;       	// 
+	or.b32 	%r20, %r12, %r21;     	// 
+	st.volatile.shared.u32 	[%rd18+0], %r20;	// id:134 __cuda_s_Hist20+0x0
+	ld.volatile.shared.u32 	%r22, [%rd18+0];	// id:135 __cuda_s_Hist20+0x0
+	setp.ne.u32 	%p4, %r22, %r20; 	// 
+	@%p4 bra 	$Lt_0_9474;         	// 
+ //<loop> Part of loop body line 137, head labeled $Lt_0_8962
+	shl.b32 	%r23, %r17, 16;      	// 
+	shr.u32 	%r24, %r23, 24;      	// 
+	cvt.u64.u32 	%rd19, %r24;     	// 
+	mul.lo.u64 	%rd20, %rd19, 4;  	// 
+	add.u64 	%rd21, %rd15, %rd20; 	// 
+$Lt_0_10242:
+ //<loop> Loop body line 140
+	.loc	16	140	0
+	ld.volatile.shared.u32 	%r25, [%rd21+0];	// id:136 __cuda_s_Hist20+0x0
+	and.b32 	%r26, %r25, 134217727;	// 
+	add.u32 	%r27, %r26, 1;       	// 
+	or.b32 	%r26, %r12, %r27;     	// 
+	st.volatile.shared.u32 	[%rd21+0], %r26;	// id:137 __cuda_s_Hist20+0x0
+	ld.volatile.shared.u32 	%r28, [%rd21+0];	// id:138 __cuda_s_Hist20+0x0
+	setp.ne.u32 	%p5, %r28, %r26; 	// 
+	@%p5 bra 	$Lt_0_10242;        	// 
+ //<loop> Part of loop body line 137, head labeled $Lt_0_8962
+	shl.b32 	%r29, %r17, 8;       	// 
+	shr.u32 	%r30, %r29, 24;      	// 
+	cvt.u64.u32 	%rd22, %r30;     	// 
+	mul.lo.u64 	%rd23, %rd22, 4;  	// 
+	add.u64 	%rd24, %rd15, %rd23; 	// 
+$Lt_0_11010:
+ //<loop> Loop body line 141
+	.loc	16	141	0
+	ld.volatile.shared.u32 	%r31, [%rd24+0];	// id:139 __cuda_s_Hist20+0x0
+	and.b32 	%r32, %r31, 134217727;	// 
+	add.u32 	%r33, %r32, 1;       	// 
+	or.b32 	%r32, %r12, %r33;     	// 
+	st.volatile.shared.u32 	[%rd24+0], %r32;	// id:140 __cuda_s_Hist20+0x0
+	ld.volatile.shared.u32 	%r34, [%rd24+0];	// id:141 __cuda_s_Hist20+0x0
+	setp.ne.u32 	%p6, %r34, %r32; 	// 
+	@%p6 bra 	$Lt_0_11010;        	// 
+ //<loop> Part of loop body line 137, head labeled $Lt_0_8962
+	shr.u32 	%r35, %r17, 24;      	// 
+	cvt.u64.u32 	%rd25, %r35;     	// 
+	mul.lo.u64 	%rd26, %rd25, 4;  	// 
+	add.u64 	%rd27, %rd15, %rd26; 	// 
+$Lt_0_11778:
+ //<loop> Loop body line 142
+	.loc	16	142	0
+	ld.volatile.shared.u32 	%r36, [%rd27+0];	// id:142 __cuda_s_Hist20+0x0
+	and.b32 	%r37, %r36, 134217727;	// 
+	add.u32 	%r38, %r37, 1;       	// 
+	or.b32 	%r37, %r12, %r38;     	// 
+	st.volatile.shared.u32 	[%rd27+0], %r37;	// id:143 __cuda_s_Hist20+0x0
+	ld.volatile.shared.u32 	%r39, [%rd27+0];	// id:144 __cuda_s_Hist20+0x0
+	setp.ne.u32 	%p7, %r39, %r37; 	// 
+	@%p7 bra 	$Lt_0_11778;        	// 
+ //<loop> Part of loop body line 137, head labeled $Lt_0_8962
+	add.s32 	%r10, %r14, %r10;    	// 
+	add.u64 	%rd11, %rd11, %rd12; 	// 
+	setp.lt.s32 	%p8, %r10, %r11; 	// 
+	@%p8 bra 	$Lt_0_8962;         	// 
+$Lt_0_8450:
+	.loc	16	145	0
+	bar.sync 	0;                  	// 
+	.loc	16	147	0
+	mov.s32 	%r40, %r1;           	// 
+	mov.u32 	%r41, 255;           	// 
+	setp.gt.s32 	%p9, %r1, %r41;  	// 
+	@%p9 bra 	$Lt_0_12546;        	// 
+	cvt.s64.s32 	%rd28, %r3;      	// 
+	cvt.u64.s32 	%rd29, %r1;      	// 
+	mul.lo.u64 	%rd5, %rd28, 4;   	// 
+	mul.lo.u64 	%rd30, %rd29, 4;  	// 
+	cvt.s64.s32 	%rd31, %r1;      	// 
+	mul.lo.u64 	%rd32, %rd31, 4;  	// 
+	add.u64 	%rd33, %rd1, %rd32;  	// 
+	ld.param.u64 	%rd34, [__cudaparm__Z18histogram256KernelPjS_i_d_Result];	// id:145 __cudaparm__Z18histogram256KernelPjS_i_d_Result+0x0
+	add.u64 	%rd35, %rd34, %rd30; 	// 
+$Lt_0_13058:
+ //<loop> Loop body line 147, nesting depth: 1, estimated iterations: unknown
+	.loc	16	151	0
+	ld.volatile.shared.u32 	%r42, [%rd33+0];	// id:146 __cuda_s_Hist20+0x0
+	and.b32 	%r43, %r42, 134217727;	// 
+	ld.volatile.shared.u32 	%r44, [%rd33+1024];	// id:147 __cuda_s_Hist20+0x0
+	and.b32 	%r45, %r44, 134217727;	// 
+	add.u32 	%r43, %r43, %r45;    	// 
+	ld.volatile.shared.u32 	%r46, [%rd33+2048];	// id:148 __cuda_s_Hist20+0x0
+	and.b32 	%r47, %r46, 134217727;	// 
+	add.u32 	%r43, %r43, %r47;    	// 
+	ld.volatile.shared.u32 	%r48, [%rd33+3072];	// id:149 __cuda_s_Hist20+0x0
+	and.b32 	%r49, %r48, 134217727;	// 
+	add.u32 	%r43, %r43, %r49;    	// 
+	ld.volatile.shared.u32 	%r50, [%rd33+4096];	// id:150 __cuda_s_Hist20+0x0
+	and.b32 	%r51, %r50, 134217727;	// 
+	add.u32 	%r43, %r43, %r51;    	// 
+	ld.volatile.shared.u32 	%r52, [%rd33+5120];	// id:151 __cuda_s_Hist20+0x0
+	and.b32 	%r53, %r52, 134217727;	// 
+	add.u32 	%r43, %r43, %r53;    	// 
+	.loc	15	108	0
+	atom.global.add.u32 	%rv1, [%rd35], %r43;	// 
+	add.u32 	%r40, %r40, %r3;     	// 
+	add.u64 	%rd35, %rd35, %rd5;  	// 
+	add.u64 	%rd33, %rd33, %rd5;  	// 
+	mov.u32 	%r54, 255;           	// 
+	setp.le.s32 	%p10, %r40, %r54;	// 
+	@%p10 bra 	$Lt_0_13058;       	// 
+$Lt_0_12546:
+	.loc	16	159	0
+	exit;                         	// 
+$LDWend__Z18histogram256KernelPjS_i:
+	} // _Z18histogram256KernelPjS_i
+

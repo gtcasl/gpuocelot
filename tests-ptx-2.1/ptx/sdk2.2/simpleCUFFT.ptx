@@ -1,0 +1,114 @@
+	.version 1.4
+	.target sm_10, map_f64_to_f32
+	// compiled with /usr/local/cuda/open64/lib//be
+	// nvopencc built on 2009-04-09
+
+	.reg .u32 %ra<17>;
+	.reg .u64 %rda<17>;
+	.reg .f32 %fa<17>;
+	.reg .f64 %fda<17>;
+	.reg .u32 %rv<5>;
+	.reg .u64 %rdv<5>;
+	.reg .f32 %fv<5>;
+	.reg .f64 %fdv<5>;
+
+
+	//-----------------------------------------------------------
+	// Compiling simpleCUFFT.cpp3.i (/tmp/ccBI#.rBWucF)
+	//-----------------------------------------------------------
+
+	//-----------------------------------------------------------
+	// Options:
+	//-----------------------------------------------------------
+	//  Target:ptx, ISA:sm_10, Endian:little, Pointer Size:64
+	//  -O3	(Optimization level)
+	//  -g0	(Debug level)
+	//  -m2	(Report advisories)
+	//-----------------------------------------------------------
+
+	.file	1	"<command-line>"
+	.file	2	"simpleCUFFT.cudafe2.gpu"
+	.file	3	"/usr/lib/gcc/x86_64-linux-gnu/4.3.3/include/stddef.h"
+	.file	4	"/home/normal/cuda/bin/../include/crt/device_runtime.h"
+	.file	5	"/home/normal/cuda/bin/../include/host_defines.h"
+	.file	6	"/home/normal/cuda/bin/../include/builtin_types.h"
+	.file	7	"/home/normal/cuda/bin/../include/device_types.h"
+	.file	8	"/home/normal/cuda/bin/../include/driver_types.h"
+	.file	9	"/home/normal/cuda/bin/../include/texture_types.h"
+	.file	10	"/home/normal/cuda/bin/../include/vector_types.h"
+	.file	11	"/home/normal/cuda/bin/../include/device_launch_parameters.h"
+	.file	12	"/home/normal/cuda/bin/../include/crt/storage_class.h"
+	.file	13	"/usr/include/bits/types.h"
+	.file	14	"/usr/include/time.h"
+	.file	15	"simpleCUFFT.cu"
+	.file	16	"/home/normal/cuda/bin/../include/common_functions.h"
+	.file	17	"/home/normal/cuda/bin/../include/crt/func_macro.h"
+	.file	18	"/home/normal/cuda/bin/../include/math_functions.h"
+	.file	19	"/home/normal/cuda/bin/../include/device_functions.h"
+	.file	20	"/home/normal/cuda/bin/../include/math_constants.h"
+	.file	21	"/home/normal/cuda/bin/../include/sm_11_atomic_functions.h"
+	.file	22	"/home/normal/cuda/bin/../include/sm_12_atomic_functions.h"
+	.file	23	"/home/normal/cuda/bin/../include/sm_13_double_functions.h"
+	.file	24	"/home/normal/cuda/bin/../include/common_types.h"
+	.file	25	"/home/normal/cuda/bin/../include/texture_fetch_functions.h"
+	.file	26	"/home/normal/cuda/bin/../include/math_functions_dbl_ptx1.h"
+
+
+	.entry _Z27ComplexPointwiseMulAndScaleP6float2PKS_if (
+		.param .u64 __cudaparm__Z27ComplexPointwiseMulAndScaleP6float2PKS_if_a,
+		.param .u64 __cudaparm__Z27ComplexPointwiseMulAndScaleP6float2PKS_if_b,
+		.param .s32 __cudaparm__Z27ComplexPointwiseMulAndScaleP6float2PKS_if_size,
+		.param .f32 __cudaparm__Z27ComplexPointwiseMulAndScaleP6float2PKS_if_scale)
+	{
+	.reg .u16 %rh<5>;
+	.reg .u32 %r<8>;
+	.reg .u64 %rd<10>;
+	.reg .f32 %f<14>;
+	.reg .pred %p<4>;
+	.loc	15	250	0
+$LBB1__Z27ComplexPointwiseMulAndScaleP6float2PKS_if:
+	.loc	15	254	0
+	mov.u16 	%rh1, %ntid.x;       	// 
+	mov.u16 	%rh2, %ctaid.x;      	// 
+	mul.wide.u16 	%r1, %rh2, %rh1;	// 
+	cvt.u32.u16 	%r2, %tid.x;     	// 
+	add.u32 	%r3, %r2, %r1;       	// 
+	mov.s32 	%r4, %r3;            	// 
+	ld.param.s32 	%r5, [__cudaparm__Z27ComplexPointwiseMulAndScaleP6float2PKS_if_size];	// id:58 __cudaparm__Z27ComplexPointwiseMulAndScaleP6float2PKS_if_size+0x0
+	setp.le.s32 	%p1, %r5, %r3;   	// 
+	@%p1 bra 	$Lt_0_1282;         	// 
+	mov.u16 	%rh3, %nctaid.x;     	// 
+	mul.wide.u16 	%r6, %rh3, %rh1;	// 
+	cvt.u64.s32 	%rd1, %r3;       	// 
+	mul.lo.u64 	%rd2, %rd1, 8;    	// 
+	cvt.s64.u32 	%rd3, %r6;       	// 
+	ld.param.u64 	%rd4, [__cudaparm__Z27ComplexPointwiseMulAndScaleP6float2PKS_if_a];	// id:63 __cudaparm__Z27ComplexPointwiseMulAndScaleP6float2PKS_if_a+0x0
+	add.u64 	%rd5, %rd4, %rd2;    	// 
+	mul.lo.u64 	%rd6, %rd3, 8;    	// 
+	ld.param.u64 	%rd7, [__cudaparm__Z27ComplexPointwiseMulAndScaleP6float2PKS_if_b];	// id:64 __cudaparm__Z27ComplexPointwiseMulAndScaleP6float2PKS_if_b+0x0
+	add.u64 	%rd8, %rd7, %rd2;    	// 
+	ld.param.f32 	%f1, [__cudaparm__Z27ComplexPointwiseMulAndScaleP6float2PKS_if_scale];	// id:57 __cudaparm__Z27ComplexPointwiseMulAndScaleP6float2PKS_if_scale+0x0
+$Lt_0_1794:
+ //<loop> Loop body line 254, nesting depth: 1, estimated iterations: unknown
+	ld.global.v2.f32 	{%f2,%f3}, [%rd5+0];	// 
+	ld.global.v2.f32 	{%f4,%f5}, [%rd8+0];	// 
+	.loc	15	255	0
+	mul.f32 	%f6, %f3, %f5;       	// 
+	mul.f32 	%f7, %f2, %f4;       	// 
+	sub.f32 	%f8, %f7, %f6;       	// 
+	mul.f32 	%f9, %f1, %f8;       	// 
+	mul.f32 	%f10, %f4, %f3;      	// 
+	mad.f32 	%f11, %f2, %f5, %f10;	// 
+	mul.f32 	%f12, %f1, %f11;     	// 
+	st.global.v2.f32 	[%rd5+0], {%f9,%f12};	// 
+	add.s32 	%r4, %r4, %r6;       	// 
+	add.u64 	%rd8, %rd8, %rd6;    	// 
+	add.u64 	%rd5, %rd5, %rd6;    	// 
+	setp.lt.s32 	%p2, %r4, %r5;   	// 
+	@%p2 bra 	$Lt_0_1794;         	// 
+$Lt_0_1282:
+	.loc	15	256	0
+	exit;                         	// 
+$LDWend__Z27ComplexPointwiseMulAndScaleP6float2PKS_if:
+	} // _Z27ComplexPointwiseMulAndScaleP6float2PKS_if
+

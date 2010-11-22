@@ -49,6 +49,7 @@ libocelot_la_SOURCES = \
 	ocelot/analysis/implementation/Pass.cpp \
 	ocelot/analysis/implementation/PassManager.cpp \
 	ocelot/analysis/implementation/RemoveBarrierPass.cpp \
+	ocelot/analysis/implementation/AssignFallThroughEdge.cpp \
 	ocelot/analysis/implementation/StructuralTransform.cpp \
 	ocelot/analysis/implementation/StructuralAnalysis.cpp \
 	ocelot/analysis/implementation/ConvertPredicationToSelectPass.cpp \
@@ -430,6 +431,7 @@ nobase_include_HEADERS = ocelot/api/interface/ocelot.h \
 	ocelot/analysis/interface/SubkernelFormationPass.h \
 	ocelot/analysis/interface/PTXOptimizer.h \
 	ocelot/analysis/interface/RemoveBarrierPass.h \
+	ocelot/analysis/interface/AssignFallThroughEdge.h \
 	ocelot/analysis/interface/StructuralAnalysis.h \
 	ocelot/analysis/interface/StructuralTransform.h \
 	ocelot/analysis/interface/PassManager.h \

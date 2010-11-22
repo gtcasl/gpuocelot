@@ -1,0 +1,327 @@
+	.version 1.4
+	.target sm_10, map_f64_to_f32
+	// compiled with /usr/local/cuda/open64/lib//be
+	// nvopencc built on 2008-12-03
+
+	.reg .u32 %ra<17>;
+	.reg .u64 %rda<17>;
+	.reg .f32 %fa<17>;
+	.reg .f64 %fda<17>;
+	.reg .u32 %rv<5>;
+	.reg .u64 %rdv<5>;
+	.reg .f32 %fv<5>;
+	.reg .f64 %fdv<5>;
+
+
+	//-----------------------------------------------------------
+	// Compiling /tmp/tmpxft_00000725_00000000-7_kernels.cpp3.i (/tmp/ccBI#.QPuVas)
+	//-----------------------------------------------------------
+
+	//-----------------------------------------------------------
+	// Options:
+	//-----------------------------------------------------------
+	//  Target:ptx, ISA:sm_10, Endian:little, Pointer Size:64
+	//  -O3	(Optimization level)
+	//  -g0	(Debug level)
+	//  -m2	(Report advisories)
+	//-----------------------------------------------------------
+
+	.file	1	"<command-line>"
+	.file	2	"/tmp/tmpxft_00000725_00000000-6_kernels.cudafe2.gpu"
+	.file	3	"/usr/lib/gcc/x86_64-linux-gnu/4.3.2/include/stddef.h"
+	.file	4	"/usr/local/cuda/bin/../include/crt/device_runtime.h"
+	.file	5	"/usr/local/cuda/bin/../include/host_defines.h"
+	.file	6	"/usr/local/cuda/bin/../include/builtin_types.h"
+	.file	7	"/usr/local/cuda/bin/../include/device_types.h"
+	.file	8	"/usr/local/cuda/bin/../include/driver_types.h"
+	.file	9	"/usr/local/cuda/bin/../include/texture_types.h"
+	.file	10	"/usr/local/cuda/bin/../include/vector_types.h"
+	.file	11	"/usr/local/cuda/bin/../include/device_launch_parameters.h"
+	.file	12	"/usr/local/cuda/bin/../include/crt/storage_class.h"
+	.file	13	"/usr/include/bits/types.h"
+	.file	14	"/usr/include/time.h"
+	.file	15	"kernels.cu"
+	.file	16	"/usr/local/cuda/bin/../include/common_functions.h"
+	.file	17	"/usr/local/cuda/bin/../include/crt/func_macro.h"
+	.file	18	"/usr/local/cuda/bin/../include/math_functions.h"
+	.file	19	"/usr/local/cuda/bin/../include/device_functions.h"
+	.file	20	"/usr/local/cuda/bin/../include/math_constants.h"
+	.file	21	"/usr/local/cuda/bin/../include/sm_11_atomic_functions.h"
+	.file	22	"/usr/local/cuda/bin/../include/sm_12_atomic_functions.h"
+	.file	23	"/usr/local/cuda/bin/../include/sm_13_double_functions.h"
+	.file	24	"/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+	.file	25	"/usr/local/cuda/bin/../include/math_functions_dbl_ptx1.h"
+
+
+	.entry _Z10k_sequencePi(.param .u64 __cudaparm__Z10k_sequencePi_ptr)
+	{
+	.reg .u32 %r<3>;
+	.reg .u64 %rd<6>;
+	.loc	15	13	0
+$LBB1__Z10k_sequencePi:
+	.loc	15	14	0
+	cvt.s32.u16 	%r1, %tid.x;     	// 
+	ld.param.u64 	%rd1, [__cudaparm__Z10k_sequencePi_ptr];	// id:8 __cudaparm__Z10k_sequencePi_ptr+0x0
+	cvt.u64.u32 	%rd2, %r1;       	// 
+	mul.lo.u64 	%rd3, %rd2, 4;    	// 
+	add.u64 	%rd4, %rd1, %rd3;    	// 
+	st.global.s32 	[%rd4+0], %r1; 	// id:9
+	.loc	15	15	0
+	exit;                         	// 
+$LDWend__Z10k_sequencePi:
+	} // _Z10k_sequencePi
+
+	.entry _Z15k_sequenceMultiPii(.param .u64 __cudaparm__Z15k_sequenceMultiPii___val_paramptr, 
+		.param .s32 __cudaparm__Z15k_sequenceMultiPii_N)
+	{
+	.reg .u16 %rh<5>;
+	.reg .u32 %r<8>;
+	.reg .u64 %rd<5>;
+	.reg .pred %p<4>;
+	.loc	15	23	0
+$LBB1__Z15k_sequenceMultiPii:
+	ld.param.u64 	%rd1, [__cudaparm__Z15k_sequenceMultiPii___val_paramptr];	// id:25 __cudaparm__Z15k_sequenceMultiPii___val_paramptr+0x0
+	.loc	15	25	0
+	mov.u16 	%rh1, %ntid.x;       	// 
+	mov.u16 	%rh2, %ctaid.x;      	// 
+	mul.wide.u16 	%r1, %rh2, %rh1;	// 
+	cvt.u32.u16 	%r2, %tid.x;     	// 
+	add.u32 	%r3, %r2, %r1;       	// 
+	mov.s32 	%r4, %r3;            	// 
+	ld.param.s32 	%r5, [__cudaparm__Z15k_sequenceMultiPii_N];	// id:23 __cudaparm__Z15k_sequenceMultiPii_N+0x0
+	setp.le.s32 	%p1, %r5, %r3;   	// 
+	@%p1 bra 	$Lt_1_5;            	// 
+	mov.u16 	%rh3, %nctaid.x;     	// 
+	mul.wide.u16 	%r6, %rh3, %rh1;	// 
+	cvt.u64.s32 	%rd2, %r6;       	// 
+	mul.lo.u64 	%rd3, %rd2, 4;    	// 
+$Lt_1_7:
+ //<loop> Loop body line 25, nesting depth: 1, estimated iterations: unknown
+	.loc	15	28	0
+	st.global.s32 	[%rd1+0], %r4; 	// id:29
+	.loc	15	29	0
+	add.u64 	%rd1, %rd3, %rd1;    	// 
+	add.s32 	%r4, %r4, %r6;       	// 
+	setp.lt.s32 	%p2, %r4, %r5;   	// 
+	@%p2 bra 	$Lt_1_7;            	// 
+$Lt_1_5:
+	.loc	15	32	0
+	exit;                         	// 
+$LDWend__Z15k_sequenceMultiPii:
+	} // _Z15k_sequenceMultiPii
+
+	.entry _Z19k_sequenceDivergentPf(.param .u64 __cudaparm__Z19k_sequenceDivergentPf_ptr)
+	{
+	.reg .u32 %r<5>;
+	.reg .u64 %rd<6>;
+	.reg .f32 %f<7>;
+	.reg .pred %p<3>;
+	.loc	15	37	0
+$LBB1__Z19k_sequenceDivergentPf:
+	cvt.u32.u16 	%r1, %tid.x;     	// 
+	cvt.rn.f32.u32 	%f1, %r1;     	// 
+	mov.f32 	%f2, 0f3d800000;     	// 0.0625
+	mul.f32 	%f3, %f1, %f2;       	// 
+	ld.param.u64 	%rd1, [__cudaparm__Z19k_sequenceDivergentPf_ptr];	// id:23 __cudaparm__Z19k_sequenceDivergentPf_ptr+0x0
+	cvt.u64.u32 	%rd2, %r1;       	// 
+	mul.lo.u64 	%rd3, %rd2, 4;    	// 
+	add.u64 	%rd4, %rd1, %rd3;    	// 
+	and.b32 	%r2, %r1, 1;         	// 
+	mov.u32 	%r3, 0;              	// 
+	setp.eq.u32 	%p1, %r2, %r3;   	// 
+	@%p1 bra 	$Lt_2_5;            	// 
+	.loc	15	40	0
+	cos.approx.f32 	%f4, %f3;            	// 
+	st.global.f32 	[%rd4+0], %f4; 	// id:24
+	bra.uni 	$Lt_2_4;             	// 
+$Lt_2_5:
+	.loc	15	43	0
+	sin.approx.f32 	%f5, %f3;            	// 
+	st.global.f32 	[%rd4+0], %f5; 	// id:25
+$Lt_2_4:
+	.loc	15	45	0
+	exit;                         	// 
+$LDWend__Z19k_sequenceDivergentPf:
+	} // _Z19k_sequenceDivergentPf
+
+	.entry _Z17k_sequenceLoopingPfi( .param .u64 __cudaparm__Z17k_sequenceLoopingPfi_ptr, 
+	.param .s32 __cudaparm__Z17k_sequenceLoopingPfi_N)
+	{
+	.reg .u32 %r<8>;
+	.reg .u64 %rd<8>;
+	.reg .f32 %f<7>;
+	.reg .pred %p<5>;
+	.loc	15	51	0
+$LBB1__Z17k_sequenceLoopingPfi:
+	.loc	15	52	0
+	cvt.s32.u16 	%r1, %tid.x;     	// 
+	mov.s32 	%r2, %r1;            	// 
+	ld.param.s32 	%r3, [__cudaparm__Z17k_sequenceLoopingPfi_N];	// id:31 __cudaparm__Z17k_sequenceLoopingPfi_N+0x0
+	setp.le.s32 	%p1, %r3, %r1;   	// 
+	@%p1 bra 	$Lt_3_8;            	// 
+	cvt.u32.u16 	%r4, %ntid.x;    	// 
+	cvt.u64.s32 	%rd1, %r1;       	// 
+	mul.lo.u64 	%rd2, %rd1, 4;    	// 
+	cvt.s64.u32 	%rd3, %r4;       	// 
+	mul.lo.u64 	%rd4, %rd3, 4;    	// 
+	ld.param.u64 	%rd5, [__cudaparm__Z17k_sequenceLoopingPfi_ptr];	// id:29 __cudaparm__Z17k_sequenceLoopingPfi_ptr+0x0
+$Lt_3_10:
+ //<loop> Loop body line 52, nesting depth: 1, estimated iterations: unknown
+	cvt.rn.f32.s32 	%f1, %r2;     	// 
+	mov.f32 	%f2, 0f3d800000;     	// 0.0625
+	mul.f32 	%f3, %f1, %f2;       	// 
+	add.u64 	%rd6, %rd2, %rd5;    	// 
+	and.b32 	%r5, %r2, 1;         	// 
+	mov.u32 	%r6, 0;              	// 
+	setp.eq.u32 	%p2, %r5, %r6;   	// 
+	@%p2 bra 	$Lt_3_12;           	// 
+ //<loop> Part of loop body line 52, head labeled $Lt_3_10
+	.loc	15	56	0
+	cos.approx.f32 	%f4, %f3;            	// 
+	st.global.f32 	[%rd6+0], %f4; 	// id:33
+	bra.uni 	$Lt_3_11;            	// 
+$Lt_3_12:
+ //<loop> Part of loop body line 52, head labeled $Lt_3_10
+	.loc	15	59	0
+	sin.approx.f32 	%f5, %f3;            	// 
+	st.global.f32 	[%rd6+0], %f5; 	// id:34
+$Lt_3_11:
+ //<loop> Part of loop body line 52, head labeled $Lt_3_10
+	add.u32 	%r2, %r2, %r4;       	// 
+	add.u64 	%rd2, %rd2, %rd4;    	// 
+	setp.lt.s32 	%p3, %r2, %r3;   	// 
+	@%p3 bra 	$Lt_3_10;           	// 
+$Lt_3_8:
+	.loc	15	63	0
+	exit;                         	// 
+$LDWend__Z17k_sequenceLoopingPfi:
+	} // _Z17k_sequenceLoopingPfi
+
+	.entry _Z7barrierPiS_(.param .u32 __cudaparm__Z7barrierPiS__in,
+		.param .u32 __cudaparm__Z7barrierPiS__out)
+	{
+	.reg .u32 %r<17>;
+	.shared .align 4 .b8 __cuda_shared8[32];
+	.loc	15	2	0
+$LBB1__Z7barrierPiS_:
+	mov.u32 	%r1, __cuda_shared8;
+	.loc	15	5	0
+	cvt.u32.u16 	%r2, %tid.x;
+	mul24.lo.u32 	%r3, %r2, 4;
+	ld.param.u32 	%r4, [__cudaparm__Z7barrierPiS__in];
+	add.u32 	%r5, %r4, %r3;
+	ld.global.s32 	%r6, [%r5+0];
+	add.u32 	%r7, %r2, 1;
+	cvt.u32.u16 	%r8, %ntid.x;
+	rem.u32 	%r9, %r7, %r8;
+	mul.lo.u32 	%r10, %r9, 4;
+	add.u32 	%r11, %r1, %r10;
+	st.shared.s32 	[%r11+0], %r6;
+	.loc	15	6	0
+	bar.sync 	0;
+	.loc	15	7	0
+	add.u32 	%r12, %r3, %r1;
+	ld.shared.s32 	%r13, [%r12+0];
+	ld.param.u32 	%r14, [__cudaparm__Z7barrierPiS__out];
+	add.u32 	%r15, %r14, %r3;
+	st.global.s32 	[%r15+0], %r13;
+	.loc	15	8	0
+	exit;
+$LDWend__Z7barrierPiS_:
+	} // _Z7barrierPiS_
+
+
+	.entry _Z21k_matrixVectorProductPKfS0_Pfii(.param .u64 __cudaparm__Z21k_matrixVectorProductPKfS0_Pfii___val_paramA,
+	.param .u64 __cudaparm__Z21k_matrixVectorProductPKfS0_Pfii___val_paramV,
+	.param .u64 __cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_R,
+	.param .s32 __cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_M,
+	.param .s32 __cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_N)
+	{
+	.reg .u32 %r<15>;
+	.reg .u64 %rd<22>;
+	.reg .f32 %f<6>;
+	.reg .pred %p<6>;
+	.shared .align 4 .b8 __cuda_V_buffer80[32];
+	.loc	15	74	0
+$LBB1__Z21k_matrixVectorProductPKfS0_Pfii:
+	.loc	15	79	0
+	cvt.u32.u16 	%r1, %ntid.x;    	// 
+	cvt.u32.u16 	%r2, %ctaid.x;   	// 
+	mul.lo.u32 	%r3, %r2, %r1;    	// 
+	cvt.u32.u16 	%r4, %tid.x;     	// 
+	add.u32 	%r5, %r3, %r4;       	// 
+	cvt.u64.u32 	%rd1, %r5;       	// 
+	mul.lo.u64 	%rd2, %rd1, 4;    	// 
+	ld.param.u64 	%rd3, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii___val_paramA];	// id:58 __cudaparm__Z21k_matrixVectorProductPKfS0_Pfii___val_paramA+0x0
+	add.u64 	%rd4, %rd3, %rd2;    	// 
+	.loc	15	80	0
+	cvt.u64.u32 	%rd5, %r4;       	// 
+	mul.lo.u64 	%rd6, %rd5, 4;    	// 
+	ld.param.u64 	%rd7, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii___val_paramV];	// id:59 __cudaparm__Z21k_matrixVectorProductPKfS0_Pfii___val_paramV+0x0
+	add.u64 	%rd8, %rd7, %rd6;    	// 
+	ld.param.s32 	%r6, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_N];	// id:52 __cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_N+0x0
+	mov.u32 	%r7, 0;              	// 
+	setp.le.s32 	%p1, %r6, %r7;   	// 
+	mov.f32 	%f1, 0f00000000;     	// 0
+	@%p1 bra 	$Lt_4_17;           	// 
+	mov.u64 	%rd9, __cuda_V_buffer80;	// 
+	mov.u32 	%r8, 0;              	// 
+	setp.gt.u32 	%p2, %r1, %r8;   	// 
+	cvt.u64.u32 	%rd10, %r1;      	// 
+	mul.lo.u64 	%rd11, %rd10, 4;  	// 
+	add.u64 	%rd12, %rd6, %rd9;   	// 
+	mov.s32 	%r9, 0;              	// 
+$Lt_4_11:
+ //<loop> Loop body line 80, nesting depth: 1, estimated iterations: unknown
+	.loc	15	85	0
+	ld.global.f32 	%f2, [%rd8+0]; 	// id:60
+	st.shared.f32 	[%rd12+0], %f2;	// id:61 __cuda_V_buffer80+0x0
+	.loc	15	86	0
+	bar.sync 	0;                 	// 
+	@!%p2 bra 	$Lt_4_12;          	// 
+ //<loop> Part of loop body line 80, head labeled $Lt_4_11
+	mov.s32 	%r10, %r1;           	// 
+	ld.param.s32 	%r11, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_M];	// id:62 __cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_M+0x0
+	cvt.u64.s32 	%rd13, %r11;     	// 
+	mul.lo.u64 	%rd14, %rd13, 4;  	// 
+	mov.s64 	%rd15, %rd9;         	// 
+	mov.s64 	%rd16, %rd4;         	// 
+	mov.s32 	%r12, 0;             	// 
+ //<loop> Part of loop body line 80, head labeled $Lt_4_11
+	mov.s32 	%r13, %r10;          	// 
+$Lt_4_14:
+ //<loop> Loop body line 86, nesting depth: 2, estimated iterations: unknown
+	.loc	15	90	0
+	ld.global.f32 	%f3, [%rd16+0];	// id:63
+	ld.shared.f32 	%f4, [%rd15+0];	// id:64 __cuda_V_buffer80+0x0
+	mad.f32 	%f1, %f3, %f4, %f1;  	// 
+	add.s32 	%r12, %r12, 1;       	// 
+	add.u64 	%rd15, %rd15, 4;     	// 
+	add.u64 	%rd16, %rd14, %rd16; 	// 
+	setp.ne.u32 	%p3, %r12, %r1;  	// 
+	@%p3 bra 	$Lt_4_14;           	// 
+ //<loop> Part of loop body line 80, head labeled $Lt_4_11
+	mul.lo.u64 	%rd17, %rd10, %rd13;	// 
+	mul.lo.u64 	%rd18, %rd17, 4;  	// 
+	add.u64 	%rd4, %rd4, %rd18;   	// 
+$Lt_4_12:
+ //<loop> Part of loop body line 80, head labeled $Lt_4_11
+	.loc	15	93	0
+	add.u64 	%rd8, %rd11, %rd8;   	// 
+	.loc	15	95	0
+	bar.sync 	0;                  	// 
+	add.u32 	%r9, %r9, %r1;       	// 
+	setp.gt.s32 	%p4, %r6, %r9;   	// 
+	@%p4 bra 	$Lt_4_11;           	// 
+	bra.uni 	$Lt_4_9;             	// 
+$Lt_4_17:
+$Lt_4_9:
+	.loc	15	98	0
+	ld.param.u64 	%rd19, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_R];	// id:65 __cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_R+0x0
+	add.u64 	%rd20, %rd19, %rd2;  	// 
+	st.global.f32 	[%rd20+0], %f1;	// id:66
+	.loc	15	99	0
+	exit;                         	// 
+$LDWend__Z21k_matrixVectorProductPKfS0_Pfii:
+	} // _Z21k_matrixVectorProductPKfS0_Pfii
+

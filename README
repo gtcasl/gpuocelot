@@ -1,0 +1,48 @@
+Take a look at http://code.google.com/p/gpuocelot/ for detailed installation info
+
+To Install Ocelot:
+	./configure; sudo make install
+
+To Link Against Ocelot:
+	g++ program.cu.cpp `OcelotConfig -l`
+
+To Run Ocelot:
+	Run your CUDA program normally with a 'configure.ocelot' file 
+		in the same directory (see the website for samples)
+
+Ocelot Version 1.1.560 Features:
+ 1) Three target devices
+	 a) PTX 1.4 Emulator 
+	 	i) Memory Checker
+	 		-out of bounds accesses
+	 		-misalgined accesses
+	 	ii) Shared Memory Race Detector
+	 b) PTX 1.4 JIT Compiler and CPU Runtime
+	 	i) Execute CUDA programs natively on CPU targets without emulation
+	 	ii) Support for any LLVM target
+	 	*iii) Requires LLVM 2.8svn
+	 	iv) Can achieve over 80% of theoretical peak FLOPs/OPs on CPU targets
+	 c) NVIDIA GPU JIT
+	 	i) Recompiles PTX kernels using the NVIDIA Driver
+ 2) Reimplementation of the CUDA Runtime
+ 	a) Device Switching
+ 		- The same host thread can simultaneously control multiple devices.
+ 	b) New Memory Model
+ 		- Device allocations are shared among all host threads
+ 3) PTXOptimizer
+ 	a) Extendible optimization pass interface for PTX
+ 		- Per-Block, Per-Kernel, Per-Module passes 
+ 4) Trace Generator
+ 	a) Extendible interface for instrumenting PTX kernels
+ 	b) Can examine the complete system state after each instruction is executed
+ 		i) Registers
+ 		ii) Memory Accesses
+ 		iii) Last instruction executed
+ 		iv) Thread activity mask
+
+Open Projects for Ocelot 1.2
+ 1) Full PTX 2.0 support
+ 2) AMD GPU Devices
+ 3) Asynchronous kernel execution
+ 4) Multi-threaded emulator device
+ 5) SIMT on CPU vector units

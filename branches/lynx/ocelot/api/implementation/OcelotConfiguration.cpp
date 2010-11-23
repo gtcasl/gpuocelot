@@ -94,7 +94,10 @@ api::OcelotConfiguration::TraceGeneration::TraceGeneration():
 static void initializeInstrument(api::OcelotConfiguration::Instrumentation &instrument, 
 	hydrazine::json::Visitor config) {
 	
-    instrument.clockCycleCountInstrumentor.enabled = config.parse<bool>("clockCycleCount", true);
+    hydrazine::json::Visitor clockCycleCountConfig = config["clockCycleCount"];
+    if (!clockCycleCountConfig.is_null()) {
+            instrument.clockCycleCountInstrumentor.enabled = clockCycleCountConfig.parse<bool>("enabled", false);
+    }
 }
 
 static void initializeTrace(api::OcelotConfiguration::TraceGeneration &trace, 

@@ -1,7 +1,9 @@
 {
 	ocelot: "ocelot",
     instrument: {
-        clockCycles: true    
+        clockCycleCount: {
+            enabled: false
+        }
     },
 	trace: { 
 		enabled: true,

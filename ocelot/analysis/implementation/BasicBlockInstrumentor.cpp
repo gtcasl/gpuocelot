@@ -34,9 +34,8 @@ namespace analysis
     }
 
     void BasicBlockInstrumentor::initialize() {
-      
+        
         counter = 0;
-  
         cudaMalloc((void **) &counter, basicBlocks * ctas * threads * sizeof(size_t));
         cudaMemset( counter, 0, basicBlocks * ctas * threads * sizeof( size_t ));
         

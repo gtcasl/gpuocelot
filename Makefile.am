@@ -50,7 +50,10 @@ libocelot_la_SOURCES = \
 	ocelot/analysis/implementation/ConvertPredicationToSelectPass.cpp \
 	ocelot/analysis/implementation/LinearScanRegisterAllocationPass.cpp \
     ocelot/analysis/implementation/ClockCycleCountPass.cpp \
+    ocelot/analysis/implementation/BasicBlockInstrumentationPass.cpp \
+    ocelot/analysis/implementation/BasicBlockExecutionCountPass.cpp \
     ocelot/analysis/implementation/PTXInstrumentor.cpp \
+    ocelot/analysis/implementation/BasicBlockInstrumentor.cpp \
     ocelot/analysis/implementation/ClockCycleCountInstrumentor.cpp \
 	ocelot/api/implementation/ocelot.cpp \
 	ocelot/api/implementation/OcelotRuntime.cpp \
@@ -400,6 +403,7 @@ nobase_include_HEADERS = ocelot/api/interface/ocelot.h \
 	ocelot/analysis/interface/ConvertPredicationToSelectPass.h \
 	ocelot/analysis/interface/LinearScanRegisterAllocationPass.h \
     ocelot/analysis/interface/ClockCycleCountPass.h \
+    ocelot/analysis/interface/BasicBlockExecutionCountPass.h \
 	ocelot/analysis/interface/PTXOptimizer.h \
 	ocelot/analysis/interface/RemoveBarrierPass.h \
 	ocelot/analysis/interface/PassManager.h \

@@ -107,12 +107,27 @@ namespace api {
 					
 			};
 
+            /*! \brief configuration properties for analysis::BasicBlockInstrumentor */
+			class BasicBlockInstrumentor
+			{
+			public:
+					BasicBlockInstrumentor();
+				
+			public:
+					//! \brief specifies the execution count instrumentation pass for basic blocks */
+					bool executionCount;
+					
+			};
+
 		public:
 			Instrumentation();
 
 		public:
 			//! \brief Clock cycle count instrumentor
 			ClockCycleCountInstrumentor clockCycleCountInstrumentor;
+
+            //! \brief Basic block execution count instrumentor
+			BasicBlockInstrumentor basicBlockInstrumentor;
 		};
 
 

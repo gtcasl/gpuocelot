@@ -34,7 +34,7 @@ namespace analysis
 			void finalize( );
 
         protected:
-            DataflowGraph::RegisterId _runOnEntryBlock( ir::PTXKernel* kernel, DataflowGraph::iterator block);
+            DataflowGraph::RegisterId _runOnEntryBlock( ir::PTXKernel* kernel, DataflowGraph::iterator block, DataflowGraph::RegisterId registerId);
 			virtual void _runOnBlock( ir::PTXKernel* kernel, DataflowGraph::iterator block, DataflowGraph::RegisterId counterPtrRegId, DataflowGraph::RegisterId registerId, unsigned int offset ) = 0;
 			
 	};

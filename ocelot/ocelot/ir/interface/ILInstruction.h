@@ -32,6 +32,7 @@ namespace ir
 				EndLoop,
 				Exp,
 				Fence,
+				FtoU,
 				Iadd,
 				Iand,
 				Ieq,
@@ -48,6 +49,7 @@ namespace ir
 				Ior,
 				Ishl,
 				Ishr,
+				ItoF,
 				Ixor,
 				Lds_And_Resource,
 				Lds_Load_Id,
@@ -307,6 +309,15 @@ namespace ir
 			bool _threads, _lds;
 	};
 
+	class ILFtoU: public ILUnaryInstruction
+	{
+		public:
+			/*! \brief Default constructor */
+			ILFtoU();
+
+			Instruction *clone(bool copy=true) const;
+	};
+
 	class ILIadd : public ILBinaryInstruction
 	{
 		public:
@@ -457,6 +468,15 @@ namespace ir
 		public:
 			/*! \brief Default constructor */
 			ILIshr();
+
+			Instruction *clone(bool copy=true) const;
+	};
+
+	class ILItoF: public ILUnaryInstruction
+	{
+		public:
+			/*! \brief Default constructor */
+			ILItoF();
 
 			Instruction *clone(bool copy=true) const;
 	};

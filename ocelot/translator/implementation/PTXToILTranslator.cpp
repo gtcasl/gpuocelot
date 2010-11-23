@@ -700,6 +700,19 @@ namespace translator
 						_add(mov);
 						return;
 					}
+					case ir::PTXOperand::f32:
+					{
+						// itof
+						if(i.modifier & ir::PTXInstruction::rn)
+						{
+							ir::ILItoF itof;
+							itof.d = _translate(i.d);
+							itof.a = _translate(i.a);
+							_add(itof);
+							return;
+						}
+						break;
+					}
 					default: break;
 				}
 				break;
@@ -740,7 +753,8 @@ namespace translator
 					case ir::PTXOperand::f32:
 					{
 						// utof
-						if(i.modifier & ir::PTXInstruction::rn)
+						if(i.modifier & ir::PTXInstruction::rn
+								|| i.modifier & ir::PTXInstruction::rz)
 						{
 							ir::ILUtoF utof;
 							utof.d = _translate(i.d);
@@ -762,11 +776,29 @@ namespace translator
 					{
 						// chop
 						ir::ILMov mov;
-						mov.a = _translate(i.a);
 						mov.d = _translate(i.d);
+						mov.a = _translate(i.a);
 						_add(mov);
 						return;
 					}
+					default: break;
+				}
+				break;
+			}
+			case ir::PTXOperand::f32:
+			{
+				switch (i.type)
+				{
+					case ir::PTXOperand::u32:
+					{
+						// ftou
+						ir::ILFtoU ftou;
+						ftou.d = _translate(i.d);
+						ftou.a = _translate(i.a);
+						_add(ftou);
+						return;
+					}
+					case ir::PTXOperand::f32: return;
 					default: break;
 				}
 				break;
@@ -2129,6 +2161,7 @@ namespace translator
 		{
 			case ir::PTXOperand::s32:
 			case ir::PTXOperand::u32:
+			case ir::PTXOperand::u64:
 			{
 				switch (i.b.addressMode)
 				{

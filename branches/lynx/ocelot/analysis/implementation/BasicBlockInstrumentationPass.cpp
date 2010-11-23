@@ -23,7 +23,7 @@
 
 namespace analysis
 {
-    DataflowGraph::RegisterId BasicBlockInstrumentationPass::_runOnEntryBlock( ir::PTXKernel* kernel, DataflowGraph::iterator block) {
+    DataflowGraph::RegisterId BasicBlockInstrumentationPass::_runOnEntryBlock( ir::PTXKernel* kernel, DataflowGraph::iterator block, DataflowGraph::RegisterId registerId) {
 
         /* The entry block adds the insrumented ptx. In order to maintain a counter-per-thread for
             each basic block, I need to calculate the thread counter offset. I do this using the following:
@@ -47,14 +47,12 @@ namespace analysis
             ld counterPtr, [counterBase]
             add counterPtr, counterPtr, offset 
         
-
+        */
 
         ir::PTXOperand::DataType type = (sizeof(size_t) == 8 ? ir::PTXOperand::u64: ir::PTXOperand::u32);
-        */
 
         DataflowGraph::RegisterId counterPtr = kernel->dfg()->newRegister();
         
-        /*
         // Convert special registers to .u32 registers in order to use them in mad/mul/add instructions 
         ir::PTXInstruction cvt(ir::PTXInstruction::Cvt);
         cvt.addressSpace = ir::PTXInstruction::Reg;
@@ -130,10 +128,15 @@ namespace analysis
         mad.d.addressMode = ir::PTXOperand::Register;
         mad.d.type = ir::PTXOperand::u32;
         
+        mad.a.addressMode = ir::PTXOperand::Register;
         mad.a.type = ir::PTXOperand::u32;
         mad.a.reg = tidY;
+
+        mad.b.addressMode = ir::PTXOperand::Register;
         mad.b.type = ir::PTXOperand::u32;
         mad.b.reg = ntidX;
+
+        mad.c.addressMode = ir::PTXOperand::Register;
         mad.c.type = ir::PTXOperand::u32;
         mad.c.reg = tidX;
 
@@ -152,7 +155,9 @@ namespace analysis
         
         mul.a.type = ir::PTXOperand::u32;
         mul.a.reg = ntidX;
+        mul.a.addressMode = ir::PTXOperand::Register;
         mul.b.type = ir::PTXOperand::u32;
+        mul.b.addressMode = ir::PTXOperand::Register;
         mul.b.reg = ntidY;
 
         kernel->dfg()->insert(block, mul, 10);
@@ -162,6 +167,7 @@ namespace analysis
         mul.d.reg = tmp2;
         mul.a = ir::PTXOperand();
         mul.a.type = ir::PTXOperand::u32;
+        mul.a.addressMode = ir::PTXOperand::Register;
         mul.a.reg = tmp1;
         mul.b.reg = tidZ;
 
@@ -253,13 +259,14 @@ namespace analysis
         ld.type = type;
         ld.addressSpace = ir::PTXInstruction::Global;
         ld.a = mov.d;
+        ld.a.addressMode = ir::PTXOperand::Indirect;
         ld.d.addressMode = ir::PTXOperand::Register;
         ld.d.type = type;
         ld.d.reg = counterPtr;
     
         kernel->dfg()->insert(block, ld, 18); 
 
-        // add counterPtr, counterPtr, offset 
+        // add counterPtr, counterPtr, offset         
         add.type = type;
         add.d.type = type;
         add.d.reg = counterPtr;
@@ -269,7 +276,37 @@ namespace analysis
         add.b.reg = offset;
 
         kernel->dfg()->insert(block, add, 19);
-        */
+        
+        /* Load, increment, and store back the result into the
+            global counter */
+
+        ld.addressSpace = ir::PTXInstruction::Global; 
+        ld.type = (sizeof(size_t) == 8 ? ir::PTXOperand::u64: ir::PTXOperand::u32);       
+        ld.a.addressMode = ir::PTXOperand::Indirect;
+        ld.a.reg = counterPtr;
+        ld.a.offset = 0;
+        ld.d.reg = registerId;
+        ld.d.addressMode = ir::PTXOperand::Register;
+		ld.d.type = type;		
+        
+        add.addressSpace = ir::PTXInstruction::Global; 
+        add.type = type;
+        add.d = ld.d;
+        add.a = ld.d;
+        add.b.type = type;	
+        add.b.addressMode = ir::PTXOperand::Immediate;
+        add.b.imm_int = 1;
+        
+        ir::PTXInstruction st(ir::PTXInstruction::St);
+        st.addressSpace = ir::PTXInstruction::Global; 
+        st.type = type;       
+        st.d = ld.a;
+        st.a = ld.d;
+
+        kernel->dfg()->insert( block, ld, 20 );  
+        kernel->dfg()->insert( block, add, 21 ); 
+        kernel->dfg()->insert( block, st, 22 ); 
+     
 
         return counterPtr;
 
@@ -287,10 +324,8 @@ namespace analysis
         /* Since the global counter array needs to be declared per module, we need to
             traverse through all the kernels in this module and get the total number of
             basic blocks */
-        unsigned int basicBlockCount = 0;
         for (ir::Module::KernelMap::const_iterator kernel = m.kernels().begin(); 
 		    kernel != m.kernels().end(); ++kernel) {
-            //basicBlockCount += (kernel->second)->cfg()->size();
             /* creating a new register per kernel for maintaining the count information -- 
                 the same register can be reused so need to only create one per kernel and 
                 pass its id along. */
@@ -300,18 +335,16 @@ namespace analysis
             if((kernel->second)->dfg()->empty())
                 continue;
             
-            /* instrumenting ptx at the beginning of the first basic block. The first block only
-                adds the instrumentation ptx, so we do not increment a counter for it */
-            DataflowGraph::RegisterId counterPtrRegId = _runOnEntryBlock((kernel->second), (kernel->second)->dfg()->begin());
-
-            /* need to keep track of the memory offset for the global counter array -- starting at
-                zero since we do not have to keep a counter for the first block */          
-            unsigned int offset = 0;
-            for( analysis::DataflowGraph::iterator block = ++((kernel->second)->dfg()->begin()); 
+            DataflowGraph::iterator entry = (kernel->second)->dfg()->begin();
+            ++entry;
+            /* instrumenting ptx at the beginning of the first basic block. */
+            DataflowGraph::RegisterId counterPtrRegId = _runOnEntryBlock((kernel->second), entry, registerId);
+   
+            unsigned int offset = 8;
+            for( analysis::DataflowGraph::iterator block = ++(entry); 
 			    block != (kernel->second)->dfg()->end(); ++block )
 		        {
                    if(!block->instructions().empty()){
-                        basicBlockCount++;
                         _runOnBlock( (kernel->second), block, counterPtrRegId, registerId, offset);
                         /* incrementing offset based on size_t */
                         offset = offset + sizeof(size_t);                 

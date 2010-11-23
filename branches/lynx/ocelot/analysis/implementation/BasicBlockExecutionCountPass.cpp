@@ -22,9 +22,10 @@ namespace analysis
 
     void BasicBlockExecutionCountPass::_runOnBlock( ir::PTXKernel* kernel, DataflowGraph::iterator block, DataflowGraph::RegisterId counterPtrRegId, DataflowGraph::RegisterId registerId, unsigned int offset)
 	{
+
        /* Load, increment, and store back the result into the
             global counter */
-        
+
         ir::PTXInstruction ld(ir::PTXInstruction::Ld);
         ld.addressSpace = ir::PTXInstruction::Global; 
         ld.type = (sizeof(size_t) == 8 ? ir::PTXOperand::u64: ir::PTXOperand::u32);       
@@ -37,8 +38,7 @@ namespace analysis
         
         ir::PTXInstruction add(ir::PTXInstruction::Add);
         add.addressSpace = ir::PTXInstruction::Global; 
-        add.type = (sizeof(size_t) == 8 ? ir::PTXOperand::u64: ir::PTXOperand::u32); 
-        add.a.addressMode = ir::PTXOperand::Register;    
+        add.type = (sizeof(size_t) == 8 ? ir::PTXOperand::u64: ir::PTXOperand::u32);
         add.d = ld.d;
         add.a = ld.d;
         add.b.type = (sizeof(size_t) == 8 ? ir::PTXOperand::u64: ir::PTXOperand::u32);	
@@ -51,7 +51,7 @@ namespace analysis
         st.type = (sizeof(size_t) == 8 ? ir::PTXOperand::u64: ir::PTXOperand::u32);       
         st.d = ld.a;
         st.a = ld.d;
-        
+
         /* Need to insert in the beginning of the basic block.
             Since basic blocks usually end with branches, it
             wouldn't make sense to insert these instructions at the end. */

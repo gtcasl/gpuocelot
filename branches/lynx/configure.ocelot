@@ -2,7 +2,10 @@
 	ocelot: "ocelot",
     instrument: {
         clockCycleCount: {
-            enabled: false
+            enabled: true
+        },
+        basicBlock: {
+            executionCount: false
         }
     },
 	trace: { 

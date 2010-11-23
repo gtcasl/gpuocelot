@@ -66,6 +66,12 @@ api::OcelotConfiguration::Instrumentation::ClockCycleCountInstrumentor::ClockCyc
 
 }
 
+api::OcelotConfiguration::Instrumentation::BasicBlockInstrumentor::BasicBlockInstrumentor():
+        executionCount(false)
+{
+
+}
+
 api::OcelotConfiguration::Instrumentation::Instrumentation()
 {
 
@@ -98,6 +104,12 @@ static void initializeInstrument(api::OcelotConfiguration::Instrumentation &inst
     if (!clockCycleCountConfig.is_null()) {
             instrument.clockCycleCountInstrumentor.enabled = clockCycleCountConfig.parse<bool>("enabled", false);
     }
+    
+    hydrazine::json::Visitor basicBlockConfig = config["basicBlock"];
+    if (!basicBlockConfig.is_null()) {
+            instrument.basicBlockInstrumentor.executionCount = basicBlockConfig.parse<bool>("executionCount", false);
+    }
+
 }
 
 static void initializeTrace(api::OcelotConfiguration::TraceGeneration &trace, 

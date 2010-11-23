@@ -387,15 +387,16 @@ cuda::HostThreadContext& cuda::CudaRuntime::_getCurrentThread() {
 }
 
 void cuda::CudaRuntime::_registerModule(ModuleMap::iterator module) {
-	if(module->second.loaded()) return;
-	module->second.loadNow();
+    
+    if(module->second.loaded()) return;
+	module->second.loadNow();	
 
     HostThreadContext& thread = _getCurrentThread();    
     if(!thread.instrumentors.empty()){
         (thread.instrumentors.front())->analyze(module->second);
         (thread.instrumentors.front())->instrument(module->second);
-    }
-	
+    }	
+
 	for(RegisteredTextureMap::iterator texture = _textures.begin(); 
 		texture != _textures.end(); ++texture) {
 		if(texture->second.module != module->first) continue;
@@ -2403,6 +2404,7 @@ cudaError_t cuda::CudaRuntime::_launchKernel(const std::string& moduleName,
     _release();
 
     if(!thread.instrumentors.empty()){        
+        (thread.instrumentors.front())->kernelName = kernelName;
         (thread.instrumentors.front())->threads = launch.blockDim.x * launch.blockDim.y * launch.blockDim.z;
         (thread.instrumentors.front())->ctas = launch.gridDim.x * launch.gridDim.y * launch.gridDim.z;
         (thread.instrumentors.front())->initialize();

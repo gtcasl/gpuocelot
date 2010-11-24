@@ -1,4 +1,4 @@
-/*! \file PTXToLLVMTranslator.cpp
+ /*! \file PTXToLLVMTranslator.cpp
 	\date Wednesday July 29, 2009
 	\author Gregory Diamos <gregory.diamos@gatech.edu>
 	\brief The source file for the PTXToLLVMTranslator class
@@ -5576,13 +5576,13 @@ namespace translator
 				get.indices.push_back( 2 );
 				break;
 			}
-			case ir::PTXOperand::smId:
+			case ir::PTXOperand::smid:
 			{
 				assertM( false, "Special register " 
 					<< ir::PTXOperand::toString( s ) << " not supported." );
 				break;
 			}
-			case ir::PTXOperand::nsmId:
+			case ir::PTXOperand::nsmid:
 			{
 				assertM( false, "Special register " 
 					<< ir::PTXOperand::toString( s ) << " not supported." );
@@ -6572,6 +6572,42 @@ namespace translator
 		clock.parameters[0].type.members[0].label = "%LLVMContext";
 
 		_llvmKernel->_statements.push_front( ir::LLVMStatement( clock ) );
+		
+		ir::LLVMStatement smid( ir::LLVMStatement::FunctionDeclaration );
+
+		smid.label = "__ocelot_smid";
+		smid.linkage = ir::LLVMStatement::InvalidLinkage;
+		smid.convention = ir::LLVMInstruction::DefaultCallingConvention;
+		smid.visibility = ir::LLVMStatement::Default;
+		
+		smid.operand.type.category = ir::LLVMInstruction::Type::Element;
+		smid.operand.type.type = ir::LLVMInstruction::I32;	
+		
+		smid.parameters.resize( 1 );
+		smid.parameters[0].type.category = ir::LLVMInstruction::Type::Pointer;
+		smid.parameters[0].type.members.resize(1);
+		smid.parameters[0].type.members[0].category = ir::LLVMInstruction::Type::Structure;
+		smid.parameters[0].type.members[0].label = "%LLVMContext";
+
+		_llvmKernel->_statements.push_front( ir::LLVMStatement( smid ) );
+		
+		ir::LLVMStatement nsmid( ir::LLVMStatement::FunctionDeclaration );
+
+		nsmid.label = "__ocelot_nsmid";
+		nsmid.linkage = ir::LLVMStatement::InvalidLinkage;
+		nsmid.convention = ir::LLVMInstruction::DefaultCallingConvention;
+		nsmid.visibility = ir::LLVMStatement::Default;
+		
+		nsmid.operand.type.category = ir::LLVMInstruction::Type::Element;
+		nsmid.operand.type.type = ir::LLVMInstruction::I32;	
+		
+		nsmid.parameters.resize( 1 );
+		nsmid.parameters[0].type.category = ir::LLVMInstruction::Type::Pointer;
+		nsmid.parameters[0].type.members.resize(1);
+		nsmid.parameters[0].type.members[0].category = ir::LLVMInstruction::Type::Structure;
+		nsmid.parameters[0].type.members[0].label = "%LLVMContext";
+
+		_llvmKernel->_statements.push_front( ir::LLVMStatement( nsmid ) );
 
 		ir::LLVMStatement vote( ir::LLVMStatement::FunctionDeclaration );
 

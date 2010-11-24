@@ -219,7 +219,6 @@ namespace executive
 					AtomicOperationCache* cache;
 					/*! \brief A reference to the kernel */
 					const LLVMExecutableKernel* kernel;
-					
 				public:
 					/*! \brief Starts the timer on creation */
 					OpaqueState();

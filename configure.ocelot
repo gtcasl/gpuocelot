@@ -11,7 +11,7 @@
 		debugger: {
 			enabled: true,
 			kernelFilter: "_Z13scalarProdGPUPfS_S_ii",
-			alwaysAttach: true
+			alwaysAttach: false
 		},
 		performanceBound: {
 			enabled: false,
@@ -39,7 +39,7 @@
 		runtimeApiTrace: "trace/CudaAPI.trace"
 	},
 	executive: {
-		devices: [ nvidia, emulated, llvm, amd ],
+		devices: [ llvm ],
 		optimizationLevel: basic,
 		workerThreadLimit: 2
 	}

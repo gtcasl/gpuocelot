@@ -104,7 +104,8 @@ namespace api {
 			public:
 					//! \brief indicates instrumentor is enabled
 					bool enabled;
-					
+                    //! \brief specifies the logfile for storing results of this instrumentation */
+                    std::string logfile;
 			};
 
             /*! \brief configuration properties for analysis::BasicBlockInstrumentor */
@@ -116,7 +117,8 @@ namespace api {
 			public:
 					//! \brief specifies the execution count instrumentation pass for basic blocks */
 					bool executionCount;
-					
+                    //! \brief specifies the logfile for storing results of this instrumentation */
+                    std::string logfile;				
 			};
 
 		public:

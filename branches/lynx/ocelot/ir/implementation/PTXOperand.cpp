@@ -52,8 +52,8 @@ std::string ir::PTXOperand::toString( SpecialRegister reg ) {
 		case nctaIdX: return "%nctaid.x"; break;
 		case nctaIdY: return "%nctaid.y"; break;
 		case nctaIdZ: return "%nctaid.z"; break;
-		case smId: return "%smid"; break;
-		case nsmId: return "%nsmid"; break;
+		case smid: return "%smid"; break;
+		case nsmid: return "%nsmid"; break;
 		case gridId: return "%gridid"; break;
 		case clock: return "%clock"; break;
 		case pm0: return "%pm0"; break;

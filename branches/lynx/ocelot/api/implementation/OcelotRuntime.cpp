@@ -52,11 +52,13 @@ namespace ocelot
         if(c.instrument.clockCycleCountInstrumentor.enabled)
         {   
             report("creating clock cycle count instrumentor");
+            _clockCycleCountInstrumentor.output = c.instrument.clockCycleCountInstrumentor.logfile;
             ocelot::addInstrumentor(_clockCycleCountInstrumentor);    
         }
         else if(c.instrument.basicBlockInstrumentor.executionCount)
         {   
-            report("creating clock cycle count instrumentor");
+            report("creating basic block execution count instrumentor");
+            _basicBlockExecutionCountInstrumentor.output = c.instrument.basicBlockInstrumentor.logfile;
             ocelot::addInstrumentor(_basicBlockExecutionCountInstrumentor);    
         }
 

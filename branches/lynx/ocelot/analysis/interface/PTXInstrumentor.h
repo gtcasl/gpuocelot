@@ -12,6 +12,8 @@
 #include <ocelot/ir/interface/Module.h>
 #include <ocelot/analysis/interface/Pass.h>
 
+#include <ostream>
+
 namespace analysis
 {
 	/*! \brief Able to run various instrumentation passes over PTX modules */
@@ -24,6 +26,9 @@ namespace analysis
 			
 			/*! \brief The output file being generated */
 			std::string output;
+
+            /*! \brief The output stream being used to write results */
+            std::ostream* out;
             
             /*! \brief The PTX module being instrumented */
             ir::Module *module;
@@ -31,14 +36,11 @@ namespace analysis
             /*! \brief The name of kernel being instrumented */
 			std::string kernelName;        
 
-            /*! \brief The name of the instrumentation pass */
-            std::string passName;
-
             /*! \brief The instrumentation pass */
             analysis::Pass *pass;
             
-            /*! \brief The number of CTAs specified for this execution */
-            unsigned int ctas;
+            /*! \brief The number of thread blocks or CTAs specified for this execution */
+            unsigned int threadBlocks;
 
             /*! \brief The number of threads specified for this execution */
             unsigned int threads;
@@ -63,6 +65,10 @@ namespace analysis
 
             /*! \brief Performs the instrumentation */
             void instrument(ir::Module& module);	
+
+        protected:
+            void setup();
+            void cleanup();
 	};
 
     typedef std::vector< PTXInstrumentor *> PTXInstrumentorVector;

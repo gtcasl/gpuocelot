@@ -2374,7 +2374,7 @@ cudaError_t cuda::CudaRuntime::_launchKernel(const std::string& moduleName,
 	
 	ModuleMap::iterator module = _modules.find(moduleName);
 	assert(module != _modules.end());
-
+    
 	try {
 		_registerModule(module);
 	}
@@ -2402,11 +2402,11 @@ cudaError_t cuda::CudaRuntime::_launchKernel(const std::string& moduleName,
 		<< ") on thread " << boost::this_thread::get_id());
 	
     _release();
-
+    
     if(!thread.instrumentors.empty()){        
         (thread.instrumentors.front())->kernelName = kernelName;
         (thread.instrumentors.front())->threads = launch.blockDim.x * launch.blockDim.y * launch.blockDim.z;
-        (thread.instrumentors.front())->ctas = launch.gridDim.x * launch.gridDim.y * launch.gridDim.z;
+        (thread.instrumentors.front())->threadBlocks = launch.gridDim.x * launch.gridDim.y * launch.gridDim.z;
         (thread.instrumentors.front())->initialize();
     }
     

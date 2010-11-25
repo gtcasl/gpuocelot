@@ -722,6 +722,16 @@ extern "C"
 		return state->timer.cycles();
 	}
 	
+	unsigned int __ocelot_smid( executive::LLVMContext *context)
+	{
+		return 0;
+	}
+	
+	unsigned int __ocelot_nsmid( executive::LLVMContext *context)
+	{
+		return 1;
+	}
+	
 	void __ocelot_debug_block( executive::LLVMContext* context, 
 		ir::ControlFlowGraph::BasicBlock::Id id )
 	{

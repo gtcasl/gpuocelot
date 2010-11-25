@@ -81,6 +81,22 @@ namespace analysis
         }
 
     }
+
+    void PTXInstrumentor::setup() {
+        if(!output.empty()){
+            out = new std::ofstream(output.c_str(), std::fstream::app);
+		}
+        else {
+			   out = &std::cout;
+		}
+    }
+
+
+    void PTXInstrumentor::cleanup() {
+        if(out != &std::cout && out != NULL){
+            delete out;
+        }
+    }
 }
 
 #endif

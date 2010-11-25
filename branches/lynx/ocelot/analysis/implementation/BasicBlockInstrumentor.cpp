@@ -36,8 +36,8 @@ namespace analysis
     void BasicBlockInstrumentor::initialize() {
         
         counter = 0;
-        cudaMalloc((void **) &counter, basicBlocks * ctas * threads * sizeof(size_t));
-        cudaMemset( counter, 0, basicBlocks * ctas * threads * sizeof( size_t ));
+        cudaMalloc((void **) &counter, basicBlocks * threadBlocks * threads * sizeof(size_t));
+        cudaMemset( counter, 0, basicBlocks * threadBlocks * threads * sizeof( size_t ));
         
         cudaMemcpyToSymbol(((BasicBlockInstrumentationPass *)pass)->basicBlockCounterBase().c_str(), &counter, sizeof(*counter), 0, cudaMemcpyHostToDevice);
     }
@@ -48,17 +48,17 @@ namespace analysis
 
     void BasicBlockInstrumentor::finalize() {
 
-        size_t *counterHost = new size_t[basicBlocks * threads * ctas];
-        cudaMemcpy(counterHost, counter, basicBlocks * threads * ctas * sizeof( size_t ), cudaMemcpyDeviceToHost);
+        size_t *counterHost = new size_t[basicBlocks * threads * threadBlocks];
+        cudaMemcpy(counterHost, counter, basicBlocks * threads * threadBlocks * sizeof( size_t ), cudaMemcpyDeviceToHost);
        
         std::cout << "\n\n" << kernelName << ":\n";
-        std::cout << "\n--------------- " << description << " Per Thread ---------------\n\n";
+        std::cout << "\n--------------- " << description << " ---------------\n\n";
 
         unsigned int i = 0;
         unsigned int j = 0;
         unsigned int k = 0;
         
-        for(k = 1; k <= ctas; k++) {
+        for(k = 1; k <= threadBlocks; k++) {
             std::cout << "CTA " << k << ":\n";
             for(i = 0; i < threads; i++) {
                 std::cout << "Thread " << (i + 1) << ":\n";
@@ -72,17 +72,8 @@ namespace analysis
         cudaFree(counter);
     }
 
-    BasicBlockInstrumentor::BasicBlockInstrumentor() : description("Basic Block Execution Count") {
+    BasicBlockInstrumentor::BasicBlockInstrumentor() : description("Basic Block Execution Count Per Thread") {
 
-    }
-
-    BasicBlockInstrumentor::BasicBlockInstrumentor(const std::string input, const std::string output, unsigned int ctas, unsigned int threads ) :
-        description("Basic Block Execution Count")
-    {
-        PTXInstrumentor::input = input;
-        PTXInstrumentor::output = output;
-        PTXInstrumentor::ctas = ctas;
-        PTXInstrumentor::threads = threads;    
     }
 
 }

@@ -25,15 +25,15 @@ namespace analysis
 {
 
     void ClockCycleCountInstrumentor::analyze(ir::Module &module) {
-        /* no static analysis necessary for this instrumentation */
+        /* No static analysis necessary for this instrumentation */
     }
 
     void ClockCycleCountInstrumentor::initialize() {
               
         clock_sm_info = 0;
 
-        cudaMalloc((void **) &clock_sm_info, 2 * ctas * sizeof(size_t));
-        cudaMemset( clock_sm_info, 0, 2 * ctas * sizeof( size_t ));
+        cudaMalloc((void **) &clock_sm_info, 2 * threadBlocks * sizeof(size_t));
+        cudaMemset( clock_sm_info, 0, 2 * threadBlocks * sizeof( size_t ));
 
         cudaMemcpyToSymbol(((ClockCycleCountPass *)pass)->kernelClockSMInfo().c_str(), &clock_sm_info, sizeof(size_t *), 0, cudaMemcpyHostToDevice);
     }
@@ -43,18 +43,22 @@ namespace analysis
     }
 
     void ClockCycleCountInstrumentor::finalize() {
+		
+        size_t *clockSMInfoHost = new size_t[2 * threadBlocks];
+        cudaMemcpy(clockSMInfoHost, clock_sm_info, 2 * threadBlocks * sizeof( size_t ), cudaMemcpyDeviceToHost);      
+    
+        setup();
 
-        size_t *clockSMInfoHost = new size_t[2 * ctas];
-        cudaMemcpy(clockSMInfoHost, clock_sm_info, 2 * ctas * sizeof( size_t ), cudaMemcpyDeviceToHost);      
-        
-        std::cout << "\n\n" << kernelName << ":\n";
-        std::cout << "\n--------------- " << description << " ---------------\n\n";
+        *out << "\n\n" << kernelName << ":\n";
+        *out << "\n--------------- " << description << " ---------------\n\n";
 
-        for(unsigned int i = 0; i < ctas; i++) {
-            std::cout << "CTA " << i << ":\n";
-            std::cout << "Clock Cycles: " << clockSMInfoHost[(i * ctas) + 0] << std::endl;
-            std::cout << "SM (Processor) ID: " << clockSMInfoHost[(i * ctas) + 1] << std::endl;
+        for(unsigned int i = 0; i < threadBlocks; i++) {
+            *out << "CTA " << i << ":\n";
+            *out << "Clock Cycles: " << clockSMInfoHost[i*2] << std::endl;
+            *out << "SM (Processor) ID: " << clockSMInfoHost[i*2 + 1] << std::endl;
         }
+
+        cleanup();    
 
         delete[] clockSMInfoHost;
         cudaFree(clock_sm_info);
@@ -62,15 +66,6 @@ namespace analysis
 
     ClockCycleCountInstrumentor::ClockCycleCountInstrumentor() : description("Clock Cycles and SM (Processor) ID") {
 
-    }
-
-    ClockCycleCountInstrumentor::ClockCycleCountInstrumentor(const std::string input, const std::string output, unsigned int ctas, unsigned int threads ) : 
-        description("Clock Cycles and SM (Processor) ID")
-    {
-        PTXInstrumentor::input = input;
-        PTXInstrumentor::output = output;
-        PTXInstrumentor::ctas = ctas;
-        PTXInstrumentor::threads = threads;    
     }
 
 }

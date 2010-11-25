@@ -28,10 +28,11 @@ namespace ir
 			case EndLoop:               return "endloop";
 			case Exp:                   return "exp";
 			case Fence:                 return "fence";
+			case FtoU:                  return "ftou";
 			case Iadd:                  return "iadd";
 			case Iand:                  return "iand";
 			case Ieq:                   return "ieq";
-			case IfLogicalNZ:            return "if_logicalnz";
+			case IfLogicalNZ:           return "if_logicalnz";
 			case IfLogicalZ:            return "if_logicalz";
 			case Ige:                   return "ige";
 			case Ilt:                   return "ilt";
@@ -44,6 +45,7 @@ namespace ir
 			case Ior:                   return "ior";
 			case Ishl:                  return "ishl";
 			case Ishr:                  return "ishr";
+			case ItoF:                  return "itof";
 			case Ixor:                  return "ixor";
 			case Lds_And_Resource:      return "lds_and_resource(1)";
 			case Lds_Load_Id:           return "lds_load_id(1)";
@@ -336,6 +338,15 @@ namespace ir
 		_lds = value;
 	}
 
+	ILFtoU::ILFtoU() : ILUnaryInstruction(FtoU)
+	{
+	}
+
+	Instruction *ILFtoU::clone(bool copy) const
+	{
+		return new ILFtoU(*this);
+	}
+
 	ILIadd::ILIadd() : ILBinaryInstruction(Iadd)
 	{
 	}
@@ -498,6 +509,15 @@ namespace ir
 	Instruction *ILIshr::clone(bool copy) const
 	{
 		return new ILIshr(*this);
+	}
+
+	ILItoF::ILItoF() : ILUnaryInstruction(ItoF)
+	{
+	}
+
+	Instruction *ILItoF::clone(bool copy) const
+	{
+		return new ILItoF(*this);
 	}
 
 	ILIxor::ILIxor() : ILBinaryInstruction(Ixor)

@@ -33,6 +33,7 @@ void PtxToIlTranslator::translate()
 		executive::ATIExecutableKernel* kernel =
 			new executive::ATIExecutableKernel(*k_it->second, NULL, NULL, NULL, 
 					NULL, NULL, NULL);
+		kernel->updateGlobals();
 		kernel->allocateSharedMemory();
 
 

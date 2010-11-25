@@ -99,15 +99,17 @@ api::OcelotConfiguration::TraceGeneration::TraceGeneration():
 
 static void initializeInstrument(api::OcelotConfiguration::Instrumentation &instrument, 
 	hydrazine::json::Visitor config) {
-	
+
     hydrazine::json::Visitor clockCycleCountConfig = config["clockCycleCount"];
     if (!clockCycleCountConfig.is_null()) {
             instrument.clockCycleCountInstrumentor.enabled = clockCycleCountConfig.parse<bool>("enabled", false);
+            instrument.clockCycleCountInstrumentor.logfile = clockCycleCountConfig.parse<std::string>("logfile", "");
     }
     
     hydrazine::json::Visitor basicBlockConfig = config["basicBlock"];
     if (!basicBlockConfig.is_null()) {
             instrument.basicBlockInstrumentor.executionCount = basicBlockConfig.parse<bool>("executionCount", false);
+            instrument.basicBlockInstrumentor.logfile = basicBlockConfig.parse<std::string>("logfile", "");
     }
 
 }

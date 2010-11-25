@@ -40,8 +40,9 @@ namespace analysis
         cvt.a.addressMode = ir::PTXOperand::Register;
         cvt.a = ir::PTXOperand(ir::PTXOperand::tidX);
         cvt.a.type = ir::PTXOperand::u16;
+
         kernel->dfg()->insert(block, cvt, 0);
-        
+    
         DataflowGraph::RegisterId clockStart = kernel->dfg()->newRegister();
         DataflowGraph::RegisterId clockEnd = kernel->dfg()->newRegister();
 
@@ -122,10 +123,71 @@ namespace analysis
 
         kernel->dfg()->insert(lastBlock, ld, lastBlock->instructions().size() - 1);
 
+        DataflowGraph::RegisterId smid = kernel->dfg()->newRegister();
+
+        cvt.d.reg = smid;
+        cvt.d.addressMode = ir::PTXOperand::Register;
+        cvt.a = ir::PTXOperand(ir::PTXOperand::smid);
+        cvt.a.type = ir::PTXOperand::u32;
+
+        kernel->dfg()->insert(lastBlock, cvt, lastBlock->instructions().size() - 1);
+
+        DataflowGraph::RegisterId ctaidX = kernel->dfg()->newRegister();
+        DataflowGraph::RegisterId nctaidX = kernel->dfg()->newRegister();
+        DataflowGraph::RegisterId ctaidY = kernel->dfg()->newRegister();
+
+        cvt.d.reg = ctaidX;
+        cvt.a = ir::PTXOperand(ir::PTXOperand::ctaIdX);
+        cvt.a.type = ir::PTXOperand::u32;
+
+        kernel->dfg()->insert(lastBlock, cvt, lastBlock->instructions().size() - 1);
+
+        cvt.d.reg = ctaidY;
+        cvt.a = ir::PTXOperand(ir::PTXOperand::ctaIdY);
+        cvt.a.type = ir::PTXOperand::u32;
+
+        kernel->dfg()->insert(lastBlock, cvt, lastBlock->instructions().size() - 1);
+
+        cvt.d.reg = nctaidX;
+        cvt.a = ir::PTXOperand(ir::PTXOperand::nctaIdX);
+        cvt.a.type = ir::PTXOperand::u32;
+
+        kernel->dfg()->insert(lastBlock, cvt, lastBlock->instructions().size() - 1);
+
+        DataflowGraph::RegisterId ctaid = kernel->dfg()->newRegister();
+
+        ir::PTXInstruction mad(ir::PTXInstruction::Mad);
+        mad.type = type;
+        mad.modifier = ir::PTXInstruction::Lo;
+        mad.d.addressMode = ir::PTXOperand::Register;
+        mad.d.type = type;
+        mad.d.reg = ctaid;
+        mad.a.addressMode = ir::PTXOperand::Register;
+        mad.a.type = type;
+        mad.a.reg = ctaidY;
+        mad.b.addressMode = ir::PTXOperand::Register;
+        mad.b.type = type;
+        mad.b.reg = nctaidX;
+        mad.c.addressMode = ir::PTXOperand::Register;
+        mad.c.type = type;
+        mad.c.reg = ctaidX;
+
+        kernel->dfg()->insert(lastBlock, mad, lastBlock->instructions().size() - 1);
+
+        mad.d.reg = clockSMInfo;
+        mad.a.reg = ctaid;
+        mad.b.addressMode = ir::PTXOperand::Immediate;
+        mad.b.imm_int = sizeof(size_t) * 2;
+        mad.c = mad.d;
+
+        kernel->dfg()->insert(lastBlock, mad, lastBlock->instructions().size() - 1);
+
         ir::PTXInstruction st(ir::PTXInstruction::St);
         st.addressSpace = ir::PTXInstruction::Global; 
         st.type = type;
-        st.d = ld.d;
+        st.d = mad.d;
+        st.d.addressMode = ir::PTXOperand::Indirect;
+        st.d.offset = 0;
         st.a.type = type;
         st.a = sub.d;
         st.pg.condition = ir::PTXOperand::Pred;
@@ -133,19 +195,10 @@ namespace analysis
         
         kernel->dfg()->insert(lastBlock, st, lastBlock->instructions().size() - 1);
 
-        DataflowGraph::RegisterId smId = kernel->dfg()->newRegister();
-
-        cvt.d.reg = smId;
-        cvt.d.addressMode = ir::PTXOperand::Register;
-        cvt.a = ir::PTXOperand(ir::PTXOperand::smId);
-        cvt.a.type = ir::PTXOperand::u32;
-
-        //kernel->dfg()->insert(lastBlock, cvt, lastBlock->instructions().size() - 1);
-
         st.d.offset = sizeof(size_t);
-        st.a = cvt.d;
+        st.a.reg = smid;
         
-        //kernel->dfg()->insert(lastBlock, st, lastBlock->instructions().size() - 1);
+        kernel->dfg()->insert(lastBlock, st, lastBlock->instructions().size() - 1);
 
 	}
 

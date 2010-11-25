@@ -12,9 +12,6 @@
 #include <hydrazine/implementation/debug.h>
 #include <hydrazine/implementation/Exception.h>
 
-#include <sys/time.h>
-#include <stdio.h>
-
 #ifdef REPORT_BASE
 #undef REPORT_BASE
 #endif
@@ -452,14 +449,20 @@ namespace executive
 						if (global == module->globals().end())
 							continue;
 
-						Device::MemoryAllocation* allocation = 
-							device->getGlobalAllocation(module->path(),
-									global->first);
+						if (device)
+						{
+							Device::MemoryAllocation* allocation = 
+								device->getGlobalAllocation(module->path(),
+										global->first);
 
-						operand->addressMode = ir::PTXOperand::Immediate;
-						operand->imm_uint = 
-							(long long unsigned int)allocation->pointer() -
-							ATIGPUDevice::Uav0BaseAddr;
+							operand->addressMode = ir::PTXOperand::Immediate;
+							operand->imm_uint = 
+								(long long unsigned int)allocation->pointer() -
+								ATIGPUDevice::Uav0BaseAddr;
+						} else {
+							operand->addressMode = ir::PTXOperand::Immediate;
+							operand->imm_uint = 0;
+						}
 
 						report("For instruction " << ptx.toString()
 								<< ", mapping constant label "

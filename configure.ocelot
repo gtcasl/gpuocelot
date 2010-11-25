@@ -2,7 +2,8 @@
 	ocelot: "ocelot",
     instrument: {
         clockCycleCount: {
-            enabled: true
+            enabled: true,
+            logfile: ""
         },
         basicBlock: {
             executionCount: false
@@ -17,9 +18,9 @@
 			ignoreIrrelevantWrites: true
 		},
 		debugger: {
-			enabled: false,
+			enabled: true,
 			kernelFilter: "_Z13scalarProdGPUPfS_S_ii",
-			alwaysAttach: true
+			alwaysAttach: false
 		},
 		performanceBound: {
 			enabled: false,
@@ -47,7 +48,7 @@
 		runtimeApiTrace: "trace/CudaAPI.trace"
 	},
 	executive: {
-		devices: [ nvidia, emulated, llvm, amd ],
+		devices: [ nvidia, emulated, llvm ],
 		optimizationLevel: basic,
 		workerThreadLimit: 2
 	}

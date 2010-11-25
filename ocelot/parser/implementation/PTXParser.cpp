@@ -1485,13 +1485,13 @@ namespace parser
 		{
 			return ir::PTXOperand::laneId;
 		}
-		if( reg == "%nsmId" )
+		if( reg == "%nsmid" )
 		{
-			return ir::PTXOperand::nsmId;
+			return ir::PTXOperand::nsmid;
 		}
-		if( reg == "%smId" )
+		if( reg == "%smid" )
 		{
-			return ir::PTXOperand::smId;
+			return ir::PTXOperand::smid;
 		}
 		if( reg == "%clock" )
 		{

@@ -31,7 +31,7 @@
 	
 %}
 
-SPECIAL_REGISTER ("%ctaid."[xyz]|"%ntid."[xyz]|"%gridid"|"%nctaid."[xyz]|"%tid."[xyz]|"%laneid"|"%warpid"|"%simd"|"%nsimd"|"%pm"[1234]|"WARP_SZ")
+SPECIAL_REGISTER ("%ctaid."[xyz]|"%ntid."[xyz]|"%gridid"|"%nctaid."[xyz]|"%tid."[xyz]|"%laneid"|"%warpid"|"%smid"|"%nsmid"|"%pm"[1234]|"WARP_SZ")
 
 BIT [01]
 NON_ZERO_DIGIT [1-9]

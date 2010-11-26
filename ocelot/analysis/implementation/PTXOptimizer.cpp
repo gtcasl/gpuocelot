@@ -19,6 +19,8 @@
 #include <hydrazine/implementation/string.h>
 #include <hydrazine/implementation/debug.h>
 
+#include <string.h>
+
 #ifdef REPORT_BASE
 #undef REPORT_BASE
 #endif
@@ -89,7 +91,11 @@ namespace analysis
 			kernel != module.kernels().end(); ++kernel )
 		{
 			report(" Writing CFG for kernel '" << kernel->first << "'");
-			std::ofstream out( kernel->first + "_cfg.dot" );
+			char str[100];
+			strcpy( str, kernel->first.c_str());
+			strcat (str,"_cfg.dot");
+			std::ofstream out(str);
+//			std::ofstream out( kernel->first.c_str() + "_cfg.dot" );
 		
 			if( !out.is_open() )
 			{

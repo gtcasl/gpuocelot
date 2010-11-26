@@ -95,7 +95,7 @@ namespace api {
 		class Instrumentation {
 		public:
 			
-			/*! \brief configuration properties for analysis::ClockCycleCountInstrumentor */
+			/*! \brief configuration properties for ClockCycleCountInstrumentor */
 			class ClockCycleCountInstrumentor
 			{
 			public:
@@ -125,11 +125,14 @@ namespace api {
 			Instrumentation();
 
 		public:
-			//! \brief Clock cycle count instrumentor
+			/*! \brief Clock cycle count instrumentor */
 			ClockCycleCountInstrumentor clockCycleCountInstrumentor;
 
             //! \brief Basic block execution count instrumentor
 			BasicBlockInstrumentor basicBlockInstrumentor;
+
+			/*! \brief creates automatically named log file in JSON */
+			bool enableJSON;
 		};
 
 

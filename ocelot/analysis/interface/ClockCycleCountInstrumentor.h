@@ -41,6 +41,8 @@ namespace analysis
 
             /*! \brief The finalize method performs any necessary CUDA runtime actions after instrumentation */
             void finalize();	
+
+            void jsonEmitter(size_t* count, int ctaNum);
 	};
 }
 

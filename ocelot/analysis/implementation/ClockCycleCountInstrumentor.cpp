@@ -18,11 +18,65 @@
 #include <hydrazine/implementation/string.h>
 #include <hydrazine/implementation/debug.h>
 #include <hydrazine/implementation/Exception.h>
+//#include <hydrazine/interface/Test.h>
+#include <hydrazine/implementation/json.h>
 
 #include <fstream>
+#include <string>
+#include <iostream>
+#include <sstream>
+
+using namespace hydrazine;
 
 namespace analysis
 {
+	void ClockCycleCountInstrumentor::jsonEmitter(size_t* counter, int ctaNum)
+	{
+		json::Object *bbcStat = new json::Object;
+		json::Object *column;
+	
+		/* per thread BB execution count */
+		column = new json::Object;
+		json::Number *valueCC;
+		bbcStat->dictionary["per_CTA_per_SM_clock_cycle_count"] = column;
+		
+		for(int i=0; i<ctaNum; i++)
+		{
+			std::stringstream thread;
+			thread << i << "." << counter[i*2+1];
+			valueCC = new json::Number((int)counter[i*2+0]);
+			column->dictionary[thread.str()] = valueCC;
+		}
+	
+		//start emitter
+		std::ofstream outFile;
+
+		std::string tmpStr = ".clockCycleCount";
+		int i=1;
+		bool alreadyExists;
+		do {
+			outFile.open((kernelName + tmpStr + ".json").c_str(), std::ios::in);	
+			if( outFile.is_open() )
+			{
+				std::cout << "file exists\n";
+				alreadyExists=true;
+				std::stringstream out;
+				out << ".clockCycleCount." << i;
+				tmpStr = out.str();
+				i++;
+			} else {
+				alreadyExists=false;
+			}
+			outFile.close();
+		}while(alreadyExists);
+	
+		outFile.open((kernelName + tmpStr + ".json").c_str());
+		json::Emitter emitter;
+		emitter.use_tabs = false;
+		emitter.emit_pretty(outFile, bbcStat, 2);
+	
+		return;
+	}
 
     void ClockCycleCountInstrumentor::analyze(ir::Module &module) {
         /* No static analysis necessary for this instrumentation */
@@ -43,7 +97,7 @@ namespace analysis
     }
 
     void ClockCycleCountInstrumentor::finalize() {
-		
+                
         size_t *clockSMInfoHost = new size_t[2 * threadBlocks];
         cudaMemcpy(clockSMInfoHost, clock_sm_info, 2 * threadBlocks * sizeof( size_t ), cudaMemcpyDeviceToHost);      
     
@@ -58,8 +112,14 @@ namespace analysis
             *out << "SM (Processor) ID: " << clockSMInfoHost[i*2 + 1] << std::endl;
         }
 
-        cleanup();    
-
+        cleanup();  
+          
+		if(enableJSON)
+		{
+			std::cout << "Printing JSON trace file\n";
+			jsonEmitter(clockSMInfoHost, threadBlocks);
+		} 
+		
         delete[] clockSMInfoHost;
         cudaFree(clock_sm_info);
     }

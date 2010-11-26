@@ -98,7 +98,9 @@ api::OcelotConfiguration::TraceGeneration::TraceGeneration():
 }
 
 static void initializeInstrument(api::OcelotConfiguration::Instrumentation &instrument, 
-	hydrazine::json::Visitor config) {
+	hydrazine::json::Visitor config) 
+{
+	instrument.enableJSON = config.parse<bool>("logAsJSON", true);
 
     hydrazine::json::Visitor clockCycleCountConfig = config["clockCycleCount"];
     if (!clockCycleCountConfig.is_null()) {
@@ -115,7 +117,8 @@ static void initializeInstrument(api::OcelotConfiguration::Instrumentation &inst
 }
 
 static void initializeTrace(api::OcelotConfiguration::TraceGeneration &trace, 
-	hydrazine::json::Visitor config) {
+	hydrazine::json::Visitor config) 
+{
 	trace.memoryChecker = config.parse<bool>("memoryChecker", true);
     
     hydrazine::json::Visitor raceConfig = config["raceDetector"];

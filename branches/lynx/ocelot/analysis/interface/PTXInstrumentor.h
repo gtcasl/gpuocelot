@@ -20,6 +20,9 @@ namespace analysis
 	class PTXInstrumentor
 	{
 		public:
+
+			/*! \brief Enables automatic output as JSON */
+			bool enableJSON;
 			
 			/*! \brief The input file being instrumented */
 			std::string input;

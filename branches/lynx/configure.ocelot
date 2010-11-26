@@ -1,6 +1,7 @@
 {
 	ocelot: "ocelot",
     instrument: {
+	logAsJASON: true,
         clockCycleCount: {
             enabled: false,
             logfile: ""

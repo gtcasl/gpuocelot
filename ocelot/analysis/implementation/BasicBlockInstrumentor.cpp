@@ -51,22 +51,26 @@ namespace analysis
         size_t *counterHost = new size_t[basicBlocks * threads * threadBlocks];
         cudaMemcpy(counterHost, counter, basicBlocks * threads * threadBlocks * sizeof( size_t ), cudaMemcpyDeviceToHost);
        
-        std::cout << "\n\n" << kernelName << ":\n";
-        std::cout << "\n--------------- " << description << " ---------------\n\n";
+        setup();
+
+        *out << "\n\n" << kernelName << ":\n";
+        *out << "\n--------------- " << description << " ---------------\n\n";
 
         unsigned int i = 0;
         unsigned int j = 0;
         unsigned int k = 0;
         
         for(k = 1; k <= threadBlocks; k++) {
-            std::cout << "CTA " << k << ":\n";
+            *out << "CTA " << k << ":\n";
             for(i = 0; i < threads; i++) {
-                std::cout << "Thread " << (i + 1) << ":\n";
+                *out << "Thread " << (i + 1) << ":\n";
                 for(j = 0; j < basicBlocks; j++) {
-                    std::cout << "basicBlock " << (j + 1) << ": " << counterHost[basicBlocks] << "\n";
+                    *out << "basicBlock " << (j + 1) << ": " << counterHost[basicBlocks] << "\n";
                 }
             }   
         }
+
+        cleanup();
 
         delete[] counterHost;
         cudaFree(counter);

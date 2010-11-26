@@ -158,7 +158,7 @@ namespace analysis
 
         ir::PTXInstruction mad(ir::PTXInstruction::Mad);
         mad.type = type;
-        mad.modifier = ir::PTXInstruction::Lo;
+        mad.modifier = ir::PTXInstruction::lo;
         mad.d.addressMode = ir::PTXOperand::Register;
         mad.d.type = type;
         mad.d.reg = ctaid;

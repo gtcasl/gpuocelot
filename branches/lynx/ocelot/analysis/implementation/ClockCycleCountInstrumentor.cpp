@@ -30,21 +30,20 @@ using namespace hydrazine;
 
 namespace analysis
 {
-	void ClockCycleCountInstrumentor::jsonEmitter(size_t* counter, int ctaNum)
+	void ClockCycleCountInstrumentor::jsonEmitter(size_t* info)
 	{
-		json::Object *bbcStat = new json::Object;
+		json::Object *clockCyclesStat = new json::Object;
 		json::Object *column;
 	
-		/* per thread BB execution count */
 		column = new json::Object;
 		json::Number *valueCC;
-		bbcStat->dictionary["per_CTA_per_SM_clock_cycle_count"] = column;
+		clockCyclesStat->dictionary["per_CTA_per_SM_clock_cycle_count"] = column;
 		
-		for(int i=0; i<ctaNum; i++)
+		for(unsigned int i = 0; i< threadBlocks; i++)
 		{
 			std::stringstream thread;
-			thread << i << "." << counter[i*2+1];
-			valueCC = new json::Number((int)counter[i*2+0]);
+			thread << i << "." << info[i*2+1];
+			valueCC = new json::Number((int)info[i*2+0]);
 			column->dictionary[thread.str()] = valueCC;
 		}
 	
@@ -58,7 +57,6 @@ namespace analysis
 			outFile.open((kernelName + tmpStr + ".json").c_str(), std::ios::in);	
 			if( outFile.is_open() )
 			{
-				std::cout << "file exists\n";
 				alreadyExists=true;
 				std::stringstream out;
 				out << ".clockCycleCount." << i;
@@ -68,12 +66,12 @@ namespace analysis
 				alreadyExists=false;
 			}
 			outFile.close();
-		}while(alreadyExists);
+		} while(alreadyExists);
 	
 		outFile.open((kernelName + tmpStr + ".json").c_str());
 		json::Emitter emitter;
 		emitter.use_tabs = false;
-		emitter.emit_pretty(outFile, bbcStat, 2);
+		emitter.emit_pretty(outFile, clockCyclesStat, 2);
 	
 		return;
 	}
@@ -116,8 +114,7 @@ namespace analysis
           
 		if(enableJSON)
 		{
-			std::cout << "Printing JSON trace file\n";
-			jsonEmitter(clockSMInfoHost, threadBlocks);
+			jsonEmitter(clockSMInfoHost);
 		} 
 		
         delete[] clockSMInfoHost;

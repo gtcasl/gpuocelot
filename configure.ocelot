@@ -1,13 +1,13 @@
 {
 	ocelot: "ocelot",
     instrument: {
-	logAsJASON: true,
+	logAsJSON: true,
         clockCycleCount: {
-            enabled: false,
+            enabled: true,
             logfile: ""
         },
         basicBlock: {
-            executionCount: true,
+            executionCount: false,
             logfile: ""
         }
     },

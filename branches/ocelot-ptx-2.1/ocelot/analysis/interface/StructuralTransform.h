@@ -17,6 +17,7 @@
 
 #include <ocelot/ir/interface/ControlFlowGraph.h>
 #include <ocelot/analysis/interface/StructuralAnalysis.h> 
+#include <ocelot/analysis/interface/AssignFallThroughEdge.h>
 
 #include <unordered_map>
 
@@ -40,9 +41,6 @@ namespace analysis {
 
     ir::PTXKernel* _kernel;
 
-    // Change the value according to the ValueMap
-    void RemapValue(ir::ControlFlowGraph::iterator BB, ValueToValueMapTy &ValueMap); 
-
     ir::ControlFlowGraph::iterator SplitBlockPredecessors(ir::ControlFlowGraph::iterator BB, BBVecTy::iterator begin, int size);
 
     // Algorithm 2 of Zhang's paper -- elimination of outgoing branches
@@ -57,6 +55,8 @@ namespace analysis {
     bool stopCut;
 
     class StructuralAnalysis SA;
+
+    class AssignFallThroughEdge *AF;
   };
 }
 

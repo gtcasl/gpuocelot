@@ -488,9 +488,11 @@ namespace analysis
 				}
 				else
 				{
-					assertM( false, "Got invalid edge type between " 
+/*					assertM( false, "Got invalid edge type between " 
 						<< begin->second->label() << " and " 
-						<< bi->second->label() );
+						<< bi->second->label() );*/
+					begin->second->_targets.insert( bi->second );
+					bi->second->_predecessors.insert( begin->second );
 				}
 			}
 		}

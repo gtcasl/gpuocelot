@@ -37,7 +37,7 @@ namespace analysis {
     for(ir::ControlFlowGraph::iterator i = _kernel->cfg()->begin(),
                                        e = _kernel->cfg()->end();
                                        i != e; ++i) {
-      NodeTy *n = new NodeTy;
+      NodeCFGTy *n = new NodeCFGTy;
       n->BB = i;
       N.insert(n);
       BB2NodeMap[i] = n;
@@ -46,32 +46,32 @@ namespace analysis {
     for(ir::ControlFlowGraph::iterator i = _kernel->cfg()->begin(),
                                        e = _kernel->cfg()->end();
                                        i != e; ++i) {
-      NodeTy *n = BB2NodeMap[i];
+      NodeCFGTy *n = BB2NodeMap[i];
 
       ir::ControlFlowGraph::BlockPointerVector PredVec = i->predecessors;
 
       for (ir::ControlFlowGraph::BlockPointerVector::iterator PI = PredVec.begin(), E = PredVec.end(); PI != E; ++PI) {
-        NodeTy *p = BB2NodeMap[*PI];
+        NodeCFGTy *p = BB2NodeMap[*PI];
         n->predNode.insert(p);
       }
 
       ir::ControlFlowGraph::BlockPointerVector SuccVec = i->successors;
 
       for (ir::ControlFlowGraph::BlockPointerVector::iterator SI = SuccVec.begin(), E = SuccVec.end(); SI != E; ++SI) {
-        NodeTy *s = BB2NodeMap[*SI];
+        NodeCFGTy *s = BB2NodeMap[*SI];
         n->succNode.insert(s);
       }
     }
   }
 
-  void AssignFallThroughEdge::DFSPostorder(NodeTy *x) {
+  void AssignFallThroughEdge::DFSPostorder(NodeCFGTy *x) {
     visit[x] = true;
     preTree[x] = ++preMax;
 
-    for (NodeSetTy::iterator i = x->succNode.begin(),
+    for (NodeCFGSetTy::iterator i = x->succNode.begin(),
                              e = x->succNode.end();
                              i != e; ++i) {
-      NodeTy *y = *i;
+      NodeCFGTy *y = *i;
 
       if (visit.count(y) == 0) 
         DFSPostorder(y);
@@ -84,9 +84,9 @@ namespace analysis {
   }
 
   void AssignFallThroughEdge::assignBackEdge() {
-    for (EdgeVecTy::iterator i = backEdgeVec.begin(), e = backEdgeVec.end(); i != e; ++i) {
-      NodeTy *srcNode = i->first;
-      NodeTy *dstNode = i->second;
+    for (EdgeCFGVecTy::iterator i = backEdgeVec.begin(), e = backEdgeVec.end(); i != e; ++i) {
+      NodeCFGTy *srcNode = i->first;
+      NodeCFGTy *dstNode = i->second;
       ir::ControlFlowGraph::iterator srcBB = srcNode->BB;
       ir::ControlFlowGraph::iterator dstBB = dstNode->BB;
 
@@ -99,18 +99,18 @@ namespace analysis {
     }
   }
 
-  void AssignFallThroughEdge::findEntryNode(NodeSetTy &S) {
-    for (NodeSetTy::iterator i = N.begin(), e = N.end(); i != e; ++i) {
+  void AssignFallThroughEdge::findEntryNode(NodeCFGSetTy &S) {
+    for (NodeCFGSetTy::iterator i = N.begin(), e = N.end(); i != e; ++i) {
       if ((*i)->predNode.size() == 0)
         S.insert(*i); 
     }
   }
 
-  NodeTy * AssignFallThroughEdge::pickOneNode(NodeSetTy &S) {
+  NodeCFGTy * AssignFallThroughEdge::pickOneNode(NodeCFGSetTy &S) {
     int min = preMax + 1;
-    NodeTy *tmpNode = NULL;
+    NodeCFGTy *tmpNode = NULL;
 
-    for (NodeSetTy::iterator i = S.begin(), e = S.end(); i != e; ++i) {
+    for (NodeCFGSetTy::iterator i = S.begin(), e = S.end(); i != e; ++i) {
       if (preTree[*i] < min) {
         min = preTree[*i];
         tmpNode = *i;
@@ -121,21 +121,22 @@ namespace analysis {
   }
 
   void AssignFallThroughEdge::topoSort() {
-    NodeSetTy S;
+    NodeCFGSetTy S;
 
     findEntryNode(S);
     sortedNodes.clear();
   
     while (S.size() > 0) { 
-      NodeTy *n = pickOneNode(S);
-      
+      NodeCFGTy *n = pickOneNode(S);
+      S.erase(n);     
+ 
       sortedNodes.push_back(n);
       sortedVal[n] = sortedMax++;
 
-      for (NodeSetTy::iterator i = n->succNode.begin(),
+      for (NodeCFGSetTy::iterator i = n->succNode.begin(),
                                e = n->succNode.end();
                                i != e; ++i) { 
-        NodeTy *succ = *i;
+        NodeCFGTy *succ = *i;
 
         succ->predNode.erase(n); 
 
@@ -154,7 +155,7 @@ namespace analysis {
       ir::PTXInstruction *term = static_cast<ir::PTXInstruction *>(i->instructions.back());
 
       if (term->opcode == ir::PTXInstruction::Bra) {
-        if (!term->uni) {
+        if (i->out_edges.size() == 2) {
           ir::ControlFlowGraph::edge_iterator braEdge = i->get_branch_edge();
           ir::ControlFlowGraph::iterator braDst = braEdge->tail;
 
@@ -189,10 +190,12 @@ namespace analysis {
         if (i->has_branch_edge()) { 
           ir::ControlFlowGraph::edge_iterator braEdge = i->get_branch_edge();
           ir::ControlFlowGraph::iterator braDst = braEdge->tail;
-          term->d = std::move(ir::PTXOperand(braDst->label));
-        } else {
-          i->instructions.pop_back();
-        }
+
+          ir::PTXInstruction* branch = new ir::PTXInstruction(ir::PTXInstruction::Bra);
+          branch->uni = true;
+          branch->d = std::move(ir::PTXOperand(braDst->label));
+          i->instructions.push_back(branch);
+        } 
       }
     }
   }
@@ -200,7 +203,7 @@ namespace analysis {
   void AssignFallThroughEdge::assignEdges() {
     buildSimpleCFG();
 
-    NodeTy *entry = BB2NodeMap[_kernel->cfg()->get_entry_block()];
+    NodeCFGTy *entry = BB2NodeMap[_kernel->cfg()->get_entry_block()];
 
     postMax = preMax = 0;
 
@@ -214,8 +217,8 @@ namespace analysis {
 
     hasIncomingFallThroughNode.clear();
 
-    for (NodeVecTy::iterator i = sortedNodes.begin(), e = sortedNodes.end(); i != e; ++i) {
-      NodeTy *node = *i;
+    for (NodeCFGVecTy::iterator i = sortedNodes.begin(), e = sortedNodes.end(); i != e; ++i) {
+      NodeCFGTy *node = *i;
       ir::ControlFlowGraph::iterator BB = node->BB;
       ir::BasicBlock::EdgePointerVector edges = BB->out_edges;
 
@@ -227,9 +230,9 @@ namespace analysis {
 
         if (edge1->type == ir::Edge::Dummy && edge2->type == ir::Edge::Dummy) {
           ir::ControlFlowGraph::iterator dstBB1 = edge1->tail;
-          NodeTy *dstNode1 = BB2NodeMap[dstBB1];
+          NodeCFGTy *dstNode1 = BB2NodeMap[dstBB1];
           ir::ControlFlowGraph::iterator dstBB2 = edge2->tail;
-          NodeTy *dstNode2 = BB2NodeMap[dstBB2];
+          NodeCFGTy *dstNode2 = BB2NodeMap[dstBB2];
     
           ir::ControlFlowGraph::iterator closeBB, remoteBB;
     

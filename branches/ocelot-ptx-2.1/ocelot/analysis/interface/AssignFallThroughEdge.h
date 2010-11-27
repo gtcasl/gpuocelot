@@ -32,18 +32,18 @@ namespace ir {
 }
 
 namespace analysis {
-  typedef struct Node {
+  typedef struct NodeCFG {
     ir::ControlFlowGraph::iterator BB;  // Map to the corresponding ir::BasicBlock * if it is original
-    std::set<struct Node *> predNode; // Predecessor of the node
-    std::set<struct Node *> succNode; // Successor of the node
-  } NodeTy;
+    std::set<struct NodeCFG *> predNode; // Predecessor of the node
+    std::set<struct NodeCFG *> succNode; // Successor of the node
+  } NodeCFGTy;
 
-  typedef std::unordered_map<ir::ControlFlowGraph::iterator, NodeTy *> BB2NodeMapTy;
-  typedef std::set<NodeTy *> NodeSetTy;
-  typedef std::vector<NodeTy *> NodeVecTy;
-  typedef std::pair<NodeTy *, NodeTy *> EdgeTy;
-  typedef std::vector<EdgeTy> EdgeVecTy;
-  typedef std::map<NodeTy *, bool> VisitMapTy;
+  typedef std::unordered_map<ir::ControlFlowGraph::iterator, NodeCFGTy *> BB2NodeCFGMapTy;
+  typedef std::set<NodeCFGTy *> NodeCFGSetTy;
+  typedef std::vector<NodeCFGTy *> NodeCFGVecTy;
+  typedef std::pair<NodeCFGTy *, NodeCFGTy *> EdgeCFGTy;
+  typedef std::vector<EdgeCFGTy> EdgeCFGVecTy;
+  typedef std::map<NodeCFGTy *, bool> VisitMapCFGTy;
 
   class AssignFallThroughEdge {
   public:
@@ -56,33 +56,33 @@ namespace analysis {
   private:
     ir::PTXKernel* _kernel;
 
-    BB2NodeMapTy BB2NodeMap;    
+    BB2NodeCFGMapTy BB2NodeMap;    
 
-    NodeSetTy N;
+    NodeCFGSetTy N;
 
     int postMax, preMax, sortedMax;
 
-    VisitMapTy visit;
+    VisitMapCFGTy visit;
     
     std::unordered_set<ir::ControlFlowGraph::iterator> hasIncomingFallThroughNode;
 
-    std::map<NodeTy *, int> preTree, postTree, sortedVal;
+    std::map<NodeCFGTy *, int> preTree, postTree, sortedVal;
 
-    EdgeVecTy backEdgeVec;
+    EdgeCFGVecTy backEdgeVec;
 
-    NodeVecTy sortedNodes;
+    NodeCFGVecTy sortedNodes;
  
     void buildSimpleCFG();
 
-    void DFSPostorder(NodeTy *x);
+    void DFSPostorder(NodeCFGTy *x);
 
     void assignBackEdge();
 
     void topoSort();
 
-    void findEntryNode(NodeSetTy &S);
+    void findEntryNode(NodeCFGSetTy &S);
 
-    NodeTy *pickOneNode(NodeSetTy &S);
+    NodeCFGTy *pickOneNode(NodeCFGSetTy &S);
 
     void adjustBraInst();
   };

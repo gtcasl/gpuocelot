@@ -1707,7 +1707,7 @@ BEGIN:
  
     cleanupUnreachable();
  
-//    dumpCTNode(*(Net.begin()));
+    dumpCTNode(*(Net.begin()));
   
     dumpUnstructuredBR();
   

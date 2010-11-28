@@ -28,12 +28,9 @@ namespace analysis
             /*! \brief The description of the specified pass */
             std::string description;
 			
-		//public:
+		public:
 			/*! \brief The default constructor */
-			BasicBlockInstrumentor();
-
-            /*! \brief The constructor that sets the defaults */
-            BasicBlockInstrumentor(const std::string input, const std::string output, unsigned int ctas, unsigned int threads );
+			BasicBlockInstrumentor(); 
 
             /*! \brief The analyze method performs any necessary static analysis */
             virtual void analyze(ir::Module &module);
@@ -46,6 +43,12 @@ namespace analysis
 
             /*! \brief The finalize method performs any necessary CUDA runtime actions after instrumentation */
             void finalize();	
+
+            /*! \brief extracts results for the basic block execution count instrumentation */
+            size_t* extractResults(std::ostream *out);
+
+            /*! \brief emits JSON for the basic block execution count instrumentation */
+            void emitJSON(size_t* info);
 	};
 
 }

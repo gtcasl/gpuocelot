@@ -27,9 +27,6 @@ namespace analysis
 			/*! \brief The default constructor */
 			ClockCycleCountInstrumentor();
 
-            /*! \brief The constructor that sets the defaults */
-            ClockCycleCountInstrumentor(const std::string input, const std::string output, unsigned int ctas, unsigned int threads );
-
             /*! \brief The analyze method performs any necessary static analysis */
             virtual void analyze(ir::Module &module);
 
@@ -42,7 +39,11 @@ namespace analysis
             /*! \brief The finalize method performs any necessary CUDA runtime actions after instrumentation */
             void finalize();	
 
-            void jsonEmitter(size_t* info);
+            /*! \brief extracts results for the clock cycle count instrumentation */
+            size_t* extractResults(std::ostream *out);
+
+            /*! \brief emits JSON for the clock cycle count instrumentation */
+            void emitJSON(size_t* info);
 	};
 }
 

@@ -14,6 +14,7 @@
 #include <ocelot/ir/interface/Module.h>
 
 #include <hydrazine/implementation/Exception.h>
+#include <hydrazine/implementation/json.h>
 
 #include <fstream>
 
@@ -82,21 +83,62 @@ namespace analysis
 
     }
 
-    void PTXInstrumentor::setup() {
+    void PTXInstrumentor::finalize() {
+
+        size_t *info = 0;
+        std::ostream *out;
+
         if(!output.empty()){
             out = new std::ofstream(output.c_str(), std::fstream::app);
 		}
         else {
 			   out = &std::cout;
 		}
-    }
 
+        info = extractResults(out);
 
-    void PTXInstrumentor::cleanup() {
+        if(enableJSON)
+		{
+			emitJSON(info);
+		} 
+		
+        if(info)
+            delete[] info;
+
         if(out != &std::cout && out != NULL){
             delete out;
         }
     }
+
+    void PTXInstrumentor::jsonEmitter(std::string metric, hydrazine::json::Object *stats) {
+   
+		std::ofstream outFile;
+
+		std::string tmp = "." + metric;
+		int i = 1;
+		bool alreadyExists = true;
+		do {
+			outFile.open((kernelName + tmp + ".json").c_str(), std::ios::in);	
+			if( outFile.is_open() )
+			{
+				std::stringstream out;
+				out << "." << metric << "." << i;
+				tmp = out.str();
+				i++;
+			} else {
+				alreadyExists = false;
+			}
+            outFile.close();
+		} while(alreadyExists);
+	
+		outFile.open((kernelName + tmp + ".json").c_str());
+		hydrazine::json::Emitter emitter;
+		emitter.use_tabs = false;
+		emitter.emit_pretty(outFile, stats, 2);
+        outFile.close();
+
+    }
+
 }
 
 #endif

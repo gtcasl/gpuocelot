@@ -46,12 +46,13 @@ namespace analysis
         return new analysis::BasicBlockExecutionCountPass;           
     }
 
-    void BasicBlockInstrumentor::finalize() {
+    size_t* BasicBlockInstrumentor::extractResults(std::ostream *out) {
 
-        size_t *counterHost = new size_t[basicBlocks * threads * threadBlocks];
-        cudaMemcpy(counterHost, counter, basicBlocks * threads * threadBlocks * sizeof( size_t ), cudaMemcpyDeviceToHost);
-       
-        setup();
+        size_t *info = new size_t[basicBlocks * threads * threadBlocks];
+        if(counter) {
+            cudaMemcpy(info, counter, basicBlocks * threads * threadBlocks * sizeof( size_t ), cudaMemcpyDeviceToHost);
+            cudaFree(counter);
+        }
 
         *out << "\n\n" << kernelName << ":\n";
         *out << "\n--------------- " << description << " ---------------\n\n";
@@ -65,15 +66,16 @@ namespace analysis
             for(i = 0; i < threads; i++) {
                 *out << "Thread " << (i + 1) << ":\n";
                 for(j = 0; j < basicBlocks; j++) {
-                    *out << "basicBlock " << (j + 1) << ": " << counterHost[basicBlocks] << "\n";
+                    *out << "basicBlock " << (j + 1) << ": " << info[basicBlocks] << "\n";
                 }
             }   
         }
+        
+        return info;
+    }
 
-        cleanup();
+    void BasicBlockInstrumentor::emitJSON(size_t *info) {
 
-        delete[] counterHost;
-        cudaFree(counter);
     }
 
     BasicBlockInstrumentor::BasicBlockInstrumentor() : description("Basic Block Execution Count Per Thread") {

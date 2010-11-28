@@ -11,6 +11,7 @@
 #include <vector>
 #include <ocelot/ir/interface/Module.h>
 #include <ocelot/analysis/interface/Pass.h>
+#include <hydrazine/implementation/json.h>
 
 #include <ostream>
 
@@ -29,9 +30,6 @@ namespace analysis
 			
 			/*! \brief The output file being generated */
 			std::string output;
-
-            /*! \brief The output stream being used to write results */
-            std::ostream* out;
             
             /*! \brief The PTX module being instrumented */
             ir::Module *module;
@@ -50,28 +48,34 @@ namespace analysis
 			
 			
 		public:
-			
-            /*! \brief The initialize method performs any necessary CUDA runtime initialization prior to instrumentation */
-            virtual void initialize() = 0;
-
-            /*! \brief The createPass method instantiates the instrumentation pass */
-            virtual analysis::Pass *createPass() = 0;
+		
 
             /*! \brief The analyze method performs any necessary static analysis */
             virtual void analyze(ir::Module &module) = 0;
 
-            /*! \brief The finalize method performs any necessary CUDA runtime actions after instrumentation */
-            virtual void finalize() = 0;
-
-			/*! \brief Performs the instrumentation */
+            /*! \brief Performs the instrumentation */
 			void instrument();		
 
             /*! \brief Performs the instrumentation */
             void instrument(ir::Module& module);	
 
-        protected:
-            void setup();
-            void cleanup();
+            /*! \brief The initialize method performs any necessary CUDA runtime initialization prior to instrumentation */
+            virtual void initialize() = 0;
+
+            /*! \brief The finalize method performs any necessary CUDA runtime actions after instrumentation */
+            void finalize();
+
+            /*! \brief The createPass method instantiates the instrumentation pass */
+            virtual analysis::Pass *createPass() = 0;
+
+            /*! \brief The jsonEmitter method creates a JSON emitter to display JSON */
+            void jsonEmitter(std::string metric, hydrazine::json::Object *stats);
+
+            /*! \brief Instrumentation-specific JSON */
+            virtual void emitJSON(size_t * info) = 0;
+
+            /*! \brief Extracts instrumentation-specific data */
+            virtual size_t* extractResults(std::ostream *out) = 0;
 	};
 
     typedef std::vector< PTXInstrumentor *> PTXInstrumentorVector;

@@ -70,10 +70,14 @@ namespace analysis
 	{
         if(info == NULL)
             return;
-
+		
 		json::Object *clockCyclesStat = new json::Object;
 		json::Object *column;
-	
+		
+		/* insert device name */
+		column = new json::Object;
+		clockCyclesStat->dictionary["device"] = new json::String(deviceName);
+		
 		column = new json::Object;
 		json::Number *valueCC;
 		clockCyclesStat->dictionary["per_CTA_clock_cycle_count"] = column;

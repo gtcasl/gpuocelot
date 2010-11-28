@@ -409,6 +409,7 @@ nobase_include_HEADERS = ocelot/api/interface/ocelot.h \
 	ocelot/analysis/interface/PassManager.h \
     ocelot/analysis/interface/PTXInstrumentor.h \
     ocelot/analysis/interface/ClockCycleCountInstrumentor.h \
+    ocelot/analysis/interface/BasicBlockInstrumentor.h \
 	ocelot/analysis/test/TestDataflowGraph.h \
 	ocelot/ir/interface/Kernel.h \
 	ocelot/ir/interface/Module.h \

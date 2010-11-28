@@ -4,7 +4,7 @@
 	\brief The source file for the BasicBlockInstrumentor class.
 */
 
-#ifndef BASIC_BLOCK_EXECUTION_INSTRUMENTOR_CPP_INCLUDED
+#ifndef BASIC_BLOCK_INSTRUMENTOR_CPP_INCLUDED
 #define BASIC_BLOCK_INSTRUMENTOR_CPP_INCLUDED
 
 #include <ocelot/analysis/interface/BasicBlockInstrumentor.h>

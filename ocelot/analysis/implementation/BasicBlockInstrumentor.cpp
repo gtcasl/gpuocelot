@@ -76,14 +76,22 @@ namespace analysis
         return info;
     }
 
-    void BasicBlockInstrumentor::emitJSON(size_t *info) {
+    void BasicBlockInstrumentor::emitJSON(size_t *info) 
+    {
+    	if(info == NULL)
+            return;
+		
 		json::Object *basicBlockStat = new json::Object;
 		json::Object *column;
-	
+		json::Number *valueBBC;
+		
+		/* device name */
+		column = new json::Object;
+		basicBlockStat->dictionary["device"] = new json::String(deviceName);
+		
 		/* per thread BB execution count */
 		column = new json::Object;
-		json::Number *valueBBC;
-		basicBlockStat->dictionary["per_thread_BB_execution_count"] = column;
+		basicBlockStat->dictionary["per_thread_BB_execution_count2"] = column;
 		for(unsigned int i=0; i<threadBlocks; i++)
 		{
 			for(unsigned int j=0; j<threads; j++)

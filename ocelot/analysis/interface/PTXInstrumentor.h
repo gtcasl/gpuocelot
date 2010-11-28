@@ -24,6 +24,9 @@ namespace analysis
 
 			/*! \brief Enables automatic output as JSON */
 			bool enableJSON;
+
+			/*! \brief device name for JSON output */
+			std::string deviceName;
 			
 			/*! \brief The input file being instrumented */
 			std::string input;
@@ -70,7 +73,7 @@ namespace analysis
 
             /*! \brief The jsonEmitter method creates a JSON emitter to display JSON */
             void jsonEmitter(std::string metric, hydrazine::json::Object *stats);
-
+			
             /*! \brief Instrumentation-specific JSON */
             virtual void emitJSON(size_t * info) = 0;
 

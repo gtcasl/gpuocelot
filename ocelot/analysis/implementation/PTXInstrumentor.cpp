@@ -10,6 +10,8 @@
 #include <ocelot/analysis/interface/PTXInstrumentor.h>
 #include <ocelot/api/interface/ocelot.h>
 
+#include <ocelot/cuda/interface/cuda_runtime.h>
+
 #include <ocelot/analysis/interface/PassManager.h>
 #include <ocelot/ir/interface/Module.h>
 
@@ -99,6 +101,9 @@ namespace analysis
 
         if(enableJSON)
 		{
+			cudaDeviceProp deviceProp;
+        	cudaGetDeviceProperties(&deviceProp, 0);
+        	deviceName = deviceProp.name;
 			emitJSON(info);
 		} 
 		

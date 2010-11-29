@@ -76,6 +76,8 @@ namespace analysis {
 
     void DFSPostorder(NodeCFGTy *x);
 
+    void assignExitNode();
+
     void assignBackEdge();
 
     void topoSort();

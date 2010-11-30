@@ -119,6 +119,8 @@ static void initializeInstrument(api::OcelotConfiguration::Instrumentation &inst
 static void initializeTrace(api::OcelotConfiguration::TraceGeneration &trace, 
 	hydrazine::json::Visitor config) 
 {
+	trace.resourceMonitor = config.parse<bool>("resourceMonitor", false);
+	
 	trace.memoryChecker = config.parse<bool>("memoryChecker", true);
     
     hydrazine::json::Visitor raceConfig = config["raceDetector"];

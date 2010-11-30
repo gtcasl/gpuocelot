@@ -18,7 +18,11 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
+
+#ifdef NDEBUG
+#undef NDEBUG
+#endif
 
 namespace ocelot
 {
@@ -33,6 +37,11 @@ namespace ocelot
 		{
 			report( "Creating memory checker" );
 			ocelot::addTraceGenerator( _memoryChecker, true );
+		}
+		if (c.trace.resourceMonitor)
+		{
+			report( "Creating resource monitor" );
+			ocelot::addTraceGenerator( _resourceMonitor, true );
 		}
 		if (c.trace.raceDetector.enabled)
 		{

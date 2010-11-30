@@ -5,17 +5,21 @@
 */
 
 #include <ocelot/executive/interface/NVIDIAExecutableKernel.h>
+#include <ocelot/trace/interface/TraceGenerator.h>
 
 #include <hydrazine/implementation/debug.h>
 #include <hydrazine/implementation/Exception.h>
 #include <hydrazine/implementation/macros.h>
 
-
 #ifdef REPORT_BASE
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
+
+#ifdef NDEBUG
+#undef NDEBUG
+#endif
 
 #define Ocelot_Exception(x) { std::stringstream ss; ss << x; report(ss.str()); \
 	throw hydrazine::Exception(ss.str()); }
@@ -67,6 +71,13 @@ void executive::NVIDIAExecutableKernel::launchGrid(int width, int height) {
 		<< ", " << height << ")");
 	CUresult result;
 
+	// notify trace generator(s)
+	std::cout << "initializing trace generator!\n";
+	for (TraceGeneratorVector::iterator it = _generators.begin(); 
+		it != _generators.end(); ++it) {
+		(*it)->initialize(*this);
+	}
+	
 	result = cuda::CudaDriver::cuLaunchGrid(cuFunction, width, height);
 	if (result != CUDA_SUCCESS) {
 		report("  - cuLaunchGrid() failed: " << result);
@@ -85,8 +96,9 @@ void executive::NVIDIAExecutableKernel::setKernelShape(int x, int y, int z) {
 	}
 }
 
-void executive::NVIDIAExecutableKernel::setDevice(const Device* device,
+void executive::NVIDIAExecutableKernel::setDevice( Device* d,
 	unsigned int limit) {
+	device = d;
 }
 
 void executive::NVIDIAExecutableKernel::setExternSharedMemorySize(unsigned int bytes) {
@@ -125,16 +137,34 @@ void executive::NVIDIAExecutableKernel::updateConstantMemory() {
 }
 
 void executive::NVIDIAExecutableKernel::addTraceGenerator(
-	trace::TraceGenerator *generator)
-{
-	assertM(false, "No trace generation support in GPU kernel.");
+        trace::TraceGenerator *generator) {
+        report( "executive::NVIDIAExecutableKernel::added trace generator");
+        _generators.push_back(generator);
 }
 
 void executive::NVIDIAExecutableKernel::removeTraceGenerator(
-	trace::TraceGenerator *generator)
-{
-	assertM(false, "No trace generation support in GPU kernel.");	
+        trace::TraceGenerator *generator) {
+        TraceGeneratorVector temp = std::move(_generators);
+        for (TraceGeneratorVector::iterator gi = temp.begin();
+                gi != temp.end(); ++gi) {
+                if (*gi != generator) {
+                        _generators.push_back(*gi);
+                }
+        }
 }
+
+/*/
+void executive::NVIDIAExecutableKernel::addTraceGenerator(
+        trace::TraceGenerator *generator)
+{
+        assertM(false, "No trace generation support in GPU kernel.");
+}
+void executive::NVIDIAExecutableKernel::removeTraceGenerator(
+        trace::TraceGenerator *generator)
+{
+        assertM(false, "No trace generation support in GPU kernel.");   
+}
+//*/
 
 void executive::NVIDIAExecutableKernel::setWorkerThreads(unsigned int limit) {
 

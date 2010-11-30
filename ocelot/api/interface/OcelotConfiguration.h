@@ -83,6 +83,9 @@ namespace api {
 		public:
 			//! \brief Check memory errors
 			bool memoryChecker;
+
+			//! \brief Monitors resource usage in proc entry
+			bool resourceMonitor;
 			
 			//! \brief Race detection
 			RaceDetector raceDetector;

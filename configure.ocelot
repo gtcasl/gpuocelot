@@ -14,6 +14,7 @@
 	trace: { 
 		enabled: true,
 		database: "traces/database.trace",
+		resourceMonitor: true,
 		memoryChecker: true,
 		raceDetector: {
 			enabled: true,
@@ -50,7 +51,7 @@
 		runtimeApiTrace: "trace/CudaAPI.trace"
 	},
 	executive: {
-		devices: [ nvidia, emulated, llvm ],
+		devices: [ nvidia ],
 		optimizationLevel: basic,
 		workerThreadLimit: 2
 	}

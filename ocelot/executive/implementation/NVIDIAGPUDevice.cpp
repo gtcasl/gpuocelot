@@ -818,6 +818,28 @@ namespace executive
 		return getMemoryAllocation(global->second, DeviceAllocation);
 	}
 
+	unsigned int NVIDIAGPUDevice::getTotalGlobalAllocation() const
+	{
+		Device::MemoryAllocation* allocation;
+		unsigned int globalAllocation = 0;
+		for(ModuleMap::const_iterator module = _modules.begin(); 
+			module != _modules.end(); ++module)
+		{
+			if(module->second.globals.empty()) continue;
+
+			for(Module::GlobalMap::const_iterator
+				global = module->second.globals.begin();
+				global != module->second.globals.end();
+				++global)
+			{
+				allocation = getMemoryAllocation(global->second, 
+						DeviceAllocation);
+				globalAllocation += (unsigned int)allocation->size();
+			}
+		}
+		return globalAllocation;
+	}
+
 	Device::MemoryAllocation* NVIDIAGPUDevice::allocate(size_t size)
 	{
 		MemoryAllocation* allocation = new MemoryAllocation(size);
@@ -1423,12 +1445,21 @@ namespace executive
 		kernel->updateParameterMemory();
 		kernel->updateMemory();
 		kernel->setExternSharedMemorySize(sharedMemory);
+		kernel->setDevice(this, 0);
 		
 		for(ArrayMap::iterator array = _arrays.begin(); 
 			array != _arrays.end(); ++array)
 		{
 			if(array->second != 0) array->second->update();
 		}
+
+		for(trace::TraceGeneratorVector::const_iterator 
+			gen = traceGenerators.begin(); 
+			gen != traceGenerators.end(); ++gen) 
+		{
+			kernel->addTraceGenerator(*gen);
+		}
+
 		
 		kernel->launchGrid(grid.x, grid.y);
 		synchronize();

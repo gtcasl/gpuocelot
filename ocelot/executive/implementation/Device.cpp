@@ -171,3 +171,8 @@ int executive::Device::runtimeVersion() const {
 	return _runtimeVersion;
 }
 
+unsigned int executive::Device::getTotalGlobalAllocation() const
+{
+	return -1;
+}
+

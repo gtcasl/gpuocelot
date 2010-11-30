@@ -5578,14 +5578,36 @@ namespace translator
 			}
 			case ir::PTXOperand::smid:
 			{
-				assertM( false, "Special register " 
-					<< ir::PTXOperand::toString( s ) << " not supported." );
+				ir::LLVMCall call;
+				
+				call.name = "@__ocelot_smid";
+				call.d.type.category = ir::LLVMInstruction::Type::Element;
+				call.d.type.type = ir::LLVMInstruction::I32;
+				call.d.name = _tempRegister();
+				
+				call.parameters.resize( 1 );
+				call.parameters[0] = _context();
+				
+				_add( call );
+				
+				return call.d.name;
 				break;
 			}
 			case ir::PTXOperand::nsmid:
 			{
-				assertM( false, "Special register " 
-					<< ir::PTXOperand::toString( s ) << " not supported." );
+				ir::LLVMCall call;
+				
+				call.name = "@__ocelot_nsmid";
+				call.d.type.category = ir::LLVMInstruction::Type::Element;
+				call.d.type.type = ir::LLVMInstruction::I32;
+				call.d.name = _tempRegister();
+				
+				call.parameters.resize( 1 );
+				call.parameters[0] = _context();
+				
+				_add( call );
+				
+				return call.d.name;
 				break;
 			}
 			case ir::PTXOperand::gridId:

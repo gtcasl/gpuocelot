@@ -15,7 +15,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 #ifdef NDEBUG
 #undef NDEBUG
@@ -72,7 +72,6 @@ void executive::NVIDIAExecutableKernel::launchGrid(int width, int height) {
 	CUresult result;
 
 	// notify trace generator(s)
-	std::cout << "initializing trace generator!\n";
 	for (TraceGeneratorVector::iterator it = _generators.begin(); 
 		it != _generators.end(); ++it) {
 		(*it)->initialize(*this);

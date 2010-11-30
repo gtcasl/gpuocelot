@@ -3,9 +3,9 @@
 	trace: { 
 		enabled: true,
 		database: "traces/database.trace",
-		memoryChecker: true,
+		memoryChecker: false,
 		raceDetector: {
-			enabled: true,
+			enabled: false,
 			ignoreIrrelevantWrites: true
 		},
 		debugger: {
@@ -39,7 +39,7 @@
 		runtimeApiTrace: "trace/CudaAPI.trace"
 	},
 	executive: {
-		devices: [ llvm ],
+		devices: [ nvidia ],
 		optimizationLevel: basic,
 		workerThreadLimit: 2
 	}

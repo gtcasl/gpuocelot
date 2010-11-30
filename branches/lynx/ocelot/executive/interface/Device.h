@@ -170,6 +170,8 @@ namespace executive
 			/*! \brief Get the address of a global by name */
 			virtual MemoryAllocation* getGlobalAllocation(
 				const std::string& module, const std::string& name) = 0;
+			/*! \brief Get size of total global allocation */
+			virtual unsigned int getTotalGlobalAllocation() const;
 			/*! \brief Allocate some new dynamic memory on this device */
 			virtual MemoryAllocation* allocate(size_t size) = 0;
 			/*! \brief Make this a host memory allocation */

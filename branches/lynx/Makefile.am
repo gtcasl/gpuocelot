@@ -100,6 +100,7 @@ libocelot_la_SOURCES = \
 	ocelot/trace/implementation/TraceEvent.cpp \
 	ocelot/trace/implementation/TraceGenerator.cpp \
 	ocelot/trace/implementation/MemoryChecker.cpp \
+	ocelot/trace/implementation/ResourceMonitor.cpp \
 	ocelot/trace/implementation/MemoryRaceDetector.cpp \
 	ocelot/trace/implementation/InteractiveDebugger.cpp \
 	ocelot/executive/implementation/ExecutableKernel.cpp \
@@ -392,6 +393,7 @@ nobase_include_HEADERS = ocelot/api/interface/ocelot.h \
 	ocelot/trace/interface/TraceGenerator.h \
 	ocelot/trace/interface/MemoryRaceDetector.h \
 	ocelot/trace/interface/MemoryChecker.h \
+	ocelot/trace/interface/ResourceMonitor.h \
 	ocelot/parser/interface/PTXLexer.h \
 	ocelot/parser/interface/Parser.h \
 	ocelot/parser/interface/PTXParser.h \

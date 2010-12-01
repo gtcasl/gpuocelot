@@ -353,13 +353,17 @@ void executive::EmulatedKernel::initializeArgumentMemory() {
 		ir::Parameter& argument = *i_it;
 		// align parameter memory
 		unsigned int padding = argument.getAlignment() 
-			- ( _parameterMemorySize % argument.getAlignment() );
+			- ( _argumentMemorySize % argument.getAlignment() );
 		padding = (argument.getAlignment() == padding) ? 0 : padding;
+		
+		report("  offset: " << _argumentMemorySize << ", alignment: " << argument.getAlignment() << ", padding: " << padding);
 		_argumentMemorySize += padding;
 		argument.offset = _argumentMemorySize;
+		
 		report( " Initializing memory for argument " << argument.name 
 			<< " of size " << argument.getSize() << " at offset "
-			<< _argumentMemorySize );
+			<< argument.offset << " with " << padding << " bytes padding from previous element" );
+			
 		_argumentMemorySize += argument.getSize();
 	}
 	ArgumentMemory = new char[_argumentMemorySize];
@@ -383,10 +387,19 @@ void executive::EmulatedKernel::updateArgumentMemory() {
 			unsigned int padding = argument.getAlignment()
 				- (size % argument.getAlignment());
 			padding = (argument.getAlignment() == padding) ? 0 : padding;
+			
+			report("  offset: " << size << ", alignment: " << argument.getAlignment() << ", padding: " << padding);
+			
 			size += padding;
+			
 			for(ir::Parameter::ValueVector::iterator
 				v_it = argument.arrayValues.begin();
 				v_it != argument.arrayValues.end(); ++v_it) {
+
+				report( " updating memory for argument " << argument.name 
+					<< " of size " << argument.getSize() << " at offset "
+					<< argument.offset );
+			
 				assert(size < _argumentMemorySize);
 				memcpy(ArgumentMemory + size, &v_it->val_b16,
 					argument.getElementSize());

@@ -90,6 +90,7 @@ public:
 			unsigned int parameterSize;
 			unsigned int argumentSize;
 			unsigned int constantSize;
+			unsigned int warpSize;
 		};
 	
 	public:

@@ -47,7 +47,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 namespace executive
 {
@@ -777,6 +777,7 @@ static LLVMModuleManager::KernelAndTranslation::MetaData* generateMetadata(
 	}
 	
 	metadata->kernel = &kernel;
+	metadata->warpSize = 1;
 	
 	return metadata;
 }
@@ -898,7 +899,7 @@ static void codegen(LLVMModuleManager::Function& function, llvm::Module& module,
 	std::string name = "_Z_ocelotTranslated_" + kernel.name;
 	
 	llvm::Function* llvmFunction = module.getFunction(name);
-
+	
 	assertM(llvmFunction != 0, "Could not find function " + name);
 	function = hydrazine::bit_cast<LLVMModuleManager::Function>(
 		LLVMState::jit()->getPointerToFunction(llvmFunction));

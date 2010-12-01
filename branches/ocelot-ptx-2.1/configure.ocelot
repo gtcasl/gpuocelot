@@ -19,9 +19,10 @@
 		runtimeApiTrace: "trace/CudaAPI.trace"
 	},
 	executive: {
-		devices: [ llvm ],
-		optimizationLevel: none,
-		workerThreadLimit: 1
+		devices: [ nvidia ],
+		optimizationLevel: report,
+		workerThreadLimit: 1,
+		warpSize: 1
 	}
 }
 

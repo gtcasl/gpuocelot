@@ -46,7 +46,7 @@ namespace ir {
 		static std::string value(const Parameter& p);
 
 	public:
-		explicit Parameter(const PTXStatement& statement, bool arg);
+		explicit Parameter(const PTXStatement& statement, bool arg, bool isReturn = false);
 		Parameter();
 		~Parameter();
 
@@ -79,6 +79,9 @@ namespace ir {
 
 		/*! \brief Is this kernel argument */
 		bool argument;
+		
+		/*! \brief is this a return argument? */
+		bool returnArgument;
 
 		/*	Runtime bindings */
 	public:

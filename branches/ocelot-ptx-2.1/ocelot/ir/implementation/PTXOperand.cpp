@@ -694,7 +694,7 @@ std::string ir::PTXOperand::toString() const {
 		}
 		return stream.str();
 	} else if( addressMode == Special ) {
-		if( vec != v1 ) {
+		if( vec != v1 || special == clock ) {
 			return toString( special );
 		}
 		else {

@@ -17,6 +17,9 @@
 #ifndef SUBKERNEL_FORMATION_PASS_CPP_INCLUDED
 #define SUBKERNEL_FORMATION_PASS_CPP_INCLUDED
 
+// Standard Library Includes
+#include <queue>
+
 // Ocelot Includes
 #include <ocelot/analysis/interface/SubkernelFormationPass.h>
 #include <ocelot/ir/interface/Module.h>
@@ -30,9 +33,6 @@
 
 #define REPORT_BASE 0
 
-// Standard Library Includes
-#include <queue>
-
 namespace analysis
 {
 
@@ -40,12 +40,12 @@ SubkernelFormationPass::SubkernelFormationPass(unsigned int e)
 	: ModulePass(DataflowGraphAnalysis, "SubkernelFormationPass"), 
 	_expectedRegionSize(e)
 {
-
+	report("Constructing SubkernelFormationPass() - expected region size: " << e);
 }
 
 void SubkernelFormationPass::runOnModule(ir::Module& m)
 {
-	report("Running SubkernelFormationPass");
+	report("Running SubkernelFormationPass - expected region size: " << _expectedRegionSize);
 	// This pass requires all kernels to be loaded
 	m.loadNow();
 
@@ -760,6 +760,7 @@ void SubkernelFormationPass::ExtractKernelsPass::runOnKernel(ir::Kernel& k)
 	typedef std::vector<ir::ControlFlowGraph::iterator> BlockQueue;
 	
 	report(" Splitting kernel '" << k.name << "' into sub-kernel regions.");
+	report("  - expected region size: " << _expectedRegionSize);
 	
 	BlockQueue queue;
 	KernelVector splitKernels;
@@ -814,7 +815,7 @@ void SubkernelFormationPass::ExtractKernelsPass::runOnKernel(ir::Kernel& k)
 			inEdges.insert((*edge)->head);
 		}
 		
-		// Blocks leaving the region become candidates for the next subkernel
+		// Edges leaving the region become candidates for the next subkernel
 		for(ir::ControlFlowGraph::const_edge_pointer_iterator 
 			edge = block->out_edges.begin(); 
 			edge != block->out_edges.end(); ++edge)
@@ -879,6 +880,25 @@ void SubkernelFormationPass::ExtractKernelsPass::runOnKernel(ir::Kernel& k)
 	updateTailCallTargets(splitKernels, idToKernelMap);
 	
 	addVariables(*splitKernels.front(), k, spillRegionSize);
+
+	// 
+	/*
+	std::cout << "\nSplit kernels:\n";
+	for (KernelVector::const_iterator kern_it = splitKernels.begin(); kern_it != splitKernels.end(); ++kern_it) {
+		std::cout << "\n" << (*kern_it)->name << "\n";
+		
+		ir::ControlFlowGraph::BlockPointerVector blocks = (*kern_it)->cfg()->executable_sequence();
+		ir::ControlFlowGraph::BlockPointerVector::const_iterator block = blocks.begin();
+		
+		for (; block != blocks.end(); ++block) {
+			std::cout << " " << (*block)->label << "\n";
+			for (ir::BasicBlock::InstructionList::const_iterator inst_it = (*block)->instructions.begin(); 
+				inst_it != (*block)->instructions.end(); ++inst_it) {
+				std::cout << "  " << (*inst_it)->toString() << "\n";
+			}
+		}
+	}
+	*/
 
 	kernels.insert(std::make_pair(splitKernels.front(),
 		std::move(splitKernels)));

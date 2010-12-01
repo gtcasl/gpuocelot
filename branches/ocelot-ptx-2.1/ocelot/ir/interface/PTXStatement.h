@@ -150,6 +150,8 @@ namespace ir {
 
 		TypeVector returnTypes;
 		TypeVector argumentTypes;
+		
+		bool isReturnArgument;
 
 	public:
 		PTXStatement( Directive directive = Directive_invalid );

@@ -66,6 +66,7 @@ ir::Parameter::Parameter() {
 	offset = 0;
 	vector = PTXOperand::v1;
 	argument = false;
+	returnArgument = false;
 }
 
 ir::Parameter::~Parameter() {
@@ -73,7 +74,7 @@ ir::Parameter::~Parameter() {
 }
 
 ir::Parameter::Parameter(const PTXStatement& statement,
-	bool arg) : argument(arg) {
+	bool arg, bool isReturn) : argument(arg), returnArgument(isReturn) {
 	type = PTXOperand::u64;
 	offset = 0;
 	

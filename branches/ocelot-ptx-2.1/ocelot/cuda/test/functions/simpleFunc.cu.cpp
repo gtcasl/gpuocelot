@@ -1,7 +1,7 @@
-# 1 "/tmp/tmpxft_000050ab_00000000-1_simpleFunc.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00004f00_00000000-1_simpleFunc.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_000050ab_00000000-1_simpleFunc.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00004f00_00000000-1_simpleFunc.cudafe1.cpp"
 # 1 "simpleFunc.cu"
 # 46 "/usr/local/cuda3.1/cuda/bin/../include/device_types.h"
 # 149 "/usr/lib/gcc/x86_64-linux-gnu/4.4.3/include/stddef.h" 3
@@ -9069,9 +9069,9 @@ printf("%s\n", (errors) ? ("FAILED") : ("Passed"));
 return 0;
 # 58 "simpleFunc.cu"
 }
-# 1 "/tmp/tmpxft_000050ab_00000000-1_simpleFunc.cudafe1.stub.c"
-# 1 "/tmp/tmpxft_000050ab_00000000-1_simpleFunc.cudafe1.stub.c" 1
-# 1 "/tmp/tmpxft_000050ab_00000000-3_simpleFunc.fatbin.c" 1
+# 1 "/tmp/tmpxft_00004f00_00000000-1_simpleFunc.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00004f00_00000000-1_simpleFunc.cudafe1.stub.c" 1
+# 1 "/tmp/tmpxft_00004f00_00000000-3_simpleFunc.fatbin.c" 1
 # 1 "/usr/local/cuda3.1/cuda/bin/../include/__cudaFatFormat.h" 1
 # 83 "/usr/local/cuda3.1/cuda/bin/../include/__cudaFatFormat.h"
 extern "C" {
@@ -9149,7 +9149,7 @@ void __cudaFatFreePTX( char* ptx );
 
 
 }
-# 2 "/tmp/tmpxft_000050ab_00000000-3_simpleFunc.fatbin.c" 2
+# 2 "/tmp/tmpxft_00004f00_00000000-3_simpleFunc.fatbin.c" 2
 
 
 
@@ -9166,9 +9166,9 @@ asm(
 ".quad 0x6170616475635f5f,0x7571735f31666d72,0x2f090a0a29657261,0x2d2d2d2d2d2d2d2f\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2f2f090a2d2d2d2d,0x696c69706d6f4320\n"
-".quad 0x2f706d742f20676e,0x305f746678706d74,0x5f62613035303030,0x3030303030303030\n"
+".quad 0x2f706d742f20676e,0x305f746678706d74,0x5f30306634303030,0x3030303030303030\n"
 ".quad 0x6c706d69735f372d,0x70632e636e754665,0x742f2820692e3370,0x23494263632f706d\n"
-".quad 0x294d68637632392e,0x2d2d2d2d2f2f090a,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
+".quad 0x294171796e72682e,0x2d2d2d2d2f2f090a,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x0a2d2d2d2d2d2d2d,0x2d2d2d2d2f2f090a,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
@@ -9182,7 +9182,7 @@ asm(
 ".quad 0x2d2d2d2d2f2f090a,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x0a2d2d2d2d2d2d2d\n"
 ".quad 0x09656c69662e090a,0x6d6d6f633c220931,0x656e696c2d646e61,0x6c69662e090a223e\n"
-".quad 0x6d742f2209320965,0x746678706d742f70,0x613035303030305f,0x3030303030305f62\n"
+".quad 0x6d742f2209320965,0x746678706d742f70,0x306634303030305f,0x3030303030305f30\n"
 ".quad 0x6d69735f362d3030,0x2e636e7546656c70,0x2e32656661647563,0x662e090a22757067\n"
 ".quad 0x2f22093309656c69,0x2f62696c2f727375,0x5f3638782f636367,0x78756e696c2d3436\n"
 ".quad 0x342e342f756e672d,0x756c636e692f332e,0x65646474732f6564,0x662e090a22682e66\n"
@@ -9347,8 +9347,8 @@ static __cudaFatElfEntry __elfEntries1 = {(char*)"sm_20", (char*)__deviceText_$s
 
 
 
-static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000004,0xa14f518d,(char*)"b0bb8a47a4f639c4",(char*)"simpleFunc.cu",(char*)" ",__ptxEntries,__cubinEntries,&__debugEntries0,0,0,0,0,0,0x064536fd,&__elfEntries1};
-# 2 "/tmp/tmpxft_000050ab_00000000-1_simpleFunc.cudafe1.stub.c" 2
+static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000004,0xa14f518d,(char*)"9ccabb72e695cd84",(char*)"simpleFunc.cu",(char*)" ",__ptxEntries,__cubinEntries,&__debugEntries0,0,0,0,0,0,0x3ff06fd9,&__elfEntries1};
+# 2 "/tmp/tmpxft_00004f00_00000000-1_simpleFunc.cudafe1.stub.c" 2
 # 1 "/usr/local/cuda3.1/cuda/bin/../include/crt/host_runtime.h" 1
 # 93 "/usr/local/cuda3.1/cuda/bin/../include/crt/host_runtime.h"
 extern "C" {
@@ -9742,10 +9742,10 @@ extern __attribute__((__weak__)) unsigned long long int ullmax(unsigned long lon
 # 5003 "/usr/local/cuda3.1/cuda/bin/../include/math_functions.h" 2 3
 # 88 "/usr/local/cuda3.1/cuda/bin/../include/common_functions.h" 2
 # 166 "/usr/local/cuda3.1/cuda/bin/../include/crt/host_runtime.h" 2
-# 3 "/tmp/tmpxft_000050ab_00000000-1_simpleFunc.cudafe1.stub.c" 2
+# 3 "/tmp/tmpxft_00004f00_00000000-1_simpleFunc.cudafe1.stub.c" 2
 struct __T20 {float *__par0;int __par1;int __dummy_field;};
 extern void __device_stub__Z6kernelPfi(float *, int);
-static void __sti____cudaRegisterAll_45_tmpxft_000050ab_00000000_4_simpleFunc_cpp1_ii_square(void) __attribute__((__constructor__));
+static void __sti____cudaRegisterAll_45_tmpxft_00004f00_00000000_4_simpleFunc_cpp1_ii_square(void) __attribute__((__constructor__));
 void __device_stub__Z6kernelPfi(float *__par0, int __par1){ struct __T20 *__T21;
 *(void**)(void*)&__T21 = (void*)0;if (cudaSetupArgument((void*)(char*)&__par0, sizeof(__par0), (size_t)&__T21->__par0) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par1, sizeof(__par1), (size_t)&__T21->__par1) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(float *, int))kernel)); (void)cudaLaunch(((char *)((void ( *)(float *, int))kernel))); };}
 void kernel( float *__cuda_0,int __cuda_1)
@@ -9756,6 +9756,6 @@ void kernel( float *__cuda_0,int __cuda_1)
 
 
 }
-# 1 "/tmp/tmpxft_000050ab_00000000-1_simpleFunc.cudafe1.stub.c"
-static void __sti____cudaRegisterAll_45_tmpxft_000050ab_00000000_4_simpleFunc_cpp1_ii_square(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, int))kernel), (char*)"kernel", "kernel", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); }
-# 1 "/tmp/tmpxft_000050ab_00000000-1_simpleFunc.cudafe1.stub.c" 2
+# 1 "/tmp/tmpxft_00004f00_00000000-1_simpleFunc.cudafe1.stub.c"
+static void __sti____cudaRegisterAll_45_tmpxft_00004f00_00000000_4_simpleFunc_cpp1_ii_square(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, int))kernel), (char*)"kernel", "kernel", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); }
+# 1 "/tmp/tmpxft_00004f00_00000000-1_simpleFunc.cudafe1.stub.c" 2

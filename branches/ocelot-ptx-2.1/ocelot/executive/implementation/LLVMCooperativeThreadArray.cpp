@@ -38,7 +38,7 @@ static unsigned int threadId(LLVMContext& context)
 ////////////////////////////////////////////////////////////////////////////////
 
 LLVMCooperativeThreadArray::LLVMCooperativeThreadArray(LLVMWorkerThread* w) :
-	_warpSize(std::max(api::OcelotConfiguration::get().executive.warpSize, 4)),
+	_warpSize(std::max(api::OcelotConfiguration::get().executive.warpSize, 1)),
 	_worker(w)
 {
 
@@ -108,7 +108,6 @@ void LLVMCooperativeThreadArray::setup(const LLVMExecutableKernel& kernel)
 */
 void LLVMCooperativeThreadArray::executeCta(unsigned int id)
 {
-	report("Executing LLVM-CTA " << id);
 	const unsigned int threads  = _contexts.size();
 
 	const unsigned int warps   = threads / _warpSize;
@@ -124,6 +123,7 @@ void LLVMCooperativeThreadArray::executeCta(unsigned int id)
 	unsigned int threadId = 0;
 
 	_nextFunction = _entryPoint;
+	report("Executing LLVM-CTA " << id << " (" << _functions[_nextFunction]->kernel->name << ")");
 
 	for(unsigned int warp = 0; warp < warps; ++warp)
 	{
@@ -156,8 +156,11 @@ void LLVMCooperativeThreadArray::executeCta(unsigned int id)
 	}
 	warpList.clear();
 	
+
 	while(_freeContexts.size() + _reclaimedContexts.size() != threads)
 	{
+		report("  while( free + reclaimed contexts (" << (_freeContexts.size() + _reclaimedContexts.size()) << ") != threads (" << threads << ")");
+	
 		_computeNextFunction();
 		
 		warpList = std::move(_queuedThreads[_nextFunction]);
@@ -166,7 +169,7 @@ void LLVMCooperativeThreadArray::executeCta(unsigned int id)
 		const unsigned int warps   = threads / _warpSize;
 		const unsigned int remains = threads % _warpSize;
 
-		report("Next sub-kernel is " << _nextFunction);
+		report("Next sub-kernel is " << _nextFunction << " (" << _functions[_nextFunction]->kernel->name << ")");
 
 		report(" threads:          " << threads);
 		report(" full warps:       " << warps);
@@ -210,7 +213,7 @@ void LLVMCooperativeThreadArray::_executeThread(unsigned int contextId)
 	context.metadata = (char*) metadata;
 	
 	report("   executing thread " << threadId(context) 
-		<< " in context " << contextId);
+		<< " in context " << contextId << " of " << _contexts.size() << ", _nextFunction: " << _nextFunction << " of " << _functions.size());
 	
 	metadata->function(&context);
 }

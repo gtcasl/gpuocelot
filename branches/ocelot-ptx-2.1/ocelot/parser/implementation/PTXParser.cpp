@@ -924,6 +924,7 @@ namespace parser
 		inArgumentList = true;
 		
 		statement.directive = ir::PTXStatement::StartParam;
+		statement.isReturnArgument = false;
 		
 		statementEnd( location );
 	}
@@ -935,6 +936,7 @@ namespace parser
 		inArgumentList = false;
 
 		statement.directive = ir::PTXStatement::EndParam;
+		statement.isReturnArgument = false;
 	
 		statementEnd( location );		
 	}
@@ -946,6 +948,7 @@ namespace parser
 		inReturnList = true;
 
 		statement.directive = ir::PTXStatement::StartParam;
+		statement.isReturnArgument = true;
 	
 		statementEnd( location );
 	}
@@ -957,6 +960,7 @@ namespace parser
 		inReturnList = false;
 
 		statement.directive = ir::PTXStatement::EndParam;
+		statement.isReturnArgument = false;
 	
 		statementEnd( location );		
 	}

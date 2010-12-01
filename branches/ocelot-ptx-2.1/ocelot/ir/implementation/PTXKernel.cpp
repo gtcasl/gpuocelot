@@ -13,11 +13,15 @@
 #include <hydrazine/interface/Version.h>
 #include <hydrazine/implementation/debug.h>
 
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
 #ifdef REPORT_BASE
 #undef REPORT_BASE
 #endif
 
 #define REPORT_BASE 0
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace ir
 {
@@ -186,6 +190,7 @@ namespace ir
 			ControlFlowGraph::Edge::FallThrough);
 	
 		bool inParameterList = false;
+		bool isReturnArgument = false;
 		unsigned int statementIndex = 0;
 		for( ; kernelStart != kernelEnd; ++kernelStart, ++statementIndex ) 
 		{
@@ -274,7 +279,7 @@ namespace ir
 			{
 				if( inParameterList )
 				{
-					arguments.push_back( Parameter( statement, true ) );
+					arguments.push_back( Parameter( statement, true, isReturnArgument) );
 				}
 				else
 				{
@@ -302,11 +307,13 @@ namespace ir
 			{
 				assert( !inParameterList );
 				inParameterList = true;
+				isReturnArgument = statement.isReturnArgument;
 			}
 			else if( statement.directive == PTXStatement::EndParam )
 			{
 				assert( inParameterList );
 				inParameterList = false;
+				isReturnArgument = statement.isReturnArgument;
 			}
 		}
 
@@ -389,8 +396,7 @@ namespace ir
 				report( " For instruction '" << instr.toString() << "'" );
 		
 				for (int i = 0; i < 6; i++) {
-					if ((instr.*operands[i]).addressMode 
-						== PTXOperand::Invalid) {
+					if ((instr.*operands[i]).addressMode == PTXOperand::Invalid) {
 						continue;
 					}
 					if ((instr.*operands[i]).type == PTXOperand::pred
@@ -398,30 +404,30 @@ namespace ir
 						continue;
 					}
 					if ((instr.*operands[i]).addressMode == PTXOperand::Register
-						|| (instr.*operands[i]).addressMode 
-						== PTXOperand::Indirect) {
+						|| (instr.*operands[i]).addressMode == PTXOperand::Indirect) {
 						if ((instr.*operands[i]).vec != PTXOperand::v1) {
-							for (PTXOperand::Array::iterator 
-								a_it = (instr.*operands[i]).array.begin(); 
-								a_it != (instr.*operands[i]).array.end(); 
-								++a_it) {
-								RegisterMap::iterator it 
-									= map.find(a_it->registerName());
+							for (PTXOperand::Array::iterator a_it = (instr.*operands[i]).array.begin(); 
+									a_it != (instr.*operands[i]).array.end(); ++a_it) {
+								
+								RegisterMap::iterator it = map.find(a_it->registerName());
 
 								PTXOperand::RegisterType reg = 0;
 								if (it == map.end()) {
 									reg = (PTXOperand::RegisterType) map.size();
-									map.insert(std::make_pair( 
-										a_it->registerName(), reg));
+									map.insert(std::make_pair(a_it->registerName(), reg));
 								}
 								else {
 									reg = it->second;
 								}
-								a_it->reg = reg;
-								report( "  Assigning register " 
-									<< a_it->registerName() 
-									<< " to " << a_it->reg );
-								a_it->identifier.clear();
+								if (a_it->addressMode != PTXOperand::BitBucket && a_it->identifier != "_") {
+									a_it->reg = reg;
+									report( "  [1] Assigning register " << a_it->registerName() 
+										<< " to " << a_it->reg );
+									a_it->identifier.clear();
+								}
+								else {
+									report("  [1] " << a_it->registerName() << " is a bit bucket");
+								}
 							}
 						}
 						else {
@@ -438,7 +444,7 @@ namespace ir
 								reg = it->second;
 							}
 							(instr.*operands[i]).reg = reg;
-							report("  Assigning register " 
+							report("  [2] Assigning register " 
 								<< (instr.*operands[i]).registerName() 
 								<< " to " << reg);
 							(instr.*operands[i]).identifier.clear();
@@ -456,21 +462,34 @@ namespace ir
 		stream << "/*\n* Ocelot Version : " 
 			<< hydrazine::Version().toString() << "\n*/\n";
 	
-		stream << ".entry " << name;
-		if (arguments.size()) {
-			stream << "(";
-			for( ParameterVector::const_iterator parameter = arguments.begin();
-				parameter != arguments.end(); ++parameter) {
-				if( parameter != arguments.begin() )
-				{
-					stream << ",\n\t\t" << parameter->toString();
-				}
-				else
-				{
-					stream << parameter->toString();
-				}
+		std::stringstream strReturnArguments;
+		std::stringstream strArguments;
+		
+		int returnArgCount = 0, argCount = 0;
+		
+		for( ParameterVector::const_iterator parameter = arguments.begin();
+			parameter != arguments.end(); ++parameter) {
+			if (parameter->returnArgument) {
+				strReturnArguments << (returnArgCount++ ? ",\n\t\t" : "") << parameter->toString();
 			}
-			stream << ")\n";
+			else {
+				strArguments << (argCount++ ? ",\n\t\t" : "") << parameter->toString();
+			}
+		}
+		
+		
+		if (_function) {
+			stream << ".visible .func ";
+			if (returnArgCount) {
+				stream << "(" << strReturnArguments.str() << ") ";
+			}
+			stream << name;
+		}
+		else {
+			stream << ".entry " << name;
+		}
+		if (argCount) {
+			stream << "(" << strArguments.str() << ")\n";
 		}
 		stream << "{\n";
 		
@@ -483,7 +502,7 @@ namespace ir
 
 		for (ParameterMap::const_iterator parameter = parameters.begin();
 			parameter != parameters.end(); ++parameter ) {
-			stream << "\t" << parameter->second.toString() << "\n";
+			stream << "\t" << parameter->second.toString() << ";\n";
 		}
 		
 		RegisterVector regs = getReferencedRegisters();

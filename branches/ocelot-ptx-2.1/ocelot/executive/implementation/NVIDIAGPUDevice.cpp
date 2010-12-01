@@ -38,11 +38,13 @@
 #define Throw(x) {std::stringstream s; s << x; report(s.str()); \
 	throw hydrazine::Exception(s.str()); }
 
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
 // Turn on report messages
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 // Print out the full ptx for each module as it is loaded
-#define REPORT_PTX 1
+#define REPORT_PTX 0
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -408,12 +410,14 @@ namespace executive
 			kernel = ir->kernels().begin(); 
 			kernel != ir->kernels().end(); ++kernel)
 		{
-			CUfunction function;
-			checkError(driver::cuModuleGetFunction(&function, _handle, 
-				kernel->first.c_str()));
-			kernels.insert(std::make_pair(kernel->first, 
-				new NVIDIAExecutableKernel(*kernel->second, function)));
-			report(" - " << kernel->first);
+			if (!kernel->second->function()) {
+				CUfunction function;
+				report(" - " << kernel->first);
+				checkError(driver::cuModuleGetFunction(&function, _handle, 
+					kernel->first.c_str()));
+				kernels.insert(std::make_pair(kernel->first, 
+					new NVIDIAExecutableKernel(*kernel->second, function)));
+			}
 		}
 	}
 	

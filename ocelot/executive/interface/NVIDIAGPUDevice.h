@@ -239,8 +239,6 @@ namespace executive
 			/*! \brief Get the address of a global by stream */
 			Device::MemoryAllocation* getGlobalAllocation(
 				const std::string& module, const std::string& name);
-			/*! \brief Get size of total global allocation */
-			unsigned int getTotalGlobalAllocation() const;
 			/*! \brief Allocate some new dynamic memory on this device */
 			Device::MemoryAllocation* allocate(size_t size);
 			/*! \brief Make this a host memory allocation */

@@ -21,7 +21,6 @@
 #include <hydrazine/implementation/json.h>
 
 #include <fstream>
-#include <string>
 
 using namespace hydrazine;
 
@@ -54,15 +53,27 @@ namespace analysis
             cudaFree(clock_sm_info);
         }
 
-        *out << "\n\n" << kernelName << ":\n";
-        *out << "\n--------------- " << description << " ---------------\n\n";
+        ClockCyclesMap clockCyclesMap;
 
         for(unsigned int i = 0; i < threadBlocks; i++) {
-            *out << "CTA " << i << ":\n";
-            *out << "Clock Cycles: " << info[i*2] << std::endl;
-            *out << "SM (Processor) ID: " << info[i*2 + 1] << std::endl;
+            size_t key = info[i*2 + 1];
+            if(clockCyclesMap.find(key) != clockCyclesMap.end()) {
+                size_t value = clockCyclesMap[key] + info[i*2];
+                clockCyclesMap[key] = value;
+            }
+            else {
+                clockCyclesMap[key] = info[i*2];
+            }        
         } 
+
+        *out << kernelName << " = {";
+
+        for (ClockCyclesMap::const_iterator it = clockCyclesMap.begin(); it != clockCyclesMap.end(); ++it) {
+			*out << it->first << ":" << it->second << ",";
+		}
         
+        *out << "}\n\n";        
+
         return info;
     }
 

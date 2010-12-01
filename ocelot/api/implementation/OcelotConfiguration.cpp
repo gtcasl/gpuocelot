@@ -119,8 +119,6 @@ static void initializeInstrument(api::OcelotConfiguration::Instrumentation &inst
 static void initializeTrace(api::OcelotConfiguration::TraceGeneration &trace, 
 	hydrazine::json::Visitor config) 
 {
-	trace.resourceMonitor = config.parse<bool>("resourceMonitor", false);
-	
 	trace.memoryChecker = config.parse<bool>("memoryChecker", true);
     
     hydrazine::json::Visitor raceConfig = config["raceDetector"];
@@ -315,7 +313,9 @@ void api::OcelotConfiguration::initialize(std::istream &stream) {
 	}
 	catch (hydrazine::Exception exp) {
 		std::cerr << "==Ocelot== WARNING: Could not parse config file '" 
-			<< path << "', loading defaults.\n";
+			<< path << "', loading defaults.\n" << std::endl;
+			
+		std::cerr << "exception:\n" << exp.what() << std::endl;
 	}
 	delete config;
 

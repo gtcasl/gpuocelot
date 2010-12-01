@@ -1,10 +1,10 @@
 {
 	ocelot: "ocelot",
     instrument: {
-	logAsJSON: true,
+	logAsJSON: false,
         clockCycleCount: {
             enabled: true,
-            logfile: ""
+            logfile: "instrument/clockCycles.py"
         },
         basicBlock: {
             executionCount: false,
@@ -14,10 +14,9 @@
 	trace: { 
 		enabled: true,
 		database: "traces/database.trace",
-		resourceMonitor: true,
 		memoryChecker: true,
 		raceDetector: {
-			enabled: true,
+			enabled: false,
 			ignoreIrrelevantWrites: true
 		},
 		debugger: {
@@ -51,7 +50,7 @@
 		runtimeApiTrace: "trace/CudaAPI.trace"
 	},
 	executive: {
-		devices: [ nvidia ],
+		devices: [ nvidia, emulated, llvm ],
 		optimizationLevel: basic,
 		workerThreadLimit: 2
 	}

@@ -17,48 +17,47 @@ INFO       /home/andrew/repositories/gpuocelot/ocelot/TestDeviceSwitching
 INFO       /home/andrew/repositories/gpuocelot/ocelot/TestCudaSequence
 INFO     ==== INDIVIDUAL TEST RESULTS ====
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestLLVMKernels 
 INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestCudaMalloc 
-INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestDeviceSwitching 
-INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestCudaTextureArray 
-INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestCudaTextureArray
-INFO     Test completed in 0.057540178299 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
+INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestCudaTexture2D 
+INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestCudaSequence 
 INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestKernels 
-INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestDeviceSwitching
-INFO     Test completed in 0.0663251876831 seconds
+INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestKernels
+INFO     Test completed in 0.0563280582428 seconds
 INFO      It produced the following output:
+Kernel launch time was 6.7234e-05s (67024 ticks)
 Pass/Fail : Pass
 
 
-Name : TestDeviceSwitching
+Name : TestKernels
 
-Description: A unit test for the ability of the CUDA runtime to switch 
-             between devices and use multiple threads Test Points: 1) In a single 
-             threaded application, iterate across all devices launching the same 
-             simple kernel each time 2) Test context migration support in 
-             ocelot. Iterate across all devices, launching a simple kernel that 
-             updates shared variable. Use the context switch mechanism to 
-             migrate the shared data. 3) Test multi-threading support. Launch one 
-             host thread to allocate memory, pass pointers to worker 
-             threads, each of which should launch independent kernels in 
-             parallel.
+Description: 
 
 
-Test Seed : 1290616463
-Test time : 0.0106435
+Test Seed : 1291146983
+Test time : 0.00821614
 
-Status : Test Point 1 Passed
-Test Point 2 Passed
-Test Point 3 Passed
+Status : Test output:
+divergent control flow succeeded
+looping kernel succeeded
+looping kernel succeeded
 
 
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestParser 
+INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestCudaTexture2D
+INFO     Test completed in 0.0592370033264 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestDataflowGraph 
+INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestLexer 
+INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestCudaSequence
+INFO     Test completed in 0.062304019928 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestCudaTextureArray 
 INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestCudaMalloc
-INFO     Test completed in 0.0859518051147 seconds
+INFO     Test completed in 0.0794868469238 seconds
 INFO      It produced the following output:
 test_malloc(256, 128)
 PASSED
@@ -75,88 +74,9 @@ PASSED
 [8] final free
 Pass/Fail : Pass
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestCudaSequence 
-INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestKernels
-INFO     Test completed in 0.0479469299316 seconds
-INFO      It produced the following output:
-Kernel launch time was 6.46114e-05s (64332 ticks)
-Pass/Fail : Pass
-
-
-Name : TestKernels
-
-Description: 
-
-
-Test Seed : 1290616463
-Test time : 0.00791168
-
-Status : Test output:
-divergent control flow succeeded
-looping kernel succeeded
-looping kernel succeeded
-
-
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestDataflowGraph 
-INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestLLVMKernels
-INFO     Test completed in 0.117395162582 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-
-Name : TestLLVMKernels
-
-Description: A unit test for the LLVM executive runtime. Test Points: 1) 
-             Execute a kernel with divergent control flow. 2) Execute a kernel with a 
-             loop. 3) Execute a matrix multiply kernel.
-
-
-Test Seed : 1290616463
-Test time : 0.0590856
-
-Status : A = [
- 1 0 0 0 0 0 0 0 ;
- 0.5 1 0 0 0 0 0 0 ;
- 0.333333 0.5 1 0 0 0 0 0 ;
- 0.25 0.333333 0.5 1 0 0 0 0 ;
- 0.2 0.25 0.333333 0.5 1 0 0 0 ;
- 0.166667 0.2 0.25 0.333333 0.5 1 0 0 ;
- 0.142857 0.166667 0.2 0.25 0.333333 0.5 1 0 ;
- 0.125 0.142857 0.166667 0.2 0.25 0.333333 0.5 1 ;
-];
-V = [
- 1 ;
- 2 ;
- 3 ;
- 4 ;
- 5 ;
- 6 ;
- 7 ;
- 8 ;
-];
-R = [
- 1 ;
- 2.5 ;
- 4.33333 ;
- 6.41667 ;
- 8.7 ;
- 11.15 ;
- 13.7429 ;
- 16.4607 ;
-];
-
-
-
 INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestLLVMInstructions 
-INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestCudaSequence
-INFO     Test completed in 0.0579440593719 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestInstructions 
 INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestLLVMInstructions
-INFO     Test completed in 0.0385940074921 seconds
+INFO     Test completed in 0.0388588905334 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -170,8 +90,8 @@ Description: A test for the assembly code generation and automatic
              check, compare to references from the LLVM manual.
 
 
-Test Seed : 1290616463
-Test time : 0.000844479
+Test Seed : 1291146983
+Test time : 0.000921249
 
 Status :  Checked instruction "<result> = add i32 4, %var"
 Add Instruction Passed
@@ -302,44 +222,90 @@ Zext Instruction Passed
 
 
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestCudaTexture2D 
-INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestInstructions
-INFO     Test completed in 0.0387389659882 seconds
+INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestLLVMKernels 
+INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestCudaTextureArray
+INFO     Test completed in 0.0624270439148 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestEmulator 
+INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestEmulator
+INFO     Test completed in 0.0374670028687 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
 
-Name : TestInstructions
+Name : TestEmulator
 
 Description: 
 
 
-Test Seed : 1290616463
-Test time : 0.000365973
+Test Seed : 1291146983
+Test time : 0.00273895
 
 Status : Test output:
-Accessors test passed.
-pass: load and store instructions
-Abs test passed.
-pass: arithmetic instructions
-pass: exotic arithmetic instructions
-pass: floating-point instructions
-pass: logical instructions
-pass: comparison instructions
-pass: predicated Add and Ld isntructions
-pass: control flow instructions
+11 registers
+Register test passed
+Load test passed
+Store test passed
+no errors
+Full kernel test passed
 
 
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestLexer 
-INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestCudaTexture2D
-INFO     Test completed in 0.0478911399841 seconds
+INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestPTXToLLVMTranslator 
+INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestLLVMKernels
+INFO     Test completed in 0.0860691070557 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestPTXToLLVMTranslator 
+
+Name : TestLLVMKernels
+
+Description: A unit test for the LLVM executive runtime. Test Points: 1) 
+             Execute a kernel with divergent control flow. 2) Execute a kernel with a 
+             loop. 3) Execute a matrix multiply kernel.
+
+
+Test Seed : 1291146983
+Test time : 0.0441799
+
+Status : A = [
+ 1 0 0 0 0 0 0 0 ;
+ 0.5 1 0 0 0 0 0 0 ;
+ 0.333333 0.5 1 0 0 0 0 0 ;
+ 0.25 0.333333 0.5 1 0 0 0 0 ;
+ 0.2 0.25 0.333333 0.5 1 0 0 0 ;
+ 0.166667 0.2 0.25 0.333333 0.5 1 0 0 ;
+ 0.142857 0.166667 0.2 0.25 0.333333 0.5 1 0 ;
+ 0.125 0.142857 0.166667 0.2 0.25 0.333333 0.5 1 ;
+];
+V = [
+ 1 ;
+ 2 ;
+ 3 ;
+ 4 ;
+ 5 ;
+ 6 ;
+ 7 ;
+ 8 ;
+];
+R = [
+ 1 ;
+ 2.5 ;
+ 4.33333 ;
+ 6.41667 ;
+ 8.7 ;
+ 11.15 ;
+ 13.7429 ;
+ 16.4607 ;
+];
+
+
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestParser 
 INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestLexer
-INFO     Test completed in 8.41729283333 seconds
+INFO     Test completed in 8.49159216881 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -351,8 +317,8 @@ Description: Tests for the PTX lexer. Test Point 1: Scan a PTX file and
              two sets of tokens match
 
 
-Test Seed : 1290616463
-Test time : 8.37944
+Test Seed : 1291146983
+Test time : 8.43339
 
 Status : For file ../tests/ptx/sdk2.2/simpleTexture.ptx, Test Point 1 (Scan): Passed
 For file ../tests/ptx/sdk2.2/simpleAtomicIntrinsics.ptx, Test Point 1 (Scan): Passed
@@ -525,38 +491,72 @@ For file ../tests/ptx/synthetic/barrier.ptx, Test Point 1 (Scan): Passed
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestCudaGlobals 
 INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestCudaGlobals
-INFO     Test completed in 0.0409388542175 seconds
+INFO     Test completed in 0.0551009178162 seconds
 INFO      It produced the following output:
 cudaSetDevice() - 0 - Ocelot Multicore CPU Backend (LLVM-JIT) 
 Pass/Fail : Pass
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestEmulator 
-INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestEmulator
-INFO     Test completed in 0.0364220142365 seconds
+INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestDeviceSwitching 
+INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestDeviceSwitching
+INFO     Test completed in 0.0556781291962 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
 
-Name : TestEmulator
+Name : TestDeviceSwitching
+
+Description: A unit test for the ability of the CUDA runtime to switch 
+             between devices and use multiple threads Test Points: 1) In a single 
+             threaded application, iterate across all devices launching the same 
+             simple kernel each time 2) Test context migration support in 
+             ocelot. Iterate across all devices, launching a simple kernel that 
+             updates shared variable. Use the context switch mechanism to 
+             migrate the shared data. 3) Test multi-threading support. Launch one 
+             host thread to allocate memory, pass pointers to worker 
+             threads, each of which should launch independent kernels in 
+             parallel.
+
+
+Test Seed : 1291146991
+Test time : 0.0100856
+
+Status : Test Point 1 Passed
+Test Point 2 Passed
+Test Point 3 Passed
+
+
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/ocelot/TestInstructions 
+INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestInstructions
+INFO     Test completed in 0.0379419326782 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+
+Name : TestInstructions
 
 Description: 
 
 
-Test Seed : 1290616472
-Test time : 0.00269985
+Test Seed : 1291146991
+Test time : 0.000507355
 
 Status : Test output:
-11 registers
-Register test passed
-Load test passed
-Store test passed
-no errors
-Full kernel test passed
+Accessors test passed.
+pass: load and store instructions
+Abs test passed.
+pass: arithmetic instructions
+pass: exotic arithmetic instructions
+pass: floating-point instructions
+pass: logical instructions
+pass: comparison instructions
+pass: predicated Add and Ld isntructions
+pass: control flow instructions
 
 
 
 INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestParser
-INFO     Test completed in 14.9439570904 seconds
+INFO     Test completed in 15.9298372269 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -569,8 +569,8 @@ Description: A test for the PTXParser class. Test Points: 1) Load a PTX file
              generating a new module, compare both to make sure that they match.
 
 
-Test Seed : 1290616463
-Test time : 14.9007
+Test Seed : 1291146983
+Test time : 15.8927
 
 Status : For file ../tests/ptx/sdk2.2/simpleTexture.ptx, Test Point 1 (Parse): Passed
 For file ../tests/ptx/sdk2.2/simpleAtomicIntrinsics.ptx, Test Point 1 (Parse): Passed
@@ -827,13 +827,278 @@ For file ../tests/ptx/synthetic/barrier.ptx, Test Point 1 (Parse): Passed
 
 
 INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestPTXToLLVMTranslator
-INFO     Test completed in 20.704941988 seconds
+INFO     Test completed in 22.1833040714 seconds
 INFO      It produced the following output:
-TestPTXToLLVMTranslator: ocelot/translator/implementation/PTXToLLVMTranslator.cpp:5582: std::string translator::PTXToLLVMTranslator::_loadSpecialRegister(ir::PTXOperand::SpecialRegister): Assertion `false' failed.
-(20.672359) PTXToLLVMTranslator.cpp:5582: Assertion message: Special register %smid not supported.
+Pass/Fail : Pass
+
+
+Name : TestPTXToLLVMTranslator
+
+Description: This is a basic test that just tries to get through a 
+             translation successfully of as many PTX programs as possible Test 
+             Points: 1) Scan for all PTX files in a directory, try to 
+             translate them.
+
+
+Test Seed : 1291146983
+Test time : 22.1413
+
+Status : For file ../tests/ptx/sdk2.2/simpleTexture.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/simpleAtomicIntrinsics.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/fastWalshTransform.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/dct8x8.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/bitonic.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/convolutionTexture.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/BlackScholes.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/dxtc.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/Mandelbrot_sm10.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/scalarProd.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/imageDenoising.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/sobol_gpu.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/dwtHaar1D.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/MonteCarlo_SM13.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/bisect_large.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/simpleStreams.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/simpleCUFFT.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/SobelFilter_kernels.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/new_radixsort.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/Mandelbrot_sm13.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/matrixMul.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/template.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/alignedTypes.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/bodysystemcuda.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/quasirandomGenerator_SM13.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/bisect_small.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/matrixMul_kernel.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/recursiveGaussian.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/boxFilter_kernel.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/histogram64.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/reduction_kernel_sm10.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/histogram256_SM10.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/histogram256_SM11.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/clock.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/oceanFFT_kernel.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/quasirandomGenerator_SM10.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/bandwidthTest.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/MersenneTwister.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/simpleZeroCopy.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/simpleTexture_kernel.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/main.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/radixsort.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/reduction_kernel_sm13.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/simpleTexture3D_kernel.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/simpleTemplates.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/scan.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/binomialOptions_SM10.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/bicubicTexture.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/transposeNew.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/scanLargeArray.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/simpleMultiGPU_kernel.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/binomialOptions_SM13.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/transpose.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/volumeRender_kernel.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/asyncAPI.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/threadMigration.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/convolutionSeparable.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/marchingCubes_kernel.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/ParticleSystem.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/reduction.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/simpleVoteIntrinsics.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/MonteCarlo_SM10.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/cppIntegration.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/fluidsGL.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/simpleGL_kernel.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/histogram256_SM12.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/particleSystem2.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/postProcessGL.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/lineOfSight.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/threadFenceReduction.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk2.2/convolutionFFT2D.ptx, Test Point 1 (Translate): Passed
+Skipping file with incompatible ptx version.
+For file ../tests/ptx/sdk3.0/simpleTexture.ptx, Test Point 1 (Translate): Passed
+Skipping file with incompatible ptx version.
+For file ../tests/ptx/sdk3.0/simpleAtomicIntrinsics.ptx, Test Point 1 (Translate): Passed
+Skipping file with incompatible ptx version.
+For file ../tests/ptx/sdk3.0/fastWalshTransform.ptx, Test Point 1 (Translate): Passed
+Skipping file with incompatible ptx version.
+For file ../tests/ptx/sdk3.0/dct8x8.ptx, Test Point 1 (Translate): Passed
+Skipping file with incompatible ptx version.
+For file ../tests/ptx/sdk3.0/convolutionTexture.ptx, Test Point 1 (Translate): Passed
+Skipping file with incompatible ptx version.
+For file ../tests/ptx/sdk3.0/BlackScholes.ptx, Test Point 1 (Translate): Passed
+Skipping file with incompatible ptx version.
+For file ../tests/ptx/sdk3.0/dxtc.ptx, Test Point 1 (Translate): Passed
+Skipping file with incompatible ptx version.
+For file ../tests/ptx/sdk3.0/simpleTemplates_kernel.ptx, Test Point 1 (Translate): Passed
+Skipping file with incompatible ptx version.
+For file ../tests/ptx/sdk3.0/scalarProd.ptx, Test Point 1 (Translate): Passed
+Skipping file with incompatible ptx version.
+For file ../tests/ptx/sdk3.0/imageDenoising.ptx, Test Point 1 (Translate): Passed
+Skipping file with incompatible ptx version.
+For file ../tests/ptx/sdk3.0/sobol_gpu.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk3.0/dwtHaar1D.ptx, Test Point 1 (Translate): Passed
+Skipping file with incompatible ptx version.
+For file ../tests/ptx/sdk3.0/MonteCarlo_SM13.ptx, Test Point 1 (Translate): Passed
+Skipping file with incompatible ptx version.
+For file ../tests/ptx/sdk3.0/bisect_large.ptx, Test Point 1 (Translate): Passed
+Skipping file with incompatible ptx version.
+For file ../tests/ptx/sdk3.0/simpleStreams.ptx, Test Point 1 (Translate): Passed
+Skipping file with incompatible ptx version.
+For file ../tests/ptx/sdk3.0/bisect_kernel_small.ptx, Test Point 1 (Translate): Passed
+Skipping file with incompatible ptx version.
+For file ../tests/ptx/sdk3.0/simpleCUFFT.ptx, Test Point 1 (Translate): Passed
+Skipping file with incompatible ptx version.
+For file ../tests/ptx/sdk3.0/bisect_kernel_large.ptx, Test Point 1 (Translate): Passed
+Skipping file with incompatible ptx version.
+For file ../tests/ptx/sdk3.0/Mandelbrot_kernel.ptx, Test Point 1 (Translate): Passed
+Skipping file with incompatible ptx version.
+For file ../tests/ptx/sdk3.0/SobelFilter_kernels.ptx, Test Point 1 (Translate): Passed
+Skipping file with incompatible ptx version.
+For file ../tests/ptx/sdk3.0/bisect_util.ptx, Test Point 1 (Translate): Passed
+Skipping file with incompatible ptx version.
+For file ../tests/ptx/sdk3.0/Mandelbrot_sm13.ptx, Test Point 1 (Translate): Passed
+Skipping file with incompatible ptx version.
+For file ../tests/ptx/sdk3.0/matrixMul.ptx, Test Point 1 (Translate): Passed
+Skipping file with incompatible ptx version.
+For file ../tests/ptx/sdk3.0/threadFenceReduction_kernel.ptx, Test Point 1 (Translate): Passed
+Skipping file with incompatible ptx version.
+For file ../tests/ptx/sdk3.0/template.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk3.0/alignedTypes.ptx, Test Point 1 (Translate): Passed
+Skipping file with incompatible ptx version.
+For file ../tests/ptx/sdk3.0/bodysystemcuda.ptx, Test Point 1 (Translate): Passed
+Skipping file with incompatible ptx version.
+For file ../tests/ptx/sdk3.0/vectorAdd.ptx, Test Point 1 (Translate): Passed
+Skipping file with incompatible ptx version.
+For file ../tests/ptx/sdk3.0/quasirandomGenerator_SM13.ptx, Test Point 1 (Translate): Passed
+Skipping file with incompatible ptx version.
+For file ../tests/ptx/sdk3.0/particles_kernel.ptx, Test Point 1 (Translate): Passed
+Skipping file with incompatible ptx version.
+For file ../tests/ptx/sdk3.0/simpleVote_kernel.ptx, Test Point 1 (Translate): Passed
+Skipping file with incompatible ptx version.
+For file ../tests/ptx/sdk3.0/bisect_small.ptx, Test Point 1 (Translate): Passed
+Skipping file with incompatible ptx version.
+For file ../tests/ptx/sdk3.0/bitonicSort.ptx, Test Point 1 (Translate): Passed
+Skipping file with incompatible ptx version.
+For file ../tests/ptx/sdk3.0/dct8x8_kernel_short.ptx, Test Point 1 (Translate): Passed
+Skipping file with incompatible ptx version.
+For file ../tests/ptx/sdk3.0/nbody_kernel.ptx, Test Point 1 (Translate): Passed
+Skipping file with incompatible ptx version.
+For file ../tests/ptx/sdk3.0/histogram256.ptx, Test Point 1 (Translate): Passed
+Skipping file with incompatible ptx version.
+For file ../tests/ptx/sdk3.0/bisect_kernel_large_onei.ptx, Test Point 1 (Translate): Passed
+Skipping file with incompatible ptx version.
+For file ../tests/ptx/sdk3.0/matrixMul_kernel.ptx, Test Point 1 (Translate): Passed
+Skipping file with incompatible ptx version.
+For file ../tests/ptx/sdk3.0/recursiveGaussian.ptx, Test Point 1 (Translate): Passed
+Skipping file with incompatible ptx version.
+For file ../tests/ptx/sdk3.0/boxFilter_kernel.ptx, Test Point 1 (Translate): Passed
+Skipping file with incompatible ptx version.
+For file ../tests/ptx/sdk3.0/histogram64.ptx, Test Point 1 (Translate): Passed
+Skipping file with incompatible ptx version.
+For file ../tests/ptx/sdk3.0/clock.ptx, Test Point 1 (Translate): Passed
+Skipping file with incompatible ptx version.
+For file ../tests/ptx/sdk3.0/oceanFFT_kernel.ptx, Test Point 1 (Translate): Passed
+Skipping file with incompatible ptx version.
+For file ../tests/ptx/sdk3.0/quasirandomGenerator_SM10.ptx, Test Point 1 (Translate): Passed
+Skipping file with incompatible ptx version.
+For file ../tests/ptx/sdk3.0/bandwidthTest.ptx, Test Point 1 (Translate): Passed
+Skipping file with incompatible ptx version.
+For file ../tests/ptx/sdk3.0/MersenneTwister.ptx, Test Point 1 (Translate): Passed
+Skipping file with incompatible ptx version.
+For file ../tests/ptx/sdk3.0/simpleZeroCopy.ptx, Test Point 1 (Translate): Passed
+Skipping file with incompatible ptx version.
+For file ../tests/ptx/sdk3.0/simpleTexture_kernel.ptx, Test Point 1 (Translate): Passed
+Skipping file with incompatible ptx version.
+For file ../tests/ptx/sdk3.0/main.ptx, Test Point 1 (Translate): Passed
+Skipping file with incompatible ptx version.
+For file ../tests/ptx/sdk3.0/radixsort.ptx, Test Point 1 (Translate): Passed
+Skipping file with incompatible ptx version.
+For file ../tests/ptx/sdk3.0/simpleAtomicIntrinsics_kernel.ptx, Test Point 1 (Translate): Passed
+Skipping file with incompatible ptx version.
+For file ../tests/ptx/sdk3.0/simpleTexture3D_kernel.ptx, Test Point 1 (Translate): Passed
+Skipping file with incompatible ptx version.
+For file ../tests/ptx/sdk3.0/tests.ptx, Test Point 1 (Translate): Passed
+Skipping file with incompatible ptx version.
+For file ../tests/ptx/sdk3.0/recursiveGaussian_kernel.ptx, Test Point 1 (Translate): Passed
+Skipping file with incompatible ptx version.
+For file ../tests/ptx/sdk3.0/simpleTemplates.ptx, Test Point 1 (Translate): Passed
+Skipping file with incompatible ptx version.
+For file ../tests/ptx/sdk3.0/binomialOptions_SM10.ptx, Test Point 1 (Translate): Passed
+Skipping file with incompatible ptx version.
+For file ../tests/ptx/sdk3.0/transpose_kernel.ptx, Test Point 1 (Translate): Passed
+Skipping file with incompatible ptx version.
+For file ../tests/ptx/sdk3.0/cppIntegration_kernel.ptx, Test Point 1 (Translate): Passed
+Skipping file with incompatible ptx version.
+For file ../tests/ptx/sdk3.0/dct8x8_kernel_quantization.ptx, Test Point 1 (Translate): Passed
+Skipping file with incompatible ptx version.
+For file ../tests/ptx/sdk3.0/ParticleSystem1.ptx, Test Point 1 (Translate): Passed
+Skipping file with incompatible ptx version.
+For file ../tests/ptx/sdk3.0/concurrentKernels.ptx, Test Point 1 (Translate): Passed
+Skipping file with incompatible ptx version.
+For file ../tests/ptx/sdk3.0/Mandelbrot_sm11.ptx, Test Point 1 (Translate): Passed
+Skipping file with incompatible ptx version.
+For file ../tests/ptx/sdk3.0/dct8x8_kernel2.ptx, Test Point 1 (Translate): Passed
+Skipping file with incompatible ptx version.
+For file ../tests/ptx/sdk3.0/bicubicTexture.ptx, Test Point 1 (Translate): Passed
+Skipping file with incompatible ptx version.
+For file ../tests/ptx/sdk3.0/transposeNew.ptx, Test Point 1 (Translate): Passed
+Skipping file with incompatible ptx version.
+For file ../tests/ptx/sdk3.0/scalarProd_kernel.ptx, Test Point 1 (Translate): Passed
+Skipping file with incompatible ptx version.
+For file ../tests/ptx/sdk3.0/simpleMultiGPU_kernel.ptx, Test Point 1 (Translate): Passed
+Skipping file with incompatible ptx version.
+For file ../tests/ptx/sdk3.0/binomialOptions_SM13.ptx, Test Point 1 (Translate): Passed
+Skipping file with incompatible ptx version.
+For file ../tests/ptx/sdk3.0/transpose.ptx, Test Point 1 (Translate): Passed
+Skipping file with incompatible ptx version.
+For file ../tests/ptx/sdk3.0/particleSystem.ptx, Test Point 1 (Translate): Passed
+Skipping file with incompatible ptx version.
+For file ../tests/ptx/sdk3.0/volumeRender_kernel.ptx, Test Point 1 (Translate): Passed
+Skipping file with incompatible ptx version.
+For file ../tests/ptx/sdk3.0/asyncAPI.ptx, Test Point 1 (Translate): Passed
+Skipping file with incompatible ptx version.
+For file ../tests/ptx/sdk3.0/threadMigration.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk3.0/convolutionSeparable.ptx, Test Point 1 (Translate): Passed
+Skipping file with incompatible ptx version.
+For file ../tests/ptx/sdk3.0/reduction_kernel.ptx, Test Point 1 (Translate): Passed
+Skipping file with incompatible ptx version.
+For file ../tests/ptx/sdk3.0/marchingCubes_kernel.ptx, Test Point 1 (Translate): Passed
+Skipping file with incompatible ptx version.
+For file ../tests/ptx/sdk3.0/bisect_kernel_large_multi.ptx, Test Point 1 (Translate): Passed
+Skipping file with incompatible ptx version.
+For file ../tests/ptx/sdk3.0/simpleVoteIntrinsics.ptx, Test Point 1 (Translate): Passed
+Skipping file with incompatible ptx version.
+For file ../tests/ptx/sdk3.0/MonteCarlo_SM10.ptx, Test Point 1 (Translate): Passed
+Skipping file with incompatible ptx version.
+For file ../tests/ptx/sdk3.0/cppIntegration.ptx, Test Point 1 (Translate): Passed
+Skipping file with incompatible ptx version.
+For file ../tests/ptx/sdk3.0/fluidsGL.ptx, Test Point 1 (Translate): Passed
+Skipping file with incompatible ptx version.
+For file ../tests/ptx/sdk3.0/simpleGL_kernel.ptx, Test Point 1 (Translate): Passed
+Skipping file with incompatible ptx version.
+For file ../tests/ptx/sdk3.0/postProcessGL.ptx, Test Point 1 (Translate): Passed
+Skipping file with incompatible ptx version.
+For file ../tests/ptx/sdk3.0/oddEvenMergeSort.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/sdk3.0/clock_kernel.ptx, Test Point 1 (Translate): Passed
+Skipping file with incompatible ptx version.
+For file ../tests/ptx/sdk3.0/lineOfSight.ptx, Test Point 1 (Translate): Passed
+Skipping file with incompatible ptx version.
+For file ../tests/ptx/sdk3.0/threadFenceReduction.ptx, Test Point 1 (Translate): Passed
+Skipping file with incompatible ptx version.
+For file ../tests/ptx/sdk3.0/convolutionFFT2D.ptx, Test Point 1 (Translate): Passed
+Skipping file with incompatible ptx version.
+For file ../tests/ptx/sdk3.0/simplePitchLinearTexture.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/apps/bounding_box.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/synthetic/sequence.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/synthetic/smid.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/synthetic/blockIsOwnPredecessor.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/synthetic/kernels.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/synthetic/barrier.ptx, Test Point 1 (Translate): Passed
+
+
 
 INFO     Test /home/andrew/repositories/gpuocelot/ocelot/TestDataflowGraph
-INFO     Test completed in 22.1022500992 seconds
+INFO     Test completed in 23.5405828953 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -848,8 +1113,8 @@ Description: A test for the DataflowGraph class. Test Points: 1)
              ranges spanning blocks are consistent.
 
 
-Test Seed : 1290616463
-Test time : 22.0558
+Test Seed : 1291146983
+Test time : 23.4864
 
 Status : Testing Generic Dataflow
  For File: ../tests/ptx/sdk2.2/simpleTexture.ptx
@@ -4675,23 +4940,23 @@ Testing SSA then back Dataflow
 
 INFO     
 Passing tests:
- (14.944s) : /home/andrew/repositories/gpuocelot/ocelot/TestParser : Passed
- (0.048s) : /home/andrew/repositories/gpuocelot/ocelot/TestCudaTexture2D : Passed
- (0.036s) : /home/andrew/repositories/gpuocelot/ocelot/TestEmulator : Passed
- (0.058s) : /home/andrew/repositories/gpuocelot/ocelot/TestCudaSequence : Passed
- (0.058s) : /home/andrew/repositories/gpuocelot/ocelot/TestCudaTextureArray : Passed
- (22.102s) : /home/andrew/repositories/gpuocelot/ocelot/TestDataflowGraph : Passed
+ (15.930s) : /home/andrew/repositories/gpuocelot/ocelot/TestParser : Passed
+ (0.038s) : /home/andrew/repositories/gpuocelot/ocelot/TestInstructions : Passed
+ (0.037s) : /home/andrew/repositories/gpuocelot/ocelot/TestEmulator : Passed
+ (0.062s) : /home/andrew/repositories/gpuocelot/ocelot/TestCudaSequence : Passed
+ (0.062s) : /home/andrew/repositories/gpuocelot/ocelot/TestCudaTextureArray : Passed
+ (23.541s) : /home/andrew/repositories/gpuocelot/ocelot/TestDataflowGraph : Passed
+ (0.056s) : /home/andrew/repositories/gpuocelot/ocelot/TestDeviceSwitching : Passed
  (0.039s) : /home/andrew/repositories/gpuocelot/ocelot/TestLLVMInstructions : Passed
- (0.039s) : /home/andrew/repositories/gpuocelot/ocelot/TestInstructions : Passed
- (0.048s) : /home/andrew/repositories/gpuocelot/ocelot/TestKernels : Passed
- (8.417s) : /home/andrew/repositories/gpuocelot/ocelot/TestLexer : Passed
- (0.041s) : /home/andrew/repositories/gpuocelot/ocelot/TestCudaGlobals : Passed
- (0.086s) : /home/andrew/repositories/gpuocelot/ocelot/TestCudaMalloc : Passed
- (0.117s) : /home/andrew/repositories/gpuocelot/ocelot/TestLLVMKernels : Passed
- (0.066s) : /home/andrew/repositories/gpuocelot/ocelot/TestDeviceSwitching : Passed
+ (0.059s) : /home/andrew/repositories/gpuocelot/ocelot/TestCudaTexture2D : Passed
+ (0.056s) : /home/andrew/repositories/gpuocelot/ocelot/TestKernels : Passed
+ (8.492s) : /home/andrew/repositories/gpuocelot/ocelot/TestLexer : Passed
+ (0.055s) : /home/andrew/repositories/gpuocelot/ocelot/TestCudaGlobals : Passed
+ (0.079s) : /home/andrew/repositories/gpuocelot/ocelot/TestCudaMalloc : Passed
+ (0.086s) : /home/andrew/repositories/gpuocelot/ocelot/TestLLVMKernels : Passed
+ (22.183s) : /home/andrew/repositories/gpuocelot/ocelot/TestPTXToLLVMTranslator : Passed
 
 Failing tests:
- (20.705s) : /home/andrew/repositories/gpuocelot/ocelot/TestPTXToLLVMTranslator : Did not complete.
 
 Non-Existent tests:
 

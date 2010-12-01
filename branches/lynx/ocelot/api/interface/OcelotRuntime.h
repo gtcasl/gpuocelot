@@ -12,7 +12,6 @@
 #include <ocelot/trace/interface/MemoryChecker.h>
 #include <ocelot/trace/interface/MemoryRaceDetector.h>
 #include <ocelot/trace/interface/InteractiveDebugger.h>
-#include <ocelot/trace/interface/ResourceMonitor.h>
 #include <ocelot/analysis/interface/ClockCycleCountInstrumentor.h>
 #include <ocelot/analysis/interface/BasicBlockInstrumentor.h>
 
@@ -24,8 +23,7 @@ namespace ocelot
 		trace::MemoryChecker _memoryChecker;
 		trace::MemoryRaceDetector _raceDetector;
 		trace::InteractiveDebugger _debugger;
-		trace::ResourceMonitor _resourceMonitor;
-		
+
         analysis::ClockCycleCountInstrumentor _clockCycleCountInstrumentor;
 		analysis::BasicBlockInstrumentor _basicBlockExecutionCountInstrumentor;
 

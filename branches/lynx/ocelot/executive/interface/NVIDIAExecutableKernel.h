@@ -34,7 +34,7 @@ namespace executive {
 		/*!
 			Sets the device used to execute the kernel
 		*/
-		void setDevice( Device* d, unsigned int limit);
+		void setDevice(const Device* device, unsigned int limit);
 
 		/*!
 			sets the size of shared memory in bytes

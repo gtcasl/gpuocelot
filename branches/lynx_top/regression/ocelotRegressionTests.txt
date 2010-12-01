@@ -1,0 +1,16 @@
+../TestLexer
+../TestParser
+../TestEmulator
+../TestInstructions
+../TestKernels
+../TestDataflowGraph
+../TestLLVMInstructions
+../TestPTXToLLVMTranslator
+../TestLLVMKernels
+../TestCudaMalloc 
+../TestCudaTexture2D
+../TestCudaTextureArray
+../TestCudaGlobals
+../TestDeviceSwitching
+../TestCudaSequence
+

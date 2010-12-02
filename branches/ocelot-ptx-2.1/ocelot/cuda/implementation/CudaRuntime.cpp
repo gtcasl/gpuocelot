@@ -40,7 +40,7 @@
 #define REPORT_BASE 0
 
 // report all ptx modules
-#define REPORT_ALL_PTX 1
+#define REPORT_ALL_PTX 0
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -1005,7 +1005,13 @@ cudaError_t cuda::CudaRuntime::cudaMemcpyToSymbol(const char *symbol,
 	else {
 		name = global->second.global;
 		module = global->second.module;
-		_registerModule(module);
+		try {
+			_registerModule(module);
+		}
+		catch(...) {
+			_unlock();
+			throw;
+		}
 	}
 
 	_bind();
@@ -1059,7 +1065,13 @@ cudaError_t cuda::CudaRuntime::cudaMemcpyFromSymbol(void *dst,
 	else {
 		name = global->second.global;
 		module = global->second.module;
-		_registerModule(module);
+		try {
+			_registerModule(module);
+		}
+		catch(...) {
+			_unlock();
+			throw;
+		}
 	}
 	
 	_bind();
@@ -1877,7 +1889,13 @@ cudaError_t cuda::CudaRuntime::cudaGetSymbolAddress(void **devPtr,
 		name = global->second.global;
 		module = global->second.module;
 		
-		_registerModule(module);
+		try {
+			_registerModule(module);
+		}
+		catch(...) {
+			_unlock();
+			throw;
+		}
 	}
 	else {
 		name = symbol;
@@ -1919,7 +1937,13 @@ cudaError_t cuda::CudaRuntime::cudaGetSymbolSize(size_t *size, const char *symbo
 	if (global != _globals.end()) {
 		name = global->second.global;
 		module = global->second.module;
-		_registerModule(module);
+		try {
+			_registerModule(module);
+		}
+		catch(...) {
+			_unlock();
+			throw;
+		}
 	}
 	else {
 		name = symbol;
@@ -2105,7 +2129,13 @@ cudaError_t cuda::CudaRuntime::cudaBindTexture(size_t *offset,
 
 	RegisteredTextureMap::iterator texture = _textures.find((void*)texref);
 	if(texture != _textures.end()) {
-		_registerModule(texture->second.module);
+		try {
+			_registerModule(texture->second.module);
+		}
+		catch(...) {
+			_unlock();
+			throw;
+		}
 		
 		_bind();
 		try {
@@ -2146,7 +2176,13 @@ cudaError_t cuda::CudaRuntime::cudaBindTexture2D(size_t *offset,
 	RegisteredTextureMap::iterator texture = _textures.find((void*)texref);
 
 	if(texture != _textures.end()) {
-		_registerModule(texture->second.module);
+		try {
+			_registerModule(texture->second.module);
+		}
+		catch(...) {
+			_unlock();
+			throw;
+		}
 		_bind();
 		try {
 			_getDevice().bindTexture((void*)devPtr, texture->second.module, 
@@ -2194,7 +2230,13 @@ cudaError_t cuda::CudaRuntime::cudaBindTextureToArray(
 
 	RegisteredTextureMap::iterator texture = _textures.find((void*)texref);
 	if(texture != _textures.end()) {
-		_registerModule(texture->second.module);
+		try {
+			_registerModule(texture->second.module);
+		}
+		catch(...) {
+			_unlock();
+			throw;
+		}
 		_bind();
 		try {
 			_getDevice().bindTexture((void*)array, texture->second.module, 
@@ -2225,7 +2267,13 @@ cudaError_t cuda::CudaRuntime::cudaUnbindTexture(
 
 	RegisteredTextureMap::iterator texture = _textures.find((void*)texref);
 	if(texture != _textures.end()) {
-		_registerModule(texture->second.module);
+		try {
+			_registerModule(texture->second.module);
+		}
+		catch(...) {
+			_unlock();
+			throw;
+		}
 		_bind();
 		try {
 			_getDevice().unbindTexture(texture->second.module, 
@@ -2468,12 +2516,24 @@ cudaError_t cuda::CudaRuntime::cudaFuncGetAttributes(
 	//
 	RegisteredKernelMap::iterator kernel = _kernels.find((void*)symbol);
 	if (kernel != _kernels.end()) {
-		_registerModule(kernel->second.module);
+		try {
+			_registerModule(kernel->second.module);
+		}
+		catch(...) {
+			_unlock();
+			throw;
+		}
+		
 		_bind();
+
 		*attr = _getDevice().getAttributes(kernel->second.module, 
 			kernel->second.kernel);
 		result = cudaSuccess;
+
 		_release();
+	}
+	else {
+		_unlock();
 	}
 	
 	return _setLastError(result);

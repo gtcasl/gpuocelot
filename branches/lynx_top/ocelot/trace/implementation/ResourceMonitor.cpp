@@ -13,9 +13,12 @@
 #include <ocelot/executive/interface/EmulatedKernel.h>
 #include <ocelot/executive/interface/Device.h>
 
+#include <ocelot/cuda/interface/cuda_runtime.h>
+
 // hydrazine includes
 #include <hydrazine/implementation/Exception.h>
-#include <iostream>
+
+#include <fstream>
 
 namespace trace
 {
@@ -53,6 +56,7 @@ namespace trace
 	ResourceMonitor::ResourceMonitor() : _cache( false ), _parameter( true ), 
 		_shared( true ), _local( true ), _constant( true )
 	{
+		
 	}	
 	
 	void ResourceMonitor::initialize( const executive::ExecutableKernel& kernel )
@@ -77,9 +81,19 @@ namespace trace
 		
 		_kernel = static_cast< const executive::EmulatedKernel* >( &kernel );
 		unsigned int totalGlobalAllocationSize = _device->getTotalGlobalAllocation();
+		
+		
+        out = new std::fstream("/proc/gpuinfo", std::fstream::out);
+
+//		will get blocked on lock (acquired by _launchKernel in CudaRuntime)        
+//		cudaDeviceProp deviceProp;
+//		cudaGetDeviceProperties(&deviceProp, 0);
+//		std::cout << deviceProp.name << "\n";
+
 		//print to proc entry
-		std::cout << "Total global memory usage: " << totalGlobalAllocationSize
-			<< "\n";
+		*out << "Total global memory usage: " << totalGlobalAllocationSize
+			<< "B\n";
+		out->close();
 	}
 
 	void ResourceMonitor::event(const TraceEvent& event)
@@ -90,6 +104,9 @@ namespace trace
 	void ResourceMonitor::finish()
 	{
 		//clear resource usage stats in proc entry
+		out = new std::fstream("/proc/gpuinfo", std::fstream::trunc);
+		*out << "Total global memory usage: 0B\n";
+		out->close();
 	}
 }
 

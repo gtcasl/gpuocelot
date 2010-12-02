@@ -6,7 +6,7 @@ __global__ void raceCondition(int *A) {
 	
 	// no synchronization barrier!
 	
-	A[threadIdx.x] = Shared[63 - threadIdx.x];	// line 9 - faulting load
+	A[threadIdx.x] = Shared[threadIdx.x];	// line 9 - faulting load
 }
 
 int main() {

@@ -82,6 +82,12 @@ void executive::NVIDIAExecutableKernel::launchGrid(int width, int height) {
 		report("  - cuLaunchGrid() failed: " << result);
 		throw hydrazine::Exception("cuLaunchGrid() failed ");
 	}
+
+	// notify trace generator(s)
+	for (TraceGeneratorVector::iterator it = _generators.begin(); 
+		it != _generators.end(); ++it) {
+		(*it)->finish();
+	}
 }
 
 /*!

@@ -11,6 +11,7 @@
 #include <ocelot/ir/interface/PTXOperand.h>
 #include <ocelot/ir/interface/Dim3.h>
 #include <ocelot/trace/interface/TraceGenerator.h>
+#include <fstream>
 
 namespace executive
 {
@@ -61,6 +62,9 @@ namespace trace
 		
 			/*! \brief A pointer to the executable kernel */
 			const executive::EmulatedKernel* _kernel;
+
+			/*! \brief A pointer to file output */
+			std::fstream *out;
 			
 		private:
 		public:

@@ -119,15 +119,15 @@ namespace analysis
    
 		std::ofstream outFile;
 
-		std::string tmp = "." + metric;
+		std::string tmp = "." + kernelName;
 		int i = 1;
 		bool alreadyExists = true;
 		do {
-			outFile.open((kernelName + tmp + ".json").c_str(), std::ios::in);	
+			outFile.open(( metric + tmp + ".json").c_str(), std::ios::in);	
 			if( outFile.is_open() )
 			{
 				std::stringstream out;
-				out << "." << metric << "." << i;
+				out << "." << kernelName << "." << i;
 				tmp = out.str();
 				i++;
 			} else {
@@ -136,7 +136,7 @@ namespace analysis
             outFile.close();
 		} while(alreadyExists);
 	
-		outFile.open((kernelName + tmp + ".json").c_str());
+		outFile.open((metric + tmp + ".json").c_str());
 		hydrazine::json::Emitter emitter;
 		emitter.use_tabs = false;
 		emitter.emit_pretty(outFile, stats, 2);

@@ -53,6 +53,7 @@ namespace executive
 		_status.struct_size = sizeof(CALdevicestatus);
 		CalDriver()->calDeviceGetStatus(&_status, _device);
 
+		report("Setting device properties");
 		_properties.ISA = ir::Instruction::CAL;
 		_properties.name = "CAL Device";
 		_properties.multiprocessorCount = _attribs.numberOfShaderEngines;
@@ -61,9 +62,11 @@ namespace executive
 
         // Multiple contexts per device is not supported yet
         // only one context per device so we can create it in the constructor
+		report("Creating device context");
 		CalDriver()->calCtxCreate(&_context, _device);
 
 		// Allocate uav0 resource
+		report("Allocating global memory (uav0)");
 		CALuint width = Uav0Size;
 		CALuint flags = CAL_RESALLOC_GLOBAL_BUFFER;
 		CalDriver()->calResAllocLocal1D(
@@ -74,6 +77,7 @@ namespace executive
 				flags);
 
 		// Allocate cb0 resource
+		report("Allocating ABI memory (cb0)");
 		flags = 0;
 		CalDriver()->calResAllocLocal1D(
 				&_cb0Resource, 
@@ -84,6 +88,7 @@ namespace executive
 
 		// Allocate cb1 resource
 		flags = 0;
+		report("Allocating param memory (cb1)");
 		CalDriver()->calResAllocLocal1D(
 				&_cb1Resource, 
 				_device, 
@@ -94,6 +99,7 @@ namespace executive
 
     ATIGPUDevice::~ATIGPUDevice() 
     {
+		report("Destroying ATIGPUDevice");
 		_modules.clear();
 
 		CalDriver()->calResFree(_uav0Resource);

@@ -218,8 +218,8 @@ namespace executive
 
 			/*! \brief uav0 base address (to avoid 0x0 be a valid address) */
 			static const CALdeviceptr Uav0BaseAddr = 0x1000;
-			/*! \brief uav0 size */
-			static const size_t Uav0Size = 60000000;
+			/*! \brief uav0 size (150 MB) */
+			static const size_t Uav0Size = 150000000;
 
 		private:
 			/*! \brief A map of registered modules */

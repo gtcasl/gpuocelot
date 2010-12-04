@@ -463,8 +463,7 @@ WHITESPACE [ \t]*
 ".ecr"                          { yylval->value = TOKEN_ECR; return TOKEN_ECR; }
 ".rc16"                         { yylval->value = TOKEN_RC16; \
                                     return TOKEN_RC16; }
-
-                                    
+        
 ".finite"                       { yylval->value = TOKEN_FINITE; \
                                     return TOKEN_FINITE; }
 ".infinite"                     { yylval->value = TOKEN_INFINITE; \

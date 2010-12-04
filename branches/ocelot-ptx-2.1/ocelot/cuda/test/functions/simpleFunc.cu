@@ -52,7 +52,7 @@ int main() {
 	free(A_cpu);
 	cudaFree(A_gpu);
 	
-	printf("%s\n", (errors ? "FAILED": "Passed"));
+	printf("Pass/Fail : %s\n", (errors ? "Fail": "Pass"));
 	
 	return 0;
 }

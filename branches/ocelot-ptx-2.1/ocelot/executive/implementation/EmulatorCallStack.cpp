@@ -18,7 +18,7 @@ namespace executive
 {
 	EmulatorCallStack::EmulatorCallStack(unsigned int threads, 
 		unsigned int initialFrameSize, unsigned int registers, 
-		unsigned int localSize, unsigned int sharedSize):
+		unsigned int localSize, unsigned int sharedSize) :
 		_stackPointer(0),
 		_threadCount(threads),
 		_localMemoryBase(3 * sizeof(unsigned int) + initialFrameSize * threads),
@@ -142,14 +142,16 @@ namespace executive
 
 	unsigned int EmulatorCallStack::callerOffset() const
 	{
-		return *(unsigned int*)&_stack.at(_stackPointer + sizeof(unsigned int) );
+		return *(unsigned int*)&_stack.at(
+			_stackPointer + sizeof(unsigned int) );
 	}
 
 	unsigned int EmulatorCallStack::callerFrameSize() const
 	{
-		return *(unsigned int*)&_stack.at(_stackPointer + 2 * sizeof(unsigned int) );
+		return *(unsigned int*)&_stack.at(
+		_stackPointer + 2 * sizeof(unsigned int) );
 	}
-		
+	
 	void EmulatorCallStack::pushFrame(unsigned int stackSize, 
 		unsigned int registers, unsigned int localSize, unsigned int sharedSize,
 		unsigned int returnPC, unsigned int callerStackFrame,
@@ -174,7 +176,7 @@ namespace executive
 		_sharedMemorySizes.push_back(sharedSize);
 		
 		_stack.resize(_stack.size() + totalNewSize);
-
+		
 		*((unsigned int*) &_stack.at(_stackPointer)) = returnPC;	
 		*((unsigned int*) &_stack.at(
 			_stackPointer + sizeof(unsigned int))) = callerStackFrame;	

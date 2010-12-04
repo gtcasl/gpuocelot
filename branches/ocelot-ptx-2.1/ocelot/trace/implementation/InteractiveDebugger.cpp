@@ -253,7 +253,9 @@ void InteractiveDebugger::_command(const std::string& command)
 		{
 			unsigned int PC = _event.PC;
 			stream >> PC;
-			_printAssembly(PC);
+			unsigned int count = 10;
+			stream >> count;
+			_printAssembly(PC, count);
 		}
 		else if(modifier == "reg" || modifier == "r")
 		{
@@ -547,7 +549,8 @@ void InteractiveDebugger::_printMemory(ir::PTXU64 address) const
 
 }
 
-void InteractiveDebugger::_printAssembly(unsigned int PC) const
+void InteractiveDebugger::_printAssembly(unsigned int PC,
+	unsigned int count) const
 {
 	switch(_kernel->ISA)
 	{
@@ -557,7 +560,8 @@ void InteractiveDebugger::_printAssembly(unsigned int PC) const
 			static_cast<const executive::EmulatedKernel&>(*_kernel);
 		
 		for(unsigned int pc = PC; 
-			pc < std::min(kernel.instructions.size(), (size_t)(PC + 10)); ++pc)
+			pc < std::min(kernel.instructions.size(), (size_t)(PC + count));
+			++pc)
 		{
 			std::cout << "(" << pc << ") - " 
 				<< kernel.instructions[pc].toString() << "\n";

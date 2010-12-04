@@ -922,6 +922,7 @@ LLVMModuleManager::KernelAndTranslation::KernelAndTranslation(ir::PTXKernel* k,
 void LLVMModuleManager::KernelAndTranslation::unload()
 {
 	#ifdef HAVE_LLVM
+	delete _kernel;
 	if(_metadata == 0) return;
 	assert(_module != 0);
 
@@ -931,7 +932,6 @@ void LLVMModuleManager::KernelAndTranslation::unload()
 
 	LLVMState::jit()->removeModule(_module);
 	delete _module;
-	delete _kernel;
 	delete _metadata;
 	#else
 	assertM(false, "LLVM support not compiled into ocelot.");

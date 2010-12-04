@@ -181,6 +181,8 @@ namespace parser
 			ir::PTXOperand( ir::PTXOperand::laneId, ir::PTXOperand::ix ) ) ) );
 		operands.insert( std::make_pair( "%nwarpid", OperandWrapper( 
 			ir::PTXOperand( ir::PTXOperand::nwarpId, ir::PTXOperand::ix ) ) ) );
+		operands.insert( std::make_pair( "WARP_SZ", OperandWrapper( 
+			ir::PTXOperand( ir::PTXOperand::warpSize, ir::PTXOperand::ix ) ) ) );
 		operands.insert( std::make_pair( "%ctaid", OperandWrapper( 
 			ir::PTXOperand( ir::PTXOperand::ctaId, ir::PTXOperand::iAll ) ) ) );
 		operands.insert( std::make_pair( "%nctaid", OperandWrapper( 

@@ -151,7 +151,7 @@ int main() {
 	
 	delete [] A_cpu;
 	
-	std::cout << "Test: " << (!errors ? "Pass" : "FAIL") << std::endl;
+	std::cout << "Pass/Fail : " << (!errors ? "Pass" : "Fail") << std::endl;
 	
 	return 0;
 }

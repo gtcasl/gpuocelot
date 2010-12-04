@@ -5,7 +5,6 @@
 		with associated code for emulating its execution
 */
 
-
 #include <hydrazine/interface/Casts.h>
 
 #include <ocelot/ir/interface/PTXOperand.h>
@@ -2543,7 +2542,8 @@ void executive::CooperativeThreadArray::eval_Call(CTAContext &context,
 				functionCallStack.pushFrame(instr.a.stackMemorySize, 
 					instr.a.registerCount, instr.a.localMemorySize, 
 					instr.a.sharedMemorySize, context.PC, 
-					functionCallStack.offset(), functionCallStack.stackSize());
+					functionCallStack.offset(),
+					functionCallStack.stackFrameSize());
 				unsigned int offset = instr.b.offset;
 				for (ir::PTXOperand::Array::const_iterator 
 					argument = instr.b.array.begin();
@@ -4634,6 +4634,7 @@ void executive::CooperativeThreadArray::eval_Ld(CTAContext &context,
 					source += (PTXU64) kernel->ConstMemory;				
 				}
 				break;
+			case PTXInstruction::Generic:
 			case PTXInstruction::Global:
 				{	
 				}
@@ -6240,11 +6241,13 @@ void executive::CooperativeThreadArray::eval_Ret(CTAContext &context,
 	trace();
 	reportE(REPORT_RET, "Returned from function call at PC " 
 		<< functionCallStack.returnPC() );
-	const PTXInstruction& call = kernel->instructions[functionCallStack.returnPC()];
+	const PTXInstruction& call = kernel->instructions[
+		functionCallStack.returnPC()];
 	reportE(REPORT_RET, " Previous stack size (" 
 		<< functionCallStack.callerFrameSize() << ") offset (" 
 		<< functionCallStack.callerOffset() << ")" );
-	char* callerStack = (char*)functionCallStack.offsetToPointer(functionCallStack.callerOffset());
+	char* callerStack = (char*)functionCallStack.offsetToPointer(
+		functionCallStack.callerOffset());
 	unsigned int callerStackSize = functionCallStack.callerFrameSize();
 	unsigned int offset = 0;
 	for (ir::PTXOperand::Array::const_iterator argument = call.d.array.begin();
@@ -6256,10 +6259,13 @@ void executive::CooperativeThreadArray::eval_Ret(CTAContext &context,
 			char* pointer = (char*)functionCallStack.stackFramePointer(threadID);
 			
 			reportE(REPORT_RET, " For thread " << threadID << " copying " 
-				<< argument->toString() << " [" << ir::PTXOperand::bytes(argument->type) << " bytes] from new frame at " 
+				<< argument->toString() << " ["
+				<< ir::PTXOperand::bytes(argument->type)
+				<< " bytes] from new frame at " 
 				<< offset << " to caller frame at " 
-				<< argument->offset 
-				<< " - destination: " << (void *)(callerPointer + argument->offset)
+				<< argument->offset
+				<< " - destination: "
+				<< (void *)(callerPointer + argument->offset)
 				<< " - caller stack size: " << callerStackSize);
 			
 			std::memcpy(callerPointer + argument->offset, pointer + offset, 
@@ -8201,13 +8207,13 @@ void executive::CooperativeThreadArray::eval_St(CTAContext &context,
 					}
 				}
 				break;
-			case PTXInstruction::Global:			
+				case PTXInstruction::Generic: /* fall through */
+				case PTXInstruction::Global:			
 				{	
 				}
 				break;
 			case PTXInstruction::Shared:
 				{
-					source = (char*)(0xffffffff & (PTXU64)source);
 					source += (PTXU64) functionCallStack.sharedMemoryPointer();
 				}
 				break;

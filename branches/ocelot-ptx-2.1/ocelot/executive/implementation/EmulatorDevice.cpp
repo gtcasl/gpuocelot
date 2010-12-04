@@ -322,6 +322,12 @@ namespace executive
 		{
 			delete allocation->second;
 		}
+		
+		for(ModuleMap::iterator module = _modules.begin(); 
+			module != _modules.end(); ++module)
+		{
+			delete module->second;
+		}
 	}
 			
 	Device::MemoryAllocation* EmulatorDevice::getMemoryAllocation(

@@ -178,10 +178,12 @@ namespace trace
 		void _setBreakpoint(unsigned int PC);
 public:
 		/*! \brief gets the value of a register */
-		ir::PTXU64 _getRegister(unsigned int thread, ir::PTXOperand::RegisterType reg) const;
+		ir::PTXU64 _getRegister(unsigned int thread,
+			ir::PTXOperand::RegisterType reg) const;
 public:
 		/*! \brief View the value of a register */
-		void _printRegister(unsigned int thread, ir::PTXOperand::RegisterType reg) const;
+		void _printRegister(unsigned int thread,
+			ir::PTXOperand::RegisterType reg) const;
 		/*! \brief prints watchpoints according to formatting information from command */
 		void _listWatchpoints(const std::string &command) const;
 		/*! \brief print the value of the region specified in a watchpoint */
@@ -195,7 +197,7 @@ public:
 		/*! \brief View values in memory near the specified device address */
 		void _printMemory(ir::PTXU64 address) const;
 		/*! \brief View the kernel assembly code near the specified address */
-		void _printAssembly(unsigned int pc) const;
+		void _printAssembly(unsigned int pc, unsigned int count) const;
 		/*! \brief Print the internal state of the currently executing warp */
 		void _printWarpState() const;
 		/*! \brief Print the PC of the currently executing warp */

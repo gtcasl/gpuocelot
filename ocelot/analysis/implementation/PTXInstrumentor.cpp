@@ -98,14 +98,6 @@ namespace analysis
 		}
 
         info = extractResults(out);
-
-        if(enableJSON)
-		{
-			cudaDeviceProp deviceProp;
-        	cudaGetDeviceProperties(&deviceProp, 0);
-        	deviceName = deviceProp.name;
-			emitJSON(info);
-		} 
 		
         if(info)
             delete[] info;
@@ -142,6 +134,10 @@ namespace analysis
 		emitter.emit_pretty(outFile, stats, 2);
         outFile.close();
 
+    }
+
+    PTXInstrumentor::KernelProfileMap PTXInstrumentor::kernelProfile() {
+        return this->_kernelProfileMap;
     }
 
 }

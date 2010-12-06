@@ -398,6 +398,9 @@ namespace cuda {
 		/*! \brief Clear all instrumentors */
 		virtual void clearInstrumentors();
 
+        /*! \brief Retrieves the kernel profile from online instrumentation */
+        virtual analysis::PTXInstrumentor::KernelProfileMap kernelProfile();
+
 		/*! \brief Sets a limit on the number of host worker threads to launch
 			when executing a CUDA kernel on a Multi-Core CPU.
 			\param limit The max number of worker threads to launch per kernel.

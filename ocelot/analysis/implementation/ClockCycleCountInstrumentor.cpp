@@ -53,26 +53,30 @@ namespace analysis
             cudaFree(clock_sm_info);
         }
 
-        ClockCyclesMap clockCyclesMap;
-
-        for(unsigned int i = 0; i < threadBlocks; i++) {
-            size_t key = info[i*2 + 1];
-            if(clockCyclesMap.find(key) != clockCyclesMap.end()) {
-                size_t value = clockCyclesMap[key] + info[i*2];
-                clockCyclesMap[key] = value;
-            }
-            else {
-                clockCyclesMap[key] = info[i*2];
-            }        
+        std::vector<size_t> threadBlockInfo;
+        threadBlockInfo.resize(2, 0);
+        
+        for(size_t i = 0; i < threadBlocks; i++) {
+            
+            threadBlockInfo[0] = info[i*2];
+            threadBlockInfo[1] = info[i*2 + 1];
+            
+            _kernelProfileMap[i] = threadBlockInfo;        
         } 
 
-        *out << kernelName << " = {";
+        *out << kernelName << "_profile = {";
 
-        for (ClockCyclesMap::const_iterator it = clockCyclesMap.begin(); it != clockCyclesMap.end(); ++it) {
-			*out << it->first << ":" << it->second << ",";
+        for (KernelProfileMap::const_iterator it = _kernelProfileMap.begin(); it != _kernelProfileMap.end(); ++it) {
+			*out << it->first << ":(";
+            
+            for(std::vector<size_t>::const_iterator mappedIt = it->second.begin(); mappedIt != it->second.end(); ++mappedIt){
+                *out << *mappedIt << ","; 
+            }
+
+            *out << "),";
 		}
         
-        *out << "}\n\n";        
+        *out << "}\n\n";   
 
         return info;
     }

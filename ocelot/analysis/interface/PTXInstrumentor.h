@@ -9,6 +9,7 @@
 
 #include <string>
 #include <vector>
+#include <map>
 #include <ocelot/ir/interface/Module.h>
 #include <ocelot/analysis/interface/Pass.h>
 #include <hydrazine/implementation/json.h>
@@ -20,7 +21,11 @@ namespace analysis
 	/*! \brief Able to run various instrumentation passes over PTX modules */
 	class PTXInstrumentor
 	{
-		public:
+		
+        public:
+
+            /*! \brief Generic map to store results from online instrumentation */
+            typedef std::map<size_t, std::vector<size_t>> KernelProfileMap;
 
 			/*! \brief Enables automatic output as JSON */
 			bool enableJSON;
@@ -48,7 +53,10 @@ namespace analysis
 
             /*! \brief The number of threads specified for this execution */
             unsigned int threads;
-			
+
+        protected:
+            
+            KernelProfileMap _kernelProfileMap;
 			
 		public:
 		
@@ -79,6 +87,9 @@ namespace analysis
 
             /*! \brief Extracts instrumentation-specific data */
             virtual size_t* extractResults(std::ostream *out) = 0;
+
+            /*! \brief obtain instrumentation results stored in KernelProfileMap */
+            KernelProfileMap kernelProfile();
 	};
 
     typedef std::vector< PTXInstrumentor *> PTXInstrumentorVector;

@@ -68,7 +68,7 @@ namespace analysis
             for(i = 0; i < threads; i++) {
                 *out << "Thread " << (i + 1) << ":\n";
                 for(j = 0; j < basicBlocks; j++) {
-                    *out << "basicBlock " << (j + 1) << ": " << info[basicBlocks] << "\n";
+                    *out << "basicBlock " << (j + 1) << ": " << info[(i * basicBlocks * threadBlocks) + j] << "\n";
                 }
             }   
         }

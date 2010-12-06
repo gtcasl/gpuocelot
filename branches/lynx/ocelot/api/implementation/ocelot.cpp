@@ -37,6 +37,10 @@ namespace ocelot
 	{
 		get()->clearInstrumentors( );
 	}
+
+    analysis::PTXInstrumentor::KernelProfileMap kernelProfile() {
+        return get()->kernelProfile();
+    }
 	
 	void limitWorkerThreads( unsigned int limit )
 	{

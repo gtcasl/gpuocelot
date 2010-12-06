@@ -4,7 +4,7 @@
 	logAsJSON: false,
         clockCycleCount: {
             enabled: true,
-            logfile: "instrument/clockCycles.py"
+            logfile: ""
         },
         basicBlock: {
             executionCount: false,

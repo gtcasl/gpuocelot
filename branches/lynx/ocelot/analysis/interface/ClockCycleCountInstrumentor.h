@@ -23,10 +23,6 @@ namespace analysis
             std::string description;
 
             size_t *clock_sm_info;
-
-        private:
-            /*!	\brief Map from SM ID to clock cycles */
-		    typedef std::map< size_t, size_t > ClockCyclesMap;
 			
 		public:
 			/*! \brief The default constructor */

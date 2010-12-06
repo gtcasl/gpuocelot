@@ -3070,6 +3070,10 @@ void cuda::CudaRuntime::addInstrumentor( analysis::PTXInstrumentor& instrumentor
 	_unlock();
 }
 
+analysis::PTXInstrumentor::KernelProfileMap cuda::CudaRuntime::kernelProfile() {
+    return _getCurrentThread().instrumentors.front()->kernelProfile();
+}
+
 void cuda::CudaRuntime::clearInstrumentors() {
 	_lock();
 	HostThreadContext& thread = _getCurrentThread();

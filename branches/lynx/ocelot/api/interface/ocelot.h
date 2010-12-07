@@ -20,6 +20,7 @@ namespace trace
 namespace analysis 
 {
     class PTXInstrumentor;
+    class KernelProfile;
 }
 
 /*! \brief A namespace for ocelot API functions */
@@ -27,8 +28,6 @@ namespace ocelot
 {
 	/*! \brief A map between pointer types */
 	typedef std::unordered_map<void*, void*> PointerMap;
-
-    typedef std::map<size_t, std::vector<size_t>> KernelProfileMap;
 
 	/*! \brief Adds a trace generator for the next kernel invocation 
 	
@@ -49,7 +48,7 @@ namespace ocelot
     void addInstrumentor(analysis::PTXInstrumentor& instrumentor);
     void clearInstrumentors();
 
-    KernelProfileMap kernelProfile();
+    analysis::KernelProfile kernelProfile();
 	
 	/*! \brief Sets a limit on the number of host worker threads to launch
 		when executing a CUDA kernel on a Multi-Core CPU.

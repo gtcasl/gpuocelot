@@ -38,7 +38,7 @@ namespace ocelot
 		get()->clearInstrumentors( );
 	}
 
-    analysis::PTXInstrumentor::KernelProfileMap kernelProfile() {
+    analysis::KernelProfile kernelProfile() {
         return get()->kernelProfile();
     }
 	

@@ -573,7 +573,7 @@ namespace cuda {
 		virtual void clearTraceGenerators();
         virtual void addInstrumentor( analysis::PTXInstrumentor& instrumentor);
 		virtual void clearInstrumentors();
-        virtual analysis::PTXInstrumentor::KernelProfileMap kernelProfile();
+        virtual analysis::KernelProfile kernelProfile();
 		virtual void limitWorkerThreads( unsigned int limit = 1024 );
 		virtual void registerPTXModule(std::istream& stream, 
 			const std::string& name);

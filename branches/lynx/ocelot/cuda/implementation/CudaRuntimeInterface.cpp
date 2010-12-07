@@ -74,7 +74,7 @@ void cuda::CudaRuntimeInterface::addInstrumentor( analysis::PTXInstrumentor& ins
 	assert(0 && "unimplemented");
 }
 
-analysis::PTXInstrumentor::KernelProfileMap cuda::CudaRuntimeInterface::kernelProfile() {
+analysis::KernelProfile cuda::CudaRuntimeInterface::kernelProfile() {
 	assert(0 && "unimplemented");
 }
 			

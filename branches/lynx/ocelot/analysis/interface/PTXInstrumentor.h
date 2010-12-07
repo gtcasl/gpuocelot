@@ -28,6 +28,9 @@ namespace analysis
 
             /*! \brief Maps number of CTAs executed on each SM */
             typedef std::map<size_t, size_t> ProcessorToThreadBlockCountMap;
+
+            /*! \brief Maps Basic Block ID to total number of basic block execution */
+            typedef std::map<size_t, size_t> BasicBlockToExecCountMap;
        
             /*! \brief The name of the kernel */
             std::string name;
@@ -40,6 +43,8 @@ namespace analysis
 
             /*! \brief Maps number of CTAs executed on each SM */
             ProcessorToThreadBlockCountMap processorToThreadBlockCountMap;
+
+            BasicBlockToExecCountMap basicBlockExecutionCountMap;
 	};
 
 	/*! \brief Able to run various instrumentation passes over PTX modules */

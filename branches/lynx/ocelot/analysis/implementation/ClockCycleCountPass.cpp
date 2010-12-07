@@ -13,6 +13,8 @@
 #include <ocelot/ir/interface/PTXKernel.h>
 #include <ocelot/analysis/interface/DataflowGraph.h>
 
+#include <climits>
+
 namespace analysis
 {
 
@@ -87,6 +89,31 @@ namespace analysis
 
         kernel->dfg()->insert(lastBlock, cvt, lastBlock->instructions().size() - 1);
         
+        DataflowGraph::RegisterId p = kernel->dfg()->newRegister();
+
+        setp.comparisonOperator = ir::PTXInstruction::Le;
+        setp.d.reg = p;
+        setp.d.type = ir::PTXOperand::pred;
+        setp.d.addressMode = ir::PTXOperand::Register;
+        setp.a.reg = clockEnd;
+        setp.b.addressMode = ir::PTXOperand::Register;
+        setp.b.reg = clockStart;
+
+        kernel->dfg()->insert(lastBlock, setp, lastBlock->instructions().size() - 1);
+
+        ir::PTXInstruction add(ir::PTXInstruction::Add);
+        add.type = type;
+        add.d.reg = clockEnd;
+        add.d.type = type;
+        add.d.addressMode = ir::PTXOperand::Register;
+        add.a = add.d;
+        add.b.addressMode = ir::PTXOperand::Immediate;
+        add.b.imm_uint = UINT_MAX;
+        add.pg.condition = ir::PTXOperand::Pred;
+        add.pg.reg = p;
+
+        kernel->dfg()->insert(lastBlock, add, lastBlock->instructions().size() - 1);
+
         ir::PTXInstruction sub(ir::PTXInstruction::Sub);
         sub.type = type;
         sub.d.reg = clockStart;

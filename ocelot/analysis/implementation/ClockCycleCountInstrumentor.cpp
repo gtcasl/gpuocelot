@@ -53,20 +53,35 @@ namespace analysis
             cudaFree(clock_sm_info);
         }
 
+        struct cudaDeviceProp properties;
+        cudaGetDeviceProperties(&properties, 0);
+
         std::vector<size_t> threadBlockInfo;
         threadBlockInfo.resize(2, 0);
+    
+        size_t total_clock_cycles = 0;
+        size_t smid = 0;
+        _kernelProfile.processorToThreadBlockCountMap.clear();
+        _kernelProfile.threadBlockToProcessorMap.clear();
         
         for(size_t i = 0; i < threadBlocks; i++) {
-            
+            smid = info[i*2+1];
+            total_clock_cycles += info[i*2];
             threadBlockInfo[0] = info[i*2];
-            threadBlockInfo[1] = info[i*2 + 1];
+            threadBlockInfo[1] = smid;
+            _kernelProfile.processorToThreadBlockCountMap[smid]++;
             
-            _kernelProfileMap[i] = threadBlockInfo;        
+            _kernelProfile.threadBlockToProcessorMap[i] = threadBlockInfo;        
         } 
 
-        *out << kernelName << "_profile = {";
+        _kernelProfile.avgThreadBlockRuntime = (total_clock_cycles/_kernelProfile.threadBlockToProcessorMap.size())/properties.clockRate;
+        _kernelProfile.name = kernelName;
+    
+        *out << kernelName << "_avgThreadBlockRuntime = " << _kernelProfile.avgThreadBlockRuntime << "\n\n";
+        *out << kernelName << "_threadBlockToProcessorMap = {";
 
-        for (KernelProfileMap::const_iterator it = _kernelProfileMap.begin(); it != _kernelProfileMap.end(); ++it) {
+        for (KernelProfile::ThreadBlockToProcessorMap::const_iterator it = _kernelProfile.threadBlockToProcessorMap.begin(); 
+            it != _kernelProfile.threadBlockToProcessorMap.end(); ++it) {
 			*out << it->first << ":(";
             
             for(std::vector<size_t>::const_iterator mappedIt = it->second.begin(); mappedIt != it->second.end(); ++mappedIt){
@@ -77,6 +92,15 @@ namespace analysis
 		}
         
         *out << "}\n\n";   
+
+        *out << kernelName << "_processorToThreadBlockCountMap = {";
+            for(KernelProfile::ProcessorToThreadBlockCountMap::const_iterator it = _kernelProfile.processorToThreadBlockCountMap.begin();
+                it != _kernelProfile.processorToThreadBlockCountMap.end(); ++it){
+                *out << it->first << ":" << it->second << ",";
+            }
+
+        *out << "}\n\n";
+
 
         return info;
     }

@@ -18,16 +18,36 @@
 
 namespace analysis
 {
+    /*! \brief Captures profile data about an executed kernel */
+	class KernelProfile
+	{
+		public:
+
+            /*! \brief Maps CTA->(clock cycles, SM) */
+            typedef std::map<size_t, std::vector<size_t>> ThreadBlockToProcessorMap;
+
+            /*! \brief Maps number of CTAs executed on each SM */
+            typedef std::map<size_t, size_t> ProcessorToThreadBlockCountMap;
+       
+            /*! \brief The name of the kernel */
+            std::string name;
+
+            /*! \brief average kernel execution time */
+            double avgThreadBlockRuntime;
+
+            /*! \brief Maps CTA->(clock cycles, SM) */
+            ThreadBlockToProcessorMap threadBlockToProcessorMap;
+
+            /*! \brief Maps number of CTAs executed on each SM */
+            ProcessorToThreadBlockCountMap processorToThreadBlockCountMap;
+	};
+
 	/*! \brief Able to run various instrumentation passes over PTX modules */
 	class PTXInstrumentor
 	{
 		
         public:
-
-            /*! \brief Generic map to store results from online instrumentation */
-            typedef std::map<size_t, std::vector<size_t>> KernelProfileMap;
-
-			/*! \brief Enables automatic output as JSON */
+        	/*! \brief Enables automatic output as JSON */
 			bool enableJSON;
 
 			/*! \brief device name for JSON output */
@@ -56,7 +76,7 @@ namespace analysis
 
         protected:
             
-            KernelProfileMap _kernelProfileMap;
+            KernelProfile _kernelProfile;
 			
 		public:
 		
@@ -88,8 +108,8 @@ namespace analysis
             /*! \brief Extracts instrumentation-specific data */
             virtual size_t* extractResults(std::ostream *out) = 0;
 
-            /*! \brief obtain instrumentation results stored in KernelProfileMap */
-            KernelProfileMap kernelProfile();
+            /*! \brief obtain kernel profile */
+            KernelProfile kernelProfile();
 	};
 
     typedef std::vector< PTXInstrumentor *> PTXInstrumentorVector;

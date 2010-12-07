@@ -3070,7 +3070,7 @@ void cuda::CudaRuntime::addInstrumentor( analysis::PTXInstrumentor& instrumentor
 	_unlock();
 }
 
-analysis::PTXInstrumentor::KernelProfileMap cuda::CudaRuntime::kernelProfile() {
+analysis::KernelProfile cuda::CudaRuntime::kernelProfile() {
     return _getCurrentThread().instrumentors.front()->kernelProfile();
 }
 

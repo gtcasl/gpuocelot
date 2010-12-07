@@ -136,8 +136,8 @@ namespace analysis
 
     }
 
-    PTXInstrumentor::KernelProfileMap PTXInstrumentor::kernelProfile() {
-        return this->_kernelProfileMap;
+    analysis::KernelProfile PTXInstrumentor::kernelProfile() {
+        return this->_kernelProfile;
     }
 
 }

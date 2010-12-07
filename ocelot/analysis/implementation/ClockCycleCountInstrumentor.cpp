@@ -22,6 +22,7 @@
 
 #include <fstream>
 
+
 using namespace hydrazine;
 
 namespace analysis
@@ -58,26 +59,34 @@ namespace analysis
 
         std::vector<size_t> threadBlockInfo;
         threadBlockInfo.resize(2, 0);
-    
-        size_t total_clock_cycles = 0;
+
         size_t smid = 0;
         _kernelProfile.processorToThreadBlockCountMap.clear();
         _kernelProfile.threadBlockToProcessorMap.clear();
+        _kernelProfile.processorToClockCyclesMap.clear();
         
         for(size_t i = 0; i < threadBlocks; i++) {
             smid = info[i*2+1];
-            total_clock_cycles += info[i*2];
             threadBlockInfo[0] = info[i*2];
             threadBlockInfo[1] = smid;
             _kernelProfile.processorToThreadBlockCountMap[smid]++;
+            _kernelProfile.processorToClockCyclesMap[smid] += info[i*2];
             
             _kernelProfile.threadBlockToProcessorMap[i] = threadBlockInfo;        
         } 
 
-        _kernelProfile.avgThreadBlockRuntime = (total_clock_cycles/_kernelProfile.threadBlockToProcessorMap.size())/properties.clockRate;
+        std::vector<size_t> clockCyclesPerSM;
+        clockCyclesPerSM.clear();
+
+        for(KernelProfile::ProcessorToClockCyclesMap::const_iterator it = _kernelProfile.processorToClockCyclesMap.begin();
+            it != _kernelProfile.processorToClockCyclesMap.end(); ++it) {
+            clockCyclesPerSM.push_back(it->second);
+        }
+
+        _kernelProfile.maxSMRuntime = *(std::max_element(clockCyclesPerSM.begin(), clockCyclesPerSM.end()))/properties.clockRate;
         _kernelProfile.name = kernelName;
     
-        *out << kernelName << "_avgThreadBlockRuntime = " << _kernelProfile.avgThreadBlockRuntime << "\n\n";
+        *out << kernelName << "_maxSMRuntime = " << _kernelProfile.maxSMRuntime << "\n\n";
         *out << kernelName << "_threadBlockToProcessorMap = {";
 
         for (KernelProfile::ThreadBlockToProcessorMap::const_iterator it = _kernelProfile.threadBlockToProcessorMap.begin(); 
@@ -133,7 +142,6 @@ namespace analysis
 
         delete clockCyclesStat;
 	}
-
 
     ClockCycleCountInstrumentor::ClockCycleCountInstrumentor() : description("Clock Cycles and SM (Processor) ID") {
 

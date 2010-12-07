@@ -28,18 +28,24 @@ namespace analysis
 
             /*! \brief Maps number of CTAs executed on each SM */
             typedef std::map<size_t, size_t> ProcessorToThreadBlockCountMap;
+        
+            /*! \brief Maps SM ID to total number of clock cycles */
+            typedef std::map<size_t, size_t> ProcessorToClockCyclesMap;
 
             /*! \brief Maps Basic Block ID to total number of basic block execution */
             typedef std::map<size_t, size_t> BasicBlockToExecCountMap;
        
+
             /*! \brief The name of the kernel */
             std::string name;
 
-            /*! \brief average kernel execution time */
-            double avgThreadBlockRuntime;
+            /*! \brief max kernel execution time for a processor (SM) */
+            double maxSMRuntime;
 
             /*! \brief Maps CTA->(clock cycles, SM) */
             ThreadBlockToProcessorMap threadBlockToProcessorMap;
+
+            ProcessorToClockCyclesMap processorToClockCyclesMap;
 
             /*! \brief Maps number of CTAs executed on each SM */
             ProcessorToThreadBlockCountMap processorToThreadBlockCountMap;

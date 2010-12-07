@@ -9,6 +9,7 @@
 
 #include <string>
 #include <map>
+#include <algorithm>
 #include <ocelot/ir/interface/Module.h>
 #include <ocelot/analysis/interface/PTXInstrumentor.h>
 #include <ocelot/analysis/interface/Pass.h>
@@ -45,6 +46,9 @@ namespace analysis
 
             /*! \brief emits JSON for the clock cycle count instrumentation */
             void emitJSON(size_t* info);
+
+        private:
+            bool pred(const std::pair<size_t, size_t>& lhs, const std::pair<size_t, size_t>& rhs);
 	};
 }
 

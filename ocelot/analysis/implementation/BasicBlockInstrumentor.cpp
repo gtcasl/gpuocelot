@@ -59,18 +59,25 @@ namespace analysis
         *out << "\n\n" << kernelName << ":\n";
         *out << "\n--------------- " << description << " ---------------\n\n";
 
-        unsigned int i = 0;
-        unsigned int j = 0;
-        unsigned int k = 0;
+        _kernelProfile.basicBlockExecutionCountMap.clear();
+
+        size_t i = 0;
+        size_t j = 0;
+        size_t k = 0;
         
-        for(k = 1; k <= threadBlocks; k++) {
-            *out << "CTA " << k << ":\n";
+        for(k = 0; k < threadBlocks; k++) {
+            //*out << "CTA " << k << ":\n";
             for(i = 0; i < threads; i++) {
-                *out << "Thread " << (i + 1) << ":\n";
+                //*out << "Thread " << i << ":\n";
                 for(j = 0; j < basicBlocks; j++) {
-                    *out << "basicBlock " << (j + 1) << ": " << info[(i * basicBlocks * threadBlocks) + j] << "\n";
+                    //*out << "basicBlock " << j << ": " << info[(i * basicBlocks) + (k * threads * basicBlocks) + j] << "\n";
+                    _kernelProfile.basicBlockExecutionCountMap[j] += info[(i * basicBlocks) + (k * threads * basicBlocks) + j];
                 }
             }   
+        }
+
+        for(j = 0; j < basicBlocks; j++) {
+            *out << "Total Execution Count for Basic Block " << j << ": " << _kernelProfile.basicBlockExecutionCountMap[j] << std::endl;
         }
         
         return info;

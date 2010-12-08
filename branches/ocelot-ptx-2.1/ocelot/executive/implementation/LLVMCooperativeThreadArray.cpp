@@ -23,7 +23,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 namespace executive
 {
@@ -123,7 +123,8 @@ void LLVMCooperativeThreadArray::executeCta(unsigned int id)
 	unsigned int threadId = 0;
 
 	_nextFunction = _entryPoint;
-	report("Executing LLVM-CTA " << id << " (" << _functions[_nextFunction]->kernel->name << ")");
+	report("Executing LLVM-CTA " << id << " (" 
+		<< _functions[_nextFunction]->kernel->name << ")");
 
 	for(unsigned int warp = 0; warp < warps; ++warp)
 	{
@@ -159,7 +160,9 @@ void LLVMCooperativeThreadArray::executeCta(unsigned int id)
 
 	while(_freeContexts.size() + _reclaimedContexts.size() != threads)
 	{
-		report("  while( free + reclaimed contexts (" << (_freeContexts.size() + _reclaimedContexts.size()) << ") != threads (" << threads << ")");
+		report("  while( free + reclaimed contexts (" 
+			<< (_freeContexts.size() + _reclaimedContexts.size()) 
+			<< ") != threads (" << threads << ")");
 	
 		_computeNextFunction();
 		
@@ -169,7 +172,8 @@ void LLVMCooperativeThreadArray::executeCta(unsigned int id)
 		const unsigned int warps   = threads / _warpSize;
 		const unsigned int remains = threads % _warpSize;
 
-		report("Next sub-kernel is " << _nextFunction << " (" << _functions[_nextFunction]->kernel->name << ")");
+		report("Next sub-kernel is " << _nextFunction << " (" 
+			<< _functions[_nextFunction]->kernel->name << ")");
 
 		report(" threads:          " << threads);
 		report(" full warps:       " << warps);
@@ -213,7 +217,8 @@ void LLVMCooperativeThreadArray::_executeThread(unsigned int contextId)
 	context.metadata = (char*) metadata;
 	
 	report("   executing thread " << threadId(context) 
-		<< " in context " << contextId << " of " << _contexts.size() << ", _nextFunction: " << _nextFunction << " of " << _functions.size());
+		<< " in context " << contextId << " of " << _contexts.size() 
+		<< ", _nextFunction: " << _nextFunction << " of " << _functions.size());
 	
 	metadata->function(&context);
 }

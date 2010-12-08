@@ -37,7 +37,10 @@ namespace executive
 			char* constant; //! Pointer to constant memory
 			char* parameter; //! Pointer to parameter memory
 			char* argument; //! Pointer to argument memory
+		
+		public:
 			
+		
 		public:
 			/*! \brief Generic pointer back to other state */
 			char* metadata;

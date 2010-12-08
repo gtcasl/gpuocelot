@@ -2070,7 +2070,7 @@ std::string ir::PTXInstruction::toString() const {
 			return result;
 		}
 		case Isspacep: {
-			std::string result = guard() + "isspace." + toString(addressSpace) 
+			std::string result = guard() + "isspacep." + toString(addressSpace) 
 				+ " " + d.toString() + ", " + a.toString();
 			return result;
 		}

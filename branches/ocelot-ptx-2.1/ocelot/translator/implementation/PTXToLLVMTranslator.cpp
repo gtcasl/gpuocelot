@@ -1051,72 +1051,80 @@ namespace translator
 			<< " is not valid: " << i.valid() );
 		switch( i.opcode )
 		{
-			case ir::PTXInstruction::Abs: _translateAbs( i ); break;
-			case ir::PTXInstruction::Add: _translateAdd( i ); break;
-			case ir::PTXInstruction::AddC: _translateAddC( i ); break;
-			case ir::PTXInstruction::And: _translateAnd( i ); break;
-			case ir::PTXInstruction::Atom: _translateAtom( i ); break;
-			case ir::PTXInstruction::Bar: _translateBar( i ); break;
-			case ir::PTXInstruction::Bfi: _translateBfi( i ); break;
-			case ir::PTXInstruction::Bfind: _translateBfind( i ); break;
-			case ir::PTXInstruction::Bra: _translateBra( i, block ); break;
-			case ir::PTXInstruction::Brev: _translateBrev( i ); break;
-			case ir::PTXInstruction::Brkpt: _translateBrkpt( i ); break;
-			case ir::PTXInstruction::Call: _translateCall( i, block ); break;
-			case ir::PTXInstruction::Clz: _translateClz( i ); break;
-			case ir::PTXInstruction::CNot: _translateCNot( i ); break;
-			case ir::PTXInstruction::CopySign: _translateCopySign( i ); break;
-			case ir::PTXInstruction::Cos: _translateCos( i ); break;
-			case ir::PTXInstruction::Cvt: _translateCvt( i ); break;
-			case ir::PTXInstruction::Div: _translateDiv( i ); break;
-			case ir::PTXInstruction::Ex2: _translateEx2( i ); break;
-			case ir::PTXInstruction::Exit: _translateExit( i ); break;
-			case ir::PTXInstruction::Fma: _translateMad( i ); break;
-			case ir::PTXInstruction::Ld: _translateLd( i ); break;
-			case ir::PTXInstruction::Lg2: _translateLg2( i ); break;
-			case ir::PTXInstruction::Mad24: _translateMad24( i ); break;
-			case ir::PTXInstruction::Mad: _translateMad( i ); break;
-			case ir::PTXInstruction::Max: _translateMax( i ); break;
-			case ir::PTXInstruction::Membar: _translateMembar( i ); break;
-			case ir::PTXInstruction::Min: _translateMin( i ); break;
-			case ir::PTXInstruction::Mov: _translateMov( i ); break;
-			case ir::PTXInstruction::Mul24: _translateMul24( i ); break;
-			case ir::PTXInstruction::Mul: _translateMul( i ); break;
-			case ir::PTXInstruction::Neg: _translateNeg( i ); break;
-			case ir::PTXInstruction::Not: _translateNot( i ); break;
-			case ir::PTXInstruction::Or: _translateOr( i ); break;
-			case ir::PTXInstruction::Pmevent: _translatePmevent( i ); break;
-			case ir::PTXInstruction::Popc: _translatePopc( i ); break;
-			case ir::PTXInstruction::Prmt: _translatePrmt( i ); break;
-			case ir::PTXInstruction::Rcp: _translateRcp( i ); break;
-			case ir::PTXInstruction::Red: _translateRed( i ); break;
-			case ir::PTXInstruction::Rem: _translateRem( i ); break;
-			case ir::PTXInstruction::Ret: _translateRet( i, block ); break;
-			case ir::PTXInstruction::Rsqrt: _translateRsqrt( i ); break;
-			case ir::PTXInstruction::Sad: _translateSad( i ); break;
-			case ir::PTXInstruction::SelP: _translateSelP( i ); break;
-			case ir::PTXInstruction::Set: _translateSet( i ); break;
-			case ir::PTXInstruction::SetP: _translateSetP( i ); break;
-			case ir::PTXInstruction::Shl: _translateShl( i ); break;
-			case ir::PTXInstruction::Shr: _translateShr( i ); break;
-			case ir::PTXInstruction::Sin: _translateSin( i ); break;
-			case ir::PTXInstruction::SlCt: _translateSlCt( i ); break;
-			case ir::PTXInstruction::Sqrt: _translateSqrt( i ); break;
-			case ir::PTXInstruction::St: _translateSt( i ); break;
-			case ir::PTXInstruction::Sub: _translateSub( i ); break;
-			case ir::PTXInstruction::SubC: _translateSubC( i ); break;
-			case ir::PTXInstruction::TestP: _translateTestP( i ); break;
-			case ir::PTXInstruction::Tex: _translateTex( i ); break;
-			case ir::PTXInstruction::Trap: _translateTrap( i ); break;
-			case ir::PTXInstruction::Vote: _translateVote( i ); break;
-			case ir::PTXInstruction::Xor: _translateXor( i ); break;
-			default:
-			{
-				assertM( false, "Opcode " 
-					<< ir::PTXInstruction::toString( i.opcode ) 
-					<< " not supported." );
-				break;
-			}
+		case ir::PTXInstruction::Abs:      _translateAbs( i );         break;
+		case ir::PTXInstruction::Add:      _translateAdd( i );         break;
+		case ir::PTXInstruction::AddC:     _translateAddC( i );        break;
+		case ir::PTXInstruction::And:      _translateAnd( i );         break;
+		case ir::PTXInstruction::Atom:     _translateAtom( i );        break;
+		case ir::PTXInstruction::Bar:      _translateBar( i );         break;
+		case ir::PTXInstruction::Bfi:      _translateBfi( i );         break;
+		case ir::PTXInstruction::Bfind:    _translateBfind( i );       break;
+		case ir::PTXInstruction::Bra:      _translateBra( i, block );  break;
+		case ir::PTXInstruction::Brev:     _translateBrev( i );        break;
+		case ir::PTXInstruction::Brkpt:    _translateBrkpt( i );       break;
+		case ir::PTXInstruction::Call:     _translateCall( i, block ); break;
+		case ir::PTXInstruction::Clz:      _translateClz( i );         break;
+		case ir::PTXInstruction::CNot:     _translateCNot( i );        break;
+		case ir::PTXInstruction::CopySign: _translateCopySign( i );    break;
+		case ir::PTXInstruction::Cos:      _translateCos( i );         break;
+		case ir::PTXInstruction::Cvt:      _translateCvt( i );         break;
+		case ir::PTXInstruction::Cvta:     _translateCvta( i );        break;
+		case ir::PTXInstruction::Div:      _translateDiv( i );         break;
+		case ir::PTXInstruction::Ex2:      _translateEx2( i );         break;
+		case ir::PTXInstruction::Exit:     _translateExit( i );        break;
+		case ir::PTXInstruction::Isspacep: _translateIsspacep( i );    break;
+		case ir::PTXInstruction::Fma:      _translateMad( i );         break;
+		case ir::PTXInstruction::Ld:       _translateLd( i );          break;
+		case ir::PTXInstruction::Ldu:      _translateLdu( i );         break;
+		case ir::PTXInstruction::Lg2:      _translateLg2( i );         break;
+		case ir::PTXInstruction::Mad24:    _translateMad24( i );       break;
+		case ir::PTXInstruction::Mad:      _translateMad( i );         break;
+		case ir::PTXInstruction::Max:      _translateMax( i );         break;
+		case ir::PTXInstruction::Membar:   _translateMembar( i );      break;
+		case ir::PTXInstruction::Min:      _translateMin( i );         break;
+		case ir::PTXInstruction::Mov:      _translateMov( i );         break;
+		case ir::PTXInstruction::Mul24:    _translateMul24( i );       break;
+		case ir::PTXInstruction::Mul:      _translateMul( i );         break;
+		case ir::PTXInstruction::Neg:      _translateNeg( i );         break;
+		case ir::PTXInstruction::Not:      _translateNot( i );         break;
+		case ir::PTXInstruction::Or:       _translateOr( i );          break;
+		case ir::PTXInstruction::Pmevent:  _translatePmevent( i );     break;
+		case ir::PTXInstruction::Popc:     _translatePopc( i );        break;
+		case ir::PTXInstruction::Prmt:     _translatePrmt( i );        break;
+		case ir::PTXInstruction::Rcp:      _translateRcp( i );         break;
+		case ir::PTXInstruction::Red:      _translateRed( i );         break;
+		case ir::PTXInstruction::Rem:      _translateRem( i );         break;
+		case ir::PTXInstruction::Ret:      _translateRet( i, block );  break;
+		case ir::PTXInstruction::Rsqrt:    _translateRsqrt( i );       break;
+		case ir::PTXInstruction::Sad:      _translateSad( i );         break;
+		case ir::PTXInstruction::SelP:     _translateSelP( i );        break;
+		case ir::PTXInstruction::Set:      _translateSet( i );         break;
+		case ir::PTXInstruction::SetP:     _translateSetP( i );        break;
+		case ir::PTXInstruction::Shl:      _translateShl( i );         break;
+		case ir::PTXInstruction::Shr:      _translateShr( i );         break;
+		case ir::PTXInstruction::Sin:      _translateSin( i );         break;
+		case ir::PTXInstruction::SlCt:     _translateSlCt( i );        break;
+		case ir::PTXInstruction::Sqrt:     _translateSqrt( i );        break;
+		case ir::PTXInstruction::St:       _translateSt( i );          break;
+		case ir::PTXInstruction::Sub:      _translateSub( i );         break;
+		case ir::PTXInstruction::SubC:     _translateSubC( i );        break;
+		case ir::PTXInstruction::Suld:     _translateSuld( i );        break;
+		case ir::PTXInstruction::Suq:      _translateSuq( i );         break;
+		case ir::PTXInstruction::Sured:    _translateSured( i );       break;
+		case ir::PTXInstruction::Sust:     _translateSust( i );        break;
+		case ir::PTXInstruction::TestP:    _translateTestP( i );       break;
+		case ir::PTXInstruction::Tex:      _translateTex( i );         break;
+		case ir::PTXInstruction::Txq:      _translateTxq( i );         break;
+		case ir::PTXInstruction::Trap:     _translateTrap( i );        break;
+		case ir::PTXInstruction::Vote:     _translateVote( i );        break;
+		case ir::PTXInstruction::Xor:      _translateXor( i );         break;
+		default:
+		{
+			assertM( false, "Opcode " 
+				<< ir::PTXInstruction::toString( i.opcode ) 
+				<< " not supported." );
+			break;
+		}
 		}
 	}
 
@@ -1647,7 +1655,7 @@ namespace translator
 				{
 					call.name = "@llvm.atomic.cmp.swap";
 					call.parameters.resize( 3 );
-					call.parameters[3] = _translate( i.c );
+					call.parameters[ 2 ] = _translate( i.c );
 					break;
 				}
 				case ir::PTXInstruction::AtomicExch:
@@ -1769,7 +1777,7 @@ namespace translator
 					
 					_add( land );
 					
-					store.d = land.d;
+					store.a = land.d;
 					
 					break;
 				}
@@ -1785,7 +1793,7 @@ namespace translator
 					
 					_add( lor );
 					
-					store.d = lor.d;
+					store.a = lor.d;
 					break;
 				}
 				case ir::PTXInstruction::AtomicXor:
@@ -1800,7 +1808,7 @@ namespace translator
 					
 					_add( lxor );
 					
-					store.d = lxor.d;
+					store.a = lxor.d;
 					
 					break;
 				}
@@ -1830,13 +1838,13 @@ namespace translator
 					
 					_add( select );
 
-					store.d = select.d;
+					store.a = select.d;
 					
 					break;
 				}
 				case ir::PTXInstruction::AtomicExch:
 				{
-					store.d = _translate( i.b );		
+					store.a = _translate( i.b );		
 					break;
 				}
 				case ir::PTXInstruction::AtomicAdd:
@@ -1851,7 +1859,7 @@ namespace translator
 					
 					_add( add );
 					
-					store.d = add.d;
+					store.a = add.d;
 					break;
 				}
 				case ir::PTXInstruction::AtomicInc:
@@ -1896,7 +1904,7 @@ namespace translator
 					
 					_add( select );
 
-					store.d = select.d;
+					store.a = select.d;
 					break;
 				}
 				case ir::PTXInstruction::AtomicDec: 
@@ -1938,7 +1946,7 @@ namespace translator
 					
 					_add( select );
 
-					store.d = select.d;
+					store.a = select.d;
 					break;
 				}
 				case ir::PTXInstruction::AtomicMin:
@@ -1974,7 +1982,7 @@ namespace translator
 					
 					_add( select );
 
-					store.d = select.d;
+					store.a = select.d;
 					break;
 				}
 				case ir::PTXInstruction::AtomicMax:
@@ -2010,7 +2018,7 @@ namespace translator
 					
 					_add( select );
 
-					store.d = select.d;
+					store.a = select.d;
 					break;
 				}
 				default: break;
@@ -2468,6 +2476,11 @@ namespace translator
 				ir::PTXOperand::isSigned( i.type ) );
 		}
 	}
+	
+	void PTXToLLVMTranslator::_translateCvta( const ir::PTXInstruction& i )
+	{
+		_translateMov( i );
+	}
 
 	void PTXToLLVMTranslator::_translateDiv( const ir::PTXInstruction& i )
 	{
@@ -2564,6 +2577,190 @@ namespace translator
 		branch.iftrue = "%exit";
 		
 		_add( branch );
+	}
+
+	void PTXToLLVMTranslator::_translateIsspacep( const ir::PTXInstruction& i )
+	{
+		switch( i.addressSpace ) 
+		{
+		case ir::PTXInstruction::Shared: // fall through
+		case ir::PTXInstruction::Local:
+		{
+			ir::LLVMInstruction::Operand base = _getMemoryBasePointer( 
+			 	i.addressSpace, false );
+			ir::LLVMInstruction::Operand extent = _getMemoryExtentPointer(
+				i.addressSpace );
+				
+			ir::LLVMInstruction::Operand baseInt = 
+				ir::LLVMInstruction::Operand( _tempRegister(),
+					ir::LLVMInstruction::Type( ir::LLVMInstruction::I64, 
+					ir::LLVMInstruction::Type::Element ) );
+			ir::LLVMInstruction::Operand extentInt = 
+				ir::LLVMInstruction::Operand( _tempRegister(),
+					ir::LLVMInstruction::Type( ir::LLVMInstruction::I64, 
+					ir::LLVMInstruction::Type::Element ) );
+			_bitcast( baseInt, base );
+			_bitcast( extentInt, extent );
+
+			ir::LLVMInstruction::Operand geThanBase = 
+				ir::LLVMInstruction::Operand( _tempRegister(),
+					ir::LLVMInstruction::Type( ir::LLVMInstruction::I1, 
+					ir::LLVMInstruction::Type::Element ) );
+
+			ir::LLVMInstruction::Operand ltExtent = 
+				ir::LLVMInstruction::Operand( _tempRegister(),
+					ir::LLVMInstruction::Type( ir::LLVMInstruction::I1, 
+					ir::LLVMInstruction::Type::Element ) );
+					
+			ir::LLVMInstruction::Operand a = _translate( i.a );
+			
+			ir::LLVMIcmp icmp;
+					
+			icmp.d = geThanBase;
+			icmp.a = a;
+			icmp.b = baseInt;
+			icmp.comparison = ir::LLVMInstruction::Oge;
+			
+			_add( icmp );
+			
+			icmp.d = ltExtent;
+			icmp.b = extentInt;
+			icmp.comparison = ir::LLVMInstruction::Olt;
+			
+			_add( icmp );
+			
+			ir::LLVMAnd land;
+			
+			land.d = _destination( i );
+			land.a = geThanBase;
+			land.b = ltExtent;
+			
+			_add( land );
+			
+			break;
+		}
+		case ir::PTXInstruction::Global:
+		{
+			ir::LLVMInstruction::Operand base = _getMemoryBasePointer( 
+			 	ir::PTXInstruction::Shared, false );
+			ir::LLVMInstruction::Operand extent = _getMemoryExtentPointer(
+				ir::PTXInstruction::Shared );
+				
+			ir::LLVMInstruction::Operand baseInt = 
+				ir::LLVMInstruction::Operand( _tempRegister(),
+					ir::LLVMInstruction::Type( ir::LLVMInstruction::I64, 
+					ir::LLVMInstruction::Type::Element ) );
+			ir::LLVMInstruction::Operand extentInt = 
+				ir::LLVMInstruction::Operand( _tempRegister(),
+					ir::LLVMInstruction::Type( ir::LLVMInstruction::I64, 
+					ir::LLVMInstruction::Type::Element ) );
+			_bitcast( baseInt, base );
+			_bitcast( extentInt, extent );
+
+			ir::LLVMInstruction::Operand geThanBase = 
+				ir::LLVMInstruction::Operand( _tempRegister(),
+					ir::LLVMInstruction::Type( ir::LLVMInstruction::I1, 
+					ir::LLVMInstruction::Type::Element ) );
+
+			ir::LLVMInstruction::Operand ltExtent = 
+				ir::LLVMInstruction::Operand( _tempRegister(),
+					ir::LLVMInstruction::Type( ir::LLVMInstruction::I1, 
+					ir::LLVMInstruction::Type::Element ) );
+					
+			ir::LLVMInstruction::Operand isShared = 
+				ir::LLVMInstruction::Operand( _tempRegister(),
+					ir::LLVMInstruction::Type( ir::LLVMInstruction::I1, 
+					ir::LLVMInstruction::Type::Element ) );
+					
+			ir::LLVMInstruction::Operand a = _translate( i.a );
+			
+			ir::LLVMIcmp icmp;
+					
+			icmp.d = geThanBase;
+			icmp.a = a;
+			icmp.b = baseInt;
+			icmp.comparison = ir::LLVMInstruction::Oge;
+			
+			_add( icmp );
+			
+			icmp.d = ltExtent;
+			icmp.b = extentInt;
+			icmp.comparison = ir::LLVMInstruction::Olt;
+			
+			_add( icmp );
+			
+			ir::LLVMAnd land;
+			
+			land.d = isShared;
+			land.a = geThanBase;
+			land.b = ltExtent;
+			
+			_add( land );
+			
+			// is the allocation local?
+			base   = _getMemoryBasePointer( ir::PTXInstruction::Local, false );
+			extent = _getMemoryExtentPointer( ir::PTXInstruction::Local );
+				
+			baseInt.name = _tempRegister();
+			extentInt.name = _tempRegister();
+			
+			_bitcast( baseInt, base );
+			_bitcast( extentInt, extent );
+
+			geThanBase.name = _tempRegister();
+			ltExtent.name = _tempRegister();
+					
+			ir::LLVMInstruction::Operand isLocal = 
+				ir::LLVMInstruction::Operand( _tempRegister(),
+					ir::LLVMInstruction::Type( ir::LLVMInstruction::I1, 
+					ir::LLVMInstruction::Type::Element ) );
+					
+			icmp.d = geThanBase;
+			icmp.a = a;
+			icmp.b = baseInt;
+			icmp.comparison = ir::LLVMInstruction::Oge;
+			
+			_add( icmp );
+			
+			icmp.d = ltExtent;
+			icmp.b = extentInt;
+			icmp.comparison = ir::LLVMInstruction::Olt;
+			
+			_add( icmp );
+						
+			land.d = isLocal;
+			land.a = geThanBase;
+			land.b = ltExtent;
+			
+			_add( land );
+
+			ir::LLVMInstruction::Operand isLocalOrShared = 
+				ir::LLVMInstruction::Operand( _tempRegister(),
+					ir::LLVMInstruction::Type( ir::LLVMInstruction::I1, 
+					ir::LLVMInstruction::Type::Element ) );
+			
+			ir::LLVMOr lor;
+			
+			lor.d = isLocalOrShared;
+			lor.a = isLocal;
+			lor.b = isShared;
+			
+			_add( lor );
+			
+			ir::LLVMXor lnot;
+			
+			lnot.d = _destination( i );
+			lnot.a = isLocalOrShared;
+			lnot.b.type = isLocalOrShared.type;
+			lnot.b.constant = true;
+			lnot.b.i64 = -1;
+		
+			_add( lnot );
+			
+			break;
+		}
+		default: assertM(false, "invalid address space"); break;
+		}
 	}
 
 	void PTXToLLVMTranslator::_translateLd( const ir::PTXInstruction& i )
@@ -2722,6 +2919,11 @@ namespace translator
 			}
 		}
 		#endif
+	}
+
+	void PTXToLLVMTranslator::_translateLdu( const ir::PTXInstruction& i )
+	{
+		_translateLd( i );
 	}
 
 	void PTXToLLVMTranslator::_translateLg2( const ir::PTXInstruction& i )
@@ -5579,6 +5781,38 @@ namespace translator
 			_add( add );
 		}	
 	}
+	
+	void PTXToLLVMTranslator::_translateSuld( const ir::PTXInstruction& i )
+	{
+		ir::LLVMCall call;
+		
+		call.name = "@__ocelot_suld";
+
+		_add( call );
+	}
+	
+	void PTXToLLVMTranslator::_translateSuq( const ir::PTXInstruction& i )
+	{
+		_translateTxq( i );
+	}
+
+	void PTXToLLVMTranslator::_translateSured( const ir::PTXInstruction& i )
+	{
+		ir::LLVMCall call;
+		
+		call.name = "@__ocelot_sured";
+
+		_add( call );
+	}	
+	
+	void PTXToLLVMTranslator::_translateSust( const ir::PTXInstruction& i )
+	{
+		ir::LLVMCall call;
+		
+		call.name = "@__ocelot_sust";
+
+		_add( call );	
+	}	
 
 	void PTXToLLVMTranslator::_translateTestP( const ir::PTXInstruction& i )
 	{
@@ -6072,6 +6306,29 @@ namespace translator
 		load.a = get.d;
 	
 		_add( load );
+	}
+
+	void PTXToLLVMTranslator::_translateTxq( const ir::PTXInstruction& i )
+	{
+		ir::LLVMCall call;
+		
+		call.name = "@__ocelot_txq";
+		
+		call.d = _destination( i );
+		call.parameters.resize( 3 );
+		call.parameters[0] = _context();
+		
+		call.parameters[1].type.category = ir::LLVMInstruction::Type::Element;
+		call.parameters[1].type.type = ir::LLVMInstruction::I32;
+		call.parameters[1].constant = true;
+		call.parameters[1].i32 = i.a.reg;
+
+		call.parameters[2].type.category = ir::LLVMInstruction::Type::Element;
+		call.parameters[2].type.type = ir::LLVMInstruction::I32;
+		call.parameters[2].constant = true;
+		call.parameters[2].i32 = i.surfaceQuery;
+
+		_add( call );
 	}
 
 	void PTXToLLVMTranslator::_translateTrap( const ir::PTXInstruction& i )
@@ -7563,6 +7820,31 @@ namespace translator
 		return load.d.name;
 	}
 	
+	ir::LLVMInstruction::Operand PTXToLLVMTranslator::_getMemoryExtentPointer( 
+	 	ir::PTXInstruction::AddressSpace space )
+ 	{
+ 		ir::LLVMCall call;
+		
+		call.name = "@__ocelot_get_extent";
+
+		call.d = ir::LLVMInstruction::Operand( _tempRegister(), 
+			ir::LLVMInstruction::Type( ir::LLVMInstruction::I32, 
+			ir::LLVMInstruction::Type::Element ) );
+		
+		call.parameters.resize( 2 );
+
+		call.parameters[0] = _context();
+
+		call.parameters[1].type.type = ir::LLVMInstruction::I32;
+		call.parameters[1].type.category = ir::LLVMInstruction::Type::Element;
+		call.parameters[1].constant = true;
+		call.parameters[1].i32 = space;
+		
+ 		_add( call );
+ 		
+		return call.d;
+ 	}			
+	
 	ir::LLVMInstruction::Operand PTXToLLVMTranslator::_getMemoryBasePointer( 
 		ir::PTXInstruction::AddressSpace space, bool isArgument )
 	{
@@ -7771,7 +8053,8 @@ namespace translator
 				reg = add.d;
 			}
 			
-			if( space == ir::PTXInstruction::Global )
+			if( space == ir::PTXInstruction::Global
+				|| space == ir::PTXInstruction::Generic )
 			{
 				pointer = reg;
 			}
@@ -8151,7 +8434,40 @@ namespace translator
 		_llvmKernel->_statements.push_front( tex );
 
 		tex.label = "__ocelot_tex_3d_fs";
-		_llvmKernel->_statements.push_front( tex );		
+		_llvmKernel->_statements.push_front( tex );
+	}
+
+	void PTXToLLVMTranslator::_addSurfaceCalls()
+	{
+	
+	}
+
+	void PTXToLLVMTranslator::_addQueryCalls()
+	{
+		ir::LLVMStatement query( ir::LLVMStatement::FunctionDeclaration );
+		query.linkage    = ir::LLVMStatement::InvalidLinkage;
+		query.convention = ir::LLVMInstruction::DefaultCallingConvention;
+		query.visibility = ir::LLVMStatement::Default;
+
+		query.operand.type.category = ir::LLVMInstruction::Type::Pointer;
+		query.operand.type.type = ir::LLVMInstruction::I32;
+		
+		query.parameters.resize( 3 );
+		
+		query.parameters[0].type.category = ir::LLVMInstruction::Type::Pointer;
+		query.parameters[0].type.members.resize(1);
+		query.parameters[0].type.members[0].category 
+			= ir::LLVMInstruction::Type::Structure;
+		query.parameters[0].type.members[0].label = "%LLVMContext";
+		
+		query.parameters[1].type.category = ir::LLVMInstruction::Type::Element;
+		query.parameters[1].type.type = ir::LLVMInstruction::I32;
+		
+		query.parameters[2].type.category = ir::LLVMInstruction::Type::Element;
+		query.parameters[2].type.type = ir::LLVMInstruction::I32;
+		
+		query.label = "__ocelot_txq";
+		_llvmKernel->_statements.push_front( query );
 	}
 
 	void PTXToLLVMTranslator::_addAtomicCalls()
@@ -8499,7 +8815,9 @@ namespace translator
 		_addMemoryCheckingDeclarations();
 		_insertDebugSymbols();
 		_addTextureCalls();
+		_addSurfaceCalls();
 		_addAtomicCalls();
+		_addQueryCalls();
 		_addMathCalls();
 		_addLLVMIntrinsics();
 

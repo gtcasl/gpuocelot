@@ -93,10 +93,13 @@ namespace translator
 			void _translateCopySign( const ir::PTXInstruction& i );
 			void _translateCos( const ir::PTXInstruction& i );
 			void _translateCvt( const ir::PTXInstruction& i );
+			void _translateCvta( const ir::PTXInstruction& i );
 			void _translateDiv( const ir::PTXInstruction& i );
 			void _translateEx2( const ir::PTXInstruction& i );
 			void _translateExit( const ir::PTXInstruction& i );
+			void _translateIsspacep( const ir::PTXInstruction& i );
 			void _translateLd( const ir::PTXInstruction& i );
+			void _translateLdu( const ir::PTXInstruction& i );
 			void _translateLg2( const ir::PTXInstruction& i );
 			void _translateMad24( const ir::PTXInstruction& i );
 			void _translateMad( const ir::PTXInstruction& i );
@@ -130,8 +133,13 @@ namespace translator
 			void _translateSt( const ir::PTXInstruction& i );
 			void _translateSub( const ir::PTXInstruction& i );
 			void _translateSubC( const ir::PTXInstruction& i );
+			void _translateSuld( const ir::PTXInstruction& i );
+			void _translateSuq( const ir::PTXInstruction& i );
+			void _translateSured( const ir::PTXInstruction& i );
+			void _translateSust( const ir::PTXInstruction& i );
 			void _translateTestP( const ir::PTXInstruction& i );
 			void _translateTex( const ir::PTXInstruction& i );
+			void _translateTxq( const ir::PTXInstruction& i );
 			void _translateTrap( const ir::PTXInstruction& i );
 			void _translateVote( const ir::PTXInstruction& i );
 			void _translateXor( const ir::PTXInstruction& i );
@@ -158,6 +166,8 @@ namespace translator
 				ir::PTXOperand::VectorIndex index );
 			ir::LLVMInstruction::Operand _getMemoryBasePointer( 
 			 	ir::PTXInstruction::AddressSpace space, bool isArgument );
+			ir::LLVMInstruction::Operand _getMemoryExtentPointer( 
+			 	ir::PTXInstruction::AddressSpace space );
 			ir::LLVMInstruction::Operand _getAddressableVariablePointer( 
 				ir::PTXInstruction::AddressSpace space,
 				const ir::PTXOperand& o );
@@ -180,6 +190,8 @@ namespace translator
 
 			void _addStackAllocations();
 			void _addTextureCalls();
+			void _addSurfaceCalls();
+			void _addQueryCalls();
 			void _addAtomicCalls();
 			void _addMathCalls();
 			void _addLLVMIntrinsics();

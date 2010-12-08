@@ -8422,7 +8422,8 @@ void executive::CooperativeThreadArray::eval_SubC(CTAContext &context,
 /*!
 	\brief load from surface memory
 */
-void executive::CooperativeThreadArray::eval_Suld(CTAContext &context, const ir::PTXInstruction &instr) {
+void executive::CooperativeThreadArray::eval_Suld(CTAContext &context,
+	const ir::PTXInstruction &instr) {
 	switch (instr.geometry) {
 	case ir::PTXInstruction::_1d:
 	{
@@ -8444,7 +8445,8 @@ void executive::CooperativeThreadArray::eval_Suld(CTAContext &context, const ir:
 	throw RuntimeException("suld - not implemented", context.PC, instr);
 }
 
-void executive::CooperativeThreadArray::eval_Sured(CTAContext &context, const ir::PTXInstruction &instr) {
+void executive::CooperativeThreadArray::eval_Sured(CTAContext &context,
+	const ir::PTXInstruction &instr) {
 	trace();
 	throw RuntimeException("sured - not implemented", context.PC, instr);
 }
@@ -8452,7 +8454,8 @@ void executive::CooperativeThreadArray::eval_Sured(CTAContext &context, const ir
 /*!
 	\brief store to surface memory
 */
-void executive::CooperativeThreadArray::eval_Sust(CTAContext &context, const ir::PTXInstruction &instr) {
+void executive::CooperativeThreadArray::eval_Sust(CTAContext &context,
+	const ir::PTXInstruction &instr) {
 	trace();
 	throw RuntimeException("sust - not implemented", context.PC, instr);
 }

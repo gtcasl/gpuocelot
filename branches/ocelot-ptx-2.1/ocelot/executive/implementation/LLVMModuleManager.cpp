@@ -378,7 +378,8 @@ static void setupSharedMemoryReferences(ir::PTXKernel& kernel,
 
 			if(ptx.opcode == ir::PTXInstruction::Mov
 				|| ptx.opcode == ir::PTXInstruction::Ld
-				|| ptx.opcode == ir::PTXInstruction::St)
+				|| ptx.opcode == ir::PTXInstruction::St
+				|| ptx.opcode == ir::PTXInstruction::Cvta)
 			{
 				for(unsigned int i = 0; i != 4; ++i)
 				{

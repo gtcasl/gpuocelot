@@ -1,109 +1,252 @@
-INFO     Reading in test file /home/normal/checkout/gpuocelot/tests/cuda2.2/regression/tests.txt
+INFO     Reading in test file /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/regression/tests.txt
 INFO      Found the following tests:
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/AlignedTypes
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/AsyncAPI
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/BandwidthTest
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/BicubicTexture
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/BinomialOptions
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/Bitonic
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/BlackScholes
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/BoxFilter
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/Clock
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/ConvolutionFFT2D
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/ConvolutionSeparable
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/ConvolutionTexture
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/CppIntegration
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/Dct8x8
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/DeviceQuery
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/DwtHaar1D
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/Dxtc
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/Eigenvalues
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/FluidsGL
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/FastWalshTransform
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/Histogram256
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/Histogram64
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/ImageDenoising
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/Mandelbrot
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/MatrixMul
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/MersenneTwister
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/MonteCarlo
-ERROR    Could not find test program /home/normal/checkout/gpuocelot/tests/cuda2.2/MonteCarlo
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/MonteCarloMultiGPU
-ERROR    Could not find test program /home/normal/checkout/gpuocelot/tests/cuda2.2/MonteCarloMultiGPU
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/Nbody
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/OceanFFT
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/PostProcessGL
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/QuasirandomGenerator
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/RecursiveGaussian
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/Reduction
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/ScalarProd
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/Scan
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/ScanLargeArray
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/SimpleAtomicIntrinsics
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/SimpleCUBLAS
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/SimpleCUFFT
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/SimpleGL
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/SimpleMultiGPU
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/SimpleStreams
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/SimpleTemplates
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/SimpleTexture
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/SimpleTexture3D
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/SimpleVoteIntrinsics
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/SimpleZeroCopy
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/SobelFilter
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/SobolQRNG
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/Template
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/ThreadFenceReduction
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/Transpose
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/TransposeNew
-INFO       /home/normal/checkout/gpuocelot/tests/cuda2.2/VolumeRender
+INFO       /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/AlignedTypes
+INFO       /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/AsyncAPI
+INFO       /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/BandwidthTest
+INFO       /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/BicubicTexture
+INFO       /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/BinomialOptions
+INFO       /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/Bitonic
+INFO       /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/BlackScholes
+INFO       /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/BoxFilter
+INFO       /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/Clock
+INFO       /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/ConvolutionFFT2D
+INFO       /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/ConvolutionSeparable
+INFO       /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/ConvolutionTexture
+INFO       /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/CppIntegration
+INFO       /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/Dct8x8
+INFO       /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/DeviceQuery
+INFO       /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/DwtHaar1D
+INFO       /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/Dxtc
+INFO       /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/Eigenvalues
+INFO       /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/FluidsGL
+INFO       /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/FastWalshTransform
+INFO       /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/Histogram256
+INFO       /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/Histogram64
+INFO       /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/ImageDenoising
+INFO       /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/Mandelbrot
+INFO       /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/MatrixMul
+INFO       /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/MersenneTwister
+INFO       /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/MonteCarlo
+ERROR    Could not find test program /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/MonteCarlo
+INFO       /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/MonteCarloMultiGPU
+ERROR    Could not find test program /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/MonteCarloMultiGPU
+INFO       /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/Nbody
+INFO       /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/OceanFFT
+INFO       /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/PostProcessGL
+INFO       /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/QuasirandomGenerator
+INFO       /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/RecursiveGaussian
+INFO       /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/Reduction
+INFO       /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/ScalarProd
+INFO       /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/Scan
+INFO       /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/ScanLargeArray
+INFO       /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/SimpleAtomicIntrinsics
+INFO       /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/SimpleCUBLAS
+INFO       /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/SimpleCUFFT
+INFO       /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/SimpleGL
+INFO       /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/SimpleMultiGPU
+INFO       /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/SimpleStreams
+INFO       /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/SimpleTemplates
+INFO       /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/SimpleTexture
+INFO       /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/SimpleTexture3D
+INFO       /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/SimpleVoteIntrinsics
+INFO       /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/SimpleZeroCopy
+INFO       /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/SobelFilter
+INFO       /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/SobolQRNG
+INFO       /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/Template
+INFO       /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/ThreadFenceReduction
+INFO       /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/Transpose
+INFO       /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/TransposeNew
+INFO       /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/VolumeRender
 INFO     ==== INDIVIDUAL TEST RESULTS ====
 
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/SimpleStreams 
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/ConvolutionFFT2D 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/ConvolutionFFT2D
-INFO     Test completed in 0.37119102478 seconds
+INFO     Running test program /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/SimpleMultiGPU 
+INFO     Running test program /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/SimpleVoteIntrinsics 
+INFO     Test /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/SimpleVoteIntrinsics
+INFO     Test completed in 0.20343208313 seconds
 INFO      It produced the following output:
-lt-ConvolutionFFT2D: ocelot/cuda/implementation/CudaRuntimeInterface.cpp:700: virtual cudaError_t cuda::CudaRuntimeInterface::cudaGetExportTable(const void**, const cudaUUID_t*): Assertion `0 && "unimplemented"' failed.
-Input data size           : 200 x 200
-Convolution kernel size   : 7 x 7
-Padded image size         : 206 x 206
-Aligned padded image size : 256 x 256
-Allocating memory...
-Generating random input data...
-Creating FFT plan for 256 x 256...
+(0.000000) LLVMModuleManager.cpp:1115: Loading module '_ZOcelotBarrierModule'
+(0.000000) LLVMModuleManager.cpp:1142:  adding subkernel '_ZOcelotBarrierKernel' at index 0
+[VOTE Kernel Test 1/3]
+	Running <<Vote.Any>> kernel1 ...
 
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/Dct8x8 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/SimpleStreams
-INFO     Test completed in 4.51949715614 seconds
+[VOTE Kernel Test 2/3]
+	Running <<Vote.All>> kernel2 ...
+
+[VOTE Kernel Test 3/3]
+	Running <<Vote.Any>> kernel3 ...
+	PASSED!
+
+TEST PASSED
+	Shutting down...
+
+Press ENTER to exit...
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/SimpleZeroCopy 
+INFO     Test /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/SimpleZeroCopy
+INFO     Test completed in 183.9230299 seconds
 INFO      It produced the following output:
-running on: Ocelot PTX Emulator
-
-memcopy:	195.99
-kernel:		125.44
-non-streamed:	160.04 (321.44 expected)
-4 streams:	200.54 (174.44 expected with compute capability 1.1 or later)
--------------------------------
+(0.000000) LLVMModuleManager.cpp:1115: Loading module '_ZOcelotBarrierModule'
+(0.000000) LLVMModuleManager.cpp:1142:  adding subkernel '_ZOcelotBarrierKernel' at index 0
+Adding vectors using mapped CPU memory...
+Checking the results...
+Releasing CPU memory...
 Test PASSED
 
 Press ENTER to exit...
 
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/DeviceQuery 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/DeviceQuery
-INFO     Test completed in 0.167647838593 seconds
+INFO     Running test program /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/Mandelbrot 
+INFO     Test /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/SimpleMultiGPU
+INFO     Test completed in 1991.48936296 seconds
 INFO      It produced the following output:
+(0.000000) LLVMModuleManager.cpp:1115: Loading module '_ZOcelotBarrierModule'
+(0.000000) LLVMModuleManager.cpp:1142:  adding subkernel '_ZOcelotBarrierKernel' at index 0
+CUDA-capable device count: 1
+main(): generating input data...
+main(): waiting for GPU results...
+GPU Processing time: 1984930.250000 (ms) 
+Checking the results...
+CPU Processing time: 155.522003 (ms) 
+GPU sum: 16777294.000000; CPU sum: 16777294.395032
+Relative difference: 2.354566E-08 
+TEST PASSED
+Shutting down...
+
+Press ENTER to exit...
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/SobelFilter 
+INFO     Test /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/SobelFilter
+INFO     Test completed in 289.125534058 seconds
+INFO      It produced the following output:
+(0.000000) LLVMModuleManager.cpp:1115: Loading module '_ZOcelotBarrierModule'
+(0.000000) LLVMModuleManager.cpp:1142:  adding subkernel '_ZOcelotBarrierKernel' at index 0
+[CUDA Sobel Edge-Detection] (automated testing w/ readback)
+Reading image: lena.pgm
+AutoTest: CUDA Sobel Edge-Detection <Original Filter>
+> Saving PGM: <lena_orig.pgm>
+   src_file <lena_orig.pgm>
+   ref_file <data/ref_orig.pgm>
+PGMvsPGM: comparing images size (512,512) epsilon(5.0000), threshold(15.00%)
+  PASSED!
+AutoTest: CUDA Sobel Edge-Detection <Sobel Shared>
+> Saving PGM: <lena_shared.pgm>
+   src_file <lena_shared.pgm>
+   ref_file <data/ref_shared.pgm>
+PGMvsPGM: comparing images size (512,512) epsilon(5.0000), threshold(15.00%)
+  PASSED!
+AutoTest: CUDA Sobel Edge-Detection <Sobel Shared+Texture>
+==Ocelot== Ocelot PTX Emulator failed to run kernel "_Z11SobelSharedP6uchar4tssssf" with exception: 
+==Ocelot== [PC 187] [thread 0] [cta 0] ld.param.f32 %r170, [__cudaparm__Z11SobelSharedP6uchar4tssssf_fScale + 18] - Memory access 0x12 is not aligned to the access size ( 4 bytes )
+==Ocelot== Near /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/SobelFilter/SobelFilter_kernels.cu:124:0
+==Ocelot== 
+terminate called after throwing an instance of 'hydrazine::Exception'
+  what():  [PC 187] [thread 0] [cta 0] ld.param.f32 %r170, [__cudaparm__Z11SobelSharedP6uchar4tssssf_fScale + 18] - Memory access 0x12 is not aligned to the access size ( 4 bytes )
+Near /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/SobelFilter/SobelFilter_kernels.cu:124:0
+
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/AsyncAPI 
+INFO     Test /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/AsyncAPI
+INFO     Test completed in 0.979247808456 seconds
+INFO      It produced the following output:
+(0.000000) LLVMModuleManager.cpp:1115: Loading module '_ZOcelotBarrierModule'
+(0.000000) LLVMModuleManager.cpp:1142:  adding subkernel '_ZOcelotBarrierKernel' at index 0
+time spent executing by the GPU: 224.28
+time spent by CPU in CUDA calls: 224.34
+CPU executed 0 iterations while waiting for GPU to finish
+--------------------------------------------------------------
+Test PASSED
+
+Press ENTER to exit...
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/SobolQRNG 
+INFO     Test /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/SobolQRNG
+INFO     Test completed in 1932.25790691 seconds
+INFO      It produced the following output:
+(0.000000) LLVMModuleManager.cpp:1115: Loading module '_ZOcelotBarrierModule'
+(0.000000) LLVMModuleManager.cpp:1142:  adding subkernel '_ZOcelotBarrierKernel' at index 0
+Allocating CPU memory...
+Allocating GPU memory...
+Initializing direction numbers...
+Copying direction numbers to device...
+Executing QRNG on GPU...
+Gsamples/s: 5.17826e-06
+Reading results from GPU...
+
+Executing QRNG on CPU...
+Gsamples/s: 0.0173049
+Checking results...
+L1-Error: 0
+
+TEST PASSED
+
+Shutting down...
+
+Press ENTER to exit...
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/Dct8x8 
+INFO     Test /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/Dct8x8
+INFO     Test completed in 1386.32297993 seconds
+INFO      It produced the following output:
+(0.000000) LLVMModuleManager.cpp:1115: Loading module '_ZOcelotBarrierModule'
+(0.000000) LLVMModuleManager.cpp:1142:  adding subkernel '_ZOcelotBarrierKernel' at index 0
+CUDA sample DCT/IDCT implementation
+===================================
+Loading test image: barbara.bmp... [512 x 512]... Success
+Running Gold 1 (CPU) version... Success
+Running Gold 2 (CPU) version... Success
+Running CUDA 1 (GPU) version... Success
+Running CUDA 2 (GPU) version... Success
+Running CUDA short (GPU) version... Success
+Dumping result to barbara_gold1.bmp... Success
+Dumping result to barbara_gold2.bmp... Success
+Dumping result to barbara_cuda1.bmp... Success
+Dumping result to barbara_cuda2.bmp... Success
+Dumping result to barbara_cuda_short.bmp... Success
+Processing time (CUDA 1)    : 314842.968750 ms 
+Processing time (CUDA 2)    : 113653.492188 ms 
+Processing time (CUDA short): 106782.171875 ms 
+PSNR Original    <---> CPU(Gold 1)    : 32.777126
+PSNR Original    <---> CPU(Gold 2)    : 32.777050
+PSNR Original    <---> GPU(CUDA 1)    : 32.777092
+PSNR Original    <---> GPU(CUDA 2)    : 32.777092
+PSNR Original    <---> GPU(CUDA short): 32.749447
+PSNR CPU(Gold 1) <---> GPU(CUDA 1)    : 61.215359
+PSNR CPU(Gold 2) <---> GPU(CUDA 2)    : 61.315254
+PSNR CPU(Gold 2) <---> GPU(CUDA short): 42.264217
+
+TEST PASSED!
+
+Press ENTER to exit...
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/DwtHaar1D 
+INFO     Test /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/DwtHaar1D
+INFO     Test completed in 2.83427596092 seconds
+INFO      It produced the following output:
+(0.000000) LLVMModuleManager.cpp:1115: Loading module '_ZOcelotBarrierModule'
+(0.000000) LLVMModuleManager.cpp:1142:  adding subkernel '_ZOcelotBarrierKernel' at index 0
+Reading signal from data/signal.dat
+Reading reference result from data/regression.gold.dat
+Test PASSED
+
+Press ENTER to exit...
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/DeviceQuery 
+INFO     Test /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/DeviceQuery
+INFO     Test completed in 0.105391979218 seconds
+INFO      It produced the following output:
+(0.000000) LLVMModuleManager.cpp:1115: Loading module '_ZOcelotBarrierModule'
+(0.000000) LLVMModuleManager.cpp:1142:  adding subkernel '_ZOcelotBarrierKernel' at index 0
 CUDA Device Query (Runtime API) version (CUDART static linking)
 There is 1 device supporting CUDA
 
 Device 0: "Ocelot PTX Emulator"
   CUDA Capability Major revision number:         2
   CUDA Capability Minor revision number:         0
-  Total amount of global memory:                 174092288 bytes
+  Total amount of global memory:                 563785728 bytes
   Number of multiprocessors:                     1
   Number of cores:                               8
-  Total amount of constant memory:               174092288 bytes
-  Total amount of shared memory per block:       174092288 bytes
-  Total number of registers available per block: 174092288
+  Total amount of constant memory:               563785728 bytes
+  Total amount of shared memory per block:       563785728 bytes
+  Total number of registers available per block: 563785728
   Warp size:                                     512
   Maximum number of threads per block:           1024
   Maximum sizes of each dimension of a block:    1024 x 1024 x 1024
@@ -121,606 +264,56 @@ Test PASSED
 
 Press ENTER to exit...
 
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/SobolQRNG 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/Dct8x8
-INFO     Test completed in 176.767066956 seconds
-INFO      It produced the following output:
-CUDA sample DCT/IDCT implementation
-===================================
-Loading test image: barbara.bmp... [512 x 512]... Success
-Running Gold 1 (CPU) version... Success
-Running Gold 2 (CPU) version... Success
-Running CUDA 1 (GPU) version... Success
-Running CUDA 2 (GPU) version... Success
-Running CUDA short (GPU) version... Success
-Dumping result to barbara_gold1.bmp... Success
-Dumping result to barbara_gold2.bmp... Success
-Dumping result to barbara_cuda1.bmp... Success
-Dumping result to barbara_cuda2.bmp... Success
-Dumping result to barbara_cuda_short.bmp... Success
-Processing time (CUDA 1)    : 43247.960938 ms 
-Processing time (CUDA 2)    : 13368.491211 ms 
-Processing time (CUDA short): 11188.792969 ms 
-PSNR Original    <---> CPU(Gold 1)    : 32.777126
-PSNR Original    <---> CPU(Gold 2)    : 32.777050
-PSNR Original    <---> GPU(CUDA 1)    : 32.777092
-PSNR Original    <---> GPU(CUDA 2)    : 32.777092
-PSNR Original    <---> GPU(CUDA short): 32.749447
-PSNR CPU(Gold 1) <---> GPU(CUDA 1)    : 61.215359
-PSNR CPU(Gold 2) <---> GPU(CUDA 2)    : 61.315254
-PSNR CPU(Gold 2) <---> GPU(CUDA short): 42.264217
-
-TEST PASSED!
-
-Press ENTER to exit...
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/Histogram64 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/Histogram64
-INFO     Test completed in 18.588105917 seconds
-INFO      It produced the following output:
-Initializing data...
-...allocating CPU memory.
-...generating input data
-...allocating GPU memory and copying input data
-Running GPU histogram (1 iterations)...
-histogram64GPU() time (average) : 18138.001953 msec //0.055133 MB/sec
-Reading back GPU results...
-Comparing the results...
-...histogramCPU()
-histogram64CPU() time : 4.844000 msec //196.877445 MB/sec
-Total sum of histogram elements: 1000000
-Sum of absolute differences: 0
-TEST PASSED
-Shutting down...
-
-Press ENTER to exit...
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/Transpose 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/Transpose
-INFO     Test completed in 0.967424869537 seconds
-INFO      It produced the following output:
-Transposing a 32 by 128 matrix of floats...
-Naive transpose average time:     171.996 ms
-Optimized transpose average time: 246.334 ms
-
-Test PASSED
-
-Press ENTER to exit...
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/Histogram256 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/Histogram256
-INFO     Test completed in 35.0467710495 seconds
-INFO      It produced the following output:
-Initializing data...
-...allocating CPU memory.
-...generating input data
-...allocating GPU memory and copying input data
-Running CPU histogram...
-histogramCPU() time : 0.428000 msec // 222.821100 MB/sec
-Running GPU histogram using SM10...
-histogram256_SM10() time : 13522.241211 msec // 0.007053 MB/sec
-TEST PASSED
-Running GPU histogram using SM11...
-histogram256_SM11() time : 11258.524414 msec // 0.008471 MB/sec
-TEST PASSED
-Running GPU histogram using SM12...
-histogram256_SM12() time : 10050.043945 msec // 0.009489 MB/sec
-TEST PASSED
-Shutting down...
-
-Press ENTER to exit...
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/ScalarProd 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/ScalarProd
-INFO     Test completed in 39.9570832253 seconds
-INFO      It produced the following output:
-Initializing data...
-...allocating CPU memory.
-...allocating GPU memory.
-...generating input data in CPU mem.
-...copying input data to GPU mem.
-Data init done.
-Executing GPU kernel...
-GPU time: 39344.984375 msecs.
-Reading back GPU result...
-Checking GPU results...
-..running CPU scalar product calculation
-...comparing the results
-L1 error: 2.721799E-08
-TEST PASSED
-Shutting down...
-
-Press ENTER to exit...
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/DwtHaar1D 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/DwtHaar1D
-INFO     Test completed in 0.821403980255 seconds
-INFO      It produced the following output:
-Reading signal from data/signal.dat
-Reading reference result from data/regression.gold.dat
-Test PASSED
-
-Press ENTER to exit...
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/AlignedTypes 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/AlignedTypes
-INFO     Test completed in 19.1268229485 seconds
-INFO      It produced the following output:
-CUDA device has 1 Multi-Processors
- Memory Size = 250000
-Allocating memory...
-Generating host input data array...
-Uploading input data to GPU memory...
-Testing misaligned types...
-uint8...
-Avg. time: 4297.439941 ms / Copy throughput: 0.000054 GB/s.
-TEST PASSED
-uint16...
-Avg. time: 2615.483887 ms / Copy throughput: 0.000089 GB/s.
-TEST PASSED
-RGBA8_misaligned...
-Avg. time: 3108.017090 ms / Copy throughput: 0.000075 GB/s.
-TEST PASSED
-LA32_misaligned...
-Avg. time: 1157.797974 ms / Copy throughput: 0.000201 GB/s.
-TEST PASSED
-RGB32_misaligned...
-Avg. time: 1058.086060 ms / Copy throughput: 0.000220 GB/s.
-TEST PASSED
-RGBA32_misaligned...
-Avg. time: 1008.598022 ms / Copy throughput: 0.000231 GB/s.
-TEST PASSED
-Testing aligned types...
-RGBA8...
-Avg. time: 1608.625000 ms / Copy throughput: 0.000145 GB/s.
-TEST PASSED
-I32...
-Avg. time: 1435.201050 ms / Copy throughput: 0.000162 GB/s.
-TEST PASSED
-LA32...
-Avg. time: 927.218018 ms / Copy throughput: 0.000251 GB/s.
-TEST PASSED
-RGB32...
-Avg. time: 607.348022 ms / Copy throughput: 0.000383 GB/s.
-TEST PASSED
-RGBA32...
-Avg. time: 607.013977 ms / Copy throughput: 0.000384 GB/s.
-TEST PASSED
-RGBA32_2...
-Avg. time: 476.971985 ms / Copy throughput: 0.000488 GB/s.
-TEST PASSED
-Shutting down...
-
-Press ENTER to exit...
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/SimpleCUFFT 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/SimpleCUFFT
-INFO     Test completed in 0.202740907669 seconds
-INFO      It produced the following output:
-lt-SimpleCUFFT: ocelot/cuda/implementation/CudaRuntimeInterface.cpp:700: virtual cudaError_t cuda::CudaRuntimeInterface::cudaGetExportTable(const void**, const cudaUUID_t*): Assertion `0 && "unimplemented"' failed.
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/BinomialOptions 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/BinomialOptions
-INFO     Test completed in 52.5254170895 seconds
-INFO      It produced the following output:
-Using device 0: Ocelot PTX Emulator
-Using single precision...
-Generating input data...
-Running GPU binomial tree...
-Options count            : 1     
-Time steps               : 2048     
-binomialOptionsGPU() time: 52277.468750 msec
-Options per second       : 0.019129     
-Running CPU binomial tree...
-Comparing the results...
-GPU binomial vs. Black-Scholes
-Avg. diff: 1.401298E-45
-CPU binomial vs. Black-Scholes
-Avg. diff: 0.000000E+00
-CPU binomial vs. GPU binomial
-Avg. diff: 1.401298E-45
-TEST PASSED
-Shutting down...
-
-Press ENTER to exit...
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/SimpleTemplates 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/SimpleTemplates
-INFO     Test completed in 0.229060173035 seconds
-INFO      It produced the following output:
-Processing time: 46.312000 (ms)
-Test PASSED
-==Ocelot== Ocelot PTX Emulator failed to run kernel "_Z10testKernelIiEvPT_S1_" with exception: 
-==Ocelot== Unknown module - /home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleTemplates/simpleTemplates.cu
-terminate called after throwing an instance of 'hydrazine::Exception'
-  what():  Unknown module - /home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleTemplates/simpleTemplates.cu
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/CppIntegration 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/CppIntegration
-INFO     Test completed in 0.255699872971 seconds
-INFO      It produced the following output:
-Test PASSED
-Hello World.
-Hello World.    
-
-Press ENTER to exit...
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/SimpleTexture 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/SobolQRNG
-INFO     Test completed in 357.340210915 seconds
-INFO      It produced the following output:
-Allocating CPU memory...
-Allocating GPU memory...
-Initializing direction numbers...
-Copying direction numbers to device...
-Executing QRNG on GPU...
-Gsamples/s: 2.80738e-05
-Reading results from GPU...
-
-Executing QRNG on CPU...
-Gsamples/s: 0.0148904
-Checking results...
-L1-Error: 0
-
-TEST PASSED
-
-Shutting down...
-
-Press ENTER to exit...
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/AsyncAPI 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/AsyncAPI
-INFO     Test completed in 1.19315695763 seconds
-INFO      It produced the following output:
-time spent executing by the GPU: 260.22
-time spent by CPU in CUDA calls: 260.28
-CPU executed 0 iterations while waiting for GPU to finish
---------------------------------------------------------------
-Test PASSED
-
-Press ENTER to exit...
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/BandwidthTest 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/BandwidthTest
-INFO     Test completed in 3.61651086807 seconds
-INFO      It produced the following output:
-Running on......
-      device 0:Ocelot PTX Emulator
-Quick Mode
-Host to Device Bandwidth for Pageable memory
-.
-Transfer Size (Bytes)	Bandwidth(MB/s)
- 33554432		490.0
-
-Quick Mode
-Device to Host Bandwidth for Pageable memory
-.
-Transfer Size (Bytes)	Bandwidth(MB/s)
- 33554432		516.2
-
-Quick Mode
-Device to Device Bandwidth
-.
-Transfer Size (Bytes)	Bandwidth(MB/s)
- 33554432		1700.9
-
-&&&& Test PASSED
-
-Press ENTER to exit...
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/Scan 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/Scan
-INFO     Test completed in 43.6775181293 seconds
-INFO      It produced the following output:
-Running parallel prefix sum (scan) of 512 elements
-Comparing 3 versions:
-
-1. scan_naive -- not work efficient (O(n log n) adds).
-Average time: 199.747598 ms
-
-2. scan_workefficient -- Work efficient (O(n) adds), but many bank conflicts.
-Average time: 104.996592 ms
-
-3. scan_best -- work efficient with very few bank conflicts.
-Average time: 129.616484 ms
-
-scan_naive: Test PASSED
-scan_workefficient: Test PASSED
-scan_best: Test PASSED
-
-Check out the CUDA Data Parallel Primitives Library for more on scan.
-http://www.gpgpu.org/developer/cudpp
-
-Press ENTER to exit...
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/SimpleCUBLAS 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/SimpleCUBLAS
-INFO     Test completed in 0.7039270401 seconds
-INFO      It produced the following output:
-lt-SimpleCUBLAS: ocelot/cuda/implementation/CudaRuntimeInterface.cpp:700: virtual cudaError_t cuda::CudaRuntimeInterface::cudaGetExportTable(const void**, const cudaUUID_t*): Assertion `0 && "unimplemented"' failed.
-simpleCUBLAS test running..
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/Mandelbrot 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/SimpleTexture
-INFO     Test completed in 133.609002113 seconds
-INFO      It produced the following output:
-Loaded 'lena_bw.pgm', 512 x 512 pixels
-Processing time: 61842.835938 (ms)
-0.00 Mpixels/sec
-Wrote 'data/lena_bw_out.pgm'
-Comparing files
-	output:    <data/lena_bw_out.pgm>
-	reference: <data/ref_rotated.pgm>
-Test PASSED
-
-Press ENTER to exit...
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/SimpleTexture3D 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/SimpleTexture3D
-INFO     Test completed in 17.4051949978 seconds
-INFO      It produced the following output:
-[simpleTexture3D] (Automated Testing)
-Read 'data/Bucky.raw', 32768 bytes
-CheckRender::dumpBin: <simpleTexture3D.bin>
-> compareBin2Bin <unsigned int> nelements=1048576, epsilon=0.00, threshold=0.15
-   src_file <simpleTexture3D.bin>
-   ref_file <data/ref_texture3D.bin>
-  PASSED!
-TEST PASSED!
-
-Press ENTER to exit...
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/Bitonic 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/Bitonic
-INFO     Test completed in 0.847715854645 seconds
-INFO      It produced the following output:
-Test PASSED
-
-Press ENTER to exit...
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/SimpleVoteIntrinsics 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/SimpleVoteIntrinsics
-INFO     Test completed in 0.270180940628 seconds
-INFO      It produced the following output:
-[VOTE Kernel Test 1/3]
-	Running <<Vote.Any>> kernel1 ...
-
-[VOTE Kernel Test 2/3]
-	Running <<Vote.All>> kernel2 ...
-
-[VOTE Kernel Test 3/3]
-	Running <<Vote.Any>> kernel3 ...
-	PASSED!
-
-TEST PASSED
-	Shutting down...
-
-Press ENTER to exit...
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/BlackScholes 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/BlackScholes
-INFO     Test completed in 440.323808908 seconds
-INFO      It produced the following output:
-Initializing data...
-...allocating CPU memory for options.
-...allocating GPU memory for options.
-...generating input data in CPU mem.
-...copying input data to GPU mem.
-Data init done.
-Executing Black-Scholes GPU kernel (1 iterations)...
-Options count             : 8000000     
-BlackScholesGPU() time    : 430338.062500 msec
-Effective memory bandwidth: 0.000186 GB/s
-Gigaoptions per second    : 0.000019     
-Reading back GPU results...
-Checking the results...
-...running CPU calculations.
-Comparing the results...
-L1 norm: 2.022635E-07
-Max absolute error: 1.192093E-05
-TEST PASSED
-Shutting down...
-...releasing GPU memory.
-...releasing CPU memory.
-Shutdown done.
-
-Press ENTER to exit...
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/SimpleGL 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/SimpleGL
-INFO     Test completed in 0.791741132736 seconds
-INFO      It produced the following output:
-==Ocelot== Ocelot PTX Emulator failed to run kernel "_Z6kernelP6float4jjf" with exception: 
-==Ocelot== [PC 420] [thread 0] [cta 0] st.global.v4.f32 [%r295 + 0], {%r11, %r298, %r160, %r299} - Global memory access 0x416c9008 is not within any allocated or mapped range.
-==Ocelot== 
-==Ocelot== Nearby Device Allocations
-==Ocelot== [0x987d640] - [0x987d658] (24 bytes)
-==Ocelot== [0x416c9010] - [0x417c9010] (1048576 bytes)
-==Ocelot== 
-==Ocelot== Near /home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleGL/simpleGL_kernel.cu:64:0
-==Ocelot== 
-terminate called after throwing an instance of 'hydrazine::Exception'
-  what():  [PC 420] [thread 0] [cta 0] st.global.v4.f32 [%r295 + 0], {%r11, %r298, %r160, %r299} - Global memory access 0x416c9008 is not within any allocated or mapped range.
-
-Nearby Device Allocations
-[0x987d640] - [0x987d658] (24 bytes)
-[0x416c9010] - [0x417c9010] (1048576 bytes)
-
-Near /home/normal/checkout/gpuocelot/tests/cuda2.2/tests/simpleGL/simpleGL_kernel.cu:64:0
-
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/SimpleMultiGPU 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/SimpleMultiGPU
-INFO     Test completed in 216.293927908 seconds
-INFO      It produced the following output:
-CUDA-capable device count: 1
-main(): generating input data...
-main(): waiting for GPU results...
-GPU Processing time: 210802.593750 (ms) 
-Checking the results...
-CPU Processing time: 143.466995 (ms) 
-GPU sum: 16777294.000000; CPU sum: 16777294.395032
-Relative difference: 2.354566E-08 
-TEST PASSED
-Shutting down...
-
-Press ENTER to exit...
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/SimpleZeroCopy 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/SimpleZeroCopy
-INFO     Test completed in 37.9979529381 seconds
-INFO      It produced the following output:
-Adding vectors using mapped CPU memory...
-Checking the results...
-Releasing CPU memory...
-Test PASSED
-
-Press ENTER to exit...
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/SobelFilter 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/SobelFilter
-INFO     Test completed in 76.1100041866 seconds
-INFO      It produced the following output:
-[CUDA Sobel Edge-Detection] (automated testing w/ readback)
-Reading image: lena.pgm
-AutoTest: CUDA Sobel Edge-Detection <Original Filter>
-> Saving PGM: <lena_orig.pgm>
-   src_file <lena_orig.pgm>
-   ref_file <data/ref_orig.pgm>
-PGMvsPGM: comparing images size (512,512) epsilon(5.0000), threshold(15.00%)
-  PASSED!
-AutoTest: CUDA Sobel Edge-Detection <Sobel Shared>
-> Saving PGM: <lena_shared.pgm>
-   src_file <lena_shared.pgm>
-   ref_file <data/ref_shared.pgm>
-PGMvsPGM: comparing images size (512,512) epsilon(5.0000), threshold(15.00%)
-  PASSED!
-AutoTest: CUDA Sobel Edge-Detection <Sobel Shared+Texture>
-> Saving PGM: <lena_shared_tex.pgm>
-   src_file <lena_shared_tex.pgm>
-   ref_file <data/ref_shared_tex.pgm>
-PGMvsPGM: comparing images size (512,512) epsilon(5.0000), threshold(15.00%)
-  PASSED!
-TEST PASSED!
-
-Press ENTER to exit...
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/MatrixMul 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/MatrixMul
-INFO     Test completed in 4.49065804482 seconds
-INFO      It produced the following output:
-Processing time: 4304.525879 (ms) 
-Test PASSED 
-
-Press ENTER to exit...
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/ConvolutionTexture 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/ConvolutionTexture
-INFO     Test completed in 31.3815670013 seconds
-INFO      It produced the following output:
-Initializing data...
-convolutionRowGPU()
-...convolutionRowGPU() time: 15215.727539 msecs; //0.004307 Mpix/s
-Copying convolutionRowGPU() output back to a_Data...
-...cudaMemcpyToArray() time: 0.277000 msecs; //236.592049 Mpix/s
-convolutionColumnGPU()...
-...convolutionColumnGPU() time: 15630.337891 msecs; //0.004193 Mpix/s
-Reading back GPU results...
-Checking GPU results...
-...convolutionRowCPU()
-...convolutionColumnCPU()
-...comparing the results
-L1 norm: 4.480072E-08
-TEST PASSED
-Shutting down...
-
-Press ENTER to exit...
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/FluidsGL 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/FluidsGL
-INFO     Test completed in 0.771207094193 seconds
-INFO      It produced the following output:
-lt-FluidsGL: ocelot/cuda/implementation/CudaRuntimeInterface.cpp:700: virtual cudaError_t cuda::CudaRuntimeInterface::cudaGetExportTable(const void**, const cudaUUID_t*): Assertion `0 && "unimplemented"' failed.
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/TransposeNew 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/Mandelbrot
-INFO     Test completed in 1335.76151705 seconds
-INFO      It produced the following output:
-CUDA Mandelbrot & Julia Set 
-AutoTest: <CUDA Mandelbrot & Julia Set>
-Compute capability 2.0
-Data initialization done.
-> Saving PPM: <mandelbrot.ppm>
-   src_file <mandelbrot.ppm>
-   ref_file <data/Mandelbrot_fp64.ppm>
-> Compare (a)rendered:  <mandelbrot.ppm>
->         (b)reference: <data/Mandelbrot_fp64.ppm>
-PPMvsPPM: comparing images size (800,600) epsilon(50), threshold(10%)
-0.76(%) of bytes mismatched (count=14571)
-  PASSED!
-> Saving PPM: <julia.ppm>
-   src_file <julia.ppm>
-   ref_file <data/referenceJulia_fp64.ppm>
-> Compare (a)rendered:  <julia.ppm>
->         (b)reference: <data/referenceJulia_fp64.ppm>
-PPMvsPPM: comparing images size (800,600) epsilon(50), threshold(10%)
-4.90(%) of bytes mismatched (count=94082)
-  PASSED!
-TEST PASSED
-
-Press ENTER to exit...
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/Clock 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/Clock
-INFO     Test completed in 3.06595015526 seconds
-INFO      It produced the following output:
-Test PASSED
-time = 948
-
-Press ENTER to exit...
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/VolumeRender 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/VolumeRender
-INFO     Test completed in 0.43453502655 seconds
+INFO     Running test program /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/VolumeRender 
+INFO     Test /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/VolumeRender
+INFO     Test completed in 0.970379114151 seconds
 INFO      It produced the following output:
 terminate called after throwing an instance of 'hydrazine::Exception'
-  what():  In function - cudaMemset - invalid memory access at 0x414fa008(1048576 bytes)
+  what():  In function - cudaMemset - invalid memory access at 0x42804008(1048576 bytes)
+(0.000000) LLVMModuleManager.cpp:1115: Loading module '_ZOcelotBarrierModule'
+(0.000000) LLVMModuleManager.cpp:1142:  adding subkernel '_ZOcelotBarrierKernel' at index 0
 Read 'data/Bucky.raw', 32768 bytes
 Press '=' and '-' to change density
       ']' and '[' to change brightness
       ';' and ''' to modify transfer function offset
       '.' and ',' to modify transfer function scale
 
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/Template 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/Template
-INFO     Test completed in 0.30605006218 seconds
+INFO     Running test program /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/Template 
+INFO     Test /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/Template
+INFO     Test completed in 0.443214893341 seconds
 INFO      It produced the following output:
-Processing time: 71.998001 (ms)
+(0.000000) LLVMModuleManager.cpp:1115: Loading module '_ZOcelotBarrierModule'
+(0.000000) LLVMModuleManager.cpp:1142:  adding subkernel '_ZOcelotBarrierKernel' at index 0
+Processing time: 176.173004 (ms)
 Test PASSED
 
 Press ENTER to exit...
 
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/Dxtc 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/Dxtc
-INFO     Test completed in 61.5348670483 seconds
+INFO     Running test program /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/Dxtc 
+INFO     Test /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/Dxtc
+INFO     Test completed in 368.241056919 seconds
 INFO      It produced the following output:
-Time 61221.554688 msec
+(0.000000) LLVMModuleManager.cpp:1115: Loading module '_ZOcelotBarrierModule'
+(0.000000) LLVMModuleManager.cpp:1142:  adding subkernel '_ZOcelotBarrierKernel' at index 0
+Time 367984.031250 msec
 RMS(reference, result) = 0.000000
 Test PASSED
 
 Press ENTER to exit...
 
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/ThreadFenceReduction 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/ThreadFenceReduction
-INFO     Test completed in 17.1677160263 seconds
+INFO     Running test program /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/ThreadFenceReduction 
+INFO     Test /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/ThreadFenceReduction
+INFO     Test completed in 94.2763450146 seconds
 INFO      It produced the following output:
+(0.000000) LLVMModuleManager.cpp:1115: Loading module '_ZOcelotBarrierModule'
+(0.000000) LLVMModuleManager.cpp:1142:  adding subkernel '_ZOcelotBarrierKernel' at index 0
 [ threadFenceReduction ]
 Using Device 0: "Ocelot PTX Emulator"
 1048576 elements
 128 threads (max)
 64 blocks
-Average time: 14464.286133 ms
-Bandwidth:    0.000290 GB/s
+Average time: 86095.132812 ms
+Bandwidth:    0.000049 GB/s
 
 GPU result = 0.062298238277
 CPU result = 0.062298242003
@@ -728,53 +321,12 @@ TEST PASSED
 
 Press ENTER to exit...
 
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/ImageDenoising 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/TransposeNew
-INFO     Test completed in 564.006550074 seconds
+INFO     Running test program /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/ImageDenoising 
+INFO     Test /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/ImageDenoising
+INFO     Test completed in 4219.81760883 seconds
 INFO      It produced the following output:
-CUDA device has 1 Multi-Processors
-
-Matrix size: 128x128, tile size: 32x32, block size: 32x8
-
-Kernel			Loop over kernel	Loop within kernel
-------			----------------	------------------
-simple copy           	 0.00 GB/s		 0.00 GB/s
-shared memory copy    	 0.00 GB/s		 0.00 GB/s
-naive transpose       	 0.00 GB/s		 0.00 GB/s
-coalesced transpose   	 0.00 GB/s		 0.00 GB/s
-no bank conflict trans	 0.00 GB/s		 0.00 GB/s
-coarse-grained        	 0.00 GB/s		 0.00 GB/s
-fine-grained          	 0.00 GB/s		 0.00 GB/s
-diagonal transpose    	 0.00 GB/s		 0.00 GB/s
-
-Test PASSED
-
-Press ENTER to exit...
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/FastWalshTransform 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/FastWalshTransform
-INFO     Test completed in 15.4737961292 seconds
-INFO      It produced the following output:
-Initializing data...
-...allocating CPU memory
-...allocating GPU memory
-...generating data
-Data length: 32768; kernel length: 128
-Running GPU dyadic convolution using Fast Walsh Transform...
-GPU time: 15232.140625 ms; GOP/s: 0.000048
-Reading back GPU results...
-Running straightforward CPU dyadic convolution...
-Comparing the results...
-L2 norm: 8.520864E-08
-TEST PASSED
-Shutting down...
-
-Press ENTER to exit...
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/MersenneTwister 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/ImageDenoising
-INFO     Test completed in 160.141375065 seconds
-INFO      It produced the following output:
+(0.000000) LLVMModuleManager.cpp:1115: Loading module '_ZOcelotBarrierModule'
+(0.000000) LLVMModuleManager.cpp:1142:  adding subkernel '_ZOcelotBarrierKernel' at index 0
 [CUDA ImageDenoising] (automated testing w/ readback)
 Allocating host and CUDA memory and loading image file...
 Loading data/portrait_noise.bmp...
@@ -818,10 +370,75 @@ TEST PASSED!
 
 Press ENTER to exit...
 
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/RecursiveGaussian 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/RecursiveGaussian
-INFO     Test completed in 670.597095966 seconds
+INFO     Running test program /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/FastWalshTransform 
+INFO     Test /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/FastWalshTransform
+INFO     Test completed in 92.9599928856 seconds
 INFO      It produced the following output:
+(0.000000) LLVMModuleManager.cpp:1115: Loading module '_ZOcelotBarrierModule'
+(0.000000) LLVMModuleManager.cpp:1142:  adding subkernel '_ZOcelotBarrierKernel' at index 0
+Initializing data...
+...allocating CPU memory
+...allocating GPU memory
+...generating data
+Data length: 32768; kernel length: 128
+Running GPU dyadic convolution using Fast Walsh Transform...
+GPU time: 92787.289062 ms; GOP/s: 0.000008
+Reading back GPU results...
+Running straightforward CPU dyadic convolution...
+Comparing the results...
+L2 norm: 8.520864E-08
+TEST PASSED
+Shutting down...
+
+Press ENTER to exit...
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/MatrixMul 
+INFO     Test /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/MatrixMul
+INFO     Test completed in 22.3942010403 seconds
+INFO      It produced the following output:
+(0.000000) LLVMModuleManager.cpp:1115: Loading module '_ZOcelotBarrierModule'
+(0.000000) LLVMModuleManager.cpp:1142:  adding subkernel '_ZOcelotBarrierKernel' at index 0
+Processing time: 22275.224609 (ms) 
+Test PASSED 
+
+Press ENTER to exit...
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/MersenneTwister 
+INFO     Test /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/Mandelbrot
+INFO     Test completed in 11787.256546 seconds
+INFO      It produced the following output:
+(0.000000) LLVMModuleManager.cpp:1115: Loading module '_ZOcelotBarrierModule'
+(0.000000) LLVMModuleManager.cpp:1142:  adding subkernel '_ZOcelotBarrierKernel' at index 0
+CUDA Mandelbrot & Julia Set 
+AutoTest: <CUDA Mandelbrot & Julia Set>
+Compute capability 2.0
+Data initialization done.
+> Saving PPM: <mandelbrot.ppm>
+   src_file <mandelbrot.ppm>
+   ref_file <data/Mandelbrot_fp64.ppm>
+> Compare (a)rendered:  <mandelbrot.ppm>
+>         (b)reference: <data/Mandelbrot_fp64.ppm>
+PPMvsPPM: comparing images size (800,600) epsilon(50), threshold(10%)
+0.76(%) of bytes mismatched (count=14571)
+  PASSED!
+> Saving PPM: <julia.ppm>
+   src_file <julia.ppm>
+   ref_file <data/referenceJulia_fp64.ppm>
+> Compare (a)rendered:  <julia.ppm>
+>         (b)reference: <data/referenceJulia_fp64.ppm>
+PPMvsPPM: comparing images size (800,600) epsilon(50), threshold(10%)
+4.90(%) of bytes mismatched (count=94082)
+  PASSED!
+TEST PASSED
+
+Press ENTER to exit...
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/RecursiveGaussian 
+INFO     Test /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/RecursiveGaussian
+INFO     Test completed in 4486.05373597 seconds
+INFO      It produced the following output:
+(0.000000) LLVMModuleManager.cpp:1115: Loading module '_ZOcelotBarrierModule'
+(0.000000) LLVMModuleManager.cpp:1142:  adding subkernel '_ZOcelotBarrierKernel' at index 0
 [CUDA Recursive Gaussian] (Automated Testing)
 Loaded 'data/lena.ppm', 512 x 512 pixels
 > Saving PPM: <lena_10.ppm>
@@ -856,78 +473,64 @@ PPMvsPPM: comparing images size (512,512) epsilon(5), threshold(50%)
 PPMvsPPM: comparing images size (512,512) epsilon(5), threshold(50%)
 43.99(%) of bytes mismatched (count=461242)
   PASSED!
-Processing time: 536100.437500 (ms)
+Processing time: 3588891.750000 (ms)
 0.00 Mpixels/sec
 Summary: 0 errors!
 Test PASSED!
 
 Press ENTER to exit...
 
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/ScanLargeArray 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/ScanLargeArray
-INFO     Test completed in 5.45128798485 seconds
+INFO     Running test program /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/OceanFFT 
+INFO     Test /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/OceanFFT
+INFO     Test completed in 4.40695500374 seconds
 INFO      It produced the following output:
-Running parallel prefix sum (prescan) of 10000 elements
-This version is work efficient (O(n) adds)
-and has very few shared memory bank conflicts
-
-Test PASSED
-Average GPU execution time: 2446.711914 ms
-CPU execution time:         0.154000 ms
-
-Check out the CUDA Data Parallel Primitives Library for more on scan.
-http://www.gpgpu.org/developer/cudpp
-
-Press ENTER to exit...
-
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/OceanFFT 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/OceanFFT
-INFO     Test completed in 0.196961164474 seconds
-INFO      It produced the following output:
-lt-OceanFFT: ocelot/cuda/implementation/CudaRuntimeInterface.cpp:700: virtual cudaError_t cuda::CudaRuntimeInterface::cudaGetExportTable(const void**, const cudaUUID_t*): Assertion `0 && "unimplemented"' failed.
+lt-OceanFFT: ocelot/cuda/implementation/CudaRuntimeInterface.cpp:715: virtual cudaError_t cuda::CudaRuntimeInterface::cudaGetExportTable(const void**, const cudaUUID_t*): Assertion `0 && "unimplemented"' failed.
+(0.000000) LLVMModuleManager.cpp:1115: Loading module '_ZOcelotBarrierModule'
+(0.000000) LLVMModuleManager.cpp:1142:  adding subkernel '_ZOcelotBarrierKernel' at index 0
 [CUDA FFT Ocean Simulation]
 Compute capability 2.0
 
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/PostProcessGL 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/MersenneTwister
-INFO     Test completed in 1671.35335684 seconds
+INFO     Running test program /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/PostProcessGL 
+INFO     Test /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/PostProcessGL
+INFO     Test completed in 1.69046711922 seconds
 INFO      It produced the following output:
-Initializing data for 24000000 samples...
-Loading CPU and GPU twisters configurations...
-Generating random numbers on GPU...
-Generated samples : 24002560 
-RandomGPU() time  : 1030901.062500 
-Samples per second: 2.328309E+04 
-Applying Box-Muller transformation on GPU...
-Transformed samples : 24002560 
-BoxMullerGPU() time : 626940.250000 
-Samples per second  : 3.828524E+04 
-Reading back the results...
-Checking GPU results...
-...generating random numbers on CPU using reference generator
-...applying Box-Muller transformation on CPU
-...comparing the results
-Max absolute error: 7.185619E-06
-L1 norm: 5.677456E-09
-TEST PASSED
-Shutting down...
+(0.000000) LLVMModuleManager.cpp:1115: Loading module '_ZOcelotBarrierModule'
+(0.000000) LLVMModuleManager.cpp:1142:  adding subkernel '_ZOcelotBarrierKernel' at index 0
+==Ocelot== Ocelot PTX Emulator failed to run kernel "_Z11cudaProcessPiS_iiiiff" with exception: 
+==Ocelot== [PC 32] [thread 0] [cta 0] ld.global.s32 %r32, [%r31 + 0] - Global memory access 0x9ba1b70 is not within any allocated or mapped range.
+==Ocelot== 
+==Ocelot== Nearby Device Allocations
+==Ocelot== [0x9ba1be0] - [0x9ba5be0] (16384 bytes)
+==Ocelot== [0xa218c40] - [0xa21cc40] (16384 bytes)
+==Ocelot== 
+==Ocelot== Near /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/postProcessGL/postProcessGL.cu:74:0
+==Ocelot== 
+terminate called after throwing an instance of 'hydrazine::Exception'
+  what():  [PC 32] [thread 0] [cta 0] ld.global.s32 %r32, [%r31 + 0] - Global memory access 0x9ba1b70 is not within any allocated or mapped range.
 
-Press ENTER to exit...
+Nearby Device Allocations
+[0x9ba1be0] - [0x9ba5be0] (16384 bytes)
+[0xa218c40] - [0xa21cc40] (16384 bytes)
 
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/QuasirandomGenerator 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/QuasirandomGenerator
-INFO     Test completed in 502.166735888 seconds
+Near /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/postProcessGL/postProcessGL.cu:74:0
+
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/QuasirandomGenerator 
+INFO     Test /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/QuasirandomGenerator
+INFO     Test completed in 8322.01937079 seconds
 INFO      It produced the following output:
+(0.000000) LLVMModuleManager.cpp:1115: Loading module '_ZOcelotBarrierModule'
+(0.000000) LLVMModuleManager.cpp:1142:  adding subkernel '_ZOcelotBarrierKernel' at index 0
 Allocating GPU memory...
 Allocating CPU memory...
 Initializing QRNG tables...
 Testing QRNG...
-Gsamples/s: 0.000008
+Gsamples/s: 0.000000
 Reading GPU results...
 Comparing to the CPU results...
 L1 norm: 7.275964E-12
 Testing inverseCNDgpu()...
-Gsamples/s: 0.000029
+Gsamples/s: 0.000004
 Reading GPU results...
 Comparing to the CPU results...
 L1 norm: 1.557365E-07
@@ -936,25 +539,29 @@ Shutting down...
 
 Press ENTER to exit...
 
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/Nbody 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/Nbody
-INFO     Test completed in 299.549199104 seconds
+INFO     Running test program /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/Nbody 
+INFO     Test /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/Nbody
+INFO     Test completed in 2533.45835018 seconds
 INFO      It produced the following output:
+(0.000000) LLVMModuleManager.cpp:1115: Loading module '_ZOcelotBarrierModule'
+(0.000000) LLVMModuleManager.cpp:1142:  adding subkernel '_ZOcelotBarrierKernel' at index 0
 Run "nbody -benchmark [-n=<numBodies>]" to measure perfomance.
 
 Test PASSED
 
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/Reduction 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/Reduction
-INFO     Test completed in 17.2049379349 seconds
+INFO     Running test program /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/Reduction 
+INFO     Test /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/Reduction
+INFO     Test completed in 58.4224801064 seconds
 INFO      It produced the following output:
+(0.000000) LLVMModuleManager.cpp:1115: Loading module '_ZOcelotBarrierModule'
+(0.000000) LLVMModuleManager.cpp:1142:  adding subkernel '_ZOcelotBarrierKernel' at index 0
 Reducing array of type int.
 Using Device 0: "Ocelot PTX Emulator"
 1048576 elements
 128 threads (max)
 64 blocks
-Average time: 16576.226562 ms
-Bandwidth:    0.000253 GB/s
+Average time: 57846.218750 ms
+Bandwidth:    0.000073 GB/s
 
 GPU result = 133784454
 CPU result = 133784454
@@ -962,48 +569,102 @@ TEST PASSED
 
 Press ENTER to exit...
 
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/ConvolutionSeparable 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/ConvolutionSeparable
-INFO     Test completed in 30.7824230194 seconds
+INFO     Running test program /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/Clock 
+INFO     Test /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/Clock
+INFO     Test completed in 12.1484229565 seconds
 INFO      It produced the following output:
-256 x 256
-Initializing data...
-Warm up...
-GPU convolution...
-GPU convolution time : 15195.478516 msec //0.004313 Mpixels/sec
-Reading back GPU results...
-Checking the results...
-...running convolutionRowCPU()
-...running convolutionColumnCPU()
+(0.000000) LLVMModuleManager.cpp:1115: Loading module '_ZOcelotBarrierModule'
+(0.000000) LLVMModuleManager.cpp:1142:  adding subkernel '_ZOcelotBarrierKernel' at index 0
+Test PASSED
+time = 64444
+
+Press ENTER to exit...
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/ScanLargeArray 
+INFO     Test /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/ScanLargeArray
+INFO     Test completed in 19.3370530605 seconds
+INFO      It produced the following output:
+(0.000000) LLVMModuleManager.cpp:1115: Loading module '_ZOcelotBarrierModule'
+(0.000000) LLVMModuleManager.cpp:1142:  adding subkernel '_ZOcelotBarrierKernel' at index 0
+Running parallel prefix sum (prescan) of 10000 elements
+This version is work efficient (O(n) adds)
+and has very few shared memory bank conflicts
+
+Test PASSED
+Average GPU execution time: 9176.637695 ms
+CPU execution time:         0.168000 ms
+
+Check out the CUDA Data Parallel Primitives Library for more on scan.
+http://www.gpgpu.org/developer/cudpp
+
+Press ENTER to exit...
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/CppIntegration 
+INFO     Test /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/CppIntegration
+INFO     Test completed in 0.16037607193 seconds
+INFO      It produced the following output:
+(0.000000) LLVMModuleManager.cpp:1115: Loading module '_ZOcelotBarrierModule'
+(0.000000) LLVMModuleManager.cpp:1142:  adding subkernel '_ZOcelotBarrierKernel' at index 0
+Test PASSED
+Hello World.
+Hello World.    
+
+Press ENTER to exit...
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/BicubicTexture 
+INFO     Test /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/MersenneTwister
+INFO     Test completed in 17243.4220769 seconds
+INFO      It produced the following output:
+(0.000000) LLVMModuleManager.cpp:1115: Loading module '_ZOcelotBarrierModule'
+(0.000000) LLVMModuleManager.cpp:1142:  adding subkernel '_ZOcelotBarrierKernel' at index 0
+Initializing data for 24000000 samples...
+Loading CPU and GPU twisters configurations...
+Generating random numbers on GPU...
+Generated samples : 24002560 
+RandomGPU() time  : 13024718.000000 
+Samples per second: 1.842847E+03 
+Applying Box-Muller transformation on GPU...
+Transformed samples : 24002560 
+BoxMullerGPU() time : 4202485.500000 
+Samples per second  : 5.711515E+03 
+Reading back the results...
+Checking GPU results...
+...generating random numbers on CPU using reference generator
+...applying Box-Muller transformation on CPU
 ...comparing the results
-L1 norm: 4.444135E-08
+Max absolute error: 7.185619E-06
+L1 norm: 5.668665E-09
 TEST PASSED
 Shutting down...
 
 Press ENTER to exit...
 
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/Eigenvalues 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/Eigenvalues
-INFO     Test completed in 4.39889192581 seconds
+INFO     Running test program /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/SimpleAtomicIntrinsics 
+INFO     Test /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/SimpleAtomicIntrinsics
+INFO     Test completed in 3.80097198486 seconds
 INFO      It produced the following output:
-Matrix size: 2048 x 2048
-Precision: 0.000010
-Iterations to be timed: 1
-Result filename: 'eigenvalues.dat'
-Gerschgorin interval: -2.894310 / 2.923304
-==Ocelot== Ocelot PTX Emulator failed to run kernel "_Z17bisectKernelLargePfS_jffjjfPjS0_S_S_S0_S_S_S0_S0_S0_S0_" with exception: 
-==Ocelot== [PC 95] [thread 1] [cta 0] st.shared.u32 [__cuda_local_var_36822_40_non_const_all_threads_converged], %r62 - Shared memory race condition, address 0x2014 was previously written by thread 0 without a memory barrier in between.
-==Ocelot== Near /home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu:605:0
-==Ocelot== 
-terminate called after throwing an instance of 'hydrazine::Exception'
-  what():  [PC 95] [thread 1] [cta 0] st.shared.u32 [__cuda_local_var_36822_40_non_const_all_threads_converged], %r62 - Shared memory race condition, address 0x2014 was previously written by thread 0 without a memory barrier in between.
-Near /home/normal/checkout/gpuocelot/tests/cuda2.2/tests/eigenvalues/bisect_util.cu:605:0
+(0.000000) LLVMModuleManager.cpp:1115: Loading module '_ZOcelotBarrierModule'
+(0.000000) LLVMModuleManager.cpp:1142:  adding subkernel '_ZOcelotBarrierKernel' at index 0
+Using Device 0: "Ocelot PTX Emulator"
+Processing time: 3700.245117 (ms)
+Test PASSED
 
+Press ENTER to exit...
 
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/BicubicTexture 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/BicubicTexture
-INFO     Test completed in 139.003404856 seconds
+INFO     Running test program /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/FluidsGL 
+INFO     Test /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/FluidsGL
+INFO     Test completed in 3.22483301163 seconds
 INFO      It produced the following output:
+lt-FluidsGL: ocelot/cuda/implementation/CudaRuntimeInterface.cpp:715: virtual cudaError_t cuda::CudaRuntimeInterface::cudaGetExportTable(const void**, const cudaUUID_t*): Assertion `0 && "unimplemented"' failed.
+(0.000000) LLVMModuleManager.cpp:1115: Loading module '_ZOcelotBarrierModule'
+(0.000000) LLVMModuleManager.cpp:1142:  adding subkernel '_ZOcelotBarrierKernel' at index 0
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/BoxFilter 
+INFO     Test /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/BicubicTexture
+INFO     Test completed in 863.825201035 seconds
+INFO      It produced the following output:
+(0.000000) LLVMModuleManager.cpp:1115: Loading module '_ZOcelotBarrierModule'
+(0.000000) LLVMModuleManager.cpp:1142:  adding subkernel '_ZOcelotBarrierKernel' at index 0
 [CUDA BicubicTexture] (automated testing w/ readback)
 Loaded 'lena_bw.pgm', 512 x 512 pixels
 AutoTest: CUDA BicubicTexture <Nearest>
@@ -1044,20 +705,56 @@ TEST PASSED!
 
 Press ENTER to exit...
 
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/SimpleAtomicIntrinsics 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/SimpleAtomicIntrinsics
-INFO     Test completed in 1.19416809082 seconds
+INFO     Running test program /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/SimpleStreams 
+INFO     Test /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/SimpleStreams
+INFO     Test completed in 13.0116209984 seconds
 INFO      It produced the following output:
-Using Device 0: "Ocelot PTX Emulator"
-Processing time: 1016.536987 (ms)
+(0.000000) LLVMModuleManager.cpp:1115: Loading module '_ZOcelotBarrierModule'
+(0.000000) LLVMModuleManager.cpp:1142:  adding subkernel '_ZOcelotBarrierKernel' at index 0
+running on: Ocelot PTX Emulator
+
+memcopy:	342.95
+kernel:		743.21
+non-streamed:	562.75 (1086.16 expected)
+4 streams:	583.29 (828.95 expected with compute capability 1.1 or later)
+-------------------------------
 Test PASSED
 
 Press ENTER to exit...
 
-INFO     Running test program /home/normal/checkout/gpuocelot/tests/cuda2.2/BoxFilter 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/BoxFilter
-INFO     Test completed in 164.285723925 seconds
+INFO     Running test program /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/BinomialOptions 
+INFO     Test /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/BinomialOptions
+INFO     Test completed in 236.740638971 seconds
 INFO      It produced the following output:
+Using device 0: Ocelot PTX Emulator
+(0.000000) LLVMModuleManager.cpp:1115: Loading module '_ZOcelotBarrierModule'
+(0.000000) LLVMModuleManager.cpp:1142:  adding subkernel '_ZOcelotBarrierKernel' at index 0
+Using single precision...
+Generating input data...
+Running GPU binomial tree...
+Options count            : 1     
+Time steps               : 2048     
+binomialOptionsGPU() time: 236594.187500 msec
+Options per second       : 0.004227     
+Running CPU binomial tree...
+Comparing the results...
+GPU binomial vs. Black-Scholes
+Avg. diff: 1.401298E-45
+CPU binomial vs. Black-Scholes
+Avg. diff: 0.000000E+00
+CPU binomial vs. GPU binomial
+Avg. diff: 1.401298E-45
+TEST PASSED
+Shutting down...
+
+Press ENTER to exit...
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/ConvolutionSeparable 
+INFO     Test /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/BoxFilter
+INFO     Test completed in 969.584882021 seconds
+INFO      It produced the following output:
+(0.000000) LLVMModuleManager.cpp:1115: Loading module '_ZOcelotBarrierModule'
+(0.000000) LLVMModuleManager.cpp:1142:  adding subkernel '_ZOcelotBarrierKernel' at index 0
 [CUDA Iterative Box Filter] (automated testing w/ readback)
 Loaded 'data/lena.ppm', 512 x 512 pixels
 AutoTest: CUDA Iterative Box Filter (radius=10)> Saving PPM: <lena_10.ppm>
@@ -1092,87 +789,496 @@ TEST PASSED!
 
 Press ENTER to exit...
 
-INFO     Test /home/normal/checkout/gpuocelot/tests/cuda2.2/PostProcessGL
-INFO     Test completed in 27736.191612 seconds
+INFO     Running test program /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/Histogram64 
+INFO     Test /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/ConvolutionSeparable
+INFO     Test completed in 171.851188898 seconds
 INFO      It produced the following output:
-==Ocelot== Ocelot PTX Emulator failed to run kernel "_Z11cudaProcessPiS_iiiiff" with exception: 
-==Ocelot== [PC 32] [thread 0] [cta 0] ld.global.s32 %r32, [%r31 + 0] - Global memory access 0xb232160 is not within any allocated or mapped range.
-==Ocelot== 
-==Ocelot== Nearby Device Allocations
-==Ocelot== [0xb2321c0] - [0xb2361c0] (16384 bytes)
-==Ocelot== [0xb8a93c0] - [0xb8ad3c0] (16384 bytes)
-==Ocelot== 
-==Ocelot== Near /home/normal/checkout/gpuocelot/tests/cuda2.2/tests/postProcessGL/postProcessGL.cu:74:0
+(0.000000) LLVMModuleManager.cpp:1115: Loading module '_ZOcelotBarrierModule'
+(0.000000) LLVMModuleManager.cpp:1142:  adding subkernel '_ZOcelotBarrierKernel' at index 0
+256 x 256
+Initializing data...
+Warm up...
+GPU convolution...
+GPU convolution time : 85420.468750 msec //0.000767 Mpixels/sec
+Reading back GPU results...
+Checking the results...
+...running convolutionRowCPU()
+...running convolutionColumnCPU()
+...comparing the results
+L1 norm: 4.444135E-08
+TEST PASSED
+Shutting down...
+
+Press ENTER to exit...
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/Transpose 
+INFO     Test /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/Transpose
+INFO     Test completed in 3.80515313148 seconds
+INFO      It produced the following output:
+(0.000000) LLVMModuleManager.cpp:1115: Loading module '_ZOcelotBarrierModule'
+(0.000000) LLVMModuleManager.cpp:1142:  adding subkernel '_ZOcelotBarrierKernel' at index 0
+Transposing a 32 by 128 matrix of floats...
+Naive transpose average time:     652.049 ms
+Optimized transpose average time: 1156.082 ms
+
+Test PASSED
+
+Press ENTER to exit...
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/Histogram256 
+INFO     Test /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/Histogram64
+INFO     Test completed in 90.9350371361 seconds
+INFO      It produced the following output:
+(0.000000) LLVMModuleManager.cpp:1115: Loading module '_ZOcelotBarrierModule'
+(0.000000) LLVMModuleManager.cpp:1142:  adding subkernel '_ZOcelotBarrierKernel' at index 0
+Initializing data...
+...allocating CPU memory.
+...generating input data
+...allocating GPU memory and copying input data
+Running GPU histogram (1 iterations)...
+histogram64GPU() time (average) : 90692.664062 msec //0.011026 MB/sec
+Reading back GPU results...
+Comparing the results...
+...histogramCPU()
+histogram64CPU() time : 4.750000 msec //200.773540 MB/sec
+Total sum of histogram elements: 1000000
+Sum of absolute differences: 0
+TEST PASSED
+Shutting down...
+
+Press ENTER to exit...
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/TransposeNew 
+INFO     Test /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/Histogram256
+INFO     Test completed in 84.2331018448 seconds
+INFO      It produced the following output:
+(0.000000) LLVMModuleManager.cpp:1115: Loading module '_ZOcelotBarrierModule'
+(0.000000) LLVMModuleManager.cpp:1142:  adding subkernel '_ZOcelotBarrierKernel' at index 0
+Initializing data...
+...allocating CPU memory.
+...generating input data
+...allocating GPU memory and copying input data
+Running CPU histogram...
+histogramCPU() time : 0.483000 msec // 197.448094 MB/sec
+Running GPU histogram using SM10...
+histogram256_SM10() time : 31748.480469 msec // 0.003004 MB/sec
+TEST PASSED
+Running GPU histogram using SM11...
+histogram256_SM11() time : 26343.953125 msec // 0.003620 MB/sec
+TEST PASSED
+Running GPU histogram using SM12...
+histogram256_SM12() time : 26021.326172 msec // 0.003665 MB/sec
+TEST PASSED
+Shutting down...
+
+Press ENTER to exit...
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/ScalarProd 
+INFO     Test /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/ScalarProd
+INFO     Test completed in 152.819127083 seconds
+INFO      It produced the following output:
+(0.000000) LLVMModuleManager.cpp:1115: Loading module '_ZOcelotBarrierModule'
+(0.000000) LLVMModuleManager.cpp:1142:  adding subkernel '_ZOcelotBarrierKernel' at index 0
+Initializing data...
+...allocating CPU memory.
+...allocating GPU memory.
+...generating input data in CPU mem.
+...copying input data to GPU mem.
+Data init done.
+Executing GPU kernel...
+GPU time: 152306.031250 msecs.
+Reading back GPU result...
+Checking GPU results...
+..running CPU scalar product calculation
+...comparing the results
+L1 error: 2.721799E-08
+TEST PASSED
+Shutting down...
+
+Press ENTER to exit...
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/ConvolutionTexture 
+INFO     Test /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/ConvolutionTexture
+INFO     Test completed in 173.027225971 seconds
+INFO      It produced the following output:
+(0.000000) LLVMModuleManager.cpp:1115: Loading module '_ZOcelotBarrierModule'
+(0.000000) LLVMModuleManager.cpp:1142:  adding subkernel '_ZOcelotBarrierKernel' at index 0
+Initializing data...
+convolutionRowGPU()
+...convolutionRowGPU() time: 83737.343750 msecs; //0.000783 Mpix/s
+Copying convolutionRowGPU() output back to a_Data...
+...cudaMemcpyToArray() time: 0.374000 msecs; //175.229940 Mpix/s
+convolutionColumnGPU()...
+...convolutionColumnGPU() time: 86554.601562 msecs; //0.000757 Mpix/s
+Reading back GPU results...
+Checking GPU results...
+...convolutionRowCPU()
+...convolutionColumnCPU()
+...comparing the results
+L1 norm: 4.480072E-08
+TEST PASSED
+Shutting down...
+
+Press ENTER to exit...
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/AlignedTypes 
+INFO     Test /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/AlignedTypes
+INFO     Test completed in 59.9422931671 seconds
+INFO      It produced the following output:
+(0.000000) LLVMModuleManager.cpp:1115: Loading module '_ZOcelotBarrierModule'
+(0.000000) LLVMModuleManager.cpp:1142:  adding subkernel '_ZOcelotBarrierKernel' at index 0
+CUDA device has 1 Multi-Processors
+ Memory Size = 250000
+Allocating memory...
+Generating host input data array...
+Uploading input data to GPU memory...
+Testing misaligned types...
+uint8...
+Avg. time: 13464.603516 ms / Copy throughput: 0.000017 GB/s.
+TEST PASSED
+uint16...
+Avg. time: 8574.518555 ms / Copy throughput: 0.000027 GB/s.
+TEST PASSED
+RGBA8_misaligned...
+Avg. time: 8282.218750 ms / Copy throughput: 0.000028 GB/s.
+TEST PASSED
+LA32_misaligned...
+Avg. time: 3547.379883 ms / Copy throughput: 0.000066 GB/s.
+TEST PASSED
+RGB32_misaligned...
+Avg. time: 3340.562012 ms / Copy throughput: 0.000070 GB/s.
+TEST PASSED
+RGBA32_misaligned...
+Avg. time: 3102.999023 ms / Copy throughput: 0.000075 GB/s.
+TEST PASSED
+Testing aligned types...
+RGBA8...
+Avg. time: 5809.319824 ms / Copy throughput: 0.000040 GB/s.
+TEST PASSED
+I32...
+Avg. time: 4875.575195 ms / Copy throughput: 0.000048 GB/s.
+TEST PASSED
+LA32...
+Avg. time: 2989.211914 ms / Copy throughput: 0.000078 GB/s.
+TEST PASSED
+RGB32...
+Avg. time: 2063.095947 ms / Copy throughput: 0.000113 GB/s.
+TEST PASSED
+RGBA32...
+Avg. time: 2079.075928 ms / Copy throughput: 0.000112 GB/s.
+TEST PASSED
+RGBA32_2...
+Avg. time: 1674.803955 ms / Copy throughput: 0.000139 GB/s.
+TEST PASSED
+Shutting down...
+
+Press ENTER to exit...
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/SimpleCUFFT 
+INFO     Test /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/SimpleCUFFT
+INFO     Test completed in 2.4632589817 seconds
+INFO      It produced the following output:
+lt-SimpleCUFFT: ocelot/cuda/implementation/CudaRuntimeInterface.cpp:715: virtual cudaError_t cuda::CudaRuntimeInterface::cudaGetExportTable(const void**, const cudaUUID_t*): Assertion `0 && "unimplemented"' failed.
+(0.000000) LLVMModuleManager.cpp:1115: Loading module '_ZOcelotBarrierModule'
+(0.000000) LLVMModuleManager.cpp:1142:  adding subkernel '_ZOcelotBarrierKernel' at index 0
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/ConvolutionFFT2D 
+INFO     Test /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/ConvolutionFFT2D
+INFO     Test completed in 2.48474788666 seconds
+INFO      It produced the following output:
+lt-ConvolutionFFT2D: ocelot/cuda/implementation/CudaRuntimeInterface.cpp:715: virtual cudaError_t cuda::CudaRuntimeInterface::cudaGetExportTable(const void**, const cudaUUID_t*): Assertion `0 && "unimplemented"' failed.
+(0.000000) LLVMModuleManager.cpp:1115: Loading module '_ZOcelotBarrierModule'
+(0.000000) LLVMModuleManager.cpp:1142:  adding subkernel '_ZOcelotBarrierKernel' at index 0
+Input data size           : 200 x 200
+Convolution kernel size   : 7 x 7
+Padded image size         : 206 x 206
+Aligned padded image size : 256 x 256
+Allocating memory...
+Generating random input data...
+Creating FFT plan for 256 x 256...
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/SimpleTemplates 
+INFO     Test /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/SimpleTemplates
+INFO     Test completed in 0.17612695694 seconds
+INFO      It produced the following output:
+(0.000000) LLVMModuleManager.cpp:1115: Loading module '_ZOcelotBarrierModule'
+(0.000000) LLVMModuleManager.cpp:1142:  adding subkernel '_ZOcelotBarrierKernel' at index 0
+Processing time: 59.828999 (ms)
+Test PASSED
+==Ocelot== Ocelot PTX Emulator failed to run kernel "_Z10testKernelIiEvPT_S1_" with exception: 
+==Ocelot== Unknown module - /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleTemplates/simpleTemplates.cu
+terminate called after throwing an instance of 'hydrazine::Exception'
+  what():  Unknown module - /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleTemplates/simpleTemplates.cu
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/BandwidthTest 
+INFO     Test /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/BandwidthTest
+INFO     Test completed in 2.14668297768 seconds
+INFO      It produced the following output:
+(0.000000) LLVMModuleManager.cpp:1115: Loading module '_ZOcelotBarrierModule'
+(0.000000) LLVMModuleManager.cpp:1142:  adding subkernel '_ZOcelotBarrierKernel' at index 0
+Running on......
+      device 0:Ocelot PTX Emulator
+Quick Mode
+Host to Device Bandwidth for Pageable memory
+.
+Transfer Size (Bytes)	Bandwidth(MB/s)
+ 33554432		979.4
+
+Quick Mode
+Device to Host Bandwidth for Pageable memory
+.
+Transfer Size (Bytes)	Bandwidth(MB/s)
+ 33554432		986.6
+
+Quick Mode
+Device to Device Bandwidth
+.
+Transfer Size (Bytes)	Bandwidth(MB/s)
+ 33554432		2006.7
+
+&&&& Test PASSED
+
+Press ENTER to exit...
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/Scan 
+INFO     Test /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/Scan
+INFO     Test completed in 161.125425816 seconds
+INFO      It produced the following output:
+(0.000000) LLVMModuleManager.cpp:1115: Loading module '_ZOcelotBarrierModule'
+(0.000000) LLVMModuleManager.cpp:1142:  adding subkernel '_ZOcelotBarrierKernel' at index 0
+Running parallel prefix sum (scan) of 512 elements
+Comparing 3 versions:
+
+1. scan_naive -- not work efficient (O(n log n) adds).
+Average time: 848.674922 ms
+
+2. scan_workefficient -- Work efficient (O(n) adds), but many bank conflicts.
+Average time: 318.935508 ms
+
+3. scan_best -- work efficient with very few bank conflicts.
+Average time: 442.679766 ms
+
+scan_naive: Test PASSED
+scan_workefficient: Test PASSED
+scan_best: Test PASSED
+
+Check out the CUDA Data Parallel Primitives Library for more on scan.
+http://www.gpgpu.org/developer/cudpp
+
+Press ENTER to exit...
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/SimpleCUBLAS 
+INFO     Test /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/SimpleCUBLAS
+INFO     Test completed in 2.64246606827 seconds
+INFO      It produced the following output:
+lt-SimpleCUBLAS: ocelot/cuda/implementation/CudaRuntimeInterface.cpp:715: virtual cudaError_t cuda::CudaRuntimeInterface::cudaGetExportTable(const void**, const cudaUUID_t*): Assertion `0 && "unimplemented"' failed.
+(0.000000) LLVMModuleManager.cpp:1115: Loading module '_ZOcelotBarrierModule'
+(0.000000) LLVMModuleManager.cpp:1142:  adding subkernel '_ZOcelotBarrierKernel' at index 0
+simpleCUBLAS test running..
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/Eigenvalues 
+INFO     Test /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/Eigenvalues
+INFO     Test completed in 6.98287010193 seconds
+INFO      It produced the following output:
+(0.000000) LLVMModuleManager.cpp:1115: Loading module '_ZOcelotBarrierModule'
+(0.000000) LLVMModuleManager.cpp:1142:  adding subkernel '_ZOcelotBarrierKernel' at index 0
+Matrix size: 2048 x 2048
+Precision: 0.000010
+Iterations to be timed: 1
+Result filename: 'eigenvalues.dat'
+Gerschgorin interval: -2.894310 / 2.923304
+==Ocelot== Ocelot PTX Emulator failed to run kernel "_Z17bisectKernelLargePfS_jffjjfPjS0_S_S_S0_S_S_S0_S0_S0_S0_" with exception: 
+==Ocelot== [PC 91] [thread 1] [cta 0] st.shared.u32 [__cuda_local_var_37752_40_non_const_all_threads_converged], %r62 - Shared memory race condition, address 0x2014 was previously written by thread 0 without a memory barrier in between.
+==Ocelot== Near /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu:605:0
 ==Ocelot== 
 terminate called after throwing an instance of 'hydrazine::Exception'
-  what():  [PC 32] [thread 0] [cta 0] ld.global.s32 %r32, [%r31 + 0] - Global memory access 0xb232160 is not within any allocated or mapped range.
+  what():  [PC 91] [thread 1] [cta 0] st.shared.u32 [__cuda_local_var_37752_40_non_const_all_threads_converged], %r62 - Shared memory race condition, address 0x2014 was previously written by thread 0 without a memory barrier in between.
+Near /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/eigenvalues/bisect_util.cu:605:0
+
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/SimpleTexture 
+INFO     Test /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/SimpleTexture
+INFO     Test completed in 567.640960932 seconds
+INFO      It produced the following output:
+(0.000000) LLVMModuleManager.cpp:1115: Loading module '_ZOcelotBarrierModule'
+(0.000000) LLVMModuleManager.cpp:1142:  adding subkernel '_ZOcelotBarrierKernel' at index 0
+Loaded 'lena_bw.pgm', 512 x 512 pixels
+Processing time: 285419.875000 (ms)
+0.00 Mpixels/sec
+Wrote 'data/lena_bw_out.pgm'
+Comparing files
+	output:    <data/lena_bw_out.pgm>
+	reference: <data/ref_rotated.pgm>
+Test PASSED
+
+Press ENTER to exit...
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/Bitonic 
+INFO     Test /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/Bitonic
+INFO     Test completed in 1.16986608505 seconds
+INFO      It produced the following output:
+(0.000000) LLVMModuleManager.cpp:1115: Loading module '_ZOcelotBarrierModule'
+(0.000000) LLVMModuleManager.cpp:1142:  adding subkernel '_ZOcelotBarrierKernel' at index 0
+Test PASSED
+
+Press ENTER to exit...
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/SimpleTexture3D 
+INFO     Test /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/SimpleTexture3D
+INFO     Test completed in 66.092151165 seconds
+INFO      It produced the following output:
+(0.000000) LLVMModuleManager.cpp:1115: Loading module '_ZOcelotBarrierModule'
+(0.000000) LLVMModuleManager.cpp:1142:  adding subkernel '_ZOcelotBarrierKernel' at index 0
+[simpleTexture3D] (Automated Testing)
+Read 'data/Bucky.raw', 32768 bytes
+CheckRender::dumpBin: <simpleTexture3D.bin>
+> compareBin2Bin <unsigned int> nelements=1048576, epsilon=0.00, threshold=0.15
+   src_file <simpleTexture3D.bin>
+   ref_file <data/ref_texture3D.bin>
+  PASSED!
+TEST PASSED!
+
+Press ENTER to exit...
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/BlackScholes 
+INFO     Test /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/TransposeNew
+INFO     Test completed in 2197.32245708 seconds
+INFO      It produced the following output:
+(0.000000) LLVMModuleManager.cpp:1115: Loading module '_ZOcelotBarrierModule'
+(0.000000) LLVMModuleManager.cpp:1142:  adding subkernel '_ZOcelotBarrierKernel' at index 0
+CUDA device has 1 Multi-Processors
+
+Matrix size: 128x128, tile size: 32x32, block size: 32x8
+
+Kernel			Loop over kernel	Loop within kernel
+------			----------------	------------------
+simple copy           	 0.00 GB/s		 0.00 GB/s
+shared memory copy    	 0.00 GB/s		 0.00 GB/s
+naive transpose       	 0.00 GB/s		 0.00 GB/s
+coalesced transpose   	 0.00 GB/s		 0.00 GB/s
+no bank conflict trans	 0.00 GB/s		 0.00 GB/s
+coarse-grained        	 0.00 GB/s		 0.00 GB/s
+fine-grained          	 0.00 GB/s		 0.00 GB/s
+diagonal transpose    	 0.00 GB/s		 0.00 GB/s
+
+Test PASSED
+
+Press ENTER to exit...
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/SimpleGL 
+INFO     Test /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/SimpleGL
+INFO     Test completed in 0.861613988876 seconds
+INFO      It produced the following output:
+(0.000000) LLVMModuleManager.cpp:1115: Loading module '_ZOcelotBarrierModule'
+(0.000000) LLVMModuleManager.cpp:1142:  adding subkernel '_ZOcelotBarrierKernel' at index 0
+==Ocelot== Ocelot PTX Emulator failed to run kernel "_Z6kernelP6float4jjf" with exception: 
+==Ocelot== [PC 91] [thread 0] [cta 0] st.global.v4.f32 [%r293 + 0], {%r11, %r296, %r159, %r297} - Global memory access 0x42962008 is not within any allocated or mapped range.
+==Ocelot== 
+==Ocelot== Nearby Device Allocations
+==Ocelot== [0x9dedc40] - [0x9dedc58] (24 bytes)
+==Ocelot== [0x42962010] - [0x42a62010] (1048576 bytes)
+==Ocelot== 
+==Ocelot== Near /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleGL/simpleGL_kernel.cu:64:0
+==Ocelot== 
+terminate called after throwing an instance of 'hydrazine::Exception'
+  what():  [PC 91] [thread 0] [cta 0] st.global.v4.f32 [%r293 + 0], {%r11, %r296, %r159, %r297} - Global memory access 0x42962008 is not within any allocated or mapped range.
 
 Nearby Device Allocations
-[0xb2321c0] - [0xb2361c0] (16384 bytes)
-[0xb8a93c0] - [0xb8ad3c0] (16384 bytes)
+[0x9dedc40] - [0x9dedc58] (24 bytes)
+[0x42962010] - [0x42a62010] (1048576 bytes)
 
-Near /home/normal/checkout/gpuocelot/tests/cuda2.2/tests/postProcessGL/postProcessGL.cu:74:0
+Near /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/tests/simpleGL/simpleGL_kernel.cu:64:0
 
+
+INFO     Test /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/BlackScholes
+INFO     Test completed in 1612.37413096 seconds
+INFO      It produced the following output:
+(0.000000) LLVMModuleManager.cpp:1115: Loading module '_ZOcelotBarrierModule'
+(0.000000) LLVMModuleManager.cpp:1142:  adding subkernel '_ZOcelotBarrierKernel' at index 0
+Initializing data...
+...allocating CPU memory for options.
+...allocating GPU memory for options.
+...generating input data in CPU mem.
+...copying input data to GPU mem.
+Data init done.
+Executing Black-Scholes GPU kernel (1 iterations)...
+Options count             : 8000000     
+BlackScholesGPU() time    : 1603682.125000 msec
+Effective memory bandwidth: 0.000050 GB/s
+Gigaoptions per second    : 0.000005     
+Reading back GPU results...
+Checking the results...
+...running CPU calculations.
+Comparing the results...
+L1 norm: 1.727440E-07
+Max absolute error: 1.049042E-05
+TEST PASSED
+Shutting down...
+...releasing GPU memory.
+...releasing CPU memory.
+Shutdown done.
+
+Press ENTER to exit...
 
 INFO     
 Passing tests:
- (17.405s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/SimpleTexture3D : Passed
- (17.205s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/Reduction : Passed
- (670.597s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/RecursiveGaussian : Passed
- (0.821s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/DwtHaar1D : Passed
- (30.782s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/ConvolutionSeparable : Passed
- (440.324s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/BlackScholes : Passed
- (52.525s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/BinomialOptions : Passed
- (37.998s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/SimpleZeroCopy : Passed
- (139.003s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/BicubicTexture : Passed
- (164.286s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/BoxFilter : Passed
- (133.609s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/SimpleTexture : Passed
- (5.451s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/ScanLargeArray : Passed
- (502.167s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/QuasirandomGenerator : Passed
- (4.491s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/MatrixMul : Passed
- (19.127s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/AlignedTypes : Passed
- (0.256s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/CppIntegration : Passed
- (0.168s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/DeviceQuery : Passed
- (564.007s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/TransposeNew : Passed
- (1335.762s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/Mandelbrot : Passed
- (0.229s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/SimpleTemplates : Passed
- (0.848s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/Bitonic : Passed
- (0.270s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/SimpleVoteIntrinsics : Passed
- (31.382s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/ConvolutionTexture : Passed
- (18.588s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/Histogram64 : Passed
- (76.110s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/SobelFilter : Passed
- (160.141s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/ImageDenoising : Passed
- (17.168s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/ThreadFenceReduction : Passed
- (357.340s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/SobolQRNG : Passed
- (0.306s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/Template : Passed
- (3.066s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/Clock : Passed
- (4.519s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/SimpleStreams : Passed
- (1.194s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/SimpleAtomicIntrinsics : Passed
- (3.617s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/BandwidthTest : Passed
- (39.957s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/ScalarProd : Passed
- (1.193s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/AsyncAPI : Passed
- (216.294s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/SimpleMultiGPU : Passed
- (1671.353s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/MersenneTwister : Passed
- (43.678s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/Scan : Passed
- (15.474s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/FastWalshTransform : Passed
- (35.047s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/Histogram256 : Passed
- (0.967s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/Transpose : Passed
- (299.549s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/Nbody : Passed
- (61.535s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/Dxtc : Passed
- (176.767s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/Dct8x8 : Passed
+ (161.125s) : /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/Scan : Passed
+ (0.203s) : /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/SimpleVoteIntrinsics : Passed
+ (1612.374s) : /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/BlackScholes : Passed
+ (8322.019s) : /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/QuasirandomGenerator : Passed
+ (1991.489s) : /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/SimpleMultiGPU : Passed
+ (1.170s) : /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/Bitonic : Passed
+ (3.801s) : /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/SimpleAtomicIntrinsics : Passed
+ (11787.257s) : /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/Mandelbrot : Passed
+ (152.819s) : /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/ScalarProd : Passed
+ (13.012s) : /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/SimpleStreams : Passed
+ (0.105s) : /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/DeviceQuery : Passed
+ (368.241s) : /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/Dxtc : Passed
+ (17243.422s) : /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/MersenneTwister : Passed
+ (173.027s) : /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/ConvolutionTexture : Passed
+ (84.233s) : /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/Histogram256 : Passed
+ (94.276s) : /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/ThreadFenceReduction : Passed
+ (0.176s) : /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/SimpleTemplates : Passed
+ (12.148s) : /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/Clock : Passed
+ (1932.258s) : /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/SobolQRNG : Passed
+ (236.741s) : /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/BinomialOptions : Passed
+ (2197.322s) : /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/TransposeNew : Passed
+ (4486.054s) : /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/RecursiveGaussian : Passed
+ (66.092s) : /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/SimpleTexture3D : Passed
+ (4219.818s) : /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/ImageDenoising : Passed
+ (171.851s) : /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/ConvolutionSeparable : Passed
+ (2533.458s) : /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/Nbody : Passed
+ (3.805s) : /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/Transpose : Passed
+ (567.641s) : /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/SimpleTexture : Passed
+ (90.935s) : /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/Histogram64 : Passed
+ (0.443s) : /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/Template : Passed
+ (58.422s) : /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/Reduction : Passed
+ (0.160s) : /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/CppIntegration : Passed
+ (2.147s) : /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/BandwidthTest : Passed
+ (2.834s) : /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/DwtHaar1D : Passed
+ (183.923s) : /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/SimpleZeroCopy : Passed
+ (863.825s) : /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/BicubicTexture : Passed
+ (59.942s) : /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/AlignedTypes : Passed
+ (19.337s) : /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/ScanLargeArray : Passed
+ (92.960s) : /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/FastWalshTransform : Passed
+ (0.979s) : /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/AsyncAPI : Passed
+ (1386.323s) : /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/Dct8x8 : Passed
+ (22.394s) : /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/MatrixMul : Passed
+ (969.585s) : /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/BoxFilter : Passed
 
 Failing tests:
- (27736.192s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/PostProcessGL : Did not complete.
- (0.771s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/FluidsGL : Did not complete.
- (4.399s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/Eigenvalues : Did not complete.
- (0.792s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/SimpleGL : Did not complete.
- (0.704s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/SimpleCUBLAS : Did not complete.
- (0.435s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/VolumeRender : Did not complete.
- (0.371s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/ConvolutionFFT2D : Did not complete.
- (0.203s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/SimpleCUFFT : Did not complete.
- (0.197s) : /home/normal/checkout/gpuocelot/tests/cuda2.2/OceanFFT : Did not complete.
+ (2.642s) : /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/SimpleCUBLAS : Did not complete.
+ (289.126s) : /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/SobelFilter : Did not complete.
+ (2.485s) : /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/ConvolutionFFT2D : Did not complete.
+ (6.983s) : /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/Eigenvalues : Did not complete.
+ (0.970s) : /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/VolumeRender : Did not complete.
+ (2.463s) : /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/SimpleCUFFT : Did not complete.
+ (4.407s) : /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/OceanFFT : Did not complete.
+ (0.862s) : /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/SimpleGL : Did not complete.
+ (3.225s) : /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/FluidsGL : Did not complete.
+ (1.690s) : /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/PostProcessGL : Did not complete.
 
 Non-Existent tests:
- /home/normal/checkout/gpuocelot/tests/cuda2.2/MonteCarlo
- /home/normal/checkout/gpuocelot/tests/cuda2.2/MonteCarloMultiGPU
+ /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/MonteCarlo
+ /home/normal/checkout/gpuocelot/tests-ptx-2.1/cuda2.2/MonteCarloMultiGPU
 

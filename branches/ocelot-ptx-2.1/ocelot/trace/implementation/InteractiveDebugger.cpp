@@ -282,7 +282,9 @@ void InteractiveDebugger::_command(const std::string& command)
 		}
 		else if(modifier == "loc" || modifier == "l")
 		{
-			_printLocation();
+			unsigned int pc = _event.PC;
+			stream >> pc;
+			_printLocation(pc);
 		}
 		else
 		{
@@ -335,7 +337,7 @@ void InteractiveDebugger::_help() const
 	std::cout << "    global address <address> <ptx-type>\n";
 	std::cout << "    global address <address> <ptx-type>[elements]\n";
 	
-	std::cout << "  print    (p) - Print the value of a megdmory resource.\n";
+	std::cout << "  print (p)  - Print the value of a resource.\n";
 	std::cout << "   asm  (a)  - Print instructions near the specified PC.\n";
 	std::cout << "   reg  (r)  - Print the value of a register.\n";
 	std::cout << "   mem  (m)  - Print the values near an address.\n";
@@ -592,7 +594,7 @@ void InteractiveDebugger::_printPC() const
 	std::cout << "(ocelot-dbg) Current PC is " << _event.PC << "\n";
 }
 
-void InteractiveDebugger::_printLocation() const
+void InteractiveDebugger::_printLocation(unsigned int pc) const
 {
 	switch(_kernel->ISA)
 	{
@@ -601,8 +603,9 @@ void InteractiveDebugger::_printLocation() const
 		const executive::EmulatedKernel& kernel =
 			static_cast<const executive::EmulatedKernel&>(*_kernel);
 		
-		std::cout << "(ocelot-dbg) Near: " 
-			<< kernel.location(_event.PC) << "\n";
+		pc = std::min(kernel.instructions.size() - 1, (size_t)(pc));
+		
+		std::cout << "(ocelot-dbg) Near: " << kernel.location(pc) << "\n";
 	}
 	break;
 	default:

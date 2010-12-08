@@ -203,7 +203,7 @@ public:
 		/*! \brief Print the PC of the currently executing warp */
 		void _printPC() const;
 		/*! \brief Print the location of the nearest source code line */
-		void _printLocation() const;
+		void _printLocation(unsigned int pc) const;
 		
 	};
 }

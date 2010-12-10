@@ -11,6 +11,8 @@
 #include <ocelot/ir/interface/PTXKernel.h>
 #include <ocelot/analysis/interface/Pass.h>
 
+#include <map>
+
 namespace ir
 {
 	class Module;
@@ -34,8 +36,8 @@ namespace analysis
 			void finalize( );
 
         protected:
-            DataflowGraph::RegisterId _runOnEntryBlock( ir::PTXKernel* kernel, DataflowGraph::iterator block, DataflowGraph::RegisterId registerId);
-			virtual void _runOnBlock( ir::PTXKernel* kernel, DataflowGraph::iterator block, DataflowGraph::RegisterId counterPtrRegId, DataflowGraph::RegisterId registerId, unsigned int offset ) = 0;
+            		std::map<std::string, DataflowGraph::RegisterId> _runOnEntryBlock( ir::PTXKernel* kernel, DataflowGraph::iterator block, DataflowGraph::RegisterId registerId);
+			virtual void _runOnBlock( ir::PTXKernel* kernel, DataflowGraph::iterator block, std::map<std::string, DataflowGraph::RegisterId>, DataflowGraph::RegisterId registerId, unsigned int offset ) = 0;
 			
 	};
 }

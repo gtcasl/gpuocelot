@@ -20,8 +20,81 @@ namespace analysis
 
     }
 
-    void BasicBlockExecutionCountPass::_runOnBlock( ir::PTXKernel* kernel, DataflowGraph::iterator block, DataflowGraph::RegisterId counterPtrRegId, DataflowGraph::RegisterId registerId, unsigned int offset)
+    void BasicBlockExecutionCountPass::_runOnBlock( ir::PTXKernel* kernel, DataflowGraph::iterator block, std::map<std::string, DataflowGraph::RegisterId> registerMap, DataflowGraph::RegisterId registerId, unsigned int offset)
 	{
+
+	//offset = (threadId + ntid * basic-block-id) * sizeof(size_t)
+	//mad offset, ntid, basic-block-id, threadId
+	//mul offset, offset, sizeof(size_t)	
+
+	ir::PTXOperand::DataType type = (sizeof(size_t) == 8 ? ir::PTXOperand::u64: ir::PTXOperand::u32);
+
+	DataflowGraph::RegisterId index = kernel->dfg()->newRegister();
+	ir::PTXInstruction mad(ir::PTXInstruction::Mad);
+        mad.addressSpace = ir::PTXInstruction::Reg;
+        mad.type = ir::PTXOperand::u32;
+        mad.modifier = ir::PTXInstruction::lo;
+
+        mad.d.reg = index;        
+        mad.d.addressMode = ir::PTXOperand::Register;
+        mad.d.type = ir::PTXOperand::u32;
+        
+        mad.a.addressMode = ir::PTXOperand::Register;
+        mad.a.type = ir::PTXOperand::u32;
+        mad.a.reg = registerMap["ntid"];
+
+        mad.b.addressMode = ir::PTXOperand::Immediate;
+        mad.b.type = ir::PTXOperand::u32;
+        mad.b.imm_int = (offset/sizeof(size_t));
+
+        mad.c.addressMode = ir::PTXOperand::Register;
+        mad.c.type = ir::PTXOperand::u32;
+        mad.c.reg = registerMap["threadId"];
+
+	kernel->dfg()->insert(block, mad, 0);
+
+        // mul offset, offset, sizeof(size_t) 
+	ir::PTXInstruction mul(ir::PTXInstruction::Mul);
+	mul.addressSpace = ir::PTXInstruction::Reg;
+        mul.type = ir::PTXOperand::u32;
+        mul.modifier = ir::PTXInstruction::lo;
+        mul.type = ir::PTXOperand::u32;
+        mul.d.reg = index;
+        mul.d.addressMode = ir::PTXOperand::Register;
+	mul.d.type = ir::PTXOperand::u32;
+	mul.a = mul.d;
+        mul.b.type = ir::PTXOperand::u32;
+        mul.b.addressMode = ir::PTXOperand::Immediate;
+        mul.b.imm_int = sizeof(size_t);
+
+        kernel->dfg()->insert(block, mul, 1);
+
+	DataflowGraph::RegisterId offset64 = kernel->dfg()->newRegister();
+	//cvt.u64 offset64, offset
+	ir::PTXInstruction cvt(ir::PTXInstruction::Cvt);
+	cvt.type = type;
+	cvt.d.addressMode = ir::PTXOperand::Register;
+	cvt.d.type = type;
+	cvt.d.reg = offset64;
+        cvt.a.addressMode = ir::PTXOperand::Register;
+        cvt.a.reg = index;
+        cvt.a.type = ir::PTXOperand::u32;
+
+        kernel->dfg()->insert(block, cvt, 2);
+
+        // add counterPtr, counterPtr, offset
+	ir::PTXInstruction add(ir::PTXInstruction::Add);      
+	add.addressSpace = ir::PTXInstruction::Reg;
+        add.type = ir::PTXOperand::u32;
+        add.type = type;
+        add.d.type = type;
+        add.d.reg = registerMap["counterPtrReg"];
+        add.a.type = type;
+        add.a.reg = registerMap["counterPtr"];
+        add.b.type = type;
+        add.b.reg = offset64;
+
+        kernel->dfg()->insert(block, add, 3);
 
        /* Load, increment, and store back the result into the
             global counter */
@@ -30,13 +103,11 @@ namespace analysis
         ld.addressSpace = ir::PTXInstruction::Global; 
         ld.type = (sizeof(size_t) == 8 ? ir::PTXOperand::u64: ir::PTXOperand::u32);       
         ld.a.addressMode = ir::PTXOperand::Indirect;
-        ld.a.reg = counterPtrRegId;
-        ld.a.offset = offset;
+        ld.a.reg = registerMap["counterPtrReg"];
         ld.d.reg = registerId;
         ld.d.addressMode = ir::PTXOperand::Register;
-		ld.d.type = (sizeof(size_t) == 8 ? ir::PTXOperand::u64: ir::PTXOperand::u32);		
+	ld.d.type = (sizeof(size_t) == 8 ? ir::PTXOperand::u64: ir::PTXOperand::u32);		
         
-        ir::PTXInstruction add(ir::PTXInstruction::Add);
         add.addressSpace = ir::PTXInstruction::Global; 
         add.type = (sizeof(size_t) == 8 ? ir::PTXOperand::u64: ir::PTXOperand::u32);
         add.d = ld.d;
@@ -49,16 +120,20 @@ namespace analysis
         ir::PTXInstruction st(ir::PTXInstruction::St);
         st.addressSpace = ir::PTXInstruction::Global; 
         st.type = (sizeof(size_t) == 8 ? ir::PTXOperand::u64: ir::PTXOperand::u32);       
-        st.d = ld.a;
-        st.a = ld.d;
+        st.d.addressMode = ir::PTXOperand::Indirect;
+	st.d.reg = registerMap["counterPtrReg"];
+	st.d.type = type;
+        st.a.addressMode = ir::PTXOperand::Register;
+	st.a.reg = registerId;
+	st.a.type = type;
 
         /* Need to insert in the beginning of the basic block.
             Since basic blocks usually end with branches, it
             wouldn't make sense to insert these instructions at the end. */
         
-        kernel->dfg()->insert( block, ld, 0 );  
-        kernel->dfg()->insert( block, add, 1 ); 
-        kernel->dfg()->insert( block, st, 2 ); 
+        kernel->dfg()->insert( block, ld, 4 );  
+        kernel->dfg()->insert( block, add, 5 ); 
+        kernel->dfg()->insert( block, st, 6 ); 
         
 	}
 

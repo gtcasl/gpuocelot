@@ -23,7 +23,7 @@
 
 namespace analysis
 {
-    DataflowGraph::RegisterId BasicBlockInstrumentationPass::_runOnEntryBlock( ir::PTXKernel* kernel, DataflowGraph::iterator block, DataflowGraph::RegisterId registerId) {
+    std::map<std::string, DataflowGraph::RegisterId> BasicBlockInstrumentationPass::_runOnEntryBlock( ir::PTXKernel* kernel, DataflowGraph::iterator block, DataflowGraph::RegisterId registerId) {
 
         /* The entry block adds the insrumented ptx. In order to maintain a counter-per-thread for
             each basic block, I need to calculate the thread counter offset. I do this using the following:
@@ -116,6 +116,32 @@ namespace analysis
         cvt.a.type = ir::PTXOperand::u16;
         kernel->dfg()->insert(block, cvt, 8);
 
+	DataflowGraph::RegisterId ntid = kernel->dfg()->newRegister();
+
+	//mul ntid, ntidx, ntidy
+	//mul ntid, tid, ntidz
+	ir::PTXInstruction mul(ir::PTXInstruction::Mul);
+	mul.addressSpace = ir::PTXInstruction::Reg;
+        mul.type = ir::PTXOperand::u32;
+        mul.modifier = ir::PTXInstruction::lo;
+
+        mul.d.reg = ntid;
+        mul.d.addressMode = ir::PTXOperand::Register;
+        mul.d.type = ir::PTXOperand::u32;
+        
+        mul.a.type = ir::PTXOperand::u32;
+        mul.a.reg = ntidX;
+        mul.a.addressMode = ir::PTXOperand::Register;
+        mul.b.type = ir::PTXOperand::u32;
+        mul.b.addressMode = ir::PTXOperand::Register;
+        mul.b.reg = ntidY;
+
+	kernel->dfg()->insert(block, mul, 9);
+	
+	mul.a.reg = ntid;
+	mul.b.reg = ntidZ;
+
+	kernel->dfg()->insert(block, mul, 10);
 
         // mad.lo threadId, tid.y, ntid.x, tid.x 
         ir::PTXInstruction mad(ir::PTXInstruction::Mad);
@@ -140,10 +166,9 @@ namespace analysis
         mad.c.type = ir::PTXOperand::u32;
         mad.c.reg = tidX;
 
-        kernel->dfg()->insert(block, mad, 9);
+        kernel->dfg()->insert(block, mad, 11);
 
         // mul.lo tmp1, ntid.x, ntid.y 
-        ir::PTXInstruction mul(ir::PTXInstruction::Mul);
         mul.addressSpace = ir::PTXInstruction::Reg;
         mul.type = ir::PTXOperand::u32;
         mul.modifier = ir::PTXInstruction::lo;
@@ -160,7 +185,7 @@ namespace analysis
         mul.b.addressMode = ir::PTXOperand::Register;
         mul.b.reg = ntidY;
 
-        kernel->dfg()->insert(block, mul, 10);
+        kernel->dfg()->insert(block, mul, 12);
 
         // mul.lo tmp2, tmp1, tid.z 
         DataflowGraph::RegisterId tmp2 = kernel->dfg()->newRegister();
@@ -171,7 +196,7 @@ namespace analysis
         mul.a.reg = tmp1;
         mul.b.reg = tidZ;
 
-        kernel->dfg()->insert(block, mul, 11);
+        kernel->dfg()->insert(block, mul, 13);
 
         // add threadId, threadId, tmp2 
         ir::PTXInstruction add(ir::PTXInstruction::Add);
@@ -187,7 +212,7 @@ namespace analysis
         add.b.type = ir::PTXOperand::u32;
         add.b.reg = tmp2;
 
-        kernel->dfg()->insert(block, add, 12);
+        kernel->dfg()->insert(block, add, 14);
 
         // mad.lo tmp2, ctaid.y, nctaid.x, ctaid.x 
         mad.d.reg = tmp2;
@@ -195,7 +220,7 @@ namespace analysis
         mad.b.reg = nctaIdX;
         mad.c.reg = ctaIdX;
     
-        kernel->dfg()->insert(block, mad, 13);
+        kernel->dfg()->insert(block, mad, 15);
        
         // mul.lo tmp1, tmp1, ntid.z 
         mul.d.reg = tmp1;
@@ -205,7 +230,7 @@ namespace analysis
         mul.a.reg = tmp1;
         mul.b.reg = ntidZ;
 
-        kernel->dfg()->insert(block, mul, 14); 
+        kernel->dfg()->insert(block, mul, 16); 
 
         // mad.lo threadId, tmp1, tmp2, threadId 
         mad.d.reg = threadId;
@@ -222,25 +247,7 @@ namespace analysis
         mad.c.type = ir::PTXOperand::u16;
         mad.c.reg = threadId;
 
-        kernel->dfg()->insert(block, mad, 15);
-
-        // mul offset, threadId, basic-block-count * sizeof(size_t) 
-        mul.type = ir::PTXOperand::u32;
-        if(type == ir::PTXOperand::u64) {
-            mul.modifier = ir::PTXInstruction::wide;
-        }
-        DataflowGraph::RegisterId offset = kernel->dfg()->newRegister();
-        mul.d.reg = offset;
-        mul.d.addressMode = ir::PTXOperand::Register;
-        mul.d.type = type;
-        
-        mul.a.type = ir::PTXOperand::u32;
-        mul.a.reg = threadId;
-        mul.b.type = ir::PTXOperand::u32;
-        mul.b.addressMode = ir::PTXOperand::Immediate;
-        mul.b.imm_int = kernel->dfg()->size() * sizeof(size_t);
-
-        kernel->dfg()->insert(block, mul, 16);
+        kernel->dfg()->insert(block, mad, 17);
 
         // mov counterBase, basicBlockCounterBase         
         DataflowGraph::RegisterId counterBase = kernel->dfg()->newRegister();
@@ -252,7 +259,7 @@ namespace analysis
         mov.a.addressMode = ir::PTXOperand::Address;
         mov.a.identifier = basicBlockCounterBase();
 
-        kernel->dfg()->insert(block, mov, 17); 
+        kernel->dfg()->insert(block, mov, 18); 
 
         // ld counterPtr, [counterBase] 
         ir::PTXInstruction ld(ir::PTXInstruction::Ld);
@@ -264,18 +271,71 @@ namespace analysis
         ld.d.type = type;
         ld.d.reg = counterPtr;
     
-        kernel->dfg()->insert(block, ld, 18); 
+        kernel->dfg()->insert(block, ld, 19); 
+	
+	//offset = (threadId + ntid * basic-block-count) * sizeof(size_t)
+	//mad offset, ntid, basic-block-count, threadId
+	//mul offset, offset, sizeof(size_t)	
 
-        // add counterPtr, counterPtr, offset         
+	DataflowGraph::RegisterId offset = kernel->dfg()->newRegister();
+        mad.addressSpace = ir::PTXInstruction::Reg;
+        mad.type = ir::PTXOperand::u32;
+        mad.modifier = ir::PTXInstruction::lo;
+
+        mad.d.reg = offset;        
+        mad.d.addressMode = ir::PTXOperand::Register;
+        mad.d.type = ir::PTXOperand::u32;
+        
+        mad.a.addressMode = ir::PTXOperand::Register;
+        mad.a.type = ir::PTXOperand::u32;
+        mad.a.reg = ntid;
+
+        mad.b.addressMode = ir::PTXOperand::Immediate;
+        mad.b.type = ir::PTXOperand::u32;
+        mad.b.imm_int = 0;
+
+
+        mad.c.addressMode = ir::PTXOperand::Register;
+        mad.c.type = ir::PTXOperand::u32;
+        mad.c.reg = threadId;
+
+	kernel->dfg()->insert(block, mad, 20);
+
+        // mul offset, offset, sizeof(size_t) 
+        mul.type = ir::PTXOperand::u32;
+        mul.d.reg = offset;
+        mul.d.addressMode = ir::PTXOperand::Register;
+	mul.d.type = ir::PTXOperand::u32;
+	mul.a = mul.d;
+        mul.b.type = ir::PTXOperand::u32;
+        mul.b.addressMode = ir::PTXOperand::Immediate;
+        mul.b.imm_int = sizeof(size_t);
+
+        kernel->dfg()->insert(block, mul, 21);
+
+	DataflowGraph::RegisterId offset64 = kernel->dfg()->newRegister();
+	//cvt.u64 offset64, offset
+	cvt.type = type;
+	cvt.d.addressMode = ir::PTXOperand::Register;
+	cvt.d.type = type;
+	cvt.d.reg = offset64;
+        cvt.a.addressMode = ir::PTXOperand::Register;
+        cvt.a.reg = offset;
+        cvt.a.type = ir::PTXOperand::u32;
+
+        kernel->dfg()->insert(block, cvt, 22);
+
+        // add counterPtrReg, counterPtr, offset     
+	DataflowGraph::RegisterId counterPtrReg = kernel->dfg()->newRegister();    
         add.type = type;
         add.d.type = type;
-        add.d.reg = counterPtr;
+        add.d.reg = counterPtrReg;
         add.a.type = type;
         add.a.reg = counterPtr;
         add.b.type = type;
-        add.b.reg = offset;
+        add.b.reg = offset64;
 
-        kernel->dfg()->insert(block, add, 19);
+        kernel->dfg()->insert(block, add, 23);
         
         /* Load, increment, and store back the result into the
             global counter */
@@ -283,8 +343,7 @@ namespace analysis
         ld.addressSpace = ir::PTXInstruction::Global; 
         ld.type = (sizeof(size_t) == 8 ? ir::PTXOperand::u64: ir::PTXOperand::u32);       
         ld.a.addressMode = ir::PTXOperand::Indirect;
-        ld.a.reg = counterPtr;
-        ld.a.offset = 0;
+        ld.a.reg = counterPtrReg;
         ld.d.reg = registerId;
         ld.d.addressMode = ir::PTXOperand::Register;
 		ld.d.type = type;		
@@ -303,12 +362,17 @@ namespace analysis
         st.d = ld.a;
         st.a = ld.d;
 
-        kernel->dfg()->insert( block, ld, 20 );  
-        kernel->dfg()->insert( block, add, 21 ); 
-        kernel->dfg()->insert( block, st, 22 ); 
+        kernel->dfg()->insert( block, ld, 24 );  
+        kernel->dfg()->insert( block, add, 25 ); 
+        kernel->dfg()->insert( block, st, 26 ); 
      
 
-        return counterPtr;
+	std::map<std::string, DataflowGraph::RegisterId> registerMap;
+	registerMap["counterPtr"] = counterPtr;	
+	registerMap["counterPtrReg"] = counterPtrReg;
+	registerMap["threadId"] = threadId;
+	registerMap["ntid"] = ntid;
+        return registerMap;
 
     }
 
@@ -338,14 +402,14 @@ namespace analysis
             DataflowGraph::iterator entry = (kernel->second)->dfg()->begin();
             ++entry;
             /* instrumenting ptx at the beginning of the first basic block. */
-            DataflowGraph::RegisterId counterPtrRegId = _runOnEntryBlock((kernel->second), entry, registerId);
+            std::map<std::string, DataflowGraph::RegisterId> registerMap = _runOnEntryBlock((kernel->second), entry, registerId);
    
             unsigned int offset = 8;
             for( analysis::DataflowGraph::iterator block = ++(entry); 
 			    block != (kernel->second)->dfg()->end(); ++block )
 		        {
                    if(!block->instructions().empty()){
-                        _runOnBlock( (kernel->second), block, counterPtrRegId, registerId, offset);
+                        _runOnBlock( (kernel->second), block, registerMap, registerId, offset);
                         /* incrementing offset based on size_t */
                         offset = offset + sizeof(size_t);                 
                     } 

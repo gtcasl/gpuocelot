@@ -3,11 +3,11 @@
     instrument: {
 	logAsJSON: false,
         clockCycleCount: {
-            enabled: true,
+            enabled: false,
             logfile: ""
         },
         basicBlock: {
-            executionCount: false,
+            executionCount: true,
             logfile: ""
         }
     },

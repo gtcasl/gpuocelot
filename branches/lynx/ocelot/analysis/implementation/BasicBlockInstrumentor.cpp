@@ -29,9 +29,14 @@ namespace analysis
 
     void BasicBlockInstrumentor::analyze(ir::Module &module) {
         basicBlocks = 0;
-        for (ir::Module::KernelMap::const_iterator kernel = module.kernels().begin(); 
-		    kernel != module.kernels().end(); ++kernel) {
-            basicBlocks += (kernel->second)->dfg()->size();
+        if(!kernelName.empty()){
+            basicBlocks = module.kernels().find(kernelName)->second->dfg()->size();
+        }
+        else {
+            for (ir::Module::KernelMap::const_iterator kernel = module.kernels().begin(); 
+		        kernel != module.kernels().end(); ++kernel) {
+                basicBlocks += (kernel->second)->dfg()->size();
+            }
         }
     }
 

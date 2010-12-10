@@ -70,13 +70,12 @@ namespace analysis
         size_t j = 0;
         size_t k = 0;
         
+	basicBlocks = basicBlocks - 2;
+
         for(k = 0; k < threadBlocks; k++) {
-            //*out << "CTA " << k << ":\n";
-            for(i = 0; i < threads; i++) {
-                //*out << "Thread " << i << ":\n";
-                for(j = 0; j < basicBlocks; j++) {
-                    //*out << "basicBlock " << j << ": " << info[(i * basicBlocks) + (k * threads * basicBlocks) + j] << "\n";
-                    _kernelProfile.basicBlockExecutionCountMap[j] += info[(i * basicBlocks) + (k * threads * basicBlocks) + j];
+            for(i = 0; i < basicBlocks; i++) {
+                for(j = 0; j < threads; j++) {
+                    _kernelProfile.basicBlockExecutionCountMap[i] += info[(i * threads) + (k * basicBlocks * threads) + j];
                 }
             }   
         }

@@ -406,27 +406,34 @@ namespace ir
 					if ((instr.*operands[i]).addressMode == PTXOperand::Register
 						|| (instr.*operands[i]).addressMode == PTXOperand::Indirect) {
 						if ((instr.*operands[i]).vec != PTXOperand::v1) {
-							for (PTXOperand::Array::iterator a_it = (instr.*operands[i]).array.begin(); 
-									a_it != (instr.*operands[i]).array.end(); ++a_it) {
+							for (PTXOperand::Array::iterator a_it = 
+								(instr.*operands[i]).array.begin(); 
+								a_it != (instr.*operands[i]).array.end();
+								++a_it) {
 								
-								RegisterMap::iterator it = map.find(a_it->registerName());
+								RegisterMap::iterator it =
+									map.find(a_it->registerName());
 
 								PTXOperand::RegisterType reg = 0;
 								if (it == map.end()) {
 									reg = (PTXOperand::RegisterType) map.size();
-									map.insert(std::make_pair(a_it->registerName(), reg));
+									map.insert(std::make_pair(
+										a_it->registerName(), reg));
 								}
 								else {
 									reg = it->second;
 								}
-								if (a_it->addressMode != PTXOperand::BitBucket && a_it->identifier != "_") {
-									a_it->reg = reg;
-									report( "  [1] Assigning register " << a_it->registerName() 
+								a_it->reg = reg;
+								if (a_it->addressMode != PTXOperand::BitBucket
+									&& a_it->identifier != "_") {
+									report( "  [1] Assigning register " 
+										<< a_it->registerName() 
 										<< " to " << a_it->reg );
 									a_it->identifier.clear();
 								}
 								else {
-									report("  [1] " << a_it->registerName() << " is a bit bucket");
+									report("  [1] " << a_it->registerName() 
+										<< " is a bit bucket");
 								}
 							}
 						}
@@ -470,10 +477,12 @@ namespace ir
 		for( ParameterVector::const_iterator parameter = arguments.begin();
 			parameter != arguments.end(); ++parameter) {
 			if (parameter->returnArgument) {
-				strReturnArguments << (returnArgCount++ ? ",\n\t\t" : "") << parameter->toString();
+				strReturnArguments << (returnArgCount++ ? ",\n\t\t" : "")
+					<< parameter->toString();
 			}
 			else {
-				strArguments << (argCount++ ? ",\n\t\t" : "") << parameter->toString();
+				strArguments << (argCount++ ? ",\n\t\t" : "")
+					<< parameter->toString();
 			}
 		}
 		

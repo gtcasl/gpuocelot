@@ -30,7 +30,7 @@ check_PROGRAMS = TestLexer TestParser \
 	TestCudaGlobals TestCudaMalloc TestCudaTexture2D TestCudaTextureArray \
 	TestCudaSequence TestLLVMKernels TestDeviceSwitching \
 	TestCalVectorScale TestPTXAssembly TestSequenceDriverAPI TestGenericMemory \
-	TestFunctionCall
+	TestFunctionCall TestIndirectFunctionCall
 EXTRA_PROGRAMS = Module PtxToIlTranslator DFG CFG PTXChecker
 lib_LTLIBRARIES = libocelot.la
 ################################################################################
@@ -361,6 +361,16 @@ TestFunctionCall_SOURCES = ocelot/cuda/test/functions/simpleFunc.cu.cpp
 TestFunctionCall_LDADD = libocelot.la $(LLVM_LDFLAGS)
 TestFunctionCall_LDFLAGS = -static
 ################################################################################
+
+################################################################################
+## TestIndirectFunctionCall
+TestIndirectFunctionCall_CXXFLAGS = $(INCLUDE) -std=c++0x
+TestIndirectFunctionCall_SOURCES = ocelot/cuda/test/functions/indirectCall.cu.cpp
+TestIndirectFunctionCall_LDADD = libocelot.la $(LLVM_LDFLAGS)
+TestIndirectFunctionCall_LDFLAGS = -static
+################################################################################
+
+
 
 ################################################################################
 ##

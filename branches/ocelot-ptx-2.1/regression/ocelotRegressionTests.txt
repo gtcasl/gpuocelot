@@ -17,4 +17,5 @@
 ../TestPTXAssembly
 ../TestFunctionCall
 ../TestGenericMemory
+../TestFunctionCall
 

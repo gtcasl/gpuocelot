@@ -798,7 +798,18 @@ namespace translator
 						_add(ftou);
 						return;
 					}
-					case ir::PTXOperand::f32: return;
+					case ir::PTXOperand::f32: 
+					{
+						if(i.modifier & ir::PTXInstruction::sat) {
+							ir::ILMov mov;
+							mov.modifier = ir::ILInstruction::sat;
+							mov.d = _translate(i.d);
+							mov.a = _translate(i.a);
+							_add(mov);
+							return;
+						}
+						break;
+					}
 					default: break;
 				}
 				break;

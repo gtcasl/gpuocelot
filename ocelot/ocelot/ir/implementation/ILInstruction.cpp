@@ -97,7 +97,25 @@ namespace ir
 		};
 	}
 
-	ILInstruction::ILInstruction(Opcode op) : opcode(op)
+	std::string ILInstruction::modifierString(unsigned int m)
+	{
+		assertM((m & InvalidModifier) == 0, 
+				"Modifier " << m << " not supported"); 
+
+		std::string s;
+
+		if (m & x2) s += "_x2";
+		if (m & x4) s += "_x4";
+		if (m & x8) s += "_x8";
+		if (m & d2) s += "_d2";
+		if (m & d4) s += "_d4";
+		if (m & d8) s += "_d8";
+		if (m & sat) s += "_sat";
+
+		return s;
+	}
+
+	ILInstruction::ILInstruction(Opcode op) : opcode(op), modifier(NoModifier)
 	{
 	}
 
@@ -112,8 +130,9 @@ namespace ir
 
 	std::string ILUnaryInstruction::toString() const
 	{
-		return ILInstruction::toString(opcode) + " " + d.toString() + ", "
-			+ a.toString();
+		return ILInstruction::toString(opcode) 
+			+ ILInstruction::modifierString(modifier)
+			+ " " + d.toString() + ", " + a.toString();
 	}
 
 	std::string ILUnaryInstruction::valid() const
@@ -130,8 +149,9 @@ namespace ir
 
 	std::string ILBinaryInstruction::toString() const
 	{
-		return ILInstruction::toString(opcode) + " " + d.toString() + ", "
-			+ a.toString() + ", " + b.toString();
+		return ILInstruction::toString(opcode) 
+			+ ILInstruction::modifierString(modifier)
+			+ " " + d.toString() + ", " + a.toString() + ", " + b.toString();
 	}
 
 	std::string ILBinaryInstruction::valid() const
@@ -149,8 +169,10 @@ namespace ir
 
 	std::string ILTrinaryInstruction::toString() const
 	{
-		return ILInstruction::toString(opcode) + " " + d.toString() + ", "
-			+ a.toString() + ", " + b.toString() + ", " + c.toString();
+		return ILInstruction::toString(opcode) 
+			+ ILInstruction::modifierString(modifier)
+			+ " " + d.toString() + ", " + a.toString() + ", " + b.toString() 
+			+ ", " + c.toString();
 	}
 
 	std::string ILTrinaryInstruction::valid() const

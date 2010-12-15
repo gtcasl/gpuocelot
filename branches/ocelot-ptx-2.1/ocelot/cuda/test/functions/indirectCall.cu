@@ -6,8 +6,6 @@
 	\brief demonstrates indirect function calling
 */
 
-#include <iostream>
-
 extern "C" __device__ __noinline__ int funcDouble(int a) {
 	return a*2;
 }
@@ -36,6 +34,8 @@ extern "C" __global__ void kernelEntry(int *A, const int N, int b) {
 	}
 }
 
+#include <cstdio>
+
 int main(int argc, char *arg[]) {
 
 	const int P = 0;
@@ -45,13 +45,13 @@ int main(int argc, char *arg[]) {
 	
 	cudaError_t result = cudaThreadSynchronize();
 	if (result != cudaSuccess) {
-		std::cout << "Initialization error: " << cudaGetErrorString(result) << std::endl;
+		printf("Initialization error:%s\n", cudaGetErrorString(result));
 		return 1;
 	}
 	
 	result = cudaMalloc((void **)&A_gpu, bytes);
 	if (result != cudaSuccess) {
-		std::cout << "cudaMalloc() - failed to allocate " << bytes << " on the device" << std::endl;
+		printf("cudaMalloc() - failed to allocate %d on the device \n", bytes);
 		return 2;
 	}
 	
@@ -62,7 +62,7 @@ int main(int argc, char *arg[]) {
 	
 	result = cudaMemcpy(A_gpu, A_cpu, bytes, cudaMemcpyHostToDevice);
 	if (result != cudaSuccess) {
-		std::cout << "cudaMemcpy() - failed to copy " << bytes << " bytes TO the device" << std::endl;
+		printf("cudaMemcpy() - failed to copy %d bytes TO the device\n", bytes);
 		return 2;
 	}
 	
@@ -73,13 +73,13 @@ int main(int argc, char *arg[]) {
 	
 	result = cudaThreadSynchronize();
 	if (result != cudaSuccess) {
-		std::cout << "Kernel launch error: " << cudaGetErrorString(result) << std::endl;
+		printf("Kernel launch error: %s\n", cudaGetErrorString(result));
 		return 3;
 	}
 	
 	result = cudaMemcpy(A_cpu, A_gpu, bytes, cudaMemcpyDeviceToHost);
 	if (result != cudaSuccess) {
-		std::cout << "cudaMemcpy() - failed to copy " << bytes << " bytes FROM the device" << std::endl;
+		printf("cudaMemcpy() - failed to copy %d bytes FROM the device\n", bytes);
 		return 2;
 	}
 	
@@ -92,7 +92,7 @@ int main(int argc, char *arg[]) {
 		dem = ((p + 2) * i);
 		
 		if (got != dem) {
-			std::cout << "Error[" << i << "] - expected: " << dem << ", got: " << got << std::endl;
+			printf("Error[%d] - expected: %d, got: %d\n", i, dem, got);
 			if (++errors > 5) {
 				break;
 			}
@@ -103,11 +103,11 @@ int main(int argc, char *arg[]) {
 	free(A_cpu);
 	
 	if (errors) {
-		std::cout << "FAILED" << std::endl;
-		std::cout << " with " << errors << " errors" << std::endl;
+		printf("FAILED\n");
+		printf(" with %d errors\n", errors);
 	}
 	else {
-		std::cout << "Pass" << std::endl;
+		printf("Pass/Fail: Pass\n");
 	}
 	
 	return 0;

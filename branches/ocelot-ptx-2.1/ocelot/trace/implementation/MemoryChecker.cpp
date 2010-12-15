@@ -302,6 +302,7 @@ namespace trace
 	{
 		const bool isMemoryOperation = 
 			event.instruction->opcode == ir::PTXInstruction::Ld
+			|| event.instruction->opcode == ir::PTXInstruction::Ldu
 			|| event.instruction->opcode == ir::PTXInstruction::St
 			|| event.instruction->opcode == ir::PTXInstruction::Atom;
 		

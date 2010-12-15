@@ -340,6 +340,9 @@ namespace cuda {
 			dim3 *gDim,
 			int *wSize
 		);
+		
+		virtual cudaError_t cudaGetExportTable(const void **ppExportTable,
+			const cudaUUID_t *pExportTableId);
 
 	public:
 		//
@@ -565,7 +568,7 @@ namespace cuda {
 		virtual cudaError_t cudaGraphicsSubResourceGetMappedArray(
 			struct cudaArray **arrayPtr, struct cudaGraphicsResource *resource, 
 			unsigned int arrayIndex, unsigned int mipLevel);
-		
+			
 	public:
 
 		virtual void addTraceGenerator( trace::TraceGenerator& gen, 

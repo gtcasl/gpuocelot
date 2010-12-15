@@ -236,6 +236,9 @@ namespace cuda
 		hydrazine::bit_cast( cuGraphicsUnmapResources, dlsym( _driver,
 			"cuGraphicsUnmapResources" ) );
 
+		hydrazine::bit_cast( cuGetExportTable, dlsym( _driver,
+			"cuGetExportTable" ) );
+
 		hydrazine::bit_cast( cuGLInit, dlsym( _driver, "cuGLInit" ) );
 		hydrazine::bit_cast( cuGLCtxCreate, dlsym( _driver,	"cuGLCtxCreate" ) );
 		hydrazine::bit_cast( cuGraphicsGLRegisterBuffer, dlsym( _driver,
@@ -1010,6 +1013,13 @@ namespace cuda
 		CHECK();
 		return (*_interface.cuGraphicsUnmapResources)(count, 
 			resources, hStream);
+	}
+
+	CUresult CudaDriver::cuGetExportTable(const void **ppExportTable,
+		const CUuuid *pExportTableId)
+	{
+		CHECK();
+		return (*_interface.cuGetExportTable)(ppExportTable, pExportTableId);
 	}
 
 	CUresult CudaDriver::cuGLInit()

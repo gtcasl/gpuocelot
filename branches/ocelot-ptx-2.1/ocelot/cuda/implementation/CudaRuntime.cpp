@@ -197,12 +197,14 @@ void cuda::CudaRuntime::_memcpy(void* dst, const void* src, size_t count,
 	
 	switch(kind) {
 		case cudaMemcpyHostToHost: {
-			report("  _memcpy(" << (void *)dst << ", " << src << ", " << count << " bytes) h-to-h");
+			report("  _memcpy(" << (void *)dst << ", " << src
+				<< ", " << count << " bytes) h-to-h");
 			memcpy(dst, src, count);
 		}
 		break;
 		case cudaMemcpyDeviceToHost: {
-			report("  _memcpy(" << (void *)dst << ", " << src << ", " << count << " bytes) d-to-h");
+			report("  _memcpy(" << (void *)dst << ", " << src
+				<< ", " << count << " bytes) d-to-h");
 			if (!_getDevice().checkMemoryAccess(src, count)) {
 				_release();
 				_memoryError(src, count, "cudaMemcpy");
@@ -215,7 +217,8 @@ void cuda::CudaRuntime::_memcpy(void* dst, const void* src, size_t count,
 		}
 		break;
 		case cudaMemcpyDeviceToDevice: {
-			report("  _memcpy(" << (void *)dst << ", " << src << ", " << count << " bytes) d-to-d");
+			report("  _memcpy(" << (void *)dst << ", "
+				<< src << ", " << count << " bytes) d-to-d");
 			if (!_getDevice().checkMemoryAccess(src, count)) {
 				_release();
 				_memoryError(src, count, "cudaMemcpy");
@@ -236,7 +239,8 @@ void cuda::CudaRuntime::_memcpy(void* dst, const void* src, size_t count,
 		}
 		break;
 		case cudaMemcpyHostToDevice: {
-			report("  _memcpy(" << (void *)dst << ", " << src << ", " << count << " bytes) h-to-d");
+			report("  _memcpy(" << (void *)dst << ", "
+				<< src << ", " << count << " bytes) h-to-d");
 			if (!_getDevice().checkMemoryAccess(dst, count)) {
 				_release();
 				_memoryError(dst, count, "cudaMemcpy");
@@ -659,7 +663,17 @@ void cuda::CudaRuntime::cudaRegisterFunction(
 	
 	_unlock();
 }
-		
+
+cudaError_t cuda::CudaRuntime::cudaGetExportTable(const void **ppExportTable,
+	const cudaUUID_t *pExportTableId) {
+	report("Getting export table");
+
+	cuda::CudaDriver::cuInit(0);
+	cuda::CudaDriver::cuGetExportTable(ppExportTable, pExportTableId);
+
+	return cudaSuccess;
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //
 // memory allocation

@@ -53,14 +53,12 @@ namespace ocelot
         {   
             report("Creating clock cycle count instrumentor");
             _clockCycleCountInstrumentor.output = c.instrument.clockCycleCountInstrumentor.logfile;
-            _clockCycleCountInstrumentor.enableJSON =  c.instrument.enableJSON;
             ocelot::addInstrumentor(_clockCycleCountInstrumentor);
         }
         else if(c.instrument.basicBlockInstrumentor.executionCount)
         {   
             report("Creating basic block execution count instrumentor");
             _basicBlockExecutionCountInstrumentor.output = c.instrument.basicBlockInstrumentor.logfile;
-            _basicBlockExecutionCountInstrumentor.enableJSON =  c.instrument.enableJSON;
             ocelot::addInstrumentor(_basicBlockExecutionCountInstrumentor);    
         }
 

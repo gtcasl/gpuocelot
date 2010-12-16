@@ -44,9 +44,6 @@ namespace analysis
             /*! \brief extracts results for the clock cycle count instrumentation */
             size_t* extractResults(std::ostream *out);
 
-            /*! \brief emits JSON for the clock cycle count instrumentation */
-            void emitJSON(size_t* info);
-
         private:
             bool pred(const std::pair<size_t, size_t>& lhs, const std::pair<size_t, size_t>& rhs);
 	};

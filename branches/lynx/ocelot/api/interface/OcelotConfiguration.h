@@ -130,9 +130,6 @@ namespace api {
 
             //! \brief Basic block execution count instrumentor
 			BasicBlockInstrumentor basicBlockInstrumentor;
-
-			/*! \brief creates automatically named log file in JSON */
-			bool enableJSON;
 		};
 
 

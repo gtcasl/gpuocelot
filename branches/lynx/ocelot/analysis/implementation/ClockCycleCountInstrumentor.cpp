@@ -114,35 +114,6 @@ namespace analysis
         return info;
     }
 
-    void ClockCycleCountInstrumentor::emitJSON(size_t* info)
-	{
-        if(info == NULL)
-            return;
-		
-		json::Object *clockCyclesStat = new json::Object;
-		json::Object *column;
-		
-		/* insert device name */
-		column = new json::Object;
-		clockCyclesStat->dictionary["device"] = new json::String(deviceName);
-		
-		column = new json::Object;
-		json::Number *valueCC;
-		clockCyclesStat->dictionary["per_CTA_clock_cycle_count"] = column;
-		
-		for(unsigned int i = 0; i < threadBlocks; i++)
-		{
-			std::stringstream thread;
-			thread << i << "." << info[i*2+1];
-			valueCC = new json::Number((int)info[i*2+0]);
-			column->dictionary[thread.str()] = valueCC;
-		}
-
-		jsonEmitter("clockCycleCount", clockCyclesStat);
-
-        delete clockCyclesStat;
-	}
-
     ClockCycleCountInstrumentor::ClockCycleCountInstrumentor() : description("Clock Cycles and SM (Processor) ID") {
 
     }

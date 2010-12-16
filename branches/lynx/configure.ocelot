@@ -1,8 +1,7 @@
 {
 	ocelot: "ocelot",
     instrument: {
-	logAsJSON: false,
-        clockCycleCount: {
+	    clockCycleCount: {
             enabled: false,
             logfile: ""
         },
@@ -25,7 +24,7 @@
 			alwaysAttach: false
 		},
 		performanceBound: {
-			enabled: false,
+			enabled: true,
 			protocol: sm_20,
 			render: false,
 			output: csv

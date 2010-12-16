@@ -396,8 +396,6 @@ void cuda::CudaRuntime::_registerModule(ModuleMap::iterator module) {
         (thread.instrumentors.front())->instrument(module->second);
     }	
 
-    module->second.writeIR(std::cout);
-
 	for(RegisteredTextureMap::iterator texture = _textures.begin(); 
 		texture != _textures.end(); ++texture) {
 		if(texture->second.module != module->first) continue;

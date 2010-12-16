@@ -100,9 +100,7 @@ api::OcelotConfiguration::TraceGeneration::TraceGeneration():
 static void initializeInstrument(api::OcelotConfiguration::Instrumentation &instrument, 
 	hydrazine::json::Visitor config) 
 {
-	instrument.enableJSON = config.parse<bool>("logAsJSON", false);
-
-    hydrazine::json::Visitor clockCycleCountConfig = config["clockCycleCount"];
+	hydrazine::json::Visitor clockCycleCountConfig = config["clockCycleCount"];
     if (!clockCycleCountConfig.is_null()) {
             instrument.clockCycleCountInstrumentor.enabled = clockCycleCountConfig.parse<bool>("enabled", false);
             instrument.clockCycleCountInstrumentor.logfile = clockCycleCountConfig.parse<std::string>("logfile", "");

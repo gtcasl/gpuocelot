@@ -122,7 +122,7 @@ size_t tPitch = 0; // Now this is compatible with gcc in 64-bit
 
 bool				  g_bQAReadback     = false;
 bool				  g_bQAAddTestForce = true;
-int					  g_iFrameToCompare = 100;
+int					  g_iFrameToCompare = 4;
 int                   frame = 0;
 int                   g_TotalErrors     = 0;
 

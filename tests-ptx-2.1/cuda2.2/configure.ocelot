@@ -3,7 +3,7 @@
 	trace: { 
 		memoryChecker: true,
 		raceDetector: {
-			enabled: true,
+			enabled: false,
 			ignoreIrrelevantWrites: true
 		},
 		debugger: {

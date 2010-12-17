@@ -66,7 +66,7 @@ __device__ __constant__ float d_Kernel[KERNEL_W];
 ////////////////////////////////////////////////////////////////////////////////
 // Loop unrolling templates, needed for best performance
 ////////////////////////////////////////////////////////////////////////////////
-template<int i> __device__ float convolutionRow(float *data){
+template<long long int i> __device__ float convolutionRow(float *data){
     return
         data[KERNEL_RADIUS - i] * d_Kernel[i]
         + convolutionRow<i - 1>(data);
@@ -76,7 +76,7 @@ template<> __device__ float convolutionRow<-1>(float *data){
     return 0;
 }
 
-template<int i> __device__ float convolutionColumn(float *data){
+template<long long int i> __device__ float convolutionColumn(float *data){
     return 
         data[(KERNEL_RADIUS - i) * COLUMN_TILE_W] * d_Kernel[i]
         + convolutionColumn<i - 1>(data);

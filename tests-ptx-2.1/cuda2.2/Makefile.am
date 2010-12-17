@@ -24,7 +24,7 @@ check_PROGRAMS = AlignedTypes AsyncAPI BandwidthTest BicubicTexture \
 	ConvolutionSeparable ConvolutionTexture CppIntegration Dct8x8 DeviceQuery \
 	DwtHaar1D Dxtc Eigenvalues FluidsGL FastWalshTransform Histogram256 \
 	Histogram64 ImageDenoising Mandelbrot MatrixMul MersenneTwister \
- Nbody OceanFFT Particles PostProcessGL \
+	Nbody OceanFFT Particles PostProcessGL MonteCarlo \
 	QuasirandomGenerator UnstructuredMandelbrot \
 	RecursiveGaussian Reduction ScalarProd Scan ScanLargeArray \
 	SimpleAtomicIntrinsics SimpleCUBLAS SimpleCUFFT SimpleGL SimpleMultiGPU \
@@ -33,7 +33,7 @@ check_PROGRAMS = AlignedTypes AsyncAPI BandwidthTest BicubicTexture \
 	ThreadFenceReduction Transpose TransposeNew VolumeRender
 lib_LTLIBRARIES = libsdk.la
 #
-# 	MonteCarloMultiGPU MonteCarlo \
+# 	MonteCarloMultiGPU \
 #
 ################################################################################
 
@@ -306,14 +306,14 @@ MersenneTwister_LDFLAGS = -static
 ################################################################################
 
 ################################################################################
-## MonteCarlo
-# MonteCarlo_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
-# MonteCarlo_SOURCES = tests/MonteCarlo/MonteCarlo_SM13.cu.cpp \
-# 	tests/MonteCarlo/MonteCarlo_SM10.cu.cpp \
-# 	tests/MonteCarlo/MonteCarlo_gold.cpp \
-# 	tests/MonteCarlo/MonteCarlo.cpp
-# MonteCarlo_LDADD = $(OCELOT_LIBS)
-# MonteCarlo_LDFLAGS = -static
+# MonteCarlo
+MonteCarlo_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
+MonteCarlo_SOURCES = tests/MonteCarlo/MonteCarlo_SM13.cu.cpp \
+	tests/MonteCarlo/MonteCarlo_SM10.cu.cpp \
+	tests/MonteCarlo/MonteCarlo_gold.cpp \
+	tests/MonteCarlo/MonteCarlo.cpp
+MonteCarlo_LDADD = $(OCELOT_LIBS)
+MonteCarlo_LDFLAGS = -static
 ################################################################################
 
 ################################################################################

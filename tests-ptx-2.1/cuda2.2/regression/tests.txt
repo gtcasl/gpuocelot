@@ -25,7 +25,6 @@
 ../MatrixMul CUDA_SDK_STYLE
 ../MersenneTwister CUDA_SDK_STYLE
 ../MonteCarlo CUDA_SDK_STYLE
-../MonteCarloMultiGPU CUDA_SDK_STYLE
 ../Nbody CUDA_SDK_STYLE
 ../OceanFFT CUDA_SDK_STYLE
 ../PostProcessGL CUDA_SDK_STYLE

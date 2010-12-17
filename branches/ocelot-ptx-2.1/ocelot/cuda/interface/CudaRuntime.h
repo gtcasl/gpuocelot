@@ -24,7 +24,6 @@
 // Hydrazine includes
 #include <hydrazine/implementation/Timer.h>
 
-
 namespace cuda {
 
 	/***************************************************************/
@@ -489,6 +488,8 @@ namespace cuda {
 		virtual cudaError_t cudaLaunch(const char *entry);
 		virtual cudaError_t cudaFuncGetAttributes(
 			struct cudaFuncAttributes *attr, const char *func);	
+		virtual cudaError_t cudaFuncSetCacheConfig(const char *func, 
+			enum cudaFuncCache cacheConfig);
 	
 	public:
 		//

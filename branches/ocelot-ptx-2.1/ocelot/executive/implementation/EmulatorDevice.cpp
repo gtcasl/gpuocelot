@@ -163,6 +163,7 @@ namespace executive
 	void* EmulatorDevice::MemoryAllocation::pointer() const
 	{
 		assert(!host() || (_flags & cudaHostAllocMapped));
+		if(_external) return _pointer;
 		return align(_pointer);
 	}
 
@@ -1056,6 +1057,8 @@ namespace executive
 		attributes.localSizeBytes = kernel->localMemorySize();
 		attributes.maxThreadsPerBlock = kernel->maxThreadsPerBlock();
 		attributes.numRegs = kernel->registerCount();
+		attributes.ptxVersion = 21;
+		attributes.binaryVersion = 21;
 		
 		return std::move(attributes);
 	}

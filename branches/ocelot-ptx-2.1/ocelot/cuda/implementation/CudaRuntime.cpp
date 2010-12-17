@@ -664,12 +664,22 @@ void cuda::CudaRuntime::cudaRegisterFunction(
 	_unlock();
 }
 
+// FIXME
+// This is a horrible hack to deal with another horrible hack
+// Thanks nvidia for creating a backdoor interface to your driver rather than 
+//   extending the API in a sane/documented way
+int dummy0() { return 0; }
+int dummy1() { return 2 << 20; }
+
+typedef int (*ExportedFunction)();
+
+static ExportedFunction exportTable[3] = {&dummy0, &dummy1, &dummy1};
+
 cudaError_t cuda::CudaRuntime::cudaGetExportTable(const void **ppExportTable,
 	const cudaUUID_t *pExportTableId) {
 	report("Getting export table");
 
-	cuda::CudaDriver::cuInit(0);
-	cuda::CudaDriver::cuGetExportTable(ppExportTable, pExportTableId);
+	*ppExportTable = &exportTable;
 
 	return cudaSuccess;
 }
@@ -2549,6 +2559,15 @@ cudaError_t cuda::CudaRuntime::cudaFuncGetAttributes(
 	else {
 		_unlock();
 	}
+	
+	return _setLastError(result);
+}
+
+cudaError_t cuda::CudaRuntime::cudaFuncSetCacheConfig(const char *func, 
+	enum cudaFuncCache cacheConfig)
+{
+	// TODO implement this, right now it is a nop
+	cudaError_t result = cudaSuccess;
 	
 	return _setLastError(result);
 }

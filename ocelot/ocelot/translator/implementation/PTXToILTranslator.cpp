@@ -808,6 +808,14 @@ namespace translator
 							_add(mov);
 							return;
 						}
+
+						if(i.modifier & ir::PTXInstruction::rz) {
+							ir::ILMov mov;
+							mov.d = _translate(i.d);
+							mov.a = _translate(i.a);
+							_add(mov);
+							return;
+						}
 						break;
 					}
 					default: break;
@@ -1062,7 +1070,7 @@ namespace translator
 		ir::ILExp exp;
 
 		exp.d = _translate(i.d);
-		exp.a = _translate(i.a);
+		exp.a = _translate(i.a).xxxx();
 
 		_add(exp);
 	}

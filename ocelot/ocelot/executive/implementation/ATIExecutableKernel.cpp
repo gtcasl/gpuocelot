@@ -242,10 +242,18 @@ namespace executive
 		// query device info
 		CalDriver()->calDeviceGetInfo(&_info, 0);
 
-		// compile, link, and load module
-		CalDriver()->calclCompile(&_object, CAL_LANGUAGE_IL, 
-				ilKernel->code().c_str(), _info.target);
+		// compile module
+		try {
+			CalDriver()->calclCompile(&_object, CAL_LANGUAGE_IL, 
+					ilKernel->code().c_str(), _info.target);
+		} catch (const hydrazine::Exception& he) {
+			std::cerr << "==Ocelot== "
+				<< "ATIExecutableKernel failed to compile kernel\n"
+				<< std::flush;
+			throw;
+		}
 
+		// link and load module
 		CalDriver()->calclLink(&_image, &_object, 1);
 		CalDriver()->calModuleLoad(&_module, *_context, _image);
 
@@ -288,9 +296,11 @@ namespace executive
 		CalDriver()->calModuleGetName(&_cb0Name, *_context, _module, "cb0");
 		CalDriver()->calCtxSetMem(*_context, _cb0Name, _cb0Mem);
 
-		CalDriver()->calCtxGetMem(&_cb1Mem, *_context, *_cb1Resource);
-		CalDriver()->calModuleGetName(&_cb1Name, *_context, _module, "cb1");
-		CalDriver()->calCtxSetMem(*_context, _cb1Name, _cb1Mem);
+		if (parameters.size()) {
+			CalDriver()->calCtxGetMem(&_cb1Mem, *_context, *_cb1Resource);
+			CalDriver()->calModuleGetName(&_cb1Name, *_context, _module, "cb1");
+			CalDriver()->calCtxSetMem(*_context, _cb1Name, _cb1Mem);
+		}
 
 		// get module entry
 		CALfunc func = 0;
@@ -314,7 +324,8 @@ namespace executive
 		// release memory handles
 		CalDriver()->calCtxReleaseMem(*_context, _uav0Mem);
 		CalDriver()->calCtxReleaseMem(*_context, _cb0Mem);
-		CalDriver()->calCtxReleaseMem(*_context, _cb1Mem);
+		if (parameters.size()) 
+			CalDriver()->calCtxReleaseMem(*_context, _cb1Mem);
 
 		// unload module
 		CalDriver()->calModuleUnload(*_context, _module);
@@ -443,6 +454,8 @@ namespace executive
 						if (operand->addressMode != ir::PTXOperand::Address)
 							continue;
 
+						report("Modifying instruction " << ptx.toString());
+
 						ir::Module::GlobalMap::const_iterator global = 
 							module->globals().find(operand->identifier);
 
@@ -464,10 +477,8 @@ namespace executive
 							operand->imm_uint = 0;
 						}
 
-						report("For instruction " << ptx.toString()
-								<< ", mapping constant label "
-								<< global->first << " to " << 
-								operand->imm_uint);
+						report("Mapping constant label " << global->first 
+								<< " to 0x" << std::hex << operand->imm_uint);
 					}
 				}
 			}

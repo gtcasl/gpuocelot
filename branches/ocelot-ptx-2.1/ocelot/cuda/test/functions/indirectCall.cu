@@ -17,21 +17,23 @@ extern "C" __device__ __noinline__ int funcTriple(int a) {
 extern "C" __device__ __noinline__ int funcQuadruple(int a) {
 	return a*4;
 }
+extern "C" __device__ __noinline__ int funcPentuple(int a) {
+	return a*5;
+}
 
-extern "C" __global__ void kernelEntry(int *A, const int N, int b) {
+extern "C" __global__ void kernelEntry(int *A, int b) {
 
 	int (*filter[])(int) = {
 		&funcDouble,
 		&funcTriple,
-		&funcQuadruple
+		&funcQuadruple,
+		&funcPentuple
 	};
 
 	int i = threadIdx.x + blockDim.x * blockIdx.x;
 	
-	if (i < N) {
-		int p = ((b + i) % 3);
-		A[i] = filter[p](i);
-	}
+	int p = ((b + i) & 3);
+	A[i] = filter[p](i);
 }
 
 #include <cstdio>
@@ -69,7 +71,7 @@ int main(int argc, char *arg[]) {
 	dim3 block(32, 1);
 	dim3 grid((N + block.x - 1) / block.x, 1);
 	
-	kernelEntry<<< grid, block >>>(A_gpu, N, P);
+	kernelEntry<<< grid, block >>>(A_gpu, P);
 	
 	result = cudaThreadSynchronize();
 	if (result != cudaSuccess) {
@@ -88,7 +90,7 @@ int main(int argc, char *arg[]) {
 		int got = A_cpu[i];
 		int dem = 0;
 		
-		int p = ((P + i) % 3);
+		int p = ((P + i) % 4);
 		dem = ((p + 2) * i);
 		
 		if (got != dem) {

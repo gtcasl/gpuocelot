@@ -517,7 +517,10 @@ static void setupTextureMemoryReferences(ir::PTXKernel& kernel,
 	LLVMModuleManager::KernelAndTranslation::MetaData* metadata,
 	const ir::PTXKernel& parent)
 {
-	 report( " Setting up texture memory references." );
+	typedef std::unordered_map<std::string, unsigned int> TextureMap;
+	report( " Setting up texture memory references." );
+	
+	TextureMap textures;
 	
 	for(ir::ControlFlowGraph::iterator block = kernel.cfg()->begin(); 
 		block != kernel.cfg()->end(); ++block)
@@ -532,12 +535,27 @@ static void setupTextureMemoryReferences(ir::PTXKernel& kernel,
 			{
 				report("  found texture instruction: " << ptx.toString());
 
-				assertM(false, "No support for textures yet.");
-				ptx.a.reg = 0;
+				TextureMap::iterator reference =
+					textures.find(ptx.a.identifier);
+				if(reference != textures.end())
+				{
+					ptx.a.reg = reference->second;
+				}
+				else
+				{
+					ptx.a.reg = textures.size();
+					textures.insert(std::make_pair(
+						ptx.a.identifier, textures.size()));
+						
+					ir::Module::TextureMap::const_iterator tex =
+						kernel.module->textures().find(ptx.a.identifier);
+					assert(tex != kernel.module->textures().end());
+					
+					metadata->textures.push_back(&tex->second);
+				}
 			}
 		}
 	}
-
 }
 
 static void setupLocalMemoryReferences(ir::PTXKernel& kernel,

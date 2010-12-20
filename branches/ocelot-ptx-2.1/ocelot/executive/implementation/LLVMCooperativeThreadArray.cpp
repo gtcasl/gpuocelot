@@ -269,6 +269,7 @@ unsigned int LLVMCooperativeThreadArray::_initializeNewContext(
 		context.local     = stack.localMemory();
 		context.parameter = stack.parameterMemory();
 		context.constant  = _kernel->constantMemory();
+		context.metadata  = reinterpret_cast<char*>(&metadata);
 	}
 	else
 	{

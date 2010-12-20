@@ -39,9 +39,6 @@ namespace executive
 			char* argument; //! Pointer to argument memory
 		
 		public:
-			
-		
-		public:
 			/*! \brief Generic pointer back to other state */
 			char* metadata;
 	};

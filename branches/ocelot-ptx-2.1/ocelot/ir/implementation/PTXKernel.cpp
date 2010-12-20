@@ -528,9 +528,56 @@ namespace ir
 			}
 		}
 		
+		
+		// issue actual instructions
 		if (_cfg != 0) {
 			ControlFlowGraph::BlockPointerVector 
 				blocks = _cfg->executable_sequence();
+				
+			std::map< std::string, ir::PTXInstruction *> indirectCalls;
+		
+			// look for and emit function prototypes
+			for (ControlFlowGraph::BlockPointerVector::iterator 
+				block = blocks.begin(); block != blocks.end(); ++block) {
+				
+				for( ControlFlowGraph::InstructionList::iterator 
+					instruction = (*block)->instructions.begin(); 
+					instruction != (*block)->instructions.end();
+					++instruction ) {
+					ir::PTXInstruction * inst = static_cast<ir::PTXInstruction *>(*instruction);
+					
+					if (inst->opcode == ir::PTXInstruction::Call && inst->a.addressMode == PTXOperand::Register ) {
+						// indirect call
+						if (indirectCalls.find(inst->c.identifier) == indirectCalls.end()) {
+							indirectCalls[inst->c.identifier] = inst;
+						}
+					}
+				}
+			}
+			for (std::map< std::string, ir::PTXInstruction *>::const_iterator indCall = indirectCalls.begin();
+				indCall != indirectCalls.end(); ++indCall) {
+
+				stream << "\t" << indCall->first << ": .callprototype ";
+				stream << "(";
+
+				unsigned int n = 0;
+				for (ir::PTXOperand::Array::const_iterator arg_it = indCall->second->d.array.begin();
+					arg_it != indCall->second->d.array.end(); ++arg_it, ++n) {
+					
+					stream << (n ? ", " : "") << ".param ." << ir::PTXOperand::toString(arg_it->type) << " _";
+				}
+				
+				stream << ") _ (";
+				n = 0;
+				for (ir::PTXOperand::Array::const_iterator arg_it = indCall->second->b.array.begin();
+					arg_it != indCall->second->b.array.end(); ++arg_it, ++n) {
+					
+					stream << (n ? ", " : "") << ".param ." << ir::PTXOperand::toString(arg_it->type) << " _";
+				}
+				stream << ");\n";
+			}
+
+			//
 		
 			int blockIndex = 1;
 			for (ControlFlowGraph::BlockPointerVector::iterator 

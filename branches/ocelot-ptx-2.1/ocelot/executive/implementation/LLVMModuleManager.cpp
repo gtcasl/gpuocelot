@@ -515,23 +515,23 @@ static void setupConstantMemoryReferences(ir::PTXKernel& kernel,
 
 static void setupTextureMemoryReferences(ir::PTXKernel& kernel,
 	LLVMModuleManager::KernelAndTranslation::MetaData* metadata,
-	const ir::PTXKernel& parent)
+	const ir::PTXKernel& parent, executive::Device* device)
 {
 	typedef std::unordered_map<std::string, unsigned int> TextureMap;
-	report( " Setting up texture memory references." );
+	report(" Setting up texture memory references.");
 	
 	TextureMap textures;
 	
 	for(ir::ControlFlowGraph::iterator block = kernel.cfg()->begin(); 
 		block != kernel.cfg()->end(); ++block)
 	{
-		for( ir::ControlFlowGraph::InstructionList::iterator 
+		for(ir::ControlFlowGraph::InstructionList::iterator 
 			instruction = block->instructions.begin(); 
-			instruction != block->instructions.end(); ++instruction )
+			instruction != block->instructions.end(); ++instruction)
 		{
 			ir::PTXInstruction& ptx = static_cast<
 				ir::PTXInstruction&>(**instruction);
-			if( ptx.opcode == ir::PTXInstruction::Tex )
+			if(ptx.opcode == ir::PTXInstruction::Tex)
 			{
 				report("  found texture instruction: " << ptx.toString());
 
@@ -547,11 +547,12 @@ static void setupTextureMemoryReferences(ir::PTXKernel& kernel,
 					textures.insert(std::make_pair(
 						ptx.a.identifier, textures.size()));
 						
-					ir::Module::TextureMap::const_iterator tex =
-						kernel.module->textures().find(ptx.a.identifier);
-					assert(tex != kernel.module->textures().end());
+					ir::Texture* texture = (ir::Texture*)
+						device->getTextureReference(
+						kernel.module->path(), ptx.a.identifier);
+					assert(texture != 0);
 					
-					metadata->textures.push_back(&tex->second);
+					metadata->textures.push_back(texture);
 				}
 			}
 		}
@@ -649,7 +650,7 @@ static void setupLocalMemoryReferences(ir::PTXKernel& kernel,
 
 static void setupPTXMemoryReferences(ir::PTXKernel& kernel,
 	LLVMModuleManager::KernelAndTranslation::MetaData* metadata,
-	const ir::PTXKernel& parent)
+	const ir::PTXKernel& parent, executive::Device* device)
 {
 	report(" Setting up memory references for kernel variables.");
 	
@@ -658,7 +659,7 @@ static void setupPTXMemoryReferences(ir::PTXKernel& kernel,
 	setupParameterMemoryReferences(kernel, metadata, parent);
 	setupSharedMemoryReferences(kernel, metadata, parent);
 	setupConstantMemoryReferences(kernel, metadata, parent);
-	setupTextureMemoryReferences(kernel, metadata, parent);
+	setupTextureMemoryReferences(kernel, metadata, parent, device);
 	setupLocalMemoryReferences(kernel, metadata, parent);
 }
 
@@ -970,7 +971,7 @@ LLVMModuleManager::KernelAndTranslation::MetaData*
 	try
 	{
 		_metadata = generateMetadata(*_kernel, _optimizationLevel);
-		setupPTXMemoryReferences(*_kernel, _metadata, *_parent);
+		setupPTXMemoryReferences(*_kernel, _metadata, *_parent, _device);
 		setupCallTargets(*_kernel, *_database);
 		translate(_module, *_kernel, _optimizationLevel);
 

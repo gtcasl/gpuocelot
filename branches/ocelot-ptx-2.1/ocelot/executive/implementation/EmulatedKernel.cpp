@@ -1062,7 +1062,7 @@ void executive::EmulatedKernel::initializeTextureMemory() {
 			ir::Texture* texture = (ir::Texture*)device->getTextureReference(
 				module->path(), fi->a.identifier);
 			assert(texture != 0);
-
+			
 			IndexMap::iterator index = indices.find(fi->a.identifier);
 
 			if (index == indices.end()) {

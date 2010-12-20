@@ -2477,6 +2477,20 @@ cudaError_t cuda::CudaRuntime::cudaFuncGetAttributes(
 	return _setLastError(result);
 }
 
+/*!
+	\brief this function succeeds unless more shared memory is requested 
+		[since we can't support that with the NVIDIA device]
+*/
+cudaError_t cuda::CudaRuntime::cudaFuncSetCacheConfig(const char*, cudaFuncCache cache) {
+	cudaError_t result = cudaSuccess;
+	_lock();
+	if (cache == cudaFuncCachePreferShared) {
+		result = cudaErrorInvalidDeviceFunction;
+	}
+	_unlock();
+	return _setLastError(result);
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //
 // CUDA event creation

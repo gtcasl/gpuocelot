@@ -482,7 +482,8 @@ namespace cuda {
 			size_t offset);
 		virtual cudaError_t cudaLaunch(const char *entry);
 		virtual cudaError_t cudaFuncGetAttributes(
-			struct cudaFuncAttributes *attr, const char *func);	
+			struct cudaFuncAttributes *attr, const char *func);
+		virtual cudaError_t cudaFuncSetCacheConfig(const char*, cudaFuncCache cache);
 	
 	public:
 		//

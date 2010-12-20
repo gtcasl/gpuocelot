@@ -15,7 +15,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 #define Ocelot_Exception(x) { std::stringstream ss; ss << x; report(ss.str()); \
 	throw hydrazine::Exception(ss.str()); }

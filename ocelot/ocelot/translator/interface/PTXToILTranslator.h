@@ -72,6 +72,7 @@ namespace translator
 			void _translateLg2(const ir::PTXInstruction &i);
 			void _translateMad(const ir::PTXInstruction &i);
 			void _translateMax(const ir::PTXInstruction &i);
+			void _translateMembar(const ir::PTXInstruction &i);
 			void _translateMin(const ir::PTXInstruction &i);
 			void _translateMov(const ir::PTXInstruction &i);
 			void _translateMul(const ir::PTXInstruction &i);
@@ -85,6 +86,7 @@ namespace translator
 			void _translateSetP(const ir::PTXInstruction &i);
 			void _translateShl(const ir::PTXInstruction &i);
 			void _translateShr(const ir::PTXInstruction &i);
+			void _translateSqrt(const ir::PTXInstruction &i);
 			void _translateSt(const ir::PTXInstruction &i);
 			void _translateSub(const ir::PTXInstruction &i);
 			void _translateXor(const ir::PTXInstruction& i);
@@ -96,7 +98,11 @@ namespace translator
 			std::string _translateConstantBuffer(const std::string &ident);
 
 			void _translateIDiv(const ir::PTXInstruction &i);
+			void _translateUDiv(const ir::PTXInstruction &i);
 			void _translateFDiv(const ir::PTXInstruction &i);
+
+			void _translateIRem(const ir::PTXInstruction &i);
+			void _translateURem(const ir::PTXInstruction &i);
 
 			void _translateISetP(const ir::PTXInstruction &i);
 			void _translateFSetP(const ir::PTXInstruction &i);

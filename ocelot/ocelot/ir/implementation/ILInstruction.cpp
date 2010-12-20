@@ -26,7 +26,8 @@ namespace ir
 			case End:                   return "end";
 			case EndIf:                 return "endif";
 			case EndLoop:               return "endloop";
-			case Exp:                   return "exp";
+			case Eq:                    return "eq";
+			case Exp_Vec:               return "exp_vec";
 			case Fence:                 return "fence";
 			case FtoU:                  return "ftou";
 			case Iadd:                  return "iadd";
@@ -60,6 +61,7 @@ namespace ir
 			case Rcp:                   return "rcp";
 			case Round_Nearest:         return "round_nearest";
 			case Sub:                   return "sub";
+			case Sqrt_Vec:              return "sqrt_vec";
 			case Uav_Arena_Load_Id:     return "uav_arena_load_id(1)";
 			case Uav_Arena_Store_Id:    return "uav_arena_store_id(1)";
 			case Uav_Raw_Load_Id:       return "uav_raw_load_id(0)";
@@ -320,16 +322,26 @@ namespace ir
 		return new ILEndLoop(*this);
 	}
 
-	ILExp::ILExp() : ILUnaryInstruction(Exp)
+	ILEq::ILEq() : ILBinaryInstruction(Eq)
 	{
 	}
 
-	Instruction *ILExp::clone(bool copy) const
+	Instruction *ILEq::clone(bool copy) const
 	{
-		return new ILExp(*this);
+		return new ILEq(*this);
 	}
 
-	ILFence::ILFence() : ILInstruction(Fence), _threads(true), _lds(false)
+	ILExp_Vec::ILExp_Vec() : ILUnaryInstruction(Exp_Vec)
+	{
+	}
+
+	Instruction *ILExp_Vec::clone(bool copy) const
+	{
+		return new ILExp_Vec(*this);
+	}
+
+	ILFence::ILFence() : ILInstruction(Fence), _threads(true), _lds(false), 
+		_memory(false)
 	{
 	}
 
@@ -337,7 +349,8 @@ namespace ir
 	{
 		return ILInstruction::toString(opcode) +
 			(_threads ? "_threads" : "") +
-			(_lds ? "_lds" : "");
+			(_lds ? "_lds" : "") +
+			(_memory ? "_memory" : "");
 	}
 
 	std::string ILFence::valid() const
@@ -358,6 +371,11 @@ namespace ir
 	void ILFence::lds(bool value)
 	{
 		_lds = value;
+	}
+
+	void ILFence::memory(bool value)
+	{
+		_memory = value;
 	}
 
 	ILFtoU::ILFtoU() : ILUnaryInstruction(FtoU)
@@ -695,6 +713,15 @@ namespace ir
 	Instruction *ILSub::clone(bool copy) const
 	{
 		return new ILSub(*this);
+	}
+
+	ILSqrt_Vec::ILSqrt_Vec() : ILUnaryInstruction(Sqrt_Vec)
+	{
+	}
+
+	Instruction *ILSqrt_Vec::clone(bool copy) const
+	{
+		return new ILSqrt_Vec(*this);
 	}
 
 	ILUav_Arena_Load_Id::ILUav_Arena_Load_Id() 

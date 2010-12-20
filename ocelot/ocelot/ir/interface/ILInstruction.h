@@ -30,7 +30,8 @@ namespace ir
 				End,
 				EndIf,
 				EndLoop,
-				Exp,
+				Eq,
+				Exp_Vec,
 				Fence,
 				FtoU,
 				Iadd,
@@ -64,6 +65,7 @@ namespace ir
 				Rcp,
 				Round_Nearest,
 				Sub,
+				Sqrt_Vec,
 				Uav_Arena_Load_Id,
 				Uav_Arena_Store_Id,
 				Uav_Raw_Load_Id,
@@ -298,11 +300,20 @@ namespace ir
 			Instruction *clone(bool copy=true) const;
 	};
 
-	class ILExp: public ILUnaryInstruction
+	class ILEq : public ILBinaryInstruction
 	{
 		public:
 			/*! \brief Default constructor */
-			ILExp();
+			ILEq();
+
+			Instruction *clone(bool copy=true) const;
+	};
+
+	class ILExp_Vec: public ILUnaryInstruction
+	{
+		public:
+			/*! \brief Default constructor */
+			ILExp_Vec();
 
 			Instruction *clone(bool copy=true) const;
 	};
@@ -317,6 +328,8 @@ namespace ir
 			void threads(bool value = true);
 			/*! \brief Set/unset lds flag */
 			void lds(bool value = true);
+			/*! \brief Set/unset memory flag */
+			void memory(bool value = true);
 
 			std::string toString() const;
 			std::string valid() const;
@@ -324,7 +337,7 @@ namespace ir
 
 		private:
 			/*! \brief threads,lds flags */
-			bool _threads, _lds;
+			bool _threads, _lds, _memory;
 	};
 
 	class ILFtoU: public ILUnaryInstruction
@@ -625,6 +638,15 @@ namespace ir
 		public:
 			/*! \brief Default constructor */
 			ILSub();
+
+			Instruction *clone(bool copy=true) const;
+	};
+
+	class ILSqrt_Vec: public ILUnaryInstruction
+	{
+		public:
+			/*! \brief Default constructor */
+			ILSqrt_Vec();
 
 			Instruction *clone(bool copy=true) const;
 	};

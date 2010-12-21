@@ -166,7 +166,7 @@ namespace translator
 				ir::PTXOperand::VectorIndex index );
 			ir::LLVMInstruction::Operand _getMemoryBasePointer( 
 			 	ir::PTXInstruction::AddressSpace space, bool isArgument );
-			ir::LLVMInstruction::Operand _getMemoryExtentPointer( 
+			ir::LLVMInstruction::Operand _getMemoryExtent( 
 			 	ir::PTXInstruction::AddressSpace space );
 			ir::LLVMInstruction::Operand _getAddressableVariablePointer( 
 				ir::PTXInstruction::AddressSpace space,
@@ -195,6 +195,7 @@ namespace translator
 			void _addAtomicCalls();
 			void _addMathCalls();
 			void _addLLVMIntrinsics();
+			void _addUtilityCalls();
 			void _addKernelPrefix();
 			void _addGlobalDeclarations();
 			void _addKernelSuffix();

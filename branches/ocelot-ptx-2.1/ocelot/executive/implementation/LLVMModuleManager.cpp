@@ -91,7 +91,6 @@ hydrazine::Thread::Id LLVMModuleManager::id()
 #ifdef HAVE_LLVM
 static unsigned int pad(unsigned int& size, unsigned int alignment)
 {
-	report("  Setting up global memory references.");
 	unsigned int padding = alignment - (size % alignment);
 	padding = (alignment == padding) ? 0 : padding;
 	size += padding;
@@ -281,6 +280,27 @@ static void setupParameterMemoryReferences(ir::PTXKernel& kernel,
 				}
 			}
 		}
+	}
+	
+	// In order to handle tail calls resuing the current stack frame, allocate 
+	//  enough space for the max number of parameters in the module
+	for(ir::Module::KernelMap::const_iterator
+		function = kernel.module->kernels().begin();
+		function != kernel.module->kernels().end(); ++function)
+	{
+		if(!function->second->function()) continue;
+		
+		unsigned int bytes = 0;
+		
+		for(ir::Kernel::ParameterVector::const_iterator
+			argument = function->second->arguments.begin();
+			argument != function->second->arguments.end(); ++argument)
+		{
+			pad(bytes, argument->getSize());
+			bytes += argument->getSize();
+		}
+		
+		metadata->parameterSize = std::max(bytes, metadata->parameterSize);
 	}
 	
 	report("   total parameter memory size is " << metadata->parameterSize);
@@ -575,9 +595,9 @@ static void setupLocalMemoryReferences(ir::PTXKernel& kernel,
 	metadata->localSize = 8;
 	
 	// give preference to barrier resume point
-	ir::Kernel::LocalMap::const_iterator local = parent.locals.find(
+	ir::Kernel::LocalMap::const_iterator local = kernel.locals.find(
 		"_Zocelot_barrier_next_kernel");
-	if(local != parent.locals.end())
+	if(local != kernel.locals.end())
 	{
 		if(local->second.space == ir::PTXInstruction::Local)
 		{
@@ -592,8 +612,8 @@ static void setupLocalMemoryReferences(ir::PTXKernel& kernel,
 		}
 	}
 
-	for(ir::Kernel::LocalMap::const_iterator local = parent.locals.begin(); 
-		local != parent.locals.end(); ++local)
+	for(ir::Kernel::LocalMap::const_iterator local = kernel.locals.begin(); 
+		local != kernel.locals.end(); ++local)
 	{
 		if(local->first == "_Zocelot_barrier_next_kernel") continue;
 		

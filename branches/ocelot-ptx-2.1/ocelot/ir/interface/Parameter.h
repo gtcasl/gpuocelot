@@ -46,7 +46,8 @@ namespace ir {
 		static std::string value(const Parameter& p);
 
 	public:
-		explicit Parameter(const PTXStatement& statement, bool arg, bool isReturn = false);
+		explicit Parameter(const PTXStatement& statement,
+			bool arg, bool isReturn = false);
 		Parameter();
 		~Parameter();
 

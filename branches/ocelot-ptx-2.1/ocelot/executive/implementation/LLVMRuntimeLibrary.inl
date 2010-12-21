@@ -24,6 +24,13 @@
 
 // Preprocessor Macros
 
+// Report Messages
+#ifdef REPORT_BASE
+#undef REPORT_BASE
+#endif
+
+#define REPORT_BASE 0
+
 // Print out information when executing atomic operations 
 #define REPORT_ATOMIC_OPERATIONS 0
 
@@ -67,6 +74,8 @@ static void __report( executive::LLVMContext* context,
 
 static std::string location(const ir::Module* module, unsigned int statement)
 {
+	if(statement == 0) return "unknown";
+	
 	ir::Module::StatementVector::const_iterator s_it 
 		= module->statements().begin();
 	std::advance(s_it, statement);
@@ -107,6 +116,8 @@ static std::string location(const ir::Module* module, unsigned int statement)
 
 static std::string instruction(const ir::Module* module, unsigned int statement)
 {
+	if(statement == 0) return "unknown";
+	
 	assert( statement < module->statements().size() );
 	ir::Module::StatementVector::const_iterator s_it 
 		= module->statements().begin();
@@ -994,7 +1005,7 @@ extern "C"
 	void __ocelot_tex_1d_us( unsigned int* result, 
 		executive::LLVMContext* context, unsigned int index, unsigned int c0 )
 	{
-		MetaData* state = (MetaData*) context->metadata;
+		MetaData* state = ( MetaData* ) context->metadata;
 		const ir::Texture& texture = *state->textures[ index ];
 		
 		result[0] = executive::tex::sample< 0, unsigned int >( texture, c0 );
@@ -1009,7 +1020,34 @@ extern "C"
 	{
 		__ocelot_tex_1d_us( result, context, index, c0 );
 	}
-
+	
+	unsigned int __ocelot_get_extent( executive::LLVMContext* context,
+		unsigned int space )
+	{
+		MetaData* state = ( MetaData* ) context->metadata;
+		
+		switch( ( ir::PTXInstruction::AddressSpace ) space )
+		{
+			case ir::PTXInstruction::Local:
+			{
+				report("Local memory size is " << state->localSize);
+				return state->localSize;
+			}
+			case ir::PTXInstruction::Param:
+			{
+				report("Parameter memory size is " << state->parameterSize);
+				return state->parameterSize;
+			}
+			case ir::PTXInstruction::Shared:
+			{
+				report("Shared memory size is " << state->sharedSize);
+				return state->sharedSize;
+			}
+			default: assertM( false, "Invalid memory space." );
+		}
+		
+		return 0;
+	}
 }
 
 #endif

@@ -40,12 +40,14 @@ SubkernelFormationPass::SubkernelFormationPass(unsigned int e)
 	: ModulePass(DataflowGraphAnalysis, "SubkernelFormationPass"), 
 	_expectedRegionSize(e)
 {
-	report("Constructing SubkernelFormationPass() - expected region size: " << e);
+	report("Constructing SubkernelFormationPass() - expected region size: "
+		<< e);
 }
 
 void SubkernelFormationPass::runOnModule(ir::Module& m)
 {
-	report("Running SubkernelFormationPass - expected region size: " << _expectedRegionSize);
+	report("Running SubkernelFormationPass - expected region size: "
+		<< _expectedRegionSize);
 	// This pass requires all kernels to be loaded
 	m.loadNow();
 
@@ -129,7 +131,8 @@ static unsigned int createRestorePoint(ir::PTXKernel& newKernel,
 		reg = dfgBlock->second->aliveIn().begin();
 		reg != dfgBlock->second->aliveIn().end(); ++reg)
 	{
-		report("    restoring r" << reg->id);
+		report("    restoring r" << reg->id 
+			<< " (" << ir::PTXOperand::bytes(reg->type) << " bytes)");
 		
 		ir::PTXInstruction* load =
 			new ir::PTXInstruction(ir::PTXInstruction::Ld);
@@ -204,7 +207,8 @@ static unsigned int createSavePoint(ir::PTXKernel& newKernel,
 			reg = dfgBlock->second->aliveIn().begin();
 			reg != dfgBlock->second->aliveIn().end(); ++reg)
 		{
-			report("    saving r" << reg->id);
+			report("    saving r" << reg->id
+				<< " (" << ir::PTXOperand::bytes(reg->type) << " bytes)");
 		
 			ir::PTXInstruction* store =
 				new ir::PTXInstruction(ir::PTXInstruction::St);
@@ -249,7 +253,7 @@ static unsigned int createSavePoint(ir::PTXKernel& newKernel,
 
 	report("   Creating tail call to next kernel containing block "
 		<< oldBlock->id);
-
+	
 	ir::PTXInstruction* call = new ir::PTXInstruction(ir::PTXInstruction::Call);
 	call->a = std::move(ir::PTXOperand(ir::PTXOperand::FunctionName, ""));
 	call->tailCall = true;
@@ -572,15 +576,16 @@ static void createScheduler(ir::PTXKernel& kernel,
 		edge != edges.end(); ++edge)
 	{
 		ir::Edge newEdge(scheduler, (*edge)->tail, (*edge)->type);
-		kernel.cfg()->remove_edge(*edge);
-		
-		// don't add multiple paths to the same block
-		if(!targets.insert(newEdge.tail).second) continue;
 
 		report("   scheduling path to block '" << newEdge.tail->label
 			<< "' from block '" << newEdge.head->label << "'");
 		report("      - former edge type [" << (*edge)->type << "]");
-		report("      - new edge type [" << newEdge.type << "]");
+		report("      - new edge type    [" << newEdge.type  << "]");
+
+		kernel.cfg()->remove_edge(*edge);
+		
+		// don't add multiple paths to the same block
+		if(!targets.insert(newEdge.tail).second) continue;
 
 		kernel.cfg()->insert_edge(newEdge);
 	}
@@ -741,6 +746,8 @@ static void addVariables(ir::PTXKernel& subkernel, const ir::Kernel& kernel,
 	
 	subkernel.locals.insert(std::make_pair(spillRegion.name,
 		ir::Local(spillRegion)));
+		
+	report("  Spill region size is " << spillRegionSize);
 }
 
 /* algorithm
@@ -855,12 +862,10 @@ void SubkernelFormationPass::ExtractKernelsPass::runOnKernel(ir::Kernel& k)
 		alreadyAdded.insert(region.begin(), region.end());
 		
 		createScheduler(*newKernel, ptx, savedBlocks);
-		
+
 		// restart with a new kernel if there are any blocks left
 		if(entry == ptx.cfg()->get_exit_block()) break;
-
-		currentRegionSize = 0;
-		
+	
 		std::stringstream name;
 		name << originalName << "_split_" << kernelId++;
 
@@ -871,16 +876,21 @@ void SubkernelFormationPass::ExtractKernelsPass::runOnKernel(ir::Kernel& k)
 		queue.clear();
 		savedBlocks.clear();
 		queue.push_back(entry);
-
+		currentRegionSize = 0;
+		
 		newKernel = splitKernels.back();
 		report(" New kernel name is " << newKernel->name);
 	}
 	
 	// Rename 
 	updateTailCallTargets(splitKernels, idToKernelMap);
-	
-	addVariables(*splitKernels.front(), k, spillRegionSize);
 
+	// Add variables
+	for(KernelVector::iterator kernel = splitKernels.begin();
+		kernel != splitKernels.end(); ++kernel)
+	{
+		addVariables(**kernel, k, spillRegionSize);
+	}
 	// 
 	/*
 	std::cout << "\nSplit kernels:\n";

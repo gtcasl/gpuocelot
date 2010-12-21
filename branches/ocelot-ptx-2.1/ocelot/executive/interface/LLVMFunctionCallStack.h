@@ -18,8 +18,8 @@ class LLVMFunctionCallStack
 {
 public:
 	void call(unsigned int localSize, unsigned int parameterSize, 
-		unsigned int functionId);
-	void returned();
+		unsigned int functionId, unsigned int resumePoint = -1);
+	unsigned int returned();
 
 	void setKernelArgumentMemory(char* memory, unsigned int argumentSize);
 
@@ -38,12 +38,14 @@ private:
 	{
 	public:
 		ParameterAndLocalSize(unsigned int localSize,
-			unsigned int parameterSize, unsigned int functionId);
+			unsigned int parameterSize, unsigned int functionId,
+			unsigned int resumePoint);
 	
 	public:
 		unsigned int localSize;
 		unsigned int parameterSize;
 		unsigned int functionId;
+		unsigned int resumePoint;
 	};
 
 	typedef std::vector<char> DataVector;

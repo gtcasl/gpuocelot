@@ -16,17 +16,20 @@
 namespace executive
 {
 
-void LLVMFunctionCallStack::call(unsigned int l, unsigned int a, unsigned int i)
+void LLVMFunctionCallStack::call(unsigned int l, unsigned int a, unsigned int i,
+	unsigned int r)
 {
 	_stack.resize(_stack.size() + l + a);
-	_sizes.push_back(ParameterAndLocalSize(l, a, i));
+	_sizes.push_back(ParameterAndLocalSize(l, a, i, r));
 }
 
-void LLVMFunctionCallStack::returned()
+unsigned int LLVMFunctionCallStack::returned()
 {
 	const ParameterAndLocalSize& sizes = _sizes.back();
 	_stack.resize(_stack.size() - sizes.localSize - sizes.parameterSize);
+	unsigned int resumePoint = sizes.resumePoint;
 	_sizes.pop_back();
+	return resumePoint;
 }
 
 void LLVMFunctionCallStack::setKernelArgumentMemory(
@@ -85,8 +88,8 @@ unsigned int LLVMFunctionCallStack::functionId() const
 }
 
 LLVMFunctionCallStack::ParameterAndLocalSize::ParameterAndLocalSize(
-	unsigned int l, unsigned int a, unsigned int id) : localSize(l), 
-	parameterSize(a), functionId(id)
+	unsigned int l, unsigned int a, unsigned int id, unsigned int r)
+	: localSize(l), parameterSize(a), functionId(id), resumePoint(r)
 {
 	
 }

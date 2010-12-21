@@ -2479,7 +2479,47 @@ namespace translator
 	
 	void PTXToLLVMTranslator::_translateCvta( const ir::PTXInstruction& i )
 	{
-		_translateMov( i );
+		switch( i.addressSpace )
+		{
+		case ir::PTXInstruction::Global: _translateMov( i ); break;
+		case ir::PTXInstruction::Shared:
+		case ir::PTXInstruction::Local:
+		{
+			ir::LLVMPtrtoint toint;
+				
+			toint.a = _getLoadOrStorePointer( i.a, 
+				i.addressSpace, _translate( i.type ), i.vec );
+
+			if( i.a.offset == 0 )
+			{
+				toint.d = _destination( i );
+
+				_add( toint );
+			}
+			else
+			{
+				toint.d = ir::LLVMInstruction::Operand( 
+					_tempRegister(),
+					ir::LLVMInstruction::Type( 
+					_translate( i.type ), 
+					ir::LLVMInstruction::Type::Element ) );
+			
+				_add( toint );
+			
+				ir::LLVMAdd add;
+			
+				add.a          = toint.d;
+				add.d          = _destination( i );
+				add.b.constant = true;
+				add.b.type     = add.a.type;
+				add.b.i64      = i.a.offset;
+			
+				_add( add );
+			}
+			break;
+		}
+		default: assertM(false, "Invalid address space for cvta.");
+		}
 	}
 
 	void PTXToLLVMTranslator::_translateDiv( const ir::PTXInstruction& i )
@@ -2588,7 +2628,7 @@ namespace translator
 		{
 			ir::LLVMInstruction::Operand base = _getMemoryBasePointer( 
 			 	i.addressSpace, false );
-			ir::LLVMInstruction::Operand extent = _getMemoryExtentPointer(
+			ir::LLVMInstruction::Operand extent = _getMemoryExtent(
 				i.addressSpace );
 				
 			ir::LLVMInstruction::Operand baseInt = 
@@ -2599,15 +2639,36 @@ namespace translator
 				ir::LLVMInstruction::Operand( _tempRegister(),
 					ir::LLVMInstruction::Type( ir::LLVMInstruction::I64, 
 					ir::LLVMInstruction::Type::Element ) );
-			_bitcast( baseInt, base );
+			
+			ir::LLVMPtrtoint ptrToInt;
+		
+			ptrToInt.a = base;
+			ptrToInt.d = baseInt;
+			
+			_add( ptrToInt );
+			
 			_bitcast( extentInt, extent );
+
+			ir::LLVMInstruction::Operand boundInt = 
+				ir::LLVMInstruction::Operand( _tempRegister(),
+					ir::LLVMInstruction::Type( ir::LLVMInstruction::I64, 
+					ir::LLVMInstruction::Type::Element ) );
+
+			ir::LLVMAdd add;
+			
+			add.a = extentInt;
+			add.b = baseInt;
+			
+			add.d = boundInt;
+
+			_add( add );
 
 			ir::LLVMInstruction::Operand geThanBase = 
 				ir::LLVMInstruction::Operand( _tempRegister(),
 					ir::LLVMInstruction::Type( ir::LLVMInstruction::I1, 
 					ir::LLVMInstruction::Type::Element ) );
 
-			ir::LLVMInstruction::Operand ltExtent = 
+			ir::LLVMInstruction::Operand ltBound = 
 				ir::LLVMInstruction::Operand( _tempRegister(),
 					ir::LLVMInstruction::Type( ir::LLVMInstruction::I1, 
 					ir::LLVMInstruction::Type::Element ) );
@@ -2619,21 +2680,21 @@ namespace translator
 			icmp.d = geThanBase;
 			icmp.a = a;
 			icmp.b = baseInt;
-			icmp.comparison = ir::LLVMInstruction::Oge;
+			icmp.comparison = ir::LLVMInstruction::Uge;
 			
 			_add( icmp );
 			
-			icmp.d = ltExtent;
-			icmp.b = extentInt;
-			icmp.comparison = ir::LLVMInstruction::Olt;
+			icmp.d = ltBound;
+			icmp.b = boundInt;
+			icmp.comparison = ir::LLVMInstruction::Ult;
 			
 			_add( icmp );
 			
 			ir::LLVMAnd land;
 			
 			land.d = _destination( i );
-			land.a = geThanBase;
-			land.b = ltExtent;
+			land.a = ltBound;
+			land.b = geThanBase;
 			
 			_add( land );
 			
@@ -2643,7 +2704,7 @@ namespace translator
 		{
 			ir::LLVMInstruction::Operand base = _getMemoryBasePointer( 
 			 	ir::PTXInstruction::Shared, false );
-			ir::LLVMInstruction::Operand extent = _getMemoryExtentPointer(
+			ir::LLVMInstruction::Operand extent = _getMemoryExtent(
 				ir::PTXInstruction::Shared );
 				
 			ir::LLVMInstruction::Operand baseInt = 
@@ -2654,15 +2715,36 @@ namespace translator
 				ir::LLVMInstruction::Operand( _tempRegister(),
 					ir::LLVMInstruction::Type( ir::LLVMInstruction::I64, 
 					ir::LLVMInstruction::Type::Element ) );
-			_bitcast( baseInt, base );
+			
+			ir::LLVMPtrtoint ptrToInt;
+		
+			ptrToInt.a = base;
+			ptrToInt.d = baseInt;
+			
+			_add( ptrToInt );
+			
 			_bitcast( extentInt, extent );
+
+			ir::LLVMInstruction::Operand boundInt = 
+				ir::LLVMInstruction::Operand( _tempRegister(),
+					ir::LLVMInstruction::Type( ir::LLVMInstruction::I64, 
+					ir::LLVMInstruction::Type::Element ) );
+
+			ir::LLVMAdd add;
+			
+			add.a = extentInt;
+			add.b = baseInt;
+			
+			add.d = boundInt;
+
+			_add( add );
 
 			ir::LLVMInstruction::Operand geThanBase = 
 				ir::LLVMInstruction::Operand( _tempRegister(),
 					ir::LLVMInstruction::Type( ir::LLVMInstruction::I1, 
 					ir::LLVMInstruction::Type::Element ) );
 
-			ir::LLVMInstruction::Operand ltExtent = 
+			ir::LLVMInstruction::Operand ltBound = 
 				ir::LLVMInstruction::Operand( _tempRegister(),
 					ir::LLVMInstruction::Type( ir::LLVMInstruction::I1, 
 					ir::LLVMInstruction::Type::Element ) );
@@ -2679,13 +2761,13 @@ namespace translator
 			icmp.d = geThanBase;
 			icmp.a = a;
 			icmp.b = baseInt;
-			icmp.comparison = ir::LLVMInstruction::Oge;
+			icmp.comparison = ir::LLVMInstruction::Uge;
 			
 			_add( icmp );
 			
-			icmp.d = ltExtent;
-			icmp.b = extentInt;
-			icmp.comparison = ir::LLVMInstruction::Olt;
+			icmp.d = ltBound;
+			icmp.b = boundInt;
+			icmp.comparison = ir::LLVMInstruction::Ult;
 			
 			_add( icmp );
 			
@@ -2693,22 +2775,34 @@ namespace translator
 			
 			land.d = isShared;
 			land.a = geThanBase;
-			land.b = ltExtent;
+			land.b = ltBound;
 			
 			_add( land );
 			
 			// is the allocation local?
 			base   = _getMemoryBasePointer( ir::PTXInstruction::Local, false );
-			extent = _getMemoryExtentPointer( ir::PTXInstruction::Local );
+			extent = _getMemoryExtent( ir::PTXInstruction::Local );
 				
 			baseInt.name = _tempRegister();
 			extentInt.name = _tempRegister();
+			boundInt.name = _tempRegister();
 			
-			_bitcast( baseInt, base );
+			ptrToInt.a = base;
+			ptrToInt.d = baseInt;
+			
+			_add( ptrToInt );
+			
 			_bitcast( extentInt, extent );
 
+			add.a = extentInt;
+			add.b = baseInt;
+			
+			add.d = boundInt;
+
+			_add( add );
+
 			geThanBase.name = _tempRegister();
-			ltExtent.name = _tempRegister();
+			ltBound.name = _tempRegister();
 					
 			ir::LLVMInstruction::Operand isLocal = 
 				ir::LLVMInstruction::Operand( _tempRegister(),
@@ -2718,19 +2812,19 @@ namespace translator
 			icmp.d = geThanBase;
 			icmp.a = a;
 			icmp.b = baseInt;
-			icmp.comparison = ir::LLVMInstruction::Oge;
+			icmp.comparison = ir::LLVMInstruction::Uge;
 			
 			_add( icmp );
 			
-			icmp.d = ltExtent;
-			icmp.b = extentInt;
-			icmp.comparison = ir::LLVMInstruction::Olt;
+			icmp.d = ltBound;
+			icmp.b = boundInt;
+			icmp.comparison = ir::LLVMInstruction::Ult;
 			
 			_add( icmp );
 						
 			land.d = isLocal;
 			land.a = geThanBase;
-			land.b = ltExtent;
+			land.b = ltBound;
 			
 			_add( land );
 
@@ -7820,7 +7914,7 @@ namespace translator
 		return load.d.name;
 	}
 	
-	ir::LLVMInstruction::Operand PTXToLLVMTranslator::_getMemoryExtentPointer( 
+	ir::LLVMInstruction::Operand PTXToLLVMTranslator::_getMemoryExtent( 
 	 	ir::PTXInstruction::AddressSpace space )
  	{
  		ir::LLVMCall call;
@@ -8653,6 +8747,32 @@ namespace translator
 		_llvmKernel->_statements.push_front( cos );
 	}
 	
+	void PTXToLLVMTranslator::_addUtilityCalls()
+	{
+		ir::LLVMStatement extent( ir::LLVMStatement::FunctionDeclaration );
+
+		extent.operand.type.category = ir::LLVMInstruction::Type::Element;
+		extent.operand.type.type     = ir::LLVMInstruction::I32;
+
+		extent.label = "__ocelot_get_extent";
+		extent.linkage = ir::LLVMStatement::InvalidLinkage;
+		extent.convention = ir::LLVMInstruction::DefaultCallingConvention;
+		extent.visibility = ir::LLVMStatement::Default;
+		
+		extent.parameters.resize( 2 );
+		
+		extent.parameters[0].type.category = ir::LLVMInstruction::Type::Pointer;
+		extent.parameters[0].type.members.resize(1);
+		extent.parameters[0].type.members[0].category 
+			= ir::LLVMInstruction::Type::Structure;
+		extent.parameters[0].type.members[0].label = "%LLVMContext";
+		
+		extent.parameters[1].type.category = ir::LLVMInstruction::Type::Element;
+		extent.parameters[1].type.type = ir::LLVMInstruction::I32;
+		
+		_llvmKernel->_statements.push_front( extent );
+	}
+	
 	void PTXToLLVMTranslator::_addKernelPrefix()
 	{
 		_llvmKernel->_statements.push_front( 
@@ -8820,6 +8940,7 @@ namespace translator
 		_addQueryCalls();
 		_addMathCalls();
 		_addLLVMIntrinsics();
+		_addUtilityCalls();
 
 		_llvmKernel->_statements.push_back( 
 			ir::LLVMStatement( ir::LLVMStatement::NewLine ) );

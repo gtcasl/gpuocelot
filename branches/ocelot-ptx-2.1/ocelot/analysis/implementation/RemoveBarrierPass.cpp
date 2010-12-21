@@ -318,6 +318,8 @@ namespace analysis
 		ir::Kernel::LocalMap::iterator stackLocal = _kernel->locals.find( 
 			"_Zocelot_spill_area" );
 		
+		report("Stack size is " << _spillBytes);
+		
 		if( stackLocal == _kernel->locals.end() )
 		{
 			ir::PTXStatement stack( ir::PTXStatement::Local );
@@ -328,11 +330,14 @@ namespace analysis
 		
 			_kernel->locals.insert( std::make_pair( stack.name, 
 				ir::Local( stack ) ) );
+			report(" creating new local memory stack entry.");
+		
 		}
 		else
 		{
 			stackLocal->second.elements = std::max( _spillBytes, 
 				stackLocal->second.elements );
+			report(" updating local memory stack entry.");
 		}
 	}
 	

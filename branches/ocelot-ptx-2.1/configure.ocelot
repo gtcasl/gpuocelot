@@ -20,7 +20,7 @@
 	},
 	executive: {
 		devices: [ llvm ],
-		optimizationLevel: report,
+		optimizationLevel: check,
 		workerThreadLimit: 1,
 		warpSize: 4
 	}

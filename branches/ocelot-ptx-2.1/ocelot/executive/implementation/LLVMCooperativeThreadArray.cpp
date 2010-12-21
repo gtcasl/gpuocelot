@@ -23,7 +23,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 namespace executive
 {
@@ -51,7 +51,7 @@ void LLVMCooperativeThreadArray::setup(const LLVMExecutableKernel& kernel)
 	_queuedThreads.resize(_functions.size());
 
 	_entryPoint = _worker->getFunctionId(kernel.module->path(), kernel.name);
-	report(" Entry point is function " << _nextFunction);
+	report(" Entry point is function " << _entryPoint);
 
 	if(_functions[_entryPoint] == 0)
 	{
@@ -250,6 +250,9 @@ unsigned int LLVMCooperativeThreadArray::_initializeNewContext(
 		
 		stack.setKernelArgumentMemory(_kernel->argumentMemory(),
 			_kernel->argumentMemorySize());
+			
+		report(" Pushing call stack (" << metadata.localSize 
+			<< " local) (" << metadata.parameterSize << " parameter)");
 		stack.call(metadata.localSize, metadata.parameterSize, _nextFunction);
 
 		context.nctaid.x  = _kernel->gridDim().x;
@@ -392,9 +395,6 @@ bool LLVMCooperativeThreadArray::_finishContext(unsigned int contextId)
 	{
 		nextFunction = localMemory[1];
 
-		report("     hit function call, saving thread context at resume point "
-			<< nextFunction << ", pushing stack.");
-
 		if(_functions[nextFunction] == 0)
 		{
 			_functions[nextFunction] =
@@ -403,7 +403,12 @@ bool LLVMCooperativeThreadArray::_finishContext(unsigned int contextId)
 
 		LLVMModuleManager::MetaData& metadata = *_functions[nextFunction];
 
-		stack.call(metadata.localSize, metadata.parameterSize, nextFunction);
+		report("     hit function call, saving thread context at resume point "
+			<< nextFunction << ", pushing stack (" << metadata.localSize 
+			<< " local) (" << metadata.parameterSize << " parameter).");
+
+		stack.call(metadata.localSize, metadata.parameterSize,
+			nextFunction, _nextFunction);
 		context.local         = stack.localMemory();
 		context.parameter     = stack.parameterMemory();
 		context.argument      = stack.argumentMemory();
@@ -411,11 +416,10 @@ bool LLVMCooperativeThreadArray::_finishContext(unsigned int contextId)
 	break;
 	case LLVMExecutableKernel::ReturnCall:
 	{
-		stack.returned();
-		nextFunction          = stack.functionId();
-		context.local         = stack.localMemory();
-		context.parameter     = stack.parameterMemory();
-		context.argument      = stack.argumentMemory();
+		nextFunction      = stack.returned();
+		context.local     = stack.localMemory();
+		context.parameter = stack.parameterMemory();
+		context.argument  = stack.argumentMemory();
 
 		report("     hit return, saving thread context at resume point "
 			<< nextFunction << ", popping stack.");

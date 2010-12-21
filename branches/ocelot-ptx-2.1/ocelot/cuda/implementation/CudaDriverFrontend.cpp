@@ -179,7 +179,8 @@ void cuda::CudaDriverFrontend::_unbind() {
 
 cuda::CudaDriverFrontend::Context::Context():
 	_selectedDevice(0), _nextSymbol(0), _flags(0),
-	_optimization(translator::Translator::DebugOptimization), _referenceCount(1) {
+	_optimization((translator::Translator::OptimizationLevel)
+		config::get().executive.optimizationLevel), _referenceCount(1) {
 
 }
 
@@ -628,6 +629,7 @@ CUresult cuda::CudaDriverFrontend::cuModuleLoad(CUmodule *cuModule, const char *
 				//ir::Module *modPtr = & module->second;
 				*cuModule = reinterpret_cast<CUmodule>(& module->second);
 				context->_getDevice().load(&module->second);
+				context->_getDevice().setOptimizationLevel(context->_optimization);
 				result = CUDA_SUCCESS;
 			}
 			else {
@@ -686,6 +688,7 @@ CUresult cuda::CudaDriverFrontend::cuModuleLoadDataEx(CUmodule *cuModule,
 			report("  loaded PTX module, now loading into emulator");
 			
 			context->_getDevice().load(&module->second);
+			context->_getDevice().setOptimizationLevel(context->_optimization);
 			result = CUDA_SUCCESS;
 			
 			report("    load Successful");

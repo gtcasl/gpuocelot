@@ -532,6 +532,8 @@ static void updateTailCallTargets(
 static void createScheduler(ir::PTXKernel& kernel,
 	ir::PTXKernel& originalKernel, const BlockSet& savedBlocks)
 {
+	typedef ir::BasicBlock::EdgePointerVector EdgeVector;
+	
 	if(kernel.cfg()->get_entry_block()->out_edges.size() == 1)
 	{
 		kernel.cfg()->get_entry_block()->out_edges[0]->type
@@ -601,8 +603,6 @@ static void createScheduler(ir::PTXKernel& kernel,
 		ir::ControlFlowGraph::edge_iterator 
 			fallthrough = scheduler->out_edges[1];
 		
-		fallthrough->type = ir::Edge::FallThrough;
-	
 		ir::PTXInstruction* compare = new ir::PTXInstruction(
 			ir::PTXInstruction::SetP);
 		
@@ -647,29 +647,38 @@ static void createScheduler(ir::PTXKernel& kernel,
 		ir::ControlFlowGraph::iterator newScheduler =
 			kernel.cfg()->insert_block(ir::BasicBlock(stream.str(), id));
 			
-		ir::Edge newFallthrough(scheduler, newScheduler, fallthrough->type);
+		ir::Edge newFallthrough(scheduler, newScheduler, ir::Edge::FallThrough);
 		
 		ir::ControlFlowGraph::const_edge_pointer_iterator 
 			edge = scheduler->out_edges.begin();
 		
-		for(std::advance(edge, 2); edge != scheduler->out_edges.end(); ++edge)
+		EdgeVector killedEdges;
+		
+		for(std::advance(edge, 1); edge != scheduler->out_edges.end(); ++edge)
 		{
 			ir::Edge replacement(newScheduler, (*edge)->tail, (*edge)->type);
 			
-			kernel.cfg()->remove_edge(*edge);
 			kernel.cfg()->insert_edge(replacement);
+			killedEdges.push_back(*edge);
 		}
 		
-		kernel.cfg()->remove_edge(fallthrough);
+		for(EdgeVector::iterator edge = killedEdges.begin();
+			edge != killedEdges.end(); ++edge)
+		{
+			kernel.cfg()->remove_edge(*edge);
+		}
+		
 		kernel.cfg()->insert_edge(newFallthrough);
 		
 		scheduler = newScheduler;
 	}
+
+	assert(scheduler->out_edges.size() > 1);
 	
 	// Add compare and branch instructions
-	ir::ControlFlowGraph::edge_iterator target = scheduler->out_edges[0];
+	ir::ControlFlowGraph::edge_iterator target      = scheduler->out_edges[0];
 	ir::ControlFlowGraph::edge_iterator fallthrough = scheduler->out_edges[1];
-		
+	
 	// add dummy block to enable the scheduler to branch anywhere
 	ir::ControlFlowGraph::iterator trampoline = kernel.cfg()->insert_block(
 		ir::BasicBlock(kernel.name + "_scheduler_trampoline",

@@ -7857,8 +7857,10 @@ namespace translator
 				call.d.type.category = ir::LLVMInstruction::Type::Element;
 				call.d.type.type = ir::LLVMInstruction::I64;
 				call.d.name = _tempRegister();
+
+				_add( call );
 								
-				ir::LLVMBitcast cast;
+				ir::LLVMTrunc cast;
 				
 				cast.d.type.category = ir::LLVMInstruction::Type::Element;
 				cast.d.type.type = ir::LLVMInstruction::I32;
@@ -7866,9 +7868,9 @@ namespace translator
 				
 				cast.a = call.d;
 				
-				_add( call );
+				_add( cast );
 				
-				return call.d.name;
+				return cast.d.name;
 				break;
 			}
 			case ir::PTXOperand::pm0:
@@ -8658,6 +8660,19 @@ namespace translator
 		ctpop.operand.type.type = ir::LLVMInstruction::I64;
 		ctpop.parameters[0].type.type = ir::LLVMInstruction::I64;
 		_llvmKernel->_statements.push_front( ctpop );
+
+		// @llvm.readcyclecounter
+		ir::LLVMStatement rdtsc( ir::LLVMStatement::FunctionDeclaration );
+
+		rdtsc.label = "llvm.readcyclecounter";
+		rdtsc.linkage    = ir::LLVMStatement::InvalidLinkage;
+		rdtsc.convention = ir::LLVMInstruction::DefaultCallingConvention;
+		rdtsc.visibility = ir::LLVMStatement::Default;
+
+		rdtsc.operand.type.category = ir::LLVMInstruction::Type::Element;
+		rdtsc.operand.type.type = ir::LLVMInstruction::I64;
+
+		_llvmKernel->_statements.push_front( rdtsc );
 
 		// @llvm.ctlz
 		ir::LLVMStatement ctlz( ir::LLVMStatement::FunctionDeclaration );

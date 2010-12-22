@@ -166,6 +166,8 @@ public:
 	typedef EdgeList::iterator edge_iterator;
 	/*! \brief A const iterator over edges */
 	typedef EdgeList::const_iterator const_edge_iterator;
+	/*! \brief Edge pair */
+	typedef std::pair<edge_iterator, edge_iterator> EdgePair;
 
 	/*! \brief A pointer to an edge iterator */
 	typedef EdgePointerVector::iterator edge_pointer_iterator;
@@ -202,6 +204,10 @@ public:
 
 	/*!	Inserts a basic block into the CFG */
 	iterator insert_block(const BasicBlock& b);
+	
+	/*! Duplicates the selected block, inserts it in an unconnected state,
+		returns an iterator to the newly created block */
+	iterator clone_block(iterator block, std::string suffix);
 	
 	/*! Removes a basic block and associated edges. Any blocks dominated by
 		block are now unreachable but still part of the graph.

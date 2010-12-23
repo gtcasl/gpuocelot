@@ -162,8 +162,11 @@ static unsigned int createRestorePoint(ir::PTXKernel& newKernel,
 	return offset;
 }
 
+typedef std::unordered_map<std::string,
+	ir::ControlFlowGraph::iterator> BlockLabelMap;
+
 static unsigned int createSavePoint(ir::PTXKernel& newKernel,
-	ir::PTXKernel& ptx, 
+	ir::PTXKernel& ptx, BlockLabelMap& saveBlocks,
 	ir::ControlFlowGraph::iterator oldBlock,
 	ir::ControlFlowGraph::edge_iterator newEdge,
 	const DataflowGraph::IteratorMap& cfgToDfgMap)
@@ -171,9 +174,6 @@ static unsigned int createSavePoint(ir::PTXKernel& newKernel,
 	report("   Creating save point for edge '" << newEdge->head->label
 		<< "' -> '" << oldBlock->label << "'");
 	
-	DataflowGraph::IteratorMap::const_iterator
-		dfgBlock = cfgToDfgMap.find(oldBlock);
-
 	// Possibly update the branch target
 	if(newEdge->type == ir::Edge::Branch)
 	{
@@ -183,6 +183,22 @@ static unsigned int createSavePoint(ir::PTXKernel& newKernel,
 	
 		branch->d.identifier += "_save";
 	}
+
+	BlockLabelMap::iterator existingBlock = saveBlocks.find(
+		oldBlock->label + "_save");
+	
+	if(existingBlock != saveBlocks.end())
+	{
+		ir::Edge edge(newEdge->head, existingBlock->second, newEdge->type);
+	
+		newKernel.cfg()->remove_edge(newEdge);
+		newKernel.cfg()->insert_edge(edge);
+	
+		return 0;
+	}
+	
+	DataflowGraph::IteratorMap::const_iterator
+		dfgBlock = cfgToDfgMap.find(oldBlock);
 
 	ir::ControlFlowGraph::edge_iterator splitEdge = newKernel.cfg()->split_edge(
 		newEdge, ir::BasicBlock(oldBlock->label + "_save", 
@@ -261,6 +277,9 @@ static unsigned int createSavePoint(ir::PTXKernel& newKernel,
 	
 	splitEdge->head->instructions.push_back(call);
 	
+	saveBlocks.insert(std::make_pair(oldBlock->label + "_save",
+		splitEdge->head));
+	
 	return offset;
 }
 
@@ -279,8 +298,10 @@ static ir::ControlFlowGraph::iterator createRegion(
 	ir::ControlFlowGraph::iterator exit = ptx.cfg()->get_exit_block();
 	
 	ir::BasicBlock::EdgePointerVector deletedEdges;
-	EdgeVector newEdges;
-	BlockMap oldToNewBlockMap;
+
+	EdgeVector    newEdges;
+	BlockMap      oldToNewBlockMap;
+	BlockLabelMap saveBlocks;
 
 	// create the map of old to new blocks
 	for(BlockSet::const_iterator block = region.begin(); 
@@ -381,7 +402,8 @@ static ir::ControlFlowGraph::iterator createRegion(
 			}
 
 			spillRegionSize = std::max(spillRegionSize, 
-				createSavePoint(newKernel, ptx, tail, newEdge, cfgToDfgMap));
+				createSavePoint(newKernel, ptx, saveBlocks,
+				tail, newEdge, cfgToDfgMap));
 			
 			// skip edges that go to an already created subkernel
 			if(alreadyAdded.count(tail) != 0) continue;

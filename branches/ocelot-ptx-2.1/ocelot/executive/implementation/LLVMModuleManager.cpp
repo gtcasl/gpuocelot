@@ -49,6 +49,8 @@
 
 #define REPORT_BASE 0
 
+#define REPORT_ALL_LLVM_ASSEMBLY 0
+
 namespace executive
 {
 
@@ -755,6 +757,8 @@ static void translate(llvm::Module*& module, ir::PTXKernel& kernel,
 	llvm::SMDiagnostic error;
 
 	module = new llvm::Module(kernel.name.c_str(), llvm::getGlobalContext());
+
+	reportE(REPORT_ALL_LLVM_ASSEMBLY, llvmKernel->code());
 
 	report("  Parsing LLVM assembly.");
 	module = llvm::ParseAssemblyString(llvmKernel->code().c_str(), 

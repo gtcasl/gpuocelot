@@ -1665,7 +1665,7 @@ namespace translator
 				}
 				case ir::PTXInstruction::AtomicAdd:
 				{
-					call.name = "@llvm.atomic.cmp.swap";
+					call.name = "@llvm.atomic.load.add";
 					break;
 				}
 				case ir::PTXInstruction::AtomicInc:
@@ -1708,6 +1708,18 @@ namespace translator
 			if( i.atomicOperation != ir::PTXInstruction::AtomicInc
 				&& i.atomicOperation != ir::PTXInstruction::AtomicDec )
 			{
+
+				ir::LLVMInttoptr cast;
+				
+				cast.a = _translate( i.a );
+				cast.d = ir::LLVMInstruction::Operand( _tempRegister(), 
+					ir::LLVMInstruction::Type( _translate( i.type ),
+					ir::LLVMInstruction::Type::Pointer ) );
+
+				_add( cast );
+
+				call.parameters[0] = cast.d;
+
 				switch( i.type )
 				{
 					case ir::PTXOperand::b8:  /* fall through */
@@ -1741,10 +1753,32 @@ namespace translator
 					default: assertM(false, "Invalid type.");
 				}
 			}
-			
-			call.parameters[0] = _translate( i.a );
+			else
+			{
+				call.parameters[0] = _translate( i.a );
+	
+					switch( i.type )
+				{
+					case ir::PTXOperand::b32: /* fall through */
+					case ir::PTXOperand::u32: /* fall through */
+					case ir::PTXOperand::s32:
+					{
+						call.name += "_32";
+						break;
+					}
+					case ir::PTXOperand::s64: /* fall through */
+					case ir::PTXOperand::u64: /* fall through */
+					case ir::PTXOperand::b64:
+					{
+						call.name += "_64";
+						break;
+					}
+					default: assertM(false, "Invalid type.");
+				}
+			}
+				
 			call.parameters[1] = _translate( i.b );
-		
+	
 			_add( call );
 		}
 		else
@@ -8570,7 +8604,7 @@ namespace translator
 	{
 		ir::LLVMStatement atom( ir::LLVMStatement::FunctionDeclaration );
 
-		atom.label = "__ocelot_atomic_inc";
+		atom.label = "__ocelot_atomic_inc_32";
 		atom.linkage = ir::LLVMStatement::InvalidLinkage;
 		atom.convention = ir::LLVMInstruction::DefaultCallingConvention;
 		atom.visibility = ir::LLVMStatement::Default;
@@ -8578,23 +8612,17 @@ namespace translator
 		atom.operand.type.category = ir::LLVMInstruction::Type::Element;
 		atom.operand.type.type = ir::LLVMInstruction::I32;
 		
-		atom.parameters.resize( 3 );
-
-		atom.parameters[2].type.category = ir::LLVMInstruction::Type::Pointer;
-		atom.parameters[2].type.members.resize(1);
-		atom.parameters[2].type.members[0].category 
-			= ir::LLVMInstruction::Type::Structure;
-		atom.parameters[2].type.members[0].label = "%LLVMContext";
+		atom.parameters.resize( 2 );
 
 		atom.parameters[0].type.category = ir::LLVMInstruction::Type::Element;
-		atom.parameters[0].type.type = ir::LLVMInstruction::I32;
+		atom.parameters[0].type.type = ir::LLVMInstruction::I64;
 
 		atom.parameters[1].type.category = ir::LLVMInstruction::Type::Element;
 		atom.parameters[1].type.type = ir::LLVMInstruction::I32;
 
 		_llvmKernel->_statements.push_front( atom );		
 
-		atom.label = "__ocelot_atomic_dec";
+		atom.label = "__ocelot_atomic_dec_32";
 		
 		_llvmKernel->_statements.push_front( atom );
 	}
@@ -8628,6 +8656,70 @@ namespace translator
 
 	void PTXToLLVMTranslator::_addLLVMIntrinsics()
 	{
+		// @llvm.atomic.load.add
+		ir::LLVMStatement atom( ir::LLVMStatement::FunctionDeclaration );
+
+		atom.label = "llvm.atomic.load.add.i32.p0i32";
+		atom.linkage = ir::LLVMStatement::InvalidLinkage;
+		atom.convention = ir::LLVMInstruction::DefaultCallingConvention;
+		atom.visibility = ir::LLVMStatement::Default;
+		
+		atom.operand.type.category = ir::LLVMInstruction::Type::Element;
+		atom.operand.type.type = ir::LLVMInstruction::I32;
+		
+		atom.parameters.resize( 2 );
+
+		atom.parameters[0].type.category = ir::LLVMInstruction::Type::Pointer;
+		atom.parameters[0].type.type = ir::LLVMInstruction::I32;
+
+		atom.parameters[1].type.category = ir::LLVMInstruction::Type::Element;
+		atom.parameters[1].type.type = ir::LLVMInstruction::I32;
+
+		_llvmKernel->_statements.push_front( atom );
+
+		atom.label = "llvm.atomic.load.and.i32.p0i32";
+		_llvmKernel->_statements.push_front( atom );
+		atom.label = "llvm.atomic.load.or.i32.p0i32";
+		_llvmKernel->_statements.push_front( atom );
+		atom.label = "llvm.atomic.load.xor.i32.p0i32";
+		_llvmKernel->_statements.push_front( atom );
+		atom.label = "llvm.atomic.load.min.i32.p0i32";
+		_llvmKernel->_statements.push_front( atom );
+		atom.label = "llvm.atomic.load.umin.i32.p0i32";
+		_llvmKernel->_statements.push_front( atom );
+		atom.label = "llvm.atomic.load.max.i32.p0i32";
+		_llvmKernel->_statements.push_front( atom );
+		atom.label = "llvm.atomic.load.umax.i32.p0i32";
+		_llvmKernel->_statements.push_front( atom );
+		atom.label = "llvm.atomic.load.min.i32.p0i32";
+		_llvmKernel->_statements.push_front( atom );
+		atom.label = "llvm.atomic.swap.i32.p0i32";
+		_llvmKernel->_statements.push_front( atom );
+
+		// @llvm.atomic.cmp.swap
+		ir::LLVMStatement cmp( ir::LLVMStatement::FunctionDeclaration );
+
+		cmp.label = "llvm.atomic.cmp.swap.i32.p0i32";
+		cmp.linkage = ir::LLVMStatement::InvalidLinkage;
+		cmp.convention = ir::LLVMInstruction::DefaultCallingConvention;
+		cmp.visibility = ir::LLVMStatement::Default;
+		
+		cmp.operand.type.category = ir::LLVMInstruction::Type::Element;
+		cmp.operand.type.type = ir::LLVMInstruction::I32;
+		
+		cmp.parameters.resize( 3 );
+
+		cmp.parameters[0].type.category = ir::LLVMInstruction::Type::Pointer;
+		cmp.parameters[0].type.type = ir::LLVMInstruction::I32;
+
+		cmp.parameters[1].type.category = ir::LLVMInstruction::Type::Element;
+		cmp.parameters[1].type.type = ir::LLVMInstruction::I32;
+
+		cmp.parameters[2].type.category = ir::LLVMInstruction::Type::Element;
+		cmp.parameters[2].type.type = ir::LLVMInstruction::I32;
+
+		_llvmKernel->_statements.push_front( cmp );
+		
 		// @llvm.ctpop
 		ir::LLVMStatement ctpop( ir::LLVMStatement::FunctionDeclaration );
 

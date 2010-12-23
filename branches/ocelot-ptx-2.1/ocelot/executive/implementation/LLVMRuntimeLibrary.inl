@@ -243,7 +243,7 @@ extern "C"
 		return true;
 	}
 
-	ir::PTXB32 __ocelot_atomic_inc( ir::PTXU64 address, ir::PTXB32 b )
+	ir::PTXB32 __ocelot_atomic_inc_32( ir::PTXU64 address, ir::PTXB32 b )
 	{
 		ir::PTXB32 d = 0;
 		ir::PTXB32 result = 0;
@@ -264,7 +264,7 @@ extern "C"
 		return d;
 	}
 
-	ir::PTXB32 __ocelot_atomic_dec( ir::PTXU64 address, ir::PTXB32 b )
+	ir::PTXB32 __ocelot_atomic_dec_32( ir::PTXU64 address, ir::PTXB32 b )
 	{
 		ir::PTXB32 d = 0;
 		ir::PTXB32 result = 0;
@@ -273,7 +273,7 @@ extern "C"
 
 		d = *((ir::PTXB32*) address);
 		
-		result = (d > b) ? b : d - 1;
+		result = ((d == 0) || (d > b)) ? b : d - 1;
 		reportE( REPORT_ATOMIC_OPERATIONS, "AtomicDec: address " 
 			<< (void*) address << " from " << d << " by " << b 
 			<< " to " << result );

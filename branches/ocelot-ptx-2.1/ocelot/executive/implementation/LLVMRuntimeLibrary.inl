@@ -29,13 +29,13 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 // Print out information when executing atomic operations 
 #define REPORT_ATOMIC_OPERATIONS 0
 
 // Only print out register updates from the Nth thread
-#define DEBUG_NTH_THREAD_ONLY 0
+#define DEBUG_NTH_THREAD_ONLY 1
 
 // Print out PTX instructions as they are executed
 #define DEBUG_PTX_INSTRUCTION_TRACE 1

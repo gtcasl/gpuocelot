@@ -556,5 +556,109 @@ ANALYSIS:
     }
   
     AF->assignEdges();
+
+    SA.Net.clear();
+   
+    SA.runOnKernel(_kernel);
+  }
+  
+  const NodeTy* StructuralTransform::get_root_node() const {
+    return *(SA.Net.begin());
+  } 
+
+  const ir::ControlFlowGraph::const_iterator StructuralTransform::bb(NodeTy *node) const {
+    if (node->isCombined)
+      return _kernel->cfg()->end();
+    else
+      return node->BB;
+  }
+
+  const StructuralTransform::NodeListTy& StructuralTransform::children(const NodeTy *node) const {
+    NodeListTy *nList = new NodeListTy;
+    NodeTy *tmp = NULL;
+ 
+    switch (node->nodeType) {
+    case Block:
+      tmp = node->entryNode;
+      nList->push_back(tmp);
+
+      while (tmp->succNode.size() == 1) {
+        tmp = *(tmp->succNode.begin());
+        nList->push_back(tmp);
+      }  
+
+      break;
+    case IfThen:
+      nList->push_back(cond(node));
+      nList->push_back(*(node->childNode.begin()));
+
+      break;
+    case IfThenElse:
+      nList->push_back(cond(node));
+      nList->push_back(ifTrue(node));
+      nList->push_back(ifFalse(node));
+     
+      break;
+    case SelfLoop:
+      nList->push_back(*(node->childNode.begin()));
+      break;
+    case NaturalLoop:
+      tmp = node->entryNode;
+      nList->push_back(tmp);
+
+      tmp = *(tmp->succNode.begin());
+      nList->push_back(tmp); 
+
+      break;
+    default:
+      break;
+    }
+
+    return *nList; 
+  }
+
+  const NodeTy* StructuralTransform::cond(const NodeTy *node) const {
+    return node->entryNode;
+  }
+
+  const NodeTy* StructuralTransform::ifTrue(const NodeTy *node) const {
+    if (node->nodeType == IfThen)
+      return *(node->childNode.begin());    
+
+    const NodeTy* lastChild = node;
+
+    while (!lastChild->isCombined)
+      lastChild = children(lastChild).back();
+ 
+    ir::PTXInstruction *term = static_cast<ir::PTXInstruction *>(lastChild->BB->instructions.back());
+
+    NodeSetTy::iterator tmpNode = node->childNode.begin();
+    NodeTy* childNode1 = *tmpNode;
+    ++tmpNode;
+    NodeTy* childNode2 = *tmpNode;
+
+    if (term->d.identifier == childNode1->entryBB->label)
+      return childNode1;
+    else
+      return childNode2;    
+  }
+
+  const NodeTy* StructuralTransform::ifFalse(const NodeTy *node) const {
+    const NodeTy* lastChild = node;
+
+    while (!lastChild->isCombined)
+      lastChild = children(lastChild).back();
+ 
+    ir::PTXInstruction *term = static_cast<ir::PTXInstruction *>(lastChild->BB->instructions.back());
+
+    NodeSetTy::iterator tmpNode = node->childNode.begin();
+    NodeTy* childNode1 = *tmpNode;
+    ++tmpNode;
+    NodeTy* childNode2 = *tmpNode;
+
+    if (term->d.identifier == childNode1->entryBB->label)
+      return childNode2;
+    else
+      return childNode1;    
   }
 }

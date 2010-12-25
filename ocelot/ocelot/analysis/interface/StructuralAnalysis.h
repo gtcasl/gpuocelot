@@ -204,31 +204,9 @@ namespace analysis {
     // deleteUnreachableNode - delete nodes that is no longer reachable from the entry
     void deleteUnreachableNodes(NodeSetTy &N, NodeTy *entry);
 
-	////Interface to PTXToILTranslator
-	///*! \brief Returns a pointer to the root node of the control tree */
-	//const NodeTy* get_root_node() const;
-
-	///*! \brief Get iterator to the basic block in the cfg */
-	//const ControlFlowGraph::const_iterator bb() const;
-
-	//typedef std::list<NodeTy *> NodeListTy;
-
-	///*! \brief Get the children
-	// *
-	// * It should return an ordered container so PTXToILTranslator can emit 
-	// blocks in order.
-	// */
-	//const NodeListTy& children() const;
-
-	///*! \brief Get condition node from IfThen and IfThenElse
-	// *
-	// * The last instruction of the condition node should be branch. 
-	// */
-	//const NodeTy* cond() const;
-	///*! \brief Get if-true node from IfThen and IfThenElse */
-	//const NodeTy* ifTrue() const;
-	///*! \brief Get if-false node from IfThenElse */
-	//const NodeTy* ifFalse() const;
+    ////Interface to PTXToILTranslator
+    ///*! \brief Returns a pointer to the root node of the control tree */
+    const NodeTy* get_root_node() const;
   };
 }
 

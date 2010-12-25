@@ -638,9 +638,9 @@ ANALYSIS:
     NodeTy* childNode2 = *tmpNode;
 
     if (term->d.identifier == childNode1->entryBB->label)
-      return childNode1;
+      return childNode2;
     else
-      return childNode2;    
+      return childNode1;    
   }
 
   const NodeTy* StructuralTransform::ifFalse(const NodeTy *node) const {
@@ -657,8 +657,8 @@ ANALYSIS:
     NodeTy* childNode2 = *tmpNode;
 
     if (term->d.identifier == childNode1->entryBB->label)
-      return childNode2;
+      return childNode1;
     else
-      return childNode1;    
+      return childNode2;    
   }
 }

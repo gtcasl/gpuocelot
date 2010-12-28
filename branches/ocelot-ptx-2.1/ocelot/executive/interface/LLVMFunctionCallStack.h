@@ -22,6 +22,7 @@ public:
 	unsigned int returned();
 
 	void setKernelArgumentMemory(char* memory, unsigned int argumentSize);
+	void resizeCurrentLocalMemory(unsigned int size);
 
 	char* localMemory();
 	char* parameterMemory();

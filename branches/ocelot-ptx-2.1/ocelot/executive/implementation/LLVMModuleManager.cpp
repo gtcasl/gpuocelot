@@ -966,8 +966,11 @@ LLVMModuleManager::KernelAndTranslation::KernelAndTranslation(ir::PTXKernel* k,
 void LLVMModuleManager::KernelAndTranslation::unload()
 {
 	#ifdef HAVE_LLVM
-	delete _kernel;
-	if(_metadata == 0) return;
+	if(_metadata == 0)
+	{
+		delete _kernel;
+		return;
+	}
 	assert(_module != 0);
 
 	llvm::Function* function = _module->getFunction(_kernel->name);
@@ -975,6 +978,7 @@ void LLVMModuleManager::KernelAndTranslation::unload()
 	LLVMState::jit()->freeMachineCodeForFunction(function);
 
 	LLVMState::jit()->removeModule(_module);
+	delete _kernel;
 	delete _module;
 	delete _metadata;
 	#else
@@ -986,9 +990,11 @@ LLVMModuleManager::KernelAndTranslation::MetaData*
 	LLVMModuleManager::KernelAndTranslation::metadata()
 {
 	#ifdef HAVE_LLVM
+	report("Getting metadata for kernel '" << _kernel->name << "'");
+
 	if(_metadata != 0) return _metadata;
 	
-	report("Translating PTX kernel '" << _kernel->name << "'");
+	report("Translating PTX");
 	
 	optimizePTX(*_kernel, _optimizationLevel, _offsetId);
 	

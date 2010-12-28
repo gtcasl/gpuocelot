@@ -140,6 +140,7 @@ void LLVMCooperativeThreadArray::executeCta(unsigned int id)
 		{
 			_reclaimContext(*context);
 		}
+		
 		warpList.clear();
 	}
 	
@@ -155,8 +156,8 @@ void LLVMCooperativeThreadArray::executeCta(unsigned int id)
 	{
 		_reclaimContext(*context);
 	}
-	warpList.clear();
 	
+	warpList.clear();
 
 	while(_freeContexts.size() + _reclaimedContexts.size() != threads)
 	{
@@ -198,6 +199,7 @@ void LLVMCooperativeThreadArray::executeCta(unsigned int id)
 		{
 			_destroyContext(*context);
 		}
+
 		warpList.clear();
 	}
 	
@@ -319,8 +321,8 @@ void LLVMCooperativeThreadArray::_computeNextFunction()
 			if(total > _contexts.size() / 2) break;
 		}
 	}
-
-	// Possibly lazily compile the function
+	
+	// lazily compile the function
 	if(_functions[_nextFunction] == 0)
 	{
 		_functions[_nextFunction] = _worker->getFunctionMetaData(_nextFunction);
@@ -373,6 +375,7 @@ bool LLVMCooperativeThreadArray::_finishContext(unsigned int contextId)
 		assertM(0 < _queuedThreads.size(), "Next function " 
 			<< 0 << " is out of range of function table with "
 			<< _queuedThreads.size() << " entries.");
+
 		_queuedThreads[0].push_back(contextId);
 
 		report("     hit barrier, removing from scheduling pool.");
@@ -382,13 +385,28 @@ bool LLVMCooperativeThreadArray::_finishContext(unsigned int contextId)
 	case LLVMExecutableKernel::TailCall:
 	{
 		nextFunction = localMemory[1];
-		
-		// nothing happens here, we reuse the existing stack
-		report("     hit tail call, saving thread context at resume point "
-			<< nextFunction << ".");
 
 		// adjust the next function by the function base
 		nextFunction += stack.functionId();
+		
+		// lazily compile the function, get the stack size
+		if(_functions[nextFunction] == 0)
+		{
+			_functions[nextFunction] = 
+				_worker->getFunctionMetaData(nextFunction);
+		}
+
+		LLVMModuleManager::MetaData& metadata = *_functions[nextFunction];
+		
+		stack.resizeCurrentLocalMemory(metadata.localSize);
+
+		context.local         = stack.localMemory();
+		context.parameter     = stack.parameterMemory();
+		context.argument      = stack.argumentMemory();
+		
+		report("     hit tail call, saving thread context at resume point "
+			<< nextFunction << ", setting local memory size to "
+			<< metadata.localSize << ".");
 	}
 	break;
 	case LLVMExecutableKernel::NormalCall:

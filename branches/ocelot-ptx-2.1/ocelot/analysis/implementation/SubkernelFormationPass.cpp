@@ -811,7 +811,6 @@ void SubkernelFormationPass::ExtractKernelsPass::runOnKernel(ir::Kernel& k)
 
 	unsigned int currentRegionSize = 0;
 	unsigned int kernelId = 0;
-	unsigned int spillRegionSize = 0;
 
 	std::string originalName = k.name;
 	
@@ -888,11 +887,15 @@ void SubkernelFormationPass::ExtractKernelsPass::runOnKernel(ir::Kernel& k)
 		// create a new region if there are enough blocks
 		if(currentRegionSize < _expectedRegionSize && !queue.empty()) continue;
 		
+		unsigned int spillRegionSize = 0;
+		
 		entry = createRegion(*newKernel, spillRegionSize, ptx, region,
 			inEdges, entry, cfgToDfgMap, alreadyAdded, savedBlocks);
 		alreadyAdded.insert(region.begin(), region.end());
 		
 		createScheduler(*newKernel, ptx, savedBlocks);
+
+		addVariables(*newKernel, k, spillRegionSize);
 
 		// restart with a new kernel if there are any blocks left
 		if(entry == ptx.cfg()->get_exit_block()) break;
@@ -916,12 +919,6 @@ void SubkernelFormationPass::ExtractKernelsPass::runOnKernel(ir::Kernel& k)
 	// Rename 
 	updateTailCallTargets(splitKernels, idToKernelMap);
 
-	// Add variables
-	for(KernelVector::iterator kernel = splitKernels.begin();
-		kernel != splitKernels.end(); ++kernel)
-	{
-		addVariables(**kernel, k, spillRegionSize);
-	}
 	// 
 	/*
 	std::cout << "\nSplit kernels:\n";

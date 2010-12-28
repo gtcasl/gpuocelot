@@ -40,16 +40,24 @@ void LLVMFunctionCallStack::setKernelArgumentMemory(
 	_argumentSize   = size;
 }
 
+void LLVMFunctionCallStack::resizeCurrentLocalMemory(unsigned int size)
+{
+	assert(_stack.size() != 0);
+	
+	_stack.resize( _stack.size() - _sizes.back().localSize + size );
+	_sizes.back().localSize = size;
+}
+
 char* LLVMFunctionCallStack::localMemory()
 {
 	const ParameterAndLocalSize& sizes = _sizes.back();
-	return &_stack[_stack.size() - sizes.localSize - sizes.parameterSize];
+	return &_stack[_stack.size() - sizes.localSize];
 }
 
 char* LLVMFunctionCallStack::parameterMemory()
 {
 	const ParameterAndLocalSize& sizes = _sizes.back();
-	return &_stack[_stack.size() - sizes.parameterSize];
+	return &_stack[_stack.size() - sizes.localSize - sizes.parameterSize];
 }
 
 char* LLVMFunctionCallStack::argumentMemory()
@@ -58,8 +66,9 @@ char* LLVMFunctionCallStack::argumentMemory()
 	
 	const ParameterAndLocalSize& sizes = _sizes.back();
 	unsigned int previousParameterSize = _sizes[_sizes.size()-2].parameterSize;
+	unsigned int previousLocalSize     = _sizes[_sizes.size()-2].localSize;
 	return &_stack[_stack.size() - sizes.localSize - sizes.parameterSize
-		- previousParameterSize];
+		- previousParameterSize - previousLocalSize];
 }
 
 unsigned int LLVMFunctionCallStack::localSize() const

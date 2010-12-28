@@ -49,9 +49,9 @@ namespace analysis
 		for( DataflowGraph::Block::RegisterSet::const_iterator 
 			reg = alive.begin(); reg != alive.end(); ++reg )
 		{
-			report( "    r" << reg->id );			
-			ir::PTXInstruction save( 
-				ir::PTXInstruction::St );
+			report( "    r" << reg->id << " (" 
+				<< ir::PTXOperand::bytes( reg->type ) << " bytes)" );
+			ir::PTXInstruction save( ir::PTXInstruction::St );
 		
 			save.type = reg->type;
 			save.addressSpace = ir::PTXInstruction::Local;

@@ -8163,6 +8163,23 @@ namespace translator
 
 			ir::LLVMInstruction::Operand reg = _translate( o );
 			
+			// Possibly cast this to a 64-bit address
+			#ifndef __i386__
+			if( reg.type.type != ir::LLVMInstruction::I64 )
+			{
+				ir::LLVMZext extend;
+				
+				extend.a = reg;
+				extend.d = ir::LLVMInstruction::Operand( _tempRegister(), 
+					ir::LLVMInstruction::Type( ir::LLVMInstruction::I64,
+					ir::LLVMInstruction::Type::Element ) );
+			
+				_add( extend );
+				
+				reg = extend.d;
+			}
+			#endif
+			
 			if( o.offset != 0 )
 			{
 				ir::LLVMAdd add;

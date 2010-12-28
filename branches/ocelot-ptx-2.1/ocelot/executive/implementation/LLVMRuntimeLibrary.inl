@@ -35,7 +35,7 @@
 #define REPORT_ATOMIC_OPERATIONS 0
 
 // Only print out register updates from the Nth thread
-#define DEBUG_NTH_THREAD_ONLY 1
+#define DEBUG_NTH_THREAD_ONLY 0
 
 // Print out PTX instructions as they are executed
 #define DEBUG_PTX_INSTRUCTION_TRACE 1

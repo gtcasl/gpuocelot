@@ -176,6 +176,8 @@ LLVMModuleManager::MetaData* LLVMWorkerThread::getFunctionMetaData(
 		throw hydrazine::Exception(message.errorMessage);
 	}
 	
+	assert(message.type == LLVMModuleManager::DatabaseMessage::GetFunction);
+	
 	return message.metadata;
 }
 

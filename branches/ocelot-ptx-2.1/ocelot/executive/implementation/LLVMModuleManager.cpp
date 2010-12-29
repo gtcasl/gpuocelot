@@ -321,7 +321,6 @@ static void setupSharedMemoryReferences(ir::PTXKernel& kernel,
 	report( "  Setting up shared memory references." );
 
 	OffsetMap offsets;
-	GlobalMap sharedGlobals;
 	StringSet external;
 	OperandVector externalOperands;
 
@@ -345,20 +344,22 @@ static void setupSharedMemoryReferences(ir::PTXKernel& kernel,
 				externalAlignment = std::max(externalAlignment, 
 					(unsigned) global->second.statement.alignment);
 				externalAlignment = std::max(externalAlignment, 
-				ir::PTXOperand::bytes(global->second.statement.type));
+					ir::PTXOperand::bytes(global->second.statement.type));
 			}
 			else 
 			{
 				report("   Allocating global shared variable " 
 					<< global->second.statement.name);
-				sharedGlobals.insert(std::make_pair( 
-					global->second.statement.name, global));
+				pad(metadata->sharedSize, global->second.statement.alignment);
+				offsets.insert(std::make_pair(global->second.statement.name, 
+					metadata->sharedSize));
+				metadata->sharedSize += global->second.statement.bytes();
 			}
 		}
 	}
 
 	ir::Kernel::LocalMap::const_iterator local = parent.locals.begin();
-	for( ; local != parent.locals.end(); ++local )
+	for( ; local != parent.locals.end(); ++local)
 	{
 		if(local->second.space == ir::PTXInstruction::Shared)
 		{
@@ -419,27 +420,6 @@ static void setupSharedMemoryReferences(ir::PTXKernel& kernel,
 							continue;
 						}
 	
-						GlobalMap::iterator gi = sharedGlobals.find(
-							operands[i]->identifier);
-						if(gi != sharedGlobals.end())
-						{
-							ir::Module::GlobalMap::const_iterator 
-							it = gi->second;
-							sharedGlobals.erase(gi);
-
-							report("   Found global shared variable " 
-								<< it->second.statement.name);
-
-							pad(metadata->sharedSize, 
-							it->second.statement.alignment);
-
-							offsets.insert(std::make_pair(
-								it->second.statement.name,
-								metadata->sharedSize));
-							metadata->sharedSize
-								+= it->second.statement.bytes();
-						}                               
-
 						OffsetMap::iterator offset = offsets.find(
 							operands[i]->identifier);
 						if(offsets.end() != offset) 

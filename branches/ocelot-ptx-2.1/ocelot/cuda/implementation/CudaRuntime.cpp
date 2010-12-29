@@ -479,6 +479,8 @@ cuda::CudaRuntime::~CudaRuntime() {
 /*!
 	registers a CUDA fatbinary and returns a handle for referencing the fat binary
 */
+static bool dummy0Flag = false;
+
 void** cuda::CudaRuntime::cudaRegisterFatBinary(void *fatCubin) {
 	size_t handle = 0;
 	__cudaFatCudaBinary *binary = (__cudaFatCudaBinary *)fatCubin;
@@ -498,13 +500,45 @@ void** cuda::CudaRuntime::cudaRegisterFatBinary(void *fatCubin) {
 	assertM(binary->ptx != 0, "binary contains no PTX");
 	assertM(binary->ptx->ptx != 0, "binary contains no PTX");
 
+	char* ptx = 0;
+	unsigned int ptxVersion = 0;
+
+	report("Getting the highest PTX version");
+
+	for(unsigned int i = 0; ; ++i)
+	{
+		if((binary->ptx[i].ptx) == 0) break;
+	
+		std::string computeCapability = binary->ptx[i].gpuProfileName;
+		std::string versionString(computeCapability.begin() + 8,
+			computeCapability.end());
+	
+		std::stringstream version;
+		unsigned int thisVersion = 0;
+		
+		version << versionString;
+		version >> thisVersion;
+		if(thisVersion > ptxVersion)
+		{
+			ptxVersion = thisVersion;
+			ptx = binary->ptx[i].ptx;
+		}
+	}
+	
+	report(" Selected version " << ptxVersion);
+
 	// register associated PTX
 	ModuleMap::iterator module = _modules.insert(
 		std::make_pair(binary->ident, ir::Module())).first;
-	module->second.lazyLoad(binary->ptx->ptx, binary->ident);
+	module->second.lazyLoad(ptx, binary->ident);
+	
+	if(std::string(binary->ident).find("/cufft/") != std::string::npos)
+	{
+		dummy0Flag = true;
+	}
 	
 	report("Loading module (fatbin) - " << module->first);
-	reportE(REPORT_ALL_PTX, " with PTX\n" << binary->ptx->ptx);
+	reportE(REPORT_ALL_PTX, " with PTX\n" << ptx);
 	
 	handle = _fatBinaries.size();
 	
@@ -668,19 +702,46 @@ void cuda::CudaRuntime::cudaRegisterFunction(
 // This is a horrible hack to deal with another horrible hack
 // Thanks nvidia for creating a backdoor interface to your driver rather than 
 //   extending the API in a sane/documented way
-int dummy0() { return 0; }
-int dummy1() { return 2 << 20; }
+// 201
+// id: simpleCUBLAS - 0x11df21116e3393c6 0x9395d855f368c3a8
+// id: simpleCUFFT  - 0x11df21116e3393c6 0x9395d855f368c3a8
+
+int dummy0() { if(dummy0Flag) return 1; return 0; }
+int dummy1() { return 1 << 20; }
+int dummy2() { return 400; }
 
 typedef int (*ExportedFunction)();
 
-static ExportedFunction exportTable[3] = {&dummy0, &dummy1, &dummy1};
+#define DEBUG_MODE 0
+
+#if (DEBUG_MODE == 0)
+static ExportedFunction exportTable[3] = {&dummy0, &dummy1, &dummy2};
+#endif
 
 cudaError_t cuda::CudaRuntime::cudaGetExportTable(const void **ppExportTable,
 	const cudaUUID_t *pExportTableId) {
-	report("Getting export table");
 
+	int assumedValue[4] = {0x6e3393c6, 0x11df2111, 0xf368c3a8, 0x9395d855};
+
+	report("Getting export table with id " << hydrazine::dataToString(
+		pExportTableId->bytes, sizeof(pExportTableId->bytes)));
+
+	if(std::memcmp(assumedValue, pExportTableId->bytes, 16) != 0)
+	{
+		assertM(false, "Unknown export table id.");
+	}
+
+#if (DEBUG_MODE == 1)
+    cuda::CudaDriver::cuInit(0);
+    CUcontext context;
+    
+    cuda::CudaDriver::cuCtxCreate(&context, 0, 0);
+    
+    cuda::CudaDriver::cuGetExportTable(ppExportTable, pExportTableId);
+
+#else
 	*ppExportTable = &exportTable;
-
+#endif
 	return cudaSuccess;
 }
 

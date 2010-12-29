@@ -116,6 +116,34 @@ void LLVMExecutableKernel::updateArgumentMemory()
 
 void LLVMExecutableKernel::updateMemory()
 {
+	report( "Updating Memory" );
+
+	report( " Updating Constant Memory" );
+	unsigned int bytes = 0;
+
+	for(ir::Module::GlobalMap::const_iterator 
+		constant = module->globals().begin(); 
+		constant != module->globals().end(); ++constant) 
+	{
+		if(constant->second.statement.directive == ir::PTXStatement::Const) 
+		{
+			report( "   Updating global constant variable " 
+				<< constant->second.statement.name << " of size " 
+				<< constant->second.statement.bytes() );
+			pad(bytes, constant->second.statement.alignment);
+
+			assert(device != 0);
+			Device::MemoryAllocation* global = device->getGlobalAllocation(
+				module->path(), constant->second.statement.name);
+
+			assert(global != 0);
+			assert(global->size() + bytes <= _constMemorySize);
+
+			memcpy(_constantMemory + bytes, global->pointer(), global->size());
+
+			bytes += global->size();
+		}
+	}
 }
 
 ExecutableKernel::TextureVector LLVMExecutableKernel::textureReferences() const

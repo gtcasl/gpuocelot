@@ -712,10 +712,12 @@ int dummy2() { return 400; }
 
 typedef int (*ExportedFunction)();
 
-#define DEBUG_MODE 0
+#define DEBUG_MODE 1
 
 #if (DEBUG_MODE == 0)
 static ExportedFunction exportTable[3] = {&dummy0, &dummy1, &dummy2};
+#else
+static CUcontext context = 0;
 #endif
 
 cudaError_t cuda::CudaRuntime::cudaGetExportTable(const void **ppExportTable,
@@ -732,18 +734,21 @@ cudaError_t cuda::CudaRuntime::cudaGetExportTable(const void **ppExportTable,
 	}
 
 #if (DEBUG_MODE == 1)
-    cuda::CudaDriver::cuInit(0);
-    CUcontext context;
-    
-    cuda::CudaDriver::cuCtxCreate(&context, 0, 0);
+    if(context == 0)
+    {
+		cuda::CudaDriver::cuInit(0);
+		
+		cuda::CudaDriver::cuCtxCreate(&context, 0, 0);
+    }
     
     cuda::CudaDriver::cuGetExportTable(ppExportTable, pExportTableId);
-
 #else
 	*ppExportTable = &exportTable;
 #endif
 	return cudaSuccess;
 }
+
+#undef DEBUG_MODE
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //

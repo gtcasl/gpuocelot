@@ -177,8 +177,9 @@ static void setupArgumentMemoryReferences(ir::PTXKernel& kernel,
 						{
 							report("   For instruction \"" << ptx.toString() 
 								<< "\" mapping \"" << argument->first 
-								<< "\" to " << argument->second);
-							operands[i]->offset     = argument->second;
+								<< "\" to "
+								<< (operands[i]->offset + argument->second));
+							operands[i]->offset     += argument->second;
 							operands[i]->isArgument = true;
 						}
 					}
@@ -275,8 +276,8 @@ static void setupParameterMemoryReferences(ir::PTXKernel& kernel,
 							<< ptx.toString() << "\" mapping \"" 
 							<< parameter->first << "\" to " 
 							<< (parameter->second + operands[i]->offset));
-							operands[ i ]->offset += parameter->second;
-							operands[ i ]->isArgument = false;
+							operands[i]->offset += parameter->second;
+							operands[i]->isArgument = false;
 						}
 					}
 				}
@@ -1214,7 +1215,7 @@ void LLVMModuleManager::ModuleDatabase::unloadModule(
 	KernelVector newKernels(kernelStart, kernelEnd);
 	
 	kernelStart = _kernels.begin();
-	std::advance(kernelStart, highId+1);
+	std::advance(kernelStart, highId + 1);
 	
 	for(KernelVector::iterator unloaded = kernelEnd;
 		unloaded != kernelStart; ++unloaded)
@@ -1235,7 +1236,7 @@ void LLVMModuleManager::ModuleDatabase::unloadModule(
 	{
 		if(module->second.lowId() > lowId)
 		{
-			module->second.shiftId(highId - lowId);
+			module->second.shiftId(highId - lowId + 1);
 		}
 	}
 }

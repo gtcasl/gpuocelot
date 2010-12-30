@@ -261,6 +261,8 @@ namespace cuda
 
 	CUresult CudaDriver::cuInit(unsigned int Flags)
 	{
+		// Handle multiple calls
+		if(_interface.loaded()) return CUDA_SUCCESS;
 		_interface.load();
 		if( !_interface.loaded() ) return CUDA_ERROR_NO_DEVICE;
 		report("cuInit");

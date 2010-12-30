@@ -76,6 +76,8 @@ int main(int argc, char** argv)
 ////////////////////////////////////////////////////////////////////////////////
 void runTest(int argc, char** argv) 
 {
+	srand(2010);
+
     if( cutCheckCmdLineFlag(argc, (const char**)argv, "device") )
 		cutilDeviceInit(argc, argv);
 	else

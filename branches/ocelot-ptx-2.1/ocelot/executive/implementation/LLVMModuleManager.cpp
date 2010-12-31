@@ -595,11 +595,47 @@ static void setupLocalMemoryReferences(ir::PTXKernel& kernel,
 		}
 	}
 
+	// give preference to resume point
+	local = kernel.locals.find("_Zocelot_resume_point");
+	if(local != kernel.locals.end())
+	{
+		if(local->second.space == ir::PTXInstruction::Local)
+		{
+			report("   Found local local variable " 
+				<< local->second.name << " of size " 
+				<< local->second.getSize());
+			
+			pad(metadata->localSize, local->second.alignment);
+			offsets.insert(std::make_pair(local->second.name,
+				metadata->localSize));
+			metadata->localSize += local->second.getSize();
+		}
+	}
+
 	for(ir::Kernel::LocalMap::const_iterator local = kernel.locals.begin(); 
 		local != kernel.locals.end(); ++local)
 	{
 		if(local->first == "_Zocelot_barrier_next_kernel") continue;
+		if(local->first == "_Zocelot_spill_area")          continue;
+		if(local->first == "_Zocelot_resume_point")        continue;
 		
+		if(local->second.space == ir::PTXInstruction::Local)
+		{
+			report("   Found local local variable " 
+				<< local->second.name << " of size " 
+				<< local->second.getSize());
+			
+			pad(metadata->localSize, local->second.alignment);
+			offsets.insert(std::make_pair(local->second.name,
+				metadata->localSize));
+			metadata->localSize += local->second.getSize();
+		}
+	}
+
+	// defer the spill area
+	local = kernel.locals.find("_Zocelot_spill_area");
+	if(local != kernel.locals.end())
+	{
 		if(local->second.space == ir::PTXInstruction::Local)
 		{
 			report("   Found local local variable " 

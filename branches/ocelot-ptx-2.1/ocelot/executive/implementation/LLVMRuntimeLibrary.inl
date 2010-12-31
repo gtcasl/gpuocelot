@@ -53,7 +53,10 @@ static void __report( executive::LLVMContext* context,
 	T value, const bool read )
 {
 	#if(DEBUG_NTH_THREAD_ONLY == 1)
-	if( context->tid.x == NTH_THREAD )
+	unsigned int threadId = context->tid.x + 
+		context->tid.y * context->ntid.y +
+		context->tid.z * context->ntid.y * context->ntid.x;
+	if( threadId == NTH_THREAD )
 	{
 	#endif		
 		std::cout << "Thread (" << context->tid.x << ", " << context->tid.y 
@@ -296,7 +299,10 @@ extern "C"
 		assert( block != state->blocks.end() );
 		
 		#if(DEBUG_NTH_THREAD_ONLY == 1)
-		if( context->tid.x == NTH_THREAD )
+		unsigned int threadId = context->tid.x + 
+			context->tid.y * context->ntid.y +
+			context->tid.z * context->ntid.y * context->ntid.x;
+		if( threadId == NTH_THREAD )
 		{
 		#endif
 		
@@ -317,7 +323,10 @@ extern "C"
 		void* instruction = (void*) _instruction;
 
 		#if(DEBUG_NTH_THREAD_ONLY == 1)
-		if( context->tid.x == NTH_THREAD )
+		unsigned int threadId = context->tid.x + 
+			context->tid.y * context->ntid.y +
+			context->tid.z * context->ntid.y * context->ntid.x;
+		if( threadId == NTH_THREAD )
 		{
 		#endif
 		
@@ -361,7 +370,10 @@ extern "C"
 		ir::PTXU8 value )
 	{
 		#if(DEBUG_NTH_THREAD_ONLY == 1)
-		if( context->tid.x == NTH_THREAD )
+		unsigned int threadId = context->tid.x + 
+			context->tid.y * context->ntid.y +
+			context->tid.z * context->ntid.y * context->ntid.x;
+		if( threadId == NTH_THREAD )
 		{
 		#endif		
 			std::cout << "Thread (" << context->tid.x << ", " << context->tid.y 
@@ -431,7 +443,10 @@ extern "C"
 		ir::PTXU8 value )
 	{
 		#if(DEBUG_NTH_THREAD_ONLY == 1)
-		if( context->tid.x == NTH_THREAD )
+		unsigned int threadId = context->tid.x + 
+			context->tid.y * context->ntid.y +
+			context->tid.z * context->ntid.y * context->ntid.x;
+		if( threadId == NTH_THREAD )
 		{
 		#endif		
 			std::cout << "Thread (" << context->tid.x << ", " << context->tid.y 

@@ -8104,7 +8104,7 @@ namespace translator
 		get.d.type.type = get.a.type.members[0].type;
 		get.d.name = _tempRegister();
 		get.indices.push_back( 0 );
-		get.indices.push_back( 0 );
+		get.indices.push_back( o.offset );
 		
 		_add( get );
 		

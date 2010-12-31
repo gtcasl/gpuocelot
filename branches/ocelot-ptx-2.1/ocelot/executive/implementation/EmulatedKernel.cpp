@@ -107,8 +107,8 @@ void executive::EmulatedKernel::launchGrid(int width, int height) {
 
 	CooperativeThreadArray cta(this, gridDim(), !_generators.empty());
 	CTA = &cta;
-	for (int x = 0; x < width; ++x) {
-		for (int y = 0; y < height; ++y) {	
+	for (int y = 0; y < height; ++y) {
+		for (int x = 0; x < width; ++x) {	
 			report("  cta: " << x << ", " << y);	
 			cta.execute(ir::Dim3(x,y,0));
 		}

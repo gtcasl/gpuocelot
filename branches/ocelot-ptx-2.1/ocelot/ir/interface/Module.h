@@ -33,6 +33,8 @@ namespace ir {
 
 		typedef std::unordered_map< std::string, PTXKernel* > KernelMap;
 		
+		typedef std::vector< std::string > NameVector;
+		
 		typedef std::vector< PTXKernel* > KernelVector;
 
 		/*! \brief Map from unique identifier to global variable */
@@ -165,6 +167,9 @@ namespace ir {
 
 		/*! Set of kernels belonging to Module.  These are PTX Kernels */
 		KernelMap _kernels;	
+		
+		/*! The original sequence of PTX kernels must be preserved */
+		NameVector _kernelSequence;
 		
 		/*! Set of textures in the module */
 		TextureMap _textures;

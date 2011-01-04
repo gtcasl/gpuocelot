@@ -1,58 +1,16 @@
 /*!
-	\file indirectCall.cu
+	\file indirectCallOcelot.cpp
 	
 	\author Andrew Kerr <arkerr@gatech.edu>
 	
 	\brief demonstrates indirect function calling
 */
 
-extern "C" __device__ __noinline__ int funcDouble(int a) {
-	return a*2;
-}
-
-extern "C" __device__ __noinline__ int funcTriple(int a) {
-	return a*3;
-}
-
-extern "C" __device__ __noinline__ int funcQuadruple(int a) {
-	return a*4;
-}
-extern "C" __device__ __noinline__ int funcPentuple(int a) {
-	return a*5;
-}
-
-extern "C" __global__ void kernelEntry(int *A, int b) {
-
-	/*
-	int (*filter[])(int) = {
-		&funcDouble,
-		&funcTriple,
-		&funcQuadruple,
-		&funcPentuple
-	};
-	*/
-	
-	int i = threadIdx.x + blockDim.x * blockIdx.x;
-	int p = ((b + i) & 3);
-	
-	int (*filter)(int);
-	if (p == 0) {
-		filter = &funcDouble;
-	}
-	else if (p == 1) {
-		filter = &funcTriple;
-	}
-	else if (p == 2) {
-		filter = &funcQuadruple;
-	}
-	else if (p == 3) {
-		filter = &funcPentuple;
-	}
-
-	A[i] = filter(i);
-}
 
 #include <cstdio>
+#include <fstream>
+
+#include <ocelot/api/interface/ocelot.h>
 
 int main(int argc, char *arg[]) {
 
@@ -84,10 +42,15 @@ int main(int argc, char *arg[]) {
 		return 2;
 	}
 	
+	std::ifstream file("ocelot/cuda/test/functions/indirectCall.ptx");
+	registerPTXModule(file, "indirectCall.cu");
+	
 	dim3 block(32, 1);
 	dim3 grid((N + block.x - 1) / block.x, 1);
-	
-	kernelEntry<<< grid, block >>>(A_gpu, P);
+	cudaConfigureCall(grid, block);
+	cudaSetupArgument(&A_gpu, sizeof(A_gpu), 0);
+	cudaSetupArgument(&P, sizeof(P), sizeof(A_gpu));
+	launch("indirectCall.cu", "kernelEntry");
 	
 	result = cudaThreadSynchronize();
 	if (result != cudaSuccess) {

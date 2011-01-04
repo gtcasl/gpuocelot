@@ -73,7 +73,16 @@ void executive::NVIDIAExecutableKernel::launchGrid(int width, int height) {
 		throw hydrazine::Exception("cuLaunchGrid() failed ");
 	}
 	else {
-		report("  - cuLaunchGrid() succeeded");
+		report("  - cuLaunchGrid() succeeded!");
+	}
+	
+	result = cuda::CudaDriver::cuCtxSynchronize();
+	if (result != CUDA_SUCCESS) {
+		report("  - cuCtxSynchronize() after cuLaunchGrid() failed: " << result);
+		throw hydrazine::Exception("cuLaunchGrid() failed ");
+	}
+	else {
+		report("  - cuCtxSynchronize() after cuLaunchGrid() succeeded!");
 	}
 }
 

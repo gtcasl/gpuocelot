@@ -44,7 +44,7 @@
 #define REPORT_BASE 0
 
 // Print out the full ptx for each module as it is loaded
-#define REPORT_PTX 0
+#define REPORT_PTX 1
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -358,19 +358,19 @@ namespace executive
 			<< hydrazine::addLineNumbers(stream.str()));
 		
 		CUjit_option options[] = {
+			CU_JIT_TARGET,
 			CU_JIT_ERROR_LOG_BUFFER, 
 			CU_JIT_ERROR_LOG_BUFFER_SIZE_BYTES, 
-			CU_JIT_TARGET
 		};
 		const int errorLogSize = 2048;
-		int errorLogActualSize = errorLogSize;
+		unsigned int errorLogActualSize = errorLogSize-1;
 		char errorLogBuffer[errorLogSize];
 		memset(errorLogBuffer, 0, errorLogSize);
 
 		void* optionValues[3] = {
+			(void*)CU_TARGET_COMPUTE_20,
 			(void*)errorLogBuffer, 
 			(void*)errorLogActualSize, 
-			(void*)CU_TARGET_COMPUTE_20
 		};
 		CUresult result = driver::cuModuleLoadDataEx(&_handle, 
 			stream.str().c_str(), 3, options, optionValues);

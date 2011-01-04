@@ -261,8 +261,10 @@ void ir::Module::writeIR( std::ostream& stream ) const {
 	}
 	stream << "\n";
 	
-	for (KernelMap::const_iterator kernel = _kernels.begin(); 
-		kernel != _kernels.end(); ++kernel) {
+	for (NameVector::const_iterator kernelName = _kernelSequence.begin();
+		kernelName != _kernelSequence.end(); ++kernelName) {
+		
+		KernelMap::const_iterator kernel = _kernels.find(*kernelName);
 		(kernel->second)->write(stream);
 	}
 }
@@ -373,6 +375,7 @@ void ir::Module::extractPTXKernels() {
 				
 				kernel->module = this;
 				_kernels[kernel->name] = (kernel);
+			  _kernelSequence.push_back(kernel->name);
 				kernel->canonicalBlockLabels(kernelInstance++);
 			}
 		}

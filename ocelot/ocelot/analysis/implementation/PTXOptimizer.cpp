@@ -89,7 +89,8 @@ namespace analysis
 			kernel != module.kernels().end(); ++kernel )
 		{
 			report(" Writing CFG for kernel '" << kernel->first << "'");
-			std::ofstream out( kernel->first + "_cfg.dot" );
+			std::ofstream out( std::string( 
+				kernel->first + "_cfg.dot" ).c_str() );
 		
 			if( !out.is_open() )
 			{

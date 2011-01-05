@@ -46,7 +46,7 @@ namespace translator
 			void _translate(const ControlTree::BlockNode* block);
 			void _translate(const ControlTree::IfThenNode* ifthen);
 			void _translate(const ControlTree::IfThenElseNode* ifthenelse);
-			void _translate(const ControlTree::SelfLoopNode* selfloop);
+			void _translate(const ControlTree::NaturalLoopNode* naturalloop);
 
 			void _translate(const ir::PTXInstruction &i); 
 			ir::ILOperand _translate(const ir::PTXOperand &o);
@@ -95,7 +95,7 @@ namespace translator
 			void _translateStSharedDword(const ir::PTXInstruction &i);
 			ir::ILOperand _translateLiteral(int l);
 			ir::ILOperand _translateLiteral(float l);
-			std::string _translateConstantBuffer(const std::string &ident);
+			std::string _translateConstantBuffer(const ir::PTXOperand o);
 
 			void _translateIDiv(const ir::PTXInstruction &i);
 			void _translateUDiv(const ir::PTXInstruction &i);
@@ -107,9 +107,12 @@ namespace translator
 			void _translateISetP(const ir::PTXInstruction &i);
 			void _translateFSetP(const ir::PTXInstruction &i);
 
-			void _convertSrc(const ir::PTXInstruction &i);
+			void _convertSrc(const ir::PTXInstruction &i, ir::ILOperand& a);
 			void _convert(const ir::PTXInstruction &i);
-			void _convertDst(const ir::PTXInstruction &i);
+			void _convert(const ir::PTXInstruction &i, const ir::ILOperand a, 
+					ir::ILOperand& d);
+			void _convertDst(const ir::PTXInstruction &i, 
+					const ir::ILOperand d);
 
 			void _addKernelPrefix();
 

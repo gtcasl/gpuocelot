@@ -41,7 +41,8 @@ libocelotTrace_la_SOURCES = \
 	traces/implementation/TraceConfiguration.cpp \
 	traces/implementation/LoadBalanceGenerator.cpp \
 	traces/implementation/KernelEntry.cpp \
-	traces/implementation/ControlFlowVisualizer.cpp
+	traces/implementation/ControlFlowVisualizer.cpp \
+	traces/implementation/BasicBlockCountGenerator.cpp
 	
 ################################################################################
 
@@ -109,7 +110,9 @@ nobase_include_HEADERS = traces/interface/MemoryTraceGenerator.h \
 	traces/interface/PerformanceBoundGenerator.h \
 	traces/interface/LoadBalanceGenerator.h \
 	traces/interface/ConvergenceGenerator.h \
-	traces/interface/ControlFlowVisualizer.h 
+	traces/interface/ControlFlowVisualizer.h \
+	traces/interface/BasicBlockCountGenerator.h
+
 ################################################################################
 
 ################################################################################

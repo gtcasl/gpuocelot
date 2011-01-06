@@ -18,6 +18,7 @@
 #include <traces/interface/ConvergenceGenerator.h>
 #include <traces/interface/LoadBalanceGenerator.h>
 #include <traces/interface/ControlFlowVisualizer.h>
+#include <traces/interface/BasicBlockCountGenerator.h>
 
 namespace trace
 {
@@ -160,6 +161,8 @@ namespace trace
 		bool loadBalance;
 		
 		ControlFlow controlFlowVisualizer;
+		
+		bool basicBlockCount;
 	
 	public:
 		TraceConfiguration();
@@ -176,6 +179,7 @@ namespace trace
 		trace::ConvergenceGenerator _convergence;
 		trace::LoadBalanceGenerator _loadBalance;
 		trace::ControlFlowVisualizer _controlFlowVisualizer;
+		trace::BasicBlockCountGenerator _basicBlockCountGenerator;
 	};
 }
 

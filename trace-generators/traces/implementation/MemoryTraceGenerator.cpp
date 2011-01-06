@@ -168,7 +168,7 @@ static ir::PTXU64 extent(const executive::ExecutableKernel& kernel) {
 		report(" Checking texture mapped address " << (*texture)->data);
 		pointers.insert((ir::PTXU64)(*texture)->data);
 	}
-	
+#if 0
 	for (ir::Kernel::ParameterVector::const_iterator 
 		parameter = kernel.parameters.begin();
 		parameter != kernel.parameters.end(); ++parameter) {
@@ -216,6 +216,7 @@ static ir::PTXU64 extent(const executive::ExecutableKernel& kernel) {
 			pointers.insert(address);
 		}
 	}
+#endif
 	
 	for(AddressSet::iterator pointer = pointers.begin(); 
 		pointer != pointers.end(); ++pointer)

@@ -44,6 +44,7 @@ TraceConfiguration::TraceConfiguration()
 	performanceBound.enabled = false; 
 	convergence.enabled = false;
 	loadBalance = false;
+	basicBlockCount = false;
 
 	try
 	{
@@ -66,6 +67,7 @@ TraceConfiguration::TraceConfiguration()
 			instruction = traceConfig.parse<bool>("instruction", false);
 			parallelism = traceConfig.parse<bool>("parallelism", false);
 			loadBalance = traceConfig.parse<bool>("loadBalance", false);
+			basicBlockCount = traceConfig.parse<bool>("basicBlockCount", false);
 
 			// more detailed configuration for this trace generator
 			hydrazine::json::Visitor warpSyncConfig =
@@ -273,6 +275,11 @@ TraceConfiguration::TraceConfiguration()
 		_controlFlowVisualizer.database = database;
 		_controlFlowVisualizer.allInstructions = controlFlowVisualizer.allInstructions;
 		ocelot::addTraceGenerator(_controlFlowVisualizer, true);
+	}
+	
+	if (basicBlockCount) {
+		_basicBlockCountGenerator.database = database;
+		ocelot::addTraceGenerator(_basicBlockCountGenerator, true);
 	}
 }
 

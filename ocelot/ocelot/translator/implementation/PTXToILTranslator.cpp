@@ -214,12 +214,16 @@ namespace translator
 	{
 		_add(ir::ILWhileLoop());
 
-		// iterate thru all the blocks except the last one (we assume that the 
-		// fall-through edges are not the loop exits)
+		// iterate thru all the blocks except the last one
 		ControlTree::NodeList::const_iterator n;
 		for (n = naturalloop->children().begin() ; 
 				n != (--naturalloop->children().end()) ; n++)
 		{
+			// the fall-through edge should be the next node in the loop
+			assertM((*n)->fallthrough() == 
+					*(++ControlTree::NodeList::const_iterator(n)),
+					"Invalid NaturalLoop node");
+
 			_translate(*n);
 
 			// the last instruction of the node should be a branch.
@@ -233,6 +237,10 @@ namespace translator
 			_add(ir::ILBreak());
 			_add(ir::ILEndIf());
 		}
+
+		// the fall-through edge should be the loop exit
+		assertM((*n)->fallthrough() != *(naturalloop->children().begin()),
+				"Invalid NaturalLoop node");
 
 		// translate the last block (we assume that the fall-through edge is 
 		// the loop exit)

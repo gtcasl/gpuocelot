@@ -538,18 +538,17 @@ namespace ir
 	}
 
 	// returns true if there is a (possibly empty) path from m to k that does
-	// not pass through n (n can be NULL)
+	// not pass through n
 	bool ControlTree::_path(Node* m, Node* k, Node* n)
 	{
+		if (m == n || _visit.find(m) != _visit.end()) return false;
+		if (m == k) return true;
+
 		_visit.insert(m);
 
-		if (m == k) return true;
-		
-		// TODO Use STL algorithm for_each
 		for (NodeSet::const_iterator s = m->succs().begin() ;
 				s != m->succs().end() ; s++)
 		{
-			if (*s == n || _visit.find(*s) != _visit.end()) continue;
 			if (_path(*s, k, n)) return true;
 		}
 
@@ -561,7 +560,6 @@ namespace ir
 	// back edge, and false otherwise.
 	bool ControlTree::_path_back(Node* m, Node* n)
 	{
-		// TODO Use STL algorithm for_each
 		for (NodeSet::const_iterator k = n->preds().begin() ;
 				k != n->preds().end() ; k++)
 		{
@@ -602,7 +600,7 @@ namespace ir
 				m != nset.end() ; m++)
 		{
 			_visit.clear();
-			if (!_path(node, *m, NULL)) {
+			if (!_path(node, *m)) {
 				// it's an Improper region
 				// TODO Improper regions are not supported yet
 				report("Found Improper region");
@@ -678,14 +676,12 @@ namespace ir
 					// locate a cyclic region, if present
 					reachUnder.clear(); nodeSet.clear();
 
-					// TODO Use STL algorithm for_each
-					// TODO Do we need to scan all the nodes???
 					for (NodeList::const_iterator m = _post.begin() ;
 							m != _post.end() ; m++)
 					{
 						if (*m != n && _path_back(*m, n)) 
 						{
-							report("Add " << (*m)->label() << "to reachUnder");
+							report("Add " << (*m)->label() << " to reachUnder");
 							reachUnder.push_front(*m); nodeSet.insert(*m);
 						}
 					}

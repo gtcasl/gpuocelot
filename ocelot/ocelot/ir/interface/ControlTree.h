@@ -174,7 +174,7 @@ namespace ir
 			 * control tree */
 			std::ostream& write(std::ostream& out) const;
 
-			/*! \brief Returns the root node of the control tree */
+			/*! \brief returns the root node of the control tree */
 			const Node* get_root_node() const;
 
 		private:
@@ -185,7 +185,7 @@ namespace ir
 			bool _backedge(Node* head, Node* tail);
 			void _compact(Node* node, NodeSet nodeSet);
 			void _reduce(Node* node, NodeSet nodeSet);
-			bool _path(Node* m, Node* k, Node* n);
+			bool _path(Node* m, Node* k, Node* n = NULL);
 			bool _path_back(Node* m, Node* n);
 			Node* _cyclic_region_type(Node* node, NodeList& nset);
 			void _structural_analysis(Node* entry);

@@ -125,7 +125,7 @@ int main(int argc, char *arg[]) {
 		printf(" with %d errors\n", errors);
 	}
 	else {
-		printf("Pass/Fail: Pass\n");
+		printf("Pass/Fail : Pass\n");
 	}
 	
 	return 0;

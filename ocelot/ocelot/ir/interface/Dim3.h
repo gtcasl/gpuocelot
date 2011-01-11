@@ -26,6 +26,9 @@ namespace ir
 			bool operator!=(const ir::Dim3 &b) const {
 				return !(x == b.x && y == b.y && z == b.z);
 			}
+			int size() const {
+				return x * y * z;
+			}
 	};
 
 }

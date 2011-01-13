@@ -76,6 +76,7 @@ namespace translator
 			void _translateMin(const ir::PTXInstruction &i);
 			void _translateMov(const ir::PTXInstruction &i);
 			void _translateMul(const ir::PTXInstruction &i);
+			void _translateMul24(const ir::PTXInstruction &i);
 			void _translateNeg(const ir::PTXInstruction &i);
 			void _translateNot(const ir::PTXInstruction &i);
 			void _translateOr(const ir::PTXInstruction &i);

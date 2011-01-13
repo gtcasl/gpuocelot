@@ -76,6 +76,7 @@ namespace ir
 				Uav_Read_Xchg_Id,
 				Udiv,
 				Umul,
+				Umul24,
 				Ushr,
 				UtoF,
 				WhileLoop,
@@ -743,6 +744,15 @@ namespace ir
 		public:
 			/*! \brief Default constructor */
 			ILUmul();
+
+			Instruction *clone(bool copy=true) const;
+	};
+
+	class ILUmul24 : public ILBinaryInstruction
+	{
+		public:
+			/*! \brief Default constructor */
+			ILUmul24();
 
 			Instruction *clone(bool copy=true) const;
 	};

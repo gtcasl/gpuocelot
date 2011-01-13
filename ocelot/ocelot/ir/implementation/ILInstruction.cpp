@@ -72,6 +72,7 @@ namespace ir
 			case Uav_Read_Xchg_Id:      return "uav_read_xchg_id(0)";
 			case Udiv:                  return "udiv";
 			case Umul:                  return "umul";
+			case Umul24:                return "umul24";
 			case Ushr:                  return "ushr";
 			case UtoF:                  return "utof";
 			case WhileLoop:             return "whileloop";
@@ -834,6 +835,15 @@ namespace ir
 	Instruction *ILUmul::clone(bool copy) const
 	{
 		return new ILUmul(*this);
+	}
+
+	ILUmul24::ILUmul24() : ILBinaryInstruction(Umul24)
+	{
+	}
+
+	Instruction *ILUmul24::clone(bool copy) const
+	{
+		return new ILUmul24(*this);
 	}
 
 	ILUshr::ILUshr() : ILBinaryInstruction(Ushr)

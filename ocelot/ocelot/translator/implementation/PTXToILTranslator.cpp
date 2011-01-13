@@ -283,7 +283,7 @@ namespace translator
 			case ir::PTXInstruction::Min:    _translateMin(i);    break;
 			case ir::PTXInstruction::Mov:    _translateMov(i);    break;
  			case ir::PTXInstruction::Mul:    _translateMul(i);    break;
-			case ir::PTXInstruction::Mul24:  _translateMul(i);    break;
+			case ir::PTXInstruction::Mul24:  _translateMul24(i);  break;
 			case ir::PTXInstruction::Neg:    _translateNeg(i);    break;
 			case ir::PTXInstruction::Not:    _translateNot(i);    break;
 			case ir::PTXInstruction::Or:     _translateOr(i);     break;
@@ -798,6 +798,7 @@ namespace translator
 						return;
 					}
 					case ir::PTXOperand::u8:
+					case ir::PTXOperand::u16:
 					{
 						// chop
 						ir::ILIand iand;
@@ -875,7 +876,8 @@ namespace translator
 							return;
 						}
 
-						if(i.modifier & ir::PTXInstruction::rz) {
+						if(i.modifier & ir::PTXInstruction::rz
+								|| i.modifier & ir::PTXInstruction::rn) {
 							ir::ILMov mov;
 							mov.d = d;
 							mov.a = a;
@@ -937,6 +939,32 @@ namespace translator
 			{
 				switch (i.d.type)
 				{
+					case ir::PTXOperand::u32:
+					{
+						// zext
+						ir::ILMov mov;
+						mov.d = _translate(i.d);
+						mov.a = d;
+						_add(mov);
+						return;
+					}
+					default: break;
+				}
+				break;
+			}
+			case ir::PTXOperand::u16:
+			{
+				switch (i.d.type)
+				{
+					case ir::PTXOperand::u16:
+					{
+						// allowed, no conversion needed
+						ir::ILMov mov;
+						mov.d = _translate(i.d);
+						mov.a = d;
+						_add(mov);
+						return;
+					}
 					case ir::PTXOperand::u32:
 					{
 						// zext
@@ -1570,6 +1598,35 @@ namespace translator
 
 				_add(mul);
 
+				break;
+			}
+			default:
+			{
+				assertM(false, "Type "
+						<< ir::PTXOperand::toString(i.type)
+						<< " not supported in "
+						<< i.toString());
+			}
+		}
+	}
+
+	void PTXToILTranslator::_translateMul24(const ir::PTXInstruction &i)
+	{
+		switch (i.type)
+		{
+			case ir::PTXOperand::s32:
+			{
+				// there is no imul24
+				_translateMul(i);
+				break;
+			}
+			case ir::PTXOperand::u32:
+			{
+				ir::ILUmul24 umul24;
+				umul24.d = _translate(i.d);
+				umul24.a = _translate(i.a);
+				umul24.b = _translate(i.b);
+				_add(umul24);
 				break;
 			}
 			default:

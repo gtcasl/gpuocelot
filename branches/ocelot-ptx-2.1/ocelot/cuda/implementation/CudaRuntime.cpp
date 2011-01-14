@@ -157,7 +157,7 @@ void cuda::HostThreadContext::mapParameters(const ir::Kernel* kernel) {
 		memcpy(temp + dst, parameterBlock + *offset, *size);
 		report( "Mapping parameter at offset " << *offset << " of size " 
 			<< *size << " to offset " << dst << " of size " 
-			<< parameter->getSize() << " data = " 
+			<< parameter->getSize() << "\n   data = " 
 			<< hydrazine::dataToString(temp + dst, parameter->getSize()));
 		dst += parameter->getSize();
 	}
@@ -1010,16 +1010,18 @@ cudaError_t cuda::CudaRuntime::cudaHostGetDevicePointer(void **pDevice,
 	_acquire();
 	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
 	
-	executive::Device::MemoryAllocation* 
-		allocation = _getDevice().getMemoryAllocation(pHost, 
+	executive::Device::MemoryAllocation *allocation = _getDevice().getMemoryAllocation(pHost, 
 			executive::Device::HostAllocation);
 
 	if (allocation != 0) {	
 		if (allocation->host()) {
-			size_t offset = (char*)pHost - (char*)allocation->pointer();
+			size_t offset = (char*)pHost - (char*)allocation->mappedPointer();
 			*pDevice = (char*)allocation->pointer() + offset;
 			result = cudaSuccess;
 		}
+	}
+	else {
+		report("cudaHostGetDevicePointer() - failed to get device pointer from host allocation at " << (const void *)pHost);
 	}
 
 	_release();

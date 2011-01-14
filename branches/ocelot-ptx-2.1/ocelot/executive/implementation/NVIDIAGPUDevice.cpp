@@ -73,7 +73,9 @@ namespace executive
 
 		checkError(driver::cuMemHostAlloc(&_hostPointer, size, _flags));
 		checkError(driver::cuMemHostGetDevicePointer(&_devicePointer, _hostPointer, 0));
-		report("MemoryAllocation::MemoryAllocation( -- host -- ) - pointer() = " << (const void *)pointer());
+		report("MemoryAllocation::MemoryAllocation() - allocated " << _size << " bytes of host-allocated memory");
+		report("  host: " << (const void *)_hostPointer << ", device pointer: " << (const void *)_devicePointer);
+
 	}
 	
 	NVIDIAGPUDevice::MemoryAllocation::MemoryAllocation(CUmodule module, 
@@ -123,9 +125,9 @@ namespace executive
 	{
 		if(host())
 		{
+			report("MemoryAllocation::MemoryAllocation() - allocated " << _size << " bytes of host-allocated memory");
 			checkError(driver::cuMemHostAlloc(&_hostPointer, _size, _flags));
-			checkError(driver::cuMemHostGetDevicePointer(&_devicePointer, 
-				_hostPointer, 0));
+			checkError(driver::cuMemHostGetDevicePointer(&_devicePointer, _hostPointer, 0));
 			memcpy(_hostPointer, a._hostPointer, _size);
 		}
 		else if(global() || _external)
@@ -759,15 +761,13 @@ namespace executive
 
 		if(type == HostAllocation || type == AnyAllocation)
 		{
-			for(AllocationMap::const_iterator alloc = _allocations.begin(); 
-				alloc != _allocations.end(); ++alloc)
+			for(AllocationMap::const_iterator alloc = _hostAllocations.begin(); 
+				alloc != _hostAllocations.end(); ++alloc)
 			{
 				if(alloc->second->host())
 				{
-					if((char*)address >= alloc->second->mappedPointer() 
-						&& (char*)address < 
-						(char*)alloc->second->mappedPointer()
-						+ alloc->second->size())
+					if((char*)address >= alloc->second->mappedPointer() && (char*)address < 
+						(char*)alloc->second->mappedPointer() + alloc->second->size())
 					{
 						allocation = alloc->second;
 						break;

@@ -96,6 +96,10 @@ namespace executive {
 		/* Get a pointer to the base of the current shared memory block */
 		const char* getSharedMemory() const;
 
+		/* Get a pointer to the base of the current local memory block
+			for the specified thread */
+		const char* getLocalMemory(unsigned int threadId) const;
+
 	protected:
 		/*! Cleans up the EmulatedKernel instance*/
 		void freeAll();

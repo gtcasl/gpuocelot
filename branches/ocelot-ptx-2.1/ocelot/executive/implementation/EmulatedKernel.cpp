@@ -534,7 +534,8 @@ void executive::EmulatedKernel::initializeSharedMemory() {
 		ir::PTXInstruction &instr = *i_it;
 
 		// look for mov and ld/st instructions
-		if (instr.opcode == ir::PTXInstruction::Mov) {
+		if (instr.opcode == ir::PTXInstruction::Mov
+			|| instr.opcode == ir::PTXInstruction::Cvta) {
 			for (int n = 0; n < 4; n++) {
 				if ((instr.*operands[n]).addressMode 
 					== ir::PTXOperand::Address) {
@@ -957,6 +958,11 @@ executive::EmulatedKernel::RegisterFile
 const char* executive::EmulatedKernel::getSharedMemory() const {
 	assert(CTA != 0);
 	return (char*) CTA->functionCallStack.sharedMemoryPointer();
+}
+
+const char* executive::EmulatedKernel::getLocalMemory(unsigned int tid) const {
+	assert(CTA != 0);
+	return (char*) CTA->functionCallStack.localMemoryPointer(tid);
 }
 
 static unsigned int align(unsigned int offset, unsigned int size) {

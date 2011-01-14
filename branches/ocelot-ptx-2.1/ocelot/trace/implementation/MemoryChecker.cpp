@@ -149,32 +149,16 @@ namespace trace
 				for( unsigned int thread = 0; thread < threads; ++thread )
 				{
 					if( !e.active[ thread ] ) continue;
-					if( _parameter.base <= *address 
-						|| *address < _parameter.base + _parameter.extent )
+					if( (ir::PTXU64)_kernel->getSharedMemory() <= *address 
+						&& *address < (ir::PTXU64)_kernel->getSharedMemory()
+						+ _shared.extent )
 					{
 						++address;
 						continue;
 					}
-					if( _argument.base <= *address 
-						|| *address < _argument.base + _argument.extent )
-					{
-						++address;
-						continue;
-					}
-					if( _shared.base <= *address 
-						|| *address < _shared.base + _shared.extent )
-					{
-						++address;
-						continue;
-					}
-					if( _local.base <= *address 
-						|| *address < _local.base + _local.extent )
-					{
-						++address;
-						continue;
-					}
-					if( _constant.base <= *address 
-						|| *address < _constant.base + _constant.extent )
+					if( (ir::PTXU64)_kernel->getLocalMemory(thread) <= *address 
+						&& *address < (ir::PTXU64)_kernel->getLocalMemory(thread)
+						+ _local.extent )
 					{
 						++address;
 						continue;

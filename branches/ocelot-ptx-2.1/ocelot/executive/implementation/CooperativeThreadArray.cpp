@@ -8193,7 +8193,7 @@ void executive::CooperativeThreadArray::eval_St(CTAContext &context,
 					context.PC, instr);
 		}
 
-		source += instr.d.offset;		
+		source += instr.d.offset;
 		
 		switch (instr.addressSpace) {
 			case PTXInstruction::Param:

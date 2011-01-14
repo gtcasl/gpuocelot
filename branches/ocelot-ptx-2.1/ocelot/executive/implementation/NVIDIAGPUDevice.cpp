@@ -44,7 +44,7 @@
 #define REPORT_BASE 0
 
 // Print out the full ptx for each module as it is loaded
-#define REPORT_PTX 1
+#define REPORT_PTX 0
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -69,11 +69,11 @@ namespace executive
 		_flags(flags), _size(size), _external(false)
 	{
 		// making all memory portable eases context switching
-		_flags |= CU_MEMHOSTALLOC_PORTABLE;
-		
+		_flags |= CU_MEMHOSTALLOC_PORTABLE | CU_MEMHOSTALLOC_DEVICEMAP;
+
 		checkError(driver::cuMemHostAlloc(&_hostPointer, size, _flags));
-		checkError(driver::cuMemHostGetDevicePointer(&_devicePointer, 
-			_hostPointer, 0));
+		checkError(driver::cuMemHostGetDevicePointer(&_devicePointer, _hostPointer, 0));
+		report("MemoryAllocation::MemoryAllocation( -- host -- ) - pointer() = " << (const void *)pointer());
 	}
 	
 	NVIDIAGPUDevice::MemoryAllocation::MemoryAllocation(CUmodule module, 
@@ -102,6 +102,7 @@ namespace executive
 	
 	NVIDIAGPUDevice::MemoryAllocation::~MemoryAllocation()
 	{
+		report("MemoryAllocation::~MemoryAllocation() : _external = " << _external << ", host() = " << host());
 		if(!_external)
 		{
 			if(host())
@@ -844,13 +845,16 @@ namespace executive
 		size_t size, unsigned int flags)
 	{
 		MemoryAllocation* allocation = new MemoryAllocation(size, flags);
-		_hostAllocations.insert(std::make_pair(allocation->pointer(), 
-			allocation));
+		_hostAllocations.insert(std::make_pair(allocation->mappedPointer(), allocation));
+
+		report("NVIDIAGPUDevice::allocateHost() - adding key " << allocation->mappedPointer());
+
 		return allocation;
 	}
 
 	void NVIDIAGPUDevice::free(void* pointer)
 	{
+		
 		if(pointer == 0) return;
 		
 		AllocationMap::iterator allocation = _allocations.find(pointer);
@@ -858,6 +862,7 @@ namespace executive
 		{
 			if(allocation->second->global())
 			{
+				report("cannot free global pointer");
 				Throw("Cannot free global pointer - " << pointer);
 			}
 			delete allocation->second;
@@ -866,7 +871,7 @@ namespace executive
 		else
 		{
 			allocation = _hostAllocations.find(pointer);
-			if(allocation != _allocations.end())
+			if(allocation != _hostAllocations.end())
 			{
 				delete allocation->second;
 				_hostAllocations.erase(allocation);
@@ -1132,6 +1137,7 @@ namespace executive
 
 	bool NVIDIAGPUDevice::queryEvent(unsigned int handle) const
 	{
+
 		EventMap::const_iterator event = _events.find(handle);
 		if(event == _events.end())
 		{
@@ -1139,12 +1145,15 @@ namespace executive
 		}
 
 		CUresult result = driver::cuEventQuery(event->second);
-		if(result == CUDA_SUCCESS) return true;
+		if(result == CUDA_SUCCESS) {
+			return true;
+		}
 		return false;
 	}
 	
 	void NVIDIAGPUDevice::recordEvent(unsigned int handle, unsigned int sHandle)
 	{
+
 		EventMap::const_iterator event = _events.find(handle);
 		if(event == _events.end())
 		{
@@ -1180,22 +1189,23 @@ namespace executive
 	float NVIDIAGPUDevice::getEventTime(unsigned int startHandle, 
 		unsigned int endHandle) const
 	{
+		
 		EventMap::const_iterator start = _events.find(startHandle);
 		if(start == _events.end())
 		{
+			report("invalid start event");
 			Throw("Invalid start event - " << startHandle);
 		}
 		
 		EventMap::const_iterator end = _events.find(endHandle);
 		if(end == _events.end())
 		{
+			report("invalid end event");
 			Throw("Invalid end event - " << endHandle);
 		}
 		
 		float time = 0.0f;
-		
-		checkError(driver::cuEventElapsedTime(&time, 
-			start->second, end->second));
+		checkError(driver::cuEventElapsedTime(&time, start->second, end->second));
 		
 		return time;
 	}

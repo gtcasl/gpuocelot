@@ -777,6 +777,10 @@ cudaError_t cuda::CudaRuntime::cudaMalloc(void **devPtr, size_t size) {
 	return _setLastError(result);
 }
 
+/*!
+	constructs a host-side allocation, returns pointer to mapped region - this allocation
+		is referenced by the mappedPointer()
+*/
 cudaError_t cuda::CudaRuntime::cudaMallocHost(void **ptr, size_t size) {
 	cudaError_t result = cudaErrorMemoryAllocation;
 	_acquire();
@@ -788,8 +792,8 @@ cudaError_t cuda::CudaRuntime::cudaMallocHost(void **ptr, size_t size) {
 		*ptr = allocation->mappedPointer();
 		result = cudaSuccess;
 	}
-	catch(hydrazine::Exception&) {
-		
+	catch(hydrazine::Exception &exp) {
+		report("  cudaMallocHost() - error:\n" << exp.what());
 	}
 
 	report("cudaMallocHost( *pPtr = " << (void *)*ptr 
@@ -2696,8 +2700,12 @@ cudaError_t cuda::CudaRuntime::cudaEventQuery(cudaEvent_t event) {
 	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
 	
 	try {
-		_getDevice().queryEvent(event);
-		result = cudaSuccess;
+		if (_getDevice().queryEvent(event)) {
+			result = cudaSuccess;
+		}
+		else {
+			result = cudaErrorNotReady;
+		}
 	}
 	catch(...) {
 	

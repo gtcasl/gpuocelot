@@ -4,6 +4,7 @@
 */
 
 #include <ocelot/cuda/interface/cuda.h>
+
 #include <iostream>
 
 #define report(x) std::cout << x << std::endl
@@ -78,7 +79,7 @@ int main() {
 		report("cuCtxCreate() failed: " << result);
 		return 1;
 	}
-	
+		
 	int pi = 0;
 	result = cuDeviceGetAttribute(&pi, CU_DEVICE_ATTRIBUTE_COMPUTE_MODE, device);
 	if (result != CUDA_SUCCESS) {

@@ -32,15 +32,17 @@ namespace translator
 		assertM(k->ISA == ir::Instruction::PTX,
 				"Kernel must be a PTXKernel to translate to an ILKernel");
 
-		ir::PTXKernel ptxKernel(*(static_cast<const ir::PTXKernel* >(k)));
+		_kernel = static_cast<const executive::ATIExecutableKernel* >(k);
 
 		// do a pass of assignRegisters before translation
-		ptxKernel.assignRegisters(*ptxKernel.cfg());
+		// we have to const_cast in order to call assignRegisters
+		ir::PTXKernel::assignRegisters(
+				const_cast<ir::ControlFlowGraph& >(*_kernel->cfg()));
 
-		report("Translating kernel " << ptxKernel.name);
+		report("Translating kernel " << _kernel->name);
 
 		// translate iterating thru the control tree
-		_ilKernel = new ir::ILKernel(ptxKernel);
+		_ilKernel = new ir::ILKernel(*_kernel);
 		_translate(_ilKernel->ctrl_tree()->get_root_node());
 		_addKernelPrefix();
 
@@ -1086,99 +1088,100 @@ namespace translator
 		// There is no signed integer division in IL so we need to use this 
 		// macro based on unsigned integer division:
 		//
-		// (w/o operand modifiers)                // (with operand modifiers)
 		// out0 = in0 / in1
 		// mdef(222)_out(1)_in(2)
-		// mov r0x, i.a                           // mov r0, in0
-		// mov r1x, i.b                           // mov r1, in1
-		// mov r0y, r1x                           // mov r0._y__, r1.x
-		// ilt r1x, r0x, 0                        // ilt r1.xy, r0, 0
-		// ilt r1y, r0y, 0
-		// iadd r0x, r0x, r1x                     // iadd r0.xy, r0, r1
-		// iadd r0y, r0y, r1y
-		// ixor r0x, r0x, r1x                     // ixor r0.xy, r0, r1
-		// ixor r1y, r0y, r1y
-		// udiv r0x, r0x, r0y                     // udiv r0.x, r0.x, r0.y
-		// ixor r1x, r1x, r1y                     // ixor r1.x, r1.x, r1.y
-		// iadd r0x, r0x, r1x                     // iadd r0.x, r0.x, r1.x
-		// ixor r0x, r0x, r1x                     // ixor r0.x, r0.x, r1.x
-		// mov i.d, r0x                           // mov out0, r0
+		// mov r0, i.a
+		// mov r1, i.b
+		// mov r0._y__, r1.x
+		// ilt r1.xy, r0, 0
+		// iadd r0.xy, r0, r1
+		// ixor r0.xy, r0, r1
+		// udiv r0.x, r0.x, r0.y
+		// ixor r1.x, r1.x, r1.y
+		// iadd r0.x, r0.x, r1.x
+		// ixor r0.x, r0.x, r1.x
+		// mov i.d, r0
 		// mend
 
-		ir::ILOperand r0x = _tempRegister();
-		ir::ILOperand r0y = _tempRegister();
-		ir::ILOperand r1x = _tempRegister();
-		ir::ILOperand r1y = _tempRegister();
+		ir::ILOperand r0 = _tempRegister();
+		ir::ILOperand r1 = _tempRegister();
 
-		// mov r0x, i.a
-		ir::ILMov mov1;
-		mov1.d = r0x; mov1.a = _translate(i.a);
-		_add(mov1);
+		// mov r0, i.a
+		{
+			ir::ILMov mov;
+			mov.d = r0; mov.a = _translate(i.a);
+			_add(mov);
+		}
 
-		// mov r1x, i.b
-		ir::ILMov mov2;
-		mov2.d = r1x; mov2.a = _translate(i.b);
-		_add(mov2);
+		// mov r1, i.b
+		{
+			ir::ILMov mov;
+			mov.d = r1; mov.a = _translate(i.b);
+			_add(mov);
+		}
 
-		// mov r0y, r1x
-		ir::ILMov mov3;
-		mov3.d = r0y; mov3.a = r1x;
-		_add(mov3);
+		// mov r0._y__, r1.x
+		{
+			ir::ILMov mov;
+			mov.d = r0._y__(); mov.a = r1.x();
+			_add(mov);
+		}
 
-		// ilt r1x, r0x, 0
-		ir::ILIlt ilt1;
-		ilt1.d = r1x; ilt1.a = r0x; ilt1.b = _translateLiteral(0);
-		_add(ilt1);
+		// ilt r1.xy, r0, 0
+		{
+			ir::ILIlt ilt;
+			ilt.d = r1.xy(); ilt.a = r0; ilt.b = _translateLiteral(0);
+			_add(ilt);
+		}
 
-		// ilt r1y, r0y, 0
-		ir::ILIlt ilt2;
-		ilt2.d = r1y; ilt2.a = r0y; ilt2.b = _translateLiteral(0);
-		_add(ilt2);
+		// iadd r0.xy, r0, r1
+		{
+			ir::ILIadd iadd;
+			iadd.d = r0.xy(); iadd.a = r0; iadd.b = r1;
+			_add(iadd);
+		}
 
-		// iadd r0x, r0x, r1x
-		ir::ILIadd iadd1;
-		iadd1.d = r0x; iadd1.a = r0x; iadd1.b = r1x;
-		_add(iadd1);
+		// ixor r0.xy, r0, r1
+		{
+			ir::ILIxor ixor;
+			ixor.d = r0.xy(); ixor.a = r0; ixor.b = r1;
+			_add(ixor);
+		}
 
-		// iadd r0y, r0y, r1y
-		ir::ILIadd iadd2;
-		iadd2.d = r0y; iadd2.a = r0y; iadd2.b = r1y;
-		_add(iadd2);
+		// udiv r0.x, r0.x, r0.y
+		{
+			ir::ILUdiv udiv;
+			udiv.d = r0.x(); udiv.a = r0.x(); udiv.b = r0.y();
+			_add(udiv);
+		}
 
-		// ixor r0x, r0x, r1x
-		ir::ILIxor ixor1;
-		ixor1.d = r0x; ixor1.a = r0x; ixor1.b = r1x;
-		_add(ixor1);
+		// ixor r1.x, r1.x, r1.y
+		{
+			ir::ILIxor ixor;
+			ixor.d = r1.x(); ixor.a = r1.x(); ixor.b = r1.y();
+			_add(ixor);
+		}
 
-		// ixor r1y, r0y, r1y
-		ir::ILIxor ixor2;
-		ixor2.d = r1y; ixor2.a = r0y; ixor2.b = r1y;
-		_add(ixor2);
+		// iadd r0.x, r0.x, r1.x
+		{
+			ir::ILIadd iadd;
+			iadd.d = r0.x(); iadd.a = r0.x(); iadd.b = r1.x();
+			_add(iadd);
+		}
 
-		// udiv r0x, r0x, r0y
-		ir::ILUdiv udiv1;
-		udiv1.d = r0x; udiv1.a = r0x; udiv1.b = r0y;
-		_add(udiv1);
+		// ixor r0.x, r0.x, r1.x
+		{
+			ir::ILIxor ixor;
+			ixor.d = r0.x(); ixor.a = r0.x(); ixor.b = r1.x();
+			_add(ixor);
+		}
 
-		// ixor r1x, r1x, r1y
-		ir::ILIxor ixor3;
-		ixor3.d = r1x; ixor3.a = r1x; ixor3.b = r1y;
-		_add(ixor3);
-
-		// iadd r0x, r0x, r1x
-		ir::ILIadd iadd3;
-		iadd3.d = r0x; iadd3.a = r0x; iadd3.b = r1x;
-		_add(iadd3);
-
-		// ixor r0x, r0x, r1x
-		ir::ILIxor ixor4;
-		ixor4.d = r0x; ixor4.a = r0x; ixor4.b = r1x;
-		_add(ixor4);
-
-		// mov i.d, r0x
-		ir::ILMov mov4;
-		mov4.d = _translate(i.d); mov4.a = r0x;
-		_add(mov4);
+		// mov i.d, r0
+		{
+			ir::ILMov mov;
+			mov.d = _translate(i.d); mov.a = r0;
+			_add(mov);
+		}
 	}
 
 	void PTXToILTranslator::_translateUDiv(const ir::PTXInstruction &i)
@@ -1558,34 +1561,83 @@ namespace translator
 		_add(mov);
 	}
 
+	inline bool _isPowerOf2(unsigned int n)
+	{
+		return (n && ((n & (n-1)) == 0));
+	}
+
+	/* returns the log base 2 of a power of 2 number */
+	inline int _Log2(unsigned int n)
+	{
+		int r = 0;
+		while (n >>= 1) r++;
+		return r;
+	}
+
 	void PTXToILTranslator::_translateMul(const ir::PTXInstruction &i)
 	{
 		switch (i.type)
 		{
 			case ir::PTXOperand::s32:
 			{
-				ir::ILImul imul;
+				if (i.a.addressMode == ir::PTXOperand::Immediate &&
+						_isPowerOf2(i.a.imm_uint))
+				{
+					ir::ILIshl ishl;
+					ishl.d = _translate(i.d);
+					ishl.a = _translateLiteral(_Log2(i.a.imm_uint));
+					ishl.b = _translate(i.b);
+					_add(ishl);
+					break;
+				}
+				if (i.b.addressMode == ir::PTXOperand::Immediate &&
+						_isPowerOf2(i.b.imm_uint))
+				{
+					ir::ILIshl ishl;
+					ishl.d = _translate(i.d);
+					ishl.a = _translate(i.a);
+					ishl.b = _translateLiteral(_Log2(i.b.imm_uint));
+					_add(ishl);
+					break;
+				}
 
+				ir::ILImul imul;
+				imul.d = _translate(i.d);
 				imul.a = _translate(i.a);
 				imul.b = _translate(i.b);
-				imul.d = _translate(i.d);
-
 				_add(imul);
-
 				break;
 			}
 			case ir::PTXOperand::u16:
 			case ir::PTXOperand::u32:
 			case ir::PTXOperand::u64:
 			{
-				ir::ILUmul umul;
+				if (i.a.addressMode == ir::PTXOperand::Immediate &&
+						_isPowerOf2(i.a.imm_uint))
+				{
+					ir::ILIshl ishl;
+					ishl.d = _translate(i.d);
+					ishl.a = _translateLiteral(_Log2(i.a.imm_uint));
+					ishl.b = _translate(i.b);
+					_add(ishl);
+					break;
+				}
+				if (i.b.addressMode == ir::PTXOperand::Immediate &&
+						_isPowerOf2(i.b.imm_uint))
+				{
+					ir::ILIshl ishl;
+					ishl.d = _translate(i.d);
+					ishl.a = _translate(i.a);
+					ishl.b = _translateLiteral(_Log2(i.b.imm_uint));
+					_add(ishl);
+					break;
+				}
 
+				ir::ILUmul umul;
+				umul.d = _translate(i.d);
 				umul.a = _translate(i.a);
 				umul.b = _translate(i.b);
-				umul.d = _translate(i.d);
-
 				_add(umul);
-
 				break;
 			}
 			case ir::PTXOperand::f32:
@@ -2644,6 +2696,21 @@ namespace translator
 		dcl_cb0.operands[0].addressMode = ir::ILOperand::ConstantBuffer;
 
 		_ilKernel->_statements.push_front(dcl_cb0);
+
+		report("Adding dcl_lds");
+		unsigned int totalSharedMemorySize = _kernel->sharedMemorySize() +
+			_kernel->externSharedMemorySize();
+		if (totalSharedMemorySize > 0)
+		{
+			ir::ILStatement dcl_lds(ir::ILStatement::LocalDataShareDcl);
+
+			dcl_lds.operands.resize(1);
+			dcl_lds.operands[0].imm_int = totalSharedMemorySize;
+			dcl_lds.operands[0].addressMode = ir::ILOperand::Immediate;
+			dcl_lds.operands[0].type = ir::ILOperand::I32;
+
+			_ilKernel->_statements.push_front(dcl_lds);
+		}
 
  		_ilKernel->_statements.push_front(ir::ILStatement(
  					ir::ILStatement::OtherDeclarations));

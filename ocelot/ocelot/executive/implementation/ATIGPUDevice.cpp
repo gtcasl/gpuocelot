@@ -57,6 +57,7 @@ namespace executive
 		_properties.ISA = ir::Instruction::CAL;
 		_properties.name = "CAL Device";
 		_properties.multiprocessorCount = _attribs.numberOfShaderEngines;
+		_properties.sharedMemPerBlock = 32768;
 		_properties.major = 1;
 		_properties.minor = 2;
 
@@ -479,11 +480,23 @@ namespace executive
 		ATIExecutableKernel kernel(*irKernel->second, &_context, &_event, 
 				&_uav0Resource, &_cb0Resource, &_cb1Resource, this);
 
+		if(kernel.sharedMemorySize() + sharedMemory > 
+			(size_t)properties().sharedMemPerBlock)
+		{
+			Throw("Out of shared memory for kernel \""
+				<< kernel.name << "\" : \n\tpreallocated "
+				<< kernel.sharedMemorySize() << " + requested " 
+				<< sharedMemory << " is greater than available " 
+				<< properties().sharedMemPerBlock << " for device " 
+				<< properties().name);
+		}
+		
 		kernel.setKernelShape(block.x, block.y, block.z);
 		kernel.setParameterBlock((const unsigned char *)parameterBlock, 
 				parameterBlockSize);
 		kernel.updateParameterMemory();
 		kernel.updateMemory();
+		kernel.setExternSharedMemorySize(sharedMemory);
 		kernel.launchGrid(grid.x, grid.y);
 	}
 

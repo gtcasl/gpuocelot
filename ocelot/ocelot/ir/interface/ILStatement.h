@@ -24,6 +24,7 @@ namespace ir
 				Instruction,
 				ConstantBufferDcl,
 				LiteralDcl,
+				LocalDataShareDcl,
 				OtherDeclarations,         // TODO Delete this
 				InvalidType
 			};

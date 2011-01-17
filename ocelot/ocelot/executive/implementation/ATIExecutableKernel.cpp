@@ -45,6 +45,7 @@ namespace executive
 			_cb1Mem(0),
 			_cb1Name(0)
 	{
+		initializeSharedMemory();
 	}
 
 	unsigned int ATIExecutableKernel::_pad(size_t& size, unsigned int alignment)
@@ -55,7 +56,7 @@ namespace executive
 		return padding;
 	}
 
-	void ATIExecutableKernel::allocateSharedMemory()
+	void ATIExecutableKernel::initializeSharedMemory()
 	{
 		report("Allocating shared memory");
 
@@ -198,7 +199,7 @@ namespace executive
 								report("For instruction " << ptx.toString()
 										<< ", mapping shared label "
 										<< mapping->first << " to " << 
-										mapping ->second);
+										mapping->second);
 
 								operand->addressMode = 
 									ir::PTXOperand::Immediate;
@@ -222,15 +223,17 @@ namespace executive
 			(*operand)->addressMode = ir::PTXOperand::Immediate;
 			(*operand)->imm_uint = sharedSize;
 		}
+
+		// allocate shared memory object
+		_sharedMemorySize = sharedSize;
+
+		report("Total shared memory size is " << _sharedMemorySize);
 	}
 
 	void ATIExecutableKernel::_translateKernel()
 	{
 		report("Translating PTX kernel \"" << name << "\" to IL");
 
-		// allocate shared memory
-		allocateSharedMemory();
-		
 		report("Running IL Translator");
 		translator::PTXToILTranslator translator;
 		ir::ILKernel *ilKernel = 
@@ -345,9 +348,10 @@ namespace executive
 		_blockDim.z = z;
 	}
 
-	void ATIExecutableKernel::setExternSharedMemorySize(unsigned int)
+	void ATIExecutableKernel::setExternSharedMemorySize(unsigned int bytes)
 	{
-		assertM(false, "Not implemented yet");
+		report("Setting external shared memory size to " << bytes);
+		_externSharedMemorySize = bytes;
 	}
 
 	void ATIExecutableKernel::setWorkerThreads(unsigned int workerThreadLimit)

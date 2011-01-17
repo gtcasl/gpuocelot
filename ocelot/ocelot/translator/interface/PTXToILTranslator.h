@@ -16,6 +16,7 @@
 #include <ocelot/ir/interface/ILKernel.h>
 #include <ocelot/ir/interface/ControlFlowGraph.h>
 #include <ocelot/ir/interface/ControlTree.h>
+#include <ocelot/executive/interface/ATIExecutableKernel.h>
 
 typedef ir::ControlTree ControlTree;
 
@@ -36,6 +37,7 @@ namespace translator
 			typedef std::map<int, std::string> ILiteralMap;
 			typedef std::map<float, std::string> FLiteralMap;
 
+			const executive::ATIExecutableKernel* _kernel;
 			ir::ILKernel *_ilKernel;
 			ILiteralMap _intLiterals;
 			FLiteralMap _floatLiterals;
@@ -123,6 +125,12 @@ namespace translator
 
 	/*! \brief returns the last instruction in a control tree node */
 	ir::PTXInstruction* getLastIns(const ControlTree::Node* node);
+
+	/*! \brief returns true if n is a power of 2 */
+	bool _isPowerOf2(unsigned int n);
+
+	/*! \brief returns the log base 2 of a power of 2 number */
+	int _Log2(unsigned int n);
 }
 
 #endif

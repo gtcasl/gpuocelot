@@ -66,6 +66,7 @@ namespace ir {
 			b32,
 			b64,
 			pred,
+			_,
 			TypeSpecifier_invalid
 		};
 

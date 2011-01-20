@@ -52,8 +52,25 @@ namespace parser
 	bool PTXParser::State::FunctionPrototype::compare( 
 		const FunctionPrototype& t )
 	{
-		return t.returnTypes == returnTypes 
-			&& t.argumentTypes == argumentTypes;
+		// it seems calls can ignore return types
+		bool returnTypesEqual = true;
+		
+		if (!(t.returnTypes.size() == 1 && t.returnTypes[0] == ir::PTXOperand::DataType::_)) {
+		
+			FunctionPrototype::TypeVector::const_iterator callee_it = t.returnTypes.begin(), 
+				prototype_it = returnTypes.begin();
+			for (; 
+				returnTypesEqual && 
+					callee_it != t.returnTypes.end() && prototype_it != returnTypes.end();
+				++callee_it, ++prototype_it) {
+			
+				if (*callee_it != ir::PTXOperand::DataType::_ && *callee_it != *prototype_it) {
+					returnTypesEqual =false;
+				}
+			}
+		}
+
+		return returnTypesEqual	&& t.argumentTypes == argumentTypes;
 	}
 	
 	std::string PTXParser::State::FunctionPrototype::toString() const
@@ -1358,6 +1375,9 @@ namespace parser
 		}
 		operand.offset = (int) value;
 		operand.type = mode->second.operand.type;
+		if (operand.identifier == "_") {
+			operand.type = ir::PTXOperand::DataType::_;
+		}
 	
 		operandVector.push_back( operand );
 	}

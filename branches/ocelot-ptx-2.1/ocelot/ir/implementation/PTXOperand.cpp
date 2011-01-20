@@ -41,6 +41,7 @@ std::string ir::PTXOperand::toString( DataType type ) {
 		case f32:  return "f32";  break;
 		case f64:  return "f64";  break;
 		case pred: return "pred"; break;
+		case _: return "_"; break;
 		default: break;
 	}
 	return "Invalid";

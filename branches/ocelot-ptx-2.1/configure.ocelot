@@ -21,7 +21,7 @@
 	executive: {
 		devices: [ llvm ],
 		optimizationLevel: none,
-		workerThreadLimit: 2,
+		workerThreadLimit: 1,
 		warpSize: 4
 	}
 }

@@ -26,42 +26,23 @@ INFO     ==== INDIVIDUAL TEST RESULTS ====
 INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestParser -i ../../tests-ptx-2.1/ptx 
 INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestDataflowGraph -i ../../tests-ptx-2.1/ptx 
 INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestCudaSequence 
-INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestCudaMalloc 
+INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestIndirectFunctionCall 
 INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestCudaSequence
-INFO     Test completed in 0.0509049892426 seconds
+INFO     Test completed in 0.0659670829773 seconds
 INFO      It produced the following output:
-A_host = 0x14c7a70
-A_gpu = 0x14c0a80
-Pass/Fail : Pass
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestFunctionCall 
-INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestCudaMalloc
-INFO     Test completed in 0.078714132309 seconds
-INFO      It produced the following output:
-test_malloc(256, 128)
-PASSED
-test_mallocArray(256, 128)
-checking results from last cudaMemcpyFromArray
-PASSED
-[1] mallocing pitch
-[2] memcpying2d
-[3] memcpying
-[4] checking for errors
-[5] mallocing
-[6] memcpying
-[7] memcpying
-[8] final free
+A_host = 0x31d32b0
+A_gpu = 0x31caec0
 Pass/Fail : Pass
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestLLVMKernels 
-INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestFunctionCall
-INFO     Test completed in 0.035621881485 seconds
+INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestIndirectFunctionCall
+INFO     Test completed in 0.0817658901215 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestPTXToLLVMTranslator -i ../../tests-ptx-2.1/ptx 
 INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestLLVMKernels
-INFO     Test completed in 0.20543217659 seconds
+INFO     Test completed in 0.13658618927 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -72,8 +53,8 @@ Description: A unit test for the LLVM executive runtime. Test Points: 1)
              Execute a kernel with a loop. 2) Execute a matrix multiply kernel.
 
 
-Test Seed : 1295453992
-Test time : 0.156099
+Test Seed : 1295559061
+Test time : 0.104727
 
 Status : A = [
  1 0 0 0 0 0 0 0 ;
@@ -108,22 +89,134 @@ R = [
 
 
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestCudaTextureArray 
-INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestCudaTextureArray
-INFO     Test completed in 0.0482749938965 seconds
+INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestPTXAssembly 
+INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestPTXAssembly
+INFO     Test completed in 2.57790613174 seconds
 INFO      It produced the following output:
-Pass/Fail : Pass
+Pass/Fail : Fail
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestCalVectorScale 
-INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestCalVectorScale
-INFO     Test completed in 0.0339579582214 seconds
-INFO      It produced the following output:
-No CAL devices found
-Pass/Fail : Pass
+
+Name : TestPTXAssembly
+
+Description: A unit test framework for PTX. Runs random inputs through unit 
+             tests on all available devices until a timer expires.
+
+
+Test Seed : 1295559061
+Test time : 2.54984
+
+Status : Ran 'TestVectorElements-u32' for 6 iterations.
+Ran 'TestAdd-u16' for 7 iterations.
+Ran 'TestAdd-s16' for 8 iterations.
+Ran 'TestAdd-u32' for 7 iterations.
+Ran 'TestAdd-s32' for 7 iterations.
+Ran 'TestAdd-s32-sat' for 7 iterations.
+Ran 'TestAdd-u64' for 7 iterations.
+Ran 'TestAdd-s64' for 8 iterations.
+Ran 'TestSub-u16' for 7 iterations.
+Ran 'TestSub-s16' for 7 iterations.
+Ran 'TestSub-u32' for 7 iterations.
+Ran 'TestSub-s32' for 7 iterations.
+Ran 'TestSub-s32-sat' for 7 iterations.
+Ran 'TestSub-u64' for 7 iterations.
+Ran 'TestSub-s64' for 8 iterations.
+Ran 'TestSub-Carry-s32' for 6 iterations.
+Ran 'TestSub-Carry-u32' for 6 iterations.
+Ran 'TestAdd-Carry-s32' for 6 iterations.
+Ran 'TestAdd-Carry-u32' for 6 iterations.
+Ran 'TestMul-Lo-u16' for 7 iterations.
+Ran 'TestMul-Hi-u16' for 7 iterations.
+Ran 'TestMul-Wide-u16' for 7 iterations.
+Ran 'TestMul-Lo-s16' for 7 iterations.
+Ran 'TestMul-Hi-s16' for 7 iterations.
+Ran 'TestMul-Wide-s16' for 7 iterations.
+Ran 'TestMul-Lo-u32' for 7 iterations.
+Ran 'TestMul-Hi-u32' for 7 iterations.
+Ran 'TestMul-Wide-u32' for 7 iterations.
+Ran 'TestMul-Lo-s32' for 8 iterations.
+Ran 'TestMul-Hi-s32' for 7 iterations.
+Ran 'TestMul-Wide-s32' for 7 iterations.
+Ran 'TestMul-Lo-u64' for 7 iterations.
+Ran 'TestMul-Hi-u64' for 6 iterations.
+Ran 'TestMul-Lo-s64' for 7 iterations.
+Ran 'TestMul-Hi-s64' for 7 iterations.
+Ran 'TestMad-Lo-u16' for 7 iterations.
+Ran 'TestMad-Hi-u16' for 7 iterations.
+Ran 'TestMad-Wide-u16' for 7 iterations.
+Ran 'TestMad-Lo-s16' for 7 iterations.
+Ran 'TestMad-Hi-s16' for 7 iterations.
+Ran 'TestMad-Wide-s16' for 7 iterations.
+Ran 'TestMad-Lo-u32' for 7 iterations.
+Ran 'TestMad-Hi-u32' for 7 iterations.
+Ran 'TestMad-Wide-u32' for 7 iterations.
+Ran 'TestMad-Lo-s32' for 7 iterations.
+Ran 'TestMad-Hi-s32' for 7 iterations.
+Ran 'TestMad-Sat-Hi-s32' for 7 iterations.
+Ran 'TestMad-Wide-s32' for 7 iterations.
+Ran 'TestMad-Lo-u64' for 7 iterations.
+Ran 'TestMad-Hi-u64' for 7 iterations.
+Ran 'TestMad-Lo-s64' for 7 iterations.
+Ran 'TestMad-Hi-s64' for 6 iterations.
+Ran 'TestSad-u16' for 7 iterations.
+Ran 'TestSad-s16' for 7 iterations.
+Ran 'TestSad-u32' for 6 iterations.
+Ran 'TestSad-s32' for 7 iterations.
+Ran 'TestSad-u64' for 7 iterations.
+Ran 'TestSad-s64' for 7 iterations.
+Ran 'TestDiv-u16' for 7 iterations.
+Ran 'TestDiv-s16' for 7 iterations.
+Ran 'TestDiv-u32' for 7 iterations.
+Ran 'TestDiv-s32' for 7 iterations.
+Ran 'TestDiv-u64' for 7 iterations.
+Ran 'TestDiv-s64' for 7 iterations.
+Ran 'TestRem-u16' for 7 iterations.
+Ran 'TestRem-s16' for 7 iterations.
+Ran 'TestRem-u32' for 7 iterations.
+Ran 'TestRem-s32' for 7 iterations.
+Ran 'TestRem-u64' for 7 iterations.
+Ran 'TestRem-s64' for 7 iterations.
+Ran 'TestAbs-s16' for 7 iterations.
+Ran 'TestAbs-s32' for 7 iterations.
+Ran 'TestAbs-s64' for 7 iterations.
+Ran 'TestNeg-s16' for 8 iterations.
+Ran 'TestNeg-s32' for 8 iterations.
+Ran 'TestNeg-s64' for 8 iterations.
+Ran 'TestMax-u16' for 7 iterations.
+Ran 'TestMax-u32' for 7 iterations.
+Ran 'TestMax-u64' for 7 iterations.
+Ran 'TestMax-s16' for 7 iterations.
+Ran 'TestMax-s32' for 7 iterations.
+Ran 'TestMax-s64' for 7 iterations.
+Ran 'TestMin-u16' for 7 iterations.
+Ran 'TestMin-u32' for 7 iterations.
+Ran 'TestMin-u64' for 7 iterations.
+Ran 'TestMin-s16' for 7 iterations.
+Ran 'TestMin-s32' for 7 iterations.
+Ran 'TestMin-s64' for 7 iterations.
+Ran 'TestPopc-b32' for 7 iterations.
+Ran 'TestPopc-b64' for 7 iterations.
+Ran 'TestClz-b32' for 7 iterations.
+Ran 'TestClz-b64' for 8 iterations.
+Ran 'TestBfind-u32' for 7 iterations.
+Ran 'TestBfind-u64' for 7 iterations.
+Ran 'TestBfind-s32' for 7 iterations.
+Ran 'TestBfind-s64' for 7 iterations.
+Ran 'TestBfind-shiftamount-u32' for 7 iterations.
+Ran 'TestBfind-shiftamount-u64' for 6 iterations.
+Ran 'TestBfind-shiftamount-s32' for 7 iterations.
+Ran 'TestBfind-shiftamount-s64' for 7 iterations.
+Ran 'TestBrev-b32' for 7 iterations.
+Ran 'TestBrev-b64' for 7 iterations.
+Ran 'TestBfi-b32' for 7 iterations.
+Test 'TestBfi-b64' (seed 1295559061): failed, output parameter 0 (I64) computed value - 2275107191 does not match reference value - 3960130479647842679
+  On device - 0 - 'Ocelot Multicore CPU Backend (LLVM-JIT)'
+Test 'TestBfi-b64' seed '1295559061' failed.
+
+
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestEmulator 
 INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestEmulator
-INFO     Test completed in 0.0296819210052 seconds
+INFO     Test completed in 0.0289080142975 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -133,8 +226,8 @@ Name : TestEmulator
 Description: 
 
 
-Test Seed : 1295453992
-Test time : 0.00271535
+Test Seed : 1295559063
+Test time : 0.00270247
 
 Status : Test output:
 10 registers
@@ -146,9 +239,45 @@ Full kernel test passed
 
 
 
+INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestDeviceSwitching 
+INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestDeviceSwitching
+INFO     Test completed in 0.0420808792114 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+
+Name : TestDeviceSwitching
+
+Description: A unit test for the ability of the CUDA runtime to switch 
+             between devices and use multiple threads Test Points: 1) In a single 
+             threaded application, iterate across all devices launching the same 
+             simple kernel each time 2) Test context migration support in 
+             ocelot. Iterate across all devices, launching a simple kernel that 
+             updates shared variable. Use the context switch mechanism to 
+             migrate the shared data. 3) Test multi-threading support. Launch one 
+             host thread to allocate memory, pass pointers to worker 
+             threads, each of which should launch independent kernels in 
+             parallel.
+
+
+Test Seed : 1295559063
+Test time : 0.0139356
+
+Status : Test Point 1 Passed
+Test Point 2 Passed
+Test Point 3 Passed
+
+
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestCudaTextureArray 
+INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestCudaTextureArray
+INFO     Test completed in 0.0385730266571 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
 INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestLexer -i ../../tests-ptx-2.1/ptx 
 INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestLexer
-INFO     Test completed in 7.17061686516 seconds
+INFO     Test completed in 7.03588199615 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -160,8 +289,8 @@ Description: Tests for the PTX lexer. Test Point 1: Scan a PTX file and
              two sets of tokens match
 
 
-Test Seed : 1295453992
-Test time : 7.12793
+Test Seed : 1295559063
+Test time : 7.00786
 
 Status : For file ../../tests-ptx-2.1/ptx/sdk2.2/simpleTexture.ptx, Test Point 1 (Scan): Passed
 For file ../../tests-ptx-2.1/ptx/sdk2.2/simpleAtomicIntrinsics.ptx, Test Point 1 (Scan): Passed
@@ -266,7 +395,7 @@ For file ../../tests-ptx-2.1/ptx/synthetic/generic.ptx, Test Point 1 (Scan): Pas
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestInstructions 
 INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestInstructions
-INFO     Test completed in 0.0354890823364 seconds
+INFO     Test completed in 0.0282998085022 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -276,8 +405,8 @@ Name : TestInstructions
 Description: 
 
 
-Test Seed : 1295453999
-Test time : 0.000553846
+Test Seed : 1295559070
+Test time : 0.000534296
 
 Status : Test output:
 Accessors test passed.
@@ -293,15 +422,81 @@ pass: control flow instructions
 
 
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestIndirectFunctionCall 
-INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestIndirectFunctionCall
-INFO     Test completed in 0.037752866745 seconds
+INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestCudaMalloc 
+INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestCudaMalloc
+INFO     Test completed in 0.0653390884399 seconds
 INFO      It produced the following output:
-TestIndirectFunctionCall: ocelot/executive/implementation/EmulatorCallStack.cpp:98: void* executive::EmulatorCallStack::sharedMemoryPointer(): Assertion `!_sharedMemory.empty()' failed.
+test_malloc(256, 128)
+PASSED
+test_mallocArray(256, 128)
+checking results from last cudaMemcpyFromArray
+PASSED
+[1] mallocing pitch
+[2] memcpying2d
+[3] memcpying
+[4] checking for errors
+[5] mallocing
+[6] memcpying
+[7] memcpying
+[8] final free
+Pass/Fail : Pass
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestCudaTexture2D 
+INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestCudaTexture2D
+INFO     Test completed in 0.0551471710205 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestKernels 
+INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestKernels
+INFO     Test completed in 0.0484981536865 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+
+Name : TestKernels
+
+Description: 
+
+
+Test Seed : 1295559071
+Test time : 0.019171
+
+Status : Test output:
+looping kernel succeeded
+matrix vector kernel succeeded
+
+
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestFunctionCall 
+INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestFunctionCall
+INFO     Test completed in 0.0639460086823 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestCudaGlobals 
+INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestCudaGlobals
+INFO     Test completed in 0.0431780815125 seconds
+INFO      It produced the following output:
+cudaSetDevice() - 0 - Ocelot Multicore CPU Backend (LLVM-JIT) 
+Pass/Fail : Pass
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestFunctionCall 
+INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestFunctionCall
+INFO     Test completed in 0.0462200641632 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestCalVectorScale 
+INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestCalVectorScale
+INFO     Test completed in 0.0318479537964 seconds
+INFO      It produced the following output:
+No CAL devices found
+Pass/Fail : Pass
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestGenericMemory 
 INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestGenericMemory
-INFO     Test completed in 0.0564720630646 seconds
+INFO     Test completed in 0.0639669895172 seconds
 INFO      It produced the following output:
  - cuInit() 
  - cuDriverGetVersion() 
@@ -324,79 +519,9 @@ INFO      It produced the following output:
  - cuCtxDestroy() 
 Pass/Fail : Pass
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestKernels 
-INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestKernels
-INFO     Test completed in 0.0612270832062 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-
-Name : TestKernels
-
-Description: 
-
-
-Test Seed : 1295453999
-Test time : 0.0157719
-
-Status : Test output:
-looping kernel succeeded
-matrix vector kernel succeeded
-
-
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestCudaTexture2D 
-INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestCudaTexture2D
-INFO     Test completed in 0.0527620315552 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestFunctionCall 
-INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestFunctionCall
-INFO     Test completed in 0.0326061248779 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestCudaGlobals 
-INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestCudaGlobals
-INFO     Test completed in 0.033695936203 seconds
-INFO      It produced the following output:
-cudaSetDevice() - 0 - Ocelot PTX Emulator 
-Pass/Fail : Pass
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestDeviceSwitching 
-INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestDeviceSwitching
-INFO     Test completed in 0.0349519252777 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-
-Name : TestDeviceSwitching
-
-Description: A unit test for the ability of the CUDA runtime to switch 
-             between devices and use multiple threads Test Points: 1) In a single 
-             threaded application, iterate across all devices launching the same 
-             simple kernel each time 2) Test context migration support in 
-             ocelot. Iterate across all devices, launching a simple kernel that 
-             updates shared variable. Use the context switch mechanism to 
-             migrate the shared data. 3) Test multi-threading support. Launch one 
-             host thread to allocate memory, pass pointers to worker 
-             threads, each of which should launch independent kernels in 
-             parallel.
-
-
-Test Seed : 1295453999
-Test time : 0.00311875
-
-Status : Test Point 1 Passed
-Test Point 2 Passed
-Test Point 3 Passed
-
-
-
 INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestLLVMInstructions 
 INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestLLVMInstructions
-INFO     Test completed in 0.0281591415405 seconds
+INFO     Test completed in 0.0737011432648 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -410,8 +535,8 @@ Description: A test for the assembly code generation and automatic
              check, compare to references from the LLVM manual.
 
 
-Test Seed : 1295453999
-Test time : 0.000850677
+Test Seed : 1295559071
+Test time : 0.00517511
 
 Status :  Checked instruction "<result> = add i32 4, %var"
 Add Instruction Passed
@@ -542,306 +667,8 @@ Zext Instruction Passed
 
 
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestPTXAssembly 
-INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestPTXAssembly
-INFO     Test completed in 6.82558012009 seconds
-INFO      It produced the following output:
-Pass/Fail : Fail
-
-
-Name : TestPTXAssembly
-
-Description: A unit test framework for PTX. Runs random inputs through unit 
-             tests on all available devices until a timer expires.
-
-
-Test Seed : 1295453999
-Test time : 6.788
-
-Status : Ran 'TestVectorElements-u32' for 23 iterations.
-Ran 'TestAdd-u16' for 20 iterations.
-Ran 'TestAdd-s16' for 18 iterations.
-Ran 'TestAdd-u32' for 25 iterations.
-Ran 'TestAdd-s32' for 24 iterations.
-Ran 'TestAdd-s32-sat' for 25 iterations.
-Ran 'TestAdd-u64' for 23 iterations.
-Ran 'TestAdd-s64' for 24 iterations.
-Ran 'TestSub-u16' for 22 iterations.
-Ran 'TestSub-s16' for 20 iterations.
-Ran 'TestSub-u32' for 22 iterations.
-Ran 'TestSub-s32' for 22 iterations.
-Ran 'TestSub-s32-sat' for 25 iterations.
-Ran 'TestSub-u64' for 20 iterations.
-Ran 'TestSub-s64' for 24 iterations.
-Ran 'TestSub-Carry-s32' for 23 iterations.
-Ran 'TestSub-Carry-u32' for 23 iterations.
-Ran 'TestAdd-Carry-s32' for 21 iterations.
-Ran 'TestAdd-Carry-u32' for 22 iterations.
-Ran 'TestMul-Lo-u16' for 26 iterations.
-Ran 'TestMul-Hi-u16' for 25 iterations.
-Ran 'TestMul-Wide-u16' for 23 iterations.
-Ran 'TestMul-Lo-s16' for 25 iterations.
-Ran 'TestMul-Hi-s16' for 24 iterations.
-Ran 'TestMul-Wide-s16' for 24 iterations.
-Ran 'TestMul-Lo-u32' for 24 iterations.
-Ran 'TestMul-Hi-u32' for 29 iterations.
-Ran 'TestMul-Wide-u32' for 29 iterations.
-Ran 'TestMul-Lo-s32' for 27 iterations.
-Ran 'TestMul-Hi-s32' for 27 iterations.
-Ran 'TestMul-Wide-s32' for 29 iterations.
-Ran 'TestMul-Lo-u64' for 29 iterations.
-Ran 'TestMul-Hi-u64' for 28 iterations.
-Ran 'TestMul-Lo-s64' for 27 iterations.
-Ran 'TestMul-Hi-s64' for 26 iterations.
-Ran 'TestMad-Lo-u16' for 27 iterations.
-Ran 'TestMad-Hi-u16' for 28 iterations.
-Ran 'TestMad-Wide-u16' for 25 iterations.
-Ran 'TestMad-Lo-s16' for 24 iterations.
-Ran 'TestMad-Hi-s16' for 28 iterations.
-Ran 'TestMad-Wide-s16' for 27 iterations.
-Ran 'TestMad-Lo-u32' for 24 iterations.
-Ran 'TestMad-Hi-u32' for 26 iterations.
-Ran 'TestMad-Wide-u32' for 28 iterations.
-Ran 'TestMad-Lo-s32' for 27 iterations.
-Ran 'TestMad-Hi-s32' for 22 iterations.
-Ran 'TestMad-Sat-Hi-s32' for 27 iterations.
-Ran 'TestMad-Wide-s32' for 27 iterations.
-Ran 'TestMad-Lo-u64' for 28 iterations.
-Ran 'TestMad-Hi-u64' for 26 iterations.
-Ran 'TestMad-Lo-s64' for 19 iterations.
-Ran 'TestMad-Hi-s64' for 26 iterations.
-Ran 'TestSad-u16' for 28 iterations.
-Ran 'TestSad-s16' for 27 iterations.
-Ran 'TestSad-u32' for 26 iterations.
-Ran 'TestSad-s32' for 13 iterations.
-Ran 'TestSad-u64' for 14 iterations.
-Ran 'TestSad-s64' for 14 iterations.
-Ran 'TestDiv-u16' for 19 iterations.
-Ran 'TestDiv-s16' for 17 iterations.
-Ran 'TestDiv-u32' for 10 iterations.
-Ran 'TestDiv-s32' for 16 iterations.
-Ran 'TestDiv-u64' for 17 iterations.
-Ran 'TestDiv-s64' for 15 iterations.
-Ran 'TestRem-u16' for 17 iterations.
-Ran 'TestRem-s16' for 17 iterations.
-Ran 'TestRem-u32' for 15 iterations.
-Ran 'TestRem-s32' for 17 iterations.
-Ran 'TestRem-u64' for 17 iterations.
-Ran 'TestRem-s64' for 30 iterations.
-Ran 'TestAbs-s16' for 31 iterations.
-Ran 'TestAbs-s32' for 29 iterations.
-Ran 'TestAbs-s64' for 31 iterations.
-Ran 'TestNeg-s16' for 31 iterations.
-Ran 'TestNeg-s32' for 31 iterations.
-Ran 'TestNeg-s64' for 31 iterations.
-Ran 'TestMax-u16' for 29 iterations.
-Ran 'TestMax-u32' for 28 iterations.
-Ran 'TestMax-u64' for 30 iterations.
-Ran 'TestMax-s16' for 30 iterations.
-Ran 'TestMax-s32' for 30 iterations.
-Ran 'TestMax-s64' for 30 iterations.
-Ran 'TestMin-u16' for 30 iterations.
-Ran 'TestMin-u32' for 29 iterations.
-Ran 'TestMin-u64' for 30 iterations.
-Ran 'TestMin-s16' for 30 iterations.
-Ran 'TestMin-s32' for 30 iterations.
-Ran 'TestMin-s64' for 30 iterations.
-Ran 'TestPopc-b32' for 30 iterations.
-Ran 'TestPopc-b64' for 31 iterations.
-Ran 'TestClz-b32' for 31 iterations.
-Ran 'TestClz-b64' for 31 iterations.
-Ran 'TestBfind-u32' for 31 iterations.
-Ran 'TestBfind-u64' for 31 iterations.
-Ran 'TestBfind-s32' for 25 iterations.
-Ran 'TestBfind-s64' for 31 iterations.
-Ran 'TestBfind-shiftamount-u32' for 29 iterations.
-Ran 'TestBfind-shiftamount-u64' for 30 iterations.
-Ran 'TestBfind-shiftamount-s32' for 29 iterations.
-Ran 'TestBfind-shiftamount-s64' for 29 iterations.
-Ran 'TestBrev-b32' for 29 iterations.
-Ran 'TestBrev-b64' for 30 iterations.
-Ran 'TestBfi-b32' for 22 iterations.
-Ran 'TestBfi-b64' for 27 iterations.
-Ran 'TestPrmt-b32' for 28 iterations.
-Ran 'TestPrmt-f4e-b32' for 26 iterations.
-Ran 'TestPrmt-b4e-b32' for 27 iterations.
-Ran 'TestPrmt-rc8-b32' for 28 iterations.
-Ran 'TestPrmt-ecl-b32' for 28 iterations.
-Ran 'TestPrmt-ecr-b32' for 28 iterations.
-Ran 'TestPrmt-rc16-b32' for 28 iterations.
-Ran 'TestCall-Uni' for 17 iterations.
-Ran 'TestCall-Nondivergent' for 21 iterations.
-Ran 'TestCall-Divergent' for 18 iterations.
-Ran 'TestCall-Recursive' for 20 iterations.
-Ran 'TestCall-Indirect' for 9 iterations.
-Ran 'TestTestP-f32-Finite' for 26 iterations.
-Ran 'TestTestP-f32-Infinite' for 26 iterations.
-Ran 'TestTestP-f32-Number' for 26 iterations.
-Ran 'TestTestP-f32-NotANumber' for 22 iterations.
-Ran 'TestTestP-f32-Normal' for 27 iterations.
-Ran 'TestTestP-f32-SubNormal' for 26 iterations.
-Ran 'TestTestP-f64-Finite' for 25 iterations.
-Ran 'TestTestP-f64-Infinite' for 13 iterations.
-Ran 'TestTestP-f64-Number' for 18 iterations.
-Ran 'TestTestP-f64-NotANumber' for 16 iterations.
-Ran 'TestTestP-f64-Normal' for 14 iterations.
-Ran 'TestTestP-f64-SubNormal' for 15 iterations.
-Ran 'TestCopysign-f32' for 16 iterations.
-Ran 'TestCopysign-f64' for 28 iterations.
-Ran 'TestAdd-f32' for 28 iterations.
-Ran 'TestAdd-f32-sat' for 23 iterations.
-Ran 'TestAdd-f32-ftz' for 26 iterations.
-Ran 'TestAdd-f32-ftz-sat' for 29 iterations.
-Ran 'TestAdd-f64' for 28 iterations.
-Ran 'TestSub-f32' for 28 iterations.
-Ran 'TestSub-f32-sat' for 28 iterations.
-Ran 'TestSub-f32-ftz' for 28 iterations.
-Ran 'TestSub-f32-ftz-sat' for 28 iterations.
-Ran 'TestSub-f64' for 28 iterations.
-Ran 'TestMul-f32' for 28 iterations.
-Ran 'TestMul-f32-sat' for 24 iterations.
-Ran 'TestMul-f32-ftz' for 27 iterations.
-Ran 'TestMul-f32-ftz-sat' for 25 iterations.
-Ran 'TestMul-f64' for 26 iterations.
-Ran 'TestMad-f32' for 26 iterations.
-Ran 'TestMad-f32-sat' for 26 iterations.
-Ran 'TestMad-f32-ftz' for 26 iterations.
-Ran 'TestMad-f32-ftz-sat' for 25 iterations.
-Ran 'TestMad-f64' for 26 iterations.
-Ran 'TestFma-f32' for 25 iterations.
-Ran 'TestFma-f32-sat' for 26 iterations.
-Ran 'TestFma-f32-ftz' for 26 iterations.
-Ran 'TestFma-f32-ftz-sat' for 25 iterations.
-Ran 'TestFma-f64' for 26 iterations.
-Ran 'TestDiv-f32' for 27 iterations.
-Ran 'TestDiv-f32-ftz' for 24 iterations.
-Ran 'TestDiv-f32-approx' for 25 iterations.
-Ran 'TestDiv-f32-full' for 23 iterations.
-Ran 'TestDiv-f32-approx-ftz' for 27 iterations.
-Ran 'TestDiv-f32-full-ftz' for 27 iterations.
-Ran 'TestDiv-f64' for 27 iterations.
-Ran 'TestAbs-f32' for 27 iterations.
-Ran 'TestAbs-f32-ftz' for 29 iterations.
-Ran 'TestAbs-f64' for 29 iterations.
-Ran 'TestNeg-f32' for 27 iterations.
-Ran 'TestNeg-f32-ftz' for 28 iterations.
-Ran 'TestNeg-f64' for 29 iterations.
-Ran 'TestMin-f32' for 28 iterations.
-Ran 'TestMin-f32-ftz' for 27 iterations.
-Ran 'TestMin-f64' for 28 iterations.
-Ran 'TestMax-f32' for 28 iterations.
-Ran 'TestMax-f32-ftz' for 28 iterations.
-Ran 'TestMax-f64' for 27 iterations.
-Ran 'TestRcp-f32' for 28 iterations.
-Ran 'TestRcp-f32-approx' for 29 iterations.
-Ran 'TestRcp-f32-ftz' for 29 iterations.
-Ran 'TestRcp-f32-approx-ftz' for 29 iterations.
-Ran 'TestRcp-f64' for 29 iterations.
-Ran 'TestRcp-f64-approx-ftz' for 28 iterations.
-Ran 'TestSqrt-f32' for 28 iterations.
-Ran 'TestSqrt-f32-approx' for 29 iterations.
-Ran 'TestSqrt-f32-ftz' for 29 iterations.
-Ran 'TestSqrt-f32-approx-ftz' for 22 iterations.
-Ran 'TestSqrt-f64' for 15 iterations.
-Ran 'TestRsqrt-f32' for 14 iterations.
-Ran 'TestRsqrt-f32-ftz' for 9 iterations.
-Ran 'TestRsqrt-f64' for 14 iterations.
-Ran 'TestCos-f32' for 20 iterations.
-Ran 'TestCos-f32-ftz' for 17 iterations.
-Ran 'TestSin-f32' for 16 iterations.
-Ran 'TestSin-f32-ftz' for 14 iterations.
-Ran 'TestEx2-f32' for 16 iterations.
-Ran 'TestEx2-f32-ftz' for 16 iterations.
-Ran 'TestLg2-f32' for 19 iterations.
-Ran 'TestLg2-f32-ftz' for 11 iterations.
-Ran 'TestSet-lt-u32-u16' for 10 iterations.
-Ran 'TestSet-lt-s32-u16' for 23 iterations.
-Ran 'TestSet-lt-f32-u16' for 25 iterations.
-Ran 'TestSet-lt-s32-u32' for 24 iterations.
-Ran 'TestSet-lt-s32-u64' for 23 iterations.
-Ran 'TestSet-lt-s32-s16' for 15 iterations.
-Ran 'TestSet-lt-s32-s32' for 21 iterations.
-Ran 'TestSet-lt-s32-s64' for 11 iterations.
-Ran 'TestSet-lt-s32-f32' for 19 iterations.
-Ran 'TestSet-lt-s32-f64' for 19 iterations.
-Ran 'TestSet-lt-ftz-s32-f32' for 20 iterations.
-Ran 'TestSet-Eq-s32-s32' for 23 iterations.
-Ran 'TestSet-Ne-s32-s32' for 21 iterations.
-Ran 'TestSet-Le-s32-s32' for 20 iterations.
-Ran 'TestSet-Gt-s32-s32' for 22 iterations.
-Ran 'TestSet-Ge-s32-s32' for 23 iterations.
-Ran 'TestSet-Lo-s32-s32' for 23 iterations.
-Ran 'TestSet-Ls-s32-s32' for 22 iterations.
-Ran 'TestSet-Hi-s32-s32' for 22 iterations.
-Ran 'TestSet-Hs-s32-s32' for 20 iterations.
-Ran 'TestSet-Eq-s32-f32' for 20 iterations.
-Ran 'TestSet-Ne-s32-f32' for 24 iterations.
-Ran 'TestSet-Lt-s32-f32' for 22 iterations.
-Ran 'TestSet-Le-s32-f32' for 20 iterations.
-Ran 'TestSet-Gt-s32-f32' for 22 iterations.
-Ran 'TestSet-Ge-s32-f32' for 22 iterations.
-Ran 'TestSet-Lo-s32-f32' for 20 iterations.
-Ran 'TestSet-Ls-s32-f32' for 21 iterations.
-Ran 'TestSet-Hi-s32-f32' for 23 iterations.
-Ran 'TestSet-Hs-s32-f32' for 24 iterations.
-Ran 'TestSet-Equ-s32-f32' for 21 iterations.
-Ran 'TestSet-Neu-s32-f32' for 22 iterations.
-Ran 'TestSet-Ltu-s32-f32' for 20 iterations.
-Ran 'TestSet-Leu-s32-f32' for 22 iterations.
-Ran 'TestSet-Gtu-s32-f32' for 22 iterations.
-Ran 'TestSet-Geu-s32-f32' for 21 iterations.
-Ran 'TestSet-Num-s32-f32' for 21 iterations.
-Ran 'TestSet-Nan-s32-f32' for 19 iterations.
-Ran 'TestSet-Lt-s32-s32-And' for 22 iterations.
-Ran 'TestSet-Lt-s32-s32-Or' for 24 iterations.
-Ran 'TestSet-Lt-s32-s32-Xor' for 23 iterations.
-Ran 'TestSet-Lt-s32-s32-And-Inv' for 21 iterations.
-Ran 'TestSetP-lt-u16' for 22 iterations.
-Ran 'TestSetP-lt-u32' for 21 iterations.
-Ran 'TestSetP-lt-u32-pq' for 15 iterations.
-Ran 'TestSetP-lt-u64' for 20 iterations.
-Ran 'TestSetP-lt-s16' for 21 iterations.
-Ran 'TestSetP-lt-s32' for 20 iterations.
-Ran 'TestSetP-lt-s64' for 20 iterations.
-Ran 'TestSetP-lt-f32' for 22 iterations.
-Ran 'TestSetP-lt-f64' for 22 iterations.
-Ran 'TestSetP-lt-u32-pq-and' for 20 iterations.
-Ran 'TestSetP-lt-u32-pq-or' for 19 iterations.
-Ran 'TestSetP-lt-u32-pq-xor' for 21 iterations.
-Ran 'TestSetP-lt-f32-pq-and-ftz' for 21 iterations.
-Ran 'TestSelp-u16' for 21 iterations.
-Ran 'TestSelp-u32' for 20 iterations.
-Ran 'TestSelp-u64' for 16 iterations.
-Ran 'TestSelp-s16' for 22 iterations.
-Ran 'TestSelp-s32' for 23 iterations.
-Ran 'TestSelp-s64' for 25 iterations.
-Ran 'TestSelp-f32' for 24 iterations.
-Ran 'TestSelp-f64' for 24 iterations.
-Ran 'TestSlct-u16-s32' for 26 iterations.
-Ran 'TestSlct-u32-s32' for 27 iterations.
-Ran 'TestSlct-u64-s32' for 26 iterations.
-Ran 'TestSlct-s16-s32' for 25 iterations.
-Ran 'TestSlct-s32-s32' for 27 iterations.
-Ran 'TestSlct-s64-s32' for 23 iterations.
-Ran 'TestSlct-f32-s32' for 22 iterations.
-Ran 'TestSlct-f64-s32' for 25 iterations.
-Ran 'TestSlct-u16-f32' for 26 iterations.
-Ran 'TestSlct-u32-f32' for 25 iterations.
-Ran 'TestSlct-u64-f32' for 23 iterations.
-Ran 'TestSlct-s16-f32' for 25 iterations.
-Ran 'TestSlct-s32-f32' for 21 iterations.
-Ran 'TestSlct-s64-f32' for 23 iterations.
-Ran 'TestSlct-f32-f32' for 25 iterations.
-Ran 'TestSlct-f64-f32' for 23 iterations.
-Ran 'TestSlct-f32-f32-ftz' for 23 iterations.
- Output parameter 0 (I8) computed value - 0 does not match reference value - 1
-  On device - 0 - 'Ocelot PTX Emulator'
-Test 'TestAnd-pred' seed '1295453999' failed.
-
-
-
 INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestParser
-INFO     Test completed in 25.6257340908 seconds
+INFO     Test completed in 23.0688397884 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -854,8 +681,8 @@ Description: A test for the PTXParser class. Test Points: 1) Load a PTX file
              generating a new module, compare both to make sure that they match.
 
 
-Test Seed : 1295453992
-Test time : 25.5814
+Test Seed : 1295559061
+Test time : 23.0245
 
 Status : For file ../../tests-ptx-2.1/ptx/sdk2.2/simpleTexture.ptx, Test Point 1 (Parse): Passed
 For file ../../tests-ptx-2.1/ptx/sdk2.2/simpleAtomicIntrinsics.ptx, Test Point 1 (Parse): Passed
@@ -959,7 +786,7 @@ For file ../../tests-ptx-2.1/ptx/synthetic/generic.ptx, Test Point 1 (Parse): Pa
 
 
 INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestDataflowGraph
-INFO     Test completed in 32.8032689095 seconds
+INFO     Test completed in 32.375592947 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -974,8 +801,8 @@ Description: A test for the DataflowGraph class. Test Points: 1)
              ranges spanning blocks are consistent.
 
 
-Test Seed : 1295453992
-Test time : 32.7522
+Test Seed : 1295559061
+Test time : 32.3301
 
 Status : Testing Generic Dataflow
  For File: ../../tests-ptx-2.1/ptx/sdk2.2/simpleTexture.ptx
@@ -4779,7 +4606,7 @@ Testing SSA then back Dataflow
 
 
 INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestPTXToLLVMTranslator
-INFO     Test completed in 34.9378709793 seconds
+INFO     Test completed in 33.2556350231 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -4792,8 +4619,8 @@ Description: This is a basic test that just tries to get through a
              translate them.
 
 
-Test Seed : 1295453992
-Test time : 34.8997
+Test Seed : 1295559061
+Test time : 33.2272
 
 Status : For file ../../tests-ptx-2.1/ptx/sdk2.2/simpleTexture.ptx, Test Point 1 (Translate): Passed
 For file ../../tests-ptx-2.1/ptx/sdk2.2/simpleAtomicIntrinsics.ptx, Test Point 1 (Translate): Passed
@@ -4898,28 +4725,28 @@ For file ../../tests-ptx-2.1/ptx/synthetic/generic.ptx, Test Point 1 (Translate)
 
 INFO     
 Passing tests:
- (0.030s) : /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestEmulator : Passed
- (0.028s) : /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestLLVMInstructions : Passed
- (0.035s) : /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestInstructions : Passed
- (0.205s) : /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestLLVMKernels : Passed
- (0.048s) : /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestCudaTextureArray : Passed
- (25.626s) : /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestParser : Passed
- (0.033s) : /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestFunctionCall : Passed
- (34.938s) : /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestPTXToLLVMTranslator : Passed
- (0.034s) : /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestCalVectorScale : Passed
- (0.061s) : /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestKernels : Passed
- (7.171s) : /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestLexer : Passed
- (0.035s) : /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestDeviceSwitching : Passed
- (32.803s) : /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestDataflowGraph : Passed
- (0.051s) : /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestCudaSequence : Passed
- (0.053s) : /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestCudaTexture2D : Passed
- (0.056s) : /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestGenericMemory : Passed
- (0.034s) : /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestCudaGlobals : Passed
- (0.079s) : /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestCudaMalloc : Passed
+ (0.029s) : /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestEmulator : Passed
+ (0.074s) : /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestLLVMInstructions : Passed
+ (0.028s) : /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestInstructions : Passed
+ (0.137s) : /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestLLVMKernels : Passed
+ (0.039s) : /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestCudaTextureArray : Passed
+ (23.069s) : /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestParser : Passed
+ (0.046s) : /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestFunctionCall : Passed
+ (33.256s) : /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestPTXToLLVMTranslator : Passed
+ (0.032s) : /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestCalVectorScale : Passed
+ (0.048s) : /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestKernels : Passed
+ (7.036s) : /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestLexer : Passed
+ (0.042s) : /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestDeviceSwitching : Passed
+ (0.082s) : /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestIndirectFunctionCall : Passed
+ (32.376s) : /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestDataflowGraph : Passed
+ (0.066s) : /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestCudaSequence : Passed
+ (0.055s) : /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestCudaTexture2D : Passed
+ (0.064s) : /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestGenericMemory : Passed
+ (0.043s) : /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestCudaGlobals : Passed
+ (0.065s) : /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestCudaMalloc : Passed
 
 Failing tests:
- (0.038s) : /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestIndirectFunctionCall : Did not complete.
- (6.826s) : /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestPTXAssembly : Failed
+ (2.578s) : /home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/TestPTXAssembly : Failed
 
 Non-Existent tests:
 

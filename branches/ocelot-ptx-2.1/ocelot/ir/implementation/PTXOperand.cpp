@@ -632,7 +632,8 @@ static std::ostream & write(std::ostream &stream, double value) {
 }
 
 std::string ir::PTXOperand::toString() const {
-	if( addressMode == BitBucket ) {
+	
+	if(type == ir::PTXOperand::_ || addressMode == BitBucket ) {
 		return "_";
 	} else if( addressMode == Indirect ) {
 		std::stringstream stream;
@@ -652,7 +653,7 @@ std::string ir::PTXOperand::toString() const {
 			else {
 				stream << "%r" << reg;
 			}
-			stream << " + " << offset;
+			stream << " + " << ( offset );
 			return stream.str();
 		}
 	} else if( addressMode == Address ) {
@@ -664,7 +665,7 @@ std::string ir::PTXOperand::toString() const {
 			stream << ( offset );
 			return identifier + " + " + stream.str();
 		} else {
-			stream << offset;
+			stream << ( offset );
 			return identifier + " + " + stream.str();
 		}
 	} else if( addressMode == Immediate ) {

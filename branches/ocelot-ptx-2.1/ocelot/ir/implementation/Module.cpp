@@ -247,6 +247,8 @@ void ir::Module::writeIR( std::ostream& stream ) const {
 
 	stream << "/* Module " << _modulePath << " */\n\n";
 	
+	stream << "/* Function prototypes */\n";
+
 	stream << "/* Globals */\n";
 	for (GlobalMap::const_iterator global = _globals.begin(); 
 		global != _globals.end(); ++global) {
@@ -412,6 +414,10 @@ void ir::Module::extractPTXKernels() {
 			assert(_textures.count(statement.name) == 0);
 			_textures.insert(std::make_pair(statement.name, 
 				Texture(statement.name, Texture::Samplerref)));
+		}
+		else if (statement.directive == PTXStatement::FunctionPrototype) {
+			// if it's an extern, add the prototype
+			
 		}
 	}
 }

@@ -39,6 +39,9 @@ namespace ir {
 
 		/*! \brief Map from unique identifier to global variable */
 		typedef std::unordered_map< std::string, Global > GlobalMap;
+		
+		/*! \brief map from unique identifier to function prototype */
+		typedef std::unordered_map< std::string, ir::PTXKernel::Prototype > ExternFunctionMap;
 				
 	public:
 

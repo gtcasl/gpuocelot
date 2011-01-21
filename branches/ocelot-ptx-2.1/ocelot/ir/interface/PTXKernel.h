@@ -27,6 +27,36 @@ namespace ir
 			typedef analysis::DataflowGraph::RegisterVector RegisterVector;
 			
 		public:
+		
+			/*!
+				\brief Defines a prototype for each kernel and function
+			*/
+			class Prototype {
+			public:
+				enum LinkingDirective {
+					Extern,		//!< externally-defined function
+					Visible,	//!< locally defined function visible outside this module
+					LinkingDirective_invalid
+				};
+			
+			public:
+
+			public:
+			
+				//! indicates linking directive of function
+				LinkingDirective linkingDirective;
+			
+				//! set of return arguments for function
+				PTXOperand returnArguments;
+				
+				//! function name
+				std::string identifier;
+				
+				//! arguments for function
+				PTXOperand arguments;
+			};
+			
+		public:
 			/*!	Constructs a control flow graph from iterators into the 
 				Module's PTXStatement vector
 

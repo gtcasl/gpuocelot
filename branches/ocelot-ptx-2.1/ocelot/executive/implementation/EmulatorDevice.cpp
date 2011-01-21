@@ -628,7 +628,7 @@ namespace executive
 		// we ignore flags
 	}
 
-	void EmulatorDevice::unmapGraphicsResource(void* resource)
+	void EmulatorDevice::unmapGraphicsResource(void* resource, int count, unsigned int streamID)
 	{
 		unsigned int handle = hydrazine::bit_cast<unsigned int>(resource);
 		GraphicsMap::iterator graphic = _graphics.find(handle);

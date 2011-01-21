@@ -206,7 +206,7 @@ namespace executive
 			virtual void setGraphicsResourceFlags(void* resource, 
 				unsigned int flags) = 0;
 			/*! \brief Unmap a mapped resource */
-			virtual void unmapGraphicsResource(void* resource) = 0;
+			virtual void unmapGraphicsResource(void* resource, int count, unsigned int stream) = 0;
 
 		public:
 			/*! \brief Load a module, must have a unique name */

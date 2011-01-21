@@ -103,7 +103,7 @@ namespace executive
 			void setGraphicsResourceFlags(void* resource, 
 				unsigned int flags);
 			/*! \brief Unmap a mapped resource */
-			void unmapGraphicsResource(void* resource);
+			void unmapGraphicsResource(void* resource, int count, unsigned int streamID);
 
 			/*! \brief Load a module, must have a unique name */
 			void load(const ir::Module *irModule);

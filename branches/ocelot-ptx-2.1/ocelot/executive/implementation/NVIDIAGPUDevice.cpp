@@ -671,6 +671,8 @@ namespace executive
 			checkError(driver::cuCtxCreate(&_context, flags, device));
 		}
 		
+		report("NVIDIAGPUDevice::NVIDIAGPUDevice() - created context. _opengl = " << _opengl);
+		
 		checkError(driver::cuCtxPopCurrent(&_context));
 		
 		char name[256];
@@ -977,7 +979,7 @@ namespace executive
 			hydrazine::bit_cast<CUgraphicsResource>(resource)));
 	}
 
-	void NVIDIAGPUDevice::mapGraphicsResource(void* resource, int count, 
+	void NVIDIAGPUDevice::mapGraphicsResource(void* resourceVoidPtr, int count, 
 		unsigned int streamId)
 	{
 		CUstream id = 0;
@@ -992,18 +994,17 @@ namespace executive
 
 			id = stream->second;
 		}
-		report("Mapping graphics resource " << resource 
-			<< " on stream " << streamId);
+		CUgraphicsResource * graphicsResources = (CUgraphicsResource *)resourceVoidPtr;
 
 		if(!_opengl) Throw("No active opengl contexts.");
 
-		checkError(driver::cuGraphicsMapResources(count,
-			(CUgraphicsResource*)&resource, id));
+		CUresult result = driver::cuGraphicsMapResources(count, graphicsResources, id);
+		report("driver::cuGraphicsMapresources() - " << result);
+		checkError(result);
 		
 		CUdeviceptr pointer;
 		unsigned int bytes = 0;
-		checkError(driver::cuGraphicsResourceGetMappedPointer(&pointer, &bytes, 
-			(CUgraphicsResource)resource));
+		checkError(driver::cuGraphicsResourceGetMappedPointer(&pointer, &bytes, (CUgraphicsResource)graphicsResources[0]));
 		
 		void* p = (void*)pointer;
 		
@@ -1039,7 +1040,7 @@ namespace executive
 			(CUgraphicsResource)resource, flags));
 	}
 
-	void NVIDIAGPUDevice::unmapGraphicsResource(void* resource)
+	void NVIDIAGPUDevice::unmapGraphicsResource(void* resourceVoidPtr, int count, unsigned int streamID)
 	{
 		CUstream id = 0;
 		
@@ -1049,16 +1050,15 @@ namespace executive
 			assert(stream != _streams.end());
 			id = stream->second;
 		}
-				
-		report("Unmapping graphics resource " << resource);
 
 		if(!_opengl) Throw("No active opengl contexts.");
 
 		CUdeviceptr pointer;
 		unsigned int bytes = 0;
 
-		checkError(driver::cuGraphicsResourceGetMappedPointer(&pointer, &bytes, 
-			(CUgraphicsResource)resource));
+		CUgraphicsResource * graphicsResources = (CUgraphicsResource *)resourceVoidPtr;
+		
+		checkError(driver::cuGraphicsResourceGetMappedPointer(&pointer, &bytes, graphicsResources[0]));
 
 		AllocationMap::iterator allocation = _allocations.find(
 			hydrazine::bit_cast<void*>(pointer));
@@ -1067,8 +1067,7 @@ namespace executive
 		delete allocation->second;
 		_allocations.erase(allocation);
 
-		checkError(driver::cuGraphicsUnmapResources(1, 
-			(CUgraphicsResource*)&resource, id));
+		checkError(driver::cuGraphicsUnmapResources(1, graphicsResources, id));
 	}
 
 	void NVIDIAGPUDevice::load(const ir::Module* module)

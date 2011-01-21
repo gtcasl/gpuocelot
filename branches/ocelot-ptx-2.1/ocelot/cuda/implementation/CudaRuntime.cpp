@@ -3030,7 +3030,7 @@ cudaError_t cuda::CudaRuntime::cudaGLUnmapBufferObject(GLuint bufObj) {
 	
 	GLBufferMap::iterator buffer = _buffers.find(bufObj);
 	if (buffer != _buffers.end()) {
-		_getDevice().unmapGraphicsResource(buffer->second);
+		_getDevice().unmapGraphicsResource(buffer->second, 1, 0);
 		result = cudaSuccess;
 	}
 	
@@ -3152,7 +3152,7 @@ cudaError_t cuda::CudaRuntime::cudaGraphicsUnmapResources(int count,
 	
 	report("cudaGraphicsUnmapResources");
 	
-	_getDevice().mapGraphicsResource(resources, count, stream);	
+	_getDevice().unmapGraphicsResource(resources, count, stream);	
 
 	_release();
 	

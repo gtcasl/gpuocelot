@@ -225,13 +225,13 @@ namespace executive
 		report("Getting global allocation: " << "module = [" << moduleName 
 				<< "] " << "global = [" << name << "]");
 
-		if(moduleName.empty())
+		if (moduleName.empty())
 		{
 			// try a brute force search over all modules
-			for(ModuleMap::iterator module = _modules.begin(); 
+			for (ModuleMap::iterator module = _modules.begin(); 
 				module != _modules.end(); ++module)
 			{
-				if(module->second->globals.empty())
+				if (module->second->globals.empty())
 				{
 					Module::AllocationVector allocations = std::move(
 						module->second->loadGlobals());
@@ -246,7 +246,7 @@ namespace executive
 
 				Module::GlobalMap::iterator global = 
 					module->second->globals.find(name);
-				if(global != module->second->globals.end())
+				if (global != module->second->globals.end())
 				{
 					return getMemoryAllocation(global->second,
 						DeviceAllocation);
@@ -703,6 +703,13 @@ namespace executive
 
 			MemoryAllocation* allocation = new MemoryAllocation(
 					&(device->_uav0Resource), device->_uav0AllocPtr, size);
+
+			// copy initial data
+			void* src = std::malloc(size);
+			global->second.statement.copy(src);
+			allocation->copy(0, src, size);
+			std::free(src);
+
 			globals.insert(std::make_pair(global->first, 
 						allocation->pointer()));
 			allocations.push_back(allocation);

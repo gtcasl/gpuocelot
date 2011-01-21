@@ -800,13 +800,22 @@ namespace translator
 						return;
 					}
 					case ir::PTXOperand::u8:
-					case ir::PTXOperand::u16:
 					{
 						// chop
 						ir::ILIand iand;
 						iand.d = d;
 						iand.a = a;
 						iand.b = _translateLiteral((int)0x000000FF);
+						_add(iand);
+						return;
+					}
+					case ir::PTXOperand::u16:
+					{
+						// chop
+						ir::ILIand iand;
+						iand.d = d;
+						iand.a = a;
+						iand.b = _translateLiteral((int)0x0000FFFF);
 						_add(iand);
 						return;
 					}
@@ -841,6 +850,7 @@ namespace translator
 			{
 				switch (i.type)
 				{
+					case ir::PTXOperand::s32:
 					case ir::PTXOperand::u32:
 					{
 						// chop (but there are no 64-bit registers in IL)
@@ -869,7 +879,8 @@ namespace translator
 					}
 					case ir::PTXOperand::f32: 
 					{
-						if(i.modifier & ir::PTXInstruction::sat) {
+						if (i.modifier & ir::PTXInstruction::sat) 
+						{
 							ir::ILMov mov;
 							mov.modifier = ir::ILInstruction::sat;
 							mov.d = d;
@@ -878,12 +889,21 @@ namespace translator
 							return;
 						}
 
-						if(i.modifier & ir::PTXInstruction::rz
-								|| i.modifier & ir::PTXInstruction::rn) {
+						if(i.modifier & ir::PTXInstruction::rz) 
+						{
 							ir::ILMov mov;
 							mov.d = d;
 							mov.a = a;
 							_add(mov);
+							return;
+						}
+
+						if (i.modifier & ir::PTXInstruction::rn)
+						{
+							ir::ILRound_Nearest round_nearest;
+							round_nearest.d = d;
+							round_nearest.a = a;
+							_add(round_nearest);
 							return;
 						}
 						break;
@@ -2632,7 +2652,6 @@ namespace translator
  	{
 		report("Adding Kernel Prefix");
 
-		report("Adding dcl_literals");
 		if (_intLiterals.size() > 0) {
 			ILiteralMap::const_iterator it;
 			for (it = _intLiterals.begin() ; it != _intLiterals.end() ; it++) 
@@ -2649,7 +2668,7 @@ namespace translator
 
 				_ilKernel->_statements.push_front(dcl_literal);
 
-				report("Added statement \"" << dcl_literal.toString() << "\"");
+				report("Added \'" << dcl_literal.toString() << "\'");
 			}
 		}
 
@@ -2669,11 +2688,10 @@ namespace translator
 
 				_ilKernel->_statements.push_front(dcl_literal);
 
-				report("Added statement \"" << dcl_literal.toString() << "\"");
+				report("Added \'" << dcl_literal.toString() << "\'");
 			}
 		}
 
-		report("Adding dcl_cb1");
 		if (_ilKernel->parameters.size() > 0) {
 			ir::ILStatement dcl_cb1(ir::ILStatement::ConstantBufferDcl);
 
@@ -2684,9 +2702,10 @@ namespace translator
 			dcl_cb1.operands[0].addressMode = ir::ILOperand::ConstantBuffer;
 
 			_ilKernel->_statements.push_front(dcl_cb1);
+
+			report("Added \'" << dcl_cb1.toString() << "\'");
 		}
 
-		report("Adding dcl_cb0");
 		ir::ILStatement dcl_cb0(ir::ILStatement::ConstantBufferDcl);
 
 		std::stringstream stream;
@@ -2696,8 +2715,8 @@ namespace translator
 		dcl_cb0.operands[0].addressMode = ir::ILOperand::ConstantBuffer;
 
 		_ilKernel->_statements.push_front(dcl_cb0);
+		report("Added \'" << dcl_cb0.toString() << "\'");
 
-		report("Adding dcl_lds");
 		unsigned int totalSharedMemorySize = _kernel->sharedMemorySize() +
 			_kernel->externSharedMemorySize();
 		if (totalSharedMemorySize > 0)
@@ -2710,6 +2729,8 @@ namespace translator
 			dcl_lds.operands[0].type = ir::ILOperand::I32;
 
 			_ilKernel->_statements.push_front(dcl_lds);
+		
+			report("Added \'" << dcl_lds.toString() << "\'");
 		}
 
  		_ilKernel->_statements.push_front(ir::ILStatement(

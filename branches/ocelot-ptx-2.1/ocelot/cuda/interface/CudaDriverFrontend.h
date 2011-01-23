@@ -540,6 +540,9 @@ namespace cuda {
 		
 		//! \brief true if devices are loaded
 		bool _devicesLoaded;
+
+		//! The minimum supoported compute capability
+		int _computeCapability;
 		
 		//! set of available devices
 		executive::DeviceVector _devices;

@@ -19,7 +19,7 @@
 		runtimeApiTrace: "trace/CudaAPI.trace"
 	},
 	executive: {
-		devices: [ nvidia ],
+		devices: [ emulated, llvm, nvidia ],
 		optimizationLevel: none,
 		workerThreadLimit: 1,
 		warpSize: 4

@@ -54,10 +54,11 @@ namespace executive
 			};
 
 			/*! \brief Allocate a new device for each CAL capable GPU */
-			static DeviceVector createDevices(unsigned int flags);
+			static DeviceVector createDevices(unsigned int flags,
+				int computeCapability);
 		
 			/*! \brief Get the total number of CAL devices in the system */
-			static unsigned int deviceCount(); 
+			static unsigned int deviceCount(int computeCapability); 
 		
 			/*! \brief Constructor */
 			ATIGPUDevice();

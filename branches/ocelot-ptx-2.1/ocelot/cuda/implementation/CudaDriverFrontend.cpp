@@ -35,7 +35,7 @@
 #undef REPORT_BASE
 #endif
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 // whether CUDA runtime catches exceptions thrown by Ocelot
 #define CATCH_RUNTIME_EXCEPTIONS 0
@@ -46,13 +46,14 @@
 // whether debugging messages are printed
 #define REPORT_BASE 0
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 //
 // Error handling macros
 
-#define Ocelot_Exception(x) { std::stringstream ss; ss << x; throw hydrazine::Exception(ss.str()); }
+#define Ocelot_Exception(x) { std::stringstream ss; ss << x; \
+	throw hydrazine::Exception(ss.str()); }
 
-///////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 typedef api::OcelotConfiguration config;
 
@@ -69,7 +70,7 @@ public:
 };
 
 cuda::CudaDriverFrontend::CudaDriverFrontend():
-	_devicesLoaded(false)
+	_devicesLoaded(false), _computeCapability(2)
 {
 	_enumerateDevices();
 }
@@ -98,25 +99,29 @@ void cuda::CudaDriverFrontend::_enumerateDevices() {
 	report("Creating devices.");
 	if(config::get().executive.enableNVIDIA) {
 		executive::DeviceVector d = 
-			executive::Device::createDevices(ir::Instruction::SASS, _flags);
+			executive::Device::createDevices(ir::Instruction::SASS, _flags,
+				_computeCapability);
 		report(" - Added " << d.size() << " nvidia gpu devices." );
 		_devices.insert(_devices.end(), d.begin(), d.end());
 	}
 	if(config::get().executive.enableEmulated) {
 		executive::DeviceVector d = 
-			executive::Device::createDevices(ir::Instruction::Emulated, _flags);
+			executive::Device::createDevices(ir::Instruction::Emulated, _flags,
+				_computeCapability);
 		report(" - Added " << d.size() << " emulator devices." );
 		_devices.insert(_devices.end(), d.begin(), d.end());
 	}
 	if(config::get().executive.enableLLVM) {
 		executive::DeviceVector d = 
-			executive::Device::createDevices(ir::Instruction::LLVM, _flags);
+			executive::Device::createDevices(ir::Instruction::LLVM, _flags,
+				_computeCapability);
 		report(" - Added " << d.size() << " llvm-cpu devices." );
 		_devices.insert(_devices.end(), d.begin(), d.end());
 	}
 	if(config::get().executive.enableAMD) {
 		executive::DeviceVector d =
-			executive::Device::createDevices(ir::Instruction::CAL, _flags);
+			executive::Device::createDevices(ir::Instruction::CAL, _flags,
+				_computeCapability);
 		report(" - Added " << d.size() << " amd gpu devices." );
 		_devices.insert(_devices.end(), d.begin(), d.end());
 	}
@@ -175,7 +180,7 @@ void cuda::CudaDriverFrontend::_unbind() {
 }
 
 
-////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////
 
 cuda::CudaDriverFrontend::Context::Context():
 	_selectedDevice(0), _nextSymbol(0), _flags(0),
@@ -233,7 +238,7 @@ void cuda::CudaDriverFrontend::Context::_registerAllModules() {
 
 }
 
-///////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 			
 /*********************************
 ** Initialization
@@ -1689,5 +1694,5 @@ std::string cuda::CudaDriverFrontend::toString(CUresult result) {
 	return "CUresult";
 }
 
-///////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 

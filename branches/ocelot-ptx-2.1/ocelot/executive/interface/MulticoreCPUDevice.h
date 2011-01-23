@@ -71,7 +71,8 @@ namespace executive
 			/*! \brief Limit the worker threads used by this device */
 			void limitWorkerThreads(unsigned int threads);
 			/*! \brief Set the optimization level for kernels in this device */
-			void setOptimizationLevel(translator::Translator::OptimizationLevel level);
+			void setOptimizationLevel(
+				translator::Translator::OptimizationLevel level);
 	};
 
 }

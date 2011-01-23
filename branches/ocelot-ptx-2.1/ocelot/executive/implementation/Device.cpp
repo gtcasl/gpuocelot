@@ -54,11 +54,12 @@ std::ostream& executive::Device::Properties::write(std::ostream &out) const {
 }
 
 executive::DeviceVector executive::Device::createDevices(
-	ir::Instruction::Architecture isa, unsigned int flags) {
+	ir::Instruction::Architecture isa, unsigned int flags,
+	int computeCapability) {
 	switch(isa) {
 		case ir::Instruction::SASS:
 		{
-			return NVIDIAGPUDevice::createDevices(flags);
+			return NVIDIAGPUDevice::createDevices(flags, computeCapability);
 		}
 		break;
 		case ir::Instruction::Emulated:
@@ -79,7 +80,7 @@ executive::DeviceVector executive::Device::createDevices(
 		break;
 		case ir::Instruction::CAL:
 		{
-			return ATIGPUDevice::createDevices(flags);
+			return ATIGPUDevice::createDevices(flags, computeCapability);
 		}
 		break;
 		default: break;
@@ -87,11 +88,12 @@ executive::DeviceVector executive::Device::createDevices(
 	assertM(false, "Invalid ISA - " << ir::Instruction::toString(isa));
 }
 
-unsigned int executive::Device::deviceCount(ir::Instruction::Architecture isa) {
+unsigned int executive::Device::deviceCount(ir::Instruction::Architecture isa,
+	int computeCapability) {
 	switch(isa) {
 		case ir::Instruction::SASS:
 		{
-			return NVIDIAGPUDevice::deviceCount();
+			return NVIDIAGPUDevice::deviceCount(computeCapability);
 		}
 		break;
 		case ir::Instruction::Emulated:
@@ -110,7 +112,7 @@ unsigned int executive::Device::deviceCount(ir::Instruction::Architecture isa) {
 		break;
 		case ir::Instruction::CAL:
 		{
-			return ATIGPUDevice::deviceCount();
+			return ATIGPUDevice::deviceCount(computeCapability);
 		}
 		break;
 		default: break;

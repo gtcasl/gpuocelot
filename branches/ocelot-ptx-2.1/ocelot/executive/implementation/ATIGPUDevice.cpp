@@ -105,11 +105,12 @@ namespace executive
         CalDriver()->calDeviceClose(_device);
     }
 
-	DeviceVector ATIGPUDevice::createDevices(unsigned int flags)
+	DeviceVector ATIGPUDevice::createDevices(unsigned int flags,
+		int computeCapability)
 	{
 		DeviceVector devices;
 
-		if(deviceCount() == 0) return devices;
+		if(deviceCount(computeCapability) == 0) return devices;
 
 		try {
 			// Multiple devices is not supported yet
@@ -122,7 +123,7 @@ namespace executive
 		return devices;
 	}
 	
-	unsigned int ATIGPUDevice::deviceCount()
+	unsigned int ATIGPUDevice::deviceCount(int computeCapability)
 	{
 		CALuint count = 0;
 

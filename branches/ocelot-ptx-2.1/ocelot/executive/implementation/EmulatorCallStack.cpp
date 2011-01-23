@@ -95,8 +95,7 @@ namespace executive
 	
 	void* EmulatorCallStack::sharedMemoryPointer()
 	{
-		assert(!_sharedMemory.empty());
-		return &_sharedMemory.at(0);
+		return _sharedMemory.data();
 	}
 
 	unsigned int EmulatorCallStack::registerCount() const

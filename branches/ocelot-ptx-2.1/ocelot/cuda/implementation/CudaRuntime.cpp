@@ -28,7 +28,7 @@
 #undef REPORT_BASE
 #endif
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 // whether CUDA runtime catches exceptions thrown by Ocelot
 #define CATCH_RUNTIME_EXCEPTIONS 0
@@ -42,13 +42,14 @@
 // report all ptx modules
 #define REPORT_ALL_PTX 0
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 //
 // Error handling macros
 
-#define Ocelot_Exception(x) { std::stringstream ss; ss << x; throw hydrazine::Exception(ss.str()); }
+#define Ocelot_Exception(x) { std::stringstream ss; ss << x; \
+	throw hydrazine::Exception(ss.str()); }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 typedef api::OcelotConfiguration config;
 
@@ -64,7 +65,7 @@ const char *cuda::FatBinaryContext::ptx() const {
 	return binary->ptx->ptx;
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 cuda::HostThreadContext::HostThreadContext(): selectedDevice(0), 
 	parameterBlock(0), parameterBlockSize(1<<13) {
@@ -90,7 +91,8 @@ cuda::HostThreadContext::HostThreadContext(const HostThreadContext& c):
 	memcpy(parameterBlock, c.parameterBlock, parameterBlockSize);
 }
 
-cuda::HostThreadContext& cuda::HostThreadContext::operator=(const HostThreadContext& c) {
+cuda::HostThreadContext& cuda::HostThreadContext::operator=(
+	const HostThreadContext& c) {
 	if(&c == this) return *this;
 	selectedDevice = c.selectedDevice;
 	validDevices = c.validDevices;
@@ -110,7 +112,8 @@ cuda::HostThreadContext::HostThreadContext(HostThreadContext&& c):
 	*this = std::move(c);
 }
 
-cuda::HostThreadContext& cuda::HostThreadContext::operator=(HostThreadContext&& c) {
+cuda::HostThreadContext& cuda::HostThreadContext::operator=(
+	HostThreadContext&& c) {
 	if (this == &c) return *this;
 	std::swap(selectedDevice, c.selectedDevice);
 	std::swap(validDevices, c.validDevices);
@@ -166,7 +169,7 @@ void cuda::HostThreadContext::mapParameters(const ir::Kernel* kernel) {
 	clearParameters();
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 cuda::RegisteredKernel::RegisteredKernel(size_t h, const std::string& m, 
 	const std::string& k) : handle(h), module(m), kernel(k) {
 }
@@ -190,7 +193,7 @@ size_t cuda::Dimension::pitch() const {
 	return ((format.x + format.y + format.z + format.w) / 8) * x;
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 void cuda::CudaRuntime::_memcpy(void* dst, const void* src, size_t count, 
 	enum cudaMemcpyKind kind) {
@@ -268,34 +271,41 @@ void cuda::CudaRuntime::_enumerateDevices() {
 	report("Creating devices.");
 	if(config::get().executive.enableNVIDIA) {
 		executive::DeviceVector d = 
-			executive::Device::createDevices(ir::Instruction::SASS, _flags);
+			executive::Device::createDevices(ir::Instruction::SASS, _flags,
+				_computeCapability);
 		report(" - Added " << d.size() << " nvidia gpu devices." );
 		_devices.insert(_devices.end(), d.begin(), d.end());
 	}
 	if(config::get().executive.enableEmulated) {
 		executive::DeviceVector d = 
-			executive::Device::createDevices(ir::Instruction::Emulated, _flags);
+			executive::Device::createDevices(ir::Instruction::Emulated, _flags,
+				_computeCapability);
 		report(" - Added " << d.size() << " emulator devices." );
 		_devices.insert(_devices.end(), d.begin(), d.end());
 	}
 	if(config::get().executive.enableLLVM) {
 		executive::DeviceVector d = 
-			executive::Device::createDevices(ir::Instruction::LLVM, _flags);
+			executive::Device::createDevices(ir::Instruction::LLVM, _flags,
+				_computeCapability);
 		report(" - Added " << d.size() << " llvm-cpu devices." );
 		_devices.insert(_devices.end(), d.begin(), d.end());
 		
 		if (config::get().executive.workerThreadLimit > 0) {
-			for (executive::DeviceVector::iterator d_it = d.begin(); d_it != d.end(); ++d_it) {
-				(*d_it)->limitWorkerThreads(config::get().executive.workerThreadLimit);
+			for (executive::DeviceVector::iterator d_it = d.begin();
+				d_it != d.end(); ++d_it) {
+				(*d_it)->limitWorkerThreads(
+					config::get().executive.workerThreadLimit);
 			}
 		}
 	}
 	if(config::get().executive.enableAMD) {
 		executive::DeviceVector d =
-			executive::Device::createDevices(ir::Instruction::CAL, _flags);
+			executive::Device::createDevices(ir::Instruction::CAL, _flags,
+				_computeCapability);
 		report(" - Added " << d.size() << " amd gpu devices." );
 		_devices.insert(_devices.end(), d.begin(), d.end());
 	}
+	
 	_devicesLoaded = true;
 	
 	if(_devices.empty())
@@ -381,9 +391,11 @@ std::string cuda::CudaRuntime::_formatError( const std::string& message ) {
 }
 
 cuda::HostThreadContext& cuda::CudaRuntime::_getCurrentThread() {
-	HostThreadContextMap::iterator t = _threads.find(boost::this_thread::get_id());
+	HostThreadContextMap::iterator t = _threads.find(
+		boost::this_thread::get_id());
 	if (t == _threads.end()) {
-		report("Creating new context for thread " << boost::this_thread::get_id());
+		report("Creating new context for thread "
+			<< boost::this_thread::get_id());
 		t = _threads.insert(std::make_pair(boost::this_thread::get_id(), 
 			HostThreadContext())).first;
 	}
@@ -425,25 +437,28 @@ void cuda::CudaRuntime::_registerAllModules() {
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 cuda::CudaRuntime::CudaRuntime() : _deviceCount(0), _devicesLoaded(false), 
-	_selectedDevice(-1), _nextSymbol(1), _flags(0), 
+	_selectedDevice(-1), _nextSymbol(1), _computeCapability(2), _flags(0), 
 	_optimization((translator::Translator::OptimizationLevel)
 		config::get().executive.optimizationLevel) {
 
 	if(config::get().executive.enableNVIDIA) {
-		_deviceCount += executive::Device::deviceCount(ir::Instruction::SASS);
+		_deviceCount += executive::Device::deviceCount(
+			ir::Instruction::SASS, _computeCapability);
 	}
 	if(config::get().executive.enableEmulated) {
 		_deviceCount += executive::Device::deviceCount(
-			ir::Instruction::Emulated);
+			ir::Instruction::Emulated, _computeCapability);
 	}
 	if(config::get().executive.enableLLVM) {
-		_deviceCount += executive::Device::deviceCount(ir::Instruction::LLVM);
+		_deviceCount += executive::Device::deviceCount(
+			ir::Instruction::LLVM, _computeCapability);
 	}
 	if(config::get().executive.enableAMD) {
-		_deviceCount += executive::Device::deviceCount(ir::Instruction::CAL);
+		_deviceCount += executive::Device::deviceCount(
+			ir::Instruction::CAL, _computeCapability);
 	}
 }
 
@@ -474,10 +489,11 @@ cuda::CudaRuntime::~CudaRuntime() {
 }
 
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 /*!
-	registers a CUDA fatbinary and returns a handle for referencing the fat binary
+	registers a CUDA fatbinary and returns a handle
+	for referencing the fat binary
 */
 static bool dummy0Flag = false;
 
@@ -750,7 +766,7 @@ cudaError_t cuda::CudaRuntime::cudaGetExportTable(const void **ppExportTable,
 
 #undef DEBUG_MODE
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 //
 // memory allocation
 
@@ -778,8 +794,8 @@ cudaError_t cuda::CudaRuntime::cudaMalloc(void **devPtr, size_t size) {
 }
 
 /*!
-	constructs a host-side allocation, returns pointer to mapped region - this allocation
-		is referenced by the mappedPointer()
+	constructs a host-side allocation, returns pointer to mapped region -
+	this allocation is referenced by the mappedPointer()
 */
 cudaError_t cuda::CudaRuntime::cudaMallocHost(void **ptr, size_t size) {
 	cudaError_t result = cudaErrorMemoryAllocation;
@@ -1010,7 +1026,8 @@ cudaError_t cuda::CudaRuntime::cudaHostGetDevicePointer(void **pDevice,
 	_acquire();
 	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
 	
-	executive::Device::MemoryAllocation *allocation = _getDevice().getMemoryAllocation(pHost, 
+	executive::Device::MemoryAllocation *allocation =
+		_getDevice().getMemoryAllocation(pHost, 
 			executive::Device::HostAllocation);
 
 	if (allocation != 0) {	
@@ -1021,7 +1038,8 @@ cudaError_t cuda::CudaRuntime::cudaHostGetDevicePointer(void **pDevice,
 		}
 	}
 	else {
-		report("cudaHostGetDevicePointer() - failed to get device pointer from host allocation at " << (const void *)pHost);
+		report("cudaHostGetDevicePointer() - failed to get device pointer "
+			"from host allocation at " << (const void *)pHost);
 	}
 
 	_release();
@@ -1047,7 +1065,7 @@ cudaError_t cuda::CudaRuntime::cudaHostGetFlags(unsigned int *pFlags,
 	return _setLastError(result);
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 //
 // memory copying
 
@@ -1865,7 +1883,7 @@ cudaError_t cuda::CudaRuntime::cudaMemcpy3DAsync(const struct cudaMemcpy3DParms 
 	return cudaMemcpy3D(p);
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 //
 // memset
 //
@@ -1957,7 +1975,7 @@ cudaError_t cuda::CudaRuntime::cudaMemset3D(struct cudaPitchedPtr pitchedDevPtr,
 	return _setLastError(result);	
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 //
 // memory allocation
 //
@@ -2060,7 +2078,7 @@ cudaError_t cuda::CudaRuntime::cudaGetSymbolSize(size_t *size, const char *symbo
 	return _setLastError(result);	
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 cudaError_t cuda::CudaRuntime::cudaGetDeviceCount(int *count) {
 	cudaError_t result = cudaSuccess;
@@ -2206,7 +2224,7 @@ cudaError_t cuda::CudaRuntime::cudaSetDeviceFlags(int f) {
 	return _setLastError(result);
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 //! binds a texture to a reference and a CUDA memory block
 cudaError_t cuda::CudaRuntime::cudaBindTexture(size_t *offset, 
@@ -2424,7 +2442,7 @@ cudaError_t cuda::CudaRuntime::cudaGetTextureReference(
 	return _setLastError(result);
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 cudaError_t cuda::CudaRuntime::cudaGetChannelDesc(
 	struct cudaChannelFormatDesc *desc, const struct cudaArray *array) {
@@ -2451,14 +2469,14 @@ struct cudaChannelFormatDesc cuda::CudaRuntime::cudaCreateChannelDesc(int x,
 	return desc;
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 cudaError_t cuda::CudaRuntime::cudaGetLastError(void) {
 	HostThreadContext& thread = _getCurrentThread();
 	return thread.lastError;
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 	
 cudaError_t cuda::CudaRuntime::cudaConfigureCall(dim3 gridDim, dim3 blockDim, 
 	size_t sharedMem, cudaStream_t stream) {
@@ -2644,7 +2662,7 @@ cudaError_t cuda::CudaRuntime::cudaFuncSetCacheConfig(const char *func,
 	return _setLastError(result);
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 //
 // CUDA event creation
 
@@ -2776,7 +2794,7 @@ cudaError_t cuda::CudaRuntime::cudaEventElapsedTime(float *ms,
 	return _setLastError(result);
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 //
 // CUDA streams
 //
@@ -2855,7 +2873,7 @@ cudaError_t cuda::CudaRuntime::cudaStreamQuery(cudaStream_t stream) {
 	return _setLastError(result);
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 cudaError_t cuda::CudaRuntime::cudaDriverGetVersion(int *driverVersion) {
 	cudaError_t result = cudaSuccess;
 
@@ -2918,7 +2936,7 @@ cudaError_t cuda::CudaRuntime::cudaRuntimeGetVersion(int *runtimeVersion) {
 	return _setLastError(result);
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 cudaError_t cuda::CudaRuntime::cudaThreadExit(void) {
 	cudaError_t result = cudaSuccess;
@@ -2951,7 +2969,7 @@ cudaError_t cuda::CudaRuntime::cudaThreadSynchronize(void) {
 	return _setLastError(result);
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 cudaError_t cuda::CudaRuntime::cudaGLMapBufferObject(void **devPtr, 
 	GLuint bufObj) {
@@ -3064,7 +3082,7 @@ cudaError_t cuda::CudaRuntime::cudaGLUnregisterBufferObject(GLuint bufObj) {
 	return _setLastError(result);
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 cudaError_t cuda::CudaRuntime::cudaGraphicsGLRegisterBuffer(
 	struct cudaGraphicsResource **resource, GLuint buffer, unsigned int flags) {
@@ -3181,9 +3199,10 @@ cudaError_t cuda::CudaRuntime::cudaGraphicsSubResourceGetMappedArray(
 }
 
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
-void cuda::CudaRuntime::addTraceGenerator( trace::TraceGenerator& gen, bool persistent ) {
+void cuda::CudaRuntime::addTraceGenerator( trace::TraceGenerator& gen,
+	bool persistent ) {
 	_lock();
 	HostThreadContext& thread = _getCurrentThread();
 	if (persistent) {
@@ -3481,5 +3500,5 @@ void cuda::CudaRuntime::setOptimizationLevel(
 	_unlock();
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 

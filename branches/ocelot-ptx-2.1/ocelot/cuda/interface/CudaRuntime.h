@@ -275,6 +275,9 @@ namespace cuda {
 		//! the next symbol for dynamically registered kernels
 		int _nextSymbol;
 		
+		//! The minimum supoported compute capability
+		int _computeCapability;
+		
 		//! The device flags
 		unsigned int _flags;
 		

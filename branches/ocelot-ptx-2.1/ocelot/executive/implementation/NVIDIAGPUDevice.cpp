@@ -38,7 +38,7 @@
 #define Throw(x) {std::stringstream s; s << x; report(s.str()); \
 	throw hydrazine::Exception(s.str()); }
 
-/////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 // Turn on report messages
 #define REPORT_BASE 1
@@ -46,7 +46,7 @@
 // Print out the full ptx for each module as it is loaded
 #define REPORT_PTX 1
 
-/////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 typedef cuda::CudaDriver driver;
 
@@ -72,9 +72,12 @@ namespace executive
 		_flags |= CU_MEMHOSTALLOC_PORTABLE | CU_MEMHOSTALLOC_DEVICEMAP;
 
 		checkError(driver::cuMemHostAlloc(&_hostPointer, size, _flags));
-		checkError(driver::cuMemHostGetDevicePointer(&_devicePointer, _hostPointer, 0));
-		report("MemoryAllocation::MemoryAllocation() - allocated " << _size << " bytes of host-allocated memory");
-		report("  host: " << (const void *)_hostPointer << ", device pointer: " << (const void *)_devicePointer);
+		checkError(driver::cuMemHostGetDevicePointer(&_devicePointer, 
+			_hostPointer, 0));
+		report("MemoryAllocation::MemoryAllocation() - allocated " << _size 
+			<< " bytes of host-allocated memory");
+		report("  host: " << (const void *)_hostPointer << ", device pointer: "
+			<< (const void *)_devicePointer);
 
 	}
 	
@@ -104,7 +107,8 @@ namespace executive
 	
 	NVIDIAGPUDevice::MemoryAllocation::~MemoryAllocation()
 	{
-		report("MemoryAllocation::~MemoryAllocation() : _external = " << _external << ", host() = " << host());
+		report("MemoryAllocation::~MemoryAllocation() : _external = "
+			<< _external << ", host() = " << host());
 		if(!_external)
 		{
 			if(host())
@@ -125,9 +129,11 @@ namespace executive
 	{
 		if(host())
 		{
-			report("MemoryAllocation::MemoryAllocation() - allocated " << _size << " bytes of host-allocated memory");
+			report("MemoryAllocation::MemoryAllocation() - allocated "
+				<< _size << " bytes of host-allocated memory");
 			checkError(driver::cuMemHostAlloc(&_hostPointer, _size, _flags));
-			checkError(driver::cuMemHostGetDevicePointer(&_devicePointer, _hostPointer, 0));
+			checkError(driver::cuMemHostGetDevicePointer(&_devicePointer,
+				_hostPointer, 0));
 			memcpy(_hostPointer, a._hostPointer, _size);
 		}
 		else if(global() || _external)
@@ -252,7 +258,8 @@ namespace executive
 	void NVIDIAGPUDevice::MemoryAllocation::copy(void* dst, 
 		size_t offset, size_t s) const
 	{
-		report("NVIDIAGPUDevice::..::copy() 2 - is host? " << host() << ", " << s << " bytes");
+		report("NVIDIAGPUDevice::..::copy() 2 - is host? " << host() << ", "
+			<< s << " bytes");
 		assert(offset + s <= size());
 		if(host())
 		{
@@ -610,7 +617,8 @@ namespace executive
 
 	CUresult NVIDIAGPUDevice::_lastError = CUDA_SUCCESS;
 
-	DeviceVector NVIDIAGPUDevice::createDevices(unsigned int flags)
+	DeviceVector NVIDIAGPUDevice::createDevices(unsigned int flags,
+		int computeCapability)
 	{
 		if(!_cudaDriverInitialized)
 		{
@@ -624,13 +632,29 @@ namespace executive
 		
 		for(int i = 0; i != count; ++i)
 		{
-			devices.push_back(new NVIDIAGPUDevice(i, flags));
+			int major = 0;
+			int minor = 0;
+			checkError(driver::cuDeviceComputeCapability(&major, &minor, i));
+			
+			if(major < computeCapability)
+			{
+				char name[256];
+				checkError(driver::cuDeviceGetName(name, 255, i));
+
+				std::cerr << "==Ocelot== WARNING - This version of Ocelot only "
+					"supports compute capability " << computeCapability
+					<< ".0 and higher, ignoring device: '" << name << "'\n";				
+			}
+			else
+			{
+				devices.push_back(new NVIDIAGPUDevice(i, flags));
+			}
 		}
 		
 		return devices;
 	}
 
-	unsigned int NVIDIAGPUDevice::deviceCount()
+	unsigned int NVIDIAGPUDevice::deviceCount(int computeCapability)
 	{
 		if(!_cudaDriverInitialized)
 		{
@@ -639,9 +663,20 @@ namespace executive
 		}
 		
 		int count;
+
 		checkError(driver::cuDeviceGetCount(&count));
+
+		int ignored = 0;
+		for(int i = 0; i < count; ++i)
+		{
+			int major = 0;
+			int minor = 0;
+			checkError(driver::cuDeviceComputeCapability(&major, &minor, i));
+			
+			if(major < computeCapability) ++ignored;
+		}
 		
-		return count;
+		return count - ignored;
 	}
 
 	NVIDIAGPUDevice::NVIDIAGPUDevice(int id, unsigned int flags) : 
@@ -768,8 +803,10 @@ namespace executive
 			{
 				if(alloc->second->host())
 				{
-					if((char*)address >= alloc->second->mappedPointer() && (char*)address < 
-						(char*)alloc->second->mappedPointer() + alloc->second->size())
+					if((char*)address >= alloc->second->mappedPointer()
+						&& (char*)address
+						< (char*)alloc->second->mappedPointer()
+						+ alloc->second->size())
 					{
 						allocation = alloc->second;
 						break;
@@ -847,9 +884,11 @@ namespace executive
 		size_t size, unsigned int flags)
 	{
 		MemoryAllocation* allocation = new MemoryAllocation(size, flags);
-		_hostAllocations.insert(std::make_pair(allocation->mappedPointer(), allocation));
+		_hostAllocations.insert(std::make_pair(allocation->mappedPointer(),
+			allocation));
 
-		report("NVIDIAGPUDevice::allocateHost() - adding key " << allocation->mappedPointer());
+		report("NVIDIAGPUDevice::allocateHost() - adding key "
+			<< allocation->mappedPointer());
 
 		return allocation;
 	}
@@ -1204,7 +1243,8 @@ namespace executive
 		}
 		
 		float time = 0.0f;
-		checkError(driver::cuEventElapsedTime(&time, start->second, end->second));
+		checkError(driver::cuEventElapsedTime(&time,
+			start->second, end->second));
 		
 		return time;
 	}

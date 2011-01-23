@@ -156,9 +156,10 @@ namespace executive
 		public:
 			/*! \brief Create devices with the selected isa */
 			static DeviceVector createDevices(ir::Instruction::Architecture isa,
-				unsigned int flags);
+				unsigned int flags, int computeCapability);
 			/*! \brief Get the total number of devices of a given ISA */
-			static unsigned int deviceCount(ir::Instruction::Architecture isa);
+			static unsigned int deviceCount(ir::Instruction::Architecture isa,
+				int computeCapability);
 
 		public:
 			/*! \brief Check a memory access against all allocations */

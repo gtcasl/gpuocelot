@@ -223,9 +223,10 @@ namespace executive
 			
 		public:
 			/*! \brief Allocate a new device for each CUDA capable GPU */
-			static DeviceVector createDevices(unsigned int flags);
+			static DeviceVector createDevices(unsigned int flags,
+				int computeCapability);
 			/*! \brief Determine the number of CUDA GPUs in the system */
-			static unsigned int deviceCount();
+			static unsigned int deviceCount(int computeCapability);
 		
 		public:
 			/*! \brief Sets the device properties, bind this to the cuda id */

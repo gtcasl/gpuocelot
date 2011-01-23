@@ -219,13 +219,13 @@ void InteractiveDebugger::_command(const std::string& command)
 		stream >> PC;
 		_setBreakpoint(PC);
 	}
-	else if (base == "list" || base == "list") {
+	else if (base == "list") {
 		_listWatchpoints(command);
 	}
-	else if (base == "clear" || base == "clear") {
+	else if (base == "clear") {
 		_clearWatchpoint(command);
 	}
-	else if (base == "watch" || base == "watch") {
+	else if (base == "watch") {
 		_setWatchpoint(command);
 	}	
 	else if(base == "print" || base == "p")

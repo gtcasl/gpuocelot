@@ -41,7 +41,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 // Turn on report messages
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 // Print out the full ptx for each module as it is loaded
 #define REPORT_PTX 1
@@ -1018,9 +1018,11 @@ namespace executive
 			hydrazine::bit_cast<CUgraphicsResource>(resource)));
 	}
 
-	void NVIDIAGPUDevice::mapGraphicsResource(void* resourceVoidPtr, int count, 
+	void NVIDIAGPUDevice::mapGraphicsResource(void** resourceVoidPtr, int count, 
 		unsigned int streamId)
 	{
+	
+	
 		CUstream id = 0;
 		if(streamId != 0)
 		{
@@ -1037,17 +1039,16 @@ namespace executive
 
 		if(!_opengl) Throw("No active opengl contexts.");
 
+		report("NVIDIAGPUDevice::mapGraphicsResource() - count = " << count );
 		CUresult result = driver::cuGraphicsMapResources(count, graphicsResources, id);
-		report("driver::cuGraphicsMapresources() - " << result);
-		checkError(result);
+		report("driver::cuGraphicsMapresources() - " << result << ", " << cuda::CudaDriver::toString(result));
 		
+		checkError(result);
+		/*
 		CUdeviceptr pointer;
 		unsigned int bytes = 0;
 		checkError(driver::cuGraphicsResourceGetMappedPointer(&pointer, &bytes, (CUgraphicsResource)graphicsResources[0]));
-		
-		void* p = (void*)pointer;
-		
-		_allocations.insert(std::make_pair(p, new MemoryAllocation(p, bytes)));
+		*/
 	}
 	
 	void* NVIDIAGPUDevice::getPointerToMappedGraphicsResource(size_t& size, 
@@ -1061,6 +1062,11 @@ namespace executive
 
 		checkError(driver::cuGraphicsResourceGetMappedPointer(&pointer, &bytes, 
 			(CUgraphicsResource)resource));
+			
+		void* p = (void*)pointer;
+		if (_allocations.find(p) == _allocations.end()) {
+			_allocations.insert(std::make_pair(p, new MemoryAllocation(p, bytes)));
+		}
 
 		size = bytes;
 		report(" size - " << size << ", pointer - " << pointer);
@@ -1079,7 +1085,7 @@ namespace executive
 			(CUgraphicsResource)resource, flags));
 	}
 
-	void NVIDIAGPUDevice::unmapGraphicsResource(void* resourceVoidPtr, int count, unsigned int streamID)
+	void NVIDIAGPUDevice::unmapGraphicsResource(void** resourceVoidPtr, int count, unsigned int streamID)
 	{
 		CUstream id = 0;
 		

@@ -286,7 +286,7 @@ namespace executive
 		assertM(false, "Not implemented yet");
 	}
 
-	void ATIGPUDevice::mapGraphicsResource(void* resource, int count, 
+	void ATIGPUDevice::mapGraphicsResource(void** resource, int count, 
 			unsigned int stream)
 	{
 		assertM(false, "Not implemented yet");
@@ -304,7 +304,7 @@ namespace executive
 		assertM(false, "Not implemented yet");
 	}
 
-	void ATIGPUDevice::unmapGraphicsResource(void* resource, int count, unsigned int streamID)
+	void ATIGPUDevice::unmapGraphicsResource(void** resource, int count, unsigned int streamID)
 	{
 		assertM(false, "Not implemented yet");
 	}

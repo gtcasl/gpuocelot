@@ -235,6 +235,54 @@ namespace ir {
 			PTXOperand::bytes(type) * array.vec );
 	}
 	
+	/*!
+	
+	*/
+	std::string PTXStatement::toString( Directive directive ) {
+		switch (directive) {
+			case Instr: return "Instr";
+			case CallTargets: return "CallTargets";
+			case Const: return "Const";
+			case Entry: return "Entry";
+			case File: return "File";
+			case Func: return "Func";
+			case FunctionPrototype: return "FunctionPrototype";
+			case Global: return "Global";
+			case Label: return "Label";
+			case Local: return "Local";
+			case Loc: return "Loc";
+			case Maxnreg: return "Maxnreg";
+			case Maxntid: return "Maxntid";
+			case Maxnctapersm: return "Maxnctapersm";
+			case Minnctapersm: return "Minnctapersm";
+			case Param: return "Param";
+			case Pragma: return "Pragma";
+			case Reg: return "Reg";
+			case Reqntid: return "Reqntid";
+			case Samplerref: return "Samplerref";
+			case Section: return "Section";
+			case Shared: return "Shared";
+			case Sreg: return "Sreg";
+			case Surfref: return "Surfref";
+			case Target: return "Target";
+			case Texref: return "Texref";
+			case Version: return "Version";
+			case StartScope: return "StartScope";
+			case EndScope: return "EndScope";
+			case StartParam: return "StartParam";
+			case EndParam: return "EndParam";
+			case FunctionName: return "FunctionName";
+			case EndFuncDec: return "EndFuncDec";
+			case Directive_invalid: 
+			default:
+				break;
+		}
+		return "Directive_invalid";
+	}
+	
+	/*!
+		
+	*/
 	std::string PTXStatement::toString() const {
 	
 		switch( directive ) {

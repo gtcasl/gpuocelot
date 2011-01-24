@@ -102,6 +102,7 @@ namespace ir {
 		enum TextureSpace {
 			GlobalSpace,
 			ParameterSpace,
+			RegisterSpace,
 			InvalidSpace
 		};
 
@@ -109,6 +110,7 @@ namespace ir {
 		static std::string toString( TextureSpace );
 		static std::string toString( Attribute );
 		static std::string toString( Data, PTXOperand::DataType );
+		static std::string toString( Directive directive );
 	
 	public:
 		/*! Indicates type of statement */

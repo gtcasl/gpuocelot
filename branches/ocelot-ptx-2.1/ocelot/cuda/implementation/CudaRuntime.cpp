@@ -2985,12 +2985,14 @@ cudaError_t cuda::CudaRuntime::cudaGLMapBufferObjectAsync(void **devPtr,
 	report("cudaGLMapBufferObjectAsync(" << bufObj << ", " << stream << ")");
 	GLBufferMap::iterator buffer = _buffers.find(bufObj);
 	if (buffer != _buffers.end()) {
-		_getDevice().mapGraphicsResource(buffer->second, 1, stream);
+
+		_getDevice().mapGraphicsResource(& buffer->second, 1, stream);
+		
 		size_t bytes = 0;
 		*devPtr = _getDevice().getPointerToMappedGraphicsResource(
-			bytes, buffer->second);
+			bytes, buffer->second);	// semantics of this questionable
 		result = cudaSuccess;
-	}	
+	}
 	_release();
 	
 	return _setLastError(result);
@@ -3048,7 +3050,7 @@ cudaError_t cuda::CudaRuntime::cudaGLUnmapBufferObject(GLuint bufObj) {
 	
 	GLBufferMap::iterator buffer = _buffers.find(bufObj);
 	if (buffer != _buffers.end()) {
-		_getDevice().unmapGraphicsResource(buffer->second, 1, 0);
+		_getDevice().unmapGraphicsResource(& buffer->second, 1, 0);
 		result = cudaSuccess;
 	}
 	
@@ -3155,7 +3157,7 @@ cudaError_t cuda::CudaRuntime::cudaGraphicsMapResources(int count,
 	
 	report("mapGraphicsResource");
 	
-	_getDevice().mapGraphicsResource(resource, count, stream);	
+	_getDevice().mapGraphicsResource((void **)resource, count, stream);	
 
 	_release();
 	
@@ -3170,7 +3172,7 @@ cudaError_t cuda::CudaRuntime::cudaGraphicsUnmapResources(int count,
 	
 	report("cudaGraphicsUnmapResources");
 	
-	_getDevice().unmapGraphicsResource(resources, count, stream);	
+	_getDevice().unmapGraphicsResource((void **)resources, count, stream);	
 
 	_release();
 	

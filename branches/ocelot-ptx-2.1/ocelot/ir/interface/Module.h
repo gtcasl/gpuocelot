@@ -41,7 +41,7 @@ namespace ir {
 		typedef std::unordered_map< std::string, Global > GlobalMap;
 		
 		/*! \brief map from unique identifier to function prototype */
-		typedef std::unordered_map< std::string, ir::PTXKernel::Prototype > ExternFunctionMap;
+		typedef std::unordered_map< std::string, ir::PTXKernel::Prototype > FunctionPrototypeMap;
 				
 	public:
 
@@ -149,6 +149,11 @@ namespace ir {
 
 		/*! \brief Gets the statement vector */
 		const StatementVector& statements() const;
+		
+		/*! \brief gets all declared function prototypes */
+		const FunctionPrototypeMap & prototypes() const;
+		
+		void addPrototype(const std::string &identifier, const ir::PTXKernel::Prototype &prototype);
 	
 	private:
 		/*! After a successful parse; constructs all kernels for PTX isa. */
@@ -167,6 +172,11 @@ namespace ir {
 			this vector.
 		*/
 		StatementVector _statements;
+		
+		/*!
+			\brief maps declared function name onto a prototype structure
+		*/
+		FunctionPrototypeMap _prototypes;
 
 		/*! Set of kernels belonging to Module.  These are PTX Kernels */
 		KernelMap _kernels;	

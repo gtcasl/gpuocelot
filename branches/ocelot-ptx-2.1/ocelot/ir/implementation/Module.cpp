@@ -20,7 +20,11 @@
 #undef REPORT_BASE
 #endif
 
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
 #define REPORT_BASE 0
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
 
 ir::Module::Module(const std::string& path) : _ptxPointer(0), _loaded(true) {
 	load(path);
@@ -345,80 +349,153 @@ void ir::Module::insertKernel(PTXKernel* kernel) {
 	After parsing, construct a set of Kernels with ISA equal to PTX from the statements vector.
 */
 void ir::Module::extractPTXKernels() {
+
 	using namespace std;
 	StatementVector::const_iterator startIterator = _statements.end(), 
-		endIterator = _statements.end();
+		      endIterator = _statements.end();
 
 	bool inKernel = false;
 	int instructionCount = 0;
 	int kernelInstance = 1;
 	bool isFunction = false;
+	ir::PTXKernel::Prototype functionPrototype;
+	
+	enum {
+		PS_NoState,
+		PS_ReturnParams,
+		PS_Params,
+		PS_End
+	} prototypeState = PS_NoState;
 
-	for (StatementVector::const_iterator it = _statements.begin(); 
-		it != _statements.end(); ++it) {
+	for (StatementVector::const_iterator it = _statements.begin(); it != _statements.end(); ++it) {
 		const PTXStatement &statement = (*it);
-		if (statement.directive == PTXStatement::Entry 
-			|| statement.directive == PTXStatement::Func) {
-			// new kernel
-			assert(!inKernel);
-			startIterator = it;
-			inKernel = true;
-			isFunction = statement.directive == PTXStatement::Func;
-			instructionCount = 0;
-		}
-		else if (statement.directive == PTXStatement::EndScope) {
-			// construct the kernel and push it onto something
-			assert(inKernel);
-			inKernel = false;
-			endIterator = ++StatementVector::const_iterator(it);
-			if (instructionCount) {
-				PTXKernel *kernel = new PTXKernel(startIterator, 
-					endIterator, isFunction);
-				
-				kernel->module = this;
-				_kernels[kernel->name] = (kernel);
-			  _kernelSequence.push_back(kernel->name);
-				kernel->canonicalBlockLabels(kernelInstance++);
+	
+		switch (statement.directive) {
+			case PTXStatement::Entry:	// fallthrough
+			case PTXStatement::Func:
+			{
+				// new kernel
+				assert(!inKernel);
+				startIterator = it;
+				inKernel = true;
+				isFunction = statement.directive == PTXStatement::Func;
+				instructionCount = 0;
+				functionPrototype.linkingDirective = 
+					(statement.attribute == PTXStatement::Extern ? 
+						ir::PTXKernel::Prototype::Extern : 
+						ir::PTXKernel::Prototype::Visible);
+				prototypeState = PS_ReturnParams;
 			}
-		}
-		else if (statement.directive == PTXStatement::EndFuncDec) {
-			assert(inKernel);
-			inKernel = false;
-			isFunction = false;
-		}
-		if (inKernel) {
-			if (statement.directive == PTXStatement::Instr) {
+			break;
+			case PTXStatement::EndScope:
+			{
+				// construct the kernel and push it onto something
+				assert(inKernel);
+				inKernel = false;
+				endIterator = ++StatementVector::const_iterator(it);
+				if (instructionCount) {
+								PTXKernel *kernel = new PTXKernel(startIterator, 
+								        endIterator, isFunction);
+								
+								kernel->module = this;
+								_kernels[kernel->name] = (kernel);
+					_kernelSequence.push_back(kernel->name);
+								kernel->canonicalBlockLabels(kernelInstance++);
+				}
+			}
+			break;
+			case PTXStatement::EndFuncDec:
+			{
+				assert(inKernel);
+				inKernel = false;
+				isFunction = false;
+				addPrototype(functionPrototype.identifier, functionPrototype);
+				prototypeState = PS_NoState;
+			}
+			break;
+			case PTXStatement::Param:
+			{						
+				if (prototypeState == PS_ReturnParams || PS_Params) {
+					ir::PTXOperand op;
+					op.identifier = statement.name;
+					op.type = statement.type;
+					switch (statement.space) {
+						case PTXStatement::ParameterSpace:
+							op.addressMode = PTXOperand::Address;
+							break;
+						case PTXStatement::RegisterSpace:
+							op.addressMode = PTXOperand::Register;
+							break;
+						default:
+							// ???
+							break;
+					}
+					if (prototypeState == PS_ReturnParams) {
+						functionPrototype.returnArguments.array.push_back(op);
+					}
+					else {
+						functionPrototype.arguments.array.push_back(op);
+					}					
+				}
+				else {
+				
+				}
+			}
+				break;
+				
+		case PTXStatement::Instr:
+			if (inKernel) {
 				instructionCount++;
 			}
-		}
-		else if (statement.directive == PTXStatement::Const
-			|| statement.directive == PTXStatement::Global
-			|| statement.directive == PTXStatement::Shared
-			|| (statement.directive == PTXStatement::Local && !inKernel)) {
-			assertM(_globals.count(statement.name) == 0, "Global operand '" 
-				<< statement.name << "' declared more than once." );
+			break;
+		case PTXStatement::Const: // fallthrough
+		case PTXStatement::Global: // fallthrough
+		case PTXStatement::Shared: // fallthrough
+		case PTXStatement::Local:
+			if (!inKernel) {
+				assertM(_globals.count(statement.name) == 0, "Global operand '" 
+					<< statement.name << "' declared more than once." );
 
-			_globals.insert(std::make_pair(statement.name, Global(statement)));
+				_globals.insert(std::make_pair(statement.name, Global(statement)));
+			}
+			break;
+		
+		case PTXStatement::Texref:
+			if (!inKernel) {
+				assert(_textures.count(statement.name) == 0);
+				_textures.insert(std::make_pair(statement.name, 
+								Texture(statement.name, Texture::Texref)));
+			}
+			break;
+		case PTXStatement::Surfref:
+			if (!inKernel) {
+        assert(_textures.count(statement.name) == 0);
+        _textures.insert(std::make_pair(statement.name, 
+                Texture(statement.name, Texture::Surfref)));
+			}
+			break;
+		case PTXStatement::Samplerref:
+			if (!inKernel) {
+				assert(_textures.count(statement.name) == 0);
+				_textures.insert(std::make_pair(statement.name, 
+								Texture(statement.name, Texture::Samplerref)));
+			}
+			break;
+				
+			default:
+				break;
 		}
-		else if (statement.directive == PTXStatement::Texref) {
-			assert(_textures.count(statement.name) == 0);
-			_textures.insert(std::make_pair(statement.name, 
-				Texture(statement.name, Texture::Texref)));
-		}
-		else if (statement.directive == PTXStatement::Surfref) {
-			assert(_textures.count(statement.name) == 0);
-			_textures.insert(std::make_pair(statement.name, 
-				Texture(statement.name, Texture::Surfref)));
-		}
-		else if (statement.directive == PTXStatement::Samplerref) {
-			assert(_textures.count(statement.name) == 0);
-			_textures.insert(std::make_pair(statement.name, 
-				Texture(statement.name, Texture::Samplerref)));
-		}
-		else if (statement.directive == PTXStatement::FunctionPrototype) {
-			// if it's an extern, add the prototype
-			
-		}
+
 	}
+}
+
+void ir::Module::addPrototype(const std::string &identifier, const ir::PTXKernel::Prototype &prototype) {
+	report("adding prototype '" << identifier << "' - " << ir::PTXKernel::Prototype::toString(prototype.linkingDirective));
+	_prototypes[identifier] = prototype;
+}
+
+/*! \brief gets all declared function prototypes */
+const ir::Module::FunctionPrototypeMap & ir::Module::prototypes() const {
+	return _prototypes;
 }
 

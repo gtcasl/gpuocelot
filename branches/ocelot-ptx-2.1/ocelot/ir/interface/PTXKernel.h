@@ -40,19 +40,23 @@ namespace ir
 				};
 			
 			public:
+				//! \brief 
+				static std::string toString(const LinkingDirective ld);
+				
+				void clear();
 
 			public:
 			
-				//! indicates linking directive of function
+				//! \brief indicates linking directive of function
 				LinkingDirective linkingDirective;
 			
-				//! set of return arguments for function
+				//! \brief set of return arguments for function
 				PTXOperand returnArguments;
 				
-				//! function name
+				//! \brief name of function
 				std::string identifier;
 				
-				//! arguments for function
+				//! \brief arguments for function
 				PTXOperand arguments;
 			};
 			

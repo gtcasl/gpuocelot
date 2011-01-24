@@ -198,7 +198,7 @@ namespace executive
 			/*! \brief Unregister a resource */
 			virtual void unRegisterGraphicsResource(void* resource) = 0;
 			/*! \brief Map a graphics resource for use with this device */
-			virtual void mapGraphicsResource(void* resource, int count, 
+			virtual void mapGraphicsResource(void** resource, int count, 
 				unsigned int stream) = 0;
 			/*! \brief Get a pointer to a mapped resource along with its size */
 			virtual void* getPointerToMappedGraphicsResource(size_t& size, 
@@ -207,7 +207,7 @@ namespace executive
 			virtual void setGraphicsResourceFlags(void* resource, 
 				unsigned int flags) = 0;
 			/*! \brief Unmap a mapped resource */
-			virtual void unmapGraphicsResource(void* resource, int count, unsigned int stream) = 0;
+			virtual void unmapGraphicsResource(void** resource, int count, unsigned int stream) = 0;
 
 		public:
 			/*! \brief Load a module, must have a unique name */

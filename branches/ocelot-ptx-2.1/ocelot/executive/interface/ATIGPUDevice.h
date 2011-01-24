@@ -95,7 +95,7 @@ namespace executive
 			/*! \brief Unregister a resource */
 			void unRegisterGraphicsResource(void* resource);
 			/*! \brief Map a graphics resource for use with this device */
-			void mapGraphicsResource(void* resource, int count, 
+			void mapGraphicsResource(void** resource, int count, 
 				unsigned int stream);
 			/*! \brief Get a pointer to a mapped resource along with its size */
 			void* getPointerToMappedGraphicsResource(size_t& size, 
@@ -104,7 +104,7 @@ namespace executive
 			void setGraphicsResourceFlags(void* resource, 
 				unsigned int flags);
 			/*! \brief Unmap a mapped resource */
-			void unmapGraphicsResource(void* resource, int count, unsigned int streamID);
+			void unmapGraphicsResource(void** resource, int count, unsigned int streamID);
 
 			/*! \brief Load a module, must have a unique name */
 			void load(const ir::Module *irModule);

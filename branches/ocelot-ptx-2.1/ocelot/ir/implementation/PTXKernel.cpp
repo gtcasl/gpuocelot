@@ -25,6 +25,23 @@
 
 namespace ir
 {
+
+
+	//! 
+	std::string PTXKernel::Prototype::toString(const LinkingDirective ld) {
+		switch (ld) {
+			case Extern: return ".extern";
+			case Visible: return ".visible";
+			default: break;
+		}
+		return "invalid";
+	}
+	
+	void PTXKernel::Prototype::clear() { 
+		returnArguments.array.clear();
+		arguments.array.clear();
+	}
+
 	PTXKernel::PTXKernel( const std::string& name, bool isFunction,
 		const ir::Module* module ) :
 		Kernel( Instruction::PTX, name, isFunction, module )

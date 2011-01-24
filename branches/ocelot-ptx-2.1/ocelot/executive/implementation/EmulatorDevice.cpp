@@ -539,56 +539,58 @@ namespace executive
 		_graphics.erase(graphic);
 	}
 
-	void EmulatorDevice::mapGraphicsResource(void* resource, int count, 
+	void EmulatorDevice::mapGraphicsResource(void** resource, int count, 
 		unsigned int stream)
 	{
 		report("mapGraphicsResource(" << resource << ", " 
 			<< count << ", " << stream << ")");
 		
-		unsigned int handle = hydrazine::bit_cast<unsigned int>(resource);
-		GraphicsMap::iterator graphic = _graphics.find(handle);
-		if(graphic == _graphics.end())
-		{
-			Throw("Invalid graphics resource - " << handle);
-		}
+		for (int i = 0; i < count; i++) {
+			unsigned int handle = hydrazine::bit_cast<unsigned int>(resource[i]);
+			GraphicsMap::iterator graphic = _graphics.find(handle);
+			if(graphic == _graphics.end())
+			{
+				Throw("Invalid graphics resource - " << handle);
+			}
 		
-		report(" Binding GL array buffer to " << graphic->second.buffer);
-		glBindBuffer(GL_ARRAY_BUFFER, graphic->second.buffer);
+			report(" Binding GL array buffer to " << graphic->second.buffer);
+			glBindBuffer(GL_ARRAY_BUFFER, graphic->second.buffer);
 
-		if(glGetError() != GL_NO_ERROR)
-		{
-			Throw("OpenGL Error in mapGraphicsResource() - glBindBuffer.")
-		}
+			if(glGetError() != GL_NO_ERROR)
+			{
+				Throw("OpenGL Error in mapGraphicsResource() - glBindBuffer.")
+			}
 
-		report(" Mapping GL buffer.");
-		graphic->second.pointer = glMapBuffer(GL_ARRAY_BUFFER, GL_READ_WRITE);
+			report(" Mapping GL buffer.");
+			graphic->second.pointer = glMapBuffer(GL_ARRAY_BUFFER, GL_READ_WRITE);
 		
-		if(glGetError() != GL_NO_ERROR)
-		{
-			Throw("OpenGL Error in mapGraphicsResource() - glMapBuffer1.")
-		}
+			if(glGetError() != GL_NO_ERROR)
+			{
+				Throw("OpenGL Error in mapGraphicsResource() - glMapBuffer1.")
+			}
 		
-		report(" Getting buffer size.");
+			report(" Getting buffer size.");
 
-		int bytes = 0;
-		glGetBufferParameteriv(GL_ARRAY_BUFFER, GL_BUFFER_SIZE, &bytes);
-		report("  size is - " << bytes);
+			int bytes = 0;
+			glGetBufferParameteriv(GL_ARRAY_BUFFER, GL_BUFFER_SIZE, &bytes);
+			report("  size is - " << bytes);
 
-		if(glGetError() != GL_NO_ERROR)
-		{
-			Throw("OpenGL Error in mapGraphicsResource() " 
-				<< "- glGetBufferParameteriv.")
-		}
+			if(glGetError() != GL_NO_ERROR)
+			{
+				Throw("OpenGL Error in mapGraphicsResource() " 
+					<< "- glGetBufferParameteriv.")
+			}
 				
-		_allocations.insert(std::make_pair(graphic->second.pointer, 
-			new MemoryAllocation(graphic->second.pointer, bytes)));
+			_allocations.insert(std::make_pair(graphic->second.pointer, 
+				new MemoryAllocation(graphic->second.pointer, bytes)));
 		
-		report(" Binding GL array buffer back to 0.");
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
+			report(" Binding GL array buffer back to 0.");
+			glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-		if(glGetError() != GL_NO_ERROR)
-		{
-			Throw("OpenGL Error in mapGraphicsResource() - glBindBuffer2.")
+			if(glGetError() != GL_NO_ERROR)
+			{
+				Throw("OpenGL Error in mapGraphicsResource() - glBindBuffer2.")
+			}
 		}
 	}
 
@@ -628,48 +630,50 @@ namespace executive
 		// we ignore flags
 	}
 
-	void EmulatorDevice::unmapGraphicsResource(void* resource, int count, unsigned int streamID)
+	void EmulatorDevice::unmapGraphicsResource(void** resource, int count, unsigned int streamID)
 	{
-		unsigned int handle = hydrazine::bit_cast<unsigned int>(resource);
-		GraphicsMap::iterator graphic = _graphics.find(handle);
-		if(graphic == _graphics.end())
-		{
-			Throw("Invalid graphics resource - " << handle);
-		}
+		for (int i = 0; i < count; i++) {
+			unsigned int handle = hydrazine::bit_cast<unsigned int>(resource[i]);
+			GraphicsMap::iterator graphic = _graphics.find(handle);
+			if(graphic == _graphics.end())
+			{
+				Throw("Invalid graphics resource - " << handle);
+			}
 
-		if(graphic->second.pointer == 0)
-		{
-			Throw("Graphics resource - " << handle << " is not mapped.");
-		}
+			if(graphic->second.pointer == 0)
+			{
+				Throw("Graphics resource - " << handle << " is not mapped.");
+			}
 		
-		glBindBuffer(GL_ARRAY_BUFFER, graphic->second.buffer);
+			glBindBuffer(GL_ARRAY_BUFFER, graphic->second.buffer);
 
-		if(glGetError() != GL_NO_ERROR)
-		{
-			Throw("OpenGL Error in unmapGraphicsResource() - glBindBuffer.")
-		}
+			if(glGetError() != GL_NO_ERROR)
+			{
+				Throw("OpenGL Error in unmapGraphicsResource() - glBindBuffer.")
+			}
 
-		glUnmapBuffer(GL_ARRAY_BUFFER);
+			glUnmapBuffer(GL_ARRAY_BUFFER);
 
-		if(glGetError() != GL_NO_ERROR)
-		{
-			Throw("OpenGL Error in unmapGraphicsResource() - glUnmapBuffer.")
-		}
+			if(glGetError() != GL_NO_ERROR)
+			{
+				Throw("OpenGL Error in unmapGraphicsResource() - glUnmapBuffer.")
+			}
 
-		AllocationMap::iterator allocation = _allocations.find(
-			graphic->second.pointer);
-		assert(allocation != _allocations.end());
+			AllocationMap::iterator allocation = _allocations.find(
+				graphic->second.pointer);
+			assert(allocation != _allocations.end());
 		
-		delete allocation->second;
-		_allocations.erase(allocation);
+			delete allocation->second;
+			_allocations.erase(allocation);
 
-		graphic->second.pointer = 0;
+			graphic->second.pointer = 0;
 	
-		glBindBuffer(GL_ARRAY_BUFFER, 0);			
+			glBindBuffer(GL_ARRAY_BUFFER, 0);			
 
-		if(glGetError() != GL_NO_ERROR)
-		{
-			Throw("OpenGL Error in unmapGraphicsResource() - glBindBuffer.")
+			if(glGetError() != GL_NO_ERROR)
+			{
+				Throw("OpenGL Error in unmapGraphicsResource() - glBindBuffer.")
+			}
 		}
 	}
 

@@ -25,7 +25,7 @@ check_PROGRAMS = 3DFD SortingNetwork worleyTestExternalSharedMemory \
 	TestThrustCountingIterator TestThrustZipDot TestThrustFillCopy \
 	TestThrustHistogram TestThrustMaxAbsDiff TestThrustMinMax TestThrustMode \
 	TestThrustNorm TestThrustPaddedGridReduction \
-	TestThrustSaxpy TestThrustSegmentedScan \
+	TestThrustSaxpy  \
 	TestThrustSort TestThrustAOSSorting TestThrustStreamCompact \
 	TestThrustSum \
 	TestThrustTransformIterator TestThrustWrapPointer TestThrustUnwrapPointer \
@@ -49,6 +49,7 @@ libsdk_la_SOURCES = sdk/stopwatch_linux.cpp \
 3DFD_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
 3DFD_SOURCES = tests/3DFD/3dfd.cu.cpp
 3DFD_LDADD = $(OCELOT_LIBS)
+3DFD_LDFLAGS = -static
 ################################################################################
 
 ################################################################################
@@ -57,6 +58,7 @@ worleyTestExternalSharedMemory_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
 worleyTestExternalSharedMemory_SOURCES = \
 	tests/worleyTestExternalSharedMemory/worleyTestExternalSharedMemory.cu.cpp
 worleyTestExternalSharedMemory_LDADD = $(OCELOT_LIBS)
+worleyTestExternalSharedMemory_LDFLAGS = -static
 ################################################################################
 
 ################################################################################
@@ -67,6 +69,7 @@ SortingNetwork_SOURCES = tests/sortingNetworks/bitonicSort.cu.cpp \
 	tests/sortingNetworks/main.cpp \
 	tests/sortingNetworks/sortingNetworks_validate.cpp
 SortingNetwork_LDADD = $(OCELOT_LIBS)
+SortingNetwork_LDFLAGS = -static
 ################################################################################
 
 ################################################################################
@@ -74,6 +77,7 @@ SortingNetwork_LDADD = $(OCELOT_LIBS)
 vectorAdd_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
 vectorAdd_SOURCES = tests/vectorAdd/vectorAdd.cu.cpp
 vectorAdd_LDADD = $(OCELOT_LIBS)
+vectorAdd_LDFLAGS = -static
 ################################################################################
 
 ################################################################################
@@ -82,6 +86,7 @@ TestAtomics_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
 TestAtomics_SOURCES = tests/AtomicPerformance/atomicsImplementation.cpp \
 	tests/AtomicPerformance/atomics.cpp
 TestAtomics_LDADD = $(OCELOT_LIBS)
+TestAtomics_LDFLAGS = -static
 ################################################################################
 
 ################################################################################
@@ -89,6 +94,7 @@ TestAtomics_LDADD = $(OCELOT_LIBS)
 TestMemoryAccesses_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
 TestMemoryAccesses_SOURCES = tests/memory/TestMemoryAccesses.cpp
 TestMemoryAccesses_LDADD = $(OCELOT_LIBS)
+TestMemoryAccesses_LDFLAGS = -static
 ################################################################################
 
 ################################################################################
@@ -96,6 +102,7 @@ TestMemoryAccesses_LDADD = $(OCELOT_LIBS)
 TestBarriers_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
 TestBarriers_SOURCES = tests/TestBarriers/TestBarriers.cpp
 TestBarriers_LDADD = $(OCELOT_LIBS)
+TestBarriers_LDFLAGS = -static
 ################################################################################
 
 ################################################################################
@@ -103,6 +110,7 @@ TestBarriers_LDADD = $(OCELOT_LIBS)
 TestCallLatency_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
 TestCallLatency_SOURCES = tests/TestCallLatency/TestCallLatency.cpp
 TestCallLatency_LDADD = $(OCELOT_LIBS)
+TestCallLatency_LDFLAGS = -static
 ################################################################################
 
 ################################################################################
@@ -111,6 +119,7 @@ TestSpecialFunctions_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
 TestSpecialFunctions_SOURCES = \
 	tests/TestSpecialFunctions/TestSpecialFunctions.cpp
 TestSpecialFunctions_LDADD = $(OCELOT_LIBS)
+TestSpecialFunctions_LDFLAGS = -static
 ################################################################################
 
 ################################################################################
@@ -119,6 +128,7 @@ TestInstructionThroughput_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
 TestInstructionThroughput_SOURCES = \
 	tests/TestInstructionThroughput/TestInstructionThroughput.cpp
 TestInstructionThroughput_LDADD = $(OCELOT_LIBS)
+TestInstructionThroughput_LDFLAGS = -static
 ################################################################################
 
 ################################################################################
@@ -127,6 +137,7 @@ TestThrustArbitraryTransform_CXXFLAGS = $(CUDA_CFLAGS)
 TestThrustArbitraryTransform_SOURCES = \
 	tests/thrust_arbitrary_transformation/arbitrary_transformation.cu.cpp
 TestThrustArbitraryTransform_LDADD = $(OCELOT_LIBS)
+TestThrustArbitraryTransform_LDFLAGS = -static
 ################################################################################
 
 ################################################################################
@@ -135,6 +146,7 @@ TestThrustBasicVector_CXXFLAGS = $(CUDA_CFLAGS)
 TestThrustBasicVector_SOURCES = \
 	tests/thrust_basic_vector/basic_vector.cu.cpp
 TestThrustBasicVector_LDADD = $(OCELOT_LIBS)
+TestThrustBasicVector_LDFLAGS = -static
 ################################################################################
 
 ################################################################################
@@ -143,6 +155,7 @@ TestThrustBoundingBox_CXXFLAGS = $(CUDA_CFLAGS)
 TestThrustBoundingBox_SOURCES = \
 	tests/thrust_bounding_box/bounding_box.cu.cpp
 TestThrustBoundingBox_LDADD = $(OCELOT_LIBS)
+TestThrustBoundingBox_LDFLAGS = -static
 ################################################################################
 
 ################################################################################
@@ -151,6 +164,7 @@ TestThrustBucketSort2D_CXXFLAGS = $(CUDA_CFLAGS)
 TestThrustBucketSort2D_SOURCES = \
 	tests/thrust_bucket_sort2d/bucket_sort2d.cu.cpp
 TestThrustBucketSort2D_LDADD = $(OCELOT_LIBS)
+TestThrustBucketSort2D_LDFLAGS = -static
 ################################################################################
 
 ################################################################################
@@ -159,6 +173,7 @@ TestThrustConstantIterator_CXXFLAGS = $(CUDA_CFLAGS)
 TestThrustConstantIterator_SOURCES = \
 	tests/thrust_constant_iterator/constant_iterator.cu.cpp
 TestThrustConstantIterator_LDADD = $(OCELOT_LIBS)
+TestThrustConstantIterator_LDFLAGS = -static
 ################################################################################
 
 ################################################################################
@@ -167,6 +182,7 @@ TestThrustCountingIterator_CXXFLAGS = $(CUDA_CFLAGS)
 TestThrustCountingIterator_SOURCES = \
 	tests/thrust_counting_iterator/counting_iterator.cu.cpp
 TestThrustCountingIterator_LDADD = $(OCELOT_LIBS)
+TestThrustCountingIterator_LDFLAGS = -static
 ################################################################################
 
 ################################################################################
@@ -175,6 +191,7 @@ TestThrustZipDot_CXXFLAGS = $(CUDA_CFLAGS)
 TestThrustZipDot_SOURCES = \
 	tests/thrust_dot_products_with_zip/dot_products_with_zip.cu.cpp
 TestThrustZipDot_LDADD = $(OCELOT_LIBS)
+TestThrustZipDot_LDFLAGS = -static
 ################################################################################
 
 ################################################################################
@@ -183,6 +200,7 @@ TestThrustFillCopy_CXXFLAGS = $(CUDA_CFLAGS)
 TestThrustFillCopy_SOURCES = \
 	tests/thrust_fill_copy_sequence/fill_copy_sequence.cu.cpp
 TestThrustFillCopy_LDADD = $(OCELOT_LIBS)
+TestThrustFillCopy_LDFLAGS = -static
 ################################################################################
 
 ################################################################################
@@ -191,6 +209,7 @@ TestThrustHistogram_CXXFLAGS = $(CUDA_CFLAGS)
 TestThrustHistogram_SOURCES = \
 	tests/thrust_histogram/histogram.cu.cpp
 TestThrustHistogram_LDADD = $(OCELOT_LIBS)
+TestThrustHistogram_LDFLAGS = -static
 ################################################################################
 
 ################################################################################
@@ -199,6 +218,7 @@ TestThrustMaxAbsDiff_CXXFLAGS = $(CUDA_CFLAGS)
 TestThrustMaxAbsDiff_SOURCES = \
 	tests/thrust_max_abs_diff/max_abs_diff.cu.cpp
 TestThrustMaxAbsDiff_LDADD = $(OCELOT_LIBS)
+TestThrustMaxAbsDiff_LDFLAGS = -static
 ################################################################################
 
 ################################################################################
@@ -207,6 +227,7 @@ TestThrustMinMax_CXXFLAGS = $(CUDA_CFLAGS)
 TestThrustMinMax_SOURCES = \
 	tests/thrust_minmax/minmax.cu.cpp
 TestThrustMinMax_LDADD = $(OCELOT_LIBS)
+TestThrustMinMax_LDFLAGS = -static
 ################################################################################
 
 ################################################################################
@@ -215,6 +236,7 @@ TestThrustMode_CXXFLAGS = $(CUDA_CFLAGS)
 TestThrustMode_SOURCES = \
 	tests/thrust_mode/mode.cu.cpp
 TestThrustMode_LDADD = $(OCELOT_LIBS)
+TestThrustMode_LDFLAGS = -static
 ################################################################################
 
 ################################################################################
@@ -223,6 +245,7 @@ TestThrustNorm_CXXFLAGS = $(CUDA_CFLAGS)
 TestThrustNorm_SOURCES = \
 	tests/thrust_norm/norm.cu.cpp
 TestThrustNorm_LDADD = $(OCELOT_LIBS)
+TestThrustNorm_LDFLAGS = -static
 ################################################################################
 
 ################################################################################
@@ -231,6 +254,7 @@ TestThrustPaddedGridReduction_CXXFLAGS = $(CUDA_CFLAGS)
 TestThrustPaddedGridReduction_SOURCES = \
 	tests/thrust_padded_grid_reduction/padded_grid_reduction.cu.cpp
 TestThrustPaddedGridReduction_LDADD = $(OCELOT_LIBS)
+TestThrustPaddedGridReduction_LDFLAGS = -static
 ################################################################################
 
 ################################################################################
@@ -239,14 +263,7 @@ TestThrustSaxpy_CXXFLAGS = $(CUDA_CFLAGS)
 TestThrustSaxpy_SOURCES = \
 	tests/thrust_saxpy/saxpy.cu.cpp
 TestThrustSaxpy_LDADD = $(OCELOT_LIBS)
-################################################################################
-
-################################################################################
-## TestThrustSegmentedScan
-TestThrustSegmentedScan_CXXFLAGS = $(CUDA_CFLAGS)
-TestThrustSegmentedScan_SOURCES = \
-	tests/thrust_segmented_scan/segmented_scan.cu.cpp
-TestThrustSegmentedScan_LDADD = $(OCELOT_LIBS)
+TestThrustSaxpy_LDFLAGS = -static
 ################################################################################
 
 ################################################################################
@@ -255,6 +272,7 @@ TestThrustSort_CXXFLAGS = $(CUDA_CFLAGS)
 TestThrustSort_SOURCES = \
 	tests/thrust_sort/sort.cu.cpp
 TestThrustSort_LDADD = $(OCELOT_LIBS)
+TestThrustSort_LDFLAGS = -static
 ################################################################################
 
 ################################################################################
@@ -263,6 +281,7 @@ TestThrustAOSSorting_CXXFLAGS = $(CUDA_CFLAGS)
 TestThrustAOSSorting_SOURCES = \
 	tests/thrust_sorting_aos_vs_soa/sorting_aos_vs_soa.cu.cpp
 TestThrustAOSSorting_LDADD = $(OCELOT_LIBS)
+TestThrustAOSSorting_LDFLAGS = -static
 ################################################################################
 
 ################################################################################
@@ -271,6 +290,7 @@ TestThrustStreamCompact_CXXFLAGS = $(CUDA_CFLAGS)
 TestThrustStreamCompact_SOURCES = \
 	tests/thrust_stream_compaction/stream_compaction.cu.cpp
 TestThrustStreamCompact_LDADD = $(OCELOT_LIBS)
+TestThrustStreamCompact_LDFLAGS = -static
 ################################################################################
 
 ################################################################################
@@ -279,6 +299,7 @@ TestThrustSum_CXXFLAGS = $(CUDA_CFLAGS)
 TestThrustSum_SOURCES = \
 	tests/thrust_sum/sum.cu.cpp
 TestThrustSum_LDADD = $(OCELOT_LIBS)
+TestThrustSum_LDFLAGS = -static
 ################################################################################
 
 ################################################################################
@@ -287,6 +308,7 @@ TestThrustTransformIterator_CXXFLAGS = $(CUDA_CFLAGS)
 TestThrustTransformIterator_SOURCES = \
 	tests/thrust_transform_iterator/transform_iterator.cu.cpp
 TestThrustTransformIterator_LDADD = $(OCELOT_LIBS)
+TestThrustTransformIterator_LDFLAGS = -static
 ################################################################################
 
 ################################################################################
@@ -295,6 +317,7 @@ TestThrustWrapPointer_CXXFLAGS = $(CUDA_CFLAGS)
 TestThrustWrapPointer_SOURCES = \
 	tests/thrust_wrap_pointer/wrap_pointer.cu.cpp
 TestThrustWrapPointer_LDADD = $(OCELOT_LIBS)
+TestThrustWrapPointer_LDFLAGS = -static
 ################################################################################
 
 ################################################################################
@@ -303,6 +326,7 @@ TestThrustUnwrapPointer_CXXFLAGS = $(CUDA_CFLAGS)
 TestThrustUnwrapPointer_SOURCES = \
 	tests/thrust_unwrap_pointer/unwrap_pointer.cu.cpp
 TestThrustUnwrapPointer_LDADD = $(OCELOT_LIBS)
+TestThrustUnwrapPointer_LDFLAGS = -static
 ################################################################################
 
 ################################################################################

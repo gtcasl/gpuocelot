@@ -88,9 +88,9 @@ int main(void)
                       search_begin,
                       search_begin + w*h,
                       bucket_end.begin());
-  // write out bucket (150, 50)'s list of points
-  unsigned int bucket_idx = 50 * w + 150;
-  std::cout << "bucket (150, 50)'s list of points:" << std::endl;
+  // write out bucket (2, 5)'s list of points
+  unsigned int bucket_idx = 2 * w + 5;
+  std::cout << "bucket (2, 5)'s list of points:" << std::endl;
   std::cout << " bucket_begin[" << bucket_idx << "] = " <<
 bucket_begin[bucket_idx] << std::endl;
   std::cout << " bucket_end[" << bucket_idx << "] = " <<

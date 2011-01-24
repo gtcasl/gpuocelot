@@ -22,7 +22,6 @@
 ../TestThrustNorm CUDA_SDK_STYLE
 ../TestThrustPaddedGridReduction CUDA_SDK_STYLE
 ../TestThrustSaxpy CUDA_SDK_STYLE
-../TestThrustSegmentedScan CUDA_SDK_STYLE
 ../TestThrustSort CUDA_SDK_STYLE
 ../TestThrustAOSSorting CUDA_SDK_STYLE
 ../TestThrustStreamCompact CUDA_SDK_STYLE

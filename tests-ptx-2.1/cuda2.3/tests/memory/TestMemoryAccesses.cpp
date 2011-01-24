@@ -35,9 +35,9 @@ namespace test
 		cudaSetupArgument( &ints, sizeof( unsigned int ), 
 			2 * sizeof( long long unsigned int ) );
 
-		std::string program = ".version 1.4\n";
+		std::string program = ".version 2.1\n";
 	
-		program += ".target sm_10, map_f64_to_f32\n\n";
+		program += ".target sm_21, map_f64_to_f32\n\n";
 		program += ".entry stridedAccess( .param .u64 out, ";
 		program += ".param .u64 in, .param .u32 size )\n";
 		program += "{\n";
@@ -47,10 +47,10 @@ namespace test
 		program += "  ld.param.u64 %r0, [in];\n";
 		program += "  ld.param.u64 %r1, [out];\n";
 		program += "  ld.param.u32 %r2, [size];\n";
-		program += "  cvt.u64.s16 %r3, %ctaid.x;\n";
-		program += "  cvt.u64.s16 %r4, %tid.x;\n";
-		program += "  cvt.u64.s16 %r5, %ntid.x;\n";
-		program += "  cvt.u64.s16 %r6, %nctaid.x;\n";
+		program += "  cvt.u64.s32 %r3, %ctaid.x;\n";
+		program += "  cvt.u64.s32 %r4, %tid.x;\n";
+		program += "  cvt.u64.s32 %r5, %ntid.x;\n";
+		program += "  cvt.u64.s32 %r6, %nctaid.x;\n";
 		
 		program += "  mul.lo.u64 %r7, %r3, %r5;\n";
 		program += "  add.u64 %r8, %r7, %r4;\n";
@@ -145,9 +145,9 @@ namespace test
 		cudaSetupArgument( &stride, sizeof( unsigned int ), 
 			2 * sizeof( long long unsigned int ) + sizeof( unsigned int ) );
 
-		std::string program = ".version 1.4\n";
+		std::string program = ".version 2.1\n";
 	
-		program += ".target sm_10, map_f64_to_f32\n\n";
+		program += ".target sm_21, map_f64_to_f32\n\n";
 		program += ".entry linearAccess( .param .u64 out, ";
 		program += ".param .u64 in, .param .u32 size, .param .u32 stride )\n";
 		program += "{\n";
@@ -158,7 +158,7 @@ namespace test
 		program += "  ld.param.u64 %r1, [out];\n";
 		program += "  ld.param.u32 %r2, [size];\n";
 		program += "  ld.param.u32 %r3, [stride];\n";
-		program += "  cvt.u64.s16 %r4, %ctaid.x;\n";
+		program += "  cvt.u64.s32 %r4, %ctaid.x;\n";
 		
 		program += "  mul.lo.u64 %r5, %r3, %r4;\n"; //begin
 		program += "  add.u64 %r6, %r5, %r3;\n";

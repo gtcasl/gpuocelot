@@ -26,7 +26,7 @@
 
 
 
-__device__ void Comparator(
+__device__ inline void Comparator(
     uint& keyA,
     uint& valA,
     uint& keyB,

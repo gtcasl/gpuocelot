@@ -26,9 +26,9 @@ namespace test
 		
 		std::stringstream program;
 		
-		program << ".version 1.4\n";
+		program << ".version 2.1\n";
 
-		program << ".target sm_10, map_f64_to_f32\n\n";
+		program << ".target sm_21, map_f64_to_f32\n\n";
 		program << ".entry testBarriers( .param .u64 input )\n";
 		program << "{\n";
 		program << " .reg .u64 %r<5>;\n";

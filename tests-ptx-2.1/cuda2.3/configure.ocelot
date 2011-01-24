@@ -3,7 +3,7 @@
 	trace: { 
 		memoryChecker: true,
 		raceDetector: {
-			enabled: false,
+			enabled: true,
 			ignoreIrrelevantWrites: true
 		},
 		cacheSimulator: {
@@ -17,8 +17,8 @@
 			instructionMemory: 1
 		},
 		debugger: {
-			enabled: true,
-			kernelFilter: "_ZN6thrust6detail6device4cuda6detail4b40c13SrtsScanSpineIvEEvPjS6_j",
+			enabled: false,
+			kernelFilter: "none",
 			alwaysAttach: false
 		}
 	},
@@ -27,7 +27,7 @@
 		runtimeApiTrace: "trace/CudaAPI.trace"
 	},
 	executive: {
-		devices: [ emulated ],
+		devices: [ llvm ],
 		optimizationLevel: basic,
 		workerThreadLimit: 2
 	}

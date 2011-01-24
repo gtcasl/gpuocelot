@@ -24,9 +24,9 @@ long long unsigned int atomic_increment(long long unsigned int iterations,
 	cudaSetupArgument( &counter, sizeof(long long unsigned int),
 		sizeof(long long unsigned int) );
 	
-	std::string program = ".version 1.4\n";
+	std::string program = ".version 2.1\n";
 	
-	program += ".target sm_10, map_f64_to_f32\n\n";
+	program += ".target sm_21, map_f64_to_f32\n\n";
 	program += ".entry atomic_increment( .param .u64 iterations, .param .u64 counter )\n";
 	program += "{\n";
 	program += " .reg .u64 %r<3>;\n";
@@ -71,9 +71,9 @@ long long unsigned int serial_increment(long long unsigned int iterations)
 	cudaSetupArgument( &counter, sizeof(long long unsigned int),
 		sizeof(long long unsigned int) );
 	
-	std::string program = ".version 1.4\n";
+	std::string program = ".version 2.1\n";
 	
-	program += ".target sm_10, map_f64_to_f32\n\n";
+	program += ".target sm_21, map_f64_to_f32\n\n";
 	program += ".entry serial_increment( .param .u64 iterations, .param .u64 counter )\n";
 	program += "{\n";
 	program += " .reg .u64 %r<3>;\n";

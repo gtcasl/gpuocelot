@@ -22,9 +22,9 @@ namespace test
 		cudaMemset( address, 0, sizeof( unsigned int ) );
 		
 		std::stringstream program;
-		program << ".version 1.4\n";
+		program << ".version 2.1\n";
 
-		program << ".target sm_10, map_f64_to_f32\n\n";
+		program << ".target sm_21, map_f64_to_f32\n\n";
 		program << ".entry nop( .param .u64 pointer )\n";
 		program << "{\n";
 		program << " .reg .u64 %address;\n";

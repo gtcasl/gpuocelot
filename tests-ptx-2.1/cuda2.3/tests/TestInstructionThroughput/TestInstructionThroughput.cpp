@@ -27,9 +27,9 @@ namespace test
 		
 		std::stringstream program;
 		
-		program << ".version 1.4\n";
+		program << ".version 2.1\n";
 
-		program << ".target sm_10, map_f64_to_f32\n\n";
+		program << ".target sm_21, map_f64_to_f32\n\n";
 		program << ".entry testInstructionThroughput( .param .u64 input )\n";
 		program << "{\n";
 		program << " .reg .u64 %r<7>;\n";
@@ -104,9 +104,9 @@ namespace test
 		
 		std::stringstream program;
 		
-		program << ".version 1.4\n";
+		program << ".version 2.1\n";
 
-		program << ".target sm_10, map_f64_to_f32\n\n";
+		program << ".target sm_21, map_f64_to_f32\n\n";
 		program << ".entry testu32InstructionThroughput( .param .u64 input )\n";
 		program << "{\n";
 		program << " .reg .u64 %r<7>;\n";
@@ -184,9 +184,9 @@ namespace test
 		
 		std::stringstream program;
 		
-		program << ".version 1.4\n";
+		program << ".version 2.1\n";
 
-		program << ".target sm_10, map_f64_to_f32\n\n";
+		program << ".target sm_21, map_f64_to_f32\n\n";
 		program << ".entry testf32InstructionThroughput( .param .u64 input )\n";
 		program << "{\n";
 		program << " .reg .u64 %r<7>;\n";

@@ -28,9 +28,9 @@ namespace test
 		
 		std::stringstream program;
 		
-		program << ".version 1.4\n";
+		program << ".version 2.1\n";
 
-		program << ".target sm_10, map_f64_to_f32\n\n";
+		program << ".target sm_21, map_f64_to_f32\n\n";
 		program << ".entry testRcp( .param .u64 input )\n";
 		program << "{\n";
 		program << " .reg .u64 %r<5>;\n";
@@ -99,9 +99,9 @@ namespace test
 		
 		std::stringstream program;
 		
-		program << ".version 1.4\n";
+		program << ".version 2.1\n";
 
-		program << ".target sm_10, map_f64_to_f32\n\n";
+		program << ".target sm_21, map_f64_to_f32\n\n";
 		program << ".entry testSqrt( .param .u64 input )\n";
 		program << "{\n";
 		program << " .reg .u64 %r<5>;\n";
@@ -125,8 +125,8 @@ namespace test
 		program << "  setp.lt.u64 %p0, %r1, %r2;\n";
 		program << "  @%p0 bra Loop_Begin;\n";
 		
-		program << "  cvt.u64.s16 %r3, %tid.x;\n";
-		program << "  cvt.u64.s16 %r4, %ctaid.x;\n";
+		program << "  cvt.u64.s32 %r3, %tid.x;\n";
+		program << "  cvt.u64.s32 %r4, %ctaid.x;\n";
 		
 		program << "  setp.eq.u64 %p0, %r3, 0;\n";
 		program << "  setp.eq.and.u64 %p0, %r4, 0, %p0;\n";
@@ -177,9 +177,9 @@ namespace test
 		
 		std::stringstream program;
 		
-		program << ".version 1.4\n";
+		program << ".version 2.1\n";
 
-		program << ".target sm_10, map_f64_to_f32\n\n";
+		program << ".target sm_21, map_f64_to_f32\n\n";
 		program << ".entry testRsqrt( .param .u64 input )\n";
 		program << "{\n";
 		program << " .reg .u64 %r<5>;\n";
@@ -203,8 +203,8 @@ namespace test
 		program << "  setp.lt.u64 %p0, %r1, %r2;\n";
 		program << "  @%p0 bra Loop_Begin;\n";
 		
-		program << "  cvt.u64.s16 %r3, %tid.x;\n";
-		program << "  cvt.u64.s16 %r4, %ctaid.x;\n";
+		program << "  cvt.u64.s32 %r3, %tid.x;\n";
+		program << "  cvt.u64.s32 %r4, %ctaid.x;\n";
 		
 		program << "  setp.eq.u64 %p0, %r3, 0;\n";
 		program << "  setp.eq.and.u64 %p0, %r4, 0, %p0;\n";
@@ -255,9 +255,9 @@ namespace test
 		
 		std::stringstream program;
 		
-		program << ".version 1.4\n";
+		program << ".version 2.1\n";
 
-		program << ".target sm_10, map_f64_to_f32\n\n";
+		program << ".target sm_21, map_f64_to_f32\n\n";
 		program << ".entry testSin( .param .u64 input )\n";
 		program << "{\n";
 		program << " .reg .u64 %r<5>;\n";
@@ -281,8 +281,8 @@ namespace test
 		program << "  setp.lt.u64 %p0, %r1, %r2;\n";
 		program << "  @%p0 bra Loop_Begin;\n";
 		
-		program << "  cvt.u64.s16 %r3, %tid.x;\n";
-		program << "  cvt.u64.s16 %r4, %ctaid.x;\n";
+		program << "  cvt.u64.s32 %r3, %tid.x;\n";
+		program << "  cvt.u64.s32 %r4, %ctaid.x;\n";
 		
 		program << "  setp.eq.u64 %p0, %r3, 0;\n";
 		program << "  setp.eq.and.u64 %p0, %r4, 0, %p0;\n";
@@ -333,9 +333,9 @@ namespace test
 		
 		std::stringstream program;
 		
-		program << ".version 1.4\n";
+		program << ".version 2.1\n";
 
-		program << ".target sm_10, map_f64_to_f32\n\n";
+		program << ".target sm_21, map_f64_to_f32\n\n";
 		program << ".entry testCos( .param .u64 input )\n";
 		program << "{\n";
 		program << " .reg .u64 %r<5>;\n";
@@ -359,8 +359,8 @@ namespace test
 		program << "  setp.lt.u64 %p0, %r1, %r2;\n";
 		program << "  @%p0 bra Loop_Begin;\n";
 		
-		program << "  cvt.u64.s16 %r3, %tid.x;\n";
-		program << "  cvt.u64.s16 %r4, %ctaid.x;\n";
+		program << "  cvt.u64.s32 %r3, %tid.x;\n";
+		program << "  cvt.u64.s32 %r4, %ctaid.x;\n";
 		
 		program << "  setp.eq.u64 %p0, %r3, 0;\n";
 		program << "  setp.eq.and.u64 %p0, %r4, 0, %p0;\n";
@@ -411,9 +411,9 @@ namespace test
 		
 		std::stringstream program;
 		
-		program << ".version 1.4\n";
+		program << ".version 2.1\n";
 
-		program << ".target sm_10, map_f64_to_f32\n\n";
+		program << ".target sm_21, map_f64_to_f32\n\n";
 		program << ".entry testLg2( .param .u64 input )\n";
 		program << "{\n";
 		program << " .reg .u64 %r<5>;\n";
@@ -437,8 +437,8 @@ namespace test
 		program << "  setp.lt.u64 %p0, %r1, %r2;\n";
 		program << "  @%p0 bra Loop_Begin;\n";
 		
-		program << "  cvt.u64.s16 %r3, %tid.x;\n";
-		program << "  cvt.u64.s16 %r4, %ctaid.x;\n";
+		program << "  cvt.u64.s32 %r3, %tid.x;\n";
+		program << "  cvt.u64.s32 %r4, %ctaid.x;\n";
 		
 		program << "  setp.eq.u64 %p0, %r3, 0;\n";
 		program << "  setp.eq.and.u64 %p0, %r4, 0, %p0;\n";
@@ -489,9 +489,9 @@ namespace test
 		
 		std::stringstream program;
 		
-		program << ".version 1.4\n";
+		program << ".version 2.1\n";
 
-		program << ".target sm_10, map_f64_to_f32\n\n";
+		program << ".target sm_21, map_f64_to_f32\n\n";
 		program << ".entry testEx2( .param .u64 input )\n";
 		program << "{\n";
 		program << " .reg .u64 %r<5>;\n";
@@ -515,8 +515,8 @@ namespace test
 		program << "  setp.lt.u64 %p0, %r1, %r2;\n";
 		program << "  @%p0 bra Loop_Begin;\n";
 		
-		program << "  cvt.u64.s16 %r3, %tid.x;\n";
-		program << "  cvt.u64.s16 %r4, %ctaid.x;\n";
+		program << "  cvt.u64.s32 %r3, %tid.x;\n";
+		program << "  cvt.u64.s32 %r4, %ctaid.x;\n";
 		
 		program << "  setp.eq.u64 %p0, %r3, 0;\n";
 		program << "  setp.eq.and.u64 %p0, %r4, 0, %p0;\n";

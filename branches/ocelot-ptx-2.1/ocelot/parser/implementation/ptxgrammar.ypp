@@ -230,7 +230,8 @@ singleList : '{' singleListSingle '}' ',' '{' singleListSingle '}';
 singleInitializer : singleList |  '{' singleList '}' | '{' singleListSingle '}' 
 	| singleListSingle;
 
-shaderModel : TOKEN_SM10 | TOKEN_SM11 | TOKEN_SM12 | TOKEN_SM13 | TOKEN_SM20;
+shaderModel : TOKEN_SM10 | TOKEN_SM11 | TOKEN_SM12 | TOKEN_SM13 | TOKEN_SM20
+	| TOKEN_SM21;
 floatingPointOption : TOKEN_MAP_F64_TO_F32;
 
 targetOption : shaderModel | floatingPointOption;

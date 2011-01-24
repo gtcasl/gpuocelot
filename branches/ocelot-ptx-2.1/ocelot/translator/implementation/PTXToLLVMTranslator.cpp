@@ -8725,6 +8725,31 @@ namespace translator
 		atom.label = "llvm.atomic.swap.i32.p0i32";
 		_llvmKernel->_statements.push_front( atom );
 
+		atom.operand.type.type = ir::LLVMInstruction::I64;
+		atom.parameters[0].type.type = ir::LLVMInstruction::I64;
+		atom.parameters[1].type.type = ir::LLVMInstruction::I64;
+
+		atom.label = "llvm.atomic.load.add.i64.p0i64";
+		_llvmKernel->_statements.push_front( atom );
+		atom.label = "llvm.atomic.load.and.i64.p0i64";
+		_llvmKernel->_statements.push_front( atom );
+		atom.label = "llvm.atomic.load.or.i64.p0i64";
+		_llvmKernel->_statements.push_front( atom );
+		atom.label = "llvm.atomic.load.xor.i64.p0i64";
+		_llvmKernel->_statements.push_front( atom );
+		atom.label = "llvm.atomic.load.min.i64.p0i64";
+		_llvmKernel->_statements.push_front( atom );
+		atom.label = "llvm.atomic.load.umin.i64.p0i64";
+		_llvmKernel->_statements.push_front( atom );
+		atom.label = "llvm.atomic.load.max.i64.p0i64";
+		_llvmKernel->_statements.push_front( atom );
+		atom.label = "llvm.atomic.load.umax.i64.p0i64";
+		_llvmKernel->_statements.push_front( atom );
+		atom.label = "llvm.atomic.load.min.i64.p0i64";
+		_llvmKernel->_statements.push_front( atom );
+		atom.label = "llvm.atomic.swap.i64.p0i64";
+		_llvmKernel->_statements.push_front( atom );
+
 		// @llvm.atomic.cmp.swap
 		ir::LLVMStatement cmp( ir::LLVMStatement::FunctionDeclaration );
 
@@ -8746,6 +8771,14 @@ namespace translator
 
 		cmp.parameters[2].type.category = ir::LLVMInstruction::Type::Element;
 		cmp.parameters[2].type.type = ir::LLVMInstruction::I32;
+
+		_llvmKernel->_statements.push_front( cmp );
+
+		cmp.operand.type.type = ir::LLVMInstruction::I64;
+		cmp.parameters[0].type.type = ir::LLVMInstruction::I64;
+		cmp.parameters[1].type.type = ir::LLVMInstruction::I64;
+		cmp.parameters[2].type.type = ir::LLVMInstruction::I64;
+		cmp.label = "llvm.atomic.cmp.swap.i64.p0i64";
 
 		_llvmKernel->_statements.push_front( cmp );
 		

@@ -252,6 +252,10 @@ void ir::Module::writeIR( std::ostream& stream ) const {
 	stream << "/* Module " << _modulePath << " */\n\n";
 	
 	stream << "/* Function prototypes */\n";
+	for (FunctionPrototypeMap::const_iterator prot_it = _prototypes.begin();
+		prot_it != _prototypes.end(); ++prot_it) {
+		
+	}
 
 	stream << "/* Globals */\n";
 	for (GlobalMap::const_iterator global = _globals.begin(); 

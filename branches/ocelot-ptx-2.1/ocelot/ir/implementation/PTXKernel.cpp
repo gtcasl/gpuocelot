@@ -41,6 +41,70 @@ namespace ir
 		returnArguments.array.clear();
 		arguments.array.clear();
 	}
+	
+	/*!
+	*/
+	std::string PTXKernel::Prototype::toString() const {
+		std::stringstream ss;
+		
+		ss << Prototype::toString(linkingDirective) << " .func ";
+		if (returnArguments.array.size()) {
+			ss << "(";
+			int n = 0;
+			for (PTXOperand::Array::const_iterator op_it = returnArguments.array.begin();
+				op_it != returnArguments.array.end(); ++op_it) {
+				
+				ss << (n++ ? ", " : "") 
+					<< (op_it->addressMode == PTXOperand::Register ? ".reg" : ".param")
+					<< " ." << PTXOperand::toString(op_it->type) << " " << op_it->identifier;
+				
+			}
+			ss << ") ";
+		}
+	
+		ss << identifier << "(";
+		if (arguments.array.size()) {
+			int n = 0;
+			for (PTXOperand::Array::const_iterator op_it = arguments.array.begin();
+				op_it != arguments.array.end(); ++op_it) {
+				
+				ss << (n++ ? ", " : "") 
+					<< (op_it->addressMode == PTXOperand::Register ? ".reg" : ".param")
+					<< " ." << PTXOperand::toString(op_it->type) << " " << op_it->identifier;
+				
+			}
+		}
+		ss << ")";
+	
+		return ss.str();
+	}
+				
+	/*!
+		\brief emits a mangled form of the function prototype that can be used to identify the function
+	*/
+	std::string PTXKernel::Prototype::getMangledName() const {
+		std::stringstream ss;
+	
+		ss << identifier << "(";
+		
+		for (PTXOperand::Array::const_iterator op_it = arguments.array.begin();
+			op_it != arguments.array.end(); ++op_it) {
+		
+			if (op_it->addressMode == PTXOperand::Register) {
+				ss << ".reg";
+			}
+			else {
+				ss << ".param";
+			}
+			ss << "." << PTXOperand::toString(op_it->type);
+		}
+		
+		ss << ")";
+	
+		return ss.str();
+	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////
 
 	PTXKernel::PTXKernel( const std::string& name, bool isFunction,
 		const ir::Module* module ) :

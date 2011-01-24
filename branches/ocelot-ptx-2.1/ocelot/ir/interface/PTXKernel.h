@@ -43,6 +43,16 @@ namespace ir
 				//! \brief 
 				static std::string toString(const LinkingDirective ld);
 				
+				/*!
+					\brief emits a PTX form of the prototype
+				*/
+				std::string toString() const;
+				
+				/*!
+					\brief emits a mangled form of the function prototype
+				*/
+				std::string getMangledName() const;
+				
 				void clear();
 
 			public:

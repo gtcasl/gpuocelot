@@ -24,7 +24,7 @@
 namespace ir {
 
 
-/////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 BasicBlock::DotFormatter::DotFormatter() { }
 BasicBlock::DotFormatter::~DotFormatter() { }
@@ -82,7 +82,7 @@ std::string BasicBlock::DotFormatter::toString(
 	return out.str();
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 BasicBlock::Edge::Edge(BlockList::iterator h, 
 	BlockList::iterator t, Type y) : head(h), tail(t), type(y) {
@@ -116,6 +116,7 @@ BasicBlock::EdgeList::iterator
 		if ((*edge)->type == Edge::FallThrough) return *edge;
 	}
 	assertM(false, "No fallthrough edge in block " << label);
+	return EdgeList::iterator();
 }
 
 BasicBlock::EdgeList::const_iterator 
@@ -125,6 +126,7 @@ BasicBlock::EdgeList::const_iterator
 		if ((*edge)->type == Edge::FallThrough) return *edge;
 	}
 	assertM(false, "No fallthrough edge in block " << label);
+	return EdgeList::const_iterator();
 }
 
 bool BasicBlock::has_fallthrough_edge() const {
@@ -142,6 +144,7 @@ BasicBlock::EdgeList::iterator
 		if ((*edge)->type == Edge::Branch) return *edge;
 	}
 	assertM(false, "No branch edge in block " << label);
+	return EdgeList::iterator();
 }
 
 BasicBlock::EdgeList::const_iterator 
@@ -151,6 +154,7 @@ BasicBlock::EdgeList::const_iterator
 		if ((*edge)->type == Edge::Branch) return *edge;
 	}
 	assertM(false, "No branch edge in block " << label);
+	return EdgeList::const_iterator();
 }
 
 bool BasicBlock::has_branch_edge() const {
@@ -168,6 +172,7 @@ BasicBlock::EdgeList::iterator
 		if ((*edge)->tail == b) return *edge;
 	}
 	assertM(false, "No edge from " << label << " to " << b->label);
+	return EdgeList::iterator();
 }
 
 BasicBlock::EdgeList::const_iterator 
@@ -177,6 +182,7 @@ BasicBlock::EdgeList::const_iterator
 		if ((*edge)->tail == b) return *edge;
 	}
 	assertM(false, "No edge from " << label << " to " << b->label);
+	return EdgeList::const_iterator();
 }
 
 ControlFlowGraph::EdgePointerVector::iterator 

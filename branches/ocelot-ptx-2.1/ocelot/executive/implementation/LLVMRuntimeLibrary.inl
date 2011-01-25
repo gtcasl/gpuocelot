@@ -139,7 +139,7 @@ extern "C"
 		return hydrazine::bitFieldInsert( in, orig, position, length );
 	}
 
-	unsigned int __ocelot_bfi_b64( long long unsigned int in, 
+	long long unsigned int __ocelot_bfi_b64( long long unsigned int in, 
 		long long unsigned int orig, unsigned int position, 
 		unsigned int length )
 	{
@@ -151,7 +151,8 @@ extern "C"
 		return hydrazine::bfind( a, shift );
 	}
 
-	unsigned int __ocelot_bfind_b64( long long unsigned int a, bool shift )
+	long long unsigned int __ocelot_bfind_b64( long long unsigned int a,
+		bool shift )
 	{
 		return hydrazine::bfind( a, shift );
 	}

@@ -687,7 +687,7 @@ void testLops_REF(void* output, void* input)
 		type r0 = getParameter<type>(input, 0);
 		type r1 = getParameter<type>(input, sizeof(type));
 
-		if(typeid(type) == typeid(bool))
+		if(typeid(type) == typeid(unsigned char))
 		{
 			r1 = r1 < 64;
 			r0 = r0 < 64;
@@ -706,7 +706,7 @@ void testLops_REF(void* output, void* input)
 		type r0 = getParameter<type>(input, 0);
 		type r1 = getParameter<type>(input, sizeof(type));
 
-		if(typeid(type) == typeid(bool))
+		if(typeid(type) == typeid(unsigned char))
 		{
 			r1 = r1 < 64;
 			r0 = r0 < 64;
@@ -725,7 +725,7 @@ void testLops_REF(void* output, void* input)
 		type r0 = getParameter<type>(input, 0);
 		type r1 = getParameter<type>(input, sizeof(type));
 
-		if(typeid(type) == typeid(bool))
+		if(typeid(type) == typeid(unsigned char))
 		{
 			r1 = r1 < 64;
 			r0 = r0 < 64;
@@ -745,7 +745,7 @@ void testLops_REF(void* output, void* input)
 		unsigned int r1 = getParameter<unsigned int>(input,
 			std::max(sizeof(type), sizeof(unsigned int)));
 
-		if(typeid(type) == typeid(bool))
+		if(typeid(type) == typeid(unsigned char))
 		{
 			r1 = r1 < 64;
 			r0 = r0 < 64;
@@ -771,7 +771,7 @@ void testLops_REF(void* output, void* input)
 	{
 		type r0 = getParameter<type>(input, 0);
 
-		if(typeid(type) == typeid(bool))
+		if(typeid(type) == typeid(unsigned char))
 		{
 			r0 = r0 < 64;
 		}
@@ -780,7 +780,7 @@ void testLops_REF(void* output, void* input)
 		
 		U64 d = ~a;
 		
-		if(typeid(type) == typeid(bool))
+		if(typeid(type) == typeid(unsigned char))
 		{
 			d = d & 1;
 		}
@@ -792,7 +792,7 @@ void testLops_REF(void* output, void* input)
 	{
 		type r0 = getParameter<type>(input, 0);
 
-		if(typeid(type) == typeid(bool))
+		if(typeid(type) == typeid(unsigned char))
 		{
 			r0 = r0 < 64;
 		}
@@ -5828,7 +5828,8 @@ namespace test
 			testSlct_OUT(FP32), testSlct_IN(FP32, true),
 			uniformFloat<float, 3>, 1, 1);
 
-		add("TestAnd-pred", testLops_REF<ir::PTXInstruction::And, bool>,
+		add("TestAnd-pred",
+			testLops_REF<ir::PTXInstruction::And, unsigned char>,
 			testLops_PTX(ir::PTXInstruction::And, ir::PTXOperand::pred),
 			testLops_OUT(I8), testLops_IN(ir::PTXInstruction::And, I8),
 			uniformRandom<bool, 3>, 1, 1);
@@ -5847,7 +5848,7 @@ namespace test
 			testLops_PTX(ir::PTXInstruction::And, ir::PTXOperand::b64),
 			testLops_OUT(I64), testLops_IN(ir::PTXInstruction::And, I64),
 			uniformRandom<long long unsigned int, 3>, 1, 1);
-		add("TestOr-pred", testLops_REF<ir::PTXInstruction::Or, bool>,
+		add("TestOr-pred", testLops_REF<ir::PTXInstruction::Or, unsigned char>,
 			testLops_PTX(ir::PTXInstruction::Or, ir::PTXOperand::pred),
 			testLops_OUT(I8), testLops_IN(ir::PTXInstruction::Or, I8),
 			uniformRandom<bool, 3>, 1, 1);
@@ -5866,7 +5867,8 @@ namespace test
 			testLops_PTX(ir::PTXInstruction::Or, ir::PTXOperand::b64),
 			testLops_OUT(I64), testLops_IN(ir::PTXInstruction::Or, I64),
 			uniformRandom<long long unsigned int, 3>, 1, 1);
-		add("TestXor-pred", testLops_REF<ir::PTXInstruction::Xor, bool>,
+		add("TestXor-pred",
+			testLops_REF<ir::PTXInstruction::Xor, unsigned char>,
 			testLops_PTX(ir::PTXInstruction::Xor, ir::PTXOperand::pred),
 			testLops_OUT(I8), testLops_IN(ir::PTXInstruction::Xor, I8),
 			uniformRandom<bool, 3>, 1, 1);
@@ -5885,7 +5887,8 @@ namespace test
 			testLops_PTX(ir::PTXInstruction::Xor, ir::PTXOperand::b64),
 			testLops_OUT(I64), testLops_IN(ir::PTXInstruction::Xor, I64),
 			uniformRandom<long long unsigned int, 3>, 1, 1);
-		add("TestNot-pred", testLops_REF<ir::PTXInstruction::Not, bool>,
+		add("TestNot-pred",
+			testLops_REF<ir::PTXInstruction::Not,unsigned char>,
 			testLops_PTX(ir::PTXInstruction::Not, ir::PTXOperand::pred),
 			testLops_OUT(I8), testLops_IN(ir::PTXInstruction::Not, I8),
 			uniformRandom<bool, 2>, 1, 1);

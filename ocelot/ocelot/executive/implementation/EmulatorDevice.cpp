@@ -163,6 +163,7 @@ namespace executive
 	void* EmulatorDevice::MemoryAllocation::pointer() const
 	{
 		assert(!host() || (_flags & cudaHostAllocMapped));
+		if(_external) return _pointer;
 		return align(_pointer);
 	}
 
@@ -553,9 +554,10 @@ namespace executive
 			Throw("OpenGL Error in mapGraphicsResource() - glBindBuffer.")
 		}
 
-		report(" Mapping GL buffer.");
 		graphic->second.pointer = glMapBuffer(GL_ARRAY_BUFFER, GL_READ_WRITE);
 		
+		report(" Mapping GL buffer to " << graphic->second.pointer);
+
 		if(glGetError() != GL_NO_ERROR)
 		{
 			Throw("OpenGL Error in mapGraphicsResource() - glMapBuffer1.")

@@ -1762,18 +1762,13 @@ cudaError_t cuda::CudaRuntime::cudaMemset(void *devPtr, int value, size_t count)
 	_acquire();
 	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
 	
-	executive::Device::MemoryAllocation* allocation = 
-		_getDevice().getMemoryAllocation(devPtr);
-	
-	if (allocation == 0) {
-		_release();
-		_memoryError(devPtr, count, "cudaMemset");
-	}
-	
 	if (!_getDevice().checkMemoryAccess(devPtr, count)) {
 		_release();
 		_memoryError(devPtr, count, "cudaMemset");
 	}
+	
+	executive::Device::MemoryAllocation* allocation = 
+		_getDevice().getMemoryAllocation(devPtr);
 	
 	size_t offset = (char*)devPtr - (char*)allocation->pointer();
 	
@@ -2815,7 +2810,9 @@ cudaError_t cuda::CudaRuntime::cudaGLMapBufferObjectAsync(void **devPtr,
 		*devPtr = _getDevice().getPointerToMappedGraphicsResource(
 			bytes, buffer->second);
 		result = cudaSuccess;
-	}	
+	}
+	report(" pointer - (" << *devPtr << ")");
+	
 	_release();
 	
 	return _setLastError(result);

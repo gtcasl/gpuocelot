@@ -75,7 +75,7 @@ std::string BasicBlock::DotFormatter::toString(
 		= block->instructions.begin();	
 	for (; instrs != block->instructions.end(); ++instrs) {
 		out << " | " 
-			<< hydrazine::toGraphVizParsableLabel((*instrs)->toString());
+		<< hydrazine::toGraphVizParsableLabel((*instrs)->toString());
 	}
 	out << "}\"]";
 

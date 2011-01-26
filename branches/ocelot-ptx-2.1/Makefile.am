@@ -31,7 +31,7 @@ check_PROGRAMS = TestLexer TestParser \
 	TestCudaSequence TestLLVMKernels TestDeviceSwitching \
 	TestCalVectorScale TestPTXAssembly TestSequenceDriverAPI TestGenericMemory \
 	TestFunctionCall TestIndirectFunctionCall TestIndirectFunctionCallOcelot
-EXTRA_PROGRAMS = Module PtxToIlTranslator DFG CFG PTXChecker OcelotServer
+EXTRA_PROGRAMS = Module PtxToIlTranslator DFG CFG PTXChecker OcelotServer TestOcelotServer
 lib_LTLIBRARIES = libocelot.la
 ################################################################################
 
@@ -157,6 +157,13 @@ OcelotServer_SOURCES = ocelot/util/implementation/OcelotServer.cpp \
 	ocelot/util/implementation/OcelotServerConnection.cpp
 OcelotServer_LDADD = libocelot.la $(LLVM_LDFLAGS)
 OcelotServer_LDFLAGS = -static
+################################################################################
+################################################################################
+## TestOcelotServer
+TestOcelotServer_CXXFLAGS = $(INCLUDE) -std=c++0x
+TestOcelotServer_SOURCES = ocelot/util/test/TestOcelotServer.cpp
+TestOcelotServer_LDADD = libocelot.la $(LLVM_LDFLAGS)
+TestOcelotServer_LDFLAGS = -static
 ################################################################################
 
 ################################################################################

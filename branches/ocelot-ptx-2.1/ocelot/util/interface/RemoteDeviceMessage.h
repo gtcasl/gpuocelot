@@ -12,6 +12,12 @@
 #include <vector>
 #include <string>
 
+// Boost includes
+#include <boost/bind.hpp>
+#include <boost/shared_ptr.hpp>
+#include <boost/enable_shared_from_this.hpp>
+#include <boost/asio.hpp>
+
 namespace remote {
 
 	class RemoteDeviceMessage {
@@ -53,6 +59,9 @@ namespace remote {
 			Device_setOptimizationLevel,
 			
 			Server_enumerateDevices,
+			
+			Client_acknowledge,
+			Client_ping,
 
 			Operation_invalid
 		};
@@ -83,6 +92,14 @@ namespace remote {
 		char *data() { return &message[0]; }
 		
 		int size() { return header.messageSize; }
+		
+		/*! \brief sends this message on the indicated socket
+			\return false if connection disconnected */
+		bool send(boost::asio::ip::tcp::socket &socket);
+		
+		/*! \brief receives this message on indicated socket
+			\return false if connection disconnected */
+		bool receive(boost::asio::ip::tcp::socket &socket);
 		
 	public:
 		//! \brief message header

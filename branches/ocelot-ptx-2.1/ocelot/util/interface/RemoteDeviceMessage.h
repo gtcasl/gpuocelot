@@ -1,11 +1,16 @@
 /*!
-
+	\file RemoteDeviceMessage.h
+	\author Andrew Kerr <arkerr@gatech.edu>, Gregory Diamos <gregory.diamos@gatech.edu>
+	\date 26 Jan 2011
+	\brief serialized message object for executive::Device interface
 */
 
 #ifndef REMOTEDEVICEMESSAGE_H_INCLUDED
-#ifndef REMOTEDEVICEMESSAGE_H_INCLUDED
+#define REMOTEDEVICEMESSAGE_H_INCLUDED
 
+// C++ includes
 #include <vector>
+#include <string>
 
 namespace remote {
 
@@ -46,26 +51,45 @@ namespace remote {
 			Device_synchronize,
 			Device_limitWorkerThreads,
 			Device_setOptimizationLevel,
-
+			
 			Server_enumerateDevices,
 
+			Operation_invalid
+		};
+		
+		class Header {
+		public:
+		
+			//! \brief selects memory operation
+			Operation operation;
+				
+			//! unique identifier of bound device
+			DeviceId deviceId;
+		
+			//! \brief size of message
+			unsigned int messageSize;
 		};
 	
 	public:
 		RemoteDeviceMessage();
 		~RemoteDeviceMessage();
 		
-		//! \brief selects memory operation
-		Operation operation;
-				
-		//! unique identifier of bound device
-		DeviceId deviceId;
+		static std::string toString(const Operation &op);
 		
-		//! \brief size in bytes of message payload
-		size_t messageSize;
+		void clear() { message.clear(); }
+		
+		void resize() { message.resize(header.messageSize, 0); }
+		
+		char *data() { return &message[0]; }
+		
+		int size() { return header.messageSize; }
+		
+	public:
+		//! \brief message header
+		Header header;
 		
 		//! \brief pointer to message payload
-		char *message;
+		ByteVector message;
 	};
 }
 

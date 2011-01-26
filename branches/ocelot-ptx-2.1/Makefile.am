@@ -31,7 +31,7 @@ check_PROGRAMS = TestLexer TestParser \
 	TestCudaSequence TestLLVMKernels TestDeviceSwitching \
 	TestCalVectorScale TestPTXAssembly TestSequenceDriverAPI TestGenericMemory \
 	TestFunctionCall TestIndirectFunctionCall TestIndirectFunctionCallOcelot
-EXTRA_PROGRAMS = Module PtxToIlTranslator DFG CFG PTXChecker
+EXTRA_PROGRAMS = Module PtxToIlTranslator DFG CFG PTXChecker OcelotServer
 lib_LTLIBRARIES = libocelot.la
 ################################################################################
 
@@ -133,7 +133,8 @@ libocelot_la_SOURCES = \
 	ocelot/cal/implementation/CalDriver.cpp \
 	ocelot/translator/implementation/Translator.cpp \
 	ocelot/translator/implementation/PTXToLLVMTranslator.cpp \
-	ocelot/translator/implementation/PTXToILTranslator.cpp
+	ocelot/translator/implementation/PTXToILTranslator.cpp \
+	ocelot/util/implementation/RemoteDeviceMessage.cpp
 	
 ################################################################################
 
@@ -151,10 +152,11 @@ OcelotConfig_LDFLAGS = -static
 
 ################################################################################
 ## OcelotServer
-# OcelotServer_CXXFLAGS = $(INCLUDE) -std=c++0x
-# OcelotServer_SOURCES = ocelot/util/implementation/OcelotServer.cpp
-# OcelotServer_LDADD = libocelot.la $(LLVM_LDFLAGS)
-# OcelotServer_LDFLAGS = -static
+OcelotServer_CXXFLAGS = $(INCLUDE) -std=c++0x
+OcelotServer_SOURCES = ocelot/util/implementation/OcelotServer.cpp \
+	ocelot/util/implementation/OcelotServerConnection.cpp
+OcelotServer_LDADD = libocelot.la $(LLVM_LDFLAGS)
+OcelotServer_LDFLAGS = -static
 ################################################################################
 
 ################################################################################
@@ -504,6 +506,7 @@ nobase_include_HEADERS = ocelot/api/interface/ocelot.h \
 	ocelot/translator/test/TestPTXToLLVMTranslator.h \
 	ocelot/translator/test/PtxToIlTranslator.h \
 	ocelot/util/interface/OcelotConfig.h \
+	ocelot/util/interface/RemoteDeviceMessage.h \
 	hydrazine/implementation/Exception.h \
 	hydrazine/implementation/Timer.h \
 	hydrazine/implementation/LowLevelTimer.h \

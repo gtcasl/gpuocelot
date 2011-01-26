@@ -150,6 +150,14 @@ OcelotConfig_LDFLAGS = -static
 ################################################################################
 
 ################################################################################
+## OcelotServer
+# OcelotServer_CXXFLAGS = $(INCLUDE) -std=c++0x
+# OcelotServer_SOURCES = ocelot/util/implementation/OcelotServer.cpp
+# OcelotServer_LDADD = libocelot.la $(LLVM_LDFLAGS)
+# OcelotServer_LDFLAGS = -static
+################################################################################
+
+################################################################################
 ## PTXOptimizer
 PTXOptimizer_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
 PTXOptimizer_SOURCES = ocelot/analysis/implementation/PTXOptimizer.cpp

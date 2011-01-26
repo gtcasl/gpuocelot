@@ -104,6 +104,16 @@ namespace api {
 			//! \brief for TraceGeneratingRuntime, path to output file
 			std::string runtimeApiTrace;
 		};
+		
+		class OcelotServer {
+		public:
+		
+		public:
+		
+			//! \brief 
+			int port;
+			
+		};
 
 		class Executive {
 		public:

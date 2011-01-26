@@ -105,13 +105,18 @@ void remote::OcelotServerConnection::start() {
 void remote::OcelotServerConnection::_handleMessage(RemoteDeviceMessage &message) {
 	report("OcelotServerConnection::_handleMessage() - message = " << 
 		RemoteDeviceMessage::toString(message.header.operation));
-		
-	if (message.header.operation == RemoteDeviceMessage::Client_ping) {
+	
+	switch (message.header.operation) {
+	case RemoteDeviceMessage::Client_ping:
+	{
 		// return with data inverted
 		if (message.size() >= 4) {
 			*((int *)&message.message[0]) = ~(*((int *)&message.message[0]));
 			message.send(_socket);
 		}
+	}
+	default:
+		break;
 	}
 }
 

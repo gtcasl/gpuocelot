@@ -69,7 +69,7 @@ std::string remote::RemoteDeviceMessage::toString(const Operation &op) {
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
-static std::ostream &operator<<(std::ostream &out, remote::RemoteDeviceMessage::Header header) {
+std::ostream &operator<<(std::ostream &out, remote::RemoteDeviceMessage::Header header) {
 	out << "{ operation: " << remote::RemoteDeviceMessage::toString(header.operation) 
 		<< ", deviceId: " << header.deviceId << ", messageSize: " << header.messageSize << " }";
 	return out;

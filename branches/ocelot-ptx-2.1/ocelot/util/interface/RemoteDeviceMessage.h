@@ -110,5 +110,7 @@ namespace remote {
 	};
 }
 
+std::ostream &operator<<(std::ostream &out, remote::RemoteDeviceMessage::Header header);
+
 #endif
 

@@ -123,6 +123,7 @@ libocelot_la_SOURCES = \
 	ocelot/executive/implementation/LLVMFunctionCallStack.cpp \
 	ocelot/executive/implementation/LLVMContext.cpp \
 	ocelot/executive/implementation/TextureOperations.cpp \
+	ocelot/executive/implementation/RemoteDevice.cpp \
 	ocelot/cuda/implementation/CudaDriverApi.cpp \
 	ocelot/cuda/implementation/CudaDriver.cpp \
 	ocelot/cuda/implementation/CudaDriverInterface.cpp \
@@ -443,10 +444,12 @@ nobase_include_HEADERS = ocelot/api/interface/ocelot.h \
 	ocelot/executive/interface/LLVMCooperativeThreadArray.h \
 	ocelot/executive/interface/LLVMFunctionCallStack.h \
 	ocelot/executive/interface/EmulatorCallStack.h \
+	ocelot/executive/interface/RemoteDevice.h \
 	ocelot/executive/test/TestEmulator.h \
 	ocelot/executive/test/sequence.ptx \
 	ocelot/executive/test/kernels.ptx \
 	ocelot/executive/test/TestLLVMKernels.h \
+	ocelot/executive/interface/RemoteDevice.h \
 	ocelot/cuda/interface/CudaRuntime.h \
 	ocelot/cuda/interface/CudaDriver.h \
 	ocelot/cuda/interface/cuda_runtime.h \

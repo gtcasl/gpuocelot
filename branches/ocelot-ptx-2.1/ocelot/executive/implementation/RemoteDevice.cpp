@@ -175,6 +175,8 @@ unsigned int executive::RemoteDevice::deviceCount(int computeCapability) {
 executive::RemoteDevice::RemoteDevice(unsigned int id, const PropertiesData& props, 
 	unsigned int flags) : _selected(false), _id(id) {
 	_properties = Properties(props);
+	
+	std::strcat(_properties.name, " (Remote)"); 
 }
 
 /*! \brief Clears all state */

@@ -54,7 +54,7 @@ namespace executive
 		CalDriver()->calDeviceGetStatus(&_status, _device);
 
 		_properties.ISA = ir::Instruction::CAL;
-		_properties.name = "CAL Device";
+		std::strcpy(_properties.name, "CAL Device");
 		_properties.multiprocessorCount = _attribs.numberOfShaderEngines;
 		_properties.major = 1;
 		_properties.minor = 2;
@@ -319,7 +319,7 @@ namespace executive
 		assertM(false, "Not implemented yet");
 	}
 
-	bool ATIGPUDevice::queryEvent(unsigned int event) const
+	bool ATIGPUDevice::queryEvent(unsigned int event)
 	{
 		assertM(false, "Not implemented yet");
 	}
@@ -334,7 +334,7 @@ namespace executive
 		assertM(false, "Not implemented yet");
 	}
 
-	float ATIGPUDevice::getEventTime(unsigned int start, unsigned int end) const
+	float ATIGPUDevice::getEventTime(unsigned int start, unsigned int end)
 	{
 		assertM(false, "Not implemented yet");
 	}
@@ -349,7 +349,7 @@ namespace executive
 		assertM(false, "Not implemented yet");
 	}
 
-	bool ATIGPUDevice::queryStream(unsigned int stream) const
+	bool ATIGPUDevice::queryStream(unsigned int stream)
 	{
 		assertM(false, "Not implemented yet");
 	}
@@ -428,7 +428,7 @@ namespace executive
 		assertM(false, "Not implemented yet");
 	}
 
-	unsigned int ATIGPUDevice::getLastError() const
+	unsigned int ATIGPUDevice::getLastError()
 	{
 		assertM(false, "Not implemented yet");
 	}

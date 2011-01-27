@@ -18,6 +18,9 @@
 #include <hydrazine/implementation/Exception.h>
 #include <hydrazine/interface/Casts.h>
 
+// Standard Library Includes
+#include <cstring>
+
 // Macros
 #define Throw(x) {std::stringstream s; s << x; \
 	throw hydrazine::Exception(s.str());}
@@ -70,7 +73,8 @@ namespace executive
 		_optimizationLevel(translator::Translator::NoOptimization)
 	{
 		_properties.ISA = ir::Instruction::LLVM;
-		_properties.name = "Ocelot Multicore CPU Backend (LLVM-JIT)";
+		std::strcpy(_properties.name,
+			"Ocelot Multicore CPU Backend (LLVM-JIT)");
 		_properties.multiprocessorCount = hydrazine::getHardwareThreadCount();
 		_properties.clockRate = 2000;
 	}

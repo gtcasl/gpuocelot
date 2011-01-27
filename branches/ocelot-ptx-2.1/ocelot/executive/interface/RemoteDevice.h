@@ -12,6 +12,7 @@
 
 // Ocelot includes
 #include <ocelot/executive/interface/Device.h>
+#include <ocelot/util/interface/RemoteDeviceMessage.h>
 
 // Hydrazine includes
 #include <hydrazine/implementation/Timer.h>
@@ -36,6 +37,7 @@ namespace executive
 	class RemoteDevice : public Device
 	{
 		public:
+			friend class RemoteDevice::MemoryAllocation;
 			/*! \brief An interface to a managed memory allocation */
 			class MemoryAllocation : public Device::MemoryAllocation
 			{
@@ -48,31 +50,23 @@ namespace executive
 					unsigned int _flags;
 					/*! \brief Is the allocation managed here or externally? */
 					bool _external;
+					/*! \brief The owning remote device */
+					RemoteDevice* _device;
 				
 				public:
 					/*! \brief Generic Construct */
 					MemoryAllocation();
 					/*! \brief Construct a device allocation */
-					MemoryAllocation(size_t size);
+					MemoryAllocation(RemoteDevice* d, size_t size,
+						void* pointer);
 					/*! \brief Construct a host allocation */
-					MemoryAllocation(size_t size, unsigned int flags);
-					/*! \brief Construct a global allocation */
-					MemoryAllocation(const ir::Global& global);
+					MemoryAllocation(RemoteDevice* d, size_t size,
+						unsigned int flags);
 					/*! \brief Construct an external allocaton */
-					MemoryAllocation(void* pointer, size_t size);
+					MemoryAllocation(RemoteDevice* d, void* pointer,
+						size_t size);
 					/*! \brief Desructor */
 					~MemoryAllocation();
-
-				public:
-					/*! \brief Copy constructor */
-					MemoryAllocation(const MemoryAllocation& a);
-					/*! \brief Move constructor */
-					MemoryAllocation(MemoryAllocation&& a);
-					
-					/*! \brief Assignment operator */
-					MemoryAllocation& operator=(const MemoryAllocation& a);
-					/*! \brief Move operator */
-					MemoryAllocation& operator=(MemoryAllocation&& a);
 			
 				public:
 					/*! \brief Get the flags if this is a host pointer */
@@ -94,99 +88,66 @@ namespace executive
 						size_t toOffset, size_t fromOffset, size_t size) const;				
 			};
 
-		protected:
-			/*! \brief A class for holding the state associated with a module */
-			class Module
-			{
-				public:
-					/*! \brief This is a map from a global name to a pointer */
-					typedef std::unordered_map<std::string, void*> GlobalMap;
-					/*! \brief A map from a kernel name to its translation */
-					typedef std::unordered_map<std::string, 
-						ExecutableKernel*> KernelMap;
-					/*! \brief A vector of memory allocations */
-					typedef std::vector<MemoryAllocation*> AllocationVector;
-					/*! \brief A map from texture names to references */
-					typedef ir::Module::TextureMap TextureMap;
-			
-				public:
-					/*! \brief The ir representation of a module */
-					const ir::Module* ir;
-					/*! \brief The emulator */
-					Device* device;
-					/*! \brief The set of global allocations in the module */
-					GlobalMap globals;
-					/*! \brief The set of translated kernels */
-					KernelMap kernels;
-					/*! \brief A duplicate copy of textures */
-					TextureMap textures;
-					
-				public:
-					/*! \brief Construct this based on a module */
-					Module(const ir::Module* m = 0, Device* d = 0);
-					/*! \brief Copy constructor */
-					Module(const Module& m);
-					/*! \brief Clean up all translated kernels */
-					virtual ~Module();
-					
-				public:
-					/*! \brief Load all of the globals for this module */
-					AllocationVector loadGlobals();
-					/*! \brief Get a specific kernel or 0 */
-					virtual ExecutableKernel* getKernel(
-						const std::string& name);
-					/*! \brief Get a handle to a specific texture or 0 */
-					ir::Texture* getTexture(const std::string& name);
-			};
-
-			/*! \brief A map of registered modules */
-			typedef std::unordered_map<std::string, Module*> ModuleMap;
-
 			/*! \brief A map of memory allocations */
 			typedef std::map<void*, MemoryAllocation*> AllocationMap;
-			
-			/*! \brief A set of registered streams */
-			typedef std::unordered_set<unsigned int> StreamSet;
-			
-			/*! \brief A map of registered events */
-			typedef std::unordered_map<unsigned int, 
-				hydrazine::Timer::Second> EventMap;
 
-		protected:
+			/*! \brief A singleton to manage communication */
+			class ConnectionManager
+			{
+			public:
+				ConnectionManager();
+				~ConnectionManager();
+			
+			public:
+				//! \brief Send to the remote device, receive an ack
+				void exchange(remote::RemoteDeviceMessage& message);
+			
+			private:
+				void _connect();
+			
+			private:				
+				//! \brief IO service for RemoteDevice instance
+				boost::asio::io_service _io_service;
+			
+				//! \brief socket for connecting to remote device
+				boost::asio::ip::tcp::socket _socket;
+				
+				//! \brief Serialize access to the manager
+				boost::mutex _mutex;
+				
+				//! \brief Is the manager connected
+				bool _connected;
+			};
+			
+		private:
 			/*! \brief A map of memory allocations in device/host space */
 			AllocationMap _allocations;
-			
-			/*! \brief The modules that have been loaded */
-			ModuleMap _modules;
-			
-			/*! \brief Registered streams */
-			StreamSet _streams;
-			
-			/*! \brief Registered events */
-			EventMap _events;
 		
 			/*! \brief Has this device been selected? */
 			bool _selected;
 			
-			/*! \brief The next handle to assign to an event, stream, etc */
-			unsigned int _next;
+			/*! \brief The message */
+			remote::RemoteDeviceMessage _message;
 			
-			/*! \brief Global timer */
-			hydrazine::Timer _timer;
-			
-		private:
-		
-			//! \brief IO service for RemoteDevice instance
-			boost::asio::io_service _io_service;
-			
-			//! \brief socket for connecting to remote device
-			boost::asio::ip::tcp::socket _socket;
-						
+			/*! \brief The remote device id */
+			unsigned int _id;
+
 		public:
-			/*! \brief Sets the device properties, bind this to the cuda id */
-			RemoteDevice(std::string host, int port, unsigned int flags = 0);
+			/*! \brief Allocate a new device for each remote device */
+			static DeviceVector createDevices(unsigned int flags,
+				int computeCapability);
+			/*! \brief Determine the number of CUDA GPUs in the system */
+			static unsigned int deviceCount(int computeCapability);
+						
+			static ConnectionManager connectionManager;
+
+		public:
+			/*! \brief Sets the device properties,
+				connects to an ocelot server */
+			RemoteDevice(unsigned int id, const PropertiesData& props, 
+				unsigned int flags = 0);
 			/*! \brief Clears all state */
-			virtual ~RemoteDevice();
+			~RemoteDevice();
 			
 		public:
 			Device::MemoryAllocation* getMemoryAllocation(const void* address, 
@@ -207,14 +168,36 @@ namespace executive
 			MemoryAllocationVector getAllAllocations() const;
 			/*! \brief Wipe all memory allocations, but keep modules */
 			void clearMemory();			
+
+		public:
+			/*! \brief Registers an opengl buffer with a resource */
+			void* glRegisterBuffer(unsigned int buffer, 
+				unsigned int flags);
+			/*! \brief Registers an opengl image with a resource */
+			void* glRegisterImage(unsigned int image, 
+				unsigned int target, unsigned int flags);
+			/*! \brief Unregister a resource */
+			void unRegisterGraphicsResource(void* resource);
+			/*! \brief Map a graphics resource for use with this device */
+			void mapGraphicsResource(void** resource, int count, 
+				unsigned int stream);
+			/*! \brief Get a pointer to a mapped resource along with its size */
+			void* getPointerToMappedGraphicsResource(size_t& size, 
+				void* resource);
+			/*! \brief Change the flags of a mapped resource */
+			void setGraphicsResourceFlags(void* resource, 
+				unsigned int flags);
+			/*! \brief Unmap a mapped resource */
+			void unmapGraphicsResource(void** resource, int count,
+				unsigned int stream);
 			
 		public:
 			/*! \brief Load a module, must have a unique name */
-			virtual void load(const ir::Module* module);
+			void load(const ir::Module* module);
 			/*! \brief Unload a module by name */
 			void unload(const std::string& name);
 			/*! \brief Get a translated kernel from the device */
-			virtual ExecutableKernel* getKernel(const std::string& module, 
+			ExecutableKernel* getKernel(const std::string& module, 
 				const std::string& kernel);
 
 		public:
@@ -223,13 +206,13 @@ namespace executive
 			/*! \brief Destroy an existing event */
 			void destroyEvent(unsigned int event);
 			/*! \brief Query to see if an event has been recorded (yes/no) */
-			bool queryEvent(unsigned int event) const;
+			bool queryEvent(unsigned int event);
 			/*! \brief Record something happening on an event */
 			void recordEvent(unsigned int event, unsigned int stream);
 			/*! \brief Synchronize on an event */
 			void synchronizeEvent(unsigned int event);
 			/*! \brief Get the elapsed time in ms between two recorded events */
-			float getEventTime(unsigned int start, unsigned int end) const;
+			float getEventTime(unsigned int start, unsigned int end);
 		
 		public:
 			/*! \brief Create a new stream */
@@ -237,7 +220,7 @@ namespace executive
 			/*! \brief Destroy an existing stream */
 			void destroyStream(unsigned int stream);
 			/*! \brief Query the status of an existing stream (ready/not) */
-			bool queryStream(unsigned int stream) const;
+			bool queryStream(unsigned int stream);
 			/*! \brief Synchronize a particular stream */
 			void synchronizeStream(unsigned int stream);
 			/*! \brief Sets the current stream */
@@ -277,7 +260,7 @@ namespace executive
 				\param traceGenerators vector of trace generators to add 
 					and remove from kernel
 			*/
-			virtual void launch(const std::string& module, 
+			void launch(const std::string& module, 
 				const std::string& kernel, const ir::Dim3& grid, 
 				const ir::Dim3& block, size_t sharedMemory, 
 				const void* argumentBlock, size_t argumentBlockSize, 
@@ -288,15 +271,15 @@ namespace executive
 			cudaFuncAttributes getAttributes(const std::string& module, 
 				const std::string& kernel);
 			/*! \brief Get the last error from this device */
-			unsigned int getLastError() const;
+			unsigned int getLastError();
 			/*! \brief Wait until all asynchronous operations have completed */
 			void synchronize();
 			
 		public:
 			/*! \brief Limit the worker threads used by this device */
-			virtual void limitWorkerThreads(unsigned int threads);			
+			void limitWorkerThreads(unsigned int threads);			
 			/*! \brief Set the optimization level for kernels in this device */
-			virtual void setOptimizationLevel(
+			void setOptimizationLevel(
 				translator::Translator::OptimizationLevel level);
 	};
 }

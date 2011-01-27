@@ -1,4 +1,7 @@
-/*!
+/*!	\file RemoteDeviceMessage.h
+	\author Andrew Kerr <arkerr@gatech.edu>
+	\date Jan 26, 2011
+	\brief The header file for the RemoteDeviceMessage class.
 	\file RemoteDeviceMessage.h
 	\author Andrew Kerr <arkerr@gatech.edu>, Gregory Diamos <gregory.diamos@gatech.edu>
 	\date 26 Jan 2011
@@ -19,7 +22,7 @@
 #include <boost/asio.hpp>
 
 namespace remote {
-
+	/*! \brief  A message type for communicating with remote devices. */ 
 	class RemoteDeviceMessage {
 	public:
 		typedef std::vector<char> ByteVector;
@@ -28,15 +31,17 @@ namespace remote {
 		//!
 		enum Operation {
 			Memory_allocate,
-			Memory_allocateHost,
+			Memory_copyHostToDevice,
+			Memory_copyDeviceToHost,
+			Memory_copyDeviceToDevice,
+			Memory_memset,
 			Memory_free,
 			
 			Device_clearMemory,
 			Device_load,
 			Device_unload,
-			Device_getKernel,
-			Device_properties,
 			Device_createEvent,
+			Device_destroyEvent,
 			Device_queryEvent,
 			Device_recordEvent,
 			Device_synchronizeEvent,
@@ -48,7 +53,6 @@ namespace remote {
 			Device_setStream,
 			Device_bindTexture,
 			Device_unbindTexture,
-			Device_getTextureReference,
 			Device_driverVersion,
 			Device_runtimeVersion,
 			Device_launch,
@@ -91,7 +95,7 @@ namespace remote {
 		
 		char *data() { return &message[0]; }
 		
-		int size() { return header.messageSize; }
+		unsigned int size() { return header.messageSize; }
 		
 		/*! \brief sends this message on the indicated socket
 			\return false if connection disconnected */

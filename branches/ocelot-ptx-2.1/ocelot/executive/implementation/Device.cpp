@@ -9,6 +9,7 @@
 #include <ocelot/executive/interface/ATIGPUDevice.h>
 #include <ocelot/executive/interface/EmulatorDevice.h>
 #include <ocelot/executive/interface/MulticoreCPUDevice.h>
+#include <ocelot/executive/interface/RemoteDevice.h>
 
 #include <hydrazine/implementation/debug.h>
 
@@ -36,7 +37,7 @@ bool executive::Device::MemoryAllocation::global() const {
 	return _global;
 }
 
-executive::Device::Properties::Properties() {
+executive::Device::Properties::Properties(const PropertiesData& props) : PropertiesData(props) {
 }
 
 std::ostream& executive::Device::Properties::write(std::ostream &out) const {
@@ -83,6 +84,11 @@ executive::DeviceVector executive::Device::createDevices(
 			return ATIGPUDevice::createDevices(flags, computeCapability);
 		}
 		break;
+		case ir::Instruction::Remote:
+		{
+			return RemoteDevice::createDevices(flags, computeCapability);
+		}
+		break;
 		default: break;
 	}
 	assertM(false, "Invalid ISA - " << ir::Instruction::toString(isa));
@@ -113,6 +119,11 @@ unsigned int executive::Device::deviceCount(ir::Instruction::Architecture isa,
 		case ir::Instruction::CAL:
 		{
 			return ATIGPUDevice::deviceCount(computeCapability);
+		}
+		break;
+		case ir::Instruction::Remote:
+		{
+			return RemoteDevice::deviceCount(computeCapability);
 		}
 		break;
 		default: break;

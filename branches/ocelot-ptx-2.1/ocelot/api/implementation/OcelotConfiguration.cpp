@@ -124,6 +124,9 @@ api::OcelotConfiguration::Executive::Executive():
 	enableEmulated(true),
 	enableNVIDIA(true),
 	enableAMD(true),
+	enableRemote(true),
+	port(2011),
+	host("127.0.0.1"),
 	workerThreadLimit(-1),
 	warpSize(-1)
 {
@@ -150,6 +153,9 @@ static void initializeExecutive(api::OcelotConfiguration::Executive &executive,
 	}
 	else if (strPrefISA == "amd" || strPrefISA == "AMD") {
 		executive.preferredISA = (int)ir::Instruction::CAL;
+	}
+	else if (strPrefISA == "remote" || strPrefISA == "Remote") {
+		executive.preferredISA = (int)ir::Instruction::Remote;
 	}
 	else {
 		report("Unknown preferredISA - using Emulated");
@@ -202,6 +208,9 @@ static void initializeExecutive(api::OcelotConfiguration::Executive &executive,
 	executive.enableEmulated = config.parse<bool>("enableEmulated", true);
 	executive.enableNVIDIA = config.parse<bool>("enableNVIDIA", true);
 	executive.enableAMD = config.parse<bool>("enableAMD", true);
+	executive.enableRemote = config.parse<bool>("enableRemote", true);
+	executive.port = config.parse<int>("port", 2011);
+	executive.host = config.parse<std::string>("host", "127.0.0.1");
 	executive.workerThreadLimit = config.parse<int>("workerThreadLimit", -1);
 	executive.warpSize = config.parse<int>("warpSize", -1);
 	
@@ -214,6 +223,7 @@ static void initializeExecutive(api::OcelotConfiguration::Executive &executive,
 		executive.enableEmulated = false;
 		executive.enableNVIDIA = false;
 		executive.enableAMD = false;
+		executive.enableRemote = false;
 		
 		for (hydrazine::json::Array::ValueVector::iterator it = array->begin();
 			it != array->end(); ++it) {
@@ -229,6 +239,9 @@ static void initializeExecutive(api::OcelotConfiguration::Executive &executive,
 			}
 			else if ((std::string)dev == "emulated") {
 				executive.enableEmulated = true;
+			}
+			else if ((std::string)dev == "remote") {
+				executive.enableRemote = true;
 			}
 		}
 	}

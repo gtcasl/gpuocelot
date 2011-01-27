@@ -290,13 +290,13 @@ namespace executive
 			/*! \brief Destroy an existing event */
 			void destroyEvent(unsigned int event);
 			/*! \brief Query to see if an event has been recorded (yes/no) */
-			bool queryEvent(unsigned int event) const;
+			bool queryEvent(unsigned int event);
 			/*! \brief Record something happening on an event */
 			void recordEvent(unsigned int event, unsigned int stream);
 			/*! \brief Synchronize on an event */
 			void synchronizeEvent(unsigned int event);
 			/*! \brief Get the elapsed time in ms between two recorded events */
-			float getEventTime(unsigned int start, unsigned int end) const;
+			float getEventTime(unsigned int start, unsigned int end);
 		
 		public:
 			/*! \brief Create a new stream */
@@ -304,7 +304,7 @@ namespace executive
 			/*! \brief Destroy an existing stream */
 			void destroyStream(unsigned int stream);
 			/*! \brief Query the status of an existing stream (ready/not) */
-			bool queryStream(unsigned int stream) const;
+			bool queryStream(unsigned int stream);
 			/*! \brief Synchronize a particular stream */
 			void synchronizeStream(unsigned int stream);
 			/*! \brief Sets the current stream */
@@ -354,7 +354,7 @@ namespace executive
 			cudaFuncAttributes getAttributes(const std::string& module, 
 				const std::string& kernel);
 			/*! \brief Get the last error from this device */
-			unsigned int getLastError() const;
+			unsigned int getLastError();
 			/*! \brief Wait until all asynchronous operations have completed */
 			void synchronize();
 			

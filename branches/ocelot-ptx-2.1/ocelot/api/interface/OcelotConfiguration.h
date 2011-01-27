@@ -104,16 +104,6 @@ namespace api {
 			//! \brief for TraceGeneratingRuntime, path to output file
 			std::string runtimeApiTrace;
 		};
-		
-		class OcelotServer {
-		public:
-		
-		public:
-		
-			//! \brief 
-			int port;
-			
-		};
 
 		class Executive {
 		public:
@@ -147,6 +137,15 @@ namespace api {
 			
 			//! \brief filter enabling AMD GPU devices if present
 			bool enableAMD;
+			
+			//! \brief filter enabling remote GPU devices if present
+			bool enableRemote;
+			
+			//! \brief The port to connect to an ocelot server for remoting
+			int port;
+
+			//! \brief The hostname of the ocelot server to connect
+			std::string host;
 
 			//! \brief maximum number of worker threads - a non-positive 
 			//         number indicates no limit

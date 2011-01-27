@@ -706,13 +706,12 @@ namespace executive
 			checkError(driver::cuCtxCreate(&_context, flags, device));
 		}
 		
-		report("NVIDIAGPUDevice::NVIDIAGPUDevice() - created context. _opengl = " << _opengl);
+		report("NVIDIAGPUDevice::NVIDIAGPUDevice() - created "
+			"context. _opengl = " << _opengl);
 		
 		checkError(driver::cuCtxPopCurrent(&_context));
 		
-		char name[256];
-		checkError(driver::cuDeviceGetName(name, 255, device));
-		_properties.name = name;
+		checkError(driver::cuDeviceGetName(_properties.name, 255, device));
 		
 		unsigned int total;
 		checkError(driver::cuDeviceTotalMem(&total, device));
@@ -1179,7 +1178,7 @@ namespace executive
 		_events.erase(event);
 	}
 
-	bool NVIDIAGPUDevice::queryEvent(unsigned int handle) const
+	bool NVIDIAGPUDevice::queryEvent(unsigned int handle)
 	{
 
 		EventMap::const_iterator event = _events.find(handle);
@@ -1231,7 +1230,7 @@ namespace executive
 	}
 
 	float NVIDIAGPUDevice::getEventTime(unsigned int startHandle, 
-		unsigned int endHandle) const
+		unsigned int endHandle)
 	{
 		
 		EventMap::const_iterator start = _events.find(startHandle);
@@ -1278,7 +1277,7 @@ namespace executive
 		_streams.erase(stream);
 	}
 	
-	bool NVIDIAGPUDevice::queryStream(unsigned int handle) const
+	bool NVIDIAGPUDevice::queryStream(unsigned int handle)
 	{
 		StreamMap::const_iterator stream = _streams.find(handle);
 		if(stream == _streams.end())
@@ -1583,7 +1582,7 @@ namespace executive
 		return cudaErrorUnknown;
 	}
 
-	unsigned int NVIDIAGPUDevice::getLastError() const
+	unsigned int NVIDIAGPUDevice::getLastError()
 	{
 		return translateError(_lastError);
 	}

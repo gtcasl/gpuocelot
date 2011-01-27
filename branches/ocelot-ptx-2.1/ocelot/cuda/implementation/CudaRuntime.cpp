@@ -305,6 +305,13 @@ void cuda::CudaRuntime::_enumerateDevices() {
 		report(" - Added " << d.size() << " amd gpu devices." );
 		_devices.insert(_devices.end(), d.begin(), d.end());
 	}
+	if(config::get().executive.enableRemote) {
+		executive::DeviceVector d =
+			executive::Device::createDevices(ir::Instruction::Remote, _flags,
+				_computeCapability);
+		report(" - Added " << d.size() << " remote devices." );
+		_devices.insert(_devices.end(), d.begin(), d.end());
+	}
 	
 	_devicesLoaded = true;
 	
@@ -459,6 +466,10 @@ cuda::CudaRuntime::CudaRuntime() : _deviceCount(0), _devicesLoaded(false),
 	if(config::get().executive.enableAMD) {
 		_deviceCount += executive::Device::deviceCount(
 			ir::Instruction::CAL, _computeCapability);
+	}
+	if(config::get().executive.enableRemote) {
+		_deviceCount += executive::Device::deviceCount(
+			ir::Instruction::Remote, _computeCapability);
 	}
 }
 
@@ -2105,7 +2116,7 @@ cudaError_t cuda::CudaRuntime::cudaGetDeviceProperties(
 			<< ", minor: " << properties.minor);
 
 		memset(prop, 0, sizeof(prop));
-		hydrazine::strlcpy( prop->name, properties.name.c_str(), 256 );
+		hydrazine::strlcpy( prop->name, properties.name, 256 );
 		prop->canMapHostMemory = 1;
 		prop->clockRate = properties.clockRate;
 		prop->computeMode = cudaComputeModeDefault;

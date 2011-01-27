@@ -47,7 +47,10 @@ namespace executive
 	static void* align(void* pointer)
 	{
 		size_t address = (size_t) pointer;
-		return (void*) (address + (address & (ALIGNMENT-1)));
+		size_t remainder = address % ALIGNMENT;
+
+		return (void*)(remainder == 0
+			? address : address + (ALIGNMENT - remainder));
 	}
 
 	EmulatorDevice::MemoryAllocation::MemoryAllocation() 
@@ -291,7 +294,7 @@ namespace executive
 	
 		_properties.ISA = ir::Instruction::Emulated;
 		_properties.addressSpace = 0;
-		_properties.name = "Ocelot PTX Emulator";
+		std::strcpy(_properties.name, "Ocelot PTX Emulator");
 		
 		_properties.totalMemory = get_avphys_pages() * getpagesize();
 		_properties.multiprocessorCount = 1;
@@ -374,7 +377,7 @@ namespace executive
 			}
 		}
 		
-		return allocation;		
+		return allocation;	
 	}
 
 	Device::MemoryAllocation* EmulatorDevice::getGlobalAllocation(
@@ -477,7 +480,7 @@ namespace executive
 		{
 			allocations.push_back(allocation->second);
 		}
-		return std::move(allocations);
+		return allocations;
 	}
 
 	Device::MemoryAllocationVector EmulatorDevice::getAllAllocations() const
@@ -489,7 +492,7 @@ namespace executive
 			allocations.push_back(allocation->second);
 		}
 		
-		return std::move(allocations);
+		return allocations;
 	}
 
 	void EmulatorDevice::clearMemory()
@@ -736,7 +739,7 @@ namespace executive
 		_events.erase(event);
 	}
 
-	bool EmulatorDevice::queryEvent(unsigned int handle) const
+	bool EmulatorDevice::queryEvent(unsigned int handle)
 	{
 		EventMap::const_iterator event = _events.find(handle);
 		if(event == _events.end())
@@ -776,7 +779,7 @@ namespace executive
 	}
 	
 	float EmulatorDevice::getEventTime(unsigned int startHandle, 
-		unsigned int endHandle) const
+		unsigned int endHandle)
 	{
 		EventMap::const_iterator startEvent = _events.find(startHandle);
 		if(startEvent == _events.end())
@@ -810,7 +813,7 @@ namespace executive
 		_streams.erase(stream);
 	}
 
-	bool EmulatorDevice::queryStream(unsigned int handle) const
+	bool EmulatorDevice::queryStream(unsigned int handle)
 	{
 		StreamSet::const_iterator stream = _streams.find(handle);
 		if(stream == _streams.end())
@@ -1067,7 +1070,7 @@ namespace executive
 		return std::move(attributes);
 	}
 
-	unsigned int EmulatorDevice::getLastError() const
+	unsigned int EmulatorDevice::getLastError()
 	{
 		return 0;
 	}

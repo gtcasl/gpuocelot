@@ -29,15 +29,17 @@
 
 std::string remote::RemoteDeviceMessage::toString(const Operation &op) {
 	switch (op) {
-	case Memory_allocate: return "Memory_allocate";
-		case Memory_allocateHost: return "Memory_allocateHost";
+		case Memory_allocate: return "Memory_allocate";
+		case Memory_copyHostToDevice: return "Memory_copyHostToDevice";
+		case Memory_copyDeviceToHost: return "Memory_copyDeviceToHost";
+		case Memory_copyDeviceToDevice: return "Memory_copyDeviceToDevice";
+		case Memory_memset: return "Memory_memset";
 		case Memory_free: return "Memory_free";
 		case Device_clearMemory: return "Device_clearMemory";
 		case Device_load: return "Device_load";
 		case Device_unload: return "Device_unload";
-		case Device_getKernel: return "Device_getKernel";
-		case Device_properties: return "Device_properties";
 		case Device_createEvent: return "Device_createEvent";
+		case Device_destroyEvent: return "Device_destroyEvent";
 		case Device_queryEvent: return "Device_queryEvent";
 		case Device_recordEvent: return "Device_recordEvent";
 		case Device_synchronizeEvent: return "Device_synchronizeEvent";
@@ -49,7 +51,6 @@ std::string remote::RemoteDeviceMessage::toString(const Operation &op) {
 		case Device_setStream: return "Device_setStream";
 		case Device_bindTexture: return "Device_bindTexture";
 		case Device_unbindTexture: return "Device_unbindTexture";
-		case Device_getTextureReference: return "Device_getTextureReference";
 		case Device_driverVersion: return "Device_driverVersion";
 		case Device_runtimeVersion: return "Device_runtimeVersion";
 		case Device_launch: return "Device_launch";
@@ -77,6 +78,8 @@ std::ostream &operator<<(std::ostream &out, remote::RemoteDeviceMessage::Header 
 
 remote::RemoteDeviceMessage::RemoteDeviceMessage() {
 	header.operation = Operation_invalid;
+	header.deviceId = -1;
+	header.messageSize = 0;
 }
 
 remote::RemoteDeviceMessage::~RemoteDeviceMessage() {
@@ -88,26 +91,12 @@ remote::RemoteDeviceMessage::~RemoteDeviceMessage() {
 bool remote::RemoteDeviceMessage::send(boost::asio::ip::tcp::socket &socket) {
 	report("OcelotServerConnection::send() - " << header);
 	try {
-		boost::system::error_code error;
-		
-		size_t len = socket.send( boost::asio::buffer((char *)&header, sizeof(header)), 0, error);
-		if (error == boost::asio::error::eof) {
-		  return false; // Connection closed cleanly by peer.
-		}
-		else if (error) {
-			report(" failed to read header");
-		  throw boost::system::system_error(error); // Some other error.
-		}
+		size_t len = boost::asio::write( socket, boost::asio::buffer((char *)&header, sizeof(header)));
+
 		assert(len == sizeof(header));
 		
-		len = socket.send( boost::asio::buffer(message), 0, error);
-		if (error == boost::asio::error::eof) {
-		  return false; // Connection closed cleanly by peer.
-		}
-		else if (error) {
-			report(" failed to read header");
-		  throw boost::system::system_error(error); // Some other error.
-		}
+		len = boost::asio::write( socket, boost::asio::buffer(message));
+
 	}
 	catch (std::exception &exp) {
 		std::cerr << "RemoteDeviceMessage::send() - " << exp.what() << std::endl;
@@ -124,29 +113,15 @@ bool remote::RemoteDeviceMessage::receive(boost::asio::ip::tcp::socket &socket) 
 		boost::array<char, sizeof(RemoteDeviceMessage::Header)> headerBuffer;
 		boost::system::error_code error;
 
-		size_t len = socket.read_some(boost::asio::buffer(headerBuffer), error);
-		if (error == boost::asio::error::eof) {
-		  return false; // Connection closed cleanly by peer.
-		}
-		else if (error) {
-			report(" failed to read header");
-		  throw boost::system::system_error(error); // Some other error.
-		}
+		size_t len = boost::asio::read(socket, boost::asio::buffer(headerBuffer));
+		
 		std::memcpy(&header, headerBuffer.data(), len);
 		
 		report("  header: " << header);
 		
 		resize();
-		len = socket.read_some(boost::asio::buffer(message), error);
-		if (error == boost::asio::error::eof) {
-			if (len != message.size()) {
-				return false;
-			}
-		}
-		else if (error) {
-			report(" failed to read payload");
-		  throw boost::system::system_error(error); // Some other error.
-		}
+		len = boost::asio::read(socket, boost::asio::buffer(message));
+		
 	}
 	catch (std::exception &exp) {
 		std::cerr << "RemoteDeviceMessage::receive() - " << exp.what() << std::endl;

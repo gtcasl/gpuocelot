@@ -449,7 +449,6 @@ nobase_include_HEADERS = ocelot/api/interface/ocelot.h \
 	ocelot/executive/test/sequence.ptx \
 	ocelot/executive/test/kernels.ptx \
 	ocelot/executive/test/TestLLVMKernels.h \
-	ocelot/executive/interface/RemoteDevice.h \
 	ocelot/cuda/interface/CudaRuntime.h \
 	ocelot/cuda/interface/CudaDriver.h \
 	ocelot/cuda/interface/cuda_runtime.h \

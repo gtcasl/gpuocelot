@@ -26,12 +26,24 @@
 namespace ir
 {
 
+	PTXKernel::Prototype::Prototype() {
+		callType = Entry;
+		linkingDirective = Visible;
+	}
 
 	//! 
 	std::string PTXKernel::Prototype::toString(const LinkingDirective ld) {
 		switch (ld) {
 			case Extern: return ".extern";
 			case Visible: return ".visible";
+			default: break;
+		}
+		return "invalid";
+	}
+	std::string PTXKernel::Prototype::toString(const CallType ct) {
+		switch (ct) {
+			case Entry: return ".entry";
+			case Func: return ".func";
 			default: break;
 		}
 		return "invalid";
@@ -47,7 +59,10 @@ namespace ir
 	std::string PTXKernel::Prototype::toString() const {
 		std::stringstream ss;
 		
-		ss << Prototype::toString(linkingDirective) << " .func ";
+		if (callType == Func) {
+			ss << Prototype::toString(linkingDirective) << " ";
+		}
+		ss << Prototype::toString(callType) << " ";
 		if (returnArguments.array.size()) {
 			ss << "(";
 			int n = 0;
@@ -62,7 +77,7 @@ namespace ir
 			ss << ") ";
 		}
 	
-		ss << identifier << "(";
+		ss << identifier << " (";
 		if (arguments.array.size()) {
 			int n = 0;
 			for (PTXOperand::Array::const_iterator op_it = arguments.array.begin();

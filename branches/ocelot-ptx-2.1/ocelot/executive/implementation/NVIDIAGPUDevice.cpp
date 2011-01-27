@@ -46,6 +46,9 @@
 // Print out the full ptx for each module as it is loaded
 #define REPORT_PTX 1
 
+// if 1, adds line numbers to reported PTX
+#define REPORT_PTX_WITH_LINENUMBERS 0
+
 ////////////////////////////////////////////////////////////////////////////////
 
 typedef cuda::CudaDriver driver;
@@ -362,10 +365,14 @@ namespace executive
 		assert(!loaded());
 		std::stringstream stream;
 		
-		ir->writeIR(stream);
-		
+		ir->writeIR(stream);		
+
+#if REPORT_PTX_WITH_LINENUMBERS == 1		
 		reportE(REPORT_PTX, " Binary is:\n" 
 			<< hydrazine::addLineNumbers(stream.str()));
+#else
+		reportE(REPORT_PTX, stream.str());
+#endif
 		
 		CUjit_option options[] = {
 			CU_JIT_TARGET,
@@ -382,12 +389,16 @@ namespace executive
 			(void*)errorLogBuffer, 
 			(void*)errorLogActualSize, 
 		};
+		
+		std::string ptxModule = stream.str();
+
+		
 		CUresult result = driver::cuModuleLoadDataEx(&_handle, 
 			stream.str().c_str(), 3, options, optionValues);
 		
 		if(result != CUDA_SUCCESS)
 		{
-			Throw("Failed to JIT module - " << ir->path() 
+			Throw("cuModuleLoadDataEx() - returned " << result << ". Failed to JIT module - " << ir->path() 
 				<< " using NVIDIA JIT with error:\n" << errorLogBuffer);
 		}
 		
@@ -1496,6 +1507,8 @@ namespace executive
 		
 		for(ArrayMap::iterator array = _arrays.begin(); 
 			array != _arrays.end(); ++array)
+
+
 		{
 			if(array->second != 0) array->second->update();
 		}

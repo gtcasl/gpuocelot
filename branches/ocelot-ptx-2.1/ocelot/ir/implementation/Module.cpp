@@ -22,6 +22,9 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
+// this toggles emitting function prototypes in Module::writeIR()
+#define EMIT_FUNCTION_PROTOTYPES 0
+
 #define REPORT_BASE 0
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -243,21 +246,25 @@ void ir::Module::write( std::ostream& stream ) const {
 
 void ir::Module::writeIR( std::ostream& stream ) const {
 	assert( loaded() );
-	report("Writing module (IR) - " << _modulePath 
-		<< " - to output stream.");
+	report("Writing module (IR) - " << _modulePath << " - to output stream.");
 
 	stream << ".version 2.1\n";
 	stream << ".target sm_20\n";
 
 	stream << "/* Module " << _modulePath << " */\n\n";
 	
+#if EMIT_FUNCTION_PROTOTYPES == 1
 	stream << "/* Function prototypes */\n";
 	for (FunctionPrototypeMap::const_iterator prot_it = _prototypes.begin();
 		prot_it != _prototypes.end(); ++prot_it) {
 		
+		if (prot_it->second.callType != ir::PTXKernel::Prototype::Entry && prot_it->second.identifier != "") {
+			stream << prot_it->second.toString() << "\n";
+		}
 	}
+#endif
 
-	stream << "/* Globals */\n";
+	stream << "\n/* Globals */\n";
 	for (GlobalMap::const_iterator global = _globals.begin(); 
 		global != _globals.end(); ++global) {
 		stream << global->second.statement.toString() << "\n";
@@ -277,6 +284,8 @@ void ir::Module::writeIR( std::ostream& stream ) const {
 		KernelMap::const_iterator kernel = _kernels.find(*kernelName);
 		(kernel->second)->write(stream);
 	}
+	
+	stream << "\n\n";
 }
 
 ir::Texture* ir::Module::getTexture(const std::string& name) {
@@ -364,6 +373,8 @@ void ir::Module::extractPTXKernels() {
 	bool isFunction = false;
 	ir::PTXKernel::Prototype functionPrototype;
 	
+	report("extractPTXKernels()");
+	
 	enum {
 		PS_NoState,
 		PS_ReturnParams,
@@ -374,21 +385,44 @@ void ir::Module::extractPTXKernels() {
 	for (StatementVector::const_iterator it = _statements.begin(); it != _statements.end(); ++it) {
 		const PTXStatement &statement = (*it);
 	
+		report("directive: " << PTXStatement::toString(statement.directive));
+	
 		switch (statement.directive) {
 			case PTXStatement::Entry:	// fallthrough
 			case PTXStatement::Func:
-			{
+			{			
 				// new kernel
 				assert(!inKernel);
 				startIterator = it;
 				inKernel = true;
 				isFunction = statement.directive == PTXStatement::Func;
 				instructionCount = 0;
-				functionPrototype.linkingDirective = 
-					(statement.attribute == PTXStatement::Extern ? 
-						ir::PTXKernel::Prototype::Extern : 
-						ir::PTXKernel::Prototype::Visible);
-				prototypeState = PS_ReturnParams;
+				functionPrototype.arguments.array.clear();
+				functionPrototype.returnArguments.array.clear();
+				
+				if (prototypeState == PS_NoState) {
+					if (!isFunction) {
+						functionPrototype.identifier = statement.name;
+					}
+					functionPrototype.callType = 
+						(isFunction ? 
+							ir::PTXKernel::Prototype::Func : 
+							ir::PTXKernel::Prototype::Entry);
+					functionPrototype.linkingDirective = 
+						(statement.attribute == PTXStatement::Extern ? 
+							ir::PTXKernel::Prototype::Extern : 
+							ir::PTXKernel::Prototype::Visible);
+					prototypeState = PS_Params;
+				}
+			}
+			break;
+			case PTXStatement::FunctionName:
+			{
+				report("  function name: " << statement.name);
+				functionPrototype.identifier = statement.name;
+				functionPrototype.returnArguments = functionPrototype.arguments;
+				functionPrototype.arguments.array.clear();
+				prototypeState = PS_Params;
 			}
 			break;
 			case PTXStatement::EndScope:
@@ -398,13 +432,12 @@ void ir::Module::extractPTXKernels() {
 				inKernel = false;
 				endIterator = ++StatementVector::const_iterator(it);
 				if (instructionCount) {
-								PTXKernel *kernel = new PTXKernel(startIterator, 
-								        endIterator, isFunction);
-								
-								kernel->module = this;
-								_kernels[kernel->name] = (kernel);
+					PTXKernel *kernel = new PTXKernel(startIterator, 
+					        endIterator, isFunction);
+					kernel->module = this;
+					_kernels[kernel->name] = (kernel);
 					_kernelSequence.push_back(kernel->name);
-								kernel->canonicalBlockLabels(kernelInstance++);
+					kernel->canonicalBlockLabels(kernelInstance++);
 				}
 			}
 			break;
@@ -413,8 +446,14 @@ void ir::Module::extractPTXKernels() {
 				assert(inKernel);
 				inKernel = false;
 				isFunction = false;
-				addPrototype(functionPrototype.identifier, functionPrototype);
-				prototypeState = PS_NoState;
+				
+			} // fallthrough
+			case PTXStatement::StartScope:
+			{
+				if (prototypeState != PS_NoState) {
+					addPrototype(functionPrototype.identifier, functionPrototype);
+					prototypeState = PS_NoState;
+				}
 			}
 			break;
 			case PTXStatement::Param:
@@ -494,7 +533,7 @@ void ir::Module::extractPTXKernels() {
 }
 
 void ir::Module::addPrototype(const std::string &identifier, const ir::PTXKernel::Prototype &prototype) {
-	report("adding prototype '" << identifier << "' - " << ir::PTXKernel::Prototype::toString(prototype.linkingDirective));
+	report("adding prototype: " << prototype.toString());
 	_prototypes[identifier] = prototype;
 }
 

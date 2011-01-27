@@ -33,6 +33,12 @@ namespace ir
 			*/
 			class Prototype {
 			public:
+				enum CallType {
+					Entry,
+					Func,
+					CallType_invalid
+				};
+				
 				enum LinkingDirective {
 					Extern,		//!< externally-defined function
 					Visible,	//!< locally defined function visible outside this module
@@ -42,6 +48,9 @@ namespace ir
 			public:
 				//! \brief 
 				static std::string toString(const LinkingDirective ld);
+				static std::string toString(const CallType ct);
+				
+				Prototype();
 				
 				/*!
 					\brief emits a PTX form of the prototype
@@ -56,6 +65,9 @@ namespace ir
 				void clear();
 
 			public:
+			
+				//! \brief indicates .entry or .func
+				CallType callType;
 			
 				//! \brief indicates linking directive of function
 				LinkingDirective linkingDirective;

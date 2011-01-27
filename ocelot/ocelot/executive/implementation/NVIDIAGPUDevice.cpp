@@ -743,8 +743,8 @@ namespace executive
 
 		if(type == HostAllocation || type == AnyAllocation)
 		{
-			for(AllocationMap::const_iterator alloc = _allocations.begin(); 
-				alloc != _allocations.end(); ++alloc)
+			for(AllocationMap::const_iterator alloc = _hostAllocations.begin(); 
+				alloc != _hostAllocations.end(); ++alloc)
 			{
 				if(alloc->second->host())
 				{
@@ -829,7 +829,7 @@ namespace executive
 		size_t size, unsigned int flags)
 	{
 		MemoryAllocation* allocation = new MemoryAllocation(size, flags);
-		_hostAllocations.insert(std::make_pair(allocation->pointer(), 
+		_hostAllocations.insert(std::make_pair(allocation->mappedPointer(), 
 			allocation));
 		return allocation;
 	}
@@ -851,7 +851,7 @@ namespace executive
 		else
 		{
 			allocation = _hostAllocations.find(pointer);
-			if(allocation != _allocations.end())
+			if(allocation != _hostAllocations.end())
 			{
 				delete allocation->second;
 				_hostAllocations.erase(allocation);

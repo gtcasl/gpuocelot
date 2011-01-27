@@ -916,7 +916,7 @@ cudaError_t cuda::CudaRuntime::cudaHostGetDevicePointer(void **pDevice,
 
 	if (allocation != 0) {	
 		if (allocation->host()) {
-			size_t offset = (char*)pHost - (char*)allocation->pointer();
+			size_t offset = (char*)pHost - (char*)allocation->mappedPointer();
 			*pDevice = (char*)allocation->pointer() + offset;
 			result = cudaSuccess;
 		}

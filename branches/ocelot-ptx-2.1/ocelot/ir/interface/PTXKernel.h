@@ -33,6 +33,8 @@ namespace ir
 			*/
 			class Prototype {
 			public:
+				typedef std::vector< ir::Parameter > ArgumentVector;
+			
 				enum CallType {
 					Entry,
 					Func,
@@ -73,13 +75,13 @@ namespace ir
 				LinkingDirective linkingDirective;
 			
 				//! \brief set of return arguments for function
-				PTXOperand returnArguments;
+				ArgumentVector returnArguments;
 				
 				//! \brief name of function
 				std::string identifier;
 				
 				//! \brief arguments for function
-				PTXOperand arguments;
+				ArgumentVector arguments;
 			};
 			
 		public:

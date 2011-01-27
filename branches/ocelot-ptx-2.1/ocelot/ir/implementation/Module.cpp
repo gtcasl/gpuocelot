@@ -23,7 +23,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
 // this toggles emitting function prototypes in Module::writeIR()
-#define EMIT_FUNCTION_PROTOTYPES 0
+#define EMIT_FUNCTION_PROTOTYPES 1
 
 #define REPORT_BASE 0
 
@@ -385,7 +385,9 @@ void ir::Module::extractPTXKernels() {
 	for (StatementVector::const_iterator it = _statements.begin(); it != _statements.end(); ++it) {
 		const PTXStatement &statement = (*it);
 	
-		report("directive: " << PTXStatement::toString(statement.directive));
+		if (statement.directive != PTXStatement::Instr && statement.directive != PTXStatement::Loc) {
+			report("directive: " << PTXStatement::toString(statement.directive));
+		}
 	
 		switch (statement.directive) {
 			case PTXStatement::Entry:	// fallthrough
@@ -397,8 +399,7 @@ void ir::Module::extractPTXKernels() {
 				inKernel = true;
 				isFunction = statement.directive == PTXStatement::Func;
 				instructionCount = 0;
-				functionPrototype.arguments.array.clear();
-				functionPrototype.returnArguments.array.clear();
+				functionPrototype.clear();
 				
 				if (prototypeState == PS_NoState) {
 					if (!isFunction) {
@@ -421,7 +422,7 @@ void ir::Module::extractPTXKernels() {
 				report("  function name: " << statement.name);
 				functionPrototype.identifier = statement.name;
 				functionPrototype.returnArguments = functionPrototype.arguments;
-				functionPrototype.arguments.array.clear();
+				functionPrototype.arguments.clear();
 				prototypeState = PS_Params;
 			}
 			break;
@@ -450,7 +451,7 @@ void ir::Module::extractPTXKernels() {
 			} // fallthrough
 			case PTXStatement::StartScope:
 			{
-				if (prototypeState != PS_NoState) {
+				if (prototypeState != PS_NoState && functionPrototype.callType != ir::PTXKernel::Prototype::Entry) {
 					addPrototype(functionPrototype.identifier, functionPrototype);
 					prototypeState = PS_NoState;
 				}
@@ -458,26 +459,16 @@ void ir::Module::extractPTXKernels() {
 			break;
 			case PTXStatement::Param:
 			{						
-				if (prototypeState == PS_ReturnParams || PS_Params) {
-					ir::PTXOperand op;
-					op.identifier = statement.name;
-					op.type = statement.type;
-					switch (statement.space) {
-						case PTXStatement::ParameterSpace:
-							op.addressMode = PTXOperand::Address;
-							break;
-						case PTXStatement::RegisterSpace:
-							op.addressMode = PTXOperand::Register;
-							break;
-						default:
-							// ???
-							break;
-					}
+				if (prototypeState == PS_ReturnParams || PS_Params) {					
+					// Parameter(const PTXStatement& statement, bool arg, bool isReturn = false)
+					ir::Parameter argument(statement, false);
 					if (prototypeState == PS_ReturnParams) {
-						functionPrototype.returnArguments.array.push_back(op);
+						report("  appending " << argument.name << " to returnArguments");
+						functionPrototype.returnArguments.push_back(argument);
 					}
 					else {
-						functionPrototype.arguments.array.push_back(op);
+						report("  appending " << argument.name << " to arguments");
+						functionPrototype.arguments.push_back(argument);
 					}					
 				}
 				else {

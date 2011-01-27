@@ -50,8 +50,8 @@ namespace ir
 	}
 	
 	void PTXKernel::Prototype::clear() { 
-		returnArguments.array.clear();
-		arguments.array.clear();
+		returnArguments.clear();
+		arguments.clear();
 	}
 	
 	/*!
@@ -63,30 +63,24 @@ namespace ir
 			ss << Prototype::toString(linkingDirective) << " ";
 		}
 		ss << Prototype::toString(callType) << " ";
-		if (returnArguments.array.size()) {
+		if (returnArguments.size()) {
 			ss << "(";
 			int n = 0;
-			for (PTXOperand::Array::const_iterator op_it = returnArguments.array.begin();
-				op_it != returnArguments.array.end(); ++op_it) {
-				
-				ss << (n++ ? ", " : "") 
-					<< (op_it->addressMode == PTXOperand::Register ? ".reg" : ".param")
-					<< " ." << PTXOperand::toString(op_it->type) << " " << op_it->identifier;
-				
+			for (ParameterVector::const_iterator op_it = returnArguments.begin();
+				op_it != returnArguments.end(); ++op_it) {
+			
+				ss << (n++ ? ", " : "") << op_it->toString();	
 			}
 			ss << ") ";
 		}
 	
 		ss << identifier << " (";
-		if (arguments.array.size()) {
+		if (arguments.size()) {
 			int n = 0;
-			for (PTXOperand::Array::const_iterator op_it = arguments.array.begin();
-				op_it != arguments.array.end(); ++op_it) {
-				
-				ss << (n++ ? ", " : "") 
-					<< (op_it->addressMode == PTXOperand::Register ? ".reg" : ".param")
-					<< " ." << PTXOperand::toString(op_it->type) << " " << op_it->identifier;
-				
+			for (ParameterVector::const_iterator op_it = arguments.begin();
+				op_it != arguments.end(); ++op_it) {
+			
+				ss << (n++ ? ", " : "") << op_it->toString();	
 			}
 		}
 		ss << ")";
@@ -101,19 +95,14 @@ namespace ir
 		std::stringstream ss;
 	
 		ss << identifier << "(";
-		
-		for (PTXOperand::Array::const_iterator op_it = arguments.array.begin();
-			op_it != arguments.array.end(); ++op_it) {
-		
-			if (op_it->addressMode == PTXOperand::Register) {
-				ss << ".reg";
+		if (arguments.size()) {
+			int n = 0;
+			for (ParameterVector::const_iterator op_it = arguments.begin();
+				op_it != arguments.end(); ++op_it) {
+			
+				ss << (n++ ? "," : "") << op_it->toString();	
 			}
-			else {
-				ss << ".param";
-			}
-			ss << "." << PTXOperand::toString(op_it->type);
 		}
-		
 		ss << ")";
 	
 		return ss.str();

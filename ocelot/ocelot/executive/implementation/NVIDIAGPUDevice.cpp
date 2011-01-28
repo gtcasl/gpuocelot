@@ -66,7 +66,7 @@ namespace executive
 		_flags(flags), _size(size), _external(false)
 	{
 		// making all memory portable eases context switching
-		_flags |= CU_MEMHOSTALLOC_PORTABLE;
+		_flags |= CU_MEMHOSTALLOC_PORTABLE | CU_MEMHOSTALLOC_DEVICEMAP;
 		
 		checkError(driver::cuMemHostAlloc(&_hostPointer, size, _flags));
 		checkError(driver::cuMemHostGetDevicePointer(&_devicePointer, 

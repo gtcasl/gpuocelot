@@ -34,11 +34,6 @@ namespace translator
 
 		_kernel = static_cast<const executive::ATIExecutableKernel* >(k);
 
-		// do a pass of assignRegisters before translation
-		// we have to const_cast in order to call assignRegisters
-		ir::PTXKernel::assignRegisters(
-				const_cast<ir::ControlFlowGraph& >(*_kernel->cfg()));
-
 		report("Translating kernel " << _kernel->name);
 
 		// translate iterating thru the control tree

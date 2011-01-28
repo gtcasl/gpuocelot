@@ -60,6 +60,9 @@ namespace executive
 				public:
 					/*! \brief This is a map from a global name to pointer */
 					typedef std::unordered_map<std::string, void*> GlobalMap;
+					/*! \brief A map from a kernel name to its translation */
+					typedef std::unordered_map<std::string, 
+						ExecutableKernel*> KernelMap;
 					/*! \brief A vector of memory allocations */
 					typedef std::vector<MemoryAllocation*> AllocationVector;
 
@@ -70,14 +73,21 @@ namespace executive
 					ATIGPUDevice* device;
 					/*! \brief The set of global allocations in the module */
 					GlobalMap globals;
+					/*! \brief The set of translated kernels */
+					KernelMap kernels;
 
 				public:
 					/*! \brief Construct this based on a module */
 					Module(const ir::Module* m = 0, ATIGPUDevice* d = 0);
+					/*! \brief Clean up all translated kernels */
+					virtual ~Module();
 
 				public:
 					/*! \brief Load all of the globals for this module */
 					AllocationVector loadGlobals();
+					/*! \brief Get a specific kernel or 0 */
+					virtual ExecutableKernel* getKernel(
+						const std::string& name);
 			};
 
 		public:
@@ -269,6 +279,8 @@ namespace executive
 			CALdevicestatus _status;
 			/*! \brief CAL Device Attributes */
 			CALdeviceattribs _attribs;
+			/*! \brief CAL Device Info */
+			CALdeviceinfo _info;
 			/*! \brief CAL Context. Multiple contexts per device is 
 				not supported yet */
 			CALcontext _context;

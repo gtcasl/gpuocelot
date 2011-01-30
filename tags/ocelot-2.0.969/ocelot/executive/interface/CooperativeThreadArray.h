@@ -13,6 +13,7 @@
 
 #include <ocelot/executive/interface/CTAContext.h>
 #include <ocelot/executive/interface/ReconvergenceMechanism.h>
+#include <ocelot/executive/interface/EmulatorCallStack.h>
 #include <ocelot/ir/interface/PTXOperand.h>
 #include <ocelot/ir/interface/Kernel.h>
 #include <ocelot/ir/interface/Texture.h>
@@ -25,67 +26,52 @@ namespace executive {
 	/*! Defines state of cooperative thread array */
 	class CooperativeThreadArray {
 	public:
-		typedef std::vector<CTAContext> Stack;
-		typedef std::vector <int> ThreadIdVector;
-		typedef std::vector<ir::PTXU64> RegisterFileType;
-		
-		
-	private:
-	
-		CooperativeThreadArray & operator=(const CooperativeThreadArray &);
+		typedef std::vector<CTABarrier> BarrierVector;
+		typedef std::vector<ir::PTXU64> RegisterFile;
 
 	public:
-		/*!
-			Constructs a cooperative thread array from an EmulatedKernel instance
+		/*! Constructs a cooperative thread array from an EmulatedKernel instance
 
 			\param kernel pointer to EmulatedKernel to which this CTA belongs
+			\param gridDim The dimensions of the kernel
+			\param trace Enable trace generation
 		*/
-		CooperativeThreadArray(const EmulatedKernel *kernel);
+		CooperativeThreadArray(EmulatedKernel *kernel, 
+			const ir::Dim3& gridDim, bool trace);
 
 		CooperativeThreadArray();
 
 		/*! Destroys state associated with CTA */
 		~CooperativeThreadArray();
+		
+		void reset();
 
-		/*!
-			Returns CTA to initial state
-		*/
-		void initialize(ir::Dim3 grid = ir::Dim3(0,0,0), bool trace = false);
-
-		/*!
-			Initializes the CTA and executes the kernel for a given block
-		*/
+		/*! Initializes the CTA and executes the kernel for a given block */
 		void execute(const ir::Dim3& block);
 		
 		/*! Jump to a specific PC for the current context */
 		void jumpToPC(int PC);
 
 		/* Get a snapshot of the current register file */
-		RegisterFileType getCurrentRegisterFile() const;
+		RegisterFile getCurrentRegisterFile() const;
 
-		/*!
-			Overwrites member pointers to allocated memory with zero so 
-			that ~CooperativeThreadArray()
-			
-			does not attempt to delete them.
-		*/
-		void clear();
+		/*! gets the active context of the cooperative thread array */
+		CTAContext& getActiveContext();
 		
-		/*!
-			gets the active context of the cooperative thread array
-		*/
-		CTAContext & getActiveContext();
-
-	public:
+	protected:
 	
-		/*!
-			Dimensions of the kernel
-		*/
-		ir::Dim3 gridDim;
+		/*! initializes elements of the CTA */
+		void initialize(const ir::Dim3 & block);
+		
+		/*! finishes execution of the CTA */
+		void finalize();
 
 	public:
 		/*! Dimensions of the cooperative thread array */
 		ir::Dim3 blockDim;
+
+        /*! Dimensions of the kernel */
+        ir::Dim3 gridDim;
 
 		/*!
 			Number of threads in CTA 
@@ -94,40 +80,16 @@ namespace executive {
 		int threadCount;
 
 		/*! Pointer to EmulatedKernel instance that this CTA is executing */
-		const EmulatedKernel *kernel;
+		EmulatedKernel *kernel;
 
 		/*! ID of block implemented by this CooperativeThreadArray instance */
 		ir::Dim3 blockId;
 
-		/*!
-			Row-major matrix of registers; 
-				each row corresponds to an alloated register
-		*/
-		ir::PTXU64 *RegisterFile;
-
-		/*!
-			Number of elements in RegisterFile between successive registers 
-			in a thread
-		*/
-		int RegisterFilePitch;
-
-		/*!
-			CC register
-		*/
-		ir::PTXOperand::RegisterType CC_register;
-
-		/*!
-			Pointer to byte-addressable shared memory
-		*/
-		char *SharedMemory;
+		/*! Function call stack */
+		EmulatorCallStack functionCallStack;
 		
-		/*! \brief The last writer for each byte in shared memory */
-		ThreadIdVector sharedMemoryWriters;
-
-		/*!
-			Pointer to byte-addressable local memory
-		*/
-		char *LocalMemory;
+		/*! Vector of named barriers */
+		BarrierVector barriers;
 
 		/*! \brief abstraction for reconvergence mechanism */
 		ReconvergenceMechanism *reconvergenceMechanism;
@@ -151,8 +113,9 @@ namespace executive {
 		const ir::PTXInstruction& currentInstruction(CTAContext& context);
 
 		/*! Gets special value */
-		ir::PTXU32 getSpecialValue( const int threadId,
-			const ir::PTXOperand::SpecialRegister ) const;
+		ir::PTXU32 getSpecialValue(const int threadId,
+			const ir::PTXOperand::SpecialRegister,
+			const ir::PTXOperand::VectorIndex) const;
 		
 	protected:
 		// execution helper functions
@@ -464,16 +427,26 @@ namespace executive {
 		void eval_And(CTAContext &context, const ir::PTXInstruction &instr);
 		void eval_Atom(CTAContext &context, const ir::PTXInstruction &instr);
 		void eval_Bar(CTAContext &context, const ir::PTXInstruction &instr);
+		void eval_Bfi(CTAContext &context, const ir::PTXInstruction &instr);
+		void eval_Bfind(CTAContext &context, const ir::PTXInstruction &instr);
+		void eval_Bfe(CTAContext &context, const ir::PTXInstruction &instr);
 		void eval_Bra(CTAContext &context, const ir::PTXInstruction &instr);
+		void eval_Brev(CTAContext &context, const ir::PTXInstruction &instr);
 		void eval_Brkpt(CTAContext &context, const ir::PTXInstruction &instr);
 		void eval_Call(CTAContext &context, const ir::PTXInstruction &instr);
+		void eval_Clz(CTAContext &context, const ir::PTXInstruction &instr);
 		void eval_CNot(CTAContext &context, const ir::PTXInstruction &instr);
+		void eval_CopySign(CTAContext &context, const ir::PTXInstruction &instr);
 		void eval_Cos(CTAContext &context, const ir::PTXInstruction &instr);
 		void eval_Cvt(CTAContext &context, const ir::PTXInstruction &instr);
+		void eval_Cvta(CTAContext &context, const ir::PTXInstruction &instr);
 		void eval_Div(CTAContext &context, const ir::PTXInstruction &instr);
 		void eval_Ex2(CTAContext &context, const ir::PTXInstruction &instr);
 		void eval_Exit(CTAContext &context, const ir::PTXInstruction &instr);
+		void eval_Fma(CTAContext &context, const ir::PTXInstruction &instr);
+		void eval_Isspacep(CTAContext &context, const ir::PTXInstruction &instr);
 		void eval_Ld(CTAContext &context, const ir::PTXInstruction &instr);
+		void eval_Ldu(CTAContext &context, const ir::PTXInstruction &instr);
 		void eval_Lg2(CTAContext &context, const ir::PTXInstruction &instr);
 		void eval_Mad24(CTAContext &context, const ir::PTXInstruction &instr);
 		void eval_Mad(CTAContext &context, const ir::PTXInstruction &instr);
@@ -487,6 +460,8 @@ namespace executive {
 		void eval_Not(CTAContext &context, const ir::PTXInstruction &instr);
 		void eval_Or(CTAContext &context, const ir::PTXInstruction &instr);
 		void eval_Pmevent(CTAContext &context, const ir::PTXInstruction &instr);
+		void eval_Popc(CTAContext &context, const ir::PTXInstruction &instr);
+		void eval_Prmt(CTAContext &context, const ir::PTXInstruction &instr);
 		void eval_Rcp(CTAContext &context, const ir::PTXInstruction &instr);
 		void eval_Red(CTAContext &context, const ir::PTXInstruction &instr);
 		void eval_Rem(CTAContext &context, const ir::PTXInstruction &instr);		
@@ -503,9 +478,15 @@ namespace executive {
 		void eval_Sqrt(CTAContext &context, const ir::PTXInstruction &instr);		
 		void eval_St(CTAContext &context, const ir::PTXInstruction &instr);		
 		void eval_Sub(CTAContext &context, const ir::PTXInstruction &instr);	
-		void eval_SubC(CTAContext &context, const ir::PTXInstruction &instr);		
-		void eval_Tex(CTAContext &context, const ir::PTXInstruction &instr);		
-		void eval_Trap(CTAContext &context, const ir::PTXInstruction &instr);		
+		void eval_SubC(CTAContext &context, const ir::PTXInstruction &instr);
+		void eval_Suld(CTAContext &context, const ir::PTXInstruction &instr);
+		void eval_Sured(CTAContext &context, const ir::PTXInstruction &instr);
+		void eval_Sust(CTAContext &context, const ir::PTXInstruction &instr);
+		void eval_Suq(CTAContext &context, const ir::PTXInstruction &instr);
+		void eval_TestP(CTAContext &context, const ir::PTXInstruction &instr);
+		void eval_Tex(CTAContext &context, const ir::PTXInstruction &instr);
+		void eval_Trap(CTAContext &context, const ir::PTXInstruction &instr);
+		void eval_Txq(CTAContext &context, const ir::PTXInstruction &instr);
 		void eval_Vote(CTAContext &context, const ir::PTXInstruction &instr);		
 		void eval_Xor(CTAContext &context, const ir::PTXInstruction &instr);		
 		void eval_Reconverge(CTAContext &context, const ir::PTXInstruction &instr);	
@@ -522,6 +503,11 @@ namespace executive {
 			const ir::PTXInstruction &instr);
 		void eval_Mov_addr(CTAContext &context,
 			const ir::PTXInstruction &instr);
+		void eval_Mov_func(CTAContext &context,
+			const ir::PTXInstruction &instr);
+
+		void copyArgument(unsigned int offset, const ir::PTXOperand& s, 
+			CTAContext& context);
 
 	};
 

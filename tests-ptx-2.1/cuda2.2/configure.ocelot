@@ -32,8 +32,10 @@
 		runtimeApiTrace: "trace/CudaAPI.trace"
 	},
 	executive: {
-		devices: [ llvm ],
+		devices: [ remote, llvm, nvidia, emulated ],
 		optimizationLevel: none,
+		port: 2011,
+		host: "127.0.0.1",
 		workerThreadLimit: 1,
 		warpSize: 4
 		

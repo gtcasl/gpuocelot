@@ -25,17 +25,24 @@ namespace ir
 				And,
 				Break,
 				Cmov_Logical,
+				Div,
 				Else,
 				End,
 				EndIf,
 				EndLoop,
+				Eq,
+				Exp_Vec,
 				Fence,
+				FtoU,
 				Iadd,
 				Iand,
 				Ieq,
+				IfLogicalNZ,
 				IfLogicalZ,
 				Ige,
 				Ilt,
+				Imax,
+				Imin,
 				Imul,
 				Ine,
 				Inegate,
@@ -43,6 +50,7 @@ namespace ir
 				Ior,
 				Ishl,
 				Ishr,
+				ItoF,
 				Ixor,
 				Lds_And_Resource,
 				Lds_Load_Id,
@@ -50,11 +58,14 @@ namespace ir
 				Lds_Read_Add_Resource,
 				Lds_Store_Id,
 				Log_Vec,
+				Lt,
 				Mad,
 				Mov,
 				Mul,
 				Rcp,
+				Round_Nearest,
 				Sub,
+				Sqrt_Vec,
 				Uav_Arena_Load_Id,
 				Uav_Arena_Store_Id,
 				Uav_Raw_Load_Id,
@@ -65,7 +76,9 @@ namespace ir
 				Uav_Read_Xchg_Id,
 				Udiv,
 				Umul,
+				Umul24,
 				Ushr,
+				UtoF,
 				WhileLoop,
 				InvalidOpcode
 			};
@@ -77,13 +90,31 @@ namespace ir
 				Dword
 			};
 
+			enum Modifier
+			{
+				NoModifier = 0,
+				x2 = 1,         // shift scale left by 2
+				x4 = 2,         // shift scale left by 4
+				x8 = 4,         // shift scale left by 8
+				d2 = 8,         // shift scale right by 2
+				d4 = 16,        // shift scale right by 4
+				d8 = 32,        // shift scale right by 8
+				sat = 64,       // saturate to [0,1]
+				InvalidModifier = 0xFF80
+			};
+
 			/*! \brief The opcode of the instruction */
 			const Opcode opcode;
+
+			/*! \brief The instruction modifier */
+			unsigned int modifier;
 
 			/*! \brief Convert an opcode to a string parsable by IL */
 			static std::string toString(Opcode o);
 			/*! \brief Convert a datatype to a string parsable by IL */
 			static std::string toString(DataType d);
+			/*! \brief Convert a modifier to a string parsable by IL */
+			static std::string modifierString(unsigned int m);
 
 			/*! \brief Default constructor */
 			ILInstruction(Opcode op = InvalidOpcode);
@@ -217,6 +248,15 @@ namespace ir
 			Instruction *clone(bool copy=true) const;
 	};
 
+	class ILDiv : public ILBinaryInstruction
+	{
+		public:
+			/*! \brief Default constructor */
+			ILDiv();
+
+			Instruction *clone(bool copy=true) const;
+	};
+
 	class ILElse : public ILInstruction
 	{
 		public:
@@ -261,6 +301,24 @@ namespace ir
 			Instruction *clone(bool copy=true) const;
 	};
 
+	class ILEq : public ILBinaryInstruction
+	{
+		public:
+			/*! \brief Default constructor */
+			ILEq();
+
+			Instruction *clone(bool copy=true) const;
+	};
+
+	class ILExp_Vec: public ILUnaryInstruction
+	{
+		public:
+			/*! \brief Default constructor */
+			ILExp_Vec();
+
+			Instruction *clone(bool copy=true) const;
+	};
+
 	class ILFence: public ILInstruction
 	{
 		public:
@@ -271,6 +329,8 @@ namespace ir
 			void threads(bool value = true);
 			/*! \brief Set/unset lds flag */
 			void lds(bool value = true);
+			/*! \brief Set/unset memory flag */
+			void memory(bool value = true);
 
 			std::string toString() const;
 			std::string valid() const;
@@ -278,7 +338,16 @@ namespace ir
 
 		private:
 			/*! \brief threads,lds flags */
-			bool _threads, _lds;
+			bool _threads, _lds, _memory;
+	};
+
+	class ILFtoU: public ILUnaryInstruction
+	{
+		public:
+			/*! \brief Default constructor */
+			ILFtoU();
+
+			Instruction *clone(bool copy=true) const;
 	};
 
 	class ILIadd : public ILBinaryInstruction
@@ -305,6 +374,20 @@ namespace ir
 			/*! \brief Default constructor */
 			ILIeq();
 
+			Instruction *clone(bool copy=true) const;
+	};
+
+	class ILIfLogicalNZ : public ILInstruction
+	{
+		public:
+			/*! \brief The first source operand */
+			ILOperand a;
+
+			/*! \brief Default constructor */
+			ILIfLogicalNZ();
+
+			std::string toString() const;
+			std::string valid() const;
 			Instruction *clone(bool copy=true) const;
 	};
 
@@ -336,6 +419,24 @@ namespace ir
 		public:
 			/*! \brief Default constructor */
 			ILIlt();
+
+			Instruction *clone(bool copy=true) const;
+	};
+
+	class ILImax : public ILBinaryInstruction
+	{
+		public:
+			/*! \brief Default constructor */
+			ILImax();
+
+			Instruction *clone(bool copy=true) const;
+	};
+
+	class ILImin : public ILBinaryInstruction
+	{
+		public:
+			/*! \brief Default constructor */
+			ILImin();
 
 			Instruction *clone(bool copy=true) const;
 	};
@@ -399,6 +500,15 @@ namespace ir
 		public:
 			/*! \brief Default constructor */
 			ILIshr();
+
+			Instruction *clone(bool copy=true) const;
+	};
+
+	class ILItoF: public ILUnaryInstruction
+	{
+		public:
+			/*! \brief Default constructor */
+			ILItoF();
 
 			Instruction *clone(bool copy=true) const;
 	};
@@ -470,6 +580,15 @@ namespace ir
 			Instruction *clone(bool copy=true) const;
 	};
 
+	class ILLt : public ILBinaryInstruction
+	{
+		public:
+			/*! \brief Default constructor */
+			ILLt();
+
+			Instruction *clone(bool copy=true) const;
+	};
+
 	class ILMad : public ILTrinaryInstruction
 	{
 		public:
@@ -506,11 +625,29 @@ namespace ir
 			Instruction *clone(bool copy=true) const;
 	};
 
+	class ILRound_Nearest : public ILUnaryInstruction
+	{
+		public:
+			/*! \brief Default constructor */
+			ILRound_Nearest();
+
+			Instruction *clone(bool copy=true) const;
+	};
+
 	class ILSub : public ILBinaryInstruction
 	{
 		public:
 			/*! \brief Default constructor */
 			ILSub();
+
+			Instruction *clone(bool copy=true) const;
+	};
+
+	class ILSqrt_Vec: public ILUnaryInstruction
+	{
+		public:
+			/*! \brief Default constructor */
+			ILSqrt_Vec();
 
 			Instruction *clone(bool copy=true) const;
 	};
@@ -611,11 +748,29 @@ namespace ir
 			Instruction *clone(bool copy=true) const;
 	};
 
+	class ILUmul24 : public ILBinaryInstruction
+	{
+		public:
+			/*! \brief Default constructor */
+			ILUmul24();
+
+			Instruction *clone(bool copy=true) const;
+	};
+
 	class ILUshr : public ILBinaryInstruction
 	{
 		public:
 			/*! \brief Default constructor */
 			ILUshr();
+
+			Instruction *clone(bool copy=true) const;
+	};
+
+	class ILUtoF: public ILUnaryInstruction
+	{
+		public:
+			/*! \brief Default constructor */
+			ILUtoF();
 
 			Instruction *clone(bool copy=true) const;
 	};

@@ -203,6 +203,10 @@ namespace analysis {
 
     // deleteUnreachableNode - delete nodes that is no longer reachable from the entry
     void deleteUnreachableNodes(NodeSetTy &N, NodeTy *entry);
+
+    ////Interface to PTXToILTranslator
+    ///*! \brief Returns a pointer to the root node of the control tree */
+    const NodeTy* get_root_node() const;
   };
 }
 

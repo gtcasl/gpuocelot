@@ -20,7 +20,7 @@ namespace executive
 			/*! \brief Constructor */
 			ATIExecutableKernel(ir::Kernel &k, CALcontext *context, 
 					CALevent *event, CALresource *uav0, CALresource *cb0, 
-					CALresource *cb1);
+					CALresource *cb1, Device* d);
 
 			/*!	\brief Launch a kernel on a 2D grid */
 			void launchGrid(int width, int height);
@@ -29,7 +29,7 @@ namespace executive
 			void setKernelShape(int x, int y, int z);
 
 			/*! \brief Changes the amount of external shared memory */
-			void setExternSharedMemorySize(unsigned int);
+			void setExternSharedMemorySize(unsigned int bytes);
 
 			/*! \brief Sets the max number of pthreads this kernel can use */
 			void setWorkerThreads(unsigned int workerThreadLimit);
@@ -49,8 +49,16 @@ namespace executive
 			/*!	\brief removes a trace generator from an EmulatedKernel */
 			void removeTraceGenerator(trace::TraceGenerator* generator);
 
-			/*! \brief Allocate shared memory */
-			void allocateSharedMemory();
+			/*! \brief Initialize shared memory */
+			void initializeSharedMemory();
+
+			/*! \brief Copies data from global objects into const and global
+			 * memory */
+			void updateGlobals();
+
+		protected:
+			/*! \brief Maps identifiers to const memory allocations */
+			void initializeGlobalMemory();
 
 		private:
 			/*! \brief Determine the padding required to satisfy alignment */
@@ -85,8 +93,8 @@ namespace executive
 			CALmem _uav0Mem;
 			/*! \brief CAL uav0 module name */
 			CALname _uav0Name;
-			/*! \brief CAL uav1 module name (for less-than-32bits memory ops) */
-			CALname _uav1Name;
+			/*! \brief CAL uav8 module name (for less-than-32bits memory ops) */
+			CALname _uav8Name;
 			//@}
 
 			/********************************************************//**

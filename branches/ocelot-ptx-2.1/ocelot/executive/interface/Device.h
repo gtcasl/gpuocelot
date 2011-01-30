@@ -36,6 +36,7 @@ namespace executive
 					int addressSpace;
 					/*! human-readable device name */
 					char name[256];
+
 					/*! number of bytes of global memory available to
 						the device */
 					size_t totalMemory;

@@ -113,6 +113,7 @@ libocelot_la_SOURCES = \
 	ocelot/executive/implementation/NVIDIAExecutableKernel.cpp \
 	ocelot/executive/implementation/ATIExecutableKernel.cpp \
 	ocelot/executive/implementation/RuntimeException.cpp \
+	ocelot/executive/implementation/ReconvergenceMechanism.cpp \
 	ocelot/executive/implementation/CooperativeThreadArray.cpp \
 	ocelot/executive/implementation/LLVMExecutableKernel.cpp \
 	ocelot/executive/implementation/LLVMModuleManager.cpp \
@@ -534,7 +535,7 @@ nobase_include_HEADERS = ocelot/api/interface/ocelot.h \
 	hydrazine/interface/Thread.hpp \
 	hydrazine/interface/Version.h \
 	hydrazine/python/RunRegression.py \
-	regression/ocelotRegressionTests.txt 
+	regression/ocelotRegressionTests.txt
 
 ################################################################################
 

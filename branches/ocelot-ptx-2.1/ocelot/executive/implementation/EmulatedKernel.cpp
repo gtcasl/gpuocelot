@@ -35,8 +35,17 @@
 
 #define REPORT_BASE 0
 
-#define REPORT_KERNEL_INSTRUCTIONS 1
-#define REPORT_LAUNCH_CONFIGURATION 1
+#define REPORT_KERNEL_INSTRUCTIONS 0
+#define REPORT_LAUNCH_CONFIGURATION 0
+#define REPORT_THREAD_FRONTIERS 1
+
+#define IPDOM_RECONVERGENCE 1
+#define BARRIER_RECONVERGENCE 2
+#define GEN6_RECONVERGENCE 3
+#define SORTED_PREDICATE_STACK_RECONVERGENCE 4
+
+// specify reconvergence mechanism here
+#define RECONVERGENCE_MECHANISM IPDOM_RECONVERGENCE
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -102,7 +111,7 @@ void executive::EmulatedKernel::launchGrid(int width, int height) {
 	report("  max threads: " << maxThreadsPerBlock() << " threads per block");
 	report("  registers: " << registerCount() << " registers");
 	report("  grid: " << gridDim().x << ", " << gridDim().y << ", " << gridDim().z);
-	report("  blockDim: " << blockDim().x << ", " << blockDim().y << ", " << blockDim().z);
+	report("  block: " << blockDim().x << ", " << blockDim().y << ", " << blockDim().z);
 #endif
 
 	CooperativeThreadArray cta(this, gridDim(), !_generators.empty());
@@ -188,18 +197,23 @@ void executive::EmulatedKernel::constructInstructionSequence() {
 	functionEntryPoints.insert(std::make_pair(name, 0));
 
 	// visit basic blocks and add reconverge instructions
-	ir::ControlFlowGraph::BlockPointerVector bb_sequence = cfg()->executable_sequence();
-		
+	ir::ControlFlowGraph::BlockPointerVector
+		bb_sequence = cfg()->executable_sequence();
+	
 	InstructionMap reconvergeTargets;
 	ReconvergeToBlockMap reconvergeSources;
+	
+	threadFrontiers.clear();
 	
 	report(" Adding reconverge instructions");
 	// Create reconverge instructions
 	for (ir::ControlFlowGraph::pointer_iterator bb_it = bb_sequence.begin(); 
 		bb_it != bb_sequence.end(); ++bb_it) {
+#if RECONVERGENCE_MECHANISM == IPDOM_RECONVERGENCE
 		ir::ControlFlowGraph::InstructionList::iterator 
 			i_it = (*bb_it)->instructions.begin();
 		for (; i_it != (*bb_it)->instructions.end(); ++i_it) {
+
 			ir::PTXInstruction &ptx_instr = static_cast<
 				ir::PTXInstruction&>(**i_it);
 			if (ptx_instr.opcode == ir::PTXInstruction::Bra && !ptx_instr.uni) {
@@ -240,6 +254,14 @@ void executive::EmulatedKernel::constructInstructionSequence() {
 				}
 			}
 		}
+		
+#elif RECONVERGENCE_MECHANISM == SORTED_PREDICATE_STACK_RECONVERGENCE
+		// every basic block with multiple predecessors gets a reconverge instruction
+		if ((*bb_it)->predecessors.size() > 1) {
+			report("inserted reconverge into " << (*bb_it)->label);
+			(*bb_it)->instructions.push_back(ir::PTXInstruction(ir::PTXInstruction::Reconverge).clone());
+		}
+#endif
 	}
 
 	InstructionIdMap ids;
@@ -250,6 +272,7 @@ void executive::EmulatedKernel::constructInstructionSequence() {
 		bb_it != bb_sequence.end(); ++bb_it) {
 		branchTargetsToBlock[(int)instructions.size()] = (*bb_it)->label;
 		int n = 0;
+		blockPCRange[(*bb_it)->label].first = (int)instructions.size();
 		for (ir::ControlFlowGraph::InstructionList::iterator 
 			i_it = (*bb_it)->instructions.begin(); 
 			i_it != (*bb_it)->instructions.end(); ++i_it, ++n) {
@@ -262,26 +285,44 @@ void executive::EmulatedKernel::constructInstructionSequence() {
 #if REPORT_KERNEL_INSTRUCTIONS
 			report("  pc " << ptx.pc << ": " << ptx.toString() );
 #endif
-			lastPC = instructions.size();
+			lastPC = ptx.pc;
 			if (!n) { basicBlockPC[ptx.pc] = (*bb_it)->label; }
 			instructions.push_back(ptx);
 		}
+		blockPCRange[(*bb_it)->label].second = (int)lastPC;
+		
+		report("  blockPCRange[" << (*bb_it)->label << "] = " << lastPC);
+		
+		// trivial TF
+		threadFrontiers[(int)lastPC] = std::make_pair<int,int>((int)lastPC+1, (int)lastPC+1);
 
 		if (n) {
 			basicBlockMap[lastPC] = (*bb_it)->label;
 		}
 	}
 
-	report( " Updating branch targets and reconverge points" );
+
+	std::set< int > targets;	// set of branch targets
+
+	report( "\n\n    Updating branch targets and reconverge points" );
 	unsigned int id = 0;
 	for (ir::ControlFlowGraph::pointer_iterator bb_it = bb_sequence.begin();
 		bb_it != bb_sequence.end(); ++bb_it) {
 		for (ir::ControlFlowGraph::InstructionList::iterator 
 			i_it = (*bb_it)->instructions.begin(); 
 			i_it != (*bb_it)->instructions.end(); ++i_it, ++id) {
-			ir::PTXInstruction& ptx = static_cast<ir::PTXInstruction&>(**i_it);
+			ir::PTXInstruction& ptx = static_cast<ir::PTXInstruction&>(**i_it);				
+			
+			// thread frontier algorithm
+			std::pair<int,int> blockRange = blockPCRange[(*bb_it)->label];
+			std::set< int >::iterator target_it = targets.find(blockRange.first);
+			if (target_it != targets.end()) {
+				targets.erase(target_it);
+			}
+				
 			if (ptx.opcode == ir::PTXInstruction::Bra) {
-				report( "  Instruction " << ptx.toString() );
+#if RECONVERGENCE_MECHANISM == IPDOM_RECONVERGENCE
+				//report( "  Instruction " << ptx.toString() );
 				if (!ptx.uni) {
 					InstructionMap::iterator 
 						reconverge = reconvergeTargets.find(i_it);
@@ -290,14 +331,32 @@ void executive::EmulatedKernel::constructInstructionSequence() {
 						target = ids.find(reconverge->second);
 					assert(target != ids.end());
 					instructions[id].reconvergeInstruction = target->second;
-					report("   reconverge at " << target->second);
+					//report("   reconverge at " << target->second);
 				}
+#endif
 				
 				InstructionIdMap::iterator branch = ids.find(
 					(*bb_it)->get_branch_edge()->tail->instructions.begin());
 				assert(branch != ids.end());
 				instructions[id].branchTargetInstruction = branch->second;
-				report("   target at " << branch->second);
+				//report("   target at " << branch->second);
+
+				int successors[2] = { instructions[id].branchTargetInstruction, blockPCRange[(*bb_it)->label].second + 1 };
+				
+				if (targets.size()) {
+					threadFrontiers[blockRange.second].first = *std::min_element(targets.begin(), targets.end()) ; // min of targets
+					threadFrontiers[blockRange.second].second = *std::max_element(targets.begin(), targets.end()) ; // max of targets
+#if REPORT_THREAD_FRONTIERS == 1
+					report("  frontier: " << threadFrontiers[blockRange.second].first << " - "
+						<< threadFrontiers[blockRange.second].second << "\n");
+#endif
+				}
+				
+				for (int i = 0; i < 2; i++) {
+					if (successors[i] > blockRange.first) {
+						targets.insert(successors[i]);
+					}
+				}
 			}
 		}
 	}
@@ -311,36 +370,37 @@ void executive::EmulatedKernel::constructInstructionSequence() {
 	Data movement instructions: ld, st
 */
 void executive::EmulatedKernel::updateParamReferences() {
-	using namespace std;
-	for (PTXInstructionVector::iterator 
-		i_it = instructions.begin();
-		i_it != instructions.end(); ++i_it) {
-		ir::PTXInstruction& instr = *i_it;
-		if (instr.addressSpace == ir::PTXInstruction::Param) {
-			if (instr.opcode == ir::PTXInstruction::Ld 
-				&& instr.a.addressMode == ir::PTXOperand::Address) {
-				ir::Parameter &param = *getParameter(instr.a.identifier);
-				instr.a.isArgument = param.isArgument() && !function();
-				report("For instruction '" << instr.toString() 
-					<< "' setting source parameter '" << instr.a.toString() 
-					<< "' offset to " << param.offset << " " 
-					<< ( instr.a.isArgument ? "(argument)" : "" ) );
-				instr.a.offset += param.offset;
-				instr.a.imm_uint = 0;
-			}
-			else if (instr.opcode == ir::PTXInstruction::St
-				&& instr.d.addressMode == ir::PTXOperand::Address) {
-				ir::Parameter &param = *getParameter(instr.d.identifier);
-				instr.d.isArgument = param.isArgument() && !function();
-				report("For instruction '" << instr.toString() 
-					<< "' setting destination parameter '" << instr.d.toString() 
-					<< "' offset to " << param.offset << " " 
-					<< ( instr.d.isArgument ? "(argument)" : "" ) );
-				instr.d.offset += param.offset;
-				instr.d.imm_uint = 0;
-			}
-		}
-	}
+    using namespace std;
+    for (PTXInstructionVector::iterator 
+        i_it = instructions.begin();
+        i_it != instructions.end(); ++i_it) {
+        ir::PTXInstruction& instr = *i_it;
+        if (instr.addressSpace == ir::PTXInstruction::Param) {
+            if (instr.opcode == ir::PTXInstruction::Ld 
+                && instr.a.addressMode == ir::PTXOperand::Address) {
+                ir::Parameter &param = *getParameter(instr.a.identifier);
+                instr.a.isArgument = param.isArgument() && !function();
+                report("For instruction '" << instr.toString() 
+                    << "' setting source parameter '" << instr.a.toString() 
+                    << "' offset to " << param.offset << " " 
+                    << ( instr.a.isArgument ? "(argument)" : "" ) );
+                instr.a.offset += param.offset;
+                instr.a.imm_uint = 0;
+            }
+            else if (instr.opcode == ir::PTXInstruction::St
+                && instr.d.addressMode == ir::PTXOperand::Address) {
+                ir::Parameter &param = *getParameter(instr.d.identifier);
+                instr.d.isArgument = param.isArgument() && !function();
+                report("For instruction '" << instr.toString() 
+                    << "' setting destination parameter '" << instr.d.toString() 
+                    << "' offset to " << param.offset << " " 
+                    << ( instr.d.isArgument ? "(argument)" : "" ) );
+                instr.d.offset += param.offset;
+                instr.d.imm_uint = 0;
+            }
+        }
+    }
+
 }
 
 void executive::EmulatedKernel::initializeArgumentMemory() {
@@ -356,13 +416,15 @@ void executive::EmulatedKernel::initializeArgumentMemory() {
 			- ( _argumentMemorySize % argument.getAlignment() );
 		padding = (argument.getAlignment() == padding) ? 0 : padding;
 		
-		report("  offset: " << _argumentMemorySize << ", alignment: " << argument.getAlignment() << ", padding: " << padding);
+		report("  offset: " << _argumentMemorySize << ", alignment: "
+			<< argument.getAlignment() << ", padding: " << padding);
 		_argumentMemorySize += padding;
 		argument.offset = _argumentMemorySize;
 		
 		report( " Initializing memory for argument " << argument.name 
 			<< " of size " << argument.getSize() << " at offset "
-			<< argument.offset << " with " << padding << " bytes padding from previous element" );
+			<< argument.offset << " with " << padding
+			<< " bytes padding from previous element" );
 			
 		_argumentMemorySize += argument.getSize();
 	}
@@ -535,7 +597,10 @@ void executive::EmulatedKernel::initializeSharedMemory() {
 
 		// look for mov and ld/st instructions
 		if (instr.opcode == ir::PTXInstruction::Mov
-			|| instr.opcode == ir::PTXInstruction::Cvta) {
+			|| instr.opcode == ir::PTXInstruction::Cvta
+			|| instr.opcode == ir::PTXInstruction::Ld 
+			|| instr.opcode == ir::PTXInstruction::St
+			|| instr.opcode == ir::PTXInstruction::Atom) {
 			for (int n = 0; n < 4; n++) {
 				if ((instr.*operands[n]).addressMode 
 					== ir::PTXOperand::Address) {
@@ -572,44 +637,6 @@ void executive::EmulatedKernel::initializeSharedMemory() {
 					}
 				}
 			}
-		}
-		else if (instr.opcode == ir::PTXInstruction::Ld 
-			|| instr.opcode == ir::PTXInstruction::St) {
-			for (int n = 0; n < 4; n++) {
-				if ((instr.*operands[n]).addressMode 
-					== ir::PTXOperand::Address) {
-					StringSet::iterator si = external.find(
-						(instr.*operands[n]).identifier);
-					if (si != external.end()) {
-						externalOperands.push_back(&(instr.*operands[n]));
-						continue;
-					}
-					
-					GlobalMap::iterator gi = sharedGlobals.find(
-							(instr.*operands[n]).identifier);
-					if (gi != sharedGlobals.end()) {
-						ir::Module::GlobalMap::const_iterator it = gi->second;
-						sharedGlobals.erase(gi);
-						unsigned int offset;
-
-						report("Found global shared variable " 
-							<< it->second.statement.name);
-						_computeOffset(it->second.statement, 
-							offset, sharedOffset);						
-						label_map[it->second.statement.name] = offset;
-					}
-					
-					Map::iterator l_it 
-						= label_map.find((instr.*operands[n]).identifier);
-					if (label_map.end() != l_it) {
-						report("For instruction " << instr.toString() 
-							<< ", mapping shared label " << l_it->first 
-							<< " to " << l_it->second );
-						(instr.*operands[n]).type = ir::PTXOperand::u64;
-						(instr.*operands[n]).imm_uint = l_it->second;
-					}
-				}
-			}			
 		}
 	}
 	
@@ -685,7 +712,9 @@ void executive::EmulatedKernel::initializeLocalMemory() {
 		ir::PTXInstruction &instr = *i_it;
 
 		// look for mov and ld/st instructions
-		if (instr.opcode == ir::PTXInstruction::Mov) {
+		if (instr.opcode == ir::PTXInstruction::Mov
+			|| instr.opcode == ir::PTXInstruction::Ld 
+			|| instr.opcode == ir::PTXInstruction::St) {
 			for (int n = 0; n < 4; n++) {
 				if ((instr.*operands[n]).addressMode 
 					== ir::PTXOperand::Address) {
@@ -700,23 +729,6 @@ void executive::EmulatedKernel::initializeLocalMemory() {
 					}
 				}
 			}
-		}
-		else if (instr.opcode == ir::PTXInstruction::Ld 
-			|| instr.opcode == ir::PTXInstruction::St) {
-			for (int n = 0; n < 4; n++) {
-				if ((instr.*operands[n]).addressMode 
-					== ir::PTXOperand::Address) {
-					map<string, unsigned int>::iterator 
-						l_it = label_map.find((instr.*operands[n]).identifier);
-					if (label_map.end() != l_it) {
-						report("For instruction " << instr.toString() 
-							<< ", mapping local label " << l_it->first 
-							<< " to " << l_it->second );
-						(instr.*operands[n]).type = ir::PTXOperand::u64;
-						(instr.*operands[n]).imm_uint = l_it->second;
-					}
-				}
-			}			
 		}
 	}
 
@@ -746,11 +758,8 @@ void executive::EmulatedKernel::initializeConstMemory() {
 			_computeOffset(it->second.statement, 
 				offset, constantOffset);						
 			constant[it->second.statement.name] = offset;
-
 		}
 	}
-
-
 	
 	report( "Total constant memory size is " << constantOffset );
 
@@ -763,28 +772,13 @@ void executive::EmulatedKernel::initializeConstMemory() {
 		ir::PTXInstruction &instr = *i_it;
 
 		// look for mov instructions or ld/st instruction
-		if (instr.opcode == ir::PTXInstruction::Mov) {
+		if (instr.opcode == ir::PTXInstruction::Mov
+			|| instr.opcode == ir::PTXInstruction::Ld 
+			|| instr.opcode == ir::PTXInstruction::St) {
 			for (int n = 0; n < 4; n++) {
 				if ((instr.*operands[n]).addressMode 
 					== ir::PTXOperand::Address) {
 					ConstantOffsetMap::iterator	l_it 
-						= constant.find((instr.*operands[n]).identifier);
-					if (constant.end() != l_it) {
-						report("For instruction " << instr.toString() 
-							<< ", mapping constant label " << l_it->first 
-							<< " to " << l_it->second );
-						(instr.*operands[n]).type = ir::PTXOperand::u64;
-						(instr.*operands[n]).imm_uint = l_it->second;
-					}
-				}
-			}
-		}
-		else if ( instr.opcode == ir::PTXInstruction::Ld 
-			|| instr.opcode == ir::PTXInstruction::St ) {
-			for (int n = 0; n < 4; n++) {
-				if ((instr.*operands[n]).addressMode 
-					== ir::PTXOperand::Address) {
-					ConstantOffsetMap::iterator l_it 
 						= constant.find((instr.*operands[n]).identifier);
 					if (constant.end() != l_it) {
 						report("For instruction " << instr.toString() 
@@ -854,8 +848,11 @@ void executive::EmulatedKernel::initializeGlobalMemory() {
 	for (; i_it != instructions.end(); ++i_it) {
 		ir::PTXInstruction &instr = *i_it;
 
-		// look for mov instructions or ld/st instruction
-		if (instr.opcode == ir::PTXInstruction::Mov) {
+		// look for mov instructions or ld/st/atom instruction
+		if (instr.opcode == ir::PTXInstruction::Mov
+			|| instr.opcode == ir::PTXInstruction::Ld 
+			|| instr.opcode == ir::PTXInstruction::St
+			|| instr.opcode == ir::PTXInstruction::Atom) {
 			for (int n = 0; n < 4; n++) {
 				if ((instr.*operands[n]).addressMode 
 					== ir::PTXOperand::Address) {
@@ -873,30 +870,6 @@ void executive::EmulatedKernel::initializeGlobalMemory() {
 						report("Mapping global label " 
 							<< (instr.*operands[n]).identifier << " to " 
 							<< (void *)(instr.*operands[n]).imm_uint 
-							<< " for instruction " << instr.toString() );
-					}
-				}
-			}
-		}
-		else if ( instr.opcode == ir::PTXInstruction::Ld 
-			|| instr.opcode == ir::PTXInstruction::St ) {
-			for (int n = 0; n < 4; n++) {
-				if ((instr.*operands[n]).addressMode 
-					== ir::PTXOperand::Address) {
-					unordered_set<string>::iterator 
-						l_it = global.find((instr.*operands[n]).identifier);
-					if (global.end() != l_it) {
-						(instr.*operands[n]).type = ir::PTXOperand::u64;
-						assert( device != 0);
-						Device::MemoryAllocation* allocation = 
-							device->getGlobalAllocation(
-							module->path(), *l_it);
-						assert(allocation != 0);
-						(instr.*operands[n]).imm_uint = 
-							(ir::PTXU64)allocation->pointer();
-						report("Mapping ld/st global label " 
-							<< (instr.*operands[n]).identifier << " to " 
-							<< (void *)(instr.*operands[n]).imm_uint
 							<< " for instruction " << instr.toString() );
 					}
 				}
@@ -1186,5 +1159,9 @@ std::string executive::EmulatedKernel::getInstructionBlock(int PC) const {
 	return "";
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////////////
+/*! \brief accessor for obtaining PCs of first and last instructions in a block */
+std::pair<int,int> executive::EmulatedKernel::getBlockRange(const std::string &label) const { 
+	return blockPCRange.at(label); 
+}
+
 

@@ -311,7 +311,7 @@ void executive::RemoteDevice::MemoryAllocation::copy(void* host, size_t dOffset,
 }
 
 void executive::RemoteDevice::MemoryAllocation::memset(size_t toOffset, int value, size_t size) {
-	long long unsigned int tSize = 3 * sizeof(long long unsigned int);
+	long long unsigned int tSize = 2 * sizeof(long long unsigned int) + sizeof(int);
 	
 	assert(_device != 0);
 	remote::RemoteDeviceMessage& _message = _device->_message;
@@ -537,8 +537,6 @@ executive::Device::MemoryAllocationVector executive::RemoteDevice::getAllAllocat
 
 /*! \brief Wipe all memory allocations, but keep modules */
 void executive::RemoteDevice::clearMemory() {
-	assert(selected());
-
 	for(AllocationMap::iterator allocation = _allocations.begin(); 
 		allocation != _allocations.end();)
 	{

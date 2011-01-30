@@ -365,7 +365,7 @@ namespace executive
 		assert(!loaded());
 		std::stringstream stream;
 		
-		ir->writeIR(stream);		
+		ir->writeIR(stream);
 
 #if REPORT_PTX_WITH_LINENUMBERS == 1		
 		reportE(REPORT_PTX, " Binary is:\n" 
@@ -905,7 +905,6 @@ namespace executive
 
 	void NVIDIAGPUDevice::free(void* pointer)
 	{
-		
 		if(pointer == 0) return;
 		
 		AllocationMap::iterator allocation = _allocations.find(pointer);
@@ -1031,8 +1030,6 @@ namespace executive
 	void NVIDIAGPUDevice::mapGraphicsResource(void** resourceVoidPtr, int count, 
 		unsigned int streamId)
 	{
-	
-	
 		CUstream id = 0;
 		if(streamId != 0)
 		{
@@ -1054,11 +1051,6 @@ namespace executive
 		report("driver::cuGraphicsMapresources() - " << result << ", " << cuda::CudaDriver::toString(result));
 		
 		checkError(result);
-		/*
-		CUdeviceptr pointer;
-		unsigned int bytes = 0;
-		checkError(driver::cuGraphicsResourceGetMappedPointer(&pointer, &bytes, (CUgraphicsResource)graphicsResources[0]));
-		*/
 	}
 	
 	void* NVIDIAGPUDevice::getPointerToMappedGraphicsResource(size_t& size, 
@@ -1111,9 +1103,11 @@ namespace executive
 		CUdeviceptr pointer;
 		unsigned int bytes = 0;
 
-		CUgraphicsResource * graphicsResources = (CUgraphicsResource *)resourceVoidPtr;
+		CUgraphicsResource * graphicsResources =
+			(CUgraphicsResource *)resourceVoidPtr;
 		
-		checkError(driver::cuGraphicsResourceGetMappedPointer(&pointer, &bytes, graphicsResources[0]));
+		checkError(driver::cuGraphicsResourceGetMappedPointer(
+			&pointer, &bytes, graphicsResources[0]));
 
 		AllocationMap::iterator allocation = _allocations.find(
 			hydrazine::bit_cast<void*>(pointer));
@@ -1191,7 +1185,6 @@ namespace executive
 
 	bool NVIDIAGPUDevice::queryEvent(unsigned int handle)
 	{
-
 		EventMap::const_iterator event = _events.find(handle);
 		if(event == _events.end())
 		{
@@ -1199,15 +1192,12 @@ namespace executive
 		}
 
 		CUresult result = driver::cuEventQuery(event->second);
-		if(result == CUDA_SUCCESS) {
-			return true;
-		}
+		if(result == CUDA_SUCCESS) return true;
 		return false;
 	}
 	
 	void NVIDIAGPUDevice::recordEvent(unsigned int handle, unsigned int sHandle)
 	{
-
 		EventMap::const_iterator event = _events.find(handle);
 		if(event == _events.end())
 		{
@@ -1243,7 +1233,6 @@ namespace executive
 	float NVIDIAGPUDevice::getEventTime(unsigned int startHandle, 
 		unsigned int endHandle)
 	{
-		
 		EventMap::const_iterator start = _events.find(startHandle);
 		if(start == _events.end())
 		{
@@ -1488,10 +1477,10 @@ namespace executive
 				<< properties().sharedMemPerBlock << " for device " 
 				<< properties().name);
 		}
-
+		
 		if(kernel->constMemorySize() > (size_t)properties().totalConstantMemory)
 		{
-			Throw("Out of shared memory for kernel \""
+			Throw("Out of constant memory for kernel \""
 				<< kernel->name << "\" : \n\tpreallocated "
 				<< kernel->constMemorySize() << " is greater than available " 
 				<< properties().totalConstantMemory << " for device " 
@@ -1507,8 +1496,6 @@ namespace executive
 		
 		for(ArrayMap::iterator array = _arrays.begin(); 
 			array != _arrays.end(); ++array)
-
-
 		{
 			if(array->second != 0) array->second->update();
 		}
@@ -1616,5 +1603,7 @@ namespace executive
 		// TODO work in something with the PTX JIT optimization level here
 	}
 }
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
 
 #endif

@@ -24,9 +24,10 @@
 namespace executive
 {
 	ATIExecutableKernel::ATIExecutableKernel(ir::Kernel &k, CALcontext *context,
-			CALevent *event, CALresource *uav0, CALresource *cb0, CALresource *cb1)
+			CALevent *event, CALresource *uav0, CALresource *cb0, 
+			CALresource *cb1, Device* d)
 		: 
-			ExecutableKernel(k), 
+			ExecutableKernel(k, d), 
 			_context(context),
 			_event(event),
 			_info(),
@@ -36,7 +37,7 @@ namespace executive
 			_uav0Resource(uav0),
 			_uav0Mem(0),
 			_uav0Name(0),
-			_uav1Name(0),
+			_uav8Name(0),
 			_cb0Resource(cb0), 
 			_cb0Mem(0),
 			_cb0Name(0),
@@ -44,6 +45,7 @@ namespace executive
 			_cb1Mem(0),
 			_cb1Name(0)
 	{
+		initializeSharedMemory();
 	}
 
 	unsigned int ATIExecutableKernel::_pad(size_t& size, unsigned int alignment)
@@ -54,7 +56,7 @@ namespace executive
 		return padding;
 	}
 
-	void ATIExecutableKernel::allocateSharedMemory()
+	void ATIExecutableKernel::initializeSharedMemory()
 	{
 		report("Allocating shared memory");
 
@@ -197,7 +199,7 @@ namespace executive
 								report("For instruction " << ptx.toString()
 										<< ", mapping shared label "
 										<< mapping->first << " to " << 
-										mapping ->second);
+										mapping->second);
 
 								operand->addressMode = 
 									ir::PTXOperand::Immediate;
@@ -221,15 +223,17 @@ namespace executive
 			(*operand)->addressMode = ir::PTXOperand::Immediate;
 			(*operand)->imm_uint = sharedSize;
 		}
+
+		// allocate shared memory object
+		_sharedMemorySize = sharedSize;
+
+		report("Total shared memory size is " << _sharedMemorySize);
 	}
 
 	void ATIExecutableKernel::_translateKernel()
 	{
 		report("Translating PTX kernel \"" << name << "\" to IL");
 
-		// allocate shared memory
-		allocateSharedMemory();
-		
 		report("Running IL Translator");
 		translator::PTXToILTranslator translator;
 		ir::ILKernel *ilKernel = 
@@ -241,10 +245,18 @@ namespace executive
 		// query device info
 		CalDriver()->calDeviceGetInfo(&_info, 0);
 
-		// compile, link, and load module
-		CalDriver()->calclCompile(&_object, CAL_LANGUAGE_IL, 
-				ilKernel->code().c_str(), _info.target);
+		// compile module
+		try {
+			CalDriver()->calclCompile(&_object, CAL_LANGUAGE_IL, 
+					ilKernel->code().c_str(), _info.target);
+		} catch (const hydrazine::Exception& he) {
+			std::cerr << "==Ocelot== "
+				<< "ATIExecutableKernel failed to compile kernel\n"
+				<< std::flush;
+			throw;
+		}
 
+		// link and load module
 		CalDriver()->calclLink(&_image, &_object, 1);
 		CalDriver()->calModuleLoad(&_module, *_context, _image);
 
@@ -279,17 +291,19 @@ namespace executive
 		CalDriver()->calModuleGetName(&_uav0Name, *_context, _module, "uav0");
 		CalDriver()->calCtxSetMem(*_context, _uav0Name, _uav0Mem);
 
-		// uav1Name is binded to uav0Mem (for less-than-32bits memory ops)
-		CalDriver()->calModuleGetName(&_uav1Name, *_context, _module, "uav1");
-		CalDriver()->calCtxSetMem(*_context, _uav1Name, _uav0Mem);
+		// uav8Name is binded to uav0Mem (for less-than-32bits memory ops)
+		CalDriver()->calModuleGetName(&_uav8Name, *_context, _module, "uav8");
+		CalDriver()->calCtxSetMem(*_context, _uav8Name, _uav0Mem);
 
 		CalDriver()->calCtxGetMem(&_cb0Mem, *_context, *_cb0Resource);
 		CalDriver()->calModuleGetName(&_cb0Name, *_context, _module, "cb0");
 		CalDriver()->calCtxSetMem(*_context, _cb0Name, _cb0Mem);
 
-		CalDriver()->calCtxGetMem(&_cb1Mem, *_context, *_cb1Resource);
-		CalDriver()->calModuleGetName(&_cb1Name, *_context, _module, "cb1");
-		CalDriver()->calCtxSetMem(*_context, _cb1Name, _cb1Mem);
+		if (parameters.size()) {
+			CalDriver()->calCtxGetMem(&_cb1Mem, *_context, *_cb1Resource);
+			CalDriver()->calModuleGetName(&_cb1Name, *_context, _module, "cb1");
+			CalDriver()->calCtxSetMem(*_context, _cb1Name, _cb1Mem);
+		}
 
 		// get module entry
 		CALfunc func = 0;
@@ -306,11 +320,15 @@ namespace executive
 		pg.gridSize  = gridSize;
 		CalDriver()->calCtxRunProgramGrid(_event, *_context, &pg);
 
+		// synchronize
+		while(*_event && !CalDriver()->calCtxIsEventDone(*_context, *_event));
+
 		// clean up
 		// release memory handles
 		CalDriver()->calCtxReleaseMem(*_context, _uav0Mem);
 		CalDriver()->calCtxReleaseMem(*_context, _cb0Mem);
-		CalDriver()->calCtxReleaseMem(*_context, _cb1Mem);
+		if (parameters.size()) 
+			CalDriver()->calCtxReleaseMem(*_context, _cb1Mem);
 
 		// unload module
 		CalDriver()->calModuleUnload(*_context, _module);
@@ -330,9 +348,10 @@ namespace executive
 		_blockDim.z = z;
 	}
 
-	void ATIExecutableKernel::setExternSharedMemorySize(unsigned int)
+	void ATIExecutableKernel::setExternSharedMemorySize(unsigned int bytes)
 	{
-		assertM(false, "Not implemented yet");
+		report("Setting external shared memory size to " << bytes);
+		_externSharedMemorySize = bytes;
 	}
 
 	void ATIExecutableKernel::setWorkerThreads(unsigned int workerThreadLimit)
@@ -355,39 +374,49 @@ namespace executive
 		int i = 0;
 		ParameterVector::const_iterator it;
 		for (it = arguments.begin(); it != arguments.end(); it++) {
-			assertM(it->arrayValues.size() == 1, 
-					"Array parameters not supported yet");
-			ir::Parameter::ValueType v = it->arrayValues[0];
+			assertM(it->arrayValues.size() <= 4, 
+					"Array parameter size greater than 4 not supported yet");
 
-			switch(it->type) {
-				case ir::PTXOperand::u64:
-				{
-					// CUDA pointers are 32-bits
-					assertM(v.val_u64 >> 32 == 0, "Pointer out of range");
-					cb1[i].x = v.val_u32 - ATIGPUDevice::Uav0BaseAddr; 
-					report("cb1[" << i << "] = {" << cb1[i].x << "}");
-					i++;
-					break;
-				}
-				case ir::PTXOperand::s32:
-				{
-					cb1[i].x = v.val_s32;
-					report("cb1[" << i << "] = {" << cb1[i].x << "}");
-					i++;
-					break;
-				}
-				case ir::PTXOperand::u32:
-				{
-					cb1[i].x = v.val_u32;
-					report("cb1[" << i << "] = {" << cb1[i].x << "}");
-					i++;
-					break;
-				}
-				default:
-				{
-					Throw("Parameter type " 
-							<< ir::PTXOperand::toString(it->type)
-							<< " not supported");
+			unsigned int j;
+			for (j = 0 ; j < it->arrayValues.size() ; j++)
+			{
+				ir::Parameter::ValueType v = it->arrayValues[j];
+
+				switch(it->type) {
+					case ir::PTXOperand::u64:
+					{
+						// CUDA pointers are 32-bits
+						assertM(v.val_u64 >> 32 == 0, 
+								"Pointer out of range");
+						cb1[i].x = (v.val_u32 < ATIGPUDevice::Uav0BaseAddr) ? 
+							0 : v.val_u32 - ATIGPUDevice::Uav0BaseAddr; 
+						report("cb1[" << i << "] = {" << cb1[i].x << "}");
+						i++;
+						break;
+					}
+					case ir::PTXOperand::s8:
+					case ir::PTXOperand::s16:
+					case ir::PTXOperand::s32:
+					case ir::PTXOperand::u8:
+					case ir::PTXOperand::u16:
+					case ir::PTXOperand::u32:
+					case ir::PTXOperand::f16:
+					case ir::PTXOperand::f32:
+					case ir::PTXOperand::b8:
+					case ir::PTXOperand::b16:
+					case ir::PTXOperand::b32:
+					{
+						cb1[i].x = v.val_b32;
+						report("cb1[" << i << "] = {" << cb1[i].x << "}");
+						i++;
+						break;
+					}
+					default:
+						{
+							assertM(false, "Parameter type " 
+									<< ir::PTXOperand::toString(it->type)
+									<< " not supported");
+						}
 				}
 			}
 		}
@@ -395,9 +424,78 @@ namespace executive
 		CalDriver()->calResUnmap(*_cb1Resource);
 	}
 
+	void ATIExecutableKernel::initializeGlobalMemory()
+	{
+		report("Initializing global variables for kernel " << name);
+
+		ir::ControlFlowGraph::iterator block;
+		for (block = cfg()->begin() ; block != cfg()->end() ; block++)
+		{
+			ir::ControlFlowGraph::InstructionList insts = block->instructions;
+			ir::ControlFlowGraph::InstructionList::iterator inst;
+			for (inst = insts.begin() ; inst != insts.end() ; inst++)
+			{
+				ir::PTXInstruction& ptx = 
+					static_cast<ir::PTXInstruction&>(**inst);
+
+				if (ptx.opcode == ir::PTXInstruction::Mov ||
+						ptx.opcode == ir::PTXInstruction::Ld ||
+						ptx.opcode == ir::PTXInstruction::St)
+				{
+					if (ptx.addressSpace != ir::PTXInstruction::Const && 
+							ptx.addressSpace != ir::PTXInstruction::Global)
+					{
+						continue;
+					}
+
+					ir::PTXOperand* operands[] = {&ptx.d, &ptx.a, &ptx.b, 
+						&ptx.c};
+
+					for (unsigned int i = 0 ; i != 4 ; i++)
+					{
+						ir::PTXOperand* operand = operands[i];
+
+						if (operand->addressMode != ir::PTXOperand::Address)
+							continue;
+
+						report("Modifying instruction " << ptx.toString());
+
+						ir::Module::GlobalMap::const_iterator global = 
+							module->globals().find(operand->identifier);
+
+						if (global == module->globals().end())
+							continue;
+
+						if (device)
+						{
+							Device::MemoryAllocation* allocation = 
+								device->getGlobalAllocation(module->path(),
+										global->first);
+
+							operand->addressMode = ir::PTXOperand::Immediate;
+							operand->imm_uint = 
+								(long long unsigned int)allocation->pointer() -
+								ATIGPUDevice::Uav0BaseAddr;
+						} else {
+							operand->addressMode = ir::PTXOperand::Immediate;
+							operand->imm_uint = 0;
+						}
+
+						report("Mapping constant label " << global->first 
+								<< " to 0x" << std::hex << operand->imm_uint);
+					}
+				}
+			}
+		}
+	}
+
+	void ATIExecutableKernel::updateGlobals() {
+		initializeGlobalMemory();
+	}
+
 	void ATIExecutableKernel::updateMemory()
 	{
-		assertM(false, "Not implemented yet");
+		updateGlobals();
 	}
 
 	ExecutableKernel::TextureVector 

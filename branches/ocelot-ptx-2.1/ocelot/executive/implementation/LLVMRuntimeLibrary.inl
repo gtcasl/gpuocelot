@@ -734,7 +734,7 @@ extern "C"
 		result[2] = executive::tex::sample< 2, float >( 
 			texture, c0, c1, c2 );
 		result[3] = executive::tex::sample< 3, float >( 
-			texture, c0, c1, c2 );	
+			texture, c0, c1, c2 );
 	}
 
 	void __ocelot_tex_3d_fu( float* result, executive::LLVMContext* context, 

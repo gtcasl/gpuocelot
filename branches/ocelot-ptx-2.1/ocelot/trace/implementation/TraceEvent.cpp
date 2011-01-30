@@ -42,9 +42,13 @@ trace::TraceEvent::TraceEvent(
 
 }
 
+void trace::TraceEvent::reset() {
+	memory_size = 0;
+	memory_addresses.clear();
+}
+
 std::string trace::TraceEvent::toString() const
 {
-
 	std::stringstream stream;
 	stream << "(" << PC << ") : \"" << instruction->toString() << "\" [" 
 		<< active << "]";
@@ -71,3 +75,4 @@ std::string trace::TraceEvent::toString() const
 
 }
 
+/////////////////////////////////////////////////////////////////////////////////////////////////

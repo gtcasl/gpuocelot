@@ -150,7 +150,6 @@ namespace ir
 
 		RegisterSet encountered;
 		RegisterSet predicates;
-		
 		RegisterSet addedRegisters;
 		RegisterVector regs;
 		
@@ -315,7 +314,7 @@ namespace ir
 				{
 					last_inserted_block = block;
 					// dont't add fall through edges for unconditional branches
-					if (edge.type != ControlFlowGraph::Edge::Invalid ) {
+					if (edge.type != ControlFlowGraph::Edge::Invalid) {
 						cfg.insert_edge(edge);
 					}
 					edge.head = block;
@@ -481,7 +480,8 @@ namespace ir
 				report( " For instruction '" << instr.toString() << "'" );
 		
 				for (int i = 0; i < 6; i++) {
-					if ((instr.*operands[i]).addressMode == PTXOperand::Invalid) {
+					if ((instr.*operands[i]).addressMode 
+						== PTXOperand::Invalid) {
 						continue;
 					}
 					if ((instr.*operands[i]).type == PTXOperand::pred
@@ -489,7 +489,8 @@ namespace ir
 						continue;
 					}
 					if ((instr.*operands[i]).addressMode == PTXOperand::Register
-						|| (instr.*operands[i]).addressMode == PTXOperand::Indirect) {
+						|| (instr.*operands[i]).addressMode 
+						== PTXOperand::Indirect) {
 						if ((instr.*operands[i]).vec != PTXOperand::v1) {
 							for (PTXOperand::Array::iterator a_it = 
 								(instr.*operands[i]).array.begin(); 

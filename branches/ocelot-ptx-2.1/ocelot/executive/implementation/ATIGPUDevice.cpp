@@ -53,19 +53,22 @@ namespace executive
 		_status.struct_size = sizeof(CALdevicestatus);
 		CalDriver()->calDeviceGetStatus(&_status, _device);
 
+		report("Setting device properties");
 		_properties.ISA = ir::Instruction::CAL;
 		std::strcpy(_properties.name, "CAL Device");
 		_properties.multiprocessorCount = _attribs.numberOfShaderEngines;
+		_properties.sharedMemPerBlock = 32768;
 		_properties.major = 1;
 		_properties.minor = 2;
 
         // Multiple contexts per device is not supported yet
         // only one context per device so we can create it in the constructor
+		report("Creating device context");
 		CalDriver()->calCtxCreate(&_context, _device);
 
 		// Allocate uav0 resource
-		// TODO Define max resource allocation size
-		CALuint width = 400000;
+		report("Allocating global memory (uav0)");
+		CALuint width = Uav0Size;
 		CALuint flags = CAL_RESALLOC_GLOBAL_BUFFER;
 		CalDriver()->calResAllocLocal1D(
 				&_uav0Resource, 
@@ -75,6 +78,7 @@ namespace executive
 				flags);
 
 		// Allocate cb0 resource
+		report("Allocating ABI memory (cb0)");
 		flags = 0;
 		CalDriver()->calResAllocLocal1D(
 				&_cb0Resource, 
@@ -85,6 +89,7 @@ namespace executive
 
 		// Allocate cb1 resource
 		flags = 0;
+		report("Allocating param memory (cb1)");
 		CalDriver()->calResAllocLocal1D(
 				&_cb1Resource, 
 				_device, 
@@ -95,6 +100,7 @@ namespace executive
 
     ATIGPUDevice::~ATIGPUDevice() 
     {
+		report("Destroying ATIGPUDevice");
 		_modules.clear();
 
 		CalDriver()->calResFree(_uav0Resource);
@@ -142,15 +148,15 @@ namespace executive
 		return count;
 	}	
 
-    void ATIGPUDevice::load(const ir::Module *irModule)
+    void ATIGPUDevice::load(const ir::Module *ir)
     {
 		report("Loading Module...");
 
-		if (_modules.count(irModule->path()) != 0)
+		if (_modules.count(ir->path()) != 0)
 		{
-			Throw("Duplicate module - " << irModule->path());
+			Throw("Duplicate module - " << ir->path());
 		}
-		_modules.insert(std::make_pair(irModule->path(), irModule));
+		_modules.insert(std::make_pair(ir->path(), new Module(ir, this)));
     }
 
     void ATIGPUDevice::unload(const std::string& name)
@@ -217,19 +223,78 @@ namespace executive
 	Device::MemoryAllocation *ATIGPUDevice::getGlobalAllocation(
 			const std::string &moduleName, const std::string &name)
 	{
-		assertM(false, "Not implemented yet");
+		report("Getting global allocation: " << "module = [" << moduleName 
+				<< "] " << "global = [" << name << "]");
+
+		if (moduleName.empty())
+		{
+			// try a brute force search over all modules
+			for (ModuleMap::iterator module = _modules.begin(); 
+				module != _modules.end(); ++module)
+			{
+				if (module->second->globals.empty())
+				{
+					Module::AllocationVector allocations = std::move(
+						module->second->loadGlobals());
+					for(Module::AllocationVector::iterator 
+						allocation = allocations.begin(); 
+						allocation != allocations.end(); ++allocation)
+					{
+						_uav0Allocations.insert(std::make_pair(
+							(*allocation)->pointer(), *allocation));
+					}
+				}
+
+				Module::GlobalMap::iterator global = 
+					module->second->globals.find(name);
+				if (global != module->second->globals.end())
+				{
+					return getMemoryAllocation(global->second,
+						DeviceAllocation);
+				}
+			}
+			return 0;
+		}
+
+		ModuleMap::iterator module = _modules.find(moduleName);
+		if (module == _modules.end()) return 0;
+
+		if (module->second->globals.empty())
+		{
+			Module::AllocationVector allocations = std::move(
+					module->second->loadGlobals());
+			for (Module::AllocationVector::iterator
+					allocation = allocations.begin();
+					allocation != allocations.end(); ++allocation)
+			{
+				_uav0Allocations.insert(std::make_pair((*allocation)->pointer(),
+									*allocation));
+			}
+		}
+
+		Module::GlobalMap::iterator global = module->second->globals.find(name);
+		if (global == module->second->globals.end()) return 0;
+
+		return getMemoryAllocation(global->second, DeviceAllocation);
 	}
 
 	Device::MemoryAllocation *ATIGPUDevice::allocate(size_t size)
 	{
-		// TODO Check uav0 size limits
+		// uav0 accesses should be aligned to 4
+		size_t aSize = AlignUp(size, 4);
+
+		// Check uav0 size limits
+		assertM(_uav0AllocPtr - Uav0BaseAddr + aSize < Uav0Size,
+				"Out of global memory: " << _uav0AllocPtr - Uav0BaseAddr
+				<< " + " << aSize
+				<< " greater than " << Uav0Size);
+
 		MemoryAllocation *allocation = 
 			new MemoryAllocation(&_uav0Resource, _uav0AllocPtr, size);
 		_uav0Allocations.insert(
 				std::make_pair(allocation->pointer(), allocation));
 
-		// uav0 accesses should be aligned to 4
-		_uav0AllocPtr += AlignUp(size, 4);
+		_uav0AllocPtr += aSize;
 
 		return allocation;
 	}
@@ -311,12 +376,13 @@ namespace executive
 
 	unsigned int ATIGPUDevice::createEvent(int flags)
 	{
-		assertM(false, "Not implemented yet");
+		// silently ignore
+		return 0;
 	}
 
 	void ATIGPUDevice::destroyEvent(unsigned int event)
 	{
-		assertM(false, "Not implemented yet");
+		// silently ignore
 	}
 
 	bool ATIGPUDevice::queryEvent(unsigned int event)
@@ -326,17 +392,18 @@ namespace executive
 
 	void ATIGPUDevice::recordEvent(unsigned int event, unsigned int stream)
 	{
-		assertM(false, "Not implemented yet");
+		// silently ignore
 	}
 
 	void ATIGPUDevice::synchronizeEvent(unsigned int event)
 	{
-		assertM(false, "Not implemented yet");
+		// silently ignore
 	}
 
 	float ATIGPUDevice::getEventTime(unsigned int start, unsigned int end)
 	{
-		assertM(false, "Not implemented yet");
+		// silently ignore
+		return 0.0;
 	}
 
 	unsigned int ATIGPUDevice::createStream()
@@ -401,9 +468,9 @@ namespace executive
 		}
 
 		ir::Module::KernelMap::const_iterator irKernel = 
-			module->second->kernels().find(kernelName);
+			module->second->ir->kernels().find(kernelName);
 
-		if (irKernel == module->second->kernels().end())
+		if (irKernel == module->second->ir->kernels().end())
 		{
 			Throw("Unknown kernel - " << kernelName
 					<< " in module " << moduleName);
@@ -412,14 +479,25 @@ namespace executive
 		report("Launching " << moduleName << ":" << kernelName);
 
 		ATIExecutableKernel kernel(*irKernel->second, &_context, &_event, 
-				&_uav0Resource, &_cb0Resource, &_cb1Resource);
+				&_uav0Resource, &_cb0Resource, &_cb1Resource, this);
 
+		if(kernel.sharedMemorySize() + sharedMemory > 
+			(size_t)properties().sharedMemPerBlock)
+		{
+			Throw("Out of shared memory for kernel \""
+				<< kernel.name << "\" : \n\tpreallocated "
+				<< kernel.sharedMemorySize() << " + requested " 
+				<< sharedMemory << " is greater than available " 
+				<< properties().sharedMemPerBlock << " for device " 
+				<< properties().name);
+		}
+		
 		kernel.setKernelShape(block.x, block.y, block.z);
 		kernel.setArgumentBlock((const unsigned char *)argumentBlock, 
 				argumentBlockSize);
 		kernel.updateArgumentMemory();
+		kernel.setExternSharedMemorySize(sharedMemory);
 		kernel.launchGrid(grid.x, grid.y);
-		synchronize();
 	}
 
 	cudaFuncAttributes ATIGPUDevice::getAttributes(const std::string& module, 
@@ -586,6 +664,61 @@ namespace executive
 				<< ")");
 		
 		CalDriver()->calResUnmap(*_resource);
+	}
+
+	ATIGPUDevice::Module::Module(const ir::Module* m, ATIGPUDevice* d) 
+		: ir(m), device(d)
+	{
+	}
+
+	ATIGPUDevice::Module::AllocationVector ATIGPUDevice::Module::loadGlobals()
+	{
+		assert(globals.empty());
+
+		report("Loading module globals");
+
+		AllocationVector allocations;
+
+		for (ir::Module::GlobalMap::const_iterator
+				global = ir->globals().begin();
+				global != ir->globals().end(); ++global)
+		{
+			// Skip external globals
+			if (global->second.statement.attribute == ir::PTXStatement::Extern)
+				continue;
+
+			report("Loading global '" << global->first << "' of size "
+					<< global->second.statement.bytes());
+
+			size_t size = global->second.statement.bytes();
+			size_t aSize = AlignUp(size, 4);
+
+			// Check uav0 size limits
+			assertM(
+				device->_uav0AllocPtr - ATIGPUDevice::Uav0BaseAddr + aSize 
+				< ATIGPUDevice::Uav0Size, "Out of global memory: " 
+				<< device->_uav0AllocPtr - ATIGPUDevice::Uav0BaseAddr
+				<< " + " << aSize
+				<< " greater than " << ATIGPUDevice::Uav0Size);
+
+			MemoryAllocation* allocation = new MemoryAllocation(
+					&(device->_uav0Resource), device->_uav0AllocPtr, size);
+
+			// copy initial data
+			void* src = std::malloc(size);
+			global->second.statement.copy(src);
+			allocation->copy(0, src, size);
+			std::free(src);
+
+			globals.insert(std::make_pair(global->first, 
+						allocation->pointer()));
+			allocations.push_back(allocation);
+
+			// uav0 accesses should be aligned to 4
+			device->_uav0AllocPtr += aSize;
+		}
+
+		return allocations;
 	}
 
 	size_t AlignUp(size_t a, size_t b)

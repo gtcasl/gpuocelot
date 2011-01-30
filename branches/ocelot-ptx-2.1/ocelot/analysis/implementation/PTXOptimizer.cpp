@@ -104,7 +104,8 @@ namespace analysis
 			kernel != module.kernels().end(); ++kernel )
 		{
 			report(" Writing CFG for kernel '" << kernel->first << "'");
-			std::ofstream out( kernel->first + "_cfg.dot" );
+			std::ofstream out( std::string( 
+				kernel->first + "_cfg.dot" ).c_str() );
 		
 			if( !out.is_open() )
 			{
@@ -175,7 +176,7 @@ int main( int argc, char** argv )
 		"The number of registers available for allocation." );
 	parser.parse( "-p", "--passes", passes, "", 
 		"A list of optimization passes (remove-barriers, " 
-		"reverse-if-conversion, subkernel-formation)" );
+		"reverse-if-conversion, subkernel-formation, structural-transform)" );
 	parser.parse( "-c", "--cfg", optimizer.cfg, false, 
 		"Dump out the CFG's of all generated kernels." );
 	parser.parse();

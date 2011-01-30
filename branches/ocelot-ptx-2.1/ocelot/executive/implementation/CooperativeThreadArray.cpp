@@ -27,19 +27,24 @@
 #include <hydrazine/implementation/debug.h>
 #include <hydrazine/implementation/math.h>
 
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+#define IPDOM_RECONVERGENCE 1
+#define BARRIER_RECONVERGENCE 2
+#define GEN6_RECONVERGENCE 3
+#define SORTED_PREDICATE_STACK_RECONVERGENCE 4
+
+// specify reconvergence mechanism here
+#define RECONVERGENCE_MECHANISM IPDOM_RECONVERGENCE
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
 #ifdef REPORT_BASE
 #undef REPORT_BASE
 #endif
 
 // global control for enabling reporting within the emulator
 #define REPORT_BASE 0
-
-// defines identifiers reconvergence mechanisms
-#define IPDOM_RECONVERGENCE 1
-#define BARRIER_RECONVERGENCE 2
-
-// selected reconvergence mechanism
-#define RECONVERGENCE_MECHANISM IPDOM_RECONVERGENCE
 
 // reporting for kernel instructions
 #define REPORT_STATIC_INSTRUCTIONS 1
@@ -52,55 +57,55 @@
 #define REPORT_REGISTER_WRITES 1
 
 // individually turn on or off reporting for particular instructions
-#define REPORT_ABS 0
-#define REPORT_ADD 0
-#define REPORT_ADDC 0
-#define REPORT_AND 0
-#define REPORT_ATOM 0
-#define REPORT_BAR 0
+#define REPORT_ABS 1
+#define REPORT_ADD 1
+#define REPORT_ADDC 1
+#define REPORT_AND 1
+#define REPORT_ATOM 1
+#define REPORT_BAR 1
 #define REPORT_BRA 0
-#define REPORT_BRKPT 0
+#define REPORT_BRKPT 1
 #define REPORT_CALL 1
-#define REPORT_CNOT 0
-#define REPORT_COS 0
-#define REPORT_CVT 0
-#define REPORT_DIV 0
-#define REPORT_EX2 0
-#define REPORT_EXIT 0
+#define REPORT_CNOT 1
+#define REPORT_COS 1
+#define REPORT_CVT 1
+#define REPORT_DIV 1
+#define REPORT_EX2 1
+#define REPORT_EXIT 1
 #define REPORT_LD 0
-#define REPORT_LG2 0
-#define REPORT_MAD24 0
-#define REPORT_MAD 0
-#define REPORT_MAX 0
-#define REPORT_MIN 0
-#define REPORT_MOV 0
-#define REPORT_MUL24 0
-#define REPORT_MUL 0
-#define REPORT_NEG 0
-#define REPORT_NOT 0
-#define REPORT_OR 0
-#define REPORT_RCP 0
+#define REPORT_LG2 1
+#define REPORT_MAD24 1
+#define REPORT_MAD 1
+#define REPORT_MAX 1
+#define REPORT_MIN 1
+#define REPORT_MOV 1
+#define REPORT_MUL24 1
+#define REPORT_MUL 1
+#define REPORT_NEG 1
+#define REPORT_NOT 1
+#define REPORT_OR 1
+#define REPORT_RCP 1
 #define REPORT_RECONVERGE 0
-#define REPORT_RED 0
-#define REPORT_REM 0
+#define REPORT_RED 1
+#define REPORT_REM 1
 #define REPORT_RET 1
-#define REPORT_RSQRT 0
-#define REPORT_SAD 0
+#define REPORT_RSQRT 1
+#define REPORT_SAD 1
 #define REPORT_SELP 0
 #define REPORT_SETP 0
-#define REPORT_SET 0
-#define REPORT_SHL 0
-#define REPORT_SHR 0
-#define REPORT_SIN 0
-#define REPORT_SLCT 0
-#define REPORT_SQRT 0
+#define REPORT_SET 1
+#define REPORT_SHL 1
+#define REPORT_SHR 1
+#define REPORT_SIN 1
+#define REPORT_SLCT 1
+#define REPORT_SQRT 1
 #define REPORT_ST 0
-#define REPORT_SUB 0
-#define REPORT_SUBC 0
-#define REPORT_TEX 0
-#define REPORT_TRAP 0
-#define REPORT_VOTE 0
-#define REPORT_XOR 0
+#define REPORT_SUB 1
+#define REPORT_SUBC 1
+#define REPORT_TEX 1
+#define REPORT_TRAP 1	
+#define REPORT_VOTE 1
+#define REPORT_XOR 1
 
 using namespace ir;
 using namespace std;
@@ -127,23 +132,38 @@ executive::CooperativeThreadArray::CooperativeThreadArray(
 	blockDim(k->blockDim()),
 	gridDim(grid),
 	threadCount(blockDim.x*blockDim.y*blockDim.z),
-	kernel(k), 
-	runtimeStack(1, CTAContext(kernel, this)),
+	kernel(k),
 	functionCallStack(blockDim.x*blockDim.y*blockDim.z,
 		k->parameterMemorySize(), k->registerCount(), k->localMemorySize(),
 		k->totalSharedMemorySize()),
 	clock(0),
 	traceEvents(trace) {
+
+#if RECONVERGENCE_MECHANISM == IPDOM_RECONVERGENCE
+	reconvergenceMechanism = new ReconvergenceIPDOM(kernel, this);
+#elif RECONVERGENCE_MECHANISM == BARRIER_RECONVERGENCE
+	reconvergenceMechanism = new ReconvergenceBarrier(kernel, this);
+#elif RECONVERGENCE_MECHANISM == GEN6_RECONVERGENCE
+	reconvergenceMechanism = new ReconvergenceTFGen6(kernel, this);
+#elif RECONVERGENCE_MECHANISM == SORTED_PREDICATE_STACK_RECONVERGENCE
+	reconvergenceMechanism = new ReconvergenceTFSortedStack(kernel, this);
+#else
+	assert(0 && "unimplemented thread reconvergence mechanism");
+#endif
+
+	initialize(k->blockDim());
 }
 
 executive::CooperativeThreadArray::CooperativeThreadArray() : kernel(0) {
 
+	reconvergenceMechanism = new ReconvergenceMechanism(this);
 }
 
 /*!
 	Destroys state associated with CTA
 */
 executive::CooperativeThreadArray::~CooperativeThreadArray() {
+	delete reconvergenceMechanism;
 }
 
 /*!
@@ -261,14 +281,14 @@ static ir::PTXF32 ftz(int modifier, ir::PTXF32 f) {
 
 void executive::CooperativeThreadArray::trace() {
 	if (traceEvents) {
-		currentEvent.contextStackSize = (ir::PTXU32)runtimeStack.size();
+		currentEvent.contextStackSize = (ir::PTXU32)reconvergenceMechanism->stackSize();
 		kernel->traceEvent(currentEvent);
 	}
 }
 
 void executive::CooperativeThreadArray::postTrace() {
 	if (traceEvents) {
-		currentEvent.contextStackSize = (ir::PTXU32)runtimeStack.size();
+		currentEvent.contextStackSize = (ir::PTXU32)reconvergenceMechanism->stackSize();
 		kernel->tracePostEvent(currentEvent);
 	}
 }
@@ -277,14 +297,14 @@ void executive::CooperativeThreadArray::postTrace() {
 
 void executive::CooperativeThreadArray::reset() {
 
-	runtimeStack.clear();
-	runtimeStack.push_back(CTAContext(kernel, this));
-	
+	reconvergenceMechanism->initialize();
+
 	barriers.clear();
 	barriers.resize(16);	// PTX2.1
 	
-	size_t threads = runtimeStack.back().active.size();
-	for (BarrierVector::iterator bar_it = barriers.begin(); bar_it != barriers.end(); ++bar_it) {
+	size_t threads = getActiveContext().active.size();
+	for (BarrierVector::iterator bar_it = barriers.begin();
+		bar_it != barriers.end(); ++bar_it) {
 		bar_it->initialize(threads);
 	}
 }
@@ -316,28 +336,29 @@ void executive::CooperativeThreadArray::execute(const ir::Dim3& block) {
 	initialize(block);
 	
 	bool running = true;
-	assert(runtimeStack.size());
+	assert(reconvergenceMechanism->stackSize());
 	
 	report("CooperativeThreadArray::execute called");
 	report("  block is " << block.x << ", " << block.y << ", " << block.z);
 	reportE(REPORT_STATIC_INSTRUCTIONS, "Running " << kernel->toString());
 
 	do {
-		assert(runtimeStack.size());
+		assert(reconvergenceMechanism->stackSize());
 
 		// get the context and advance the program counter
-		CTAContext& context = runtimeStack.back();
+		CTAContext& context = reconvergenceMechanism->getContext();
 		const PTXInstruction& instr = currentInstruction(context);
+
+		reconvergenceMechanism->evalPredicate(context);
 
 		reportE(REPORT_DYNAMIC_INSTRUCTIONS, " [PC: " << context.PC 
 			<< ", counter: " << counter 
 			<< "] " << instr.toString() << " [stack "
-			<< runtimeStack.size() << "] [active " 
+			<< reconvergenceMechanism->stackSize() << "] [active " 
 			<< context.active.count() << "]" );
 
 		if (traceEvents) {
-			currentEvent.memory_size = 0;
-			currentEvent.memory_addresses.clear();
+			currentEvent.reset();
 			currentEvent.PC = context.PC;
 			currentEvent.instruction = &instr;
 			currentEvent.active = context.active;
@@ -478,17 +499,9 @@ void executive::CooperativeThreadArray::execute(const ir::Dim3& block) {
 				break;
 		}
 	
-		// advance to next instruction if the current instruction wasn't a branch
-		if (instr.opcode != PTXInstruction::Bra && 
-			instr.opcode != PTXInstruction::Call && 
-#if RECONVERGENCE_MECHANISM == BARRIER_RECONVERGENCE
-			instr.opcode != PTXInstruction::Bar &&
-#endif
-			instr.opcode != PTXInstruction::Reconverge ) {
-			context.PC++;
-			running = context.running;
-		}
-		
+		running = reconvergenceMechanism->nextInstruction(
+			getActiveContext(), instr);
+
 		postTrace();
 
 		clock += 4;
@@ -502,10 +515,10 @@ void executive::CooperativeThreadArray::execute(const ir::Dim3& block) {
 }
 
 void executive::CooperativeThreadArray::jumpToPC(int PC) {
-	assert(!runtimeStack.empty());
+	assert(reconvergenceMechanism->stackSize() != 0);
 	assert(PC < (int)kernel->instructions.size());
 	
-	runtimeStack.back().PC = PC;
+	getActiveContext().PC = PC;
 }
 
 executive::CooperativeThreadArray::RegisterFile 
@@ -519,6 +532,13 @@ executive::CooperativeThreadArray::RegisterFile
 		}
 	}
 	return file;
+}
+
+/*!
+	gets the active context of the cooperative thread array
+*/
+executive::CTAContext & executive::CooperativeThreadArray::getActiveContext() {
+	return reconvergenceMechanism->getContext();
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2284,12 +2304,8 @@ void executive::CooperativeThreadArray::eval_Bar(CTAContext& context,
 	}
 }
 
-void executive::CooperativeThreadArray::eval_Bra(CTAContext &context, const PTXInstruction &instr) {
-	// if threads diverge
-	//		pop the activation stack, push an activation context for the reconverge instruction,
-	//			push the activation context for the branch target and for the fall-through target
-	// otherwise
-	//		pop the activation stack, push the target activation context
+void executive::CooperativeThreadArray::eval_Bra(CTAContext &context,
+	const PTXInstruction &instr) {
 	using namespace boost;
 
 	dynamic_bitset<> branch = context.active;
@@ -2321,62 +2337,8 @@ void executive::CooperativeThreadArray::eval_Bra(CTAContext &context, const PTXI
 	report("  reconverge PC " << instr.reconvergeInstruction);
 #endif
 
-	if (instr.uni) {
-#if REPORT_BRA
-		report("   uniform branching");
-#endif
-
-		// unfiorm
-		if (branch.count()) {
-			// all threads branch
-			context.PC = instr.branchTargetInstruction;
-		}
-		else {
-			// all threads fall through
-			context.PC ++;
-		}
-	}
-	else {
-		// divergence - complicated
-		CTAContext branchContext(context), fallthroughContext(context), 
-			reconvergeContext(context);
-
-		branchContext.active = branch;
-		branchContext.PC = instr.branchTargetInstruction;
-
-		fallthroughContext.active = fall_through;
-		fallthroughContext.PC++;
-		
-		reconvergeContext.PC = instr.reconvergeInstruction + 1;
-		
-		runtimeStack.pop_back();
-
-#if RECONVERGENCE_MECHANISM == IPDOM_RECONVERGENCE
-		bool reconvergeContextAlreadyExists = false;
-		for(ContextStack::reverse_iterator si = runtimeStack.rbegin(); 
-			si != runtimeStack.rend(); ++si ) {
-			if(si->PC == reconvergeContext.PC) {
-				reconvergeContextAlreadyExists = true;
-				break;
-			}
-		}
-
-		if(!reconvergeContextAlreadyExists) {
-			runtimeStack.push_back(reconvergeContext);
-		}
-#endif
-
-		if (branchContext.active.any()) {
-			runtimeStack.push_back(branchContext);
-		}
-		
-		if (fallthroughContext.active.any()) {
-			runtimeStack.push_back(fallthroughContext);		
-		}
-#if REPORT_BRA
-		report("   divergent branching");
-#endif
-	}
+	// dispatch to reconvergence mechanism
+	reconvergenceMechanism->eval_Bra(context, instr, branch, fall_through);
 
 	trace();
 }
@@ -2388,21 +2350,9 @@ void executive::CooperativeThreadArray::eval_Bra(CTAContext &context, const PTXI
 void executive::CooperativeThreadArray::eval_Reconverge(CTAContext &context, const PTXInstruction &instr) {
 	using namespace std;
 	trace();
-#if REPORT_RECONVERGE
-	report("   stack before reconverge:");
-	{
-		list< CTAContext >::reverse_iterator it = runtimeStack.rbegin();
-		for (; it != runtimeStack.rend(); ++it) {
-			report("      " << it->PC << " [active " << it->active << "]");
-		}
-	}
-#endif
-#if RECONVERGENCE_MECHANISM == IPDOM_RECONVERGENCE
-	runtimeStack.pop_back();
-#elif RECONVERGENCE_MECHANISM == BARRIER_RECONVERGENCE
-	context.PC ++;
-#else
-#endif
+	
+	// dispatch
+	reconvergenceMechanism->eval_Reconverge(context, instr);
 }
 
 /*!
@@ -2511,7 +2461,8 @@ void executive::CooperativeThreadArray::eval_Call(CTAContext &context,
 				offset += ir::PTXOperand::bytes(argument->type);
 			}
 
-			runtimeStack.push_back(targetContext->second);			
+			reconvergenceMechanism->runtimeStack.push_back(
+				targetContext->second);			
 		}
 	}
 	else {
@@ -2557,7 +2508,7 @@ void executive::CooperativeThreadArray::eval_Call(CTAContext &context,
 				targetContext.PC = instr.branchTargetInstruction;
 				++context.PC;
 				
-				runtimeStack.push_back(targetContext);
+				reconvergenceMechanism->runtimeStack.push_back(targetContext);
 			}
 		}
 		else {
@@ -2592,7 +2543,7 @@ void executive::CooperativeThreadArray::eval_Call(CTAContext &context,
 				targetContext.PC = instr.branchTargetInstruction;
 				
 				++context.PC;
-				runtimeStack.push_back(targetContext);
+				reconvergenceMechanism->runtimeStack.push_back(targetContext);
 			}
 			else {
 				++context.PC;
@@ -2779,22 +2730,6 @@ static Float round(Float a, int modifier) {
 		fd = a;
 	}
 	return fd;
-}
-
-static ir::PTXF32 toF32(ir::PTXF64 a, int modifier) { 
-	int mode = fegetround();
-	if (modifier & PTXInstruction::rn) {
-		fesetround(FE_TONEAREST);
-	} else if (modifier & PTXInstruction::rz) {
-		fesetround(FE_TOWARDZERO);
-	} else if (modifier & PTXInstruction::rm) {
-		fesetround(FE_DOWNWARD);
-	} else if (modifier & PTXInstruction::rp) {
-		fesetround(FE_UPWARD);
-	}
-	ir::PTXF32 d = a;
-	fesetround(mode);
-	return d;
 }
 
 /*!
@@ -3709,23 +3644,6 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context,
 							PTXF64 a = operandAsF64(threadID, instr.a);
 							if (a != a) a = 0.0;
 							a = round(a, instr.modifier);
-							PTXS64 d = 0;
-							if(a > LLONG_MAX) {
-								d = LLONG_MAX;
-							}
-							else if(a < LLONG_MIN) {
-								d = LLONG_MIN;
-							}
-							else {
-								d = a;
-							}
-							setRegAsS64(threadID, instr.d.reg, d);
-						}
-						break;
-					case PTXOperand::f32: 
-						{
-							PTXF64 a = operandAsF64(threadID, instr.a);
-							a = toF32(a, instr.modifier);
 							if(instr.modifier & PTXInstruction::sat) {
 								if (a != a) a = 0.0;
 								a = min(1.0, a);
@@ -4108,22 +4026,12 @@ void executive::CooperativeThreadArray::eval_Ex2(CTAContext &context,
 /*!
 
 */
-void executive::CooperativeThreadArray::eval_Exit(CTAContext &context, const PTXInstruction &instr) {
-
-#if RECONVERGENCE_MECHANISM == IPDOM_RECONVERGENCE
-	eval_Bar(context, instr);
-	context.running = false;
-#elif RECONVERGENCE_MECHANISM == BARRIER_RECONVERGENCE
-	if (context.active.count() == context.active.size() || runtimeStack.size() == 1) {
-		trace();
-		context.running = false;
-	}
-	else {
-		eval_Bar(context, instr);
-	}
-#else
-#endif
+void executive::CooperativeThreadArray::eval_Exit(CTAContext &context,
+	const PTXInstruction &instr) {
+	trace();
+	reconvergenceMechanism->eval_Exit(context, instr);
 }
+
 
 /*!
 
@@ -4157,6 +4065,7 @@ void executive::CooperativeThreadArray::eval_Fma(CTAContext &context, const ir::
 		throw RuntimeException("unsupported data type", context.PC, instr);
 	}
 }
+
 
 /*!
 
@@ -4664,7 +4573,6 @@ void executive::CooperativeThreadArray::eval_Ld(CTAContext &context,
 		}
 	}
 }
-
 
 /*!
 
@@ -6274,7 +6182,7 @@ void executive::CooperativeThreadArray::eval_Ret(CTAContext &context,
 		offset += ir::PTXOperand::bytes(argument->type);
 	}
 	functionCallStack.popFrame();
-	runtimeStack.pop_back();
+	reconvergenceMechanism->runtimeStack.pop_back();
 }
 
 /*!
@@ -7197,6 +7105,7 @@ void executive::CooperativeThreadArray::eval_Set(CTAContext &context,
 					case PTXInstruction::Leu:
 					case PTXInstruction::Gtu:
 					case PTXInstruction::Geu:
+					case PTXInstruction::Num:
 					case PTXInstruction::Nan:
 						// if either is NaN, set t to true
 						t = (std::isnan(a) || std::isnan(b) || t);
@@ -7786,6 +7695,15 @@ void executive::CooperativeThreadArray::eval_Sin(CTAContext &context,
 			setRegAsF32(threadID, instr.d.reg, d);
 		}
 	}	
+	else if (instr.type == PTXOperand::f64) {
+		for (int threadID = 0; threadID < threadCount; threadID++) {
+			if (!context.predicated(threadID, instr)) continue;
+			
+			PTXF64 d, a = operandAsF64(threadID, instr.a);
+			d = sin(a);
+			setRegAsF64(threadID, instr.d.reg, d);
+		}
+	}
 	else {
 		throw RuntimeException("unsupported data type", context.PC, instr);
 	}
@@ -8576,7 +8494,6 @@ void executive::CooperativeThreadArray::eval_Tex(CTAContext &context,
 	}
 	for (int threadID = 0; threadID < threadCount; threadID++) {
 		if (!context.predicated(threadID, instr)) continue;
-		
 		switch (instr.geometry) {
 			case ir::PTXInstruction::_1d:
 				switch (instr.d.type) {
@@ -9304,6 +9221,16 @@ void executive::CooperativeThreadArray::eval_Xor(CTAContext &context,
 				b = operandAsB64(threadID, instr.b);
 			d = a ^ b;
 			setRegAsB64(threadID, instr.d.reg, d);
+		}
+	}
+	else if (instr.type == PTXOperand::pred) {
+		for (int threadID = 0; threadID < threadCount; threadID++) {
+			if (!context.predicated(threadID, instr)) continue;
+			
+			bool d, a = operandAsPredicate(threadID, instr.a), 
+				b = operandAsPredicate(threadID, instr.b);
+			d = a ^ b;
+			setRegAsPredicate(threadID, instr.d.reg, d);
 		}
 	}
 	else {

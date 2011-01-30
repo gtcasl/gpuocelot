@@ -923,8 +923,7 @@ namespace analysis
 	{
 		compute();
 		SSAGraph graph( *this );
-		graph.toSsa();
-		
+		graph.toSsa();		
 	}
 
 	void DataflowGraph::fromSsa()

@@ -22,7 +22,7 @@ namespace analysis
 				InvalidRegisterAllocationType
 			};
 			
-			/*! \brief The possible PTX to PXT passes */
+			/*! \brief The possible PTX to PTX passes */
 			enum PassType
 			{
 				InvalidPassType = 0x0,

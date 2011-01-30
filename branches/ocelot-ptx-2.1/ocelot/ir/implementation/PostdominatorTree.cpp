@@ -25,16 +25,16 @@ ir::PostdominatorTree::~PostdominatorTree() {
 }
 
 ir::PostdominatorTree::PostdominatorTree(ControlFlowGraph *c) {
-	// form a vector of the basic blocks in reverse post-order
+	// form a vector of the basic blocks in post-order
 	report("Building post-dominator tree.");
 	cfg = c;
 	report(" Starting with post order sequence");
-	// form a vector of the basic blocks in reverse post-order
+	// form a vector of the basic blocks in post-order
 	ControlFlowGraph::BlockPointerVector 
-		post_order = cfg->post_order_sequence();
+		post_order = cfg->reverse_topological_sequence();
 	
-	ControlFlowGraph::pointer_iterator it = post_order.begin();
-	ControlFlowGraph::pointer_iterator end = post_order.end();
+	ControlFlowGraph::reverse_pointer_iterator it = post_order.rbegin();
+	ControlFlowGraph::reverse_pointer_iterator end = post_order.rend();
 	for (; it != end; ++it) {
 		blocks.push_back(*it);
 		blocksToIndex[*it] = (int)blocks.size()-1;
@@ -111,10 +111,10 @@ int ir::PostdominatorTree::intersect(int b1, int b2) const {
 	int finger2 = b2;
 	while (finger1 != finger2) {
 		report( "finger1 " << finger1 << " finger2 " << finger2 );
-		while (finger1 > finger2) {
+		while (finger1 < finger2) {
 			finger1 = p_dom[finger1];
 		}
-		while (finger2 > finger1) {
+		while (finger2 < finger1) {
 			finger2 = p_dom[finger2];
 		}
 	}

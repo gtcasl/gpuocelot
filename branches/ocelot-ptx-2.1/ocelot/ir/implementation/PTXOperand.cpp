@@ -557,12 +557,13 @@ ir::PTXOperand::PTXOperand() {
 	type = PTXOperand::s32;
 	offset = 0;
 	imm_int = 0;
+	reg = 0;
 	vec = v1;
 }
 
 ir::PTXOperand::PTXOperand(SpecialRegister r, VectorIndex i, DataType t) : 
 	addressMode(Special), type(t), vIndex(i), special(r), 
-	vec(i == iAll ? v4 : v1) {
+	reg(0), vec(i == iAll ? v4 : v1) {
 	std::stringstream name;
 	name << toString(r);
 	if( i != iAll )

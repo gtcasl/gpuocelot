@@ -47,6 +47,13 @@ namespace trace {
 			ir::PTXU32 ctxStackSize = 1);
 
 		/*!
+			\brief resets instruction-specific events to their 'off' state
+		*/
+		void reset();
+
+	public:
+
+		/*!
 			ID of the block that generated the event
 		*/
 		ir::Dim3 blockId;

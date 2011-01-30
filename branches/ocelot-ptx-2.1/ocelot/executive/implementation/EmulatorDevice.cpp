@@ -377,7 +377,7 @@ namespace executive
 			}
 		}
 		
-		return allocation;	
+		return allocation;
 	}
 
 	Device::MemoryAllocation* EmulatorDevice::getGlobalAllocation(
@@ -557,7 +557,7 @@ namespace executive
 			}
 		
 			report(" Binding GL array buffer to " << graphic->second.buffer);
-			glBindBuffer(GL_ARRAY_BUFFER, graphic->second.buffer);
+				glBindBuffer(GL_ARRAY_BUFFER, graphic->second.buffer);
 
 			if(glGetError() != GL_NO_ERROR)
 			{

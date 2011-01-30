@@ -16,6 +16,7 @@
 #include <ocelot/ir/interface/ILKernel.h>
 #include <ocelot/ir/interface/ControlFlowGraph.h>
 #include <ocelot/ir/interface/ControlTree.h>
+#include <ocelot/executive/interface/ATIExecutableKernel.h>
 
 typedef ir::ControlTree ControlTree;
 
@@ -36,6 +37,7 @@ namespace translator
 			typedef std::map<int, std::string> ILiteralMap;
 			typedef std::map<float, std::string> FLiteralMap;
 
+			const executive::ATIExecutableKernel* _kernel;
 			ir::ILKernel *_ilKernel;
 			ILiteralMap _intLiterals;
 			FLiteralMap _floatLiterals;
@@ -46,17 +48,18 @@ namespace translator
 			void _translate(const ControlTree::BlockNode* block);
 			void _translate(const ControlTree::IfThenNode* ifthen);
 			void _translate(const ControlTree::IfThenElseNode* ifthenelse);
-			void _translate(const ControlTree::SelfLoopNode* selfloop);
+			void _translate(const ControlTree::NaturalLoopNode* naturalloop);
 
 			void _translate(const ir::PTXInstruction &i); 
 			ir::ILOperand _translate(const ir::PTXOperand &o);
 			ir::ILInstruction::DataType _translate(
-					const ir::PTXOperand::DataType d);
+				const ir::PTXOperand::DataType d);
 			std::string _translate(const ir::PTXOperand::RegisterType &reg);
 			ir::ILOperand::SpecialRegister _translate(
-					const ir::PTXOperand::SpecialRegister &s,
-					const ir::PTXOperand::VectorIndex& d);
+				const ir::PTXOperand::SpecialRegister &s,
+                const ir::PTXOperand::VectorIndex& d);
 
+			void _translateAbs(const ir::PTXInstruction &i);
 			void _translateAdd(const ir::PTXInstruction &i);
 			void _translateAnd(const ir::PTXInstruction &i);
 			void _translateAtom(const ir::PTXInstruction& i);
@@ -64,27 +67,56 @@ namespace translator
 			void _translateBra(const ir::PTXInstruction &i);
 			void _translateCvt(const ir::PTXInstruction &i);
 			void _translateDiv(const ir::PTXInstruction &i);
+			void _translateEx2(const ir::PTXInstruction &i);
 			void _translateExit(const ir::PTXInstruction &i);
 			void _translateLd(const ir::PTXInstruction &i);
 			void _translateLdSharedByte(const ir::PTXInstruction &i);
 			void _translateLdSharedDword(const ir::PTXInstruction &i);
+			void _translateLg2(const ir::PTXInstruction &i);
 			void _translateMad(const ir::PTXInstruction &i);
+			void _translateMax(const ir::PTXInstruction &i);
+			void _translateMembar(const ir::PTXInstruction &i);
+			void _translateMin(const ir::PTXInstruction &i);
 			void _translateMov(const ir::PTXInstruction &i);
 			void _translateMul(const ir::PTXInstruction &i);
+			void _translateMul24(const ir::PTXInstruction &i);
+			void _translateNeg(const ir::PTXInstruction &i);
+			void _translateNot(const ir::PTXInstruction &i);
 			void _translateOr(const ir::PTXInstruction &i);
+			void _translateRcp(const ir::PTXInstruction &i);
 			void _translateRem(const ir::PTXInstruction &i);
 			void _translateSelP(const ir::PTXInstruction &i);
+			void _translateSet(const ir::PTXInstruction &i);
 			void _translateSetP(const ir::PTXInstruction &i);
 			void _translateShl(const ir::PTXInstruction &i);
 			void _translateShr(const ir::PTXInstruction &i);
+			void _translateSqrt(const ir::PTXInstruction &i);
 			void _translateSt(const ir::PTXInstruction &i);
+			void _translateSub(const ir::PTXInstruction &i);
+			void _translateXor(const ir::PTXInstruction& i);
+
 			void _translateStSharedByte(const ir::PTXInstruction &i);
 			void _translateStSharedDword(const ir::PTXInstruction &i);
-			void _translateSub(const ir::PTXInstruction &i);
-
 			ir::ILOperand _translateLiteral(int l);
 			ir::ILOperand _translateLiteral(float l);
-			std::string _translateConstantBuffer(const std::string &ident);
+			std::string _translateConstantBuffer(const ir::PTXOperand o);
+
+			void _translateIDiv(const ir::PTXInstruction &i);
+			void _translateUDiv(const ir::PTXInstruction &i);
+			void _translateFDiv(const ir::PTXInstruction &i);
+
+			void _translateIRem(const ir::PTXInstruction &i);
+			void _translateURem(const ir::PTXInstruction &i);
+
+			void _translateISetP(const ir::PTXInstruction &i);
+			void _translateFSetP(const ir::PTXInstruction &i);
+
+			void _convertSrc(const ir::PTXInstruction &i, ir::ILOperand& a);
+			void _convert(const ir::PTXInstruction &i);
+			void _convert(const ir::PTXInstruction &i, const ir::ILOperand a, 
+					ir::ILOperand& d);
+			void _convertDst(const ir::PTXInstruction &i, 
+					const ir::ILOperand d);
 
 			void _addKernelPrefix();
 
@@ -94,6 +126,12 @@ namespace translator
 
 	/*! \brief returns the last instruction in a control tree node */
 	ir::PTXInstruction* getLastIns(const ControlTree::Node* node);
+
+	/*! \brief returns true if n is a power of 2 */
+	bool _isPowerOf2(unsigned int n);
+
+	/*! \brief returns the log base 2 of a power of 2 number */
+	int _Log2(unsigned int n);
 }
 
 #endif

@@ -61,7 +61,8 @@ namespace executive {
 
 	class CTAContext {
 	public:
-		CTAContext(const EmulatedKernel *kernel, CooperativeThreadArray *cta);
+		CTAContext(const EmulatedKernel *kernel = 0,
+			CooperativeThreadArray *cta = 0);
 
 		~CTAContext();
 

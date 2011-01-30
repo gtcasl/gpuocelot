@@ -34,7 +34,7 @@
 #define CATCH_RUNTIME_EXCEPTIONS 0
 
 // whether verbose error messages are printed
-#define CUDA_VERBOSE 0
+#define CUDA_VERBOSE 1
 
 // whether debugging messages are printed
 #define REPORT_BASE 0
@@ -588,10 +588,8 @@ void cuda::CudaRuntime::cudaUnregisterFatBinary(void **fatCubinHandle) {
 	//  for that
 	size_t handle = (size_t)fatCubinHandle;
 	if (handle >= _fatBinaries.size()) {
-		/*
 		Ocelot_Exception("cudaUnregisterFatBinary(" << handle 
 			<< ") - invalid handle.");
-			*/
 	}
 }
 
@@ -1905,18 +1903,13 @@ cudaError_t cuda::CudaRuntime::cudaMemset(void *devPtr, int value, size_t count)
 	_acquire();
 	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
 	
-	executive::Device::MemoryAllocation* allocation = 
-		_getDevice().getMemoryAllocation(devPtr);
-	
-	if (allocation == 0) {
-		_release();
-		_memoryError(devPtr, count, "cudaMemset");
-	}
-	
 	if (!_getDevice().checkMemoryAccess(devPtr, count)) {
 		_release();
 		_memoryError(devPtr, count, "cudaMemset");
 	}
+	
+	executive::Device::MemoryAllocation* allocation = 
+		_getDevice().getMemoryAllocation(devPtr);
 	
 	size_t offset = (char*)devPtr - (char*)allocation->pointer();
 	
@@ -2632,9 +2625,14 @@ cudaError_t cuda::CudaRuntime::cudaLaunch(const char *entry) {
 cudaError_t cuda::CudaRuntime::cudaFuncGetAttributes(
 	struct cudaFuncAttributes *attr, const char *symbol) {
 	cudaError_t result = cudaErrorInvalidDeviceFunction;		
-	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
 
 	_lock();
+
+	_enumerateDevices();
+	if (_devices.empty()) {
+		_unlock();
+		return _setLastError(cudaErrorNoDevice);
+	}
 	
 	//
 	// go find the kernel and fill out its attributes
@@ -3319,7 +3317,7 @@ void cuda::CudaRuntime::reset() {
 	_lock();
 	report("Resetting cuda runtime.");
 	HostThreadContext& thread = _getCurrentThread();
-	thread.clear();	
+	thread.clear();
 	_dimensions.clear();
 	
 	for(DeviceVector::iterator device = _devices.begin(); 

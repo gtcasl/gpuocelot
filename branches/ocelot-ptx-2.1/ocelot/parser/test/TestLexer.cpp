@@ -149,7 +149,7 @@ namespace test
 		
 		report( " Scanning internal stream." );
 		
-		lexer.switch_streams( &stream );
+		lexer.switch_streams( &stream, 0 );
 		
 		if( temp.str().size() != 0 )
 		{

@@ -239,8 +239,8 @@ public:
 		\param edge existing edge to split
 		\param newblock new BasicBlock to insert into CFG and create an edge 
 			from
-		\return implicily created edge from newblock->tail with same type as 
-			edge [may need modifying]
+		\return implicily created edges (head->newblock, newblock->tail) with 
+			same type as edge [may need modifying]
 	*/
 	EdgePair split_edge(edge_iterator edge, const BasicBlock& newBlock);
 
@@ -290,6 +290,18 @@ public:
 		and exit that would be encountered by a post order traversal
 	*/
 	BlockPointerVector post_order_sequence();
+
+	/*! returns an ordered sequence of the nodes of the CFG including entry 
+		and exit that would be encountered by a reverse post order traversal
+		This is equivalent to a topological order
+	*/
+	BlockPointerVector topological_sequence();
+
+	/*! returns an ordered sequence of the nodes of the CFG including entry 
+		and exit that would be encountered by a reverse post order traversal
+		This is equivalent to a topological order
+	*/
+	BlockPointerVector reverse_topological_sequence();
 
 	/*! Returns an ordered sequence of basic blocks such that the entry node 
 		is first and all fall-through edges produce adjacencies

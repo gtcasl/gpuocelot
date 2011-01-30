@@ -53,6 +53,34 @@ namespace executive
 					const size_t _size;
 			};
 
+		private:
+			/*! \brief A class for holding the state associated with a module */
+			class Module
+			{
+				public:
+					/*! \brief This is a map from a global name to pointer */
+					typedef std::unordered_map<std::string, void*> GlobalMap;
+					/*! \brief A vector of memory allocations */
+					typedef std::vector<MemoryAllocation*> AllocationVector;
+
+				public:
+					/*! \brief The ir representation of a module */
+					const ir::Module* ir;
+					/*! \brief The device associated with this module */
+					ATIGPUDevice* device;
+					/*! \brief The set of global allocations in the module */
+					GlobalMap globals;
+
+				public:
+					/*! \brief Construct this based on a module */
+					Module(const ir::Module* m = 0, ATIGPUDevice* d = 0);
+
+				public:
+					/*! \brief Load all of the globals for this module */
+					AllocationVector loadGlobals();
+			};
+
+		public:
 			/*! \brief Allocate a new device for each CAL capable GPU */
 			static DeviceVector createDevices(unsigned int flags,
 				int computeCapability);
@@ -191,10 +219,12 @@ namespace executive
 
 			/*! \brief uav0 base address (to avoid 0x0 be a valid address) */
 			static const CALdeviceptr Uav0BaseAddr = 0x1000;
+			/*! \brief uav0 size (150 MB) */
+			static const size_t Uav0Size = 150000000;
 
 		private:
 			/*! \brief A map of registered modules */
-			typedef std::unordered_map<std::string, const ir::Module*> ModuleMap;
+			typedef std::unordered_map<std::string, Module*> ModuleMap;
 
 			/*! \brief A map of memory allocations */
 			typedef std::map<void*, MemoryAllocation*> AllocationMap;

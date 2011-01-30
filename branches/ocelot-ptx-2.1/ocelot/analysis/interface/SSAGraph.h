@@ -40,7 +40,7 @@ namespace analysis
 			void _updateOut();
 			
 		public:
-			SSAGraph(DataflowGraph& graph);
+			SSAGraph( DataflowGraph& graph );
 			void toSsa();
 			void fromSsa();
 	};

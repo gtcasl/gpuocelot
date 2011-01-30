@@ -12,6 +12,7 @@
 #define EXECUTIVE_COOPERATIVETHREADARRAY_H_INCLUDED
 
 #include <ocelot/executive/interface/CTAContext.h>
+#include <ocelot/executive/interface/ReconvergenceMechanism.h>
 #include <ocelot/executive/interface/EmulatorCallStack.h>
 #include <ocelot/ir/interface/PTXOperand.h>
 #include <ocelot/ir/interface/Kernel.h>
@@ -25,7 +26,6 @@ namespace executive {
 	/*! Defines state of cooperative thread array */
 	class CooperativeThreadArray {
 	public:
-		typedef std::vector<CTAContext> ContextStack;
 		typedef std::vector<CTABarrier> BarrierVector;
 		typedef std::vector<ir::PTXU64> RegisterFile;
 
@@ -54,6 +54,9 @@ namespace executive {
 
 		/* Get a snapshot of the current register file */
 		RegisterFile getCurrentRegisterFile() const;
+
+		/*! gets the active context of the cooperative thread array */
+		CTAContext& getActiveContext();
 		
 	protected:
 	
@@ -67,11 +70,13 @@ namespace executive {
 		/*! Dimensions of the cooperative thread array */
 		ir::Dim3 blockDim;
 
-		/*! Dimensions of the kernel */
-		ir::Dim3 gridDim;
+        /*! Dimensions of the kernel */
+        ir::Dim3 gridDim;
 
-		/*! Number of threads in CTA 
-				(equal to blockDim.x * blockDim.y * blockDim.z) */
+		/*!
+			Number of threads in CTA 
+				(equal to blockDim.x * blockDim.y * blockDim.z)
+		*/
 		int threadCount;
 
 		/*! Pointer to EmulatedKernel instance that this CTA is executing */
@@ -80,15 +85,15 @@ namespace executive {
 		/*! ID of block implemented by this CooperativeThreadArray instance */
 		ir::Dim3 blockId;
 
-		/*! Stack containing the active thread mask and the program counter */
-		ContextStack runtimeStack;
-
 		/*! Function call stack */
 		EmulatorCallStack functionCallStack;
 		
 		/*! Vector of named barriers */
 		BarrierVector barriers;
 
+		/*! \brief abstraction for reconvergence mechanism */
+		ReconvergenceMechanism *reconvergenceMechanism;
+		
 		/*! Counter incremented 4 times per instruction */
 		ir::PTXU64 clock;
 

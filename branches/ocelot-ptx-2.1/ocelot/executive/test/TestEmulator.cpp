@@ -220,7 +220,7 @@ public:
 		cta.setRegAsU64(0, 1, (PTXU64)block);
 
 		try {
-			cta.eval_Ld(cta.runtimeStack.back(), ld);
+			cta.eval_Ld(cta.getActiveContext(), ld);
 			if (cta.getRegAsU32(0, 0) != 0xa5a500a3) {
 				// load failed
 				result = false;
@@ -240,7 +240,7 @@ public:
 		ld.a.offset = 4;
 
 		try {
-			cta.eval_Ld(cta.runtimeStack.back(), ld);
+			cta.eval_Ld(cta.getActiveContext(), ld);
 			if (std::fabs(cta.getRegAsF32(0, 0) - 1.0f) > 0.1f) {
 				// load failed
 				result = false;
@@ -275,7 +275,7 @@ public:
 		block[2] = 0xC0490E56;	// -3.14159f
 
 		try {
-			cta.eval_Ld(cta.runtimeStack.back(), ld);
+			cta.eval_Ld(cta.getActiveContext(), ld);
 			if (std::fabs(cta.getRegAsF32(0, 0) + 3.14159f) > 0.1f) {
 				result = false;
 				status << "ld.global failed: got " 
@@ -349,7 +349,7 @@ public:
 		cta.setRegAsU32(0, 0, 74);
 
 		try {
-			cta.eval_St(cta.runtimeStack.back(), st);
+			cta.eval_St(cta.getActiveContext(), st);
 			if (u_block[0] != 74) {
 				result = false;
 				status << "st.global failed - got " << hex 
@@ -372,7 +372,7 @@ public:
 		st.a.type = PTXOperand::f32;
 
 		try {
-			cta.eval_St(cta.runtimeStack.back(), st);
+			cta.eval_St(cta.getActiveContext(), st);
 			if (std::fabs(f_block[0] - 24.3f) > 0.1f) {
 				result = false;
 				status << "st.global failed - got " << f_block[0] 

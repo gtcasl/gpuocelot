@@ -32,7 +32,7 @@ public:
 	bool valid;
 
 	EmulatedKernel *kernel;
-	CooperativeThreadArray cta;
+	CooperativeThreadArray* cta;
 	Module module;
 	
 	TestInstructions() {
@@ -70,13 +70,13 @@ public:
 			kernel = new EmulatedKernel(rawKernel, 0);
 			kernel->setKernelShape(threadCount, 1, 1);
 			kernel->setExternSharedMemorySize(64);
-			CooperativeThreadArray l_cta(kernel, ir::Dim3(), false);
-			cta = l_cta;
+			cta = new CooperativeThreadArray(kernel, ir::Dim3(), false);
 		}
 	}
 
 	~TestInstructions() {
 		delete kernel;
+		delete cta;
 	}
 
 	/*!
@@ -138,16 +138,16 @@ public:
 		using namespace executive;
 
 		bool result = true;
-		cta.reset();
+		cta->reset();
 
 		for (int j = 0; j < (int)kernel->registerCount(); j++) {
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsU32(i, j, i*(j+1));
+				cta->setRegAsU32(i, j, i*(j+1));
 			}
 		}
 		for (int j = 0; result && j < (int)kernel->registerCount(); j++) {
 			for (int i = 0; result && i < threadCount; i++) {
-				if (cta.getRegAsU32(i, j) != (ir::PTXU32)(i*(j+1))) {
+				if (cta->getRegAsU32(i, j) != (ir::PTXU32)(i*(j+1))) {
 					result = false;
 					status << "set/getRegAsU32 test failed\n";
 				}
@@ -157,8 +157,8 @@ public:
 		for (int i = 0; result && i < threadCount; i ++) {
 			// set as float, get as float
 			if (result) {
-				cta.setRegAsF32(i, 1, 12.5f);
-				if (std::fabs(cta.getRegAsF32(i, 1) - 12.5f) > 0.01f) {
+				cta->setRegAsF32(i, 1, 12.5f);
+				if (std::fabs(cta->getRegAsF32(i, 1) - 12.5f) > 0.01f) {
 					result = false;
 					status << "set/getRegAsF32 failed\n";
 				}
@@ -169,24 +169,24 @@ public:
 				PTXU64 value = 0xffffffffffffffffULL;
 				PTXU64 outval = 0xffffffffffff0000ULL;
 				PTXU64 encountered;
-				cta.setRegAsU64(i, 3, value);
-				cta.setRegAsU16(i, 3, 0);
-				encountered = cta.getRegAsU64(i, 3);
+				cta->setRegAsU64(i, 3, value);
+				cta->setRegAsU16(i, 3, 0);
+				encountered = cta->getRegAsU64(i, 3);
 				if (encountered != outval) {
 					result = false;
 					status << "setAsU64, setAsU16 failed: getAsU64 returned 0x" << std::hex;
 					status << encountered << ", expected: 0x" << outval << std::dec << " for thread " << i << "\n";
-					status << "read the register one more time: 0x" << std::hex << cta.getRegAsU64(i, 3) << dec << "\n";
+					status << "read the register one more time: 0x" << std::hex << cta->getRegAsU64(i, 3) << dec << "\n";
 				}
 			}
 
 			// set as float, get as uint
 			if (result) {
-				cta.setRegAsF32(i, 2, 1.0f);
-				if (cta.getRegAsU32(i, 2) != 0x3F800000) {
+				cta->setRegAsF32(i, 2, 1.0f);
+				if (cta->getRegAsU32(i, 2) != 0x3F800000) {
 					result = false;
 					status << "setRegAsF32, getRegAsU32 failed: 0x" 
-						<< std::hex <<  cta.getRegAsU32(i, 2) << std::dec <<  "\n";
+						<< std::hex <<  cta->getRegAsU32(i, 2) << std::dec <<  "\n";
 				}
 			}
 		}
@@ -213,7 +213,7 @@ public:
 
 		PTXInstruction ins;
 
-		cta.reset();
+		cta->reset();
 
 		// s16
 		//
@@ -223,13 +223,13 @@ public:
 			ins.d = reg("r2", PTXOperand::s16, 0);
 			ins.a = reg("r1", PTXOperand::s16, 1);
 			for (int t = 0; t < threadCount; t++) {
-				cta.setRegAsS16(t, 1, -t);
+				cta->setRegAsS16(t, 1, -t);
 			}
-			cta.eval_Abs(cta.runtimeStack.back(), ins);
+			cta->eval_Abs(cta->getActiveContext(), ins);
 			for (int t = 0; t < threadCount; t++) {
-				if (cta.getRegAsS16(t, 0) != t) {
+				if (cta->getRegAsS16(t, 0) != t) {
 					result = false;
-					status << "abs.s16 failed (thread " << t << "): expected " << t << ", got " << cta.getRegAsS16(t, 0) << "\n";
+					status << "abs.s16 failed (thread " << t << "): expected " << t << ", got " << cta->getRegAsS16(t, 0) << "\n";
 				}
 			}
 		}
@@ -242,13 +242,13 @@ public:
 			ins.d = reg("r2", PTXOperand::s32, 0);
 			ins.a = reg("r1", PTXOperand::s32, 1);
 			for (int t = 0; t < threadCount; t++) {
-				cta.setRegAsS32(t, 1, -t);
+				cta->setRegAsS32(t, 1, -t);
 			}
-			cta.eval_Abs(cta.runtimeStack.back(), ins);
+			cta->eval_Abs(cta->getActiveContext(), ins);
 			for (int t = 0; t < threadCount; t++) {
-				if (cta.getRegAsS32(t, 0) != t) {
+				if (cta->getRegAsS32(t, 0) != t) {
 					result = false;
-					status << "abs.s32 failed: expected " << t << ", got " << cta.getRegAsS32(t, 0) << "\n";
+					status << "abs.s32 failed: expected " << t << ", got " << cta->getRegAsS32(t, 0) << "\n";
 				}
 			}
 		}
@@ -261,13 +261,13 @@ public:
 			ins.d = reg("r2", PTXOperand::s64, 0);
 			ins.a = reg("r1", PTXOperand::s64, 1);
 			for (int t = 0; t < threadCount; t++) {
-				cta.setRegAsS64(t, 1, -t);
+				cta->setRegAsS64(t, 1, -t);
 			}
-			cta.eval_Abs(cta.runtimeStack.back(), ins);
+			cta->eval_Abs(cta->getActiveContext(), ins);
 			for (int t = 0; t < threadCount; t++) {
-				if (cta.getRegAsS64(t, 0) != t) {
+				if (cta->getRegAsS64(t, 0) != t) {
 					result = false;
-					status << "abs.s64 failed: expected " << t << ", got " << cta.getRegAsS64(t, 0) << "\n";
+					status << "abs.s64 failed: expected " << t << ", got " << cta->getRegAsS64(t, 0) << "\n";
 				}
 			}
 		}
@@ -280,14 +280,14 @@ public:
 			ins.d = reg("r2", PTXOperand::f32, 0);
 			ins.a = reg("r1", PTXOperand::f32, 1);
 			for (int t = 0; t < threadCount; t++) {
-				cta.setRegAsF32(t, 1, -(float)t * 2.76f);
-				cta.setRegAsF32(t, 0, 0);
+				cta->setRegAsF32(t, 1, -(float)t * 2.76f);
+				cta->setRegAsF32(t, 0, 0);
 			}
-			cta.eval_Abs(cta.runtimeStack.back(), ins);
+			cta->eval_Abs(cta->getActiveContext(), ins);
 			for (int t = 0; t < threadCount; t++) {
-				if (std::fabs(cta.getRegAsF32(t, 0) - (float)t * 2.76f) > 0.01f) {
+				if (std::fabs(cta->getRegAsF32(t, 0) - (float)t * 2.76f) > 0.01f) {
 					result = false;
-					status << "abs.f32 failed: expected " << (float)t * 2.76f << ", got " << cta.getRegAsF32(t, 0) << "\n";
+					status << "abs.f32 failed: expected " << (float)t * 2.76f << ", got " << cta->getRegAsF32(t, 0) << "\n";
 				}
 			}
 		}
@@ -300,14 +300,14 @@ public:
 			ins.d = reg("r2", PTXOperand::f64, 0);
 			ins.a = reg("r1", PTXOperand::f64, 1);
 			for (int t = 0; t < threadCount; t++) {
-				cta.setRegAsF64(t, 1, -(double)t * 9.76);
-				cta.setRegAsF64(t, 0, 0);
+				cta->setRegAsF64(t, 1, -(double)t * 9.76);
+				cta->setRegAsF64(t, 0, 0);
 			}
-			cta.eval_Abs(cta.runtimeStack.back(), ins);
+			cta->eval_Abs(cta->getActiveContext(), ins);
 			for (int t = 0; t < threadCount; t++) {
-				if (std::fabs(cta.getRegAsF64(t, 0) - (double)t * 9.76) > 0.01f) {
+				if (std::fabs(cta->getRegAsF64(t, 0) - (double)t * 9.76) > 0.01f) {
 					result = false;
-					status << "abs.f64 failed: expected " << t << ", got " << cta.getRegAsF64(t, 0) << "\n";
+					status << "abs.f64 failed: expected " << t << ", got " << cta->getRegAsF64(t, 0) << "\n";
 				}
 			}
 		}
@@ -332,13 +332,13 @@ public:
 			ins.d = reg("r3", PTXOperand::u16, 2);
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsU16(i, 0, (PTXU16)(i * 2));
-				cta.setRegAsU16(i, 1, (PTXU16)(4 + i));
-				cta.setRegAsU16(i, 2, 0);
+				cta->setRegAsU16(i, 0, (PTXU16)(i * 2));
+				cta->setRegAsU16(i, 1, (PTXU16)(4 + i));
+				cta->setRegAsU16(i, 2, 0);
 			}
-			cta.eval_Add(cta.runtimeStack.back(), ins);
+			cta->eval_Add(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
-				if (cta.getRegAsU16(i, 2) != (i*2+4+i)) {
+				if (cta->getRegAsU16(i, 2) != (i*2+4+i)) {
 					result = false;
 					status << "add.u16 incorrect\n";
 					break;
@@ -356,13 +356,13 @@ public:
 			ins.d = reg("r3", PTXOperand::u32, 2);
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsU32(i, 0, (PTXU32)(i * 2));
-				cta.setRegAsU32(i, 1, (PTXU32)(4 + i));
-				cta.setRegAsU32(i, 2, 0);
+				cta->setRegAsU32(i, 0, (PTXU32)(i * 2));
+				cta->setRegAsU32(i, 1, (PTXU32)(4 + i));
+				cta->setRegAsU32(i, 2, 0);
 			}
-			cta.eval_Add(cta.runtimeStack.back(), ins);
+			cta->eval_Add(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
-				if (cta.getRegAsU32(i, 2) != (PTXU32)(i*2+4+i)) {
+				if (cta->getRegAsU32(i, 2) != (PTXU32)(i*2+4+i)) {
 					result = false;
 					status << "add.u32 incorrect\n";
 					break;
@@ -380,13 +380,13 @@ public:
 			ins.d = reg("r3", PTXOperand::u64, 2);
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsU64(i, 0, (PTXU64)(i * 2));
-				cta.setRegAsU64(i, 1, (PTXU64)(4 + i));
-				cta.setRegAsU64(i, 2, 0);
+				cta->setRegAsU64(i, 0, (PTXU64)(i * 2));
+				cta->setRegAsU64(i, 1, (PTXU64)(4 + i));
+				cta->setRegAsU64(i, 2, 0);
 			}
-			cta.eval_Add(cta.runtimeStack.back(), ins);
+			cta->eval_Add(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
-				if (cta.getRegAsU64(i, 2) != (PTXU64)(i*2+4+i)) {
+				if (cta->getRegAsU64(i, 2) != (PTXU64)(i*2+4+i)) {
 					result = false;
 					status << "add.u64 incorrect\n";
 					break;
@@ -404,13 +404,13 @@ public:
 			ins.d = reg("r3", PTXOperand::s16, 2);
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsS16(i, 0, (PTXS16)(i * 2));
-				cta.setRegAsS16(i, 1, (PTXS16)(4 + i));
-				cta.setRegAsS16(i, 2, 0);
+				cta->setRegAsS16(i, 0, (PTXS16)(i * 2));
+				cta->setRegAsS16(i, 1, (PTXS16)(4 + i));
+				cta->setRegAsS16(i, 2, 0);
 			}
-			cta.eval_Add(cta.runtimeStack.back(), ins);
+			cta->eval_Add(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
-				if (cta.getRegAsS16(i, 2) != (i*2+4+i)) {
+				if (cta->getRegAsS16(i, 2) != (i*2+4+i)) {
 					result = false;
 					status << "add.s16 incorrect\n";
 					break;
@@ -428,13 +428,13 @@ public:
 			ins.d = reg("r3", PTXOperand::s32, 2);
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsS32(i, 0, (PTXS32)(i * 2));
-				cta.setRegAsS32(i, 1, (PTXS32)(4 + i));
-				cta.setRegAsS32(i, 2, 0);
+				cta->setRegAsS32(i, 0, (PTXS32)(i * 2));
+				cta->setRegAsS32(i, 1, (PTXS32)(4 + i));
+				cta->setRegAsS32(i, 2, 0);
 			}
-			cta.eval_Add(cta.runtimeStack.back(), ins);
+			cta->eval_Add(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
-				if (cta.getRegAsS32(i, 2) != (i*2+4+i)) {
+				if (cta->getRegAsS32(i, 2) != (i*2+4+i)) {
 					result = false;
 					status << "add.s32 incorrect\n";
 					break;
@@ -452,13 +452,13 @@ public:
 			ins.d = reg("r3", PTXOperand::s64, 2);
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsS64(i, 0, (PTXS64)(i * 2));
-				cta.setRegAsS64(i, 1, (PTXS64)(4 + i));
-				cta.setRegAsS64(i, 2, 0);
+				cta->setRegAsS64(i, 0, (PTXS64)(i * 2));
+				cta->setRegAsS64(i, 1, (PTXS64)(4 + i));
+				cta->setRegAsS64(i, 2, 0);
 			}
-			cta.eval_Add(cta.runtimeStack.back(), ins);
+			cta->eval_Add(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
-				if (cta.getRegAsS64(i, 2) != (i*2+4+i)) {
+				if (cta->getRegAsS64(i, 2) != (i*2+4+i)) {
 					result = false;
 					status << "add.s64 incorrect\n";
 					break;
@@ -476,16 +476,16 @@ public:
 			ins.d = reg("r3", PTXOperand::f32, 2);
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsF32(i, 0, (PTXF32)(i * 2));
-				cta.setRegAsF32(i, 1, (PTXF32)(4 + i));
-				cta.setRegAsF32(i, 2, 0);
+				cta->setRegAsF32(i, 0, (PTXF32)(i * 2));
+				cta->setRegAsF32(i, 1, (PTXF32)(4 + i));
+				cta->setRegAsF32(i, 2, 0);
 			}
-			cta.eval_Add(cta.runtimeStack.back(), ins);
+			cta->eval_Add(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
-				if (cta.getRegAsF32(i, 2) != (PTXF32)(i*2+4+i)) {
+				if (cta->getRegAsF32(i, 2) != (PTXF32)(i*2+4+i)) {
 					result = false;
 					status << "add.f32 incorrect [" << i << "] - expected: " << (float)(i*2+4+i) 
-						<< ", got " << cta.getRegAsF32(i, 2) << "\n";
+						<< ", got " << cta->getRegAsF32(i, 2) << "\n";
 					break;
 				}
 			}
@@ -501,16 +501,16 @@ public:
 			ins.d = reg("r3", PTXOperand::f64, 2);
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsF64(i, 0, (PTXF64)(i * 2));
-				cta.setRegAsF64(i, 1, (PTXF64)(4 + i));
-				cta.setRegAsF64(i, 2, 0.0);
+				cta->setRegAsF64(i, 0, (PTXF64)(i * 2));
+				cta->setRegAsF64(i, 1, (PTXF64)(4 + i));
+				cta->setRegAsF64(i, 2, 0.0);
 			}
-			cta.eval_Add(cta.runtimeStack.back(), ins);
+			cta->eval_Add(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
-				if (std::fabs(cta.getRegAsF64(i, 2) - (double)(i*2+4+i)) > 0.1) {
+				if (std::fabs(cta->getRegAsF64(i, 2) - (double)(i*2+4+i)) > 0.1) {
 					result = false;
 					status << "add.f64 incorrect [" << i << "] - expected: " << (PTXF64)(i*2+4+i) 
-						<< ", got " << cta.getRegAsF64(i, 2) << "\n";
+						<< ", got " << cta->getRegAsF64(i, 2) << "\n";
 					break;
 				}
 			}
@@ -535,20 +535,20 @@ public:
 			ins.d = reg("r6", PTXOperand::u32, 5);
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsU32(i, 0, (PTXU32)(i * 2));
-				cta.setRegAsU32(i, 5, 0);
-				cta.setRegAsU32(i, 6, 1);	// set the carry flag
+				cta->setRegAsU32(i, 0, (PTXU32)(i * 2));
+				cta->setRegAsU32(i, 5, 0);
+				cta->setRegAsU32(i, 6, 1);	// set the carry flag
 			}
-			cta.eval_AddC(cta.runtimeStack.back(), ins);
+			cta->eval_AddC(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
 				PTXU32 expected = (0x0fffffffe + (PTXU32)(i*2) + 1);
-				if (cta.getRegAsU32(i, 5) != expected) {
+				if (cta->getRegAsU32(i, 5) != expected) {
 					result = false;
 					status << "addc.u32 incorrect\n";
 					break;
 				}
 				// verify carry		
-				if (cta.getRegAsU32(i, 6) != 1) {
+				if (cta->getRegAsU32(i, 6) != 1) {
 					result = false;
 					status << "addc.u32 failed to set carry bit\n";
 					break;
@@ -566,20 +566,20 @@ public:
 			ins.d = reg("r6", PTXOperand::s32, 5);
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsS32(i, 0, (PTXS32)(i * 2));
-				cta.setRegAsS32(i, 5, 0);
-				cta.setRegAsU32(i, 6, 1);	// set the carry flag
+				cta->setRegAsS32(i, 0, (PTXS32)(i * 2));
+				cta->setRegAsS32(i, 5, 0);
+				cta->setRegAsU32(i, 6, 1);	// set the carry flag
 			}
-			cta.eval_AddC(cta.runtimeStack.back(), ins);
+			cta->eval_AddC(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
 				PTXS32 expected = (0x0fffffffe + (PTXS32)(i*2) + 1);
-				if (cta.getRegAsS32(i, 5) != expected) {
+				if (cta->getRegAsS32(i, 5) != expected) {
 					result = false;
 					status << "addc.s32 incorrect\n";
 					break;
 				}
 				// verify carry			
-				if (cta.getRegAsS32(i, 6) != 1) {
+				if (cta->getRegAsS32(i, 6) != 1) {
 					result = false;
 					status << "addc.s32 failed to set carry bit\n";
 					break;
@@ -605,13 +605,13 @@ public:
 			ins.d = reg("r3", PTXOperand::u16, 2);
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsU16(i, 0, (PTXU16)(9 + i * 2));
-				cta.setRegAsU16(i, 1, (PTXU16)(4 + i));
-				cta.setRegAsU16(i, 2, 0);
+				cta->setRegAsU16(i, 0, (PTXU16)(9 + i * 2));
+				cta->setRegAsU16(i, 1, (PTXU16)(4 + i));
+				cta->setRegAsU16(i, 2, 0);
 			}
-			cta.eval_Sub(cta.runtimeStack.back(), ins);
+			cta->eval_Sub(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
-				if (cta.getRegAsU16(i, 2) != (9 + i*2-(4+i))) {
+				if (cta->getRegAsU16(i, 2) != (9 + i*2-(4+i))) {
 					result = false;
 					status << "sub.u16 incorrect\n";
 					break;
@@ -628,13 +628,13 @@ public:
 			ins.d = reg("r3", PTXOperand::u32, 2);
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsU32(i, 0, (PTXU32)(9 + i * 2));
-				cta.setRegAsU32(i, 1, (PTXU32)(4 + i));
-				cta.setRegAsU32(i, 2, 0);
+				cta->setRegAsU32(i, 0, (PTXU32)(9 + i * 2));
+				cta->setRegAsU32(i, 1, (PTXU32)(4 + i));
+				cta->setRegAsU32(i, 2, 0);
 			}
-			cta.eval_Sub(cta.runtimeStack.back(), ins);
+			cta->eval_Sub(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
-				if (cta.getRegAsU32(i, 2) != (PTXU32)(9 + i*2 - (4+i))) {
+				if (cta->getRegAsU32(i, 2) != (PTXU32)(9 + i*2 - (4+i))) {
 					result = false;
 					status << "sub.u32 incorrect\n";
 					break;
@@ -651,13 +651,13 @@ public:
 			ins.d = reg("r3", PTXOperand::u64, 2);
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsU64(i, 0, (PTXU64)(9 + i * 2));
-				cta.setRegAsU64(i, 1, (PTXU64)(4 + i));
-				cta.setRegAsU64(i, 2, 0);
+				cta->setRegAsU64(i, 0, (PTXU64)(9 + i * 2));
+				cta->setRegAsU64(i, 1, (PTXU64)(4 + i));
+				cta->setRegAsU64(i, 2, 0);
 			}
-			cta.eval_Sub(cta.runtimeStack.back(), ins);
+			cta->eval_Sub(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
-				if (cta.getRegAsU64(i, 2) != (PTXU64)(9 + i*2 - (4+i))) {
+				if (cta->getRegAsU64(i, 2) != (PTXU64)(9 + i*2 - (4+i))) {
 					result = false;
 					status << "sub.u64 incorrect\n";
 					break;
@@ -674,13 +674,13 @@ public:
 			ins.d = reg("r3", PTXOperand::s16, 2);
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsS16(i, 0, (PTXS16)(i * 2));
-				cta.setRegAsS16(i, 1, (PTXS16)(4 + i));
-				cta.setRegAsS16(i, 2, 0);
+				cta->setRegAsS16(i, 0, (PTXS16)(i * 2));
+				cta->setRegAsS16(i, 1, (PTXS16)(4 + i));
+				cta->setRegAsS16(i, 2, 0);
 			}
-			cta.eval_Sub(cta.runtimeStack.back(), ins);
+			cta->eval_Sub(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
-				if (cta.getRegAsS16(i, 2) != (i*2-(4+i))) {
+				if (cta->getRegAsS16(i, 2) != (i*2-(4+i))) {
 					result = false;
 					status << "sub.s16 incorrect\n";
 					break;
@@ -697,13 +697,13 @@ public:
 			ins.d = reg("r3", PTXOperand::s32, 2);
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsS32(i, 0, (PTXS32)(i * 2));
-				cta.setRegAsS32(i, 1, (PTXS32)(4 + i));
-				cta.setRegAsS32(i, 2, 0);
+				cta->setRegAsS32(i, 0, (PTXS32)(i * 2));
+				cta->setRegAsS32(i, 1, (PTXS32)(4 + i));
+				cta->setRegAsS32(i, 2, 0);
 			}
-			cta.eval_Sub(cta.runtimeStack.back(), ins);
+			cta->eval_Sub(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
-				if (cta.getRegAsS32(i, 2) != (i*2-(4+i))) {
+				if (cta->getRegAsS32(i, 2) != (i*2-(4+i))) {
 					result = false;
 					status << "sub.s32 incorrect\n";
 					break;
@@ -720,13 +720,13 @@ public:
 			ins.d = reg("r3", PTXOperand::s64, 2);
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsS64(i, 0, (PTXS64)(i * 2));
-				cta.setRegAsS64(i, 1, (PTXS64)(4 + i));
-				cta.setRegAsS64(i, 2, 0);
+				cta->setRegAsS64(i, 0, (PTXS64)(i * 2));
+				cta->setRegAsS64(i, 1, (PTXS64)(4 + i));
+				cta->setRegAsS64(i, 2, 0);
 			}
-			cta.eval_Sub(cta.runtimeStack.back(), ins);
+			cta->eval_Sub(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
-				if (cta.getRegAsS64(i, 2) != (i*2-(4+i))) {
+				if (cta->getRegAsS64(i, 2) != (i*2-(4+i))) {
 					result = false;
 					status << "sub.s64 incorrect\n";
 					break;
@@ -743,16 +743,16 @@ public:
 			ins.d = reg("r3", PTXOperand::f32, 2);
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsF32(i, 0, (PTXF32)(i * 2));
-				cta.setRegAsF32(i, 1, (PTXF32)(4 + i));
-				cta.setRegAsF32(i, 2, 0);
+				cta->setRegAsF32(i, 0, (PTXF32)(i * 2));
+				cta->setRegAsF32(i, 1, (PTXF32)(4 + i));
+				cta->setRegAsF32(i, 2, 0);
 			}
-			cta.eval_Sub(cta.runtimeStack.back(), ins);
+			cta->eval_Sub(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
-				if (cta.getRegAsF32(i, 2) != (PTXF32)(i*2-(4+i))) {
+				if (cta->getRegAsF32(i, 2) != (PTXF32)(i*2-(4+i))) {
 					result = false;
 					status << "sub.f32 incorrect [" << i << "] - expected: " << (float)(i*2+4+i) 
-						<< ", got " << cta.getRegAsF32(i, 2) << "\n";
+						<< ", got " << cta->getRegAsF32(i, 2) << "\n";
 					break;
 				}
 			}
@@ -767,16 +767,16 @@ public:
 			ins.d = reg("r3", PTXOperand::f64, 2);
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsF64(i, 0, (PTXF64)(i * 2));
-				cta.setRegAsF64(i, 1, (PTXF64)(4 + i));
-				cta.setRegAsF64(i, 2, 0.0);
+				cta->setRegAsF64(i, 0, (PTXF64)(i * 2));
+				cta->setRegAsF64(i, 1, (PTXF64)(4 + i));
+				cta->setRegAsF64(i, 2, 0.0);
 			}
-			cta.eval_Sub(cta.runtimeStack.back(), ins);
+			cta->eval_Sub(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
-				if (std::fabs(cta.getRegAsF64(i, 2) - (double)(i*2-(4+i))) > 0.1) {
+				if (std::fabs(cta->getRegAsF64(i, 2) - (double)(i*2-(4+i))) > 0.1) {
 					result = false;
 					status << "sub.f64 incorrect [" << i << "] - expected: " << (PTXF64)(i*2+4+i) 
-						<< ", got " << cta.getRegAsF64(i, 2) << "\n";
+						<< ", got " << cta->getRegAsF64(i, 2) << "\n";
 					break;
 				}
 			}
@@ -802,20 +802,20 @@ public:
 			ins.d = reg("r6", PTXOperand::u32, 5);
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsU32(i, 0, (PTXU32)(i * 2));
-				cta.setRegAsU32(i, 5, 0);
-				cta.setRegAsU32(i, 6, 1);	// set the carry flag
+				cta->setRegAsU32(i, 0, (PTXU32)(i * 2));
+				cta->setRegAsU32(i, 5, 0);
+				cta->setRegAsU32(i, 6, 1);	// set the carry flag
 			}
-			cta.eval_SubC(cta.runtimeStack.back(), ins);
+			cta->eval_SubC(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
 				PTXU32 expected = (0x0fffffffe - ((PTXU32)(i*2)) + 1);
-				if (cta.getRegAsU32(i, 5) != expected) {
+				if (cta->getRegAsU32(i, 5) != expected) {
 					result = false;
 					status << "subc.u32 incorrect\n";
 					break;
 				}
 				// verify carry		
-				if (cta.getRegAsU32(i, 6) != 1) {
+				if (cta->getRegAsU32(i, 6) != 1) {
 					result = false;
 					status << "subc.u32 failed to set borrow bit\n";
 					break;
@@ -834,20 +834,20 @@ public:
 			ins.d = reg("r6", PTXOperand::s32, 5);
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsS32(i, 0, (PTXS32)(i * 2));
-				cta.setRegAsS32(i, 5, 0);
-				cta.setRegAsU32(i, 6, 1);	// set the carry flag
+				cta->setRegAsS32(i, 0, (PTXS32)(i * 2));
+				cta->setRegAsS32(i, 5, 0);
+				cta->setRegAsU32(i, 6, 1);	// set the carry flag
 			}
-			cta.eval_SubC(cta.runtimeStack.back(), ins);
+			cta->eval_SubC(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
 				PTXS32 expected = (0x0fffffffe - ((PTXS32)(i*2)) + 1);
-				if (cta.getRegAsS32(i, 5) != expected) {
+				if (cta->getRegAsS32(i, 5) != expected) {
 					result = false;
 					status << "subc.s32 incorrect\n";
 					break;
 				}
 				// verify carry			
-				if (cta.getRegAsS32(i, 6) != 1) {
+				if (cta->getRegAsS32(i, 6) != 1) {
 					result = false;
 					status << "subc.s32 failed to set borrow bit\n";
 					break;
@@ -878,16 +878,16 @@ public:
 			ins.d = reg("r4", PTXOperand::u16, 3);
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsU16(i, 0, (PTXU16)(i * 2));
-				cta.setRegAsU16(i, 1, (PTXU16)(4 + i));
-				cta.setRegAsU16(i, 2, 2);
-				cta.setRegAsU16(i, 3, 0);
+				cta->setRegAsU16(i, 0, (PTXU16)(i * 2));
+				cta->setRegAsU16(i, 1, (PTXU16)(4 + i));
+				cta->setRegAsU16(i, 2, 2);
+				cta->setRegAsU16(i, 3, 0);
 			}
-			cta.eval_Sad(cta.runtimeStack.back(), ins);
+			cta->eval_Sad(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
 				PTXU16 a = (i * 2), b = (4 + i), c = 2;
 				PTXU16 expected = c + ((a < b) ? b-a : a-b);
-				if (cta.getRegAsU16(i, 2) != expected) {
+				if (cta->getRegAsU16(i, 2) != expected) {
 					result = false;
 					status << "sad.u16 incorrect\n";
 					break;
@@ -905,16 +905,16 @@ public:
 			ins.d = reg("r4", PTXOperand::u32, 3);
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsU32(i, 0, (PTXU32)(i * 2));
-				cta.setRegAsU32(i, 1, (PTXU32)(4 + i));
-				cta.setRegAsU32(i, 2, 2);
-				cta.setRegAsU32(i, 3, 0);
+				cta->setRegAsU32(i, 0, (PTXU32)(i * 2));
+				cta->setRegAsU32(i, 1, (PTXU32)(4 + i));
+				cta->setRegAsU32(i, 2, 2);
+				cta->setRegAsU32(i, 3, 0);
 			}
-			cta.eval_Sad(cta.runtimeStack.back(), ins);
+			cta->eval_Sad(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
 				PTXU32 a = (i * 2), b = (4 + i), c = 2;
 				PTXU32 expected = c + ((a < b) ? b-a : a-b);
-				if (cta.getRegAsU32(i, 2) != expected) {
+				if (cta->getRegAsU32(i, 2) != expected) {
 					result = false;
 					status << "sad.u32 incorrect\n";
 					break;
@@ -932,16 +932,16 @@ public:
 			ins.d = reg("r4", PTXOperand::u64, 3);
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsU64(i, 0, (PTXU64)(i * 2));
-				cta.setRegAsU64(i, 1, (PTXU64)(4 + i));
-				cta.setRegAsU64(i, 2, 2);
-				cta.setRegAsU64(i, 3, 0);
+				cta->setRegAsU64(i, 0, (PTXU64)(i * 2));
+				cta->setRegAsU64(i, 1, (PTXU64)(4 + i));
+				cta->setRegAsU64(i, 2, 2);
+				cta->setRegAsU64(i, 3, 0);
 			}
-			cta.eval_Sad(cta.runtimeStack.back(), ins);
+			cta->eval_Sad(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
 				PTXU64 a = (i * 2), b = (4 + i), c = 2;
 				PTXU64 expected = c + ((a < b) ? b-a : a-b);
-				if (cta.getRegAsU64(i, 2) != expected) {
+				if (cta->getRegAsU64(i, 2) != expected) {
 					result = false;
 					status << "sad.u64 incorrect\n";
 					break;
@@ -959,16 +959,16 @@ public:
 			ins.d = reg("r4", PTXOperand::s16, 3);
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsS16(i, 0, (PTXS16)(i * 2));
-				cta.setRegAsS16(i, 1, (PTXS16)(4 + i));
-				cta.setRegAsS16(i, 2, 2);
-				cta.setRegAsS16(i, 3, 0);
+				cta->setRegAsS16(i, 0, (PTXS16)(i * 2));
+				cta->setRegAsS16(i, 1, (PTXS16)(4 + i));
+				cta->setRegAsS16(i, 2, 2);
+				cta->setRegAsS16(i, 3, 0);
 			}
-			cta.eval_Sad(cta.runtimeStack.back(), ins);
+			cta->eval_Sad(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
 				PTXS16 a = (i * 2), b = (4 + i), c = 2;
 				PTXS16 expected = c + ((a < b) ? b-a : a-b);
-				if (cta.getRegAsS16(i, 2) != expected) {
+				if (cta->getRegAsS16(i, 2) != expected) {
 					result = false;
 					status << "sad.s16 incorrect\n";
 					break;
@@ -986,16 +986,16 @@ public:
 			ins.d = reg("r4", PTXOperand::s32, 3);
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsS32(i, 0, (PTXS32)(i * 2));
-				cta.setRegAsS32(i, 1, (PTXS32)(4 + i));
-				cta.setRegAsS32(i, 2, 2);
-				cta.setRegAsS32(i, 3, 0);
+				cta->setRegAsS32(i, 0, (PTXS32)(i * 2));
+				cta->setRegAsS32(i, 1, (PTXS32)(4 + i));
+				cta->setRegAsS32(i, 2, 2);
+				cta->setRegAsS32(i, 3, 0);
 			}
-			cta.eval_Sad(cta.runtimeStack.back(), ins);
+			cta->eval_Sad(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
 				PTXS32 a = (i * 2), b = (4 + i), c = 2;
 				PTXS32 expected = c + ((a < b) ? b-a : a-b);
-				if (cta.getRegAsS32(i, 2) != expected) {
+				if (cta->getRegAsS32(i, 2) != expected) {
 					result = false;
 					status << "sad.s32 incorrect\n";
 					break;
@@ -1013,16 +1013,16 @@ public:
 			ins.d = reg("r4", PTXOperand::u64, 3);
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsS64(i, 0, (PTXS64)(i * 2));
-				cta.setRegAsS64(i, 1, (PTXS64)(4 + i));
-				cta.setRegAsS64(i, 2, 2);
-				cta.setRegAsS64(i, 3, 0);
+				cta->setRegAsS64(i, 0, (PTXS64)(i * 2));
+				cta->setRegAsS64(i, 1, (PTXS64)(4 + i));
+				cta->setRegAsS64(i, 2, 2);
+				cta->setRegAsS64(i, 3, 0);
 			}
-			cta.eval_Sad(cta.runtimeStack.back(), ins);
+			cta->eval_Sad(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
 				PTXS64 a = (i * 2), b = (4 + i), c = 2;
 				PTXS64 expected = c + ((a < b) ? b-a : a-b);
-				if (cta.getRegAsS64(i, 2) != expected) {
+				if (cta->getRegAsS64(i, 2) != expected) {
 					result = false;
 					status << "sad.s64 incorrect\n";
 					break;
@@ -1051,14 +1051,14 @@ public:
 			ins.d = reg("r3", PTXOperand::u16, 2);
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsU16(i, 0, (PTXU16)(i * 2));
-				cta.setRegAsU16(i, 1, (PTXU16)(4 + i));
-				cta.setRegAsU16(i, 2, 0);
+				cta->setRegAsU16(i, 0, (PTXU16)(i * 2));
+				cta->setRegAsU16(i, 1, (PTXU16)(4 + i));
+				cta->setRegAsU16(i, 2, 0);
 			}
-			cta.eval_Min(cta.runtimeStack.back(), ins);
+			cta->eval_Min(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
 				PTXU16 expected = argmin(i*2, 4+i);
-				if (cta.getRegAsU16(i, 2) != expected) {
+				if (cta->getRegAsU16(i, 2) != expected) {
 					result = false;
 					status << "min.u16 incorrect\n";
 					break;
@@ -1075,14 +1075,14 @@ public:
 			ins.d = reg("r3", PTXOperand::u32, 2);
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsU32(i, 0, (PTXU32)(i * 2));
-				cta.setRegAsU32(i, 1, (PTXU32)(4 + i));
-				cta.setRegAsU32(i, 2, 0);
+				cta->setRegAsU32(i, 0, (PTXU32)(i * 2));
+				cta->setRegAsU32(i, 1, (PTXU32)(4 + i));
+				cta->setRegAsU32(i, 2, 0);
 			}
-			cta.eval_Min(cta.runtimeStack.back(), ins);
+			cta->eval_Min(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
 				PTXU32 expected = argmin(i*2, 4+i);
-				if (cta.getRegAsU32(i, 2) != expected) {
+				if (cta->getRegAsU32(i, 2) != expected) {
 					result = false;
 					status << "min.u32 incorrect\n";
 					break;
@@ -1099,14 +1099,14 @@ public:
 			ins.d = reg("r3", PTXOperand::u64, 2);
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsU64(i, 0, (PTXU64)(i * 2));
-				cta.setRegAsU64(i, 1, (PTXU64)(4 + i));
-				cta.setRegAsU64(i, 2, 0);
+				cta->setRegAsU64(i, 0, (PTXU64)(i * 2));
+				cta->setRegAsU64(i, 1, (PTXU64)(4 + i));
+				cta->setRegAsU64(i, 2, 0);
 			}
-			cta.eval_Min(cta.runtimeStack.back(), ins);
+			cta->eval_Min(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
 				PTXU64 expected = argmin(i*2, 4+i);
-				if (cta.getRegAsU64(i, 2) != expected) {
+				if (cta->getRegAsU64(i, 2) != expected) {
 					result = false;
 					status << "min.u64 incorrect\n";
 					break;
@@ -1123,14 +1123,14 @@ public:
 			ins.d = reg("r3", PTXOperand::s16, 2);
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsS16(i, 0, (PTXS16)(i * 2));
-				cta.setRegAsS16(i, 1, (PTXS16)(4 + i));
-				cta.setRegAsS16(i, 2, 0);
+				cta->setRegAsS16(i, 0, (PTXS16)(i * 2));
+				cta->setRegAsS16(i, 1, (PTXS16)(4 + i));
+				cta->setRegAsS16(i, 2, 0);
 			}
-			cta.eval_Min(cta.runtimeStack.back(), ins);
+			cta->eval_Min(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
 				PTXS16 expected = argmin(i*2, 4+i);
-				if (cta.getRegAsS16(i, 2) != expected) {
+				if (cta->getRegAsS16(i, 2) != expected) {
 					result = false;
 					status << "min.s16 incorrect\n";
 					break;
@@ -1147,14 +1147,14 @@ public:
 			ins.d = reg("r3", PTXOperand::s32, 2);
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsS32(i, 0, (PTXS32)(i * 2));
-				cta.setRegAsS32(i, 1, (PTXS32)(4 + i));
-				cta.setRegAsS32(i, 2, 0);
+				cta->setRegAsS32(i, 0, (PTXS32)(i * 2));
+				cta->setRegAsS32(i, 1, (PTXS32)(4 + i));
+				cta->setRegAsS32(i, 2, 0);
 			}
-			cta.eval_Min(cta.runtimeStack.back(), ins);
+			cta->eval_Min(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
 				PTXS32 expected = argmin(i*2, 4+i);
-				if (cta.getRegAsS32(i, 2) != expected) {
+				if (cta->getRegAsS32(i, 2) != expected) {
 					result = false;
 					status << "min.s32 incorrect\n";
 					break;
@@ -1171,14 +1171,14 @@ public:
 			ins.d = reg("r3", PTXOperand::s64, 2);
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsS64(i, 0, (PTXS64)(i * 2));
-				cta.setRegAsS64(i, 1, (PTXS64)(4 + i));
-				cta.setRegAsS64(i, 2, 0);
+				cta->setRegAsS64(i, 0, (PTXS64)(i * 2));
+				cta->setRegAsS64(i, 1, (PTXS64)(4 + i));
+				cta->setRegAsS64(i, 2, 0);
 			}
-			cta.eval_Min(cta.runtimeStack.back(), ins);
+			cta->eval_Min(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
 				PTXS64 expected = argmin(i*2, 4+i);
-				if (cta.getRegAsS64(i, 2) != expected) {
+				if (cta->getRegAsS64(i, 2) != expected) {
 					result = false;
 					status << "min.s64 incorrect\n";
 					break;
@@ -1195,17 +1195,17 @@ public:
 			ins.d = reg("r3", PTXOperand::f32, 2);
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsF32(i, 0, (PTXF32)(i * 2));
-				cta.setRegAsF32(i, 1, (PTXF32)(4 + i));
-				cta.setRegAsF32(i, 2, 0);
+				cta->setRegAsF32(i, 0, (PTXF32)(i * 2));
+				cta->setRegAsF32(i, 1, (PTXF32)(4 + i));
+				cta->setRegAsF32(i, 2, 0);
 			}
-			cta.eval_Min(cta.runtimeStack.back(), ins);
+			cta->eval_Min(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
 				PTXF32 expected = argmin(i*2, 4+i);
-				if (cta.getRegAsF32(i, 2) != expected) {
+				if (cta->getRegAsF32(i, 2) != expected) {
 					result = false;
 					status << "min.f32 incorrect [" << i << "] - expected: " << (float)(i*2+4+i) 
-						<< ", got " << cta.getRegAsF32(i, 2) << "\n";
+						<< ", got " << cta->getRegAsF32(i, 2) << "\n";
 					break;
 				}
 			}
@@ -1220,17 +1220,17 @@ public:
 			ins.d = reg("r3", PTXOperand::f64, 2);
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsF64(i, 0, (PTXF64)(i * 2));
-				cta.setRegAsF64(i, 1, (PTXF64)(4 + i));
-				cta.setRegAsF64(i, 2, 0.0);
+				cta->setRegAsF64(i, 0, (PTXF64)(i * 2));
+				cta->setRegAsF64(i, 1, (PTXF64)(4 + i));
+				cta->setRegAsF64(i, 2, 0.0);
 			}
-			cta.eval_Min(cta.runtimeStack.back(), ins);
+			cta->eval_Min(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
 				PTXF64 expected = argmin(i*2, 4+i);
-				if (std::fabs(cta.getRegAsF64(i, 2) - expected) > 0.1) {
+				if (std::fabs(cta->getRegAsF64(i, 2) - expected) > 0.1) {
 					result = false;
 					status << "min.f64 incorrect [" << i << "] - expected: " << expected 
-						<< ", got " << cta.getRegAsF64(i, 2) << "\n";
+						<< ", got " << cta->getRegAsF64(i, 2) << "\n";
 					break;
 				}
 			}
@@ -1255,14 +1255,14 @@ public:
 			ins.d = reg("r3", PTXOperand::u16, 2);
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsU16(i, 0, (PTXU16)(i * 2));
-				cta.setRegAsU16(i, 1, (PTXU16)(4 + i));
-				cta.setRegAsU16(i, 2, 0);
+				cta->setRegAsU16(i, 0, (PTXU16)(i * 2));
+				cta->setRegAsU16(i, 1, (PTXU16)(4 + i));
+				cta->setRegAsU16(i, 2, 0);
 			}
-			cta.eval_Max(cta.runtimeStack.back(), ins);
+			cta->eval_Max(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
 				PTXU16 expected = argmax(i*2, 4+i);
-				if (cta.getRegAsU16(i, 2) != expected) {
+				if (cta->getRegAsU16(i, 2) != expected) {
 					result = false;
 					status << "max.u16 incorrect\n";
 					break;
@@ -1279,14 +1279,14 @@ public:
 			ins.d = reg("r3", PTXOperand::u32, 2);
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsU32(i, 0, (PTXU32)(i * 2));
-				cta.setRegAsU32(i, 1, (PTXU32)(4 + i));
-				cta.setRegAsU32(i, 2, 0);
+				cta->setRegAsU32(i, 0, (PTXU32)(i * 2));
+				cta->setRegAsU32(i, 1, (PTXU32)(4 + i));
+				cta->setRegAsU32(i, 2, 0);
 			}
-			cta.eval_Max(cta.runtimeStack.back(), ins);
+			cta->eval_Max(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
 				PTXU32 expected = argmax(i*2, 4+i);
-				if (cta.getRegAsU32(i, 2) != expected) {
+				if (cta->getRegAsU32(i, 2) != expected) {
 					result = false;
 					status << "max.u32 incorrect\n";
 					break;
@@ -1303,14 +1303,14 @@ public:
 			ins.d = reg("r3", PTXOperand::u64, 2);
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsU64(i, 0, (PTXU64)(i * 2));
-				cta.setRegAsU64(i, 1, (PTXU64)(4 + i));
-				cta.setRegAsU64(i, 2, 0);
+				cta->setRegAsU64(i, 0, (PTXU64)(i * 2));
+				cta->setRegAsU64(i, 1, (PTXU64)(4 + i));
+				cta->setRegAsU64(i, 2, 0);
 			}
-			cta.eval_Max(cta.runtimeStack.back(), ins);
+			cta->eval_Max(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
 				PTXU64 expected = argmax(i*2, 4+i);
-				if (cta.getRegAsU64(i, 2) != expected) {
+				if (cta->getRegAsU64(i, 2) != expected) {
 					result = false;
 					status << "max.u64 incorrect\n";
 					break;
@@ -1327,14 +1327,14 @@ public:
 			ins.d = reg("r3", PTXOperand::s16, 2);
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsS16(i, 0, (PTXS16)(i * 2));
-				cta.setRegAsS16(i, 1, (PTXS16)(4 + i));
-				cta.setRegAsS16(i, 2, 0);
+				cta->setRegAsS16(i, 0, (PTXS16)(i * 2));
+				cta->setRegAsS16(i, 1, (PTXS16)(4 + i));
+				cta->setRegAsS16(i, 2, 0);
 			}
-			cta.eval_Max(cta.runtimeStack.back(), ins);
+			cta->eval_Max(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
 				PTXS16 expected = argmax(i*2, 4+i);
-				if (cta.getRegAsS16(i, 2) != expected) {
+				if (cta->getRegAsS16(i, 2) != expected) {
 					result = false;
 					status << "max.s16 incorrect\n";
 					break;
@@ -1351,14 +1351,14 @@ public:
 			ins.d = reg("r3", PTXOperand::s32, 2);
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsS32(i, 0, (PTXS32)(i * 2));
-				cta.setRegAsS32(i, 1, (PTXS32)(4 + i));
-				cta.setRegAsS32(i, 2, 0);
+				cta->setRegAsS32(i, 0, (PTXS32)(i * 2));
+				cta->setRegAsS32(i, 1, (PTXS32)(4 + i));
+				cta->setRegAsS32(i, 2, 0);
 			}
-			cta.eval_Max(cta.runtimeStack.back(), ins);
+			cta->eval_Max(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
 				PTXS32 expected = argmax(i*2, 4+i);
-				if (cta.getRegAsS32(i, 2) != expected) {
+				if (cta->getRegAsS32(i, 2) != expected) {
 					result = false;
 					status << "max.s32 incorrect\n";
 					break;
@@ -1375,14 +1375,14 @@ public:
 			ins.d = reg("r3", PTXOperand::s64, 2);
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsS64(i, 0, (PTXS64)(i * 2));
-				cta.setRegAsS64(i, 1, (PTXS64)(4 + i));
-				cta.setRegAsS64(i, 2, 0);
+				cta->setRegAsS64(i, 0, (PTXS64)(i * 2));
+				cta->setRegAsS64(i, 1, (PTXS64)(4 + i));
+				cta->setRegAsS64(i, 2, 0);
 			}
-			cta.eval_Max(cta.runtimeStack.back(), ins);
+			cta->eval_Max(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
 				PTXS64 expected = argmax(i*2, 4+i);
-				if (cta.getRegAsS64(i, 2) != expected) {
+				if (cta->getRegAsS64(i, 2) != expected) {
 					result = false;
 					status << "max.s64 incorrect\n";
 					break;
@@ -1399,17 +1399,17 @@ public:
 			ins.d = reg("r3", PTXOperand::f32, 2);
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsF32(i, 0, (PTXF32)(i * 2));
-				cta.setRegAsF32(i, 1, (PTXF32)(4 + i));
-				cta.setRegAsF32(i, 2, 0);
+				cta->setRegAsF32(i, 0, (PTXF32)(i * 2));
+				cta->setRegAsF32(i, 1, (PTXF32)(4 + i));
+				cta->setRegAsF32(i, 2, 0);
 			}
-			cta.eval_Max(cta.runtimeStack.back(), ins);
+			cta->eval_Max(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
 				PTXF32 expected = argmax(i*2, 4+i);
-				if (cta.getRegAsF32(i, 2) != expected) {
+				if (cta->getRegAsF32(i, 2) != expected) {
 					result = false;
 					status << "max.f32 incorrect [" << i << "] - expected: " << (float)(i*2+4+i) 
-						<< ", got " << cta.getRegAsF32(i, 2) << "\n";
+						<< ", got " << cta->getRegAsF32(i, 2) << "\n";
 					break;
 				}
 			}
@@ -1424,17 +1424,17 @@ public:
 			ins.d = reg("r3", PTXOperand::f64, 2);
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsF64(i, 0, (PTXF64)(i * 2));
-				cta.setRegAsF64(i, 1, (PTXF64)(4 + i));
-				cta.setRegAsF64(i, 2, 0.0);
+				cta->setRegAsF64(i, 0, (PTXF64)(i * 2));
+				cta->setRegAsF64(i, 1, (PTXF64)(4 + i));
+				cta->setRegAsF64(i, 2, 0.0);
 			}
-			cta.eval_Max(cta.runtimeStack.back(), ins);
+			cta->eval_Max(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
 				PTXF64 expected = argmax(i*2, 4+i);
-				if (std::fabs(cta.getRegAsF64(i, 2) - expected) > 0.1) {
+				if (std::fabs(cta->getRegAsF64(i, 2) - expected) > 0.1) {
 					result = false;
 					status << "max.f64 incorrect [" << i << "] - expected: " << expected 
-						<< ", got " << cta.getRegAsF64(i, 2) << "\n";
+						<< ", got " << cta->getRegAsF64(i, 2) << "\n";
 					break;
 				}
 			}
@@ -1457,13 +1457,13 @@ public:
 			ins.d = reg("r3", PTXOperand::s16, 2);
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsS16(i, 0, (PTXS16)(i * 2));
-				cta.setRegAsS16(i, 2, 0);
+				cta->setRegAsS16(i, 0, (PTXS16)(i * 2));
+				cta->setRegAsS16(i, 2, 0);
 			}
-			cta.eval_Neg(cta.runtimeStack.back(), ins);
+			cta->eval_Neg(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
 				PTXS16 expected = -(i*2);
-				if (cta.getRegAsS16(i, 2) != expected) {
+				if (cta->getRegAsS16(i, 2) != expected) {
 					result = false;
 					status << "neg.s16 incorrect\n";
 					break;
@@ -1480,13 +1480,13 @@ public:
 			ins.d = reg("r3", PTXOperand::s32, 2);
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsS32(i, 0, (PTXS32)(i * 2));
-				cta.setRegAsS32(i, 2, 0);
+				cta->setRegAsS32(i, 0, (PTXS32)(i * 2));
+				cta->setRegAsS32(i, 2, 0);
 			}
-			cta.eval_Neg(cta.runtimeStack.back(), ins);
+			cta->eval_Neg(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
 				PTXS32 expected = -(i*2);
-				if (cta.getRegAsS32(i, 2) != expected) {
+				if (cta->getRegAsS32(i, 2) != expected) {
 					result = false;
 					status << "neg.s32 incorrect\n";
 					break;
@@ -1502,13 +1502,13 @@ public:
 			ins.d = reg("r3", PTXOperand::s64, 2);
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsS64(i, 0, (PTXS64)(i * 2));
-				cta.setRegAsS64(i, 2, 0);
+				cta->setRegAsS64(i, 0, (PTXS64)(i * 2));
+				cta->setRegAsS64(i, 2, 0);
 			}
-			cta.eval_Neg(cta.runtimeStack.back(), ins);
+			cta->eval_Neg(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
 				PTXS64 expected = -(i*2);
-				if (cta.getRegAsS64(i, 2) != expected) {
+				if (cta->getRegAsS64(i, 2) != expected) {
 					result = false;
 					status << "neg.s64 incorrect\n";
 					break;
@@ -1524,16 +1524,16 @@ public:
 			ins.d = reg("r3", PTXOperand::f32, 2);
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsF32(i, 0, (PTXF32)(i * 2));
-				cta.setRegAsF32(i, 2, 0);
+				cta->setRegAsF32(i, 0, (PTXF32)(i * 2));
+				cta->setRegAsF32(i, 2, 0);
 			}
-			cta.eval_Neg(cta.runtimeStack.back(), ins);
+			cta->eval_Neg(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
 				PTXF32 expected = -(i*2);
-				if (cta.getRegAsF32(i, 2) != expected) {
+				if (cta->getRegAsF32(i, 2) != expected) {
 					result = false;
 					status << "neg.f32 incorrect [" << i << "] - expected: " << (float)(i*2+4+i) 
-						<< ", got " << cta.getRegAsF32(i, 2) << "\n";
+						<< ", got " << cta->getRegAsF32(i, 2) << "\n";
 					break;
 				}
 			}
@@ -1547,16 +1547,16 @@ public:
 			ins.d = reg("r3", PTXOperand::f64, 2);
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsF64(i, 0, (PTXF64)(i * 2));
-				cta.setRegAsF64(i, 2, 0.0);
+				cta->setRegAsF64(i, 0, (PTXF64)(i * 2));
+				cta->setRegAsF64(i, 2, 0.0);
 			}
-			cta.eval_Neg(cta.runtimeStack.back(), ins);
+			cta->eval_Neg(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
 				PTXF64 expected = -(i*2);
-				if (std::fabs(cta.getRegAsF64(i, 2) - expected) > 0.1) {
+				if (std::fabs(cta->getRegAsF64(i, 2) - expected) > 0.1) {
 					result = false;
 					status << "neg.f64 incorrect [" << i << "] - expected: " << expected 
-						<< ", got " << cta.getRegAsF64(i, 2) << "\n";
+						<< ", got " << cta->getRegAsF64(i, 2) << "\n";
 					break;
 				}
 			}
@@ -1581,14 +1581,14 @@ public:
 			ins.d = reg("r3", PTXOperand::u16, 2);
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsU16(i, 0, (PTXU16)(i * 8 + 8));
-				cta.setRegAsU16(i, 1, (PTXU16)(4 + i));
-				cta.setRegAsU16(i, 2, 0);
+				cta->setRegAsU16(i, 0, (PTXU16)(i * 8 + 8));
+				cta->setRegAsU16(i, 1, (PTXU16)(4 + i));
+				cta->setRegAsU16(i, 2, 0);
 			}
-			cta.eval_Rem(cta.runtimeStack.back(), ins);
+			cta->eval_Rem(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
 				PTXU16 expected = ((i * 8 + 8) % (4 + i));
-				if (cta.getRegAsU16(i, 2) != expected) {
+				if (cta->getRegAsU16(i, 2) != expected) {
 					result = false;
 					status << "rem.u16 incorrect\n";
 					break;
@@ -1605,14 +1605,14 @@ public:
 			ins.d = reg("r3", PTXOperand::u32, 2);
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsU32(i, 0, (PTXU32)(i * 8 + 8));
-				cta.setRegAsU32(i, 1, (PTXU32)(4 + i));
-				cta.setRegAsU32(i, 2, 0);
+				cta->setRegAsU32(i, 0, (PTXU32)(i * 8 + 8));
+				cta->setRegAsU32(i, 1, (PTXU32)(4 + i));
+				cta->setRegAsU32(i, 2, 0);
 			}
-			cta.eval_Rem(cta.runtimeStack.back(), ins);
+			cta->eval_Rem(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
 				PTXU32 expected = ((i * 8 + 8) % (4 + i));
-				if (cta.getRegAsU32(i, 2) != expected) {
+				if (cta->getRegAsU32(i, 2) != expected) {
 					result = false;
 					status << "rem.u32 incorrect\n";
 					break;
@@ -1629,14 +1629,14 @@ public:
 			ins.d = reg("r3", PTXOperand::u64, 2);
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsU64(i, 0, (PTXU64)(i * 8 + 8));
-				cta.setRegAsU64(i, 1, (PTXU64)(4 + i));
-				cta.setRegAsU64(i, 2, 0);
+				cta->setRegAsU64(i, 0, (PTXU64)(i * 8 + 8));
+				cta->setRegAsU64(i, 1, (PTXU64)(4 + i));
+				cta->setRegAsU64(i, 2, 0);
 			}
-			cta.eval_Rem(cta.runtimeStack.back(), ins);
+			cta->eval_Rem(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
 				PTXU64 expected = ((i * 8 + 8) % (4 + i));
-				if (cta.getRegAsU64(i, 2) != expected) {
+				if (cta->getRegAsU64(i, 2) != expected) {
 					result = false;
 					status << "rem.u64 incorrect\n";
 					break;
@@ -1653,14 +1653,14 @@ public:
 			ins.d = reg("r3", PTXOperand::s16, 2);
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsS16(i, 0, (PTXS16)(i * 8 + 8));
-				cta.setRegAsS16(i, 1, (PTXS16)(4 + i));
-				cta.setRegAsS16(i, 2, 0);
+				cta->setRegAsS16(i, 0, (PTXS16)(i * 8 + 8));
+				cta->setRegAsS16(i, 1, (PTXS16)(4 + i));
+				cta->setRegAsS16(i, 2, 0);
 			}
-			cta.eval_Rem(cta.runtimeStack.back(), ins);
+			cta->eval_Rem(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
 				PTXS16 expected = ((i * 8 + 8) % (4 + i));
-				if (cta.getRegAsS16(i, 2) != expected) {
+				if (cta->getRegAsS16(i, 2) != expected) {
 					result = false;
 					status << "rem.s16 incorrect\n";
 					break;
@@ -1677,14 +1677,14 @@ public:
 			ins.d = reg("r3", PTXOperand::s32, 2);
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsS32(i, 0, (PTXS32)(i * 8 + 8));
-				cta.setRegAsS32(i, 1, (PTXS32)(4 + i));
-				cta.setRegAsS32(i, 2, 0);
+				cta->setRegAsS32(i, 0, (PTXS32)(i * 8 + 8));
+				cta->setRegAsS32(i, 1, (PTXS32)(4 + i));
+				cta->setRegAsS32(i, 2, 0);
 			}
-			cta.eval_Rem(cta.runtimeStack.back(), ins);
+			cta->eval_Rem(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
 				PTXS32 expected = ((i * 8 + 8) % (4 + i));
-				if (cta.getRegAsS32(i, 2) != expected) {
+				if (cta->getRegAsS32(i, 2) != expected) {
 					result = false;
 					status << "rem.s32 incorrect\n";
 					break;
@@ -1701,14 +1701,14 @@ public:
 			ins.d = reg("r3", PTXOperand::s64, 2);
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsS64(i, 0, (PTXS64)(i * 8 + 8));
-				cta.setRegAsS64(i, 1, (PTXS64)(4 + i));
-				cta.setRegAsS64(i, 2, 0);
+				cta->setRegAsS64(i, 0, (PTXS64)(i * 8 + 8));
+				cta->setRegAsS64(i, 1, (PTXS64)(4 + i));
+				cta->setRegAsS64(i, 2, 0);
 			}
-			cta.eval_Rem(cta.runtimeStack.back(), ins);
+			cta->eval_Rem(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
 				PTXS64 expected = ((i * 8 + 8) % (4 + i));
-				if (cta.getRegAsS64(i, 2) != expected) {
+				if (cta->getRegAsS64(i, 2) != expected) {
 					result = false;
 					status << "rem.s64 incorrect\n";
 					break;
@@ -1735,14 +1735,14 @@ public:
 			ins.d = reg("r3", PTXOperand::u16, 2);
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsU16(i, 0, (PTXU16)(i * 8 + 8));
-				cta.setRegAsU16(i, 1, (PTXU16)(4 + i));
-				cta.setRegAsU16(i, 2, 0);
+				cta->setRegAsU16(i, 0, (PTXU16)(i * 8 + 8));
+				cta->setRegAsU16(i, 1, (PTXU16)(4 + i));
+				cta->setRegAsU16(i, 2, 0);
 			}
-			cta.eval_Div(cta.runtimeStack.back(), ins);
+			cta->eval_Div(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
 				PTXU16 expected = ((i * 8 + 8) / (4 + i));
-				if (cta.getRegAsU16(i, 2) != expected) {
+				if (cta->getRegAsU16(i, 2) != expected) {
 					result = false;
 					status << "div.u16 incorrect\n";
 					break;
@@ -1759,14 +1759,14 @@ public:
 			ins.d = reg("r3", PTXOperand::u32, 2);
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsU32(i, 0, (PTXU32)(i * 8 + 8));
-				cta.setRegAsU32(i, 1, (PTXU32)(4 + i));
-				cta.setRegAsU32(i, 2, 0);
+				cta->setRegAsU32(i, 0, (PTXU32)(i * 8 + 8));
+				cta->setRegAsU32(i, 1, (PTXU32)(4 + i));
+				cta->setRegAsU32(i, 2, 0);
 			}
-			cta.eval_Div(cta.runtimeStack.back(), ins);
+			cta->eval_Div(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
 				PTXU32 expected = ((i * 8 + 8) / (4 + i));
-				if (cta.getRegAsU32(i, 2) != expected) {
+				if (cta->getRegAsU32(i, 2) != expected) {
 					result = false;
 					status << "div.u32 incorrect\n";
 					break;
@@ -1783,14 +1783,14 @@ public:
 			ins.d = reg("r3", PTXOperand::u64, 2);
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsU64(i, 0, (PTXU64)(i * 8 + 8));
-				cta.setRegAsU64(i, 1, (PTXU64)(4 + i));
-				cta.setRegAsU64(i, 2, 0);
+				cta->setRegAsU64(i, 0, (PTXU64)(i * 8 + 8));
+				cta->setRegAsU64(i, 1, (PTXU64)(4 + i));
+				cta->setRegAsU64(i, 2, 0);
 			}
-			cta.eval_Div(cta.runtimeStack.back(), ins);
+			cta->eval_Div(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
 				PTXU64 expected = ((i * 8 + 8) / (4 + i));
-				if (cta.getRegAsU64(i, 2) != expected) {
+				if (cta->getRegAsU64(i, 2) != expected) {
 					result = false;
 					status << "div.u64 incorrect\n";
 					break;
@@ -1807,14 +1807,14 @@ public:
 			ins.d = reg("r3", PTXOperand::s16, 2);
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsS16(i, 0, (PTXS16)(i * 8 + 8));
-				cta.setRegAsS16(i, 1, (PTXS16)(4 + i));
-				cta.setRegAsS16(i, 2, 0);
+				cta->setRegAsS16(i, 0, (PTXS16)(i * 8 + 8));
+				cta->setRegAsS16(i, 1, (PTXS16)(4 + i));
+				cta->setRegAsS16(i, 2, 0);
 			}
-			cta.eval_Div(cta.runtimeStack.back(), ins);
+			cta->eval_Div(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
 				PTXS16 expected = ((i * 8 + 8) / (4 + i));
-				if (cta.getRegAsS16(i, 2) != expected) {
+				if (cta->getRegAsS16(i, 2) != expected) {
 					result = false;
 					status << "div.s16 incorrect\n";
 					break;
@@ -1831,14 +1831,14 @@ public:
 			ins.d = reg("r3", PTXOperand::s32, 2);
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsS32(i, 0, (PTXS32)(i * 8 + 8));
-				cta.setRegAsS32(i, 1, (PTXS32)(4 + i));
-				cta.setRegAsS32(i, 2, 0);
+				cta->setRegAsS32(i, 0, (PTXS32)(i * 8 + 8));
+				cta->setRegAsS32(i, 1, (PTXS32)(4 + i));
+				cta->setRegAsS32(i, 2, 0);
 			}
-			cta.eval_Div(cta.runtimeStack.back(), ins);
+			cta->eval_Div(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
 				PTXS32 expected = ((i * 8 + 8) / (4 + i));
-				if (cta.getRegAsS32(i, 2) != expected) {
+				if (cta->getRegAsS32(i, 2) != expected) {
 					result = false;
 					status << "div.s32 incorrect\n";
 					break;
@@ -1855,14 +1855,14 @@ public:
 			ins.d = reg("r3", PTXOperand::s64, 2);
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsS64(i, 0, (PTXS64)(i * 8 + 8));
-				cta.setRegAsS64(i, 1, (PTXS64)(4 + i));
-				cta.setRegAsS64(i, 2, 0);
+				cta->setRegAsS64(i, 0, (PTXS64)(i * 8 + 8));
+				cta->setRegAsS64(i, 1, (PTXS64)(4 + i));
+				cta->setRegAsS64(i, 2, 0);
 			}
-			cta.eval_Div(cta.runtimeStack.back(), ins);
+			cta->eval_Div(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
 				PTXS64 expected = ((i * 8 + 8) / (4 + i));
-				if (cta.getRegAsS64(i, 2) != expected) {
+				if (cta->getRegAsS64(i, 2) != expected) {
 					result = false;
 					status << "div.s64 incorrect\n";
 					break;
@@ -1878,17 +1878,17 @@ public:
 			ins.d = reg("r3", PTXOperand::f32, 2);
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsF32(i, 0, (PTXF32)(i * 8 + 8));
-				cta.setRegAsF32(i, 1, (PTXF32)(4 + i));
-				cta.setRegAsF32(i, 2, 0);
+				cta->setRegAsF32(i, 0, (PTXF32)(i * 8 + 8));
+				cta->setRegAsF32(i, 1, (PTXF32)(4 + i));
+				cta->setRegAsF32(i, 2, 0);
 			}
-			cta.eval_Div(cta.runtimeStack.back(), ins);
+			cta->eval_Div(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
 				PTXF32 expected = ((PTXF32)(i * 8 + 8) / (PTXF32)(4 + i));
-				if (std::fabs(cta.getRegAsF32(i, 2) - expected) > 0.1f) {
+				if (std::fabs(cta->getRegAsF32(i, 2) - expected) > 0.1f) {
 					result = false;
 					status << "div.f32 incorrect [" << i << "] - expected: " << (float)expected 
-						<< ", got " << cta.getRegAsF32(i, 2) << "\n";
+						<< ", got " << cta->getRegAsF32(i, 2) << "\n";
 					break;
 				}
 			}
@@ -1902,17 +1902,17 @@ public:
 			ins.d = reg("r3", PTXOperand::f64, 2);
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsF64(i, 0, (PTXF64)(i * 8 + 8));
-				cta.setRegAsF64(i, 1, (PTXF64)(4 + i));
-				cta.setRegAsF64(i, 2, 0.0);
+				cta->setRegAsF64(i, 0, (PTXF64)(i * 8 + 8));
+				cta->setRegAsF64(i, 1, (PTXF64)(4 + i));
+				cta->setRegAsF64(i, 2, 0.0);
 			}
-			cta.eval_Div(cta.runtimeStack.back(), ins);
+			cta->eval_Div(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
 				PTXF32 expected = ((PTXF64)(i * 8 + 8) / (PTXF64)(4 + i));
-				if (std::fabs(cta.getRegAsF64(i, 2) - expected) > 0.1) {
+				if (std::fabs(cta->getRegAsF64(i, 2) - expected) > 0.1) {
 					result = false;
 					status << "div.f64 incorrect [" << i << "] - expected: " << expected 
-						<< ", got " << cta.getRegAsF64(i, 2) << "\n";
+						<< ", got " << cta->getRegAsF64(i, 2) << "\n";
 					break;
 				}
 			}
@@ -1938,18 +1938,18 @@ public:
 			ins.d = reg("r4", PTXOperand::u16, 3);
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsU16(i, 0, (PTXU16)(i + 1));
-				cta.setRegAsU16(i, 1, (PTXU16)(4 + 2*i));
-				cta.setRegAsU16(i, 2, (PTXU16)i);
-				cta.setRegAsU16(i, 3, 0);
+				cta->setRegAsU16(i, 0, (PTXU16)(i + 1));
+				cta->setRegAsU16(i, 1, (PTXU16)(4 + 2*i));
+				cta->setRegAsU16(i, 2, (PTXU16)i);
+				cta->setRegAsU16(i, 3, 0);
 			}
-			cta.eval_Mad(cta.runtimeStack.back(), ins);
+			cta->eval_Mad(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
 				PTXU16 expected = ((i + 1) * (4 + 2*i) + i);
-				if (cta.getRegAsU16(i, 3) != expected) {
+				if (cta->getRegAsU16(i, 3) != expected) {
 					result = false;
 					status << "mad.u16 incorrect - expected " << expected 
-						<< ", got " << cta.getRegAsU16(i, 3) << "\n";
+						<< ", got " << cta->getRegAsU16(i, 3) << "\n";
 					break;
 				}
 			}
@@ -1965,15 +1965,15 @@ public:
 			ins.d = reg("r4", PTXOperand::u32, 3);
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsU32(i, 0, (PTXU32)(i + 1));
-				cta.setRegAsU32(i, 1, (PTXU32)(4 + 2*i));
-				cta.setRegAsU32(i, 2, (PTXU32)i);
-				cta.setRegAsU32(i, 3, 0);
+				cta->setRegAsU32(i, 0, (PTXU32)(i + 1));
+				cta->setRegAsU32(i, 1, (PTXU32)(4 + 2*i));
+				cta->setRegAsU32(i, 2, (PTXU32)i);
+				cta->setRegAsU32(i, 3, 0);
 			}
-			cta.eval_Mad(cta.runtimeStack.back(), ins);
+			cta->eval_Mad(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
 				PTXU32 expected = ((i + 1) * (4 + 2*i) + i);
-				if (cta.getRegAsU32(i, 3) != expected) {
+				if (cta->getRegAsU32(i, 3) != expected) {
 					result = false;
 					status << "mad.u32 incorrect\n";
 					break;
@@ -1991,15 +1991,15 @@ public:
 			ins.d = reg("r4", PTXOperand::u64, 3);
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsU64(i, 0, (PTXU64)(i + 1));
-				cta.setRegAsU64(i, 1, (PTXU64)(4 + 2*i));
-				cta.setRegAsU64(i, 2, (PTXU64)i);
-				cta.setRegAsU64(i, 3, 0);
+				cta->setRegAsU64(i, 0, (PTXU64)(i + 1));
+				cta->setRegAsU64(i, 1, (PTXU64)(4 + 2*i));
+				cta->setRegAsU64(i, 2, (PTXU64)i);
+				cta->setRegAsU64(i, 3, 0);
 			}
-			cta.eval_Mad(cta.runtimeStack.back(), ins);
+			cta->eval_Mad(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
 				PTXU64  expected = ((i + 1) * (4 + 2*i) + i);
-				if (cta.getRegAsU64(i, 3) != expected) {
+				if (cta->getRegAsU64(i, 3) != expected) {
 					result = false;
 					status << "mad.u64 incorrect\n";
 					break;
@@ -2017,15 +2017,15 @@ public:
 			ins.d = reg("r4", PTXOperand::s16, 3);
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsS16(i, 0, (PTXS16)(i - 1));
-				cta.setRegAsS16(i, 1, (PTXS16)(4 + 2*i));
-				cta.setRegAsS16(i, 2, (PTXS16)i);
-				cta.setRegAsS16(i, 3, 0);
+				cta->setRegAsS16(i, 0, (PTXS16)(i - 1));
+				cta->setRegAsS16(i, 1, (PTXS16)(4 + 2*i));
+				cta->setRegAsS16(i, 2, (PTXS16)i);
+				cta->setRegAsS16(i, 3, 0);
 			}
-			cta.eval_Mad(cta.runtimeStack.back(), ins);
+			cta->eval_Mad(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
 				PTXS16 expected = (i - 1) * (4 + 2*i) + (i);
-				if (cta.getRegAsS16(i, 3) != expected) {
+				if (cta->getRegAsS16(i, 3) != expected) {
 					result = false;
 					status << "mad.s16 incorrect\n";
 					break;
@@ -2043,15 +2043,15 @@ public:
 			ins.d = reg("r4", PTXOperand::s32, 3);
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsS32(i, 0, (PTXS32)(i - 1));
-				cta.setRegAsS32(i, 1, (PTXS32)(4 + 2*i));
-				cta.setRegAsS32(i, 2, (PTXS32)i);
-				cta.setRegAsS32(i, 3, 0);
+				cta->setRegAsS32(i, 0, (PTXS32)(i - 1));
+				cta->setRegAsS32(i, 1, (PTXS32)(4 + 2*i));
+				cta->setRegAsS32(i, 2, (PTXS32)i);
+				cta->setRegAsS32(i, 3, 0);
 			}
-			cta.eval_Mad(cta.runtimeStack.back(), ins);
+			cta->eval_Mad(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
 				PTXS32 expected = (i - 1) * (4 + 2*i) + (i);
-				if (cta.getRegAsS32(i, 3) != expected) {
+				if (cta->getRegAsS32(i, 3) != expected) {
 					result = false;
 					status << "mad.s32 incorrect\n";
 					break;
@@ -2069,15 +2069,15 @@ public:
 			ins.d = reg("r4", PTXOperand::s64, 3);
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsS64(i, 0, (PTXS64)(i - 1));
-				cta.setRegAsS64(i, 1, (PTXS64)(4 + 2*i));
-				cta.setRegAsS64(i, 2, (PTXS64)i);
-				cta.setRegAsS64(i, 3, 0);
+				cta->setRegAsS64(i, 0, (PTXS64)(i - 1));
+				cta->setRegAsS64(i, 1, (PTXS64)(4 + 2*i));
+				cta->setRegAsS64(i, 2, (PTXS64)i);
+				cta->setRegAsS64(i, 3, 0);
 			}
-			cta.eval_Mad(cta.runtimeStack.back(), ins);
+			cta->eval_Mad(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
 				PTXS64 expected = (i - 1) * (4 + 2*i) + (i);
-				if (cta.getRegAsS64(i, 3) != expected) {
+				if (cta->getRegAsS64(i, 3) != expected) {
 					result = false;
 					status << "mad.s64 incorrect\n";
 					break;
@@ -2095,18 +2095,18 @@ public:
 			ins.d = reg("r4", PTXOperand::f32, 3);
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsF32(i, 0, (PTXF32)(i - 1));
-				cta.setRegAsF32(i, 1, (PTXF32)(4 + 2*i));
-				cta.setRegAsF32(i, 2, (PTXF32)i);
-				cta.setRegAsF32(i, 3, 0);
+				cta->setRegAsF32(i, 0, (PTXF32)(i - 1));
+				cta->setRegAsF32(i, 1, (PTXF32)(4 + 2*i));
+				cta->setRegAsF32(i, 2, (PTXF32)i);
+				cta->setRegAsF32(i, 3, 0);
 			}
-			cta.eval_Mad(cta.runtimeStack.back(), ins);
+			cta->eval_Mad(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
 				PTXF32 expected = (PTXF32)(i - 1) * (PTXF32)(4 + 2*i) + (PTXF32)(i);
-				if (std::fabs(cta.getRegAsF32(i, 3) - expected) > 0.1f) {
+				if (std::fabs(cta->getRegAsF32(i, 3) - expected) > 0.1f) {
 					result = false;
 					status << "mad.f32 incorrect [" << i << "] - expected: " << (float)expected 
-						<< ", got " << cta.getRegAsF32(i, 2) << "\n";
+						<< ", got " << cta->getRegAsF32(i, 2) << "\n";
 					break;
 				}
 			}
@@ -2122,18 +2122,18 @@ public:
 			ins.d = reg("r4", PTXOperand::f64, 3);
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsF64(i, 0, (PTXF64)(i - 1));
-				cta.setRegAsF64(i, 1, (PTXF64)(4 + 2*i));
-				cta.setRegAsF64(i, 2, (PTXF64)i);
-				cta.setRegAsF64(i, 3, 0);
+				cta->setRegAsF64(i, 0, (PTXF64)(i - 1));
+				cta->setRegAsF64(i, 1, (PTXF64)(4 + 2*i));
+				cta->setRegAsF64(i, 2, (PTXF64)i);
+				cta->setRegAsF64(i, 3, 0);
 			}
-			cta.eval_Mad(cta.runtimeStack.back(), ins);
+			cta->eval_Mad(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
 				PTXF32 expected = (PTXF64)(i - 1) * (PTXF64)(4 + 2*i) + (PTXF64)(i);
-				if (std::fabs(cta.getRegAsF64(i, 3) - expected) > 0.1) {
+				if (std::fabs(cta->getRegAsF64(i, 3) - expected) > 0.1) {
 					result = false;
 					status << "mad.f64 incorrect [" << i << "] - expected: " << expected 
-						<< ", got " << cta.getRegAsF64(i, 2) << "\n";
+						<< ", got " << cta->getRegAsF64(i, 2) << "\n";
 					break;
 				}
 			}
@@ -2159,18 +2159,18 @@ public:
 			ins.d = reg("r4", PTXOperand::u16, 3);
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsU16(i, 0, (PTXU16)(i + 1));
-				cta.setRegAsU16(i, 1, (PTXU16)(4 + 2*i));
-				cta.setRegAsU16(i, 2, (PTXU16)i);
-				cta.setRegAsU16(i, 3, 0);
+				cta->setRegAsU16(i, 0, (PTXU16)(i + 1));
+				cta->setRegAsU16(i, 1, (PTXU16)(4 + 2*i));
+				cta->setRegAsU16(i, 2, (PTXU16)i);
+				cta->setRegAsU16(i, 3, 0);
 			}
-			cta.eval_Mul(cta.runtimeStack.back(), ins);
+			cta->eval_Mul(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
 				PTXU16 expected = ((i + 1) * (4 + 2*i));
-				if (cta.getRegAsU16(i, 3) != expected) {
+				if (cta->getRegAsU16(i, 3) != expected) {
 					result = false;
 					status << "mul.u16 incorrect - expected " << expected 
-						<< ", got " << cta.getRegAsU16(i, 3) << "\n";
+						<< ", got " << cta->getRegAsU16(i, 3) << "\n";
 					break;
 				}
 			}
@@ -2186,15 +2186,15 @@ public:
 			ins.d = reg("r4", PTXOperand::u32, 3);
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsU32(i, 0, (PTXU32)(i + 1));
-				cta.setRegAsU32(i, 1, (PTXU32)(4 + 2*i));
-				cta.setRegAsU32(i, 2, (PTXU32)i);
-				cta.setRegAsU32(i, 3, 0);
+				cta->setRegAsU32(i, 0, (PTXU32)(i + 1));
+				cta->setRegAsU32(i, 1, (PTXU32)(4 + 2*i));
+				cta->setRegAsU32(i, 2, (PTXU32)i);
+				cta->setRegAsU32(i, 3, 0);
 			}
-			cta.eval_Mul(cta.runtimeStack.back(), ins);
+			cta->eval_Mul(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
 				PTXU32 expected = ((i + 1) * (4 + 2*i));
-				if (cta.getRegAsU32(i, 3) != expected) {
+				if (cta->getRegAsU32(i, 3) != expected) {
 					result = false;
 					status << "mul.u32 incorrect\n";
 					break;
@@ -2212,15 +2212,15 @@ public:
 			ins.d = reg("r4", PTXOperand::u64, 3);
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsU64(i, 0, (PTXU64)(i + 1));
-				cta.setRegAsU64(i, 1, (PTXU64)(4 + 2*i));
-				cta.setRegAsU64(i, 2, (PTXU64)i);
-				cta.setRegAsU64(i, 3, 0);
+				cta->setRegAsU64(i, 0, (PTXU64)(i + 1));
+				cta->setRegAsU64(i, 1, (PTXU64)(4 + 2*i));
+				cta->setRegAsU64(i, 2, (PTXU64)i);
+				cta->setRegAsU64(i, 3, 0);
 			}
-			cta.eval_Mul(cta.runtimeStack.back(), ins);
+			cta->eval_Mul(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
 				PTXU64  expected = ((i + 1) * (4 + 2*i));
-				if (cta.getRegAsU64(i, 3) != expected) {
+				if (cta->getRegAsU64(i, 3) != expected) {
 					result = false;
 					status << "mul.u64 incorrect\n";
 					break;
@@ -2238,15 +2238,15 @@ public:
 			ins.d = reg("r4", PTXOperand::s16, 3);
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsS16(i, 0, (PTXS16)(i - 1));
-				cta.setRegAsS16(i, 1, (PTXS16)(4 + 2*i));
-				cta.setRegAsS16(i, 2, (PTXS16)i);
-				cta.setRegAsS16(i, 3, 0);
+				cta->setRegAsS16(i, 0, (PTXS16)(i - 1));
+				cta->setRegAsS16(i, 1, (PTXS16)(4 + 2*i));
+				cta->setRegAsS16(i, 2, (PTXS16)i);
+				cta->setRegAsS16(i, 3, 0);
 			}
-			cta.eval_Mul(cta.runtimeStack.back(), ins);
+			cta->eval_Mul(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
 				PTXS16 expected = (i - 1) * (4 + 2*i);
-				if (cta.getRegAsS16(i, 3) != expected) {
+				if (cta->getRegAsS16(i, 3) != expected) {
 					result = false;
 					status << "mul.s16 incorrect\n";
 					break;
@@ -2264,15 +2264,15 @@ public:
 			ins.d = reg("r4", PTXOperand::s32, 3);
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsS32(i, 0, (PTXS32)(i - 1));
-				cta.setRegAsS32(i, 1, (PTXS32)(4 + 2*i));
-				cta.setRegAsS32(i, 2, (PTXS32)i);
-				cta.setRegAsS32(i, 3, 0);
+				cta->setRegAsS32(i, 0, (PTXS32)(i - 1));
+				cta->setRegAsS32(i, 1, (PTXS32)(4 + 2*i));
+				cta->setRegAsS32(i, 2, (PTXS32)i);
+				cta->setRegAsS32(i, 3, 0);
 			}
-			cta.eval_Mul(cta.runtimeStack.back(), ins);
+			cta->eval_Mul(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
 				PTXS32 expected = (i - 1) * (4 + 2*i);
-				if (cta.getRegAsS32(i, 3) != expected) {
+				if (cta->getRegAsS32(i, 3) != expected) {
 					result = false;
 					status << "mul.s32 incorrect\n";
 					break;
@@ -2290,15 +2290,15 @@ public:
 			ins.d = reg("r4", PTXOperand::s64, 3);
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsS64(i, 0, (PTXS64)(i - 1));
-				cta.setRegAsS64(i, 1, (PTXS64)(4 + 2*i));
-				cta.setRegAsS64(i, 2, (PTXS64)i);
-				cta.setRegAsS64(i, 3, 0);
+				cta->setRegAsS64(i, 0, (PTXS64)(i - 1));
+				cta->setRegAsS64(i, 1, (PTXS64)(4 + 2*i));
+				cta->setRegAsS64(i, 2, (PTXS64)i);
+				cta->setRegAsS64(i, 3, 0);
 			}
-			cta.eval_Mul(cta.runtimeStack.back(), ins);
+			cta->eval_Mul(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
 				PTXS64 expected = (i - 1) * (4 + 2*i);
-				if (cta.getRegAsS64(i, 3) != expected) {
+				if (cta->getRegAsS64(i, 3) != expected) {
 					result = false;
 					status << "mul.s64 incorrect\n";
 					break;
@@ -2316,18 +2316,18 @@ public:
 			ins.d = reg("r4", PTXOperand::f32, 3);
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsF32(i, 0, (PTXF32)(i - 1));
-				cta.setRegAsF32(i, 1, (PTXF32)(4 + 2*i));
-				cta.setRegAsF32(i, 2, (PTXF32)i);
-				cta.setRegAsF32(i, 3, 0);
+				cta->setRegAsF32(i, 0, (PTXF32)(i - 1));
+				cta->setRegAsF32(i, 1, (PTXF32)(4 + 2*i));
+				cta->setRegAsF32(i, 2, (PTXF32)i);
+				cta->setRegAsF32(i, 3, 0);
 			}
-			cta.eval_Mul(cta.runtimeStack.back(), ins);
+			cta->eval_Mul(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
 				PTXF32 expected = (PTXF32)(i - 1) * (PTXF32)(4 + 2*i);
-				if (std::fabs(cta.getRegAsF32(i, 3) - expected) > 0.1f) {
+				if (std::fabs(cta->getRegAsF32(i, 3) - expected) > 0.1f) {
 					result = false;
 					status << "mul.f32 incorrect [" << i << "] - expected: " << (float)expected 
-						<< ", got " << cta.getRegAsF32(i, 2) << "\n";
+						<< ", got " << cta->getRegAsF32(i, 2) << "\n";
 					break;
 				}
 			}
@@ -2343,18 +2343,18 @@ public:
 			ins.d = reg("r4", PTXOperand::f64, 3);
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsF64(i, 0, (PTXF64)(i - 1));
-				cta.setRegAsF64(i, 1, (PTXF64)(4 + 2*i));
-				cta.setRegAsF64(i, 2, (PTXF64)i);
-				cta.setRegAsF64(i, 3, 0);
+				cta->setRegAsF64(i, 0, (PTXF64)(i - 1));
+				cta->setRegAsF64(i, 1, (PTXF64)(4 + 2*i));
+				cta->setRegAsF64(i, 2, (PTXF64)i);
+				cta->setRegAsF64(i, 3, 0);
 			}
-			cta.eval_Mul(cta.runtimeStack.back(), ins);
+			cta->eval_Mul(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
 				PTXF32 expected = (PTXF64)(i - 1) * (PTXF64)(4 + 2*i);
-				if (std::fabs(cta.getRegAsF64(i, 3) - expected) > 0.1) {
+				if (std::fabs(cta->getRegAsF64(i, 3) - expected) > 0.1) {
 					result = false;
 					status << "mul.f64 incorrect [" << i << "] - expected: " << expected 
-						<< ", got " << cta.getRegAsF64(i, 2) << "\n";
+						<< ", got " << cta->getRegAsF64(i, 2) << "\n";
 					break;
 				}
 			}
@@ -2387,16 +2387,16 @@ public:
 			ins.d = reg("r3", PTXOperand::f32, 2);
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsF32(i, 0, (PTXF32)(0.1f + (float)i * freq));
-				cta.setRegAsF32(i, 2, 0);
+				cta->setRegAsF32(i, 0, (PTXF32)(0.1f + (float)i * freq));
+				cta->setRegAsF32(i, 2, 0);
 			}
-			cta.eval_Rcp(cta.runtimeStack.back(), ins);
+			cta->eval_Rcp(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
-				if (std::fabs(cta.getRegAsF32(i, 2) - 1.0f/(PTXF32)(0.1f + (float)i * freq)) > 0.1f) {
+				if (std::fabs(cta->getRegAsF32(i, 2) - 1.0f/(PTXF32)(0.1f + (float)i * freq)) > 0.1f) {
 					result = false;
 					status << "rcp.f32 incorrect [" << i << "] - expected: " 
 						<< 1.0f/(PTXF32)(0.1f + (float)i * freq) 
-						<< ", got " << cta.getRegAsF32(i, 2) << "\n";
+						<< ", got " << cta->getRegAsF32(i, 2) << "\n";
 					break;
 				}
 			}
@@ -2410,15 +2410,15 @@ public:
 			ins.d = reg("r3", PTXOperand::f64, 2);
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsF64(i, 0, (PTXF64)(0.1f + (double)i * freq));
-				cta.setRegAsF64(i, 2, 0);
+				cta->setRegAsF64(i, 0, (PTXF64)(0.1f + (double)i * freq));
+				cta->setRegAsF64(i, 2, 0);
 			}
-			cta.eval_Rcp(cta.runtimeStack.back(), ins);
+			cta->eval_Rcp(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
-				if (std::fabs(cta.getRegAsF64(i, 2) - 1.0/(0.1 + (double)i * freq)) > 0.1f) {
+				if (std::fabs(cta->getRegAsF64(i, 2) - 1.0/(0.1 + (double)i * freq)) > 0.1f) {
 					result = false;
 					status << "rcp.f64 incorrect [" << i << "] - expected: " << 1.0/(0.1 + (double)i * freq)
-						<< ", got " << cta.getRegAsF64(i, 2) << "\n";
+						<< ", got " << cta->getRegAsF64(i, 2) << "\n";
 					break;
 				}
 			}
@@ -2443,16 +2443,16 @@ public:
 			ins.d = reg("r3", PTXOperand::f32, 2);
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsF32(i, 0, (PTXF32)((float)i * freq));
-				cta.setRegAsF32(i, 2, 0);
+				cta->setRegAsF32(i, 0, (PTXF32)((float)i * freq));
+				cta->setRegAsF32(i, 2, 0);
 			}
-			cta.eval_Cos(cta.runtimeStack.back(), ins);
+			cta->eval_Cos(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
-				if (std::fabs(cta.getRegAsF32(i, 2) - (PTXF32)cos((float)i * freq)) > 0.1f) {
+				if (std::fabs(cta->getRegAsF32(i, 2) - (PTXF32)cos((float)i * freq)) > 0.1f) {
 					result = false;
 					status << "cos.f32 incorrect [" << i << "] - expected: " 
 						<< (PTXF32)cos((float)i * freq) 
-						<< ", got " << cta.getRegAsF32(i, 2) << "\n";
+						<< ", got " << cta->getRegAsF32(i, 2) << "\n";
 					break;
 				}
 			}
@@ -2476,16 +2476,16 @@ public:
 			ins.d = reg("r3", PTXOperand::f32, 2);
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsF32(i, 0, (PTXF32)((float)i * freq));
-				cta.setRegAsF32(i, 2, 0);
+				cta->setRegAsF32(i, 0, (PTXF32)((float)i * freq));
+				cta->setRegAsF32(i, 2, 0);
 			}
-			cta.eval_Sin(cta.runtimeStack.back(), ins);
+			cta->eval_Sin(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
-				if (std::fabs(cta.getRegAsF32(i, 2) - (PTXF32)sin((float)i * freq)) > 0.1f) {
+				if (std::fabs(cta->getRegAsF32(i, 2) - (PTXF32)sin((float)i * freq)) > 0.1f) {
 					result = false;
 					status << "sin.f32 incorrect [" << i << "] - expected: " 
 						<< (PTXF32)sin((float)i * freq) 
-						<< ", got " << cta.getRegAsF32(i, 2) << "\n";
+						<< ", got " << cta->getRegAsF32(i, 2) << "\n";
 					break;
 				}
 			}
@@ -2511,16 +2511,16 @@ public:
 			for (int i = 0; i < threadCount; i++) {
 				int as = (!(i & 0x01) ? -1 : 1);
 				int bs = (!(i % 0x02) ? 1 : -1);
-				cta.setRegAsF32(i, 0, (PTXF32)((float)(as * i) / (float)threadCount * 4.2f));
-				cta.setRegAsF32(i, 1, (PTXF32)((float)(bs * i) / (float)threadCount * 2.7f));
-				cta.setRegAsF32(i, 2, 0);
+				cta->setRegAsF32(i, 0, (PTXF32)((float)(as * i) / (float)threadCount * 4.2f));
+				cta->setRegAsF32(i, 1, (PTXF32)((float)(bs * i) / (float)threadCount * 2.7f));
+				cta->setRegAsF32(i, 2, 0);
 			}
-			cta.eval_Fma(cta.runtimeStack.back(), ins);
+			cta->eval_Fma(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
-				PTXF32 got = cta.getRegAsF32(i, 2);
+				PTXF32 got = cta->getRegAsF32(i, 2);
 				
-				PTXF32 a = cta.getRegAsF32(i, 0);
-				PTXF32 b = cta.getRegAsF32(i, 1);
+				PTXF32 a = cta->getRegAsF32(i, 0);
+				PTXF32 b = cta->getRegAsF32(i, 1);
 				
 				PTXF32 exp = b;
 				if (a < 0) {
@@ -2550,16 +2550,16 @@ public:
 			for (int i = 0; i < threadCount; i++) {
 				int as = (!(i & 0x01) ? -1 : 1);
 				int bs = (!(i % 0x02) ? 1 : -1);
-				cta.setRegAsF64(i, 0, (PTXF64)((double)(as * i) / (double)threadCount * 1.2));
-				cta.setRegAsF64(i, 1, (PTXF64)((double)(bs * i) / (double)threadCount * 7.7));
-				cta.setRegAsF64(i, 2, 0);
+				cta->setRegAsF64(i, 0, (PTXF64)((double)(as * i) / (double)threadCount * 1.2));
+				cta->setRegAsF64(i, 1, (PTXF64)((double)(bs * i) / (double)threadCount * 7.7));
+				cta->setRegAsF64(i, 2, 0);
 			}
-			cta.eval_Fma(cta.runtimeStack.back(), ins);
+			cta->eval_Fma(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
-				PTXF64 got = cta.getRegAsF64(i, 2);
+				PTXF64 got = cta->getRegAsF64(i, 2);
 				
-				PTXF64 a = cta.getRegAsF64(i, 0);
-				PTXF64 b = cta.getRegAsF64(i, 1);
+				PTXF64 a = cta->getRegAsF64(i, 0);
+				PTXF64 b = cta->getRegAsF64(i, 1);
 				
 				PTXF64 exp = b;
 				if (a < 0) {
@@ -2596,16 +2596,16 @@ public:
 			ins.d = reg("r3", PTXOperand::f32, 2);
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsF32(i, 0, (PTXF32)((float)i / (float)threadCount * 4.0f));
-				cta.setRegAsF32(i, 2, 0);
+				cta->setRegAsF32(i, 0, (PTXF32)((float)i / (float)threadCount * 4.0f));
+				cta->setRegAsF32(i, 2, 0);
 			}
-			cta.eval_Ex2(cta.runtimeStack.back(), ins);
+			cta->eval_Ex2(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
-				if (std::fabs(cta.getRegAsF32(i, 2) - (PTXF32)exp2((float)i / (float)threadCount * 4.0f)) > 0.1f) {
+				if (std::fabs(cta->getRegAsF32(i, 2) - (PTXF32)exp2((float)i / (float)threadCount * 4.0f)) > 0.1f) {
 					result = false;
 					status << "ex2.f32 incorrect [" << i << "] - expected: " 
 						<< (PTXF32)exp2((float)i / (float)threadCount * 4.0f) 
-						<< ", got " << cta.getRegAsF32(i, 2) << "\n";
+						<< ", got " << cta->getRegAsF32(i, 2) << "\n";
 					break;
 				}
 			}
@@ -2630,14 +2630,14 @@ public:
 			ins.d = reg("r3", PTXOperand::f32, 2);
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsF32(i, 0, (PTXF32)((float)i / (float)threadCount * 4.0f));
-				cta.setRegAsF32(i, 1, (PTXF32)((float)i / (float)threadCount * 2.0f));
-				cta.setRegAsF32(i, 3, (PTXF32)((float)i / (float)threadCount * 0.5f));
-				cta.setRegAsF32(i, 2, 0);
+				cta->setRegAsF32(i, 0, (PTXF32)((float)i / (float)threadCount * 4.0f));
+				cta->setRegAsF32(i, 1, (PTXF32)((float)i / (float)threadCount * 2.0f));
+				cta->setRegAsF32(i, 3, (PTXF32)((float)i / (float)threadCount * 0.5f));
+				cta->setRegAsF32(i, 2, 0);
 			}
-			cta.eval_Fma(cta.runtimeStack.back(), ins);
+			cta->eval_Fma(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
-				PTXF32 got = cta.getRegAsF32(i, 2);
+				PTXF32 got = cta->getRegAsF32(i, 2);
 				PTXF32 exp = (float)i / (float)threadCount * 4.0f * (float)i / (float)threadCount * 2.0f +
 					(float)i / (float)threadCount * 0.5f;
 					
@@ -2660,14 +2660,14 @@ public:
 			ins.d = reg("r3", PTXOperand::f64, 2);
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsF64(i, 0, (PTXF32)((double)i / (double)threadCount * 4.5));
-				cta.setRegAsF64(i, 1, (PTXF32)((double)i / (double)threadCount * 2.25));
-				cta.setRegAsF64(i, 3, (PTXF32)((double)i / (double)threadCount * 0.55));
-				cta.setRegAsF64(i, 2, 0);
+				cta->setRegAsF64(i, 0, (PTXF32)((double)i / (double)threadCount * 4.5));
+				cta->setRegAsF64(i, 1, (PTXF32)((double)i / (double)threadCount * 2.25));
+				cta->setRegAsF64(i, 3, (PTXF32)((double)i / (double)threadCount * 0.55));
+				cta->setRegAsF64(i, 2, 0);
 			}
-			cta.eval_Fma(cta.runtimeStack.back(), ins);
+			cta->eval_Fma(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
-				PTXF32 got = cta.getRegAsF32(i, 2);
+				PTXF32 got = cta->getRegAsF32(i, 2);
 				PTXF32 exp = (double)i / (double)threadCount * 4.5 * (double)i / (double)threadCount * 2.25 +
 					(double)i / (double)threadCount *  0.55;
 					
@@ -2698,17 +2698,17 @@ public:
 			ins.d = reg("r3", PTXOperand::f32, 2);
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsF32(i, 0, (PTXF32)(0.5f + (float)i / (float)threadCount * 4.0f));
-				cta.setRegAsF32(i, 2, 0);
+				cta->setRegAsF32(i, 0, (PTXF32)(0.5f + (float)i / (float)threadCount * 4.0f));
+				cta->setRegAsF32(i, 2, 0);
 			}
-			cta.eval_Lg2(cta.runtimeStack.back(), ins);
+			cta->eval_Lg2(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
-				if (std::fabs(cta.getRegAsF32(i, 2) - (PTXF32)log2(0.5f + (float)i / (float)threadCount * 4.0f)) > 0.1f) {
+				if (std::fabs(cta->getRegAsF32(i, 2) - (PTXF32)log2(0.5f + (float)i / (float)threadCount * 4.0f)) > 0.1f) {
 					result = false;
 					status << "lg2.f32 incorrect [" << i 
 						<< "] - log2(" << (0.5f + (float)i / (float)threadCount * 4.0f) << ") - expected: " 
 						<< (PTXF32)log2(0.5f + (float)i / (float)threadCount * 4.0f) 
-						<< ", got " << cta.getRegAsF32(i, 2) << "\n";
+						<< ", got " << cta->getRegAsF32(i, 2) << "\n";
 					break;
 				}
 			}
@@ -2732,16 +2732,16 @@ public:
 			ins.d = reg("r3", PTXOperand::f32, 2);
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsF32(i, 0, (PTXF32)(0.1f + (float)i * freq));
-				cta.setRegAsF32(i, 2, 0);
+				cta->setRegAsF32(i, 0, (PTXF32)(0.1f + (float)i * freq));
+				cta->setRegAsF32(i, 2, 0);
 			}
-			cta.eval_Sqrt(cta.runtimeStack.back(), ins);
+			cta->eval_Sqrt(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
-				if (std::fabs(cta.getRegAsF32(i, 2) - (PTXF32)sqrt(0.1f + (float)i * freq)) > 0.1f) {
+				if (std::fabs(cta->getRegAsF32(i, 2) - (PTXF32)sqrt(0.1f + (float)i * freq)) > 0.1f) {
 					result = false;
 					status << "sqrt.f32 incorrect [" << i << "] - expected: " 
 						<< (PTXF32)sqrt(0.1f + (float)i * freq) 
-						<< ", got " << cta.getRegAsF32(i, 2) << "\n";
+						<< ", got " << cta->getRegAsF32(i, 2) << "\n";
 					break;
 				}
 			}
@@ -2755,15 +2755,15 @@ public:
 			ins.d = reg("r3", PTXOperand::f64, 2);
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsF64(i, 0, (PTXF64)(0.1f + (double)i * freq));
-				cta.setRegAsF64(i, 2, 0);
+				cta->setRegAsF64(i, 0, (PTXF64)(0.1f + (double)i * freq));
+				cta->setRegAsF64(i, 2, 0);
 			}
-			cta.eval_Sqrt(cta.runtimeStack.back(), ins);
+			cta->eval_Sqrt(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
-				if (std::fabs(cta.getRegAsF64(i, 2) - sqrt(0.1 + (double)i * freq)) > 0.1f) {
+				if (std::fabs(cta->getRegAsF64(i, 2) - sqrt(0.1 + (double)i * freq)) > 0.1f) {
 					result = false;
 					status << "sqrt.f64 incorrect [" << i << "] - expected: " << sqrt(0.1 + (double)i * freq)
-						<< ", got " << cta.getRegAsF64(i, 2) << "\n";
+						<< ", got " << cta->getRegAsF64(i, 2) << "\n";
 					break;
 				}
 			}
@@ -2788,16 +2788,16 @@ public:
 			ins.d = reg("r3", PTXOperand::f32, 2);
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsF32(i, 0, (PTXF32)(0.1f + (float)i * freq));
-				cta.setRegAsF32(i, 2, 0);
+				cta->setRegAsF32(i, 0, (PTXF32)(0.1f + (float)i * freq));
+				cta->setRegAsF32(i, 2, 0);
 			}
-			cta.eval_Rsqrt(cta.runtimeStack.back(), ins);
+			cta->eval_Rsqrt(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
-				if (std::fabs(cta.getRegAsF32(i, 2) - 1.0f/(PTXF32)sqrt(0.1f + (float)i * freq)) > 0.1f) {
+				if (std::fabs(cta->getRegAsF32(i, 2) - 1.0f/(PTXF32)sqrt(0.1f + (float)i * freq)) > 0.1f) {
 					result = false;
 					status << "rsqrt.f32 incorrect [" << i << "] - expected: " 
 						<< 1.0f/(PTXF32)sqrt(0.1f + (float)i * freq) 
-						<< ", got " << cta.getRegAsF32(i, 2) << "\n";
+						<< ", got " << cta->getRegAsF32(i, 2) << "\n";
 					break;
 				}
 			}
@@ -2811,15 +2811,15 @@ public:
 			ins.d = reg("r3", PTXOperand::f64, 2);
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsF64(i, 0, (PTXF64)(0.1f + (double)i * freq));
-				cta.setRegAsF64(i, 2, 0);
+				cta->setRegAsF64(i, 0, (PTXF64)(0.1f + (double)i * freq));
+				cta->setRegAsF64(i, 2, 0);
 			}
-			cta.eval_Rsqrt(cta.runtimeStack.back(), ins);
+			cta->eval_Rsqrt(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
-				if (std::fabs(cta.getRegAsF64(i, 2) - 1.0/sqrt(0.1 + (double)i * freq)) > 0.1f) {
+				if (std::fabs(cta->getRegAsF64(i, 2) - 1.0/sqrt(0.1 + (double)i * freq)) > 0.1f) {
 					result = false;
 					status << "rsqrt.f64 incorrect [" << i << "] - expected: " << 1.0/sqrt(0.1 + (double)i * freq)
-						<< ", got " << cta.getRegAsF64(i, 2) << "\n";
+						<< ", got " << cta->getRegAsF64(i, 2) << "\n";
 					break;
 				}
 			}
@@ -2844,7 +2844,7 @@ public:
 		PTXInstruction ins;
 		ins.opcode = PTXInstruction::And;
 
-		cta.reset();
+		cta->reset();
 
 		// b16
 		//
@@ -2854,16 +2854,16 @@ public:
 			ins.a = reg("r1", PTXOperand::b16, 1);
 			ins.b = reg("r2", PTXOperand::b16, 2);
 			for (int t = 0; t < threadCount; t++) {
-				cta.setRegAsB16(t, 1, t);
-				cta.setRegAsB16(t, 2, 3*t);
+				cta->setRegAsB16(t, 1, t);
+				cta->setRegAsB16(t, 2, 3*t);
 			}
-			cta.eval_And(cta.runtimeStack.back(), ins);
+			cta->eval_And(cta->getActiveContext(), ins);
 			for (int t = 0; t < threadCount; t++) {
 				PTXB16 expected = (t) & (3*t);
-				if (cta.getRegAsB16(t, 0) != expected) {
+				if (cta->getRegAsB16(t, 0) != expected) {
 					result = false;
 					status << "and.b16 failed (thread " << t << "): expected " << expected 
-						<< ", got " << cta.getRegAsS16(t, 0) << "\n";
+						<< ", got " << cta->getRegAsS16(t, 0) << "\n";
 				}
 			}
 		}
@@ -2876,16 +2876,16 @@ public:
 			ins.a = reg("r1", PTXOperand::b32, 1);
 			ins.b = reg("r2", PTXOperand::b32, 2);
 			for (int t = 0; t < threadCount; t++) {
-				cta.setRegAsB32(t, 1, t);
-				cta.setRegAsB32(t, 2, 3*t);
+				cta->setRegAsB32(t, 1, t);
+				cta->setRegAsB32(t, 2, 3*t);
 			}
-			cta.eval_And(cta.runtimeStack.back(), ins);
+			cta->eval_And(cta->getActiveContext(), ins);
 			for (int t = 0; t < threadCount; t++) {
 				PTXB32 expected = (t) & (3*t);
-				if (cta.getRegAsB32(t, 0) != expected) {
+				if (cta->getRegAsB32(t, 0) != expected) {
 					result = false;
 					status << "and.b32 failed (thread " << t << "): expected " << expected 
-						<< ", got " << cta.getRegAsS16(t, 0) << "\n";
+						<< ", got " << cta->getRegAsS16(t, 0) << "\n";
 				}
 			}
 		}
@@ -2898,16 +2898,16 @@ public:
 			ins.a = reg("r1", PTXOperand::b64, 1);
 			ins.b = reg("r2", PTXOperand::b64, 2);
 			for (int t = 0; t < threadCount; t++) {
-				cta.setRegAsB64(t, 1, t);
-				cta.setRegAsB64(t, 2, 3*t);
+				cta->setRegAsB64(t, 1, t);
+				cta->setRegAsB64(t, 2, 3*t);
 			}
-			cta.eval_And(cta.runtimeStack.back(), ins);
+			cta->eval_And(cta->getActiveContext(), ins);
 			for (int t = 0; t < threadCount; t++) {
 				PTXB64 expected = (t) & (3*t);
-				if (cta.getRegAsB64(t, 0) != expected) {
+				if (cta->getRegAsB64(t, 0) != expected) {
 					result = false;
 					status << "and.b64 failed (thread " << t << "): expected " << expected 
-						<< ", got " << cta.getRegAsS16(t, 0) << "\n";
+						<< ", got " << cta->getRegAsS16(t, 0) << "\n";
 				}
 			}
 		}
@@ -2923,7 +2923,7 @@ public:
 		PTXInstruction ins;
 		ins.opcode = PTXInstruction::Or;
 
-		cta.reset();
+		cta->reset();
 
 		// b16
 		//
@@ -2933,16 +2933,16 @@ public:
 			ins.a = reg("r1", PTXOperand::b16, 1);
 			ins.b = reg("r2", PTXOperand::b16, 2);
 			for (int t = 0; t < threadCount; t++) {
-				cta.setRegAsB16(t, 1, t);
-				cta.setRegAsB16(t, 2, 3*t);
+				cta->setRegAsB16(t, 1, t);
+				cta->setRegAsB16(t, 2, 3*t);
 			}
-			cta.eval_Or(cta.runtimeStack.back(), ins);
+			cta->eval_Or(cta->getActiveContext(), ins);
 			for (int t = 0; t < threadCount; t++) {
 				PTXB16 expected = (t) | (3*t);
-				if (cta.getRegAsB16(t, 0) != expected) {
+				if (cta->getRegAsB16(t, 0) != expected) {
 					result = false;
 					status << "or.b16 failed (thread " << t << "): expected " << expected 
-						<< ", got " << cta.getRegAsS16(t, 0) << "\n";
+						<< ", got " << cta->getRegAsS16(t, 0) << "\n";
 				}
 			}
 		}
@@ -2955,16 +2955,16 @@ public:
 			ins.a = reg("r1", PTXOperand::b32, 1);
 			ins.b = reg("r2", PTXOperand::b32, 2);
 			for (int t = 0; t < threadCount; t++) {
-				cta.setRegAsB32(t, 1, t);
-				cta.setRegAsB32(t, 2, 3*t);
+				cta->setRegAsB32(t, 1, t);
+				cta->setRegAsB32(t, 2, 3*t);
 			}
-			cta.eval_Or(cta.runtimeStack.back(), ins);
+			cta->eval_Or(cta->getActiveContext(), ins);
 			for (int t = 0; t < threadCount; t++) {
 				PTXB32 expected = (t) | (3*t);
-				if (cta.getRegAsB32(t, 0) != expected) {
+				if (cta->getRegAsB32(t, 0) != expected) {
 					result = false;
 					status << "or.b32 failed (thread " << t << "): expected " << expected 
-						<< ", got " << cta.getRegAsS16(t, 0) << "\n";
+						<< ", got " << cta->getRegAsS16(t, 0) << "\n";
 				}
 			}
 		}
@@ -2977,16 +2977,16 @@ public:
 			ins.a = reg("r1", PTXOperand::b64, 1);
 			ins.b = reg("r2", PTXOperand::b64, 2);
 			for (int t = 0; t < threadCount; t++) {
-				cta.setRegAsB64(t, 1, t);
-				cta.setRegAsB64(t, 2, 3*t);
+				cta->setRegAsB64(t, 1, t);
+				cta->setRegAsB64(t, 2, 3*t);
 			}
-			cta.eval_Or(cta.runtimeStack.back(), ins);
+			cta->eval_Or(cta->getActiveContext(), ins);
 			for (int t = 0; t < threadCount; t++) {
 				PTXB64 expected = (t) | (3*t);
-				if (cta.getRegAsB64(t, 0) != expected) {
+				if (cta->getRegAsB64(t, 0) != expected) {
 					result = false;
 					status << "or.b64 failed (thread " << t << "): expected " << expected 
-						<< ", got " << cta.getRegAsS16(t, 0) << "\n";
+						<< ", got " << cta->getRegAsS16(t, 0) << "\n";
 				}
 			}
 		}
@@ -3002,7 +3002,7 @@ public:
 		PTXInstruction ins;
 		ins.opcode = PTXInstruction::Xor;
 
-		cta.reset();
+		cta->reset();
 
 		// b16
 		//
@@ -3012,16 +3012,16 @@ public:
 			ins.a = reg("r1", PTXOperand::b16, 1);
 			ins.b = reg("r2", PTXOperand::b16, 2);
 			for (int t = 0; t < threadCount; t++) {
-				cta.setRegAsB16(t, 1, t);
-				cta.setRegAsB16(t, 2, 3*t);
+				cta->setRegAsB16(t, 1, t);
+				cta->setRegAsB16(t, 2, 3*t);
 			}
-			cta.eval_Xor(cta.runtimeStack.back(), ins);
+			cta->eval_Xor(cta->getActiveContext(), ins);
 			for (int t = 0; t < threadCount; t++) {
 				PTXB16 expected = ((t) ^ (3*t));
-				if (cta.getRegAsB16(t, 0) != expected) {
+				if (cta->getRegAsB16(t, 0) != expected) {
 					result = false;
 					status << "xor.b16 failed (thread " << t << "): expected " << expected 
-						<< ", got " << cta.getRegAsS16(t, 0) << "\n";
+						<< ", got " << cta->getRegAsS16(t, 0) << "\n";
 				}
 			}
 		}
@@ -3034,16 +3034,16 @@ public:
 			ins.a = reg("r1", PTXOperand::b32, 1);
 			ins.b = reg("r2", PTXOperand::b32, 2);
 			for (int t = 0; t < threadCount; t++) {
-				cta.setRegAsB32(t, 1, t);
-				cta.setRegAsB32(t, 2, 3*t);
+				cta->setRegAsB32(t, 1, t);
+				cta->setRegAsB32(t, 2, 3*t);
 			}
-			cta.eval_Xor(cta.runtimeStack.back(), ins);
+			cta->eval_Xor(cta->getActiveContext(), ins);
 			for (int t = 0; t < threadCount; t++) {
 				PTXB32 expected = ((t) ^ (3*t));
-				if (cta.getRegAsB32(t, 0) != expected) {
+				if (cta->getRegAsB32(t, 0) != expected) {
 					result = false;
 					status << "xor.b32 failed (thread " << t << "): expected " << expected 
-						<< ", got " << cta.getRegAsS32(t, 0) << "\n";
+						<< ", got " << cta->getRegAsS32(t, 0) << "\n";
 				}
 			}
 		}
@@ -3056,13 +3056,13 @@ public:
 			ins.a = reg("r1", PTXOperand::b64, 1);
 			ins.b = reg("r2", PTXOperand::b64, 2);
 			for (int t = 0; t < threadCount; t++) {
-				cta.setRegAsB64(t, 1, t);
-				cta.setRegAsB64(t, 2, 3*t);
+				cta->setRegAsB64(t, 1, t);
+				cta->setRegAsB64(t, 2, 3*t);
 			}
-			cta.eval_Xor(cta.runtimeStack.back(), ins);
+			cta->eval_Xor(cta->getActiveContext(), ins);
 			for (int t = 0; t < threadCount; t++) {
 				PTXB64 expected = ((t) ^ (3*t));
-				PTXB64 got = cta.getRegAsB64(t, 0);
+				PTXB64 got = cta->getRegAsB64(t, 0);
 				if (got != expected) {
 					result = false;
 					status << "xor.b64 failed (thread " << t << "): expected " << expected 
@@ -3082,7 +3082,7 @@ public:
 		PTXInstruction ins;
 		ins.opcode = PTXInstruction::Not;
 
-		cta.reset();
+		cta->reset();
 
 		// b16
 		//
@@ -3091,16 +3091,16 @@ public:
 			ins.d = reg("r3", PTXOperand::b16, 0);
 			ins.a = reg("r1", PTXOperand::b16, 1);
 			for (int t = 0; t < threadCount; t++) {
-				cta.setRegAsB16(t, 1, t);
-				cta.setRegAsB16(t, 0, 0);
+				cta->setRegAsB16(t, 1, t);
+				cta->setRegAsB16(t, 0, 0);
 			}
-			cta.eval_Not(cta.runtimeStack.back(), ins);
+			cta->eval_Not(cta->getActiveContext(), ins);
 			for (int t = 0; t < threadCount; t++) {
 				PTXB16 expected = (~t);
-				if (cta.getRegAsB16(t, 0) != expected) {
+				if (cta->getRegAsB16(t, 0) != expected) {
 					result = false;
 					status << "xor.b16 failed (thread " << t << "): expected " << expected 
-						<< ", got " << cta.getRegAsS16(t, 0) << "\n";
+						<< ", got " << cta->getRegAsS16(t, 0) << "\n";
 				}
 			}
 		}
@@ -3112,16 +3112,16 @@ public:
 			ins.d = reg("r3", PTXOperand::b32, 0);
 			ins.a = reg("r1", PTXOperand::b32, 1);
 			for (int t = 0; t < threadCount; t++) {
-				cta.setRegAsB32(t, 1, t);
-				cta.setRegAsB32(t, 0, 0);
+				cta->setRegAsB32(t, 1, t);
+				cta->setRegAsB32(t, 0, 0);
 			}
-			cta.eval_Not(cta.runtimeStack.back(), ins);
+			cta->eval_Not(cta->getActiveContext(), ins);
 			for (int t = 0; t < threadCount; t++) {
 				PTXB32 expected = (~t);
-				if (cta.getRegAsB32(t, 0) != expected) {
+				if (cta->getRegAsB32(t, 0) != expected) {
 					result = false;
 					status << "xor.b32 failed (thread " << t << "): expected " << expected 
-						<< ", got " << cta.getRegAsS16(t, 0) << "\n";
+						<< ", got " << cta->getRegAsS16(t, 0) << "\n";
 				}
 			}
 		}
@@ -3133,13 +3133,13 @@ public:
 			ins.d = reg("r3", PTXOperand::b64, 0);
 			ins.a = reg("r1", PTXOperand::b64, 1);
 			for (int t = 0; t < threadCount; t++) {
-				cta.setRegAsB64(t, 1, t);
-				cta.setRegAsB64(t, 0, 0);
+				cta->setRegAsB64(t, 1, t);
+				cta->setRegAsB64(t, 0, 0);
 			}
-			cta.eval_Not(cta.runtimeStack.back(), ins);
+			cta->eval_Not(cta->getActiveContext(), ins);
 			for (int t = 0; t < threadCount; t++) {
 				PTXB64 expected = (~t);
-				PTXB64 got = cta.getRegAsB64(t, 0);
+				PTXB64 got = cta->getRegAsB64(t, 0);
 				if (got != expected) {
 					result = false;
 					status << "xor.b64 failed (thread " << t << "): expected " << expected 
@@ -3168,7 +3168,7 @@ public:
 		PTXInstruction ins;
 		ins.opcode = PTXInstruction::Ld;
 
-		cta.reset();
+		cta->reset();
 
 		//
 		// Global memory
@@ -3185,16 +3185,16 @@ public:
 			ins.type = PTXOperand::u32;
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsU64(i, 0, (PTXU64)&source[0]);
-				cta.setRegAsU32(i, 5, 0);
+				cta->setRegAsU64(i, 0, (PTXU64)&source[0]);
+				cta->setRegAsU32(i, 5, 0);
 			}
 
-			cta.eval_Ld(cta.runtimeStack.back(), ins);
+			cta->eval_Ld(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
-				if (cta.getRegAsU32(i, 5) != 0xaa551376) {
+				if (cta->getRegAsU32(i, 5) != 0xaa551376) {
 					result = false;
 					status << "ld.u32.global failed - [" << i << "] - expected 0xaa551376, got " 
-						<< cta.getRegAsU32(i, 5) << "\n";
+						<< cta->getRegAsU32(i, 5) << "\n";
 				}
 			}
 		}
@@ -3209,13 +3209,13 @@ public:
 			ins.type = PTXOperand::u32;
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsU64(i, 0, (PTXU64)&source[0]);
-				cta.setRegAsU32(i, 5, 0);
+				cta->setRegAsU64(i, 0, (PTXU64)&source[0]);
+				cta->setRegAsU32(i, 5, 0);
 			}
 
-			cta.eval_Ld(cta.runtimeStack.back(), ins);
+			cta->eval_Ld(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
-				PTXU32 got = cta.getRegAsU32(i, 5);
+				PTXU32 got = cta->getRegAsU32(i, 5);
 				if (got != 0x75320011) {
 					result = false;
 					status << "ld.u32.global failed - [" << i << "] - expected 0x75320011, got 0x" << hex
@@ -3235,13 +3235,13 @@ public:
 			ins.type = PTXOperand::u32;
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsU64(i, 0, (PTXU64)&source[0]);
-				cta.setRegAsU32(i, 5, 0);
+				cta->setRegAsU64(i, 0, (PTXU64)&source[0]);
+				cta->setRegAsU32(i, 5, 0);
 			}
 
-			cta.eval_Ld(cta.runtimeStack.back(), ins);
+			cta->eval_Ld(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
-				PTXU32 got = cta.getRegAsU32(i, 5);
+				PTXU32 got = cta->getRegAsU32(i, 5);
 				if (got != 0x99b8aafd) {
 					result = false;
 					status << "ld.u32.global failed - [" << i << "] - expected 0x99b8aafd, got 0x" << hex
@@ -3258,13 +3258,13 @@ public:
 		PTXInstruction ins;
 		ins.opcode = PTXInstruction::Ld;
 
-		cta.reset();
+		cta->reset();
 
 		//
 		// Shared memory
 		//
 
-		PTXU32 *shared = (PTXU32 *)cta.functionCallStack.sharedMemoryPointer();
+		PTXU32 *shared = (PTXU32 *)cta->functionCallStack.sharedMemoryPointer();
 
 		ins.addressSpace = PTXInstruction::Shared;
 
@@ -3282,16 +3282,16 @@ public:
 			ins.type = PTXOperand::u32;
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsU64(i, 0, (PTXU64)(i % 4) * sizeof(PTXU32));
-				cta.setRegAsU32(i, 5, 0);
+				cta->setRegAsU64(i, 0, (PTXU64)(i % 4) * sizeof(PTXU32));
+				cta->setRegAsU32(i, 5, 0);
 			}
 
-			cta.eval_Ld(cta.runtimeStack.back(), ins);
+			cta->eval_Ld(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
-				if (cta.getRegAsU32(i, 5) != shared[i % 4]) {
+				if (cta->getRegAsU32(i, 5) != shared[i % 4]) {
 					result = false;
 					status << "ld.u32.shared [reg] failed - [" << i << "] - expected 0x" << hex << shared[i % 4] 
-						<< ", got 0x" << cta.getRegAsU32(i, 5) << dec << "\n";
+						<< ", got 0x" << cta->getRegAsU32(i, 5) << dec << "\n";
 				}
 			}
 		}
@@ -3305,16 +3305,16 @@ public:
 			ins.type = PTXOperand::u32;
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsU64(i, 0, (PTXU64)(i % 4) * sizeof(PTXU32));
-				cta.setRegAsU32(i, 5, 0);
+				cta->setRegAsU64(i, 0, (PTXU64)(i % 4) * sizeof(PTXU32));
+				cta->setRegAsU32(i, 5, 0);
 			}
 
-			cta.eval_Ld(cta.runtimeStack.back(), ins);
+			cta->eval_Ld(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
-				if (cta.getRegAsU32(i, 5) != shared[1 + (i % 4)]) {
+				if (cta->getRegAsU32(i, 5) != shared[1 + (i % 4)]) {
 					result = false;
 					status << "ld.u32.shared [reg+offset] failed - [" << i << "] - expected 0x" << hex << shared[1 + (i % 4)] 
-						<< ", got 0x" << cta.getRegAsU32(i, 5) << dec << "\n";
+						<< ", got 0x" << cta->getRegAsU32(i, 5) << dec << "\n";
 				}
 			}
 		}
@@ -3329,16 +3329,16 @@ public:
 			ins.type = PTXOperand::u32;
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsU64(i, 0, 0);
-				cta.setRegAsU32(i, 5, 0);
+				cta->setRegAsU64(i, 0, 0);
+				cta->setRegAsU32(i, 5, 0);
 			}
 
-			cta.eval_Ld(cta.runtimeStack.back(), ins);
+			cta->eval_Ld(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
-				if (cta.getRegAsU32(i, 5) != shared[2]) {
+				if (cta->getRegAsU32(i, 5) != shared[2]) {
 					result = false;
 					status << "ld.u32.shared [imm] failed - [" << i << "] - expected 0x" << hex << shared[2] 
-						<< ", got 0x" << cta.getRegAsU32(i, 5) << dec << "\n";
+						<< ", got 0x" << cta->getRegAsU32(i, 5) << dec << "\n";
 				}
 			}
 		}
@@ -3352,14 +3352,14 @@ public:
 		PTXInstruction ins;
 		ins.opcode = PTXInstruction::Ld;
 
-		cta.reset();
+		cta->reset();
 
 		//
 		// Parameter memory
 		//
 
 		// we only need this to set values, the instruction itself sees it as just another address space
-		PTXU32 *space = (PTXU32 *)cta.kernel->ArgumentMemory;
+		PTXU32 *space = (PTXU32 *)cta->kernel->ArgumentMemory;
 
 		ins.addressSpace = PTXInstruction::Param;
 
@@ -3377,16 +3377,16 @@ public:
 			ins.type = PTXOperand::u32;
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsU64(i, 0, (PTXU64)(i % 4) * sizeof(PTXU32));
-				cta.setRegAsU32(i, 5, 0);
+				cta->setRegAsU64(i, 0, (PTXU64)(i % 4) * sizeof(PTXU32));
+				cta->setRegAsU32(i, 5, 0);
 			}
 
-			cta.eval_Ld(cta.runtimeStack.back(), ins);
+			cta->eval_Ld(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
-				if (cta.getRegAsU32(i, 5) != space[i % 4]) {
+				if (cta->getRegAsU32(i, 5) != space[i % 4]) {
 					result = false;
 					status << "ld.u32.param [reg] failed - [" << i << "] - expected 0x" << hex << space[i % 4] 
-						<< ", got 0x" << cta.getRegAsU32(i, 5) << dec << "\n";
+						<< ", got 0x" << cta->getRegAsU32(i, 5) << dec << "\n";
 				}
 			}
 		}
@@ -3400,16 +3400,16 @@ public:
 			ins.type = PTXOperand::u32;
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsU64(i, 0, (PTXU64)(i % 4) * sizeof(PTXU32));
-				cta.setRegAsU32(i, 5, 0);
+				cta->setRegAsU64(i, 0, (PTXU64)(i % 4) * sizeof(PTXU32));
+				cta->setRegAsU32(i, 5, 0);
 			}
 
-			cta.eval_Ld(cta.runtimeStack.back(), ins);
+			cta->eval_Ld(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
-				if (cta.getRegAsU32(i, 5) != space[1 + (i % 4)]) {
+				if (cta->getRegAsU32(i, 5) != space[1 + (i % 4)]) {
 					result = false;
 					status << "ld.u32.param [reg+offset] failed - [" << i << "] - expected 0x" << hex << space[1 + (i % 4)] 
-						<< ", got 0x" << cta.getRegAsU32(i, 5) << dec << "\n";
+						<< ", got 0x" << cta->getRegAsU32(i, 5) << dec << "\n";
 				}
 			}
 		}
@@ -3424,16 +3424,16 @@ public:
 			ins.type = PTXOperand::u32;
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsU64(i, 0, 0);
-				cta.setRegAsU32(i, 5, 0);
+				cta->setRegAsU64(i, 0, 0);
+				cta->setRegAsU32(i, 5, 0);
 			}
 
-			cta.eval_Ld(cta.runtimeStack.back(), ins);
+			cta->eval_Ld(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
-				if (cta.getRegAsU32(i, 5) != space[2]) {
+				if (cta->getRegAsU32(i, 5) != space[2]) {
 					result = false;
 					status << "ld.u32.param [imm] failed - [" << i << "] - expected 0x" << hex << space[2] 
-						<< ", got 0x" << cta.getRegAsU32(i, 5) << dec << "\n";
+						<< ", got 0x" << cta->getRegAsU32(i, 5) << dec << "\n";
 				}
 			}
 		}
@@ -3447,7 +3447,7 @@ public:
 		PTXInstruction ins;
 		ins.opcode = PTXInstruction::Ld;
 
-		cta.reset();
+		cta->reset();
 
 		//
 		// Global memory
@@ -3476,18 +3476,18 @@ public:
 			ins.type = PTXOperand::u32;
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsU64(i, 0, (PTXU64)&source[0]);
-				cta.setRegAsU32(i, 1, 0);
-				cta.setRegAsU32(i, 2, 0);
-				cta.setRegAsU32(i, 3, 0);
-				cta.setRegAsU32(i, 4, 0);
-				cta.setRegAsU32(i, 5, 0);
+				cta->setRegAsU64(i, 0, (PTXU64)&source[0]);
+				cta->setRegAsU32(i, 1, 0);
+				cta->setRegAsU32(i, 2, 0);
+				cta->setRegAsU32(i, 3, 0);
+				cta->setRegAsU32(i, 4, 0);
+				cta->setRegAsU32(i, 5, 0);
 			}
 
-			cta.eval_Ld(cta.runtimeStack.back(), ins);
+			cta->eval_Ld(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
-				PTXU32 d0 = cta.getRegAsU32(i, 1);
-				PTXU32 d1 = cta.getRegAsU32(i, 2);
+				PTXU32 d0 = cta->getRegAsU32(i, 1);
+				PTXU32 d1 = cta->getRegAsU32(i, 2);
 				if (d0 != 0xaa551376 || d1 != 0x91834321) {
 					result = false;
 					status << "ld.u32.global.v2 failed - [" << i << 
@@ -3513,18 +3513,18 @@ public:
 			ins.type = PTXOperand::u32;
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsU64(i, 0, (PTXU64)&source[0]);
-				cta.setRegAsU32(i, 1, 0);
-				cta.setRegAsU32(i, 2, 0);
-				cta.setRegAsU32(i, 3, 0);
-				cta.setRegAsU32(i, 4, 0);
-				cta.setRegAsU32(i, 5, 0);
+				cta->setRegAsU64(i, 0, (PTXU64)&source[0]);
+				cta->setRegAsU32(i, 1, 0);
+				cta->setRegAsU32(i, 2, 0);
+				cta->setRegAsU32(i, 3, 0);
+				cta->setRegAsU32(i, 4, 0);
+				cta->setRegAsU32(i, 5, 0);
 			}
 
-			cta.eval_Ld(cta.runtimeStack.back(), ins);
+			cta->eval_Ld(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
 				for (int j = 0; j < 4; j++) {
-					if (cta.getRegAsU32(i, 1+j) != source[j]) {
+					if (cta->getRegAsU32(i, 1+j) != source[j]) {
 						status << "ld.u32.global.v4 failed\n";
 						result = false; 
 						break;
@@ -3558,7 +3558,7 @@ public:
 		PTXInstruction ins;
 		ins.opcode = PTXInstruction::St;
 
-		cta.reset();
+		cta->reset();
 
 		//
 		// Global memory
@@ -3575,11 +3575,11 @@ public:
 			ins.type = PTXOperand::u32;
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsU64(i, 5, (PTXU64)&source[i]);
-				cta.setRegAsU32(i, 0, i);
+				cta->setRegAsU64(i, 5, (PTXU64)&source[i]);
+				cta->setRegAsU32(i, 0, i);
 			}
 
-			cta.eval_St(cta.runtimeStack.back(), ins);
+			cta->eval_St(cta->getActiveContext(), ins);
 			for (PTXU32 i = 0; i < (PTXU32)threadCount; i++) {
 				if (source[i] != i) {
 					result = false;
@@ -3598,11 +3598,11 @@ public:
 			ins.type = PTXOperand::u32;
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsU64(i, 5, (PTXU64)&source[i]);
-				cta.setRegAsU32(i, 0, i);
+				cta->setRegAsU64(i, 5, (PTXU64)&source[i]);
+				cta->setRegAsU32(i, 0, i);
 			}
 
-			cta.eval_St(cta.runtimeStack.back(), ins);
+			cta->eval_St(cta->getActiveContext(), ins);
 			for (PTXU32 i = 0; i < (PTXU32)threadCount; i++) {
 				if (source[i+1] != i) {
 					result = false;
@@ -3622,10 +3622,10 @@ public:
 			ins.type = PTXOperand::u32;
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsU32(i, 0, i);
+				cta->setRegAsU32(i, 0, i);
 			}
 
-			cta.eval_St(cta.runtimeStack.back(), ins);
+			cta->eval_St(cta->getActiveContext(), ins);
 
 			if (source[0] != (PTXU32)threadCount - 1) {
 				result = false;
@@ -3645,7 +3645,7 @@ public:
 		PTXInstruction ins;
 		ins.opcode = PTXInstruction::St;
 
-		cta.reset();
+		cta->reset();
 
 		//
 		// Global memory
@@ -3670,14 +3670,14 @@ public:
 			ins.d.offset = 0;
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsU32(i, 0, (PTXU64)&block[i*4]);
-				cta.setRegAsU32(i, 1, i);
-				cta.setRegAsU32(i, 2, i*2);
-				cta.setRegAsU32(i, 3, i*3);
-				cta.setRegAsU32(i, 4, i*4);
+				cta->setRegAsU32(i, 0, (PTXU64)&block[i*4]);
+				cta->setRegAsU32(i, 1, i);
+				cta->setRegAsU32(i, 2, i*2);
+				cta->setRegAsU32(i, 3, i*3);
+				cta->setRegAsU32(i, 4, i*4);
 			}
 
-			cta.eval_St(cta.runtimeStack.back(), ins);
+			cta->eval_St(cta->getActiveContext(), ins);
 			for (PTXU32 i = 0; i < (PTXU32)threadCount; i++) {
 				for (PTXU32 j = 0; j < 4; j++) {
 					if (block[i*4+j] != i * (j+1)) {
@@ -3722,7 +3722,7 @@ public:
 		PTXInstruction ins;
 		ins.opcode = PTXInstruction::Mov;
 
-		cta.reset();
+		cta->reset();
 
 		// from register
 
@@ -3731,9 +3731,9 @@ public:
 			ins.d = reg("r6", PTXOperand::u16, 0);
 			ins.a = sreg(PTXOperand::tid, PTXOperand::ix);
 			ins.type = PTXOperand::u16;
-			cta.eval_Mov(cta.runtimeStack.back(), ins);
+			cta->eval_Mov(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
-				if (cta.getRegAsU16(i, 0) != (PTXU16)i) {
+				if (cta->getRegAsU16(i, 0) != (PTXU16)i) {
 					result = false;
 					status << "mov.u32 r6, tidX failed\n";
 				}
@@ -3745,9 +3745,9 @@ public:
 			ins.d = reg("r6", PTXOperand::u16, 0);
 			ins.a = sreg(PTXOperand::tid, PTXOperand::iy);
 			ins.type = PTXOperand::u16;
-			cta.eval_Mov(cta.runtimeStack.back(), ins);
+			cta->eval_Mov(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
-				if (cta.getRegAsU16(i, 0) != 0) {
+				if (cta->getRegAsU16(i, 0) != 0) {
 					result = false;
 					status << "mov.u32 r6, tidY failed\n";
 				}
@@ -3759,9 +3759,9 @@ public:
 			ins.d = reg("r6", PTXOperand::u16, 0);
 			ins.a = sreg(PTXOperand::ntid, PTXOperand::ix);
 			ins.type = PTXOperand::u16;
-			cta.eval_Mov(cta.runtimeStack.back(), ins);
+			cta->eval_Mov(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
-				if (cta.getRegAsU16(i, 0) != threadCount) {
+				if (cta->getRegAsU16(i, 0) != threadCount) {
 					result = false;
 					status << "mov.u32 r6, ntidX failed\n";
 				}
@@ -3773,9 +3773,9 @@ public:
 			ins.d = reg("r6", PTXOperand::u16, 0);
 			ins.a = sreg(PTXOperand::ntid, PTXOperand::iy);
 			ins.type = PTXOperand::u16;
-			cta.eval_Mov(cta.runtimeStack.back(), ins);
+			cta->eval_Mov(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
-				if (cta.getRegAsU16(i, 0) != 1) {
+				if (cta->getRegAsU16(i, 0) != 1) {
 					result = false;
 					status << "mov.u32 r6, ntidY failed\n";
 				}
@@ -3793,7 +3793,7 @@ public:
 		PTXInstruction ins;
 		ins.opcode = PTXInstruction::Cvt;
 
-		cta.reset();
+		cta->reset();
 
 		// 
 	
@@ -3810,7 +3810,7 @@ public:
 		PTXInstruction ins;
 		ins.opcode = PTXInstruction::Set;
 
-		cta.reset();
+		cta->reset();
 
 		if (result) {
 			// set.u32.s32.ge
@@ -3823,17 +3823,17 @@ public:
 			ins.booleanOperator = PTXInstruction::BoolNop;
 	
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsU32(i, 3, 0x55555555);
-				cta.setRegAsS32(i, 1, 4 - i);
-				cta.setRegAsS32(i, 2, i);
-				cta.setRegAsPredicate(i, 0, (i % 5));
+				cta->setRegAsU32(i, 3, 0x55555555);
+				cta->setRegAsS32(i, 1, 4 - i);
+				cta->setRegAsS32(i, 2, i);
+				cta->setRegAsPredicate(i, 0, (i % 5));
 			}
-			cta.eval_Set(cta.runtimeStack.back(), ins);
+			cta->eval_Set(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
 				PTXS32 a = (4 - i), b = (i);
 				bool r_t = (a >= b);
 				PTXU32 r_d = (r_t ? 0xFFFFFFFF : 0x00);
-				if (r_d != cta.getRegAsU32(i, 3)) {
+				if (r_d != cta->getRegAsU32(i, 3)) {
 					status << "[set.u32.s32.ge test] " << ins.toString() << "; failed on thread " << i << "\n";
 					result = false; break;
 				}
@@ -3851,17 +3851,17 @@ public:
 			ins.booleanOperator = PTXInstruction::BoolAnd;
 	
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsU32(i, 3, 0x55555555);
-				cta.setRegAsS32(i, 1, 4 - i);
-				cta.setRegAsS32(i, 2, i);
-				cta.setRegAsPredicate(i, 0, (i % 3));
+				cta->setRegAsU32(i, 3, 0x55555555);
+				cta->setRegAsS32(i, 1, 4 - i);
+				cta->setRegAsS32(i, 2, i);
+				cta->setRegAsPredicate(i, 0, (i % 3));
 			}
-			cta.eval_Set(cta.runtimeStack.back(), ins);
+			cta->eval_Set(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
 				PTXS32 a = (4 - i), b = (i);
 				bool r_t = (a >= b) && (bool)(i % 3);
 				PTXF32 r_d = (r_t ? 1.0f : 0.0f);
-				if (r_d != cta.getRegAsF32(i, 3)) {
+				if (r_d != cta->getRegAsF32(i, 3)) {
 					status << "[set.f32.s32.and test] " << ins.toString() << "; failed on thread " << i << "\n";
 					result = false; break;
 				}
@@ -3880,17 +3880,17 @@ public:
 			ins.booleanOperator = PTXInstruction::BoolOr;
 	
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsU32(i, 3, 0x55555555);
-				cta.setRegAsF32(i, 1, (PTXF32)(4 - i));
-				cta.setRegAsF32(i, 2, (PTXF32)i);
-				cta.setRegAsPredicate(i, 0, (i % 5));
+				cta->setRegAsU32(i, 3, 0x55555555);
+				cta->setRegAsF32(i, 1, (PTXF32)(4 - i));
+				cta->setRegAsF32(i, 2, (PTXF32)i);
+				cta->setRegAsPredicate(i, 0, (i % 5));
 			}
-			cta.eval_Set(cta.runtimeStack.back(), ins);
+			cta->eval_Set(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
 				PTXS32 a = (4 - i), b = (i);
 				bool r_t = (a < b) || (bool)(i % 5);
 				PTXU32 r_d = (r_t ? 0xFFFFFFFF : 0x00);
-				if (r_d != cta.getRegAsU32(i, 3)) {
+				if (r_d != cta->getRegAsU32(i, 3)) {
 					status << "[set.u32.f32.lt.or test] " << ins.toString() 
 						<< "; failed on thread " << i << "\n";
 					result = false; break;
@@ -3907,7 +3907,7 @@ public:
 		PTXInstruction ins;
 		ins.opcode = PTXInstruction::SetP;
 
-		cta.reset();
+		cta->reset();
 
 		if (result) {
 			// setp.s32.lt p|q, a, b; // p = (a < b); q = !(a < b);
@@ -3925,21 +3925,21 @@ public:
 			}
 	
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsS32(i, 1, 4 - i);
-				cta.setRegAsS32(i, 2, i);
+				cta->setRegAsS32(i, 1, 4 - i);
+				cta->setRegAsS32(i, 2, i);
 			}
-			cta.eval_SetP(cta.runtimeStack.back(), ins);
+			cta->eval_SetP(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
-				if (((4-i) < i && cta.getRegAsPredicate(i, 3) && !cta.getRegAsPredicate(i, 4))) {
+				if (((4-i) < i && cta->getRegAsPredicate(i, 3) && !cta->getRegAsPredicate(i, 4))) {
 					// good
 				}
-				else if ( !((4-i)<i) && !cta.getRegAsPredicate(i, 3) && cta.getRegAsPredicate(i, 4)) {
+				else if ( !((4-i)<i) && !cta->getRegAsPredicate(i, 3) && cta->getRegAsPredicate(i, 4)) {
 					// good
 				}
 				else {
 					status << "[s32 Lt test] " << ins.toString() << " failed - thread " << i 
-						<< ", (" << cta.getRegAsS32(i, 1) << " < " << cta.getRegAsS32(i, 2) << ") ?? - "
-						<< " p = " << cta.getRegAsPredicate(i, 3) << ", q = " << cta.getRegAsPredicate(i, 4) << "\n";
+						<< ", (" << cta->getRegAsS32(i, 1) << " < " << cta->getRegAsS32(i, 2) << ") ?? - "
+						<< " p = " << cta->getRegAsPredicate(i, 3) << ", q = " << cta->getRegAsPredicate(i, 4) << "\n";
 					result = false;
 					break;
 				}
@@ -3957,21 +3957,21 @@ public:
 			ins.comparisonOperator = PTXInstruction::Ge;
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsS32(i, 1, 4 - i);
-				cta.setRegAsS32(i, 2, i);
+				cta->setRegAsS32(i, 1, 4 - i);
+				cta->setRegAsS32(i, 2, i);
 			}
-			cta.eval_SetP(cta.runtimeStack.back(), ins);
+			cta->eval_SetP(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
-				if (((4-i) >= i && cta.getRegAsPredicate(i, 3) && !cta.getRegAsPredicate(i, 4))) {
+				if (((4-i) >= i && cta->getRegAsPredicate(i, 3) && !cta->getRegAsPredicate(i, 4))) {
 					// good
 				}
-				else if ( !((4-i) >= i) && !cta.getRegAsPredicate(i, 3) && cta.getRegAsPredicate(i, 4)) {
+				else if ( !((4-i) >= i) && !cta->getRegAsPredicate(i, 3) && cta->getRegAsPredicate(i, 4)) {
 					// good
 				}
 				else {
 					status << "[s32 Ge test] " << ins.toString() << "; failed - thread " << i 
-						<< ", (" << cta.getRegAsS32(i, 1) << " >= " << cta.getRegAsS32(i, 2) << ") ?? - "
-						<< " p = " << cta.getRegAsPredicate(i, 3) << ", q = " << cta.getRegAsPredicate(i, 4) << "\n";
+						<< ", (" << cta->getRegAsS32(i, 1) << " >= " << cta->getRegAsS32(i, 2) << ") ?? - "
+						<< " p = " << cta->getRegAsPredicate(i, 3) << ", q = " << cta->getRegAsPredicate(i, 4) << "\n";
 					result = false;
 					break;
 				}
@@ -3989,22 +3989,22 @@ public:
 			ins.comparisonOperator = PTXInstruction::Gt;
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsF32(i, 1, 2.25f * i);
-				cta.setRegAsF32(i, 2, 3.14f - 1.1f * (float)i);
+				cta->setRegAsF32(i, 1, 2.25f * i);
+				cta->setRegAsF32(i, 2, 3.14f - 1.1f * (float)i);
 			}
-			cta.eval_SetP(cta.runtimeStack.back(), ins);
+			cta->eval_SetP(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
 				float a = 2.25f * i;
 				float b = 3.14f - 1.1f * (float)i;
 				bool r_p = (a > b), r_q = !(a > b);
 
-				if (cta.getRegAsPredicate(i, 3) == r_p && cta.getRegAsPredicate(i, 4) == r_q) {
+				if (cta->getRegAsPredicate(i, 3) == r_p && cta->getRegAsPredicate(i, 4) == r_q) {
 					// good
 				}
 				else {
 					status << "[f32 Gt test] " << ins.toString() << "; failed - thread " << i 
-						<< ", (" << cta.getRegAsF32(i, 1) << " > " << cta.getRegAsF32(i, 2) << ") ?? - "
-						<< " p = " << cta.getRegAsPredicate(i, 3) << ", q = " << cta.getRegAsPredicate(i, 4) << "\n";
+						<< ", (" << cta->getRegAsF32(i, 1) << " > " << cta->getRegAsF32(i, 2) << ") ?? - "
+						<< " p = " << cta->getRegAsPredicate(i, 3) << ", q = " << cta->getRegAsPredicate(i, 4) << "\n";
 					result = false;
 					break;
 				}
@@ -4021,22 +4021,22 @@ public:
 			ins.comparisonOperator = PTXInstruction::Le;
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsF32(i, 1, 2.25f * i);
-				cta.setRegAsF32(i, 2, 3.14f - 1.1f * (float)i);
+				cta->setRegAsF32(i, 1, 2.25f * i);
+				cta->setRegAsF32(i, 2, 3.14f - 1.1f * (float)i);
 			}
-			cta.eval_SetP(cta.runtimeStack.back(), ins);
+			cta->eval_SetP(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
 				float a = 2.25f * i;
 				float b = 3.14f - 1.1f * (float)i;
 				bool r_p = (a <= b), r_q = !(a <= b);
 
-				if (cta.getRegAsPredicate(i, 3) == r_p && cta.getRegAsPredicate(i, 4) == r_q) {
+				if (cta->getRegAsPredicate(i, 3) == r_p && cta->getRegAsPredicate(i, 4) == r_q) {
 					// good
 				}
 				else {
 					status << "[f32 Le test] " << ins.toString() << "; failed - thread " << i 
-						<< ", (" << cta.getRegAsF32(i, 1) << " <= " << cta.getRegAsF32(i, 2) << ") ?? - "
-						<< " p = " << cta.getRegAsPredicate(i, 3) << ", q = " << cta.getRegAsPredicate(i, 4) << "\n";
+						<< ", (" << cta->getRegAsF32(i, 1) << " <= " << cta->getRegAsF32(i, 2) << ") ?? - "
+						<< " p = " << cta->getRegAsPredicate(i, 3) << ", q = " << cta->getRegAsPredicate(i, 4) << "\n";
 					result = false;
 					break;
 				}
@@ -4056,11 +4056,11 @@ public:
 			ins.booleanOperator = PTXInstruction::BoolAnd;
 	
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsS32(i, 1, 4 - i);
-				cta.setRegAsS32(i, 2, i);
-				cta.setRegAsPredicate(i, 0, (i % 2));
+				cta->setRegAsS32(i, 1, 4 - i);
+				cta->setRegAsS32(i, 2, i);
+				cta->setRegAsPredicate(i, 0, (i % 2));
 			}
-			cta.eval_SetP(cta.runtimeStack.back(), ins);
+			cta->eval_SetP(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
 				PTXS32 a = (4 - i);
 				PTXS32 b = (i);
@@ -4068,13 +4068,13 @@ public:
 				bool r_p = (a < b) && r_c, r_q = !(a < b) && r_c; 
 
 
-				if (r_p == cta.getRegAsPredicate(i, 3) && r_q == cta.getRegAsPredicate(i, 4)) {
+				if (r_p == cta->getRegAsPredicate(i, 3) && r_q == cta->getRegAsPredicate(i, 4)) {
 					// good
 				}
 				else {
 					status << "[s32 Lt+And test] " << ins.toString() << " failed - thread " << i 
-						<< ", (" << cta.getRegAsS32(i, 1) << " < " << cta.getRegAsS32(i, 2) << ") ?? - "
-						<< " p = " << cta.getRegAsPredicate(i, 3) << ", q = " << cta.getRegAsPredicate(i, 4) << "\n";
+						<< ", (" << cta->getRegAsS32(i, 1) << " < " << cta->getRegAsS32(i, 2) << ") ?? - "
+						<< " p = " << cta->getRegAsPredicate(i, 3) << ", q = " << cta->getRegAsPredicate(i, 4) << "\n";
 					result = false;
 					break;
 				}
@@ -4093,24 +4093,24 @@ public:
 			ins.booleanOperator = PTXInstruction::BoolOr;
 	
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsS32(i, 1, 4 - i);
-				cta.setRegAsS32(i, 2, i);
-				cta.setRegAsPredicate(i, 0, (i % 5));
+				cta->setRegAsS32(i, 1, 4 - i);
+				cta->setRegAsS32(i, 2, i);
+				cta->setRegAsPredicate(i, 0, (i % 5));
 			}
-			cta.eval_SetP(cta.runtimeStack.back(), ins);
+			cta->eval_SetP(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
 				PTXS32 a = (4 - i);
 				PTXS32 b = (i);
 				bool r_c = (bool)(i % 5);
 				bool r_p = (a >= b) || r_c, r_q = !(a >= b) || r_c; 
 
-				if (r_p == cta.getRegAsPredicate(i, 3) && r_q == cta.getRegAsPredicate(i, 4)) {
+				if (r_p == cta->getRegAsPredicate(i, 3) && r_q == cta->getRegAsPredicate(i, 4)) {
 					// good
 				}
 				else {
 					status << "[s32 Ge+Or test] " << ins.toString() << " failed - thread " << i 
-						<< ", (" << cta.getRegAsS32(i, 1) << " >= " << cta.getRegAsS32(i, 2) << ") ?? - "
-						<< " p = " << cta.getRegAsPredicate(i, 3) << ", q = " << cta.getRegAsPredicate(i, 4) << "\n";
+						<< ", (" << cta->getRegAsS32(i, 1) << " >= " << cta->getRegAsS32(i, 2) << ") ?? - "
+						<< " p = " << cta->getRegAsPredicate(i, 3) << ", q = " << cta->getRegAsPredicate(i, 4) << "\n";
 					result = false;
 					break;
 				}
@@ -4135,7 +4135,7 @@ public:
 		PTXInstruction ins;
 		ins.opcode = PTXInstruction::SelP;
 
-		cta.reset();
+		cta->reset();
 
 		if (result) {
 			// selp.s32 r4, a, b, p
@@ -4147,25 +4147,25 @@ public:
 			ins.c = reg("p", PTXOperand::pred, 0);
 	
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsS32(i, 1, 4 - i);
-				cta.setRegAsS32(i, 2, i);
-				cta.setRegAsPredicate(i, 0, (i % 3));
+				cta->setRegAsS32(i, 1, 4 - i);
+				cta->setRegAsS32(i, 2, i);
+				cta->setRegAsPredicate(i, 0, (i % 3));
 			}
-			cta.eval_SelP(cta.runtimeStack.back(), ins);
+			cta->eval_SelP(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
 				PTXS32 a = (4 - i);
 				PTXS32 b = (i);
 				bool r_c = (bool)(i % 3);
 				PTXS32 r_d = (r_c ? a : b);
 
-				if (r_d == cta.getRegAsS32(i, 3)) {
+				if (r_d == cta->getRegAsS32(i, 3)) {
 					// good
 				}
 				else {
 					status << "[s32 selp test] " << ins.toString() << "; thread " << i << " failed: ";
-					status << " a = " << cta.getRegAsS32(i, 1) 
-						<< ", b = " << cta.getRegAsS32(i, 2) 
-						<< ", d = " << cta.getRegAsS32(i, 3) << ", expected d = " << r_d << "\n";
+					status << " a = " << cta->getRegAsS32(i, 1) 
+						<< ", b = " << cta->getRegAsS32(i, 2) 
+						<< ", d = " << cta->getRegAsS32(i, 3) << ", expected d = " << r_d << "\n";
 					result = false;
 					break;
 				}
@@ -4182,25 +4182,25 @@ public:
 			ins.c = reg("p", PTXOperand::pred, 0);
 	
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsF32(i, 1, (PTXF32)(4 - i));
-				cta.setRegAsF32(i, 2, (PTXF32)i);
-				cta.setRegAsPredicate(i, 0, (i % 3));
+				cta->setRegAsF32(i, 1, (PTXF32)(4 - i));
+				cta->setRegAsF32(i, 2, (PTXF32)i);
+				cta->setRegAsPredicate(i, 0, (i % 3));
 			}
-			cta.eval_SelP(cta.runtimeStack.back(), ins);
+			cta->eval_SelP(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
 				PTXF32 a = (PTXF32)(4 - i);
 				PTXF32 b = (PTXF32)(i);
 				bool r_c = (bool)(i % 3);
 				PTXF32 r_d = (r_c ? a : b);
 
-				if (r_d == cta.getRegAsF32(i, 3)) {
+				if (r_d == cta->getRegAsF32(i, 3)) {
 					// good
 				}
 				else {
 					status << "[s32 selp test] " << ins.toString() << "; thread " << i << " failed: ";
-					status << " a = " << cta.getRegAsF32(i, 1) 
-						<< ", b = " << cta.getRegAsF32(i, 2) 
-						<< ", d = " << cta.getRegAsF32(i, 3) << ", expected d = " << r_d << "\n";
+					status << " a = " << cta->getRegAsF32(i, 1) 
+						<< ", b = " << cta->getRegAsF32(i, 2) 
+						<< ", d = " << cta->getRegAsF32(i, 3) << ", expected d = " << r_d << "\n";
 					result = false;
 					break;
 				}
@@ -4216,7 +4216,7 @@ public:
 		PTXInstruction ins;
 		ins.opcode = PTXInstruction::SlCt;
 
-		cta.reset();
+		cta->reset();
 
 		if (result) {
 			// slct.f32.f32 r, a, b, c
@@ -4228,19 +4228,19 @@ public:
 			ins.c = reg("c", PTXOperand::f32, 3);
 	
 			for (int i = 0; i < threadCount; i++) {
-				cta.setRegAsF32(i, 1, (PTXF32)(4 - i) * 2.0f);
-				cta.setRegAsF32(i, 2, (PTXF32)i * 3.0f);
-				cta.setRegAsF32(i, 3, (PTXF32)(4 - i));
-				cta.setRegAsF32(i, 0, (PTXF32)0);
+				cta->setRegAsF32(i, 1, (PTXF32)(4 - i) * 2.0f);
+				cta->setRegAsF32(i, 2, (PTXF32)i * 3.0f);
+				cta->setRegAsF32(i, 3, (PTXF32)(4 - i));
+				cta->setRegAsF32(i, 0, (PTXF32)0);
 
 			}
-			cta.eval_SlCt(cta.runtimeStack.back(), ins);
+			cta->eval_SlCt(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
 				PTXF32 r_a = (PTXF32)(4 - i) * 2.0f;
 				PTXF32 r_b = (PTXF32)i * 3.0f;
 				PTXF32 r_c = (PTXF32)(4 - i);
 
-				PTXF32 d = cta.getRegAsF32(i, 0);
+				PTXF32 d = cta->getRegAsF32(i, 0);
 				if (r_c >= 0 && r_a != d) {
 					status << "[slct.f32.f32 test] " << ins.toString() << "; failed on thread " << i << "\n";
 					result = false;
@@ -4263,7 +4263,7 @@ public:
 		PTXInstruction ins;
 		ins.opcode = PTXInstruction::TestP;
 
-		cta.reset();
+		cta->reset();
 
 		// f32
 		//
@@ -4329,22 +4329,22 @@ public:
 		PTXInstruction ins;
 		ins.opcode = PTXInstruction::Add;
 
-		cta.reset();
+		cta->reset();
 
 		ins.a = reg("a", PTXOperand::s32, 0);
 		ins.b = reg("b", PTXOperand::s32, 1);
 		ins.d = reg("d", PTXOperand::s32, 2);
 
 		for (int i = 0; i < threadCount; i++) {
-			cta.runtimeStack.back().active[i] = ((i % 2) ? false : true);
-			cta.setRegAsS32(i, 0, i);
-			cta.setRegAsS32(i, 1, 2*i);
-			cta.setRegAsS32(i, 2, -1);
+			cta->getActiveContext().active[i] = ((i % 2) ? false : true);
+			cta->setRegAsS32(i, 0, i);
+			cta->setRegAsS32(i, 1, 2*i);
+			cta->setRegAsS32(i, 2, -1);
 		}
-		cta.eval_Add(cta.runtimeStack.back(), ins);
+		cta->eval_Add(cta->getActiveContext(), ins);
 
 		for (int i = 0; i < threadCount; i++) {
-			PTXS32 got = cta.getRegAsS32(i, ins.d.reg);
+			PTXS32 got = cta->getRegAsS32(i, ins.d.reg);
 			if (i % 2) {
 				if (got != -1) {
 					status << "test_Pred_Add - error on thread " << i << ": expected -1, got " <<
@@ -4370,7 +4370,7 @@ public:
 		PTXInstruction ins;
 		ins.opcode = PTXInstruction::Ld;
 
-		cta.reset();
+		cta->reset();
 
 		//
 		// Global memory
@@ -4387,14 +4387,14 @@ public:
 			ins.type = PTXOperand::u32;
 
 			for (int i = 0; i < threadCount; i++) {
-				cta.runtimeStack.back().active[i] = ((i % 2) ? false : true);
-				cta.setRegAsU64(i, 0, (PTXU64)&source[0]);
-				cta.setRegAsU32(i, 5, 0);
+				cta->getActiveContext().active[i] = ((i % 2) ? false : true);
+				cta->setRegAsU64(i, 0, (PTXU64)&source[0]);
+				cta->setRegAsU32(i, 5, 0);
 			}
 
-			cta.eval_Ld(cta.runtimeStack.back(), ins);
+			cta->eval_Ld(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
-				PTXU32 got = cta.getRegAsU32(i, 5);
+				PTXU32 got = cta->getRegAsU32(i, 5);
 				if (i % 2) {
 					if (got != 0) {
 						status << "test_Pred_ld - ld.u32.global failed - [" << i 
@@ -4424,29 +4424,29 @@ public:
 		ins.branchTargetInstruction = 3;
 		ins.reconvergeInstruction = 7;
 
-		cta.reset();
-		if (cta.runtimeStack.size() != 1) {
+		cta->reset();
+		if (cta->reconvergenceMechanism->stackSize() != 1) {
 			result = false;
 			status << "test_Bra_uni failed - expected runtime stack to include 1 context before Bra instruction. " 
-				<< cta.runtimeStack.size() << " context(s) encountered \n";
+				<< cta->reconvergenceMechanism->stackSize() << " context(s) encountered \n";
 			return (result);
 		}
 
 		for (int i = 0; i < threadCount; i++) {
-			cta.runtimeStack.back().active[i] = true;
+			cta->getActiveContext().active[i] = true;
 		}
 
-		cta.eval_Bra(cta.runtimeStack.back(), ins);
+		cta->eval_Bra(cta->getActiveContext(), ins);
 
-		if (cta.runtimeStack.size() != 2) {
+		if (cta->reconvergenceMechanism->stackSize() != 2) {
 			result = false;
 			status << "test_Bra_uni failed - expected runtime stack to include 2 contexts. " 
-				<< cta.runtimeStack.size() << " contexts encountered \n";
+				<< cta->reconvergenceMechanism->stackSize() << " contexts encountered \n";
 		}
 
 		if (result) {
 			for (int i = 0; i < threadCount; i++) {
-				if (!cta.runtimeStack.back().active[i]) {
+				if (!cta->getActiveContext().active[i]) {
 					result = false;
 					status << "test_Bra_uni failed (1)\n";
 					break;
@@ -4455,7 +4455,7 @@ public:
 		}
 		if (result) {
 			for (int i = 0; i < threadCount; i++) {
-				if (!cta.runtimeStack.front().active[i]) {
+				if (!cta->reconvergenceMechanism->runtimeStack.front().active[i]) {
 					result = false;
 					status << "test_Bra_uni failed (2)\n";
 					break;
@@ -4476,29 +4476,29 @@ public:
 		ins.pg.reg = 1;
 		ins.pg.condition = PTXOperand::Pred;
 		
-		cta.reset();
-		if (cta.runtimeStack.size() != 1) {
+		cta->reset();
+		if (cta->reconvergenceMechanism->stackSize() != 1) {
 			result = false;
 			status << "test_Bra_div failed - expected runtime stack to include 1 context before Bra instruction. " 
-				<< cta.runtimeStack.size() << " context(s) encountered \n";
+				<< cta->reconvergenceMechanism->stackSize() << " context(s) encountered \n";
 			return (result);
 		}
 
 		for (int i = 0; i < threadCount; i++) {
-			cta.runtimeStack.back().active[i] = (i > 3);
-			cta.setRegAsPredicate(i, ins.pg.reg, ((i % 2) ? false : true));
+			cta->getActiveContext().active[i] = (i > 3);
+			cta->setRegAsPredicate(i, ins.pg.reg, ((i % 2) ? false : true));
 		}
 		
-		cta.eval_Bra(cta.runtimeStack.back(), ins);
+		cta->eval_Bra(cta->getActiveContext(), ins);
 		
-		if (cta.runtimeStack.size() != 3) {
+		if (cta->reconvergenceMechanism->stackSize() != 3) {
 			result = false;
 			status << "test_Bra_div failed - expected activation stack to have size 3. instead, " 
-				<< cta.runtimeStack.size() << " context(s) encountered\n";
+				<< cta->reconvergenceMechanism->stackSize() << " context(s) encountered\n";
 		}
 
-		CooperativeThreadArray::ContextStack::const_reverse_iterator 
-			ctx_it = cta.runtimeStack.rbegin();
+		ReconvergenceMechanism::RuntimeStack::const_reverse_iterator 
+			ctx_it = cta->reconvergenceMechanism->runtimeStack.rbegin();
 
 		if (result && ctx_it->PC != 1) {
 			for (int i = 0; i < threadCount; i++) {
@@ -4549,30 +4549,30 @@ public:
 		ins.pg.reg = 1;
 		ins.pg.condition = PTXOperand::Pred;
 		
-		cta.reset();
+		cta->reset();
 
 		for (int i = 0; i < threadCount; i++) {
-			cta.runtimeStack.back().active[i] = (i > 3);										// turn off some threads
-			cta.setRegAsPredicate(i, ins.pg.reg, ((i % 2) ? false : true));	// diverge every other thread
+			cta->getActiveContext().active[i] = (i > 3);										// turn off some threads
+			cta->setRegAsPredicate(i, ins.pg.reg, ((i % 2) ? false : true));	// diverge every other thread
 		}
 		
-		cta.eval_Bra(cta.runtimeStack.back(), ins);
+		cta->eval_Bra(cta->getActiveContext(), ins);
 		
-		if (cta.runtimeStack.size() != 3) {
+		if (cta->reconvergenceMechanism->stackSize() != 3) {
 			result = false;
 			status << "test_Reconverge failed - expected activation stack to have size 3. instead, " 
-				<< cta.runtimeStack.size() << " context(s) encountered\n";
+				<< cta->reconvergenceMechanism->stackSize() << " context(s) encountered\n";
 		}
 		
 		// now evaluate reconverge and see what happens
 		int n = 0;
-		while (result && cta.runtimeStack.back().PC < 8) {
-			if (++n >= 3 || cta.runtimeStack.size() == 1) {
+		while (result && cta->getActiveContext().PC < 8) {
+			if (++n >= 3 || cta->reconvergenceMechanism->stackSize() == 1) {
 				status << "test_Reconverge failed - threads have not reconverged past the reconverge instruction\n";
 				result = false;
 				break;
 			}
-			cta.eval_Reconverge(cta.runtimeStack.back(), ins);
+			cta->eval_Reconverge(cta->getActiveContext(), ins);
 		}
 		
 		return result;

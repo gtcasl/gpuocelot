@@ -10,6 +10,7 @@
 #include <hydrazine/implementation/string.h>
 #include <hydrazine/implementation/debug.h>
 
+#include <set>
 #include <unordered_set>
 #include <stack>
 #include <queue>
@@ -21,10 +22,23 @@
 
 #define REPORT_BASE 0
 
+#define FAST_RANDOM_LAYOUT 1
+#define PRESERVE_SOURCE_LAYOUT 2
+
+#define LAYOUT_SCHEME PRESERVE_SOURCE_LAYOUT
+
 namespace ir {
 
 
 ////////////////////////////////////////////////////////////////////////////////
+
+class BlockSetCompare {
+public:
+	bool operator()(const ir::ControlFlowGraph::iterator &a_it,
+		const ir::ControlFlowGraph::iterator &b_it) const {
+		return a_it->label < b_it->label;
+	}
+};
 
 BasicBlock::DotFormatter::DotFormatter() { }
 BasicBlock::DotFormatter::~DotFormatter() { }
@@ -457,6 +471,123 @@ void ControlFlowGraph::clear() {
 	_nextId = 2;
 }
 
+ControlFlowGraph::BlockPointerVector ControlFlowGraph::topological_sequence() {
+	typedef std::set<iterator, BlockSetCompare> BlockSet;
+	typedef std::queue<iterator> Queue;
+	
+	report("Creating topological order traversal");
+	BlockSet visited;
+	BlockPointerVector sequence;
+	Queue queue;
+	
+	queue.push(get_entry_block());
+
+	while (sequence.size() != size()) {
+		if(queue.empty()) {
+			for (pointer_iterator block = sequence.begin();
+				block != sequence.end(); ++block) {
+				for (pointer_iterator successor = (*block)->successors.begin();
+					successor != (*block)->successors.end(); ++successor) {
+					
+					if (visited.count(*successor) == 0) {
+						queue.push(*successor);
+						break;
+					}		
+				}
+				if(!queue.empty()) {
+					break;
+				}
+			}
+			
+			if(queue.empty()) break; // The remaining blocks are unreachable
+		}
+		
+		iterator current = queue.front();
+		queue.pop();
+		if(!visited.insert(current).second) continue;
+		sequence.push_back(current);
+		report(" Adding block " << current->label);
+
+		for (pointer_iterator block = current->successors.begin();
+			block != current->successors.end(); ++block) {
+			bool noDependencies = true;
+		
+			for (pointer_iterator pred = (*block)->predecessors.begin(); 
+				pred != (*block)->predecessors.end(); ++pred) {
+				if (visited.count(*pred) == 0) {
+					noDependencies = false;
+					break;
+				}
+			}
+			
+			if(noDependencies) {
+				queue.push(*block);
+			}
+		}
+	}
+
+	return sequence;
+}
+
+
+ControlFlowGraph::BlockPointerVector
+	ControlFlowGraph::reverse_topological_sequence() {
+	typedef std::set<iterator, BlockSetCompare> BlockSet;
+	typedef std::queue<iterator> Queue;
+	
+	report("Creating reverse topological order traversal");
+	BlockSet visited;
+	BlockPointerVector sequence;
+	Queue queue;
+	
+	queue.push(get_exit_block());
+
+	while (sequence.size() != size()) {
+		if(queue.empty()) {
+			for (pointer_iterator block = sequence.begin();
+				block != sequence.end(); ++block) {
+				for (pointer_iterator pred = (*block)->predecessors.begin();
+					pred != (*block)->predecessors.end(); ++pred) {
+					
+					if (visited.count(*pred) == 0) {
+						queue.push(*pred);
+						break;
+					}		
+				}
+				if(!queue.empty()) {
+					break;
+				}
+			}
+			
+			if(queue.empty()) break; // The remaining blocks are unreachable
+		}
+		
+		iterator current = queue.front();
+		queue.pop();
+		if(!visited.insert(current).second) continue;
+		sequence.push_back(current);
+		report(" Adding block " << current->label);
+
+		for (pointer_iterator block = current->predecessors.begin();
+			block != current->predecessors.end(); ++block) {
+			bool noDependencies = true;
+		
+			for (pointer_iterator successor = (*block)->successors.begin(); 
+				successor != (*block)->successors.end(); ++successor) {
+				if (visited.count(*successor) == 0) {
+					noDependencies = false;
+					break;
+				}
+			}
+			
+			if(noDependencies) {
+				queue.push(*block);
+			}
+		}
+	}
+
+	return sequence;
+}
 
 ControlFlowGraph::BlockPointerVector ControlFlowGraph::post_order_sequence() {
 	typedef std::unordered_set<iterator> BlockSet;
@@ -656,7 +787,6 @@ ControlFlowGraph::const_iterator ControlFlowGraph::begin() const {
 
 ControlFlowGraph::const_iterator ControlFlowGraph::end() const {
 	return _blocks.end();
-
 }
 
 ControlFlowGraph::edge_iterator ControlFlowGraph::edges_begin() {

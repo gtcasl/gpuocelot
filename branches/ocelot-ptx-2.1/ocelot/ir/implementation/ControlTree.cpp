@@ -9,6 +9,7 @@
 #include <ocelot/ir/interface/Instruction.h>
 
 // Hydrazine includes
+#include <hydrazine/implementation/string.h>
 #include <hydrazine/implementation/debug.h>
 
 // STL includes
@@ -40,10 +41,10 @@ namespace ir
 			report("Inserting node " << bb->label);
 			Node *node = _insert_node(new InstNode(bb));
 			bmap[bb] = node;
-
-			if (bb == cfg->get_entry_block()) start = node;
-			if (bb == cfg->get_exit_block()) end = node;
 		}
+
+		start = bmap[cfg->get_entry_block()];
+		end = bmap[cfg->get_exit_block()];
 
 		ControlFlowGraph::const_edge_iterator e;
 		for (e = cfg->edges_begin() ; e != cfg->edges_end() ; e++)
@@ -118,7 +119,6 @@ namespace ir
 
 	std::ostream& ControlTree::write(std::ostream& out) const
 	{
-		//std::unordered_map<NodeList::const_iterator, unsigned int> bmap;
 		std::unordered_map<Node*, unsigned int> bmap;
 
 		out << "digraph {" << std::endl;
@@ -142,7 +142,8 @@ namespace ir
 				ControlFlowGraph::InstructionList::const_iterator ins;
 				for (ins = insts.begin() ; ins != insts.end() ; ins++)
 				{
-					out << " | " << (*ins)->toString();
+					out << " | " << 
+						hydrazine::toGraphVizParsableLabel((*ins)->toString());
 				} 
 
 				out << "}\"];";
@@ -253,14 +254,9 @@ namespace ir
 		return children().back();
 	}
 
-	ControlTree::SelfLoopNode::SelfLoopNode(const std::string& l, Node* body) 
-		: Node(l, SelfLoop, NodeList(1, body))
+	ControlTree::NaturalLoopNode::NaturalLoopNode(const std::string& label, 
+			const NodeList& children) : Node(label, NaturalLoop, children)
 	{
-	}
-
-	const ControlTree::Node* ControlTree::SelfLoopNode::body() const
-	{
-		return children().front();
 	}
 
 	ControlTree::InvalidNode::InvalidNode() : Node("", Invalid, NodeList())
@@ -286,7 +282,7 @@ namespace ir
 	{
 		Node* n;
 		bool p, s;
-		NodeList nodes;
+		NodeList nodes; // TODO Implement nodes as an ordered set
 
 		nset.clear();
 
@@ -426,6 +422,27 @@ namespace ir
 		return new InvalidNode();
 	}
 
+	bool ControlTree::_isCyclic(Node* node)
+	{
+		if (node->rtype() == Node::NaturalLoop) return true;
+
+		return false;
+	}
+
+	bool ControlTree::_backedge(Node* head, Node* tail)
+	{
+		// head->tail is a back-edge if tail dominates head
+		// (tail dominates head if head appears first in the _post list)
+		Node* match[] = {head, tail};
+		NodeList::iterator n = 
+			find_first_of(_post.begin(), _post.end(), match, match + 2);
+		
+		if (*n == head) return true;
+		if (*n == tail) return false;
+
+		assertM(false, "Neither head nor tail are valid nodes");
+	}
+
 	void ControlTree::_compact(Node* node, NodeSet nodeSet)
 	{
 		_insert_node(node);
@@ -445,20 +462,6 @@ namespace ir
 		}
 
 		_postCtr = _post.insert(pos, node);
-	}
-
-	bool ControlTree::_backedge(Node* head, Node* tail)
-	{
-		// head->tail is a back-edge if tail dominates head
-		// (tail dominates head if head appears first in the _post list)
-		Node* match[] = {head, tail};
-		NodeList::iterator n = 
-			find_first_of(_post.begin(), _post.end(), match, match + 2);
-		
-		if (*n == head) return true;
-		if (*n == tail) return false;
-
-		assertM(false, "Neither head nor tail are valid nodes");
 	}
 
 	void ControlTree::_reduce(Node* node, NodeSet nodeSet)
@@ -503,49 +506,89 @@ namespace ir
 			}
 		}
 
-		// check for back-edges between (different) nodeSet nodes
-		for (n = nodeSet.begin() ; n != nodeSet.end() ; n++)
+		// if not cyclic then check for back-edges between nodeSet nodes
+		if (!_isCyclic(node))
 		{
-			bool shouldbreak = false;
-			NodeSet::iterator p;
-			for (p = (*n)->preds().begin() ; p != (*n)->preds().end() ; p++)
+			for (n = nodeSet.begin() ; n != nodeSet.end() ; n++)
 			{
-				if (*n == *p || nodeSet.find(*p) == nodeSet.end()) continue;
-
-				if (_backedge(*p, *n)) 
+				bool shouldbreak = false;
+				NodeSet::iterator p;
+				for (p = (*n)->preds().begin() ; p != (*n)->preds().end() ; p++)
 				{
-					// add back-edge region->region
-					report("Add " << node->label() << " -> " << node->label());
-					node->preds().insert(node);
-					node->succs().insert(node);
+					if (nodeSet.find(*p) == nodeSet.end()) continue;
 
-					// no need to add more than one back-edge
-					shouldbreak = true;
-					break;
+					if (_backedge(*p, *n)) 
+					{
+						// add back-edge region->region
+						report("Add " << node->label() << " -> " << node->label());
+						node->preds().insert(node);
+						node->succs().insert(node);
+
+						// no need to add more than one back-edge
+						shouldbreak = true;
+						break;
+					}
 				}
+				if (shouldbreak) break;
 			}
-			if (shouldbreak) break;
 		}
 
 		// adjust the postorder traversal
 		_compact(node, nodeSet);
 	}
 
+	// returns true if there is a (possibly empty) path from m to k that does
+	// not pass through n
+	bool ControlTree::_path(Node* m, Node* k, Node* n)
+	{
+		if (m == n || _visit.find(m) != _visit.end()) return false;
+		if (m == k) return true;
+
+		_visit.insert(m);
+
+		for (NodeSet::const_iterator s = m->succs().begin() ;
+				s != m->succs().end() ; s++)
+		{
+			if (_path(*s, k, n)) return true;
+		}
+
+		return false;
+	}
+
+	// returns true if there is a node k such that there is a (possibly empty)
+	// path from m to k that does not pass through n and an edge k->n that is a
+	// back edge, and false otherwise.
+	bool ControlTree::_path_back(Node* m, Node* n)
+	{
+		for (NodeSet::const_iterator k = n->preds().begin() ;
+				k != n->preds().end() ; k++)
+		{
+			if (_backedge(*k, n))
+			{
+				_visit.clear();
+				if (_path(m, *k, n)) return true;
+			}
+		}
+
+		return false;
+	}
+
 	ControlTree::Node* ControlTree::_cyclic_region_type(Node* node, 
-			NodeSet& nset)
+			NodeList& nset)
 	{
 		if (nset.size() == 1)
 		{
 			if (node->succs().find(node) != node->succs().end())
 			{
-				std::string label("SelfLoopNode_");
+				// SelfLoopNode is a special case of a NaturalLoopNode
+				std::string label("NaturalLoopNode_");
 
 				std::stringstream ss;
 				ss << _nodes.size();
 				label += ss.str();
 
 				report("Found " << label << ": " << node->label());
-				return new SelfLoopNode(label, node);
+				return new NaturalLoopNode(label, NodeList(1, node));
 			} else
 			{
 				report("Couldn't find any cyclic regions");
@@ -553,14 +596,47 @@ namespace ir
 			}
 		}
 
-		report("Couldn't find any cyclic regions");
-		return new InvalidNode();
+		for (NodeList::const_iterator m = nset.begin() ;
+				m != nset.end() ; m++)
+		{
+			_visit.clear();
+			if (!_path(node, *m)) {
+				// it's an Improper region
+				// TODO Improper regions are not supported yet
+				report("Found Improper region");
+				return new InvalidNode();
+			}
+		}
+
+		// check for a WhileLoop
+		Node* m = *(nset.begin()++);
+
+		if (node->succs().size() == 2 && m->succs().size() == 1 
+				&& node->preds().size() == 2 && m->preds().size() == 1)
+		{
+			// TODO WhileLoop regions are not supported yet
+			report("Found WhileLoop region");
+			return new InvalidNode();
+		}
+
+		// it's a NaturalLoop
+		std::string label("NaturalLoopNode_");
+
+		std::stringstream ss;
+		ss << _nodes.size();
+		label += ss.str();
+
+		report("Found " << label << ": " << nset.front()->label() << "..."
+				<< nset.back()->label());
+
+		return new NaturalLoopNode(label, nset);
 	}
 
 	void ControlTree::_structural_analysis(Node* entry)
 	{
 		Node* n;
-		NodeSet nodeSet, reachUnder;
+		NodeSet nodeSet;
+		NodeList reachUnder; // TODO Implement reachUnder as an ordered set
 		bool changed;
 
 		report("Starting Structural Analysis...");
@@ -598,21 +674,30 @@ namespace ir
 				} else
 				{
 					// locate a cyclic region, if present
-					reachUnder.clear(); reachUnder.insert(n);
+					reachUnder.clear(); nodeSet.clear();
 
-					// TODO cyclic control structure with multiples nodes are
-					// not handled yet
+					for (NodeList::const_iterator m = _post.begin() ;
+							m != _post.end() ; m++)
+					{
+						if (*m != n && _path_back(*m, n)) 
+						{
+							report("Add " << (*m)->label() << " to reachUnder");
+							reachUnder.push_front(*m); nodeSet.insert(*m);
+						}
+					}
+					reachUnder.push_front(n); nodeSet.insert(n);
+
 					report("Looking for cyclic region from " << n->label());
 					region = _cyclic_region_type(n, reachUnder);
 
 					if (region->rtype() != Node::Invalid)
 					{
 						report("Replacing nodeSet for " << region->label());
-						_reduce(region, reachUnder);
+						_reduce(region, nodeSet);
 
 						changed = true;
 
-						if (reachUnder.find(entry) != reachUnder.end())
+						if (nodeSet.find(entry) != nodeSet.end())
 						{
 							entry = region;
 						}

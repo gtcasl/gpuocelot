@@ -120,7 +120,7 @@ namespace parser
 	}
 	
 	void PTXParser::State::_setImmediateTypes()
-	{		
+	{
 		ir::PTXOperand::DataType type = ir::PTXOperand::TypeSpecifier_invalid;
 		for( OperandVector::iterator operand = operandVector.begin(); 
 			operand != operandVector.end(); ++operand )

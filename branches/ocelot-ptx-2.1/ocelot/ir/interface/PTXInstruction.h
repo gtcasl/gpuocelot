@@ -387,7 +387,7 @@ namespace ir {
 				
 		/*! Second destination register for SetP, otherwise unused */
 		PTXOperand pq;
-
+		
 		/*! Indicates whether target or source is a vector or scalar */
 		Vec vec;
 

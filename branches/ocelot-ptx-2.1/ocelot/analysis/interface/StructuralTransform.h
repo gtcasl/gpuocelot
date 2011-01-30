@@ -20,6 +20,7 @@
 #include <ocelot/analysis/interface/AssignFallThroughEdge.h>
 
 #include <unordered_map>
+#include <list>
 
 namespace ir {
   class PTXKernel;
@@ -57,6 +58,30 @@ namespace analysis {
     class StructuralAnalysis SA;
 
     class AssignFallThroughEdge *AF;
+
+    const NodeTy* get_root_node() const;
+
+    ///*! \brief Get iterator to the basic block in the cfg */
+    const ir::ControlFlowGraph::const_iterator bb(NodeTy *node) const;
+    
+    typedef std::list<const NodeTy *> NodeListTy;
+    
+    ///*! \brief Get the children
+    // *
+    // * It should return an ordered container so PTXToILTranslator can emit 
+    // blocks in order.
+    // */
+    const NodeListTy& children(const NodeTy *node) const;
+    
+    ///*! \brief Get condition node from IfThen and IfThenElse
+    // *
+    // * The last instruction of the condition node should be branch. 
+    // */
+    const NodeTy* cond(const NodeTy *node) const;
+    ///*! \brief Get if-true node from IfThen and IfThenElse */
+    const NodeTy* ifTrue(const NodeTy *node) const;
+    ///*! \brief Get if-false node from IfThenElse */
+    const NodeTy* ifFalse(const NodeTy *node) const;
   };
 }
 

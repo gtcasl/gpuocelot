@@ -49,12 +49,20 @@ namespace ir
 
 				return stream.str();
 			}
+			case LocalDataShareDcl:
+			{
+				std::stringstream s;
+
+				s << "dcl_lds_id(1) ";
+				s << operands[0].toString();
+
+				return s.str();
+			}
 			case OtherDeclarations: return \
 							  "il_cs_2_0\n"
 							  "dcl_max_thread_per_group 512\n"
 							  "dcl_raw_uav_id(0)\n"
-							  "dcl_arena_uav_id(1)\n"
-							  "dcl_lds_id(1) 32768";
+							  "dcl_arena_uav_id(8)";
 			default:
 			{
 				assertM(false, "Statement type "

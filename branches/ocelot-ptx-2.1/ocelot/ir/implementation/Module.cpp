@@ -365,7 +365,7 @@ void ir::Module::extractPTXKernels() {
 
 	using namespace std;
 	StatementVector::const_iterator startIterator = _statements.end(), 
-		      endIterator = _statements.end();
+		endIterator = _statements.end();
 
 	bool inKernel = false;
 	int instructionCount = 0;
@@ -382,7 +382,8 @@ void ir::Module::extractPTXKernels() {
 		PS_End
 	} prototypeState = PS_NoState;
 
-	for (StatementVector::const_iterator it = _statements.begin(); it != _statements.end(); ++it) {
+	for (StatementVector::const_iterator it = _statements.begin(); 
+		it != _statements.end(); ++it) {
 		const PTXStatement &statement = (*it);
 	
 		if (statement.directive != PTXStatement::Instr && statement.directive != PTXStatement::Loc) {

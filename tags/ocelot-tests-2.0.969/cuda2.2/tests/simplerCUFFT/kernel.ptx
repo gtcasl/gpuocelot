@@ -1,0 +1,286 @@
+.version 1.4
+.target sm_10, map_f64_to_f32
+
+
+/*
+* AUTO GENERATED OCELOT PTX FILE
+* Ocelot Version : 0.4.72
+* From file : /home/buildmeister/build/rel/gpgpu/toolkit/r2.3/cufft/src/kernels/SP/SP_c2c_radix2.cu
+*/
+
+// Globals
+.extern .shared .align 4 .b8 smem[];
+
+/*
+  Ocelot Version : 0.4.72
+
+Typical call for plan that is 1x32, C2C, forward:
+
+input buffer:  0x1000600
+output buffer: 0x1000500
+
+(2.708911) GPUExecutableKernel.cpp:108:  executive::GPUExecutableKernel::configuraParameters()
+(2.708922) GPUExecutableKernel.cpp:125:    set parameter size: 48
+(2.708932) GPUExecutableKernel.cpp:132:  Configuring parameter __cudaparm__Z23SP_c2c_radix2_sp_kernelifiPvS_i11tfStride_st_n  - type: 1 x s32 - value: 32
+(2.708939) GPUExecutableKernel.cpp:181:    - GPUExecutableKernel::configureParameters() - cuParamSeti(offset: 0, value: 0x20)
+
+(2.708968) GPUExecutableKernel.cpp:132:  Configuring parameter __cudaparm__Z23SP_c2c_radix2_sp_kernelifiPvS_i11tfStride_st_TPbyN  - type: 1 x f32 - value: 0.19635
+(2.708975) GPUExecutableKernel.cpp:197:    - GPUExecutableKernel::configureParameters() - cuParamSetf(offset: 4, value: 0.19635)
+
+(2.708987) GPUExecutableKernel.cpp:132:  Configuring parameter __cudaparm__Z23SP_c2c_radix2_sp_kernelifiPvS_i11tfStride_st_b  - type: 1 x s32 - value: 4
+(2.708992) GPUExecutableKernel.cpp:181:    - GPUExecutableKernel::configureParameters() - cuParamSeti(offset: 8, value: 0x4)
+
+(2.709000) GPUExecutableKernel.cpp:132:  Configuring parameter __cudaparm__Z23SP_c2c_radix2_sp_kernelifiPvS_i11tfStride_st_ipd  - type: 1 x u64 - value: 0x0000000001000600
+(2.709006) GPUExecutableKernel.cpp:181:    - GPUExecutableKernel::configureParameters() - cuParamSeti(offset: 12, value: 0x1000600)
+
+(2.709013) GPUExecutableKernel.cpp:132:  Configuring parameter __cudaparm__Z23SP_c2c_radix2_sp_kernelifiPvS_i11tfStride_st_opd  - type: 1 x u64 - value: 0x0000000001000500
+(2.709019) GPUExecutableKernel.cpp:181:    - GPUExecutableKernel::configureParameters() - cuParamSeti(offset: 20, value: 0x1000500)
+
+(2.709026) GPUExecutableKernel.cpp:132:  Configuring parameter __cudaparm__Z23SP_c2c_radix2_sp_kernelifiPvS_i11tfStride_st_sign  - type: 1 x s32 - value: -1
+(2.709032) GPUExecutableKernel.cpp:181:    - GPUExecutableKernel::configureParameters() - cuParamSeti(offset: 28, value: 0xffffffff)
+
+(2.709040) GPUExecutableKernel.cpp:132:  Configuring parameter __cudaparm__Z23SP_c2c_radix2_sp_kernelifiPvS_i11tfStride_st_S  - type: 16 x b8 - value: 0x00000001000000200000000100000020
+(2.709049) GPUExecutableKernel.cpp:161:    - GPUExecutableKernel::configureParameters() - cuParamSetv(offset: 32, size: 16 bytes)
+
+*/
+.entry _Z23SP_c2c_radix2_sp_kernelifiPvS_i11tfStride_st(		.param  .s32 __cudaparm__Z23SP_c2c_radix2_sp_kernelifiPvS_i11tfStride_st_n,
+		.param  .f32 __cudaparm__Z23SP_c2c_radix2_sp_kernelifiPvS_i11tfStride_st_TPbyN,
+		.param  .s32 __cudaparm__Z23SP_c2c_radix2_sp_kernelifiPvS_i11tfStride_st_b,
+		.param  .u64 __cudaparm__Z23SP_c2c_radix2_sp_kernelifiPvS_i11tfStride_st_ipd,
+		.param  .u64 __cudaparm__Z23SP_c2c_radix2_sp_kernelifiPvS_i11tfStride_st_opd,
+		.param  .s32 __cudaparm__Z23SP_c2c_radix2_sp_kernelifiPvS_i11tfStride_st_sign,
+		.param .align 4 .b8 __cudaparm__Z23SP_c2c_radix2_sp_kernelifiPvS_i11tfStride_st_S)
+{
+	.reg .u64 %r0;
+	.reg .u32 %r1;
+	.reg .u32 %r2;
+	.reg .u32 %r3;
+	.reg .u32 %r4;
+	.reg .u32 %r5;
+	.reg .u32 %r6;
+	.reg .u16 %r7;
+	.reg .u16 %r8;
+	.reg .u32 %r9;
+	.reg .u32 %r10;
+	.reg .u32 %r11;
+	.reg .u32 %r12;
+	.reg .u32 %r13;
+	.reg .u64 %r14;
+	.reg .u32 %r15;
+	.reg .u32 %r16;
+	.reg .u64 %r17;
+	.reg .u64 %r18;
+	.reg .u64 %r19;
+	.reg .f32 %r20;
+	.reg .f32 %r21;
+	.reg .u32 %r22;
+	.reg .u32 %r23;
+	.reg .u32 %r24;
+	.reg .u64 %r25;
+	.reg .u64 %r26;
+	.reg .u64 %r27;
+	.reg .f32 %r28;
+	.reg .f32 %r29;
+	.reg .u64 %r30;
+	.reg .u64 %r31;
+	.reg .u64 %r32;
+	.reg .u32 %r33;
+	.reg .u64 %r34;
+	.reg .u64 %r35;
+	.reg .u64 %r36;
+	.reg .u64 %r37;
+	.reg .u64 %r38;
+	.reg .u64 %r39;
+	.reg .u32 %r40;
+	.reg .u64 %r41;
+	.reg .u64 %r42;
+	.reg .u64 %r43;
+	.reg .u32 %r44;
+	.reg .pred %p45;
+	.reg .u32 %r46;
+	.reg .f32 %r47;
+	.reg .f32 %r48;
+	.reg .f32 %r49;
+	.reg .u32 %r50;
+	.reg .u32 %r51;
+	.reg .u32 %r52;
+	.reg .u32 %r53;
+	.reg .u32 %r54;
+	.reg .u32 %r55;
+	.reg .u64 %r56;
+	.reg .u64 %r57;
+	.reg .u64 %r58;
+	.reg .f32 %r59;
+	.reg .u32 %r60;
+	.reg .u64 %r61;
+	.reg .u64 %r62;
+	.reg .u64 %r63;
+	.reg .f32 %r64;
+	.reg .f32 %r65;
+	.reg .f32 %r66;
+	.reg .u32 %r67;
+	.reg .f32 %r68;
+	.reg .f32 %r69;
+	.reg .u64 %r70;
+	.reg .u64 %r71;
+	.reg .u64 %r72;
+	.reg .u32 %r73;
+	.reg .u64 %r74;
+	.reg .u64 %r75;
+	.reg .u64 %r76;
+	.reg .f32 %r77;
+	.reg .f32 %r78;
+	.reg .f32 %r79;
+	.reg .f32 %r80;
+	.reg .f32 %r81;
+	.reg .f32 %r82;
+	.reg .f32 %r83;
+	.reg .f32 %r84;
+	.reg .f32 %r85;
+	.reg .f32 %r86;
+	.reg .f32 %r87;
+	.reg .pred %p88;
+	.reg .u32 %r89;
+	.reg .u32 %r90;
+	.reg .u32 %r91;
+	.reg .u64 %r92;
+	.reg .u32 %r93;
+	.reg .u32 %r94;
+	.reg .u64 %r95;
+	.reg .u64 %r96;
+	.reg .u64 %r97;
+	.reg .u32 %r98;
+	.reg .u32 %r99;
+	.reg .u64 %r100;
+	.reg .u64 %r101;
+	.reg .u64 %r102;
+	$BB_1_1:				/* $LBB1__Z23SP_c2c_radix2_sp_kernelifiPvS_i11tfStride_st */ 
+		mov.u64 %r0, smem;
+		ld.param.s32 %r1, [__cudaparm__Z23SP_c2c_radix2_sp_kernelifiPvS_i11tfStride_st_n];
+		shr.s32 %r2, %r1, 1;
+		mov.s32 %r3, %r2;
+		ld.param.s32 %r4, [__cudaparm__Z23SP_c2c_radix2_sp_kernelifiPvS_i11tfStride_st_b];
+		ld.param.s32 %r5, [__cudaparm__Z23SP_c2c_radix2_sp_kernelifiPvS_i11tfStride_st_S + 4];
+		cvt.s32.u16 %r6, %tid.x;
+		mov.u16 %r7, %nctaid.x;
+		mov.u16 %r8, %ctaid.y;
+		mul.wide.u16 %r9, %r7, %r8;
+		cvt.u32.u16 %r10, %ctaid.x;
+		add.u32 %r11, %r10, %r9;
+		ld.param.s32 %r12, [__cudaparm__Z23SP_c2c_radix2_sp_kernelifiPvS_i11tfStride_st_S];
+		mul.lo.s32 %r13, %r12, %r11;
+		ld.param.u64 %r14, [__cudaparm__Z23SP_c2c_radix2_sp_kernelifiPvS_i11tfStride_st_ipd];
+		mul.lo.s32 %r15, %r5, %r6;
+		add.s32 %r16, %r13, %r15;
+		cvt.s64.s32 %r17, %r16;
+		mul.lo.u64 %r18, %r17, 8;
+		add.u64 %r19, %r14, %r18;
+		ld.global.v2.f32 {%r20, %r21}, [%r19 + 0];
+		add.s32 %r22, %r2, %r6;
+		mul.lo.s32 %r23, %r22, %r5;
+		add.s32 %r24, %r13, %r23;
+		cvt.s64.s32 %r25, %r24;
+		mul.lo.u64 %r26, %r25, 8;
+		add.u64 %r27, %r14, %r26;
+		ld.global.v2.f32 {%r28, %r29}, [%r27 + 0];
+		cvt.s64.s32 %r30, %r6;
+		mul.lo.u64 %r31, %r30, 4;
+		add.u64 %r32, %r0, %r31;
+		st.shared.f32 [%r32 + 0], %r20;
+		add.s32 %r33, %r6, %r1;
+		cvt.s64.s32 %r34, %r33;
+		mul.lo.u64 %r35, %r34, 4;
+		add.u64 %r36, %r0, %r35;
+		st.shared.f32 [%r36 + 0], %r21;
+		cvt.s64.s32 %r37, %r22;
+		mul.lo.u64 %r38, %r37, 4;
+		add.u64 %r39, %r0, %r38;
+		st.shared.f32 [%r39 + 0], %r28;
+		add.s32 %r40, %r22, %r1;
+		cvt.s64.s32 %r41, %r40;
+		mul.lo.u64 %r42, %r41, 4;
+		add.u64 %r43, %r0, %r42;
+		st.shared.f32 [%r43 + 0], %r29;
+		bar.sync 0;
+		mov.u32 %r44, 1;
+		setp.le.s32 %p45, %r1, %r44;
+		@%p45 bra $BB_1_4;
+	$BB_1_2:
+		ld.param.s32 %r46, [__cudaparm__Z23SP_c2c_radix2_sp_kernelifiPvS_i11tfStride_st_sign];
+		cvt.rn.f32.s32 %r47, %r46;
+		ld.param.f32 %r48, [__cudaparm__Z23SP_c2c_radix2_sp_kernelifiPvS_i11tfStride_st_TPbyN];
+		mul.f32 %r49, %r48, %r47;
+		mov.s32 %r50, 1;
+	$BB_1_3:				/* $Lt_0_1794 */ 
+		shr.s32 %r51, %r6, %r4;
+		shl.b32 %r52, %r51, %r4;
+		shl.b32 %r53, %r52, 1;
+		sub.s32 %r54, %r6, %r52;
+		add.s32 %r55, %r53, %r54;
+		cvt.s64.s32 %r56, %r55;
+		mul.lo.u64 %r57, %r56, 4;
+		add.u64 %r58, %r0, %r57;
+		ld.shared.f32 %r59, [%r58 + 0];
+		add.s32 %r60, %r55, %r1;
+		cvt.s64.s32 %r61, %r60;
+		mul.lo.u64 %r62, %r61, 4;
+		add.u64 %r63, %r0, %r62;
+		ld.shared.f32 %r64, [%r63 + 0];
+		cvt.rn.f32.s32 %r65, %r52;
+		mul.f32 %r66, %r49, %r65;
+		add.s32 %r67, %r55, %r3;
+		sin.approx.f32 %r68, %r66;
+		cos.approx.f32 %r69, %r66;
+		cvt.s64.s32 %r70, %r67;
+		mul.lo.u64 %r71, %r70, 4;
+		add.u64 %r72, %r0, %r71;
+		add.s32 %r73, %r67, %r1;
+		cvt.s64.s32 %r74, %r73;
+		mul.lo.u64 %r75, %r74, 4;
+		add.u64 %r76, %r0, %r75;
+		ld.shared.f32 %r77, [%r72 + 0];
+		ld.shared.f32 %r78, [%r76 + 0];
+		mul.f32 %r79, %r68, %r78;
+		mul.f32 %r80, %r77, %r69;
+		sub.f32 %r81, %r80, %r79;
+		mul.f32 %r82, %r69, %r78;
+		mad.f32 %r83, %r77, %r68, %r82;
+		bar.sync 0;
+		add.f32 %r84, %r59, %r81;
+		st.shared.f32 [%r32 + 0], %r84;
+		add.f32 %r85, %r64, %r83;
+		st.shared.f32 [%r36 + 0], %r85;
+		sub.f32 %r86, %r59, %r81;
+		st.shared.f32 [%r39 + 0], %r86;
+		sub.f32 %r87, %r64, %r83;
+		st.shared.f32 [%r43 + 0], %r87;
+		bar.sync 0;
+		shl.b32 %r50, %r50, 1;
+		shr.s32 %r3, %r3, 1;
+		sub.s32 %r4, %r4, 1;
+		setp.gt.s32 %p88, %r1, %r50;
+		@%p88 bra $BB_1_3;
+	$BB_1_4:				/* $Lt_0_1282 */ 
+		ld.shared.f32 %r20, [%r32 + 0];
+		ld.shared.f32 %r21, [%r36 + 0];
+		ld.shared.f32 %r28, [%r39 + 0];
+		ld.shared.f32 %r29, [%r43 + 0];
+		ld.param.s32 %r89, [__cudaparm__Z23SP_c2c_radix2_sp_kernelifiPvS_i11tfStride_st_S + 12];
+		ld.param.s32 %r90, [__cudaparm__Z23SP_c2c_radix2_sp_kernelifiPvS_i11tfStride_st_S + 8];
+		mul.lo.s32 %r91, %r90, %r11;
+		ld.param.u64 %r92, [__cudaparm__Z23SP_c2c_radix2_sp_kernelifiPvS_i11tfStride_st_opd];
+		mul.lo.s32 %r93, %r89, %r6;
+		add.s32 %r94, %r91, %r93;
+		cvt.s64.s32 %r95, %r94;
+		mul.lo.u64 %r96, %r95, 8;
+		add.u64 %r97, %r92, %r96;
+		st.global.v2.f32 [%r97 + 0], {%r20, %r21};
+		mul.lo.s32 %r98, %r22, %r89;
+		add.s32 %r99, %r91, %r98;
+		cvt.s64.s32 %r100, %r99;
+		mul.lo.u64 %r101, %r100, 8;
+		add.u64 %r102, %r92, %r101;
+		st.global.v2.f32 [%r102 + 0], {%r28, %r29};
+		exit;
+}
+

@@ -1,0 +1,219 @@
+	.version 2.1
+	.target sm_20
+	// compiled with /usr/local/cuda3.1/cuda/open64/lib//be
+	// nvopencc 3.1 built on 2010-06-07
+
+	//-----------------------------------------------------------
+	// Compiling /tmp/tmpxft_00001d7b_00000000-7_scan_best_kernel.cpp3.i (/tmp/ccBI#.uy0Igl)
+	//-----------------------------------------------------------
+
+	//-----------------------------------------------------------
+	// Options:
+	//-----------------------------------------------------------
+	//  Target:ptx, ISA:sm_20, Endian:little, Pointer Size:64
+	//  -O3	(Optimization level)
+	//  -g0	(Debug level)
+	//  -m2	(Report advisories)
+	//-----------------------------------------------------------
+
+	.file	1	"<command-line>"
+	.file	2	"/tmp/tmpxft_00001d7b_00000000-6_scan_best_kernel.cudafe2.gpu"
+	.file	3	"/usr/lib/gcc/x86_64-linux-gnu/4.4.3/include/stddef.h"
+	.file	4	"/usr/local/cuda3.1/cuda/bin/../include/crt/device_runtime.h"
+	.file	5	"/usr/local/cuda3.1/cuda/bin/../include/host_defines.h"
+	.file	6	"/usr/local/cuda3.1/cuda/bin/../include/builtin_types.h"
+	.file	7	"/usr/local/cuda3.1/cuda/bin/../include/device_types.h"
+	.file	8	"/usr/local/cuda3.1/cuda/bin/../include/driver_types.h"
+	.file	9	"/usr/local/cuda3.1/cuda/bin/../include/surface_types.h"
+	.file	10	"/usr/local/cuda3.1/cuda/bin/../include/texture_types.h"
+	.file	11	"/usr/local/cuda3.1/cuda/bin/../include/vector_types.h"
+	.file	12	"/usr/local/cuda3.1/cuda/bin/../include/device_launch_parameters.h"
+	.file	13	"/usr/local/cuda3.1/cuda/bin/../include/crt/storage_class.h"
+	.file	14	"/usr/include/bits/types.h"
+	.file	15	"/usr/include/time.h"
+	.file	16	"/home/andrew/repositories/gpuocelot/tests/cuda2.2/tests/scan/scan_best_kernel.cu"
+	.file	17	"/usr/local/cuda3.1/cuda/bin/../include/common_functions.h"
+	.file	18	"/usr/local/cuda3.1/cuda/bin/../include/math_functions.h"
+	.file	19	"/usr/local/cuda3.1/cuda/bin/../include/math_constants.h"
+	.file	20	"/usr/local/cuda3.1/cuda/bin/../include/device_functions.h"
+	.file	21	"/usr/local/cuda3.1/cuda/bin/../include/sm_11_atomic_functions.h"
+	.file	22	"/usr/local/cuda3.1/cuda/bin/../include/sm_12_atomic_functions.h"
+	.file	23	"/usr/local/cuda3.1/cuda/bin/../include/sm_13_double_functions.h"
+	.file	24	"/usr/local/cuda3.1/cuda/bin/../include/sm_20_atomic_functions.h"
+	.file	25	"/usr/local/cuda3.1/cuda/bin/../include/sm_20_intrinsics.h"
+	.file	26	"/usr/local/cuda3.1/cuda/bin/../include/surface_functions.h"
+	.file	27	"/usr/local/cuda3.1/cuda/bin/../include/texture_fetch_functions.h"
+	.file	28	"/usr/local/cuda3.1/cuda/bin/../include/math_functions_dbl_ptx3.h"
+
+	.extern	.shared .align 4 .b8 temp[];
+
+	.entry _Z9scan_bestPfS_i (
+		.param .u64 __cudaparm__Z9scan_bestPfS_i_g_odata,
+		.param .u64 __cudaparm__Z9scan_bestPfS_i_g_idata,
+		.param .s32 __cudaparm__Z9scan_bestPfS_i_n)
+	{
+	.reg .u32 %r<50>;
+	.reg .u64 %rd<34>;
+	.reg .f32 %f<14>;
+	.reg .pred %p<9>;
+	.loc	16	78	0
+$LDWbegin__Z9scan_bestPfS_i:
+	mov.u64 	%rd1, temp;
+	.loc	16	93	0
+	cvt.s32.u32 	%r1, %tid.x;
+	cvt.s64.s32 	%rd2, %r1;
+	mul.wide.s32 	%rd3, %r1, 4;
+	shr.s32 	%r2, %r1, 4;
+	add.s32 	%r3, %r1, %r2;
+	cvt.s64.s32 	%rd4, %r3;
+	mul.wide.s32 	%rd5, %r3, 4;
+	add.u64 	%rd6, %rd1, %rd5;
+	ld.param.u64 	%rd7, [__cudaparm__Z9scan_bestPfS_i_g_idata];
+	add.u64 	%rd8, %rd3, %rd7;
+	ld.global.f32 	%f1, [%rd8+0];
+	st.shared.f32 	[%rd6+0], %f1;
+	.loc	16	94	0
+	ld.param.s32 	%r4, [__cudaparm__Z9scan_bestPfS_i_n];
+	shr.s32 	%r5, %r4, 31;
+	mov.s32 	%r6, 1;
+	and.b32 	%r7, %r5, %r6;
+	add.s32 	%r8, %r7, %r4;
+	shr.s32 	%r9, %r8, 1;
+	add.s32 	%r10, %r9, %r1;
+	cvt.s64.s32 	%rd9, %r10;
+	mul.wide.s32 	%rd10, %r10, 4;
+	shr.s32 	%r11, %r10, 4;
+	add.s32 	%r12, %r10, %r11;
+	cvt.s64.s32 	%rd11, %r12;
+	mul.wide.s32 	%rd12, %r12, 4;
+	add.u64 	%rd13, %rd1, %rd12;
+	add.u64 	%rd14, %rd10, %rd7;
+	ld.global.f32 	%f2, [%rd14+0];
+	st.shared.f32 	[%rd13+0], %f2;
+	.loc	16	99	0
+	mov.s32 	%r13, %r9;
+	mov.u32 	%r14, 0;
+	setp.le.s32 	%p1, %r9, %r14;
+	@%p1 bra 	$Lt_0_8194;
+	mov.s32 	%r15, 1;
+$Lt_0_5122:
+ //<loop> Loop body line 101
+	.loc	16	101	0
+	bar.sync 	0;
+	setp.le.s32 	%p2, %r13, %r1;
+	@%p2 bra 	$Lt_0_5378;
+ //<loop> Part of loop body line 101, head labeled $Lt_0_5122
+	.loc	16	111	0
+	mul.lo.s32 	%r16, %r1, 2;
+	add.s32 	%r17, %r16, 1;
+	add.s32 	%r18, %r16, 2;
+	mul.lo.s32 	%r19, %r17, %r15;
+	mul.lo.s32 	%r20, %r18, %r15;
+	sub.s32 	%r21, %r20, 1;
+	shr.s32 	%r22, %r21, 4;
+	add.s32 	%r23, %r20, %r22;
+	cvt.s64.s32 	%rd15, %r23;
+	mul.wide.s32 	%rd16, %r23, 4;
+	add.u64 	%rd17, %rd1, %rd16;
+	ld.shared.f32 	%f3, [%rd17+-4];
+	sub.s32 	%r24, %r19, 1;
+	shr.s32 	%r25, %r24, 4;
+	add.s32 	%r26, %r19, %r25;
+	cvt.s64.s32 	%rd18, %r26;
+	mul.wide.s32 	%rd19, %r26, 4;
+	add.u64 	%rd20, %rd1, %rd19;
+	ld.shared.f32 	%f4, [%rd20+-4];
+	add.f32 	%f5, %f3, %f4;
+	st.shared.f32 	[%rd17+-4], %f5;
+$Lt_0_5378:
+ //<loop> Part of loop body line 101, head labeled $Lt_0_5122
+	.loc	16	114	0
+	mul.lo.s32 	%r15, %r15, 2;
+	.loc	16	99	0
+	shr.s32 	%r13, %r13, 1;
+	mov.u32 	%r27, 0;
+	setp.gt.s32 	%p3, %r13, %r27;
+	@%p3 bra 	$Lt_0_5122;
+	bra.uni 	$Lt_0_4610;
+$Lt_0_8194:
+	mov.s32 	%r15, 1;
+$Lt_0_4610:
+	mov.u32 	%r28, 0;
+	setp.ne.s32 	%p4, %r1, %r28;
+	@%p4 bra 	$Lt_0_6146;
+	.loc	16	124	0
+	mov.f32 	%f6, 0f00000000;     	// 0
+	sub.s32 	%r29, %r4, 1;
+	shr.s32 	%r30, %r29, 4;
+	add.s32 	%r31, %r4, %r30;
+	cvt.s64.s32 	%rd21, %r31;
+	mul.wide.s32 	%rd22, %r31, 4;
+	add.u64 	%rd23, %rd1, %rd22;
+	st.shared.f32 	[%rd23+-4], %f6;
+$Lt_0_6146:
+	mov.u32 	%r32, 1;
+	setp.le.s32 	%p5, %r4, %r32;
+	@%p5 bra 	$Lt_0_6658;
+	mov.s32 	%r33, 1;
+$Lt_0_7170:
+ //<loop> Loop body line 124, nesting depth: 1, estimated iterations: unknown
+	.loc	16	130	0
+	shr.s32 	%r34, %r15, 31;
+	mov.s32 	%r35, 1;
+	and.b32 	%r36, %r34, %r35;
+	add.s32 	%r37, %r36, %r15;
+	shr.s32 	%r15, %r37, 1;
+	.loc	16	132	0
+	bar.sync 	0;
+	setp.le.s32 	%p6, %r33, %r1;
+	@%p6 bra 	$Lt_0_7426;
+ //<loop> Part of loop body line 124, head labeled $Lt_0_7170
+	.loc	16	142	0
+	mul.lo.s32 	%r38, %r1, 2;
+	add.s32 	%r39, %r38, 1;
+	mul.lo.s32 	%r40, %r39, %r15;
+	sub.s32 	%r41, %r40, 1;
+	shr.s32 	%r42, %r41, 4;
+	add.s32 	%r43, %r40, %r42;
+	cvt.s64.s32 	%rd24, %r43;
+	mul.wide.s32 	%rd25, %r43, 4;
+	add.u64 	%rd26, %rd1, %rd25;
+	ld.shared.f32 	%f7, [%rd26+-4];
+	.loc	16	143	0
+	add.s32 	%r44, %r38, 2;
+	mul.lo.s32 	%r45, %r44, %r15;
+	sub.s32 	%r46, %r45, 1;
+	shr.s32 	%r47, %r46, 4;
+	add.s32 	%r48, %r45, %r47;
+	cvt.s64.s32 	%rd27, %r48;
+	mul.wide.s32 	%rd28, %r48, 4;
+	add.u64 	%rd29, %rd1, %rd28;
+	ld.shared.f32 	%f8, [%rd29+-4];
+	st.shared.f32 	[%rd26+-4], %f8;
+	.loc	16	144	0
+	ld.shared.f32 	%f9, [%rd29+-4];
+	add.f32 	%f10, %f9, %f7;
+	st.shared.f32 	[%rd29+-4], %f10;
+$Lt_0_7426:
+ //<loop> Part of loop body line 124, head labeled $Lt_0_7170
+	.loc	16	128	0
+	mul.lo.s32 	%r33, %r33, 2;
+	setp.lt.s32 	%p7, %r33, %r4;
+	@%p7 bra 	$Lt_0_7170;
+$Lt_0_6658:
+	.loc	16	148	0
+	bar.sync 	0;
+	.loc	16	151	0
+	ld.param.u64 	%rd30, [__cudaparm__Z9scan_bestPfS_i_g_odata];
+	ld.shared.f32 	%f11, [%rd6+0];
+	add.u64 	%rd31, %rd3, %rd30;
+	st.global.f32 	[%rd31+0], %f11;
+	.loc	16	152	0
+	ld.shared.f32 	%f12, [%rd13+0];
+	add.u64 	%rd32, %rd10, %rd30;
+	st.global.f32 	[%rd32+0], %f12;
+	.loc	16	153	0
+	exit;
+$LDWend__Z9scan_bestPfS_i:
+	} // _Z9scan_bestPfS_i
+

@@ -1,0 +1,91 @@
+	.version 2.1
+	.target sm_20
+	// compiled with /usr/local/cuda3.1/cuda/open64/lib//be
+	// nvopencc 3.1 built on 2010-06-07
+
+	//-----------------------------------------------------------
+	// Compiling /tmp/tmpxft_00001d18_00000000-7_simpleStreams.cpp3.i (/tmp/ccBI#.WjdBH9)
+	//-----------------------------------------------------------
+
+	//-----------------------------------------------------------
+	// Options:
+	//-----------------------------------------------------------
+	//  Target:ptx, ISA:sm_20, Endian:little, Pointer Size:64
+	//  -O3	(Optimization level)
+	//  -g0	(Debug level)
+	//  -m2	(Report advisories)
+	//-----------------------------------------------------------
+
+	.file	1	"<command-line>"
+	.file	2	"/tmp/tmpxft_00001d18_00000000-6_simpleStreams.cudafe2.gpu"
+	.file	3	"/usr/lib/gcc/x86_64-linux-gnu/4.4.3/include/stddef.h"
+	.file	4	"/usr/local/cuda3.1/cuda/bin/../include/crt/device_runtime.h"
+	.file	5	"/usr/local/cuda3.1/cuda/bin/../include/host_defines.h"
+	.file	6	"/usr/local/cuda3.1/cuda/bin/../include/builtin_types.h"
+	.file	7	"/usr/local/cuda3.1/cuda/bin/../include/device_types.h"
+	.file	8	"/usr/local/cuda3.1/cuda/bin/../include/driver_types.h"
+	.file	9	"/usr/local/cuda3.1/cuda/bin/../include/surface_types.h"
+	.file	10	"/usr/local/cuda3.1/cuda/bin/../include/texture_types.h"
+	.file	11	"/usr/local/cuda3.1/cuda/bin/../include/vector_types.h"
+	.file	12	"/usr/local/cuda3.1/cuda/bin/../include/device_launch_parameters.h"
+	.file	13	"/usr/local/cuda3.1/cuda/bin/../include/crt/storage_class.h"
+	.file	14	"/usr/include/bits/types.h"
+	.file	15	"/usr/include/time.h"
+	.file	16	"/usr/local/cuda3.1/cuda/bin/../include/texture_fetch_functions.h"
+	.file	17	"/usr/local/cuda3.1/cuda/bin/../include/common_functions.h"
+	.file	18	"/usr/local/cuda3.1/cuda/bin/../include/math_functions.h"
+	.file	19	"/usr/local/cuda3.1/cuda/bin/../include/math_constants.h"
+	.file	20	"/usr/local/cuda3.1/cuda/bin/../include/device_functions.h"
+	.file	21	"/usr/local/cuda3.1/cuda/bin/../include/sm_11_atomic_functions.h"
+	.file	22	"/usr/local/cuda3.1/cuda/bin/../include/sm_12_atomic_functions.h"
+	.file	23	"/usr/local/cuda3.1/cuda/bin/../include/sm_13_double_functions.h"
+	.file	24	"/usr/local/cuda3.1/cuda/bin/../include/sm_20_atomic_functions.h"
+	.file	25	"/usr/local/cuda3.1/cuda/bin/../include/sm_20_intrinsics.h"
+	.file	26	"/usr/local/cuda3.1/cuda/bin/../include/surface_functions.h"
+	.file	27	"/usr/local/cuda3.1/cuda/bin/../include/math_functions_dbl_ptx3.h"
+	.file	28	"/home/andrew/repositories/gpuocelot/tests/cuda2.2/tests/simpleStreams/simpleStreams.cu"
+
+
+	.entry _Z10init_arrayPiS_i (
+		.param .u64 __cudaparm__Z10init_arrayPiS_i_g_data,
+		.param .u64 __cudaparm__Z10init_arrayPiS_i_factor,
+		.param .s32 __cudaparm__Z10init_arrayPiS_i_num_iterations)
+	{
+	.reg .u32 %r<14>;
+	.reg .u64 %rd<7>;
+	.reg .pred %p<4>;
+	.loc	28	59	0
+$LDWbegin__Z10init_arrayPiS_i:
+	ld.param.s32 	%r1, [__cudaparm__Z10init_arrayPiS_i_num_iterations];
+	mov.u32 	%r2, 0;
+	setp.le.s32 	%p1, %r1, %r2;
+	@%p1 bra 	$Lt_0_1282;
+	mov.s32 	%r3, %r1;
+	ld.param.u64 	%rd1, [__cudaparm__Z10init_arrayPiS_i_g_data];
+	mov.u32 	%r4, %tid.x;
+	mov.u32 	%r5, %ctaid.x;
+	mov.u32 	%r6, %ntid.x;
+	mul.lo.u32 	%r7, %r5, %r6;
+	add.u32 	%r8, %r4, %r7;
+	cvt.s64.s32 	%rd2, %r8;
+	mul.wide.s32 	%rd3, %r8, 4;
+	add.u64 	%rd4, %rd1, %rd3;
+	ld.global.s32 	%r9, [%rd4+0];
+	ld.param.u64 	%rd5, [__cudaparm__Z10init_arrayPiS_i_factor];
+	mov.s32 	%r10, 0;
+	mov.s32 	%r11, %r3;
+$Lt_0_1794:
+ //<loop> Loop body line 59, nesting depth: 1, estimated iterations: unknown
+	.loc	28	64	0
+	ld.global.s32 	%r12, [%rd5+0];
+	add.s32 	%r9, %r12, %r9;
+	st.global.s32 	[%rd4+0], %r9;
+	add.s32 	%r10, %r10, 1;
+	setp.ne.s32 	%p2, %r1, %r10;
+	@%p2 bra 	$Lt_0_1794;
+$Lt_0_1282:
+	.loc	28	65	0
+	exit;
+$LDWend__Z10init_arrayPiS_i:
+	} // _Z10init_arrayPiS_i
+

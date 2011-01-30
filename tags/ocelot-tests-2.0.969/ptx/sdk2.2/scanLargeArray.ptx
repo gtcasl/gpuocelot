@@ -1,0 +1,1714 @@
+	.version 2.1
+	.target sm_20
+	// compiled with /usr/local/cuda3.1/cuda/open64/lib//be
+	// nvopencc 3.1 built on 2010-06-07
+
+	.visible .func (.param .u32 __cudaretf__Z8buildSumPf) _Z8buildSumPf (.param .u64 __cudaparmf1__Z8buildSumPf)
+
+	.visible .func _Z16scanRootToLeavesPfj (.param .u64 __cudaparmf1__Z16scanRootToLeavesPfj, .param .u32 __cudaparmf2__Z16scanRootToLeavesPfj)
+
+	.visible .func _Z22loadSharedChunkFromMemILb0EEvPfPKfiiRiS3_S3_S3_S3_S3_ (.param .u64 __cudaparmf1__Z22loadSharedChunkFromMemILb0EEvPfPKfiiRiS3_S3_S3_S3_S3_, .param .u64 __cudaparmf2__Z22loadSharedChunkFromMemILb0EEvPfPKfiiRiS3_S3_S3_S3_S3_, .param .s32 __cudaparmf3__Z22loadSharedChunkFromMemILb0EEvPfPKfiiRiS3_S3_S3_S3_S3_, .param .s32 __cudaparmf4__Z22loadSharedChunkFromMemILb0EEvPfPKfiiRiS3_S3_S3_S3_S3_, .param .u64 __cudaparmf5__Z22loadSharedChunkFromMemILb0EEvPfPKfiiRiS3_S3_S3_S3_S3_, .param .u64 __cudaparmf6__Z22loadSharedChunkFromMemILb0EEvPfPKfiiRiS3_S3_S3_S3_S3_, .param .u64 __cudaparmf7__Z22loadSharedChunkFromMemILb0EEvPfPKfiiRiS3_S3_S3_S3_S3_, .param .u64 __cudaparmf8__Z22loadSharedChunkFromMemILb0EEvPfPKfiiRiS3_S3_S3_S3_S3_, .param .u64 __cudaparmf9__Z22loadSharedChunkFromMemILb0EEvPfPKfiiRiS3_S3_S3_S3_S3_, .param .u64 __cudaparmf10__Z22loadSharedChunkFromMemILb0EEvPfPKfiiRiS3_S3_S3_S3_S3_)
+
+	.visible .func _Z12prescanBlockILb1EEvPfiS0_ (.param .u64 __cudaparmf1__Z12prescanBlockILb1EEvPfiS0_, .param .s32 __cudaparmf2__Z12prescanBlockILb1EEvPfiS0_, .param .u64 __cudaparmf3__Z12prescanBlockILb1EEvPfiS0_)
+
+	.visible .func _Z16clearLastElementILb1EEvPfS0_i (.param .u64 __cudaparmf1__Z16clearLastElementILb1EEvPfS0_i, .param .u64 __cudaparmf2__Z16clearLastElementILb1EEvPfS0_i, .param .s32 __cudaparmf3__Z16clearLastElementILb1EEvPfS0_i)
+
+	.visible .func _Z21storeSharedChunkToMemILb0EEvPfPKfiiiiiii (.param .u64 __cudaparmf1__Z21storeSharedChunkToMemILb0EEvPfPKfiiiiiii, .param .u64 __cudaparmf2__Z21storeSharedChunkToMemILb0EEvPfPKfiiiiiii, .param .s32 __cudaparmf3__Z21storeSharedChunkToMemILb0EEvPfPKfiiiiiii, .param .s32 __cudaparmf4__Z21storeSharedChunkToMemILb0EEvPfPKfiiiiiii, .param .s32 __cudaparmf5__Z21storeSharedChunkToMemILb0EEvPfPKfiiiiiii, .param .s32 __cudaparmf6__Z21storeSharedChunkToMemILb0EEvPfPKfiiiiiii, .param .s32 __cudaparmf7__Z21storeSharedChunkToMemILb0EEvPfPKfiiiiiii, .param .s32 __cudaparmf8__Z21storeSharedChunkToMemILb0EEvPfPKfiiiiiii, .param .s32 __cudaparmf9__Z21storeSharedChunkToMemILb0EEvPfPKfiiiiiii)
+
+	.visible .func _Z22loadSharedChunkFromMemILb1EEvPfPKfiiRiS3_S3_S3_S3_S3_ (.param .u64 __cudaparmf1__Z22loadSharedChunkFromMemILb1EEvPfPKfiiRiS3_S3_S3_S3_S3_, .param .u64 __cudaparmf2__Z22loadSharedChunkFromMemILb1EEvPfPKfiiRiS3_S3_S3_S3_S3_, .param .s32 __cudaparmf3__Z22loadSharedChunkFromMemILb1EEvPfPKfiiRiS3_S3_S3_S3_S3_, .param .s32 __cudaparmf4__Z22loadSharedChunkFromMemILb1EEvPfPKfiiRiS3_S3_S3_S3_S3_, .param .u64 __cudaparmf5__Z22loadSharedChunkFromMemILb1EEvPfPKfiiRiS3_S3_S3_S3_S3_, .param .u64 __cudaparmf6__Z22loadSharedChunkFromMemILb1EEvPfPKfiiRiS3_S3_S3_S3_S3_, .param .u64 __cudaparmf7__Z22loadSharedChunkFromMemILb1EEvPfPKfiiRiS3_S3_S3_S3_S3_, .param .u64 __cudaparmf8__Z22loadSharedChunkFromMemILb1EEvPfPKfiiRiS3_S3_S3_S3_S3_, .param .u64 __cudaparmf9__Z22loadSharedChunkFromMemILb1EEvPfPKfiiRiS3_S3_S3_S3_S3_, .param .u64 __cudaparmf10__Z22loadSharedChunkFromMemILb1EEvPfPKfiiRiS3_S3_S3_S3_S3_)
+
+	.visible .func _Z21storeSharedChunkToMemILb1EEvPfPKfiiiiiii (.param .u64 __cudaparmf1__Z21storeSharedChunkToMemILb1EEvPfPKfiiiiiii, .param .u64 __cudaparmf2__Z21storeSharedChunkToMemILb1EEvPfPKfiiiiiii, .param .s32 __cudaparmf3__Z21storeSharedChunkToMemILb1EEvPfPKfiiiiiii, .param .s32 __cudaparmf4__Z21storeSharedChunkToMemILb1EEvPfPKfiiiiiii, .param .s32 __cudaparmf5__Z21storeSharedChunkToMemILb1EEvPfPKfiiiiiii, .param .s32 __cudaparmf6__Z21storeSharedChunkToMemILb1EEvPfPKfiiiiiii, .param .s32 __cudaparmf7__Z21storeSharedChunkToMemILb1EEvPfPKfiiiiiii, .param .s32 __cudaparmf8__Z21storeSharedChunkToMemILb1EEvPfPKfiiiiiii, .param .s32 __cudaparmf9__Z21storeSharedChunkToMemILb1EEvPfPKfiiiiiii)
+
+	.visible .func _Z12prescanBlockILb0EEvPfiS0_ (.param .u64 __cudaparmf1__Z12prescanBlockILb0EEvPfiS0_, .param .s32 __cudaparmf2__Z12prescanBlockILb0EEvPfiS0_, .param .u64 __cudaparmf3__Z12prescanBlockILb0EEvPfiS0_)
+
+	.visible .func _Z16clearLastElementILb0EEvPfS0_i (.param .u64 __cudaparmf1__Z16clearLastElementILb0EEvPfS0_i, .param .u64 __cudaparmf2__Z16clearLastElementILb0EEvPfS0_i, .param .s32 __cudaparmf3__Z16clearLastElementILb0EEvPfS0_i)
+
+	.visible .func (.param .f32 __cudaretf__ZSt5frexpfPi) _ZSt5frexpfPi (.param .f32 __cudaparmf1__ZSt5frexpfPi, .param .u64 __cudaparmf2__ZSt5frexpfPi)
+
+	//-----------------------------------------------------------
+	// Compiling /tmp/tmpxft_00001fc5_00000000-7_scanLargeArray.cpp3.i (/tmp/ccBI#.jKyCAg)
+	//-----------------------------------------------------------
+
+	//-----------------------------------------------------------
+	// Options:
+	//-----------------------------------------------------------
+	//  Target:ptx, ISA:sm_20, Endian:little, Pointer Size:64
+	//  -O3	(Optimization level)
+	//  -g0	(Debug level)
+	//  -m2	(Report advisories)
+	//-----------------------------------------------------------
+
+	.file	1	"<command-line>"
+	.file	2	"/tmp/tmpxft_00001fc5_00000000-6_scanLargeArray.cudafe2.gpu"
+	.file	3	"/usr/lib/gcc/x86_64-linux-gnu/4.4.3/include/stddef.h"
+	.file	4	"/usr/local/cuda3.1/cuda/bin/../include/crt/device_runtime.h"
+	.file	5	"/usr/local/cuda3.1/cuda/bin/../include/host_defines.h"
+	.file	6	"/usr/local/cuda3.1/cuda/bin/../include/builtin_types.h"
+	.file	7	"/usr/local/cuda3.1/cuda/bin/../include/device_types.h"
+	.file	8	"/usr/local/cuda3.1/cuda/bin/../include/driver_types.h"
+	.file	9	"/usr/local/cuda3.1/cuda/bin/../include/surface_types.h"
+	.file	10	"/usr/local/cuda3.1/cuda/bin/../include/texture_types.h"
+	.file	11	"/usr/local/cuda3.1/cuda/bin/../include/vector_types.h"
+	.file	12	"/usr/local/cuda3.1/cuda/bin/../include/device_launch_parameters.h"
+	.file	13	"/usr/local/cuda3.1/cuda/bin/../include/crt/storage_class.h"
+	.file	14	"/usr/include/bits/types.h"
+	.file	15	"/usr/include/time.h"
+	.file	16	"/home/andrew/repositories/gpuocelot/tests/cuda2.2/tests/scanLargeArray/scanLargeArray_kernel.cu"
+	.file	17	"/usr/include/c++/4.4/cmath"
+	.file	18	"/usr/local/cuda3.1/cuda/bin/../include/common_functions.h"
+	.file	19	"/usr/local/cuda3.1/cuda/bin/../include/math_functions.h"
+	.file	20	"/usr/local/cuda3.1/cuda/bin/../include/math_constants.h"
+	.file	21	"/usr/local/cuda3.1/cuda/bin/../include/device_functions.h"
+	.file	22	"/usr/local/cuda3.1/cuda/bin/../include/sm_11_atomic_functions.h"
+	.file	23	"/usr/local/cuda3.1/cuda/bin/../include/sm_12_atomic_functions.h"
+	.file	24	"/usr/local/cuda3.1/cuda/bin/../include/sm_13_double_functions.h"
+	.file	25	"/usr/local/cuda3.1/cuda/bin/../include/sm_20_atomic_functions.h"
+	.file	26	"/usr/local/cuda3.1/cuda/bin/../include/sm_20_intrinsics.h"
+	.file	27	"/usr/local/cuda3.1/cuda/bin/../include/surface_functions.h"
+	.file	28	"/usr/local/cuda3.1/cuda/bin/../include/texture_fetch_functions.h"
+	.file	29	"/usr/local/cuda3.1/cuda/bin/../include/math_functions_dbl_ptx3.h"
+
+	.extern	.shared .align 4 .b8 s_data[];
+
+	.visible .func (.param .u32 __cudaretf__Z8buildSumPf) _Z8buildSumPf (.param .u64 __cudaparmf1__Z8buildSumPf)
+	{
+	.reg .u32 %r<20>;
+	.reg .u64 %rd<10>;
+	.reg .f32 %f<5>;
+	.reg .pred %p<5>;
+	.loc	16	155	0
+$LDWbegin__Z8buildSumPf:
+	ld.param.u64 	%rd1, [__cudaparmf1__Z8buildSumPf];
+	mov.s64 	%rd2, %rd1;
+	.loc	16	160	0
+	cvt.s32.u32 	%r1, %ntid.x;
+	mov.s32 	%r2, %r1;
+	mov.u32 	%r3, 0;
+	setp.le.s32 	%p1, %r1, %r3;
+	@%p1 bra 	$Lt_0_3586;
+	mov.u32 	%r4, %tid.x;
+	mov.u32 	%r5, 1;
+$Lt_0_2562:
+ //<loop> Loop body line 162
+	.loc	16	162	0
+	bar.sync 	0;
+	setp.le.u32 	%p2, %r2, %r4;
+	@%p2 bra 	$Lt_0_2818;
+ //<loop> Part of loop body line 162, head labeled $Lt_0_2562
+	.loc	16	173	0
+	mov.s32 	%r6, 2;
+	mul24.lo.s32 	%r7, %r6, %r5;
+	mul24.lo.s32 	%r8, %r7, %r4;
+	add.u32 	%r9, %r8, %r5;
+	add.u32 	%r10, %r9, %r5;
+	sub.s32 	%r11, %r10, 1;
+	shr.s32 	%r12, %r11, 4;
+	add.s32 	%r13, %r10, %r12;
+	cvt.s64.s32 	%rd3, %r13;
+	mul.wide.s32 	%rd4, %r13, 4;
+	add.u64 	%rd5, %rd2, %rd4;
+	ld.f32 	%f1, [%rd5+-4];
+	sub.s32 	%r14, %r9, 1;
+	shr.s32 	%r15, %r14, 4;
+	add.s32 	%r16, %r9, %r15;
+	cvt.s64.s32 	%rd6, %r16;
+	mul.wide.s32 	%rd7, %r16, 4;
+	add.u64 	%rd8, %rd2, %rd7;
+	ld.f32 	%f2, [%rd8+-4];
+	add.f32 	%f3, %f1, %f2;
+	st.f32 	[%rd5+-4], %f3;
+$Lt_0_2818:
+ //<loop> Part of loop body line 162, head labeled $Lt_0_2562
+	.loc	16	176	0
+	mul.lo.u32 	%r5, %r5, 2;
+	.loc	16	160	0
+	shr.s32 	%r2, %r2, 1;
+	mov.u32 	%r17, 0;
+	setp.gt.s32 	%p3, %r2, %r17;
+	@%p3 bra 	$Lt_0_2562;
+	bra.uni 	$Lt_0_2050;
+$Lt_0_3586:
+	mov.u32 	%r5, 1;
+$Lt_0_2050:
+	.loc	16	179	0
+	mov.s32 	%r18, %r5;
+	st.param.u32 	[__cudaretf__Z8buildSumPf], %r18;
+	ret;
+$LDWend__Z8buildSumPf:
+	} // _Z8buildSumPf
+
+	.visible .func _Z16scanRootToLeavesPfj (.param .u64 __cudaparmf1__Z16scanRootToLeavesPfj, .param .u32 __cudaparmf2__Z16scanRootToLeavesPfj)
+	{
+	.reg .u32 %r<19>;
+	.reg .u64 %rd<10>;
+	.reg .f32 %f<6>;
+	.reg .pred %p<5>;
+	.loc	16	183	0
+$LDWbegin__Z16scanRootToLeavesPfj:
+	ld.param.u64 	%rd1, [__cudaparmf1__Z16scanRootToLeavesPfj];
+	mov.s64 	%rd2, %rd1;
+	ld.param.u32 	%r1, [__cudaparmf2__Z16scanRootToLeavesPfj];
+	mov.s32 	%r2, %r1;
+	mov.u32 	%r3, %ntid.x;
+	mov.u32 	%r4, 1;
+	setp.lt.u32 	%p1, %r3, %r4;
+	@%p1 bra 	$Lt_1_2050;
+	mov.u32 	%r5, %tid.x;
+	mov.s32 	%r6, 1;
+$Lt_1_2562:
+ //<loop> Loop body line 183, nesting depth: 1, estimated iterations: unknown
+	.loc	16	189	0
+	shr.u32 	%r2, %r2, 1;
+	.loc	16	191	0
+	bar.sync 	0;
+	setp.le.u32 	%p2, %r6, %r5;
+	@%p2 bra 	$Lt_1_2818;
+ //<loop> Part of loop body line 183, head labeled $Lt_1_2562
+	.loc	16	202	0
+	mov.s32 	%r7, 2;
+	mul24.lo.s32 	%r8, %r7, %r2;
+	mul24.lo.s32 	%r9, %r8, %r5;
+	add.u32 	%r10, %r9, %r2;
+	sub.s32 	%r11, %r10, 1;
+	shr.s32 	%r12, %r11, 4;
+	add.s32 	%r13, %r10, %r12;
+	cvt.s64.s32 	%rd3, %r13;
+	mul.wide.s32 	%rd4, %r13, 4;
+	add.u64 	%rd5, %rd2, %rd4;
+	ld.f32 	%f1, [%rd5+-4];
+	.loc	16	203	0
+	add.u32 	%r14, %r10, %r2;
+	sub.s32 	%r15, %r14, 1;
+	shr.s32 	%r16, %r15, 4;
+	add.s32 	%r17, %r14, %r16;
+	cvt.s64.s32 	%rd6, %r17;
+	mul.wide.s32 	%rd7, %r17, 4;
+	add.u64 	%rd8, %rd2, %rd7;
+	ld.f32 	%f2, [%rd8+-4];
+	st.f32 	[%rd5+-4], %f2;
+	.loc	16	204	0
+	ld.f32 	%f3, [%rd8+-4];
+	add.f32 	%f4, %f3, %f1;
+	st.f32 	[%rd8+-4], %f4;
+$Lt_1_2818:
+ //<loop> Part of loop body line 183, head labeled $Lt_1_2562
+	.loc	16	187	0
+	mul.lo.s32 	%r6, %r6, 2;
+	setp.le.u32 	%p3, %r6, %r3;
+	@%p3 bra 	$Lt_1_2562;
+$Lt_1_2050:
+	.loc	16	207	0
+	ret;
+$LDWend__Z16scanRootToLeavesPfj:
+	} // _Z16scanRootToLeavesPfj
+
+	.visible .func _Z22loadSharedChunkFromMemILb0EEvPfPKfiiRiS3_S3_S3_S3_S3_ (.param .u64 __cudaparmf1__Z22loadSharedChunkFromMemILb0EEvPfPKfiiRiS3_S3_S3_S3_S3_, .param .u64 __cudaparmf2__Z22loadSharedChunkFromMemILb0EEvPfPKfiiRiS3_S3_S3_S3_S3_, .param .s32 __cudaparmf3__Z22loadSharedChunkFromMemILb0EEvPfPKfiiRiS3_S3_S3_S3_S3_, .param .s32 __cudaparmf4__Z22loadSharedChunkFromMemILb0EEvPfPKfiiRiS3_S3_S3_S3_S3_, .param .u64 __cudaparmf5__Z22loadSharedChunkFromMemILb0EEvPfPKfiiRiS3_S3_S3_S3_S3_, .param .u64 __cudaparmf6__Z22loadSharedChunkFromMemILb0EEvPfPKfiiRiS3_S3_S3_S3_S3_, .param .u64 __cudaparmf7__Z22loadSharedChunkFromMemILb0EEvPfPKfiiRiS3_S3_S3_S3_S3_, .param .u64 __cudaparmf8__Z22loadSharedChunkFromMemILb0EEvPfPKfiiRiS3_S3_S3_S3_S3_, .param .u64 __cudaparmf9__Z22loadSharedChunkFromMemILb0EEvPfPKfiiRiS3_S3_S3_S3_S3_, .param .u64 __cudaparmf10__Z22loadSharedChunkFromMemILb0EEvPfPKfiiRiS3_S3_S3_S3_S3_)
+	{
+	.reg .u32 %r<21>;
+	.reg .u64 %rd<30>;
+	.reg .f32 %f<4>;
+	.loc	16	82	0
+$LDWbegin__Z22loadSharedChunkFromMemILb0EEvPfPKfiiRiS3_S3_S3_S3_S3_:
+	ld.param.u64 	%rd1, [__cudaparmf1__Z22loadSharedChunkFromMemILb0EEvPfPKfiiRiS3_S3_S3_S3_S3_];
+	mov.s64 	%rd2, %rd1;
+	ld.param.u64 	%rd3, [__cudaparmf2__Z22loadSharedChunkFromMemILb0EEvPfPKfiiRiS3_S3_S3_S3_S3_];
+	mov.s64 	%rd4, %rd3;
+	ld.param.u32 	%r1, [__cudaparmf4__Z22loadSharedChunkFromMemILb0EEvPfPKfiiRiS3_S3_S3_S3_S3_];
+	mov.s32 	%r2, %r1;
+	ld.param.u64 	%rd5, [__cudaparmf5__Z22loadSharedChunkFromMemILb0EEvPfPKfiiRiS3_S3_S3_S3_S3_];
+	mov.s64 	%rd6, %rd5;
+	ld.param.u64 	%rd7, [__cudaparmf6__Z22loadSharedChunkFromMemILb0EEvPfPKfiiRiS3_S3_S3_S3_S3_];
+	mov.s64 	%rd8, %rd7;
+	ld.param.u64 	%rd9, [__cudaparmf7__Z22loadSharedChunkFromMemILb0EEvPfPKfiiRiS3_S3_S3_S3_S3_];
+	mov.s64 	%rd10, %rd9;
+	ld.param.u64 	%rd11, [__cudaparmf8__Z22loadSharedChunkFromMemILb0EEvPfPKfiiRiS3_S3_S3_S3_S3_];
+	mov.s64 	%rd12, %rd11;
+	ld.param.u64 	%rd13, [__cudaparmf9__Z22loadSharedChunkFromMemILb0EEvPfPKfiiRiS3_S3_S3_S3_S3_];
+	mov.s64 	%rd14, %rd13;
+	ld.param.u64 	%rd15, [__cudaparmf10__Z22loadSharedChunkFromMemILb0EEvPfPKfiiRiS3_S3_S3_S3_S3_];
+	mov.s64 	%rd16, %rd15;
+	.loc	16	84	0
+	cvt.s32.u32 	%r3, %tid.x;
+	add.u32 	%r4, %r2, %r3;
+	st.s32 	[%rd10+0], %r4;
+	.loc	16	85	0
+	mov.u32 	%r5, %ntid.x;
+	add.u32 	%r6, %r4, %r5;
+	st.s32 	[%rd12+0], %r6;
+	.loc	16	87	0
+	st.s32 	[%rd6+0], %r3;
+	.loc	16	88	0
+	add.u32 	%r7, %r3, %r5;
+	st.s32 	[%rd8+0], %r7;
+	.loc	16	91	0
+	ld.s32 	%r8, [%rd6+0];
+	shr.s32 	%r9, %r8, 4;
+	st.s32 	[%rd14+0], %r9;
+	.loc	16	92	0
+	ld.s32 	%r10, [%rd8+0];
+	shr.s32 	%r11, %r10, 4;
+	st.s32 	[%rd16+0], %r11;
+	.loc	16	96	0
+	ld.s32 	%r12, [%rd10+0];
+	cvt.s64.s32 	%rd17, %r12;
+	mul.wide.s32 	%rd18, %r12, 4;
+	add.u64 	%rd19, %rd4, %rd18;
+	ld.f32 	%f1, [%rd19+0];
+	ld.s32 	%r13, [%rd6+0];
+	ld.s32 	%r14, [%rd14+0];
+	add.s32 	%r15, %r13, %r14;
+	cvt.s64.s32 	%rd20, %r15;
+	mul.wide.s32 	%rd21, %r15, 4;
+	add.u64 	%rd22, %rd2, %rd21;
+	st.f32 	[%rd22+0], %f1;
+	.loc	16	104	0
+	ld.s32 	%r16, [%rd12+0];
+	cvt.s64.s32 	%rd23, %r16;
+	mul.wide.s32 	%rd24, %r16, 4;
+	add.u64 	%rd25, %rd4, %rd24;
+	ld.f32 	%f2, [%rd25+0];
+	ld.s32 	%r17, [%rd8+0];
+	ld.s32 	%r18, [%rd16+0];
+	add.s32 	%r19, %r17, %r18;
+	cvt.s64.s32 	%rd26, %r19;
+	mul.wide.s32 	%rd27, %r19, 4;
+	add.u64 	%rd28, %rd2, %rd27;
+	st.f32 	[%rd28+0], %f2;
+	.loc	16	106	0
+	ret;
+$LDWend__Z22loadSharedChunkFromMemILb0EEvPfPKfiiRiS3_S3_S3_S3_S3_:
+	} // _Z22loadSharedChunkFromMemILb0EEvPfPKfiiRiS3_S3_S3_S3_S3_
+
+	.visible .func _Z12prescanBlockILb1EEvPfiS0_ (.param .u64 __cudaparmf1__Z12prescanBlockILb1EEvPfiS0_, .param .s32 __cudaparmf2__Z12prescanBlockILb1EEvPfiS0_, .param .u64 __cudaparmf3__Z12prescanBlockILb1EEvPfiS0_)
+	{
+	.reg .u32 %r<43>;
+	.reg .u64 %rd<24>;
+	.reg .f32 %f<11>;
+	.reg .pred %p<10>;
+	.loc	16	211	0
+$LDWbegin__Z12prescanBlockILb1EEvPfiS0_:
+	ld.param.u64 	%rd1, [__cudaparmf1__Z12prescanBlockILb1EEvPfiS0_];
+	mov.s64 	%rd2, %rd1;
+	ld.param.u32 	%r1, [__cudaparmf2__Z12prescanBlockILb1EEvPfiS0_];
+	mov.s32 	%r2, %r1;
+	ld.param.u64 	%rd3, [__cudaparmf3__Z12prescanBlockILb1EEvPfiS0_];
+	mov.s64 	%rd4, %rd3;
+	.loc	16	160	0
+	cvt.s32.u32 	%r3, %ntid.x;
+	mov.s32 	%r4, %r3;
+	mov.u32 	%r5, 0;
+	setp.le.s32 	%p1, %r3, %r5;
+	@%p1 bra 	$Lt_3_9730;
+	mov.u32 	%r6, %tid.x;
+	mov.u32 	%r7, 1;
+$Lt_3_6658:
+ //<loop> Loop body line 162
+	.loc	16	162	0
+	bar.sync 	0;
+	setp.le.u32 	%p2, %r4, %r6;
+	@%p2 bra 	$Lt_3_6914;
+ //<loop> Part of loop body line 162, head labeled $Lt_3_6658
+	.loc	16	173	0
+	mov.s32 	%r8, 2;
+	mul24.lo.s32 	%r9, %r8, %r7;
+	mul24.lo.s32 	%r10, %r9, %r6;
+	add.u32 	%r11, %r10, %r7;
+	add.u32 	%r12, %r11, %r7;
+	sub.s32 	%r13, %r12, 1;
+	shr.s32 	%r14, %r13, 4;
+	add.s32 	%r15, %r12, %r14;
+	cvt.s64.s32 	%rd5, %r15;
+	mul.wide.s32 	%rd6, %r15, 4;
+	add.u64 	%rd7, %rd2, %rd6;
+	ld.f32 	%f1, [%rd7+-4];
+	sub.s32 	%r16, %r11, 1;
+	shr.s32 	%r17, %r16, 4;
+	add.s32 	%r18, %r11, %r17;
+	cvt.s64.s32 	%rd8, %r18;
+	mul.wide.s32 	%rd9, %r18, 4;
+	add.u64 	%rd10, %rd2, %rd9;
+	ld.f32 	%f2, [%rd10+-4];
+	add.f32 	%f3, %f1, %f2;
+	st.f32 	[%rd7+-4], %f3;
+$Lt_3_6914:
+ //<loop> Part of loop body line 162, head labeled $Lt_3_6658
+	.loc	16	176	0
+	mul.lo.u32 	%r7, %r7, 2;
+	.loc	16	160	0
+	shr.s32 	%r4, %r4, 1;
+	mov.u32 	%r19, 0;
+	setp.gt.s32 	%p3, %r4, %r19;
+	@%p3 bra 	$Lt_3_6658;
+	bra.uni 	$Lt_3_6146;
+$Lt_3_9730:
+	mov.u32 	%r6, %tid.x;
+	mov.u32 	%r7, 1;
+$Lt_3_6146:
+	.loc	16	213	0
+	mov.u32 	%r20, 0;
+	setp.ne.u32 	%p4, %r6, %r20;
+	@%p4 bra 	$Lt_3_7682;
+	.loc	16	144	0
+	shl.b32 	%r21, %r3, 1;
+	sub.s32 	%r22, %r21, 1;
+	shr.s32 	%r23, %r22, 4;
+	add.s32 	%r24, %r21, %r23;
+	cvt.s64.s32 	%rd11, %r24;
+	mul.wide.s32 	%rd12, %r24, 4;
+	add.u64 	%rd13, %rd2, %rd12;
+	ld.f32 	%f4, [%rd13+-4];
+	cvt.s32.u32 	%r25, %ctaid.x;
+	mov.s32 	%r26, 0;
+	setp.eq.s32 	%p5, %r2, %r26;
+	selp.s32 	%r27, %r25, %r2, %p5;
+	cvt.s64.s32 	%rd14, %r27;
+	mul.wide.s32 	%rd15, %r27, 4;
+	add.u64 	%rd16, %rd4, %rd15;
+	st.f32 	[%rd16+0], %f4;
+	.loc	16	148	0
+	mov.f32 	%f5, 0f00000000;     	// 0
+	st.f32 	[%rd13+-4], %f5;
+$Lt_3_7682:
+	.loc	16	215	0
+	mov.s32 	%r28, %r7;
+	mov.u32 	%r29, 1;
+	setp.lt.u32 	%p6, %r3, %r29;
+	@%p6 bra 	$Lt_3_8194;
+	mov.s32 	%r30, 1;
+$Lt_3_8706:
+ //<loop> Loop body line 215, nesting depth: 1, estimated iterations: unknown
+	.loc	16	189	0
+	shr.u32 	%r28, %r28, 1;
+	.loc	16	191	0
+	bar.sync 	0;
+	setp.le.u32 	%p7, %r30, %r6;
+	@%p7 bra 	$Lt_3_8962;
+ //<loop> Part of loop body line 215, head labeled $Lt_3_8706
+	.loc	16	202	0
+	mov.s32 	%r31, 2;
+	mul24.lo.s32 	%r32, %r31, %r28;
+	mul24.lo.s32 	%r33, %r32, %r6;
+	add.u32 	%r34, %r33, %r28;
+	sub.s32 	%r35, %r34, 1;
+	shr.s32 	%r36, %r35, 4;
+	add.s32 	%r37, %r34, %r36;
+	cvt.s64.s32 	%rd17, %r37;
+	mul.wide.s32 	%rd18, %r37, 4;
+	add.u64 	%rd19, %rd2, %rd18;
+	ld.f32 	%f6, [%rd19+-4];
+	.loc	16	203	0
+	add.u32 	%r38, %r34, %r28;
+	sub.s32 	%r39, %r38, 1;
+	shr.s32 	%r40, %r39, 4;
+	add.s32 	%r41, %r38, %r40;
+	cvt.s64.s32 	%rd20, %r41;
+	mul.wide.s32 	%rd21, %r41, 4;
+	add.u64 	%rd22, %rd2, %rd21;
+	ld.f32 	%f7, [%rd22+-4];
+	st.f32 	[%rd19+-4], %f7;
+	.loc	16	204	0
+	ld.f32 	%f8, [%rd22+-4];
+	add.f32 	%f9, %f8, %f6;
+	st.f32 	[%rd22+-4], %f9;
+$Lt_3_8962:
+ //<loop> Part of loop body line 215, head labeled $Lt_3_8706
+	.loc	16	187	0
+	mul.lo.s32 	%r30, %r30, 2;
+	setp.le.u32 	%p8, %r30, %r3;
+	@%p8 bra 	$Lt_3_8706;
+$Lt_3_8194:
+	.loc	16	216	0
+	ret;
+$LDWend__Z12prescanBlockILb1EEvPfiS0_:
+	} // _Z12prescanBlockILb1EEvPfiS0_
+
+	.visible .func _Z16clearLastElementILb1EEvPfS0_i (.param .u64 __cudaparmf1__Z16clearLastElementILb1EEvPfS0_i, .param .u64 __cudaparmf2__Z16clearLastElementILb1EEvPfS0_i, .param .s32 __cudaparmf3__Z16clearLastElementILb1EEvPfS0_i)
+	{
+	.reg .u32 %r<11>;
+	.reg .u64 %rd<12>;
+	.reg .f32 %f<4>;
+	.reg .pred %p<3>;
+	.loc	16	135	0
+$LDWbegin__Z16clearLastElementILb1EEvPfS0_i:
+	ld.param.u64 	%rd1, [__cudaparmf1__Z16clearLastElementILb1EEvPfS0_i];
+	mov.s64 	%rd2, %rd1;
+	ld.param.u64 	%rd3, [__cudaparmf2__Z16clearLastElementILb1EEvPfS0_i];
+	mov.s64 	%rd4, %rd3;
+	ld.param.u32 	%r1, [__cudaparmf3__Z16clearLastElementILb1EEvPfS0_i];
+	mov.s32 	%r2, %r1;
+	mov.u32 	%r3, %tid.x;
+	mov.u32 	%r4, 0;
+	setp.ne.u32 	%p1, %r3, %r4;
+	@%p1 bra 	$Lt_4_1794;
+	.loc	16	144	0
+	mov.u32 	%r5, %ntid.x;
+	shl.b32 	%r6, %r5, 1;
+	sub.s32 	%r7, %r6, 1;
+	shr.s32 	%r8, %r7, 4;
+	add.s32 	%r9, %r6, %r8;
+	cvt.s64.s32 	%rd5, %r9;
+	mul.wide.s32 	%rd6, %r9, 4;
+	add.u64 	%rd7, %rd2, %rd6;
+	ld.f32 	%f1, [%rd7+-4];
+	cvt.s64.s32 	%rd8, %r2;
+	mul.wide.s32 	%rd9, %r2, 4;
+	add.u64 	%rd10, %rd4, %rd9;
+	st.f32 	[%rd10+0], %f1;
+	.loc	16	148	0
+	mov.f32 	%f2, 0f00000000;     	// 0
+	st.f32 	[%rd7+-4], %f2;
+$Lt_4_1794:
+	.loc	16	150	0
+	ret;
+$LDWend__Z16clearLastElementILb1EEvPfS0_i:
+	} // _Z16clearLastElementILb1EEvPfS0_i
+
+	.visible .func _Z21storeSharedChunkToMemILb0EEvPfPKfiiiiiii (.param .u64 __cudaparmf1__Z21storeSharedChunkToMemILb0EEvPfPKfiiiiiii, .param .u64 __cudaparmf2__Z21storeSharedChunkToMemILb0EEvPfPKfiiiiiii, .param .s32 __cudaparmf3__Z21storeSharedChunkToMemILb0EEvPfPKfiiiiiii, .param .s32 __cudaparmf4__Z21storeSharedChunkToMemILb0EEvPfPKfiiiiiii, .param .s32 __cudaparmf5__Z21storeSharedChunkToMemILb0EEvPfPKfiiiiiii, .param .s32 __cudaparmf6__Z21storeSharedChunkToMemILb0EEvPfPKfiiiiiii, .param .s32 __cudaparmf7__Z21storeSharedChunkToMemILb0EEvPfPKfiiiiiii, .param .s32 __cudaparmf8__Z21storeSharedChunkToMemILb0EEvPfPKfiiiiiii, .param .s32 __cudaparmf9__Z21storeSharedChunkToMemILb0EEvPfPKfiiiiiii)
+	{
+	.reg .u32 %r<16>;
+	.reg .u64 %rd<18>;
+	.reg .f32 %f<4>;
+	.loc	16	115	0
+$LDWbegin__Z21storeSharedChunkToMemILb0EEvPfPKfiiiiiii:
+	ld.param.u64 	%rd1, [__cudaparmf1__Z21storeSharedChunkToMemILb0EEvPfPKfiiiiiii];
+	mov.s64 	%rd2, %rd1;
+	ld.param.u64 	%rd3, [__cudaparmf2__Z21storeSharedChunkToMemILb0EEvPfPKfiiiiiii];
+	mov.s64 	%rd4, %rd3;
+	ld.param.u32 	%r1, [__cudaparmf4__Z21storeSharedChunkToMemILb0EEvPfPKfiiiiiii];
+	mov.s32 	%r2, %r1;
+	ld.param.u32 	%r3, [__cudaparmf5__Z21storeSharedChunkToMemILb0EEvPfPKfiiiiiii];
+	mov.s32 	%r4, %r3;
+	ld.param.u32 	%r5, [__cudaparmf6__Z21storeSharedChunkToMemILb0EEvPfPKfiiiiiii];
+	mov.s32 	%r6, %r5;
+	ld.param.u32 	%r7, [__cudaparmf7__Z21storeSharedChunkToMemILb0EEvPfPKfiiiiiii];
+	mov.s32 	%r8, %r7;
+	ld.param.u32 	%r9, [__cudaparmf8__Z21storeSharedChunkToMemILb0EEvPfPKfiiiiiii];
+	mov.s32 	%r10, %r9;
+	ld.param.u32 	%r11, [__cudaparmf9__Z21storeSharedChunkToMemILb0EEvPfPKfiiiiiii];
+	mov.s32 	%r12, %r11;
+	.loc	16	119	0
+	add.s32 	%r13, %r2, %r10;
+	cvt.s64.s32 	%rd5, %r13;
+	mul.wide.s32 	%rd6, %r13, 4;
+	add.u64 	%rd7, %rd4, %rd6;
+	ld.f32 	%f1, [%rd7+0];
+	cvt.s64.s32 	%rd8, %r6;
+	mul.wide.s32 	%rd9, %r6, 4;
+	add.u64 	%rd10, %rd2, %rd9;
+	st.f32 	[%rd10+0], %f1;
+	.loc	16	127	0
+	add.s32 	%r14, %r4, %r12;
+	cvt.s64.s32 	%rd11, %r14;
+	mul.wide.s32 	%rd12, %r14, 4;
+	add.u64 	%rd13, %rd4, %rd12;
+	ld.f32 	%f2, [%rd13+0];
+	cvt.s64.s32 	%rd14, %r8;
+	mul.wide.s32 	%rd15, %r8, 4;
+	add.u64 	%rd16, %rd2, %rd15;
+	st.f32 	[%rd16+0], %f2;
+	.loc	16	129	0
+	ret;
+$LDWend__Z21storeSharedChunkToMemILb0EEvPfPKfiiiiiii:
+	} // _Z21storeSharedChunkToMemILb0EEvPfPKfiiiiiii
+
+	.visible .func _Z22loadSharedChunkFromMemILb1EEvPfPKfiiRiS3_S3_S3_S3_S3_ (.param .u64 __cudaparmf1__Z22loadSharedChunkFromMemILb1EEvPfPKfiiRiS3_S3_S3_S3_S3_, .param .u64 __cudaparmf2__Z22loadSharedChunkFromMemILb1EEvPfPKfiiRiS3_S3_S3_S3_S3_, .param .s32 __cudaparmf3__Z22loadSharedChunkFromMemILb1EEvPfPKfiiRiS3_S3_S3_S3_S3_, .param .s32 __cudaparmf4__Z22loadSharedChunkFromMemILb1EEvPfPKfiiRiS3_S3_S3_S3_S3_, .param .u64 __cudaparmf5__Z22loadSharedChunkFromMemILb1EEvPfPKfiiRiS3_S3_S3_S3_S3_, .param .u64 __cudaparmf6__Z22loadSharedChunkFromMemILb1EEvPfPKfiiRiS3_S3_S3_S3_S3_, .param .u64 __cudaparmf7__Z22loadSharedChunkFromMemILb1EEvPfPKfiiRiS3_S3_S3_S3_S3_, .param .u64 __cudaparmf8__Z22loadSharedChunkFromMemILb1EEvPfPKfiiRiS3_S3_S3_S3_S3_, .param .u64 __cudaparmf9__Z22loadSharedChunkFromMemILb1EEvPfPKfiiRiS3_S3_S3_S3_S3_, .param .u64 __cudaparmf10__Z22loadSharedChunkFromMemILb1EEvPfPKfiiRiS3_S3_S3_S3_S3_)
+	{
+	.reg .u32 %r<23>;
+	.reg .u64 %rd<30>;
+	.reg .f32 %f<4>;
+	.reg .pred %p<3>;
+	.loc	16	82	0
+$LDWbegin__Z22loadSharedChunkFromMemILb1EEvPfPKfiiRiS3_S3_S3_S3_S3_:
+	ld.param.u64 	%rd1, [__cudaparmf1__Z22loadSharedChunkFromMemILb1EEvPfPKfiiRiS3_S3_S3_S3_S3_];
+	mov.s64 	%rd2, %rd1;
+	ld.param.u64 	%rd3, [__cudaparmf2__Z22loadSharedChunkFromMemILb1EEvPfPKfiiRiS3_S3_S3_S3_S3_];
+	mov.s64 	%rd4, %rd3;
+	ld.param.u32 	%r1, [__cudaparmf3__Z22loadSharedChunkFromMemILb1EEvPfPKfiiRiS3_S3_S3_S3_S3_];
+	mov.s32 	%r2, %r1;
+	ld.param.u32 	%r3, [__cudaparmf4__Z22loadSharedChunkFromMemILb1EEvPfPKfiiRiS3_S3_S3_S3_S3_];
+	mov.s32 	%r4, %r3;
+	ld.param.u64 	%rd5, [__cudaparmf5__Z22loadSharedChunkFromMemILb1EEvPfPKfiiRiS3_S3_S3_S3_S3_];
+	mov.s64 	%rd6, %rd5;
+	ld.param.u64 	%rd7, [__cudaparmf6__Z22loadSharedChunkFromMemILb1EEvPfPKfiiRiS3_S3_S3_S3_S3_];
+	mov.s64 	%rd8, %rd7;
+	ld.param.u64 	%rd9, [__cudaparmf7__Z22loadSharedChunkFromMemILb1EEvPfPKfiiRiS3_S3_S3_S3_S3_];
+	mov.s64 	%rd10, %rd9;
+	ld.param.u64 	%rd11, [__cudaparmf8__Z22loadSharedChunkFromMemILb1EEvPfPKfiiRiS3_S3_S3_S3_S3_];
+	mov.s64 	%rd12, %rd11;
+	ld.param.u64 	%rd13, [__cudaparmf9__Z22loadSharedChunkFromMemILb1EEvPfPKfiiRiS3_S3_S3_S3_S3_];
+	mov.s64 	%rd14, %rd13;
+	ld.param.u64 	%rd15, [__cudaparmf10__Z22loadSharedChunkFromMemILb1EEvPfPKfiiRiS3_S3_S3_S3_S3_];
+	mov.s64 	%rd16, %rd15;
+	.loc	16	84	0
+	cvt.s32.u32 	%r5, %tid.x;
+	add.u32 	%r6, %r4, %r5;
+	st.s32 	[%rd10+0], %r6;
+	.loc	16	85	0
+	mov.u32 	%r7, %ntid.x;
+	add.u32 	%r8, %r6, %r7;
+	st.s32 	[%rd12+0], %r8;
+	.loc	16	87	0
+	st.s32 	[%rd6+0], %r5;
+	.loc	16	88	0
+	add.u32 	%r9, %r5, %r7;
+	st.s32 	[%rd8+0], %r9;
+	.loc	16	91	0
+	ld.s32 	%r10, [%rd6+0];
+	shr.s32 	%r11, %r10, 4;
+	st.s32 	[%rd14+0], %r11;
+	.loc	16	92	0
+	ld.s32 	%r12, [%rd8+0];
+	shr.s32 	%r13, %r12, 4;
+	st.s32 	[%rd16+0], %r13;
+	.loc	16	96	0
+	ld.s32 	%r14, [%rd10+0];
+	cvt.s64.s32 	%rd17, %r14;
+	mul.wide.s32 	%rd18, %r14, 4;
+	add.u64 	%rd19, %rd4, %rd18;
+	ld.f32 	%f1, [%rd19+0];
+	ld.s32 	%r15, [%rd6+0];
+	ld.s32 	%r16, [%rd14+0];
+	add.s32 	%r17, %r15, %r16;
+	cvt.s64.s32 	%rd20, %r17;
+	mul.wide.s32 	%rd21, %r17, 4;
+	add.u64 	%rd22, %rd2, %rd21;
+	st.f32 	[%rd22+0], %f1;
+	ld.s32 	%r18, [%rd8+0];
+	setp.ge.s32 	%p1, %r18, %r2;
+	@%p1 bra 	$Lt_6_2050;
+	.loc	16	100	0
+	ld.s32 	%r19, [%rd12+0];
+	cvt.s64.s32 	%rd23, %r19;
+	mul.wide.s32 	%rd24, %r19, 4;
+	add.u64 	%rd25, %rd4, %rd24;
+	ld.f32 	%f2, [%rd25+0];
+	bra.uni 	$Lt_6_1794;
+$Lt_6_2050:
+	mov.f32 	%f2, 0f00000000;     	// 0
+$Lt_6_1794:
+	ld.s32 	%r20, [%rd16+0];
+	add.s32 	%r21, %r20, %r18;
+	cvt.s64.s32 	%rd26, %r21;
+	mul.wide.s32 	%rd27, %r21, 4;
+	add.u64 	%rd28, %rd2, %rd27;
+	st.f32 	[%rd28+0], %f2;
+	.loc	16	106	0
+	ret;
+$LDWend__Z22loadSharedChunkFromMemILb1EEvPfPKfiiRiS3_S3_S3_S3_S3_:
+	} // _Z22loadSharedChunkFromMemILb1EEvPfPKfiiRiS3_S3_S3_S3_S3_
+
+	.visible .func _Z21storeSharedChunkToMemILb1EEvPfPKfiiiiiii (.param .u64 __cudaparmf1__Z21storeSharedChunkToMemILb1EEvPfPKfiiiiiii, .param .u64 __cudaparmf2__Z21storeSharedChunkToMemILb1EEvPfPKfiiiiiii, .param .s32 __cudaparmf3__Z21storeSharedChunkToMemILb1EEvPfPKfiiiiiii, .param .s32 __cudaparmf4__Z21storeSharedChunkToMemILb1EEvPfPKfiiiiiii, .param .s32 __cudaparmf5__Z21storeSharedChunkToMemILb1EEvPfPKfiiiiiii, .param .s32 __cudaparmf6__Z21storeSharedChunkToMemILb1EEvPfPKfiiiiiii, .param .s32 __cudaparmf7__Z21storeSharedChunkToMemILb1EEvPfPKfiiiiiii, .param .s32 __cudaparmf8__Z21storeSharedChunkToMemILb1EEvPfPKfiiiiiii, .param .s32 __cudaparmf9__Z21storeSharedChunkToMemILb1EEvPfPKfiiiiiii)
+	{
+	.reg .u32 %r<18>;
+	.reg .u64 %rd<18>;
+	.reg .f32 %f<4>;
+	.reg .pred %p<3>;
+	.loc	16	115	0
+$LDWbegin__Z21storeSharedChunkToMemILb1EEvPfPKfiiiiiii:
+	ld.param.u64 	%rd1, [__cudaparmf1__Z21storeSharedChunkToMemILb1EEvPfPKfiiiiiii];
+	mov.s64 	%rd2, %rd1;
+	ld.param.u64 	%rd3, [__cudaparmf2__Z21storeSharedChunkToMemILb1EEvPfPKfiiiiiii];
+	mov.s64 	%rd4, %rd3;
+	ld.param.u32 	%r1, [__cudaparmf3__Z21storeSharedChunkToMemILb1EEvPfPKfiiiiiii];
+	mov.s32 	%r2, %r1;
+	ld.param.u32 	%r3, [__cudaparmf4__Z21storeSharedChunkToMemILb1EEvPfPKfiiiiiii];
+	mov.s32 	%r4, %r3;
+	ld.param.u32 	%r5, [__cudaparmf5__Z21storeSharedChunkToMemILb1EEvPfPKfiiiiiii];
+	mov.s32 	%r6, %r5;
+	ld.param.u32 	%r7, [__cudaparmf6__Z21storeSharedChunkToMemILb1EEvPfPKfiiiiiii];
+	mov.s32 	%r8, %r7;
+	ld.param.u32 	%r9, [__cudaparmf7__Z21storeSharedChunkToMemILb1EEvPfPKfiiiiiii];
+	mov.s32 	%r10, %r9;
+	ld.param.u32 	%r11, [__cudaparmf8__Z21storeSharedChunkToMemILb1EEvPfPKfiiiiiii];
+	mov.s32 	%r12, %r11;
+	ld.param.u32 	%r13, [__cudaparmf9__Z21storeSharedChunkToMemILb1EEvPfPKfiiiiiii];
+	mov.s32 	%r14, %r13;
+	.loc	16	119	0
+	add.s32 	%r15, %r4, %r12;
+	cvt.s64.s32 	%rd5, %r15;
+	mul.wide.s32 	%rd6, %r15, 4;
+	add.u64 	%rd7, %rd4, %rd6;
+	ld.f32 	%f1, [%rd7+0];
+	cvt.s64.s32 	%rd8, %r8;
+	mul.wide.s32 	%rd9, %r8, 4;
+	add.u64 	%rd10, %rd2, %rd9;
+	st.f32 	[%rd10+0], %f1;
+	setp.le.s32 	%p1, %r2, %r6;
+	@%p1 bra 	$Lt_7_1794;
+	.loc	16	123	0
+	add.s32 	%r16, %r6, %r14;
+	cvt.s64.s32 	%rd11, %r16;
+	mul.wide.s32 	%rd12, %r16, 4;
+	add.u64 	%rd13, %rd4, %rd12;
+	ld.f32 	%f2, [%rd13+0];
+	cvt.s64.s32 	%rd14, %r10;
+	mul.wide.s32 	%rd15, %r10, 4;
+	add.u64 	%rd16, %rd2, %rd15;
+	st.f32 	[%rd16+0], %f2;
+$Lt_7_1794:
+	.loc	16	129	0
+	ret;
+$LDWend__Z21storeSharedChunkToMemILb1EEvPfPKfiiiiiii:
+	} // _Z21storeSharedChunkToMemILb1EEvPfPKfiiiiiii
+
+	.visible .func _Z12prescanBlockILb0EEvPfiS0_ (.param .u64 __cudaparmf1__Z12prescanBlockILb0EEvPfiS0_, .param .s32 __cudaparmf2__Z12prescanBlockILb0EEvPfiS0_, .param .u64 __cudaparmf3__Z12prescanBlockILb0EEvPfiS0_)
+	{
+	.reg .u32 %r<38>;
+	.reg .u64 %rd<19>;
+	.reg .f32 %f<10>;
+	.reg .pred %p<9>;
+	.loc	16	211	0
+$LDWbegin__Z12prescanBlockILb0EEvPfiS0_:
+	ld.param.u64 	%rd1, [__cudaparmf1__Z12prescanBlockILb0EEvPfiS0_];
+	mov.s64 	%rd2, %rd1;
+	.loc	16	160	0
+	cvt.s32.u32 	%r1, %ntid.x;
+	mov.s32 	%r2, %r1;
+	mov.u32 	%r3, 0;
+	setp.le.s32 	%p1, %r1, %r3;
+	@%p1 bra 	$Lt_8_10242;
+	mov.u32 	%r4, %tid.x;
+	mov.u32 	%r5, 1;
+$Lt_8_7170:
+ //<loop> Loop body line 162
+	.loc	16	162	0
+	bar.sync 	0;
+	setp.le.u32 	%p2, %r2, %r4;
+	@%p2 bra 	$Lt_8_7426;
+ //<loop> Part of loop body line 162, head labeled $Lt_8_7170
+	.loc	16	173	0
+	mov.s32 	%r6, 2;
+	mul24.lo.s32 	%r7, %r6, %r5;
+	mul24.lo.s32 	%r8, %r7, %r4;
+	add.u32 	%r9, %r8, %r5;
+	add.u32 	%r10, %r9, %r5;
+	sub.s32 	%r11, %r10, 1;
+	shr.s32 	%r12, %r11, 4;
+	add.s32 	%r13, %r10, %r12;
+	cvt.s64.s32 	%rd3, %r13;
+	mul.wide.s32 	%rd4, %r13, 4;
+	add.u64 	%rd5, %rd2, %rd4;
+	ld.f32 	%f1, [%rd5+-4];
+	sub.s32 	%r14, %r9, 1;
+	shr.s32 	%r15, %r14, 4;
+	add.s32 	%r16, %r9, %r15;
+	cvt.s64.s32 	%rd6, %r16;
+	mul.wide.s32 	%rd7, %r16, 4;
+	add.u64 	%rd8, %rd2, %rd7;
+	ld.f32 	%f2, [%rd8+-4];
+	add.f32 	%f3, %f1, %f2;
+	st.f32 	[%rd5+-4], %f3;
+$Lt_8_7426:
+ //<loop> Part of loop body line 162, head labeled $Lt_8_7170
+	.loc	16	176	0
+	mul.lo.u32 	%r5, %r5, 2;
+	.loc	16	160	0
+	shr.s32 	%r2, %r2, 1;
+	mov.u32 	%r17, 0;
+	setp.gt.s32 	%p3, %r2, %r17;
+	@%p3 bra 	$Lt_8_7170;
+	bra.uni 	$Lt_8_6658;
+$Lt_8_10242:
+	mov.u32 	%r4, %tid.x;
+	mov.u32 	%r5, 1;
+$Lt_8_6658:
+	.loc	16	213	0
+	mov.u32 	%r18, 0;
+	setp.ne.u32 	%p4, %r4, %r18;
+	@%p4 bra 	$Lt_8_8194;
+	.loc	16	148	0
+	shl.b32 	%r19, %r1, 1;
+	mov.f32 	%f4, 0f00000000;     	// 0
+	sub.s32 	%r20, %r19, 1;
+	shr.s32 	%r21, %r20, 4;
+	add.s32 	%r22, %r19, %r21;
+	cvt.s64.s32 	%rd9, %r22;
+	mul.wide.s32 	%rd10, %r22, 4;
+	add.u64 	%rd11, %rd2, %rd10;
+	st.f32 	[%rd11+-4], %f4;
+$Lt_8_8194:
+	.loc	16	215	0
+	mov.s32 	%r23, %r5;
+	mov.u32 	%r24, 1;
+	setp.lt.u32 	%p5, %r1, %r24;
+	@%p5 bra 	$Lt_8_8706;
+	mov.s32 	%r25, 1;
+$Lt_8_9218:
+ //<loop> Loop body line 215, nesting depth: 1, estimated iterations: unknown
+	.loc	16	189	0
+	shr.u32 	%r23, %r23, 1;
+	.loc	16	191	0
+	bar.sync 	0;
+	setp.le.u32 	%p6, %r25, %r4;
+	@%p6 bra 	$Lt_8_9474;
+ //<loop> Part of loop body line 215, head labeled $Lt_8_9218
+	.loc	16	202	0
+	mov.s32 	%r26, 2;
+	mul24.lo.s32 	%r27, %r26, %r23;
+	mul24.lo.s32 	%r28, %r27, %r4;
+	add.u32 	%r29, %r28, %r23;
+	sub.s32 	%r30, %r29, 1;
+	shr.s32 	%r31, %r30, 4;
+	add.s32 	%r32, %r29, %r31;
+	cvt.s64.s32 	%rd12, %r32;
+	mul.wide.s32 	%rd13, %r32, 4;
+	add.u64 	%rd14, %rd2, %rd13;
+	ld.f32 	%f5, [%rd14+-4];
+	.loc	16	203	0
+	add.u32 	%r33, %r29, %r23;
+	sub.s32 	%r34, %r33, 1;
+	shr.s32 	%r35, %r34, 4;
+	add.s32 	%r36, %r33, %r35;
+	cvt.s64.s32 	%rd15, %r36;
+	mul.wide.s32 	%rd16, %r36, 4;
+	add.u64 	%rd17, %rd2, %rd16;
+	ld.f32 	%f6, [%rd17+-4];
+	st.f32 	[%rd14+-4], %f6;
+	.loc	16	204	0
+	ld.f32 	%f7, [%rd17+-4];
+	add.f32 	%f8, %f7, %f5;
+	st.f32 	[%rd17+-4], %f8;
+$Lt_8_9474:
+ //<loop> Part of loop body line 215, head labeled $Lt_8_9218
+	.loc	16	187	0
+	mul.lo.s32 	%r25, %r25, 2;
+	setp.le.u32 	%p7, %r25, %r1;
+	@%p7 bra 	$Lt_8_9218;
+$Lt_8_8706:
+	.loc	16	216	0
+	ret;
+$LDWend__Z12prescanBlockILb0EEvPfiS0_:
+	} // _Z12prescanBlockILb0EEvPfiS0_
+
+	.visible .func _Z16clearLastElementILb0EEvPfS0_i (.param .u64 __cudaparmf1__Z16clearLastElementILb0EEvPfS0_i, .param .u64 __cudaparmf2__Z16clearLastElementILb0EEvPfS0_i, .param .s32 __cudaparmf3__Z16clearLastElementILb0EEvPfS0_i)
+	{
+	.reg .u32 %r<9>;
+	.reg .u64 %rd<7>;
+	.reg .f32 %f<3>;
+	.reg .pred %p<3>;
+	.loc	16	135	0
+$LDWbegin__Z16clearLastElementILb0EEvPfS0_i:
+	ld.param.u64 	%rd1, [__cudaparmf1__Z16clearLastElementILb0EEvPfS0_i];
+	mov.s64 	%rd2, %rd1;
+	mov.u32 	%r1, %tid.x;
+	mov.u32 	%r2, 0;
+	setp.ne.u32 	%p1, %r1, %r2;
+	@%p1 bra 	$Lt_9_2050;
+	.loc	16	148	0
+	mov.u32 	%r3, %ntid.x;
+	shl.b32 	%r4, %r3, 1;
+	mov.f32 	%f1, 0f00000000;     	// 0
+	sub.s32 	%r5, %r4, 1;
+	shr.s32 	%r6, %r5, 4;
+	add.s32 	%r7, %r4, %r6;
+	cvt.s64.s32 	%rd3, %r7;
+	mul.wide.s32 	%rd4, %r7, 4;
+	add.u64 	%rd5, %rd2, %rd4;
+	st.f32 	[%rd5+-4], %f1;
+$Lt_9_2050:
+	.loc	16	150	0
+	ret;
+$LDWend__Z16clearLastElementILb0EEvPfS0_i:
+	} // _Z16clearLastElementILb0EEvPfS0_i
+
+	.entry _Z10uniformAddPfS_iii (
+		.param .u64 __cudaparm__Z10uniformAddPfS_iii_g_data,
+		.param .u64 __cudaparm__Z10uniformAddPfS_iii_uniforms,
+		.param .s32 __cudaparm__Z10uniformAddPfS_iii_n,
+		.param .s32 __cudaparm__Z10uniformAddPfS_iii_blockOffset,
+		.param .s32 __cudaparm__Z10uniformAddPfS_iii_baseIndex)
+	{
+	.reg .u32 %r<16>;
+	.reg .u64 %rd<13>;
+	.reg .f32 %f<8>;
+	.reg .pred %p<4>;
+	.shared .f32 __cuda_local_var_27147_35_uni;
+	.loc	16	248	0
+$LDWbegin__Z10uniformAddPfS_iii:
+	cvt.s32.u32 	%r1, %ctaid.x;
+	mov.u32 	%r2, %tid.x;
+	mov.u32 	%r3, 0;
+	setp.ne.u32 	%p1, %r2, %r3;
+	@%p1 bra 	$Lt_10_1794;
+	.loc	16	252	0
+	ld.param.u64 	%rd1, [__cudaparm__Z10uniformAddPfS_iii_uniforms];
+	ld.param.u32 	%r4, [__cudaparm__Z10uniformAddPfS_iii_blockOffset];
+	add.u32 	%r5, %r1, %r4;
+	cvt.u64.u32 	%rd2, %r5;
+	mul.wide.u32 	%rd3, %r5, 4;
+	add.u64 	%rd4, %rd1, %rd3;
+	ldu.global.f32 	%f1, [%rd4+0];
+	st.shared.f32 	[__cuda_local_var_27147_35_uni], %f1;
+$Lt_10_1794:
+	.loc	16	256	0
+	bar.sync 	0;
+	.loc	16	259	0
+	mov.u32 	%r6, %ntid.x;
+	shl.b32 	%r7, %r6, 1;
+	mul24.lo.s32 	%r8, %r1, %r7;
+	ld.param.s32 	%r9, [__cudaparm__Z10uniformAddPfS_iii_baseIndex];
+	add.s32 	%r10, %r9, %r8;
+	add.u32 	%r11, %r10, %r2;
+	ld.param.u64 	%rd5, [__cudaparm__Z10uniformAddPfS_iii_g_data];
+	cvt.u64.u32 	%rd6, %r11;
+	mul.wide.u32 	%rd7, %r11, 4;
+	add.u64 	%rd8, %rd5, %rd7;
+	ld.shared.f32 	%f2, [__cuda_local_var_27147_35_uni];
+	ld.global.f32 	%f3, [%rd8+0];
+	add.f32 	%f4, %f3, %f2;
+	st.global.f32 	[%rd8+0], %f4;
+	ld.param.u32 	%r12, [__cudaparm__Z10uniformAddPfS_iii_n];
+	add.u32 	%r13, %r6, %r2;
+	setp.le.u32 	%p2, %r12, %r13;
+	@%p2 bra 	$Lt_10_2306;
+	.loc	16	260	0
+	add.u32 	%r14, %r11, %r6;
+	cvt.u64.u32 	%rd9, %r14;
+	mul.wide.u32 	%rd10, %r14, 4;
+	add.u64 	%rd11, %rd5, %rd10;
+	ld.global.f32 	%f5, [%rd11+0];
+	add.f32 	%f6, %f5, %f2;
+	st.global.f32 	[%rd11+0], %f6;
+$Lt_10_2306:
+	.loc	16	261	0
+	exit;
+$LDWend__Z10uniformAddPfS_iii:
+	} // _Z10uniformAddPfS_iii
+
+	.entry _Z7prescanILb1ELb0EEvPfPKfS0_iii (
+		.param .u64 __cudaparm__Z7prescanILb1ELb0EEvPfPKfS0_iii_g_odata,
+		.param .u64 __cudaparm__Z7prescanILb1ELb0EEvPfPKfS0_iii_g_idata,
+		.param .u64 __cudaparm__Z7prescanILb1ELb0EEvPfPKfS0_iii_g_blockSums,
+		.param .s32 __cudaparm__Z7prescanILb1ELb0EEvPfPKfS0_iii_n,
+		.param .s32 __cudaparm__Z7prescanILb1ELb0EEvPfPKfS0_iii_blockIndex,
+		.param .s32 __cudaparm__Z7prescanILb1ELb0EEvPfPKfS0_iii_baseIndex)
+	{
+	.reg .u32 %r<54>;
+	.reg .u64 %rd<38>;
+	.reg .f32 %f<15>;
+	.reg .pred %p<11>;
+	.loc	16	224	0
+$LDWbegin__Z7prescanILb1ELb0EEvPfPKfS0_iii:
+	.loc	16	230	0
+	mov.u32 	%r1, %ntid.x;
+	ld.param.s32 	%r2, [__cudaparm__Z7prescanILb1ELb0EEvPfPKfS0_iii_baseIndex];
+	mov.u32 	%r3, 0;
+	setp.ne.s32 	%p1, %r2, %r3;
+	@%p1 bra 	$Lt_11_10242;
+	cvt.s32.u32 	%r4, %ctaid.x;
+	shl.b32 	%r5, %r1, 1;
+	mul24.lo.s32 	%r6, %r4, %r5;
+	bra.uni 	$Lt_11_9986;
+$Lt_11_10242:
+	mov.s32 	%r6, %r2;
+$Lt_11_9986:
+	mov.u64 	%rd1, s_data;
+	.loc	16	96	0
+	cvt.s32.u32 	%r7, %tid.x;
+	add.u32 	%r8, %r6, %r7;
+	cvt.s64.s32 	%rd2, %r8;
+	mul.wide.s32 	%rd3, %r8, 4;
+	shr.s32 	%r9, %r7, 4;
+	add.s32 	%r10, %r7, %r9;
+	cvt.s64.s32 	%rd4, %r10;
+	mul.wide.s32 	%rd5, %r10, 4;
+	add.u64 	%rd6, %rd1, %rd5;
+	ld.param.u64 	%rd7, [__cudaparm__Z7prescanILb1ELb0EEvPfPKfS0_iii_g_idata];
+	add.u64 	%rd8, %rd3, %rd7;
+	ld.global.f32 	%f1, [%rd8+0];
+	st.shared.f32 	[%rd6+0], %f1;
+	.loc	16	104	0
+	add.u32 	%r11, %r7, %r1;
+	add.u32 	%r12, %r8, %r1;
+	cvt.s64.s32 	%rd9, %r12;
+	mul.wide.s32 	%rd10, %r12, 4;
+	shr.s32 	%r13, %r11, 4;
+	add.s32 	%r14, %r11, %r13;
+	cvt.s64.s32 	%rd11, %r14;
+	mul.wide.s32 	%rd12, %r14, 4;
+	add.u64 	%rd13, %rd1, %rd12;
+	add.u64 	%rd14, %rd10, %rd7;
+	ld.global.f32 	%f2, [%rd14+0];
+	st.shared.f32 	[%rd13+0], %f2;
+	.loc	16	160	0
+	mov.s32 	%r15, %r1;
+	mov.u32 	%r16, 0;
+	setp.le.s32 	%p2, %r1, %r16;
+	@%p2 bra 	$Lt_11_14082;
+	mov.u32 	%r17, 1;
+$Lt_11_11010:
+ //<loop> Loop body line 162
+	.loc	16	162	0
+	bar.sync 	0;
+	setp.ge.u32 	%p3, %r7, %r15;
+	@%p3 bra 	$Lt_11_11266;
+ //<loop> Part of loop body line 162, head labeled $Lt_11_11010
+	.loc	16	173	0
+	mov.s32 	%r18, 2;
+	mul24.lo.s32 	%r19, %r18, %r17;
+	mul24.lo.s32 	%r20, %r19, %r7;
+	add.u32 	%r21, %r20, %r17;
+	add.u32 	%r22, %r21, %r17;
+	sub.s32 	%r23, %r22, 1;
+	shr.s32 	%r24, %r23, 4;
+	add.s32 	%r25, %r22, %r24;
+	cvt.s64.s32 	%rd15, %r25;
+	mul.wide.s32 	%rd16, %r25, 4;
+	add.u64 	%rd17, %rd1, %rd16;
+	ld.shared.f32 	%f3, [%rd17+-4];
+	sub.s32 	%r26, %r21, 1;
+	shr.s32 	%r27, %r26, 4;
+	add.s32 	%r28, %r21, %r27;
+	cvt.s64.s32 	%rd18, %r28;
+	mul.wide.s32 	%rd19, %r28, 4;
+	add.u64 	%rd20, %rd1, %rd19;
+	ld.shared.f32 	%f4, [%rd20+-4];
+	add.f32 	%f5, %f3, %f4;
+	st.shared.f32 	[%rd17+-4], %f5;
+$Lt_11_11266:
+ //<loop> Part of loop body line 162, head labeled $Lt_11_11010
+	.loc	16	176	0
+	mul.lo.u32 	%r17, %r17, 2;
+	.loc	16	160	0
+	shr.s32 	%r15, %r15, 1;
+	mov.u32 	%r29, 0;
+	setp.gt.s32 	%p4, %r15, %r29;
+	@%p4 bra 	$Lt_11_11010;
+	bra.uni 	$Lt_11_10498;
+$Lt_11_14082:
+	mov.u32 	%r17, 1;
+$Lt_11_10498:
+	.loc	16	213	0
+	mov.u32 	%r30, 0;
+	setp.ne.u32 	%p5, %r7, %r30;
+	@%p5 bra 	$Lt_11_12034;
+	.loc	16	144	0
+	shl.b32 	%r31, %r1, 1;
+	sub.s32 	%r32, %r31, 1;
+	shr.s32 	%r33, %r32, 4;
+	add.s32 	%r34, %r31, %r33;
+	cvt.s64.s32 	%rd21, %r34;
+	mul.wide.s32 	%rd22, %r34, 4;
+	add.u64 	%rd23, %rd1, %rd22;
+	ld.param.s32 	%r35, [__cudaparm__Z7prescanILb1ELb0EEvPfPKfS0_iii_blockIndex];
+	ld.shared.f32 	%f6, [%rd23+-4];
+	ld.param.u64 	%rd24, [__cudaparm__Z7prescanILb1ELb0EEvPfPKfS0_iii_g_blockSums];
+	cvt.s32.u32 	%r36, %ctaid.x;
+	mov.s32 	%r37, 0;
+	setp.eq.s32 	%p6, %r35, %r37;
+	selp.s32 	%r38, %r36, %r35, %p6;
+	cvt.s64.s32 	%rd25, %r38;
+	mul.wide.s32 	%rd26, %r38, 4;
+	add.u64 	%rd27, %rd24, %rd26;
+	st.global.f32 	[%rd27+0], %f6;
+	.loc	16	148	0
+	mov.f32 	%f7, 0f00000000;     	// 0
+	st.shared.f32 	[%rd23+-4], %f7;
+$Lt_11_12034:
+	.loc	16	215	0
+	mov.s32 	%r39, %r17;
+	mov.u32 	%r40, 1;
+	setp.lt.u32 	%p7, %r1, %r40;
+	@%p7 bra 	$Lt_11_12546;
+	mov.s32 	%r41, 1;
+$Lt_11_13058:
+ //<loop> Loop body line 215, nesting depth: 1, estimated iterations: unknown
+	.loc	16	189	0
+	shr.u32 	%r39, %r39, 1;
+	.loc	16	191	0
+	bar.sync 	0;
+	setp.le.u32 	%p8, %r41, %r7;
+	@%p8 bra 	$Lt_11_13314;
+ //<loop> Part of loop body line 215, head labeled $Lt_11_13058
+	.loc	16	202	0
+	mov.s32 	%r42, 2;
+	mul24.lo.s32 	%r43, %r42, %r39;
+	mul24.lo.s32 	%r44, %r43, %r7;
+	add.u32 	%r45, %r44, %r39;
+	sub.s32 	%r46, %r45, 1;
+	shr.s32 	%r47, %r46, 4;
+	add.s32 	%r48, %r45, %r47;
+	cvt.s64.s32 	%rd28, %r48;
+	mul.wide.s32 	%rd29, %r48, 4;
+	add.u64 	%rd30, %rd1, %rd29;
+	ld.shared.f32 	%f8, [%rd30+-4];
+	.loc	16	203	0
+	add.u32 	%r49, %r45, %r39;
+	sub.s32 	%r50, %r49, 1;
+	shr.s32 	%r51, %r50, 4;
+	add.s32 	%r52, %r49, %r51;
+	cvt.s64.s32 	%rd31, %r52;
+	mul.wide.s32 	%rd32, %r52, 4;
+	add.u64 	%rd33, %rd1, %rd32;
+	ld.shared.f32 	%f9, [%rd33+-4];
+	st.shared.f32 	[%rd30+-4], %f9;
+	.loc	16	204	0
+	ld.shared.f32 	%f10, [%rd33+-4];
+	add.f32 	%f11, %f10, %f8;
+	st.shared.f32 	[%rd33+-4], %f11;
+$Lt_11_13314:
+ //<loop> Part of loop body line 215, head labeled $Lt_11_13058
+	.loc	16	187	0
+	mul.lo.s32 	%r41, %r41, 2;
+	setp.le.u32 	%p9, %r41, %r1;
+	@%p9 bra 	$Lt_11_13058;
+$Lt_11_12546:
+	.loc	16	116	0
+	bar.sync 	0;
+	.loc	16	119	0
+	ld.param.u64 	%rd34, [__cudaparm__Z7prescanILb1ELb0EEvPfPKfS0_iii_g_odata];
+	ld.shared.f32 	%f12, [%rd6+0];
+	add.u64 	%rd35, %rd3, %rd34;
+	st.global.f32 	[%rd35+0], %f12;
+	.loc	16	127	0
+	ld.shared.f32 	%f13, [%rd13+0];
+	add.u64 	%rd36, %rd10, %rd34;
+	st.global.f32 	[%rd36+0], %f13;
+	.loc	16	241	0
+	exit;
+$LDWend__Z7prescanILb1ELb0EEvPfPKfS0_iii:
+	} // _Z7prescanILb1ELb0EEvPfPKfS0_iii
+
+	.entry _Z7prescanILb1ELb1EEvPfPKfS0_iii (
+		.param .u64 __cudaparm__Z7prescanILb1ELb1EEvPfPKfS0_iii_g_odata,
+		.param .u64 __cudaparm__Z7prescanILb1ELb1EEvPfPKfS0_iii_g_idata,
+		.param .u64 __cudaparm__Z7prescanILb1ELb1EEvPfPKfS0_iii_g_blockSums,
+		.param .s32 __cudaparm__Z7prescanILb1ELb1EEvPfPKfS0_iii_n,
+		.param .s32 __cudaparm__Z7prescanILb1ELb1EEvPfPKfS0_iii_blockIndex,
+		.param .s32 __cudaparm__Z7prescanILb1ELb1EEvPfPKfS0_iii_baseIndex)
+	{
+	.reg .u32 %r<56>;
+	.reg .u64 %rd<40>;
+	.reg .f32 %f<15>;
+	.reg .pred %p<12>;
+	.loc	16	224	0
+$LDWbegin__Z7prescanILb1ELb1EEvPfPKfS0_iii:
+	.loc	16	230	0
+	mov.u32 	%r1, %ntid.x;
+	ld.param.s32 	%r2, [__cudaparm__Z7prescanILb1ELb1EEvPfPKfS0_iii_baseIndex];
+	mov.u32 	%r3, 0;
+	setp.ne.s32 	%p1, %r2, %r3;
+	@%p1 bra 	$Lt_12_10242;
+	cvt.s32.u32 	%r4, %ctaid.x;
+	shl.b32 	%r5, %r1, 1;
+	mul24.lo.s32 	%r6, %r4, %r5;
+	bra.uni 	$Lt_12_9986;
+$Lt_12_10242:
+	mov.s32 	%r6, %r2;
+$Lt_12_9986:
+	mov.u64 	%rd1, s_data;
+	.loc	16	96	0
+	cvt.s32.u32 	%r7, %tid.x;
+	add.u32 	%r8, %r6, %r7;
+	cvt.s64.s32 	%rd2, %r8;
+	mul.wide.s32 	%rd3, %r8, 4;
+	shr.s32 	%r9, %r7, 4;
+	add.s32 	%r10, %r7, %r9;
+	cvt.s64.s32 	%rd4, %r10;
+	mul.wide.s32 	%rd5, %r10, 4;
+	add.u64 	%rd6, %rd1, %rd5;
+	ld.param.u64 	%rd7, [__cudaparm__Z7prescanILb1ELb1EEvPfPKfS0_iii_g_idata];
+	add.u64 	%rd8, %rd3, %rd7;
+	ld.global.f32 	%f1, [%rd8+0];
+	st.shared.f32 	[%rd6+0], %f1;
+	add.u32 	%r11, %r7, %r1;
+	ld.param.s32 	%r12, [__cudaparm__Z7prescanILb1ELb1EEvPfPKfS0_iii_n];
+	setp.gt.s32 	%p2, %r12, %r11;
+	@!%p2 bra 	$Lt_12_10754;
+	.loc	16	100	0
+	add.u32 	%r13, %r8, %r1;
+	cvt.s64.s32 	%rd9, %r13;
+	mul.wide.s32 	%rd10, %r13, 4;
+	add.u64 	%rd11, %rd7, %rd10;
+	ld.global.f32 	%f2, [%rd11+0];
+	bra.uni 	$Lt_12_10498;
+$Lt_12_10754:
+	mov.f32 	%f2, 0f00000000;     	// 0
+$Lt_12_10498:
+	shr.s32 	%r14, %r11, 4;
+	add.s32 	%r15, %r11, %r14;
+	cvt.s64.s32 	%rd12, %r15;
+	mul.wide.s32 	%rd13, %r15, 4;
+	add.u64 	%rd14, %rd1, %rd13;
+	st.shared.f32 	[%rd14+0], %f2;
+	.loc	16	160	0
+	mov.s32 	%r16, %r1;
+	mov.u32 	%r17, 0;
+	setp.le.s32 	%p3, %r1, %r17;
+	@%p3 bra 	$Lt_12_15106;
+	mov.u32 	%r18, 1;
+$Lt_12_11522:
+ //<loop> Loop body line 162
+	.loc	16	162	0
+	bar.sync 	0;
+	setp.ge.u32 	%p4, %r7, %r16;
+	@%p4 bra 	$Lt_12_11778;
+ //<loop> Part of loop body line 162, head labeled $Lt_12_11522
+	.loc	16	173	0
+	mov.s32 	%r19, 2;
+	mul24.lo.s32 	%r20, %r19, %r18;
+	mul24.lo.s32 	%r21, %r20, %r7;
+	add.u32 	%r22, %r21, %r18;
+	add.u32 	%r23, %r22, %r18;
+	sub.s32 	%r24, %r23, 1;
+	shr.s32 	%r25, %r24, 4;
+	add.s32 	%r26, %r23, %r25;
+	cvt.s64.s32 	%rd15, %r26;
+	mul.wide.s32 	%rd16, %r26, 4;
+	add.u64 	%rd17, %rd1, %rd16;
+	ld.shared.f32 	%f3, [%rd17+-4];
+	sub.s32 	%r27, %r22, 1;
+	shr.s32 	%r28, %r27, 4;
+	add.s32 	%r29, %r22, %r28;
+	cvt.s64.s32 	%rd18, %r29;
+	mul.wide.s32 	%rd19, %r29, 4;
+	add.u64 	%rd20, %rd1, %rd19;
+	ld.shared.f32 	%f4, [%rd20+-4];
+	add.f32 	%f5, %f3, %f4;
+	st.shared.f32 	[%rd17+-4], %f5;
+$Lt_12_11778:
+ //<loop> Part of loop body line 162, head labeled $Lt_12_11522
+	.loc	16	176	0
+	mul.lo.u32 	%r18, %r18, 2;
+	.loc	16	160	0
+	shr.s32 	%r16, %r16, 1;
+	mov.u32 	%r30, 0;
+	setp.gt.s32 	%p5, %r16, %r30;
+	@%p5 bra 	$Lt_12_11522;
+	bra.uni 	$Lt_12_11010;
+$Lt_12_15106:
+	mov.u32 	%r18, 1;
+$Lt_12_11010:
+	.loc	16	213	0
+	mov.u32 	%r31, 0;
+	setp.ne.u32 	%p6, %r7, %r31;
+	@%p6 bra 	$Lt_12_12546;
+	.loc	16	144	0
+	shl.b32 	%r32, %r1, 1;
+	sub.s32 	%r33, %r32, 1;
+	shr.s32 	%r34, %r33, 4;
+	add.s32 	%r35, %r32, %r34;
+	cvt.s64.s32 	%rd21, %r35;
+	mul.wide.s32 	%rd22, %r35, 4;
+	add.u64 	%rd23, %rd1, %rd22;
+	ld.param.s32 	%r36, [__cudaparm__Z7prescanILb1ELb1EEvPfPKfS0_iii_blockIndex];
+	ld.shared.f32 	%f6, [%rd23+-4];
+	ld.param.u64 	%rd24, [__cudaparm__Z7prescanILb1ELb1EEvPfPKfS0_iii_g_blockSums];
+	cvt.s32.u32 	%r37, %ctaid.x;
+	mov.s32 	%r38, 0;
+	setp.eq.s32 	%p7, %r36, %r38;
+	selp.s32 	%r39, %r37, %r36, %p7;
+	cvt.s64.s32 	%rd25, %r39;
+	mul.wide.s32 	%rd26, %r39, 4;
+	add.u64 	%rd27, %rd24, %rd26;
+	st.global.f32 	[%rd27+0], %f6;
+	.loc	16	148	0
+	mov.f32 	%f7, 0f00000000;     	// 0
+	st.shared.f32 	[%rd23+-4], %f7;
+$Lt_12_12546:
+	.loc	16	215	0
+	mov.s32 	%r40, %r18;
+	mov.u32 	%r41, 1;
+	setp.lt.u32 	%p8, %r1, %r41;
+	@%p8 bra 	$Lt_12_13058;
+	mov.s32 	%r42, 1;
+$Lt_12_13570:
+ //<loop> Loop body line 215, nesting depth: 1, estimated iterations: unknown
+	.loc	16	189	0
+	shr.u32 	%r40, %r40, 1;
+	.loc	16	191	0
+	bar.sync 	0;
+	setp.le.u32 	%p9, %r42, %r7;
+	@%p9 bra 	$Lt_12_13826;
+ //<loop> Part of loop body line 215, head labeled $Lt_12_13570
+	.loc	16	202	0
+	mov.s32 	%r43, 2;
+	mul24.lo.s32 	%r44, %r43, %r40;
+	mul24.lo.s32 	%r45, %r44, %r7;
+	add.u32 	%r46, %r45, %r40;
+	sub.s32 	%r47, %r46, 1;
+	shr.s32 	%r48, %r47, 4;
+	add.s32 	%r49, %r46, %r48;
+	cvt.s64.s32 	%rd28, %r49;
+	mul.wide.s32 	%rd29, %r49, 4;
+	add.u64 	%rd30, %rd1, %rd29;
+	ld.shared.f32 	%f8, [%rd30+-4];
+	.loc	16	203	0
+	add.u32 	%r50, %r46, %r40;
+	sub.s32 	%r51, %r50, 1;
+	shr.s32 	%r52, %r51, 4;
+	add.s32 	%r53, %r50, %r52;
+	cvt.s64.s32 	%rd31, %r53;
+	mul.wide.s32 	%rd32, %r53, 4;
+	add.u64 	%rd33, %rd1, %rd32;
+	ld.shared.f32 	%f9, [%rd33+-4];
+	st.shared.f32 	[%rd30+-4], %f9;
+	.loc	16	204	0
+	ld.shared.f32 	%f10, [%rd33+-4];
+	add.f32 	%f11, %f10, %f8;
+	st.shared.f32 	[%rd33+-4], %f11;
+$Lt_12_13826:
+ //<loop> Part of loop body line 215, head labeled $Lt_12_13570
+	.loc	16	187	0
+	mul.lo.s32 	%r42, %r42, 2;
+	setp.le.u32 	%p10, %r42, %r1;
+	@%p10 bra 	$Lt_12_13570;
+$Lt_12_13058:
+	.loc	16	116	0
+	bar.sync 	0;
+	.loc	16	119	0
+	ld.param.u64 	%rd34, [__cudaparm__Z7prescanILb1ELb1EEvPfPKfS0_iii_g_odata];
+	ld.shared.f32 	%f12, [%rd6+0];
+	add.u64 	%rd35, %rd3, %rd34;
+	st.global.f32 	[%rd35+0], %f12;
+	@!%p2 bra 	$Lt_12_14594;
+	.loc	16	123	0
+	ld.shared.f32 	%f13, [%rd14+0];
+	add.u32 	%r54, %r8, %r1;
+	cvt.s64.s32 	%rd36, %r54;
+	mul.wide.s32 	%rd37, %r54, 4;
+	add.u64 	%rd38, %rd34, %rd37;
+	st.global.f32 	[%rd38+0], %f13;
+$Lt_12_14594:
+	.loc	16	241	0
+	exit;
+$LDWend__Z7prescanILb1ELb1EEvPfPKfS0_iii:
+	} // _Z7prescanILb1ELb1EEvPfPKfS0_iii
+
+	.entry _Z7prescanILb0ELb0EEvPfPKfS0_iii (
+		.param .u64 __cudaparm__Z7prescanILb0ELb0EEvPfPKfS0_iii_g_odata,
+		.param .u64 __cudaparm__Z7prescanILb0ELb0EEvPfPKfS0_iii_g_idata,
+		.param .u64 __cudaparm__Z7prescanILb0ELb0EEvPfPKfS0_iii_g_blockSums,
+		.param .s32 __cudaparm__Z7prescanILb0ELb0EEvPfPKfS0_iii_n,
+		.param .s32 __cudaparm__Z7prescanILb0ELb0EEvPfPKfS0_iii_blockIndex,
+		.param .s32 __cudaparm__Z7prescanILb0ELb0EEvPfPKfS0_iii_baseIndex)
+	{
+	.reg .u32 %r<50>;
+	.reg .u64 %rd<34>;
+	.reg .f32 %f<14>;
+	.reg .pred %p<10>;
+	.loc	16	224	0
+$LDWbegin__Z7prescanILb0ELb0EEvPfPKfS0_iii:
+	.loc	16	230	0
+	mov.u32 	%r1, %ntid.x;
+	ld.param.s32 	%r2, [__cudaparm__Z7prescanILb0ELb0EEvPfPKfS0_iii_baseIndex];
+	mov.u32 	%r3, 0;
+	setp.ne.s32 	%p1, %r2, %r3;
+	@%p1 bra 	$Lt_13_10754;
+	cvt.s32.u32 	%r4, %ctaid.x;
+	shl.b32 	%r5, %r1, 1;
+	mul24.lo.s32 	%r6, %r4, %r5;
+	bra.uni 	$Lt_13_10498;
+$Lt_13_10754:
+	mov.s32 	%r6, %r2;
+$Lt_13_10498:
+	mov.u64 	%rd1, s_data;
+	.loc	16	96	0
+	cvt.s32.u32 	%r7, %tid.x;
+	add.u32 	%r8, %r6, %r7;
+	cvt.s64.s32 	%rd2, %r8;
+	mul.wide.s32 	%rd3, %r8, 4;
+	shr.s32 	%r9, %r7, 4;
+	add.s32 	%r10, %r7, %r9;
+	cvt.s64.s32 	%rd4, %r10;
+	mul.wide.s32 	%rd5, %r10, 4;
+	add.u64 	%rd6, %rd1, %rd5;
+	ld.param.u64 	%rd7, [__cudaparm__Z7prescanILb0ELb0EEvPfPKfS0_iii_g_idata];
+	add.u64 	%rd8, %rd3, %rd7;
+	ld.global.f32 	%f1, [%rd8+0];
+	st.shared.f32 	[%rd6+0], %f1;
+	.loc	16	104	0
+	add.u32 	%r11, %r7, %r1;
+	add.u32 	%r12, %r8, %r1;
+	cvt.s64.s32 	%rd9, %r12;
+	mul.wide.s32 	%rd10, %r12, 4;
+	shr.s32 	%r13, %r11, 4;
+	add.s32 	%r14, %r11, %r13;
+	cvt.s64.s32 	%rd11, %r14;
+	mul.wide.s32 	%rd12, %r14, 4;
+	add.u64 	%rd13, %rd1, %rd12;
+	add.u64 	%rd14, %rd10, %rd7;
+	ld.global.f32 	%f2, [%rd14+0];
+	st.shared.f32 	[%rd13+0], %f2;
+	.loc	16	160	0
+	mov.s32 	%r15, %r1;
+	mov.u32 	%r16, 0;
+	setp.le.s32 	%p2, %r1, %r16;
+	@%p2 bra 	$Lt_13_14594;
+	mov.u32 	%r17, 1;
+$Lt_13_11522:
+ //<loop> Loop body line 162
+	.loc	16	162	0
+	bar.sync 	0;
+	setp.ge.u32 	%p3, %r7, %r15;
+	@%p3 bra 	$Lt_13_11778;
+ //<loop> Part of loop body line 162, head labeled $Lt_13_11522
+	.loc	16	173	0
+	mov.s32 	%r18, 2;
+	mul24.lo.s32 	%r19, %r18, %r17;
+	mul24.lo.s32 	%r20, %r19, %r7;
+	add.u32 	%r21, %r20, %r17;
+	add.u32 	%r22, %r21, %r17;
+	sub.s32 	%r23, %r22, 1;
+	shr.s32 	%r24, %r23, 4;
+	add.s32 	%r25, %r22, %r24;
+	cvt.s64.s32 	%rd15, %r25;
+	mul.wide.s32 	%rd16, %r25, 4;
+	add.u64 	%rd17, %rd1, %rd16;
+	ld.shared.f32 	%f3, [%rd17+-4];
+	sub.s32 	%r26, %r21, 1;
+	shr.s32 	%r27, %r26, 4;
+	add.s32 	%r28, %r21, %r27;
+	cvt.s64.s32 	%rd18, %r28;
+	mul.wide.s32 	%rd19, %r28, 4;
+	add.u64 	%rd20, %rd1, %rd19;
+	ld.shared.f32 	%f4, [%rd20+-4];
+	add.f32 	%f5, %f3, %f4;
+	st.shared.f32 	[%rd17+-4], %f5;
+$Lt_13_11778:
+ //<loop> Part of loop body line 162, head labeled $Lt_13_11522
+	.loc	16	176	0
+	mul.lo.u32 	%r17, %r17, 2;
+	.loc	16	160	0
+	shr.s32 	%r15, %r15, 1;
+	mov.u32 	%r29, 0;
+	setp.gt.s32 	%p4, %r15, %r29;
+	@%p4 bra 	$Lt_13_11522;
+	bra.uni 	$Lt_13_11010;
+$Lt_13_14594:
+	mov.u32 	%r17, 1;
+$Lt_13_11010:
+	.loc	16	213	0
+	mov.u32 	%r30, 0;
+	setp.ne.u32 	%p5, %r7, %r30;
+	@%p5 bra 	$Lt_13_12546;
+	.loc	16	148	0
+	shl.b32 	%r31, %r1, 1;
+	mov.f32 	%f6, 0f00000000;     	// 0
+	sub.s32 	%r32, %r31, 1;
+	shr.s32 	%r33, %r32, 4;
+	add.s32 	%r34, %r31, %r33;
+	cvt.s64.s32 	%rd21, %r34;
+	mul.wide.s32 	%rd22, %r34, 4;
+	add.u64 	%rd23, %rd1, %rd22;
+	st.shared.f32 	[%rd23+-4], %f6;
+$Lt_13_12546:
+	.loc	16	215	0
+	mov.s32 	%r35, %r17;
+	mov.u32 	%r36, 1;
+	setp.lt.u32 	%p6, %r1, %r36;
+	@%p6 bra 	$Lt_13_13058;
+	mov.s32 	%r37, 1;
+$Lt_13_13570:
+ //<loop> Loop body line 215, nesting depth: 1, estimated iterations: unknown
+	.loc	16	189	0
+	shr.u32 	%r35, %r35, 1;
+	.loc	16	191	0
+	bar.sync 	0;
+	setp.le.u32 	%p7, %r37, %r7;
+	@%p7 bra 	$Lt_13_13826;
+ //<loop> Part of loop body line 215, head labeled $Lt_13_13570
+	.loc	16	202	0
+	mov.s32 	%r38, 2;
+	mul24.lo.s32 	%r39, %r38, %r35;
+	mul24.lo.s32 	%r40, %r39, %r7;
+	add.u32 	%r41, %r40, %r35;
+	sub.s32 	%r42, %r41, 1;
+	shr.s32 	%r43, %r42, 4;
+	add.s32 	%r44, %r41, %r43;
+	cvt.s64.s32 	%rd24, %r44;
+	mul.wide.s32 	%rd25, %r44, 4;
+	add.u64 	%rd26, %rd1, %rd25;
+	ld.shared.f32 	%f7, [%rd26+-4];
+	.loc	16	203	0
+	add.u32 	%r45, %r41, %r35;
+	sub.s32 	%r46, %r45, 1;
+	shr.s32 	%r47, %r46, 4;
+	add.s32 	%r48, %r45, %r47;
+	cvt.s64.s32 	%rd27, %r48;
+	mul.wide.s32 	%rd28, %r48, 4;
+	add.u64 	%rd29, %rd1, %rd28;
+	ld.shared.f32 	%f8, [%rd29+-4];
+	st.shared.f32 	[%rd26+-4], %f8;
+	.loc	16	204	0
+	ld.shared.f32 	%f9, [%rd29+-4];
+	add.f32 	%f10, %f9, %f7;
+	st.shared.f32 	[%rd29+-4], %f10;
+$Lt_13_13826:
+ //<loop> Part of loop body line 215, head labeled $Lt_13_13570
+	.loc	16	187	0
+	mul.lo.s32 	%r37, %r37, 2;
+	setp.le.u32 	%p8, %r37, %r1;
+	@%p8 bra 	$Lt_13_13570;
+$Lt_13_13058:
+	.loc	16	116	0
+	bar.sync 	0;
+	.loc	16	119	0
+	ld.param.u64 	%rd30, [__cudaparm__Z7prescanILb0ELb0EEvPfPKfS0_iii_g_odata];
+	ld.shared.f32 	%f11, [%rd6+0];
+	add.u64 	%rd31, %rd3, %rd30;
+	st.global.f32 	[%rd31+0], %f11;
+	.loc	16	127	0
+	ld.shared.f32 	%f12, [%rd13+0];
+	add.u64 	%rd32, %rd10, %rd30;
+	st.global.f32 	[%rd32+0], %f12;
+	.loc	16	241	0
+	exit;
+$LDWend__Z7prescanILb0ELb0EEvPfPKfS0_iii:
+	} // _Z7prescanILb0ELb0EEvPfPKfS0_iii
+
+	.entry _Z7prescanILb0ELb1EEvPfPKfS0_iii (
+		.param .u64 __cudaparm__Z7prescanILb0ELb1EEvPfPKfS0_iii_g_odata,
+		.param .u64 __cudaparm__Z7prescanILb0ELb1EEvPfPKfS0_iii_g_idata,
+		.param .u64 __cudaparm__Z7prescanILb0ELb1EEvPfPKfS0_iii_g_blockSums,
+		.param .s32 __cudaparm__Z7prescanILb0ELb1EEvPfPKfS0_iii_n,
+		.param .s32 __cudaparm__Z7prescanILb0ELb1EEvPfPKfS0_iii_blockIndex,
+		.param .s32 __cudaparm__Z7prescanILb0ELb1EEvPfPKfS0_iii_baseIndex)
+	{
+	.reg .u32 %r<52>;
+	.reg .u64 %rd<36>;
+	.reg .f32 %f<14>;
+	.reg .pred %p<11>;
+	.loc	16	224	0
+$LDWbegin__Z7prescanILb0ELb1EEvPfPKfS0_iii:
+	.loc	16	230	0
+	mov.u32 	%r1, %ntid.x;
+	ld.param.s32 	%r2, [__cudaparm__Z7prescanILb0ELb1EEvPfPKfS0_iii_baseIndex];
+	mov.u32 	%r3, 0;
+	setp.ne.s32 	%p1, %r2, %r3;
+	@%p1 bra 	$Lt_14_10754;
+	cvt.s32.u32 	%r4, %ctaid.x;
+	shl.b32 	%r5, %r1, 1;
+	mul24.lo.s32 	%r6, %r4, %r5;
+	bra.uni 	$Lt_14_10498;
+$Lt_14_10754:
+	mov.s32 	%r6, %r2;
+$Lt_14_10498:
+	mov.u64 	%rd1, s_data;
+	.loc	16	96	0
+	cvt.s32.u32 	%r7, %tid.x;
+	add.u32 	%r8, %r6, %r7;
+	cvt.s64.s32 	%rd2, %r8;
+	mul.wide.s32 	%rd3, %r8, 4;
+	shr.s32 	%r9, %r7, 4;
+	add.s32 	%r10, %r7, %r9;
+	cvt.s64.s32 	%rd4, %r10;
+	mul.wide.s32 	%rd5, %r10, 4;
+	add.u64 	%rd6, %rd1, %rd5;
+	ld.param.u64 	%rd7, [__cudaparm__Z7prescanILb0ELb1EEvPfPKfS0_iii_g_idata];
+	add.u64 	%rd8, %rd3, %rd7;
+	ld.global.f32 	%f1, [%rd8+0];
+	st.shared.f32 	[%rd6+0], %f1;
+	add.u32 	%r11, %r7, %r1;
+	ld.param.s32 	%r12, [__cudaparm__Z7prescanILb0ELb1EEvPfPKfS0_iii_n];
+	setp.gt.s32 	%p2, %r12, %r11;
+	@!%p2 bra 	$Lt_14_11266;
+	.loc	16	100	0
+	add.u32 	%r13, %r8, %r1;
+	cvt.s64.s32 	%rd9, %r13;
+	mul.wide.s32 	%rd10, %r13, 4;
+	add.u64 	%rd11, %rd7, %rd10;
+	ld.global.f32 	%f2, [%rd11+0];
+	bra.uni 	$Lt_14_11010;
+$Lt_14_11266:
+	mov.f32 	%f2, 0f00000000;     	// 0
+$Lt_14_11010:
+	shr.s32 	%r14, %r11, 4;
+	add.s32 	%r15, %r11, %r14;
+	cvt.s64.s32 	%rd12, %r15;
+	mul.wide.s32 	%rd13, %r15, 4;
+	add.u64 	%rd14, %rd1, %rd13;
+	st.shared.f32 	[%rd14+0], %f2;
+	.loc	16	160	0
+	mov.s32 	%r16, %r1;
+	mov.u32 	%r17, 0;
+	setp.le.s32 	%p3, %r1, %r17;
+	@%p3 bra 	$Lt_14_15618;
+	mov.u32 	%r18, 1;
+$Lt_14_12034:
+ //<loop> Loop body line 162
+	.loc	16	162	0
+	bar.sync 	0;
+	setp.ge.u32 	%p4, %r7, %r16;
+	@%p4 bra 	$Lt_14_12290;
+ //<loop> Part of loop body line 162, head labeled $Lt_14_12034
+	.loc	16	173	0
+	mov.s32 	%r19, 2;
+	mul24.lo.s32 	%r20, %r19, %r18;
+	mul24.lo.s32 	%r21, %r20, %r7;
+	add.u32 	%r22, %r21, %r18;
+	add.u32 	%r23, %r22, %r18;
+	sub.s32 	%r24, %r23, 1;
+	shr.s32 	%r25, %r24, 4;
+	add.s32 	%r26, %r23, %r25;
+	cvt.s64.s32 	%rd15, %r26;
+	mul.wide.s32 	%rd16, %r26, 4;
+	add.u64 	%rd17, %rd1, %rd16;
+	ld.shared.f32 	%f3, [%rd17+-4];
+	sub.s32 	%r27, %r22, 1;
+	shr.s32 	%r28, %r27, 4;
+	add.s32 	%r29, %r22, %r28;
+	cvt.s64.s32 	%rd18, %r29;
+	mul.wide.s32 	%rd19, %r29, 4;
+	add.u64 	%rd20, %rd1, %rd19;
+	ld.shared.f32 	%f4, [%rd20+-4];
+	add.f32 	%f5, %f3, %f4;
+	st.shared.f32 	[%rd17+-4], %f5;
+$Lt_14_12290:
+ //<loop> Part of loop body line 162, head labeled $Lt_14_12034
+	.loc	16	176	0
+	mul.lo.u32 	%r18, %r18, 2;
+	.loc	16	160	0
+	shr.s32 	%r16, %r16, 1;
+	mov.u32 	%r30, 0;
+	setp.gt.s32 	%p5, %r16, %r30;
+	@%p5 bra 	$Lt_14_12034;
+	bra.uni 	$Lt_14_11522;
+$Lt_14_15618:
+	mov.u32 	%r18, 1;
+$Lt_14_11522:
+	.loc	16	213	0
+	mov.u32 	%r31, 0;
+	setp.ne.u32 	%p6, %r7, %r31;
+	@%p6 bra 	$Lt_14_13058;
+	.loc	16	148	0
+	shl.b32 	%r32, %r1, 1;
+	mov.f32 	%f6, 0f00000000;     	// 0
+	sub.s32 	%r33, %r32, 1;
+	shr.s32 	%r34, %r33, 4;
+	add.s32 	%r35, %r32, %r34;
+	cvt.s64.s32 	%rd21, %r35;
+	mul.wide.s32 	%rd22, %r35, 4;
+	add.u64 	%rd23, %rd1, %rd22;
+	st.shared.f32 	[%rd23+-4], %f6;
+$Lt_14_13058:
+	.loc	16	215	0
+	mov.s32 	%r36, %r18;
+	mov.u32 	%r37, 1;
+	setp.lt.u32 	%p7, %r1, %r37;
+	@%p7 bra 	$Lt_14_13570;
+	mov.s32 	%r38, 1;
+$Lt_14_14082:
+ //<loop> Loop body line 215, nesting depth: 1, estimated iterations: unknown
+	.loc	16	189	0
+	shr.u32 	%r36, %r36, 1;
+	.loc	16	191	0
+	bar.sync 	0;
+	setp.le.u32 	%p8, %r38, %r7;
+	@%p8 bra 	$Lt_14_14338;
+ //<loop> Part of loop body line 215, head labeled $Lt_14_14082
+	.loc	16	202	0
+	mov.s32 	%r39, 2;
+	mul24.lo.s32 	%r40, %r39, %r36;
+	mul24.lo.s32 	%r41, %r40, %r7;
+	add.u32 	%r42, %r41, %r36;
+	sub.s32 	%r43, %r42, 1;
+	shr.s32 	%r44, %r43, 4;
+	add.s32 	%r45, %r42, %r44;
+	cvt.s64.s32 	%rd24, %r45;
+	mul.wide.s32 	%rd25, %r45, 4;
+	add.u64 	%rd26, %rd1, %rd25;
+	ld.shared.f32 	%f7, [%rd26+-4];
+	.loc	16	203	0
+	add.u32 	%r46, %r42, %r36;
+	sub.s32 	%r47, %r46, 1;
+	shr.s32 	%r48, %r47, 4;
+	add.s32 	%r49, %r46, %r48;
+	cvt.s64.s32 	%rd27, %r49;
+	mul.wide.s32 	%rd28, %r49, 4;
+	add.u64 	%rd29, %rd1, %rd28;
+	ld.shared.f32 	%f8, [%rd29+-4];
+	st.shared.f32 	[%rd26+-4], %f8;
+	.loc	16	204	0
+	ld.shared.f32 	%f9, [%rd29+-4];
+	add.f32 	%f10, %f9, %f7;
+	st.shared.f32 	[%rd29+-4], %f10;
+$Lt_14_14338:
+ //<loop> Part of loop body line 215, head labeled $Lt_14_14082
+	.loc	16	187	0
+	mul.lo.s32 	%r38, %r38, 2;
+	setp.le.u32 	%p9, %r38, %r1;
+	@%p9 bra 	$Lt_14_14082;
+$Lt_14_13570:
+	.loc	16	116	0
+	bar.sync 	0;
+	.loc	16	119	0
+	ld.param.u64 	%rd30, [__cudaparm__Z7prescanILb0ELb1EEvPfPKfS0_iii_g_odata];
+	ld.shared.f32 	%f11, [%rd6+0];
+	add.u64 	%rd31, %rd3, %rd30;
+	st.global.f32 	[%rd31+0], %f11;
+	@!%p2 bra 	$Lt_14_15106;
+	.loc	16	123	0
+	ld.shared.f32 	%f12, [%rd14+0];
+	add.u32 	%r50, %r8, %r1;
+	cvt.s64.s32 	%rd32, %r50;
+	mul.wide.s32 	%rd33, %r50, 4;
+	add.u64 	%rd34, %rd30, %rd33;
+	st.global.f32 	[%rd34+0], %f12;
+$Lt_14_15106:
+	.loc	16	241	0
+	exit;
+$LDWend__Z7prescanILb0ELb1EEvPfPKfS0_iii:
+	} // _Z7prescanILb0ELb1EEvPfPKfS0_iii
+
+	.visible .func (.param .f32 __cudaretf__ZSt5frexpfPi) _ZSt5frexpfPi (.param .f32 __cudaparmf1__ZSt5frexpfPi, .param .u64 __cudaparmf2__ZSt5frexpfPi)
+	{
+	.reg .u32 %r<17>;
+	.reg .u64 %rd<4>;
+	.reg .f32 %f<10>;
+	.reg .pred %p<4>;
+	.loc	17	285	0
+$LDWbegin__ZSt5frexpfPi:
+	ld.param.f32 	%f1, [__cudaparmf1__ZSt5frexpfPi];
+	mov.f32 	%f2, %f1;
+	ld.param.u64 	%rd1, [__cudaparmf2__ZSt5frexpfPi];
+	mov.s64 	%rd2, %rd1;
+	mov.f32 	%f3, %f2;
+	abs.f32 	%f4, %f2;
+	mov.f32 	%f5, 0f00800000;     	// 1.17549e-38
+	setp.lt.f32 	%p1, %f4, %f5;
+	@!%p1 bra 	$Lt_15_2306;
+	.loc	19	2359	0
+	mov.f32 	%f6, 0f4b800000;     	// 1.67772e+07
+	mul.f32 	%f3, %f2, %f6;
+	mov.u32 	%r1, 24;
+	bra.uni 	$Lt_15_2050;
+$Lt_15_2306:
+	.loc	19	2362	0
+	mov.u32 	%r1, 0;
+$Lt_15_2050:
+	mov.b32 	%r2, %f3;
+	shr.s32 	%r3, %r2, 23;
+	and.b32 	%r4, %r3, 255;
+	mov.u32 	%r5, 255;
+	set.eq.u32.u32 	%r6, %r4, %r5;
+	neg.s32 	%r7, %r6;
+	mov.f32 	%f7, 0f00000000;     	// 0
+	set.eq.u32.f32 	%r8, %f4, %f7;
+	neg.s32 	%r9, %r8;
+	or.b32 	%r10, %r7, %r9;
+	mov.u32 	%r11, 0;
+	setp.eq.s32 	%p2, %r10, %r11;
+	@%p2 bra 	$Lt_15_2818;
+	.loc	19	2367	0
+	add.f32 	%f3, %f3, %f3;
+	mov.u32 	%r12, 0;
+	bra.uni 	$Lt_15_2562;
+$Lt_15_2818:
+	.loc	19	2369	0
+	sub.u32 	%r13, %r4, %r1;
+	sub.u32 	%r12, %r13, 126;
+	.loc	19	2370	0
+	and.b32 	%r14, %r2, -2139095041;
+	or.b32 	%r15, %r14, 1056964608;
+	mov.b32 	%f3, %r15;
+$Lt_15_2562:
+	.loc	19	2372	0
+	st.s32 	[%rd2+0], %r12;
+	.loc	17	285	0
+	mov.f32 	%f8, %f3;
+	st.param.f32 	[__cudaretf__ZSt5frexpfPi], %f8;
+	ret;
+$LDWend__ZSt5frexpfPi:
+	} // _ZSt5frexpfPi
+

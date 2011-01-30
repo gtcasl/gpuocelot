@@ -1,0 +1,115 @@
+INFO     Reading in test file /home/normal/checkout/gpuocelot/tests/rodinia/regression/tests.txt
+INFO      Found the following tests:
+INFO       /home/normal/checkout/gpuocelot/tests/rodinia/srad
+INFO       /home/normal/checkout/gpuocelot/tests/rodinia/hotspot
+INFO       /home/normal/checkout/gpuocelot/tests/rodinia/backprop
+INFO       /home/normal/checkout/gpuocelot/tests/rodinia/lu
+INFO       /home/normal/checkout/gpuocelot/tests/rodinia/needle
+INFO       /home/normal/checkout/gpuocelot/tests/rodinia/mummergpu
+INFO     ==== INDIVIDUAL TEST RESULTS ====
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/rodinia/srad 128 128 0 31 0 31 0.5 2 
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/rodinia/lu -V -i data/32.dat 
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/rodinia/mummergpu data/shortref.fa data/shortqry.fa 
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/rodinia/backprop 
+INFO     Test /home/normal/checkout/gpuocelot/tests/rodinia/lu
+INFO     Test completed in 0.132027864456 seconds
+INFO      It produced the following output:
+(0.000000) TraceConfiguration.cpp:161:  performanceBound.enabled = true
+(0.000000) TraceConfiguration.cpp:243:  Creating performance bound trace generator
+Reading matrix from file data/32.dat
+Before LUD
+Time consumed(ms): 65.624000
+After LUD
+>>>Verify<<<<
+
+TEST PASSED
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/rodinia/hotspot 50 6 60 
+INFO     Test /home/normal/checkout/gpuocelot/tests/rodinia/mummergpu
+INFO     Test completed in 0.207716941833 seconds
+INFO      It produced the following output:
+TWO_LEVEL_NODE_TREE is 0
+TWO_LEVEL_CHILD_TREE is 0
+QRYTEX is 0
+COALESCED_QUERIES is 0
+REFTEX is 0
+REORDER_REF is 0
+NODETEX is 1
+CHILDTEX is 1
+MERGETEX is 0
+REORDER_TREE is 1
+RENUMBER_TREE is 1
+(0.000000) TraceConfiguration.cpp:161:  performanceBound.enabled = true
+(0.000000) TraceConfiguration.cpp:243:  Creating performance bound trace generator
+Loading ref: data/shortref.fa... 6 bp. [0.00007s]
+Opening data/shortqry.fa...
+Streaming reference pages against all queries
+Stream will use 1 pages for 6 bases, page size = 6
+Building reference texture...
+  Creating Suffix Tree... 11 nodes [0.00015s]
+  Renumbering tree... [0.00001s]
+  Flattening Tree...  node: 4096x32 children: 4096x32 [0.00012s]
+This tree will need 4194304 bytes on the board
+The refstr requires 4107 bytes
+Beginning reference page 0x6f00e0
+board free memory: 536870912 total memory: 805306368
+done
+Loading query block... done.
+
+TEST PASSED
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/rodinia/needle 512 512 13 
+INFO     Test /home/normal/checkout/gpuocelot/tests/rodinia/srad
+INFO     Test completed in 0.548134088516 seconds
+INFO      It produced the following output:
+(0.000000) TraceConfiguration.cpp:161:  performanceBound.enabled = true
+(0.000000) TraceConfiguration.cpp:243:  Creating performance bound trace generator
+
+TEST PASSED
+
+INFO     Test /home/normal/checkout/gpuocelot/tests/rodinia/needle
+INFO     Test completed in 3.47116088867 seconds
+INFO      It produced the following output:
+(0.000000) TraceConfiguration.cpp:161:  performanceBound.enabled = true
+(0.000000) TraceConfiguration.cpp:243:  Creating performance bound trace generator
+
+TEST PASSED
+
+INFO     Test /home/normal/checkout/gpuocelot/tests/rodinia/hotspot
+INFO     Test completed in 7.70841312408 seconds
+INFO      It produced the following output:
+(0.000000) TraceConfiguration.cpp:161:  performanceBound.enabled = true
+(0.000000) TraceConfiguration.cpp:243:  Creating performance bound trace generator
+pyramidHeight: 6
+gridSize: [50, 50]
+border:[6, 6]
+blockGrid:[13, 13]
+targetBlock:[4, 4]
+
+TEST PASSED
+
+INFO     Test /home/normal/checkout/gpuocelot/tests/rodinia/backprop
+INFO     Test completed in 9.56149196625 seconds
+INFO      It produced the following output:
+(0.000000) TraceConfiguration.cpp:161:  performanceBound.enabled = true
+(0.000000) TraceConfiguration.cpp:243:  Creating performance bound trace generator
+Random number generator seed: 7
+Input layer size : 65536
+Performing GPU computation
+
+TEST PASSED
+
+INFO     
+Passing tests:
+ (9.561s) : /home/normal/checkout/gpuocelot/tests/rodinia/backprop : Passed
+ (0.132s) : /home/normal/checkout/gpuocelot/tests/rodinia/lu : Passed
+ (0.548s) : /home/normal/checkout/gpuocelot/tests/rodinia/srad : Passed
+ (0.208s) : /home/normal/checkout/gpuocelot/tests/rodinia/mummergpu : Passed
+ (7.708s) : /home/normal/checkout/gpuocelot/tests/rodinia/hotspot : Passed
+ (3.471s) : /home/normal/checkout/gpuocelot/tests/rodinia/needle : Passed
+
+Failing tests:
+
+Non-Existent tests:
+

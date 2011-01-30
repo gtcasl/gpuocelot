@@ -1,0 +1,356 @@
+	.version 2.1
+	.target sm_20
+	// compiled with /usr/local/cuda3.1/cuda/open64/lib//be
+	// nvopencc 3.1 built on 2010-06-07
+
+	//-----------------------------------------------------------
+	// Compiling /tmp/tmpxft_00001b95_00000000-7_fastWalshTransform.cpp3.i (/tmp/ccBI#.yvI6Ud)
+	//-----------------------------------------------------------
+
+	//-----------------------------------------------------------
+	// Options:
+	//-----------------------------------------------------------
+	//  Target:ptx, ISA:sm_20, Endian:little, Pointer Size:64
+	//  -O3	(Optimization level)
+	//  -g0	(Debug level)
+	//  -m2	(Report advisories)
+	//-----------------------------------------------------------
+
+	.file	1	"<command-line>"
+	.file	2	"/tmp/tmpxft_00001b95_00000000-6_fastWalshTransform.cudafe2.gpu"
+	.file	3	"/usr/lib/gcc/x86_64-linux-gnu/4.4.3/include/stddef.h"
+	.file	4	"/usr/local/cuda3.1/cuda/bin/../include/crt/device_runtime.h"
+	.file	5	"/usr/local/cuda3.1/cuda/bin/../include/host_defines.h"
+	.file	6	"/usr/local/cuda3.1/cuda/bin/../include/builtin_types.h"
+	.file	7	"/usr/local/cuda3.1/cuda/bin/../include/device_types.h"
+	.file	8	"/usr/local/cuda3.1/cuda/bin/../include/driver_types.h"
+	.file	9	"/usr/local/cuda3.1/cuda/bin/../include/surface_types.h"
+	.file	10	"/usr/local/cuda3.1/cuda/bin/../include/texture_types.h"
+	.file	11	"/usr/local/cuda3.1/cuda/bin/../include/vector_types.h"
+	.file	12	"/usr/local/cuda3.1/cuda/bin/../include/device_launch_parameters.h"
+	.file	13	"/usr/local/cuda3.1/cuda/bin/../include/crt/storage_class.h"
+	.file	14	"/usr/include/bits/types.h"
+	.file	15	"/usr/include/time.h"
+	.file	16	"/home/andrew/repositories/gpuocelot/tests/cuda2.2/tests/fastWalshTransform/fastWalshTransform_kernel.cu"
+	.file	17	"/usr/local/cuda3.1/cuda/bin/../include/common_functions.h"
+	.file	18	"/usr/local/cuda3.1/cuda/bin/../include/math_functions.h"
+	.file	19	"/usr/local/cuda3.1/cuda/bin/../include/math_constants.h"
+	.file	20	"/usr/local/cuda3.1/cuda/bin/../include/device_functions.h"
+	.file	21	"/usr/local/cuda3.1/cuda/bin/../include/sm_11_atomic_functions.h"
+	.file	22	"/usr/local/cuda3.1/cuda/bin/../include/sm_12_atomic_functions.h"
+	.file	23	"/usr/local/cuda3.1/cuda/bin/../include/sm_13_double_functions.h"
+	.file	24	"/usr/local/cuda3.1/cuda/bin/../include/sm_20_atomic_functions.h"
+	.file	25	"/usr/local/cuda3.1/cuda/bin/../include/sm_20_intrinsics.h"
+	.file	26	"/usr/local/cuda3.1/cuda/bin/../include/surface_functions.h"
+	.file	27	"/usr/local/cuda3.1/cuda/bin/../include/texture_fetch_functions.h"
+	.file	28	"/usr/local/cuda3.1/cuda/bin/../include/math_functions_dbl_ptx3.h"
+
+	.extern	.shared .align 4 .b8 s_data[];
+
+	.entry _Z15fwtBatch1KernelPfS_i (
+		.param .u64 __cudaparm__Z15fwtBatch1KernelPfS_i_d_Output,
+		.param .u64 __cudaparm__Z15fwtBatch1KernelPfS_i_d_Input,
+		.param .s32 __cudaparm__Z15fwtBatch1KernelPfS_i_log2N)
+	{
+	.reg .u32 %r<33>;
+	.reg .u64 %rd<37>;
+	.reg .f32 %f<20>;
+	.reg .pred %p<10>;
+	.loc	16	51	0
+$LDWbegin__Z15fwtBatch1KernelPfS_i:
+	.loc	16	60	0
+	cvt.s32.u32 	%r1, %tid.x;
+	mov.s32 	%r2, %r1;
+	ld.param.s32 	%r3, [__cudaparm__Z15fwtBatch1KernelPfS_i_log2N];
+	shl.b32 	%r4, 1, %r3;
+	setp.gt.s32 	%p1, %r4, %r1;
+	@!%p1 bra 	$Lt_0_5122;
+	mov.u64 	%rd1, s_data;
+	mov.u32 	%r5, %ctaid.x;
+	shl.b32 	%r6, %r5, %r3;
+	cvt.s64.s32 	%rd2, %r1;
+	mov.u32 	%r7, %ntid.x;
+	cvt.s64.u32 	%rd3, %r7;
+	cvt.s64.s32 	%rd4, %r6;
+	mul.wide.s32 	%rd5, %r1, 4;
+	mul.wide.u32 	%rd6, %r7, 4;
+	mul.wide.s32 	%rd7, %r6, 4;
+	add.u64 	%rd8, %rd5, %rd1;
+	ld.param.u64 	%rd9, [__cudaparm__Z15fwtBatch1KernelPfS_i_d_Input];
+	add.s64 	%rd10, %rd9, %rd7;
+	add.s64 	%rd11, %rd5, %rd10;
+$Lt_0_5634:
+ //<loop> Loop body line 60, nesting depth: 1, estimated iterations: unknown
+	.loc	16	61	0
+	ld.global.f32 	%f1, [%rd11+0];
+	st.shared.f32 	[%rd8+0], %f1;
+	add.u32 	%r2, %r2, %r7;
+	add.s64 	%rd11, %rd11, %rd6;
+	add.u64 	%rd8, %rd8, %rd6;
+	setp.gt.s32 	%p2, %r4, %r2;
+	@%p2 bra 	$Lt_0_5634;
+$Lt_0_5122:
+	mov.u64 	%rd1, s_data;
+	.loc	16	65	0
+	shr.s32 	%r8, %r4, 2;
+	mov.s32 	%r9, %r8;
+	mov.u32 	%r10, 0;
+	setp.le.s32 	%p3, %r8, %r10;
+	@%p3 bra 	$Lt_0_6146;
+$Lt_0_6658:
+ //<loop> Loop body line 72
+	.loc	16	72	0
+	bar.sync 	0;
+	.loc	16	73	0
+	sub.s32 	%r11, %r9, 1;
+	and.b32 	%r12, %r11, %r1;
+	sub.s32 	%r13, %r1, %r12;
+	shl.b32 	%r14, %r13, 2;
+	add.s32 	%r15, %r12, %r14;
+	cvt.s64.s32 	%rd12, %r15;
+	mul.wide.s32 	%rd13, %r15, 4;
+	add.u64 	%rd14, %rd1, %rd13;
+	ld.shared.f32 	%f2, [%rd14+0];
+	.loc	16	74	0
+	add.s32 	%r16, %r15, %r9;
+	cvt.s64.s32 	%rd15, %r16;
+	mul.wide.s32 	%rd16, %r16, 4;
+	add.u64 	%rd17, %rd1, %rd16;
+	ld.shared.f32 	%f3, [%rd17+0];
+	.loc	16	75	0
+	add.s32 	%r17, %r16, %r9;
+	cvt.s64.s32 	%rd18, %r17;
+	mul.wide.s32 	%rd19, %r17, 4;
+	add.u64 	%rd20, %rd1, %rd19;
+	ld.shared.f32 	%f4, [%rd20+0];
+	.loc	16	76	0
+	add.s32 	%r18, %r17, %r9;
+	cvt.s64.s32 	%rd21, %r18;
+	mul.wide.s32 	%rd22, %r18, 4;
+	add.u64 	%rd23, %rd1, %rd22;
+	ld.shared.f32 	%f5, [%rd23+0];
+	.loc	16	79	0
+	add.f32 	%f6, %f2, %f4;
+	sub.f32 	%f7, %f2, %f4;
+	.loc	16	80	0
+	add.f32 	%f8, %f3, %f5;
+	sub.f32 	%f9, %f3, %f5;
+	.loc	16	81	0
+	add.f32 	%f10, %f6, %f8;
+	st.shared.f32 	[%rd14+0], %f10;
+	sub.f32 	%f11, %f6, %f8;
+	st.shared.f32 	[%rd17+0], %f11;
+	.loc	16	82	0
+	add.f32 	%f12, %f7, %f9;
+	st.shared.f32 	[%rd20+0], %f12;
+	sub.f32 	%f13, %f7, %f9;
+	st.shared.f32 	[%rd23+0], %f13;
+	.loc	16	65	0
+	shr.s32 	%r9, %r9, 2;
+	mov.u32 	%r19, 0;
+	setp.gt.s32 	%p4, %r9, %r19;
+	@%p4 bra 	$Lt_0_6658;
+$Lt_0_6146:
+	and.b32 	%r20, %r3, 1;
+	mov.u32 	%r21, 0;
+	setp.eq.s32 	%p5, %r20, %r21;
+	@%p5 bra 	$Lt_0_7170;
+	.loc	16	87	0
+	bar.sync 	0;
+	.loc	16	88	0
+	mov.s32 	%r22, %r1;
+	shr.s32 	%r23, %r4, 31;
+	mov.s32 	%r24, 1;
+	and.b32 	%r25, %r23, %r24;
+	add.s32 	%r26, %r25, %r4;
+	shr.s32 	%r27, %r26, 1;
+	setp.le.s32 	%p6, %r27, %r1;
+	@%p6 bra 	$Lt_0_7682;
+	mov.u32 	%r7, %ntid.x;
+$Lt_0_8194:
+ //<loop> Loop body line 88, nesting depth: 1, estimated iterations: unknown
+	.loc	16	92	0
+	shl.b32 	%r28, %r22, 1;
+	cvt.s64.s32 	%rd24, %r28;
+	mul.wide.s32 	%rd25, %r28, 4;
+	add.u64 	%rd26, %rd1, %rd25;
+	ld.shared.f32 	%f14, [%rd26+0];
+	.loc	16	93	0
+	ld.shared.f32 	%f15, [%rd26+4];
+	.loc	16	94	0
+	add.f32 	%f16, %f14, %f15;
+	st.shared.f32 	[%rd26+0], %f16;
+	.loc	16	95	0
+	sub.f32 	%f17, %f14, %f15;
+	st.shared.f32 	[%rd26+4], %f17;
+	add.u32 	%r22, %r22, %r7;
+	setp.gt.s32 	%p7, %r27, %r22;
+	@%p7 bra 	$Lt_0_8194;
+$Lt_0_7682:
+$Lt_0_7170:
+	.loc	16	99	0
+	bar.sync 	0;
+	.loc	16	100	0
+	mov.s32 	%r29, %r1;
+	@!%p1 bra 	$Lt_0_8706;
+	cvt.s64.s32 	%rd27, %r1;
+	mov.u32 	%r7, %ntid.x;
+	cvt.s64.u32 	%rd28, %r7;
+	mov.u32 	%r30, %ctaid.x;
+	shl.b32 	%r31, %r30, %r3;
+	mul.wide.s32 	%rd29, %r1, 4;
+	mul.wide.u32 	%rd6, %r7, 4;
+	cvt.s64.s32 	%rd30, %r31;
+	add.u64 	%rd31, %rd29, %rd1;
+	ld.param.u64 	%rd32, [__cudaparm__Z15fwtBatch1KernelPfS_i_d_Output];
+	mul.wide.s32 	%rd33, %r31, 4;
+	add.s64 	%rd34, %rd32, %rd33;
+	add.s64 	%rd35, %rd29, %rd34;
+$Lt_0_9218:
+ //<loop> Loop body line 100, nesting depth: 1, estimated iterations: unknown
+	.loc	16	101	0
+	ld.shared.f32 	%f18, [%rd31+0];
+	st.global.f32 	[%rd35+0], %f18;
+	add.u32 	%r29, %r29, %r7;
+	add.s64 	%rd35, %rd35, %rd6;
+	add.u64 	%rd31, %rd31, %rd6;
+	setp.gt.s32 	%p8, %r4, %r29;
+	@%p8 bra 	$Lt_0_9218;
+$Lt_0_8706:
+	.loc	16	102	0
+	exit;
+$LDWend__Z15fwtBatch1KernelPfS_i:
+	} // _Z15fwtBatch1KernelPfS_i
+
+	.entry _Z15fwtBatch2KernelPfS_i (
+		.param .u64 __cudaparm__Z15fwtBatch2KernelPfS_i_d_Output,
+		.param .u64 __cudaparm__Z15fwtBatch2KernelPfS_i_d_Input,
+		.param .s32 __cudaparm__Z15fwtBatch2KernelPfS_i_stride)
+	{
+	.reg .u32 %r<21>;
+	.reg .u64 %rd<24>;
+	.reg .f32 %f<14>;
+	.loc	16	111	0
+$LDWbegin__Z15fwtBatch2KernelPfS_i:
+	.loc	16	125	0
+	mov.u32 	%r1, %ntid.x;
+	mov.u32 	%r2, %nctaid.x;
+	mul.lo.u32 	%r3, %r2, %r1;
+	ld.param.s32 	%r4, [__cudaparm__Z15fwtBatch2KernelPfS_i_stride];
+	sub.s32 	%r5, %r4, 1;
+	mov.u32 	%r6, %ctaid.x;
+	mul.lo.u32 	%r7, %r6, %r1;
+	mov.u32 	%r8, %ctaid.y;
+	mul.lo.u32 	%r9, %r8, %r3;
+	mov.u32 	%r10, %tid.x;
+	add.u32 	%r11, %r10, %r7;
+	and.b32 	%r12, %r5, %r11;
+	sub.s32 	%r13, %r11, %r12;
+	mul.lo.u32 	%r14, %r9, 4;
+	cvt.u64.u32 	%rd1, %r14;
+	mul.wide.u32 	%rd2, %r14, 4;
+	shl.b32 	%r15, %r13, 2;
+	ld.param.u64 	%rd3, [__cudaparm__Z15fwtBatch2KernelPfS_i_d_Input];
+	add.u64 	%rd4, %rd3, %rd2;
+	add.s32 	%r16, %r12, %r15;
+	cvt.s64.s32 	%rd5, %r16;
+	mul.wide.s32 	%rd6, %r16, 4;
+	add.u64 	%rd7, %rd4, %rd6;
+	ld.global.f32 	%f1, [%rd7+0];
+	.loc	16	126	0
+	add.s32 	%r17, %r16, %r4;
+	cvt.s64.s32 	%rd8, %r17;
+	mul.wide.s32 	%rd9, %r17, 4;
+	add.u64 	%rd10, %rd4, %rd9;
+	ld.global.f32 	%f2, [%rd10+0];
+	.loc	16	127	0
+	add.s32 	%r18, %r17, %r4;
+	cvt.s64.s32 	%rd11, %r18;
+	mul.wide.s32 	%rd12, %r18, 4;
+	add.u64 	%rd13, %rd4, %rd12;
+	ld.global.f32 	%f3, [%rd13+0];
+	.loc	16	128	0
+	add.s32 	%r19, %r18, %r4;
+	cvt.s64.s32 	%rd14, %r19;
+	mul.wide.s32 	%rd15, %r19, 4;
+	add.u64 	%rd16, %rd4, %rd15;
+	ld.global.f32 	%f4, [%rd16+0];
+	.loc	16	131	0
+	add.f32 	%f5, %f1, %f3;
+	sub.f32 	%f6, %f1, %f3;
+	.loc	16	132	0
+	add.f32 	%f7, %f2, %f4;
+	sub.f32 	%f8, %f2, %f4;
+	.loc	16	133	0
+	ld.param.u64 	%rd17, [__cudaparm__Z15fwtBatch2KernelPfS_i_d_Output];
+	add.u64 	%rd18, %rd17, %rd2;
+	add.f32 	%f9, %f5, %f7;
+	add.u64 	%rd19, %rd18, %rd6;
+	st.global.f32 	[%rd19+0], %f9;
+	sub.f32 	%f10, %f5, %f7;
+	add.u64 	%rd20, %rd18, %rd9;
+	st.global.f32 	[%rd20+0], %f10;
+	.loc	16	134	0
+	add.f32 	%f11, %f6, %f8;
+	add.u64 	%rd21, %rd18, %rd12;
+	st.global.f32 	[%rd21+0], %f11;
+	sub.f32 	%f12, %f6, %f8;
+	add.u64 	%rd22, %rd18, %rd15;
+	st.global.f32 	[%rd22+0], %f12;
+	.loc	16	135	0
+	exit;
+$LDWend__Z15fwtBatch2KernelPfS_i:
+	} // _Z15fwtBatch2KernelPfS_i
+
+	.entry _Z14modulateKernelPfS_i (
+		.param .u64 __cudaparm__Z14modulateKernelPfS_i_d_A,
+		.param .u64 __cudaparm__Z14modulateKernelPfS_i_d_B,
+		.param .s32 __cudaparm__Z14modulateKernelPfS_i_N)
+	{
+	.reg .u32 %r<11>;
+	.reg .u64 %rd<10>;
+	.reg .f32 %f<8>;
+	.reg .pred %p<4>;
+	.loc	16	163	0
+$LDWbegin__Z14modulateKernelPfS_i:
+	.loc	16	168	0
+	mov.u32 	%r1, %ntid.x;
+	mov.u32 	%r2, %ctaid.x;
+	mul.lo.u32 	%r3, %r2, %r1;
+	mov.u32 	%r4, %tid.x;
+	add.u32 	%r5, %r4, %r3;
+	mov.s32 	%r6, %r5;
+	ld.param.s32 	%r7, [__cudaparm__Z14modulateKernelPfS_i_N];
+	setp.le.s32 	%p1, %r7, %r5;
+	@%p1 bra 	$Lt_2_1282;
+	cvt.rn.f32.s32 	%f1, %r7;
+	mov.u32 	%r8, %nctaid.x;
+	mul.lo.u32 	%r9, %r8, %r1;
+	cvt.s64.s32 	%rd1, %r5;
+	mul.wide.s32 	%rd2, %r5, 4;
+	cvt.s64.u32 	%rd3, %r9;
+	rcp.rn.f32 	%f2, %f1;
+	ld.param.u64 	%rd4, [__cudaparm__Z14modulateKernelPfS_i_d_A];
+	add.u64 	%rd5, %rd4, %rd2;
+	mul.wide.u32 	%rd6, %r9, 4;
+	ld.param.u64 	%rd7, [__cudaparm__Z14modulateKernelPfS_i_d_B];
+	add.u64 	%rd8, %rd7, %rd2;
+$Lt_2_1794:
+ //<loop> Loop body line 168, nesting depth: 1, estimated iterations: unknown
+	.loc	16	169	0
+	ld.global.f32 	%f3, [%rd5+0];
+	ld.global.f32 	%f4, [%rd8+0];
+	mul.f32 	%f5, %f4, %f2;
+	mul.f32 	%f6, %f3, %f5;
+	st.global.f32 	[%rd5+0], %f6;
+	add.s32 	%r6, %r6, %r9;
+	add.u64 	%rd8, %rd8, %rd6;
+	add.u64 	%rd5, %rd5, %rd6;
+	setp.lt.s32 	%p2, %r6, %r7;
+	@%p2 bra 	$Lt_2_1794;
+$Lt_2_1282:
+	.loc	16	170	0
+	exit;
+$LDWend__Z14modulateKernelPfS_i:
+	} // _Z14modulateKernelPfS_i
+

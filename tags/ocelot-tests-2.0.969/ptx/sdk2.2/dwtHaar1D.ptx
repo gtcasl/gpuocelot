@@ -1,0 +1,206 @@
+	.version 2.1
+	.target sm_20
+	// compiled with /usr/local/cuda3.1/cuda/open64/lib//be
+	// nvopencc 3.1 built on 2010-06-07
+
+	//-----------------------------------------------------------
+	// Compiling /tmp/tmpxft_0000220a_00000000-7_dwtHaar1D.cpp3.i (/tmp/ccBI#.GS9RNn)
+	//-----------------------------------------------------------
+
+	//-----------------------------------------------------------
+	// Options:
+	//-----------------------------------------------------------
+	//  Target:ptx, ISA:sm_20, Endian:little, Pointer Size:64
+	//  -O3	(Optimization level)
+	//  -g0	(Debug level)
+	//  -m2	(Report advisories)
+	//-----------------------------------------------------------
+
+	.file	1	"<command-line>"
+	.file	2	"/tmp/tmpxft_0000220a_00000000-6_dwtHaar1D.cudafe2.gpu"
+	.file	3	"/usr/lib/gcc/x86_64-linux-gnu/4.4.3/include/stddef.h"
+	.file	4	"/usr/local/cuda3.1/cuda/bin/../include/crt/device_runtime.h"
+	.file	5	"/usr/local/cuda3.1/cuda/bin/../include/host_defines.h"
+	.file	6	"/usr/local/cuda3.1/cuda/bin/../include/builtin_types.h"
+	.file	7	"/usr/local/cuda3.1/cuda/bin/../include/device_types.h"
+	.file	8	"/usr/local/cuda3.1/cuda/bin/../include/driver_types.h"
+	.file	9	"/usr/local/cuda3.1/cuda/bin/../include/surface_types.h"
+	.file	10	"/usr/local/cuda3.1/cuda/bin/../include/texture_types.h"
+	.file	11	"/usr/local/cuda3.1/cuda/bin/../include/vector_types.h"
+	.file	12	"/usr/local/cuda3.1/cuda/bin/../include/device_launch_parameters.h"
+	.file	13	"/usr/local/cuda3.1/cuda/bin/../include/crt/storage_class.h"
+	.file	14	"/usr/include/bits/types.h"
+	.file	15	"/usr/include/time.h"
+	.file	16	"/home/andrew/repositories/gpuocelot/tests/cuda2.2/tests/dwtHaar1D/dwtHaar1D_kernel.cu"
+	.file	17	"/usr/local/cuda3.1/cuda/bin/../include/common_functions.h"
+	.file	18	"/usr/local/cuda3.1/cuda/bin/../include/math_functions.h"
+	.file	19	"/usr/local/cuda3.1/cuda/bin/../include/math_constants.h"
+	.file	20	"/usr/local/cuda3.1/cuda/bin/../include/device_functions.h"
+	.file	21	"/usr/local/cuda3.1/cuda/bin/../include/sm_11_atomic_functions.h"
+	.file	22	"/usr/local/cuda3.1/cuda/bin/../include/sm_12_atomic_functions.h"
+	.file	23	"/usr/local/cuda3.1/cuda/bin/../include/sm_13_double_functions.h"
+	.file	24	"/usr/local/cuda3.1/cuda/bin/../include/sm_20_atomic_functions.h"
+	.file	25	"/usr/local/cuda3.1/cuda/bin/../include/sm_20_intrinsics.h"
+	.file	26	"/usr/local/cuda3.1/cuda/bin/../include/surface_functions.h"
+	.file	27	"/usr/local/cuda3.1/cuda/bin/../include/texture_fetch_functions.h"
+	.file	28	"/usr/local/cuda3.1/cuda/bin/../include/math_functions_dbl_ptx3.h"
+
+	.extern	.shared .align 4 .b8 shared[];
+
+	.entry _Z9dwtHaar1DPfS_S_jji (
+		.param .u64 __cudaparm__Z9dwtHaar1DPfS_S_jji_id,
+		.param .u64 __cudaparm__Z9dwtHaar1DPfS_S_jji_od,
+		.param .u64 __cudaparm__Z9dwtHaar1DPfS_S_jji_approx_final,
+		.param .u32 __cudaparm__Z9dwtHaar1DPfS_S_jji_dlevels,
+		.param .u32 __cudaparm__Z9dwtHaar1DPfS_S_jji_slength_step_half,
+		.param .s32 __cudaparm__Z9dwtHaar1DPfS_S_jji_bdim)
+	{
+	.reg .u32 %r<34>;
+	.reg .u64 %rd<39>;
+	.reg .f32 %f<23>;
+	.reg .pred %p<6>;
+	.loc	16	111	0
+$LDWbegin__Z9dwtHaar1DPfS_S_jji:
+	mov.u64 	%rd1, shared;
+	.loc	16	127	0
+	ld.param.s32 	%r1, [__cudaparm__Z9dwtHaar1DPfS_S_jji_bdim];
+	cvt.s32.u32 	%r2, %ctaid.x;
+	mul.lo.s32 	%r3, %r1, %r2;
+	mul.lo.s32 	%r4, %r3, 2;
+	cvt.s32.u32 	%r5, %tid.x;
+	add.s32 	%r6, %r4, %r5;
+	ld.param.u64 	%rd2, [__cudaparm__Z9dwtHaar1DPfS_S_jji_id];
+	cvt.u64.u32 	%rd3, %r6;
+	mul.wide.u32 	%rd4, %r6, 4;
+	add.u64 	%rd5, %rd2, %rd4;
+	ld.global.f32 	%f1, [%rd5+0];
+	cvt.s64.s32 	%rd6, %r5;
+	mul.wide.s32 	%rd7, %r5, 4;
+	add.u64 	%rd8, %rd1, %rd7;
+	st.shared.f32 	[%rd8+0], %f1;
+	.loc	16	128	0
+	add.u32 	%r7, %r6, %r1;
+	cvt.u64.u32 	%rd9, %r7;
+	mul.wide.u32 	%rd10, %r7, 4;
+	add.u64 	%rd11, %rd2, %rd10;
+	ld.global.f32 	%f2, [%rd11+0];
+	add.s32 	%r8, %r5, %r1;
+	cvt.s64.s32 	%rd12, %r8;
+	mul.wide.s32 	%rd13, %r8, 4;
+	add.u64 	%rd14, %rd1, %rd13;
+	st.shared.f32 	[%rd14+0], %f2;
+	.loc	16	129	0
+	bar.sync 	0;
+	.loc	16	134	0
+	mul.lo.s32 	%r9, %r5, 2;
+	cvt.s64.s32 	%rd15, %r9;
+	mul.wide.s32 	%rd16, %r9, 4;
+	add.u64 	%rd17, %rd1, %rd16;
+	ld.shared.f32 	%f3, [%rd17+0];
+	.loc	16	135	0
+	ld.shared.f32 	%f4, [%rd17+4];
+	.loc	16	136	0
+	bar.sync 	0;
+	.loc	16	140	0
+	ld.param.u64 	%rd18, [__cudaparm__Z9dwtHaar1DPfS_S_jji_od];
+	sub.f32 	%f5, %f3, %f4;
+	mov.f32 	%f6, 0f3f3504f3;     	// 0.707107
+	mul.f32 	%f7, %f5, %f6;
+	ld.param.u32 	%r10, [__cudaparm__Z9dwtHaar1DPfS_S_jji_slength_step_half];
+	add.s32 	%r11, %r3, %r5;
+	add.u32 	%r12, %r10, %r11;
+	cvt.u64.u32 	%rd19, %r12;
+	mul.wide.u32 	%rd20, %r12, 4;
+	add.u64 	%rd21, %rd18, %rd20;
+	st.global.f32 	[%rd21+0], %f7;
+	.loc	16	148	0
+	add.f32 	%f8, %f3, %f4;
+	mov.f32 	%f9, 0f3f3504f3;     	// 0.707107
+	mul.f32 	%f10, %f8, %f9;
+	shr.s32 	%r13, %r5, 4;
+	add.s32 	%r14, %r5, %r13;
+	cvt.u64.u32 	%rd22, %r14;
+	mul.wide.u32 	%rd23, %r14, 4;
+	add.u64 	%rd24, %rd1, %rd23;
+	st.shared.f32 	[%rd24+0], %f10;
+	.loc	16	152	0
+	bar.sync 	0;
+	ld.param.u32 	%r15, [__cudaparm__Z9dwtHaar1DPfS_S_jji_dlevels];
+	mov.u32 	%r16, 1;
+	setp.le.u32 	%p1, %r15, %r16;
+	@%p1 bra 	$Lt_0_3586;
+	.loc	16	167	0
+	shr.s32 	%r17, %r1, 1;
+	.loc	16	173	0
+	mov.s32 	%r18, %r9;
+	sub.u32 	%r19, %r15, 1;
+	mov.u32 	%r20, 1;
+	mov.u32 	%r21, 1;
+	mov.s32 	%r22, %r19;
+$Lt_0_4610:
+ //<loop> Loop body line 173, nesting depth: 1, estimated iterations: unknown
+	setp.ge.u32 	%p2, %r5, %r17;
+	@%p2 bra 	$Lt_0_4866;
+ //<loop> Part of loop body line 173, head labeled $Lt_0_4610
+	.loc	16	203	0
+	shr.u32 	%r23, %r18, 4;
+	add.u32 	%r24, %r18, %r21;
+	shr.u32 	%r25, %r24, 4;
+	add.u32 	%r26, %r23, %r18;
+	cvt.u64.u32 	%rd25, %r26;
+	mul.wide.u32 	%rd26, %r26, 4;
+	add.u64 	%rd27, %rd1, %rd26;
+	add.u32 	%r27, %r24, %r25;
+	cvt.u64.u32 	%rd28, %r27;
+	mul.wide.u32 	%rd29, %r27, 4;
+	add.u64 	%rd30, %rd1, %rd29;
+	ld.shared.f32 	%f11, [%rd27+0];
+	ld.shared.f32 	%f12, [%rd30+0];
+	sub.f32 	%f13, %f11, %f12;
+	mov.f32 	%f14, 0f3f3504f3;    	// 0.707107
+	mul.f32 	%f15, %f13, %f14;
+	cvt.s32.u32 	%r28, %nctaid.x;
+	add.u32 	%r29, %r28, %r2;
+	mul.lo.u32 	%r30, %r17, %r29;
+	add.u32 	%r31, %r5, %r30;
+	cvt.u64.u32 	%rd31, %r31;
+	mul.wide.u32 	%rd32, %r31, 4;
+	add.u64 	%rd33, %rd18, %rd32;
+	st.global.f32 	[%rd33+0], %f15;
+	.loc	16	211	0
+	ld.shared.f32 	%f16, [%rd27+0];
+	ld.shared.f32 	%f17, [%rd30+0];
+	add.f32 	%f18, %f16, %f17;
+	mov.f32 	%f19, 0f3f3504f3;    	// 0.707107
+	mul.f32 	%f20, %f18, %f19;
+	st.shared.f32 	[%rd27+0], %f20;
+	.loc	16	214	0
+	shr.u32 	%r17, %r17, 1;
+	.loc	16	215	0
+	shl.b32 	%r21, %r21, 1;
+	.loc	16	216	0
+	shl.b32 	%r18, %r18, 1;
+$Lt_0_4866:
+ //<loop> Part of loop body line 173, head labeled $Lt_0_4610
+	.loc	16	220	0
+	bar.sync 	0;
+	add.u32 	%r20, %r20, 1;
+	setp.ne.u32 	%p3, %r20, %r15;
+	@%p3 bra 	$Lt_0_4610;
+	mov.u32 	%r32, 0;
+	setp.ne.s32 	%p4, %r5, %r32;
+	@%p4 bra 	$Lt_0_5634;
+	.loc	16	227	0
+	ld.shared.f32 	%f21, [shared+0];
+	ld.param.u64 	%rd34, [__cudaparm__Z9dwtHaar1DPfS_S_jji_approx_final];
+	cvt.s64.s32 	%rd35, %r2;
+	mul.wide.s32 	%rd36, %r2, 4;
+	add.u64 	%rd37, %rd34, %rd36;
+	st.global.f32 	[%rd37+0], %f21;
+$Lt_0_5634:
+$Lt_0_3586:
+	.loc	16	231	0
+	exit;
+$LDWend__Z9dwtHaar1DPfS_S_jji:
+	} // _Z9dwtHaar1DPfS_S_jji
+

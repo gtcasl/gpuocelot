@@ -1,11 +1,11 @@
-../TestLexer
-../TestParser
+../TestLexer -i ../ocelot-tests-1.3.967/ptx
+../TestParser -i ../ocelot-tests-1.3.967/ptx
 ../TestEmulator
 ../TestInstructions
 ../TestKernels
-../TestDataflowGraph
+../TestDataflowGraph -i ../ocelot-tests-1.3.967/ptx
 ../TestLLVMInstructions
-../TestPTXToLLVMTranslator
+../TestPTXToLLVMTranslator -i ../ocelot-tests-1.3.967/ptx
 ../TestLLVMKernels
 ../TestCudaMalloc 
 ../TestCudaTexture2D

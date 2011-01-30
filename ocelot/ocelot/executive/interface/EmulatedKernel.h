@@ -94,7 +94,7 @@ namespace executive {
 
 		/*!	On construction, allocates registers by computing live ranges */
 		void registerAllocation();
-
+		
 		/*!	Produces a packed vector of instructions, updates each operand, 
 			and changes labels to indices.
 		*/

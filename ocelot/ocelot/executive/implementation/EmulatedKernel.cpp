@@ -10,7 +10,6 @@
 #include <vector>
 #include <map>
 #include <unordered_set>
-#include <algorithm>
 #include <cstring>
 
 // Ocelot includes
@@ -23,11 +22,9 @@
 #include <ocelot/executive/interface/Device.h>
 #include <ocelot/executive/interface/RuntimeException.h>
 #include <ocelot/executive/interface/CooperativeThreadArray.h>
-#include <ocelot/ir/interface/HammockGraph.h>
 #include <ocelot/trace/interface/TraceGenerator.h>
 
 // Hydrazine includes
-#include <hydrazine/implementation/string.h>
 #include <hydrazine/implementation/debug.h>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -184,26 +181,7 @@ void executive::EmulatedKernel::initialize() {
 	updateParamReferences();
 	initializeLocalMemory();
 }
-
-class DotFormatterBlockLabel : public ir::BasicBlock::DotFormatter {
-public:
-
-	DotFormatterBlockLabel() { }
-	~DotFormatterBlockLabel() { }
-
-	/*!	\brief prints string representation of */
-	std::string toString(const ir::BasicBlock *block) {
-	std::stringstream out;
-
-	out << "[shape=record,";
-	out << "label=";
-	out << "\"{" << hydrazine::toGraphVizParsableLabel(block->label);
-	out << "}\"]";
-
-	return out.str();
-	}
-};
-
+		
 void executive::EmulatedKernel::constructInstructionSequence() {
 	typedef std::unordered_map<ir::ControlFlowGraph::InstructionList::iterator, 
 		ir::ControlFlowGraph::InstructionList::iterator > InstructionMap;
@@ -652,6 +630,8 @@ void executive::EmulatedKernel::initializeLocalMemory() {
 
 	map<string, unsigned int> label_map;
 	
+	report("Initialize local memory");
+	
 	if(module != 0) {
 		for(ir::Module::GlobalMap::const_iterator 
 			it = module->globals().begin(); 
@@ -864,7 +844,7 @@ void executive::EmulatedKernel::jumpToPC(int PC) {
 executive::EmulatedKernel::RegisterFile 
 	executive::EmulatedKernel::getCurrentRegisterFile() const {
 	assert(CTA != 0);
-	return CTA->getCurrentRegisterFile();		
+	return CTA->getCurrentRegisterFile();
 }
 
 const char* executive::EmulatedKernel::getSharedMemory() const {
@@ -890,7 +870,7 @@ void executive::EmulatedKernel::initializeTextureMemory() {
 			ir::Texture* texture = (ir::Texture*)device->getTextureReference(
 				module->path(), fi->a.identifier);
 			assert(texture != 0);
-
+			
 			IndexMap::iterator index = indices.find(fi->a.identifier);
 
 			if (index == indices.end()) {

@@ -19,10 +19,10 @@
 // Ocelot libs
 #include <ocelot/cuda/interface/CudaRuntimeInterface.h>
 #include <ocelot/executive/interface/Device.h>
+#include <ocelot/analysis/interface/PassManager.h>
 
 // Hydrazine includes
 #include <hydrazine/implementation/Timer.h>
-
 
 namespace cuda {
 
@@ -88,7 +88,9 @@ namespace cuda {
 
 		//! set of trace generators to be inserted into emulated kernels
 		trace::TraceGeneratorVector nextTraceGenerators;
-	
+		
+		int ptxPasses;
+			
 	public:
 		HostThreadContext();
 		~HostThreadContext();
@@ -482,8 +484,9 @@ namespace cuda {
 			size_t offset);
 		virtual cudaError_t cudaLaunch(const char *entry);
 		virtual cudaError_t cudaFuncGetAttributes(
-			struct cudaFuncAttributes *attr, const char *func);
-		virtual cudaError_t cudaFuncSetCacheConfig(const char*, cudaFuncCache cache);
+			struct cudaFuncAttributes *attr, const char *func);	
+		virtual cudaError_t cudaFuncSetCacheConfig(const char *func, 
+			enum cudaFuncCache cacheConfig);
 	
 	public:
 		//
@@ -569,6 +572,10 @@ namespace cuda {
 		virtual void addTraceGenerator( trace::TraceGenerator& gen, 
 			bool persistent = false );
 		virtual void clearTraceGenerators();
+
+		virtual void addPTXPass(analysis::Pass &pass);
+		virtual void removePTXPass(analysis::Pass &pass);
+		virtual void clearPTXPasses();
 		virtual void limitWorkerThreads( unsigned int limit = 1024 );
 		virtual void registerPTXModule(std::istream& stream, 
 			const std::string& name);

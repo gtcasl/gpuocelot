@@ -347,6 +347,7 @@ namespace cuda {
 
 		virtual cudaError_t cudaThreadExit(void);
 		virtual cudaError_t cudaThreadSynchronize(void);
+		virtual cudaError_t cudaThreadSetLimit(enum cudaLimit limit, size_t value);
 
 		/*
 			Version accessors
@@ -384,6 +385,19 @@ namespace cuda {
 			bool persistent = false );
 		/*! \brief Clear all trace generators */
 		virtual void clearTraceGenerators();
+		/*!
+			\brief Adds a PTX->PTX pass for the next *Module load*
+		*/
+		virtual void addPTXPass(analysis::Pass &pass);
+		/*!
+			\brief removes the specified pass
+		*/
+		virtual void removePTXPass(analysis::Pass &pass);
+		/*!
+			\brief clears all PTX->PTX passes
+		*/
+		virtual void clearPTXPasses();
+		
 		/*! \brief Sets a limit on the number of host worker threads to launch
 			when executing a CUDA kernel on a Multi-Core CPU.
 			\param limit The max number of worker threads to launch per kernel.

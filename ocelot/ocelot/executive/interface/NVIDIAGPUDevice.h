@@ -263,7 +263,7 @@ namespace executive
 			/*! \brief Unregister a resource */
 			void unRegisterGraphicsResource(void* resource);
 			/*! \brief Map a graphics resource for use with this device */
-			void mapGraphicsResource(void* resource, int count, 
+			void mapGraphicsResource(void** resource, int count, 
 				unsigned int stream);
 			/*! \brief Get a pointer to a mapped resource along with its size */
 			void* getPointerToMappedGraphicsResource(size_t& size, 
@@ -272,7 +272,7 @@ namespace executive
 			void setGraphicsResourceFlags(void* resource, 
 				unsigned int flags);
 			/*! \brief Unmap a mapped resource */
-			void unmapGraphicsResource(void* resource);
+			void unmapGraphicsResource(void** resource, int count, unsigned int streamID);
 
 		public:
 			/*! \brief Load a module, must have a unique name */
@@ -289,13 +289,13 @@ namespace executive
 			/*! \brief Destroy an existing event */
 			void destroyEvent(unsigned int event);
 			/*! \brief Query to see if an event has been recorded (yes/no) */
-			bool queryEvent(unsigned int event) const;
+			bool queryEvent(unsigned int event);
 			/*! \brief Record something happening on an event */
 			void recordEvent(unsigned int event, unsigned int stream);
 			/*! \brief Synchronize on an event */
 			void synchronizeEvent(unsigned int event);
 			/*! \brief Get the elapsed time in ms between two recorded events */
-			float getEventTime(unsigned int start, unsigned int end) const;
+			float getEventTime(unsigned int start, unsigned int end);
 		
 		public:
 			/*! \brief Create a new stream */
@@ -303,7 +303,7 @@ namespace executive
 			/*! \brief Destroy an existing stream */
 			void destroyStream(unsigned int stream);
 			/*! \brief Query the status of an existing stream (ready/not) */
-			bool queryStream(unsigned int stream) const;
+			bool queryStream(unsigned int stream);
 			/*! \brief Synchronize a particular stream */
 			void synchronizeStream(unsigned int stream);
 			/*! \brief Sets the current stream */
@@ -353,7 +353,7 @@ namespace executive
 			cudaFuncAttributes getAttributes(const std::string& module, 
 				const std::string& kernel);
 			/*! \brief Get the last error from this device */
-			unsigned int getLastError() const;
+			unsigned int getLastError();
 			/*! \brief Wait until all asynchronous operations have completed */
 			void synchronize();
 			

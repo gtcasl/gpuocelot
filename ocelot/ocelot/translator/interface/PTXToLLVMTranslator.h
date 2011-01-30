@@ -133,6 +133,13 @@ namespace translator
 				ir::PTXOperand::DataType dType, 
 				const ir::LLVMInstruction::Operand& s, 
 				ir::PTXOperand::DataType sType, int modifier = 0 );
+			void _flushToZero(const ir::LLVMInstruction::Operand& d, 
+				const ir::LLVMInstruction::Operand& a);
+			void _saturate(const ir::LLVMInstruction::Operand& d, 
+				const ir::LLVMInstruction::Operand& a);
+			void _floatToIntSaturate(const ir::LLVMInstruction::Operand& d, 
+				const ir::LLVMInstruction::Operand& ftoint,
+				const ir::LLVMInstruction::Operand& f, bool isSigned);
 			
 			std::string _tempRegister();
 			std::string _loadSpecialRegister( 
@@ -149,7 +156,6 @@ namespace translator
 				ir::PTXInstruction::AddressSpace space, 
 				ir::LLVMInstruction::DataType type, unsigned int vector );
 			
-			void _setFloatingPointRoundingMode( const ir::PTXInstruction& i );
 			ir::LLVMInstruction::Operand _destination( 
 				const ir::PTXInstruction& i, bool pd = false );
 			ir::LLVMInstruction::Operand _destinationCC( 
@@ -164,6 +170,8 @@ namespace translator
 			void _addTextureCalls();
 			void _addAtomicCalls();
 			void _addMathCalls();
+			void _addLLVMIntrinsics();
+			void _addUtilityCalls();
 			void _addKernelPrefix();
 			void _addGlobalDeclarations();
 			void _addKernelSuffix();

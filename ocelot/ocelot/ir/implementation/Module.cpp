@@ -22,16 +22,18 @@
 
 #define REPORT_BASE 0
 
-ir::Module::Module(const std::string& path) : _ptxPointer(0) {
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+ir::Module::Module(const std::string& path) : _ptxPointer(0), _loaded(true) {
 	load(path);
 }
 
 ir::Module::Module(std::istream& stream, 
-	const std::string& path) : _ptxPointer(0) {
+	const std::string& path) : _ptxPointer(0), _loaded(true) {
 	load(stream, path);
 }
 
-ir::Module::Module() : _ptxPointer(0) {
+ir::Module::Module() : _ptxPointer(0), _loaded(true) {
 	PTXStatement version;
 	PTXStatement target;
 	version.directive = PTXStatement::Version;
@@ -48,7 +50,7 @@ ir::Module::~Module() {
 
 
 ir::Module::Module(const std::string& name, 
-	const StatementVector& statements) {
+	const StatementVector& statements) : _loaded(true) {
 	_modulePath = name;
 	_statements = statements;
 	extractPTXKernels();
@@ -70,6 +72,8 @@ void ir::Module::unload() {
 	_textures.clear();
 	_globals.clear();
 	_modulePath = "::unloaded::";
+	
+	_loaded = false;
 }
 
 /*!
@@ -97,6 +101,8 @@ bool ir::Module::load(const std::string& path) {
 	else {
 		return false;
 	}
+	
+	_loaded = true;
 
 	return true;
 }
@@ -115,6 +121,8 @@ bool ir::Module::load(std::istream& stream, const std::string& path) {
 	parser.parse( stream );
 	_statements = std::move( parser.statements() );
 	extractPTXKernels();
+
+	_loaded = true;
 
 	return true;
 }
@@ -139,6 +147,7 @@ bool ir::Module::lazyLoad(const char* source, const std::string& path) {
 
 void ir::Module::loadNow() {
 	if( loaded() ) return;
+	_loaded = true;
 	if( !_ptx.empty() )
 	{
 		std::stringstream stream( std::move( _ptx ) );
@@ -166,7 +175,7 @@ void ir::Module::loadNow() {
 }	
 	
 bool ir::Module::loaded() const {
-	return _ptx.empty() && ( _ptxPointer == 0 );
+	return _loaded;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -223,7 +232,7 @@ void ir::Module::writeIR( std::ostream& stream ) const {
 
 	stream << "/* Module " << _modulePath << " */\n\n";
 	
-	stream << "/* Globals */\n";
+	stream << "\n/* Globals */\n";
 	for (GlobalMap::const_iterator global = _globals.begin(); 
 		global != _globals.end(); ++global) {
 		stream << global->second.statement.toString() << "\n";

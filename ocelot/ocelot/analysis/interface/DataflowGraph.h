@@ -89,6 +89,7 @@ namespace analysis
 			{
 				private:
 					std::string _message;
+				
 				public:
 					NoProducerException( RegisterId reg );
 					~NoProducerException() throw();
@@ -156,7 +157,7 @@ namespace analysis
 					RegisterSet _aliveOut;
 					/*! \brief The fallthrough block */
 					BlockVector::iterator _fallthrough;
-					/*! \brief The target block */
+					/*! \brief The target blocks */
 					BlockPointerSet _targets;
 					/*! \brief A list of predecessor blocks */
 					BlockPointerSet _predecessors;
@@ -182,9 +183,7 @@ namespace analysis
 					Block( DataflowGraph& dfg, 
 						ir::ControlFlowGraph::iterator block );
 					/*! \brief Default constructor */
-					explicit Block( Type t = Invalid );
-					/*! \brief Consutructor from a blank bb */
-					explicit Block( ir::ControlFlowGraph::iterator block );
+					Block( DataflowGraph& dfg, Type t = Invalid );
 					
 				public:
 					/*! \brief Get registers that are alive entering the block*/
@@ -303,7 +302,8 @@ namespace analysis
 			void redirect( iterator source, 
 				iterator destination, iterator newTarget );
 			/*! \brief Set the target of a block */
-			void target( iterator block, iterator target );
+			void target( iterator block, iterator target,
+				bool fallthrough = false );
 			/*! \brief Delete a block, joining predecessors and successors */
 			iterator erase( iterator block );
 			/*! \brief Revert back to a single entry and exit block */
@@ -353,7 +353,7 @@ namespace std
 		analysis::DataflowGraph::iterator >::operator()( 
 		analysis::DataflowGraph::iterator it ) const
 	{
-		return ( size_t )&( *it );
+		return ( size_t )it->id();
 	}
 	
 	template<> inline size_t hash< 

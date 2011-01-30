@@ -41,12 +41,14 @@ namespace executive
 					int addressSpace;
 					/*! human-readable device name */
 					std::string name;
-					/*! number of bytes of global memory available to the device */
+					/*! number of bytes of global memory available to
+						the device */
 					size_t totalMemory;
-					/*! gets the number of multiprocessors/cores on the device */
+					/*! gets the number of multiprocessors/cores on
+						the device */
 					unsigned int multiprocessorCount;
-					/*! true if the device can simultaneously execute a kernel while 
-						performing data transfer */
+					/*! true if the device can simultaneously execute a kernel
+						while performing data transfer */
 					int memcpyOverlap;
 					/*! maximum number of threads per block */
 					int maxThreadsPerBlock;
@@ -54,7 +56,8 @@ namespace executive
 					int maxThreadsDim[3];
 					/*! maximum size of each dimension of a grid */
 					int maxGridSize[3];
-					/*! total amount of shared memory available per block in bytes */
+					/*! total amount of shared memory available per block
+						in bytes */
 					int sharedMemPerBlock;
 					/*! total amount of constant memory on the device */
 					int totalConstantMemory;
@@ -197,7 +200,7 @@ namespace executive
 			/*! \brief Unregister a resource */
 			virtual void unRegisterGraphicsResource(void* resource) = 0;
 			/*! \brief Map a graphics resource for use with this device */
-			virtual void mapGraphicsResource(void* resource, int count, 
+			virtual void mapGraphicsResource(void** resource, int count, 
 				unsigned int stream) = 0;
 			/*! \brief Get a pointer to a mapped resource along with its size */
 			virtual void* getPointerToMappedGraphicsResource(size_t& size, 
@@ -206,7 +209,8 @@ namespace executive
 			virtual void setGraphicsResourceFlags(void* resource, 
 				unsigned int flags) = 0;
 			/*! \brief Unmap a mapped resource */
-			virtual void unmapGraphicsResource(void* resource) = 0;
+			virtual void unmapGraphicsResource(void** resource, int count,
+				unsigned int stream) = 0;
 
 		public:
 			/*! \brief Load a module, must have a unique name */
@@ -227,7 +231,7 @@ namespace executive
 			/*! \brief Destroy an existing event */
 			virtual void destroyEvent(unsigned int event) = 0;
 			/*! \brief Query to see if an event has been recorded (yes/no) */
-			virtual bool queryEvent(unsigned int event) const = 0;
+			virtual bool queryEvent(unsigned int event) = 0;
 			/*! \brief Record something happening on an event */
 			virtual void recordEvent(unsigned int event, 
 				unsigned int stream) = 0;
@@ -235,7 +239,7 @@ namespace executive
 			virtual void synchronizeEvent(unsigned int event) = 0;
 			/*! \brief Get the elapsed time in ms between two recorded events */
 			virtual float getEventTime(unsigned int start, 
-				unsigned int end) const = 0;
+				unsigned int end) = 0;
 		
 		public:
 			/*! \brief Create a new stream */
@@ -243,7 +247,7 @@ namespace executive
 			/*! \brief Destroy an existing stream */
 			virtual void destroyStream(unsigned int stream) = 0;
 			/*! \brief Query the status of an existing stream (ready/not) */
-			virtual bool queryStream(unsigned int stream) const = 0;
+			virtual bool queryStream(unsigned int stream) = 0;
 			/*! \brief Synchronize a particular stream */
 			virtual void synchronizeStream(unsigned int stream) = 0;
 			/*! \brief Sets the current stream */
@@ -299,7 +303,7 @@ namespace executive
 			virtual cudaFuncAttributes getAttributes(const std::string& module, 
 				const std::string& kernel) = 0;
 			/*! \brief Get the last error from this device */
-			virtual unsigned int getLastError() const = 0;
+			virtual unsigned int getLastError() = 0;
 			/*! \brief Wait until all asynchronous operations have completed */
 			virtual void synchronize() = 0;
 			

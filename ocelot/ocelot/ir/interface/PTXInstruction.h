@@ -376,12 +376,14 @@ namespace ir {
 		/*! Source operand c */
 		PTXOperand c;
 
+	public:
+	
 		/*  Runtime annotations 
 			
 			The following members are used to annotate the instruction 
 				at analysis time
 		*/
-	public:
+		
 		/*! \brief Index of post dominator instruction at which possibly 
 			divergent branches reconverge */
 		int reconvergeInstruction;

@@ -28,8 +28,7 @@
 #undef REPORT_BASE
 #endif
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
-
+////////////////////////////////////////////////////////////////////////////////
 
 // whether CUDA runtime catches exceptions thrown by Ocelot
 #define CATCH_RUNTIME_EXCEPTIONS 0
@@ -43,13 +42,14 @@
 // report all ptx modules
 #define REPORT_ALL_PTX 0
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 //
 // Error handling macros
 
-#define Ocelot_Exception(x) { std::stringstream ss; ss << x; throw hydrazine::Exception(ss.str()); }
+#define Ocelot_Exception(x) { std::stringstream ss; ss << x; \
+	throw hydrazine::Exception(ss.str()); }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 typedef api::OcelotConfiguration config;
 
@@ -65,7 +65,7 @@ const char *cuda::FatBinaryContext::ptx() const {
 	return binary->ptx->ptx;
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 cuda::HostThreadContext::HostThreadContext(): selectedDevice(0), 
 	parameterBlock(0), parameterBlockSize(1<<13) {
@@ -86,7 +86,8 @@ cuda::HostThreadContext::HostThreadContext(const HostThreadContext& c):
 	parameterIndices(c.parameterIndices),
 	parameterSizes(c.parameterSizes),
 	persistentTraceGenerators(c.persistentTraceGenerators),
-	nextTraceGenerators(c.nextTraceGenerators) {
+	nextTraceGenerators(c.nextTraceGenerators),
+	ptxPasses(c.ptxPasses) {
 	memcpy(parameterBlock, c.parameterBlock, parameterBlockSize);
 }
 
@@ -101,6 +102,7 @@ cuda::HostThreadContext& cuda::HostThreadContext::operator=(
 	parameterSizes = c.parameterSizes;
 	persistentTraceGenerators = c.persistentTraceGenerators;
 	nextTraceGenerators = c.nextTraceGenerators;
+	ptxPasses = c.ptxPasses;
 	memcpy(parameterBlock, c.parameterBlock, parameterBlockSize);
 	return *this;
 }
@@ -122,6 +124,7 @@ cuda::HostThreadContext& cuda::HostThreadContext::operator=(
 	std::swap(parameterSizes, c.parameterSizes);
 	std::swap(persistentTraceGenerators, c.persistentTraceGenerators);
 	std::swap(nextTraceGenerators, c.nextTraceGenerators);
+	std::swap(ptxPasses, c.ptxPasses);
 	return *this;
 }
 
@@ -134,6 +137,7 @@ void cuda::HostThreadContext::clear() {
 	validDevices.clear();
 	launchConfigurations.clear();
 	clearParameters();
+	persistentTraceGenerators.clear();
 	nextTraceGenerators.clear();
 }
 
@@ -165,7 +169,7 @@ void cuda::HostThreadContext::mapParameters(const ir::Kernel* kernel) {
 	clearParameters();
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 cuda::RegisteredKernel::RegisteredKernel(size_t h, const std::string& m, 
 	const std::string& k) : handle(h), module(m), kernel(k) {
 }
@@ -189,16 +193,21 @@ size_t cuda::Dimension::pitch() const {
 	return ((format.x + format.y + format.z + format.w) / 8) * x;
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 void cuda::CudaRuntime::_memcpy(void* dst, const void* src, size_t count, 
 	enum cudaMemcpyKind kind) {
+	
 	switch(kind) {
 		case cudaMemcpyHostToHost: {
+			report("  _memcpy(" << (void *)dst << ", " << src
+				<< ", " << count << " bytes) h-to-h");
 			memcpy(dst, src, count);
 		}
 		break;
 		case cudaMemcpyDeviceToHost: {
+			report("  _memcpy(" << (void *)dst << ", " << src
+				<< ", " << count << " bytes) d-to-h");
 			if (!_getDevice().checkMemoryAccess(src, count)) {
 				_release();
 				_memoryError(src, count, "cudaMemcpy");
@@ -211,6 +220,8 @@ void cuda::CudaRuntime::_memcpy(void* dst, const void* src, size_t count,
 		}
 		break;
 		case cudaMemcpyDeviceToDevice: {
+			report("  _memcpy(" << (void *)dst << ", "
+				<< src << ", " << count << " bytes) d-to-d");
 			if (!_getDevice().checkMemoryAccess(src, count)) {
 				_release();
 				_memoryError(src, count, "cudaMemcpy");
@@ -231,6 +242,8 @@ void cuda::CudaRuntime::_memcpy(void* dst, const void* src, size_t count,
 		}
 		break;
 		case cudaMemcpyHostToDevice: {
+			report("  _memcpy(" << (void *)dst << ", "
+				<< src << ", " << count << " bytes) h-to-d");
 			if (!_getDevice().checkMemoryAccess(dst, count)) {
 				_release();
 				_memoryError(dst, count, "cudaMemcpy");
@@ -275,8 +288,10 @@ void cuda::CudaRuntime::_enumerateDevices() {
 		_devices.insert(_devices.end(), d.begin(), d.end());
 		
 		if (config::get().executive.workerThreadLimit > 0) {
-			for (executive::DeviceVector::iterator d_it = d.begin(); d_it != d.end(); ++d_it) {
-				(*d_it)->limitWorkerThreads(config::get().executive.workerThreadLimit);
+			for (executive::DeviceVector::iterator d_it = d.begin();
+				d_it != d.end(); ++d_it) {
+				(*d_it)->limitWorkerThreads(
+					config::get().executive.workerThreadLimit);
 			}
 		}
 	}
@@ -417,7 +432,7 @@ void cuda::CudaRuntime::_registerAllModules() {
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 cuda::CudaRuntime::CudaRuntime() : _deviceCount(0), _devicesLoaded(false), 
 	_selectedDevice(-1), _nextSymbol(1), _flags(0), 
@@ -466,10 +481,11 @@ cuda::CudaRuntime::~CudaRuntime() {
 }
 
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 /*!
-	registers a CUDA fatbinary and returns a handle for referencing the fat binary
+	registers a CUDA fatbinary and returns a handle
+	for referencing the fat binary
 */
 void** cuda::CudaRuntime::cudaRegisterFatBinary(void *fatCubin) {
 	size_t handle = 0;
@@ -654,7 +670,7 @@ void cuda::CudaRuntime::cudaRegisterFunction(
 	_unlock();
 }
 		
-//////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 //
 // memory allocation
 
@@ -681,6 +697,10 @@ cudaError_t cuda::CudaRuntime::cudaMalloc(void **devPtr, size_t size) {
 	return _setLastError(result);
 }
 
+/*!
+	constructs a host-side allocation, returns pointer to mapped region -
+	this allocation is referenced by the mappedPointer()
+*/
 cudaError_t cuda::CudaRuntime::cudaMallocHost(void **ptr, size_t size) {
 	cudaError_t result = cudaErrorMemoryAllocation;
 	_acquire();
@@ -692,8 +712,8 @@ cudaError_t cuda::CudaRuntime::cudaMallocHost(void **ptr, size_t size) {
 		*ptr = allocation->mappedPointer();
 		result = cudaSuccess;
 	}
-	catch(hydrazine::Exception& exp) {
-		report("exception raised: " << exp.what());
+	catch(hydrazine::Exception &exp) {
+		report("  cudaMallocHost() - error:\n" << exp.what());
 	}
 
 	report("cudaMallocHost( *pPtr = " << (void *)*ptr 
@@ -910,8 +930,8 @@ cudaError_t cuda::CudaRuntime::cudaHostGetDevicePointer(void **pDevice,
 	_acquire();
 	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
 	
-	executive::Device::MemoryAllocation* 
-		allocation = _getDevice().getMemoryAllocation(pHost, 
+	executive::Device::MemoryAllocation *allocation =
+		_getDevice().getMemoryAllocation(pHost, 
 			executive::Device::HostAllocation);
 
 	if (allocation != 0) {	
@@ -920,6 +940,10 @@ cudaError_t cuda::CudaRuntime::cudaHostGetDevicePointer(void **pDevice,
 			*pDevice = (char*)allocation->pointer() + offset;
 			result = cudaSuccess;
 		}
+	}
+	else {
+		report("cudaHostGetDevicePointer() - failed to get device pointer "
+			"from host allocation at " << (const void *)pHost);
 	}
 
 	_release();
@@ -945,7 +969,7 @@ cudaError_t cuda::CudaRuntime::cudaHostGetFlags(unsigned int *pFlags,
 	return _setLastError(result);
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 //
 // memory copying
 
@@ -999,7 +1023,13 @@ cudaError_t cuda::CudaRuntime::cudaMemcpyToSymbol(const char *symbol,
 	else {
 		name = global->second.global;
 		module = global->second.module;
-		_registerModule(module);
+		try {
+			_registerModule(module);
+		}
+		catch(...) {
+			_unlock();
+			throw;
+		}
 	}
 
 	_bind();
@@ -1053,7 +1083,13 @@ cudaError_t cuda::CudaRuntime::cudaMemcpyFromSymbol(void *dst,
 	else {
 		name = global->second.global;
 		module = global->second.module;
-		_registerModule(module);
+		try {
+			_registerModule(module);
+		}
+		catch(...) {
+			_unlock();
+			throw;
+		}
 	}
 	
 	_bind();
@@ -1751,7 +1787,7 @@ cudaError_t cuda::CudaRuntime::cudaMemcpy3DAsync(const struct cudaMemcpy3DParms 
 	return cudaMemcpy3D(p);
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 //
 // memset
 //
@@ -1838,7 +1874,7 @@ cudaError_t cuda::CudaRuntime::cudaMemset3D(struct cudaPitchedPtr pitchedDevPtr,
 	return _setLastError(result);	
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 //
 // memory allocation
 //
@@ -1866,7 +1902,13 @@ cudaError_t cuda::CudaRuntime::cudaGetSymbolAddress(void **devPtr,
 		name = global->second.global;
 		module = global->second.module;
 		
-		_registerModule(module);
+		try {
+			_registerModule(module);
+		}
+		catch(...) {
+			_unlock();
+			throw;
+		}
 	}
 	else {
 		name = symbol;
@@ -1908,7 +1950,13 @@ cudaError_t cuda::CudaRuntime::cudaGetSymbolSize(size_t *size, const char *symbo
 	if (global != _globals.end()) {
 		name = global->second.global;
 		module = global->second.module;
-		_registerModule(module);
+		try {
+			_registerModule(module);
+		}
+		catch(...) {
+			_unlock();
+			throw;
+		}
 	}
 	else {
 		name = symbol;
@@ -1929,7 +1977,7 @@ cudaError_t cuda::CudaRuntime::cudaGetSymbolSize(size_t *size, const char *symbo
 	return _setLastError(result);	
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 cudaError_t cuda::CudaRuntime::cudaGetDeviceCount(int *count) {
 	cudaError_t result = cudaSuccess;
@@ -2028,7 +2076,8 @@ cudaError_t cuda::CudaRuntime::cudaSetDevice(int device) {
 		HostThreadContext& thread = _getCurrentThread();
 		thread.selectedDevice = device;
 		report("Setting device for thread " 
-			<< boost::this_thread::get_id() << " to " << device);
+			<< boost::this_thread::get_id() << " to " 
+			<< device);
 		result = cudaSuccess;
 	}
 
@@ -2074,7 +2123,7 @@ cudaError_t cuda::CudaRuntime::cudaSetDeviceFlags(int f) {
 	return _setLastError(result);
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 //! binds a texture to a reference and a CUDA memory block
 cudaError_t cuda::CudaRuntime::cudaBindTexture(size_t *offset, 
@@ -2093,7 +2142,13 @@ cudaError_t cuda::CudaRuntime::cudaBindTexture(size_t *offset,
 
 	RegisteredTextureMap::iterator texture = _textures.find((void*)texref);
 	if(texture != _textures.end()) {
-		_registerModule(texture->second.module);
+		try {
+			_registerModule(texture->second.module);
+		}
+		catch(...) {
+			_unlock();
+			throw;
+		}
 		
 		_bind();
 		try {
@@ -2134,7 +2189,13 @@ cudaError_t cuda::CudaRuntime::cudaBindTexture2D(size_t *offset,
 	RegisteredTextureMap::iterator texture = _textures.find((void*)texref);
 
 	if(texture != _textures.end()) {
-		_registerModule(texture->second.module);
+		try {
+			_registerModule(texture->second.module);
+		}
+		catch(...) {
+			_unlock();
+			throw;
+		}
 		_bind();
 		try {
 			_getDevice().bindTexture((void*)devPtr, texture->second.module, 
@@ -2182,7 +2243,13 @@ cudaError_t cuda::CudaRuntime::cudaBindTextureToArray(
 
 	RegisteredTextureMap::iterator texture = _textures.find((void*)texref);
 	if(texture != _textures.end()) {
-		_registerModule(texture->second.module);
+		try {
+			_registerModule(texture->second.module);
+		}
+		catch(...) {
+			_unlock();
+			throw;
+		}
 		_bind();
 		try {
 			_getDevice().bindTexture((void*)array, texture->second.module, 
@@ -2213,7 +2280,13 @@ cudaError_t cuda::CudaRuntime::cudaUnbindTexture(
 
 	RegisteredTextureMap::iterator texture = _textures.find((void*)texref);
 	if(texture != _textures.end()) {
-		_registerModule(texture->second.module);
+		try {
+			_registerModule(texture->second.module);
+		}
+		catch(...) {
+			_unlock();
+			throw;
+		}
 		_bind();
 		try {
 			_getDevice().unbindTexture(texture->second.module, 
@@ -2268,7 +2341,7 @@ cudaError_t cuda::CudaRuntime::cudaGetTextureReference(
 	return _setLastError(result);
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 cudaError_t cuda::CudaRuntime::cudaGetChannelDesc(
 	struct cudaChannelFormatDesc *desc, const struct cudaArray *array) {
@@ -2295,14 +2368,14 @@ struct cudaChannelFormatDesc cuda::CudaRuntime::cudaCreateChannelDesc(int x,
 	return desc;
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 cudaError_t cuda::CudaRuntime::cudaGetLastError(void) {
 	HostThreadContext& thread = _getCurrentThread();
 	return thread.lastError;
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 	
 cudaError_t cuda::CudaRuntime::cudaConfigureCall(dim3 gridDim, dim3 blockDim, 
 	size_t sharedMem, cudaStream_t stream) {
@@ -2461,12 +2534,24 @@ cudaError_t cuda::CudaRuntime::cudaFuncGetAttributes(
 	//
 	RegisteredKernelMap::iterator kernel = _kernels.find((void*)symbol);
 	if (kernel != _kernels.end()) {
-		_registerModule(kernel->second.module);
+		try {
+			_registerModule(kernel->second.module);
+		}
+		catch(...) {
+			_unlock();
+			throw;
+		}
+		
 		_bind();
+
 		*attr = _getDevice().getAttributes(kernel->second.module, 
 			kernel->second.kernel);
 		result = cudaSuccess;
+
 		_release();
+	}
+	else {
+		_unlock();
 	}
 	
 	return _setLastError(result);
@@ -2618,7 +2703,7 @@ cudaError_t cuda::CudaRuntime::cudaEventElapsedTime(float *ms,
 	return _setLastError(result);
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 //
 // CUDA streams
 //
@@ -2697,7 +2782,7 @@ cudaError_t cuda::CudaRuntime::cudaStreamQuery(cudaStream_t stream) {
 	return _setLastError(result);
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 cudaError_t cuda::CudaRuntime::cudaDriverGetVersion(int *driverVersion) {
 	cudaError_t result = cudaSuccess;
 
@@ -2760,7 +2845,7 @@ cudaError_t cuda::CudaRuntime::cudaRuntimeGetVersion(int *runtimeVersion) {
 	return _setLastError(result);
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 cudaError_t cuda::CudaRuntime::cudaThreadExit(void) {
 	cudaError_t result = cudaSuccess;
@@ -2793,7 +2878,7 @@ cudaError_t cuda::CudaRuntime::cudaThreadSynchronize(void) {
 	return _setLastError(result);
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 cudaError_t cuda::CudaRuntime::cudaGLMapBufferObject(void **devPtr, 
 	GLuint bufObj) {
@@ -2809,10 +2894,12 @@ cudaError_t cuda::CudaRuntime::cudaGLMapBufferObjectAsync(void **devPtr,
 	report("cudaGLMapBufferObjectAsync(" << bufObj << ", " << stream << ")");
 	GLBufferMap::iterator buffer = _buffers.find(bufObj);
 	if (buffer != _buffers.end()) {
-		_getDevice().mapGraphicsResource(buffer->second, 1, stream);
+
+		_getDevice().mapGraphicsResource(& buffer->second, 1, stream);
+		
 		size_t bytes = 0;
 		*devPtr = _getDevice().getPointerToMappedGraphicsResource(
-			bytes, buffer->second);
+			bytes, buffer->second);	// semantics of this questionable
 		result = cudaSuccess;
 	}
 	report(" pointer - (" << *devPtr << ")");
@@ -2874,7 +2961,7 @@ cudaError_t cuda::CudaRuntime::cudaGLUnmapBufferObject(GLuint bufObj) {
 	
 	GLBufferMap::iterator buffer = _buffers.find(bufObj);
 	if (buffer != _buffers.end()) {
-		_getDevice().unmapGraphicsResource(buffer->second);
+		_getDevice().unmapGraphicsResource(& buffer->second, 1, 0);
 		result = cudaSuccess;
 	}
 	
@@ -2908,7 +2995,7 @@ cudaError_t cuda::CudaRuntime::cudaGLUnregisterBufferObject(GLuint bufObj) {
 	return _setLastError(result);
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 cudaError_t cuda::CudaRuntime::cudaGraphicsGLRegisterBuffer(
 	struct cudaGraphicsResource **resource, GLuint buffer, unsigned int flags) {
@@ -2981,7 +3068,7 @@ cudaError_t cuda::CudaRuntime::cudaGraphicsMapResources(int count,
 	
 	report("mapGraphicsResource");
 	
-	_getDevice().mapGraphicsResource(resource, count, stream);	
+	_getDevice().mapGraphicsResource((void **)resource, count, stream);	
 
 	_release();
 	
@@ -2996,7 +3083,7 @@ cudaError_t cuda::CudaRuntime::cudaGraphicsUnmapResources(int count,
 	
 	report("cudaGraphicsUnmapResources");
 	
-	_getDevice().mapGraphicsResource(resources, count, stream);	
+	_getDevice().unmapGraphicsResource((void **)resources, count, stream);	
 
 	_release();
 	
@@ -3025,11 +3112,10 @@ cudaError_t cuda::CudaRuntime::cudaGraphicsSubResourceGetMappedArray(
 }
 
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
-void cuda::CudaRuntime::addTraceGenerator( trace::TraceGenerator& gen, 
+void cuda::CudaRuntime::addTraceGenerator( trace::TraceGenerator& gen,
 	bool persistent ) {
-
 	_lock();
 	HostThreadContext& thread = _getCurrentThread();
 	if (persistent) {
@@ -3046,6 +3132,40 @@ void cuda::CudaRuntime::clearTraceGenerators() {
 	HostThreadContext& thread = _getCurrentThread();
 	thread.persistentTraceGenerators.clear();
 	thread.nextTraceGenerators.clear();
+	_unlock();
+}
+
+void cuda::CudaRuntime::addPTXPass(analysis::Pass &pass) {
+	_lock();
+#if 0
+	HostThreadContext& thread = _getCurrentThread();
+
+	thread.ptxPersistentPassesList.push_back(&pass);
+#endif
+	_unlock();
+}
+
+void cuda::CudaRuntime::removePTXPass(analysis::Pass &pass) {
+	_lock();
+#if 0
+	HostThreadContext& thread = _getCurrentThread();
+
+	analysis::PassList::iterator p_it = thread.ptxPersistentPassesList.begin();
+	for (; p_it != thread.ptxPersistentPassesList.end(); ++p_it) {
+		if ((*p_it) == &pass) {
+			p_it = thread.ptxPersistentPassesList.erase(p_it);
+		}
+	}
+#endif
+	_unlock();
+}
+
+void cuda::CudaRuntime::clearPTXPasses() {
+	_lock();
+#if 0
+	HostThreadContext& thread = _getCurrentThread();
+	thread.ptxPersistentPassesList.clear();
+#endif
 	_unlock();
 }
 
@@ -3263,12 +3383,12 @@ void cuda::CudaRuntime::unregisterModule(const std::string& name) {
 		Ocelot_Exception("Module - " << name << " - is not registered.");
 	}
 	
-	_modules.erase(module);
-	
 	for (DeviceVector::iterator device = _devices.begin(); 
 		device != _devices.end(); ++device) {
 		(*device)->unload(name);
 	}
+	
+	_modules.erase(module);
 	
 	_unlock();
 }
@@ -3293,5 +3413,5 @@ void cuda::CudaRuntime::setOptimizationLevel(
 	_unlock();
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 

@@ -1088,6 +1088,7 @@ namespace cuda
 				return "CUDA DRIVER - launch timeout";
 			case CUDA_ERROR_LAUNCH_INCOMPATIBLE_TEXTURING: 
 				return "CUDA DRIVER - incompatible texturing";
+			case CUDA_ERROR_NOT_MAPPED_AS_POINTER: return "CUDA DRIVER - not mapped as pointer";
 			case CUDA_ERROR_UNKNOWN: return "CUDA DRIVER - unknown error";
 			default: break;
 		}

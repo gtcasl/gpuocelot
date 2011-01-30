@@ -218,7 +218,8 @@ namespace analysis
 	}
 
 	DataflowGraph::Block::Block( DataflowGraph& dfg, 
-		ir::ControlFlowGraph::iterator block ) : _type( Body ), _block( block )
+		ir::ControlFlowGraph::iterator block ) : _fallthrough( dfg.end() ),
+		_type( Body ), _block( block )
 	{
 		_fallthrough = dfg.end();
 		for( ir::ControlFlowGraph::InstructionList::const_iterator 
@@ -231,19 +232,10 @@ namespace analysis
 	
 	}
 
-	DataflowGraph::Block::Block( Type t ) : _type( t )
+	DataflowGraph::Block::Block( DataflowGraph& dfg, Type t ) :
+		_fallthrough( dfg.end() ), _type( t )
 	{
 		
-	}
-	
-	DataflowGraph::Block::Block( ir::ControlFlowGraph::iterator block ) 
-		: _type( Body ), _block( block )
-	{
-		assert( block->instructions.empty() );
-		assert( block->successors.empty() );
-		assert( block->predecessors.empty() );
-		assert( block->in_edges.empty() );
-		assert( block->out_edges.empty() );
 	}
 	
 	bool DataflowGraph::Block::compute( bool hasFallthrough )
@@ -438,7 +430,7 @@ namespace analysis
 		
 		unsigned int count = 1;
 		map.insert( std::make_pair( cfg.get_entry_block(), 
-			_blocks.insert( _blocks.end(), Block( Block::Entry ) ) ) );	
+			_blocks.insert( _blocks.end(), Block( *this, Block::Entry ) ) ) );	
 		for( ir::ControlFlowGraph::BlockPointerVector::iterator 
 			bbi = blocks.begin(); bbi != blocks.end(); ++bbi, ++count )
 		{
@@ -455,7 +447,7 @@ namespace analysis
 				_blocks.insert( _blocks.end(), newB ) ) );	
 		}
 		map.insert( std::make_pair( cfg.get_exit_block(), 
-			_blocks.insert( _blocks.end(), Block( Block::Exit ) ) ) );	
+			_blocks.insert( _blocks.end(), Block( *this, Block::Exit ) ) ) );	
 		
 		_blocks.front()._block = cfg.get_entry_block();
 		_blocks.back()._block = cfg.get_exit_block();
@@ -496,9 +488,11 @@ namespace analysis
 				}
 				else
 				{
-					assertM( false, "Got invalid edge type between " 
+/*					assertM( false, "Got invalid edge type between " 
 						<< begin->second->label() << " and " 
-						<< bi->second->label() );
+						<< bi->second->label() );*/
+					begin->second->_targets.insert( bi->second );
+					bi->second->_predecessors.insert( begin->second );
 				}
 			}
 		}
@@ -544,6 +538,12 @@ namespace analysis
 	{
 		BlockVector::iterator successor = predecessor->_fallthrough;
 
+		if(successor == end())
+		{
+			assert( !predecessor->_targets.empty() );
+			successor = *predecessor->_targets.begin();
+		}
+		
 		return insert( predecessor, successor, label );
 	}
 	
@@ -571,7 +571,8 @@ namespace analysis
 		
 		_cfg->remove_edge( edge );
 		
-		iterator current = _blocks.insert( successor, Block( Block::Body ) );
+		iterator current = _blocks.insert( successor, Block( *this, 
+			Block::Body ) );
 		current->_block = _cfg->insert_block(
 			ir::ControlFlowGraph::BasicBlock( label, _cfg->newId() ) );
 		
@@ -585,8 +586,6 @@ namespace analysis
 		}
 		else
 		{
-			predecessor->_targets.erase( successor );
-
 			BlockPointerSet::iterator ti
 				= predecessor->_targets.find( successor );
 			assert( ti != predecessor->_targets.end() );
@@ -605,7 +604,8 @@ namespace analysis
 		return current;
 	}
 	
-	void DataflowGraph::target( iterator block, iterator target )
+	void DataflowGraph::target( iterator block,
+		iterator target, bool fallthrough )
 	{
 		report( "Adding branch from " << block->label() 
 			<< " to " << target->label() );
@@ -618,8 +618,17 @@ namespace analysis
 			assert( target->_predecessors.count( block ) == 0 );
 			target->_predecessors.insert( block );
 			
-			_cfg->insert_edge( ir::ControlFlowGraph::Edge( block->_block, 
-				target->_block, ir::ControlFlowGraph::Edge::Branch ) );
+			if( fallthrough )
+			{
+				_cfg->insert_edge( ir::ControlFlowGraph::Edge( block->_block, 
+					target->_block, ir::ControlFlowGraph::Edge::FallThrough ) );
+				block->_fallthrough = target;
+			}
+			else
+			{
+				_cfg->insert_edge( ir::ControlFlowGraph::Edge( block->_block, 
+					target->_block, ir::ControlFlowGraph::Edge::Branch ) );
+			}
 		}
 	}
 
@@ -639,7 +648,7 @@ namespace analysis
 		InstructionVector::iterator end = block->_instructions.end();
 		
 		iterator added = _blocks.insert( ++iterator( block ), 
-			Block( Block::Body ) );
+			Block( *this, Block::Body ) );
 
 		if( isFallthrough )
 		{
@@ -812,8 +821,8 @@ namespace analysis
 	{
 		_consistent = true;
 		_blocks.clear();
-		_blocks.push_back( Block( Block::Entry ) );
-		_blocks.push_back( Block( Block::Exit ) );
+		_blocks.push_back( Block( *this, Block::Entry ) );
+		_blocks.push_back( Block( *this, Block::Exit ) );
 		
 		_cfg->clear();
 		

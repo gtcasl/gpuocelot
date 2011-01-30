@@ -70,6 +70,16 @@ void cuda::CudaRuntimeInterface::clearTraceGenerators() {
 	assert(0 && "unimplemented");
 }
 
+void cuda::CudaRuntimeInterface::addPTXPass(analysis::Pass &pass) {
+	assert(0 && "unimplemented");
+}
+void cuda::CudaRuntimeInterface::removePTXPass(analysis::Pass &pass) {
+	assert(0 && "unimplemented");
+}
+void cuda::CudaRuntimeInterface::clearPTXPasses() {
+	assert(0 && "unimplemented");
+}
+
 void cuda::CudaRuntimeInterface::limitWorkerThreads( unsigned int limit ) {
 	assert(0 && "unimplemented");
 }
@@ -681,6 +691,11 @@ cudaError_t cuda::CudaRuntimeInterface::cudaThreadExit(void) {
 }
 
 cudaError_t cuda::CudaRuntimeInterface::cudaThreadSynchronize(void) {
+	assert(0 && "unimplemented");
+	return cudaErrorNotYetImplemented;
+}
+
+cudaError_t cuda::CudaRuntimeInterface::cudaThreadSetLimit(enum cudaLimit limit, size_t value) {
 	assert(0 && "unimplemented");
 	return cudaErrorNotYetImplemented;
 }

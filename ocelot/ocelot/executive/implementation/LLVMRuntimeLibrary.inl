@@ -34,7 +34,10 @@ static void __report( executive::LLVMContext* context,
 	T value, const bool read )
 {
 	#if(DEBUG_NTH_THREAD_ONLY == 1)
-	if( context->tid.x == NTH_THREAD )
+	unsigned int threadId = context->tid.x + 
+		context->tid.y * context->ntid.y +
+		context->tid.z * context->ntid.y * context->ntid.x;
+	if( threadId == NTH_THREAD )
 	{
 	#endif		
 		std::cout << "Thread (" << context->tid.x << ", " << context->tid.y 
@@ -53,75 +56,12 @@ static void __report( executive::LLVMContext* context,
 	#endif
 }
 
+static boost::mutex mutex;
+
 extern "C"
 {
-	bool __ocelot_testp_finite_f32( float a )
-	{
-		return !_isinf( a );
-	}
-	
-	bool __ocelot_testp_infinite_f32( float a )
-	{
-		return _isinf( a );
-	}
-	
-	bool __ocelot_testp_number_f32( float a )
-	{
-		return !_isnan( a );
-	}
-	
-	bool __ocelot_testp_notanumber_f32( float a )
-	{
-		return _isnan( a );
-	}
-	
-	bool __ocelot_testp_normal_f32( float a )
-	{
-		return _isnormal( a );
-	}
-	
-	bool __ocelot_testp_subnormal_f32( float a )
-	{
-		return !_isinf( a ) && !_isnan( a ) && !_isnormal( a );
-	}
-	
-	bool __ocelot_testp_finite_f64( double a )
-	{
-		return !_isinf( a );
-	}
-	
-	bool __ocelot_testp_infinite_f64( double a )
-	{
-		return _isinf( a );
-	}
-	
-	bool __ocelot_testp_number_f64( double a )
-	{
-		return !_isnan( a );
-	}
-	
-	bool __ocelot_testp_notanumber_f64( double a )
-	{
-		return _isnan( a );
-	}
-	
-	bool __ocelot_testp_normal_f64( double a )
-	{
-		return _isnormal( a );
-	}
-	
-	bool __ocelot_testp_subnormal_f64( double a )
-	{
-		return !_isinf( a ) && !_isnan( a ) && !_isnormal( a );
-	}
-	
-	unsigned int __ocelot_bfi_b32( unsigned int in, unsigned int orig, 
-		unsigned int position, unsigned int length )
-	{
-		return hydrazine::bitFieldInsert( in, orig, position, length );
-	}
 
-	unsigned int __ocelot_bfi_b64( long long unsigned int in, 
+	long long unsigned int __ocelot_bfi_b64( long long unsigned int in, 
 		long long unsigned int orig, unsigned int position, 
 		unsigned int length )
 	{
@@ -133,7 +73,8 @@ extern "C"
 		return hydrazine::bfind( a, shift );
 	}
 
-	unsigned int __ocelot_bfind_b64( long long unsigned int a, bool shift )
+	long long unsigned int __ocelot_bfind_b64( long long unsigned int a,
+		bool shift )
 	{
 		return hydrazine::bfind( a, shift );
 	}
@@ -146,26 +87,6 @@ extern "C"
 	long long unsigned int __ocelot_brev_b64( long long unsigned int a )
 	{
 		return hydrazine::brev( a );
-	}
-
-	unsigned int __ocelot_clz_b32( unsigned int a )
-	{
-		return hydrazine::countLeadingZeros( a );
-	}
-
-	unsigned int __ocelot_clz_b64( long long unsigned int a )
-	{
-		return hydrazine::countLeadingZeros( a );
-	}
-
-	unsigned int __ocelot_popc_b32( unsigned int a )
-	{
-		return hydrazine::popc( a );
-	}
-
-	unsigned int __ocelot_popc_b64( long long unsigned int a )
-	{
-		return hydrazine::popc( a );
 	}
 
 	unsigned int __ocelot_prmt( unsigned int a, unsigned int b, unsigned int c )
@@ -230,101 +151,6 @@ extern "C"
 		return hi;
 	}
 
-	float __ocelot_ex2Ftz( float f )
-	{
-		float value = exp( f * 0.693147f );
-		if( _isnan( value ) || _isinf( value ) )
-		{
-			value = 0;
-		}
-		return value;
-	}
-	
-	float __ocelot_ex2( float value )
-	{
-		return exp( value * 0.693147f );
-	}
-
-	float __ocelot_rsqrtFtz( float f )
-	{
-		float value = 1.0 / sqrt( f );
-		if( _isnan( value ) || _isinf( value ) )
-		{
-			value = 0;
-		}
-		return value;
-	}
-
-	float __ocelot_rsqrt( float value )
-	{
-		return 1.0 / sqrt( value );
-	}
-	
-	double __ocelot_sqrt( double f )
-	{
-		return sqrt( f );
-	}
-	
-	float __ocelot_sqrtFtz( float f )
-	{
-		float value = sqrt( f );
-		if( _isnan( value ) || _isinf( value ) )
-		{
-			value = 0;
-		}
-		return value;
-	}
-	
-	float __ocelot_sqrtf( float f )
-	{
-		return sqrt( f );
-	}
-	
-	float __ocelot_log2Ftz( float f )
-	{
-		float value = log2( f );
-		if( _isnan( value ) || _isinf( value ) )
-		{
-			value = 0;
-		}
-		return value;
-	}
-
-	float __ocelot_log2f( float f )
-	{
-		return log2( f );
-	}
-
-	float __ocelot_sinFtz( float f )
-	{
-		float value = sin( f );
-		if( _isnan( value ) || _isinf( value ) )
-		{
-			value = 0;
-		}
-		return value;
-	}
-
-	float __ocelot_sinf( float f )
-	{
-		return sin( f );
-	}
-
-	float __ocelot_cosFtz( float f )
-	{
-		float value = cos( f );
-		if( _isnan( value ) || _isinf( value ) )
-		{
-			value = 0;
-		}
-		return value;
-	}
-
-	float __ocelot_cosf( float f )
-	{
-		return cos( f );
-	}
-
 	bool __ocelot_vote( bool a, ir::PTXInstruction::VoteMode mode, bool invert )
 	{
 		a = invert ? !a : a;
@@ -343,395 +169,48 @@ extern "C"
 		return true;
 	}
 
-	ir::PTXF32 __ocelot_atom_f32( executive::LLVMContext* context, 
-		ir::PTXInstruction::AddressSpace space, 
-		ir::PTXInstruction::AtomicOperation op, ir::PTXU64 address, 
-		ir::PTXF32 b )
+	ir::PTXB32 __ocelot_atomic_inc_32( ir::PTXU64 address, ir::PTXB32 b )
 	{
-		executive::LLVMExecutableKernel::OpaqueState* state = 
-			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
-		
-		ir::PTXF32 d = 0;
-		ir::PTXF32 result = 0;
-		
-		if( space == ir::PTXInstruction::Shared )
-		{
-			address += ( ir::PTXU64 ) context->shared;
-		}
-		else
-		{
-			state->cache->lock();
-		}
-		
-		d = *((ir::PTXF32*) address);
-
-		switch( op )
-		{
-			case ir::PTXInstruction::AtomicAdd:
-			{
-				result = d + b;
-				reportE( REPORT_ATOMIC_OPERATIONS, "AtomicAdd: address " 
-					<< (void*) address << " from " << d << " by " << b 
-					<< " to " << result );
-				break;
-			}
-			case ir::PTXInstruction::AtomicMin:
-			{
-				result = std::min( d, b );
-				reportE( REPORT_ATOMIC_OPERATIONS, "AtomicMin: address " 
-					<< (void*) address << " from " << d << " by " << b 
-					<< " to " << result );
-				break;
-			}
-			case ir::PTXInstruction::AtomicMax:
-			{
-				result = std::max( d, b );
-				reportE( REPORT_ATOMIC_OPERATIONS, "AtomicMin: address " 
-					<< (void*) address << " from " << d << " by " << b 
-					<< " to " << result );
-				break;
-			}
-			default: assertM( false, "Atomic " 
-				<< ir::PTXInstruction::toString( op ) 
-				<< " not supported for f32." );
-		}
-
-		*((ir::PTXF32*) address) = result;
-
-		if( space != ir::PTXInstruction::Shared )
-		{
-			state->cache->unlock();
-		}
-		
-		return d;
-	}
-
-	ir::PTXB32 __ocelot_atom_b32( executive::LLVMContext* context, 
-		ir::PTXInstruction::AddressSpace space, 
-		ir::PTXInstruction::AtomicOperation op, 
-		ir::PTXU64 address, ir::PTXB32 b )
-	{
-		executive::LLVMExecutableKernel::OpaqueState* state = 
-			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
-		
 		ir::PTXB32 d = 0;
 		ir::PTXB32 result = 0;
 
-		if( space == ir::PTXInstruction::Shared )
-		{
-			address += ( ir::PTXU64 ) context->shared;
-		}
-		else
-		{
-			state->cache->lock();
-		}
+		mutex.lock();
 
 		d = *((ir::PTXB32*) address);
 		
-		switch( op )
-		{
-			case ir::PTXInstruction::AtomicAnd:
-			{
-				result = d & b;
-				reportE( REPORT_ATOMIC_OPERATIONS, "AtomicAnd: address " 
-					<< (void*) address << " from " << d << " by " << b 
-					<< " to " << result );
-				break;
-			}
-			case ir::PTXInstruction::AtomicOr:
-			{
-				result = d | b;
-				reportE( REPORT_ATOMIC_OPERATIONS, "AtomicOr: address " 
-					<< (void*) address << " from " << d << " by " << b 
-					<< " to " << result );
-				break;
-			}
-			case ir::PTXInstruction::AtomicXor:
-			{
-				result = d ^ b;
-				reportE( REPORT_ATOMIC_OPERATIONS, "AtomicXor: address " 
-					<< (void*) address << " from " << d << " by " << b 
-					<< " to " << result );
-				break;
-			}
-			case ir::PTXInstruction::AtomicAdd:
-			{
-				result = d + b;
-				reportE( REPORT_ATOMIC_OPERATIONS, "AtomicAdd: address " 
-					<< (void*) address << " from " << d << " by " << b 
-					<< " to " << result );
-				break;
-			}
-			case ir::PTXInstruction::AtomicMin:
-			{
-				result = std::min( d, b );
-				reportE( REPORT_ATOMIC_OPERATIONS, "AtomicMin: address " 
-					<< (void*) address << " from " << d << " by " << b 
-					<< " to " << result );
-				break;
-			}
-			case ir::PTXInstruction::AtomicMax:
-			{
-				result = std::max( d, b );
-				reportE( REPORT_ATOMIC_OPERATIONS, "AtomicMax: address " 
-					<< (void*) address << " from " << d << " by " << b 
-					<< " to " << result );
-				break;
-			}
-			case ir::PTXInstruction::AtomicDec:
-			{
-				result = ((d == 0) || (d > b)) ? b : d - 1;
-				reportE( REPORT_ATOMIC_OPERATIONS, "AtomicDec: address " 
-					<< (void*) address << " from " << d << " by " << b 
-					<< " to " << result );
-				break;
-			}
-			case ir::PTXInstruction::AtomicInc:
-			{
-				result = (d >= b) ? 0 : d + 1;
-				reportE( REPORT_ATOMIC_OPERATIONS, "AtomicInc: address " 
-					<< (void*) address << " from " << d << " by " << b 
-					<< " to " << result );
-				break;
-			}
-			case ir::PTXInstruction::AtomicExch:
-			{
-				result = b;
-				reportE( REPORT_ATOMIC_OPERATIONS, "AtomicExch: address " 
-					<< (void*) address << " from " << d << " by " << b 
-					<< " to " << result );
-				break;
-			}
-			default: assertM( false, "Atomic " 
-				<< ir::PTXInstruction::toString( op ) 
-				<< " not supported for b32." );
-		}
-
-		*((ir::PTXB32*) address) = result;
-		
-		if( space != ir::PTXInstruction::Shared )
-		{
-			state->cache->unlock();
-		}
-
-		return d;
-	}
-
-	ir::PTXS32 __ocelot_atom_s32( executive::LLVMContext* context, 
-		ir::PTXInstruction::AddressSpace space, 
-		ir::PTXInstruction::AtomicOperation op, 
-		ir::PTXU64 address, ir::PTXS32 b )
-	{
-		executive::LLVMExecutableKernel::OpaqueState* state = 
-			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
-		
-		ir::PTXS32 d = 0;
-		ir::PTXS32 result = 0;
-
-		if( space == ir::PTXInstruction::Shared )
-		{
-			address += ( ir::PTXU64 ) context->shared;
-		}
-		else
-		{
-			state->cache->lock();
-		}
-		
-		d = *((ir::PTXS32*) address);
-
-		switch( op )
-		{
-			case ir::PTXInstruction::AtomicAdd:
-			{
-				result = d + b;
-				reportE( REPORT_ATOMIC_OPERATIONS, "AtomicAdd: address " 
-					<< (void*) address << " from " << d << " by " << b 
-					<< " to " << result );
-				break;
-			}
-			case ir::PTXInstruction::AtomicMin:
-			{
-				result = std::min( d, b );
-				reportE( REPORT_ATOMIC_OPERATIONS, "AtomicMin: address " 
-					<< (void*) address << " from " << d << " by " << b 
-					<< " to " << result );
-				break;
-			}
-			case ir::PTXInstruction::AtomicMax:
-			{
-				result = std::max( d, b );
-				reportE( REPORT_ATOMIC_OPERATIONS, "AtomicMax: address " 
-					<< (void*) address << " from " << d << " by " << b 
-					<< " to " << result );
-				break;
-			}
-			default: assertM( false, "Atomic " 
-				<< ir::PTXInstruction::toString( op ) 
-				<< " not supported for s32." );
-		}
-
-		*((ir::PTXS32*) address) = result;
-
-		if( space != ir::PTXInstruction::Shared )
-		{
-			state->cache->unlock();
-		}
-		
-		return d;
-	}
-
-	ir::PTXB64 __ocelot_atom_b64( executive::LLVMContext* context, 
-		ir::PTXInstruction::AddressSpace space, 
-		ir::PTXInstruction::AtomicOperation op, 
-		ir::PTXU64 address, ir::PTXB64 b )
-	{
-		executive::LLVMExecutableKernel::OpaqueState* state = 
-			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
-		
-		ir::PTXB64 d = 0;
-		ir::PTXB64 result = 0;
-
-		if( space == ir::PTXInstruction::Shared )
-		{
-			address += ( ir::PTXU64 ) context->shared;
-		}
-		else
-		{
-			state->cache->lock();
-		}
-				
-		d = *((ir::PTXB64*) address);
-
-		switch( op )
-		{
-			case ir::PTXInstruction::AtomicAdd:
-			{
-				reportE( REPORT_ATOMIC_OPERATIONS, "AtomicAdd: address " 
-					<< (void*) address << " from " << d << " by " << b 
-					<< " to " << ( d + b ) );
-				result = d + b;
-				break;
-			}
-			case ir::PTXInstruction::AtomicExch:
-			{
-				d = *((ir::PTXB64*) address);
-				reportE( REPORT_ATOMIC_OPERATIONS, "AtomicExch: address " 
-					<< (void*) address << " from " << d << " by " << b 
-					<< " to " << b );
-				result = b;
-				break;
-			}
-			default: assertM( false, "Atomic " 
-				<< ir::PTXInstruction::toString( op ) 
-				<< " not supported for b64." );
-		}
-
-		*((ir::PTXB64*) address) = result;
-
-		if( space != ir::PTXInstruction::Shared )
-		{
-			state->cache->unlock();
-		}
-		
-		return d;
-	}
-
-	ir::PTXB32 __ocelot_atomcas_b32( executive::LLVMContext* context, 
-		ir::PTXInstruction::AddressSpace space, 
-		ir::PTXInstruction::AtomicOperation op, ir::PTXU64 address, 
-		ir::PTXB32 b, ir::PTXB32 c )
-	{
-		executive::LLVMExecutableKernel::OpaqueState* state = 
-			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
-		
-		ir::PTXB32 d = 0;
-		
-		if( space == ir::PTXInstruction::Shared )
-		{
-			address += ( ir::PTXU64 ) context->shared;
-		}
-		else
-		{
-			state->cache->lock();
-		}
-				
-		d = *((ir::PTXB32*) address);
-
-		assert( op == ir::PTXInstruction::AtomicCas );
-
-		ir::PTXB32 result = ( d == b ) ? c : d;
-
-		reportE( REPORT_ATOMIC_OPERATIONS, "AtomicCas: address " 
+		result = (d >= b) ? 0 : d + 1;
+		reportE( REPORT_ATOMIC_OPERATIONS, "AtomicInc: address " 
 			<< (void*) address << " from " << d << " by " << b 
 			<< " to " << result );
 
 		*((ir::PTXB32*) address) = result;
-
-		if( space != ir::PTXInstruction::Shared )
-		{
-			state->cache->unlock();
-		}
 		
+		mutex.unlock();
+
 		return d;
 	}
 
-	ir::PTXB64 __ocelot_atomcas_b64( executive::LLVMContext* context, 
-		ir::PTXInstruction::AddressSpace space, 
-		ir::PTXInstruction::AtomicOperation op, ir::PTXU64 address, 
-		ir::PTXB64 b, ir::PTXB64 c )
+	ir::PTXB32 __ocelot_atomic_dec_32( ir::PTXU64 address, ir::PTXB32 b )
 	{
-		executive::LLVMExecutableKernel::OpaqueState* state = 
-			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
+		ir::PTXB32 d = 0;
+		ir::PTXB32 result = 0;
+
+		mutex.lock();
+
+		d = *((ir::PTXB32*) address);
 		
-		ir::PTXB64 d = 0;
-		
-		if( space == ir::PTXInstruction::Shared )
-		{
-			address += ( ir::PTXU64 ) context->shared;
-		}
-		else
-		{
-			state->cache->lock();
-		}
-				
-		d = *((ir::PTXB64*) address);
-
-		assert( op == ir::PTXInstruction::AtomicCas );
-
-		ir::PTXB64 result = ( d == b ) ? c : d;
-
-		reportE( REPORT_ATOMIC_OPERATIONS, "AtomicCas: address " 
+		result = ((d == 0) || (d > b)) ? b : d - 1;
+		reportE( REPORT_ATOMIC_OPERATIONS, "AtomicDec: address " 
 			<< (void*) address << " from " << d << " by " << b 
-			<< " to " << ( ( d == b ) ? c : d ) );
+			<< " to " << result );
 
-		*((ir::PTXB64*) address) = result;
-
-		if( space != ir::PTXInstruction::Shared )
-		{
-			state->cache->unlock();
-		}
+		*((ir::PTXB32*) address) = result;
+		
+		mutex.unlock();
 
 		return d;
 	}
 
-	unsigned int __ocelot_clock( executive::LLVMContext* context )
-	{
-		executive::LLVMExecutableKernel::OpaqueState* state = 
-			(executive::LLVMExecutableKernel::OpaqueState*) context->other;
-		
-		return state->timer.cycles();
-	}
-	
-	unsigned int __ocelot_smid( executive::LLVMContext *context)
-	{
-		return 0;
-	}
-	
-	unsigned int __ocelot_nsmid( executive::LLVMContext *context)
-	{
-		return 1;
-	}
-	
 	void __ocelot_debug_block( executive::LLVMContext* context, 
 		ir::ControlFlowGraph::BasicBlock::Id id )
 	{
@@ -744,7 +223,10 @@ extern "C"
 		assert( block != state->blocks.end() );
 		
 		#if(DEBUG_NTH_THREAD_ONLY == 1)
-		if( context->tid.x == NTH_THREAD )
+		unsigned int threadId = context->tid.x + 
+			context->tid.y * context->ntid.y +
+			context->tid.z * context->ntid.y * context->ntid.x;
+		if( threadId == NTH_THREAD )
 		{
 		#endif
 		
@@ -765,7 +247,10 @@ extern "C"
 		void* instruction = (void*) _instruction;
 
 		#if(DEBUG_NTH_THREAD_ONLY == 1)
-		if( context->tid.x == NTH_THREAD )
+		unsigned int threadId = context->tid.x + 
+			context->tid.y * context->ntid.y +
+			context->tid.z * context->ntid.y * context->ntid.x;
+		if( threadId == NTH_THREAD )
 		{
 		#endif
 		
@@ -809,7 +294,10 @@ extern "C"
 		ir::PTXU8 value )
 	{
 		#if(DEBUG_NTH_THREAD_ONLY == 1)
-		if( context->tid.x == NTH_THREAD )
+		unsigned int threadId = context->tid.x + 
+			context->tid.y * context->ntid.y +
+			context->tid.z * context->ntid.y * context->ntid.x;
+		if( threadId == NTH_THREAD )
 		{
 		#endif		
 			std::cout << "Thread (" << context->tid.x << ", " << context->tid.y 
@@ -879,7 +367,10 @@ extern "C"
 		ir::PTXU8 value )
 	{
 		#if(DEBUG_NTH_THREAD_ONLY == 1)
-		if( context->tid.x == NTH_THREAD )
+		unsigned int threadId = context->tid.x + 
+			context->tid.y * context->ntid.y +
+			context->tid.z * context->ntid.y * context->ntid.x;
+		if( threadId == NTH_THREAD )
 		{
 		#endif		
 			std::cout << "Thread (" << context->tid.x << ", " << context->tid.y 
@@ -1136,7 +627,7 @@ extern "C"
 		result[2] = executive::tex::sample< 2, float >( 
 			texture, c0, c1, c2 );
 		result[3] = executive::tex::sample< 3, float >( 
-			texture, c0, c1, c2 );			
+			texture, c0, c1, c2 );
 	}
 
 	void __ocelot_tex_3d_fu( float* result, executive::LLVMContext* context, 

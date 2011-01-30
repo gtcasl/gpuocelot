@@ -5,6 +5,8 @@
 		with associated code for emulating its execution
 */
 
+#include <hydrazine/interface/Casts.h>
+
 #include <ocelot/ir/interface/PTXOperand.h>
 #include <ocelot/ir/interface/PTXInstruction.h>
 
@@ -46,13 +48,13 @@
 
 // reporting for kernel instructions
 #define REPORT_STATIC_INSTRUCTIONS 1
-#define REPORT_DYNAMIC_INSTRUCTIONS 0
+#define REPORT_DYNAMIC_INSTRUCTIONS 1
 
 // reporting for register accesses
 #define REPORT_NTH_THREAD_ONLY 1
 #define NTH_THREAD 0
-#define REPORT_REGISTER_READS 0
-#define REPORT_REGISTER_WRITES 0
+#define REPORT_REGISTER_READS 1
+#define REPORT_REGISTER_WRITES 1
 
 // individually turn on or off reporting for particular instructions
 #define REPORT_ABS 1
@@ -116,14 +118,6 @@ static T CTAAbs(T a) {
 	return a;
 }
 
-bool isF32NaN(PTXF32 f) {
-	return f != f;
-}
-
-bool isF64NaN(PTXF64 f) {
-	return f != f;
-}
-
 #define max(a, b) ((a) < (b) ? (b) : (a))
 #define min(a, b) ((a) > (b) ? (b) : (a))
 
@@ -133,8 +127,8 @@ bool isF64NaN(PTXF64 f) {
 
 	\param kernel pointer to EmulatedKernel to which this CTA belongs
 */
-executive::CooperativeThreadArray::CooperativeThreadArray(const EmulatedKernel *k):
-	kernel(k) {
+executive::CooperativeThreadArray::CooperativeThreadArray(
+	const EmulatedKernel *k): kernel(k) {
 
 	traceEvents = true;
 
@@ -260,7 +254,14 @@ ir::PTXU32 executive::CooperativeThreadArray::getSpecialValue(
 
 ir::PTXF32 executive::CooperativeThreadArray::sat(int modifier, ir::PTXF32 f) {
 	if (modifier & ir::PTXInstruction::sat) {
-		return (f <= 0 ? 0 : (f >= 1.0f ? 1.0f : f));
+		return (f <= 0 || std::isnan(f) ? 0 : (f >= 1.0f ? 1.0f : f));
+	}
+	return f;
+}
+
+static ir::PTXF32 ftz(int modifier, ir::PTXF32 f) {
+	if (modifier & ir::PTXInstruction::ftz) {
+		return (!std::isnormal(f) && !std::isnan(f) && !std::isinf(f) ? 0 : f);
 	}
 	return f;
 }
@@ -281,13 +282,12 @@ void executive::CooperativeThreadArray::postTrace() {
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
+
 /*!
 	Called by the worker thread to evaluate a block
 */
 void executive::CooperativeThreadArray::execute(const ir::Dim3& block) {
 	using namespace ir;
-
-	bool running = true;
 
 	counter = 0;
 	blockId = block;
@@ -296,6 +296,7 @@ void executive::CooperativeThreadArray::execute(const ir::Dim3& block) {
 	currentEvent.gridDim = gridDim;
 	currentEvent.blockDim = blockDim;
 	
+	bool running = true;
 	reconvergenceMechanism->initialize();
 	
 	report("CooperativeThreadArray::execute called");
@@ -768,8 +769,9 @@ ir::PTXB64 executive::CooperativeThreadArray::getRegAsB64(int threadID, ir::PTXO
 	\param threadID ID of the active thread
 	\param reg index of register
 */
-bool executive::CooperativeThreadArray::getRegAsPredicate(int threadID, ir::PTXOperand::RegisterType reg) {
-	bool r = getRegAsU64(threadID, reg) != 0;
+bool executive::CooperativeThreadArray::getRegAsPredicate(int threadID, 
+	ir::PTXOperand::RegisterType reg) {
+	bool r = (bool)getRegAsU64(threadID, reg);
 	#if REPORT_NTH_THREAD_ONLY == 1
 	if (threadID == NTH_THREAD) {
 		reportE(REPORT_REGISTER_READS, "   thread " << threadID 
@@ -1224,7 +1226,8 @@ ir::PTXS64 executive::CooperativeThreadArray::operandAsS64(int threadID,
 	return 0;
 }
 
-ir::PTXF32 executive::CooperativeThreadArray::operandAsF32(int threadID, const PTXOperand &op) {
+ir::PTXF32 executive::CooperativeThreadArray::operandAsF32(int threadID,
+	const PTXOperand &op) {
 	switch (op.addressMode) {
 		case PTXOperand::Register:
 			return getRegAsF32(threadID, op.reg);
@@ -1236,7 +1239,8 @@ ir::PTXF32 executive::CooperativeThreadArray::operandAsF32(int threadID, const P
 	return 0;
 }
 
-ir::PTXF64 executive::CooperativeThreadArray::operandAsF64(int threadID, const PTXOperand &op) {
+ir::PTXF64 executive::CooperativeThreadArray::operandAsF64(int threadID,
+	const PTXOperand &op) {
 	switch (op.addressMode) {
 		case PTXOperand::Register:
 			return getRegAsF64(threadID, op.reg);
@@ -1299,7 +1303,8 @@ ir::PTXB32 executive::CooperativeThreadArray::operandAsB32(int threadID, const P
 	return 0;
 }
 
-ir::PTXB64 executive::CooperativeThreadArray::operandAsB64(int threadID, const PTXOperand &op) {
+ir::PTXB64 executive::CooperativeThreadArray::operandAsB64(int threadID,
+	const PTXOperand &op) {
 	switch (op.addressMode) {
 		case PTXOperand::Indirect:
 			return getRegAsB64(threadID, op.reg) + op.offset;
@@ -1314,6 +1319,36 @@ ir::PTXB64 executive::CooperativeThreadArray::operandAsB64(int threadID, const P
 	return 0;
 }
 
+bool executive::CooperativeThreadArray::operandAsPredicate(int threadID,
+	const PTXOperand &op) {
+	bool result = false;
+	switch (op.addressMode) {
+		case PTXOperand::Register:
+			result = getRegAsPredicate(threadID, op.reg);
+			break;
+		case PTXOperand::Immediate:
+			result = (bool)(op.imm_uint);
+			break;
+		default:
+			assert(0 == "invalid address mode of operand");
+	}
+	
+	switch (op.condition) {
+		case PTXOperand::PT:
+			result = true;
+			break;
+		case PTXOperand::nPT:
+			result = false;
+			break;
+		case PTXOperand::Pred:
+			break;
+		case PTXOperand::InvPred:
+			result = !result;
+			break;	
+	}
+	
+	return result;
+}
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
 /*!
@@ -1327,7 +1362,7 @@ void executive::CooperativeThreadArray::eval_Abs(CTAContext &context,
 
 			if (!context.predicated(threadID, instr)) continue;
 			PTXF32 d, a = operandAsF32(threadID, instr.a);
-			d = sat(instr.modifier, CTAAbs(a));
+			d = ftz(instr.modifier, CTAAbs(a));
 			setRegAsF32(threadID, instr.d.reg, d);
 		}
 	}	
@@ -1384,9 +1419,9 @@ void executive::CooperativeThreadArray::eval_Add(CTAContext &context, const PTXI
 	if (instr.type == PTXOperand::f32) {
 		for (int threadID = 0; threadID < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;
-			PTXF32 d, a = operandAsF32(threadID, instr.a), 
-				b = operandAsF32(threadID, instr.b);
-			d = sat(instr.modifier, a + b);
+			PTXF32 d, a = ftz(instr.modifier, operandAsF32(threadID, instr.a)), 
+				b = ftz(instr.modifier, operandAsF32(threadID, instr.b));
+			d = ftz(instr.modifier, sat(instr.modifier, a + b));
 			setRegAsF32(threadID, instr.d.reg, d);
 		}
 	}	
@@ -1537,8 +1572,8 @@ void executive::CooperativeThreadArray::eval_And(CTAContext &context, const PTXI
 		for (int threadID = 0; threadID < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;
 			
-			bool d, a = getRegAsPredicate(threadID, instr.a.reg), 
-				b = getRegAsPredicate(threadID, instr.b.reg);
+			bool d, a = operandAsPredicate(threadID, instr.a), 
+				b = operandAsPredicate(threadID, instr.b);
 			d = b && a;
 			setRegAsPredicate(threadID, instr.d.reg, d);
 		}
@@ -1979,7 +2014,8 @@ void executive::CooperativeThreadArray::eval_Reconverge(CTAContext &context, con
 /*!
 
 */
-void executive::CooperativeThreadArray::eval_Brkpt(CTAContext &context, const PTXInstruction &instr) {
+void executive::CooperativeThreadArray::eval_Brkpt(CTAContext &context,
+	const PTXInstruction &instr) {
 	trace();
 	context.running = false;
 }
@@ -2031,7 +2067,8 @@ void executive::CooperativeThreadArray::eval_CNot(CTAContext &context, const PTX
 /*!
 
 */
-void executive::CooperativeThreadArray::eval_Cos(CTAContext &context, const PTXInstruction &instr) {
+void executive::CooperativeThreadArray::eval_Cos(CTAContext &context,
+	const PTXInstruction &instr) {
 	trace();
 	if (instr.type == PTXOperand::f32) {
 		for (int threadID = 0; threadID < threadCount; threadID++) {
@@ -2105,22 +2142,6 @@ static Float round(Float a, int modifier) {
 		fd = a;
 	}
 	return fd;
-}
-
-static ir::PTXF32 round(ir::PTXF64 a, int modifier) { 
-	int mode = fegetround();
-	if (modifier & PTXInstruction::rn) {
-		fesetround(FE_TONEAREST);
-	} else if (modifier & PTXInstruction::rz) {
-		fesetround(FE_TOWARDZERO);
-	} else if (modifier & PTXInstruction::rm) {
-		fesetround(FE_DOWNWARD);
-	} else if (modifier & PTXInstruction::rp) {
-		fesetround(FE_UPWARD);
-	}
-	ir::PTXF32 d = a;
-	fesetround(mode);
-	return d;
 }
 
 /*!
@@ -2731,10 +2752,10 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context,
 							if (a != a) a = 0.0f;
 							PTXF32 fd = round(a, instr.modifier);
 							PTXU8 d = 0;
-							if( fd > UCHAR_MAX ) {
+							if(fd > UCHAR_MAX) {
 								d = UCHAR_MAX;
 							}
-							else if( fd < 0 ) {
+							else if(fd < 0) {
 								d = 0;
 							}
 							else {
@@ -2750,10 +2771,10 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context,
 							if (a != a) a = 0.0f;
 							PTXF32 fd = round(a, instr.modifier);
 							PTXU16 d = 0;
-							if( fd > USHRT_MAX ) {
+							if(fd > USHRT_MAX) {
 								d = USHRT_MAX;
 							}
-							else if( fd < 0 ) {
+							else if(fd < 0) {
 								d = 0;
 							}
 							else {
@@ -2769,10 +2790,10 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context,
 							if (a != a) a = 0.0f;
 							PTXF32 fd = round(a, instr.modifier);
 							PTXU32 d = 0;
-							if( fd > UINT_MAX ) {
+							if(fd > UINT_MAX) {
 								d = UINT_MAX;
 							}
-							else if( fd < 0 ) {
+							else if(fd < 0) {
 								d = 0;
 							}
 							else {
@@ -2786,8 +2807,17 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context,
 						{
 							PTXF32 a = operandAsF32(threadID, instr.a);
 							if (a != a) a = 0.0f;
-							PTXU64 d = round(a, instr.modifier);
-							d = min(ULLONG_MAX, d);
+							PTXF32 fd = round(a, instr.modifier);
+							PTXU64 d = 0;
+							if(fd > ULLONG_MAX) {
+								d = ULLONG_MAX;
+							}
+							else if(fd < 0) {
+								d = 0;
+							}
+							else {
+								d = fd;
+							}
 							setRegAsU64(threadID, instr.d.reg, d);
 						}
 						break;
@@ -2795,10 +2825,17 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context,
 						{
 							PTXF32 a = operandAsF32(threadID, instr.a);
 							if (a != a) a = 0.0f;
-							PTXS64 dd = round(a, instr.modifier);
+							PTXF32 fd = round(a, instr.modifier);
 							PTXS8 d = 0;
-							dd = min(CHAR_MAX, dd);
-							d = max(dd, CHAR_MIN);
+							if(fd > CHAR_MAX) {
+								d = CHAR_MAX;
+							}
+							else if(fd < CHAR_MIN) {
+								d = CHAR_MIN;
+							}
+							else {
+								d = fd;
+							}
 							setRegAsS64(threadID, instr.d.reg, d);
 						}
 						break;
@@ -2806,10 +2843,17 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context,
 						{
 							PTXF32 a = operandAsF32(threadID, instr.a);
 							if (a != a) a = 0.0f;
-							PTXS64 dd = round(a, instr.modifier);
+							PTXF32 fd = round(a, instr.modifier);
 							PTXS16 d = 0;
-							dd = min(SHRT_MAX, dd);
-							d = max(dd, SHRT_MIN);
+							if(fd > SHRT_MAX) {
+								d = SHRT_MAX;
+							}
+							else if(fd < SHRT_MIN) {
+								d = SHRT_MIN;
+							}
+							else {
+								d = fd;
+							}
 							setRegAsS64(threadID, instr.d.reg, d);
 						}
 						break;
@@ -2817,10 +2861,17 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context,
 						{
 							PTXF32 a = operandAsF32(threadID, instr.a);
 							if (a != a) a = 0.0f;
-							PTXS64 dd = round(a, instr.modifier);
+							PTXF32 fd = round(a, instr.modifier);
 							PTXS32 d = 0;
-							dd = min(INT_MAX, dd);
-							d = max(dd, INT_MIN);
+							if(fd > INT_MAX) {
+								d = INT_MAX;
+							}
+							else if(fd < INT_MIN) {
+								d = INT_MIN;
+							}
+							else {
+								d = fd;
+							}
 							setRegAsS64(threadID, instr.d.reg, d);
 						}
 						break;
@@ -2828,7 +2879,17 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context,
 						{
 							PTXF32 a = operandAsF32(threadID, instr.a);
 							if (a != a) a = 0.0f;
-							PTXS64 d = round(a, instr.modifier);
+							PTXF32 fd = round(a, instr.modifier);
+							PTXS64 d = 0;
+							if(fd > LLONG_MAX) {
+								d = LLONG_MAX;
+							}
+							else if(fd < LLONG_MIN) {
+								d = LLONG_MIN;
+							}
+							else {
+								d = fd;
+							}
 							setRegAsS64(threadID, instr.d.reg, d);
 						}
 						break;
@@ -2864,11 +2925,11 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context,
 							PTXF64 a = operandAsF64(threadID, instr.a);
 							if (a != a) a = 0.0f;
 							PTXF64 fd = round(a, instr.modifier);
-							PTXU16 d = 0;
-							if( fd > UCHAR_MAX ) {
+							PTXU8 d = 0;
+							if(fd > UCHAR_MAX) {
 								d = UCHAR_MAX;
 							}
-							else if( fd < 0 ) {
+							else if(fd < 0) {
 								d = 0;
 							}
 							else {
@@ -2884,10 +2945,10 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context,
 							if (a != a) a = 0.0f;
 							PTXF64 fd = round(a, instr.modifier);
 							PTXU16 d = 0;
-							if( fd > USHRT_MAX ) {
+							if(fd > USHRT_MAX) {
 								d = USHRT_MAX;
 							}
-							else if( fd < 0 ) {
+							else if(fd < 0) {
 								d = 0;
 							}
 							else {
@@ -2903,13 +2964,14 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context,
 							if (a != a) a = 0.0f;
 							PTXF64 fd = round(a, instr.modifier);
 							PTXU32 d = 0;
-							if( fd > UINT_MAX ) {
+							if(fd > UINT_MAX) {
 								d = UINT_MAX;
 							}
-							else if( fd < 0 ) {
+							else if(fd < 0) {
 								d = 0;
 							}
-							else {
+							else
+							{
 								d = fd;
 							}
 							setRegAsU64(threadID, instr.d.reg, d);
@@ -2920,8 +2982,18 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context,
 						{
 							PTXF64 a = operandAsF64(threadID, instr.a);
 							if (a != a) a = 0.0f;
-							PTXU64 d = round(a, instr.modifier);
-							d = min(ULLONG_MAX, d);
+							PTXF64 fd = round(a, instr.modifier);
+							PTXU64 d = 0;
+							if(fd > ULLONG_MAX) {
+								d = ULLONG_MAX;
+							}
+							else if(fd < 0) {
+								d = 0;
+							}
+							else
+							{
+								d = fd;
+							}
 							setRegAsU64(threadID, instr.d.reg, d);
 						}
 						break;
@@ -2931,8 +3003,15 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context,
 							if (a != a) a = 0.0;
 							a = round(a, instr.modifier);
 							PTXS8 d = 0;
-							a = min(CHAR_MAX, a);
-							d = max(a, CHAR_MIN);
+							if(a > CHAR_MAX) {
+								d = CHAR_MAX;
+							}
+							else if(a < CHAR_MIN) {
+								d = CHAR_MIN;
+							}
+							else {
+								d = a;
+							}
 							setRegAsS64(threadID, instr.d.reg, d);
 						}
 						break;
@@ -2942,8 +3021,15 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context,
 							if (a != a) a = 0.0;
 							a = round(a, instr.modifier);
 							PTXS16 d = 0;
-							a = min(SHRT_MAX, a);
-							d = max(a, SHRT_MIN);
+							if(a > SHRT_MAX) {
+								d = SHRT_MAX;
+							}
+							else if(a < SHRT_MIN) {
+								d = SHRT_MIN;
+							}
+							else {
+								d = a;
+							}
 							setRegAsS64(threadID, instr.d.reg, d);
 						}
 						break;
@@ -2953,8 +3039,15 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context,
 							if (a != a) a = 0.0;
 							a = round(a, instr.modifier);
 							PTXS32 d = 0;
-							a = min(INT_MAX, a);
-							d = max(a, INT_MIN);
+							if(a > INT_MAX) {
+								d = INT_MAX;
+							}
+							else if(a < INT_MIN) {
+								d = INT_MIN;
+							}
+							else {
+								d = a;
+							}
 							setRegAsS64(threadID, instr.d.reg, d);
 						}
 						break;
@@ -2962,13 +3055,6 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context,
 						{
 							PTXF64 a = operandAsF64(threadID, instr.a);
 							if (a != a) a = 0.0;
-							PTXS64 d = round(a, instr.modifier);
-							setRegAsS64(threadID, instr.d.reg, d);
-						}
-						break;
-					case PTXOperand::f32: 
-						{
-							PTXF64 a = operandAsF64(threadID, instr.a);
 							a = round(a, instr.modifier);
 							if(instr.modifier & PTXInstruction::sat) {
 								if (a != a) a = 0.0;
@@ -2988,8 +3074,7 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context,
 								a = min(1.0, a);
 								a = max(a, 0.0);
 							}
-							setRegAsF64(threadID, instr.d.reg, 
-								sat(instr.modifier, a));
+							setRegAsF64(threadID, instr.d.reg, a);
 						}
 						break;
 					default:
@@ -3011,14 +3096,21 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context,
 /*!
 
 */
-void executive::CooperativeThreadArray::eval_Div(CTAContext &context, const PTXInstruction &instr) {
+void executive::CooperativeThreadArray::eval_Div(CTAContext &context,
+	const PTXInstruction &instr) {
 	trace();
 	if (instr.type == PTXOperand::f32) {
 		for (int threadID = 0; threadID < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;
 			
-			PTXF32 d, a = operandAsF32(threadID, instr.a), b = operandAsF32(threadID, instr.b);
-			d = sat(instr.modifier, a / b);
+			PTXF32 d, a = ftz(instr.modifier, operandAsF32(threadID, instr.a)),
+				b = ftz(instr.modifier, operandAsF32(threadID, instr.b));
+			if(ir::PTXInstruction::approx & instr.modifier) {
+				d = a * (1.0f / b);
+			}
+			else {
+				d = ftz(instr.modifier, a / b);
+			}
 			setRegAsF32(threadID, instr.d.reg, d);
 		}
 	}	
@@ -3026,7 +3118,8 @@ void executive::CooperativeThreadArray::eval_Div(CTAContext &context, const PTXI
 		for (int threadID = 0; threadID < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;
 			
-			PTXF64 d, a = operandAsF64(threadID, instr.a), b = operandAsF64(threadID, instr.b);
+			PTXF64 d, a = operandAsF64(threadID, instr.a),
+				b = operandAsF64(threadID, instr.b);
 			d = a / b;
 			setRegAsF64(threadID, instr.d.reg, d);
 		}
@@ -3035,7 +3128,8 @@ void executive::CooperativeThreadArray::eval_Div(CTAContext &context, const PTXI
 		for (int threadID = 0; threadID < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;
 			
-			PTXS16 d, a = operandAsS16(threadID, instr.a), b = operandAsS16(threadID, instr.b);
+			PTXS16 d, a = operandAsS16(threadID, instr.a),
+				b = operandAsS16(threadID, instr.b);
 			if(b == 0) {
 				throw RuntimeException("Divide by zero at: " 
 					+ kernel->location(context.PC), context.PC, instr);
@@ -3048,7 +3142,8 @@ void executive::CooperativeThreadArray::eval_Div(CTAContext &context, const PTXI
 		for (int threadID = 0; threadID < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;
 			
-			PTXS32 d, a = operandAsS32(threadID, instr.a), b = operandAsS32(threadID, instr.b);
+			PTXS32 d, a = operandAsS32(threadID, instr.a),
+				b = operandAsS32(threadID, instr.b);
 			if(b == 0) {
 				throw RuntimeException("Divide by zero at: " 
 					+ kernel->location(context.PC), context.PC, instr);
@@ -3061,7 +3156,8 @@ void executive::CooperativeThreadArray::eval_Div(CTAContext &context, const PTXI
 		for (int threadID = 0; threadID < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;
 			
-			PTXS64 d, a = operandAsS64(threadID, instr.a), b = operandAsS64(threadID, instr.b);
+			PTXS64 d, a = operandAsS64(threadID, instr.a),
+				b = operandAsS64(threadID, instr.b);
 			if(b == 0) {
 				throw RuntimeException("Divide by zeroa at: " 
 					+ kernel->location(context.PC), context.PC, instr);
@@ -3074,7 +3170,8 @@ void executive::CooperativeThreadArray::eval_Div(CTAContext &context, const PTXI
 		for (int threadID = 0; threadID < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;
 			
-			PTXU16 d, a = operandAsU16(threadID, instr.a), b = operandAsU16(threadID, instr.b);
+			PTXU16 d, a = operandAsU16(threadID, instr.a),
+				b = operandAsU16(threadID, instr.b);
 			if(b == 0) {
 				throw RuntimeException("Divide by zero at: " 
 					+ kernel->location(context.PC), context.PC, instr);
@@ -3087,7 +3184,8 @@ void executive::CooperativeThreadArray::eval_Div(CTAContext &context, const PTXI
 		for (int threadID = 0; threadID < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;
 			
-			PTXU32 d, a = operandAsU32(threadID, instr.a), b = operandAsU32(threadID, instr.b);
+			PTXU32 d, a = operandAsU32(threadID, instr.a),
+				b = operandAsU32(threadID, instr.b);
 			if(b == 0) {
 				throw RuntimeException("Divide by zero at: " 
 					+ kernel->location(context.PC), context.PC, instr);
@@ -3100,7 +3198,8 @@ void executive::CooperativeThreadArray::eval_Div(CTAContext &context, const PTXI
 		for (int threadID = 0; threadID < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;
 			
-			PTXU64 d, a = operandAsU64(threadID, instr.a), b = operandAsU64(threadID, instr.b);
+			PTXU64 d, a = operandAsU64(threadID, instr.a),
+				b = operandAsU64(threadID, instr.b);
 			if(b == 0) {
 				throw RuntimeException("Divide by zero at: " 
 					+ kernel->location(context.PC), context.PC, instr);
@@ -3117,14 +3216,15 @@ void executive::CooperativeThreadArray::eval_Div(CTAContext &context, const PTXI
 /*!
 
 */
-void executive::CooperativeThreadArray::eval_Ex2(CTAContext &context, const PTXInstruction &instr) {
+void executive::CooperativeThreadArray::eval_Ex2(CTAContext &context,
+	const PTXInstruction &instr) {
 	trace();
 	if (instr.type == PTXOperand::f32) {
 		for (int threadID = 0; threadID < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;
 			
 			PTXF32 d, a = operandAsF32(threadID, instr.a);
-			d = exp(a * 0.693147f);
+			d = ftz(instr.modifier, std::exp2f(a));
 			setRegAsF32(threadID, instr.d.reg, d);
 		}
 	}	
@@ -3494,13 +3594,14 @@ void executive::CooperativeThreadArray::eval_Ld(CTAContext &context,
 /*!
 
 */
-void executive::CooperativeThreadArray::eval_Lg2(CTAContext &context, const PTXInstruction &instr) {
+void executive::CooperativeThreadArray::eval_Lg2(CTAContext &context,
+	const PTXInstruction &instr) {
 	trace();
 	if (instr.type == PTXOperand::f32) {
 		for (int threadID = 0; threadID < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;
-			PTXF32 d, a = operandAsF32(threadID, instr.a);
-			d = log2(a);
+			PTXF32 d, a = ftz(instr.modifier, operandAsF32(threadID, instr.a));
+			d = ftz(instr.modifier, std::log2f(a));
 			setRegAsF32(threadID, instr.d.reg, d);
 		}
 	}	
@@ -3701,14 +3802,12 @@ void executive::CooperativeThreadArray::eval_Mad(CTAContext &context, const PTXI
 		for (int threadID = 0; threadID < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;
 			PTXF32 d = 0,
-				a = operandAsF32(threadID, instr.a), 
-				b = operandAsF32(threadID, instr.b), 
-				c = operandAsF32(threadID, instr.c);
+				a = ftz(instr.modifier, operandAsF32(threadID, instr.a)), 
+				b = ftz(instr.modifier, operandAsF32(threadID, instr.b)), 
+				c = ftz(instr.modifier, operandAsF32(threadID, instr.c));
 
-			d = a * b + c;
-			if (instr.modifier & PTXInstruction::sat) {
-				if (d < 0) d = 0; else if (d > 1) d = 1;
-			}
+			d = ftz(instr.modifier, sat(instr.modifier, a * b + c));
+			
 			setRegAsF32(threadID, instr.d.reg, d);
 		}
 	} break;
@@ -3737,14 +3836,29 @@ void executive::CooperativeThreadArray::eval_Mad(CTAContext &context, const PTXI
 /*!
 
 */
-void executive::CooperativeThreadArray::eval_Max(CTAContext &context, const PTXInstruction &instr) {
+void executive::CooperativeThreadArray::eval_Max(CTAContext &context,
+	const PTXInstruction &instr) {
 	trace();
 	if (instr.type == PTXOperand::f32) {
 		for (int threadID = 0; threadID < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;
 			
-			PTXF32 d, a = operandAsF32(threadID, instr.a), b = operandAsF32(threadID, instr.b);
-			d = (a > b ? a : b);
+			PTXF32 d, a = operandAsF32(threadID, instr.a),
+				b = operandAsF32(threadID, instr.b);
+
+			if(std::isnan(a))
+			{
+				d = ftz(instr.modifier, b);
+			}
+			else if(std::isnan(b))
+			{
+				d = ftz(instr.modifier, a);
+			}
+			else
+			{
+				d = ftz(instr.modifier, a > b ? a : b);
+			}
+
 			setRegAsF32(threadID, instr.d.reg, d);
 		}
 	}	
@@ -3752,8 +3866,22 @@ void executive::CooperativeThreadArray::eval_Max(CTAContext &context, const PTXI
 		for (int threadID = 0; threadID < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;
 			
-			PTXF64 d, a = operandAsF64(threadID, instr.a), b = operandAsF64(threadID, instr.b);
-			d = (a > b ? a : b);
+			PTXF64 d, a = operandAsF64(threadID, instr.a),
+				b = operandAsF64(threadID, instr.b);
+
+			if(std::isnan(a))
+			{
+				d = b;
+			}
+			else if(std::isnan(b))
+			{
+				d = a;
+			}
+			else
+			{
+				d = (a > b ? a : b);
+			}
+
 			setRegAsF64(threadID, instr.d.reg, d);
 		}
 	}
@@ -3761,7 +3889,8 @@ void executive::CooperativeThreadArray::eval_Max(CTAContext &context, const PTXI
 		for (int threadID = 0; threadID < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;
 			
-			PTXS16 d, a = operandAsS16(threadID, instr.a), b = operandAsS16(threadID, instr.b);
+			PTXS16 d, a = operandAsS16(threadID, instr.a),
+				b = operandAsS16(threadID, instr.b);
 			d = (a > b ? a : b);
 			setRegAsS16(threadID, instr.d.reg, d);
 		}
@@ -3770,7 +3899,8 @@ void executive::CooperativeThreadArray::eval_Max(CTAContext &context, const PTXI
 		for (int threadID = 0; threadID < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;
 			
-			PTXS32 d, a = operandAsS32(threadID, instr.a), b = operandAsS32(threadID, instr.b);
+			PTXS32 d, a = operandAsS32(threadID, instr.a),
+				b = operandAsS32(threadID, instr.b);
 			d = (a > b ? a : b);
 			setRegAsS32(threadID, instr.d.reg, d);
 		}
@@ -3779,7 +3909,8 @@ void executive::CooperativeThreadArray::eval_Max(CTAContext &context, const PTXI
 		for (int threadID = 0; threadID < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;
 			
-			PTXS64 d, a = operandAsS64(threadID, instr.a), b = operandAsS64(threadID, instr.b);
+			PTXS64 d, a = operandAsS64(threadID, instr.a),
+				b = operandAsS64(threadID, instr.b);
 			d = (a > b ? a : b);
 			setRegAsS64(threadID, instr.d.reg, d);
 		}
@@ -3788,7 +3919,8 @@ void executive::CooperativeThreadArray::eval_Max(CTAContext &context, const PTXI
 		for (int threadID = 0; threadID < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;
 			
-			PTXU16 d, a = operandAsU16(threadID, instr.a), b = operandAsU16(threadID, instr.b);
+			PTXU16 d, a = operandAsU16(threadID, instr.a),
+				b = operandAsU16(threadID, instr.b);
 			d = (a > b ? a : b);
 			setRegAsU16(threadID, instr.d.reg, d);
 		}
@@ -3797,7 +3929,8 @@ void executive::CooperativeThreadArray::eval_Max(CTAContext &context, const PTXI
 		for (int threadID = 0; threadID < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;
 			
-			PTXU32 d, a = operandAsU32(threadID, instr.a), b = operandAsU32(threadID, instr.b);
+			PTXU32 d, a = operandAsU32(threadID, instr.a),
+				b = operandAsU32(threadID, instr.b);
 			d = (a > b ? a : b);
 			setRegAsU32(threadID, instr.d.reg, d);
 		}
@@ -3806,7 +3939,8 @@ void executive::CooperativeThreadArray::eval_Max(CTAContext &context, const PTXI
 		for (int threadID = 0; threadID < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;
 			
-			PTXU64 d, a = operandAsU64(threadID, instr.a), b = operandAsU64(threadID, instr.b);
+			PTXU64 d, a = operandAsU64(threadID, instr.a),
+				b = operandAsU64(threadID, instr.b);
 			d = (a > b ? a : b);
 			setRegAsU64(threadID, instr.d.reg, d);
 		}
@@ -3819,14 +3953,29 @@ void executive::CooperativeThreadArray::eval_Max(CTAContext &context, const PTXI
 /*!
 
 */
-void executive::CooperativeThreadArray::eval_Min(CTAContext &context, const PTXInstruction &instr) {
+void executive::CooperativeThreadArray::eval_Min(CTAContext &context,
+	const PTXInstruction &instr) {
 	trace();
 	if (instr.type == PTXOperand::f32) {
 		for (int threadID = 0; threadID < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;
 			
-			PTXF32 d, a = operandAsF32(threadID, instr.a), b = operandAsF32(threadID, instr.b);
-			d = (a < b ? a : b);
+			PTXF32 d, a = operandAsF32(threadID, instr.a),
+				b = operandAsF32(threadID, instr.b);
+
+			if(std::isnan(a))
+			{
+				d = ftz(instr.modifier, b);
+			}
+			else if(std::isnan(b))
+			{
+				d = ftz(instr.modifier, a);
+			}
+			else
+			{
+				d = ftz(instr.modifier, (a < b ? a : b));
+			}
+
 			setRegAsF32(threadID, instr.d.reg, d);
 		}
 	}	
@@ -3834,8 +3983,22 @@ void executive::CooperativeThreadArray::eval_Min(CTAContext &context, const PTXI
 		for (int threadID = 0; threadID < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;
 			
-			PTXF64 d, a = operandAsF64(threadID, instr.a), b = operandAsF64(threadID, instr.b);
-			d = (a < b ? a : b);
+			PTXF64 d, a = operandAsF64(threadID, instr.a),
+				b = operandAsF64(threadID, instr.b);
+
+			if(std::isnan(a))
+			{
+				d = b;
+			}
+			else if(std::isnan(b))
+			{
+				d = a;
+			}
+			else
+			{
+				d = (a < b ? a : b);
+			}
+
 			setRegAsF64(threadID, instr.d.reg, d);
 		}
 	}
@@ -4332,8 +4495,9 @@ void executive::CooperativeThreadArray::eval_Mul(CTAContext &context, const PTXI
 		for (int threadID = 0; threadID < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;
 			
-			PTXF32 d, a = operandAsF32(threadID, instr.a), b = operandAsF32(threadID, instr.b);
-			d = sat(instr.modifier, a * b);
+			PTXF32 d, a = ftz(instr.modifier, operandAsF32(threadID, instr.a)),
+				b = ftz(instr.modifier, operandAsF32(threadID, instr.b));
+			d = ftz(instr.modifier, sat(instr.modifier, a * b));
 			setRegAsF32(threadID, instr.d.reg, d);
 		}
 	}	
@@ -4495,7 +4659,7 @@ void executive::CooperativeThreadArray::eval_Neg(CTAContext &context, const PTXI
 			if (!context.predicated(threadID, instr)) continue;
 			
 			PTXF32 d, a = operandAsF32(threadID, instr.a);
-			d = -a;
+			d = ftz(instr.modifier, -a);
 			setRegAsF32(threadID, instr.d.reg, d);
 		}
 	}	
@@ -4549,7 +4713,7 @@ void executive::CooperativeThreadArray::eval_Not(CTAContext &context, const PTXI
 		for (int threadID = 0; threadID < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;
 			
-			bool d, a = getRegAsPredicate(threadID, instr.a.reg);
+			bool d, a = operandAsPredicate(threadID, instr.a);
 			d = !a;
 			setRegAsPredicate(threadID, instr.d.reg, d);
 		}
@@ -4595,8 +4759,8 @@ void executive::CooperativeThreadArray::eval_Or(CTAContext &context, const PTXIn
 		for (int threadID = 0; threadID < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;
 			
-			bool d, a = getRegAsPredicate(threadID, instr.a.reg), 
-				b = getRegAsPredicate(threadID, instr.b.reg);
+			bool d, a = operandAsPredicate(threadID, instr.a), 
+				b = operandAsPredicate(threadID, instr.b);
 			d = b || a;
 			setRegAsPredicate(threadID, instr.d.reg, d);
 		}
@@ -4654,8 +4818,8 @@ void executive::CooperativeThreadArray::eval_Rcp(CTAContext &context, const PTXI
 		for (int threadID = 0; threadID < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;
 			
-			PTXF32 d, a = operandAsF32(threadID, instr.a);
-			d = 1.0f/a;
+			PTXF32 d, a = ftz(instr.modifier, operandAsF32(threadID, instr.a));
+			d = ftz(instr.modifier, 1.0f/a);
 			setRegAsF32(threadID, instr.d.reg, d);
 		}
 	}	
@@ -4795,8 +4959,8 @@ void executive::CooperativeThreadArray::eval_Rsqrt(CTAContext &context,
 		for (int threadID = 0; threadID < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;
 			
-			PTXF32 d, a = operandAsF32(threadID, instr.a);
-			d = 1.0f/(PTXF32)sqrt(a);
+			PTXF32 d, a = ftz(instr.modifier, operandAsF32(threadID, instr.a));
+			d = ftz(instr.modifier, 1.0f/(PTXF32)sqrt(a));
 			setRegAsF32(threadID, instr.d.reg, d);
 		}
 	}	
@@ -4919,7 +5083,8 @@ selp.type d, a, b, c;
                 .f32, .f64 };
 
 */
-void executive::CooperativeThreadArray::eval_SelP(CTAContext &context, const PTXInstruction &instr) {
+void executive::CooperativeThreadArray::eval_SelP(CTAContext &context,
+	const PTXInstruction &instr) {
 	trace();
 
 	switch (instr.type) {
@@ -4930,8 +5095,10 @@ void executive::CooperativeThreadArray::eval_SelP(CTAContext &context, const PTX
 			for (int threadID = 0; threadID < threadCount; threadID++) {
 				if (!context.predicated(threadID, instr)) continue;
 				
-				PTXU16 a = operandAsU16(threadID, instr.a), b = operandAsU16(threadID, instr.b);
-				bool c = getRegAsPredicate(threadID, instr.c.reg);	// read the predicate register
+				PTXU16 a = operandAsU16(threadID, instr.a),
+					b = operandAsU16(threadID, instr.b);
+				bool c = operandAsPredicate(threadID, instr.c);
+				
 				PTXU16 d = (c ? a : b);
 				
 				setRegAsU16(threadID, instr.d.reg, d);
@@ -4947,8 +5114,10 @@ void executive::CooperativeThreadArray::eval_SelP(CTAContext &context, const PTX
 			for (int threadID = 0; threadID < threadCount; threadID++) {
 				if (!context.predicated(threadID, instr)) continue;
 				
-				PTXU32 a = operandAsU32(threadID, instr.a), b = operandAsU32(threadID, instr.b);
-				bool c = getRegAsPredicate(threadID, instr.c.reg);	// read the predicate register
+				PTXU32 a = operandAsU32(threadID, instr.a),
+					b = operandAsU32(threadID, instr.b);
+				bool c = operandAsPredicate(threadID, instr.c);
+				
 				PTXU32 d = (c ? a : b);
 				
 				setRegAsU32(threadID, instr.d.reg, d);
@@ -4964,12 +5133,14 @@ void executive::CooperativeThreadArray::eval_SelP(CTAContext &context, const PTX
 			for (int threadID = 0; threadID < threadCount; threadID++) {
 				if (!context.predicated(threadID, instr)) continue;
 				
-				PTXU64 a = operandAsU64(threadID, instr.a), b = operandAsU64(threadID, instr.b);
-				bool c = getRegAsPredicate(threadID, instr.c.reg);	// read the predicate register
+				PTXU64 a = operandAsU64(threadID, instr.a),
+					b = operandAsU64(threadID, instr.b);
+				bool c = operandAsPredicate(threadID, instr.c);
 				PTXU64 d = (c ? a : b);
 
-				reportE( REPORT_SELP, "  thread[" << threadID << "] d = 0x" << hex << d << ", " 
-					<< instr.d.identifier << " = " << getRegAsU64(threadID, instr.d.reg) << dec);
+				reportE( REPORT_SELP, "  thread[" << threadID << "] d = 0x" 
+					<< hex << d << ", " << instr.d.identifier << " = " 
+					<< getRegAsU64(threadID, instr.d.reg) << dec);
 				
 				setRegAsU64(threadID, instr.d.reg, d);
 			}
@@ -4981,7 +5152,8 @@ void executive::CooperativeThreadArray::eval_SelP(CTAContext &context, const PTX
 }
 
 /*!
-	Compare two numeric values with a relational operator and [optionally] combine this result
+	Compare two numeric values with a relational operator 
+	and [optionally] combine this result
 	with a predicate value by applying a boolean operator
 
 setp.CmpOp.type p[|q], a, b;
@@ -5025,8 +5197,10 @@ void executive::CooperativeThreadArray::eval_SetP(CTAContext &context,
 					case PTXOperand::s32:
 					case PTXOperand::u32:
 					case PTXOperand::b32:
-						a = (PTXU64)operandAsU32(threadID, instr.a) & 0x0ffffffff;
-						b = (PTXU64)operandAsU32(threadID, instr.b) & 0x0ffffffff;
+						a = (PTXU64)operandAsU32(
+							threadID, instr.a) & 0x0ffffffff;
+						b = (PTXU64)operandAsU32(
+							threadID, instr.b) & 0x0ffffffff;
 						break;
 					default:
 						a = operandAsU64(threadID, instr.a);
@@ -5035,7 +5209,7 @@ void executive::CooperativeThreadArray::eval_SetP(CTAContext &context,
 				}
 
 				if (instr.c.addressMode == PTXOperand::Register) {
-					c = getRegAsPredicate(threadID, instr.c.reg);
+					c = operandAsPredicate(threadID, instr.c);
 				}
 				
 				// any branch predictor worth its salt will get this wrong twice or less
@@ -5134,10 +5308,11 @@ void executive::CooperativeThreadArray::eval_SetP(CTAContext &context,
 				}			
 				
 				if (instr.c.addressMode == PTXOperand::Register) {
-					c = getRegAsPredicate(threadID, instr.c.reg);
+					c = operandAsPredicate(threadID, instr.c);
 				}
 				
-				// any branch predictor worth its salt will get this wrong twice or less
+				// any branch predictor worth its salt will
+				// get this wrong twice or less
 				switch (instr.comparisonOperator) {
 				
 					case PTXInstruction::Eq:
@@ -5169,7 +5344,8 @@ void executive::CooperativeThreadArray::eval_SetP(CTAContext &context,
 						break;
 					
 					default:
-						throw RuntimeException("invalid comparison operator for unsigned int type", context.PC, instr);
+						throw RuntimeException("invalid comparison operator "
+							"for unsigned int type", context.PC, instr);
 				}
 				
 				// now apply the bool op
@@ -5212,12 +5388,13 @@ void executive::CooperativeThreadArray::eval_SetP(CTAContext &context,
 			for (int threadID = 0; threadID < threadCount; threadID++) {
 				if (!context.predicated(threadID, instr)) continue;
 				
-				PTXF32 a = operandAsF32(threadID, instr.a), b = operandAsF32(threadID, instr.b);
+				PTXF32 a = operandAsF32(threadID, instr.a),
+					b = operandAsF32(threadID, instr.b);
 				bool c = true;	// read operator somehow
 				bool t = false;
 				
 				if (instr.c.addressMode == PTXOperand::Register) {
-					c = getRegAsPredicate(threadID, instr.c.reg);
+					c = operandAsPredicate(threadID, instr.c);
 				}
 				
 				// any branch predictor worth its salt will get this wrong twice or less
@@ -5256,14 +5433,15 @@ void executive::CooperativeThreadArray::eval_SetP(CTAContext &context,
 						break;
 
 					case PTXInstruction::Num:
-						t = !isF32NaN(a) && !isF32NaN(a);
+						t = !std::isnan(a) && !std::isnan(b);
 						break;
 					case PTXInstruction::Nan:
-						t = isF32NaN(a) || isF32NaN(a);					
+						t = std::isnan(a) || std::isnan(b);					
 						break;
 
 					default:
-						throw RuntimeException("invalid comparison operator for unsigned int type", context.PC, instr);
+						throw RuntimeException("invalid comparison operator "
+							"for unsigned int type", context.PC, instr);
 				}
 								
 				// now apply the bool op
@@ -5306,12 +5484,13 @@ void executive::CooperativeThreadArray::eval_SetP(CTAContext &context,
 			for (int threadID = 0; threadID < threadCount; threadID++) {
 				if (!context.predicated(threadID, instr)) continue;
 				
-				PTXF64 a = operandAsF64(threadID, instr.a), b = operandAsF64(threadID, instr.b);
+				PTXF64 a = operandAsF64(threadID, instr.a),
+					b = operandAsF64(threadID, instr.b);
 				bool c = true;
 				bool t = false;
 				
 				if (instr.c.addressMode == PTXOperand::Register) {
-					c = getRegAsPredicate(threadID, instr.c.reg);
+					c = operandAsPredicate(threadID, instr.c);
 				}
 				
 				// any branch predictor worth its salt will get this wrong twice or less
@@ -5352,14 +5531,15 @@ void executive::CooperativeThreadArray::eval_SetP(CTAContext &context,
 						break;
 
 					case PTXInstruction::Num:
-						t = !isF64NaN(a) && !isF64NaN(a);
+						t = !std::isnan(a) && !std::isnan(b);
 						break;
 					case PTXInstruction::Nan:
-						t = isF64NaN(a) || isF64NaN(a);					
+						t = std::isnan(a) || std::isnan(b);					
 						break;
 
 					default:
-						throw RuntimeException("invalid comparison operator for unsigned int type", context.PC, instr);
+						throw RuntimeException("invalid comparison operator "
+							"for unsigned int type", context.PC, instr);
 				}				
 
 				
@@ -5412,7 +5592,8 @@ void executive::CooperativeThreadArray::eval_SetP(CTAContext &context,
 		d = BoolOp(t, c) ? 0xFFFFFFFF : 0x00000000;
 
 */
-void executive::CooperativeThreadArray::eval_Set(CTAContext &context, const PTXInstruction &instr) {
+void executive::CooperativeThreadArray::eval_Set(CTAContext &context,
+	const PTXInstruction &instr) {
 	trace();
 	
 	switch (instr.a.type) {
@@ -5453,7 +5634,7 @@ void executive::CooperativeThreadArray::eval_Set(CTAContext &context, const PTXI
 				}	
 
 				if (instr.c.addressMode == PTXOperand::Register) {
-					c = getRegAsPredicate(threadID, instr.c.reg);
+					c = operandAsPredicate(threadID, instr.c);
 				}
 				
 				// any branch predictor worth its salt will get this wrong twice or less
@@ -5483,7 +5664,8 @@ void executive::CooperativeThreadArray::eval_Set(CTAContext &context, const PTXI
 						t = (a >= b);
 						break;
 					default:
-						throw RuntimeException("invalid comparison operator for unsigned int type", context.PC, instr);
+						throw RuntimeException("invalid comparison operator "
+							"for unsigned int type", context.PC, instr);
 				}
 				
 				// now apply the bool op
@@ -5549,7 +5731,7 @@ void executive::CooperativeThreadArray::eval_Set(CTAContext &context, const PTXI
 				}			
 				
 				if (instr.c.addressMode == PTXOperand::Register) {
-					c = getRegAsPredicate(threadID, instr.c.reg);
+					c = operandAsPredicate(threadID, instr.c);
 				}
 				
 				// any branch predictor worth its salt will get this wrong twice or less
@@ -5584,7 +5766,8 @@ void executive::CooperativeThreadArray::eval_Set(CTAContext &context, const PTXI
 						break;
 					
 					default:
-						throw RuntimeException("invalid comparison operator for unsigned int type", context.PC, instr);
+						throw RuntimeException("invalid comparison operator "
+						"for unsigned int type", context.PC, instr);
 				}
 				
 				// now apply the bool op
@@ -5623,12 +5806,13 @@ void executive::CooperativeThreadArray::eval_Set(CTAContext &context, const PTXI
 			for (int threadID = 0; threadID < threadCount; threadID++) {
 				if (!context.predicated(threadID, instr)) continue;
 				
-				PTXF32 a = operandAsF32(threadID, instr.a), b = operandAsF32(threadID, instr.b);
+				PTXF32 a = operandAsF32(threadID, instr.a),
+					b = operandAsF32(threadID, instr.b);
 				bool c = true;	// read operator somehow
 				bool t = false;
 				
 				if (instr.c.addressMode == PTXOperand::Register) {
-					c = getRegAsPredicate(threadID, instr.c.reg);
+					c = operandAsPredicate(threadID, instr.c);
 				}
 				
 				// any branch predictor worth its salt will get this wrong twice or less
@@ -5639,7 +5823,7 @@ void executive::CooperativeThreadArray::eval_Set(CTAContext &context, const PTXI
 						break;
 					case PTXInstruction::Neu:
 					case PTXInstruction::Ne:
-						t = (a != b);
+						t = !std::isnan(b) && !std::isnan(a) && (a != b);
 						break;
 					
 					case PTXInstruction::Ltu:
@@ -5667,11 +5851,15 @@ void executive::CooperativeThreadArray::eval_Set(CTAContext &context, const PTXI
 						break;
 
 					case PTXInstruction::Num:
+						t = !std::isnan(a) && !std::isnan(b);
+						break;
+					
 					case PTXInstruction::Nan:
 						break;
-
+						
 					default:
-						throw RuntimeException("invalid comparison operator for unsigned int type", context.PC, instr);
+						throw RuntimeException("invalid comparison operator "
+							"for unsigned int type", context.PC, instr);
 				}
 				
 				switch (instr.comparisonOperator) {
@@ -5684,7 +5872,7 @@ void executive::CooperativeThreadArray::eval_Set(CTAContext &context, const PTXI
 					case PTXInstruction::Num:
 					case PTXInstruction::Nan:
 						// if either is NaN, set t to true
-						t = (isF32NaN(a) || isF32NaN(b) || t);
+						t = (std::isnan(a) || std::isnan(b) || t);
 						break;
 					default:
 						break;
@@ -5726,12 +5914,13 @@ void executive::CooperativeThreadArray::eval_Set(CTAContext &context, const PTXI
 			for (int threadID = 0; threadID < threadCount; threadID++) {
 				if (!context.predicated(threadID, instr)) continue;
 				
-				PTXF64 a = operandAsF64(threadID, instr.a), b = operandAsF64(threadID, instr.b);
+				PTXF64 a = operandAsF64(threadID, instr.a),
+					b = operandAsF64(threadID, instr.b);
 				bool c = true;
 				bool t = false;
 				
 				if (instr.c.addressMode == PTXOperand::Register) {
-					c = getRegAsPredicate(threadID, instr.c.reg);
+					c = operandAsPredicate(threadID, instr.c);
 				}
 				
 				// any branch predictor worth its salt will get this wrong twice or less
@@ -5772,11 +5961,15 @@ void executive::CooperativeThreadArray::eval_Set(CTAContext &context, const PTXI
 						break;
 
 					case PTXInstruction::Num:
+						t = !std::isnan(a) && !std::isnan(b);
+						break;
 					case PTXInstruction::Nan:
+						t = std::isnan(a) || std::isnan(b);
 						break;
 
 					default:
-						throw RuntimeException("invalid comparison operator for unsigned int type", context.PC, instr);
+						throw RuntimeException("invalid comparison operator "
+							"for unsigned int type", context.PC, instr);
 				}				
 				
 				switch (instr.comparisonOperator) {
@@ -5789,7 +5982,7 @@ void executive::CooperativeThreadArray::eval_Set(CTAContext &context, const PTXI
 					case PTXInstruction::Num:
 					case PTXInstruction::Nan:
 						// if either is NaN, set t to true
-						t = (isF64NaN(a) || isF64NaN(b) || t);
+						t = (std::isnan(a) || std::isnan(b) || t);
 						break;
 					default:
 						break;
@@ -6254,14 +6447,15 @@ void executive::CooperativeThreadArray::eval_Shr(CTAContext &context, const PTXI
 /*!
 
 */		
-void executive::CooperativeThreadArray::eval_Sin(CTAContext &context, const PTXInstruction &instr) {
+void executive::CooperativeThreadArray::eval_Sin(CTAContext &context,
+	const PTXInstruction &instr) {
 	trace();
 	if (instr.type == PTXOperand::f32) {
 		for (int threadID = 0; threadID < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;
 			
 			PTXF32 d, a = operandAsF32(threadID, instr.a);
-			d = (PTXF32)sin(a);
+			d = ftz(instr.modifier, (PTXF32)sin(a));
 			setRegAsF32(threadID, instr.d.reg, d);
 		}
 	}	
@@ -6345,7 +6539,8 @@ void executive::CooperativeThreadArray::eval_SlCt(CTAContext &context, const PTX
 /*!
 
 */		
-void executive::CooperativeThreadArray::eval_Sqrt(CTAContext &context, const PTXInstruction &instr) {
+void executive::CooperativeThreadArray::eval_Sqrt(CTAContext &context,
+	const PTXInstruction &instr) {
 	trace();
 
 	assert(instr.opcode == PTXInstruction::Sqrt);
@@ -6354,8 +6549,13 @@ void executive::CooperativeThreadArray::eval_Sqrt(CTAContext &context, const PTX
 		for (int threadID = 0; threadID < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;
 			
-			PTXF32 d, a = operandAsF32(threadID, instr.a);
-			d = (PTXF32)sqrt(a);
+			int modifier = instr.modifier;
+			if( modifier & PTXInstruction::approx ) {
+				modifier |= PTXInstruction::ftz;
+			}
+			
+			PTXF32 d, a = ftz(modifier, operandAsF32(threadID, instr.a));
+			d = ftz(modifier, (PTXF32)sqrt(a));
 			setRegAsF32(threadID, instr.d.reg, d);
 		}
 	}	
@@ -6675,7 +6875,7 @@ void executive::CooperativeThreadArray::eval_St(CTAContext &context,
 					context.PC, instr);
 		}
 
-		source += instr.d.offset;		
+		source += instr.d.offset;
 		
 		switch (instr.addressSpace) {
 			case PTXInstruction::Param:
@@ -6683,7 +6883,7 @@ void executive::CooperativeThreadArray::eval_St(CTAContext &context,
 					source += (PTXU64) kernel->ParameterMemory;
 				}
 				break;
-			case PTXInstruction::Global:			
+				case PTXInstruction::Global:			
 				{	
 				}
 				break;
@@ -6714,20 +6914,21 @@ void executive::CooperativeThreadArray::eval_St(CTAContext &context,
 
 }
 
-///////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 /*!
 
 */		
-void executive::CooperativeThreadArray::eval_Sub(CTAContext &context, const PTXInstruction &instr) {
+void executive::CooperativeThreadArray::eval_Sub(CTAContext &context,
+	const PTXInstruction &instr) {
 	trace();
 	if (instr.type == PTXOperand::f32) {
 		for (int threadID = 0; threadID < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;
 			
-			PTXF32 d, a = operandAsF32(threadID, instr.a), 
-				b = operandAsF32(threadID, instr.b);
-			d = sat(instr.modifier, a - b);
+			PTXF32 d, a = ftz(instr.modifier, operandAsF32(threadID, instr.a)), 
+				b = ftz(instr.modifier, operandAsF32(threadID, instr.b));
+			d = ftz(instr.modifier, sat(instr.modifier, a - b));
 			setRegAsF32(threadID, instr.d.reg, d);
 		}
 	}	
@@ -6905,8 +7106,6 @@ void executive::CooperativeThreadArray::eval_Tex(CTAContext &context,
 	}
 	for (int threadID = 0; threadID < threadCount; threadID++) {
 		if (!context.predicated(threadID, instr)) continue;
-		PTXB8 *address = 0;
-		
 		switch (instr.geometry) {
 			case ir::PTXInstruction::_1d:
 				switch (instr.d.type) {
@@ -6917,21 +7116,13 @@ void executive::CooperativeThreadArray::eval_Tex(CTAContext &context,
 							assert(instr.d.array.size()==4);
 							PTXS32 c = getRegAsS32(threadID, 
 								instr.c.array[0].reg);
-							PTXU32 d0 = tex::sample<0,PTXU32>(texture, c, address);
+							PTXU32 d0 = tex::sample<0,PTXU32>(texture, c);
+							PTXU32 d1 = tex::sample<1,PTXU32>(texture, c);
+							PTXU32 d2 = tex::sample<2,PTXU32>(texture, c);
+							PTXU32 d3 = tex::sample<3,PTXU32>(texture, c);
 							if (traceEvents) {
-								currentEvent.memory_addresses.push_back((PTXU64)address);
-							}
-							PTXU32 d1 = tex::sample<1,PTXU32>(texture, c, address);
-							if (traceEvents) {
-								currentEvent.memory_addresses.push_back((PTXU64)address);
-							}
-							PTXU32 d2 = tex::sample<2,PTXU32>(texture, c, address);
-							if (traceEvents) {
-								currentEvent.memory_addresses.push_back((PTXU64)address);
-							}
-							PTXU32 d3 = tex::sample<3,PTXU32>(texture, c, address);
-							if (traceEvents) {
-								currentEvent.memory_addresses.push_back((PTXU64)address);
+								tex::addresses(texture, c,
+									currentEvent.memory_addresses);
 							}
 							setRegAsU32(threadID, instr.d.array[0].reg, d0);
 							setRegAsU32(threadID, instr.d.array[1].reg, d1);
@@ -6943,21 +7134,13 @@ void executive::CooperativeThreadArray::eval_Tex(CTAContext &context,
 							assert(instr.d.array.size()==4);
 							PTXF32 c = getRegAsF32(threadID, 
 								instr.c.array[0].reg);
-							PTXU32 d0 = tex::sample<0,PTXU32>(texture, c, address);
+							PTXU32 d0 = tex::sample<0,PTXU32>(texture, c);
+							PTXU32 d1 = tex::sample<1,PTXU32>(texture, c);
+							PTXU32 d2 = tex::sample<2,PTXU32>(texture, c);
+							PTXU32 d3 = tex::sample<3,PTXU32>(texture, c);
 							if (traceEvents) {
-								currentEvent.memory_addresses.push_back((PTXU64)address);
-							}
-							PTXU32 d1 = tex::sample<1,PTXU32>(texture, c, address);
-							if (traceEvents) {
-								currentEvent.memory_addresses.push_back((PTXU64)address);
-							}
-							PTXU32 d2 = tex::sample<2,PTXU32>(texture, c, address);
-							if (traceEvents) {
-								currentEvent.memory_addresses.push_back((PTXU64)address);
-							}
-							PTXU32 d3 = tex::sample<3,PTXU32>(texture, c, address);
-							if (traceEvents) {
-								currentEvent.memory_addresses.push_back((PTXU64)address);
+								tex::addresses(texture, c,
+									currentEvent.memory_addresses);
 							}
 							setRegAsU32(threadID, instr.d.array[0].reg, d0);
 							setRegAsU32(threadID, instr.d.array[1].reg, d1);
@@ -6978,21 +7161,13 @@ void executive::CooperativeThreadArray::eval_Tex(CTAContext &context,
 							assert(instr.d.array.size()==4);
 							PTXS32 c = getRegAsS32(threadID, 
 								instr.c.array[0].reg);
-							PTXS32 d0 = tex::sample<0,PTXS32>(texture, c, address);
+							PTXS32 d0 = tex::sample<0,PTXS32>(texture, c);
+							PTXS32 d1 = tex::sample<1,PTXS32>(texture, c);
+							PTXS32 d2 = tex::sample<2,PTXS32>(texture, c);
+							PTXS32 d3 = tex::sample<3,PTXS32>(texture, c);
 							if (traceEvents) {
-								currentEvent.memory_addresses.push_back((PTXU64)address);
-							}
-							PTXS32 d1 = tex::sample<1,PTXS32>(texture, c, address);
-							if (traceEvents) {
-								currentEvent.memory_addresses.push_back((PTXU64)address);
-							}
-							PTXS32 d2 = tex::sample<2,PTXS32>(texture, c, address);
-							if (traceEvents) {
-								currentEvent.memory_addresses.push_back((PTXU64)address);
-							}
-							PTXS32 d3 = tex::sample<3,PTXS32>(texture, c, address);
-							if (traceEvents) {
-								currentEvent.memory_addresses.push_back((PTXU64)address);
+								tex::addresses(texture, c,
+									currentEvent.memory_addresses);
 							}
 							setRegAsS32(threadID, instr.d.array[0].reg, d0);
 							setRegAsS32(threadID, instr.d.array[1].reg, d1);
@@ -7004,21 +7179,13 @@ void executive::CooperativeThreadArray::eval_Tex(CTAContext &context,
 							assert(instr.d.array.size()==4);
 							PTXF32 c = getRegAsF32(threadID, 
 								instr.c.array[0].reg);
-							PTXS32 d0 = tex::sample<0,PTXS32>(texture, c, address);
+							PTXS32 d0 = tex::sample<0,PTXS32>(texture, c);
+							PTXS32 d1 = tex::sample<1,PTXS32>(texture, c);
+							PTXS32 d2 = tex::sample<2,PTXS32>(texture, c);
+							PTXS32 d3 = tex::sample<3,PTXS32>(texture, c);
 							if (traceEvents) {
-								currentEvent.memory_addresses.push_back((PTXU64)address);
-							}
-							PTXS32 d1 = tex::sample<1,PTXS32>(texture, c, address);
-							if (traceEvents) {
-								currentEvent.memory_addresses.push_back((PTXU64)address);
-							}
-							PTXS32 d2 = tex::sample<2,PTXS32>(texture, c, address);
-							if (traceEvents) {
-								currentEvent.memory_addresses.push_back((PTXU64)address);
-							}
-							PTXS32 d3 = tex::sample<3,PTXS32>(texture, c, address);
-							if (traceEvents) {
-								currentEvent.memory_addresses.push_back((PTXU64)address);
+								tex::addresses(texture, c,
+									currentEvent.memory_addresses);
 							}
 							setRegAsS32(threadID, instr.d.array[0].reg, d0);
 							setRegAsS32(threadID, instr.d.array[1].reg, d1);
@@ -7043,6 +7210,10 @@ void executive::CooperativeThreadArray::eval_Tex(CTAContext &context,
 							PTXF32 d1 = tex::sample<1,PTXF32>(texture, c);
 							PTXF32 d2 = tex::sample<2,PTXF32>(texture, c);
 							PTXF32 d3 = tex::sample<3,PTXF32>(texture, c);
+							if (traceEvents) {
+								tex::addresses(texture, c,
+									currentEvent.memory_addresses);
+							}
 							setRegAsF32(threadID, instr.d.array[0].reg, d0);
 							setRegAsF32(threadID, instr.d.array[1].reg, d1);
 							setRegAsF32(threadID, instr.d.array[2].reg, d2);
@@ -7053,21 +7224,13 @@ void executive::CooperativeThreadArray::eval_Tex(CTAContext &context,
 							assert(instr.d.array.size()==4);
 							PTXF32 c = getRegAsF32(threadID, 
 								instr.c.array[0].reg);
-							PTXF32 d0 = tex::sample<0,PTXF32>(texture, c, address);
+							PTXF32 d0 = tex::sample<0,PTXF32>(texture, c);
+							PTXF32 d1 = tex::sample<1,PTXF32>(texture, c);
+							PTXF32 d2 = tex::sample<2,PTXF32>(texture, c);
+							PTXF32 d3 = tex::sample<3,PTXF32>(texture, c);
 							if (traceEvents) {
-								currentEvent.memory_addresses.push_back((PTXU64)address);
-							}
-							PTXF32 d1 = tex::sample<1,PTXF32>(texture, c, address);
-							if (traceEvents) {
-								currentEvent.memory_addresses.push_back((PTXU64)address);
-							}
-							PTXF32 d2 = tex::sample<2,PTXF32>(texture, c, address);
-							if (traceEvents) {
-								currentEvent.memory_addresses.push_back((PTXU64)address);
-							}
-							PTXF32 d3 = tex::sample<3,PTXF32>(texture, c, address);
-							if (traceEvents) {
-								currentEvent.memory_addresses.push_back((PTXU64)address);
+								tex::addresses(texture, c,
+									currentEvent.memory_addresses);
 							}
 							setRegAsF32(threadID, instr.d.array[0].reg, d0);
 							setRegAsF32(threadID, instr.d.array[1].reg, d1);
@@ -7103,6 +7266,10 @@ void executive::CooperativeThreadArray::eval_Tex(CTAContext &context,
 							PTXU32 d1 = tex::sample<1,PTXU32>(texture, c0, c1);
 							PTXU32 d2 = tex::sample<2,PTXU32>(texture, c0, c1);
 							PTXU32 d3 = tex::sample<3,PTXU32>(texture, c0, c1);
+							if (traceEvents) {
+								tex::addresses(texture, c0, c1,
+									currentEvent.memory_addresses);
+							}
 							setRegAsU32(threadID, instr.d.array[0].reg, d0);
 							setRegAsU32(threadID, instr.d.array[1].reg, d1);
 							setRegAsU32(threadID, instr.d.array[2].reg, d2);
@@ -7119,6 +7286,10 @@ void executive::CooperativeThreadArray::eval_Tex(CTAContext &context,
 							PTXU32 d1 = tex::sample<1,PTXU32>(texture, c0, c1);
 							PTXU32 d2 = tex::sample<2,PTXU32>(texture, c0, c1);
 							PTXU32 d3 = tex::sample<3,PTXU32>(texture, c0, c1);
+							if (traceEvents) {
+								tex::addresses(texture, c0, c1,
+									currentEvent.memory_addresses);
+							}
 							setRegAsU32(threadID, instr.d.array[0].reg, d0);
 							setRegAsU32(threadID, instr.d.array[1].reg, d1);
 							setRegAsU32(threadID, instr.d.array[2].reg, d2);
@@ -7144,6 +7315,10 @@ void executive::CooperativeThreadArray::eval_Tex(CTAContext &context,
 							PTXS32 d1 = tex::sample<1,PTXS32>(texture, c0, c1);
 							PTXS32 d2 = tex::sample<2,PTXS32>(texture, c0, c1);
 							PTXS32 d3 = tex::sample<3,PTXS32>(texture, c0, c1);
+							if (traceEvents) {
+								tex::addresses(texture, c0, c1,
+									currentEvent.memory_addresses);
+							}
 							setRegAsS32(threadID, instr.d.array[0].reg, d0);
 							setRegAsS32(threadID, instr.d.array[1].reg, d1);
 							setRegAsS32(threadID, instr.d.array[2].reg, d2);
@@ -7160,6 +7335,10 @@ void executive::CooperativeThreadArray::eval_Tex(CTAContext &context,
 							PTXS32 d1 = tex::sample<1,PTXS32>(texture, c0, c1);
 							PTXS32 d2 = tex::sample<2,PTXS32>(texture, c0, c1);
 							PTXS32 d3 = tex::sample<3,PTXS32>(texture, c0, c1);
+							if (traceEvents) {
+								tex::addresses(texture, c0, c1,
+									currentEvent.memory_addresses);
+							}
 							setRegAsS32(threadID, instr.d.array[0].reg, d0);
 							setRegAsS32(threadID, instr.d.array[1].reg, d1);
 							setRegAsS32(threadID, instr.d.array[2].reg, d2);
@@ -7185,6 +7364,10 @@ void executive::CooperativeThreadArray::eval_Tex(CTAContext &context,
 							PTXF32 d1 = tex::sample<1,PTXF32>(texture, c0, c1);
 							PTXF32 d2 = tex::sample<2,PTXF32>(texture, c0, c1);
 							PTXF32 d3 = tex::sample<3,PTXF32>(texture, c0, c1);
+							if (traceEvents) {
+								tex::addresses(texture, c0, c1,
+									currentEvent.memory_addresses);
+							}
 							setRegAsF32(threadID, instr.d.array[0].reg, d0);
 							setRegAsF32(threadID, instr.d.array[1].reg, d1);
 							setRegAsF32(threadID, instr.d.array[2].reg, d2);
@@ -7201,6 +7384,10 @@ void executive::CooperativeThreadArray::eval_Tex(CTAContext &context,
 							PTXF32 d1 = tex::sample<1,PTXF32>(texture, c0, c1);
 							PTXF32 d2 = tex::sample<2,PTXF32>(texture, c0, c1);
 							PTXF32 d3 = tex::sample<3,PTXF32>(texture, c0, c1);
+							if (traceEvents) {
+								tex::addresses(texture, c0, c1,
+									currentEvent.memory_addresses);
+							}
 							setRegAsF32(threadID, instr.d.array[0].reg, d0);
 							setRegAsF32(threadID, instr.d.array[1].reg, d1);
 							setRegAsF32(threadID, instr.d.array[2].reg, d2);
@@ -7233,10 +7420,18 @@ void executive::CooperativeThreadArray::eval_Tex(CTAContext &context,
 								instr.c.array[1].reg);
 							PTXS32 c2 = getRegAsS32(threadID, 
 								instr.c.array[2].reg);
-							PTXU32 d0 = tex::sample<0,PTXU32>(texture, c0, c1, c2);
-							PTXU32 d1 = tex::sample<1,PTXU32>(texture, c0, c1, c2);
-							PTXU32 d2 = tex::sample<2,PTXU32>(texture, c0, c1, c2);
-							PTXU32 d3 = tex::sample<3,PTXU32>(texture, c0, c1, c2);
+							PTXU32 d0 = tex::sample<0,PTXU32>(
+								texture, c0, c1, c2);
+							PTXU32 d1 = tex::sample<1,PTXU32>(
+								texture, c0, c1, c2);
+							PTXU32 d2 = tex::sample<2,PTXU32>(
+								texture, c0, c1, c2);
+							PTXU32 d3 = tex::sample<3,PTXU32>(
+								texture, c0, c1, c2);
+							if (traceEvents) {
+								tex::addresses(texture, c0, c1, c2,
+									currentEvent.memory_addresses);
+							}
 							setRegAsU32(threadID, instr.d.array[0].reg, d0);
 							setRegAsU32(threadID, instr.d.array[1].reg, d1);
 							setRegAsU32(threadID, instr.d.array[2].reg, d2);
@@ -7251,10 +7446,18 @@ void executive::CooperativeThreadArray::eval_Tex(CTAContext &context,
 								instr.c.array[1].reg);
 							PTXF32 c2 = getRegAsF32(threadID, 
 								instr.c.array[2].reg);
-							PTXU32 d0 = tex::sample<0,PTXU32>(texture, c0, c1, c2);
-							PTXU32 d1 = tex::sample<1,PTXU32>(texture, c0, c1, c2);
-							PTXU32 d2 = tex::sample<2,PTXU32>(texture, c0, c1, c2);
-							PTXU32 d3 = tex::sample<3,PTXU32>(texture, c0, c1, c2);
+							PTXU32 d0 = tex::sample<0,PTXU32>(
+								texture, c0, c1, c2);
+							PTXU32 d1 = tex::sample<1,PTXU32>(
+								texture, c0, c1, c2);
+							PTXU32 d2 = tex::sample<2,PTXU32>(
+								texture, c0, c1, c2);
+							PTXU32 d3 = tex::sample<3,PTXU32>(
+								texture, c0, c1, c2);
+							if (traceEvents) {
+								tex::addresses(texture, c0, c1, c2,
+									currentEvent.memory_addresses);
+							}
 							setRegAsU32(threadID, instr.d.array[0].reg, d0);
 							setRegAsU32(threadID, instr.d.array[1].reg, d1);
 							setRegAsU32(threadID, instr.d.array[2].reg, d2);
@@ -7278,10 +7481,18 @@ void executive::CooperativeThreadArray::eval_Tex(CTAContext &context,
 								instr.c.array[1].reg);
 							PTXS32 c2 = getRegAsS32(threadID, 
 								instr.c.array[2].reg);
-							PTXS32 d0 = tex::sample<0,PTXS32>(texture, c0, c1, c2);
-							PTXS32 d1 = tex::sample<1,PTXS32>(texture, c0, c1, c2);
-							PTXS32 d2 = tex::sample<2,PTXS32>(texture, c0, c1, c2);
-							PTXS32 d3 = tex::sample<3,PTXS32>(texture, c0, c1, c2);
+							PTXS32 d0 = tex::sample<0,PTXS32>(
+								texture, c0, c1, c2);
+							PTXS32 d1 = tex::sample<1,PTXS32>(
+								texture, c0, c1, c2);
+							PTXS32 d2 = tex::sample<2,PTXS32>(
+								texture, c0, c1, c2);
+							PTXS32 d3 = tex::sample<3,PTXS32>(
+								texture, c0, c1, c2);
+							if (traceEvents) {
+								tex::addresses(texture, c0, c1, c2,
+									currentEvent.memory_addresses);
+							}
 							setRegAsS32(threadID, instr.d.array[0].reg, d0);
 							setRegAsS32(threadID, instr.d.array[1].reg, d1);
 							setRegAsS32(threadID, instr.d.array[2].reg, d2);
@@ -7296,10 +7507,18 @@ void executive::CooperativeThreadArray::eval_Tex(CTAContext &context,
 								instr.c.array[1].reg);
 							PTXF32 c2 = getRegAsF32(threadID, 
 								instr.c.array[2].reg);
-							PTXS32 d0 = tex::sample<0,PTXS32>(texture, c0, c1, c2);
-							PTXS32 d1 = tex::sample<1,PTXS32>(texture, c0, c1, c2);
-							PTXS32 d2 = tex::sample<2,PTXS32>(texture, c0, c1, c2);
-							PTXS32 d3 = tex::sample<3,PTXS32>(texture, c0, c1, c2);
+							PTXS32 d0 = tex::sample<0,PTXS32>(
+								texture, c0, c1, c2);
+							PTXS32 d1 = tex::sample<1,PTXS32>(
+								texture, c0, c1, c2);
+							PTXS32 d2 = tex::sample<2,PTXS32>(
+								texture, c0, c1, c2);
+							PTXS32 d3 = tex::sample<3,PTXS32>(
+								texture, c0, c1, c2);
+							if (traceEvents) {
+								tex::addresses(texture, c0, c1, c2,
+									currentEvent.memory_addresses);
+							}
 							setRegAsS32(threadID, instr.d.array[0].reg, d0);
 							setRegAsS32(threadID, instr.d.array[1].reg, d1);
 							setRegAsS32(threadID, instr.d.array[2].reg, d2);
@@ -7323,10 +7542,18 @@ void executive::CooperativeThreadArray::eval_Tex(CTAContext &context,
 								instr.c.array[1].reg);
 							PTXS32 c2 = getRegAsS32(threadID, 
 								instr.c.array[2].reg);
-							PTXF32 d0 = tex::sample<0,PTXF32>(texture, c0, c1, c2);
-							PTXF32 d1 = tex::sample<1,PTXF32>(texture, c0, c1, c2);
-							PTXF32 d2 = tex::sample<2,PTXF32>(texture, c0, c1, c2);
-							PTXF32 d3 = tex::sample<3,PTXF32>(texture, c0, c1, c2);
+							PTXF32 d0 = tex::sample<0,PTXF32>(
+								texture, c0, c1, c2);
+							PTXF32 d1 = tex::sample<1,PTXF32>(
+								texture, c0, c1, c2);
+							PTXF32 d2 = tex::sample<2,PTXF32>(
+								texture, c0, c1, c2);
+							PTXF32 d3 = tex::sample<3,PTXF32>(
+								texture, c0, c1, c2);
+							if (traceEvents) {
+								tex::addresses(texture, c0, c1, c2,
+									currentEvent.memory_addresses);
+							}
 							setRegAsF32(threadID, instr.d.array[0].reg, d0);
 							setRegAsF32(threadID, instr.d.array[1].reg, d1);
 							setRegAsF32(threadID, instr.d.array[2].reg, d2);
@@ -7341,10 +7568,18 @@ void executive::CooperativeThreadArray::eval_Tex(CTAContext &context,
 								instr.c.array[1].reg);
 							PTXF32 c2 = getRegAsF32(threadID, 
 								instr.c.array[2].reg);
-							PTXF32 d0 = tex::sample<0,PTXF32>(texture, c0, c1, c2);
-							PTXF32 d1 = tex::sample<1,PTXF32>(texture, c0, c1, c2);
-							PTXF32 d2 = tex::sample<2,PTXF32>(texture, c0, c1, c2);
-							PTXF32 d3 = tex::sample<3,PTXF32>(texture, c0, c1, c2);
+							PTXF32 d0 = tex::sample<0,PTXF32>(
+								texture, c0, c1, c2);
+							PTXF32 d1 = tex::sample<1,PTXF32>(
+								texture, c0, c1, c2);
+							PTXF32 d2 = tex::sample<2,PTXF32>(
+								texture, c0, c1, c2);
+							PTXF32 d3 = tex::sample<3,PTXF32>(
+								texture, c0, c1, c2);
+							if (traceEvents) {
+								tex::addresses(texture, c0, c1, c2,
+									currentEvent.memory_addresses);
+							}
 							setRegAsF32(threadID, instr.d.array[0].reg, d0);
 							setRegAsF32(threadID, instr.d.array[1].reg, d1);
 							setRegAsF32(threadID, instr.d.array[2].reg, d2);
@@ -7469,8 +7704,8 @@ void executive::CooperativeThreadArray::eval_Xor(CTAContext &context,
 		for (int threadID = 0; threadID < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;
 			
-			bool d, a = getRegAsPredicate(threadID, instr.a.reg), 
-				b = getRegAsPredicate(threadID, instr.b.reg);
+			bool d, a = operandAsPredicate(threadID, instr.a), 
+				b = operandAsPredicate(threadID, instr.b);
 			d = b ^ a;
 			setRegAsPredicate(threadID, instr.d.reg, d);
 		}
@@ -7509,8 +7744,8 @@ void executive::CooperativeThreadArray::eval_Xor(CTAContext &context,
 		for (int threadID = 0; threadID < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;
 			
-			bool d, a = getRegAsPredicate(threadID, instr.a.reg), 
-				b = getRegAsPredicate(threadID, instr.b.reg);
+			bool d, a = operandAsPredicate(threadID, instr.a), 
+				b = operandAsPredicate(threadID, instr.b);
 			d = a ^ b;
 			setRegAsPredicate(threadID, instr.d.reg, d);
 		}

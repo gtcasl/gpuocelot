@@ -62,7 +62,7 @@ namespace analysis
 			Pass* pass = new analysis::ConvertPredicationToSelectPass;
 			manager.addPass( *pass );
 		}
-
+		
 		if( input.empty() )
 		{
 			std::cout << "No input file name given.  Bailing out." << std::endl;

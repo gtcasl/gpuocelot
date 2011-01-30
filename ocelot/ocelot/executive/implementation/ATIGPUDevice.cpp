@@ -359,7 +359,7 @@ namespace executive
 		assertM(false, "Not implemented yet");
 	}
 
-	void ATIGPUDevice::mapGraphicsResource(void* resource, int count, 
+	void ATIGPUDevice::mapGraphicsResource(void** resource, int count, 
 			unsigned int stream)
 	{
 		assertM(false, "Not implemented yet");
@@ -377,7 +377,7 @@ namespace executive
 		assertM(false, "Not implemented yet");
 	}
 
-	void ATIGPUDevice::unmapGraphicsResource(void* resource)
+	void ATIGPUDevice::unmapGraphicsResource(void** resource, int count, unsigned int streamID)
 	{
 		assertM(false, "Not implemented yet");
 	}
@@ -393,7 +393,7 @@ namespace executive
 		// silently ignore
 	}
 
-	bool ATIGPUDevice::queryEvent(unsigned int event) const
+	bool ATIGPUDevice::queryEvent(unsigned int event)
 	{
 		assertM(false, "Not implemented yet");
 	}
@@ -408,7 +408,7 @@ namespace executive
 		// silently ignore
 	}
 
-	float ATIGPUDevice::getEventTime(unsigned int start, unsigned int end) const
+	float ATIGPUDevice::getEventTime(unsigned int start, unsigned int end)
 	{
 		// silently ignore
 		return 0.0;
@@ -424,7 +424,7 @@ namespace executive
 		assertM(false, "Not implemented yet");
 	}
 
-	bool ATIGPUDevice::queryStream(unsigned int stream) const
+	bool ATIGPUDevice::queryStream(unsigned int stream)
 	{
 		assertM(false, "Not implemented yet");
 	}
@@ -535,7 +535,7 @@ namespace executive
 		return std::move(attributes);
 	}
 
-	unsigned int ATIGPUDevice::getLastError() const
+	unsigned int ATIGPUDevice::getLastError()
 	{
 		assertM(false, "Not implemented yet");
 	}

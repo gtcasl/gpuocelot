@@ -22,7 +22,7 @@ ACLOCAL_AMFLAGS = -I m4
 ################################################################################
 ## Programs and Libraries
 BUILT_SOURCES=ptxgrammar.h
-bin_PROGRAMS = PTXOptimizer OcelotConfig 
+bin_PROGRAMS = PTXOptimizer OcelotConfig
 check_PROGRAMS = TestLexer TestParser \
 	TestEmulator TestInstructions TestKernels \
 	TestDataflowGraph TestLLVMInstructions \
@@ -142,7 +142,7 @@ OcelotConfig_LDFLAGS = -static
 ## PTXOptimizer
 PTXOptimizer_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
 PTXOptimizer_SOURCES = ocelot/analysis/implementation/PTXOptimizer.cpp
-PTXOptimizer_LDADD = libocelot.la 
+PTXOptimizer_LDADD = libocelot.la
 PTXOptimizer_LDFLAGS = -static
 ################################################################################
 
@@ -312,7 +312,7 @@ TestCudaTextureArray_LDFLAGS = -static
 TestCudaSequence_CXXFLAGS = $(SDK_CFLAGS)
 TestCudaSequence_SOURCES = ocelot/cuda/test/kernels/sequence.cu.cpp
 TestCudaSequence_LDADD = libocelot.la $(LLVM_LDFLAGS)
-TestCudaSequence_LDFLAGS = -static -locelotTrace
+TestCudaSequence_LDFLAGS = -static
 ################################################################################
 
 ################################################################################
@@ -459,7 +459,7 @@ nobase_include_HEADERS = ocelot/api/interface/ocelot.h \
 	hydrazine/interface/Thread.hpp \
 	hydrazine/interface/Version.h \
 	hydrazine/python/RunRegression.py \
-	regression/ocelotRegressionTests.txt	
+	regression/ocelotRegressionTests.txt
 
 ################################################################################
 

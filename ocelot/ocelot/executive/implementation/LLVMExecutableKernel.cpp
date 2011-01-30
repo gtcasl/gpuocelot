@@ -7,6 +7,7 @@
 #ifndef LLVM_EXECUTABLE_KERNEL_CPP_INCLUDED
 #define LLVM_EXECUTABLE_KERNEL_CPP_INCLUDED
 
+// Ocelot Includes
 #include <ocelot/executive/interface/LLVMExecutableKernel.h>
 #include <ocelot/executive/interface/TextureOperations.h>
 #include <ocelot/executive/interface/Device.h>
@@ -16,6 +17,7 @@
 #include <ocelot/analysis/interface/ConvertPredicationToSelectPass.h>
 #include <fstream>
 
+// Hydrazine Includes
 #include <hydrazine/implementation/macros.h>
 #include <hydrazine/implementation/Exception.h>
 #include <hydrazine/interface/Casts.h>

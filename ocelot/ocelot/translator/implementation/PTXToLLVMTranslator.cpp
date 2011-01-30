@@ -1,4 +1,4 @@
- /*! \file PTXToLLVMTranslator.cpp
+/*! \file PTXToLLVMTranslator.cpp
 	\date Wednesday July 29, 2009
 	\author Gregory Diamos <gregory.diamos@gatech.edu>
 	\brief The source file for the PTXToLLVMTranslator class
@@ -8,6 +8,7 @@
 #ifndef PTX_TO_LLVM_TRANSLATOR_CPP_INCLUDED
 #define PTX_TO_LLVM_TRANSLATOR_CPP_INCLUDED
 
+// Ocelot Includes
 #include <ocelot/translator/interface/PTXToLLVMTranslator.h>
 #include <ocelot/ir/interface/LLVMInstruction.h>
 #include <ocelot/ir/interface/LLVMKernel.h>
@@ -15,10 +16,15 @@
 #include <ocelot/ir/interface/PTXInstruction.h>
 #include <ocelot/ir/interface/Module.h>
 
-#include <climits>
-
+// Hydrazine Includes
+#include <hydrazine/interface/Casts.h>
 #include <hydrazine/implementation/debug.h>
 
+// Standard Library Includes
+#include <climits>
+#include <limits>
+
+// Preprocessor Macros
 #ifdef __i386__
 #define USE_VECTOR_INSTRUCTIONS 0
 #else
@@ -1113,12 +1119,26 @@ namespace translator
 			
 			ir::LLVMSelect select;
 			
-			select.d = destination;
+			if( i.modifier & ir::PTXInstruction::ftz )
+			{
+				select.d = ir::LLVMInstruction::Operand( _tempRegister(), 
+					destination.type );
+			}
+			else
+			{
+				select.d = destination;
+			}
+			
 			select.condition = compare.d;
 			select.a = sub.d;
 			select.b = compare.a;
 			
 			_add( select );
+			
+			if( i.modifier & ir::PTXInstruction::ftz )
+			{
+				_flushToZero( destination, select.d );
+			}
 		}
 		else
 		{
@@ -1185,10 +1205,11 @@ namespace translator
 			add.a = _translate( i.a );
 			add.b = _translate( i.b );
 
-			if( i.modifier & ir::PTXInstruction::sat )
+			if( i.modifier & ir::PTXInstruction::sat
+				|| i.modifier & ir::PTXInstruction::ftz )
 			{
 				add.d = add.a;
-				add.a.name = _tempRegister();
+				add.d.name = _tempRegister();
 			}
 			else
 			{
@@ -1199,34 +1220,22 @@ namespace translator
 			
 			if( i.modifier & ir::PTXInstruction::sat )
 			{
-				ir::LLVMFcmp compare;
-				
-				compare.d.name = _tempRegister();
-				compare.d.type.type = ir::LLVMInstruction::I1;
-				compare.d.type.category = ir::LLVMInstruction::Type::Element;
-				compare.comparison = ir::LLVMInstruction::Ule;
-				compare.a = add.d;
-				compare.b.type.type = compare.a.type.type;
-				compare.b.type.category = ir::LLVMInstruction::Type::Element;
-				compare.b.constant = true;
-				if( compare.b.type.type == ir::LLVMInstruction::F32 )
+				if( i.modifier & ir::PTXInstruction::ftz )
 				{
-					compare.b.f32 = 0;
+					ir::LLVMInstruction::Operand temp =
+						ir::LLVMInstruction::Operand( _tempRegister(),
+						add.d.type );
+					_saturate( temp, add.d );
+					_flushToZero( result, temp );
 				}
 				else
 				{
-					compare.b.f64 = 0;
+					_saturate( result, add.d );
 				}
-				
-				ir::LLVMSelect select;
-				
-				select.d = result;
-				select.condition = compare.d;
-				select.a = compare.b;
-				select.b = add.d;
-				
-				_add( compare );
-				_add( select );
+			}
+			else if( i.modifier & ir::PTXInstruction::ftz )
+			{
+				_flushToZero( result, add.d );
 			}
 		}
 		else
@@ -1560,78 +1569,439 @@ namespace translator
 
 	void PTXToLLVMTranslator::_translateAtom( const ir::PTXInstruction& i )
 	{
-		ir::LLVMCall call;
-		
-		call.d = _destination( i );
-
-		if( i.atomicOperation == ir::PTXInstruction::AtomicCas )
+		if( i.addressSpace != ir::PTXInstruction::Shared )
 		{
-			if( i.type == ir::PTXOperand::b32 
-				|| i.type == ir::PTXOperand::u32 )
+			ir::LLVMCall call;
+		
+			call.d = _destination( i );
+			call.parameters.resize( 2 );
+
+			switch( i.atomicOperation )
 			{
-				call.name = "@__ocelot_atomcas_b32";
+				case ir::PTXInstruction::AtomicAnd:
+				{
+					call.name = "@llvm.atomic.load.and";
+					break;
+				}
+				case ir::PTXInstruction::AtomicOr:
+				{
+					call.name = "@llvm.atomic.load.or";
+					break;
+				}
+				case ir::PTXInstruction::AtomicXor:
+				{
+					call.name = "@llvm.atomic.load.xor";
+					break;
+				}
+				case ir::PTXInstruction::AtomicCas:
+				{
+					call.name = "@llvm.atomic.cmp.swap";
+					call.parameters.resize( 3 );
+					call.parameters[ 2 ] = _translate( i.c );
+					break;
+				}
+				case ir::PTXInstruction::AtomicExch:
+				{
+					call.name = "@llvm.atomic.swap";
+					break;
+				}
+				case ir::PTXInstruction::AtomicAdd:
+				{
+					call.name = "@llvm.atomic.load.add";
+					break;
+				}
+				case ir::PTXInstruction::AtomicInc:
+				{
+					call.name = "@__ocelot_atomic_inc";
+					break;
+				}
+				case ir::PTXInstruction::AtomicDec: 
+				{
+					call.name = "@__ocelot_atomic_dec";
+					break;
+				}
+				case ir::PTXInstruction::AtomicMin:
+				{
+					if( ir::PTXOperand::isSigned( i.type ) )
+					{
+						call.name = "@llvm.atomic.load.min";
+					}
+					else
+					{
+						call.name = "@llvm.atomic.load.umin";
+					}
+					break;
+				}
+				case ir::PTXInstruction::AtomicMax:
+				{
+					if( ir::PTXOperand::isSigned( i.type ) )
+					{
+						call.name = "@llvm.atomic.load.max";
+					}
+					else
+					{
+						call.name = "@llvm.atomic.load.umax";
+					}
+					break;
+				}
+				default: break;
+			}
+
+			if( i.atomicOperation != ir::PTXInstruction::AtomicInc
+				&& i.atomicOperation != ir::PTXInstruction::AtomicDec )
+			{
+
+				ir::LLVMInttoptr cast;
+				
+				cast.a = _translate( i.a );
+				cast.d = ir::LLVMInstruction::Operand( _tempRegister(), 
+					ir::LLVMInstruction::Type( _translate( i.type ),
+					ir::LLVMInstruction::Type::Pointer ) );
+
+				_add( cast );
+
+				call.parameters[0] = cast.d;
+
+				switch( i.type )
+				{
+					case ir::PTXOperand::b8:  /* fall through */
+					case ir::PTXOperand::u8:  /* fall through */
+					case ir::PTXOperand::s8:
+					{
+						call.name += ".i8.p0i8";
+						break;
+					}
+					case ir::PTXOperand::b16: /* fall through */
+					case ir::PTXOperand::u16: /* fall through */
+					case ir::PTXOperand::s16:
+					{
+						call.name += ".i16.p0i16";
+						break;
+					}
+					case ir::PTXOperand::b32: /* fall through */
+					case ir::PTXOperand::u32: /* fall through */
+					case ir::PTXOperand::s32:
+					{
+						call.name += ".i32.p0i32";
+						break;
+					}
+					case ir::PTXOperand::s64: /* fall through */
+					case ir::PTXOperand::u64: /* fall through */
+					case ir::PTXOperand::b64:
+					{
+						call.name += ".i64.p0i64";
+						break;
+					}
+					default: assertM(false, "Invalid type.");
+				}
 			}
 			else
 			{
-				call.name = "@__ocelot_atomcas_b64";				
+				call.parameters[0] = _translate( i.a );
+	
+					switch( i.type )
+				{
+					case ir::PTXOperand::b32: /* fall through */
+					case ir::PTXOperand::u32: /* fall through */
+					case ir::PTXOperand::s32:
+					{
+						call.name += "_32";
+						break;
+					}
+					case ir::PTXOperand::s64: /* fall through */
+					case ir::PTXOperand::u64: /* fall through */
+					case ir::PTXOperand::b64:
+					{
+						call.name += "_64";
+						break;
+					}
+					default: assertM(false, "Invalid type.");
+				}
 			}
-			call.parameters.resize( 6 );
+				
+			call.parameters[1] = _translate( i.b );
+	
+			_add( call );
 		}
 		else
 		{
-			if( i.type == ir::PTXOperand::b32
-				|| i.type == ir::PTXOperand::u32 )
+			// Shared atomics do not need to be atomic because threads in
+			// a CTA are serialized
+			ir::LLVMLoad load;
+			
+			load.a = _getLoadOrStorePointer( i.a, i.addressSpace, 
+				_translate( i.type ), i.vec );
+			load.d = _destination( i );
+			
+			_add( load );
+			
+			ir::LLVMStore store;
+			
+			store.d = load.a;
+			
+			switch( i.atomicOperation )
 			{
-				call.name = "@__ocelot_atom_b32";
-			}
-			else if( i.type == ir::PTXOperand::f32 )
-			{
-				call.name = "@__ocelot_atom_f32";
-			}
-			else if( i.type == ir::PTXOperand::s32 )
-			{
-				call.name = "@__ocelot_atom_s32";
-			}
-			else
-			{
-				call.name = "@__ocelot_atom_b64";
-			}
-			call.parameters.resize( 5 );
-		}
-		
-		call.parameters[0] = _context();
+				case ir::PTXInstruction::AtomicAnd:
+				{
+					ir::LLVMAnd land;
+					
+					land.d.name          = _tempRegister();
+					land.d.type.category = ir::LLVMInstruction::Type::Element;
+					land.d.type.type     = _translate( i.type );
+					land.a               = _translate( i.b );
+					land.b               = load.d;
+					
+					_add( land );
+					
+					store.a = land.d;
+					
+					break;
+				}
+				case ir::PTXInstruction::AtomicOr:
+				{
+					ir::LLVMOr lor;
+					
+					lor.d.name          = _tempRegister();
+					lor.d.type.category = ir::LLVMInstruction::Type::Element;
+					lor.d.type.type     = _translate( i.type );
+					lor.a               = _translate( i.b );
+					lor.b               = load.d;
+					
+					_add( lor );
+					
+					store.a = lor.d;
+					break;
+				}
+				case ir::PTXInstruction::AtomicXor:
+				{
+					ir::LLVMXor lxor;
+					
+					lxor.d.name          = _tempRegister();
+					lxor.d.type.category = ir::LLVMInstruction::Type::Element;
+					lxor.d.type.type     = _translate( i.type );
+					lxor.a               = _translate( i.b );
+					lxor.b               = load.d;
+					
+					_add( lxor );
+					
+					store.a = lxor.d;
+					
+					break;
+				}
+				case ir::PTXInstruction::AtomicCas:
+				{
+					ir::LLVMIcmp cmp;
+					
+					cmp.d.name          = _tempRegister();
+					cmp.d.type.category = ir::LLVMInstruction::Type::Element;
+					cmp.d.type.type     = ir::LLVMInstruction::I1;
+				
+					cmp.comparison      = ir::LLVMInstruction::Eq;
+					
+					cmp.a               = load.d;
+					cmp.b               = _translate( i.b );
+					
+					_add( cmp );
+					
+					ir::LLVMSelect select;
+					
+					select.condition       = cmp.d;
+					select.a               = _translate( i.c );
+					select.b               = load.d;
+					select.d.name          = _tempRegister();
+					select.d.type.category = ir::LLVMInstruction::Type::Element;
+					select.d.type.type     = _translate( i.type );
+					
+					_add( select );
 
-		call.parameters[1].type.type = ir::LLVMInstruction::I32;
-		call.parameters[1].type.category = ir::LLVMInstruction::Type::Element;
-		call.parameters[1].i32 = i.addressSpace;
-		call.parameters[1].constant = true;
+					store.a = select.d;
+					
+					break;
+				}
+				case ir::PTXInstruction::AtomicExch:
+				{
+					store.a = _translate( i.b );		
+					break;
+				}
+				case ir::PTXInstruction::AtomicAdd:
+				{
+					ir::LLVMAdd add;
+					
+					add.d.name          = _tempRegister();
+					add.d.type.category = ir::LLVMInstruction::Type::Element;
+					add.d.type.type     = _translate( i.type );
+					add.a               = _translate( i.b );
+					add.b               = load.d;
+					
+					_add( add );
+					
+					store.a = add.d;
+					break;
+				}
+				case ir::PTXInstruction::AtomicInc:
+				{
+					ir::LLVMIcmp cmp;
+					
+					cmp.d.name          = _tempRegister();
+					cmp.d.type.category = ir::LLVMInstruction::Type::Element;
+					cmp.d.type.type     = ir::LLVMInstruction::I1;
+				
+					cmp.comparison      = ir::LLVMInstruction::Slt;
+					
+					cmp.a               = load.d;
+					cmp.b               = _translate( i.b );
+					
+					_add( cmp );
+					
+					ir::LLVMAdd add;
+					
+					add.d.name          = _tempRegister();
+					add.d.type.category = ir::LLVMInstruction::Type::Element;
+					add.d.type.type     = _translate( i.type );
+					add.a               = load.d;
+					add.b.constant      = true;
+					add.b.type.category = ir::LLVMInstruction::Type::Element;
+					add.b.type.type     = _translate( i.type );
+					add.b.i32           = 1;
+					
+					_add( add );
+					
+					ir::LLVMSelect select;
+					
+					select.condition       = cmp.d;
+					select.a               = add.d;
+					select.b.constant      = true;
+					select.b.type.category = ir::LLVMInstruction::Type::Element;
+					select.b.type.type     = _translate( i.type );
+					select.b.i32           = 0;
+					select.d.name          = _tempRegister();
+					select.d.type.category = ir::LLVMInstruction::Type::Element;
+					select.d.type.type     = _translate( i.type );
+					
+					_add( select );
 
-		call.parameters[2].type.type = ir::LLVMInstruction::I32;
-		call.parameters[2].type.category = ir::LLVMInstruction::Type::Element;
-		call.parameters[2].i32 = i.atomicOperation;
-		call.parameters[2].constant = true;
+					store.a = select.d;
+					break;
+				}
+				case ir::PTXInstruction::AtomicDec: 
+				{
+					ir::LLVMIcmp cmp;
+					
+					cmp.d.name          = _tempRegister();
+					cmp.d.type.category = ir::LLVMInstruction::Type::Element;
+					cmp.d.type.type     = ir::LLVMInstruction::I1;
+				
+					cmp.comparison      = ir::LLVMInstruction::Sgt;
+					
+					cmp.a               = load.d;
+					cmp.b               = _translate( i.b );
+					
+					_add( cmp );
+					
+					ir::LLVMSub sub;
+					
+					sub.d.name          = _tempRegister();
+					sub.d.type.category = ir::LLVMInstruction::Type::Element;
+					sub.d.type.type     = _translate( i.type );
+					sub.a               = load.d;
+					sub.b.constant      = true;
+					sub.b.type.category = ir::LLVMInstruction::Type::Element;
+					sub.b.type.type     = _translate( i.type );
+					sub.b.i32           = 1;
+					
+					_add( sub );
+					
+					ir::LLVMSelect select;
+					
+					select.condition       = cmp.d;
+					select.a               = cmp.b;
+					select.b               = sub.d;
+					select.d.name          = _tempRegister();
+					select.d.type.category = ir::LLVMInstruction::Type::Element;
+					select.d.type.type     = _translate( i.type );
+					
+					_add( select );
 
-		if( ir::PTXOperand::bytes(i.a.type) == 8 )
-		{
-			call.parameters[3] = _translate( i.a );
+					store.a = select.d;
+					break;
+				}
+				case ir::PTXInstruction::AtomicMin:
+				{
+					ir::LLVMIcmp cmp;
+					
+					cmp.d.name          = _tempRegister();
+					cmp.d.type.category = ir::LLVMInstruction::Type::Element;
+					cmp.d.type.type     = ir::LLVMInstruction::I1;
+				
+					if( ir::PTXOperand::isSigned( i.type ) )
+					{
+						cmp.comparison      = ir::LLVMInstruction::Slt;
+					}
+					else
+					{
+						cmp.comparison      = ir::LLVMInstruction::Ult;
+					}
+					
+					cmp.a               = load.d;
+					cmp.b               = _translate( i.b );
+					
+					_add( cmp );
+					
+					ir::LLVMSelect select;
+					
+					select.condition       = cmp.d;
+					select.a               = cmp.a;
+					select.b               = cmp.b;
+					select.d.name          = _tempRegister();
+					select.d.type.category = ir::LLVMInstruction::Type::Element;
+					select.d.type.type     = _translate( i.type );
+					
+					_add( select );
+
+					store.a = select.d;
+					break;
+				}
+				case ir::PTXInstruction::AtomicMax:
+				{
+					ir::LLVMIcmp cmp;
+					
+					cmp.d.name          = _tempRegister();
+					cmp.d.type.category = ir::LLVMInstruction::Type::Element;
+					cmp.d.type.type     = ir::LLVMInstruction::I1;
+					
+					if( ir::PTXOperand::isSigned( i.type ) )
+					{
+						cmp.comparison      = ir::LLVMInstruction::Sgt;
+					}
+					else
+					{
+						cmp.comparison      = ir::LLVMInstruction::Ugt;
+					}
+					
+					cmp.a               = load.d;
+					cmp.b               = _translate( i.b );
+					
+					_add( cmp );
+					
+					ir::LLVMSelect select;
+					
+					select.condition       = cmp.d;
+					select.a               = cmp.a;
+					select.b               = cmp.b;
+					select.d.name          = _tempRegister();
+					select.d.type.category = ir::LLVMInstruction::Type::Element;
+					select.d.type.type     = _translate( i.type );
+					
+					_add( select );
+
+					store.a = select.d;
+					break;
+				}
+				default: break;
+			}
+			
+			_add( store );
 		}
-		else
-		{
-			call.parameters[3].type.type = ir::LLVMInstruction::I64;
-			call.parameters[3].type.category 
-				= ir::LLVMInstruction::Type::Element;
-			call.parameters[3].name = _tempRegister();
-			_bitcast( call.parameters[3], _translate( i.a ), false );
-		}
-		
-		call.parameters[4] = _translate( i.b );
-		
-		if( i.atomicOperation == ir::PTXInstruction::AtomicCas )
-		{
-			call.parameters[5] = _translate( i.c );
-		}
-		
-		_add( call );
 	}
 
 	void PTXToLLVMTranslator::_translateBar( const ir::PTXInstruction& i )
@@ -1706,14 +2076,27 @@ namespace translator
 
 	void PTXToLLVMTranslator::_translateCNot( const ir::PTXInstruction& i )
 	{
+		ir::LLVMIcmp cmp;
+	
+		cmp.d = ir::LLVMInstruction::Operand( _tempRegister(),
+			ir::LLVMInstruction::Type( ir::LLVMInstruction::I1, 
+			ir::LLVMInstruction::Type::Element ) );
+		cmp.a = _translate( i.a );
+		cmp.comparison = ir::LLVMInstruction::Eq;
+		cmp.b = ir::LLVMInstruction::Operand( (ir::LLVMI64) 0 );
+		cmp.b.type.type = cmp.a.type.type;
+		
+		_add( cmp );
+	
 		ir::LLVMSelect select;
+		
 		select.d = _destination( i );
-		select.condition = _translate( i.a );
-		select.a = select.condition;
+		select.condition = cmp.d;
+		select.a = cmp.a;
 		select.a.constant = true;
-		select.a.i64 = 0;
+		select.a.i64 = 1;
 		select.b = select.a;		
-		select.b.i64 = -1;
+		select.b.i64 = 0;
 	
 		_add( select );
 	}
@@ -1721,21 +2104,29 @@ namespace translator
 	void PTXToLLVMTranslator::_translateCos( const ir::PTXInstruction& i )
 	{
 		ir::LLVMCall call;
+
+		call.name = "@llvm.cos.f32";
 		
 		if( i.modifier & ir::PTXInstruction::ftz )
 		{
-			call.name = "@__ocelot_cosFtz";
+			call.d.name          = _tempRegister();
+			call.d.type.type     = ir::LLVMInstruction::F32;
+			call.d.type.category = ir::LLVMInstruction::Type::Element;
 		}
 		else
 		{
-			call.name = "@__ocelot_cosf";
+			call.d = _destination( i );
 		}
 		
-		call.d = _destination( i );
 		call.parameters.resize( 1 );
 		call.parameters[0] = _translate( i.a );
-		
+				
 		_add( call );
+
+		if( i.modifier & ir::PTXInstruction::ftz )
+		{
+			_flushToZero( _destination( i ), call.d );
+		}
 	}
 
 	void PTXToLLVMTranslator::_translateCvt( const ir::PTXInstruction& i )
@@ -1769,11 +2160,36 @@ namespace translator
 		{
 			ir::LLVMFdiv div;
 			
-			div.d = _destination( i );
-			div.a = _translate( i.a );
-			div.b = _translate( i.b );
+			ir::LLVMInstruction::Operand result = _destination( i );
 			
+			if( i.modifier & ir::PTXInstruction::ftz )
+			{
+				div.d = ir::LLVMInstruction::Operand( _tempRegister(), 
+					ir::LLVMInstruction::Type( ir::LLVMInstruction::F32, 
+					ir::LLVMInstruction::Type::Element ) );
+				div.a = ir::LLVMInstruction::Operand( _tempRegister(), 
+					ir::LLVMInstruction::Type( ir::LLVMInstruction::F32, 
+					ir::LLVMInstruction::Type::Element ) );
+				div.b = ir::LLVMInstruction::Operand( _tempRegister(), 
+					ir::LLVMInstruction::Type( ir::LLVMInstruction::F32, 
+					ir::LLVMInstruction::Type::Element ) );
+				
+				_flushToZero( div.a, _translate( i.a ) );
+				_flushToZero( div.b, _translate( i.b ) );
+			}
+			else
+			{
+				div.d = result;
+				div.a = _translate( i.a );
+				div.b = _translate( i.b );
+			}
+				
 			_add( div );
+		
+			if( i.modifier & ir::PTXInstruction::ftz )
+			{
+				_flushToZero( result, div.d );
+			}
 		}
 		else if( ir::PTXOperand::isSigned( i.type ) )
 		{
@@ -1800,21 +2216,29 @@ namespace translator
 	void PTXToLLVMTranslator::_translateEx2( const ir::PTXInstruction& i )
 	{
 		ir::LLVMCall call;
+
+		call.name = "@llvm.exp2.f32";
 		
 		if( i.modifier & ir::PTXInstruction::ftz )
 		{
-			call.name = "@__ocelot_ex2Ftz";
+			call.d.name          = _tempRegister();
+			call.d.type.type     = ir::LLVMInstruction::F32;
+			call.d.type.category = ir::LLVMInstruction::Type::Element;
 		}
 		else
 		{
-			call.name = "@__ocelot_ex2";
+			call.d = _destination( i );
 		}
 		
-		call.d = _destination( i );
 		call.parameters.resize( 1 );
 		call.parameters[0] = _translate( i.a );
 		
 		_add( call );
+
+		if( i.modifier & ir::PTXInstruction::ftz )
+		{
+			_flushToZero( _destination( i ), call.d );
+		}
 	}
 
 	void PTXToLLVMTranslator::_translateExit( const ir::PTXInstruction& i )
@@ -1983,21 +2407,33 @@ namespace translator
 	void PTXToLLVMTranslator::_translateLg2( const ir::PTXInstruction& i )
 	{
 		ir::LLVMCall call;
+
+		call.name = "@llvm.log2.f32";	
+		call.parameters.resize( 1 );
 		
 		if( i.modifier & ir::PTXInstruction::ftz )
 		{
-			call.name = "@__ocelot_log2Ftz";
+			call.d.name          = _tempRegister();
+			call.d.type.type     = ir::LLVMInstruction::F32;
+			call.d.type.category = ir::LLVMInstruction::Type::Element;
+
+			call.parameters[0] = ir::LLVMInstruction::Operand( _tempRegister(),
+				call.d.type );
+
+			_flushToZero( call.parameters[0], _translate( i.a ) );
 		}
 		else
 		{
-			call.name = "@__ocelot_log2f";
+			call.d = _destination( i );		
+			call.parameters[0] = _translate( i.a );
 		}
 		
-		call.d = _destination( i );
-		call.parameters.resize( 1 );
-		call.parameters[0] = _translate( i.a );
-		
 		_add( call );
+		
+		if( i.modifier & ir::PTXInstruction::ftz )
+		{
+			_flushToZero( _destination( i ), call.d );
+		}		
 	}
 
 	void PTXToLLVMTranslator::_translateMad24( const ir::PTXInstruction& i )
@@ -2067,14 +2503,40 @@ namespace translator
 		{
 			ir::LLVMFmul mul;
 			ir::LLVMFadd add;
-			
-			_setFloatingPointRoundingMode( i );
 
-			add.d = _destination( i );			
+			ir::LLVMInstruction::Operand result = _destination( i );
+
+			if( i.modifier & ir::PTXInstruction::ftz )
+			{
+				mul.a = ir::LLVMInstruction::Operand( _tempRegister(), 
+					ir::LLVMInstruction::Type( ir::LLVMInstruction::F32, 
+					ir::LLVMInstruction::Type::Element ) );
+				mul.b = ir::LLVMInstruction::Operand( _tempRegister(), 
+					ir::LLVMInstruction::Type( ir::LLVMInstruction::F32, 
+					ir::LLVMInstruction::Type::Element ) );
+				
+				_flushToZero( mul.a, _translate( i.a ) );
+				_flushToZero( mul.b, _translate( i.b ) );
+			}
+			else
+			{
+				mul.a = _translate( i.a );
+				mul.b = _translate( i.b );
+			}
+			
+			if( i.modifier & ir::PTXInstruction::sat
+				|| i.modifier & ir::PTXInstruction::ftz )
+			{
+				add.d = mul.a;
+				add.d.name = _tempRegister();
+			}
+			else
+			{
+				add.d = result;
+			}
+			
 			mul.d = add.d;
 			mul.d.name = _tempRegister();
-			mul.a = _translate( i.a );
-			mul.b = _translate( i.b );
 
 			_add( mul );
 
@@ -2082,6 +2544,26 @@ namespace translator
 			add.b = _translate( i.c );
 			
 			_add( add );
+
+			if( i.modifier & ir::PTXInstruction::sat )
+			{
+				if( i.modifier & ir::PTXInstruction::ftz )
+				{
+					ir::LLVMInstruction::Operand temp =
+						ir::LLVMInstruction::Operand( _tempRegister(),
+						add.d.type );
+					_saturate( temp, add.d );
+					_flushToZero( result, temp );
+				}
+				else
+				{
+					_saturate( result, add.d );
+				}
+			}
+			else if( i.modifier & ir::PTXInstruction::ftz )
+			{
+				_flushToZero( result, add.d );
+			}
 		}
 		else
 		{
@@ -2511,15 +2993,51 @@ namespace translator
 			compare.b = _translate( i.b );
 			compare.comparison = ir::LLVMInstruction::Ogt;
 			
+			ir::LLVMFcmp isNan;
+			
+			isNan.comparison = ir::LLVMInstruction::Uno;
+			isNan.a.type = compare.a.type;
+			isNan.a.constant = true;
+			isNan.a.i64 = 0;
+			isNan.b = compare.b;
+			isNan.d = ir::LLVMInstruction::Operand( _tempRegister(),
+				compare.d.type );
+			
+			_add( isNan );
+			
+			ir::LLVMSelect selectNan;
+			
+			selectNan.condition = isNan.d;
+			selectNan.d = ir::LLVMInstruction::Operand( _tempRegister(),
+				destination.type );
+			selectNan.a = compare.a;
+			selectNan.b = compare.b;
+			
+			_add( selectNan );
+			
 			ir::LLVMSelect select; 
 			
 			select.condition = compare.d;
 			select.a = compare.a;
-			select.b = compare.b;
-			select.d = destination;
+			select.b = selectNan.d;
 			
+			if( i.modifier & ir::PTXInstruction::ftz )
+			{
+				select.d = ir::LLVMInstruction::Operand( _tempRegister(),
+					destination.type );
+			}
+			else
+			{
+				select.d = destination;
+			}
+
 			_add( compare );
 			_add( select );
+			
+			if( i.modifier & ir::PTXInstruction::ftz )
+			{
+				_flushToZero( destination, select.d );
+			}
 		}
 		else
 		{
@@ -2574,15 +3092,51 @@ namespace translator
 			compare.b = _translate( i.b );
 			compare.comparison = ir::LLVMInstruction::Olt;
 			
+			ir::LLVMFcmp isNan;
+			
+			isNan.comparison = ir::LLVMInstruction::Uno;
+			isNan.a.type = compare.a.type;
+			isNan.a.constant = true;
+			isNan.a.i64 = 0;
+			isNan.b = compare.b;
+			isNan.d = ir::LLVMInstruction::Operand( _tempRegister(),
+				compare.d.type );
+			
+			_add( isNan );
+			
+			ir::LLVMSelect selectNan;
+			
+			selectNan.condition = isNan.d;
+			selectNan.d = ir::LLVMInstruction::Operand( _tempRegister(),
+				destination.type );
+			selectNan.a = compare.a;
+			selectNan.b = compare.b;
+			
+			_add( selectNan );
+			
 			ir::LLVMSelect select; 
 			
 			select.condition = compare.d;
 			select.a = compare.a;
-			select.b = compare.b;
-			select.d = destination;
-			
+			select.b = selectNan.d;
+
+			if( i.modifier & ir::PTXInstruction::ftz )
+			{
+				select.d = ir::LLVMInstruction::Operand( _tempRegister(),
+					destination.type );
+			}
+			else
+			{
+				select.d = destination;
+			}
+
 			_add( compare );
 			_add( select );
+			
+			if( i.modifier & ir::PTXInstruction::ftz )
+			{
+				_flushToZero( destination, select.d );
+			}
 		}
 		else
 		{
@@ -2624,16 +3178,41 @@ namespace translator
 				{
 					case ir::PTXOperand::v1:
 					{
-						if( i.a.addressMode == ir::PTXOperand::Address )
+						if( i.a.addressMode == ir::PTXOperand::Address
+							|| i.a.addressMode == ir::PTXOperand::Indirect )
 						{
 							if( i.addressSpace == ir::PTXInstruction::Global )
 							{
 								ir::LLVMPtrtoint toint;
 				
 								toint.a = _getAddressableGlobalPointer( i.a );
-								toint.d = _destination( i );
+
+								if( i.a.offset == 0 )
+								{
+									toint.d = _destination( i );
 				
-								_add( toint );
+									_add( toint );
+								}
+								else
+								{
+									toint.d = ir::LLVMInstruction::Operand( 
+										_tempRegister(),
+										ir::LLVMInstruction::Type( 
+										_translate( i.type ), 
+										ir::LLVMInstruction::Type::Element ) );
+									
+									_add( toint );
+									
+									ir::LLVMAdd add;
+									
+									add.a          = toint.d;
+									add.d          = _destination( i );
+									add.b.constant = true;
+									add.b.type     = add.a.type;
+									add.b.i64      = i.a.offset;
+									
+									_add( add );
+								}
 							}
 							else
 							{
@@ -2643,8 +3222,16 @@ namespace translator
 								cast.a.type.category = cast.d.type.category;
 								cast.a.type.type = cast.d.type.type;
 								cast.a.constant = true;
-								cast.a.i64 = i.a.offset;
-			
+
+								if( i.a.addressMode == ir::PTXOperand::Address )
+								{
+									cast.a.i64 = i.a.offset;
+								}
+								else
+								{
+									cast.a.i64 = i.reentryPoint;
+								}
+
 								_add( cast );
 							}
 						}
@@ -2864,19 +3451,60 @@ namespace translator
 		if( ir::PTXOperand::isFloat( i.type ) )
 		{
 			ir::LLVMFmul mul;
-			
-			_setFloatingPointRoundingMode( i );
-			
-			mul.d = _destination( i );
-			mul.a = _translate( i.a );
-			mul.b = _translate( i.b );
+		
+			ir::LLVMInstruction::Operand result = _destination( i );
 
-			if( i.modifier & ir::PTXInstruction::sat )
+			if( i.modifier & ir::PTXInstruction::ftz )
 			{
-				assertM( false, "Saturate not supported for " << i.toString() );
+				mul.a = ir::LLVMInstruction::Operand( _tempRegister(), 
+					ir::LLVMInstruction::Type( ir::LLVMInstruction::F32, 
+					ir::LLVMInstruction::Type::Element ) );
+				mul.b = ir::LLVMInstruction::Operand( _tempRegister(), 
+					ir::LLVMInstruction::Type( ir::LLVMInstruction::F32, 
+					ir::LLVMInstruction::Type::Element ) );
+				
+				_flushToZero( mul.a, _translate( i.a ) );
+				_flushToZero( mul.b, _translate( i.b ) );
+			}
+			else
+			{
+				mul.a = _translate( i.a );
+				mul.b = _translate( i.b );
+			}
+			
+			if( i.modifier & ir::PTXInstruction::sat
+				|| i.modifier & ir::PTXInstruction::ftz )
+			{
+				mul.d = ir::LLVMInstruction::Operand( _tempRegister(), 
+					ir::LLVMInstruction::Type( ir::LLVMInstruction::F32, 
+					ir::LLVMInstruction::Type::Element ) );
+			}
+			else
+			{
+				mul.d = result;
 			}
 
 			_add( mul );
+			
+			if( i.modifier & ir::PTXInstruction::sat )
+			{
+				if( i.modifier & ir::PTXInstruction::ftz )
+				{
+					ir::LLVMInstruction::Operand temp =
+						ir::LLVMInstruction::Operand( _tempRegister(),
+						mul.d.type );
+					_saturate( temp, mul.d );
+					_flushToZero( result, temp );
+				}
+				else
+				{
+					_saturate( result, mul.d );
+				}
+			}
+			else if( i.modifier & ir::PTXInstruction::ftz )
+			{
+				_flushToZero( result, mul.d );
+			}
 		}
 		else
 		{
@@ -2885,7 +3513,7 @@ namespace translator
 				ir::LLVMInstruction::Operand extendedA = _translate( i.a );
 				ir::LLVMInstruction::Operand extendedB = _translate( i.b );
 				
-				if( ir::PTXOperand::isSigned( i.a.type ) )
+				if( ir::PTXOperand::isSigned( i.type ) )
 				{
 					if( i.a.addressMode != ir::PTXOperand::Immediate )
 					{
@@ -3133,14 +3761,28 @@ namespace translator
 		if( ir::PTXOperand::isFloat( i.type ) )
 		{
 			ir::LLVMFsub sub;
-		
-			sub.d = _destination( i );
+
 			sub.b = _translate( i.a );
-			sub.a = sub.b;
+			sub.a.type = sub.b.type;
 			sub.a.constant = true;
 			sub.a.i64 = 0;
 		
+			if( i.modifier & ir::PTXInstruction::ftz )
+			{
+				sub.d = ir::LLVMInstruction::Operand( _tempRegister(),
+					sub.b.type );
+			}
+			else
+			{
+				sub.d = _destination( i );
+			}
+		
 			_add( sub );
+			
+			if( i.modifier & ir::PTXInstruction::ftz )
+			{
+				_flushToZero( _destination( i ), sub.d );
+			}
 		}
 		else
 		{
@@ -3196,21 +3838,36 @@ namespace translator
 	{
 		ir::LLVMFdiv div;
 		
-		div.d = _destination( i );
 		div.b = _translate( i.a );
-		div.a = div.b;
+		div.a.type = div.b.type;
 		div.a.constant = true;
 		
 		if( i.a.type == ir::PTXOperand::f32 )
 		{
-			div.a.f32 = 1.0;
+			div.a.f32 = 1.0f;
 		}
 		else
 		{
 			div.a.f64 = 1.0;
 		}
 		
+		if( i.modifier & ir::PTXInstruction::ftz
+			&& i.type == ir::PTXOperand::f32 )
+		{
+			div.d = ir::LLVMInstruction::Operand( _tempRegister(), div.a.type );
+		}
+		else
+		{
+			div.d = _destination( i );
+		}
+		
 		_add( div );
+
+		if( i.modifier & ir::PTXInstruction::ftz
+			&& i.type == ir::PTXOperand::f32 )
+		{
+			_flushToZero( _destination( i ), div.d );
+		}
 	}
 
 	void PTXToLLVMTranslator::_translateRed( const ir::PTXInstruction& i )
@@ -3269,20 +3926,69 @@ namespace translator
 	{
 		ir::LLVMCall call;
 		
-		if( i.modifier & ir::PTXInstruction::ftz )
+		if( i.type == ir::PTXOperand::f32 )
 		{
-			call.name = "@__ocelot_rsqrtFtz";
+			call.name = "@llvm.sqrt.f32";
 		}
 		else
 		{
-			call.name = "@__ocelot_rsqrt";
+			call.name = "@llvm.sqrt.f64";
+		}
+
+		call.d = ir::LLVMInstruction::Operand( 
+			_tempRegister(), ir::LLVMInstruction::Type( _translate( i.type ), 
+			ir::LLVMInstruction::Type::Element ) );
+
+		call.parameters.resize( 1 );
+		
+		if( i.modifier & ir::PTXInstruction::ftz )
+		{
+			call.parameters[0] = ir::LLVMInstruction::Operand( 
+				_tempRegister(), call.d.type );
+			
+			_flushToZero( call.parameters[0], _translate( i.a ) );
+		}
+		else
+		{
+			call.parameters[0] = _translate( i.a );
+		}
+	
+		_add( call );
+		
+		ir::LLVMFdiv divide;
+		
+		if( i.modifier & ir::PTXInstruction::ftz )
+		{
+			divide.d.type = _translate( i.d.type );
+			divide.d.type.category = ir::LLVMInstruction::Type::Element;
+			divide.d.name = _tempRegister();
+		}
+		else
+		{			
+			divide.d = _destination( i );
 		}
 		
-		call.d = _destination( i );
-		call.parameters.resize( 1 );
-		call.parameters[0] = _translate( i.a );
+		divide.a.type = call.d.type;
+		divide.a.type.category = ir::LLVMInstruction::Type::Element;
+		divide.a.constant = true;
+
+		if( i.type == ir::PTXOperand::f32 )
+		{
+			divide.a.f32 = 1.0f;
+		}
+		else
+		{
+			divide.a.f64 = 1.0;
+		}
 		
-		_add( call );
+		divide.b = call.d;		
+
+		_add( divide );		
+
+		if( i.modifier & ir::PTXInstruction::ftz )
+		{
+			_flushToZero( _destination( i ), divide.d );
+		}
 	}
 
 	void PTXToLLVMTranslator::_translateSad( const ir::PTXInstruction& i )
@@ -3498,7 +4204,7 @@ namespace translator
 				{
 					ir::LLVMXor Xor;
 					
-					Xor.d = d;
+					Xor.d = comparison;
 					Xor.d.name = _tempRegister();
 					Xor.a = c;
 					Xor.b = comparison;
@@ -3532,8 +4238,8 @@ namespace translator
 		}
 		else if( ir::PTXOperand::f32 == i.type )
 		{
-			select.a.f32 = 1.0;
-			select.b.f32 = 0.0;		
+			select.a.f32 = 1.0f;
+			select.b.f32 = 0.0f;		
 		}
 		else
 		{
@@ -3580,28 +4286,33 @@ namespace translator
 		
 		ir::LLVMInstruction::Operand pd = d;
 		ir::LLVMInstruction::Operand pq;
-		
+		ir::LLVMXor Not;
+
 		if( i.pq.addressMode != ir::PTXOperand::Invalid )
 		{
 			pq = _translate( i.pq );
+
+			if( i.c.addressMode == ir::PTXOperand::Register )
+			{
+				Not.d = tempD;
+				Not.d.name = _tempRegister();
+			}
+			else
+			{
+				Not.d = pq;
+			}
+
+			Not.a = tempD;
+			Not.b.type.category = ir::LLVMInstruction::Type::Element;
+			Not.b.type.type = ir::LLVMInstruction::I1;
+			Not.b.constant = true;
+			Not.b.i1 = true;
+		
+			_add( Not );
 		}
 		
 		if( i.c.addressMode == ir::PTXOperand::Register )
 		{
-			ir::LLVMXor Not;
-
-			if( i.pq.addressMode != ir::PTXOperand::Invalid )
-			{
-				Not.d = tempD;
-				Not.d.name = _tempRegister();
-				Not.a = tempD;
-				Not.b.type.category = ir::LLVMInstruction::Type::Element;
-				Not.b.type.type = ir::LLVMInstruction::I1;
-				Not.b.constant = true;
-				Not.b.i1 = true;
-			
-				_add( Not );
-			}
 					
 			switch( i.booleanOperator )
 			{
@@ -3676,20 +4387,97 @@ namespace translator
 		
 		shift.d = _destination( i );
 		shift.a = _translate( i.a );
-		shift.b = _translate( i.b );
 		
+		if(ir::PTXOperand::bytes(i.b.type) > ir::PTXOperand::bytes(i.a.type))
+		{
+			ir::LLVMTrunc truncate;
+			
+			truncate.a = _translate( i.b );
+			truncate.d = ir::LLVMInstruction::Operand( _tempRegister(),
+				shift.a.type );
+
+			shift.b = truncate.d;
+			
+			_add( truncate );
+		}
+		else if( ir::PTXOperand::bytes(i.b.type) 
+			< ir::PTXOperand::bytes(i.a.type) )
+		{
+			ir::LLVMZext extend;
+			
+			extend.a = _translate( i.b );
+			extend.d = ir::LLVMInstruction::Operand( _tempRegister(),
+				shift.a.type );
+			
+			shift.b = extend.d;
+			
+			_add( extend );
+		}
+		else
+		{
+			shift.b = _translate( i.b );
+		}
+	
 		_add( shift );
 	}
 
 	void PTXToLLVMTranslator::_translateShr( const ir::PTXInstruction& i )
 	{
+		ir::LLVMInstruction::Operand a = _translate( i.a );
+		ir::LLVMInstruction::Operand b;
+
+		if(ir::PTXOperand::bytes(i.b.type) > ir::PTXOperand::bytes(i.a.type))
+		{
+			ir::LLVMTrunc truncate;
+			
+			truncate.a = _translate( i.b );
+			truncate.d = ir::LLVMInstruction::Operand( _tempRegister(),
+				a.type );
+
+			b = truncate.d;
+			
+			_add( truncate );
+		}
+		else if( ir::PTXOperand::bytes(i.b.type) 
+			< ir::PTXOperand::bytes(i.a.type) )
+		{
+			if( ir::PTXOperand::isSigned( i.type ) )
+			{
+				ir::LLVMSext extend;
+			
+				extend.a = _translate( i.b );
+				extend.d = ir::LLVMInstruction::Operand( _tempRegister(),
+					a.type );
+			
+				b = extend.d;
+			
+				_add( extend );
+			}
+			else
+			{
+				ir::LLVMZext extend;
+			
+				extend.a = _translate( i.b );
+				extend.d = ir::LLVMInstruction::Operand( _tempRegister(),
+					a.type );
+			
+				b = extend.d;
+			
+				_add( extend );
+			}
+		}
+		else
+		{
+			b = _translate( i.b );
+		}
+	
 		if( ir::PTXOperand::isSigned( i.type ) )
 		{
 			ir::LLVMAshr shift;
 			
 			shift.d = _destination( i );
-			shift.a = _translate( i.a );
-			shift.b = _translate( i.b );
+			shift.a = a;
+			shift.b = b;
 			
 			_add( shift );
 		}
@@ -3698,8 +4486,8 @@ namespace translator
 			ir::LLVMLshr shift;
 			
 			shift.d = _destination( i );
-			shift.a = _translate( i.a );
-			shift.b = _translate( i.b );
+			shift.a = a;
+			shift.b = b;
 			
 			_add( shift );
 		}
@@ -3708,21 +4496,29 @@ namespace translator
 	void PTXToLLVMTranslator::_translateSin( const ir::PTXInstruction& i )
 	{
 		ir::LLVMCall call;
+
+		call.name = "@llvm.sin.f32";
 		
 		if( i.modifier & ir::PTXInstruction::ftz )
 		{
-			call.name = "@__ocelot_sinFtz";
+			call.d.name          = _tempRegister();
+			call.d.type.type     = ir::LLVMInstruction::F32;
+			call.d.type.category = ir::LLVMInstruction::Type::Element;
 		}
 		else
 		{
-			call.name = "@__ocelot_sinf";
+			call.d = _destination( i );
 		}
 		
-		call.d = _destination( i );
 		call.parameters.resize( 1 );
 		call.parameters[0] = _translate( i.a );
 		
 		_add( call );
+
+		if( i.modifier & ir::PTXInstruction::ftz )
+		{
+			_flushToZero( _destination( i ), call.d );
+		}
 	}
 
 	void PTXToLLVMTranslator::_translateSlCt( const ir::PTXInstruction& i )
@@ -3758,7 +4554,7 @@ namespace translator
 			compare.b.i32 = 0;
 			compare.comparison = ir::LLVMInstruction::Sge;
 			
-			_add( compare );		
+			_add( compare );
 		}
 		
 		ir::LLVMSelect select;
@@ -3774,24 +4570,41 @@ namespace translator
 	{
 		ir::LLVMCall call;
 		
-		if( i.modifier & ir::PTXInstruction::ftz )
+		if( i.a.type == ir::PTXOperand::f64 )
 		{
-			call.name = "@__ocelot_sqrtFtz";
-		}
-		else if( i.a.type == ir::PTXOperand::f64 )
-		{
-			call.name = "@__ocelot_sqrt";
+			call.name = "@llvm.sqrt.f64";
 		}
 		else
 		{
-			call.name = "@__ocelot_sqrtf";
+			call.name = "@llvm.sqrt.f32";
 		}
 		
-		call.d = _destination( i );
 		call.parameters.resize( 1 );
-		call.parameters[0] = _translate( i.a );
+		
+		if( i.modifier & ir::PTXInstruction::ftz 
+			|| i.modifier & ir::PTXInstruction::approx )
+		{
+			call.d.name          = _tempRegister();
+			call.d.type.category = ir::LLVMInstruction::Type::Element;
+			call.d.type.type     = ir::LLVMInstruction::F32;
+			call.parameters[0] = ir::LLVMInstruction::Operand( 
+				_tempRegister(), call.d.type );
+			
+			_flushToZero( call.parameters[0], _translate( i.a ) );
+		}
+		else
+		{
+			call.parameters[0] = _translate( i.a );
+			call.d = _destination( i );
+		}
 		
 		_add( call );
+				
+		if( i.modifier & ir::PTXInstruction::ftz
+			|| i.modifier & ir::PTXInstruction::approx )
+		{
+			_flushToZero( _destination( i ), call.d );
+		}
 	}
 
 	void PTXToLLVMTranslator::_translateSt( const ir::PTXInstruction& i )
@@ -3992,44 +4805,42 @@ namespace translator
 		{
 			ir::LLVMFsub sub;
 		
-			sub.d = _destination( i );
+			ir::LLVMInstruction::Operand result = _destination( i );
+
 			sub.a = _translate( i.a );
 			sub.b = _translate( i.b );
 		
+			if( i.modifier & ir::PTXInstruction::sat
+				|| i.modifier & ir::PTXInstruction::ftz )
+			{
+				sub.d = sub.a;
+				sub.d.name = _tempRegister();
+			}
+			else
+			{
+				sub.d = result;
+			}
+
 			_add( sub );
 			
 			if( i.modifier & ir::PTXInstruction::sat )
 			{
-				ir::LLVMFcmp compare;
-				
-				compare.d.name = _tempRegister();
-				compare.d.type.type = ir::LLVMInstruction::I1;
-				compare.d.type.category = ir::LLVMInstruction::Type::Element;
-				compare.comparison = ir::LLVMInstruction::Ule;
-				compare.a = sub.d;
-				compare.b.type.type = compare.a.type.type;
-				compare.b.type.category = ir::LLVMInstruction::Type::Element;
-				compare.b.constant = true;
-				if( compare.b.type.type == ir::LLVMInstruction::F32 )
+				if( i.modifier & ir::PTXInstruction::ftz )
 				{
-					compare.b.f32 = 0;
+					ir::LLVMInstruction::Operand temp =
+						ir::LLVMInstruction::Operand( _tempRegister(),
+						sub.d.type );
+					_saturate( temp, sub.d );
+					_flushToZero( result, temp );
 				}
 				else
 				{
-					compare.b.f64 = 0;
+					_saturate( result, sub.d );
 				}
-				
-				ir::LLVMSelect select;
-				
-				select.d.name = _tempRegister();
-				select.d.type.type = sub.d.type.type;
-				select.d.type.category = sub.d.type.category;
-				select.condition = compare.d;
-				select.a = compare.b;
-				select.b = sub.d;
-				
-				_add( compare );
-				_add( select );
+			}
+			else if( i.modifier & ir::PTXInstruction::ftz )
+			{
+				_flushToZero( result, sub.d );
 			}
 		}
 		else
@@ -5339,10 +6150,13 @@ namespace translator
 					case ir::PTXOperand::s64:
 					{
 						ir::LLVMFptosi fptosi;
-						fptosi.d = d;
+						fptosi.d = ir::LLVMInstruction::Operand( 
+							_tempRegister(), d.type );
 						fptosi.a = tempA;
 						
 						_add( fptosi );
+
+						_floatToIntSaturate( d, fptosi.d, tempA, true );
 						break;
 					}
 					case ir::PTXOperand::pred:
@@ -5356,10 +6170,13 @@ namespace translator
 					case ir::PTXOperand::u64:
 					{
 						ir::LLVMFptoui fptoui;
-						fptoui.d = d;
+						fptoui.d = ir::LLVMInstruction::Operand( 
+							_tempRegister(), d.type );
 						fptoui.a = tempA;
 						
 						_add( fptoui );
+
+						_floatToIntSaturate( d, fptoui.d, tempA, false );
 						break;
 					}
 					case ir::PTXOperand::f16:
@@ -5403,10 +6220,13 @@ namespace translator
 					case ir::PTXOperand::s64:
 					{
 						ir::LLVMFptosi fptosi;
-						fptosi.d = d;
+						fptosi.d = ir::LLVMInstruction::Operand( 
+							_tempRegister(), d.type );
 						fptosi.a = a;
 						
 						_add( fptosi );
+
+						_floatToIntSaturate( d, fptosi.d, a, true );
 						break;
 					}
 					case ir::PTXOperand::pred:
@@ -5420,10 +6240,13 @@ namespace translator
 					case ir::PTXOperand::u64:
 					{
 						ir::LLVMFptoui fptoui;
-						fptoui.d = d;
+						fptoui.d = ir::LLVMInstruction::Operand( 
+							_tempRegister(), d.type );
 						fptoui.a = a;
 						
 						_add( fptoui );
+
+						_floatToIntSaturate( d, fptoui.d, a, false );
 						break;
 					}
 					case ir::PTXOperand::f16:
@@ -5465,6 +6288,337 @@ namespace translator
 		}
 	}
 
+	void PTXToLLVMTranslator::_flushToZero(
+		const ir::LLVMInstruction::Operand& d,
+		const ir::LLVMInstruction::Operand& a )
+	{
+		ir::LLVMFcmp less;
+		
+		less.comparison = ir::LLVMInstruction::Olt;
+		
+		less.d = ir::LLVMInstruction::Operand( _tempRegister(),
+			ir::LLVMInstruction::Type( ir::LLVMInstruction::I1, 
+			ir::LLVMInstruction::Type::Element ) );
+		less.a = a;
+		less.b = ir::LLVMInstruction::Operand( (ir::LLVMI64) 0 );
+		less.b.type.type = less.a.type.type;
+		
+		_add( less );
+
+		ir::LLVMFsub subtract;
+		
+		subtract.d = ir::LLVMInstruction::Operand( _tempRegister(),
+			ir::LLVMInstruction::Type( less.a.type.type, 
+			ir::LLVMInstruction::Type::Element ) );
+		subtract.a = ir::LLVMInstruction::Operand( (ir::LLVMI64) 0 );
+		subtract.a.type.type = less.a.type.type;
+		subtract.b = less.a;
+		
+		_add( subtract );
+		
+		ir::LLVMSelect select;
+		
+		select.condition = less.d;
+		
+		select.d = ir::LLVMInstruction::Operand( _tempRegister(),
+			ir::LLVMInstruction::Type( less.a.type.type, 
+			ir::LLVMInstruction::Type::Element ) );
+		select.a = subtract.d;
+		select.b = less.a;
+		
+		_add( select );
+		
+		ir::LLVMFcmp greaterEqual;
+		
+		greaterEqual.comparison = ir::LLVMInstruction::Olt;
+		
+		greaterEqual.d = ir::LLVMInstruction::Operand( _tempRegister(),
+			ir::LLVMInstruction::Type( ir::LLVMInstruction::I1, 
+			ir::LLVMInstruction::Type::Element ) );
+		greaterEqual.a = select.d;
+		
+		greaterEqual.b = ir::LLVMInstruction::Operand( 
+			(ir::LLVMI32) hydrazine::bit_cast< ir::LLVMI32 >(
+			std::numeric_limits<float>::min() ) );
+		
+		greaterEqual.b.type.type = less.a.type.type;
+		
+		_add( greaterEqual );
+
+		ir::LLVMSelect flush;
+		
+		flush.d = d;
+		flush.condition = greaterEqual.d;
+		flush.a = ir::LLVMInstruction::Operand( (ir::LLVMF32) 0.0f );
+		flush.b = a;
+		
+		_add( flush );
+	}
+
+	void PTXToLLVMTranslator::_saturate( const ir::LLVMInstruction::Operand& d,
+		const ir::LLVMInstruction::Operand& a )
+	{
+		ir::LLVMFcmp compare;
+		
+		compare.d.name = _tempRegister();
+		compare.d.type.type = ir::LLVMInstruction::I1;
+		compare.d.type.category = ir::LLVMInstruction::Type::Element;
+		compare.comparison = ir::LLVMInstruction::Ult;
+		compare.a = a;
+		compare.b.type.type = compare.a.type.type;
+		compare.b.type.category = ir::LLVMInstruction::Type::Element;
+		compare.b.constant = true;
+		compare.b.f32 = 0.0f;
+		
+		ir::LLVMSelect select;
+		
+		select.d = ir::LLVMInstruction::Operand( _tempRegister(), 
+			ir::LLVMInstruction::Type( ir::LLVMInstruction::F32,
+			ir::LLVMInstruction::Type::Element ) );
+		select.condition = compare.d;
+		select.a = compare.b;
+		select.b = a;
+		
+		_add( compare );
+		_add( select );
+		
+		compare.d.name = _tempRegister();
+		compare.comparison = ir::LLVMInstruction::Ogt;
+		compare.b.f32  = 1.0f;
+		compare.a = a;
+		
+		select.b = select.d;
+		
+		select.d = d;		
+		select.condition = compare.d;
+		select.a = compare.b;
+		
+		_add( compare );
+		_add( select );	
+	}
+
+	void PTXToLLVMTranslator::_floatToIntSaturate(
+		const ir::LLVMInstruction::Operand& d, 
+		const ir::LLVMInstruction::Operand& ftoint,
+		const ir::LLVMInstruction::Operand& f, bool isSigned)
+	{
+		ir::LLVMInstruction::Operand min( _tempRegister(), f.type );
+		ir::LLVMInstruction::Operand max( _tempRegister(), f.type );
+		ir::LLVMInstruction::Operand minInt( _tempRegister(), d.type );
+		ir::LLVMInstruction::Operand maxInt( _tempRegister(), d.type );
+		ir::LLVMInstruction::Operand lessThanMin( _tempRegister(),
+			ir::LLVMInstruction::Type( ir::LLVMInstruction::I1, 
+			ir::LLVMInstruction::Type::Element ) );
+		ir::LLVMInstruction::Operand greaterThanMax( _tempRegister(),
+			lessThanMin.type );
+		ir::LLVMInstruction::Operand nan( _tempRegister(), lessThanMin.type );
+
+		if( isSigned )
+		{
+			ir::LLVMSitofp sitofp;
+			
+			sitofp.d          = min;
+			sitofp.a.constant = true;
+			sitofp.a.type     = d.type;
+
+			switch( d.type.type )
+			{
+			case ir::LLVMInstruction::I1:
+			{
+				sitofp.a.i64 = 0;
+				break;
+			}
+			case ir::LLVMInstruction::I8:
+			{
+				sitofp.a.i64 = std::numeric_limits<char>::min();
+				break;
+			}
+			case ir::LLVMInstruction::I16:
+			{
+				sitofp.a.i64 = std::numeric_limits<short>::min();
+				break;
+			}
+			case ir::LLVMInstruction::I32:
+			{
+				sitofp.a.i64 = std::numeric_limits<int>::min();
+				break;
+			}
+			case ir::LLVMInstruction::I64:
+			{
+				sitofp.a.i64 = std::numeric_limits<long long int>::min();
+				break;
+			}
+			default: break;
+			}
+
+			minInt = sitofp.a;
+
+			_add( sitofp );
+			
+			sitofp.d = max;
+
+			switch( d.type.type )
+			{
+			case ir::LLVMInstruction::I1:
+			{
+				sitofp.a.i64 = 0;
+				break;
+			}
+			case ir::LLVMInstruction::I8:
+			{
+				sitofp.a.i64 = std::numeric_limits<char>::max();
+				break;
+			}
+			case ir::LLVMInstruction::I16:
+			{
+				sitofp.a.i64 = std::numeric_limits<short>::max();
+				break;
+			}
+			case ir::LLVMInstruction::I32:
+			{
+				sitofp.a.i64 = std::numeric_limits<int>::max();
+				break;
+			}
+			case ir::LLVMInstruction::I64:
+			{
+				sitofp.a.i64 = std::numeric_limits<long long int>::max();
+				break;
+			}
+			default: break;
+			}
+
+			maxInt = sitofp.a;
+
+			_add( sitofp );
+		}
+		else
+		{
+			ir::LLVMUitofp uitofp;
+			
+			uitofp.d          = min;
+			uitofp.a.constant = true;
+			uitofp.a.type     = d.type;
+
+			switch( d.type.type )
+			{
+			case ir::LLVMInstruction::I1:
+			{
+				uitofp.a.i64 = 1;
+				break;
+			}
+			case ir::LLVMInstruction::I8:
+			{
+				uitofp.a.i64 = std::numeric_limits<unsigned char>::min();
+				break;
+			}
+			case ir::LLVMInstruction::I16:
+			{
+				uitofp.a.i64 = std::numeric_limits<unsigned short>::min();
+				break;
+			}
+			case ir::LLVMInstruction::I32:
+			{
+				uitofp.a.i64 = std::numeric_limits<unsigned int>::min();
+				break;
+			}
+			case ir::LLVMInstruction::I64:
+			{
+				uitofp.a.i64 = std::numeric_limits<
+					long long unsigned int>::min();
+				break;
+			}
+			default: break;
+			}
+
+			minInt = uitofp.a;
+
+			_add( uitofp );
+			
+			uitofp.d = max;
+
+			switch( d.type.type )
+			{
+			case ir::LLVMInstruction::I1:
+			{
+				uitofp.a.i64 = 0;
+				break;
+			}
+			case ir::LLVMInstruction::I8:
+			{
+				uitofp.a.i64 = std::numeric_limits<unsigned char>::max();
+				break;
+			}
+			case ir::LLVMInstruction::I16:
+			{
+				uitofp.a.i64 = std::numeric_limits<unsigned short>::max();
+				break;
+			}
+			case ir::LLVMInstruction::I32:
+			{
+				uitofp.a.i64 = std::numeric_limits<unsigned int>::max();
+				break;
+			}
+			case ir::LLVMInstruction::I64:
+			{
+				uitofp.a.i64 = std::numeric_limits<
+					long long unsigned int>::max();
+				break;
+			}
+			default: break;
+			}
+			
+			maxInt = uitofp.a;
+			
+			_add( uitofp );
+		}
+		
+		ir::LLVMFcmp compare;
+		
+		compare.comparison = ir::LLVMInstruction::Olt;
+		
+		compare.d = lessThanMin;
+		compare.a = f;
+		compare.b = min;
+		
+		_add( compare );
+		
+		compare.comparison = ir::LLVMInstruction::Ogt;
+		
+		compare.d = greaterThanMax;
+		compare.a = f;
+		compare.b = max;
+		
+		_add( compare );
+		
+		compare.comparison = ir::LLVMInstruction::Uno;
+		compare.d = nan;
+		
+		_add( compare );
+		
+		ir::LLVMSelect select;
+		
+		select.condition = lessThanMin;
+		select.a = minInt;
+		select.b = ftoint;
+		select.d = ir::LLVMInstruction::Operand( _tempRegister(), d.type );
+
+		_add( select );
+		
+		select.condition = greaterThanMax;
+		select.a = maxInt;
+		select.b = select.d;
+		select.d = ir::LLVMInstruction::Operand( _tempRegister(), d.type );
+		
+		_add( select );
+		
+		select.condition = nan;
+		select.a.i64     = 0;
+		select.b         = select.d;
+		select.d         = d;
+		
+		_add( select );
+	}
+
 	std::string PTXToLLVMTranslator::_tempRegister()
 	{
 		std::stringstream stream;
@@ -5478,7 +6632,7 @@ namespace translator
 		std::string reg;
 
 		ir::LLVMGetelementptr get;
-			
+		
 		get.d.type.category = ir::LLVMInstruction::Type::Pointer;
 		get.d.type.type = ir::LLVMInstruction::I16;
 		get.a = _context();
@@ -5620,17 +6774,24 @@ namespace translator
 			{
 				ir::LLVMCall call;
 				
-				call.name = "@__ocelot_clock";
+				call.name = "@llvm.readcyclecounter";
 				call.d.type.category = ir::LLVMInstruction::Type::Element;
-				call.d.type.type = ir::LLVMInstruction::I32;
+				call.d.type.type = ir::LLVMInstruction::I64;
 				call.d.name = _tempRegister();
-				
-				call.parameters.resize( 1 );
-				call.parameters[0] = _context();
-				
+
 				_add( call );
+								
+				ir::LLVMTrunc cast;
 				
-				return call.d.name;
+				cast.d.type.category = ir::LLVMInstruction::Type::Element;
+				cast.d.type.type = ir::LLVMInstruction::I32;
+				cast.d.name = _tempRegister();
+				
+				cast.a = call.d;
+				
+				_add( cast );
+				
+				return cast.d.name;
 				break;
 			}
 			case ir::PTXOperand::pm0:
@@ -5798,7 +6959,7 @@ namespace translator
 		get.d.type.type = get.a.type.members[0].type;
 		get.d.name = _tempRegister();
 		get.indices.push_back( 0 );
-		get.indices.push_back( 0 );
+		get.indices.push_back( o.offset );
 		
 		_add( get );
 		
@@ -5856,6 +7017,23 @@ namespace translator
 				|| o.addressMode == ir::PTXOperand::Indirect );
 
 			ir::LLVMInstruction::Operand reg = _translate( o );
+			
+			// Possibly cast this to a 64-bit address
+			#ifndef __i386__
+			if( reg.type.type != ir::LLVMInstruction::I64 )
+			{
+				ir::LLVMZext extend;
+				
+				extend.a = reg;
+				extend.d = ir::LLVMInstruction::Operand( _tempRegister(), 
+					ir::LLVMInstruction::Type( ir::LLVMInstruction::I64,
+					ir::LLVMInstruction::Type::Element ) );
+			
+				_add( extend );
+				
+				reg = extend.d;
+			}
+			#endif
 			
 			if( o.offset != 0 )
 			{
@@ -5950,30 +7128,6 @@ namespace translator
 		}
 	}
 	
-	void PTXToLLVMTranslator::_setFloatingPointRoundingMode( 
-		const ir::PTXInstruction& i )
-	{
-		#if USE_SPECIFIED_ROUNDING_MODES
-		ir::LLVMCall call;
-		
-		call.name = "@setRoundingMode";
-		
-		call.parameters.resize( 1 );
-		call.parameters[0].type.type = ir::LLVMInstruction::I32;
-		call.parameters[0].type.category = ir::LLVMInstruction::Type::Element;
-		call.parameters[0].i32 = i.modifier;
-		call.parameters[0].constant = true;
-
-		if( ir::PTXOperand::PT != i.pg.condition )
-		{
-			call.parameters.resize( 2 );
-			call.parameters[1] = _translate( i.pg );
-		}
-		
-		_add( call );
-		#endif
-	}
-
 	ir::LLVMInstruction::Operand PTXToLLVMTranslator::_destination( 
 		const ir::PTXInstruction& i, bool pq )
 	{
@@ -6300,14 +7454,14 @@ namespace translator
 		_llvmKernel->_statements.push_front( tex );
 
 		tex.label = "__ocelot_tex_3d_fs";
-		_llvmKernel->_statements.push_front( tex );		
+		_llvmKernel->_statements.push_front( tex );
 	}
 
 	void PTXToLLVMTranslator::_addAtomicCalls()
 	{
 		ir::LLVMStatement atom( ir::LLVMStatement::FunctionDeclaration );
 
-		atom.label = "__ocelot_atom_b32";
+		atom.label = "__ocelot_atomic_inc_32";
 		atom.linkage = ir::LLVMStatement::InvalidLinkage;
 		atom.convention = ir::LLVMInstruction::DefaultCallingConvention;
 		atom.visibility = ir::LLVMStatement::Default;
@@ -6315,57 +7469,19 @@ namespace translator
 		atom.operand.type.category = ir::LLVMInstruction::Type::Element;
 		atom.operand.type.type = ir::LLVMInstruction::I32;
 		
-		atom.parameters.resize( 5 );
+		atom.parameters.resize( 2 );
 
-		atom.parameters[0].type.category = ir::LLVMInstruction::Type::Pointer;
-		atom.parameters[0].type.members.resize(1);
-		atom.parameters[0].type.members[0].category 
-			= ir::LLVMInstruction::Type::Structure;
-		atom.parameters[0].type.members[0].label = "%LLVMContext";
+		atom.parameters[0].type.category = ir::LLVMInstruction::Type::Element;
+		atom.parameters[0].type.type = ir::LLVMInstruction::I64;
 
 		atom.parameters[1].type.category = ir::LLVMInstruction::Type::Element;
 		atom.parameters[1].type.type = ir::LLVMInstruction::I32;
 
-		atom.parameters[2].type.category = ir::LLVMInstruction::Type::Element;
-		atom.parameters[2].type.type = ir::LLVMInstruction::I32;
-
-		atom.parameters[3].type.category = ir::LLVMInstruction::Type::Element;
-		atom.parameters[3].type.type = ir::LLVMInstruction::I64;
-
-		atom.parameters[4].type.category = ir::LLVMInstruction::Type::Element;
-		atom.parameters[4].type.type = ir::LLVMInstruction::I32;
-
 		_llvmKernel->_statements.push_front( atom );		
 
-		atom.label = "__ocelot_atom_s32";
+		atom.label = "__ocelot_atomic_dec_32";
 		
 		_llvmKernel->_statements.push_front( atom );
-
-		atom.parameters.resize( 6 );
-
-		atom.label = "__ocelot_atomcas_b32";
-		atom.parameters[5].type.category = ir::LLVMInstruction::Type::Element;
-		atom.parameters[5].type.type = ir::LLVMInstruction::I32;
-
-		_llvmKernel->_statements.push_front( atom );	
-
-		atom.label = "__ocelot_atomcas_b64";
-		atom.operand.type.type = ir::LLVMInstruction::I64;
-		atom.parameters[4].type.type = ir::LLVMInstruction::I64;
-		atom.parameters[5].type.type = ir::LLVMInstruction::I64;
-
-		_llvmKernel->_statements.push_front( atom );	
-
-		atom.label = "__ocelot_atom_b64";
-		atom.parameters.resize( 5 );
-
-		_llvmKernel->_statements.push_front( atom );
-
-		atom.label = "__ocelot_atom_f32";
-		atom.operand.type.type = ir::LLVMInstruction::F32;
-		atom.parameters[4].type.type = ir::LLVMInstruction::F32;
-			
-		_llvmKernel->_statements.push_front( atom );	
 	}
 
 	void PTXToLLVMTranslator::_addMathCalls()
@@ -6394,6 +7510,265 @@ namespace translator
 		
 		_llvmKernel->_statements.push_front( mul );
 	}
+
+	void PTXToLLVMTranslator::_addLLVMIntrinsics()
+	{
+		// @llvm.atomic.load.add
+		ir::LLVMStatement atom( ir::LLVMStatement::FunctionDeclaration );
+
+		atom.label = "llvm.atomic.load.add.i32.p0i32";
+		atom.linkage = ir::LLVMStatement::InvalidLinkage;
+		atom.convention = ir::LLVMInstruction::DefaultCallingConvention;
+		atom.visibility = ir::LLVMStatement::Default;
+		
+		atom.operand.type.category = ir::LLVMInstruction::Type::Element;
+		atom.operand.type.type = ir::LLVMInstruction::I32;
+		
+		atom.parameters.resize( 2 );
+
+		atom.parameters[0].type.category = ir::LLVMInstruction::Type::Pointer;
+		atom.parameters[0].type.type = ir::LLVMInstruction::I32;
+
+		atom.parameters[1].type.category = ir::LLVMInstruction::Type::Element;
+		atom.parameters[1].type.type = ir::LLVMInstruction::I32;
+
+		_llvmKernel->_statements.push_front( atom );
+
+		atom.label = "llvm.atomic.load.and.i32.p0i32";
+		_llvmKernel->_statements.push_front( atom );
+		atom.label = "llvm.atomic.load.or.i32.p0i32";
+		_llvmKernel->_statements.push_front( atom );
+		atom.label = "llvm.atomic.load.xor.i32.p0i32";
+		_llvmKernel->_statements.push_front( atom );
+		atom.label = "llvm.atomic.load.min.i32.p0i32";
+		_llvmKernel->_statements.push_front( atom );
+		atom.label = "llvm.atomic.load.umin.i32.p0i32";
+		_llvmKernel->_statements.push_front( atom );
+		atom.label = "llvm.atomic.load.max.i32.p0i32";
+		_llvmKernel->_statements.push_front( atom );
+		atom.label = "llvm.atomic.load.umax.i32.p0i32";
+		_llvmKernel->_statements.push_front( atom );
+		atom.label = "llvm.atomic.load.min.i32.p0i32";
+		_llvmKernel->_statements.push_front( atom );
+		atom.label = "llvm.atomic.swap.i32.p0i32";
+		_llvmKernel->_statements.push_front( atom );
+
+		atom.operand.type.type = ir::LLVMInstruction::I64;
+		atom.parameters[0].type.type = ir::LLVMInstruction::I64;
+		atom.parameters[1].type.type = ir::LLVMInstruction::I64;
+
+		atom.label = "llvm.atomic.load.add.i64.p0i64";
+		_llvmKernel->_statements.push_front( atom );
+		atom.label = "llvm.atomic.load.and.i64.p0i64";
+		_llvmKernel->_statements.push_front( atom );
+		atom.label = "llvm.atomic.load.or.i64.p0i64";
+		_llvmKernel->_statements.push_front( atom );
+		atom.label = "llvm.atomic.load.xor.i64.p0i64";
+		_llvmKernel->_statements.push_front( atom );
+		atom.label = "llvm.atomic.load.min.i64.p0i64";
+		_llvmKernel->_statements.push_front( atom );
+		atom.label = "llvm.atomic.load.umin.i64.p0i64";
+		_llvmKernel->_statements.push_front( atom );
+		atom.label = "llvm.atomic.load.max.i64.p0i64";
+		_llvmKernel->_statements.push_front( atom );
+		atom.label = "llvm.atomic.load.umax.i64.p0i64";
+		_llvmKernel->_statements.push_front( atom );
+		atom.label = "llvm.atomic.load.min.i64.p0i64";
+		_llvmKernel->_statements.push_front( atom );
+		atom.label = "llvm.atomic.swap.i64.p0i64";
+		_llvmKernel->_statements.push_front( atom );
+
+		// @llvm.atomic.cmp.swap
+		ir::LLVMStatement cmp( ir::LLVMStatement::FunctionDeclaration );
+
+		cmp.label = "llvm.atomic.cmp.swap.i32.p0i32";
+		cmp.linkage = ir::LLVMStatement::InvalidLinkage;
+		cmp.convention = ir::LLVMInstruction::DefaultCallingConvention;
+		cmp.visibility = ir::LLVMStatement::Default;
+		
+		cmp.operand.type.category = ir::LLVMInstruction::Type::Element;
+		cmp.operand.type.type = ir::LLVMInstruction::I32;
+		
+		cmp.parameters.resize( 3 );
+
+		cmp.parameters[0].type.category = ir::LLVMInstruction::Type::Pointer;
+		cmp.parameters[0].type.type = ir::LLVMInstruction::I32;
+
+		cmp.parameters[1].type.category = ir::LLVMInstruction::Type::Element;
+		cmp.parameters[1].type.type = ir::LLVMInstruction::I32;
+
+		cmp.parameters[2].type.category = ir::LLVMInstruction::Type::Element;
+		cmp.parameters[2].type.type = ir::LLVMInstruction::I32;
+
+		_llvmKernel->_statements.push_front( cmp );
+
+		cmp.operand.type.type = ir::LLVMInstruction::I64;
+		cmp.parameters[0].type.type = ir::LLVMInstruction::I64;
+		cmp.parameters[1].type.type = ir::LLVMInstruction::I64;
+		cmp.parameters[2].type.type = ir::LLVMInstruction::I64;
+		cmp.label = "llvm.atomic.cmp.swap.i64.p0i64";
+
+		_llvmKernel->_statements.push_front( cmp );
+		
+		// @llvm.ctpop
+		ir::LLVMStatement ctpop( ir::LLVMStatement::FunctionDeclaration );
+
+		ctpop.label = "llvm.ctpop.i8";
+		ctpop.linkage = ir::LLVMStatement::InvalidLinkage;
+		ctpop.convention = ir::LLVMInstruction::DefaultCallingConvention;
+		ctpop.visibility = ir::LLVMStatement::Default;
+		
+		ctpop.operand.type.category = ir::LLVMInstruction::Type::Element;
+		ctpop.operand.type.type = ir::LLVMInstruction::I8;
+		
+		ctpop.parameters.resize( 1 );
+
+		ctpop.parameters[0].type.category = ir::LLVMInstruction::Type::Element;
+		ctpop.parameters[0].type.type = ir::LLVMInstruction::I8;
+
+		_llvmKernel->_statements.push_front( ctpop );
+
+		ctpop.label = "llvm.ctpop.i16";
+		ctpop.operand.type.type = ir::LLVMInstruction::I16;
+		ctpop.parameters[0].type.type = ir::LLVMInstruction::I16;
+		_llvmKernel->_statements.push_front( ctpop );
+
+		ctpop.label = "llvm.ctpop.i32";
+		ctpop.operand.type.type = ir::LLVMInstruction::I32;
+		ctpop.parameters[0].type.type = ir::LLVMInstruction::I32;
+		_llvmKernel->_statements.push_front( ctpop );
+
+		ctpop.label = "llvm.ctpop.i64";
+		ctpop.operand.type.type = ir::LLVMInstruction::I64;
+		ctpop.parameters[0].type.type = ir::LLVMInstruction::I64;
+		_llvmKernel->_statements.push_front( ctpop );
+
+		// @llvm.readcyclecounter
+		ir::LLVMStatement rdtsc( ir::LLVMStatement::FunctionDeclaration );
+
+		rdtsc.label = "llvm.readcyclecounter";
+		rdtsc.linkage    = ir::LLVMStatement::InvalidLinkage;
+		rdtsc.convention = ir::LLVMInstruction::DefaultCallingConvention;
+		rdtsc.visibility = ir::LLVMStatement::Default;
+
+		rdtsc.operand.type.category = ir::LLVMInstruction::Type::Element;
+		rdtsc.operand.type.type = ir::LLVMInstruction::I64;
+
+		_llvmKernel->_statements.push_front( rdtsc );
+
+		// @llvm.ctlz
+		ir::LLVMStatement ctlz( ir::LLVMStatement::FunctionDeclaration );
+
+		ctlz.label      = "llvm.ctlz.i8";
+		ctlz.linkage    = ir::LLVMStatement::InvalidLinkage;
+		ctlz.convention = ir::LLVMInstruction::DefaultCallingConvention;
+		ctlz.visibility = ir::LLVMStatement::Default;
+		
+		ctlz.operand.type.category = ir::LLVMInstruction::Type::Element;
+		ctlz.operand.type.type     = ir::LLVMInstruction::I8;
+		
+		ctlz.parameters.resize( 1 );
+
+		ctlz.parameters[0].type.category = ir::LLVMInstruction::Type::Element;
+		ctlz.parameters[0].type.type     = ir::LLVMInstruction::I8;
+
+		_llvmKernel->_statements.push_front( ctlz );
+
+		ctlz.label = "llvm.ctlz.i16";
+		ctlz.operand.type.type = ir::LLVMInstruction::I16;
+		ctlz.parameters[0].type.type = ir::LLVMInstruction::I16;
+		_llvmKernel->_statements.push_front( ctlz );
+
+		ctlz.label = "llvm.ctlz.i32";
+		ctlz.operand.type.type = ir::LLVMInstruction::I32;
+		ctlz.parameters[0].type.type = ir::LLVMInstruction::I32;
+		_llvmKernel->_statements.push_front( ctlz );
+
+		ctlz.label = "llvm.ctlz.i64";
+		ctlz.operand.type.type = ir::LLVMInstruction::I64;
+		ctlz.parameters[0].type.type = ir::LLVMInstruction::I64;
+		_llvmKernel->_statements.push_front( ctlz );
+		
+		// @llvm.sqrt
+		ir::LLVMStatement sqrt( ir::LLVMStatement::FunctionDeclaration );
+
+		sqrt.label      = "llvm.sqrt.f32";
+		sqrt.linkage    = ir::LLVMStatement::InvalidLinkage;
+		sqrt.convention = ir::LLVMInstruction::DefaultCallingConvention;
+		sqrt.visibility = ir::LLVMStatement::Default;
+		
+		sqrt.operand.type.category = ir::LLVMInstruction::Type::Element;
+		sqrt.operand.type.type     = ir::LLVMInstruction::F32;
+		
+		sqrt.parameters.resize( 1 );
+
+		sqrt.parameters[0].type.category = ir::LLVMInstruction::Type::Element;
+		sqrt.parameters[0].type.type     = ir::LLVMInstruction::F32;
+
+		_llvmKernel->_statements.push_front( sqrt );
+
+		sqrt.label                   = "llvm.sqrt.f64";
+		sqrt.operand.type.type       = ir::LLVMInstruction::F64;
+		sqrt.parameters[0].type.type = ir::LLVMInstruction::F64;
+		
+		_llvmKernel->_statements.push_front( sqrt );
+
+		// @llvm.cos
+		ir::LLVMStatement cos( ir::LLVMStatement::FunctionDeclaration );
+
+		cos.label      = "llvm.cos.f32";
+		cos.linkage    = ir::LLVMStatement::InvalidLinkage;
+		cos.convention = ir::LLVMInstruction::DefaultCallingConvention;
+		cos.visibility = ir::LLVMStatement::Default;
+		
+		cos.operand.type.category = ir::LLVMInstruction::Type::Element;
+		cos.operand.type.type     = ir::LLVMInstruction::F32;
+		
+		cos.parameters.resize( 1 );
+
+		cos.parameters[0].type.category = ir::LLVMInstruction::Type::Element;
+		cos.parameters[0].type.type     = ir::LLVMInstruction::F32;
+
+		_llvmKernel->_statements.push_front( cos );
+
+		// @llvm.sin
+		cos.label      = "llvm.sin.f32";
+		_llvmKernel->_statements.push_front( cos );
+
+		// @llvm.log2
+		cos.label      = "llvm.log2.f32";
+		_llvmKernel->_statements.push_front( cos );
+
+		// @llvm.exp2
+		cos.label      = "llvm.exp2.f32";
+		_llvmKernel->_statements.push_front( cos );
+	}
+	
+	void PTXToLLVMTranslator::_addUtilityCalls()
+	{
+		ir::LLVMStatement extent( ir::LLVMStatement::FunctionDeclaration );
+
+		extent.operand.type.category = ir::LLVMInstruction::Type::Element;
+		extent.operand.type.type     = ir::LLVMInstruction::I32;
+
+		extent.label = "__ocelot_get_extent";
+		extent.linkage = ir::LLVMStatement::InvalidLinkage;
+		extent.convention = ir::LLVMInstruction::DefaultCallingConvention;
+		extent.visibility = ir::LLVMStatement::Default;
+		
+		extent.parameters.resize( 2 );
+		
+		extent.parameters[0].type.category = ir::LLVMInstruction::Type::Pointer;
+		extent.parameters[0].type.members.resize(1);
+		extent.parameters[0].type.members[0].category 
+			= ir::LLVMInstruction::Type::Structure;
+		extent.parameters[0].type.members[0].label = "%LLVMContext";
+		
+		extent.parameters[1].type.category = ir::LLVMInstruction::Type::Element;
+		extent.parameters[1].type.type = ir::LLVMInstruction::I32;
+		
+		_llvmKernel->_statements.push_front( extent );
+	}
 	
 	void PTXToLLVMTranslator::_addKernelPrefix()
 	{
@@ -6407,7 +7782,7 @@ namespace translator
 		kernel.convention = ir::LLVMInstruction::DefaultCallingConvention;
 		kernel.visibility = ir::LLVMStatement::Default;
 		kernel.functionAttributes = ir::LLVMInstruction::NoUnwind;
-	
+
 		kernel.operand.type.category = ir::LLVMInstruction::Type::Element;
 		kernel.operand.type.type = ir::LLVMInstruction::I32;
 		
@@ -6436,165 +7811,6 @@ namespace translator
 		_llvmKernel->_statements.push_front( 
 			ir::LLVMStatement( ir::LLVMStatement::NewLine ) );		
 
-		ir::LLVMStatement cosf( ir::LLVMStatement::FunctionDeclaration );
-
-		cosf.label = "__ocelot_cosf";
-		cosf.linkage = ir::LLVMStatement::InvalidLinkage;
-		cosf.convention = ir::LLVMInstruction::DefaultCallingConvention;
-		cosf.visibility = ir::LLVMStatement::Default;
-		
-		cosf.operand.type.category = ir::LLVMInstruction::Type::Element;
-		cosf.operand.type.type = ir::LLVMInstruction::F32;
-		
-		cosf.parameters.resize( 1 );
-		cosf.parameters[0].type.category = ir::LLVMInstruction::Type::Element;
-		cosf.parameters[0].type.type = ir::LLVMInstruction::F32;
-	
-		_llvmKernel->_statements.push_front( cosf );		
-		cosf.label = "__ocelot_cosFtz";
-		_llvmKernel->_statements.push_front( cosf );
-
-		ir::LLVMStatement sinf( ir::LLVMStatement::FunctionDeclaration );
-
-		sinf.label = "__ocelot_sinf";
-		sinf.linkage = ir::LLVMStatement::InvalidLinkage;
-		sinf.convention = ir::LLVMInstruction::DefaultCallingConvention;
-		sinf.visibility = ir::LLVMStatement::Default;
-		
-		sinf.operand.type.category = ir::LLVMInstruction::Type::Element;
-		sinf.operand.type.type = ir::LLVMInstruction::F32;
-		
-		sinf.parameters.resize( 1 );
-		sinf.parameters[0].type.category = ir::LLVMInstruction::Type::Element;
-		sinf.parameters[0].type.type = ir::LLVMInstruction::F32;
-	
-		_llvmKernel->_statements.push_front( sinf );		
-		sinf.label = "__ocelot_sinFtz";
-		_llvmKernel->_statements.push_front( sinf );		
-
-		ir::LLVMStatement ex2( ir::LLVMStatement::FunctionDeclaration );
-
-		ex2.label = "__ocelot_ex2";
-		ex2.linkage = ir::LLVMStatement::InvalidLinkage;
-		ex2.convention = ir::LLVMInstruction::DefaultCallingConvention;
-		ex2.visibility = ir::LLVMStatement::Default;
-		
-		ex2.operand.type.category = ir::LLVMInstruction::Type::Element;
-		ex2.operand.type.type = ir::LLVMInstruction::F32;
-		
-		ex2.parameters.resize( 1 );
-		ex2.parameters[0].type.category = ir::LLVMInstruction::Type::Element;
-		ex2.parameters[0].type.type = ir::LLVMInstruction::F32;
-	
-		_llvmKernel->_statements.push_front( ex2 );		
-		ex2.label = "__ocelot_ex2Ftz";
-		_llvmKernel->_statements.push_front( ex2 );
-		
-		ir::LLVMStatement log2f( ir::LLVMStatement::FunctionDeclaration );
-
-		log2f.label = "__ocelot_log2f";
-		log2f.linkage = ir::LLVMStatement::InvalidLinkage;
-		log2f.convention = ir::LLVMInstruction::DefaultCallingConvention;
-		log2f.visibility = ir::LLVMStatement::Default;
-		
-		log2f.operand.type.category = ir::LLVMInstruction::Type::Element;
-		log2f.operand.type.type = ir::LLVMInstruction::F32;
-		
-		log2f.parameters.resize( 1 );
-		log2f.parameters[0].type.category = ir::LLVMInstruction::Type::Element;
-		log2f.parameters[0].type.type = ir::LLVMInstruction::F32;
-	
-		_llvmKernel->_statements.push_front( log2f );		
-		log2f.label = "__ocelot_log2Ftz";
-		_llvmKernel->_statements.push_front( log2f );
-
-		ir::LLVMStatement sqrtf( ir::LLVMStatement::FunctionDeclaration );
-
-		sqrtf.label = "__ocelot_sqrtf";
-		sqrtf.linkage = ir::LLVMStatement::InvalidLinkage;
-		sqrtf.convention = ir::LLVMInstruction::DefaultCallingConvention;
-		sqrtf.visibility = ir::LLVMStatement::Default;
-		
-		sqrtf.operand.type.category = ir::LLVMInstruction::Type::Element;
-		sqrtf.operand.type.type = ir::LLVMInstruction::F32;
-		
-		sqrtf.parameters.resize( 1 );
-		sqrtf.parameters[0].type.category = ir::LLVMInstruction::Type::Element;
-		sqrtf.parameters[0].type.type = ir::LLVMInstruction::F32;
-	
-		_llvmKernel->_statements.push_front( sqrtf );		
-		sqrtf.label = "__ocelot_sqrtFtz";
-		_llvmKernel->_statements.push_front( sqrtf );
-
-		ir::LLVMStatement sqrt( ir::LLVMStatement::FunctionDeclaration );
-
-		sqrt.label = "__ocelot_sqrt";
-		sqrt.linkage = ir::LLVMStatement::InvalidLinkage;
-		sqrt.convention = ir::LLVMInstruction::DefaultCallingConvention;
-		sqrt.visibility = ir::LLVMStatement::Default;
-		
-		sqrt.operand.type.category = ir::LLVMInstruction::Type::Element;
-		sqrt.operand.type.type = ir::LLVMInstruction::F64;
-		
-		sqrt.parameters.resize( 1 );
-		sqrt.parameters[0].type.category = ir::LLVMInstruction::Type::Element;
-		sqrt.parameters[0].type.type = ir::LLVMInstruction::F64;
-	
-		_llvmKernel->_statements.push_front( sqrt );		
-
-		ir::LLVMStatement rsqrt( ir::LLVMStatement::FunctionDeclaration );
-
-		rsqrt.label = "__ocelot_rsqrt";
-		rsqrt.linkage = ir::LLVMStatement::InvalidLinkage;
-		rsqrt.convention = ir::LLVMInstruction::DefaultCallingConvention;
-		rsqrt.visibility = ir::LLVMStatement::Default;
-		
-		rsqrt.operand.type.category = ir::LLVMInstruction::Type::Element;
-		rsqrt.operand.type.type = ir::LLVMInstruction::F32;
-		
-		rsqrt.parameters.resize( 1 );
-		rsqrt.parameters[0].type.category = ir::LLVMInstruction::Type::Element;
-		rsqrt.parameters[0].type.type = ir::LLVMInstruction::F32;
-	
-		_llvmKernel->_statements.push_front( rsqrt );		
-		rsqrt.label = "__ocelot_rsqrtFtz";
-		_llvmKernel->_statements.push_front( rsqrt );		
-
-		ir::LLVMStatement setRoundingMode( 
-			ir::LLVMStatement::FunctionDeclaration );
-
-		setRoundingMode.label = "setRoundingMode";
-		setRoundingMode.linkage = ir::LLVMStatement::InvalidLinkage;
-		setRoundingMode.convention 
-			= ir::LLVMInstruction::DefaultCallingConvention;
-		setRoundingMode.visibility = ir::LLVMStatement::Default;
-		
-		setRoundingMode.parameters.resize( 1 );
-		setRoundingMode.parameters[0].type.category 
-			= ir::LLVMInstruction::Type::Element;
-		setRoundingMode.parameters[0].type.type = ir::LLVMInstruction::I32;
-	
-		_llvmKernel->_statements.push_front( setRoundingMode );
-
-		ir::LLVMStatement clock( ir::LLVMStatement::FunctionDeclaration );
-
-		clock.label = "__ocelot_clock";
-		clock.linkage = ir::LLVMStatement::InvalidLinkage;
-		clock.convention = ir::LLVMInstruction::DefaultCallingConvention;
-		clock.visibility = ir::LLVMStatement::Default;
-		
-		clock.operand.type.category = ir::LLVMInstruction::Type::Element;
-		clock.operand.type.type = ir::LLVMInstruction::I32;	
-		
-		clock.parameters.resize( 1 );
-		clock.parameters[0].type.category = ir::LLVMInstruction::Type::Pointer;
-		clock.parameters[0].type.members.resize(1);
-		clock.parameters[0].type.members[0].category 
-			= ir::LLVMInstruction::Type::Structure;
-		clock.parameters[0].type.members[0].label = "%LLVMContext";
-
-		_llvmKernel->_statements.push_front( ir::LLVMStatement( clock ) );
-		
 		ir::LLVMStatement smid( ir::LLVMStatement::FunctionDeclaration );
 
 		smid.label = "__ocelot_smid";
@@ -6608,7 +7824,8 @@ namespace translator
 		smid.parameters.resize( 1 );
 		smid.parameters[0].type.category = ir::LLVMInstruction::Type::Pointer;
 		smid.parameters[0].type.members.resize(1);
-		smid.parameters[0].type.members[0].category = ir::LLVMInstruction::Type::Structure;
+		smid.parameters[0].type.members[0].category
+			= ir::LLVMInstruction::Type::Structure;
 		smid.parameters[0].type.members[0].label = "%LLVMContext";
 
 		_llvmKernel->_statements.push_front( ir::LLVMStatement( smid ) );
@@ -6626,7 +7843,8 @@ namespace translator
 		nsmid.parameters.resize( 1 );
 		nsmid.parameters[0].type.category = ir::LLVMInstruction::Type::Pointer;
 		nsmid.parameters[0].type.members.resize(1);
-		nsmid.parameters[0].type.members[0].category = ir::LLVMInstruction::Type::Structure;
+		nsmid.parameters[0].type.members[0].category
+			= ir::LLVMInstruction::Type::Structure;
 		nsmid.parameters[0].type.members[0].label = "%LLVMContext";
 
 		_llvmKernel->_statements.push_front( ir::LLVMStatement( nsmid ) );
@@ -6656,6 +7874,8 @@ namespace translator
 		_addTextureCalls();
 		_addAtomicCalls();
 		_addMathCalls();
+		_addLLVMIntrinsics();
+		_addUtilityCalls();
 
 		_llvmKernel->_statements.push_back( 
 			ir::LLVMStatement( ir::LLVMStatement::NewLine ) );
@@ -6698,6 +7918,7 @@ namespace translator
 			"Kernel must a PTXKernel to translate to an LLVMKernel" );
 		
 		_ptx = static_cast< const ir::PTXKernel* >( k );
+		
 		_llvmKernel = new ir::LLVMKernel( *k );
 				
 		assert(_ptx->dfg()->ssa());
@@ -6712,7 +7933,7 @@ namespace translator
 		_tempBlockCount = 0;
 		_uninitialized.clear();
 		_usesTextures = false;
-				
+		
 		return _llvmKernel;
 	}
 	

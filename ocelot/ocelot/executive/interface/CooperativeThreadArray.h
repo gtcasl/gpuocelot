@@ -11,7 +11,6 @@
 #ifndef EXECUTIVE_COOPERATIVETHREADARRAY_H_INCLUDED
 #define EXECUTIVE_COOPERATIVETHREADARRAY_H_INCLUDED
 
-#include <deque>
 #include <ocelot/executive/interface/CTAContext.h>
 #include <ocelot/executive/interface/ReconvergenceMechanism.h>
 #include <ocelot/ir/interface/PTXOperand.h>
@@ -26,7 +25,7 @@ namespace executive {
 	/*! Defines state of cooperative thread array */
 	class CooperativeThreadArray {
 	public:
-		typedef std::deque <CTAContext> Stack;
+		typedef std::vector<CTAContext> Stack;
 		typedef std::vector <int> ThreadIdVector;
 		typedef std::vector<ir::PTXU64> RegisterFileType;
 		
@@ -57,7 +56,7 @@ namespace executive {
 			Initializes the CTA and executes the kernel for a given block
 		*/
 		void execute(const ir::Dim3& block);
-
+		
 		/*! Jump to a specific PC for the current context */
 		void jumpToPC(int PC);
 
@@ -84,9 +83,8 @@ namespace executive {
 		*/
 		ir::Dim3 gridDim;
 
-		/*!
-			Dimensions of the cooperative thread array
-		*/
+	public:
+		/*! Dimensions of the cooperative thread array */
 		ir::Dim3 blockDim;
 
 		/*!
@@ -95,14 +93,10 @@ namespace executive {
 		*/
 		int threadCount;
 
-		/*!
-			Pointer to EmulatedKernel instance that this CTA is executing
-		*/
+		/*! Pointer to EmulatedKernel instance that this CTA is executing */
 		const EmulatedKernel *kernel;
 
-		/*!
-			ID of block implemented by this CooperativeThreadArray instance
-		*/
+		/*! ID of block implemented by this CooperativeThreadArray instance */
 		ir::Dim3 blockId;
 
 		/*!
@@ -140,37 +134,25 @@ namespace executive {
 		*/
 		ReconvergenceMechanism *reconvergenceMechanism;
 		
-		/*!
-			Counter incremented 4 times per instruction
-		*/
+		/*! Counter incremented 4 times per instruction */
 		ir::PTXU64 clock;
 
-		/*!
-			Flag to enable or disable tracing of events
-		*/
+		/*! Flag to enable or disable tracing of events */
 		bool traceEvents;
 
-		/*!
-			Number of dynamic instructions executed
-		*/
+		/*! Number of dynamic instructions executed */
 		int counter;
 
-		/*!
-			An object used to trace execution of the CooperativeThreadArray
-		*/
+		/*! An object used to trace execution of the CooperativeThreadArray */
 		trace::TraceEvent currentEvent;
 
 	protected:
 		// internal functions for execution
 
-		/*!
-			Gets current instruction
-		*/
-		const ir::PTXInstruction& currentInstruction(CTAContext & context);
+		/*! Gets current instruction */
+		const ir::PTXInstruction& currentInstruction(CTAContext& context);
 
-		/*!
-			Gets special value
-		*/
+		/*! Gets special value */
 		ir::PTXU32 getSpecialValue( const int threadId,
 			const ir::PTXOperand::SpecialRegister ) const;
 		
@@ -179,9 +161,7 @@ namespace executive {
 
 		ir::PTXF32 sat(int modifier, ir::PTXF32 f);
 		
-		/*!
-			\brief invokes TraceGenerator::event() on all trace generators
-		*/
+		// Set the trace event
 		void trace();
 
 		/*!
@@ -468,6 +448,8 @@ namespace executive {
 		ir::PTXB16 operandAsB16(int, const ir::PTXOperand &);
 		ir::PTXB32 operandAsB32(int, const ir::PTXOperand &);
 		ir::PTXB64 operandAsB64(int, const ir::PTXOperand &);
+
+		bool operandAsPredicate(int, const ir::PTXOperand&);
 
 	private:
 		void normalStore(int, const ir::PTXInstruction &, char*);

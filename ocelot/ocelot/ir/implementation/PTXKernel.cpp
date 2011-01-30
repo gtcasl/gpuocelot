@@ -13,11 +13,15 @@
 #include <hydrazine/interface/Version.h>
 #include <hydrazine/implementation/debug.h>
 
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
 #ifdef REPORT_BASE
 #undef REPORT_BASE
 #endif
 
 #define REPORT_BASE 0
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace ir
 {
@@ -92,11 +96,6 @@ namespace ir
 			{
 				report( "  For instruction " << (*instruction)->toString() );
 				
-				bool detailed = false;
-				if ((*instruction)->toString() == "mov.pred %p187, %p186") {
-					detailed = true;
-				}
-				
 				const ir::PTXInstruction& ptx = static_cast<
 					const ir::PTXInstruction&>(**instruction);
 				
@@ -169,8 +168,6 @@ namespace ir
 				}
 			}
 		}
-		
-		// dead code elimintation step?
 		
 		return regs;
 	}
@@ -265,7 +262,7 @@ namespace ir
 						edge.type = ControlFlowGraph::Edge::Invalid;
 					}
 				}
-				else if(statement.instruction.opcode == PTXInstruction::Exit)
+				else if( statement.instruction.opcode == PTXInstruction::Exit )
 				{
 					assertM(!hasExit, "Duplicate exit block.");
 					hasExit = true;

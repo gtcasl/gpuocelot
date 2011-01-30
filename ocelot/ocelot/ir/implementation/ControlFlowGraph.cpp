@@ -327,8 +327,7 @@ void ControlFlowGraph::remove_edge(edge_iterator edge) {
 	_edges.erase(edge);
 }
 
-std::pair<ControlFlowGraph::edge_iterator, ControlFlowGraph::edge_iterator>
-	ControlFlowGraph::split_edge(edge_iterator edge,
+ControlFlowGraph::EdgePair ControlFlowGraph::split_edge(edge_iterator edge,
 	const BasicBlock& newBlock) {
 	iterator head = edge->head;
 	iterator tail = edge->tail;
@@ -338,9 +337,9 @@ std::pair<ControlFlowGraph::edge_iterator, ControlFlowGraph::edge_iterator>
 
 	iterator block = insert_block(newBlock);
 	edge_iterator firstEdge = insert_edge(Edge(head, block, type));
-	edge_iterator newEdge = insert_edge(Edge(block, tail, type));	
+	edge_iterator secondEdge = insert_edge(Edge(block, tail, type));	
 	
-	return std::make_pair(firstEdge, newEdge);
+	return std::make_pair(firstEdge, secondEdge);
 }
 
 ControlFlowGraph::iterator ControlFlowGraph::split_block(iterator block, 
@@ -360,7 +359,7 @@ ControlFlowGraph::iterator ControlFlowGraph::split_block(iterator block,
 		label = l;
 	}
 	
-	iterator newBlock = insert_block(BasicBlock(label));
+	iterator newBlock = insert_block(BasicBlock(label, newId()));
 	BasicBlock::InstructionList::iterator 
 		begin = block->instructions.begin();
 	std::advance(begin, instruction);
@@ -591,7 +590,7 @@ ControlFlowGraph::BlockPointerVector
 }
 
 ControlFlowGraph::BlockPointerVector ControlFlowGraph::post_order_sequence() {
-	typedef std::set<iterator, BlockSetCompare> BlockSet;
+	typedef std::unordered_set<iterator> BlockSet;
 	typedef std::stack<iterator> Stack;
 	
 	report("Creating post order traversal");
@@ -635,7 +634,7 @@ ControlFlowGraph::BlockPointerVector ControlFlowGraph::post_order_sequence() {
 }
 
 ControlFlowGraph::BlockPointerVector ControlFlowGraph::pre_order_sequence() {
-	typedef std::set<iterator, BlockSetCompare> BlockSet;
+	typedef std::unordered_set<iterator> BlockSet;
 	typedef std::stack<iterator> Stack;
 	
 	BlockSet visited;
@@ -664,13 +663,7 @@ ControlFlowGraph::BlockPointerVector ControlFlowGraph::pre_order_sequence() {
 }
 
 ControlFlowGraph::BlockPointerVector ControlFlowGraph::executable_sequence() {
-	#if LAYOUT_SCHEME == FAST_RANDOM_LAYOUT
-		typedef std::unordered_set<iterator> BlockSet;
-	#elif LAYOUT_SCHEME == PRESERVE_SOURCE_LAYOUT
-		typedef std::set<iterator, BlockSetCompare> BlockSet;	
-	#else
-		#error "Invalid layout scheme."
-	#endif
+	typedef std::unordered_set<iterator> BlockSet;
 	BlockPointerVector sequence;
 	BlockSet unscheduled;
 
@@ -693,9 +686,20 @@ ControlFlowGraph::BlockPointerVector ControlFlowGraph::executable_sequence() {
 			unscheduled.erase(fallthroughEdge->tail);
 		}
 		else {
+			// find a new block, favor branch targets over random blocks
+			iterator next = *unscheduled.begin();
+			
+			for(edge_pointer_iterator edge = sequence.back()->out_edges.begin();
+				edge != sequence.back()->out_edges.end(); ++edge)
+			{
+				if(unscheduled.count((*edge)->tail) != 0)
+				{
+					next = (*edge)->tail;
+				}
+			}
+			
 			// rewind through fallthrough edges to find the beginning of the 
 			// next chain of fall throughs
-			iterator next = *unscheduled.begin();
 			report("  restarting at " << next->label);
 			bool rewinding = true;
 			while (rewinding) {
@@ -726,6 +730,9 @@ ControlFlowGraph::BlockPointerVector ControlFlowGraph::executable_sequence() {
 ControlFlowGraph & ControlFlowGraph::operator=(const 
 	ControlFlowGraph &cfg) {
 	report( "Copying cfg" );
+	
+	report("\nControlFlowGraph::operator=()");
+	
 	typedef std::unordered_map<const_iterator, iterator> BlockMap;
 	BlockMap block_map;
 	
@@ -748,14 +755,19 @@ ControlFlowGraph & ControlFlowGraph::operator=(const
 		}
 	}
 
-
+	report("Edges:");
+	
 	// duplicate edges using the block_map
 	for (const_edge_iterator e_it = cfg.edges_begin(); 
 		e_it != cfg.edges_end(); ++e_it) {
 		assert( block_map.count( e_it->head ) );
 		assert( block_map.count( e_it->tail ) );
+		
+		report("\n  " << e_it->head->label << " -> " << e_it->tail->label << " [" << e_it->type << "]");
+		
 		insert_edge(Edge(block_map[e_it->head], 
 			block_map[e_it->tail], e_it->type));
+		report("\n");
 	}
 	
 	return *this;
@@ -774,8 +786,6 @@ ControlFlowGraph::const_iterator ControlFlowGraph::begin() const {
 }
 
 ControlFlowGraph::const_iterator ControlFlowGraph::end() const {
-	return _blocks.end();
-
 	return _blocks.end();
 }
 

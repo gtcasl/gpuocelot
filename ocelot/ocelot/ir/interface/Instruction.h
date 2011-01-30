@@ -21,6 +21,7 @@ namespace ir {
 			SASS, 						// NVIDIA GPU
 			LLVM,						// LLVM to x86
 			CAL,						// AMD Cal
+			Remote,                     // Remote Device
 			x86,
 			x86_64,
 			SPU,

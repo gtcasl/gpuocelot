@@ -47,8 +47,10 @@ namespace executive {
 		/*! Given a thread's ID, determine if the instruction should execute */
 		bool predicated(int threadID, const ir::PTXInstruction &instr);
 		
+		/*! Increments PCs of active threads as well as PC
+		*/
+		void incrementPC();
 	};
-
 }
 
 #endif

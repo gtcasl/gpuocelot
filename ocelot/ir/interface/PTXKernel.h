@@ -27,6 +27,64 @@ namespace ir
 			typedef analysis::DataflowGraph::RegisterVector RegisterVector;
 			
 		public:
+		
+			/*!
+				\brief Defines a prototype for each kernel and function
+			*/
+			class Prototype {
+			public:
+				typedef std::vector< ir::Parameter > ArgumentVector;
+			
+				enum CallType {
+					Entry,
+					Func,
+					CallType_invalid
+				};
+				
+				enum LinkingDirective {
+					Extern,		//!< externally-defined function
+					Visible,	//!< locally defined function visible outside this module
+					LinkingDirective_invalid
+				};
+			
+			public:
+				//! \brief 
+				static std::string toString(const LinkingDirective ld);
+				static std::string toString(const CallType ct);
+				
+				Prototype();
+				
+				/*!
+					\brief emits a PTX form of the prototype
+				*/
+				std::string toString() const;
+				
+				/*!
+					\brief emits a mangled form of the function prototype
+				*/
+				std::string getMangledName() const;
+				
+				void clear();
+
+			public:
+			
+				//! \brief indicates .entry or .func
+				CallType callType;
+			
+				//! \brief indicates linking directive of function
+				LinkingDirective linkingDirective;
+			
+				//! \brief set of return arguments for function
+				ArgumentVector returnArguments;
+				
+				//! \brief name of function
+				std::string identifier;
+				
+				//! \brief arguments for function
+				ArgumentVector arguments;
+			};
+			
+		public:
 			/*!	Constructs a control flow graph from iterators into the 
 				Module's PTXStatement vector
 
@@ -37,10 +95,9 @@ namespace ir
 					[i.e. the EndEntry statement]
 				\return true on successful creation
 			*/
-			static void constructCFG(
-				ControlFlowGraph &cfg,
+			void constructCFG(ControlFlowGraph &cfg,
 				PTXStatementVector::const_iterator kernelStart,
-				PTXStatementVector::const_iterator kernelEnd );
+				PTXStatementVector::const_iterator kernelEnd);
 
 			/*! \brief Assigns register IDs to identifiers */
 			static RegisterMap assignRegisters(ControlFlowGraph& cfg);

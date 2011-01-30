@@ -140,6 +140,57 @@ namespace trace
 	{
 		switch( e.instruction->addressSpace )
 		{
+			case ir::PTXInstruction::Generic:
+			{
+				TraceEvent::U64Vector::const_iterator 
+					address = e.memory_addresses.begin();
+
+				unsigned int threads = e.active.size();
+				for( unsigned int thread = 0; thread < threads; ++thread )
+				{
+					if( !e.active[ thread ] ) continue;
+					if(_kernel->totalSharedMemorySize() > 0)
+					{
+						if( (ir::PTXU64)_kernel->getSharedMemory() <= *address 
+							&& *address < (ir::PTXU64)_kernel->getSharedMemory()
+							+ _shared.extent )
+						{
+							++address;
+							continue;
+						}
+					}
+					if( (ir::PTXU64)_kernel->getLocalMemory(thread) <= *address 
+						&& *address < (ir::PTXU64)_kernel->getLocalMemory(thread)
+						+ _local.extent )
+					{
+						++address;
+						continue;
+					}
+					if( _cache.base > *address 
+						|| *address >= _cache.base + _cache.extent
+						|| !_cache.valid )
+					{
+						const executive::Device::MemoryAllocation* allocation = 
+							_device->getMemoryAllocation( (void*)*address, 
+								executive::Device::AnyAllocation );
+						if( allocation == 0 )
+						{
+							globalMemoryError( _device, _dim,
+								thread, *address, e.memory_size, e, _kernel );
+						}
+						_cache.base = ( ir::PTXU64 ) allocation->pointer();
+						_cache.extent = allocation->size();
+						if( *address >= _cache.base + _cache.extent )
+						{
+							globalMemoryError( _device, _dim,
+								thread, *address, e.memory_size, e, _kernel );
+						}
+					}
+					++address;
+				}
+				
+				break;
+			}
 			case ir::PTXInstruction::Global:
 			{
 				TraceEvent::U64Vector::const_iterator 
@@ -175,8 +226,20 @@ namespace trace
 			}
 			case ir::PTXInstruction::Local: checkLocalAccess( "Local", _dim,
 				_local, e, _kernel ); break;
-			case ir::PTXInstruction::Param: checkLocalAccess( "Parameter", _dim, 
-				_parameter, e, _kernel ); break;
+			case ir::PTXInstruction::Param:
+			{
+				if( e.instruction->a.isArgument )
+				{
+					checkLocalAccess( "Argument", _dim, 
+						_argument, e, _kernel );
+				}
+				else
+				{
+					checkLocalAccess( "Parameter", _dim, 
+						_parameter, e, _kernel );
+				}
+				break;
+			}
 			case ir::PTXInstruction::Shared: checkLocalAccess( "Shared", _dim, 	
 				_shared, e, _kernel ); break;
 			case ir::PTXInstruction::Const: checkLocalAccess( "Constant", _dim, 
@@ -216,6 +279,9 @@ namespace trace
 		_local.base = 0;
 		_local.extent = kernel.localMemorySize();
 		
+		_argument.base = 0;
+		_argument.extent = kernel.argumentMemorySize();
+		
 		_kernel = static_cast< const executive::EmulatedKernel* >( &kernel );
 	}
 
@@ -223,6 +289,7 @@ namespace trace
 	{
 		const bool isMemoryOperation = 
 			event.instruction->opcode == ir::PTXInstruction::Ld
+			|| event.instruction->opcode == ir::PTXInstruction::Ldu
 			|| event.instruction->opcode == ir::PTXInstruction::St
 			|| event.instruction->opcode == ir::PTXInstruction::Atom;
 		

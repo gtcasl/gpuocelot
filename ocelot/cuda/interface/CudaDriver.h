@@ -237,6 +237,8 @@ namespace cuda
 						CUgraphicsResource *resources, CUstream hStream );
 					CUresult (*cuGraphicsUnmapResources)(unsigned int count, 
 						CUgraphicsResource *resources, CUstream hStream );
+					CUresult (*cuGetExportTable)(const void **ppExportTable,
+						const CUuuid *pExportTableId);
 
 					CUresult (*cuGLInit)();
 					CUresult (*cuGLCtxCreate)(CUcontext *pCtx, 
@@ -612,6 +614,14 @@ namespace cuda
 				CUgraphicsResource *resources, CUstream hStream );
 			static CUresult cuGraphicsUnmapResources(unsigned int count, 
 				CUgraphicsResource *resources, CUstream hStream );
+
+			/************************************
+			**
+			**    Export Table
+			**
+			***********************************/
+			static CUresult cuGetExportTable(const void **ppExportTable,
+				const CUuuid *pExportTableId);
 
 			/************************************
 			**

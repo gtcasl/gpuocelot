@@ -45,6 +45,7 @@ namespace trace {
 			WarpSynchronousTraceFormat,
 			PerformanceBoundTraceFormat,
 			ConvergenceTraceFormat,
+			BasicBlockCountFormat,
 			InvalidTraceFormat
 		};
 		

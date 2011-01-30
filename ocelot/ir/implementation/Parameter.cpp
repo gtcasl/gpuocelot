@@ -65,13 +65,16 @@ ir::Parameter::Parameter() {
 	type = PTXOperand::u64;
 	offset = 0;
 	vector = PTXOperand::v1;
+	argument = false;
+	returnArgument = false;
 }
 
 ir::Parameter::~Parameter() {
 
 }
 
-ir::Parameter::Parameter(const PTXStatement& statement) {
+ir::Parameter::Parameter(const PTXStatement& statement,
+	bool arg, bool isReturn) : argument(arg), returnArgument(isReturn) {
 	type = PTXOperand::u64;
 	offset = 0;
 	
@@ -117,6 +120,10 @@ unsigned int ir::Parameter::getElementSize() const {
 
 unsigned int ir::Parameter::getAlignment() const {
 	return std::max( getElementSize(), alignment );
+}
+
+bool ir::Parameter::isArgument() const {
+	return argument;
 }
 
 std::string ir::Parameter::toString() const {

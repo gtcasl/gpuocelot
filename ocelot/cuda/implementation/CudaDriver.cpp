@@ -236,6 +236,9 @@ namespace cuda
 		hydrazine::bit_cast( cuGraphicsUnmapResources, dlsym( _driver,
 			"cuGraphicsUnmapResources" ) );
 
+		hydrazine::bit_cast( cuGetExportTable, dlsym( _driver,
+			"cuGetExportTable" ) );
+
 		hydrazine::bit_cast( cuGLInit, dlsym( _driver, "cuGLInit" ) );
 		hydrazine::bit_cast( cuGLCtxCreate, dlsym( _driver,	"cuGLCtxCreate" ) );
 		hydrazine::bit_cast( cuGraphicsGLRegisterBuffer, dlsym( _driver,
@@ -258,6 +261,8 @@ namespace cuda
 
 	CUresult CudaDriver::cuInit(unsigned int Flags)
 	{
+		// Handle multiple calls
+		if(_interface.loaded()) return CUDA_SUCCESS;
 		_interface.load();
 		if( !_interface.loaded() ) return CUDA_ERROR_NO_DEVICE;
 		report("cuInit");
@@ -1012,6 +1017,13 @@ namespace cuda
 			resources, hStream);
 	}
 
+	CUresult CudaDriver::cuGetExportTable(const void **ppExportTable,
+		const CUuuid *pExportTableId)
+	{
+		CHECK();
+		return (*_interface.cuGetExportTable)(ppExportTable, pExportTableId);
+	}
+
 	CUresult CudaDriver::cuGLInit()
 	{
 		CHECK();
@@ -1088,6 +1100,7 @@ namespace cuda
 				return "CUDA DRIVER - launch timeout";
 			case CUDA_ERROR_LAUNCH_INCOMPATIBLE_TEXTURING: 
 				return "CUDA DRIVER - incompatible texturing";
+			case CUDA_ERROR_NOT_MAPPED_AS_POINTER: return "CUDA DRIVER - not mapped as pointer";
 			case CUDA_ERROR_UNKNOWN: return "CUDA DRIVER - unknown error";
 			default: break;
 		}

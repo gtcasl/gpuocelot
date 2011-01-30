@@ -10,10 +10,16 @@
 // ocelot includes
 #include <ocelot/executive/interface/MulticoreCPUDevice.h>
 #include <ocelot/executive/interface/LLVMExecutableKernel.h>
+#include <ocelot/executive/interface/LLVMModuleManager.h>
+#include <ocelot/executive/interface/LLVMExecutionManager.h>
 
 // hydrazine includes
+#include <hydrazine/interface/WindowsCompatibility.h>
 #include <hydrazine/implementation/Exception.h>
 #include <hydrazine/interface/Casts.h>
+
+// Standard Library Includes
+#include <cstring>
 
 // Macros
 #define Throw(x) {std::stringstream s; s << x; \
@@ -27,6 +33,15 @@ namespace executive
 	
 	}
 
+	MulticoreCPUDevice::Module::~Module()
+	{
+		assert(ir->loaded());
+		
+		if(!LLVMModuleManager::isModuleLoaded(ir->path())) return;
+
+		LLVMModuleManager::unloadModule(ir->path());
+		LLVMExecutionManager::flushTranslatedKernels();
+	}
 
 	ExecutableKernel* MulticoreCPUDevice::Module::getKernel(
 		const std::string& name)
@@ -58,7 +73,8 @@ namespace executive
 		_optimizationLevel(translator::Translator::NoOptimization)
 	{
 		_properties.ISA = ir::Instruction::LLVM;
-		_properties.name = "Ocelot Multicore CPU Backend (LLVM-JIT)";
+		std::strcpy(_properties.name,
+			"Ocelot Multicore CPU Backend (LLVM-JIT)");
 		_properties.multiprocessorCount = hydrazine::getHardwareThreadCount();
 		_properties.clockRate = 2000;
 	}
@@ -86,7 +102,7 @@ namespace executive
 	void MulticoreCPUDevice::launch(const std::string& moduleName, 
 		const std::string& kernelName, const ir::Dim3& grid, 
 		const ir::Dim3& block, size_t sharedMemory, 
-		const void* parameterBlock, size_t parameterBlockSize, 
+		const void* argumentBlock, size_t argumentBlockSize, 
 		const trace::TraceGeneratorVector& traceGenerators)
 	{
 		ModuleMap::iterator module = _modules.find(moduleName);
@@ -125,9 +141,9 @@ namespace executive
 		}
 		
 		kernel->setKernelShape(block.x, block.y, block.z);
-		kernel->setParameterBlock((const unsigned char*)parameterBlock, 
-			parameterBlockSize);
-		kernel->updateParameterMemory();
+		kernel->setArgumentBlock((const unsigned char*)argumentBlock, 
+			argumentBlockSize);
+		kernel->updateArgumentMemory();
 		kernel->updateMemory();
 		kernel->setExternSharedMemorySize(sharedMemory);
 		kernel->setWorkerThreads(_workerThreads);

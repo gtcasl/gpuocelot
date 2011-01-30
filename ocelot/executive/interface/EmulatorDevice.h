@@ -222,7 +222,7 @@ namespace executive
 			/*! \brief Unregister a resource */
 			void unRegisterGraphicsResource(void* resource);
 			/*! \brief Map a graphics resource for use with this device */
-			void mapGraphicsResource(void* resource, int count, 
+			void mapGraphicsResource(void** resource, int count, 
 				unsigned int stream);
 			/*! \brief Get a pointer to a mapped resource along with its size */
 			void* getPointerToMappedGraphicsResource(size_t& size, 
@@ -231,7 +231,7 @@ namespace executive
 			void setGraphicsResourceFlags(void* resource, 
 				unsigned int flags);
 			/*! \brief Unmap a mapped resource */
-			void unmapGraphicsResource(void* resource);
+			void unmapGraphicsResource(void** resource, int count, unsigned int streamID);
 
 		public:
 			/*! \brief Load a module, must have a unique name */
@@ -248,13 +248,13 @@ namespace executive
 			/*! \brief Destroy an existing event */
 			void destroyEvent(unsigned int event);
 			/*! \brief Query to see if an event has been recorded (yes/no) */
-			bool queryEvent(unsigned int event) const;
+			bool queryEvent(unsigned int event);
 			/*! \brief Record something happening on an event */
 			void recordEvent(unsigned int event, unsigned int stream);
 			/*! \brief Synchronize on an event */
 			void synchronizeEvent(unsigned int event);
 			/*! \brief Get the elapsed time in ms between two recorded events */
-			float getEventTime(unsigned int start, unsigned int end) const;
+			float getEventTime(unsigned int start, unsigned int end);
 		
 		public:
 			/*! \brief Create a new stream */
@@ -262,7 +262,7 @@ namespace executive
 			/*! \brief Destroy an existing stream */
 			void destroyStream(unsigned int stream);
 			/*! \brief Query the status of an existing stream (ready/not) */
-			bool queryStream(unsigned int stream) const;
+			bool queryStream(unsigned int stream);
 			/*! \brief Synchronize a particular stream */
 			void synchronizeStream(unsigned int stream);
 			/*! \brief Sets the current stream */
@@ -297,22 +297,22 @@ namespace executive
 				\param grid grid dimensions
 				\param block block dimensions
 				\param sharedMemory shared memory size
-				\param parameterBlock array of bytes for parameter memory
-				\param parameterBlockSize number of bytes in parameter memory
+				\param argumentBlock array of bytes for parameter memory
+				\param argumentBlockSize number of bytes in parameter memory
 				\param traceGenerators vector of trace generators to add 
 					and remove from kernel
 			*/
 			virtual void launch(const std::string& module, 
 				const std::string& kernel, const ir::Dim3& grid, 
 				const ir::Dim3& block, size_t sharedMemory, 
-				const void* parameterBlock, size_t parameterBlockSize, 
+				const void* argumentBlock, size_t argumentBlockSize, 
 				const trace::TraceGeneratorVector& 
 				traceGenerators = trace::TraceGeneratorVector());
 			/*! \brief Get the function attributes of a specific kernel */
 			cudaFuncAttributes getAttributes(const std::string& module, 
 				const std::string& kernel);
 			/*! \brief Get the last error from this device */
-			unsigned int getLastError() const;
+			unsigned int getLastError();
 			/*! \brief Wait until all asynchronous operations have completed */
 			void synchronize();
 			

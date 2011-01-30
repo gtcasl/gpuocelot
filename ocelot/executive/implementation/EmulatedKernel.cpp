@@ -10,7 +10,6 @@
 #include <vector>
 #include <map>
 #include <unordered_set>
-#include <algorithm>
 #include <cstring>
 
 // Ocelot includes
@@ -23,11 +22,9 @@
 #include <ocelot/executive/interface/Device.h>
 #include <ocelot/executive/interface/RuntimeException.h>
 #include <ocelot/executive/interface/CooperativeThreadArray.h>
-#include <ocelot/ir/interface/HammockGraph.h>
 #include <ocelot/trace/interface/TraceGenerator.h>
 
 // Hydrazine includes
-#include <hydrazine/implementation/string.h>
 #include <hydrazine/implementation/debug.h>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -65,7 +62,7 @@ executive::EmulatedKernel::EmulatedKernel(
 		"Can only build an emulated kernel from a PTXKernel.");
 	
 	ISA = ir::Instruction::Emulated;
-	ConstMemory = ParameterMemory = 0;
+	ConstMemory = ArgumentMemory = 0;
 	if (_initialize) {
 		initialize();
 	}
@@ -109,6 +106,7 @@ void executive::EmulatedKernel::launchGrid(int width, int height) {
 	report("  static shared: " << sharedMemorySize() << " bytes");
 	report("  extern shared: " << externSharedMemorySize() << " bytes");
 	report("  total shared:  " << totalSharedMemorySize() << " bytes");
+	report("  argument: " << argumentMemorySize() << " bytes");
 	report("  param: " << parameterMemorySize() << " bytes");
 	report("  max threads: " << maxThreadsPerBlock() << " threads per block");
 	report("  registers: " << registerCount() << " registers");
@@ -116,14 +114,12 @@ void executive::EmulatedKernel::launchGrid(int width, int height) {
 	report("  block: " << blockDim().x << ", " << blockDim().y << ", " << blockDim().z);
 #endif
 
-	for (int x = 0; x < width; ++x) {
-		for (int y = 0; y < height; ++y) {
-			ir::Dim3 block(x,y,0);
-			CooperativeThreadArray cta(this);
-
-			CTA = &cta;
-			cta.initialize( _gridDim, !_generators.empty() );
-			cta.execute(block);
+	CooperativeThreadArray cta(this, gridDim(), !_generators.empty());
+	CTA = &cta;
+	for (int y = 0; y < height; ++y) {
+		for (int x = 0; x < width; ++x) {	
+			report("  cta: " << x << ", " << y);	
+			cta.execute(ir::Dim3(x,y,0));
 		}
 	}
 	
@@ -171,8 +167,8 @@ void executive::EmulatedKernel::removeTraceGenerator(
 
 void executive::EmulatedKernel::freeAll() {
 	delete [] ConstMemory;
-	delete [] ParameterMemory;
-	ParameterMemory = ConstMemory = 0;
+	delete [] ArgumentMemory;
+	ArgumentMemory = ConstMemory = 0;
 }
 
 void executive::EmulatedKernel::initialize() {
@@ -180,31 +176,15 @@ void executive::EmulatedKernel::initialize() {
 	constructInstructionSequence();
 	initializeTextureMemory();
 	initializeSharedMemory();
-	initializeParameterMemory();
+	initializeArgumentMemory();
+	initializeStackMemory();
 	updateParamReferences();
 	initializeLocalMemory();
+	invalidateCallTargets();
 }
-
-class DotFormatterBlockLabel : public ir::BasicBlock::DotFormatter {
-public:
-
-	DotFormatterBlockLabel() { }
-	~DotFormatterBlockLabel() { }
-
-	/*!	\brief prints string representation of */
-	std::string toString(const ir::BasicBlock *block) {
-	std::stringstream out;
-
-	out << "[shape=record,";
-	out << "label=";
-	out << "\"{" << hydrazine::toGraphVizParsableLabel(block->label);
-	out << "}\"]";
-
-	return out.str();
-	}
-};
-
+		
 void executive::EmulatedKernel::constructInstructionSequence() {
+
 	typedef std::unordered_map<ir::ControlFlowGraph::InstructionList::iterator, 
 		ir::ControlFlowGraph::InstructionList::iterator > InstructionMap;
 	typedef std::unordered_map<ir::ControlFlowGraph::InstructionList::iterator,
@@ -213,8 +193,12 @@ void executive::EmulatedKernel::constructInstructionSequence() {
 		ir::ControlFlowGraph::iterator> ReconvergeToBlockMap;
 	report("Constructing emulated instruction sequence.");
 
+	// This kernel/function begins at the first instruction
+	functionEntryPoints.insert(std::make_pair(name, 0));
+
 	// visit basic blocks and add reconverge instructions
-	ir::ControlFlowGraph::BlockPointerVector bb_sequence = cfg()->executable_sequence();
+	ir::ControlFlowGraph::BlockPointerVector
+		bb_sequence = cfg()->executable_sequence();
 	
 	InstructionMap reconvergeTargets;
 	ReconvergeToBlockMap reconvergeSources;
@@ -386,40 +370,66 @@ void executive::EmulatedKernel::constructInstructionSequence() {
 	Data movement instructions: ld, st
 */
 void executive::EmulatedKernel::updateParamReferences() {
-	using namespace std;
-	for (PTXInstructionVector::iterator 
-		i_it = instructions.begin();
-		i_it != instructions.end(); ++i_it) {
-		ir::PTXInstruction & instr = *i_it;
-		if (instr.addressSpace == ir::PTXInstruction::Param 
-			&& instr.a.addressMode == ir::PTXOperand::Address) {
-			if (instr.opcode == ir::PTXInstruction::Ld
-				|| instr.opcode == ir::PTXInstruction::St) {
-				ir::Parameter* param = getParameter(instr.a.identifier);
-				instr.a.offset += param->offset;
-				instr.a.imm_uint = 0;
-			}
-		}
-	}
+    using namespace std;
+    for (PTXInstructionVector::iterator 
+        i_it = instructions.begin();
+        i_it != instructions.end(); ++i_it) {
+        ir::PTXInstruction& instr = *i_it;
+        if (instr.addressSpace == ir::PTXInstruction::Param) {
+            if (instr.opcode == ir::PTXInstruction::Ld 
+                && instr.a.addressMode == ir::PTXOperand::Address) {
+                ir::Parameter &param = *getParameter(instr.a.identifier);
+                instr.a.isArgument = param.isArgument() && !function();
+                report("For instruction '" << instr.toString() 
+                    << "' setting source parameter '" << instr.a.toString() 
+                    << "' offset to " << param.offset << " " 
+                    << ( instr.a.isArgument ? "(argument)" : "" ) );
+                instr.a.offset += param.offset;
+                instr.a.imm_uint = 0;
+            }
+            else if (instr.opcode == ir::PTXInstruction::St
+                && instr.d.addressMode == ir::PTXOperand::Address) {
+                ir::Parameter &param = *getParameter(instr.d.identifier);
+                instr.d.isArgument = param.isArgument() && !function();
+                report("For instruction '" << instr.toString() 
+                    << "' setting destination parameter '" << instr.d.toString() 
+                    << "' offset to " << param.offset << " " 
+                    << ( instr.d.isArgument ? "(argument)" : "" ) );
+                instr.d.offset += param.offset;
+                instr.d.imm_uint = 0;
+            }
+        }
+    }
+
 }
 
-void executive::EmulatedKernel::initializeParameterMemory() {
-	report( "Initializing parameter memory for kernel " << name );
-	delete[] ParameterMemory;
-	ParameterMemory = 0;
-	_parameterMemorySize = 0;
-	for(ParameterVector::iterator i_it = parameters.begin();
-		i_it != parameters.end(); ++i_it ) {
-		report( " Initializing memory for paramter " << i_it->name 
-			<< " of size " << i_it->getSize() );
-		//align parameter memory
-		unsigned int padding = i_it->getAlignment() 
-			- ( _parameterMemorySize % i_it->getAlignment() );
-		padding = (i_it->getAlignment() == padding) ? 0 : padding;
-		_parameterMemorySize += padding;
-		i_it->offset = _parameterMemorySize;
-		_parameterMemorySize += i_it->getSize();
-	}	
+void executive::EmulatedKernel::initializeArgumentMemory() {
+	report( "Initializing argument memory for kernel " << name );
+	delete[] ArgumentMemory;
+	ArgumentMemory = 0;
+	_argumentMemorySize = 0;
+	for(ParameterVector::iterator i_it = arguments.begin();
+		i_it != arguments.end(); ++i_it) {
+		ir::Parameter& argument = *i_it;
+		// align parameter memory
+		unsigned int padding = argument.getAlignment() 
+			- ( _argumentMemorySize % argument.getAlignment() );
+		padding = (argument.getAlignment() == padding) ? 0 : padding;
+		
+		report("  offset: " << _argumentMemorySize << ", alignment: "
+			<< argument.getAlignment() << ", padding: " << padding);
+		_argumentMemorySize += padding;
+		argument.offset = _argumentMemorySize;
+		
+		report( " Initializing memory for argument " << argument.name 
+			<< " of size " << argument.getSize() << " at offset "
+			<< argument.offset << " with " << padding
+			<< " bytes padding from previous element" );
+			
+		_argumentMemorySize += argument.getSize();
+	}
+	ArgumentMemory = new char[_argumentMemorySize];
+	report(" Total argument size is " << argumentMemorySize());
 }
 
 bool executive::EmulatedKernel::checkMemoryAccess(const void* base, 
@@ -428,29 +438,39 @@ bool executive::EmulatedKernel::checkMemoryAccess(const void* base,
 	return device->checkMemoryAccess(base, size);
 }
 
-void executive::EmulatedKernel::updateParameterMemory() {
+void executive::EmulatedKernel::updateArgumentMemory() {
 	using namespace std;
 
-	delete[] ParameterMemory;	
-	ParameterMemory = new char[_parameterMemorySize];
-	
-	unsigned int size = 0;
-	for(ParameterVector::iterator i_it = parameters.begin();
-		i_it != parameters.end(); ++i_it ) {
-		unsigned int padding = i_it->getAlignment()
-			- ( size % i_it->getAlignment() );
-		padding = (i_it->getAlignment() == padding) ? 0 : padding;
-		size += padding;
-		for(ir::Parameter::ValueVector::iterator 
-			v_it = i_it->arrayValues.begin(); 
-			v_it != i_it->arrayValues.end(); ++v_it) {
-			assert( size < _parameterMemorySize );
-			memcpy( ParameterMemory + size, &v_it->val_b16, 
-				i_it->getElementSize() );
-			size += i_it->getElementSize();
-		}
-	}	
+	if(!function()) {
+		unsigned int size = 0;
+		for(ParameterVector::iterator i_it = arguments.begin();
+			i_it != arguments.end(); ++i_it) {
+			ir::Parameter& argument = *i_it;
+			unsigned int padding = argument.getAlignment()
+				- (size % argument.getAlignment());
+			padding = (argument.getAlignment() == padding) ? 0 : padding;
+			
+			report("  offset: " << size << ", alignment: " << argument.getAlignment() << ", padding: " << padding);
+			
+			size += padding;
+			
+			for(ir::Parameter::ValueVector::iterator
+				v_it = argument.arrayValues.begin();
+				v_it != argument.arrayValues.end(); ++v_it) {
 
+				report( " updating memory for argument " << argument.name 
+					<< " of size " << argument.getSize() << " at offset "
+					<< argument.offset );
+			
+				assert(size < _argumentMemorySize);
+				memcpy(ArgumentMemory + size, &v_it->val_b16,
+					argument.getElementSize());
+				size += argument.getElementSize();
+			}
+		}
+	}
+	
+	// skip parameters because they cannot have initial values
 }
 
 void executive::EmulatedKernel::updateMemory() {
@@ -577,6 +597,7 @@ void executive::EmulatedKernel::initializeSharedMemory() {
 
 		// look for mov and ld/st instructions
 		if (instr.opcode == ir::PTXInstruction::Mov
+			|| instr.opcode == ir::PTXInstruction::Cvta
 			|| instr.opcode == ir::PTXInstruction::Ld 
 			|| instr.opcode == ir::PTXInstruction::St
 			|| instr.opcode == ir::PTXInstruction::Atom) {
@@ -651,6 +672,8 @@ void executive::EmulatedKernel::initializeLocalMemory() {
 	unsigned int localOffset = 0;
 
 	map<string, unsigned int> label_map;
+	
+	report("Initialize local memory");
 	
 	if(module != 0) {
 		for(ir::Module::GlobalMap::const_iterator 
@@ -855,6 +878,44 @@ void executive::EmulatedKernel::initializeGlobalMemory() {
 	}
 }
 
+void executive::EmulatedKernel::lazyLink(int callPC, 
+	const std::string& functionName) {
+	EmulatedKernel* kernel = static_cast<EmulatedKernel*>(
+		device->getKernel(module->path(), functionName));
+	assertM(kernel != 0, "Kernel function '" << functionName 
+		<< "' not found in module '" << module->path() << "'");
+	FunctionNameMap::iterator 
+		entryPoint = functionEntryPoints.find(functionName);
+
+	if (entryPoint == functionEntryPoints.end()) {
+		int newPC = instructions.size();
+		report("Linking kernel '" << functionName << "' at pc " << newPC);
+		kernelEntryPoints.insert(std::make_pair(newPC, kernel));
+		instructions.insert(instructions.end(), kernel->instructions.begin(), 
+			kernel->instructions.end());
+		entryPoint = functionEntryPoints.insert(
+			std::make_pair(functionName, newPC)).first;
+	}
+	
+	instructions[callPC].branchTargetInstruction = entryPoint->second;
+	
+	if (instructions[callPC].opcode == ir::PTXInstruction::Call) {
+		instructions[callPC].a.stackMemorySize = 
+		kernel->parameterMemorySize();
+		instructions[callPC].a.localMemorySize = kernel->localMemorySize();
+		instructions[callPC].a.sharedMemorySize = kernel->sharedMemorySize();
+		instructions[callPC].a.registerCount = kernel->registerCount();
+	}
+}
+
+const executive::EmulatedKernel* 
+	executive::EmulatedKernel::getKernel(int PC) const {
+	report("Getting kernel at pc " << PC);
+	PCToKernelMap::const_iterator kernel = kernelEntryPoints.find(PC);
+	if (kernel == kernelEntryPoints.end()) return 0;
+	return kernel->second;
+}
+
 void executive::EmulatedKernel::jumpToPC(int PC) {
 	assert(CTA != 0);
 	
@@ -864,12 +925,102 @@ void executive::EmulatedKernel::jumpToPC(int PC) {
 executive::EmulatedKernel::RegisterFile 
 	executive::EmulatedKernel::getCurrentRegisterFile() const {
 	assert(CTA != 0);
-	return CTA->getCurrentRegisterFile();		
+	return CTA->getCurrentRegisterFile();
 }
 
 const char* executive::EmulatedKernel::getSharedMemory() const {
 	assert(CTA != 0);
-	return CTA->SharedMemory;		
+	return (char*) CTA->functionCallStack.sharedMemoryPointer();
+}
+
+const char* executive::EmulatedKernel::getLocalMemory(unsigned int tid) const {
+	assert(CTA != 0);
+	return (char*) CTA->functionCallStack.localMemoryPointer(tid);
+}
+
+static unsigned int align(unsigned int offset, unsigned int size) {
+	unsigned int difference = offset & (size - 1);
+	unsigned int alignedOffset = difference == 0 
+		? offset : offset + size - difference;
+	return alignedOffset;
+}
+
+void executive::EmulatedKernel::initializeStackMemory() {
+	_parameterMemorySize = 0;
+	typedef std::unordered_map<std::string, unsigned int> OffsetMap;
+
+	report("Initializing stack memory for kernel " << name);
+	
+	OffsetMap offsets;
+
+	if(function()) {
+		for(ParameterVector::iterator i_it = arguments.begin();
+			i_it != arguments.end(); ++i_it) {
+			ir::Parameter& parameter = *i_it;
+			// align parameter memory
+			unsigned int padding = parameter.getAlignment() 
+				- ( _parameterMemorySize % parameter.getAlignment() );
+			padding = (parameter.getAlignment() == padding) ? 0 : padding;
+			_parameterMemorySize += padding;
+			parameter.offset = _parameterMemorySize;
+			offsets[parameter.name] = _parameterMemorySize;
+			report( " Initializing memory for stack parameter " 
+				<< parameter.name 
+				<< " of size " << parameter.getSize() << " at offset " 
+				<< _parameterMemorySize );
+			_parameterMemorySize += parameter.getSize();
+		}
+	}
+	
+	for (ParameterMap::iterator i_it = parameters.begin();
+		i_it != parameters.end(); ++i_it) {
+		ir::Parameter& parameter = i_it->second;
+		// align parameter memory
+		unsigned int padding = parameter.getAlignment() 
+			- ( _parameterMemorySize % parameter.getAlignment() );
+		padding = (parameter.getAlignment() == padding) ? 0 : padding;
+		_parameterMemorySize += padding;
+		parameter.offset = _parameterMemorySize;
+		offsets[parameter.name] = _parameterMemorySize;
+		report( " Initializing memory for stack parameter " << parameter.name 
+			<< " of size " << parameter.getSize() << " at offset " 
+			<< _parameterMemorySize );
+		_parameterMemorySize += parameter.getSize();
+	}
+	
+	report( "Setting offsets of operands to call instructions." );
+	for (PTXInstructionVector::iterator fi = instructions.begin(); 
+		fi != instructions.end(); ++fi) {
+		
+		if (fi->opcode == ir::PTXInstruction::Call) {
+			report( " For '" << fi->toString() << "'" );
+			unsigned int offset = 0;
+		
+			for (ir::PTXOperand::Array::iterator argument = fi->d.array.begin(); 
+				argument != fi->d.array.end(); ++argument) {
+				offset = align(offset, ir::PTXOperand::bytes(argument->type));
+				argument->offset = offsets[argument->identifier];
+				report( "  For return argument '" << argument->identifier 
+					<< "' stack offset " << offset << " -> argument offset " 
+					<< argument->offset );
+				offset += ir::PTXOperand::bytes(argument->type);
+			}
+			
+			fi->b.offset = offset;
+			
+			for (ir::PTXOperand::Array::iterator argument = fi->b.array.begin(); 
+				argument != fi->b.array.end(); ++argument) {
+				offset = align(offset, ir::PTXOperand::bytes(argument->type));
+				argument->offset = offsets[argument->identifier];
+				report( "  For call argument '" << argument->identifier 
+					<< "' argument offset " << argument->offset 
+					<< " -> stack offset " << offset );
+				offset += ir::PTXOperand::bytes(argument->type);
+			}
+			
+		}
+	}
+
 }
 
 void executive::EmulatedKernel::initializeTextureMemory() {
@@ -890,7 +1041,7 @@ void executive::EmulatedKernel::initializeTextureMemory() {
 			ir::Texture* texture = (ir::Texture*)device->getTextureReference(
 				module->path(), fi->a.identifier);
 			assert(texture != 0);
-
+			
 			IndexMap::iterator index = indices.find(fi->a.identifier);
 
 			if (index == indices.end()) {
@@ -913,6 +1064,23 @@ void executive::EmulatedKernel::initializeTextureMemory() {
 			<< " - data: " << textures[ind_it->second]->data);
 	}
 	#endif
+}
+
+void executive::EmulatedKernel::invalidateCallTargets() {
+	report( "Invalidating call instruction targets." );
+	for (PTXInstructionVector::iterator fi = instructions.begin(); 
+		fi != instructions.end(); ++fi) {
+		if (fi->opcode == ir::PTXInstruction::Mov) {
+			if (fi->a.addressMode == ir::PTXOperand::FunctionName) {
+				report( " For '" << fi->toString() << "'" );
+				fi->branchTargetInstruction = -1;
+			}
+		}
+		else if (fi->opcode == ir::PTXInstruction::Call) {
+			report( " For '" << fi->toString() << "'" );
+			fi->branchTargetInstruction = -1;
+		}
+	}
 }
 
 void executive::EmulatedKernel::updateGlobals() {

@@ -8,6 +8,7 @@
 #define PASS_H_INCLUDED
 
 #include <string>
+#include <list>
 
 namespace ir
 {
@@ -138,6 +139,7 @@ namespace analysis
 			virtual void finalize( ) = 0;
 	};
 
+	typedef std::list< Pass * > PassList;
 }
 
 #endif

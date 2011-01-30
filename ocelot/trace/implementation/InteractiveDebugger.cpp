@@ -94,13 +94,31 @@ void InteractiveDebugger::event(const TraceEvent& event)
 		break;
 		case ir::PTXInstruction::Param:
 		{
-			if(*address + event.memory_size > _kernel->parameterMemorySize())
+			bool isArgument = event.instruction->opcode 
+				== ir::PTXInstruction::St ? event.instruction->d.isArgument 
+				: event.instruction->a.isArgument;
+			if(isArgument)
 			{
-				std::cout << "(ocelot-dbg) Parameter memory access " 
-					<< "violation at " << (void*)*address << " (" 
-					<< _event.memory_size << " bytes)\n";
+				if(*address + event.memory_size > _kernel->argumentMemorySize())
+				{
+					std::cout << "(ocelot-dbg) Argument memory access " 
+						<< "violation at " << (void*)*address << " (" 
+						<< _event.memory_size << " bytes)\n";
 
-				memoryError = true;
+					memoryError = true;
+				}
+			}
+			else
+			{
+				if(*address + event.memory_size
+					> _kernel->parameterMemorySize())
+				{
+					std::cout << "(ocelot-dbg) Parameter memory access " 
+						<< "violation at " << (void*)*address << " (" 
+						<< _event.memory_size << " bytes)\n";
+
+					memoryError = true;
+				}
 			}
 		}
 		break;
@@ -201,13 +219,13 @@ void InteractiveDebugger::_command(const std::string& command)
 		stream >> PC;
 		_setBreakpoint(PC);
 	}
-	else if (base == "list" || base == "list") {
+	else if (base == "list") {
 		_listWatchpoints(command);
 	}
-	else if (base == "clear" || base == "clear") {
+	else if (base == "clear") {
 		_clearWatchpoint(command);
 	}
-	else if (base == "watch" || base == "watch") {
+	else if (base == "watch") {
 		_setWatchpoint(command);
 	}	
 	else if(base == "print" || base == "p")
@@ -235,7 +253,9 @@ void InteractiveDebugger::_command(const std::string& command)
 		{
 			unsigned int PC = _event.PC;
 			stream >> PC;
-			_printAssembly(PC);
+			unsigned int count = 10;
+			stream >> count;
+			_printAssembly(PC, count);
 		}
 		else if(modifier == "reg" || modifier == "r")
 		{
@@ -262,7 +282,9 @@ void InteractiveDebugger::_command(const std::string& command)
 		}
 		else if(modifier == "loc" || modifier == "l")
 		{
-			_printLocation();
+			unsigned int pc = _event.PC;
+			stream >> pc;
+			_printLocation(pc);
 		}
 		else
 		{
@@ -315,7 +337,7 @@ void InteractiveDebugger::_help() const
 	std::cout << "    global address <address> <ptx-type>\n";
 	std::cout << "    global address <address> <ptx-type>[elements]\n";
 	
-	std::cout << "  print    (p) - Print the value of a megdmory resource.\n";
+	std::cout << "  print (p)  - Print the value of a resource.\n";
 	std::cout << "   asm  (a)  - Print instructions near the specified PC.\n";
 	std::cout << "   reg  (r)  - Print the value of a register.\n";
 	std::cout << "   mem  (m)  - Print the values near an address.\n";
@@ -529,7 +551,8 @@ void InteractiveDebugger::_printMemory(ir::PTXU64 address) const
 
 }
 
-void InteractiveDebugger::_printAssembly(unsigned int PC) const
+void InteractiveDebugger::_printAssembly(unsigned int PC,
+	unsigned int count) const
 {
 	switch(_kernel->ISA)
 	{
@@ -539,7 +562,8 @@ void InteractiveDebugger::_printAssembly(unsigned int PC) const
 			static_cast<const executive::EmulatedKernel&>(*_kernel);
 		
 		for(unsigned int pc = PC; 
-			pc < std::min(kernel.instructions.size(), (size_t)(PC + 10)); ++pc)
+			pc < std::min(kernel.instructions.size(), (size_t)(PC + count));
+			++pc)
 		{
 			std::cout << "(" << pc << ") - " 
 				<< kernel.instructions[pc].toString() << "\n";
@@ -570,7 +594,7 @@ void InteractiveDebugger::_printPC() const
 	std::cout << "(ocelot-dbg) Current PC is " << _event.PC << "\n";
 }
 
-void InteractiveDebugger::_printLocation() const
+void InteractiveDebugger::_printLocation(unsigned int pc) const
 {
 	switch(_kernel->ISA)
 	{
@@ -579,8 +603,9 @@ void InteractiveDebugger::_printLocation() const
 		const executive::EmulatedKernel& kernel =
 			static_cast<const executive::EmulatedKernel&>(*_kernel);
 		
-		std::cout << "(ocelot-dbg) Near: " 
-			<< kernel.location(_event.PC) << "\n";
+		pc = std::min(kernel.instructions.size() - 1, (size_t)(pc));
+		
+		std::cout << "(ocelot-dbg) Near: " << kernel.location(pc) << "\n";
 	}
 	break;
 	default:

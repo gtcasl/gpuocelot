@@ -29,13 +29,13 @@ namespace executive
 			void setKernelShape(int x, int y, int z);
 
 			/*! \brief Changes the amount of external shared memory */
-			void setExternSharedMemorySize(unsigned int);
+			void setExternSharedMemorySize(unsigned int bytes);
 
 			/*! \brief Sets the max number of pthreads this kernel can use */
 			void setWorkerThreads(unsigned int workerThreadLimit);
 
-			/*! \brief Indicate that the kernels parameters have been updated */
-			void updateParameterMemory();
+			/*! \brief Indicate that the kernels arguments have been updated */
+			void updateArgumentMemory();
 
 			/*! \brief Indicate that other memory has been updated */
 			void updateMemory();
@@ -49,8 +49,8 @@ namespace executive
 			/*!	\brief removes a trace generator from an EmulatedKernel */
 			void removeTraceGenerator(trace::TraceGenerator* generator);
 
-			/*! \brief Allocate shared memory */
-			void allocateSharedMemory();
+			/*! \brief Initialize shared memory */
+			void initializeSharedMemory();
 
 			/*! \brief Copies data from global objects into const and global
 			 * memory */

@@ -9,30 +9,6 @@
 
 #include <ocelot/trace/interface/TraceEvent.h>
 
-/////////////////////////////////////////////////////////////////////////////////////////////////
-
-trace::ReconvergenceTraceEvent::ReconvergenceTraceEvent():
-	stackVisitNodes(0),
-	stackVisitEnd(0),
-	stackVisitMiddle(0),
-	stackInsert(0),
-	stackMerge(0),
-	conservativeBranch(false)
-{
-
-}
-
-void trace::ReconvergenceTraceEvent::reset() {
-	stackVisitNodes = 0;
-	stackVisitEnd = 0;
-	stackVisitMiddle = 0;
-	stackInsert = 0;
-	stackMerge = 0;
-	conservativeBranch = false;
-}
-
-/////////////////////////////////////////////////////////////////////////////////////////////////
-
 trace::TraceEvent::TraceEvent():
 	blockId(0, 0, 0),
 	PC(0),
@@ -67,7 +43,6 @@ trace::TraceEvent::TraceEvent(
 }
 
 void trace::TraceEvent::reset() {
-	reconvergence.reset();
 	memory_size = 0;
 	memory_addresses.clear();
 }
@@ -80,19 +55,24 @@ std::string trace::TraceEvent::toString() const
 
 	U64Vector::const_iterator address = memory_addresses.begin();
 	
-	if( !memory_addresses.empty() ) {
+	if( !memory_addresses.empty() )
+	{
 		stream << " : <" << (void*)*address << std::dec 
 			<< ", " << memory_size << ">";
 	
 		++address;
 	}
 	
-	for( ; address != memory_addresses.end(); ++address ) {
+	for( ; address != memory_addresses.end(); ++address )
+	{
+	
 		stream << " <" << (void*)*address << std::dec 
 			<< ", " << memory_size << ">";
+	
 	}
 	
 	return stream.str();
+
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////

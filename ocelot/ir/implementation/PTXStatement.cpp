@@ -14,6 +14,30 @@
 
 namespace ir {
 
+	static void write(std::ostream &out, const ir::PTXStatement::ArrayVector & values, ir::PTXOperand::DataType type) {
+		ir::PTXStatement::ArrayVector::const_iterator it = values.begin();
+		for (int n = 0; it != values.end(); ++it, ++n) {
+			out << (n ? ", " : "");
+			switch (type) {
+				case ir::PTXOperand::s8: out << it->s8; break;
+				case ir::PTXOperand::s16: out << it->s16; break;
+				case ir::PTXOperand::s32: out << it->s32; break;
+				case ir::PTXOperand::s64: out << it->s64;  break;
+				case ir::PTXOperand::u8: out << it->u8; break;
+				case ir::PTXOperand::u16: out << it->u16; break;
+				case ir::PTXOperand::u32: out << it->u32; break;
+				case ir::PTXOperand::u64: out << it->u64; break;
+				case ir::PTXOperand::f32: out << it->f32; break;
+				case ir::PTXOperand::f64: out << it->f64; break;
+				case ir::PTXOperand::b8: out << it->b8; break;
+				case ir::PTXOperand::b16: out << it->b16; break;
+				case ir::PTXOperand::b32: out << it->b32; break;
+				case ir::PTXOperand::b64: out << it->b64; break;
+				default: break;
+			}
+		}
+	}
+
 	std::string PTXStatement::StaticArray::dimensions() const {
 		if( stride.size() == 0 ) {
 			return "";
@@ -120,6 +144,15 @@ namespace ir {
 		return stream.str();
 		
 	}
+
+	std::string PTXStatement::toString( TextureSpace space ) {
+		switch ( space ) {
+			case GlobalSpace: return "global";
+			case ParameterSpace: return "param";
+			default: break;
+		}
+		return "";
+	}
 	
 	std::string PTXStatement::toString( Attribute attribute ) {
 		switch( attribute ) {
@@ -202,11 +235,71 @@ namespace ir {
 			PTXOperand::bytes(type) * array.vec );
 	}
 	
+	/*!
+	
+	*/
+	std::string PTXStatement::toString( Directive directive ) {
+		switch (directive) {
+			case Instr: return "Instr";
+			case CallTargets: return "CallTargets";
+			case Const: return "Const";
+			case Entry: return "Entry";
+			case File: return "File";
+			case Func: return "Func";
+			case FunctionPrototype: return "FunctionPrototype";
+			case Global: return "Global";
+			case Label: return "Label";
+			case Local: return "Local";
+			case Loc: return "Loc";
+			case Maxnreg: return "Maxnreg";
+			case Maxntid: return "Maxntid";
+			case Maxnctapersm: return "Maxnctapersm";
+			case Minnctapersm: return "Minnctapersm";
+			case Param: return "Param";
+			case Pragma: return "Pragma";
+			case Reg: return "Reg";
+			case Reqntid: return "Reqntid";
+			case Samplerref: return "Samplerref";
+			case Section: return "Section";
+			case Shared: return "Shared";
+			case Sreg: return "Sreg";
+			case Surfref: return "Surfref";
+			case Target: return "Target";
+			case Texref: return "Texref";
+			case Version: return "Version";
+			case StartScope: return "StartScope";
+			case EndScope: return "EndScope";
+			case StartParam: return "StartParam";
+			case EndParam: return "EndParam";
+			case FunctionName: return "FunctionName";
+			case EndFuncDec: return "EndFuncDec";
+			case Directive_invalid: 
+			default:
+				break;
+		}
+		return "Directive_invalid";
+	}
+	
+	/*!
+		
+	*/
 	std::string PTXStatement::toString() const {
 	
 		switch( directive ) {
 			case Instr: {
 				return instruction.toString() + ";";
+				break;
+			}
+			case CallTargets: {
+				std::string result = name + ": .calltargets ";
+				for( StringVector::const_iterator target = targets.begin(); 
+					target != targets.end(); ++target ) {
+					if( target != targets.begin() ) {
+						result += ", ";
+					}
+					result += *target;
+				}
+				return result + ";";
 				break;
 			}
 			case Const: {
@@ -241,9 +334,29 @@ namespace ir {
 				return stream.str();
 				break;
 			}
-			case Func:
-				return ".func " + name;
+			case Func: {
+				std::string result;
+				if( attribute != NoAttribute ) {
+					result += "." + toString( attribute ) + " ";
+				}
+				return result + ".func";
 				break;
+			}
+			case FunctionPrototype: {
+				std::string result = name + ": .callprototype (";
+				for(TypeVector::const_iterator type = returnTypes.begin(); 
+					type != returnTypes.end(); ++type) {
+					if( type != returnTypes.begin() ) result += ", ";
+					result += ".param ." + PTXOperand::toString( *type ) + " _";
+				}
+				result += ") _ (";
+				for(TypeVector::const_iterator type = argumentTypes.begin(); 
+					type != argumentTypes.end(); ++type) {
+					if( type != argumentTypes.begin() ) result += ", ";
+					result += ".param ." + PTXOperand::toString( *type ) + " _";
+				}
+				return result + ");";
+			}
 			case Global: {
 				std::stringstream stream;
 				if( attribute != NoAttribute ) {
@@ -296,6 +409,36 @@ namespace ir {
 				return stream.str();
 				break;
 			}
+			
+			case Maxnreg: {
+				std::stringstream ss;
+				ss << ".maxnreg ";
+				write(ss, array.values, ir::PTXOperand::u32);
+				ss << ";";
+				return ss.str();
+				break;
+			}
+			case Maxntid: {
+				std::stringstream ss;
+				ss << ".maxntid ";
+				write(ss, array.values, ir::PTXOperand::u32);
+				ss << ";";
+				return ss.str();
+			}
+			case Maxnctapersm: {
+				std::stringstream ss;
+				ss << ".maxnctapersm ";
+				write(ss, array.values, ir::PTXOperand::u32);
+				ss << ";";
+				return ss.str();
+			}
+			case Minnctapersm: {
+				std::stringstream ss;
+				ss << ".minnctapersm ";
+				write(ss, array.values, ir::PTXOperand::u32);
+				ss << ";";
+				return ss.str();
+			}
 			case Param: {
 				assert( array.values.empty() );
 				std::stringstream stream;
@@ -315,6 +458,10 @@ namespace ir {
 				return stream.str();
 				break;
 			}
+			case Pragma: {
+				return ".pragma \"" + name + "\"";
+				break;
+			}
 			case Reg: {
 				std::stringstream stream;
 				if( attribute != NoAttribute ) {
@@ -332,6 +479,18 @@ namespace ir {
 				}
 				stream << ";";
 				return stream.str();
+				break;
+			}
+			case Reqntid: {
+				std::stringstream ss;
+				ss << ".reqntid ";
+				write(ss, array.values, ir::PTXOperand::u32);
+				ss << ";";
+				return ss.str();
+			}
+			case Samplerref:
+			{
+				return "." + toString(space) + " .samplerref " + name + ";";
 				break;
 			}
 			case Section:
@@ -358,50 +517,27 @@ namespace ir {
 				return ".sreg " + PTXInstruction::toString( array.vec ) + 
 					" ." + PTXOperand::toString( type ) + " " + name + ";";
 				break;
-			case Struct:
-				assert( " The current version of PTX does not implement structures or unions." == 0 );
-				break;
-			case Surf:
-				assert( "No support for Surf" == 0 );
-				break;
 			case Target: {
 				return ".target " + hydrazine::toString( targets.begin(), 
 					targets.end(), ", " );
 				break;
 			}
-			case Tex: {
-				std::stringstream stream;
-				if( attribute != NoAttribute ) {
-					stream << "." << toString( attribute ) << " ";
-				}
-				stream << ".tex";
-				assert( alignment != 0);
-				if( alignment != 1 ) {
-					stream << " .align " << alignment;
-				}
-				if( array.vec != PTXOperand::v1 ) {
-					stream << " ." << PTXInstruction::toString( array.vec );
-				}
-				stream << " ." << PTXOperand::toString( type ) << " " << name;
-				stream << array.dimensions();
-				if( !array.values.empty() ) { 
-					stream << " = " << array.initializer( type );
-				}
-				stream << ";";
-				return stream.str();
+			case Surfref: {
+				return "." + toString(space) + " .surfref " + name + ";";
 				break;
 			}
-			case Union:
-				assert( " The current version of PTX does not implement structures or unions." == 0 );
+			case Texref: {
+				return "." + toString( space ) + " .texref " + name + ";";
 				break;
+			}
 			case Version: {
-				return ".version 1.4";
+				return ".version 2.1";
 				break;
 			}
-			case StartEntry:
+			case StartScope:
 				return "{";
 				break;		
-			case EndEntry:
+			case EndScope:
 				return "}";
 				break;			
 			case StartParam:
@@ -409,10 +545,18 @@ namespace ir {
 				break;		
 			case EndParam:
 				return ")";
-				break;				
+				break;
+			case FunctionName:
+				return name;
+				break;
+			case EndFuncDec:
+				return "";
+				break;
 			case Directive_invalid:
 				return "";
-				break;		
+				break;
+			default:
+				break;
 		}
 		return "";
 	

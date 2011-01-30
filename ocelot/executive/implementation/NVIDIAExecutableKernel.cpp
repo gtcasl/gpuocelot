@@ -41,7 +41,7 @@ executive::NVIDIAExecutableKernel::NVIDIAExecutableKernel(
 	report("NVIDIAExecutableKernel()");
 	this->ISA = ir::Instruction::SASS;
 	
-	_parameterMemorySize = mapParameterOffsets();
+	_argumentMemorySize = mapArgumentOffsets();
 		
 	cuda::CudaDriver::cuFuncGetAttribute((int*)&_registerCount, 
 		CU_FUNC_ATTRIBUTE_NUM_REGS, cuFunction);
@@ -71,6 +71,18 @@ void executive::NVIDIAExecutableKernel::launchGrid(int width, int height) {
 	if (result != CUDA_SUCCESS) {
 		report("  - cuLaunchGrid() failed: " << result);
 		throw hydrazine::Exception("cuLaunchGrid() failed ");
+	}
+	else {
+		report("  - cuLaunchGrid() succeeded!");
+	}
+	
+	result = cuda::CudaDriver::cuCtxSynchronize();
+	if (result != CUDA_SUCCESS) {
+		report("  - cuCtxSynchronize() after cuLaunchGrid() failed: " << result);
+		throw hydrazine::Exception("cuLaunchGrid() failed ");
+	}
+	else {
+		report("  - cuCtxSynchronize() after cuLaunchGrid() succeeded!");
 	}
 }
 
@@ -102,8 +114,8 @@ void executive::NVIDIAExecutableKernel::setExternSharedMemorySize(unsigned int b
 	}
 }
 
-void executive::NVIDIAExecutableKernel::updateParameterMemory() {
-	configureParameters();
+void executive::NVIDIAExecutableKernel::updateArgumentMemory() {
+	configureArguments();
 }
 
 void executive::NVIDIAExecutableKernel::updateMemory() {
@@ -140,20 +152,24 @@ void executive::NVIDIAExecutableKernel::setWorkerThreads(unsigned int limit) {
 
 }
 
-void executive::NVIDIAExecutableKernel::configureParameters() {
-	report("executive::NVIDIAExecutableKernel::configureParameters() - size: " << _parameterMemorySize);
+void executive::NVIDIAExecutableKernel::configureArguments() {
+	report("executive::NVIDIAExecutableKernel::configureArguments() - size: " 
+		<< _argumentMemorySize);
 
-	char *paramBuffer = new char[_parameterMemorySize];
-	getParameterBlock((unsigned char*)paramBuffer, _parameterMemorySize);
+	char *argBuffer = new char[_argumentMemorySize];
+	getArgumentBlock((unsigned char*)argBuffer, _argumentMemorySize);
 
-	if (cuda::CudaDriver::cuParamSetSize(cuFunction, _parameterMemorySize) != CUDA_SUCCESS) {
-		delete [] paramBuffer;
-		Ocelot_Exception("NVIDIAExecutableKernel::configureParameters() - failed to set parameter size to " 
-			<< _parameterMemorySize);
+	if (cuda::CudaDriver::cuParamSetSize(cuFunction,
+		_argumentMemorySize) != CUDA_SUCCESS) {
+		delete [] argBuffer;
+		Ocelot_Exception("NVIDIAExecutableKernel::configureArguments() " 
+			<< "- failed to set parameter size to " << _argumentMemorySize);
 	}
-	if (cuda::CudaDriver::cuParamSetv(cuFunction, 0, paramBuffer, _parameterMemorySize) != CUDA_SUCCESS) {
-		delete [] paramBuffer;
-		Ocelot_Exception("NVIDIAExecutableKernel::configureParameters() - failed to set parameter data");
+	if (cuda::CudaDriver::cuParamSetv(cuFunction, 0, argBuffer,
+		_argumentMemorySize) != CUDA_SUCCESS) {
+		delete [] argBuffer;
+		Ocelot_Exception("NVIDIAExecutableKernel::configureArguments() " << 
+			"- failed to set parameter data");
 	}
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////

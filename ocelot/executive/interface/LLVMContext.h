@@ -20,9 +20,9 @@ namespace executive
 			class Dimension
 			{
 				public:
-					unsigned short x;
-					unsigned short y;
-					unsigned short z;
+					unsigned int x;
+					unsigned int y;
+					unsigned int z;
 			};
 	
 		public:
@@ -36,16 +36,11 @@ namespace executive
 			char* shared; //! Pointer to shared memory
 			char* constant; //! Pointer to constant memory
 			char* parameter; //! Pointer to parameter memory
-			
-		public:
-			size_t localSize; //! Local memory per thread
-			size_t sharedSize; //! Shared memory
-			size_t constantSize; //! Constant memory
-			size_t parameterSize; //! Parameter memory
-			
+			char* argument; //! Pointer to argument memory
+		
 		public:
 			/*! \brief Generic pointer back to other state */
-			char* other;
+			char* metadata;
 	};
 
 }

@@ -12,6 +12,17 @@
 #include <sstream>
 #include <iomanip>
 
+std::string ir::PTXOperand::toString( VectorIndex index ) {
+	switch( index ) {
+		case ix:   return "x"; break;
+		case iy:   return "y"; break;
+		case iz:   return "z"; break;
+		case iw:   return "w"; break;
+		case iAll: return "";  break;
+	}
+	return "";
+}
+
 std::string ir::PTXOperand::toString( DataType type ) {
 	switch( type ) {
 		case s8:   return "s8";   break;
@@ -30,6 +41,7 @@ std::string ir::PTXOperand::toString( DataType type ) {
 		case f32:  return "f32";  break;
 		case f64:  return "f64";  break;
 		case pred: return "pred"; break;
+		case _: return "_"; break;
 		default: break;
 	}
 	return "Invalid";
@@ -37,29 +49,60 @@ std::string ir::PTXOperand::toString( DataType type ) {
 
 std::string ir::PTXOperand::toString( SpecialRegister reg ) {
 	switch( reg ) {
-		case tidX: return "%tid.x"; break;
-		case tidY: return "%tid.y"; break;
-		case tidZ: return "%tid.z"; break;
-		case ntidX: return "%ntid.x"; break;
-		case ntidY: return "%ntid.y"; break;
-		case ntidZ: return "%ntid.z"; break;
-		case laneId: return "%laneid"; break;
-		case warpId: return "%warpid"; break;
-		case warpSize: return "WARP_SZ"; break;
-		case ctaIdX: return "%ctaid.x"; break;
-		case ctaIdY: return "%ctaid.y"; break;
-		case ctaIdZ: return "%ctaid.z"; break;
-		case nctaIdX: return "%nctaid.x"; break;
-		case nctaIdY: return "%nctaid.y"; break;
-		case nctaIdZ: return "%nctaid.z"; break;
-		case smid: return "%smid"; break;
-		case nsmid: return "%nsmid"; break;
-		case gridId: return "%gridid"; break;
-		case clock: return "%clock"; break;
-		case pm0: return "%pm0"; break;
-		case pm1: return "%pm1"; break;
-		case pm2: return "%pm2"; break;
-		case pm3: return "%pm3"; break;
+		case tid:          return "%tid";          break;
+		case ntid:         return "%ntid";         break;
+		case laneId:       return "%laneid";       break;
+		case warpId:       return "%warpid";       break;
+		case nwarpId:      return "%nwarpid";       break;
+		case warpSize:     return "WARP_SZ";       break;
+		case ctaId:        return "%ctaid";        break;
+		case nctaId:       return "%nctaid";       break;
+		case smId:         return "%smid";         break;
+		case nsmId:        return "%nsmid";        break;
+		case gridId:       return "%gridid";       break;
+		case clock:        return "%clock";        break;
+		case clock64:      return "%clock64";      break;
+		case lanemask_eq:  return "%lanemask_eq";  break;
+		case lanemask_le:  return "%lanemask_le";  break;
+		case lanemask_lt:  return "%lanemask_lt";  break;
+		case lanemask_ge:  return "%lanemask_ge";  break;
+		case lanemask_gt:  return "%lanemask_gt";  break;
+		case pm0:          return "%pm0";          break;
+		case pm1:          return "%pm1";          break;
+		case pm2:          return "%pm2";          break;
+		case pm3:          return "%pm3";          break;
+		case envreg0:      return "%envreg0";      break;
+		case envreg1:      return "%envreg1";      break;
+		case envreg2:      return "%envreg2";      break;
+		case envreg3:      return "%envreg3";      break;
+		case envreg4:      return "%envreg4";      break;
+		case envreg5:      return "%envreg5";      break;
+		case envreg6:      return "%envreg6";      break;
+		case envreg7:      return "%envreg7";      break;
+		case envreg8:      return "%envreg8";      break;
+		case envreg9:      return "%envreg9";      break;
+		case envreg10:     return "%envreg10";     break;
+		case envreg11:     return "%envreg11";     break;
+		case envreg12:     return "%envreg12";     break;
+		case envreg13:     return "%envreg13";     break;
+		case envreg14:     return "%envreg14";     break;
+		case envreg15:     return "%envreg15";     break;
+		case envreg16:     return "%envreg16";     break;
+		case envreg17:     return "%envreg17";     break;
+		case envreg18:     return "%envreg18";     break;
+		case envreg19:     return "%envreg19";     break;
+		case envreg20:     return "%envreg20";     break;
+		case envreg21:     return "%envreg21";     break;
+		case envreg22:     return "%envreg22";     break;
+		case envreg23:     return "%envreg23";     break;
+		case envreg24:     return "%envreg24";     break;
+		case envreg25:     return "%envreg25";     break;
+		case envreg26:     return "%envreg26";     break;
+		case envreg27:     return "%envreg27";     break;
+		case envreg28:     return "%envreg28";     break;
+		case envreg29:     return "%envreg29";     break;
+		case envreg30:     return "%envreg30";     break;
+		case envreg31:     return "%envreg31";     break;
 		default: break;
 	}
 	return "SpecialRegister_invalid";
@@ -73,7 +116,6 @@ std::string ir::PTXOperand::toString( AddressMode mode ) {
 		case Address:   return "Address";   break;
 		case Label:     return "Label";     break;
 		case Special:   return "Special";   break;
-		case BitBucket: return "BitBucket"; break;
 		default: break;
 	}
 	return "Invalid";
@@ -515,19 +557,47 @@ ir::PTXOperand::PTXOperand() {
 	type = PTXOperand::s32;
 	offset = 0;
 	imm_int = 0;
+	reg = 0;
 	vec = v1;
 }
 
-ir::PTXOperand::PTXOperand(SpecialRegister r) : addressMode(Special), 
-	special(r) {
+ir::PTXOperand::PTXOperand(SpecialRegister r, VectorIndex i, DataType t) : 
+	addressMode(Special), type(t), vIndex(i), special(r), 
+	reg(0), vec(i == iAll ? v4 : v1) {
+	std::stringstream name;
+	name << toString(r);
+	if( i != iAll )
+	{
+		name << "." << toString(i);
+	}
+	else
+	{
+		array.push_back( PTXOperand( r, ix, t ) );
+		array.push_back( PTXOperand( r, iy, t ) );
+		array.push_back( PTXOperand( r, iz, t ) );
+		array.push_back( PTXOperand( r, iw, t ) );
+	}
+	identifier = name.str();
 }
 
 ir::PTXOperand::PTXOperand(const std::string& l) : identifier(l), 
-	addressMode(Label) {
+	addressMode(Label), type(TypeSpecifier_invalid),
+	offset(0), condition(Pred), reg(0), vec(v1) {
 }
 
 ir::PTXOperand::PTXOperand(AddressMode m, DataType t, RegisterType r, 
-	int o, Vec v) : addressMode(m), type(t), offset(o), reg(r), vec(v) {
+	int o, Vec v) : addressMode(m), type(t), offset(o), condition(Pred),
+	reg(r), vec(v) {
+}
+
+ir::PTXOperand::PTXOperand(AddressMode m, DataType t, 
+	const std::string& i, int o, Vec v) : identifier(i), 
+	addressMode(m), type(t), offset(o), condition(Pred), vec(v) {
+}
+
+ir::PTXOperand::PTXOperand(AddressMode m, const std::string& i) : identifier(i),
+	addressMode(m), type(TypeSpecifier_invalid), offset(0), condition(Pred),
+	reg(0), vec(v1) {
 }
 
 ir::PTXOperand::~PTXOperand() {
@@ -563,7 +633,8 @@ static std::ostream & write(std::ostream &stream, double value) {
 }
 
 std::string ir::PTXOperand::toString() const {
-	if( addressMode == BitBucket ) {
+	
+	if(type == ir::PTXOperand::_ || addressMode == BitBucket ) {
 		return "_";
 	} else if( addressMode == Indirect ) {
 		std::stringstream stream;
@@ -583,7 +654,7 @@ std::string ir::PTXOperand::toString() const {
 			else {
 				stream << "%r" << reg;
 			}
-			stream << " + " << offset;
+			stream << " + " << ( offset );
 			return stream.str();
 		}
 	} else if( addressMode == Address ) {
@@ -595,7 +666,7 @@ std::string ir::PTXOperand::toString() const {
 			stream << ( offset );
 			return identifier + " + " + stream.str();
 		} else {
-			stream << offset;
+			stream << ( offset );
 			return identifier + " + " + stream.str();
 		}
 	} else if( addressMode == Immediate ) {
@@ -626,7 +697,24 @@ std::string ir::PTXOperand::toString() const {
 		}
 		return stream.str();
 	} else if( addressMode == Special ) {
-		return toString( special );
+		if( vec != v1 || special == clock ) {
+			return toString( special );
+		}
+		else {
+			assert( vec == v1 );
+			assert( array.empty() );
+			return toString( special ) + "." + toString( vIndex );
+		}
+	} else if( addressMode == ArgumentList ) {
+		std::string result = "(";
+		for( Array::const_iterator fi = array.begin(); 
+			fi != array.end(); ++fi ) {
+			result += fi->toString();
+			if( fi != --array.end() ) {
+				result += ", ";
+			}
+		}
+		return result + ")";
 	} else if( type == pred ) {
 		switch( condition ) {
 			case PT: return "%pt"; break;
@@ -644,18 +732,33 @@ std::string ir::PTXOperand::toString() const {
 				break;
 			}
 		}
-	} else if( vec != v1 && !array.empty() ) {
-		assert( ( vec == v2 && array.size() == 2 ) 
-			|| ( vec == v4 && array.size() == 4 ) );
-		std::string result = "{";
-		for( Array::const_iterator fi = array.begin(); 
-			fi != array.end(); ++fi ) {
-			result += fi->toString();
-			if( fi != --array.end() ) {
-				result += ", ";
+	} 
+	else if( vec != v1 ) {
+		if( !array.empty() ) {
+			assert( ( vec == v2 && array.size() == 2 ) 
+				|| ( vec == v4 && array.size() == 4 ) );
+			std::string result = "{";
+			for( Array::const_iterator fi = array.begin(); 
+				fi != array.end(); ++fi ) {
+				result += fi->toString();
+				if( fi != --array.end() ) {
+					result += ", ";
+				}
 			}
+			return result + "}";
 		}
-		return result + "}";
+		else {
+			assert( vIndex != iAll );
+			std::stringstream stream;
+			if( !identifier.empty() ) {
+				stream << identifier;
+			}
+			else {
+				stream << "%r" << reg;
+			}
+			stream << "." << toString(vIndex);
+			return stream.str();
+		}
 	}
 	
 	if( !identifier.empty() ) {

@@ -44,6 +44,7 @@ ir::Kernel::Kernel(const Kernel &kernel) {
 	name = kernel.name;
 	ISA = kernel.ISA;
 	parameters = kernel.parameters;
+	arguments = kernel.arguments;
 	locals = kernel.locals;
 	_function = kernel.function();
 
@@ -60,6 +61,7 @@ const ir::Kernel& ir::Kernel::operator=(const Kernel &kernel) {
 	name = kernel.name;
 	ISA = kernel.ISA;
 	parameters = kernel.parameters;
+	arguments = kernel.arguments;
 	locals = kernel.locals;
 	_function = kernel.function();
 
@@ -76,23 +78,37 @@ const ir::Kernel& ir::Kernel::operator=(const Kernel &kernel) {
 
 ir::Parameter* ir::Kernel::getParameter(const std::string& name) {
 	using namespace std;
-	for (vector<Parameter>::iterator p_it = parameters.begin(); 
-		p_it != parameters.end(); ++p_it) {
+
+	ParameterMap::iterator p_it = parameters.find(name);
+	if (p_it != parameters.end()) {
+		return &p_it->second;
+	}
+
+	for (ParameterVector::iterator p_it = arguments.begin(); 
+		p_it != arguments.end(); ++p_it) {
 		if (p_it->name == name) {
 			return &*p_it;
 		}
 	}
+	
 	return 0;
 }
 
 const ir::Parameter* ir::Kernel::getParameter(const std::string& name) const {
 	using namespace std;
-	for (vector<Parameter>::const_iterator p_it = parameters.begin(); 
-		p_it != parameters.end(); ++p_it) {
+
+	ParameterMap::const_iterator p_it = parameters.find(name);
+	if (p_it != parameters.end()) {
+		return &p_it->second;
+	}
+
+	for (ParameterVector::const_iterator p_it = arguments.begin(); 
+		p_it != arguments.end(); ++p_it) {
 		if (p_it->name == name) {
 			return &*p_it;
 		}
 	}
+
 	return 0;
 }
 

@@ -27,26 +27,24 @@ namespace executive
 	class Device 
 	{
 		public:
-			/*! \brief properties of a specific device */
-			class Properties
+			class PropertiesData
 			{
-				public:
-					/*! \brief constructor sets the default values */
-					Properties();
-			
 				public:
 					/*! "native" ISA of the device */
 					ir::Instruction::Architecture ISA;
 					/*! identifies the device's address space */
 					int addressSpace;
 					/*! human-readable device name */
-					std::string name;
-					/*! number of bytes of global memory available to the device */
+					char name[256];
+
+					/*! number of bytes of global memory available to
+						the device */
 					size_t totalMemory;
-					/*! gets the number of multiprocessors/cores on the device */
+					/*! gets the number of multiprocessors/cores on
+						the device */
 					unsigned int multiprocessorCount;
-					/*! true if the device can simultaneously execute a kernel while 
-						performing data transfer */
+					/*! true if the device can simultaneously execute a kernel
+						while performing data transfer */
 					int memcpyOverlap;
 					/*! maximum number of threads per block */
 					int maxThreadsPerBlock;
@@ -54,7 +52,8 @@ namespace executive
 					int maxThreadsDim[3];
 					/*! maximum size of each dimension of a grid */
 					int maxGridSize[3];
-					/*! total amount of shared memory available per block in bytes */
+					/*! total amount of shared memory available per block
+						in bytes */
 					int sharedMemPerBlock;
 					/*! total amount of constant memory on the device */
 					int totalConstantMemory;
@@ -80,6 +79,16 @@ namespace executive
 					size_t stackSize;
 					/*! printfFIFOSize */
 					size_t printfFIFOSize;
+			
+			};
+			
+			/*! \brief properties of a specific device */
+			class Properties : public PropertiesData
+			{
+				public:
+					/*! \brief constructor sets the default values */
+					Properties(const PropertiesData& = PropertiesData());
+			
 				public:
 					/*! Write attributes of the device to an output stream */
 					std::ostream& write(std::ostream &out) const;
@@ -156,9 +165,10 @@ namespace executive
 		public:
 			/*! \brief Create devices with the selected isa */
 			static DeviceVector createDevices(ir::Instruction::Architecture isa,
-				unsigned int flags);
+				unsigned int flags, int computeCapability);
 			/*! \brief Get the total number of devices of a given ISA */
-			static unsigned int deviceCount(ir::Instruction::Architecture isa);
+			static unsigned int deviceCount(ir::Instruction::Architecture isa,
+				int computeCapability);
 
 		public:
 			/*! \brief Check a memory access against all allocations */
@@ -197,7 +207,7 @@ namespace executive
 			/*! \brief Unregister a resource */
 			virtual void unRegisterGraphicsResource(void* resource) = 0;
 			/*! \brief Map a graphics resource for use with this device */
-			virtual void mapGraphicsResource(void* resource, int count, 
+			virtual void mapGraphicsResource(void** resource, int count, 
 				unsigned int stream) = 0;
 			/*! \brief Get a pointer to a mapped resource along with its size */
 			virtual void* getPointerToMappedGraphicsResource(size_t& size, 
@@ -206,7 +216,8 @@ namespace executive
 			virtual void setGraphicsResourceFlags(void* resource, 
 				unsigned int flags) = 0;
 			/*! \brief Unmap a mapped resource */
-			virtual void unmapGraphicsResource(void* resource) = 0;
+			virtual void unmapGraphicsResource(void** resource, int count,
+				unsigned int stream) = 0;
 
 		public:
 			/*! \brief Load a module, must have a unique name */
@@ -227,7 +238,7 @@ namespace executive
 			/*! \brief Destroy an existing event */
 			virtual void destroyEvent(unsigned int event) = 0;
 			/*! \brief Query to see if an event has been recorded (yes/no) */
-			virtual bool queryEvent(unsigned int event) const = 0;
+			virtual bool queryEvent(unsigned int event) = 0;
 			/*! \brief Record something happening on an event */
 			virtual void recordEvent(unsigned int event, 
 				unsigned int stream) = 0;
@@ -235,7 +246,7 @@ namespace executive
 			virtual void synchronizeEvent(unsigned int event) = 0;
 			/*! \brief Get the elapsed time in ms between two recorded events */
 			virtual float getEventTime(unsigned int start, 
-				unsigned int end) const = 0;
+				unsigned int end) = 0;
 		
 		public:
 			/*! \brief Create a new stream */
@@ -243,7 +254,7 @@ namespace executive
 			/*! \brief Destroy an existing stream */
 			virtual void destroyStream(unsigned int stream) = 0;
 			/*! \brief Query the status of an existing stream (ready/not) */
-			virtual bool queryStream(unsigned int stream) const = 0;
+			virtual bool queryStream(unsigned int stream) = 0;
 			/*! \brief Synchronize a particular stream */
 			virtual void synchronizeStream(unsigned int stream) = 0;
 			/*! \brief Sets the current stream */
@@ -284,22 +295,22 @@ namespace executive
 				\param grid grid dimensions
 				\param block block dimensions
 				\param sharedMemory shared memory size
-				\param parameterBlock array of bytes for parameter memory
-				\param parameterBlockSize number of bytes in parameter memory
+				\param argumentBlock array of bytes for argument memory
+				\param argumentBlockSize number of bytes in argument memory
 				\param traceGenerators vector of trace generators to add 
 					and remove from kernel
 			*/
 			virtual void launch(const std::string& module, 
 				const std::string& kernel, const ir::Dim3& grid, 
 				const ir::Dim3& block, size_t sharedMemory, 
-				const void* parameterBlock, size_t parameterBlockSize, 
+				const void* argumentBlock, size_t argumentBlockSize, 
 				const trace::TraceGeneratorVector& 
 				traceGenerators = trace::TraceGeneratorVector()) = 0;
 			/*! \brief Get the function attributes of a specific kernel */
 			virtual cudaFuncAttributes getAttributes(const std::string& module, 
 				const std::string& kernel) = 0;
 			/*! \brief Get the last error from this device */
-			virtual unsigned int getLastError() const = 0;
+			virtual unsigned int getLastError() = 0;
 			/*! \brief Wait until all asynchronous operations have completed */
 			virtual void synchronize() = 0;
 			

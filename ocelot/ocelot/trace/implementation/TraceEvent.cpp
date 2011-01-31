@@ -9,6 +9,30 @@
 
 #include <ocelot/trace/interface/TraceEvent.h>
 
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+trace::ReconvergenceTraceEvent::ReconvergenceTraceEvent():
+	stackVisitNodes(0),
+	stackVisitEnd(0),
+	stackVisitMiddle(0),
+	stackInsert(0),
+	stackMerge(0),
+	conservativeBranch(false)
+{
+
+}
+
+void trace::ReconvergenceTraceEvent::reset() {
+	stackVisitNodes = 0;
+	stackVisitEnd = 0;
+	stackVisitMiddle = 0;
+	stackInsert = 0;
+	stackMerge = 0;
+	conservativeBranch = false;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
 trace::TraceEvent::TraceEvent():
 	blockId(0, 0, 0),
 	PC(0),

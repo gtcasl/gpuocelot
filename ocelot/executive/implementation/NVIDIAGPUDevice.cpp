@@ -375,7 +375,6 @@ namespace executive
 #endif
 		
 		CUjit_option options[] = {
-			CU_JIT_TARGET,
 			CU_JIT_ERROR_LOG_BUFFER, 
 			CU_JIT_ERROR_LOG_BUFFER_SIZE_BYTES, 
 		};
@@ -384,8 +383,7 @@ namespace executive
 		char errorLogBuffer[errorLogSize];
 		memset(errorLogBuffer, 0, errorLogSize);
 
-		void* optionValues[3] = {
-			(void*)CU_TARGET_COMPUTE_20,
+		void* optionValues[2] = {
 			(void*)errorLogBuffer, 
 			(void*)errorLogActualSize, 
 		};
@@ -394,11 +392,12 @@ namespace executive
 
 		
 		CUresult result = driver::cuModuleLoadDataEx(&_handle, 
-			stream.str().c_str(), 3, options, optionValues);
+			stream.str().c_str(), 2, options, optionValues);
 		
 		if(result != CUDA_SUCCESS)
 		{
-			Throw("cuModuleLoadDataEx() - returned " << result << ". Failed to JIT module - " << ir->path() 
+			Throw("cuModuleLoadDataEx() - returned " << result 
+				<< ". Failed to JIT module - " << ir->path() 
 				<< " using NVIDIA JIT with error:\n" << errorLogBuffer);
 		}
 		

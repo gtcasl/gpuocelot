@@ -3,15 +3,15 @@
 	trace: { 
 		enabled: true,
 		database: "traces/database.trace",
-		memoryChecker: false,
+		memoryChecker: true,
 		raceDetector: {
-			enabled: false,
+			enabled: true,
 			ignoreIrrelevantWrites: true
 		},
 		debugger: {
-			enabled: true,
+			enabled: false,
 			kernelFilter: "_Z13scalarProdGPUPfS_S_ii",
-			alwaysAttach: false
+			alwaysAttach: true
 		},
 		performanceBound: {
 			enabled: false,

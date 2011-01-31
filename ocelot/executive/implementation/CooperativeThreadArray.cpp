@@ -3644,6 +3644,24 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context,
 							PTXF64 a = operandAsF64(threadID, instr.a);
 							if (a != a) a = 0.0;
 							a = round(a, instr.modifier);
+							PTXS64 d = 0;
+							if(a > LLONG_MAX) {
+								d = LLONG_MAX;
+							}
+							else if(a < LLONG_MIN) {
+								d = LLONG_MIN;
+							}
+							else {
+								d = a;
+							}
+							setRegAsS64(threadID, instr.d.reg, d);
+						}
+						break;
+					case PTXOperand::f32:
+						{
+							PTXF64 a = operandAsF64(threadID, instr.a);
+							if (a != a) a = 0.0;
+							a = round(a, instr.modifier);
 							if(instr.modifier & PTXInstruction::sat) {
 								if (a != a) a = 0.0;
 								a = min(1.0, a);

@@ -24,7 +24,10 @@ namespace cuda
 					void* _driver;
 					/*! \brief The driver version */
 					int _version;
-			
+					
+					//! name of library to load
+					std::string _libname;
+					
 				public:
 					CUresult (*cuInit)(unsigned int Flags);
 					CUresult (*cuDriverGetVersion)(int *driverVersion);
@@ -253,6 +256,9 @@ namespace cuda
 				public:
 					/*! \brief The constructor zeros out all of the pointers */
 					Interface();
+					
+					//! \brief
+					Interface(const std::string &library);
 					/*! \brief The destructor closes dlls */
 					~Interface();
 					/*! \brief Load the cuda driver */

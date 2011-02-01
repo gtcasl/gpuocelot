@@ -10,7 +10,8 @@
 
 // C++ includes
 #include <fstream>
-
+#include <map>
+#include <vector>
 // Ocelot includes
 #include <ocelot/ir/interface/Dim3.h>
 #include <ocelot/cuda/interface/cuda.h>
@@ -86,7 +87,7 @@ namespace util {
 			size_t sharedMemorySize;
 			
 			//! \brief contains parameter memory
-			char *parameterMemory
+			char *parameterMemory;
 		};
 	
 		typedef std::map< CUfunction, std::pair< std::string, std::string > > FunctionModuleMap;

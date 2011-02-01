@@ -38,6 +38,17 @@ namespace analysis
                 basicBlocks += (kernel->second)->dfg()->size();
             }
         }
+
+
+        ir::Kernel *kernel = module.kernels().find(kernelName)->second;
+        for(ir::ControlFlowGraph::const_iterator basicBlock = kernel->cfg()->begin();
+            basicBlock != kernel->cfg()->end(); ++basicBlock) {
+            if(basicBlock->label == "entry" || basicBlock->label == "exit")
+                continue;
+            labels.push_back(basicBlock->label);
+        }
+
+        
     }
 
     void BasicBlockInstrumentor::initialize() {
@@ -61,8 +72,10 @@ namespace analysis
             cudaFree(counter);
         }
 
-        *out << "\n\n" << kernelName << ":\n";
-        *out << "\n--------------- " << description << " ---------------\n\n";
+        *out << "{\n\"kernel\": " << kernelName << ",\n";
+        *out << "\n\"threadBlocks\": " << threadBlocks << ",\n";
+        *out << "\n\"threads\": " << threads << ",\n";
+        *out << "\n\"counters\": {\n";
 
         _kernelProfile.basicBlockExecutionCountMap.clear();
 
@@ -79,9 +92,11 @@ namespace analysis
         }
 
         for(j = 0; j < basicBlocks; j++) {
-            *out << "Total Execution Count for Basic Block " << j << ": " << _kernelProfile.basicBlockExecutionCountMap[j] << std::endl;
+            *out << "\"" << labels[j] << "\": " << _kernelProfile.basicBlockExecutionCountMap[j] << ",\n";
         }
         
+        *out << "\n}\n}\n";
+
         return info;
     }
 

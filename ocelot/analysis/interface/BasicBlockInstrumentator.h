@@ -8,6 +8,7 @@
 #define BASIC_BLOCK_INSTRUMENTOR_H_INCLUDED
 
 #include <string>
+#include <vector>
 #include <ocelot/ir/interface/Module.h>
 #include <ocelot/analysis/interface/PTXInstrumentor.h>
 #include <ocelot/analysis/interface/Pass.h>
@@ -17,8 +18,7 @@ namespace analysis
 	/*! \brief Able to run the basic block instrumentation passes over PTX modules */
 	class BasicBlockInstrumentor : public analysis::PTXInstrumentor
 	{
-		public:
-			
+		public:	
             /*! \brief The basic block counter */
             size_t *counter;        
 
@@ -27,7 +27,7 @@ namespace analysis
         
             /*! \brief The description of the specified pass */
             std::string description;
-			
+	
 		public:
 			/*! \brief The default constructor */
 			BasicBlockInstrumentor();

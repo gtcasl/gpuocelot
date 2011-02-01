@@ -71,17 +71,16 @@ AC_CHECK_PROG(HAVE_LLVM_CONFIG, llvm-config, yes, no)
 if test $HAVE_LLVM_CONFIG = yes && test $enable_llvm = yes
 then
 	LLVM_VERSION=$(llvm-config --version)
-	if test $LLVM_VERSION = 2.9svn
+	if test `expr match "$LLVM_VERSION" '2.9'` = '0'
 	then
+		AC_WARN(LLVM Disabled: version $LLVM_VERSION found, 2.9 required )
+		AC_SUBST(LLVM_CFLAGS, "")
+		AC_SUBST(LLVM_LDFLAGS, "")
+	else
 		AC_DEFINE(HAVE_LLVM, [1], ["Define to 1 if llvm is installed"])
 		AC_SUBST(LLVM_CFLAGS, $(llvm-config --cppflags))
 		AC_SUBST(LLVM_LDFLAGS, "$(llvm-config --ldflags --libs core jit native \
 			asmparser instcombine | tr '\n' ' ') -rdynamic")
-	else
-		AC_WARN(LLVM Support Not Enabled: version $LLVM_VERSION found but \
-			requires 2.8svn )
-		AC_SUBST(LLVM_CFLAGS, "")
-		AC_SUBST(LLVM_LDFLAGS, "")
 	fi
 else
 	AC_SUBST(LLVM_CFLAGS, "")

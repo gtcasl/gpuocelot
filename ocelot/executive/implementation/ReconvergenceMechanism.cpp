@@ -119,7 +119,7 @@ bool executive::ReconvergenceMechanism::nextInstruction(executive::CTAContext &c
 /*!
 	\brief gets the stack size
 */
-const size_t executive::ReconvergenceMechanism::stackSize() const {
+size_t executive::ReconvergenceMechanism::stackSize() const {
 	return runtimeStack.size();
 }
 

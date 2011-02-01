@@ -82,6 +82,9 @@ namespace analysis
             /*! \brief The number of threads specified for this execution */
             unsigned int threads;
 
+            /*! \brief The strings representing the basic block labels */
+            std::vector<std::string> labels;
+
         protected:
             
             KernelProfile _kernelProfile;

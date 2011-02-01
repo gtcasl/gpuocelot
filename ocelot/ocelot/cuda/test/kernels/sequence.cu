@@ -8,6 +8,7 @@
 */
 
 #include <stdio.h>
+#include <dlfcn.h>
 
 #if 0
 extern "C" __global__ void sequence(int *A, int N) {
@@ -60,6 +61,11 @@ int main(int argc, char *arg[]) {
 	int errors = 0;
 
 	size_t bytes = sizeof(int)*N;
+	
+	if (cudaThreadSynchronize() != cudaSuccess) {
+		printf("Failed to load CUDA library:\n%s\n", dlerror());
+		return 0;
+	}
 
 	if (cudaMalloc((void **)&A_gpu, bytes) != cudaSuccess) {
 		printf("cudaMalloc() - failed to allocate %d bytes on device\n", (int)bytes);

@@ -32,6 +32,12 @@ namespace cuda
 {
 	CudaDriver::Interface::Interface() : _driver( 0 )
 	{
+		_libname = "libcuda.so";
+	}
+	
+
+	//! \brief
+	CudaDriver::Interface::Interface(const std::string &library): _libname(library) {
 	
 	}
 
@@ -48,8 +54,8 @@ namespace cuda
 	{
 		if( _driver != 0 ) return;
 		
-		report( "Loading libcuda.so" );
-		_driver = dlopen( "libcuda.so", RTLD_LAZY );
+		report( "Loading " << _libname );
+		_driver = dlopen( _libname.c_str(), RTLD_LAZY );
 		if( _driver == 0 )
 		{
 			report( "Failed to load cuda driver." );

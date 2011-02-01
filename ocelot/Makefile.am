@@ -32,8 +32,15 @@ check_PROGRAMS = TestLexer TestParser \
 	TestCalVectorScale TestPTXAssembly TestSequenceDriverAPI TestGenericMemory \
 	TestFunctionCall TestIndirectFunctionCall TestIndirectFunctionCallOcelot
 EXTRA_PROGRAMS = Module PtxToIlTranslator DFG CFG PTXChecker OcelotServer TestOcelotServer
-lib_LTLIBRARIES = libocelot.la
+lib_LTLIBRARIES = libocelot.la libKernelExtractor.la
+
 ################################################################################
+
+libKernelExtractor_la_CXXFLAGS = -Wall -ansi -Werror -std=c++0x
+#libKernelExtractor_la_HEADERS = ocelot/util/interface/KernelExtractor.h
+libKernelExtractor_la_LDFLAGS = -module
+libKernelExtractor_la_SOURCES = ocelot/util/implementation/KernelExtractor.cpp \
+	ocelot/util/implementation/KernelExtractorDriverApi.cpp
 
 ################################################################################
 ## libocelot

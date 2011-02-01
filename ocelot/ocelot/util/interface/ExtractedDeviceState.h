@@ -28,7 +28,10 @@ namespace util {
 		class MemoryAllocation {
 		public:
 			MemoryAllocation(size_t size);
+			MemoryAllocation();
 			~MemoryAllocation();
+			
+			void serialize(std::ostream &out);
 			
 			//!
 			void resize(size_t _size, char c = 0);
@@ -39,16 +42,20 @@ namespace util {
 			
 			//! \brief size in bytes of allocation
 			size_t size;
-			
-			//! \brief contents of memory allocation
-			char *image;
 		};
 		
 		typedef std::map< std::string, MemoryAllocation *> GlobalVariableMap;
 		typedef std::map< char *, MemoryAllocation *> GlobalAllocationMap;
 		
+		/*!
+		
+		*/
 		class Module {
 		public:
+		
+			void clear();
+			
+			void serialize(std::ostream &out);
 		
 		public:
 			//! \brief module loaded into this name
@@ -67,6 +74,8 @@ namespace util {
 		class KernelLaunch {
 		public:
 		
+			void serialize(std::ostream &out);
+
 		public:
 			//! \brief name of module owning kernel
 			std::string moduleName;

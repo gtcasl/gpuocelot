@@ -177,8 +177,25 @@ namespace trace
 				_local, e, _kernel ); break;
 			case ir::PTXInstruction::Param: checkLocalAccess( "Parameter", _dim, 
 				_parameter, e, _kernel ); break;
-			case ir::PTXInstruction::Shared: checkLocalAccess( "Shared", _dim, 	
-				_shared, e, _kernel ); break;
+			case ir::PTXInstruction::Shared: {
+				TraceEvent::U64Vector::const_iterator 
+					address = e.memory_addresses.begin();
+
+				unsigned int threads = e.active.size();
+				for( unsigned int thread = 0; thread < threads; ++thread )
+				{
+					if( !e.active[ thread ] ) continue;
+					
+					ir::PTXU64 a = *address & 0xffffffff;
+					if( _shared.base > a 
+						|| a >= _shared.base + _shared.extent )
+					{
+						memoryError( "Shared", _dim, thread, 
+							a, e.memory_size, e, _kernel, _shared );
+					}
+					++address;
+				}
+			}; break;
 			case ir::PTXInstruction::Const: checkLocalAccess( "Constant", _dim, 
 				_constant, e, _kernel ); break;
 			default: break;

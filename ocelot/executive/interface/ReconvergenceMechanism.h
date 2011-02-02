@@ -30,7 +30,7 @@ namespace executive {
 	*/
 	class ReconvergenceMechanism {
 	public:
-		typedef std::deque<CTAContext> RuntimeStack;
+		typedef std::vector<CTAContext> RuntimeStack;
 			
 		enum Type {
 			Reconverge_IPDOM,
@@ -86,7 +86,7 @@ namespace executive {
 		virtual executive::CTAContext & getContext();
 		
 		//! \brief gets the stack size
-		const size_t stackSize() const;
+		size_t stackSize() const;
 		
 		//! \brief gets the reconvergence mechanism type
 		Type getType() const { return type; }
@@ -107,10 +107,6 @@ namespace executive {
 	
 		//! \brief context stack
 		RuntimeStack runtimeStack;
-		
-		//! \brief events specifically related to thread divergence and reconvergence
-		trace::ReconvergenceTraceEvent currentEvent;
-		
 	};
 
 	//

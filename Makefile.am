@@ -26,19 +26,20 @@ bin_PROGRAMS = PTXOptimizer OcelotConfig
 check_PROGRAMS = TestLexer TestParser \
 	TestEmulator TestInstructions TestKernels \
 	TestDataflowGraph TestLLVMInstructions \
-	TestPTXToLLVMTranslator   \
-	TestCudaGlobals TestCudaMalloc TestCudaTexture2D TestCudaTextureArray TestCudaTexture3D \
+	TestPTXToLLVMTranslator TestCudaGlobals TestCudaMalloc TestCudaTexture2D \
+	TestCudaTextureArray TestCudaTexture3D \
 	TestCudaSequence TestLLVMKernels TestDeviceSwitching \
 	TestCalVectorScale TestPTXAssembly TestSequenceDriverAPI TestGenericMemory \
 	TestFunctionCall TestIndirectFunctionCall TestIndirectFunctionCallOcelot
-EXTRA_PROGRAMS = Module PtxToIlTranslator DFG CFG PTXChecker OcelotServer TestOcelotServer
+EXTRA_PROGRAMS = Module PtxToIlTranslator DFG CFG PTXChecker OcelotServer \
+	TestOcelotServer
 lib_LTLIBRARIES = libocelot.la
 ################################################################################
 
 ################################################################################
 ## libocelot
 libocelot_la_CXXFLAGS = $(LLVM_CFLAGS) $(INCLUDE) -Wall -ansi -Werror \
-	-std=c++0x $(LLVM_LDFLAGS)
+	-std=c++0x
 libocelot_la_SOURCES = \
 	ocelot/parser/implementation/ptx.lpp \
 	ocelot/parser/implementation/ptxgrammar.ypp \
@@ -148,7 +149,7 @@ OcelotConfig_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x \
 	-DOCELOT_LIB_PATH="\"${libdir}\"" -DOCELOT_PREFIX_PATH="\"${prefix}\"" \
 	-DOCELOT_INCLUDE_PATH="\"${includedir}\""
 OcelotConfig_SOURCES = ocelot/util/implementation/OcelotConfig.cpp
-OcelotConfig_LDADD = libocelot.la
+OcelotConfig_LDADD = libocelot.la $(LLVM_LDFLAGS) 
 OcelotConfig_LDFLAGS = -static
 ################################################################################
 
@@ -172,7 +173,7 @@ TestOcelotServer_LDFLAGS = -static
 ## PTXOptimizer
 PTXOptimizer_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
 PTXOptimizer_SOURCES = ocelot/analysis/implementation/PTXOptimizer.cpp
-PTXOptimizer_LDADD = libocelot.la
+PTXOptimizer_LDADD = libocelot.la $(LLVM_LDFLAGS)
 PTXOptimizer_LDFLAGS = -static
 ################################################################################
 

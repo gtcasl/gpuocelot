@@ -3,13 +3,13 @@
 	trace: { 
 		enabled: true,
 		database: "traces/database.trace",
-		memoryChecker: false,
+		memoryChecker: true,
 		raceDetector: {
 			enabled: false,
 			ignoreIrrelevantWrites: true
 		},
 		debugger: {
-			enabled: true,
+			enabled: false,
 			kernelFilter: "_Z13scalarProdGPUPfS_S_ii",
 			alwaysAttach: false
 		},
@@ -39,7 +39,7 @@
 		runtimeApiTrace: "trace/CudaAPI.trace"
 	},
 	executive: {
-		devices: [ emulated ],
+		devices: [ nvidia ],
 		optimizationLevel: basic,
 		workerThreadLimit: 2
 	}

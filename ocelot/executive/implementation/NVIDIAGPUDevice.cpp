@@ -25,7 +25,7 @@
 // standard library includes
 #include <cstring>
 
-/////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 #ifdef REPORT_BASE
 #undef REPORT_BASE
@@ -44,7 +44,7 @@
 #define REPORT_BASE 0
 
 // Print out the full ptx for each module as it is loaded
-#define REPORT_PTX 1
+#define REPORT_PTX 0
 
 // if 1, adds line numbers to reported PTX
 #define REPORT_PTX_WITH_LINENUMBERS 0
@@ -71,14 +71,14 @@ namespace executive
 		unsigned int flags) : Device::MemoryAllocation(false, true), 
 		_flags(flags), _size(size), _external(false)
 	{
-		// making all memory portable eases context switching
-		_flags |= CU_MEMHOSTALLOC_PORTABLE | CU_MEMHOSTALLOC_DEVICEMAP;
-		
-		checkError(driver::cuMemHostAlloc(&_hostPointer, size, _flags));
-		checkError(driver::cuMemHostGetDevicePointer(&_devicePointer, 
-			_hostPointer, 0));
 		report("MemoryAllocation::MemoryAllocation() - allocated " << _size 
 			<< " bytes of host-allocated memory");
+		checkError(driver::cuMemHostAlloc(&_hostPointer, size, _flags));
+		if(CUDA_SUCCESS != driver::cuMemHostGetDevicePointer(&_devicePointer, 
+			_hostPointer, 0)) 
+		{
+			_devicePointer = 0;
+		}
 		report("  host: " << (const void *)_hostPointer << ", device pointer: "
 			<< (const void *)_devicePointer);
 
@@ -1014,13 +1014,16 @@ namespace executive
 
 			id = stream->second;
 		}
-		CUgraphicsResource * graphicsResources = (CUgraphicsResource *)resourceVoidPtr;
+		CUgraphicsResource * graphicsResources = 
+			(CUgraphicsResource *)resourceVoidPtr;
 
 		if(!_opengl) Throw("No active opengl contexts.");
 
 		report("NVIDIAGPUDevice::mapGraphicsResource() - count = " << count );
-		CUresult result = driver::cuGraphicsMapResources(count, graphicsResources, id);
-		report("driver::cuGraphicsMapresources() - " << result << ", " << cuda::CudaDriver::toString(result));
+		CUresult result = driver::cuGraphicsMapResources(count,
+			graphicsResources, id);
+		report("driver::cuGraphicsMapresources() - " << result << ", " 
+			<< cuda::CudaDriver::toString(result));
 		
 		checkError(result);
 	}
@@ -1039,7 +1042,8 @@ namespace executive
 			
 		void* p = (void*)pointer;
 		if (_allocations.find(p) == _allocations.end()) {
-			_allocations.insert(std::make_pair(p, new MemoryAllocation(p, bytes)));
+			_allocations.insert(std::make_pair(p, 
+				new MemoryAllocation(p, bytes)));
 		}
 
 		size = bytes;

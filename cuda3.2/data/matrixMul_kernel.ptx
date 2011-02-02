@@ -1,0 +1,363 @@
+	.version 1.4
+	.target sm_10, map_f64_to_f32
+	// compiled with /usr/local/cuda3.2/cuda/open64/lib//be
+	// nvopencc 3.2 built on 2010-09-08
+
+	//-----------------------------------------------------------
+	// Compiling /tmp/tmpxft_00005315_00000000-9_matrixMul_kernel.cpp3.i (/tmp/ccBI#.8TzzPX)
+	//-----------------------------------------------------------
+
+	//-----------------------------------------------------------
+	// Options:
+	//-----------------------------------------------------------
+	//  Target:ptx, ISA:sm_10, Endian:little, Pointer Size:64
+	//  -O3	(Optimization level)
+	//  -g0	(Debug level)
+	//  -m2	(Report advisories)
+	//-----------------------------------------------------------
+
+	.file	1	"<command-line>"
+	.file	2	"/tmp/tmpxft_00005315_00000000-8_matrixMul_kernel.cudafe2.gpu"
+	.file	3	"/usr/lib/gcc/x86_64-linux-gnu/4.4.3/include/stddef.h"
+	.file	4	"/usr/local/cuda3.2/cuda/bin/../include/crt/device_runtime.h"
+	.file	5	"/usr/local/cuda3.2/cuda/bin/../include/host_defines.h"
+	.file	6	"/usr/local/cuda3.2/cuda/bin/../include/builtin_types.h"
+	.file	7	"/usr/local/cuda3.2/cuda/bin/../include/device_types.h"
+	.file	8	"/usr/local/cuda3.2/cuda/bin/../include/driver_types.h"
+	.file	9	"/usr/local/cuda3.2/cuda/bin/../include/surface_types.h"
+	.file	10	"/usr/local/cuda3.2/cuda/bin/../include/texture_types.h"
+	.file	11	"/usr/local/cuda3.2/cuda/bin/../include/vector_types.h"
+	.file	12	"/usr/local/cuda3.2/cuda/bin/../include/device_launch_parameters.h"
+	.file	13	"/usr/local/cuda3.2/cuda/bin/../include/crt/storage_class.h"
+	.file	14	"/usr/include/bits/types.h"
+	.file	15	"/usr/include/time.h"
+	.file	16	"/usr/local/cuda3.2/cuda/bin/../include/texture_fetch_functions.h"
+	.file	17	"matrixMul_kernel.cu"
+	.file	18	"/usr/local/cuda3.2/cuda/bin/../include/common_functions.h"
+	.file	19	"/usr/local/cuda3.2/cuda/bin/../include/math_functions.h"
+	.file	20	"/usr/local/cuda3.2/cuda/bin/../include/math_constants.h"
+	.file	21	"/usr/local/cuda3.2/cuda/bin/../include/device_functions.h"
+	.file	22	"/usr/local/cuda3.2/cuda/bin/../include/sm_11_atomic_functions.h"
+	.file	23	"/usr/local/cuda3.2/cuda/bin/../include/sm_12_atomic_functions.h"
+	.file	24	"/usr/local/cuda3.2/cuda/bin/../include/sm_13_double_functions.h"
+	.file	25	"/usr/local/cuda3.2/cuda/bin/../include/sm_20_atomic_functions.h"
+	.file	26	"/usr/local/cuda3.2/cuda/bin/../include/sm_20_intrinsics.h"
+	.file	27	"/usr/local/cuda3.2/cuda/bin/../include/surface_functions.h"
+	.file	28	"/usr/local/cuda3.2/cuda/bin/../include/math_functions_dbl_ptx1.h"
+
+
+	.entry matrixMul (
+		.param .u64 __cudaparm_matrixMul_C,
+		.param .u64 __cudaparm_matrixMul_A,
+		.param .u64 __cudaparm_matrixMul_B,
+		.param .s32 __cudaparm_matrixMul_wA,
+		.param .s32 __cudaparm_matrixMul_wB)
+	{
+	.reg .u32 %r<34>;
+	.reg .u64 %rd<29>;
+	.reg .f32 %f<52>;
+	.reg .pred %p<4>;
+	.shared .align 4 .b8 __cuda___cuda_local_var_26860_39_non_const_As32[1024];
+	.shared .align 4 .b8 __cuda___cuda_local_var_26864_39_non_const_Bs1056[1024];
+	.loc	17	37	0
+$LDWbegin_matrixMul:
+	.loc	17	68	0
+	cvt.s32.u16 	%r1, %ctaid.x;
+	mul24.lo.s32 	%r2, %r1, 16;
+	cvt.s32.u16 	%r3, %ctaid.y;
+	ld.param.s32 	%r4, [__cudaparm_matrixMul_wA];
+	mul.lo.s32 	%r5, %r3, %r4;
+	mul.lo.s32 	%r6, %r5, 16;
+	add.s32 	%r7, %r6, %r4;
+	sub.s32 	%r8, %r7, 1;
+	cvt.s32.u16 	%r9, %tid.x;
+	cvt.s32.u16 	%r10, %tid.y;
+	ld.param.s32 	%r11, [__cudaparm_matrixMul_wB];
+	setp.lt.s32 	%p1, %r8, %r6;
+	@%p1 bra 	$Lt_0_3330;
+	mov.u64 	%rd1, __cuda___cuda_local_var_26860_39_non_const_As32;
+	mov.u64 	%rd2, __cuda___cuda_local_var_26864_39_non_const_Bs1056;
+	ld.param.s32 	%r4, [__cudaparm_matrixMul_wA];
+	add.s32 	%r12, %r4, 15;
+	shr.s32 	%r13, %r12, 31;
+	mov.s32 	%r14, 15;
+	and.b32 	%r15, %r13, %r14;
+	add.s32 	%r16, %r15, %r12;
+	shr.s32 	%r17, %r16, 4;
+	ld.param.s32 	%r11, [__cudaparm_matrixMul_wB];
+	mul.lo.s32 	%r18, %r10, %r11;
+	mul.lo.s32 	%r19, %r10, %r4;
+	cvt.s64.s32 	%rd3, %r9;
+	cvt.s64.s32 	%rd4, %r10;
+	add.s32 	%r20, %r19, %r6;
+	add.s32 	%r21, %r9, %r20;
+	mul.wide.s32 	%rd5, %r9, 4;
+	add.u64 	%rd6, %rd2, %rd5;
+	mul.wide.s32 	%rd7, %r10, 64;
+	add.u64 	%rd8, %rd1, %rd7;
+	mul.wide.s32 	%rd9, %r10, 16;
+	add.u64 	%rd10, %rd3, %rd9;
+	mul.lo.u64 	%rd11, %rd10, 4;
+	add.s32 	%r22, %r19, %r8;
+	mul.lo.s32 	%r23, %r11, 16;
+	cvt.s64.s32 	%rd12, %r23;
+	mul.wide.s32 	%rd13, %r23, 4;
+	add.u64 	%rd14, %rd11, %rd1;
+	add.u64 	%rd15, %rd11, %rd2;
+	add.s32 	%r24, %r22, %r9;
+	ld.param.u64 	%rd16, [__cudaparm_matrixMul_B];
+	add.s32 	%r25, %r18, %r2;
+	add.s32 	%r26, %r9, %r25;
+	cvt.s64.s32 	%rd17, %r26;
+	mul.wide.s32 	%rd18, %r26, 4;
+	add.u64 	%rd19, %rd16, %rd18;
+	ld.param.u64 	%rd20, [__cudaparm_matrixMul_A];
+	cvt.s64.s32 	%rd21, %r21;
+	mul.wide.s32 	%rd22, %r21, 4;
+	add.u64 	%rd23, %rd20, %rd22;
+	mov.f32 	%f1, 0f00000000;     	// 0
+	mov.s32 	%r27, %r17;
+$Lt_0_2818:
+ //<loop> Loop body line 68, nesting depth: 1, estimated iterations: unknown
+	.loc	17	83	0
+	ld.global.f32 	%f2, [%rd23+0];
+	st.shared.f32 	[%rd14+0], %f2;
+	.loc	17	84	0
+	ld.global.f32 	%f3, [%rd19+0];
+	st.shared.f32 	[%rd15+0], %f3;
+	.loc	17	87	0
+	bar.sync 	0;
+	.loc	17	93	0
+	ld.shared.f32 	%f4, [%rd8+0];
+	ld.shared.f32 	%f5, [%rd6+0];
+	mad.f32 	%f6, %f4, %f5, %f1;
+	ld.shared.f32 	%f7, [%rd8+4];
+	ld.shared.f32 	%f8, [%rd6+64];
+	mad.f32 	%f9, %f7, %f8, %f6;
+	ld.shared.f32 	%f10, [%rd8+8];
+	ld.shared.f32 	%f11, [%rd6+128];
+	mad.f32 	%f12, %f10, %f11, %f9;
+	ld.shared.f32 	%f13, [%rd8+12];
+	ld.shared.f32 	%f14, [%rd6+192];
+	mad.f32 	%f15, %f13, %f14, %f12;
+	ld.shared.f32 	%f16, [%rd8+16];
+	ld.shared.f32 	%f17, [%rd6+256];
+	mad.f32 	%f18, %f16, %f17, %f15;
+	ld.shared.f32 	%f19, [%rd8+20];
+	ld.shared.f32 	%f20, [%rd6+320];
+	mad.f32 	%f21, %f19, %f20, %f18;
+	ld.shared.f32 	%f22, [%rd8+24];
+	ld.shared.f32 	%f23, [%rd6+384];
+	mad.f32 	%f24, %f22, %f23, %f21;
+	ld.shared.f32 	%f25, [%rd8+28];
+	ld.shared.f32 	%f26, [%rd6+448];
+	mad.f32 	%f27, %f25, %f26, %f24;
+	ld.shared.f32 	%f28, [%rd8+32];
+	ld.shared.f32 	%f29, [%rd6+512];
+	mad.f32 	%f30, %f28, %f29, %f27;
+	ld.shared.f32 	%f31, [%rd8+36];
+	ld.shared.f32 	%f32, [%rd6+576];
+	mad.f32 	%f33, %f31, %f32, %f30;
+	ld.shared.f32 	%f34, [%rd8+40];
+	ld.shared.f32 	%f35, [%rd6+640];
+	mad.f32 	%f36, %f34, %f35, %f33;
+	ld.shared.f32 	%f37, [%rd8+44];
+	ld.shared.f32 	%f38, [%rd6+704];
+	mad.f32 	%f39, %f37, %f38, %f36;
+	ld.shared.f32 	%f40, [%rd8+48];
+	ld.shared.f32 	%f41, [%rd6+768];
+	mad.f32 	%f42, %f40, %f41, %f39;
+	ld.shared.f32 	%f43, [%rd8+52];
+	ld.shared.f32 	%f44, [%rd6+832];
+	mad.f32 	%f45, %f43, %f44, %f42;
+	ld.shared.f32 	%f46, [%rd8+56];
+	ld.shared.f32 	%f47, [%rd6+896];
+	mad.f32 	%f48, %f46, %f47, %f45;
+	ld.shared.f32 	%f49, [%rd8+60];
+	ld.shared.f32 	%f50, [%rd6+960];
+	mad.f32 	%f1, %f49, %f50, %f48;
+	.loc	17	98	0
+	bar.sync 	0;
+	.loc	17	68	0
+	add.u64 	%rd19, %rd13, %rd19;
+	add.s32 	%r21, %r21, 16;
+	add.u64 	%rd23, %rd23, 64;
+	setp.le.s32 	%p2, %r21, %r24;
+	@%p2 bra 	$Lt_0_2818;
+	bra.uni 	$Lt_0_2306;
+$Lt_0_3330:
+	ld.param.s32 	%r11, [__cudaparm_matrixMul_wB];
+	mul.lo.s32 	%r18, %r10, %r11;
+	mov.f32 	%f1, 0f00000000;     	// 0
+$Lt_0_2306:
+	.loc	17	104	0
+	ld.param.u64 	%rd24, [__cudaparm_matrixMul_C];
+	mul.lo.s32 	%r28, %r11, %r3;
+	add.s32 	%r29, %r1, %r28;
+	mul.lo.s32 	%r30, %r29, 16;
+	add.s32 	%r31, %r18, %r30;
+	add.s32 	%r32, %r9, %r31;
+	cvt.s64.s32 	%rd25, %r32;
+	mul.wide.s32 	%rd26, %r32, 4;
+	add.u64 	%rd27, %rd24, %rd26;
+	st.global.f32 	[%rd27+0], %f1;
+	.loc	17	105	0
+	exit;
+$LDWend_matrixMul:
+	} // matrixMul
+
+	.entry matrixMul_64bit (
+		.param .u64 __cudaparm_matrixMul_64bit_C,
+		.param .u64 __cudaparm_matrixMul_64bit_A,
+		.param .u64 __cudaparm_matrixMul_64bit_B,
+		.param .u64 __cudaparm_matrixMul_64bit_wA,
+		.param .u64 __cudaparm_matrixMul_64bit_wB)
+	{
+	.reg .u64 %rd<58>;
+	.reg .f32 %f<52>;
+	.reg .pred %p<4>;
+	.shared .align 4 .b8 __cuda___cuda_local_var_26937_39_non_const_As2120[1024];
+	.shared .align 4 .b8 __cuda___cuda_local_var_26941_39_non_const_Bs3144[1024];
+	.loc	17	114	0
+$LDWbegin_matrixMul_64bit:
+	.loc	17	125	0
+	ld.param.u64 	%rd1, [__cudaparm_matrixMul_64bit_wA];
+	ld.global.u64 	%rd2, [%rd1+0];
+	cvt.u64.u16 	%rd3, %ctaid.y;
+	mul.lo.u64 	%rd4, %rd2, %rd3;
+	mul.lo.u64 	%rd5, %rd4, 16;
+	.loc	17	128	0
+	add.u64 	%rd6, %rd2, %rd5;
+	sub.u64 	%rd7, %rd6, 1;
+	.loc	17	137	0
+	ld.param.u64 	%rd8, [__cudaparm_matrixMul_64bit_wB];
+	ld.global.u64 	%rd9, [%rd8+0];
+	mul.lo.u64 	%rd10, %rd9, 16;
+	.loc	17	145	0
+	cvt.u64.u16 	%rd11, %ctaid.x;
+	mul.lo.u64 	%rd12, %rd11, 16;
+	mov.s64 	%rd13, %rd5;
+	cvt.u64.u16 	%rd14, %tid.y;
+	cvt.u64.u16 	%rd15, %tid.x;
+	setp.lt.u64 	%p1, %rd7, %rd5;
+	@%p1 bra 	$Lt_1_3330;
+	mov.u64 	%rd16, __cuda___cuda_local_var_26937_39_non_const_As2120;
+	mov.u64 	%rd17, __cuda___cuda_local_var_26941_39_non_const_Bs3144;
+	add.u64 	%rd18, %rd2, 15;
+	shr.s64 	%rd19, %rd18, 63;
+	mov.s64 	%rd20, 15;
+	and.b64 	%rd21, %rd19, %rd20;
+	add.s64 	%rd22, %rd21, %rd18;
+	shr.s64 	%rd23, %rd22, 4;
+	mul.lo.u64 	%rd24, %rd14, 64;
+	add.u64 	%rd25, %rd16, %rd24;
+	mul.lo.u64 	%rd26, %rd15, 4;
+	add.u64 	%rd27, %rd17, %rd26;
+	mul.lo.u64 	%rd28, %rd14, 16;
+	add.u64 	%rd29, %rd15, %rd28;
+	mul.lo.u64 	%rd30, %rd29, 4;
+	add.u64 	%rd31, %rd30, %rd16;
+	add.u64 	%rd32, %rd30, %rd17;
+	ld.param.u64 	%rd33, [__cudaparm_matrixMul_64bit_B];
+	ld.param.u64 	%rd34, [__cudaparm_matrixMul_64bit_A];
+	mov.f32 	%f1, 0f00000000;     	// 0
+	mov.s64 	%rd35, %rd23;
+$Lt_1_2818:
+ //<loop> Loop body line 145, nesting depth: 1, estimated iterations: unknown
+	.loc	17	160	0
+	ld.global.u64 	%rd36, [%rd1+0];
+	mul.lo.u64 	%rd37, %rd36, %rd14;
+	add.u64 	%rd38, %rd13, %rd37;
+	add.u64 	%rd39, %rd15, %rd38;
+	mul.lo.u64 	%rd40, %rd39, 4;
+	add.u64 	%rd41, %rd34, %rd40;
+	ld.global.f32 	%f2, [%rd41+0];
+	st.shared.f32 	[%rd31+0], %f2;
+	.loc	17	161	0
+	ld.global.u64 	%rd42, [%rd8+0];
+	mul.lo.u64 	%rd43, %rd42, %rd14;
+	add.u64 	%rd44, %rd12, %rd43;
+	add.u64 	%rd45, %rd15, %rd44;
+	mul.lo.u64 	%rd46, %rd45, 4;
+	add.u64 	%rd47, %rd33, %rd46;
+	ld.global.f32 	%f3, [%rd47+0];
+	st.shared.f32 	[%rd32+0], %f3;
+	.loc	17	164	0
+	bar.sync 	0;
+	.loc	17	170	0
+	ld.shared.f32 	%f4, [%rd25+0];
+	ld.shared.f32 	%f5, [%rd27+0];
+	mad.f32 	%f6, %f4, %f5, %f1;
+	ld.shared.f32 	%f7, [%rd25+4];
+	ld.shared.f32 	%f8, [%rd27+64];
+	mad.f32 	%f9, %f7, %f8, %f6;
+	ld.shared.f32 	%f10, [%rd25+8];
+	ld.shared.f32 	%f11, [%rd27+128];
+	mad.f32 	%f12, %f10, %f11, %f9;
+	ld.shared.f32 	%f13, [%rd25+12];
+	ld.shared.f32 	%f14, [%rd27+192];
+	mad.f32 	%f15, %f13, %f14, %f12;
+	ld.shared.f32 	%f16, [%rd25+16];
+	ld.shared.f32 	%f17, [%rd27+256];
+	mad.f32 	%f18, %f16, %f17, %f15;
+	ld.shared.f32 	%f19, [%rd25+20];
+	ld.shared.f32 	%f20, [%rd27+320];
+	mad.f32 	%f21, %f19, %f20, %f18;
+	ld.shared.f32 	%f22, [%rd25+24];
+	ld.shared.f32 	%f23, [%rd27+384];
+	mad.f32 	%f24, %f22, %f23, %f21;
+	ld.shared.f32 	%f25, [%rd25+28];
+	ld.shared.f32 	%f26, [%rd27+448];
+	mad.f32 	%f27, %f25, %f26, %f24;
+	ld.shared.f32 	%f28, [%rd25+32];
+	ld.shared.f32 	%f29, [%rd27+512];
+	mad.f32 	%f30, %f28, %f29, %f27;
+	ld.shared.f32 	%f31, [%rd25+36];
+	ld.shared.f32 	%f32, [%rd27+576];
+	mad.f32 	%f33, %f31, %f32, %f30;
+	ld.shared.f32 	%f34, [%rd25+40];
+	ld.shared.f32 	%f35, [%rd27+640];
+	mad.f32 	%f36, %f34, %f35, %f33;
+	ld.shared.f32 	%f37, [%rd25+44];
+	ld.shared.f32 	%f38, [%rd27+704];
+	mad.f32 	%f39, %f37, %f38, %f36;
+	ld.shared.f32 	%f40, [%rd25+48];
+	ld.shared.f32 	%f41, [%rd27+768];
+	mad.f32 	%f42, %f40, %f41, %f39;
+	ld.shared.f32 	%f43, [%rd25+52];
+	ld.shared.f32 	%f44, [%rd27+832];
+	mad.f32 	%f45, %f43, %f44, %f42;
+	ld.shared.f32 	%f46, [%rd25+56];
+	ld.shared.f32 	%f47, [%rd27+896];
+	mad.f32 	%f48, %f46, %f47, %f45;
+	ld.shared.f32 	%f49, [%rd25+60];
+	ld.shared.f32 	%f50, [%rd27+960];
+	mad.f32 	%f1, %f49, %f50, %f48;
+	.loc	17	175	0
+	bar.sync 	0;
+	.loc	17	145	0
+	add.u64 	%rd12, %rd10, %rd12;
+	add.u64 	%rd13, %rd13, 16;
+	setp.ge.u64 	%p2, %rd7, %rd13;
+	@%p2 bra 	$Lt_1_2818;
+	ld.global.u64 	%rd9, [%rd8+0];
+	bra.uni 	$Lt_1_2306;
+$Lt_1_3330:
+	mov.f32 	%f1, 0f00000000;     	// 0
+$Lt_1_2306:
+	.loc	17	181	0
+	ld.param.u64 	%rd48, [__cudaparm_matrixMul_64bit_C];
+	mul.lo.u64 	%rd49, %rd9, %rd14;
+	mul.lo.u64 	%rd50, %rd9, %rd3;
+	add.u64 	%rd51, %rd11, %rd50;
+	mul.lo.u64 	%rd52, %rd51, 16;
+	add.u64 	%rd53, %rd49, %rd52;
+	add.u64 	%rd54, %rd15, %rd53;
+	mul.lo.u64 	%rd55, %rd54, 4;
+	add.u64 	%rd56, %rd48, %rd55;
+	st.global.f32 	[%rd56+0], %f1;
+	.loc	17	182	0
+	exit;
+$LDWend_matrixMul_64bit:
+	} // matrixMul_64bit
+

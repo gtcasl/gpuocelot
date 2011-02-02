@@ -1,0 +1,49 @@
+	.version 1.4
+	.target sm_13, map_f64_to_f32
+	
+	.entry SimpleKernel( .param .u32 iterations )
+	{
+		.reg .u32 %r15;
+		.reg .u32 %r16;
+		.reg .u32 %r17;
+		.reg .u32 %r18;
+		.reg .u32 %r19;
+		.reg .u32 %r20;
+		.reg .u32 %r21;
+		.reg .u32 %r22;
+		.reg .u32 %r23;
+		.reg .u32 %r24;
+		.reg .u32 %r25;
+		.reg .pred %p5;
+		$Block1:
+			mov.u32 %r15, 0;
+			mov.u32 %r16, 0;
+			mov.u32 %r17, 0;
+			mov.u32 %r18, 0;
+			mov.u32 %r19, 0;
+			mov.u32 %r20, 0;
+			mov.u32 %r21, 0;
+			mov.u32 %r22, 0;
+			mov.u32 %r23, 0;
+			mov.u32 %r24, 0;
+			mov.u32 %r25, 0;
+			mov.pred %p5, 1;
+		$Block2:
+			ld.const.u32 	%r20, [%r15+0];
+			mul.lo.u32 	%r21, %r20, %r18;
+			add.u32 	%r22, %r21, %r19;
+			set.gt.u32.u32 	%r23, %r21, %r22;
+			neg.s32 	%r24, %r23;
+			mul.hi.u32 	%r25, %r20, %r18;
+			add.u32 	%r19, %r24, %r25;
+			st.local.u32 	[%r17+0], %r22;
+			add.u32 	%r17, %r17, 4;
+			add.u32 	%r15, %r15, 4;
+			setp.ne.u32 	%p5, %r15, %r16;
+			@%p5 bra 	$Block1;
+		$Block3:
+			exit;
+	}
+	
+
+	

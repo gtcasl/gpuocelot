@@ -1,0 +1,6 @@
+../srad 128 128 0 31 0 31 0.5 2 CUDA_SDK_STYLE
+../hotspot 50 6 60 CUDA_SDK_STYLE
+../backprop CUDA_SDK_STYLE
+../lu -V -i data/32.dat CUDA_SDK_STYLE
+../needle 512 512 13 CUDA_SDK_STYLE
+../mummergpu data/shortref.fa data/shortqry.fa CUDA_SDK_STYLE

@@ -2474,38 +2474,40 @@ void executive::CooperativeThreadArray::eval_Call(CTAContext &context,
 			reportE(REPORT_CALL, " lazy linking against kernel '" 
 				<< instr.a.identifier << "'");
 			kernel->lazyLink(context.PC, instr.a.identifier);
-			assert(instr.branchTargetInstruction != -1);
 		}
 
+		const PTXInstruction& jittedInstr = currentInstruction(context);
+		assert(jittedInstr.branchTargetInstruction != -1);
+
 		// Simple direct call handling
-		if (instr.uni) {
+		if (jittedInstr.uni) {
 			reportE(REPORT_CALL, " uniform direct call" );
 			int firstActive = context.active.find_first();
-			bool taken = context.predicated(firstActive, instr);		
+			bool taken = context.predicated(firstActive, jittedInstr);		
 			
 			if (taken) {
 				reportE(REPORT_CALL, 
 					"  call was taken, increasing stack size by (" 
-					<< instr.a.stackMemorySize << " stack) (" 
-					<< instr.a.registerCount << " registers) (" 
-					<< instr.a.localMemorySize << " local memory) (" 
-					<< instr.a.sharedMemorySize << " sharedMemorySize)");
-				functionCallStack.pushFrame(instr.a.stackMemorySize, 
-					instr.a.registerCount, instr.a.localMemorySize, 
-					instr.a.sharedMemorySize, context.PC, 
+					<< jittedInstr.a.stackMemorySize << " stack) (" 
+					<< jittedInstr.a.registerCount << " registers) (" 
+					<< jittedInstr.a.localMemorySize << " local memory) (" 
+					<< jittedInstr.a.sharedMemorySize << " sharedMemorySize)");
+				functionCallStack.pushFrame(jittedInstr.a.stackMemorySize, 
+					jittedInstr.a.registerCount, jittedInstr.a.localMemorySize, 
+					jittedInstr.a.sharedMemorySize, context.PC, 
 					functionCallStack.offset(),
 					functionCallStack.stackFrameSize());
-				unsigned int offset = instr.b.offset;
+				unsigned int offset = jittedInstr.b.offset;
 				for (ir::PTXOperand::Array::const_iterator 
-					argument = instr.b.array.begin();
-					argument != instr.b.array.end(); ++argument) {
+					argument = jittedInstr.b.array.begin();
+					argument != jittedInstr.b.array.end(); ++argument) {
 					copyArgument(offset, *argument, context);
 					offset += ir::PTXOperand::bytes(argument->type);
 				}
 				
 				CTAContext targetContext(context);
 				
-				targetContext.PC = instr.branchTargetInstruction;
+				targetContext.PC = jittedInstr.branchTargetInstruction;
 				++context.PC;
 				
 				reconvergenceMechanism->runtimeStack.push_back(targetContext);
@@ -2518,29 +2520,29 @@ void executive::CooperativeThreadArray::eval_Call(CTAContext &context,
 
 			for (int threadID = 0; threadID != threadCount; ++threadID) {
 				targetContext.active[threadID] = 
-					context.predicated(threadID, instr);
+					context.predicated(threadID, jittedInstr);
 			}
 			
 			if (targetContext.active.any()) {
 				reportE(REPORT_CALL, 
 					"  call was taken, increasing stack size by (" 
-					<< instr.a.stackMemorySize << " stack) (" 
-					<< instr.a.registerCount << " registers) (" 
-					<< instr.a.localMemorySize << " local memory) (" 
-					<< instr.a.sharedMemorySize << " sharedMemorySize)");
-				functionCallStack.pushFrame(instr.a.stackMemorySize, 
-					instr.a.registerCount, instr.a.localMemorySize, 
-					instr.a.sharedMemorySize, context.PC, 
+					<< jittedInstr.a.stackMemorySize << " stack) (" 
+					<< jittedInstr.a.registerCount << " registers) (" 
+					<< jittedInstr.a.localMemorySize << " local memory) (" 
+					<< jittedInstr.a.sharedMemorySize << " sharedMemorySize)");
+				functionCallStack.pushFrame(jittedInstr.a.stackMemorySize, 
+					jittedInstr.a.registerCount, jittedInstr.a.localMemorySize, 
+					jittedInstr.a.sharedMemorySize, context.PC, 
 					functionCallStack.offset(), functionCallStack.stackSize());
 				unsigned int offset = instr.b.offset;
 				for (ir::PTXOperand::Array::const_iterator 
-					argument = instr.b.array.begin();
-					argument != instr.b.array.end(); ++argument) {
+					argument = jittedInstr.b.array.begin();
+					argument != jittedInstr.b.array.end(); ++argument) {
 					copyArgument(offset, *argument, targetContext);
 					offset += ir::PTXOperand::bytes(argument->type);
 				}
 				
-				targetContext.PC = instr.branchTargetInstruction;
+				targetContext.PC = jittedInstr.branchTargetInstruction;
 				
 				++context.PC;
 				reconvergenceMechanism->runtimeStack.push_back(targetContext);
@@ -5499,9 +5501,13 @@ void executive::CooperativeThreadArray::eval_Mov_func(CTAContext &context,
 	if (instr.branchTargetInstruction == -1) {
 		kernel->lazyLink(context.PC, instr.a.identifier);
 	}
+	
+	const ir::PTXInstruction& jittedInstr = currentInstruction(context);
+	
 	for (int threadID = 0; threadID < threadCount; threadID++) {
-		if (!context.predicated(threadID, instr)) continue;
-		setRegAsU64(threadID, instr.d.reg, instr.branchTargetInstruction);
+		if (!context.predicated(threadID, jittedInstr)) continue;
+		setRegAsU64(threadID, jittedInstr.d.reg,
+			jittedInstr.branchTargetInstruction);
 	}
 }
 
@@ -7123,7 +7129,6 @@ void executive::CooperativeThreadArray::eval_Set(CTAContext &context,
 					case PTXInstruction::Leu:
 					case PTXInstruction::Gtu:
 					case PTXInstruction::Geu:
-					case PTXInstruction::Num:
 					case PTXInstruction::Nan:
 						// if either is NaN, set t to true
 						t = (std::isnan(a) || std::isnan(b) || t);

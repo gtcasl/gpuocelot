@@ -259,7 +259,8 @@ void executive::EmulatedKernel::constructInstructionSequence() {
 		// every basic block with multiple predecessors gets a reconverge instruction
 		if ((*bb_it)->predecessors.size() > 1) {
 			report("inserted reconverge into " << (*bb_it)->label);
-			(*bb_it)->instructions.push_back(ir::PTXInstruction(ir::PTXInstruction::Reconverge).clone());
+			(*bb_it)->instructions.push_back(
+				ir::PTXInstruction(ir::PTXInstruction::Reconverge).clone());
 		}
 #endif
 	}
@@ -294,7 +295,8 @@ void executive::EmulatedKernel::constructInstructionSequence() {
 		report("  blockPCRange[" << (*bb_it)->label << "] = " << lastPC);
 		
 		// trivial TF
-		threadFrontiers[(int)lastPC] = std::make_pair<int,int>((int)lastPC+1, (int)lastPC+1);
+		threadFrontiers[(int)lastPC] = std::make_pair<int,int>(
+			(int)lastPC+1, (int)lastPC+1);
 
 		if (n) {
 			basicBlockMap[lastPC] = (*bb_it)->label;
@@ -315,7 +317,7 @@ void executive::EmulatedKernel::constructInstructionSequence() {
 			
 			// thread frontier algorithm
 			std::pair<int,int> blockRange = blockPCRange[(*bb_it)->label];
-			std::set< int >::iterator target_it = targets.find(blockRange.first);
+			std::set<int>::iterator target_it = targets.find(blockRange.first);
 			if (target_it != targets.end()) {
 				targets.erase(target_it);
 			}
@@ -341,13 +343,17 @@ void executive::EmulatedKernel::constructInstructionSequence() {
 				instructions[id].branchTargetInstruction = branch->second;
 				//report("   target at " << branch->second);
 
-				int successors[2] = { instructions[id].branchTargetInstruction, blockPCRange[(*bb_it)->label].second + 1 };
+				int successors[2] = { instructions[id].branchTargetInstruction,
+					blockPCRange[(*bb_it)->label].second + 1 };
 				
 				if (targets.size()) {
-					threadFrontiers[blockRange.second].first = *std::min_element(targets.begin(), targets.end()) ; // min of targets
-					threadFrontiers[blockRange.second].second = *std::max_element(targets.begin(), targets.end()) ; // max of targets
+					threadFrontiers[blockRange.second].first =
+						*std::min_element(targets.begin(), targets.end()); // min of targets
+					threadFrontiers[blockRange.second].second =
+						*std::max_element(targets.begin(), targets.end()); // max of targets
 #if REPORT_THREAD_FRONTIERS == 1
-					report("  frontier: " << threadFrontiers[blockRange.second].first << " - "
+					report("  frontier: " 
+						<< threadFrontiers[blockRange.second].first << " - "
 						<< threadFrontiers[blockRange.second].second << "\n");
 #endif
 				}
@@ -891,10 +897,14 @@ void executive::EmulatedKernel::lazyLink(int callPC,
 		int newPC = instructions.size();
 		report("Linking kernel '" << functionName << "' at pc " << newPC);
 		kernelEntryPoints.insert(std::make_pair(newPC, kernel));
+
+		std::string name = functionName;
+
 		instructions.insert(instructions.end(), kernel->instructions.begin(), 
 			kernel->instructions.end());
+
 		entryPoint = functionEntryPoints.insert(
-			std::make_pair(functionName, newPC)).first;
+			std::make_pair(name, newPC)).first;
 	}
 	
 	instructions[callPC].branchTargetInstruction = entryPoint->second;
@@ -1160,7 +1170,8 @@ std::string executive::EmulatedKernel::getInstructionBlock(int PC) const {
 }
 
 /*! \brief accessor for obtaining PCs of first and last instructions in a block */
-std::pair<int,int> executive::EmulatedKernel::getBlockRange(const std::string &label) const { 
+std::pair<int,int> executive::EmulatedKernel::getBlockRange(
+	const std::string &label) const { 
 	return blockPCRange.at(label); 
 }
 

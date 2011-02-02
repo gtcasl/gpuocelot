@@ -67,13 +67,14 @@ int main(int argc, char *argv[])
 	    cudaSetDevice( cutGetMaxGflopsDeviceId());
 
     int n = 16 * 1024 * 1024;
-    int nbytes = n * sizeof(int);
-    int value = 26;
 
 #if 1
     n = 1024;   // reduce workload for emulation
 #endif
     
+    int nbytes = n * sizeof(int);
+    int value = 26;
+
     // allocate host memory
     int *a = 0;
     cutilSafeCall( cudaMallocHost((void**)&a, nbytes) );

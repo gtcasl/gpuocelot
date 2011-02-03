@@ -3483,7 +3483,9 @@ void cuda::CudaRuntime::unregisterModule(const std::string& name) {
 	
 	for (DeviceVector::iterator device = _devices.begin(); 
 		device != _devices.end(); ++device) {
+		(*device)->select();
 		(*device)->unload(name);
+		(*device)->unselect();
 	}
 	
 	_modules.erase(module);

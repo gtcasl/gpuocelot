@@ -355,7 +355,7 @@ namespace executive
 		
 		if(_handle != 0)
 		{
-			checkError(driver::cuModuleUnload(_handle));
+			assert(driver::cuModuleUnload(_handle) == CUDA_SUCCESS );
 		}
 	}
 	
@@ -392,7 +392,6 @@ namespace executive
 		
 		std::string ptxModule = stream.str();
 
-		
 		CUresult result = driver::cuModuleLoadDataEx(&_handle, 
 			stream.str().c_str(), 3, options, optionValues);
 		
@@ -1127,6 +1126,8 @@ namespace executive
 
 	void NVIDIAGPUDevice::load(const ir::Module* module)
 	{
+		assert(selected());
+	
 		if(_modules.count(module->path()) != 0)
 		{
 			Throw("Duplicate module - " << module->path());
@@ -1137,6 +1138,8 @@ namespace executive
 	
 	void NVIDIAGPUDevice::unload(const std::string& name)
 	{
+		assert(selected());
+	
 		ModuleMap::iterator module = _modules.find(name);
 		if(module == _modules.end())
 		{

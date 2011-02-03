@@ -10,7 +10,7 @@
 ## Package specification
 # Revision scheme is MajorFeatureSet.MinorFeatureSet.SVNChangelistNumber
 AC_PREREQ(2.61)
-AC_INIT(ocelot, 1.1.560, gregory.diamos@gatech.edu)
+AC_INIT(ocelot, 1.3.967, gregory.diamos@gatech.edu)
 AM_INIT_AUTOMAKE([])
 ################################################################################
 

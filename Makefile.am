@@ -29,7 +29,7 @@ check_PROGRAMS = TestLexer TestParser \
 	TestPTXToLLVMTranslator TestCudaGlobals TestCudaMalloc TestCudaTexture2D \
 	TestCudaTextureArray TestCudaTexture3D \
 	TestCudaSequence TestLLVMKernels TestDeviceSwitching \
-	TestCalVectorScale TestPTXAssembly TestSequenceDriverAPI TestGenericMemory \
+	TestCalVectorScale TestPTXAssembly \
 	TestFunctionCall TestIndirectFunctionCall TestIndirectFunctionCallOcelot
 EXTRA_PROGRAMS = Module PtxToIlTranslator DFG CFG PTXChecker OcelotServer \
 	TestOcelotServer
@@ -126,10 +126,7 @@ libocelot_la_SOURCES = \
 	ocelot/executive/implementation/LLVMContext.cpp \
 	ocelot/executive/implementation/TextureOperations.cpp \
 	ocelot/executive/implementation/RemoteDevice.cpp \
-	ocelot/cuda/implementation/CudaDriverApi.cpp \
 	ocelot/cuda/implementation/CudaDriver.cpp \
-	ocelot/cuda/implementation/CudaDriverInterface.cpp \
-	ocelot/cuda/implementation/CudaDriverFrontend.cpp \
 	ocelot/cuda/implementation/CudaRuntimeInterface.cpp \
 	ocelot/cuda/implementation/CudaRuntime.cpp \
 	ocelot/cuda/implementation/cuda_runtime.cpp \
@@ -347,24 +344,6 @@ TestCudaSequence_LDFLAGS = -static
 ################################################################################
 
 ################################################################################
-##
-##
-TestSequenceDriverAPI_CXXFLAGS = $(SDK_CFLAGS)
-TestSequenceDriverAPI_SOURCES = ocelot/cuda/test/driver/sequence.cpp
-TestSequenceDriverAPI_LDADD = libocelot.la $(LLVM_LDFLAGS)
-TestSequenceDriverAPI_LDFLAGS = -static
-################################################################################
-
-################################################################################
-##
-##
-TestGenericMemory_CXXFLAGS = $(SDK_CFLAGS)
-TestGenericMemory_SOURCES = ocelot/cuda/test/driver/generic.cpp
-TestGenericMemory_LDADD = libocelot.la $(LLVM_LDFLAGS)
-TestGenericMemory_LDFLAGS = -static
-################################################################################
-
-################################################################################
 ## TestDeviceSwitching
 TestDeviceSwitching_CXXFLAGS = $(INCLUDE) -Wall -ansi \
 	-pedantic -Werror -std=c++0x
@@ -457,8 +436,6 @@ nobase_include_HEADERS = ocelot/api/interface/ocelot.h \
 	ocelot/cuda/interface/CudaRuntimeInterface.h \
 	ocelot/cuda/interface/TraceGeneratingCudaRuntime.h \
 	ocelot/cuda/interface/cuda.h \
-	ocelot/cuda/interface/CudaDriverFrontend.h \
-	ocelot/cuda/interface/CudaDriverInterface.h \
 	ocelot/cuda/interface/CudaRuntimeContext.h \
 	ocelot/trace/interface/TraceEvent.h \
 	ocelot/trace/interface/TraceGenerator.h \

@@ -3662,7 +3662,6 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context,
 					case PTXOperand::f32:
 						{
 							PTXF64 a = operandAsF64(threadID, instr.a);
-							if (a != a) a = 0.0;
 							a = round(a, instr.modifier);
 							if(instr.modifier & PTXInstruction::sat) {
 								if (a != a) a = 0.0;
@@ -3724,8 +3723,10 @@ void executive::CooperativeThreadArray::eval_Cvta(CTAContext &context,
 					break;
 				case ir::PTXInstruction::Shared:
 				{
-					hydrazine::bit_cast(addrSpaceBase, functionCallStack.sharedMemoryPointer());
-					addrSpaceSize = hydrazine::bit_cast<ir::PTXU32>(functionCallStack.sharedMemorySize());
+					hydrazine::bit_cast(addrSpaceBase, 
+						functionCallStack.sharedMemoryPointer());
+					addrSpaceSize = hydrazine::bit_cast<ir::PTXU32>(
+						functionCallStack.sharedMemorySize());
 				}
 					break;
 				case ir::PTXInstruction::Local:

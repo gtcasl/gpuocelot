@@ -118,7 +118,7 @@ std::string ir::PTXInstruction::toString( SurfaceQuery query ) {
 std::string ir::PTXInstruction::toString( FormatMode mode ) {
 	switch (mode) {
 		case Unformatted: return ".b";
-		case Formatted: return ".p";
+		case Formatted:   return ".p";
 		case FormatMode_Invalid: break;
 		default: break;
 	}
@@ -151,17 +151,31 @@ std::string ir::PTXInstruction::roundingMode( Modifier modifier ) {
 std::string ir::PTXInstruction::modifierString( unsigned int modifier, 
 	CarryFlag carry ) {
 	std::string result;
-	switch( modifier ) {
-		case approx: return result += "approx."; break;
-		case wide:   return result += "wide.";   break;
-		case hi:     return result += "hi.";     break;
-		case lo:     return result += "lo.";     break;
-		case rn:     return result += "rn.";     break;
-		case rz:     return result += "rz.";     break;
-		case rm:     return result += "rm.";     break;
-		case rp:     return result += "rp.";     break;
-		default: break;
+	if( modifier & approx ) {
+		result += "approx.";
 	}
+	else if( modifier & wide ) {
+		result += "wide.";
+	}
+	else if( modifier & hi ) {
+		result += "hi.";
+	}
+	else if( modifier & lo ) {
+		result += "lo.";
+	}
+	else if( modifier & rn ) {
+		result += "rn.";
+	}
+	else if( modifier & rz ) {
+		result += "rz.";
+	}
+	else if( modifier & rm ) {
+		result += "rm.";
+	}
+	else if( modifier & rp ) {
+		result += "rp.";
+	}
+
 	if( modifier & ftz ) {
 		result += "ftz.";
 	}
@@ -1888,7 +1902,8 @@ std::string ir::PTXInstruction::guard() const {
 std::string ir::PTXInstruction::toString() const {
 	switch (opcode) {
 		case Abs: {
-			return guard() + "abs." + PTXOperand::toString( type ) + " " 
+			return guard() + "abs." + modifierString(modifier, carry)
+				+ PTXOperand::toString( type ) + " " 
 				+ d.toString() + ", " + a.toString();
 		}
 		case Add: {
@@ -2039,8 +2054,9 @@ std::string ir::PTXInstruction::toString() const {
 			return result;
 		}
 		case Cvta: {
-			std::string result = guard() + "cvta." + toString(addressSpace) + "." + 
-				PTXOperand::toString(type) + " " + d.toString() + ", " + a.toString();
+			std::string result = guard() + "cvta." + toString(addressSpace)
+				+ "." + PTXOperand::toString(type) + " " + d.toString() + ", "
+				+ a.toString();
 			return result;
 		}
 		case Div: {
@@ -2064,9 +2080,10 @@ std::string ir::PTXInstruction::toString() const {
 			return "exit";
 		}
 		case Fma: {
-			std::string result = guard() + "fma." + modifierString(modifier, carry) + 
-				PTXOperand::toString(type) + " " + d.toString() + ", " + a.toString() 
-				+ ", " + b.toString() + ", " + c.toString();
+			std::string result = guard() + "fma."
+				+ modifierString(modifier, carry)
+				+ PTXOperand::toString(type) + " " + d.toString() + ", "
+				+ a.toString() + ", " + b.toString() + ", " + c.toString();
 			return result;
 		}
 		case Isspacep: {
@@ -2126,14 +2143,16 @@ std::string ir::PTXInstruction::toString() const {
 			return result;
 		}
 		case Max: {
-			return guard() + "max." + PTXOperand::toString( type ) + " "
+			return guard() + "max." + modifierString(modifier, carry)
+				+ PTXOperand::toString( type ) + " "
 				+ d.toString() + ", " + a.toString() + ", " + b.toString();
 		}
 		case Membar: {
 			return guard() + "membar." + toString( level );
 		}
 		case Min: {
-			return guard() + "min." + PTXOperand::toString( type ) + " "
+			return guard() + "min." + modifierString(modifier, carry)
+				+ PTXOperand::toString( type ) + " "
 				+ d.toString() + ", " + a.toString() + ", " + b.toString();
 		}
 		case Mov: {
@@ -2155,7 +2174,8 @@ std::string ir::PTXInstruction::toString() const {
 			return result;
 		}
 		case Neg: {
-			return guard() + "neg." + PTXOperand::toString( type ) + " "
+			return guard() + "neg." + modifierString(modifier, carry)
+				+ PTXOperand::toString( type ) + " "
 				+ d.toString() + ", " + a.toString();
 		}
 		case Not: {

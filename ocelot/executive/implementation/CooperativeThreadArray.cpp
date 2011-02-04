@@ -1578,9 +1578,8 @@ void executive::CooperativeThreadArray::eval_Add(CTAContext &context, const PTXI
 				d = (PTXS32)temp;
 			}
 			else if (instr.carry & ir::PTXInstruction::CC) {
-				PTXS64 temp = (PTXS64)a + (PTXS64)b;
-				d = (PTXS32)temp;
-				PTXU32 carry = (temp & 0x100000000LLU) >> 32;
+				PTXS32 carry = 0;
+				hydrazine::add(d, carry, a, b, carry);
 				setRegAsU32(threadID, instr.pq.reg, carry);
 			}
 			else {
@@ -1613,9 +1612,8 @@ void executive::CooperativeThreadArray::eval_Add(CTAContext &context, const PTXI
 			PTXU32 d, a = operandAsU32(threadID, instr.a), 
 				b = operandAsU32(threadID, instr.b);
 			if (instr.carry & ir::PTXInstruction::CC) {
-				PTXS64 temp = (PTXS64)a + (PTXS64)b;
-				d = (PTXS32)temp;
-				PTXU32 carry = (temp & 0x100000000LLU) >> 32;
+				PTXU32 carry = 0;
+				hydrazine::add(d, carry, a, b, carry);
 				setRegAsU32(threadID, instr.pq.reg, carry);
 			}
 			else {
@@ -1650,15 +1648,17 @@ void executive::CooperativeThreadArray::eval_AddC(CTAContext &context,
 	{
 		for (int threadID = 0; threadID  < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;
-			PTXU64 d = 0,
+			PTXU32 d = 0,
 				a = operandAsU32(threadID, instr.a),
 				b = operandAsU32(threadID, instr.b);
 
-			d = a + b + getRegAsU32(threadID, instr.c.reg);
-			setRegAsU32(threadID, instr.d.reg, (PTXU32)d);
+			PTXU32 carry = getRegAsU32(threadID, instr.c.reg);
+			hydrazine::add(d, carry, a, b, carry);
+
+			setRegAsU32(threadID, instr.d.reg, d);
 
 			if (instr.carry & PTXInstruction::CC) {
-				setRegAsU32(threadID, instr.pq.reg, (d & 0x100000000LLU) >> 32);
+				setRegAsU32(threadID, instr.pq.reg, carry);
 			}
 		}
 	} break;
@@ -1667,16 +1667,17 @@ void executive::CooperativeThreadArray::eval_AddC(CTAContext &context,
 	{
 		for (int threadID = 0; threadID  < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;
-			PTXS64 d = 0,
+			PTXS32 d = 0,
 				a = operandAsS32(threadID, instr.a),
 				b = operandAsS32(threadID, instr.b);
-			PTXS64 carry = getRegAsU32(threadID, instr.c.reg);
 
-			d = a + b + carry;
-			setRegAsS32(threadID, instr.d.reg, (PTXS32)d);
+			PTXS32 carry = getRegAsS32(threadID, instr.c.reg);
+			hydrazine::add(d, carry, a, b, carry);
+
+			setRegAsS32(threadID, instr.d.reg, d);
 
 			if (instr.carry & PTXInstruction::CC) {
-				setRegAsU32(threadID, instr.pq.reg, (d & 0x100000000LLU) >> 32);
+				setRegAsS32(threadID, instr.pq.reg, carry);
 			}
 		}
 	} break;
@@ -1689,7 +1690,8 @@ void executive::CooperativeThreadArray::eval_AddC(CTAContext &context,
 /*!
 
 */
-void executive::CooperativeThreadArray::eval_And(CTAContext &context, const PTXInstruction &instr) {
+void executive::CooperativeThreadArray::eval_And(CTAContext &context,
+	const PTXInstruction &instr) {
 	trace();
 	if (instr.type == PTXOperand::pred) {
 		for (int threadID = 0; threadID < threadCount; threadID++) {
@@ -3731,12 +3733,14 @@ void executive::CooperativeThreadArray::eval_Cvta(CTAContext &context,
 					break;
 				case ir::PTXInstruction::Local:
 				{
-					addrSpaceSize = hydrazine::bit_cast<ir::PTXU32>(functionCallStack.localMemorySize());
+					addrSpaceSize = hydrazine::bit_cast<ir::PTXU32>(
+						functionCallStack.localMemorySize());
 				}
 					break;
 				default:
 					throw RuntimeException(
-						"Cvta instruction cannot convert from specified address space to generic addresses",
+						"Cvta instruction cannot convert from specified "
+							"address space to generic addresses",
 						context.PC, instr);
 					break;
 			}
@@ -3746,9 +3750,12 @@ void executive::CooperativeThreadArray::eval_Cvta(CTAContext &context,
 					continue;
 				}
 				ir::PTXU32 localMemPtr;
-				hydrazine::bit_cast(localMemPtr, functionCallStack.localMemoryPointer(tid));
-				ir::PTXU32 srcAddr = operandAsU32(tid, instr.a) + addrSpaceBase + 
-					(instr.addressSpace == ir::PTXInstruction::Local ? localMemPtr : 0);
+				hydrazine::bit_cast(localMemPtr, 
+					functionCallStack.localMemoryPointer(tid));
+				ir::PTXU32 srcAddr = operandAsU32(tid, instr.a)
+					+ addrSpaceBase
+					+ (instr.addressSpace == ir::PTXInstruction::Local
+					? localMemPtr : 0);
 				setRegAsU32(tid, instr.d.reg, srcAddr);
 			}
 		}
@@ -3763,18 +3770,22 @@ void executive::CooperativeThreadArray::eval_Cvta(CTAContext &context,
 					break;
 				case ir::PTXInstruction::Shared:
 				{
-					hydrazine::bit_cast(addrSpaceBase, functionCallStack.sharedMemoryPointer());
-					addrSpaceSize = hydrazine::bit_cast<ir::PTXU64>(functionCallStack.sharedMemorySize());
+					hydrazine::bit_cast(addrSpaceBase, 
+						functionCallStack.sharedMemoryPointer());
+					addrSpaceSize = hydrazine::bit_cast<ir::PTXU64>(
+						functionCallStack.sharedMemorySize());
 				}
 					break;
 				case ir::PTXInstruction::Local:
 				{
-					addrSpaceSize = hydrazine::bit_cast<ir::PTXU64>(functionCallStack.localMemorySize());
+					addrSpaceSize = hydrazine::bit_cast<ir::PTXU64>(
+						functionCallStack.localMemorySize());
 				}
 					break;
 				default:
 					throw RuntimeException(
-						"Cvta instruction cannot convert from specified address space to generic addresses",
+						"Cvta instruction cannot convert from specified "
+							"address space to generic addresses",
 						context.PC, instr);
 					break;
 			}
@@ -3783,8 +3794,9 @@ void executive::CooperativeThreadArray::eval_Cvta(CTAContext &context,
 				if (!context.predicated(tid, instr)) {
 					continue;
 				}
-				ir::PTXU64 srcAddr = operandAsU64(tid, instr.a) + addrSpaceBase + 
-					(instr.addressSpace == ir::PTXInstruction::Local ?
+				ir::PTXU64 srcAddr = operandAsU64(tid, instr.a)
+					+ addrSpaceBase
+					+ (instr.addressSpace == ir::PTXInstruction::Local ?
 						(PTXU64)functionCallStack.localMemoryPointer(tid) : 0);
 				setRegAsU64(tid, instr.d.reg, srcAddr);
 			}
@@ -3792,7 +3804,8 @@ void executive::CooperativeThreadArray::eval_Cvta(CTAContext &context,
 			break;
 			
 		default:
-			throw RuntimeException("cvta instruction not valid for specified data size", context.PC, instr);
+			throw RuntimeException("cvta instruction not valid for "
+				"specified data size", context.PC, instr);
 			break;
 		};
 	}
@@ -3809,18 +3822,22 @@ void executive::CooperativeThreadArray::eval_Cvta(CTAContext &context,
 					break;
 				case ir::PTXInstruction::Shared:
 				{
-					hydrazine::bit_cast(addrSpaceBase, functionCallStack.sharedMemoryPointer());
-					addrSpaceSize = hydrazine::bit_cast<ir::PTXU32>(functionCallStack.sharedMemorySize());
+					hydrazine::bit_cast(addrSpaceBase, 
+						functionCallStack.sharedMemoryPointer());
+					addrSpaceSize = hydrazine::bit_cast<ir::PTXU32>(
+						functionCallStack.sharedMemorySize());
 				}
 					break;
 				case ir::PTXInstruction::Local:
 				{
-					addrSpaceSize = hydrazine::bit_cast<ir::PTXU32>(functionCallStack.localMemorySize());
+					addrSpaceSize = hydrazine::bit_cast<ir::PTXU32>(
+						functionCallStack.localMemorySize());
 				}
 					break;
 				default:
 					throw RuntimeException(
-						"Cvta instruction cannot convert from specified address space to generic addresses",
+						"Cvta instruction cannot convert from specified "
+							"address space to generic addresses",
 						context.PC, instr);
 					break;
 			}
@@ -3834,14 +3851,18 @@ void executive::CooperativeThreadArray::eval_Cvta(CTAContext &context,
 					(instr.addressSpace == ir::PTXInstruction::Local ?
 						(PTXU64)functionCallStack.localMemoryPointer(tid) : 0);
 				
-				if (srcAddr < localAddrSpaceBase && instr.addressSpace != ir::PTXInstruction::Global) {
-					throw RuntimeException("cvta instruction - source address is not part of addressed region",
+				if (srcAddr < localAddrSpaceBase && instr.addressSpace
+					!= ir::PTXInstruction::Global) {
+					throw RuntimeException("cvta instruction - source "
+						"address is not part of addressed region",
 						context.PC, instr);
 					return;
 				}
 				srcAddr -= localAddrSpaceBase;
-				if (srcAddr >= addrSpaceSize && instr.addressSpace != ir::PTXInstruction::Global) {
-					throw RuntimeException("cvta instruction - source address is not part of addressed region",
+				if (srcAddr >= addrSpaceSize && instr.addressSpace
+					!= ir::PTXInstruction::Global) {
+					throw RuntimeException("cvta instruction - source "
+						"address is not part of addressed region",
 						context.PC, instr);
 				}
 				setRegAsU32(tid, instr.d.reg, srcAddr);
@@ -3858,18 +3879,22 @@ void executive::CooperativeThreadArray::eval_Cvta(CTAContext &context,
 					break;
 				case ir::PTXInstruction::Shared:
 				{
-					hydrazine::bit_cast(addrSpaceBase, functionCallStack.sharedMemoryPointer());
-					addrSpaceSize = hydrazine::bit_cast<ir::PTXU64, size_t >(functionCallStack.sharedMemorySize());
+					hydrazine::bit_cast(addrSpaceBase, 
+						functionCallStack.sharedMemoryPointer());
+					addrSpaceSize = hydrazine::bit_cast<ir::PTXU64, size_t >(
+						functionCallStack.sharedMemorySize());
 				}
 					break;
 				case ir::PTXInstruction::Local:
 				{
-					addrSpaceSize = hydrazine::bit_cast<ir::PTXU64, size_t >(functionCallStack.localMemorySize());
+					addrSpaceSize = hydrazine::bit_cast<ir::PTXU64, size_t >(
+						functionCallStack.localMemorySize());
 				}
 					break;
 				default:
 					throw RuntimeException(
-						"Cvta instruction cannot convert from specified address space to generic addresses",
+						"Cvta instruction cannot convert from specified "
+							"address space to generic addresses",
 						context.PC, instr);
 					break;
 			}
@@ -3882,14 +3907,18 @@ void executive::CooperativeThreadArray::eval_Cvta(CTAContext &context,
 				ir::PTXU32 localAddrSpaceBase = addrSpaceBase + 
 					(instr.addressSpace == ir::PTXInstruction::Local ?
 						(PTXU64)functionCallStack.localMemoryPointer(tid) : 0);
-				if (srcAddr < localAddrSpaceBase && instr.addressSpace != ir::PTXInstruction::Global) {
-					throw RuntimeException("cvta instruction - source address is not part of addressed region",
+				if (srcAddr < localAddrSpaceBase && instr.addressSpace
+					!= ir::PTXInstruction::Global) {
+					throw RuntimeException("cvta instruction - "
+						"source address is not part of addressed region",
 						context.PC, instr);
 					return;
 				}
 				srcAddr -= localAddrSpaceBase;
-				if (srcAddr >= addrSpaceSize && instr.addressSpace != ir::PTXInstruction::Global) {
-					throw RuntimeException("cvta instruction - source address is not part of addressed region",
+				if (srcAddr >= addrSpaceSize && instr.addressSpace
+					!= ir::PTXInstruction::Global) {
+					throw RuntimeException("cvta instruction - "
+						"source address is not part of addressed region",
 						context.PC, instr);
 				}
 				setRegAsU64(tid, instr.d.reg, srcAddr);
@@ -3898,7 +3927,8 @@ void executive::CooperativeThreadArray::eval_Cvta(CTAContext &context,
 			break;
 			
 		default:
-			throw RuntimeException("cvta instruction not valid for specified data size", context.PC, instr);
+			throw RuntimeException("cvta instruction not valid for "
+				"specified data size", context.PC, instr);
 			break;
 		};
 	}
@@ -5186,7 +5216,7 @@ void executive::CooperativeThreadArray::eval_Membar(CTAContext &context, const P
 	/*! No need to do anything here. */
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 /*!
 
@@ -8237,15 +8267,10 @@ void executive::CooperativeThreadArray::eval_Sub(CTAContext &context,
 				d = ld;
 			}
 			else if (instr.carry & ir::PTXInstruction::CC) {
-				PTXS64 la = a;
-				PTXS64 lb = b;
-
-				PTXS64 ld = la - lb;
-
-				PTXU32 carry = (0x100000000LLU & ld) >> 32;
-				setRegAsU32(threadID, instr.pq.reg, carry);
-			
-				d = ld;
+				PTXS32 carry = 0;
+				
+				hydrazine::add(d, carry, a, -b, carry);
+				setRegAsS32(threadID, instr.pq.reg, carry);
 			}
 			else {
 				d = a - b;
@@ -8282,15 +8307,10 @@ void executive::CooperativeThreadArray::eval_Sub(CTAContext &context,
 				b = operandAsU32(threadID, instr.b);
 
 			if (instr.carry & ir::PTXInstruction::CC) {
-				PTXS64 la = a;
-				PTXS64 lb = b;
-
-				PTXS64 ld = la - lb;
-
-				PTXU32 carry = (0x100000000LLU & ld) >> 32;
+				PTXU32 carry = 0;
+				
+				hydrazine::add(d, carry, a, -b, carry);
 				setRegAsU32(threadID, instr.pq.reg, carry);
-			
-				d = ld;
 			}
 			else {
 				d = a - b;
@@ -8326,15 +8346,18 @@ void executive::CooperativeThreadArray::eval_SubC(CTAContext &context,
 	{
 		for (int threadID = 0; threadID  < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;
-			PTXU64 d = 0,
+			PTXU32 d = 0,
 				a = operandAsU32(threadID, instr.a),
 				b = operandAsU32(threadID, instr.b);
 
-			d = a - b + getRegAsU32(threadID, instr.c.reg);
-			setRegAsU32(threadID, instr.d.reg, (PTXU32)d);
+			PTXU32 carry = getRegAsU32(threadID, instr.c.reg) - 1;
+
+			hydrazine::add(d, carry, a, -b, carry);
+
+			setRegAsU32(threadID, instr.d.reg, d);
 
 			if (instr.carry & PTXInstruction::CC) {
-				setRegAsU32(threadID, instr.pq.reg, (d & 0x100000000LLU) >> 32);
+				setRegAsU32(threadID, instr.pq.reg, carry);
 			}
 		}
 	} break;
@@ -8343,15 +8366,18 @@ void executive::CooperativeThreadArray::eval_SubC(CTAContext &context,
 	{
 		for (int threadID = 0; threadID  < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;
-			PTXS64 d = 0,
+			PTXS32 d = 0,
 				a = operandAsS32(threadID, instr.a),
 				b = operandAsS32(threadID, instr.b);
 
-			d = a - b + getRegAsU32(threadID, instr.c.reg);
-			setRegAsS32(threadID, instr.d.reg, (PTXS32)d);
+			PTXS32 carry = getRegAsS32(threadID, instr.c.reg) - 1;
+
+			hydrazine::add(d, carry, a, -b, carry);
+
+			setRegAsS32(threadID, instr.d.reg, d);
 
 			if (instr.carry & PTXInstruction::CC) {
-				setRegAsU32(threadID, instr.pq.reg, (d & 0x100000000LLU) >> 32);
+				setRegAsS32(threadID, instr.pq.reg, carry);
 			}
 		}
 	} break;

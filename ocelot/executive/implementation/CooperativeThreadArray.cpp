@@ -8267,15 +8267,10 @@ void executive::CooperativeThreadArray::eval_Sub(CTAContext &context,
 				d = ld;
 			}
 			else if (instr.carry & ir::PTXInstruction::CC) {
-				PTXS64 la = a;
-				PTXS64 lb = b;
-
-				PTXS64 ld = la - lb;
-
-				PTXU32 carry = (0x100000000LLU & ld) >> 32;
-				setRegAsU32(threadID, instr.pq.reg, carry);
-			
-				d = ld;
+				PTXS32 carry = 0;
+				
+				hydrazine::add(d, carry, a, -b, carry);
+				setRegAsS32(threadID, instr.pq.reg, carry);
 			}
 			else {
 				d = a - b;
@@ -8312,15 +8307,10 @@ void executive::CooperativeThreadArray::eval_Sub(CTAContext &context,
 				b = operandAsU32(threadID, instr.b);
 
 			if (instr.carry & ir::PTXInstruction::CC) {
-				PTXS64 la = a;
-				PTXS64 lb = b;
-
-				PTXS64 ld = la - lb;
-
-				PTXU32 carry = (0x100000000LLU & ld) >> 32;
+				PTXU32 carry = 0;
+				
+				hydrazine::add(d, carry, a, -b, carry);
 				setRegAsU32(threadID, instr.pq.reg, carry);
-			
-				d = ld;
 			}
 			else {
 				d = a - b;
@@ -8356,15 +8346,18 @@ void executive::CooperativeThreadArray::eval_SubC(CTAContext &context,
 	{
 		for (int threadID = 0; threadID  < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;
-			PTXU64 d = 0,
+			PTXU32 d = 0,
 				a = operandAsU32(threadID, instr.a),
 				b = operandAsU32(threadID, instr.b);
 
-			d = a - b + getRegAsU32(threadID, instr.c.reg);
-			setRegAsU32(threadID, instr.d.reg, (PTXU32)d);
+			PTXU32 carry = getRegAsU32(threadID, instr.c.reg) - 1;
+
+			hydrazine::add(d, carry, a, -b, carry);
+
+			setRegAsU32(threadID, instr.d.reg, d);
 
 			if (instr.carry & PTXInstruction::CC) {
-				setRegAsU32(threadID, instr.pq.reg, (d & 0x100000000LLU) >> 32);
+				setRegAsU32(threadID, instr.pq.reg, carry);
 			}
 		}
 	} break;
@@ -8373,15 +8366,18 @@ void executive::CooperativeThreadArray::eval_SubC(CTAContext &context,
 	{
 		for (int threadID = 0; threadID  < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;
-			PTXS64 d = 0,
+			PTXS32 d = 0,
 				a = operandAsS32(threadID, instr.a),
 				b = operandAsS32(threadID, instr.b);
 
-			d = a - b + getRegAsU32(threadID, instr.c.reg);
-			setRegAsS32(threadID, instr.d.reg, (PTXS32)d);
+			PTXS32 carry = getRegAsS32(threadID, instr.c.reg) - 1;
+
+			hydrazine::add(d, carry, a, -b, carry);
+
+			setRegAsS32(threadID, instr.d.reg, d);
 
 			if (instr.carry & PTXInstruction::CC) {
-				setRegAsU32(threadID, instr.pq.reg, (d & 0x100000000LLU) >> 32);
+				setRegAsS32(threadID, instr.pq.reg, carry);
 			}
 		}
 	} break;

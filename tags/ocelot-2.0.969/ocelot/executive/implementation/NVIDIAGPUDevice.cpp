@@ -47,7 +47,7 @@
 #define REPORT_PTX 1
 
 // if 1, adds line numbers to reported PTX
-#define REPORT_PTX_WITH_LINENUMBERS 0
+#define REPORT_PTX_WITH_LINENUMBERS 1
 
 ////////////////////////////////////////////////////////////////////////////////
 

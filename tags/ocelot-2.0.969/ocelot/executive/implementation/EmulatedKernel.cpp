@@ -967,7 +967,7 @@ void executive::EmulatedKernel::initializeStackMemory() {
 		for(ParameterVector::iterator i_it = arguments.begin();
 			i_it != arguments.end(); ++i_it) {
 			ir::Parameter& parameter = *i_it;
-			// align parameter memory
+			// align parameter memory
 			unsigned int padding = parameter.getAlignment() 
 				- ( _parameterMemorySize % parameter.getAlignment() );
 			padding = (parameter.getAlignment() == padding) ? 0 : padding;

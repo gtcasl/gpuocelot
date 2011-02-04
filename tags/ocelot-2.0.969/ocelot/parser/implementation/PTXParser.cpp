@@ -55,16 +55,20 @@ namespace parser
 		// it seems calls can ignore return types
 		bool returnTypesEqual = true;
 		
-		if (!(t.returnTypes.size() == 1 && t.returnTypes[0] == ir::PTXOperand::DataType::_)) {
+		if (!(t.returnTypes.size() == 1 && t.returnTypes[0]
+			== ir::PTXOperand::DataType::_)) {
 		
-			FunctionPrototype::TypeVector::const_iterator callee_it = t.returnTypes.begin(), 
+			FunctionPrototype::TypeVector::const_iterator
+				callee_it = t.returnTypes.begin(), 
 				prototype_it = returnTypes.begin();
 			for (; 
 				returnTypesEqual && 
-					callee_it != t.returnTypes.end() && prototype_it != returnTypes.end();
+					callee_it != t.returnTypes.end()
+					&& prototype_it != returnTypes.end();
 				++callee_it, ++prototype_it) {
 			
-				if (*callee_it != ir::PTXOperand::DataType::_ && *callee_it != *prototype_it) {
+				if (*callee_it != ir::PTXOperand::DataType::_
+					&& *callee_it != *prototype_it) {
 					returnTypesEqual =false;
 				}
 			}

@@ -3090,15 +3090,15 @@ std::string testCarry_PTX(ir::PTXOperand::DataType type, bool sub)
 	
 	if(sub)
 	{
-		stream << "\tsub.cc" << typeString << " %r2, %r1, %r0;\n";
+		stream << "\tsub.cc"  << typeString << " %r2, %r1, %r0;\n";
 		stream << "\tsubc.cc" << typeString << " %r3, %r2, %r0;\n";
-		stream << "\tsubc" << typeString << " %r4, %r3, %r0;\n";
+		stream << "\tsubc"    << typeString << " %r4, %r3, %r0;\n";
 	}
 	else
 	{
-		stream << "\tadd.cc" << typeString << " %r2, %r1, %r0;\n";
+		stream << "\tadd.cc"  << typeString << " %r2, %r1, %r0;\n";
 		stream << "\taddc.cc" << typeString << " %r3, %r2, %r0;\n";
-		stream << "\taddc" << typeString << " %r4, %r3, %r0;\n";
+		stream << "\taddc"    << typeString << " %r4, %r3, %r0;\n";
 	}
 	
 	stream << "\tst.global" << typeString << " [%rOut], %r4;\n";
@@ -3116,30 +3116,20 @@ void testCarry_REF(void* output, void* input)
 	
 	type result = 0;
 	
-	long long int t0 = r0;
-	long long int t1 = r1;
+	type t0 = r0;
+	type t1 = r1;
 	
-	long long int tresult = 0;
-	long long int carry = 0;
+	type carry   = 0;
+	type tresult = 0;
+	
+	if(sub) t0 = -t0;
+	hydrazine::add(tresult, carry, t1, t0, carry);
+	if(sub) carry += -1;
+	hydrazine::add(tresult, carry, tresult, t0, carry);
+	if(sub) carry += -1;
+	hydrazine::add(tresult, carry, tresult, t0, carry);
 
-	if(sub)
-	{
-		tresult = t1 - t0;
-		carry = (tresult & 0x100000000LLU) >> 32;
-		tresult = (type)tresult - t0 + carry;
-		carry = (tresult & 0x100000000LLU) >> 32;
-		tresult = (type)tresult - t0 + carry;
-	}
-	else
-	{
-		tresult = t1 + t0;
-		carry = (tresult & 0x100000000LLU) >> 32;
-		tresult = (type)tresult + t0 + carry;
-		carry = (tresult & 0x100000000LLU) >> 32;
-		tresult = (type)tresult + t0 + carry;
-	}
-
-	result = (type)tresult;
+	result = tresult;
 	
 	setParameter(output, 0, result);
 }

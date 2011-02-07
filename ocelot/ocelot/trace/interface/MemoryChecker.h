@@ -44,12 +44,6 @@ namespace trace
 			/*! \brief The last allocation referenced */
 			Allocation _cache;
 			
-			/*! \brief Parameter memory allocation */
-			Allocation _parameter;
-			
-			/*! \brief Argument memory allocation */
-			Allocation _argument;
-			
 			/*! \brief Shared memory allocation */
 			Allocation _shared;
 			

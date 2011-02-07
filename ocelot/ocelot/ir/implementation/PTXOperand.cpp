@@ -726,6 +726,7 @@ std::string ir::PTXOperand::toString() const {
 				}
 				else {
 					std::stringstream stream;
+					if( condition == InvPred ) stream << "!";
 					stream << "%p" << reg;
 					return stream.str();
 				}

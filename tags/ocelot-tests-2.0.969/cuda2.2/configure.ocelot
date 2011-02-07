@@ -32,7 +32,7 @@
 		runtimeApiTrace: "trace/CudaAPI.trace"
 	},
 	executive: {
-		devices: [ remote, llvm, nvidia, emulated ],
+		devices: [ emulated ],
 		optimizationLevel: none,
 		port: 2011,
 		host: "127.0.0.1",

@@ -1,0 +1,69 @@
+	.version 1.4
+	.target sm_10, map_f64_to_f32
+	// compiled with /usr/local/cuda3.2/cuda/open64/lib//be
+	// nvopencc 3.2 built on 2010-09-08
+
+	//-----------------------------------------------------------
+	// Compiling /tmp/tmpxft_0000572b_00000000-9_threadMigration.cpp3.i (/tmp/ccBI#.NkQHBa)
+	//-----------------------------------------------------------
+
+	//-----------------------------------------------------------
+	// Options:
+	//-----------------------------------------------------------
+	//  Target:ptx, ISA:sm_10, Endian:little, Pointer Size:64
+	//  -O3	(Optimization level)
+	//  -g0	(Debug level)
+	//  -m2	(Report advisories)
+	//-----------------------------------------------------------
+
+	.file	1	"<command-line>"
+	.file	2	"/tmp/tmpxft_0000572b_00000000-8_threadMigration.cudafe2.gpu"
+	.file	3	"/usr/lib/gcc/x86_64-linux-gnu/4.4.3/include/stddef.h"
+	.file	4	"/usr/local/cuda3.2/cuda/bin/../include/crt/device_runtime.h"
+	.file	5	"/usr/local/cuda3.2/cuda/bin/../include/host_defines.h"
+	.file	6	"/usr/local/cuda3.2/cuda/bin/../include/builtin_types.h"
+	.file	7	"/usr/local/cuda3.2/cuda/bin/../include/device_types.h"
+	.file	8	"/usr/local/cuda3.2/cuda/bin/../include/driver_types.h"
+	.file	9	"/usr/local/cuda3.2/cuda/bin/../include/surface_types.h"
+	.file	10	"/usr/local/cuda3.2/cuda/bin/../include/texture_types.h"
+	.file	11	"/usr/local/cuda3.2/cuda/bin/../include/vector_types.h"
+	.file	12	"/usr/local/cuda3.2/cuda/bin/../include/device_launch_parameters.h"
+	.file	13	"/usr/local/cuda3.2/cuda/bin/../include/crt/storage_class.h"
+	.file	14	"/usr/include/bits/types.h"
+	.file	15	"/usr/include/time.h"
+	.file	16	"/usr/local/cuda3.2/cuda/bin/../include/texture_fetch_functions.h"
+	.file	17	"/usr/local/cuda3.2/cuda/bin/../include/common_functions.h"
+	.file	18	"/usr/local/cuda3.2/cuda/bin/../include/math_functions.h"
+	.file	19	"/usr/local/cuda3.2/cuda/bin/../include/math_constants.h"
+	.file	20	"/usr/local/cuda3.2/cuda/bin/../include/device_functions.h"
+	.file	21	"/usr/local/cuda3.2/cuda/bin/../include/sm_11_atomic_functions.h"
+	.file	22	"/usr/local/cuda3.2/cuda/bin/../include/sm_12_atomic_functions.h"
+	.file	23	"/usr/local/cuda3.2/cuda/bin/../include/sm_13_double_functions.h"
+	.file	24	"/usr/local/cuda3.2/cuda/bin/../include/sm_20_atomic_functions.h"
+	.file	25	"/usr/local/cuda3.2/cuda/bin/../include/sm_20_intrinsics.h"
+	.file	26	"/usr/local/cuda3.2/cuda/bin/../include/surface_functions.h"
+	.file	27	"/usr/local/cuda3.2/cuda/bin/../include/math_functions_dbl_ptx1.h"
+	.file	28	"threadMigration.cu"
+
+
+	.entry kernelFunction (
+		.param .u64 __cudaparm_kernelFunction_input)
+	{
+	.reg .u32 %r<5>;
+	.reg .u64 %rd<6>;
+	.loc	28	14	0
+$LDWbegin_kernelFunction:
+	.loc	28	17	0
+	cvt.u32.u16 	%r1, %tid.x;
+	mov.s32 	%r2, 32;
+	sub.s32 	%r3, %r2, %r1;
+	ld.param.u64 	%rd1, [__cudaparm_kernelFunction_input];
+	cvt.u64.u32 	%rd2, %r1;
+	mul.wide.u32 	%rd3, %r1, 4;
+	add.u64 	%rd4, %rd1, %rd3;
+	st.global.s32 	[%rd4+0], %r3;
+	.loc	28	18	0
+	exit;
+$LDWend_kernelFunction:
+	} // kernelFunction
+

@@ -1,0 +1,248 @@
+	.version 2.1
+	.target sm_20
+	// compiled with /usr/local/cuda3.1/cuda/open64/lib//be
+	// nvopencc 3.1 built on 2010-06-07
+
+	.visible .func (.param .u32 __cudaretf__Z8buildSumPf) _Z8buildSumPf (.param .u64 __cudaparmf1__Z8buildSumPf)
+
+	.visible .func _Z16scanRootToLeavesPfj (.param .u64 __cudaparmf1__Z16scanRootToLeavesPfj, .param .u32 __cudaparmf2__Z16scanRootToLeavesPfj)
+
+	//-----------------------------------------------------------
+	// Compiling /tmp/tmpxft_00001fef_00000000-7_scanLargeArray_kernel.cpp3.i (/tmp/ccBI#.b0IM4u)
+	//-----------------------------------------------------------
+
+	//-----------------------------------------------------------
+	// Options:
+	//-----------------------------------------------------------
+	//  Target:ptx, ISA:sm_20, Endian:little, Pointer Size:64
+	//  -O3	(Optimization level)
+	//  -g0	(Debug level)
+	//  -m2	(Report advisories)
+	//-----------------------------------------------------------
+
+	.file	1	"<command-line>"
+	.file	2	"/tmp/tmpxft_00001fef_00000000-6_scanLargeArray_kernel.cudafe2.gpu"
+	.file	3	"/usr/lib/gcc/x86_64-linux-gnu/4.4.3/include/stddef.h"
+	.file	4	"/usr/local/cuda3.1/cuda/bin/../include/crt/device_runtime.h"
+	.file	5	"/usr/local/cuda3.1/cuda/bin/../include/host_defines.h"
+	.file	6	"/usr/local/cuda3.1/cuda/bin/../include/builtin_types.h"
+	.file	7	"/usr/local/cuda3.1/cuda/bin/../include/device_types.h"
+	.file	8	"/usr/local/cuda3.1/cuda/bin/../include/driver_types.h"
+	.file	9	"/usr/local/cuda3.1/cuda/bin/../include/surface_types.h"
+	.file	10	"/usr/local/cuda3.1/cuda/bin/../include/texture_types.h"
+	.file	11	"/usr/local/cuda3.1/cuda/bin/../include/vector_types.h"
+	.file	12	"/usr/local/cuda3.1/cuda/bin/../include/device_launch_parameters.h"
+	.file	13	"/usr/local/cuda3.1/cuda/bin/../include/crt/storage_class.h"
+	.file	14	"/usr/include/bits/types.h"
+	.file	15	"/usr/include/time.h"
+	.file	16	"/home/andrew/repositories/gpuocelot/tests/cuda2.2/tests/scanLargeArray/scanLargeArray_kernel.cu"
+	.file	17	"/usr/local/cuda3.1/cuda/bin/../include/common_functions.h"
+	.file	18	"/usr/local/cuda3.1/cuda/bin/../include/math_functions.h"
+	.file	19	"/usr/local/cuda3.1/cuda/bin/../include/math_constants.h"
+	.file	20	"/usr/local/cuda3.1/cuda/bin/../include/device_functions.h"
+	.file	21	"/usr/local/cuda3.1/cuda/bin/../include/sm_11_atomic_functions.h"
+	.file	22	"/usr/local/cuda3.1/cuda/bin/../include/sm_12_atomic_functions.h"
+	.file	23	"/usr/local/cuda3.1/cuda/bin/../include/sm_13_double_functions.h"
+	.file	24	"/usr/local/cuda3.1/cuda/bin/../include/sm_20_atomic_functions.h"
+	.file	25	"/usr/local/cuda3.1/cuda/bin/../include/sm_20_intrinsics.h"
+	.file	26	"/usr/local/cuda3.1/cuda/bin/../include/surface_functions.h"
+	.file	27	"/usr/local/cuda3.1/cuda/bin/../include/texture_fetch_functions.h"
+	.file	28	"/usr/local/cuda3.1/cuda/bin/../include/math_functions_dbl_ptx3.h"
+
+
+	.visible .func (.param .u32 __cudaretf__Z8buildSumPf) _Z8buildSumPf (.param .u64 __cudaparmf1__Z8buildSumPf)
+	{
+	.reg .u32 %r<20>;
+	.reg .u64 %rd<10>;
+	.reg .f32 %f<5>;
+	.reg .pred %p<5>;
+	.loc	16	155	0
+$LDWbegin__Z8buildSumPf:
+	ld.param.u64 	%rd1, [__cudaparmf1__Z8buildSumPf];
+	mov.s64 	%rd2, %rd1;
+	.loc	16	160	0
+	cvt.s32.u32 	%r1, %ntid.x;
+	mov.s32 	%r2, %r1;
+	mov.u32 	%r3, 0;
+	setp.le.s32 	%p1, %r1, %r3;
+	@%p1 bra 	$Lt_0_3586;
+	mov.u32 	%r4, %tid.x;
+	mov.u32 	%r5, 1;
+$Lt_0_2562:
+ //<loop> Loop body line 162
+	.loc	16	162	0
+	bar.sync 	0;
+	setp.le.u32 	%p2, %r2, %r4;
+	@%p2 bra 	$Lt_0_2818;
+ //<loop> Part of loop body line 162, head labeled $Lt_0_2562
+	.loc	16	173	0
+	mov.s32 	%r6, 2;
+	mul24.lo.s32 	%r7, %r6, %r5;
+	mul24.lo.s32 	%r8, %r7, %r4;
+	add.u32 	%r9, %r8, %r5;
+	add.u32 	%r10, %r9, %r5;
+	sub.s32 	%r11, %r10, 1;
+	shr.s32 	%r12, %r11, 4;
+	add.s32 	%r13, %r10, %r12;
+	cvt.s64.s32 	%rd3, %r13;
+	mul.wide.s32 	%rd4, %r13, 4;
+	add.u64 	%rd5, %rd2, %rd4;
+	ld.f32 	%f1, [%rd5+-4];
+	sub.s32 	%r14, %r9, 1;
+	shr.s32 	%r15, %r14, 4;
+	add.s32 	%r16, %r9, %r15;
+	cvt.s64.s32 	%rd6, %r16;
+	mul.wide.s32 	%rd7, %r16, 4;
+	add.u64 	%rd8, %rd2, %rd7;
+	ld.f32 	%f2, [%rd8+-4];
+	add.f32 	%f3, %f1, %f2;
+	st.f32 	[%rd5+-4], %f3;
+$Lt_0_2818:
+ //<loop> Part of loop body line 162, head labeled $Lt_0_2562
+	.loc	16	176	0
+	mul.lo.u32 	%r5, %r5, 2;
+	.loc	16	160	0
+	shr.s32 	%r2, %r2, 1;
+	mov.u32 	%r17, 0;
+	setp.gt.s32 	%p3, %r2, %r17;
+	@%p3 bra 	$Lt_0_2562;
+	bra.uni 	$Lt_0_2050;
+$Lt_0_3586:
+	mov.u32 	%r5, 1;
+$Lt_0_2050:
+	.loc	16	179	0
+	mov.s32 	%r18, %r5;
+	st.param.u32 	[__cudaretf__Z8buildSumPf], %r18;
+	ret;
+$LDWend__Z8buildSumPf:
+	} // _Z8buildSumPf
+
+	.visible .func _Z16scanRootToLeavesPfj (.param .u64 __cudaparmf1__Z16scanRootToLeavesPfj, .param .u32 __cudaparmf2__Z16scanRootToLeavesPfj)
+	{
+	.reg .u32 %r<19>;
+	.reg .u64 %rd<10>;
+	.reg .f32 %f<6>;
+	.reg .pred %p<5>;
+	.loc	16	183	0
+$LDWbegin__Z16scanRootToLeavesPfj:
+	ld.param.u64 	%rd1, [__cudaparmf1__Z16scanRootToLeavesPfj];
+	mov.s64 	%rd2, %rd1;
+	ld.param.u32 	%r1, [__cudaparmf2__Z16scanRootToLeavesPfj];
+	mov.s32 	%r2, %r1;
+	mov.u32 	%r3, %ntid.x;
+	mov.u32 	%r4, 1;
+	setp.lt.u32 	%p1, %r3, %r4;
+	@%p1 bra 	$Lt_1_2050;
+	mov.u32 	%r5, %tid.x;
+	mov.s32 	%r6, 1;
+$Lt_1_2562:
+ //<loop> Loop body line 183, nesting depth: 1, estimated iterations: unknown
+	.loc	16	189	0
+	shr.u32 	%r2, %r2, 1;
+	.loc	16	191	0
+	bar.sync 	0;
+	setp.le.u32 	%p2, %r6, %r5;
+	@%p2 bra 	$Lt_1_2818;
+ //<loop> Part of loop body line 183, head labeled $Lt_1_2562
+	.loc	16	202	0
+	mov.s32 	%r7, 2;
+	mul24.lo.s32 	%r8, %r7, %r2;
+	mul24.lo.s32 	%r9, %r8, %r5;
+	add.u32 	%r10, %r9, %r2;
+	sub.s32 	%r11, %r10, 1;
+	shr.s32 	%r12, %r11, 4;
+	add.s32 	%r13, %r10, %r12;
+	cvt.s64.s32 	%rd3, %r13;
+	mul.wide.s32 	%rd4, %r13, 4;
+	add.u64 	%rd5, %rd2, %rd4;
+	ld.f32 	%f1, [%rd5+-4];
+	.loc	16	203	0
+	add.u32 	%r14, %r10, %r2;
+	sub.s32 	%r15, %r14, 1;
+	shr.s32 	%r16, %r15, 4;
+	add.s32 	%r17, %r14, %r16;
+	cvt.s64.s32 	%rd6, %r17;
+	mul.wide.s32 	%rd7, %r17, 4;
+	add.u64 	%rd8, %rd2, %rd7;
+	ld.f32 	%f2, [%rd8+-4];
+	st.f32 	[%rd5+-4], %f2;
+	.loc	16	204	0
+	ld.f32 	%f3, [%rd8+-4];
+	add.f32 	%f4, %f3, %f1;
+	st.f32 	[%rd8+-4], %f4;
+$Lt_1_2818:
+ //<loop> Part of loop body line 183, head labeled $Lt_1_2562
+	.loc	16	187	0
+	mul.lo.s32 	%r6, %r6, 2;
+	setp.le.u32 	%p3, %r6, %r3;
+	@%p3 bra 	$Lt_1_2562;
+$Lt_1_2050:
+	.loc	16	207	0
+	ret;
+$LDWend__Z16scanRootToLeavesPfj:
+	} // _Z16scanRootToLeavesPfj
+
+	.entry _Z10uniformAddPfS_iii (
+		.param .u64 __cudaparm__Z10uniformAddPfS_iii_g_data,
+		.param .u64 __cudaparm__Z10uniformAddPfS_iii_uniforms,
+		.param .s32 __cudaparm__Z10uniformAddPfS_iii_n,
+		.param .s32 __cudaparm__Z10uniformAddPfS_iii_blockOffset,
+		.param .s32 __cudaparm__Z10uniformAddPfS_iii_baseIndex)
+	{
+	.reg .u32 %r<16>;
+	.reg .u64 %rd<13>;
+	.reg .f32 %f<8>;
+	.reg .pred %p<4>;
+	.shared .f32 __cuda_local_var_24208_35_uni;
+	.loc	16	248	0
+$LDWbegin__Z10uniformAddPfS_iii:
+	cvt.s32.u32 	%r1, %ctaid.x;
+	mov.u32 	%r2, %tid.x;
+	mov.u32 	%r3, 0;
+	setp.ne.u32 	%p1, %r2, %r3;
+	@%p1 bra 	$Lt_2_1794;
+	.loc	16	252	0
+	ld.param.u64 	%rd1, [__cudaparm__Z10uniformAddPfS_iii_uniforms];
+	ld.param.u32 	%r4, [__cudaparm__Z10uniformAddPfS_iii_blockOffset];
+	add.u32 	%r5, %r1, %r4;
+	cvt.u64.u32 	%rd2, %r5;
+	mul.wide.u32 	%rd3, %r5, 4;
+	add.u64 	%rd4, %rd1, %rd3;
+	ldu.global.f32 	%f1, [%rd4+0];
+	st.shared.f32 	[__cuda_local_var_24208_35_uni], %f1;
+$Lt_2_1794:
+	.loc	16	256	0
+	bar.sync 	0;
+	.loc	16	259	0
+	mov.u32 	%r6, %ntid.x;
+	shl.b32 	%r7, %r6, 1;
+	mul24.lo.s32 	%r8, %r1, %r7;
+	ld.param.s32 	%r9, [__cudaparm__Z10uniformAddPfS_iii_baseIndex];
+	add.s32 	%r10, %r9, %r8;
+	add.u32 	%r11, %r10, %r2;
+	ld.param.u64 	%rd5, [__cudaparm__Z10uniformAddPfS_iii_g_data];
+	cvt.u64.u32 	%rd6, %r11;
+	mul.wide.u32 	%rd7, %r11, 4;
+	add.u64 	%rd8, %rd5, %rd7;
+	ld.shared.f32 	%f2, [__cuda_local_var_24208_35_uni];
+	ld.global.f32 	%f3, [%rd8+0];
+	add.f32 	%f4, %f3, %f2;
+	st.global.f32 	[%rd8+0], %f4;
+	ld.param.u32 	%r12, [__cudaparm__Z10uniformAddPfS_iii_n];
+	add.u32 	%r13, %r6, %r2;
+	setp.le.u32 	%p2, %r12, %r13;
+	@%p2 bra 	$Lt_2_2306;
+	.loc	16	260	0
+	add.u32 	%r14, %r11, %r6;
+	cvt.u64.u32 	%rd9, %r14;
+	mul.wide.u32 	%rd10, %r14, 4;
+	add.u64 	%rd11, %rd5, %rd10;
+	ld.global.f32 	%f5, [%rd11+0];
+	add.f32 	%f6, %f5, %f2;
+	st.global.f32 	[%rd11+0], %f6;
+$Lt_2_2306:
+	.loc	16	261	0
+	exit;
+$LDWend__Z10uniformAddPfS_iii:
+	} // _Z10uniformAddPfS_iii
+

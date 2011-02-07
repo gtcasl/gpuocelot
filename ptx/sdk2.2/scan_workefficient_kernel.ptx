@@ -1,0 +1,181 @@
+	.version 2.1
+	.target sm_20
+	// compiled with /usr/local/cuda3.1/cuda/open64/lib//be
+	// nvopencc 3.1 built on 2010-06-07
+
+	//-----------------------------------------------------------
+	// Compiling /tmp/tmpxft_00001dbb_00000000-7_scan_workefficient_kernel.cpp3.i (/tmp/ccBI#.PMiWhO)
+	//-----------------------------------------------------------
+
+	//-----------------------------------------------------------
+	// Options:
+	//-----------------------------------------------------------
+	//  Target:ptx, ISA:sm_20, Endian:little, Pointer Size:64
+	//  -O3	(Optimization level)
+	//  -g0	(Debug level)
+	//  -m2	(Report advisories)
+	//-----------------------------------------------------------
+
+	.file	1	"<command-line>"
+	.file	2	"/tmp/tmpxft_00001dbb_00000000-6_scan_workefficient_kernel.cudafe2.gpu"
+	.file	3	"/usr/lib/gcc/x86_64-linux-gnu/4.4.3/include/stddef.h"
+	.file	4	"/usr/local/cuda3.1/cuda/bin/../include/crt/device_runtime.h"
+	.file	5	"/usr/local/cuda3.1/cuda/bin/../include/host_defines.h"
+	.file	6	"/usr/local/cuda3.1/cuda/bin/../include/builtin_types.h"
+	.file	7	"/usr/local/cuda3.1/cuda/bin/../include/device_types.h"
+	.file	8	"/usr/local/cuda3.1/cuda/bin/../include/driver_types.h"
+	.file	9	"/usr/local/cuda3.1/cuda/bin/../include/surface_types.h"
+	.file	10	"/usr/local/cuda3.1/cuda/bin/../include/texture_types.h"
+	.file	11	"/usr/local/cuda3.1/cuda/bin/../include/vector_types.h"
+	.file	12	"/usr/local/cuda3.1/cuda/bin/../include/device_launch_parameters.h"
+	.file	13	"/usr/local/cuda3.1/cuda/bin/../include/crt/storage_class.h"
+	.file	14	"/usr/include/bits/types.h"
+	.file	15	"/usr/include/time.h"
+	.file	16	"/home/andrew/repositories/gpuocelot/tests/cuda2.2/tests/scan/scan_workefficient_kernel.cu"
+	.file	17	"/usr/local/cuda3.1/cuda/bin/../include/common_functions.h"
+	.file	18	"/usr/local/cuda3.1/cuda/bin/../include/math_functions.h"
+	.file	19	"/usr/local/cuda3.1/cuda/bin/../include/math_constants.h"
+	.file	20	"/usr/local/cuda3.1/cuda/bin/../include/device_functions.h"
+	.file	21	"/usr/local/cuda3.1/cuda/bin/../include/sm_11_atomic_functions.h"
+	.file	22	"/usr/local/cuda3.1/cuda/bin/../include/sm_12_atomic_functions.h"
+	.file	23	"/usr/local/cuda3.1/cuda/bin/../include/sm_13_double_functions.h"
+	.file	24	"/usr/local/cuda3.1/cuda/bin/../include/sm_20_atomic_functions.h"
+	.file	25	"/usr/local/cuda3.1/cuda/bin/../include/sm_20_intrinsics.h"
+	.file	26	"/usr/local/cuda3.1/cuda/bin/../include/surface_functions.h"
+	.file	27	"/usr/local/cuda3.1/cuda/bin/../include/texture_fetch_functions.h"
+	.file	28	"/usr/local/cuda3.1/cuda/bin/../include/math_functions_dbl_ptx3.h"
+
+	.extern	.shared .align 4 .b8 temp[];
+
+	.entry _Z18scan_workefficientPfS_i (
+		.param .u64 __cudaparm__Z18scan_workefficientPfS_i_g_odata,
+		.param .u64 __cudaparm__Z18scan_workefficientPfS_i_g_idata,
+		.param .s32 __cudaparm__Z18scan_workefficientPfS_i_n)
+	{
+	.reg .u32 %r<21>;
+	.reg .u64 %rd<25>;
+	.reg .f32 %f<14>;
+	.reg .pred %p<9>;
+	.loc	16	48	0
+$LDWbegin__Z18scan_workefficientPfS_i:
+	mov.u64 	%rd1, temp;
+	.loc	16	58	0
+	cvt.s32.u32 	%r1, %tid.x;
+	mul.lo.s32 	%r2, %r1, 2;
+	cvt.s64.s32 	%rd2, %r2;
+	mul.wide.s32 	%rd3, %r2, 4;
+	ld.param.u64 	%rd4, [__cudaparm__Z18scan_workefficientPfS_i_g_idata];
+	add.u64 	%rd5, %rd4, %rd3;
+	add.u64 	%rd6, %rd3, %rd1;
+	ld.global.f32 	%f1, [%rd5+0];
+	st.shared.f32 	[%rd6+0], %f1;
+	.loc	16	59	0
+	ld.global.f32 	%f2, [%rd5+4];
+	st.shared.f32 	[%rd6+4], %f2;
+	.loc	16	62	0
+	ld.param.s32 	%r3, [__cudaparm__Z18scan_workefficientPfS_i_n];
+	shr.s32 	%r4, %r3, 1;
+	mov.s32 	%r5, %r4;
+	mov.u32 	%r6, 0;
+	setp.le.s32 	%p1, %r4, %r6;
+	@%p1 bra 	$Lt_0_8194;
+	mov.s32 	%r7, 1;
+$Lt_0_5122:
+ //<loop> Loop body line 64
+	.loc	16	64	0
+	bar.sync 	0;
+	setp.le.s32 	%p2, %r5, %r1;
+	@%p2 bra 	$Lt_0_5378;
+ //<loop> Part of loop body line 64, head labeled $Lt_0_5122
+	.loc	16	71	0
+	add.s32 	%r8, %r2, 2;
+	mul.lo.s32 	%r9, %r7, %r8;
+	cvt.s64.s32 	%rd7, %r9;
+	mul.wide.s32 	%rd8, %r9, 4;
+	add.u64 	%rd9, %rd1, %rd8;
+	ld.shared.f32 	%f3, [%rd9+-4];
+	add.s32 	%r10, %r2, 1;
+	mul.lo.s32 	%r11, %r7, %r10;
+	cvt.s64.s32 	%rd10, %r11;
+	mul.wide.s32 	%rd11, %r11, 4;
+	add.u64 	%rd12, %rd1, %rd11;
+	ld.shared.f32 	%f4, [%rd12+-4];
+	add.f32 	%f5, %f3, %f4;
+	st.shared.f32 	[%rd9+-4], %f5;
+$Lt_0_5378:
+ //<loop> Part of loop body line 64, head labeled $Lt_0_5122
+	.loc	16	74	0
+	mul.lo.s32 	%r7, %r7, 2;
+	.loc	16	62	0
+	shr.s32 	%r5, %r5, 1;
+	mov.u32 	%r12, 0;
+	setp.gt.s32 	%p3, %r5, %r12;
+	@%p3 bra 	$Lt_0_5122;
+	bra.uni 	$Lt_0_4610;
+$Lt_0_8194:
+	mov.s32 	%r7, 1;
+$Lt_0_4610:
+	mov.u32 	%r13, 0;
+	setp.ne.s32 	%p4, %r1, %r13;
+	@%p4 bra 	$Lt_0_6146;
+	.loc	16	82	0
+	mov.f32 	%f6, 0f00000000;     	// 0
+	cvt.s64.s32 	%rd13, %r3;
+	mul.wide.s32 	%rd14, %r3, 4;
+	add.u64 	%rd15, %rd1, %rd14;
+	st.shared.f32 	[%rd15+-4], %f6;
+$Lt_0_6146:
+	mov.u32 	%r14, 1;
+	setp.le.s32 	%p5, %r3, %r14;
+	@%p5 bra 	$Lt_0_6658;
+	mov.s32 	%r15, 1;
+$Lt_0_7170:
+ //<loop> Loop body line 82, nesting depth: 1, estimated iterations: unknown
+	.loc	16	88	0
+	shr.s32 	%r7, %r7, 1;
+	.loc	16	89	0
+	bar.sync 	0;
+	setp.le.s32 	%p6, %r15, %r1;
+	@%p6 bra 	$Lt_0_7426;
+ //<loop> Part of loop body line 82, head labeled $Lt_0_7170
+	.loc	16	96	0
+	add.s32 	%r16, %r2, 1;
+	mul.lo.s32 	%r17, %r7, %r16;
+	cvt.s64.s32 	%rd16, %r17;
+	mul.wide.s32 	%rd17, %r17, 4;
+	add.u64 	%rd18, %rd1, %rd17;
+	ld.shared.f32 	%f7, [%rd18+-4];
+	.loc	16	97	0
+	add.s32 	%r18, %r2, 2;
+	mul.lo.s32 	%r19, %r7, %r18;
+	cvt.s64.s32 	%rd19, %r19;
+	mul.wide.s32 	%rd20, %r19, 4;
+	add.u64 	%rd21, %rd1, %rd20;
+	ld.shared.f32 	%f8, [%rd21+-4];
+	st.shared.f32 	[%rd18+-4], %f8;
+	.loc	16	98	0
+	ld.shared.f32 	%f9, [%rd21+-4];
+	add.f32 	%f10, %f9, %f7;
+	st.shared.f32 	[%rd21+-4], %f10;
+$Lt_0_7426:
+ //<loop> Part of loop body line 82, head labeled $Lt_0_7170
+	.loc	16	86	0
+	mul.lo.s32 	%r15, %r15, 2;
+	setp.lt.s32 	%p7, %r15, %r3;
+	@%p7 bra 	$Lt_0_7170;
+$Lt_0_6658:
+	.loc	16	102	0
+	bar.sync 	0;
+	.loc	16	105	0
+	ld.param.u64 	%rd22, [__cudaparm__Z18scan_workefficientPfS_i_g_odata];
+	add.u64 	%rd23, %rd22, %rd3;
+	ld.shared.f32 	%f11, [%rd6+0];
+	st.global.f32 	[%rd23+0], %f11;
+	.loc	16	106	0
+	ld.shared.f32 	%f12, [%rd6+4];
+	st.global.f32 	[%rd23+4], %f12;
+	.loc	16	107	0
+	exit;
+$LDWend__Z18scan_workefficientPfS_i:
+	} // _Z18scan_workefficientPfS_i
+

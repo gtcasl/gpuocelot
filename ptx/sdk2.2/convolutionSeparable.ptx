@@ -1,0 +1,1859 @@
+	.version 2.1
+	.target sm_20
+	// compiled with /usr/local/cuda3.1/cuda/open64/lib//be
+	// nvopencc 3.1 built on 2010-06-07
+
+	.visible .func (.param .f32 __cudaretf__Z14convolutionRowILin1EEfPf) _Z14convolutionRowILin1EEfPf (.param .u64 __cudaparmf1__Z14convolutionRowILin1EEfPf)
+
+	.visible .func (.param .f32 __cudaretf__Z17convolutionColumnILin1EEfPf) _Z17convolutionColumnILin1EEfPf (.param .u64 __cudaparmf1__Z17convolutionColumnILin1EEfPf)
+
+	.visible .func (.param .f32 __cudaretf__Z14convolutionRowILi16EEfPf) _Z14convolutionRowILi16EEfPf (.param .u64 __cudaparmf1__Z14convolutionRowILi16EEfPf)
+
+	.visible .func (.param .f32 __cudaretf__Z14convolutionRowILi15EEfPf) _Z14convolutionRowILi15EEfPf (.param .u64 __cudaparmf1__Z14convolutionRowILi15EEfPf)
+
+	.visible .func (.param .f32 __cudaretf__Z17convolutionColumnILi16EEfPf) _Z17convolutionColumnILi16EEfPf (.param .u64 __cudaparmf1__Z17convolutionColumnILi16EEfPf)
+
+	.visible .func (.param .f32 __cudaretf__Z17convolutionColumnILi15EEfPf) _Z17convolutionColumnILi15EEfPf (.param .u64 __cudaparmf1__Z17convolutionColumnILi15EEfPf)
+
+	.visible .func (.param .f32 __cudaretf__Z14convolutionRowILi14EEfPf) _Z14convolutionRowILi14EEfPf (.param .u64 __cudaparmf1__Z14convolutionRowILi14EEfPf)
+
+	.visible .func (.param .f32 __cudaretf__Z14convolutionRowILi13EEfPf) _Z14convolutionRowILi13EEfPf (.param .u64 __cudaparmf1__Z14convolutionRowILi13EEfPf)
+
+	.visible .func (.param .f32 __cudaretf__Z14convolutionRowILi12EEfPf) _Z14convolutionRowILi12EEfPf (.param .u64 __cudaparmf1__Z14convolutionRowILi12EEfPf)
+
+	.visible .func (.param .f32 __cudaretf__Z14convolutionRowILi11EEfPf) _Z14convolutionRowILi11EEfPf (.param .u64 __cudaparmf1__Z14convolutionRowILi11EEfPf)
+
+	.visible .func (.param .f32 __cudaretf__Z14convolutionRowILi10EEfPf) _Z14convolutionRowILi10EEfPf (.param .u64 __cudaparmf1__Z14convolutionRowILi10EEfPf)
+
+	.visible .func (.param .f32 __cudaretf__Z14convolutionRowILi9EEfPf) _Z14convolutionRowILi9EEfPf (.param .u64 __cudaparmf1__Z14convolutionRowILi9EEfPf)
+
+	.visible .func (.param .f32 __cudaretf__Z14convolutionRowILi8EEfPf) _Z14convolutionRowILi8EEfPf (.param .u64 __cudaparmf1__Z14convolutionRowILi8EEfPf)
+
+	.visible .func (.param .f32 __cudaretf__Z14convolutionRowILi7EEfPf) _Z14convolutionRowILi7EEfPf (.param .u64 __cudaparmf1__Z14convolutionRowILi7EEfPf)
+
+	.visible .func (.param .f32 __cudaretf__Z14convolutionRowILi6EEfPf) _Z14convolutionRowILi6EEfPf (.param .u64 __cudaparmf1__Z14convolutionRowILi6EEfPf)
+
+	.visible .func (.param .f32 __cudaretf__Z14convolutionRowILi5EEfPf) _Z14convolutionRowILi5EEfPf (.param .u64 __cudaparmf1__Z14convolutionRowILi5EEfPf)
+
+	.visible .func (.param .f32 __cudaretf__Z14convolutionRowILi4EEfPf) _Z14convolutionRowILi4EEfPf (.param .u64 __cudaparmf1__Z14convolutionRowILi4EEfPf)
+
+	.visible .func (.param .f32 __cudaretf__Z14convolutionRowILi3EEfPf) _Z14convolutionRowILi3EEfPf (.param .u64 __cudaparmf1__Z14convolutionRowILi3EEfPf)
+
+	.visible .func (.param .f32 __cudaretf__Z14convolutionRowILi2EEfPf) _Z14convolutionRowILi2EEfPf (.param .u64 __cudaparmf1__Z14convolutionRowILi2EEfPf)
+
+	.visible .func (.param .f32 __cudaretf__Z14convolutionRowILi1EEfPf) _Z14convolutionRowILi1EEfPf (.param .u64 __cudaparmf1__Z14convolutionRowILi1EEfPf)
+
+	.visible .func (.param .f32 __cudaretf__Z14convolutionRowILi0EEfPf) _Z14convolutionRowILi0EEfPf (.param .u64 __cudaparmf1__Z14convolutionRowILi0EEfPf)
+
+	.visible .func (.param .f32 __cudaretf__Z17convolutionColumnILi14EEfPf) _Z17convolutionColumnILi14EEfPf (.param .u64 __cudaparmf1__Z17convolutionColumnILi14EEfPf)
+
+	.visible .func (.param .f32 __cudaretf__Z17convolutionColumnILi13EEfPf) _Z17convolutionColumnILi13EEfPf (.param .u64 __cudaparmf1__Z17convolutionColumnILi13EEfPf)
+
+	.visible .func (.param .f32 __cudaretf__Z17convolutionColumnILi12EEfPf) _Z17convolutionColumnILi12EEfPf (.param .u64 __cudaparmf1__Z17convolutionColumnILi12EEfPf)
+
+	.visible .func (.param .f32 __cudaretf__Z17convolutionColumnILi11EEfPf) _Z17convolutionColumnILi11EEfPf (.param .u64 __cudaparmf1__Z17convolutionColumnILi11EEfPf)
+
+	.visible .func (.param .f32 __cudaretf__Z17convolutionColumnILi10EEfPf) _Z17convolutionColumnILi10EEfPf (.param .u64 __cudaparmf1__Z17convolutionColumnILi10EEfPf)
+
+	.visible .func (.param .f32 __cudaretf__Z17convolutionColumnILi9EEfPf) _Z17convolutionColumnILi9EEfPf (.param .u64 __cudaparmf1__Z17convolutionColumnILi9EEfPf)
+
+	.visible .func (.param .f32 __cudaretf__Z17convolutionColumnILi8EEfPf) _Z17convolutionColumnILi8EEfPf (.param .u64 __cudaparmf1__Z17convolutionColumnILi8EEfPf)
+
+	.visible .func (.param .f32 __cudaretf__Z17convolutionColumnILi7EEfPf) _Z17convolutionColumnILi7EEfPf (.param .u64 __cudaparmf1__Z17convolutionColumnILi7EEfPf)
+
+	.visible .func (.param .f32 __cudaretf__Z17convolutionColumnILi6EEfPf) _Z17convolutionColumnILi6EEfPf (.param .u64 __cudaparmf1__Z17convolutionColumnILi6EEfPf)
+
+	.visible .func (.param .f32 __cudaretf__Z17convolutionColumnILi5EEfPf) _Z17convolutionColumnILi5EEfPf (.param .u64 __cudaparmf1__Z17convolutionColumnILi5EEfPf)
+
+	.visible .func (.param .f32 __cudaretf__Z17convolutionColumnILi4EEfPf) _Z17convolutionColumnILi4EEfPf (.param .u64 __cudaparmf1__Z17convolutionColumnILi4EEfPf)
+
+	.visible .func (.param .f32 __cudaretf__Z17convolutionColumnILi3EEfPf) _Z17convolutionColumnILi3EEfPf (.param .u64 __cudaparmf1__Z17convolutionColumnILi3EEfPf)
+
+	.visible .func (.param .f32 __cudaretf__Z17convolutionColumnILi2EEfPf) _Z17convolutionColumnILi2EEfPf (.param .u64 __cudaparmf1__Z17convolutionColumnILi2EEfPf)
+
+	.visible .func (.param .f32 __cudaretf__Z17convolutionColumnILi1EEfPf) _Z17convolutionColumnILi1EEfPf (.param .u64 __cudaparmf1__Z17convolutionColumnILi1EEfPf)
+
+	.visible .func (.param .f32 __cudaretf__Z17convolutionColumnILi0EEfPf) _Z17convolutionColumnILi0EEfPf (.param .u64 __cudaparmf1__Z17convolutionColumnILi0EEfPf)
+
+	//-----------------------------------------------------------
+	// Compiling /tmp/tmpxft_0000167b_00000000-7_convolutionSeparable.cpp3.i (/tmp/ccBI#.VWjypj)
+	//-----------------------------------------------------------
+
+	//-----------------------------------------------------------
+	// Options:
+	//-----------------------------------------------------------
+	//  Target:ptx, ISA:sm_20, Endian:little, Pointer Size:64
+	//  -O3	(Optimization level)
+	//  -g0	(Debug level)
+	//  -m2	(Report advisories)
+	//-----------------------------------------------------------
+
+	.file	1	"<command-line>"
+	.file	2	"/tmp/tmpxft_0000167b_00000000-6_convolutionSeparable.cudafe2.gpu"
+	.file	3	"/usr/lib/gcc/x86_64-linux-gnu/4.4.3/include/stddef.h"
+	.file	4	"/usr/local/cuda3.1/cuda/bin/../include/crt/device_runtime.h"
+	.file	5	"/usr/local/cuda3.1/cuda/bin/../include/host_defines.h"
+	.file	6	"/usr/local/cuda3.1/cuda/bin/../include/builtin_types.h"
+	.file	7	"/usr/local/cuda3.1/cuda/bin/../include/device_types.h"
+	.file	8	"/usr/local/cuda3.1/cuda/bin/../include/driver_types.h"
+	.file	9	"/usr/local/cuda3.1/cuda/bin/../include/surface_types.h"
+	.file	10	"/usr/local/cuda3.1/cuda/bin/../include/texture_types.h"
+	.file	11	"/usr/local/cuda3.1/cuda/bin/../include/vector_types.h"
+	.file	12	"/usr/local/cuda3.1/cuda/bin/../include/device_launch_parameters.h"
+	.file	13	"/usr/local/cuda3.1/cuda/bin/../include/crt/storage_class.h"
+	.file	14	"/usr/include/bits/types.h"
+	.file	15	"/usr/include/time.h"
+	.file	16	"/home/andrew/repositories/gpuocelot/tests/cuda2.2/tests/convolutionSeparable/convolutionSeparable_kernel.cu"
+	.file	17	"/usr/local/cuda3.1/cuda/bin/../include/common_functions.h"
+	.file	18	"/usr/local/cuda3.1/cuda/bin/../include/math_functions.h"
+	.file	19	"/usr/local/cuda3.1/cuda/bin/../include/math_constants.h"
+	.file	20	"/usr/local/cuda3.1/cuda/bin/../include/device_functions.h"
+	.file	21	"/usr/local/cuda3.1/cuda/bin/../include/sm_11_atomic_functions.h"
+	.file	22	"/usr/local/cuda3.1/cuda/bin/../include/sm_12_atomic_functions.h"
+	.file	23	"/usr/local/cuda3.1/cuda/bin/../include/sm_13_double_functions.h"
+	.file	24	"/usr/local/cuda3.1/cuda/bin/../include/sm_20_atomic_functions.h"
+	.file	25	"/usr/local/cuda3.1/cuda/bin/../include/sm_20_intrinsics.h"
+	.file	26	"/usr/local/cuda3.1/cuda/bin/../include/surface_functions.h"
+	.file	27	"/usr/local/cuda3.1/cuda/bin/../include/texture_fetch_functions.h"
+	.file	28	"/usr/local/cuda3.1/cuda/bin/../include/math_functions_dbl_ptx3.h"
+
+	.const .align 4 .b8 d_Kernel[68];
+
+	.visible .func (.param .f32 __cudaretf__Z14convolutionRowILin1EEfPf) _Z14convolutionRowILin1EEfPf (.param .u64 __cudaparmf1__Z14convolutionRowILin1EEfPf)
+	{
+	.reg .f32 %f<3>;
+	.loc	16	75	0
+$LDWbegin__Z14convolutionRowILin1EEfPf:
+	.loc	16	76	0
+	mov.f32 	%f1, 0f00000000;     	// 0
+	st.param.f32 	[__cudaretf__Z14convolutionRowILin1EEfPf], %f1;
+	ret;
+$LDWend__Z14convolutionRowILin1EEfPf:
+	} // _Z14convolutionRowILin1EEfPf
+
+	.visible .func (.param .f32 __cudaretf__Z17convolutionColumnILin1EEfPf) _Z17convolutionColumnILin1EEfPf (.param .u64 __cudaparmf1__Z17convolutionColumnILin1EEfPf)
+	{
+	.reg .f32 %f<3>;
+	.loc	16	85	0
+$LDWbegin__Z17convolutionColumnILin1EEfPf:
+	.loc	16	86	0
+	mov.f32 	%f1, 0f00000000;     	// 0
+	st.param.f32 	[__cudaretf__Z17convolutionColumnILin1EEfPf], %f1;
+	ret;
+$LDWend__Z17convolutionColumnILin1EEfPf:
+	} // _Z17convolutionColumnILin1EEfPf
+
+	.visible .func (.param .f32 __cudaretf__Z14convolutionRowILi16EEfPf) _Z14convolutionRowILi16EEfPf (.param .u64 __cudaparmf1__Z14convolutionRowILi16EEfPf)
+	{
+	.reg .u64 %rd<4>;
+	.reg .f32 %f<53>;
+	.loc	16	69	0
+$LDWbegin__Z14convolutionRowILi16EEfPf:
+	ld.param.u64 	%rd1, [__cudaparmf1__Z14convolutionRowILi16EEfPf];
+	mov.s64 	%rd2, %rd1;
+	.loc	16	70	0
+	ld.f32 	%f1, [%rd2+32];
+	ld.const.f32 	%f2, [d_Kernel+0];
+	mul.f32 	%f3, %f1, %f2;
+	ld.const.f32 	%f4, [d_Kernel+4];
+	ld.f32 	%f5, [%rd2+28];
+	fma.rn.f32 	%f6, %f4, %f5, %f3;
+	ld.const.f32 	%f7, [d_Kernel+8];
+	ld.f32 	%f8, [%rd2+24];
+	fma.rn.f32 	%f9, %f7, %f8, %f6;
+	ld.const.f32 	%f10, [d_Kernel+12];
+	ld.f32 	%f11, [%rd2+20];
+	fma.rn.f32 	%f12, %f10, %f11, %f9;
+	ld.const.f32 	%f13, [d_Kernel+16];
+	ld.f32 	%f14, [%rd2+16];
+	fma.rn.f32 	%f15, %f13, %f14, %f12;
+	ld.const.f32 	%f16, [d_Kernel+20];
+	ld.f32 	%f17, [%rd2+12];
+	fma.rn.f32 	%f18, %f16, %f17, %f15;
+	ld.const.f32 	%f19, [d_Kernel+24];
+	ld.f32 	%f20, [%rd2+8];
+	fma.rn.f32 	%f21, %f19, %f20, %f18;
+	ld.const.f32 	%f22, [d_Kernel+28];
+	ld.f32 	%f23, [%rd2+4];
+	fma.rn.f32 	%f24, %f22, %f23, %f21;
+	ld.f32 	%f25, [%rd2+0];
+	ld.const.f32 	%f26, [d_Kernel+32];
+	fma.rn.f32 	%f27, %f25, %f26, %f24;
+	ld.f32 	%f28, [%rd2+-4];
+	ld.const.f32 	%f29, [d_Kernel+36];
+	fma.rn.f32 	%f30, %f28, %f29, %f27;
+	ld.f32 	%f31, [%rd2+-8];
+	ld.const.f32 	%f32, [d_Kernel+40];
+	fma.rn.f32 	%f33, %f31, %f32, %f30;
+	ld.f32 	%f34, [%rd2+-12];
+	ld.const.f32 	%f35, [d_Kernel+44];
+	fma.rn.f32 	%f36, %f34, %f35, %f33;
+	ld.f32 	%f37, [%rd2+-16];
+	ld.const.f32 	%f38, [d_Kernel+48];
+	fma.rn.f32 	%f39, %f37, %f38, %f36;
+	ld.f32 	%f40, [%rd2+-20];
+	ld.const.f32 	%f41, [d_Kernel+52];
+	fma.rn.f32 	%f42, %f40, %f41, %f39;
+	ld.f32 	%f43, [%rd2+-24];
+	ld.const.f32 	%f44, [d_Kernel+56];
+	fma.rn.f32 	%f45, %f43, %f44, %f42;
+	ld.f32 	%f46, [%rd2+-28];
+	ld.const.f32 	%f47, [d_Kernel+60];
+	fma.rn.f32 	%f48, %f46, %f47, %f45;
+	ld.f32 	%f49, [%rd2+-32];
+	ld.const.f32 	%f50, [d_Kernel+64];
+	fma.rn.f32 	%f51, %f49, %f50, %f48;
+	st.param.f32 	[__cudaretf__Z14convolutionRowILi16EEfPf], %f51;
+	ret;
+$LDWend__Z14convolutionRowILi16EEfPf:
+	} // _Z14convolutionRowILi16EEfPf
+
+	.visible .func (.param .f32 __cudaretf__Z17convolutionColumnILi16EEfPf) _Z17convolutionColumnILi16EEfPf (.param .u64 __cudaparmf1__Z17convolutionColumnILi16EEfPf)
+	{
+	.reg .u64 %rd<4>;
+	.reg .f32 %f<53>;
+	.loc	16	79	0
+$LDWbegin__Z17convolutionColumnILi16EEfPf:
+	ld.param.u64 	%rd1, [__cudaparmf1__Z17convolutionColumnILi16EEfPf];
+	mov.s64 	%rd2, %rd1;
+	.loc	16	80	0
+	ld.f32 	%f1, [%rd2+512];
+	ld.const.f32 	%f2, [d_Kernel+0];
+	mul.f32 	%f3, %f1, %f2;
+	ld.const.f32 	%f4, [d_Kernel+4];
+	ld.f32 	%f5, [%rd2+448];
+	fma.rn.f32 	%f6, %f4, %f5, %f3;
+	ld.const.f32 	%f7, [d_Kernel+8];
+	ld.f32 	%f8, [%rd2+384];
+	fma.rn.f32 	%f9, %f7, %f8, %f6;
+	ld.const.f32 	%f10, [d_Kernel+12];
+	ld.f32 	%f11, [%rd2+320];
+	fma.rn.f32 	%f12, %f10, %f11, %f9;
+	ld.const.f32 	%f13, [d_Kernel+16];
+	ld.f32 	%f14, [%rd2+256];
+	fma.rn.f32 	%f15, %f13, %f14, %f12;
+	ld.const.f32 	%f16, [d_Kernel+20];
+	ld.f32 	%f17, [%rd2+192];
+	fma.rn.f32 	%f18, %f16, %f17, %f15;
+	ld.const.f32 	%f19, [d_Kernel+24];
+	ld.f32 	%f20, [%rd2+128];
+	fma.rn.f32 	%f21, %f19, %f20, %f18;
+	ld.const.f32 	%f22, [d_Kernel+28];
+	ld.f32 	%f23, [%rd2+64];
+	fma.rn.f32 	%f24, %f22, %f23, %f21;
+	ld.f32 	%f25, [%rd2+0];
+	ld.const.f32 	%f26, [d_Kernel+32];
+	fma.rn.f32 	%f27, %f25, %f26, %f24;
+	ld.f32 	%f28, [%rd2+-64];
+	ld.const.f32 	%f29, [d_Kernel+36];
+	fma.rn.f32 	%f30, %f28, %f29, %f27;
+	ld.f32 	%f31, [%rd2+-128];
+	ld.const.f32 	%f32, [d_Kernel+40];
+	fma.rn.f32 	%f33, %f31, %f32, %f30;
+	ld.f32 	%f34, [%rd2+-192];
+	ld.const.f32 	%f35, [d_Kernel+44];
+	fma.rn.f32 	%f36, %f34, %f35, %f33;
+	ld.f32 	%f37, [%rd2+-256];
+	ld.const.f32 	%f38, [d_Kernel+48];
+	fma.rn.f32 	%f39, %f37, %f38, %f36;
+	ld.f32 	%f40, [%rd2+-320];
+	ld.const.f32 	%f41, [d_Kernel+52];
+	fma.rn.f32 	%f42, %f40, %f41, %f39;
+	ld.f32 	%f43, [%rd2+-384];
+	ld.const.f32 	%f44, [d_Kernel+56];
+	fma.rn.f32 	%f45, %f43, %f44, %f42;
+	ld.f32 	%f46, [%rd2+-448];
+	ld.const.f32 	%f47, [d_Kernel+60];
+	fma.rn.f32 	%f48, %f46, %f47, %f45;
+	ld.f32 	%f49, [%rd2+-512];
+	ld.const.f32 	%f50, [d_Kernel+64];
+	fma.rn.f32 	%f51, %f49, %f50, %f48;
+	st.param.f32 	[__cudaretf__Z17convolutionColumnILi16EEfPf], %f51;
+	ret;
+$LDWend__Z17convolutionColumnILi16EEfPf:
+	} // _Z17convolutionColumnILi16EEfPf
+
+	.visible .func (.param .f32 __cudaretf__Z14convolutionRowILi15EEfPf) _Z14convolutionRowILi15EEfPf (.param .u64 __cudaparmf1__Z14convolutionRowILi15EEfPf)
+	{
+	.reg .u64 %rd<4>;
+	.reg .f32 %f<50>;
+	.loc	16	69	0
+$LDWbegin__Z14convolutionRowILi15EEfPf:
+	ld.param.u64 	%rd1, [__cudaparmf1__Z14convolutionRowILi15EEfPf];
+	mov.s64 	%rd2, %rd1;
+	.loc	16	70	0
+	ld.f32 	%f1, [%rd2+32];
+	ld.const.f32 	%f2, [d_Kernel+0];
+	mul.f32 	%f3, %f1, %f2;
+	ld.const.f32 	%f4, [d_Kernel+4];
+	ld.f32 	%f5, [%rd2+28];
+	fma.rn.f32 	%f6, %f4, %f5, %f3;
+	ld.const.f32 	%f7, [d_Kernel+8];
+	ld.f32 	%f8, [%rd2+24];
+	fma.rn.f32 	%f9, %f7, %f8, %f6;
+	ld.const.f32 	%f10, [d_Kernel+12];
+	ld.f32 	%f11, [%rd2+20];
+	fma.rn.f32 	%f12, %f10, %f11, %f9;
+	ld.const.f32 	%f13, [d_Kernel+16];
+	ld.f32 	%f14, [%rd2+16];
+	fma.rn.f32 	%f15, %f13, %f14, %f12;
+	ld.const.f32 	%f16, [d_Kernel+20];
+	ld.f32 	%f17, [%rd2+12];
+	fma.rn.f32 	%f18, %f16, %f17, %f15;
+	ld.const.f32 	%f19, [d_Kernel+24];
+	ld.f32 	%f20, [%rd2+8];
+	fma.rn.f32 	%f21, %f19, %f20, %f18;
+	ld.const.f32 	%f22, [d_Kernel+28];
+	ld.f32 	%f23, [%rd2+4];
+	fma.rn.f32 	%f24, %f22, %f23, %f21;
+	ld.f32 	%f25, [%rd2+0];
+	ld.const.f32 	%f26, [d_Kernel+32];
+	fma.rn.f32 	%f27, %f25, %f26, %f24;
+	ld.f32 	%f28, [%rd2+-4];
+	ld.const.f32 	%f29, [d_Kernel+36];
+	fma.rn.f32 	%f30, %f28, %f29, %f27;
+	ld.f32 	%f31, [%rd2+-8];
+	ld.const.f32 	%f32, [d_Kernel+40];
+	fma.rn.f32 	%f33, %f31, %f32, %f30;
+	ld.f32 	%f34, [%rd2+-12];
+	ld.const.f32 	%f35, [d_Kernel+44];
+	fma.rn.f32 	%f36, %f34, %f35, %f33;
+	ld.f32 	%f37, [%rd2+-16];
+	ld.const.f32 	%f38, [d_Kernel+48];
+	fma.rn.f32 	%f39, %f37, %f38, %f36;
+	ld.f32 	%f40, [%rd2+-20];
+	ld.const.f32 	%f41, [d_Kernel+52];
+	fma.rn.f32 	%f42, %f40, %f41, %f39;
+	ld.f32 	%f43, [%rd2+-24];
+	ld.const.f32 	%f44, [d_Kernel+56];
+	fma.rn.f32 	%f45, %f43, %f44, %f42;
+	ld.f32 	%f46, [%rd2+-28];
+	ld.const.f32 	%f47, [d_Kernel+60];
+	fma.rn.f32 	%f48, %f46, %f47, %f45;
+	st.param.f32 	[__cudaretf__Z14convolutionRowILi15EEfPf], %f48;
+	ret;
+$LDWend__Z14convolutionRowILi15EEfPf:
+	} // _Z14convolutionRowILi15EEfPf
+
+	.visible .func (.param .f32 __cudaretf__Z14convolutionRowILi14EEfPf) _Z14convolutionRowILi14EEfPf (.param .u64 __cudaparmf1__Z14convolutionRowILi14EEfPf)
+	{
+	.reg .u64 %rd<4>;
+	.reg .f32 %f<47>;
+	.loc	16	69	0
+$LDWbegin__Z14convolutionRowILi14EEfPf:
+	ld.param.u64 	%rd1, [__cudaparmf1__Z14convolutionRowILi14EEfPf];
+	mov.s64 	%rd2, %rd1;
+	.loc	16	70	0
+	ld.f32 	%f1, [%rd2+32];
+	ld.const.f32 	%f2, [d_Kernel+0];
+	mul.f32 	%f3, %f1, %f2;
+	ld.const.f32 	%f4, [d_Kernel+4];
+	ld.f32 	%f5, [%rd2+28];
+	fma.rn.f32 	%f6, %f4, %f5, %f3;
+	ld.const.f32 	%f7, [d_Kernel+8];
+	ld.f32 	%f8, [%rd2+24];
+	fma.rn.f32 	%f9, %f7, %f8, %f6;
+	ld.const.f32 	%f10, [d_Kernel+12];
+	ld.f32 	%f11, [%rd2+20];
+	fma.rn.f32 	%f12, %f10, %f11, %f9;
+	ld.const.f32 	%f13, [d_Kernel+16];
+	ld.f32 	%f14, [%rd2+16];
+	fma.rn.f32 	%f15, %f13, %f14, %f12;
+	ld.const.f32 	%f16, [d_Kernel+20];
+	ld.f32 	%f17, [%rd2+12];
+	fma.rn.f32 	%f18, %f16, %f17, %f15;
+	ld.const.f32 	%f19, [d_Kernel+24];
+	ld.f32 	%f20, [%rd2+8];
+	fma.rn.f32 	%f21, %f19, %f20, %f18;
+	ld.const.f32 	%f22, [d_Kernel+28];
+	ld.f32 	%f23, [%rd2+4];
+	fma.rn.f32 	%f24, %f22, %f23, %f21;
+	ld.f32 	%f25, [%rd2+0];
+	ld.const.f32 	%f26, [d_Kernel+32];
+	fma.rn.f32 	%f27, %f25, %f26, %f24;
+	ld.f32 	%f28, [%rd2+-4];
+	ld.const.f32 	%f29, [d_Kernel+36];
+	fma.rn.f32 	%f30, %f28, %f29, %f27;
+	ld.f32 	%f31, [%rd2+-8];
+	ld.const.f32 	%f32, [d_Kernel+40];
+	fma.rn.f32 	%f33, %f31, %f32, %f30;
+	ld.f32 	%f34, [%rd2+-12];
+	ld.const.f32 	%f35, [d_Kernel+44];
+	fma.rn.f32 	%f36, %f34, %f35, %f33;
+	ld.f32 	%f37, [%rd2+-16];
+	ld.const.f32 	%f38, [d_Kernel+48];
+	fma.rn.f32 	%f39, %f37, %f38, %f36;
+	ld.f32 	%f40, [%rd2+-20];
+	ld.const.f32 	%f41, [d_Kernel+52];
+	fma.rn.f32 	%f42, %f40, %f41, %f39;
+	ld.f32 	%f43, [%rd2+-24];
+	ld.const.f32 	%f44, [d_Kernel+56];
+	fma.rn.f32 	%f45, %f43, %f44, %f42;
+	st.param.f32 	[__cudaretf__Z14convolutionRowILi14EEfPf], %f45;
+	ret;
+$LDWend__Z14convolutionRowILi14EEfPf:
+	} // _Z14convolutionRowILi14EEfPf
+
+	.visible .func (.param .f32 __cudaretf__Z14convolutionRowILi13EEfPf) _Z14convolutionRowILi13EEfPf (.param .u64 __cudaparmf1__Z14convolutionRowILi13EEfPf)
+	{
+	.reg .u64 %rd<4>;
+	.reg .f32 %f<44>;
+	.loc	16	69	0
+$LDWbegin__Z14convolutionRowILi13EEfPf:
+	ld.param.u64 	%rd1, [__cudaparmf1__Z14convolutionRowILi13EEfPf];
+	mov.s64 	%rd2, %rd1;
+	.loc	16	70	0
+	ld.f32 	%f1, [%rd2+32];
+	ld.const.f32 	%f2, [d_Kernel+0];
+	mul.f32 	%f3, %f1, %f2;
+	ld.const.f32 	%f4, [d_Kernel+4];
+	ld.f32 	%f5, [%rd2+28];
+	fma.rn.f32 	%f6, %f4, %f5, %f3;
+	ld.const.f32 	%f7, [d_Kernel+8];
+	ld.f32 	%f8, [%rd2+24];
+	fma.rn.f32 	%f9, %f7, %f8, %f6;
+	ld.const.f32 	%f10, [d_Kernel+12];
+	ld.f32 	%f11, [%rd2+20];
+	fma.rn.f32 	%f12, %f10, %f11, %f9;
+	ld.const.f32 	%f13, [d_Kernel+16];
+	ld.f32 	%f14, [%rd2+16];
+	fma.rn.f32 	%f15, %f13, %f14, %f12;
+	ld.const.f32 	%f16, [d_Kernel+20];
+	ld.f32 	%f17, [%rd2+12];
+	fma.rn.f32 	%f18, %f16, %f17, %f15;
+	ld.const.f32 	%f19, [d_Kernel+24];
+	ld.f32 	%f20, [%rd2+8];
+	fma.rn.f32 	%f21, %f19, %f20, %f18;
+	ld.const.f32 	%f22, [d_Kernel+28];
+	ld.f32 	%f23, [%rd2+4];
+	fma.rn.f32 	%f24, %f22, %f23, %f21;
+	ld.f32 	%f25, [%rd2+0];
+	ld.const.f32 	%f26, [d_Kernel+32];
+	fma.rn.f32 	%f27, %f25, %f26, %f24;
+	ld.f32 	%f28, [%rd2+-4];
+	ld.const.f32 	%f29, [d_Kernel+36];
+	fma.rn.f32 	%f30, %f28, %f29, %f27;
+	ld.f32 	%f31, [%rd2+-8];
+	ld.const.f32 	%f32, [d_Kernel+40];
+	fma.rn.f32 	%f33, %f31, %f32, %f30;
+	ld.f32 	%f34, [%rd2+-12];
+	ld.const.f32 	%f35, [d_Kernel+44];
+	fma.rn.f32 	%f36, %f34, %f35, %f33;
+	ld.f32 	%f37, [%rd2+-16];
+	ld.const.f32 	%f38, [d_Kernel+48];
+	fma.rn.f32 	%f39, %f37, %f38, %f36;
+	ld.f32 	%f40, [%rd2+-20];
+	ld.const.f32 	%f41, [d_Kernel+52];
+	fma.rn.f32 	%f42, %f40, %f41, %f39;
+	st.param.f32 	[__cudaretf__Z14convolutionRowILi13EEfPf], %f42;
+	ret;
+$LDWend__Z14convolutionRowILi13EEfPf:
+	} // _Z14convolutionRowILi13EEfPf
+
+	.visible .func (.param .f32 __cudaretf__Z14convolutionRowILi12EEfPf) _Z14convolutionRowILi12EEfPf (.param .u64 __cudaparmf1__Z14convolutionRowILi12EEfPf)
+	{
+	.reg .u64 %rd<4>;
+	.reg .f32 %f<41>;
+	.loc	16	69	0
+$LDWbegin__Z14convolutionRowILi12EEfPf:
+	ld.param.u64 	%rd1, [__cudaparmf1__Z14convolutionRowILi12EEfPf];
+	mov.s64 	%rd2, %rd1;
+	.loc	16	70	0
+	ld.f32 	%f1, [%rd2+32];
+	ld.const.f32 	%f2, [d_Kernel+0];
+	mul.f32 	%f3, %f1, %f2;
+	ld.const.f32 	%f4, [d_Kernel+4];
+	ld.f32 	%f5, [%rd2+28];
+	fma.rn.f32 	%f6, %f4, %f5, %f3;
+	ld.const.f32 	%f7, [d_Kernel+8];
+	ld.f32 	%f8, [%rd2+24];
+	fma.rn.f32 	%f9, %f7, %f8, %f6;
+	ld.const.f32 	%f10, [d_Kernel+12];
+	ld.f32 	%f11, [%rd2+20];
+	fma.rn.f32 	%f12, %f10, %f11, %f9;
+	ld.const.f32 	%f13, [d_Kernel+16];
+	ld.f32 	%f14, [%rd2+16];
+	fma.rn.f32 	%f15, %f13, %f14, %f12;
+	ld.const.f32 	%f16, [d_Kernel+20];
+	ld.f32 	%f17, [%rd2+12];
+	fma.rn.f32 	%f18, %f16, %f17, %f15;
+	ld.const.f32 	%f19, [d_Kernel+24];
+	ld.f32 	%f20, [%rd2+8];
+	fma.rn.f32 	%f21, %f19, %f20, %f18;
+	ld.const.f32 	%f22, [d_Kernel+28];
+	ld.f32 	%f23, [%rd2+4];
+	fma.rn.f32 	%f24, %f22, %f23, %f21;
+	ld.f32 	%f25, [%rd2+0];
+	ld.const.f32 	%f26, [d_Kernel+32];
+	fma.rn.f32 	%f27, %f25, %f26, %f24;
+	ld.f32 	%f28, [%rd2+-4];
+	ld.const.f32 	%f29, [d_Kernel+36];
+	fma.rn.f32 	%f30, %f28, %f29, %f27;
+	ld.f32 	%f31, [%rd2+-8];
+	ld.const.f32 	%f32, [d_Kernel+40];
+	fma.rn.f32 	%f33, %f31, %f32, %f30;
+	ld.f32 	%f34, [%rd2+-12];
+	ld.const.f32 	%f35, [d_Kernel+44];
+	fma.rn.f32 	%f36, %f34, %f35, %f33;
+	ld.f32 	%f37, [%rd2+-16];
+	ld.const.f32 	%f38, [d_Kernel+48];
+	fma.rn.f32 	%f39, %f37, %f38, %f36;
+	st.param.f32 	[__cudaretf__Z14convolutionRowILi12EEfPf], %f39;
+	ret;
+$LDWend__Z14convolutionRowILi12EEfPf:
+	} // _Z14convolutionRowILi12EEfPf
+
+	.visible .func (.param .f32 __cudaretf__Z14convolutionRowILi11EEfPf) _Z14convolutionRowILi11EEfPf (.param .u64 __cudaparmf1__Z14convolutionRowILi11EEfPf)
+	{
+	.reg .u64 %rd<4>;
+	.reg .f32 %f<38>;
+	.loc	16	69	0
+$LDWbegin__Z14convolutionRowILi11EEfPf:
+	ld.param.u64 	%rd1, [__cudaparmf1__Z14convolutionRowILi11EEfPf];
+	mov.s64 	%rd2, %rd1;
+	.loc	16	70	0
+	ld.f32 	%f1, [%rd2+32];
+	ld.const.f32 	%f2, [d_Kernel+0];
+	mul.f32 	%f3, %f1, %f2;
+	ld.const.f32 	%f4, [d_Kernel+4];
+	ld.f32 	%f5, [%rd2+28];
+	fma.rn.f32 	%f6, %f4, %f5, %f3;
+	ld.const.f32 	%f7, [d_Kernel+8];
+	ld.f32 	%f8, [%rd2+24];
+	fma.rn.f32 	%f9, %f7, %f8, %f6;
+	ld.const.f32 	%f10, [d_Kernel+12];
+	ld.f32 	%f11, [%rd2+20];
+	fma.rn.f32 	%f12, %f10, %f11, %f9;
+	ld.const.f32 	%f13, [d_Kernel+16];
+	ld.f32 	%f14, [%rd2+16];
+	fma.rn.f32 	%f15, %f13, %f14, %f12;
+	ld.const.f32 	%f16, [d_Kernel+20];
+	ld.f32 	%f17, [%rd2+12];
+	fma.rn.f32 	%f18, %f16, %f17, %f15;
+	ld.const.f32 	%f19, [d_Kernel+24];
+	ld.f32 	%f20, [%rd2+8];
+	fma.rn.f32 	%f21, %f19, %f20, %f18;
+	ld.const.f32 	%f22, [d_Kernel+28];
+	ld.f32 	%f23, [%rd2+4];
+	fma.rn.f32 	%f24, %f22, %f23, %f21;
+	ld.f32 	%f25, [%rd2+0];
+	ld.const.f32 	%f26, [d_Kernel+32];
+	fma.rn.f32 	%f27, %f25, %f26, %f24;
+	ld.f32 	%f28, [%rd2+-4];
+	ld.const.f32 	%f29, [d_Kernel+36];
+	fma.rn.f32 	%f30, %f28, %f29, %f27;
+	ld.f32 	%f31, [%rd2+-8];
+	ld.const.f32 	%f32, [d_Kernel+40];
+	fma.rn.f32 	%f33, %f31, %f32, %f30;
+	ld.f32 	%f34, [%rd2+-12];
+	ld.const.f32 	%f35, [d_Kernel+44];
+	fma.rn.f32 	%f36, %f34, %f35, %f33;
+	st.param.f32 	[__cudaretf__Z14convolutionRowILi11EEfPf], %f36;
+	ret;
+$LDWend__Z14convolutionRowILi11EEfPf:
+	} // _Z14convolutionRowILi11EEfPf
+
+	.visible .func (.param .f32 __cudaretf__Z14convolutionRowILi10EEfPf) _Z14convolutionRowILi10EEfPf (.param .u64 __cudaparmf1__Z14convolutionRowILi10EEfPf)
+	{
+	.reg .u64 %rd<4>;
+	.reg .f32 %f<35>;
+	.loc	16	69	0
+$LDWbegin__Z14convolutionRowILi10EEfPf:
+	ld.param.u64 	%rd1, [__cudaparmf1__Z14convolutionRowILi10EEfPf];
+	mov.s64 	%rd2, %rd1;
+	.loc	16	70	0
+	ld.f32 	%f1, [%rd2+32];
+	ld.const.f32 	%f2, [d_Kernel+0];
+	mul.f32 	%f3, %f1, %f2;
+	ld.const.f32 	%f4, [d_Kernel+4];
+	ld.f32 	%f5, [%rd2+28];
+	fma.rn.f32 	%f6, %f4, %f5, %f3;
+	ld.const.f32 	%f7, [d_Kernel+8];
+	ld.f32 	%f8, [%rd2+24];
+	fma.rn.f32 	%f9, %f7, %f8, %f6;
+	ld.const.f32 	%f10, [d_Kernel+12];
+	ld.f32 	%f11, [%rd2+20];
+	fma.rn.f32 	%f12, %f10, %f11, %f9;
+	ld.const.f32 	%f13, [d_Kernel+16];
+	ld.f32 	%f14, [%rd2+16];
+	fma.rn.f32 	%f15, %f13, %f14, %f12;
+	ld.const.f32 	%f16, [d_Kernel+20];
+	ld.f32 	%f17, [%rd2+12];
+	fma.rn.f32 	%f18, %f16, %f17, %f15;
+	ld.const.f32 	%f19, [d_Kernel+24];
+	ld.f32 	%f20, [%rd2+8];
+	fma.rn.f32 	%f21, %f19, %f20, %f18;
+	ld.const.f32 	%f22, [d_Kernel+28];
+	ld.f32 	%f23, [%rd2+4];
+	fma.rn.f32 	%f24, %f22, %f23, %f21;
+	ld.f32 	%f25, [%rd2+0];
+	ld.const.f32 	%f26, [d_Kernel+32];
+	fma.rn.f32 	%f27, %f25, %f26, %f24;
+	ld.f32 	%f28, [%rd2+-4];
+	ld.const.f32 	%f29, [d_Kernel+36];
+	fma.rn.f32 	%f30, %f28, %f29, %f27;
+	ld.f32 	%f31, [%rd2+-8];
+	ld.const.f32 	%f32, [d_Kernel+40];
+	fma.rn.f32 	%f33, %f31, %f32, %f30;
+	st.param.f32 	[__cudaretf__Z14convolutionRowILi10EEfPf], %f33;
+	ret;
+$LDWend__Z14convolutionRowILi10EEfPf:
+	} // _Z14convolutionRowILi10EEfPf
+
+	.visible .func (.param .f32 __cudaretf__Z14convolutionRowILi9EEfPf) _Z14convolutionRowILi9EEfPf (.param .u64 __cudaparmf1__Z14convolutionRowILi9EEfPf)
+	{
+	.reg .u64 %rd<4>;
+	.reg .f32 %f<32>;
+	.loc	16	69	0
+$LDWbegin__Z14convolutionRowILi9EEfPf:
+	ld.param.u64 	%rd1, [__cudaparmf1__Z14convolutionRowILi9EEfPf];
+	mov.s64 	%rd2, %rd1;
+	.loc	16	70	0
+	ld.f32 	%f1, [%rd2+32];
+	ld.const.f32 	%f2, [d_Kernel+0];
+	mul.f32 	%f3, %f1, %f2;
+	ld.const.f32 	%f4, [d_Kernel+4];
+	ld.f32 	%f5, [%rd2+28];
+	fma.rn.f32 	%f6, %f4, %f5, %f3;
+	ld.const.f32 	%f7, [d_Kernel+8];
+	ld.f32 	%f8, [%rd2+24];
+	fma.rn.f32 	%f9, %f7, %f8, %f6;
+	ld.const.f32 	%f10, [d_Kernel+12];
+	ld.f32 	%f11, [%rd2+20];
+	fma.rn.f32 	%f12, %f10, %f11, %f9;
+	ld.const.f32 	%f13, [d_Kernel+16];
+	ld.f32 	%f14, [%rd2+16];
+	fma.rn.f32 	%f15, %f13, %f14, %f12;
+	ld.const.f32 	%f16, [d_Kernel+20];
+	ld.f32 	%f17, [%rd2+12];
+	fma.rn.f32 	%f18, %f16, %f17, %f15;
+	ld.const.f32 	%f19, [d_Kernel+24];
+	ld.f32 	%f20, [%rd2+8];
+	fma.rn.f32 	%f21, %f19, %f20, %f18;
+	ld.const.f32 	%f22, [d_Kernel+28];
+	ld.f32 	%f23, [%rd2+4];
+	fma.rn.f32 	%f24, %f22, %f23, %f21;
+	ld.f32 	%f25, [%rd2+0];
+	ld.const.f32 	%f26, [d_Kernel+32];
+	fma.rn.f32 	%f27, %f25, %f26, %f24;
+	ld.f32 	%f28, [%rd2+-4];
+	ld.const.f32 	%f29, [d_Kernel+36];
+	fma.rn.f32 	%f30, %f28, %f29, %f27;
+	st.param.f32 	[__cudaretf__Z14convolutionRowILi9EEfPf], %f30;
+	ret;
+$LDWend__Z14convolutionRowILi9EEfPf:
+	} // _Z14convolutionRowILi9EEfPf
+
+	.visible .func (.param .f32 __cudaretf__Z14convolutionRowILi8EEfPf) _Z14convolutionRowILi8EEfPf (.param .u64 __cudaparmf1__Z14convolutionRowILi8EEfPf)
+	{
+	.reg .u64 %rd<4>;
+	.reg .f32 %f<29>;
+	.loc	16	69	0
+$LDWbegin__Z14convolutionRowILi8EEfPf:
+	ld.param.u64 	%rd1, [__cudaparmf1__Z14convolutionRowILi8EEfPf];
+	mov.s64 	%rd2, %rd1;
+	.loc	16	70	0
+	ld.f32 	%f1, [%rd2+32];
+	ld.const.f32 	%f2, [d_Kernel+0];
+	mul.f32 	%f3, %f1, %f2;
+	ld.const.f32 	%f4, [d_Kernel+4];
+	ld.f32 	%f5, [%rd2+28];
+	fma.rn.f32 	%f6, %f4, %f5, %f3;
+	ld.const.f32 	%f7, [d_Kernel+8];
+	ld.f32 	%f8, [%rd2+24];
+	fma.rn.f32 	%f9, %f7, %f8, %f6;
+	ld.const.f32 	%f10, [d_Kernel+12];
+	ld.f32 	%f11, [%rd2+20];
+	fma.rn.f32 	%f12, %f10, %f11, %f9;
+	ld.const.f32 	%f13, [d_Kernel+16];
+	ld.f32 	%f14, [%rd2+16];
+	fma.rn.f32 	%f15, %f13, %f14, %f12;
+	ld.const.f32 	%f16, [d_Kernel+20];
+	ld.f32 	%f17, [%rd2+12];
+	fma.rn.f32 	%f18, %f16, %f17, %f15;
+	ld.const.f32 	%f19, [d_Kernel+24];
+	ld.f32 	%f20, [%rd2+8];
+	fma.rn.f32 	%f21, %f19, %f20, %f18;
+	ld.const.f32 	%f22, [d_Kernel+28];
+	ld.f32 	%f23, [%rd2+4];
+	fma.rn.f32 	%f24, %f22, %f23, %f21;
+	ld.f32 	%f25, [%rd2+0];
+	ld.const.f32 	%f26, [d_Kernel+32];
+	fma.rn.f32 	%f27, %f25, %f26, %f24;
+	st.param.f32 	[__cudaretf__Z14convolutionRowILi8EEfPf], %f27;
+	ret;
+$LDWend__Z14convolutionRowILi8EEfPf:
+	} // _Z14convolutionRowILi8EEfPf
+
+	.visible .func (.param .f32 __cudaretf__Z14convolutionRowILi7EEfPf) _Z14convolutionRowILi7EEfPf (.param .u64 __cudaparmf1__Z14convolutionRowILi7EEfPf)
+	{
+	.reg .u64 %rd<4>;
+	.reg .f32 %f<26>;
+	.loc	16	69	0
+$LDWbegin__Z14convolutionRowILi7EEfPf:
+	ld.param.u64 	%rd1, [__cudaparmf1__Z14convolutionRowILi7EEfPf];
+	mov.s64 	%rd2, %rd1;
+	.loc	16	70	0
+	ld.f32 	%f1, [%rd2+32];
+	ld.const.f32 	%f2, [d_Kernel+0];
+	mul.f32 	%f3, %f1, %f2;
+	ld.const.f32 	%f4, [d_Kernel+4];
+	ld.f32 	%f5, [%rd2+28];
+	fma.rn.f32 	%f6, %f4, %f5, %f3;
+	ld.const.f32 	%f7, [d_Kernel+8];
+	ld.f32 	%f8, [%rd2+24];
+	fma.rn.f32 	%f9, %f7, %f8, %f6;
+	ld.const.f32 	%f10, [d_Kernel+12];
+	ld.f32 	%f11, [%rd2+20];
+	fma.rn.f32 	%f12, %f10, %f11, %f9;
+	ld.const.f32 	%f13, [d_Kernel+16];
+	ld.f32 	%f14, [%rd2+16];
+	fma.rn.f32 	%f15, %f13, %f14, %f12;
+	ld.const.f32 	%f16, [d_Kernel+20];
+	ld.f32 	%f17, [%rd2+12];
+	fma.rn.f32 	%f18, %f16, %f17, %f15;
+	ld.const.f32 	%f19, [d_Kernel+24];
+	ld.f32 	%f20, [%rd2+8];
+	fma.rn.f32 	%f21, %f19, %f20, %f18;
+	ld.const.f32 	%f22, [d_Kernel+28];
+	ld.f32 	%f23, [%rd2+4];
+	fma.rn.f32 	%f24, %f22, %f23, %f21;
+	st.param.f32 	[__cudaretf__Z14convolutionRowILi7EEfPf], %f24;
+	ret;
+$LDWend__Z14convolutionRowILi7EEfPf:
+	} // _Z14convolutionRowILi7EEfPf
+
+	.visible .func (.param .f32 __cudaretf__Z14convolutionRowILi6EEfPf) _Z14convolutionRowILi6EEfPf (.param .u64 __cudaparmf1__Z14convolutionRowILi6EEfPf)
+	{
+	.reg .u64 %rd<4>;
+	.reg .f32 %f<23>;
+	.loc	16	69	0
+$LDWbegin__Z14convolutionRowILi6EEfPf:
+	ld.param.u64 	%rd1, [__cudaparmf1__Z14convolutionRowILi6EEfPf];
+	mov.s64 	%rd2, %rd1;
+	.loc	16	70	0
+	ld.f32 	%f1, [%rd2+32];
+	ld.const.f32 	%f2, [d_Kernel+0];
+	mul.f32 	%f3, %f1, %f2;
+	ld.const.f32 	%f4, [d_Kernel+4];
+	ld.f32 	%f5, [%rd2+28];
+	fma.rn.f32 	%f6, %f4, %f5, %f3;
+	ld.const.f32 	%f7, [d_Kernel+8];
+	ld.f32 	%f8, [%rd2+24];
+	fma.rn.f32 	%f9, %f7, %f8, %f6;
+	ld.const.f32 	%f10, [d_Kernel+12];
+	ld.f32 	%f11, [%rd2+20];
+	fma.rn.f32 	%f12, %f10, %f11, %f9;
+	ld.const.f32 	%f13, [d_Kernel+16];
+	ld.f32 	%f14, [%rd2+16];
+	fma.rn.f32 	%f15, %f13, %f14, %f12;
+	ld.const.f32 	%f16, [d_Kernel+20];
+	ld.f32 	%f17, [%rd2+12];
+	fma.rn.f32 	%f18, %f16, %f17, %f15;
+	ld.const.f32 	%f19, [d_Kernel+24];
+	ld.f32 	%f20, [%rd2+8];
+	fma.rn.f32 	%f21, %f19, %f20, %f18;
+	st.param.f32 	[__cudaretf__Z14convolutionRowILi6EEfPf], %f21;
+	ret;
+$LDWend__Z14convolutionRowILi6EEfPf:
+	} // _Z14convolutionRowILi6EEfPf
+
+	.visible .func (.param .f32 __cudaretf__Z14convolutionRowILi5EEfPf) _Z14convolutionRowILi5EEfPf (.param .u64 __cudaparmf1__Z14convolutionRowILi5EEfPf)
+	{
+	.reg .u64 %rd<4>;
+	.reg .f32 %f<20>;
+	.loc	16	69	0
+$LDWbegin__Z14convolutionRowILi5EEfPf:
+	ld.param.u64 	%rd1, [__cudaparmf1__Z14convolutionRowILi5EEfPf];
+	mov.s64 	%rd2, %rd1;
+	.loc	16	70	0
+	ld.f32 	%f1, [%rd2+32];
+	ld.const.f32 	%f2, [d_Kernel+0];
+	mul.f32 	%f3, %f1, %f2;
+	ld.const.f32 	%f4, [d_Kernel+4];
+	ld.f32 	%f5, [%rd2+28];
+	fma.rn.f32 	%f6, %f4, %f5, %f3;
+	ld.const.f32 	%f7, [d_Kernel+8];
+	ld.f32 	%f8, [%rd2+24];
+	fma.rn.f32 	%f9, %f7, %f8, %f6;
+	ld.const.f32 	%f10, [d_Kernel+12];
+	ld.f32 	%f11, [%rd2+20];
+	fma.rn.f32 	%f12, %f10, %f11, %f9;
+	ld.const.f32 	%f13, [d_Kernel+16];
+	ld.f32 	%f14, [%rd2+16];
+	fma.rn.f32 	%f15, %f13, %f14, %f12;
+	ld.const.f32 	%f16, [d_Kernel+20];
+	ld.f32 	%f17, [%rd2+12];
+	fma.rn.f32 	%f18, %f16, %f17, %f15;
+	st.param.f32 	[__cudaretf__Z14convolutionRowILi5EEfPf], %f18;
+	ret;
+$LDWend__Z14convolutionRowILi5EEfPf:
+	} // _Z14convolutionRowILi5EEfPf
+
+	.visible .func (.param .f32 __cudaretf__Z14convolutionRowILi4EEfPf) _Z14convolutionRowILi4EEfPf (.param .u64 __cudaparmf1__Z14convolutionRowILi4EEfPf)
+	{
+	.reg .u64 %rd<4>;
+	.reg .f32 %f<17>;
+	.loc	16	69	0
+$LDWbegin__Z14convolutionRowILi4EEfPf:
+	ld.param.u64 	%rd1, [__cudaparmf1__Z14convolutionRowILi4EEfPf];
+	mov.s64 	%rd2, %rd1;
+	.loc	16	70	0
+	ld.f32 	%f1, [%rd2+32];
+	ld.const.f32 	%f2, [d_Kernel+0];
+	mul.f32 	%f3, %f1, %f2;
+	ld.const.f32 	%f4, [d_Kernel+4];
+	ld.f32 	%f5, [%rd2+28];
+	fma.rn.f32 	%f6, %f4, %f5, %f3;
+	ld.const.f32 	%f7, [d_Kernel+8];
+	ld.f32 	%f8, [%rd2+24];
+	fma.rn.f32 	%f9, %f7, %f8, %f6;
+	ld.const.f32 	%f10, [d_Kernel+12];
+	ld.f32 	%f11, [%rd2+20];
+	fma.rn.f32 	%f12, %f10, %f11, %f9;
+	ld.const.f32 	%f13, [d_Kernel+16];
+	ld.f32 	%f14, [%rd2+16];
+	fma.rn.f32 	%f15, %f13, %f14, %f12;
+	st.param.f32 	[__cudaretf__Z14convolutionRowILi4EEfPf], %f15;
+	ret;
+$LDWend__Z14convolutionRowILi4EEfPf:
+	} // _Z14convolutionRowILi4EEfPf
+
+	.visible .func (.param .f32 __cudaretf__Z14convolutionRowILi3EEfPf) _Z14convolutionRowILi3EEfPf (.param .u64 __cudaparmf1__Z14convolutionRowILi3EEfPf)
+	{
+	.reg .u64 %rd<4>;
+	.reg .f32 %f<14>;
+	.loc	16	69	0
+$LDWbegin__Z14convolutionRowILi3EEfPf:
+	ld.param.u64 	%rd1, [__cudaparmf1__Z14convolutionRowILi3EEfPf];
+	mov.s64 	%rd2, %rd1;
+	.loc	16	70	0
+	ld.f32 	%f1, [%rd2+32];
+	ld.const.f32 	%f2, [d_Kernel+0];
+	mul.f32 	%f3, %f1, %f2;
+	ld.const.f32 	%f4, [d_Kernel+4];
+	ld.f32 	%f5, [%rd2+28];
+	fma.rn.f32 	%f6, %f4, %f5, %f3;
+	ld.const.f32 	%f7, [d_Kernel+8];
+	ld.f32 	%f8, [%rd2+24];
+	fma.rn.f32 	%f9, %f7, %f8, %f6;
+	ld.const.f32 	%f10, [d_Kernel+12];
+	ld.f32 	%f11, [%rd2+20];
+	fma.rn.f32 	%f12, %f10, %f11, %f9;
+	st.param.f32 	[__cudaretf__Z14convolutionRowILi3EEfPf], %f12;
+	ret;
+$LDWend__Z14convolutionRowILi3EEfPf:
+	} // _Z14convolutionRowILi3EEfPf
+
+	.visible .func (.param .f32 __cudaretf__Z14convolutionRowILi2EEfPf) _Z14convolutionRowILi2EEfPf (.param .u64 __cudaparmf1__Z14convolutionRowILi2EEfPf)
+	{
+	.reg .u64 %rd<4>;
+	.reg .f32 %f<11>;
+	.loc	16	69	0
+$LDWbegin__Z14convolutionRowILi2EEfPf:
+	ld.param.u64 	%rd1, [__cudaparmf1__Z14convolutionRowILi2EEfPf];
+	mov.s64 	%rd2, %rd1;
+	.loc	16	70	0
+	ld.f32 	%f1, [%rd2+32];
+	ld.const.f32 	%f2, [d_Kernel+0];
+	mul.f32 	%f3, %f1, %f2;
+	ld.const.f32 	%f4, [d_Kernel+4];
+	ld.f32 	%f5, [%rd2+28];
+	fma.rn.f32 	%f6, %f4, %f5, %f3;
+	ld.const.f32 	%f7, [d_Kernel+8];
+	ld.f32 	%f8, [%rd2+24];
+	fma.rn.f32 	%f9, %f7, %f8, %f6;
+	st.param.f32 	[__cudaretf__Z14convolutionRowILi2EEfPf], %f9;
+	ret;
+$LDWend__Z14convolutionRowILi2EEfPf:
+	} // _Z14convolutionRowILi2EEfPf
+
+	.visible .func (.param .f32 __cudaretf__Z14convolutionRowILi1EEfPf) _Z14convolutionRowILi1EEfPf (.param .u64 __cudaparmf1__Z14convolutionRowILi1EEfPf)
+	{
+	.reg .u64 %rd<4>;
+	.reg .f32 %f<8>;
+	.loc	16	69	0
+$LDWbegin__Z14convolutionRowILi1EEfPf:
+	ld.param.u64 	%rd1, [__cudaparmf1__Z14convolutionRowILi1EEfPf];
+	mov.s64 	%rd2, %rd1;
+	.loc	16	70	0
+	ld.f32 	%f1, [%rd2+32];
+	ld.const.f32 	%f2, [d_Kernel+0];
+	mul.f32 	%f3, %f1, %f2;
+	ld.const.f32 	%f4, [d_Kernel+4];
+	ld.f32 	%f5, [%rd2+28];
+	fma.rn.f32 	%f6, %f4, %f5, %f3;
+	st.param.f32 	[__cudaretf__Z14convolutionRowILi1EEfPf], %f6;
+	ret;
+$LDWend__Z14convolutionRowILi1EEfPf:
+	} // _Z14convolutionRowILi1EEfPf
+
+	.visible .func (.param .f32 __cudaretf__Z14convolutionRowILi0EEfPf) _Z14convolutionRowILi0EEfPf (.param .u64 __cudaparmf1__Z14convolutionRowILi0EEfPf)
+	{
+	.reg .u64 %rd<4>;
+	.reg .f32 %f<5>;
+	.loc	16	69	0
+$LDWbegin__Z14convolutionRowILi0EEfPf:
+	ld.param.u64 	%rd1, [__cudaparmf1__Z14convolutionRowILi0EEfPf];
+	mov.s64 	%rd2, %rd1;
+	.loc	16	70	0
+	ld.f32 	%f1, [%rd2+32];
+	ld.const.f32 	%f2, [d_Kernel+0];
+	mul.f32 	%f3, %f1, %f2;
+	st.param.f32 	[__cudaretf__Z14convolutionRowILi0EEfPf], %f3;
+	ret;
+$LDWend__Z14convolutionRowILi0EEfPf:
+	} // _Z14convolutionRowILi0EEfPf
+
+	.visible .func (.param .f32 __cudaretf__Z17convolutionColumnILi15EEfPf) _Z17convolutionColumnILi15EEfPf (.param .u64 __cudaparmf1__Z17convolutionColumnILi15EEfPf)
+	{
+	.reg .u64 %rd<4>;
+	.reg .f32 %f<50>;
+	.loc	16	79	0
+$LDWbegin__Z17convolutionColumnILi15EEfPf:
+	ld.param.u64 	%rd1, [__cudaparmf1__Z17convolutionColumnILi15EEfPf];
+	mov.s64 	%rd2, %rd1;
+	.loc	16	80	0
+	ld.f32 	%f1, [%rd2+512];
+	ld.const.f32 	%f2, [d_Kernel+0];
+	mul.f32 	%f3, %f1, %f2;
+	ld.const.f32 	%f4, [d_Kernel+4];
+	ld.f32 	%f5, [%rd2+448];
+	fma.rn.f32 	%f6, %f4, %f5, %f3;
+	ld.const.f32 	%f7, [d_Kernel+8];
+	ld.f32 	%f8, [%rd2+384];
+	fma.rn.f32 	%f9, %f7, %f8, %f6;
+	ld.const.f32 	%f10, [d_Kernel+12];
+	ld.f32 	%f11, [%rd2+320];
+	fma.rn.f32 	%f12, %f10, %f11, %f9;
+	ld.const.f32 	%f13, [d_Kernel+16];
+	ld.f32 	%f14, [%rd2+256];
+	fma.rn.f32 	%f15, %f13, %f14, %f12;
+	ld.const.f32 	%f16, [d_Kernel+20];
+	ld.f32 	%f17, [%rd2+192];
+	fma.rn.f32 	%f18, %f16, %f17, %f15;
+	ld.const.f32 	%f19, [d_Kernel+24];
+	ld.f32 	%f20, [%rd2+128];
+	fma.rn.f32 	%f21, %f19, %f20, %f18;
+	ld.const.f32 	%f22, [d_Kernel+28];
+	ld.f32 	%f23, [%rd2+64];
+	fma.rn.f32 	%f24, %f22, %f23, %f21;
+	ld.f32 	%f25, [%rd2+0];
+	ld.const.f32 	%f26, [d_Kernel+32];
+	fma.rn.f32 	%f27, %f25, %f26, %f24;
+	ld.f32 	%f28, [%rd2+-64];
+	ld.const.f32 	%f29, [d_Kernel+36];
+	fma.rn.f32 	%f30, %f28, %f29, %f27;
+	ld.f32 	%f31, [%rd2+-128];
+	ld.const.f32 	%f32, [d_Kernel+40];
+	fma.rn.f32 	%f33, %f31, %f32, %f30;
+	ld.f32 	%f34, [%rd2+-192];
+	ld.const.f32 	%f35, [d_Kernel+44];
+	fma.rn.f32 	%f36, %f34, %f35, %f33;
+	ld.f32 	%f37, [%rd2+-256];
+	ld.const.f32 	%f38, [d_Kernel+48];
+	fma.rn.f32 	%f39, %f37, %f38, %f36;
+	ld.f32 	%f40, [%rd2+-320];
+	ld.const.f32 	%f41, [d_Kernel+52];
+	fma.rn.f32 	%f42, %f40, %f41, %f39;
+	ld.f32 	%f43, [%rd2+-384];
+	ld.const.f32 	%f44, [d_Kernel+56];
+	fma.rn.f32 	%f45, %f43, %f44, %f42;
+	ld.f32 	%f46, [%rd2+-448];
+	ld.const.f32 	%f47, [d_Kernel+60];
+	fma.rn.f32 	%f48, %f46, %f47, %f45;
+	st.param.f32 	[__cudaretf__Z17convolutionColumnILi15EEfPf], %f48;
+	ret;
+$LDWend__Z17convolutionColumnILi15EEfPf:
+	} // _Z17convolutionColumnILi15EEfPf
+
+	.visible .func (.param .f32 __cudaretf__Z17convolutionColumnILi14EEfPf) _Z17convolutionColumnILi14EEfPf (.param .u64 __cudaparmf1__Z17convolutionColumnILi14EEfPf)
+	{
+	.reg .u64 %rd<4>;
+	.reg .f32 %f<47>;
+	.loc	16	79	0
+$LDWbegin__Z17convolutionColumnILi14EEfPf:
+	ld.param.u64 	%rd1, [__cudaparmf1__Z17convolutionColumnILi14EEfPf];
+	mov.s64 	%rd2, %rd1;
+	.loc	16	80	0
+	ld.f32 	%f1, [%rd2+512];
+	ld.const.f32 	%f2, [d_Kernel+0];
+	mul.f32 	%f3, %f1, %f2;
+	ld.const.f32 	%f4, [d_Kernel+4];
+	ld.f32 	%f5, [%rd2+448];
+	fma.rn.f32 	%f6, %f4, %f5, %f3;
+	ld.const.f32 	%f7, [d_Kernel+8];
+	ld.f32 	%f8, [%rd2+384];
+	fma.rn.f32 	%f9, %f7, %f8, %f6;
+	ld.const.f32 	%f10, [d_Kernel+12];
+	ld.f32 	%f11, [%rd2+320];
+	fma.rn.f32 	%f12, %f10, %f11, %f9;
+	ld.const.f32 	%f13, [d_Kernel+16];
+	ld.f32 	%f14, [%rd2+256];
+	fma.rn.f32 	%f15, %f13, %f14, %f12;
+	ld.const.f32 	%f16, [d_Kernel+20];
+	ld.f32 	%f17, [%rd2+192];
+	fma.rn.f32 	%f18, %f16, %f17, %f15;
+	ld.const.f32 	%f19, [d_Kernel+24];
+	ld.f32 	%f20, [%rd2+128];
+	fma.rn.f32 	%f21, %f19, %f20, %f18;
+	ld.const.f32 	%f22, [d_Kernel+28];
+	ld.f32 	%f23, [%rd2+64];
+	fma.rn.f32 	%f24, %f22, %f23, %f21;
+	ld.f32 	%f25, [%rd2+0];
+	ld.const.f32 	%f26, [d_Kernel+32];
+	fma.rn.f32 	%f27, %f25, %f26, %f24;
+	ld.f32 	%f28, [%rd2+-64];
+	ld.const.f32 	%f29, [d_Kernel+36];
+	fma.rn.f32 	%f30, %f28, %f29, %f27;
+	ld.f32 	%f31, [%rd2+-128];
+	ld.const.f32 	%f32, [d_Kernel+40];
+	fma.rn.f32 	%f33, %f31, %f32, %f30;
+	ld.f32 	%f34, [%rd2+-192];
+	ld.const.f32 	%f35, [d_Kernel+44];
+	fma.rn.f32 	%f36, %f34, %f35, %f33;
+	ld.f32 	%f37, [%rd2+-256];
+	ld.const.f32 	%f38, [d_Kernel+48];
+	fma.rn.f32 	%f39, %f37, %f38, %f36;
+	ld.f32 	%f40, [%rd2+-320];
+	ld.const.f32 	%f41, [d_Kernel+52];
+	fma.rn.f32 	%f42, %f40, %f41, %f39;
+	ld.f32 	%f43, [%rd2+-384];
+	ld.const.f32 	%f44, [d_Kernel+56];
+	fma.rn.f32 	%f45, %f43, %f44, %f42;
+	st.param.f32 	[__cudaretf__Z17convolutionColumnILi14EEfPf], %f45;
+	ret;
+$LDWend__Z17convolutionColumnILi14EEfPf:
+	} // _Z17convolutionColumnILi14EEfPf
+
+	.visible .func (.param .f32 __cudaretf__Z17convolutionColumnILi13EEfPf) _Z17convolutionColumnILi13EEfPf (.param .u64 __cudaparmf1__Z17convolutionColumnILi13EEfPf)
+	{
+	.reg .u64 %rd<4>;
+	.reg .f32 %f<44>;
+	.loc	16	79	0
+$LDWbegin__Z17convolutionColumnILi13EEfPf:
+	ld.param.u64 	%rd1, [__cudaparmf1__Z17convolutionColumnILi13EEfPf];
+	mov.s64 	%rd2, %rd1;
+	.loc	16	80	0
+	ld.f32 	%f1, [%rd2+512];
+	ld.const.f32 	%f2, [d_Kernel+0];
+	mul.f32 	%f3, %f1, %f2;
+	ld.const.f32 	%f4, [d_Kernel+4];
+	ld.f32 	%f5, [%rd2+448];
+	fma.rn.f32 	%f6, %f4, %f5, %f3;
+	ld.const.f32 	%f7, [d_Kernel+8];
+	ld.f32 	%f8, [%rd2+384];
+	fma.rn.f32 	%f9, %f7, %f8, %f6;
+	ld.const.f32 	%f10, [d_Kernel+12];
+	ld.f32 	%f11, [%rd2+320];
+	fma.rn.f32 	%f12, %f10, %f11, %f9;
+	ld.const.f32 	%f13, [d_Kernel+16];
+	ld.f32 	%f14, [%rd2+256];
+	fma.rn.f32 	%f15, %f13, %f14, %f12;
+	ld.const.f32 	%f16, [d_Kernel+20];
+	ld.f32 	%f17, [%rd2+192];
+	fma.rn.f32 	%f18, %f16, %f17, %f15;
+	ld.const.f32 	%f19, [d_Kernel+24];
+	ld.f32 	%f20, [%rd2+128];
+	fma.rn.f32 	%f21, %f19, %f20, %f18;
+	ld.const.f32 	%f22, [d_Kernel+28];
+	ld.f32 	%f23, [%rd2+64];
+	fma.rn.f32 	%f24, %f22, %f23, %f21;
+	ld.f32 	%f25, [%rd2+0];
+	ld.const.f32 	%f26, [d_Kernel+32];
+	fma.rn.f32 	%f27, %f25, %f26, %f24;
+	ld.f32 	%f28, [%rd2+-64];
+	ld.const.f32 	%f29, [d_Kernel+36];
+	fma.rn.f32 	%f30, %f28, %f29, %f27;
+	ld.f32 	%f31, [%rd2+-128];
+	ld.const.f32 	%f32, [d_Kernel+40];
+	fma.rn.f32 	%f33, %f31, %f32, %f30;
+	ld.f32 	%f34, [%rd2+-192];
+	ld.const.f32 	%f35, [d_Kernel+44];
+	fma.rn.f32 	%f36, %f34, %f35, %f33;
+	ld.f32 	%f37, [%rd2+-256];
+	ld.const.f32 	%f38, [d_Kernel+48];
+	fma.rn.f32 	%f39, %f37, %f38, %f36;
+	ld.f32 	%f40, [%rd2+-320];
+	ld.const.f32 	%f41, [d_Kernel+52];
+	fma.rn.f32 	%f42, %f40, %f41, %f39;
+	st.param.f32 	[__cudaretf__Z17convolutionColumnILi13EEfPf], %f42;
+	ret;
+$LDWend__Z17convolutionColumnILi13EEfPf:
+	} // _Z17convolutionColumnILi13EEfPf
+
+	.visible .func (.param .f32 __cudaretf__Z17convolutionColumnILi12EEfPf) _Z17convolutionColumnILi12EEfPf (.param .u64 __cudaparmf1__Z17convolutionColumnILi12EEfPf)
+	{
+	.reg .u64 %rd<4>;
+	.reg .f32 %f<41>;
+	.loc	16	79	0
+$LDWbegin__Z17convolutionColumnILi12EEfPf:
+	ld.param.u64 	%rd1, [__cudaparmf1__Z17convolutionColumnILi12EEfPf];
+	mov.s64 	%rd2, %rd1;
+	.loc	16	80	0
+	ld.f32 	%f1, [%rd2+512];
+	ld.const.f32 	%f2, [d_Kernel+0];
+	mul.f32 	%f3, %f1, %f2;
+	ld.const.f32 	%f4, [d_Kernel+4];
+	ld.f32 	%f5, [%rd2+448];
+	fma.rn.f32 	%f6, %f4, %f5, %f3;
+	ld.const.f32 	%f7, [d_Kernel+8];
+	ld.f32 	%f8, [%rd2+384];
+	fma.rn.f32 	%f9, %f7, %f8, %f6;
+	ld.const.f32 	%f10, [d_Kernel+12];
+	ld.f32 	%f11, [%rd2+320];
+	fma.rn.f32 	%f12, %f10, %f11, %f9;
+	ld.const.f32 	%f13, [d_Kernel+16];
+	ld.f32 	%f14, [%rd2+256];
+	fma.rn.f32 	%f15, %f13, %f14, %f12;
+	ld.const.f32 	%f16, [d_Kernel+20];
+	ld.f32 	%f17, [%rd2+192];
+	fma.rn.f32 	%f18, %f16, %f17, %f15;
+	ld.const.f32 	%f19, [d_Kernel+24];
+	ld.f32 	%f20, [%rd2+128];
+	fma.rn.f32 	%f21, %f19, %f20, %f18;
+	ld.const.f32 	%f22, [d_Kernel+28];
+	ld.f32 	%f23, [%rd2+64];
+	fma.rn.f32 	%f24, %f22, %f23, %f21;
+	ld.f32 	%f25, [%rd2+0];
+	ld.const.f32 	%f26, [d_Kernel+32];
+	fma.rn.f32 	%f27, %f25, %f26, %f24;
+	ld.f32 	%f28, [%rd2+-64];
+	ld.const.f32 	%f29, [d_Kernel+36];
+	fma.rn.f32 	%f30, %f28, %f29, %f27;
+	ld.f32 	%f31, [%rd2+-128];
+	ld.const.f32 	%f32, [d_Kernel+40];
+	fma.rn.f32 	%f33, %f31, %f32, %f30;
+	ld.f32 	%f34, [%rd2+-192];
+	ld.const.f32 	%f35, [d_Kernel+44];
+	fma.rn.f32 	%f36, %f34, %f35, %f33;
+	ld.f32 	%f37, [%rd2+-256];
+	ld.const.f32 	%f38, [d_Kernel+48];
+	fma.rn.f32 	%f39, %f37, %f38, %f36;
+	st.param.f32 	[__cudaretf__Z17convolutionColumnILi12EEfPf], %f39;
+	ret;
+$LDWend__Z17convolutionColumnILi12EEfPf:
+	} // _Z17convolutionColumnILi12EEfPf
+
+	.visible .func (.param .f32 __cudaretf__Z17convolutionColumnILi11EEfPf) _Z17convolutionColumnILi11EEfPf (.param .u64 __cudaparmf1__Z17convolutionColumnILi11EEfPf)
+	{
+	.reg .u64 %rd<4>;
+	.reg .f32 %f<38>;
+	.loc	16	79	0
+$LDWbegin__Z17convolutionColumnILi11EEfPf:
+	ld.param.u64 	%rd1, [__cudaparmf1__Z17convolutionColumnILi11EEfPf];
+	mov.s64 	%rd2, %rd1;
+	.loc	16	80	0
+	ld.f32 	%f1, [%rd2+512];
+	ld.const.f32 	%f2, [d_Kernel+0];
+	mul.f32 	%f3, %f1, %f2;
+	ld.const.f32 	%f4, [d_Kernel+4];
+	ld.f32 	%f5, [%rd2+448];
+	fma.rn.f32 	%f6, %f4, %f5, %f3;
+	ld.const.f32 	%f7, [d_Kernel+8];
+	ld.f32 	%f8, [%rd2+384];
+	fma.rn.f32 	%f9, %f7, %f8, %f6;
+	ld.const.f32 	%f10, [d_Kernel+12];
+	ld.f32 	%f11, [%rd2+320];
+	fma.rn.f32 	%f12, %f10, %f11, %f9;
+	ld.const.f32 	%f13, [d_Kernel+16];
+	ld.f32 	%f14, [%rd2+256];
+	fma.rn.f32 	%f15, %f13, %f14, %f12;
+	ld.const.f32 	%f16, [d_Kernel+20];
+	ld.f32 	%f17, [%rd2+192];
+	fma.rn.f32 	%f18, %f16, %f17, %f15;
+	ld.const.f32 	%f19, [d_Kernel+24];
+	ld.f32 	%f20, [%rd2+128];
+	fma.rn.f32 	%f21, %f19, %f20, %f18;
+	ld.const.f32 	%f22, [d_Kernel+28];
+	ld.f32 	%f23, [%rd2+64];
+	fma.rn.f32 	%f24, %f22, %f23, %f21;
+	ld.f32 	%f25, [%rd2+0];
+	ld.const.f32 	%f26, [d_Kernel+32];
+	fma.rn.f32 	%f27, %f25, %f26, %f24;
+	ld.f32 	%f28, [%rd2+-64];
+	ld.const.f32 	%f29, [d_Kernel+36];
+	fma.rn.f32 	%f30, %f28, %f29, %f27;
+	ld.f32 	%f31, [%rd2+-128];
+	ld.const.f32 	%f32, [d_Kernel+40];
+	fma.rn.f32 	%f33, %f31, %f32, %f30;
+	ld.f32 	%f34, [%rd2+-192];
+	ld.const.f32 	%f35, [d_Kernel+44];
+	fma.rn.f32 	%f36, %f34, %f35, %f33;
+	st.param.f32 	[__cudaretf__Z17convolutionColumnILi11EEfPf], %f36;
+	ret;
+$LDWend__Z17convolutionColumnILi11EEfPf:
+	} // _Z17convolutionColumnILi11EEfPf
+
+	.visible .func (.param .f32 __cudaretf__Z17convolutionColumnILi10EEfPf) _Z17convolutionColumnILi10EEfPf (.param .u64 __cudaparmf1__Z17convolutionColumnILi10EEfPf)
+	{
+	.reg .u64 %rd<4>;
+	.reg .f32 %f<35>;
+	.loc	16	79	0
+$LDWbegin__Z17convolutionColumnILi10EEfPf:
+	ld.param.u64 	%rd1, [__cudaparmf1__Z17convolutionColumnILi10EEfPf];
+	mov.s64 	%rd2, %rd1;
+	.loc	16	80	0
+	ld.f32 	%f1, [%rd2+512];
+	ld.const.f32 	%f2, [d_Kernel+0];
+	mul.f32 	%f3, %f1, %f2;
+	ld.const.f32 	%f4, [d_Kernel+4];
+	ld.f32 	%f5, [%rd2+448];
+	fma.rn.f32 	%f6, %f4, %f5, %f3;
+	ld.const.f32 	%f7, [d_Kernel+8];
+	ld.f32 	%f8, [%rd2+384];
+	fma.rn.f32 	%f9, %f7, %f8, %f6;
+	ld.const.f32 	%f10, [d_Kernel+12];
+	ld.f32 	%f11, [%rd2+320];
+	fma.rn.f32 	%f12, %f10, %f11, %f9;
+	ld.const.f32 	%f13, [d_Kernel+16];
+	ld.f32 	%f14, [%rd2+256];
+	fma.rn.f32 	%f15, %f13, %f14, %f12;
+	ld.const.f32 	%f16, [d_Kernel+20];
+	ld.f32 	%f17, [%rd2+192];
+	fma.rn.f32 	%f18, %f16, %f17, %f15;
+	ld.const.f32 	%f19, [d_Kernel+24];
+	ld.f32 	%f20, [%rd2+128];
+	fma.rn.f32 	%f21, %f19, %f20, %f18;
+	ld.const.f32 	%f22, [d_Kernel+28];
+	ld.f32 	%f23, [%rd2+64];
+	fma.rn.f32 	%f24, %f22, %f23, %f21;
+	ld.f32 	%f25, [%rd2+0];
+	ld.const.f32 	%f26, [d_Kernel+32];
+	fma.rn.f32 	%f27, %f25, %f26, %f24;
+	ld.f32 	%f28, [%rd2+-64];
+	ld.const.f32 	%f29, [d_Kernel+36];
+	fma.rn.f32 	%f30, %f28, %f29, %f27;
+	ld.f32 	%f31, [%rd2+-128];
+	ld.const.f32 	%f32, [d_Kernel+40];
+	fma.rn.f32 	%f33, %f31, %f32, %f30;
+	st.param.f32 	[__cudaretf__Z17convolutionColumnILi10EEfPf], %f33;
+	ret;
+$LDWend__Z17convolutionColumnILi10EEfPf:
+	} // _Z17convolutionColumnILi10EEfPf
+
+	.visible .func (.param .f32 __cudaretf__Z17convolutionColumnILi9EEfPf) _Z17convolutionColumnILi9EEfPf (.param .u64 __cudaparmf1__Z17convolutionColumnILi9EEfPf)
+	{
+	.reg .u64 %rd<4>;
+	.reg .f32 %f<32>;
+	.loc	16	79	0
+$LDWbegin__Z17convolutionColumnILi9EEfPf:
+	ld.param.u64 	%rd1, [__cudaparmf1__Z17convolutionColumnILi9EEfPf];
+	mov.s64 	%rd2, %rd1;
+	.loc	16	80	0
+	ld.f32 	%f1, [%rd2+512];
+	ld.const.f32 	%f2, [d_Kernel+0];
+	mul.f32 	%f3, %f1, %f2;
+	ld.const.f32 	%f4, [d_Kernel+4];
+	ld.f32 	%f5, [%rd2+448];
+	fma.rn.f32 	%f6, %f4, %f5, %f3;
+	ld.const.f32 	%f7, [d_Kernel+8];
+	ld.f32 	%f8, [%rd2+384];
+	fma.rn.f32 	%f9, %f7, %f8, %f6;
+	ld.const.f32 	%f10, [d_Kernel+12];
+	ld.f32 	%f11, [%rd2+320];
+	fma.rn.f32 	%f12, %f10, %f11, %f9;
+	ld.const.f32 	%f13, [d_Kernel+16];
+	ld.f32 	%f14, [%rd2+256];
+	fma.rn.f32 	%f15, %f13, %f14, %f12;
+	ld.const.f32 	%f16, [d_Kernel+20];
+	ld.f32 	%f17, [%rd2+192];
+	fma.rn.f32 	%f18, %f16, %f17, %f15;
+	ld.const.f32 	%f19, [d_Kernel+24];
+	ld.f32 	%f20, [%rd2+128];
+	fma.rn.f32 	%f21, %f19, %f20, %f18;
+	ld.const.f32 	%f22, [d_Kernel+28];
+	ld.f32 	%f23, [%rd2+64];
+	fma.rn.f32 	%f24, %f22, %f23, %f21;
+	ld.f32 	%f25, [%rd2+0];
+	ld.const.f32 	%f26, [d_Kernel+32];
+	fma.rn.f32 	%f27, %f25, %f26, %f24;
+	ld.f32 	%f28, [%rd2+-64];
+	ld.const.f32 	%f29, [d_Kernel+36];
+	fma.rn.f32 	%f30, %f28, %f29, %f27;
+	st.param.f32 	[__cudaretf__Z17convolutionColumnILi9EEfPf], %f30;
+	ret;
+$LDWend__Z17convolutionColumnILi9EEfPf:
+	} // _Z17convolutionColumnILi9EEfPf
+
+	.visible .func (.param .f32 __cudaretf__Z17convolutionColumnILi8EEfPf) _Z17convolutionColumnILi8EEfPf (.param .u64 __cudaparmf1__Z17convolutionColumnILi8EEfPf)
+	{
+	.reg .u64 %rd<4>;
+	.reg .f32 %f<29>;
+	.loc	16	79	0
+$LDWbegin__Z17convolutionColumnILi8EEfPf:
+	ld.param.u64 	%rd1, [__cudaparmf1__Z17convolutionColumnILi8EEfPf];
+	mov.s64 	%rd2, %rd1;
+	.loc	16	80	0
+	ld.f32 	%f1, [%rd2+512];
+	ld.const.f32 	%f2, [d_Kernel+0];
+	mul.f32 	%f3, %f1, %f2;
+	ld.const.f32 	%f4, [d_Kernel+4];
+	ld.f32 	%f5, [%rd2+448];
+	fma.rn.f32 	%f6, %f4, %f5, %f3;
+	ld.const.f32 	%f7, [d_Kernel+8];
+	ld.f32 	%f8, [%rd2+384];
+	fma.rn.f32 	%f9, %f7, %f8, %f6;
+	ld.const.f32 	%f10, [d_Kernel+12];
+	ld.f32 	%f11, [%rd2+320];
+	fma.rn.f32 	%f12, %f10, %f11, %f9;
+	ld.const.f32 	%f13, [d_Kernel+16];
+	ld.f32 	%f14, [%rd2+256];
+	fma.rn.f32 	%f15, %f13, %f14, %f12;
+	ld.const.f32 	%f16, [d_Kernel+20];
+	ld.f32 	%f17, [%rd2+192];
+	fma.rn.f32 	%f18, %f16, %f17, %f15;
+	ld.const.f32 	%f19, [d_Kernel+24];
+	ld.f32 	%f20, [%rd2+128];
+	fma.rn.f32 	%f21, %f19, %f20, %f18;
+	ld.const.f32 	%f22, [d_Kernel+28];
+	ld.f32 	%f23, [%rd2+64];
+	fma.rn.f32 	%f24, %f22, %f23, %f21;
+	ld.f32 	%f25, [%rd2+0];
+	ld.const.f32 	%f26, [d_Kernel+32];
+	fma.rn.f32 	%f27, %f25, %f26, %f24;
+	st.param.f32 	[__cudaretf__Z17convolutionColumnILi8EEfPf], %f27;
+	ret;
+$LDWend__Z17convolutionColumnILi8EEfPf:
+	} // _Z17convolutionColumnILi8EEfPf
+
+	.visible .func (.param .f32 __cudaretf__Z17convolutionColumnILi7EEfPf) _Z17convolutionColumnILi7EEfPf (.param .u64 __cudaparmf1__Z17convolutionColumnILi7EEfPf)
+	{
+	.reg .u64 %rd<4>;
+	.reg .f32 %f<26>;
+	.loc	16	79	0
+$LDWbegin__Z17convolutionColumnILi7EEfPf:
+	ld.param.u64 	%rd1, [__cudaparmf1__Z17convolutionColumnILi7EEfPf];
+	mov.s64 	%rd2, %rd1;
+	.loc	16	80	0
+	ld.f32 	%f1, [%rd2+512];
+	ld.const.f32 	%f2, [d_Kernel+0];
+	mul.f32 	%f3, %f1, %f2;
+	ld.const.f32 	%f4, [d_Kernel+4];
+	ld.f32 	%f5, [%rd2+448];
+	fma.rn.f32 	%f6, %f4, %f5, %f3;
+	ld.const.f32 	%f7, [d_Kernel+8];
+	ld.f32 	%f8, [%rd2+384];
+	fma.rn.f32 	%f9, %f7, %f8, %f6;
+	ld.const.f32 	%f10, [d_Kernel+12];
+	ld.f32 	%f11, [%rd2+320];
+	fma.rn.f32 	%f12, %f10, %f11, %f9;
+	ld.const.f32 	%f13, [d_Kernel+16];
+	ld.f32 	%f14, [%rd2+256];
+	fma.rn.f32 	%f15, %f13, %f14, %f12;
+	ld.const.f32 	%f16, [d_Kernel+20];
+	ld.f32 	%f17, [%rd2+192];
+	fma.rn.f32 	%f18, %f16, %f17, %f15;
+	ld.const.f32 	%f19, [d_Kernel+24];
+	ld.f32 	%f20, [%rd2+128];
+	fma.rn.f32 	%f21, %f19, %f20, %f18;
+	ld.const.f32 	%f22, [d_Kernel+28];
+	ld.f32 	%f23, [%rd2+64];
+	fma.rn.f32 	%f24, %f22, %f23, %f21;
+	st.param.f32 	[__cudaretf__Z17convolutionColumnILi7EEfPf], %f24;
+	ret;
+$LDWend__Z17convolutionColumnILi7EEfPf:
+	} // _Z17convolutionColumnILi7EEfPf
+
+	.visible .func (.param .f32 __cudaretf__Z17convolutionColumnILi6EEfPf) _Z17convolutionColumnILi6EEfPf (.param .u64 __cudaparmf1__Z17convolutionColumnILi6EEfPf)
+	{
+	.reg .u64 %rd<4>;
+	.reg .f32 %f<23>;
+	.loc	16	79	0
+$LDWbegin__Z17convolutionColumnILi6EEfPf:
+	ld.param.u64 	%rd1, [__cudaparmf1__Z17convolutionColumnILi6EEfPf];
+	mov.s64 	%rd2, %rd1;
+	.loc	16	80	0
+	ld.f32 	%f1, [%rd2+512];
+	ld.const.f32 	%f2, [d_Kernel+0];
+	mul.f32 	%f3, %f1, %f2;
+	ld.const.f32 	%f4, [d_Kernel+4];
+	ld.f32 	%f5, [%rd2+448];
+	fma.rn.f32 	%f6, %f4, %f5, %f3;
+	ld.const.f32 	%f7, [d_Kernel+8];
+	ld.f32 	%f8, [%rd2+384];
+	fma.rn.f32 	%f9, %f7, %f8, %f6;
+	ld.const.f32 	%f10, [d_Kernel+12];
+	ld.f32 	%f11, [%rd2+320];
+	fma.rn.f32 	%f12, %f10, %f11, %f9;
+	ld.const.f32 	%f13, [d_Kernel+16];
+	ld.f32 	%f14, [%rd2+256];
+	fma.rn.f32 	%f15, %f13, %f14, %f12;
+	ld.const.f32 	%f16, [d_Kernel+20];
+	ld.f32 	%f17, [%rd2+192];
+	fma.rn.f32 	%f18, %f16, %f17, %f15;
+	ld.const.f32 	%f19, [d_Kernel+24];
+	ld.f32 	%f20, [%rd2+128];
+	fma.rn.f32 	%f21, %f19, %f20, %f18;
+	st.param.f32 	[__cudaretf__Z17convolutionColumnILi6EEfPf], %f21;
+	ret;
+$LDWend__Z17convolutionColumnILi6EEfPf:
+	} // _Z17convolutionColumnILi6EEfPf
+
+	.visible .func (.param .f32 __cudaretf__Z17convolutionColumnILi5EEfPf) _Z17convolutionColumnILi5EEfPf (.param .u64 __cudaparmf1__Z17convolutionColumnILi5EEfPf)
+	{
+	.reg .u64 %rd<4>;
+	.reg .f32 %f<20>;
+	.loc	16	79	0
+$LDWbegin__Z17convolutionColumnILi5EEfPf:
+	ld.param.u64 	%rd1, [__cudaparmf1__Z17convolutionColumnILi5EEfPf];
+	mov.s64 	%rd2, %rd1;
+	.loc	16	80	0
+	ld.f32 	%f1, [%rd2+512];
+	ld.const.f32 	%f2, [d_Kernel+0];
+	mul.f32 	%f3, %f1, %f2;
+	ld.const.f32 	%f4, [d_Kernel+4];
+	ld.f32 	%f5, [%rd2+448];
+	fma.rn.f32 	%f6, %f4, %f5, %f3;
+	ld.const.f32 	%f7, [d_Kernel+8];
+	ld.f32 	%f8, [%rd2+384];
+	fma.rn.f32 	%f9, %f7, %f8, %f6;
+	ld.const.f32 	%f10, [d_Kernel+12];
+	ld.f32 	%f11, [%rd2+320];
+	fma.rn.f32 	%f12, %f10, %f11, %f9;
+	ld.const.f32 	%f13, [d_Kernel+16];
+	ld.f32 	%f14, [%rd2+256];
+	fma.rn.f32 	%f15, %f13, %f14, %f12;
+	ld.const.f32 	%f16, [d_Kernel+20];
+	ld.f32 	%f17, [%rd2+192];
+	fma.rn.f32 	%f18, %f16, %f17, %f15;
+	st.param.f32 	[__cudaretf__Z17convolutionColumnILi5EEfPf], %f18;
+	ret;
+$LDWend__Z17convolutionColumnILi5EEfPf:
+	} // _Z17convolutionColumnILi5EEfPf
+
+	.visible .func (.param .f32 __cudaretf__Z17convolutionColumnILi4EEfPf) _Z17convolutionColumnILi4EEfPf (.param .u64 __cudaparmf1__Z17convolutionColumnILi4EEfPf)
+	{
+	.reg .u64 %rd<4>;
+	.reg .f32 %f<17>;
+	.loc	16	79	0
+$LDWbegin__Z17convolutionColumnILi4EEfPf:
+	ld.param.u64 	%rd1, [__cudaparmf1__Z17convolutionColumnILi4EEfPf];
+	mov.s64 	%rd2, %rd1;
+	.loc	16	80	0
+	ld.f32 	%f1, [%rd2+512];
+	ld.const.f32 	%f2, [d_Kernel+0];
+	mul.f32 	%f3, %f1, %f2;
+	ld.const.f32 	%f4, [d_Kernel+4];
+	ld.f32 	%f5, [%rd2+448];
+	fma.rn.f32 	%f6, %f4, %f5, %f3;
+	ld.const.f32 	%f7, [d_Kernel+8];
+	ld.f32 	%f8, [%rd2+384];
+	fma.rn.f32 	%f9, %f7, %f8, %f6;
+	ld.const.f32 	%f10, [d_Kernel+12];
+	ld.f32 	%f11, [%rd2+320];
+	fma.rn.f32 	%f12, %f10, %f11, %f9;
+	ld.const.f32 	%f13, [d_Kernel+16];
+	ld.f32 	%f14, [%rd2+256];
+	fma.rn.f32 	%f15, %f13, %f14, %f12;
+	st.param.f32 	[__cudaretf__Z17convolutionColumnILi4EEfPf], %f15;
+	ret;
+$LDWend__Z17convolutionColumnILi4EEfPf:
+	} // _Z17convolutionColumnILi4EEfPf
+
+	.visible .func (.param .f32 __cudaretf__Z17convolutionColumnILi3EEfPf) _Z17convolutionColumnILi3EEfPf (.param .u64 __cudaparmf1__Z17convolutionColumnILi3EEfPf)
+	{
+	.reg .u64 %rd<4>;
+	.reg .f32 %f<14>;
+	.loc	16	79	0
+$LDWbegin__Z17convolutionColumnILi3EEfPf:
+	ld.param.u64 	%rd1, [__cudaparmf1__Z17convolutionColumnILi3EEfPf];
+	mov.s64 	%rd2, %rd1;
+	.loc	16	80	0
+	ld.f32 	%f1, [%rd2+512];
+	ld.const.f32 	%f2, [d_Kernel+0];
+	mul.f32 	%f3, %f1, %f2;
+	ld.const.f32 	%f4, [d_Kernel+4];
+	ld.f32 	%f5, [%rd2+448];
+	fma.rn.f32 	%f6, %f4, %f5, %f3;
+	ld.const.f32 	%f7, [d_Kernel+8];
+	ld.f32 	%f8, [%rd2+384];
+	fma.rn.f32 	%f9, %f7, %f8, %f6;
+	ld.const.f32 	%f10, [d_Kernel+12];
+	ld.f32 	%f11, [%rd2+320];
+	fma.rn.f32 	%f12, %f10, %f11, %f9;
+	st.param.f32 	[__cudaretf__Z17convolutionColumnILi3EEfPf], %f12;
+	ret;
+$LDWend__Z17convolutionColumnILi3EEfPf:
+	} // _Z17convolutionColumnILi3EEfPf
+
+	.visible .func (.param .f32 __cudaretf__Z17convolutionColumnILi2EEfPf) _Z17convolutionColumnILi2EEfPf (.param .u64 __cudaparmf1__Z17convolutionColumnILi2EEfPf)
+	{
+	.reg .u64 %rd<4>;
+	.reg .f32 %f<11>;
+	.loc	16	79	0
+$LDWbegin__Z17convolutionColumnILi2EEfPf:
+	ld.param.u64 	%rd1, [__cudaparmf1__Z17convolutionColumnILi2EEfPf];
+	mov.s64 	%rd2, %rd1;
+	.loc	16	80	0
+	ld.f32 	%f1, [%rd2+512];
+	ld.const.f32 	%f2, [d_Kernel+0];
+	mul.f32 	%f3, %f1, %f2;
+	ld.const.f32 	%f4, [d_Kernel+4];
+	ld.f32 	%f5, [%rd2+448];
+	fma.rn.f32 	%f6, %f4, %f5, %f3;
+	ld.const.f32 	%f7, [d_Kernel+8];
+	ld.f32 	%f8, [%rd2+384];
+	fma.rn.f32 	%f9, %f7, %f8, %f6;
+	st.param.f32 	[__cudaretf__Z17convolutionColumnILi2EEfPf], %f9;
+	ret;
+$LDWend__Z17convolutionColumnILi2EEfPf:
+	} // _Z17convolutionColumnILi2EEfPf
+
+	.visible .func (.param .f32 __cudaretf__Z17convolutionColumnILi1EEfPf) _Z17convolutionColumnILi1EEfPf (.param .u64 __cudaparmf1__Z17convolutionColumnILi1EEfPf)
+	{
+	.reg .u64 %rd<4>;
+	.reg .f32 %f<8>;
+	.loc	16	79	0
+$LDWbegin__Z17convolutionColumnILi1EEfPf:
+	ld.param.u64 	%rd1, [__cudaparmf1__Z17convolutionColumnILi1EEfPf];
+	mov.s64 	%rd2, %rd1;
+	.loc	16	80	0
+	ld.f32 	%f1, [%rd2+512];
+	ld.const.f32 	%f2, [d_Kernel+0];
+	mul.f32 	%f3, %f1, %f2;
+	ld.const.f32 	%f4, [d_Kernel+4];
+	ld.f32 	%f5, [%rd2+448];
+	fma.rn.f32 	%f6, %f4, %f5, %f3;
+	st.param.f32 	[__cudaretf__Z17convolutionColumnILi1EEfPf], %f6;
+	ret;
+$LDWend__Z17convolutionColumnILi1EEfPf:
+	} // _Z17convolutionColumnILi1EEfPf
+
+	.visible .func (.param .f32 __cudaretf__Z17convolutionColumnILi0EEfPf) _Z17convolutionColumnILi0EEfPf (.param .u64 __cudaparmf1__Z17convolutionColumnILi0EEfPf)
+	{
+	.reg .u64 %rd<4>;
+	.reg .f32 %f<5>;
+	.loc	16	79	0
+$LDWbegin__Z17convolutionColumnILi0EEfPf:
+	ld.param.u64 	%rd1, [__cudaparmf1__Z17convolutionColumnILi0EEfPf];
+	mov.s64 	%rd2, %rd1;
+	.loc	16	80	0
+	ld.f32 	%f1, [%rd2+512];
+	ld.const.f32 	%f2, [d_Kernel+0];
+	mul.f32 	%f3, %f1, %f2;
+	st.param.f32 	[__cudaretf__Z17convolutionColumnILi0EEfPf], %f3;
+	ret;
+$LDWend__Z17convolutionColumnILi0EEfPf:
+	} // _Z17convolutionColumnILi0EEfPf
+
+	.entry _Z17convolutionRowGPUPfS_ii (
+		.param .u64 __cudaparm__Z17convolutionRowGPUPfS_ii_d_Result,
+		.param .u64 __cudaparm__Z17convolutionRowGPUPfS_ii_d_Data,
+		.param .s32 __cudaparm__Z17convolutionRowGPUPfS_ii_dataW,
+		.param .s32 __cudaparm__Z17convolutionRowGPUPfS_ii_dataH)
+	{
+	.reg .u32 %r<29>;
+	.reg .u64 %rd<17>;
+	.reg .f32 %f<54>;
+	.reg .pred %p<5>;
+	.shared .align 4 .b8 __cuda___cuda_local_var_27011_35_data96[576];
+	.loc	16	98	0
+$LDWbegin__Z17convolutionRowGPUPfS_ii:
+	cvt.s32.u32 	%r1, %ctaid.x;
+	mov.s32 	%r2, 128;
+	mul24.lo.s32 	%r3, %r1, %r2;
+	ld.param.s32 	%r4, [__cudaparm__Z17convolutionRowGPUPfS_ii_dataW];
+	sub.s32 	%r5, %r4, 1;
+	sub.s32 	%r6, %r3, 8;
+	mov.u32 	%r7, %tid.x;
+	add.u32 	%r8, %r3, %r7;
+	sub.s32 	%r9, %r8, 16;
+	setp.gt.s32 	%p1, %r6, %r9;
+	@%p1 bra 	$Lt_36_2818;
+	mov.s32 	%r10, 0;
+	max.s32 	%r11, %r6, %r10;
+	set.ge.u32.s32 	%r12, %r9, %r11;
+	neg.s32 	%r13, %r12;
+	add.s32 	%r14, %r3, 135;
+	min.s32 	%r15, %r5, %r14;
+	set.le.u32.s32 	%r16, %r9, %r15;
+	neg.s32 	%r17, %r16;
+	and.b32 	%r18, %r13, %r17;
+	mov.u32 	%r19, 0;
+	setp.eq.s32 	%p2, %r18, %r19;
+	@%p2 bra 	$Lt_36_3586;
+	.loc	16	130	0
+	ld.param.u64 	%rd1, [__cudaparm__Z17convolutionRowGPUPfS_ii_d_Data];
+	cvt.s32.u32 	%r20, %ctaid.y;
+	mul24.lo.s32 	%r21, %r20, %r4;
+	add.s32 	%r22, %r8, %r21;
+	cvt.s64.s32 	%rd2, %r22;
+	mul.wide.s32 	%rd3, %r22, 4;
+	add.u64 	%rd4, %rd1, %rd3;
+	ld.global.f32 	%f1, [%rd4+-64];
+	bra.uni 	$Lt_36_3330;
+$Lt_36_3586:
+	mov.f32 	%f1, 0f00000000;     	// 0
+$Lt_36_3330:
+	mov.u64 	%rd5, __cuda___cuda_local_var_27011_35_data96;
+	cvt.s64.s32 	%rd6, %r7;
+	mul.wide.s32 	%rd7, %r7, 4;
+	add.u64 	%rd8, %rd5, %rd7;
+	st.shared.f32 	[%rd8+-32], %f1;
+$Lt_36_2818:
+	mov.u64 	%rd5, __cuda___cuda_local_var_27011_35_data96;
+	.loc	16	139	0
+	bar.sync 	0;
+	add.s32 	%r23, %r3, 127;
+	min.s32 	%r24, %r5, %r23;
+	setp.gt.s32 	%p3, %r8, %r24;
+	@%p3 bra 	$Lt_36_3842;
+	.loc	16	70	0
+	cvt.s64.s32 	%rd9, %r7;
+	mul.wide.s32 	%rd10, %r7, 4;
+	add.u64 	%rd11, %rd5, %rd10;
+	ld.shared.f32 	%f2, [%rd11+64];
+	ld.const.f32 	%f3, [d_Kernel+0];
+	mul.f32 	%f4, %f2, %f3;
+	ld.const.f32 	%f5, [d_Kernel+4];
+	ld.shared.f32 	%f6, [%rd11+60];
+	fma.rn.f32 	%f7, %f5, %f6, %f4;
+	ld.const.f32 	%f8, [d_Kernel+8];
+	ld.shared.f32 	%f9, [%rd11+56];
+	fma.rn.f32 	%f10, %f8, %f9, %f7;
+	ld.const.f32 	%f11, [d_Kernel+12];
+	ld.shared.f32 	%f12, [%rd11+52];
+	fma.rn.f32 	%f13, %f11, %f12, %f10;
+	ld.const.f32 	%f14, [d_Kernel+16];
+	ld.shared.f32 	%f15, [%rd11+48];
+	fma.rn.f32 	%f16, %f14, %f15, %f13;
+	ld.const.f32 	%f17, [d_Kernel+20];
+	ld.shared.f32 	%f18, [%rd11+44];
+	fma.rn.f32 	%f19, %f17, %f18, %f16;
+	ld.const.f32 	%f20, [d_Kernel+24];
+	ld.shared.f32 	%f21, [%rd11+40];
+	fma.rn.f32 	%f22, %f20, %f21, %f19;
+	ld.const.f32 	%f23, [d_Kernel+28];
+	ld.shared.f32 	%f24, [%rd11+36];
+	fma.rn.f32 	%f25, %f23, %f24, %f22;
+	ld.shared.f32 	%f26, [%rd11+32];
+	ld.const.f32 	%f27, [d_Kernel+32];
+	fma.rn.f32 	%f28, %f26, %f27, %f25;
+	ld.shared.f32 	%f29, [%rd11+28];
+	ld.const.f32 	%f30, [d_Kernel+36];
+	fma.rn.f32 	%f31, %f29, %f30, %f28;
+	ld.shared.f32 	%f32, [%rd11+24];
+	ld.const.f32 	%f33, [d_Kernel+40];
+	fma.rn.f32 	%f34, %f32, %f33, %f31;
+	ld.shared.f32 	%f35, [%rd11+20];
+	ld.const.f32 	%f36, [d_Kernel+44];
+	fma.rn.f32 	%f37, %f35, %f36, %f34;
+	ld.shared.f32 	%f38, [%rd11+16];
+	ld.const.f32 	%f39, [d_Kernel+48];
+	fma.rn.f32 	%f40, %f38, %f39, %f37;
+	ld.shared.f32 	%f41, [%rd11+12];
+	ld.const.f32 	%f42, [d_Kernel+52];
+	fma.rn.f32 	%f43, %f41, %f42, %f40;
+	ld.shared.f32 	%f44, [%rd11+8];
+	ld.const.f32 	%f45, [d_Kernel+56];
+	fma.rn.f32 	%f46, %f44, %f45, %f43;
+	ld.shared.f32 	%f47, [%rd11+4];
+	ld.const.f32 	%f48, [d_Kernel+60];
+	fma.rn.f32 	%f49, %f47, %f48, %f46;
+	.loc	16	155	0
+	ld.shared.f32 	%f50, [%rd11+0];
+	ld.const.f32 	%f51, [d_Kernel+64];
+	fma.rn.f32 	%f52, %f50, %f51, %f49;
+	ld.param.u64 	%rd12, [__cudaparm__Z17convolutionRowGPUPfS_ii_d_Result];
+	cvt.s32.u32 	%r25, %ctaid.y;
+	mul24.lo.s32 	%r26, %r25, %r4;
+	add.s32 	%r27, %r8, %r26;
+	cvt.s64.s32 	%rd13, %r27;
+	mul.wide.s32 	%rd14, %r27, 4;
+	add.u64 	%rd15, %rd12, %rd14;
+	st.global.f32 	[%rd15+0], %f52;
+$Lt_36_3842:
+	.loc	16	157	0
+	exit;
+$LDWend__Z17convolutionRowGPUPfS_ii:
+	} // _Z17convolutionRowGPUPfS_ii
+
+	.entry _Z20convolutionColumnGPUPfS_iiii (
+		.param .u64 __cudaparm__Z20convolutionColumnGPUPfS_iiii_d_Result,
+		.param .u64 __cudaparm__Z20convolutionColumnGPUPfS_iiii_d_Data,
+		.param .s32 __cudaparm__Z20convolutionColumnGPUPfS_iiii_dataW,
+		.param .s32 __cudaparm__Z20convolutionColumnGPUPfS_iiii_dataH,
+		.param .s32 __cudaparm__Z20convolutionColumnGPUPfS_iiii_smemStride,
+		.param .s32 __cudaparm__Z20convolutionColumnGPUPfS_iiii_gmemStride)
+	{
+	.reg .u32 %r<45>;
+	.reg .u64 %rd<21>;
+	.reg .f32 %f<54>;
+	.reg .pred %p<7>;
+	.shared .align 4 .b8 __cuda___cuda_local_var_27083_35_data704[4096];
+	.loc	16	170	0
+$LDWbegin__Z20convolutionColumnGPUPfS_iiii:
+	.loc	16	190	0
+	cvt.s32.u32 	%r1, %tid.y;
+	mov.u32 	%r2, %tid.x;
+	mov.s32 	%r3, 16;
+	mul24.lo.s32 	%r4, %r1, %r3;
+	add.u32 	%r5, %r2, %r4;
+	.loc	16	191	0
+	cvt.s32.u32 	%r6, %ctaid.y;
+	mov.s32 	%r7, 48;
+	mul24.lo.s32 	%r8, %r6, %r7;
+	cvt.s32.u32 	%r9, %ctaid.x;
+	mov.s32 	%r10, 16;
+	mul24.lo.s32 	%r11, %r9, %r10;
+	add.u32 	%r12, %r8, %r1;
+	add.u32 	%r13, %r11, %r2;
+	sub.u32 	%r14, %r12, 8;
+	ld.param.s32 	%r15, [__cudaparm__Z20convolutionColumnGPUPfS_iiii_dataW];
+	mul24.lo.s32 	%r16, %r14, %r15;
+	add.s32 	%r17, %r13, %r16;
+	.loc	16	195	0
+	mov.s32 	%r18, %r14;
+	add.s32 	%r19, %r8, 55;
+	ld.param.s32 	%r20, [__cudaparm__Z20convolutionColumnGPUPfS_iiii_dataH];
+	setp.lt.s32 	%p1, %r19, %r14;
+	@%p1 bra 	$Lt_37_5890;
+	mov.u64 	%rd1, __cuda___cuda_local_var_27083_35_data704;
+	sub.s32 	%r21, %r20, 1;
+	ld.param.s32 	%r22, [__cudaparm__Z20convolutionColumnGPUPfS_iiii_smemStride];
+	cvt.s64.s32 	%rd2, %r22;
+	sub.s32 	%r23, %r8, 8;
+	mul.wide.s32 	%rd3, %r22, 4;
+	min.s32 	%r24, %r19, %r21;
+	mov.s32 	%r25, 0;
+	max.s32 	%r26, %r23, %r25;
+	cvt.s64.s32 	%rd4, %r5;
+	mul.wide.s32 	%rd5, %r5, 4;
+	add.u64 	%rd6, %rd1, %rd5;
+	mov.u32 	%r27, %ntid.y;
+	ld.param.s32 	%r28, [__cudaparm__Z20convolutionColumnGPUPfS_iiii_gmemStride];
+$Lt_37_3842:
+ //<loop> Loop body line 195, nesting depth: 1, estimated iterations: unknown
+	set.ge.u32.s32 	%r29, %r24, %r18;
+	neg.s32 	%r30, %r29;
+	set.le.u32.s32 	%r31, %r26, %r18;
+	neg.s32 	%r32, %r31;
+	and.b32 	%r33, %r30, %r32;
+	mov.u32 	%r34, 0;
+	setp.eq.s32 	%p2, %r33, %r34;
+	@%p2 bra 	$Lt_37_4354;
+ //<loop> Part of loop body line 195, head labeled $Lt_37_3842
+	.loc	16	196	0
+	ld.param.u64 	%rd7, [__cudaparm__Z20convolutionColumnGPUPfS_iiii_d_Data];
+	cvt.s64.s32 	%rd8, %r17;
+	mul.wide.s32 	%rd9, %r17, 4;
+	add.u64 	%rd10, %rd7, %rd9;
+	ld.global.f32 	%f1, [%rd10+0];
+	bra.uni 	$Lt_37_4098;
+$Lt_37_4354:
+ //<loop> Part of loop body line 195, head labeled $Lt_37_3842
+	mov.f32 	%f1, 0f00000000;     	// 0
+$Lt_37_4098:
+ //<loop> Part of loop body line 195, head labeled $Lt_37_3842
+	st.shared.f32 	[%rd6+0], %f1;
+	.loc	16	199	0
+	add.u64 	%rd6, %rd6, %rd3;
+	.loc	16	200	0
+	add.s32 	%r17, %r17, %r28;
+	add.u32 	%r18, %r18, %r27;
+	setp.ge.s32 	%p3, %r19, %r18;
+	@%p3 bra 	$Lt_37_3842;
+	bra.uni 	$Lt_37_3330;
+$Lt_37_5890:
+	sub.s32 	%r21, %r20, 1;
+	mov.u64 	%rd1, __cuda___cuda_local_var_27083_35_data704;
+$Lt_37_3330:
+	.loc	16	206	0
+	bar.sync 	0;
+	.loc	16	208	0
+	add.s32 	%r35, %r1, 8;
+	mov.s32 	%r36, 16;
+	mul24.lo.s32 	%r37, %r35, %r36;
+	add.u32 	%r5, %r2, %r37;
+	.loc	16	209	0
+	mul24.lo.s32 	%r38, %r12, %r15;
+	add.s32 	%r17, %r13, %r38;
+	.loc	16	212	0
+	mov.s32 	%r39, %r12;
+	add.s32 	%r40, %r8, 47;
+	min.s32 	%r41, %r40, %r21;
+	setp.lt.s32 	%p4, %r41, %r12;
+	@%p4 bra 	$Lt_37_4866;
+	ld.param.s32 	%r42, [__cudaparm__Z20convolutionColumnGPUPfS_iiii_smemStride];
+	cvt.s64.s32 	%rd11, %r42;
+	mul.wide.s32 	%rd3, %r42, 4;
+	ld.param.s32 	%r43, [__cudaparm__Z20convolutionColumnGPUPfS_iiii_gmemStride];
+	cvt.s64.s32 	%rd12, %r43;
+	mul.wide.s32 	%rd13, %r43, 4;
+	cvt.s64.s32 	%rd14, %r5;
+	mul.wide.s32 	%rd15, %r5, 4;
+	add.u64 	%rd6, %rd1, %rd15;
+	ld.param.u64 	%rd16, [__cudaparm__Z20convolutionColumnGPUPfS_iiii_d_Result];
+	cvt.s64.s32 	%rd17, %r17;
+	mul.wide.s32 	%rd18, %r17, 4;
+	add.u64 	%rd19, %rd16, %rd18;
+	mov.u32 	%r27, %ntid.y;
+	ld.const.f32 	%f2, [d_Kernel+64];
+	ld.const.f32 	%f3, [d_Kernel+60];
+	ld.const.f32 	%f4, [d_Kernel+56];
+	ld.const.f32 	%f5, [d_Kernel+52];
+	ld.const.f32 	%f6, [d_Kernel+48];
+	ld.const.f32 	%f7, [d_Kernel+44];
+	ld.const.f32 	%f8, [d_Kernel+40];
+	ld.const.f32 	%f9, [d_Kernel+36];
+	ld.const.f32 	%f10, [d_Kernel+32];
+	ld.const.f32 	%f11, [d_Kernel+28];
+	ld.const.f32 	%f12, [d_Kernel+24];
+	ld.const.f32 	%f13, [d_Kernel+20];
+	ld.const.f32 	%f14, [d_Kernel+16];
+	ld.const.f32 	%f15, [d_Kernel+12];
+	ld.const.f32 	%f16, [d_Kernel+8];
+	ld.const.f32 	%f17, [d_Kernel+4];
+	ld.const.f32 	%f18, [d_Kernel+0];
+$Lt_37_5378:
+ //<loop> Loop body line 212, nesting depth: 1, estimated iterations: unknown
+	.loc	16	224	0
+	ld.shared.f32 	%f19, [%rd6+512];
+	mul.f32 	%f20, %f19, %f18;
+	ld.shared.f32 	%f21, [%rd6+448];
+	fma.rn.f32 	%f22, %f17, %f21, %f20;
+	ld.shared.f32 	%f23, [%rd6+384];
+	fma.rn.f32 	%f24, %f16, %f23, %f22;
+	ld.shared.f32 	%f25, [%rd6+320];
+	fma.rn.f32 	%f26, %f15, %f25, %f24;
+	ld.shared.f32 	%f27, [%rd6+256];
+	fma.rn.f32 	%f28, %f14, %f27, %f26;
+	ld.shared.f32 	%f29, [%rd6+192];
+	fma.rn.f32 	%f30, %f13, %f29, %f28;
+	ld.shared.f32 	%f31, [%rd6+128];
+	fma.rn.f32 	%f32, %f12, %f31, %f30;
+	ld.shared.f32 	%f33, [%rd6+64];
+	fma.rn.f32 	%f34, %f11, %f33, %f32;
+	ld.shared.f32 	%f35, [%rd6+0];
+	fma.rn.f32 	%f36, %f35, %f10, %f34;
+	ld.shared.f32 	%f37, [%rd6+-64];
+	fma.rn.f32 	%f38, %f37, %f9, %f36;
+	ld.shared.f32 	%f39, [%rd6+-128];
+	fma.rn.f32 	%f40, %f39, %f8, %f38;
+	ld.shared.f32 	%f41, [%rd6+-192];
+	fma.rn.f32 	%f42, %f41, %f7, %f40;
+	ld.shared.f32 	%f43, [%rd6+-256];
+	fma.rn.f32 	%f44, %f43, %f6, %f42;
+	ld.shared.f32 	%f45, [%rd6+-320];
+	fma.rn.f32 	%f46, %f45, %f5, %f44;
+	ld.shared.f32 	%f47, [%rd6+-384];
+	fma.rn.f32 	%f48, %f47, %f4, %f46;
+	ld.shared.f32 	%f49, [%rd6+-448];
+	fma.rn.f32 	%f50, %f49, %f3, %f48;
+	ld.shared.f32 	%f51, [%rd6+-512];
+	fma.rn.f32 	%f52, %f51, %f2, %f50;
+	st.global.f32 	[%rd19+0], %f52;
+	.loc	16	225	0
+	add.u64 	%rd6, %rd6, %rd3;
+	.loc	16	226	0
+	add.u64 	%rd19, %rd13, %rd19;
+	add.u32 	%r39, %r39, %r27;
+	setp.ge.s32 	%p5, %r41, %r39;
+	@%p5 bra 	$Lt_37_5378;
+$Lt_37_4866:
+	.loc	16	228	0
+	exit;
+$LDWend__Z20convolutionColumnGPUPfS_iiii:
+	} // _Z20convolutionColumnGPUPfS_iiii
+

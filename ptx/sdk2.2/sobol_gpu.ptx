@@ -1,0 +1,201 @@
+	.version 2.1
+	.target sm_20
+	// compiled with /usr/local/cuda3.1/cuda/open64/lib//be
+	// nvopencc 3.1 built on 2010-06-07
+
+	//-----------------------------------------------------------
+	// Compiling /tmp/tmpxft_00001aab_00000000-7_sobol_gpu.cpp3.i (/tmp/ccBI#.Zrw8JN)
+	//-----------------------------------------------------------
+
+	//-----------------------------------------------------------
+	// Options:
+	//-----------------------------------------------------------
+	//  Target:ptx, ISA:sm_20, Endian:little, Pointer Size:64
+	//  -O3	(Optimization level)
+	//  -g0	(Debug level)
+	//  -m2	(Report advisories)
+	//-----------------------------------------------------------
+
+	.file	1	"<command-line>"
+	.file	2	"/tmp/tmpxft_00001aab_00000000-6_sobol_gpu.cudafe2.gpu"
+	.file	3	"/usr/lib/gcc/x86_64-linux-gnu/4.4.3/include/stddef.h"
+	.file	4	"/usr/local/cuda3.1/cuda/bin/../include/crt/device_runtime.h"
+	.file	5	"/usr/local/cuda3.1/cuda/bin/../include/host_defines.h"
+	.file	6	"/usr/local/cuda3.1/cuda/bin/../include/builtin_types.h"
+	.file	7	"/usr/local/cuda3.1/cuda/bin/../include/device_types.h"
+	.file	8	"/usr/local/cuda3.1/cuda/bin/../include/driver_types.h"
+	.file	9	"/usr/local/cuda3.1/cuda/bin/../include/surface_types.h"
+	.file	10	"/usr/local/cuda3.1/cuda/bin/../include/texture_types.h"
+	.file	11	"/usr/local/cuda3.1/cuda/bin/../include/vector_types.h"
+	.file	12	"/usr/local/cuda3.1/cuda/bin/../include/device_launch_parameters.h"
+	.file	13	"/usr/local/cuda3.1/cuda/bin/../include/crt/storage_class.h"
+	.file	14	"/usr/include/bits/types.h"
+	.file	15	"/usr/include/time.h"
+	.file	16	"/usr/local/cuda3.1/cuda/bin/../include/texture_fetch_functions.h"
+	.file	17	"/usr/local/cuda3.1/cuda/bin/../include/common_functions.h"
+	.file	18	"/usr/local/cuda3.1/cuda/bin/../include/math_functions.h"
+	.file	19	"/usr/local/cuda3.1/cuda/bin/../include/math_constants.h"
+	.file	20	"/usr/local/cuda3.1/cuda/bin/../include/device_functions.h"
+	.file	21	"/usr/local/cuda3.1/cuda/bin/../include/sm_11_atomic_functions.h"
+	.file	22	"/usr/local/cuda3.1/cuda/bin/../include/sm_12_atomic_functions.h"
+	.file	23	"/usr/local/cuda3.1/cuda/bin/../include/sm_13_double_functions.h"
+	.file	24	"/usr/local/cuda3.1/cuda/bin/../include/sm_20_atomic_functions.h"
+	.file	25	"/usr/local/cuda3.1/cuda/bin/../include/sm_20_intrinsics.h"
+	.file	26	"/usr/local/cuda3.1/cuda/bin/../include/surface_functions.h"
+	.file	27	"/usr/local/cuda3.1/cuda/bin/../include/math_functions_dbl_ptx3.h"
+	.file	28	"/home/andrew/repositories/gpuocelot/tests/cuda2.2/tests/SobolQRNG/sobol_gpu.cu"
+
+
+	.entry _Z15sobolGPU_kerneljjPjPf (
+		.param .u32 __cudaparm__Z15sobolGPU_kerneljjPjPf_n_vectors,
+		.param .u32 __cudaparm__Z15sobolGPU_kerneljjPjPf_n_dimensions,
+		.param .u64 __cudaparm__Z15sobolGPU_kerneljjPjPf___val_paramd_directions,
+		.param .u64 __cudaparm__Z15sobolGPU_kerneljjPjPf___val_paramd_output)
+	{
+	.reg .u32 %r<51>;
+	.reg .u64 %rd<34>;
+	.reg .f32 %f<8>;
+	.reg .pred %p<8>;
+	.shared .align 4 .b8 __cuda___cuda_local_var_24132_42_v24[128];
+	.loc	28	55	0
+$LDWbegin__Z15sobolGPU_kerneljjPjPf:
+	mov.u32 	%r1, %tid.x;
+	mov.u32 	%r2, 31;
+	setp.gt.u32 	%p1, %r1, %r2;
+	@%p1 bra 	$Lt_0_3842;
+	.loc	28	69	0
+	mov.u64 	%rd1, __cuda___cuda_local_var_24132_42_v24;
+	cvt.u64.u32 	%rd2, %r1;
+	mul.wide.u32 	%rd3, %r1, 4;
+	ld.param.u64 	%rd4, [__cudaparm__Z15sobolGPU_kerneljjPjPf___val_paramd_directions];
+	mov.u32 	%r3, %ctaid.y;
+	mul.lo.u32 	%r4, %r3, 32;
+	cvt.u64.u32 	%rd5, %r4;
+	mul.wide.u32 	%rd6, %r4, 4;
+	add.u64 	%rd7, %rd4, %rd6;
+	add.u64 	%rd8, %rd3, %rd7;
+	ld.global.u32 	%r5, [%rd8+0];
+	add.u64 	%rd9, %rd3, %rd1;
+	st.shared.u32 	[%rd9+0], %r5;
+$Lt_0_3842:
+	mov.u64 	%rd1, __cuda___cuda_local_var_24132_42_v24;
+	.loc	28	71	0
+	bar.sync 	0;
+	.loc	28	82	0
+	mov.u32 	%r6, %ntid.x;
+	mov.u32 	%r7, %ctaid.x;
+	mul.lo.u32 	%r8, %r7, %r6;
+	add.u32 	%r9, %r1, %r8;
+	shr.s32 	%r10, %r9, 1;
+	xor.b32 	%r11, %r9, %r10;
+	.loc	28	90	0
+	mov.u32 	%r12, %nctaid.x;
+	mul.lo.u32 	%r13, %r12, %r6;
+	neg.s32 	%r14, %r13;
+	and.b32 	%r15, %r14, %r13;
+	clz.b32 	%r16, %r15;
+	mov.s32 	%r17, 31;
+	sub.s32 	%r18, %r17, %r16;
+	mov.u32 	%r19, 0;
+	setp.eq.u32 	%p2, %r18, %r19;
+	@%p2 bra 	$Lt_0_6914;
+	mov.s32 	%r20, 1;
+	max.s32 	%r21, %r18, %r20;
+	mov.s64 	%rd10, %rd1;
+	mov.u32 	%r22, 0;
+	mov.u32 	%r23, 0;
+	mov.s32 	%r24, %r21;
+$Lt_0_4866:
+ //<loop> Loop body line 90, nesting depth: 1, estimated iterations: unknown
+	.loc	28	97	0
+	ld.shared.u32 	%r25, [%rd10+0];
+	and.b32 	%r26, %r11, 1;
+	neg.s32 	%r27, %r26;
+	and.b32 	%r28, %r25, %r27;
+	xor.b32 	%r23, %r23, %r28;
+	.loc	28	98	0
+	shr.u32 	%r11, %r11, 1;
+	.loc	28	90	0
+	add.u32 	%r22, %r22, 1;
+	add.u64 	%rd10, %rd10, 4;
+	setp.gt.u32 	%p3, %r18, %r22;
+	@%p3 bra 	$Lt_0_4866;
+	bra.uni 	$Lt_0_4354;
+$Lt_0_6914:
+	mov.u32 	%r23, 0;
+$Lt_0_4354:
+	ld.param.u32 	%r29, [__cudaparm__Z15sobolGPU_kerneljjPjPf_n_vectors];
+	setp.ge.u32 	%p4, %r9, %r29;
+	@%p4 bra 	$Lt_0_5378;
+	.loc	28	102	0
+	cvt.rn.f32.u32 	%f1, %r23;
+	mov.f32 	%f2, 0f2f800000;     	// 2.32831e-10
+	mul.f32 	%f3, %f1, %f2;
+	ld.param.u64 	%rd11, [__cudaparm__Z15sobolGPU_kerneljjPjPf___val_paramd_output];
+	mov.u32 	%r30, %ctaid.y;
+	mul.lo.u32 	%r31, %r30, %r29;
+	cvt.u64.u32 	%rd12, %r31;
+	mul.wide.u32 	%rd13, %r31, 4;
+	add.u64 	%rd14, %rd11, %rd13;
+	cvt.s64.s32 	%rd15, %r9;
+	mul.wide.s32 	%rd16, %r9, 4;
+	add.u64 	%rd17, %rd14, %rd16;
+	st.global.f32 	[%rd17+0], %f3;
+$Lt_0_5378:
+	.loc	28	129	0
+	mov.s32 	%r32, 32;
+	sub.s32 	%r33, %r32, %r16;
+	cvt.s64.s32 	%rd18, %r33;
+	mul.wide.s32 	%rd19, %r33, 4;
+	add.u64 	%rd20, %rd1, %rd19;
+	ld.shared.u32 	%r34, [%rd20+-8];
+	.loc	28	131	0
+	add.s32 	%r35, %r13, %r9;
+	mov.s32 	%r36, %r35;
+	setp.ge.u32 	%p5, %r35, %r29;
+	@%p5 bra 	$Lt_0_5890;
+	mov.u32 	%r37, %ctaid.y;
+	mul.lo.u32 	%r38, %r37, %r29;
+	sub.u32 	%r39, %r13, 1;
+	mov.s32 	%r40, %r9;
+	cvt.u64.u32 	%rd21, %r38;
+	cvt.s64.u32 	%rd22, %r13;
+	mul.wide.u32 	%rd23, %r13, 4;
+	ld.param.u64 	%rd24, [__cudaparm__Z15sobolGPU_kerneljjPjPf___val_paramd_output];
+	mul.wide.u32 	%rd25, %r38, 4;
+	add.s64 	%rd26, %rd24, %rd25;
+	cvt.u64.u32 	%rd27, %r35;
+	mul.wide.u32 	%rd28, %r35, 4;
+	add.s64 	%rd29, %rd26, %rd28;
+$Lt_0_6402:
+ //<loop> Loop body line 131, nesting depth: 1, estimated iterations: unknown
+	.loc	28	139	0
+	or.b32 	%r41, %r39, %r40;
+	not.b32 	%r42, %r41;
+	neg.s32 	%r43, %r42;
+	and.b32 	%r44, %r42, %r43;
+	clz.b32 	%r45, %r44;
+	mov.s32 	%r46, 32;
+	sub.s32 	%r47, %r46, %r45;
+	cvt.s64.s32 	%rd30, %r47;
+	mul.wide.s32 	%rd31, %r47, 4;
+	add.u64 	%rd32, %rd1, %rd31;
+	ld.shared.u32 	%r48, [%rd32+-4];
+	xor.b32 	%r49, %r48, %r34;
+	xor.b32 	%r23, %r23, %r49;
+	.loc	28	140	0
+	cvt.rn.f32.u32 	%f4, %r23;
+	mov.f32 	%f5, 0f2f800000;     	// 2.32831e-10
+	mul.f32 	%f6, %f4, %f5;
+	st.global.f32 	[%rd29+0], %f6;
+	add.u32 	%r36, %r13, %r36;
+	add.u32 	%r40, %r13, %r40;
+	add.s64 	%rd29, %rd29, %rd23;
+	setp.lt.u32 	%p6, %r36, %r29;
+	@%p6 bra 	$Lt_0_6402;
+$Lt_0_5890:
+	.loc	28	142	0
+	exit;
+$LDWend__Z15sobolGPU_kerneljjPjPf:
+	} // _Z15sobolGPU_kerneljjPjPf
+

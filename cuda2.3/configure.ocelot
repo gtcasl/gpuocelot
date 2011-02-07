@@ -1,0 +1,35 @@
+{
+	ocelot: "ocelot",
+	trace: { 
+		memoryChecker: true,
+		raceDetector: {
+			enabled: true,
+			ignoreIrrelevantWrites: true
+		},
+		cacheSimulator: {
+			enabled: false,
+			writebackTime: 50,
+			cacheSize: 8192,
+			lineSize: 64,
+			hitTime: 1,
+			missTime: 200,
+			associativity: 1,
+			instructionMemory: 1
+		},
+		debugger: {
+			enabled: false,
+			kernelFilter: "none",
+			alwaysAttach: false
+		}
+	},
+	cuda: {
+		implementation: CudaRuntime,
+		runtimeApiTrace: "trace/CudaAPI.trace"
+	},
+	executive: {
+		devices: [ llvm ],
+		optimizationLevel: basic,
+		workerThreadLimit: 2
+	}
+}
+

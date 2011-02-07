@@ -1,0 +1,185 @@
+	.version 2.1
+	.target sm_20
+	// compiled with /usr/local/cuda3.1/cuda/open64/lib//be
+	// nvopencc 3.1 built on 2010-06-07
+
+	//-----------------------------------------------------------
+	// Compiling /tmp/tmpxft_00001c38_00000000-7_simpleVoteIntrinsics.cpp3.i (/tmp/ccBI#.i0bTCZ)
+	//-----------------------------------------------------------
+
+	//-----------------------------------------------------------
+	// Options:
+	//-----------------------------------------------------------
+	//  Target:ptx, ISA:sm_20, Endian:little, Pointer Size:64
+	//  -O3	(Optimization level)
+	//  -g0	(Debug level)
+	//  -m2	(Report advisories)
+	//-----------------------------------------------------------
+
+	.file	1	"<command-line>"
+	.file	2	"/tmp/tmpxft_00001c38_00000000-6_simpleVoteIntrinsics.cudafe2.gpu"
+	.file	3	"/usr/lib/gcc/x86_64-linux-gnu/4.4.3/include/stddef.h"
+	.file	4	"/usr/local/cuda3.1/cuda/bin/../include/crt/device_runtime.h"
+	.file	5	"/usr/local/cuda3.1/cuda/bin/../include/host_defines.h"
+	.file	6	"/usr/local/cuda3.1/cuda/bin/../include/builtin_types.h"
+	.file	7	"/usr/local/cuda3.1/cuda/bin/../include/device_types.h"
+	.file	8	"/usr/local/cuda3.1/cuda/bin/../include/driver_types.h"
+	.file	9	"/usr/local/cuda3.1/cuda/bin/../include/surface_types.h"
+	.file	10	"/usr/local/cuda3.1/cuda/bin/../include/texture_types.h"
+	.file	11	"/usr/local/cuda3.1/cuda/bin/../include/vector_types.h"
+	.file	12	"/usr/local/cuda3.1/cuda/bin/../include/device_launch_parameters.h"
+	.file	13	"/usr/local/cuda3.1/cuda/bin/../include/crt/storage_class.h"
+	.file	14	"/usr/include/bits/types.h"
+	.file	15	"/usr/include/time.h"
+	.file	16	"/usr/local/cuda3.1/cuda/bin/../include/texture_fetch_functions.h"
+	.file	17	"/home/andrew/repositories/gpuocelot/tests/cuda2.2/tests/simpleVoteIntrinsics/simpleVote_kernel.cu"
+	.file	18	"/usr/local/cuda3.1/cuda/bin/../include/common_functions.h"
+	.file	19	"/usr/local/cuda3.1/cuda/bin/../include/math_functions.h"
+	.file	20	"/usr/local/cuda3.1/cuda/bin/../include/math_constants.h"
+	.file	21	"/usr/local/cuda3.1/cuda/bin/../include/device_functions.h"
+	.file	22	"/usr/local/cuda3.1/cuda/bin/../include/sm_11_atomic_functions.h"
+	.file	23	"/usr/local/cuda3.1/cuda/bin/../include/sm_12_atomic_functions.h"
+	.file	24	"/usr/local/cuda3.1/cuda/bin/../include/sm_13_double_functions.h"
+	.file	25	"/usr/local/cuda3.1/cuda/bin/../include/sm_20_atomic_functions.h"
+	.file	26	"/usr/local/cuda3.1/cuda/bin/../include/sm_20_intrinsics.h"
+	.file	27	"/usr/local/cuda3.1/cuda/bin/../include/surface_functions.h"
+	.file	28	"/usr/local/cuda3.1/cuda/bin/../include/math_functions_dbl_ptx3.h"
+
+
+	.entry _Z14VoteAnyKernel1PjS_i (
+		.param .u64 __cudaparm__Z14VoteAnyKernel1PjS_i_input,
+		.param .u64 __cudaparm__Z14VoteAnyKernel1PjS_i_result,
+		.param .s32 __cudaparm__Z14VoteAnyKernel1PjS_i_size)
+	{
+	.reg .u32 %r<17>;
+	.reg .u64 %rd<8>;
+	.reg .pred %p<4>;
+	.loc	17	48	0
+$LDWbegin__Z14VoteAnyKernel1PjS_i:
+	.loc	17	52	0
+	mov.u32 	%r1, %tid.x;
+	mov.u32 	%r2, %ctaid.x;
+	mov.u32 	%r3, %ntid.x;
+	mul.lo.u32 	%r4, %r2, %r3;
+	add.u32 	%r5, %r1, %r4;
+	cvt.s64.s32 	%rd1, %r5;
+	mul.wide.s32 	%rd2, %r5, 4;
+	ld.param.u64 	%rd3, [__cudaparm__Z14VoteAnyKernel1PjS_i_input];
+	add.u64 	%rd4, %rd3, %rd2;
+	ld.global.u32 	%r6, [%rd4+0];
+	mov.u32 	%r7, 0;
+	set.ne.u32.u32 	%r8, %r6, %r7;
+	neg.s32 	%r9, %r8;
+	mov.u32 	%r10, 0;
+	setp.ne.u32 	%p1, %r9, %r10;
+	vote.any.pred 	%p2, %p1;
+	selp.u32 	%r11, 1, 0, %p2;
+	mov.s32 	%r12, %r11;
+	mov.s32 	%r13, 0;
+	set.ne.u32.s32 	%r14, %r12, %r13;
+	neg.s32 	%r15, %r14;
+	ld.param.u64 	%rd5, [__cudaparm__Z14VoteAnyKernel1PjS_i_result];
+	add.u64 	%rd6, %rd5, %rd2;
+	st.global.u32 	[%rd6+0], %r15;
+	.loc	17	53	0
+	exit;
+$LDWend__Z14VoteAnyKernel1PjS_i:
+	} // _Z14VoteAnyKernel1PjS_i
+
+	.entry _Z14VoteAllKernel2PjS_i (
+		.param .u64 __cudaparm__Z14VoteAllKernel2PjS_i_input,
+		.param .u64 __cudaparm__Z14VoteAllKernel2PjS_i_result,
+		.param .s32 __cudaparm__Z14VoteAllKernel2PjS_i_size)
+	{
+	.reg .u32 %r<17>;
+	.reg .u64 %rd<8>;
+	.reg .pred %p<4>;
+	.loc	17	58	0
+$LDWbegin__Z14VoteAllKernel2PjS_i:
+	.loc	17	62	0
+	mov.u32 	%r1, %tid.x;
+	mov.u32 	%r2, %ctaid.x;
+	mov.u32 	%r3, %ntid.x;
+	mul.lo.u32 	%r4, %r2, %r3;
+	add.u32 	%r5, %r1, %r4;
+	cvt.s64.s32 	%rd1, %r5;
+	mul.wide.s32 	%rd2, %r5, 4;
+	ld.param.u64 	%rd3, [__cudaparm__Z14VoteAllKernel2PjS_i_input];
+	add.u64 	%rd4, %rd3, %rd2;
+	ld.global.u32 	%r6, [%rd4+0];
+	mov.u32 	%r7, 0;
+	set.ne.u32.u32 	%r8, %r6, %r7;
+	neg.s32 	%r9, %r8;
+	mov.u32 	%r10, 0;
+	setp.ne.u32 	%p1, %r9, %r10;
+	vote.all.pred 	%p2, %p1;
+	selp.u32 	%r11, 1, 0, %p2;
+	mov.s32 	%r12, %r11;
+	mov.s32 	%r13, 0;
+	set.ne.u32.s32 	%r14, %r12, %r13;
+	neg.s32 	%r15, %r14;
+	ld.param.u64 	%rd5, [__cudaparm__Z14VoteAllKernel2PjS_i_result];
+	add.u64 	%rd6, %rd5, %rd2;
+	st.global.u32 	[%rd6+0], %r15;
+	.loc	17	63	0
+	exit;
+$LDWend__Z14VoteAllKernel2PjS_i:
+	} // _Z14VoteAllKernel2PjS_i
+
+	.entry _Z14VoteAnyKernel3Pbi (
+		.param .u64 __cudaparm__Z14VoteAnyKernel3Pbi_info,
+		.param .s32 __cudaparm__Z14VoteAnyKernel3Pbi_warp_size)
+	{
+	.reg .u32 %r<27>;
+	.reg .u64 %rd<5>;
+	.reg .pred %p<8>;
+	.loc	17	67	0
+$LDWbegin__Z14VoteAnyKernel3Pbi:
+	.loc	17	73	0
+	ld.param.s32 	%r1, [__cudaparm__Z14VoteAnyKernel3Pbi_warp_size];
+	mul.lo.s32 	%r2, %r1, 3;
+	mov.u32 	%r3, %ctaid.x;
+	mov.u32 	%r4, %ntid.x;
+	mul.lo.u32 	%r5, %r3, %r4;
+	shr.s32 	%r6, %r2, 31;
+	mov.s32 	%r7, 1;
+	and.b32 	%r8, %r6, %r7;
+	add.s32 	%r9, %r8, %r2;
+	shr.s32 	%r10, %r9, 1;
+	mov.u32 	%r11, %tid.x;
+	add.u32 	%r12, %r11, %r5;
+	setp.le.s32 	%p1, %r10, %r12;
+	selp.s32 	%r13, 1, 0, %p1;
+	mov.u32 	%r14, 0;
+	setp.ne.u32 	%p2, %r13, %r14;
+	vote.any.pred 	%p3, %p2;
+	selp.u32 	%r15, 1, 0, %p3;
+	mov.s32 	%r16, %r15;
+	mul.lo.s32 	%r17, %r12, 3;
+	cvt.u64.s32 	%rd1, %r17;
+	ld.param.u64 	%rd2, [__cudaparm__Z14VoteAnyKernel3Pbi_info];
+	add.u64 	%rd3, %rd1, %rd2;
+	mov.s32 	%r18, 0;
+	set.ne.u32.s32 	%r19, %r16, %r18;
+	neg.s32 	%r20, %r19;
+	st.global.s8 	[%rd3+0], %r20;
+	.loc	17	76	0
+	st.global.s8 	[%rd3+1], %r13;
+	.loc	17	78	0
+	mov.u32 	%r21, 0;
+	setp.ne.u32 	%p4, %r13, %r21;
+	vote.all.pred 	%p5, %p4;
+	selp.u32 	%r22, 1, 0, %p5;
+	mov.s32 	%r23, %r22;
+	mov.u32 	%r24, 0;
+	setp.eq.s32 	%p6, %r23, %r24;
+	@%p6 bra 	$Lt_2_1026;
+	.loc	17	79	0
+	mov.s32 	%r25, 1;
+	st.global.s8 	[%rd3+2], %r25;
+$Lt_2_1026:
+	.loc	17	81	0
+	exit;
+$LDWend__Z14VoteAnyKernel3Pbi:
+	} // _Z14VoteAnyKernel3Pbi
+

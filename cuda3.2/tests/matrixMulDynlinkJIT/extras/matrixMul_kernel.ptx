@@ -1,0 +1,161 @@
+	.version 1.4
+	.target sm_10, map_f64_to_f32
+
+	.reg .u32 %ra<17>;
+	.reg .u64 %rda<17>;
+	.reg .f32 %fa<17>;
+	.reg .f64 %fda<17>;
+	.reg .u32 %rv<5>;
+	.reg .u64 %rdv<5>;
+	.reg .f32 %fv<5>;
+	.reg .f64 %fdv<5>;
+
+	.entry matrixMul (
+		.param .u32 __cudaparm_matrixMul_C,
+		.param .u32 __cudaparm_matrixMul_A,
+		.param .u32 __cudaparm_matrixMul_B,
+		.param .s32 __cudaparm_matrixMul_wA,
+		.param .s32 __cudaparm_matrixMul_wB)
+	{
+	.reg .u32 %r<57>;
+	.reg .f32 %f<37>;
+	.reg .pred %p<4>;
+	.shared .align 4 .b8 __cuda_Bs20[1024];
+	.shared .align 4 .b8 __cuda_As1044[1024];
+	.loc	14	61	0
+$LBB1_matrixMul:
+	.loc	14	92	0
+	cvt.s32.u16 	%r1, %ctaid.x;   	// 
+	mul24.lo.s32 	%r2, %r1, 16;   	// 
+	cvt.s32.u16 	%r3, %ctaid.y;   	// 
+	ld.param.s32 	%r4, [__cudaparm_matrixMul_wA];	// id:70 __cudaparm_matrixMul_wA+0x0
+	mul.lo.s32 	%r5, %r3, %r4;    	// 
+	mul.lo.s32 	%r6, %r5, 16;     	// 
+	add.s32 	%r7, %r6, %r4;       	// 
+	sub.s32 	%r8, %r7, 1;         	// 
+	cvt.s32.u16 	%r9, %tid.x;     	// 
+	cvt.s32.u16 	%r10, %tid.y;    	// 
+	ld.param.s32 	%r11, [__cudaparm_matrixMul_wB];	// id:68 __cudaparm_matrixMul_wB+0x0
+	setp.lt.s32 	%p1, %r8, %r6;   	// 
+	mov.f32 	%f1, 0f00000000;     	// 0
+	@%p1 bra 	$Lt_0_3330;         	// 
+	mov.u32 	%r12, __cuda_Bs20;   	// 
+	mov.u32 	%r13, __cuda_As1044; 	// 
+	add.s32 	%r14, %r4, 15;       	// 
+	shr.s32 	%r15, %r14, 31;      	// 
+	mov.s32 	%r16, 15;            	// 
+	and.b32 	%r17, %r15, %r16;    	// 
+	add.s32 	%r18, %r17, %r14;    	// 
+	shr.s32 	%r19, %r18, 4;       	// 
+	mul.lo.s32 	%r20, %r10, %r11; 	// 
+	mul24.lo.u32 	%r21, %r9, 4;   	// 
+	mul.lo.s32 	%r22, %r10, %r4;  	// 
+	mul.lo.u32 	%r23, %r6, 4;     	// 
+	mul24.lo.u32 	%r24, %r10, 16; 	// 
+	mul.lo.u32 	%r25, %r2, 4;     	// 
+	mul24.lo.u32 	%r26, %r10, 64; 	// 
+	mul.lo.s32 	%r27, %r11, 16;   	// 
+	mul.lo.u32 	%r28, %r20, 4;    	// 
+	ld.param.u32 	%r29, [__cudaparm_matrixMul_A];	// id:73 __cudaparm_matrixMul_A+0x0
+	add.s32 	%r30, %r29, %r21;    	// 
+	ld.param.u32 	%r31, [__cudaparm_matrixMul_B];	// id:74 __cudaparm_matrixMul_B+0x0
+	add.s32 	%r32, %r31, %r21;    	// 
+	add.u32 	%r33, %r21, %r12;    	// 
+	mul.lo.u32 	%r34, %r22, 4;    	// 
+	add.u32 	%r35, %r9, %r24;     	// 
+	add.u32 	%r36, %r26, %r13;    	// 
+	add.s32 	%r37, %r32, %r28;    	// 
+	add.s32 	%r38, %r30, %r34;    	// 
+	mul.lo.u32 	%r39, %r35, 4;    	// 
+	add.s32 	%r40, %r37, %r25;    	// 
+	mul.lo.u32 	%r41, %r27, 4;    	// 
+	add.s32 	%r42, %r38, %r23;    	// 
+	add.u32 	%r43, %r39, %r13;    	// 
+	add.u32 	%r44, %r39, %r12;    	// 
+	mul.lo.u32 	%r45, %r8, 4;     	// 
+	add.s32 	%r46, %r38, %r45;    	// 
+	mov.s32 	%r47, %r19;          	// 
+$Lt_0_2818:
+ //<loop> Loop body line 92, nesting depth: 1, estimated iterations: unknown
+	.loc	14	107	0
+	ld.global.f32 	%f2, [%r42+0]; 	// id:75
+	st.shared.f32 	[%r43+0], %f2; 	// id:76 __cuda_As1044+0x0
+	.loc	14	108	0
+	ld.global.f32 	%f3, [%r40+0]; 	// id:77
+	st.shared.f32 	[%r44+0], %f3; 	// id:78 __cuda_Bs20+0x0
+	.loc	14	111	0
+	bar.sync 	0;                  	// 
+	.loc	14	117	0
+	ld.shared.f32 	%f4, [%r36+0]; 	// id:79 __cuda_As1044+0x0
+	ld.shared.f32 	%f5, [%r33+0]; 	// id:80 __cuda_Bs20+0x0
+	mad.f32 	%f1, %f4, %f5, %f1;  	// 
+	ld.shared.f32 	%f6, [%r36+4]; 	// id:81 __cuda_As1044+0x0
+	ld.shared.f32 	%f7, [%r33+64];	// id:82 __cuda_Bs20+0x0
+	mad.f32 	%f1, %f6, %f7, %f1;  	// 
+	ld.shared.f32 	%f8, [%r36+8]; 	// id:83 __cuda_As1044+0x0
+	ld.shared.f32 	%f9, [%r33+128];	// id:84 __cuda_Bs20+0x0
+	mad.f32 	%f1, %f8, %f9, %f1;  	// 
+	ld.shared.f32 	%f10, [%r36+12];	// id:85 __cuda_As1044+0x0
+	ld.shared.f32 	%f11, [%r33+192];	// id:86 __cuda_Bs20+0x0
+	mad.f32 	%f1, %f10, %f11, %f1;	// 
+	ld.shared.f32 	%f12, [%r36+16];	// id:87 __cuda_As1044+0x0
+	ld.shared.f32 	%f13, [%r33+256];	// id:88 __cuda_Bs20+0x0
+	mad.f32 	%f1, %f12, %f13, %f1;	// 
+	ld.shared.f32 	%f14, [%r36+20];	// id:89 __cuda_As1044+0x0
+	ld.shared.f32 	%f15, [%r33+320];	// id:90 __cuda_Bs20+0x0
+	mad.f32 	%f1, %f14, %f15, %f1;	// 
+	ld.shared.f32 	%f16, [%r36+24];	// id:91 __cuda_As1044+0x0
+	ld.shared.f32 	%f17, [%r33+384];	// id:92 __cuda_Bs20+0x0
+	mad.f32 	%f1, %f16, %f17, %f1;	// 
+	ld.shared.f32 	%f18, [%r36+28];	// id:93 __cuda_As1044+0x0
+	ld.shared.f32 	%f19, [%r33+448];	// id:94 __cuda_Bs20+0x0
+	mad.f32 	%f1, %f18, %f19, %f1;	// 
+	ld.shared.f32 	%f20, [%r36+32];	// id:95 __cuda_As1044+0x0
+	ld.shared.f32 	%f21, [%r33+512];	// id:96 __cuda_Bs20+0x0
+	mad.f32 	%f1, %f20, %f21, %f1;	// 
+	ld.shared.f32 	%f22, [%r36+36];	// id:97 __cuda_As1044+0x0
+	ld.shared.f32 	%f23, [%r33+576];	// id:98 __cuda_Bs20+0x0
+	mad.f32 	%f1, %f22, %f23, %f1;	// 
+	ld.shared.f32 	%f24, [%r36+40];	// id:99 __cuda_As1044+0x0
+	ld.shared.f32 	%f25, [%r33+640];	// id:100 __cuda_Bs20+0x0
+	mad.f32 	%f1, %f24, %f25, %f1;	// 
+	ld.shared.f32 	%f26, [%r36+44];	// id:101 __cuda_As1044+0x0
+	ld.shared.f32 	%f27, [%r33+704];	// id:102 __cuda_Bs20+0x0
+	mad.f32 	%f1, %f26, %f27, %f1;	// 
+	ld.shared.f32 	%f28, [%r36+48];	// id:103 __cuda_As1044+0x0
+	ld.shared.f32 	%f29, [%r33+768];	// id:104 __cuda_Bs20+0x0
+	mad.f32 	%f1, %f28, %f29, %f1;	// 
+	ld.shared.f32 	%f30, [%r36+52];	// id:105 __cuda_As1044+0x0
+	ld.shared.f32 	%f31, [%r33+832];	// id:106 __cuda_Bs20+0x0
+	mad.f32 	%f1, %f30, %f31, %f1;	// 
+	ld.shared.f32 	%f32, [%r36+56];	// id:107 __cuda_As1044+0x0
+	ld.shared.f32 	%f33, [%r33+896];	// id:108 __cuda_Bs20+0x0
+	mad.f32 	%f1, %f32, %f33, %f1;	// 
+	ld.shared.f32 	%f34, [%r36+60];	// id:109 __cuda_As1044+0x0
+	ld.shared.f32 	%f35, [%r33+960];	// id:110 __cuda_Bs20+0x0
+	mad.f32 	%f1, %f34, %f35, %f1;	// 
+	.loc	14	122	0
+	bar.sync 	0;                  	// 
+	.loc	14	92	0
+	add.s32 	%r40, %r40, %r41;    	// 
+	add.s32 	%r42, %r42, 64;      	// 
+	setp.le.u32 	%p2, %r42, %r46; 	// 
+	@%p2 bra 	$Lt_0_2818;         	// 
+	bra.uni 	$Lt_0_2306;          	// 
+$Lt_0_3330:
+	mul.lo.s32 	%r20, %r10, %r11; 	// 
+$Lt_0_2306:
+	.loc	14	128	0
+	ld.param.u32 	%r48, [__cudaparm_matrixMul_C];	// id:111 __cudaparm_matrixMul_C+0x0
+	mul.lo.s32 	%r49, %r11, %r3;  	// 
+	add.s32 	%r50, %r1, %r49;     	// 
+	mul.lo.s32 	%r51, %r50, 16;   	// 
+	add.s32 	%r52, %r20, %r51;    	// 
+	add.s32 	%r53, %r9, %r52;     	// 
+	mul.lo.u32 	%r54, %r53, 4;    	// 
+	add.u32 	%r55, %r48, %r54;    	// 
+	st.global.f32 	[%r55+0], %f1; 	// id:112
+	.loc	14	129	0
+	exit;                         	// 
+$LDWend_matrixMul:
+	} // matrixMul

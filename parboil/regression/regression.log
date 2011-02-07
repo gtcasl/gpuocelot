@@ -1,0 +1,203 @@
+INFO     Reading in test file /home/normal/checkout/gpuocelot/tests/parboil/regression/tests.txt
+INFO      Found the following tests:
+INFO       /home/normal/checkout/gpuocelot/tests/parboil/cp
+INFO       /home/normal/checkout/gpuocelot/tests/parboil/mri-fhd
+INFO       /home/normal/checkout/gpuocelot/tests/parboil/mri-q
+INFO       /home/normal/checkout/gpuocelot/tests/parboil/pns
+INFO       /home/normal/checkout/gpuocelot/tests/parboil/rpes
+INFO       /home/normal/checkout/gpuocelot/tests/parboil/sad
+INFO       /home/normal/checkout/gpuocelot/tests/parboil/tpacf
+INFO     ==== INDIVIDUAL TEST RESULTS ====
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/parboil/mri-q -i data/mriQIn.bin -o mriFQOut.bin 
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/parboil/pns 2000 2000 2000 -o pns.out 
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/parboil/sad -i "data/frameSad.bin,data/referenceSad.bin" -o sad.out 
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/parboil/cp -o cp.out 
+INFO     Test /home/normal/checkout/gpuocelot/tests/parboil/sad
+INFO     Test completed in 51.8396148682 seconds
+INFO      It produced the following output:
+(0.000000) TraceConfiguration.cpp:161:  performanceBound.enabled = true
+(0.000000) TraceConfiguration.cpp:243:  Creating performance bound trace generator
+1: 1572
+
+2: 1047 525
+
+3: 895 677
+
+4: 686 361 209 316
+
+5: 575 182 111 179 94 266 115 50
+
+6: 606 80 88 273 97 112 178 138
+
+7: 514 61 43 139 92 19 45 134 26 68 153 113 71 44 25 25
+
+TEST PASSED
+IO:      0.285682
+GPU:     51.016196
+Copy:    0.070458
+Compute: 0.333393
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/parboil/mri-fhd -i data/mriFhdIn.bin -o mriFhdOut.bin 
+INFO     Test /home/normal/checkout/gpuocelot/tests/parboil/mri-q
+INFO     Test completed in 570.526057959 seconds
+INFO      It produced the following output:
+(0.000000) TraceConfiguration.cpp:161:  performanceBound.enabled = true
+(0.000000) TraceConfiguration.cpp:243:  Creating performance bound trace generator
+32768 pixels in output; 3072 samples in trajectory; using 3072 samples
+TEST PASSED
+IO:      0.001042
+GPU:     570.408642
+Copy:    0.001127
+Compute: 0.000414
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/parboil/tpacf -i "data/Datapnts.1,data/Randompnts.1,data/Randompnts.2,data/Randompnts.3,data/Randompnts.4,data/Randompnts.5,data/Randompnts.6,data/Randompnts.7,data/Randompnts.8,data/Randompnts.9,data/Randompnts.10,data/Randompnts.11,data/Randompnts.12,data/Randompnts.13,data/Randompnts.14,data/Randompnts.15,data/Randompnts.16,data/Randompnts.17,data/Randompnts.18,data/Randompnts.19,data/Randompnts.20,data/Randompnts.21,data/Randompnts.22,data/Randompnts.23,data/Randompnts.24,data/Randompnts.25,data/Randompnts.26,data/Randompnts.27,data/Randompnts.28,data/Randompnts.29,data/Randompnts.30,data/Randompnts.31,data/Randompnts.32,data/Randompnts.33,data/Randompnts.34,data/Randompnts.35,data/Randompnts.36,data/Randompnts.37,data/Randompnts.38,data/Randompnts.39,data/Randompnts.40,data/Randompnts.41,data/Randompnts.42,data/Randompnts.43,data/Randompnts.44,data/Randompnts.45,data/Randompnts.46,data/Randompnts.47,data/Randompnts.48,data/Randompnts.49,data/Randompnts.50,data/Randompnts.51,data/Randompnts.52,data/Randompnts.53,data/Randompnts.54,data/Randompnts.55,data/Randompnts.56,data/Randompnts.57,data/Randompnts.58,data/Randompnts.59,data/Randompnts.60,data/Randompnts.61,data/Randompnts.62,data/Randompnts.63,data/Randompnts.64,data/Randompnts.65,data/Randompnts.66,data/Randompnts.67,data/Randompnts.68,data/Randompnts.69,data/Randompnts.70,data/Randompnts.71,data/Randompnts.72,data/Randompnts.73,data/Randompnts.74,data/Randompnts.75,data/Randompnts.76,data/Randompnts.77,data/Randompnts.78,data/Randompnts.79,data/Randompnts.80,data/Randompnts.81,data/Randompnts.82,data/Randompnts.83,data/Randompnts.84,data/Randompnts.85,data/Randompnts.86,data/Randompnts.87,data/Randompnts.88,data/Randompnts.89,data/Randompnts.90,data/Randompnts.91,data/Randompnts.92,data/Randompnts.93,data/Randompnts.94,data/Randompnts.95,data/Randompnts.96,data/Randompnts.97,data/Randompnts.98,data/Randompnts.99,data/Randompnts.100" -o tpacf.out -- -n 100 -p 4096 
+INFO     Test /home/normal/checkout/gpuocelot/tests/parboil/tpacf
+INFO     Test completed in 0.489248991013 seconds
+INFO      It produced the following output:
+(0.000000) TraceConfiguration.cpp:161:  performanceBound.enabled = true
+(0.000000) TraceConfiguration.cpp:243:  Creating performance bound trace generator
+Min distance: 1.000000 arcmin
+Max distance: 10000.000000 arcmin
+Bins per dec: 5
+Total bins  : 20
+==Ocelot== Ocelot PTX Emulator failed to run kernel "_Z9gen_histsPmPfS0_S0_ii" with exception: 
+==Ocelot== [PC 315] [thread 0] [cta 0] ld.volatile.shared.u32 %r252, [%r251 + -512] - Shared memory access 0x20000001000 (4 bytes) is beyond allocated block size 13312
+==Ocelot== Near scan_largearray_kernel.cu:170:0
+==Ocelot== 
+terminate called after throwing an instance of 'hydrazine::Exception'
+  what():  [PC 315] [thread 0] [cta 0] ld.volatile.shared.u32 %r252, [%r251 + -512] - Shared memory access 0x20000001000 (4 bytes) is beyond allocated block size 13312
+Near scan_largearray_kernel.cu:170:0
+
+
+INFO     Running test program /home/normal/checkout/gpuocelot/tests/parboil/rpes -i "data/basisFile.inp,data/basisRpes.inp" -o rpes.out 
+INFO     Test /home/normal/checkout/gpuocelot/tests/parboil/mri-fhd
+INFO     Test completed in 599.375113964 seconds
+INFO      It produced the following output:
+(0.000000) TraceConfiguration.cpp:161:  performanceBound.enabled = true
+(0.000000) TraceConfiguration.cpp:243:  Creating performance bound trace generator
+32768 pixels in output; 3072 samples in trajectory; using 3072 samples
+First dR 0.000000, 1506610, 1527900
+Launch RhoPhi Kernel on GPU: Blocks (6, 1), Threads Per Block 512
+Launch GPU Kernel: Grids 6, Blocks Per Grid (128, 1), Threads Per Block (256, 1), K Elems Per Thread 512
+Copying 10240 bytes to constant memory
+Copying 10240 bytes to constant memory
+Copying 10240 bytes to constant memory
+Copying 10240 bytes to constant memory
+Copying 10240 bytes to constant memory
+Copying 10240 bytes to constant memory
+TEST PASSED
+IO:      0.001089
+GPU:     599.268462
+Copy:    0.001091
+Compute: 0.000468
+
+INFO     Test /home/normal/checkout/gpuocelot/tests/parboil/cp
+INFO     Test completed in 2440.13586617 seconds
+INFO      It produced the following output:
+(0.000000) TraceConfiguration.cpp:161:  performanceBound.enabled = true
+(0.000000) TraceConfiguration.cpp:243:  Creating performance bound trace generator
+CUDA accelerated coulombic potential microbenchmark
+Original version by John E. Stone <johns@ks.uiuc.edu>
+This version maintained by Chris Rodrigues
+TEST PASSED
+IO:      0.010727
+GPU:     2439.972694
+Copy:    0.032839
+Compute: 0.009904
+
+INFO     Test /home/normal/checkout/gpuocelot/tests/parboil/rpes
+INFO     Test completed in 3788.72860599 seconds
+INFO      It produced the following output:
+(0.000000) TraceConfiguration.cpp:161:  performanceBound.enabled = true
+(0.000000) TraceConfiguration.cpp:243:  Creating performance bound trace generator
+
+>>>>>>> STARTED BASIS SET OUTPUT <<<<<<<
+
+# OF KNOWN ATOMS:  2
+# OF KNOWN SHELLS: 5
+
+
+Atom O (3 shells)
+	Shell O1: 8 primitives
+		primitive 1:   11720.00     0.00
+		primitive 2:    1759.00     0.01
+		primitive 3:     400.80     0.03
+		primitive 4:     113.70     0.10
+		primitive 5:      37.03     0.28
+		primitive 6:      13.27     0.45
+		primitive 7:       5.03     0.27
+		primitive 8:       1.01     0.02
+
+	Shell O2: 8 primitives
+		primitive 1:   11720.00    -0.00
+		primitive 2:    1759.00    -0.00
+		primitive 3:     400.80    -0.01
+		primitive 4:     113.70    -0.05
+		primitive 5:      37.03    -0.14
+		primitive 6:      13.27    -0.33
+		primitive 7:       5.03    -0.23
+		primitive 8:       1.01     1.10
+
+	Shell O3: 1 primitives
+		primitive 1:       0.30     1.00
+
+
+Atom H (2 shells)
+	Shell H1: 3 primitives
+		primitive 1:      13.01     0.03
+		primitive 2:       1.96     0.23
+		primitive 3:       0.44     0.81
+
+	Shell H2: 1 primitives
+		primitive 1:       0.12     1.00
+
+>>>>>>>> DONE BASIS SET OUTPUT <<<<<<<<
+
+
+Total # of integrals to compute: 187240905
+Total # of blocks allocated: 3510150
+Final array size: 1088430
+79.41 MB allocated
+maxblocks = 64
+54 computation cycles will be performed...
+done.
+
+17 reduction cycles will be performed...
+totReductionElements 1088430
+TEST PASSED
+IO:      0.043520
+GPU:     3788.245930
+Copy:    0.200672
+Compute: 0.169494
+
+INFO     Test /home/normal/checkout/gpuocelot/tests/parboil/pns
+INFO     Test completed in 7341.50590611 seconds
+INFO      It produced the following output:
+(0.000000) TraceConfiguration.cpp:161:  performanceBound.enabled = true
+(0.000000) TraceConfiguration.cpp:243:  Creating performance bound trace generator
+petri N=2000 s=2000 t=2000
+mean_vars: 0.002176    var_vars: 0.000000
+mean_maxs: 2.001500    var_maxs: 0.001498
+TEST PASSED
+IO:      0.000262
+GPU:     7341.317772
+Copy:    0.100489
+Compute: 0.000042
+
+INFO     
+Passing tests:
+ (3788.729s) : /home/normal/checkout/gpuocelot/tests/parboil/rpes : Passed
+ (51.840s) : /home/normal/checkout/gpuocelot/tests/parboil/sad : Passed
+ (2440.136s) : /home/normal/checkout/gpuocelot/tests/parboil/cp : Passed
+ (599.375s) : /home/normal/checkout/gpuocelot/tests/parboil/mri-fhd : Passed
+ (570.526s) : /home/normal/checkout/gpuocelot/tests/parboil/mri-q : Passed
+ (7341.506s) : /home/normal/checkout/gpuocelot/tests/parboil/pns : Passed
+
+Failing tests:
+ (0.489s) : /home/normal/checkout/gpuocelot/tests/parboil/tpacf : Did not complete.
+
+Non-Existent tests:
+
+
+

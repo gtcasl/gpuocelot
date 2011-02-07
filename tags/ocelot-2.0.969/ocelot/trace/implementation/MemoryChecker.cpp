@@ -87,13 +87,13 @@ namespace trace
 	static void memoryError( const std::string& space, const ir::Dim3& dim, 
 		unsigned int thread, ir::PTXU64 address, unsigned int size, 
 		const TraceEvent& e, const executive::EmulatedKernel* kernel, 
-		const MemoryChecker::Allocation& allocation )
+		unsigned int extent )
 	{
 		std::stringstream stream;
 		stream << prefix( thread, dim, e );
 		stream << space << " memory access " << (void*) address 
 			<< " (" << size << " bytes) is beyond allocated block size " 
-			<< allocation.extent;
+			<< extent;
 		stream << "\n";
 		stream << "Near " << kernel->location( e.PC ) << "\n";
 		throw hydrazine::Exception( stream.str() );
@@ -116,8 +116,8 @@ namespace trace
 	}
 
 	static void checkLocalAccess( const std::string& space, const ir::Dim3& dim,
-		const MemoryChecker::Allocation& allocation, const TraceEvent& event, 
-		const executive::EmulatedKernel* kernel )
+		ir::PTXU64 base, ir::PTXU64 extent,
+		const TraceEvent& event, const executive::EmulatedKernel* kernel )
 	{
 		TraceEvent::U64Vector::const_iterator 
 			address = event.memory_addresses.begin();
@@ -126,11 +126,10 @@ namespace trace
 		for( unsigned int thread = 0; thread < threads; ++thread )
 		{
 			if( !event.active[ thread ] ) continue;
-			if( allocation.base > *address 
-				|| *address >= allocation.base + allocation.extent )
+			if( base > *address || *address >= base + extent )
 			{
 				memoryError( space, dim, thread, 
-					*address, event.memory_size, event, kernel, allocation );
+					*address, event.memory_size, event, kernel, extent );
 			}
 			++address;
 		}
@@ -225,25 +224,27 @@ namespace trace
 				break;
 			}
 			case ir::PTXInstruction::Local: checkLocalAccess( "Local", _dim,
-				_local, e, _kernel ); break;
+				_local.base, _local.extent, e, _kernel ); break;
 			case ir::PTXInstruction::Param:
 			{
 				if( e.instruction->a.isArgument )
 				{
 					checkLocalAccess( "Argument", _dim, 
-						_argument, e, _kernel );
+						0, _kernel->getCurrentFrameArgumentMemorySize(),
+						e, _kernel );
 				}
 				else
 				{
 					checkLocalAccess( "Parameter", _dim, 
-						_parameter, e, _kernel );
+						0, _kernel->getCurrentFrameParameterMemorySize(),
+						e, _kernel );
 				}
 				break;
 			}
 			case ir::PTXInstruction::Shared: checkLocalAccess( "Shared", _dim, 	
-				_shared, e, _kernel ); break;
+				_shared.base, _shared.extent, e, _kernel ); break;
 			case ir::PTXInstruction::Const: checkLocalAccess( "Constant", _dim, 
-				_constant, e, _kernel ); break;
+				_constant.base, _constant.extent, e, _kernel ); break;
 			default: break;
 		}
 	}
@@ -253,7 +254,7 @@ namespace trace
 		// TODO: implement this
 	}
 	
-	MemoryChecker::MemoryChecker() : _cache( false ), _parameter( true ), 
+	MemoryChecker::MemoryChecker() : _cache( false ),
 		_shared( true ), _local( true ), _constant( true )
 	{
 	
@@ -267,9 +268,6 @@ namespace trace
 		
 		_cache.valid = false;
 
-		_parameter.base = 0;
-		_parameter.extent = kernel.parameterMemorySize();
-
 		_constant.base = 0;
 		_constant.extent = kernel.constMemorySize();
 		
@@ -278,10 +276,7 @@ namespace trace
 		
 		_local.base = 0;
 		_local.extent = kernel.localMemorySize();
-		
-		_argument.base = 0;
-		_argument.extent = kernel.argumentMemorySize();
-		
+				
 		_kernel = static_cast< const executive::EmulatedKernel* >( &kernel );
 	}
 

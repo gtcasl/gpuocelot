@@ -16,14 +16,15 @@
 
 namespace executive
 {
-	EmulatorCallStack::EmulatorCallStack(unsigned int threads, 
+	EmulatorCallStack::EmulatorCallStack(unsigned int threads,
+		unsigned int initialArgumentSize,
 		unsigned int initialFrameSize, unsigned int registers, 
 		unsigned int localSize, unsigned int sharedSize) :
 		_stackPointer(0),
 		_threadCount(threads),
 		_localMemoryBase(3 * sizeof(unsigned int) + initialFrameSize * threads),
 		_registerFileBase(_localMemoryBase + localSize * threads),
-		_stackFrameSizes(1, initialFrameSize),
+		_stackFrameSizes(1, initialArgumentSize),
 		_localMemorySizes(1, localSize),
 		_registerFileSizes(1, registers),
 		_sharedMemorySizes(1, sharedSize),
@@ -32,7 +33,7 @@ namespace executive
 			+ threads * localSize + 3 * sizeof(unsigned int)),
 		_sharedMemory(sharedSize)
 	{
-
+		_stackFrameSizes.push_back(initialFrameSize);
 	}
 
 	void* EmulatorCallStack::stackFramePointer(unsigned int thread)
@@ -49,8 +50,8 @@ namespace executive
 		assert(_stackFrameSizes.size() > 1);
 		unsigned int previousIndex = _stackFrameSizes.size() - 2;
 		unsigned int totalPreviousSize = (_stackFrameSizes.at(previousIndex)
-			+ _registerFileSizes.at(previousIndex) * sizeof(RegisterType)
-			+ _localMemorySizes.at(previousIndex)) * _threadCount
+			+ _registerFileSizes.at(previousIndex - 1) * sizeof(RegisterType)
+			+ _localMemorySizes.at(previousIndex - 1)) * _threadCount
 			+ 3 * sizeof(unsigned int);
 		return &_stack.at(_stackPointer + 3 * sizeof(unsigned int) 
 			- totalPreviousSize + thread * previousFrameSize());

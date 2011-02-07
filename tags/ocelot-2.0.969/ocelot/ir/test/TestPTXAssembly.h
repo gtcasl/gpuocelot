@@ -50,6 +50,7 @@ namespace test
 					TypeVector outputTypes;
 					unsigned int threads;
 					unsigned int ctas;
+					int epsilon;
 			};
 			
 			/*! \brief A list of tests to perform */
@@ -93,7 +94,8 @@ namespace test
 			void add(const std::string& name,
 				ReferenceFunction function, const std::string& ptx, 
 				const TypeVector& out, const TypeVector& in, 
-				GeneratorFunction gen, unsigned int threads, unsigned int ctas);
+				GeneratorFunction gen, unsigned int threads, unsigned int ctas,
+				int epsilon = 0);
 				
 			/*! \brief Run the current set of tests, abort on the first error */
 			bool doTest();

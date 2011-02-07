@@ -19,7 +19,7 @@
 		runtimeApiTrace: "trace/CudaAPI.trace"
 	},
 	executive: {
-		devices: [ emulated ],
+		devices: [ llvm ],
 		port: 2011,
 		host: "127.0.0.1",
 		optimizationLevel: none,

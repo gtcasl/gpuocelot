@@ -2292,7 +2292,8 @@ std::string ir::PTXInstruction::toString() const {
 			return result;
 		}
 		case SlCt: {
-			return guard() + "slct." + PTXOperand::toString( type ) + "." 
+			return guard() + "slct." + modifierString( modifier, carry )
+				+ PTXOperand::toString( type ) + "." 
 				+ PTXOperand::toString( c.type ) + " " + d.toString() + ", " 
 				+ a.toString() + ", " + b.toString() + ", " + c.toString();
 		}

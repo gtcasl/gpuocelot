@@ -26,26 +26,77 @@
 #include <climits>
 #include <cmath>
 
+#ifdef REPORT_BASE
+#undef REPORT_BASE
+#endif 
+
+#define REPORT_BASE 0
+
 ////////////////////////////////////////////////////////////////////////////////
 // HELPER FUNCTIONS
 template<typename T>
 bool issubnormal(T r0)
 {
-	return !std::isnormal(r0) && !std::isnan(r0) && !std::isinf(r0);
+	return !std::isnormal(r0) && !std::isnan(r0)
+		&& !std::isinf(r0) && r0 != (T)0;
 }
 
-bool compareFloat(float a, float b)
+bool compareFloat(float a, float b, int eps)
 {
 	if(std::isnan(a) && std::isnan(b)) return true;
+	
+	bool signa = std::copysign(1.0, a) > 0;
+	bool signb = std::copysign(1.0, b) > 0;
+	
+	if(std::isinf(a) && std::isinf(b) && signa == signb) return true;
 
-	return a == b;
+	float difference = 0.0f;
+	
+	if(std::abs(a) < std::pow(10.0f, 4))
+	{
+		difference = std::abs(a - b);
+	}
+	else
+	{
+		difference = std::abs(1.0f - a/b);
+	}
+	
+	float epsilon = std::numeric_limits<float>::epsilon()
+		* std::pow(2.0, eps);
+
+	report("Difference is " << difference << " epsilon is "
+		<< epsilon << " eps is " << eps);
+
+	return difference <= epsilon;
 }
 
-bool compareDouble(double a, double b)
+bool compareDouble(double a, double b, int eps)
 {
 	if(std::isnan(a) && std::isnan(b)) return true;
+	
+	bool signa = std::copysign(1.0, a) > 0;
+	bool signb = std::copysign(1.0, b) > 0;
+	
+	if(std::isinf(a) && std::isinf(b) && signa == signb) return true;
 
-	return a == b;
+	float difference = 0.0;
+	
+	if(std::abs(a) < std::pow(10.0, 15))
+	{
+		difference = std::abs(a - b);
+	}
+	else
+	{
+		difference = std::abs(1.0 - a/b);
+	}
+	
+	double epsilon = std::numeric_limits<double>::epsilon()
+		* std::pow(2.0, eps);
+
+	report("Difference is " << difference << " epsilon is "
+		<< epsilon << " eps is " << eps);
+
+	return difference <= epsilon;
 }
 
 template<typename T>
@@ -282,21 +333,29 @@ std::string testCvt_PTX(ir::PTXOperand::DataType dtype,
 	ptx << "\t.reg .u64 %rIn, %rOut;                       \n";
 	ptx << "\t.reg " << sTypeString    << " %rs;           \n";
 	ptx << "\t.reg " << dTypeString    << " %rd;           \n";
+	ptx << "\t.reg .pred %pd;                              \n";
 	ptx << "\tld.param.u64 %rIn, [in];                     \n";
 	ptx << "\tld.param.u64 %rOut, [out];                   \n";
-	ptx << "\tld.global" << sTypeString << " %rs, [%rIn];   \n";
-
+	ptx << "\tld.global" << sTypeString << " %rs, [%rIn];  \n";
+	
+	if(ir::PTXOperand::isFloat(stype) && !ir::PTXOperand::isFloat(dtype))
+	{
+		ptx << "\ttestp.notanumber" << sTypeString << " %pd, %rs;  \n";
+		ptx << "\t@%pd mov" << sTypeString << " %rs, 0.0;  \n";
+	
+	}
+	
 	ptx << "\tcvt";
 	
 	if(round)
 	{
 		if(ir::PTXOperand::isFloat(stype))
 		{
-			ptx << ".rn";
+			ptx << ".rz";
 		}
 		else
 		{
-			ptx << ".rni";
+			ptx << ".rzi";
 		}
 	}
 	
@@ -1491,6 +1550,12 @@ std::string testSpecial_PTX(ir::PTXInstruction::Opcode opcode, bool ftz)
 	ptx << "\tld.param.u64 %rOut, [out];                   \n";
 	ptx << "\tld.global.f32 %f0, [%rIn];                   \n";
 
+	if(opcode == ir::PTXInstruction::Cos || opcode == ir::PTXInstruction::Sin)
+	{
+		ptx << "\tabs.f32 %f0, %f0;                        \n";
+		ptx << "\tmin.f32 %f0, %f0, 0.8;                   \n";
+	}
+
 	ptx << "\t" << ir::PTXInstruction::toString(opcode) << ".approx";
 
 	if(ftz) ptx << ".ftz";
@@ -1528,23 +1593,45 @@ void testSpecial_REF(void* output, void* input)
 		{
 			if(std::isinf(r0))
 			{
-				result = std::numeric_limits<float>::signaling_NaN();
+				if(r0 < 0)
+				{
+					result = std::numeric_limits<float>::signaling_NaN();
+				}
+				else
+				{
+					result = std::cos(0.8);
+				}
+			}
+			else if(std::isnan(r0))
+			{
+				result = std::cos(0.8);
 			}
 			else
 			{
-				result = std::cos(r0);
+				result = std::cos(std::min(std::abs(r0), 0.8f));
 			}
 			break;
 		}
 		case ir::PTXInstruction::Sin:
 		{
-			if(std::isinf(r0))
+			if(std::isinf(r0) || std::isnan(r0))
 			{
-				result = std::numeric_limits<float>::signaling_NaN();
+				if(r0 < 0)
+				{
+					result = std::numeric_limits<float>::signaling_NaN();
+				}
+				else
+				{
+					result = std::sin(0.8);
+				}
+			}
+			else if(std::isnan(r0))
+			{
+				result = std::sin(0.8);
 			}
 			else
 			{
-				result = std::sin(r0);
+				result = std::sin(std::min(std::abs(r0), 0.8f));
 			}
 			break;
 		}
@@ -1743,20 +1830,21 @@ std::string testRcpSqrt_PTX(ir::PTXOperand::DataType type, bool sqrt,
 template<typename type, bool sqrt, bool approx, bool ftz>
 void testRcpSqrt_REF(void* output, void* input)
 {
+	typedef long long unsigned int uint;
 	static_assert(sizeof(type) == 4 || sizeof(type) == 8, "only f32/f64 valid");
 
 	type r0 = getParameter<type>(input, 0);
 
-	if(ftz || approx)
+	if(ftz)
 	{
-		if(issubnormal(r0)) r0 = 0.0f;
+		if(issubnormal(r0)) r0 = std::copysign((type)0, r0);
 	}
 
 	type result = 0;
 
 	if(sqrt)
 	{
-		if(r0 < (type)0)
+		if(r0 < (type)0 || std::isnan(r0))
 		{
 			result = std::numeric_limits<type>::signaling_NaN();
 		}
@@ -1773,13 +1861,40 @@ void testRcpSqrt_REF(void* output, void* input)
 		}
 		else
 		{
-			result = (type)1 / r0;
+			if(sizeof(type) == 8 && approx)
+			{
+				if(r0 == 0.0)
+				{
+					result = std::numeric_limits<double>::infinity();
+				}
+				else if(r0 == -0.0)
+				{
+					result = -std::numeric_limits<double>::infinity();
+				}
+				else
+				{
+					unsigned int upper = 0;
+					unsigned int lower = 0;
+					uint word = hydrazine::bit_cast<uint>(r0);
+				
+					upper = word >> 32;
+					lower = 0;
+								
+					word = lower | ((uint)upper << 32);
+				
+					result = 1.0 / hydrazine::bit_cast<type>(word);
+				}
+			}
+			else
+			{
+				result = (type)1 / r0;
+			}
 		}
 	}
 	
 	if(ftz)
 	{
-		if(issubnormal(result)) result = 0.0f;
+		if(issubnormal(result)) result = (type)0;
 	}
 	
 	setParameter(output, 0, result);
@@ -2064,15 +2179,22 @@ void testFdiv_REF(void* output, void* input)
 
 	if(modifier & ir::PTXInstruction::ftz)
 	{
-		if(issubnormal(r0)) r0 = 0.0f;
-		if(issubnormal(r1)) r1 = 0.0f;
+		if(issubnormal(r0)) r0 = std::copysign(0.0f, r0);
+		if(issubnormal(r1)) r1 = std::copysign(0.0f, r1);
 	}
 
 	type result = 0;
 	
 	if(modifier & ir::PTXInstruction::approx)
 	{
-		result = r0 * ( 1.0f / r1 );
+		if(issubnormal(r0) || issubnormal(r1))
+		{
+			result = r0 / r1;
+		}
+		else
+		{
+			result = r0 * ( 1.0f / r1 );
+		}
 	}
 	else
 	{
@@ -2081,7 +2203,7 @@ void testFdiv_REF(void* output, void* input)
 
 	if(modifier & ir::PTXInstruction::ftz)
 	{
-		if(issubnormal(result)) result = 0.0f;
+		if(issubnormal(result)) result = std::copysign(0.0f, result);
 	}
 	
 	if(modifier & ir::PTXInstruction::sat)
@@ -4314,7 +4436,7 @@ namespace test
 					float computed = getParameter<float>(outputBlock, index);
 					float reference = getParameter<float>(
 						referenceBlock, index);
-					if(!compareFloat(computed, reference))
+					if(!compareFloat(computed, reference, test.epsilon))
 					{
 						pass = false;
 						status << " Output parameter " 
@@ -4335,7 +4457,7 @@ namespace test
 					double computed = getParameter<double>(outputBlock, index);
 					double reference = getParameter<double>(
 						referenceBlock, index);
-					if(!compareDouble(computed, reference))
+					if(!compareDouble(computed, reference, test.epsilon))
 					{
 						pass = false;
 						status << " Output parameter " 
@@ -5034,25 +5156,25 @@ namespace test
 			testFdiv_REF<float, ir::PTXInstruction::approx>,
 			testFdiv_PTX(ir::PTXOperand::f32, ir::PTXInstruction::approx), 
 			testFdiv_OUT(FP32), testFdiv_IN(FP32),
-			uniformFloat<float, 2>, 1, 1);
+			uniformFloat<float, 2>, 1, 1, 5);
 		add("TestDiv-f32-full", testFdiv_REF<float, ir::PTXInstruction::full>,
 			testFdiv_PTX(ir::PTXOperand::f32, ir::PTXInstruction::full), 
 			testFdiv_OUT(FP32), testFdiv_IN(FP32),
-			uniformFloat<float, 2>, 1, 1);
+			uniformFloat<float, 2>, 1, 1, 8);
 		add("TestDiv-f32-approx-ftz",
 			testFdiv_REF<float,
 				ir::PTXInstruction::approx | ir::PTXInstruction::ftz>,
 			testFdiv_PTX(ir::PTXOperand::f32,
 				ir::PTXInstruction::approx | ir::PTXInstruction::ftz), 
 			testFdiv_OUT(FP32), testFdiv_IN(FP32),
-			uniformFloat<float, 2>, 1, 1);
+			uniformFloat<float, 2>, 1, 1, 5);
 		add("TestDiv-f32-full-ftz", 
 			testFdiv_REF<float,
 				ir::PTXInstruction::full | ir::PTXInstruction::ftz>,
 			testFdiv_PTX(ir::PTXOperand::f32,
 				ir::PTXInstruction::full | ir::PTXInstruction::ftz), 
 			testFdiv_OUT(FP32), testFdiv_IN(FP32),
-			uniformFloat<float, 2>, 1, 1);
+			uniformFloat<float, 2>, 1, 1, 8);
 		add("TestDiv-f64", testFdiv_REF<double, 0>,
 			testFdiv_PTX(ir::PTXOperand::f64, 0), testFdiv_OUT(FP64), 
 			testFdiv_IN(FP64), uniformFloat<double, 2>, 1, 1);
@@ -5116,7 +5238,7 @@ namespace test
 		add("TestRcp-f32-approx", testRcpSqrt_REF<float, false, true, false>,
 			testRcpSqrt_PTX(ir::PTXOperand::f32, false, true, false),
 			testRcpSqrt_INOUT(FP32), testRcpSqrt_INOUT(FP32),
-			uniformFloat<float, 1>, 1, 1);
+			uniformFloat<float, 1>, 1, 1, 15);
 		add("TestRcp-f32-ftz", testRcpSqrt_REF<float, false, false, true>,
 			testRcpSqrt_PTX(ir::PTXOperand::f32, false, false, true),
 			testRcpSqrt_INOUT(FP32), testRcpSqrt_INOUT(FP32),
@@ -5124,16 +5246,16 @@ namespace test
 		add("TestRcp-f32-approx-ftz", testRcpSqrt_REF<float, false, true, true>,
 			testRcpSqrt_PTX(ir::PTXOperand::f32, false, true, true),
 			testRcpSqrt_INOUT(FP32), testRcpSqrt_INOUT(FP32),
-			uniformFloat<float, 1>, 1, 1);
+			uniformFloat<float, 1>, 1, 1, 15);
 		add("TestRcp-f64", testRcpSqrt_REF<double, false, false, false>,
 			testRcpSqrt_PTX(ir::PTXOperand::f64, false, false, false),
 			testRcpSqrt_INOUT(FP64), testRcpSqrt_INOUT(FP64),
-			uniformFloat<double, 1>, 1, 1);
+			uniformFloat<double, 1>, 1, 1, 10);
 		add("TestRcp-f64-approx-ftz",
 			testRcpSqrt_REF<double, false, true, true>,
 			testRcpSqrt_PTX(ir::PTXOperand::f64, false, true, true),
 			testRcpSqrt_INOUT(FP64), testRcpSqrt_INOUT(FP64),
-			uniformFloat<double, 1>, 1, 1);
+			uniformFloat<double, 1>, 1, 1, 10);
 
 		add("TestSqrt-f32", testRcpSqrt_REF<float, true, false, false>,
 			testRcpSqrt_PTX(ir::PTXOperand::f32, true, false, false),
@@ -5142,7 +5264,7 @@ namespace test
 		add("TestSqrt-f32-approx", testRcpSqrt_REF<float, true, true, false>,
 			testRcpSqrt_PTX(ir::PTXOperand::f32, true, true, false),
 			testRcpSqrt_INOUT(FP32), testRcpSqrt_INOUT(FP32),
-			uniformFloat<float, 1>, 1, 1);
+			uniformFloat<float, 1>, 1, 1, 15);
 		add("TestSqrt-f32-ftz", testRcpSqrt_REF<float, true, false, true>,
 			testRcpSqrt_PTX(ir::PTXOperand::f32, true, false, true),
 			testRcpSqrt_INOUT(FP32), testRcpSqrt_INOUT(FP32),
@@ -5150,7 +5272,7 @@ namespace test
 		add("TestSqrt-f32-approx-ftz", testRcpSqrt_REF<float, true, true, true>,
 			testRcpSqrt_PTX(ir::PTXOperand::f32, true, true, true),
 			testRcpSqrt_INOUT(FP32), testRcpSqrt_INOUT(FP32),
-			uniformFloat<float, 1>, 1, 1);
+			uniformFloat<float, 1>, 1, 1, 15);
 		add("TestSqrt-f64", testRcpSqrt_REF<double, true, false, false>,
 			testRcpSqrt_PTX(ir::PTXOperand::f64, true, false, false),
 			testRcpSqrt_INOUT(FP64), testRcpSqrt_INOUT(FP64),
@@ -5159,15 +5281,15 @@ namespace test
 		add("TestRsqrt-f32", testRsqrt_REF<float, false>,
 			testRsqrt_PTX(ir::PTXOperand::f32, false),
 			testRsqrt_INOUT(FP32), testRsqrt_INOUT(FP32),
-			uniformFloat<float, 1>, 1, 1);
+			uniformFloat<float, 1>, 1, 1, 15);
 		add("TestRsqrt-f32-ftz", testRsqrt_REF<float, true>,
 			testRsqrt_PTX(ir::PTXOperand::f32, true),
 			testRsqrt_INOUT(FP32), testRsqrt_INOUT(FP32),
-			uniformFloat<float, 1>, 1, 1);
+			uniformFloat<float, 1>, 1, 1, 15);
 		add("TestRsqrt-f64", testRsqrt_REF<double, false>,
 			testRsqrt_PTX(ir::PTXOperand::f64, false),
 			testRsqrt_INOUT(FP64), testRsqrt_INOUT(FP64),
-			uniformFloat<double, 1>, 1, 1);
+			uniformFloat<double, 1>, 1, 1, 5);
 
 		add("TestCos-f32",
 			testSpecial_REF<ir::PTXInstruction::Cos, false>,
@@ -5184,12 +5306,12 @@ namespace test
 			testSpecial_REF<ir::PTXInstruction::Sin, false>,
 			testSpecial_PTX(ir::PTXInstruction::Sin, false),
 			testSpecial_INOUT(), testSpecial_INOUT(),
-			uniformFloat<float, 1>, 1, 1);
+			uniformFloat<float, 1>, 1, 1, 3);
 		add("TestSin-f32-ftz",
 			testSpecial_REF<ir::PTXInstruction::Sin, true>,
 			testSpecial_PTX(ir::PTXInstruction::Sin, true),
 			testSpecial_INOUT(), testSpecial_INOUT(),
-			uniformFloat<float, 1>, 1, 1);
+			uniformFloat<float, 1>, 1, 1, 3);
 
 		add("TestEx2-f32",
 			testSpecial_REF<ir::PTXInstruction::Ex2, false>,
@@ -5206,12 +5328,12 @@ namespace test
 			testSpecial_REF<ir::PTXInstruction::Lg2, false>,
 			testSpecial_PTX(ir::PTXInstruction::Lg2, false),
 			testSpecial_INOUT(), testSpecial_INOUT(),
-			uniformFloat<float, 1>, 1, 1);
+			uniformFloat<float, 1>, 1, 1, 10);
 		add("TestLg2-f32-ftz",
 			testSpecial_REF<ir::PTXInstruction::Lg2, true>,
 			testSpecial_PTX(ir::PTXInstruction::Lg2, true),
 			testSpecial_INOUT(), testSpecial_INOUT(),
-			uniformFloat<float, 1>, 1, 1);
+			uniformFloat<float, 1>, 1, 1, 10);
 
 		add("TestSet-lt-u32-u16",
 			testSet_REF<unsigned int, unsigned short, ir::PTXOperand::Pred, 
@@ -5357,43 +5479,46 @@ namespace test
 				ir::PTXInstruction::Ge, false),
 			testSet_OUT(I32), testSet_IN(I32),
 			uniformRandom<char, 2*sizeof(int) + sizeof(bool)>, 1, 1);
-		add("TestSet-Lo-s32-f32",
-			testSet_REF<int, float, ir::PTXOperand::Pred, 
+		add("TestSet-Lo-s32-u32",
+			testSet_REF<int, unsigned int, ir::PTXOperand::Pred, 
 				ir::PTXInstruction::BoolOp_Invalid, ir::PTXInstruction::Lo,
 				false>,
-			testSet_PTX(ir::PTXOperand::s32, ir::PTXOperand::f32,
+			testSet_PTX(ir::PTXOperand::s32, ir::PTXOperand::u32,
 				ir::PTXOperand::Pred, ir::PTXInstruction::BoolOp_Invalid,
 				ir::PTXInstruction::Lo, false),
 			testSet_OUT(I32), testSet_IN(I32),
-			uniformRandom<char, sizeof(float)
+			uniformRandom<char, sizeof(unsigned int)
 				+ sizeof(int) + sizeof(bool)>, 1, 1);
-		add("TestSet-Ls-s32-s32",
-			testSet_REF<int, int, ir::PTXOperand::Pred, 
+		add("TestSet-Ls-s32-u32",
+			testSet_REF<int, unsigned int, ir::PTXOperand::Pred, 
 				ir::PTXInstruction::BoolOp_Invalid, ir::PTXInstruction::Ls,
 				false>,
-			testSet_PTX(ir::PTXOperand::s32, ir::PTXOperand::s32,
+			testSet_PTX(ir::PTXOperand::s32, ir::PTXOperand::u32,
 				ir::PTXOperand::Pred, ir::PTXInstruction::BoolOp_Invalid,
 				ir::PTXInstruction::Ls, false),
 			testSet_OUT(I32), testSet_IN(I32),
-			uniformRandom<char, 2*sizeof(int) + sizeof(bool)>, 1, 1);
-		add("TestSet-Hi-s32-s32",
-			testSet_REF<int, int, ir::PTXOperand::Pred, 
+			uniformRandom<char, sizeof(unsigned int)
+				+ sizeof(int) + sizeof(bool)>, 1, 1);
+		add("TestSet-Hi-s32-u32",
+			testSet_REF<int, unsigned int, ir::PTXOperand::Pred, 
 				ir::PTXInstruction::BoolOp_Invalid, ir::PTXInstruction::Hi,
 				false>,
-			testSet_PTX(ir::PTXOperand::s32, ir::PTXOperand::s32,
+			testSet_PTX(ir::PTXOperand::s32, ir::PTXOperand::u32,
 				ir::PTXOperand::Pred, ir::PTXInstruction::BoolOp_Invalid,
 				ir::PTXInstruction::Hi, false),
 			testSet_OUT(I32), testSet_IN(I32),
-			uniformRandom<char, 2*sizeof(int) + sizeof(bool)>, 1, 1);
-		add("TestSet-Hs-s32-s32",
-			testSet_REF<int, int, ir::PTXOperand::Pred, 
+			uniformRandom<char, sizeof(unsigned int)
+				+ sizeof(int) + sizeof(bool)>, 1, 1);
+		add("TestSet-Hs-s32-u32",
+			testSet_REF<int, unsigned int, ir::PTXOperand::Pred, 
 				ir::PTXInstruction::BoolOp_Invalid, ir::PTXInstruction::Hs,
 				false>,
-			testSet_PTX(ir::PTXOperand::s32, ir::PTXOperand::s32,
+			testSet_PTX(ir::PTXOperand::s32, ir::PTXOperand::u32,
 				ir::PTXOperand::Pred, ir::PTXInstruction::BoolOp_Invalid,
 				ir::PTXInstruction::Hs, false),
 			testSet_OUT(I32), testSet_IN(I32),
-			uniformRandom<char, 2*sizeof(int) + sizeof(bool)>, 1, 1);
+			uniformRandom<char, sizeof(unsigned int)
+				+ sizeof(int) + sizeof(bool)>, 1, 1);
 
 		add("TestSet-Eq-s32-f32",
 			testSet_REF<int, float, ir::PTXOperand::Pred, 
@@ -5449,42 +5574,46 @@ namespace test
 				ir::PTXInstruction::Ge, false),
 			testSet_OUT(I32), testSet_IN(FP32),
 			uniformFloat<float, 3>, 1, 1);
-		add("TestSet-Lo-s32-f32",
-			testSet_REF<int, float, ir::PTXOperand::Pred, 
+		add("TestSet-Lo-s32-u32",
+			testSet_REF<int, unsigned int, ir::PTXOperand::Pred, 
 				ir::PTXInstruction::BoolOp_Invalid, ir::PTXInstruction::Lo,
 				false>,
-			testSet_PTX(ir::PTXOperand::s32, ir::PTXOperand::f32,
+			testSet_PTX(ir::PTXOperand::s32, ir::PTXOperand::u32,
 				ir::PTXOperand::Pred, ir::PTXInstruction::BoolOp_Invalid,
 				ir::PTXInstruction::Lo, false),
-			testSet_OUT(I32), testSet_IN(FP32),
-			uniformFloat<float, 3>, 1, 1);
-		add("TestSet-Ls-s32-f32",
-			testSet_REF<int, float, ir::PTXOperand::Pred, 
+			testSet_OUT(I32), testSet_IN(I32),
+			uniformRandom<char, sizeof(unsigned int)
+				+ sizeof(int) + sizeof(bool)>, 1, 1);
+		add("TestSet-Ls-s32-u32",
+			testSet_REF<int, unsigned int, ir::PTXOperand::Pred, 
 				ir::PTXInstruction::BoolOp_Invalid, ir::PTXInstruction::Ls,
 				false>,
-			testSet_PTX(ir::PTXOperand::s32, ir::PTXOperand::f32,
+			testSet_PTX(ir::PTXOperand::s32, ir::PTXOperand::u32,
 				ir::PTXOperand::Pred, ir::PTXInstruction::BoolOp_Invalid,
 				ir::PTXInstruction::Ls, false),
-			testSet_OUT(I32), testSet_IN(FP32),
-			uniformFloat<float, 3>, 1, 1);
-		add("TestSet-Hi-s32-f32",
-			testSet_REF<int, float, ir::PTXOperand::Pred, 
+			testSet_OUT(I32), testSet_IN(I32),
+			uniformRandom<char, sizeof(unsigned int)
+				+ sizeof(int) + sizeof(bool)>, 1, 1);
+		add("TestSet-Hi-s32-u32",
+			testSet_REF<int, unsigned int, ir::PTXOperand::Pred, 
 				ir::PTXInstruction::BoolOp_Invalid, ir::PTXInstruction::Hi,
 				false>,
-			testSet_PTX(ir::PTXOperand::s32, ir::PTXOperand::f32,
+			testSet_PTX(ir::PTXOperand::s32, ir::PTXOperand::u32,
 				ir::PTXOperand::Pred, ir::PTXInstruction::BoolOp_Invalid,
 				ir::PTXInstruction::Hi, false),
-			testSet_OUT(I32), testSet_IN(FP32),
-			uniformFloat<float, 3>, 1, 1);
-		add("TestSet-Hs-s32-f32",
-			testSet_REF<int, float, ir::PTXOperand::Pred, 
+			testSet_OUT(I32), testSet_IN(I32),
+			uniformRandom<char, sizeof(unsigned int)
+				+ sizeof(int) + sizeof(bool)>, 1, 1);
+		add("TestSet-Hs-s32-u32",
+			testSet_REF<int, unsigned int, ir::PTXOperand::Pred, 
 				ir::PTXInstruction::BoolOp_Invalid, ir::PTXInstruction::Hs,
 				false>,
-			testSet_PTX(ir::PTXOperand::s32, ir::PTXOperand::f32,
+			testSet_PTX(ir::PTXOperand::s32, ir::PTXOperand::u32,
 				ir::PTXOperand::Pred, ir::PTXInstruction::BoolOp_Invalid,
 				ir::PTXInstruction::Hs, false),
-			testSet_OUT(I32), testSet_IN(FP32),
-			uniformFloat<float, 3>, 1, 1);
+			testSet_OUT(I32), testSet_IN(I32),
+			uniformRandom<char, sizeof(unsigned int)
+				+ sizeof(int) + sizeof(bool)>, 1, 1);
 		add("TestSet-Equ-s32-f32",
 			testSet_REF<int, float, ir::PTXOperand::Pred, 
 				ir::PTXInstruction::BoolOp_Invalid, ir::PTXInstruction::Equ,
@@ -6549,51 +6678,51 @@ namespace test
 			uniformFloat<double, 1>, 1, 1);
 
 		add("TestCvt-f32-u8",
-			testCvt_REF<float, unsigned char, false, false, false>,
+			testCvt_REF<float, unsigned char, false, false, true>,
 			testCvt_PTX(ir::PTXOperand::f32,
-				ir::PTXOperand::u8, false, false, false),
+				ir::PTXOperand::u8, false, false, true),
 			testCvt_INOUT(FP32), testCvt_INOUT(I8),
 			uniformRandom<unsigned char, 1>, 1, 1);
 		add("TestCvt-f32-u16",
-			testCvt_REF<float, unsigned short, false, false, false>,
+			testCvt_REF<float, unsigned short, false, false, true>,
 			testCvt_PTX(ir::PTXOperand::f32,
-				ir::PTXOperand::u16, false, false, false),
+				ir::PTXOperand::u16, false, false, true),
 			testCvt_INOUT(FP32), testCvt_INOUT(I16),
 			uniformRandom<unsigned short, 1>, 1, 1);
 		add("TestCvt-f32-u32",
-			testCvt_REF<float, unsigned int, false, false, false>,
+			testCvt_REF<float, unsigned int, false, false, true>,
 			testCvt_PTX(ir::PTXOperand::f32,
-				ir::PTXOperand::u32, false, false, false),
+				ir::PTXOperand::u32, false, false, true),
 			testCvt_INOUT(FP32), testCvt_INOUT(I32),
 			uniformRandom<unsigned int, 1>, 1, 1);
 		add("TestCvt-f32-u64",
-			testCvt_REF<float, long long unsigned int, false, false, false>,
+			testCvt_REF<float, long long unsigned int, false, false, true>,
 			testCvt_PTX(ir::PTXOperand::f32,
-				ir::PTXOperand::u64, false, false, false),
+				ir::PTXOperand::u64, false, false, true),
 			testCvt_INOUT(FP32), testCvt_INOUT(I64),
 			uniformRandom<long long unsigned int, 1>, 1, 1);
 		add("TestCvt-f32-s8",
-			testCvt_REF<float, char, false, false, false>,
+			testCvt_REF<float, char, false, false, true>,
 			testCvt_PTX(ir::PTXOperand::f32,
-				ir::PTXOperand::s8, false, false, false),
+				ir::PTXOperand::s8, false, false, true),
 			testCvt_INOUT(FP32), testCvt_INOUT(I8),
 			uniformRandom<char, 1>, 1, 1);
 		add("TestCvt-f32-s16",
-			testCvt_REF<float, short, false, false, false>,
+			testCvt_REF<float, short, false, false, true>,
 			testCvt_PTX(ir::PTXOperand::f32,
-				ir::PTXOperand::s16, false, false, false),
+				ir::PTXOperand::s16, false, false, true),
 			testCvt_INOUT(FP32), testCvt_INOUT(I16),
 			uniformRandom<short, 1>, 1, 1);
 		add("TestCvt-f32-s32",
-			testCvt_REF<float, int, false, false, false>,
+			testCvt_REF<float, int, false, false, true>,
 			testCvt_PTX(ir::PTXOperand::f32,
-				ir::PTXOperand::s32, false, false, false),
+				ir::PTXOperand::s32, false, false, true),
 			testCvt_INOUT(FP32), testCvt_INOUT(I32),
 			uniformRandom<int, 1>, 1, 1);
 		add("TestCvt-f32-s64",
-			testCvt_REF<float, long long int, false, false, false>,
+			testCvt_REF<float, long long int, false, false, true>,
 			testCvt_PTX(ir::PTXOperand::f32,
-				ir::PTXOperand::s64, false, false, false),
+				ir::PTXOperand::s64, false, false, true),
 			testCvt_INOUT(FP32), testCvt_INOUT(I64),
 			uniformRandom<long long int, 1>, 1, 1);
 		add("TestCvt-f32-f32",
@@ -6610,52 +6739,52 @@ namespace test
 			uniformFloat<double, 1>, 1, 1);
 
 		add("TestCvt-f64-u8",
-			testCvt_REF<double, unsigned char, false, false, false>,
+			testCvt_REF<double, unsigned char, false, false, true>,
 			testCvt_PTX(ir::PTXOperand::f64,
-				ir::PTXOperand::u8, false, false, false),
+				ir::PTXOperand::u8, false, false, true),
 			testCvt_INOUT(FP64), testCvt_INOUT(I8),
 			uniformRandom<unsigned char, 1>, 1, 1);
 		add("TestCvt-f64-u16",
-			testCvt_REF<double, unsigned short, false, false, false>,
+			testCvt_REF<double, unsigned short, false, false, true>,
 			testCvt_PTX(ir::PTXOperand::f64,
-				ir::PTXOperand::u16, false, false, false),
+				ir::PTXOperand::u16, false, false, true),
 			testCvt_INOUT(FP64), testCvt_INOUT(I16),
 			uniformRandom<unsigned short, 1>, 1, 1);
 		add("TestCvt-f64-u32",
-			testCvt_REF<double, unsigned int, false, false, false>,
+			testCvt_REF<double, unsigned int, false, false, true>,
 			testCvt_PTX(ir::PTXOperand::f64,
-				ir::PTXOperand::u32, false, false, false),
+				ir::PTXOperand::u32, false, false, true),
 			testCvt_INOUT(FP64), testCvt_INOUT(I32),
 			uniformRandom<unsigned int, 1>, 1, 1);
 		add("TestCvt-f64-u64",
-			testCvt_REF<double, long long unsigned int, false, false, false>,
+			testCvt_REF<double, long long unsigned int, false, false, true>,
 			testCvt_PTX(ir::PTXOperand::f64,
-				ir::PTXOperand::u64, false, false, false),
+				ir::PTXOperand::u64, false, false, true),
 			testCvt_INOUT(FP64), testCvt_INOUT(I64),
 			uniformRandom<long long unsigned int, 1>, 1, 1);
 		add("TestCvt-f64-s8",
-			testCvt_REF<double, char, false, false, false>,
+			testCvt_REF<double, char, false, false, true>,
 			testCvt_PTX(ir::PTXOperand::f64,
-				ir::PTXOperand::s8, false, false, false),
+				ir::PTXOperand::s8, false, false, true),
 			testCvt_INOUT(FP64), testCvt_INOUT(I8),
 			uniformRandom<char, 1>, 1, 1);
 		add("TestCvt-f64-s16",
-			testCvt_REF<double, short, false, false, false>,
+			testCvt_REF<double, short, false, false, true>,
 			testCvt_PTX(ir::PTXOperand::f64,
-				ir::PTXOperand::s16, false, false, false),
+				ir::PTXOperand::s16, false, false, true),
 			testCvt_INOUT(FP64), testCvt_INOUT(I16),
 			uniformRandom<short, 1>, 1, 1);
 		add("TestCvt-f64-s32",
-			testCvt_REF<double, int, false, false, false>,
+			testCvt_REF<double, int, false, false, true>,
 			testCvt_PTX(ir::PTXOperand::f64,
-				ir::PTXOperand::s32, false, false, false),
+				ir::PTXOperand::s32, false, false, true),
 			testCvt_INOUT(FP64), testCvt_INOUT(I32),
 			uniformRandom<int, 1>, 1, 1);
 		add("TestCvt-f64-s64",
 			testCvt_REF<double, long long int,
-				false, false, false>,
+				false, false, true>,
 			testCvt_PTX(ir::PTXOperand::f64,
-				ir::PTXOperand::s64, false, false, false),
+				ir::PTXOperand::s64, false, false, true),
 			testCvt_INOUT(FP64), testCvt_INOUT(I64),
 			uniformRandom<long long int, 1>, 1, 1);
 		add("TestCvt-f64-f32",
@@ -6685,7 +6814,8 @@ namespace test
 	void TestPTXAssembly::add(const std::string& name, 
 		ReferenceFunction function, const std::string& ptx, 
 		const TypeVector& out, const TypeVector& in, 
-		GeneratorFunction generator, unsigned int threads, unsigned int ctas)
+		GeneratorFunction generator, unsigned int threads, unsigned int ctas,
+		int epsilon)
 	{
 		// TODO change this to std::tr1::regex when gcc gets its act together
 		if(!regularExpression.empty() &&
@@ -6706,10 +6836,14 @@ namespace test
 		test.outputTypes = out;
 		test.threads = threads;
 		test.ctas = ctas;
+		test.epsilon = epsilon;
 		
 		if(print)
 		{
 			std::cout << "Added test - '" << name << "'\n";
+			std::cout << " threads: " << threads << "\n";
+			std::cout << " ctas: " << ctas << "\n";
+			std::cout << " ptx:\n";
 			std::cout << ptx << "\n";
 		}
 		

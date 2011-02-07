@@ -948,6 +948,18 @@ const char* executive::EmulatedKernel::getLocalMemory(unsigned int tid) const {
 	return (char*) CTA->functionCallStack.localMemoryPointer(tid);
 }
 
+unsigned int
+	executive::EmulatedKernel::getCurrentFrameArgumentMemorySize() const {
+	assert(CTA != 0);
+	return CTA->functionCallStack.previousFrameSize();
+}
+
+unsigned int
+	executive::EmulatedKernel::getCurrentFrameParameterMemorySize() const {
+	assert(CTA != 0);
+	return CTA->functionCallStack.stackFrameSize();
+}
+
 static unsigned int align(unsigned int offset, unsigned int size) {
 	unsigned int difference = offset & (size - 1);
 	unsigned int alignedOffset = difference == 0 
@@ -967,7 +979,8 @@ void executive::EmulatedKernel::initializeStackMemory() {
 		for(ParameterVector::iterator i_it = arguments.begin();
 			i_it != arguments.end(); ++i_it) {
 			ir::Parameter& parameter = *i_it;
-			// align parameter memory
+			// align parameter memory
+
 			unsigned int padding = parameter.getAlignment() 
 				- ( _parameterMemorySize % parameter.getAlignment() );
 			padding = (parameter.getAlignment() == padding) ? 0 : padding;

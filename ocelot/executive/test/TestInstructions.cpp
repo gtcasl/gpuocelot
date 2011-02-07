@@ -808,7 +808,7 @@ public:
 			}
 			cta->eval_SubC(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
-				PTXU32 expected = (0x0fffffffe - ((PTXU32)(i*2)) + 1);
+				PTXU32 expected = (0x0fffffffe - ((PTXU32)(i*2)));
 				if (cta->getRegAsU32(i, 5) != expected) {
 					result = false;
 					status << "subc.u32 incorrect\n";
@@ -840,7 +840,7 @@ public:
 			}
 			cta->eval_SubC(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
-				PTXS32 expected = (0x0fffffffe - ((PTXS32)(i*2)) + 1);
+				PTXS32 expected = (0x0fffffffe - ((PTXS32)(i*2)));
 				if (cta->getRegAsS32(i, 5) != expected) {
 					result = false;
 					status << "subc.s32 incorrect\n";

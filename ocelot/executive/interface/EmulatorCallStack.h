@@ -47,7 +47,8 @@ class EmulatorCallStack
 
 	public:
 		/*! \brief Create a new call stack for a set number of threads */
-		EmulatorCallStack(unsigned int threads = 0, 
+		EmulatorCallStack(unsigned int threads = 0,
+			unsigned int initialArgumentSize = 0, 
 			unsigned int initialFrameSize = 0, unsigned int registers = 0, 
 			unsigned int localSize = 0, unsigned int sharedSize = 0);
 	

@@ -27,7 +27,7 @@
 #include <hydrazine/implementation/debug.h>
 #include <hydrazine/implementation/math.h>
 
-/////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 #define IPDOM_RECONVERGENCE 1
 #define BARRIER_RECONVERGENCE 2
@@ -37,7 +37,7 @@
 // specify reconvergence mechanism here
 #define RECONVERGENCE_MECHANISM IPDOM_RECONVERGENCE
 
-/////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 #ifdef REPORT_BASE
 #undef REPORT_BASE
@@ -1385,7 +1385,8 @@ ir::PTXF64 executive::CooperativeThreadArray::operandAsF64(int threadID,
 	return 0;
 }
 
-ir::PTXB8 executive::CooperativeThreadArray::operandAsB8(int threadID, const PTXOperand &op) {
+ir::PTXB8 executive::CooperativeThreadArray::operandAsB8(int threadID,
+	const PTXOperand &op) {
 	switch (op.addressMode) {
 		case PTXOperand::Indirect:
 			return getRegAsB8(threadID, op.reg) + op.offset;
@@ -1402,7 +1403,8 @@ ir::PTXB8 executive::CooperativeThreadArray::operandAsB8(int threadID, const PTX
 	return 0;
 }
 
-ir::PTXB16 executive::CooperativeThreadArray::operandAsB16(int threadID, const PTXOperand &op) {
+ir::PTXB16 executive::CooperativeThreadArray::operandAsB16(int threadID,
+	const PTXOperand &op) {
 	switch (op.addressMode) {
 		case PTXOperand::Indirect:
 			return getRegAsB16(threadID, op.reg) + op.offset;
@@ -1419,7 +1421,8 @@ ir::PTXB16 executive::CooperativeThreadArray::operandAsB16(int threadID, const P
 	return 0;
 }
 
-ir::PTXB32 executive::CooperativeThreadArray::operandAsB32(int threadID, const PTXOperand &op) {
+ir::PTXB32 executive::CooperativeThreadArray::operandAsB32(int threadID,
+	const PTXOperand &op) {
 	switch (op.addressMode) {
 		case PTXOperand::Indirect:
 			return getRegAsB32(threadID, op.reg) + op.offset;
@@ -1482,7 +1485,7 @@ bool executive::CooperativeThreadArray::operandAsPredicate(int threadID,
 	
 	return result;
 }
-/////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 /*!
 
@@ -1547,7 +1550,8 @@ void executive::CooperativeThreadArray::eval_Abs(CTAContext &context,
 /*!
 
 */
-void executive::CooperativeThreadArray::eval_Add(CTAContext &context, const PTXInstruction &instr) {
+void executive::CooperativeThreadArray::eval_Add(CTAContext &context,
+	const PTXInstruction &instr) {
 	trace();
 	if (instr.type == PTXOperand::f32) {
 		for (int threadID = 0; threadID < threadCount; threadID++) {

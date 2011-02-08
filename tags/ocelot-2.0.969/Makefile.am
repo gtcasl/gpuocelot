@@ -402,99 +402,106 @@ nobase_include_HEADERS = ocelot/api/interface/ocelot.h \
 	ocelot/api/interface/OcelotConfiguration.h \
 	ocelot/api/interface/OcelotRuntime.h \
 	ocelot/api/test/TestDeviceSwitching.h \
-	ocelot/executive/interface/CooperativeThreadArray.h \
-	ocelot/executive/interface/EmulatedKernel.h \
-	ocelot/executive/interface/RuntimeException.h \
-	ocelot/executive/interface/Device.h \
-	ocelot/executive/interface/ATIGPUDevice.h \
+	ocelot/analysis/interface/SSAGraph.h \
+	ocelot/analysis/interface/StructuralTransform.h \
+	ocelot/analysis/interface/PassManager.h \
+	ocelot/analysis/interface/AssignFallThroughEdge.h \
+	ocelot/analysis/interface/PTXOptimizer.h \
+	ocelot/analysis/interface/DataflowGraph.h \
+	ocelot/analysis/interface/Pass.h \
+	ocelot/analysis/interface/ConvertPredicationToSelectPass.h \
+	ocelot/analysis/interface/SubkernelFormationPass.h \
+	ocelot/analysis/interface/StructuralAnalysis.h \
+	ocelot/analysis/interface/RemoveBarrierPass.h \
+	ocelot/analysis/interface/LinearScanRegisterAllocationPass.h \
+	ocelot/analysis/test/TestDataflowGraph.h \
+	ocelot/cal/interface/CalDriver.h \
+	ocelot/cal/include/calcl.h \
+	ocelot/cal/include/cal.h \
+	ocelot/cuda/interface/CudaRuntimeInterface.h \
+	ocelot/cuda/interface/CudaRuntime.h \
+	ocelot/cuda/interface/TraceGeneratingCudaRuntime.h \
+	ocelot/cuda/interface/CudaDriver.h \
+	ocelot/cuda/interface/cuda.h \
+	ocelot/cuda/interface/cuda_runtime.h \
 	ocelot/executive/interface/NVIDIAGPUDevice.h \
+	ocelot/executive/interface/LLVMWorkerThread.h \
+	ocelot/executive/interface/EmulatorCallStack.h \
 	ocelot/executive/interface/EmulatorDevice.h \
-	ocelot/executive/interface/MulticoreCPUDevice.h \
-	ocelot/executive/interface/CTAContext.h \
-	ocelot/executive/interface/ExternalKernel.h \
-	ocelot/executive/interface/NVIDIAExecutableKernel.h \
-	ocelot/executive/interface/ATIExecutableKernel.h \
+	ocelot/executive/interface/LLVMCooperativeThreadArray.h \
+	ocelot/executive/interface/LLVMRuntimeLibrary.h \
+	ocelot/executive/implementation/LLVMRuntimeLibrary.inl \
+	ocelot/executive/interface/EmulatedKernel.h \
+	ocelot/executive/interface/Device.h \
+	ocelot/executive/interface/LLVMExecutionManager.h \
+	ocelot/executive/interface/RemoteDevice.h \
+	ocelot/executive/interface/CooperativeThreadArray.h \
 	ocelot/executive/interface/LLVMContext.h \
 	ocelot/executive/interface/LLVMExecutableKernel.h \
 	ocelot/executive/interface/TextureOperations.h \
-	ocelot/executive/interface/ExecutableKernel.h \
-	ocelot/executive/interface/LLVMModuleManager.h \
-	ocelot/executive/interface/LLVMExecutionManager.h \
 	ocelot/executive/interface/LLVMState.h \
-	ocelot/executive/interface/LLVMWorkerThread.h \
-	ocelot/executive/interface/LLVMCooperativeThreadArray.h \
+	ocelot/executive/interface/MulticoreCPUDevice.h \
+	ocelot/executive/interface/CTAContext.h \
+	ocelot/executive/interface/ATIExecutableKernel.h \
+	ocelot/executive/interface/ExecutableKernel.h \
+	ocelot/executive/interface/ExternalKernel.h \
+	ocelot/executive/interface/ATIGPUDevice.h \
+	ocelot/executive/interface/LLVMModuleManager.h \
+	ocelot/executive/interface/ReconvergenceMechanism.h \
+	ocelot/executive/interface/RuntimeException.h \
+	ocelot/executive/interface/NVIDIAExecutableKernel.h \
 	ocelot/executive/interface/LLVMFunctionCallStack.h \
-	ocelot/executive/interface/EmulatorCallStack.h \
-	ocelot/executive/interface/RemoteDevice.h \
+	ocelot/executive/test/TestLLVMKernels.h \
 	ocelot/executive/test/TestEmulator.h \
 	ocelot/executive/test/sequence.ptx \
 	ocelot/executive/test/kernels.ptx \
-	ocelot/executive/test/TestLLVMKernels.h \
-	ocelot/cuda/interface/CudaRuntime.h \
-	ocelot/cuda/interface/CudaDriver.h \
-	ocelot/cuda/interface/cuda_runtime.h \
-	ocelot/cuda/interface/CudaRuntimeInterface.h \
-	ocelot/cuda/interface/TraceGeneratingCudaRuntime.h \
-	ocelot/cuda/interface/cuda.h \
-	ocelot/cuda/interface/CudaRuntimeContext.h \
-	ocelot/trace/interface/TraceEvent.h \
-	ocelot/trace/interface/TraceGenerator.h \
-	ocelot/trace/interface/MemoryRaceDetector.h \
-	ocelot/trace/interface/MemoryChecker.h \
+	ocelot/ir/interface/DominatorTree.h \
+	ocelot/ir/interface/Texture.h \
+	ocelot/ir/interface/ILKernel.h \
+	ocelot/ir/interface/Documentation.h \
+	ocelot/ir/interface/PTXOperand.h \
+	ocelot/ir/interface/PTXKernel.h \
+	ocelot/ir/interface/Dim3.h \
+	ocelot/ir/interface/LLVMInstruction.h \
+	ocelot/ir/interface/ILInstruction.h \
+	ocelot/ir/interface/ControlFlowGraph.h \
+	ocelot/ir/interface/ControlTree.h \
+	ocelot/ir/interface/Local.h \
+	ocelot/ir/interface/LLVMKernel.h \
+	ocelot/ir/interface/Module.h \
+	ocelot/ir/interface/PTXStatement.h \
+	ocelot/ir/interface/Parameter.h \
+	ocelot/ir/interface/PostdominatorTree.h \
+	ocelot/ir/interface/PTXInstruction.h \
+	ocelot/ir/interface/LLVMStatement.h \
+	ocelot/ir/interface/ILOperand.h \
+	ocelot/ir/interface/ILStatement.h \
+	ocelot/ir/interface/Instruction.h \
+	ocelot/ir/interface/Global.h \
+	ocelot/ir/interface/Kernel.h \
+	ocelot/ir/test/TestPTXAssembly.h \
+	ocelot/ir/test/TestLLVMInstructions.h \
+	ocelot/ir/test/SamplePTX.h \
 	ocelot/parser/interface/PTXLexer.h \
 	ocelot/parser/interface/Parser.h \
 	ocelot/parser/interface/PTXParser.h \
 	ocelot/parser/test/TestLexer.h \
 	ocelot/parser/test/TestParser.h \
-	ocelot/analysis/interface/DataflowGraph.h \
-	ocelot/analysis/interface/Pass.h \
-	ocelot/analysis/interface/SSAGraph.h \
-	ocelot/analysis/interface/ConvertPredicationToSelectPass.h \
-	ocelot/analysis/interface/LinearScanRegisterAllocationPass.h \
-	ocelot/analysis/interface/SubkernelFormationPass.h \
-	ocelot/analysis/interface/PTXOptimizer.h \
-	ocelot/analysis/interface/RemoveBarrierPass.h \
-	ocelot/analysis/interface/AssignFallThroughEdge.h \
-	ocelot/analysis/interface/StructuralAnalysis.h \
-	ocelot/analysis/interface/StructuralTransform.h \
-	ocelot/analysis/interface/PassManager.h \
-	ocelot/analysis/test/TestDataflowGraph.h \
-	ocelot/ir/interface/Kernel.h \
-	ocelot/ir/interface/Module.h \
-	ocelot/ir/interface/ControlFlowGraph.h \
-	ocelot/ir/interface/PostdominatorTree.h \
-	ocelot/ir/interface/Parameter.h \
-	ocelot/ir/interface/PTXKernel.h \
-	ocelot/ir/interface/Dim3.h \
-	ocelot/ir/interface/LLVMInstruction.h \
-	ocelot/ir/interface/LLVMKernel.h \
-	ocelot/ir/interface/LLVMStatement.h \
-	ocelot/ir/interface/Local.h	\
-	ocelot/ir/interface/PTXStatement.h \
-	ocelot/ir/interface/PTXInstruction.h \
-	ocelot/ir/interface/Instruction.h \
-	ocelot/ir/interface/DominatorTree.h \
-	ocelot/ir/interface/Documentation.h \
-	ocelot/ir/interface/PTXOperand.h \
-	ocelot/ir/interface/Global.h \
-	ocelot/ir/interface/Texture.h \
-	ocelot/ir/interface/ControlTree.h \
-	ocelot/ir/test/TestLLVMInstructions.h \
-	ocelot/ir/test/SamplePTX.h \
-	ocelot/ir/test/TestPTXAssembly.h \
-	ocelot/ir/interface/ILInstruction.h \
-	ocelot/ir/interface/ILStatement.h \
-	ocelot/ir/interface/ILKernel.h \
-	ocelot/cal/interface/CalDriver.h \
-	ocelot/cal/include/calcl.h \
-	ocelot/cal/include/cal.h \
+	ocelot/trace/interface/TraceEvent.h \
+	ocelot/trace/interface/TraceGenerator.h \
+	ocelot/trace/interface/MemoryRaceDetector.h \
+	ocelot/trace/interface/MemoryChecker.h \
+	ocelot/trace/interface/InteractiveDebugger.h \
 	ocelot/translator/interface/PTXToILTranslator.h \
 	ocelot/translator/interface/PTXToLLVMTranslator.h \
 	ocelot/translator/interface/Translator.h \
 	ocelot/translator/test/TestPTXToLLVMTranslator.h \
 	ocelot/translator/test/PtxToIlTranslator.h \
-	ocelot/util/interface/OcelotConfig.h \
-	ocelot/util/interface/RemoteDeviceMessage.h \
+	ocelot/trace/interface/MemoryChecker.h \
+	ocelot/trace/interface/TraceEvent.h \
+	ocelot/trace/interface/TraceGenerator.h \
+	ocelot/trace/interface/MemoryRaceDetector.h \
+	ocelot/trace/interface/InteractiveDebugger.h \
 	hydrazine/implementation/Exception.h \
 	hydrazine/implementation/Timer.h \
 	hydrazine/implementation/LowLevelTimer.h \
@@ -512,8 +519,11 @@ nobase_include_HEADERS = ocelot/api/interface/ocelot.h \
 	hydrazine/interface/Thread.h \
 	hydrazine/interface/Thread.hpp \
 	hydrazine/interface/Version.h \
+	hydrazine/interface/MetaProgramming.h \
+	hydrazine/interface/WindowsCompatibility.h \
 	hydrazine/python/RunRegression.py \
-	regression/ocelotRegressionTests.txt
+	regression/ocelotRegressionTests.txt \
+	configure.ocelot
 
 ################################################################################
 

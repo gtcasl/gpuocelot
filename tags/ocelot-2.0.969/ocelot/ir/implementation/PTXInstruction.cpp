@@ -1893,8 +1893,8 @@ std::string ir::PTXInstruction::guard() const {
 	switch( pg.condition ) {
 		case PTXOperand::PT: return ""; break;
 		case PTXOperand::nPT: return "@!%pt "; break;
-		case PTXOperand::Pred: return "@" + pg.toString() + " " ; break;
-		case PTXOperand::InvPred: return "@!" + pg.toString() + " "; break;
+		case PTXOperand::Pred: /* fall through */
+		case PTXOperand::InvPred: return "@" + pg.toString() + " "; break;
 	}
 	return "";
 }

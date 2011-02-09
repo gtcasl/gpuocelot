@@ -12,8 +12,10 @@
 #include <fstream>
 #include <map>
 #include <vector>
+
 // Ocelot includes
 #include <ocelot/ir/interface/Dim3.h>
+#include <ocelot/ir/interface/PTXOperand.h>
 #include <ocelot/cuda/interface/cuda.h>
 
 // Hydrazine includes
@@ -27,7 +29,7 @@ namespace util {
 	
 		class MemoryAllocation {
 		public:
-			MemoryAllocation(size_t size);
+			MemoryAllocation(void *ptr, size_t size, ir::PTXOperand::DataType dt = ir::PTXOperand::u32, char c = 0);
 			MemoryAllocation();
 			~MemoryAllocation();
 			
@@ -37,15 +39,19 @@ namespace util {
 			void resize(size_t _size, char c = 0);
 			
 		public:
-			//! \brief base pointer to allocation
-			char *base;
-			
-			//! \brief size in bytes of allocation
-			size_t size;
+		
+			//! \brief references the allocation on the device
+			void *devicePointer;
+		
+			//! \brief type of data
+			ir::PTXOperand::DataType dataType;
+		
+			//! \brief binary representation of data
+			ByteVector data;
 		};
 		
 		typedef std::map< std::string, MemoryAllocation *> GlobalVariableMap;
-		typedef std::map< char *, MemoryAllocation *> GlobalAllocationMap;
+		typedef std::map< void *, MemoryAllocation *> GlobalAllocationMap;
 		
 		/*!
 		
@@ -65,14 +71,11 @@ namespace util {
 			//! \brief module loaded into this name
 			std::string name;
 			
-			//! \brief PTX representation of module
-			std::string ptx;
+			//! \brief file to which PTX representation of module is written
+			std::string ptxFile;
 			
 			//! \brief 
-			GlobalVariableMap globalVariablesBefore;
-			
-			//! \brief 
-			GlobalVariableMap globalVariablesAfter;
+			GlobalVariableMap globalVariables;
 		};
 		
 		class KernelLaunch {
@@ -93,14 +96,11 @@ namespace util {
 			//! \brief dimensions of grid
 			ir::Dim3 gridDim;
 			
-			//! \brief parameter memory size
-			size_t parameterMemorySize;
-			
 			//! \brief shared memory size
 			size_t sharedMemorySize;
 			
-			//! \brief contains parameter memory
-			char *parameterMemory;
+			//! \brief block of memory denoting parameter memory
+			ByteVector parameterMemory;
 		};
 		
 		class Application {
@@ -109,9 +109,10 @@ namespace util {
 			void serialize(std::ostream &out) const;
 		
 		public:
-		
+			//! \brief name of application
 			std::string name;
 			
+			//! \brief name of target CUDA device
 			std::string cudaDevice;
 			
 		};
@@ -139,15 +140,12 @@ namespace util {
 		ModuleMap modules;
 		
 		//! \brief values of global allocations before kernel launch
-		GlobalAllocationMap globalAllocationsBefore;
-		
-		//! \brief values of global allocations after kernel launch
-		GlobalAllocationMap globalAllocationsAfter;
+		GlobalAllocationMap globalAllocations;
 		
 		//! \brief maps CUfunction onto (module-name, kernel-name) tuple
 		FunctionModuleMap functionMap;
 		
-		//! \brief 
+		//! \brief parameters of CUDA launch
 		KernelLaunch launch;
 	};
 

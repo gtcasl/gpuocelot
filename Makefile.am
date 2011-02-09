@@ -30,17 +30,11 @@ check_PROGRAMS = TestLexer TestParser \
 	TestCudaTextureArray TestCudaTexture3D \
 	TestCudaSequence TestLLVMKernels TestDeviceSwitching \
 	TestCalVectorScale TestPTXAssembly TestSequenceDriverAPI TestGenericMemory \
-	TestFunctionCall TestIndirectFunctionCall TestIndirectFunctionCallOcelot
+	TestFunctionCall TestIndirectFunctionCall TestIndirectFunctionCallOcelot \
+	KernelTestHarness
 EXTRA_PROGRAMS = Module PtxToIlTranslator DFG CFG PTXChecker OcelotServer TestOcelotServer
 lib_LTLIBRARIES = libocelot.la libKernelExtractor.la
 
-################################################################################
-
-libKernelExtractor_la_CXXFLAGS = -Wall -ansi -Werror -std=c++0x
-#libKernelExtractor_la_HEADERS = ocelot/util/interface/KernelExtractor.h
-libKernelExtractor_la_LDFLAGS = -module
-libKernelExtractor_la_SOURCES = ocelot/util/implementation/KernelExtractor.cpp \
-	ocelot/util/implementation/KernelExtractorDriverApi.cpp
 
 ################################################################################
 ## libocelot
@@ -364,8 +358,9 @@ TestSequenceDriverAPI_LDFLAGS = -static
 ################################################################################
 ##
 ##
-TestGenericMemory_CXXFLAGS = $(SDK_CFLAGS)
-TestGenericMemory_SOURCES = ocelot/cuda/test/driver/generic.cpp
+TestGenericMemory_CXXFLAGS = $(SDK_CFLAGS) -Wall -ansi \
+	-pedantic -Werror -std=c++0x
+TestGenericMemory_SOURCES = ocelot/cuda/test/memory/generic.cpp
 TestGenericMemory_LDADD = libocelot.la $(LLVM_LDFLAGS)
 TestGenericMemory_LDFLAGS = -static
 ################################################################################
@@ -411,7 +406,22 @@ TestIndirectFunctionCallOcelot_LDADD = libocelot.la $(LLVM_LDFLAGS)
 TestIndirectFunctionCallOcelot_LDFLAGS = -static
 ################################################################################
 
+################################################################################
 
+libKernelExtractor_la_CXXFLAGS = -Wall -ansi -Werror -std=c++0x
+#libKernelExtractor_la_HEADERS = ocelot/util/interface/KernelExtractor.h
+libKernelExtractor_la_LDFLAGS = -module
+libKernelExtractor_la_SOURCES = ocelot/util/implementation/KernelExtractor.cpp \
+	ocelot/util/implementation/KernelExtractorDriverApi.cpp
+
+################################################################################
+## KernelTestHarness
+KernelTestHarness_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
+KernelTestHarness_SOURCES = ocelot/util/implementation/KernelTestHarness.cpp \
+	ocelot/util/implementation/ExtractedDeviceState.cpp
+KernelTestHarness_LDADD = libocelot.la $(LLVM_LDFLAGS)
+KernelTestHarness_LDFLAGS = -static
+################################################################################
 
 ################################################################################
 ##

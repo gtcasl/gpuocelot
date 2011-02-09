@@ -74,13 +74,13 @@ util::ExtractedDeviceState::MemoryAllocation::~MemoryAllocation() {
 
 }
 
-void util::ExtractedDeviceState::MemoryAllocation::serialize(std::ostream &out) const {
+void util::ExtractedDeviceState::MemoryAllocation::serialize(std::ostream &out, const std::string & prefix) const {
 	out << "{";
 	out << "  \"device\": \"" << (void *)devicePointer << "\",\n";
 	out << "  \"type\": \"" << ir::PTXOperand::toString(dataType) << "\",\n";
 	
 	std::stringstream ss;
-	ss << "global-" 
+	ss << prefix << "-global-" 
 		<< ir::PTXOperand::toString(dataType) 
 		<< "-" << data.size() 
 		<< "-bytes-" << (void *)devicePointer;
@@ -123,7 +123,7 @@ void util::ExtractedDeviceState::Module::clear() {
 	globalVariables.clear();
 }
 
-void util::ExtractedDeviceState::Module::serialize(std::ostream &out) const {
+void util::ExtractedDeviceState::Module::serialize(std::ostream &out, const std::string & prefix) const {
 	out << "{\n";
 	out << "  \"name\": \"" << name << "\",\n";
 	out << "  \"ptxFile\": \"";
@@ -136,7 +136,7 @@ void util::ExtractedDeviceState::Module::serialize(std::ostream &out) const {
 			v_it != globalVariables.end(); ++v_it ) {
 			if (!n++) { out << ",\n"; }
 			out << "    \"" << v_it->first << "\": ";
-			v_it->second->serialize(out);
+			v_it->second->serialize(out, prefix);
 		}
 		out << "}\n";
 	}
@@ -165,7 +165,7 @@ util::ExtractedDeviceState::ExtractedDeviceState() {
 }
 
 util::ExtractedDeviceState::~ExtractedDeviceState() {
-
+	clear();
 }
 
 //! \brief store data in host memory to file
@@ -185,7 +185,7 @@ void util::ExtractedDeviceState::serialize(std::ostream &out) const {
 		alloc_it != globalAllocations.end(); ++alloc_it) {
 	
 		out << (n++ ? ",\n":"");
-		alloc_it->second->serialize(out);
+		alloc_it->second->serialize(out, application.name);
 	}
 	
 	out << "],\n";
@@ -203,7 +203,7 @@ void util::ExtractedDeviceState::serialize(std::ostream &out) const {
 			mod_it != modules.end(); ++mod_it) {
 		
 			out << (n++ ? ",":"");
-			mod_it->second.serialize(out);
+			mod_it->second.serialize(out, application.name);
 		}
 	}
 	else {

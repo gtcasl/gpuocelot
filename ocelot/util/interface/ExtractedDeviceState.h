@@ -33,7 +33,7 @@ namespace util {
 			MemoryAllocation();
 			~MemoryAllocation();
 			
-			void serialize(std::ostream &out) const;
+			void serialize(std::ostream &out, const std::string & prefix = "") const;
 			
 			//!
 			void resize(size_t _size, char c = 0);
@@ -65,7 +65,7 @@ namespace util {
 		
 			void clear();
 			
-			void serialize(std::ostream &out) const;
+			void serialize(std::ostream &out, const std::string & prefix = "") const;
 		
 		public:
 			//! \brief module loaded into this name

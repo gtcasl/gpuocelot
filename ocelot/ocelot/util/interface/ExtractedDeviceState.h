@@ -31,7 +31,7 @@ namespace util {
 			MemoryAllocation();
 			~MemoryAllocation();
 			
-			void serialize(std::ostream &out);
+			void serialize(std::ostream &out) const;
 			
 			//!
 			void resize(size_t _size, char c = 0);
@@ -53,9 +53,13 @@ namespace util {
 		class Module {
 		public:
 		
+			Module();
+			
+			~Module();
+		
 			void clear();
 			
-			void serialize(std::ostream &out);
+			void serialize(std::ostream &out) const;
 		
 		public:
 			//! \brief module loaded into this name
@@ -74,7 +78,7 @@ namespace util {
 		class KernelLaunch {
 		public:
 		
-			void serialize(std::ostream &out);
+			void serialize(std::ostream &out) const;
 
 		public:
 			//! \brief name of module owning kernel
@@ -98,6 +102,19 @@ namespace util {
 			//! \brief contains parameter memory
 			char *parameterMemory;
 		};
+		
+		class Application {
+		public:
+		
+			void serialize(std::ostream &out) const;
+		
+		public:
+		
+			std::string name;
+			
+			std::string cudaDevice;
+			
+		};
 	
 		typedef std::map< CUfunction, std::pair< std::string, std::string > > FunctionModuleMap;
 		typedef std::map< std::string, Module > ModuleMap;
@@ -108,12 +125,16 @@ namespace util {
 		ExtractedDeviceState();
 		~ExtractedDeviceState();
 		
-		void serialize(std::ostream &out);
+		void serialize(std::ostream &out) const;
 		void deserialize(std::istream &in);
 		
 		void clear();
 		
 	public:
+	
+		//! \brief data specific to an application
+		Application application;
+	
 		//! \brief maps module names onto structure capturing module state
 		ModuleMap modules;
 		

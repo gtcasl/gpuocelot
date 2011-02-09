@@ -811,7 +811,8 @@ public:
 				PTXU32 expected = (0x0fffffffe - ((PTXU32)(i*2)));
 				if (cta->getRegAsU32(i, 5) != expected) {
 					result = false;
-					status << "subc.u32 incorrect\n";
+					status << "subc.u32 incorrect - got " << cta->getRegAsU32(i,5) 
+						<< ", expected " << expected << "\n";
 					break;
 				}
 				// verify carry		

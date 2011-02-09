@@ -26,13 +26,34 @@ namespace util {
 		KernelExtractorDriver();
 		virtual ~KernelExtractorDriver();
 		
+		//! \brief copies data from device to host-side allocations
+		void synchronizeFromDevice();
+		
+		//! \brief copies data from host-side allocations to device
+		void synchronizeToDevice();
+		
+		//! \brief called when a kernel is launched
+		void kernelLaunch(CUfunction f, int gridX = 1, int gridY = 1);
+		
+		//! \brief called when a kernel returns
+		void kernelReturn(CUresult result);
+		
+		//! \brief allocates device memory
+		void allocate(CUresult result, void *dptr, size_t bytes);
+		
+		//! \brief deletes an allocation
+		void free(void *dptr);
+		
 	public:
 	
 		// CUDA Driver API 
 		cuda::CudaDriver cudaDriver;
 	
-		// object for serializing CUDA kernels and device state
-		ExtractedDeviceState extractedState;
+		//!  object for serializing CUDA kernels and device state
+		ExtractedDeviceState state;
+		
+		//! determines whether kernels are actually extracted
+		bool enabled;
 
 	// CUDA Driver API Interface
 	public:

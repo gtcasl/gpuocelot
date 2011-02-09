@@ -63,9 +63,97 @@
 // shared object or to invoke Ocelot's Driver API frontend
 typedef util::KernelExtractorDriver CudaApi;
 
-util::KernelExtractorDriver::KernelExtractorDriver() {
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
+static CUdeviceptr toDevicePtr(void *ptr) {
+	return 0;
 }
+
+static void * fromDevicePtr(CUdeviceptr ptr) {
+	return 0;
+}
+
+util::KernelExtractorDriver::KernelExtractorDriver() {
+	enabled = false;
+}
+
+
+/*!
+
+*/
+void util::KernelExtractorDriver::kernelLaunch(CUfunction f, int gridX, int gridY) {
+	state.launch.gridDim = ir::Dim3(gridX, gridY, 1);
+	util::ExtractedDeviceState::FunctionModuleMap::const_iterator f_it = state.functionMap.find(f);
+	
+	cuCtxSynchronize();	// wait for previous launches to conclude [somehow]	
+	synchronizeFromDevice();
+	
+	if (f_it != state.functionMap.end()) {
+		state.launch.moduleName = f_it->second.first;
+		state.launch.kernelName = f_it->second.second;
+	}
+	else {
+		state.launch.moduleName = "unknown_module";
+		state.launch.kernelName = "unknown_kernel";
+	}
+	
+	// serialize 'before' state
+	std::string app = state.application.name;
+	state.application.name += "-before";
+	std::ofstream file("before.json");
+	state.serialize(file);
+	state.application.name = app;
+}
+
+
+void util::KernelExtractorDriver::kernelReturn(CUresult result) {
+	cuCtxSynchronize();
+	
+	synchronizeFromDevice();
+	
+	std::string app = state.application.name;
+	state.application.name += "-after";
+	std::ofstream file("after.json");
+	state.serialize(file);
+	state.application.name = app;
+}
+
+
+//! \brief copies data from device to host-side allocations
+void util::KernelExtractorDriver::synchronizeFromDevice() {
+	ExtractedDeviceState::GlobalAllocationMap::const_iterator alloc_it = state.globalAllocations.begin();
+	for (; alloc_it != state.globalAllocations.end(); ++alloc_it) {
+		ExtractedDeviceState::MemoryAllocation *allocation = alloc_it->second;
+		CUresult result = cudaDriver.cuMemcpyDtoH(&allocation->data[0], 
+			toDevicePtr(allocation->devicePointer), allocation->data.size());
+		if (result != CUDA_SUCCESS) {
+			// failed
+			report("KernelExtractorDriver::synchronizeFromDevice() - failed to copy from device");
+			break;
+		}
+	}
+	ExtractedDeviceState::ModuleMap::const_iterator mod_it = state.modules.begin();
+	for (; mod_it != state.modules.end(); ++mod_it) {
+		ExtractedDeviceState::GlobalVariableMap::const_iterator alloc_it = mod_it->second.globalVariables.begin();
+		for (; alloc_it != mod_it->second.globalVariables.end(); ++alloc_it) {
+			ExtractedDeviceState::MemoryAllocation *allocation = alloc_it->second;
+			CUresult result = cudaDriver.cuMemcpyDtoH(&allocation->data[0], 
+				toDevicePtr(allocation->devicePointer), allocation->data.size());
+			if (result != CUDA_SUCCESS) {
+				// failed
+				report("KernelExtractorDriver::synchronizeFromDevice() - failed to copy from device");
+				break;
+			}
+		}
+	}
+}
+
+//! \brief copies data to host-side allocations to device
+void util::KernelExtractorDriver::synchronizeToDevice() {
+	assert(0 && "unimplemented");
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /*********************************
 ** Initialization
@@ -248,7 +336,14 @@ CUresult util::KernelExtractorDriver::cuMemGetInfo(unsigned int *free,
 CUresult util::KernelExtractorDriver::cuMemAlloc( CUdeviceptr *dptr, 
 	unsigned int bytesize) {
 	trace();	
-	RETURN( cudaDriver.cuMemAlloc(dptr, bytesize) );
+	
+	CUresult res = cudaDriver.cuMemAlloc(dptr, bytesize);
+	
+	if (enabled) {
+		allocate(res, (void *)dptr, bytesize);
+	}
+	
+	RETURN( res );
 }
 
 CUresult util::KernelExtractorDriver::cuMemAllocPitch( CUdeviceptr *dptr, 
@@ -258,12 +353,20 @@ CUresult util::KernelExtractorDriver::cuMemAllocPitch( CUdeviceptr *dptr,
 			          unsigned int ElementSizeBytes
 			         ) {
 	trace();	
-	RETURN( cudaDriver.cuMemAllocPitch(dptr, pPitch, WidthInBytes, Height, ElementSizeBytes) );
+	CUresult res = cudaDriver.cuMemAllocPitch(dptr, pPitch, WidthInBytes, Height, ElementSizeBytes);
+	if (enabled) {
+		allocate(res, (void *)dptr, *pPitch * Height);
+	}
+	RETURN( res );
 }
 
 CUresult util::KernelExtractorDriver::cuMemFree(CUdeviceptr dptr) {
-	trace();	
-	RETURN( cudaDriver.cuMemFree(dptr) );
+	trace();
+	CUresult res = cudaDriver.cuMemFree(dptr);
+	if (enabled) {
+		free(fromDevicePtr(dptr));
+	}
+	RETURN( res );
 }
 
 CUresult util::KernelExtractorDriver::cuMemGetAddressRange( CUdeviceptr *pbase, 
@@ -714,19 +817,43 @@ serialize after state
 
 CUresult util::KernelExtractorDriver::cuLaunch ( CUfunction f ) {
 	trace();	
-	RETURN( cudaDriver.cuLaunch(f) );
+	if (enabled) {
+		kernelLaunch(f);
+	}
+	
+	CUresult res = cudaDriver.cuLaunch(f);
+	if (enabled) {
+		kernelReturn(res);
+	}
+	
+	RETURN( res );
 }
 
 CUresult util::KernelExtractorDriver::cuLaunchGrid (CUfunction f, int grid_width, 
 	int grid_height) {
-	trace();	
-	RETURN( cudaDriver.cuLaunchGrid(f, grid_width, grid_height) );
+	trace();
+	if (enabled) {
+		kernelLaunch(f, grid_width, grid_height);
+	}
+	CUresult res = cudaDriver.cuLaunchGrid(f, grid_width, grid_height);
+	if (enabled) {
+		kernelReturn(res);
+	}
+	RETURN( res );
 }
 
 CUresult util::KernelExtractorDriver::cuLaunchGridAsync( CUfunction f, int grid_width, 
 	int grid_height, CUstream hStream ) {
 	trace();	
-	RETURN( cudaDriver.cuLaunchGridAsync(f, grid_width, grid_height, hStream) );
+	
+	if (enabled) {
+		kernelLaunch(f, grid_width, grid_height);
+	}
+	CUresult res = cudaDriver.cuLaunchGridAsync(f, grid_width, grid_height, hStream);
+	if (enabled) {
+		kernelReturn(res);
+	}
+	RETURN(res);
 }
 
 

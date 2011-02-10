@@ -15,12 +15,16 @@
 
 // Ocelot includes
 #include <ocelot/cuda/interface/CudaDriver.h>
-#include <ocelot/cuda/interface/CudaDriverInterface.h>
 #include <ocelot/util/interface/ExtractedDeviceState.h>
 
 namespace util {
 
-	class KernelExtractorDriver: public cuda::CudaDriverInterface {
+	class KernelExtractorDriver {
+	public:
+		typedef std::unordered_map< CUmodule, std::string > ModuleNameMap;
+		typedef std::unordered_map< CUfunction, std::pair< std::string, std::string > > FunctionNameMap;
+		typedef std::unordered_map< CUtexref, std::pair< std::string, std::string > > TextureNameMap;
+		
 	public:
 	
 		KernelExtractorDriver();
@@ -31,6 +35,18 @@ namespace util {
 		
 		//! \brief copies data from host-side allocations to device
 		void synchronizeToDevice();
+		
+		//! \brief binds module handle to PTX image
+		void loadModule(CUresult result, CUmodule module, const char *ptxImage, const char *name=0);
+		
+		//! \brief binds a function handle to a module and kernel name
+		void bindKernel(CUresult result, CUmodule module, CUfunction function, const char *name);
+		
+		//! \brief binds a texture handle to a module and texture name
+		void bindTexture(CUresult result, CUmodule module, CUtexref texture, const char *name);
+		
+		//! \brief binds a global variable to a pointer
+		void bindGlobal(CUresult result, CUmodule module, void *ptr, const char *name);
 		
 		//! \brief called when a kernel is launched
 		void kernelLaunch(CUfunction f, int gridX = 1, int gridY = 1);
@@ -46,14 +62,28 @@ namespace util {
 		
 	public:
 	
+		static KernelExtractorDriver * get();
+	
+		//! \brief singleton instance
+		static KernelExtractorDriver instance;
+	
 		// CUDA Driver API 
-		cuda::CudaDriver cudaDriver;
+		cuda::CudaDriver::Interface cudaDriver;
 	
 		//!  object for serializing CUDA kernels and device state
 		ExtractedDeviceState state;
 		
 		//! determines whether kernels are actually extracted
 		bool enabled;
+		
+		//! maps module handles to module names
+		ModuleNameMap moduleNameMap;
+		
+		//! maps function handles to (module name, function name) pairs
+		FunctionNameMap functionNameMap;
+		
+		//! maps texture handles to (module name, texture name) pairs
+		TextureNameMap textureNameMap;
 
 	// CUDA Driver API Interface
 	public:
@@ -66,6 +96,9 @@ namespace util {
 		** Driver Version Query
 		*********************************/
 		CUresult cuDriverGetVersion(int *driverVersion);
+		
+		CUresult cuGetExportTable(const void **ppExportTable,
+			const CUuuid *pExportTableId);
 
 		/************************************
 		**

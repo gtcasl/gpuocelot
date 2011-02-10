@@ -35,25 +35,26 @@ namespace cuda
 		_libname = "libcuda.so";
 	}
 	
-
-	//! \brief
-	CudaDriver::Interface::Interface(const std::string &library): _libname(library) {
-	
-	}
-
 	CudaDriver::Interface::~Interface()
 	{
+		unload();
+	}
+	
+
+	/*! \brief unloads the driver */
+	void CudaDriver::Interface::unload() {
+	
 		if( _driver )
 		{
-			report( "Closing libcuda.so" );
+			report( "Closing " << _libname );
 			dlclose( _driver );
+			report("closed.");
 		}
 	}
 	
 	void CudaDriver::Interface::load()
 	{
 		if( _driver != 0 ) return;
-		
 		report( "Loading " << _libname );
 		_driver = dlopen( _libname.c_str(), RTLD_LAZY );
 		if( _driver == 0 )
@@ -252,10 +253,14 @@ namespace cuda
 		hydrazine::bit_cast( cuGraphicsGLRegisterImage, dlsym( _driver,
 			"cuGraphicsGLRegisterImage" ) );
 
-		(*cuDriverGetVersion)(&_version);
+		CUresult result = (*cuDriverGetVersion)(&_version);
 
-		report(" Driver version is: " << _version);
-
+		if (result == CUDA_SUCCESS) {
+			report(" Driver version is: " << _version << " and was called successfully");
+		}
+		else {
+			report("cuDriverGetVersion() returned " << result);
+		}
 	}
 
 	bool CudaDriver::Interface::loaded() const

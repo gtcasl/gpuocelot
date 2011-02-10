@@ -15,8 +15,8 @@
 
 // Ocelot includes
 #include <ocelot/ir/interface/Dim3.h>
+#include <ocelot/ir/interface/Texture.h>
 #include <ocelot/ir/interface/PTXOperand.h>
-#include <ocelot/cuda/interface/cuda.h>
 
 // Hydrazine includes
 
@@ -50,6 +50,7 @@ namespace util {
 			ByteVector data;
 		};
 		
+		typedef std::map< std::string, ir::Texture *> TextureMap;
 		typedef std::map< std::string, MemoryAllocation *> GlobalVariableMap;
 		typedef std::map< void *, MemoryAllocation *> GlobalAllocationMap;
 		
@@ -66,6 +67,8 @@ namespace util {
 			void clear();
 			
 			void serialize(std::ostream &out, const std::string & prefix = "") const;
+			
+			void serializeTexture(ir::Texture &texture, std::ostream &out, const std::string & prefix = "") const;
 		
 		public:
 			//! \brief module loaded into this name
@@ -76,6 +79,9 @@ namespace util {
 			
 			//! \brief 
 			GlobalVariableMap globalVariables;
+			
+			//! \brief textures contained in the module
+			TextureMap textures;
 		};
 		
 		class KernelLaunch {
@@ -106,6 +112,8 @@ namespace util {
 		class Application {
 		public:
 		
+			Application();
+		
 			void serialize(std::ostream &out) const;
 		
 		public:
@@ -117,7 +125,6 @@ namespace util {
 			
 		};
 	
-		typedef std::map< CUfunction, std::pair< std::string, std::string > > FunctionModuleMap;
 		typedef std::map< std::string, Module > ModuleMap;
 	
 	public:
@@ -141,10 +148,7 @@ namespace util {
 		
 		//! \brief values of global allocations before kernel launch
 		GlobalAllocationMap globalAllocations;
-		
-		//! \brief maps CUfunction onto (module-name, kernel-name) tuple
-		FunctionModuleMap functionMap;
-		
+				
 		//! \brief parameters of CUDA launch
 		KernelLaunch launch;
 	};

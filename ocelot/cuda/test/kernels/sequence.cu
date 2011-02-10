@@ -10,7 +10,7 @@
 #include <stdio.h>
 #include <dlfcn.h>
 
-#if 0
+#if 1
 extern "C" __global__ void sequence(int *A, int N) {
 	int i = threadIdx.x + blockIdx.x * blockDim.x;
 	if (i < N) {
@@ -62,7 +62,18 @@ int main(int argc, char *arg[]) {
 
 	size_t bytes = sizeof(int)*N;
 	
-	if (cudaThreadSynchronize() != cudaSuccess) {
+	void *driverApiHandle = dlopen("libcuda.so", RTLD_NOW);
+	if (driverApiHandle) {
+		printf("Loaded libcuda.so explicitly; unloading now.\n");
+		dlclose(driverApiHandle);
+	}
+	else {
+		printf("Error: %s\n", dlerror());
+	}	
+
+	cudaError_t result = cudaThreadSynchronize();
+	if (result != cudaSuccess) {
+		printf("cudaThreadSynchronize() = %s\n", cudaGetErrorString(result));
 		printf("Failed to load CUDA library:\n%s\n", dlerror());
 		return 0;
 	}
@@ -85,7 +96,7 @@ int main(int argc, char *arg[]) {
 	dim3 grid((N+BlockSize-1)/BlockSize,1);
 	dim3 block(BlockSize, 1);
 	
-#if 0
+
 	sequence<<< grid, block >>>(A_gpu, N);
 	
 	printf("cudaMemcpy(0x%x, 0x%x) - APP\n", (void *)A_host, (void *)A_gpu);
@@ -97,7 +108,7 @@ int main(int argc, char *arg[]) {
 			++errors;
 		}
 	}
-	
+#if 0
 	grid.x /= 4;
 	v4sequence<<< grid, block >>>((int4 *)A_gpu, N/4);
 	cudaMemcpy(A_host, A_gpu, bytes, cudaMemcpyDeviceToHost);

@@ -411,7 +411,27 @@ libKernelExtractor_la_CXXFLAGS = -Wall -ansi -Werror -std=c++0x
 #libKernelExtractor_la_HEADERS = ocelot/util/interface/KernelExtractor.h
 libKernelExtractor_la_LDFLAGS = -module
 libKernelExtractor_la_SOURCES = ocelot/util/implementation/KernelExtractor.cpp \
-	ocelot/util/implementation/KernelExtractorDriverApi.cpp
+	ocelot/util/implementation/KernelExtractorDriverApi.cpp \
+	ocelot/util/implementation/ExtractedDeviceState.cpp \
+	ocelot/cuda/implementation/CudaDriverInterface.cpp \
+	ocelot/cuda/implementation/CudaDriver.cpp \
+	ocelot/ir/implementation/PTXOperand.cpp \
+	ocelot/ir/implementation/Dim3.cpp \
+	hydrazine/implementation/Exception.cpp \
+	hydrazine/implementation/Timer.cpp \
+	hydrazine/implementation/LowLevelTimer.cpp \
+	hydrazine/implementation/ArgumentParser.cpp \
+	hydrazine/implementation/math.cpp \
+	hydrazine/implementation/debug.cpp \
+	hydrazine/implementation/string.cpp \
+	hydrazine/implementation/json.cpp \
+	hydrazine/implementation/WindowsCompatibility.cpp \
+	hydrazine/interface/Configurable.cpp \
+	hydrazine/interface/Test.cpp \
+	hydrazine/interface/Stringable.cpp \
+	hydrazine/interface/Clonable.cpp \
+	hydrazine/interface/Thread.cpp \
+	hydrazine/interface/Version.cpp
 
 ################################################################################
 ## KernelTestHarness

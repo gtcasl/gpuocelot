@@ -44,14 +44,14 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 #if REPORT_BASE
-#define trace() { std::cout << " - " << __func__ << "() " << std::endl; }
+#define trace() { std::cout << __FILE__ << ":" << __LINE__ << " - " << __func__ << "() " << std::endl; }
 #else
 #define trace()
 #endif
 
 #if REPORT_BASE
 #define RETURN(x) CUresult result = x; \
-	if (result != CUDA_SUCCESS) { std::cout << "  error: " << (int)result << std::endl; } \
+	if (result != CUDA_SUCCESS) { std::cout << __FILE__ << ":" << __LINE__ << "  error: " << (int)result << std::endl; } \
 	return result;
 #else
 #define RETURN(x) return x 
@@ -61,6 +61,7 @@
 
 // use this to define either a pass-through driver API implementation for testing linkage with the
 // shared object or to invoke Ocelot's Driver API frontend
+//typedef util::KernelExtractorDriver CudaApi;
 typedef util::KernelExtractorDriver CudaApi;
 
 /*********************************
@@ -80,6 +81,12 @@ CUresult cuDriverGetVersion(int *driverVersion) {
 	RETURN( CudaApi::get()->cuDriverGetVersion(driverVersion) );
 }
 
+
+CUresult cuGetExportTable(const void **ppExportTable,
+	const CUuuid *pExportTableId) {
+	trace();
+	return( CudaApi::get()->cuGetExportTable(ppExportTable, pExportTableId) );
+}
 
 /************************************
 **

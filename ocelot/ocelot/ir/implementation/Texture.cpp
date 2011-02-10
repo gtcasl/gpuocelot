@@ -29,6 +29,41 @@ namespace ir
 		return ".texref";
 	}
 	
+	
+	std::string Texture::toString(Interpolation type) {
+		switch (type) {
+		case Nearest: return "Nearest";
+		case Linear: return "Linear";
+		default: break;
+		}
+		return "Interpolation_unknown";
+	}
+	
+	std::string Texture::toString(AddressMode type) {
+		switch (type) {
+		case Wrap: return "Wrap";
+		case Clamp: return "Clamp";
+		case Mirror: return "Mirror";
+		case Clamp_ogl: return "Clamp_ogl";
+		case Clamp_edge: return "Clamp_edge";
+		case Clamp_border: return "Clamp_border";
+		case AddressMode_Invalid: return "AddressMode_Invalid";
+		default: break;
+		}
+		return "AddressMode_unknown";
+	}
+	
+	std::string Texture::toString(Type type) {
+		switch (type) {
+		case Unsigned: return "Unsigned";
+		case Signed: return "Signed";
+		case Float: return "Float";
+		case Invalid: return "Invalid";
+		default: break;
+		}
+		return "Type_unknown";
+	}
+
 	std::string Texture::toString() const {
 		return ".global " + toString(surfaceType) + " " + name + ";";
 	}

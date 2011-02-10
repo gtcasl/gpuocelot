@@ -15,7 +15,7 @@ namespace cuda
 	/*! \brief Dynamic interface to the cuda driver */
 	class CudaDriver
 	{
-		private:
+		public:
 			/*! \brief Container for pointers to the actual functions */
 			class Interface
 			{
@@ -25,6 +25,8 @@ namespace cuda
 					/*! \brief The driver version */
 					int _version;
 					
+				public:
+				
 					//! name of library to load
 					std::string _libname;
 					
@@ -257,17 +259,17 @@ namespace cuda
 					/*! \brief The constructor zeros out all of the pointers */
 					Interface();
 					
-					//! \brief
-					Interface(const std::string &library);
 					/*! \brief The destructor closes dlls */
 					~Interface();
 					/*! \brief Load the cuda driver */
 					void load();
 					/*! \brief Has the driver been loaded? */
 					bool loaded() const;
+					/*! \brief unloads the driver */
+					void unload();
 			};
 	
-		private:
+		public:
 			/*! \brief Interface to the CUDA driver */
 			static Interface _interface;
 			

@@ -25,8 +25,19 @@ static void emitEscapedString(std::ostream &out, const std::string &str) {
 	}
 }
 
-static void serialize(std::ostream &out, const ir::Dim3 &dim) {
+static std::ostream & serialize(std::ostream &out, const ir::Dim3 &dim) {
 	out << "[" << dim.x << ", " << dim.y << ", " << dim.z << "]";
+	return out;
+}
+
+static std::ostream & serialize(std::ostream &out, const std::vector<int> &ints) {
+	out << "[";
+	int n=0;
+	for (std::vector<int>::const_iterator i_it = ints.begin(); i_it != ints.end(); ++i_it) {
+		out << (n++ ? "," : "") << *i_it;
+	}
+	out << "]";
+	return out;
 }
 
 static void serializeBinary(std::ostream &out, const size_t size, const char *bytes, bool raw) {
@@ -80,7 +91,7 @@ void util::ExtractedDeviceState::MemoryAllocation::serialize(std::ostream &out, 
 	out << "  \"type\": \"" << ir::PTXOperand::toString(dataType) << "\",\n";
 	
 	std::stringstream ss;
-	ss << prefix << "-global-" 
+	ss << prefix << "_global-" 
 		<< ir::PTXOperand::toString(dataType) 
 		<< "-" << data.size() 
 		<< "-bytes-" << (void *)devicePointer;
@@ -123,14 +134,42 @@ void util::ExtractedDeviceState::Module::clear() {
 	globalVariables.clear();
 }
 
+void util::ExtractedDeviceState::Module::serializeTexture(
+	ir::Texture &texture, 
+	std::ostream &out, 
+	const std::string & prefix) const {
+
+	std::vector<int> bits;
+	bits.push_back(texture.x);
+	bits.push_back(texture.y);
+	bits.push_back(texture.z);
+	bits.push_back(texture.w);
+
+	out << "{\n";
+	out << "  \"name\": \"" << texture.name << "\",\n";
+	out << "  \"bits\": " << ::serialize(out, bits) << ",\n";
+	out << "  \"normalize\": " << (texture.normalize ? "true" : "false") << ",\n";
+	out << "  \"normalizedFloat\": " << (texture.normalizedFloat ? "true" : "false") << ",\n";
+	out << "  \"size\": " << ::serialize(out, texture.size) << ",\n";
+	out << "  \"type\": \"" << ir::Texture::toString(texture.type) << "\",\n";
+	out << "  \"addressMode\": [ ";
+	for (int i = 0; i < 3; i++) {
+		out << (i ? ", " : "") << ir::Texture::toString(texture.addressMode[i]);
+	}
+	out << "  ],\n";
+	out << "  \"interpolation\": \"" << ir::Texture::toString(texture.interpolation) << "\",\n";
+	out << "  \"data\": \"" << (const void *)texture.data << "\"\n";
+	out << "}\n";
+}
+
 void util::ExtractedDeviceState::Module::serialize(std::ostream &out, const std::string & prefix) const {
 	out << "{\n";
 	out << "  \"name\": \"" << name << "\",\n";
 	out << "  \"ptxFile\": \"";
 	emitEscapedString(out, ptxFile);
-	out << "\",\n";
+	out << "\"";
 	if (globalVariables.size()) {
-		out << "  \"globals\": {\n";
+		out << ",\n  \"globals\": {\n";
 		int n = 0;
 		for (GlobalVariableMap::const_iterator v_it = globalVariables.begin(); 
 			v_it != globalVariables.end(); ++v_it ) {
@@ -140,14 +179,29 @@ void util::ExtractedDeviceState::Module::serialize(std::ostream &out, const std:
 		}
 		out << "}\n";
 	}
+	if (textures.size()) {
+		out << ",\n  \"textures\": {\n";
+		int n = 0;
+		for (TextureMap::const_iterator t_it = textures.begin();
+			t_it != textures.end(); ++t_it) {
+				if (!n++) { out << ",\n"; }
+			out << "   \"" << t_it->first << "\": ";
+			serializeTexture(*(t_it->second), out, prefix);
+		}
+		out << "}\n";
+	}
 	out << "}\n";
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
+util::ExtractedDeviceState::Application::Application() {
+	name = "cudaApp";
+}
+
 void util::ExtractedDeviceState::Application::serialize(std::ostream &out) const {
 	out << "{\n\"name\": \"";
-	emitEscapedString(out, cudaDevice);
+	emitEscapedString(out, name);
 	out << "\",\n\"cudaDevice\":\""; 
 	emitEscapedString(out, cudaDevice);
 	out << "\"}";

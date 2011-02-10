@@ -10,6 +10,8 @@
 
 // C++ includes
 #include <string>
+#include <sstream>
+#include <cstring>
 
 // Ocelot includes
 #include <ocelot/cuda/interface/cuda.h>
@@ -17,7 +19,7 @@
 
 // Hydrazine includes
 #include <hydrazine/implementation/debug.h>
-
+#include <hydrazine/interface/Casts.h>
 
 #ifdef REPORT_BASE
 #undef REPORT_BASE
@@ -33,7 +35,7 @@
 #define CUDA_VERBOSE 1
 
 // whether debugging messages are printed
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -44,14 +46,14 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 #if REPORT_BASE
-#define trace() { std::cout << " - " << __func__ << "() " << std::endl; }
+#define trace() { std::cout << __FILE__ << ":" << __LINE__ << " - " << __func__ << "() " << std::endl; }
 #else
 #define trace()
 #endif
 
 #if REPORT_BASE
 #define RETURN(x) CUresult result = x; \
-	if (result != CUDA_SUCCESS) { std::cout << "  error: " << (int)result << std::endl; } \
+	if (result != CUDA_SUCCESS) { std::cout << __FILE__ << ":" << __LINE__ << "  error: " << (int)result << std::endl; } \
 	return result;
 #else
 #define RETURN(x) return x 
@@ -66,29 +68,112 @@ typedef util::KernelExtractorDriver CudaApi;
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 static CUdeviceptr toDevicePtr(void *ptr) {
-	return 0;
+	return hydrazine::bit_cast<CUdeviceptr>(ptr);
 }
 
 static void * fromDevicePtr(CUdeviceptr ptr) {
-	return 0;
+	return reinterpret_cast<void *>(hydrazine::bit_cast<size_t>(ptr) & ((1ULL << 8*sizeof(unsigned int))-1));
 }
+
+util::KernelExtractorDriver util::KernelExtractorDriver::instance;
+
+util::KernelExtractorDriver * util::KernelExtractorDriver::get() {
+	return &util::KernelExtractorDriver::instance;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
 util::KernelExtractorDriver::KernelExtractorDriver() {
-	enabled = false;
+	
+	cudaDriver._libname = "libcuda.so.1";
+	cudaDriver.load();
+	
+	enabled = true;
 }
 
+util::KernelExtractorDriver::~KernelExtractorDriver() {
+	report("~KernelExtractorDriver()");
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+//! \brief binds module handle to PTX image
+void util::KernelExtractorDriver::loadModule(
+	CUresult result, CUmodule module, 
+	const char *ptxImage, 
+	const char *name) {
+	
+	std::stringstream ss;
+	ss << "module" << moduleNameMap.size();
+	std::string modName = ss.str();
+	
+	if (!name && ptxImage) {
+		std::stringstream fss;
+		fss << modName << ".ptx";
+		state.modules[modName].name = modName;
+		state.modules[modName].ptxFile = fss.str();
+		std::ofstream file(fss.str());
+		file << ptxImage;
+	}
+	else if (name) {
+		modName = name;
+		state.modules[modName].name = modName;
+		state.modules[modName].ptxFile = name;
+	}
+	moduleNameMap[module] = modName;
+}
+
+//! \brief binds a function handle to a module and kernel name
+void util::KernelExtractorDriver::bindKernel(
+	CUresult result, 
+	CUmodule module,
+	CUfunction function, 
+	const char *name) {
+
+	ModuleNameMap::const_iterator mod_it = moduleNameMap.find(module);
+	if (mod_it != moduleNameMap.end()) {
+		std::pair<std::string,std::string> fname(mod_it->second, name);
+		functionNameMap[function] = fname;
+	}
+}
+
+//! \brief binds a texture handle to a module and texture name
+void util::KernelExtractorDriver::bindTexture(
+	CUresult result, 
+	CUmodule module, 
+	CUtexref texture, 
+	const char *name) {
+	
+	ModuleNameMap::const_iterator mod_it = moduleNameMap.find(module);
+	if (mod_it != moduleNameMap.end()) {
+		std::pair<std::string,std::string> fname(mod_it->second, name);
+		textureNameMap[texture] = fname;
+	}
+}
+
+
+//! \brief binds a global variable to a pointer
+void util::KernelExtractorDriver::bindGlobal(
+	CUresult result, 
+	CUmodule module, 
+	void *ptr, 
+	const char *name) {
+
+	
+}
 
 /*!
 
 */
 void util::KernelExtractorDriver::kernelLaunch(CUfunction f, int gridX, int gridY) {
 	state.launch.gridDim = ir::Dim3(gridX, gridY, 1);
-	util::ExtractedDeviceState::FunctionModuleMap::const_iterator f_it = state.functionMap.find(f);
+	FunctionNameMap::const_iterator f_it = functionNameMap.find(f);
 	
 	cuCtxSynchronize();	// wait for previous launches to conclude [somehow]	
 	synchronizeFromDevice();
 	
-	if (f_it != state.functionMap.end()) {
+	if (f_it != functionNameMap.end()) {
 		state.launch.moduleName = f_it->second.first;
 		state.launch.kernelName = f_it->second.second;
 	}
@@ -99,8 +184,8 @@ void util::KernelExtractorDriver::kernelLaunch(CUfunction f, int gridX, int grid
 	
 	// serialize 'before' state
 	std::string app = state.application.name;
-	state.application.name += "-before";
-	std::ofstream file("before.json");
+	state.application.name += "-before-" + state.launch.moduleName + "-" + state.launch.kernelName;
+	std::ofstream file(state.application.name + ".json");
 	state.serialize(file);
 	state.application.name = app;
 }
@@ -112,8 +197,8 @@ void util::KernelExtractorDriver::kernelReturn(CUresult result) {
 	synchronizeFromDevice();
 	
 	std::string app = state.application.name;
-	state.application.name += "-after";
-	std::ofstream file("after.json");
+	state.application.name += "-after-" + state.launch.moduleName + "-" + state.launch.kernelName;
+	std::ofstream file(state.application.name + ".json");
 	state.serialize(file);
 	state.application.name = app;
 }
@@ -153,6 +238,23 @@ void util::KernelExtractorDriver::synchronizeToDevice() {
 	assert(0 && "unimplemented");
 }
 
+//! \brief allocates device memory
+void util::KernelExtractorDriver::allocate(CUresult result, void *dptr, size_t bytes) {
+	ExtractedDeviceState::MemoryAllocation *allocation = 
+		new ExtractedDeviceState::MemoryAllocation(dptr, bytes, ir::PTXOperand::u32);
+	state.globalAllocations[dptr] = allocation;
+}
+
+//! \brief deletes an allocation
+void util::KernelExtractorDriver::free(void *dptr) {
+	ExtractedDeviceState::GlobalAllocationMap::iterator it = state.globalAllocations.find(dptr);
+	if (it != state.globalAllocations.end()) {
+		ExtractedDeviceState::MemoryAllocation *allocation = it->second;
+		state.globalAllocations.erase(it);
+		delete allocation;
+	}
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /*********************************
@@ -168,10 +270,14 @@ CUresult util::KernelExtractorDriver::cuInit(unsigned int Flags) {
 ** Driver Version Query
 *********************************/
 CUresult util::KernelExtractorDriver::cuDriverGetVersion(int *driverVersion) {
-	trace();	
-	RETURN( cudaDriver.cuDriverGetVersion(driverVersion) );
+	trace();
+	RETURN( (*cudaDriver.cuDriverGetVersion)(driverVersion) );
 }
 
+CUresult util::KernelExtractorDriver::cuGetExportTable(const void **ppExportTable, const CUuuid *pExportTableId) {
+	trace();
+	RETURN( cudaDriver.cuGetExportTable(ppExportTable, pExportTableId) );
+}
 
 /************************************
 **
@@ -274,20 +380,32 @@ CUresult util::KernelExtractorDriver::cuCtxSynchronize(void) {
 
 CUresult util::KernelExtractorDriver::cuModuleLoad(CUmodule *module, const char *fname) {
 	trace();	
-	RETURN( cudaDriver.cuModuleLoad(module, fname) );
+	CUresult res = cudaDriver.cuModuleLoad(module, fname);
+	if (enabled) {
+		loadModule(res, *module, 0, fname);
+	}
+	RETURN( res );
 }
 
 CUresult util::KernelExtractorDriver::cuModuleLoadData(CUmodule *module, 
 	const void *image) {
 	trace();	
-	RETURN( cudaDriver.cuModuleLoadData(module, image) );
+	CUresult res = cudaDriver.cuModuleLoadData(module, image);
+	if (enabled) {
+		loadModule(res, *module, (const char *)image);
+	}
+	RETURN( res );
 }
 
 CUresult util::KernelExtractorDriver::cuModuleLoadDataEx(CUmodule *module, 
 	const void *image, unsigned int numOptions, 
 	CUjit_option *options, void **optionValues) {
-	trace();	
-	RETURN( cudaDriver.cuModuleLoadDataEx(module, image, numOptions, options, optionValues) );
+	trace();
+	CUresult res = cudaDriver.cuModuleLoadDataEx(module, image, numOptions, options, optionValues);
+	if (enabled) {
+		loadModule(res, *module, (const char *)image);
+	}
+	RETURN( res );
 }
 
 CUresult util::KernelExtractorDriver::cuModuleLoadFatBinary(CUmodule *module, 
@@ -304,7 +422,11 @@ CUresult util::KernelExtractorDriver::cuModuleUnload(CUmodule hmod) {
 CUresult util::KernelExtractorDriver::cuModuleGetFunction(CUfunction *hfunc, 
 	CUmodule hmod, const char *name) {
 	trace();	
-	RETURN( cudaDriver.cuModuleGetFunction(hfunc, hmod, name) );
+	CUresult res = cudaDriver.cuModuleGetFunction(hfunc, hmod, name);
+	if (enabled) {
+		bindKernel(res, hmod, *hfunc, name);
+	}	
+	RETURN( res );
 }
 
 CUresult util::KernelExtractorDriver::cuModuleGetGlobal(CUdeviceptr *dptr, 
@@ -315,8 +437,12 @@ CUresult util::KernelExtractorDriver::cuModuleGetGlobal(CUdeviceptr *dptr,
 
 CUresult util::KernelExtractorDriver::cuModuleGetTexRef(CUtexref *pTexRef, CUmodule hmod, 
 	const char *name) {
-	trace();	
-	RETURN( cudaDriver.cuModuleGetTexRef(pTexRef, hmod, name) );
+	trace();
+	CUresult res = cudaDriver.cuModuleGetTexRef(pTexRef, hmod, name);
+	if (enabled) {
+		bindTexture(res, hmod, *pTexRef, name);
+	}
+	RETURN( res );
 }
 
 
@@ -340,7 +466,7 @@ CUresult util::KernelExtractorDriver::cuMemAlloc( CUdeviceptr *dptr,
 	CUresult res = cudaDriver.cuMemAlloc(dptr, bytesize);
 	
 	if (enabled) {
-		allocate(res, (void *)dptr, bytesize);
+		allocate(res, fromDevicePtr(*dptr), bytesize);
 	}
 	
 	RETURN( res );
@@ -355,7 +481,7 @@ CUresult util::KernelExtractorDriver::cuMemAllocPitch( CUdeviceptr *dptr,
 	trace();	
 	CUresult res = cudaDriver.cuMemAllocPitch(dptr, pPitch, WidthInBytes, Height, ElementSizeBytes);
 	if (enabled) {
-		allocate(res, (void *)dptr, *pPitch * Height);
+		allocate(res, fromDevicePtr(*dptr), *pPitch * Height);
 	}
 	RETURN( res );
 }
@@ -615,13 +741,19 @@ CUresult util::KernelExtractorDriver::cuMemsetD2D32( CUdeviceptr dstDevice,
 
 CUresult util::KernelExtractorDriver::cuFuncSetBlockShape (CUfunction hfunc, int x, 
 	int y, int z) {
-	trace();	
+	trace();
+	if (enabled) {
+		state.launch.blockDim = ir::Dim3(x, y, z);
+	}
 	RETURN( cudaDriver.cuFuncSetBlockShape(hfunc, x, y, z) );
 }
 
 CUresult util::KernelExtractorDriver::cuFuncSetSharedSize (CUfunction hfunc, 
 	unsigned int bytes) {
 	trace();	
+	if (enabled) {
+		state.launch.sharedMemorySize = bytes;
+	}
 	RETURN( cudaDriver.cuFuncSetSharedSize(hfunc, bytes) );
 }
 
@@ -775,25 +907,37 @@ CUresult util::KernelExtractorDriver::cuTexRefGetFlags( unsigned int *pFlags,
 
 CUresult util::KernelExtractorDriver::cuParamSetSize (CUfunction hfunc, 
 	unsigned int numbytes) {
-	trace();	
+	trace();
+	if (enabled) {
+		state.launch.parameterMemory.resize(numbytes, 0);
+	}
 	RETURN( cudaDriver.cuParamSetSize(hfunc, numbytes) );
 }
 
 CUresult util::KernelExtractorDriver::cuParamSeti    (CUfunction hfunc, int offset, 
 	unsigned int value) {
-	trace();	
+	trace();
+	if (enabled) {
+		std::memcpy(&state.launch.parameterMemory[offset], &value, sizeof(value));
+	}
 	RETURN( cudaDriver.cuParamSeti(hfunc, offset, value) );
 }
 
 CUresult util::KernelExtractorDriver::cuParamSetf    (CUfunction hfunc, int offset, 
 	float value) {
 	trace();	
+	if (enabled) {
+		std::memcpy(&state.launch.parameterMemory[offset], &value, sizeof(value));
+	}
 	RETURN( cudaDriver.cuParamSetf(hfunc, offset, value) );
 }
 
 CUresult util::KernelExtractorDriver::cuParamSetv    (CUfunction hfunc, int offset, 
 	void * ptr, unsigned int numbytes) {
 	trace();	
+	if (enabled) {
+		std::memcpy(&state.launch.parameterMemory[offset], ptr, numbytes);
+	}
 	RETURN( cudaDriver.cuParamSetv(hfunc, offset, ptr, numbytes) );
 }
 
@@ -995,5 +1139,6 @@ CUresult util::KernelExtractorDriver::cuGraphicsGLRegisterImage(
 	trace();	
 	RETURN( cudaDriver.cuGraphicsGLRegisterImage(pCudaResource, image, target, Flags) );
 }
+
 
 

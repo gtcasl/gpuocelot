@@ -84,6 +84,10 @@ namespace ir
 		public:
 		
 			static std::string toString(SurfaceType type);
+			static std::string toString(Interpolation type);
+			static std::string toString(AddressMode type);
+			static std::string toString(Type type);
+			
 			static ir::PTXOperand::DataType convertFromChannelDataType(ChannelDataType);
 			static ChannelDataType convertFromPTXDataType(ir::PTXOperand::DataType);
 

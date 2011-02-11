@@ -788,9 +788,7 @@ namespace executive
 		assert(!selected());
 		select();
 		_modules.clear();
-		if (!_opengl) {
-			checkError(driver::cuCtxDestroy(_context));
-		}
+		checkError(driver::cuCtxDestroy(_context));
 	}
 	
 	Device::MemoryAllocation* NVIDIAGPUDevice::getMemoryAllocation(

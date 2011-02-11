@@ -82,13 +82,23 @@ namespace api {
 
 		public:
 			//! \brief Check memory errors
-			bool memoryChecker;
+			class MemoryChecker
+			{
+			public:
+					MemoryChecker();
+			public:
+					bool enabled;
+					bool checkInitialization;
+			};
 			
 			//! \brief Race detection
 			RaceDetector raceDetector;
                         
             //! \brief Interactive Debugger
             Debugger debugger;
+
+            //! \brief Memory checker
+            MemoryChecker memoryChecker;
 		};
 
 		class CudaRuntimeImplementation {

@@ -36,13 +36,59 @@ namespace trace
 					Allocation(bool valid = false, 
 						ir::PTXU64 base = 0, ir::PTXU64 extent = 0);
 			};
-		
+
+			enum Status {
+				INVALID,
+				NOT_DEFINED,
+				PARTIALLY_DEFINED,
+				DEFINED
+			};
+
+			class ShadowMemory
+			{
+			    public:
+        			/*! \brief Distinguished Secondary Mapping for shadow memory */
+        			std::vector <Status> map;
+
+			    public:
+			        ShadowMemory()
+			        {
+                        //_map.resize(16*1024);   //4GB / 64KB = 2^32 / 2^16 = 2^16
+			        }
+
+			        void resize(unsigned int size)
+			        {
+			            map.resize(size, NOT_DEFINED);					    
+			        }
+
+			        unsigned int size(void)
+			        {
+			        	return map.size();
+			        }
+
+					/*! \brief Check if region is initialized */
+			        Status checkRegion(unsigned int idx, unsigned int size);
+				
+					/*! \brief Set initialization status of a region */
+					void setRegion(unsigned int idx, unsigned int size, Status stat);
+
+					/*! \brief Check if region is initialized */
+					Status checkRegister(ir::PTXOperand::RegisterType idx);
+
+					/*! \brief Set initialization status of a register */
+					void setRegister(ir::PTXOperand::RegisterType idx, Status stat);
+			        
+			};
+			
 		private:
 			/*! \brief The block dimensions */
 			ir::Dim3 _dim;
 		
 			/*! \brief The last allocation referenced */
 			Allocation _cache;
+			
+			/*! \brief Parameter memory allocation */
+			Allocation _parameter;
 			
 			/*! \brief Shared memory allocation */
 			Allocation _shared;
@@ -58,6 +104,20 @@ namespace trace
 		
 			/*! \brief A pointer to the executable kernel */
 			const executive::EmulatedKernel* _kernel;
+
+			/*! \brief Flag to toggle initialization checks */
+			bool checkInitialization;
+
+			/*! \brief Shadow maps for checking uninitialized memory */
+			ShadowMemory _globalShadow;		
+
+			ShadowMemory _sharedShadow;	
+
+			ShadowMemory _constShadow;
+
+			ShadowMemory _localShadow;
+		
+			ShadowMemory _registerFileShadow;
 			
 		private:
 			/*! \brief Check the alignment of a memory access */
@@ -69,10 +129,20 @@ namespace trace
 			
 			/*! \brief Check for an uninitialized memory access */
 			void _checkInitialized(const TraceEvent& e);
+
+			/*! \brief Track initialization status of registers */
+			void _trackInstructions( const TraceEvent& e );
+			
+			/*! \brief Track register-to-register status and control redirect */
+			void trackInstruction( const TraceEvent& e, unsigned int numOp );
+
 			
 		public:
 			/*! \brief The constructor initializes the cached allocations */
 			MemoryChecker();
+
+			/*! \brief Set initialization checking toggle */
+			void setCheckInitialization(bool toggle);
 			
 			/*! \brief Set the cache and get a pointer to the memory mappings */
 			virtual void initialize(const executive::ExecutableKernel& kernel);

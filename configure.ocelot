@@ -3,7 +3,10 @@
 	trace: { 
 		database: "traces/database.trace",
 		memory: true,
-		memoryChecker: true,
+		memoryChecker: {
+			enabled: true,
+			checkInitialization: false
+		},
 		raceDetector: {
 			enabled: true,
 			ignoreIrrelevantWrites: true

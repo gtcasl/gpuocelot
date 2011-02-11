@@ -74,27 +74,43 @@ api::OcelotConfiguration::TraceGeneration::Debugger::Debugger():
 
 }
 
-api::OcelotConfiguration::TraceGeneration::TraceGeneration():
-	memoryChecker(false)
+api::OcelotConfiguration::TraceGeneration::MemoryChecker::MemoryChecker():
+	enabled(true),
+	checkInitialization(false)
+{
+
+}
+
+api::OcelotConfiguration::TraceGeneration::TraceGeneration()
 {
 
 }
 
 static void initializeTrace(api::OcelotConfiguration::TraceGeneration &trace, 
 	hydrazine::json::Visitor config) {
-	trace.memoryChecker = config.parse<bool>("memoryChecker", true);
+    hydrazine::json::Visitor memoryCheckerConfig = config["memoryChecker"];
+    if (!memoryCheckerConfig.is_null()) {
+            trace.memoryChecker.enabled = 
+            	memoryCheckerConfig.parse<bool>("enabled", true);
+            trace.memoryChecker.checkInitialization = 
+            	memoryCheckerConfig.parse<bool>("checkInitialization", false);
+    }
     
     hydrazine::json::Visitor raceConfig = config["raceDetector"];
     if (!raceConfig.is_null()) {
-            trace.raceDetector.enabled = raceConfig.parse<bool>("enabled", false);
-            trace.raceDetector.ignoreIrrelevantWrites = raceConfig.parse<bool>("ignoreIrrelevantWrites", true);
+            trace.raceDetector.enabled = 
+            	raceConfig.parse<bool>("enabled", false);
+            trace.raceDetector.ignoreIrrelevantWrites = 
+            	raceConfig.parse<bool>("ignoreIrrelevantWrites", true);
     }
 
     hydrazine::json::Visitor debugConfig = config["debugger"];
     if (!debugConfig.is_null()) {
             trace.debugger.enabled = debugConfig.parse<bool>("enabled", false);
-            trace.debugger.kernelFilter = debugConfig.parse<std::string>("kernelFilter", "");
-            trace.debugger.alwaysAttach = debugConfig.parse<bool>("alwaysAttach", false);
+            trace.debugger.kernelFilter = 
+            	debugConfig.parse<std::string>("kernelFilter", "");
+            trace.debugger.alwaysAttach = 
+            	debugConfig.parse<bool>("alwaysAttach", false);
     }
 }
 

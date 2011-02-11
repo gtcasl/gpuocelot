@@ -53,18 +53,6 @@
 
 typedef api::OcelotConfiguration config;
 
-const char *cuda::FatBinaryContext::name() const {
-	if (!cubin_ptr) return "";
-	__cudaFatCudaBinary *binary = (__cudaFatCudaBinary *)cubin_ptr;
-	return binary->ident;
-}	
-
-const char *cuda::FatBinaryContext::ptx() const {
-	if (!cubin_ptr) return "";
-	__cudaFatCudaBinary *binary = (__cudaFatCudaBinary *)cubin_ptr;
-	return binary->ptx->ptx;
-}
-
 ////////////////////////////////////////////////////////////////////////////////
 
 cuda::HostThreadContext::HostThreadContext(): selectedDevice(0), 
@@ -569,8 +557,7 @@ void** cuda::CudaRuntime::cudaRegisterFatBinary(void *fatCubin) {
 	
 	handle = _fatBinaries.size();
 	
-	FatBinaryContext cubinContext;
-	cubinContext.cubin_ptr = fatCubin;
+	FatBinaryContext cubinContext(fatCubin);
 	_fatBinaries.push_back(cubinContext);
 	
 	_unlock();

@@ -16,7 +16,5 @@
 ../TestCalVectorScale
 ../TestPTXAssembly
 ../TestFunctionCall
-../TestGenericMemory
-../TestFunctionCall
 ../TestIndirectFunctionCall
 

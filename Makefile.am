@@ -132,6 +132,7 @@ libocelot_la_SOURCES = \
 	ocelot/cuda/implementation/CudaRuntimeInterface.cpp \
 	ocelot/cuda/implementation/CudaRuntime.cpp \
 	ocelot/cuda/implementation/cuda_runtime.cpp \
+	ocelot/cuda/implementation/FatBinaryContext.cpp \
 	ocelot/cal/implementation/CalDriver.cpp \
 	ocelot/translator/implementation/Translator.cpp \
 	ocelot/translator/implementation/PTXToLLVMTranslator.cpp \
@@ -411,10 +412,12 @@ libKernelExtractor_la_CXXFLAGS = -Wall -ansi -Werror -std=c++0x
 #libKernelExtractor_la_HEADERS = ocelot/util/interface/KernelExtractor.h
 libKernelExtractor_la_LDFLAGS = -module
 libKernelExtractor_la_SOURCES = ocelot/util/implementation/KernelExtractor.cpp \
-	ocelot/util/implementation/KernelExtractorDriverApi.cpp \
 	ocelot/util/implementation/ExtractedDeviceState.cpp \
+	ocelot/cuda/implementation/FatBinaryContext.cpp \
+	ocelot/cuda/implementation/CudaDriverApi.cpp \
 	ocelot/cuda/implementation/CudaDriverInterface.cpp \
 	ocelot/cuda/implementation/CudaDriver.cpp \
+	ocelot/ir/implementation/Texture.cpp \
 	ocelot/ir/implementation/PTXOperand.cpp \
 	ocelot/ir/implementation/Dim3.cpp \
 	hydrazine/implementation/Exception.cpp \

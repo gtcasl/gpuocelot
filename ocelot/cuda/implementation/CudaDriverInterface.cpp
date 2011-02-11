@@ -27,6 +27,9 @@ CUresult cuda::CudaDriverInterface::cuDriverGetVersion(int *driverVersion) {
 	return CUDA_ERROR_NOT_FOUND;
 }
 
+CUresult cuda::CudaDriverInterface::cuGetExportTable(const void **ppExportTable, const CUuuid *pExportTableId) {
+	return CUDA_ERROR_NOT_FOUND;
+}
 
 /************************************
 **

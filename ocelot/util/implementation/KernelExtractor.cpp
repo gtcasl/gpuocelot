@@ -15,6 +15,7 @@
 
 // Ocelot includes
 #include <ocelot/cuda/interface/cuda.h>
+#include <ocelot/cuda/interface/FatBinaryContext.h>
 #include <ocelot/util/interface/KernelExtractor.h>
 
 // Hydrazine includes
@@ -27,7 +28,6 @@
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
-
 // whether CUDA runtime catches exceptions thrown by Ocelot
 #define CATCH_RUNTIME_EXCEPTIONS 0
 
@@ -35,7 +35,7 @@
 #define CUDA_VERBOSE 1
 
 // whether debugging messages are printed
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -61,9 +61,11 @@
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// use this to define either a pass-through driver API implementation for testing linkage with the
-// shared object or to invoke Ocelot's Driver API frontend
-typedef util::KernelExtractorDriver CudaApi;
+util::KernelExtractorDriver util::KernelExtractorDriver::instance;
+
+cuda::CudaDriverInterface * cuda::CudaDriverInterface::get() {
+	return &util::KernelExtractorDriver::instance;
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -73,12 +75,6 @@ static CUdeviceptr toDevicePtr(void *ptr) {
 
 static void * fromDevicePtr(CUdeviceptr ptr) {
 	return reinterpret_cast<void *>(hydrazine::bit_cast<size_t>(ptr) & ((1ULL << 8*sizeof(unsigned int))-1));
-}
-
-util::KernelExtractorDriver util::KernelExtractorDriver::instance;
-
-util::KernelExtractorDriver * util::KernelExtractorDriver::get() {
-	return &util::KernelExtractorDriver::instance;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -108,7 +104,11 @@ void util::KernelExtractorDriver::loadModule(
 	ss << "module" << moduleNameMap.size();
 	std::string modName = ss.str();
 	
-	if (!name && ptxImage) {
+	if (name) {
+		modName = name;	
+	}
+	
+	if (ptxImage) {
 		std::stringstream fss;
 		fss << modName << ".ptx";
 		state.modules[modName].name = modName;
@@ -410,8 +410,13 @@ CUresult util::KernelExtractorDriver::cuModuleLoadDataEx(CUmodule *module,
 
 CUresult util::KernelExtractorDriver::cuModuleLoadFatBinary(CUmodule *module, 
 	const void *fatCubin) {
-	trace();	
-	RETURN( cudaDriver.cuModuleLoadFatBinary(module, fatCubin) );
+	trace();
+	cuda::FatBinaryContext fatBin(fatCubin);
+	CUresult res = cudaDriver.cuModuleLoadFatBinary(module, fatCubin);
+	if (enabled) {
+		loadModule(res, *module, fatBin.ptx(), fatBin.name());	
+	}
+	RETURN( res );
 }
 
 CUresult util::KernelExtractorDriver::cuModuleUnload(CUmodule hmod) {

@@ -316,7 +316,7 @@ CUresult cuda::CudaDriverFrontend::cuDeviceComputeCapability(int *major, int *mi
 	return result;
 }
 
-CUresult cuda::CudaDriverFrontend::cuDeviceTotalMem(unsigned int *bytes, CUdevice dev) {
+CUresult cuda::CudaDriverFrontend::cuDeviceTotalMem(size_t *bytes, CUdevice dev) {
 	CUresult result = CUDA_ERROR_NOT_FOUND;
 	_lock();
 
@@ -768,7 +768,7 @@ CUresult cuda::CudaDriverFrontend::cuModuleGetFunction(CUfunction *hfunc,
 }
 
 CUresult cuda::CudaDriverFrontend::cuModuleGetGlobal(CUdeviceptr *dptr, 
-	unsigned int *bytes, CUmodule hmod, const char *name) {
+	size_t *bytes, CUmodule hmod, const char *name) {
 
 	CUresult result = CUDA_ERROR_NOT_FOUND;
 	Context *context = _bind();
@@ -816,8 +816,8 @@ CUresult cuda::CudaDriverFrontend::cuModuleGetTexRef(CUtexref *pTexRef, CUmodule
 **
 ***********************************/
 
-CUresult cuda::CudaDriverFrontend::cuMemGetInfo(unsigned int *free, 
-	unsigned int *total) {
+CUresult cuda::CudaDriverFrontend::cuMemGetInfo(size_t *free, 
+	size_t *total) {
 	assert(0 && "unimplemented");
 	return CUDA_ERROR_NOT_FOUND;
 }
@@ -847,7 +847,7 @@ CUresult cuda::CudaDriverFrontend::cuMemAlloc( CUdeviceptr *dptr,
 }
 
 CUresult cuda::CudaDriverFrontend::cuMemAllocPitch( CUdeviceptr *dptr, 
-			          unsigned int *pPitch,
+			          size_t *pPitch,
 			          unsigned int WidthInBytes, 
 			          unsigned int Height, 
 			          unsigned int ElementSizeBytes
@@ -862,7 +862,7 @@ CUresult cuda::CudaDriverFrontend::cuMemFree(CUdeviceptr dptr) {
 }
 
 CUresult cuda::CudaDriverFrontend::cuMemGetAddressRange( CUdeviceptr *pbase, 
-	unsigned int *psize, CUdeviceptr dptr ) {
+	size_t *psize, CUdeviceptr dptr ) {
 	assert(0 && "unimplemented");
 	return CUDA_ERROR_NOT_FOUND;
 }
@@ -1282,7 +1282,7 @@ CUresult cuda::CudaDriverFrontend::cuTexRefSetArray( CUtexref hTexRef, CUarray h
 	return CUDA_ERROR_NOT_FOUND;
 }
 
-CUresult cuda::CudaDriverFrontend::cuTexRefSetAddress( unsigned int *ByteOffset, 
+CUresult cuda::CudaDriverFrontend::cuTexRefSetAddress( size_t *ByteOffset, 
 	CUtexref hTexRef, CUdeviceptr dptr, unsigned int bytes ) {
 	assert(0 && "unimplemented");
 	return CUDA_ERROR_NOT_FOUND;
@@ -1619,7 +1619,7 @@ CUresult cuda::CudaDriverFrontend::cuGraphicsSubResourceGetMappedArray(
 }
 
 CUresult cuda::CudaDriverFrontend::cuGraphicsResourceGetMappedPointer(
-	CUdeviceptr *pDevPtr, unsigned int *pSize, 
+	CUdeviceptr *pDevPtr, size_t *pSize, 
 	CUgraphicsResource resource ) {
 	assert(0 && "unimplemented");
 	return CUDA_ERROR_NOT_FOUND;
@@ -1688,6 +1688,15 @@ CUresult cuda::CudaDriverFrontend::cuGraphicsGLRegisterImage(
 	return CUDA_ERROR_NOT_FOUND;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+
+CUresult cuda::CudaDriverFrontend::cuGetExportTable(
+	const void **ppExportTable, 
+	const CUuuid *pExportTableId) {
+
+	assert(0 && "unimplemented");
+	return CUDA_ERROR_NOT_FOUND;
+}
 
 std::string cuda::CudaDriverFrontend::toString(CUresult result) {
 	assert(0 && "unimplemented");

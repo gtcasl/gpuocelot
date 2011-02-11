@@ -155,7 +155,7 @@ namespace cuda {
 		CUresult cuDeviceGetName(char *name, int len, CUdevice dev);
 		CUresult cuDeviceComputeCapability(int *major, int *minor, 
 			CUdevice dev);
-		CUresult cuDeviceTotalMem(unsigned int *bytes, CUdevice dev);
+		CUresult cuDeviceTotalMem(size_t *bytes, CUdevice dev);
 		CUresult cuDeviceGetProperties(CUdevprop *prop, 
 			CUdevice dev);
 		CUresult cuDeviceGetAttribute(int *pi, 
@@ -195,7 +195,7 @@ namespace cuda {
 		CUresult cuModuleGetFunction(CUfunction *hfunc, 
 			CUmodule hmod, const char *name);
 		CUresult cuModuleGetGlobal(CUdeviceptr *dptr, 
-			unsigned int *bytes, CUmodule hmod, const char *name);
+			size_t *bytes, CUmodule hmod, const char *name);
 		CUresult cuModuleGetTexRef(CUtexref *pTexRef, CUmodule hmod, 
 			const char *name);
 
@@ -205,20 +205,20 @@ namespace cuda {
 		**
 		***********************************/
 
-		CUresult cuMemGetInfo(unsigned int *free, 
-			unsigned int *total);
+		CUresult cuMemGetInfo(size_t *free, 
+			size_t *total);
 
 		CUresult cuMemAlloc( CUdeviceptr *dptr, 
 			unsigned int bytesize);
 		CUresult cuMemAllocPitch( CUdeviceptr *dptr, 
-					          unsigned int *pPitch,
+					          size_t *pPitch,
 					          unsigned int WidthInBytes, 
 					          unsigned int Height, 
 					          unsigned int ElementSizeBytes
 					         );
 		CUresult cuMemFree(CUdeviceptr dptr);
 		CUresult cuMemGetAddressRange( CUdeviceptr *pbase, 
-			unsigned int *psize, CUdeviceptr dptr );
+			size_t *psize, CUdeviceptr dptr );
 
 		CUresult cuMemAllocHost(void **pp, unsigned int bytesize);
 		CUresult cuMemFreeHost(void *p);
@@ -381,7 +381,7 @@ namespace cuda {
 
 		CUresult cuTexRefSetArray( CUtexref hTexRef, CUarray hArray, 
 			unsigned int Flags );
-		CUresult cuTexRefSetAddress( unsigned int *ByteOffset, 
+		CUresult cuTexRefSetAddress( size_t *ByteOffset, 
 			CUtexref hTexRef, CUdeviceptr dptr, unsigned int bytes );
 		CUresult cuTexRefSetAddress2D( CUtexref hTexRef, 
 			const CUDA_ARRAY_DESCRIPTOR *desc, CUdeviceptr dptr, 
@@ -473,7 +473,7 @@ namespace cuda {
 			CUarray *pArray, CUgraphicsResource resource, 
 			unsigned int arrayIndex, unsigned int mipLevel );
 		CUresult cuGraphicsResourceGetMappedPointer(
-			CUdeviceptr *pDevPtr, unsigned int *pSize, 
+			CUdeviceptr *pDevPtr, size_t *pSize, 
 			CUgraphicsResource resource );
 		CUresult cuGraphicsResourceSetMapFlags(
 			CUgraphicsResource resource, unsigned int flags ); 
@@ -496,6 +496,12 @@ namespace cuda {
 		CUresult cuGraphicsGLRegisterImage( 
 			CUgraphicsResource *pCudaResource, unsigned int image, 
 			int target, unsigned int Flags);
+			
+		/*
+			CUDA Driver API Support Functions
+		*/
+		CUresult cuGetExportTable(const void **ppExportTable,
+			const CUuuid *pExportTableId);
 
 		std::string toString(CUresult result);
 

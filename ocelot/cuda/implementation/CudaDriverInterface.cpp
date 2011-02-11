@@ -51,7 +51,7 @@ CUresult cuda::CudaDriverInterface::cuDeviceComputeCapability(int *major, int *m
 	return CUDA_ERROR_NOT_FOUND;
 }
 
-CUresult cuda::CudaDriverInterface::cuDeviceTotalMem(unsigned int *bytes, CUdevice dev) {
+CUresult cuda::CudaDriverInterface::cuDeviceTotalMem(size_t *bytes, CUdevice dev) {
 	return CUDA_ERROR_NOT_FOUND;
 }
 
@@ -142,7 +142,7 @@ CUresult cuda::CudaDriverInterface::cuModuleGetFunction(CUfunction *hfunc,
 }
 
 CUresult cuda::CudaDriverInterface::cuModuleGetGlobal(CUdeviceptr *dptr, 
-	unsigned int *bytes, CUmodule hmod, const char *name) {
+	size_t *bytes, CUmodule hmod, const char *name) {
 	return CUDA_ERROR_NOT_FOUND;
 }
 
@@ -158,8 +158,8 @@ CUresult cuda::CudaDriverInterface::cuModuleGetTexRef(CUtexref *pTexRef, CUmodul
 **
 ***********************************/
 
-CUresult cuda::CudaDriverInterface::cuMemGetInfo(unsigned int *free, 
-	unsigned int *total) {
+CUresult cuda::CudaDriverInterface::cuMemGetInfo(size_t *free, 
+	size_t *total) {
 	return CUDA_ERROR_NOT_FOUND;
 }
 
@@ -170,7 +170,7 @@ CUresult cuda::CudaDriverInterface::cuMemAlloc( CUdeviceptr *dptr,
 }
 
 CUresult cuda::CudaDriverInterface::cuMemAllocPitch( CUdeviceptr *dptr, 
-			          unsigned int *pPitch,
+			          size_t *pPitch,
 			          unsigned int WidthInBytes, 
 			          unsigned int Height, 
 			          unsigned int ElementSizeBytes
@@ -183,7 +183,7 @@ CUresult cuda::CudaDriverInterface::cuMemFree(CUdeviceptr dptr) {
 }
 
 CUresult cuda::CudaDriverInterface::cuMemGetAddressRange( CUdeviceptr *pbase, 
-	unsigned int *psize, CUdeviceptr dptr ) {
+	size_t *psize, CUdeviceptr dptr ) {
 	return CUDA_ERROR_NOT_FOUND;
 }
 
@@ -466,7 +466,7 @@ CUresult cuda::CudaDriverInterface::cuTexRefSetArray( CUtexref hTexRef, CUarray 
 	return CUDA_ERROR_NOT_FOUND;
 }
 
-CUresult cuda::CudaDriverInterface::cuTexRefSetAddress( unsigned int *ByteOffset, 
+CUresult cuda::CudaDriverInterface::cuTexRefSetAddress( size_t *ByteOffset, 
 	CUtexref hTexRef, CUdeviceptr dptr, unsigned int bytes ) {
 	return CUDA_ERROR_NOT_FOUND;
 }
@@ -654,7 +654,7 @@ CUresult cuda::CudaDriverInterface::cuGraphicsSubResourceGetMappedArray(
 }
 
 CUresult cuda::CudaDriverInterface::cuGraphicsResourceGetMappedPointer(
-	CUdeviceptr *pDevPtr, unsigned int *pSize, 
+	CUdeviceptr *pDevPtr, size_t *pSize, 
 	CUgraphicsResource resource ) {
 	return CUDA_ERROR_NOT_FOUND;
 }

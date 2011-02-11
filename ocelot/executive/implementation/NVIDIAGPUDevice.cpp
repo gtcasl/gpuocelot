@@ -7,6 +7,9 @@
 #ifndef NVIDIA_GPU_DEVICE_CPP_INCLUDED
 #define NVIDIA_GPU_DEVICE_CPP_INCLUDED
 
+// C++ includes
+#include <iomanip>
+
 // ocelot includes
 #include <ocelot/executive/interface/NVIDIAGPUDevice.h>
 #include <ocelot/executive/interface/NVIDIAExecutableKernel.h>
@@ -65,20 +68,24 @@ namespace executive
 		_flags(0), _size(size), _hostPointer(0), _external(false)
 	{
 		checkError(driver::cuMemAlloc(&_devicePointer, size));
+		report("MemoryAllocation::MemoryAllocation() - allocated " << _size 
+			<< " bytes of host-allocated memory");
+		report("  device pointer: "	<< (const void *)_devicePointer);
+
 	}
 	
 	NVIDIAGPUDevice::MemoryAllocation::MemoryAllocation(size_t size, 
 		unsigned int flags) : Device::MemoryAllocation(false, true), 
 		_flags(flags), _size(size), _external(false)
 	{
-		report("MemoryAllocation::MemoryAllocation() - allocated " << _size 
-			<< " bytes of host-allocated memory");
 		checkError(driver::cuMemHostAlloc(&_hostPointer, size, _flags));
 		if(CUDA_SUCCESS != driver::cuMemHostGetDevicePointer(&_devicePointer, 
 			_hostPointer, 0)) 
 		{
 			_devicePointer = 0;
 		}
+		report("MemoryAllocation::MemoryAllocation() - allocated " << _size 
+			<< " bytes of host-allocated memory");
 		report("  host: " << (const void *)_hostPointer << ", device pointer: "
 			<< (const void *)_devicePointer);
 
@@ -88,7 +95,7 @@ namespace executive
 		const ir::Global& g) : Device::MemoryAllocation(true, false), _flags(0),
 		_size(g.statement.bytes()), _hostPointer(0), _external(false)
 	{
-		unsigned int bytes;
+		size_t bytes;
 		checkError(driver::cuModuleGetGlobal(&_devicePointer, &bytes, module, 
 			g.statement.name.c_str()));
 		if(bytes != _size)
@@ -700,7 +707,7 @@ namespace executive
 			_cudaDriverInitialized = true;
 		}
 		
-		_runtimeVersion = 3000;
+		_runtimeVersion = 3020;
 		checkError(driver::cuDriverGetVersion(&_driverVersion));
 		
 		CUdevice device;
@@ -717,14 +724,16 @@ namespace executive
 			checkError(driver::cuCtxCreate(&_context, flags, device));
 		}
 		
-		report("NVIDIAGPUDevice::NVIDIAGPUDevice() - created "
-			"context. _opengl = " << _opengl);
+		report("NVIDIAGPUDevice::NVIDIAGPUDevice() - created context. _opengl = " << _opengl);
+		unsigned int version = 0;
+		checkError(driver::cuCtxGetApiVersion(_context, &version));
+		report("  API version = " << version << ", driver version = " << _driverVersion)
 		
 		checkError(driver::cuCtxPopCurrent(&_context));
 		
 		checkError(driver::cuDeviceGetName(_properties.name, 255, device));
 		
-		unsigned int total;
+		size_t total;
 		checkError(driver::cuDeviceTotalMem(&total, device));
 		_properties.totalMemory = total;
 		
@@ -779,7 +788,9 @@ namespace executive
 		assert(!selected());
 		select();
 		_modules.clear();
-		checkError(driver::cuCtxDestroy(_context));
+		if (!_opengl) {
+			checkError(driver::cuCtxDestroy(_context));
+		}
 	}
 	
 	Device::MemoryAllocation* NVIDIAGPUDevice::getMemoryAllocation(
@@ -1042,14 +1053,12 @@ namespace executive
 
 			id = stream->second;
 		}
-		CUgraphicsResource * graphicsResources = 
-			(CUgraphicsResource *)resourceVoidPtr;
+		CUgraphicsResource * graphicsResources = (CUgraphicsResource *)resourceVoidPtr;
 
 		if(!_opengl) Throw("No active opengl contexts.");
 
 		report("NVIDIAGPUDevice::mapGraphicsResource() - count = " << count );
-		CUresult result = driver::cuGraphicsMapResources(count,
-			graphicsResources, id);
+		CUresult result = driver::cuGraphicsMapResources(count,	graphicsResources, id);
 		report("driver::cuGraphicsMapresources() - " << result << ", " 
 			<< cuda::CudaDriver::toString(result));
 		
@@ -1060,13 +1069,15 @@ namespace executive
 		void* resource)
 	{
 		CUdeviceptr pointer;
-		unsigned int bytes = 0;
+		size_t bytes = 0;
 		report("Getting pointer to mapped resource " << resource);
 
 		if(!_opengl) Throw("No active opengl contexts.");
 
-		checkError(driver::cuGraphicsResourceGetMappedPointer(&pointer, &bytes, 
-			(CUgraphicsResource)resource));
+		CUresult result = driver::cuGraphicsResourceGetMappedPointer(&pointer, &bytes, 
+			(CUgraphicsResource)resource);
+		report("  cuGraphicsResourceGetMappedPointer() returned " << result)
+		checkError(result);
 			
 		void* p = (void*)pointer;
 		if (_allocations.find(p) == _allocations.end()) {
@@ -1106,10 +1117,9 @@ namespace executive
 		if(!_opengl) Throw("No active opengl contexts.");
 
 		CUdeviceptr pointer;
-		unsigned int bytes = 0;
+		size_t bytes = 0;
 
-		CUgraphicsResource * graphicsResources =
-			(CUgraphicsResource *)resourceVoidPtr;
+		CUgraphicsResource * graphicsResources = (CUgraphicsResource *)resourceVoidPtr;
 		
 		checkError(driver::cuGraphicsResourceGetMappedPointer(&pointer,
 			&bytes, graphicsResources[0]));
@@ -1363,7 +1373,7 @@ namespace executive
 
 		CUtexref ref = hydrazine::bit_cast<CUtexref>(tex);
 		CUdeviceptr ptr = hydrazine::bit_cast<CUdeviceptr>(pointer);
-		unsigned int offset = 0;
+		size_t offset = 0;
 		unsigned int bytesPerElement = ((desc.x + desc.y 
 			+ desc.z + desc.w) / 8);
 		unsigned int pitch = bytesPerElement * size.x;

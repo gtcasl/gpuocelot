@@ -16,6 +16,8 @@
 // Linux system headers
 #include <dlfcn.h>
 
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
 // Macros
 #define CHECK() {assertM(_interface.loaded(), __FUNCTION__ \
 	<< " called without loading the driver.");\
@@ -27,6 +29,20 @@
 
 #define REPORT_BASE 0
 #define REPORT_ALL_CALLS 0
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+// Dynamic linking
+
+#define DynLink( function ) hydrazine::bit_cast( function, dlsym(_driver, #function))
+
+// 64-bit functions have _v2 suffixes
+#if defined(__x86_64) || defined(AMD64) || defined(_M_AMD64)
+#define DynLinkV( function ) hydrazine::bit_cast( function, dlsym(_driver, #function "_v2"))
+#else
+#define DynLinkV( function ) hydrazine::bit_cast( function, dlsym(_driver, #function))
+#endif
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace cuda
 {
@@ -64,197 +80,134 @@ namespace cuda
 			return;
 		}
 		
-		hydrazine::bit_cast( cuInit, dlsym( _driver, "cuInit" ) );
-		hydrazine::bit_cast( cuDriverGetVersion, dlsym( _driver, 
-			"cuDriverGetVersion" ) );
-		hydrazine::bit_cast( cuDeviceGet, dlsym( _driver, "cuDeviceGet" ) );
-		hydrazine::bit_cast( cuDeviceGetCount, dlsym( _driver, 
-			"cuDeviceGetCount" ) );
-		hydrazine::bit_cast( cuDeviceGetName, dlsym( _driver, 
-			"cuDeviceGetName" ) );
-		hydrazine::bit_cast( cuDeviceComputeCapability, dlsym( _driver, 
-			"cuDeviceComputeCapability" ) );
-		hydrazine::bit_cast( cuDeviceTotalMem, dlsym( _driver, 
-			"cuDeviceTotalMem" ) );
-		hydrazine::bit_cast( cuDeviceGetProperties, dlsym( _driver, 
-			"cuDeviceGetProperties" ) );
-		hydrazine::bit_cast( cuDeviceGetAttribute, dlsym( _driver, 
-			"cuDeviceGetAttribute" ) );
-		hydrazine::bit_cast( cuCtxGetLimit, dlsym( _driver, "cuCtxGetLimit" ) );	
-		hydrazine::bit_cast( cuCtxCreate, dlsym( _driver, "cuCtxCreate" ) );
-		hydrazine::bit_cast( cuCtxDestroy, dlsym( _driver, "cuCtxDestroy" ) );
-		hydrazine::bit_cast( cuCtxAttach, dlsym( _driver, "cuCtxAttach" ) );
-		hydrazine::bit_cast( cuCtxDetach, dlsym( _driver, "cuCtxDetach" ) );
-		hydrazine::bit_cast( cuCtxPushCurrent, dlsym( _driver, 
-			"cuCtxPushCurrent" ) );
-		hydrazine::bit_cast( cuCtxPopCurrent, dlsym( _driver, 
-			"cuCtxPopCurrent" ) );
-		hydrazine::bit_cast( cuCtxGetDevice, dlsym( _driver, 
-			"cuCtxGetDevice" ) );
-		hydrazine::bit_cast( cuCtxSynchronize, dlsym( _driver, 
-			"cuCtxSynchronize" ) );
-		hydrazine::bit_cast( cuModuleLoad, dlsym( _driver, "cuModuleLoad" ) );
-		hydrazine::bit_cast( cuModuleLoadData, dlsym( _driver, 
-			"cuModuleLoadData" ) );
-		hydrazine::bit_cast( cuModuleLoadDataEx, dlsym( _driver, 
-			"cuModuleLoadDataEx" ) );
-		hydrazine::bit_cast( cuModuleLoadFatBinary, dlsym( _driver, 
-			"cuModuleLoadFatBinary" ) );
-		hydrazine::bit_cast( cuModuleUnload, dlsym( _driver, 
-			"cuModuleUnload" ) );
-		hydrazine::bit_cast( cuModuleGetFunction, dlsym( _driver, 
-			"cuModuleGetFunction" ) );
-		hydrazine::bit_cast( cuModuleGetGlobal, dlsym( _driver, 
-			"cuModuleGetGlobal" ) );
-		hydrazine::bit_cast( cuModuleGetTexRef, dlsym( _driver, 
-			"cuModuleGetTexRef" ) );
-		hydrazine::bit_cast( cuMemGetInfo, dlsym( _driver, "cuMemGetInfo" ) );
-		hydrazine::bit_cast( cuMemAlloc, dlsym( _driver, "cuMemAlloc" ) );
-		hydrazine::bit_cast( cuMemAllocPitch, dlsym( _driver, 
-			"cuMemAllocPitch" ) );
-		hydrazine::bit_cast( cuMemFree, dlsym( _driver, "cuMemFree" ) );
-		hydrazine::bit_cast( cuMemGetAddressRange, dlsym( _driver, 
-			"cuMemGetAddressRange" ) );
-		hydrazine::bit_cast( cuMemAllocHost, dlsym( _driver, 
-			"cuMemAllocHost" ) );
-		hydrazine::bit_cast( cuMemFreeHost, dlsym( _driver, "cuMemFreeHost" ) );
-		hydrazine::bit_cast( cuMemHostAlloc, dlsym( _driver, 
-			"cuMemHostAlloc" ) );
-		hydrazine::bit_cast( cuMemHostGetDevicePointer, dlsym( _driver, 
-			"cuMemHostGetDevicePointer" ) );
-		hydrazine::bit_cast( cuMemHostGetFlags, dlsym( _driver, 
-			"cuMemHostGetFlags" ) );
-		hydrazine::bit_cast( cuMemcpyHtoD, dlsym( _driver, "cuMemcpyHtoD" ) );
-		hydrazine::bit_cast( cuMemcpyDtoH, dlsym( _driver, "cuMemcpyDtoH" ) );
-		hydrazine::bit_cast( cuMemcpyDtoD, dlsym( _driver, "cuMemcpyDtoD" ) );
-		hydrazine::bit_cast( cuMemcpyDtoA, dlsym( _driver, "cuMemcpyDtoA" ) );
-		hydrazine::bit_cast( cuMemcpyAtoD, dlsym( _driver, "cuMemcpyAtoD" ) );
-		hydrazine::bit_cast( cuMemcpyHtoA, dlsym( _driver, "cuMemcpyHtoA" ) );
-		hydrazine::bit_cast( cuMemcpyAtoH, dlsym( _driver, "cuMemcpyAtoH" ) );
-		hydrazine::bit_cast( cuMemcpyAtoA, dlsym( _driver, "cuMemcpyAtoA" ) );
-		hydrazine::bit_cast( cuMemcpy2D, dlsym( _driver, "cuMemcpy2D" ) );
-		hydrazine::bit_cast( cuMemcpy2DUnaligned, dlsym( _driver, 
-			"cuMemcpy2DUnaligned" ) );
-		hydrazine::bit_cast( cuMemcpy3D, dlsym( _driver, "cuMemcpy3D" ) );
-		hydrazine::bit_cast( cuMemcpyHtoDAsync, dlsym( _driver, 
-			"cuMemcpyHtoDAsync" ) );
-		hydrazine::bit_cast( cuMemcpyDtoHAsync, dlsym( _driver, 
-			"cuMemcpyDtoHAsync" ) );
-		hydrazine::bit_cast( cuMemcpyHtoAAsync, dlsym( _driver, 
-			"cuMemcpyHtoAAsync" ) );
-		hydrazine::bit_cast( cuMemcpyAtoHAsync, dlsym( _driver, 
-			"cuMemcpyAtoHAsync" ) );
-		hydrazine::bit_cast( cuMemcpy2DAsync, dlsym( _driver, 
-			"cuMemcpy2DAsync" ) );
-		hydrazine::bit_cast( cuMemcpy3DAsync, dlsym( _driver, 
-			"cuMemcpy3DAsync" ) );
-		hydrazine::bit_cast( cuMemsetD8, dlsym( _driver, "cuMemsetD8" ) );
-		hydrazine::bit_cast( cuMemsetD16, dlsym( _driver, "cuMemsetD16" ) );
-		hydrazine::bit_cast( cuMemsetD32, dlsym( _driver, "cuMemsetD32" ) );
-		hydrazine::bit_cast( cuMemsetD2D8, dlsym( _driver, "cuMemsetD2D8" ) );
-		hydrazine::bit_cast( cuMemsetD2D16, dlsym( _driver, "cuMemsetD2D16" ) );
-		hydrazine::bit_cast( cuMemsetD2D32, dlsym( _driver, "cuMemsetD2D32" ) );
-		hydrazine::bit_cast( cuFuncSetBlockShape, dlsym( _driver, 
-			"cuFuncSetBlockShape" ) );
-		hydrazine::bit_cast( cuFuncSetSharedSize, dlsym( _driver, 
-			"cuFuncSetSharedSize" ) );
-		hydrazine::bit_cast( cuFuncGetAttribute, dlsym( _driver, 
-			"cuFuncGetAttribute" ) );
-		hydrazine::bit_cast( cuArrayCreate, dlsym( _driver, "cuArrayCreate" ) );
-		hydrazine::bit_cast( cuArrayGetDescriptor, dlsym( _driver, 
-			"cuArrayGetDescriptor" ) );
-		hydrazine::bit_cast( cuArrayDestroy, dlsym( _driver, 
-			"cuArrayDestroy" ) );
-		hydrazine::bit_cast( cuArray3DCreate, dlsym( _driver, 
-			"cuArray3DCreate" ) );
-		hydrazine::bit_cast( cuArray3DGetDescriptor, dlsym( _driver, 
-			"cuArray3DGetDescriptor" ) );
-		hydrazine::bit_cast( cuTexRefCreate, dlsym( _driver, 
-			"cuTexRefCreate" ) );
-		hydrazine::bit_cast( cuTexRefDestroy, dlsym( _driver, 
-			"cuTexRefDestroy" ) );
-		hydrazine::bit_cast( cuTexRefSetArray, dlsym( _driver, 
-			"cuTexRefSetArray" ) );
-		hydrazine::bit_cast( cuTexRefSetAddress, dlsym( _driver, 
-			"cuTexRefSetAddress" ) );
-		hydrazine::bit_cast( cuTexRefSetAddress2D, dlsym( _driver, 
-			"cuTexRefSetAddress2D" ) );
-		hydrazine::bit_cast( cuTexRefSetFormat, dlsym( _driver, 
-			"cuTexRefSetFormat" ) );
-		hydrazine::bit_cast( cuTexRefSetAddressMode, dlsym( _driver, 
-			"cuTexRefSetAddressMode" ) );
-		hydrazine::bit_cast( cuTexRefSetFilterMode, dlsym( _driver, 
-			"cuTexRefSetFilterMode" ) );
-		hydrazine::bit_cast( cuTexRefSetFlags, dlsym( _driver, 
-			"cuTexRefSetFlags" ) );
-		hydrazine::bit_cast( cuTexRefGetAddress, dlsym( _driver, 
-			"cuTexRefGetAddress" ) );
-		hydrazine::bit_cast( cuTexRefGetArray, dlsym( _driver, 
-			"cuTexRefGetArray" ) );
-		hydrazine::bit_cast( cuTexRefGetAddressMode, dlsym( _driver, 
-			"cuTexRefGetAddressMode" ) );
-		hydrazine::bit_cast( cuTexRefGetFilterMode, dlsym( _driver, 
-			"cuTexRefGetFilterMode" ) );
-		hydrazine::bit_cast( cuTexRefGetFormat, dlsym( _driver, 
-			"cuTexRefGetFormat" ) );
-		hydrazine::bit_cast( cuTexRefGetFlags, dlsym( _driver, 
-			"cuTexRefGetFlags" ) );
-		hydrazine::bit_cast( cuParamSetSize, dlsym( _driver, 
-			"cuParamSetSize" ) );
-		hydrazine::bit_cast( cuParamSeti, dlsym( _driver, "cuParamSeti" ) );
-		hydrazine::bit_cast( cuParamSetf, dlsym( _driver, "cuParamSetf" ) );
-		hydrazine::bit_cast( cuParamSetv, dlsym( _driver, "cuParamSetv" ) );
-		hydrazine::bit_cast( cuParamSetTexRef, dlsym( _driver, 
-			"cuParamSetTexRef" ) );
-		hydrazine::bit_cast( cuLaunch, dlsym( _driver, "cuLaunch" ) );
-		hydrazine::bit_cast( cuLaunchGrid, dlsym( _driver, "cuLaunchGrid" ) );
-		hydrazine::bit_cast( cuLaunchGridAsync, dlsym( _driver, 
-			"cuLaunchGridAsync" ) );
-		hydrazine::bit_cast( cuEventCreate, dlsym( _driver, 
-			"cuEventCreate" ) );
-		hydrazine::bit_cast( cuEventRecord, dlsym( _driver, 
-			"cuEventRecord" ) );
-		hydrazine::bit_cast( cuEventQuery, dlsym( _driver, "cuEventQuery" ) );
-		hydrazine::bit_cast( cuEventSynchronize, dlsym( _driver, 
-			"cuEventSynchronize" ) );
-		hydrazine::bit_cast( cuEventDestroy, dlsym( _driver, 
-			"cuEventDestroy" ) );
-		hydrazine::bit_cast( cuEventElapsedTime, dlsym( _driver, 
-			"cuEventElapsedTime" ) );
-		hydrazine::bit_cast( cuStreamCreate, dlsym( _driver, 
-			"cuStreamCreate" ) );
-		hydrazine::bit_cast( cuStreamQuery, dlsym( _driver, 
-			"cuStreamQuery" ) );
-		hydrazine::bit_cast( cuStreamSynchronize, dlsym( _driver, 
-			"cuStreamSynchronize" ) );
-		hydrazine::bit_cast( cuStreamDestroy, dlsym( _driver, 
-			"cuStreamDestroy" ) );
+		DynLink(cuInit);
+		DynLink(cuDriverGetVersion);
+		DynLink(cuDeviceGet);
+		DynLink(cuDeviceGetCount);
+		DynLink(cuDeviceGetName);
+		DynLink(cuDeviceComputeCapability);
 
-		hydrazine::bit_cast( cuGraphicsUnregisterResource, dlsym( _driver,
-			"cuGraphicsUnregisterResource" ) ); 
-		hydrazine::bit_cast( cuGraphicsSubResourceGetMappedArray, 
-			dlsym( _driver, "cuGraphicsSubResourceGetMappedArray" ) );
-		hydrazine::bit_cast( cuGraphicsResourceGetMappedPointer, dlsym( _driver,
-			"cuGraphicsResourceGetMappedPointer" ) );
-		hydrazine::bit_cast( cuGraphicsResourceSetMapFlags, dlsym( _driver,
-			"cuGraphicsResourceSetMapFlags" ) );
-		hydrazine::bit_cast( cuGraphicsMapResources, dlsym( _driver,
-			"cuGraphicsMapResources" ) );
-		hydrazine::bit_cast( cuGraphicsUnmapResources, dlsym( _driver,
-			"cuGraphicsUnmapResources" ) );
+		DynLinkV(cuDeviceTotalMem);
+		
+		DynLink(cuDeviceGetProperties);
+		DynLink(cuDeviceGetAttribute);
+		DynLink(cuCtxGetLimit);
+		DynLink(cuCtxGetApiVersion);
+		DynLinkV(cuCtxCreate);
+		
+		DynLink(cuCtxDestroy);
+		DynLink(cuCtxAttach);
+		DynLink(cuCtxDetach);
+		DynLink(cuCtxPushCurrent);
+		DynLink(cuCtxPopCurrent);
+		DynLink(cuCtxGetDevice);
+		DynLink(cuCtxSynchronize);
+		DynLink(cuModuleLoad);
+		DynLink(cuModuleLoadData);
+		DynLink(cuModuleLoadDataEx);
+		DynLink(cuModuleLoadFatBinary);
+		DynLink(cuModuleUnload);
+		DynLink(cuModuleGetFunction);
+		
+		DynLinkV(cuModuleGetGlobal);
+		
+		DynLink(cuModuleGetTexRef);
+		
+		DynLinkV(cuMemGetInfo);
+		DynLinkV(cuMemAlloc);
+		DynLinkV(cuMemAllocPitch);
+		DynLinkV(cuMemFree);
+		DynLinkV(cuMemGetAddressRange);
+		DynLinkV(cuMemAllocHost);
+		
+		DynLink(cuMemFreeHost);
+		DynLink(cuMemHostAlloc);
+		
+		DynLinkV(cuMemHostGetDevicePointer);
+		DynLink(cuMemHostGetFlags);
+		DynLinkV(cuMemcpyHtoD);
+		DynLinkV(cuMemcpyDtoH);
+		DynLinkV(cuMemcpyDtoD);
+		DynLinkV(cuMemcpyDtoA);
+		DynLinkV(cuMemcpyAtoD);
+		DynLinkV(cuMemcpyHtoA);
+		DynLinkV(cuMemcpyAtoH);
+		DynLinkV(cuMemcpyAtoA);
+		DynLinkV(cuMemcpy2D);
+		DynLinkV(cuMemcpy2DUnaligned);
+		DynLinkV(cuMemcpy3D);
+		DynLinkV(cuMemcpyHtoDAsync);
+		DynLinkV(cuMemcpyDtoHAsync);
+		DynLinkV(cuMemcpyHtoAAsync);
+		DynLinkV(cuMemcpyAtoHAsync);
+		DynLinkV(cuMemcpy2DAsync);
+		DynLinkV(cuMemcpy3DAsync);
+		DynLinkV(cuMemsetD8);
+		DynLinkV(cuMemsetD16);
+		DynLinkV(cuMemsetD32);
+		DynLinkV(cuMemsetD2D8);
+		DynLinkV(cuMemsetD2D16);
+		DynLinkV(cuMemsetD2D32);
+		
+		DynLink(cuFuncSetBlockShape);
+		DynLink(cuFuncSetSharedSize);
+		DynLink(cuFuncGetAttribute);
+		
+		DynLinkV(cuArrayCreate);
+		DynLinkV(cuArrayGetDescriptor);
+		DynLink(cuArrayDestroy);
+		DynLinkV(cuArray3DCreate);
+		DynLinkV(cuArray3DGetDescriptor);
+		DynLink(cuTexRefCreate);
+		DynLink(cuTexRefDestroy);
+		DynLink(cuTexRefSetArray);
+		DynLinkV(cuTexRefSetAddress);
+		DynLinkV(cuTexRefSetAddress2D);
+		DynLink(cuTexRefSetFormat);
+		DynLink(cuTexRefSetAddressMode);
+		DynLink(cuTexRefSetFilterMode);
+		DynLink(cuTexRefSetFlags);
+		DynLinkV(cuTexRefGetAddress);
+		DynLink(cuTexRefGetArray);
+		DynLink(cuTexRefGetAddressMode);
+		DynLink(cuTexRefGetFilterMode);
+		DynLink(cuTexRefGetFormat);
+		DynLink(cuTexRefGetFlags);
+		DynLink(cuParamSetSize);
+		DynLink(cuParamSeti);
+		DynLink(cuParamSetf);
+		DynLink(cuParamSetv);
+		DynLink(cuParamSetTexRef);
+		DynLink(cuLaunch);
+		DynLink(cuLaunchGrid);
+		DynLink(cuLaunchGridAsync);
+		DynLink(cuEventCreate);
+		DynLink(cuEventRecord);
+		DynLink(cuEventQuery);
+		DynLink(cuEventSynchronize);
+		DynLink(cuEventDestroy);
+		DynLink(cuEventElapsedTime);
+		DynLink(cuStreamCreate);
+		DynLink(cuStreamQuery);
+		DynLink(cuStreamSynchronize);
+		DynLink(cuStreamDestroy);
 
-		hydrazine::bit_cast( cuGetExportTable, dlsym( _driver,
-			"cuGetExportTable" ) );
+		DynLink(cuGraphicsUnregisterResource);
+		DynLink(cuGraphicsSubResourceGetMappedArray);
+		DynLinkV(cuGraphicsResourceGetMappedPointer);
+		DynLink(cuGraphicsResourceSetMapFlags);
+		DynLink(cuGraphicsMapResources);
+		DynLink(cuGraphicsUnmapResources);
 
-		hydrazine::bit_cast( cuGLInit, dlsym( _driver, "cuGLInit" ) );
-		hydrazine::bit_cast( cuGLCtxCreate, dlsym( _driver,	"cuGLCtxCreate" ) );
-		hydrazine::bit_cast( cuGraphicsGLRegisterBuffer, dlsym( _driver,
-			"cuGraphicsGLRegisterBuffer" ) );
-		hydrazine::bit_cast( cuGraphicsGLRegisterImage, dlsym( _driver,
-			"cuGraphicsGLRegisterImage" ) );
+		DynLink(cuGetExportTable);
+
+		DynLink(cuGLInit);
+		DynLinkV(cuGLCtxCreate);
+		DynLink(cuGraphicsGLRegisterBuffer);
+		DynLink(cuGraphicsGLRegisterImage);
 
 		CUresult result = (*cuDriverGetVersion)(&_version);
-
+		
 		if (result == CUDA_SUCCESS) {
 			report(" Driver version is: " << _version << " and was called successfully");
 		}
@@ -324,7 +277,7 @@ namespace cuda
 		return (*_interface.cuDeviceComputeCapability)(major, minor, dev);
 	}
 
-	CUresult CudaDriver::cuDeviceTotalMem(unsigned int *bytes, CUdevice dev)
+	CUresult CudaDriver::cuDeviceTotalMem(size_t *bytes, CUdevice dev)
 	{
 		CHECK();
 		return (*_interface.cuDeviceTotalMem)(bytes, dev);
@@ -343,6 +296,10 @@ namespace cuda
 		return (*_interface.cuDeviceGetAttribute)(pi, attrib, dev);
 	}
 
+	CUresult CudaDriver::cuCtxGetApiVersion(CUcontext ctx, unsigned int *version) {
+		CHECK();
+		return (*_interface.cuCtxGetApiVersion)(ctx, version);
+	}
 	CUresult CudaDriver::cuCtxCreate(CUcontext *pctx, unsigned int flags, 
 		CUdevice dev )
 	{
@@ -440,7 +397,7 @@ namespace cuda
 	}
 
 	CUresult CudaDriver::cuModuleGetGlobal(CUdeviceptr *dptr, 
-		unsigned int *bytes, CUmodule hmod, const char *name)
+		size_t *bytes, CUmodule hmod, const char *name)
 	{
 		CHECK();
 		return (*_interface.cuModuleGetGlobal)(dptr, bytes, hmod, name);
@@ -454,7 +411,7 @@ namespace cuda
 	}
 
 
-	CUresult CudaDriver::cuMemGetInfo(unsigned int *free, unsigned int *total)
+	CUresult CudaDriver::cuMemGetInfo(size_t *free, size_t *total)
 	{
 		CHECK();
 		return (*_interface.cuMemGetInfo)(free, total);
@@ -468,7 +425,7 @@ namespace cuda
 	}
 
 	CUresult CudaDriver::cuMemAllocPitch( CUdeviceptr *dptr, 
-				          unsigned int *pPitch,
+				          size_t *pPitch,
 				          unsigned int WidthInBytes, 
 				          unsigned int Height, 
 				          unsigned int ElementSizeBytes
@@ -486,7 +443,7 @@ namespace cuda
 	}
 
 	CUresult CudaDriver::cuMemGetAddressRange( CUdeviceptr *pbase, 
-		unsigned int *psize, CUdeviceptr dptr )
+		size_t *psize, CUdeviceptr dptr )
 	{
 		CHECK();
 		return (*_interface.cuMemGetAddressRange)(pbase, psize, dptr);
@@ -773,8 +730,8 @@ namespace cuda
 		return (*_interface.cuTexRefSetArray)(hTexRef, hArray, Flags);
 	}
 
-	CUresult CudaDriver::cuTexRefSetAddress( unsigned int *ByteOffset, 
-		CUtexref hTexRef, CUdeviceptr dptr, unsigned int bytes )
+	CUresult CudaDriver::cuTexRefSetAddress( size_t *ByteOffset, 
+		CUtexref hTexRef, CUdeviceptr dptr, size_t bytes )
 	{
 		CHECK();
 		return (*_interface.cuTexRefSetAddress)(ByteOffset, hTexRef, 
@@ -998,7 +955,7 @@ namespace cuda
 	}
 
 	CUresult CudaDriver::cuGraphicsResourceGetMappedPointer(
-		CUdeviceptr *pDevPtr, unsigned int *pSize, 
+		CUdeviceptr *pDevPtr, size_t *pSize, 
 		CUgraphicsResource resource)
 	{
 		CHECK();

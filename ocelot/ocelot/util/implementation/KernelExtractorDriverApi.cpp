@@ -59,15 +59,23 @@
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+#define Function(f) f
+#define FunctionV(f) f ## _v2
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
 // use this to define either a pass-through driver API implementation for testing linkage with the
 // shared object or to invoke Ocelot's Driver API frontend
 //typedef util::KernelExtractorDriver CudaApi;
 typedef util::KernelExtractorDriver CudaApi;
 
+
+extern "C" {
+
 /*********************************
 ** Initialization
 *********************************/
-CUresult cuInit(unsigned int Flags) {
+CUresult Function(cuInit)(unsigned int Flags) {
 	trace();
 	RETURN( CudaApi::get()->cuInit(Flags) );
 }
@@ -76,13 +84,13 @@ CUresult cuInit(unsigned int Flags) {
 /*********************************
 ** Driver Version Query
 *********************************/
-CUresult cuDriverGetVersion(int *driverVersion) {
+CUresult Function(cuDriverGetVersion)(int *driverVersion) {
 	trace();	
 	RETURN( CudaApi::get()->cuDriverGetVersion(driverVersion) );
 }
 
 
-CUresult cuGetExportTable(const void **ppExportTable,
+CUresult Function(cuGetExportTable)(const void **ppExportTable,
 	const CUuuid *pExportTableId) {
 	trace();
 	return( CudaApi::get()->cuGetExportTable(ppExportTable, pExportTableId) );
@@ -94,39 +102,39 @@ CUresult cuGetExportTable(const void **ppExportTable,
 **
 ***********************************/
 
-CUresult cuDeviceGet(CUdevice *device, int ordinal) {
+CUresult Function(cuDeviceGet)(CUdevice *device, int ordinal) {
 	trace();	
 	RETURN( CudaApi::get()->cuDeviceGet(device, ordinal) );
 }
 
-CUresult cuDeviceGetCount(int *count) {
+CUresult Function(cuDeviceGetCount)(int *count) {
 	trace();	
 	RETURN( CudaApi::get()->cuDeviceGetCount(count) );
 }
 
-CUresult cuDeviceGetName(char *name, int len, CUdevice dev) {
+CUresult Function(cuDeviceGetName)(char *name, int len, CUdevice dev) {
 	trace();	
 	RETURN( CudaApi::get()->cuDeviceGetName(name, len, dev) );
 }
 
-CUresult cuDeviceComputeCapability(int *major, int *minor, 
+CUresult Function(cuDeviceComputeCapability)(int *major, int *minor, 
 	CUdevice dev) {
 	trace();	
 	RETURN( CudaApi::get()->cuDeviceComputeCapability(major, minor, dev) );
 }
 
-CUresult cuDeviceTotalMem(unsigned int *bytes, CUdevice dev) {
+CUresult FunctionV(cuDeviceTotalMem)(size_t *bytes, CUdevice dev) {
 	trace();	
 	RETURN( CudaApi::get()->cuDeviceTotalMem(bytes, dev) );
 }
 
-CUresult cuDeviceGetProperties(CUdevprop *prop, 
+CUresult Function(cuDeviceGetProperties)(CUdevprop *prop, 
 	CUdevice dev) {
 	trace();	
 	RETURN( CudaApi::get()->cuDeviceGetProperties(prop, dev) );
 }
 
-CUresult cuDeviceGetAttribute(int *pi, 
+CUresult Function(cuDeviceGetAttribute)(int *pi, 
 	CUdevice_attribute attrib, CUdevice dev) {
 	trace();	
 	RETURN( CudaApi::get()->cuDeviceGetAttribute(pi, attrib, dev) );
@@ -139,43 +147,43 @@ CUresult cuDeviceGetAttribute(int *pi,
 **
 ***********************************/
 
-CUresult cuCtxCreate(CUcontext *pctx, unsigned int flags, 
+CUresult FunctionV(cuCtxCreate)(CUcontext *pctx, unsigned int flags, 
 	CUdevice dev ) {
 	trace();	
 	RETURN( CudaApi::get()->cuCtxCreate(pctx, flags, dev) );
 }
 
-CUresult cuCtxDestroy( CUcontext ctx ) {
+CUresult Function(cuCtxDestroy)( CUcontext ctx ) {
 	trace();	
 	RETURN( CudaApi::get()->cuCtxDestroy(ctx) );
 }
 
-CUresult cuCtxAttach(CUcontext *pctx, unsigned int flags) {
+CUresult Function(cuCtxAttach)(CUcontext *pctx, unsigned int flags) {
 	trace();	
 	RETURN( CudaApi::get()->cuCtxAttach(pctx, flags) );
 }
 
-CUresult cuCtxDetach(CUcontext ctx) {
+CUresult Function(cuCtxDetach)(CUcontext ctx) {
 	trace();	
 	RETURN( CudaApi::get()->cuCtxDetach(ctx) );
 }
 
-CUresult cuCtxPushCurrent( CUcontext ctx ) {
+CUresult Function(cuCtxPushCurrent)( CUcontext ctx ) {
 	trace();	
 	RETURN( CudaApi::get()->cuCtxPushCurrent(ctx) );
 }
 
-CUresult cuCtxPopCurrent( CUcontext *pctx ) {
+CUresult Function(cuCtxPopCurrent)( CUcontext *pctx ) {
 	trace();	
 	RETURN( CudaApi::get()->cuCtxPopCurrent(pctx) );
 }
 
-CUresult cuCtxGetDevice(CUdevice *device) {
+CUresult Function(cuCtxGetDevice)(CUdevice *device) {
 	trace();	
 	RETURN( CudaApi::get()->cuCtxGetDevice(device) );
 }
 
-CUresult cuCtxSynchronize(void) {
+CUresult Function(cuCtxSynchronize)(void) {
 	trace();	
 	RETURN( CudaApi::get()->cuCtxSynchronize() );
 }
@@ -187,48 +195,48 @@ CUresult cuCtxSynchronize(void) {
 **
 ***********************************/
 
-CUresult cuModuleLoad(CUmodule *module, const char *fname) {
+CUresult Function(cuModuleLoad)(CUmodule *module, const char *fname) {
 	trace();	
 	RETURN( CudaApi::get()->cuModuleLoad(module, fname) );
 }
 
-CUresult cuModuleLoadData(CUmodule *module, 
+CUresult Function(cuModuleLoadData)(CUmodule *module, 
 	const void *image) {
 	trace();	
 	RETURN( CudaApi::get()->cuModuleLoadData(module, image) );
 }
 
-CUresult cuModuleLoadDataEx(CUmodule *module, 
+CUresult Function(cuModuleLoadDataEx)(CUmodule *module, 
 	const void *image, unsigned int numOptions, 
 	CUjit_option *options, void **optionValues) {
 	trace();	
 	RETURN( CudaApi::get()->cuModuleLoadDataEx(module, image, numOptions, options, optionValues) );
 }
 
-CUresult cuModuleLoadFatBinary(CUmodule *module, 
+CUresult Function(cuModuleLoadFatBinary)(CUmodule *module, 
 	const void *fatCubin) {
 	trace();	
 	RETURN( CudaApi::get()->cuModuleLoadFatBinary(module, fatCubin) );
 }
 
-CUresult cuModuleUnload(CUmodule hmod) {
+CUresult Function(cuModuleUnload)(CUmodule hmod) {
 	trace();	
 	RETURN( CudaApi::get()->cuModuleUnload(hmod) );
 }
 
-CUresult cuModuleGetFunction(CUfunction *hfunc, 
+CUresult Function(cuModuleGetFunction)(CUfunction *hfunc, 
 	CUmodule hmod, const char *name) {
 	trace();	
 	RETURN( CudaApi::get()->cuModuleGetFunction(hfunc, hmod, name) );
 }
 
-CUresult cuModuleGetGlobal(CUdeviceptr *dptr, 
-	unsigned int *bytes, CUmodule hmod, const char *name) {
+CUresult FunctionV(cuModuleGetGlobal)(CUdeviceptr *dptr, 
+	size_t *bytes, CUmodule hmod, const char *name) {
 	trace();	
 	RETURN( CudaApi::get()->cuModuleGetGlobal(dptr, bytes, hmod, name) );
 }
 
-CUresult cuModuleGetTexRef(CUtexref *pTexRef, CUmodule hmod, 
+CUresult Function(cuModuleGetTexRef)(CUtexref *pTexRef, CUmodule hmod, 
 	const char *name) {
 	trace();	
 	RETURN( CudaApi::get()->cuModuleGetTexRef(pTexRef, hmod, name) );
@@ -241,21 +249,21 @@ CUresult cuModuleGetTexRef(CUtexref *pTexRef, CUmodule hmod,
 **
 ***********************************/
 
-CUresult cuMemGetInfo(unsigned int *free, 
-	unsigned int *total) {
+CUresult FunctionV(cuMemGetInfo)(size_t *free, 
+	size_t *total) {
 	trace();	
 	RETURN( CudaApi::get()->cuMemGetInfo(free, total) );
 }
 
 
-CUresult cuMemAlloc( CUdeviceptr *dptr, 
+CUresult FunctionV(cuMemAlloc)( CUdeviceptr *dptr, 
 	unsigned int bytesize) {
 	trace();	
 	RETURN( CudaApi::get()->cuMemAlloc(dptr, bytesize) );
 }
 
-CUresult cuMemAllocPitch( CUdeviceptr *dptr, 
-			          unsigned int *pPitch,
+CUresult FunctionV(cuMemAllocPitch)( CUdeviceptr *dptr, 
+			          size_t *pPitch,
 			          unsigned int WidthInBytes, 
 			          unsigned int Height, 
 			          unsigned int ElementSizeBytes
@@ -264,43 +272,43 @@ CUresult cuMemAllocPitch( CUdeviceptr *dptr,
 	RETURN( CudaApi::get()->cuMemAllocPitch(dptr, pPitch, WidthInBytes, Height, ElementSizeBytes) );
 }
 
-CUresult cuMemFree(CUdeviceptr dptr) {
+CUresult FunctionV(cuMemFree)(CUdeviceptr dptr) {
 	trace();	
 	RETURN( CudaApi::get()->cuMemFree(dptr) );
 }
 
-CUresult cuMemGetAddressRange( CUdeviceptr *pbase, 
-	unsigned int *psize, CUdeviceptr dptr ) {
+CUresult FunctionV(cuMemGetAddressRange)( CUdeviceptr *pbase, 
+	size_t *psize, CUdeviceptr dptr ) {
 	trace();	
 	RETURN( CudaApi::get()->cuMemGetAddressRange(pbase, psize, dptr) );
 }
 
 
-CUresult cuMemAllocHost(void **pp, unsigned int bytesize) {
+CUresult Function(cuMemAllocHost)(void **pp, size_t bytesize) {
 	trace();	
 	RETURN( CudaApi::get()->cuMemAllocHost(pp, bytesize) );
 }
 
-CUresult cuMemFreeHost(void *p) {
+CUresult Function(cuMemFreeHost)(void *p) {
 	trace();	
 	RETURN( CudaApi::get()->cuMemFreeHost(p) );
 }
 
 
-CUresult cuMemHostAlloc(void **pp, 
-	unsigned long long bytesize, unsigned int Flags ) {
+CUresult Function(cuMemHostAlloc)(void **pp, 
+	size_t bytesize, unsigned int Flags ) {
 	trace();	
 	RETURN( CudaApi::get()->cuMemHostAlloc(pp, bytesize, Flags) );
 }
 
 
-CUresult cuMemHostGetDevicePointer( CUdeviceptr *pdptr, 
+CUresult FunctionV(cuMemHostGetDevicePointer)( CUdeviceptr *pdptr, 
 	void *p, unsigned int Flags ) {
 	trace();	
 	RETURN( CudaApi::get()->cuMemHostGetDevicePointer(pdptr, p, Flags) );
 }
 
-CUresult cuMemHostGetFlags( unsigned int *pFlags, void *p ) {
+CUresult Function(cuMemHostGetFlags)( unsigned int *pFlags, void *p ) {
 	trace();	
 	RETURN( CudaApi::get()->cuMemHostGetFlags(pFlags, p) );
 }
@@ -319,13 +327,13 @@ CUresult cuMemHostGetFlags( unsigned int *pFlags, void *p ) {
 
 // 1D functions
 // system <-> device memory
-CUresult cuMemcpyHtoD (CUdeviceptr dstDevice, 
+CUresult FunctionV(cuMemcpyHtoD )(CUdeviceptr dstDevice, 
 	const void *srcHost, unsigned int ByteCount ) {
 	trace();	
 	RETURN( CudaApi::get()->cuMemcpyHtoD(dstDevice, srcHost, ByteCount) );
 }
 
-CUresult cuMemcpyDtoH (void *dstHost, CUdeviceptr srcDevice, 
+CUresult FunctionV(cuMemcpyDtoH )(void *dstHost, CUdeviceptr srcDevice, 
 	unsigned int ByteCount ) {
 	trace();	
 	RETURN( CudaApi::get()->cuMemcpyDtoH(dstHost, srcDevice, ByteCount) );
@@ -333,7 +341,7 @@ CUresult cuMemcpyDtoH (void *dstHost, CUdeviceptr srcDevice,
 
 
 // device <-> device memory
-CUresult cuMemcpyDtoD (CUdeviceptr dstDevice, 
+CUresult FunctionV(cuMemcpyDtoD )(CUdeviceptr dstDevice, 
 	CUdeviceptr srcDevice, unsigned int ByteCount ) {
 	trace();	
 	RETURN( CudaApi::get()->cuMemcpyDtoD(dstDevice, srcDevice, ByteCount) );
@@ -341,14 +349,14 @@ CUresult cuMemcpyDtoD (CUdeviceptr dstDevice,
 
 
 // device <-> array memory
-CUresult cuMemcpyDtoA ( CUarray dstArray, 
+CUresult FunctionV(cuMemcpyDtoA )( CUarray dstArray, 
 	unsigned int dstIndex, CUdeviceptr srcDevice, 
 	unsigned int ByteCount ) {
 	trace();	
 	RETURN( CudaApi::get()->cuMemcpyDtoA(dstArray, dstIndex, srcDevice, ByteCount) );
 }
 
-CUresult cuMemcpyAtoD ( CUdeviceptr dstDevice, 
+CUresult FunctionV(cuMemcpyAtoD )( CUdeviceptr dstDevice, 
 	CUarray hSrc, unsigned int SrcIndex, unsigned int ByteCount ) {
 	trace();	
 	RETURN( CudaApi::get()->cuMemcpyAtoD(dstDevice, hSrc, SrcIndex, ByteCount) );
@@ -356,14 +364,14 @@ CUresult cuMemcpyAtoD ( CUdeviceptr dstDevice,
 
 
 // system <-> array memory
-CUresult cuMemcpyHtoA( CUarray dstArray, 
+CUresult FunctionV(cuMemcpyHtoA)( CUarray dstArray, 
 	unsigned int dstIndex, const void *pSrc, 
 	unsigned int ByteCount ) {
 	trace();	
 	RETURN( CudaApi::get()->cuMemcpyHtoA(dstArray, dstIndex, pSrc, ByteCount) );
 }
 
-CUresult cuMemcpyAtoH( void *dstHost, CUarray srcArray, 
+CUresult FunctionV(cuMemcpyAtoH)( void *dstHost, CUarray srcArray, 
 	unsigned int srcIndex, unsigned int ByteCount ) {
 	trace();	
 	RETURN( CudaApi::get()->cuMemcpyAtoH(dstHost, srcArray, srcIndex, ByteCount) );
@@ -371,7 +379,7 @@ CUresult cuMemcpyAtoH( void *dstHost, CUarray srcArray,
 
 
 // array <-> array memory
-CUresult cuMemcpyAtoA( CUarray dstArray, 
+CUresult FunctionV(cuMemcpyAtoA)( CUarray dstArray, 
 	unsigned int dstIndex, CUarray srcArray, unsigned int srcIndex, 
 	unsigned int ByteCount ) {
 	trace();	
@@ -381,12 +389,12 @@ CUresult cuMemcpyAtoA( CUarray dstArray,
 
 // 2D memcpy
 
-CUresult cuMemcpy2D( const CUDA_MEMCPY2D *pCopy ) {
+CUresult FunctionV(cuMemcpy2D)( const CUDA_MEMCPY2D *pCopy ) {
 	trace();	
 	RETURN( CudaApi::get()->cuMemcpy2D(pCopy) );
 }
 
-CUresult cuMemcpy2DUnaligned( const CUDA_MEMCPY2D *pCopy ) {
+CUresult FunctionV(cuMemcpy2DUnaligned)( const CUDA_MEMCPY2D *pCopy ) {
 	trace();	
 	RETURN( CudaApi::get()->cuMemcpy2DUnaligned(pCopy) );
 }
@@ -394,7 +402,7 @@ CUresult cuMemcpy2DUnaligned( const CUDA_MEMCPY2D *pCopy ) {
 
 // 3D memcpy
 
-CUresult cuMemcpy3D( const CUDA_MEMCPY3D *pCopy ) {
+CUresult FunctionV(cuMemcpy3D)( const CUDA_MEMCPY3D *pCopy ) {
 	trace();	
 	RETURN( CudaApi::get()->cuMemcpy3D(pCopy) );
 }
@@ -416,13 +424,13 @@ CUresult cuMemcpy3D( const CUDA_MEMCPY3D *pCopy ) {
 
 // 1D functions
 // system <-> device memory
-CUresult cuMemcpyHtoDAsync (CUdeviceptr dstDevice, 
+CUresult FunctionV(cuMemcpyHtoDAsync)(CUdeviceptr dstDevice, 
 	const void *srcHost, unsigned int ByteCount, CUstream hStream ) {
 	trace();	
 	RETURN( CudaApi::get()->cuMemcpyHtoDAsync(dstDevice, srcHost, ByteCount, hStream) );
 }
 
-CUresult cuMemcpyDtoHAsync (void *dstHost, 
+CUresult FunctionV(cuMemcpyDtoHAsync)(void *dstHost, 
 	CUdeviceptr srcDevice, unsigned int ByteCount, CUstream hStream ) {
 	trace();	
 	RETURN( CudaApi::get()->cuMemcpyDtoHAsync(dstHost, srcDevice, ByteCount, hStream) );
@@ -430,14 +438,14 @@ CUresult cuMemcpyDtoHAsync (void *dstHost,
 
 
 // system <-> array memory
-CUresult cuMemcpyHtoAAsync( CUarray dstArray, 
+CUresult FunctionV(cuMemcpyHtoAAsync)( CUarray dstArray, 
 	unsigned int dstIndex, const void *pSrc, 
 	unsigned int ByteCount, CUstream hStream ) {
 	trace();	
 	RETURN( CudaApi::get()->cuMemcpyHtoAAsync(dstArray, dstIndex, pSrc, ByteCount, hStream) );
 }
 
-CUresult cuMemcpyAtoHAsync( void *dstHost, CUarray srcArray, 
+CUresult FunctionV(cuMemcpyAtoHAsync)( void *dstHost, CUarray srcArray, 
 	unsigned int srcIndex, unsigned int ByteCount, 
 	CUstream hStream ) {
 	trace();	
@@ -445,7 +453,7 @@ CUresult cuMemcpyAtoHAsync( void *dstHost, CUarray srcArray,
 }
 
 // 2D memcpy
-CUresult cuMemcpy2DAsync( const CUDA_MEMCPY2D *pCopy, 
+CUresult FunctionV(cuMemcpy2DAsync)( const CUDA_MEMCPY2D *pCopy, 
 	CUstream hStream ) {
 	trace();	
 	RETURN( CudaApi::get()->cuMemcpy2DAsync(pCopy, hStream) );
@@ -453,7 +461,7 @@ CUresult cuMemcpy2DAsync( const CUDA_MEMCPY2D *pCopy,
 
 
 // 3D memcpy
-CUresult cuMemcpy3DAsync( const CUDA_MEMCPY3D *pCopy, 
+CUresult FunctionV(cuMemcpy3DAsync)( const CUDA_MEMCPY3D *pCopy, 
 	CUstream hStream ) {
 	trace();	
 	RETURN( CudaApi::get()->cuMemcpy3DAsync(pCopy, hStream) );
@@ -465,40 +473,40 @@ CUresult cuMemcpy3DAsync( const CUDA_MEMCPY3D *pCopy,
 **    Memset
 **
 ***********************************/
-CUresult cuMemsetD8( CUdeviceptr dstDevice, 
+CUresult FunctionV(cuMemsetD8)( CUdeviceptr dstDevice, 
 	unsigned char uc, unsigned int N ) {
 	trace();	
 	RETURN( CudaApi::get()->cuMemsetD8(dstDevice, uc, N) );
 }
 
-CUresult cuMemsetD16( CUdeviceptr dstDevice, 
+CUresult FunctionV(cuMemsetD16)( CUdeviceptr dstDevice, 
 	unsigned short us, unsigned int N ) {
 	trace();	
 	RETURN( CudaApi::get()->cuMemsetD16(dstDevice, us, N) );
 }
 
-CUresult cuMemsetD32( CUdeviceptr dstDevice, 
+CUresult FunctionV(cuMemsetD32)( CUdeviceptr dstDevice, 
 	unsigned int ui, unsigned int N ) {
 	trace();	
 	RETURN( CudaApi::get()->cuMemsetD32(dstDevice, ui, N) );
 }
 
 
-CUresult cuMemsetD2D8( CUdeviceptr dstDevice,
+CUresult FunctionV(cuMemsetD2D8)( CUdeviceptr dstDevice,
 	unsigned int dstPitch, unsigned char uc, unsigned int Width, 
 	unsigned int Height ) {
 	trace();	
 	RETURN( CudaApi::get()->cuMemsetD2D8(dstDevice, dstPitch, uc, Width, Height) );
 }
 
-CUresult cuMemsetD2D16( CUdeviceptr dstDevice, 
+CUresult FunctionV(cuMemsetD2D16)( CUdeviceptr dstDevice, 
 	unsigned int dstPitch, unsigned short us, unsigned int Width, 
 	unsigned int Height ) {
 	trace();	
 	RETURN( CudaApi::get()->cuMemsetD2D16(dstDevice, dstPitch, us, Width, Height) );
 }
 
-CUresult cuMemsetD2D32( CUdeviceptr dstDevice, 
+CUresult FunctionV(cuMemsetD2D32)( CUdeviceptr dstDevice, 
 	unsigned int dstPitch, unsigned int ui, unsigned int Width, 
 	unsigned int Height ) {
 	trace();	
@@ -513,19 +521,19 @@ CUresult cuMemsetD2D32( CUdeviceptr dstDevice,
 ***********************************/
 
 
-CUresult cuFuncSetBlockShape (CUfunction hfunc, int x, 
+CUresult Function(cuFuncSetBlockShape)(CUfunction hfunc, int x, 
 	int y, int z) {
 	trace();	
 	RETURN( CudaApi::get()->cuFuncSetBlockShape(hfunc, x, y, z) );
 }
 
-CUresult cuFuncSetSharedSize (CUfunction hfunc, 
+CUresult Function(cuFuncSetSharedSize)(CUfunction hfunc, 
 	unsigned int bytes) {
 	trace();	
 	RETURN( CudaApi::get()->cuFuncSetSharedSize(hfunc, bytes) );
 }
 
-CUresult cuFuncGetAttribute (int *pi, 
+CUresult Function(cuFuncGetAttribute)(int *pi, 
 	CUfunction_attribute attrib, CUfunction hfunc) {
 	trace();	
 	RETURN( CudaApi::get()->cuFuncGetAttribute(pi, attrib, hfunc) );
@@ -538,31 +546,31 @@ CUresult cuFuncGetAttribute (int *pi,
 **
 ***********************************/
 
-CUresult cuArrayCreate( CUarray *pHandle, 
+CUresult FunctionV(cuArrayCreate)( CUarray *pHandle, 
 	const CUDA_ARRAY_DESCRIPTOR *pAllocateArray ) {
 	trace();	
 	RETURN( CudaApi::get()->cuArrayCreate(pHandle, pAllocateArray) );
 }
 
-CUresult cuArrayGetDescriptor( 
+CUresult FunctionV(cuArrayGetDescriptor)( 
 	CUDA_ARRAY_DESCRIPTOR *pArrayDescriptor, CUarray hArray ) {
 	trace();	
 	RETURN( CudaApi::get()->cuArrayGetDescriptor(pArrayDescriptor, hArray) );
 }
 
-CUresult cuArrayDestroy( CUarray hArray ) {
+CUresult Function(cuArrayDestroy)( CUarray hArray ) {
 	trace();	
 	RETURN( CudaApi::get()->cuArrayDestroy(hArray) );
 }
 
 
-CUresult cuArray3DCreate( CUarray *pHandle, 
+CUresult FunctionV(cuArray3DCreate)( CUarray *pHandle, 
 	const CUDA_ARRAY3D_DESCRIPTOR *pAllocateArray ) {
 	trace();	
 	RETURN( CudaApi::get()->cuArray3DCreate(pHandle, pAllocateArray) );
 }
 
-CUresult cuArray3DGetDescriptor( 
+CUresult FunctionV(cuArray3DGetDescriptor)( 
 	CUDA_ARRAY3D_DESCRIPTOR *pArrayDescriptor, CUarray hArray ) {
 	trace();	
 	RETURN( CudaApi::get()->cuArray3DGetDescriptor(pArrayDescriptor, hArray) );
@@ -575,92 +583,92 @@ CUresult cuArray3DGetDescriptor(
 **    Texture reference management
 **
 ***********************************/
-CUresult cuTexRefCreate( CUtexref *pTexRef ) {
+CUresult Function(cuTexRefCreate)( CUtexref *pTexRef ) {
 	trace();	
 	RETURN( CudaApi::get()->cuTexRefCreate(pTexRef) );
 }
 
-CUresult cuTexRefDestroy( CUtexref hTexRef ) {
+CUresult Function(cuTexRefDestroy)( CUtexref hTexRef ) {
 	trace();	
 	RETURN( CudaApi::get()->cuTexRefDestroy(hTexRef) );
 }
 
 
-CUresult cuTexRefSetArray( CUtexref hTexRef, CUarray hArray, 
+CUresult Function(cuTexRefSetArray)( CUtexref hTexRef, CUarray hArray, 
 	unsigned int Flags ) {
 	trace();	
 	RETURN( CudaApi::get()->cuTexRefSetArray(hTexRef, hArray, Flags) );
 }
 
-CUresult cuTexRefSetAddress( unsigned int *ByteOffset, 
+CUresult FunctionV(cuTexRefSetAddress)( size_t *ByteOffset, 
 	CUtexref hTexRef, CUdeviceptr dptr, unsigned int bytes ) {
 	trace();	
 	RETURN( CudaApi::get()->cuTexRefSetAddress(ByteOffset, hTexRef, dptr, bytes) );
 }
 
-CUresult cuTexRefSetAddress2D( CUtexref hTexRef, 
+CUresult FunctionV(cuTexRefSetAddress2D)( CUtexref hTexRef, 
 	const CUDA_ARRAY_DESCRIPTOR *desc, CUdeviceptr dptr, 
 	unsigned int Pitch) {
 	trace();	
 	RETURN( CudaApi::get()->cuTexRefSetAddress2D(hTexRef, desc, dptr, Pitch) );
 }
 
-CUresult cuTexRefSetFormat( CUtexref hTexRef, 
+CUresult Function(cuTexRefSetFormat)( CUtexref hTexRef, 
 	CUarray_format fmt, int NumPackedComponents ) {
 	trace();	
 	RETURN( CudaApi::get()->cuTexRefSetFormat(hTexRef, fmt, NumPackedComponents) );
 }
 
-CUresult cuTexRefSetAddressMode( CUtexref hTexRef, int dim, 
+CUresult Function(cuTexRefSetAddressMode)( CUtexref hTexRef, int dim, 
 	CUaddress_mode am ) {
 	trace();	
 	RETURN( CudaApi::get()->cuTexRefSetAddressMode(hTexRef, dim, am) );
 }
 
-CUresult cuTexRefSetFilterMode( CUtexref hTexRef, 
+CUresult Function(cuTexRefSetFilterMode)( CUtexref hTexRef, 
 	CUfilter_mode fm ) {
 	trace();	
 	RETURN( CudaApi::get()->cuTexRefSetFilterMode(hTexRef, fm) );
 }
 
-CUresult cuTexRefSetFlags( CUtexref hTexRef, 
+CUresult Function(cuTexRefSetFlags)( CUtexref hTexRef, 
 	unsigned int Flags ) {
 	trace();	
 	RETURN( CudaApi::get()->cuTexRefSetFlags(hTexRef, Flags) );
 }
 
 
-CUresult cuTexRefGetAddress( CUdeviceptr *pdptr, 
+CUresult FunctionV(cuTexRefGetAddress)( CUdeviceptr *pdptr, 
 	CUtexref hTexRef ) {
 	trace();	
 	RETURN( CudaApi::get()->cuTexRefGetAddress(pdptr, hTexRef) );
 }
 
-CUresult cuTexRefGetArray( CUarray *phArray, 
+CUresult Function(cuTexRefGetArray)( CUarray *phArray, 
 	CUtexref hTexRef ) {
 	trace();	
 	RETURN( CudaApi::get()->cuTexRefGetArray(phArray, hTexRef) );
 }
 
-CUresult cuTexRefGetAddressMode( CUaddress_mode *pam, 
+CUresult Function(cuTexRefGetAddressMode)( CUaddress_mode *pam, 
 	CUtexref hTexRef, int dim ) {
 	trace();	
 	RETURN( CudaApi::get()->cuTexRefGetAddressMode(pam, hTexRef, dim) );
 }
 
-CUresult cuTexRefGetFilterMode( CUfilter_mode *pfm, 
+CUresult Function(cuTexRefGetFilterMode)( CUfilter_mode *pfm, 
 	CUtexref hTexRef ) {
 	trace();	
 	RETURN( CudaApi::get()->cuTexRefGetFilterMode(pfm, hTexRef) );
 }
 
-CUresult cuTexRefGetFormat( CUarray_format *pFormat, 
+CUresult Function(cuTexRefGetFormat)( CUarray_format *pFormat, 
 	int *pNumChannels, CUtexref hTexRef ) {
 	trace();	
 	RETURN( CudaApi::get()->cuTexRefGetFormat(pFormat, pNumChannels, hTexRef) );
 }
 
-CUresult cuTexRefGetFlags( unsigned int *pFlags, 
+CUresult Function(cuTexRefGetFlags)( unsigned int *pFlags, 
 	CUtexref hTexRef ) {
 	trace();	
 	RETURN( CudaApi::get()->cuTexRefGetFlags(pFlags, hTexRef) );
@@ -673,31 +681,31 @@ CUresult cuTexRefGetFlags( unsigned int *pFlags,
 **
 ***********************************/
 
-CUresult cuParamSetSize (CUfunction hfunc, 
+CUresult Function(cuParamSetSize)(CUfunction hfunc, 
 	unsigned int numbytes) {
 	trace();	
 	RETURN( CudaApi::get()->cuParamSetSize(hfunc, numbytes) );
 }
 
-CUresult cuParamSeti    (CUfunction hfunc, int offset, 
+CUresult Function(cuParamSeti)(CUfunction hfunc, int offset, 
 	unsigned int value) {
 	trace();	
 	RETURN( CudaApi::get()->cuParamSeti(hfunc, offset, value) );
 }
 
-CUresult cuParamSetf    (CUfunction hfunc, int offset, 
+CUresult Function(cuParamSetf)(CUfunction hfunc, int offset, 
 	float value) {
 	trace();	
 	RETURN( CudaApi::get()->cuParamSetf(hfunc, offset, value) );
 }
 
-CUresult cuParamSetv    (CUfunction hfunc, int offset, 
+CUresult Function(cuParamSetv)(CUfunction hfunc, int offset, 
 	void * ptr, unsigned int numbytes) {
 	trace();	
 	RETURN( CudaApi::get()->cuParamSetv(hfunc, offset, ptr, numbytes) );
 }
 
-CUresult cuParamSetTexRef(CUfunction hfunc, int texunit, 
+CUresult Function(cuParamSetTexRef)(CUfunction hfunc, int texunit, 
 	CUtexref hTexRef) {
 	trace();	
 	RETURN( CudaApi::get()->cuParamSetTexRef(hfunc, texunit, hTexRef) );
@@ -710,18 +718,18 @@ CUresult cuParamSetTexRef(CUfunction hfunc, int texunit,
 **
 ***********************************/
 
-CUresult cuLaunch ( CUfunction f ) {
+CUresult Function(cuLaunch)( CUfunction f ) {
 	trace();	
 	RETURN( CudaApi::get()->cuLaunch(f) );
 }
 
-CUresult cuLaunchGrid (CUfunction f, int grid_width, 
+CUresult Function(cuLaunchGrid)(CUfunction f, int grid_width, 
 	int grid_height) {
 	trace();	
 	RETURN( CudaApi::get()->cuLaunchGrid(f, grid_width, grid_height) );
 }
 
-CUresult cuLaunchGridAsync( CUfunction f, int grid_width, 
+CUresult Function(cuLaunchGridAsync)( CUfunction f, int grid_width, 
 	int grid_height, CUstream hStream ) {
 	trace();	
 	RETURN( CudaApi::get()->cuLaunchGridAsync(f, grid_width, grid_height, hStream) );
@@ -733,33 +741,33 @@ CUresult cuLaunchGridAsync( CUfunction f, int grid_width,
 **    Events
 **
 ***********************************/
-CUresult cuEventCreate( CUevent *phEvent, 
+CUresult Function(cuEventCreate)( CUevent *phEvent, 
 	unsigned int Flags ) {
 	trace();	
 	RETURN( CudaApi::get()->cuEventCreate(phEvent, Flags) );
 }
 
-CUresult cuEventRecord( CUevent hEvent, CUstream hStream ) {
+CUresult Function(cuEventRecord)( CUevent hEvent, CUstream hStream ) {
 	trace();	
 	RETURN( CudaApi::get()->cuEventRecord(hEvent, hStream) );
 }
 
-CUresult cuEventQuery( CUevent hEvent ) {
+CUresult Function(cuEventQuery)( CUevent hEvent ) {
 	trace();	
 	RETURN( CudaApi::get()->cuEventQuery(hEvent) );
 }
 
-CUresult cuEventSynchronize( CUevent hEvent ) {
+CUresult Function(cuEventSynchronize)( CUevent hEvent ) {
 	trace();	
 	RETURN( CudaApi::get()->cuEventSynchronize(hEvent) );
 }
 
-CUresult cuEventDestroy( CUevent hEvent ) {
+CUresult Function(cuEventDestroy)( CUevent hEvent ) {
 	trace();	
 	RETURN( CudaApi::get()->cuEventDestroy(hEvent) );
 }
 
-CUresult cuEventElapsedTime( float *pMilliseconds, 
+CUresult Function(cuEventElapsedTime)( float *pMilliseconds, 
 	CUevent hStart, CUevent hEnd ) {
 	trace();	
 	RETURN( CudaApi::get()->cuEventElapsedTime(pMilliseconds, hStart, hEnd) );
@@ -771,23 +779,23 @@ CUresult cuEventElapsedTime( float *pMilliseconds,
 **    Streams
 **
 ***********************************/
-CUresult cuStreamCreate( CUstream *phStream, 
+CUresult Function(cuStreamCreate)( CUstream *phStream, 
 	unsigned int Flags ) {
 	trace();	
 	RETURN( CudaApi::get()->cuStreamCreate(phStream, Flags) );
 }
 
-CUresult cuStreamQuery( CUstream hStream ) {
+CUresult Function(cuStreamQuery)( CUstream hStream ) {
 	trace();	
 	RETURN( CudaApi::get()->cuStreamQuery(hStream) );
 }
 
-CUresult cuStreamSynchronize( CUstream hStream ) {
+CUresult Function(cuStreamSynchronize)( CUstream hStream ) {
 	trace();	
 	RETURN( CudaApi::get()->cuStreamSynchronize(hStream) );
 }
 
-CUresult cuStreamDestroy( CUstream hStream ) {
+CUresult Function(cuStreamDestroy)( CUstream hStream ) {
 	trace();	
 	RETURN( CudaApi::get()->cuStreamDestroy(hStream) );
 }
@@ -798,39 +806,39 @@ CUresult cuStreamDestroy( CUstream hStream ) {
 **    Graphics
 **
 ***********************************/
-CUresult cuGraphicsUnregisterResource(
+CUresult Function(cuGraphicsUnregisterResource)(
 	CUgraphicsResource resource) {
 	trace();	
 	RETURN( CudaApi::get()->cuGraphicsUnregisterResource(resource) );
 }
 
-CUresult cuGraphicsSubResourceGetMappedArray(
+CUresult Function(cuGraphicsSubResourceGetMappedArray)(
 	CUarray *pArray, CUgraphicsResource resource, 
 	unsigned int arrayIndex, unsigned int mipLevel ) {
 	trace();	
 	RETURN( CudaApi::get()->cuGraphicsSubResourceGetMappedArray(pArray, resource, arrayIndex, mipLevel) );
 }
 
-CUresult cuGraphicsResourceGetMappedPointer(
-	CUdeviceptr *pDevPtr, unsigned int *pSize, 
+CUresult FunctionV(cuGraphicsResourceGetMappedPointer)(
+	CUdeviceptr *pDevPtr, size_t *pSize, 
 	CUgraphicsResource resource ) {
 	trace();	
 	RETURN( CudaApi::get()->cuGraphicsResourceGetMappedPointer(pDevPtr, pSize, resource) );
 }
 
-CUresult cuGraphicsResourceSetMapFlags(
+CUresult Function(cuGraphicsResourceSetMapFlags)(
 	CUgraphicsResource resource, unsigned int flags ) {
 	trace();	
 	RETURN( CudaApi::get()->cuGraphicsResourceSetMapFlags(resource, flags) );
 }
  
-CUresult cuGraphicsMapResources(unsigned int count, 
+CUresult Function(cuGraphicsMapResources)(unsigned int count, 
 	CUgraphicsResource *resources, CUstream hStream ) {
 	trace();	
 	RETURN( CudaApi::get()->cuGraphicsMapResources(count, resources, hStream) );
 }
 
-CUresult cuGraphicsUnmapResources(unsigned int count, 
+CUresult Function(cuGraphicsUnmapResources)(unsigned int count, 
 	CUgraphicsResource *resources, CUstream hStream ) {
 	trace();	
 	RETURN( CudaApi::get()->cuGraphicsUnmapResources(count, resources, hStream) );
@@ -842,31 +850,32 @@ CUresult cuGraphicsUnmapResources(unsigned int count,
 **    OpenGL
 **
 ***********************************/
-CUresult cuGLInit() {
+CUresult Function(cuGLInit)() {
 	trace();	
 	RETURN( CudaApi::get()->cuGLInit() );
 }
 
-CUresult cuGLCtxCreate(CUcontext *pCtx, 
+CUresult Function(cuGLCtxCreate)(CUcontext *pCtx, 
 	unsigned int Flags, CUdevice device) {
 	trace();	
 	RETURN( CudaApi::get()->cuGLCtxCreate(pCtx, Flags, device) );
 }
 
-CUresult cuGraphicsGLRegisterBuffer( 
+CUresult Function(cuGraphicsGLRegisterBuffer)( 
 	CUgraphicsResource *pCudaResource, unsigned int buffer, 
 	unsigned int Flags ) {
 	trace();	
 	RETURN( CudaApi::get()->cuGraphicsGLRegisterBuffer(pCudaResource, buffer, Flags) );
 }
 
-CUresult cuGraphicsGLRegisterImage( 
+CUresult Function(cuGraphicsGLRegisterImage)( 
 	CUgraphicsResource *pCudaResource, unsigned int image, 
 	int target, unsigned int Flags) {
 	trace();	
 	RETURN( CudaApi::get()->cuGraphicsGLRegisterImage(pCudaResource, image, target, Flags) );
 }
 
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+}
 

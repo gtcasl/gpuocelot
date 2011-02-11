@@ -306,7 +306,7 @@ CUresult util::KernelExtractorDriver::cuDeviceComputeCapability(int *major, int 
 	RETURN( cudaDriver.cuDeviceComputeCapability(major, minor, dev) );
 }
 
-CUresult util::KernelExtractorDriver::cuDeviceTotalMem(unsigned int *bytes, CUdevice dev) {
+CUresult util::KernelExtractorDriver::cuDeviceTotalMem(size_t *bytes, CUdevice dev) {
 	trace();	
 	RETURN( cudaDriver.cuDeviceTotalMem(bytes, dev) );
 }
@@ -430,7 +430,7 @@ CUresult util::KernelExtractorDriver::cuModuleGetFunction(CUfunction *hfunc,
 }
 
 CUresult util::KernelExtractorDriver::cuModuleGetGlobal(CUdeviceptr *dptr, 
-	unsigned int *bytes, CUmodule hmod, const char *name) {
+	size_t *bytes, CUmodule hmod, const char *name) {
 	trace();	
 	RETURN( cudaDriver.cuModuleGetGlobal(dptr, bytes, hmod, name) );
 }
@@ -452,8 +452,8 @@ CUresult util::KernelExtractorDriver::cuModuleGetTexRef(CUtexref *pTexRef, CUmod
 **
 ***********************************/
 
-CUresult util::KernelExtractorDriver::cuMemGetInfo(unsigned int *free, 
-	unsigned int *total) {
+CUresult util::KernelExtractorDriver::cuMemGetInfo(size_t *free, 
+	size_t *total) {
 	trace();	
 	RETURN( cudaDriver.cuMemGetInfo(free, total) );
 }
@@ -473,7 +473,7 @@ CUresult util::KernelExtractorDriver::cuMemAlloc( CUdeviceptr *dptr,
 }
 
 CUresult util::KernelExtractorDriver::cuMemAllocPitch( CUdeviceptr *dptr, 
-			          unsigned int *pPitch,
+			          size_t *pPitch,
 			          unsigned int WidthInBytes, 
 			          unsigned int Height, 
 			          unsigned int ElementSizeBytes
@@ -496,7 +496,7 @@ CUresult util::KernelExtractorDriver::cuMemFree(CUdeviceptr dptr) {
 }
 
 CUresult util::KernelExtractorDriver::cuMemGetAddressRange( CUdeviceptr *pbase, 
-	unsigned int *psize, CUdeviceptr dptr ) {
+	size_t *psize, CUdeviceptr dptr ) {
 	trace();	
 	RETURN( cudaDriver.cuMemGetAddressRange(pbase, psize, dptr) );
 }
@@ -824,8 +824,8 @@ CUresult util::KernelExtractorDriver::cuTexRefSetArray( CUtexref hTexRef, CUarra
 	RETURN( cudaDriver.cuTexRefSetArray(hTexRef, hArray, Flags) );
 }
 
-CUresult util::KernelExtractorDriver::cuTexRefSetAddress( unsigned int *ByteOffset, 
-	CUtexref hTexRef, CUdeviceptr dptr, unsigned int bytes ) {
+CUresult util::KernelExtractorDriver::cuTexRefSetAddress( size_t *ByteOffset, 
+	CUtexref hTexRef, CUdeviceptr dptr, size_t bytes ) {
 	trace();	
 	RETURN( cudaDriver.cuTexRefSetAddress(ByteOffset, hTexRef, dptr, bytes) );
 }
@@ -1085,7 +1085,7 @@ CUresult util::KernelExtractorDriver::cuGraphicsSubResourceGetMappedArray(
 }
 
 CUresult util::KernelExtractorDriver::cuGraphicsResourceGetMappedPointer(
-	CUdeviceptr *pDevPtr, unsigned int *pSize, 
+	CUdeviceptr *pDevPtr, size_t *pSize, 
 	CUgraphicsResource resource ) {
 	trace();	
 	RETURN( cudaDriver.cuGraphicsResourceGetMappedPointer(pDevPtr, pSize, resource) );

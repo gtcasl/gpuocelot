@@ -2998,8 +2998,9 @@ cudaError_t cuda::CudaRuntime::cudaGLMapBufferObjectAsync(void **devPtr,
 		_getDevice().mapGraphicsResource(& buffer->second, 1, stream);
 		
 		size_t bytes = 0;
-		*devPtr = _getDevice().getPointerToMappedGraphicsResource(
-			bytes, buffer->second);	// semantics of this questionable
+		
+		// semantics of this questionable
+		*devPtr = _getDevice().getPointerToMappedGraphicsResource(bytes, buffer->second);
 		result = cudaSuccess;
 	}
 	_release();

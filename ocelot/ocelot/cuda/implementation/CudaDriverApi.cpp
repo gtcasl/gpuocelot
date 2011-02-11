@@ -33,7 +33,7 @@
 #define CUDA_VERBOSE 1
 
 // whether debugging messages are printed
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -66,7 +66,7 @@
 
 // use this to define either a pass-through driver API implementation for testing linkage with the
 // shared object or to invoke Ocelot's Driver API frontend
-typedef cuda::CudaDriverFrontend CudaApi;
+typedef cuda::CudaDriverInterface CudaApi;
 
 extern "C" {
 

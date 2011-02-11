@@ -28,12 +28,14 @@ namespace cuda
 			/*********************************
 			** Initialization
 			*********************************/
-			CUresult cuInit(unsigned int Flags);
+			virtual CUresult cuInit(unsigned int Flags);
 
 			/*********************************
 			** Driver Version Query
 			*********************************/
-			CUresult cuDriverGetVersion(int *driverVersion);
+			virtual CUresult cuDriverGetVersion(int *driverVersion);
+			virtual CUresult cuGetExportTable(const void **ppExportTable,
+				const CUuuid *pExportTableId);
 
 			/************************************
 			**
@@ -41,15 +43,15 @@ namespace cuda
 			**
 			***********************************/
 
-			CUresult cuDeviceGet(CUdevice *device, int ordinal);
-			CUresult cuDeviceGetCount(int *count);
-			CUresult cuDeviceGetName(char *name, int len, CUdevice dev);
-			CUresult cuDeviceComputeCapability(int *major, int *minor, 
+			virtual CUresult cuDeviceGet(CUdevice *device, int ordinal);
+			virtual CUresult cuDeviceGetCount(int *count);
+			virtual CUresult cuDeviceGetName(char *name, int len, CUdevice dev);
+			virtual CUresult cuDeviceComputeCapability(int *major, int *minor, 
 				CUdevice dev);
-			CUresult cuDeviceTotalMem(size_t *bytes, CUdevice dev);
-			CUresult cuDeviceGetProperties(CUdevprop *prop, 
+			virtual CUresult cuDeviceTotalMem(size_t *bytes, CUdevice dev);
+			virtual CUresult cuDeviceGetProperties(CUdevprop *prop, 
 				CUdevice dev);
-			CUresult cuDeviceGetAttribute(int *pi, 
+			virtual CUresult cuDeviceGetAttribute(int *pi, 
 				CUdevice_attribute attrib, CUdevice dev);
 
 			/************************************
@@ -58,15 +60,15 @@ namespace cuda
 			**
 			***********************************/
 
-			CUresult cuCtxCreate(CUcontext *pctx, unsigned int flags, 
+			virtual CUresult cuCtxCreate(CUcontext *pctx, unsigned int flags, 
 				CUdevice dev );
-			CUresult cuCtxDestroy( CUcontext ctx );
-			CUresult cuCtxAttach(CUcontext *pctx, unsigned int flags);
-			CUresult cuCtxDetach(CUcontext ctx);
-			CUresult cuCtxPushCurrent( CUcontext ctx );
-			CUresult cuCtxPopCurrent( CUcontext *pctx );
-			CUresult cuCtxGetDevice(CUdevice *device);
-			CUresult cuCtxSynchronize(void);
+			virtual CUresult cuCtxDestroy( CUcontext ctx );
+			virtual CUresult cuCtxAttach(CUcontext *pctx, unsigned int flags);
+			virtual CUresult cuCtxDetach(CUcontext ctx);
+			virtual CUresult cuCtxPushCurrent( CUcontext ctx );
+			virtual CUresult cuCtxPopCurrent( CUcontext *pctx );
+			virtual CUresult cuCtxGetDevice(CUdevice *device);
+			virtual CUresult cuCtxSynchronize(void);
 
 			/************************************
 			**
@@ -74,20 +76,20 @@ namespace cuda
 			**
 			***********************************/
 
-			CUresult cuModuleLoad(CUmodule *module, const char *fname);
-			CUresult cuModuleLoadData(CUmodule *module, 
+			virtual CUresult cuModuleLoad(CUmodule *module, const char *fname);
+			virtual CUresult cuModuleLoadData(CUmodule *module, 
 				const void *image);
-			CUresult cuModuleLoadDataEx(CUmodule *module, 
+			virtual CUresult cuModuleLoadDataEx(CUmodule *module, 
 				const void *image, unsigned int numOptions, 
 				CUjit_option *options, void **optionValues);
-			CUresult cuModuleLoadFatBinary(CUmodule *module, 
+			virtual CUresult cuModuleLoadFatBinary(CUmodule *module, 
 				const void *fatCubin);
-			CUresult cuModuleUnload(CUmodule hmod);
-			CUresult cuModuleGetFunction(CUfunction *hfunc, 
+			virtual CUresult cuModuleUnload(CUmodule hmod);
+			virtual CUresult cuModuleGetFunction(CUfunction *hfunc, 
 				CUmodule hmod, const char *name);
-			CUresult cuModuleGetGlobal(CUdeviceptr *dptr, 
+			virtual CUresult cuModuleGetGlobal(CUdeviceptr *dptr, 
 				size_t *bytes, CUmodule hmod, const char *name);
-			CUresult cuModuleGetTexRef(CUtexref *pTexRef, CUmodule hmod, 
+			virtual CUresult cuModuleGetTexRef(CUtexref *pTexRef, CUmodule hmod, 
 				const char *name);
 
 			/************************************
@@ -96,30 +98,30 @@ namespace cuda
 			**
 			***********************************/
 
-			CUresult cuMemGetInfo(size_t *free, 
+			virtual CUresult cuMemGetInfo(size_t *free, 
 				size_t *total);
 
-			CUresult cuMemAlloc( CUdeviceptr *dptr, 
+			virtual CUresult cuMemAlloc( CUdeviceptr *dptr, 
 				unsigned int bytesize);
-			CUresult cuMemAllocPitch( CUdeviceptr *dptr, 
+			virtual CUresult cuMemAllocPitch( CUdeviceptr *dptr, 
 						          size_t *pPitch,
 						          unsigned int WidthInBytes, 
 						          unsigned int Height, 
 						          unsigned int ElementSizeBytes
 						         );
-			CUresult cuMemFree(CUdeviceptr dptr);
-			CUresult cuMemGetAddressRange( CUdeviceptr *pbase, 
+			virtual CUresult cuMemFree(CUdeviceptr dptr);
+			virtual CUresult cuMemGetAddressRange( CUdeviceptr *pbase, 
 				size_t *psize, CUdeviceptr dptr );
 
-			CUresult cuMemAllocHost(void **pp, unsigned int bytesize);
-			CUresult cuMemFreeHost(void *p);
+			virtual CUresult cuMemAllocHost(void **pp, unsigned int bytesize);
+			virtual CUresult cuMemFreeHost(void *p);
 
-			CUresult cuMemHostAlloc(void **pp, 
+			virtual CUresult cuMemHostAlloc(void **pp, 
 				unsigned long long bytesize, unsigned int Flags );
 
-			CUresult cuMemHostGetDevicePointer( CUdeviceptr *pdptr, 
+			virtual CUresult cuMemHostGetDevicePointer( CUdeviceptr *pdptr, 
 				void *p, unsigned int Flags );
-			CUresult cuMemHostGetFlags( unsigned int *pFlags, void *p );
+			virtual CUresult cuMemHostGetFlags( unsigned int *pFlags, void *p );
 
 			/************************************
 			**
@@ -134,42 +136,42 @@ namespace cuda
 
 			// 1D functions
 			// system <-> device memory
-			CUresult cuMemcpyHtoD (CUdeviceptr dstDevice, 
+			virtual CUresult cuMemcpyHtoD (CUdeviceptr dstDevice, 
 				const void *srcHost, unsigned int ByteCount );
-			CUresult cuMemcpyDtoH (void *dstHost, CUdeviceptr srcDevice, 
+			virtual CUresult cuMemcpyDtoH (void *dstHost, CUdeviceptr srcDevice, 
 				unsigned int ByteCount );
 
 			// device <-> device memory
-			CUresult cuMemcpyDtoD (CUdeviceptr dstDevice, 
+			virtual CUresult cuMemcpyDtoD (CUdeviceptr dstDevice, 
 				CUdeviceptr srcDevice, unsigned int ByteCount );
 
 			// device <-> array memory
-			CUresult cuMemcpyDtoA ( CUarray dstArray, 
+			virtual CUresult cuMemcpyDtoA ( CUarray dstArray, 
 				unsigned int dstIndex, CUdeviceptr srcDevice, 
 				unsigned int ByteCount );
-			CUresult cuMemcpyAtoD ( CUdeviceptr dstDevice, 
+			virtual CUresult cuMemcpyAtoD ( CUdeviceptr dstDevice, 
 				CUarray hSrc, unsigned int SrcIndex, unsigned int ByteCount );
 
 			// system <-> array memory
-			CUresult cuMemcpyHtoA( CUarray dstArray, 
+			virtual CUresult cuMemcpyHtoA( CUarray dstArray, 
 				unsigned int dstIndex, const void *pSrc, 
 				unsigned int ByteCount );
-			CUresult cuMemcpyAtoH( void *dstHost, CUarray srcArray, 
+			virtual CUresult cuMemcpyAtoH( void *dstHost, CUarray srcArray, 
 				unsigned int srcIndex, unsigned int ByteCount );
 
 			// array <-> array memory
-			CUresult cuMemcpyAtoA( CUarray dstArray, 
+			virtual CUresult cuMemcpyAtoA( CUarray dstArray, 
 				unsigned int dstIndex, CUarray srcArray, unsigned int srcIndex, 
 				unsigned int ByteCount );
 
 			// 2D memcpy
 
-			CUresult cuMemcpy2D( const CUDA_MEMCPY2D *pCopy );
-			CUresult cuMemcpy2DUnaligned( const CUDA_MEMCPY2D *pCopy );
+			virtual CUresult cuMemcpy2D( const CUDA_MEMCPY2D *pCopy );
+			virtual CUresult cuMemcpy2DUnaligned( const CUDA_MEMCPY2D *pCopy );
 
 			// 3D memcpy
 
-			CUresult cuMemcpy3D( const CUDA_MEMCPY3D *pCopy );
+			virtual CUresult cuMemcpy3D( const CUDA_MEMCPY3D *pCopy );
 
 			/************************************
 			**
@@ -187,25 +189,25 @@ namespace cuda
 
 			// 1D functions
 			// system <-> device memory
-			CUresult cuMemcpyHtoDAsync (CUdeviceptr dstDevice, 
+			virtual CUresult cuMemcpyHtoDAsync (CUdeviceptr dstDevice, 
 			const void *srcHost, unsigned int ByteCount, CUstream hStream );
-			CUresult cuMemcpyDtoHAsync (void *dstHost, 
+			virtual CUresult cuMemcpyDtoHAsync (void *dstHost, 
 			CUdeviceptr srcDevice, unsigned int ByteCount, CUstream hStream );
 
 			// system <-> array memory
-			CUresult cuMemcpyHtoAAsync( CUarray dstArray, 
+			virtual CUresult cuMemcpyHtoAAsync( CUarray dstArray, 
 				unsigned int dstIndex, const void *pSrc, 
 				unsigned int ByteCount, CUstream hStream );
-			CUresult cuMemcpyAtoHAsync( void *dstHost, CUarray srcArray, 
+			virtual CUresult cuMemcpyAtoHAsync( void *dstHost, CUarray srcArray, 
 				unsigned int srcIndex, unsigned int ByteCount, 
 				CUstream hStream );
 
 			// 2D memcpy
-			CUresult cuMemcpy2DAsync( const CUDA_MEMCPY2D *pCopy, 
+			virtual CUresult cuMemcpy2DAsync( const CUDA_MEMCPY2D *pCopy, 
 				CUstream hStream );
 
 			// 3D memcpy
-			CUresult cuMemcpy3DAsync( const CUDA_MEMCPY3D *pCopy, 
+			virtual CUresult cuMemcpy3DAsync( const CUDA_MEMCPY3D *pCopy, 
 				CUstream hStream );
 
 			/************************************
@@ -213,20 +215,20 @@ namespace cuda
 			**    Memset
 			**
 			***********************************/
-			CUresult cuMemsetD8( CUdeviceptr dstDevice, 
+			virtual CUresult cuMemsetD8( CUdeviceptr dstDevice, 
 				unsigned char uc, unsigned int N );
-			CUresult cuMemsetD16( CUdeviceptr dstDevice, 
+			virtual CUresult cuMemsetD16( CUdeviceptr dstDevice, 
 				unsigned short us, unsigned int N );
-			CUresult cuMemsetD32( CUdeviceptr dstDevice, 
+			virtual CUresult cuMemsetD32( CUdeviceptr dstDevice, 
 				unsigned int ui, unsigned int N );
 
-			CUresult cuMemsetD2D8( CUdeviceptr dstDevice,
+			virtual CUresult cuMemsetD2D8( CUdeviceptr dstDevice,
 				unsigned int dstPitch, unsigned char uc, unsigned int Width, 
 				unsigned int Height );
-			CUresult cuMemsetD2D16( CUdeviceptr dstDevice, 
+			virtual CUresult cuMemsetD2D16( CUdeviceptr dstDevice, 
 				unsigned int dstPitch, unsigned short us, unsigned int Width, 
 				unsigned int Height );
-			CUresult cuMemsetD2D32( CUdeviceptr dstDevice, 
+			virtual CUresult cuMemsetD2D32( CUdeviceptr dstDevice, 
 				unsigned int dstPitch, unsigned int ui, unsigned int Width, 
 				unsigned int Height );
 
@@ -237,11 +239,11 @@ namespace cuda
 			***********************************/
 
 
-			CUresult cuFuncSetBlockShape (CUfunction hfunc, int x, 
+			virtual CUresult cuFuncSetBlockShape (CUfunction hfunc, int x, 
 				int y, int z);
-			CUresult cuFuncSetSharedSize (CUfunction hfunc, 
+			virtual CUresult cuFuncSetSharedSize (CUfunction hfunc, 
 				unsigned int bytes);
-			CUresult cuFuncGetAttribute (int *pi, 
+			virtual CUresult cuFuncGetAttribute (int *pi, 
 				CUfunction_attribute attrib, CUfunction hfunc);
 
 			/************************************
@@ -250,15 +252,15 @@ namespace cuda
 			**
 			***********************************/
 
-			CUresult cuArrayCreate( CUarray *pHandle, 
+			virtual CUresult cuArrayCreate( CUarray *pHandle, 
 				const CUDA_ARRAY_DESCRIPTOR *pAllocateArray );
-			CUresult cuArrayGetDescriptor( 
+			virtual CUresult cuArrayGetDescriptor( 
 				CUDA_ARRAY_DESCRIPTOR *pArrayDescriptor, CUarray hArray );
-			CUresult cuArrayDestroy( CUarray hArray );
+			virtual CUresult cuArrayDestroy( CUarray hArray );
 
-			CUresult cuArray3DCreate( CUarray *pHandle, 
+			virtual CUresult cuArray3DCreate( CUarray *pHandle, 
 				const CUDA_ARRAY3D_DESCRIPTOR *pAllocateArray );
-			CUresult cuArray3DGetDescriptor( 
+			virtual CUresult cuArray3DGetDescriptor( 
 				CUDA_ARRAY3D_DESCRIPTOR *pArrayDescriptor, CUarray hArray );
 
 
@@ -267,36 +269,36 @@ namespace cuda
 			**    Texture reference management
 			**
 			***********************************/
-			CUresult cuTexRefCreate( CUtexref *pTexRef );
-			CUresult cuTexRefDestroy( CUtexref hTexRef );
+			virtual CUresult cuTexRefCreate( CUtexref *pTexRef );
+			virtual CUresult cuTexRefDestroy( CUtexref hTexRef );
 
-			CUresult cuTexRefSetArray( CUtexref hTexRef, CUarray hArray, 
+			virtual CUresult cuTexRefSetArray( CUtexref hTexRef, CUarray hArray, 
 				unsigned int Flags );
-			CUresult cuTexRefSetAddress( size_t *ByteOffset, 
+			virtual CUresult cuTexRefSetAddress( size_t *ByteOffset, 
 				CUtexref hTexRef, CUdeviceptr dptr, unsigned int bytes );
-			CUresult cuTexRefSetAddress2D( CUtexref hTexRef, 
+			virtual CUresult cuTexRefSetAddress2D( CUtexref hTexRef, 
 				const CUDA_ARRAY_DESCRIPTOR *desc, CUdeviceptr dptr, 
 				unsigned int Pitch);
-			CUresult cuTexRefSetFormat( CUtexref hTexRef, 
+			virtual CUresult cuTexRefSetFormat( CUtexref hTexRef, 
 				CUarray_format fmt, int NumPackedComponents );
-			CUresult cuTexRefSetAddressMode( CUtexref hTexRef, int dim, 
+			virtual CUresult cuTexRefSetAddressMode( CUtexref hTexRef, int dim, 
 				CUaddress_mode am );
-			CUresult cuTexRefSetFilterMode( CUtexref hTexRef, 
+			virtual CUresult cuTexRefSetFilterMode( CUtexref hTexRef, 
 				CUfilter_mode fm );
-			CUresult cuTexRefSetFlags( CUtexref hTexRef, 
+			virtual CUresult cuTexRefSetFlags( CUtexref hTexRef, 
 				unsigned int Flags );
 
-			CUresult cuTexRefGetAddress( CUdeviceptr *pdptr, 
+			virtual CUresult cuTexRefGetAddress( CUdeviceptr *pdptr, 
 				CUtexref hTexRef );
-			CUresult cuTexRefGetArray( CUarray *phArray, 
+			virtual CUresult cuTexRefGetArray( CUarray *phArray, 
 				CUtexref hTexRef );
-			CUresult cuTexRefGetAddressMode( CUaddress_mode *pam, 
+			virtual CUresult cuTexRefGetAddressMode( CUaddress_mode *pam, 
 				CUtexref hTexRef, int dim );
-			CUresult cuTexRefGetFilterMode( CUfilter_mode *pfm, 
+			virtual CUresult cuTexRefGetFilterMode( CUfilter_mode *pfm, 
 				CUtexref hTexRef );
-			CUresult cuTexRefGetFormat( CUarray_format *pFormat, 
+			virtual CUresult cuTexRefGetFormat( CUarray_format *pFormat, 
 				int *pNumChannels, CUtexref hTexRef );
-			CUresult cuTexRefGetFlags( unsigned int *pFlags, 
+			virtual CUresult cuTexRefGetFlags( unsigned int *pFlags, 
 				CUtexref hTexRef );
 
 			/************************************
@@ -305,15 +307,15 @@ namespace cuda
 			**
 			***********************************/
 
-			CUresult cuParamSetSize (CUfunction hfunc, 
+			virtual CUresult cuParamSetSize (CUfunction hfunc, 
 				unsigned int numbytes);
-			CUresult cuParamSeti    (CUfunction hfunc, int offset, 
+			virtual CUresult cuParamSeti    (CUfunction hfunc, int offset, 
 				unsigned int value);
-			CUresult cuParamSetf    (CUfunction hfunc, int offset, 
+			virtual CUresult cuParamSetf    (CUfunction hfunc, int offset, 
 				float value);
-			CUresult cuParamSetv    (CUfunction hfunc, int offset, 
+			virtual CUresult cuParamSetv    (CUfunction hfunc, int offset, 
 				void * ptr, unsigned int numbytes);
-			CUresult cuParamSetTexRef(CUfunction hfunc, int texunit, 
+			virtual CUresult cuParamSetTexRef(CUfunction hfunc, int texunit, 
 				CUtexref hTexRef);
 
 			/************************************
@@ -322,10 +324,10 @@ namespace cuda
 			**
 			***********************************/
 
-			CUresult cuLaunch ( CUfunction f );
-			CUresult cuLaunchGrid (CUfunction f, int grid_width, 
+			virtual CUresult cuLaunch ( CUfunction f );
+			virtual CUresult cuLaunchGrid (CUfunction f, int grid_width, 
 				int grid_height);
-			CUresult cuLaunchGridAsync( CUfunction f, int grid_width, 
+			virtual CUresult cuLaunchGridAsync( CUfunction f, int grid_width, 
 				int grid_height, CUstream hStream );
 
 			/************************************
@@ -333,13 +335,13 @@ namespace cuda
 			**    Events
 			**
 			***********************************/
-			CUresult cuEventCreate( CUevent *phEvent, 
+			virtual CUresult cuEventCreate( CUevent *phEvent, 
 				unsigned int Flags );
-			CUresult cuEventRecord( CUevent hEvent, CUstream hStream );
-			CUresult cuEventQuery( CUevent hEvent );
-			CUresult cuEventSynchronize( CUevent hEvent );
-			CUresult cuEventDestroy( CUevent hEvent );
-			CUresult cuEventElapsedTime( float *pMilliseconds, 
+			virtual CUresult cuEventRecord( CUevent hEvent, CUstream hStream );
+			virtual CUresult cuEventQuery( CUevent hEvent );
+			virtual CUresult cuEventSynchronize( CUevent hEvent );
+			virtual CUresult cuEventDestroy( CUevent hEvent );
+			virtual CUresult cuEventElapsedTime( float *pMilliseconds, 
 				CUevent hStart, CUevent hEnd );
 
 			/************************************
@@ -347,30 +349,30 @@ namespace cuda
 			**    Streams
 			**
 			***********************************/
-			CUresult cuStreamCreate( CUstream *phStream, 
+			virtual CUresult cuStreamCreate( CUstream *phStream, 
 				unsigned int Flags );
-			CUresult cuStreamQuery( CUstream hStream );
-			CUresult cuStreamSynchronize( CUstream hStream );
-			CUresult cuStreamDestroy( CUstream hStream );
+			virtual CUresult cuStreamQuery( CUstream hStream );
+			virtual CUresult cuStreamSynchronize( CUstream hStream );
+			virtual CUresult cuStreamDestroy( CUstream hStream );
 
 			/************************************
 			**
 			**    Graphics
 			**
 			***********************************/
-			CUresult cuGraphicsUnregisterResource(
+			virtual CUresult cuGraphicsUnregisterResource(
 				CUgraphicsResource resource);
-			CUresult cuGraphicsSubResourceGetMappedArray(
+			virtual CUresult cuGraphicsSubResourceGetMappedArray(
 				CUarray *pArray, CUgraphicsResource resource, 
 				unsigned int arrayIndex, unsigned int mipLevel );
-			CUresult cuGraphicsResourceGetMappedPointer(
+			virtual CUresult cuGraphicsResourceGetMappedPointer(
 				CUdeviceptr *pDevPtr, size_t *pSize, 
 				CUgraphicsResource resource );
-			CUresult cuGraphicsResourceSetMapFlags(
+			virtual CUresult cuGraphicsResourceSetMapFlags(
 				CUgraphicsResource resource, unsigned int flags ); 
-			CUresult cuGraphicsMapResources(unsigned int count, 
+			virtual CUresult cuGraphicsMapResources(unsigned int count, 
 				CUgraphicsResource *resources, CUstream hStream );
-			CUresult cuGraphicsUnmapResources(unsigned int count, 
+			virtual CUresult cuGraphicsUnmapResources(unsigned int count, 
 				CUgraphicsResource *resources, CUstream hStream );
 
 			/************************************
@@ -378,13 +380,13 @@ namespace cuda
 			**    OpenGL
 			**
 			***********************************/
-			CUresult cuGLInit();
-			CUresult cuGLCtxCreate(CUcontext *pCtx, 
+			virtual CUresult cuGLInit();
+			virtual CUresult cuGLCtxCreate(CUcontext *pCtx, 
 				unsigned int Flags, CUdevice device);
-			CUresult cuGraphicsGLRegisterBuffer( 
+			virtual CUresult cuGraphicsGLRegisterBuffer( 
 				CUgraphicsResource *pCudaResource, unsigned int buffer, 
 				unsigned int Flags );
-			CUresult cuGraphicsGLRegisterImage( 
+			virtual CUresult cuGraphicsGLRegisterImage( 
 				CUgraphicsResource *pCudaResource, unsigned int image, 
 				int target, unsigned int Flags);
 

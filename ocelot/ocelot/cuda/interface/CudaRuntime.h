@@ -20,6 +20,7 @@
 #include <ocelot/cuda/interface/CudaRuntimeInterface.h>
 #include <ocelot/executive/interface/Device.h>
 #include <ocelot/analysis/interface/PassManager.h>
+#include <ocelot/cuda/interface/FatBinaryContext.h>
 
 // Hydrazine includes
 #include <hydrazine/implementation/Timer.h>
@@ -126,17 +127,6 @@ namespace cuda {
 	};
 	
 	typedef std::map< void*, RegisteredKernel > RegisteredKernelMap;
-
-	/*!	\brief Class allowing sharing of a fat binary among threads	*/
-	class FatBinaryContext {
-	public:
-		//! pointer to CUBIN structure
-		void *cubin_ptr;
-		
-	public:
-		const char *name() const;
-		const char *ptx() const;
-	};
 
 	class RegisteredTexture
 	{

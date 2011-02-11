@@ -59,6 +59,15 @@ typedef api::OcelotConfiguration config;
 
 cuda::CudaDriverFrontend *cuda::CudaDriverFrontend::_instance = 0;
 
+cuda::CudaDriverInterface * cuda::CudaDriverInterface::get() {
+	if (!cuda::CudaDriverFrontend::_instance) {
+		cuda::CudaDriverFrontend::_instance = new CudaDriverFrontend;
+	}
+	return cuda::CudaDriverFrontend::_instance;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
 class CudaDriverFrontendDestructor {
 public:
 	~CudaDriverFrontendDestructor() {
@@ -86,12 +95,6 @@ cuda::CudaDriverFrontend::~CudaDriverFrontend() {
 	}
 }
 
-cuda::CudaDriverFrontend * cuda::CudaDriverFrontend::get() {
-	if (!_instance) {
-		_instance = new CudaDriverFrontend;
-	}
-	return _instance;
-}
 
 //! \brief create devices if they do not exist
 void cuda::CudaDriverFrontend::_enumerateDevices() {

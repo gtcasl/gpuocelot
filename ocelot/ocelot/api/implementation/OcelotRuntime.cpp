@@ -29,9 +29,11 @@ namespace ocelot
 	
 	void OcelotRuntime::configure( const api::OcelotConfiguration & c )
 	{
-		if (c.trace.memoryChecker)
+		if (c.trace.memoryChecker.enabled)
 		{
 			report( "Creating memory checker" );
+			_memoryChecker.setCheckInitialization(  
+				c.trace.memoryChecker.checkInitialization );
 			ocelot::addTraceGenerator( _memoryChecker, true );
 		}
 		if (c.trace.raceDetector.enabled)

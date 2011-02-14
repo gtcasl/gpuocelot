@@ -627,6 +627,7 @@ namespace executive
 		memcpy.dstXInBytes = 0;
 		memcpy.dstY = 0;
 		memcpy.dstZ = 0;
+
 		
 		checkError(driver::cuMemcpy3D(&memcpy));
 	}
@@ -724,13 +725,9 @@ namespace executive
 			checkError(driver::cuCtxCreate(&_context, flags, device));
 		}
 		
-		report("NVIDIAGPUDevice::NVIDIAGPUDevice() - created context. _opengl = " << _opengl);
-		unsigned int version = 0;
-		checkError(driver::cuCtxGetApiVersion(_context, &version));
-		report("  API version = " << version << ", driver version = " << _driverVersion)
-		
+		report("NVIDIAGPUDevice::NVIDIAGPUDevice() - created context. _opengl = " << _opengl);		
 		checkError(driver::cuCtxPopCurrent(&_context));
-		
+				
 		checkError(driver::cuDeviceGetName(_properties.name, 255, device));
 		
 		size_t total;
@@ -1196,6 +1193,7 @@ namespace executive
 			Throw("Invalid event - " << handle);
 		}
 		
+
 		checkError(driver::cuEventDestroy(event->second));
 		_events.erase(event);
 	}

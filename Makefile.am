@@ -441,6 +441,9 @@ libKernelExtractor_la_SOURCES = ocelot/util/implementation/KernelExtractor.cpp \
 KernelTestHarness_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
 KernelTestHarness_SOURCES = ocelot/util/implementation/KernelTestHarness.cpp \
 	ocelot/util/implementation/ExtractedDeviceState.cpp
+KernelTestHarness_includedir = .
+KernelTestHarness_include_HEADERS = ocelot/util/interface/KernelTestHarness.h \
+	ocelot/util/interface/ExtractedDeviceState.h
 KernelTestHarness_LDADD = libocelot.la $(LLVM_LDFLAGS)
 KernelTestHarness_LDFLAGS = -static
 ################################################################################

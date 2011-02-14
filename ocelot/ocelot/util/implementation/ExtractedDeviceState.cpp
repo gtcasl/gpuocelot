@@ -8,9 +8,40 @@
 // C++ includes
 #include <iomanip>
 #include <sstream>
+#include <assert.h>
+#include <iostream>
+
+// Boost includes
+#include  <boost/lexical_cast.hpp>
+
+// Hydrazine includes
+#include <hydrazine/implementation/Exception.h>
+#include <hydrazine/implementation/debug.h>
+#include <hydrazine/interface/Casts.h>
 
 // Ocelot includes
 #include <ocelot/util/interface/ExtractedDeviceState.h>
+
+#ifdef REPORT_BASE
+#undef REPORT_BASE
+#endif
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+// whether debugging messages are printed
+#define REPORT_BASE 1
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+template <typename ElemT>
+struct HexTo {
+	ElemT value;
+	operator ElemT() const {return value;}
+	friend std::istream& operator>>(std::istream& in, HexTo& out) {
+		  in >> std::hex >> out.value;
+		  return in;
+	}
+};
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -29,6 +60,23 @@ static std::ostream & serialize(std::ostream &out, const ir::Dim3 &dim) {
 	out << "[" << dim.x << ", " << dim.y << ", " << dim.z << "]";
 	return out;
 }
+
+static void deserialize(ir::Dim3 &dim, const hydrazine::json::Visitor &array) {
+	dim.x = array[0];
+	dim.y = array[1];
+	dim.z = array[2];
+}
+
+/*
+static void deserialize(std::vector<int> &ints, const hydrazine::json::Visitor &array) {
+	hydrazine::json::Array *arrayPtr = static_cast<hydrazine::json::Array *>(array.value);
+	for (hydrazine::json::Array::ValueVector::const_iterator it = arrayPtr->begin();
+		it != arrayPtr->end(); ++it) {
+		
+		ints.push_back((*it)->as_integer());
+	}
+}
+*/
 
 static std::ostream & serialize(std::ostream &out, const std::vector<int> &ints) {
 	out << "[";
@@ -68,8 +116,46 @@ static void serializeBinary(std::ostream &out, const size_t size, const char *by
 	out << std::setbase(10) << "\n] }";
 }
 
+static void deserializeBinary(util::ByteVector &bytes, const hydrazine::json::Array *arrayPtr, size_t size) {
+	size_t wordSize = 4;
+	bytes.clear();
+	bytes.reserve(size);
+	for (hydrazine::json::Array::ValueVector::const_iterator it = arrayPtr->begin(); it != arrayPtr->end(); ++it) {
+		std::string wordString = (*it)->as_string();		
+		unsigned int word = boost::lexical_cast<HexTo<unsigned int> >(wordString);
+		for (size_t i = 0; i < wordSize; i++) {
+			bytes.push_back(word & 0x0ff);
+			word >>= 8;
+		}
+	}
+	bytes.resize(size, 0);
+}
+
+static void deserializeBinary(util::ByteVector &bytes, const hydrazine::json::Visitor &object) {
+	size_t size = object.parse<int>("bytes", 0);
+	if (hydrazine::json::Value *arrayValue = object.find("image")) {
+		deserializeBinary(bytes, static_cast<hydrazine::json::Array *>(arrayValue), size);
+	}
+}
+
 static void serializeBinary(std::ostream &out, const util::ByteVector &data) {
 	serializeBinary(out, data.size(), &data[0]);
+}
+
+static void deserializeImage(util::ByteVector &bytes, std::istream &in, size_t size) {
+	size_t wordSize = 4;
+	bytes.clear();
+	bytes.reserve(size);
+	while (in.good()) {
+		std::string wordString;
+		in >> wordString;
+		unsigned int word = boost::lexical_cast<HexTo<unsigned int> >(wordString);
+		for (size_t i = 0; i < wordSize; i++) {
+			bytes.push_back(word & 0x0ff);
+			word >>= 8;
+		}
+	}
+	bytes.resize(size, 0);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -83,6 +169,10 @@ util::ExtractedDeviceState::MemoryAllocation::MemoryAllocation(): devicePointer(
 
 util::ExtractedDeviceState::MemoryAllocation::~MemoryAllocation() {
 
+}
+
+size_t util::ExtractedDeviceState::MemoryAllocation::size() const {
+	return data.size();
 }
 
 void util::ExtractedDeviceState::MemoryAllocation::serialize(std::ostream &out, const std::string & prefix) const {
@@ -104,6 +194,18 @@ void util::ExtractedDeviceState::MemoryAllocation::serialize(std::ostream &out, 
 	::serializeBinary(file, data.size(), &data[0], true);
 }
 
+void util::ExtractedDeviceState::MemoryAllocation::deserialize(const hydrazine::json::Visitor &object) {
+	devicePointer = hydrazine::bit_cast<void *>(boost::lexical_cast<HexTo<size_t> >(object.parse<std::string>("device", "0x00")));
+	dataType = ir::PTXOperand::u64;//type = ir::PTXOperand::fromString(object.parse<std::string>("type", "u64"));
+	size_t bytes = object.parse<int>("size", 0);
+	
+	std::string filename = object.parse<std::string>("file", "");
+	if (filename != "") {
+		std::ifstream file(filename.c_str());
+		deserializeImage(data, file, bytes);
+	}
+}
+
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
 void util::ExtractedDeviceState::KernelLaunch::serialize(std::ostream &out) const {
@@ -114,6 +216,19 @@ void util::ExtractedDeviceState::KernelLaunch::serialize(std::ostream &out) cons
 	out << "  \"parameterMemory\": ";
 	serializeBinary(out, parameterMemory);
 	out << "}";
+}
+
+void util::ExtractedDeviceState::KernelLaunch::deserialize(const hydrazine::json::Visitor &object) {
+	moduleName = object.parse<std::string>("module", "unknown-module");
+	kernelName = object.parse<std::string>("kernel", "unknown-kernel");
+	
+	::deserialize(gridDim, object["gridDim"]);
+	::deserialize(blockDim, object["blockDim"]);
+	sharedMemorySize = object.parse<int>("sharedMemorySize", 0);
+	
+	if (hydrazine::json::Value *parameterMemory = object.find("parameterMemory")) {
+		deserializeBinary(this->parameterMemory, hydrazine::json::Visitor(parameterMemory));
+	}
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -193,6 +308,41 @@ void util::ExtractedDeviceState::Module::serialize(std::ostream &out, const std:
 	out << "}\n";
 }
 
+void util::ExtractedDeviceState::Module::deserialize(const hydrazine::json::Visitor &object) {
+	name = object.parse<std::string>("name", "module");
+	ptxFile = object.parse<std::string>("ptxFile", "module.ptx");
+	if (hydrazine::json::Value *globalsValue = object.find("globals")) {
+		hydrazine::json::Object *globals = static_cast<hydrazine::json::Object *>(globalsValue);
+		for (hydrazine::json::Object::Dictionary::const_iterator glb_it = globals->begin();
+			glb_it != globals->end(); ++glb_it) {
+			
+			MemoryAllocation *allocation = new MemoryAllocation;
+			globalVariables[glb_it->first] = allocation;
+			
+			allocation->deserialize(hydrazine::json::Visitor(glb_it->second));
+		}
+	}
+	if (hydrazine::json::Value *texturesValue = object.find("textures")) {
+		hydrazine::json::Object *textures = static_cast<hydrazine::json::Object *>(texturesValue);
+		for (hydrazine::json::Object::Dictionary::const_iterator tex_it = textures->begin();
+			tex_it != textures->end(); ++tex_it) {
+			
+			ir::Texture *texture = new ir::Texture;
+			this->textures[tex_it->first] = texture;
+			
+			deserializeTexture(*texture, hydrazine::json::Visitor(tex_it->second));
+		}
+	}
+}
+
+void util::ExtractedDeviceState::Module::deserializeTexture(
+	ir::Texture &texture, 
+	const hydrazine::json::Visitor &visitor) {
+
+	// TODO
+	assert(0 && "unimplemented yet");
+}
+
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
 util::ExtractedDeviceState::Application::Application() {
@@ -205,6 +355,11 @@ void util::ExtractedDeviceState::Application::serialize(std::ostream &out) const
 	out << "\",\n\"cudaDevice\":\""; 
 	emitEscapedString(out, cudaDevice);
 	out << "\"}";
+}
+
+void util::ExtractedDeviceState::Application::deserialize(const hydrazine::json::Visitor &object) {
+	name = object.parse<std::string>("name", "cudaApp");
+	cudaDevice = object.parse<std::string>("cudaDevice", "gpu");
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -269,7 +424,36 @@ void util::ExtractedDeviceState::serialize(std::ostream &out) const {
 
 //! \brief load data from JSON file to host memory
 void util::ExtractedDeviceState::deserialize(std::istream &in) {
+	hydrazine::json::Parser parser;
+	hydrazine::json::Object *stateObject = 0;
 
+	{
+		stateObject = parser.parse_object(in);
+		hydrazine::json::Visitor object(stateObject);
+		
+		application.deserialize(object["application"]);
+		launch.deserialize(object["kernelLaunch"]);
+		
+		hydrazine::json::Visitor allocationsArray(object["allocations"]);
+		for (hydrazine::json::Array::const_iterator alloc_it = allocationsArray.begin_array();
+			alloc_it != allocationsArray.end_array(); ++alloc_it) {
+			
+			MemoryAllocation *allocation = new MemoryAllocation;
+			allocation->deserialize(hydrazine::json::Visitor(*alloc_it));
+			globalAllocations[allocation->devicePointer] = allocation;
+		}
+		
+		hydrazine::json::Visitor modulesArray(object["modules"]);
+		for (hydrazine::json::Array::const_iterator mod_it = modulesArray.begin_array();
+			mod_it != modulesArray.end_array(); ++mod_it) {
+			
+			Module module;
+			module.deserialize(hydrazine::json::Visitor(*mod_it));
+			modules[module.name] = module;
+		}
+	}
+	
+	if (stateObject) delete stateObject;
 }
 
 //! \brief clear all data structures

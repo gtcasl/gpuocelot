@@ -74,7 +74,8 @@ static CUdeviceptr toDevicePtr(void *ptr) {
 }
 
 static void * fromDevicePtr(CUdeviceptr ptr) {
-	return reinterpret_cast<void *>(hydrazine::bit_cast<size_t>(ptr) & ((1ULL << 8*sizeof(unsigned int))-1));
+//	return reinterpret_cast<void *>(hydrazine::bit_cast<size_t>(ptr) & ((1ULL << 8*sizeof(unsigned int))-1));
+	return hydrazine::bit_cast<void *>(ptr);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -183,9 +184,11 @@ void util::KernelExtractorDriver::kernelLaunch(CUfunction f, int gridX, int grid
 	}
 	
 	// serialize 'before' state
+	std::string launchName = state.launch.moduleName + "-" + state.launch.kernelName;
+	std::ofstream file(state.application.name + "-" + launchName + ".json");
+	
 	std::string app = state.application.name;
-	state.application.name += "-before-" + state.launch.moduleName + "-" + state.launch.kernelName;
-	std::ofstream file(state.application.name + ".json");
+	state.application.name += "-before-" + launchName;
 	state.serialize(file);
 	state.application.name = app;
 }
@@ -196,9 +199,12 @@ void util::KernelExtractorDriver::kernelReturn(CUresult result) {
 	
 	synchronizeFromDevice();
 	
+	
+	std::string launchName = state.launch.moduleName + "-" + state.launch.kernelName;
+	std::ofstream file(state.application.name + "-" + launchName + ".json", std::ios_base::app);
+	
 	std::string app = state.application.name;
 	state.application.name += "-after-" + state.launch.moduleName + "-" + state.launch.kernelName;
-	std::ofstream file(state.application.name + ".json");
 	state.serialize(file);
 	state.application.name = app;
 }
@@ -213,7 +219,8 @@ void util::KernelExtractorDriver::synchronizeFromDevice() {
 			toDevicePtr(allocation->devicePointer), allocation->data.size());
 		if (result != CUDA_SUCCESS) {
 			// failed
-			report("KernelExtractorDriver::synchronizeFromDevice() - failed to copy from device");
+			report("KernelExtractorDriver::synchronizeFromDevice() - failed to copy from device " << cuda::CudaDriver::toString(result));
+			report("  source: " << (void *)allocation->devicePointer);
 			break;
 		}
 	}
@@ -226,7 +233,8 @@ void util::KernelExtractorDriver::synchronizeFromDevice() {
 				toDevicePtr(allocation->devicePointer), allocation->data.size());
 			if (result != CUDA_SUCCESS) {
 				// failed
-				report("KernelExtractorDriver::synchronizeFromDevice() - failed to copy from device");
+				report("KernelExtractorDriver::synchronizeFromDevice() - failed to copy from device " << cuda::CudaDriver::toString(result));
+			report("  source: " << (void *)allocation->devicePointer);
 				break;
 			}
 		}
@@ -243,6 +251,7 @@ void util::KernelExtractorDriver::allocate(CUresult result, void *dptr, size_t b
 	ExtractedDeviceState::MemoryAllocation *allocation = 
 		new ExtractedDeviceState::MemoryAllocation(dptr, bytes, ir::PTXOperand::u32);
 	state.globalAllocations[dptr] = allocation;
+	report("New allocation: " << dptr << " (" << bytes << ")");
 }
 
 //! \brief deletes an allocation

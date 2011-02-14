@@ -38,7 +38,7 @@
 	throw hydrazine::Exception(s.str()); }
 
 // Turn on report messages
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 // Print out the full ptx for each module as it is loaded
 #define REPORT_PTX 1

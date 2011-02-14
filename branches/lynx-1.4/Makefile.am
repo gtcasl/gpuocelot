@@ -11,7 +11,7 @@
 AM_YFLAGS = -d
 AM_LFLAGS = -o$(LEX_OUTPUT_ROOT).c --c++
 INCLUDE = -I $(srcdir)/ocelot/cuda/include
-AM_LDFLAGS = 
+AM_LDFLAGS = -all-static
 ################################################################################
 
 ################################################################################
@@ -138,7 +138,7 @@ OcelotConfig_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x \
 	-DOCELOT_INCLUDE_PATH="\"${includedir}\""
 OcelotConfig_SOURCES = ocelot/util/implementation/OcelotConfig.cpp
 OcelotConfig_LDADD = libocelot.la
-OcelotConfig_LDFLAGS = -static
+OcelotConfig_LDFLAGS = -all-static
 ################################################################################
 
 ################################################################################
@@ -146,7 +146,7 @@ OcelotConfig_LDFLAGS = -static
 PTXOptimizer_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
 PTXOptimizer_SOURCES = ocelot/analysis/implementation/PTXOptimizer.cpp
 PTXOptimizer_LDADD = libocelot.la 
-PTXOptimizer_LDFLAGS = -static
+PTXOptimizer_LDFLAGS = -all-static
 ################################################################################
 
 ################################################################################
@@ -154,7 +154,7 @@ PTXOptimizer_LDFLAGS = -static
 DFG_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
 DFG_SOURCES = ocelot/analysis/test/DFG.cpp
 DFG_LDADD = libocelot.la $(LLVM_LDFLAGS)
-DFG_LDFLAGS = -static
+DFG_LDFLAGS = -all-static
 ################################################################################
 
 ################################################################################
@@ -162,7 +162,7 @@ DFG_LDFLAGS = -static
 CFG_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
 CFG_SOURCES = ocelot/ir/test/CFG.cpp
 CFG_LDADD = libocelot.la $(LLVM_LDFLAGS)
-CFG_LDFLAGS = -static
+CFG_LDFLAGS = -all-static
 ################################################################################
 
 ################################################################################
@@ -170,7 +170,7 @@ CFG_LDFLAGS = -static
 Module_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
 Module_SOURCES = ocelot/ir/test/Module.cpp
 Module_LDADD = libocelot.la $(LLVM_LDFLAGS)
-Module_LDFLAGS = -static
+Module_LDFLAGS = -all-static
 ################################################################################
 
 ################################################################################
@@ -178,7 +178,7 @@ Module_LDFLAGS = -static
 PtxToIlTranslator_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
 PtxToIlTranslator_SOURCES = ocelot/translator/test/PtxToIlTranslator.cpp
 PtxToIlTranslator_LDADD = libocelot.la $(LLVM_LDFLAGS)
-PtxToIlTranslator_LDFLAGS = -static
+PtxToIlTranslator_LDFLAGS = -all-static
 ################################################################################
 
 ################################################################################
@@ -186,7 +186,7 @@ PtxToIlTranslator_LDFLAGS = -static
 TestLexer_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
 TestLexer_SOURCES = ocelot/parser/test/TestLexer.cpp
 TestLexer_LDADD = libocelot.la $(LLVM_LDFLAGS)
-TestLexer_LDFLAGS = -static
+TestLexer_LDFLAGS = -all-static
 ################################################################################
 
 ################################################################################
@@ -194,7 +194,7 @@ TestLexer_LDFLAGS = -static
 TestParser_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
 TestParser_SOURCES = ocelot/parser/test/TestParser.cpp
 TestParser_LDADD = libocelot.la $(LLVM_LDFLAGS)
-TestParser_LDFLAGS = -static
+TestParser_LDFLAGS = -all-static
 ################################################################################
 
 ################################################################################
@@ -202,7 +202,7 @@ TestParser_LDFLAGS = -static
 TestEmulator_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
 TestEmulator_SOURCES = ocelot/executive/test/TestEmulator.cpp
 TestEmulator_LDADD = libocelot.la $(LLVM_LDFLAGS)
-TestEmulator_LDFLAGS = -static
+TestEmulator_LDFLAGS = -all-static
 ################################################################################
 
 ################################################################################
@@ -210,7 +210,7 @@ TestEmulator_LDFLAGS = -static
 TestKernels_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
 TestKernels_SOURCES = ocelot/executive/test/TestKernels.cpp
 TestKernels_LDADD = libocelot.la $(LLVM_LDFLAGS)
-TestKernels_LDFLAGS = -static
+TestKernels_LDFLAGS = -all-static
 ################################################################################
 
 ################################################################################
@@ -218,7 +218,7 @@ TestKernels_LDFLAGS = -static
 TestGPUKernel_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
 TestGPUKernel_SOURCES = ocelot/executive/test/TestGPUKernel.cpp
 TestGPUKernel_LDADD = libocelot.la $(LLVM_LDFLAGS)
-TestGPUKernel_LDFLAGS = -static
+TestGPUKernel_LDFLAGS = -all-static
 ################################################################################
 
 ################################################################################
@@ -226,7 +226,7 @@ TestGPUKernel_LDFLAGS = -static
 PTXChecker_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
 PTXChecker_SOURCES = ocelot/executive/test/PTXChecker.cpp
 PTXChecker_LDADD = libocelot.la $(LLVM_LDFLAGS) $(CUDA_LDFLAGS)
-PTXChecker_LDFLAGS = -static
+PTXChecker_LDFLAGS = -all-static
 ################################################################################
 
 ################################################################################
@@ -234,7 +234,7 @@ PTXChecker_LDFLAGS = -static
 TestInstructions_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
 TestInstructions_SOURCES = ocelot/executive/test/TestInstructions.cpp
 TestInstructions_LDADD = libocelot.la $(LLVM_LDFLAGS)
-TestInstructions_LDFLAGS = -static
+TestInstructions_LDFLAGS = -all-static
 ################################################################################
 
 ################################################################################
@@ -242,7 +242,7 @@ TestInstructions_LDFLAGS = -static
 TestDataflowGraph_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
 TestDataflowGraph_SOURCES = ocelot/analysis/test/TestDataflowGraph.cpp
 TestDataflowGraph_LDADD = libocelot.la $(LLVM_LDFLAGS)
-TestDataflowGraph_LDFLAGS = -static
+TestDataflowGraph_LDFLAGS = -all-static
 ################################################################################
 
 ################################################################################
@@ -250,7 +250,7 @@ TestDataflowGraph_LDFLAGS = -static
 TestLLVMInstructions_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
 TestLLVMInstructions_SOURCES = ocelot/ir/test/TestLLVMInstructions.cpp
 TestLLVMInstructions_LDADD = libocelot.la $(LLVM_LDFLAGS)
-TestLLVMInstructions_LDFLAGS = -static
+TestLLVMInstructions_LDFLAGS = -all-static
 ################################################################################
 
 ################################################################################
@@ -259,7 +259,7 @@ TestPTXToLLVMTranslator_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
 TestPTXToLLVMTranslator_SOURCES = \
 	ocelot/translator/test/TestPTXToLLVMTranslator.cpp
 TestPTXToLLVMTranslator_LDADD = libocelot.la $(LLVM_LDFLAGS)
-TestPTXToLLVMTranslator_LDFLAGS = -static
+TestPTXToLLVMTranslator_LDFLAGS = -all-static
 ################################################################################
 
 ################################################################################
@@ -268,7 +268,7 @@ TestLLVMKernels_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
 TestLLVMKernels_SOURCES = \
 	ocelot/executive/test/TestLLVMKernels.cpp
 TestLLVMKernels_LDADD = libocelot.la $(LLVM_LDFLAGS)
-TestLLVMKernels_LDFLAGS = -static
+TestLLVMKernels_LDFLAGS = -all-static
 ################################################################################
 
 ################################################################################
@@ -278,7 +278,7 @@ TestCudaGlobals_CXXFLAGS = $(SDK_CFLAGS)
 TestCudaGlobals_SOURCES = \
 	ocelot/cuda/test/globals/global.cu.cpp
 TestCudaGlobals_LDADD = libocelot.la $(LLVM_LDFLAGS)
-TestCudaGlobals_LDFLAGS = -static
+TestCudaGlobals_LDFLAGS = -all-static
 ################################################################################
 
 ################################################################################
@@ -288,7 +288,7 @@ TestCudaMalloc_CXXFLAGS = $(SDK_CFLAGS)
 TestCudaMalloc_SOURCES = \
 	ocelot/cuda/test/memory/malloc.cu.cpp
 TestCudaMalloc_LDADD = libocelot.la $(LLVM_LDFLAGS)
-TestCudaMalloc_LDFLAGS = -static
+TestCudaMalloc_LDFLAGS = -all-static
 ################################################################################
 
 ################################################################################
@@ -297,7 +297,7 @@ TestCudaMalloc_LDFLAGS = -static
 TestCudaTexture2D_CXXFLAGS = $(SDK_CFLAGS)
 TestCudaTexture2D_SOURCES = ocelot/cuda/test/textures/texture2D.cu.cpp
 TestCudaTexture2D_LDADD = libocelot.la $(LLVM_LDFLAGS)
-TestCudaTexture2D_LDFLAGS = -static
+TestCudaTexture2D_LDFLAGS = -all-static
 ################################################################################
 
 ################################################################################
@@ -306,7 +306,7 @@ TestCudaTexture2D_LDFLAGS = -static
 TestCudaTextureArray_CXXFLAGS = $(SDK_CFLAGS)
 TestCudaTextureArray_SOURCES = ocelot/cuda/test/textures/textureArray.cu.cpp
 TestCudaTextureArray_LDADD = libocelot.la $(LLVM_LDFLAGS)
-TestCudaTextureArray_LDFLAGS = -static
+TestCudaTextureArray_LDFLAGS = -all-static
 ################################################################################
 
 ################################################################################
@@ -315,7 +315,7 @@ TestCudaTextureArray_LDFLAGS = -static
 TestCudaSequence_CXXFLAGS = $(SDK_CFLAGS)
 TestCudaSequence_SOURCES = ocelot/cuda/test/kernels/sequence.cu.cpp
 TestCudaSequence_LDADD = libocelot.la $(LLVM_LDFLAGS)
-TestCudaSequence_LDFLAGS = -static
+TestCudaSequence_LDFLAGS = -all-static
 ################################################################################
 
 ################################################################################
@@ -324,7 +324,7 @@ TestCudaSequence_LDFLAGS = -static
 TestLoopExit_CXXFLAGS = $(SDK_CFLAGS)
 TestLoopExit_SOURCES = ocelot/cuda/test/kernels/loopExit.cu.cpp
 TestLoopExit_LDADD = libocelot.la $(LLVM_LDFLAGS)
-TestLoopExit_LDFLAGS = -static
+TestLoopExit_LDFLAGS = -all-static
 ################################################################################
 
 ################################################################################
@@ -333,7 +333,7 @@ TestLoopExit_LDFLAGS = -static
 TestMemoryCheck_CXXFLAGS = $(SDK_CFLAGS)
 TestMemoryCheck_SOURCES = ocelot/cuda/test/kernels/memoryCheck.cu.cpp
 TestMemoryCheck_LDADD = libocelot.la $(LLVM_LDFLAGS)
-TestMemoryCheck_LDFLAGS = -static
+TestMemoryCheck_LDFLAGS = -all-static
 ################################################################################
 
 ################################################################################
@@ -342,7 +342,7 @@ TestMemoryCheck_LDFLAGS = -static
 TestRaceCondition_CXXFLAGS = $(SDK_CFLAGS)
 TestRaceCondition_SOURCES = ocelot/cuda/test/kernels/raceCondition.cu.cpp
 TestRaceCondition_LDADD = libocelot.la $(LLVM_LDFLAGS)
-TestRaceCondition_LDFLAGS = -static
+TestRaceCondition_LDFLAGS = -all-static
 ################################################################################
 
 ################################################################################
@@ -351,7 +351,7 @@ TestDeviceSwitching_CXXFLAGS = $(INCLUDE) -Wall -ansi \
 	-pedantic -Werror -std=c++0x
 TestDeviceSwitching_SOURCES = ocelot/api/test/TestDeviceSwitching.cpp
 TestDeviceSwitching_LDADD = libocelot.la $(LLVM_LDFLAGS)
-TestDeviceSwitching_LDFLAGS = -static
+TestDeviceSwitching_LDFLAGS = -all-static
 ################################################################################
 
 ################################################################################

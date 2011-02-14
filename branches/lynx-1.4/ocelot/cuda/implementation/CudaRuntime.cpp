@@ -484,6 +484,8 @@ cuda::CudaRuntime::~CudaRuntime() {
 void** cuda::CudaRuntime::cudaRegisterFatBinary(void *fatCubin) {
 	size_t handle = 0;
 	__cudaFatCudaBinary *binary = (__cudaFatCudaBinary *)fatCubin;
+
+    printf("OCELOT cudaRegisterFatBinary: go ASPLOS!!!!\n");
 	
 	_lock();
 		

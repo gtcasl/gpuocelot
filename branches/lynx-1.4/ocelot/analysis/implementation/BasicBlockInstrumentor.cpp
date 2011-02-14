@@ -54,10 +54,16 @@ namespace analysis
     void BasicBlockInstrumentor::initialize() {
         
         counter = 0;
-        cudaMalloc((void **) &counter, basicBlocks * threadBlocks * threads * sizeof(size_t));
-        cudaMemset( counter, 0, basicBlocks * threadBlocks * threads * sizeof( size_t ));
+        if(cudaMalloc((void **) &counter, basicBlocks * threadBlocks * threads * sizeof(size_t)) != cudaSuccess){
+            throw hydrazine::Exception( "Could not allocate sufficient memory on device (cudaMalloc failed)!" );
+        }
+        if(cudaMemset( counter, 0, basicBlocks * threadBlocks * threads * sizeof( size_t )) != cudaSuccess){
+            throw hydrazine::Exception( "cudaMemset failed!" );
+        }
         
-        cudaMemcpyToSymbol(((BasicBlockInstrumentationPass *)pass)->basicBlockCounterBase().c_str(), &counter, sizeof(*counter), 0, cudaMemcpyHostToDevice);
+        if(cudaMemcpyToSymbol(((BasicBlockInstrumentationPass *)pass)->basicBlockCounterBase().c_str(), &counter, sizeof(*counter), 0, cudaMemcpyHostToDevice) != cudaSuccess) {
+            throw hydrazine::Exception( "cudaMemcpyToSymbol failed!");
+        }
     }
 
     analysis::Pass *BasicBlockInstrumentor::createPass() {

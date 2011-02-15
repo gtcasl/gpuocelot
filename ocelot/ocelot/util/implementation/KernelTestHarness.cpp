@@ -73,13 +73,20 @@ void util::KernelTestHarness::execute() {
 	}
 
 	// map parameter memory according to pointer rules
+	report("Remapping parameter memory pointers (size " << state.launch.parameterMemory.size() << ")");
 	for (size_t i = 0; i < state.launch.parameterMemory.size(); i += sizeof(void *)) {
-		PointerMap::iterator p_it = pointers.find(*(void **)&state.launch.parameterMemory[i]);
+
+		void *pointer = *(void **)&state.launch.parameterMemory[i];
+		report("checking parameter value " << pointer << " at offset " << i);
+				
+		PointerMap::iterator p_it = pointers.find(pointer);
 		if (p_it != pointers.end()) {
 			*(void **)&state.launch.parameterMemory[i] = p_it->second;
+			report("remapping parameter value " << pointer << " to " << p_it->second);
 		}	
 	}
 
+	report("setting up argument memory, size " << state.launch.parameterMemory.size() << " bytes");
 	result = cudaSetupArgument(&state.launch.parameterMemory[0], state.launch.parameterMemory.size(), 0);
 	if (result != cudaSuccess) {
 		report("Failed to setup parameter memory");
@@ -87,6 +94,14 @@ void util::KernelTestHarness::execute() {
 	}
 	
 	ocelot::launch(state.launch.moduleName, state.launch.kernelName);
+	
+	result = cudaThreadSynchronize();
+	if (result != cudaSuccess) {
+		report("Kernel execution FAILED");
+	}
+	else {
+		report("Kernel execution succeeded.");
+	}
 }
 
 bool util::KernelTestHarness::compare() {
@@ -99,6 +114,7 @@ bool util::KernelTestHarness::compare() {
 		
 	}
 	
+	assert(0 && "unimplemented");
 	return false;
 }
 
@@ -260,13 +276,14 @@ int main(int argc, char *argv[]) {
 		std::ifstream file(input.c_str());	
 			util::KernelTestHarness test(file);
 			test.execute();
-
+/*
 			if (test.compare()) {
 				std::cout << "Test Passed" << std::endl;
 			}
 			else {
 				std::cout << "TEST FAILED" << std::endl;
 			}
+			*/
 	}
 
 	return 0;

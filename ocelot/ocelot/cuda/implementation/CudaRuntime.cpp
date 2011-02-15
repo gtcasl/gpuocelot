@@ -131,30 +131,50 @@ void cuda::HostThreadContext::clear() {
 
 void cuda::HostThreadContext::mapParameters(const ir::Kernel* kernel) {
 	
-	assert(kernel->arguments.size() == parameterIndices.size());
-	IndexVector::iterator offset = parameterIndices.begin();
-	SizeVector::iterator size = parameterSizes.begin();
-	unsigned int dst = 0;
-	unsigned char* temp = (unsigned char*)malloc(parameterBlockSize);
-	for (ir::Kernel::ParameterVector::const_iterator 
-		parameter = kernel->arguments.begin(); 
-		parameter != kernel->arguments.end(); ++parameter, ++offset, ++size) {
-		unsigned int misalignment = dst % parameter->getAlignment();
-		unsigned int alignmentOffset = misalignment == 0 
-			? 0 : parameter->getAlignment() - misalignment;
-		dst += alignmentOffset;
+	if (kernel->arguments.size() == parameterIndices.size()) {
+		IndexVector::iterator offset = parameterIndices.begin();
+		SizeVector::iterator size = parameterSizes.begin();
+		unsigned int dst = 0;
+		unsigned char* temp = (unsigned char*)malloc(parameterBlockSize);
+		for (ir::Kernel::ParameterVector::const_iterator 
+			parameter = kernel->arguments.begin(); 
+			parameter != kernel->arguments.end(); ++parameter, ++offset, ++size) {
+			unsigned int misalignment = dst % parameter->getAlignment();
+			unsigned int alignmentOffset = misalignment == 0 
+				? 0 : parameter->getAlignment() - misalignment;
+			dst += alignmentOffset;
 		
-		memset(temp + dst, 0, parameter->getSize());
-		memcpy(temp + dst, parameterBlock + *offset, *size);
-		report( "Mapping parameter at offset " << *offset << " of size " 
-			<< *size << " to offset " << dst << " of size " 
-			<< parameter->getSize() << "\n   data = " 
-			<< hydrazine::dataToString(temp + dst, parameter->getSize()));
-		dst += parameter->getSize();
+			memset(temp + dst, 0, parameter->getSize());
+			memcpy(temp + dst, parameterBlock + *offset, *size);
+			report( "Mapping parameter at offset " << *offset << " of size " 
+				<< *size << " to offset " << dst << " of size " 
+				<< parameter->getSize() << "\n   data = " 
+				<< hydrazine::dataToString(temp + dst, parameter->getSize()));
+			dst += parameter->getSize();
+		}
+		free(parameterBlock);
+		parameterBlock = temp;
+		clearParameters();
 	}
-	free(parameterBlock);
-	parameterBlock = temp;
-	clearParameters();
+	else if (parameterIndices.size() == 1 && parameterIndices[0] == 0 && parameterSizes[0]) {
+		
+		parameterBlockSize = parameterSizes[0];
+		
+		unsigned char *temp = (unsigned char *)malloc(parameterBlockSize);
+		memcpy(temp, parameterBlock, parameterBlockSize);
+		free(parameterBlock);
+		parameterBlock = temp;
+		
+		report("parameter block formatted by client: offset " << parameterIndices[0] << ", " 
+			<< parameterSizes[0] << " bytes");
+		clearParameters();
+	}
+	else {
+		report("Parameter ERROR: offset " << parameterIndices[0] << ", " << parameterSizes[0] 
+			<< " bytes. Expected parameter sizes of " << parameterBlockSize);
+		assert((kernel->arguments.size() == parameterIndices.size()) && 
+			"unaccepted argument formatting");
+	}
 }
 
 ////////////////////////////////////////////////////////////////////////////////

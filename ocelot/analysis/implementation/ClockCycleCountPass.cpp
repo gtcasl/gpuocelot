@@ -31,7 +31,6 @@ namespace analysis
 
         // Convert special register tid.x to .u32 or .u64
         ir::PTXInstruction cvt(ir::PTXInstruction::Cvt);
-        cvt.addressSpace = ir::PTXInstruction::Reg;
         cvt.type = type;
 
         DataflowGraph::RegisterId tidX = kernel->dfg()->newRegister();
@@ -40,7 +39,8 @@ namespace analysis
 		cvt.d.type = type;
 		cvt.d.reg = tidX;
         cvt.a.addressMode = ir::PTXOperand::Register;
-        cvt.a = ir::PTXOperand(ir::PTXOperand::tidX);
+        cvt.a = ir::PTXOperand(ir::PTXOperand::tid);
+        cvt.a.vIndex = ir::PTXOperand::ix;
         cvt.a.type = ir::PTXOperand::u16;
 
         kernel->dfg()->insert(block, cvt, 0);
@@ -67,7 +67,7 @@ namespace analysis
         cvt.d.type = type;
         cvt.d.reg = clockStart;
         cvt.d.addressMode = ir::PTXOperand::Register;
-        cvt.a = ir::PTXOperand(ir::PTXOperand::clock);
+        cvt.a = ir::PTXOperand(ir::PTXOperand::clock64);
         cvt.a.type = ir::PTXOperand::u32;
         
         kernel->dfg()->insert(block, cvt, 2);
@@ -88,31 +88,6 @@ namespace analysis
         kernel->dfg()->insert(lastBlock, bar, lastBlock->instructions().size() - 1);
 
         kernel->dfg()->insert(lastBlock, cvt, lastBlock->instructions().size() - 1);
-        
-        DataflowGraph::RegisterId p = kernel->dfg()->newRegister();
-
-        setp.comparisonOperator = ir::PTXInstruction::Le;
-        setp.d.reg = p;
-        setp.d.type = ir::PTXOperand::pred;
-        setp.d.addressMode = ir::PTXOperand::Register;
-        setp.a.reg = clockEnd;
-        setp.b.addressMode = ir::PTXOperand::Register;
-        setp.b.reg = clockStart;
-
-        kernel->dfg()->insert(lastBlock, setp, lastBlock->instructions().size() - 1);
-
-        ir::PTXInstruction add(ir::PTXInstruction::Add);
-        add.type = type;
-        add.d.reg = clockEnd;
-        add.d.type = type;
-        add.d.addressMode = ir::PTXOperand::Register;
-        add.a = add.d;
-        add.b.addressMode = ir::PTXOperand::Immediate;
-        add.b.imm_uint = UINT_MAX;
-        add.pg.condition = ir::PTXOperand::Pred;
-        add.pg.reg = p;
-
-        kernel->dfg()->insert(lastBlock, add, lastBlock->instructions().size() - 1);
 
         ir::PTXInstruction sub(ir::PTXInstruction::Sub);
         sub.type = type;
@@ -154,7 +129,7 @@ namespace analysis
 
         cvt.d.reg = smid;
         cvt.d.addressMode = ir::PTXOperand::Register;
-        cvt.a = ir::PTXOperand(ir::PTXOperand::smid);
+        cvt.a = ir::PTXOperand(ir::PTXOperand::smId);
         cvt.a.type = ir::PTXOperand::u32;
 
         kernel->dfg()->insert(lastBlock, cvt, lastBlock->instructions().size() - 1);
@@ -164,19 +139,22 @@ namespace analysis
         DataflowGraph::RegisterId ctaidY = kernel->dfg()->newRegister();
 
         cvt.d.reg = ctaidX;
-        cvt.a = ir::PTXOperand(ir::PTXOperand::ctaIdX);
+        cvt.a = ir::PTXOperand(ir::PTXOperand::ctaId);
+        cvt.a.vIndex = ir::PTXOperand::ix;
         cvt.a.type = ir::PTXOperand::u32;
 
         kernel->dfg()->insert(lastBlock, cvt, lastBlock->instructions().size() - 1);
 
         cvt.d.reg = ctaidY;
-        cvt.a = ir::PTXOperand(ir::PTXOperand::ctaIdY);
+        cvt.a = ir::PTXOperand(ir::PTXOperand::ctaId);
+        cvt.a.vIndex = ir::PTXOperand::iy;
         cvt.a.type = ir::PTXOperand::u32;
 
         kernel->dfg()->insert(lastBlock, cvt, lastBlock->instructions().size() - 1);
 
         cvt.d.reg = nctaidX;
-        cvt.a = ir::PTXOperand(ir::PTXOperand::nctaIdX);
+        cvt.a = ir::PTXOperand(ir::PTXOperand::nctaId);
+        cvt.a.vIndex = ir::PTXOperand::ix;
         cvt.a.type = ir::PTXOperand::u32;
 
         kernel->dfg()->insert(lastBlock, cvt, lastBlock->instructions().size() - 1);

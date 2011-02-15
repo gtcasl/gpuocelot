@@ -23,6 +23,9 @@ namespace executive
 					/*! \brief Construct this based on a module */
 					Module(const ir::Module* m = 0, Device* d = 0);
 				
+					/*! \brief Destroy this, unload the module from caches */
+					~Module();
+				
 				public:
 					/*! \brief Get a specific LLVMExecutableKernel or 0 */
 					ExecutableKernel* getKernel(const std::string& name);
@@ -52,15 +55,15 @@ namespace executive
 				\param grid grid dimensions
 				\param block block dimensions
 				\param sharedMemory shared memory size
-				\param parameterBlock array of bytes for parameter memory
-				\param parameterBlockSize number of bytes in parameter memory
+				\param argumentBlock array of bytes for parameter memory
+				\param argumentBlockSize number of bytes in parameter memory
 				\param traceGenerators vector of trace generators to add 
 					and remove from kernel
 			*/
 			void launch(const std::string& module, 
 				const std::string& kernel, const ir::Dim3& grid, 
 				const ir::Dim3& block, size_t sharedMemory, 
-				const void* parameterBlock, size_t parameterBlockSize, 
+				const void* argumentBlock, size_t argumentBlockSize, 
 				const trace::TraceGeneratorVector& 
 				traceGenerators = trace::TraceGeneratorVector());
 		
@@ -68,7 +71,8 @@ namespace executive
 			/*! \brief Limit the worker threads used by this device */
 			void limitWorkerThreads(unsigned int threads);
 			/*! \brief Set the optimization level for kernels in this device */
-			void setOptimizationLevel(translator::Translator::OptimizationLevel level);
+			void setOptimizationLevel(
+				translator::Translator::OptimizationLevel level);
 	};
 
 }

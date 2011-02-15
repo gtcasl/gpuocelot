@@ -36,7 +36,6 @@ void PtxToIlTranslator::translate()
 		kernel->updateGlobals();
 		kernel->allocateSharedMemory();
 
-
 		std::string il = kernel->name + ".il";
 
 		ir::ILKernel* translatedKernel = dynamic_cast< ir::ILKernel* >( 

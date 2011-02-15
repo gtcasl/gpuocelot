@@ -41,14 +41,15 @@ namespace analysis
 		ir::PTXInstruction& ptx = static_cast< ir::PTXInstruction& >( 
 			*instruction->i );
 
-		select.d = ptx.d;
-		select.b = select.d;
-		select.a = select.b;
+		select.d     = ptx.d;
+		select.b     = select.d;
+		select.a     = select.b;
 		select.a.reg = _tempRegister();
-		select.c = ptx.pg;
+		select.c     = ptx.pg;
+		select.type  = ptx.type;
 		
 		ptx.pg.condition = ir::PTXOperand::PT;
-		ptx.d.reg = select.a.reg;
+		ptx.d.reg        = select.a.reg;
 			
 		_kernel->dfg()->insert( block, select, id + 1 );
 	}

@@ -32,15 +32,17 @@ namespace translator
 		assertM(k->ISA == ir::Instruction::PTX,
 				"Kernel must be a PTXKernel to translate to an ILKernel");
 
-		ir::PTXKernel ptxKernel(*(static_cast<const ir::PTXKernel* >(k)));
+		_kernel = static_cast<const executive::ATIExecutableKernel* >(k);
 
 		// do a pass of assignRegisters before translation
-		ptxKernel.assignRegisters(*ptxKernel.cfg());
+		// we have to const_cast in order to call assignRegisters
+		ir::PTXKernel::assignRegisters(
+				const_cast<ir::ControlFlowGraph& >(*_kernel->cfg()));
 
-		report("Translating kernel " << ptxKernel.name);
+		report("Translating kernel " << _kernel->name);
 
 		// translate iterating thru the control tree
-		_ilKernel = new ir::ILKernel(ptxKernel);
+		_ilKernel = new ir::ILKernel(*_kernel);
 		_translate(_ilKernel->ctrl_tree()->get_root_node());
 		_addKernelPrefix();
 
@@ -73,9 +75,9 @@ namespace translator
 				_translate(static_cast<const ControlTree::IfThenElseNode*>(node));
 				break;
 			}
-			case ControlTree::Node::SelfLoop:
+			case ControlTree::Node::NaturalLoop:
 			{
-				_translate(static_cast<const ControlTree::SelfLoopNode*>(node));
+				_translate(static_cast<const ControlTree::NaturalLoopNode*>(node));
 				break;
 			}
 			default: assertM(false, "Invalid region type " << node->rtype());
@@ -210,23 +212,53 @@ namespace translator
 		}
 	}
 
-	void PTXToILTranslator::_translate(const ControlTree::SelfLoopNode* selfloop)
+	void PTXToILTranslator::_translate(const ControlTree::NaturalLoopNode* naturalloop)
 	{
 		_add(ir::ILWhileLoop());
 
-		const ControlTree::Node* body = selfloop->body();
-		_translate(body);
+		// iterate thru all the blocks except the last one
+		ControlTree::NodeList::const_iterator n;
+		for (n = naturalloop->children().begin() ; 
+				n != (--naturalloop->children().end()) ; n++)
+		{
+			// the fall-through edge should be the next node in the loop
+			assertM((*n)->fallthrough() == 
+					*(++ControlTree::NodeList::const_iterator(n)),
+					"Invalid NaturalLoop node");
 
-		// the last instruction of the body of a SeflLoop should be a branch
-		// we need to translate that branch into an if_logicalz instruction
-		ir::PTXInstruction* ins = getLastIns(body);
+			_translate(*n);
+
+			// the last instruction of the node should be a branch.
+			ir::PTXInstruction* ins = getLastIns(*n);
+			assertM(ins->opcode == ir::PTXInstruction::Bra, "Invalid instruction");
+
+			// add loop exit
+			ir::ILIfLogicalNZ if_logicalnz;
+			if_logicalnz.a = _translate(ins->pg);
+			_add(if_logicalnz);
+			_add(ir::ILBreak());
+			_add(ir::ILEndIf());
+		}
+
+		// the fall-through edge should be the loop exit
+		assertM((*n)->fallthrough() != *(naturalloop->children().begin()),
+				"Invalid NaturalLoop node");
+
+		// translate the last block (we assume that the fall-through edge is 
+		// the loop exit)
+		_translate(*n);
+
+		// the last instruction of the node should be a branch.
+		ir::PTXInstruction* ins = getLastIns(*n);
 		assertM(ins->opcode == ir::PTXInstruction::Bra, "Invalid instruction");
 
+		// add loop exit
 		ir::ILIfLogicalZ if_logicalz;
 		if_logicalz.a = _translate(ins->pg);
 		_add(if_logicalz);
 		_add(ir::ILBreak());
 		_add(ir::ILEndIf());
+
 		_add(ir::ILEndLoop());
 	}
 
@@ -235,37 +267,39 @@ namespace translator
 		report("Translating: " << i.toString());
 		switch (i.opcode) 
 		{
- 			case ir::PTXInstruction::Abs:   _translateAbs(i);  break;
- 			case ir::PTXInstruction::Add:   _translateAdd(i);  break;
-			case ir::PTXInstruction::And:   _translateAnd(i);  break;
-			case ir::PTXInstruction::Atom:  _translateAtom(i); break;
-			case ir::PTXInstruction::Bar:   _translateBar(i);  break;
-			case ir::PTXInstruction::Bra:   _translateBra(i);  break;
- 			case ir::PTXInstruction::Cvt:   _translateCvt(i);  break;
-			case ir::PTXInstruction::Div:   _translateDiv(i);  break;
-			case ir::PTXInstruction::Ex2:   _translateEx2(i);  break;
- 			case ir::PTXInstruction::Exit:  _translateExit(i); break;
- 			case ir::PTXInstruction::Ld:    _translateLd(i);   break;
-			case ir::PTXInstruction::Lg2:   _translateLg2(i);  break;
-			case ir::PTXInstruction::Mad:   _translateMad(i);  break;
-			case ir::PTXInstruction::Max:   _translateMax(i);  break;
-			case ir::PTXInstruction::Min:   _translateMin(i);  break;
-			case ir::PTXInstruction::Mov:   _translateMov(i);  break;
- 			case ir::PTXInstruction::Mul:   _translateMul(i);  break;
-			case ir::PTXInstruction::Mul24: _translateMul(i);  break;
-			case ir::PTXInstruction::Neg:   _translateNeg(i);  break;
-			case ir::PTXInstruction::Not:   _translateNot(i);  break;
-			case ir::PTXInstruction::Or:    _translateOr(i);   break;
-			case ir::PTXInstruction::Rcp:   _translateRcp(i);  break;
-			case ir::PTXInstruction::Rem:   _translateRem(i);  break;
-			case ir::PTXInstruction::SelP:  _translateSelP(i); break;
-			case ir::PTXInstruction::Set:   _translateSet(i);  break;
-			case ir::PTXInstruction::SetP:  _translateSetP(i); break;
-			case ir::PTXInstruction::Shl:   _translateShl(i);  break;
-			case ir::PTXInstruction::Shr:   _translateShr(i);  break;
- 			case ir::PTXInstruction::St:    _translateSt(i);   break;
-			case ir::PTXInstruction::Sub:   _translateSub(i);  break;
-			case ir::PTXInstruction::Xor:   _translateXor(i);  break;
+ 			case ir::PTXInstruction::Abs:    _translateAbs(i);    break;
+ 			case ir::PTXInstruction::Add:    _translateAdd(i);    break;
+			case ir::PTXInstruction::And:    _translateAnd(i);    break;
+			case ir::PTXInstruction::Atom:   _translateAtom(i);   break;
+			case ir::PTXInstruction::Bar:    _translateBar(i);    break;
+			case ir::PTXInstruction::Bra:    _translateBra(i);    break;
+ 			case ir::PTXInstruction::Cvt:    _translateCvt(i);    break;
+			case ir::PTXInstruction::Div:    _translateDiv(i);    break;
+			case ir::PTXInstruction::Ex2:    _translateEx2(i);    break;
+ 			case ir::PTXInstruction::Exit:   _translateExit(i);   break;
+ 			case ir::PTXInstruction::Ld:     _translateLd(i);     break;
+			case ir::PTXInstruction::Lg2:    _translateLg2(i);    break;
+			case ir::PTXInstruction::Mad:    _translateMad(i);    break;
+			case ir::PTXInstruction::Max:    _translateMax(i);    break;
+			case ir::PTXInstruction::Membar: _translateMembar(i); break;
+			case ir::PTXInstruction::Min:    _translateMin(i);    break;
+			case ir::PTXInstruction::Mov:    _translateMov(i);    break;
+ 			case ir::PTXInstruction::Mul:    _translateMul(i);    break;
+			case ir::PTXInstruction::Mul24:  _translateMul24(i);  break;
+			case ir::PTXInstruction::Neg:    _translateNeg(i);    break;
+			case ir::PTXInstruction::Not:    _translateNot(i);    break;
+			case ir::PTXInstruction::Or:     _translateOr(i);     break;
+			case ir::PTXInstruction::Rcp:    _translateRcp(i);    break;
+			case ir::PTXInstruction::Rem:    _translateRem(i);    break;
+			case ir::PTXInstruction::SelP:   _translateSelP(i);   break;
+			case ir::PTXInstruction::Set:    _translateSet(i);    break;
+			case ir::PTXInstruction::SetP:   _translateSetP(i);   break;
+			case ir::PTXInstruction::Shl:    _translateShl(i);    break;
+			case ir::PTXInstruction::Shr:    _translateShr(i);    break;
+			case ir::PTXInstruction::Sqrt:   _translateSqrt(i);   break;
+ 			case ir::PTXInstruction::St:     _translateSt(i);     break;
+			case ir::PTXInstruction::Sub:    _translateSub(i);    break;
+			case ir::PTXInstruction::Xor:    _translateXor(i);    break;
 			default:
 			{
 				assertM(false, "Opcode \""
@@ -320,13 +354,13 @@ namespace translator
 			case ir::PTXOperand::Address:
 			{
 				op.addressMode = ir::ILOperand::ConstantBuffer;
-				op.identifier = _translateConstantBuffer(o.identifier);
+				op.identifier = _translateConstantBuffer(o);
 				break;
 			}
 			case ir::PTXOperand::Special:
 			{
 				op.addressMode = ir::ILOperand::Special;
-				op.special = _translate(o.special);
+				op.special = _translate(o.special, o.vIndex);
 				break;
 			}
 			default:
@@ -378,27 +412,51 @@ namespace translator
 	}
 
 	ir::ILOperand::SpecialRegister PTXToILTranslator::_translate(
-			const ir::PTXOperand::SpecialRegister &s)
+		const ir::PTXOperand::SpecialRegister &s,
+        const ir::PTXOperand::VectorIndex& d)
 	{
 		ir::ILOperand::SpecialRegister sr;
 
 		switch (s)
 		{
-			case ir::PTXOperand::tidX:    sr = ir::ILOperand::vTidInGrpX;     break;
-			case ir::PTXOperand::tidY:    sr = ir::ILOperand::vTidInGrpY;     break;
-			case ir::PTXOperand::tidZ:    sr = ir::ILOperand::vTidInGrpZ;     break;
-			case ir::PTXOperand::ntidX:   sr = ir::ILOperand::vNTidInGrpX;    break;
-			case ir::PTXOperand::ntidY:   sr = ir::ILOperand::vNTidInGrpY;    break;
-			case ir::PTXOperand::ntidZ:   sr = ir::ILOperand::vNTidInGrpZ;    break;
-			case ir::PTXOperand::ctaIdX:  sr = ir::ILOperand::vThreadGrpIdX;  break;
-			case ir::PTXOperand::ctaIdY:  sr = ir::ILOperand::vThreadGrpIdY;  break;
-			case ir::PTXOperand::ctaIdZ:  sr = ir::ILOperand::vThreadGrpIdZ;  break;
-			case ir::PTXOperand::nctaIdX: sr = ir::ILOperand::vNThreadGrpIdX; break;
-			case ir::PTXOperand::nctaIdY: sr = ir::ILOperand::vNThreadGrpIdY; break;
-			case ir::PTXOperand::nctaIdZ: sr = ir::ILOperand::vNThreadGrpIdZ; break;
-			default: assertM(false, "Special Register " 
-							 << ir::PTXOperand::toString(s) 
-							 << " not supported");
+			case ir::PTXOperand::tid:    
+			switch (d)
+			{
+	        case ir::PTXOperand::ix: sr = ir::ILOperand::vTidInGrpX;     break;
+	        case ir::PTXOperand::iy: sr = ir::ILOperand::vTidInGrpY;     break;
+	        case ir::PTXOperand::iz: sr = ir::ILOperand::vTidInGrpZ;     break;
+	        default: assertM(false, "Invalid vector index " << d);
+			}
+			break;
+			case ir::PTXOperand::ntid:   
+			switch (d)
+			{
+	        case ir::PTXOperand::ix: sr = ir::ILOperand::vNTidInGrpX;    break;
+	        case ir::PTXOperand::iy: sr = ir::ILOperand::vNTidInGrpY;    break;
+	        case ir::PTXOperand::iz: sr = ir::ILOperand::vNTidInGrpZ;    break;
+	        default: assertM(false, "Invalid vector index " << d);
+			}
+			break;
+			case ir::PTXOperand::ctaId:  
+			switch (d)
+			{
+	        case ir::PTXOperand::ix: sr = ir::ILOperand::vThreadGrpIdX;  break;
+	        case ir::PTXOperand::iy: sr = ir::ILOperand::vThreadGrpIdY;  break;
+	        case ir::PTXOperand::iz: sr = ir::ILOperand::vThreadGrpIdZ;  break;
+	        default: assertM(false, "Invalid vector index " << d);
+			}
+			break;
+			case ir::PTXOperand::nctaId:
+			switch (d)
+			{
+	        case ir::PTXOperand::ix: sr = ir::ILOperand::vNThreadGrpIdX; break;
+	        case ir::PTXOperand::iy: sr = ir::ILOperand::vNThreadGrpIdY; break;
+	        case ir::PTXOperand::iz: sr = ir::ILOperand::vNThreadGrpIdZ; break;
+	        default: assertM(false, "Invalid vector index " << d);
+			}
+			break;
+			default: assertM(false, "Special Register " << s
+				<< " not supported");
 		}
 
 		return sr;
@@ -670,12 +728,18 @@ namespace translator
 		// do nothing (bra instructions are handled using the control tree)
 	}
 
-	void PTXToILTranslator::_convertSrc(const ir::PTXInstruction &i)
+	void PTXToILTranslator::_convertSrc(const ir::PTXInstruction &i,
+			ir::ILOperand& a)
 	{
+		// TODO Implement relaxed type-checking rules for source operands
+		a = _translate(i.a);
 	}
 
-	void PTXToILTranslator::_convert(const ir::PTXInstruction &i)
+	void PTXToILTranslator::_convert(const ir::PTXInstruction &i, 
+			const ir::ILOperand a, ir::ILOperand& d)
 	{
+		d = _tempRegister();
+
 		switch (i.a.type)
 		{
 			case ir::PTXOperand::s32:
@@ -683,35 +747,45 @@ namespace translator
 				switch (i.type)
 				{
 					case ir::PTXOperand::s64:
-					{
-						// sext
-						ir::ILMov mov;
-						mov.a = _translate(i.a);
-						mov.d = _translate(i.d);
-						_add(mov);
-						return;
-					}
 					case ir::PTXOperand::u64:
 					{
-						// sext
+						// sext (but there are no 64-bit registers in IL)
 						ir::ILMov mov;
-						mov.a = _translate(i.a);
-						mov.d = _translate(i.d);
+						mov.d = d;
+						mov.a = a;
 						_add(mov);
 						return;
 					}
 					case ir::PTXOperand::f32:
+					case ir::PTXOperand::f64:
 					{
-						// itof
+						// s2f
 						if(i.modifier & ir::PTXInstruction::rn)
 						{
 							ir::ILItoF itof;
-							itof.d = _translate(i.d);
-							itof.a = _translate(i.a);
+							itof.d = d;
+							itof.a = a;
 							_add(itof);
 							return;
 						}
 						break;
+					}
+					default: break;
+				}
+				break;
+			}
+			case ir::PTXOperand::u8:
+			{
+				switch (i.type)
+				{
+					case ir::PTXOperand::u32:
+					{
+						// zext
+						ir::ILMov mov;
+						mov.d = d;
+						mov.a = a;
+						_add(mov);
+						return;
 					}
 					default: break;
 				}
@@ -727,8 +801,8 @@ namespace translator
 					{
 						// zext
 						ir::ILMov mov;
-						mov.a = _translate(i.a);
-						mov.d = _translate(i.d);
+						mov.d = d;
+						mov.a = a;
 						_add(mov);
 						return;
 					}
@@ -741,24 +815,52 @@ namespace translator
 				switch (i.type)
 				{
 					case ir::PTXOperand::s64:
+					{
+						// zext
+						ir::ILMov mov;
+						mov.d = d;
+						mov.a = a;
+						_add(mov);
+						return;
+					}
+					case ir::PTXOperand::u8:
+					{
+						// chop
+						ir::ILIand iand;
+						iand.d = d;
+						iand.a = a;
+						iand.b = _translateLiteral((int)0x000000FF);
+						_add(iand);
+						return;
+					}
+					case ir::PTXOperand::u16:
+					{
+						// chop
+						ir::ILIand iand;
+						iand.d = d;
+						iand.a = a;
+						iand.b = _translateLiteral((int)0x0000FFFF);
+						_add(iand);
+						return;
+					}
 					case ir::PTXOperand::u64:
 					{
 						// zext
 						ir::ILMov mov;
-						mov.a = _translate(i.a);
-						mov.d = _translate(i.d);
+						mov.d = d;
+						mov.a = a;
 						_add(mov);
 						return;
 					}
 					case ir::PTXOperand::f32:
 					{
-						// utof
+						// u2f
 						if(i.modifier & ir::PTXInstruction::rn
 								|| i.modifier & ir::PTXInstruction::rz)
 						{
 							ir::ILUtoF utof;
-							utof.d = _translate(i.d);
-							utof.a = _translate(i.a);
+							utof.d = d;
+							utof.a = a;
 							_add(utof);
 							return;
 						}
@@ -772,12 +874,13 @@ namespace translator
 			{
 				switch (i.type)
 				{
+					case ir::PTXOperand::s32:
 					case ir::PTXOperand::u32:
 					{
-						// chop
+						// chop (but there are no 64-bit registers in IL)
 						ir::ILMov mov;
-						mov.d = _translate(i.d);
-						mov.a = _translate(i.a);
+						mov.d = d;
+						mov.a = a;
 						_add(mov);
 						return;
 					}
@@ -791,14 +894,44 @@ namespace translator
 				{
 					case ir::PTXOperand::u32:
 					{
-						// ftou
+						// f2u
 						ir::ILFtoU ftou;
-						ftou.d = _translate(i.d);
-						ftou.a = _translate(i.a);
+						ftou.d = d;
+						ftou.a = a;
 						_add(ftou);
 						return;
 					}
-					case ir::PTXOperand::f32: return;
+					case ir::PTXOperand::f32: 
+					{
+						if (i.modifier & ir::PTXInstruction::sat) 
+						{
+							ir::ILMov mov;
+							mov.modifier = ir::ILInstruction::sat;
+							mov.d = d;
+							mov.a = a;
+							_add(mov);
+							return;
+						}
+
+						if(i.modifier & ir::PTXInstruction::rz) 
+						{
+							ir::ILMov mov;
+							mov.d = d;
+							mov.a = a;
+							_add(mov);
+							return;
+						}
+
+						if (i.modifier & ir::PTXInstruction::rn)
+						{
+							ir::ILRound_Nearest round_nearest;
+							round_nearest.d = d;
+							round_nearest.a = a;
+							_add(round_nearest);
+							return;
+						}
+						break;
+					}
 					default: break;
 				}
 				break;
@@ -809,7 +942,8 @@ namespace translator
 		assertM(false, "Opcode \"" << i.toString() << "\" not supported");
 	}
 
-	void PTXToILTranslator::_convertDst(const ir::PTXInstruction &i)
+	void PTXToILTranslator::_convertDst(const ir::PTXInstruction &i,
+			const ir::ILOperand d)
 	{
 		switch (i.type)
 		{
@@ -820,17 +954,13 @@ namespace translator
 					case ir::PTXOperand::u32:
 					{
 						// allowed, no conversion needed
-						break;
+						ir::ILMov mov;
+						mov.d = _translate(i.d);
+						mov.a = d;
+						_add(mov);
+						return;
 					}
-					default:
-					{
-						assertM(false,
-								"Destination operand conversion from \""
-								<< ir::PTXOperand::toString(i.type)
-								<< "\" to \""
-								<< ir::PTXOperand::toString(i.d.type)
-								<< "\" not supported");
-					}
+					default: break;
 				}
 				break;
 			}
@@ -838,16 +968,59 @@ namespace translator
 			{
 				switch (i.d.type)
 				{
-					case ir::PTXOperand::u64: break;
-					default:
+					case ir::PTXOperand::u64: 
 					{
-						assertM(false,
-								"Destination operand conversion from \""
-								<< ir::PTXOperand::toString(i.type)
-								<< "\" to \""
-								<< ir::PTXOperand::toString(i.d.type)
-								<< "\" not supported");
+						// allowed, no conversion needed
+						ir::ILMov mov;
+						mov.d = _translate(i.d);
+						mov.a = d;
+						_add(mov);
+						return;
 					}
+					default: break;
+				}
+				break;
+			}
+			case ir::PTXOperand::u8:
+			{
+				switch (i.d.type)
+				{
+					case ir::PTXOperand::u32:
+					{
+						// zext
+						ir::ILMov mov;
+						mov.d = _translate(i.d);
+						mov.a = d;
+						_add(mov);
+						return;
+					}
+					default: break;
+				}
+				break;
+			}
+			case ir::PTXOperand::u16:
+			{
+				switch (i.d.type)
+				{
+					case ir::PTXOperand::u16:
+					{
+						// allowed, no conversion needed
+						ir::ILMov mov;
+						mov.d = _translate(i.d);
+						mov.a = d;
+						_add(mov);
+						return;
+					}
+					case ir::PTXOperand::u32:
+					{
+						// zext
+						ir::ILMov mov;
+						mov.d = _translate(i.d);
+						mov.a = d;
+						_add(mov);
+						return;
+					}
+					default: break;
 				}
 				break;
 			}
@@ -855,16 +1028,16 @@ namespace translator
 			{
 				switch (i.d.type)
 				{
-					case ir::PTXOperand::u32: break;
-					default:
+					case ir::PTXOperand::u32:
 					{
-						assertM(false,
-								"Destination operand conversion from \""
-								<< ir::PTXOperand::toString(i.type)
-								<< "\" to \""
-								<< ir::PTXOperand::toString(i.d.type)
-								<< "\" not supported");
+						// allowed, no conversion needed
+						ir::ILMov mov;
+						mov.d = _translate(i.d);
+						mov.a = d;
+						_add(mov);
+						return;
 					}
+					default: break;
 				}
 				break;
 			}
@@ -872,16 +1045,16 @@ namespace translator
 			{
 				switch (i.d.type)
 				{
-					case ir::PTXOperand::u64: break;
-					default:
+					case ir::PTXOperand::u64:
 					{
-						assertM(false,
-								"Destination operand conversion from \""
-								<< ir::PTXOperand::toString(i.type)
-								<< "\" to \""
-								<< ir::PTXOperand::toString(i.d.type)
-								<< "\" not supported");
+						// allowed, no conversion needed
+						ir::ILMov mov;
+						mov.d = _translate(i.d);
+						mov.a = d;
+						_add(mov);
+						return;
 					}
+					default: break;
 				}
 				break;
 			}
@@ -889,36 +1062,54 @@ namespace translator
 			{
 				switch (i.d.type)
 				{
-					case ir::PTXOperand::f32: break;
-					default:
+					case ir::PTXOperand::f32:
 					{
-						assertM(false,
-								"Destination operand conversion from \""
-								<< ir::PTXOperand::toString(i.type)
-								<< "\" to \""
-								<< ir::PTXOperand::toString(i.d.type)
-								<< "\" not supported");
+						// allowed, no conversion needed
+						ir::ILMov mov;
+						mov.d = _translate(i.d);
+						mov.a = d;
+						_add(mov);
+						return;
 					}
+					default: break;
 				}
 				break;
 			}
-			default:
+			case ir::PTXOperand::f64:
 			{
-				assertM(false,
-						"Destination operand conversion from \""
-						<< ir::PTXOperand::toString(i.type)
-						<< "\" to \""
-						<< ir::PTXOperand::toString(i.d.type)
-						<< "\" not supported");
+				switch (i.d.type)
+				{
+					case ir::PTXOperand::f64:
+					{
+						// allowed, no conversion needed
+						ir::ILMov mov;
+						mov.d = _translate(i.d);
+						mov.a = d;
+						_add(mov);
+						return;
+					}
+					default: break;
+				}
+				break;
 			}
+			default: break;
 		}
+
+		assertM(false,
+				"Destination operand conversion from \""
+				<< ir::PTXOperand::toString(i.type)
+				<< "\" to \""
+				<< ir::PTXOperand::toString(i.d.type)
+				<< "\" not supported");
 	}
 
 	void PTXToILTranslator::_translateCvt(const ir::PTXInstruction &i)
 	{
-		_convertSrc(i);
-		_convert(i);
-		_convertDst(i);
+		ir::ILOperand a, d;
+
+		_convertSrc(i, a);
+		_convert(i, a, d);
+		_convertDst(i, d);
 	}
 
 	void PTXToILTranslator::_translateDiv(const ir::PTXInstruction &i)
@@ -926,6 +1117,7 @@ namespace translator
 		switch (i.type)
 		{
 			case ir::PTXOperand::s32: _translateIDiv(i); break;
+			case ir::PTXOperand::u32: _translateUDiv(i); break;
 			case ir::PTXOperand::f32: _translateFDiv(i); break;
 			default:
 			{
@@ -940,99 +1132,109 @@ namespace translator
 		// There is no signed integer division in IL so we need to use this 
 		// macro based on unsigned integer division:
 		//
-		// (w/o operand modifiers)                // (with operand modifiers)
 		// out0 = in0 / in1
 		// mdef(222)_out(1)_in(2)
-		// mov r0x, i.a                           // mov r0, in0
-		// mov r1x, i.b                           // mov r1, in1
-		// mov r0y, r1x                           // mov r0._y__, r1.x
-		// ilt r1x, r0x, 0                        // ilt r1.xy, r0, 0
-		// ilt r1y, r0y, 0
-		// iadd r0x, r0x, r1x                     // iadd r0.xy, r0, r1
-		// iadd r0y, r0y, r1y
-		// ixor r0x, r0x, r1x                     // ixor r0.xy, r0, r1
-		// ixor r1y, r0y, r1y
-		// udiv r0x, r0x, r0y                     // udiv r0.x, r0.x, r0.y
-		// ixor r1x, r1x, r1y                     // ixor r1.x, r1.x, r1.y
-		// iadd r0x, r0x, r1x                     // iadd r0.x, r0.x, r1.x
-		// ixor r0x, r0x, r1x                     // ixor r0.x, r0.x, r1.x
-		// mov i.d, r0x                           // mov out0, r0
+		// mov r0, i.a
+		// mov r1, i.b
+		// mov r0._y__, r1.x
+		// ilt r1.xy, r0, 0
+		// iadd r0.xy, r0, r1
+		// ixor r0.xy, r0, r1
+		// udiv r0.x, r0.x, r0.y
+		// ixor r1.x, r1.x, r1.y
+		// iadd r0.x, r0.x, r1.x
+		// ixor r0.x, r0.x, r1.x
+		// mov i.d, r0
 		// mend
 
-		ir::ILOperand r0x = _tempRegister();
-		ir::ILOperand r0y = _tempRegister();
-		ir::ILOperand r1x = _tempRegister();
-		ir::ILOperand r1y = _tempRegister();
+		ir::ILOperand r0 = _tempRegister();
+		ir::ILOperand r1 = _tempRegister();
 
-		// mov r0x, i.a
-		ir::ILMov mov1;
-		mov1.d = r0x; mov1.a = _translate(i.a);
-		_add(mov1);
+		// mov r0, i.a
+		{
+			ir::ILMov mov;
+			mov.d = r0; mov.a = _translate(i.a);
+			_add(mov);
+		}
 
-		// mov r1x, i.b
-		ir::ILMov mov2;
-		mov2.d = r1x; mov2.a = _translate(i.b);
-		_add(mov2);
+		// mov r1, i.b
+		{
+			ir::ILMov mov;
+			mov.d = r1; mov.a = _translate(i.b);
+			_add(mov);
+		}
 
-		// mov r0y, r1x
-		ir::ILMov mov3;
-		mov3.d = r0y; mov3.a = r1x;
-		_add(mov3);
+		// mov r0._y__, r1.x
+		{
+			ir::ILMov mov;
+			mov.d = r0._y__(); mov.a = r1.x();
+			_add(mov);
+		}
 
-		// ilt r1x, r0x, 0
-		ir::ILIlt ilt1;
-		ilt1.d = r1x; ilt1.a = r0x; ilt1.b = _translateLiteral(0);
-		_add(ilt1);
+		// ilt r1.xy, r0, 0
+		{
+			ir::ILIlt ilt;
+			ilt.d = r1.xy(); ilt.a = r0; ilt.b = _translateLiteral(0);
+			_add(ilt);
+		}
 
-		// ilt r1y, r0y, 0
-		ir::ILIlt ilt2;
-		ilt2.d = r1y; ilt2.a = r0y; ilt2.b = _translateLiteral(0);
-		_add(ilt2);
+		// iadd r0.xy, r0, r1
+		{
+			ir::ILIadd iadd;
+			iadd.d = r0.xy(); iadd.a = r0; iadd.b = r1;
+			_add(iadd);
+		}
 
-		// iadd r0x, r0x, r1x
-		ir::ILIadd iadd1;
-		iadd1.d = r0x; iadd1.a = r0x; iadd1.b = r1x;
-		_add(iadd1);
+		// ixor r0.xy, r0, r1
+		{
+			ir::ILIxor ixor;
+			ixor.d = r0.xy(); ixor.a = r0; ixor.b = r1;
+			_add(ixor);
+		}
 
-		// iadd r0y, r0y, r1y
-		ir::ILIadd iadd2;
-		iadd2.d = r0y; iadd2.a = r0y; iadd2.b = r1y;
-		_add(iadd2);
+		// udiv r0.x, r0.x, r0.y
+		{
+			ir::ILUdiv udiv;
+			udiv.d = r0.x(); udiv.a = r0.x(); udiv.b = r0.y();
+			_add(udiv);
+		}
 
-		// ixor r0x, r0x, r1x
-		ir::ILIxor ixor1;
-		ixor1.d = r0x; ixor1.a = r0x; ixor1.b = r1x;
-		_add(ixor1);
+		// ixor r1.x, r1.x, r1.y
+		{
+			ir::ILIxor ixor;
+			ixor.d = r1.x(); ixor.a = r1.x(); ixor.b = r1.y();
+			_add(ixor);
+		}
 
-		// ixor r1y, r0y, r1y
-		ir::ILIxor ixor2;
-		ixor2.d = r1y; ixor2.a = r0y; ixor2.b = r1y;
-		_add(ixor2);
+		// iadd r0.x, r0.x, r1.x
+		{
+			ir::ILIadd iadd;
+			iadd.d = r0.x(); iadd.a = r0.x(); iadd.b = r1.x();
+			_add(iadd);
+		}
 
-		// udiv r0x, r0x, r0y
-		ir::ILUdiv udiv1;
-		udiv1.d = r0x; udiv1.a = r0x; udiv1.b = r0y;
-		_add(udiv1);
+		// ixor r0.x, r0.x, r1.x
+		{
+			ir::ILIxor ixor;
+			ixor.d = r0.x(); ixor.a = r0.x(); ixor.b = r1.x();
+			_add(ixor);
+		}
 
-		// ixor r1x, r1x, r1y
-		ir::ILIxor ixor3;
-		ixor3.d = r1x; ixor3.a = r1x; ixor3.b = r1y;
-		_add(ixor3);
+		// mov i.d, r0
+		{
+			ir::ILMov mov;
+			mov.d = _translate(i.d); mov.a = r0;
+			_add(mov);
+		}
+	}
 
-		// iadd r0x, r0x, r1x
-		ir::ILIadd iadd3;
-		iadd3.d = r0x; iadd3.a = r0x; iadd3.b = r1x;
-		_add(iadd3);
-
-		// ixor r0x, r0x, r1x
-		ir::ILIxor ixor4;
-		ixor4.d = r0x; ixor4.a = r0x; ixor4.b = r1x;
-		_add(ixor4);
-
-		// mov i.d, r0x
-		ir::ILMov mov4;
-		mov4.d = _translate(i.d); mov4.a = r0x;
-		_add(mov4);
+	void PTXToILTranslator::_translateUDiv(const ir::PTXInstruction &i)
+	{
+		ir::ILUdiv udiv;
+		udiv.d = _translate(i.d);
+		udiv.a = _translate(i.a);
+		udiv.b = _translate(i.b);
+		_add(udiv);
 	}
 
 	void PTXToILTranslator::_translateFDiv(const ir::PTXInstruction &i)
@@ -1048,12 +1250,10 @@ namespace translator
 
 	void PTXToILTranslator::_translateEx2(const ir::PTXInstruction &i)
 	{
-		ir::ILExp exp;
-
-		exp.d = _translate(i.d);
-		exp.a = _translate(i.a);
-
-		_add(exp);
+		ir::ILExp_Vec exp_vec;
+		exp_vec.d = _translate(i.d);
+		exp_vec.a = _translate(i.a);
+		_add(exp_vec);
 	}
 
 	void PTXToILTranslator::_translateExit(const ir::PTXInstruction &i)
@@ -1374,6 +1574,16 @@ namespace translator
 		_add(imax);
 	}
 
+	void PTXToILTranslator::_translateMembar(const ir::PTXInstruction &i)
+	{
+		assertM(i.level == ir::PTXInstruction::GlobalLevel,
+				"Membar instruction '" << i.toString() << "' not supported");
+
+		ir::ILFence fence;
+		fence.memory();
+		_add(fence);
+	}
+
 	void PTXToILTranslator::_translateMin(const ir::PTXInstruction &i)
 	{
 		ir::ILImin imin;
@@ -1395,34 +1605,83 @@ namespace translator
 		_add(mov);
 	}
 
+	inline bool _isPowerOf2(unsigned int n)
+	{
+		return (n && ((n & (n-1)) == 0));
+	}
+
+	/* returns the log base 2 of a power of 2 number */
+	inline int _Log2(unsigned int n)
+	{
+		int r = 0;
+		while (n >>= 1) r++;
+		return r;
+	}
+
 	void PTXToILTranslator::_translateMul(const ir::PTXInstruction &i)
 	{
 		switch (i.type)
 		{
 			case ir::PTXOperand::s32:
 			{
-				ir::ILImul imul;
+				if (i.a.addressMode == ir::PTXOperand::Immediate &&
+						_isPowerOf2(i.a.imm_uint))
+				{
+					ir::ILIshl ishl;
+					ishl.d = _translate(i.d);
+					ishl.a = _translateLiteral(_Log2(i.a.imm_uint));
+					ishl.b = _translate(i.b);
+					_add(ishl);
+					break;
+				}
+				if (i.b.addressMode == ir::PTXOperand::Immediate &&
+						_isPowerOf2(i.b.imm_uint))
+				{
+					ir::ILIshl ishl;
+					ishl.d = _translate(i.d);
+					ishl.a = _translate(i.a);
+					ishl.b = _translateLiteral(_Log2(i.b.imm_uint));
+					_add(ishl);
+					break;
+				}
 
+				ir::ILImul imul;
+				imul.d = _translate(i.d);
 				imul.a = _translate(i.a);
 				imul.b = _translate(i.b);
-				imul.d = _translate(i.d);
-
 				_add(imul);
-
 				break;
 			}
 			case ir::PTXOperand::u16:
 			case ir::PTXOperand::u32:
 			case ir::PTXOperand::u64:
 			{
-				ir::ILUmul umul;
+				if (i.a.addressMode == ir::PTXOperand::Immediate &&
+						_isPowerOf2(i.a.imm_uint))
+				{
+					ir::ILIshl ishl;
+					ishl.d = _translate(i.d);
+					ishl.a = _translateLiteral(_Log2(i.a.imm_uint));
+					ishl.b = _translate(i.b);
+					_add(ishl);
+					break;
+				}
+				if (i.b.addressMode == ir::PTXOperand::Immediate &&
+						_isPowerOf2(i.b.imm_uint))
+				{
+					ir::ILIshl ishl;
+					ishl.d = _translate(i.d);
+					ishl.a = _translate(i.a);
+					ishl.b = _translateLiteral(_Log2(i.b.imm_uint));
+					_add(ishl);
+					break;
+				}
 
+				ir::ILUmul umul;
+				umul.d = _translate(i.d);
 				umul.a = _translate(i.a);
 				umul.b = _translate(i.b);
-				umul.d = _translate(i.d);
-
 				_add(umul);
-
 				break;
 			}
 			case ir::PTXOperand::f32:
@@ -1435,6 +1694,35 @@ namespace translator
 
 				_add(mul);
 
+				break;
+			}
+			default:
+			{
+				assertM(false, "Type "
+						<< ir::PTXOperand::toString(i.type)
+						<< " not supported in "
+						<< i.toString());
+			}
+		}
+	}
+
+	void PTXToILTranslator::_translateMul24(const ir::PTXInstruction &i)
+	{
+		switch (i.type)
+		{
+			case ir::PTXOperand::s32:
+			{
+				// there is no imul24
+				_translateMul(i);
+				break;
+			}
+			case ir::PTXOperand::u32:
+			{
+				ir::ILUmul24 umul24;
+				umul24.d = _translate(i.d);
+				umul24.a = _translate(i.a);
+				umul24.b = _translate(i.b);
+				_add(umul24);
 				break;
 			}
 			default:
@@ -1530,11 +1818,8 @@ namespace translator
 		_add(rcp);
 	}
 
-	void PTXToILTranslator::_translateRem(const ir::PTXInstruction &i)
+	void PTXToILTranslator::_translateIRem(const ir::PTXInstruction &i)
 	{
-		assertM(i.type == ir::PTXOperand::s32, "Type " 
-				<< ir::PTXOperand::toString(i.type) << " not supported");
-
 		// out0 = in0 % in1
 		// mdef(285)_out(1)_in(2)
 		// mov r0, in0
@@ -1641,6 +1926,76 @@ namespace translator
 			ir::ILMov mov;
 			mov.d = _translate(i.d); mov.a = r0;
 			_add(mov);
+		}
+	}
+
+	void PTXToILTranslator::_translateURem(const ir::PTXInstruction &i)
+	{
+		// out0 = in0 % in1
+		// mdef(98)_out(1)_in(2)
+		// mov r0, in0
+		// mov r1, in1
+		// udiv r2.x, r0.x, r1.x
+		// umul r2.x, r2.x, r1.x
+		// iadd r0.x, r0.x, r2.x_neg(xyzw)
+		// mov out0, r0
+		// mend
+
+		ir::ILOperand r0 = _tempRegister();
+		ir::ILOperand r1 = _tempRegister();
+		ir::ILOperand r2 = _tempRegister();
+
+		// mov r0, in0
+		{
+			ir::ILMov mov;
+			mov.d = r0; mov.a = _translate(i.a);
+			_add(mov);
+		}
+
+		// mov r1, in1
+		{
+			ir::ILMov mov;
+			mov.d = r1; mov.a = _translate(i.b);
+			_add(mov);
+		}
+
+		// udiv r2.x, r0.x, r1.x
+		{
+			ir::ILUdiv udiv;
+			udiv.d = r2.x(); udiv.a = r0.x(); udiv.b = r1.x();
+			_add(udiv);
+		}
+
+		// umul r2.x, r2.x, r1.x
+		{
+			ir::ILUmul umul;
+			umul.d = r2.x(); umul.a = r2.x(); umul.b = r1.x();
+			_add(umul);
+		}
+
+		// iadd r0.x, r0.x, r2.x_neg(xyzw)
+		{
+			ir::ILIadd iadd;
+			iadd.d = r0.x(); iadd.a = r0.x(); iadd.b = r2.x().neg();
+			_add(iadd);
+		}
+
+		// mov out0, r0
+		{
+			ir::ILMov mov;
+			mov.d = _translate(i.d); mov.a = r0;
+			_add(mov);
+		}
+	}
+
+	void PTXToILTranslator::_translateRem(const ir::PTXInstruction &i)
+	{
+		switch (i.type)
+		{
+			case ir::PTXOperand::s32: _translateIRem(i); break;
+			case ir::PTXOperand::u32: _translateURem(i); break;
+			default: assertM(false, "Opcode \"" << i.toString() 
+							 << "\" not supported");
 		}
 	}
 
@@ -1771,6 +2126,15 @@ namespace translator
 	{
 		switch (i.comparisonOperator)
 		{
+			case ir::PTXInstruction::Eq:
+			{
+				ir::ILEq eq;
+				eq.d = _translate(i.d);
+				eq.a = _translate(i.a);
+				eq.b = _translate(i.b);
+				_add(eq);
+				break;
+			}
 			case ir::PTXInstruction::Lt:
 			{
 				ir::ILLt lt;
@@ -1855,6 +2219,14 @@ namespace translator
 						<< i.toString());
 			}
 		}
+	}
+
+	void PTXToILTranslator::_translateSqrt(const ir::PTXInstruction &i)
+	{
+		ir::ILSqrt_Vec sqrt_vec;
+		sqrt_vec.d = _translate(i.d);
+		sqrt_vec.a = _translate(i.a);
+		_add(sqrt_vec);
 	}
 
 	void PTXToILTranslator::_translateSt(const ir::PTXInstruction &i)
@@ -2278,23 +2650,23 @@ namespace translator
 	}
 
 	std::string PTXToILTranslator::_translateConstantBuffer(
-			const std::string &ident)
+			const ir::PTXOperand o)
 	{
+		const std::string ident = o.identifier;
 		std::stringstream stream;
 
 		int i = 0;
 		ir::Kernel::ParameterVector::const_iterator it;
-		for (it = _ilKernel->parameters.begin() ; 
-				it != _ilKernel->parameters.end() ; it++, i++) {
+		for (it = _ilKernel->arguments.begin() ; 
+				it != _ilKernel->arguments.end() ; it++) {
 			if (it->name == ident) break;
+			i += it->arrayValues.size();
 		}
 
-		if (it != _ilKernel->parameters.end()) {
-			stream << "cb1[" << i << "]";
+		if (it != _ilKernel->arguments.end()) {
+			stream << "cb1[" << i + o.offset << "]";
 		} else {
-			assertM(false, "Parameter "
-					<< ident
-					<< " not declared");
+			assertM(false, "Argument " << ident << " not declared");
 		}
 
 		return stream.str();
@@ -2304,7 +2676,6 @@ namespace translator
  	{
 		report("Adding Kernel Prefix");
 
-		report("Adding dcl_literals");
 		if (_intLiterals.size() > 0) {
 			ILiteralMap::const_iterator it;
 			for (it = _intLiterals.begin() ; it != _intLiterals.end() ; it++) 
@@ -2321,7 +2692,7 @@ namespace translator
 
 				_ilKernel->_statements.push_front(dcl_literal);
 
-				report("Added statement \"" << dcl_literal.toString() << "\"");
+				report("Added \'" << dcl_literal.toString() << "\'");
 			}
 		}
 
@@ -2341,11 +2712,10 @@ namespace translator
 
 				_ilKernel->_statements.push_front(dcl_literal);
 
-				report("Added statement \"" << dcl_literal.toString() << "\"");
+				report("Added \'" << dcl_literal.toString() << "\'");
 			}
 		}
 
-		report("Adding dcl_cb1");
 		if (_ilKernel->parameters.size() > 0) {
 			ir::ILStatement dcl_cb1(ir::ILStatement::ConstantBufferDcl);
 
@@ -2356,9 +2726,10 @@ namespace translator
 			dcl_cb1.operands[0].addressMode = ir::ILOperand::ConstantBuffer;
 
 			_ilKernel->_statements.push_front(dcl_cb1);
+
+			report("Added \'" << dcl_cb1.toString() << "\'");
 		}
 
-		report("Adding dcl_cb0");
 		ir::ILStatement dcl_cb0(ir::ILStatement::ConstantBufferDcl);
 
 		std::stringstream stream;
@@ -2368,6 +2739,23 @@ namespace translator
 		dcl_cb0.operands[0].addressMode = ir::ILOperand::ConstantBuffer;
 
 		_ilKernel->_statements.push_front(dcl_cb0);
+		report("Added \'" << dcl_cb0.toString() << "\'");
+
+		unsigned int totalSharedMemorySize = _kernel->sharedMemorySize() +
+			_kernel->externSharedMemorySize();
+		if (totalSharedMemorySize > 0)
+		{
+			ir::ILStatement dcl_lds(ir::ILStatement::LocalDataShareDcl);
+
+			dcl_lds.operands.resize(1);
+			dcl_lds.operands[0].imm_int = totalSharedMemorySize;
+			dcl_lds.operands[0].addressMode = ir::ILOperand::Immediate;
+			dcl_lds.operands[0].type = ir::ILOperand::I32;
+
+			_ilKernel->_statements.push_front(dcl_lds);
+		
+			report("Added \'" << dcl_lds.toString() << "\'");
+		}
 
  		_ilKernel->_statements.push_front(ir::ILStatement(
  					ir::ILStatement::OtherDeclarations));

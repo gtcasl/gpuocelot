@@ -60,23 +60,6 @@ static void initializeCheckpoint(api::OcelotConfiguration::Checkpoint &check,
 
 ////////////////////////////////////////////////////////////////////////////////
 
-api::OcelotConfiguration::Instrumentation::ClockCycleCountInstrumentor::ClockCycleCountInstrumentor():
-        enabled(false)
-{
-
-}
-
-api::OcelotConfiguration::Instrumentation::BasicBlockInstrumentor::BasicBlockInstrumentor():
-        executionCount(false)
-{
-
-}
-
-api::OcelotConfiguration::Instrumentation::Instrumentation()
-{
-
-}
-
 api::OcelotConfiguration::TraceGeneration::RaceDetector::RaceDetector():
         enabled(false),
         ignoreIrrelevantWrites(true)
@@ -91,45 +74,43 @@ api::OcelotConfiguration::TraceGeneration::Debugger::Debugger():
 
 }
 
-api::OcelotConfiguration::TraceGeneration::TraceGeneration():
-	memoryChecker(false)
+api::OcelotConfiguration::TraceGeneration::MemoryChecker::MemoryChecker():
+	enabled(true),
+	checkInitialization(false)
 {
 
 }
 
-static void initializeInstrument(api::OcelotConfiguration::Instrumentation &instrument, 
-	hydrazine::json::Visitor config) 
+api::OcelotConfiguration::TraceGeneration::TraceGeneration()
 {
-	hydrazine::json::Visitor clockCycleCountConfig = config["clockCycleCount"];
-    if (!clockCycleCountConfig.is_null()) {
-            instrument.clockCycleCountInstrumentor.enabled = clockCycleCountConfig.parse<bool>("enabled", false);
-            instrument.clockCycleCountInstrumentor.logfile = clockCycleCountConfig.parse<std::string>("logfile", "");
-    }
-    
-    hydrazine::json::Visitor basicBlockConfig = config["basicBlock"];
-    if (!basicBlockConfig.is_null()) {
-            instrument.basicBlockInstrumentor.executionCount = basicBlockConfig.parse<bool>("executionCount", false);
-            instrument.basicBlockInstrumentor.logfile = basicBlockConfig.parse<std::string>("logfile", "");
-    }
 
 }
 
 static void initializeTrace(api::OcelotConfiguration::TraceGeneration &trace, 
-	hydrazine::json::Visitor config) 
-{
-	trace.memoryChecker = config.parse<bool>("memoryChecker", true);
+	hydrazine::json::Visitor config) {
+    hydrazine::json::Visitor memoryCheckerConfig = config["memoryChecker"];
+    if (!memoryCheckerConfig.is_null()) {
+            trace.memoryChecker.enabled = 
+            	memoryCheckerConfig.parse<bool>("enabled", true);
+            trace.memoryChecker.checkInitialization = 
+            	memoryCheckerConfig.parse<bool>("checkInitialization", false);
+    }
     
     hydrazine::json::Visitor raceConfig = config["raceDetector"];
     if (!raceConfig.is_null()) {
-            trace.raceDetector.enabled = raceConfig.parse<bool>("enabled", false);
-            trace.raceDetector.ignoreIrrelevantWrites = raceConfig.parse<bool>("ignoreIrrelevantWrites", true);
+            trace.raceDetector.enabled = 
+            	raceConfig.parse<bool>("enabled", false);
+            trace.raceDetector.ignoreIrrelevantWrites = 
+            	raceConfig.parse<bool>("ignoreIrrelevantWrites", true);
     }
 
     hydrazine::json::Visitor debugConfig = config["debugger"];
     if (!debugConfig.is_null()) {
             trace.debugger.enabled = debugConfig.parse<bool>("enabled", false);
-            trace.debugger.kernelFilter = debugConfig.parse<std::string>("kernelFilter", "");
-            trace.debugger.alwaysAttach = debugConfig.parse<bool>("alwaysAttach", false);
+            trace.debugger.kernelFilter = 
+            	debugConfig.parse<std::string>("kernelFilter", "");
+            trace.debugger.alwaysAttach = 
+            	debugConfig.parse<bool>("alwaysAttach", false);
     }
 }
 
@@ -159,6 +140,9 @@ api::OcelotConfiguration::Executive::Executive():
 	enableEmulated(true),
 	enableNVIDIA(true),
 	enableAMD(true),
+	enableRemote(true),
+	port(2011),
+	host("127.0.0.1"),
 	workerThreadLimit(-1),
 	warpSize(-1)
 {
@@ -185,6 +169,9 @@ static void initializeExecutive(api::OcelotConfiguration::Executive &executive,
 	}
 	else if (strPrefISA == "amd" || strPrefISA == "AMD") {
 		executive.preferredISA = (int)ir::Instruction::CAL;
+	}
+	else if (strPrefISA == "remote" || strPrefISA == "Remote") {
+		executive.preferredISA = (int)ir::Instruction::Remote;
 	}
 	else {
 		report("Unknown preferredISA - using Emulated");
@@ -237,6 +224,9 @@ static void initializeExecutive(api::OcelotConfiguration::Executive &executive,
 	executive.enableEmulated = config.parse<bool>("enableEmulated", true);
 	executive.enableNVIDIA = config.parse<bool>("enableNVIDIA", true);
 	executive.enableAMD = config.parse<bool>("enableAMD", true);
+	executive.enableRemote = config.parse<bool>("enableRemote", true);
+	executive.port = config.parse<int>("port", 2011);
+	executive.host = config.parse<std::string>("host", "127.0.0.1");
 	executive.workerThreadLimit = config.parse<int>("workerThreadLimit", -1);
 	executive.warpSize = config.parse<int>("warpSize", -1);
 	
@@ -249,6 +239,7 @@ static void initializeExecutive(api::OcelotConfiguration::Executive &executive,
 		executive.enableEmulated = false;
 		executive.enableNVIDIA = false;
 		executive.enableAMD = false;
+		executive.enableRemote = false;
 		
 		for (hydrazine::json::Array::ValueVector::iterator it = array->begin();
 			it != array->end(); ++it) {
@@ -264,6 +255,9 @@ static void initializeExecutive(api::OcelotConfiguration::Executive &executive,
 			}
 			else if ((std::string)dev == "emulated") {
 				executive.enableEmulated = true;
+			}
+			else if ((std::string)dev == "remote") {
+				executive.enableRemote = true;
 			}
 		}
 	}
@@ -290,10 +284,7 @@ void api::OcelotConfiguration::initialize(std::istream &stream) {
 		config = parser.parse_object(stream);
 
 		hydrazine::json::Visitor main(config);
-        if (main.find("instrument")) {
-			initializeInstrument(instrument, main["instrument"]);
-		}		
-        if (main.find("trace")) {
+		if (main.find("trace")) {
 			initializeTrace(trace, main["trace"]);
 		}
 		if (main.find("cuda")) {

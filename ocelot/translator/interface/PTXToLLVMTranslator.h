@@ -56,12 +56,13 @@ namespace translator
 			void _reportWrites( const analysis::DataflowGraph::Instruction& i );
 			void _check( ir::PTXInstruction::AddressSpace space,
 				const ir::LLVMInstruction::Operand& address, 
-				unsigned int bytes, unsigned int statement );
+				unsigned int bytes, bool isArgument, unsigned int statement );
 			void _addMemoryCheckingDeclarations();
 			void _insertDebugSymbols();
 			
 		private:
-			void _yield( unsigned int continuation );
+			void _yield( unsigned int type, const ir::LLVMInstruction::Operand&
+				continuation = ir::LLVMInstruction::Operand() );
 
 			ir::LLVMInstruction::Operand _translate( const ir::PTXOperand& o );
 			void _swapAllExceptName( ir::LLVMInstruction::Operand& o, 
@@ -79,17 +80,26 @@ namespace translator
 			void _translateAnd( const ir::PTXInstruction& i );
 			void _translateAtom( const ir::PTXInstruction& i );
 			void _translateBar( const ir::PTXInstruction& i );
+			void _translateBfi( const ir::PTXInstruction& i );
+			void _translateBfind( const ir::PTXInstruction& i );
 			void _translateBra( const ir::PTXInstruction& i, 
 				const analysis::DataflowGraph::Block& block );
+			void _translateBrev( const ir::PTXInstruction& i );
 			void _translateBrkpt( const ir::PTXInstruction& i );
-			void _translateCall( const ir::PTXInstruction& i );
+			void _translateCall( const ir::PTXInstruction& i, 
+				const analysis::DataflowGraph::Block& block );
+			void _translateClz( const ir::PTXInstruction& i );
 			void _translateCNot( const ir::PTXInstruction& i );
+			void _translateCopySign( const ir::PTXInstruction& i );
 			void _translateCos( const ir::PTXInstruction& i );
 			void _translateCvt( const ir::PTXInstruction& i );
+			void _translateCvta( const ir::PTXInstruction& i );
 			void _translateDiv( const ir::PTXInstruction& i );
 			void _translateEx2( const ir::PTXInstruction& i );
 			void _translateExit( const ir::PTXInstruction& i );
+			void _translateIsspacep( const ir::PTXInstruction& i );
 			void _translateLd( const ir::PTXInstruction& i );
+			void _translateLdu( const ir::PTXInstruction& i );
 			void _translateLg2( const ir::PTXInstruction& i );
 			void _translateMad24( const ir::PTXInstruction& i );
 			void _translateMad( const ir::PTXInstruction& i );
@@ -103,10 +113,13 @@ namespace translator
 			void _translateNot( const ir::PTXInstruction& i );
 			void _translateOr( const ir::PTXInstruction& i );
 			void _translatePmevent( const ir::PTXInstruction& i );
+			void _translatePopc( const ir::PTXInstruction& i );
+			void _translatePrmt( const ir::PTXInstruction& i );
 			void _translateRcp( const ir::PTXInstruction& i );
 			void _translateRed( const ir::PTXInstruction& i );
 			void _translateRem( const ir::PTXInstruction& i );
-			void _translateRet( const ir::PTXInstruction& i );
+			void _translateRet( const ir::PTXInstruction& i, 
+				const analysis::DataflowGraph::Block& block );
 			void _translateRsqrt( const ir::PTXInstruction& i );
 			void _translateSad( const ir::PTXInstruction& i );
 			void _translateSelP( const ir::PTXInstruction& i );
@@ -120,7 +133,13 @@ namespace translator
 			void _translateSt( const ir::PTXInstruction& i );
 			void _translateSub( const ir::PTXInstruction& i );
 			void _translateSubC( const ir::PTXInstruction& i );
+			void _translateSuld( const ir::PTXInstruction& i );
+			void _translateSuq( const ir::PTXInstruction& i );
+			void _translateSured( const ir::PTXInstruction& i );
+			void _translateSust( const ir::PTXInstruction& i );
+			void _translateTestP( const ir::PTXInstruction& i );
 			void _translateTex( const ir::PTXInstruction& i );
+			void _translateTxq( const ir::PTXInstruction& i );
 			void _translateTrap( const ir::PTXInstruction& i );
 			void _translateVote( const ir::PTXInstruction& i );
 			void _translateXor( const ir::PTXInstruction& i );
@@ -133,12 +152,22 @@ namespace translator
 				ir::PTXOperand::DataType dType, 
 				const ir::LLVMInstruction::Operand& s, 
 				ir::PTXOperand::DataType sType, int modifier = 0 );
+			void _flushToZero(const ir::LLVMInstruction::Operand& d, 
+				const ir::LLVMInstruction::Operand& a);
+			void _saturate(const ir::LLVMInstruction::Operand& d, 
+				const ir::LLVMInstruction::Operand& a);
+			void _floatToIntSaturate(const ir::LLVMInstruction::Operand& d, 
+				const ir::LLVMInstruction::Operand& ftoint,
+				const ir::LLVMInstruction::Operand& f, bool isSigned);
 			
 			std::string _tempRegister();
 			std::string _loadSpecialRegister( 
-				ir::PTXOperand::SpecialRegister s );
-			ir::LLVMInstruction::Operand 
-				_getMemoryBasePointer( ir::PTXInstruction::AddressSpace space );
+				ir::PTXOperand::SpecialRegister s, 
+				ir::PTXOperand::VectorIndex index );
+			ir::LLVMInstruction::Operand _getMemoryBasePointer( 
+			 	ir::PTXInstruction::AddressSpace space, bool isArgument );
+			ir::LLVMInstruction::Operand _getMemoryExtent( 
+			 	ir::PTXInstruction::AddressSpace space );
 			ir::LLVMInstruction::Operand _getAddressableVariablePointer( 
 				ir::PTXInstruction::AddressSpace space,
 				const ir::PTXOperand& o );
@@ -149,7 +178,6 @@ namespace translator
 				ir::PTXInstruction::AddressSpace space, 
 				ir::LLVMInstruction::DataType type, unsigned int vector );
 			
-			void _setFloatingPointRoundingMode( const ir::PTXInstruction& i );
 			ir::LLVMInstruction::Operand _destination( 
 				const ir::PTXInstruction& i, bool pd = false );
 			ir::LLVMInstruction::Operand _destinationCC( 
@@ -162,8 +190,12 @@ namespace translator
 
 			void _addStackAllocations();
 			void _addTextureCalls();
+			void _addSurfaceCalls();
+			void _addQueryCalls();
 			void _addAtomicCalls();
 			void _addMathCalls();
+			void _addLLVMIntrinsics();
+			void _addUtilityCalls();
 			void _addKernelPrefix();
 			void _addGlobalDeclarations();
 			void _addKernelSuffix();

@@ -41,7 +41,7 @@ namespace executive {
 		*/
 		void setExternSharedMemorySize(unsigned int bytes);
 
-		void updateParameterMemory();
+		void updateArgumentMemory();
 		
 		/*! \brief Indicate that other memory has been updated */
 		void updateMemory();
@@ -61,14 +61,10 @@ namespace executive {
 		void setWorkerThreads(unsigned int limit);
 		
 	protected:
-		/*!
-			Configures the parameter block for the CUDA driver API
-		*/
-		void configureParameters();
+		/*! Configures the argument block for the CUDA driver API */
+		void configureArguments();
 		
-		/*!
-			Construct 
-		*/
+		/*! Construct */
 		bool initialize();
 	
 	protected:

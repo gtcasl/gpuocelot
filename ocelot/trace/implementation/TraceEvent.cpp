@@ -67,7 +67,6 @@ trace::TraceEvent::TraceEvent(
 }
 
 void trace::TraceEvent::reset() {
-	reconvergence.reset();
 	memory_size = 0;
 	memory_addresses.clear();
 }
@@ -80,19 +79,24 @@ std::string trace::TraceEvent::toString() const
 
 	U64Vector::const_iterator address = memory_addresses.begin();
 	
-	if( !memory_addresses.empty() ) {
+	if( !memory_addresses.empty() )
+	{
 		stream << " : <" << (void*)*address << std::dec 
 			<< ", " << memory_size << ">";
 	
 		++address;
 	}
 	
-	for( ; address != memory_addresses.end(); ++address ) {
+	for( ; address != memory_addresses.end(); ++address )
+	{
+	
 		stream << " <" << (void*)*address << std::dec 
 			<< ", " << memory_size << ">";
+	
 	}
 	
 	return stream.str();
+
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////

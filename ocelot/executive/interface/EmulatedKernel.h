@@ -23,11 +23,13 @@ namespace executive {
 		
 	class EmulatedKernel: public ExecutableKernel {
 	public:
-		typedef std::vector< ir::PTXInstruction > PTXInstructionVector;
-		typedef std::map< int, std::string > ProgramCounterBlockMap;
+		typedef std::vector<ir::PTXInstruction> PTXInstructionVector;
+		typedef std::map<int, std::string> ProgramCounterBlockMap;
+		typedef std::unordered_map<std::string, int> FunctionNameMap;
 		typedef std::map< std::string, std::pair<int, int> > BlockRangeMap;
 		typedef std::map< int, std::pair< int, int > > ThreadFrontierMap;
-		typedef std::vector<ir::PTXU64> RegisterFile;
+		typedef std::unordered_map<int, const EmulatedKernel*> PCToKernelMap;
+		typedef CooperativeThreadArray::RegisterFile RegisterFile;
 
 	private:
 		static void _computeOffset(const ir::PTXStatement& it, 
@@ -58,7 +60,7 @@ namespace executive {
 		void setWorkerThreads(unsigned int limit);
 
 		/*! \brief Indicate that the kernels parameters have been updated */
-		void updateParameterMemory();
+		void updateArgumentMemory();
 		
 		/*! \brief Indicate that other memory has been updated */
 		void updateMemory();
@@ -78,7 +80,15 @@ namespace executive {
 
 		/*!	Maps identifiers to global memory allocations. */
 		void initializeGlobalMemory();
+		
+		/*! Lazily sets the target of a call instruction to the entry point
+			of the specified function.  This function will be inserted into
+			the instruction sequence if it does not already exist */
+		void lazyLink(int callPC, const std::string& functionName);
 
+		/*! Finds the kernel beginning at the specified PC */
+		const EmulatedKernel* getKernel(int PC) const;
+		
 		/*! If the kernel is executing, jump to the specified PC */
 		void jumpToPC(int PC);
 
@@ -88,13 +98,23 @@ namespace executive {
 		/* Get a pointer to the base of the current shared memory block */
 		const char* getSharedMemory() const;
 
+		/* Get a pointer to the base of the current local memory block
+			for the specified thread */
+		const char* getLocalMemory(unsigned int threadId) const;
+
+		/* Get the argument memory size of the current frame */
+		unsigned int getCurrentFrameArgumentMemorySize() const;
+
+		/* Get the parameter memory size of the current frame */
+		unsigned int getCurrentFrameParameterMemorySize() const;
+
 	protected:
 		/*! Cleans up the EmulatedKernel instance*/
 		void freeAll();
 
 		/*!	On construction, allocates registers by computing live ranges */
 		void registerAllocation();
-
+		
 		/*!	Produces a packed vector of instructions, updates each operand, 
 			and changes labels to indices.
 		*/
@@ -107,7 +127,7 @@ namespace executive {
 		void updateParamReferences();
 
 		/*!	Allocate parameter memory*/	
-		void initializeParameterMemory();
+		void initializeArgumentMemory();
 
 		/*!	Allocates arrays in shared memory and maps identifiers to 
 			allocations. */
@@ -123,16 +143,23 @@ namespace executive {
 		/*!	Maps identifiers to global shared memory allocations. */
 		void initializeGlobalSharedMemory();
 		
+		/*! Determines stack memory size and maps identifiers to allocations */
+		void initializeStackMemory();
+		
 		/*!	Scans the kernel and builds the set of textures using references 
 				in tex instructions */
 		void initializeTextureMemory();
+
+		/*! Sets the target of call instructions to invalid pcs so that they
+			can be lazily compiled and allocated */
+		void invalidateCallTargets();
 
 	public:
 		/*! A map of register name to register number */
 		ir::PTXKernel::RegisterMap registerMap;
 
-		/*!	Pointer to block of memory used to store parameter data */
-		char* ParameterMemory;
+		/*!	Pointer to block of memory used to store argument data */
+		char* ArgumentMemory;
 
 		/*!	Pointer to byte-addressable const memory */
 		char* ConstMemory;
@@ -143,7 +170,7 @@ namespace executive {
 		/*! Maps program counters of header instructions to basic block label */
 		ProgramCounterBlockMap branchTargetsToBlock;
 		
-		/*! maps a PC to the basic block it terminates */
+		/*! maps the program counter of the terminating instructions to owning basic block */
 		ProgramCounterBlockMap basicBlockMap;
 		
 		/*! maps a PC to the basic block it starts */
@@ -157,6 +184,13 @@ namespace executive {
 
 		/*!	Packed vector of mapped textures */
 		TextureVector textures;
+
+	private:
+		/*! Maps program counter to the kernel that begins there */
+		PCToKernelMap kernelEntryPoints;
+
+		/*! A map of function names to the PC of their entry point */
+		FunctionNameMap functionEntryPoints;
 
 		/*! A handle to the current CTA, or 0 if none is executing */
 		executive::CooperativeThreadArray* CTA;

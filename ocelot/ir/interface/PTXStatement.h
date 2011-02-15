@@ -19,29 +19,38 @@ namespace ir {
 		/*!	PTX directive types */
 		enum Directive {
 			Instr,			//! indicates this is an actual instruction
+			CallTargets,
 			Const,
 			Entry,
 			File,
 			Func,
+			FunctionPrototype,
 			Global,
 			Label,
 			Local,
 			Loc,
+			Maxnreg,
+			Maxntid,
+			Maxnctapersm,
+			Minnctapersm,
 			Param,
+			Pragma,
 			Reg,
+			Reqntid,
+			Samplerref,
 			Section,
 			Shared,
 			Sreg,
-			Struct,
-			Surf,
+			Surfref,
 			Target,
-			Tex,
-			Union,
+			Texref,
 			Version,
-			StartEntry,		//< synthetic directive to indicate start of entry
-			EndEntry,		//< synthetic to indicate the end of an entry
-			StartParam,		//< synthetic to indicate start of a parameter list
-			EndParam,		//< synthetic to indicate end of a parameter list
+			StartScope,		//! synthetic directive to indicate start of entry
+			EndScope,		//! synthetic to indicate the end of an entry
+			StartParam,		//! synthetic to indicate start of a parameter list
+			EndParam,		//! synthetic to indicate end of a parameter list
+			FunctionName,	//! synthetic to indicate the function name
+			EndFuncDec, 	//! synthetic ending a function declaration
 			Directive_invalid
 		};
 
@@ -89,10 +98,19 @@ namespace ir {
 			Extern,
 			NoAttribute
 		};
+		
+		enum TextureSpace {
+			GlobalSpace,
+			ParameterSpace,
+			RegisterSpace,
+			InvalidSpace
+		};
 
 	public:	
+		static std::string toString( TextureSpace );
 		static std::string toString( Attribute );
 		static std::string toString( Data, PTXOperand::DataType );
+		static std::string toString( Directive directive );
 	
 	public:
 		/*! Indicates type of statement */
@@ -109,6 +127,7 @@ namespace ir {
 		union {
 			unsigned int sourceFile;
 			int alignment;
+			TextureSpace space;
 		};
 		
 		std::string section_type;
@@ -130,6 +149,11 @@ namespace ir {
 		Attribute attribute;
 
 		StringVector targets;
+
+		TypeVector returnTypes;
+		TypeVector argumentTypes;
+		
+		bool isReturnArgument;
 
 	public:
 		PTXStatement( Directive directive = Directive_invalid );

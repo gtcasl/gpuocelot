@@ -31,7 +31,6 @@ namespace analysis
 
 	    DataflowGraph::RegisterId index = kernel->dfg()->newRegister();
 	    ir::PTXInstruction mad(ir::PTXInstruction::Mad);
-        mad.addressSpace = ir::PTXInstruction::Reg;
         mad.type = ir::PTXOperand::u32;
         mad.modifier = ir::PTXInstruction::lo;
 
@@ -55,7 +54,6 @@ namespace analysis
 
         // mul offset, offset, sizeof(size_t) 
 	    ir::PTXInstruction mul(ir::PTXInstruction::Mul);
-	    mul.addressSpace = ir::PTXInstruction::Reg;
         mul.type = ir::PTXOperand::u32;
         mul.modifier = ir::PTXInstruction::lo;
         mul.type = ir::PTXOperand::u32;
@@ -84,7 +82,6 @@ namespace analysis
 
         // add counterPtr, counterPtr, offset
 	    ir::PTXInstruction add(ir::PTXInstruction::Add);      
-	    add.addressSpace = ir::PTXInstruction::Reg;
         add.type = type;
         add.d.type = type;
         add.d.addressMode = ir::PTXOperand::Register;

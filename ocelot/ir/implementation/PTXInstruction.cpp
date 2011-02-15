@@ -11,8 +11,8 @@
 
 std::string ir::PTXInstruction::toString( Level l ) {
 	switch( l ) {
-		case CtaLevel: return "cta"; break;
-		case GlobalLevel: return "gl"; break;
+		case CtaLevel:    return "cta"; break;
+		case GlobalLevel: return "gl";  break;
 		default: break;
 	}
 	return "";
@@ -20,12 +20,12 @@ std::string ir::PTXInstruction::toString( Level l ) {
 
 std::string ir::PTXInstruction::toString( PermuteMode m ) {
 	switch( m ) {
-		case ForwardFourExtract: return "f4e"; break;
+		case ForwardFourExtract:  return "f4e"; break;
 		case BackwardFourExtract: return "b4e"; break;
-		case ReplicateEight: return "rc8"; break;
-		case EdgeClampLeft: return "ecl"; break;
-		case EdgeClampRight: return "ecr"; break;
-		case ReplicateSixteen: return "rc16"; break;
+		case ReplicateEight:      return "rc8"; break;
+		case EdgeClampLeft:       return "ecl"; break;
+		case EdgeClampRight:      return "ecr"; break;
+		case ReplicateSixteen:    return "rc16"; break;
 		default: break;
 	}
 	return "";
@@ -33,12 +33,12 @@ std::string ir::PTXInstruction::toString( PermuteMode m ) {
 
 std::string ir::PTXInstruction::toString( FloatingPointMode m ) {
 	switch( m ) {
-		case Finite: return "finite"; break;
-		case Infinite: return "infinite"; break;
-		case Number: return "number"; break;
+		case Finite:     return "finite"; break;
+		case Infinite:   return "infinite"; break;
+		case Number:     return "number"; break;
 		case NotANumber: return "notanumber"; break;
-		case Normal: return "normal"; break;
-		case SubNormal: return "subnormal"; break;
+		case Normal:     return "normal"; break;
+		case SubNormal:  return "subnormal"; break;
 		default: break;
 	}
 	return "";
@@ -55,14 +55,12 @@ std::string ir::PTXInstruction::toString( Vec v ) {
 
 std::string ir::PTXInstruction::toString( AddressSpace space ) {
 	switch( space ) {
-		case Reg:
-		case SReg: return "reg"; break;
-		case Const: return "const"; break;
-		case Global: return "global"; break;
-		case Local: return "local"; break;
-		case Param: return "param"; break;
-		case Shared: return "shared"; break;
-		case Texture: return "tex"; break;
+		case Const:   return "const";  break;
+		case Global:  return "global"; break;
+		case Local:   return "local";  break;
+		case Param:   return "param";  break;
+		case Shared:  return "shared"; break;
+		case Texture: return "tex";    break;
 		default: break;
 	}
 	return "";
@@ -70,16 +68,16 @@ std::string ir::PTXInstruction::toString( AddressSpace space ) {
 
 std::string ir::PTXInstruction::toString( AtomicOperation operation ) {
 	switch( operation ) {
-		case AtomicAnd: return "and"; break;
-		case AtomicOr: return "or"; break;
-		case AtomicXor: return "xor"; break;
-		case AtomicCas: return "cas"; break;
+		case AtomicAnd:  return "and";  break;
+		case AtomicOr:   return "or";   break;
+		case AtomicXor:  return "xor";  break;
+		case AtomicCas:  return "cas";  break;
 		case AtomicExch: return "exch"; break;
-		case AtomicAdd: return "add"; break;
-		case AtomicInc: return "inc"; break;
-		case AtomicDec: return "dec"; break;
-		case AtomicMin: return "min"; break;
-		case AtomicMax: return "max"; break;
+		case AtomicAdd:  return "add";  break;
+		case AtomicInc:  return "inc";  break;
+		case AtomicDec:  return "dec";  break;
+		case AtomicMin:  return "min";  break;
+		case AtomicMax:  return "max";  break;
 		default: break;
 	}
 	return "";
@@ -88,13 +86,52 @@ std::string ir::PTXInstruction::toString( AtomicOperation operation ) {
 std::string ir::PTXInstruction::toString( ReductionOperation operation ) {
 	switch( operation ) {
 		case ReductionAnd: return "and"; break;
-		case ReductionOr: return "or"; break;
+		case ReductionOr:  return "or";  break;
 		case ReductionXor: return "xor"; break;
 		case ReductionAdd: return "add"; break;
 		case ReductionInc: return "inc"; break;
 		case ReductionDec: return "dec"; break;
 		case ReductionMin: return "min"; break;
 		case ReductionMax: return "max"; break;
+		default: break;
+	}
+	return "";
+}
+
+std::string ir::PTXInstruction::toString( SurfaceQuery query ) {
+	switch (query) {
+		case Width: return "width";
+		case Height: return "height";
+		case Depth: return "depth";
+		case ChannelDataType: return "channel_data_type";
+		case ChannelOrder: return "channel_order";
+		case NormalizedCoordinates:  return "normalized_coords";
+		case SamplerFilterMode: return "filter_mode";
+		case SamplerAddrMode0: return "addr_mode_0";
+		case SamplerAddrMode1: return "addr_mode_1";
+		case SamplerAddrMode2: return "addr_mode_2";
+		default: break;
+	}
+	return "";
+}
+
+std::string ir::PTXInstruction::toString( FormatMode mode ) {
+	switch (mode) {
+		case Unformatted: return ".b";
+		case Formatted:   return ".p";
+		case FormatMode_Invalid: break;
+		default: break;
+	}
+	return "";
+}
+
+std::string ir::PTXInstruction::toString( ClampOperation clamp ) {
+	switch (clamp) {
+		case TrapOOB:                return ".trap";
+		case Clamp:                  return ".clamp";
+		case Zero:                   return ".zero";
+		case Mirror:                 return ".mirror";
+		case ClampOperation_Invalid: break;
 		default: break;
 	}
 	return "";
@@ -114,17 +151,31 @@ std::string ir::PTXInstruction::roundingMode( Modifier modifier ) {
 std::string ir::PTXInstruction::modifierString( unsigned int modifier, 
 	CarryFlag carry ) {
 	std::string result;
-	switch( modifier ) {
-		case approx: return result += "approx."; break;
-		case wide: return result += "wide."; break;
-		case hi: return result += "hi."; break;
-		case lo: return result += "lo."; break;
-		case rn: return result += "rn."; break;
-		case rz: return result += "rz."; break;
-		case rm: return result += "rm."; break;
-		case rp: return result += "rp."; break;
-		default: break;
+	if( modifier & approx ) {
+		result += "approx.";
 	}
+	else if( modifier & wide ) {
+		result += "wide.";
+	}
+	else if( modifier & hi ) {
+		result += "hi.";
+	}
+	else if( modifier & lo ) {
+		result += "lo.";
+	}
+	else if( modifier & rn ) {
+		result += "rn.";
+	}
+	else if( modifier & rz ) {
+		result += "rz.";
+	}
+	else if( modifier & rm ) {
+		result += "rm.";
+	}
+	else if( modifier & rp ) {
+		result += "rp.";
+	}
+
 	if( modifier & ftz ) {
 		result += "ftz.";
 	}
@@ -139,33 +190,44 @@ std::string ir::PTXInstruction::modifierString( unsigned int modifier,
 
 std::string ir::PTXInstruction::toString( Modifier modifier ) {
 	switch( modifier ) {
-		case hi: return "hi"; break;
-		case lo: return "lo"; break;
-		case wide: return "wide"; break;
-		case sat: return "sat"; break;
-		case rn: return "rn"; break;
-		case rz: return "rz"; break;
-		case rm: return "rm"; break;
-		case rp: return "rp"; break;
+		case hi:     return "hi";     break;
+		case lo:     return "lo";     break;
+		case wide:   return "wide";   break;
+		case sat:    return "sat";    break;
+		case rn:     return "rn";     break;
+		case rz:     return "rz";     break;
+		case rm:     return "rm";     break;
+		case rp:     return "rp";     break;
 		case approx: return "approx"; break;
-		case ftz: return "ftz"; break;
+		case ftz:    return "ftz";    break;
 		default: break;
 	}
 	return "";	
 }
 
+
+std::string ir::PTXInstruction::toString( BarrierOperation operation) {
+	switch (operation) {
+		case BarSync:      return ".sync";
+		case BarArrive:    return ".arrive";
+		case BarReduction: return ".red";
+		default: break;
+	}
+	return "";
+}
+
 std::string ir::PTXInstruction::toString( CmpOp operation ) {
 	switch( operation ) {
-		case Eq: return "eq"; break;
-		case Ne: return "ne"; break;
-		case Lt: return "lt"; break;
-		case Le: return "le"; break;
-		case Gt: return "gt"; break;
-		case Ge: return "ge"; break;
-		case Lo: return "lo"; break;
-		case Ls: return "ls"; break;
-		case Hi: return "hi"; break;
-		case Hs: return "hs"; break;
+		case Eq: return "eq";   break;
+		case Ne: return "ne";   break;
+		case Lt: return "lt";   break;
+		case Le: return "le";   break;
+		case Gt: return "gt";   break;
+		case Ge: return "ge";   break;
+		case Lo: return "lo";   break;
+		case Ls: return "ls";   break;
+		case Hi: return "hi";   break;
+		case Hs: return "hs";   break;
 		case Equ: return "equ"; break;
 		case Neu: return "neu"; break;
 		case Ltu: return "ltu"; break;
@@ -182,7 +244,7 @@ std::string ir::PTXInstruction::toString( CmpOp operation ) {
 std::string ir::PTXInstruction::toString( BoolOp operation ) {
 	switch( operation ) {
 		case BoolAnd: return "and"; break;
-		case BoolOr: return "or"; break;
+		case BoolOr:  return "or";  break;
 		case BoolXor: return "xor"; break;	
 		default: break;
 	}
@@ -201,9 +263,10 @@ std::string ir::PTXInstruction::toString( Geometry geometry ) {
 
 std::string ir::PTXInstruction::toString( VoteMode mode ) {
 	switch( mode ) {
-		case All: return "all"; break;
-		case Any: return "any"; break;
-		case Uni: return "uni"; break;
+		case All:    return "all";    break;
+		case Any:    return "any";    break;
+		case Uni:    return "uni";    break;
+		case Ballot: return "ballot"; break;
 		default: break;
 	}
 	return "";
@@ -211,88 +274,88 @@ std::string ir::PTXInstruction::toString( VoteMode mode ) {
 
 std::string ir::PTXInstruction::toString( Opcode opcode ) {
 	switch( opcode ) {
-		case Abs: return "abs"; break;
-		case Add: return "add"; break;
-		case AddC: return "addc"; break;
-		case And: return "and"; break;
-		case Atom: return "atom"; break;
-		case Bar: return "bar"; break;
-		case Bfe: return "bfe"; break;
-		case Bfi: return "bfi"; break;
-		case Bfind: return "bfind"; break;
-		case Bra: return "bra"; break;
-		case Brev: return "brev"; break;
-		case Brkpt: return "brkpt"; break;
-		case Call: return "call"; break;
-		case Clz: return "clz"; break;
-		case CNot: return "cnot"; break;
-		case CopySign: return "copysign"; break;
-		case Cos: return "cos"; break;
-		case Cvt: return "cvt"; break;
-		case Cvta: return "cvta"; break;
-		case Div: return "div"; break;
-		case Ex2: return "ex2"; break;
-		case Exit: return "exit"; break;
-		case Fma: return "fma"; break;
-		case Isspacep: return "isspacep"; break;
-		case Ld: return "ld"; break;
-		case Ldu: return "ldu"; break;
-		case Lg2: return "lg2"; break;
-		case Mad24: return "mad24"; break;
-		case Mad: return "mad"; break;
-		case Max: return "max"; break;
-		case Membar: return "membar"; break;
-		case Min: return "min"; break;
-		case Mov: return "mov"; break;
-		case Mul24: return "mul24"; break;
-		case Mul: return "mul"; break;
-		case Neg: return "neg"; break;
-		case Not: return "not"; break;
-		case Or: return "or"; break;
-		case Pmevent: return "pmevent"; break;
-		case Popc: return "popc"; break;
-		case Prefetch: return "prefetch"; break;
-		case Prefetchu: return "prefetchu"; break;
-		case Prmt: return "prmt"; break;
-		case Rcp: return "rcp"; break;
-		case Red: return "red"; break;
-		case Rem: return "rem"; break;
-		case Ret: return "ret"; break;
-		case Rsqrt: return "rsqrt"; break;
-		case Sad: return "sad"; break;
-		case SelP: return "selp"; break;
-		case Set: return "set"; break;
-		case SetP: return "setp"; break;
-		case Shl: return "shl"; break;
-		case Shr: return "shr"; break;
-		case Sin: return "sin"; break;
-		case SlCt: return "slct"; break;
-		case Sqrt: return "sqrt"; break;
-		case St: return "st"; break;
-		case Sub: return "sub"; break;
-		case SubC: return "subc"; break;
-		case Suld: return "suld"; break;
-		case Sured: return "sured"; break;
-		case Sust: return "sust"; break;
-		case Suq: return "suq"; break;
-		case TestP: return "testp"; break;
-		case Tex: return "tex"; break;
-		case Txq: return "txq"; break;
-		case Trap: return "trap"; break;
-		case Vabsdiff: return "vabsdiff"; break;
-		case Vadd: return "vadd"; break;
-		case Vmad: return "vmad"; break;
-		case Vmax: return "vmax"; break;
-		case Vmin: return "vmin"; break;
-		case Vset: return "vset"; break;
-		case Vshl: return "vshl"; break;
-		case Vshr: return "vshr"; break;
-		case Vsub: return "vsub"; break;
-		case Vote: return "vote"; break;
-		case Xor: return "xor"; break;
+		case Abs:        return "abs";        break;
+		case Add:        return "add";        break;
+		case AddC:       return "addc";       break;
+		case And:        return "and";        break;
+		case Atom:       return "atom";       break;
+		case Bar:        return "bar";        break;
+		case Bfe:        return "bfe";        break;
+		case Bfi:        return "bfi";        break;
+		case Bfind:      return "bfind";      break;
+		case Bra:        return "bra";        break;
+		case Brev:       return "brev";       break;
+		case Brkpt:      return "brkpt";      break;
+		case Call:       return "call";       break;
+		case Clz:        return "clz";        break;
+		case CNot:       return "cnot";       break;
+		case CopySign:   return "copysign";   break;
+		case Cos:        return "cos";        break;
+		case Cvt:        return "cvt";        break;
+		case Cvta:       return "cvta";       break;
+		case Div:        return "div";        break;
+		case Ex2:        return "ex2";        break;
+		case Exit:       return "exit";       break;
+		case Fma:        return "fma";        break;
+		case Isspacep:   return "isspacep";   break;
+		case Ld:         return "ld";         break;
+		case Ldu:        return "ldu";        break;
+		case Lg2:        return "lg2";        break;
+		case Mad24:      return "mad24";      break;
+		case Mad:        return "mad";        break;
+		case Max:        return "max";        break;
+		case Membar:     return "membar";     break;
+		case Min:        return "min";        break;
+		case Mov:        return "mov";        break;
+		case Mul24:      return "mul24";      break;
+		case Mul:        return "mul";        break;
+		case Neg:        return "neg";        break;
+		case Not:        return "not";        break;
+		case Or:         return "or";         break;
+		case Pmevent:    return "pmevent";    break;
+		case Popc:       return "popc";       break;
+		case Prefetch:   return "prefetch";   break;
+		case Prefetchu:  return "prefetchu";  break;
+		case Prmt:       return "prmt";       break;
+		case Rcp:        return "rcp";        break;
+		case Red:        return "red";        break;
+		case Rem:        return "rem";        break;
+		case Ret:        return "ret";        break;
+		case Rsqrt:      return "rsqrt";      break;
+		case Sad:        return "sad";        break;
+		case SelP:       return "selp";       break;
+		case Set:        return "set";        break;
+		case SetP:       return "setp";       break;
+		case Shl:        return "shl";        break;
+		case Shr:        return "shr";        break;
+		case Sin:        return "sin";        break;
+		case SlCt:       return "slct";       break;
+		case Sqrt:       return "sqrt";       break;
+		case St:         return "st";         break;
+		case Sub:        return "sub";        break;
+		case SubC:       return "subc";       break;
+		case Suld:       return "suld";       break;
+		case Sured:      return "sured";      break;
+		case Sust:       return "sust";       break;
+		case Suq:        return "suq";        break;
+		case TestP:      return "testp";      break;
+		case Tex:        return "tex";        break;
+		case Txq:        return "txq";        break;
+		case Trap:       return "trap";       break;
+		case Vabsdiff:   return "vabsdiff";   break;
+		case Vadd:       return "vadd";       break;
+		case Vmad:       return "vmad";       break;
+		case Vmax:       return "vmax";       break;
+		case Vmin:       return "vmin";       break;
+		case Vset:       return "vset";       break;
+		case Vshl:       return "vshl";       break;
+		case Vshr:       return "vshr";       break;
+		case Vsub:       return "vsub";       break;
+		case Vote:       return "vote";       break;
+		case Xor:        return "xor";        break;
 		case Reconverge: return "reconverge"; break;
-		case Phi: return "phi"; break;
-		case Nop: return "nop"; break;
+		case Phi:        return "phi";        break;
+		case Nop:        return "nop";        break;
 	}
 	return "INVALID";
 }
@@ -313,10 +376,11 @@ ir::PTXInstruction::PTXInstruction( Opcode op, const PTXOperand& _d,
 	vec = PTXOperand::v1;
 	pg.condition = PTXOperand::PT;
 	pg.type = PTXOperand::pred;
-	booleanOperator = BoolNop;
+	barrierOperation = BarSync;
 	carry = None;
 	statementIndex = 0;
-	divideFull = false;
+	cc = 0;
+	addressSpace = AddressSpace_Invalid;
 }
 
 ir::PTXInstruction::~PTXInstruction() {
@@ -559,6 +623,22 @@ std::string ir::PTXInstruction::valid() const {
 			break;
 		}
 		case Call: {
+			if( a.addressMode != PTXOperand::Register
+				&& a.addressMode != PTXOperand::FunctionName ) {
+				return "operand A must be a function name or register.";
+			}
+			if( d.addressMode != PTXOperand::ArgumentList 
+				&& d.addressMode != PTXOperand::Invalid ) {
+				return "operand D must be an argument list if it is specified.";
+			}
+			if( b.addressMode != PTXOperand::ArgumentList
+				&& b.addressMode != PTXOperand::Invalid ) {
+				return "operand B must be an argument list if it is specified.";
+			}
+			if( a.addressMode == PTXOperand::Register
+				&& c.addressMode != PTXOperand::FunctionName ) {
+				return "operand C must be function name if A is a register.";
+			}
 			break;
 		}
 		case Clz: {
@@ -591,6 +671,25 @@ std::string ir::PTXInstruction::valid() const {
 			}			
 			if( !PTXOperand::valid( type, d.type ) 
 				&& d.addressMode != PTXOperand::Immediate ) {
+				return "operand D type " + PTXOperand::toString( d.type ) 
+					+ " cannot be assigned to " + PTXOperand::toString( type );
+			}
+			break;
+		}
+		case CopySign : {
+			if( type != PTXOperand::f32 && type != PTXOperand::f64 ) {
+				return "invalid instruction type " 
+					+ PTXOperand::toString( type );
+			}			
+			if( !PTXOperand::valid( type, a.type ) ) {
+				return "operand A type " + PTXOperand::toString( a.type ) 
+					+ " cannot be assigned to " + PTXOperand::toString( type );
+			}			
+			if( !PTXOperand::valid( type, b.type ) ) {
+				return "operand B type " + PTXOperand::toString( b.type ) 
+					+ " cannot be assigned to " + PTXOperand::toString( type );
+			}			
+			if( !PTXOperand::valid( type, d.type ) ) {
 				return "operand D type " + PTXOperand::toString( d.type ) 
 					+ " cannot be assigned to " + PTXOperand::toString( type );
 			}
@@ -629,15 +728,26 @@ std::string ir::PTXInstruction::valid() const {
 					+ " cannot be assigned from " + PTXOperand::toString( type );
 			}
 			if( modifier & ftz ) {
-				if( PTXOperand::isInt( type ) ) {
+				if( !(PTXOperand::isFloat( type ) || PTXOperand::isFloat(a.type))) {
 					return toString( ftz ) 
 						+ " only valid for float point instructions.";
 				}
 			}
-			if( !PTXOperand::relaxedValid( type, d.type ) ) {
+			if( vec == PTXOperand::v1
+				&& PTXOperand::BitBucket != d.addressMode 
+				&& !PTXOperand::relaxedValid( type, d.type ) ) {
 				return "operand D type " + PTXOperand::toString( d.type ) 
 					+ " cannot be assigned to " + PTXOperand::toString( type ) 
 					+ ", not even for relaxed typed instructions.";
+			}
+			break;
+		}
+		case Cvta: {
+			if (!(type == PTXOperand::u32 || type == PTXOperand::u64)) {
+				return "invalid instruction type " + PTXOperand::toString(type);
+			}
+			if (!(addressSpace == Global || addressSpace == Local || addressSpace == Shared)) {
+				return "invalid address space " + toString(addressSpace);
 			}
 			break;
 		}
@@ -715,6 +825,30 @@ std::string ir::PTXInstruction::valid() const {
 		case Exit: {
 			break;
 		}
+		case Fma: {
+			if (!(type == ir::PTXOperand::f32 || type == ir::PTXOperand::f64)) {
+				return "invalid instruction type " + PTXOperand::toString( type );
+			}
+			if( !PTXOperand::valid( type, d.type ) 
+				&& d.addressMode != PTXOperand::Immediate ) {
+				return "operand D type " + PTXOperand::toString( d.type ) 
+					+ " cannot be assigned to " + PTXOperand::toString( type );
+			}
+			break;
+		}
+		case Isspacep: {
+			if (!(addressSpace == PTXInstruction::Global
+				|| addressSpace == PTXInstruction::Shared
+				|| addressSpace == PTXInstruction::Local)) {
+				return "invalid address space " + toString(addressSpace);
+			}
+			if (!(d.addressMode == PTXOperand::Register
+				&& a.addressMode == PTXOperand::Register)) {
+				return "invalid address mode for operands";
+			}
+			break;
+		}
+		case Ldu: // fall through
 		case Ld: {
 			if( !( a.addressMode == PTXOperand::Register 
 				|| a.addressMode == PTXOperand::Address 
@@ -724,19 +858,26 @@ std::string ir::PTXInstruction::valid() const {
 					+ PTXOperand::toString( a.addressMode ) 
 					+ " for operand A ";
 			}
+			if( addressSpace == AddressSpace_Invalid ) {
+				return "invalid address space";
+			}
 			if( addressSpace != Global && addressSpace != Shared 
-				&& volatility == Volatile ) {
+				&& volatility == Volatile && addressSpace != Generic ) {
 				return "only shared and global address spaces supported " 
-					+ std::string( "for volatile loads" );
+					"for volatile loads";
 			}
 			if( d.addressMode != PTXOperand::Register ) {
 				return "operand D must be a register not a " 
 					+ PTXOperand::toString( d.addressMode );
 			}
-			if( !PTXOperand::relaxedValid( type, d.type ) ) {
+			if( vec == PTXOperand::v1
+				&& PTXOperand::BitBucket != d.addressMode 
+				&& !PTXOperand::relaxedValid( type, d.type ) ) {
 				return "operand D type " + PTXOperand::toString( d.type ) 
 					+ " cannot be assigned to " + PTXOperand::toString( type ) 
-					+ ", not even for relaxed typed instructions.";
+					+ ", not even for relaxed typed instructions: -\n" 
+					+ toString() + "\nd.addressMode: "
+					+ PTXOperand::toString(d.addressMode);
 			}
 			break;
 		}
@@ -828,8 +969,9 @@ std::string ir::PTXInstruction::valid() const {
 					<< d.bytes();
 				return stream.str();
 			}
-			if( ( modifier & sat ) && ( type != PTXOperand::s32 ) ) {
-				return "saturate only valid for s32";
+			if( ( modifier & sat ) && ( type != PTXOperand::s32
+				&& type != PTXOperand::f32 ) ) {
+				return "saturate only valid for s32/f32";
 			}
 			if( modifier & ftz ) {
 				if( PTXOperand::isInt( type ) ) {
@@ -1112,23 +1254,21 @@ std::string ir::PTXInstruction::valid() const {
 			break;
 		}
 		case Rcp: {
-			if( ( modifier & approx ) ) {
-				if( type != PTXOperand::f32 ) {
-					return "only f32 supported for approximate";
-				}
-			}
 			if( type != PTXOperand::f32 && type != PTXOperand::f64 ) {
 				return "invalid instruction type " 
 					+ PTXOperand::toString( type );
 			}
 			if( type == PTXOperand::f64 ) {
-				if( !( modifier & rn ) && !( modifier & rz ) 
+				if( modifier & ftz ) {
+					if( !( modifier & approx ) ) {
+						return "requires .approx.ftz for f64";
+					}
+				}
+				else if ( !( modifier & rn ) && !( modifier & rz ) 
 					&& !( modifier & rm ) && !( modifier & rp ) ) {
-					return "requires a rounding modifier";
+					return "rounding mode required";
 				}
-				if( !( modifier & rn ) ) {
-					return "only nearest rounding supported";
-				}
+			
 			}
 			if( !PTXOperand::valid( type, a.type ) 
 				&& a.addressMode != PTXOperand::Immediate ) {
@@ -1321,9 +1461,8 @@ std::string ir::PTXInstruction::valid() const {
 					+ " must be a predicate.";
 			}
 			if( modifier & ftz ) {
-				if( PTXOperand::isInt( type ) ) {
-					return toString( ftz ) 
-						+ " only valid for float point instructions.";
+				if( PTXOperand::isInt( a.type ) ) {
+					return " .ftz only valid when source is .f32.";
 				}
 			}
 			break;
@@ -1522,16 +1661,22 @@ std::string ir::PTXInstruction::valid() const {
 					+ PTXOperand::toString( d.addressMode ) 
 					+ " for operand D ";
 			}
-			if( ( addressSpace != Global && addressSpace != Shared ) 
+			if( addressSpace == AddressSpace_Invalid ) {
+				return "invalid address space";
+			}
+			if( ( addressSpace != Global && addressSpace != Shared
+				&& addressSpace != Generic ) 
 				&& volatility == Volatile ) {
 				return "only shared and global address spaces supported " 
-					+ std::string( "for volatile stores" );
+					"for volatile stores";
 			}
 			if( a.addressMode != PTXOperand::Register
 				&& a.addressMode != PTXOperand::Immediate ) {
 				return "operand A must be a register or immediate";
 			}
-			if( !PTXOperand::relaxedValid( type, a.type ) ) {
+			if( vec == PTXOperand::v1
+				&& PTXOperand::BitBucket != a.addressMode 
+				&& !PTXOperand::relaxedValid( type, a.type ) ) {
 				return "operand A type " + PTXOperand::toString( a.type ) 
 					+ " cannot be assigned to " + PTXOperand::toString( type ) 
 					+ ", not even for relaxed typed instructions.";
@@ -1640,12 +1785,76 @@ std::string ir::PTXInstruction::valid() const {
 			}
 			break;
 		}
+		case Txq: {
+			if (type != ir::PTXOperand::b32) {
+				return "data type must be .b32";
+			}
+			break;
+		}
+		case Suld: {
+			if (formatMode == Formatted && !(type == ir::PTXOperand::b32
+				|| type == ir::PTXOperand::u32 
+				|| type == ir::PTXOperand::s32
+				|| type == ir::PTXOperand::f32)) {
+				return "sust.p - data type must be .b32, .u32, .s32, or .f32";
+			}
+			else if (formatMode == Unformatted && !(type == ir::PTXOperand::b8
+				|| type == ir::PTXOperand::b16 
+				|| type == ir::PTXOperand::b32
+				|| type == ir::PTXOperand::b64)) {
+				return "sust.b - data type must be .b8, .b16, .b32, or .b64";
+			}
+			break;
+		}
+		case Suq: {
+			if (!(surfaceQuery == Width || surfaceQuery == Height
+				|| surfaceQuery == Depth)) {
+				return "surface query must be .width, .height, or .depth";
+			}
+			if (type != ir::PTXOperand::b32) {
+				return "data type must be .b32";
+			}
+			break;
+		}
+		case Sured: {
+			if (!(reductionOperation == ReductionAdd
+				|| reductionOperation == ReductionMin 
+				|| reductionOperation == ReductionMax
+				|| reductionOperation == ReductionAnd
+				|| reductionOperation == ReductionOr)) {
+				return "reduction operation must be .add, .min, .max, .and, or .or";
+			}
+			if (!(type == ir::PTXOperand::u32 || type == ir::PTXOperand::u64 
+				|| type == ir::PTXOperand::s32 || type == ir::PTXOperand::b32)) {
+				return "data type must be .u32, .u64, .s32, or .b32";
+			}
+			break;
+		}
+		case Sust: {
+			if (formatMode == Formatted && !(type == ir::PTXOperand::b32
+				|| type == ir::PTXOperand::u32 
+				|| type == ir::PTXOperand::s32
+				|| type == ir::PTXOperand::f32)) {
+				return "sust.p - data type must be .b32, .u32, .s32, or .f32";
+			}
+			else if (formatMode == Unformatted && !(type == ir::PTXOperand::b8
+				|| type == ir::PTXOperand::b16 
+				|| type == ir::PTXOperand::b32
+				|| type == ir::PTXOperand::b64)) {
+				return "sust.b - data type must be .b8, .b16, .b32, or .b64";
+			}
+			break;
+		}
 		case Trap: {
 			break;
 		}
 		case Vote: {
-			if( d.type != PTXOperand::pred ) {
+			if( vote != Ballot && d.type != PTXOperand::pred ) {
 				return "destination must be a predicate";
+			}
+			else if( vote == Ballot &&
+				!PTXOperand::valid(d.type, PTXOperand::b32) ) {
+				return "destination must be assignable to b32 for .ballot";
 			}
 			if( a.type != PTXOperand::pred ) {
 				return "operand A must be a predicate";
@@ -1684,8 +1893,8 @@ std::string ir::PTXInstruction::guard() const {
 	switch( pg.condition ) {
 		case PTXOperand::PT: return ""; break;
 		case PTXOperand::nPT: return "@!%pt "; break;
+		case PTXOperand::InvPred: // return "@!" + pg.toString() + " "; break;
 		case PTXOperand::Pred: return "@" + pg.toString() + " " ; break;
-		case PTXOperand::InvPred: return "@!" + pg.toString() + " "; break;
 	}
 	return "";
 }
@@ -1693,7 +1902,8 @@ std::string ir::PTXInstruction::guard() const {
 std::string ir::PTXInstruction::toString() const {
 	switch (opcode) {
 		case Abs: {
-			return guard() + "abs." + PTXOperand::toString( type ) + " " 
+			return guard() + "abs." + modifierString(modifier, carry)
+				+ PTXOperand::toString( type ) + " " 
 				+ d.toString() + ", " + a.toString();
 		}
 		case Add: {
@@ -1729,7 +1939,28 @@ std::string ir::PTXInstruction::toString() const {
 			return result;
 		}
 		case Bar: {
-			return guard() + "bar.sync " + d.toString();
+			std::string result = guard() + "bar" + toString(barrierOperation);
+			ir::PTXOperand ir::PTXInstruction::* instrMembers [] = { 
+				&ir::PTXInstruction::d, 
+				&ir::PTXInstruction::a, 
+				&ir::PTXInstruction::b, 
+				&ir::PTXInstruction::c,
+				&ir::PTXInstruction::pq
+			};
+			switch (barrierOperation) {
+				case BarReduction: 
+				{
+					result += toString(reductionOperation) + PTXOperand::toString(type);
+				}
+				break;
+				default: break;
+			};
+			for (int i = 0; instrMembers[i] != &ir::PTXInstruction::pq; i++) {
+				if ((this->*instrMembers[i]).addressMode != ir::PTXOperand::Invalid) {
+					result += " " + (this->*instrMembers[i]).toString();
+				}
+			}
+			return result;
 		}
 		case Bfi: {
 			return guard() + "bfi." + PTXOperand::toString( type ) + " " 
@@ -1762,11 +1993,17 @@ std::string ir::PTXInstruction::toString() const {
 			if( uni ) {
 				result += ".uni";
 			}
+			else if( tailCall ) {
+				result += ".tail";
+			}
 			result += " ";
 			if( d.addressMode != PTXOperand::Invalid ) {
 				result += d.toString() + ", ";
 			}
-			result += a.toString() + ", " + b.toString();
+			result += a.toString();
+			if( b.addressMode != PTXOperand::Invalid ) {
+				result += ", " + b.toString();
+			}
 			if( a.addressMode == PTXOperand::Register ) {
 				result += ", " + c.toString();
 			}
@@ -1780,12 +2017,14 @@ std::string ir::PTXInstruction::toString() const {
 			return guard() + "cnot." + PTXOperand::toString( type ) + " "
 				+ d.toString() + ", " + a.toString();
 		}
+		case CopySign: {
+			return guard() + "copysign." + PTXOperand::toString( type ) + " "
+				+ d.toString() + ", " + a.toString() + ", " + b.toString();
+		}
 		case Cos: {
-			std::string result = guard() + "cos.";
-			result += modifierString( modifier, carry );
-			result += PTXOperand::toString( type ) + " " + d.toString() 
+			return guard() + "cos." + modifierString( modifier, carry )
+				+ PTXOperand::toString( type ) + " " + d.toString()
 				+ ", " + a.toString();
-			return result;
 		}
 		case Cvt: {
 			std::string result = guard() + "cvt.";
@@ -1814,6 +2053,12 @@ std::string ir::PTXInstruction::toString() const {
 				+ a.toString();
 			return result;
 		}
+		case Cvta: {
+			std::string result = guard() + "cvta." + toString(addressSpace)
+				+ "." + PTXOperand::toString(type) + " " + d.toString() + ", "
+				+ a.toString();
+			return result;
+		}
 		case Div: {
 			std::string result = guard() + "div.";
 			if( divideFull ) {
@@ -1834,12 +2079,39 @@ std::string ir::PTXInstruction::toString() const {
 		case Exit: {
 			return "exit";
 		}
+		case Fma: {
+			std::string result = guard() + "fma."
+				+ modifierString(modifier, carry)
+				+ PTXOperand::toString(type) + " " + d.toString() + ", "
+				+ a.toString() + ", " + b.toString() + ", " + c.toString();
+			return result;
+		}
+		case Isspacep: {
+			std::string result = guard() + "isspacep." + toString(addressSpace) 
+				+ " " + d.toString() + ", " + a.toString();
+			return result;
+		}
 		case Ld: {
 			std::string result = guard() + "ld.";
 			if( volatility == Volatile ) {
 				result += "volatile.";
 			}
-			if( addressSpace != AddressSpace_Invalid ) {
+			if( addressSpace != Generic ) {
+				result += toString(addressSpace) + ".";
+			}
+			if( d.vec != PTXOperand::v1 ) {
+				result += toString( d.vec ) + ".";
+			}
+			result += PTXOperand::toString( type ) + " " + d.toString() + ", [" 
+				+ a.toString() + "]";
+			return result;
+		}
+		case Ldu: {
+			std::string result = guard() + "ldu.";
+			if( volatility == Volatile ) {
+				result += "volatile.";
+			}
+			if( addressSpace != Generic ) {
 				result += toString(addressSpace) + ".";
 			}
 			if( d.vec != PTXOperand::v1 ) {
@@ -1871,14 +2143,16 @@ std::string ir::PTXInstruction::toString() const {
 			return result;
 		}
 		case Max: {
-			return guard() + "max." + PTXOperand::toString( type ) + " "
+			return guard() + "max." + modifierString(modifier, carry)
+				+ PTXOperand::toString( type ) + " "
 				+ d.toString() + ", " + a.toString() + ", " + b.toString();
 		}
 		case Membar: {
 			return guard() + "membar." + toString( level );
 		}
 		case Min: {
-			return guard() + "min." + PTXOperand::toString( type ) + " "
+			return guard() + "min." + modifierString(modifier, carry)
+				+ PTXOperand::toString( type ) + " "
 				+ d.toString() + ", " + a.toString() + ", " + b.toString();
 		}
 		case Mov: {
@@ -1900,7 +2174,8 @@ std::string ir::PTXInstruction::toString() const {
 			return result;
 		}
 		case Neg: {
-			return guard() + "neg." + PTXOperand::toString( type ) + " "
+			return guard() + "neg." + modifierString(modifier, carry)
+				+ PTXOperand::toString( type ) + " "
 				+ d.toString() + ", " + a.toString();
 		}
 		case Not: {
@@ -1976,6 +2251,7 @@ std::string ir::PTXInstruction::toString() const {
 			if( c.addressMode != PTXOperand::Invalid ) {
 				result += toString( booleanOperator ) + ".";
 			}
+			if( ftz & modifier ) result += "ftz.";
 			result += PTXOperand::toString( type ) + "." 
 				+ PTXOperand::toString( a.type ) + " " + d.toString() 
 				+ ", " + a.toString() + ", " + b.toString();
@@ -2016,7 +2292,8 @@ std::string ir::PTXInstruction::toString() const {
 			return result;
 		}
 		case SlCt: {
-			return guard() + "slct." + PTXOperand::toString( type ) + "." 
+			return guard() + "slct." + modifierString( modifier, carry )
+				+ PTXOperand::toString( type ) + "." 
 				+ PTXOperand::toString( c.type ) + " " + d.toString() + ", " 
 				+ a.toString() + ", " + b.toString() + ", " + c.toString();
 		}
@@ -2032,7 +2309,7 @@ std::string ir::PTXInstruction::toString() const {
 			if( volatility == Volatile ) {
 				result += "volatile.";
 			}
-			if( addressSpace != AddressSpace_Invalid ) {
+			if( addressSpace != Generic ) {
 				result += toString(addressSpace) + ".";
 			}
 			if( a.vec != PTXOperand::v1 ) {
@@ -2056,6 +2333,32 @@ std::string ir::PTXInstruction::toString() const {
 				+ d.toString() + ", " + a.toString() + ", " + b.toString();
 			return result;
 		}
+		case Suld: {
+			return guard() + "suld" + toString(formatMode) + "." 
+				+ toString(geometry) + "." + toString(vec) + "."
+				+ PTXOperand::toString(type) + toString(clamp) +
+				" " + d.toString() + ", [" + a.toString() + ", " 
+				+ b.toString() + "]";
+		}
+		case Suq: {
+			return guard() + "suq." + toString( surfaceQuery ) 
+				+ "." + PTXOperand::toString(type) + " " + d.toString() 
+				+ ", [" + a.toString() + "]";
+		}
+		case Sured: {
+			return guard() + "sured" + toString(formatMode) + "." 
+				+ toString(reductionOperation) + "." +
+				toString(geometry) + "." + PTXOperand::toString(type) 
+				+  toString(clamp) + " [" + d.toString() + ", " + a.toString()
+				+ "], " + b.toString();
+		}
+		case Sust: {			
+			return guard() + "sust" + toString(formatMode) + "." 
+				+ toString(geometry) + "." 
+				+ toString(vec) + "." + PTXOperand::toString(type) 
+				+ toString(clamp) + " [" + d.toString() +", " + a.toString() 
+				+ "], " + b.toString();
+		}
 		case TestP: {
 			return guard() + "testp." + toString( floatingPointMode ) 
 				+ "." + PTXOperand::toString( type ) + " " + d.toString() + ", " 
@@ -2070,8 +2373,14 @@ std::string ir::PTXInstruction::toString() const {
 		case Trap: {
 			return guard() + "trap";
 		}
+		case Txq: {
+			return guard() + "txq." + toString( surfaceQuery ) 
+				+ "." + PTXOperand::toString(type) + " " + d.toString()
+				+ ", [" + a.toString() + "]";
+		}
 		case Vote: {
-			return guard() + "vote." + toString( vote ) + ".pred " 
+			return guard() + "vote." + toString( vote ) + "."
+				+ PTXOperand::toString( type ) + " "
 				+ d.toString() + ", " + a.toString();
 		}
 		case Xor: {

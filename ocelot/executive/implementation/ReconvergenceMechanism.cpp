@@ -56,7 +56,7 @@ executive::ReconvergenceMechanism::ReconvergenceMechanism(
 }
 
 void executive::ReconvergenceMechanism::initialize() {
-	CTAContext context(cta->blockDim, cta);
+	CTAContext context(cta->kernel, cta);
 	runtimeStack.clear();
 	runtimeStack.push_back(context);
 }
@@ -119,7 +119,7 @@ bool executive::ReconvergenceMechanism::nextInstruction(executive::CTAContext &c
 /*!
 	\brief gets the stack size
 */
-const size_t executive::ReconvergenceMechanism::stackSize() const {
+size_t executive::ReconvergenceMechanism::stackSize() const {
 	return runtimeStack.size();
 }
 
@@ -239,11 +239,15 @@ void executive::ReconvergenceIPDOM::eval_Exit(executive::CTAContext &context,
 	context.running = false;
 }
 
-bool executive::ReconvergenceIPDOM::nextInstruction(executive::CTAContext &context, 
+bool executive::ReconvergenceIPDOM::nextInstruction(
+	executive::CTAContext &context, 
 	const ir::PTXInstruction &instr) {
 
 	// advance to next instruction if the current instruction wasn't a branch
-	if (instr.opcode != ir::PTXInstruction::Bra && instr.opcode != ir::PTXInstruction::Reconverge ) {
+	if (instr.opcode != ir::PTXInstruction::Bra
+		&& instr.opcode != ir::PTXInstruction::Reconverge
+		&& instr.opcode != ir::PTXInstruction::Call
+		&& instr.opcode != ir::PTXInstruction::Ret ) {
 		context.PC++;
 	}
 	return context.running;
@@ -446,7 +450,6 @@ bool executive::ReconvergenceTFGen6::eval_Bra(executive::CTAContext &context,
 		
 		if (targetPC != minPC) {
 			// this is a conservative branch and will result in no-ops
-			currentEvent.conservativeBranch = true;
 			report(" conservative branch ");
 		}
 		
@@ -585,74 +588,7 @@ bool executive::ReconvergenceTFSortedStack::eval_Bra(executive::CTAContext &cont
 	}
 	
 	isDivergent = (ctxCount > 1);
-
-	currentEvent.stackVisitNodes = 0;
-	currentEvent.stackVisitEnd = 0;
-	currentEvent.stackVisitMiddle = 0;
-	currentEvent.stackInsert = 0;
-	currentEvent.stackMerge = 0;
-	currentEvent.conservativeBranch = false;
 	
-	//
-	// preserve invariant runtimeStack is in descending order
-	//
-	// insert sorted
-	for (int ctx = 0; ctx < ctxCount; ctx++) {
-		size_t nodes = 1;
-		for (RuntimeStack::iterator s_it = runtimeStack.begin(); true; ++s_it, nodes++) {
-			if (s_it == runtimeStack.end()) {
-				runtimeStack.insert(s_it, branchContexts[ctxStart+ctx]);
-				++currentEvent.stackVisitEnd;
-				nodes = 1;
-				++currentEvent.stackInsert;
-				break;
-			}
-			else if (s_it->PC < branchContexts[ctxStart+ctx].PC) {
-				if (s_it == runtimeStack.begin()) {
-					++currentEvent.stackVisitEnd;
-					nodes = 1;
-				}
-				else {
-					++currentEvent.stackVisitMiddle;
-				}
-				++currentEvent.stackInsert;
-				runtimeStack.insert(s_it, branchContexts[ctxStart+ctx]);
-				break;
-			}
-			else if (s_it->PC == branchContexts[ctxStart+ctx].PC) {
-				// merge with existing contexts if one exists
-				s_it->active |= branchContexts[ctxStart+ctx].active;
-				
-				RuntimeStack::iterator next_it = s_it;
-				++next_it;
-				if (next_it == runtimeStack.end() || s_it == runtimeStack.begin()) {
-					++currentEvent.stackVisitEnd;
-					nodes = 1;
-				}
-				else {
-					++currentEvent.stackVisitMiddle;
-				}
-				++currentEvent.stackMerge;
-				break;
-			}
-		}
-		currentEvent.stackVisitNodes += nodes;
-	}
-	
-	if (currentEvent.stackVisitMiddle) {
-		report("\n[PC " << context.PC << "]  " << instr.toString());
-		report("insert into the middle of the context stack:");
-		for (RuntimeStack::iterator s_it = runtimeStack.begin(); s_it != runtimeStack.end(); ++s_it) {
-			report("   " << s_it->PC);
-			if (branchContext.active.any() && s_it->PC == branchContext.PC) {
-				report("  [branch target]"); 
-			}
-			if (fallthroughContext.active.any() && s_it->PC == fallthroughContext.PC) {
-				report("  [fallthrough target]");
-			}
-		}
-		report(" ");
-	}
 	return isDivergent;
 }
 

@@ -28,19 +28,20 @@ namespace ocelot
 		get()->clearTraceGenerators( );
 	}
 
-    void addInstrumentor( analysis::PTXInstrumentor& instrumentor)
+	void addPTXPass(analysis::Pass &pass) 
 	{
-		get()->addInstrumentor(instrumentor);
-	}
-				
-	void clearInstrumentors( )
-	{
-		get()->clearInstrumentors( );
+		get()->addPTXPass(pass);
 	}
 
-    analysis::KernelProfile kernelProfile() {
-        return get()->kernelProfile();
-    }
+	void removePTXPass(analysis::Pass &pass) 
+	{
+		get()->removePTXPass(pass);
+	}
+
+	void clearPTXPasses() 
+	{
+		get()->clearPTXPasses();
+	}
 	
 	void limitWorkerThreads( unsigned int limit )
 	{

@@ -7,6 +7,9 @@
 #ifndef NVIDIA_GPU_DEVICE_CPP_INCLUDED
 #define NVIDIA_GPU_DEVICE_CPP_INCLUDED
 
+// C++ includes
+#include <iomanip>
+
 // ocelot includes
 #include <ocelot/executive/interface/NVIDIAGPUDevice.h>
 #include <ocelot/executive/interface/NVIDIAExecutableKernel.h>
@@ -25,25 +28,31 @@
 // standard library includes
 #include <cstring>
 
-/////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 #ifdef REPORT_BASE
 #undef REPORT_BASE
 #endif
 
 #define checkError(x) if((_lastError = x) != CUDA_SUCCESS) { \
+	report("exception"); \
 	throw hydrazine::Exception("Cuda Driver Error - " #x + \
 		driver::toString(_lastError)); }
-#define Throw(x) {std::stringstream s; s << x; \
+#define Throw(x) {std::stringstream s; s << x; report(s.str()); \
 	throw hydrazine::Exception(s.str()); }
+
+////////////////////////////////////////////////////////////////////////////////
 
 // Turn on report messages
 #define REPORT_BASE 0
 
 // Print out the full ptx for each module as it is loaded
-#define REPORT_PTX 1
+#define REPORT_PTX 0
 
-/////////////////////////////////////////////////////////////////////////////////////////////////
+// if 1, adds line numbers to reported PTX
+#define REPORT_PTX_WITH_LINENUMBERS 1
+
+////////////////////////////////////////////////////////////////////////////////
 
 typedef cuda::CudaDriver driver;
 
@@ -59,25 +68,34 @@ namespace executive
 		_flags(0), _size(size), _hostPointer(0), _external(false)
 	{
 		checkError(driver::cuMemAlloc(&_devicePointer, size));
+		report("MemoryAllocation::MemoryAllocation() - allocated " << _size 
+			<< " bytes of host-allocated memory");
+		report("  device pointer: "	<< (const void *)_devicePointer);
+
 	}
 	
 	NVIDIAGPUDevice::MemoryAllocation::MemoryAllocation(size_t size, 
 		unsigned int flags) : Device::MemoryAllocation(false, true), 
 		_flags(flags), _size(size), _external(false)
 	{
-		// making all memory portable eases context switching
-		_flags |= CU_MEMHOSTALLOC_PORTABLE;
-		
 		checkError(driver::cuMemHostAlloc(&_hostPointer, size, _flags));
-		checkError(driver::cuMemHostGetDevicePointer(&_devicePointer, 
-			_hostPointer, 0));
+		if(CUDA_SUCCESS != driver::cuMemHostGetDevicePointer(&_devicePointer, 
+			_hostPointer, 0)) 
+		{
+			_devicePointer = 0;
+		}
+		report("MemoryAllocation::MemoryAllocation() - allocated " << _size 
+			<< " bytes of host-allocated memory");
+		report("  host: " << (const void *)_hostPointer << ", device pointer: "
+			<< (const void *)_devicePointer);
+
 	}
 	
 	NVIDIAGPUDevice::MemoryAllocation::MemoryAllocation(CUmodule module, 
 		const ir::Global& g) : Device::MemoryAllocation(true, false), _flags(0),
 		_size(g.statement.bytes()), _hostPointer(0), _external(false)
 	{
-		unsigned int bytes;
+		size_t bytes;
 		checkError(driver::cuModuleGetGlobal(&_devicePointer, &bytes, module, 
 			g.statement.name.c_str()));
 		if(bytes != _size)
@@ -99,6 +117,8 @@ namespace executive
 	
 	NVIDIAGPUDevice::MemoryAllocation::~MemoryAllocation()
 	{
+		report("MemoryAllocation::~MemoryAllocation() : _external = "
+			<< _external << ", host() = " << host());
 		if(!_external)
 		{
 			if(host())
@@ -119,8 +139,10 @@ namespace executive
 	{
 		if(host())
 		{
+			report("MemoryAllocation::MemoryAllocation() - allocated "
+				<< _size << " bytes of host-allocated memory");
 			checkError(driver::cuMemHostAlloc(&_hostPointer, _size, _flags));
-			checkError(driver::cuMemHostGetDevicePointer(&_devicePointer, 
+			checkError(driver::cuMemHostGetDevicePointer(&_devicePointer,
 				_hostPointer, 0));
 			memcpy(_hostPointer, a._hostPointer, _size);
 		}
@@ -230,6 +252,7 @@ namespace executive
 	void NVIDIAGPUDevice::MemoryAllocation::copy(size_t offset, 
 		const void* src, size_t s)
 	{
+		report("NVIDIAGPUDevice::..::copy() 1");
 		assert(offset + s <= size());
 		if(host())
 		{
@@ -245,6 +268,8 @@ namespace executive
 	void NVIDIAGPUDevice::MemoryAllocation::copy(void* dst, 
 		size_t offset, size_t s) const
 	{
+		report("NVIDIAGPUDevice::..::copy() 2 - is host? " << host() << ", "
+			<< s << " bytes");
 		assert(offset + s <= size());
 		if(host())
 		{
@@ -275,9 +300,11 @@ namespace executive
 	void NVIDIAGPUDevice::MemoryAllocation::copy(Device::MemoryAllocation* a, 
 		size_t toOffset, size_t fromOffset, size_t s) const
 	{
+		report("NVIDIAGPUDevice::..::copy() 3");
 		MemoryAllocation* allocation = static_cast<MemoryAllocation*>(a);
 		assert(fromOffset + s <= size());
 		assert(toOffset + s <= allocation->size());
+		
 		
 		if(host())
 		{
@@ -335,7 +362,7 @@ namespace executive
 		
 		if(_handle != 0)
 		{
-			checkError(driver::cuModuleUnload(_handle));
+			assert(driver::cuModuleUnload(_handle) == CUDA_SUCCESS );
 		}
 	}
 	
@@ -346,25 +373,39 @@ namespace executive
 		std::stringstream stream;
 		
 		ir->writeIR(stream);
-		
+
+#if REPORT_PTX_WITH_LINENUMBERS == 1		
 		reportE(REPORT_PTX, " Binary is:\n" 
 			<< hydrazine::addLineNumbers(stream.str()));
+#else
+		reportE(REPORT_PTX, stream.str());
+#endif
 		
-		CUjit_option options[] = {CU_JIT_ERROR_LOG_BUFFER, 
-			CU_JIT_ERROR_LOG_BUFFER_SIZE_BYTES};
+		CUjit_option options[] = {
+			CU_JIT_TARGET,
+			CU_JIT_ERROR_LOG_BUFFER, 
+			CU_JIT_ERROR_LOG_BUFFER_SIZE_BYTES, 
+		};
 		const int errorLogSize = 2048;
-		int errorLogActualSize = errorLogSize;
+		unsigned int errorLogActualSize = errorLogSize-1;
 		char errorLogBuffer[errorLogSize];
 		memset(errorLogBuffer, 0, errorLogSize);
 
-		void* optionValues[2] = {(void*)errorLogBuffer, 
-			(void*)errorLogActualSize};
+		void* optionValues[3] = {
+			(void*)CU_TARGET_COMPUTE_20,
+			(void*)errorLogBuffer, 
+			(void*)errorLogActualSize, 
+		};
+		
+		std::string ptxModule = stream.str();
+
 		CUresult result = driver::cuModuleLoadDataEx(&_handle, 
-			stream.str().c_str(), 2, options, optionValues);
+			stream.str().c_str(), 3, options, optionValues);
 		
 		if(result != CUDA_SUCCESS)
 		{
-			Throw("Failed to JIT module - " << ir->path() 
+			Throw("cuModuleLoadDataEx() - returned " << result 
+				<< ". Failed to JIT module - " << ir->path() 
 				<< " using NVIDIA JIT with error:\n" << errorLogBuffer);
 		}
 		
@@ -397,12 +438,14 @@ namespace executive
 			kernel = ir->kernels().begin(); 
 			kernel != ir->kernels().end(); ++kernel)
 		{
-			CUfunction function;
-			checkError(driver::cuModuleGetFunction(&function, _handle, 
-				kernel->first.c_str()));
-			kernels.insert(std::make_pair(kernel->first, 
-				new NVIDIAExecutableKernel(*kernel->second, function)));
-			report(" - " << kernel->first);
+			if (!kernel->second->function()) {
+				CUfunction function;
+				report(" - " << kernel->first);
+				checkError(driver::cuModuleGetFunction(&function, _handle, 
+					kernel->first.c_str()));
+				kernels.insert(std::make_pair(kernel->first, 
+					new NVIDIAExecutableKernel(*kernel->second, function)));
+			}
 		}
 	}
 	
@@ -584,6 +627,7 @@ namespace executive
 		memcpy.dstXInBytes = 0;
 		memcpy.dstY = 0;
 		memcpy.dstZ = 0;
+
 		
 		checkError(driver::cuMemcpy3D(&memcpy));
 	}
@@ -592,7 +636,8 @@ namespace executive
 
 	CUresult NVIDIAGPUDevice::_lastError = CUDA_SUCCESS;
 
-	DeviceVector NVIDIAGPUDevice::createDevices(unsigned int flags)
+	DeviceVector NVIDIAGPUDevice::createDevices(unsigned int flags,
+		int computeCapability)
 	{
 		if(!_cudaDriverInitialized)
 		{
@@ -606,13 +651,29 @@ namespace executive
 		
 		for(int i = 0; i != count; ++i)
 		{
-			devices.push_back(new NVIDIAGPUDevice(i, flags));
+			int major = 0;
+			int minor = 0;
+			checkError(driver::cuDeviceComputeCapability(&major, &minor, i));
+			
+			if(major < computeCapability)
+			{
+				char name[256];
+				checkError(driver::cuDeviceGetName(name, 255, i));
+
+				std::cerr << "==Ocelot== WARNING - This version of Ocelot only "
+					"supports compute capability " << computeCapability
+					<< ".0 and higher, ignoring device: '" << name << "'\n";				
+			}
+			else
+			{
+				devices.push_back(new NVIDIAGPUDevice(i, flags));
+			}
 		}
 		
 		return devices;
 	}
 
-	unsigned int NVIDIAGPUDevice::deviceCount()
+	unsigned int NVIDIAGPUDevice::deviceCount(int computeCapability)
 	{
 		if(!_cudaDriverInitialized)
 		{
@@ -621,9 +682,20 @@ namespace executive
 		}
 		
 		int count;
+
 		checkError(driver::cuDeviceGetCount(&count));
+
+		int ignored = 0;
+		for(int i = 0; i < count; ++i)
+		{
+			int major = 0;
+			int minor = 0;
+			checkError(driver::cuDeviceComputeCapability(&major, &minor, i));
+			
+			if(major < computeCapability) ++ignored;
+		}
 		
-		return count;
+		return count - ignored;
 	}
 
 	NVIDIAGPUDevice::NVIDIAGPUDevice(int id, unsigned int flags) : 
@@ -636,7 +708,7 @@ namespace executive
 			_cudaDriverInitialized = true;
 		}
 		
-		_runtimeVersion = 3000;
+		_runtimeVersion = 3020;
 		checkError(driver::cuDriverGetVersion(&_driverVersion));
 		
 		CUdevice device;
@@ -653,13 +725,12 @@ namespace executive
 			checkError(driver::cuCtxCreate(&_context, flags, device));
 		}
 		
+		report("NVIDIAGPUDevice::NVIDIAGPUDevice() - created context. _opengl = " << _opengl);		
 		checkError(driver::cuCtxPopCurrent(&_context));
+				
+		checkError(driver::cuDeviceGetName(_properties.name, 255, device));
 		
-		char name[256];
-		checkError(driver::cuDeviceGetName(name, 255, device));
-		_properties.name = name;
-		
-		unsigned int total;
+		size_t total;
 		checkError(driver::cuDeviceTotalMem(&total, device));
 		_properties.totalMemory = total;
 		
@@ -743,14 +814,14 @@ namespace executive
 
 		if(type == HostAllocation || type == AnyAllocation)
 		{
-			for(AllocationMap::const_iterator alloc = _allocations.begin(); 
-				alloc != _allocations.end(); ++alloc)
+			for(AllocationMap::const_iterator alloc = _hostAllocations.begin(); 
+				alloc != _hostAllocations.end(); ++alloc)
 			{
 				if(alloc->second->host())
 				{
-					if((char*)address >= alloc->second->mappedPointer() 
-						&& (char*)address < 
-						(char*)alloc->second->mappedPointer()
+					if((char*)address >= alloc->second->mappedPointer()
+						&& (char*)address
+						< (char*)alloc->second->mappedPointer()
 						+ alloc->second->size())
 					{
 						allocation = alloc->second;
@@ -829,8 +900,12 @@ namespace executive
 		size_t size, unsigned int flags)
 	{
 		MemoryAllocation* allocation = new MemoryAllocation(size, flags);
-		_hostAllocations.insert(std::make_pair(allocation->pointer(), 
+		_hostAllocations.insert(std::make_pair(allocation->mappedPointer(),
 			allocation));
+
+		report("NVIDIAGPUDevice::allocateHost() - adding key "
+			<< allocation->mappedPointer());
+
 		return allocation;
 	}
 
@@ -843,6 +918,7 @@ namespace executive
 		{
 			if(allocation->second->global())
 			{
+				report("cannot free global pointer");
 				Throw("Cannot free global pointer - " << pointer);
 			}
 			delete allocation->second;
@@ -851,7 +927,7 @@ namespace executive
 		else
 		{
 			allocation = _hostAllocations.find(pointer);
-			if(allocation != _allocations.end())
+			if(allocation != _hostAllocations.end())
 			{
 				delete allocation->second;
 				_hostAllocations.erase(allocation);
@@ -957,7 +1033,7 @@ namespace executive
 			hydrazine::bit_cast<CUgraphicsResource>(resource)));
 	}
 
-	void NVIDIAGPUDevice::mapGraphicsResource(void* resource, int count, 
+	void NVIDIAGPUDevice::mapGraphicsResource(void** resourceVoidPtr, int count, 
 		unsigned int streamId)
 	{
 		CUstream id = 0;
@@ -972,35 +1048,37 @@ namespace executive
 
 			id = stream->second;
 		}
-		report("Mapping graphics resource " << resource 
-			<< " on stream " << streamId);
+		CUgraphicsResource * graphicsResources = (CUgraphicsResource *)resourceVoidPtr;
 
 		if(!_opengl) Throw("No active opengl contexts.");
 
-		checkError(driver::cuGraphicsMapResources(count,
-			(CUgraphicsResource*)&resource, id));
+		report("NVIDIAGPUDevice::mapGraphicsResource() - count = " << count );
+		CUresult result = driver::cuGraphicsMapResources(count,	graphicsResources, id);
+		report("driver::cuGraphicsMapresources() - " << result << ", " 
+			<< cuda::CudaDriver::toString(result));
 		
-		CUdeviceptr pointer;
-		unsigned int bytes = 0;
-		checkError(driver::cuGraphicsResourceGetMappedPointer(&pointer, &bytes, 
-			(CUgraphicsResource)resource));
-		
-		void* p = (void*)pointer;
-		
-		_allocations.insert(std::make_pair(p, new MemoryAllocation(p, bytes)));
+		checkError(result);
 	}
 	
 	void* NVIDIAGPUDevice::getPointerToMappedGraphicsResource(size_t& size, 
 		void* resource)
 	{
 		CUdeviceptr pointer;
-		unsigned int bytes = 0;
+		size_t bytes = 0;
 		report("Getting pointer to mapped resource " << resource);
 
 		if(!_opengl) Throw("No active opengl contexts.");
 
-		checkError(driver::cuGraphicsResourceGetMappedPointer(&pointer, &bytes, 
-			(CUgraphicsResource)resource));
+		CUresult result = driver::cuGraphicsResourceGetMappedPointer(&pointer, &bytes, 
+			(CUgraphicsResource)resource);
+		report("  cuGraphicsResourceGetMappedPointer() returned " << result)
+		checkError(result);
+			
+		void* p = (void*)pointer;
+		if (_allocations.find(p) == _allocations.end()) {
+			_allocations.insert(std::make_pair(p, 
+				new MemoryAllocation(p, bytes)));
+		}
 
 		size = bytes;
 		report(" size - " << size << ", pointer - " << pointer);
@@ -1019,7 +1097,8 @@ namespace executive
 			(CUgraphicsResource)resource, flags));
 	}
 
-	void NVIDIAGPUDevice::unmapGraphicsResource(void* resource)
+	void NVIDIAGPUDevice::unmapGraphicsResource(void** resourceVoidPtr, 
+		int count, unsigned int streamID)
 	{
 		CUstream id = 0;
 		
@@ -1029,16 +1108,16 @@ namespace executive
 			assert(stream != _streams.end());
 			id = stream->second;
 		}
-				
-		report("Unmapping graphics resource " << resource);
-
+		
 		if(!_opengl) Throw("No active opengl contexts.");
 
 		CUdeviceptr pointer;
-		unsigned int bytes = 0;
+		size_t bytes = 0;
 
-		checkError(driver::cuGraphicsResourceGetMappedPointer(&pointer, &bytes, 
-			(CUgraphicsResource)resource));
+		CUgraphicsResource * graphicsResources = (CUgraphicsResource *)resourceVoidPtr;
+		
+		checkError(driver::cuGraphicsResourceGetMappedPointer(&pointer,
+			&bytes, graphicsResources[0]));
 
 		AllocationMap::iterator allocation = _allocations.find(
 			hydrazine::bit_cast<void*>(pointer));
@@ -1047,12 +1126,13 @@ namespace executive
 		delete allocation->second;
 		_allocations.erase(allocation);
 
-		checkError(driver::cuGraphicsUnmapResources(1, 
-			(CUgraphicsResource*)&resource, id));
+		checkError(driver::cuGraphicsUnmapResources(1, graphicsResources, id));
 	}
 
 	void NVIDIAGPUDevice::load(const ir::Module* module)
 	{
+		assert(selected());
+	
 		if(_modules.count(module->path()) != 0)
 		{
 			Throw("Duplicate module - " << module->path());
@@ -1063,6 +1143,8 @@ namespace executive
 	
 	void NVIDIAGPUDevice::unload(const std::string& name)
 	{
+		assert(selected());
+	
 		ModuleMap::iterator module = _modules.find(name);
 		if(module == _modules.end())
 		{
@@ -1111,11 +1193,12 @@ namespace executive
 			Throw("Invalid event - " << handle);
 		}
 		
+
 		checkError(driver::cuEventDestroy(event->second));
 		_events.erase(event);
 	}
 
-	bool NVIDIAGPUDevice::queryEvent(unsigned int handle) const
+	bool NVIDIAGPUDevice::queryEvent(unsigned int handle)
 	{
 		EventMap::const_iterator event = _events.find(handle);
 		if(event == _events.end())
@@ -1163,23 +1246,24 @@ namespace executive
 	}
 
 	float NVIDIAGPUDevice::getEventTime(unsigned int startHandle, 
-		unsigned int endHandle) const
+		unsigned int endHandle)
 	{
 		EventMap::const_iterator start = _events.find(startHandle);
 		if(start == _events.end())
 		{
+			report("invalid start event");
 			Throw("Invalid start event - " << startHandle);
 		}
 		
 		EventMap::const_iterator end = _events.find(endHandle);
 		if(end == _events.end())
 		{
+			report("invalid end event");
 			Throw("Invalid end event - " << endHandle);
 		}
 		
 		float time = 0.0f;
-		
-		checkError(driver::cuEventElapsedTime(&time, 
+		checkError(driver::cuEventElapsedTime(&time,
 			start->second, end->second));
 		
 		return time;
@@ -1208,7 +1292,7 @@ namespace executive
 		_streams.erase(stream);
 	}
 	
-	bool NVIDIAGPUDevice::queryStream(unsigned int handle) const
+	bool NVIDIAGPUDevice::queryStream(unsigned int handle)
 	{
 		StreamMap::const_iterator stream = _streams.find(handle);
 		if(stream == _streams.end())
@@ -1285,7 +1369,7 @@ namespace executive
 
 		CUtexref ref = hydrazine::bit_cast<CUtexref>(tex);
 		CUdeviceptr ptr = hydrazine::bit_cast<CUdeviceptr>(pointer);
-		unsigned int offset = 0;
+		size_t offset = 0;
 		unsigned int bytesPerElement = ((desc.x + desc.y 
 			+ desc.z + desc.w) / 8);
 		unsigned int pitch = bytesPerElement * size.x;
@@ -1372,6 +1456,7 @@ namespace executive
 		const std::string& textureName)
 	{
 		ModuleMap::iterator module = _modules.find(moduleName);
+		
 		if(module == _modules.end()) return 0;
 		return module->second.getTexture(textureName);
 	}
@@ -1379,7 +1464,7 @@ namespace executive
 	void NVIDIAGPUDevice::launch(const std::string& moduleName, 
 		const std::string& kernelName, const ir::Dim3& grid, 
 		const ir::Dim3& block, size_t sharedMemory, 
-		const void* parameterBlock, size_t parameterBlockSize, 
+		const void* argumentBlock, size_t argumentBlockSize,
 		const trace::TraceGeneratorVector& traceGenerators)
 	{
 		ModuleMap::iterator module = _modules.find(moduleName);
@@ -1418,9 +1503,9 @@ namespace executive
 		}
 		
 		kernel->setKernelShape(block.x, block.y, block.z);
-		kernel->setParameterBlock((const unsigned char*)parameterBlock, 
-			parameterBlockSize);
-		kernel->updateParameterMemory();
+		kernel->setArgumentBlock((const unsigned char*)argumentBlock, 
+			argumentBlockSize);
+		kernel->updateArgumentMemory();
 		kernel->updateMemory();
 		kernel->setExternSharedMemorySize(sharedMemory);
 		
@@ -1460,6 +1545,8 @@ namespace executive
 		attributes.localSizeBytes = kernel->localMemorySize();
 		attributes.maxThreadsPerBlock = kernel->maxThreadsPerBlock();
 		attributes.numRegs = kernel->registerCount();
+		attributes.ptxVersion = 21;
+		attributes.binaryVersion = 21;
 		
 		return std::move(attributes);
 	}
@@ -1510,7 +1597,7 @@ namespace executive
 		return cudaErrorUnknown;
 	}
 
-	unsigned int NVIDIAGPUDevice::getLastError() const
+	unsigned int NVIDIAGPUDevice::getLastError()
 	{
 		return translateError(_lastError);
 	}

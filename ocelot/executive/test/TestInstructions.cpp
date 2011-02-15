@@ -32,7 +32,7 @@ public:
 	bool valid;
 
 	EmulatedKernel *kernel;
-	CooperativeThreadArray *cta;
+	CooperativeThreadArray* cta;
 	Module module;
 	
 	TestInstructions() {
@@ -70,12 +70,13 @@ public:
 			kernel = new EmulatedKernel(rawKernel, 0);
 			kernel->setKernelShape(threadCount, 1, 1);
 			kernel->setExternSharedMemorySize(64);
-			cta = new CooperativeThreadArray(kernel);
+			cta = new CooperativeThreadArray(kernel, ir::Dim3(), false);
 		}
 	}
 
 	~TestInstructions() {
 		delete kernel;
+		delete cta;
 	}
 
 	/*!
@@ -91,11 +92,12 @@ public:
 		return op;
 	}
 
-	PTXOperand sreg(PTXOperand::SpecialRegister reg) {
+	PTXOperand sreg(PTXOperand::SpecialRegister reg, PTXOperand::VectorIndex v) {
 		PTXOperand op;
 		op.addressMode = PTXOperand::Special;
 		op.type = PTXOperand::u16;
 		op.special = reg;
+		op.vIndex = v;
 		return op;
 	}
 
@@ -136,8 +138,7 @@ public:
 		using namespace executive;
 
 		bool result = true;
-		
-		cta->initialize();
+		cta->reset();
 
 		for (int j = 0; j < (int)kernel->registerCount(); j++) {
 			for (int i = 0; i < threadCount; i++) {
@@ -212,7 +213,7 @@ public:
 
 		PTXInstruction ins;
 
-		cta->initialize();
+		cta->reset();
 
 		// s16
 		//
@@ -807,10 +808,11 @@ public:
 			}
 			cta->eval_SubC(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
-				PTXU32 expected = (0x0fffffffe - ((PTXU32)(i*2)) + 1);
+				PTXU32 expected = (0x0fffffffe - ((PTXU32)(i*2)));
 				if (cta->getRegAsU32(i, 5) != expected) {
 					result = false;
-					status << "subc.u32 incorrect\n";
+					status << "subc.u32 incorrect - got " << cta->getRegAsU32(i,5) 
+						<< ", expected " << expected << "\n";
 					break;
 				}
 				// verify carry		
@@ -839,7 +841,7 @@ public:
 			}
 			cta->eval_SubC(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
-				PTXS32 expected = (0x0fffffffe - ((PTXS32)(i*2)) + 1);
+				PTXS32 expected = (0x0fffffffe - ((PTXS32)(i*2)));
 				if (cta->getRegAsS32(i, 5) != expected) {
 					result = false;
 					status << "subc.s32 incorrect\n";
@@ -2456,32 +2458,6 @@ public:
 				}
 			}
 		}
-
-		// f64
-		//
-		if (result) {
-			double freq = 2 * 3.14159 / (double)threadCount;
-
-			ins.opcode = PTXInstruction::Cos;
-			ins.type = PTXOperand::f64;
-			ins.a = reg("r1", PTXOperand::f64, 0);
-			ins.d = reg("r3", PTXOperand::f64, 2);
-
-			for (int i = 0; i < threadCount; i++) {
-				cta->setRegAsF64(i, 0, (PTXF64)((float)i * freq));
-				cta->setRegAsF64(i, 2, 0);
-			}
-			cta->eval_Cos(cta->getActiveContext(), ins);
-			for (int i = 0; i < threadCount; i++) {
-				if (std::fabs(cta->getRegAsF64(i, 2) - cos((float)i * freq)) > 0.1f) {
-					result = false;
-					status << "cos.f64 incorrect [" << i << "] - expected: " << cos((double)i * freq) 
-						<< ", got " << cta->getRegAsF64(i, 2) << "\n";
-					break;
-				}
-			}
-		}
-
 		return result;
 	}
 
@@ -2516,25 +2492,89 @@ public:
 			}
 		}
 
-		// f64
+		return result;
+	}
+	
+	bool test_CopySign() {
+		bool result = true;
+
+		PTXInstruction ins;
+		ins.opcode = PTXInstruction::Fma;
+
+		// f32
 		//
 		if (result) {
-			double freq = 2 * 3.14159 / (double)threadCount;
+			ins.type = PTXOperand::f32;
+			ins.a = reg("r1", PTXOperand::f32, 0);
+			ins.b = reg("r2", PTXOperand::f32, 1);
+			ins.d = reg("r3", PTXOperand::f32, 2);
 
+			for (int i = 0; i < threadCount; i++) {
+				int as = (!(i & 0x01) ? -1 : 1);
+				int bs = (!(i % 0x02) ? 1 : -1);
+				cta->setRegAsF32(i, 0, (PTXF32)((float)(as * i) / (float)threadCount * 4.2f));
+				cta->setRegAsF32(i, 1, (PTXF32)((float)(bs * i) / (float)threadCount * 2.7f));
+				cta->setRegAsF32(i, 2, 0);
+			}
+			cta->eval_Fma(cta->getActiveContext(), ins);
+			for (int i = 0; i < threadCount; i++) {
+				PTXF32 got = cta->getRegAsF32(i, 2);
+				
+				PTXF32 a = cta->getRegAsF32(i, 0);
+				PTXF32 b = cta->getRegAsF32(i, 1);
+				
+				PTXF32 exp = b;
+				if (a < 0) {
+					exp = -std::fabs(b);
+				}
+				else {
+					exp = std::fabs(b);
+				}
+					
+				if (std::fabs(got - exp) > 0.1f) {
+					result = false;
+					status << "fma.f32 incorrect [" << i << "] - expected: " 
+						<< (PTXF32)exp
+						<< ", got " << got << "\n";
+					break;
+				}
+			}
+		}
+		
+		// f64
+		if (result) {
 			ins.type = PTXOperand::f64;
 			ins.a = reg("r1", PTXOperand::f64, 0);
+			ins.b = reg("r2", PTXOperand::f64, 1);
 			ins.d = reg("r3", PTXOperand::f64, 2);
 
 			for (int i = 0; i < threadCount; i++) {
-				cta->setRegAsF64(i, 0, (PTXF64)((float)i * freq));
+				int as = (!(i & 0x01) ? -1 : 1);
+				int bs = (!(i % 0x02) ? 1 : -1);
+				cta->setRegAsF64(i, 0, (PTXF64)((double)(as * i) / (double)threadCount * 1.2));
+				cta->setRegAsF64(i, 1, (PTXF64)((double)(bs * i) / (double)threadCount * 7.7));
 				cta->setRegAsF64(i, 2, 0);
 			}
-			cta->eval_Sin(cta->getActiveContext(), ins);
+			cta->eval_Fma(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
-				if (std::fabs(cta->getRegAsF64(i, 2) - sin((float)i * freq)) > 0.1f) {
+				PTXF64 got = cta->getRegAsF64(i, 2);
+				
+				PTXF64 a = cta->getRegAsF64(i, 0);
+				PTXF64 b = cta->getRegAsF64(i, 1);
+				
+				PTXF64 exp = b;
+				if (a < 0) {
+					exp = -std::fabs(b);
+				}
+				else {
+					exp = std::fabs(b);
+				}
+					
+				if (std::fabs(got - exp) > 0.1) {
 					result = false;
-					status << "sin.f64 incorrect [" << i << "] - expected: " << sin((double)i * freq) 
-						<< ", got " << cta->getRegAsF64(i, 2) << "\n";
+					status << "fma.f64 incorrect [" << i << "] - expected: " 
+						<< exp
+						<< ", got " << got << "\n";
 					break;
 				}
 			}
@@ -2567,6 +2607,76 @@ public:
 					status << "ex2.f32 incorrect [" << i << "] - expected: " 
 						<< (PTXF32)exp2((float)i / (float)threadCount * 4.0f) 
 						<< ", got " << cta->getRegAsF32(i, 2) << "\n";
+					break;
+				}
+			}
+		}
+
+		return result;
+	}
+
+	bool test_Fma() {
+		bool result = true;
+
+		PTXInstruction ins;
+		ins.opcode = PTXInstruction::Fma;
+
+		// f32
+		//
+		if (result) {
+			ins.type = PTXOperand::f32;
+			ins.a = reg("r1", PTXOperand::f32, 0);
+			ins.b = reg("r2", PTXOperand::f32, 1);
+			ins.c = reg("r4", PTXOperand::f32, 3);
+			ins.d = reg("r3", PTXOperand::f32, 2);
+
+			for (int i = 0; i < threadCount; i++) {
+				cta->setRegAsF32(i, 0, (PTXF32)((float)i / (float)threadCount * 4.0f));
+				cta->setRegAsF32(i, 1, (PTXF32)((float)i / (float)threadCount * 2.0f));
+				cta->setRegAsF32(i, 3, (PTXF32)((float)i / (float)threadCount * 0.5f));
+				cta->setRegAsF32(i, 2, 0);
+			}
+			cta->eval_Fma(cta->getActiveContext(), ins);
+			for (int i = 0; i < threadCount; i++) {
+				PTXF32 got = cta->getRegAsF32(i, 2);
+				PTXF32 exp = (float)i / (float)threadCount * 4.0f * (float)i / (float)threadCount * 2.0f +
+					(float)i / (float)threadCount * 0.5f;
+					
+				if (std::fabs(got - exp) > 0.1f) {
+					result = false;
+					status << "fma.f32 incorrect [" << i << "] - expected: " 
+						<< (PTXF32)exp
+						<< ", got " << got << "\n";
+					break;
+				}
+			}
+		}
+		
+		// f64
+		if (result) {
+			ins.type = PTXOperand::f64;
+			ins.a = reg("r1", PTXOperand::f64, 0);
+			ins.b = reg("r2", PTXOperand::f64, 1);
+			ins.c = reg("r4", PTXOperand::f64, 3);
+			ins.d = reg("r3", PTXOperand::f64, 2);
+
+			for (int i = 0; i < threadCount; i++) {
+				cta->setRegAsF64(i, 0, (PTXF32)((double)i / (double)threadCount * 4.5));
+				cta->setRegAsF64(i, 1, (PTXF32)((double)i / (double)threadCount * 2.25));
+				cta->setRegAsF64(i, 3, (PTXF32)((double)i / (double)threadCount * 0.55));
+				cta->setRegAsF64(i, 2, 0);
+			}
+			cta->eval_Fma(cta->getActiveContext(), ins);
+			for (int i = 0; i < threadCount; i++) {
+				PTXF32 got = cta->getRegAsF32(i, 2);
+				PTXF32 exp = (double)i / (double)threadCount * 4.5 * (double)i / (double)threadCount * 2.25 +
+					(double)i / (double)threadCount *  0.55;
+					
+				if (std::fabs(got - exp) > 0.1) {
+					result = false;
+					status << "fma.f64 incorrect [" << i << "] - expected: " 
+						<< exp
+						<< ", got " << got << "\n";
 					break;
 				}
 			}
@@ -2735,7 +2845,7 @@ public:
 		PTXInstruction ins;
 		ins.opcode = PTXInstruction::And;
 
-		cta->initialize();
+		cta->reset();
 
 		// b16
 		//
@@ -2814,7 +2924,7 @@ public:
 		PTXInstruction ins;
 		ins.opcode = PTXInstruction::Or;
 
-		cta->initialize();
+		cta->reset();
 
 		// b16
 		//
@@ -2893,7 +3003,7 @@ public:
 		PTXInstruction ins;
 		ins.opcode = PTXInstruction::Xor;
 
-		cta->initialize();
+		cta->reset();
 
 		// b16
 		//
@@ -2973,7 +3083,7 @@ public:
 		PTXInstruction ins;
 		ins.opcode = PTXInstruction::Not;
 
-		cta->initialize();
+		cta->reset();
 
 		// b16
 		//
@@ -3059,7 +3169,7 @@ public:
 		PTXInstruction ins;
 		ins.opcode = PTXInstruction::Ld;
 
-		cta->initialize();
+		cta->reset();
 
 		//
 		// Global memory
@@ -3149,13 +3259,13 @@ public:
 		PTXInstruction ins;
 		ins.opcode = PTXInstruction::Ld;
 
-		cta->initialize();
+		cta->reset();
 
 		//
 		// Shared memory
 		//
 
-		PTXU32 *shared = (PTXU32 *)cta->SharedMemory;
+		PTXU32 *shared = (PTXU32 *)cta->functionCallStack.sharedMemoryPointer();
 
 		ins.addressSpace = PTXInstruction::Shared;
 
@@ -3243,14 +3353,14 @@ public:
 		PTXInstruction ins;
 		ins.opcode = PTXInstruction::Ld;
 
-		cta->initialize();
+		cta->reset();
 
 		//
 		// Parameter memory
 		//
 
 		// we only need this to set values, the instruction itself sees it as just another address space
-		PTXU32 *space = (PTXU32 *)cta->kernel->ParameterMemory;
+		PTXU32 *space = (PTXU32 *)cta->kernel->ArgumentMemory;
 
 		ins.addressSpace = PTXInstruction::Param;
 
@@ -3338,7 +3448,7 @@ public:
 		PTXInstruction ins;
 		ins.opcode = PTXInstruction::Ld;
 
-		cta->initialize();
+		cta->reset();
 
 		//
 		// Global memory
@@ -3449,7 +3559,7 @@ public:
 		PTXInstruction ins;
 		ins.opcode = PTXInstruction::St;
 
-		cta->initialize();
+		cta->reset();
 
 		//
 		// Global memory
@@ -3536,7 +3646,7 @@ public:
 		PTXInstruction ins;
 		ins.opcode = PTXInstruction::St;
 
-		cta->initialize();
+		cta->reset();
 
 		//
 		// Global memory
@@ -3613,14 +3723,14 @@ public:
 		PTXInstruction ins;
 		ins.opcode = PTXInstruction::Mov;
 
-		cta->initialize();
+		cta->reset();
 
 		// from register
 
 		// from special register tidX
 		if (result) {
 			ins.d = reg("r6", PTXOperand::u16, 0);
-			ins.a = sreg(PTXOperand::tidX);
+			ins.a = sreg(PTXOperand::tid, PTXOperand::ix);
 			ins.type = PTXOperand::u16;
 			cta->eval_Mov(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
@@ -3634,7 +3744,7 @@ public:
 		// from special register tidY
 		if (result) {
 			ins.d = reg("r6", PTXOperand::u16, 0);
-			ins.a = sreg(PTXOperand::tidY);
+			ins.a = sreg(PTXOperand::tid, PTXOperand::iy);
 			ins.type = PTXOperand::u16;
 			cta->eval_Mov(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
@@ -3648,7 +3758,7 @@ public:
 		// from special register ntidX
 		if (result) {
 			ins.d = reg("r6", PTXOperand::u16, 0);
-			ins.a = sreg(PTXOperand::ntidX);
+			ins.a = sreg(PTXOperand::ntid, PTXOperand::ix);
 			ins.type = PTXOperand::u16;
 			cta->eval_Mov(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
@@ -3662,7 +3772,7 @@ public:
 		// from special register ntidY
 		if (result) {
 			ins.d = reg("r6", PTXOperand::u16, 0);
-			ins.a = sreg(PTXOperand::ntidY);
+			ins.a = sreg(PTXOperand::ntid, PTXOperand::iy);
 			ins.type = PTXOperand::u16;
 			cta->eval_Mov(cta->getActiveContext(), ins);
 			for (int i = 0; i < threadCount; i++) {
@@ -3684,7 +3794,7 @@ public:
 		PTXInstruction ins;
 		ins.opcode = PTXInstruction::Cvt;
 
-		cta->initialize();
+		cta->reset();
 
 		// 
 	
@@ -3701,7 +3811,7 @@ public:
 		PTXInstruction ins;
 		ins.opcode = PTXInstruction::Set;
 
-		cta->initialize();
+		cta->reset();
 
 		if (result) {
 			// set.u32.s32.ge
@@ -3798,7 +3908,7 @@ public:
 		PTXInstruction ins;
 		ins.opcode = PTXInstruction::SetP;
 
-		cta->initialize();
+		cta->reset();
 
 		if (result) {
 			// setp.s32.lt p|q, a, b; // p = (a < b); q = !(a < b);
@@ -4026,7 +4136,7 @@ public:
 		PTXInstruction ins;
 		ins.opcode = PTXInstruction::SelP;
 
-		cta->initialize();
+		cta->reset();
 
 		if (result) {
 			// selp.s32 r4, a, b, p
@@ -4107,7 +4217,7 @@ public:
 		PTXInstruction ins;
 		ins.opcode = PTXInstruction::SlCt;
 
-		cta->initialize();
+		cta->reset();
 
 		if (result) {
 			// slct.f32.f32 r, a, b, c
@@ -4147,6 +4257,70 @@ public:
 	
 		return result;
 	}
+	
+	bool test_TestP() {
+		bool result = false;
+		/*
+		PTXInstruction ins;
+		ins.opcode = PTXInstruction::TestP;
+
+		cta->reset();
+
+		// f32
+		//
+		if (result) {
+			// testp.op.type p, a
+			//
+			//	op: .finite, .infinite, .number, .notanumber, .normal, .subnormal
+			//	type: .f32, .f64
+			//
+			ins.type = PTXOperand::f32;
+			ins.d = reg("p", PTXOperand::pred, 0);
+			ins.a = reg("a", PTXOperand::f32, 1);
+	
+			ir::PTXInstruction::FloatingPointMode floatModes[] = {
+				ir::PTXInstruction::Finite,
+				ir::PTXInstruction::Infinite,
+				ir::PTXInstruction::Number,
+				ir::PTXInstruction::NotANumber,
+				ir::PTXInstruction::Normal,
+				ir::PTXInstruction::SubNormal,
+				ir::PTXInstruction::FloatingPointMode_Invalid
+			};
+			
+			PTXF32 floatValues[] = {
+				-1, 0, 1, FLT_EPSILON, -FLT_EPSILON, 0
+			};
+			
+			for (int mode = 0; floatModes[mode] != ir::PTXInstruction::FloatingPointMode_Invalid; mode++) {
+				ins.opcode = PTXInstruction::TestP;
+				ins.floatingPointMode = floatModes[mode];
+				ins.d = reg("p", PTXOperand::pred, 0);
+				ins.a = reg("a", PTXOperand::f32, 1);
+				
+				
+				
+			}
+			
+		}
+		
+		// f64
+		//
+		if (result) {
+			// testp.op.type p, a
+			//
+			//	op: .finite, .infinite, .number, .notanumber, .normal, .subnormal
+			//	type: .f32, .f64
+			//
+			ins.type = PTXOperand::f32;
+			ins.d = reg("p", PTXOperand::pred, 0);
+			ins.a = reg("a", PTXOperand::f32, 1);
+	
+			
+		}
+		*/
+		return result;
+	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -4156,7 +4330,7 @@ public:
 		PTXInstruction ins;
 		ins.opcode = PTXInstruction::Add;
 
-		cta->initialize();
+		cta->reset();
 
 		ins.a = reg("a", PTXOperand::s32, 0);
 		ins.b = reg("b", PTXOperand::s32, 1);
@@ -4197,7 +4371,7 @@ public:
 		PTXInstruction ins;
 		ins.opcode = PTXInstruction::Ld;
 
-		cta->initialize();
+		cta->reset();
 
 		//
 		// Global memory
@@ -4251,7 +4425,7 @@ public:
 		ins.branchTargetInstruction = 3;
 		ins.reconvergeInstruction = 7;
 
-		cta->initialize();
+		cta->reset();
 		if (cta->reconvergenceMechanism->stackSize() != 1) {
 			result = false;
 			status << "test_Bra_uni failed - expected runtime stack to include 1 context before Bra instruction. " 
@@ -4280,7 +4454,6 @@ public:
 				}
 			}
 		}
-
 		if (result) {
 			for (int i = 0; i < threadCount; i++) {
 				if (!cta->reconvergenceMechanism->runtimeStack.front().active[i]) {
@@ -4304,7 +4477,7 @@ public:
 		ins.pg.reg = 1;
 		ins.pg.condition = PTXOperand::Pred;
 		
-		cta->initialize();
+		cta->reset();
 		if (cta->reconvergenceMechanism->stackSize() != 1) {
 			result = false;
 			status << "test_Bra_div failed - expected runtime stack to include 1 context before Bra instruction. " 
@@ -4325,7 +4498,8 @@ public:
 				<< cta->reconvergenceMechanism->stackSize() << " context(s) encountered\n";
 		}
 
-		deque<CTAContext>::const_reverse_iterator ctx_it = cta->reconvergenceMechanism->runtimeStack.rbegin();
+		ReconvergenceMechanism::RuntimeStack::const_reverse_iterator 
+			ctx_it = cta->reconvergenceMechanism->runtimeStack.rbegin();
 
 		if (result && ctx_it->PC != 1) {
 			for (int i = 0; i < threadCount; i++) {
@@ -4376,7 +4550,7 @@ public:
 		ins.pg.reg = 1;
 		ins.pg.condition = PTXOperand::Pred;
 		
-		cta->initialize();
+		cta->reset();
 
 		for (int i = 0; i < threadCount; i++) {
 			cta->getActiveContext().active[i] = (i > 3);										// turn off some threads

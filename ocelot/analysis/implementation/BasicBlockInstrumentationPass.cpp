@@ -55,7 +55,6 @@ namespace analysis
         
         // Convert special registers to .u32 registers in order to use them in mad/mul/add instructions 
         ir::PTXInstruction cvt(ir::PTXInstruction::Cvt);
-        cvt.addressSpace = ir::PTXInstruction::Reg;
         cvt.type = ir::PTXOperand::u32;
 
         DataflowGraph::RegisterId tidX = kernel->dfg()->newRegister();
@@ -69,59 +68,67 @@ namespace analysis
         DataflowGraph::RegisterId ctaIdY = kernel->dfg()->newRegister();
 
         cvt.d.addressMode = ir::PTXOperand::Register;
-		cvt.d.type = ir::PTXOperand::u32;
-		cvt.d.reg = tidX;
+	    cvt.d.type = ir::PTXOperand::u32;
+	    cvt.d.reg = tidX;
         cvt.a.addressMode = ir::PTXOperand::Register;
-        cvt.a = ir::PTXOperand(ir::PTXOperand::tidX);
+        cvt.a = ir::PTXOperand(ir::PTXOperand::tid);
+        cvt.a.vIndex = ir::PTXOperand::ix;
         cvt.a.type = ir::PTXOperand::u16;
         kernel->dfg()->insert(block, cvt, 0);
 
         cvt.d.reg = ntidX;
-        cvt.a = ir::PTXOperand(ir::PTXOperand::ntidX);
+        cvt.a = ir::PTXOperand(ir::PTXOperand::ntid);
+        cvt.a.vIndex = ir::PTXOperand::ix;
         cvt.a.type = ir::PTXOperand::u16;
         kernel->dfg()->insert(block, cvt, 1);
 
         cvt.d.reg = tidY;
-        cvt.a = ir::PTXOperand(ir::PTXOperand::tidY);
+        cvt.a = ir::PTXOperand(ir::PTXOperand::tid);
+        cvt.a.vIndex = ir::PTXOperand::iy;
         cvt.a.type = ir::PTXOperand::u16;
         kernel->dfg()->insert(block, cvt, 2);
           
         cvt.d.reg = ntidY;
-        cvt.a = ir::PTXOperand(ir::PTXOperand::ntidY);
+        cvt.a = ir::PTXOperand(ir::PTXOperand::ntid);
+        cvt.a.vIndex = ir::PTXOperand::iy;
         cvt.a.type = ir::PTXOperand::u16;
         kernel->dfg()->insert(block, cvt, 3);
 
         cvt.d.reg = tidZ;
-        cvt.a = ir::PTXOperand(ir::PTXOperand::tidZ);
+        cvt.a = ir::PTXOperand(ir::PTXOperand::tid);
+        cvt.a.vIndex = ir::PTXOperand::iz;
         cvt.a.type = ir::PTXOperand::u16;
         kernel->dfg()->insert(block, cvt, 4);
           
         cvt.d.reg = ntidZ;
-        cvt.a = ir::PTXOperand(ir::PTXOperand::ntidZ);
+        cvt.a = ir::PTXOperand(ir::PTXOperand::ntid);
+        cvt.a.vIndex = ir::PTXOperand::iz;
         cvt.a.type = ir::PTXOperand::u16;
         kernel->dfg()->insert(block, cvt, 5);
 
         cvt.d.reg = ctaIdX;
-        cvt.a = ir::PTXOperand(ir::PTXOperand::ctaIdX);
+        cvt.a = ir::PTXOperand(ir::PTXOperand::ctaId);
+        cvt.a.vIndex = ir::PTXOperand::ix;
         cvt.a.type = ir::PTXOperand::u16;
         kernel->dfg()->insert(block, cvt, 6);
           
         cvt.d.reg = nctaIdX;
-        cvt.a = ir::PTXOperand(ir::PTXOperand::nctaIdX);
+        cvt.a = ir::PTXOperand(ir::PTXOperand::nctaId);
+        cvt.a.vIndex = ir::PTXOperand::ix;
         cvt.a.type = ir::PTXOperand::u16;
         kernel->dfg()->insert(block, cvt, 7);
 
         cvt.d.reg = ctaIdY;
-        cvt.a = ir::PTXOperand(ir::PTXOperand::ctaIdY);
+        cvt.a = ir::PTXOperand(ir::PTXOperand::ctaId);
+        cvt.a.vIndex = ir::PTXOperand::iy;
         cvt.a.type = ir::PTXOperand::u16;
         kernel->dfg()->insert(block, cvt, 8);
 
-	DataflowGraph::RegisterId ntid = kernel->dfg()->newRegister();
+        DataflowGraph::RegisterId ntid = kernel->dfg()->newRegister();
 
-	//mul ntid, ntidx, ntidy
-	//mul ntid, tid, ntidz
-	ir::PTXInstruction mul(ir::PTXInstruction::Mul);
-	mul.addressSpace = ir::PTXInstruction::Reg;
+        //mul ntid, ntidx, ntidy
+        //mul ntid, tid, ntidz
+        ir::PTXInstruction mul(ir::PTXInstruction::Mul);
         mul.type = ir::PTXOperand::u32;
         mul.modifier = ir::PTXInstruction::lo;
 
@@ -136,16 +143,15 @@ namespace analysis
         mul.b.addressMode = ir::PTXOperand::Register;
         mul.b.reg = ntidY;
 
-	kernel->dfg()->insert(block, mul, 9);
-	
-	mul.a.reg = ntid;
-	mul.b.reg = ntidZ;
+        kernel->dfg()->insert(block, mul, 9);
 
-	kernel->dfg()->insert(block, mul, 10);
+        mul.a.reg = ntid;
+        mul.b.reg = ntidZ;
+
+        kernel->dfg()->insert(block, mul, 10);
 
         // mad.lo threadId, tid.y, ntid.x, tid.x 
         ir::PTXInstruction mad(ir::PTXInstruction::Mad);
-        mad.addressSpace = ir::PTXInstruction::Reg;
         mad.type = ir::PTXOperand::u32;
         mad.modifier = ir::PTXInstruction::lo;
 
@@ -169,7 +175,6 @@ namespace analysis
         kernel->dfg()->insert(block, mad, 11);
 
         // mul.lo tmp1, ntid.x, ntid.y 
-        mul.addressSpace = ir::PTXInstruction::Reg;
         mul.type = ir::PTXOperand::u32;
         mul.modifier = ir::PTXInstruction::lo;
 
@@ -200,7 +205,6 @@ namespace analysis
 
         // add threadId, threadId, tmp2 
         ir::PTXInstruction add(ir::PTXInstruction::Add);
-        add.addressSpace = ir::PTXInstruction::Reg;
         add.type = ir::PTXOperand::u32;
         add.d.addressMode = ir::PTXOperand::Register;
         add.d.type = ir::PTXOperand::u32;
@@ -219,7 +223,7 @@ namespace analysis
         mad.a.reg = ctaIdY;
         mad.b.reg = nctaIdX;
         mad.c.reg = ctaIdX;
-    
+
         kernel->dfg()->insert(block, mad, 15);
        
         // mul.lo tmp1, tmp1, ntid.z 
@@ -270,15 +274,14 @@ namespace analysis
         ld.d.addressMode = ir::PTXOperand::Register;
         ld.d.type = type;
         ld.d.reg = counterPtr;
-    
-        kernel->dfg()->insert(block, ld, 19); 
-	
-	//offset = (threadId + ntid * basic-block-count) * sizeof(size_t)
-	//mad offset, ntid, basic-block-count, threadId
-	//mul offset, offset, sizeof(size_t)	
 
-	DataflowGraph::RegisterId offset = kernel->dfg()->newRegister();
-        mad.addressSpace = ir::PTXInstruction::Reg;
+        kernel->dfg()->insert(block, ld, 19); 
+
+        //offset = (threadId + ntid * basic-block-count) * sizeof(size_t)
+        //mad offset, ntid, basic-block-count, threadId
+        //mul offset, offset, sizeof(size_t)	
+
+        DataflowGraph::RegisterId offset = kernel->dfg()->newRegister();
         mad.type = ir::PTXOperand::u32;
         mad.modifier = ir::PTXInstruction::lo;
 
@@ -299,26 +302,26 @@ namespace analysis
         mad.c.type = ir::PTXOperand::u32;
         mad.c.reg = threadId;
 
-	kernel->dfg()->insert(block, mad, 20);
+        kernel->dfg()->insert(block, mad, 20);
 
         // mul offset, offset, sizeof(size_t) 
         mul.type = ir::PTXOperand::u32;
         mul.d.reg = offset;
         mul.d.addressMode = ir::PTXOperand::Register;
-	mul.d.type = ir::PTXOperand::u32;
-	mul.a = mul.d;
+        mul.d.type = ir::PTXOperand::u32;
+        mul.a = mul.d;
         mul.b.type = ir::PTXOperand::u32;
         mul.b.addressMode = ir::PTXOperand::Immediate;
         mul.b.imm_int = sizeof(size_t);
 
         kernel->dfg()->insert(block, mul, 21);
 
-	DataflowGraph::RegisterId offset64 = kernel->dfg()->newRegister();
-	//cvt.u64 offset64, offset
-	cvt.type = type;
-	cvt.d.addressMode = ir::PTXOperand::Register;
-	cvt.d.type = type;
-	cvt.d.reg = offset64;
+        DataflowGraph::RegisterId offset64 = kernel->dfg()->newRegister();
+        //cvt.u64 offset64, offset
+        cvt.type = type;
+        cvt.d.addressMode = ir::PTXOperand::Register;
+        cvt.d.type = type;
+        cvt.d.reg = offset64;
         cvt.a.addressMode = ir::PTXOperand::Register;
         cvt.a.reg = offset;
         cvt.a.type = ir::PTXOperand::u32;
@@ -326,7 +329,7 @@ namespace analysis
         kernel->dfg()->insert(block, cvt, 22);
 
         // add counterPtrReg, counterPtr, offset     
-	DataflowGraph::RegisterId counterPtrReg = kernel->dfg()->newRegister();    
+        DataflowGraph::RegisterId counterPtrReg = kernel->dfg()->newRegister();    
         add.type = type;
         add.d.type = type;
         add.d.reg = counterPtrReg;
@@ -346,7 +349,7 @@ namespace analysis
         ld.a.reg = counterPtrReg;
         ld.d.reg = registerId;
         ld.d.addressMode = ir::PTXOperand::Register;
-		ld.d.type = type;		
+	    ld.d.type = type;		
         
         add.addressSpace = ir::PTXInstruction::Global; 
         add.type = type;
@@ -367,11 +370,11 @@ namespace analysis
         kernel->dfg()->insert( block, st, 26 ); 
      
 
-	std::map<std::string, DataflowGraph::RegisterId> registerMap;
-	registerMap["counterPtr"] = counterPtr;	
-	registerMap["counterPtrReg"] = counterPtrReg;
-	registerMap["threadId"] = threadId;
-	registerMap["ntid"] = ntid;
+	    std::map<std::string, DataflowGraph::RegisterId> registerMap;
+	    registerMap["counterPtr"] = counterPtr;	
+	    registerMap["counterPtrReg"] = counterPtrReg;
+	    registerMap["threadId"] = threadId;
+        registerMap["ntid"] = ntid;
         return registerMap;
 
     }

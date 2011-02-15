@@ -7,20 +7,16 @@
 #ifndef OCELOT_H_INCLUDED
 #define OCELOT_H_INCLUDED
 
+// C++ includes
 #include <istream>
 #include <unordered_map>
-#include <map>
-#include <vector>
+
+// Ocelot includes
+#include <ocelot/analysis/interface/Pass.h>
 
 namespace trace
 {
 	class TraceGenerator;
-}
-
-namespace analysis 
-{
-    class PTXInstrumentor;
-    class KernelProfile;
 }
 
 /*! \brief A namespace for ocelot API functions */
@@ -44,11 +40,18 @@ namespace ocelot
 	/*! \brief Clear all trace generators 
 		\param safe Make this a thread safe call*/
 	void clearTraceGenerators();
-
-    void addInstrumentor(analysis::PTXInstrumentor& instrumentor);
-    void clearInstrumentors();
-
-    analysis::KernelProfile kernelProfile();
+		
+	/*! \brief Adds a PTX->PTX pass active for the next *Module load*
+	
+		\param pass reference to the PTX pass to be added
+	*/
+	void addPTXPass(analysis::Pass &pass);
+	
+	/*! \brief removes the specified pass */
+	void removePTXPass(analysis::Pass &pass);
+	
+	/*! \brief clears all PTX->PTX passes */
+	void clearPTXPasses();
 	
 	/*! \brief Sets a limit on the number of host worker threads to launch
 		when executing a CUDA kernel on a Multi-Core CPU.

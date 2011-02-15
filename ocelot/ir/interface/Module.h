@@ -33,10 +33,15 @@ namespace ir {
 
 		typedef std::unordered_map< std::string, PTXKernel* > KernelMap;
 		
+		typedef std::vector< std::string > NameVector;
+		
 		typedef std::vector< PTXKernel* > KernelVector;
 
 		/*! \brief Map from unique identifier to global variable */
 		typedef std::unordered_map< std::string, Global > GlobalMap;
+		
+		/*! \brief map from unique identifier to function prototype */
+		typedef std::unordered_map< std::string, ir::PTXKernel::Prototype > FunctionPrototypeMap;
 				
 	public:
 
@@ -135,7 +140,7 @@ namespace ir {
                 the global being inserted, it will be owned
 				by the module.
 		*/
-		void insertGlobal(const PTXStatement &statement);		
+		void insertGlobal(const PTXStatement &statement);	
 
 		/*! \brief Gets the module path */
 		const std::string& path() const;
@@ -151,6 +156,11 @@ namespace ir {
 
 		/*! \brief Gets the statement vector */
 		const StatementVector& statements() const;
+		
+		/*! \brief gets all declared function prototypes */
+		const FunctionPrototypeMap & prototypes() const;
+		
+		void addPrototype(const std::string &identifier, const ir::PTXKernel::Prototype &prototype);
 	
 	private:
 		/*! After a successful parse; constructs all kernels for PTX isa. */
@@ -169,9 +179,17 @@ namespace ir {
 			this vector.
 		*/
 		StatementVector _statements;
+		
+		/*!
+			\brief maps declared function name onto a prototype structure
+		*/
+		FunctionPrototypeMap _prototypes;
 
 		/*! Set of kernels belonging to Module.  These are PTX Kernels */
 		KernelMap _kernels;	
+		
+		/*! The original sequence of PTX kernels must be preserved */
+		NameVector _kernelSequence;
 		
 		/*! Set of textures in the module */
 		TextureMap _textures;
@@ -184,6 +202,9 @@ namespace ir {
 		
 		/*! Target string */
 		std::string _target;
+		
+		/*! Is the module currently loaded? */
+		bool _loaded;
 		
 		friend class executive::Executive;
 	};

@@ -110,8 +110,10 @@ namespace ir {
 		std::string name;
 		/*!	Instruction Set Architecture of the kernel */
 		Instruction::Architecture ISA;
+		/*!	Set of parameters in order specified in the kernel's definition */
+		ParameterVector arguments;
 		/*! Set of parameters that are not kernel arguments */
-		ParameterVector parameters;
+		ParameterMap parameters;
 		/*! \brief Local variables */
 		LocalMap locals;
 		/*!	Pointer to the module this kernel belongs to */

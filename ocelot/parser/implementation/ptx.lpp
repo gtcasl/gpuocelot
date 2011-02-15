@@ -31,8 +31,6 @@
 	
 %}
 
-SPECIAL_REGISTER ("%ctaid."[xyz]|"%ntid."[xyz]|"%gridid"|"%nctaid."[xyz]|"%tid."[xyz]|"%laneid"|"%warpid"|"%smid"|"%nsmid"|"%pm"[1234]|"WARP_SZ")
-
 BIT [01]
 NON_ZERO_DIGIT [1-9]
 BINARY_CONSTANT (0[bB][{BIT}]+)
@@ -71,12 +69,15 @@ FLOAT_CONSTANT ({DFC}|{HFC})
 
 FOLLOWSYM  [[:alnum:]_$]
 IDENTIFIER ([[:alpha:]]{FOLLOWSYM}*|[_$%]{FOLLOWSYM}+)
+VECTOR_SUFFIX {""}
 
 NEW_LINE ([\n]*)
 TAB [\t]*
 SPACE [ ]*
 WHITESPACE [ \t]*
 
+/* "bar.sync"                      { strlcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_BARSYNC; } */
 /******************************************************************************/
 
 %%
@@ -108,20 +109,32 @@ WHITESPACE [ \t]*
                                     return OPCODE_ATOM; }
 "abs"                           { strlcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_ABS; }
-"bar.sync"                      { strlcpy( yylval->text, yytext, 1024 ); \
-                                    return OPCODE_BARSYNC; }
+"bar"                     			{ strlcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_BAR; }
+"bfi"                           { strlcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_BFI; }
+"bfind"                         { strlcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_BFIND; }
 "bra"                           { strlcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_BRA; }
+"brev"                          { strlcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_BREV; }
 "brkpt"                         { strlcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_BRKPT; }
 "call"                          { strlcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_CALL; }
+"clz"                           { strlcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_CLZ; }
 "cnot"                          { strlcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_CNOT; }
+"copysign"                      { strlcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_COPYSIGN; }
 "cos"                           { strlcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_COS; }
 "cvt"                           { strlcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_CVT; }
+"cvta"                           { strlcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_CVTA; }
 "div"                           { strlcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_DIV; }
 "ex2"                           { strlcpy( yylval->text, yytext, 1024 ); \
@@ -130,8 +143,12 @@ WHITESPACE [ \t]*
                                     return OPCODE_EXIT; }
 "fma"                           { strlcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_FMA; }
+"isspacep"                      { strlcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_ISSPACEP; }
 "ld"                            { strlcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_LD; }
+"ldu"                            { strlcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_LDU; }
 "lg2"                           { strlcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_LG2; }
 "membar"                        { strlcpy( yylval->text, yytext, 1024 ); \
@@ -158,6 +175,10 @@ WHITESPACE [ \t]*
                                     return OPCODE_OR; }
 "pmevent"                       { strlcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_PMEVENT; }
+"popc"                          { strlcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_POPC; }
+"prmt"                          { strlcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_PRMT; }
 "rcp"                           { strlcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_RCP; }
 "red"                           { strlcpy( yylval->text, yytext, 1024 ); \
@@ -192,68 +213,86 @@ WHITESPACE [ \t]*
                                     return OPCODE_SUB; }
 "subc"                          { strlcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_SUBC; }
+"suld"                          { strlcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_SULD; }
+"sust"                          { strlcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_SUST; }
+"sured"                          { strlcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_SURED; }
+"suq"                          { strlcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_SUQ; }
+"testp"                         { strlcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_TESTP; }
 "tex"                           { strlcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_TEX; }
 "trap"                          { strlcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_TRAP; }
+"txq"                          { strlcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_TXQ; }
 "vote"                          { strlcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_VOTE; }
 "xor"                           { strlcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_XOR; }
 
 
+".align"                        { yylval->value = TOKEN_ALIGN; \
+                                    return TOKEN_ALIGN; }
+".callprototype"                { yylval->value = TOKEN_CALL_PROTOTYPE; \
+                                    return TOKEN_CALL_PROTOTYPE; }
+".calltargets"                  { yylval->value = TOKEN_CALL_TARGETS; \
+                                    return TOKEN_CALL_TARGETS; }
+".const"                        { yylval->value = TOKEN_CONST; \
+                                    return TOKEN_CONST; }
 ".entry"                        { yylval->value = TOKEN_ENTRY; \
                                     return TOKEN_ENTRY; }
 ".extern"                       { yylval->value = TOKEN_EXTERN; \
                                     return TOKEN_EXTERN; }
 ".file"                         { yylval->value = TOKEN_FILE; \
                                     return TOKEN_FILE; }
-".visible"                      { yylval->value = TOKEN_VISIBLE; \
-                                    return TOKEN_VISIBLE; }
-".loc"                          { yylval->value = TOKEN_LOC; \
-                                    return TOKEN_LOC; }
 ".func"                         { yylval->value = TOKEN_FUNCTION; \
                                     return TOKEN_FUNCTION; }
-".struct"                       { yylval->value = TOKEN_STRUCT; \
-                                    return TOKEN_STRUCT; }
-".union"                        { yylval->value = TOKEN_UNION; \
-                                    return TOKEN_UNION; }
-".target"                       { yylval->value = TOKEN_TARGET; \
-                                    return TOKEN_TARGET; }
-".version"                      { yylval->value = TOKEN_VERSION; \
-                                    return TOKEN_VERSION; }
-".section"                      { yylval->value = TOKEN_SECTION; \
-                                    return TOKEN_SECTION; }
-
-".const"                        { yylval->value = TOKEN_CONST; \
-                                    return TOKEN_CONST; }
 ".global"                       { yylval->value = TOKEN_GLOBAL; \
                                     return TOKEN_GLOBAL; }
 ".local"                        { yylval->value = TOKEN_LOCAL; \
                                     return TOKEN_LOCAL; }
-".param"                        { yylval->value = TOKEN_PARAM; \
-                                    return TOKEN_PARAM; }
-".reg"                          { yylval->value = TOKEN_REG; \
-                                    return TOKEN_REG; }
-".shared"                       { yylval->value = TOKEN_SHARED; \
-                                    return TOKEN_SHARED;}
-".sreg"                         { yylval->value = TOKEN_SREG; \
-                                    return TOKEN_SREG; }
-".tex"                          { yylval->value = TOKEN_TEX; \
-                                    return TOKEN_TEX; }
-".surf"                         { yylval->value = TOKEN_SURF; \
-                                    return TOKEN_SURF; }
-".cta"                          { yylval->value = TOKEN_CTA; 
-                                    return TOKEN_CTA; }
-".gl"                           { yylval->value = TOKEN_GL; 
-                                    return TOKEN_GL; }
-
+".loc"                          { yylval->value = TOKEN_LOC; \
+                                    return TOKEN_LOC; }
+".maxnctapersm"                 { yylval->value = TOKEN_MAXNCTAPERSM; 
+                                    return TOKEN_MAXNCTAPERSM; }
+".minnctapersm"                 { yylval->value = TOKEN_MINNCTAPERSM; 
+                                    return TOKEN_MINNCTAPERSM; }
 ".maxnreg"                      { yylval->value = TOKEN_MAXNREG; 
                                     return TOKEN_MAXNREG; }
 ".maxntid"                      { yylval->value = TOKEN_MAXNTID; 
                                     return TOKEN_MAXNTID; }
-".maxnctapersm"                 { yylval->value = TOKEN_MAXNCTAPERSM; 
-                                    return TOKEN_MAXNCTAPERSM; }
+".param"                        { yylval->value = TOKEN_PARAM; \
+                                    return TOKEN_PARAM; }
+".pragma"                       { yylval->value = TOKEN_PRAGMA; \
+                                    return TOKEN_PRAGMA; }
+".reg"                          { yylval->value = TOKEN_REG; \
+                                    return TOKEN_REG; }
+".samplerref"                   { yylval->value = TOKEN_SAMPLERREF; \
+                                    return TOKEN_SAMPLERREF; }
+".section"                      { yylval->value = TOKEN_SECTION; \
+                                    return TOKEN_SECTION; }
+".shared"                       { yylval->value = TOKEN_SHARED; \
+                                    return TOKEN_SHARED;}
+".shiftamt"                     { yylval->value = TOKEN_SHIFT_AMOUNT; \
+                                    return TOKEN_SHIFT_AMOUNT;}
+".surfref"	                   { yylval->value = TOKEN_SURFREF; \
+                                    return TOKEN_SURFREF; }
+".target"                       { yylval->value = TOKEN_TARGET; \
+                                    return TOKEN_TARGET; }
+".texref"                       { yylval->value = TOKEN_TEXREF; \
+                                    return TOKEN_TEXREF; }
+".version"                      { yylval->value = TOKEN_VERSION; \
+                                    return TOKEN_VERSION; }
+".visible"                      { yylval->value = TOKEN_VISIBLE; \
+                                    return TOKEN_VISIBLE; }
+
+".cta"                          { yylval->value = TOKEN_CTA; return TOKEN_CTA; }
+".gl"                           { yylval->value = TOKEN_GL; return TOKEN_GL; }
+".sys"                          { yylval->value = TOKEN_SYS; return TOKEN_SYS; }
 
 "sm_10"                         { yylval->value = TOKEN_SM10; 
                                     return TOKEN_SM10; }
@@ -265,6 +304,8 @@ WHITESPACE [ \t]*
                                     return TOKEN_SM13; }
 "sm_20"                         { yylval->value = TOKEN_SM20; 
                                     return TOKEN_SM20; }
+"sm_21"                         { yylval->value = TOKEN_SM21; 
+                                    return TOKEN_SM21; }
 "map_f64_to_f32"                { yylval->value = TOKEN_MAP_F64_TO_F32; 
                                     return TOKEN_MAP_F64_TO_F32; }
 
@@ -322,9 +363,9 @@ WHITESPACE [ \t]*
 ".approx"                       { yylval->value = TOKEN_APPROX; \
                                     return TOKEN_APPROX; }
 
+".tail"                         { yylval->value = TOKEN_TAIL; \
+                                    return TOKEN_TAIL; }
 ".uni"                          { yylval->value = TOKEN_UNI; return TOKEN_UNI; }
-".align"                        { yylval->value = TOKEN_ALIGN; \
-                                    return TOKEN_ALIGN; }
 ".byte"                         { yylval->value = TOKEN_BYTE; \
                                     return TOKEN_BYTE; }
 ".wide"                         { yylval->value = TOKEN_WIDE; \
@@ -339,6 +380,15 @@ WHITESPACE [ \t]*
 ".v2"                           { yylval->value = TOKEN_V2; return TOKEN_V2; }
 ".v4"                           { yylval->value = TOKEN_V4; return TOKEN_V4; }
 
+".x"                            { yylval->value = TOKEN_X; return TOKEN_X; }
+".y"                            { yylval->value = TOKEN_Y; return TOKEN_Y; }
+".z"                            { yylval->value = TOKEN_Z; return TOKEN_Z; }
+".w"                            { yylval->value = TOKEN_W; return TOKEN_W; }
+".r"                            { yylval->value = TOKEN_X; return TOKEN_X; }
+".g"                            { yylval->value = TOKEN_Y; return TOKEN_Y; }
+".b"                            { yylval->value = TOKEN_Z; return TOKEN_Z; }
+".a"                            { yylval->value = TOKEN_W; return TOKEN_W; }
+
 ".any"                          { yylval->value = TOKEN_ANY; return TOKEN_ANY; }
 ".all"                          { yylval->value = TOKEN_ALL; return TOKEN_ALL; }
 
@@ -348,13 +398,85 @@ WHITESPACE [ \t]*
 ".inc"                          { yylval->value = TOKEN_INC; return TOKEN_INC; }
 ".add"                          { yylval->value = TOKEN_ADD; return TOKEN_ADD; }
 ".cas"                          { yylval->value = TOKEN_CAS; return TOKEN_CAS; }
-".exch"                         { yylval->value = TOKEN_EXCH; \
-                                    return TOKEN_EXCH; }
+".exch"                         { yylval->value = TOKEN_EXCH; return TOKEN_EXCH; }
 
 ".1d"                           { yylval->value = TOKEN_1D; return TOKEN_1D; }
 ".2d"                           { yylval->value = TOKEN_2D; return TOKEN_2D; }
 ".3d"                           { yylval->value = TOKEN_3D; return TOKEN_3D; }
 
+".p"                           	{ yylval->value = TOKEN_P; return TOKEN_P; }
+
+".ca"                           { yylval->value = TOKEN_CA; return TOKEN_CA; }
+".wb"                           { yylval->value = TOKEN_WB; return TOKEN_WB; }
+".cg"                           { yylval->value = TOKEN_CG; return TOKEN_CG; }
+".cs"                           { yylval->value = TOKEN_CS; return TOKEN_CS; }
+".lu"                           { yylval->value = TOKEN_LU; return TOKEN_LU; }
+".cv"                           { yylval->value = TOKEN_CV; return TOKEN_CV; }
+".wt"                           { yylval->value = TOKEN_WT; return TOKEN_WT; }
+
+".L1"                           { yylval->value = TOKEN_L1; return TOKEN_L1; }
+".L2"                           { yylval->value = TOKEN_L2; return TOKEN_L2; }
+
+".width"                        { yylval->value = TOKEN_WIDTH; \
+                                    return TOKEN_WIDTH; }
+".height"                       { yylval->value = TOKEN_HEIGHT; \
+                                    return TOKEN_HEIGHT; }
+".depth"                        { yylval->value = TOKEN_DEPTH; \
+                                    return TOKEN_DEPTH; }
+".normalized_coords"            { yylval->value = TOKEN_NORMALIZED_COORDS; \
+                                    return TOKEN_NORMALIZED_COORDS; }
+".filter_mode"                  { yylval->value = TOKEN_FILTER_MODE; \
+                                    return TOKEN_FILTER_MODE; }
+".addr_mode_0"                  { yylval->value = TOKEN_ADDR_MODE_0; \
+                                    return TOKEN_ADDR_MODE_0; }
+".addr_mode_1"                  { yylval->value = TOKEN_ADDR_MODE_1; \
+                                    return TOKEN_ADDR_MODE_1; }
+".addr_mode_2"                  { yylval->value = TOKEN_ADDR_MODE_2; \
+                                    return TOKEN_ADDR_MODE_2; }
+".channel_data_type"            { yylval->value = TOKEN_CHANNEL_DATA_TYPE; \
+                                    return TOKEN_CHANNEL_DATA_TYPE; }
+".channel_order"                { yylval->value = TOKEN_CHANNEL_ORDER; \
+                                    return TOKEN_CHANNEL_ORDER; }
+".trap"                         { yylval->value = TOKEN_TRAP; \
+                                    return TOKEN_TRAP; }
+".to"                           { yylval->value = TOKEN_TO; return TOKEN_TO; }
+".clamp"                        { yylval->value = TOKEN_CLAMP; 
+                                    return TOKEN_CLAMP; }
+".zero"                         { yylval->value = TOKEN_ZERO; \
+                                    return TOKEN_ZERO; }
+".arrive"                       { yylval->value = TOKEN_ARRIVE; \
+                                    return TOKEN_ARRIVE; }
+".red"                          { yylval->value = TOKEN_RED; \
+                                    return TOKEN_RED; }
+".sync"                          { yylval->value = TOKEN_SYNC; \
+                                    return TOKEN_SYNC; }
+".popc"                         { yylval->value = TOKEN_POPC; \
+                                    return TOKEN_POPC; }
+
+".ballot"                       { yylval->value = TOKEN_BALLOT; \
+                                    return TOKEN_BALLOT; }
+                                    
+".f4e"                          { yylval->value = TOKEN_F4E; return TOKEN_F4E; }
+".b4e"                          { yylval->value = TOKEN_B4E; return TOKEN_B4E; }
+".rc8"                          { yylval->value = TOKEN_RC8; return TOKEN_RC8; }
+".ecl"                          { yylval->value = TOKEN_ECL; return TOKEN_ECL; }
+".ecr"                          { yylval->value = TOKEN_ECR; return TOKEN_ECR; }
+".rc16"                         { yylval->value = TOKEN_RC16; \
+                                    return TOKEN_RC16; }
+        
+".finite"                       { yylval->value = TOKEN_FINITE; \
+                                    return TOKEN_FINITE; }
+".infinite"                     { yylval->value = TOKEN_INFINITE; \
+                                    return TOKEN_INFINITE; }
+".number"                       { yylval->value = TOKEN_NUMBER; \
+                                    return TOKEN_NUMBER; }
+".notanumber"                   { yylval->value = TOKEN_NOT_A_NUMBER; \
+                                    return TOKEN_NOT_A_NUMBER; }
+".normal"                       { yylval->value = TOKEN_NORMAL; \
+                                    return TOKEN_NORMAL; }
+".subnormal"                    { yylval->value = TOKEN_SUBNORMAL; \
+                                    return TOKEN_SUBNORMAL; }
+                                    
 {DECIMAL_CONSTANT}              { std::stringstream stream; stream << yytext; \
                                     stream >> yylval->value; \
                                     return TOKEN_DECIMAL_CONSTANT; }
@@ -395,10 +517,6 @@ WHITESPACE [ \t]*
                                     stream >> yylval->doubleFloat; \
                                     return TOKEN_DOUBLE_CONSTANT; }
 
-{SPECIAL_REGISTER}              { strlcpy( yylval->text, yytext, 1024 ); \
-                                    return TOKEN_SPECIAL_REGISTER; }
-"%clock"                        { strlcpy( yylval->text, yytext, 1024 ); \
-                                    return TOKEN_CLOCK; }
 {IDENTIFIER}":"                 { strlcpy( yylval->text, yytext, \
                                     MIN( strlen( yytext ), 1024 ) ); \
                                     return TOKEN_LABEL; }
@@ -447,6 +565,8 @@ WHITESPACE [ \t]*
                                     yylval->text[1] = '\0'; return ('-'); }
 "!"                             { yylval->text[0] = '!'; 
                                     yylval->text[1] = '\0'; return ('!'); }
+"|"                             { yylval->text[0] = '|'; 
+                                    yylval->text[1] = '\0'; return ('|'); }
 "_"                             { yylval->text[0] = '_'; 
                                     yylval->text[1] = '\0'; return ('_'); }
 

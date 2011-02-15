@@ -117,7 +117,7 @@ namespace test
 			second.load(stream2);
 		}
 		catch (const parser::PTXParser::Exception& exp) {
-			if (exp.error == parser::PTXParser::State::NotVersion1_4)
+			if (exp.error == parser::PTXParser::State::NotVersion2_1)
 			{
 				status << "Skipping file with incompatible ptx version." 
 					<< std::endl;

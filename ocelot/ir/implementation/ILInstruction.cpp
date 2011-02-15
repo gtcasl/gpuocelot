@@ -26,7 +26,8 @@ namespace ir
 			case End:                   return "end";
 			case EndIf:                 return "endif";
 			case EndLoop:               return "endloop";
-			case Exp:                   return "exp";
+			case Eq:                    return "eq";
+			case Exp_Vec:               return "exp_vec";
 			case Fence:                 return "fence";
 			case FtoU:                  return "ftou";
 			case Iadd:                  return "iadd";
@@ -60,6 +61,7 @@ namespace ir
 			case Rcp:                   return "rcp";
 			case Round_Nearest:         return "round_nearest";
 			case Sub:                   return "sub";
+			case Sqrt_Vec:              return "sqrt_vec";
 			case Uav_Arena_Load_Id:     return "uav_arena_load_id(1)";
 			case Uav_Arena_Store_Id:    return "uav_arena_store_id(1)";
 			case Uav_Raw_Load_Id:       return "uav_raw_load_id(0)";
@@ -70,6 +72,7 @@ namespace ir
 			case Uav_Read_Xchg_Id:      return "uav_read_xchg_id(0)";
 			case Udiv:                  return "udiv";
 			case Umul:                  return "umul";
+			case Umul24:                return "umul24";
 			case Ushr:                  return "ushr";
 			case UtoF:                  return "utof";
 			case WhileLoop:             return "whileloop";
@@ -97,7 +100,25 @@ namespace ir
 		};
 	}
 
-	ILInstruction::ILInstruction(Opcode op) : opcode(op)
+	std::string ILInstruction::modifierString(unsigned int m)
+	{
+		assertM((m & InvalidModifier) == 0, 
+				"Modifier " << m << " not supported"); 
+
+		std::string s;
+
+		if (m & x2) s += "_x2";
+		if (m & x4) s += "_x4";
+		if (m & x8) s += "_x8";
+		if (m & d2) s += "_d2";
+		if (m & d4) s += "_d4";
+		if (m & d8) s += "_d8";
+		if (m & sat) s += "_sat";
+
+		return s;
+	}
+
+	ILInstruction::ILInstruction(Opcode op) : opcode(op), modifier(NoModifier)
 	{
 	}
 
@@ -112,8 +133,9 @@ namespace ir
 
 	std::string ILUnaryInstruction::toString() const
 	{
-		return ILInstruction::toString(opcode) + " " + d.toString() + ", "
-			+ a.toString();
+		return ILInstruction::toString(opcode) 
+			+ ILInstruction::modifierString(modifier)
+			+ " " + d.toString() + ", " + a.toString();
 	}
 
 	std::string ILUnaryInstruction::valid() const
@@ -130,8 +152,9 @@ namespace ir
 
 	std::string ILBinaryInstruction::toString() const
 	{
-		return ILInstruction::toString(opcode) + " " + d.toString() + ", "
-			+ a.toString() + ", " + b.toString();
+		return ILInstruction::toString(opcode) 
+			+ ILInstruction::modifierString(modifier)
+			+ " " + d.toString() + ", " + a.toString() + ", " + b.toString();
 	}
 
 	std::string ILBinaryInstruction::valid() const
@@ -149,8 +172,10 @@ namespace ir
 
 	std::string ILTrinaryInstruction::toString() const
 	{
-		return ILInstruction::toString(opcode) + " " + d.toString() + ", "
-			+ a.toString() + ", " + b.toString() + ", " + c.toString();
+		return ILInstruction::toString(opcode) 
+			+ ILInstruction::modifierString(modifier)
+			+ " " + d.toString() + ", " + a.toString() + ", " + b.toString() 
+			+ ", " + c.toString();
 	}
 
 	std::string ILTrinaryInstruction::valid() const
@@ -298,16 +323,26 @@ namespace ir
 		return new ILEndLoop(*this);
 	}
 
-	ILExp::ILExp() : ILUnaryInstruction(Exp)
+	ILEq::ILEq() : ILBinaryInstruction(Eq)
 	{
 	}
 
-	Instruction *ILExp::clone(bool copy) const
+	Instruction *ILEq::clone(bool copy) const
 	{
-		return new ILExp(*this);
+		return new ILEq(*this);
 	}
 
-	ILFence::ILFence() : ILInstruction(Fence), _threads(true), _lds(false)
+	ILExp_Vec::ILExp_Vec() : ILUnaryInstruction(Exp_Vec)
+	{
+	}
+
+	Instruction *ILExp_Vec::clone(bool copy) const
+	{
+		return new ILExp_Vec(*this);
+	}
+
+	ILFence::ILFence() : ILInstruction(Fence), _threads(true), _lds(false), 
+		_memory(false)
 	{
 	}
 
@@ -315,7 +350,8 @@ namespace ir
 	{
 		return ILInstruction::toString(opcode) +
 			(_threads ? "_threads" : "") +
-			(_lds ? "_lds" : "");
+			(_lds ? "_lds" : "") +
+			(_memory ? "_memory" : "");
 	}
 
 	std::string ILFence::valid() const
@@ -336,6 +372,11 @@ namespace ir
 	void ILFence::lds(bool value)
 	{
 		_lds = value;
+	}
+
+	void ILFence::memory(bool value)
+	{
+		_memory = value;
 	}
 
 	ILFtoU::ILFtoU() : ILUnaryInstruction(FtoU)
@@ -675,6 +716,15 @@ namespace ir
 		return new ILSub(*this);
 	}
 
+	ILSqrt_Vec::ILSqrt_Vec() : ILUnaryInstruction(Sqrt_Vec)
+	{
+	}
+
+	Instruction *ILSqrt_Vec::clone(bool copy) const
+	{
+		return new ILSqrt_Vec(*this);
+	}
+
 	ILUav_Arena_Load_Id::ILUav_Arena_Load_Id() 
 		: ILUnaryInstruction(Uav_Arena_Load_Id)
 	{
@@ -785,6 +835,15 @@ namespace ir
 	Instruction *ILUmul::clone(bool copy) const
 	{
 		return new ILUmul(*this);
+	}
+
+	ILUmul24::ILUmul24() : ILBinaryInstruction(Umul24)
+	{
+	}
+
+	Instruction *ILUmul24::clone(bool copy) const
+	{
+		return new ILUmul24(*this);
 	}
 
 	ILUshr::ILUshr() : ILBinaryInstruction(Ushr)

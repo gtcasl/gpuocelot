@@ -23,7 +23,7 @@ namespace analysis
 		This implementation leaves identifies barriers and
 		splits the basic block containing them into two.  The first block
 		contains all of the code before the barrier, spill instructions to
-		a stack in local memory, and a branch to the program exit.
+		a stack in local memory, and a tail call to resume this kernel.
 		A local variable is allocated on the stack to indicate the program
 		entry point.
 		
@@ -36,14 +36,16 @@ namespace analysis
 	{
 		private:
 			ir::PTXKernel* _kernel;
-			unsigned int _reentryPoint;
-			unsigned int _spillBytes;
-			bool _barriers;
+			unsigned int   _reentryPoint;
+			unsigned int   _kernelId;
+			unsigned int   _spillBytes;
 			
 		private:
 			DataflowGraph::RegisterId _tempRegister( );
 			void _addSpillCode( DataflowGraph::iterator block, 
-				const DataflowGraph::Block::RegisterSet& alive );
+				DataflowGraph::iterator target, 
+				const DataflowGraph::Block::RegisterSet& alive,
+				bool isBarrier );
 			void _addRestoreCode( DataflowGraph::iterator block, 
 				const DataflowGraph::Block::RegisterSet& alive );
 			void _addEntryPoint( DataflowGraph::iterator block );
@@ -53,18 +55,12 @@ namespace analysis
 			void _runOnBlock( DataflowGraph::iterator block );
 		
 		public:
-			RemoveBarrierPass();
+			RemoveBarrierPass( unsigned int kernelId = 0 );
 			
 		public:
 			void initialize( const ir::Module& m );
 			void runOnKernel( ir::Kernel& k );		
 			void finalize( );
-
-		public:
-			/*! \brief Does this kernel contain at least one barrier? */
-			bool barriers() const;
-			/*! \brrief What is the name of the barrier resume point? */
-			std::string resume() const;
 
 	};
 }

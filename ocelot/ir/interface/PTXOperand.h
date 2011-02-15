@@ -1,5 +1,4 @@
-/*!
-	\file PTXOperand.h
+/*! \file PTXOperand.h
 	\author Andrew Kerr <arkerr@gatech.edu>
 	\date Jan 15, 2009
 	\brief internal representation of a PTX operand
@@ -43,6 +42,8 @@ namespace ir {
 			Address,			//! treat as addressable variable
 			Label,				//! operand is a label
 			Special,			//! special register
+			ArgumentList,       //! treat as argument list for function call
+			FunctionName,       //! operand is a function name
 			BitBucket,			//! bit bucket register
 			Invalid
 		};
@@ -65,34 +66,66 @@ namespace ir {
 			b32,
 			b64,
 			pred,
+			_,
 			TypeSpecifier_invalid
 		};
 
 		/*!	Special register names */
 		enum SpecialRegister {
-			tidX,
-			tidY,
-			tidZ,
-			ntidX,
-			ntidY,
-			ntidZ,
+			tid,
+			ntid,
 			laneId,
 			warpId,
+			nwarpId,
 			warpSize,
-			ctaIdX,
-			ctaIdY,
-			ctaIdZ,
-			nctaIdX,
-			nctaIdY,
-			nctaIdZ,
-			smid,
-			nsmid,
+			ctaId,
+			nctaId,
+			smId,
+			nsmId,
 			gridId,
 			clock,
+			clock64,
+			lanemask_eq,
+			lanemask_le,
+			lanemask_lt,
+			lanemask_ge,
+			lanemask_gt,
 			pm0,
 			pm1,
 			pm2,
 			pm3,
+			envreg0,
+			envreg1,
+			envreg2,
+			envreg3,
+			envreg4,
+			envreg5,
+			envreg6,
+			envreg7,
+			envreg8,
+			envreg9,
+			envreg10,
+			envreg11,
+			envreg12,
+			envreg13,
+			envreg14,
+			envreg15,
+			envreg16,
+			envreg17,
+			envreg18,
+			envreg19,
+			envreg20,
+			envreg21,
+			envreg22,
+			envreg23,
+			envreg24,
+			envreg25,
+			envreg26,
+			envreg27,
+			envreg28,
+			envreg29,
+			envreg30,
+			envreg31,
 			SpecialRegister_invalid
 		};
 		
@@ -108,29 +141,43 @@ namespace ir {
 			v2 = 2,				//< vector2
 			v4 = 4				//< vector4
 		};
+		
+		enum VectorIndex {
+			iAll = 0, //! Refers to the complete vector
+			ix = 1, //! Only refers to the x index of the vector
+			iy = 2, //! Only refers to the y index of the vector
+			iz = 3, //! Only refers to the z index of the vector
+			iw = 4 //! Only refers to the w index of the vector
+		};
 
 		typedef std::vector<PTXOperand> Array;
 
 		typedef Instruction::RegisterType RegisterType;
 
 	public:
-		static std::string toString( DataType );
-		static std::string toString( SpecialRegister );
-		static std::string toString( AddressMode );
-		static std::string toString( DataType, RegisterType );
-		static bool isFloat( DataType );
-		static bool isInt( DataType );
-		static bool isSigned( DataType );
-		static unsigned int bytes( DataType );
-		static bool valid( DataType, DataType );
-		static bool relaxedValid(DataType, DataType);
+		static std::string toString(VectorIndex);
+		static std::string toString(DataType);
+		static std::string toString(SpecialRegister);
+		static std::string toString(AddressMode);
+		static std::string toString(DataType, RegisterType);
+		static bool isFloat(DataType);
+		static bool isInt(DataType);
+		static bool isSigned(DataType);
+		static unsigned int bytes(DataType);
+		static bool valid(DataType, DataType);
+		static bool relaxedValid(DataType instructionType, DataType);
+		static long long unsigned int maxInt(DataType type);
+		static long long unsigned int minInt(DataType type);
 		
 	public:
 		PTXOperand();
-		PTXOperand(SpecialRegister r);
+		PTXOperand(SpecialRegister r, VectorIndex i = iAll, DataType t = u32);
 		PTXOperand(const std::string& label);
 		PTXOperand(AddressMode m, DataType t, RegisterType r = 0, 
 			int o = 0, Vec v = v1);
+		PTXOperand(AddressMode m, DataType t, const std::string& identifier, 
+			int o = 0, Vec v = v1);
+		PTXOperand(AddressMode m, const std::string& identifier);
 		~PTXOperand();
 
 		std::string toString() const;
@@ -147,8 +194,12 @@ namespace ir {
 		DataType type;
 
 		//!	offset when used with an indirect addressing mode
-		int offset;
-
+		union {
+			int offset;
+			VectorIndex vIndex;
+			unsigned int registerCount;
+		};
+		
 		//! immediate-mode value of operand
 		union {
 			long long unsigned int imm_uint;
@@ -156,13 +207,21 @@ namespace ir {
 			double imm_float;
 			PredicateCondition condition;
 			SpecialRegister special;
+			unsigned int localMemorySize;
 		};
 
-		/*! Identifier for register */
-		RegisterType reg;
+		union {
+			/*! Identifier for register */
+			RegisterType reg;
+			bool isArgument;
+			unsigned int sharedMemorySize;
+		};
 		
-		//! Indicates whether target or source is a vector or scalar
-		Vec vec;
+		union {
+			//! Indicates whether target or source is a vector or scalar
+			Vec vec;
+			unsigned int stackMemorySize;
+		};
 		
 		//! Array if this is a vector
 		Array array;

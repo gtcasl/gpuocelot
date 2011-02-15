@@ -140,15 +140,14 @@ namespace ir {
 		};
 	
 		enum AddressSpace {
-			Reg = 0,
-			SReg,
+			AddressSpace_Invalid = 0,
 			Const,
 			Global,
 			Local,
 			Param,
 			Shared,
 			Texture,
-			AddressSpace_Invalid
+			Generic
 		};
 
 		enum AtomicOperation {
@@ -165,6 +164,13 @@ namespace ir {
 			AtomicOperation_Invalid
 		};
 		
+		enum BarrierOperation {
+			BarSync,
+			BarArrive,
+			BarReduction,
+			BarrierOperation_invalid
+		};
+		
 		enum ReductionOperation {
 			ReductionAnd,
 			ReductionXor,
@@ -174,14 +180,26 @@ namespace ir {
 			ReductionDec,
 			ReductionMin,
 			ReductionMax,
+			ReductionPopc,
 			ReductionOperation_Invalid
 		};
-
-		enum VoteMode {
-			All,
-			Any,
-			Uni,
-			VoteMode_Invalid
+		
+		enum CacheOperation {
+			Ca,
+			Cg,
+			Cs,
+			Cv,
+			Wb,
+			Wt,
+			CacheOperation_Invalid
+		};
+		
+		enum ClampOperation {
+			TrapOOB,	// avoid colliding with PTXInstruction::Opcode::Trap
+			Clamp,
+			Zero,
+			Mirror,
+			ClampOperation_Invalid
 		};
 
 		/*! comparison operator */
@@ -227,6 +245,12 @@ namespace ir {
 			FloatingPointMode_Invalid
 		};
 		
+		enum FormatMode {
+			Unformatted,
+			Formatted,
+			FormatMode_Invalid
+		};
+		
 		/*! Vector operation */
 		typedef PTXOperand::Vec Vec;
 		
@@ -241,12 +265,34 @@ namespace ir {
 		
 		/*! geometry for textures */
 		enum Geometry {
-			_1d,
-			_2d,
-			_3d,
+			_1d = 1,
+			_2d = 2,
+			_3d = 3,
 			Geometry_Invalid
 		};
 
+		enum SurfaceQuery {
+			Width,
+			Height,
+			Depth,
+			ChannelDataType,
+			ChannelOrder,
+			NormalizedCoordinates,
+			SamplerFilterMode,
+			SamplerAddrMode0,
+			SamplerAddrMode1,
+			SamplerAddrMode2,
+			SurfaceQuery_Invalid
+		};
+
+		enum VoteMode {
+			All,
+			Any,
+			Uni,
+			Ballot,
+			VoteMode_Invalid
+		};
+		
 	public:
 		static std::string toString( Level );
 		static std::string toString( PermuteMode );
@@ -254,7 +300,11 @@ namespace ir {
 		static std::string toString( Vec );
 		static std::string toString( AddressSpace );
 		static std::string toString( AtomicOperation );
+		static std::string toString( BarrierOperation );
 		static std::string toString( ReductionOperation );
+		static std::string toString( SurfaceQuery );
+		static std::string toString( FormatMode );
+		static std::string toString( ClampOperation );
 		static std::string toString( CmpOp );
 		static std::string toString( BoolOp );
 		static std::string roundingMode( Modifier );
@@ -297,12 +347,10 @@ namespace ir {
 		/*! indicates data type of instruction */
 		PTXOperand::DataType type;
 
-		/*! optionally writes carry-out value to condition code register */
-		CarryFlag carry;
+		/*! Flag containing one or more floating-point modifiers */
+		unsigned int modifier;
 
 		union {
-			/*! Flag containing one or more floating-point modifiers */
-			unsigned int modifier;
 
 			/*! Comparison operator */
 			CmpOp comparisonOperator;
@@ -321,6 +369,17 @@ namespace ir {
 			
 			/*! For call instructions, indicates a tail call */
 			bool tailCall;
+			
+			/*! For txq and suq instruction, specifies attributes */
+			SurfaceQuery surfaceQuery;
+			
+			/*! For sust and suld instructions, indicates whether to store 
+				unformatted binary datay or formatted store of a vector
+				of 32-bit data */
+			FormatMode formatMode;
+			
+			/*! Indicates which type of bar. instruction should be used */
+			BarrierOperation barrierOperation;
 		};
 	
 		/*! If the instruction is predicated, the guard */
@@ -333,6 +392,7 @@ namespace ir {
 		Vec vec;
 
 		union {
+
 			/*! If instruction type is atomic, select this atomic operation */
 			AtomicOperation atomicOperation;
 			
@@ -353,15 +413,31 @@ namespace ir {
 
 			/*! Indicates whether the target address space is volatile */
 			Volatility volatility;
-			
-			/*! Geometry if this is a texture instruction */
-			Geometry geometry;
-			
+						
 			/*! Is this a divide full instruction? */
 			bool divideFull;
 			
+			/*! If cvta instruction, indicates whether destination is 
+				generic address or if source is generic address - true if 
+				segmented address space, false if generic */
+			bool toAddrSpace;
+			
 			/*! If the instruction updates the CC, what is the CC register */
 			PTXOperand::RegisterType cc;
+			
+			/*! indicates how loads, stores, and prefetches should take place */
+			CacheOperation cacheOperation;
+		};
+		
+		/*! Geometry if this is a texture or surface instruction */
+		Geometry geometry;
+
+		union {
+			/*! optionally writes carry-out value to condition code register */
+			CarryFlag carry;
+		
+			/*! how to handle out-of-bounds accesses */
+			ClampOperation clamp;
 		};
 
 		/*! Destination operand */
@@ -376,12 +452,14 @@ namespace ir {
 		/*! Source operand c */
 		PTXOperand c;
 
+	public:
+	
 		/*  Runtime annotations 
 			
 			The following members are used to annotate the instruction 
 				at analysis time
 		*/
-	public:
+		
 		/*! \brief Index of post dominator instruction at which possibly 
 			divergent branches reconverge */
 		int reconvergeInstruction;

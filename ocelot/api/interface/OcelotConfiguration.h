@@ -82,56 +82,24 @@ namespace api {
 
 		public:
 			//! \brief Check memory errors
-			bool memoryChecker;
+			class MemoryChecker
+			{
+			public:
+					MemoryChecker();
+			public:
+					bool enabled;
+					bool checkInitialization;
+			};
 			
 			//! \brief Race detection
 			RaceDetector raceDetector;
                         
             //! \brief Interactive Debugger
             Debugger debugger;
+
+            //! \brief Memory checker
+            MemoryChecker memoryChecker;
 		};
-
-        //! Configuration for instrumentation facilities
-		class Instrumentation {
-		public:
-			
-			/*! \brief configuration properties for ClockCycleCountInstrumentor */
-			class ClockCycleCountInstrumentor
-			{
-			public:
-					ClockCycleCountInstrumentor();
-				
-			public:
-					//! \brief indicates instrumentor is enabled
-					bool enabled;
-                    //! \brief specifies the logfile for storing results of this instrumentation */
-                    std::string logfile;
-			};
-
-            /*! \brief configuration properties for analysis::BasicBlockInstrumentor */
-			class BasicBlockInstrumentor
-			{
-			public:
-					BasicBlockInstrumentor();
-				
-			public:
-					//! \brief specifies the execution count instrumentation pass for basic blocks */
-					bool executionCount;
-                    //! \brief specifies the logfile for storing results of this instrumentation */
-                    std::string logfile;				
-			};
-
-		public:
-			Instrumentation();
-
-		public:
-			/*! \brief Clock cycle count instrumentor */
-			ClockCycleCountInstrumentor clockCycleCountInstrumentor;
-
-            //! \brief Basic block execution count instrumentor
-			BasicBlockInstrumentor basicBlockInstrumentor;
-		};
-
 
 		class CudaRuntimeImplementation {
 		public:
@@ -179,6 +147,15 @@ namespace api {
 			
 			//! \brief filter enabling AMD GPU devices if present
 			bool enableAMD;
+			
+			//! \brief filter enabling remote GPU devices if present
+			bool enableRemote;
+			
+			//! \brief The port to connect to an ocelot server for remoting
+			int port;
+
+			//! \brief The hostname of the ocelot server to connect
+			std::string host;
 
 			//! \brief maximum number of worker threads - a non-positive 
 			//         number indicates no limit
@@ -230,9 +207,6 @@ namespace api {
 		
 		//! \brief configuration for Ocelot checkpoint
 		Checkpoint checkpoint;
-
-        //! \brief configuration for PTX instrumentation
-        Instrumentation instrument;
 		
 	};
 

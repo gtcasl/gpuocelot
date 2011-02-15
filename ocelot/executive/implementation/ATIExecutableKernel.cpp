@@ -45,6 +45,7 @@ namespace executive
 			_cb1Mem(0),
 			_cb1Name(0)
 	{
+		initializeSharedMemory();
 	}
 
 	unsigned int ATIExecutableKernel::_pad(size_t& size, unsigned int alignment)
@@ -55,7 +56,7 @@ namespace executive
 		return padding;
 	}
 
-	void ATIExecutableKernel::allocateSharedMemory()
+	void ATIExecutableKernel::initializeSharedMemory()
 	{
 		report("Allocating shared memory");
 
@@ -198,7 +199,7 @@ namespace executive
 								report("For instruction " << ptx.toString()
 										<< ", mapping shared label "
 										<< mapping->first << " to " << 
-										mapping ->second);
+										mapping->second);
 
 								operand->addressMode = 
 									ir::PTXOperand::Immediate;
@@ -222,15 +223,17 @@ namespace executive
 			(*operand)->addressMode = ir::PTXOperand::Immediate;
 			(*operand)->imm_uint = sharedSize;
 		}
+
+		// allocate shared memory object
+		_sharedMemorySize = sharedSize;
+
+		report("Total shared memory size is " << _sharedMemorySize);
 	}
 
 	void ATIExecutableKernel::_translateKernel()
 	{
 		report("Translating PTX kernel \"" << name << "\" to IL");
 
-		// allocate shared memory
-		allocateSharedMemory();
-		
 		report("Running IL Translator");
 		translator::PTXToILTranslator translator;
 		ir::ILKernel *ilKernel = 
@@ -242,10 +245,18 @@ namespace executive
 		// query device info
 		CalDriver()->calDeviceGetInfo(&_info, 0);
 
-		// compile, link, and load module
-		CalDriver()->calclCompile(&_object, CAL_LANGUAGE_IL, 
-				ilKernel->code().c_str(), _info.target);
+		// compile module
+		try {
+			CalDriver()->calclCompile(&_object, CAL_LANGUAGE_IL, 
+					ilKernel->code().c_str(), _info.target);
+		} catch (const hydrazine::Exception& he) {
+			std::cerr << "==Ocelot== "
+				<< "ATIExecutableKernel failed to compile kernel\n"
+				<< std::flush;
+			throw;
+		}
 
+		// link and load module
 		CalDriver()->calclLink(&_image, &_object, 1);
 		CalDriver()->calModuleLoad(&_module, *_context, _image);
 
@@ -288,9 +299,11 @@ namespace executive
 		CalDriver()->calModuleGetName(&_cb0Name, *_context, _module, "cb0");
 		CalDriver()->calCtxSetMem(*_context, _cb0Name, _cb0Mem);
 
-		CalDriver()->calCtxGetMem(&_cb1Mem, *_context, *_cb1Resource);
-		CalDriver()->calModuleGetName(&_cb1Name, *_context, _module, "cb1");
-		CalDriver()->calCtxSetMem(*_context, _cb1Name, _cb1Mem);
+		if (parameters.size()) {
+			CalDriver()->calCtxGetMem(&_cb1Mem, *_context, *_cb1Resource);
+			CalDriver()->calModuleGetName(&_cb1Name, *_context, _module, "cb1");
+			CalDriver()->calCtxSetMem(*_context, _cb1Name, _cb1Mem);
+		}
 
 		// get module entry
 		CALfunc func = 0;
@@ -314,7 +327,8 @@ namespace executive
 		// release memory handles
 		CalDriver()->calCtxReleaseMem(*_context, _uav0Mem);
 		CalDriver()->calCtxReleaseMem(*_context, _cb0Mem);
-		CalDriver()->calCtxReleaseMem(*_context, _cb1Mem);
+		if (parameters.size()) 
+			CalDriver()->calCtxReleaseMem(*_context, _cb1Mem);
 
 		// unload module
 		CalDriver()->calModuleUnload(*_context, _module);
@@ -334,9 +348,10 @@ namespace executive
 		_blockDim.z = z;
 	}
 
-	void ATIExecutableKernel::setExternSharedMemorySize(unsigned int)
+	void ATIExecutableKernel::setExternSharedMemorySize(unsigned int bytes)
 	{
-		assertM(false, "Not implemented yet");
+		report("Setting external shared memory size to " << bytes);
+		_externSharedMemorySize = bytes;
 	}
 
 	void ATIExecutableKernel::setWorkerThreads(unsigned int workerThreadLimit)
@@ -344,11 +359,11 @@ namespace executive
 		assertM(false, "Not implemented yet");
 	}
 
-	void ATIExecutableKernel::updateParameterMemory()
+	void ATIExecutableKernel::updateArgumentMemory()
 	{
-		report("updateParameterMemory() - size: " << parameters.size());
+		report("updateArgumentMemory() - size: " << arguments.size());
 
-		if (parameters.size() == 0) return;
+		if (arguments.size() == 0) return;
 
 		cb_t *cb1;
 		CALuint pitch = 0;
@@ -358,7 +373,7 @@ namespace executive
 
 		int i = 0;
 		ParameterVector::const_iterator it;
-		for (it = parameters.begin(); it != parameters.end(); it++) {
+		for (it = arguments.begin(); it != arguments.end(); it++) {
 			assertM(it->arrayValues.size() <= 4, 
 					"Array parameter size greater than 4 not supported yet");
 
@@ -443,6 +458,8 @@ namespace executive
 						if (operand->addressMode != ir::PTXOperand::Address)
 							continue;
 
+						report("Modifying instruction " << ptx.toString());
+
 						ir::Module::GlobalMap::const_iterator global = 
 							module->globals().find(operand->identifier);
 
@@ -464,10 +481,8 @@ namespace executive
 							operand->imm_uint = 0;
 						}
 
-						report("For instruction " << ptx.toString()
-								<< ", mapping constant label "
-								<< global->first << " to " << 
-								operand->imm_uint);
+						report("Mapping constant label " << global->first 
+								<< " to 0x" << std::hex << operand->imm_uint);
 					}
 				}
 			}

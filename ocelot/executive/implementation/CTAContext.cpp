@@ -15,22 +15,40 @@
 
 #define REPORT_BASE 0
 
-executive::CTAContext::CTAContext(const ir::Dim3 blockDim, executive::CooperativeThreadArray *c): cta(c) {
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+executive::CTAContext::CTAContext(
+	const executive::EmulatedKernel *k, 
+	executive::CooperativeThreadArray *c)
+		: kernel(k), cta(c) 
+{
+	
 	using namespace boost;
 	using namespace std;
-		
+
+	ir::Dim3 blockDim = kernel->blockDim();
 	active = dynamic_bitset<>(blockDim.x * blockDim.y * blockDim.z, 1);
 	PC = 0;
 	running = true;
 	for (int i = 0; i < blockDim.x*blockDim.y*blockDim.z; i++) {
 		active[i] = 1;
 	}
+	report("CTAContext(0x" << hex << (unsigned long)k << ", 0x" 
+		<< (unsigned long)c << ")" << dec);
 }
 
 executive::CTAContext::~CTAContext() {
 
 }
 
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+/*! Increments PCs of active threads as well as PC
+*/
+void executive::CTAContext::incrementPC() {
+	PC ++;
+}
+		
 bool executive::CTAContext::predicated(int threadID, const ir::PTXInstruction &instr) {
 	using namespace ir;
 	
@@ -46,11 +64,7 @@ bool executive::CTAContext::predicated(int threadID, const ir::PTXInstruction &i
 			break;
 		default:
 			{
-				report("CTAContext::predicated is actually inspecting a predicate register ..");
-
 				bool pred = cta->getRegAsPredicate(threadID, instr.pg.reg);
-				report("  with value " << pred);
-
 				on = ((pred && condition == PTXOperand::Pred) 
 					|| (!pred && condition == PTXOperand::InvPred));
 			}
@@ -60,4 +74,5 @@ bool executive::CTAContext::predicated(int threadID, const ir::PTXInstruction &i
 	return on;
 }
 
+/////////////////////////////////////////////////////////////////////////////////////////////////
 

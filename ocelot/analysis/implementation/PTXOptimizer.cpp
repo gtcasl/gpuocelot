@@ -11,15 +11,16 @@
 #include <ocelot/analysis/interface/PassManager.h>
 #include <ocelot/analysis/interface/LinearScanRegisterAllocationPass.h>
 #include <ocelot/analysis/interface/RemoveBarrierPass.h>
+#include <ocelot/analysis/interface/StructuralTransform.h>
 #include <ocelot/analysis/interface/ConvertPredicationToSelectPass.h>
+#include <ocelot/analysis/interface/SubkernelFormationPass.h>
+
 #include <ocelot/ir/interface/Module.h>
 
 #include <hydrazine/implementation/ArgumentParser.h>
 #include <hydrazine/implementation/Exception.h>
 #include <hydrazine/implementation/string.h>
 #include <hydrazine/implementation/debug.h>
-
-#include <string.h>
 
 #ifdef REPORT_BASE
 #undef REPORT_BASE
@@ -52,10 +53,22 @@ namespace analysis
 				registerCount );
 			manager.addPass( *pass );
 		}
+
+		if( passes & SubkernelFormation )
+		{
+			Pass* pass = new analysis::SubkernelFormationPass;
+			manager.addPass( *pass );
+		}
 		
 		if( passes & RemoveBarriers )
 		{
 			Pass* pass = new analysis::RemoveBarrierPass;
+			manager.addPass( *pass );
+		}
+
+		if( passes & StructuralTransform )
+		{
+			Pass* pass = new analysis::StructuralTransform;
 			manager.addPass( *pass );
 		}
 
@@ -64,7 +77,7 @@ namespace analysis
 			Pass* pass = new analysis::ConvertPredicationToSelectPass;
 			manager.addPass( *pass );
 		}
-
+		
 		if( input.empty() )
 		{
 			std::cout << "No input file name given.  Bailing out." << std::endl;
@@ -91,11 +104,8 @@ namespace analysis
 			kernel != module.kernels().end(); ++kernel )
 		{
 			report(" Writing CFG for kernel '" << kernel->first << "'");
-			char str[100];
-			strcpy( str, kernel->first.c_str());
-			strcat (str,"_cfg.dot");
-			std::ofstream out(str);
-//			std::ofstream out( kernel->first.c_str() + "_cfg.dot" );
+			std::ofstream out( std::string( 
+				kernel->first + "_cfg.dot" ).c_str() );
 		
 			if( !out.is_open() )
 			{
@@ -129,6 +139,16 @@ static int parsePassTypes( const std::string& passList )
 			report( "  Matched reverse-if-conversion." );
 			types |= analysis::PTXOptimizer::ReverseIfConversion;
 		}
+		else if( *pass == "structural-transform" )
+		{
+			report( "  Matched structural-transform." );
+			types |= analysis::PTXOptimizer::StructuralTransform;
+		}
+		else if( *pass == "subkernel-formation" )
+		{
+			report( "  Matched subkernel-formation." );
+			types |= analysis::PTXOptimizer::SubkernelFormation;
+		}
 		else if( !pass->empty() )
 		{
 			std::cout << "==Ocelot== Warning: Unknown pass name - '" << *pass 
@@ -156,7 +176,7 @@ int main( int argc, char** argv )
 		"The number of registers available for allocation." );
 	parser.parse( "-p", "--passes", passes, "", 
 		"A list of optimization passes (remove-barriers, " 
-		+ std::string( "reverse-if-conversion)") );
+		"reverse-if-conversion, subkernel-formation, structural-transform)" );
 	parser.parse( "-c", "--cfg", optimizer.cfg, false, 
 		"Dump out the CFG's of all generated kernels." );
 	parser.parse();

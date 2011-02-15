@@ -46,7 +46,7 @@ namespace ir
 						Block,          // Block of nodes
 						IfThen,         // If-Then
 						IfThenElse,     // If-Then-Else
-						SelfLoop,       // Loop of only one node
+						NaturalLoop,    // Loop with side exits
 						Invalid
 					};
 
@@ -154,15 +154,12 @@ namespace ir
 							Node* ifTrue, Node* ifFalse) const;
 			};
 
-			/*! \brief Loop with only one node */
-			class SelfLoopNode : public Node
+			class NaturalLoopNode : public Node
 			{
 				public:
 					/*! \brief Constructor */
-					SelfLoopNode(const std::string& label, Node* body);
-
-					/*! \brief Get the node for the body loop */
-					const Node* body() const;
+					NaturalLoopNode(const std::string& label, 
+						const NodeList& children);
 			};
 
 			/*! \brief Invalid node */
@@ -177,17 +174,20 @@ namespace ir
 			 * control tree */
 			std::ostream& write(std::ostream& out) const;
 
-			/*! \brief Returns the root node of the control tree */
+			/*! \brief returns the root node of the control tree */
 			const Node* get_root_node() const;
 
 		private:
 			Node* _insert_node(Node* node);
 			void _dfs_postorder(Node* x);
 			Node* _acyclic_region_type(Node* node, NodeSet& nset);
-			void _compact(Node* node, NodeSet nodeSet);
+			bool _isCyclic(Node* node);
 			bool _backedge(Node* head, Node* tail);
+			void _compact(Node* node, NodeSet nodeSet);
 			void _reduce(Node* node, NodeSet nodeSet);
-			Node* _cyclic_region_type(Node* node, NodeSet& nset);
+			bool _path(Node* m, Node* k, Node* n = NULL);
+			bool _path_back(Node* m, Node* n);
+			Node* _cyclic_region_type(Node* node, NodeList& nset);
 			void _structural_analysis(Node* entry);
 
 			NodeList _nodes;

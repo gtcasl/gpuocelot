@@ -41,9 +41,6 @@ namespace trace {
 		bool conservativeBranch;
 	};
 
-	/*!
-		\brief main trace event class
-	*/
 	class TraceEvent : hydrazine::Stringable {
 	public:
 		typedef std::vector< ir::PTXU64 > U64Vector;

@@ -35,7 +35,7 @@ namespace translator
 			/*! \brief All possible optimization levels */
 			enum OptimizationLevel
 			{
-				NoOptimization,
+				NoOptimization = 0x0,
 				ReportOptimization,
 				DebugOptimization,
 				InstrumentOptimization,

@@ -13,14 +13,103 @@
 #include <hydrazine/interface/Version.h>
 #include <hydrazine/implementation/debug.h>
 
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
 #ifdef REPORT_BASE
 #undef REPORT_BASE
 #endif
 
 #define REPORT_BASE 0
 
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
 namespace ir
 {
+
+	PTXKernel::Prototype::Prototype() {
+		callType = Entry;
+		linkingDirective = Visible;
+	}
+
+	//! 
+	std::string PTXKernel::Prototype::toString(const LinkingDirective ld) {
+		switch (ld) {
+			case Extern: return ".extern";
+			case Visible: return ".visible";
+			default: break;
+		}
+		return "invalid";
+	}
+	std::string PTXKernel::Prototype::toString(const CallType ct) {
+		switch (ct) {
+			case Entry: return ".entry";
+			case Func: return ".func";
+			default: break;
+		}
+		return "invalid";
+	}
+	
+	void PTXKernel::Prototype::clear() { 
+		returnArguments.clear();
+		arguments.clear();
+	}
+	
+	/*!
+	*/
+	std::string PTXKernel::Prototype::toString() const {
+		std::stringstream ss;
+		
+		if (callType == Func) {
+			ss << Prototype::toString(linkingDirective) << " ";
+		}
+		ss << Prototype::toString(callType) << " ";
+		if (returnArguments.size()) {
+			ss << "(";
+			int n = 0;
+			for (ParameterVector::const_iterator op_it = returnArguments.begin();
+				op_it != returnArguments.end(); ++op_it) {
+			
+				ss << (n++ ? ", " : "") << op_it->toString();	
+			}
+			ss << ") ";
+		}
+	
+		ss << identifier << " (";
+		if (arguments.size()) {
+			int n = 0;
+			for (ParameterVector::const_iterator op_it = arguments.begin();
+				op_it != arguments.end(); ++op_it) {
+			
+				ss << (n++ ? ", " : "") << op_it->toString();	
+			}
+		}
+		ss << ")";
+	
+		return ss.str();
+	}
+				
+	/*!
+		\brief emits a mangled form of the function prototype that can be used to identify the function
+	*/
+	std::string PTXKernel::Prototype::getMangledName() const {
+		std::stringstream ss;
+	
+		ss << identifier << "(";
+		if (arguments.size()) {
+			int n = 0;
+			for (ParameterVector::const_iterator op_it = arguments.begin();
+				op_it != arguments.end(); ++op_it) {
+			
+				ss << (n++ ? "," : "") << op_it->toString();	
+			}
+		}
+		ss << ")";
+	
+		return ss.str();
+	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////
+
 	PTXKernel::PTXKernel( const std::string& name, bool isFunction,
 		const ir::Module* module ) :
 		Kernel( Instruction::PTX, name, isFunction, module )
@@ -32,23 +121,6 @@ namespace ir
 		PTXStatementVector::const_iterator end, bool function) : 
 		Kernel( Instruction::PTX, "", function )
 	{
-		// get parameters/locals, extract kernel name
-		for( PTXStatementVector::const_iterator it = start; it != end; ++it ) 
-		{
-			if( (*it).directive == PTXStatement::Param )
-			{
-				parameters.push_back( Parameter( *it ) );
-			}
-			else if( (*it).directive == PTXStatement::Local
-				|| (*it).directive == PTXStatement::Shared )
-			{
-				locals.insert( std::make_pair( ( *it ).name, Local( *it ) ) );
-			}
-			else if( (*it).directive == PTXStatement::Entry )
-			{
-				name = (*it).name;
-			}
-		}
 		_cfg = new ControlFlowGraph;
 		constructCFG( *_cfg, start, end );
 		assignRegisters( *_cfg );
@@ -91,11 +163,6 @@ namespace ir
 				instruction != block->instructions.end(); ++instruction )
 			{
 				report( "  For instruction " << (*instruction)->toString() );
-				
-				bool detailed = false;
-				if ((*instruction)->toString() == "mov.pred %p187, %p186") {
-					detailed = true;
-				}
 				
 				const ir::PTXInstruction& ptx = static_cast<
 					const ir::PTXInstruction&>(**instruction);
@@ -170,8 +237,6 @@ namespace ir
 			}
 		}
 		
-		// dead code elimintation step?
-		
 		return regs;
 	}
 
@@ -208,8 +273,8 @@ namespace ir
 		ControlFlowGraph::Edge edge(cfg.get_entry_block(), block, 
 			ControlFlowGraph::Edge::FallThrough);
 	
-		bool hasExit = false;
-	
+		bool inParameterList = false;
+		bool isReturnArgument = false;
 		unsigned int statementIndex = 0;
 		for( ; kernelStart != kernelEnd; ++kernelStart, ++statementIndex ) 
 		{
@@ -265,10 +330,8 @@ namespace ir
 						edge.type = ControlFlowGraph::Edge::Invalid;
 					}
 				}
-				else if(statement.instruction.opcode == PTXInstruction::Exit)
+				else if( statement.instruction.opcode == PTXInstruction::Exit )
 				{
-					assertM(!hasExit, "Duplicate exit block.");
-					hasExit = true;
 					last_inserted_block = block;
 					if (edge.type != ControlFlowGraph::Edge::Invalid) {
 						cfg.insert_edge(edge);
@@ -276,16 +339,10 @@ namespace ir
 					edge.head = block;
 					edge.tail = cfg.get_exit_block();
 					edge.type = ControlFlowGraph::Edge::FallThrough;
-					
-					cfg.insert_edge(edge);
-					
+
 					block = cfg.insert_block(
 						ControlFlowGraph::BasicBlock("", cfg.newId()));
 					edge.type = ControlFlowGraph::Edge::Invalid;
-				}
-				else if( statement.instruction.opcode == PTXInstruction::Call )
-				{
-					assertM(false, "Unhandled control flow instruction call");
 				}
 				else if( statement.instruction.opcode == PTXInstruction::Ret )
 				{
@@ -302,6 +359,46 @@ namespace ir
 					edge.type = ControlFlowGraph::Edge::Invalid;
 				}
 			}
+			else if( statement.directive == PTXStatement::Param )
+			{
+				if( inParameterList )
+				{
+					arguments.push_back( Parameter( statement, true, isReturnArgument) );
+				}
+				else
+				{
+					parameters.insert( std::make_pair( 
+						statement.name, Parameter( statement, false ) ) );
+				}
+			}
+			else if( statement.directive == PTXStatement::Local
+				|| statement.directive == PTXStatement::Shared )
+			{
+				locals.insert( std::make_pair( 
+					statement.name, Local( statement ) ) );
+			}
+			else if( statement.directive == PTXStatement::Entry )
+			{
+				assert( !function() );
+				name = statement.name;
+			}
+			else if( statement.directive == PTXStatement::FunctionName )
+			{
+				assert( function() );
+				name = statement.name;
+			}
+			else if( statement.directive == PTXStatement::StartParam )
+			{
+				assert( !inParameterList );
+				inParameterList = true;
+				isReturnArgument = statement.isReturnArgument;
+			}
+			else if( statement.directive == PTXStatement::EndParam )
+			{
+				assert( inParameterList );
+				inParameterList = false;
+				isReturnArgument = statement.isReturnArgument;
+			}
 		}
 
 		if (block->instructions.size()) 
@@ -309,13 +406,37 @@ namespace ir
 			if (edge.type != ControlFlowGraph::Edge::Invalid) {
 				cfg.insert_edge(edge);
 			}
+			edge.head = block;
+			edge.tail = cfg.get_exit_block();
+			edge.type = ControlFlowGraph::Edge::FallThrough;
+			cfg.insert_edge(edge);
 		}
 		else 
 		{
+			if(last_inserted_block!=cfg.end()) 
+			{
+				// make sure there is a fall through edge from the last 
+				// inserted block to the exit node
+				ControlFlowGraph::edge_iterator ft_e = cfg.edges_end();
+				for( ControlFlowGraph::edge_pointer_iterator 
+					it = last_inserted_block->out_edges.begin(); 
+					it != last_inserted_block->out_edges.end(); ++it )
+				{
+					if( (*it)->type == ControlFlowGraph::Edge::FallThrough 
+						&& (*it)->tail == cfg.get_exit_block() )
+					{
+						ft_e = (*it);
+						break;
+					}
+				}
+				if( ft_e == cfg.edges_end() )
+				{
+					cfg.insert_edge(ControlFlowGraph::Edge(last_inserted_block, 
+						cfg.get_exit_block()));
+				}
+			}
 			cfg.remove_block(block);
 		}
-
-		assertM(hasExit, "No exit point from the kernel found.");
 
 		// go back and add edges for basic blocks terminating in branches
 		for( BlockPointerVector::iterator it = branchBlocks.begin();
@@ -371,27 +492,35 @@ namespace ir
 						|| (instr.*operands[i]).addressMode 
 						== PTXOperand::Indirect) {
 						if ((instr.*operands[i]).vec != PTXOperand::v1) {
-							for (PTXOperand::Array::iterator 
-								a_it = (instr.*operands[i]).array.begin(); 
-								a_it != (instr.*operands[i]).array.end(); 
+							for (PTXOperand::Array::iterator a_it = 
+								(instr.*operands[i]).array.begin(); 
+								a_it != (instr.*operands[i]).array.end();
 								++a_it) {
-								RegisterMap::iterator it 
-									= map.find(a_it->registerName());
+								
+								RegisterMap::iterator it =
+									map.find(a_it->registerName());
 
 								PTXOperand::RegisterType reg = 0;
 								if (it == map.end()) {
 									reg = (PTXOperand::RegisterType) map.size();
-									map.insert(std::make_pair( 
+									map.insert(std::make_pair(
 										a_it->registerName(), reg));
 								}
 								else {
 									reg = it->second;
 								}
 								a_it->reg = reg;
-								report( "  Assigning register " 
-									<< a_it->registerName() 
-									<< " to " << a_it->reg );
-								a_it->identifier.clear();
+								if (a_it->addressMode != PTXOperand::BitBucket
+									&& a_it->identifier != "_") {
+									report( "  [1] Assigning register " 
+										<< a_it->registerName() 
+										<< " to " << a_it->reg );
+									a_it->identifier.clear();
+								}
+								else {
+									report("  [1] " << a_it->registerName() 
+										<< " is a bit bucket");
+								}
 							}
 						}
 						else {
@@ -408,7 +537,7 @@ namespace ir
 								reg = it->second;
 							}
 							(instr.*operands[i]).reg = reg;
-							report("  Assigning register " 
+							report("  [2] Assigning register " 
 								<< (instr.*operands[i]).registerName() 
 								<< " to " << reg);
 							(instr.*operands[i]).identifier.clear();
@@ -426,28 +555,49 @@ namespace ir
 		stream << "/*\n* Ocelot Version : " 
 			<< hydrazine::Version().toString() << "\n*/\n";
 	
-		stream << ".entry " << name;
-		if (parameters.size()) {
-			stream << "(";
-			for( ParameterVector::const_iterator parameter = parameters.begin();
-				parameter != parameters.end(); ++parameter )
-			{
-				if( parameter != parameters.begin() )
-				{
-					stream << ",\n\t\t" << parameter->toString();
-				}
-				else
-				{
-					stream << parameter->toString();
-				}
+		std::stringstream strReturnArguments;
+		std::stringstream strArguments;
+		
+		int returnArgCount = 0, argCount = 0;
+		
+		for( ParameterVector::const_iterator parameter = arguments.begin();
+			parameter != arguments.end(); ++parameter) {
+			if (parameter->returnArgument) {
+				strReturnArguments << (returnArgCount++ ? ",\n\t\t" : "")
+					<< parameter->toString();
 			}
-			stream << ")\n";
+			else {
+				strArguments << (argCount++ ? ",\n\t\t" : "")
+					<< parameter->toString();
+			}
+		}
+		
+		
+		if (_function) {
+			stream << ".visible .func ";
+			if (returnArgCount) {
+				stream << "(" << strReturnArguments.str() << ") ";
+			}
+			stream << name;
+		}
+		else {
+			stream << ".entry " << name;
+		}
+		if (argCount) {
+			stream << "(" << strArguments.str() << ")\n";
 		}
 		stream << "{\n";
 		
 		for (LocalMap::const_iterator local = locals.begin();
 			local != locals.end(); ++local) {
 			stream << "\t" << local->second.toString() << "\n";
+		}
+		
+		stream << "\n";
+
+		for (ParameterMap::const_iterator parameter = parameters.begin();
+			parameter != parameters.end(); ++parameter ) {
+			stream << "\t" << parameter->second.toString() << ";\n";
 		}
 		
 		RegisterVector regs = getReferencedRegisters();
@@ -464,9 +614,60 @@ namespace ir
 			}
 		}
 		
+		
+		// issue actual instructions
 		if (_cfg != 0) {
 			ControlFlowGraph::BlockPointerVector 
 				blocks = _cfg->executable_sequence();
+				
+			std::map< std::string, ir::PTXInstruction *> indirectCalls;
+		
+			// look for and emit function prototypes
+			for (ControlFlowGraph::BlockPointerVector::iterator 
+				block = blocks.begin(); block != blocks.end(); ++block) {
+				
+				for( ControlFlowGraph::InstructionList::iterator 
+					instruction = (*block)->instructions.begin(); 
+					instruction != (*block)->instructions.end();
+					++instruction ) {
+					ir::PTXInstruction * inst = static_cast<ir::PTXInstruction *>(*instruction);
+					
+					if (inst->opcode == ir::PTXInstruction::Call && inst->a.addressMode == PTXOperand::Register ) {
+						// indirect call
+						if (indirectCalls.find(inst->c.identifier) == indirectCalls.end()) {
+							indirectCalls[inst->c.identifier] = inst;
+						}
+					}
+				}
+			}
+			if (indirectCalls.size()) {
+				stream << "\t\n";
+				for (std::map< std::string, ir::PTXInstruction *>::const_iterator indCall = indirectCalls.begin();
+					indCall != indirectCalls.end(); ++indCall) {
+
+					stream << "\t" << indCall->first << ": .callprototype ";
+					stream << "(";
+
+					unsigned int n = 0;
+					for (ir::PTXOperand::Array::const_iterator arg_it = indCall->second->d.array.begin();
+						arg_it != indCall->second->d.array.end(); ++arg_it, ++n) {
+					
+						stream << (n ? ", " : "") << ".param ." << ir::PTXOperand::toString(arg_it->type) << " _";
+					}
+				
+					stream << ") _ (";
+					n = 0;
+					for (ir::PTXOperand::Array::const_iterator arg_it = indCall->second->b.array.begin();
+						arg_it != indCall->second->b.array.end(); ++arg_it, ++n) {
+					
+						stream << (n ? ", " : "") << ".param ." << ir::PTXOperand::toString(arg_it->type) << " _";
+					}
+					stream << ");\n";
+				}
+				stream << "\t\n";
+			}
+
+			//
 		
 			int blockIndex = 1;
 			for (ControlFlowGraph::BlockPointerVector::iterator 

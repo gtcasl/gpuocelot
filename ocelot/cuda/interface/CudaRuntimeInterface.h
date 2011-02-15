@@ -14,7 +14,6 @@
 
 #include <ocelot/cuda/interface/cuda_runtime.h>
 #include <ocelot/trace/interface/TraceGenerator.h>
-#include <ocelot/analysis/interface/PTXInstrumentor.h>
 #include <ocelot/translator/interface/Translator.h>
 
 namespace cuda {
@@ -348,6 +347,7 @@ namespace cuda {
 
 		virtual cudaError_t cudaThreadExit(void);
 		virtual cudaError_t cudaThreadSynchronize(void);
+		virtual cudaError_t cudaThreadSetLimit(enum cudaLimit limit, size_t value);
 
 		/*
 			Version accessors
@@ -385,22 +385,19 @@ namespace cuda {
 			bool persistent = false );
 		/*! \brief Clear all trace generators */
 		virtual void clearTraceGenerators();
-        
-        /*! \brief Adds an instrumentor for the next kernel invocation 
-	
-			\param gen A reference to the instrumentor being added, it must not
-				be destroyed until the next kernel is executed.
-			\param persistent The instrumentor will be associated with all
-				subsequent kernels until clear is called, otherwise it will
-				only be associated with the next kernel.
+		/*!
+			\brief Adds a PTX->PTX pass for the next *Module load*
 		*/
-		virtual void addInstrumentor( analysis::PTXInstrumentor& instrumentor);
-		/*! \brief Clear all instrumentors */
-		virtual void clearInstrumentors();
-
-        /*! \brief Retrieves the kernel profile from online instrumentation */
-        virtual analysis::KernelProfile kernelProfile();
-
+		virtual void addPTXPass(analysis::Pass &pass);
+		/*!
+			\brief removes the specified pass
+		*/
+		virtual void removePTXPass(analysis::Pass &pass);
+		/*!
+			\brief clears all PTX->PTX passes
+		*/
+		virtual void clearPTXPasses();
+		
 		/*! \brief Sets a limit on the number of host worker threads to launch
 			when executing a CUDA kernel on a Multi-Core CPU.
 			\param limit The max number of worker threads to launch per kernel.

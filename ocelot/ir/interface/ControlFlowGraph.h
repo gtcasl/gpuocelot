@@ -23,6 +23,7 @@ class BasicBlock {
 public:
 	/*! \brief A list of blocks */
 	typedef std::list< BasicBlock > BlockList;
+	typedef BlockList::iterator Pointer;
 
 	/*! \brief An edge connects two basic blocks */
 	class Edge {
@@ -48,7 +49,6 @@ public:
 	};
 
 	typedef std::list< Edge > EdgeList;
-	typedef BlockList::iterator Pointer;
 	typedef std::vector< Pointer > BlockPointerVector;
 	typedef std::vector< EdgeList::iterator > EdgePointerVector;
 	typedef std::list< Instruction* > InstructionList;
@@ -166,6 +166,8 @@ public:
 	typedef EdgeList::iterator edge_iterator;
 	/*! \brief A const iterator over edges */
 	typedef EdgeList::const_iterator const_edge_iterator;
+	/*! \brief Edge pair */
+	typedef std::pair<edge_iterator, edge_iterator> EdgePair;
 
 	/*! \brief A pointer to an edge iterator */
 	typedef EdgePointerVector::iterator edge_pointer_iterator;
@@ -181,12 +183,16 @@ public:
 	typedef BasicBlock::InstructionList InstructionList;
 
 	/*! \brief maps a basic block [by label] to a coloring */
-	typedef std::unordered_map< std::string, unsigned int > BasicBlockColorMap;
+	typedef std::unordered_map<std::string, unsigned int> BasicBlockColorMap;
 
 public:
 	ControlFlowGraph();
 	~ControlFlowGraph();
 
+public:
+	/*! \brief Get the name of an edge type */
+	static std::string toString( Edge::Type t );
+	
 public:
 	/*! Make sure that the next call to newId will return a unique id */
 	void computeNewBlockId();
@@ -202,6 +208,10 @@ public:
 
 	/*!	Inserts a basic block into the CFG */
 	iterator insert_block(const BasicBlock& b);
+	
+	/*! Duplicates the selected block, inserts it in an unconnected state,
+		returns an iterator to the newly created block */
+	iterator clone_block(iterator block, std::string suffix);
 	
 	/*! Removes a basic block and associated edges. Any blocks dominated by
 		block are now unreachable but still part of the graph.
@@ -232,8 +242,7 @@ public:
 		\return implicily created edges (head->newblock, newblock->tail) with 
 			same type as edge [may need modifying]
 	*/
-	std::pair<edge_iterator, edge_iterator> split_edge(edge_iterator edge, 
-		const BasicBlock& newBlock);
+	EdgePair split_edge(edge_iterator edge, const BasicBlock& newBlock);
 
 	/*! \brief Splits a basic block into two such that there is a fallthrough
 		edge from the original block to the newly split block.
@@ -271,9 +280,6 @@ public:
 	
 	/*! \brief Clears all basic blocks and edges in the CFG.*/
 	void clear();
-	
-	/*! \brief Get the name of an edge type */
-	static std::string toString( Edge::Type t );
 	
 	/*! returns an ordered sequence of the nodes of the CFG including entry 
 		and exit that would be encountered by a pre order traversal
@@ -328,7 +334,7 @@ public:
 
 private:
 	BlockList _blocks;
-	EdgeList _edges;
+	EdgeList  _edges;
 
 	iterator _entry;
 	iterator _exit;
@@ -346,7 +352,7 @@ namespace std
 	public:
 		size_t operator()( ir::ControlFlowGraph::iterator it ) const
 		{
-			return ( size_t )&( *it );
+			return ( size_t )it->id;
 		}
 	};
 
@@ -356,7 +362,7 @@ namespace std
 	public:
 		size_t operator()( ir::ControlFlowGraph::const_iterator it ) const
 		{
-			return ( size_t )&( *it );
+			return ( size_t )it->id;
 		}
 	};
 

@@ -13,6 +13,9 @@
 #include <map>
 #include <vector>
 
+// Hydrazine includes
+#include <hydrazine/implementation/json.h>
+
 // Ocelot includes
 #include <ocelot/ir/interface/Dim3.h>
 #include <ocelot/ir/interface/Texture.h>
@@ -34,9 +37,12 @@ namespace util {
 			~MemoryAllocation();
 			
 			void serialize(std::ostream &out, const std::string & prefix = "") const;
+			void deserialize(const hydrazine::json::Visitor &visitor);
 			
 			//!
 			void resize(size_t _size, char c = 0);
+			
+			size_t size() const;
 			
 		public:
 		
@@ -67,8 +73,12 @@ namespace util {
 			void clear();
 			
 			void serialize(std::ostream &out, const std::string & prefix = "") const;
+			void deserialize(const hydrazine::json::Visitor &visitor);
 			
+		private:
+		
 			void serializeTexture(ir::Texture &texture, std::ostream &out, const std::string & prefix = "") const;
+			void deserializeTexture(ir::Texture &texture, const hydrazine::json::Visitor &visitor);
 		
 		public:
 			//! \brief module loaded into this name
@@ -88,6 +98,7 @@ namespace util {
 		public:
 		
 			void serialize(std::ostream &out) const;
+			void deserialize(const hydrazine::json::Visitor &visitor);
 
 		public:
 			//! \brief name of module owning kernel
@@ -115,6 +126,7 @@ namespace util {
 			Application();
 		
 			void serialize(std::ostream &out) const;
+			void deserialize(const hydrazine::json::Visitor &visitor);
 		
 		public:
 			//! \brief name of application

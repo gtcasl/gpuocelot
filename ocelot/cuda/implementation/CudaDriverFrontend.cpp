@@ -29,7 +29,7 @@
 #include <hydrazine/implementation/debug.h>
 
 // GL includes
-#include <GL/glew.h>
+//#include <GL/glew.h>
 
 #ifdef REPORT_BASE
 #undef REPORT_BASE

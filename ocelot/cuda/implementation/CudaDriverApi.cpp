@@ -121,6 +121,11 @@ CUresult Function(cuDeviceComputeCapability)(int *major, int *minor,
 	RETURN( CudaApi::get()->cuDeviceComputeCapability(major, minor, dev) );
 }
 
+CUresult Function(cuDeviceTotalMem)(size_t *bytes, CUdevice dev) {
+	trace();	
+	RETURN( CudaApi::get()->cuDeviceTotalMem(bytes, dev) );
+}
+
 CUresult FunctionV(cuDeviceTotalMem)(size_t *bytes, CUdevice dev) {
 	trace();	
 	RETURN( CudaApi::get()->cuDeviceTotalMem(bytes, dev) );
@@ -144,6 +149,12 @@ CUresult Function(cuDeviceGetAttribute)(int *pi,
 **    Context management
 **
 ***********************************/
+
+CUresult Function(cuCtxCreate)(CUcontext *pctx, unsigned int flags, 
+	CUdevice dev ) {
+	trace();	
+	RETURN( CudaApi::get()->cuCtxCreate(pctx, flags, dev) );
+}
 
 CUresult FunctionV(cuCtxCreate)(CUcontext *pctx, unsigned int flags, 
 	CUdevice dev ) {
@@ -859,6 +870,11 @@ CUresult Function(cuGLCtxCreate)(CUcontext *pCtx,
 	RETURN( CudaApi::get()->cuGLCtxCreate(pCtx, Flags, device) );
 }
 
+CUresult Function(cuGLRegisterBufferObject)(GLuint bufferobj) {
+	trace();
+	RETURN ( CudaApi::get()->cuGLRegisterBufferObject(bufferobj) );
+}
+
 CUresult Function(cuGraphicsGLRegisterBuffer)( 
 	CUgraphicsResource *pCudaResource, unsigned int buffer, 
 	unsigned int Flags ) {
@@ -873,6 +889,10 @@ CUresult Function(cuGraphicsGLRegisterImage)(
 	RETURN( CudaApi::get()->cuGraphicsGLRegisterImage(pCudaResource, image, target, Flags) );
 }
 
+CUresult Function(cuGLSetBufferObjectMapFlags)(GLuint buffer, unsigned int flags) {
+	trace();
+	RETURN ( CudaApi::get()->cuGLSetBufferObjectMapFlags(buffer, flags) );
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 

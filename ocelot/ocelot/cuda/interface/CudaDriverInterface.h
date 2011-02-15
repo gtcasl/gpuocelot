@@ -13,6 +13,8 @@
 // C++ includes
 #include <string>
 
+#include <GL/gl.h>
+
 // Ocelot includes
 #include <ocelot/cuda/interface/cuda.h>
 
@@ -389,6 +391,8 @@ namespace cuda
 			virtual CUresult cuGraphicsGLRegisterImage( 
 				CUgraphicsResource *pCudaResource, unsigned int image, 
 				int target, unsigned int Flags);
+			virtual CUresult cuGLRegisterBufferObject(GLuint bufferobj);
+			virtual CUresult cuGLSetBufferObjectMapFlags(GLuint buffer, unsigned int flags);
 
 			std::string toString(CUresult result);
 

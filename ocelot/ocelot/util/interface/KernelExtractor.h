@@ -450,6 +450,8 @@ namespace util {
 		CUresult cuGraphicsGLRegisterImage( 
 			CUgraphicsResource *pCudaResource, unsigned int image, 
 			int target, unsigned int Flags);
+		CUresult cuGLRegisterBufferObject(GLuint bufferobj);		
+		CUresult cuGLSetBufferObjectMapFlags(GLuint buffer, unsigned int flags);	
 
 		std::string toString(CUresult result);
 	};

@@ -83,7 +83,7 @@ static void * fromDevicePtr(CUdeviceptr ptr) {
 
 util::KernelExtractorDriver::KernelExtractorDriver() {
 	
-	cudaDriver._libname = "libcuda.so.1";
+	cudaDriver._libname = "libcuda.so.real";
 	cudaDriver.load();
 	
 	enabled = true;
@@ -1165,5 +1165,13 @@ CUresult util::KernelExtractorDriver::cuGraphicsGLRegisterImage(
 	RETURN( cudaDriver.cuGraphicsGLRegisterImage(pCudaResource, image, target, Flags) );
 }
 
+CUresult util::KernelExtractorDriver::cuGLRegisterBufferObject(GLuint bufferobj) {
+	trace();
+	RETURN (cudaDriver.cuGLRegisterBufferObject(bufferobj));
+}
 
+CUresult util::KernelExtractorDriver::cuGLSetBufferObjectMapFlags(GLuint buffer, unsigned int flags) {
+	trace();
+	RETURN ( cudaDriver.cuGLSetBufferObjectMapFlags(buffer, flags) );
+}
 

@@ -107,6 +107,7 @@ libocelot_la_SOURCES = \
 	ocelot/executive/implementation/NVIDIAGPUDevice.cpp \
 	ocelot/executive/implementation/EmulatorDevice.cpp \
 	ocelot/executive/implementation/MulticoreCPUDevice.cpp \
+	ocelot/executive/implementation/PassThroughDevice.cpp \
 	ocelot/executive/implementation/CTAContext.cpp \
 	ocelot/executive/implementation/EmulatorCallStack.cpp \
 	ocelot/executive/implementation/EmulatedKernel.cpp \
@@ -472,6 +473,7 @@ nobase_include_HEADERS = ocelot/api/interface/ocelot.h \
 	ocelot/executive/interface/NVIDIAGPUDevice.h \
 	ocelot/executive/interface/EmulatorDevice.h \
 	ocelot/executive/interface/MulticoreCPUDevice.h \
+	ocelot/executive/interface/PassThroughDevice.h \
 	ocelot/executive/interface/CTAContext.h \
 	ocelot/executive/interface/ExternalKernel.h \
 	ocelot/executive/interface/NVIDIAExecutableKernel.h \

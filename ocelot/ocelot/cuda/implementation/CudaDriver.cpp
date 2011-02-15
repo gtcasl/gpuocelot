@@ -205,6 +205,8 @@ namespace cuda
 		DynLinkV(cuGLCtxCreate);
 		DynLink(cuGraphicsGLRegisterBuffer);
 		DynLink(cuGraphicsGLRegisterImage);
+		DynLink(cuGLRegisterBufferObject);
+		DynLink(cuGLSetBufferObjectMapFlags);
 
 		CUresult result = (*cuDriverGetVersion)(&_version);
 		
@@ -1021,6 +1023,16 @@ namespace cuda
 		CHECK();
 		return (*_interface.cuGraphicsGLRegisterImage)(pCudaResource, image, 
 			target, Flags);
+	}
+	
+	CUresult CudaDriver::cuGLRegisterBufferObject(GLuint bufferobj) {
+		CHECK();
+		return (*_interface.cuGLRegisterBufferObject)(bufferobj);
+	}
+	
+	CUresult CudaDriver::cuGLSetBufferObjectMapFlags(GLuint buffer, unsigned int flags) {
+		CHECK();
+		return (*_interface.cuGLSetBufferObjectMapFlags)(buffer, flags);
 	}
 
 	std::string CudaDriver::toString(CUresult r)

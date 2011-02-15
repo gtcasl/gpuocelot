@@ -95,7 +95,7 @@ static void serializeBinary(std::ostream &out, const size_t size, const char *by
 		unsigned int word = 0;
 		for (size_t j = 0; j < wordSize; j++) {
 			if (j+n < size) {
-				word |= (((unsigned int)bytes[j+n]) << (j * 8));
+				word |= (((unsigned int)bytes[j+n] & 0x0ff) << (j * 8));
 			}
 		}
 		if (n) {
@@ -145,13 +145,14 @@ static void serializeBinary(std::ostream &out, const util::ByteVector &data) {
 static void deserializeImage(util::ByteVector &bytes, std::istream &in, size_t size) {
 	size_t wordSize = 4;
 	bytes.clear();
-	bytes.reserve(size);
+	bytes.resize(size, 0);
+	size_t ip = 0;
 	while (in.good()) {
 		std::string wordString;
 		in >> wordString;
 		unsigned int word = boost::lexical_cast<HexTo<unsigned int> >(wordString);
 		for (size_t i = 0; i < wordSize; i++) {
-			bytes.push_back(word & 0x0ff);
+			bytes[ip++] = (word & 0x0ff);
 			word >>= 8;
 		}
 	}

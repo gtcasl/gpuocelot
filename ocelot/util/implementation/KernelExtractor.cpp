@@ -12,6 +12,7 @@
 #include <string>
 #include <sstream>
 #include <cstring>
+#include <iomanip>
 
 // Ocelot includes
 #include <ocelot/cuda/interface/cuda.h>
@@ -924,6 +925,7 @@ CUresult util::KernelExtractorDriver::cuParamSetSize (CUfunction hfunc,
 	trace();
 	if (enabled) {
 		state.launch.parameterMemory.resize(numbytes, 0);
+		report("  setting size " << numbytes);
 	}
 	RETURN( cudaDriver.cuParamSetSize(hfunc, numbytes) );
 }
@@ -933,6 +935,7 @@ CUresult util::KernelExtractorDriver::cuParamSeti    (CUfunction hfunc, int offs
 	trace();
 	if (enabled) {
 		std::memcpy(&state.launch.parameterMemory[offset], &value, sizeof(value));
+		report("  offset " << offset << ", value " << value);
 	}
 	RETURN( cudaDriver.cuParamSeti(hfunc, offset, value) );
 }
@@ -942,6 +945,7 @@ CUresult util::KernelExtractorDriver::cuParamSetf    (CUfunction hfunc, int offs
 	trace();	
 	if (enabled) {
 		std::memcpy(&state.launch.parameterMemory[offset], &value, sizeof(value));
+		report("  offset " << offset << ", value " << value);
 	}
 	RETURN( cudaDriver.cuParamSetf(hfunc, offset, value) );
 }
@@ -951,13 +955,20 @@ CUresult util::KernelExtractorDriver::cuParamSetv    (CUfunction hfunc, int offs
 	trace();	
 	if (enabled) {
 		std::memcpy(&state.launch.parameterMemory[offset], ptr, numbytes);
+		
+		report("  offset: " << offset << ", size: " << numbytes << " bytes");
+		unsigned int *intPtr = (unsigned int *)ptr;
+		for (unsigned int i = 0; i < numbytes/4; i++) {
+			report("  0x" << std::setw(8) << std::setfill('0') << std::setbase(16) << intPtr[i] << std::setbase(10));
+		}
 	}
 	RETURN( cudaDriver.cuParamSetv(hfunc, offset, ptr, numbytes) );
 }
 
 CUresult util::KernelExtractorDriver::cuParamSetTexRef(CUfunction hfunc, int texunit, 
 	CUtexref hTexRef) {
-	trace();	
+	trace();
+	assert(0 && "unimplemented");
 	RETURN( cudaDriver.cuParamSetTexRef(hfunc, texunit, hTexRef) );
 }
 

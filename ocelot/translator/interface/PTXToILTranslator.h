@@ -48,6 +48,7 @@ namespace translator
 			void _translate(const ControlTree::BlockNode* block);
 			void _translate(const ControlTree::IfThenNode* ifthen);
 			void _translate(const ControlTree::IfThenElseNode* ifthenelse);
+			void _translate(const ControlTree::WhileLoopNode* whileloop);
 			void _translate(const ControlTree::NaturalLoopNode* naturalloop);
 
 			void _translate(const ir::PTXInstruction &i); 

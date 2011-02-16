@@ -49,12 +49,20 @@ namespace ir
 		ControlFlowGraph::const_edge_iterator e;
 		for (e = cfg->edges_begin() ; e != cfg->edges_end() ; e++)
 		{
-			report("Add edge " << e->head->label << " -> " << e->tail->label);
-			bmap[e->head]->succs().insert(bmap[e->tail]);
-			bmap[e->tail]->preds().insert(bmap[e->head]);
+			ControlFlowGraph::const_iterator h = e->head;
+			ControlFlowGraph::const_iterator t = e->tail;
+
+			bmap[h]->succs().insert(bmap[t]);
+			bmap[t]->preds().insert(bmap[h]);
 
 			if (e->type == ir::ControlFlowGraph::Edge::FallThrough)
-				bmap[e->head]->fallthrough() = bmap[e->tail];
+			{
+				report("Add edge " << h->label << " --> " << t->label);
+				bmap[h]->fallthrough() = bmap[t];
+			} else
+			{
+				report("Add edge " << h->label << " -> " << t->label);
+			}
 		}
 
 		assertM(start->preds().size() == 0, "Start shouldn't have predecessor");
@@ -254,6 +262,11 @@ namespace ir
 		return children().back();
 	}
 
+	ControlTree::WhileLoopNode::WhileLoopNode(const std::string& label, 
+			const NodeList& children) : Node(label, WhileLoop, children)
+	{
+	}
+
 	ControlTree::NaturalLoopNode::NaturalLoopNode(const std::string& label, 
 			const NodeList& children) : Node(label, NaturalLoop, children)
 	{
@@ -424,6 +437,7 @@ namespace ir
 
 	bool ControlTree::_isCyclic(Node* node)
 	{
+		if (node->rtype() == Node::WhileLoop) return true;
 		if (node->rtype() == Node::NaturalLoop) return true;
 
 		return false;
@@ -481,11 +495,17 @@ namespace ir
 				report("Del " << (*p)->label() << " -> " << (*n)->label());
 				(*p)->succs().erase(*n);
 
-				report("Add " << (*p)->label() << " -> " << node->label());
 				(*p)->succs().insert(node);
 				node->preds().insert(*p);
 
-				if ((*p)->fallthrough() == *n) (*p)->fallthrough() = node;
+				if ((*p)->fallthrough() == *n)
+				{
+					report("Add " << (*p)->label() << " --> " << node->label());
+					(*p)->fallthrough() = node;
+				} else 
+				{
+					report("Add " << (*p)->label() << " -> " << node->label());
+				}
 			}
 
 			NodeSet::iterator s;
@@ -498,11 +518,17 @@ namespace ir
 				report("Del " << (*n)->label() << " -> " << (*s)->label());
 				(*s)->preds().erase(*n);
 
-				report("Add " << node->label() << " -> " << (*s)->label());
 				(*s)->preds().insert(node);
 				node->succs().insert(*s);
 
-				if ((*n)->fallthrough() == *s) node->fallthrough() = *s;
+				if ((*n)->fallthrough() == *s) 
+				{
+					report("Add " << node->label() << " --> " << (*s)->label());
+					node->fallthrough() = *s;
+				} else
+				{
+					report("Add " << node->label() << " -> " << (*s)->label());
+				}
 			}
 		}
 
@@ -609,14 +635,21 @@ namespace ir
 		}
 
 		// check for a WhileLoop
-		Node* m = *(nset.begin()++);
+		Node* m = *(++nset.begin());
 
 		if (node->succs().size() == 2 && m->succs().size() == 1 
 				&& node->preds().size() == 2 && m->preds().size() == 1)
 		{
-			// TODO WhileLoop regions are not supported yet
-			report("Found WhileLoop region");
-			return new InvalidNode();
+			std::string label("WhileLoopNode_");
+
+			std::stringstream ss;
+			ss << _nodes.size();
+			label += ss.str();
+
+			report("Found " << label << ": " << nset.front()->label() << "..."
+					<< nset.back()->label());
+
+			return new WhileLoopNode(label, nset);
 		}
 
 		// it's a NaturalLoop

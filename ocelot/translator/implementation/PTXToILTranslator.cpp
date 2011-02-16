@@ -70,6 +70,11 @@ namespace translator
 				_translate(static_cast<const ControlTree::IfThenElseNode*>(node));
 				break;
 			}
+			case ControlTree::Node::WhileLoop:
+			{
+				_translate(static_cast<const ControlTree::WhileLoopNode*>(node));
+				break;
+			}
 			case ControlTree::Node::NaturalLoop:
 			{
 				_translate(static_cast<const ControlTree::NaturalLoopNode*>(node));
@@ -207,6 +212,41 @@ namespace translator
 		}
 	}
 
+	void PTXToILTranslator::_translate(const ControlTree::WhileLoopNode* whileloop)
+	{
+		_add(ir::ILWhileLoop());
+
+		// iterate thru all the blocks except the last one
+		ControlTree::NodeList::const_iterator n;
+		for (n = whileloop->children().begin() ; 
+				n != (--whileloop->children().end()) ; n++)
+		{
+			// the fall-through edge should be the next node in the loop
+			assertM((*n)->fallthrough() == 
+					*(++ControlTree::NodeList::const_iterator(n)),
+					"Invalid NaturalLoop node");
+
+			_translate(*n);
+
+			// the last instruction of the node should be a branch.
+			ir::PTXInstruction* ins = getLastIns(*n);
+			assertM(ins->opcode == ir::PTXInstruction::Bra, "Invalid instruction");
+
+			// add loop exit
+			ir::ILIfLogicalNZ if_logicalnz;
+			if_logicalnz.a = _translate(ins->pg);
+			_add(if_logicalnz);
+			_add(ir::ILBreak());
+			_add(ir::ILEndIf());
+		}
+
+		// translate the last block 
+		_translate(*n);
+
+		// add loop back
+		_add(ir::ILEndLoop());
+	}
+
 	void PTXToILTranslator::_translate(const ControlTree::NaturalLoopNode* naturalloop)
 	{
 		_add(ir::ILWhileLoop());
@@ -254,6 +294,7 @@ namespace translator
 		_add(ir::ILBreak());
 		_add(ir::ILEndIf());
 
+		// add loop back
 		_add(ir::ILEndLoop());
 	}
 

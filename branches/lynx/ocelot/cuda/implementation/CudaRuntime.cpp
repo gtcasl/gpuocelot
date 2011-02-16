@@ -75,6 +75,7 @@ cuda::HostThreadContext::HostThreadContext(const HostThreadContext& c):
 	parameterSizes(c.parameterSizes),
 	persistentTraceGenerators(c.persistentTraceGenerators),
 	nextTraceGenerators(c.nextTraceGenerators),
+    instrumentors(c.instrumentors),
 	ptxPasses(c.ptxPasses) {
 	memcpy(parameterBlock, c.parameterBlock, parameterBlockSize);
 }
@@ -90,6 +91,7 @@ cuda::HostThreadContext& cuda::HostThreadContext::operator=(
 	parameterSizes = c.parameterSizes;
 	persistentTraceGenerators = c.persistentTraceGenerators;
 	nextTraceGenerators = c.nextTraceGenerators;
+    instrumentors = c.instrumentors;
 	ptxPasses = c.ptxPasses;
 	memcpy(parameterBlock, c.parameterBlock, parameterBlockSize);
 	return *this;
@@ -112,6 +114,7 @@ cuda::HostThreadContext& cuda::HostThreadContext::operator=(
 	std::swap(parameterSizes, c.parameterSizes);
 	std::swap(persistentTraceGenerators, c.persistentTraceGenerators);
 	std::swap(nextTraceGenerators, c.nextTraceGenerators);
+    std::swap(instrumentors, c.instrumentors);
 	std::swap(ptxPasses, c.ptxPasses);
 	return *this;
 }
@@ -400,6 +403,11 @@ cuda::HostThreadContext& cuda::CudaRuntime::_getCurrentThread() {
 void cuda::CudaRuntime::_registerModule(ModuleMap::iterator module) {
 	if(module->second.loaded()) return;
 	module->second.loadNow();
+
+    HostThreadContext& thread = _getCurrentThread();    
+    if(!thread.instrumentors.empty()){
+        (thread.instrumentors.front())->instrument(module->second);
+    }	
 	
 	for(RegisteredTextureMap::iterator texture = _textures.begin(); 
 		texture != _textures.end(); ++texture) {
@@ -2549,6 +2557,19 @@ cudaError_t cuda::CudaRuntime::_launchKernel(const std::string& moduleName,
 	
 	report("kernel launch (" << kernelName 
 		<< ") on thread " << boost::this_thread::get_id());
+
+    _release();
+    
+    if(!thread.instrumentors.empty()){        
+        (thread.instrumentors.front())->kernelName = kernelName;
+        (thread.instrumentors.front())->threads = launch.blockDim.x * launch.blockDim.y * launch.blockDim.z;
+        (thread.instrumentors.front())->threadBlocks = launch.gridDim.x * launch.gridDim.y * launch.gridDim.z;
+        (thread.instrumentors.front())->analyze(module->second);
+        (thread.instrumentors.front())->initialize();
+    }
+    
+    _acquire();
+
 	
 	try {
 		trace::TraceGeneratorVector traceGens;
@@ -2590,6 +2611,10 @@ cudaError_t cuda::CudaRuntime::_launchKernel(const std::string& moduleName,
 		throw;
 	}
 	_release();
+
+    if(!thread.instrumentors.empty()){
+        (thread.instrumentors.front())->finalize();
+    }
 	
 	return result;
 }
@@ -3218,6 +3243,27 @@ void cuda::CudaRuntime::clearTraceGenerators() {
 	HostThreadContext& thread = _getCurrentThread();
 	thread.persistentTraceGenerators.clear();
 	thread.nextTraceGenerators.clear();
+	_unlock();
+}
+
+void cuda::CudaRuntime::addInstrumentor( analysis::PTXInstrumentor& instrumentor) {
+
+	_lock();
+	
+    HostThreadContext& thread = _getCurrentThread();
+	thread.instrumentors.push_back(&instrumentor);
+	
+	_unlock();
+}
+
+analysis::KernelProfile cuda::CudaRuntime::kernelProfile() {
+    return _getCurrentThread().instrumentors.front()->kernelProfile();
+}
+
+void cuda::CudaRuntime::clearInstrumentors() {
+	_lock();
+	HostThreadContext& thread = _getCurrentThread();
+	thread.instrumentors.clear();
 	_unlock();
 }
 

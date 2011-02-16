@@ -89,6 +89,9 @@ namespace cuda {
 
 		//! set of trace generators to be inserted into emulated kernels
 		trace::TraceGeneratorVector nextTraceGenerators;
+
+        //! set of instrumentors to be inserted into kernels
+        analysis::PTXInstrumentorVector instrumentors;
 		
 		int ptxPasses;
 			
@@ -568,6 +571,10 @@ namespace cuda {
 		virtual void addTraceGenerator( trace::TraceGenerator& gen, 
 			bool persistent = false );
 		virtual void clearTraceGenerators();
+
+        virtual void addInstrumentor( analysis::PTXInstrumentor& instrumentor);
+		virtual void clearInstrumentors();
+        virtual analysis::KernelProfile kernelProfile();    
 
 		virtual void addPTXPass(analysis::Pass &pass);
 		virtual void removePTXPass(analysis::Pass &pass);

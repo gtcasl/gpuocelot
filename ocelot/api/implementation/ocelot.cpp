@@ -28,6 +28,20 @@ namespace ocelot
 		get()->clearTraceGenerators( );
 	}
 
+    void addInstrumentor( analysis::PTXInstrumentor& instrumentor)
+	{
+		get()->addInstrumentor(instrumentor);
+	}
+				
+	void clearInstrumentors( )
+	{
+		get()->clearInstrumentors( );
+	}
+
+    analysis::KernelProfile kernelProfile() {
+        return get()->kernelProfile();
+    }
+
 	void addPTXPass(analysis::Pass &pass) 
 	{
 		get()->addPTXPass(pass);

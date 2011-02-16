@@ -1,5 +1,9 @@
 {
 	ocelot: "ocelot",
+    instrument: {
+        clockCycleCount: {
+        }
+    },
 	trace: { 
 		database: "traces/database.trace",
 		memory: true,

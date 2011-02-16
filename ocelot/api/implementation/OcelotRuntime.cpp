@@ -50,6 +50,19 @@ namespace ocelot
 				_debugger.alwaysAttach = c.trace.debugger.alwaysAttach;
 				ocelot::addTraceGenerator(_debugger, true);
 		}
+        if(c.instrument.clockCycleCountInstrumentor.enabled)
+        {   
+            report("Creating clock cycle count instrumentor");
+            _clockCycleCountInstrumentor.output = c.instrument.clockCycleCountInstrumentor.logfile;
+            ocelot::addInstrumentor(_clockCycleCountInstrumentor);
+        }
+        if(c.instrument.basicBlockInstrumentor.enabled)
+        {   
+            report("Creating basic block execution count instrumentor");
+            _basicBlockExecutionCountInstrumentor.output = c.instrument.basicBlockInstrumentor.logfile;
+            ocelot::addInstrumentor(_basicBlockExecutionCountInstrumentor);    
+        }
+
 
 	}
 

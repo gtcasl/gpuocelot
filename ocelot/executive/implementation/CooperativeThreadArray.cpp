@@ -192,8 +192,6 @@ ir::PTXU32 executive::CooperativeThreadArray::getSpecialValue(
 	assert( reg != ir::PTXOperand::pm1 );
 	assert( reg != ir::PTXOperand::pm2 );
 	assert( reg != ir::PTXOperand::pm3 );
-	assert( reg != ir::PTXOperand::smId );
-	assert( reg != ir::PTXOperand::nsmId );
 	assert( reg != ir::PTXOperand::gridId );
 
 	switch( reg ) {
@@ -265,7 +263,10 @@ ir::PTXU32 executive::CooperativeThreadArray::getSpecialValue(
 			}
 			break;
 		}
+        case ir::PTXOperand::smId: return 0; break;
+        case ir::PTXOperand::nsmId: return 1; break;
 		case ir::PTXOperand::clock: return clock; break;
+        case ir::PTXOperand::clock64: return clock; break;
 		default: break;
 	}
 	

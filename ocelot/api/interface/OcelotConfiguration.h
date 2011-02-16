@@ -101,6 +101,47 @@ namespace api {
             MemoryChecker memoryChecker;
 		};
 
+        //! Configuration for instrumentation facilities
+		class Instrumentation {
+		public:
+			
+			/*! \brief configuration properties for ClockCycleCountInstrumentor */
+			class ClockCycleCountInstrumentor
+			{
+			public:
+					ClockCycleCountInstrumentor();
+				
+			public:
+					//! \brief specifies if instrumentation is enabled */
+					bool enabled;
+                    //! \brief specifies the logfile for storing results of this instrumentation */
+                    std::string logfile;
+			};
+
+            /*! \brief configuration properties for analysis::BasicBlockInstrumentor */
+			class BasicBlockInstrumentor
+			{
+			public:
+					BasicBlockInstrumentor();
+				
+			public:
+					//! \brief specifies if instrumentation is enabled */
+					bool enabled;
+                    //! \brief specifies the logfile for storing results of this instrumentation */
+                    std::string logfile;				
+			};
+
+		public:
+			Instrumentation();
+
+		public:
+			/*! \brief Clock cycle count instrumentor */
+			ClockCycleCountInstrumentor clockCycleCountInstrumentor;
+
+            //! \brief Basic block execution count instrumentor
+			BasicBlockInstrumentor basicBlockInstrumentor;
+		};
+
 		class CudaRuntimeImplementation {
 		public:
 			CudaRuntimeImplementation();
@@ -207,6 +248,9 @@ namespace api {
 		
 		//! \brief configuration for Ocelot checkpoint
 		Checkpoint checkpoint;
+
+        //! \brief configuration for PTX instrumentation
+        Instrumentation instrument;
 		
 	};
 

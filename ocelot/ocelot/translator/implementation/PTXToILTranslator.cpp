@@ -34,11 +34,6 @@ namespace translator
 
 		_kernel = static_cast<const executive::ATIExecutableKernel* >(k);
 
-		// do a pass of assignRegisters before translation
-		// we have to const_cast in order to call assignRegisters
-		ir::PTXKernel::assignRegisters(
-				const_cast<ir::ControlFlowGraph& >(*_kernel->cfg()));
-
 		report("Translating kernel " << _kernel->name);
 
 		// translate iterating thru the control tree
@@ -273,11 +268,14 @@ namespace translator
 			case ir::PTXInstruction::Atom:   _translateAtom(i);   break;
 			case ir::PTXInstruction::Bar:    _translateBar(i);    break;
 			case ir::PTXInstruction::Bra:    _translateBra(i);    break;
+			case ir::PTXInstruction::Clz:    _translateClz(i);    break;
  			case ir::PTXInstruction::Cvt:    _translateCvt(i);    break;
 			case ir::PTXInstruction::Div:    _translateDiv(i);    break;
 			case ir::PTXInstruction::Ex2:    _translateEx2(i);    break;
  			case ir::PTXInstruction::Exit:   _translateExit(i);   break;
+			case ir::PTXInstruction::Fma:    _translateFma(i);    break;
  			case ir::PTXInstruction::Ld:     _translateLd(i);     break;
+ 			case ir::PTXInstruction::Ldu:    _translateLdu(i);    break;
 			case ir::PTXInstruction::Lg2:    _translateLg2(i);    break;
 			case ir::PTXInstruction::Mad:    _translateMad(i);    break;
 			case ir::PTXInstruction::Max:    _translateMax(i);    break;
@@ -420,41 +418,41 @@ namespace translator
 		switch (s)
 		{
 			case ir::PTXOperand::tid:    
-			switch (d)
-			{
-	        case ir::PTXOperand::ix: sr = ir::ILOperand::vTidInGrpX;     break;
-	        case ir::PTXOperand::iy: sr = ir::ILOperand::vTidInGrpY;     break;
-	        case ir::PTXOperand::iz: sr = ir::ILOperand::vTidInGrpZ;     break;
-	        default: assertM(false, "Invalid vector index " << d);
-			}
-			break;
+				switch (d)
+				{
+					case ir::PTXOperand::ix: sr = ir::ILOperand::vTidInGrpX; break;
+					case ir::PTXOperand::iy: sr = ir::ILOperand::vTidInGrpY; break;
+					case ir::PTXOperand::iz: sr = ir::ILOperand::vTidInGrpZ; break;
+					default: assertM(false, "Invalid vector index " << d);
+				}
+				break;
 			case ir::PTXOperand::ntid:   
-			switch (d)
-			{
-	        case ir::PTXOperand::ix: sr = ir::ILOperand::vNTidInGrpX;    break;
-	        case ir::PTXOperand::iy: sr = ir::ILOperand::vNTidInGrpY;    break;
-	        case ir::PTXOperand::iz: sr = ir::ILOperand::vNTidInGrpZ;    break;
-	        default: assertM(false, "Invalid vector index " << d);
-			}
-			break;
+				switch (d)
+				{
+					case ir::PTXOperand::ix: sr = ir::ILOperand::vNTidInGrpX; break;
+					case ir::PTXOperand::iy: sr = ir::ILOperand::vNTidInGrpY; break;
+					case ir::PTXOperand::iz: sr = ir::ILOperand::vNTidInGrpZ; break;
+					default: assertM(false, "Invalid vector index " << d);
+				}
+				break;
 			case ir::PTXOperand::ctaId:  
-			switch (d)
-			{
-	        case ir::PTXOperand::ix: sr = ir::ILOperand::vThreadGrpIdX;  break;
-	        case ir::PTXOperand::iy: sr = ir::ILOperand::vThreadGrpIdY;  break;
-	        case ir::PTXOperand::iz: sr = ir::ILOperand::vThreadGrpIdZ;  break;
-	        default: assertM(false, "Invalid vector index " << d);
-			}
-			break;
+				switch (d)
+				{
+					case ir::PTXOperand::ix: sr = ir::ILOperand::vThreadGrpIdX; break;
+					case ir::PTXOperand::iy: sr = ir::ILOperand::vThreadGrpIdY; break;
+					case ir::PTXOperand::iz: sr = ir::ILOperand::vThreadGrpIdZ; break;
+					default: assertM(false, "Invalid vector index " << d);
+				}
+				break;
 			case ir::PTXOperand::nctaId:
-			switch (d)
-			{
-	        case ir::PTXOperand::ix: sr = ir::ILOperand::vNThreadGrpIdX; break;
-	        case ir::PTXOperand::iy: sr = ir::ILOperand::vNThreadGrpIdY; break;
-	        case ir::PTXOperand::iz: sr = ir::ILOperand::vNThreadGrpIdZ; break;
-	        default: assertM(false, "Invalid vector index " << d);
-			}
-			break;
+				switch (d)
+				{
+					case ir::PTXOperand::ix: sr = ir::ILOperand::vNThreadGrpIdX; break;
+					case ir::PTXOperand::iy: sr = ir::ILOperand::vNThreadGrpIdY; break;
+					case ir::PTXOperand::iz: sr = ir::ILOperand::vNThreadGrpIdZ; break;
+					default: assertM(false, "Invalid vector index " << d);
+				}
+				break;
 			default: assertM(false, "Special Register " << s
 				<< " not supported");
 		}
@@ -814,6 +812,15 @@ namespace translator
 			{
 				switch (i.type)
 				{
+					case ir::PTXOperand::s32:
+					{
+						// do nothing
+						ir::ILMov mov;
+						mov.d = d;
+						mov.a = a;
+						_add(mov);
+						return;
+                    }
 					case ir::PTXOperand::s64:
 					{
 						// zext
@@ -1103,6 +1110,43 @@ namespace translator
 				<< "\" not supported");
 	}
 
+	void PTXToILTranslator::_translateClz(const ir::PTXInstruction &i)
+	{
+		// clz returns [0, 32]
+		// ffb_hi returns [0, 31] and -1
+		//
+		// ffb_hi r0, i.a
+		// ushr r1, r0, 31
+		// cmov_logical i.d, r1, 32, r0
+		
+		ir::ILOperand r0 = _tempRegister();
+		ir::ILOperand r1 = _tempRegister();
+
+		// ffb_hi r0, i.a
+		{
+			ir::ILFfb_Hi ffb_hi;
+			ffb_hi.d = r0; ffb_hi.a = _translate(i.a);
+			_add(ffb_hi);
+		}
+
+		// ushr r1, r0, 31
+		{
+			ir::ILUshr ushr;
+			ushr.d = r1; ushr.a = r0; ushr.b = _translateLiteral(31);
+			_add(ushr);
+		}
+
+		// cmov_logical i.d, r1, 32, r0
+		{
+			ir::ILCmov_Logical cmov_logical;
+			cmov_logical.d = _translate(i.d); 
+			cmov_logical.a = r1; 
+			cmov_logical.b = _translateLiteral(32);
+			cmov_logical.c = r0;
+			_add(cmov_logical);
+		}
+	}
+
 	void PTXToILTranslator::_translateCvt(const ir::PTXInstruction &i)
 	{
 		ir::ILOperand a, d;
@@ -1261,6 +1305,16 @@ namespace translator
 		ir::ILEnd end;
 
 		_add(end);
+	}
+
+	void PTXToILTranslator::_translateFma(const ir::PTXInstruction &i)
+	{
+		ir::ILFma fma;
+		fma.d = _translate(i.d);
+		fma.a = _translate(i.a);
+		fma.b = _translate(i.b);
+		fma.c = _translate(i.c);
+		_add(fma);
 	}
 
 	void PTXToILTranslator::_translateLd(const ir::PTXInstruction &i)
@@ -1433,6 +1487,11 @@ namespace translator
 						<< i.toString());
 			}
 		}
+	}
+
+	void PTXToILTranslator::_translateLdu(const ir::PTXInstruction &i)
+	{
+		_translateLd(i);
 	}
 
 	void PTXToILTranslator::_translateLdSharedByte(const ir::PTXInstruction &i)
@@ -2528,9 +2587,9 @@ namespace translator
 
 	void PTXToILTranslator::_translateSub(const ir::PTXInstruction& i)
 	{
-		// There's no sub instruction in IL so we need to use add
 		switch (i.type)
 		{
+			// There's no isub instruction in IL so we need to use add
 			case ir::PTXOperand::s32:
 			case ir::PTXOperand::u32:
 			case ir::PTXOperand::u64:

@@ -32,7 +32,9 @@ namespace ir
 				EndLoop,
 				Eq,
 				Exp_Vec,
+				Ffb_Hi,
 				Fence,
+				Fma,
 				FtoU,
 				Iadd,
 				Iand,
@@ -319,6 +321,15 @@ namespace ir
 			Instruction *clone(bool copy=true) const;
 	};
 
+	class ILFfb_Hi: public ILUnaryInstruction
+	{
+		public:
+			/*! \brief Default constructor */
+			ILFfb_Hi();
+
+			Instruction *clone(bool copy=true) const;
+	};
+
 	class ILFence: public ILInstruction
 	{
 		public:
@@ -339,6 +350,15 @@ namespace ir
 		private:
 			/*! \brief threads,lds flags */
 			bool _threads, _lds, _memory;
+	};
+
+	class ILFma : public ILTrinaryInstruction
+	{
+		public:
+			/*! \brief Default constructor */
+			ILFma();
+
+			Instruction *clone(bool copy=true) const;
 	};
 
 	class ILFtoU: public ILUnaryInstruction

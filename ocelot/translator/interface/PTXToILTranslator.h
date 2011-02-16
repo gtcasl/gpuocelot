@@ -62,14 +62,17 @@ namespace translator
 			void _translateAbs(const ir::PTXInstruction &i);
 			void _translateAdd(const ir::PTXInstruction &i);
 			void _translateAnd(const ir::PTXInstruction &i);
-			void _translateAtom(const ir::PTXInstruction& i);
+			void _translateAtom(const ir::PTXInstruction &i);
 			void _translateBar(const ir::PTXInstruction &i);
 			void _translateBra(const ir::PTXInstruction &i);
+			void _translateClz(const ir::PTXInstruction &i);
 			void _translateCvt(const ir::PTXInstruction &i);
 			void _translateDiv(const ir::PTXInstruction &i);
 			void _translateEx2(const ir::PTXInstruction &i);
 			void _translateExit(const ir::PTXInstruction &i);
+			void _translateFma(const ir::PTXInstruction &i);
 			void _translateLd(const ir::PTXInstruction &i);
+			void _translateLdu(const ir::PTXInstruction &i);
 			void _translateLdSharedByte(const ir::PTXInstruction &i);
 			void _translateLdSharedDword(const ir::PTXInstruction &i);
 			void _translateLg2(const ir::PTXInstruction &i);

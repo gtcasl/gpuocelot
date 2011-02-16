@@ -45,6 +45,7 @@ namespace executive
 			_cb1Mem(0),
 			_cb1Name(0)
 	{
+		registerAllocation();
 		initializeSharedMemory();
 	}
 
@@ -54,6 +55,14 @@ namespace executive
 		padding = (alignment == padding) ? 0 : padding;
 		size += padding;
 		return padding;
+	}
+
+	void ATIExecutableKernel::registerAllocation() {
+		//using namespace std;
+		report("Allocating registers");
+		registerMap = ir::PTXKernel::assignRegisters( *cfg() );
+		_registerCount = registerMap.size();
+		report(" Allocated " << _registerCount << " registers");
 	}
 
 	void ATIExecutableKernel::initializeSharedMemory()
@@ -374,9 +383,6 @@ namespace executive
 		int i = 0;
 		ParameterVector::const_iterator it;
 		for (it = arguments.begin(); it != arguments.end(); it++) {
-			assertM(it->arrayValues.size() <= 4, 
-					"Array parameter size greater than 4 not supported yet");
-
 			unsigned int j;
 			for (j = 0 ; j < it->arrayValues.size() ; j++)
 			{
@@ -412,11 +418,11 @@ namespace executive
 						break;
 					}
 					default:
-						{
-							assertM(false, "Parameter type " 
-									<< ir::PTXOperand::toString(it->type)
-									<< " not supported");
-						}
+					{
+						assertM(false, "Parameter type " 
+								<< ir::PTXOperand::toString(it->type)
+								<< " not supported");
+					}
 				}
 			}
 		}

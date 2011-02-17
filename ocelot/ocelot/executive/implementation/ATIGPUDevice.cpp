@@ -31,7 +31,7 @@ namespace executive
 {
     ATIGPUDevice::ATIGPUDevice() 
 		: 
-			_uav0Allocations(),
+			_allocations(),
 			_uav0AllocPtr(Uav0BaseAddr),
 			_uav0Resource(0),
 			_cb0Resource(0),
@@ -106,6 +106,18 @@ namespace executive
     ATIGPUDevice::~ATIGPUDevice() 
     {
 		report("Destroying ATIGPUDevice");
+
+		for(AllocationMap::iterator allocation = _allocations.begin(); 
+			allocation != _allocations.end(); ++allocation)
+		{
+			delete allocation->second;
+		}
+		
+		for(ModuleMap::iterator module = _modules.begin(); 
+			module != _modules.end(); ++module)
+		{
+			delete module->second;
+		}
 		_modules.clear();
 
 		CalDriver()->calResFree(_uav0Resource);
@@ -167,11 +179,23 @@ namespace executive
     void ATIGPUDevice::unload(const std::string& name)
     {
 		ModuleMap::iterator module = _modules.find(name);
-		if (module == _modules.end())
+		if(module == _modules.end())
 		{
 			Throw("Cannot unload unknown module - " << name);
 		}
-
+		
+		for(Module::GlobalMap::iterator global = module->second->globals.begin();
+			global != module->second->globals.end(); ++global)
+		{
+			AllocationMap::iterator allocation = 
+				_allocations.find(global->second);
+			assert(allocation != _allocations.end());
+			delete allocation->second;
+			_allocations.erase(allocation);
+		}
+		
+		delete module->second;
+		
 		_modules.erase(module);
     }
 
@@ -210,11 +234,11 @@ namespace executive
 		if (type == HostAllocation) {
 			assertM(false, "Not implemented yet");
 		} else {
-			if (!_uav0Allocations.empty()) {
+			if (!_allocations.empty()) {
 				AllocationMap::const_iterator alloc = 
-					_uav0Allocations.upper_bound((void*)address);
-				if(alloc != _uav0Allocations.begin()) --alloc;
-				if(alloc != _uav0Allocations.end())
+					_allocations.upper_bound((void*)address);
+				if(alloc != _allocations.begin()) --alloc;
+				if(alloc != _allocations.end())
 				{
 					if(!alloc->second->host()
 					 	&& (char*)address >= (char*)alloc->second->pointer())
@@ -249,7 +273,7 @@ namespace executive
 						allocation = allocations.begin(); 
 						allocation != allocations.end(); ++allocation)
 					{
-						_uav0Allocations.insert(std::make_pair(
+						_allocations.insert(std::make_pair(
 							(*allocation)->pointer(), *allocation));
 					}
 				}
@@ -276,7 +300,7 @@ namespace executive
 					allocation = allocations.begin();
 					allocation != allocations.end(); ++allocation)
 			{
-				_uav0Allocations.insert(std::make_pair((*allocation)->pointer(),
+				_allocations.insert(std::make_pair((*allocation)->pointer(),
 									*allocation));
 			}
 		}
@@ -300,7 +324,7 @@ namespace executive
 
 		MemoryAllocation *allocation = 
 			new MemoryAllocation(&_uav0Resource, _uav0AllocPtr, size);
-		_uav0Allocations.insert(
+		_allocations.insert(
 				std::make_pair(allocation->pointer(), allocation));
 
 		_uav0AllocPtr += aSize;
@@ -316,13 +340,20 @@ namespace executive
 
 	void ATIGPUDevice::free(void *pointer)
 	{
-		if (pointer == 0) return;
-
-		AllocationMap::iterator allocation = _uav0Allocations.find(pointer);
-		if (allocation != _uav0Allocations.end()) {
-			_uav0Allocations.erase(allocation);
+		if(pointer == 0) return;
+		
+		AllocationMap::iterator allocation = _allocations.find(pointer);
+		if(allocation != _allocations.end())
+		{
+			if(allocation->second->global())
+			{
+				Throw("Cannot free global pointer - " << pointer);
+			}
 			delete allocation->second;
-		} else {
+			_allocations.erase(allocation);
+		}
+		else
+		{
 			Throw("Tried to free invalid pointer - " << pointer);
 		}
 	}

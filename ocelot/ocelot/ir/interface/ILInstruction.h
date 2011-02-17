@@ -66,6 +66,7 @@ namespace ir
 				Mul,
 				Rcp,
 				Round_Nearest,
+				Rsq_Vec,
 				Sub,
 				Sqrt_Vec,
 				Uav_Arena_Load_Id,
@@ -650,6 +651,15 @@ namespace ir
 		public:
 			/*! \brief Default constructor */
 			ILRound_Nearest();
+
+			Instruction *clone(bool copy=true) const;
+	};
+
+	class ILRsq_Vec : public ILUnaryInstruction
+	{
+		public:
+			/*! \brief Default constructor */
+			ILRsq_Vec();
 
 			Instruction *clone(bool copy=true) const;
 	};

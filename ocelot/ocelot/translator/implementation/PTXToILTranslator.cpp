@@ -330,6 +330,7 @@ namespace translator
 			case ir::PTXInstruction::Or:     _translateOr(i);     break;
 			case ir::PTXInstruction::Rcp:    _translateRcp(i);    break;
 			case ir::PTXInstruction::Rem:    _translateRem(i);    break;
+			case ir::PTXInstruction::Rsqrt:  _translateRsqrt(i);  break;
 			case ir::PTXInstruction::SelP:   _translateSelP(i);   break;
 			case ir::PTXInstruction::Set:    _translateSet(i);    break;
 			case ir::PTXInstruction::SetP:   _translateSetP(i);   break;
@@ -1541,64 +1542,96 @@ namespace translator
 		// However, the two least significant bits of the address must be set to 
 		// zero. Therefore, we need to extract the correct byte from the dword:
 		//
-		// and temp1, i.a, 3
+		// iadd temp3, i.a, i.a.offset
+		// iand temp1, temp3, 3
 		// imul temp1, temp1, 8
-		// and temp2, i.a, 0xFFFFFFFC
+		// iand temp2, temp3, 0xFFFFFFFC
 		// lds_load_id(1) i.d, temp2
 		// ishr i.d, i.d, temp1
 		// ishl i.d, i.d, 24
 		// ishr i.d, i.d, 24
 		
-		assertM(i.a.offset == 0, "Ld Shared Byte from offset not supported");
-
 		ir::ILOperand temp1 = _tempRegister();
 		ir::ILOperand temp2 = _tempRegister();
+		ir::ILOperand temp3 = _tempRegister();
+
+		// add the address and the offset
+		{
+			if (i.a.offset == 0)
+			{
+				ir::ILMov mov;
+				mov.d = temp3;
+				mov.a = _translate(i.a);
+				_add(mov);
+			} else
+			{
+				ir::ILIadd iadd;
+				iadd.d = temp3;
+				iadd.a = _translate(i.a);
+				iadd.b = _translateLiteral(i.a.offset);
+				_add(iadd);
+			}
+		}
 
 		// get the two lsb's of the address.
-		ir::ILAnd iland1;
-		iland1.d = temp1;
-		iland1.a = _translate(i.a);
-		iland1.b = _translateLiteral(3);
-		_add(iland1);
+		{
+			ir::ILIand iand;
+			iand.d = temp1;
+			iand.a = temp3;
+			iand.b = _translateLiteral(3);
+			_add(iand);
+		}
 
 		// calculate the offset inside the dword
-		ir::ILImul imul;
-		imul.d = temp1;
-		imul.a = temp1;
-		imul.b = _translateLiteral(8);
-		_add(imul);
+		{
+			ir::ILImul imul;
+			imul.d = temp1;
+			imul.a = temp1;
+			imul.b = _translateLiteral(8);
+			_add(imul);
+		}
 
 		// set the two lsb's of the address to zero
-		ir::ILAnd iland2;
-		iland2.d = temp2;
-		iland2.a = _translate(i.a);
-		iland2.b = _translateLiteral((int)0xFFFFFFFC);
-		_add(iland2);
+		{
+			ir::ILIand iand;
+			iand.d = temp2;
+			iand.a = temp3;
+			iand.b = _translateLiteral((int)0xFFFFFFFC);
+			_add(iand);
+		}
 
 		// load dword
-		ir::ILLds_Load_Id lds_load_id;
-		lds_load_id.d = _translate(i.d);
-		lds_load_id.a = temp2;
-		_add(lds_load_id);
+		{
+			ir::ILLds_Load_Id lds_load_id;
+			lds_load_id.d = _translate(i.d);
+			lds_load_id.a = temp2;
+			_add(lds_load_id);
+		}
 
 		// extract the correct byte from the dword
-		ir::ILIshr ishr1;
-		ishr1.d = _translate(i.d);
-		ishr1.a = _translate(i.d);
-		ishr1.b = temp1;
-		_add(ishr1);
+		{
+			ir::ILIshr ishr;
+			ishr.d = _translate(i.d);
+			ishr.a = _translate(i.d);
+			ishr.b = temp1;
+			_add(ishr);
+		}
 
-		ir::ILIshl ishl;
-		ishl.d = _translate(i.d);
-		ishl.a = _translate(i.d);
-		ishl.b = _translateLiteral(24);
-		_add(ishl);
+		{
+			ir::ILIshl ishl;
+			ishl.d = _translate(i.d);
+			ishl.a = _translate(i.d);
+			ishl.b = _translateLiteral(24);
+			_add(ishl);
+		}
 
-		ir::ILIshr ishr2;
-		ishr2.d = _translate(i.d);
-		ishr2.a = _translate(i.d);
-		ishr2.b = _translateLiteral(24);
-		_add(ishr2);
+		{
+			ir::ILIshr ishr;
+			ishr.d = _translate(i.d);
+			ishr.a = _translate(i.d);
+			ishr.b = _translateLiteral(24);
+			_add(ishr);
+		}
 	}
 
 	void PTXToILTranslator::_translateLdSharedDword(const ir::PTXInstruction &i)
@@ -2097,6 +2130,678 @@ namespace translator
 			default: assertM(false, "Opcode \"" << i.toString() 
 							 << "\" not supported");
 		}
+	}
+
+	void PTXToILTranslator::_translateRsqrt(const ir::PTXInstruction &i)
+	{
+		// IEEE 754-compliant
+		// mdef(331)_out(1)_in(1)
+		// mov r0, in0
+		// 
+		// dcl_literal l0, 0x00000000, 0x7FFFFFFF, 0x7F800000, 0x00000000
+		// and r0._yz_, r0.x, l0
+		// 
+		// dcl_literal l1, 0x00000000, 0x00000000, 0x00000000, 0x00000000
+		// ieq r0.__z_, r0.z, l1
+		// 
+		// dcl_literal l2, 0x00000000, 0x00000000, 0x00000000, 0x00000000
+		// ine r0.___w, r0.y, l2
+		// and r0.__z_, r0.z, r0.w
+		// 
+		// dcl_literal l3, 0x00000000, 0x00000000, 0x00000000, 0x00000000
+		// ilt r1.x___, r0.x, l3
+		// and r0.___w, r0.w, r1.x
+		// ior r0.__z_, r0.z, r0.w
+		// 
+		// dcl_literal l4, 0x7F800000, 0x7F800000, 0x7F800000, 0x7F800000
+		// ilt r0._y__, l4, r0.y
+		// ior r0.__z_, r0.z, r0.y
+		// if_logicalnz r0.z
+		//     
+		//     dcl_literal l5, 0x007FFFFF, 0x007FFFFF, 0x007FFFFF, 0x007FFFFF
+		//     and r0.__z_, r0.x, l5
+		//     itof r0.__z_, r0.z
+		//     
+		//     dcl_literal l6, 0x7F800000, 0x007FFFFF, 0x00000000, 0x00000000
+		//     and r1.xy__, r0.z, l6
+		//     
+		//     dcl_literal l7, 0x00000017, 0x00000017, 0x00000017, 0x00000017
+		//     ishr r0.__z_, r1.x, l7
+		//     
+		//     dcl_literal l8, 0x00000018, 0x00000018, 0x00000018, 0x00000018
+		//     iadd r0.__z_, r0.z, l8
+		//     
+		//     dcl_literal l9, 0x00800000, 0x00800000, 0x00800000, 0x00800000
+		//     ior r1.x___, r1.y, l9
+		//     
+		//     dcl_literal l10, 0x00000096, 0x00000096, 0x00000096, 0x00000096
+		//     iadd r0.__z_, l10, r0.z_neg(xyzw)
+		//     
+		//     dcl_literal l11, 0x00000017, 0x00000017, 0x00000017, 0x00000017
+		//     ilt r1._y__, l11, r0.z
+		//     
+		//     dcl_literal l12, 0x00000018, 0x00000018, 0x00000018, 0x00000018
+		//     cmov_logical r0.__z_, r1.y, l12, r0.z
+		//     
+		//     dcl_literal l13, 0x00000000, 0x00000000, 0x00000000, 0x00000000
+		//     ilt r1._y__, l13, r0.z
+		//     ishr r1.__z_, r1.x, r0.z
+		//     inegate r0.__z_, r0.z
+		//     
+		//     dcl_literal l14, 0x00000017, 0x00000017, 0x00000017, 0x00000017
+		//     ishl r0.__z_, r0.z, l14
+		//     iadd r0.__z_, r1.x, r0.z
+		//     cmov_logical r0.__z_, r1.y, r1.z, r0.z
+		//     rsq_vec r0.__z_, r0.z
+		//     
+		//     dcl_literal l15, 0x7F800000, 0x7F800000, 0x7F800000, 0x7F800000
+		//     and r1.x___, r0.z, l15
+		//     if_logicalz r1.x
+		//         
+		//         dcl_literal l16, 0x007FFFFF, 0x007FFFFF, 0x007FFFFF, 0x007FFFFF
+		//         and r1._y__, r0.z, l16
+		//         itof r1._y__, r1.y
+		//         
+		//         dcl_literal l17, 0x00000000, 0x7F800000, 0x007FFFFF, 0x00000000
+		//         and r1._yz_, r1.y, l17
+		//         
+		//         dcl_literal l18, 0x00000017, 0x00000017, 0x00000017, 0x00000017
+		//         ishr r1._y__, r1.y, l18
+		//         
+		//         dcl_literal l19, 0x0000000C, 0x0000000C, 0x0000000C, 0x0000000C
+		//         iadd r1._y__, r1.y, l19
+		//         
+		//         dcl_literal l20, 0x00800000, 0x00800000, 0x00800000, 0x00800000
+		//         ior r1.__z_, r1.z, l20
+		//         
+		//         dcl_literal l21, 0x00000096, 0x00000096, 0x00000096, 0x00000096
+		//         iadd r1._y__, l21, r1.y_neg(xyzw)
+		//         
+		//         dcl_literal l22, 0x00000017, 0x00000017, 0x00000017, 0x00000017
+		//         ilt r1.___w, l22, r1.y
+		//         
+		//         dcl_literal l23, 0x00000018, 0x00000018, 0x00000018, 0x00000018
+		//         cmov_logical r1._y__, r1.w, l23, r1.y
+		//         
+		//         dcl_literal l24, 0x00000000, 0x00000000, 0x00000000, 0x00000000
+		//         ilt r1.___w, l24, r1.y
+		//         ishr r2.x___, r1.z, r1.y
+		//         inegate r1._y__, r1.y
+		//         
+		//         dcl_literal l25, 0x00000017, 0x00000017, 0x00000017, 0x00000017
+		//         ishl r1._y__, r1.y, l25
+		//         iadd r1._y__, r1.z, r1.y
+		//         cmov_logical r1._y__, r1.w, r2.x, r1.y
+		//     else
+		//         
+		//         dcl_literal l26, 0x7FFFFFFF, 0x7FFFFFFF, 0x7FFFFFFF, 0x7FFFFFFF
+		//         and r0.__z_, r0.z, l26
+		//         
+		//         dcl_literal l27, 0x00000017, 0x00000017, 0x00000017, 0x00000017
+		//         ishr r1.x___, r1.x, l27
+		//         
+		//         dcl_literal l28, 0x06000000, 0x06000000, 0x06000000, 0x06000000
+		//         iadd r0.__z_, r0.z, l28
+		//         
+		//         dcl_literal l29, 0xFFFFFF8D, 0xFFFFFF8D, 0xFFFFFF8D, 0xFFFFFF8D
+		//         iadd r1.x___, r1.x, l29
+		//         
+		//         dcl_literal l30, 0x0000007F, 0x0000007F, 0x0000007F, 0x0000007F
+		//         ilt r1.x___, l30, r1.x
+		//         
+		//         dcl_literal l31, 0x7F800000, 0x7F800000, 0x7F800000, 0x7F800000
+		//         cmov_logical r1._y__, r1.x, l31, r0.z
+		//     endif
+		//     
+		//     dcl_literal l32, 0xFFC00000, 0xFFC00000, 0xFFC00000, 0xFFC00000
+		//     cmov_logical r0.__z_, r0.w, l32, r1.y
+		//     
+		//     dcl_literal l33, 0x7FC00000, 0x7FC00000, 0x7FC00000, 0x7FC00000
+		//     ior r0.___w, r0.x, l33
+		//     cmov_logical r0.x___, r0.y, r0.w, r0.z
+		// else
+		//     rsq_vec r0.x___, r0.x
+		// endif
+		// mov out0, r0
+		// mend
+
+		ir::ILOperand r0 = _tempRegister();
+		ir::ILOperand r1 = _tempRegister();
+		ir::ILOperand r2 = _tempRegister();
+
+		// mov r0, in0
+		{
+			ir::ILMov mov;
+			mov.d = r0;
+			mov.a = _translate(i.a);
+			_add(mov);
+		}
+
+		// dcl_literal l0, 0x00000000, 0x7FFFFFFF, 0x7F800000, 0x00000000
+		// and r0._yz_, r0.x, l0
+		{
+			// TODO Implement multi-valued literals. Otherwise, we need to use
+			// two and's.
+			ir::ILAnd and1;
+			and1.d = r0._y__(); 
+			and1.a = r0.x(); 
+			and1.b = _translateLiteral((int)0x7FFFFFFF);
+			_add(and1);
+
+			ir::ILAnd and2;
+			and2.d = r0.__z_();
+			and2.a = r0.x();
+			and2.b = _translateLiteral((int)0x7F800000);
+			_add(and2);
+		}
+
+		// dcl_literal l1, 0x00000000, 0x00000000, 0x00000000, 0x00000000
+		// ieq r0.__z_, r0.z, l1
+		{
+			ir::ILIeq ieq;
+			ieq.d = r0.__z_();
+			ieq.a = r0.z();
+			ieq.b = _translateLiteral(0);
+			_add(ieq);
+		}
+
+		// dcl_literal l2, 0x00000000, 0x00000000, 0x00000000, 0x00000000
+		// ine r0.___w, r0.y, l2
+		// and r0.__z_, r0.z, r0.w
+		{
+			ir::ILIne ine;
+			ine.d = r0.___w();
+			ine.a = r0.y();
+			ine.b = _translateLiteral(0);
+			_add(ine);
+
+			ir::ILAnd and1;
+			and1.d = r0.__z_();
+			and1.a = r0.z();
+			and1.b = r0.w();
+			_add(and1);
+		}
+
+		// dcl_literal l3, 0x00000000, 0x00000000, 0x00000000, 0x00000000
+		// ilt r1.x___, r0.x, l3
+		// and r0.___w, r0.w, r1.x
+		// ior r0.__z_, r0.z, r0.w
+		{
+			ir::ILIlt ilt;
+			ilt.d = r1.x___();
+			ilt.a = r0.x();
+			ilt.b = _translateLiteral(0);
+			_add(ilt);
+
+			ir::ILAnd and1;
+			and1.d = r0.___w();
+			and1.a = r0.w();
+			and1.b = r1.x();
+			_add(and1);
+
+			ir::ILIor ior;
+			ior.d = r0.__z_();
+			ior.a = r0.z();
+			ior.b = r0.w();
+			_add(ior);
+		}
+
+		// dcl_literal l4, 0x7F800000, 0x7F800000, 0x7F800000, 0x7F800000
+		// ilt r0._y__, l4, r0.y
+		// ior r0.__z_, r0.z, r0.y
+		{
+			ir::ILIlt ilt;
+			ilt.d = r0._y__();
+			ilt.a = _translateLiteral((int)0x7F800000);
+			ilt.b = r0.y();
+			_add(ilt);
+
+			ir::ILIor ior;
+			ior.d = r0.__z_();
+			ior.a = r0.z();
+			ior.b = r0.y();
+			_add(ior);
+		}
+
+		// if_logicalnz r0.z
+		{
+			ir::ILIfLogicalNZ if_logicalnz;
+			if_logicalnz.a = r0.z();
+			_add(if_logicalnz);
+		}
+		
+		//     dcl_literal l5, 0x007FFFFF, 0x007FFFFF, 0x007FFFFF, 0x007FFFFF
+		//     and r0.__z_, r0.x, l5
+		//     itof r0.__z_, r0.z
+		{
+			ir::ILAnd and1;
+			and1.d = r0.__z_();
+			and1.a = r0.x();
+			and1.b = _translateLiteral((int)0x007FFFFF);
+			_add(and1);
+
+			ir::ILItoF itof;
+			itof.d = r0.__z_();
+			itof.a = r0.z();
+			_add(itof);
+		}
+
+		//     dcl_literal l6, 0x7F800000, 0x007FFFFF, 0x00000000, 0x00000000
+		//     and r1.xy__, r0.z, l6
+		{
+			// TODO Implement multi-valued literals.
+			ir::ILAnd and1;
+			and1.d = r1.x___();
+			and1.a = r0.z();
+			and1.b = _translateLiteral((int)0x7F800000);
+			_add(and1);
+
+			ir::ILAnd and2;
+			and2.d = r1._y__();
+			and2.a = r0.z();
+			and2.b = _translateLiteral((int)0x007FFFFF);
+			_add(and2);
+		}
+
+		//     dcl_literal l7, 0x00000017, 0x00000017, 0x00000017, 0x00000017
+		//     ishr r0.__z_, r1.x, l7
+		{
+			ir::ILIshr ishr;
+			ishr.d = r0.__z_();
+			ishr.a = r1.x();
+			ishr.b = _translateLiteral((int)0x00000017);
+			_add(ishr);
+		}
+
+		//     dcl_literal l8, 0x00000018, 0x00000018, 0x00000018, 0x00000018
+		//     iadd r0.__z_, r0.z, l8
+		{
+			ir::ILIadd iadd;
+			iadd.d = r0.__z_();
+			iadd.a = r0.z();
+			iadd.b = _translateLiteral((int)0x00000018);
+			_add(iadd);
+		}
+
+		//     dcl_literal l9, 0x00800000, 0x00800000, 0x00800000, 0x00800000
+		//     ior r1.x___, r1.y, l9
+		{
+			ir::ILIor ior;
+			ior.d = r1.x___();
+			ior.a = r1.y();
+			ior.b = _translateLiteral((int)0x00800000);
+			_add(ior);
+		}
+
+		//     dcl_literal l10, 0x00000096, 0x00000096, 0x00000096, 0x00000096
+		//     iadd r0.__z_, l10, r0.z_neg(xyzw)
+		{
+			ir::ILIadd iadd;
+			iadd.d = r0.__z_();
+			iadd.a = _translateLiteral((int)0x00000096);
+			iadd.b = r0.z().neg();
+			_add(iadd);
+		}
+
+		//     dcl_literal l11, 0x00000017, 0x00000017, 0x00000017, 0x00000017
+		//     ilt r1._y__, l11, r0.z
+		{
+			ir::ILIlt ilt;
+			ilt.d = r1._y__();
+			ilt.a = _translateLiteral((int)0x00000017);
+			ilt.b = r0.z();
+			_add(ilt);
+		}
+
+		//     dcl_literal l12, 0x00000018, 0x00000018, 0x00000018, 0x00000018
+		//     cmov_logical r0.__z_, r1.y, l12, r0.z
+		{
+			ir::ILCmov_Logical cmov_logical;
+			cmov_logical.d = r0.__z_();
+			cmov_logical.a = r1.y();
+			cmov_logical.b = _translateLiteral((int)0x00000018);
+			cmov_logical.c = r0.z();
+			_add(cmov_logical);
+		}
+
+		//     dcl_literal l13, 0x00000000, 0x00000000, 0x00000000, 0x00000000
+		//     ilt r1._y__, l13, r0.z
+		//     ishr r1.__z_, r1.x, r0.z
+		//     inegate r0.__z_, r0.z
+		{
+			ir::ILIlt ilt;
+			ilt.d = r1._y__();
+			ilt.a = _translateLiteral(0);
+			ilt.b = r0.z();
+			_add(ilt);
+
+			ir::ILIshr ishr;
+			ishr.d = r1.__z_();
+			ishr.a = r1.x();
+			ishr.b = r0.z();
+			_add(ishr);
+
+			ir::ILInegate inegate;
+			inegate.d = r0.__z_();
+			inegate.a = r0.x();
+			_add(inegate);
+		}
+
+		//     dcl_literal l14, 0x00000017, 0x00000017, 0x00000017, 0x00000017
+		//     ishl r0.__z_, r0.z, l14
+		//     iadd r0.__z_, r1.x, r0.z
+		//     cmov_logical r0.__z_, r1.y, r1.z, r0.z
+		//     rsq_vec r0.__z_, r0.z
+		{
+			ir::ILIshl ishl;
+			ishl.d = r0.__z_();
+			ishl.a = r0.z();
+			ishl.b = _translateLiteral((int)0x00000017);
+			_add(ishl);
+
+			ir::ILIadd iadd;
+			iadd.d = r0.__z_();
+			iadd.a = r1.x();
+			iadd.b = r0.z();
+			_add(iadd);
+
+			ir::ILCmov_Logical cmov_logical;
+			cmov_logical.d = r0.__z_();
+			cmov_logical.a = r1.y();
+			cmov_logical.b = r1.z();
+			cmov_logical.c = r0.z();
+			_add(cmov_logical);
+
+			ir::ILRsq_Vec rsq_vec;
+			rsq_vec.d = r0.__z_();
+			rsq_vec.a = r0.z();
+			_add(rsq_vec);
+		}
+
+		//     dcl_literal l15, 0x7F800000, 0x7F800000, 0x7F800000, 0x7F800000
+		//     and r1.x___, r0.z, l15
+		//     if_logicalz r1.x
+		{
+			ir::ILAnd and1;
+			and1.d = r1.x___();
+			and1.a = r0.z();
+			and1.b = _translateLiteral((int)0x7F800000);
+			_add(and1);
+
+			ir::ILIfLogicalZ if_logicalz;
+			if_logicalz.a = r1.x();
+			_add(if_logicalz);
+		}
+		
+		//         dcl_literal l16, 0x007FFFFF, 0x007FFFFF, 0x007FFFFF, 0x007FFFFF
+		//         and r1._y__, r0.z, l16
+		//         itof r1._y__, r1.y
+		{
+			ir::ILAnd and1;
+			and1.d = r1._y__();
+			and1.a = r0.z();
+			and1.b = _translateLiteral((int)0x007FFFFF);
+			_add(and1);
+
+			ir::ILItoF itof;
+			itof.d = r1._y__();
+			itof.a = r1.y();
+			_add(itof);
+		}
+
+		//         dcl_literal l17, 0x00000000, 0x7F800000, 0x007FFFFF, 0x00000000
+		//         and r1._yz_, r1.y, l17
+		{
+			// TODO Implement multi-valued literals.
+			ir::ILAnd and1;
+			and1.d = r1._y__();
+			and1.a = r1.y();
+			and1.b = _translateLiteral((int)0x7F800000);
+			_add(and1);
+
+			ir::ILAnd and2;
+			and2.d = r1.__z_();
+			and2.a = r1.y();
+			and2.b = _translateLiteral((int)0x007FFFFF);
+			_add(and2);
+		}
+
+		//         dcl_literal l18, 0x00000017, 0x00000017, 0x00000017, 0x00000017
+		//         ishr r1._y__, r1.y, l18
+		{
+			ir::ILIshr ishr;
+			ishr.d = r1._y__();
+			ishr.a = r1.y();
+			ishr.b = _translateLiteral((int)0x00000017);
+			_add(ishr);
+		}
+
+		//         dcl_literal l19, 0x0000000C, 0x0000000C, 0x0000000C, 0x0000000C
+		//         iadd r1._y__, r1.y, l19
+		{
+			ir::ILIadd iadd;
+			iadd.d = r1._y__();
+			iadd.a = r1.y();
+			iadd.b = _translateLiteral((int)0x0000000C);
+			_add(iadd);
+		}
+
+		//         dcl_literal l20, 0x00800000, 0x00800000, 0x00800000, 0x00800000
+		//         ior r1.__z_, r1.z, l20
+		{
+			ir::ILIor ior;
+			ior.d = r1.__z_();
+			ior.a = r1.z();
+			ior.b = _translateLiteral((int)0x00800000);
+			_add(ior);
+		}
+
+		//         dcl_literal l21, 0x00000096, 0x00000096, 0x00000096, 0x00000096
+		//         iadd r1._y__, l21, r1.y_neg(xyzw)
+		{
+			ir::ILIadd iadd;
+			iadd.d = r1._y__();
+			iadd.a = _translateLiteral((int)0x00000096);
+			iadd.b = r1.y().neg();
+			_add(iadd);
+		}
+
+		//         dcl_literal l22, 0x00000017, 0x00000017, 0x00000017, 0x00000017
+		//         ilt r1.___w, l22, r1.y
+		{
+			ir::ILIlt ilt;
+			ilt.d = r1.___w();
+			ilt.a = _translateLiteral((int)0x00000017);
+			ilt.b = r1.y();
+			_add(ilt);
+		}
+
+		//         dcl_literal l23, 0x00000018, 0x00000018, 0x00000018, 0x00000018
+		//         cmov_logical r1._y__, r1.w, l23, r1.y
+		{
+			ir::ILCmov_Logical cmov_logical;
+			cmov_logical.d = r1._y__();
+			cmov_logical.a = r1.w();
+			cmov_logical.b = _translateLiteral((int)0x00000018);
+			cmov_logical.c = r1.y();
+			_add(cmov_logical);
+		}
+
+		//         dcl_literal l24, 0x00000000, 0x00000000, 0x00000000, 0x00000000
+		//         ilt r1.___w, l24, r1.y
+		//         ishr r2.x___, r1.z, r1.y
+		//         inegate r1._y__, r1.y
+		{
+			ir::ILIlt ilt;
+			ilt.d = r1.___w();
+			ilt.a = _translateLiteral(0);
+			ilt.b = r1.y();
+			_add(ilt);
+
+			ir::ILIshr ishr;
+			ishr.d = r2.x___();
+			ishr.a = r1.z();
+			ishr.b = r1.y();
+			_add(ishr);
+
+			ir::ILInegate inegate;
+			inegate.d = r1._y__();
+			inegate.a = r1.y();
+			_add(inegate);
+		}
+
+		//         dcl_literal l25, 0x00000017, 0x00000017, 0x00000017, 0x00000017
+		//         ishl r1._y__, r1.y, l25
+		//         iadd r1._y__, r1.z, r1.y
+		//         cmov_logical r1._y__, r1.w, r2.x, r1.y
+		{
+			ir::ILIshl ishl;
+			ishl.d = r1._y__();
+			ishl.a = r1.y();
+			ishl.b = _translateLiteral((int)0x00000017);
+			_add(ishl);
+
+			ir::ILIadd iadd;
+			iadd.d = r1._y__();
+			iadd.a = r1.z();
+			iadd.b = r1.y();
+			_add(iadd);
+
+			ir::ILCmov_Logical cmov_logical;
+			cmov_logical.d = r1._y__();
+			cmov_logical.a = r1.w();
+			cmov_logical.b = r2.x();
+			cmov_logical.c = r1.y();
+			_add(cmov_logical);
+		}
+
+		//     else
+		{
+			_add(ir::ILElse());
+		}
+		
+		//         dcl_literal l26, 0x7FFFFFFF, 0x7FFFFFFF, 0x7FFFFFFF, 0x7FFFFFFF
+		//         and r0.__z_, r0.z, l26
+		{
+			ir::ILAnd and1;
+			and1.d = r0.__z_();
+			and1.a = r0.z();
+			and1.b = _translateLiteral((int)0x7FFFFFFF);
+			_add(and1);
+		}
+
+		//         dcl_literal l27, 0x00000017, 0x00000017, 0x00000017, 0x00000017
+		//         ishr r1.x___, r1.x, l27
+		{
+			ir::ILIshr ishr;
+			ishr.d = r1.x___();
+			ishr.a = r1.x();
+			ishr.b = _translateLiteral((int)0x00000017);
+			_add(ishr);
+		}
+
+		//         dcl_literal l28, 0x06000000, 0x06000000, 0x06000000, 0x06000000
+		//         iadd r0.__z_, r0.z, l28
+		{
+			ir::ILIadd iadd;
+			iadd.d = r0.__z_();
+			iadd.a = r0.z();
+			iadd.b = _translateLiteral((int)0x06000000);
+			_add(iadd);
+		}
+
+		//         dcl_literal l29, 0xFFFFFF8D, 0xFFFFFF8D, 0xFFFFFF8D, 0xFFFFFF8D
+		//         iadd r1.x___, r1.x, l29
+		{
+			ir::ILIadd iadd;
+			iadd.d = r1.x___();
+			iadd.a = r1.x();
+			iadd.b = _translateLiteral((int)0xFFFFFF8D);
+			_add(iadd);
+		}
+
+		//         dcl_literal l30, 0x0000007F, 0x0000007F, 0x0000007F, 0x0000007F
+		//         ilt r1.x___, l30, r1.x
+		{
+			ir::ILIlt ilt;
+			ilt.d = r1.x___();
+			ilt.a = _translateLiteral((int)0x0000007F);
+			ilt.b = r1.x();
+			_add(ilt);
+		}
+
+		//         dcl_literal l31, 0x7F800000, 0x7F800000, 0x7F800000, 0x7F800000
+		//         cmov_logical r1._y__, r1.x, l31, r0.z
+		{
+			ir::ILCmov_Logical cmov_logical;
+			cmov_logical.d = r1._y__();
+			cmov_logical.a = r1.x();
+			cmov_logical.b = _translateLiteral((int)0x7F800000);
+			cmov_logical.c = r0.z();
+			_add(cmov_logical);
+		}
+
+		//     endif
+		{
+			_add(ir::ILEndIf());
+		}
+
+		//     dcl_literal l32, 0xFFC00000, 0xFFC00000, 0xFFC00000, 0xFFC00000
+		//     cmov_logical r0.__z_, r0.w, l32, r1.y
+		{
+			ir::ILCmov_Logical cmov_logical;
+			cmov_logical.d = r0.__z_();
+			cmov_logical.a = r0.w();
+			cmov_logical.b = _translateLiteral((int)0xFFC00000);
+			cmov_logical.c = r1.y();
+			_add(cmov_logical);
+		}
+
+		//     dcl_literal l33, 0x7FC00000, 0x7FC00000, 0x7FC00000, 0x7FC00000
+		//     ior r0.___w, r0.x, l33
+		//     cmov_logical r0.x___, r0.y, r0.w, r0.z
+		{
+			ir::ILIor ior;
+			ior.d = r0.___w();
+			ior.a = r0.x();
+			ior.b = _translateLiteral((int)0x7FC00000);
+			_add(ior);
+
+			ir::ILCmov_Logical cmov_logical;
+			cmov_logical.d = r0.x___();
+			cmov_logical.a = r0.y();
+			cmov_logical.b = r0.w();
+			cmov_logical.c = r0.z();
+			_add(cmov_logical);
+		}
+
+		// else
+		{
+			_add(ir::ILElse());
+		}
+
+		//     rsq_vec r0.x___, r0.x
+		{
+			ir::ILRsq_Vec rsq_vec;
+			rsq_vec.d = r0.x___();
+			rsq_vec.a = r0.x();
+			_add(rsq_vec);
+		}
+
+		// endif
+		{
+			_add(ir::ILEndIf());
+		}
+
+		// mov out0, r0
+		{
+			ir::ILMov mov;
+			mov.d = _translate(i.d);
+			mov.a = r0;
+			_add(mov);
+		}
+
+		// mend
 	}
 
 	void PTXToILTranslator::_translateSelP(const ir::PTXInstruction &i)

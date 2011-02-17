@@ -248,7 +248,7 @@ namespace executive
 			 ***********************************************************/
 			//@{
 			/*! \brief A map of memory allocations in device space */
-			AllocationMap _uav0Allocations;
+			AllocationMap _allocations;
 			/*! \brief Pointer to the next chunck of allocatable memory */
 			CALdeviceptr _uav0AllocPtr;
 			/*! \brief CAL uav0 resource */

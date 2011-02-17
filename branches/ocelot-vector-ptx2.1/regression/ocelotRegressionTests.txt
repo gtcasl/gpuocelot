@@ -1,0 +1,20 @@
+../TestLexer -i ../tests/ptx
+../TestParser -i ../tests/ptx
+../TestEmulator
+../TestInstructions
+../TestKernels
+../TestDataflowGraph -i ../tests/ptx
+../TestLLVMInstructions
+../TestPTXToLLVMTranslator -i ../tests/ptx
+../TestLLVMKernels
+../TestCudaMalloc 
+../TestCudaTexture2D
+../TestCudaTextureArray
+../TestCudaGlobals
+../TestDeviceSwitching
+../TestCudaSequence
+../TestCalVectorScale
+../TestPTXAssembly
+../TestFunctionCall
+../TestIndirectFunctionCall
+

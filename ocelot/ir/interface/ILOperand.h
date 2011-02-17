@@ -106,9 +106,14 @@ namespace ir
 			//@{
 			ILOperand x() const;
 			ILOperand y() const;
+			ILOperand z() const;
+			ILOperand w() const;
 			ILOperand xy() const;
 			ILOperand xxxx() const;
+			ILOperand x___() const;
 			ILOperand _y__() const;
+			ILOperand __z_() const;
+			ILOperand ___w() const;
 			//@}
 			
 			/*! \brief Negate */

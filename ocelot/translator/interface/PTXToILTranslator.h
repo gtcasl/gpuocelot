@@ -89,6 +89,7 @@ namespace translator
 			void _translateOr(const ir::PTXInstruction &i);
 			void _translateRcp(const ir::PTXInstruction &i);
 			void _translateRem(const ir::PTXInstruction &i);
+			void _translateRsqrt(const ir::PTXInstruction &i);
 			void _translateSelP(const ir::PTXInstruction &i);
 			void _translateSet(const ir::PTXInstruction &i);
 			void _translateSetP(const ir::PTXInstruction &i);

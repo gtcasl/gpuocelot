@@ -151,6 +151,22 @@ namespace ir
 		return o;
 	}
 
+	ILOperand ILOperand::z() const
+	{
+		ILOperand o(*this);
+		o.swizzle_z = CompSel_Z;
+
+		return o;
+	}
+
+	ILOperand ILOperand::w() const
+	{
+		ILOperand o(*this);
+		o.swizzle_w = CompSel_W;
+
+		return o;
+	}
+
 	ILOperand ILOperand::xy() const
 	{
 		ILOperand o(*this);
@@ -171,6 +187,17 @@ namespace ir
 		return o;
 	}
 
+	ILOperand ILOperand::x___() const
+	{
+		ILOperand o(*this);
+		o.swizzle_x = CompSel_X;
+		o.swizzle_y = CompSel_NoWrite;
+		o.swizzle_z = CompSel_NoWrite;
+		o.swizzle_w = CompSel_NoWrite;
+
+		return o;
+	}
+
 	ILOperand ILOperand::_y__() const
 	{
 		ILOperand o(*this);
@@ -178,6 +205,28 @@ namespace ir
 		o.swizzle_y = CompSel_Y;
 		o.swizzle_z = CompSel_NoWrite;
 		o.swizzle_w = CompSel_NoWrite;
+
+		return o;
+	}
+
+	ILOperand ILOperand::__z_() const
+	{
+		ILOperand o(*this);
+		o.swizzle_x = CompSel_NoWrite;
+		o.swizzle_y = CompSel_NoWrite;
+		o.swizzle_z = CompSel_Z;
+		o.swizzle_w = CompSel_NoWrite;
+
+		return o;
+	}
+
+	ILOperand ILOperand::___w() const
+	{
+		ILOperand o(*this);
+		o.swizzle_x = CompSel_NoWrite;
+		o.swizzle_y = CompSel_NoWrite;
+		o.swizzle_z = CompSel_NoWrite;
+		o.swizzle_w = CompSel_W;
 
 		return o;
 	}

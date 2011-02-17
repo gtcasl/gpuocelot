@@ -62,6 +62,7 @@ namespace ir
 			case Mul:                   return "mul";
 			case Rcp:                   return "rcp";
 			case Round_Nearest:         return "round_nearest";
+			case Rsq_Vec:               return "rsq_vec";
 			case Sub:                   return "sub";
 			case Sqrt_Vec:              return "sqrt_vec";
 			case Uav_Arena_Load_Id:     return "uav_arena_load_id(1)";
@@ -725,6 +726,15 @@ namespace ir
 	Instruction *ILRound_Nearest::clone(bool copy) const
 	{
 		return new ILRound_Nearest(*this);
+	}
+
+	ILRsq_Vec::ILRsq_Vec() : ILUnaryInstruction(Rsq_Vec)
+	{
+	}
+
+	Instruction *ILRsq_Vec::clone(bool copy) const
+	{
+		return new ILRsq_Vec(*this);
 	}
 
 	ILSub::ILSub() : ILBinaryInstruction(Sub)

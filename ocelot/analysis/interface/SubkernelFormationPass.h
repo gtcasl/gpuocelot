@@ -39,7 +39,7 @@ namespace analysis
 		typedef std::vector<ir::PTXKernel*> KernelVector;
 			
 	public:
-		SubkernelFormationPass(unsigned int expectedRegionSize = 5);
+		SubkernelFormationPass(unsigned int expectedRegionSize = 50);
 		void runOnModule(ir::Module& m);
 
 	public:
@@ -50,7 +50,7 @@ namespace analysis
 				KernelVector> KernelVectorMap;
 				
 		public:
-			ExtractKernelsPass(unsigned int expectedRegionSize = 5);
+			ExtractKernelsPass(unsigned int expectedRegionSize = 50);
 			void initialize(const ir::Module& m);
 			void runOnKernel(ir::Kernel& k);
 			void finalize();

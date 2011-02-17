@@ -554,7 +554,8 @@ static void updateTailCallTargets(
 static void createScheduler(ir::PTXKernel& kernel,
 	ir::PTXKernel& originalKernel, const BlockSet& savedBlocks)
 {
-	typedef ir::BasicBlock::EdgePointerVector EdgeVector;
+	typedef ir::BasicBlock::EdgePointerVector EdgePointerVector;
+	typedef std::vector<ir::Edge> EdgeVector;
 	
 	if(kernel.cfg()->get_entry_block()->out_edges.size() == 1)
 	{
@@ -618,7 +619,8 @@ static void createScheduler(ir::PTXKernel& kernel,
 		ir::Edge::FallThrough));
 
 	assert(scheduler->out_edges.size() > 1);
-
+	
+	// unroll the scheduler into a chain of 2-path schedulers
 	while(scheduler->out_edges.size() > 2)
 	{
 		ir::ControlFlowGraph::edge_iterator target = scheduler->out_edges[0];
@@ -674,20 +676,27 @@ static void createScheduler(ir::PTXKernel& kernel,
 		ir::ControlFlowGraph::const_edge_pointer_iterator 
 			edge = scheduler->out_edges.begin();
 		
-		EdgeVector killedEdges;
+		EdgePointerVector killedEdges;
+		EdgeVector newEdges;
 		
 		for(std::advance(edge, 1); edge != scheduler->out_edges.end(); ++edge)
 		{
 			ir::Edge replacement(newScheduler, (*edge)->tail, (*edge)->type);
 			
-			kernel.cfg()->insert_edge(replacement);
+			newEdges.push_back(replacement);
 			killedEdges.push_back(*edge);
 		}
 		
-		for(EdgeVector::iterator edge = killedEdges.begin();
+		for(EdgePointerVector::iterator edge = killedEdges.begin();
 			edge != killedEdges.end(); ++edge)
 		{
 			kernel.cfg()->remove_edge(*edge);
+		}
+
+		for(EdgeVector::iterator edge = newEdges.begin();
+			edge != newEdges.end(); ++edge)
+		{
+			kernel.cfg()->insert_edge(*edge);
 		}
 		
 		kernel.cfg()->insert_edge(newFallthrough);

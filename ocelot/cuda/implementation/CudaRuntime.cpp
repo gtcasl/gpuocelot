@@ -330,6 +330,22 @@ void cuda::CudaRuntime::_enumerateDevices() {
 		std::cerr << "==Ocelot==  Consider enabling the emulator in " 
 			<< "configure.ocelot.\n";
 	}
+	else
+	{
+		// Register modules that have already been loaded
+		for(ModuleMap::iterator module = _modules.begin(); 
+			module != _modules.end(); ++module) {
+			if(!module->second.loaded()) continue;
+			for(DeviceVector::iterator device = _devices.begin(); 
+				device != _devices.end(); ++device) {
+				(*device)->select();
+				(*device)->load(&module->second);
+				(*device)->setOptimizationLevel(_optimization);
+				(*device)->unselect();
+			}
+		}
+
+	}
 }
 
 //! acquires mutex and locks the runtime

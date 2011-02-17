@@ -29,6 +29,8 @@ namespace ir
 			case Eq:                    return "eq";
 			case Exp_Vec:               return "exp_vec";
 			case Fence:                 return "fence";
+			case Ffb_Hi:                return "ffb_hi";
+			case Fma:                   return "fma";
 			case FtoU:                  return "ftou";
 			case Iadd:                  return "iadd";
 			case Iand:                  return "iand";
@@ -341,6 +343,15 @@ namespace ir
 		return new ILExp_Vec(*this);
 	}
 
+	ILFfb_Hi::ILFfb_Hi() : ILUnaryInstruction(Ffb_Hi)
+	{
+	}
+
+	Instruction *ILFfb_Hi::clone(bool copy) const
+	{
+		return new ILFfb_Hi(*this);
+	}
+
 	ILFence::ILFence() : ILInstruction(Fence), _threads(true), _lds(false), 
 		_memory(false)
 	{
@@ -377,6 +388,15 @@ namespace ir
 	void ILFence::memory(bool value)
 	{
 		_memory = value;
+	}
+
+	ILFma::ILFma() : ILTrinaryInstruction(Fma)
+	{
+	}
+
+	Instruction *ILFma::clone(bool copy) const
+	{
+		return new ILFma(*this);
 	}
 
 	ILFtoU::ILFtoU() : ILUnaryInstruction(FtoU)

@@ -28,7 +28,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 // Turn on report messages
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 // Memory Alignment (must be a power of 2) 
 // (cuda currently requires 256-byte alignment)

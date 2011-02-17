@@ -46,6 +46,7 @@ namespace ir
 						Block,          // Block of nodes
 						IfThen,         // If-Then
 						IfThenElse,     // If-Then-Else
+						WhileLoop,      // While-Loop
 						NaturalLoop,    // Loop with side exits
 						Invalid
 					};
@@ -152,6 +153,14 @@ namespace ir
 				private:
 					const NodeList buildChildren(Node* cond, 
 							Node* ifTrue, Node* ifFalse) const;
+			};
+
+			class WhileLoopNode : public Node
+			{
+				public:
+					/*! \brief Constructor */
+					WhileLoopNode(const std::string& label, 
+						const NodeList& children);
 			};
 
 			class NaturalLoopNode : public Node

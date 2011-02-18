@@ -45,6 +45,7 @@ TraceConfiguration::TraceConfiguration()
 	convergence.enabled = false;
 	loadBalance = false;
 	basicBlockCount = false;
+  x86trace = false;
 
 	try
 	{
@@ -68,6 +69,7 @@ TraceConfiguration::TraceConfiguration()
 			parallelism = traceConfig.parse<bool>("parallelism", false);
 			loadBalance = traceConfig.parse<bool>("loadBalance", false);
 			basicBlockCount = traceConfig.parse<bool>("basicBlockCount", false);
+      x86trace = traceConfig.parse<bool>("x86Trace", false);
 
 			// more detailed configuration for this trace generator
 			hydrazine::json::Visitor warpSyncConfig =
@@ -281,6 +283,13 @@ TraceConfiguration::TraceConfiguration()
 		_basicBlockCountGenerator.database = database;
 		ocelot::addTraceGenerator(_basicBlockCountGenerator, true);
 	}
+
+  if(x86trace) 
+  {
+    report("Creating x86 trace generator");
+    _x86TraceGenerator.database = database;
+    ocelot::addTraceGenerator(_x86TraceGenerator, true);
+  }
 }
 
 }

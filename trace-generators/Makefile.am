@@ -21,7 +21,8 @@ BUILT_SOURCES =
 bin_PROGRAMS = 
 check_PROGRAMS = 
 EXTRA_PROGRAMS = MemoryTraceAnalyzer InstructionTraceAnalyzer \
-	BranchTraceAnalyzer ParallelismTraceAnalyzer SharedComputationAnalyzer
+	BranchTraceAnalyzer ParallelismTraceAnalyzer SharedComputationAnalyzer \
+	X86TraceGenerator
 lib_LTLIBRARIES = libocelotTrace.la
 ################################################################################
 
@@ -42,8 +43,19 @@ libocelotTrace_la_SOURCES = \
 	traces/implementation/LoadBalanceGenerator.cpp \
 	traces/implementation/KernelEntry.cpp \
 	traces/implementation/ControlFlowVisualizer.cpp \
-	traces/implementation/BasicBlockCountGenerator.cpp
+	traces/implementation/BasicBlockCountGenerator.cpp \
+	traces/implementation/X86TraceGenerator.cpp
 	
+################################################################################
+
+
+################################################################################
+## X86TraceGenerator
+X86TraceGenerator_CXXFLGAS = -Wall -ansi -pedantic -Werror -std=x++0x -I ../ocelot/install/include
+X86TraceGenerator_SOURCES = \
+  traces/implementation/X86TraceGenerator.cpp
+X86TraceGenerator_LDADD = libocelotTrace.la
+X86TraceGenerator_LDFLGAS = -static $(OCELOT_LDFLAGS)
 ################################################################################
 
 ################################################################################
@@ -111,7 +123,9 @@ nobase_include_HEADERS = traces/interface/MemoryTraceGenerator.h \
 	traces/interface/LoadBalanceGenerator.h \
 	traces/interface/ConvergenceGenerator.h \
 	traces/interface/ControlFlowVisualizer.h \
-	traces/interface/BasicBlockCountGenerator.h
+	traces/interface/BasicBlockCountGenerator.h \
+	traces/interface/X86TraceGenerator.h \
+	traces/interface/X86TraceGeneratorCommon.h
 
 ################################################################################
 

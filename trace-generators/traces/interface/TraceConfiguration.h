@@ -19,6 +19,7 @@
 #include <traces/interface/LoadBalanceGenerator.h>
 #include <traces/interface/ControlFlowVisualizer.h>
 #include <traces/interface/BasicBlockCountGenerator.h>
+#include <traces/interface/X86TraceGenerator.h>
 
 namespace trace
 {
@@ -159,6 +160,9 @@ namespace trace
 		
 		//! \brief trace::LoadBalanceGenerator
 		bool loadBalance;
+
+    //! \brief trace:X86TraceGenerator
+    bool x86trace;
 		
 		ControlFlow controlFlowVisualizer;
 		
@@ -180,6 +184,7 @@ namespace trace
 		trace::LoadBalanceGenerator _loadBalance;
 		trace::ControlFlowVisualizer _controlFlowVisualizer;
 		trace::BasicBlockCountGenerator _basicBlockCountGenerator;
+    trace::X86TraceGenerator _x86TraceGenerator;
 	};
 }
 

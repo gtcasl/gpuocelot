@@ -38,7 +38,14 @@ static void sinkBarrier(ir::PTXKernel& ptx,
 	ir::ControlFlowGraph::iterator block, ir::ControlFlowGraph::iterator dom,
 	ir::ControlFlowGraph::iterator pdom)
 {
-	// TODO fill this in
+/*	bool split = true;
+	ir::ControlFlowGraph::iterator currentBlock = block;
+	
+	while(split)
+	{
+	
+	}
+	*/
 }
 
 void MIMDThreadSchedulingPass::runOnKernel(ir::Kernel& k)
@@ -56,6 +63,14 @@ void MIMDThreadSchedulingPass::runOnKernel(ir::Kernel& k)
 	for(ir::ControlFlowGraph::iterator block = kernel->cfg()->begin();
 		block != kernel->cfg()->end(); ++block)
 	{
+		// skip blocks that are post dominators of the entry point	
+		if(kernel->pdom_tree()->postDominates(
+			block, kernel->cfg()->get_entry_block()))
+		{
+			report("Skipping block " << block->id);
+			continue;
+		}
+	
 		for(ir::ControlFlowGraph::InstructionList::const_iterator
 			instruction = block->instructions.begin();
 			instruction != block->instructions.end(); ++instruction)
@@ -65,9 +80,9 @@ void MIMDThreadSchedulingPass::runOnKernel(ir::Kernel& k)
 			if(ptx.opcode == ir::PTXInstruction::Bar)
 			{
 				ir::ControlFlowGraph::iterator
-					dom = kernel->dom_tree()->getDominator(block);
-				ir::ControlFlowGraph::iterator
 					pdom = kernel->pdom_tree()->getPostDominator(block);
+				ir::ControlFlowGraph::iterator
+					dom = kernel->dom_tree()->getDominator(block);
 				report("Found barrier " << ptx.toString()
 					<< " in block " << block->id << " (postdominator "
 					<< pdom->id << ") (dominator " << dom->id << ")");

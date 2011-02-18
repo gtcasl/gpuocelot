@@ -51,6 +51,10 @@ namespace ir {
 		/*! Map from a BasicBlock pointer to an index into the blocks vector */
 		ControlFlowGraph::BlockMap blocksToIndex;
 
+		/*! Does a particular block post-dominate another block? */
+		bool postDominates(ControlFlowGraph::iterator block, 
+			ControlFlowGraph::iterator potentialPredecessor);
+
 		/*! Given a block known to be in the control flow graph, 
 			return the post dominator */
 		ControlFlowGraph::iterator getPostDominator(

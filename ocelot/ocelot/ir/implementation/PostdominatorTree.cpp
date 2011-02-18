@@ -45,6 +45,26 @@ ir::PostdominatorTree::PostdominatorTree(ControlFlowGraph *c) {
 	computeDT();
 }
 
+bool ir::PostdominatorTree::postDominates(ControlFlowGraph::iterator block, 
+	ControlFlowGraph::iterator potentialPredecessor) {
+	int id = blocksToIndex[block];
+	int successorId = blocksToIndex[potentialPredecessor];
+	int endId = blocksToIndex[cfg->get_exit_block()];
+	
+	bool dominates = false;
+	
+	int nextId = successorId;
+	
+	do
+	{
+		dominates = nextId == id;
+		nextId = p_dom[nextId];
+	}
+	while(endId != nextId && dominates);
+	
+	return dominates;
+}
+
 ir::ControlFlowGraph::iterator ir::PostdominatorTree::getPostDominator(
 	ControlFlowGraph::iterator block) {
 	int n = blocksToIndex[block];

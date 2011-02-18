@@ -7,9 +7,11 @@
 #ifndef PASS_H_INCLUDED
 #define PASS_H_INCLUDED
 
+// Standard Library Includes
 #include <string>
 #include <list>
 
+// Forward Declarations
 namespace ir
 {
 	class Kernel;

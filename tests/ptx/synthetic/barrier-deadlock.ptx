@@ -1,0 +1,54 @@
+.version 2.1
+.target sm_21
+
+/*
+deadlock_one(int* A)
+{
+	id = threadIdx.x % 16;
+
+	if(threadIdx.x < 16)
+	{
+		A[id] = id;
+		__syncthreads();
+	}
+	else
+	{
+		__syncthreads();
+		A[id] += 1;
+	}
+}
+*/
+.entry deadlock_one (.param .u64 A)
+{
+	.reg .u32 %r<11>;
+	.reg .u64 %rd<6>;
+	.reg .pred %p<3>;
+	
+$Begin:
+	mov.u32 	    %r1,  %tid.x;
+	rem.u32 	    %r2,  %r1, 16;
+	mul.wide.u32    %rd2, %r1, 4;
+	
+	ld.param.u64 	%rd1, [A];
+	add.u64         %rd3, %rd1, %rd2;
+	mov.u32         %r10, 0;
+
+	setp.ge.u32 	%p1, %r1, 16;
+	@%p1 bra        $Else;
+
+$Then:
+	st.global.u32   [%rd3], %r1;
+	bar.sync        0;
+
+	bra.uni         $Join;
+	
+$Else:
+	bar.sync        0;
+	ld.global.u32   %r3, [%rd3];
+	add.u32         %r4, %r3, 1;
+	st.global.u32   [%rd3], %r4;
+	
+$Join:
+	exit;
+}
+

@@ -52,13 +52,15 @@ static void addPredicateInitialValue(ir::ControlFlowGraph::iterator dom,
 		<< dom->id << " with '" << setp->toString() << "'");
 }
 
-static void addYield(ir::PTXKernel& kernel,
+typedef std::unordered_set<ir::ControlFlowGraph::iterator> BlockSet;
+
+static void addYield(ir::PTXKernel& kernel, BlockSet& barriers,
 	ir::ControlFlowGraph::iterator block,
 	ir::ControlFlowGraph::iterator successor,
 	ir::ControlFlowGraph::iterator pdom, ir::Instruction::RegisterType reg)
 {
-	ir::PTXInstruction* barrier =
-		static_cast<ir::PTXInstruction*>(block->instructions.back());
+	ir::PTXInstruction* barrier = static_cast<ir::PTXInstruction*>(
+		block->instructions.back());
 	block->instructions.pop_back();
 
 	ir::PTXInstruction* setp = new ir::PTXInstruction(ir::PTXInstruction::SetP);
@@ -71,15 +73,37 @@ static void addYield(ir::PTXKernel& kernel,
 	setp->comparisonOperator = ir::PTXInstruction::Eq;
 	
 	block->instructions.push_front(setp);
+
+	setp = new ir::PTXInstruction(ir::PTXInstruction::SetP);
+	
+	setp->d = ir::PTXOperand(ir::PTXOperand::Register,
+		ir::PTXOperand::pred, reg);
+	setp->type = ir::PTXOperand::u32;
+	setp->a = ir::PTXOperand(0);
+	setp->b = ir::PTXOperand(0);
+	setp->comparisonOperator = ir::PTXInstruction::Ne;
+	
+	successor->instructions.push_front(setp);
 	
 	ir::ControlFlowGraph::iterator scheduler = kernel.cfg()->split_block(pdom,
 		0, ir::Edge::FallThrough, pdom->label);
+
+	report("   created scheduler block " << scheduler->id
+		<< " from pdom block " << pdom->id);
+
+	if(!barriers.insert(pdom).second)
+	{
+		report("   removing barrier from " << scheduler->id << " "
+			<< scheduler->instructions.front()->toString());
+		delete scheduler->instructions.front();
+		scheduler->instructions.pop_front();
+	}
 
 	std::swap(pdom, scheduler);
 
 	scheduler->label = block->label + "_scheduler";
 	scheduler->instructions.push_back(barrier);
-
+		
 	ir::PTXInstruction* branchToResumePoint
 		= new ir::PTXInstruction(ir::PTXInstruction::Bra);
 
@@ -98,9 +122,23 @@ static void addYield(ir::PTXKernel& kernel,
 	
 	kernel.cfg()->insert_edge(ir::Edge(block, scheduler, ir::Edge::Branch));
 	kernel.cfg()->insert_edge(ir::Edge(scheduler, successor, ir::Edge::Branch));
+
+	for(ir::ControlFlowGraph::edge_pointer_iterator
+		edge = scheduler->in_edges.begin();
+		edge != scheduler->in_edges.end(); ++edge)
+	{
+		if((*edge)->type != ir::Edge::Branch) continue;
+		assert(!(*edge)->head->instructions.empty());
+
+		ir::PTXInstruction& ptx = *static_cast<ir::PTXInstruction*>(
+			(*edge)->head->instructions.back());
+		assert(ptx.opcode == ir::PTXInstruction::Bra);
+		
+		ptx.d.identifier = scheduler->label;
+	}
 }
 
-static void sinkBarrier(ir::PTXKernel& kernel, 
+static void sinkBarrier(ir::PTXKernel& kernel, BlockSet& barriers,
 	ir::ControlFlowGraph::iterator block, ir::ControlFlowGraph::iterator dom,
 	ir::ControlFlowGraph::iterator pdom)
 {
@@ -130,12 +168,13 @@ static void sinkBarrier(ir::PTXKernel& kernel,
 				kernel.cfg()->remove_edge(block->get_edge(successor));
 				
 				report("  for barrier at instruction " << instructionIndex);
+				report("   created resume block " << successor->id);
 				
 				ir::Instruction::RegisterType
 					predicate = kernel.dfg()->newRegister();
 				
 				addPredicateInitialValue(dom, predicate);
-				addYield(kernel, block, successor, pdom, predicate);
+				addYield(kernel, barriers, block, successor, pdom, predicate);
 
 				block = successor;
 				split = true;
@@ -154,6 +193,7 @@ void MIMDThreadSchedulingPass::runOnKernel(ir::Kernel& k)
 	ir::PTXKernel* kernel = static_cast<ir::PTXKernel*>(&k);
 
 	bool changed = true;
+	BlockSet barriers;
 
 	while(changed)
 	{
@@ -205,7 +245,7 @@ void MIMDThreadSchedulingPass::runOnKernel(ir::Kernel& k)
 		ir::ControlFlowGraph::pointer_iterator pdom  = postDominators.begin();
 		for( ; block != schedulingPoints.end(); ++block, ++dom, ++pdom)
 		{
-			sinkBarrier(*kernel, *block, *dom, *pdom);
+			sinkBarrier(*kernel, barriers, *block, *dom, *pdom);
 		}
 	}
 }

@@ -32,7 +32,8 @@ check_PROGRAMS = TestLexer TestParser \
 	TestCalVectorScale TestPTXAssembly TestGenericMemory \
 	TestFunctionCall TestIndirectFunctionCall TestIndirectFunctionCallOcelot \
 	KernelTestHarness
-EXTRA_PROGRAMS = Module PtxToIlTranslator DFG CFG PTXChecker OcelotServer TestOcelotServer
+EXTRA_PROGRAMS = Module PtxToIlTranslator DFG CFG PTXChecker \
+	OcelotServer TestOcelotServer
 lib_LTLIBRARIES = libocelot.la libKernelExtractor.la
 
 ################################################################################

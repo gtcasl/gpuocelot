@@ -600,6 +600,10 @@ ir::PTXOperand::PTXOperand(AddressMode m, const std::string& i) : identifier(i),
 	reg(0), vec(v1) {
 }
 
+ir::PTXOperand::PTXOperand(long long unsigned int v, DataType t)
+	: addressMode(Immediate), type(t), offset(0), imm_uint(v), reg(0), vec(v1) {
+}
+
 ir::PTXOperand::~PTXOperand() {
 
 }

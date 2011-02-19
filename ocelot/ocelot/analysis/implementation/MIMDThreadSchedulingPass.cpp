@@ -34,18 +34,116 @@ void MIMDThreadSchedulingPass::initialize(const ir::Module& m)
 	// none needed, intentionally empty
 }
 
-static void sinkBarrier(ir::PTXKernel& ptx, 
+static void addPredicateInitialValue(ir::ControlFlowGraph::iterator dom,
+	ir::Instruction::RegisterType reg)
+{
+	ir::PTXInstruction* setp = new ir::PTXInstruction(ir::PTXInstruction::SetP);
+	
+	setp->d = ir::PTXOperand(ir::PTXOperand::Register,
+		ir::PTXOperand::pred, reg);
+	setp->type = ir::PTXOperand::u32;
+	setp->a = ir::PTXOperand(0);
+	setp->b = ir::PTXOperand(0);
+	setp->comparisonOperator = ir::PTXInstruction::Ne;
+	
+	dom->instructions.push_front(setp);
+	
+	report("   initializing predicate register " << reg << " in block "
+		<< dom->id << " with '" << setp->toString() << "'");
+}
+
+static void addYield(ir::PTXKernel& kernel,
+	ir::ControlFlowGraph::iterator block,
+	ir::ControlFlowGraph::iterator successor,
+	ir::ControlFlowGraph::iterator pdom, ir::Instruction::RegisterType reg)
+{
+	ir::PTXInstruction* barrier =
+		static_cast<ir::PTXInstruction*>(block->instructions.back());
+	block->instructions.pop_back();
+
+	ir::PTXInstruction* setp = new ir::PTXInstruction(ir::PTXInstruction::SetP);
+	
+	setp->d = ir::PTXOperand(ir::PTXOperand::Register,
+		ir::PTXOperand::pred, reg);
+	setp->type = ir::PTXOperand::u32;
+	setp->a = ir::PTXOperand(0);
+	setp->b = ir::PTXOperand(0);
+	setp->comparisonOperator = ir::PTXInstruction::Eq;
+	
+	block->instructions.push_front(setp);
+	
+	ir::ControlFlowGraph::iterator scheduler = kernel.cfg()->split_block(pdom,
+		0, ir::Edge::FallThrough, pdom->label);
+
+	std::swap(pdom, scheduler);
+
+	scheduler->label = block->label + "_scheduler";
+	scheduler->instructions.push_back(barrier);
+
+	ir::PTXInstruction* branchToResumePoint
+		= new ir::PTXInstruction(ir::PTXInstruction::Bra);
+
+	branchToResumePoint->pg = ir::PTXOperand(ir::PTXOperand::Register,
+		ir::PTXOperand::pred, reg);
+	branchToResumePoint->d = ir::PTXOperand(successor->label);
+	
+	scheduler->instructions.push_back(branchToResumePoint);
+	
+	ir::PTXInstruction* branchToScheduler
+		= new ir::PTXInstruction(ir::PTXInstruction::Bra);
+
+	branchToScheduler->d = ir::PTXOperand(scheduler->label);
+	
+	block->instructions.push_back(branchToScheduler);	
+	
+	kernel.cfg()->insert_edge(ir::Edge(block, scheduler, ir::Edge::Branch));
+	kernel.cfg()->insert_edge(ir::Edge(scheduler, successor, ir::Edge::Branch));
+}
+
+static void sinkBarrier(ir::PTXKernel& kernel, 
 	ir::ControlFlowGraph::iterator block, ir::ControlFlowGraph::iterator dom,
 	ir::ControlFlowGraph::iterator pdom)
 {
-/*	bool split = true;
+	bool split = true;
 	ir::ControlFlowGraph::iterator currentBlock = block;
 	
 	while(split)
 	{
+		split = false;
+		report(" Sinking all barriers in block " << block->id);
 	
+		for(ir::ControlFlowGraph::InstructionList::iterator
+			instruction = block->instructions.begin();
+			instruction != block->instructions.end(); ++instruction)
+		{
+			const ir::PTXInstruction& ptx =
+				*static_cast<const ir::PTXInstruction*>(*instruction);
+			if(ptx.opcode == ir::PTXInstruction::Bar)
+			{
+				unsigned int instructionIndex = std::distance(
+					block->instructions.begin(), instruction) + 1;
+				ir::ControlFlowGraph::iterator
+					successor = kernel.cfg()->split_block(block,
+					instructionIndex, ir::Edge::Branch,
+					block->label + "_resume");
+				
+				kernel.cfg()->remove_edge(block->get_edge(successor));
+				
+				report("  for barrier at instruction " << instructionIndex);
+				
+				ir::Instruction::RegisterType
+					predicate = kernel.dfg()->newRegister();
+				
+				addPredicateInitialValue(dom, predicate);
+				addYield(kernel, block, successor, pdom, predicate);
+
+				block = successor;
+				split = true;
+				break;
+			}
+		}		
 	}
-	*/
+	
 }
 
 void MIMDThreadSchedulingPass::runOnKernel(ir::Kernel& k)
@@ -54,52 +152,61 @@ void MIMDThreadSchedulingPass::runOnKernel(ir::Kernel& k)
 		"This pass is valid for PTX kernels only.");
 
 	ir::PTXKernel* kernel = static_cast<ir::PTXKernel*>(&k);
-	ir::ControlFlowGraph::BlockPointerVector schedulingPoints;
-	ir::ControlFlowGraph::BlockPointerVector postDominators;
-	ir::ControlFlowGraph::BlockPointerVector dominators;
 
-	// identify scheduling points
-	//  - blocks with barriers
-	for(ir::ControlFlowGraph::iterator block = kernel->cfg()->begin();
-		block != kernel->cfg()->end(); ++block)
+	bool changed = true;
+
+	while(changed)
 	{
-		// skip blocks that are post dominators of the entry point	
-		if(kernel->pdom_tree()->postDominates(
-			block, kernel->cfg()->get_entry_block()))
+		changed = false;
+		report("Applying pass...");
+		ir::ControlFlowGraph::BlockPointerVector schedulingPoints;
+		ir::ControlFlowGraph::BlockPointerVector postDominators;
+		ir::ControlFlowGraph::BlockPointerVector dominators;
+
+		// identify scheduling points
+		//  - blocks with barriers
+		for(ir::ControlFlowGraph::iterator block = kernel->cfg()->begin();
+			block != kernel->cfg()->end(); ++block)
 		{
-			report("Skipping block " << block->id);
-			continue;
-		}
-	
-		for(ir::ControlFlowGraph::InstructionList::const_iterator
-			instruction = block->instructions.begin();
-			instruction != block->instructions.end(); ++instruction)
-		{
-			const ir::PTXInstruction& ptx =
-				*static_cast<const ir::PTXInstruction*>(*instruction);
-			if(ptx.opcode == ir::PTXInstruction::Bar)
+			// skip blocks that are post dominators of the entry point	
+			if(kernel->pdom_tree()->postDominates(
+				block, kernel->cfg()->get_entry_block()))
 			{
-				ir::ControlFlowGraph::iterator
-					pdom = kernel->pdom_tree()->getPostDominator(block);
-				ir::ControlFlowGraph::iterator
-					dom = kernel->dom_tree()->getDominator(block);
-				report("Found barrier " << ptx.toString()
-					<< " in block " << block->id << " (postdominator "
-					<< pdom->id << ") (dominator " << dom->id << ")");
-				schedulingPoints.push_back(block);
-				postDominators.push_back(pdom);
-				dominators.push_back(dom);
-				break;
+				report(" Skipping block " << block->id);
+				continue;
+			}
+	
+			for(ir::ControlFlowGraph::InstructionList::const_iterator
+				instruction = block->instructions.begin();
+				instruction != block->instructions.end(); ++instruction)
+			{
+				const ir::PTXInstruction& ptx =
+					*static_cast<const ir::PTXInstruction*>(*instruction);
+				if(ptx.opcode == ir::PTXInstruction::Bar)
+				{
+					ir::ControlFlowGraph::iterator
+						pdom = kernel->pdom_tree()->getPostDominator(block);
+					ir::ControlFlowGraph::iterator
+						dom = kernel->dom_tree()->getDominator(block);
+					report(" Found barrier " << ptx.toString()
+						<< " in block " << block->id << " (postdominator "
+						<< pdom->id << ") (dominator " << dom->id << ")");
+					schedulingPoints.push_back(block);
+					postDominators.push_back(pdom);
+					dominators.push_back(dom);
+					changed = true;
+					break;
+				}
 			}
 		}
-	}
 	
-	ir::ControlFlowGraph::pointer_iterator block = schedulingPoints.begin();
-	ir::ControlFlowGraph::pointer_iterator dom   = dominators.begin();
-	ir::ControlFlowGraph::pointer_iterator pdom  = postDominators.begin();
-	for( ; block != schedulingPoints.end(); ++block, ++dom, ++pdom)
-	{
-		sinkBarrier(*kernel, *block, *dom, *pdom);
+		ir::ControlFlowGraph::pointer_iterator block = schedulingPoints.begin();
+		ir::ControlFlowGraph::pointer_iterator dom   = dominators.begin();
+		ir::ControlFlowGraph::pointer_iterator pdom  = postDominators.begin();
+		for( ; block != schedulingPoints.end(); ++block, ++dom, ++pdom)
+		{
+			sinkBarrier(*kernel, *block, *dom, *pdom);
+		}
 	}
 }
 

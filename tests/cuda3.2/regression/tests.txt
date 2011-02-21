@@ -1,62 +1,62 @@
-../MatrixMul 
-../MergeSort 
-../QuasirandomGenerator 
-../SimpleVoteIntrinsics 
-../Dct8x8 
-../SimpleTexture3D 
-../DwtHaar1D 
-../VolumeRender 
-../Reduction 
-../OceanFFT 
-../SimpleZeroCopy 
-../Template 
-../CppIntegration 
-../ConvolutionFFT2D 
-../SimpleGL 
-../SimpleAtomicIntrinsics 
-../MersenneTwister 
-../SimpleMultiCopy 
-../Histogram 
-../BicubicTexture 
-../MonteCarloMultiGPU 
-../Dxtc 
-../PostProcessGL 
-../Eigenvalues 
-../BlackScholes 
-../SimpleCUBLAS 
-../SimpleCUFFT 
-../MonteCarlo 
-../ThreadMigration 
-../SimpleTemplates 
-../Scan 
-../RecursiveGaussian 
-../SortingNetworks 
-../ConvolutionSeparable 
-../SimplePitchLinearTexture 
-../BandwidthTest 
-../ImageDenoising 
-../BoxFilter 
-../ConvolutionTexture 
-../AlignedTypes 
-../Transpose 
-../BilateralFilter 
-../Nbody 
-../FluidsGL 
-../SimpleStreams 
-../Mandelbrot 
-../FastWalshTransform 
-../FDTD3d 
-../SimpleTexture 
-../SimplePrintf 
-../MatrixMul 
-../DeviceQuery 
-../ScalarProd 
-../AsyncAPI 
-../BinomialOptions 
-../VectorAdd 
-../ThreadFenceReduction 
-../SimpleMultiGPU 
-../SobolQRNG 
-../SobelFilter 
-../MatrixMulDynlinkJIT 
-../Clock
+../MatrixMul -noprompt
+../MergeSort -noprompt
+../QuasirandomGenerator -noprompt
+../SimpleVoteIntrinsics -noprompt
+../Dct8x8 -noprompt
+../SimpleTexture3D -noprompt
+../DwtHaar1D -noprompt
+../VolumeRender -noprompt
+../Reduction -noprompt
+../OceanFFT -noprompt
+../SimpleZeroCopy -noprompt
+../Template -noprompt
+../CppIntegration -noprompt
+../ConvolutionFFT2D -noprompt
+../SimpleGL -noprompt
+../SimpleAtomicIntrinsics -noprompt
+../MersenneTwister -noprompt
+../SimpleMultiCopy -noprompt
+../Histogram -noprompt
+../BicubicTexture -noprompt
+../MonteCarloMultiGPU -noprompt
+../Dxtc -noprompt
+../PostProcessGL -noprompt
+../Eigenvalues -noprompt
+../BlackScholes -noprompt
+../SimpleCUBLAS -noprompt
+../SimpleCUFFT -noprompt
+../MonteCarlo -noprompt
+../ThreadMigration -noprompt
+../SimpleTemplates -noprompt
+../Scan -noprompt
+../RecursiveGaussian -noprompt
+../SortingNetworks -noprompt
+../ConvolutionSeparable -noprompt
+../SimplePitchLinearTexture -noprompt
+../BandwidthTest -noprompt
+../ImageDenoising -noprompt
+../BoxFilter -noprompt
+../ConvolutionTexture -noprompt
+../AlignedTypes -noprompt
+../Transpose -noprompt
+../BilateralFilter -noprompt
+../Nbody -compare
+../FluidsGL -noprompt
+../SimpleStreams -noprompt
+../Mandelbrot -noprompt
+../FastWalshTransform -noprompt
+../FDTD3d -noprompt
+../SimpleTexture -noprompt
+../SimplePrintf -noprompt
+../MatrixMul -noprompt
+../DeviceQuery -noprompt
+../ScalarProd -noprompt
+../AsyncAPI -noprompt
+../BinomialOptions -noprompt
+../VectorAdd -noprompt
+../ThreadFenceReduction -noprompt
+../SimpleMultiGPU -noprompt
+../SobolQRNG -noprompt
+../SobelFilter -noprompt
+../MatrixMulDynlinkJIT -noprompt
+../Clock -noprompt

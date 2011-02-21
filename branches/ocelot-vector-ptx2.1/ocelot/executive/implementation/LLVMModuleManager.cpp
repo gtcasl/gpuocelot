@@ -7,23 +7,24 @@
 #ifndef LLVM_MODULE_MANAGER_CPP_INCLUDED
 #define LLVM_MODULE_MANAGER_CPP_INCLUDED
 
+// C++ includes
+
 // Ocelot Includes
+#include <configure.h>
+#include <ocelot/api/interface/OcelotConfiguration.h>
 #include <ocelot/executive/interface/LLVMModuleManager.h>
 #include <ocelot/executive/interface/LLVMState.h>
 #include <ocelot/executive/interface/Device.h>
+#include <ocelot/ir/interface/LLVMKernel.h>
+#include <ocelot/ir/interface/Module.h>
 
 #include <ocelot/translator/interface/PTXToLLVMTranslator.h>
 
+#include <ocelot/analysis/interface/LLVMUniformVectorization.h>
 #include <ocelot/analysis/interface/SubkernelFormationPass.h>
 #include <ocelot/analysis/interface/ConvertPredicationToSelectPass.h>
 #include <ocelot/analysis/interface/RemoveBarrierPass.h>
 
-#include <ocelot/ir/interface/LLVMKernel.h>
-#include <ocelot/ir/interface/Module.h>
-
-#include <ocelot/api/interface/OcelotConfiguration.h>
-
-#include <configure.h>
 
 // Hydrazine Includes
 #include <hydrazine/interface/Casts.h>
@@ -47,14 +48,18 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 0
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+#define REPORT_BASE 1
 
 #define REPORT_ALL_LLVM_ASSEMBLY 0
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace executive
 {
 
-////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
 // LLVMModuleManager
 void LLVMModuleManager::loadModule(const ir::Module* m, 
 	translator::Translator::OptimizationLevel l, Device* d)
@@ -875,6 +880,14 @@ static void optimize(llvm::Module& module,
 	llvm::PassManager manager;
 
 	manager.add(new llvm::TargetData(*LLVMState::jit()->getTargetData()));
+	
+	
+	if (true) {
+		// LLVM vectorization pass
+		report("Adding LLVM vectorization pass");
+		analysis::LLVMUniformVectorization *uniformVectorizationPass = new analysis::LLVMUniformVectorization;
+		manager.add(uniformVectorizationPass);
+	}
 
 	if(level < 2)
 	{
@@ -917,6 +930,8 @@ static void optimize(llvm::Module& module,
 		manager.add(llvm::createCFGSimplificationPass());
 	}
 	manager.run(module);
+	
+	module.dump();
 }
 
 

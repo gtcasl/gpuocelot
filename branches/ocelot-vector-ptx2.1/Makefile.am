@@ -31,7 +31,7 @@ check_PROGRAMS = TestLexer TestParser \
 	TestCudaSequence TestLLVMKernels TestDeviceSwitching \
 	TestCalVectorScale TestPTXAssembly TestGenericMemory \
 	TestFunctionCall TestIndirectFunctionCall TestIndirectFunctionCallOcelot \
-	KernelTestHarness
+	KernelTestHarness TestConvergence
 EXTRA_PROGRAMS = Module PtxToIlTranslator DFG CFG PTXChecker OcelotServer TestOcelotServer
 lib_LTLIBRARIES = libocelot.la libKernelExtractor.la
 
@@ -55,6 +55,7 @@ libocelot_la_SOURCES = \
 	ocelot/analysis/implementation/ConvertPredicationToSelectPass.cpp \
 	ocelot/analysis/implementation/LinearScanRegisterAllocationPass.cpp \
 	ocelot/analysis/implementation/SubkernelFormationPass.cpp \
+	ocelot/analysis/implementation/LLVMUniformVectorization.cpp \
 	ocelot/api/implementation/ocelot.cpp \
 	ocelot/api/implementation/OcelotRuntime.cpp \
 	ocelot/api/implementation/OcelotConfiguration.cpp \
@@ -408,6 +409,14 @@ TestIndirectFunctionCallOcelot_LDFLAGS = -static
 ################################################################################
 
 ################################################################################
+## TestConvergence
+TestConvergence_CXXFLAGS = $(INCLUDE) -std=c++0x
+TestConvergence_SOURCES = ocelot/executive/test/vectorization/TestConvergence.cu.cpp
+TestConvergence_LDADD = libocelot.la $(LLVM_LDFLAGS)
+TestConvergence_LDFLAGS = -static
+################################################################################
+
+################################################################################
 
 libKernelExtractor_la_CXXFLAGS = -Wall -ansi -Werror -std=c++0x
 #libKernelExtractor_la_HEADERS = ocelot/util/interface/KernelExtractor.h
@@ -525,6 +534,7 @@ nobase_include_HEADERS = ocelot/api/interface/ocelot.h \
 	ocelot/analysis/interface/StructuralTransform.h \
 	ocelot/analysis/interface/PassManager.h \
 	ocelot/analysis/test/TestDataflowGraph.h \
+	ocelot/analysis/interface/LLVMUniformVectorization.h \
 	ocelot/ir/interface/Kernel.h \
 	ocelot/ir/interface/Module.h \
 	ocelot/ir/interface/ControlFlowGraph.h \

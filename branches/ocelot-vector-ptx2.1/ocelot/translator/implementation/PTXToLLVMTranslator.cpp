@@ -268,21 +268,21 @@ namespace translator
 		context.members.resize( 10 );
 
 		context.members[0].category = ir::LLVMInstruction::Type::Structure;
-		context.members[0].label = "%Dimension";
+		context.members[0].label = "%Dimension";	// tid
 
-		context.members[1] = context.members[0];
-		context.members[2] = context.members[0];
-		context.members[3] = context.members[0];
+		context.members[1] = context.members[0];	// ntid
+		context.members[2] = context.members[0];	// ctaid
+		context.members[3] = context.members[0];	// nctaid
 
 		context.members[4].category = ir::LLVMInstruction::Type::Pointer;
-		context.members[4].type = ir::LLVMInstruction::I8;
+		context.members[4].type = ir::LLVMInstruction::I8;	// local
 
-		context.members[5] = context.members[4];
-		context.members[6] = context.members[4];
-		context.members[7] = context.members[4];	
-		context.members[8] = context.members[4];
-		context.members[9] = context.members[4];
-		
+		context.members[5] = context.members[4];	// shared
+		context.members[6] = context.members[4];	// constant
+		context.members[7] = context.members[4];	// argument
+		context.members[8] = context.members[4];	// parameter
+		context.members[9] = context.members[4];	// metadata
+				
 		return context;
 	}
 

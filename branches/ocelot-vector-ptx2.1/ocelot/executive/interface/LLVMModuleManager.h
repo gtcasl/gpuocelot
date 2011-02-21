@@ -79,18 +79,19 @@ public:
 				ir::ControlFlowGraph::const_iterator> BlockIdMap;
 
 		public:
-			BlockIdMap           blocks;
-			const ir::PTXKernel* kernel;
-			Function             function;
-			TextureVector        textures;
-		
-		public:
 			unsigned int sharedSize;
 			unsigned int localSize;
 			unsigned int parameterSize;
 			unsigned int argumentSize;
 			unsigned int constantSize;
 			unsigned int warpSize;
+			
+		public:
+			BlockIdMap           blocks;
+			const ir::PTXKernel* kernel;
+			Function             function;
+			TextureVector        textures;
+		
 		};
 	
 	public:

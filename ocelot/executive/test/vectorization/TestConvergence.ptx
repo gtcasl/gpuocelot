@@ -1,0 +1,72 @@
+	.version 2.2
+	.target sm_20
+	// compiled with /usr/local/cuda3.2rel/cuda/open64/lib//be
+	// nvopencc 3.2 built on 2010-11-03
+
+	//-----------------------------------------------------------
+	// Compiling /tmp/tmpxft_00007a92_00000000-9_TestConvergence.cpp3.i (/tmp/ccBI#.zEUhSs)
+	//-----------------------------------------------------------
+
+	//-----------------------------------------------------------
+	// Options:
+	//-----------------------------------------------------------
+	//  Target:ptx, ISA:sm_20, Endian:little, Pointer Size:64
+	//  -O3	(Optimization level)
+	//  -g0	(Debug level)
+	//  -m2	(Report advisories)
+	//-----------------------------------------------------------
+
+	.file	1	"<command-line>"
+	.file	2	"/tmp/tmpxft_00007a92_00000000-8_TestConvergence.cudafe2.gpu"
+	.file	3	"/usr/lib/gcc/x86_64-linux-gnu/4.4.3/include/stddef.h"
+	.file	4	"/usr/local/cuda3.2rel/cuda/bin/../include/crt/device_runtime.h"
+	.file	5	"/usr/local/cuda3.2rel/cuda/bin/../include/host_defines.h"
+	.file	6	"/usr/local/cuda3.2rel/cuda/bin/../include/builtin_types.h"
+	.file	7	"/usr/local/cuda3.2rel/cuda/bin/../include/device_types.h"
+	.file	8	"/usr/local/cuda3.2rel/cuda/bin/../include/driver_types.h"
+	.file	9	"/usr/local/cuda3.2rel/cuda/bin/../include/surface_types.h"
+	.file	10	"/usr/local/cuda3.2rel/cuda/bin/../include/texture_types.h"
+	.file	11	"/usr/local/cuda3.2rel/cuda/bin/../include/vector_types.h"
+	.file	12	"/usr/local/cuda3.2rel/cuda/bin/../include/device_launch_parameters.h"
+	.file	13	"/usr/local/cuda3.2rel/cuda/bin/../include/crt/storage_class.h"
+	.file	14	"/usr/include/bits/types.h"
+	.file	15	"/usr/include/time.h"
+	.file	16	"/usr/local/cuda3.2rel/cuda/bin/../include/texture_fetch_functions.h"
+	.file	17	"/usr/local/cuda3.2rel/cuda/bin/../include/common_functions.h"
+	.file	18	"/usr/local/cuda3.2rel/cuda/bin/../include/math_functions.h"
+	.file	19	"/usr/local/cuda3.2rel/cuda/bin/../include/math_constants.h"
+	.file	20	"/usr/local/cuda3.2rel/cuda/bin/../include/device_functions.h"
+	.file	21	"/usr/local/cuda3.2rel/cuda/bin/../include/sm_11_atomic_functions.h"
+	.file	22	"/usr/local/cuda3.2rel/cuda/bin/../include/sm_12_atomic_functions.h"
+	.file	23	"/usr/local/cuda3.2rel/cuda/bin/../include/sm_13_double_functions.h"
+	.file	24	"/usr/local/cuda3.2rel/cuda/bin/../include/sm_20_atomic_functions.h"
+	.file	25	"/usr/local/cuda3.2rel/cuda/bin/../include/sm_20_intrinsics.h"
+	.file	26	"/usr/local/cuda3.2rel/cuda/bin/../include/surface_functions.h"
+	.file	27	"/usr/local/cuda3.2rel/cuda/bin/../include/math_functions_dbl_ptx3.h"
+	.file	28	"TestConvergence.cu"
+
+
+	.entry convergence (
+		.param .u64 __cudaparm_convergence_A)
+	{
+	.reg .u32 %r<3>;
+	.reg .u64 %rd<6>;
+	.reg .f32 %f<6>;
+	.loc	28	14	0
+$LDWbegin_convergence:
+	.loc	28	16	0
+	cvt.s32.u32 	%r1, %tid.x;
+	cvt.rn.f32.s32 	%f1, %r1;
+	ld.param.u64 	%rd1, [__cudaparm_convergence_A];
+	cvt.s64.s32 	%rd2, %r1;
+	mul.wide.s32 	%rd3, %r1, 4;
+	add.u64 	%rd4, %rd1, %rd3;
+	ld.global.f32 	%f2, [%rd4+0];
+	add.f32 	%f3, %f1, %f1;
+	add.f32 	%f4, %f2, %f3;
+	st.global.f32 	[%rd4+0], %f4;
+	.loc	28	17	0
+	exit;
+$LDWend_convergence:
+	} // convergence
+

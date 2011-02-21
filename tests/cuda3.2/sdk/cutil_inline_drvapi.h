@@ -223,7 +223,7 @@ inline void __cuCheckMsg( const char * msg, const char *file, const int line )
 
 
 #if __DEVICE_EMULATION__
-    inline int cutilDeviceInitDrv(int ARGC, char **ARGV) { } 
+    inline int cutilDeviceInitDrv(int ARGC, char **ARGV) { return 0; } 
 #else
     inline int cutilDeviceInitDrv(int ARGC, char ** ARGV) 
     {
@@ -255,7 +255,7 @@ inline void __cuCheckMsg( const char * msg, const char *file, const int line )
 
     // General initialization call to pick the best CUDA Device
 #if __DEVICE_EMULATION__
-    inline CUdevice cutilChooseCudaDeviceDrv(int argc, char **argv, int *p_devID)
+    inline CUdevice cutilChooseCudaDeviceDrv(int argc, char **argv, int *p_devID) { }
 #else
     inline CUdevice cutilChooseCudaDeviceDrv(int argc, char **argv, int *p_devID)
     {

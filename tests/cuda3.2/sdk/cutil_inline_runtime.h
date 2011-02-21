@@ -248,8 +248,8 @@ inline void __cutilSafeMalloc( void *pointer, const char *file, const int line )
 }
 
 #if __DEVICE_EMULATION__
-    inline int cutilDeviceInit(int ARGC, char **ARGV) { }
-    inline int cutilChooseCudaDevice(int ARGC, char **ARGV) { }
+    inline int cutilDeviceInit(int ARGC, char **ARGV) { return 0; }
+    inline int cutilChooseCudaDevice(int ARGC, char **ARGV) { return 0; }
 #else
     inline int cutilDeviceInit(int ARGC, char **ARGV)
     {

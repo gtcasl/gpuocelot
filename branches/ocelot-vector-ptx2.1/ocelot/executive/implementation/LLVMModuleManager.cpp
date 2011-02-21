@@ -50,7 +50,7 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 #define REPORT_ALL_LLVM_ASSEMBLY 0
 
@@ -882,7 +882,7 @@ static void optimize(llvm::Module& module,
 	manager.add(new llvm::TargetData(*LLVMState::jit()->getTargetData()));
 	
 	
-	if (true) {
+	if (false) {
 		// LLVM vectorization pass
 		report("Adding LLVM vectorization pass");
 		analysis::LLVMUniformVectorization *uniformVectorizationPass = new analysis::LLVMUniformVectorization;
@@ -930,8 +930,6 @@ static void optimize(llvm::Module& module,
 		manager.add(llvm::createCFGSimplificationPass());
 	}
 	manager.run(module);
-	
-	module.dump();
 }
 
 

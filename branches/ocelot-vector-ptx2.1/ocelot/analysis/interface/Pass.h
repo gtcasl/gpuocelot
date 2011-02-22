@@ -110,11 +110,18 @@ namespace analysis
 			
 		public:
 			/*! \brief Initialize the pass using a specific module */
-			virtual void initialize( const ir::Module& m ) = 0;
+			virtual void initialize( const ir::Module& m );
+			
+			/*! 
+				\brief called before runOnKernel() is called 
+			*/
+			virtual void doInitialize( ir::Module &module);
+			
 			/*! \brief Run the pass on a specific kernel in the module */
-			virtual void runOnKernel( ir::Kernel& k ) = 0;		
+			virtual void runOnKernel( ir::Kernel& k ) = 0;
+			
 			/*! \brief Finalize the pass */
-			virtual void finalize( ) = 0;
+			virtual void finalize( );
 	};
 
 	/*! \brief A pass over a single basic block in a kernel */
@@ -128,15 +135,32 @@ namespace analysis
 			
 		public:
 			/*! \brief Initialize the pass using a specific module */
-			virtual void initialize( const ir::Module& m ) = 0;
+			virtual void initialize( const ir::Module& m );
+			
+			/*! 
+				\brief called before runOnBlock() is called 
+			*/
+			virtual void doInitialize( ir::Module &module);
+			
 			/*! \brief Initialize the pass using a specific kernel */
-			virtual void initialize( const ir::Kernel& m ) = 0;
+			virtual void initialize( const ir::Kernel& kernel );
+			
+			/*! 
+				\brief called before runOnBlock() is called 
+				
+				Note, this function can perform kernel-level transformations and in
+				all cases is guaranteed to return before runOnBlock() is called.
+			*/
+			virtual void doInitialize( ir::Kernel &kernel);
+			
 			/*! \brief Run the pass on a specific kernel in the module */
 			virtual void runOnBlock( ir::BasicBlock& b ) = 0;		
+			
 			/*! \brief Finalize the pass on the kernel */
-			virtual void finalizeKernel( ) = 0;
+			virtual void finalizeKernel( );
+			
 			/*! \brief Finalize the pass on the module */
-			virtual void finalize( ) = 0;
+			virtual void finalize( );
 	};
 
 	typedef std::list< Pass * > PassList;

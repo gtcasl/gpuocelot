@@ -31,12 +31,29 @@ analysis::ThreadDecouplingPass::ThreadDecouplingPass() {
 
 }
 
-void analysis::ThreadDecouplingPass::initialize( const ir::Module& m ) {
+void analysis::ThreadDecouplingPass::initialize( ir::Module& m ) {
 
 }
 
-void analysis::ThreadDecouplingPass::initialize( const ir::Kernel& k ) {
-	// 
+void analysis::ThreadDecouplingPass::initialize( ir::Kernel& k ) {
+	//
+	// TODO: kernels should not be const - the initialize function should be permitted
+	//   to modify the kernel
+	//
+	ir::PTXStatement threadIdX(ir::PTXStatement::Local);
+	threadIdX.name = getLocalVariableName(ir::PTXOperand::ix);
+	threadIdx.type = ir::PTXOperand::u16;
+	k.insertVariable(threadIdX);
+	
+	ir::PTXStatement threadIdY(ir::PTXStatement::Local);
+	threadIdX.name = getLocalVariableName(ir::PTXOperand::iy);
+	threadIdx.type = ir::PTXOperand::u16;
+	k.insertVariable(threadIdY);
+	
+	ir::PTXStatement threadIdZ(ir::PTXStatement::Local);
+	threadIdX.name = getLocalVariableName(ir::PTXOperand::iz);
+	threadIdx.type = ir::PTXOperand::u16;
+	k.insertVariable(threadIdZ);
 }
 
 void analysis::ThreadDecouplingPass::runOnBlock( ir::BasicBlock& block ) {

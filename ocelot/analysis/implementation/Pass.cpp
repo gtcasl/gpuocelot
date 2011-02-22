@@ -72,6 +72,21 @@ namespace analysis
 	{
 	
 	}
+	
+	//! \brief called before runOnBlock() is called 
+	void KernelPass::doInitialize( ir::Module &module) {
+	
+	}
+	
+	/*! \brief Initialize the pass using a specific module */
+	void KernelPass::initialize( const ir::Module& m ) {
+	
+	}
+			
+	/*! \brief Finalize the pass */
+	void KernelPass::finalize( ) {
+	
+	}
 
 	BasicBlockPass::BasicBlockPass( int a, const std::string& n )
 		: Pass( Pass::BasicBlockPass, a, n )
@@ -83,7 +98,36 @@ namespace analysis
 	{
 	
 	}
+	
+	//! \brief called before runOnBlock() is called 
+	void BasicBlockPass::doInitialize( ir::Module &module) {
+	
+	}
+	
+	//! \brief called before runOnBlock() is called 
+	void BasicBlockPass::doInitialize( ir::Kernel &kernel) {
+	
+	}
 
+	/*! \brief Initialize the pass using a specific module */
+	void BasicBlockPass::initialize( const ir::Module& m ) {
+	
+	}
+
+	/*! \brief Initialize the pass using a specific kernel */
+	void BasicBlockPass::initialize( const ir::Kernel& kernel ) {
+	
+	}	
+
+	/*! \brief Finalize the pass on the kernel */
+	void BasicBlockPass::finalizeKernel( ) {
+	
+	}
+
+	/*! \brief Finalize the pass on the module */
+	void BasicBlockPass::finalize( ) {
+	
+	}
 }
 
 #endif

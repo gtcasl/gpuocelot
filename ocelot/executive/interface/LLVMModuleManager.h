@@ -78,7 +78,7 @@ public:
 			Kernel_exit = 2,
 			Divergent_branch = 3,
 			Convergent_branch = 4,
-			ThreadExitType_unknown;
+			ThreadExitType_unknown
 		};
 		
 	public:

@@ -69,6 +69,26 @@ public:
 public:
 	class ModuleDatabase;
 
+	//! describes status of threads that have reached a subkernel exit point
+	class ThreadDescriptor {
+	public:
+		enum ThreadExitType {
+			Subkernel_exit = 0,
+			Barrier_exit = 1,
+			Kernel_exit = 2,
+			Divergent_branch = 3,
+			Convergent_branch = 4,
+			ThreadExitType_unknown;
+		};
+		
+	public:
+		int targetSubkernelID;
+		ir::Dim3 threadIdx;
+		ThreadExitType type;
+		char *localMemory;
+	};
+
+	//! 
 	class KernelAndTranslation
 	{
 	public:
@@ -87,11 +107,11 @@ public:
 			unsigned int warpSize;
 			
 		public:
+			ThreadDescriptor *threadDescriptor;
 			BlockIdMap           blocks;
 			const ir::PTXKernel* kernel;
 			Function             function;
 			TextureVector        textures;
-		
 		};
 	
 	public:

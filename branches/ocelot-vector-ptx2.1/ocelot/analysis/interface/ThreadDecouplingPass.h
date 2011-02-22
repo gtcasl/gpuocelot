@@ -29,8 +29,7 @@ namespace analysis
 		\brief replaces uses of threadIdx.{x,y,z} with loads from a .local variable
 			which contains the actual mapping
 	 */
-	class ThreadDecouplingPass : public BasicBlockPass
-	{
+	class ThreadDecouplingPass : public BasicBlockPass {
 	public:
 		typedef std::vector<ir::PTXKernel*> KernelVector;
 			
@@ -39,10 +38,10 @@ namespace analysis
 		ThreadDecouplingPass();
 		
 		//! no operation
-		virtual void initialize( const ir::Module& m );
+		virtual void initialize( ir::Module& m );
 		
 		//! adds a local variable to each kernel storing threadIdx
-		virtual void initialize( const ir::Kernel& m );
+		virtual void initialize( ir::Kernel& m );
 		
 		//! replaces uses of threadIdx.{x,y,z} with loads from the local threadIdx variable
 		virtual void runOnBlock( ir::BasicBlock& b );	

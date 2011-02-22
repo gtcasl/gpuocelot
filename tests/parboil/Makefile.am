@@ -56,8 +56,7 @@ mri_q_LDFLAGS = -static
 ################################################################################
 ## pns
 pns_CXXFLAGS = $(CUDA_CFLAGS) $(SDK_CFLAGS)
-pns_SOURCES = tests/pns/main.cu.cpp \
-	tests/pns/rand_gen.cu.cpp
+pns_SOURCES = tests/pns/main.cu.cpp
 pns_LDADD = $(OCELOT_LIBS)
 pns_LDFLAGS = -static
 ################################################################################

@@ -49,6 +49,9 @@ namespace analysis
 			/*! \brief The number of registers to allocate */
 			unsigned int registerCount;
 			
+			/*! \brief The target sub-kernel size */
+			unsigned int subkernelSize;
+			
 			/*! \brief Print out the CFG of optimized kernels */
 			bool cfg;
 			

@@ -42,11 +42,6 @@ int totReductionElements;
 
 uint2 *FinalReduce;
 
-struct double3
-{
-  double x, y, z;
-};
-
 void AllocateDataOnDevice(int, int, int, int, int, int);
 void RunKernel(int, struct pb_TimerSet *, struct pb_Parameters *);
 

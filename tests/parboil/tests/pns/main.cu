@@ -45,8 +45,8 @@ T(r+3,c-1)-> P(r+3,c) -> T(r+3,c)->
 
 */
 
-#include "rand_gen.cu"
-#include "petri_kernel.cu"
+#include "rand_gen.cuh"
+#include "petri_kernel.cuh"
 
 static int N, s, t, N2, NSQUARE2;
 uint32 host_mt[MERS_N];

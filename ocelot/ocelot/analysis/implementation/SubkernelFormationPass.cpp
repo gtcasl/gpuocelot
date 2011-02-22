@@ -849,7 +849,7 @@ void SubkernelFormationPass::ExtractKernelsPass::runOnKernel(ir::Kernel& k)
 
 		// Remove this block from the entering list (if it exists)
 		inEdges.erase(block);
-
+		
 		// Keep track of all blocks entering the region
 		for(ir::ControlFlowGraph::const_edge_pointer_iterator 
 			edge = block->in_edges.begin(); 
@@ -857,6 +857,12 @@ void SubkernelFormationPass::ExtractKernelsPass::runOnKernel(ir::Kernel& k)
 		{
 			// skip the entry block
 			if((*edge)->head == ptx.cfg()->get_entry_block()) continue;
+
+			// skip the current block
+			if((*edge)->head == block) continue;
+
+			// skip blocks in the region
+			if(region.count((*edge)->head)) continue;
 			
 			inEdges.insert((*edge)->head);
 		}
@@ -927,25 +933,6 @@ void SubkernelFormationPass::ExtractKernelsPass::runOnKernel(ir::Kernel& k)
 	
 	// Rename 
 	updateTailCallTargets(splitKernels, idToKernelMap);
-
-	// 
-	/*
-	std::cout << "\nSplit kernels:\n";
-	for (KernelVector::const_iterator kern_it = splitKernels.begin(); kern_it != splitKernels.end(); ++kern_it) {
-		std::cout << "\n" << (*kern_it)->name << "\n";
-		
-		ir::ControlFlowGraph::BlockPointerVector blocks = (*kern_it)->cfg()->executable_sequence();
-		ir::ControlFlowGraph::BlockPointerVector::const_iterator block = blocks.begin();
-		
-		for (; block != blocks.end(); ++block) {
-			std::cout << " " << (*block)->label << "\n";
-			for (ir::BasicBlock::InstructionList::const_iterator inst_it = (*block)->instructions.begin(); 
-				inst_it != (*block)->instructions.end(); ++inst_it) {
-				std::cout << "  " << (*inst_it)->toString() << "\n";
-			}
-		}
-	}
-	*/
 
 	kernels.insert(std::make_pair(splitKernels.front(),
 		std::move(splitKernels)));

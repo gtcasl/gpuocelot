@@ -138,7 +138,8 @@ void cuda::HostThreadContext::mapParameters(const ir::Kernel* kernel) {
 		unsigned char* temp = (unsigned char*)malloc(parameterBlockSize);
 		for (ir::Kernel::ParameterVector::const_iterator 
 			parameter = kernel->arguments.begin(); 
-			parameter != kernel->arguments.end(); ++parameter, ++offset, ++size) {
+			parameter != kernel->arguments.end();
+			++parameter, ++offset, ++size) {
 			unsigned int misalignment = dst % parameter->getAlignment();
 			unsigned int alignmentOffset = misalignment == 0 
 				? 0 : parameter->getAlignment() - misalignment;
@@ -156,7 +157,8 @@ void cuda::HostThreadContext::mapParameters(const ir::Kernel* kernel) {
 		parameterBlock = temp;
 		clearParameters();
 	}
-	else if (parameterIndices.size() == 1 && parameterIndices[0] == 0 && parameterSizes[0]) {
+	else if (parameterIndices.size() == 1
+		&& parameterIndices[0] == 0 && parameterSizes[0]) {
 		
 		parameterBlockSize = parameterSizes[0];
 		
@@ -165,13 +167,15 @@ void cuda::HostThreadContext::mapParameters(const ir::Kernel* kernel) {
 		free(parameterBlock);
 		parameterBlock = temp;
 		
-		report("parameter block formatted by client: offset " << parameterIndices[0] << ", " 
+		report("parameter block formatted by client: offset "
+			<< parameterIndices[0] << ", " 
 			<< parameterSizes[0] << " bytes");
 		clearParameters();
 	}
 	else {
-		report("Parameter ERROR: offset " << parameterIndices[0] << ", " << parameterSizes[0] 
-			<< " bytes. Expected parameter sizes of " << parameterBlockSize);
+		report("Parameter ERROR: offset " << parameterIndices[0] << ", "
+			<< parameterSizes[0] << " bytes. Expected parameter sizes of "
+			<< parameterBlockSize);
 		assert((kernel->arguments.size() == parameterIndices.size()) && 
 			"unaccepted argument formatting");
 	}

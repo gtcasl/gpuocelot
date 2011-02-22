@@ -149,6 +149,12 @@ api::OcelotConfiguration::Executive::Executive():
 
 }
 
+api::OcelotConfiguration::Optimizations::Optimizations():
+	subkernelSize(50)
+{
+
+}
+
 static void initializeExecutive(api::OcelotConfiguration::Executive &executive, 
 	hydrazine::json::Visitor config) {
 
@@ -263,6 +269,13 @@ static void initializeExecutive(api::OcelotConfiguration::Executive &executive,
 	}
 }
 
+static void initializeOptimizations(
+	api::OcelotConfiguration::Optimizations &optimizations, 
+	hydrazine::json::Visitor config) {
+
+	optimizations.subkernelSize = config.parse<int>("subkernelSize", 50);
+}
+
 api::OcelotConfiguration::OcelotConfiguration() {
 
 }
@@ -296,6 +309,9 @@ void api::OcelotConfiguration::initialize(std::istream &stream) {
 		if (main.find("checkpoint")) {
 			initializeCheckpoint(checkpoint, main["checkpoint"]);
 		}
+		if (main.find("optimizations")) {
+			initializeOptimizations(optimizations, main["optimizations"]);
+		}
 		version = main.parse<std::string>("version", 
 			hydrazine::Version().toString());
 		ocelot = main.parse<std::string>("ocelot", "ocelot");
@@ -307,14 +323,6 @@ void api::OcelotConfiguration::initialize(std::istream &stream) {
 		std::cerr << "exception:\n" << exp.what() << std::endl;
 	}
 	delete config;
-
-	std::string device;
-	if (executive.enableEmulated) device = "emulated";
-	if (executive.enableLLVM) device = "llvm";
-	if (executive.enableNVIDIA) device = "nvidia";
-	if (executive.enableAMD) device = "amd";
-	report("Ocelot Configuration: " << ocelot 
-		<< " " << version << " " << device);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

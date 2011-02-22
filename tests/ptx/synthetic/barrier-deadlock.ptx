@@ -52,3 +52,48 @@ $Join:
 	exit;
 }
 
+
+	.entry deadlock_two (
+		.param .u32 __cudaparm__Z7kernel2Pf_Out)
+	{
+	.reg .u32 %r<8>;
+	.reg .f32 %f<10>;
+	.reg .pred %p<3>;
+	.loc	28	2	0
+$LDWbegin__Z7kernel2Pf:
+	cvt.s32.u32 	%r1, %tid.x;
+	mul.lo.u32 	%r2, %r1, 4;
+	ld.param.u32 	%r3, [__cudaparm__Z7kernel2Pf_Out];
+	add.u32 	%r4, %r3, %r2;
+	and.b32 	%r5, %r1, 1;
+	mov.u32 	%r6, 0;
+	setp.eq.u32 	%p1, %r5, %r6;
+	@%p1 bra 	$Lt_0_1282;
+	.loc	28	5	0
+	mov.f32 	%f1, 0f3f800000;     	// 1
+	st.global.f32 	[%r4+0], %f1;
+	.loc	28	6	0
+	bar.sync 	0;
+	.loc	28	7	0
+	ld.global.f32 	%f2, [%r4+4];
+	mov.f32 	%f3, 0fbf800000;     	// -1
+	add.f32 	%f4, %f2, %f3;
+	st.global.f32 	[%r4+4], %f4;
+	bra.uni 	$Lt_0_1026;
+$Lt_0_1282:
+	.loc	28	9	0
+	mov.f32 	%f5, 0fbf800000;     	// -1
+	st.global.f32 	[%r4+0], %f5;
+	.loc	28	10	0
+	bar.sync 	0;
+	.loc	28	11	0
+	ld.global.f32 	%f6, [%r4+4];
+	mov.f32 	%f7, 0f3f800000;     	// 1
+	add.f32 	%f8, %f6, %f7;
+	st.global.f32 	[%r4+4], %f8;
+$Lt_0_1026:
+	.loc	28	13	0
+	exit;
+$LDWend__Z7kernel2Pf:
+	} // _Z7kernel2Pf
+

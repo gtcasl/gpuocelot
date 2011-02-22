@@ -1178,12 +1178,14 @@ LLVMModuleManager::ModuleDatabase::~ModuleDatabase()
 void LLVMModuleManager::ModuleDatabase::loadModule(const ir::Module* module, 
 	translator::Translator::OptimizationLevel level, Device* device)
 {
+	typedef api::OcelotConfiguration config;
+
 	assert(!isModuleLoaded(module->path()));
 
 	report("Loading module '" << module->path() << "'");
 
 	typedef analysis::SubkernelFormationPass::ExtractKernelsPass Pass;
-	Pass pass;
+	Pass pass(config::get().optimizations.subkernelSize);
 
 	pass.initialize(*module);
 

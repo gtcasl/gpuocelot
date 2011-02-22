@@ -388,6 +388,12 @@ bool LLVMCooperativeThreadArray::_finishContext(unsigned int contextId)
 
 		// adjust the next function by the function base
 		nextFunction += stack.functionId();
+
+		if(nextFunction == _nextFunction)
+		{
+			_queuedThreads[nextFunction].push_back(contextId);
+			return false;
+		}		
 		
 		// lazily compile the function, get the stack size
 		if(_functions[nextFunction] == 0)

@@ -61,7 +61,7 @@ namespace analysis
 
 		if( passes & SubkernelFormation )
 		{
-			Pass* pass = new analysis::SubkernelFormationPass;
+			Pass* pass = new analysis::SubkernelFormationPass( subkernelSize );
 			manager.addPass( *pass );
 		}
 		
@@ -190,6 +190,8 @@ int main( int argc, char** argv )
 		"The type of register allocator to use (linearscan)." );
 	parser.parse( "-r", "--max-registers", optimizer.registerCount, 32,
 		"The number of registers available for allocation." );
+	parser.parse( "-s", "--subkernel-size", optimizer.subkernelSize, 70,
+		"The target size for subkernel formation." );
 	parser.parse( "-p", "--passes", passes, "", 
 		"A list of optimization passes (remove-barriers, " 
 		"reverse-if-conversion, subkernel-formation, structural-transform, "

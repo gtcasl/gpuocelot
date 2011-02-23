@@ -26,7 +26,7 @@ static float expectedValue(int n,  int P) {
 	for (int p = 0; p < P; p++) {
 		f *= 1.25f - 2.0f;
 	}
-	A[i] = f;
+	return f;
 }
 
 static void testConvergenceWithLoop() {
@@ -57,7 +57,7 @@ static void testConvergenceWithLoop() {
 		}
 	}
 	
-	printf("Test %s\n", (errors ? "FAILED": "Passed"));
+	printf("Pass/Fail : %s\n", (errors ? "Fail":"Pass"));
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////

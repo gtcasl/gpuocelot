@@ -1,7 +1,7 @@
-# 1 "/tmp/tmpxft_00007c10_00000000-1_TestConvergence.cudafe1.cpp"
+# 1 "/tmp/tmpxft_000027d4_00000000-1_TestConvergence.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_00007c10_00000000-1_TestConvergence.cudafe1.cpp"
+# 1 "/tmp/tmpxft_000027d4_00000000-1_TestConvergence.cudafe1.cpp"
 # 1 "TestConvergence.cu"
 # 46 "/usr/local/cuda3.2rel/cuda/bin/../include/device_types.h"
 # 149 "/usr/lib/gcc/x86_64-linux-gnu/4.4.3/include/stddef.h" 3
@@ -9606,7 +9606,7 @@ printf("error [%d] - expected: %f, got %f\n", i, expected, got);
 # 44 "TestConvergence.cu"
 }
 # 46 "TestConvergence.cu"
-printf("Test %s\n", (errors) ? ("FAILED") : ("Passed"));
+printf("Pass/Fail : %s\n", (errors) ? ("Fail") : ("Pass"));
 # 47 "TestConvergence.cu"
 }
 # 51 "TestConvergence.cu"
@@ -9619,8 +9619,8 @@ testConvergence();
 return 0;
 # 56 "TestConvergence.cu"
 }
-# 1 "/tmp/tmpxft_00007c10_00000000-1_TestConvergence.cudafe1.stub.c"
-# 1 "/tmp/tmpxft_00007c10_00000000-1_TestConvergence.cudafe1.stub.c" 1
+# 1 "/tmp/tmpxft_000027d4_00000000-1_TestConvergence.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_000027d4_00000000-1_TestConvergence.cudafe1.stub.c" 1
 # 1 "/usr/local/cuda3.2rel/cuda/bin/../include/crt/host_runtime.h" 1
 # 91 "/usr/local/cuda3.2rel/cuda/bin/../include/crt/host_runtime.h"
 extern "C" {
@@ -10022,8 +10022,8 @@ extern __attribute__((__weak__)) unsigned long long int ullmax(unsigned long lon
 
 
 #pragma pack()
-# 2 "/tmp/tmpxft_00007c10_00000000-1_TestConvergence.cudafe1.stub.c" 2
-# 1 "/tmp/tmpxft_00007c10_00000000-3_TestConvergence.fatbin.c" 1
+# 2 "/tmp/tmpxft_000027d4_00000000-1_TestConvergence.cudafe1.stub.c" 2
+# 1 "/tmp/tmpxft_000027d4_00000000-3_TestConvergence.fatbin.c" 1
 # 1 "/usr/local/cuda3.2rel/cuda/bin/../include/__cudaFatFormat.h" 1
 # 83 "/usr/local/cuda3.2rel/cuda/bin/../include/__cudaFatFormat.h"
 extern "C" {
@@ -10101,7 +10101,7 @@ void __cudaFatFreePTX( char* ptx );
 
 
 }
-# 2 "/tmp/tmpxft_00007c10_00000000-3_TestConvergence.fatbin.c" 2
+# 2 "/tmp/tmpxft_000027d4_00000000-3_TestConvergence.fatbin.c" 2
 
 asm(
 ".section .rodata\n"
@@ -10113,9 +10113,9 @@ asm(
 ".quad 0x2e332063636e6570,0x20746c6975622032,0x2d30313032206e6f,0x090a0a33302d3131\n"
 ".quad 0x2d2d2d2d2d2d2f2f,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2f090a2d2d2d2d2d\n"
-".quad 0x6c69706d6f43202f,0x706d742f20676e69,0x5f746678706d742f,0x3031633730303030\n"
+".quad 0x6c69706d6f43202f,0x706d742f20676e69,0x5f746678706d742f,0x3464373230303030\n"
 ".quad 0x303030303030305f,0x747365545f372d30,0x65677265766e6f43,0x337070632e65636e\n"
-".quad 0x706d742f2820692e,0x742e23494263632f,0x090a296d57375758,0x2d2d2d2d2d2d2f2f\n"
+".quad 0x706d742f2820692e,0x432e23494263632f,0x090a294a797a5165,0x2d2d2d2d2d2d2f2f\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x090a0a2d2d2d2d2d,0x2d2d2d2d2d2d2f2f\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
@@ -10130,7 +10130,7 @@ asm(
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x090a0a2d2d2d2d2d,0x093109656c69662e,0x6e616d6d6f633c22\n"
 ".quad 0x223e656e696c2d64,0x09656c69662e090a,0x2f706d742f220932,0x305f746678706d74\n"
-".quad 0x5f30316337303030,0x3030303030303030,0x43747365545f362d,0x6e65677265766e6f\n"
+".quad 0x5f34643732303030,0x3030303030303030,0x43747365545f362d,0x6e65677265766e6f\n"
 ".quad 0x66616475632e6563,0x0a227570672e3265,0x3309656c69662e09,0x6c2f7273752f2209\n"
 ".quad 0x782f6363672f6269,0x696c2d34365f3638,0x2f756e672d78756e,0x6e692f332e342e34\n"
 ".quad 0x74732f6564756c63,0x0a22682e66656464,0x3409656c69662e09,0x6c2f7273752f2209\n"
@@ -10274,11 +10274,11 @@ static __cudaFatElfEntry __elfEntries1 = {(char*)"sm_20", (char*)__deviceText_$s
 
 
 
-static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000004,0x2e00b786,(char*)"951c23c974dd2093",(char*)"TestConvergence.cu",(char*)" ",__ptxEntries,__cubinEntries,&__debugEntries0,0,0,0,0,0,0xfc297f53,&__elfEntries1};
-# 3 "/tmp/tmpxft_00007c10_00000000-1_TestConvergence.cudafe1.stub.c" 2
+static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000004,0x2e00b786,(char*)"0c309d977d98bde7",(char*)"TestConvergence.cu",(char*)" ",__ptxEntries,__cubinEntries,&__debugEntries0,0,0,0,0,0,0xdb48218d,&__elfEntries1};
+# 3 "/tmp/tmpxft_000027d4_00000000-1_TestConvergence.cudafe1.stub.c" 2
 struct __T20 {float *__par0;int __dummy_field;};
 extern void __device_stub__Z11convergencePf(float *);
-static void __sti____cudaRegisterAll_50_tmpxft_00007c10_00000000_4_TestConvergence_cpp1_ii_9b5121ed(void) __attribute__((__constructor__));
+static void __sti____cudaRegisterAll_50_tmpxft_000027d4_00000000_4_TestConvergence_cpp1_ii_9b5121ed(void) __attribute__((__constructor__));
 void __device_stub__Z11convergencePf(float *__par0){ struct __T20 *__T21 = 0;
 if (cudaSetupArgument((void*)(char*)&__par0, sizeof(__par0), (size_t)&__T21->__par0) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(float *))convergence)); (void)cudaLaunch(((char *)((void ( *)(float *))convergence))); };}
 void convergence( float *__cuda_0)
@@ -10287,6 +10287,6 @@ void convergence( float *__cuda_0)
 
 
 }
-# 1 "/tmp/tmpxft_00007c10_00000000-1_TestConvergence.cudafe1.stub.c"
-static void __sti____cudaRegisterAll_50_tmpxft_00007c10_00000000_4_TestConvergence_cpp1_ii_9b5121ed(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *))convergence), (char*)"convergence", "convergence", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); }
-# 1 "/tmp/tmpxft_00007c10_00000000-1_TestConvergence.cudafe1.stub.c" 2
+# 1 "/tmp/tmpxft_000027d4_00000000-1_TestConvergence.cudafe1.stub.c"
+static void __sti____cudaRegisterAll_50_tmpxft_000027d4_00000000_4_TestConvergence_cpp1_ii_9b5121ed(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *))convergence), (char*)"convergence", "convergence", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); }
+# 1 "/tmp/tmpxft_000027d4_00000000-1_TestConvergence.cudafe1.stub.c" 2

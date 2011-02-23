@@ -24,6 +24,13 @@
 // toggles uniform control flow warp-synchronous execution or scalar execution (1)
 #define LLVM_UNIFORMCONTROL_WARPSIZE 2
 
+namespace llvm {
+	class Type;
+	class IntegerType;
+	class StructType;
+	class ConstantInt;
+}
+
 namespace analysis
 {
 
@@ -111,8 +118,15 @@ namespace analysis
 		*/
 		class Translation {
 		public:
-			Translation(llvm::Function *f, int ws=LLVM_UNIFORMCONTROL_WARPSIZE): F(f), warpSize(ws) { }
+			Translation(llvm::Function *f, LLVMUniformVectorization *pass);
 			~Translation();
+			
+			/*!
+				\brief entry point to pass
+			*/
+			void runOnFunction();
+			
+		protected:
 			
 			//! \brief gets a warp-synchronous block from a scalar block
 			llvm::BasicBlock * getWarpBlockFromScalar(llvm::BasicBlock *scalarBlock);
@@ -127,23 +141,133 @@ namespace analysis
 			/*! \brief given an instruction from the scalar set, get a vector from the vectorized set that
 				is either a promoted-to-vector instruction or a set of scalar values packed into a vector*/
 			llvm::Instruction *getInstructionAsVectorized(llvm::Value *inst, llvm::Instruction *before=0);
+			
+			/*! 
+				
+			*/
+			llvm::Value * getLocalMemorySize(llvm::Instruction *insertBefore);
+			
+			/*! 
+				\brief gets a pointer to local memory
+			*/
+			llvm::Value * getLocalMemoryPointer(llvm::Instruction *insertBefore);
 
+		protected:
+		
 			/*!
 				\brief visit an instruction and either promotes to vector, or packs results into a vector
 			*/
 			void vectorize(llvm::Instruction *inst);
+		
+			/*!
+				\brief fetches metadata object and obtains thread local arguments
+					(i.e. localMemory pointer, threadIdx.x)
+			*/
+			void loadThreadLocalArguments();
+		
+			/*!
+
+				\brief performs breadth-first traversal of blocks in function F constructing a
+					list of blocks visited
+			*/
+			void breadthFirstTraversal(BasicBlockList & traversal, llvm::Function *F);
+		
+			/*!
+				\brief visits every instruction in the scalar phase and inserts a set of cloned
+					instructions in the parallel warp-synchronous block structure
+			*/
+			void addInterleavedInstructions();
+		
+			/*!
+
+				\brief visits all cloned instructions and resolves dependencies
+			*/
+			void resolveDependencies();
+		
+			/*!
+
+				\brief given a cloned instruction, update data dependencies to correspond to
+
+					cloned instructions from previous blocks
+			*/
+			void updateDependencies(llvm::Instruction *instr, int tid);
+		
+			/*!
+				\brief loaded tidx values are incremented by threadID within warp
+			*/
+			void updateThreadIdxUses();
+
+			/*!
+				\brief local memory is owned by each thread - compute the thread's actual localMemPointer 
+					from its thread ID and LLVMContext::localSize
+			*/
+			void updateLocalMemAddresses();
+				
+			/*!
+				\brief replace dummy terminators in warp-synchronous block structure with
+					tests for warp-synchronous behavior and either branches to successor blocks
+					or returns to Ocelot multicore runtime
+			*/
+			void resolveControlFlow();
+		
+			/*!
+				\brief visits each of the warp scheduler blocks and changes control flow to point
+					to warp-synchronous regions
+
+			*/
+			void updateSchedulerBlocks();
+		
+			/*!
+				\brief deals with a particular divergent branch
+
+			*/
+			void handleDivergentBranch(DivergentBranch &divergent);
+		
+			/*!
+				\brief emit spill code or handler for a branch known to be divergent
+
+			*/
+			void divergenceHandlerBranch(DivergentBranch &divergent);
+		
+			/*!
+				\brief inserts a schedular block that handles control flow
+
+			*/
+			void createSchedulerBlock();
+		
+			void debugInsertCFGTraces();
+		
+			/*!
+				\brief prints a .dot file of the function's control flow graph - no instrucitons, just bb labels
+			*/
+			void debugEmitCFG();
+		
+			/*!
+				\brief this could probably be implemented as a second function pass, but examine
+					collections of instructions of size <warpSize>, hoist or sink instructions, and
+					make into vectors for vector processing
+			*/
+			void vectorize();
 			
-		public:
-		
-			llvm::Value * getLocalMemorySize(llvm::Instruction *insertBefore);
-			llvm::Value * getLocalMemoryPointer(llvm::Instruction *insertBefore);
 		
 		public:
+		
+			/*!
+				\brief
+			*/
+			const LLVMUniformVectorization *pass;
 		
 			/*!
 				\brief pointer to LLVM function
 			*/
 			llvm::Function *F;
+			
+			/*!
+			
+			*/
+			int warpSize;
+			
+		public:
 		
 			/*!
 				\brief traverses scalar blocks breadth-first
@@ -186,7 +310,6 @@ namespace analysis
 			*/
 			WarpSchedulerMap warpSchedulerBlocks;
 			
-			int warpSize;
 		};
 
 	public:
@@ -199,6 +322,8 @@ namespace analysis
 		~LLVMUniformVectorization();
 
 	public:
+	
+		virtual bool doInitialize(llvm::Module &M);
 
 		//! \brief entry point for pass
 		virtual bool runOnFunction(llvm::Function &F);
@@ -210,97 +335,26 @@ namespace analysis
 		virtual llvm::PassKind getPassKind() const;
 
 	public:
-
-
-	protected:
-
-		/*!
-			\brief entry point to pass
-		*/
-		void addWarpSynchronous(llvm::Function &F);
-		
-		/*!
-			\brief visits every instruction in the scalar phase and inserts a set of cloned
-				instructions in the parallel warp-synchronous block structure
-		*/
-		void addInterleavedInstructions(Translation &translation);
-		
-		/*!
-			\brief visits all cloned instructions and resolves dependencies
-		*/
-		void resolveDependencies(Translation &translation);
-		
-		/*!
-			\brief given a cloned instruction, update data dependencies to correspond to
-				cloned instructions from previous blocks
-		*/
-		void updateDependencies(Translation &translation, llvm::Instruction *instr, int tid);
-		
-		/*!
-			\brief loaded tidx values are incremented by threadID within warp
-		*/
-		void updateThreadIdxUses(Translation &translation);
-
-		/*!
-			\brief local memory is owned by each thread - compute the thread's actual localMemPointer 
-				from its thread ID and LLVMContext::localSize
-		*/
-		void updateLocalMemAddresses(Translation &translation);
-				
-		/*!
-			\brief replace dummy terminators in warp-synchronous block structure with
-				tests for warp-synchronous behavior and either branches to successor blocks
-				or returns to Ocelot multicore runtime
-		*/
-		void resolveControlFlow(Translation &translation);
-		
-		/*!
-			\brief visits each of the warp scheduler blocks and changes control flow to point
-				to warp-synchronous regions
-		*/
-		void updateSchedulerBlocks(Translation &translation);
-		
-		/*!
-			\brief deals with a particular divergent branch
-		*/
-		void handleDivergentBranch(Translation &translation, DivergentBranch &divergent);
-		
-		/*!
-			\brief emit spill code or handler for a branch known to be divergent
-		*/
-		void divergenceHandlerBranch(Translation &translation, DivergentBranch &divergent);
-		
-		/*!
-			\brief inserts a schedular block that handles control flow
-		*/
-		void createSchedulerBlock(Translation &translation);
-		
-		void debugInsertCFGTraces(Translation &translation);
-		
-		/*!
-			\brief prints a .dot file of the function's control flow graph - no instrucitons, just bb labels
-		*/
-		void debugEmitCFG(Translation &translation);
-		
-		/*!
-			\brief this could probably be implemented as a second function pass, but examine
-				collections of instructions of size <warpSize>, hoist or sink instructions, and
-				make into vectors for vector processing
-		*/
-		void vectorize(Translation &translation);
-
-	protected:
-
-		/*!
-			\brief performs breadth-first traversal of blocks in function F constructing a
-				list of blocks visited
-		*/
-		void breadthFirstTraversal(BasicBlockList & traversal, llvm::Function *F);
+		const llvm::IntegerType *getTyInt(int n) const;
+	
+		llvm::ConstantInt *getConstInt32(int n) const;
+		llvm::ConstantInt *getConstInt16(short n) const;
 
 	public:
+		//! pointer to module 
+		const llvm::Module *M;
 
 		//! \brief number of consecutive threads to pack into a single hardware thread
 		int warpSize;
+		
+		//! \brief (int,int,int)
+		llvm::Type *tyDimension;
+		
+		//! \brief type of Metadata object
+		llvm::Type *tyMetadata;
+		
+		//! \brief type of ThreadDescriptor
+		llvm::Type *tyThreadDescriptor;
 
 		static char ID;
 	};

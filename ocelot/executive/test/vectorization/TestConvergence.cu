@@ -43,7 +43,7 @@ static void testConvergence() {
 		}
 	}
 	
-	printf("Test %s\n", (errors ? "FAILED": "Passed"));
+	printf("Pass/Fail : %s\n", (errors ? "Fail":"Pass"));
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////

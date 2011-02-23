@@ -10,6 +10,7 @@
 // Standard Library Includes
 #include <map>
 #include <string>
+#include <list>
 
 namespace ir
 {

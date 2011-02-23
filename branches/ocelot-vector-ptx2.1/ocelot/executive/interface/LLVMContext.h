@@ -26,23 +26,40 @@ namespace executive
 			};
 	
 		public:
-			Dimension tid; //! Thread ids
-			Dimension ntid; //! CTA dimensions
-			Dimension ctaid; //! CTA ids
-			Dimension nctaid; //! Kernel dimensions
+			Dimension tid; //! Thread ids [0]
+			Dimension ntid; //! CTA dimensions [1]
+			Dimension ctaid; //! CTA ids [2]
+			Dimension nctaid; //! Kernel dimensions [3]
 		
 		public:
-			char* local; //! Pointer to local memory
-			char* shared; //! Pointer to shared memory
-			char* constant; //! Pointer to constant memory
-			char* parameter; //! Pointer to parameter memory
-			char* argument; //! Pointer to argument memory
+			char* local; //! Pointer to local memory [4]
+			char* shared; //! Pointer to shared memory [5]
+			char* constant; //! Pointer to constant memory [6]
+			char* parameter; //! Pointer to parameter memory [7]
+			char* argument; //! Pointer to argument memory [8]
 		
 		public:
 			/*! \brief Generic pointer back to other state */
-			char* metadata;
+			char* metadata; // [9]
 	};
-
+	
+	class ThreadDescriptor {
+	public:
+		enum ThreadExitType {
+			Subkernel_exit = 0,
+			Barrier_exit = 1,
+			Kernel_exit = 2,
+			Divergent_branch = 3,
+			Convergent_branch = 4,
+			ThreadExitType_unknown
+		};
+		
+	public:
+		char *localMemory;
+		int targetSubkernelID;
+		ThreadExitType type;
+		LLVMContext::Dimension tid;
+	};
 }
 
 #endif

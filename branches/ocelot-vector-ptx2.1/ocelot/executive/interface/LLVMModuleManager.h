@@ -82,10 +82,10 @@ public:
 		};
 		
 	public:
+		char *localMemory;
 		int targetSubkernelID;
 		ir::Dim3 threadIdx;
 		ThreadExitType type;
-		char *localMemory;
 	};
 
 	//! 

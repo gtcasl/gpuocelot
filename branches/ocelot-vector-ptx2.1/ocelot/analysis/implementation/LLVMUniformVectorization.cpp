@@ -23,12 +23,14 @@
 #include <hydrazine/implementation/debug.h>
 #include <hydrazine/implementation/Exception.h>
 
+#define Ocelot_Exception(x) { std::stringstream ss; ss << x; std::cerr << x << std::endl; throw hydrazine::Exception(ss.str()); }
+
 #ifdef REPORT_BASE
 #undef REPORT_BASE
 #endif
 
 #define REPORT_BASE 1
-#define Ocelot_Exception(x) { std::stringstream ss; ss << x; std::cerr << x << std::endl; throw hydrazine::Exception(ss.str()); }
+
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -61,16 +63,11 @@ analysis::LLVMUniformVectorization::WarpScheduler::WarpScheduler():
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
-analysis::LLVMUniformVectorization::Translation::~Translation() {
-
-}
-
 analysis::LLVMUniformVectorization::DivergentBranch::DivergentBranch()
 :
 	scalarBlock(0), warpBlock(0), handler(0) {
 
 }
-
 
 //! \brief gets a warp-synchronous block from a scalar block
 llvm::BasicBlock * analysis::LLVMUniformVectorization::Translation::getWarpBlockFromScalar(
@@ -134,46 +131,105 @@ llvm::PassKind analysis::LLVMUniformVectorization::getPassKind() const {
 */
 bool analysis::LLVMUniformVectorization::runOnFunction(llvm::Function &F) {
 	
+	Translation translation(&F, this);
+	
 	{
 		F.getParent()->dump();
 	}
 	
-	addWarpSynchronous(F);
+	translation.runOnFunction();
+	
 	return true;
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-void analysis::LLVMUniformVectorization::addWarpSynchronous(llvm::Function &F) {
-	Translation translation(&F, warpSize);
-	
-	report("Vectorization: " << translation.F->getNameStr());
-	
-	if (LLVM_UNIFORMCONTROL_WARPSIZE > 1) {
-		breadthFirstTraversal(translation.traversal, translation.F);
-		addInterleavedInstructions(translation);
-		resolveDependencies(translation);
-	
-		updateThreadIdxUses(translation);
-		updateLocalMemAddresses(translation);
-		resolveControlFlow(translation);
-		createSchedulerBlock(translation);
-	
-		updateSchedulerBlocks(translation);
-		vectorize(translation);
+bool analysis::LLVMUniformVectorization::doInitialize(llvm::Module &_M) {
+	const int w = 32;
+	M = &_M;
+	{
+		std::vector<const llvm::Type *> types;
+		types.push_back(getTyInt(w));
+		types.push_back(getTyInt(w));
+		types.push_back(getTyInt(w));
+		tyDimension = llvm::StructType::get(_M.getContext(), types);
+	}
+	{
+		std::vector<const llvm::Type *> types;
+		types.push_back(llvm::PointerType::get(getTyInt(8), 0));
+		types.push_back(getTyInt(w));
+		types.push_back(getTyInt(w));
+		types.push_back(tyDimension);
+		tyThreadDescriptor = llvm::StructType::get(_M.getContext(), types);
+	}
+	{
+		std::vector<const llvm::Type *> types;
+		types.push_back(getTyInt(w));
+		types.push_back(getTyInt(w));
+		types.push_back(getTyInt(w));
+		types.push_back(getTyInt(w));
+		types.push_back(getTyInt(w));
+		types.push_back(getTyInt(w));
+		types.push_back(llvm::PointerType::get(tyThreadDescriptor, 0));
+		tyMetadata = llvm::StructType::get(_M.getContext(), types);
 	}
 	
-	report("end vectorization " << translation.F->getNameStr() << "\n");
-	
-	// debugging
-	//debugEmitCFG(translation);
-	//translation.F->getParent()->dump();
+	return true;
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void analysis::LLVMUniformVectorization::breadthFirstTraversal(
+const llvm::IntegerType *analysis::LLVMUniformVectorization::getTyInt(int n) const {
+	return llvm::IntegerType::get(M->getContext(), n);
+}
+
+llvm::ConstantInt *analysis::LLVMUniformVectorization::getConstInt32(int n) const {
+	return llvm::ConstantInt::get(getTyInt(32), n, true);
+}
+
+llvm::ConstantInt *analysis::LLVMUniformVectorization::getConstInt16(short n) const {
+	return llvm::ConstantInt::get(getTyInt(16), n, true);
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+analysis::LLVMUniformVectorization::Translation::Translation(
+	llvm::Function *f, 
+	LLVMUniformVectorization *_pass
+):
+	pass(_pass), F(f), warpSize(_pass->warpSize) 
+{
+
+}
+
+analysis::LLVMUniformVectorization::Translation::~Translation() {
+
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void analysis::LLVMUniformVectorization::Translation::runOnFunction() {
+	
+	report("Vectorization: " << F->getNameStr());
+	
+	if (warpSize > 1) {
+		breadthFirstTraversal(traversal, F);
+		addInterleavedInstructions();
+		resolveDependencies();
+	
+		updateThreadIdxUses();
+		updateLocalMemAddresses();
+		resolveControlFlow();
+		createSchedulerBlock();
+	
+		updateSchedulerBlocks();
+		vectorize();
+	}
+	
+	report("end vectorization " << F->getNameStr() << "\n");
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void analysis::LLVMUniformVectorization::Translation::breadthFirstTraversal(
 	BasicBlockList & traversal, llvm::Function *F) {
 
 	BasicBlockList blockList;
@@ -242,16 +298,45 @@ llvm::Value * analysis::LLVMUniformVectorization::Translation::getLocalMemoryPoi
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
+
+/*!
+	\brief fetches metadata object and obtains thread local arguments
+		(i.e. localMemory pointer, threadIdx.x)
+*/
+void analysis::LLVMUniformVectorization::Translation::loadThreadLocalArguments() {
+
+	// do this from the start of the subkernel
+	llvm::Value *context = &*(F->arg_begin());
+	llvm::BasicBlock &entryBlock = F->front();
+	llvm::Instruction *firstInst = entryBlock.getFirstNonPHI();
+	
+	std::vector< llvm::Value *> idx;
+	idx.push_back(pass->getConstInt32(0));
+	idx.push_back(pass->getConstInt32(9));
+	llvm::GetElementPtrInst *gempMetadataPtr = llvm::GetElementPtrInst::Create(context, idx.begin(), 
+		idx.end(), "metadataPtr", firstInst);
+	
+	idx.clear();
+	idx.push_back(pass->getConstInt32(0));
+	idx.push_back(pass->getConstInt32(6));
+	llvm::GetElementPtrInst *gempThreadDescPtr = llvm::GetElementPtrInst::Create(gempMetadataPtr, 
+		idx.begin(), idx.end(), "threadDescriptorPtr", firstInst);
+	
+	assert(gempThreadDescPtr);
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
 /*!
 	\brief 
 */
-void analysis::LLVMUniformVectorization::addInterleavedInstructions(Translation &translation) {
+void analysis::LLVMUniformVectorization::Translation::addInterleavedInstructions() {
 
 	// create blocks	
-	llvm::Function::BasicBlockListType & basicBlocks = translation.F->getBasicBlockList();
+	llvm::Function::BasicBlockListType & basicBlocks = F->getBasicBlockList();
 
-	for (BasicBlockList::iterator bb_it = translation.traversal.begin(); 
-		bb_it != translation.traversal.end(); ++bb_it) {
+	for (BasicBlockList::iterator bb_it = traversal.begin(); 
+		bb_it != traversal.end(); ++bb_it) {
 		
 		llvm::BasicBlock *bb = *bb_it;
 		if (bb->getNameStr() == "") { continue; }
@@ -259,30 +344,30 @@ void analysis::LLVMUniformVectorization::addInterleavedInstructions(Translation 
 		// ignore ocelot-inserted blocks for fusing thread blocks together
 		if (bb->getNameStr().substr(0, 30) == "$__ocelot_remove_barrier_entry") { 
 			WarpScheduler warpSched;
-			translation.warpSchedulerBlocks[bb] = warpSched;
+			warpSchedulerBlocks[bb] = warpSched;
 		}
 
 		// construct a warp-synchronous block
 		std::stringstream ss;
 		ss << bb->getNameStr() << "_ws_" << warpSize;
 		llvm::BasicBlock *warpBlock = llvm::BasicBlock::Create(
-			translation.F->getContext(), ss.str(), 0, 0);
-		translation.warpBlocksMap[bb] = warpBlock;
+			F->getContext(), ss.str(), 0, 0);
+		warpBlocksMap[bb] = warpBlock;
 	}
 	
-	for (BasicBlockList::iterator bb_it = translation.traversal.begin(); 
-		bb_it != translation.traversal.end(); ++bb_it) {
+	for (BasicBlockList::iterator bb_it = traversal.begin(); 
+		bb_it != traversal.end(); ++bb_it) {
 
 		llvm::BasicBlock *srcBlock = *bb_it;
 
 		// ignore empty blocks		
 		// ignore the warp-scheduler block
 		if (srcBlock->getNameStr() == "" || 
-			translation.warpSchedulerBlocks.find(srcBlock) != translation.warpSchedulerBlocks.end()) {
+			warpSchedulerBlocks.find(srcBlock) != warpSchedulerBlocks.end()) {
 			continue;
 		}
 
-		llvm::BasicBlock *warpBlock = translation.warpBlocksMap[srcBlock];
+		llvm::BasicBlock *warpBlock = warpBlocksMap[srcBlock];
 		llvm::BasicBlock::InstListType & instList = warpBlock->getInstList();
 
 		for (llvm::BasicBlock::iterator inst_it = srcBlock->begin(); inst_it != srcBlock->end(); 
@@ -304,13 +389,13 @@ void analysis::LLVMUniformVectorization::addInterleavedInstructions(Translation 
 					}
 					instList.push_back(instr);
 
-					translation.warpInstructionMap[(&*inst_it)].replicated.push_back(instr);
+					warpInstructionMap[(&*inst_it)].replicated.push_back(instr);
 				}
 			}
 		}
 
 		// insert a dummy terminator
-		llvm::ReturnInst::Create(translation.F->getContext(), 0, warpBlock);	
+		llvm::ReturnInst::Create(F->getContext(), 0, warpBlock);	
 		basicBlocks.push_back(warpBlock);
 	}
 }
@@ -318,16 +403,16 @@ void analysis::LLVMUniformVectorization::addInterleavedInstructions(Translation 
 /*!
 	\brief visits all cloned instructions and resolves dependencies
 */
-void analysis::LLVMUniformVectorization::resolveDependencies(Translation &translation) {
-	for (BasicBlockList::iterator bb_it = translation.traversal.begin(); 
-		bb_it != translation.traversal.end(); ++bb_it) {
+void analysis::LLVMUniformVectorization::Translation::resolveDependencies() {
+	for (BasicBlockList::iterator bb_it = traversal.begin(); 
+		bb_it != traversal.end(); ++bb_it) {
 
 		llvm::BasicBlock *srcBlock = *bb_it;
 		
 		// ignore empty blocks		
 		// ignore the warp-scheduler block
 		if (srcBlock->getNameStr() == "" ||
-			translation.warpSchedulerBlocks.find(srcBlock) != translation.warpSchedulerBlocks.end()) {
+			warpSchedulerBlocks.find(srcBlock) != warpSchedulerBlocks.end()) {
 			continue;
 		}
 
@@ -343,8 +428,8 @@ void analysis::LLVMUniformVectorization::resolveDependencies(Translation &transl
 				for (int tid = 0; tid < warpSize; tid++) {
 					// clone instruction
 					
-					llvm::Instruction *instr = translation.warpInstructionMap[(&*inst_it)].replicated[tid];
-					updateDependencies(translation, instr, tid);
+					llvm::Instruction *instr = warpInstructionMap[(&*inst_it)].replicated[tid];
+					updateDependencies(instr, tid);
 					
 					// replace element ptr instructions with computations of thread idx
 					if (llvm::GetElementPtrInst::classof(instr)) {
@@ -364,11 +449,11 @@ void analysis::LLVMUniformVectorization::resolveDependencies(Translation &transl
 							
 							if (indices[1] == 0 && indices[2] == 0 && indices[3] == 0) {
 								// tidx
-								translation.threadIdxMap[ptrInst] = tid;
+								threadIdxMap[ptrInst] = tid;
 							}
 							else if (indices[1] == 0 && indices[2] == 4 && indices[3] < 0) {
 								// local memory
-								translation.localMemPtrMap[ptrInst] = tid;
+								localMemPtrMap[ptrInst] = tid;
 							}
 						}
 					}
@@ -381,10 +466,10 @@ void analysis::LLVMUniformVectorization::resolveDependencies(Translation &transl
 /*!
 	\brief visits all uses of tidx and replaces with a computed value
 */
-void analysis::LLVMUniformVectorization::updateThreadIdxUses(Translation &translation) {
+void analysis::LLVMUniformVectorization::Translation::updateThreadIdxUses() {
 	// visit all tidx dereferences and add threadID to result
-	for (std::map< llvm::Instruction *, int >::iterator ptr_it = translation.threadIdxMap.begin();
-		ptr_it != translation.threadIdxMap.end(); ++ptr_it) {
+	for (std::map< llvm::Instruction *, int >::iterator ptr_it = threadIdxMap.begin();
+		ptr_it != threadIdxMap.end(); ++ptr_it) {
 
 		// visit all users
 		for (llvm::Value::use_iterator use_it = ptr_it->first->use_begin(); 
@@ -396,17 +481,7 @@ void analysis::LLVMUniformVectorization::updateThreadIdxUses(Translation &transl
 				llvm::LoadInst *loadInst = static_cast<llvm::LoadInst *>(*use_it);
 				// now replace all uses of loadInst with
 				llvm::ConstantInt *tidxInst = llvm::ConstantInt::get(
-					llvm::Type::getInt32Ty(translation.F->getContext()), ptr_it->second);
-					
-				if (loadInst->getType() != tidxInst->getType()) {
-					std::string ss;
-					llvm::raw_string_ostream os(ss);
-					os << "assertion will fail: ";
-					loadInst->getType()->print(os);
-					os << " != ";
-					tidxInst->getType()->print(os);
-					report(os.str());
-				}
+					llvm::Type::getInt32Ty(F->getContext()), ptr_it->second);
 					
 				llvm::BinaryOperator *addInst = llvm::BinaryOperator::CreateNSWAdd( loadInst, tidxInst, ss.str(), loadInst);
 				loadInst->moveBefore(addInst);
@@ -421,11 +496,11 @@ void analysis::LLVMUniformVectorization::updateThreadIdxUses(Translation &transl
 	\brief local memory is owned by each thread - compute the thread's actual local mem ptr from its
 		thread ID and LLVMContext::localSize
 */
-void analysis::LLVMUniformVectorization::updateLocalMemAddresses(Translation &translation) {
+void analysis::LLVMUniformVectorization::Translation::updateLocalMemAddresses() {
 
 	// visit all tidx dereferences and add threadID to result
-	for (std::map< llvm::Instruction *, int >::iterator ptr_it = translation.localMemPtrMap.begin();
-		ptr_it != translation.localMemPtrMap.end(); ++ptr_it) {
+	for (std::map< llvm::Instruction *, int >::iterator ptr_it = localMemPtrMap.begin();
+		ptr_it != localMemPtrMap.end(); ++ptr_it) {
 
 		// visit all users
 		for (llvm::Value::use_iterator use_it = ptr_it->first->use_begin(); 
@@ -455,27 +530,13 @@ void analysis::LLVMUniformVectorization::updateLocalMemAddresses(Translation &tr
 				
 				llvm::LoadInst *loadInst = static_cast<llvm::LoadInst *>(*use_it);
 				llvm::Value *tidxInst = llvm::ConstantInt::get(
-					llvm::Type::getInt32Ty(translation.F->getContext()), ptr_it->second);
-				llvm::Value *localMemSize = translation.getLocalMemorySize(loadInst);
+					llvm::Type::getInt32Ty(F->getContext()), ptr_it->second);
+				llvm::Value *localMemSize = getLocalMemorySize(loadInst);
 				if (sizeof(void *) > sizeof(int)) {
 					localMemSize = llvm::CastInst::CreateZExtOrBitCast(localMemSize, 
-						llvm::Type::getInt64Ty(translation.F->getContext()), "localMemSize64", loadInst);
+						llvm::Type::getInt64Ty(F->getContext()), "localMemSize64", loadInst);
 					tidxInst = llvm::CastInst::CreateZExtOrBitCast(tidxInst, 
-						llvm::Type::getInt64Ty(translation.F->getContext()), "tidxInst64", loadInst);
-				}
-				
-				translation.F->dump();
-				
-				{
-					if (localMemSize->getType() != tidxInst->getType()) {
-						std::string ss;
-						llvm::raw_string_ostream os(ss);
-						os << "assertion will fail: ";
-						localMemSize->getType()->print(os);
-						os << " != ";
-						tidxInst->getType()->print(os);
-						report(os.str());
-					}
+						llvm::Type::getInt64Ty(F->getContext()), "tidxInst64", loadInst);
 				}
 				
 				llvm::BinaryOperator *mulInst = llvm::BinaryOperator::CreateMul(
@@ -489,35 +550,20 @@ void analysis::LLVMUniformVectorization::updateLocalMemAddresses(Translation &tr
 					llvm::Instruction *consumingAddInst = static_cast<llvm::Instruction *>(
 						*(ptrtoint->use_begin()));
 					
-					
-					
 					bool wasPointer = false;
 					const llvm::Type *originalType = 0;
 					if (ptrtoint->getType()->isPointerTy()) {
 						wasPointer = true;
 						originalType = ptrtoint->getType();
 						ptrtoint = llvm::CastInst::CreatePointerCast(ptrtoint, mulInst->getType(), "", consumingAddInst);
-						report("pointer type");
-					}
-					
-					std::cerr << "ptrtoint type: ";
-					ptrtoint->dump();
-					ptrtoint->getType()->dump();
-					std::cerr << "mulInst type: ";
-					mulInst->getType()->dump();
-					if (originalType) {
-					std::cerr << "original type: ";
-					originalType->dump();
 					}
 					
 					llvm::Instruction *addTdOff = llvm::BinaryOperator::CreateNSWAdd(
 						ptrtoint, mulInst, "tdOff", consumingAddInst);	
 										
 					if (wasPointer) {
-						std::cerr << "addTdOff type: ";
-						addTdOff->getType()->dump();
-						
-						addTdOff = llvm::CastInst::Create(llvm::Instruction::IntToPtr, addTdOff, originalType, "local.ptr", consumingAddInst);
+						addTdOff = llvm::CastInst::Create(llvm::Instruction::IntToPtr, addTdOff, originalType,
+							"local.ptr", consumingAddInst);
 					}
 					consumingAddInst->setOperand(1, addTdOff);
 				}
@@ -533,20 +579,20 @@ void analysis::LLVMUniformVectorization::updateLocalMemAddresses(Translation &tr
 	\param instr cloned instruction
 	\param tid thread ID within warp to which cloned instruction belongs
 */	
-void analysis::LLVMUniformVectorization::updateDependencies(Translation &translation, 
+void analysis::LLVMUniformVectorization::Translation::updateDependencies(
 	llvm::Instruction *instr, int tid) {
 		
 	for (unsigned int i = 0; i < instr->getNumOperands(); ++i) {
 		llvm::Value *operand = instr->getOperand(i);
 		
 		if (llvm::BasicBlock::classof(operand)) {
-			instr->setOperand(i, translation.getWarpBlockFromScalar(
+			instr->setOperand(i, getWarpBlockFromScalar(
 				static_cast<llvm::BasicBlock *>(operand)));
 		}
 		else if (llvm::Instruction::classof(operand)) {
-			WarpInstructionMap::iterator op_it = translation.warpInstructionMap.find(operand);
+			WarpInstructionMap::iterator op_it = warpInstructionMap.find(operand);
 			
-			if (op_it != translation.warpInstructionMap.end()) {
+			if (op_it != warpInstructionMap.end()) {
 				instr->setOperand(i, op_it->second.replicated[tid]);
 			}
 			else if (llvm::PHINode::classof(operand)) {
@@ -556,12 +602,12 @@ void analysis::LLVMUniformVectorization::updateDependencies(Translation &transla
 					phiNode->getNameStr(), instr);
 				
 				for (unsigned int j = 0; j < phiNode->getNumIncomingValues(); ++j) {
-					op_it = translation.warpInstructionMap.find(phiNode->getIncomingValue(j));
-					if (op_it != translation.warpInstructionMap.end()) {
+					op_it = warpInstructionMap.find(phiNode->getIncomingValue(j));
+					if (op_it != warpInstructionMap.end()) {
 						llvm::Value *incoming = op_it->second.replicated[tid];
 						if (llvm::Instruction::classof(incoming)) {
 							llvm::BasicBlock *scalar = static_cast<llvm::Instruction*>(incoming)->getParent();
-							llvm::BasicBlock *warpBlock = translation.getWarpBlockFromScalar(scalar);
+							llvm::BasicBlock *warpBlock = getWarpBlockFromScalar(scalar);
 							if (!warpBlock) {
 								warpBlock = scalar;
 							}
@@ -600,12 +646,12 @@ void analysis::LLVMUniformVectorization::updateDependencies(Translation &transla
 		tests for warp-synchronous behavior and either branches to successor blocks
 		or returns to Ocelot multicore runtime
 */
-void analysis::LLVMUniformVectorization::resolveControlFlow(Translation &translation) {
+void analysis::LLVMUniformVectorization::Translation::resolveControlFlow() {
 		
-	for (BasicBlockMap::iterator bb_it = translation.warpBlocksMap.begin();
-		bb_it != translation.warpBlocksMap.end(); ++bb_it) {
+	for (BasicBlockMap::iterator bb_it = warpBlocksMap.begin();
+		bb_it != warpBlocksMap.end(); ++bb_it) {
 		
-		if (translation.warpSchedulerBlocks.find(bb_it->first) != translation.warpSchedulerBlocks.end()) {
+		if (warpSchedulerBlocks.find(bb_it->first) != warpSchedulerBlocks.end()) {
 			continue;
 		}
 		
@@ -620,15 +666,14 @@ void analysis::LLVMUniformVectorization::resolveControlFlow(Translation &transla
 					// constant expressions are warp synchronous
 					llvm::BranchInst *clonedBr = static_cast<llvm::BranchInst *>(braInst->clone());
 					for (unsigned int n = 0; n < clonedBr->getNumSuccessors(); n++) {
-						clonedBr->setSuccessor(n, translation.warpBlocksMap[clonedBr->getSuccessor(n)]);
+						clonedBr->setSuccessor(n, warpBlocksMap[clonedBr->getSuccessor(n)]);
 					}
 					bb_it->second->getTerminator()->eraseFromParent(); // erase dummy
 					bb_it->second->getInstList().push_back(clonedBr);
 				}
 				else {
 					// potentially divergent branch - add to map for subsequent handling
-					translation.divergingBranchMap[bb_it->second] = DivergentBranch(bb_it->first, 
-						bb_it->second);
+					divergingBranchMap[bb_it->second] = DivergentBranch(bb_it->first, bb_it->second);
 				}
 			}
 			else if (braInst->isUnconditional()) {
@@ -636,7 +681,7 @@ void analysis::LLVMUniformVectorization::resolveControlFlow(Translation &transla
 				bb_it->second->getTerminator()->eraseFromParent();
 				
 				// insert uniform branch to successor
-				llvm::BasicBlock *succ = translation.warpBlocksMap[braInst->getSuccessor(0)];
+				llvm::BasicBlock *succ = warpBlocksMap[braInst->getSuccessor(0)];
 				llvm::BranchInst::Create(succ, bb_it->second);
 			}
 			else {
@@ -657,16 +702,16 @@ void analysis::LLVMUniformVectorization::resolveControlFlow(Translation &transla
 	}
 	
 	// insert handling code for potentially diverging branches
-	for (DivergentBranchMap::iterator div_br_it = translation.divergingBranchMap.begin();
-		div_br_it != translation.divergingBranchMap.end(); ++div_br_it) {
-		handleDivergentBranch(translation, div_br_it->second);
+	for (DivergentBranchMap::iterator div_br_it = divergingBranchMap.begin();
+		div_br_it != divergingBranchMap.end(); ++div_br_it) {
+		handleDivergentBranch(div_br_it->second);
 	}
 }
 
 /*!
 	\brief deals with a particular divergent branch
 */
-void analysis::LLVMUniformVectorization::handleDivergentBranch(Translation &translation, 
+void analysis::LLVMUniformVectorization::Translation::handleDivergentBranch(
 	DivergentBranch &divergent) {
 	
 	// we only know how to handle 1-bit integer conditions
@@ -678,17 +723,16 @@ void analysis::LLVMUniformVectorization::handleDivergentBranch(Translation &tran
 			Ocelot_Exception("condition was expected to be of type integer-1");
 		}
 	
-		WarpInstructionMap::iterator ws_it = translation.warpInstructionMap.find(condition);
-		if (ws_it == translation.warpInstructionMap.end()) {
+		WarpInstructionMap::iterator ws_it = warpInstructionMap.find(condition);
+		if (ws_it == warpInstructionMap.end()) {
 			Ocelot_Exception("divergent branch condition does not appear in the warp instruction map");
 		}
 		
 		divergent.warpBlock->getTerminator()->removeFromParent();	 // remove dummy
 		
 		// construct reduction
-		const llvm::Type *int16ty = llvm::Type::getInt16Ty(translation.F->getContext());
-		const llvm::Type *int32ty = llvm::Type::getInt32Ty(translation.F->getContext());
-		llvm::Constant *constOne = llvm::ConstantInt::get(int16ty, 1);
+		const llvm::Type *int16ty = pass->getTyInt(16);
+		llvm::Constant *constOne = pass->getConstInt16(1);
 		llvm::Instruction *z = new llvm::ZExtInst(ws_it->second.replicated[0], int16ty, "condZ", 
 			divergent.warpBlock);
 		
@@ -704,21 +748,25 @@ void analysis::LLVMUniformVectorization::handleDivergentBranch(Translation &tran
 		
 		// if z is 0, all conditions were 0s. if z is (warpSize-1), all conditions were 1
 		// else, diverge!
-		
+		/*
 		llvm::ConstantInt *constZero = static_cast<llvm::ConstantInt *>(
 			llvm::ConstantInt::get(int16ty, 0));
 		llvm::ConstantInt *constFull = static_cast<llvm::ConstantInt *>(
 			llvm::ConstantInt::get(int16ty, (1<<warpSize)-1));
 		llvm::ConstantInt *constZero32 = static_cast<llvm::ConstantInt *>(
 			llvm::ConstantInt::get(int32ty, 0));
+			*/
+		llvm::ConstantInt *constZero = pass->getConstInt16(0);
+		llvm::ConstantInt *constFull = pass->getConstInt16((1<<warpSize)-1);
+		llvm::ConstantInt *constZero32 = pass->getConstInt32(0);
 		
 		std::stringstream ss;
 		ss << divergent.warpBlock->getNameStr() << "_diverge";
 		divergent.handler = llvm::BasicBlock::Create(
-			translation.F->getContext(), ss.str(), translation.F);
+			F->getContext(), ss.str(), F);
 			
-		llvm::BasicBlock *succZero = translation.warpBlocksMap[scBranch->getSuccessor(1)];
-		llvm::BasicBlock *succFull = translation.warpBlocksMap[scBranch->getSuccessor(0)];
+		llvm::BasicBlock *succZero = warpBlocksMap[scBranch->getSuccessor(1)];
+		llvm::BasicBlock *succFull = warpBlocksMap[scBranch->getSuccessor(0)];
 		
 		llvm::SwitchInst *switchInst = llvm::SwitchInst::Create(
 			z, divergent.handler, 2, divergent.warpBlock);
@@ -726,9 +774,9 @@ void analysis::LLVMUniformVectorization::handleDivergentBranch(Translation &tran
 		switchInst->addCase(constZero, succZero);
 		
 		// insert dummy return statement
-		llvm::ReturnInst::Create(translation.F->getContext(), constZero32, divergent.handler);
+		llvm::ReturnInst::Create(F->getContext(), constZero32, divergent.handler);
 		
-		divergenceHandlerBranch(translation, divergent);
+		divergenceHandlerBranch(divergent);
 	}
 	else {
 		Ocelot_Exception("unexpected divergent terminator");
@@ -740,7 +788,7 @@ void analysis::LLVMUniformVectorization::handleDivergentBranch(Translation &tran
 /*!
 	\brief emit spill code or handler for a branch known to be divergent
 */
-void analysis::LLVMUniformVectorization::divergenceHandlerBranch(Translation &translation, 
+void analysis::LLVMUniformVectorization::Translation::divergenceHandlerBranch(
 	DivergentBranch &divergent) {
 
 }
@@ -750,20 +798,16 @@ void analysis::LLVMUniformVectorization::divergenceHandlerBranch(Translation &tr
 /*!
 	\brief inserts a schedular block that handles control flow
 */
-void analysis::LLVMUniformVectorization::createSchedulerBlock(Translation &translation) {
-	llvm::BasicBlock *entry = & translation.F->front();
-	translation.schedulerBlock = llvm::BasicBlock::Create(translation.F->getContext(),
-		"WarpSyncScheduler", 
-		translation.F, 
-		entry);
+void analysis::LLVMUniformVectorization::Translation::createSchedulerBlock() {
+	llvm::BasicBlock *entry = & F->front();
+	schedulerBlock = llvm::BasicBlock::Create(F->getContext(), "WarpSyncScheduler", F, entry);
 	
 	// for now, have scheduler block chain to previous entry point
 	llvm::BasicBlock *startBlock = entry;
-	if (!translation.warpSchedulerBlocks.size()) {
-		startBlock = translation.getWarpBlockFromScalar(entry);
+	if (!warpSchedulerBlocks.size()) {
+		startBlock = getWarpBlockFromScalar(entry);
 	}
-	llvm::BranchInst *braInst = llvm::BranchInst::Create(
-		startBlock, translation.schedulerBlock);
+	llvm::BranchInst *braInst = llvm::BranchInst::Create(startBlock, schedulerBlock);
 	assert(braInst);
 }
 
@@ -771,19 +815,19 @@ void analysis::LLVMUniformVectorization::createSchedulerBlock(Translation &trans
 	\brief visits each of the warp scheduler blocks and changes control flow to point
 		to warp-synchronous regions
 */
-void analysis::LLVMUniformVectorization::updateSchedulerBlocks(Translation &translation) {
-	WarpSchedulerMap::const_iterator ws_it = translation.warpSchedulerBlocks.begin();
-	for (; ws_it != translation.warpSchedulerBlocks.end(); ++ws_it) {
+void analysis::LLVMUniformVectorization::Translation::updateSchedulerBlocks() {
+	WarpSchedulerMap::const_iterator ws_it = warpSchedulerBlocks.begin();
+	for (; ws_it != warpSchedulerBlocks.end(); ++ws_it) {
 		llvm::BasicBlock *scalar = ws_it->first;
 		llvm::TerminatorInst *termInst = scalar->getTerminator();
 
 		if (llvm::BranchInst::classof(termInst)) {
 			llvm::BranchInst *braInst = static_cast<llvm::BranchInst *>(termInst);
 			for (unsigned int i = 0; i < braInst->getNumSuccessors(); i++) {
-				if (translation.warpSchedulerBlocks.find(braInst->getSuccessor(i)) ==
-					translation.warpSchedulerBlocks.end()) {
+				if (warpSchedulerBlocks.find(braInst->getSuccessor(i)) ==
+					warpSchedulerBlocks.end()) {
 
-					llvm::BasicBlock *wsBlock = translation.getWarpBlockFromScalar(braInst->getSuccessor(i));
+					llvm::BasicBlock *wsBlock = getWarpBlockFromScalar(braInst->getSuccessor(i));
 					braInst->setSuccessor(i, wsBlock);
 				}
 			}
@@ -799,7 +843,7 @@ void analysis::LLVMUniformVectorization::updateSchedulerBlocks(Translation &tran
 /*!
 	\brief prints a .dot file of the function's control flow graph - no instrucitons, just bb labels
 */
-void analysis::LLVMUniformVectorization::debugEmitCFG(Translation &translation) {
+void analysis::LLVMUniformVectorization::Translation::debugEmitCFG() {
 	std::ostream & out = std::cout;
 	
 	std::map< llvm::BasicBlock *, int > blockMap;
@@ -807,8 +851,8 @@ void analysis::LLVMUniformVectorization::debugEmitCFG(Translation &translation) 
 	out << " digraph G {\n";
 	
 	int bbn = 1;
-	for (llvm::Function::iterator bb_it = translation.F->begin(); 
-		bb_it != translation.F->end(); ++bb_it) {
+	for (llvm::Function::iterator bb_it = F->begin(); 
+		bb_it != F->end(); ++bb_it) {
 		llvm::BasicBlock *block = &*bb_it;
 		
 		out << "  bb_" << bbn << " [label=\"" << std::string(block->getName()) << "\"]\n";
@@ -818,8 +862,8 @@ void analysis::LLVMUniformVectorization::debugEmitCFG(Translation &translation) 
 	
 	bbn = 1;
 	int errors = 1;
-	for (llvm::Function::iterator bb_it = translation.F->begin(); 
-		bb_it != translation.F->end(); ++bb_it) {
+	for (llvm::Function::iterator bb_it = F->begin(); 
+		bb_it != F->end(); ++bb_it) {
 		llvm::BasicBlock *block = &*bb_it;
 		llvm::TerminatorInst *terminator = block->getTerminator();
 		
@@ -1094,20 +1138,20 @@ void analysis::LLVMUniformVectorization::Translation::vectorize(llvm::Instructio
 		collections of instructions of size <warpSize>, hoist or sink instructions, and
 		make into vectors for vector processing
 */
-void analysis::LLVMUniformVectorization::vectorize(Translation &translation) {
+void analysis::LLVMUniformVectorization::Translation::vectorize() {
 
 	report("vectorize(translation)");
 
 	// go through the work list 
-	for (BasicBlockList::iterator bb_it = translation.traversal.begin(); 
-		bb_it != translation.traversal.end(); ++bb_it) {
+	for (BasicBlockList::iterator bb_it = traversal.begin(); 
+		bb_it != traversal.end(); ++bb_it) {
 		llvm::BasicBlock *block = *bb_it;
 		report("  vectorizing " << block->getNameStr());
 
 		for (llvm::BasicBlock::iterator inst_it = block->begin(); inst_it != block->end(); ++inst_it) {
 			llvm::Instruction *inst = &*inst_it;
 			report("    " << inst);
-			translation.vectorize(&*inst_it);
+			vectorize(&*inst_it);
 		}		
 	}
 }

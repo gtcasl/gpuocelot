@@ -344,6 +344,7 @@ void PassManager::runOnModule()
 	}
 }
 
+#if 0
 //! \brief implements an alternative approach to coalescing passes
 void PassManager::runOnModuleCoalesced() {
 	Pass::Type passType = Pass::InvalidPass;
@@ -364,20 +365,44 @@ void PassManager::runOnModuleCoalesced() {
 		
 		// call doInitialize() for this pass
 		switch (pass->second->type) {
-		case Pass::ImmutablePass: // fall through
+		case Pass::ImmutablePass:
+		{
+			ImmutablePass *immutable = static_cast<ImmutablePass *>(pass->second);
+			immutable->runOnModule(*_module);
+		}
+		break;
 		case Pass::ModulePass:
-			pass->second->runOnModule(*_module);
+		{
+			ModulePass *modPass = static_cast<ModulePass *>(pass->second);
+			modPass->runOnModule(*_module);
+		}
+		break;
+		case Pass::KernelPass:
+		{
+			KernelPass *kernelPass = static_cast<KernelPass*>(pass->second);
+			kernelPass->doInitialize(*_module);
+			
+			// if it's coalescable, add to coalesced sequence, else apply
+			coalesced.push_back(*pass);
+			if (!kernlPass->coalesce()) {
+				_applyPasses(coalesced);
+				coalesced.clear();
+			}
+		}
 			break;
-		case Pass::KernelPass:	// fall through
+			
 		case Pass::BasicBlockPass:
-			pass->second->doInitialize(*_module);
+		{
+			BasicBlockPass *blockPass = static_cast<BasicBlockPass*>(pass->second);
+			blockPass->doInitialize(*_module);
 		
 			// if it's coalescable, add to coalesced sequence, else apply
-			coalesced.push_back(pass->second);
+			coalesced.push_back(*pass);
 			if (!pass->second->coalesce()) {
 				_applyPasses(coalesced);
 				coalesced.clear();
 			}
+		}
 			break;			
 		default:
 			break;
@@ -403,8 +428,7 @@ void PassManager::_applyPasses(const PassSequence &coalesced) {
 		
 		for (ir::Module::KernelMap::const_iterator kernel = _module->kernels().begin();
 			kernel != _module->kernels().end(); ++kernel) {
-				
-				
+			
 			if (pass->second->type == Pass::KernelPass) {
 				KernelPass *kernelPass = static_cast<KernelPass*>(pass->second);
 				freeUnusedDataStructures(kernel->second, pass->first);
@@ -443,7 +467,7 @@ void PassManager::_applyPasses(const PassSequence &coalesced) {
 		pass->second->finalize();
 	}
 }
-
+#endif
 }
 
 #endif

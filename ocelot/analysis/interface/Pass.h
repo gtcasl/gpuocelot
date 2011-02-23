@@ -55,6 +55,10 @@ namespace analysis
 			/*! \brief The name of the pass */
 			const std::string name;
 		
+		protected:
+			//! \brief Pass instances should set this to true or false if they are coalescable
+			bool _coalesce;
+		
 		public:
 			/*! \brief The default constructor sets the type */
 			explicit Pass( Type t = InvalidPass, int a = NoAnalysis,
@@ -67,6 +71,8 @@ namespace analysis
 			Pass& operator=( const Pass& p );
 			/*! \brief Report the name of the pass */
 			std::string toString() const;
+			//! returns true if pass is coalescable
+			bool coalesce() const;
 	};
 	
 	

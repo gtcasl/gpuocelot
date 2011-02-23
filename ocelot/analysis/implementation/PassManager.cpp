@@ -344,6 +344,106 @@ void PassManager::runOnModule()
 	}
 }
 
+//! \brief implements an alternative approach to coalescing passes
+void PassManager::runOnModuleCoalesced() {
+	Pass::Type passType = Pass::InvalidPass;
+	PassSequence coalesced;
+	_module->loadNow();
+	
+	for (PassSequence::const_iterator pass = _passesOrdered.begin();
+		pass != _passesOrdered.end(); ++pass) {
+		
+		// apply any coalesced passes
+		if (pass->second->type != passType) {
+			if (coalesced.size()) {
+				_applyPasses(coalesced);
+				coalesced.clear();
+			}
+		}
+		passType = pass->second->type;
+		
+		// call doInitialize() for this pass
+		switch (pass->second->type) {
+		case Pass::ImmutablePass: // fall through
+		case Pass::ModulePass:
+			pass->second->runOnModule(*_module);
+			break;
+		case Pass::KernelPass:	// fall through
+		case Pass::BasicBlockPass:
+			pass->second->doInitialize(*_module);
+		
+			// if it's coalescable, add to coalesced sequence, else apply
+			coalesced.push_back(pass->second);
+			if (!pass->second->coalesce()) {
+				_applyPasses(coalesced);
+				coalesced.clear();
+			}
+			break;			
+		default:
+			break;
+		}
+	}
+	_applyPasses(coalesced);
+}
+
+//! applies a series of passes of the same type
+void PassManager::_applyPasses(const PassSequence &coalesced) {
+	if (!coalesced.size()) { return; }
+	
+	// initialize on module
+	for (PassSequence::const_iterator pass = coalesced.begin();
+		pass != coalesced.end(); ++pass) {
+		
+		pass->second->doInitialize(*_module);
+	}
+	
+	// apply kernel and basic block passes
+	for (PassSequence::const_iterator pass = coalesced.begin();
+		pass != coalesced.end(); ++pass) {
+		
+		for (ir::Module::KernelMap::const_iterator kernel = _module->kernels().begin();
+			kernel != _module->kernels().end(); ++kernel) {
+				
+				
+			if (pass->second->type == Pass::KernelPass) {
+				KernelPass *kernelPass = static_cast<KernelPass*>(pass->second);
+				freeUnusedDataStructures(kernel->second, pass->first);
+				allocateNewDataStructures(kernel->second, pass->first);
+				
+				kernelPass->runOnKernel(kernel->second);
+				
+				freeUnusedDataStructures(kernel->second, Pass::NoAnalysis);
+			}
+			else {
+				pass->second->doInitialize(*kernel->second);
+
+				report("  Running basic block pass '" << pass->toString() 
+					<< "' on kernel '" << kernel->name << "'" );
+				
+				BasicBlockPass* bbPass = static_cast<BasicBlockPass*>(pass);
+				bbPass->doInitialize(*kernel->second);
+				for( ir::ControlFlowGraph::iterator block = kernel->cfg()->begin(); 
+					block != kernel->cfg()->end(); ++block ) {
+						
+					freeUnusedDataStructures(kernel->second, pass->first);
+					allocateNewDataStructures(kernel->second, pass->first);
+						
+					bbPass->runOnBlock( *block );
+					freeUnusedDataStructures(kernel->second, Pass::NoAnalysis);
+				}
+				bbPass->finalizeKernel();
+			}
+		}
+	}
+	
+	// finalize on module
+	for (PassSequence::const_iterator pass = coalesced.begin();
+		pass != coalesced.end(); ++pass) {
+		
+		pass->second->finalize();
+	}
+}
+
 }
 
 #endif

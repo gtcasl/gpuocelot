@@ -25,6 +25,10 @@ namespace analysis
 	/*! \brief A class to orchestrate the execution of many passes */
 	class PassManager
 	{
+	private:
+		typedef std::multimap<int, Pass*, std::greater<int>> PassMap;
+		typedef std::list< std::pair< int, Pass*> > PassSequence;
+	
 	public:
 		/*! \brief The constructor creates an empty pass manager associated
 			with an existing Module.  
@@ -60,12 +64,18 @@ namespace analysis
 		
 		/*! \brief Runs passes on the entire module. */
 		void runOnModule();
+	
+		//! \brief implements an alternative approach to coalescing
+		void runOnModuleCoalesced();
 		
 	private:
-		typedef std::multimap<int, Pass*, std::greater<int>> PassMap;
 		
+		void _applyPasses(const PassSequence &coalesced);
+	
 	private:
 		PassMap     _passes;
+		PassSequence _passesOrdered;
+	
 		ir::Module* _module;
 	};
 }

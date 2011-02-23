@@ -13,7 +13,7 @@
 namespace analysis
 {
 	Pass::Pass( Type t, int a, const std::string& n )
-		: type( t ), analyses( a ), name( n )
+		: type( t ), analyses( a ), name( n ), _coalesce(true)
 	{
 	
 	}
@@ -24,7 +24,7 @@ namespace analysis
 	}
 	
 	Pass::Pass( const Pass& p ) : type( p.type ), 
-		analyses( p.analyses ), name( p.name )
+		analyses( p.analyses ), name( p.name ),  _coalesce(p._coalesce)
 	{
 	
 	}

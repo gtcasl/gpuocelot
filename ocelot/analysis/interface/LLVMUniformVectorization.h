@@ -29,6 +29,7 @@ namespace llvm {
 	class IntegerType;
 	class StructType;
 	class ConstantInt;
+	class GetElementPtrInst;
 }
 
 namespace analysis
@@ -310,6 +311,10 @@ namespace analysis
 			*/
 			WarpSchedulerMap warpSchedulerBlocks;
 			
+			/*!
+				\brief pointer to array of thread descriptors indexed by tid
+			*/
+			llvm::GetElementPtrInst *gempThreadDescPtr;
 		};
 
 	public:

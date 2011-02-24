@@ -30,6 +30,7 @@ namespace llvm {
 	class StructType;
 	class ConstantInt;
 	class GetElementPtrInst;
+	class LoadInst;
 }
 
 namespace analysis
@@ -42,6 +43,20 @@ namespace analysis
 	class LLVMUniformVectorization: public llvm::FunctionPass {
 	public:
 		typedef std::vector< llvm::Instruction *> InstructionVector;
+
+		//! \brief usage of a thread-local parameter (either thread ID or local memory ptr)
+		class ThreadLocalArgument {
+		public:
+			typedef std::vector< llvm::LoadInst *> ThreadLocalArgumentVector;
+		public:
+		
+			llvm::GetElementPtrInst *ptrThreadDescriptorArray;
+		
+			ThreadLocalArgumentVector localPointer;
+			ThreadLocalArgumentVector threadId_x;
+			ThreadLocalArgumentVector threadId_y;
+			ThreadLocalArgumentVector threadId_z;
+		};
 
 		/*!
 			\brief contains replicated and/or vectorized instructions
@@ -315,6 +330,11 @@ namespace analysis
 				\brief pointer to array of thread descriptors indexed by tid
 			*/
 			llvm::GetElementPtrInst *gempThreadDescPtr;
+			
+			/*!
+				\brief loaded values at beginning of subkernel
+			*/
+			ThreadLocalArgument threadLocalArguments;
 		};
 
 	public:

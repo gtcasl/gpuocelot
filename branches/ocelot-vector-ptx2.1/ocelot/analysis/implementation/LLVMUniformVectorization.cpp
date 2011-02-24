@@ -34,7 +34,7 @@
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
-char analysis::LLVMUniformVectorization::ID = 0;
+char analysis::LLVMUniformVectorization::ID = 127;
 
 std::string operator+(const std::string &str, llvm::Value *value) {
 	std::string valStr;
@@ -140,6 +140,7 @@ bool analysis::LLVMUniformVectorization::runOnFunction(llvm::Function &F) {
 	
 	Translation translation(&F, this);
 	
+	std::cerr << "translation.runOnFunction()" << std::endl;
 	
 	translation.runOnFunction();
 	
@@ -182,6 +183,7 @@ bool analysis::LLVMUniformVectorization::doInitialize(llvm::Module &_M) {
 		types.push_back(llvm::PointerType::get(tyThreadDescriptor, 0));
 		tyMetadata = llvm::StructType::get(_M.getContext(), types);
 	}
+	std::cerr << "do initialize returning" << std::endl;
 	
 	return true;
 }

@@ -215,6 +215,7 @@ void analysis::LLVMUniformVectorization::Translation::runOnFunction() {
 		addInterleavedInstructions();
 		resolveDependencies();
 	
+		loadThreadLocalArguments();
 		updateThreadIdxUses();
 		updateLocalMemAddresses();
 		resolveControlFlow();
@@ -319,10 +320,8 @@ void analysis::LLVMUniformVectorization::Translation::loadThreadLocalArguments()
 	idx.clear();
 	idx.push_back(pass->getConstInt32(0));
 	idx.push_back(pass->getConstInt32(6));
-	llvm::GetElementPtrInst *gempThreadDescPtr = llvm::GetElementPtrInst::Create(gempMetadataPtr, 
+	gempThreadDescPtr = llvm::GetElementPtrInst::Create(gempMetadataPtr, 
 		idx.begin(), idx.end(), "threadDescriptorPtr", firstInst);
-	
-	assert(gempThreadDescPtr);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -447,6 +446,9 @@ void analysis::LLVMUniformVectorization::Translation::resolveDependencies() {
 								}
 							}
 							
+							//
+							// recognize uses of tid.x, tid.y, tid.z, localMemory
+							//
 							if (indices[1] == 0 && indices[2] == 0 && indices[3] == 0) {
 								// tidx
 								threadIdxMap[ptrInst] = tid;
@@ -497,6 +499,8 @@ void analysis::LLVMUniformVectorization::Translation::updateThreadIdxUses() {
 		thread ID and LLVMContext::localSize
 */
 void analysis::LLVMUniformVectorization::Translation::updateLocalMemAddresses() {
+
+	
 
 	// visit all tidx dereferences and add threadID to result
 	for (std::map< llvm::Instruction *, int >::iterator ptr_it = localMemPtrMap.begin();

@@ -106,6 +106,7 @@ analysis::LLVMUniformVectorization::DivergentBranch::DivergentBranch(
 
 analysis::LLVMUniformVectorization::LLVMUniformVectorization(int _warpSize):
 	llvm::FunctionPass(ID),
+	M(0),
 	warpSize(_warpSize)
 {
 
@@ -131,18 +132,28 @@ llvm::PassKind analysis::LLVMUniformVectorization::getPassKind() const {
 */
 bool analysis::LLVMUniformVectorization::runOnFunction(llvm::Function &F) {
 	
-	Translation translation(&F, this);
 	
 	{
-		F.getParent()->dump();
+	std::cerr << "Before pass:\n==============================" << std::endl;
+		F.dump();
 	}
 	
+	Translation translation(&F, this);
+	
+	
 	translation.runOnFunction();
+	
+	{
+	std::cerr << "\n\n==============================\nAfter pass:\n" << std::endl;
+		F.dump();
+	}
 	
 	return true;
 }
 
 bool analysis::LLVMUniformVectorization::doInitialize(llvm::Module &_M) {
+	std::cerr << "\n===\nanalysis::LLVMUniformVectorization::doInitialize()" << std::endl;
+	
 	const int w = 32;
 	M = &_M;
 	{
@@ -178,6 +189,7 @@ bool analysis::LLVMUniformVectorization::doInitialize(llvm::Module &_M) {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 const llvm::IntegerType *analysis::LLVMUniformVectorization::getTyInt(int n) const {
+	assert(M);
 	return llvm::IntegerType::get(M->getContext(), n);
 }
 
@@ -213,11 +225,13 @@ void analysis::LLVMUniformVectorization::Translation::runOnFunction() {
 	if (warpSize > 1) {
 		breadthFirstTraversal(traversal, F);
 		addInterleavedInstructions();
+		
+		loadThreadLocalArguments();
 		resolveDependencies();
 	
-		loadThreadLocalArguments();
-		updateThreadIdxUses();
-		updateLocalMemAddresses();
+		// updateThreadIdxUses();
+		// updateLocalMemAddresses();
+		
 		resolveControlFlow();
 		createSchedulerBlock();
 	
@@ -320,8 +334,65 @@ void analysis::LLVMUniformVectorization::Translation::loadThreadLocalArguments()
 	idx.clear();
 	idx.push_back(pass->getConstInt32(0));
 	idx.push_back(pass->getConstInt32(6));
-	gempThreadDescPtr = llvm::GetElementPtrInst::Create(gempMetadataPtr, 
+		
+	threadLocalArguments.ptrThreadDescriptorArray = llvm::GetElementPtrInst::Create(gempMetadataPtr, 
 		idx.begin(), idx.end(), "threadDescriptorPtr", firstInst);
+	
+	for (int tid = 0; tid < warpSize; tid++) {
+		llvm::GetElementPtrInst *ptr = 0;
+		
+		{
+			std::stringstream ss;
+			std::vector< llvm::Value *> idx;
+			idx.push_back(pass->getConstInt32(tid));
+			idx.push_back(pass->getConstInt32(0));
+		
+			ptr = llvm::GetElementPtrInst::Create(threadLocalArguments.ptrThreadDescriptorArray,
+				idx.begin(), idx.end(), "", firstInst);
+		
+			ss << "localMemPtr." << tid;
+			threadLocalArguments.localPointer.push_back(new llvm::LoadInst(ptr, ss.str(), firstInst));
+		}
+		{
+			std::stringstream ss;
+			std::vector< llvm::Value *> idx;
+			idx.push_back(pass->getConstInt32(tid));
+			idx.push_back(pass->getConstInt32(2));
+			idx.push_back(pass->getConstInt32(0));
+		
+			ptr = llvm::GetElementPtrInst::Create(threadLocalArguments.ptrThreadDescriptorArray,
+				idx.begin(), idx.end(), "", firstInst);
+		
+			ss << "tid_x." << tid;
+			threadLocalArguments.threadId_x.push_back(new llvm::LoadInst(ptr, ss.str(), firstInst));
+		}
+		{
+			std::stringstream ss;
+			std::vector< llvm::Value *> idx;
+			idx.push_back(pass->getConstInt32(tid));
+			idx.push_back(pass->getConstInt32(2));
+			idx.push_back(pass->getConstInt32(1));
+		
+			ptr = llvm::GetElementPtrInst::Create(threadLocalArguments.ptrThreadDescriptorArray,
+				idx.begin(), idx.end(), "", firstInst);
+		
+			ss << "tid_y." << tid;
+			threadLocalArguments.threadId_y.push_back(new llvm::LoadInst(ptr, ss.str(), firstInst));
+		}
+		{
+			std::stringstream ss;
+			std::vector< llvm::Value *> idx;
+			idx.push_back(pass->getConstInt32(tid));
+			idx.push_back(pass->getConstInt32(2));
+			idx.push_back(pass->getConstInt32(2));
+		
+			ptr = llvm::GetElementPtrInst::Create(threadLocalArguments.ptrThreadDescriptorArray,
+				idx.begin(), idx.end(), "", firstInst);
+		
+			ss << "tid_z." << tid;
+			threadLocalArguments.threadId_z.push_back(new llvm::LoadInst(ptr, ss.str(), firstInst));
+		}
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -446,6 +517,19 @@ void analysis::LLVMUniformVectorization::Translation::resolveDependencies() {
 								}
 							}
 							
+							if (indices[1] == 0 && indices[2] == 0) {
+								ThreadLocalArgument::ThreadLocalArgumentVector ThreadLocalArgument::*threadId[3] = {
+									&ThreadLocalArgument::threadId_x,
+									&ThreadLocalArgument::threadId_y,
+									&ThreadLocalArgument::threadId_z
+								};
+								ptrInst->replaceAllUsesWith((threadLocalArguments.*threadId[indices[3]])[tid]);
+							}
+							else if (indices[1] == 0 && indices[2] == 4) {
+								ptrInst->replaceAllUsesWith(threadLocalArguments.localPointer[tid]);
+							}
+							
+#if 0
 							//
 							// recognize uses of tid.x, tid.y, tid.z, localMemory
 							//
@@ -457,6 +541,7 @@ void analysis::LLVMUniformVectorization::Translation::resolveDependencies() {
 								// local memory
 								localMemPtrMap[ptrInst] = tid;
 							}
+#endif
 						}
 					}
 				}
@@ -963,6 +1048,7 @@ llvm::Instruction *analysis::LLVMUniformVectorization::Translation::getInstructi
 	if (instruction) {
 		WarpInstructionMap::iterator ws_it = warpInstructionMap.find(inst);
 		if (ws_it == warpInstructionMap.end()) {
+
 			throw hydrazine::Exception(std::string("getInstructionAsVectorized() - instruction ") + inst + 
 				" not in warpTranslationMap");
 		}

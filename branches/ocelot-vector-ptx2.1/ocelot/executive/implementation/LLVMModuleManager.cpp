@@ -882,7 +882,7 @@ static void optimize(llvm::Module& module,
 	manager.add(new llvm::TargetData(*LLVMState::jit()->getTargetData()));
 	
 	
-	if (false) {
+	if (true) {
 		// LLVM vectorization pass
 		report("Adding LLVM vectorization pass");
 		analysis::LLVMUniformVectorization *uniformVectorizationPass = new analysis::LLVMUniformVectorization;
@@ -929,7 +929,11 @@ static void optimize(llvm::Module& module,
 		manager.add(llvm::createAggressiveDCEPass());
 		manager.add(llvm::createCFGSimplificationPass());
 	}
+	
+	
 	manager.run(module);
+	
+	assert(0 && "early exit");
 }
 
 

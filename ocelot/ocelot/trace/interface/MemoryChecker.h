@@ -11,6 +11,8 @@
 #include <ocelot/ir/interface/PTXOperand.h>
 #include <ocelot/ir/interface/Dim3.h>
 #include <ocelot/trace/interface/TraceGenerator.h>
+#include <iostream>
+#include <sstream>
 
 namespace executive
 {
@@ -131,10 +133,12 @@ namespace trace
 			void _checkInitialized(const TraceEvent& e);
 
 			/*! \brief Track initialization status of registers */
-			void _trackInstructions( const TraceEvent& e );
-			
+			void _checkInstructions( const TraceEvent& e );
+
 			/*! \brief Track register-to-register status and control redirect */
-			void trackInstruction( const TraceEvent& e, unsigned int numOp );
+			Status checkInstruction( const TraceEvent& e,
+				bool useMemoryFlag=false, ShadowMemory *shadowMem=NULL );
+			
 
 			
 		public:

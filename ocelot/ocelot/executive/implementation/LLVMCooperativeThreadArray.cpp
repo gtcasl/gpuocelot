@@ -77,6 +77,52 @@ void LLVMCooperativeThreadArray::setup(const LLVMExecutableKernel& kernel)
 	}
 }
 
+
+void LLVMCooperativeThreadArray::executeCta(unsigned int id)
+{
+	_nextFunction = _entryPoint;
+
+	if(_functions[_nextFunction]->subkernels != 0)
+	{
+		_executeComplexCta(id);
+	}
+	else
+	{
+		_executeSimpleCta(id);
+	}
+}
+
+void LLVMCooperativeThreadArray::flushTranslatedKernels()
+{
+	report("Flushing translated kernels.");
+	_functions.clear();
+}
+
+void LLVMCooperativeThreadArray::_executeSimpleCta(unsigned int id)
+{
+	unsigned int contextId = _initializeNewContext(0, id);
+	LLVMContext& context = _contexts[contextId];
+
+	LLVMModuleManager::MetaData* metadata = _functions[_nextFunction];
+	context.metadata = (char*) metadata;
+	
+	for(unsigned int z = 0; z < context.ntid.z; ++z)
+	{
+		context.tid.z = z;
+		for(unsigned int y = 0; y < context.ntid.y; ++y)
+		{
+			context.tid.y = y;
+			for(unsigned int x = 0; x < context.ntid.x; ++x)
+			{
+				context.tid.x = x;
+				metadata->function(&context);
+			}		
+		}
+	}
+	
+	_destroyContext(contextId);
+}
+
 /* We want to execute the CTA as quickly as possibly. Speed is the only 
 	concern here, but it requires careful thread scheduling and state 
 	management to maximize the opportunities for locality and vector 
@@ -106,7 +152,7 @@ void LLVMCooperativeThreadArray::setup(const LLVMExecutableKernel& kernel)
 		c) If all threads are finished, the CTA is done.
 
 */
-void LLVMCooperativeThreadArray::executeCta(unsigned int id)
+void LLVMCooperativeThreadArray::_executeComplexCta(unsigned int id)
 {
 	const unsigned int threads  = _contexts.size();
 
@@ -122,7 +168,6 @@ void LLVMCooperativeThreadArray::executeCta(unsigned int id)
 
 	unsigned int threadId = 0;
 
-	_nextFunction = _entryPoint;
 	report("Executing LLVM-CTA " << id << " (" 
 		<< _functions[_nextFunction]->kernel->name << ")");
 
@@ -204,12 +249,6 @@ void LLVMCooperativeThreadArray::executeCta(unsigned int id)
 	}
 	
 	_destroyContexts();
-}
-
-void LLVMCooperativeThreadArray::flushTranslatedKernels()
-{
-	report("Flushing translated kernels.");
-	_functions.clear();
 }
 
 void LLVMCooperativeThreadArray::_executeThread(unsigned int contextId)

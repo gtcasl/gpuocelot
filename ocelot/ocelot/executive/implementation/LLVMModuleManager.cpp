@@ -702,7 +702,7 @@ static void setupPTXMemoryReferences(ir::PTXKernel& kernel,
 	setupLocalMemoryReferences(kernel, metadata, parent);
 }
 
-static void optimizePTX(ir::PTXKernel& kernel,
+static unsigned int optimizePTX(ir::PTXKernel& kernel,
 	translator::Translator::OptimizationLevel optimization,
 	LLVMModuleManager::FunctionId id)
 {
@@ -724,6 +724,8 @@ static void optimizePTX(ir::PTXKernel& kernel,
 	removeBarriers.finalize();
 	
 	kernel.dfg()->toSsa();
+
+	return removeBarriers.usesBarriers;
 }
 
 static void setupCallTargets(ir::PTXKernel& kernel,
@@ -973,9 +975,9 @@ static void codegen(LLVMModuleManager::Function& function, llvm::Module& module,
 // KernelAndTranslation
 LLVMModuleManager::KernelAndTranslation::KernelAndTranslation(ir::PTXKernel* k, 
 	translator::Translator::OptimizationLevel l, const ir::PTXKernel* p, 
-	FunctionId o, Device* d, const ModuleDatabase* m) : _kernel(k), _module(0),
-	_optimizationLevel(l), _metadata(0), _parent(p), _offsetId(o), _device(d), 
-	_database(m)
+	FunctionId o, unsigned int s, Device* d, const ModuleDatabase* m)
+	: _kernel(k), _module(0), _optimizationLevel(l), _metadata(0), _parent(p),
+	_offsetId(o), _subkernels(s), _device(d), _database(m)
 {
 
 }
@@ -1013,11 +1015,15 @@ LLVMModuleManager::KernelAndTranslation::MetaData*
 	
 	report("Translating PTX");
 	
-	optimizePTX(*_kernel, _optimizationLevel, _offsetId);
+	unsigned int barriers = optimizePTX(*_kernel,
+		_optimizationLevel, _offsetId);
 	
 	try
 	{
 		_metadata = generateMetadata(*_kernel, _optimizationLevel);
+		
+		_metadata->subkernels = barriers + _subkernels;
+		
 		setupPTXMemoryReferences(*_kernel, _metadata, *_parent, _device);
 		setupCallTargets(*_kernel, *_database);
 		translate(_module, *_kernel, _optimizationLevel);
@@ -1212,7 +1218,8 @@ void LLVMModuleManager::ModuleDatabase::loadModule(const ir::Module* module,
 				<< "' at index " << (subkernels.size() + _kernels.size()));
 			subkernels.push_back(KernelAndTranslation(*subkernel,
 				level, kernel->first, std::distance(
-				kernel->second.begin(), subkernel), device, this));
+				kernel->second.begin(), subkernel), kernel->second.size() - 1,
+				device, this));
 		}
 	}
 

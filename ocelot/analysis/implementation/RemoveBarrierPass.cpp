@@ -281,6 +281,7 @@ namespace analysis
 			{
 				unsigned int bytes = _spillBytes;
 				_spillBytes = 1;
+				usesBarriers = true;
 				_removeBarrier( block, std::distance( 
 					block->instructions().begin(), _instruction ) );
 				_spillBytes = std::max( bytes, _spillBytes );
@@ -350,7 +351,7 @@ namespace analysis
 
 	void RemoveBarrierPass::initialize( const ir::Module& m )
 	{
-	
+		usesBarriers = false;
 	}
 	
 	void RemoveBarrierPass::runOnKernel( ir::Kernel& k )

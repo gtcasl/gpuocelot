@@ -91,6 +91,7 @@ public:
 			unsigned int argumentSize;
 			unsigned int constantSize;
 			unsigned int warpSize;
+			unsigned int subkernels;  
 		};
 	
 	public:
@@ -98,6 +99,7 @@ public:
 			translator::Translator::OptimizationLevel level = 
 			translator::Translator::NoOptimization,
 			const ir::PTXKernel* parent = 0, FunctionId offset = 0,
+			unsigned int subkernels = 0,
 			Device* device = 0, const ModuleDatabase* database = 0);
 
 	public:
@@ -112,6 +114,7 @@ public:
 		MetaData*                                 _metadata;
 		const ir::PTXKernel*                      _parent;
 		FunctionId                                _offsetId;
+		unsigned int                              _subkernels;
 		Device*                                   _device;
 		const ModuleDatabase*                     _database;
 	};

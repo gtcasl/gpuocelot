@@ -61,6 +61,9 @@ namespace analysis
 			void initialize( const ir::Module& m );
 			void runOnKernel( ir::Kernel& k );		
 			void finalize( );
+			
+		public:
+			bool usesBarriers;
 
 	};
 }

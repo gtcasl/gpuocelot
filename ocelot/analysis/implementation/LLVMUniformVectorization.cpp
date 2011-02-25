@@ -136,8 +136,6 @@ bool analysis::LLVMUniformVectorization::runOnFunction(llvm::Function &F) {
 	}
 	
 	{
-	std::cerr << "Before pass:\n==============================" << std::endl;
-		F.dump();
 	}
 	
 	Translation translation(&F, this);
@@ -227,21 +225,39 @@ void analysis::LLVMUniformVectorization::Translation::runOnFunction() {
 	report("Vectorization: " << F->getNameStr());
 	
 	if (warpSize > 1) {
+		createSubkernelPrologue();
+		
+		{
+			std::cerr << "Before pass:\n==============================" << std::endl;
+			F->dump();
+		}
+		
+		report("Breadth first traversal:");
 		breadthFirstTraversal(traversal, F);
+		
+		report("Adding interleaved and replicated instructions:");
 		addInterleavedInstructions();
 		
+		report("Loading thread-local arguments");
 		loadThreadLocalArguments();
-		resolveDependencies();
-		updateThreadLocalUses();
-	
-		// updateThreadIdxUses();
-		// updateLocalMemAddresses();
 		
+		report("Updating data dependencies among replicated instructions");
+		resolveDependencies();
+		
+		report("Updating users of thread-local arguments");
+		updateThreadLocalUses();
+		
+		report("Updating control flow among warp-synchronous replicated blocks");
 		resolveControlFlow();
+		/*
 		createSchedulerBlock();
-	
 		updateSchedulerBlocks();
+		*/
+		
+		report("Vectorizing replicated instruction bundles");
 		vectorize();
+		
+		finalizeSubkernel();
 	}
 	
 	report("end vectorization " << F->getNameStr() << "\n");
@@ -258,7 +274,9 @@ void analysis::LLVMUniformVectorization::Translation::breadthFirstTraversal(
 	llvm::Function::BasicBlockListType & llvmBasicBlocks = F->getBasicBlockList();
 	for (llvm::Function::BasicBlockListType::iterator bb_it = llvmBasicBlocks.begin();
 		bb_it != llvmBasicBlocks.end(); ++bb_it) {
-		blockList.push_back(&*bb_it);
+		llvm::BasicBlock *bb = &*bb_it;
+
+		blockList.push_back(bb);
 	}
 
 	BasicBlockList workList; 
@@ -267,8 +285,11 @@ void analysis::LLVMUniformVectorization::Translation::breadthFirstTraversal(
 	workList.push_back(blockList.front());
 	blockList.pop_front();
 
-	while (traversal.size() != llvmBasicBlocks.size()) {
+	while (traversal.size() != llvmBasicBlocks.size() - 1) {
 		llvm::BasicBlock *bb;
+		
+		report("traversal.size() = " << traversal.size() << ", llvmBasicBlocks.size() = " << llvmBasicBlocks.size());
+		
 		if (workList.size()) {
 			bb = workList.front();
 			workList.pop_front();
@@ -284,7 +305,9 @@ void analysis::LLVMUniformVectorization::Translation::breadthFirstTraversal(
 		if (!bb) { break; }
 
 		report(" visiting: " << std::string(bb->getName()));
-		traversal.push_back(bb);
+		if (bb != subkernelEntry.prologue) {
+			traversal.push_back(bb);
+		}
 		visited.insert(bb);
 
 		llvm::TerminatorInst *termInst = bb->getTerminator();
@@ -306,18 +329,54 @@ llvm::Value * analysis::LLVMUniformVectorization::Translation::getLocalMemorySiz
 		idx.begin(), idx.end(), "metadataPtrPtr", insertBefore);
 	
 	llvm::LoadInst *metadataPtr = new llvm::LoadInst(metadataPtrPtr, "metadataPtrI8", insertBefore);
-	llvm::CastInst *sharedSizePtr = llvm::CastInst::CreatePointerCast(metadataPtr, tyInt32->getPointerTo(), "sharedSizePtr", insertBefore);
+	llvm::CastInst *sharedSizePtr = llvm::CastInst::CreatePointerCast(metadataPtr, 
+		tyInt32->getPointerTo(), "sharedSizePtr", insertBefore);
 	llvm::LoadInst *sharedSize = new llvm::LoadInst(sharedSizePtr, "sharedSize", insertBefore);
 		
 	return sharedSize;
 }
 
-llvm::Value * analysis::LLVMUniformVectorization::Translation::getLocalMemoryPointer(llvm::Instruction *insertBefore) {
+llvm::Value * analysis::LLVMUniformVectorization::Translation::getLocalMemoryPointer(
+	llvm::Instruction *insertBefore) {
 	return 0;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
+/*!
+
+*/
+void analysis::LLVMUniformVectorization::Translation::finalizeSubkernel() {
+
+		report("Finalizing subkernel DSF");
+		
+	llvm::TerminatorInst *termInst = subkernelEntry.prologue->getTerminator();
+	llvm::BasicBlock *wsTarget = getWarpBlockFromScalar(subkernelEntry.start);
+	
+	report("warp synchronous target: " << wsTarget->getNameStr() );
+	
+	assert(llvm::BranchInst::classof(termInst));
+	
+	llvm::BranchInst *branchInst = static_cast<llvm::BranchInst *>(termInst);
+	branchInst->setSuccessor(0, wsTarget);
+}
+			
+/*!
+	
+*/
+void analysis::LLVMUniformVectorization::Translation::createSubkernelPrologue() {
+
+	subkernelEntry.start = & F->front();
+	subkernelEntry.prologue = llvm::BasicBlock::Create(F->getContext(), "WarpSynchronousEntry", 
+		F, subkernelEntry.start);
+
+	llvm::BasicBlock *startBlock = subkernelEntry.start;
+	if (!warpSchedulerBlocks.size()) {
+		startBlock = getWarpBlockFromScalar(subkernelEntry.start);
+	}
+	llvm::BranchInst *braInst = llvm::BranchInst::Create(subkernelEntry.start, subkernelEntry.prologue);
+	assert(braInst);
+}
 
 /*!
 	\brief fetches metadata object and obtains thread local arguments
@@ -326,11 +385,8 @@ llvm::Value * analysis::LLVMUniformVectorization::Translation::getLocalMemoryPoi
 void analysis::LLVMUniformVectorization::Translation::loadThreadLocalArguments() {
 
 	// do this from the start of the subkernel
+	llvm::Instruction *firstInst = subkernelEntry.prologue->getFirstNonPHI();
 	llvm::Value *context = &*(F->arg_begin());
-	llvm::BasicBlock &entryBlock = F->front();
-	llvm::Instruction *firstInst = entryBlock.getFirstNonPHI();
-	
-	// construct new basic block
 	
 	std::vector< llvm::Value *> idx;
 	idx.push_back(pass->getConstInt32(0));
@@ -366,8 +422,6 @@ void analysis::LLVMUniformVectorization::Translation::loadThreadLocalArguments()
 	
 	for (int tid = 0; tid < warpSize; tid++) {
 		llvm::GetElementPtrInst *ptr = 0;
-		
-
 		
 		{
 			std::stringstream ss;
@@ -613,117 +667,6 @@ void analysis::LLVMUniformVectorization::Translation::updateThreadLocalUses() {
 				warpInstructionMap.erase(warpInstructionMap.find(scalarInst));
 				scalarInst->removeFromParent();
 			}
-		}
-	}
-}
-
-/*!
-	\brief visits all uses of tidx and replaces with a computed value
-*/
-void analysis::LLVMUniformVectorization::Translation::updateThreadIdxUses() {
-	// visit all tidx dereferences and add threadID to result
-	for (std::map< llvm::Instruction *, int >::iterator ptr_it = threadIdxMap.begin();
-		ptr_it != threadIdxMap.end(); ++ptr_it) {
-
-		// visit all users
-		for (llvm::Value::use_iterator use_it = ptr_it->first->use_begin(); 
-			use_it != ptr_it->first->use_end(); ++use_it) {
-		
-			if (llvm::LoadInst::classof(*use_it)) {
-				std::stringstream ss;
-				ss << "tidx" << ptr_it->second << "w";
-				llvm::LoadInst *loadInst = static_cast<llvm::LoadInst *>(*use_it);
-				// now replace all uses of loadInst with
-				llvm::ConstantInt *tidxInst = llvm::ConstantInt::get(
-					llvm::Type::getInt32Ty(F->getContext()), ptr_it->second);
-					
-				llvm::BinaryOperator *addInst = llvm::BinaryOperator::CreateNSWAdd( loadInst, tidxInst, ss.str(), loadInst);
-				loadInst->moveBefore(addInst);
-				loadInst->replaceAllUsesWith(addInst);
-				addInst->setOperand(0, loadInst);
-			}	
-		}
-	}
-}
-
-/*!
-	\brief local memory is owned by each thread - compute the thread's actual local mem ptr from its
-		thread ID and LLVMContext::localSize
-*/
-void analysis::LLVMUniformVectorization::Translation::updateLocalMemAddresses() {
-
-	
-
-	// visit all tidx dereferences and add threadID to result
-	for (std::map< llvm::Instruction *, int >::iterator ptr_it = localMemPtrMap.begin();
-		ptr_it != localMemPtrMap.end(); ++ptr_it) {
-
-		// visit all users
-		for (llvm::Value::use_iterator use_it = ptr_it->first->use_begin(); 
-			use_it != ptr_it->first->use_end(); ++use_it) {
-		
-			if (llvm::LoadInst::classof(*use_it)) {
-				std::stringstream ss;
-
-				/*
-				// now replace all uses of loadInst with
-				std::vector< llvm::Value * > idx;
-				idx.push_back(llvm::ConstantInt::get(
-					llvm::Type::getInt32Ty(translation.F->getContext()), 0));
-				idx.push_back(llvm::ConstantInt::get(
-					llvm::Type::getInt32Ty(translation.F->getContext()), 8));
-				
-				llvm::Value *ctaContextPtr = ptr_it->first->getOperand(0);
-
-				assert(ctaContextPtr->getName() == "__ctaContext");
-				
-				llvm::GetElementPtrInst *gepInst = llvm::GetElementPtrInst::Create(
-					ctaContextPtr, idx.begin(), idx.end(), "ptrLocalMemSize", loadInst);
-		
-					
-				llvm::LoadInst *localSize = new llvm::LoadInst(gepInst, "localMemSize.", loadInst);
-				*/
-				
-				llvm::LoadInst *loadInst = static_cast<llvm::LoadInst *>(*use_it);
-				llvm::Value *tidxInst = llvm::ConstantInt::get(
-					llvm::Type::getInt32Ty(F->getContext()), ptr_it->second);
-				llvm::Value *localMemSize = getLocalMemorySize(loadInst);
-				if (sizeof(void *) > sizeof(int)) {
-					localMemSize = llvm::CastInst::CreateZExtOrBitCast(localMemSize, 
-						llvm::Type::getInt64Ty(F->getContext()), "localMemSize64", loadInst);
-					tidxInst = llvm::CastInst::CreateZExtOrBitCast(tidxInst, 
-						llvm::Type::getInt64Ty(F->getContext()), "tidxInst64", loadInst);
-				}
-				
-				llvm::BinaryOperator *mulInst = llvm::BinaryOperator::CreateMul(
-					localMemSize, tidxInst, "tOffset", loadInst);
-					
-				assert(mulInst);
-				for (llvm::Value::use_iterator lduse_it = loadInst->use_begin(); 
-					lduse_it != loadInst->use_end(); ++lduse_it) {
-				
-					llvm::Instruction *ptrtoint = static_cast<llvm::Instruction *>(*lduse_it);
-					llvm::Instruction *consumingAddInst = static_cast<llvm::Instruction *>(
-						*(ptrtoint->use_begin()));
-					
-					bool wasPointer = false;
-					const llvm::Type *originalType = 0;
-					if (ptrtoint->getType()->isPointerTy()) {
-						wasPointer = true;
-						originalType = ptrtoint->getType();
-						ptrtoint = llvm::CastInst::CreatePointerCast(ptrtoint, mulInst->getType(), "", consumingAddInst);
-					}
-					
-					llvm::Instruction *addTdOff = llvm::BinaryOperator::CreateNSWAdd(
-						ptrtoint, mulInst, "tdOff", consumingAddInst);	
-										
-					if (wasPointer) {
-						addTdOff = llvm::CastInst::Create(llvm::Instruction::IntToPtr, addTdOff, originalType,
-							"local.ptr", consumingAddInst);
-					}
-					consumingAddInst->setOperand(1, addTdOff);
-				}
-			}	
 		}
 	}
 }
@@ -1315,4 +1258,12 @@ void analysis::LLVMUniformVectorization::Translation::vectorize() {
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
+/*!
+	\brief visits all subkernel exits
+*/
+void analysis::LLVMUniformVectorization::Translation::updateSubkernelExits() {
+	
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
 

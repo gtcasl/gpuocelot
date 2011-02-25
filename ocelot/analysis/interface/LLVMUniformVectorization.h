@@ -128,6 +128,17 @@ namespace analysis
 		};
 		
 		typedef std::map< llvm::BasicBlock *, WarpScheduler > WarpSchedulerMap;
+		
+		//! \brief 
+		class SubkernelEntry {
+		public:
+		
+			//! \brief new entry block inserted by pass
+			llvm::BasicBlock *prologue;
+			
+			//! \brief previous entry block
+			llvm::BasicBlock *start;
+		};
 
 		/*!
 			\brief object storing intermediate results needed by the translation
@@ -171,6 +182,16 @@ namespace analysis
 		protected:
 		
 			/*!
+			
+			*/
+			void createSubkernelPrologue();
+			
+			/*!
+			
+			*/
+			void finalizeSubkernel();
+		
+			/*!
 				\brief visit an instruction and either promotes to vector, or packs results into a vector
 			*/
 			void vectorize(llvm::Instruction *inst);
@@ -212,17 +233,6 @@ namespace analysis
 				\brief updates users of threadIdx and localMemPtr
 			*/
 			void updateThreadLocalUses();
-		
-			/*!
-				\brief loaded tidx values are incremented by threadID within warp
-			*/
-			void updateThreadIdxUses();
-
-			/*!
-				\brief local memory is owned by each thread - compute the thread's actual localMemPointer 
-					from its thread ID and LLVMContext::localSize
-			*/
-			void updateLocalMemAddresses();
 				
 			/*!
 				\brief replace dummy terminators in warp-synchronous block structure with
@@ -256,6 +266,9 @@ namespace analysis
 			*/
 			void createSchedulerBlock();
 		
+			/*!
+				\brief 
+			*/
 			void debugInsertCFGTraces();
 		
 			/*!
@@ -270,6 +283,10 @@ namespace analysis
 			*/
 			void vectorize();
 			
+			/*!
+				\brief visits subkernel exits and assigns exit descriptors
+			*/
+			void updateSubkernelExits();
 		
 		public:
 		
@@ -320,6 +337,11 @@ namespace analysis
 				\brief maps cloned getelementptr instruction obtaining ptr to localMem to its warp-sync thread ID
 			*/
 			std::map< llvm::Instruction *, int > localMemPtrMap;
+			
+			/*!
+				\brief subkernel entry
+			*/
+			SubkernelEntry subkernelEntry;
 			
 			/*!
 				\brief indirect jumps based on warp id and last divergent branch handled by this block

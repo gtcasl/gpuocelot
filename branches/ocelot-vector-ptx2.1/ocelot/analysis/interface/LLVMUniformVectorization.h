@@ -50,7 +50,7 @@ namespace analysis
 			typedef std::vector< llvm::LoadInst *> ThreadLocalArgumentVector;
 		public:
 		
-			llvm::GetElementPtrInst *ptrThreadDescriptorArray;
+			llvm::Instruction *ptrThreadDescriptorArray;
 		
 			ThreadLocalArgumentVector localPointer;
 			ThreadLocalArgumentVector threadId_x;
@@ -207,6 +207,11 @@ namespace analysis
 					cloned instructions from previous blocks
 			*/
 			void updateDependencies(llvm::Instruction *instr, int tid);
+		
+			/*!
+				\brief updates users of threadIdx and localMemPtr
+			*/
+			void updateThreadLocalUses();
 		
 			/*!
 				\brief loaded tidx values are incremented by threadID within warp

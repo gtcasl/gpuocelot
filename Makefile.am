@@ -497,11 +497,10 @@ nobase_include_HEADERS = ocelot/api/interface/ocelot.h \
 	ocelot/translator/interface/Translator.h \
 	ocelot/translator/test/TestPTXToLLVMTranslator.h \
 	ocelot/translator/test/PtxToIlTranslator.h \
-	ocelot/trace/interface/MemoryChecker.h \
-	ocelot/trace/interface/TraceEvent.h \
-	ocelot/trace/interface/TraceGenerator.h \
-	ocelot/trace/interface/MemoryRaceDetector.h \
-	ocelot/trace/interface/InteractiveDebugger.h \
+	ocelot/util/interface/OcelotConfig.h \
+	ocelot/util/interface/OcelotServerConnection.h \
+	ocelot/util/interface/OcelotServer.h \
+	ocelot/util/interface/RemoteDeviceMessage.h \
 	hydrazine/implementation/Exception.h \
 	hydrazine/implementation/Timer.h \
 	hydrazine/implementation/LowLevelTimer.h \

@@ -56,8 +56,8 @@ namespace executive
 		
 	public:
 		char *localMemory;
-		int targetSubkernelID;
 		ThreadExitType type;
+		int targetSubkernelID;
 		LLVMContext::Dimension tid;
 	};
 }

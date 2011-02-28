@@ -53,6 +53,7 @@ namespace analysis
 			llvm::Instruction *ptrThreadDescriptorArray;
 		
 			ThreadLocalArgumentVector localPointer;
+			ThreadLocalArgumentVector parameterPointer;
 			ThreadLocalArgumentVector threadId_x;
 			ThreadLocalArgumentVector threadId_y;
 			ThreadLocalArgumentVector threadId_z;

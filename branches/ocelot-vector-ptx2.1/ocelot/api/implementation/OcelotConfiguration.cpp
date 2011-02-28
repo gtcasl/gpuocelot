@@ -144,7 +144,8 @@ api::OcelotConfiguration::Executive::Executive():
 	port(2011),
 	host("127.0.0.1"),
 	workerThreadLimit(-1),
-	warpSize(-1)
+	warpSize(-1),
+	printLLVMModule(false)
 {
 
 }
@@ -229,6 +230,7 @@ static void initializeExecutive(api::OcelotConfiguration::Executive &executive,
 	executive.host = config.parse<std::string>("host", "127.0.0.1");
 	executive.workerThreadLimit = config.parse<int>("workerThreadLimit", -1);
 	executive.warpSize = config.parse<int>("warpSize", -1);
+	executive.printLLVMModule = config.parse<bool>("printLLVMModule", false);
 	
 	if (config.find("devices")) {
 		hydrazine::json::Visitor devices = config["devices"];

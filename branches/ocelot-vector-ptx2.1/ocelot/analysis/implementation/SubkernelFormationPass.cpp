@@ -928,25 +928,6 @@ void SubkernelFormationPass::ExtractKernelsPass::runOnKernel(ir::Kernel& k)
 	// Rename 
 	updateTailCallTargets(splitKernels, idToKernelMap);
 
-	// 
-	/*
-	std::cout << "\nSplit kernels:\n";
-	for (KernelVector::const_iterator kern_it = splitKernels.begin(); kern_it != splitKernels.end(); ++kern_it) {
-		std::cout << "\n" << (*kern_it)->name << "\n";
-		
-		ir::ControlFlowGraph::BlockPointerVector blocks = (*kern_it)->cfg()->executable_sequence();
-		ir::ControlFlowGraph::BlockPointerVector::const_iterator block = blocks.begin();
-		
-		for (; block != blocks.end(); ++block) {
-			std::cout << " " << (*block)->label << "\n";
-			for (ir::BasicBlock::InstructionList::const_iterator inst_it = (*block)->instructions.begin(); 
-				inst_it != (*block)->instructions.end(); ++inst_it) {
-				std::cout << "  " << (*inst_it)->toString() << "\n";
-			}
-		}
-	}
-	*/
-
 	kernels.insert(std::make_pair(splitKernels.front(),
 		std::move(splitKernels)));
 }

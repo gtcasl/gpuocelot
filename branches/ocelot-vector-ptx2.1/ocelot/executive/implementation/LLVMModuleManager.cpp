@@ -50,7 +50,7 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 #define REPORT_ALL_LLVM_ASSEMBLY 0
 
@@ -875,21 +875,24 @@ static void optimize(llvm::Module& module,
 		level = 3;
 	}
 
-	if(level == 0) return;
 
 	llvm::PassManager manager;
 
 	manager.add(new llvm::TargetData(*LLVMState::jit()->getTargetData()));
 	
-	
-	if (true) {
+	if (api::OcelotConfiguration::get().executive.warpSize > 1) {
 		// LLVM vectorization pass
-		report("Adding LLVM vectorization pass");
-		analysis::LLVMUniformVectorization *uniformVectorizationPass = new analysis::LLVMUniformVectorization;
+		report("\n\nAdding LLVM vectorization pass\n\n");
+		analysis::LLVMUniformVectorization *uniformVectorizationPass = 
+			new analysis::LLVMUniformVectorization(api::OcelotConfiguration::get().executive.warpSize);
 		manager.add(uniformVectorizationPass);
 	}
 
-	if(level < 2)
+	if(level == 0)
+	{
+		report("no optimizations");
+	}
+	else if(level == 1)
 	{
 		manager.add(llvm::createInstructionCombiningPass());
 		manager.add(llvm::createReassociatePass());
@@ -930,10 +933,7 @@ static void optimize(llvm::Module& module,
 		manager.add(llvm::createCFGSimplificationPass());
 	}
 	
-	
 	manager.run(module);
-	
-	assert(0 && "early exit");
 }
 
 
@@ -1031,7 +1031,7 @@ LLVMModuleManager::KernelAndTranslation::MetaData*
 	report("Translating PTX");
 	
 	optimizePTX(*_kernel, _optimizationLevel, _offsetId);
-	
+		
 	try
 	{
 		_metadata = generateMetadata(*_kernel, _optimizationLevel);
@@ -1057,6 +1057,14 @@ LLVMModuleManager::KernelAndTranslation::MetaData*
 	{
 		optimize(*_module, _optimizationLevel);
 		codegen(_metadata->function, *_module, *_kernel, _device);
+		
+		if (api::OcelotConfiguration::get().executive.printLLVMModule) {
+			_module->dump();
+		}
+		std::string errors;
+		if (llvm::verifyModule(*_module, llvm::ReturnStatusAction, &errors)) {
+			std::cerr << "llvm::verifyModule failed:" << errors << std::endl;
+		}
 	}
 	catch(...)
 	{

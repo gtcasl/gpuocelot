@@ -163,6 +163,9 @@ namespace api {
 
 			//! \brief suggested warp size
 			int warpSize;
+			
+			//! \brief indicates whether to print LLVM module
+			bool printLLVMModule;
 		};
 
 	public:

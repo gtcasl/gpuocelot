@@ -29,8 +29,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 1
-
+#define REPORT_BASE 0
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -135,26 +134,13 @@ bool analysis::LLVMUniformVectorization::runOnFunction(llvm::Function &F) {
 		doInitialize(*F.getParent());
 	}
 	
-	{
-	}
-	
-	Translation translation(&F, this);
-	
-	std::cerr << "translation.runOnFunction()" << std::endl;
-	
+	Translation translation(&F, this);	
 	translation.runOnFunction();
-	
-	{
-	std::cerr << "\n\n==============================\nAfter pass:\n" << std::endl;
-		F.dump();
-	}
 	
 	return true;
 }
 
-bool analysis::LLVMUniformVectorization::doInitialize(llvm::Module &_M) {
-	std::cerr << "\n===\nanalysis::LLVMUniformVectorization::doInitialize()" << std::endl;
-	
+bool analysis::LLVMUniformVectorization::doInitialize(llvm::Module &_M) {	
 	const int w = 32;
 	M = &_M;
 	{
@@ -183,7 +169,6 @@ bool analysis::LLVMUniformVectorization::doInitialize(llvm::Module &_M) {
 		types.push_back(llvm::PointerType::get(tyThreadDescriptor, 0));
 		tyMetadata = llvm::StructType::get(_M.getContext(), types);
 	}
-	std::cerr << "do initialize returning" << std::endl;
 	
 	return true;
 }
@@ -226,33 +211,19 @@ void analysis::LLVMUniformVectorization::Translation::runOnFunction() {
 	
 	if (warpSize > 1) {
 		createSubkernelPrologue();
-		
-		{
-			std::cerr << "Before pass:\n==============================" << std::endl;
-			F->dump();
-		}
-		
+				
 		report("Breadth first traversal:");
 		breadthFirstTraversal(traversal, F);
 		
 		report("Adding interleaved and replicated instructions:");
 		addInterleavedInstructions();
-		
-		report("Loading thread-local arguments");
-		loadThreadLocalArguments();
-		
+				
 		report("Updating data dependencies among replicated instructions");
 		resolveDependencies();
 		
-		report("Updating users of thread-local arguments");
-		updateThreadLocalUses();
-		
 		report("Updating control flow among warp-synchronous replicated blocks");
 		resolveControlFlow();
-		/*
-		createSchedulerBlock();
-		updateSchedulerBlocks();
-		*/
+		
 		
 		report("Vectorizing replicated instruction bundles");
 		vectorize();
@@ -542,6 +513,12 @@ void analysis::LLVMUniformVectorization::Translation::addInterleavedInstructions
 					instList.push_back(instr);
 
 					warpInstructionMap[(&*inst_it)].replicated.push_back(instr);
+					
+					if (llvm::GetElementPtrInst *ptrInst = llvm::dyn_cast<llvm::GetElementPtrInst>(instr)) {
+						if (ptrInst->getPointerOperand()->getNameStr() == "__ctaContext") {
+							ptrInst->setOperand(1, pass->getConstInt32(tid));
+						}
+					}
 				}
 			}
 		}
@@ -556,24 +533,6 @@ void analysis::LLVMUniformVectorization::Translation::addInterleavedInstructions
 	\brief visits all cloned instructions and resolves dependencies
 */
 void analysis::LLVMUniformVectorization::Translation::resolveDependencies() {
-
-	std::cerr << "\nresolveDependencies():\n";
-	F->dump();
-	std::cerr << "\n---" << std::endl;
-	
-	std::cerr << " existing map:\n";
-	for (WarpInstructionMap::const_iterator w_it = warpInstructionMap.begin();
-		w_it != warpInstructionMap.end(); ++w_it ) {
-	
-		std::cerr << "\n";
-		w_it->first->dump();
-		for (InstructionVector::const_iterator ri_it = w_it->second.replicated.begin();
-			ri_it != w_it->second.replicated.end(); ++ri_it ) {
-			(*ri_it)->dump();
-		}
-	}
-
-	std::cerr << "\n-----\n" << std::endl;
 	
 	for (BasicBlockList::iterator bb_it = traversal.begin(); 
 		bb_it != traversal.end(); ++bb_it) {
@@ -847,17 +806,9 @@ void analysis::LLVMUniformVectorization::Translation::handleDivergentBranch(
 		
 		// if z is 0, all conditions were 0s. if z is (warpSize-1), all conditions were 1
 		// else, diverge!
-		/*
-		llvm::ConstantInt *constZero = static_cast<llvm::ConstantInt *>(
-			llvm::ConstantInt::get(int16ty, 0));
-		llvm::ConstantInt *constFull = static_cast<llvm::ConstantInt *>(
-			llvm::ConstantInt::get(int16ty, (1<<warpSize)-1));
-		llvm::ConstantInt *constZero32 = static_cast<llvm::ConstantInt *>(
-			llvm::ConstantInt::get(int32ty, 0));
-			*/
+
 		llvm::ConstantInt *constZero = pass->getConstInt16(0);
 		llvm::ConstantInt *constFull = pass->getConstInt16((1<<warpSize)-1);
-		llvm::ConstantInt *constZero32 = pass->getConstInt32(0);
 		
 		std::stringstream ss;
 		ss << divergent.warpBlock->getNameStr() << "_diverge";
@@ -873,7 +824,8 @@ void analysis::LLVMUniformVectorization::Translation::handleDivergentBranch(
 		switchInst->addCase(constZero, succZero);
 		
 		// insert dummy return statement
-		llvm::ReturnInst::Create(F->getContext(), constZero32, divergent.handler);
+		//llvm::ReturnInst::Create(F->getContext(), constZero32, divergent.handler);
+		llvm::ReturnInst::Create(F->getContext(), divergent.handler);
 		
 		divergenceHandlerBranch(divergent);
 	}
@@ -1262,7 +1214,50 @@ void analysis::LLVMUniformVectorization::Translation::vectorize() {
 	\brief visits all subkernel exits
 */
 void analysis::LLVMUniformVectorization::Translation::updateSubkernelExits() {
-	
+	for (BasicBlockMap::const_iterator ws_bb_it = warpBlocksMap.begin(); 
+		ws_bb_it != warpBlocksMap.end(); ++ws_bb_it) {
+		
+		llvm::BasicBlock * const wsBlock = ws_bb_it->second;
+		for (llvm::BasicBlock::iterator inst_it = wsBlock->begin(); inst_it != wsBlock->end(); 
+			++inst_it) {
+			if (llvm::BitCastInst *castInst = llvm::dyn_cast<llvm::BitCastInst>(&*inst_it)) {
+				// bitcast i8* to i32*
+				// source is localMemPtr
+				// user of bitcast instruction is a store instruction
+				// store source value is a constant integer
+				//
+				const llvm::Type *sourceType = castInst->getOperand(0)->getType();
+				const llvm::Type *destType = castInst->getType();
+				
+				const llvm::Type *sourceElementType = 0;
+				const llvm::Type *destElementType = 0;
+
+				if (sourceType->isPointerTy() && 
+					(sourceElementType = static_cast<const llvm::PointerType *>(sourceType)->getElementType())
+						->isIntegerTy(8) && 
+					destType->isPointerTy() &&
+						(destElementType = static_cast<const llvm::PointerType *>(destType)->getElementType())
+						->isIntegerTy(32)) {
+					
+					for (ThreadLocalArgument::ThreadLocalArgumentVector::const_iterator 
+						localMemPtr_it = threadLocalArguments.localPointer.begin();
+						localMemPtr_it != threadLocalArguments.localPointer.end(); ++localMemPtr_it) {
+						
+						if (static_cast<const llvm::Value *>(*localMemPtr_it) == castInst->getOperand(0)) {
+							// if all users are in this block and store constants
+							for (llvm::Value::use_iterator use_it = castInst->use_begin(); 
+								use_it != castInst->use_end(); ++use_it) {
+								
+								if (llvm::StoreInst *storeInst = llvm::dyn_cast<llvm::StoreInst>(*use_it)) {
+									assert(storeInst);
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////

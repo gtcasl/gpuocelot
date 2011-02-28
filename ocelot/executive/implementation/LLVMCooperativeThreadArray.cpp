@@ -25,6 +25,9 @@
 
 #define REPORT_BASE 0
 
+
+static int executeWarpCalls = 0;
+
 namespace executive
 {
 
@@ -117,6 +120,7 @@ void LLVMCooperativeThreadArray::executeCta(unsigned int id)
 	report(" full warps:       " << warps);
 	report(" remaining threas: " << remains);
 	report(" entry point:      " << _entryPoint);
+	executeWarpCalls = 0;
 
 	ThreadList warpList;
 
@@ -204,6 +208,8 @@ void LLVMCooperativeThreadArray::executeCta(unsigned int id)
 	}
 	
 	_destroyContexts();
+	
+	//std::cout << "Execute warp calls: " << executeWarpCalls << std::endl;
 }
 
 void LLVMCooperativeThreadArray::flushTranslatedKernels()
@@ -214,10 +220,11 @@ void LLVMCooperativeThreadArray::flushTranslatedKernels()
 
 void LLVMCooperativeThreadArray::_executeThread(unsigned int contextId)
 {
+	
 	LLVMContext& context = _contexts[contextId];
 	LLVMModuleManager::MetaData* metadata = _functions[_nextFunction];
 	context.metadata = (char*) metadata;
-	
+		
 	report("   executing thread " << threadId(context) 
 		<< " in context " << contextId << " of " << _contexts.size() 
 		<< ", _nextFunction: " << _nextFunction << " of " << _functions.size());
@@ -225,15 +232,27 @@ void LLVMCooperativeThreadArray::_executeThread(unsigned int contextId)
 	metadata->function(&context);
 }
 
+
 void LLVMCooperativeThreadArray::_executeWarp(ThreadList::const_iterator begin,
 	ThreadList::const_iterator end)
 {
-	report("  executing warp");
-	// this is a stupid implementation of a warp that just loops over threads
-	for(ThreadList::const_iterator i = begin; i != end; ++i)
-	{
-		_executeThread(*i);
+	
+	LLVMModuleManager::MetaData* metadata = _functions[_nextFunction];
+	std::vector<LLVMContext> contextVector;
+	
+	for(ThreadList::const_iterator i = begin; i != end; ++i) {
+		
+		LLVMContext& context = _contexts[*i];
+		context.metadata = (char*) metadata;
+		contextVector.push_back(context);
 	}
+	if (contextVector.size()) {
+		report("  executing warp ( size " << contextVector.size() << ")");
+	
+		metadata->function(&contextVector[0]);
+		contextVector.clear();
+	}
+	++executeWarpCalls;
 }
 
 unsigned int LLVMCooperativeThreadArray::_initializeNewContext(

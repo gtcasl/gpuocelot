@@ -880,12 +880,11 @@ static void optimize(llvm::Module& module,
 
 	manager.add(new llvm::TargetData(*LLVMState::jit()->getTargetData()));
 	
-	if (api::OcelotConfiguration::get().executive.warpSize > 1) {
+	int warpSize = api::OcelotConfiguration::get().executive.warpSize;
+	if (warpSize > 1) {
 		// LLVM vectorization pass
 		report("\n\nAdding LLVM vectorization pass\n\n");
-		analysis::LLVMUniformVectorization *uniformVectorizationPass = 
-			new analysis::LLVMUniformVectorization(api::OcelotConfiguration::get().executive.warpSize);
-		manager.add(uniformVectorizationPass);
+		manager.add(new analysis::LLVMUniformVectorization(warpSize));
 	}
 
 	if(level == 0)

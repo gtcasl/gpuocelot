@@ -31,6 +31,9 @@ namespace llvm {
 	class ConstantInt;
 	class GetElementPtrInst;
 	class LoadInst;
+	class BinaryOperator;
+	class CallInst;
+	class PHINode;
 }
 
 namespace analysis
@@ -67,6 +70,11 @@ namespace analysis
 			VectorizedInstruction(): vector(0) { }
 
 			bool isVectorizable() const;
+			
+			void vectorize(llvm::Instruction *scalarInst, llvm::Instruction *before);
+		
+		private:
+			
 
 		public:
 
@@ -284,6 +292,20 @@ namespace analysis
 			*/
 			void vectorize();
 			
+			
+			void vectorizeBinaryOperator(
+				llvm::BinaryOperator *, 
+				VectorizedInstruction &vecInstr, 
+				llvm::Instruction *before);
+			void vectorizeCall(
+				llvm::CallInst *, 
+				VectorizedInstruction &vecInstr, 
+				llvm::Instruction *before);
+			void vectorizePhiNode(
+				llvm::PHINode *, 
+				VectorizedInstruction &vecInstr, 
+				llvm::Instruction *before);
+			
 			/*!
 				\brief visits subkernel exits and assigns exit descriptors
 			*/
@@ -328,16 +350,6 @@ namespace analysis
 					for handling divergence
 			*/
 			DivergentBranchMap divergingBranchMap;
-			
-			/*!
-				\brief maps cloned getelementptr instruction obtaining ptr to tidx to its warp-sync thread ID
-			*/
-			std::map< llvm::Instruction *, int > threadIdxMap;
-
-			/*!
-				\brief maps cloned getelementptr instruction obtaining ptr to localMem to its warp-sync thread ID
-			*/
-			std::map< llvm::Instruction *, int > localMemPtrMap;
 			
 			/*!
 				\brief subkernel entry

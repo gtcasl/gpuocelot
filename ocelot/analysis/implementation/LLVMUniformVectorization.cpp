@@ -22,6 +22,7 @@
 // Hydrazine includes
 #include <hydrazine/implementation/debug.h>
 #include <hydrazine/implementation/Exception.h>
+#include <hydrazine/implementation/math.h>
 
 #define Ocelot_Exception(x) { std::stringstream ss; ss << x; std::cerr << x << std::endl; throw hydrazine::Exception(ss.str()); }
 
@@ -958,6 +959,9 @@ bool analysis::LLVMUniformVectorization::VectorizedInstruction::isVectorizable()
 					"__ocelot_sqrtf",
 					"__ocelot_sinf",
 					"__ocelot_cosf",
+					"llvm.sqrt.f32",
+					"llvm.sin.f32",
+					"llvm.cos.f32f",
 					0, 0
 				};
 
@@ -997,8 +1001,6 @@ analysis::LLVMUniformVectorization::InstructionVector
 	is either a promoted-to-vector instruction or a set of scalar values packed into a vector*/
 llvm::Instruction *analysis::LLVMUniformVectorization::Translation::getInstructionAsVectorized(
 	llvm::Value *inst, llvm::Instruction *before) {
-
-	report("getInstructionAsVectorized(" << inst->getNameStr() << ")");
 
 	const llvm::Type *tyInt32 = llvm::Type::getInt32Ty(F->getContext());
 	llvm::Instruction *vectorInstruction = 0;
@@ -1167,23 +1169,42 @@ void analysis::LLVMUniformVectorization::Translation::vectorizeCall(
 
 	report(" call instruction: " << calleeName);
 
+	assert(hydrazine::isPowerOfTwo(warpSize) && "warp size must be power of 2 for vectorizing function calls");
+
+	const char *floatSuffixes[] = {
+		"f32", "v2f32", "v4f32", "v8f32"
+	};
 	const char *str[] = {
-		"__ocelot_sqrtf", "llvm.sqrt.f32",
-		"__ocelot_sinf", "llvm.sin.f32",
-		"__ocelot_cosf", "llvm.cos.f32",
+		"__ocelot_sqrtf", "llvm.sqrt",
+		"__ocelot_sinf", "llvm.sin",
+		"__ocelot_cosf", "llvm.cos",
+		"llvm.sqrt.f32", "llvm.sqrt",
+		"llvm.sin.f32", "llvm.sin",
+		"llvm.cos.f32f", "llvm.cos",
 		0, 0
 	};
 	llvm::Function *funcIntrinsic = 0;
 	for (int n = 0; str[n]; n+=2) {
 		if (calleeName == str[n]) {
-			funcIntrinsic = F->getParent()->getFunction(std::string(str[n+1]));
+			int s = 0;
+			for (; s <= 3; s++) {
+				if ((1 << s) == warpSize) {
+					break;
+				}
+			}
+			std::string destName = std::string(str[n+1]) + "." + floatSuffixes[s];
+			funcIntrinsic = F->getParent()->getFunction(destName);
 			if (!funcIntrinsic) {
+				report("creating intrinsic type " << calleeName);
 				llvm::VectorType *vecType = llvm::VectorType::get(callInst->getType(), warpSize);
 				std::vector< const llvm::Type *> args;
 				args.push_back(vecType);
 				llvm::FunctionType *funcType = llvm::FunctionType::get(vecType, args, false);
 				funcIntrinsic = llvm::Function::Create(funcType, 
-					llvm::GlobalValue::ExternalLinkage, str[n+1], F->getParent());
+					llvm::GlobalValue::ExternalLinkage, destName, F->getParent());
+			}
+			else {
+				report("using existing intrinsic definition ");
 			}
 			assert(funcIntrinsic && "failed to get identified intrinsic");
 			break;
@@ -1195,6 +1216,8 @@ void analysis::LLVMUniformVectorization::Translation::vectorizeCall(
 	for (unsigned int op = 0; op < callInst->getNumOperands() - 1; ++op) {
 		args.push_back(getInstructionAsVectorized(callInst->getOperand(op), before));
 	}
+	
+	report("  vectorizing call to function type " << funcIntrinsic << " with " << args.size() << " arguments");
 	
 	llvm::CallInst *vecCallInst = llvm::CallInst::Create(funcIntrinsic, args.begin(), args.end(), "", before);
 	vecInstr.vector = vecCallInst;

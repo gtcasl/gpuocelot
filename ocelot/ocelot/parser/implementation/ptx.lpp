@@ -20,6 +20,7 @@
 	#include <hydrazine/implementation/macros.h>
 	#include <hydrazine/implementation/string.h>
 	#include <ocelot/parser/interface/PTXLexer.h>
+	#include <configure.h>
 	#include <cassert>
 	#include <sstream>
 	#include <cstring>
@@ -76,8 +77,6 @@ TAB [\t]*
 SPACE [ ]*
 WHITESPACE [ \t]*
 
-/* "bar.sync"                      { strlcpy( yylval->text, yytext, 1024 ); \
-                                    return OPCODE_BARSYNC; } */
 /******************************************************************************/
 
 %%
@@ -109,7 +108,7 @@ WHITESPACE [ \t]*
                                     return OPCODE_ATOM; }
 "abs"                           { strlcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_ABS; }
-"bar"                     			{ strlcpy( yylval->text, yytext, 1024 ); \
+"bar"                           { strlcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_BAR; }
 "bfi"                           { strlcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_BFI; }
@@ -585,10 +584,12 @@ long long unsigned int binaryToUint( const std::string& string )
 	return hydrazine::binaryToUint( string );
 }
 
+#ifndef HAVE_STRLCPY
 void strlcpy( char* destination, const char* source, unsigned int max )
 {
 	return hydrazine::strlcpy( destination, source, max );
 }
+#endif
 
 #endif
 

@@ -122,7 +122,7 @@ AC_FUNC_STRNLEN
 AC_FUNC_STRTOD
 AC_FUNC_VPRINTF
 AC_CHECK_FUNCS([clock_gettime getpagesize memmove memset munmap fesetround \
-	floor select sqrt])
+	floor select sqrt strlcpy])
 ################################################################################
 
 ################################################################################

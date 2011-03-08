@@ -10,7 +10,7 @@ To Run Ocelot:
 	Run your CUDA program normally with a 'configure.ocelot' file 
 		in the same directory (see the website for samples)
 
-Ocelot Version 1.1.560 Features:
+Ocelot Version 1.3.967 Features:
  1) Three target devices
 	 a) PTX 1.4 Emulator 
 	 	i) Memory Checker
@@ -32,17 +32,10 @@ Ocelot Version 1.1.560 Features:
  3) PTXOptimizer
  	a) Extendible optimization pass interface for PTX
  		- Per-Block, Per-Kernel, Per-Module passes 
- 4) Trace Generator
+ 4) Trace Generators
  	a) Extendible interface for instrumenting PTX kernels
  	b) Can examine the complete system state after each instruction is executed
  		i) Registers
  		ii) Memory Accesses
  		iii) Last instruction executed
  		iv) Thread activity mask
-
-Open Projects for Ocelot 1.2
- 1) Full PTX 2.0 support
- 2) AMD GPU Devices
- 3) Asynchronous kernel execution
- 4) Multi-threaded emulator device
- 5) SIMT on CPU vector units

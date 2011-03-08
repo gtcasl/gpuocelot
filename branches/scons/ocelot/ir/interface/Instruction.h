@@ -22,7 +22,6 @@ namespace ir {
 			LLVM,						// LLVM to x86
 			CAL,						// AMD Cal
 			Remote,                     // Remote Device
-			VIR,                        // Vanaheimr IR
 			x86,
 			x86_64,
 			SPU,

@@ -1,0 +1,43 @@
+	.version 2.2
+	.target sm_20
+
+	.visible .func saxpy (.param .u64 __cudaparmf1_saxpy, .param .u64 __cudaparmf2_saxpy, .param .s32 __cudaparmf3_saxpy, .param .s32 __cudaparmf4_saxpy)
+
+	.visible .func saxpy (.param .u64 __cudaparmf1_saxpy, .param .u64 __cudaparmf2_saxpy, .param .s32 __cudaparmf3_saxpy, .param .s32 __cudaparmf4_saxpy)
+	{
+		.reg .u32 %r<15>;
+		.reg .u64 %rd<10>;
+		.reg .pred %p<3>;
+		.loc	16	4	0
+	$LDWbegin_saxpy:
+		ld.param.u64 	%rd1, [__cudaparmf1_saxpy];
+		mov.s64 	%rd2, %rd1;
+		ld.param.u64 	%rd3, [__cudaparmf2_saxpy];
+		mov.s64 	%rd4, %rd3;
+		ld.param.u32 	%r1, [__cudaparmf3_saxpy];
+		mov.s32 	%r2, %r1;
+		ld.param.u32 	%r3, [__cudaparmf4_saxpy];
+		mov.s32 	%r4, %r3;
+		mov.u32 	%r5, %ctaid.x;
+		mov.u32 	%r6, %ntid.x;
+		mul.lo.u32 	%r7, %r5, %r6;
+		mov.u32 	%r8, %tid.x;
+		add.u32 	%r9, %r8, %r7;
+		setp.le.s32 	%p1, %r4, %r9;
+		@%p1 bra 	$Lt_0_1026;
+		.loc	16	9	0
+		cvt.s64.s32 	%rd5, %r9;
+		mul.wide.s32 	%rd6, %r9, 4;
+		add.u64 	%rd7, %rd6, %rd2;
+		ld.s32 	%r10, [%rd7+0];
+		add.u64 	%rd8, %rd6, %rd4;
+		ld.s32 	%r11, [%rd8+0];
+		mul.lo.s32 	%r12, %r11, %r2;
+		add.s32 	%r13, %r10, %r12;
+		st.s32 	[%rd7+0], %r13;
+	$Lt_0_1026:
+		.loc	16	11	0
+		ret;
+	$LDWend_saxpy:
+	} // saxpy
+

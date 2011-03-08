@@ -15,6 +15,15 @@
 
 // hydrazine includes
 #include <hydrazine/implementation/Exception.h>
+#include <hydrazine/implementation/debug.h>
+
+// Debugging messages
+#ifdef REPORT_BASE
+#undef REPORT_BASE
+#endif
+
+#define REPORT_BASE 1
+#define REPORT_KERNEL_INSTRUCTIONS 0
 
 namespace trace
 {
@@ -72,7 +81,7 @@ namespace trace
 	
 	void MemoryChecker::_checkAlignment( const TraceEvent& e )
 	{		
-		switch(e.memory_size)
+		switch( e.memory_size )
 		{
 			case 1: return;
 			case 2: checkAlignment< 2 >( _kernel, _dim, e ); break;
@@ -86,7 +95,7 @@ namespace trace
 
 	static void uninitError( const ir::Dim3& dim,
 		unsigned int thread, const TraceEvent& event, 
-		const executive::EmulatedKernel* kernel)
+		const executive::EmulatedKernel* kernel )
 	{
 		std::stringstream stream;
 		stream << prefix( thread, dim, event );
@@ -100,7 +109,7 @@ namespace trace
 		const executive::Device* device, 
 		unsigned int thread, ir::PTXU64 address, 
 		unsigned int size, const TraceEvent& event, 
-		const executive::EmulatedKernel* kernel)
+		const executive::EmulatedKernel* kernel )
 	{
 		std::stringstream stream;
 		stream << prefix( thread, dim, event );
@@ -128,10 +137,10 @@ namespace trace
 		throw hydrazine::Exception( stream.str() );
 	}
 
-	static void globalMemoryError(const executive::Device* device, 
+	static void globalMemoryError( const executive::Device* device, 
 		const ir::Dim3& dim, unsigned int thread, ir::PTXU64 address, 
 		unsigned int size, const TraceEvent& event, 
-		const executive::EmulatedKernel* kernel)
+		const executive::EmulatedKernel* kernel )
 	{
 		std::stringstream stream;
 		stream << prefix( thread, dim, event );
@@ -278,26 +287,40 @@ namespace trace
 		}
 	}
 	
+	MemoryChecker::ShadowMemory::ShadowMemory( )
+	{
+	}
+
+	void MemoryChecker::ShadowMemory::resize( unsigned int size )
+	{
+		map.resize(size, NOT_DEFINED);
+	}
+	
+	unsigned int MemoryChecker::ShadowMemory::size()
+	{
+		return map.size();
+	} 
+
 	MemoryChecker::Status MemoryChecker::ShadowMemory::checkRegion( 
-		const unsigned int idx, const unsigned int size )
+		const unsigned int idx, const unsigned int size)
 	{
 		Status currStatus = DEFINED;
-		for (unsigned int i=0; i < size; i++)
+		for( unsigned int i=0; i < size; i++ )
 		{
-			if(currStatus > map[idx+i])
+			if( currStatus > map[idx+i] )
 				currStatus = map[idx+i];
 		}
 		
 		return currStatus;
 	}
 
-	void MemoryChecker::ShadowMemory::setRegion(const unsigned int idx, 
-		const unsigned int size, const Status stat)
+	void MemoryChecker::ShadowMemory::setRegion( const unsigned int idx, 
+		const unsigned int size, const Status stat )
 	{
 		if( idx+size-1 >= map.size() )
-			std::cout << "idx+size-1: " << idx+size-1 << " map.size(): " 
-				<< map.size() << "\n";
-		for (unsigned int i=0; i < size; i++)
+			report( "Store address out of range by " << idx+size-1-map.size()  
+				<< "\n" );
+		for( unsigned int i=0; i < size; i++ )
 		{
 				map[idx+i] = stat;
 		}
@@ -305,19 +328,19 @@ namespace trace
 	}
 
 	MemoryChecker::Status MemoryChecker::ShadowMemory::checkRegister(
-		const ir::PTXOperand::RegisterType idx)
+		const ir::PTXOperand::RegisterType idx )
 	{
-		if (map[(unsigned int)idx] < DEFINED) {
+		if( map[ (unsigned int) idx ] < DEFINED ) {
 			return NOT_DEFINED;
 		}
 		return DEFINED;
 	}
 
 	void MemoryChecker::ShadowMemory::setRegister(
-		const ir::PTXOperand::RegisterType idx, const Status stat)
+		const ir::PTXOperand::RegisterType idx, const Status stat )
 	{
 		assert( (unsigned int)idx < map.size() );
-		map[(unsigned int)idx] = stat;
+		map[ (unsigned int) idx ] = stat;
 	}
 	
 	void setRegisterStatus( MemoryChecker::ShadowMemory &registerFile, 
@@ -325,7 +348,7 @@ namespace trace
 		MemoryChecker::Status stat )
 	{
 		int regDIdx;
-		if ( inst.opcode == ir::PTXInstruction::Tex)
+		if( inst.opcode == ir::PTXInstruction::Tex )
 		{
 			for( int i=0; i < 4; i++ )
 			{
@@ -343,7 +366,7 @@ namespace trace
 	MemoryChecker::Status MemoryChecker::checkInstruction( 
 		const TraceEvent& e,
 		bool useMemoryFlag, 
-		MemoryChecker::ShadowMemory *shadowMem)
+		MemoryChecker::ShadowMemory *shadowMem )
 	{
 		MemoryChecker::Status destStatus = MemoryChecker::DEFINED;
 		TraceEvent::U64Vector::const_iterator 
@@ -367,15 +390,28 @@ namespace trace
 				break;
 		}
 		
-		for( unsigned int thread = 0; thread < threads; ++thread )
+		for ( unsigned int thread = 0; thread < threads; ++thread )
 		{
-			if( !e.active[ thread ] ) continue;
+			if ( !e.active[ thread ] ) continue;
 		
 			errorOut << "Undefined register:";
 			ir::PTXOperand d = inst.d;
 			unsigned int regD = d.reg+thread*regPerThread;
 			destStatus = MemoryChecker::DEFINED;
-		
+	
+			//check predicate register
+			if( inst.pg.reg != ir::PTXOperand::Invalid )
+			{
+				MemoryChecker::Status varStatus = 
+					_registerFileShadow.checkRegister(inst.pg.reg);
+				if( varStatus < MemoryChecker::NOT_DEFINED )
+				{
+					destStatus = MemoryChecker::NOT_DEFINED;
+					errorOut << "pg r" 
+						<< inst.pg.reg << " ";
+				}
+			}
+
 			//check register a b c
 			const ir::PTXOperand * operands[] = { &inst.a, &inst.b, &inst.c };
 			for ( unsigned int i=0; i < 3; i++ )
@@ -388,7 +424,7 @@ namespace trace
 					MemoryChecker::Status varStatus = 
 						_registerFileShadow.checkRegister(regIdx);
 				
-					if ( varStatus < MemoryChecker::DEFINED )
+					if( varStatus < MemoryChecker::DEFINED )
 					{
 						destStatus = MemoryChecker::NOT_DEFINED;
 						errorOut << "r" 
@@ -397,13 +433,13 @@ namespace trace
 				}
 			}	
 		
-			for ( unsigned int i=0; i < inst.c.array.size(); i++ )
+			for( unsigned int i=0; i < inst.c.array.size(); i++ )
 			{
 				int regIdx = inst.c.array[i].reg + thread * regPerThread;
 				MemoryChecker::Status varStatus = 
 					_registerFileShadow.checkRegister(regIdx);
 
-				if ( varStatus < MemoryChecker::DEFINED )
+				if( varStatus < MemoryChecker::DEFINED )
 				{
 					destStatus = MemoryChecker::NOT_DEFINED;
 					errorOut << "r" 
@@ -412,11 +448,9 @@ namespace trace
 			}
 
 			//exception for XOR Rx Ry Ry; Rx always defined
-			if( inst.opcode == ir::PTXInstruction::Xor )
-			{
-				if( inst.a.reg == inst.b.reg )
-					return MemoryChecker::DEFINED;
-			}
+			if( inst.opcode == ir::PTXInstruction::Xor 
+				&& inst.a.reg == inst.b.reg )
+				return MemoryChecker::DEFINED;
 			
 			//check memory
 			if( ( inst.opcode == ir::PTXInstruction::Ld ||
@@ -426,7 +460,7 @@ namespace trace
 				MemoryChecker::Status varStatus = 
 					shadowMem->checkRegion(*address, e.memory_size);
 				++address;
-				if (varStatus < MemoryChecker::DEFINED)
+				if( varStatus < MemoryChecker::DEFINED )
 				{
 					errorOut << "[thread: " << thread 
 						<< "] Loading uninitialized value from " << space << 
@@ -436,7 +470,7 @@ namespace trace
 			}
 
 			//store?
-			if( inst.opcode == ir::PTXInstruction::St && useMemoryFlag)
+			if( inst.opcode == ir::PTXInstruction::St && useMemoryFlag )
 			{
 				unsigned int pmIndex = *address;		
 				unsigned int regIdx = inst.a.reg+thread*regPerThread;
@@ -446,7 +480,7 @@ namespace trace
 				shadowMem->setRegion(pmIndex, e.memory_size, varStatus);
 				++address;
 
-				if (varStatus < MemoryChecker::DEFINED)
+				if( varStatus < MemoryChecker::DEFINED )
 				{
 					errorOut << "[thread: " << thread 
 						<< "] Storing uninitialized value to " << space 
@@ -456,13 +490,22 @@ namespace trace
 
 			if( inst.opcode == ir::PTXInstruction::St 
 				&& destStatus == MemoryChecker::NOT_DEFINED
-				&& inst.addressSpace == ir::PTXInstruction::Global)
+				&& inst.addressSpace == ir::PTXInstruction::Global )
 			{
 				memoryUninitError( "Global", _dim, _device,
 					thread, *address, e.memory_size, e, _kernel );
 			}
 			
-			if( inst.d.vec != ir::PTXOperand::v1 )
+			//store status of destination register: pg, d, or vector d
+			if( inst.d.reg == ir::PTXOperand::Invalid )
+			{
+				if( inst.pq.addressMode == ir::PTXOperand::Invalid )
+				{
+					destStatus = (destStatus == MemoryChecker::NOT_DEFINED) ? MemoryChecker::INVALID : destStatus;
+					_registerFileShadow.setRegister(inst.pq.reg, destStatus);
+				}
+			} 
+			else if( inst.d.vec != ir::PTXOperand::v1 )
 			{
 				for( unsigned int i=0; i < inst.d.array.size(); i++ )
 				{
@@ -472,9 +515,9 @@ namespace trace
 				_registerFileShadow.setRegister(regD, destStatus);
 			}
 			
-			if ( destStatus != MemoryChecker::DEFINED )
+			if( destStatus != MemoryChecker::DEFINED )
 			{
-				std::cout << prefix( thread, _dim, e ) << errorOut.str() << "\n";
+				report( prefix( thread, _dim, e ) << errorOut.str() << "\n" );
 			}
 			
 			errorOut.str("");
@@ -495,7 +538,7 @@ namespace trace
 				break;
 			default: 	//global, constant, texture
 			{
-				if ( e.instruction->opcode == ir::PTXInstruction::Atom ||
+				if( e.instruction->opcode == ir::PTXInstruction::Atom ||
 					e.instruction->opcode == ir::PTXInstruction::Ld ||
 					e.instruction->opcode == ir::PTXInstruction::Ldu )
 				{	
@@ -516,8 +559,8 @@ namespace trace
 		bool errorFlag;	
 		switch( e.instruction->opcode )
 		{
-			case ir::PTXInstruction::SetP:
-			case ir::PTXInstruction::SelP:
+			case ir::PTXInstruction::Bra:
+			case ir::PTXInstruction::Call:
 				errorFlag = true;
 				break;
 			default: 
@@ -525,7 +568,7 @@ namespace trace
 				break;
 		}
 		
-		if (checkInstruction( e ) == NOT_DEFINED && errorFlag )
+		if ( checkInstruction( e ) == NOT_DEFINED && errorFlag )
 			uninitError( _dim, 0, e, _kernel );
 	}
 	
@@ -569,7 +612,7 @@ namespace trace
 
 	}
 
-	void MemoryChecker::event(const TraceEvent& event)
+	void MemoryChecker::event( const TraceEvent& event )
 	{
 		const bool isMemoryOperation = 
 			event.instruction->opcode == ir::PTXInstruction::Ld
@@ -577,19 +620,19 @@ namespace trace
 			|| event.instruction->opcode == ir::PTXInstruction::St
 			|| event.instruction->opcode == ir::PTXInstruction::Atom;
 
-		std::cout << "[" << event.PC << "] " << event.instruction->toString() 
-			<< "\n";
+		//report( "[" << event.PC << "] " << event.instruction->toString() 
+		//	<< "\n" );
 			
 		if( isMemoryOperation ) 
 		{
 			_checkAlignment( event );
 			_checkValidity( event );
-			if ( checkInitialization )
+			if( checkInitialization )
 				_checkInitialized( event );
 		} 
 		else 
 		{
-			if ( checkInitialization )
+			if( checkInitialization )
 				_checkInstructions( event );
 		}
 	}

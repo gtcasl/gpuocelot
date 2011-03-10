@@ -23,7 +23,7 @@ extern "C" __global__ void divergence(float *A) {
 
 static float expectedValue(int n) {
 	if (n & 0x01) {
-		return i * 2.0f + 1.0f;
+		return n * 2.0f + 1.0f;
 	}
 	else {
 		return 1.25f * ((float)n + 1.0f);

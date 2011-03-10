@@ -136,16 +136,17 @@ api::OcelotConfiguration::Executive::Executive():
 	preferredISA(ir::Instruction::Emulated),
 	optimizationLevel(translator::Translator::FullOptimization),
 	required(false),
-	enableLLVM(true),
+	enableLLVM(false),
 	enableEmulated(true),
-	enableNVIDIA(true),
-	enableAMD(true),
-	enableRemote(true),
+	enableNVIDIA(false),
+	enableAMD(false),
+	enableRemote(false),
 	port(2011),
 	host("127.0.0.1"),
 	workerThreadLimit(-1),
 	warpSize(-1),
-	printLLVMModule(false)
+	printLLVMModule(false),
+	printKernelRuntimes(false)
 {
 
 }
@@ -231,6 +232,7 @@ static void initializeExecutive(api::OcelotConfiguration::Executive &executive,
 	executive.workerThreadLimit = config.parse<int>("workerThreadLimit", -1);
 	executive.warpSize = config.parse<int>("warpSize", -1);
 	executive.printLLVMModule = config.parse<bool>("printLLVMModule", false);
+	executive.printKernelRuntimes = config.parse<bool>("printKernelRuntimes", false);
 	
 	if (config.find("devices")) {
 		hydrazine::json::Visitor devices = config["devices"];

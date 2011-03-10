@@ -770,45 +770,47 @@ void analysis::LLVMUniformVectorization::Translation::handleDivergentBranch(
 		divergent.warpBlock->getTerminator()->removeFromParent();	 // remove dummy
 		
 		// construct reduction
-		const llvm::Type *int16ty = pass->getTyInt(16);
-		llvm::Constant *constOne = pass->getConstInt16(1);
-		llvm::Instruction *z = new llvm::ZExtInst(ws_it->second.replicated[0], int16ty, "condZ", 
+		const llvm::Type *intTy = pass->getTyInt(32);
+		llvm::Instruction *branchConditional = new llvm::ZExtInst(ws_it->second.replicated[0], intTy, "condZ", 
 			divergent.warpBlock);
 		
 		// insert reduction code 
 		for (int n = 1; n < warpSize; n++) {
-			llvm::BinaryOperator *shlOp = llvm::BinaryOperator::Create(llvm::Instruction::Shl, z, 
+			/*
+			llvm::BinaryOperator *shlOp = llvm::BinaryOperator::Create(llvm::Instruction::Shl, branchConditional, 
 				constOne, "condZsl", divergent.warpBlock);
 			llvm::Instruction *cmpInt16 = new llvm::ZExtInst(ws_it->second.replicated[n], int16ty, "cmpws",
 				divergent.warpBlock);
-			z = llvm::BinaryOperator::Create(llvm::Instruction::Or, shlOp, cmpInt16, "condZ", 
+			branchConditional = llvm::BinaryOperator::Create(llvm::Instruction::Or, shlOp, cmpInt16, "condZ", 
 				divergent.warpBlock);
+			*/
+			llvm::Instruction *cmpInt16 = new llvm::ZExtInst(ws_it->second.replicated[n], intTy, "cmpws",
+				divergent.warpBlock);
+			branchConditional = llvm::BinaryOperator::Create(llvm::Instruction::Add, branchConditional, cmpInt16, "cmpws", divergent.warpBlock);
 		}
 		
-		// if z is 0, all conditions were 0s. if z is (warpSize-1), all conditions were 1
+		// if branchConditional is 0, all conditions were 0s. if z is (warpSize), all conditions were 1
 		// else, diverge!
 
-		llvm::ConstantInt *constZero = pass->getConstInt16(0);
-		llvm::ConstantInt *constFull = pass->getConstInt16((1<<warpSize)-1);
+		llvm::ConstantInt *constZero = pass->getConstInt32(0);
+		llvm::ConstantInt *constFull = pass->getConstInt32(warpSize);
 		
 		std::stringstream ss;
 		ss << divergent.warpBlock->getNameStr() << "_diverge";
-		divergent.handler = llvm::BasicBlock::Create(
-			F->getContext(), ss.str(), F);
+		divergent.handler = llvm::BasicBlock::Create(F->getContext(), ss.str(), F);
 			
 		llvm::BasicBlock *succZero = warpBlocksMap[scBranch->getSuccessor(1)];
 		llvm::BasicBlock *succFull = warpBlocksMap[scBranch->getSuccessor(0)];
 		
 		llvm::SwitchInst *switchInst = llvm::SwitchInst::Create(
-			z, divergent.handler, 2, divergent.warpBlock);
+			branchConditional, divergent.handler, 2, divergent.warpBlock);
 		switchInst->addCase(constFull, succFull);
 		switchInst->addCase(constZero, succZero);
 		
 		// insert dummy return statement
-		//llvm::ReturnInst::Create(F->getContext(), constZero32, divergent.handler);
 		llvm::ReturnInst::Create(F->getContext(), divergent.handler);
 		
-		divergenceHandlerBranch(divergent);
+		divergenceHandlerBranch(divergent, ws_it->second);
 	}
 	else {
 		Ocelot_Exception("unexpected divergent terminator");
@@ -821,8 +823,21 @@ void analysis::LLVMUniformVectorization::Translation::handleDivergentBranch(
 	\brief emit spill code or handler for a branch known to be divergent
 */
 void analysis::LLVMUniformVectorization::Translation::divergenceHandlerBranch(
-	DivergentBranch &divergent) {
+	DivergentBranch &divergent, 
+	VectorizedInstruction &condition) {
 
+	// trap to host environment on reaching a divergent region
+	std::vector< const llvm::Type *> argTypes;
+	argTypes.push_back(pass->getTyInt(32));
+	argTypes.push_back(pass->getTyInt(32));
+	llvm::FunctionType *funcType = llvm::FunctionType::get(llvm::Type::getVoidTy(
+		F->getParent()->getContext()), argTypes, false);
+		
+	std::vector< llvm::Value *> args;
+	args.push_back(pass->getConstInt32(1));
+	args.push_back(pass->getConstInt32(0));
+	llvm::CallInst::Create(F->getParent()->getOrInsertFunction("__ocelot_abort", funcType), 
+		args.begin(), args.end(), "", divergent.handler->getTerminator());
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////

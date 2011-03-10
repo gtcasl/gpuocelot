@@ -267,7 +267,7 @@ namespace analysis
 				\brief emit spill code or handler for a branch known to be divergent
 
 			*/
-			void divergenceHandlerBranch(DivergentBranch &divergent);
+			void divergenceHandlerBranch(DivergentBranch &divergent, VectorizedInstruction &condition);
 		
 			/*!
 				\brief inserts a schedular block that handles control flow

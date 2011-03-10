@@ -32,7 +32,7 @@ check_PROGRAMS = TestLexer TestParser \
 	TestCalVectorScale TestPTXAssembly TestGenericMemory \
 	TestFunctionCall TestIndirectFunctionCall TestIndirectFunctionCallOcelot \
 	KernelTestHarness TestConvergence \
-	MicroComputeBound
+	MicroComputeBound MicroMemoryBound
 EXTRA_PROGRAMS = Module PtxToIlTranslator DFG CFG PTXChecker OcelotServer TestOcelotServer
 lib_LTLIBRARIES = libocelot.la libKernelExtractor.la
 
@@ -91,13 +91,13 @@ libocelot_la_SOURCES = \
 	hydrazine/implementation/debug.cpp \
 	hydrazine/implementation/string.cpp \
 	hydrazine/implementation/json.cpp \
-	hydrazine/implementation/WindowsCompatibility.cpp \
 	hydrazine/interface/Configurable.cpp \
 	hydrazine/interface/Test.cpp \
 	hydrazine/interface/Stringable.cpp \
 	hydrazine/interface/Clonable.cpp \
 	hydrazine/interface/Thread.cpp \
 	hydrazine/interface/Version.cpp \
+	hydrazine/implementation/SystemCompatibility.cpp \
 	ocelot/trace/implementation/TraceEvent.cpp \
 	ocelot/trace/implementation/TraceGenerator.cpp \
 	ocelot/trace/implementation/MemoryChecker.cpp \
@@ -426,6 +426,14 @@ MicroComputeBound_LDFLAGS = -static
 ################################################################################
 
 ################################################################################
+## MicroMemoryBound
+MicroMemoryBound_CXXFLAGS = $(INCLUDE) -std=c++0x
+MicroMemoryBound_SOURCES = ocelot/cuda/test/microbenchmarks/memoryBound/memoryBound.cu.cpp
+MicroMemoryBound_LDADD = libocelot.la $(LLVM_LDFLAGS)
+MicroMemoryBound_LDFLAGS = -static
+################################################################################
+
+################################################################################
 
 libKernelExtractor_la_CXXFLAGS = -Wall -ansi -Werror -std=c++0x
 #libKernelExtractor_la_HEADERS = ocelot/util/interface/KernelExtractor.h
@@ -447,13 +455,13 @@ libKernelExtractor_la_SOURCES = ocelot/util/implementation/KernelExtractor.cpp \
 	hydrazine/implementation/debug.cpp \
 	hydrazine/implementation/string.cpp \
 	hydrazine/implementation/json.cpp \
-	hydrazine/implementation/WindowsCompatibility.cpp \
 	hydrazine/interface/Configurable.cpp \
 	hydrazine/interface/Test.cpp \
 	hydrazine/interface/Stringable.cpp \
 	hydrazine/interface/Clonable.cpp \
 	hydrazine/interface/Thread.cpp \
-	hydrazine/interface/Version.cpp
+	hydrazine/interface/Version.cpp \
+	hydrazine/implementation/SystemCompatibility.cpp
 
 ################################################################################
 ## KernelTestHarness

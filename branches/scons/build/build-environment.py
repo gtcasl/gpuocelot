@@ -36,6 +36,29 @@ def getCudaPaths():
 
 	return (bin_path,lib_path,inc_path)
 
+def getLLVMPaths():
+	"""Determines LLVM {bin,lib,include} paths
+	
+	returns (bin_path,lib_path,inc_path)
+	"""
+	
+	llvm_config_path = which.which('llvm-config')
+	
+	# determine defaults
+	if os.name == 'posix':
+		if os.path.isfile(llvm_config_path):
+			bin_path = os.popen('llvm-config --bindir').read().split()
+			lib_path = os.popen('llvm-config --libdir').read().split()
+			inc_path = os.popen('llvm-config --includedir').read().split()
+		else:
+			bin_path = '/usr/local/bin'
+			lib_path = '/usr/local/lib'
+			inc_path = '/usr/local/include/llvm'
+	else:
+		raise ValueError, 'Error: unknown OS.  Where is LLVM installed?'
+	
+	return (bin_path,lib_path,inc_path)
+
 def getTools():
 	result = []
 	if os.name == 'nt':

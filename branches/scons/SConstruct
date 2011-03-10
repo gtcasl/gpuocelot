@@ -12,6 +12,7 @@ import inspect
 try:
   Import('env')
 except:
+  exec open("build/which.py")
   exec open("build/build-environment.py")
   env = Environment()
   

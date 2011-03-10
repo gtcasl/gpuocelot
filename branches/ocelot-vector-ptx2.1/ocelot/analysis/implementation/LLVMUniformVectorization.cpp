@@ -149,7 +149,7 @@ bool analysis::LLVMUniformVectorization::doInitialize(llvm::Module &_M) {
 		types.push_back(getTyInt(w));
 		types.push_back(getTyInt(w));
 		types.push_back(getTyInt(w));
-		tyDimension = llvm::StructType::get(_M.getContext(), types);
+		tyDimension = llvm::StructType::get(_M.getContext(), types, "tyDimension");
 	}
 	{
 		std::vector<const llvm::Type *> types;
@@ -157,7 +157,7 @@ bool analysis::LLVMUniformVectorization::doInitialize(llvm::Module &_M) {
 		types.push_back(getTyInt(w));
 		types.push_back(getTyInt(w));
 		types.push_back(tyDimension);
-		tyThreadDescriptor = llvm::StructType::get(_M.getContext(), types);
+		tyThreadDescriptor = llvm::StructType::get(_M.getContext(), types, "tyThreadDescriptor");
 	}
 	{
 		std::vector<const llvm::Type *> types;
@@ -168,7 +168,7 @@ bool analysis::LLVMUniformVectorization::doInitialize(llvm::Module &_M) {
 		types.push_back(getTyInt(w));
 		types.push_back(getTyInt(w));
 		types.push_back(llvm::PointerType::get(tyThreadDescriptor, 0));
-		tyMetadata = llvm::StructType::get(_M.getContext(), types);
+		tyMetadata = llvm::StructType::get(_M.getContext(), types, "tyMetadata");
 	}
 	
 	return true;
@@ -224,7 +224,6 @@ void analysis::LLVMUniformVectorization::Translation::runOnFunction() {
 		
 		report("Updating control flow among warp-synchronous replicated blocks");
 		resolveControlFlow();
-		
 		
 		report("Vectorizing replicated instruction bundles");		
 		vectorize();
@@ -316,13 +315,9 @@ llvm::Value * analysis::LLVMUniformVectorization::Translation::getLocalMemoryPoi
 
 */
 void analysis::LLVMUniformVectorization::Translation::finalizeSubkernel() {
-
-		report("Finalizing subkernel DSF");
 		
 	llvm::TerminatorInst *termInst = subkernelEntry.prologue->getTerminator();
 	llvm::BasicBlock *wsTarget = getWarpBlockFromScalar(subkernelEntry.start);
-	
-	report("warp synchronous target: " << wsTarget->getNameStr() );
 	
 	assert(llvm::BranchInst::classof(termInst));
 	
@@ -365,29 +360,17 @@ void analysis::LLVMUniformVectorization::Translation::loadThreadLocalArguments()
 	
 	llvm::LoadInst *loadedMetadataPtr = new llvm::LoadInst(gempMetadataPtr, "metadataPtrI8", firstInst);
 	
-	std::cerr << "loadedMetadataPtr type: ";
-	loadedMetadataPtr->getType()->dump();
-	
-	std::cerr << " intend to cast to type ";
-	pass->tyMetadata->dump();
-	
 	llvm::CastInst *castedMetadataPtr = llvm::CastInst::CreatePointerCast(loadedMetadataPtr, 
 		llvm::PointerType::get(pass->tyMetadata,0), "metadataPtr", firstInst );
 	
 	idx.clear();
 	idx.push_back(pass->getConstInt32(0));
 	idx.push_back(pass->getConstInt32(6));
-	
-	std::cerr << "gempMetadataPtr type: ";
-	castedMetadataPtr->getType()->dump();
 		
 	llvm::Instruction *threadDescriptorPtr = llvm::GetElementPtrInst::Create(castedMetadataPtr, 
 		idx.begin(), idx.end(), "threadDescriptorPtr", firstInst);
 	threadLocalArguments.ptrThreadDescriptorArray = new llvm::LoadInst(threadDescriptorPtr,
 		"threadDescriptorArray", firstInst);
-	
-	std::cerr << "threadDescriptorArray type: ";
-	threadLocalArguments.ptrThreadDescriptorArray->getType()->dump();
 	
 	for (int tid = 0; tid < warpSize; tid++) {
 		llvm::GetElementPtrInst *ptr = 0;
@@ -1070,6 +1053,7 @@ void analysis::LLVMUniformVectorization::Translation::vectorize(llvm::Instructio
 	llvm::BasicBlock *block = after->getParent();
 	llvm::BasicBlock::iterator inst_it = block->begin();
 	bool found = false;
+	
 	for (; llvm::PHINode::classof(&*inst_it); ++inst_it) { }
 
 	if (!llvm::PHINode::classof(after)) {
@@ -1169,7 +1153,8 @@ void analysis::LLVMUniformVectorization::Translation::vectorizeCall(
 
 	report(" call instruction: " << calleeName);
 
-	assert(hydrazine::isPowerOfTwo(warpSize) && "warp size must be power of 2 for vectorizing function calls");
+	assert(hydrazine::isPowerOfTwo(warpSize) && 
+		"warp size must be power of 2 for vectorizing function calls");
 
 	const char *floatSuffixes[] = {
 		"f32", "v2f32", "v4f32", "v8f32"
@@ -1233,12 +1218,14 @@ void analysis::LLVMUniformVectorization::Translation::vectorizePhiNode(
 
 	report("vectorizingPhiNode " << phiNode->getNameStr() 
 		<< " - vector instruction to appear in block " << before->getParent()->getNameStr() 
-		<< " before " << before->getNameStr());
+		<< " before \"" << before->getNameStr() << "\"");
 
 	// phi nodes are special little creatures
 	std::string s = phiNode->getNameStr() + ".vec";
 	llvm::VectorType *vecType = llvm::VectorType::get(phiNode->getType(), warpSize);
 	llvm::PHINode *vecPhi = llvm::PHINode::Create(vecType, s, before);
+	
+	vecInstr.vector = vecPhi;
 	
 	unsigned int numPreds = phiNode->getNumIncomingValues();
 	for (unsigned int i = 0; i < numPreds; i++) {
@@ -1254,8 +1241,6 @@ void analysis::LLVMUniformVectorization::Translation::vectorizePhiNode(
 				incomingBlock);
 		}
 	}
-	
-	vecInstr.vector = vecPhi;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1272,7 +1257,11 @@ void analysis::LLVMUniformVectorization::Translation::vectorize() {
 		bb_it != traversal.end(); ++bb_it) {
 		llvm::BasicBlock *block = *bb_it;
 
+		report("  vectorizing block " << block->getNameStr());
+		
 		for (llvm::BasicBlock::iterator inst_it = block->begin(); inst_it != block->end(); ++inst_it) {
+			report("  vectorizing scalar instruction " << &*inst_it);
+		
 			vectorize(&*inst_it);
 		}		
 	}

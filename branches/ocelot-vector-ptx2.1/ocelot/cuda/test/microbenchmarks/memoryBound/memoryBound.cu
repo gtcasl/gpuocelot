@@ -14,50 +14,106 @@
 #define cudaCheckCall(x) { cudaError_t result = x; if (result != cudaSuccess) \
 	{ printf("Error: %s\n", cudaGetErrorString(result)); assert(0); } }
 
-extern "C" __global__ void kernel_MemoryBound(float *dest, float *source, int blockLines) {
-	int tid = threadIdx.x;
+#define min(a, b) ((a) > (b) ? (b) : (a))
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+extern "C" __global__ void kernel_Touch(
+	float *buffer,
+	float val,
+	size_t elements) {
 	
-	int blockLineSize = sizeof(float)*LINESIZE;
-	int blockSize = blockLineSize * blockLines;
-	int blockOffset = blockSize * blockIdx.x;
-	
-	float *destPtr = dest + tid + blockOffset;
-	float *sourcePtr = source + tid + blockOffset;
-	
-	for (int i = 0; i < blockLines; i++) {
-		*destPtr = *sourcePtr;
-		destPtr += blockLineSize;
-		sourcePtr += blockLineSize;
+	int id = threadIdx.x + blockDim.x * blockIdx.x;
+	for (; id < elements; id += blockDim.x) {
+		buffer[id] = val;
 	}
 }
 
-void run(const int N) {
-	int blockLines = BlockSize / LINESIZE;
+extern "C" __global__ void kernel_GlobalTransfer(
+	float *destPtr,
+	float *srcPtr,
+	size_t threadBaseStride,
+	size_t threadStride,
+	size_t elementsPerThread) {
 	
-	dim3 grid(N / BlockSize, 1);
-	dim3 block(LINESIZE, 1);
+	int id = threadIdx.x * threadBaseStride + blockDim.x * blockIdx.x * elementsPerThread;
+	destPtr += id;
+	srcPtr += id;
+
+	for (size_t i = 0; i < elementsPerThread; i++) {
+		*destPtr = *srcPtr;
+		destPtr += threadStride;
+		srcPtr += threadStride;
+	}	
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+void run(size_t elements, int ctaSize = 256) {
+	float *A_dest, *A_src;
+	size_t bytes = sizeof(float)*elements;
+	int runs = 10;
 	
-	float *A_gpu_dest, *A_gpu_source;
+	cudaCheckCall(cudaMalloc((void **)&A_dest, bytes));
+	cudaCheckCall(cudaMalloc((void **)&A_src, bytes));
 	
-	size_t bytes = sizeof(float)*N;
-	cudaCheckCall(cudaMalloc((void **)&A_gpu_dest, bytes));
-	cudaCheckCall(cudaMalloc((void **)&A_gpu_source, bytes));
+	//kernel_Touch<<< dim3(min(16, elements/64), 1), dim3(64, 1) >>>(A_src, 2.0f, elements);
+	//kernel_Touch<<< dim3(min(16, elements/64), 1), dim3(64, 1) >>>(A_dest, 0.0f, elements);
 	
+	// dense copies (enables coalesced accesses)
 	hydrazine::Timer timer;
 	timer.start();
-	
-	kernel_MemoryBound<<< grid, block >>>(A_gpu_dest, A_gpu_source, blockLines);
-	
+	for (int i = 0; i < runs; i++) {
+		float *ptrs[2] = { A_dest, A_src };
+		
+		size_t baseStride = 1;
+		size_t intrathreadStride = ctaSize;
+		size_t elementsPerThread = 8*ctaSize;
+		
+		dim3 block(ctaSize, 1);
+		dim3 grid(elements / (ctaSize) / elementsPerThread, 1);
+		
+		kernel_GlobalTransfer<<< grid, block >>>(ptrs[(i) % 2], ptrs[(i+1)%2], 
+			baseStride, intrathreadStride, elementsPerThread);
+	}
+	cudaThreadSynchronize();
 	timer.stop();
+	double coalescedRuntime = timer.seconds();
 	
-	double transferSize = N * 2.0;
-	double GBperSec = transferSize / timer.seconds() / 1.0e9;
-	printf("Bandwidth: %f\n", GBperSec);
+	// dense copies (enables coalesced accesses)
+	timer.start();
+	for (int i = 0; i < runs; i++) {
+		float *ptrs[2] = { A_dest, A_src };
+		
+		size_t elementsPerThread = 8*ctaSize;
+		size_t baseStride = elementsPerThread;
+		size_t intrathreadStride = 1;
+		
+		dim3 block(ctaSize, 1);
+		dim3 grid(elements / (ctaSize) / elementsPerThread, 1);
+		
+		kernel_GlobalTransfer<<< grid, block >>>(ptrs[(i) % 2], ptrs[(i+1)%2], 
+			baseStride, intrathreadStride, elementsPerThread);
+	}
+	cudaThreadSynchronize();
+	timer.stop();
+	double sequentialRuntime = timer.seconds();
+	
+	cudaFree(A_dest);
+	cudaFree(A_src);
+	
+	double coalescedBandwidth = (double)(elements >> 18) * 2 * runs / (coalescedRuntime * 1000.0) ;
+	double serialBandwidth = (double)(elements >> 18) * 2 * runs / (sequentialRuntime * 1000.0);
+	
+	printf("allocation size: %d MB. Coalesced bandwidth: %f GB/s. Sequential bandwidth: %f GB/s\n",
+		(elements>>18), coalescedBandwidth, serialBandwidth);
 }
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
 
 int main(int argc, char *arg[]) {
 
-	run((10 << 20));
+	run((100 << 20));
 	
 	return 0;
 }

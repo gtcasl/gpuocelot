@@ -11,9 +11,11 @@
 #include <ocelot/executive/interface/LLVMExecutableKernel.h>
 #include <ocelot/executive/interface/LLVMExecutionManager.h>
 #include <ocelot/executive/interface/Device.h>
+#include <ocelot/api/interface/OcelotConfiguration.h>
 
 // Hydrazine Includes
 #include <hydrazine/implementation/debug.h>
+#include <hydrazine/implementation/Timer.h>
 
 // Standard Library Includes
 #include <cstring>
@@ -68,7 +70,18 @@ void LLVMExecutableKernel::launchGrid(int x, int y)
 	_gridDim.x = x;
 	_gridDim.y = y;
 	
+	hydrazine::Timer timer;
+	
+	timer.start();
+	
 	LLVMExecutionManager::launch(*this);
+	
+	timer.stop();
+	std::cout << "{ \"kernel\": " << name << ", \"runtime\": " << timer.seconds() << ", "
+		<< "\"warpSize\": " << api::OcelotConfiguration::get().executive.warpSize << ", "
+		<< "\"gridDim\": ["
+		<< _gridDim.x << ", " << _gridDim.y << ", " << _gridDim.z << "], \"blockDim\": [" 
+		<< _blockDim.x << ", " << _blockDim.y << ", " << _blockDim.z << "] }\n";
 }
 
 void LLVMExecutableKernel::setKernelShape( int x, int y, int z )

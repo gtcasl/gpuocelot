@@ -133,6 +133,18 @@ static boost::mutex mutex;
 
 extern "C"
 {	
+	void __ocelot_abort(unsigned int code, unsigned int other) {
+		std::cout << "Kernel execution aborted - code " << code << ": ";
+		switch (code) {
+		case 1: std::cout << "Unhandled divergent condition";
+		case 2: std::cout << "Invalid operation";
+		case 3: std::cout << "Runtime assertion failure";
+		default: break;
+		}
+		std::cout << std::endl;
+		assert(0 && "execution aborted");
+	}
+
 	unsigned int __ocelot_bfi_b32( unsigned int in, unsigned int orig, 
 		unsigned int position, unsigned int length )
 	{

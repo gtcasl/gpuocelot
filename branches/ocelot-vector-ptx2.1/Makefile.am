@@ -31,7 +31,7 @@ check_PROGRAMS = TestLexer TestParser \
 	TestCudaSequence TestLLVMKernels TestDeviceSwitching \
 	TestCalVectorScale TestPTXAssembly TestGenericMemory \
 	TestFunctionCall TestIndirectFunctionCall TestIndirectFunctionCallOcelot \
-	KernelTestHarness TestConvergence \
+	KernelTestHarness TestConvergence TestDivergence \
 	MicroComputeBound MicroMemoryBound
 EXTRA_PROGRAMS = Module PtxToIlTranslator DFG CFG PTXChecker OcelotServer TestOcelotServer
 lib_LTLIBRARIES = libocelot.la libKernelExtractor.la
@@ -415,6 +415,14 @@ TestConvergence_CXXFLAGS = $(INCLUDE) -std=c++0x
 TestConvergence_SOURCES = ocelot/executive/test/vectorization/TestConvergence.cu.cpp
 TestConvergence_LDADD = libocelot.la $(LLVM_LDFLAGS)
 TestConvergence_LDFLAGS = -static
+################################################################################
+
+################################################################################
+## TestDivergence
+TestDivergence_CXXFLAGS = $(INCLUDE) -std=c++0x
+TestDivergence_SOURCES = ocelot/executive/test/vectorization/TestDivergence.cu.cpp
+TestDivergence_LDADD = libocelot.la $(LLVM_LDFLAGS)
+TestDivergence_LDFLAGS = -static
 ################################################################################
 
 ################################################################################

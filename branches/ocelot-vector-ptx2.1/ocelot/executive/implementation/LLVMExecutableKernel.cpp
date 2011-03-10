@@ -77,11 +77,14 @@ void LLVMExecutableKernel::launchGrid(int x, int y)
 	LLVMExecutionManager::launch(*this);
 	
 	timer.stop();
-	std::cout << "{ \"kernel\": " << name << ", \"runtime\": " << timer.seconds() << ", "
-		<< "\"warpSize\": " << api::OcelotConfiguration::get().executive.warpSize << ", "
-		<< "\"gridDim\": ["
-		<< _gridDim.x << ", " << _gridDim.y << ", " << _gridDim.z << "], \"blockDim\": [" 
-		<< _blockDim.x << ", " << _blockDim.y << ", " << _blockDim.z << "] }\n";
+	
+	if (api::OcelotConfiguration::get().executive.printKernelRuntimes) {
+		std::cout << "{ \"kernel\": " << name << ", \"runtime\": " << timer.seconds() << ", "
+			<< "\"warpSize\": " << api::OcelotConfiguration::get().executive.warpSize << ", "
+			<< "\"gridDim\": ["
+			<< _gridDim.x << ", " << _gridDim.y << ", " << _gridDim.z << "], \"blockDim\": [" 
+			<< _blockDim.x << ", " << _blockDim.y << ", " << _blockDim.z << "] }\n";
+	}
 }
 
 void LLVMExecutableKernel::setKernelShape( int x, int y, int z )

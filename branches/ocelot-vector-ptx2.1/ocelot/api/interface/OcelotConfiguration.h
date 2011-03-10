@@ -166,6 +166,9 @@ namespace api {
 			
 			//! \brief indicates whether to print LLVM module
 			bool printLLVMModule;
+			
+			//! \brief indicates whether to print kernel runtimes for debugging purposes
+			bool printKernelRuntimes;
 		};
 
 	public:
@@ -182,12 +185,12 @@ namespace api {
 		//! \brief initializes configuration object from a stream as JSON
 		void initialize(std::istream &stream);
 
-        //! \brief gets singleton configuration object or 
-        //	constructs from 'configure.ocelot'
-        static const OcelotConfiguration& get();
+    //! \brief gets singleton configuration object or 
+    //	constructs from 'configure.ocelot'
+    static const OcelotConfiguration& get();
 
-        //! \brief destroys the singleton
-        static void destroy();
+    //! \brief destroys the singleton
+    static void destroy();
 
 	public:
 		//! \brief path to configuration file for reparsing 

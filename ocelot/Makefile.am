@@ -91,7 +91,7 @@ libocelot_la_SOURCES = \
 	hydrazine/implementation/debug.cpp \
 	hydrazine/implementation/string.cpp \
 	hydrazine/implementation/json.cpp \
-	hydrazine/implementation/WindowsCompatibility.cpp \
+	hydrazine/implementation/SystemCompatibility.cpp \
 	hydrazine/interface/Configurable.cpp \
 	hydrazine/interface/Test.cpp \
 	hydrazine/interface/Stringable.cpp \
@@ -431,7 +431,7 @@ libKernelExtractor_la_SOURCES = ocelot/util/implementation/KernelExtractor.cpp \
 	hydrazine/implementation/debug.cpp \
 	hydrazine/implementation/string.cpp \
 	hydrazine/implementation/json.cpp \
-	hydrazine/implementation/WindowsCompatibility.cpp \
+	hydrazine/implementation/SystemCompatibility.cpp \
 	hydrazine/interface/Configurable.cpp \
 	hydrazine/interface/Test.cpp \
 	hydrazine/interface/Stringable.cpp \
@@ -579,6 +579,7 @@ nobase_include_HEADERS = ocelot/api/interface/ocelot.h \
 	hydrazine/interface/Clonable.h \
 	hydrazine/interface/Thread.h \
 	hydrazine/interface/Thread.hpp \
+	hydrazine/interface/SystemCompatibility.h \
 	hydrazine/interface/Version.h \
 	hydrazine/python/RunRegression.py \
 	regression/ocelotRegressionTests.txt

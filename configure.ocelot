@@ -29,6 +29,9 @@
 		workerThreadLimit: 4,
 		warpSize: 4,
 		printLLVMModule: false
+	},
+	optimizations: {
+		subkernelSize: 60
 	}
 }
 

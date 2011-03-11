@@ -71,7 +71,7 @@ AC_CHECK_PROG(HAVE_LLVM_CONFIG, llvm-config, yes, no)
 if test $HAVE_LLVM_CONFIG = yes && test $enable_llvm = yes
 then
 	LLVM_VERSION=$(llvm-config --version)
-	if test `expr match "$LLVM_VERSION" '2.9'` = '0'
+	if test `expr match "$LLVM_VERSION" '3.0'` = '0'
 	then
 		AC_WARN(LLVM Disabled: version $LLVM_VERSION found, 2.9 required )
 		AC_SUBST(LLVM_CFLAGS, "")

@@ -115,11 +115,14 @@ public:
 		};
 	
 	public:
-		KernelAndTranslation(ir::PTXKernel* k = 0, 
-			translator::Translator::OptimizationLevel level = 
-			translator::Translator::NoOptimization,
-			const ir::PTXKernel* parent = 0, FunctionId offset = 0,
-			Device* device = 0, const ModuleDatabase* database = 0);
+		KernelAndTranslation(
+			ir::PTXKernel* k = 0, 
+			translator::Translator::OptimizationLevel level = translator::Translator::NoOptimization,
+			const ir::PTXKernel* parent = 0, 
+			FunctionId offset = 0,
+			Device* device = 0,
+			const ModuleDatabase* database = 0,
+			int _ws=1);
 
 	public:
 		void               unload();
@@ -135,6 +138,7 @@ public:
 		FunctionId                                _offsetId;
 		Device*                                   _device;
 		const ModuleDatabase*                     _database;
+		int 																			_warpSize;
 	};
 
 	typedef KernelAndTranslation::MetaData MetaData;

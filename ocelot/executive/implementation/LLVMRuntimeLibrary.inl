@@ -136,9 +136,9 @@ extern "C"
 	void __ocelot_abort(unsigned int code, unsigned int other) {
 		std::cout << "Kernel execution aborted - code " << code << ": ";
 		switch (code) {
-		case 1: std::cout << "Unhandled divergent condition";
-		case 2: std::cout << "Invalid operation";
-		case 3: std::cout << "Runtime assertion failure";
+		case 1: std::cout << "Unhandled divergent condition"; break;
+		case 2: std::cout << "Invalid operation"; break;
+		case 3: std::cout << "Runtime assertion failure"; break;
 		default: break;
 		}
 		std::cout << std::endl;

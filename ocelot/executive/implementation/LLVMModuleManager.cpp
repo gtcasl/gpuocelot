@@ -987,12 +987,24 @@ static void codegen(LLVMModuleManager::Function& function, llvm::Module& module,
 
 ////////////////////////////////////////////////////////////////////////////////
 // KernelAndTranslation
-LLVMModuleManager::KernelAndTranslation::KernelAndTranslation(ir::PTXKernel* k, 
-	translator::Translator::OptimizationLevel l, const ir::PTXKernel* p, 
-	FunctionId o, Device* d, const ModuleDatabase* m) : _kernel(k), _module(0),
-	_optimizationLevel(l), _metadata(0), _parent(p), _offsetId(o), _device(d), 
-	_database(m)
-{
+LLVMModuleManager::KernelAndTranslation::KernelAndTranslation(
+	ir::PTXKernel* k, 
+	translator::Translator::OptimizationLevel l,
+	const ir::PTXKernel* p, 
+	FunctionId o, 
+	Device* d,
+	const ModuleDatabase* m,
+	int ws) 
+: 
+	_kernel(k), 
+	_module(0),
+	_optimizationLevel(l),
+	_metadata(0),
+	_parent(p),
+	_offsetId(o), 
+	_device(d), 
+	_database(m), 
+	_warpSize(ws) {
 
 }
 
@@ -1232,9 +1244,16 @@ void LLVMModuleManager::ModuleDatabase::loadModule(const ir::Module* module,
 		{
 			report(" adding subkernel '" << (*subkernel)->name 
 				<< "' at index " << (subkernels.size() + _kernels.size()));
-			subkernels.push_back(KernelAndTranslation(*subkernel,
-				level, kernel->first, std::distance(
-				kernel->second.begin(), subkernel), device, this));
+			subkernels.push_back(
+				KernelAndTranslation(
+					*subkernel,				// subkernel (PTX)
+					level,						// optimization level
+					 kernel->first, 	// parent kernel (PTX)
+					std::distance(kernel->second.begin(), subkernel), 	// function ID offset
+					device, 					// target device
+					this							// module database
+				)
+			);
 		}
 	}
 

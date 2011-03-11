@@ -209,6 +209,11 @@ public:
 	/*!	Inserts a basic block into the CFG */
 	iterator insert_block(const BasicBlock& b);
 	
+	/*!
+		\brief creates and inserts a new block into the CFG
+	*/
+	iterator insert_new_block(const std::string &name);
+	
 	/*! Duplicates the selected block, inserts it in an unconnected state,
 		returns an iterator to the newly created block */
 	iterator clone_block(iterator block, std::string suffix);

@@ -46,8 +46,7 @@ namespace analysis
 		class ExtractKernelsPass : public KernelPass
 		{
 		public:
-			typedef std::unordered_map<ir::PTXKernel*, 
-				KernelVector> KernelVectorMap;
+			typedef std::unordered_map<ir::PTXKernel*, KernelVector> KernelVectorMap;
 				
 		public:
 			ExtractKernelsPass(unsigned int expectedRegionSize = 50);

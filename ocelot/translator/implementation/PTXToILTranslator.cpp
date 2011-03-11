@@ -955,7 +955,7 @@ namespace translator
 						if (i.modifier & ir::PTXInstruction::sat) 
 						{
 							ir::ILMov mov;
-							mov.modifier = ir::ILInstruction::sat;
+							mov.clamp = ir::ILInstruction::Clamp;
 							mov.d = d;
 							mov.a = a;
 							_add(mov);
@@ -1506,7 +1506,7 @@ namespace translator
 
 							ir::ILLds_Load_Id lds_load_id;
 							lds_load_id.a = temp;
-							lds_load_id.d = _translate(*dst);
+							lds_load_id.d = _translate(*dst).x();
 							_add(lds_load_id);
 
 							offset += ir::PTXOperand::bytes(i.type);
@@ -1603,7 +1603,7 @@ namespace translator
 		// load dword
 		{
 			ir::ILLds_Load_Id lds_load_id;
-			lds_load_id.d = _translate(i.d);
+			lds_load_id.d = _translate(i.d).x();
 			lds_load_id.a = temp2;
 			_add(lds_load_id);
 		}
@@ -1640,7 +1640,7 @@ namespace translator
 		{
 			ir::ILLds_Load_Id lds_load_id;
 			lds_load_id.a = _translate(i.a);
-			lds_load_id.d = _translate(i.d);
+			lds_load_id.d = _translate(i.d).x();
 			_add(lds_load_id);
 		} else
 		{
@@ -1654,7 +1654,7 @@ namespace translator
 
 			ir::ILLds_Load_Id lds_load_id;
 			lds_load_id.a = temp;
-			lds_load_id.d = _translate(i.d);
+			lds_load_id.d = _translate(i.d).x();
 			_add(lds_load_id);
 		}
 	}
@@ -3173,7 +3173,7 @@ namespace translator
 							_add(iadd);
 
 							ir::ILLds_Store_Id lds_store_id;
-							lds_store_id.a = _translate(*src);
+							lds_store_id.a = _translate(*src).x();
 							lds_store_id.d = temp;
 							_add(lds_store_id);
 
@@ -3296,13 +3296,13 @@ namespace translator
 		_add(ishl);
 
 		ir::ILLds_And_Resource lds_and_resource;
-		lds_and_resource.d = _translate(i.d);
-		lds_and_resource.a = temp5;
+		lds_and_resource.d = _translate(i.d).x();
+		lds_and_resource.a = temp5.x();
 		_add(lds_and_resource);
 
 		ir::ILLds_Or_Resource lds_or_resource;
-		lds_or_resource.d = _translate(i.d);
-		lds_or_resource.a = temp2;
+		lds_or_resource.d = _translate(i.d).x();
+		lds_or_resource.a = temp2.x();
 		_add(lds_or_resource);
 	}
 
@@ -3311,7 +3311,7 @@ namespace translator
 		if (i.d.offset == 0)
 		{
 			ir::ILLds_Store_Id lds_store_id;
-			lds_store_id.a = _translate(i.a);
+			lds_store_id.a = _translate(i.a).x();
 			lds_store_id.d = _translate(i.d);
 			_add(lds_store_id);
 		} else
@@ -3325,7 +3325,7 @@ namespace translator
 			_add(iadd);
 
 			ir::ILLds_Store_Id lds_store_id;
-			lds_store_id.a = _translate(i.a);
+			lds_store_id.a = _translate(i.a).x();
 			lds_store_id.d = temp;
 			_add(lds_store_id);
 		}

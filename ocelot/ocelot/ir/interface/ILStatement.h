@@ -29,7 +29,7 @@ namespace ir
 				InvalidType
 			};
 
-			typedef std::vector<ILOperand> operandVector;
+			typedef std::vector<ILOperand> OperandVector;
 
 			/*! \brief If this is an instruction, a pointer to the instruction
 			 * object.
@@ -40,12 +40,16 @@ namespace ir
 			/*! \brief Statement type */
 			Type type;
 			/*! \brief The operands if this is a declaration */
-			operandVector operands;
+			OperandVector operands;
 
 			/*! \brief Default constructor */
 			ILStatement(Type type = InvalidType);
 			/*! \brief Construct a statement from an instruction */
 			explicit ILStatement(const ILInstruction &i);
+			/*! \brief Copy constructor */
+			ILStatement(const ILStatement& s);
+			/*! \brief Destructor */
+			~ILStatement();
 
 			/*! \brief Convert this statement into a string */
 			std::string toString() const;

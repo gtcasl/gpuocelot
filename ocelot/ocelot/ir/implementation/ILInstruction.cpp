@@ -12,6 +12,11 @@
 
 namespace ir
 {
+	ILInstruction::ILInstruction(Opcode op) : opcode(op), clamp(NoClamp), 
+		shift_scale(Shift_None)
+	{
+	}
+
 	std::string ILInstruction::toString(Opcode opcode)
 	{
 		switch(opcode)
@@ -65,8 +70,8 @@ namespace ir
 			case Rsq_Vec:               return "rsq_vec";
 			case Sub:                   return "sub";
 			case Sqrt_Vec:              return "sqrt_vec";
-			case Uav_Arena_Load_Id:     return "uav_arena_load_id(1)";
-			case Uav_Arena_Store_Id:    return "uav_arena_store_id(1)";
+			case Uav_Arena_Load_Id:     return "uav_arena_load_id(8)";
+			case Uav_Arena_Store_Id:    return "uav_arena_store_id(8)";
 			case Uav_Raw_Load_Id:       return "uav_raw_load_id(0)";
 			case Uav_Raw_Store_Id:      return "uav_raw_store_id(0) mem.x,";
 			case Uav_Read_Add_Id:       return "uav_read_add_id(0)";
@@ -102,88 +107,74 @@ namespace ir
 			}
 		};
 	}
-
-	std::string ILInstruction::modifierString(unsigned int m)
+	
+	std::string ILInstruction::toString(const ClampOperation &c)
 	{
-		assertM((m & InvalidModifier) == 0, 
-				"Modifier " << m << " not supported"); 
+		std::string result;
+		switch(c)
+		{
+			case Clamp:   result += "_sat"; break;
+			case NoClamp:                   break;
+		}
 
-		std::string s;
-
-		if (m & x2) s += "_x2";
-		if (m & x4) s += "_x4";
-		if (m & x8) s += "_x8";
-		if (m & d2) s += "_d2";
-		if (m & d4) s += "_d4";
-		if (m & d8) s += "_d8";
-		if (m & sat) s += "_sat";
-
-		return s;
+		return result;
 	}
 
-	ILInstruction::ILInstruction(Opcode op) : opcode(op), modifier(NoModifier)
+	std::string ILInstruction::toString(const ShiftScale &s)
 	{
+		std::string result;
+		switch(s)
+		{
+			case Shift_D2:   result += "_d2"; break;
+			case Shift_D4:   result += "_d4"; break;
+			case Shift_D8:   result += "_d8"; break;
+			case Shift_None:                  break;
+			case Shift_X2:   result += "_x2"; break;
+			case Shift_X4:   result += "_x4"; break;
+			case Shift_X8:   result += "_x8"; break;
+		}
+
+		return result;
 	}
 
-	ILUnaryInstruction::ILUnaryInstruction(Opcode op,
-			const ILOperand &_d, const ILOperand &_a)
-		:
-			ILInstruction(op),
-			d(_d),
-			a(_a)
+	std::string ILInstruction::toString() const
+	{
+		return toString(opcode) + toString(shift_scale) + toString(clamp);
+	}
+
+	std::string ILInstruction::valid() const
+	{
+		assertM(false, "Not implemented yet");
+	}
+
+	ILUnaryInstruction::ILUnaryInstruction(Opcode op) : ILInstruction(op)
 	{
 	}
 
 	std::string ILUnaryInstruction::toString() const
 	{
-		return ILInstruction::toString(opcode) 
-			+ ILInstruction::modifierString(modifier)
-			+ " " + d.toString() + ", " + a.toString();
+		return ILInstruction::toString(opcode) + " " + d.toString() + ", " 
+			+ a.toString();
 	}
 
-	std::string ILUnaryInstruction::valid() const
-	{
-		assertM(false, "Not implemented yet");
-	}
-
-	ILBinaryInstruction::ILBinaryInstruction(Opcode op,
-			const ILOperand &_d, const ILOperand &_a, const ILOperand &_b)
-		:
-			ILInstruction(op), d(_d), a(_a), b(_b)
+	ILBinaryInstruction::ILBinaryInstruction(Opcode op) : ILInstruction(op)
 	{
 	}
 
 	std::string ILBinaryInstruction::toString() const
 	{
-		return ILInstruction::toString(opcode) 
-			+ ILInstruction::modifierString(modifier)
-			+ " " + d.toString() + ", " + a.toString() + ", " + b.toString();
+		return ILInstruction::toString(opcode) + " " + d.toString() + ", " 
+			+ a.toString() + ", " + b.toString();
 	}
 
-	std::string ILBinaryInstruction::valid() const
-	{
-		assertM(false, "Not implemented yet");
-	}
-
-	ILTrinaryInstruction::ILTrinaryInstruction(Opcode op,
-			const ILOperand &_d, const ILOperand &_a, const ILOperand &_b,
-			const ILOperand &_c)
-		:
-			ILInstruction(op), d(_d), a(_a), b(_b), c(_c)
+	ILTrinaryInstruction::ILTrinaryInstruction(Opcode op) : ILInstruction(op)
 	{
 	}
 
 	std::string ILTrinaryInstruction::toString() const
 	{
-		return ILInstruction::toString(opcode) 
-			+ ILInstruction::modifierString(modifier)
-			+ " " + d.toString() + ", " + a.toString() + ", " + b.toString() 
-			+ ", " + c.toString();
-	}
-
-	std::string ILTrinaryInstruction::valid() const
-	{
-		assertM(false, "Not implemented yet");
+		return ILInstruction::toString(opcode) + " " + d.toString() + ", " 
+			+ a.toString() + ", " + b.toString() + ", " + c.toString();
 	}
 
 	ILAbs::ILAbs() : ILUnaryInstruction(Abs)
@@ -217,16 +208,6 @@ namespace ir
 	{
 	}
 
-	std::string ILBreak::toString() const
-	{
-		return ILInstruction::toString(opcode);
-	}
-
-	std::string ILBreak::valid() const
-	{
-		assertM(false, "Not implemented yet");
-	}
-
 	Instruction *ILBreak::clone(bool copy) const
 	{
 		return new ILBreak(*this);
@@ -254,16 +235,6 @@ namespace ir
 	{
 	}
 
-	std::string ILElse::toString() const
-	{
-		return ILInstruction::toString(opcode);
-	}
-
-	std::string ILElse::valid() const
-	{
-		assertM(false, "Not implemented yet");
-	}
-
 	Instruction *ILElse::clone(bool copy) const
 	{
 		return new ILElse(*this);
@@ -271,16 +242,6 @@ namespace ir
 
 	ILEnd::ILEnd() : ILInstruction(End)
 	{
-	}
-
-	std::string ILEnd::toString() const
-	{
-		return "end";
-	}
-
-	std::string ILEnd::valid() const
-	{
-		assertM(false, "Not implemented yet");
 	}
 
 	Instruction *ILEnd::clone(bool copy) const
@@ -292,16 +253,6 @@ namespace ir
 	{
 	}
 
-	std::string ILEndIf::toString() const
-	{
-		return ILInstruction::toString(opcode);
-	}
-
-	std::string ILEndIf::valid() const
-	{
-		assertM(false, "Not implemented yet");
-	}
-
 	Instruction *ILEndIf::clone(bool copy) const
 	{
 		return new ILEndIf(*this);
@@ -309,16 +260,6 @@ namespace ir
 
 	ILEndLoop::ILEndLoop() : ILInstruction(EndLoop)
 	{
-	}
-
-	std::string ILEndLoop::toString() const
-	{
-		return ILInstruction::toString(opcode);
-	}
-
-	std::string ILEndLoop::valid() const
-	{
-		assertM(false, "Not implemented yet");
 	}
 
 	Instruction *ILEndLoop::clone(bool copy) const
@@ -360,15 +301,8 @@ namespace ir
 
 	std::string ILFence::toString() const
 	{
-		return ILInstruction::toString(opcode) +
-			(_threads ? "_threads" : "") +
-			(_lds ? "_lds" : "") +
-			(_memory ? "_memory" : "");
-	}
-
-	std::string ILFence::valid() const
-	{
-		assertM(false, "Not implemented yet");
+		return ILInstruction::toString(opcode) + (_threads ? "_threads" : "") +
+			(_lds ? "_lds" : "") + (_memory ? "_memory" : "");
 	}
 
 	Instruction *ILFence::clone(bool copy) const
@@ -445,11 +379,6 @@ namespace ir
 		return ILInstruction::toString(opcode) + " " + a.toString();
 	}
 
-	std::string ILIfLogicalNZ::valid() const
-	{
-		assertM(false, "Not implemented yet");
-	}
-
 	Instruction *ILIfLogicalNZ::clone(bool copy) const
 	{
 		return new ILIfLogicalNZ(*this);
@@ -462,11 +391,6 @@ namespace ir
 	std::string ILIfLogicalZ::toString() const
 	{
 		return ILInstruction::toString(opcode) + " " + a.toString();
-	}
-
-	std::string ILIfLogicalZ::valid() const
-	{
-		assertM(false, "Not implemented yet");
 	}
 
 	Instruction *ILIfLogicalZ::clone(bool copy) const
@@ -596,26 +520,13 @@ namespace ir
 	{
 	}
 
-	std::string ILLds_And_Resource::toString() const
-	{
-		return ILInstruction::toString(opcode) + " " + d.toString() + ".x, "
-			+ a.toString() + ".x";
-	}
-
 	Instruction *ILLds_And_Resource::clone(bool copy) const
 	{
 		return new ILLds_And_Resource(*this);
 	}
 
-	ILLds_Load_Id::ILLds_Load_Id() 
-		: ILUnaryInstruction(Lds_Load_Id)
+	ILLds_Load_Id::ILLds_Load_Id() : ILUnaryInstruction(Lds_Load_Id)
 	{
-	}
-
-	std::string ILLds_Load_Id::toString() const
-	{
-		return ILInstruction::toString(opcode) + " " + d.toString() + ".x, "
-			+ a.toString();
 	}
 
 	Instruction *ILLds_Load_Id::clone(bool copy) const
@@ -623,15 +534,8 @@ namespace ir
 		return new ILLds_Load_Id(*this);
 	}
 
-	ILLds_Or_Resource::ILLds_Or_Resource() 
-		: ILUnaryInstruction(Lds_Or_Resource)
+	ILLds_Or_Resource::ILLds_Or_Resource() : ILUnaryInstruction(Lds_Or_Resource)
 	{
-	}
-
-	std::string ILLds_Or_Resource::toString() const
-	{
-		return ILInstruction::toString(opcode) + " " + d.toString() + ".x, "
-			+ a.toString() + ".x";
 	}
 
 	Instruction *ILLds_Or_Resource::clone(bool copy) const
@@ -649,15 +553,8 @@ namespace ir
 		return new ILLds_Read_Add_Resource(*this);
 	}
 
-	ILLds_Store_Id::ILLds_Store_Id() 
-		: ILUnaryInstruction(Lds_Store_Id)
+	ILLds_Store_Id::ILLds_Store_Id() : ILUnaryInstruction(Lds_Store_Id)
 	{
-	}
-
-	std::string ILLds_Store_Id::toString() const
-	{
-		return ILInstruction::toString(opcode) + " " + d.toString() + ", "
-			+ a.toString() + ".x";
 	}
 
 	Instruction *ILLds_Store_Id::clone(bool copy) const
@@ -896,16 +793,6 @@ namespace ir
 
 	ILWhileLoop::ILWhileLoop() : ILInstruction(WhileLoop)
 	{
-	}
-
-	std::string ILWhileLoop::toString() const
-	{
-		return ILInstruction::toString(opcode);
-	}
-
-	std::string ILWhileLoop::valid() const
-	{
-		assertM(false, "Not implemented yet");
 	}
 
 	Instruction *ILWhileLoop::clone(bool copy) const

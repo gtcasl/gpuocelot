@@ -309,6 +309,7 @@ namespace analysis
 			/*!
 				\brief visits subkernel exits and assigns exit descriptors
 			*/
+
 			void updateSubkernelExits();
 		
 		public:

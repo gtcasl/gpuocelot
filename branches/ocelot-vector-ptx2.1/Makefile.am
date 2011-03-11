@@ -56,6 +56,7 @@ libocelot_la_SOURCES = \
 	ocelot/analysis/implementation/ConvertPredicationToSelectPass.cpp \
 	ocelot/analysis/implementation/LinearScanRegisterAllocationPass.cpp \
 	ocelot/analysis/implementation/SubkernelFormationPass.cpp \
+	ocelot/analysis/implementation/HyperblockFormationPass.cpp \
 	ocelot/analysis/implementation/LLVMUniformVectorization.cpp \
 	ocelot/api/implementation/ocelot.cpp \
 	ocelot/api/implementation/OcelotRuntime.cpp \
@@ -552,6 +553,7 @@ nobase_include_HEADERS = ocelot/api/interface/ocelot.h \
 	ocelot/analysis/interface/ConvertPredicationToSelectPass.h \
 	ocelot/analysis/interface/LinearScanRegisterAllocationPass.h \
 	ocelot/analysis/interface/SubkernelFormationPass.h \
+	ocelot/analysis/interface/HyperblockFormationPass.h \
 	ocelot/analysis/interface/PTXOptimizer.h \
 	ocelot/analysis/interface/RemoveBarrierPass.h \
 	ocelot/analysis/interface/AssignFallThroughEdge.h \

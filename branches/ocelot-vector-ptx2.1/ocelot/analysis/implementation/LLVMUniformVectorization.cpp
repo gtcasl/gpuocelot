@@ -1172,7 +1172,8 @@ void analysis::LLVMUniformVectorization::Translation::vectorizeCall(
 		"warp size must be power of 2 for vectorizing function calls");
 
 	const char *floatSuffixes[] = {
-		"f32", "v2f32", "v4f32", "v8f32"
+		"f32", "v2f32", "v4f32", "v8f32", "v16f32", "v32f32", "v64f32", "v128f32", "v256f32", 
+		"v512f32", 0
 	};
 	const char *str[] = {
 		"__ocelot_sqrtf", "llvm.sqrt",
@@ -1187,11 +1188,12 @@ void analysis::LLVMUniformVectorization::Translation::vectorizeCall(
 	for (int n = 0; str[n]; n+=2) {
 		if (calleeName == str[n]) {
 			int s = 0;
-			for (; s <= 3; s++) {
+			for (; floatSuffixes[s]; s++) {
 				if ((1 << s) == warpSize) {
 					break;
 				}
 			}
+			assert((1 << s) == warpSize);
 			std::string destName = std::string(str[n+1]) + "." + floatSuffixes[s];
 			funcIntrinsic = F->getParent()->getFunction(destName);
 			if (!funcIntrinsic) {

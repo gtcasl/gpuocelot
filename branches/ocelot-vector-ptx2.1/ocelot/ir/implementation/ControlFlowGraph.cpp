@@ -257,6 +257,13 @@ ControlFlowGraph::iterator ControlFlowGraph::insert_block(
 	return _blocks.insert(end(), block);
 }
 
+/*!
+	\brief creates and inserts a new block into the CFG
+*/
+ControlFlowGraph::iterator ControlFlowGraph::insert_new_block(const std::string &name) {
+	return _blocks.insert(end(), BasicBlock(name, newId()));
+}
+	
 ControlFlowGraph::iterator ControlFlowGraph::clone_block(iterator block, std::string suffix)
 {
 	return insert_block(BasicBlock(block->label + "_cloned" + suffix,

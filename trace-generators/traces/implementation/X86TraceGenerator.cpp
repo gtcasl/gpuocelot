@@ -24,6 +24,7 @@
 #include <ocelot/api/interface/OcelotConfiguration.h>
 #include <ocelot/api/interface/ocelot.h>
 
+#include <ocelot/executive/interface/ExecutableKernel.h>
 #include <ocelot/executive/interface/EmulatedKernel.h>
 #include <ocelot/executive/interface/Device.h>
 
@@ -378,26 +379,22 @@ ofstream *debug_stream;
 // Ptx to X86 trace generator constructor
 ///////////////////////////////////////////////////////////////////////////////////////////////
 trace::X86TraceGenerator::X86TraceGenerator() : 
-  init(false), no_threads_per_block(0), no_threads(0), blockDimX(1), blockDimY(1), 
-  blockDimZ(1), gridDimX(1), gridDimY(1), gridDimZ(1), use_kernel_name(false),
-  can_gen_traces(true), kernel_count(0)
+  init(false), num_warps_per_block(0), num_total_warps(0), blockDimX(1), blockDimY(1), 
+  blockDimZ(1), gridDimX(1), gridDimY(1), gridDimZ(1), can_gen_traces(true), kernel_count(0)
 {
+  m_compute = "2.0";
   mem_addr_flag = ~0u;
 
 #ifndef GEN_PTX_TRACE_GEN
   char *t_name;
   char *t_path;
-  char *use_k_name;
 
   // get TRACE_PATH environment variable
   t_path = getenv("TRACE_PATH");
-  if (t_path != NULL) {
-    trace_path = t_path;
-    trace_path.append("/");
-  }
-  else {
-    trace_path = "";
-  }
+  assert(t_path != NULL);
+
+  trace_path = t_path;
+  trace_path.append("/");
 
 
   // get TRACE_NAME environment variable
@@ -407,20 +404,26 @@ trace::X86TraceGenerator::X86TraceGenerator() :
   else
     trace_name = "Trace";
 
+  // get KERNEL_INFO_PATH : get register usage information from the file
+  char* kernel_info_path = getenv("KERNEL_INFO_PATH");
+  ifstream kernel_info_file;
+  
+  kernel_info_file.open(kernel_info_path);
+  assert(!kernel_info_file.fail());
 
-  // get USE_KERNEL_NAME environment variable
-  use_k_name = getenv("USE_KERNEL_NAME");
-  if (use_k_name != NULL) {
-    if (atoi(use_k_name) != 0) {
-      use_kernel_name = true;
-    }
-    else {
-      use_kernel_name = false;
-    }
+  string kernel_name;
+  int register_num;
+  int sharedmem;
+
+  while (kernel_info_file >> kernel_name >> register_num >> sharedmem) {
+    m_kernel_register_map[kernel_name] = register_num;
+    m_kernel_sharedmem_map[kernel_name] = sharedmem;
   }
-  else {
-    use_kernel_name = false;
-  }
+
+  // get compute version
+  char* compute_version = getenv("COMPUTE_VERSION");
+  if (compute_version != NULL)
+    m_compute = string(compute_version);
 
 
   // set trace file extension
@@ -428,8 +431,6 @@ trace::X86TraceGenerator::X86TraceGenerator() :
 
 
   last_block_id = -1;
-
-
 #endif
 }
 
@@ -466,14 +467,8 @@ void trace::X86TraceGenerator::initialize(const executive::ExecutableKernel& ker
   ///
 
 
-  // reset instruction hash for a new kernel
-  for (auto itr = inst_storage.begin(); itr != inst_storage.end(); ++itr) {
-    delete (*itr).second;
-  }
-  inst_storage.clear();
-
-
-
+  
+  
   ///
   /// Since each block is executed in sequential, we open gzFile for current block and
   /// close when it has been terminate. However, since we don't know when exactly a block
@@ -482,8 +477,8 @@ void trace::X86TraceGenerator::initialize(const executive::ExecutableKernel& ker
   ///
   if (last_block_id != -1) {
     int block_id = last_block_id;
-    for (int ii = 0; ii < no_threads_per_block; ++ii) {
-      Trace_info *tr_info = &trace_info[block_id * no_threads_per_block + ii];
+    for (int ii = 0; ii < num_warps_per_block; ++ii) {
+      Trace_info *tr_info = &trace_info[block_id * num_warps_per_block + ii];
       if (tr_info->bytes_accumulated) {
         int bytes_written = gzwrite(tr_info->trace_stream, tr_info->trace_buf, tr_info->bytes_accumulated); 
         if (bytes_written != tr_info->bytes_accumulated) {
@@ -493,7 +488,7 @@ void trace::X86TraceGenerator::initialize(const executive::ExecutableKernel& ker
       }
       gzclose(tr_info->trace_stream);
 
-      Thread_info *th_info = &thread_info[block_id * no_threads_per_block + ii];
+      Thread_info *th_info = &thread_info[block_id * num_warps_per_block + ii];
       if (sizeof(Thread_info) != gzwrite(gz_config_file, th_info, sizeof(Thread_info))) {
         report("unable to write to config file");
         exit(-1);
@@ -502,78 +497,164 @@ void trace::X86TraceGenerator::initialize(const executive::ExecutableKernel& ker
       txt_config_file << th_info->thread_id << " " << th_info->inst_count << "\n";
       info_file << th_info->thread_id << " " << th_info->inst_count << "\n";
     }
+
+    txt_config_file.close();
+    info_file.close();
   }
 
 
+  ///
+  /// reset instruction hash for a new kernel
+  ///
+  for (auto itr = inst_storage.begin(); itr != inst_storage.end(); ++itr) {
+    delete (*itr).second;
+  }
+  inst_storage.clear();
   last_block_id = -1;
 
-  init = true;
 
+  ///
+  /// Kernel information
+  ///
   blockDimX = kernel.blockDim().x;
   blockDimY = kernel.blockDim().y;
   blockDimZ = kernel.blockDim().z;
-
-  gridDimX = kernel.gridDim().x;
-  gridDimY = kernel.gridDim().y;
-  gridDimZ = kernel.gridDim().z; // will be 1 always
+  gridDimX  = kernel.gridDim().x;
+  gridDimY  = kernel.gridDim().y;
+  gridDimZ  = kernel.gridDim().z; // will be 1 always
 
   assert(gridDimZ == 1);
 
-  no_threads_per_block = (blockDimX * blockDimY * blockDimZ + (WARP_SIZE - 1)) / WARP_SIZE;
-  no_threads = no_threads_per_block * gridDimX * gridDimY * gridDimZ;
+  num_warps_per_block = (blockDimX * blockDimY * blockDimZ + (WARP_SIZE - 1)) / WARP_SIZE;
+  num_total_warps = num_warps_per_block * gridDimX * gridDimY * gridDimZ;
+  
+
+  // maximum block calculation
+  int max_block = 8;
+
+  // base hardware configuration
+  int total_shared_memory = 16384;
+  int total_thread = 1024;
+  int total_register = 16384;
+  int shared_mem_allocation_granularity = 512;
+  if (m_compute == "2.0") {
+    total_shared_memory = 49152;
+    total_thread        = 1536;
+    total_register      = 32768;
+    shared_mem_allocation_granularity = 128;
+  }
+  
+  // Registers calculation
+  int num_register_per_block  = 0;
+  int num_register_per_thread = m_kernel_register_map[kernel.name];
+  int shared_mem_per_block    = m_kernel_sharedmem_map[kernel.name];
 
   report("New kernel launched");
+  report("compute version:" << m_compute);
   report("grid  " << gridDimX <<  " x " << gridDimY <<  " x " << gridDimZ);
   report("block " << blockDimX << " x " << blockDimY << " x " << blockDimZ);
+  report("number of warps per block:" << num_warps_per_block);
+  report("number of total warps:" << num_total_warps);
+  report("# threads per block : " << num_warps_per_block * WARP_SIZE);
+  report("number of register per thread:" << num_register_per_thread);
+  report("number of shared memory per thread:" << shared_mem_per_block);
 
+  // Threads calculation
+  int num_threads_per_block = num_warps_per_block * WARP_SIZE;
+  if (max_block > total_thread / num_threads_per_block)
+    max_block = total_thread / num_threads_per_block;
+
+  // Shared memory calculation
+  if (shared_mem_per_block > 0) {
+    int ceil_1 = ((shared_mem_per_block + (shared_mem_allocation_granularity - 1)) /
+        shared_mem_allocation_granularity) * shared_mem_allocation_granularity;
+
+    if (ceil_1 == 0)
+      ceil_1 = shared_mem_allocation_granularity;
+
+    //report("adjusted shared memory:" << ceil_1);
+
+    if (max_block > total_shared_memory / ceil_1)
+      max_block = total_shared_memory / ceil_1;
+  }
+
+
+  // ceil((ceil(num_warps_per_block, 2)) * num_register_per_thread * 32, 512)
+  if (m_compute == "1.3") {
+    assert(num_warps_per_block > 0);
+    int ceil_1 = ((num_warps_per_block+(2-1)) / 2) * 2;
+    ceil_1 *= num_register_per_thread * 32;
+    int ceil_2 = ((ceil_1 + (512-1)) / 512) * 512;
+    if (ceil_2 == 0)
+      ceil_2 = 512;
+    num_register_per_block = ceil_2;
+  }
+  // ceil(reg*32, 64) * #warps
+  else if (m_compute == "2.0") {
+    int ceil_1 = num_register_per_thread * 32;
+    ceil_1 = ((ceil_1 + (64-1)) / 64) * 64;
+    if (ceil_1 == 0)
+      ceil_1 = 64;
+    ceil_1 *= num_warps_per_block;
+    num_register_per_block = ceil_1;
+  }
+
+  //report("number of register per block:" << num_register_per_block);
+
+  if (max_block > total_register / num_register_per_block)
+    max_block = total_register / num_register_per_block;
+
+
+  report("max blocks per core : " << max_block);
+
+
+  init = true;
   can_gen_traces = true;
 
+  ///
+  /// set kernel name
+  ///
+  char temp[10];
+  kernel_name = kernel.name;
 
-  if (use_kernel_name) {
-    char temp[10];
-    kernel_name = kernel.name;
-
-    if (kernel_count_map.find(kernel_name) != kernel_count_map.end()) {
-      kernel_count = ++kernel_count_map[kernel_name];
-    }
-    else {
-      kernel_count_map[kernel_name] = 0;
-      kernel_count = 0;
-    }
-
-    sprintf(temp, "_%d", kernel_count);
-    kernel_name.append(temp);
-    kernel_name.append("/");
-
-    string command("mkdir -p ");
-    command.append(trace_path);
-    command.append(kernel_name);
-
-    string kernel_path = trace_path;
-    kernel_path.append(kernel_name);
-
-
-    /* to satisfy compiler */
-    int status;
-    status = system(command.c_str());
-    if (status == -1) {
-      status = system(command.c_str());
-    }
-    report("" << command.c_str() << " (status " <<  status << ")");
-
-
-    // open kernel configuration file
-    if (!txt_kernel_config_file.is_open()) {
-      string kernel_config_file = trace_path;
-      kernel_config_file.append("kernel_config");
-      txt_kernel_config_file.open(kernel_config_file.c_str());
-    }
-
-    txt_kernel_config_file << kernel_path << "\n";
+  if (kernel_count_map.find(kernel_name) != kernel_count_map.end()) {
+    kernel_count = ++kernel_count_map[kernel_name];
   }
   else {
-    kernel_name = "";
+    kernel_count_map[kernel_name] = 0;
+    kernel_count = 0;
   }
+
+  sprintf(temp, "_%d", kernel_count);
+  kernel_name.append(temp);
+  kernel_name.append("/");
+
+  string command("mkdir -p ");
+  command.append(trace_path);
+  command.append(kernel_name);
+
+  string kernel_path = trace_path;
+  kernel_path.append(kernel_name);
+
+
+  /* to satisfy compiler */
+  int status;
+  status = system(command.c_str());
+  if (status == -1) {
+    status = system(command.c_str());
+  }
+  report("" << command.c_str() << " (status " <<  status << ")");
+
+
+  // open kernel configuration file
+  if (!txt_kernel_config_file.is_open()) {
+    string kernel_config_file = trace_path;
+    kernel_config_file.append("kernel_config.txt");
+    txt_kernel_config_file.open(kernel_config_file.c_str());
+    txt_kernel_config_file << -1 << " newptx" << "\n";
+  }
+
+  txt_kernel_config_file << kernel_path << "Trace.txt\n";
 
   char file_path[400];
 
@@ -592,29 +673,36 @@ void trace::X86TraceGenerator::initialize(const executive::ExecutableKernel& ker
   gz_config_file = gzopen(file_path, "wb");
 
   // write number of threads
-  if (sizeof(uint32_t) != gzwrite(gz_config_file, &no_threads, sizeof(uint32_t))) {
+  if (sizeof(uint32_t) != gzwrite(gz_config_file, &num_total_warps, sizeof(uint32_t))) {
     std::cerr << "unable to write to config file\n";
     exit(-1);
   }
 
 
-  // write config file in text format
-  // no of threads
+  // write config file in text format : no of threads
   // thread no and start instruction for each thread
   sprintf(file_path, "%s%s%s.txt", trace_path.c_str(), kernel_name.c_str(), trace_name.c_str());
   txt_config_file.open(file_path);
-  txt_config_file << no_threads << " ptx\n";
 
+  if (txt_config_file.fail())
+    assert(0);
+
+  txt_config_file << num_total_warps << " ptx";
+  txt_config_file << " " << max_block << "\n";
 
   sprintf(file_path, "%s%s%s_info.txt", trace_path.c_str(), kernel_name.c_str(), trace_name.c_str());
   info_file.open(file_path);
 
+  if (thread_info != NULL) {
+    delete[] thread_info;
+    delete[] trace_info;
+  }
 
-  thread_info = new Thread_info[no_threads];
-  trace_info  = new Trace_info [no_threads];
+  thread_info = new Thread_info[num_total_warps];
+  trace_info  = new Trace_info [num_total_warps];
 
-  memset(thread_info, 0, no_threads * sizeof(Thread_info));
-  memset(trace_info, 0, no_threads * sizeof(Trace_info));
+  memset(thread_info, 0, num_total_warps * sizeof(Thread_info));
+  memset(trace_info, 0, num_total_warps * sizeof(Trace_info));
 }
 
 
@@ -643,9 +731,9 @@ void trace::X86TraceGenerator::event(const trace::TraceEvent & event)
     if (last_block_id != -1) {
       int block_id = last_block_id;
       // process each warps in previous block
-      for (int ii = 0; ii < no_threads_per_block; ++ii) {
+      for (int ii = 0; ii < num_warps_per_block; ++ii) {
         // write remaining inst info
-        Trace_info *tr_info = &trace_info[block_id * no_threads_per_block + ii];
+        Trace_info *tr_info = &trace_info[block_id * num_warps_per_block + ii];
         if (tr_info->bytes_accumulated) {
           int bytes_written = gzwrite(tr_info->trace_stream, tr_info->trace_buf, tr_info->bytes_accumulated); 
           if (bytes_written != tr_info->bytes_accumulated) {
@@ -655,9 +743,8 @@ void trace::X86TraceGenerator::event(const trace::TraceEvent & event)
         }
         gzclose(tr_info->trace_stream);
 
-
         // record warp information
-        Thread_info *th_info = &thread_info[block_id * no_threads_per_block + ii];
+        Thread_info *th_info = &thread_info[block_id * num_warps_per_block + ii];
         if (sizeof(Thread_info) != gzwrite(gz_config_file, th_info, sizeof(Thread_info))) {
           report("unable to write to config file");
           exit(-1);
@@ -673,9 +760,9 @@ void trace::X86TraceGenerator::event(const trace::TraceEvent & event)
 
 
     // setup data structure for a new block
-    for (int ii = 0; ii < no_threads_per_block; ++ii) {
-      Thread_info *th_info = &thread_info[cur_block * no_threads_per_block + ii];
-      Trace_info *tr_info  = &trace_info[cur_block * no_threads_per_block + ii];
+    for (int ii = 0; ii < num_warps_per_block; ++ii) {
+      Thread_info *th_info = &thread_info[cur_block * num_warps_per_block + ii];
+      Trace_info *tr_info  = &trace_info[cur_block * num_warps_per_block + ii];
 
       /* id assigned to each warp/block - shift block_id left by 16 and add the running thread count */
       int thread_id = (cur_block << 16) + ii;
@@ -1315,9 +1402,9 @@ void trace::X86TraceGenerator::event(const trace::TraceEvent & event)
           }
 #endif
 #endif
-          assert((cur_block * no_threads_per_block + cur_warp) < no_threads);
+          assert((cur_block * num_warps_per_block + cur_warp) < num_total_warps);
 
-          info = &trace_info[cur_block * no_threads_per_block + cur_warp];
+          info = &trace_info[cur_block * num_warps_per_block + cur_warp];
 
           if ((i == 0 || i == (count - 1)) && count > 1) {
             // macsim does not use this field, so using it to indicate
@@ -1340,7 +1427,7 @@ void trace::X86TraceGenerator::event(const trace::TraceEvent & event)
             int bytes_written;
             bytes_written = gzwrite(info->trace_stream, info->trace_buf, BUF_SIZE);
             if (bytes_written != BUF_SIZE) {
-              std::cerr << "unable to write to trace file, thread " << (cur_block * no_threads_per_block + cur_warp) 
+              std::cerr << "unable to write to trace file, thread " << (cur_block * num_warps_per_block + cur_warp) 
                 << " bytes written = " <<  bytes_written << "\n";
               int err;
               std::cerr << "1. error is " << gzerror(info->trace_stream, &err) << "\n";
@@ -1389,15 +1476,15 @@ void trace::X86TraceGenerator::event(const trace::TraceEvent & event)
         }
 #endif
 #endif
-        assert((cur_block * no_threads_per_block + cur_warp) < no_threads);
-        info = &trace_info[cur_block * no_threads_per_block + cur_warp];
+        assert((cur_block * num_warps_per_block + cur_warp) < num_total_warps);
+        info = &trace_info[cur_block * num_warps_per_block + cur_warp];
         memcpy(info->trace_buf + info->bytes_accumulated, inst_info, sizeof(Inst_info));
         info->bytes_accumulated += sizeof(Inst_info);
         if (info->bytes_accumulated == BUF_SIZE) {
           int bytes_written;
           bytes_written = gzwrite(info->trace_stream, info->trace_buf, BUF_SIZE);
           if (bytes_written != BUF_SIZE) {
-            std::cerr << "unable to write to trace file, thread " << (cur_block * no_threads_per_block + cur_warp) 
+            std::cerr << "unable to write to trace file, thread " << (cur_block * num_warps_per_block + cur_warp) 
               << " bytes written = " <<  bytes_written << "\n";
             int err;
             std::cerr << "2. error is " << gzerror(info->trace_stream, &err) << "\n";
@@ -1435,9 +1522,9 @@ void trace::X86TraceGenerator::event(const trace::TraceEvent & event)
 #endif
 
 
-        assert((cur_block * no_threads_per_block + cur_warp) < no_threads);
+        assert((cur_block * num_warps_per_block + cur_warp) < num_total_warps);
 
-        info = &trace_info[cur_block * no_threads_per_block + cur_warp];
+        info = &trace_info[cur_block * num_warps_per_block + cur_warp];
         memcpy(info->trace_buf + info->bytes_accumulated, inst_info, sizeof(Inst_info));
         info->bytes_accumulated += sizeof(Inst_info);
         if (info->bytes_accumulated == BUF_SIZE) {
@@ -1445,7 +1532,7 @@ void trace::X86TraceGenerator::event(const trace::TraceEvent & event)
           bytes_written = gzwrite(info->trace_stream, info->trace_buf, BUF_SIZE);
           if (bytes_written != BUF_SIZE) {
             std::cerr 
-              << "unable to write to trace file, thread " << (cur_block * no_threads_per_block + cur_warp) 
+              << "unable to write to trace file, thread " << (cur_block * num_warps_per_block + cur_warp) 
               << " block " << cur_block
               << " bytes written = " <<  bytes_written  
               << " file_name:" << info->trace_name << "\n";
@@ -1482,8 +1569,8 @@ void trace::X86TraceGenerator::finalize()
 
 
   int block_id = last_block_id;
-  for (int ii = 0; ii < no_threads_per_block; ++ii) {
-    Trace_info *tr_info = &trace_info[block_id * no_threads_per_block + ii];
+  for (int ii = 0; ii < num_warps_per_block; ++ii) {
+    Trace_info *tr_info = &trace_info[block_id * num_warps_per_block + ii];
     if (tr_info->bytes_accumulated) {
       int bytes_written = gzwrite(tr_info->trace_stream, tr_info->trace_buf, tr_info->bytes_accumulated); 
       if (bytes_written != tr_info->bytes_accumulated) {
@@ -1493,7 +1580,7 @@ void trace::X86TraceGenerator::finalize()
     }
     gzclose(tr_info->trace_stream);
 
-    Thread_info *th_info = &thread_info[block_id * no_threads_per_block + ii];
+    Thread_info *th_info = &thread_info[block_id * num_warps_per_block + ii];
     if (sizeof(Thread_info) != gzwrite(gz_config_file, th_info, sizeof(Thread_info))) {
       std::cerr << "unable to write to config file\n";
       exit(-1);

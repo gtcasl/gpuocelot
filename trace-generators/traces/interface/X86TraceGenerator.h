@@ -6,6 +6,7 @@
 #include <stdint.h>
 #include <map>
 #include <zlib.h>
+#include <unordered_map>
 
 // Boost includes
 #include <boost/archive/text_oarchive.hpp>
@@ -45,14 +46,39 @@ struct Inst_info;
 struct Model_info; // HSP
 
 namespace trace {
-
-
   class X86TraceGenerator : public trace::TraceGenerator { 
-    private:
+    public:
+      /**
+       * Constructor
+       */
+      X86TraceGenerator();
 
+      /**
+       * Destructor
+       */
+      ~X86TraceGenerator();
+
+      /**
+       * Initialization
+       */
+      void initialize(const executive::ExecutableKernel& kernel);
+
+      /**
+       * Event function
+       */
+      void event(const trace::TraceEvent & event);
+
+      /**
+       * Finalization
+       */
+      void finalize();
+
+      void writeInstToFile(std::ofstream &file, Inst_info *t_info);
+
+    private:
       bool init;
-      int32_t no_threads_per_block;
-      int32_t no_threads;
+      int32_t num_warps_per_block;
+      int32_t num_total_warps;
       Thread_info *thread_info;
       Trace_info *trace_info;
       //std::map<int, Thread_info *> thread_info;
@@ -82,6 +108,10 @@ namespace trace {
 
       std::ofstream txt_kernel_config_file;
 
+      std::unordered_map<std::string, int> m_kernel_register_map;
+      std::unordered_map<std::string, int> m_kernel_sharedmem_map;
+      std::string m_compute;
+
       ////////////////////////////////////////////////
       int blockDimX;
       int blockDimY;
@@ -90,7 +120,6 @@ namespace trace {
       int gridDimY;
       int gridDimZ;
 
-      bool use_kernel_name;
       bool can_gen_traces;
       int kernel_count;
 
@@ -98,19 +127,6 @@ namespace trace {
 
       std::map<std::string, int> kernel_count_map;
       ////////////////////////////////////////////////
-
-    public:
-
-      X86TraceGenerator();
-      ~X86TraceGenerator();
-
-      void initialize(const executive::ExecutableKernel& kernel);
-      //void initialize(const executive::EmulatedKernel *kernel);
-      void event(const trace::TraceEvent & event);
-
-      void finalize();
-
-      void writeInstToFile(std::ofstream &file, Inst_info *t_info);
 
   };
 }

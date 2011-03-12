@@ -24,6 +24,7 @@
 #include <ocelot/analysis/interface/SubkernelFormationPass.h>
 #include <ocelot/analysis/interface/ConvertPredicationToSelectPass.h>
 #include <ocelot/analysis/interface/RemoveBarrierPass.h>
+#include <ocelot/analysis/interface/HyperblockFormationPass.h>
 
 
 // Hydrazine Includes
@@ -50,7 +51,7 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 #define REPORT_ALL_LLVM_ASSEMBLY 0
 
@@ -1218,6 +1219,7 @@ void LLVMModuleManager::ModuleDatabase::loadModule(const ir::Module* module,
 
 	report("Loading module '" << module->path() << "'");
 
+#if 1
 	typedef analysis::SubkernelFormationPass::ExtractKernelsPass Pass;
 	Pass pass;
 
@@ -1231,6 +1233,35 @@ void LLVMModuleManager::ModuleDatabase::loadModule(const ir::Module* module,
 	}
 
 	pass.finalize();
+#else
+	
+	typedef analysis::HyperblockFormationPass::ExtractHyperblocksPass Pass;
+	Pass pass;
+	pass.initialize(*module);
+
+	for(ir::Module::KernelMap::const_iterator
+		kernel = module->kernels().begin(); 
+		kernel != module->kernels().end(); ++kernel) {
+		pass.runOnKernel(*kernel->second);
+	}
+
+	pass.finalize();
+	
+	int index = 0;
+	for (analysis::HyperblockFormationPass::ExtractHyperblocksPass::KernelVectorMap::const_iterator k_it = pass.kernels.begin();
+		k_it != pass.kernels.end();
+		++k_it) {
+		
+		for(analysis::HyperblockFormationPass::KernelVector::const_iterator 
+			subkernel = k_it->second.begin();
+			subkernel != k_it->second.end(); ++subkernel) {
+				
+			++index;
+			(*subkernel)->write(std::cout);
+		}
+	}
+		
+#endif
 
 	KernelVector subkernels;
 
@@ -1244,6 +1275,9 @@ void LLVMModuleManager::ModuleDatabase::loadModule(const ir::Module* module,
 		{
 			report(" adding subkernel '" << (*subkernel)->name 
 				<< "' at index " << (subkernels.size() + _kernels.size()));
+			
+			(*subkernel)->write(std::cout);
+			
 			subkernels.push_back(
 				KernelAndTranslation(
 					*subkernel,				// subkernel (PTX)

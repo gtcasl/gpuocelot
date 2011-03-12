@@ -981,18 +981,18 @@ cudaError_t cuda::CudaRuntime::cudaMalloc3D(struct cudaPitchedPtr* devPtr,
 
 	report("cudaMalloc3D() extent - width " << extent.width 
 		<< " - height " << extent.height << " - depth " << extent.depth );
-
-	devPtr->pitch = 0;
+	size_t padding = (extent.width % 256) ? 256 - extent.width % 256 : 0;
+	devPtr->pitch = extent.width + padding;
 	devPtr->xsize = extent.width;
-	devPtr->ysize = extent.height * extent.depth;
+	devPtr->ysize = extent.height; //* extent.depth;
 	
-	size_t size = devPtr->xsize * devPtr->ysize;
+	size_t size = devPtr->pitch * extent.height * extent.depth;
 
 	try {
 		executive::Device::MemoryAllocation* 
 			allocation = _getDevice().allocate(size);
 		devPtr->ptr = allocation->pointer();
-		_dimensions[allocation->pointer()] = Dimension(extent.width, 
+		_dimensions[allocation->pointer()] = Dimension(devPtr->pitch, 
 			extent.height, extent.depth);
 		result = cudaSuccess;
 	}
@@ -1992,20 +1992,81 @@ cudaError_t cuda::CudaRuntime::cudaMemset2D(void *devPtr, size_t pitch,
 	return _setLastError(result);	
 }
 
-
+//does not support the use of cudaPitchedPtr.pos!!
 cudaError_t cuda::CudaRuntime::cudaMemset3D(struct cudaPitchedPtr pitchedDevPtr,
 	int value, struct cudaExtent extent) {
 
-	cudaError_t result = cudaErrorNotYetImplemented;
+	cudaError_t result = cudaErrorInvalidValue;
+
+	size_t pitch = pitchedDevPtr.pitch;
+	//size_t xsize = pitchedDevPtr.xsize;
+	size_t ysize = pitchedDevPtr.ysize;
+	size_t width = extent.width;
+	size_t height = extent.height;
+	size_t depth = extent.depth;
+	void *ptr;
+	for (size_t i = 0; i < depth; i++) {
+		ptr = (char*)pitchedDevPtr.ptr + i * pitch * ysize;
+		result = cudaMemset2D(ptr, pitch, value, width, height);
+	}
+	
+	return _setLastError(result);	
+}
+/*
+cudaError_t cuda::CudaRuntime::cudaMemset3D(struct cudaPitchedPtr pitchedDevPtr,
+	int value, struct cudaExtent extent) {
+
+	cudaError_t result = cudaErrorInvalidValue;
 	_acquire();
 	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
 
-	assert(0 && "unimplemented");
+	size_t pitch = pitchedDevPtr.pitch;
+	size_t xsize = pitchedDevPtr.xsize;
+	size_t ysize = pitchedDevPtr.ysize;
+
+	size_t width = extent.width;
+	size_t height = extent.height;
+	size_t depth = extent.depth;
+
+	executive::Device::MemoryAllocation* allocation = 
+		_getDevice().getMemoryAllocation(pitchedDevPtr.ptr);
+	
+	if (allocation == 0) {
+		_release();
+		_memoryError(pitchedDevPtr.ptr, pitch * xsize * ysize, "cudaMemset3D");
+	}
+		
+	size_t offset = (char*)pitchedDevPtr.ptr - (char*)allocation->pointer();
+	
+	if (ysize == height && pitch == width) {
+		if (!_getDevice().checkMemoryAccess(pitchedDevPtr.ptr, depth * width * height)) {
+			_release();
+			_memoryError(pitchedDevPtr.ptr, depth * width * height, "cudaMemset3D");
+		}
+		
+		allocation->memset(offset, value, depth * width * height);
+	}
+	else {
+		for (size_t j = 0; j < depth; j++) {
+			for (size_t i = 0; i < height; i++) {
+				size_t ptr = offset + pitch * i + (j * pitch * ysize);
+				void* address = (char*)allocation->pointer() + ptr;
+				if (!_getDevice().checkMemoryAccess(address, width)) {
+					_release();
+					_memoryError(address, width, "cudaMemset3D");
+				}
+			
+				allocation->memset(ptr, value, width);
+			}
+		}
+	}
+
+	result = cudaSuccess;
 	
 	_release();
 	return _setLastError(result);	
 }
-
+*/
 ////////////////////////////////////////////////////////////////////////////////
 //
 // memory allocation

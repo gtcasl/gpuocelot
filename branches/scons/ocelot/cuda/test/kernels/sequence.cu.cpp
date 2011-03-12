@@ -9700,9 +9700,9 @@ for (int i = 0; i < N; i++) {
 # 80 "sequence.cu"
 cudaMemcpy(A_gpu, A_host, bytes, cudaMemcpyHostToDevice);
 # 82 "sequence.cu"
-printf("A_host = 0x%x\n", (void *)A_host);
+printf("A_host = 0x%p\n", (void *)A_host);
 # 83 "sequence.cu"
-printf("A_gpu = 0x%x\n", (void *)A_gpu);
+printf("A_gpu = 0x%p\n", (void *)A_gpu);
 # 85 "sequence.cu"
 dim3 grid(((N + BlockSize) - 1) / BlockSize, 1);
 # 86 "sequence.cu"
@@ -9710,7 +9710,7 @@ dim3 block(BlockSize, 1);
 # 89 "sequence.cu"
 cudaConfigureCall(grid, block) ? ((void)0) : sequence(A_gpu, N);
 # 91 "sequence.cu"
-printf("cudaMemcpy(0x%x, 0x%x) - APP\n", (void *)A_host, (void *)A_gpu);
+printf("cudaMemcpy(0x%p, 0x%p) - APP\n", (void *)A_host, (void *)A_gpu);
 # 92 "sequence.cu"
 cudaMemcpy(A_host, A_gpu, bytes, cudaMemcpyDeviceToHost);
 # 93 "sequence.cu"

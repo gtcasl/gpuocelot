@@ -8,7 +8,7 @@
 #define PTX_OPTIMIZER_CPP_INCLUDED
 
 // Ocelot Includes
-#include <ocelot/analysis/interface/PTXOptimizer.h>
+#include <ocelot/tools/PTXOptimizer.h>
 #include <ocelot/analysis/interface/PassManager.h>
 #include <ocelot/analysis/interface/LinearScanRegisterAllocationPass.h>
 #include <ocelot/analysis/interface/RemoveBarrierPass.h>

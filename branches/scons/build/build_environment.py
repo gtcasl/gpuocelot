@@ -4,6 +4,7 @@ import os
 
 import inspect
 import platform
+import re
 
 def getCudaPaths():
 	"""Determines CUDA {bin,lib,include} paths
@@ -36,29 +37,80 @@ def getCudaPaths():
 
 	return (bin_path,lib_path,inc_path)
 
-def getLLVMPaths():
-	"""Determines LLVM {bin,lib,include} paths
+def getBoostPaths():
+	"""Determines BOOST {bin,lib,include} paths
 	
 	returns (bin_path,lib_path,inc_path)
 	"""
+
+	# determine defaults
+	if os.name == 'posix':
+		bin_path = '/usr/bin'
+		lib_path = '/usr/lib'
+		inc_path = '/usr/include'
+	else:
+		raise ValueError, 'Error: unknown OS.  Where is boost installed?'
+
+	# override with environement variables
+	if 'CUDA_BIN_PATH' in os.environ:
+		bin_path = os.path.abspath(os.environ['BOOST_BIN_PATH'])
+	if 'CUDA_LIB_PATH' in os.environ:
+		lib_path = os.path.abspath(os.environ['BOOST_LIB_PATH'])
+	if 'CUDA_INC_PATH' in os.environ:
+		inc_path = os.path.abspath(os.environ['BOOST_INC_PATH'])
+
+	return (bin_path,lib_path,inc_path)
+
+def getGLEWPaths():
+	"""Determines GLEW {bin,lib,include} paths
 	
-	llvm_config_path = which.which('llvm-config')
+	returns (bin_path,lib_path,inc_path)
+	"""
+
+	# determine defaults
+	if os.name == 'posix':
+		bin_path = '/usr/bin'
+		lib_path = '/usr/lib'
+		inc_path = '/usr/include'
+	else:
+		raise ValueError, 'Error: unknown OS.  Where is GLEW installed?'
+
+	# override with environement variables
+	if 'GLEW_BIN_PATH' in os.environ:
+		bin_path = os.path.abspath(os.environ['GLEW_BIN_PATH'])
+	if 'GLEW_LIB_PATH' in os.environ:
+		lib_path = os.path.abspath(os.environ['GLEW_LIB_PATH'])
+	if 'GLEW_INC_PATH' in os.environ:
+		inc_path = os.path.abspath(os.environ['GLEW_INC_PATH'])
+
+	return (bin_path,lib_path,inc_path)
+
+def getLLVMPaths():
+	"""Determines LLVM {have,bin,lib,include,cflags,lflags,libs} paths
+	
+	returns (have,bin_path,lib_path,inc_path,cflags,lflags,libs)
+	"""
+	
+	try:
+		llvm_config_path = which('llvm-config')
+	except:
+		print 'Failed to find llvm-config'
+		return (False, None, None, None, None, None, None)
 	
 	# determine defaults
 	if os.name == 'posix':
-		if os.path.isfile(llvm_config_path):
-			bin_path = os.popen('llvm-config --bindir').read().split()
-			lib_path = os.popen('llvm-config --libdir').read().split()
-			inc_path = os.popen('llvm-config --includedir').read().split()
-		else:
-			bin_path = '/usr/local/bin'
-			lib_path = '/usr/local/lib'
-			inc_path = '/usr/local/include/llvm'
+		bin_path = os.popen('llvm-config --bindir').read().split()
+		lib_path = os.popen('llvm-config --libdir').read().split()
+		inc_path = os.popen('llvm-config --includedir').read().split()
+		cflags   = os.popen('llvm-config --cppflags').read().split()
+		lflags   = os.popen('llvm-config --ldflags').read().split()
+		libs     = os.popen('llvm-config --libs core jit native \
+			asmparser instcombine').read().split()
 	else:
 		raise ValueError, 'Error: unknown OS.  Where is LLVM installed?'
-	
-	return (bin_path,lib_path,inc_path)
 
+	return (True,bin_path,lib_path,inc_path,cflags,lflags,libs)
+	
 def getTools():
 	result = []
 	if os.name == 'nt':
@@ -67,6 +119,7 @@ def getTools():
 		result = ['default', 'gcc']
 	else:
 		result = ['default']
+
 	return result;
 
 
@@ -145,28 +198,52 @@ def getLINKFLAGS(mode, LINK):
 
 	return result
 
+def getVersion(base):
+	try:
+		svn_path = which('svn')
+	except:
+		print 'Failed to get subversion revision'
+		return base
+
+	svn_info = os.popen('svn info ..').read()
+	
+	match = re.search('Last Changed Rev: ', svn_info)
+	revision = ''
+	if match:
+		end = re.search('\n', svn_info[match.end():])
+		if end:
+			revision = svn_info[match.end():match.end()+end.start()]
+	
+	return base + '.' + revision
 
 def Environment():
-	# allow the user discretion to choose the MSVC version
 	vars = Variables()
+
+	# allow the user discretion to choose the MSVC version
 	if os.name == 'nt':
-		vars.Add(EnumVariable('MSVC_VERSION', 'MS Visual C++ version', None, allowed_values=('8.0', '9.0', '10.0')))
+		vars.Add(EnumVariable('MSVC_VERSION', 'MS Visual C++ version', \
+			None, allowed_values=('8.0', '9.0', '10.0')))
 
 	# add a variable to handle RELEASE/DEBUG mode
 	vars.Add(EnumVariable('mode', 'Release versus debug mode', 'release',
 		allowed_values = ('release', 'debug')))
 
 	# add a variable to handle warnings
-	if os.name == 'posix':
-		vars.Add(BoolVariable('Wall', 'Enable all compilation warnings', 1))
-	else:
-		vars.Add(BoolVariable('Wall', 'Enable all compilation warnings', 0))
+	vars.Add(BoolVariable('Wall', 'Enable all compilation warnings', 1))
 
 	# add a variable to treat warnings as errors
-	vars.Add(BoolVariable('Werror', 'Treat warnings as errors', 0))
+	vars.Add(BoolVariable('Werror', 'Treat warnings as errors', 1))
+
+	# add a variable to compile the ocelot unit tests
+	vars.Add(EnumVariable('test_level', \
+		'Build the ocelot unit tests at the given test level', 'none', \
+		allowed_values = ('none', 'basic', 'full')))
 
 	# create an Environment
 	env = OldEnvironment(tools = getTools(), variables = vars)
+
+	# set the version
+	env.Replace(VERSION = getVersion("2.1"))
 
 	# get the absolute path to the directory containing
 	# this source file
@@ -174,21 +251,51 @@ def Environment():
 	thisDir = os.path.dirname(thisFile)
 
 	# get C compiler switches
-	env.Append(CFLAGS = getCFLAGS(env['mode'], env['Wall'], env['Werror'], env.subst('$CC')))
+	env.AppendUnique(CFLAGS = getCFLAGS(env['mode'], env['Wall'], \
+		env['Werror'], env.subst('$CC')))
 
 	# get CXX compiler switches
-	env.Append(CXXFLAGS = getCXXFLAGS(env['mode'], env['Wall'], env['Werror'], env.subst('$CXX')))
+	env.AppendUnique(CXXFLAGS = getCXXFLAGS(env['mode'], env['Wall'], \
+		env['Werror'], env.subst('$CXX')))
 
 	# get linker switches
-	env.Append(LINKFLAGS = getLINKFLAGS(env['mode'], env.subst('$LINK')))
-	 
+	env.AppendUnique(LINKFLAGS = getLINKFLAGS(env['mode'], env.subst('$LINK')))
+
+	# get bison switches
+	env.AppendUnique(YACCFLAGS = "-d")
+	
 	# get CUDA paths
 	(cuda_exe_path,cuda_lib_path,cuda_inc_path) = getCudaPaths()
-	env.Append(LIBPATH = [cuda_lib_path])
-	env.Append(CPPPATH = [cuda_inc_path])
+	#env.Append(LIBPATH = [cuda_lib_path])
+	#env.Append(CPPPATH = [cuda_inc_path])
 
+	# get boost paths
+	(boost_exe_path,boost_lib_path,boost_inc_path) = getBoostPaths()
+	env.AppendUnique(LIBPATH = [boost_lib_path])
+	env.AppendUnique(CPPPATH = [boost_inc_path])
+
+	# get GLEW paths
+	(glew_exe_path,glew_lib_path,glew_inc_path) = getGLEWPaths()
+	env.AppendUnique(LIBPATH = [glew_lib_path])
+	env.AppendUnique(CPPPATH = [glew_inc_path])
+
+	# get llvm paths
+	(llvm, llvm_exe_path,llvm_lib_path,llvm_inc_path,llvm_cflags,\
+		llvm_lflags,llvm_libs) = getLLVMPaths()
+	env.AppendUnique(LIBPATH = llvm_lib_path)
+	env.AppendUnique(CPPPATH = llvm_inc_path)
+	env.AppendUnique(CXXFLAGS = llvm_cflags)
+	env.AppendUnique(LINKFLAGS = llvm_lflags)
+	env.Replace(HAVE_LLVM = llvm)
+	env.Replace(LLVM_LIBS = llvm_libs)
+	
+	print str(llvm_libs)
+	
 	# set ocelot include path
 	env.Prepend(CPPPATH = os.path.dirname(thisDir))
+	
+	# include the build directory in case of generated files
+	env.Prepend(CPPPATH = env.Dir('.'))
 
 	# import the LD_LIBRARY_PATH so we can run commands which depend
 	# on shared libraries

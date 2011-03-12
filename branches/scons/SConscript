@@ -1,0 +1,162 @@
+################################################################################
+#	\file   SConscript
+#	\author Gregory Diamos <gregory.diamos@gatech.edu>
+#   \date   Tuesday March 8, 2011
+#	\brief  The SCons master build script for Ocelot
+################################################################################
+
+import os
+import inspect
+
+## Hepler functions
+def config_h_build(target, source, env):
+
+	config_h_defines = env.Dictionary()
+
+	for a_target, a_source in zip(target, source):
+		config_h = file(str(a_target), "w")
+		config_h_in = file(str(a_source), "r")
+		config_h.write(config_h_in.read() % config_h_defines)
+		config_h_in.close()
+		config_h.close()
+
+
+## The script begins here
+# try to import an environment first
+try:
+	Import('env')
+except:
+	try:
+		exec open("../build/which.py")
+		exec open("../build/build_environment.py")
+	except:
+		exec open("build/which.py")
+		exec open("build/build_environment.py")		
+	env = Environment()
+  
+# on mac we have to tell the linker to link against the C++ library
+if env['PLATFORM'] == "darwin":
+	env.Append(LINKFLAGS = "-lstdc++")
+
+# Create configure.h
+env.AlwaysBuild(env.Command('configure.h', 'configure.h.in', config_h_build))
+
+# find all source files in the source tree
+sources = []
+directories = ['ocelot/ir/implementation', 
+	'ocelot/analysis/implementation',
+	'ocelot/api/implementation', 
+	'ocelot/cal/implementation', 
+	'ocelot/cuda/implementation', 
+	'ocelot/executive/implementation', 
+	'ocelot/parser/implementation', 
+	'ocelot/trace/implementation', 
+	'ocelot/translator/implementation', 
+	'ocelot/util/implementation', 
+	'hydrazine/implementation', 
+	'hydrazine/interface' ]
+extensions = ['*.cpp']
+
+for dir in directories:
+	for ext in extensions:
+		regexp = os.path.join(dir, ext)
+		sources.extend(env.Glob(regexp))
+
+# find all flex/bison sources
+flex_extensions  = ['*.ll']
+bison_extensions = ['*.yy']
+
+flex_sources  = []
+bison_sources = []
+
+for dir in directories:
+	for ext in flex_extensions:
+		regexp = os.path.join(dir, ext)
+		flex_sources.extend(env.Glob(regexp))
+	for ext in bison_extensions:
+		regexp = os.path.join(dir, ext)
+		bison_sources.extend(env.Glob(regexp))
+	
+# Generate the flex/bison .c/.cpp files
+for source in flex_sources:
+	lex = env.CXXFile(os.path.splitext(os.path.basename(str(source)))[0] \
+		+ '.cpp', str(source))
+	sources.append(lex[0])
+
+for source in bison_sources:
+	bison = env.CXXFile(os.path.splitext(os.path.basename(str(source)))[0] \
+		+ '.cpp', str(source))
+	sources.append(bison[0])
+
+# Create the ocelot library
+libocelot = env.SharedLibrary('ocelot', sources)
+
+# Create the ocelot tools
+ocelot_libs = ['boost_system-mt', 'boost_filesystem-mt', \
+	'boost_thread-mt', 'GLEW']
+ocelot_libs.extend(env['LLVM_LIBS'])
+
+OcelotConfig = env.Program('OcelotConfig', \
+	[libocelot, 'ocelot/tools/OcelotConfig.cpp'], LIBS=ocelot_libs)
+PTXOptimizer = env.Program('PTXOptimizer', \
+	[libocelot, 'ocelot/tools/PTXOptimizer.cpp'], LIBS=ocelot_libs)
+OcelotServer = env.Program('OcelotServer', \
+	[libocelot, 'ocelot/tools/OcelotServer.cpp'], LIBS=ocelot_libs)
+
+# Create the ocelot unit tests
+tests = []
+if env['test_level'] == 'basic' or env['test_level'] == 'full':
+	tests.append(('TestLexer',  'ocelot/parser/test/TestLexer.cpp'))
+	tests.append(('TestParser', 'ocelot/parser/test/TestParser.cpp'))
+	tests.append(('TestInstructions', \
+		'ocelot/executive/test/TestInstructions.cpp'))
+	tests.append(('TestDataflowGraph', \
+		'ocelot/analysis/test/TestDataflowGraph.cpp'))
+	tests.append(('TestLLVMInstructions', \
+		'ocelot/ir/test/TestLLVMInstructions.cpp'))
+	tests.append(('TestKernels', \
+		'ocelot/executive/test/TestKernels.cpp'))
+	tests.append(('TestLLVMKernels', \
+		'ocelot/executive/test/TestLLVMKernels.cpp'))
+	tests.append(('TestEmulator', \
+		'ocelot/executive/test/TestEmulator.cpp'))
+	tests.append(('TestPTXToLLVMTranslator', \
+		'ocelot/translator/test/TestPTXToLLVMTranslator.cpp'))
+	
+if env['test_level'] == 'full':
+	tests.append(('TestCudaSequence', \
+		'ocelot/cuda/test/kernels/sequence.cu.cpp'))
+	tests.append(('TestCudaGenericMemory', \
+		'ocelot/cuda/test/memory/generic.cpp'))
+	tests.append(('TestCudaMalloc', \
+		'ocelot/cuda/test/memory/malloc.cu.cpp'))
+	tests.append(('TestCudaGlobals', \
+		'ocelot/cuda/test/globals/global.cu.cpp'))
+	tests.append(('TestCudaTexture2D', \
+		'ocelot/cuda/test/textures/texture2D.cu.cpp'))
+	tests.append(('TestCudaTexture3D', \
+		'ocelot/cuda/test/textures/texture3D.cu.cpp'))
+	tests.append(('TestCudaTextureArray', \
+		'ocelot/cuda/test/textures/textureArray.cu.cpp'))
+	tests.append(('TestFunctionCall', \
+		'ocelot/cuda/test/functions/simpleFunc.cu.cpp'))
+	tests.append(('TestIndirectFunctionCall', \
+		'ocelot/cuda/test/functions/indirectCall.cu.cpp'))
+	tests.append(('TestIndirectFunctionCallOcelot', \
+		'ocelot/cuda/test/functions/indirectCallOcelot.cpp'))
+	tests.append(('TestCalVectorScale', \
+		'ocelot/cal/test/vectorScale.cu.cpp'))
+	tests.append(('TestDeviceSwitching', \
+		'ocelot/api/test/TestDeviceSwitching.cpp'))
+	tests.append(('TestPTXAssembly', \
+		'ocelot/ir/test/TestPTXAssembly.cpp'))
+
+if env['test_level'] != 'none':
+	print 'Adding unit tests to the build...'
+
+for test in tests:
+	print ' added \'' + test[0] + '\''
+	Test = env.Program(test[0], [libocelot, test[1]], LIBS=ocelot_libs)
+
+# Run the ocelot unit tests
+

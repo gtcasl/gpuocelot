@@ -9730,7 +9730,7 @@ result = cudaMalloc((void **)(&A_gpu), bytes);
 # 71 "indirectCall.cu"
 if (result != (cudaSuccess)) {
 # 72 "indirectCall.cu"
-printf("cudaMalloc() - failed to allocate %d on the device \n", bytes);
+printf("cudaMalloc() - failed to allocate %d on the device \n", (int)bytes);
 # 73 "indirectCall.cu"
 return 2;
 # 74 "indirectCall.cu"
@@ -9748,7 +9748,7 @@ result = cudaMemcpy(A_gpu, A_cpu, bytes, cudaMemcpyHostToDevice);
 # 82 "indirectCall.cu"
 if (result != (cudaSuccess)) {
 # 83 "indirectCall.cu"
-printf("cudaMemcpy() - failed to copy %d bytes TO the device\n", bytes);
+printf("cudaMemcpy() - failed to copy %d bytes TO the device\n", (int)bytes);
 # 84 "indirectCall.cu"
 return 2;
 # 85 "indirectCall.cu"
@@ -9774,7 +9774,7 @@ result = cudaMemcpy(A_cpu, A_gpu, bytes, cudaMemcpyDeviceToHost);
 # 99 "indirectCall.cu"
 if (result != (cudaSuccess)) {
 # 100 "indirectCall.cu"
-printf("cudaMemcpy() - failed to copy %d bytes FROM the device\n", bytes);
+printf("cudaMemcpy() - failed to copy %d bytes FROM the device\n", (int)bytes);
 # 101 "indirectCall.cu"
 return 2;
 # 102 "indirectCall.cu"

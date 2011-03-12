@@ -89,7 +89,7 @@ bool ir::DominatorTree::dominates(ControlFlowGraph::iterator block,
 		dominates = nextId == id;
 		nextId = i_dom[nextId];
 	}
-	while(startId != nextId && dominates);
+	while(startId != nextId && !dominates);
 	
 	return dominates;
 }

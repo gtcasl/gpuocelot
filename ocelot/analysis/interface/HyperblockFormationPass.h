@@ -46,29 +46,32 @@ namespace analysis {
 		private:
 		
 			//! \brief creates a spill region in the first block
-			void _createSpillRegion(ir::PTXKernel &subkernel, ir::PTXKernel &parentKernel);
+			void _createSpillRegion(
+				ir::PTXKernel &subkernel, 
+				ir::PTXKernel &parentKernel, 
+				ir::BasicBlock &restoreBlock);
 			
 			//! \brief restores live variables 
 			size_t _createRestore(
 				ir::PTXKernel &hyperblock,
 				ir::PTXKernel &parentKernel,
 				ir::BasicBlock &restoreBlock,
-				const analysis::DataflowGraph::RegisterSet &aliveIn);
+				DataflowGraph::IteratorMap::const_iterator dfgBlock);
 				
 			//! \brief stores live variables to local memory
 			size_t _createStore(
 				ir::PTXKernel &hyperblock,
 				ir::PTXKernel &parentKernel,
 				ir::BasicBlock &exitBlock,
-				const analysis::DataflowGraph::RegisterSet &aliveOut);
+				DataflowGraph::IteratorMap::const_iterator dfgBlock);
 				
 			//! \brief writes the exit point 
 			size_t _createHyperblockExit(
 				ir::PTXKernel &hyperblock,
 				ir::PTXKernel &parentKernel,
-				ir::BasicBlock &exitBlock,
-				unsigned int nextBlockId,
-				unsigned int exitCode);
+				const ir::BasicBlock &parentBlock,
+				ir::BasicBlock &clonedBlock,
+				ir::BasicBlock &exitBlock);
 			
 		public:
 			KernelVectorMap kernels;

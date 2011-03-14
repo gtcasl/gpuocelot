@@ -1,3 +1,5 @@
+#! /bin/python
+
 ################################################################################
 #	\file   SConscript
 #	\author Gregory Diamos <gregory.diamos@gatech.edu>
@@ -28,10 +30,11 @@ try:
 except:
 	try:
 		exec open("../build/which.py")
-		exec open("../build/build_environment.py")
+		prefix = '../'
 	except:
 		exec open("build/which.py")
-		exec open("build/build_environment.py")		
+		prefix = './'
+	exec open(prefix + "build/build_environment.py")
 	env = Environment()
   
 # on mac we have to tell the linker to link against the C++ library
@@ -157,6 +160,4 @@ if env['test_level'] != 'none':
 for test in tests:
 	print ' added \'' + test[0] + '\''
 	Test = env.Program(test[0], [libocelot, test[1]], LIBS=ocelot_libs)
-
-# Run the ocelot unit tests
 

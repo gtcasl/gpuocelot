@@ -239,6 +239,9 @@ def Environment():
 		'Build the ocelot unit tests at the given test level', 'none', \
 		allowed_values = ('none', 'basic', 'full')))
 
+	# add a variable to compile the ocelot unit tests
+	vars.Add(BoolVariable('run_tests', 'Run the ocelot unit tests', 0))
+
 	# create an Environment
 	env = OldEnvironment(tools = getTools(), variables = vars)
 
@@ -288,8 +291,6 @@ def Environment():
 	env.AppendUnique(LINKFLAGS = llvm_lflags)
 	env.Replace(HAVE_LLVM = llvm)
 	env.Replace(LLVM_LIBS = llvm_libs)
-	
-	print str(llvm_libs)
 	
 	# set ocelot include path
 	env.Prepend(CPPPATH = os.path.dirname(thisDir))

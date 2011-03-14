@@ -1,5 +1,5 @@
 /*! 
-	\file HyperblockFormationPass.cpp
+	\file HyperblockFormation.cpp
 	\author Andrew Kerr <arkerr@gatech.edu>
 	\date March 2011
 	\brief Defines a hyperblock formation pass for convergent execution
@@ -26,20 +26,13 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
-analysis::HyperblockFormationPass::HyperblockFormationPass() {
-
-}
-
-void analysis::HyperblockFormationPass::runOnModule(ir::Module& m) {
+analysis::HyperblockFormation::HyperblockFormation() {
 
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
-analysis::HyperblockFormationPass::ExtractHyperblocksPass::ExtractHyperblocksPass() {
-}
-
-void analysis::HyperblockFormationPass::ExtractHyperblocksPass::initialize(const ir::Module& m) {
+void analysis::HyperblockFormation::initialize(const ir::Module& m) {
 
 }
 
@@ -56,7 +49,7 @@ void analysis::HyperblockFormationPass::ExtractHyperblocksPass::initialize(const
 			in the successor, store live out values [assuming a global mapping of register IDs to .local memory regions
 			add a subkernel exit descriptor
 */
-void analysis::HyperblockFormationPass::ExtractHyperblocksPass::runOnKernel(ir::Kernel& parent) {
+void analysis::HyperblockFormation::runOnKernel(KernelDecomposition &decomposition, ir::Kernel& parent, HyperblockId baseId) {
 	//
 	// construct a new subkernel for each sequence of basic blocks with provable convergence
 	// properties
@@ -119,16 +112,15 @@ void analysis::HyperblockFormationPass::ExtractHyperblocksPass::runOnKernel(ir::
 		hyperblocks.push_back(subkernel);
 	}
 	
-	kernels.insert(std::make_pair(&parentKernel, hyperblocks));
 }
 
-void analysis::HyperblockFormationPass::ExtractHyperblocksPass::finalize() {
+void analysis::HyperblockFormation::finalize() {
 
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
-void analysis::HyperblockFormationPass::ExtractHyperblocksPass::_createSpillRegion(
+void analysis::HyperblockFormation::_createSpillRegion(
 	ir::PTXKernel &subkernel, 
 	ir::PTXKernel &parentKernel,
 	ir::BasicBlock &restoreBlock) {
@@ -164,7 +156,7 @@ void analysis::HyperblockFormationPass::ExtractHyperblocksPass::_createSpillRegi
 	report("  Spill region size is " << spillRegionSize);
 }
 
-size_t analysis::HyperblockFormationPass::ExtractHyperblocksPass::_createRestore(
+size_t analysis::HyperblockFormation::_createRestore(
 	ir::PTXKernel &hyperblock,
 	ir::PTXKernel &parentKernel,
 	ir::BasicBlock &restoreBlock,
@@ -198,7 +190,7 @@ size_t analysis::HyperblockFormationPass::ExtractHyperblocksPass::_createRestore
 
 	
 //! \brief stores live variables to local memory
-size_t analysis::HyperblockFormationPass::ExtractHyperblocksPass::_createStore(
+size_t analysis::HyperblockFormation::_createStore(
 	ir::PTXKernel &hyperblock,
 	ir::PTXKernel &parentKernel,
 	ir::BasicBlock &exitBlock,
@@ -230,7 +222,7 @@ size_t analysis::HyperblockFormationPass::ExtractHyperblocksPass::_createStore(
 }
 	
 //! \brief stores a target block ID as well as exit code to the spill area
-size_t analysis::HyperblockFormationPass::ExtractHyperblocksPass::_createHyperblockExit(
+size_t analysis::HyperblockFormation::_createHyperblockExit(
 	ir::PTXKernel &subkernel,
 	ir::PTXKernel &parentKernel,
 	const ir::BasicBlock &parentBlock,

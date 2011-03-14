@@ -40,7 +40,7 @@ def runUnitTests(options):
 	print status
 	
 	# Check for any failing/missing tests
-	if re.search('Failing tests\|Non-Existent tests', status):
+	if re.search('Failing tests|Non-Existent tests', status):
 		return False
 	else:
 		return True

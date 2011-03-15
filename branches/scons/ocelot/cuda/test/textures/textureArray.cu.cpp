@@ -9814,7 +9814,7 @@ struct __T20 {float *__par0;int __par1;int __par2;int __dummy_field;};
 extern void __device_stub__Z6kernelPfii(float *, int, int);
 static void __sti____cudaRegisterAll_48_tmpxft_0000154c_00000000_14_textureArray_cpp1_ii_Surface(void) __attribute__((__constructor__));
 void __device_stub__Z6kernelPfii(float *__par0, int __par1, int __par2){ struct __T20 *__T21;
-*(void**)(void*)&__T21 = (void*)0;if (cudaSetupArgument((void*)(char*)&__par0, sizeof(__par0), (size_t)&__T21->__par0) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par1, sizeof(__par1), (size_t)&__T21->__par1) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par2, sizeof(__par2), (size_t)&__T21->__par2) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(float *, int, int))kernel)); (void)cudaLaunch(((char *)((void ( *)(float *, int, int))kernel))); };}
+__T21 = 0;if (cudaSetupArgument((void*)(char*)&__par0, sizeof(__par0), (size_t)&__T21->__par0) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par1, sizeof(__par1), (size_t)&__T21->__par1) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par2, sizeof(__par2), (size_t)&__T21->__par2) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(float *, int, int))kernel)); (void)cudaLaunch(((char *)((void ( *)(float *, int, int))kernel))); };}
 void kernel( float *__cuda_0,int __cuda_1,int __cuda_2)
 # 25 "textureArray.cu"
 {__device_stub__Z6kernelPfii( __cuda_0,__cuda_1,__cuda_2);

@@ -635,9 +635,10 @@ void cuda::CudaRuntime::cudaRegisterVar(void **fatCubinHandle, char *hostVar,
 	char *deviceAddress, const char *deviceName, int ext, int size, 
 	int constant, int global) {
 
-	report("cuda::CudaRuntime::cudaRegisterVar() - host var: " << (void *)hostVar 
-		<< ", deviceName: " << deviceName << ", size: " << size << " bytes,"
-		<< (constant ? " constant" : " ") << (global ? " global" : " "));
+	report("cuda::CudaRuntime::cudaRegisterVar() - host var: "
+		<< (void *)hostVar << ", deviceName: " << deviceName << ", size: "
+		<< size << " bytes," << (constant ? " constant" : " ")
+		<< (global ? " global" : " "));
 
 	size_t handle = (size_t)fatCubinHandle;
 	_lock();
@@ -750,53 +751,14 @@ void cuda::CudaRuntime::cudaRegisterFunction(
 	_unlock();
 }
 
-// FIXME
-// This is a horrible hack to deal with another horrible hack
-// Thanks nvidia for creating a backdoor interface to your driver rather than 
-//   extending the API in a sane/documented way
-// 201
-// id: simpleCUBLAS - 0x11df21116e3393c6 0x9395d855f368c3a8
-// id: simpleCUFFT  - 0x11df21116e3393c6 0x9395d855f368c3a8
-
-int dummy0() { if(dummy0Flag) return 1; return 0; }
-int dummy1() { return 1 << 20; }
-int dummy2() { return 400; }
-
-typedef int (*ExportedFunction)();
-
-#define DEBUG_MODE 1
-
-#if (DEBUG_MODE == 0)
-static ExportedFunction exportTable[3] = {&dummy0, &dummy1, &dummy2};
-#else
-static CUcontext context = 0;
-#endif
-
 cudaError_t cuda::CudaRuntime::cudaGetExportTable(const void **ppExportTable,
 	const cudaUUID_t *pExportTableId) {
 
-	int assumedValue[4] = {0x6e3393c6, 0x11df2111, 0xf368c3a8, 0x9395d855};
+	assertM(false, "cudaGetExportTable is actually a backdoor to the NVIDIA "
+		"driver.  Ocelot cannot support this because it requires the NVIDIA "
+			"driver to be installed.  If you want to run an application that "
+			"depends on this hack, please complain to NVIDIA.");
 
-	report("Getting export table with id " << hydrazine::dataToString(
-		pExportTableId->bytes, sizeof(pExportTableId->bytes)));
-
-	if(std::memcmp(assumedValue, pExportTableId->bytes, 16) != 0)
-	{
-		assertM(false, "Unknown export table id.");
-	}
-
-#if (DEBUG_MODE == 1)
-    if(context == 0)
-    {
-		cuda::CudaDriver::cuInit(0);
-		
-		cuda::CudaDriver::cuCtxCreate(&context, 0, 0);
-    }
-    
-    cuda::CudaDriver::cuGetExportTable(ppExportTable, pExportTableId);
-#else
-	*ppExportTable = &exportTable;
-#endif
 	return cudaSuccess;
 }
 
@@ -2061,7 +2023,8 @@ cudaError_t cuda::CudaRuntime::cudaGetSymbolAddress(void **devPtr,
 	return _setLastError(result);	
 }
 
-cudaError_t cuda::CudaRuntime::cudaGetSymbolSize(size_t *size, const char *symbol) {
+cudaError_t cuda::CudaRuntime::cudaGetSymbolSize(size_t *size,
+	const char *symbol) {
 	cudaError_t result = cudaSuccess;
 	report("cuda::CudaRuntime::cudaGetSymbolSize(" << size << ", " 
 		<< (void*) symbol << ")");
@@ -3026,8 +2989,9 @@ cudaError_t cuda::CudaRuntime::cudaGLMapBufferObjectAsync(void **devPtr,
 		
 		size_t bytes = 0;
 		
-		// semantics of this questionable
-		*devPtr = _getDevice().getPointerToMappedGraphicsResource(bytes, buffer->second);
+		// semantics of this are questionable
+		*devPtr = _getDevice().getPointerToMappedGraphicsResource(
+			bytes, buffer->second);
 		result = cudaSuccess;
 	}
 	_release();

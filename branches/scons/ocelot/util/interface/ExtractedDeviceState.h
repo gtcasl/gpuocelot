@@ -2,11 +2,17 @@
 	\file ExtractedDeviceState.h
 	\author Andrew Kerr <arkerr@gatech.edu>
 	\date 31 Jan 2011
-	\brief Data structure describing device state with serialization and deserialization procedures
+	\brief Data structure describing device state with serialization
+		and deserialization procedures
 */
 
 #ifndef OCELOT_UTIL_EXTRACTEDDEVICESTATE_H_INCLUDED
 #define OCELOT_UTIL_EXTRACTEDDEVICESTATE_H_INCLUDED
+
+// Ocelot includes
+#include <ocelot/ir/interface/Dim3.h>
+#include <ocelot/ir/interface/Texture.h>
+#include <ocelot/ir/interface/PTXOperand.h>
 
 // C++ includes
 #include <fstream>
@@ -15,13 +21,6 @@
 
 // Hydrazine includes
 #include <hydrazine/implementation/json.h>
-
-// Ocelot includes
-#include <ocelot/ir/interface/Dim3.h>
-#include <ocelot/ir/interface/Texture.h>
-#include <ocelot/ir/interface/PTXOperand.h>
-
-// Hydrazine includes
 
 namespace util {
 
@@ -32,11 +31,13 @@ namespace util {
 	
 		class MemoryAllocation {
 		public:
-			MemoryAllocation(void *ptr, size_t size, ir::PTXOperand::DataType dt = ir::PTXOperand::u32, char c = 0);
+			MemoryAllocation(void *ptr, size_t size,
+				ir::PTXOperand::DataType dt = ir::PTXOperand::u32, char c = 0);
 			MemoryAllocation();
 			~MemoryAllocation();
 			
-			void serialize(std::ostream &out, const std::string & prefix = "") const;
+			void serialize(std::ostream &out,
+				const std::string & prefix = "") const;
 			void deserialize(const hydrazine::json::Visitor &visitor);
 			
 			//!
@@ -56,7 +57,7 @@ namespace util {
 			ByteVector data;
 		};
 		
-		typedef std::map< std::string, ir::Texture *> TextureMap;
+		typedef std::map< std::string, const ir::Texture *> TextureMap;
 		typedef std::map< std::string, MemoryAllocation *> GlobalVariableMap;
 		typedef std::map< void *, MemoryAllocation *> GlobalAllocationMap;
 		
@@ -72,13 +73,16 @@ namespace util {
 		
 			void clear();
 			
-			void serialize(std::ostream &out, const std::string & prefix = "") const;
+			void serialize(std::ostream &out,
+				const std::string & prefix = "") const;
 			void deserialize(const hydrazine::json::Visitor &visitor);
 			
 		private:
 		
-			void serializeTexture(ir::Texture &texture, std::ostream &out, const std::string & prefix = "") const;
-			void deserializeTexture(ir::Texture &texture, const hydrazine::json::Visitor &visitor);
+			void serializeTexture(const ir::Texture &texture,
+				std::ostream &out, const std::string & prefix = "") const;
+			void deserializeTexture(ir::Texture &texture,
+				const hydrazine::json::Visitor &visitor);
 		
 		public:
 			//! \brief module loaded into this name
@@ -86,10 +90,7 @@ namespace util {
 			
 			//! \brief file to which PTX representation of module is written
 			std::string ptxFile;
-			
-			//! \brief 
-			GlobalVariableMap globalVariables;
-			
+						
 			//! \brief textures contained in the module
 			TextureMap textures;
 		};
@@ -160,7 +161,16 @@ namespace util {
 		
 		//! \brief values of global allocations before kernel launch
 		GlobalAllocationMap globalAllocations;
-				
+		
+		//! \brief values of global variables before the kernel launch
+		GlobalVariableMap globalVariables;
+		
+		//! \brief values of global allocations after kernel launch
+		GlobalAllocationMap postLaunchGlobalAllocations;
+		
+		//! \brief values of global variables after the kernel launch
+		GlobalVariableMap postLaunchGlobalVariables;
+		
 		//! \brief parameters of CUDA launch
 		KernelLaunch launch;
 	};

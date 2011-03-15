@@ -15,7 +15,7 @@ from optparse import OptionParser
 ## Run Unit Tests
 def runUnitTests(options):
 	if options.test_level == 'none':
-		return True
+		return False
 	
 	command = "hydrazine/python/RunRegression.py -v"
 	
@@ -52,7 +52,7 @@ def runUnitTests(options):
 def submit(options, testPassed):
 	if not options.submit:
 		return
-	
+		
 	if len(options.message) == 0:
 		print "Log message not specified (use -m)"
 		return
@@ -74,12 +74,15 @@ def main():
 	parser.add_option( "-c", "--clean", \
 		default = False, action = "store_true" )
 	parser.add_option( "-d", "--debug", \
-		default = False, action = "store_true" )
-	parser.add_option( "-t", "--test_level", default = "none" )
+		default = False, action = "store_true", \
+		help = "build Ocelot in debug mode." )
+	parser.add_option( "-t", "--test_level", default = "none", \
+		help = "set the test level (none, basic, full)" )
 	parser.add_option( "-j", "--threads", default = "1" )
 	parser.add_option( "-s", "--submit", \
 		default = False, action = "store_true" )
-	parser.add_option( "-m", "--message", default = "" )
+	parser.add_option( "-m", "--message", default = "", \
+		help = "the message describing the changes being committed." )
 	
 	( options, arguments ) = parser.parse_args()
 	
@@ -93,7 +96,7 @@ def main():
 
 	if options.submit:
 		if options.test_level != 'full':
-			print " Full test level required for a submit."
+			print "Full test level required for a submit."
 		options.test_level = 'full'
 
 	command += " test_level=" + options.test_level

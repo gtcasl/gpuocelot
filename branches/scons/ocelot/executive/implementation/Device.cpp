@@ -10,6 +10,7 @@
 #include <ocelot/executive/interface/EmulatorDevice.h>
 #include <ocelot/executive/interface/MulticoreCPUDevice.h>
 #include <ocelot/executive/interface/RemoteDevice.h>
+#include <ocelot/executive/interface/PassThroughDevice.h>
 
 #include <hydrazine/implementation/debug.h>
 
@@ -37,7 +38,8 @@ bool executive::Device::MemoryAllocation::global() const {
 	return _global;
 }
 
-executive::Device::Properties::Properties(const PropertiesData& props) : PropertiesData(props) {
+executive::Device::Properties::Properties(const PropertiesData& props)
+	: PropertiesData(props) {
 }
 
 std::ostream& executive::Device::Properties::write(std::ostream &out) const {

@@ -161,51 +161,7 @@ void util::KernelTestHarness::_setupModule() {
 			std::ifstream file(mod_it->second.ptxFile);
 			ocelot::registerPTXModule(file, state.launch.moduleName);
 		}
-		
-		// configure global variables
-		for (ExtractedDeviceState::GlobalVariableMap::const_iterator alloc_it = mod_it->second.globalVariables.begin(); 
-			alloc_it != mod_it->second.globalVariables.end(); ++alloc_it) {
-			
-			void *devicePtr;
-			cudaError_t result = cudaGetSymbolAddress(&devicePtr, alloc_it->first.c_str());
-			if (result != cudaSuccess) {
-				report("failed to get address of symbol '" << alloc_it->first << "' from module " << mod_it->second.name);
-				throw hydrazine::Exception("failed to get address of symbol");
-			}
-			pointers[alloc_it->second->devicePointer] = devicePtr;
-			
-			result = cudaMemcpy(devicePtr, (void *)&alloc_it->second->data[0], alloc_it->second->size(), cudaMemcpyHostToDevice);
-			if (result != cudaSuccess) {
-				throw hydrazine::Exception("failed to copy initial values to global variable");
-			}
-		}		
-		
-		// look for pointer values and assume they should be updated among global variables whose
-		// size is sizeof(void*)
-		for (ExtractedDeviceState::GlobalVariableMap::const_iterator alloc_it = mod_it->second.globalVariables.begin(); 
-			alloc_it != mod_it->second.globalVariables.end(); ++alloc_it) {
 
-			size_t symbolSize = 0;
-			void *devicePtr;
-			cudaError_t result = cudaGetSymbolSize(&symbolSize, alloc_it->first.c_str());
-			if (result != cudaSuccess) {
-				report("failed to get size of symbol '" << alloc_it->first << "'");
-				throw hydrazine::Exception("failed to get size of symbol");
-			}
-			if (symbolSize == sizeof(void*)) {
-				PointerMap::iterator p_it = pointers.find(*(void **)&alloc_it->second->data[0]);
-				if (p_it != pointers.end()) {
-					result = cudaGetSymbolAddress(&devicePtr, alloc_it->first.c_str());
-					if (result != cudaSuccess) {
-						throw hydrazine::Exception("failed to get symbol address even though it's been previously written to");
-					}
-					result = cudaMemcpy(devicePtr, & p_it->second, sizeof(void*), cudaMemcpyHostToDevice);
-					if (result != cudaSuccess) {
-						throw hydrazine::Exception("failed to copy to a symbol");
-					}
-				}
-			}
-		}
 	}
 }
 

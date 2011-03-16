@@ -57,18 +57,6 @@ LLVMDynamicTranslationCache::LLVMDynamicTranslationCache() {
 LLVMDynamicTranslationCache::~LLVMDynamicTranslationCache() {
 
 }
-		
-const LLVMDynamicTranslationCache::Translation *
-LLVMDynamicTranslationCache::getTranslationById(HyperblockId id, int ws) const {
-	TranslationMap::const_iterator t_it = translations.find(id);
-	if (t_it != translations.end()) {
-		TranslationWarpMap::const_iterator w_it = t_it->second.find(ws);
-		if (w_it != t_it->second.end()) {
-			return w_it->second;
-		}
-	}
-	return 0;
-}
 
 /*!
 	\brief gets a translation via its hyperblock ID or constructs it.
@@ -77,28 +65,36 @@ const LLVMDynamicTranslationCache::Translation *
 LLVMDynamicTranslationCache::getOrInsertTranslationById(HyperblockId id, int ws) {
 
 	report("LLVMDynamicTranslationCache::getOrInsertTranslationById( id: " << id << ", ws: " << ws << ")");
-
-	Translation *translation = 0;
-	TranslationMap::iterator t_it = translations.find(id);
-	if (t_it != translations.end()) {
-		TranslationWarpMap::iterator w_it = t_it->second.find(ws);
-		if (w_it != t_it->second.end()) {
-			return w_it->second;
-		}
-		else {
-			w_it = t_it->second.find(1);
-			if (w_it != t_it->second.end()) {
-				// construct alternative warp-size translation from the scalar warpsize
-				return translation;
-			}
-		}
+		
+	TranslatedSubkernelMap::const_iterator sk_it = subkernelMap.find(id);
+	assert(sk_it != subkernelMap.end());
+	
+	TranslatedSubkernel *subkernel = sk_it->second;
+	Translation *scalarTranslation = 0;
+	if (subkernel->translations.find(1) == subkernel->translations.end()) {
+		scalarTranslation = new Translation;
+		executive::Device *device = modules[subkernel->parent->kernel->module->path()].device;
+		scalarTranslation->metadata = compileTranslation(
+			*subkernel->parent,
+			*subkernel,
+			*scalarTranslation,
+			subkernel->parent->kernel,
+			(translator::Translator::OptimizationLevel)api::OcelotConfiguration::get().executive.optimizationLevel,
+			device
+		);
+		subkernel->translations[1] = scalarTranslation;
+		
+		assert(scalarTranslation->llvmFunction);
+		assert(scalarTranslation->function);
+		
+		scalarTranslation->llvmFunction->dump();
+	}
+	assert(scalarTranslation && "failed to find scalar translation");
+	if (ws > 1) {
+		assert(0 && "non-scalar translation unimplemented");
 	}
 	
-	if (!translation) {
-		// construct translation from PTX to LLVM for ws=1 
-		
-	}
-	return 0;
+	return scalarTranslation;
 }
 
 
@@ -117,11 +113,37 @@ bool LLVMDynamicTranslationCache::loadModule(const ir::Module *module, executive
 		for(ir::Module::KernelMap::const_iterator kernel = module->kernels().begin(); 
 			kernel != module->kernels().end();
 			 ++kernel) {
-			analysis::HyperblockFormation formation;
 			
-			formation.initialize(*module);
-			formation.runOnKernel(metadata.kernels[kernel->first] , *kernel->second);
-			formation.finalize();
+			report("  transforming kernel '" << kernel->second->name << "'");
+			
+			TranslatedKernel *translatedKernel = new TranslatedKernel;
+			translatedKernel->kernel = kernel->second;
+			metadata.kernels[kernel->second->name] = translatedKernel;
+			
+			analysis::HyperblockFormation formationPass;
+			
+			formationPass.initialize(*module);
+			formationPass.runOnKernel(translatedKernel->decomposition, *kernel->second);
+			formationPass.finalize();
+
+			// create subkernels
+			typedef analysis::HyperblockFormation::KernelDecomposition::HyperblockMap HyperblockMap;
+			for (HyperblockMap::const_iterator hb_it = translatedKernel->decomposition.hyperblocks.begin();
+				hb_it != translatedKernel->decomposition.hyperblocks.end();
+				++hb_it) {
+				
+				TranslatedSubkernel *translated = new TranslatedSubkernel;
+				translatedKernel->subkernels[hb_it->second.hyperblockId] = translated;
+				translated->parent = translatedKernel;
+				translated->subkernel = hb_it->second.subkernel;
+				translated->entryId = hb_it->second.hyperblockId;
+				
+				
+				report("  adding hyperblock " << translated->entryId);
+				
+				subkernelMap[translated->entryId] = translated;
+			}
+
 		}
 		
 		modules.insert(std::make_pair(module->path(), metadata));
@@ -130,9 +152,41 @@ bool LLVMDynamicTranslationCache::loadModule(const ir::Module *module, executive
 	return false;
 }
 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+LLVMDynamicTranslationCache::TranslatedKernel::TranslatedKernel(): kernelModule(0), kernel(0) {
+
+}
+
+LLVMDynamicTranslationCache::TranslatedKernel::~TranslatedKernel() {
+
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+LLVMDynamicTranslationCache::TranslatedSubkernel::TranslatedSubkernel(): parent(0), subkernel(0), entryId(0) {
+
+}
+
+LLVMDynamicTranslationCache::TranslatedSubkernel::~TranslatedSubkernel() {
+
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+LLVMDynamicTranslationCache::Translation::Translation():
+llvmFunction(0), function(0), metadata(0), warpSize(1) {
+
+}
+
+LLVMDynamicTranslationCache::Translation::~Translation() {
+
+}
+
 void LLVMDynamicTranslationCache::Translation::execute(LLVMContext *contexts) const {
 	report("Executing translation");
-	assert(0 && "unimplemented");
+	function(contexts);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1104,7 +1158,7 @@ static void link(
 /*!
 
 */
-static void codegen(
+static llvm::Function *codegen(
 	LLVMDynamicTranslationCache::TranslatedFunction &function, 
 	llvm::Module& module,
 	const ir::PTXKernel& kernel,
@@ -1126,6 +1180,9 @@ static void codegen(
 	
 	function = hydrazine::bit_cast<LLVMDynamicTranslationCache::TranslatedFunction>(
 		LLVMState::jit()->getPointerToFunction(llvmFunction));
+	
+	assert(function);
+	return llvmFunction;
 }
 
 #endif
@@ -1140,41 +1197,42 @@ static void codegen(
 	\param device - pointer to target device
 */
 void *LLVMDynamicTranslationCache::compileTranslation(
+	LLVMDynamicTranslationCache::TranslatedKernel &translatedKernel,
+	LLVMDynamicTranslationCache::TranslatedSubkernel &translatedSubkernel,
 	LLVMDynamicTranslationCache::Translation &translation,
-	llvm::Module * & module,
 	ir::PTXKernel *parent,
 	translator::Translator::OptimizationLevel optimization,
 	executive::Device *device) {
 
 	#ifdef HAVE_LLVM
-	report("Getting metadata for kernel '" << translation.subkernel->name << "'");
+	report("Getting metadata for kernel '" << translatedSubkernel.subkernel->name << "'");
 	
 	report("Translating PTX");
 	
 	LLVMDynamicExecutive::Metadata *metadata = 0;
 	
 	// apply PTX optimizations and transformations needed to support the dynamic translation cache
-	optimizePTX(*translation.subkernel, optimization);
+	optimizePTX(*translatedSubkernel.subkernel, optimization);
 		
 	try {
 	
 		// compte memory sizes and layouts
-		metadata = generateMetadata(*translation.subkernel, optimization, translation.warpSize);
+		metadata = generateMetadata(*translatedSubkernel.subkernel, optimization, translation.warpSize);
 		
 		// translate global memory references
-		setupPTXMemoryReferences(*translation.subkernel, metadata, *parent, device);
+		setupPTXMemoryReferences(*translatedSubkernel.subkernel, metadata, *parent, device);
 
 		// rewrite call functions with hyperblock exits chained to target functions
-		setupCallTargets(*translation.subkernel, *this);
+		setupCallTargets(*translatedSubkernel.subkernel, *this);
 		
 		// perform PTX to LLVM translation - construct a new LLVM module
-		translate(module, *translation.subkernel, optimization);
+		translate(translatedKernel.kernelModule, *translatedSubkernel.subkernel, optimization);
 
 		// Converting out of ssa makes the assembly easier to read
 		if(optimization == translator::Translator::ReportOptimization 
 			|| optimization == translator::Translator::DebugOptimization)
 		{
-			translation.subkernel->dfg()->fromSsa();
+			translatedSubkernel.subkernel->dfg()->fromSsa();
 		}
 	}
 	catch(...)
@@ -1187,29 +1245,30 @@ void *LLVMDynamicTranslationCache::compileTranslation(
 	try
 	{
 		// apply optimizations on the reuslting LLVM function
-		optimize(*module, optimization, translation.warpSize);
+		optimize(*translatedKernel.kernelModule, optimization, translation.warpSize);
 		
 		// dynamically compile LLVM to host ISA
-		codegen(translation.function, *module, *translation.subkernel, device);
+		translation.llvmFunction = codegen(translation.function, *translatedKernel.kernelModule, 
+			*translatedSubkernel.subkernel, device);
 		
 		if (api::OcelotConfiguration::get().executive.printLLVMModule) {
-			module->dump();
+			translatedKernel.kernelModule->dump();
 		}
 		
 		// this step may be ellided for performance
 		std::string errors;
-		if (llvm::verifyModule(*module, llvm::ReturnStatusAction, &errors)) {
+		if (llvm::verifyModule(*translatedKernel.kernelModule, llvm::ReturnStatusAction, &errors)) {
 			std::cerr << "llvm::verifyModule failed:" << errors << std::endl;
 		}
 	}
 	catch(...)
 	{
-		llvm::Function* llvmFunction = module->getFunction(translation.subkernel->name);
+		llvm::Function* llvmFunction = translatedKernel.kernelModule->getFunction(translatedSubkernel.subkernel->name);
 
 		LLVMState::jit()->freeMachineCodeForFunction(llvmFunction);
 
-		LLVMState::jit()->removeModule(module);
-		delete module;
+		LLVMState::jit()->removeModule(translatedKernel.kernelModule);
+		delete translatedKernel.kernelModule;
 		delete metadata;
 		metadata = 0;
 		

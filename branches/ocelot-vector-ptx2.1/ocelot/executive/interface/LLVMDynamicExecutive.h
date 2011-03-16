@@ -74,6 +74,7 @@ namespace executive {
 		*/
 		class Warp {
 		public:
+			Warp(): entryId(0) { }
 			size_t size() { return threads.size(); }
 			
 		public:

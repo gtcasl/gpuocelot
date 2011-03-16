@@ -20,6 +20,8 @@
 
 // Forward Declarations
 
+// HyperblockFormation::KernelDecomposition::HyperblockMap
+
 namespace analysis {
 
 	/*!

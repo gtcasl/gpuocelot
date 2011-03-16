@@ -32,8 +32,10 @@ namespace executive {
 		
 	public:
 	
+		class TranslatedKernel;
+		
 		/*!
-			\brief data structure regarding an individual translation 
+			\brief data structure regarding an individual translation of a subkernel
 		*/
 		class Translation {
 		public:
@@ -44,22 +46,15 @@ namespace executive {
 			void execute(LLVMContext *contexts) const;
 			
 		public:
-		
-			//! \brief subkernel
-			ir::PTXKernel *subkernel;
-			
-			//! \brief references translated form of subkernel
-			llvm::Function *translation;
+			//! \brief LLVM function backing translation
+			llvm::Function *llvmFunction;
 			
 			//! \brief pointer to compiled function
 			TranslatedFunction function;
 			
 			//! \brief stores information needed by the translated function and the execution manager
 			void *metadata;
-			
-			//! \brief id of entry
-			HyperblockId entryId;
-			
+						
 			//! \brief size of a warp
 			int warpSize;
 		};
@@ -67,10 +62,53 @@ namespace executive {
 		//! \brief maps warp size onto particular translations
 		typedef std::map< int, const Translation *> TranslationWarpMap;
 		
-		//! \brief maps HyperblockIds onto sets of translations
-		typedef std::unordered_map< HyperblockId, TranslationWarpMap > TranslationMap;
+		/*!
+			\brief contains elements of the kernel decomposition as well as a set of existing translations
+		*/
+		class TranslatedSubkernel {
+		public:
+			TranslatedSubkernel();
+			~TranslatedSubkernel();
+			
+		public:
+			//! \brief pointer to parent kernel
+			TranslatedKernel *parent;
 		
-		typedef std::map< std::string, analysis::HyperblockFormation::KernelDecomposition > KernelDecompositionMap;
+			//! \brief subkernel
+			ir::PTXKernel *subkernel;
+			
+			//! \brief id of entry
+			HyperblockId entryId;
+		
+			//! \brief 
+			TranslationWarpMap translations;
+		};
+		typedef std::unordered_map< HyperblockId, TranslatedSubkernel *> TranslatedSubkernelMap;
+		
+		/*!
+			\brief data structure for translated kernels
+		*/
+		class TranslatedKernel {
+		public:
+			TranslatedKernel();
+			~TranslatedKernel();
+			
+		public:
+		
+			//! \brief this data structure maintains the kernel's structure
+			analysis::HyperblockFormation::KernelDecomposition decomposition;
+		
+			//! \brief each kernel is translated as its own module
+			llvm::Module *kernelModule;
+			
+			//! \brief
+			ir::PTXKernel *kernel;
+			
+			//! \brief set of translations for each subkernel
+			TranslatedSubkernelMap subkernels;
+		};
+		
+		typedef std::map< std::string, TranslatedKernel * > KernelTranslationMap;
 				
 		/*!
 			\brief stores module-level information such as the decomposition of kernels
@@ -84,12 +122,9 @@ namespace executive {
 			
 			//! \brief target device
 			executive::Device *device;
-			
-			//! \brief references the containing LLVM module
-			llvm::Module *llvmModule;
 		
 			//! \brief kernel decomposition of hyperblocks 
-			KernelDecompositionMap kernels;
+			KernelTranslationMap kernels;
 		};
 		typedef std::unordered_map< std::string, ModuleMetadata> ModuleMap;
 	
@@ -100,10 +135,7 @@ namespace executive {
 		
 		//! \brief loads a module into the translation cache
 		bool loadModule(const ir::Module *module, executive::Device *device);
-		
-		//! \brief searches for an existing translation and returns false if doesn't exist
-		const Translation *getTranslationById(HyperblockId id, int ws=1) const;
-		
+				
 		//! \brief searches for an existing translation and compiles it if it doesn't exist
 		const Translation *getOrInsertTranslationById(HyperblockId, int ws=1);
 	
@@ -113,8 +145,9 @@ namespace executive {
 			\brief entry point of PTX->LLVM compilation
 		*/
 		void *compileTranslation(
-			LLVMDynamicTranslationCache::Translation &translation,
-			llvm::Module * & module,
+			TranslatedKernel &translatedKernel,
+			TranslatedSubkernel &translatedSubkernel,
+			Translation &translation,
 			ir::PTXKernel *parent,
 			translator::Translator::OptimizationLevel optimization,
 			executive::Device *device);
@@ -127,8 +160,8 @@ namespace executive {
 		//! \brief stores information
 		ModuleMap modules;
 		
-		//! \brief 
-		TranslationMap translations;
+		//! \brief references translated 
+		TranslatedSubkernelMap subkernelMap;
 	};
 }
 

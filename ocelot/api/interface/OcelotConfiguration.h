@@ -138,6 +138,9 @@ namespace api {
 
 			//! \brief filter enabling LLVM devices if present
 			bool enableLLVM;
+			
+			//! \brief filter enabling dynamic LLVM executive device
+			bool enableDynamicLLVM;
 
 			//! \brief filter enbabling Emulated PTX devices if present
 			bool enableEmulated;
@@ -150,6 +153,7 @@ namespace api {
 			
 			//! \brief filter enabling remote GPU devices if present
 			bool enableRemote;
+			
 			
 			//! \brief The port to connect to an ocelot server for remoting
 			int port;

@@ -110,6 +110,11 @@ libocelot_la_SOURCES = \
 	ocelot/executive/implementation/NVIDIAGPUDevice.cpp \
 	ocelot/executive/implementation/EmulatorDevice.cpp \
 	ocelot/executive/implementation/MulticoreCPUDevice.cpp \
+	ocelot/executive/implementation/DynamicMulticoreCPUDevice.cpp \
+	ocelot/executive/implementation/LLVMDynamicTranslationCache.cpp \
+	ocelot/executive/implementation/LLVMDynamicExecutive.cpp \
+	ocelot/executive/implementation/LLVMDynamicExecutionManager.cpp \
+	ocelot/executive/implementation/LLVMDynamicKernel.cpp \
 	ocelot/executive/implementation/PassThroughDevice.cpp \
 	ocelot/executive/implementation/CTAContext.cpp \
 	ocelot/executive/implementation/EmulatorCallStack.cpp \
@@ -508,6 +513,7 @@ nobase_include_HEADERS = ocelot/api/interface/ocelot.h \
 	ocelot/executive/interface/NVIDIAGPUDevice.h \
 	ocelot/executive/interface/EmulatorDevice.h \
 	ocelot/executive/interface/MulticoreCPUDevice.h \
+	ocelot/executive/interface/DynamicMulticoreCPUDevice.h \
 	ocelot/executive/interface/PassThroughDevice.h \
 	ocelot/executive/interface/CTAContext.h \
 	ocelot/executive/interface/ExternalKernel.h \
@@ -517,6 +523,10 @@ nobase_include_HEADERS = ocelot/api/interface/ocelot.h \
 	ocelot/executive/interface/LLVMExecutableKernel.h \
 	ocelot/executive/interface/TextureOperations.h \
 	ocelot/executive/interface/ExecutableKernel.h \
+	ocelot/executive/interface/LLVMDynamicTranslationCache.h \
+	ocelot/executive/interface/LLVMDynamicExecutive.h \
+	ocelot/executive/interface/LLVMDynamicExecutionManager.h \
+	ocelot/executive/interface/LLVMDynamicKernel.h \
 	ocelot/executive/interface/LLVMModuleManager.h \
 	ocelot/executive/interface/LLVMExecutionManager.h \
 	ocelot/executive/interface/LLVMState.h \

@@ -25,7 +25,7 @@ namespace analysis {
 	/*!
 		\brief extracts hyperblocks from a PTX kernel
 	*/
-	class HyperblockFormation: public ModulePass {
+	class HyperblockFormation {
 	public:
 		typedef std::vector<ir::PTXKernel*> KernelVector;
 		typedef unsigned int HyperblockId;

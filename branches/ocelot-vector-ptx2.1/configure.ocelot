@@ -22,7 +22,7 @@
 		runtimeApiTrace: "trace/CudaAPI.trace"
 	},
 	executive: {
-		devices: [ llvm ],
+		devices: [ "dynamic-llvm" ],
 		port: 2011,
 		host: "127.0.0.1",
 		optimizationLevel: full,

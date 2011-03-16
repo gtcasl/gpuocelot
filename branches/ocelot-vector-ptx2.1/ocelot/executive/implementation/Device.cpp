@@ -4,12 +4,15 @@
 	\brief The source file for the Device class
 */
 
+
 #include <ocelot/executive/interface/Device.h>
 #include <ocelot/executive/interface/NVIDIAGPUDevice.h>
 #include <ocelot/executive/interface/ATIGPUDevice.h>
 #include <ocelot/executive/interface/EmulatorDevice.h>
 #include <ocelot/executive/interface/MulticoreCPUDevice.h>
+#include <ocelot/executive/interface/DynamicMulticoreCPUDevice.h>
 #include <ocelot/executive/interface/RemoteDevice.h>
+#include <ocelot/api/interface/OcelotConfiguration.h>
 
 #include <hydrazine/implementation/debug.h>
 
@@ -74,7 +77,12 @@ executive::DeviceVector executive::Device::createDevices(
 		{
 			DeviceVector cpus;
 			#ifdef HAVE_LLVM
-			cpus.push_back(new MulticoreCPUDevice(flags));
+			if (api::OcelotConfiguration::get().executive.enableDynamicLLVM) {
+				cpus.push_back(new DynamicMulticoreCPUDevice(flags));
+			}
+			else {
+				cpus.push_back(new MulticoreCPUDevice(flags));
+			}
 			#endif
 			return cpus;
 		}

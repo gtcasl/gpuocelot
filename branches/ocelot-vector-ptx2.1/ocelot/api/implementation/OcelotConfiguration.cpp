@@ -166,6 +166,9 @@ static void initializeExecutive(api::OcelotConfiguration::Executive &executive,
 	else if (strPrefISA == "llvm" || strPrefISA == "LLVM") {
 		executive.preferredISA = (int)ir::Instruction::LLVM;
 	}
+	else if (strPrefISA == "dynamic-llvm" || strPrefISA == "dynamic-LLVM") {
+		executive.preferredISA = (int)ir::Instruction::LLVM;
+	}
 	else if (strPrefISA == "nvidia" || strPrefISA == "NVIDIA") {
 		executive.preferredISA = (int)ir::Instruction::SASS;
 	}
@@ -240,6 +243,7 @@ static void initializeExecutive(api::OcelotConfiguration::Executive &executive,
 			static_cast<hydrazine::json::Array *>(devices.value);
 		
 		executive.enableLLVM = false;
+		executive.enableDynamicLLVM = false;
 		executive.enableEmulated = false;
 		executive.enableNVIDIA = false;
 		executive.enableAMD = false;
@@ -249,6 +253,10 @@ static void initializeExecutive(api::OcelotConfiguration::Executive &executive,
 			it != array->end(); ++it) {
 			hydrazine::json::Visitor dev(*it);
 			if ((std::string)dev == "llvm") {
+				executive.enableLLVM = true;
+			}
+			else if ((std::string)dev == "dynamic-llvm") {
+				executive.enableDynamicLLVM = true;
 				executive.enableLLVM = true;
 			}
 			else if ((std::string)dev == "nvidia") {

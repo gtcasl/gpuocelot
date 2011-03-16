@@ -55,12 +55,10 @@ void analysis::HyperblockFormation::runOnKernel(KernelDecomposition &decompositi
 	// properties
 	//
 	
-	
 	ir::PTXKernel& parentKernel = static_cast<ir::PTXKernel&>(parent);
 	report("Run on kernel " << parentKernel.name);
 
 	// Compute live register sets for each block
-	KernelVector hyperblocks;
 	
 	parentKernel.dfg()->compute();
 	analysis::DataflowGraph::IteratorMap cfgToDfgMap = parentKernel.dfg()->getCFGtoDFGMap();
@@ -77,41 +75,46 @@ void analysis::HyperblockFormation::runOnKernel(KernelDecomposition &decompositi
 		}
 		
 		++blockIndex;
+		
+		Hyperblock hyperblock;
+		hyperblock.hyperblockId = (HyperblockId)decomposition.hyperblocks.size() + baseId;
+		hyperblock.entryBlock = (*bb_it)->label;
+		
 		DataflowGraph::IteratorMap::const_iterator dfgBlock = cfgToDfgMap.find(*bb_it);
 		assert(dfgBlock != cfgToDfgMap.end() && "failed to find block in CFT-to-DFG mapping");
 		
-		ir::PTXKernel *subkernel = new ir::PTXKernel(
+		hyperblock.subkernel = new ir::PTXKernel(
 			parentKernel.name + "_hb_" + boost::lexical_cast<std::string>(blockIndex), 
 			false, 
 			parentKernel.module);
 
-		ir::ControlFlowGraph::iterator computationalBlock = subkernel->cfg()->insert_new_block((*bb_it)->label);
+		ir::ControlFlowGraph::iterator computationalBlock = hyperblock.subkernel->cfg()->insert_new_block((*bb_it)->label);
 		for (ir::BasicBlock::InstructionList::const_iterator inst_it = (*bb_it)->instructions.begin();
 			inst_it != (*bb_it)->instructions.end();
 			++inst_it) {
 			computationalBlock->instructions.push_back((*inst_it)->clone());
 		}
 
-		ir::BasicBlock::Edge entryEdge(subkernel->cfg()->get_entry_block(), computationalBlock );
-		ir::BasicBlock::Edge exitEdge(computationalBlock, subkernel->cfg()->get_exit_block() );
-		ir::ControlFlowGraph::edge_iterator entryIterator = subkernel->cfg()->insert_edge(entryEdge);
-		ir::ControlFlowGraph::edge_iterator exitIterator = subkernel->cfg()->insert_edge(exitEdge);
+		ir::BasicBlock::Edge entryEdge(hyperblock.subkernel->cfg()->get_entry_block(), computationalBlock );
+		ir::BasicBlock::Edge exitEdge(computationalBlock, hyperblock.subkernel->cfg()->get_exit_block() );
+		ir::ControlFlowGraph::edge_iterator entryIterator = hyperblock.subkernel->cfg()->insert_edge(entryEdge);
+		ir::ControlFlowGraph::edge_iterator exitIterator = hyperblock.subkernel->cfg()->insert_edge(exitEdge);
 		
 		// now create prologe/restore and epilog/store blocks
 		ir::BasicBlock prologBlock;
 		ir::BasicBlock epilogBlock;
 		
+		_createSpillRegion(*hyperblock.subkernel, parentKernel, prologBlock);
+		_createRestore(*hyperblock.subkernel, parentKernel, prologBlock, dfgBlock);
+		_createStore(*hyperblock.subkernel, parentKernel, epilogBlock, dfgBlock);
+		_createHyperblockExit(*hyperblock.subkernel, parentKernel, **bb_it, *computationalBlock, epilogBlock);
 		
-		_createSpillRegion(*subkernel, parentKernel, prologBlock);
-		_createRestore(*subkernel, parentKernel, prologBlock, dfgBlock);
-		_createStore(*subkernel, parentKernel, epilogBlock, dfgBlock);
-		_createHyperblockExit(*subkernel, parentKernel, **bb_it, *computationalBlock, epilogBlock);
+		/* ir::ControlFlowGraph::EdgePair splitEntry = */hyperblock.subkernel->cfg()->split_edge(entryIterator, prologBlock);
+		/* ir::ControlFlowGraph::EdgePair splitExit = */ hyperblock.subkernel->cfg()->split_edge(exitIterator, epilogBlock);
 		
-		ir::ControlFlowGraph::EdgePair splitEntry = subkernel->cfg()->split_edge(entryIterator, prologBlock);
-		ir::ControlFlowGraph::EdgePair splitExit = subkernel->cfg()->split_edge(exitIterator, epilogBlock);
-		hyperblocks.push_back(subkernel);
+		decomposition.hyperblocks[hyperblock.hyperblockId] = hyperblock;
+		decomposition.hyperblockEntries[hyperblock.entryBlock] = hyperblock.hyperblockId;
 	}
-	
 }
 
 void analysis::HyperblockFormation::finalize() {

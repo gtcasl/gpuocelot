@@ -25,32 +25,33 @@
 #include <list>
 #include <unordered_set>
 
+typedef ir::ControlFlowGraph CFG;
+
 namespace ir
 {
 	class ControlTree
 	{
 		public:
 			/*! \brief Construct ControlTree given the CFG */
-			ControlTree(ControlFlowGraph* cfg);
+			ControlTree(CFG* cfg);
 			/*! \brief Default destructor */
 			~ControlTree();
+
+			/*! \brief Region type */
+			enum RegionType
+			{
+				Inst,           // Instructions (e.g. basic block)
+				Block,          // Block of nodes
+				IfThen,         // If-Then
+				While,          // While loop
+				Natural,        // Natural loop with side exits
+				Invalid
+			};
 
 			/*! \brief A polymorphic base class that represents any node */
 			class Node
 			{
 				public:
-					/*! \brief Region type */
-					enum RegionType
-					{
-						Inst,           // Instructions (e.g. basic block)
-						Block,          // Block of nodes
-						IfThen,         // If-Then
-						IfThenElse,     // If-Then-Else
-						WhileLoop,      // While-Loop
-						NaturalLoop,    // Loop with side exits
-						Invalid
-					};
-
 					typedef std::list<Node*> NodeList;
 					typedef std::unordered_set<Node*> NodeSet;
 
@@ -97,16 +98,20 @@ namespace ir
 			class InstNode : public Node
 			{
 				public:
-					/*! \brief Constructor */
-					InstNode(const ControlFlowGraph::const_iterator& bb);
+					typedef CFG::InstructionList InstructionList;
 
-					/*! /brief Get iterator to the basic block in the cfg */
-					const ControlFlowGraph::const_iterator bb() const;
+					/*! \brief Constructor */
+					InstNode(const CFG::const_iterator& bb);
+
+					/*! /brief Get the instruction list */
+					const InstructionList& insts() const;
 
 				private:
 					/*! \brief Iterator to the basic block in the cfg */
-					const ControlFlowGraph::const_iterator _bb;
+					const CFG::const_iterator _bb;
 			};
+
+			typedef InstNode::InstructionList InstructionList;
 
 			/*! \brief A sequence of nodes */
 			class BlockNode : public Node
@@ -122,26 +127,8 @@ namespace ir
 			{
 				public:
 					/*! \brief Constructor */
-					IfThenNode(const std::string& label, 
-						Node* cond, Node* ifTrue);
-
-					/*! \brief Get condition node */
-					const Node* cond() const;
-					/*! \brief Get if-true node */
-					const Node* ifTrue() const;
-
-				private:
-					const NodeList buildChildren(Node* cond, 
-							Node* ifTrue) const;
-			};
-
-			/*! \brief If-Then-Else node */
-			class IfThenElseNode : public Node
-			{
-				public:
-					/*! \brief Constructor */
-					IfThenElseNode(const std::string& label, Node* cond, 
-							Node* ifTrue, Node* ifFalse);
+					IfThenNode(const std::string& label, Node* cond, 
+							Node* ifTrue, Node* ifFalse = NULL);
 
 					/*! \brief Get condition node */
 					const Node* cond() const;
@@ -155,19 +142,19 @@ namespace ir
 							Node* ifTrue, Node* ifFalse) const;
 			};
 
-			class WhileLoopNode : public Node
+			class WhileNode : public Node
 			{
 				public:
 					/*! \brief Constructor */
-					WhileLoopNode(const std::string& label, 
+					WhileNode(const std::string& label, 
 						const NodeList& children);
 			};
 
-			class NaturalLoopNode : public Node
+			class NaturalNode : public Node
 			{
 				public:
 					/*! \brief Constructor */
-					NaturalLoopNode(const std::string& label, 
+					NaturalNode(const std::string& label, 
 						const NodeList& children);
 			};
 

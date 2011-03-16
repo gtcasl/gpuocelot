@@ -27,184 +27,101 @@ namespace translator
 	{
 	}
 
-	ir::Kernel *PTXToILTranslator::translate(const ir::Kernel *k)
+	ir::Kernel* PTXToILTranslator::translate(const ir::Kernel* k)
 	{
-		assertM(k->ISA == ir::Instruction::PTX,
-				"Kernel must be a PTXKernel to translate to an ILKernel");
+		assertM(0, "Translator needs the kernel to be an executable kernel");
+	}
 
-		_kernel = static_cast<const executive::ATIExecutableKernel* >(k);
+	ir::Kernel* PTXToILTranslator::translate(const ExecutableKernel* k)
+	{
+		report("Translating kernel " << k->name);
 
-		report("Translating kernel " << _kernel->name);
+		assertM(k->ISA == ir::Instruction::PTX, "Kernel must be in PTX");
 
-		// translate iterating thru the control tree
-		_ilKernel = new ir::ILKernel(*_kernel);
-		_translate(_ilKernel->ctrl_tree()->get_root_node());
-		_addKernelPrefix();
+		_ilKernel = new ir::ILKernel(*k);
+
+		_translateInstructions();
+		_addKernelPrefix(k);
 
  		return _ilKernel;
   	}
 
-	void PTXToILTranslator::_translate(const ControlTree::Node* node)
+	void PTXToILTranslator::_translateInstructions()
+	{
+		// translate instructions iterating thru the control tree
+		_translate(_ilKernel->ctrl_tree()->get_root_node());
+	}
+
+	void PTXToILTranslator::_translate(const CT::Node* node)
 	{
 		report("Translating " << node->label());
 
 		switch (node->rtype())
 		{
-			case ControlTree::Node::Inst:
+			case CT::Inst:
 			{
-				_translate(static_cast<const ControlTree::InstNode*>(node));
+				_translate(static_cast<const CT::InstNode*>(node)); 
 				break;
 			}
-			case ControlTree::Node::Block:
+			case CT::Block:
 			{
-				_translate(static_cast<const ControlTree::BlockNode*>(node));
+				_translate(static_cast<const CT::BlockNode*>(node)); 
 				break;
 			}
-			case ControlTree::Node::IfThen:
+			case CT::IfThen:
 			{
-				_translate(static_cast<const ControlTree::IfThenNode*>(node));
+				_translate(static_cast<const CT::IfThenNode*>(node)); 
 				break;
 			}
-			case ControlTree::Node::IfThenElse:
+			case CT::While:
 			{
-				_translate(static_cast<const ControlTree::IfThenElseNode*>(node));
+				_translate(static_cast<const CT::WhileNode*>(node)); 
 				break;
 			}
-			case ControlTree::Node::WhileLoop:
+			case CT::Natural: 
 			{
-				_translate(static_cast<const ControlTree::WhileLoopNode*>(node));
-				break;
-			}
-			case ControlTree::Node::NaturalLoop:
-			{
-				_translate(static_cast<const ControlTree::NaturalLoopNode*>(node));
+				_translate(static_cast<const CT::NaturalNode*>(node)); 
 				break;
 			}
 			default: assertM(false, "Invalid region type " << node->rtype());
 		}
 	}
 
-	void PTXToILTranslator::_translate(const ControlTree::InstNode* insts)
+	void PTXToILTranslator::_translate(const CT::InstNode* node)
 	{
-		ir::ControlFlowGraph::InstructionList::const_iterator ins;
-		for (ins = insts->bb()->instructions.begin() ; 
-				ins != insts->bb()->instructions.end() ; ins++)
+		for (CT::InstructionList::const_iterator
+				ins = node->insts().begin(), end = node->insts().end() ;
+				ins != end ; ins++)
 		{
 			_translate(static_cast<ir::PTXInstruction &>(**ins));
 		}
 	}
 
-	void PTXToILTranslator::_translate(const ControlTree::BlockNode* block)
+	void PTXToILTranslator::_translate(const CT::BlockNode* node)
 	{
-		ControlTree::NodeList::const_iterator node;
-		for (node = block->children().begin() ; 
-				node != block->children().end() ; node++)
+		for (CT::NodeList::const_iterator child = node->children().begin(),
+				end = node->children().end() ; child != end ; child++)
 		{
-			_translate(*node);
+			_translate(*child);
 		}	
 	}
 
-	void PTXToILTranslator::_translate(const ControlTree::IfThenNode* ifthen)
-	{
-		const ControlTree::Node* cond = ifthen->cond();
-
-		assertM(cond->rtype() == ControlTree::Node::Inst, 
-				"Invalid condition node");
-
-		ir::Instruction* ins =
-			static_cast<const ControlTree::InstNode*>(cond)->bb()->instructions.back();
-
-		ir::PTXInstruction& bra = static_cast<ir::PTXInstruction&>(*ins);
-
-		assertM(bra.opcode == ir::PTXInstruction::Bra, "Invalid instruction");
-		
-		_translate(cond);
-
-		switch (bra.pg.condition)
-		{
-			case ir::PTXOperand::Pred:
-			{
-				ir::ILIfLogicalZ if_logicalz;
-				if_logicalz.a = _translate(bra.pg);
-				_add(if_logicalz);
-				break;
-			}
-			case ir::PTXOperand::InvPred:
-			{
-				ir::ILIfLogicalNZ if_logicalnz;
-				if_logicalnz.a = _translate(bra.pg);
-				_add(if_logicalnz);
-				break;
-			}
-			default: assertM(false, "Invalid predicate condition");
-
-		}
-
-		_translate(ifthen->ifTrue());
-
-		_add(ir::ILEndIf());
-	}
-
-	void PTXToILTranslator::_translate(const ControlTree::IfThenElseNode* ifthenelse)
-	{
-		const ControlTree::Node* cond = ifthenelse->cond();
-
-		assertM(cond->rtype() == ControlTree::Node::Inst, 
-				"Invalid condition node");
-
-		ir::Instruction* ins =
-			static_cast<const ControlTree::InstNode*>(cond)->bb()->instructions.back();
-
-		ir::PTXInstruction& bra = static_cast<ir::PTXInstruction&>(*ins);
-
-		assertM(bra.opcode == ir::PTXInstruction::Bra, "Invalid instruction");
-		
-		_translate(cond);
-
-		switch (bra.pg.condition)
-		{
-			case ir::PTXOperand::Pred:
-			{
-				ir::ILIfLogicalZ if_logicalz;
-				if_logicalz.a = _translate(bra.pg);
-				_add(if_logicalz);
-				break;
-			}
-			case ir::PTXOperand::InvPred:
-			{
-				ir::ILIfLogicalNZ if_logicalnz;
-				if_logicalnz.a = _translate(bra.pg);
-				_add(if_logicalnz);
-				break;
-			}
-			default: assertM(false, "Invalid predicate condition");
-
-		}
-
-		_translate(ifthenelse->ifTrue());
-
-		_add(ir::ILElse());
-		_translate(ifthenelse->ifFalse());
-
-		_add(ir::ILEndIf());
-	}
-
-	ir::PTXInstruction* getLastIns(const ControlTree::Node* node)
+	ir::PTXInstruction* getLastIns(const CT::Node* node)
 	{
 		switch (node->rtype())
 		{
-			case ControlTree::Node::Inst:
+			case CT::Inst:
 			{
-				const ControlTree::InstNode* inode = 
-					static_cast<const ControlTree::InstNode*>(node);
+				const CT::InstNode* inode = 
+					static_cast<const CT::InstNode*>(node);
 
 				return static_cast<ir::PTXInstruction*>(
-						inode->bb()->instructions.back());
+						inode->insts().back());
 			}
-			case ControlTree::Node::Block:
+			case CT::Block:
 			{
-				const ControlTree::BlockNode* bnode =
-					static_cast<const ControlTree::BlockNode*>(node);
+				const CT::BlockNode* bnode =
+					static_cast<const CT::BlockNode*>(node);
 
 				return getLastIns(bnode->children().back());
 			}
@@ -212,89 +129,99 @@ namespace translator
 		}
 	}
 
-	void PTXToILTranslator::_translate(const ControlTree::WhileLoopNode* whileloop)
+	void PTXToILTranslator::_translate(const CT::IfThenNode* node)
 	{
+		// translate condition
+		assertM(node->cond()->rtype() == CT::Inst, "Invalid condition node");
+		_translate(node->cond());
+
+		// translate branch
+		ir::PTXInstruction* bra = getLastIns(node->cond());
+		assertM(bra->opcode == ir::PTXInstruction::Bra, "Invalid instruction");
+		_translateBra(*bra);
+		
+		// translate then
+		_translate(node->ifTrue());
+
+		// translate else (if necessary)
+		if (node->ifFalse() != NULL)
+		{
+			_add(ir::ILElse());
+			_translate(node->ifFalse());
+		}
+
+		// done!
+		_add(ir::ILEndIf());
+	}
+
+	void PTXToILTranslator::_translate(const CT::WhileNode* node)
+	{
+		// translate while
 		_add(ir::ILWhileLoop());
 
-		// iterate thru all the blocks except the last one
-		ControlTree::NodeList::const_iterator n;
-		for (n = whileloop->children().begin() ; 
-				n != (--whileloop->children().end()) ; n++)
+		// translate body (except last block)
+		CT::NodeList::const_iterator last = (--node->children().end());
+		for (CT::NodeList::const_iterator child = node->children().begin() ; 
+				child != last ; child++)
 		{
 			// the fall-through edge should be the next node in the loop
-			assertM((*n)->fallthrough() == 
-					*(++ControlTree::NodeList::const_iterator(n)),
-					"Invalid NaturalLoop node");
+			CT::NodeList::const_iterator next(child); next++;
+			assertM((*child)->fallthrough() == *next, "Invalid Natural loop");
+			_translate(*child);
 
-			_translate(*n);
-
-			// the last instruction of the node should be a branch.
-			ir::PTXInstruction* ins = getLastIns(*n);
-			assertM(ins->opcode == ir::PTXInstruction::Bra, "Invalid instruction");
-
-			// add loop exit
-			ir::ILIfLogicalNZ if_logicalnz;
-			if_logicalnz.a = _translate(ins->pg);
-			_add(if_logicalnz);
+			// translate side exit (invert logic)
+			ir::PTXInstruction* bra = getLastIns(*child);
+			assert(bra->opcode == ir::PTXInstruction::Bra);
+			bra->pg.condition = ir::PTXOperand::InvPred;
+			_translateBra(*bra);
 			_add(ir::ILBreak());
 			_add(ir::ILEndIf());
 		}
 
-		// translate the last block 
-		_translate(*n);
+		// translate last block 
+		_translate(*last);
 
-		// add loop back
+		// done!
 		_add(ir::ILEndLoop());
 	}
 
-	void PTXToILTranslator::_translate(const ControlTree::NaturalLoopNode* naturalloop)
+	void PTXToILTranslator::_translate(const CT::NaturalNode* node)
 	{
+		// translate while
 		_add(ir::ILWhileLoop());
 
-		// iterate thru all the blocks except the last one
-		ControlTree::NodeList::const_iterator n;
-		for (n = naturalloop->children().begin() ; 
-				n != (--naturalloop->children().end()) ; n++)
+		// translate body (except last block)
+		CT::NodeList::const_iterator last = (--node->children().end());
+		for (CT::NodeList::const_iterator child = node->children().begin() ; 
+				child != last ; child++)
 		{
 			// the fall-through edge should be the next node in the loop
-			assertM((*n)->fallthrough() == 
-					*(++ControlTree::NodeList::const_iterator(n)),
-					"Invalid NaturalLoop node");
+			CT::NodeList::const_iterator next(child); next++;
+			assertM((*child)->fallthrough() == *next, "Invalid Natural loop");
+			_translate(*child);
 
-			_translate(*n);
-
-			// the last instruction of the node should be a branch.
-			ir::PTXInstruction* ins = getLastIns(*n);
-			assertM(ins->opcode == ir::PTXInstruction::Bra, "Invalid instruction");
-
-			// add loop exit
-			ir::ILIfLogicalNZ if_logicalnz;
-			if_logicalnz.a = _translate(ins->pg);
-			_add(if_logicalnz);
+			// translate side exit (invert logic)
+			ir::PTXInstruction* bra = getLastIns(*child);
+			assert(bra->opcode == ir::PTXInstruction::Bra);
+			bra->pg.condition = ir::PTXOperand::InvPred;
+			_translateBra(*bra);
 			_add(ir::ILBreak());
 			_add(ir::ILEndIf());
 		}
 
-		// the fall-through edge should be the loop exit
-		assertM((*n)->fallthrough() != *(naturalloop->children().begin()),
-				"Invalid NaturalLoop node");
+		// translate last block
+		assert((*last)->fallthrough() != *(node->children().begin()));
+		_translate(*last);
 
-		// translate the last block (we assume that the fall-through edge is 
-		// the loop exit)
-		_translate(*n);
-
-		// the last instruction of the node should be a branch.
-		ir::PTXInstruction* ins = getLastIns(*n);
-		assertM(ins->opcode == ir::PTXInstruction::Bra, "Invalid instruction");
-
-		// add loop exit
-		ir::ILIfLogicalZ if_logicalz;
-		if_logicalz.a = _translate(ins->pg);
-		_add(if_logicalz);
+		// translate side exit 
+		ir::PTXInstruction* bra = getLastIns(*last);
+		assert(bra->opcode == ir::PTXInstruction::Bra);
+		assert(bra->pg.condition == ir::PTXOperand::Pred);
+		_translateBra(*bra);
 		_add(ir::ILBreak());
 		_add(ir::ILEndIf());
 
-		// add loop back
+		// done!
 		_add(ir::ILEndLoop());
 	}
 
@@ -308,7 +235,7 @@ namespace translator
 			case ir::PTXInstruction::And:    _translateAnd(i);    break;
 			case ir::PTXInstruction::Atom:   _translateAtom(i);   break;
 			case ir::PTXInstruction::Bar:    _translateBar(i);    break;
-			case ir::PTXInstruction::Bra:    _translateBra(i);    break;
+			case ir::PTXInstruction::Bra:    /* control tree */   break;
 			case ir::PTXInstruction::Clz:    _translateClz(i);    break;
  			case ir::PTXInstruction::Cvt:    _translateCvt(i);    break;
 			case ir::PTXInstruction::Div:    _translateDiv(i);    break;
@@ -342,9 +269,7 @@ namespace translator
 			case ir::PTXInstruction::Xor:    _translateXor(i);    break;
 			default:
 			{
-				assertM(false, "Opcode \""
-						<< i.toString()
-						<< "\" not supported");
+				assertM(0, "Opcode \"" << i.toString() << "\" not supported");
 			}
 		}
 	}
@@ -765,7 +690,24 @@ namespace translator
 
 	void PTXToILTranslator::_translateBra(const ir::PTXInstruction &i)
 	{
-		// do nothing (bra instructions are handled using the control tree)
+		switch (i.pg.condition)
+		{
+			case ir::PTXOperand::Pred:
+			{
+				ir::ILIfLogicalZ if_logicalz;
+				if_logicalz.a = _translate(i.pg);
+				_add(if_logicalz);
+				break;
+			}
+			case ir::PTXOperand::InvPred:
+			{
+				ir::ILIfLogicalNZ if_logicalnz;
+				if_logicalnz.a = _translate(i.pg);
+				_add(if_logicalnz);
+				break;
+			}
+			default: assertM(false, "Invalid predicate condition");
+		}
 	}
 
 	void PTXToILTranslator::_convertSrc(const ir::PTXInstruction &i,
@@ -3477,7 +3419,7 @@ namespace translator
 		return stream.str();
 	}
 
- 	void PTXToILTranslator::_addKernelPrefix()
+ 	void PTXToILTranslator::_addKernelPrefix(const ExecutableKernel *k)
  	{
 		report("Adding Kernel Prefix");
 
@@ -3546,8 +3488,8 @@ namespace translator
 		_ilKernel->_statements.push_front(dcl_cb0);
 		report("Added \'" << dcl_cb0.toString() << "\'");
 
-		unsigned int totalSharedMemorySize = _kernel->sharedMemorySize() +
-			_kernel->externSharedMemorySize();
+		unsigned int totalSharedMemorySize = k->sharedMemorySize() +
+			k->externSharedMemorySize();
 		if (totalSharedMemorySize > 0)
 		{
 			ir::ILStatement dcl_lds(ir::ILStatement::LocalDataShareDcl);

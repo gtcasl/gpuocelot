@@ -687,7 +687,7 @@ void trace::X86TraceGenerator::initialize(const executive::ExecutableKernel& ker
   if (txt_config_file.fail())
     assert(0);
 
-  txt_config_file << num_total_warps << " ptx";
+  txt_config_file << num_total_warps << " newptx";
   txt_config_file << " " << max_block << "\n";
 
   sprintf(file_path, "%s%s%s_info.txt", trace_path.c_str(), kernel_name.c_str(), trace_name.c_str());

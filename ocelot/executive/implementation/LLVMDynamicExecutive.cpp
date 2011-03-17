@@ -148,7 +148,7 @@ void LLVMDynamicExecutive::executeWarp(Warp &warp) {
 	
 	// lazily fetch translation
 	const LLVMDynamicTranslationCache::Translation *translation = 
-		LLVMDynamicExecutionManager::get().getOrInsertTranslationById(warp.entryId, warp.size());
+		getOrInsertTranslationById(warp.entryId, warp.size());
 	
 	assert(translation && "failed to obtain translation");
 	report(" obtained translation. Executing warp.");
@@ -167,7 +167,7 @@ void LLVMDynamicExecutive::executeWarp(Warp &warp) {
 		ctx_it != warp.threads.end(); 
 		++ctx_it) {
 	
-		Metadata::ThreadExitCode exitCode = Metadata::ThreadExitCode_invalid;
+		Metadata::ThreadExitCode exitCode = Metadata::Thread_exit;
 		report(" thread(" << ctx_it->tid.x << ", " << ctx_it->tid.y << ", " << ctx_it->tid.z << ") [cta ] exited with code " 
 			<< Metadata::toString(exitCode));
 		
@@ -195,7 +195,6 @@ void LLVMDynamicExecutive::executeWarp(Warp &warp) {
 		default: assert(0 && "invalid ThreadExitCode");
 			break;
 		}
-		assert("unimplemented" && 0);
 	}
 }
 
@@ -233,7 +232,7 @@ void LLVMDynamicExecutive::CooperativeThreadArray::initialize(
 	const ir::Dim3 blockDim = kernel.blockDim();
 	
 	int totalThreads = blockDim.x * blockDim.y * blockDim.z;
-	local.resize(kernel.localMemorySize() * totalThreads, 0);
+	local.resize(32 * totalThreads, 0);
 	
 	report("Initializing CTA with " << totalThreads << " threads");
 	report("  local memory size " << local.size() << " bytes");
@@ -261,6 +260,40 @@ void LLVMDynamicExecutive::CooperativeThreadArray::initialize(
 		
 		readyQueue.push_back(context);
 	}
+}
+
+
+//! \brief searches for an existing translation and compiles it if it doesn't exist
+const LLVMDynamicTranslationCache::Translation *
+LLVMDynamicExecutive::getOrInsertTranslationById(HyperblockId id, int ws) {
+
+	const LLVMDynamicTranslationCache::Translation *translation =0;
+	TranslationWarpCache::iterator hb_it = translationCache.find(id);
+	
+	report(" getOrInsertTranslationById( id" << id << ", ws: " << ws << ")");
+	
+	if (hb_it != translationCache.end()) {
+		LLVMDynamicTranslationCache::TranslationWarpMap::iterator tr_it = hb_it->second.find(ws);
+		if (tr_it != hb_it->second.end()) {
+			translation = tr_it->second;
+			report("hit local translation cache");
+		}
+		else {
+			// not found for this warp size. query the singleton translation cache
+			translation = LLVMDynamicExecutionManager::get().getOrInsertTranslationById(id, ws);
+			hb_it->second[ws] = translation;
+			report("no translation found for this warp size. Querying global translation cache.");
+		}
+	}
+	else {
+		// not found for any warp size. query the singleton translation cache
+		translation = LLVMDynamicExecutionManager::get().getOrInsertTranslationById(id, ws);
+		LLVMDynamicTranslationCache::TranslationWarpMap warpMap;
+		warpMap[ws] = translation;
+		translationCache[id] = warpMap;
+		report("no translation found for hyperblock id. Querying global translation cache.");
+	}
+	return translation;
 }
 
 }

@@ -33,6 +33,8 @@ namespace executive {
 		typedef analysis::HyperblockFormation::HyperblockId HyperblockId;
 		typedef std::vector< LLVMContext > ThreadContextVector;
 		
+		typedef std::map< HyperblockId, LLVMDynamicTranslationCache::TranslationWarpMap > TranslationWarpCache;
+		
 		/*!
 		
 		*/
@@ -121,6 +123,9 @@ namespace executive {
 		
 	private:
 	
+		//! \brief searches for an existing translation and compiles it if it doesn't exist
+		const LLVMDynamicTranslationCache::Translation *getOrInsertTranslationById(HyperblockId, int ws=1);
+	
 		//! \brief construct a warp
 		void warpFormation(Warp &warp);
 		
@@ -146,6 +151,9 @@ namespace executive {
 		
 		//! \brief set of active CTAs
 		CooperativeThreadArrayMap ctaMap;
+		
+		//! \brief thread-local cache of translations
+		TranslationWarpCache translationCache;
 		
 		//! \brief set of threads which may execute next
 		CtaThreadQueue readyQueue;

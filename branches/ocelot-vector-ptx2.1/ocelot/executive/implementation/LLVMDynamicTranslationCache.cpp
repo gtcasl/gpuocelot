@@ -70,9 +70,11 @@ LLVMDynamicTranslationCache::getOrInsertTranslationById(HyperblockId id, int ws)
 	assert(sk_it != subkernelMap.end());
 	
 	TranslatedSubkernel *subkernel = sk_it->second;
-	Translation *scalarTranslation = 0;
-	if (subkernel->translations.find(1) == subkernel->translations.end()) {
-		scalarTranslation = new Translation;
+	const Translation *translation = 0;
+	
+	TranslationWarpMap::const_iterator sk_tr_it = subkernel->translations.find(1);
+	if (sk_tr_it == subkernel->translations.end()) {
+		Translation *scalarTranslation = new Translation;
 		executive::Device *device = modules[subkernel->parent->kernel->module->path()].device;
 		scalarTranslation->metadata = compileTranslation(
 			*subkernel->parent,
@@ -84,17 +86,25 @@ LLVMDynamicTranslationCache::getOrInsertTranslationById(HyperblockId id, int ws)
 		);
 		subkernel->translations[1] = scalarTranslation;
 		
+		report("inserting translation with " 
+			<< static_cast<LLVMDynamicExecutive::Metadata*>(scalarTranslation->metadata)->localSize 
+			<< " bytes of local memory");
+		
 		assert(scalarTranslation->llvmFunction);
 		assert(scalarTranslation->function);
 		
 		scalarTranslation->llvmFunction->dump();
+		translation = scalarTranslation;
 	}
-	assert(scalarTranslation && "failed to find scalar translation");
+	else {
+		translation = sk_tr_it->second;
+	}
+	assert(translation && "failed to find scalar translation");
 	if (ws > 1) {
 		assert(0 && "non-scalar translation unimplemented");
 	}
 	
-	return scalarTranslation;
+	return translation;
 }
 
 
@@ -138,12 +148,10 @@ bool LLVMDynamicTranslationCache::loadModule(const ir::Module *module, executive
 				translated->subkernel = hb_it->second.subkernel;
 				translated->entryId = hb_it->second.hyperblockId;
 				
-				
 				report("  adding hyperblock " << translated->entryId);
 				
 				subkernelMap[translated->entryId] = translated;
 			}
-
 		}
 		
 		modules.insert(std::make_pair(module->path(), metadata));
@@ -833,8 +841,7 @@ static void setupLocalMemoryReferences(
 			}
 		}
 	}
-
-    report("   Total local memory size is " << metadata->localSize << ".");
+	report("   Total local memory size is " << metadata->localSize << ".");
 }
 
 /*!

@@ -138,6 +138,9 @@ namespace ir
 		public:
 			/*! \brief Builds the data flow graph within the kernel */
 			virtual analysis::DataflowGraph* dfg();
+			
+			/*! */
+			virtual analysis::DataflowGraph *rebuildDfg();
 
 			/*! \brief Gets the datalow graph */
 			virtual const analysis::DataflowGraph* dfg() const;

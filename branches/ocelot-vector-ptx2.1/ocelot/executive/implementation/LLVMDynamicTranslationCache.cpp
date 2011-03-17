@@ -135,7 +135,7 @@ bool LLVMDynamicTranslationCache::loadModule(const ir::Module *module, executive
 			formationPass.initialize(*module);
 			formationPass.runOnKernel(translatedKernel->decomposition, *kernel->second);
 			formationPass.finalize();
-
+			
 			// create subkernels
 			typedef analysis::HyperblockFormation::KernelDecomposition::HyperblockMap HyperblockMap;
 			for (HyperblockMap::const_iterator hb_it = translatedKernel->decomposition.hyperblocks.begin();
@@ -148,7 +148,10 @@ bool LLVMDynamicTranslationCache::loadModule(const ir::Module *module, executive
 				translated->subkernel = hb_it->second.subkernel;
 				translated->entryId = hb_it->second.hyperblockId;
 				
+//				translated->subkernel->dfg()->toSsa();
+				
 				report("  adding hyperblock " << translated->entryId);
+				translated->subkernel->write(std::cout);
 				
 				subkernelMap[translated->entryId] = translated;
 			}
@@ -703,11 +706,7 @@ static void setupTextureMemoryReferences(
 						kernel.module->path(), ptx.a.identifier);
 					assert(texture != 0);
 					
-					/*
-						// TODO textures
 					metadata->textures.push_back(texture);
-					
-					*/
 					
 					assert(0 && "unimplemented");
 				}
@@ -733,7 +732,7 @@ static void setupLocalMemoryReferences(
 	// [0] == subkernel-id
 	// [1] == call type
 	// [2] == barrier resume point if it exists
-	metadata->localSize = 8;
+	metadata->localSize = 0;
 	
 	// give preference to barrier resume point
 	ir::Kernel::LocalMap::const_iterator local = kernel.locals.find(
@@ -752,7 +751,30 @@ static void setupLocalMemoryReferences(
 			metadata->localSize += local->second.getSize();
 		}
 	}
+	
+	/*
+	// give preference to barrier resume point
+	local = kernel.locals.find("_Zocelot_resume_status");
+	if(local != kernel.locals.end())
+	{
+		if(local->second.space == ir::PTXInstruction::Local)
+		{
+			report("   Found local local variable " 
+				<< local->second.name << " of size " 
+				<< local->second.getSize());
+			
+			pad(metadata->localSize, local->second.alignment);
+			offsets.insert(std::make_pair(local->second.name,
+				metadata->localSize));
+			metadata->localSize += local->second.getSize();
+		}
+	}
+	*/
+	pad(metadata->localSize, sizeof(int));
+	offsets.insert(std::make_pair("_Zocelot_resume_status", metadata->localSize));
+	metadata->localSize += sizeof(int);
 
+	/*
 	// give preference to resume point
 	local = kernel.locals.find("_Zocelot_resume_point");
 	if(local != kernel.locals.end())
@@ -769,13 +791,18 @@ static void setupLocalMemoryReferences(
 			metadata->localSize += local->second.getSize();
 		}
 	}
-
+	*/
+	pad(metadata->localSize, sizeof(int));
+	offsets.insert(std::make_pair("_Zocelot_resume_point", metadata->localSize));
+	metadata->localSize += sizeof(int);
+	
 	for(ir::Kernel::LocalMap::const_iterator local = kernel.locals.begin(); 
 		local != kernel.locals.end(); ++local)
 	{
 		if(local->first == "_Zocelot_barrier_next_kernel") continue;
 		if(local->first == "_Zocelot_spill_area")          continue;
 		if(local->first == "_Zocelot_resume_point")        continue;
+		if(local->first == "_Zocelot_resume_status")        continue;
 		
 		if(local->second.space == ir::PTXInstruction::Local)
 		{
@@ -826,8 +853,13 @@ static void setupLocalMemoryReferences(
 				{
 					if(operands[i]->addressMode == ir::PTXOperand::Address)
 					{
-						OffsetMap::iterator offset = offsets.find( 
-							operands[i]->identifier);
+						/*
+						if(operands[i]->identifier == "_Zocelot_barrier_next_kernel") continue;
+						if(operands[i]->identifier == "_Zocelot_spill_area")          continue;
+						if(operands[i]->identifier == "_Zocelot_resume_point")        continue;
+						if(operands[i]->identifier == "_Zocelot_resume_status")        continue;
+						*/
+						OffsetMap::iterator offset = offsets.find(operands[i]->identifier);
 						if(offsets.end() != offset) 
 						{
 							ptx.addressSpace = ir::PTXInstruction::Local;
@@ -881,16 +913,7 @@ static void optimizePTX(
 	convertPredicationToSelect.initialize(*kernel.module);
 	convertPredicationToSelect.runOnKernel(kernel);
 	convertPredicationToSelect.finalize();
-	
-	/*
-	analysis::RemoveBarrierPass              removeBarriers(id);
-
-	report("  Running remove barriers pass");
-	removeBarriers.initialize(*kernel.module);
-	removeBarriers.runOnKernel(kernel);
-	removeBarriers.finalize();
-	*/
-		
+			
 	kernel.dfg()->toSsa();
 }
 
@@ -947,6 +970,9 @@ static void translate(
 	report(" Translating kernel.");
 	
 	report("  Converting from PTX IR to LLVM IR.");
+	
+	kernel.write(std::cout);
+	
 	translator::PTXToLLVMTranslator translator(optimization);
 	ir::LLVMKernel* llvmKernel = static_cast<ir::LLVMKernel*>(translator.translate(&kernel));
 	

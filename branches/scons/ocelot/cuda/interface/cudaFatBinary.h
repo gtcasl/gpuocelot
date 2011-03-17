@@ -106,12 +106,25 @@ typedef struct __cudaFatCudaBinaryRec {
     __cudaFatElfEntry             *elf;
 } __cudaFatCudaBinary;
 
+typedef struct __cudaFatCudaBinary2HeaderRec { 
+	char unknown[80];
+	char name[16];
+} __cudaFatCudaBinary2Header;
+
+
+typedef struct __cudaFatCudaBinaryRec2 {
+	int magic;
+	int version;
+	const unsigned long long* fatbinData;
+	char* f;
+} __cudaFatCudaBinary2;
 
 /*
  * Current version and magic numbers:
  */
 #define __cudaFatVERSION   0x00000004
 #define __cudaFatMAGIC     0x1ee55a01
+#define __cudaFatMAGIC2    0x466243b1
 
 /*
  * Version history log:

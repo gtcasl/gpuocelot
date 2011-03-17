@@ -19,6 +19,7 @@ namespace ir {
 		/*!	PTX directive types */
 		enum Directive {
 			Instr,			//! indicates this is an actual instruction
+			AddressSize,
 			CallTargets,
 			Const,
 			Entry,
@@ -128,6 +129,7 @@ namespace ir {
 			unsigned int sourceFile;
 			int alignment;
 			TextureSpace space;
+			unsigned int addressSize;
 		};
 		
 		std::string section_type;

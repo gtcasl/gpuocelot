@@ -113,6 +113,7 @@ def main():
 	command += " -j" + options.threads
 
 	# Run SCons
+	print command
 	os.system(command)
 
 	# Run unit tests

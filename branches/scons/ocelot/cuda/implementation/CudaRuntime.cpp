@@ -538,72 +538,35 @@ cuda::CudaRuntime::~CudaRuntime() {
 	registers a CUDA fatbinary and returns a handle
 	for referencing the fat binary
 */
-static bool dummy0Flag = false;
 
 void** cuda::CudaRuntime::cudaRegisterFatBinary(void *fatCubin) {
 	size_t handle = 0;
-	__cudaFatCudaBinary *binary = (__cudaFatCudaBinary *)fatCubin;
-	
 	_lock();
-		
+
+	handle = _fatBinaries.size();
+	
+	FatBinaryContext cubinContext(fatCubin);
+
 	for (FatBinaryVector::const_iterator it = _fatBinaries.begin();
 		it != _fatBinaries.end(); ++it) {
-		if (std::string(it->name()) == binary->ident) {
+		if (std::string(it->name()) == cubinContext.name()) {
 			_unlock();
-		
+	
 			assert(0 && "binary already exists");		
 			return 0;
 		}	
 	}
 
-	assertM(binary->ptx != 0, "binary contains no PTX");
-	assertM(binary->ptx->ptx != 0, "binary contains no PTX");
-
-	char* ptx = 0;
-	unsigned int ptxVersion = 0;
-
-	report("Getting the highest PTX version");
-
-	for(unsigned int i = 0; ; ++i)
-	{
-		if((binary->ptx[i].ptx) == 0) break;
-	
-		std::string computeCapability = binary->ptx[i].gpuProfileName;
-		std::string versionString(computeCapability.begin() + 8,
-			computeCapability.end());
-	
-		std::stringstream version;
-		unsigned int thisVersion = 0;
-		
-		version << versionString;
-		version >> thisVersion;
-		if(thisVersion > ptxVersion)
-		{
-			ptxVersion = thisVersion;
-			ptx = binary->ptx[i].ptx;
-		}
-	}
-	
-	report(" Selected version " << ptxVersion);
-
-	// register associated PTX
-	ModuleMap::iterator module = _modules.insert(
-		std::make_pair(binary->ident, ir::Module())).first;
-	module->second.lazyLoad(ptx, binary->ident);
-	
-	if(std::string(binary->ident).find("/cufft/") != std::string::npos)
-	{
-		dummy0Flag = true;
-	}
-	
-	report("Loading module (fatbin) - " << module->first);
-	reportE(REPORT_ALL_PTX, " with PTX\n" << ptx);
-	
-	handle = _fatBinaries.size();
-	
-	FatBinaryContext cubinContext(fatCubin);
 	_fatBinaries.push_back(cubinContext);
 	
+	// register associated PTX
+	ModuleMap::iterator module = _modules.insert(
+		std::make_pair(cubinContext.name(), ir::Module())).first;
+	module->second.lazyLoad(cubinContext.ptx(), cubinContext.name());
+	
+	report("Loading module (fatbin) - " << module->first);
+	reportE(REPORT_ALL_PTX, " with PTX\n" << cubinContext.ptx());
+		
 	_unlock();
 	
 	return (void **)handle;

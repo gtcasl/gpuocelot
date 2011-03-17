@@ -107,58 +107,62 @@ OcelotServer = env.Program('OcelotServer', \
 OcelotServer = env.Program('OcelotKernelTestHarness', \
 	[libocelot, 'ocelot/tools/KernelTestHarness.cpp'], LIBS=ocelot_libs)
 
+Default(OcelotConfig)
+
 # Create the ocelot unit tests
 tests = []
-if env['test_level'] == 'basic' or env['test_level'] == 'full':
-	tests.append(('TestLexer',  'ocelot/parser/test/TestLexer.cpp'))
-	tests.append(('TestParser', 'ocelot/parser/test/TestParser.cpp'))
-	tests.append(('TestInstructions', \
-		'ocelot/executive/test/TestInstructions.cpp'))
-	tests.append(('TestDataflowGraph', \
-		'ocelot/analysis/test/TestDataflowGraph.cpp'))
-	tests.append(('TestLLVMInstructions', \
-		'ocelot/ir/test/TestLLVMInstructions.cpp'))
-	tests.append(('TestKernels', \
-		'ocelot/executive/test/TestKernels.cpp'))
-	tests.append(('TestLLVMKernels', \
-		'ocelot/executive/test/TestLLVMKernels.cpp'))
-	tests.append(('TestEmulator', \
-		'ocelot/executive/test/TestEmulator.cpp'))
-	tests.append(('TestPTXToLLVMTranslator', \
-		'ocelot/translator/test/TestPTXToLLVMTranslator.cpp'))
-	
-if env['test_level'] == 'full':
-	tests.append(('TestCudaSequence', \
-		'ocelot/cuda/test/kernels/sequence.cu.cpp'))
-	tests.append(('TestCudaGenericMemory', \
-		'ocelot/cuda/test/memory/generic.cpp'))
-	tests.append(('TestCudaMalloc', \
-		'ocelot/cuda/test/memory/malloc.cu.cpp'))
-	tests.append(('TestCudaGlobals', \
-		'ocelot/cuda/test/globals/global.cu.cpp'))
-	tests.append(('TestCudaTexture2D', \
-		'ocelot/cuda/test/textures/texture2D.cu.cpp'))
-	tests.append(('TestCudaTexture3D', \
-		'ocelot/cuda/test/textures/texture3D.cu.cpp'))
-	tests.append(('TestCudaTextureArray', \
-		'ocelot/cuda/test/textures/textureArray.cu.cpp'))
-	tests.append(('TestFunctionCall', \
-		'ocelot/cuda/test/functions/simpleFunc.cu.cpp'))
-	tests.append(('TestIndirectFunctionCall', \
-		'ocelot/cuda/test/functions/indirectCall.cu.cpp'))
-	tests.append(('TestIndirectFunctionCallOcelot', \
-		'ocelot/cuda/test/functions/indirectCallOcelot.cpp'))
-	tests.append(('TestCalVectorScale', \
-		'ocelot/cal/test/vectorScale.cu.cpp'))
-	tests.append(('TestDeviceSwitching', \
-		'ocelot/api/test/TestDeviceSwitching.cpp'))
-	tests.append(('TestPTXAssembly', \
-		'ocelot/ir/test/TestPTXAssembly.cpp'))
+tests.append(('TestLexer',  'ocelot/parser/test/TestLexer.cpp', 'basic'))
+tests.append(('TestParser', 'ocelot/parser/test/TestParser.cpp', 'basic'))
+tests.append(('TestInstructions', \
+	'ocelot/executive/test/TestInstructions.cpp', 'basic'))
+tests.append(('TestDataflowGraph', \
+	'ocelot/analysis/test/TestDataflowGraph.cpp', 'basic'))
+tests.append(('TestLLVMInstructions', \
+	'ocelot/ir/test/TestLLVMInstructions.cpp', 'basic'))
+tests.append(('TestKernels', \
+	'ocelot/executive/test/TestKernels.cpp', 'basic'))
+tests.append(('TestLLVMKernels', \
+	'ocelot/executive/test/TestLLVMKernels.cpp', 'basic'))
+tests.append(('TestEmulator', \
+	'ocelot/executive/test/TestEmulator.cpp', 'basic'))
+tests.append(('TestPTXToLLVMTranslator', \
+	'ocelot/translator/test/TestPTXToLLVMTranslator.cpp', 'basic'))
+tests.append(('TestCudaSequence', \
+	'ocelot/cuda/test/kernels/sequence.cu.cpp', 'full'))
+tests.append(('TestCudaGenericMemory', \
+	'ocelot/cuda/test/memory/generic.cpp', 'full'))
+tests.append(('TestCudaMalloc', \
+	'ocelot/cuda/test/memory/malloc.cu.cpp', 'full'))
+tests.append(('TestCudaGlobals', \
+	'ocelot/cuda/test/globals/global.cu.cpp', 'full'))
+tests.append(('TestCudaTexture2D', \
+	'ocelot/cuda/test/textures/texture2D.cu.cpp', 'full'))
+tests.append(('TestCudaTexture3D', \
+	'ocelot/cuda/test/textures/texture3D.cu.cpp', 'full'))
+tests.append(('TestCudaTextureArray', \
+	'ocelot/cuda/test/textures/textureArray.cu.cpp', 'full'))
+tests.append(('TestFunctionCall', \
+	'ocelot/cuda/test/functions/simpleFunc.cu.cpp', 'full'))
+tests.append(('TestIndirectFunctionCall', \
+	'ocelot/cuda/test/functions/indirectCall.cu.cpp', 'full'))
+tests.append(('TestIndirectFunctionCallOcelot', \
+	'ocelot/cuda/test/functions/indirectCallOcelot.cpp', 'full'))
+tests.append(('TestCalVectorScale', \
+	'ocelot/cal/test/vectorScale.cu.cpp', 'full'))
+tests.append(('TestDeviceSwitching', \
+	'ocelot/api/test/TestDeviceSwitching.cpp', 'full'))
+tests.append(('TestPTXAssembly', \
+	'ocelot/ir/test/TestPTXAssembly.cpp', 'full'))
+
+for test in tests:
+	Test = env.Program(test[0], [libocelot, test[1]], LIBS=ocelot_libs)
 
 if env['test_level'] != 'none':
 	print 'Adding unit tests to the build...'
 
-for test in tests:
-	print ' added \'' + test[0] + '\''
-	Test = env.Program(test[0], [libocelot, test[1]], LIBS=ocelot_libs)
+level_map = { 'none' : 0, 'basic' : 1, 'full' : 2 }
 
+for test in tests:
+	if level_map[env['test_level']] >= level_map[test[2]]:
+		print 'Adding test ' + test[0]
+		Default(test[0])

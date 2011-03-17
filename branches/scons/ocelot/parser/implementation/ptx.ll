@@ -244,6 +244,8 @@ WHITESPACE [ \t]*
 
 ".align"                        { yylval->value = TOKEN_ALIGN; \
                                     return TOKEN_ALIGN; }
+".address_size"                 { yylval->value = TOKEN_ADDRESS_SIZE; \
+                                    return TOKEN_ADDRESS_SIZE; }
 ".callprototype"                { yylval->value = TOKEN_CALL_PROTOTYPE; \
                                     return TOKEN_CALL_PROTOTYPE; }
 ".calltargets"                  { yylval->value = TOKEN_CALL_TARGETS; \

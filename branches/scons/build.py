@@ -81,6 +81,8 @@ def main():
 	parser.add_option( "-j", "--threads", default = "1" )
 	parser.add_option( "-s", "--submit", \
 		default = False, action = "store_true" )
+	parser.add_option( "-b", "--build_target", \
+		default = "", help = "build a specific target." )
 	parser.add_option( "-m", "--message", default = "", \
 		help = "the message describing the changes being committed." )
 	
@@ -88,17 +90,25 @@ def main():
 	
 	command = "scons"
 
+	if options.submit:
+		if options.test_level != 'full':
+			print "Full test level required for a submit."
+		options.test_level = 'full'
+		options.build_target = ''
+
 	if options.clean:
 		command += " -c"
 
 	if options.debug:
 		command += " mode=debug"
 
-	if options.submit:
-		if options.test_level != 'full':
-			print "Full test level required for a submit."
-		options.test_level = 'full'
-
+	if options.build_target != '':
+		if options.debug:
+			command += " .debug_build/"
+		else:
+			command += " .release_build/"
+		command += options.build_target
+		
 	command += " test_level=" + options.test_level
 	command += " -j" + options.threads
 

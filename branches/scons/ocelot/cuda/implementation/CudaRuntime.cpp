@@ -129,12 +129,12 @@ void cuda::HostThreadContext::clear() {
 	nextTraceGenerators.clear();
 }
 
-void cuda::HostThreadContext::mapParameters(const ir::Kernel* kernel) {
-	
+unsigned int cuda::HostThreadContext::mapParameters(const ir::Kernel* kernel) {
+	unsigned int dst = 0;
+
 	if (kernel->arguments.size() == parameterIndices.size()) {
 		IndexVector::iterator offset = parameterIndices.begin();
 		SizeVector::iterator size = parameterSizes.begin();
-		unsigned int dst = 0;
 		unsigned char* temp = (unsigned char*)malloc(parameterBlockSize);
 		for (ir::Kernel::ParameterVector::const_iterator 
 			parameter = kernel->arguments.begin(); 
@@ -171,6 +171,8 @@ void cuda::HostThreadContext::mapParameters(const ir::Kernel* kernel) {
 			<< parameterIndices[0] << ", " 
 			<< parameterSizes[0] << " bytes");
 		clearParameters();
+
+		dst = parameterBlockSize;
 	}
 	else {
 		report("Parameter ERROR: offset " << parameterIndices[0] << ", "
@@ -179,6 +181,8 @@ void cuda::HostThreadContext::mapParameters(const ir::Kernel* kernel) {
 		assert((kernel->arguments.size() == parameterIndices.size()) && 
 			"unaccepted argument formatting");
 	}
+
+	return dst;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -2548,7 +2552,7 @@ cudaError_t cuda::CudaRuntime::_launchKernel(const std::string& moduleName,
 	KernelLaunchConfiguration launch(thread.launchConfigurations.back());
 	thread.launchConfigurations.pop_back();
 	
-	thread.mapParameters(k);
+	unsigned int paramSize = thread.mapParameters(k);
 	
 	report("kernel launch (" << kernelName 
 		<< ") on thread " << boost::this_thread::get_id());
@@ -2563,7 +2567,7 @@ cudaError_t cuda::CudaRuntime::_launchKernel(const std::string& moduleName,
 
 		_getDevice().launch(moduleName, kernelName, convert(launch.gridDim), 
 			convert(launch.blockDim), launch.sharedMemory, 
-			thread.parameterBlock, thread.parameterBlockSize, traceGens);
+			thread.parameterBlock, paramSize, traceGens);
 		report(" launch completed successfully");	
 	}
 	catch( const executive::RuntimeException& e ) {

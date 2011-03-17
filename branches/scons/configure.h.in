@@ -1,6 +1,6 @@
 /* configure.h.in.  Generated from configure.in by autoheader.  */
 
-/* "Define to 1 if llvm is installed" */
+/* Define if llvm is installed */
 #if %(HAVE_LLVM)d
 #define HAVE_LLVM
 #endif
@@ -8,17 +8,25 @@
 /* "Define the ocelot compile flags" */
 #define OCELOT_CXXFLAGS "%(CXXFLAGS)s"
 
-/* "Define the ocelot linker flags" */
-#define OCELOT_LDFLAGS "%(LINKFLAGS)s"
-
 /* Name of package */
 #define PACKAGE "ocelot"
 
 /* Version number of package */
 #define VERSION "%(VERSION)s"
 
-/* Ocelot CXX flags */
-#define OCELOT_CXXFLAGS "%(CXXFLAGS)s"
+/* Where is Ocelot installed */
+#define OCELOT_PREFIX_PATH "%(INSTALL_PATH)s"
 
+/* "Define the ocelot linker flags" */
+#define OCELOT_LDFLAGS "%(OCELOT_LDFLAGS)s"
+
+/* Where are the ocelot headers? */
+#define OCELOT_INCLUDE_PATH "%(INSTALL_PATH)s"
+
+/* Where are the ocelot libraries? */
+#define OCELOT_LIB_PATH "%(INSTALL_PATH)s"
+
+/* Where are the ocelot binaries? */
+#define OCELOT_BIN_PATH "%(INSTALL_PATH)s"
 
 

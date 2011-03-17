@@ -95,8 +95,7 @@ for source in bison_sources:
 libocelot = env.SharedLibrary('ocelot', sources)
 
 # Create the ocelot tools
-ocelot_libs = ['boost_system-mt', 'boost_filesystem-mt', \
-	'boost_thread-mt', 'GLEW']
+ocelot_libs = env['EXTRA_LIBS']
 ocelot_libs.extend(env['LLVM_LIBS'])
 
 OcelotConfig = env.Program('OcelotConfig', \
@@ -105,6 +104,8 @@ PTXOptimizer = env.Program('PTXOptimizer', \
 	[libocelot, 'ocelot/tools/PTXOptimizer.cpp'], LIBS=ocelot_libs)
 OcelotServer = env.Program('OcelotServer', \
 	[libocelot, 'ocelot/tools/OcelotServer.cpp'], LIBS=ocelot_libs)
+OcelotServer = env.Program('OcelotKernelTestHarness', \
+	[libocelot, 'ocelot/tools/KernelTestHarness.cpp'], LIBS=ocelot_libs)
 
 # Create the ocelot unit tests
 tests = []

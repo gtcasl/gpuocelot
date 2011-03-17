@@ -82,10 +82,6 @@ namespace executive
 				const std::string& kernel);
 
 		public:
-			/*! \brief Get the device properties */
-			const Properties& properties() const;
-
-		public:
 			/*! \brief Create a new event */
 			unsigned int createEvent(int flags);
 			/*! \brief Destroy an existing event */

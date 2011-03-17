@@ -31,8 +31,7 @@ namespace util {
 	
 		class MemoryAllocation {
 		public:
-			MemoryAllocation(void *ptr, size_t size,
-				ir::PTXOperand::DataType dt = ir::PTXOperand::u32, char c = 0);
+			MemoryAllocation(void *ptr, size_t size, char c = 0);
 			MemoryAllocation();
 			~MemoryAllocation();
 			
@@ -49,9 +48,6 @@ namespace util {
 		
 			//! \brief references the allocation on the device
 			void *devicePointer;
-		
-			//! \brief type of data
-			ir::PTXOperand::DataType dataType;
 		
 			//! \brief binary representation of data
 			ByteVector data;
@@ -89,7 +85,7 @@ namespace util {
 			std::string name;
 			
 			//! \brief file to which PTX representation of module is written
-			std::string ptxFile;
+			std::string ptx;
 						
 			//! \brief textures contained in the module
 			TextureMap textures;

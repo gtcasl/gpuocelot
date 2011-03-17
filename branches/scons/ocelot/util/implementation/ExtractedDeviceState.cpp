@@ -153,30 +153,12 @@ static void serializeBinary(std::ostream &out, const util::ByteVector &data) {
 	serializeBinary(out, data.size(), &data[0]);
 }
 
-static void deserializeImage(util::ByteVector &bytes, std::istream &in,
-	size_t size) {
-	size_t wordSize = 4;
-	bytes.clear();
-	bytes.resize(size, 0);
-	size_t ip = 0;
-	while (in.good()) {
-		std::string wordString;
-		in >> wordString;
-		unsigned int word =
-			boost::lexical_cast<HexTo<unsigned int>>(wordString);
-		for (size_t i = 0; i < wordSize; i++) {
-			bytes[ip++] = (word & 0x0ff);
-			word >>= 8;
-		}
-	}
-	bytes.resize(size, 0);
-}
 
 ////////////////////////////////////////////////////////////////////////////////
 
 util::ExtractedDeviceState::MemoryAllocation::MemoryAllocation(void *ptr,
-	size_t _size, ir::PTXOperand::DataType _dt, char c): 
-	devicePointer(ptr), dataType(_dt), data(_size, c) {
+	size_t _size, char c): 
+	devicePointer(ptr), data(_size, c) {
 }
 util::ExtractedDeviceState::MemoryAllocation::MemoryAllocation():
 	devicePointer(0) {
@@ -195,20 +177,10 @@ void util::ExtractedDeviceState::MemoryAllocation::serialize(std::ostream &out,
 	const std::string & prefix) const {
 	out << "{";
 	out << "  \"device\": \"" << (void *)devicePointer << "\",\n";
-	out << "  \"type\": \"" << ir::PTXOperand::toString(dataType) << "\",\n";
+	out << "  \"data\": ";
+	::serializeBinary(out, data);
 	
-	std::stringstream ss;
-	ss << prefix << "_global-" 
-		<< ir::PTXOperand::toString(dataType) 
-		<< "-" << data.size() 
-		<< "-bytes-" << (void *)devicePointer;
-	
-	out << "  \"size\": " << data.size() << ",\n";
-	out << "  \"file\": \"" << ss.str() << "\"";
 	out << "}";
-	
-	std::ofstream file(ss.str());
-	::serializeBinary(file, data.size(), &data[0], true);
 }
 
 void util::ExtractedDeviceState::MemoryAllocation::deserialize(
@@ -216,13 +188,9 @@ void util::ExtractedDeviceState::MemoryAllocation::deserialize(
 	devicePointer = hydrazine::bit_cast<void *>(
 		boost::lexical_cast<HexTo<size_t> >(
 		object.parse<std::string>("device", "0x00")));
-	dataType = ir::PTXOperand::u64;//type = ir::PTXOperand::fromString(object.parse<std::string>("type", "u64"));
-	size_t bytes = object.parse<int>("size", 0);
 	
-	std::string filename = object.parse<std::string>("file", "");
-	if (filename != "") {
-		std::ifstream file(filename.c_str());
-		deserializeImage(data, file, bytes);
+	if (hydrazine::json::Value *dataMemory = object.find("data")) {
+		deserializeBinary(data, hydrazine::json::Visitor(dataMemory));
 	}
 }
 
@@ -251,7 +219,7 @@ void util::ExtractedDeviceState::KernelLaunch::deserialize(
 	
 	if (hydrazine::json::Value *parameterMemory = object.find("parameterMemory")) {
 		deserializeBinary(this->parameterMemory,
-		hydrazine::json::Visitor(parameterMemory));
+			hydrazine::json::Visitor(parameterMemory));
 	}
 }
 
@@ -304,8 +272,8 @@ void util::ExtractedDeviceState::Module::serialize(std::ostream &out,
 	const std::string & prefix) const {
 	out << "{\n";
 	out << "  \"name\": \"" << name << "\",\n";
-	out << "  \"ptxFile\": \"";
-	emitEscapedString(out, ptxFile);
+	out << "  \"ptx\": \"";
+	emitEscapedString(out, ptx);
 	out << "\"";
 	if (textures.size()) {
 		out << ",\n  \"textures\": {\n";
@@ -324,7 +292,7 @@ void util::ExtractedDeviceState::Module::serialize(std::ostream &out,
 void util::ExtractedDeviceState::Module::deserialize(
 	const hydrazine::json::Visitor &object) {
 	name = object.parse<std::string>("name", "module");
-	ptxFile = object.parse<std::string>("ptxFile", "module.ptx");
+	ptx = object.parse<std::string>("ptx", "");
 	if (hydrazine::json::Value *texturesValue = object.find("textures")) {
 		hydrazine::json::Object *textures =
 			static_cast<hydrazine::json::Object *>(texturesValue);
@@ -405,7 +373,17 @@ void util::ExtractedDeviceState::serialize(std::ostream &out) const {
 		out << (n++ ? ",\n":"");
 		alloc_it->second->serialize(out, application.name);
 	}
+
+	out << "],\n\"post_launch_allocations\": [";
+	n = 0;
+	for (GlobalAllocationMap::const_iterator
+		alloc_it = postLaunchGlobalAllocations.begin(); 
+		alloc_it != postLaunchGlobalAllocations.end(); ++alloc_it) {
 	
+		out << (n++ ? ",\n":"");
+		alloc_it->second->serialize(out, application.name);
+	}
+		
 	out << "],\n";
 	
 	out <<" \"kernelLaunch\": ";
@@ -453,6 +431,17 @@ void util::ExtractedDeviceState::deserialize(std::istream &in) {
 			globalAllocations[allocation->devicePointer] = allocation;
 		}
 		
+		hydrazine::json::Visitor postAllocationsArray(
+			object["post_launch_allocations"]);
+		for (hydrazine::json::Array::const_iterator
+			alloc_it = postAllocationsArray.begin_array();
+			alloc_it != postAllocationsArray.end_array(); ++alloc_it) {
+			
+			MemoryAllocation *allocation = new MemoryAllocation;
+			allocation->deserialize(hydrazine::json::Visitor(*alloc_it));
+			postLaunchGlobalAllocations[allocation->devicePointer] = allocation;
+		}
+
 		hydrazine::json::Visitor modulesArray(object["modules"]);
 		for (hydrazine::json::Array::const_iterator
 			mod_it = modulesArray.begin_array();

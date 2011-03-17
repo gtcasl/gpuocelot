@@ -267,6 +267,9 @@ def Environment():
 	# get bison switches
 	env.AppendUnique(YACCFLAGS = "-d")
 	
+	# Install paths
+	env.Replace(INSTALL_PATH = os.path.abspath(os.getcwd()))
+	
 	# get CUDA paths
 	(cuda_exe_path,cuda_lib_path,cuda_inc_path) = getCudaPaths()
 	#env.Append(LIBPATH = [cuda_lib_path])
@@ -294,6 +297,18 @@ def Environment():
 	
 	# set ocelot include path
 	env.Prepend(CPPPATH = os.path.dirname(thisDir))
+	
+	# set extra libs 
+	env.Replace(EXTRA_LIBS=['-lboost_system-mt', '-lboost_filesystem-mt', \
+		'-lboost_thread-mt', '-lGLEW'])
+	
+	# set ocelot libs
+	ocelot_libs = '-locelot'
+	for lib in env['EXTRA_LIBS']:
+		ocelot_libs += ' ' + lib
+	for lib in env['LLVM_LIBS']:
+		ocelot_libs += ' ' + lib
+	env.Replace(OCELOT_LDFLAGS=ocelot_libs)
 	
 	# include the build directory in case of generated files
 	env.Prepend(CPPPATH = env.Dir('.'))

@@ -30,6 +30,7 @@ namespace util {
 		
 		void execute();
 		bool compare();
+		void reset();
 		
 	private:
 	
@@ -37,7 +38,6 @@ namespace util {
 		void _setupTextures(const ExtractedDeviceState::Module &module);
 		void _setupMemory();
 		void _setupModule();
-		void _extractResultState();
 	
 	private:
 		//! extracted device state de-serialized from file

@@ -7,11 +7,13 @@
 */
 
 // Ocelot includes
-#include <ocelot/cuda/interface/cuda_runtime.h>
 #include <ocelot/executive/interface/PassThroughDevice.h>
+#include <ocelot/cuda/interface/cuda_runtime.h>
+#include <ocelot/api/interface/OcelotConfiguration.h>
 
 // Hydrazine includes
 #include <hydrazine/implementation/debug.h>
+#include <hydrazine/implementation/Exception.h>
 
 #ifdef REPORT_BASE
 #undef REPORT_BASE
@@ -20,24 +22,25 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 // whether debugging messages are printed
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 // if reporting is enabled, determines whether to print file name, line number, 
 // and function name for each device call
-#define REPORT_DEVICE_CALLS 1
+#define REPORT_DEVICE_CALLS 0
 
 ////////////////////////////////////////////////////////////////////////////////
 
 #if REPORT_DEVICE_CALLS
-#define TRACE() report( __FILE__ << ":" << __LINE__ \
-	<< " - " << __func__ << "() " )
+#define TRACE() report( " - " << __func__ << "() " )
 #else
 #define TRACE()
 #endif
 
-#define CHECK() assert(0 && "No device selected")
+#define CHECK() assertM(_target, "Target not set.")
 
 ////////////////////////////////////////////////////////////////////////////////
+
+typedef api::OcelotConfiguration config;
 
 executive::PassThroughDevice::PassThroughDevice(
 	executive::Device *target, 
@@ -45,6 +48,9 @@ executive::PassThroughDevice::PassThroughDevice(
 : _kernelCount(0), _target(target) 
 {
 	TRACE();
+	_properties = _target->properties();
+
+	report("Bound to device '" << properties().name << "'");
 }
 
 executive::PassThroughDevice::~PassThroughDevice() {
@@ -192,15 +198,18 @@ void executive::PassThroughDevice::load(const ir::Module* module) {
 		util::ExtractedDeviceState::Module())).first;
 	
 	eModule->second.name = module->path();
-	std::stringstream stream(eModule->second.ptxFile);
+	std::stringstream stream;
 	module->writeIR(stream);
-	
+	eModule->second.ptx = stream.str();
+
 	for (ir::Module::TextureMap::const_iterator
 		texture = module->textures().begin();
 		texture != module->textures().end(); ++texture) {
 		eModule->second.textures.insert(
 			std::make_pair(texture->first, &texture->second));
 	}
+	
+	// TODO add global allocations
 	
 	_target->load(module);
 }
@@ -455,5 +464,17 @@ void  executive::PassThroughDevice::_recordStatePostExecution() {
 		}
 	}
 	
+	std::stringstream stream;
+	stream << config::get().checkpoint.path
+		<< config::get().checkpoint.prefix << _kernelCount++
+		<< config::get().checkpoint.suffix;
+	std::ofstream file(stream.str());
+	if(!file.is_open())
+	{
+		throw hydrazine::Exception("Failed to open checkpoint file '"
+			+ stream.str() + "' for writing.");
+	}
+	
+	_state.serialize(file);
 }
 

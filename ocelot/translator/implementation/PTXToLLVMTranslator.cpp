@@ -941,6 +941,8 @@ namespace translator
 			block = ++_ptx->dfg()->begin(); 
 			block != _ptx->dfg()->end(); ++block )
 		{
+			report("  translating block " << block->label() );
+		
 			_newBlock( block->label() );
 			report( "  Translating Phi Instructions" );
 			for( analysis::DataflowGraph::PhiInstructionVector::const_iterator 

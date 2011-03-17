@@ -32,7 +32,22 @@ namespace analysis {
 		typedef std::vector<ir::PTXKernel*> KernelVector;
 		typedef unsigned int HyperblockId;
 		
+		/*!
+			\brief 
+		*/
 		class Hyperblock {
+		public:
+			class Exit {
+			public:
+				
+				//! \brief 
+				ir::BasicBlock::Pointer exitBlock; 
+				
+				//! \brief 
+				ir::PTXInstruction *selp;
+			};
+			typedef std::vector< Exit > ExitVector;
+			
 		public:
 		
 			//! \brief stores subkernel backing hyperblock
@@ -43,6 +58,9 @@ namespace analysis {
 			
 			//! \brief identifies the label of the entry block
 			std::string entryBlock;
+			
+			//! \brief defines exit points of hyperblock
+			ExitVector exits;
 		};
 		
 		/*!

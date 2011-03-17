@@ -24,6 +24,7 @@ namespace executive {
 	*/
 	class LLVMDynamicExecutive {
 	public:
+		typedef ExecutableKernel::TextureVector TextureVector;
 		typedef std::list< LLVMContext > ThreadContextQueue;
 		typedef std::vector< char > ByteVector;
 		
@@ -67,9 +68,12 @@ namespace executive {
 		public:
 			const ir::PTXKernel* kernel;
 			HyperblockId	nextEntryId;
+			TextureVector textures;
 			
 		public:
+			//! \brief toString method for enumeration ThreadExitCode
 			static std::string toString(const ThreadExitCode &code);
+			
 		};
 		
 		/*!
@@ -141,6 +145,12 @@ namespace executive {
 		//! \brief computes the CTA ID
 		unsigned int ctaId(const ir::Dim3 &ctaId);
 		
+		//! \brief gets the exit code of a thread
+		static Metadata::ThreadExitCode getExitCode(const LLVMContext &context);
+		
+		//! \brief determines a thread's next subkernel
+		static HyperblockId getNextSubkernel(const LLVMContext &context);
+		
 	public:
 	
 		//! \brief kernel to execute
@@ -154,12 +164,6 @@ namespace executive {
 		
 		//! \brief thread-local cache of translations
 		TranslationWarpCache translationCache;
-		
-		//! \brief set of threads which may execute next
-		CtaThreadQueue readyQueue;
-		
-		//! \brief set of threads waiting on a barrier 
-		CtaThreadQueue waitingQueue;
 		
 	};
 }	

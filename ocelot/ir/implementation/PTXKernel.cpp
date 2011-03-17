@@ -255,6 +255,14 @@ namespace ir
 		_dfg = new analysis::DataflowGraph( *_cfg );
 		return _dfg;
 	}
+	
+
+	/*! */
+	analysis::DataflowGraph *PTXKernel::rebuildDfg() {
+		if (_dfg) delete _dfg;
+		_dfg = 0;
+		return dfg();
+	}
 
 	const analysis::DataflowGraph* PTXKernel::dfg() const 
 	{

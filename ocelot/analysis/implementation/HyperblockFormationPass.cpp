@@ -56,7 +56,11 @@ void analysis::HyperblockFormation::runOnKernel(KernelDecomposition &decompositi
 	//
 	
 	ir::PTXKernel& parentKernel = static_cast<ir::PTXKernel&>(parent);
-	report("Run on kernel " << parentKernel.name);
+	report("Run on kernel '" << parentKernel.name << "'");
+#if REPORT_BASE > 0
+	parentKernel.write(std::cout);
+	report("\n\n");
+#endif
 
 	// Compute live register sets for each block
 	
@@ -88,13 +92,17 @@ void analysis::HyperblockFormation::runOnKernel(KernelDecomposition &decompositi
 			false, 
 			parentKernel.module);
 
+		
 		ir::ControlFlowGraph::iterator computationalBlock = hyperblock.subkernel->cfg()->insert_new_block((*bb_it)->label);
 		for (ir::BasicBlock::InstructionList::const_iterator inst_it = (*bb_it)->instructions.begin();
 			inst_it != (*bb_it)->instructions.end();
 			++inst_it) {
 			computationalBlock->instructions.push_back((*inst_it)->clone());
 		}
-
+		
+		decomposition.hyperblocks[hyperblock.hyperblockId] = hyperblock;
+		decomposition.hyperblockEntries[hyperblock.entryBlock] = hyperblock.hyperblockId;
+		
 		ir::BasicBlock::Edge entryEdge(hyperblock.subkernel->cfg()->get_entry_block(), computationalBlock );
 		ir::BasicBlock::Edge exitEdge(computationalBlock, hyperblock.subkernel->cfg()->get_exit_block() );
 		ir::ControlFlowGraph::edge_iterator entryIterator = hyperblock.subkernel->cfg()->insert_edge(entryEdge);
@@ -112,9 +120,13 @@ void analysis::HyperblockFormation::runOnKernel(KernelDecomposition &decompositi
 		/* ir::ControlFlowGraph::EdgePair splitEntry = */hyperblock.subkernel->cfg()->split_edge(entryIterator, prologBlock);
 		/* ir::ControlFlowGraph::EdgePair splitExit = */ hyperblock.subkernel->cfg()->split_edge(exitIterator, epilogBlock);
 		
-		decomposition.hyperblocks[hyperblock.hyperblockId] = hyperblock;
-		decomposition.hyperblockEntries[hyperblock.entryBlock] = hyperblock.hyperblockId;
+		hyperblock.subkernel->rebuildDfg()->compute();
 	}
+	
+	// revisit all basic block terminators:
+	//	- branches to blocks with multiple in-edges are hyperblock exits
+	//	- branches in which both targets are hyperblock exits need only spill once
+
 }
 
 void analysis::HyperblockFormation::finalize() {
@@ -128,11 +140,12 @@ void analysis::HyperblockFormation::_createSpillRegion(
 	ir::PTXKernel &parentKernel,
 	ir::BasicBlock &restoreBlock) {
 	
-	unsigned int spillRegionSize = 10;
+	unsigned int spillRegionSize = parentKernel.dfg()->maxRegister()*4;
 
 	subkernel.arguments  = parentKernel.arguments;
 	subkernel.parameters = parentKernel.parameters;
 	subkernel.locals     = parentKernel.locals;
+	
 	
 	ir::PTXStatement resumeTarget(ir::PTXStatement::Local);
 		
@@ -201,12 +214,20 @@ size_t analysis::HyperblockFormation::_createStore(
 	
 	size_t offset = 0;
 
-	ir::PTXInstruction* move = new ir::PTXInstruction(ir::PTXInstruction::Mov);
+	ir::PTXInstruction* move = 0;
+	
 	for(DataflowGraph::RegisterSet::const_iterator reg = dfgBlock->second->aliveOut().begin(); 
 		reg != dfgBlock->second->aliveOut().end(); 
 		++reg) {
 		
 		report("    saving r" << reg->id << " (" << ir::PTXOperand::bytes(reg->type) << " bytes)");
+		
+		if (!move) {
+			move = new ir::PTXInstruction(ir::PTXInstruction::Mov);
+			move->a = std::move(ir::PTXOperand(ir::PTXOperand::Address, ir::PTXOperand::u32, "_Zocelot_spill_area"));
+			move->d = std::move(ir::PTXOperand(ir::PTXOperand::Register, ir::PTXOperand::u32, hyperblock.dfg()->newRegister()));
+			exitBlock.instructions.push_back(move);
+		}
 	
 		ir::PTXInstruction* store =	new ir::PTXInstruction(ir::PTXInstruction::St);
 	
@@ -252,8 +273,8 @@ size_t analysis::HyperblockFormation::_createHyperblockExit(
 				selp->b = std::move(ir::PTXOperand(ir::PTXOperand::Immediate, ir::PTXOperand::u32));
 				selp->a.imm_uint = 0;	// branch target hyperblock id
 				selp->b.imm_uint = 0;	// fall through target hyperblock id
-				selp->c = terminator->pg;
-				
+				selp->c = std::move(ir::PTXOperand(ir::PTXOperand::Register, ir::PTXOperand::pred, terminator->pg.reg, 0));
+								
 				targetRegister = selp->d.reg;
 				
 				exitBlock.instructions.push_back(selp);
@@ -262,9 +283,46 @@ size_t analysis::HyperblockFormation::_createHyperblockExit(
 			else {
 				// unconditional branch
 			}
-			// store 
+		
 			ir::PTXInstruction *move = new ir::PTXInstruction(ir::PTXInstruction::Mov);
 			move->a = std::move(ir::PTXOperand(ir::PTXOperand::Address, ir::PTXOperand::u32, "_Zocelot_resume_point"));
+			move->d = std::move(ir::PTXOperand(ir::PTXOperand::Register, ir::PTXOperand::u32, subkernel.dfg()->newRegister()));
+			move->type = ir::PTXOperand::u32;
+			
+			ir::PTXInstruction *store = new ir::PTXInstruction(ir::PTXInstruction::St);
+			store->addressSpace = ir::PTXInstruction::Local;
+			store->type = ir::PTXOperand::u32;
+			store->d = std::move(ir::PTXOperand(ir::PTXOperand::Indirect, ir::PTXOperand::u32, move->d.reg, 0));
+			store->a = std::move(ir::PTXOperand(ir::PTXOperand::Register, ir::PTXOperand::u32, targetRegister, 0));
+			
+			exitBlock.instructions.push_back(move);
+			exitBlock.instructions.push_back(store);
+			
+			// store 
+			move = new ir::PTXInstruction(ir::PTXInstruction::Mov);
+			move->a = std::move(ir::PTXOperand(ir::PTXOperand::Address, ir::PTXOperand::u32, "_Zocelot_resume_status"));
+			move->d = std::move(ir::PTXOperand(ir::PTXOperand::Register, ir::PTXOperand::u32, subkernel.dfg()->newRegister()));
+			move->type = ir::PTXOperand::u32;
+	
+			store = new ir::PTXInstruction(ir::PTXInstruction::St);
+			store->addressSpace = ir::PTXInstruction::Local;
+			store->type = ir::PTXOperand::u32;
+			store->d = std::move(ir::PTXOperand(ir::PTXOperand::Indirect, ir::PTXOperand::u32, move->d.reg, 0));
+			store->a = std::move(ir::PTXOperand(ir::PTXOperand::Immediate, ir::PTXOperand::u32));
+			store->a.imm_uint = 1;
+	
+			exitBlock.instructions.push_back(move);
+			exitBlock.instructions.push_back(store);
+		}
+		break;
+		case ir::PTXInstruction::Exit:
+		{
+			// mov %rd0, _Zocelot_resume_status
+			// store [%rd0], <exit code>
+			
+			// store 
+			ir::PTXInstruction *move = new ir::PTXInstruction(ir::PTXInstruction::Mov);
+			move->a = std::move(ir::PTXOperand(ir::PTXOperand::Address, ir::PTXOperand::u32, "_Zocelot_resume_status", 0));
 			move->d = std::move(ir::PTXOperand(ir::PTXOperand::Register, ir::PTXOperand::u32, subkernel.dfg()->newRegister()));
 			move->type = ir::PTXOperand::u32;
 	
@@ -272,15 +330,16 @@ size_t analysis::HyperblockFormation::_createHyperblockExit(
 			store->addressSpace = ir::PTXInstruction::Local;
 			store->type = ir::PTXOperand::u32;
 			store->d = std::move(ir::PTXOperand(ir::PTXOperand::Indirect, ir::PTXOperand::u32, move->d.reg, 0));
-			store->a = std::move(ir::PTXOperand(ir::PTXOperand::Register, ir::PTXOperand::u32, targetRegister));
+			store->a = std::move(ir::PTXOperand(ir::PTXOperand::Immediate, ir::PTXOperand::u32));
+			store->a.imm_uint = 6;
 	
-			exitBlock.instructions.push_back(move);
+			// need to insert these into the dfg
+			clonedBlock.instructions.erase(last);
+			clonedBlock.instructions.push_back(move);
+			clonedBlock.instructions.push_back(store);
+			
 		}
 		break;
-		case ir::PTXInstruction::Exit:
-		{
-			// nothing
-		}
 		default:
 			break;
 	}

@@ -85,6 +85,20 @@ void LLVMDynamicExecutive::finishContext(LLVMContext &context) {
 
 }
 
+
+//! \brief gets the exit code of a thread
+LLVMDynamicExecutive::Metadata::ThreadExitCode LLVMDynamicExecutive::getExitCode(
+	const LLVMContext &context) {
+
+	return (LLVMDynamicExecutive::Metadata::ThreadExitCode)*((int *)&context.local[0]);
+}
+
+LLVMDynamicExecutive::HyperblockId LLVMDynamicExecutive::getNextSubkernel(
+	const LLVMContext &context) {
+	
+	return *((HyperblockId *)&context.local[4]);
+}
+
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
 /*! 
@@ -167,7 +181,7 @@ void LLVMDynamicExecutive::executeWarp(Warp &warp) {
 		ctx_it != warp.threads.end(); 
 		++ctx_it) {
 	
-		Metadata::ThreadExitCode exitCode = Metadata::Thread_exit;
+		Metadata::ThreadExitCode exitCode = getExitCode(*ctx_it);
 		report(" thread(" << ctx_it->tid.x << ", " << ctx_it->tid.y << ", " << ctx_it->tid.z << ") [cta ] exited with code " 
 			<< Metadata::toString(exitCode));
 		

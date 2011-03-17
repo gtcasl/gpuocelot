@@ -25,6 +25,7 @@ namespace executive {
 	class LLVMDynamicExecutive {
 	public:
 		typedef std::list< LLVMContext > ThreadContextQueue;
+		typedef std::vector< char > ByteVector;
 		
 		//! maps CTA ID to a queue of waiting threads
 		typedef std::map< unsigned int, ThreadContextQueue > CtaThreadQueue;
@@ -85,6 +86,29 @@ namespace executive {
 			HyperblockId entryId;
 		};
 		
+		class CooperativeThreadArray {
+		public:
+		
+			void initialize(const LLVMDynamicKernel &kernel, const ir::Dim3 & ctaId);
+		
+		public:
+			ByteVector local;
+			ByteVector shared;
+			ByteVector constant;
+			ByteVector parameter;
+			ByteVector argument;
+			
+			ir::Dim3 blockId;
+			ir::Dim3 blockDim;
+			
+			//! threads ready to execute
+			ThreadContextQueue readyQueue;
+			
+			//! threads waiting on a barrier
+			ThreadContextQueue barrierQueue;
+		};
+		typedef std::map< unsigned int, CooperativeThreadArray > CooperativeThreadArrayMap;
+		
 	public:
 		//! \brief 
 		LLVMDynamicExecutive(const LLVMDynamicKernel *kernel, int procID);
@@ -109,6 +133,9 @@ namespace executive {
 		//! \brief destroy a context before it is removed
 		void finishContext(LLVMContext &context);
 		
+		//! \brief computes the CTA ID
+		unsigned int ctaId(const ir::Dim3 &ctaId);
+		
 	public:
 	
 		//! \brief kernel to execute
@@ -116,6 +143,9 @@ namespace executive {
 		
 		//! \brief procesor
 		int processor;
+		
+		//! \brief set of active CTAs
+		CooperativeThreadArrayMap ctaMap;
 		
 		//! \brief set of threads which may execute next
 		CtaThreadQueue readyQueue;

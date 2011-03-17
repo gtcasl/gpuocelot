@@ -114,7 +114,7 @@ bool LLVMDynamicTranslationCache::loadModule(const ir::Module *module, executive
 			kernel != module->kernels().end();
 			 ++kernel) {
 			
-			report("  transforming kernel '" << kernel->second->name << "'");
+			report("  Encountered kernel '" << kernel->second->name << "'");
 			
 			TranslatedKernel *translatedKernel = new TranslatedKernel;
 			translatedKernel->kernel = kernel->second;

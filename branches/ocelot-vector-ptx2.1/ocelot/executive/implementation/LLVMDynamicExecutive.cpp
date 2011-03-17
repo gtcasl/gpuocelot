@@ -61,24 +61,22 @@ LLVMDynamicExecutive::LLVMDynamicExecutive(
 	kernel(_kernel),
 	processor(procID)
 {
-
+	report("LLVMDynamicExecutive");
+	report(" local memory size: " << _kernel->localMemorySize());
 }
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
+
+//! \brief computes the CTA ID
+unsigned int LLVMDynamicExecutive::ctaId(const ir::Dim3 &ctaId) {
+	return (unsigned int)(kernel->gridDim().x * ctaId.y + ctaId.x);
+}
+
 //! \brief adds a CTA to the dynamic executive's execution list
 void LLVMDynamicExecutive::addCta(const ir::Dim3 &blockId) {
-	int totalThreads = kernel->blockDim().size();
-	int ctaId = 0; //kernel->gridDim().x * kernel->blockIdx().y + kernel->blockIdx().x;
-	for (int tid = 0; tid < totalThreads; ++tid) {
-		LLVMContext context;
-		
-		// TODO: initialize context
-		
-		readyQueue[ctaId].push_back(context);
-	}
-	waitingQueue[ctaId].clear();
+	ctaMap[ctaId(blockId)].initialize(*kernel, blockId);
 }
 
 
@@ -117,15 +115,20 @@ void LLVMDynamicExecutive::execute() {
 	int waitingThreads = 0;
 	int readyThreads = 0;
 	
+	
+	report("execute()");
+	
 	do {
 		Warp warp;
 		
-		// test barriers
 		testBarriers(waitingThreads, readyThreads);
+		
 		if (readyThreads) {
+			
 			// construct a warp
 			warpFormation(warp);
 		
+			report(" formed warp with " << warp.threads.size() << " threads");
 			// execute a warp
 			executeWarp(warp);
 		}
@@ -149,6 +152,12 @@ void LLVMDynamicExecutive::executeWarp(Warp &warp) {
 	
 	assert(translation && "failed to obtain translation");
 	report(" obtained translation. Executing warp.");
+	
+	for (ThreadContextVector::iterator ctx_it = warp.threads.begin(); 
+		ctx_it != warp.threads.end(); 
+		++ctx_it) {
+		ctx_it->metadata = (char *)translation->metadata;
+	}
 	
 	translation->execute(&warp.threads[0]);
 	
@@ -193,10 +202,14 @@ void LLVMDynamicExecutive::executeWarp(Warp &warp) {
 //! \brief construct a warp - for now, simply choose a ready thread
 void LLVMDynamicExecutive::warpFormation(Warp &warp) {
 	warp.threads.resize(1);
-	for (CtaThreadQueue::iterator cta_it = readyQueue.begin(); cta_it != readyQueue.end(); ++cta_it) {
-		if (cta_it->second.size()) {
-			warp.threads[0] = cta_it->second.front();
-			cta_it->second.pop_front();
+	for (CooperativeThreadArrayMap::iterator cta_it = ctaMap.begin();
+		cta_it != ctaMap.end();
+		++cta_it) {
+		
+		if (cta_it->second.readyQueue.size()) {
+			warp.threads[0] =cta_it->second.readyQueue.front();
+			cta_it->second.readyQueue.pop_front();
+			return; 
 		}
 	}
 }
@@ -204,16 +217,49 @@ void LLVMDynamicExecutive::warpFormation(Warp &warp) {
 //! \brief determine if any barriers have been reached
 void LLVMDynamicExecutive::testBarriers(int &waiting, int &ready) {
 	ready = waiting = 0;
-	for (CtaThreadQueue::iterator cta_it = readyQueue.begin(); cta_it != readyQueue.end(); ++cta_it) {
-		CtaThreadQueue::iterator waiting_it = waitingQueue.find(cta_it->first);
-		assert(waiting_it != waitingQueue.end());
+	for (CooperativeThreadArrayMap::iterator cta_it = ctaMap.begin();
+		cta_it != ctaMap.end();
+		++cta_it) {
 		
-		if (!cta_it->second.size()) {
-			cta_it->second = waiting_it->second;
-			waiting_it->second.clear();
-		}
-		ready += (int)cta_it->second.size();
-		waiting += (int)waiting_it->second.size();
+		ready += (int)cta_it->second.readyQueue.size();
+		waiting += (int)cta_it->second.barrierQueue.size();
+	}
+}
+
+void LLVMDynamicExecutive::CooperativeThreadArray::initialize(
+	const LLVMDynamicKernel &kernel, 
+	const ir::Dim3 &ctaId) {
+
+	const ir::Dim3 blockDim = kernel.blockDim();
+	
+	int totalThreads = blockDim.x * blockDim.y * blockDim.z;
+	local.resize(kernel.localMemorySize() * totalThreads, 0);
+	
+	report("Initializing CTA with " << totalThreads << " threads");
+	report("  local memory size " << local.size() << " bytes");
+	
+	for (int threadId = 0; threadId < totalThreads; threadId++) {
+		LLVMContext context;
+		context.nctaid.x  = kernel.gridDim().x;
+		context.nctaid.y  = kernel.gridDim().y;
+		context.nctaid.z  = kernel.gridDim().z;
+		context.ctaid.x   = ctaId.x;
+		context.ctaid.y   = ctaId.y;
+		context.ctaid.z   = ctaId.z;
+		context.ntid.x    = blockDim.x;
+		context.ntid.y    = blockDim.y;
+		context.ntid.z    = blockDim.z;
+		context.tid.x     = threadId % context.ntid.x;
+		context.tid.y     = (threadId / context.ntid.x) % context.ntid.y;
+		context.tid.z     = threadId / (context.ntid.x * context.ntid.y);
+		context.shared    = reinterpret_cast<char*>(&shared[0]);
+		context.argument  = kernel.argumentMemory();	//stack.argumentMemory();
+		context.local     = &local[threadId * kernel.localMemorySize()];	//stack.localMemory();
+		context.parameter = 0;	//stack.parameterMemory();
+		context.constant  = kernel.constantMemory();
+		context.metadata  = 0;
+		
+		readyQueue.push_back(context);
 	}
 }
 

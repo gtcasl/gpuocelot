@@ -31,22 +31,33 @@ namespace analysis {
 	public:
 		typedef std::vector<ir::PTXKernel*> KernelVector;
 		typedef unsigned int HyperblockId;
+		typedef std::map< analysis::DataflowGraph::RegisterId, analysis::DataflowGraph::Register > RegisterMap;
 		
 		/*!
 			\brief 
 		*/
 		class Hyperblock {
 		public:
-			class Exit {
+			/*!
+				\brief 
+			*/
+			class Edge {
+			public:	
+			
 			public:
+				//! \brief edge type
+				ir::BasicBlock::Edge::Type type;
 				
-				//! \brief 
-				ir::BasicBlock::Pointer exitBlock; 
+				//! \brief reference to the actual external basic block
+				ir::BasicBlock::Pointer externalBlock;
+			
+				//! \brief references the external source or target hyperblock
+				HyperblockId externalHyperblock;
 				
-				//! \brief 
-				ir::PTXInstruction *selp;
+				//! \brief set of live values flowing along an edge
+				analysis::DataflowGraph::RegisterSet liveValues;
 			};
-			typedef std::vector< Exit > ExitVector;
+			typedef std::vector< Edge > EdgeVector;
 			
 		public:
 		
@@ -59,17 +70,21 @@ namespace analysis {
 			//! \brief identifies the label of the entry block
 			std::string entryBlock;
 			
-			//! \brief defines exit points of hyperblock
-			ExitVector exits;
+			// list of incoming edges
+			EdgeVector in_edges;
+			
+			// list of out-going edges
+			EdgeVector out_edges;
 		};
+		
 		
 		/*!
 			\brief stores information describing kernel decomposition
 		*/
 		class KernelDecomposition {
 		public:
-			typedef std::unordered_map< std::string, HyperblockId> HyperblockEntryMap;
-			typedef std::unordered_map< HyperblockId, Hyperblock > HyperblockMap;
+		typedef std::unordered_map< std::string, HyperblockId> HyperblockEntryMap;
+		typedef std::unordered_map< HyperblockId, Hyperblock > HyperblockMap;
 			
 		public:
 		
@@ -98,30 +113,21 @@ namespace analysis {
 		//! \brief creates a spill region in the first block
 		void _createSpillRegion(
 			ir::PTXKernel &subkernel, 
-			ir::PTXKernel &parentKernel, 
-			ir::BasicBlock &restoreBlock);
+			ir::PTXKernel &parentKernel);
 		
 		//! \brief restores live variables 
 		size_t _createRestore(
 			ir::PTXKernel &hyperblock,
-			ir::PTXKernel &parentKernel,
-			ir::BasicBlock &restoreBlock,
-			DataflowGraph::IteratorMap::const_iterator dfgBlock);
+			const RegisterMap &liveValues);
 			
 		//! \brief stores live variables to local memory
 		size_t _createStore(
 			ir::PTXKernel &hyperblock,
-			ir::PTXKernel &parentKernel,
-			ir::BasicBlock &exitBlock,
-			DataflowGraph::IteratorMap::const_iterator dfgBlock);
+			const RegisterMap &liveValues);
 			
 		//! \brief writes the exit point 
 		size_t _createHyperblockExit(
-			ir::PTXKernel &hyperblock,
-			ir::PTXKernel &parentKernel,
-			const ir::BasicBlock &parentBlock,
-			ir::BasicBlock &clonedBlock,
-			ir::BasicBlock &exitBlock);		
+			Hyperblock &hyperblock);		
 	};
 }
 

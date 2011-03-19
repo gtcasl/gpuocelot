@@ -72,13 +72,11 @@ void analysis::HyperblockFormation::runOnKernel(KernelDecomposition &decompositi
 	ir::ControlFlowGraph::BlockPointerVector blocks = cfg->topological_sequence();
 	for (ir::ControlFlowGraph::BlockPointerVector::const_iterator bb_it = blocks.begin(); 
 		bb_it != blocks.end(); 
-		++bb_it) {
+		++bb_it, ++blockIndex) {
 		
 		if (!(*bb_it)->instructions.size()) {
 			continue;
 		}
-		
-		++blockIndex;
 		
 		Hyperblock hyperblock;
 		hyperblock.hyperblockId = (HyperblockId)decomposition.hyperblocks.size() + baseId;
@@ -113,7 +111,8 @@ void analysis::HyperblockFormation::runOnKernel(KernelDecomposition &decompositi
 			edge.liveValues = dfgBlock->second->aliveIn();
 			hyperblock.in_edges.push_back(edge);
 			
-			report("  edge " << (*edge_it)->head->label << " -> " << (*edge_it)->tail->label << " (" << edge.liveValues.size() << " live values)");
+			report("  edge " << (*edge_it)->head->label << " -> " << (*edge_it)->tail->label 
+				<< " (" << edge.liveValues.size() << " live values)");
 		}
 		
 		report(" visitng (" << (*bb_it)->out_edges.size() << ") out edges");
@@ -123,10 +122,11 @@ void analysis::HyperblockFormation::runOnKernel(KernelDecomposition &decompositi
 			edge.liveValues = dfgBlock->second->aliveOut();
 			edge.externalBlock = (*bb_it);
 			edge.type = (*edge_it)->type;
-			
+			edge.label = (*edge_it)->tail->label ;
 			hyperblock.out_edges.push_back(edge);
 			
-			report("  edge " << (*edge_it)->head->label << " -> " << (*edge_it)->tail->label << " (" << edge.liveValues.size() << " live values)");
+			report("  edge " << (*edge_it)->head->label << " -> " << (*edge_it)->tail->label 
+				<< " (" << edge.liveValues.size() << " live values)");
 		}
 		
 		decomposition.hyperblocks[hyperblock.hyperblockId] = hyperblock;
@@ -172,10 +172,11 @@ void analysis::HyperblockFormation::runOnKernel(KernelDecomposition &decompositi
 				storeSet[live_it->id] = *live_it;
 			}
 			KernelDecomposition::HyperblockEntryMap::const_iterator 
-				entry_it = decomposition.hyperblockEntries.find((edge_it->externalBlock)->label);
+				entry_it = decomposition.hyperblockEntries.find(edge_it->label);
 			if (entry_it != decomposition.hyperblockEntries.end()) {
 				edge_it->externalHyperblock = entry_it->second;
-				report("  assigning out edge to target " << edge_it->externalHyperblock << " [label " << (edge_it->externalBlock)->label << "]");
+				report(" --  assigning out edge to target " << edge_it->externalHyperblock 
+					<< " [label " << edge_it->label << "]");
 			}
 			
 			report(" " << restoreSet.size() << " live out values");
@@ -187,17 +188,6 @@ void analysis::HyperblockFormation::runOnKernel(KernelDecomposition &decompositi
 		_createRestore(*hyperblock.subkernel, restoreSet);
 		_createHyperblockExit(hyperblock);
 		_createStore(*hyperblock.subkernel, storeSet);
-		
-#if 0
-		
-		_createSpillRegion(*hyperblock.subkernel, parentKernel, prologBlock);
-		_createRestore(*hyperblock.subkernel, parentKernel, prologBlock, dfgBlock);
-		_createStore(*hyperblock.subkernel, parentKernel, epilogBlock, dfgBlock);
-		_createHyperblockExit(*hyperblock.subkernel, parentKernel, **bb_it, *computationalBlock, epilogBlock);
-		
-		/* ir::ControlFlowGraph::EdgePair splitEntry = */hyperblock.subkernel->cfg()->split_edge(entryIterator, prologBlock);
-		/* ir::ControlFlowGraph::EdgePair splitExit = */ hyperblock.subkernel->cfg()->split_edge(exitIterator, epilogBlock);
-#endif
 
 		hyperblock.subkernel->rebuildDfg()->compute();
 	}
@@ -341,7 +331,8 @@ size_t analysis::HyperblockFormation::_createHyperblockExit(
 	--last;
 	ir::PTXInstruction *terminator = static_cast<ir::PTXInstruction *>(*last);
 	
-	ir::PTXOperand::RegisterType targetRegister = 0;
+	ir::PTXOperand resumePointOperand;
+	
 	switch (terminator->opcode) {
 		case ir::PTXInstruction::Bra:
 		{
@@ -380,7 +371,7 @@ size_t analysis::HyperblockFormation::_createHyperblockExit(
 				selp->b.imm_uint = fallthroughTargetId;		// fallthrough target
 				selp->c = std::move(ir::PTXOperand(ir::PTXOperand::Register, ir::PTXOperand::pred, terminator->pg.reg, 0));
 								
-				targetRegister = selp->d.reg;
+				resumePointOperand = std::move(ir::PTXOperand(ir::PTXOperand::Register, ir::PTXOperand::u32, selp->d.reg, 0));
 				
 				exitBlock->instructions.erase(last);
 				exitBlock->instructions.push_back(selp);
@@ -388,6 +379,13 @@ size_t analysis::HyperblockFormation::_createHyperblockExit(
 			else {
 				// unconditional branch
 				report(" unconditional branch");
+				resumePointOperand = std::move(ir::PTXOperand(ir::PTXOperand::Immediate, ir::PTXOperand::u32));
+				
+				for (Hyperblock::EdgeVector::const_iterator edge_it = hyperblock.out_edges.begin();
+					edge_it != hyperblock.out_edges.end(); ++edge_it) {
+					resumePointOperand.imm_uint = edge_it->externalHyperblock;
+				}
+				
 				exitBlock->instructions.erase(last);
 			}
 		
@@ -401,7 +399,7 @@ size_t analysis::HyperblockFormation::_createHyperblockExit(
 			store->addressSpace = ir::PTXInstruction::Local;
 			store->type = ir::PTXOperand::u32;
 			store->d = std::move(ir::PTXOperand(ir::PTXOperand::Indirect, ir::PTXOperand::u32, move->d.reg, 0));
-			store->a = std::move(ir::PTXOperand(ir::PTXOperand::Register, ir::PTXOperand::u32, targetRegister, 0));
+			store->a = resumePointOperand;//std::move(ir::PTXOperand(ir::PTXOperand::Register, ir::PTXOperand::u32, targetRegister, 0));
 			
 			exitBlock->instructions.push_back(move);
 			exitBlock->instructions.push_back(store);
@@ -423,15 +421,20 @@ size_t analysis::HyperblockFormation::_createHyperblockExit(
 			exitBlock->instructions.push_back(store);
 		}
 		break;
+		case ir::PTXInstruction::Call:
+		{
+			assert(0 && "calls not implemented");
+		}
+		break;
 		case ir::PTXInstruction::Exit:
 		{
 			// mov %rd0, _Zocelot_resume_status
 			// store [%rd0], <exit code>
-#if 0
+
 			// store 
 			ir::PTXInstruction *move = new ir::PTXInstruction(ir::PTXInstruction::Mov);
 			move->a = std::move(ir::PTXOperand(ir::PTXOperand::Address, ir::PTXOperand::u32, "_Zocelot_resume_status", 0));
-			move->d = std::move(ir::PTXOperand(ir::PTXOperand::Register, ir::PTXOperand::u32, subkernel.dfg()->newRegister()));
+			move->d = std::move(ir::PTXOperand(ir::PTXOperand::Register, ir::PTXOperand::u32, hyperblock.subkernel->dfg()->newRegister()));
 			move->type = ir::PTXOperand::u32;
 	
 			ir::PTXInstruction *store = new ir::PTXInstruction(ir::PTXInstruction::St);
@@ -442,13 +445,53 @@ size_t analysis::HyperblockFormation::_createHyperblockExit(
 			store->a.imm_uint = 6;
 	
 			// need to insert these into the dfg
-			clonedBlock.instructions.erase(last);
-			clonedBlock.instructions.push_back(move);
-			clonedBlock.instructions.push_back(store);
-#endif
+			exitBlock->instructions.erase(last);
+			exitBlock->instructions.push_back(move);
+			exitBlock->instructions.push_back(store);
 		}
 		break;
 		default:
+		{
+			
+			
+			ir::PTXOperand resumePointOperand = std::move(ir::PTXOperand(ir::PTXOperand::Immediate, ir::PTXOperand::u32));
+			
+			for (Hyperblock::EdgeVector::const_iterator edge_it = hyperblock.out_edges.begin();
+				edge_it != hyperblock.out_edges.end(); ++edge_it) {
+				resumePointOperand.imm_uint = edge_it->externalHyperblock;
+			}
+				
+			analysis::DataflowGraph::RegisterId addrRegister = hyperblock.subkernel->dfg()->newRegister();
+			ir::PTXInstruction *move = new ir::PTXInstruction(ir::PTXInstruction::Mov);
+			move->a = std::move(ir::PTXOperand(ir::PTXOperand::Address, ir::PTXOperand::u32, "_Zocelot_resume_point"));
+			move->d = std::move(ir::PTXOperand(ir::PTXOperand::Register, ir::PTXOperand::u32, addrRegister));
+			move->type = ir::PTXOperand::u32;
+			
+			ir::PTXInstruction *store = new ir::PTXInstruction(ir::PTXInstruction::St);
+			store->addressSpace = ir::PTXInstruction::Local;
+			store->type = ir::PTXOperand::u32;
+			store->d = std::move(ir::PTXOperand(ir::PTXOperand::Indirect, ir::PTXOperand::u32, move->d.reg, 0));
+			store->a = resumePointOperand;//std::move(ir::PTXOperand(ir::PTXOperand::Register, ir::PTXOperand::u32, targetRegister, 0));
+			
+			exitBlock->instructions.push_back(move);
+			exitBlock->instructions.push_back(store);
+			
+			// store 
+			move = new ir::PTXInstruction(ir::PTXInstruction::Mov);
+			move->a = std::move(ir::PTXOperand(ir::PTXOperand::Address, ir::PTXOperand::u32, "_Zocelot_resume_status"));
+			move->d = std::move(ir::PTXOperand(ir::PTXOperand::Register, ir::PTXOperand::u32, addrRegister));
+			move->type = ir::PTXOperand::u32;
+	
+			store = new ir::PTXInstruction(ir::PTXInstruction::St);
+			store->addressSpace = ir::PTXInstruction::Local;
+			store->type = ir::PTXOperand::u32;
+			store->d = std::move(ir::PTXOperand(ir::PTXOperand::Indirect, ir::PTXOperand::u32, move->d.reg, 0));
+			store->a = std::move(ir::PTXOperand(ir::PTXOperand::Immediate, ir::PTXOperand::u32));
+			store->a.imm_uint = 0;
+	
+			exitBlock->instructions.push_back(move);
+			exitBlock->instructions.push_back(store);
+		}
 			break;
 	}
 	

@@ -145,11 +145,14 @@ namespace executive {
 		//! \brief computes the CTA ID
 		unsigned int ctaId(const ir::Dim3 &ctaId);
 		
+		//! \brief computes the CTA ID
+		unsigned int ctaId(const LLVMContext &ctx);
+		
 		//! \brief gets the exit code of a thread
 		static Metadata::ThreadExitCode getExitCode(const LLVMContext &context);
 		
 		//! \brief determines a thread's next subkernel
-		static HyperblockId getNextSubkernel(const LLVMContext &context);
+		static HyperblockId getResumePoint(const LLVMContext &context);
 		
 	public:
 	

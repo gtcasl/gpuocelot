@@ -74,6 +74,11 @@ unsigned int LLVMDynamicExecutive::ctaId(const ir::Dim3 &ctaId) {
 	return (unsigned int)(kernel->gridDim().x * ctaId.y + ctaId.x);
 }
 
+
+unsigned int LLVMDynamicExecutive::ctaId(const LLVMContext &ctx) {
+	return (unsigned int)(kernel->gridDim().x * ctx.ctaid.y + ctx.ctaid.x);
+}
+
 //! \brief adds a CTA to the dynamic executive's execution list
 void LLVMDynamicExecutive::addCta(const ir::Dim3 &blockId) {
 	ctaMap[ctaId(blockId)].initialize(*kernel, blockId);
@@ -93,7 +98,7 @@ LLVMDynamicExecutive::Metadata::ThreadExitCode LLVMDynamicExecutive::getExitCode
 	return (LLVMDynamicExecutive::Metadata::ThreadExitCode)*((int *)&context.local[0]);
 }
 
-LLVMDynamicExecutive::HyperblockId LLVMDynamicExecutive::getNextSubkernel(
+LLVMDynamicExecutive::HyperblockId LLVMDynamicExecutive::getResumePoint(
 	const LLVMContext &context) {
 	
 	return *((HyperblockId *)&context.local[4]);
@@ -146,7 +151,6 @@ void LLVMDynamicExecutive::execute() {
 			// execute a warp
 			executeWarp(warp);
 		}
-		
 	} while (waitingThreads || readyThreads);
 }
 
@@ -183,23 +187,29 @@ void LLVMDynamicExecutive::executeWarp(Warp &warp) {
 	
 		Metadata::ThreadExitCode exitCode = getExitCode(*ctx_it);
 		report(" thread(" << ctx_it->tid.x << ", " << ctx_it->tid.y << ", " << ctx_it->tid.z << ") [cta ] exited with code " 
-			<< Metadata::toString(exitCode));
+			<< Metadata::toString(exitCode) << " - resume point: " << getResumePoint(*ctx_it));
+		unsigned int ctaId = LLVMDynamicExecutive::ctaId(*ctx_it);
 		
 		switch (exitCode) {
 		case Metadata::Thread_fallthrough:
 			// update its next thread Id
+			ctaMap[ctaId].readyQueue.push_back(*ctx_it);
 			break;
 		case Metadata::Thread_branch:
 			// update its next thread Id
+			ctaMap[ctaId].readyQueue.push_back(*ctx_it);
 			break;
 		case Metadata::Thread_tailcall:
 			// update its next thread Id
+			assert(0 && "calls not implemented");
 			break;
 		case Metadata::Thread_call:
 			// update its next thread Id
+			assert(0 && "calls not implemented");
 			break;
 		case Metadata::Thread_barrier:
 			// update its next thread Id, place into a waiting queue
+			ctaMap[ctaId].barrierQueue.push_back(*ctx_it);
 			break;
 		case Metadata::Thread_exit:
 			// kill off the thread
@@ -220,8 +230,9 @@ void LLVMDynamicExecutive::warpFormation(Warp &warp) {
 		++cta_it) {
 		
 		if (cta_it->second.readyQueue.size()) {
-			warp.threads[0] =cta_it->second.readyQueue.front();
+			warp.threads[0] = cta_it->second.readyQueue.front();
 			cta_it->second.readyQueue.pop_front();
+			warp.entryId = getResumePoint(warp.threads[0]);
 			return; 
 		}
 	}
@@ -284,7 +295,7 @@ LLVMDynamicExecutive::getOrInsertTranslationById(HyperblockId id, int ws) {
 	const LLVMDynamicTranslationCache::Translation *translation =0;
 	TranslationWarpCache::iterator hb_it = translationCache.find(id);
 	
-	report(" getOrInsertTranslationById( id" << id << ", ws: " << ws << ")");
+	report(" getOrInsertTranslationById( id: " << id << ", ws: " << ws << ")");
 	
 	if (hb_it != translationCache.end()) {
 		LLVMDynamicTranslationCache::TranslationWarpMap::iterator tr_it = hb_it->second.find(ws);

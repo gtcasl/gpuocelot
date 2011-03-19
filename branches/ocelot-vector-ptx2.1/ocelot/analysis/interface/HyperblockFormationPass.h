@@ -50,6 +50,8 @@ namespace analysis {
 				
 				//! \brief reference to the actual external basic block
 				ir::BasicBlock::Pointer externalBlock;
+				
+				std::string label;
 			
 				//! \brief references the external source or target hyperblock
 				HyperblockId externalHyperblock;

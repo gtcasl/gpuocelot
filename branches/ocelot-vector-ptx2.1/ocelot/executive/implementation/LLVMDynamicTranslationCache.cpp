@@ -965,7 +965,7 @@ static void translate(
 	ir::PTXKernel& kernel,
 	translator::Translator::OptimizationLevel optimization)
 {
-	assert(module == 0);
+//	assert(module == 0);
 
 	report(" Translating kernel.");
 	
@@ -985,12 +985,10 @@ static void translate(
 	reportE(REPORT_ALL_LLVM_ASSEMBLY, llvmKernel->code());
 
 	report("  Parsing LLVM assembly.");
-	module = llvm::ParseAssemblyString(llvmKernel->code().c_str(), 
-		module, error, llvm::getGlobalContext());
+	module = llvm::ParseAssemblyString(llvmKernel->code().c_str(), module, error, llvm::getGlobalContext());
 
-	if(module == 0) {
-		report("   Parsing kernel failed, dumping code:\n" 
-			<< llvmKernel->numberedCode());
+	if (module == 0) {
+		report("   Parsing kernel failed, dumping code:\n" << llvmKernel->numberedCode());
 			
 		std::string m;
 		llvm::raw_string_ostream message(m);
@@ -1001,12 +999,14 @@ static void translate(
 
 		throw hydrazine::Exception(message.str());
 	}
+	else {
+		report(" parsed kernel");
+	}
 
 	report("  Checking llvm module for errors.");
 	std::string verifyError;
 	
-	if(llvm::verifyModule(*module, llvm::ReturnStatusAction, &verifyError)) {
-	
+	if (llvm::verifyModule(*module, llvm::ReturnStatusAction, &verifyError)) {
 		report("   Checking kernel failed, dumping code:\n" << llvmKernel->numberedCode());
 			
 		delete llvmKernel;
@@ -1017,6 +1017,9 @@ static void translate(
 
 		throw hydrazine::Exception("LLVM Verifier failed for kernel: " 
 			+ kernel.name + " : \"" + verifyError + "\"");
+	}
+	else {
+		report(" verified module");
 	}
 
 	delete llvmKernel;
@@ -1035,23 +1038,6 @@ static LLVMDynamicExecutive::Metadata* generateMetadata(
 	
 	if(level == translator::Translator::DebugOptimization
 		|| level == translator::Translator::ReportOptimization) {
-
-		/*		
-		report("  Adding debugging symbols");
-		ir::ControlFlowGraph::BasicBlock::Id id = 0;
-		
-		for(
-			analysis::DataflowGraph::iterator block = kernel.dfg()->begin(); 
-			block != kernel.dfg()->end(); 
-			++block) {
-			
-
-			block->block()->id = id++;
-			metadata->blocks.insert(std::make_pair(block->id(), 
-				block->block()));
-
-		}
-		*/
 						
 		assert(0 && "unimplemented");
 	}

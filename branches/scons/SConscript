@@ -29,12 +29,12 @@ try:
 	Import('env')
 except:
 	try:
-		exec open("../build/which.py")
+		exec open("../scripts/which.py")
 		prefix = '../'
 	except:
-		exec open("build/which.py")
+		exec open("scripts/which.py")
 		prefix = './'
-	exec open(prefix + "build/build_environment.py")
+	exec open(prefix + "scripts/build_environment.py")
 	env = Environment()
   
 # on mac we have to tell the linker to link against the C++ library

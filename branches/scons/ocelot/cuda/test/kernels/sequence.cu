@@ -90,16 +90,11 @@ int main(int argc, char *arg[]) {
 	
 	cudaMemcpy(A_gpu, A_host, bytes, cudaMemcpyHostToDevice);
 	
-	printf("A_host = 0x%x\n", (int)A_host);
-	printf("A_gpu = 0x%x\n", (int)A_gpu);
-
 	dim3 grid((N+BlockSize-1)/BlockSize,1);
 	dim3 block(BlockSize, 1);
 	
-
 	sequence<<< grid, block >>>(A_gpu, N);
 	
-	printf("cudaMemcpy(0x%x, 0x%x) - APP\n", (int)A_host, (int)A_gpu);
 	cudaMemcpy(A_host, A_gpu, bytes, cudaMemcpyDeviceToHost);
 	for (int i = 0; i < N && errors < 5; i++) {
 		if (A_host[i] != 2*i) {

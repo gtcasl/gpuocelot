@@ -107,8 +107,9 @@ typedef struct __cudaFatCudaBinaryRec {
 } __cudaFatCudaBinary;
 
 typedef struct __cudaFatCudaBinary2HeaderRec { 
-	char unknown[80];
-	char name[16];
+	char unknown[52];
+	unsigned int length;
+	char unknown2[16];
 } __cudaFatCudaBinary2Header;
 
 
@@ -125,6 +126,7 @@ typedef struct __cudaFatCudaBinaryRec2 {
 #define __cudaFatVERSION   0x00000004
 #define __cudaFatMAGIC     0x1ee55a01
 #define __cudaFatMAGIC2    0x466243b1
+#define __cudaFatMAGIC3    0xba55ed50
 
 /*
  * Version history log:

@@ -32,6 +32,7 @@ namespace analysis {
 		typedef std::vector<ir::PTXKernel*> KernelVector;
 		typedef unsigned int HyperblockId;
 		typedef std::map< analysis::DataflowGraph::RegisterId, analysis::DataflowGraph::Register > RegisterMap;
+		typedef std::vector< unsigned int> OffsetVector;
 		
 		/*!
 			\brief 
@@ -120,12 +121,14 @@ namespace analysis {
 		//! \brief restores live variables 
 		size_t _createRestore(
 			ir::PTXKernel &hyperblock,
-			const RegisterMap &liveValues);
+			const RegisterMap &liveValues,
+			OffsetVector &offsets);
 			
 		//! \brief stores live variables to local memory
 		size_t _createStore(
 			ir::PTXKernel &hyperblock,
-			const RegisterMap &liveValues);
+			const RegisterMap &liveValues,
+			OffsetVector &offsets);
 			
 		//! \brief writes the exit point 
 		size_t _createHyperblockExit(

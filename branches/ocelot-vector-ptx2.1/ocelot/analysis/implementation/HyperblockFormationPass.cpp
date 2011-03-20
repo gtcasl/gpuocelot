@@ -22,9 +22,23 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
+/*
+Kerr thoughts [March 19]
+- how do we effectively align spills?
+- one option is a kernel-level register<=>.local mapping
+- 
+*/
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+static size_t pad(size_t offset, size_t size) {
+	if (offset % size) {
+		offset += (size - (offset % size));
+	}
+	return offset;
+}
 
 analysis::HyperblockFormation::HyperblockFormation() {
 
@@ -86,7 +100,7 @@ void analysis::HyperblockFormation::runOnKernel(KernelDecomposition &decompositi
 		assert(dfgBlock != cfgToDfgMap.end() && "failed to find block in CFT-to-DFG mapping");
 		
 		hyperblock.subkernel = new ir::PTXKernel(
-			parentKernel.name + "_hb_" + boost::lexical_cast<std::string>(blockIndex), 
+			parentKernel.name + "_hb_" + boost::lexical_cast<std::string>(hyperblock.hyperblockId), 
 			false, 
 			parentKernel.module);
 
@@ -132,6 +146,13 @@ void analysis::HyperblockFormation::runOnKernel(KernelDecomposition &decompositi
 		decomposition.hyperblocks[hyperblock.hyperblockId] = hyperblock;
 		decomposition.hyperblockEntries[hyperblock.entryBlock] = hyperblock.hyperblockId;
 		hyperblock.subkernel->rebuildDfg()->compute();
+	}
+		
+	OffsetVector registerOffsets;
+	registerOffsets.resize(parentKernel.dfg()->maxRegister(), 0);
+	for (analysis::DataflowGraph::RegisterId reg_id = 0; reg_id < parentKernel.dfg()->maxRegister();
+		reg_id++) {
+		registerOffsets[reg_id] = 8*reg_id;
 	}
 	
 	// revisit all basic block terminators:
@@ -185,9 +206,9 @@ void analysis::HyperblockFormation::runOnKernel(KernelDecomposition &decompositi
 		ir::BasicBlock epilogBlock;
 		
 		_createSpillRegion(*hyperblock.subkernel, parentKernel);
-		_createRestore(*hyperblock.subkernel, restoreSet);
+		_createRestore(*hyperblock.subkernel, restoreSet, registerOffsets);
 		_createHyperblockExit(hyperblock);
-		_createStore(*hyperblock.subkernel, storeSet);
+		_createStore(*hyperblock.subkernel, storeSet, registerOffsets);
 
 		hyperblock.subkernel->rebuildDfg()->compute();
 	}
@@ -241,7 +262,8 @@ void analysis::HyperblockFormation::_createSpillRegion(
 //! \brief restores live variables 
 size_t analysis::HyperblockFormation::_createRestore(
 	ir::PTXKernel &hyperblock,
-	const RegisterMap &liveValues) {
+	const RegisterMap &liveValues,
+	OffsetVector &offsets) {
 
 	size_t bytes = 0;
 	
@@ -259,10 +281,12 @@ size_t analysis::HyperblockFormation::_createRestore(
 		
 		ir::PTXInstruction* load = new ir::PTXInstruction(ir::PTXInstruction::Ld);
 		
+		bytes = pad(bytes, ir::PTXOperand::bytes(reg_it->second.type));
+		
 		load->addressSpace = ir::PTXInstruction::Local;
 		load->type = reg_it->second.type;
 
-		load->a = std::move(ir::PTXOperand(ir::PTXOperand::Indirect, ir::PTXOperand::u32, move->d.reg, bytes));
+		load->a = std::move(ir::PTXOperand(ir::PTXOperand::Indirect, ir::PTXOperand::u32, move->d.reg, offsets[reg_it->second.id]));
 		load->d = std::move(ir::PTXOperand(ir::PTXOperand::Register, reg_it->second.type, reg_it->first));
 	
 		ir::BasicBlock::InstructionList::iterator iterator = restoreBlock->instructions.begin();
@@ -280,7 +304,8 @@ size_t analysis::HyperblockFormation::_createRestore(
 //! \brief stores live variables to local memory
 size_t analysis::HyperblockFormation::_createStore(
 	ir::PTXKernel &hyperblock,
-	const RegisterMap &liveValues) {
+	const RegisterMap &liveValues,
+	OffsetVector &offsets) {
 	
 	size_t offset = 0;
 
@@ -302,9 +327,11 @@ size_t analysis::HyperblockFormation::_createStore(
 		
 		store->addressSpace = ir::PTXInstruction::Local;
 		store->type = reg_it->second.type;
+		
+		bytes = pad(bytes, ir::PTXOperand::bytes(reg_it->second.type));
 
 		store->a = std::move(ir::PTXOperand(ir::PTXOperand::Register, reg_it->second.type, reg_it->first));
-		store->d = std::move(ir::PTXOperand(ir::PTXOperand::Indirect, ir::PTXOperand::u32, move->d.reg, bytes));
+		store->d = std::move(ir::PTXOperand(ir::PTXOperand::Indirect, ir::PTXOperand::u32, move->d.reg, offsets[reg_it->second.id]));
 	
 		storeBlock->instructions.push_back(store);
 	

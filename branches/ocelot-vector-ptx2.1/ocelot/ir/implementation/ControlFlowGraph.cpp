@@ -367,8 +367,7 @@ ControlFlowGraph::iterator ControlFlowGraph::split_block(iterator block,
 	}
 	
 	iterator newBlock = insert_block(BasicBlock(label, newId()));
-	BasicBlock::InstructionList::iterator 
-		begin = block->instructions.begin();
+	BasicBlock::InstructionList::iterator begin = block->instructions.begin();
 	std::advance(begin, instruction);
 	BasicBlock::InstructionList::iterator end = block->instructions.end();
 	

@@ -48,8 +48,10 @@ void LLVMDynamicExecutionManager::launch(const LLVMDynamicKernel & kernel) {
 	translationCache.loadModule(kernel.module, kernel.device);
 
 	ir::Dim3 gridDim(kernel.gridDim());
+	ir::Dim3 blockDim(kernel.blockDim());
 	int totalCtas = gridDim.x * gridDim.y;
 	report("  loaded. Executing grid " << gridDim.x << ", " << gridDim.y);
+	report("  block dim: " << blockDim.x << ", " << blockDim.y << ", " << blockDim.z);
 	
 	for (int ctaStart = 0; ctaStart < totalCtas; ctaStart++) {
 		LLVMDynamicExecutive executive(&kernel, 0);

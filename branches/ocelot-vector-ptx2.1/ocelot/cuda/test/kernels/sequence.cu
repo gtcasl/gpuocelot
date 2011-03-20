@@ -7,10 +7,11 @@
 		one synchronization
 */
 
+#include <assert.h>
 #include <stdio.h>
 #include <dlfcn.h>
 
-#if 1
+#if 0
 extern "C" __global__ void sequence(int *A, int N) {
 	int i = threadIdx.x + blockIdx.x * blockDim.x;
 	if (i < N) {
@@ -37,6 +38,16 @@ extern "C" __global__ void v4sequence(int4 *A, int N) {
 
 #endif
 
+extern "C" __global__ void testShareConvergent(int *A) {
+	int i = threadIdx.x;
+	__shared__ int storage[256];
+	
+	storage[threadIdx.x] = 2*i;
+	__syncthreads();
+	A[i] = storage[threadIdx.x ^ 2] + threadIdx.x;
+}
+
+#if 0
 extern "C" __global__ void testShr(int *A) {
 	int i = threadIdx.x + blockIdx.x * blockDim.x;
 	int b;
@@ -52,6 +63,7 @@ extern "C" __global__ void testShr(int *A) {
 	}
 	A[i] = b;
 }
+#endif
 
 int main(int argc, char *arg[]) {
 
@@ -96,7 +108,7 @@ int main(int argc, char *arg[]) {
 	dim3 grid((N+BlockSize-1)/BlockSize,1);
 	dim3 block(BlockSize, 1);
 	
-
+#if 0
 	sequence<<< grid, block >>>(A_gpu, N);
 	
 	printf("cudaMemcpy(0x%x, 0x%x) - APP\n", (void *)A_host, (void *)A_gpu);
@@ -108,6 +120,7 @@ int main(int argc, char *arg[]) {
 			++errors;
 		}
 	}
+#endif
 #if 0
 	grid.x /= 4;
 	v4sequence<<< grid, block >>>((int4 *)A_gpu, N/4);
@@ -145,7 +158,28 @@ int main(int argc, char *arg[]) {
 		}
 	}
 #endif
-	
+
+	if (!errors) {
+		dim3 grid(1,1);
+		dim3 block(8, 1, 1);
+		testShareConvergent<<< grid, block >>>(A_gpu);
+		if (cudaMemcpy(A_host, A_gpu, bytes, cudaMemcpyDeviceToHost) != cudaSuccess) {
+			printf("cudaMemcpy(A, B) - failed to copy %d bytes from device to host\n", (int)bytes);
+			cudaFree(A_gpu);
+			free(A_host);
+		}
+		
+		for (int i = 0; i < N && errors < 5; i++) {
+			int shi = (i ^ 2);
+			int expected = shi * 2 + i;
+			int got = A_host[i];
+			if (expected != got) {
+				++errors;
+				printf("ERROR 3 [%d] - expected: %d, got: %d\n", i, expected, got);
+			}
+		}
+	}
+#if 0
 	if (!errors) {
 
 		testShr<<< grid, block >>>(A_gpu);
@@ -166,12 +200,12 @@ int main(int argc, char *arg[]) {
 			}
 			int got = A_host[i];
 			if (b != got) {
-				printf("ERROR 3 [%d] - expected: %d, got: %d\n", i, b, got);
+				printf("ERROR 4 [%d] - expected: %d, got: %d\n", i, b, got);
 				++errors;
 			}
 		}
 	}
-
+#endif
 	cudaFree(A_gpu);
 	free(A_host);
 

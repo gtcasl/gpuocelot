@@ -28,22 +28,6 @@
 
 namespace executive {
 
-std::string LLVMDynamicExecutive::Metadata::toString(const ThreadExitCode &code) {
-	switch (code) {
-	case Thread_fallthrough: return "fallthrough";
-	case Thread_branch: return "branch";
-	case Thread_tailcall: return "tailcall";
-	case Thread_call: return "call";
-	case Thread_barrier: return "barrier";
-	case Thread_exit: return "exit";
-	case Thread_exit_other: return "other";
-	case ThreadExitCode_invalid: break;
-	default: break;
-	}
-	return "invalid";
-}
-
-
 LLVMDynamicExecutive::Metadata::Metadata() {
 
 }
@@ -92,10 +76,10 @@ void LLVMDynamicExecutive::finishContext(LLVMContext &context) {
 
 
 //! \brief gets the exit code of a thread
-LLVMDynamicExecutive::Metadata::ThreadExitCode LLVMDynamicExecutive::getExitCode(
+LLVMDynamicExecutive::ThreadExitCode LLVMDynamicExecutive::getExitCode(
 	const LLVMContext &context) {
 
-	return (LLVMDynamicExecutive::Metadata::ThreadExitCode)*((int *)&context.local[0]);
+	return (ThreadExitCode)*((int *)&context.local[0]);
 }
 
 LLVMDynamicExecutive::HyperblockId LLVMDynamicExecutive::getResumePoint(
@@ -185,36 +169,36 @@ void LLVMDynamicExecutive::executeWarp(Warp &warp) {
 		ctx_it != warp.threads.end(); 
 		++ctx_it) {
 	
-		Metadata::ThreadExitCode exitCode = getExitCode(*ctx_it);
+		ThreadExitCode exitCode = getExitCode(*ctx_it);
 		report(" thread(" << ctx_it->tid.x << ", " << ctx_it->tid.y << ", " << ctx_it->tid.z << ") [cta ] exited with code " 
-			<< Metadata::toString(exitCode) << " - resume point: " << getResumePoint(*ctx_it));
+			<< analysis::HyperblockFormation::toString(exitCode) << " - resume point: " << getResumePoint(*ctx_it));
 		unsigned int ctaId = LLVMDynamicExecutive::ctaId(*ctx_it);
 		
 		switch (exitCode) {
-		case Metadata::Thread_fallthrough:
+		case analysis::HyperblockFormation::Thread_fallthrough:
 			// update its next thread Id
 			ctaMap[ctaId].readyQueue.push_back(*ctx_it);
 			break;
-		case Metadata::Thread_branch:
+		case analysis::HyperblockFormation::Thread_branch:
 			// update its next thread Id
 			ctaMap[ctaId].readyQueue.push_back(*ctx_it);
 			break;
-		case Metadata::Thread_tailcall:
+		case analysis::HyperblockFormation::Thread_tailcall:
 			// update its next thread Id
 			assert(0 && "calls not implemented");
 			break;
-		case Metadata::Thread_call:
+		case analysis::HyperblockFormation::Thread_call:
 			// update its next thread Id
 			assert(0 && "calls not implemented");
 			break;
-		case Metadata::Thread_barrier:
+		case analysis::HyperblockFormation::Thread_barrier:
 			// update its next thread Id, place into a waiting queue
 			ctaMap[ctaId].barrierQueue.push_back(*ctx_it);
 			break;
-		case Metadata::Thread_exit:
+		case analysis::HyperblockFormation::Thread_exit:
 			// kill off the thread
 			break;
-		case Metadata::Thread_exit_other:
+		case analysis::HyperblockFormation::Thread_exit_other:
 			break;
 		default: assert(0 && "invalid ThreadExitCode");
 			break;
@@ -244,6 +228,12 @@ void LLVMDynamicExecutive::testBarriers(int &waiting, int &ready) {
 	for (CooperativeThreadArrayMap::iterator cta_it = ctaMap.begin();
 		cta_it != ctaMap.end();
 		++cta_it) {
+				
+		if (cta_it->second.barrierQueue.size() && !cta_it->second.readyQueue.size()) {
+			cta_it->second.readyQueue = cta_it->second.barrierQueue;
+			cta_it->second.barrierQueue.clear();
+			
+		}
 		
 		ready += (int)cta_it->second.readyQueue.size();
 		waiting += (int)cta_it->second.barrierQueue.size();
@@ -257,11 +247,13 @@ void LLVMDynamicExecutive::CooperativeThreadArray::initialize(
 	const ir::Dim3 blockDim = kernel.blockDim();
 	
 	int totalThreads = blockDim.x * blockDim.y * blockDim.z;
-	unsigned int localMemorySize = 56;
+	unsigned int localMemorySize = 128;
 	local.resize(localMemorySize * totalThreads, 0);
+	shared.resize(1024, 0);
 	
 	report("Initializing CTA with " << totalThreads << " threads");
 	report("  local memory size " << local.size() << " bytes");
+	report("  shared memory size: " << shared.size() << " bytes");
 	
 	for (int threadId = 0; threadId < totalThreads; threadId++) {
 		LLVMContext context;

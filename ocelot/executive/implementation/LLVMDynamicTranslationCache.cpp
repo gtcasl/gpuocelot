@@ -130,12 +130,14 @@ bool LLVMDynamicTranslationCache::loadModule(const ir::Module *module, executive
 			
 			TranslatedKernel *translatedKernel = new TranslatedKernel;
 			translatedKernel->kernel = kernel->second;
+			translatedKernel->entryBlockId = (HyperblockId)subkernelMap.size();
 			metadata.kernels[kernel->second->name] = translatedKernel;
 			
 			analysis::HyperblockFormation formationPass;
 			
 			formationPass.initialize(*module);
-			formationPass.runOnKernel(translatedKernel->decomposition, *kernel->second);
+			formationPass.runOnKernel(translatedKernel->decomposition, *kernel->second, 
+				translatedKernel->entryBlockId);
 			formationPass.finalize();
 			
 			// create subkernels
@@ -165,6 +167,19 @@ bool LLVMDynamicTranslationCache::loadModule(const ir::Module *module, executive
 	return false;
 }
 
+
+LLVMDynamicTranslationCache::HyperblockId LLVMDynamicTranslationCache::getEntryId(
+	const std::string &module, 
+	const std::string &kernel) {
+	
+	ModuleMap::const_iterator mod_it = modules.find(module);
+	assert(mod_it != modules.end());
+
+	KernelTranslationMap::const_iterator k_it = mod_it->second.kernels.find(kernel);
+	assert(k_it != mod_it->second.kernels.end());
+	
+	return k_it->second->entryBlockId;
+}
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 

@@ -40,10 +40,12 @@ LLVMDynamicExecutive::Metadata::~Metadata() {
 
 LLVMDynamicExecutive::LLVMDynamicExecutive(
 	const LLVMDynamicKernel *_kernel, 
-	int procID)
+	int procID,
+	HyperblockId _entryId)
 :
 	kernel(_kernel),
-	processor(procID)
+	processor(procID),
+	entryId(_entryId)
 {
 	report("LLVMDynamicExecutive");
 	report(" local memory size: " << _kernel->localMemorySize());
@@ -65,7 +67,7 @@ unsigned int LLVMDynamicExecutive::ctaId(const LLVMContext &ctx) {
 
 //! \brief adds a CTA to the dynamic executive's execution list
 void LLVMDynamicExecutive::addCta(const ir::Dim3 &blockId) {
-	ctaMap[ctaId(blockId)].initialize(*kernel, blockId);
+	ctaMap[ctaId(blockId)].initialize(*kernel, blockId, entryId);
 }
 
 
@@ -86,6 +88,13 @@ LLVMDynamicExecutive::HyperblockId LLVMDynamicExecutive::getResumePoint(
 	const LLVMContext &context) {
 	
 	return *((HyperblockId *)&context.local[4]);
+}
+
+//! \brief sets the resume point of the context
+void LLVMDynamicExecutive::setResumePoint(
+	const LLVMContext &context, 
+	LLVMDynamicExecutive::HyperblockId hbId) {
+	*((HyperblockId *)&context.local[4]) = hbId;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -242,7 +251,8 @@ void LLVMDynamicExecutive::testBarriers(int &waiting, int &ready) {
 
 void LLVMDynamicExecutive::CooperativeThreadArray::initialize(
 	const LLVMDynamicKernel &kernel, 
-	const ir::Dim3 &ctaId) {
+	const ir::Dim3 &ctaId,
+	HyperblockId entry) {
 
 	const ir::Dim3 blockDim = kernel.blockDim();
 	
@@ -276,6 +286,7 @@ void LLVMDynamicExecutive::CooperativeThreadArray::initialize(
 		context.constant  = kernel.constantMemory();
 		context.metadata  = 0;
 		
+		setResumePoint(context, entry);
 		readyQueue.push_back(context);
 	}
 }

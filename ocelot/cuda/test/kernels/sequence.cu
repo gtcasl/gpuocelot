@@ -11,14 +11,30 @@
 #include <stdio.h>
 #include <dlfcn.h>
 
-#if 0
+#define Enable_sequence 1
+#define Enable_testSharedConvergent 1
+
+#if Enable_sequence
 extern "C" __global__ void sequence(int *A, int N) {
 	int i = threadIdx.x + blockIdx.x * blockDim.x;
 	if (i < N) {
 		A[i] = 2*i;
 	}
 }
+#endif
 
+#if Enable_testSharedConvergent
+extern "C" __global__ void testShareConvergent(int *A) {
+	int i = threadIdx.x;
+	__shared__ int storage[256];
+	
+	storage[threadIdx.x] = 2*i;
+	__syncthreads();
+	A[i] = storage[threadIdx.x ^ 2] + threadIdx.x;
+}
+#endif
+
+#if 0
 extern "C" __global__ void testShareSimple(int *A) {
 	int i = threadIdx.x + blockIdx.x * blockDim.x;
 	__shared__ int Share[32];
@@ -29,24 +45,14 @@ extern "C" __global__ void testShareSimple(int *A) {
 	A[i] = Share[threadIdx.x ^ 1];
 	A[i] = Share[31 - threadIdx.x];
 }
-
+#endif
+#if 0
 extern "C" __global__ void v4sequence(int4 *A, int N) {
 	int i = threadIdx.x + blockIdx.x * blockDim.x + 1;
 	int4 b = make_int4(i, 2*i, 3*i, 4*i);
 	A[i-1] = b;
 }
-
 #endif
-
-extern "C" __global__ void testShareConvergent(int *A) {
-	int i = threadIdx.x;
-	__shared__ int storage[256];
-	
-	storage[threadIdx.x] = 2*i;
-	__syncthreads();
-	A[i] = storage[threadIdx.x ^ 2] + threadIdx.x;
-}
-
 #if 0
 extern "C" __global__ void testShr(int *A) {
 	int i = threadIdx.x + blockIdx.x * blockDim.x;
@@ -108,7 +114,7 @@ int main(int argc, char *arg[]) {
 	dim3 grid((N+BlockSize-1)/BlockSize,1);
 	dim3 block(BlockSize, 1);
 	
-#if 0
+#if Enable_sequence
 	sequence<<< grid, block >>>(A_gpu, N);
 	
 	printf("cudaMemcpy(0x%x, 0x%x) - APP\n", (void *)A_host, (void *)A_gpu);
@@ -121,6 +127,7 @@ int main(int argc, char *arg[]) {
 		}
 	}
 #endif
+
 #if 0
 	grid.x /= 4;
 	v4sequence<<< grid, block >>>((int4 *)A_gpu, N/4);
@@ -158,7 +165,7 @@ int main(int argc, char *arg[]) {
 		}
 	}
 #endif
-
+#if Enable_testShareConvergent
 	if (!errors) {
 		dim3 grid(1,1);
 		dim3 block(8, 1, 1);
@@ -179,6 +186,7 @@ int main(int argc, char *arg[]) {
 			}
 		}
 	}
+#endif	
 #if 0
 	if (!errors) {
 

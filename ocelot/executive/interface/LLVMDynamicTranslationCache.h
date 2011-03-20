@@ -104,6 +104,9 @@ namespace executive {
 			//! \brief
 			ir::PTXKernel *kernel;
 			
+			//! \brief
+			HyperblockId entryBlockId;
+			
 			//! \brief set of translations for each subkernel
 			TranslatedSubkernelMap subkernels;
 		};
@@ -135,6 +138,9 @@ namespace executive {
 		
 		//! \brief loads a module into the translation cache
 		bool loadModule(const ir::Module *module, executive::Device *device);
+		
+		//! \brief gets the entry block id for the selected kernel
+		HyperblockId getEntryId(const std::string &module, const std::string &kernel);
 				
 		//! \brief searches for an existing translation and compiles it if it doesn't exist
 		const Translation *getOrInsertTranslationById(HyperblockId, int ws=1);

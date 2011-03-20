@@ -91,11 +91,10 @@ void analysis::HyperblockFormation::runOnKernel(KernelDecomposition &decompositi
 	analysis::DataflowGraph::IteratorMap cfgToDfgMap = parentKernel.dfg()->getCFGtoDFGMap();
 	ir::ControlFlowGraph *cfg = parentKernel.cfg();
 	
-	int blockIndex = 0;
 	ir::ControlFlowGraph::BlockPointerVector blocks = cfg->topological_sequence();
 	for (ir::ControlFlowGraph::BlockPointerVector::const_iterator bb_it = blocks.begin(); 
 		bb_it != blocks.end(); 
-		++bb_it, ++blockIndex) {
+		++bb_it) {
 		
 		if (!(*bb_it)->instructions.size()) {
 			continue;

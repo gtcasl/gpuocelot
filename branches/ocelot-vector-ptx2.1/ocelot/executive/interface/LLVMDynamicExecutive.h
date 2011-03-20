@@ -80,7 +80,7 @@ namespace executive {
 		class CooperativeThreadArray {
 		public:
 		
-			void initialize(const LLVMDynamicKernel &kernel, const ir::Dim3 & ctaId);
+			void initialize(const LLVMDynamicKernel &kernel, const ir::Dim3 & ctaId, HyperblockId entry);
 		
 		public:
 			ByteVector local;
@@ -102,7 +102,7 @@ namespace executive {
 		
 	public:
 		//! \brief 
-		LLVMDynamicExecutive(const LLVMDynamicKernel *kernel, int procID);
+		LLVMDynamicExecutive(const LLVMDynamicKernel *kernel, int procID, HyperblockId entryId);
 		
 		//! \brief executes all thread contexts and waits for termination before returning
 		void execute();
@@ -135,9 +135,12 @@ namespace executive {
 		
 		//! \brief gets the exit code of a thread
 		static ThreadExitCode getExitCode(const LLVMContext &context);
-		
+				
 		//! \brief determines a thread's next subkernel
 		static HyperblockId getResumePoint(const LLVMContext &context);
+		
+		//! \brief sets the resume point of the context
+		static void setResumePoint(const LLVMContext &context, HyperblockId resumeId);
 		
 	public:
 	
@@ -146,6 +149,9 @@ namespace executive {
 		
 		//! \brief procesor
 		int processor;
+		
+		//! \brief entry id of the hyperblock
+		HyperblockId entryId;
 		
 		//! \brief set of active CTAs
 		CooperativeThreadArrayMap ctaMap;

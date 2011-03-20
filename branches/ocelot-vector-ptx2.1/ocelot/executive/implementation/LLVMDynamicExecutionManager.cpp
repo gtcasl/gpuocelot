@@ -7,6 +7,7 @@
 // Ocelot includes
 #include <ocelot/executive/interface/LLVMDynamicExecutionManager.h>
 #include <ocelot/executive/interface/LLVMDynamicExecutive.h>
+#include <ocelot/ir/interface/Module.h>
 
 // Hydrazine Includes
 #include <hydrazine/implementation/debug.h>
@@ -47,14 +48,20 @@ void LLVMDynamicExecutionManager::launch(const LLVMDynamicKernel & kernel) {
 	
 	translationCache.loadModule(kernel.module, kernel.device);
 
+	LLVMDynamicTranslationCache::HyperblockId entryId = translationCache.getEntryId(
+		kernel.module->path(), 
+		kernel.name);
+	
 	ir::Dim3 gridDim(kernel.gridDim());
 	ir::Dim3 blockDim(kernel.blockDim());
 	int totalCtas = gridDim.x * gridDim.y;
 	report("  loaded. Executing grid " << gridDim.x << ", " << gridDim.y);
 	report("  block dim: " << blockDim.x << ", " << blockDim.y << ", " << blockDim.z);
+	report("  entry id: " << entryId);
+	
 	
 	for (int ctaStart = 0; ctaStart < totalCtas; ctaStart++) {
-		LLVMDynamicExecutive executive(&kernel, 0);
+		LLVMDynamicExecutive executive(&kernel, 0, entryId);
 		ir::Dim3 ctaId(ctaStart % gridDim.y, ctaStart / gridDim.y );
 		report("Executing CTA " << ctaId.x << ", " << ctaId.y);
 		

@@ -16,6 +16,7 @@
 #include <ocelot/analysis/interface/ConvertPredicationToSelectPass.h>
 #include <ocelot/analysis/interface/SubkernelFormationPass.h>
 #include <ocelot/analysis/interface/MIMDThreadSchedulingPass.h>
+#include <ocelot/analysis/interface/SyncEliminationPass.h>
 
 #include <ocelot/ir/interface/Module.h>
 
@@ -86,6 +87,12 @@ namespace analysis
 		if( passes & MIMDThreadScheduling )
 		{
 			Pass* pass = new analysis::MIMDThreadSchedulingPass;
+			manager.addPass( *pass );
+		}
+		
+		if( passes & SyncElimination )
+		{
+			Pass* pass = new analysis::SyncEliminationPass;
 			manager.addPass( *pass );
 		}
 		
@@ -165,6 +172,11 @@ static int parsePassTypes( const std::string& passList )
 			report( "  Matched mimd-threading." );
 			types |= analysis::PTXOptimizer::MIMDThreadScheduling;
 		}
+		else if( *pass == "sync-elimination" )
+		{
+			report( "  Matched sync-elimination." );
+			types |= analysis::PTXOptimizer::SyncElimination;
+		}
 		else if( !pass->empty() )
 		{
 			std::cout << "==Ocelot== Warning: Unknown pass name - '" << *pass 
@@ -194,8 +206,8 @@ int main( int argc, char** argv )
 		"The target size for subkernel formation." );
 	parser.parse( "-p", "--passes", passes, "", 
 		"A list of optimization passes (remove-barriers, " 
-		"reverse-if-conversion, subkernel-formation, structural-transform, "
-		"mimd-threading)" );
+		"reverse-if-conversion, subkernel-formation, structural-transform " 
+		"mimd-threading, sync-elimination)");
 	parser.parse( "-c", "--cfg", optimizer.cfg, false, 
 		"Dump out the CFG's of all generated kernels." );
 	parser.parse();

@@ -30,7 +30,8 @@ namespace analysis
 				ReverseIfConversion = 0x2,
 				SubkernelFormation = 0x4,
 				StructuralTransform = 0x8,
-				MIMDThreadScheduling = 0x10
+				MIMDThreadScheduling = 0x10,
+				SyncElimination = 0x20
 			};
 	
 		public:

@@ -137,6 +137,7 @@ namespace analysis
 			{
 				friend class SSAGraph;
 				friend class DataflowGraph;
+				friend class SyncEliminationPass;
 				public:
 					/*! \brief The type of block */
 					enum Type

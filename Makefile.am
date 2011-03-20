@@ -33,7 +33,7 @@ check_PROGRAMS = TestLexer TestParser \
 	TestFunctionCall TestIndirectFunctionCall TestIndirectFunctionCallOcelot \
 	KernelTestHarness
 EXTRA_PROGRAMS = Module PtxToIlTranslator DFG CFG PTXChecker \
-	OcelotServer TestOcelotServer
+	OcelotServer TestOcelotServer DB
 lib_LTLIBRARIES = libocelot.la libKernelExtractor.la
 
 ################################################################################
@@ -140,7 +140,15 @@ libocelot_la_SOURCES = \
 	ocelot/translator/implementation/Translator.cpp \
 	ocelot/translator/implementation/PTXToLLVMTranslator.cpp \
 	ocelot/translator/implementation/PTXToILTranslator.cpp \
-	ocelot/util/implementation/RemoteDeviceMessage.cpp
+	ocelot/util/implementation/RemoteDeviceMessage.cpp \
+	ocelot/graphs/implementation/DirectionalGraph.cpp \
+	ocelot/graphs/implementation/DivergenceDrawer.cpp \
+	ocelot/graphs/implementation/DivergenceGraph.cpp \
+	ocelot/analysis/implementation/DivergenceAnalysis.cpp \
+	ocelot/analysis/implementation/BranchInfo.cpp \
+	ocelot/analysis/implementation/SyncEliminationPass.cpp \
+	ocelot/analysis/test/DB.cpp
+	
 	
 ################################################################################
 
@@ -194,6 +202,14 @@ CFG_CXXFLAGS = -Wall -ansi -pedantic -Werror -std=c++0x
 CFG_SOURCES = ocelot/ir/test/CFG.cpp
 CFG_LDADD = libocelot.la $(LLVM_LDFLAGS)
 CFG_LDFLAGS = -static
+################################################################################
+
+################################################################################
+## DB
+DB_CXXFLAGS = -Wall -pedantic -std=c++0x
+DB_SOURCES = ocelot/analysis/test/DB.cpp
+DB_LDADD = libocelot.la $(LLVM_LDFLAGS)
+DB_LDFLAGS = -static
 ################################################################################
 
 ################################################################################
@@ -582,7 +598,13 @@ nobase_include_HEADERS = ocelot/api/interface/ocelot.h \
 	hydrazine/interface/SystemCompatibility.h \
 	hydrazine/interface/Version.h \
 	hydrazine/python/RunRegression.py \
-	regression/ocelotRegressionTests.txt
+	regression/ocelotRegressionTests.txt\
+	ocelot/graphs/interface/DirectionalGraph.h \
+	ocelot/graphs/interface/DivergenceDrawer.h \
+	ocelot/graphs/interface/DivergenceGraph.h \
+	ocelot/analysis/interface/DivergenceAnalysis.h \
+	ocelot/analysis/interface/BranchInfo.h \
+	ocelot/analysis/interface/SyncEliminationPass.h
 
 ################################################################################
 

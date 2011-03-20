@@ -34,6 +34,19 @@ namespace analysis {
 		typedef std::map< analysis::DataflowGraph::RegisterId, analysis::DataflowGraph::Register > RegisterMap;
 		typedef std::vector< unsigned int> OffsetVector;
 		
+		//! \brief indicates reason for thread exit
+		enum ThreadExitCode {
+			Thread_fallthrough = 0,
+			Thread_branch = 1,
+			Thread_tailcall = 3,
+			Thread_call = 4,
+			Thread_barrier = 5,
+			Thread_exit = 6,
+			Thread_exit_other = 7,
+			ThreadExitCode_invalid
+		};
+		static std::string toString(const ThreadExitCode &code);
+		
 		/*!
 			\brief 
 		*/
@@ -103,6 +116,7 @@ namespace analysis {
 			//! \brief identifies first hyperblock of subkernel
 			HyperblockId entry;
 		};
+		
 	public:
 
 		HyperblockFormation();
@@ -112,6 +126,8 @@ namespace analysis {
 		void finalize();
 		
 	private:
+	
+		void _partitionAtBarrier(ir::PTXKernel &parentKernel);
 	
 		//! \brief creates a spill region in the first block
 		void _createSpillRegion(
@@ -132,7 +148,18 @@ namespace analysis {
 			
 		//! \brief writes the exit point 
 		size_t _createHyperblockExit(
-			Hyperblock &hyperblock);		
+			Hyperblock &hyperblock);
+			
+		void _createExit(
+			Hyperblock &hyperblock, 
+			ir::BasicBlock::Pointer exitBlock, 
+			const ir::PTXOperand &resumePoint,
+			unsigned int exitCode);
+			
+		void _createExit(
+			Hyperblock &hyperblock, 
+			ir::BasicBlock::Pointer exitBlock,
+			unsigned int exitCode);
 	};
 }
 

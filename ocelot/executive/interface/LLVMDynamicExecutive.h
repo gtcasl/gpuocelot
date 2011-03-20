@@ -32,6 +32,7 @@ namespace executive {
 		typedef std::map< unsigned int, ThreadContextQueue > CtaThreadQueue;
 		
 		typedef analysis::HyperblockFormation::HyperblockId HyperblockId;
+		typedef analysis::HyperblockFormation::ThreadExitCode ThreadExitCode;
 		typedef std::vector< LLVMContext > ThreadContextVector;
 		
 		typedef std::map< HyperblockId, LLVMDynamicTranslationCache::TranslationWarpMap > TranslationWarpCache;
@@ -40,18 +41,6 @@ namespace executive {
 		
 		*/
 		class Metadata {
-		public:
-			//! \brief indicates reason for thread exit
-			enum ThreadExitCode {
-				Thread_fallthrough = 0,
-				Thread_branch = 1,
-				Thread_tailcall = 3,
-				Thread_call = 4,
-				Thread_barrier = 5,
-				Thread_exit = 6,
-				Thread_exit_other = 7,
-				ThreadExitCode_invalid
-			};
 			
 		public:
 			Metadata();
@@ -69,10 +58,6 @@ namespace executive {
 			const ir::PTXKernel* kernel;
 			HyperblockId	nextEntryId;
 			TextureVector textures;
-			
-		public:
-			//! \brief toString method for enumeration ThreadExitCode
-			static std::string toString(const ThreadExitCode &code);
 			
 		};
 		
@@ -149,7 +134,7 @@ namespace executive {
 		unsigned int ctaId(const LLVMContext &ctx);
 		
 		//! \brief gets the exit code of a thread
-		static Metadata::ThreadExitCode getExitCode(const LLVMContext &context);
+		static ThreadExitCode getExitCode(const LLVMContext &context);
 		
 		//! \brief determines a thread's next subkernel
 		static HyperblockId getResumePoint(const LLVMContext &context);

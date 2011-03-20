@@ -71,6 +71,9 @@ namespace executive {
 			~TranslatedSubkernel();
 			
 		public:
+			//! \brief each kernel is translated as its own module
+			llvm::Module *kernelModule;
+			
 			//! \brief pointer to parent kernel
 			TranslatedKernel *parent;
 		
@@ -97,9 +100,6 @@ namespace executive {
 		
 			//! \brief this data structure maintains the kernel's structure
 			analysis::HyperblockFormation::KernelDecomposition decomposition;
-		
-			//! \brief each kernel is translated as its own module
-			llvm::Module *kernelModule;
 			
 			//! \brief
 			ir::PTXKernel *kernel;

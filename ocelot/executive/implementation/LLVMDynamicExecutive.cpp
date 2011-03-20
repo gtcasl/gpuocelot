@@ -134,7 +134,6 @@ void LLVMDynamicExecutive::execute() {
 	int waitingThreads = 0;
 	int readyThreads = 0;
 	
-	
 	report("execute()");
 	
 	do {
@@ -175,11 +174,12 @@ void LLVMDynamicExecutive::executeWarp(Warp &warp) {
 		ctx_it != warp.threads.end(); 
 		++ctx_it) {
 		ctx_it->metadata = (char *)translation->metadata;
+		
+		report("thread (" << ctx_it->tid.x << "," << ctx_it->tid.y << "," << ctx_it->tid.z << ") - entering block " << warp.entryId);
 	}
 	
 	translation->execute(&warp.threads[0]);
 	
-	report(" warp execution completed.");
 	for (
 		ThreadContextVector::iterator ctx_it = warp.threads.begin(); 
 		ctx_it != warp.threads.end(); 
@@ -257,7 +257,8 @@ void LLVMDynamicExecutive::CooperativeThreadArray::initialize(
 	const ir::Dim3 blockDim = kernel.blockDim();
 	
 	int totalThreads = blockDim.x * blockDim.y * blockDim.z;
-	local.resize(32 * totalThreads, 0);
+	unsigned int localMemorySize = 56;
+	local.resize(localMemorySize * totalThreads, 0);
 	
 	report("Initializing CTA with " << totalThreads << " threads");
 	report("  local memory size " << local.size() << " bytes");
@@ -278,7 +279,7 @@ void LLVMDynamicExecutive::CooperativeThreadArray::initialize(
 		context.tid.z     = threadId / (context.ntid.x * context.ntid.y);
 		context.shared    = reinterpret_cast<char*>(&shared[0]);
 		context.argument  = kernel.argumentMemory();	//stack.argumentMemory();
-		context.local     = &local[threadId * kernel.localMemorySize()];	//stack.localMemory();
+		context.local     = &local[threadId * localMemorySize];	//stack.localMemory();
 		context.parameter = 0;	//stack.parameterMemory();
 		context.constant  = kernel.constantMemory();
 		context.metadata  = 0;
@@ -312,11 +313,11 @@ LLVMDynamicExecutive::getOrInsertTranslationById(HyperblockId id, int ws) {
 	}
 	else {
 		// not found for any warp size. query the singleton translation cache
+		report("no translation found for hyperblock id. Querying global translation cache.");
 		translation = LLVMDynamicExecutionManager::get().getOrInsertTranslationById(id, ws);
 		LLVMDynamicTranslationCache::TranslationWarpMap warpMap;
 		warpMap[ws] = translation;
 		translationCache[id] = warpMap;
-		report("no translation found for hyperblock id. Querying global translation cache.");
 	}
 	return translation;
 }

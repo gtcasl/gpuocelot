@@ -44,7 +44,7 @@
 
 #define REPORT_ALL_LLVM_ASSEMBLY 0
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -74,6 +74,8 @@ LLVMDynamicTranslationCache::getOrInsertTranslationById(HyperblockId id, int ws)
 	
 	TranslationWarpMap::const_iterator sk_tr_it = subkernel->translations.find(1);
 	if (sk_tr_it == subkernel->translations.end()) {
+		report("scalar version not found. Compiling");
+		
 		Translation *scalarTranslation = new Translation;
 		executive::Device *device = modules[subkernel->parent->kernel->module->path()].device;
 		scalarTranslation->metadata = compileTranslation(
@@ -166,7 +168,7 @@ bool LLVMDynamicTranslationCache::loadModule(const ir::Module *module, executive
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
-LLVMDynamicTranslationCache::TranslatedKernel::TranslatedKernel(): kernelModule(0), kernel(0) {
+LLVMDynamicTranslationCache::TranslatedKernel::TranslatedKernel(): kernel(0) {
 
 }
 
@@ -176,7 +178,7 @@ LLVMDynamicTranslationCache::TranslatedKernel::~TranslatedKernel() {
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
-LLVMDynamicTranslationCache::TranslatedSubkernel::TranslatedSubkernel(): parent(0), subkernel(0), entryId(0) {
+LLVMDynamicTranslationCache::TranslatedSubkernel::TranslatedSubkernel(): kernelModule(0),  parent(0), subkernel(0), entryId(0) {
 
 }
 
@@ -196,7 +198,7 @@ LLVMDynamicTranslationCache::Translation::~Translation() {
 }
 
 void LLVMDynamicTranslationCache::Translation::execute(LLVMContext *contexts) const {
-	report("Executing translation");
+	report("Executing translation [contexts at " << (const void *)contexts << "]");
 	function(contexts);
 }
 
@@ -965,7 +967,7 @@ static void translate(
 	ir::PTXKernel& kernel,
 	translator::Translator::OptimizationLevel optimization)
 {
-//	assert(module == 0);
+	assert(module == 0);
 
 	report(" Translating kernel.");
 	
@@ -1245,7 +1247,7 @@ void *LLVMDynamicTranslationCache::compileTranslation(
 		setupCallTargets(*translatedSubkernel.subkernel, *this);
 		
 		// perform PTX to LLVM translation - construct a new LLVM module
-		translate(translatedKernel.kernelModule, *translatedSubkernel.subkernel, optimization);
+		translate(translatedSubkernel.kernelModule, *translatedSubkernel.subkernel, optimization);
 
 		// Converting out of ssa makes the assembly easier to read
 		if(optimization == translator::Translator::ReportOptimization 
@@ -1264,30 +1266,30 @@ void *LLVMDynamicTranslationCache::compileTranslation(
 	try
 	{
 		// apply optimizations on the reuslting LLVM function
-		optimize(*translatedKernel.kernelModule, optimization, translation.warpSize);
+		optimize(*translatedSubkernel.kernelModule, optimization, translation.warpSize);
 		
 		// dynamically compile LLVM to host ISA
-		translation.llvmFunction = codegen(translation.function, *translatedKernel.kernelModule, 
+		translation.llvmFunction = codegen(translation.function, *translatedSubkernel.kernelModule, 
 			*translatedSubkernel.subkernel, device);
 		
 		if (api::OcelotConfiguration::get().executive.printLLVMModule) {
-			translatedKernel.kernelModule->dump();
+			translatedSubkernel.kernelModule->dump();
 		}
 		
 		// this step may be ellided for performance
 		std::string errors;
-		if (llvm::verifyModule(*translatedKernel.kernelModule, llvm::ReturnStatusAction, &errors)) {
+		if (llvm::verifyModule(*translatedSubkernel.kernelModule, llvm::ReturnStatusAction, &errors)) {
 			std::cerr << "llvm::verifyModule failed:" << errors << std::endl;
 		}
 	}
 	catch(...)
 	{
-		llvm::Function* llvmFunction = translatedKernel.kernelModule->getFunction(translatedSubkernel.subkernel->name);
+		llvm::Function* llvmFunction = translatedSubkernel.kernelModule->getFunction(translatedSubkernel.subkernel->name);
 
 		LLVMState::jit()->freeMachineCodeForFunction(llvmFunction);
 
-		LLVMState::jit()->removeModule(translatedKernel.kernelModule);
-		delete translatedKernel.kernelModule;
+		LLVMState::jit()->removeModule(translatedSubkernel.kernelModule);
+		delete translatedSubkernel.kernelModule;
 		delete metadata;
 		metadata = 0;
 		

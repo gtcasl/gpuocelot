@@ -22,7 +22,7 @@ namespace util {
 
 	class KernelTestHarness {
 	public:
-		typedef std::map< void *, void *> PointerMap;
+		typedef std::map<const void*, const void*> PointerMap;
 	public:
 	
 		KernelTestHarness(std::istream &input);

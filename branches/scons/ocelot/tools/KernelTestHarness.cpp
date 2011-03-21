@@ -84,7 +84,7 @@ void util::KernelTestHarness::execute() {
 				
 		PointerMap::iterator p_it = pointers.find(pointer);
 		if (p_it != pointers.end()) {
-			*(void **)&parameterMemory[i] = p_it->second;
+			*(const void **)&parameterMemory[i] = p_it->second;
 			report("  remapping parameter value " << pointer
 				<< " to " << p_it->second);
 		}	
@@ -112,12 +112,70 @@ void util::KernelTestHarness::execute() {
 	}
 }
 
+typedef long long unsigned int uint64;
+
+static void compareAllocation(unsigned int& errors, uint64 size,
+	const void* referenceAddress, const void* computedAddress) {
+
+	char* computedData = new char[size];
+		
+	cudaError_t result = cudaMemcpy(computedData,
+		computedAddress, size, cudaMemcpyDeviceToHost);
+	
+	if (result != cudaSuccess) {
+		report(" failed to copy from computed device allocation");
+		delete[] computedData;
+		throw hydrazine::Exception(
+			"Failed to copy from computed device allocation");
+	}
+	
+	uint64 address = 0;
+	uint64 bytes   = size;
+
+	for (; address + sizeof(uint64) <= bytes; address += sizeof(uint64)) {
+		uint64 computed  = 0;
+		uint64 reference = 0;
+	
+		std::memcpy(&computed,  computedData + address, sizeof(uint64));
+		std::memcpy(&reference, (char*)referenceAddress + address,
+			sizeof(uint64));
+	
+		if(computed != reference) {
+			std::cout << "at " << (void*)(address + (char*)referenceAddress)
+				<< " - computed '0x" << std::hex << computed
+				<< "' != reference '0x" << std::hex << reference << "'\n";
+			++errors;
+		}
+		
+		if (errors > 20) break;
+	}
+	
+	if(errors <= 20) {
+		uint64 computed  = 0;
+		uint64 reference = 0;
+	
+		std::memcpy(&computed,  computedData + address, bytes - address);
+		std::memcpy(&reference, (char*)referenceAddress + address,
+			bytes - address);
+	
+		if(computed != reference) {
+			std::cout << "at " << (void*)(address + (char*)referenceAddress)
+				<< " - computed '0x" << std::hex << computed
+				<< "' != reference '0x" << std::hex << reference << "'\n";
+			++errors;
+		}
+	}
+	
+	delete[] computedData;
+}
+
 bool util::KernelTestHarness::compare() {
 	// visit each allocation and compare 'after' results to 'before'
 	
 	unsigned int errors = 0;
 	report("Comparing computed data with reference");
-	// construct device allocations and retain mapping of pointers
+
+	// compare global memory allocations
 	for (ExtractedDeviceState::GlobalAllocationMap::const_iterator
 		alloc_it = state.globalAllocations.begin();
 		alloc_it != state.globalAllocations.end(); ++alloc_it) {
@@ -129,65 +187,44 @@ bool util::KernelTestHarness::compare() {
 		assertM(referenceAllocation != state.postLaunchGlobalAllocations.end(),
 			"Reference data corresponding to allocation at " << alloc_it->first
 			<< " not found, malformed kernel checkpoint.");
-
-		typedef long long unsigned int uint;
 		
-		char* computedData = new char[alloc_it->second->size()];
-		
-		cudaError_t result = cudaMemcpy(computedData,
-			pointers[alloc_it->second->devicePointer],
-			alloc_it->second->size(), cudaMemcpyDeviceToHost);
-		
-		if (result != cudaSuccess) {
-			report(" failed to copy from computed device allocation");
-			delete[] computedData;
-			throw hydrazine::Exception(
-				"Failed to copy from computed device allocation");
-		}
-		
-		uint address = 0;
-		uint bytes   = alloc_it->second->size();
-
-		for (; address + sizeof(uint) <= bytes; address += sizeof(uint)) {
-			uint computed  = 0;
-			uint reference = 0;
-		
-			std::memcpy(&computed,  computedData + address, sizeof(uint));
-			std::memcpy(&reference, 
-				(char*)referenceAllocation->second->data.data() + address,
-				sizeof(uint));
-		
-			if(computed != reference) {
-				std::cout << "at " << (void*)(address + (char*)alloc_it->first)
-					<< " - computed '0x" << std::hex << computed
-					<< "' != reference '0x" << std::hex << reference << "'\n";
-				++errors;
-			}
-			
-			if (errors > 20) break;
-		}
-		
-		if(errors <= 20) {
-			uint computed  = 0;
-			uint reference = 0;
-		
-			std::memcpy(&computed,  computedData + address, bytes - address);
-			std::memcpy(&reference, 
-				(char*)referenceAllocation->second->data.data() + address,
-				bytes - address);
-		
-			if(computed != reference) {
-				std::cout << "at " << (void*)(address + (char*)alloc_it->first)
-					<< " - computed '0x" << std::hex << computed
-					<< "' != reference '0x" << std::hex << reference << "'\n";
-				++errors;
-			}
-		}
-		
-		delete[] computedData;
+		compareAllocation(errors, alloc_it->second->size(),
+			referenceAllocation->second->data.data(),
+			pointers[alloc_it->second->devicePointer]);
 
 		if (errors > 20) break;
 	}
+
+	// compare global variable allocations
+	for (ExtractedDeviceState::GlobalVariableMap::const_iterator
+		alloc_it = state.globalVariables.begin();
+		alloc_it != state.globalVariables.end(); ++alloc_it) {
+		report(" comparing global variable " << alloc_it->first);
+		
+		ExtractedDeviceState::GlobalVariableMap::const_iterator
+			referenceAllocation = state.postLaunchGlobalVariables.find(
+			alloc_it->first);
+		assertM(referenceAllocation != state.postLaunchGlobalVariables.end(),
+			"Reference data corresponding to variable " << alloc_it->first
+			<< " not found, malformed kernel checkpoint.");
+		
+		void* address = 0;
+		
+		cudaError_t result = cudaGetSymbolAddress(&address,
+			alloc_it->second->name.c_str());
+		
+		if (result != cudaSuccess) {
+			throw hydrazine::Exception(
+				"Failed to get address of device global variable '"
+				+ alloc_it->second->name + "'");
+		}
+		
+		compareAllocation(errors, alloc_it->second->size(),
+			referenceAllocation->second->data.data(), address);
+
+		if (errors > 20) break;
+	}	
+	
 	
 	return errors == 0;
 }
@@ -195,7 +232,7 @@ bool util::KernelTestHarness::compare() {
 void util::KernelTestHarness::reset() {
 	for(PointerMap::iterator pointer = pointers.begin();
 		pointer != pointers.end(); ++pointer) {
-		cudaFree(pointer->second);
+		cudaFree((void*)pointer->second);
 	}
 	
 	pointers.clear();
@@ -230,7 +267,7 @@ void util::KernelTestHarness::_setupMemory() {
 			<< " (at " << devicePtr << ")");
 				
 		// copy
-		result = cudaMemcpy(devicePtr, &alloc_it->second->data[0],
+		result = cudaMemcpy(devicePtr, alloc_it->second->data.data(),
 			alloc_it->second->size(), cudaMemcpyHostToDevice);
 		if (result != cudaSuccess) {
 			report(" failed to copy to new device allocation");
@@ -238,6 +275,7 @@ void util::KernelTestHarness::_setupMemory() {
 				"Failed to copy to new device allocation");
 		}
 	}
+
 }
 
 void util::KernelTestHarness::_setupModule() {
@@ -256,6 +294,20 @@ void util::KernelTestHarness::_setupModule() {
 			ocelot::registerPTXModule(file, state.launch.moduleName);
 		}
 
+	}
+	
+	// fill out the initial contents of global variables
+	for (ExtractedDeviceState::GlobalVariableMap::const_iterator
+		global = state.globalVariables.begin();
+		global != state.globalVariables.end(); ++global) {
+		cudaError_t result = cudaMemcpyToSymbol(global->second->name.c_str(),
+			global->second->data.data(), global->second->size(), 0);
+
+		if (result != cudaSuccess) {
+			throw hydrazine::Exception(
+				"Failed to copy to device global variable '"
+				+ global->second->name + "'");
+		}
 	}
 }
 

@@ -167,6 +167,10 @@ namespace executive
 			~PassThroughDevice();
 
 		private:
+			/*! \brief A vector of module pointers */
+			typedef std::vector<const ir::Module*> ModuleVector;
+
+		private:
 			/*! \brief Record all of the state that could affect the execution
 				of the kernel */
 			void _recordStatePreExecution();
@@ -192,8 +196,10 @@ namespace executive
 			util::ExtractedDeviceState _state;
 			
 			/*! \brief function calls target this device*/
-			Device *_target;
+			Device* _target;
 			
+			/*! \brief The list of all modules */
+			ModuleVector _modules;			
 	};
 }
 

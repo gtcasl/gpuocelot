@@ -209,9 +209,9 @@ void executive::PassThroughDevice::load(const ir::Module* module) {
 			std::make_pair(texture->first, &texture->second));
 	}
 	
-	// TODO add global allocations
-	
 	_target->load(module);
+
+	_modules.push_back(module);
 }
 
 void executive::PassThroughDevice::unload(const std::string& name) {
@@ -225,6 +225,14 @@ void executive::PassThroughDevice::unload(const std::string& name) {
 	}
 	
 	_target->unload(name);
+	
+	for (ModuleVector::iterator module = _modules.begin();
+		module != _modules.end(); ++module) {
+		if((*module)->path() == name) {
+			_modules.erase(module);
+			break;
+		}
+	}
 }
 
 executive::ExecutableKernel* executive::PassThroughDevice::getKernel(
@@ -405,8 +413,7 @@ void executive::PassThroughDevice::setOptimizationLevel(
 void  executive::PassThroughDevice::_recordStatePreExecution() {
 
 	// clear previous
-	_state.globalAllocations.clear();
-	_state.postLaunchGlobalAllocations.clear();
+	_state.clearData();	
 
 	// save allocations
 	Device::MemoryAllocationVector allocations = getAllAllocations();
@@ -425,6 +432,31 @@ void  executive::PassThroughDevice::_recordStatePreExecution() {
 				0, (*allocation)->size());
 		}
 	}
+
+	// save global allocations
+	for(ModuleVector::iterator module = _modules.begin();
+		module != _modules.end(); ++module) {
+		for (ir::Module::GlobalMap::const_iterator
+			global = (*module)->globals().begin();
+			global != (*module)->globals().end(); ++global) {
+		
+			Device::MemoryAllocation* allocation = getGlobalAllocation(
+				(*module)->path(), global->second.name());
+		
+			util::ExtractedDeviceState::GlobalAllocation*
+				g = new util::ExtractedDeviceState::GlobalAllocation(
+					allocation->pointer(), allocation->size(),
+					(*module)->path(), global->second.name());
+		
+			util::ExtractedDeviceState::GlobalVariableMap::iterator memory
+				= _state.globalVariables.insert(
+					std::make_pair(g->key(), g)).first;
+		
+			allocation->copy(memory->second->data.data(),
+				0, allocation->size());
+		}
+	}
+
 }
 
 void  executive::PassThroughDevice::_recordKernelLaunch(
@@ -464,6 +496,30 @@ void  executive::PassThroughDevice::_recordStatePostExecution() {
 		}
 	}
 	
+	// save global allocations
+	for(ModuleVector::iterator module = _modules.begin();
+		module != _modules.end(); ++module) {
+		for (ir::Module::GlobalMap::const_iterator
+			global = (*module)->globals().begin();
+			global != (*module)->globals().end(); ++global) {
+		
+			Device::MemoryAllocation* allocation = getGlobalAllocation(
+				(*module)->path(), global->second.name());
+		
+			util::ExtractedDeviceState::GlobalAllocation*
+				g = new util::ExtractedDeviceState::GlobalAllocation(
+					allocation->pointer(), allocation->size(),
+					(*module)->path(), global->second.name());
+		
+			util::ExtractedDeviceState::GlobalVariableMap::iterator memory
+				= _state.postLaunchGlobalVariables.insert(
+					std::make_pair(g->key(), g)).first;
+		
+			allocation->copy(memory->second->data.data(),
+				0, allocation->size());
+		}
+	}
+
 	std::stringstream stream;
 	stream << config::get().checkpoint.path
 		<< config::get().checkpoint.prefix << _kernelCount++

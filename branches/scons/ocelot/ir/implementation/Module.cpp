@@ -252,7 +252,7 @@ void ir::Module::writeIR( std::ostream& stream ) const {
 
 	stream << ".version 2.3\n";
 	stream << ".target sm_20\n";
-	stream << ".addressSize " << addressSize() << "\n";
+	stream << ".address_size " << addressSize() << "\n";
 
 	stream << "/* Module " << _modulePath << " */\n\n";
 	

@@ -52,11 +52,11 @@ def getBoostPaths():
 		raise ValueError, 'Error: unknown OS.  Where is boost installed?'
 
 	# override with environement variables
-	if 'CUDA_BIN_PATH' in os.environ:
+	if 'BOOST_BIN_PATH' in os.environ:
 		bin_path = os.path.abspath(os.environ['BOOST_BIN_PATH'])
-	if 'CUDA_LIB_PATH' in os.environ:
+	if 'BOOST_LIB_PATH' in os.environ:
 		lib_path = os.path.abspath(os.environ['BOOST_LIB_PATH'])
-	if 'CUDA_INC_PATH' in os.environ:
+	if 'BOOST_INC_PATH' in os.environ:
 		inc_path = os.path.abspath(os.environ['BOOST_INC_PATH'])
 
 	return (bin_path,lib_path,inc_path)

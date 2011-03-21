@@ -40,6 +40,22 @@ ExecutableKernel::ExecutableKernel( const ir::Kernel& k,
 	mapArgumentOffsets();
 }
 
+ExecutableKernel::ExecutableKernel(const ir::PTXKernel& k, executive::Device* d):
+	ir::Kernel( k ), 
+	device( d ), 
+	_constMemorySize( 0 ),
+	_localMemorySize( 0 ), 
+	_maxThreadsPerBlock( 16384 ), 
+	_registerCount( 0 ), 
+	_sharedMemorySize( 0 ), 
+	_externSharedMemorySize( 0 ),
+	_argumentMemorySize( 0 ),
+	_parameterMemorySize( 0 ) 
+{
+
+	mapArgumentOffsets();
+}
+
 ExecutableKernel::ExecutableKernel( executive::Device* d ) :
 	device( d ), _constMemorySize( 0 ), _localMemorySize( 0 ), 
 	_maxThreadsPerBlock( 16384 ), _registerCount( 0 ), 

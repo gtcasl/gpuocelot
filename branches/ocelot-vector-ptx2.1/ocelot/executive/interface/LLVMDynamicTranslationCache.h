@@ -85,6 +85,9 @@ namespace executive {
 		
 			//! \brief 
 			TranslationWarpMap translations;
+			
+			//! \brief each translated subkernel offers a certain storage requirement
+			size_t localMemorySize;
 		};
 		typedef std::unordered_map< HyperblockId, TranslatedSubkernel *> TranslatedSubkernelMap;
 		
@@ -109,6 +112,12 @@ namespace executive {
 			
 			//! \brief set of translations for each subkernel
 			TranslatedSubkernelMap subkernels;
+			
+			//! \brief maximum amount of local memory required for translated kernel
+			size_t localMemorySize;
+			
+			//! \brief size of each [static] shared memory declaration
+			size_t sharedMemorySize;
 		};
 		
 		typedef std::map< std::string, TranslatedKernel * > KernelTranslationMap;
@@ -139,8 +148,8 @@ namespace executive {
 		//! \brief loads a module into the translation cache
 		bool loadModule(const ir::Module *module, executive::Device *device);
 		
-		//! \brief gets the entry block id for the selected kernel
-		HyperblockId getEntryId(const std::string &module, const std::string &kernel);
+		//! \brief gets a translated kernel by name
+		const TranslatedKernel *getTranslatedKernel(const std::string &module, const std::string &kernel);
 				
 		//! \brief searches for an existing translation and compiles it if it doesn't exist
 		const Translation *getOrInsertTranslationById(HyperblockId, int ws=1);

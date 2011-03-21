@@ -80,8 +80,10 @@ namespace executive {
 		class CooperativeThreadArray {
 		public:
 		
-			void initialize(const LLVMDynamicKernel &kernel, const ir::Dim3 & ctaId, HyperblockId entry);
+			void initialize(const LLVMDynamicKernel &kernel, const ir::Dim3 & ctaId, HyperblockId entry, int localSize = 0, int sharedSize = 0);
 		
+			void resize(int localSize = 0, int sharedSize = 0, int constSize = 0, int parameterSize = 0, int argumentSize = 0);
+			
 		public:
 			ByteVector local;
 			ByteVector shared;
@@ -101,8 +103,12 @@ namespace executive {
 		typedef std::map< unsigned int, CooperativeThreadArray > CooperativeThreadArrayMap;
 		
 	public:
-		//! \brief 
-		LLVMDynamicExecutive(const LLVMDynamicKernel *kernel, int procID, HyperblockId entryId);
+		//! \brief constructs a dynamic executive object
+		LLVMDynamicExecutive(
+			const LLVMDynamicKernel *kernel, 
+			int procID, 
+			const LLVMDynamicTranslationCache::TranslatedKernel *translatedKernel, 
+			int sharedMemSize = 0);
 		
 		//! \brief executes all thread contexts and waits for termination before returning
 		void execute();
@@ -150,8 +156,11 @@ namespace executive {
 		//! \brief procesor
 		int processor;
 		
-		//! \brief entry id of the hyperblock
-		HyperblockId entryId;
+		//! \brief 
+		const LLVMDynamicTranslationCache::TranslatedKernel *translatedKernel;
+		
+		//! \brief dynamic shared memory size
+		size_t sharedMemorySize;
 		
 		//! \brief set of active CTAs
 		CooperativeThreadArrayMap ctaMap;

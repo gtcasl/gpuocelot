@@ -132,7 +132,8 @@ namespace analysis {
 		//! \brief creates a spill region in the first block
 		void _createSpillRegion(
 			ir::PTXKernel &subkernel, 
-			ir::PTXKernel &parentKernel);
+			ir::PTXKernel &parentKernel,
+			size_t spillSize);
 		
 		//! \brief restores live variables 
 		size_t _createRestore(

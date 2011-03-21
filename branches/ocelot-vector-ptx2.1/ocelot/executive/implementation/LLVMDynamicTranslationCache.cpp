@@ -44,7 +44,7 @@
 
 #define REPORT_ALL_LLVM_ASSEMBLY 0
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -95,7 +95,7 @@ LLVMDynamicTranslationCache::getOrInsertTranslationById(HyperblockId id, int ws)
 		assert(scalarTranslation->llvmFunction);
 		assert(scalarTranslation->function);
 		
-		scalarTranslation->llvmFunction->dump();
+//		scalarTranslation->llvmFunction->dump();
 		translation = scalarTranslation;
 	}
 	else {
@@ -126,7 +126,7 @@ bool LLVMDynamicTranslationCache::loadModule(const ir::Module *module, executive
 			kernel != module->kernels().end();
 			 ++kernel) {
 			
-			report("  Encountered kernel '" << kernel->second->name << "'");
+			report("Encountered kernel '" << kernel->second->name << "'");
 			
 			TranslatedKernel *translatedKernel = new TranslatedKernel;
 			translatedKernel->kernel = kernel->second;
@@ -151,11 +151,14 @@ bool LLVMDynamicTranslationCache::loadModule(const ir::Module *module, executive
 				translated->parent = translatedKernel;
 				translated->subkernel = hb_it->second.subkernel;
 				translated->entryId = hb_it->second.hyperblockId;
-				
-//				translated->subkernel->dfg()->toSsa();
+				translated->localMemorySize = translated->subkernel->getLocalMemorySize();
+				translatedKernel->localMemorySize = std::max(translatedKernel->localMemorySize, translated->localMemorySize);
+				translatedKernel->sharedMemorySize = std::max(translatedKernel->sharedMemorySize, translated->subkernel->getSharedMemorySize());
 				
 				report("  adding hyperblock " << translated->entryId);
+#if REPORT_BASE
 				translated->subkernel->write(std::cout);
+#endif
 				
 				subkernelMap[translated->entryId] = translated;
 			}
@@ -167,8 +170,9 @@ bool LLVMDynamicTranslationCache::loadModule(const ir::Module *module, executive
 	return false;
 }
 
-
-LLVMDynamicTranslationCache::HyperblockId LLVMDynamicTranslationCache::getEntryId(
+//! \brief gets a translated kernel by name
+const LLVMDynamicTranslationCache::TranslatedKernel *
+LLVMDynamicTranslationCache::getTranslatedKernel(
 	const std::string &module, 
 	const std::string &kernel) {
 	
@@ -178,12 +182,15 @@ LLVMDynamicTranslationCache::HyperblockId LLVMDynamicTranslationCache::getEntryI
 	KernelTranslationMap::const_iterator k_it = mod_it->second.kernels.find(kernel);
 	assert(k_it != mod_it->second.kernels.end());
 	
-	return k_it->second->entryBlockId;
+	return k_it->second;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
-LLVMDynamicTranslationCache::TranslatedKernel::TranslatedKernel(): kernel(0) {
+LLVMDynamicTranslationCache::TranslatedKernel::TranslatedKernel():
+	kernel(0), 
+	localMemorySize(0), 
+	sharedMemorySize(0) {
 
 }
 
@@ -706,27 +713,25 @@ static void setupTextureMemoryReferences(
 			{
 				report("  found texture instruction: " << ptx.toString());
 
-				TextureMap::iterator reference =
-					textures.find(ptx.a.identifier);
+				TextureMap::iterator reference = textures.find(ptx.a.identifier);
 				if(reference != textures.end())
 				{
 					ptx.a.reg = reference->second;
+					report(" recognized as as texture " << ptx.a.reg);
 				}
 				else
 				{
 					ptx.a.reg = textures.size();
-					textures.insert(std::make_pair(
-						ptx.a.identifier, textures.size()));
+					textures.insert(std::make_pair(ptx.a.identifier, textures.size()));
 						
-					ir::Texture* texture = (ir::Texture*)
-						device->getTextureReference(
+					ir::Texture* texture = (ir::Texture*)device->getTextureReference(
 						kernel.module->path(), ptx.a.identifier);
 					assert(texture != 0);
 					
 					metadata->textures.push_back(texture);
-					
-					assert(0 && "unimplemented");
+					report(" adding as texture " << ptx.a.reg);
 				}
+				assert(metadata->textures.size());
 			}
 		}
 	}
@@ -987,8 +992,9 @@ static void translate(
 	report(" Translating kernel.");
 	
 	report("  Converting from PTX IR to LLVM IR.");
-	
+#if REPORT_BASE	
 	kernel.write(std::cout);
+#endif
 	
 	translator::PTXToLLVMTranslator translator(optimization);
 	ir::LLVMKernel* llvmKernel = static_cast<ir::LLVMKernel*>(translator.translate(&kernel));

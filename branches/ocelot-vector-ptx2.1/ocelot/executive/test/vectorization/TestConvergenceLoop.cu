@@ -101,9 +101,11 @@ static int testLoopEarlyExit() {
 	int errors = 0;
 	for (int i = 0; errors < 5 && i < N; i++) {
 		float got = A_host[i];
-		float expected = 2.0f * (float)i / (float)(N-1) + i * dt;
-		printf("ERROR 2 [%d] - expected: %f, got: %f\n", i, expected, got);
-		++errors;
+		float expected = 2.0f * (float)i / (float)(N-1) + (i+1) * dt;
+		if (fabs(got - expected) > 0.0001f) {
+			printf("ERROR 2 [%d] - expected: %f, got: %f\n", i, expected, got);
+			++errors;
+		}
 	}
 	
 	free(A_host);

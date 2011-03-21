@@ -20,7 +20,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 namespace executive {
 
@@ -42,26 +42,29 @@ LLVMDynamicExecutionManager::~LLVMDynamicExecutionManager() {
 /*!
 	\brief executes a kernel
 */
-void LLVMDynamicExecutionManager::launch(const LLVMDynamicKernel & kernel) {
+void LLVMDynamicExecutionManager::launch(const LLVMDynamicKernel & kernel, int sharedMemorySize) {
 	
 	report("Launching LLVM kernel '" << kernel.name << "'.");
 	
 	translationCache.loadModule(kernel.module, kernel.device);
 
-	LLVMDynamicTranslationCache::HyperblockId entryId = translationCache.getEntryId(
-		kernel.module->path(), 
-		kernel.name);
+	const LLVMDynamicTranslationCache::TranslatedKernel *translatedKernel =
+		translationCache.getTranslatedKernel(kernel.module->path(), kernel.name);
+	
+	assert(translatedKernel);
 	
 	ir::Dim3 gridDim(kernel.gridDim());
 	ir::Dim3 blockDim(kernel.blockDim());
 	int totalCtas = gridDim.x * gridDim.y;
+	
 	report("  loaded. Executing grid " << gridDim.x << ", " << gridDim.y);
 	report("  block dim: " << blockDim.x << ", " << blockDim.y << ", " << blockDim.z);
-	report("  entry id: " << entryId);
-	
+	report("  entry id: " << translatedKernel->entryBlockId);
+	report("  local memory size: " << translatedKernel->localMemorySize << " bytes");
 	
 	for (int ctaStart = 0; ctaStart < totalCtas; ctaStart++) {
-		LLVMDynamicExecutive executive(&kernel, 0, entryId);
+		LLVMDynamicExecutive executive(&kernel, 0, translatedKernel, sharedMemorySize);
+		
 		ir::Dim3 ctaId(ctaStart % gridDim.y, ctaStart / gridDim.y );
 		report("Executing CTA " << ctaId.x << ", " << ctaId.y);
 		

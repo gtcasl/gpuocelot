@@ -7,6 +7,7 @@
 #ifndef EXECUTABLE_KERNEL_H_INCLUDED
 #define EXECUTABLE_KERNEL_H_INCLUDED
 
+#include <ocelot/ir/interface/PTXKernel.h>
 #include <ocelot/ir/interface/Kernel.h>
 #include <ocelot/ir/interface/Texture.h>
 #include <ocelot/ir/interface/Dim3.h>
@@ -30,8 +31,8 @@ namespace executive {
 		executive::Device* device;
 
 	public:
-		ExecutableKernel(const ir::Kernel& k, 
-			executive::Device* d = 0);
+		ExecutableKernel(const ir::PTXKernel& k, executive::Device* d = 0);
+		ExecutableKernel(const ir::Kernel& k, executive::Device* d = 0);
 		ExecutableKernel(executive::Device* d = 0);
 		virtual ~ExecutableKernel();
 	

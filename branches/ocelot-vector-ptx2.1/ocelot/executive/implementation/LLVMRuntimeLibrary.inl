@@ -13,7 +13,8 @@
 #include <ocelot/executive/interface/Device.h>
 #include <ocelot/executive/interface/LLVMExecutableKernel.h>
 #include <ocelot/executive/interface/LLVMContext.h>
-#include <ocelot/executive/interface/LLVMModuleManager.h>
+//#include <ocelot/executive/interface/LLVMModuleManager.h>
+#include <ocelot/executive/interface/LLVMDynamicExecutive.h>
 #include <ocelot/executive/interface/TextureOperations.h>
 
 // Hydrazine Includes
@@ -46,7 +47,8 @@
 // The id of the thread to print operations for
 #define NTH_THREAD 0
 
-typedef executive::LLVMModuleManager::KernelAndTranslation::MetaData MetaData;
+//typedef executive::LLVMModuleManager::KernelAndTranslation::MetaData MetaData;
+typedef executive::LLVMDynamicExecutive::Metadata MetaData;
 
 template < typename T >
 static void __report( executive::LLVMContext* context, 
@@ -875,7 +877,7 @@ extern "C"
 	void __ocelot_tex_2d_ff( float* result, executive::LLVMContext* context, 
 		unsigned int index, float c0, float c1 )
 	{
-		MetaData* state = (MetaData*) context->metadata;
+		MetaData* state = (MetaData*) context->metadata;		
 		const ir::Texture& texture = *state->textures[ index ];
 		
 		result[0] = executive::tex::sample< 0, float >( texture, c0, c1 );

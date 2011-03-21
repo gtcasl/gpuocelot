@@ -9,6 +9,7 @@
 
 #include <ocelot/ir/interface/PTXKernel.h>
 #include <ocelot/ir/interface/ControlFlowGraph.h>
+#include <ocelot/ir/interface/Module.h>
 
 #include <hydrazine/interface/Version.h>
 #include <hydrazine/implementation/debug.h>
@@ -754,6 +755,146 @@ namespace ir
 				}
 			}
 		}
+	}
+
+	/*!
+		\brief computes size and padding for a declaration
+	*/
+	static void _computeOffset(
+		const ir::PTXStatement& statement, 
+		size_t& offset, 
+		size_t& totalOffset) {
+	
+		size_t padding = statement.accessAlignment() - 
+			(totalOffset % statement.accessAlignment());
+		padding = ( padding == (size_t) statement.accessAlignment() ) ? 0 : padding;
+		offset = totalOffset + padding;
+
+		totalOffset = offset;
+		if(statement.array.stride.empty()) {
+			totalOffset += statement.array.vec * ir::PTXOperand::bytes(statement.type);
+		}
+		else {
+			for (int i = 0; i < (int)statement.array.stride.size(); i++) {
+				totalOffset += statement.array.stride[i] * statement.array.vec * 
+					ir::PTXOperand::bytes(statement.type);
+			}
+		}
+	}	
+
+	/*! \brief computes the size of .local memory declarations */
+	size_t PTXKernel::getLocalMemorySize() const {
+		size_t localOffset = 0;
+
+		std::map<std::string, unsigned int> label_map;
+	
+		report("Initialize local memory");
+	
+		if(module != 0) {
+			for(ir::Module::GlobalMap::const_iterator 
+				it = module->globals().begin(); 
+				it != module->globals().end(); ++it) {
+				if (it->second.statement.directive == ir::PTXStatement::Local) {
+					size_t offset;
+
+					report("Found global local variable " << it->second.statement.name);
+					_computeOffset(it->second.statement, offset, localOffset);
+				}
+			}
+		}
+	
+		LocalMap::const_iterator it = locals.begin();
+		for (; it != locals.end(); ++it) {
+			if (it->second.space == ir::PTXInstruction::Local) {
+				size_t offset;
+
+				report("Found local local variable " 	<< it->second.name);
+				_computeOffset(it->second.statement(), offset, localOffset);
+			}
+		}
+
+		return localOffset;
+	}
+
+	/*! \brief computes the size of static .shared memory declarations */
+	size_t PTXKernel::getSharedMemorySize() const {
+	
+		using namespace std;
+		typedef std::unordered_map<string, unsigned int> Map;
+		typedef std::unordered_map<std::string, 
+			ir::Module::GlobalMap::const_iterator> GlobalMap;
+		typedef std::unordered_set<std::string> StringSet;
+		typedef std::deque<ir::PTXOperand*> OperandVector;
+		
+		size_t sharedOffset = 0;
+		size_t externalAlignment = 1;
+
+		report( "Initializing shared memory for kernel " << name );
+		Map label_map;
+		GlobalMap sharedGlobals;
+		StringSet external;
+	
+		if(module != 0) {
+			for(ir::Module::GlobalMap::const_iterator 
+				it = module->globals().begin(); 
+				it != module->globals().end(); ++it) {
+				if (it->second.statement.directive == ir::PTXStatement::Shared) {
+					if(it->second.statement.attribute == ir::PTXStatement::Extern) {
+						report("Found global external shared variable " 
+							<< it->second.statement.name);
+						assert(external.count(it->second.statement.name) == 0);
+						external.insert(it->second.statement.name);
+						externalAlignment = std::max( externalAlignment, 
+							(size_t) it->second.statement.accessAlignment() );
+						externalAlignment = std::max( externalAlignment, 
+							(size_t)ir::PTXOperand::bytes( it->second.statement.type ) );
+					} 
+					else {
+						report("Found global shared variable " 
+							<< it->second.statement.name);
+						sharedGlobals.insert( std::make_pair( 
+							it->second.statement.name, it ) );
+							
+					}
+				}
+			}
+		}
+	
+		LocalMap::const_iterator it = locals.begin();
+		for (; it != locals.end(); ++it) {
+			if (it->second.space == ir::PTXInstruction::Shared) {
+				if(it->second.attribute == ir::PTXStatement::Extern) {
+					report("Found local external shared variable " 
+						<< it->second.name);
+					assert(external.count(it->second.name) == 0);
+						external.insert(it->second.name);
+					externalAlignment = std::max( externalAlignment, 
+						(size_t) it->second.getAlignment() );
+					externalAlignment = std::max( externalAlignment, 
+						(size_t)ir::PTXOperand::bytes( it->second.type ) );
+				}
+				else {
+					size_t offset;
+
+					_computeOffset(it->second.statement(), offset, sharedOffset);
+					label_map[it->second.name] = offset;
+					report("Found local shared variable " << it->second.name 
+						<< " at offset " << offset << " with alignment " 
+						<< it->second.getAlignment() << " of size " 
+						<< (sharedOffset - offset ));
+				}
+			}
+		}
+	
+		// compute necessary padding for alignment of external shared memory
+		size_t padding = externalAlignment - (sharedOffset % externalAlignment);
+		padding = (padding == externalAlignment) ? 0 : padding;
+		sharedOffset += padding;
+
+		report("Padding shared memory by " << padding << " bytes to handle " 
+			<< externalAlignment << " byte alignment requirement.");
+		
+		return sharedOffset;
 	}
 }
 

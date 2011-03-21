@@ -1246,8 +1246,6 @@ void LLVMModuleManager::ModuleDatabase::loadModule(const ir::Module* module,
 			report(" adding subkernel '" << (*subkernel)->name 
 				<< "' at index " << (subkernels.size() + _kernels.size()));
 			
-			(*subkernel)->write(std::cout);
-			
 			subkernels.push_back(
 				KernelAndTranslation(
 					*subkernel,				// subkernel (PTX)

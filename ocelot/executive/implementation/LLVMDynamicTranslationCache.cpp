@@ -95,7 +95,6 @@ LLVMDynamicTranslationCache::getOrInsertTranslationById(HyperblockId id, int ws)
 		assert(scalarTranslation->llvmFunction);
 		assert(scalarTranslation->function);
 		
-//		scalarTranslation->llvmFunction->dump();
 		translation = scalarTranslation;
 	}
 	else {
@@ -131,7 +130,12 @@ bool LLVMDynamicTranslationCache::loadModule(const ir::Module *module, executive
 			TranslatedKernel *translatedKernel = new TranslatedKernel;
 			translatedKernel->kernel = kernel->second;
 			translatedKernel->entryBlockId = (HyperblockId)subkernelMap.size();
+			translatedKernel->localMemorySize = kernel->second->getLocalMemorySize();
+			translatedKernel->sharedMemorySize = kernel->second->getSharedMemorySize();
 			metadata.kernels[kernel->second->name] = translatedKernel;
+			
+			report(" static .local declarations: " << translatedKernel->localMemorySize << " bytes");
+			report(" static .shared declarations: " << translatedKernel->sharedMemorySize << " bytes");
 			
 			analysis::HyperblockFormation formationPass;
 			

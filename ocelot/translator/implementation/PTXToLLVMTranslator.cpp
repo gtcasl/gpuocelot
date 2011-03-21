@@ -5300,6 +5300,8 @@ namespace translator
 	{
 		#if(USE_VECTOR_INSTRUCTIONS == 1)
 		ir::LLVMStore store;
+		
+		report("translating store instruction: " << i.toString());
 
 		if( i.vec == ir::PTXOperand::v1 )
 		{

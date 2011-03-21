@@ -330,7 +330,9 @@ size_t analysis::HyperblockFormation::_createStore(
 			move->d = std::move(ir::PTXOperand(ir::PTXOperand::Register, ir::PTXOperand::u32, hyperblock.dfg()->newRegister()));
 			storeBlock->instructions.push_back(move);
 		}
-		
+		if (reg_it->first == move->d.reg) {
+			continue;
+		}
 		ir::PTXInstruction* store = new ir::PTXInstruction(ir::PTXInstruction::St);
 		
 		store->addressSpace = ir::PTXInstruction::Local;

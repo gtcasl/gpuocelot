@@ -77,7 +77,7 @@ void LLVMDynamicKernel::launchGrid(int x, int y)
 	
 	timer.start();
 	
-	LLVMDynamicExecutionManager::get().launch(*this, this->sharedMemorySize());
+	LLVMDynamicExecutionManager::get().launch(*this, this->sharedMemorySize() + this->externSharedMemorySize());
 	
 	timer.stop();
 	

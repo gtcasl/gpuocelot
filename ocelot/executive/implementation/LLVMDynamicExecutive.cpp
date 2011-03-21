@@ -257,7 +257,7 @@ void LLVMDynamicExecutive::CooperativeThreadArray::initialize(
 	const ir::Dim3 blockDim = kernel.blockDim();
 	
 	int totalThreads = blockDim.x * blockDim.y * blockDim.z;
-	unsigned int localMemorySize = 128;
+	unsigned int localMemorySize = 256;
 	local.resize(localMemorySize * totalThreads, 0);
 	shared.resize(1024, 0);
 	

@@ -1,85 +1,62 @@
-INFO     Reading in test file /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/regression/ocelotRegressionTests.txt
+INFO     Reading in test file /home/andrew/repositories/gpuocelot-checkout/branches/ocelot-vector-ptx2.1/regression/ocelotRegressionTests.txt
 INFO      Found the following tests:
-INFO       /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestLexer
-INFO       /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestParser
-INFO       /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestEmulator
-INFO       /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestInstructions
-INFO       /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestKernels
-INFO       /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestDataflowGraph
-INFO       /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestLLVMInstructions
-INFO       /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestPTXToLLVMTranslator
-INFO       /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestLLVMKernels
-INFO       /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaMalloc
-INFO       /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaTexture2D
-INFO       /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaTextureArray
-INFO       /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaGlobals
-INFO       /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestDeviceSwitching
-INFO       /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaSequence
-INFO       /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCalVectorScale
-INFO       /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestPTXAssembly
-INFO       /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestFunctionCall
-INFO       /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestIndirectFunctionCall
-INFO       /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestConvergence
+INFO       /home/andrew/repositories/gpuocelot-checkout/branches/ocelot-vector-ptx2.1/TestLexer
+INFO       /home/andrew/repositories/gpuocelot-checkout/branches/ocelot-vector-ptx2.1/TestParser
+INFO       /home/andrew/repositories/gpuocelot-checkout/branches/ocelot-vector-ptx2.1/TestEmulator
+INFO       /home/andrew/repositories/gpuocelot-checkout/branches/ocelot-vector-ptx2.1/TestInstructions
+INFO       /home/andrew/repositories/gpuocelot-checkout/branches/ocelot-vector-ptx2.1/TestKernels
+INFO       /home/andrew/repositories/gpuocelot-checkout/branches/ocelot-vector-ptx2.1/TestDataflowGraph
+INFO       /home/andrew/repositories/gpuocelot-checkout/branches/ocelot-vector-ptx2.1/TestLLVMInstructions
+INFO       /home/andrew/repositories/gpuocelot-checkout/branches/ocelot-vector-ptx2.1/TestPTXToLLVMTranslator
+INFO       /home/andrew/repositories/gpuocelot-checkout/branches/ocelot-vector-ptx2.1/TestLLVMKernels
+INFO       /home/andrew/repositories/gpuocelot-checkout/branches/ocelot-vector-ptx2.1/TestCudaMalloc
+INFO       /home/andrew/repositories/gpuocelot-checkout/branches/ocelot-vector-ptx2.1/TestCudaTexture2D
+INFO       /home/andrew/repositories/gpuocelot-checkout/branches/ocelot-vector-ptx2.1/TestCudaTextureArray
+INFO       /home/andrew/repositories/gpuocelot-checkout/branches/ocelot-vector-ptx2.1/TestCudaGlobals
+INFO       /home/andrew/repositories/gpuocelot-checkout/branches/ocelot-vector-ptx2.1/TestDeviceSwitching
+INFO       /home/andrew/repositories/gpuocelot-checkout/branches/ocelot-vector-ptx2.1/TestCudaSequence
+INFO       /home/andrew/repositories/gpuocelot-checkout/branches/ocelot-vector-ptx2.1/TestCalVectorScale
+INFO       /home/andrew/repositories/gpuocelot-checkout/branches/ocelot-vector-ptx2.1/TestPTXAssembly
+INFO       /home/andrew/repositories/gpuocelot-checkout/branches/ocelot-vector-ptx2.1/TestFunctionCall
+INFO       /home/andrew/repositories/gpuocelot-checkout/branches/ocelot-vector-ptx2.1/TestIndirectFunctionCall
+INFO       /home/andrew/repositories/gpuocelot-checkout/branches/ocelot-vector-ptx2.1/TestConvergence
 INFO     ==== INDIVIDUAL TEST RESULTS ====
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestParser -i ../tests/ptx 
-INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestPTXToLLVMTranslator -i ../tests/ptx 
-INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestParser
-INFO     Test completed in 0.0390360355377 seconds
+INFO     Running test program /home/andrew/repositories/gpuocelot-checkout/branches/ocelot-vector-ptx2.1/TestInstructions 
+INFO     Running test program /home/andrew/repositories/gpuocelot-checkout/branches/ocelot-vector-ptx2.1/TestDataflowGraph -i ../tests/ptx 
+INFO     Running test program /home/andrew/repositories/gpuocelot-checkout/branches/ocelot-vector-ptx2.1/TestCudaGlobals 
+INFO     Running test program /home/andrew/repositories/gpuocelot-checkout/branches/ocelot-vector-ptx2.1/TestCudaTextureArray 
+INFO     Test /home/andrew/repositories/gpuocelot-checkout/branches/ocelot-vector-ptx2.1/TestInstructions
+INFO     Test completed in 0.0383770465851 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
 
-Name : TestParser
+Name : TestInstructions
 
-Description: A test for the PTXParser class. Test Points: 1) Load a PTX file 
-             and run it through the parser generating a module. Write the 
-             module to an intermediate stream. Parse the stream again 
-             generating a new module, compare both to make sure that they match.
+Description: 
 
 
-Test Seed : 1298474486
-Test time : 1.85966e-05
+Test Seed : 1300733161
+Test time : 0.000538826
 
-Status : 
-
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaTextureArray 
-INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestPTXToLLVMTranslator
-INFO     Test completed in 0.0438690185547 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-
-Name : TestPTXToLLVMTranslator
-
-Description: This is a basic test that just tries to get through a 
-             translation successfully of as many PTX programs as possible Test 
-             Points: 1) Scan for all PTX files in a directory, try to 
-             translate them.
+Status : Test output:
+Accessors test passed.
+pass: load and store instructions
+Abs test passed.
+pass: arithmetic instructions
+pass: exotic arithmetic instructions
+pass: floating-point instructions
+pass: logical instructions
+pass: comparison instructions
+pass: predicated Add and Ld isntructions
+pass: control flow instructions
 
 
-Test Seed : 1298474486
-Test time : 1.52588e-05
 
-Status : 
-
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestIndirectFunctionCall 
-INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaTextureArray
-INFO     Test completed in 0.0572619438171 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestDataflowGraph -i ../tests/ptx 
-INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestIndirectFunctionCall
-INFO     Test completed in 0.0887169837952 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestEmulator 
-INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestDataflowGraph
-INFO     Test completed in 0.0405712127686 seconds
+INFO     Running test program /home/andrew/repositories/gpuocelot-checkout/branches/ocelot-vector-ptx2.1/TestFunctionCall 
+INFO     Test /home/andrew/repositories/gpuocelot-checkout/branches/ocelot-vector-ptx2.1/TestDataflowGraph
+INFO     Test completed in 0.0414910316467 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -94,8 +71,8 @@ Description: A test for the DataflowGraph class. Test Points: 1)
              ranges spanning blocks are consistent.
 
 
-Test Seed : 1298474487
-Test time : 2.76566e-05
+Test Seed : 1300733161
+Test time : 1.78814e-05
 
 Status : Testing Generic Dataflow
  Test Passed
@@ -106,64 +83,64 @@ Testing SSA then back Dataflow
 
 
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestPTXAssembly 
-INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestEmulator
-INFO     Test completed in 0.0417718887329 seconds
+INFO     Running test program /home/andrew/repositories/gpuocelot-checkout/branches/ocelot-vector-ptx2.1/TestLLVMInstructions 
+INFO     Test /home/andrew/repositories/gpuocelot-checkout/branches/ocelot-vector-ptx2.1/TestCudaGlobals
+INFO     Test completed in 0.050940990448 seconds
 INFO      It produced the following output:
+(0.000000) LLVMModuleManager.cpp:1220: Loading module '_ZOcelotBarrierModule'
+(0.000000) LLVMModuleManager.cpp:1247:  adding subkernel '_ZOcelotBarrierKernel' at index 0
+/*
+* Ocelot Version : 0.0.0
+*/
+.entry _ZOcelotBarrierKernel{
+	.local .u32 _Zocelot_barrier_next_kernel[1];
+	.local .u32 _Zocelot_resume_point[1];
+	.local .b8 _Zocelot_spill_area[];
+
+	.reg .u32 %r0;
+	.reg .u32 %r1;
+	
+	BarrierPrototype: .callprototype () _ ();
+	
+	$BB_1_0002:
+		mov.u32 %r0, _Zocelot_barrier_next_kernel;
+		ld.local.u32 %r1, [%r0 + 0];
+		call.tail (), %r1, (), BarrierPrototype;
+		exit;
+}
+cudaSetDevice() - 0 - Ocelot Dynamic Multicore CPU Backend (LLVM-JIT) 
 Pass/Fail : Pass
 
-
-Name : TestEmulator
-
-Description: 
-
-
-Test Seed : 1298474487
-Test time : 0.00403714
-
-Status : Test output:
-10 registers
-Register test passed
-Load test passed
-Store test passed
-no errors
-Full kernel test passed
-
-
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestDeviceSwitching 
-INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestDeviceSwitching
-INFO     Test completed in 0.0626468658447 seconds
+INFO     Running test program /home/andrew/repositories/gpuocelot-checkout/branches/ocelot-vector-ptx2.1/TestParser -i ../tests/ptx 
+INFO     Test /home/andrew/repositories/gpuocelot-checkout/branches/ocelot-vector-ptx2.1/TestCudaTextureArray
+INFO     Test completed in 0.0671539306641 seconds
 INFO      It produced the following output:
+(0.000000) LLVMModuleManager.cpp:1220: Loading module '_ZOcelotBarrierModule'
+(0.000000) LLVMModuleManager.cpp:1247:  adding subkernel '_ZOcelotBarrierKernel' at index 0
+/*
+* Ocelot Version : 0.0.0
+*/
+.entry _ZOcelotBarrierKernel{
+	.local .u32 _Zocelot_barrier_next_kernel[1];
+	.local .u32 _Zocelot_resume_point[1];
+	.local .b8 _Zocelot_spill_area[];
+
+	.reg .u32 %r0;
+	.reg .u32 %r1;
+	
+	BarrierPrototype: .callprototype () _ ();
+	
+	$BB_1_0002:
+		mov.u32 %r0, _Zocelot_barrier_next_kernel;
+		ld.local.u32 %r1, [%r0 + 0];
+		call.tail (), %r1, (), BarrierPrototype;
+		exit;
+}
 Pass/Fail : Pass
 
-
-Name : TestDeviceSwitching
-
-Description: A unit test for the ability of the CUDA runtime to switch 
-             between devices and use multiple threads Test Points: 1) In a single 
-             threaded application, iterate across all devices launching the same 
-             simple kernel each time 2) Test context migration support in 
-             ocelot. Iterate across all devices, launching a simple kernel that 
-             updates shared variable. Use the context switch mechanism to 
-             migrate the shared data. 3) Test multi-threading support. Launch one 
-             host thread to allocate memory, pass pointers to worker 
-             threads, each of which should launch independent kernels in 
-             parallel.
-
-
-Test Seed : 1298474487
-Test time : 0.0243659
-
-Status : Test Point 1 Passed
-Test Point 2 Passed
-Test Point 3 Passed
-
-
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestLLVMInstructions 
-INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestLLVMInstructions
-INFO     Test completed in 0.0374450683594 seconds
+INFO     Running test program /home/andrew/repositories/gpuocelot-checkout/branches/ocelot-vector-ptx2.1/TestPTXAssembly 
+INFO     Test /home/andrew/repositories/gpuocelot-checkout/branches/ocelot-vector-ptx2.1/TestLLVMInstructions
+INFO     Test completed in 0.0322859287262 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -177,8 +154,8 @@ Description: A test for the assembly code generation and automatic
              check, compare to references from the LLVM manual.
 
 
-Test Seed : 1298474487
-Test time : 0.0012846
+Test Seed : 1300733161
+Test time : 0.000897884
 
 Status :  Checked instruction "<result> = add i32 4, %var"
 Add Instruction Passed
@@ -309,16 +286,189 @@ Zext Instruction Passed
 
 
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaGlobals 
-INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaGlobals
-INFO     Test completed in 0.0516600608826 seconds
+INFO     Running test program /home/andrew/repositories/gpuocelot-checkout/branches/ocelot-vector-ptx2.1/TestCudaSequence 
+INFO     Test /home/andrew/repositories/gpuocelot-checkout/branches/ocelot-vector-ptx2.1/TestFunctionCall
+INFO     Test completed in 0.0448179244995 seconds
 INFO      It produced the following output:
-cudaSetDevice() - 0 - Ocelot Multicore CPU Backend (LLVM-JIT) 
+TestFunctionCall: ocelot/executive/implementation/LLVMDynamicTranslationCache.cpp:972: void executive::setupCallTargets(ir::PTXKernel&, const executive::LLVMDynamicTranslationCache&): Assertion `0 && "unimplemented"' failed.
+(0.000000) LLVMModuleManager.cpp:1220: Loading module '_ZOcelotBarrierModule'
+(0.000000) LLVMModuleManager.cpp:1247:  adding subkernel '_ZOcelotBarrierKernel' at index 0
+/*
+* Ocelot Version : 0.0.0
+*/
+.entry _ZOcelotBarrierKernel{
+	.local .u32 _Zocelot_barrier_next_kernel[1];
+	.local .u32 _Zocelot_resume_point[1];
+	.local .b8 _Zocelot_spill_area[];
+
+	.reg .u32 %r0;
+	.reg .u32 %r1;
+	
+	BarrierPrototype: .callprototype () _ ();
+	
+	$BB_1_0002:
+		mov.u32 %r0, _Zocelot_barrier_next_kernel;
+		ld.local.u32 %r1, [%r0 + 0];
+		call.tail (), %r1, (), BarrierPrototype;
+		exit;
+}
+
+INFO     Running test program /home/andrew/repositories/gpuocelot-checkout/branches/ocelot-vector-ptx2.1/TestIndirectFunctionCall 
+INFO     Test /home/andrew/repositories/gpuocelot-checkout/branches/ocelot-vector-ptx2.1/TestParser
+INFO     Test completed in 0.0417530536652 seconds
+INFO      It produced the following output:
 Pass/Fail : Pass
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestLexer -i ../tests/ptx 
-INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestLexer
-INFO     Test completed in 0.0359690189362 seconds
+
+Name : TestParser
+
+Description: A test for the PTXParser class. Test Points: 1) Load a PTX file 
+             and run it through the parser generating a module. Write the 
+             module to an intermediate stream. Parse the stream again 
+             generating a new module, compare both to make sure that they match.
+
+
+Test Seed : 1300733161
+Test time : 1.54972e-05
+
+Status : 
+
+
+INFO     Running test program /home/andrew/repositories/gpuocelot-checkout/branches/ocelot-vector-ptx2.1/TestEmulator 
+INFO     Test /home/andrew/repositories/gpuocelot-checkout/branches/ocelot-vector-ptx2.1/TestIndirectFunctionCall
+INFO     Test completed in 0.0447602272034 seconds
+INFO      It produced the following output:
+TestIndirectFunctionCall: ocelot/executive/implementation/LLVMDynamicTranslationCache.cpp:972: void executive::setupCallTargets(ir::PTXKernel&, const executive::LLVMDynamicTranslationCache&): Assertion `0 && "unimplemented"' failed.
+(0.000000) LLVMModuleManager.cpp:1220: Loading module '_ZOcelotBarrierModule'
+(0.000000) LLVMModuleManager.cpp:1247:  adding subkernel '_ZOcelotBarrierKernel' at index 0
+/*
+* Ocelot Version : 0.0.0
+*/
+.entry _ZOcelotBarrierKernel{
+	.local .u32 _Zocelot_barrier_next_kernel[1];
+	.local .u32 _Zocelot_resume_point[1];
+	.local .b8 _Zocelot_spill_area[];
+
+	.reg .u32 %r0;
+	.reg .u32 %r1;
+	
+	BarrierPrototype: .callprototype () _ ();
+	
+	$BB_1_0002:
+		mov.u32 %r0, _Zocelot_barrier_next_kernel;
+		ld.local.u32 %r1, [%r0 + 0];
+		call.tail (), %r1, (), BarrierPrototype;
+		exit;
+}
+
+INFO     Running test program /home/andrew/repositories/gpuocelot-checkout/branches/ocelot-vector-ptx2.1/TestPTXToLLVMTranslator -i ../tests/ptx 
+INFO     Test /home/andrew/repositories/gpuocelot-checkout/branches/ocelot-vector-ptx2.1/TestEmulator
+INFO     Test completed in 0.0558440685272 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+
+Name : TestEmulator
+
+Description: 
+
+
+Test Seed : 1300733161
+Test time : 0.00939107
+
+Status : Test output:
+10 registers
+Register test passed
+Load test passed
+Store test passed
+no errors
+Full kernel test passed
+
+
+
+INFO     Running test program /home/andrew/repositories/gpuocelot-checkout/branches/ocelot-vector-ptx2.1/TestLLVMKernels 
+INFO     Test /home/andrew/repositories/gpuocelot-checkout/branches/ocelot-vector-ptx2.1/TestPTXToLLVMTranslator
+INFO     Test completed in 0.0271289348602 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+
+Name : TestPTXToLLVMTranslator
+
+Description: This is a basic test that just tries to get through a 
+             translation successfully of as many PTX programs as possible Test 
+             Points: 1) Scan for all PTX files in a directory, try to 
+             translate them.
+
+
+Test Seed : 1300733161
+Test time : 1.23978e-05
+
+Status : 
+
+
+INFO     Running test program /home/andrew/repositories/gpuocelot-checkout/branches/ocelot-vector-ptx2.1/TestCalVectorScale 
+INFO     Test /home/andrew/repositories/gpuocelot-checkout/branches/ocelot-vector-ptx2.1/TestCudaSequence
+INFO     Test completed in 0.0918879508972 seconds
+INFO      It produced the following output:
+(0.000000) LLVMModuleManager.cpp:1220: Loading module '_ZOcelotBarrierModule'
+(0.000000) LLVMModuleManager.cpp:1247:  adding subkernel '_ZOcelotBarrierKernel' at index 0
+/*
+* Ocelot Version : 0.0.0
+*/
+.entry _ZOcelotBarrierKernel{
+	.local .u32 _Zocelot_barrier_next_kernel[1];
+	.local .u32 _Zocelot_resume_point[1];
+	.local .b8 _Zocelot_spill_area[];
+
+	.reg .u32 %r0;
+	.reg .u32 %r1;
+	
+	BarrierPrototype: .callprototype () _ ();
+	
+	$BB_1_0002:
+		mov.u32 %r0, _Zocelot_barrier_next_kernel;
+		ld.local.u32 %r1, [%r0 + 0];
+		call.tail (), %r1, (), BarrierPrototype;
+		exit;
+}
+Loaded libcuda.so explicitly; unloading now.
+A_host = 0x31e20f0
+A_gpu = 0x31def00
+cudaMemcpy(0x31e20f0, 0x31def00) - APP
+Pass/Fail : Pass
+
+INFO     Running test program /home/andrew/repositories/gpuocelot-checkout/branches/ocelot-vector-ptx2.1/TestCudaMalloc 
+INFO     Test /home/andrew/repositories/gpuocelot-checkout/branches/ocelot-vector-ptx2.1/TestCalVectorScale
+INFO     Test completed in 0.0418899059296 seconds
+INFO      It produced the following output:
+(0.000000) LLVMModuleManager.cpp:1220: Loading module '_ZOcelotBarrierModule'
+(0.000000) LLVMModuleManager.cpp:1247:  adding subkernel '_ZOcelotBarrierKernel' at index 0
+/*
+* Ocelot Version : 0.0.0
+*/
+.entry _ZOcelotBarrierKernel{
+	.local .u32 _Zocelot_barrier_next_kernel[1];
+	.local .u32 _Zocelot_resume_point[1];
+	.local .b8 _Zocelot_spill_area[];
+
+	.reg .u32 %r0;
+	.reg .u32 %r1;
+	
+	BarrierPrototype: .callprototype () _ ();
+	
+	$BB_1_0002:
+		mov.u32 %r0, _Zocelot_barrier_next_kernel;
+		ld.local.u32 %r1, [%r0 + 0];
+		call.tail (), %r1, (), BarrierPrototype;
+		exit;
+}
+No CAL devices found
+Pass/Fail : Pass
+
+INFO     Running test program /home/andrew/repositories/gpuocelot-checkout/branches/ocelot-vector-ptx2.1/TestLexer -i ../tests/ptx 
+INFO     Test /home/andrew/repositories/gpuocelot-checkout/branches/ocelot-vector-ptx2.1/TestLexer
+INFO     Test completed in 0.0257458686829 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -330,44 +480,1589 @@ Description: Tests for the PTX lexer. Test Point 1: Scan a PTX file and
              two sets of tokens match
 
 
-Test Seed : 1298474487
-Test time : 1.66893e-05
+Test Seed : 1300733161
+Test time : 1.21593e-05
 
 Status : 
 
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestKernels 
-INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestKernels
-INFO     Test completed in 0.0545649528503 seconds
+INFO     Running test program /home/andrew/repositories/gpuocelot-checkout/branches/ocelot-vector-ptx2.1/TestCudaTexture2D 
+INFO     Test /home/andrew/repositories/gpuocelot-checkout/branches/ocelot-vector-ptx2.1/TestCudaMalloc
+INFO     Test completed in 0.0657851696014 seconds
 INFO      It produced the following output:
+(0.000000) LLVMModuleManager.cpp:1220: Loading module '_ZOcelotBarrierModule'
+(0.000000) LLVMModuleManager.cpp:1247:  adding subkernel '_ZOcelotBarrierKernel' at index 0
+/*
+* Ocelot Version : 0.0.0
+*/
+.entry _ZOcelotBarrierKernel{
+	.local .u32 _Zocelot_barrier_next_kernel[1];
+	.local .u32 _Zocelot_resume_point[1];
+	.local .b8 _Zocelot_spill_area[];
+
+	.reg .u32 %r0;
+	.reg .u32 %r1;
+	
+	BarrierPrototype: .callprototype () _ ();
+	
+	$BB_1_0002:
+		mov.u32 %r0, _Zocelot_barrier_next_kernel;
+		ld.local.u32 %r1, [%r0 + 0];
+		call.tail (), %r1, (), BarrierPrototype;
+		exit;
+}
+test_malloc(256, 128)
+PASSED
+test_mallocArray(256, 128)
+checking results from last cudaMemcpyFromArray
+PASSED
+[1] mallocing pitch
+[2] memcpying2d
+[3] memcpying
+[4] checking for errors
+[5] mallocing
+[6] memcpying
+[7] memcpying
+[8] final free
 Pass/Fail : Pass
 
-
-Name : TestKernels
-
-Description: 
-
-
-Test Seed : 1298474487
-Test time : 0.0173349
-
-Status : Test output:
-looping kernel succeeded
-matrix vector kernel succeeded
-
-
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCalVectorScale 
-INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCalVectorScale
-INFO     Test completed in 0.0380039215088 seconds
+INFO     Running test program /home/andrew/repositories/gpuocelot-checkout/branches/ocelot-vector-ptx2.1/TestConvergence 
+INFO     Test /home/andrew/repositories/gpuocelot-checkout/branches/ocelot-vector-ptx2.1/TestCudaTexture2D
+INFO     Test completed in 0.0469579696655 seconds
 INFO      It produced the following output:
-No CAL devices found
+(0.000000) LLVMModuleManager.cpp:1220: Loading module '_ZOcelotBarrierModule'
+(0.000000) LLVMModuleManager.cpp:1247:  adding subkernel '_ZOcelotBarrierKernel' at index 0
+/*
+* Ocelot Version : 0.0.0
+*/
+.entry _ZOcelotBarrierKernel{
+	.local .u32 _Zocelot_barrier_next_kernel[1];
+	.local .u32 _Zocelot_resume_point[1];
+	.local .b8 _Zocelot_spill_area[];
+
+	.reg .u32 %r0;
+	.reg .u32 %r1;
+	
+	BarrierPrototype: .callprototype () _ ();
+	
+	$BB_1_0002:
+		mov.u32 %r0, _Zocelot_barrier_next_kernel;
+		ld.local.u32 %r1, [%r0 + 0];
+		call.tail (), %r1, (), BarrierPrototype;
+		exit;
+}
 Pass/Fail : Pass
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestLLVMKernels 
-INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestLLVMKernels
-INFO     Test completed in 0.157700061798 seconds
+INFO     Running test program /home/andrew/repositories/gpuocelot-checkout/branches/ocelot-vector-ptx2.1/TestKernels 
+INFO     Test /home/andrew/repositories/gpuocelot-checkout/branches/ocelot-vector-ptx2.1/TestConvergence
+INFO     Test completed in 0.039715051651 seconds
 INFO      It produced the following output:
+(0.000000) LLVMModuleManager.cpp:1220: Loading module '_ZOcelotBarrierModule'
+(0.000000) LLVMModuleManager.cpp:1247:  adding subkernel '_ZOcelotBarrierKernel' at index 0
+/*
+* Ocelot Version : 0.0.0
+*/
+.entry _ZOcelotBarrierKernel{
+	.local .u32 _Zocelot_barrier_next_kernel[1];
+	.local .u32 _Zocelot_resume_point[1];
+	.local .b8 _Zocelot_spill_area[];
+
+	.reg .u32 %r0;
+	.reg .u32 %r1;
+	
+	BarrierPrototype: .callprototype () _ ();
+	
+	$BB_1_0002:
+		mov.u32 %r0, _Zocelot_barrier_next_kernel;
+		ld.local.u32 %r1, [%r0 + 0];
+		call.tail (), %r1, (), BarrierPrototype;
+		exit;
+}
+Pass/Fail : Pass
+
+INFO     Running test program /home/andrew/repositories/gpuocelot-checkout/branches/ocelot-vector-ptx2.1/TestDeviceSwitching 
+INFO     Test /home/andrew/repositories/gpuocelot-checkout/branches/ocelot-vector-ptx2.1/TestLLVMKernels
+INFO     Test completed in 0.140924930573 seconds
+INFO      It produced the following output:
+(0.000000) LLVMModuleManager.cpp:1220: Loading module '_ZOcelotBarrierModule'
+(0.000000) LLVMModuleManager.cpp:1247:  adding subkernel '_ZOcelotBarrierKernel' at index 0
+/*
+* Ocelot Version : 0.0.0
+*/
+.entry _ZOcelotBarrierKernel{
+	.local .u32 _Zocelot_barrier_next_kernel[1];
+	.local .u32 _Zocelot_resume_point[1];
+	.local .b8 _Zocelot_spill_area[];
+
+	.reg .u32 %r0;
+	.reg .u32 %r1;
+	
+	BarrierPrototype: .callprototype () _ ();
+	
+	$BB_1_0002:
+		mov.u32 %r0, _Zocelot_barrier_next_kernel;
+		ld.local.u32 %r1, [%r0 + 0];
+		call.tail (), %r1, (), BarrierPrototype;
+		exit;
+}
+(0.008482) LLVMModuleManager.cpp:1220: Loading module 'ocelot/executive/test/kernels.ptx'
+(0.012812) LLVMModuleManager.cpp:1247:  adding subkernel '_Z21k_matrixVectorProductPKfS0_Pfii' at index 1
+/*
+* Ocelot Version : 0.0.0
+*/
+.entry _Z21k_matrixVectorProductPKfS0_Pfii(.param  .u64 __cudaparm__Z21k_matrixVectorProductPKfS0_Pfii___val_paramA,
+		.param  .u64 __cudaparm__Z21k_matrixVectorProductPKfS0_Pfii___val_paramV,
+		.param  .u64 __cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_R,
+		.param  .s32 __cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_M,
+		.param  .s32 __cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_N)
+{
+	.local .u32 _Zocelot_resume_point[1];
+	.local .b8 _Zocelot_spill_area[101];
+	.shared .align 4 .b8 __cuda___cuda_local_var_27983_32_non_const_V_buffer72[32];
+
+	.reg .u64 %r39;
+	.reg .u64 %r40;
+	.reg .u32 %r0;
+	.reg .u32 %r1;
+	.reg .u32 %r2;
+	.reg .u32 %r3;
+	.reg .u32 %r4;
+	.reg .u64 %r5;
+	.reg .u64 %r6;
+	.reg .u64 %r7;
+	.reg .u64 %r8;
+	.reg .u64 %r9;
+	.reg .u64 %r10;
+	.reg .u64 %r11;
+	.reg .u64 %r12;
+	.reg .u32 %r13;
+	.reg .u32 %r14;
+	.reg .pred %p15;
+	.reg .u64 %r16;
+	.reg .u32 %r17;
+	.reg .pred %p18;
+	.reg .u64 %r19;
+	.reg .u64 %r20;
+	.reg .u32 %r21;
+	.reg .f32 %r22;
+	.reg .f32 %r23;
+	.reg .u32 %r24;
+	.reg .u64 %r25;
+	.reg .u32 %r26;
+	.reg .u64 %r27;
+	.reg .u64 %r28;
+	.reg .u64 %r29;
+	.reg .u32 %r30;
+	.reg .u32 %r31;
+	.reg .f32 %r32;
+	.reg .f32 %r33;
+	.reg .pred %p34;
+	.reg .u64 %r37;
+	.reg .pred %p38;
+	.reg .u32 %r41;
+	.reg .u32 %r42;
+	.reg .u32 %r43;
+	.reg .u32 %r44;
+	.reg .u32 %r45;
+	.reg .u32 %r46;
+	.reg .u32 %r47;
+	.reg .u32 %r48;
+	.reg .u32 %r49;
+	.reg .u32 %r50;
+	.reg .u32 %r51;
+	.reg .u32 %r52;
+	.reg .pred %p53;
+	.reg .pred %p54;
+	.reg .pred %p55;
+	.reg .pred %p56;
+	.reg .pred %p57;
+	.reg .pred %p58;
+	.reg .pred %p59;
+	.reg .pred %p60;
+	_Z21k_matrixVectorProductPKfS0_Pfii_scheduler:
+		mov.u32 %r51, _Zocelot_resume_point;
+		ld.local.u32 %r52, [%r51 + 0];
+		setp.eq.u32 %p53, %r52, 3;
+		@%p53 bra $BB_2_0003_restore;
+	_Z21k_matrixVectorProductPKfS0_Pfii_scheduler_22:
+		setp.eq.u32 %p54, %r52, 10;
+		@%p54 bra $BB_2_0010_restore;
+	_Z21k_matrixVectorProductPKfS0_Pfii_scheduler_23:
+		setp.eq.u32 %p55, %r52, 4;
+		@%p55 bra $BB_2_0004_restore;
+	_Z21k_matrixVectorProductPKfS0_Pfii_scheduler_24:
+		setp.eq.u32 %p56, %r52, 5;
+		@%p56 bra $BB_2_0005_restore;
+	_Z21k_matrixVectorProductPKfS0_Pfii_scheduler_25:
+		setp.eq.u32 %p57, %r52, 8;
+		@%p57 bra $BB_2_0008_restore;
+	_Z21k_matrixVectorProductPKfS0_Pfii_scheduler_26:
+		setp.eq.u32 %p58, %r52, 6;
+		@%p58 bra $BB_2_0006_restore;
+	_Z21k_matrixVectorProductPKfS0_Pfii_scheduler_27:
+		setp.eq.u32 %p59, %r52, 9;
+		@%p59 bra $BB_2_0009_restore;
+	_Z21k_matrixVectorProductPKfS0_Pfii_scheduler_28:
+		setp.eq.u32 %p60, %r52, 11;
+		@%p60 bra $BB_2_0011_restore;
+	_Z21k_matrixVectorProductPKfS0_Pfii_scheduler_trampoline:
+		bra $BB_2_0002;
+	$BB_2_0002:
+		mov.u32 %r0, %ntid.x;
+		mov.u32 %r1, %ctaid.x;
+		mul.lo.u32 %r2, %r1, %r0;
+		mov.u32 %r3, %tid.x;
+		add.u32 %r4, %r2, %r3;
+		cvt.u64.u32 %r5, %r4;
+		mul.wide.u32 %r6, %r4, 4;
+		ld.param.u64 %r7, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii___val_paramA];
+		add.u64 %r8, %r7, %r6;
+		cvt.u64.u32 %r9, %r3;
+		mul.wide.u32 %r10, %r3, 4;
+		ld.param.u64 %r11, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii___val_paramV];
+		add.u64 %r12, %r11, %r10;
+		ld.param.s32 %r13, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_N];
+		mov.u32 %r14, 0;
+		setp.le.s32 %p15, %r13, %r14;
+		@%p15 bra $BB_2_0010;
+	$BB_2_0003:
+		mov.u64 %r16, __cuda___cuda_local_var_27983_32_non_const_V_buffer72;
+		mov.u32 %r17, 0;
+		setp.gt.u32 %p18, %r0, %r17;
+		cvt.u64.u32 %r19, %r0;
+		add.u64 %r20, %r10, %r16;
+		mov.s32 %r21, 0;
+		mov.f32 %r22, 0f00000000;
+	$BB_2_0004:
+		ld.global.f32 %r23, [%r12 + 0];
+		st.shared.f32 [%r20 + 0], %r23;
+		bar.sync 0;
+		@!%p18 bra $BB_2_0008;
+	$BB_2_0005:
+		mov.s32 %r24, %r0;
+		mov.s64 %r25, %r16;
+		ld.param.s32 %r26, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_M];
+		cvt.s64.s32 %r27, %r26;
+		mul.wide.s32 %r28, %r26, 4;
+		mov.s64 %r29, %r8;
+		mov.s32 %r30, 0;
+		mov.s32 %r31, %r24;
+	$BB_2_0006:
+		ld.shared.f32 %r32, [%r25 + 0];
+		ld.global.f32 %r33, [%r29 + 0];
+		fma.rn.f32 %r22, %r32, %r33, %r22;
+		add.s32 %r30, %r30, 1;
+		add.u64 %r29, %r28, %r29;
+		add.u64 %r25, %r25, 4;
+		setp.ne.u32 %p34, %r30, %r0;
+		@%p34 bra $BB_2_0006;
+	$BB_2_0007_save:
+		mov.u32 %r41, _Zocelot_spill_area;
+		st.local.u32 [%r41 + 0], %r0;
+		st.local.u64 [%r41 + 4], %r27;
+		st.local.u64 [%r41 + 12], %r6;
+		st.local.u64 [%r41 + 20], %r8;
+		st.local.u64 [%r41 + 28], %r12;
+		st.local.u32 [%r41 + 36], %r13;
+		st.local.u64 [%r41 + 40], %r16;
+		st.local.pred [%r41 + 48], %p18;
+		st.local.u64 [%r41 + 49], %r19;
+		st.local.u64 [%r41 + 57], %r20;
+		st.local.u32 [%r41 + 65], %r21;
+		st.local.f32 [%r41 + 69], %r22;
+		mov.u32 %r42, _Zocelot_resume_point;
+		st.local.u32 [%r42 + 0], 7;
+		call.tail _Z21k_matrixVectorProductPKfS0_Pfii_split_0;
+	$BB_2_0008:
+		mul.lo.u64 %r37, %r19, 4;
+		add.u64 %r12, %r12, %r37;
+		bar.sync 0;
+		add.u32 %r21, %r21, %r0;
+		setp.gt.s32 %p38, %r13, %r21;
+		@%p38 bra $BB_2_0004;
+	$BB_2_0009:
+		bra.uni $BB_2_0011;
+	$BB_2_0010:
+		mov.f32 %r22, 0f00000000;
+	$BB_2_0011:
+		ld.param.u64 %r39, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_R];
+		add.u64 %r40, %r39, %r6;
+		st.global.f32 [%r40 + 0], %r22;
+		exit;
+	$BB_2_0003_restore:
+		mov.u32 %r43, _Zocelot_spill_area;
+		ld.local.u32 %r0, [%r43 + 0];
+		ld.local.u64 %r6, [%r43 + 4];
+		ld.local.u64 %r8, [%r43 + 12];
+		ld.local.u64 %r10, [%r43 + 20];
+		ld.local.u64 %r12, [%r43 + 28];
+		ld.local.u32 %r13, [%r43 + 36];
+		bra.uni $BB_2_0003;
+	$BB_2_0010_restore:
+		mov.u32 %r44, _Zocelot_spill_area;
+		ld.local.u64 %r6, [%r44 + 0];
+		bra.uni $BB_2_0010;
+	$BB_2_0004_restore:
+		mov.u32 %r45, _Zocelot_spill_area;
+		ld.local.u32 %r0, [%r45 + 0];
+		ld.local.u64 %r6, [%r45 + 4];
+		ld.local.u64 %r8, [%r45 + 12];
+		ld.local.u64 %r12, [%r45 + 20];
+		ld.local.u32 %r13, [%r45 + 28];
+		ld.local.u64 %r16, [%r45 + 32];
+		ld.local.pred %p18, [%r45 + 40];
+		ld.local.u64 %r19, [%r45 + 41];
+		ld.local.u64 %r20, [%r45 + 49];
+		ld.local.u32 %r21, [%r45 + 57];
+		ld.local.f32 %r22, [%r45 + 61];
+		bra.uni $BB_2_0004;
+	$BB_2_0005_restore:
+		mov.u32 %r46, _Zocelot_spill_area;
+		ld.local.u32 %r0, [%r46 + 0];
+		ld.local.u64 %r6, [%r46 + 4];
+		ld.local.u64 %r8, [%r46 + 12];
+		ld.local.u64 %r12, [%r46 + 20];
+		ld.local.u32 %r13, [%r46 + 28];
+		ld.local.u64 %r16, [%r46 + 32];
+		ld.local.pred %p18, [%r46 + 40];
+		ld.local.u64 %r19, [%r46 + 41];
+		ld.local.u64 %r20, [%r46 + 49];
+		ld.local.u32 %r21, [%r46 + 57];
+		ld.local.f32 %r22, [%r46 + 61];
+		bra.uni $BB_2_0005;
+	$BB_2_0008_restore:
+		mov.u32 %r47, _Zocelot_spill_area;
+		ld.local.u32 %r0, [%r47 + 0];
+		ld.local.u64 %r6, [%r47 + 4];
+		ld.local.u64 %r8, [%r47 + 12];
+		ld.local.u64 %r12, [%r47 + 20];
+		ld.local.u32 %r13, [%r47 + 28];
+		ld.local.u64 %r16, [%r47 + 32];
+		ld.local.pred %p18, [%r47 + 40];
+		ld.local.u64 %r19, [%r47 + 41];
+		ld.local.u64 %r20, [%r47 + 49];
+		ld.local.u32 %r21, [%r47 + 57];
+		ld.local.f32 %r22, [%r47 + 61];
+		bra.uni $BB_2_0008;
+	$BB_2_0006_restore:
+		mov.u32 %r48, _Zocelot_spill_area;
+		ld.local.u32 %r0, [%r48 + 0];
+		ld.local.u64 %r25, [%r48 + 4];
+		ld.local.u64 %r27, [%r48 + 12];
+		ld.local.u64 %r28, [%r48 + 20];
+		ld.local.u64 %r29, [%r48 + 28];
+		ld.local.u64 %r6, [%r48 + 36];
+		ld.local.u32 %r30, [%r48 + 44];
+		ld.local.u64 %r8, [%r48 + 48];
+		ld.local.u64 %r12, [%r48 + 56];
+		ld.local.u32 %r13, [%r48 + 64];
+		ld.local.u64 %r16, [%r48 + 68];
+		ld.local.pred %p18, [%r48 + 76];
+		ld.local.u64 %r19, [%r48 + 77];
+		ld.local.u64 %r20, [%r48 + 85];
+		ld.local.u32 %r21, [%r48 + 93];
+		ld.local.f32 %r22, [%r48 + 97];
+		bra.uni $BB_2_0006;
+	$BB_2_0009_restore:
+		mov.u32 %r49, _Zocelot_spill_area;
+		ld.local.f32 %r22, [%r49 + 0];
+		ld.local.u64 %r6, [%r49 + 4];
+		bra.uni $BB_2_0009;
+	$BB_2_0011_restore:
+		mov.u32 %r50, _Zocelot_spill_area;
+		ld.local.f32 %r22, [%r50 + 0];
+		ld.local.u64 %r6, [%r50 + 4];
+		bra.uni $BB_2_0011;
+}
+(0.014008) LLVMModuleManager.cpp:1247:  adding subkernel '_Z21k_matrixVectorProductPKfS0_Pfii_split_0' at index 2
+/*
+* Ocelot Version : 0.0.0
+*/
+.visible .func _Z21k_matrixVectorProductPKfS0_Pfii_split_0(.param  .u64 __cudaparm__Z21k_matrixVectorProductPKfS0_Pfii___val_paramA,
+		.param  .u64 __cudaparm__Z21k_matrixVectorProductPKfS0_Pfii___val_paramV,
+		.param  .u64 __cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_R,
+		.param  .s32 __cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_M,
+		.param  .s32 __cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_N)
+{
+	.local .u32 _Zocelot_resume_point[1];
+	.local .b8 _Zocelot_spill_area[73];
+	.shared .align 4 .b8 __cuda___cuda_local_var_27983_32_non_const_V_buffer72[32];
+
+	.reg .u64 %r35;
+	.reg .u64 %r27;
+	.reg .u64 %r36;
+	.reg .u64 %r8;
+	.reg .u32 %r61;
+	.reg .u32 %r62;
+	.reg .u32 %r63;
+	.reg .u32 %r0;
+	.reg .u64 %r6;
+	.reg .u64 %r12;
+	.reg .u32 %r13;
+	.reg .u64 %r16;
+	.reg .pred %p18;
+	.reg .u64 %r19;
+	.reg .u64 %r20;
+	.reg .u32 %r21;
+	.reg .f32 %r22;
+	$BB_2_0007_restore:
+		mov.u32 %r63, _Zocelot_spill_area;
+		ld.local.u32 %r0, [%r63 + 0];
+		ld.local.u64 %r27, [%r63 + 4];
+		ld.local.u64 %r6, [%r63 + 12];
+		ld.local.u64 %r8, [%r63 + 20];
+		ld.local.u64 %r12, [%r63 + 28];
+		ld.local.u32 %r13, [%r63 + 36];
+		ld.local.u64 %r16, [%r63 + 40];
+		ld.local.pred %p18, [%r63 + 48];
+		ld.local.u64 %r19, [%r63 + 49];
+		ld.local.u64 %r20, [%r63 + 57];
+		ld.local.u32 %r21, [%r63 + 65];
+		ld.local.f32 %r22, [%r63 + 69];
+		bra.uni $BB_2_0007;
+	$BB_2_0007:
+		mul.lo.u64 %r35, %r27, %r19;
+		mul.lo.u64 %r36, %r35, 4;
+		add.u64 %r8, %r8, %r36;
+	$BB_2_0008_save:
+		mov.u32 %r61, _Zocelot_spill_area;
+		st.local.u32 [%r61 + 0], %r0;
+		st.local.u64 [%r61 + 4], %r6;
+		st.local.u64 [%r61 + 12], %r8;
+		st.local.u64 [%r61 + 20], %r12;
+		st.local.u32 [%r61 + 28], %r13;
+		st.local.u64 [%r61 + 32], %r16;
+		st.local.pred [%r61 + 40], %p18;
+		st.local.u64 [%r61 + 41], %r19;
+		st.local.u64 [%r61 + 49], %r20;
+		st.local.u32 [%r61 + 57], %r21;
+		st.local.f32 [%r61 + 61], %r22;
+		mov.u32 %r62, _Zocelot_resume_point;
+		st.local.u32 [%r62 + 0], 8;
+		call.tail _Z21k_matrixVectorProductPKfS0_Pfii;
+}
+(0.014286) LLVMModuleManager.cpp:1247:  adding subkernel '_Z17k_sequenceLoopingPfi' at index 3
+/*
+* Ocelot Version : 0.0.0
+*/
+.entry _Z17k_sequenceLoopingPfi(.param  .u64 __cudaparm__Z17k_sequenceLoopingPfi_ptr,
+		.param  .s32 __cudaparm__Z17k_sequenceLoopingPfi_N)
+{
+	.local .u32 _Zocelot_resume_point[1];
+	.local .b8 _Zocelot_spill_area[16];
+	.local .align 4 .b8 __cuda___cuda_result_3212[28];
+
+	.reg .f32 %r94;
+	.reg .f32 %r95;
+	.reg .f32 %r1;
+	.reg .u32 %r96;
+	.reg .f32 %r97;
+	.reg .f32 %r98;
+	.reg .f32 %r99;
+	.reg .f32 %r100;
+	.reg .f32 %r101;
+	.reg .f32 %r102;
+	.reg .f32 %r103;
+	.reg .f32 %r104;
+	.reg .u32 %r67;
+	.reg .f32 %r93;
+	.reg .u32 %r105;
+	.reg .f32 %r106;
+	.reg .f32 %r107;
+	.reg .u32 %r108;
+	.reg .u32 %r109;
+	.reg .pred %p110;
+	.reg .f32 %r111;
+	.reg .f32 %r112;
+	.reg .f32 %r113;
+	.reg .f32 %r114;
+	.reg .f32 %r115;
+	.reg .f32 %r116;
+	.reg .f32 %r117;
+	.reg .f32 %r118;
+	.reg .f32 %r119;
+	.reg .u32 %r0;
+	.reg .f32 %r2;
+	.reg .f32 %r3;
+	.reg .pred %p4;
+	.reg .f32 %r120;
+	.reg .f32 %r121;
+	.reg .f32 %r122;
+	.reg .f32 %r123;
+	.reg .f32 %r124;
+	.reg .f32 %r125;
+	.reg .f32 %r126;
+	.reg .u32 %r127;
+	.reg .u32 %r128;
+	.reg .pred %p129;
+	.reg .f32 %r6;
+	.reg .f32 %r7;
+	.reg .pred %p8;
+	.reg .u64 %r130;
+	.reg .u64 %r131;
+	.reg .u64 %r132;
+	.reg .u64 %r133;
+	.reg .u32 %r134;
+	.reg .u32 %r135;
+	.reg .u32 %r136;
+	.reg .u32 %r137;
+	.reg .u32 %r138;
+	.reg .u32 %r139;
+	.reg .u32 %r140;
+	.reg .u32 %r141;
+	.reg .u32 %r142;
+	.reg .u32 %r143;
+	.reg .u32 %r144;
+	.reg .u32 %r145;
+	.reg .u32 %r146;
+	.reg .pred %p147;
+	.reg .pred %p148;
+	.reg .pred %p149;
+	.reg .pred %p150;
+	.reg .pred %p151;
+	.reg .pred %p152;
+	.reg .pred %p153;
+	_Z17k_sequenceLoopingPfi_scheduler:
+		mov.u32 %r145, _Zocelot_resume_point;
+		ld.local.u32 %r146, [%r145 + 0];
+		setp.eq.u32 %p147, %r146, 23;
+		@%p147 bra $BB_1_0023_restore;
+	_Z17k_sequenceLoopingPfi_scheduler_39:
+		setp.eq.u32 %p148, %r146, 24;
+		@%p148 bra $BB_1_0024_restore;
+	_Z17k_sequenceLoopingPfi_scheduler_40:
+		setp.eq.u32 %p149, %r146, 25;
+		@%p149 bra $BB_1_0025_restore;
+	_Z17k_sequenceLoopingPfi_scheduler_41:
+		setp.eq.u32 %p150, %r146, 4;
+		@%p150 bra $BB_1_0004_restore;
+	_Z17k_sequenceLoopingPfi_scheduler_42:
+		setp.eq.u32 %p151, %r146, 27;
+		@%p151 bra $BB_1_0027_restore;
+	_Z17k_sequenceLoopingPfi_scheduler_43:
+		setp.eq.u32 %p152, %r146, 26;
+		@%p152 bra $BB_1_0026_restore;
+	_Z17k_sequenceLoopingPfi_scheduler_44:
+		setp.eq.u32 %p153, %r146, 22;
+		@%p153 bra $BB_1_0022_restore;
+	_Z17k_sequenceLoopingPfi_scheduler_trampoline:
+		bra $BB_1_0002;
+	$BB_1_0002:
+		cvt.s32.u32 %r0, %tid.x;
+		cvt.rn.f32.s32 %r1, %r0;
+		abs.f32 %r2, %r1;
+		mov.f32 %r3, 0f7f800000;
+		setp.eq.f32 %p4, %r2, %r3;
+		@!%p4 bra $BB_1_0004;
+	$BB_1_0003_save:
+		mov.u32 %r134, _Zocelot_spill_area;
+		st.local.u32 [%r134 + 0], %r0;
+		st.local.f32 [%r134 + 4], %r1;
+		mov.u32 %r135, _Zocelot_resume_point;
+		st.local.u32 [%r135 + 0], 3;
+		call.tail _Z17k_sequenceLoopingPfi_split_1;
+	$BB_1_0004:
+		mov.f32 %r7, 0f473ba700;
+		setp.gt.f32 %p8, %r2, %r7;
+		@!%p8 bra $BB_1_0022;
+	$BB_1_0004_bounce:
+		bra.uni $BB_1_0005_save;
+	$BB_1_0005_save:
+		mov.u32 %r136, _Zocelot_spill_area;
+		st.local.u32 [%r136 + 0], %r0;
+		st.local.f32 [%r136 + 4], %r1;
+		mov.u32 %r137, _Zocelot_resume_point;
+		st.local.u32 [%r137 + 0], 5;
+		call.tail _Z17k_sequenceLoopingPfi_split_0;
+	$BB_1_0022:
+		mov.f32 %r94, 0f3f22f983;
+		mul.f32 %r95, %r1, %r94;
+		cvt.rni.s32.f32 %r96, %r95;
+		cvt.rn.f32.s32 %r97, %r96;
+		neg.f32 %r98, %r97;
+		mov.f32 %r99, 0f2e85a309;
+		mov.f32 %r100, 0f39fdaa20;
+		mov.f32 %r101, 0f3fc90000;
+		fma.rn.f32 %r102, %r98, %r101, %r1;
+		fma.rn.f32 %r103, %r98, %r100, %r102;
+		fma.rn.f32 %r104, %r98, %r99, %r103;
+		mov.s32 %r67, %r96;
+		mov.f32 %r93, %r104;
+	$BB_1_0023:
+		add.s32 %r105, %r67, 1;
+		mov.f32 %r106, %r93;
+		mul.f32 %r107, %r106, %r106;
+		and.b32 %r108, %r105, 1;
+		mov.u32 %r109, 0;
+		setp.eq.s32 %p110, %r108, %r109;
+		@%p110 bra $BB_1_0025;
+	$BB_1_0024:
+		mov.f32 %r111, 0f37ccf5ce;
+		mov.f32 %r112, 0fbab6061a;
+		fma.rn.f32 %r113, %r111, %r107, %r112;
+		mov.f32 %r114, 0f3d2aaaa5;
+		fma.rn.f32 %r115, %r113, %r107, %r114;
+		mov.f32 %r116, 0fbf000000;
+		fma.rn.f32 %r117, %r115, %r107, %r116;
+		mov.f32 %r118, 0f3f800000;
+		fma.rn.f32 %r119, %r117, %r107, %r118;
+		bra.uni $BB_1_0026;
+	$BB_1_0025:
+		mov.f32 %r120, 0fb94ca1f9;
+		mov.f32 %r121, 0f3c08839e;
+		fma.rn.f32 %r122, %r120, %r107, %r121;
+		mov.f32 %r123, 0fbe2aaaa3;
+		fma.rn.f32 %r124, %r122, %r107, %r123;
+		mul.f32 %r125, %r107, %r124;
+		fma.rn.f32 %r119, %r125, %r106, %r106;
+	$BB_1_0026:
+		neg.f32 %r126, %r119;
+		and.b32 %r127, %r105, 2;
+		mov.s32 %r128, 0;
+		setp.ne.s32 %p129, %r127, %r128;
+		selp.f32 %r119, %r126, %r119, %p129;
+		mov.f32 %r6, %r119;
+	$BB_1_0027:
+		ld.param.u64 %r130, [__cudaparm__Z17k_sequenceLoopingPfi_ptr];
+		cvt.s64.s32 %r131, %r0;
+		mul.wide.s32 %r132, %r0, 4;
+		add.u64 %r133, %r130, %r132;
+		st.global.f32 [%r133 + 0], %r6;
+		exit;
+	$BB_1_0023_restore:
+		mov.u32 %r138, _Zocelot_spill_area;
+		ld.local.u32 %r0, [%r138 + 0];
+		ld.local.u32 %r67, [%r138 + 4];
+		ld.local.f32 %r93, [%r138 + 8];
+		bra.uni $BB_1_0023;
+	$BB_1_0024_restore:
+		mov.u32 %r139, _Zocelot_spill_area;
+		ld.local.u32 %r0, [%r139 + 0];
+		ld.local.u32 %r105, [%r139 + 4];
+		ld.local.f32 %r107, [%r139 + 8];
+		bra.uni $BB_1_0024;
+	$BB_1_0025_restore:
+		mov.u32 %r140, _Zocelot_spill_area;
+		ld.local.u32 %r0, [%r140 + 0];
+		ld.local.u32 %r105, [%r140 + 4];
+		ld.local.f32 %r106, [%r140 + 8];
+		ld.local.f32 %r107, [%r140 + 12];
+		bra.uni $BB_1_0025;
+	$BB_1_0004_restore:
+		mov.u32 %r141, _Zocelot_spill_area;
+		ld.local.u32 %r0, [%r141 + 0];
+		ld.local.f32 %r1, [%r141 + 4];
+		ld.local.f32 %r2, [%r141 + 8];
+		bra.uni $BB_1_0004;
+	$BB_1_0027_restore:
+		mov.u32 %r142, _Zocelot_spill_area;
+		ld.local.u32 %r0, [%r142 + 0];
+		ld.local.f32 %r6, [%r142 + 4];
+		bra.uni $BB_1_0027;
+	$BB_1_0026_restore:
+		mov.u32 %r143, _Zocelot_spill_area;
+		ld.local.u32 %r0, [%r143 + 0];
+		ld.local.u32 %r105, [%r143 + 4];
+		ld.local.f32 %r119, [%r143 + 8];
+		bra.uni $BB_1_0026;
+	$BB_1_0022_restore:
+		mov.u32 %r144, _Zocelot_spill_area;
+		ld.local.u32 %r0, [%r144 + 0];
+		ld.local.f32 %r1, [%r144 + 4];
+		bra.uni $BB_1_0022;
+}
+(0.015237) LLVMModuleManager.cpp:1247:  adding subkernel '_Z17k_sequenceLoopingPfi_split_0' at index 4
+/*
+* Ocelot Version : 0.0.0
+*/
+.visible .func _Z17k_sequenceLoopingPfi_split_0(.param  .u64 __cudaparm__Z17k_sequenceLoopingPfi_ptr,
+		.param  .s32 __cudaparm__Z17k_sequenceLoopingPfi_N)
+{
+	.local .u32 _Zocelot_resume_point[1];
+	.local .b8 _Zocelot_spill_area[44];
+	.local .align 4 .b8 __cuda___cuda_result_3212[28];
+
+	.reg .u32 %r55;
+	.reg .u32 %r56;
+	.reg .u32 %r17;
+	.reg .u32 %r54;
+	.reg .u32 %r9;
+	.reg .f32 %r1;
+	.reg .u32 %r10;
+	.reg .u32 %r11;
+	.reg .u32 %r12;
+	.reg .u64 %r13;
+	.reg .u64 %r14;
+	.reg .u32 %r15;
+	.reg .u32 %r16;
+	.reg .u32 %r18;
+	.reg .u32 %r19;
+	.reg .u32 %r20;
+	.reg .u32 %r21;
+	.reg .u32 %r22;
+	.reg .u32 %r23;
+	.reg .u32 %r24;
+	.reg .pred %p25;
+	.reg .u32 %r26;
+	.reg .u32 %r27;
+	.reg .u32 %r28;
+	.reg .u64 %r29;
+	.reg .u32 %r30;
+	.reg .u32 %r31;
+	.reg .u32 %r32;
+	.reg .u64 %r33;
+	.reg .u64 %r34;
+	.reg .u64 %r35;
+	.reg .u32 %r36;
+	.reg .u32 %r37;
+	.reg .u32 %r38;
+	.reg .pred %p39;
+	.reg .u32 %r47;
+	.reg .u32 %r48;
+	.reg .u32 %r49;
+	.reg .pred %p50;
+	.reg .u32 %r154;
+	.reg .u32 %r155;
+	.reg .u32 %r156;
+	.reg .u32 %r157;
+	.reg .u32 %r158;
+	.reg .u32 %r159;
+	.reg .u32 %r160;
+	.reg .u32 %r0;
+	.reg .u32 %r161;
+	.reg .u32 %r162;
+	.reg .u32 %r163;
+	.reg .u32 %r164;
+	.reg .u32 %r165;
+	.reg .u32 %r166;
+	.reg .pred %p167;
+	.reg .pred %p168;
+	.reg .pred %p169;
+	.reg .pred %p170;
+	_Z17k_sequenceLoopingPfi_split_0_scheduler:
+		mov.u32 %r165, _Zocelot_resume_point;
+		ld.local.u32 %r166, [%r165 + 0];
+		setp.eq.u32 %p167, %r166, 6;
+		@%p167 bra $BB_1_0006_restore;
+	_Z17k_sequenceLoopingPfi_split_0_scheduler_23:
+		setp.eq.u32 %p168, %r166, 7;
+		@%p168 bra $BB_1_0007_restore;
+	_Z17k_sequenceLoopingPfi_split_0_scheduler_24:
+		setp.eq.u32 %p169, %r166, 9;
+		@%p169 bra $BB_1_0009_restore;
+	_Z17k_sequenceLoopingPfi_split_0_scheduler_25:
+		setp.eq.u32 %p170, %r166, 5;
+		@%p170 bra $BB_1_0005_restore;
+	_Z17k_sequenceLoopingPfi_split_0_scheduler_trampoline:
+		bra $BB_1_0011_restore;
+	$BB_1_0011_restore:
+		mov.u32 %r164, _Zocelot_spill_area;
+		ld.local.u32 %r11, [%r164 + 0];
+		ld.local.u32 %r0, [%r164 + 4];
+		ld.local.u32 %r36, [%r164 + 8];
+		ld.local.u32 %r16, [%r164 + 12];
+		ld.local.u32 %r17, [%r164 + 16];
+		ld.local.u32 %r10, [%r164 + 20];
+		bra.uni $BB_1_0011;
+	$BB_1_0011:
+		mov.u32 %r55, -2147483648;
+		set.gt.u32.u32 %r56, %r17, %r55;
+		neg.s32 %r54, %r56;
+	$BB_1_0012_save:
+		mov.u32 %r154, _Zocelot_spill_area;
+		st.local.u32 [%r154 + 0], %r11;
+		st.local.u32 [%r154 + 4], %r0;
+		st.local.u32 [%r154 + 8], %r36;
+		st.local.u32 [%r154 + 12], %r16;
+		st.local.u32 [%r154 + 16], %r17;
+		st.local.u32 [%r154 + 20], %r54;
+		st.local.u32 [%r154 + 24], %r10;
+		mov.u32 %r155, _Zocelot_resume_point;
+		st.local.u32 [%r155 + 0], 12;
+		call.tail _Z17k_sequenceLoopingPfi_split_1;
+	$BB_1_0005:
+		mov.b32 %r9, %r1;
+		and.b32 %r10, %r9, -2147483648;
+		mov.s32 %r11, %r10;
+		shl.b32 %r12, %r9, 8;
+		mov.u64 %r13, __cudart_i2opi_f;
+		mov.u64 %r14, __cuda___cuda_result_3212;
+		or.b32 %r15, %r12, -2147483648;
+		mov.s32 %r16, 0;
+		mov.u32 %r17, 0;
+	$BB_1_0006:
+		ld.const.u32 %r18, [%r13 + 0];
+		mul.lo.u32 %r19, %r15, %r18;
+		add.u32 %r20, %r19, %r17;
+		set.gt.u32.u32 %r21, %r19, %r20;
+		neg.s32 %r22, %r21;
+		mul.hi.u32 %r23, %r18, %r15;
+		add.u32 %r17, %r22, %r23;
+		st.local.u32 [%r14 + 0], %r20;
+		add.s32 %r16, %r16, 1;
+		add.u64 %r14, %r14, 4;
+		add.u64 %r13, %r13, 4;
+		mov.u32 %r24, 6;
+		setp.ne.s32 %p25, %r16, %r24;
+		@%p25 bra $BB_1_0006;
+	$BB_1_0007:
+		st.local.u32 [__cuda___cuda_result_3212 + 24], %r17;
+		shl.b32 %r26, %r9, 1;
+		shr.u32 %r27, %r26, 24;
+		sub.u32 %r28, %r27, 128;
+		mov.u64 %r29, __cuda___cuda_result_3212;
+		shr.u32 %r30, %r28, 5;
+		mov.s32 %r31, 4;
+		sub.s32 %r32, %r31, %r30;
+		cvt.s64.s32 %r33, %r32;
+		mul.wide.s32 %r34, %r32, 4;
+		add.u64 %r35, %r29, %r34;
+		ld.local.u32 %r17, [%r35 + 8];
+		ld.local.u32 %r36, [%r35 + 4];
+		and.b32 %r37, %r28, 31;
+		mov.u32 %r38, 0;
+		setp.eq.u32 %p39, %r37, %r38;
+		@%p39 bra $BB_1_0009;
+	$BB_1_0007_bounce:
+		bra.uni $BB_1_0008_save;
+	$BB_1_0008_save:
+		mov.u32 %r156, _Zocelot_spill_area;
+		st.local.u32 [%r156 + 0], %r0;
+		st.local.u32 [%r156 + 4], %r11;
+		st.local.u64 [%r156 + 8], %r35;
+		st.local.u32 [%r156 + 16], %r36;
+		st.local.u32 [%r156 + 20], %r37;
+		st.local.u32 [%r156 + 24], %r17;
+		st.local.u32 [%r156 + 28], %r10;
+		mov.u32 %r157, _Zocelot_resume_point;
+		st.local.u32 [%r157 + 0], 8;
+		call.tail _Z17k_sequenceLoopingPfi_split_1;
+	$BB_1_0009:
+		shr.u32 %r16, %r17, 30;
+		shr.u32 %r47, %r36, 30;
+		shl.b32 %r48, %r17, 2;
+		add.u32 %r17, %r47, %r48;
+		shl.b32 %r36, %r36, 2;
+		mov.u32 %r49, 0;
+		setp.eq.u32 %p50, %r36, %r49;
+		@%p50 bra $BB_1_0011;
+	$BB_1_0009_bounce:
+		bra.uni $BB_1_0010_save;
+	$BB_1_0010_save:
+		mov.u32 %r158, _Zocelot_spill_area;
+		st.local.u32 [%r158 + 0], %r0;
+		st.local.u32 [%r158 + 4], %r11;
+		st.local.u32 [%r158 + 8], %r36;
+		st.local.u32 [%r158 + 12], %r16;
+		st.local.u32 [%r158 + 16], %r17;
+		st.local.u32 [%r158 + 20], %r10;
+		mov.u32 %r159, _Zocelot_resume_point;
+		st.local.u32 [%r159 + 0], 10;
+		call.tail _Z17k_sequenceLoopingPfi_split_1;
+	$BB_1_0006_restore:
+		mov.u32 %r160, _Zocelot_spill_area;
+		ld.local.u32 %r0, [%r160 + 0];
+		ld.local.u32 %r11, [%r160 + 4];
+		ld.local.u64 %r13, [%r160 + 8];
+		ld.local.u64 %r14, [%r160 + 16];
+		ld.local.u32 %r15, [%r160 + 24];
+		ld.local.u32 %r16, [%r160 + 28];
+		ld.local.u32 %r17, [%r160 + 32];
+		ld.local.u32 %r9, [%r160 + 36];
+		ld.local.u32 %r10, [%r160 + 40];
+		bra.uni $BB_1_0006;
+	$BB_1_0007_restore:
+		mov.u32 %r161, _Zocelot_spill_area;
+		ld.local.u32 %r0, [%r161 + 0];
+		ld.local.u32 %r11, [%r161 + 4];
+		ld.local.u32 %r17, [%r161 + 8];
+		ld.local.u32 %r9, [%r161 + 12];
+		ld.local.u32 %r10, [%r161 + 16];
+		bra.uni $BB_1_0007;
+	$BB_1_0009_restore:
+		mov.u32 %r162, _Zocelot_spill_area;
+		ld.local.u32 %r0, [%r162 + 0];
+		ld.local.u32 %r11, [%r162 + 4];
+		ld.local.u32 %r36, [%r162 + 8];
+		ld.local.u32 %r17, [%r162 + 12];
+		ld.local.u32 %r10, [%r162 + 16];
+		bra.uni $BB_1_0009;
+	$BB_1_0005_restore:
+		mov.u32 %r163, _Zocelot_spill_area;
+		ld.local.u32 %r0, [%r163 + 0];
+		ld.local.f32 %r1, [%r163 + 4];
+		bra.uni $BB_1_0005;
+}
+(0.016274) LLVMModuleManager.cpp:1247:  adding subkernel '_Z17k_sequenceLoopingPfi_split_1' at index 5
+/*
+* Ocelot Version : 0.0.0
+*/
+.visible .func _Z17k_sequenceLoopingPfi_split_1(.param  .u64 __cudaparm__Z17k_sequenceLoopingPfi_ptr,
+		.param  .s32 __cudaparm__Z17k_sequenceLoopingPfi_N)
+{
+	.local .u32 _Zocelot_resume_point[1];
+	.local .b8 _Zocelot_spill_area[32];
+	.local .align 4 .b8 __cuda___cuda_result_3212[28];
+
+	.reg .u32 %r57;
+	.reg .u32 %r16;
+	.reg .u32 %r58;
+	.reg .u32 %r59;
+	.reg .pred %p60;
+	.reg .u32 %r10;
+	.reg .u32 %r61;
+	.reg .pred %p62;
+	.reg .u32 %r54;
+	.reg .u32 %r67;
+	.reg .u32 %r68;
+	.reg .pred %p69;
+	.reg .u32 %r17;
+	.reg .f32 %r5;
+	.reg .f32 %r1;
+	.reg .f32 %r6;
+	.reg .u32 %r70;
+	.reg .u32 %r36;
+	.reg .u32 %r75;
+	.reg .u32 %r76;
+	.reg .pred %p77;
+	.reg .u32 %r40;
+	.reg .u32 %r41;
+	.reg .u32 %r42;
+	.reg .u32 %r43;
+	.reg .u32 %r44;
+	.reg .u32 %r45;
+	.reg .u32 %r46;
+	.reg .u32 %r80;
+	.reg .u32 %r81;
+	.reg .u32 %r82;
+	.reg .u32 %r83;
+	.reg .u32 %r84;
+	.reg .u32 %r85;
+	.reg .u32 %r86;
+	.reg .u32 %r87;
+	.reg .u32 %r88;
+	.reg .u32 %r89;
+	.reg .u32 %r90;
+	.reg .u32 %r91;
+	.reg .u32 %r92;
+	.reg .u32 %r11;
+	.reg .f32 %r93;
+	.reg .u32 %r51;
+	.reg .u32 %r52;
+	.reg .u32 %r53;
+	.reg .u32 %r171;
+	.reg .u32 %r172;
+	.reg .u32 %r173;
+	.reg .u32 %r174;
+	.reg .u32 %r175;
+	.reg .u32 %r176;
+	.reg .u32 %r177;
+	.reg .u32 %r178;
+	.reg .u32 %r179;
+	.reg .u32 %r180;
+	.reg .u32 %r181;
+	.reg .u32 %r182;
+	.reg .u32 %r183;
+	.reg .u32 %r0;
+	.reg .u32 %r184;
+	.reg .u32 %r185;
+	.reg .u32 %r186;
+	.reg .u32 %r187;
+	.reg .u32 %r188;
+	.reg .u64 %r35;
+	.reg .u32 %r37;
+	.reg .u32 %r189;
+	.reg .u32 %r190;
+	.reg .u32 %r191;
+	.reg .u32 %r192;
+	.reg .pred %p193;
+	.reg .pred %p194;
+	.reg .pred %p195;
+	.reg .pred %p196;
+	.reg .pred %p197;
+	.reg .pred %p198;
+	.reg .pred %p199;
+	_Z17k_sequenceLoopingPfi_split_1_scheduler:
+		mov.u32 %r191, _Zocelot_resume_point;
+		ld.local.u32 %r192, [%r191 + 0];
+		setp.eq.u32 %p193, %r192, 14;
+		@%p193 bra $BB_1_0014_restore;
+	_Z17k_sequenceLoopingPfi_split_1_scheduler_40:
+		setp.eq.u32 %p194, %r192, 18;
+		@%p194 bra $BB_1_0018_restore;
+	_Z17k_sequenceLoopingPfi_split_1_scheduler_41:
+		setp.eq.u32 %p195, %r192, 19;
+		@%p195 bra $BB_1_0019_restore;
+	_Z17k_sequenceLoopingPfi_split_1_scheduler_42:
+		setp.eq.u32 %p196, %r192, 21;
+		@%p196 bra $BB_1_0021_restore;
+	_Z17k_sequenceLoopingPfi_split_1_scheduler_43:
+		setp.eq.u32 %p197, %r192, 12;
+		@%p197 bra $BB_1_0012_restore;
+	_Z17k_sequenceLoopingPfi_split_1_scheduler_44:
+		setp.eq.u32 %p198, %r192, 8;
+		@%p198 bra $BB_1_0008_restore;
+	_Z17k_sequenceLoopingPfi_split_1_scheduler_45:
+		setp.eq.u32 %p199, %r192, 10;
+		@%p199 bra $BB_1_0010_restore;
+	_Z17k_sequenceLoopingPfi_split_1_scheduler_trampoline:
+		bra $BB_1_0003_restore;
+	$BB_1_0003_restore:
+		mov.u32 %r190, _Zocelot_spill_area;
+		ld.local.u32 %r0, [%r190 + 0];
+		ld.local.f32 %r1, [%r190 + 4];
+		bra.uni $BB_1_0003;
+	$BB_1_0003:
+		neg.f32 %r5, %r1;
+		add.rn.f32 %r6, %r1, %r5;
+		bra.uni $BB_1_0027_save;
+	$BB_1_0027_save:
+		mov.u32 %r175, _Zocelot_spill_area;
+		st.local.u32 [%r175 + 0], %r0;
+		st.local.f32 [%r175 + 4], %r6;
+		mov.u32 %r176, _Zocelot_resume_point;
+		st.local.u32 [%r176 + 0], 27;
+		call.tail _Z17k_sequenceLoopingPfi;
+	$BB_1_0012:
+		add.u32 %r57, %r16, %r54;
+		neg.s32 %r58, %r57;
+		mov.u32 %r59, 0;
+		setp.ne.u32 %p60, %r10, %r59;
+		selp.s32 %r16, %r58, %r57, %p60;
+		mov.u32 %r61, 0;
+		setp.eq.u32 %p62, %r54, %r61;
+		@%p62 bra $BB_1_0014;
+	$BB_1_0013_save:
+		mov.u32 %r171, _Zocelot_spill_area;
+		st.local.u32 [%r171 + 0], %r0;
+		st.local.u32 [%r171 + 4], %r36;
+		st.local.u32 [%r171 + 8], %r16;
+		st.local.u32 [%r171 + 12], %r17;
+		st.local.u32 [%r171 + 16], %r10;
+		mov.u32 %r172, _Zocelot_resume_point;
+		st.local.u32 [%r172 + 0], 13;
+		call.tail _Z17k_sequenceLoopingPfi_split_2;
+	$BB_1_0008:
+		mov.s32 %r40, 32;
+		sub.s32 %r41, %r40, %r37;
+		shr.u32 %r42, %r36, %r41;
+		shl.b32 %r43, %r17, %r37;
+		add.u32 %r17, %r42, %r43;
+		ld.local.u32 %r44, [%r35 + 0];
+		shr.u32 %r45, %r44, %r41;
+		shl.b32 %r46, %r36, %r37;
+		add.u32 %r36, %r45, %r46;
+	$BB_1_0008_bounce:
+		bra.uni $BB_1_0009_save;
+	$BB_1_0009_save:
+		mov.u32 %r179, _Zocelot_spill_area;
+		st.local.u32 [%r179 + 0], %r0;
+		st.local.u32 [%r179 + 4], %r11;
+		st.local.u32 [%r179 + 8], %r36;
+		st.local.u32 [%r179 + 12], %r17;
+		st.local.u32 [%r179 + 16], %r10;
+		mov.u32 %r180, _Zocelot_resume_point;
+		st.local.u32 [%r180 + 0], 9;
+		call.tail _Z17k_sequenceLoopingPfi_split_0;
+	$BB_1_0010:
+		add.u32 %r51, %r17, 1;
+		mov.u32 %r52, -2147483648;
+		set.gt.u32.u32 %r53, %r51, %r52;
+		neg.s32 %r54, %r53;
+		bra.uni $BB_1_0012;
+	$BB_1_0014:
+		mov.s32 %r67, %r16;
+		mov.u32 %r68, 0;
+		setp.le.s32 %p69, %r17, %r68;
+		@%p69 bra $BB_1_0018;
+	$BB_1_0014_bounce:
+		bra.uni $BB_1_0015_save;
+	$BB_1_0015_save:
+		mov.u32 %r173, _Zocelot_spill_area;
+		st.local.u32 [%r173 + 0], %r0;
+		st.local.u32 [%r173 + 4], %r11;
+		st.local.u32 [%r173 + 8], %r67;
+		st.local.u32 [%r173 + 12], %r36;
+		st.local.u32 [%r173 + 16], %r17;
+		mov.u32 %r174, _Zocelot_resume_point;
+		st.local.u32 [%r174 + 0], 15;
+		call.tail _Z17k_sequenceLoopingPfi_split_2;
+	$BB_1_0018:
+		mov.u32 %r70, 0;
+	$BB_1_0019:
+		mul.lo.u32 %r36, %r17, -921707870;
+		mov.u32 %r75, -921707870;
+		mul.hi.u32 %r17, %r17, %r75;
+		mov.u32 %r76, 0;
+		setp.le.s32 %p77, %r17, %r76;
+		@%p77 bra $BB_1_0021;
+	$BB_1_0019_bounce:
+		bra.uni $BB_1_0020_save;
+	$BB_1_0020_save:
+		mov.u32 %r177, _Zocelot_spill_area;
+		st.local.u32 [%r177 + 0], %r11;
+		st.local.u32 [%r177 + 4], %r0;
+		st.local.u32 [%r177 + 8], %r67;
+		st.local.u32 [%r177 + 12], %r36;
+		st.local.u32 [%r177 + 16], %r70;
+		st.local.u32 [%r177 + 20], %r17;
+		mov.u32 %r178, _Zocelot_resume_point;
+		st.local.u32 [%r178 + 0], 20;
+		call.tail _Z17k_sequenceLoopingPfi_split_2;
+	$BB_1_0021:
+		mov.u32 %r80, 0;
+		set.ne.u32.u32 %r81, %r36, %r80;
+		neg.s32 %r82, %r81;
+		add.u32 %r17, %r82, %r17;
+		shl.b32 %r83, %r17, 24;
+		mov.s32 %r84, 0;
+		set.lt.u32.s32 %r85, %r83, %r84;
+		neg.s32 %r86, %r85;
+		shr.u32 %r87, %r17, 8;
+		add.u32 %r88, %r70, 126;
+		shl.b32 %r89, %r88, 23;
+		add.u32 %r90, %r87, %r89;
+		add.u32 %r91, %r86, %r90;
+		or.b32 %r92, %r11, %r91;
+		mov.b32 %r93, %r92;
+		bra.uni $BB_1_0023_save;
+	$BB_1_0023_save:
+		mov.u32 %r181, _Zocelot_spill_area;
+		st.local.u32 [%r181 + 0], %r0;
+		st.local.u32 [%r181 + 4], %r67;
+		st.local.f32 [%r181 + 8], %r93;
+		mov.u32 %r182, _Zocelot_resume_point;
+		st.local.u32 [%r182 + 0], 23;
+		call.tail _Z17k_sequenceLoopingPfi;
+	$BB_1_0014_restore:
+		mov.u32 %r183, _Zocelot_spill_area;
+		ld.local.u32 %r0, [%r183 + 0];
+		ld.local.u32 %r11, [%r183 + 4];
+		ld.local.u32 %r36, [%r183 + 8];
+		ld.local.u32 %r16, [%r183 + 12];
+		ld.local.u32 %r17, [%r183 + 16];
+		bra.uni $BB_1_0014;
+	$BB_1_0018_restore:
+		mov.u32 %r184, _Zocelot_spill_area;
+		ld.local.u32 %r0, [%r184 + 0];
+		ld.local.u32 %r11, [%r184 + 4];
+		ld.local.u32 %r67, [%r184 + 8];
+		ld.local.u32 %r17, [%r184 + 12];
+		bra.uni $BB_1_0018;
+	$BB_1_0019_restore:
+		mov.u32 %r185, _Zocelot_spill_area;
+		ld.local.u32 %r11, [%r185 + 0];
+		ld.local.u32 %r0, [%r185 + 4];
+		ld.local.u32 %r67, [%r185 + 8];
+		ld.local.u32 %r70, [%r185 + 12];
+		ld.local.u32 %r17, [%r185 + 16];
+		bra.uni $BB_1_0019;
+	$BB_1_0021_restore:
+		mov.u32 %r186, _Zocelot_spill_area;
+		ld.local.u32 %r11, [%r186 + 0];
+		ld.local.u32 %r0, [%r186 + 4];
+		ld.local.u32 %r67, [%r186 + 8];
+		ld.local.u32 %r36, [%r186 + 12];
+		ld.local.u32 %r70, [%r186 + 16];
+		ld.local.u32 %r17, [%r186 + 20];
+		bra.uni $BB_1_0021;
+	$BB_1_0012_restore:
+		mov.u32 %r187, _Zocelot_spill_area;
+		ld.local.u32 %r11, [%r187 + 0];
+		ld.local.u32 %r0, [%r187 + 4];
+		ld.local.u32 %r36, [%r187 + 8];
+		ld.local.u32 %r16, [%r187 + 12];
+		ld.local.u32 %r17, [%r187 + 16];
+		ld.local.u32 %r54, [%r187 + 20];
+		ld.local.u32 %r10, [%r187 + 24];
+		bra.uni $BB_1_0012;
+	$BB_1_0008_restore:
+		mov.u32 %r188, _Zocelot_spill_area;
+		ld.local.u32 %r0, [%r188 + 0];
+		ld.local.u32 %r11, [%r188 + 4];
+		ld.local.u64 %r35, [%r188 + 8];
+		ld.local.u32 %r36, [%r188 + 16];
+		ld.local.u32 %r37, [%r188 + 20];
+		ld.local.u32 %r17, [%r188 + 24];
+		ld.local.u32 %r10, [%r188 + 28];
+		bra.uni $BB_1_0008;
+	$BB_1_0010_restore:
+		mov.u32 %r189, _Zocelot_spill_area;
+		ld.local.u32 %r0, [%r189 + 0];
+		ld.local.u32 %r11, [%r189 + 4];
+		ld.local.u32 %r36, [%r189 + 8];
+		ld.local.u32 %r16, [%r189 + 12];
+		ld.local.u32 %r17, [%r189 + 16];
+		ld.local.u32 %r10, [%r189 + 20];
+		bra.uni $BB_1_0010;
+}
+(0.017562) LLVMModuleManager.cpp:1247:  adding subkernel '_Z17k_sequenceLoopingPfi_split_2' at index 6
+/*
+* Ocelot Version : 0.0.0
+*/
+.visible .func _Z17k_sequenceLoopingPfi_split_2(.param  .u64 __cudaparm__Z17k_sequenceLoopingPfi_ptr,
+		.param  .s32 __cudaparm__Z17k_sequenceLoopingPfi_N)
+{
+	.local .u32 _Zocelot_resume_point[1];
+	.local .b8 _Zocelot_spill_area[24];
+	.local .align 4 .b8 __cuda___cuda_result_3212[28];
+
+	.reg .u32 %r36;
+	.reg .u32 %r63;
+	.reg .u32 %r64;
+	.reg .u32 %r65;
+	.reg .u32 %r66;
+	.reg .u32 %r17;
+	.reg .u32 %r11;
+	.reg .u32 %r10;
+	.reg .u32 %r70;
+	.reg .u32 %r71;
+	.reg .u32 %r72;
+	.reg .u32 %r73;
+	.reg .pred %p74;
+	.reg .u32 %r78;
+	.reg .u32 %r79;
+	.reg .u32 %r200;
+	.reg .u32 %r201;
+	.reg .u32 %r202;
+	.reg .u32 %r203;
+	.reg .u32 %r204;
+	.reg .u32 %r205;
+	.reg .u32 %r206;
+	.reg .u32 %r0;
+	.reg .u32 %r67;
+	.reg .u32 %r207;
+	.reg .u32 %r208;
+	.reg .u32 %r16;
+	.reg .u32 %r209;
+	.reg .u32 %r210;
+	.reg .u32 %r211;
+	.reg .u32 %r212;
+	.reg .pred %p213;
+	.reg .pred %p214;
+	.reg .pred %p215;
+	.reg .pred %p216;
+	_Z17k_sequenceLoopingPfi_split_2_scheduler:
+		mov.u32 %r211, _Zocelot_resume_point;
+		ld.local.u32 %r212, [%r211 + 0];
+		setp.eq.u32 %p213, %r212, 16;
+		@%p213 bra $BB_1_0016_restore;
+	_Z17k_sequenceLoopingPfi_split_2_scheduler_31:
+		setp.eq.u32 %p214, %r212, 17;
+		@%p214 bra $BB_1_0017_restore;
+	_Z17k_sequenceLoopingPfi_split_2_scheduler_32:
+		setp.eq.u32 %p215, %r212, 13;
+		@%p215 bra $BB_1_0013_restore;
+	_Z17k_sequenceLoopingPfi_split_2_scheduler_33:
+		setp.eq.u32 %p216, %r212, 15;
+		@%p216 bra $BB_1_0015_restore;
+	_Z17k_sequenceLoopingPfi_split_2_scheduler_trampoline:
+		bra $BB_1_0020_restore;
+	$BB_1_0020_restore:
+		mov.u32 %r210, _Zocelot_spill_area;
+		ld.local.u32 %r11, [%r210 + 0];
+		ld.local.u32 %r0, [%r210 + 4];
+		ld.local.u32 %r67, [%r210 + 8];
+		ld.local.u32 %r36, [%r210 + 12];
+		ld.local.u32 %r70, [%r210 + 16];
+		ld.local.u32 %r17, [%r210 + 20];
+		bra.uni $BB_1_0020;
+	$BB_1_0020:
+		shr.u32 %r78, %r36, 31;
+		shl.b32 %r79, %r17, 1;
+		add.u32 %r17, %r78, %r79;
+		shl.b32 %r36, %r36, 1;
+		sub.u32 %r70, %r70, 1;
+	$BB_1_0020_bounce:
+		bra.uni $BB_1_0021_save;
+	$BB_1_0021_save:
+		mov.u32 %r204, _Zocelot_spill_area;
+		st.local.u32 [%r204 + 0], %r11;
+		st.local.u32 [%r204 + 4], %r0;
+		st.local.u32 [%r204 + 8], %r67;
+		st.local.u32 [%r204 + 12], %r36;
+		st.local.u32 [%r204 + 16], %r70;
+		st.local.u32 [%r204 + 20], %r17;
+		mov.u32 %r205, _Zocelot_resume_point;
+		st.local.u32 [%r205 + 0], 21;
+		call.tail _Z17k_sequenceLoopingPfi_split_1;
+	$BB_1_0013:
+		neg.s32 %r36, %r36;
+		mov.u32 %r63, 0;
+		set.eq.u32.u32 %r64, %r36, %r63;
+		neg.s32 %r65, %r64;
+		not.b32 %r66, %r17;
+		add.u32 %r17, %r65, %r66;
+		xor.b32 %r11, %r10, -2147483648;
+	$BB_1_0014_save:
+		mov.u32 %r200, _Zocelot_spill_area;
+		st.local.u32 [%r200 + 0], %r0;
+		st.local.u32 [%r200 + 4], %r11;
+		st.local.u32 [%r200 + 8], %r36;
+		st.local.u32 [%r200 + 12], %r16;
+		st.local.u32 [%r200 + 16], %r17;
+		mov.u32 %r201, _Zocelot_resume_point;
+		st.local.u32 [%r201 + 0], 14;
+		call.tail _Z17k_sequenceLoopingPfi_split_1;
+	$BB_1_0016_restore:
+		mov.u32 %r206, _Zocelot_spill_area;
+		ld.local.u32 %r0, [%r206 + 0];
+		ld.local.u32 %r11, [%r206 + 4];
+		ld.local.u32 %r67, [%r206 + 8];
+		ld.local.u32 %r36, [%r206 + 12];
+		ld.local.u32 %r70, [%r206 + 16];
+		ld.local.u32 %r17, [%r206 + 20];
+		bra.uni $BB_1_0016;
+	$BB_1_0015:
+		mov.u32 %r70, 0;
+	$BB_1_0016:
+		shr.u32 %r71, %r36, 31;
+		shl.b32 %r72, %r17, 1;
+		add.u32 %r17, %r71, %r72;
+		shl.b32 %r36, %r36, 1;
+		sub.u32 %r70, %r70, 1;
+		mov.u32 %r73, 0;
+		setp.gt.s32 %p74, %r17, %r73;
+		@%p74 bra $BB_1_0016;
+	$BB_1_0017:
+		bra.uni $BB_1_0019_save;
+	$BB_1_0019_save:
+		mov.u32 %r202, _Zocelot_spill_area;
+		st.local.u32 [%r202 + 0], %r11;
+		st.local.u32 [%r202 + 4], %r0;
+		st.local.u32 [%r202 + 8], %r67;
+		st.local.u32 [%r202 + 12], %r70;
+		st.local.u32 [%r202 + 16], %r17;
+		mov.u32 %r203, _Zocelot_resume_point;
+		st.local.u32 [%r203 + 0], 19;
+		call.tail _Z17k_sequenceLoopingPfi_split_1;
+	$BB_1_0017_restore:
+		mov.u32 %r207, _Zocelot_spill_area;
+		ld.local.u32 %r0, [%r207 + 0];
+		ld.local.u32 %r11, [%r207 + 4];
+		ld.local.u32 %r67, [%r207 + 8];
+		ld.local.u32 %r70, [%r207 + 12];
+		ld.local.u32 %r17, [%r207 + 16];
+		bra.uni $BB_1_0017;
+	$BB_1_0013_restore:
+		mov.u32 %r208, _Zocelot_spill_area;
+		ld.local.u32 %r0, [%r208 + 0];
+		ld.local.u32 %r36, [%r208 + 4];
+		ld.local.u32 %r16, [%r208 + 8];
+		ld.local.u32 %r17, [%r208 + 12];
+		ld.local.u32 %r10, [%r208 + 16];
+		bra.uni $BB_1_0013;
+	$BB_1_0015_restore:
+		mov.u32 %r209, _Zocelot_spill_area;
+		ld.local.u32 %r0, [%r209 + 0];
+		ld.local.u32 %r11, [%r209 + 4];
+		ld.local.u32 %r67, [%r209 + 8];
+		ld.local.u32 %r36, [%r209 + 12];
+		ld.local.u32 %r17, [%r209 + 16];
+		bra.uni $BB_1_0015;
+}
+(0.025892) LLVMModuleManager.cpp:1039: Getting metadata for kernel '_Z17k_sequenceLoopingPfi'
+(0.025924) LLVMModuleManager.cpp:1043: Translating PTX
+(0.025932) LLVMModuleManager.cpp:715:   Building dataflow graph.
+(0.027001) LLVMModuleManager.cpp:718:   Optimizing PTX
+(0.027013) LLVMModuleManager.cpp:722:    Running convert predication to select pass
+(0.027177) LLVMModuleManager.cpp:727:    Running remove barriers pass
+(0.027432) LLVMModuleManager.cpp:829:   Building metadata.
+(0.027443) LLVMModuleManager.cpp:700:   Setting up memory references for kernel variables.
+(0.027459) LLVMModuleManager.cpp:144:    Setting up argument memory references.
+(0.027470) LLVMModuleManager.cpp:156:     Argument __cudaparm__Z17k_sequenceLoopingPfi_ptr, offset 0
+(0.027478) LLVMModuleManager.cpp:156:     Argument __cudaparm__Z17k_sequenceLoopingPfi_N, offset 8
+(0.027494) LLVMModuleManager.cpp:187:     For instruction "ld.param.u64 %r93, [__cudaparm__Z17k_sequenceLoopingPfi_ptr]" mapping "__cudaparm__Z17k_sequenceLoopingPfi_ptr" to 0
+(0.027539) LLVMModuleManager.cpp:199:     total argument memory size is 12
+(0.027549) LLVMModuleManager.cpp:207:    Setting up parameter memory references.
+(0.027560) LLVMModuleManager.cpp:228:     For arguments of call instruction 'call.tail _Z17k_sequenceLoopingPfi_split_1'
+(0.027569) LLVMModuleManager.cpp:228:     For arguments of call instruction 'call.tail _Z17k_sequenceLoopingPfi_split_0'
+(0.027583) LLVMModuleManager.cpp:315:     total parameter memory size is 0
+(0.027590) LLVMModuleManager.cpp:328:    Setting up shared memory references.
+(0.027608) LLVMModuleManager.cpp:448:     Mapping external shared variables.
+(0.027617) LLVMModuleManager.cpp:457:     Total shared memory size is 0.
+(0.027627) LLVMModuleManager.cpp:464:    Setting up constant memory references.
+(0.027636) LLVMModuleManager.cpp:478:     Found global constant variable __cudart_i2opi_f of size 24
+(0.027645) LLVMModuleManager.cpp:486:     Total constant memory size is 24
+(0.027658) LLVMModuleManager.cpp:530:   Setting up texture memory references.
+(0.027667) LLVMModuleManager.cpp:575:    Setting up local memory references.
+(0.027678) LLVMModuleManager.cpp:595:     Found local local variable _Zocelot_barrier_next_kernel of size 4
+(0.027688) LLVMModuleManager.cpp:612:     Found local local variable _Zocelot_resume_point of size 4
+(0.027696) LLVMModuleManager.cpp:632:     Found local local variable __cuda___cuda_result_3212 of size 28
+(0.027705) LLVMModuleManager.cpp:649:     Found local local variable _Zocelot_spill_area of size 16
+(0.027722) LLVMModuleManager.cpp:685:     For instruction mov.u32 %r22, _Zocelot_spill_area + 44, mapping local label _Zocelot_spill_area to 44
+(0.027737) LLVMModuleManager.cpp:685:     For instruction mov.u32 %r23, _Zocelot_resume_point + 12, mapping local label _Zocelot_resume_point to 12
+(0.027752) LLVMModuleManager.cpp:685:     For instruction mov.u32 %r33, _Zocelot_spill_area + 44, mapping local label _Zocelot_spill_area to 44
+(0.027766) LLVMModuleManager.cpp:685:     For instruction mov.u32 %r34, _Zocelot_resume_point + 12, mapping local label _Zocelot_resume_point to 12
+(0.027781) LLVMModuleManager.cpp:685:     For instruction mov.u32 %r97, _Zocelot_spill_area + 44, mapping local label _Zocelot_spill_area to 44
+(0.027795) LLVMModuleManager.cpp:685:     For instruction mov.u32 %r101, _Zocelot_spill_area + 44, mapping local label _Zocelot_spill_area to 44
+(0.027810) LLVMModuleManager.cpp:685:     For instruction mov.u32 %r105, _Zocelot_spill_area + 44, mapping local label _Zocelot_spill_area to 44
+(0.027824) LLVMModuleManager.cpp:685:     For instruction mov.u32 %r110, _Zocelot_spill_area + 44, mapping local label _Zocelot_spill_area to 44
+(0.027838) LLVMModuleManager.cpp:685:     For instruction mov.u32 %r114, _Zocelot_spill_area + 44, mapping local label _Zocelot_spill_area to 44
+(0.027853) LLVMModuleManager.cpp:685:     For instruction mov.u32 %r117, _Zocelot_spill_area + 44, mapping local label _Zocelot_spill_area to 44
+(0.027867) LLVMModuleManager.cpp:685:     For instruction mov.u32 %r121, _Zocelot_spill_area + 44, mapping local label _Zocelot_spill_area to 44
+(0.027882) LLVMModuleManager.cpp:685:     For instruction mov.u32 %r0, _Zocelot_resume_point + 12, mapping local label _Zocelot_resume_point to 12
+(0.027890) LLVMModuleManager.cpp:693:     Total local memory size is 60.
+(0.027898) LLVMModuleManager.cpp:739:    Setting up targets of call instructions.
+(0.027908) LLVMModuleManager.cpp:771:   Translating kernel.
+(0.027915) LLVMModuleManager.cpp:773:    Converting from PTX IR to LLVM IR.
+(0.030436) LLVMModuleManager.cpp:778:    Assembling LLVM kernel.
+(0.032803) LLVMModuleManager.cpp:786:    Parsing LLVM assembly.
+(0.035136) LLVMModuleManager.cpp:804:    Checking llvm module for errors.
+(0.035703) LLVMModuleManager.cpp:856:   Optimizing kernel at level FullOptimization
+(0.039372) LLVMModuleManager.cpp:969:   Generating native code.
+(0.039383) LLVMModuleManager.cpp:943:    Linking global variables.
+(0.039406) LLVMModuleManager.cpp:975:    Invoking LLVM to Native JIT
+(0.045324) LLVMModuleManager.cpp:1039: Getting metadata for kernel '_Z21k_matrixVectorProductPKfS0_Pfii'
+(0.045336) LLVMModuleManager.cpp:1043: Translating PTX
+(0.045344) LLVMModuleManager.cpp:715:   Building dataflow graph.
+(0.046954) LLVMModuleManager.cpp:718:   Optimizing PTX
+(0.046971) LLVMModuleManager.cpp:722:    Running convert predication to select pass
+(0.047238) LLVMModuleManager.cpp:727:    Running remove barriers pass
+(0.048761) LLVMModuleManager.cpp:829:   Building metadata.
+(0.048779) LLVMModuleManager.cpp:700:   Setting up memory references for kernel variables.
+(0.048807) LLVMModuleManager.cpp:144:    Setting up argument memory references.
+(0.048818) LLVMModuleManager.cpp:156:     Argument __cudaparm__Z21k_matrixVectorProductPKfS0_Pfii___val_paramA, offset 0
+(0.048827) LLVMModuleManager.cpp:156:     Argument __cudaparm__Z21k_matrixVectorProductPKfS0_Pfii___val_paramV, offset 8
+(0.048835) LLVMModuleManager.cpp:156:     Argument __cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_R, offset 16
+(0.048843) LLVMModuleManager.cpp:156:     Argument __cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_M, offset 24
+(0.048852) LLVMModuleManager.cpp:156:     Argument __cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_N, offset 28
+(0.048868) LLVMModuleManager.cpp:187:     For instruction "ld.param.u64 %r171, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_R]" mapping "__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_R" to 16
+(0.048885) LLVMModuleManager.cpp:187:     For instruction "ld.param.u64 %r30, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii___val_paramA]" mapping "__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii___val_paramA" to 0
+(0.048901) LLVMModuleManager.cpp:187:     For instruction "ld.param.u64 %r34, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii___val_paramV]" mapping "__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii___val_paramV" to 8
+(0.048916) LLVMModuleManager.cpp:187:     For instruction "ld.param.s32 %r36, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_N]" mapping "__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_N" to 28
+(0.048934) LLVMModuleManager.cpp:187:     For instruction "ld.param.s32 %r92, [__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_M]" mapping "__cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_M" to 24
+(0.048955) LLVMModuleManager.cpp:199:     total argument memory size is 32
+(0.048963) LLVMModuleManager.cpp:207:    Setting up parameter memory references.
+(0.048974) LLVMModuleManager.cpp:228:     For arguments of call instruction 'call.tail _ZOcelotBarrierKernel'
+(0.048984) LLVMModuleManager.cpp:228:     For arguments of call instruction 'call.tail _ZOcelotBarrierKernel'
+(0.048994) LLVMModuleManager.cpp:228:     For arguments of call instruction 'call.tail _Z21k_matrixVectorProductPKfS0_Pfii_split_0'
+(0.049013) LLVMModuleManager.cpp:315:     total parameter memory size is 0
+(0.049021) LLVMModuleManager.cpp:328:    Setting up shared memory references.
+(0.049031) LLVMModuleManager.cpp:388:     Found local shared variable __cuda___cuda_local_var_27983_32_non_const_V_buffer72 of size 32
+(0.049050) LLVMModuleManager.cpp:438:     For instruction mov.u64 %r45, __cuda___cuda_local_var_27983_32_non_const_V_buffer72, mapping shared label __cuda___cuda_local_var_27983_32_non_const_V_buffer72 to 0
+(0.049068) LLVMModuleManager.cpp:448:     Mapping external shared variables.
+(0.049075) LLVMModuleManager.cpp:457:     Total shared memory size is 32.
+(0.049084) LLVMModuleManager.cpp:464:    Setting up constant memory references.
+(0.049093) LLVMModuleManager.cpp:478:     Found global constant variable __cudart_i2opi_f of size 24
+(0.049103) LLVMModuleManager.cpp:486:     Total constant memory size is 24
+(0.049119) LLVMModuleManager.cpp:530:   Setting up texture memory references.
+(0.049129) LLVMModuleManager.cpp:575:    Setting up local memory references.
+(0.049139) LLVMModuleManager.cpp:595:     Found local local variable _Zocelot_barrier_next_kernel of size 4
+(0.049148) LLVMModuleManager.cpp:612:     Found local local variable _Zocelot_resume_point of size 4
+(0.049239) LLVMModuleManager.cpp:649:     Found local local variable _Zocelot_spill_area of size 101
+(0.049257) LLVMModuleManager.cpp:685:     For instruction mov.u32 %r64, _Zocelot_spill_area + 16, mapping local label _Zocelot_spill_area to 16
+(0.049272) LLVMModuleManager.cpp:685:     For instruction mov.u32 %r65, _Zocelot_resume_point + 12, mapping local label _Zocelot_resume_point to 12
+(0.049286) LLVMModuleManager.cpp:685:     For instruction mov.u32 %r66, _Zocelot_barrier_next_kernel + 8, mapping local label _Zocelot_barrier_next_kernel to 8
+(0.049302) LLVMModuleManager.cpp:685:     For instruction mov.u32 %r148, _Zocelot_spill_area + 16, mapping local label _Zocelot_spill_area to 16
+(0.049316) LLVMModuleManager.cpp:685:     For instruction mov.u32 %r149, _Zocelot_resume_point + 12, mapping local label _Zocelot_resume_point to 12
+(0.049330) LLVMModuleManager.cpp:685:     For instruction mov.u32 %r150, _Zocelot_barrier_next_kernel + 8, mapping local label _Zocelot_barrier_next_kernel to 8
+(0.049345) LLVMModuleManager.cpp:685:     For instruction mov.u32 %r133, _Zocelot_spill_area + 16, mapping local label _Zocelot_spill_area to 16
+(0.049359) LLVMModuleManager.cpp:685:     For instruction mov.u32 %r134, _Zocelot_resume_point + 12, mapping local label _Zocelot_resume_point to 12
+(0.049373) LLVMModuleManager.cpp:685:     For instruction mov.u32 %r173, _Zocelot_spill_area + 16, mapping local label _Zocelot_spill_area to 16
+(0.049388) LLVMModuleManager.cpp:685:     For instruction mov.u32 %r180, _Zocelot_spill_area + 16, mapping local label _Zocelot_spill_area to 16
+(0.049402) LLVMModuleManager.cpp:685:     For instruction mov.u32 %r182, _Zocelot_spill_area + 16, mapping local label _Zocelot_spill_area to 16
+(0.049417) LLVMModuleManager.cpp:685:     For instruction mov.u32 %r194, _Zocelot_spill_area + 16, mapping local label _Zocelot_spill_area to 16
+(0.049431) LLVMModuleManager.cpp:685:     For instruction mov.u32 %r206, _Zocelot_spill_area + 16, mapping local label _Zocelot_spill_area to 16
+(0.049446) LLVMModuleManager.cpp:685:     For instruction mov.u32 %r218, _Zocelot_spill_area + 16, mapping local label _Zocelot_spill_area to 16
+(0.049460) LLVMModuleManager.cpp:685:     For instruction mov.u32 %r235, _Zocelot_spill_area + 16, mapping local label _Zocelot_spill_area to 16
+(0.049474) LLVMModuleManager.cpp:685:     For instruction mov.u32 %r238, _Zocelot_spill_area + 16, mapping local label _Zocelot_spill_area to 16
+(0.049489) LLVMModuleManager.cpp:685:     For instruction mov.u32 %r6, _Zocelot_resume_point + 12, mapping local label _Zocelot_resume_point to 12
+(0.049504) LLVMModuleManager.cpp:685:     For instruction mov.u32 %r67, _Zocelot_spill_area + 16, mapping local label _Zocelot_spill_area to 16
+(0.049518) LLVMModuleManager.cpp:685:     For instruction mov.u32 %r3, _Zocelot_resume_point + 12, mapping local label _Zocelot_resume_point to 12
+(0.049532) LLVMModuleManager.cpp:685:     For instruction mov.u32 %r151, _Zocelot_spill_area + 16, mapping local label _Zocelot_spill_area to 16
+(0.049546) LLVMModuleManager.cpp:685:     For instruction mov.u32 %r0, _Zocelot_resume_point + 12, mapping local label _Zocelot_resume_point to 12
+(0.049554) LLVMModuleManager.cpp:693:     Total local memory size is 117.
+(0.049562) LLVMModuleManager.cpp:739:    Setting up targets of call instructions.
+(0.049572) LLVMModuleManager.cpp:771:   Translating kernel.
+(0.049579) LLVMModuleManager.cpp:773:    Converting from PTX IR to LLVM IR.
+(0.057010) LLVMModuleManager.cpp:778:    Assembling LLVM kernel.
+(0.062877) LLVMModuleManager.cpp:786:    Parsing LLVM assembly.
+(0.067554) LLVMModuleManager.cpp:804:    Checking llvm module for errors.
+(0.068870) LLVMModuleManager.cpp:856:   Optimizing kernel at level FullOptimization
+(0.076780) LLVMModuleManager.cpp:969:   Generating native code.
+(0.076797) LLVMModuleManager.cpp:943:    Linking global variables.
+(0.076806) LLVMModuleManager.cpp:975:    Invoking LLVM to Native JIT
+(0.086658) LLVMModuleManager.cpp:1039: Getting metadata for kernel '_ZOcelotBarrierKernel'
+(0.086677) LLVMModuleManager.cpp:1043: Translating PTX
+(0.086709) LLVMModuleManager.cpp:715:   Building dataflow graph.
+(0.086769) LLVMModuleManager.cpp:718:   Optimizing PTX
+(0.086778) LLVMModuleManager.cpp:722:    Running convert predication to select pass
+(0.086790) LLVMModuleManager.cpp:727:    Running remove barriers pass
+(0.086820) LLVMModuleManager.cpp:829:   Building metadata.
+(0.086827) LLVMModuleManager.cpp:700:   Setting up memory references for kernel variables.
+(0.086837) LLVMModuleManager.cpp:144:    Setting up argument memory references.
+(0.086845) LLVMModuleManager.cpp:199:     total argument memory size is 0
+(0.086853) LLVMModuleManager.cpp:207:    Setting up parameter memory references.
+(0.086867) LLVMModuleManager.cpp:228:     For arguments of call instruction 'call.tail (), %r1, (), BarrierPrototype'
+(0.086876) LLVMModuleManager.cpp:315:     total parameter memory size is 0
+(0.086884) LLVMModuleManager.cpp:328:    Setting up shared memory references.
+(0.086895) LLVMModuleManager.cpp:448:     Mapping external shared variables.
+(0.086903) LLVMModuleManager.cpp:457:     Total shared memory size is 0.
+(0.086911) LLVMModuleManager.cpp:464:    Setting up constant memory references.
+(0.086919) LLVMModuleManager.cpp:486:     Total constant memory size is 0
+(0.086927) LLVMModuleManager.cpp:530:   Setting up texture memory references.
+(0.086935) LLVMModuleManager.cpp:575:    Setting up local memory references.
+(0.086945) LLVMModuleManager.cpp:595:     Found local local variable _Zocelot_barrier_next_kernel of size 4
+(0.086954) LLVMModuleManager.cpp:612:     Found local local variable _Zocelot_resume_point of size 4
+(0.086963) LLVMModuleManager.cpp:649:     Found local local variable _Zocelot_spill_area of size 1
+(0.086978) LLVMModuleManager.cpp:685:     For instruction mov.u32 %r0, _Zocelot_barrier_next_kernel + 8, mapping local label _Zocelot_barrier_next_kernel to 8
+(0.086987) LLVMModuleManager.cpp:693:     Total local memory size is 17.
+(0.086994) LLVMModuleManager.cpp:739:    Setting up targets of call instructions.
+(0.087002) LLVMModuleManager.cpp:771:   Translating kernel.
+(0.087008) LLVMModuleManager.cpp:773:    Converting from PTX IR to LLVM IR.
+(0.087231) LLVMModuleManager.cpp:778:    Assembling LLVM kernel.
+(0.087969) LLVMModuleManager.cpp:786:    Parsing LLVM assembly.
+(0.088936) LLVMModuleManager.cpp:804:    Checking llvm module for errors.
+(0.089140) LLVMModuleManager.cpp:856:   Optimizing kernel at level NoOptimization
+(0.089162) LLVMModuleManager.cpp:893:  no optimizations
+(0.089172) LLVMModuleManager.cpp:969:   Generating native code.
+(0.089180) LLVMModuleManager.cpp:943:    Linking global variables.
+(0.089188) LLVMModuleManager.cpp:975:    Invoking LLVM to Native JIT
+(0.090277) LLVMModuleManager.cpp:1039: Getting metadata for kernel '_Z21k_matrixVectorProductPKfS0_Pfii_split_0'
+(0.090290) LLVMModuleManager.cpp:1043: Translating PTX
+(0.090298) LLVMModuleManager.cpp:715:   Building dataflow graph.
+(0.090593) LLVMModuleManager.cpp:718:   Optimizing PTX
+(0.090602) LLVMModuleManager.cpp:722:    Running convert predication to select pass
+(0.090634) LLVMModuleManager.cpp:727:    Running remove barriers pass
+(0.090734) LLVMModuleManager.cpp:829:   Building metadata.
+(0.090743) LLVMModuleManager.cpp:700:   Setting up memory references for kernel variables.
+(0.090752) LLVMModuleManager.cpp:144:    Setting up argument memory references.
+(0.090762) LLVMModuleManager.cpp:156:     Argument __cudaparm__Z21k_matrixVectorProductPKfS0_Pfii___val_paramA, offset 0
+(0.090770) LLVMModuleManager.cpp:156:     Argument __cudaparm__Z21k_matrixVectorProductPKfS0_Pfii___val_paramV, offset 8
+(0.090778) LLVMModuleManager.cpp:156:     Argument __cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_R, offset 16
+(0.090786) LLVMModuleManager.cpp:156:     Argument __cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_M, offset 24
+(0.090794) LLVMModuleManager.cpp:156:     Argument __cudaparm__Z21k_matrixVectorProductPKfS0_Pfii_N, offset 28
+(0.090803) LLVMModuleManager.cpp:199:     total argument memory size is 32
+(0.090811) LLVMModuleManager.cpp:207:    Setting up parameter memory references.
+(0.090847) LLVMModuleManager.cpp:228:     For arguments of call instruction 'call.tail _Z21k_matrixVectorProductPKfS0_Pfii'
+(0.090859) LLVMModuleManager.cpp:315:     total parameter memory size is 0
+(0.090867) LLVMModuleManager.cpp:328:    Setting up shared memory references.
+(0.090877) LLVMModuleManager.cpp:388:     Found local shared variable __cuda___cuda_local_var_27983_32_non_const_V_buffer72 of size 32
+(0.090887) LLVMModuleManager.cpp:448:     Mapping external shared variables.
+(0.090895) LLVMModuleManager.cpp:457:     Total shared memory size is 32.
+(0.090903) LLVMModuleManager.cpp:464:    Setting up constant memory references.
+(0.090912) LLVMModuleManager.cpp:478:     Found global constant variable __cudart_i2opi_f of size 24
+(0.090920) LLVMModuleManager.cpp:486:     Total constant memory size is 24
+(0.090929) LLVMModuleManager.cpp:530:   Setting up texture memory references.
+(0.090937) LLVMModuleManager.cpp:575:    Setting up local memory references.
+(0.090945) LLVMModuleManager.cpp:595:     Found local local variable _Zocelot_barrier_next_kernel of size 4
+(0.090954) LLVMModuleManager.cpp:612:     Found local local variable _Zocelot_resume_point of size 4
+(0.090963) LLVMModuleManager.cpp:649:     Found local local variable _Zocelot_spill_area of size 73
+(0.090978) LLVMModuleManager.cpp:685:     For instruction mov.u32 %r39, _Zocelot_spill_area + 16, mapping local label _Zocelot_spill_area to 16
+(0.090993) LLVMModuleManager.cpp:685:     For instruction mov.u32 %r40, _Zocelot_resume_point + 12, mapping local label _Zocelot_resume_point to 12
+(0.091008) LLVMModuleManager.cpp:685:     For instruction mov.u32 %r0, _Zocelot_spill_area + 16, mapping local label _Zocelot_spill_area to 16
+(0.091016) LLVMModuleManager.cpp:693:     Total local memory size is 89.
+(0.091023) LLVMModuleManager.cpp:739:    Setting up targets of call instructions.
+(0.091031) LLVMModuleManager.cpp:771:   Translating kernel.
+(0.091038) LLVMModuleManager.cpp:773:    Converting from PTX IR to LLVM IR.
+(0.092312) LLVMModuleManager.cpp:778:    Assembling LLVM kernel.
+(0.093922) LLVMModuleManager.cpp:786:    Parsing LLVM assembly.
+(0.095542) LLVMModuleManager.cpp:804:    Checking llvm module for errors.
+(0.096331) LLVMModuleManager.cpp:856:   Optimizing kernel at level FullOptimization
+(0.098498) LLVMModuleManager.cpp:969:   Generating native code.
+(0.098524) LLVMModuleManager.cpp:943:    Linking global variables.
+(0.098534) LLVMModuleManager.cpp:975:    Invoking LLVM to Native JIT
 Pass/Fail : Pass
 
 
@@ -377,8 +2072,8 @@ Description: A unit test for the LLVM executive runtime. Test Points: 1)
              Execute a kernel with a loop. 2) Execute a matrix multiply kernel.
 
 
-Test Seed : 1298474487
-Test time : 0.111863
+Test Seed : 1300733161
+Test time : 0.101088
 
 Status : A = [
  1 0 0 0 0 0 0 0 ;
@@ -413,547 +2108,124 @@ R = [
 
 
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestInstructions 
-INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestInstructions
-INFO     Test completed in 0.0407950878143 seconds
+INFO     Test /home/andrew/repositories/gpuocelot-checkout/branches/ocelot-vector-ptx2.1/TestKernels
+INFO     Test completed in 0.0430550575256 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
 
-Name : TestInstructions
+Name : TestKernels
 
 Description: 
 
 
-Test Seed : 1298474487
-Test time : 0.000791311
+Test Seed : 1300733161
+Test time : 0.0113575
 
 Status : Test output:
-Accessors test passed.
-pass: load and store instructions
-Abs test passed.
-pass: arithmetic instructions
-pass: exotic arithmetic instructions
-pass: floating-point instructions
-pass: logical instructions
-pass: comparison instructions
-pass: predicated Add and Ld isntructions
-pass: control flow instructions
+looping kernel succeeded
+matrix vector kernel succeeded
 
 
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaMalloc 
-INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaMalloc
-INFO     Test completed in 0.0828540325165 seconds
+INFO     Test /home/andrew/repositories/gpuocelot-checkout/branches/ocelot-vector-ptx2.1/TestDeviceSwitching
+INFO     Test completed in 0.0473761558533 seconds
 INFO      It produced the following output:
-test_malloc(256, 128)
-PASSED
-test_mallocArray(256, 128)
-checking results from last cudaMemcpyFromArray
-PASSED
-[1] mallocing pitch
-[2] memcpying2d
-[3] memcpying
-[4] checking for errors
-[5] mallocing
-[6] memcpying
-[7] memcpying
-[8] final free
-Pass/Fail : Pass
+(0.000000) LLVMModuleManager.cpp:1220: Loading module '_ZOcelotBarrierModule'
+(0.000000) LLVMModuleManager.cpp:1247:  adding subkernel '_ZOcelotBarrierKernel' at index 0
+/*
+* Ocelot Version : 0.0.0
+*/
+.entry _ZOcelotBarrierKernel{
+	.local .u32 _Zocelot_barrier_next_kernel[1];
+	.local .u32 _Zocelot_resume_point[1];
+	.local .b8 _Zocelot_spill_area[];
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaSequence 
-INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaSequence
-INFO     Test completed in 0.081493139267 seconds
-INFO      It produced the following output:
-A_host = 0x18a3ad0
-A_gpu = 0x18a4b00
-cudaMemcpy(0x18a3ad0, 0x18a4b00) - APP
-Pass/Fail : Pass
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestConvergence 
-INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestConvergence
-INFO     Test completed in 0.0497310161591 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestFunctionCall 
-INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestFunctionCall
-INFO     Test completed in 0.0641620159149 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaTexture2D 
-INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaTexture2D
-INFO     Test completed in 0.0544049739838 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestPTXAssembly
-INFO     Test completed in 12.1677429676 seconds
-INFO      It produced the following output:
+	.reg .u32 %r0;
+	.reg .u32 %r1;
+	
+	BarrierPrototype: .callprototype () _ ();
+	
+	$BB_1_0002:
+		mov.u32 %r0, _Zocelot_barrier_next_kernel;
+		ld.local.u32 %r1, [%r0 + 0];
+		call.tail (), %r1, (), BarrierPrototype;
+		exit;
+}
 Pass/Fail : Pass
 
 
-Name : TestPTXAssembly
+Name : TestDeviceSwitching
 
-Description: A unit test framework for PTX. Runs random inputs through unit 
-             tests on all available devices until a timer expires.
-
-
-Test Seed : 1298474487
-Test time : 12.1208
-
-Status : Ran 'TestVectorElements-u32' for 3 iterations.
-Ran 'TestAdd-u16' for 4 iterations.
-Ran 'TestAdd-s16' for 4 iterations.
-Ran 'TestAdd-u32' for 4 iterations.
-Ran 'TestAdd-s32' for 4 iterations.
-Ran 'TestAdd-s32-sat' for 4 iterations.
-Ran 'TestAdd-u64' for 4 iterations.
-Ran 'TestAdd-s64' for 4 iterations.
-Ran 'TestSub-u16' for 4 iterations.
-Ran 'TestSub-s16' for 4 iterations.
-Ran 'TestSub-u32' for 4 iterations.
-Ran 'TestSub-s32' for 4 iterations.
-Ran 'TestSub-s32-sat' for 4 iterations.
-Ran 'TestSub-u64' for 5 iterations.
-Ran 'TestSub-s64' for 5 iterations.
-Ran 'TestSub-Carry-s32' for 4 iterations.
-Ran 'TestSub-Carry-u32' for 3 iterations.
-Ran 'TestAdd-Carry-s32' for 4 iterations.
-Ran 'TestAdd-Carry-u32' for 4 iterations.
-Ran 'TestMul-Lo-u16' for 4 iterations.
-Ran 'TestMul-Hi-u16' for 4 iterations.
-Ran 'TestMul-Wide-u16' for 4 iterations.
-Ran 'TestMul-Lo-s16' for 4 iterations.
-Ran 'TestMul-Hi-s16' for 4 iterations.
-Ran 'TestMul-Wide-s16' for 4 iterations.
-Ran 'TestMul-Lo-u32' for 4 iterations.
-Ran 'TestMul-Hi-u32' for 4 iterations.
-Ran 'TestMul-Wide-u32' for 4 iterations.
-Ran 'TestMul-Lo-s32' for 4 iterations.
-Ran 'TestMul-Hi-s32' for 4 iterations.
-Ran 'TestMul-Wide-s32' for 4 iterations.
-Ran 'TestMul-Lo-u64' for 4 iterations.
-Ran 'TestMul-Hi-u64' for 5 iterations.
-Ran 'TestMul-Lo-s64' for 4 iterations.
-Ran 'TestMul-Hi-s64' for 3 iterations.
-Ran 'TestMad-Lo-u16' for 3 iterations.
-Ran 'TestMad-Hi-u16' for 3 iterations.
-Ran 'TestMad-Wide-u16' for 3 iterations.
-Ran 'TestMad-Lo-s16' for 3 iterations.
-Ran 'TestMad-Hi-s16' for 3 iterations.
-Ran 'TestMad-Wide-s16' for 3 iterations.
-Ran 'TestMad-Lo-u32' for 3 iterations.
-Ran 'TestMad-Hi-u32' for 3 iterations.
-Ran 'TestMad-Wide-u32' for 3 iterations.
-Ran 'TestMad-Lo-s32' for 3 iterations.
-Ran 'TestMad-Hi-s32' for 3 iterations.
-Ran 'TestMad-Sat-Hi-s32' for 3 iterations.
-Ran 'TestMad-Wide-s32' for 3 iterations.
-Ran 'TestMad-Lo-u64' for 3 iterations.
-Ran 'TestMad-Hi-u64' for 3 iterations.
-Ran 'TestMad-Lo-s64' for 5 iterations.
-Ran 'TestMad-Hi-s64' for 5 iterations.
-Ran 'TestSad-u16' for 4 iterations.
-Ran 'TestSad-s16' for 4 iterations.
-Ran 'TestSad-u32' for 4 iterations.
-Ran 'TestSad-s32' for 4 iterations.
-Ran 'TestSad-u64' for 4 iterations.
-Ran 'TestSad-s64' for 3 iterations.
-Ran 'TestDiv-u16' for 3 iterations.
-Ran 'TestDiv-s16' for 3 iterations.
-Ran 'TestDiv-u32' for 3 iterations.
-Ran 'TestDiv-s32' for 3 iterations.
-Ran 'TestDiv-u64' for 3 iterations.
-Ran 'TestDiv-s64' for 3 iterations.
-Ran 'TestRem-u16' for 3 iterations.
-Ran 'TestRem-s16' for 3 iterations.
-Ran 'TestRem-u32' for 3 iterations.
-Ran 'TestRem-s32' for 3 iterations.
-Ran 'TestRem-u64' for 3 iterations.
-Ran 'TestRem-s64' for 3 iterations.
-Ran 'TestAbs-s16' for 3 iterations.
-Ran 'TestAbs-s32' for 4 iterations.
-Ran 'TestAbs-s64' for 5 iterations.
-Ran 'TestNeg-s16' for 5 iterations.
-Ran 'TestNeg-s32' for 5 iterations.
-Ran 'TestNeg-s64' for 5 iterations.
-Ran 'TestMax-u16' for 5 iterations.
-Ran 'TestMax-u32' for 5 iterations.
-Ran 'TestMax-u64' for 5 iterations.
-Ran 'TestMax-s16' for 4 iterations.
-Ran 'TestMax-s32' for 4 iterations.
-Ran 'TestMax-s64' for 3 iterations.
-Ran 'TestMin-u16' for 3 iterations.
-Ran 'TestMin-u32' for 3 iterations.
-Ran 'TestMin-u64' for 3 iterations.
-Ran 'TestMin-s16' for 3 iterations.
-Ran 'TestMin-s32' for 3 iterations.
-Ran 'TestMin-s64' for 3 iterations.
-Ran 'TestPopc-b32' for 3 iterations.
-Ran 'TestPopc-b64' for 4 iterations.
-Ran 'TestClz-b32' for 5 iterations.
-Ran 'TestClz-b64' for 4 iterations.
-Ran 'TestBfind-u32' for 4 iterations.
-Ran 'TestBfind-u64' for 4 iterations.
-Ran 'TestBfind-s32' for 4 iterations.
-Ran 'TestBfind-s64' for 4 iterations.
-Ran 'TestBfind-shiftamount-u32' for 3 iterations.
-Ran 'TestBfind-shiftamount-u64' for 3 iterations.
-Ran 'TestBfind-shiftamount-s32' for 3 iterations.
-Ran 'TestBfind-shiftamount-s64' for 3 iterations.
-Ran 'TestBrev-b32' for 3 iterations.
-Ran 'TestBrev-b64' for 3 iterations.
-Ran 'TestBfi-b32' for 3 iterations.
-Ran 'TestBfi-b64' for 3 iterations.
-Ran 'TestPrmt-b32' for 3 iterations.
-Ran 'TestPrmt-f4e-b32' for 3 iterations.
-Ran 'TestPrmt-b4e-b32' for 5 iterations.
-Ran 'TestPrmt-rc8-b32' for 5 iterations.
-Ran 'TestPrmt-ecl-b32' for 5 iterations.
-Ran 'TestPrmt-ecr-b32' for 4 iterations.
-Ran 'TestPrmt-rc16-b32' for 4 iterations.
-Ran 'TestCall-Uni' for 2 iterations.
-Ran 'TestCall-Nondivergent' for 2 iterations.
-Ran 'TestCall-Divergent' for 2 iterations.
-Ran 'TestCall-Recursive' for 2 iterations.
-Ran 'TestCall-Indirect' for 1 iterations.
-Ran 'TestTestP-f32-Finite' for 4 iterations.
-Ran 'TestTestP-f32-Infinite' for 3 iterations.
-Ran 'TestTestP-f32-Number' for 3 iterations.
-Ran 'TestTestP-f32-NotANumber' for 3 iterations.
-Ran 'TestTestP-f32-Normal' for 3 iterations.
-Ran 'TestTestP-f32-SubNormal' for 3 iterations.
-Ran 'TestTestP-f64-Finite' for 3 iterations.
-Ran 'TestTestP-f64-Infinite' for 5 iterations.
-Ran 'TestTestP-f64-Number' for 5 iterations.
-Ran 'TestTestP-f64-NotANumber' for 4 iterations.
-Ran 'TestTestP-f64-Normal' for 3 iterations.
-Ran 'TestTestP-f64-SubNormal' for 4 iterations.
-Ran 'TestCopysign-f32' for 4 iterations.
-Ran 'TestCopysign-f64' for 4 iterations.
-Ran 'TestAdd-f32' for 4 iterations.
-Ran 'TestAdd-f32-sat' for 4 iterations.
-Ran 'TestAdd-f32-ftz' for 4 iterations.
-Ran 'TestAdd-f32-ftz-sat' for 3 iterations.
-Ran 'TestAdd-f64' for 4 iterations.
-Ran 'TestSub-f32' for 4 iterations.
-Ran 'TestSub-f32-sat' for 3 iterations.
-Ran 'TestSub-f32-ftz' for 3 iterations.
-Ran 'TestSub-f32-ftz-sat' for 3 iterations.
-Ran 'TestSub-f64' for 5 iterations.
-Ran 'TestMul-f32' for 5 iterations.
-Ran 'TestMul-f32-sat' for 4 iterations.
-Ran 'TestMul-f32-ftz' for 3 iterations.
-Ran 'TestMul-f32-ftz-sat' for 3 iterations.
-Ran 'TestMul-f64' for 4 iterations.
-Ran 'TestMad-f32' for 3 iterations.
-Ran 'TestMad-f32-sat' for 3 iterations.
-Ran 'TestMad-f32-ftz' for 2 iterations.
-Ran 'TestMad-f32-ftz-sat' for 2 iterations.
-Ran 'TestMad-f64' for 3 iterations.
-Ran 'TestFma-f32' for 3 iterations.
-Ran 'TestFma-f32-sat' for 3 iterations.
-Ran 'TestFma-f32-ftz' for 2 iterations.
-Ran 'TestFma-f32-ftz-sat' for 2 iterations.
-Ran 'TestFma-f64' for 3 iterations.
-Ran 'TestDiv-f32' for 4 iterations.
-Ran 'TestDiv-f32-ftz' for 4 iterations.
-Ran 'TestDiv-f32-approx' for 5 iterations.
-Ran 'TestDiv-f32-full' for 5 iterations.
-Ran 'TestDiv-f32-approx-ftz' for 4 iterations.
-Ran 'TestDiv-f32-full-ftz' for 3 iterations.
-Ran 'TestDiv-f64' for 4 iterations.
-Ran 'TestAbs-f32' for 3 iterations.
-Ran 'TestAbs-f32-ftz' for 3 iterations.
-Ran 'TestAbs-f64' for 3 iterations.
-Ran 'TestNeg-f32' for 3 iterations.
-Ran 'TestNeg-f32-ftz' for 3 iterations.
-Ran 'TestNeg-f64' for 3 iterations.
-Ran 'TestMin-f32' for 3 iterations.
-Ran 'TestMin-f32-ftz' for 3 iterations.
-Ran 'TestMin-f64' for 3 iterations.
-Ran 'TestMax-f32' for 3 iterations.
-Ran 'TestMax-f32-ftz' for 3 iterations.
-Ran 'TestMax-f64' for 3 iterations.
-Ran 'TestRcp-f32' for 3 iterations.
-Ran 'TestRcp-f32-approx' for 3 iterations.
-Ran 'TestRcp-f32-ftz' for 3 iterations.
-Ran 'TestRcp-f32-approx-ftz' for 3 iterations.
-Ran 'TestRcp-f64' for 3 iterations.
-Ran 'TestRcp-f64-approx-ftz' for 3 iterations.
-Ran 'TestSqrt-f32' for 3 iterations.
-Ran 'TestSqrt-f32-approx' for 3 iterations.
-Ran 'TestSqrt-f32-ftz' for 3 iterations.
-Ran 'TestSqrt-f32-approx-ftz' for 4 iterations.
-Ran 'TestSqrt-f64' for 5 iterations.
-Ran 'TestRsqrt-f32' for 5 iterations.
-Ran 'TestRsqrt-f32-ftz' for 3 iterations.
-Ran 'TestRsqrt-f64' for 4 iterations.
-Ran 'TestCos-f32' for 3 iterations.
-Ran 'TestCos-f32-ftz' for 3 iterations.
-Ran 'TestSin-f32' for 3 iterations.
-Ran 'TestSin-f32-ftz' for 3 iterations.
-Ran 'TestEx2-f32' for 3 iterations.
-Ran 'TestEx2-f32-ftz' for 4 iterations.
-Ran 'TestLg2-f32' for 4 iterations.
-Ran 'TestLg2-f32-ftz' for 3 iterations.
-Ran 'TestSet-lt-u32-u16' for 3 iterations.
-Ran 'TestSet-lt-s32-u16' for 4 iterations.
-Ran 'TestSet-lt-f32-u16' for 3 iterations.
-Ran 'TestSet-lt-s32-u32' for 3 iterations.
-Ran 'TestSet-lt-s32-u64' for 3 iterations.
-Ran 'TestSet-lt-s32-s16' for 3 iterations.
-Ran 'TestSet-lt-s32-s32' for 3 iterations.
-Ran 'TestSet-lt-s32-s64' for 3 iterations.
-Ran 'TestSet-lt-s32-f32' for 3 iterations.
-Ran 'TestSet-lt-s32-f64' for 3 iterations.
-Ran 'TestSet-lt-ftz-s32-f32' for 3 iterations.
-Ran 'TestSet-Eq-s32-s32' for 3 iterations.
-Ran 'TestSet-Ne-s32-s32' for 3 iterations.
-Ran 'TestSet-Le-s32-s32' for 3 iterations.
-Ran 'TestSet-Gt-s32-s32' for 4 iterations.
-Ran 'TestSet-Ge-s32-s32' for 3 iterations.
-Ran 'TestSet-Lo-s32-u32' for 3 iterations.
-Ran 'TestSet-Ls-s32-u32' for 3 iterations.
-Ran 'TestSet-Hi-s32-u32' for 3 iterations.
-Ran 'TestSet-Hs-s32-u32' for 3 iterations.
-Ran 'TestSet-Eq-s32-f32' for 3 iterations.
-Ran 'TestSet-Ne-s32-f32' for 4 iterations.
-Ran 'TestSet-Lt-s32-f32' for 4 iterations.
-Ran 'TestSet-Le-s32-f32' for 3 iterations.
-Ran 'TestSet-Gt-s32-f32' for 3 iterations.
-Ran 'TestSet-Ge-s32-f32' for 3 iterations.
-Ran 'TestSet-Lo-s32-u32' for 3 iterations.
-Ran 'TestSet-Ls-s32-u32' for 3 iterations.
-Ran 'TestSet-Hi-s32-u32' for 3 iterations.
-Ran 'TestSet-Hs-s32-u32' for 3 iterations.
-Ran 'TestSet-Equ-s32-f32' for 3 iterations.
-Ran 'TestSet-Neu-s32-f32' for 4 iterations.
-Ran 'TestSet-Ltu-s32-f32' for 4 iterations.
-Ran 'TestSet-Leu-s32-f32' for 4 iterations.
-Ran 'TestSet-Gtu-s32-f32' for 3 iterations.
-Ran 'TestSet-Geu-s32-f32' for 3 iterations.
-Ran 'TestSet-Num-s32-f32' for 3 iterations.
-Ran 'TestSet-Nan-s32-f32' for 3 iterations.
-Ran 'TestSet-Lt-s32-s32-And' for 3 iterations.
-Ran 'TestSet-Lt-s32-s32-Or' for 3 iterations.
-Ran 'TestSet-Lt-s32-s32-Xor' for 3 iterations.
-Ran 'TestSet-Lt-s32-s32-And-Inv' for 3 iterations.
-Ran 'TestSetP-lt-u16' for 3 iterations.
-Ran 'TestSetP-lt-u32' for 3 iterations.
-Ran 'TestSetP-lt-u32-pq' for 3 iterations.
-Ran 'TestSetP-lt-u64' for 3 iterations.
-Ran 'TestSetP-lt-s16' for 5 iterations.
-Ran 'TestSetP-lt-s32' for 4 iterations.
-Ran 'TestSetP-lt-s64' for 3 iterations.
-Ran 'TestSetP-lt-f32' for 3 iterations.
-Ran 'TestSetP-lt-f64' for 3 iterations.
-Ran 'TestSetP-lt-u32-pq-and' for 3 iterations.
-Ran 'TestSetP-lt-u32-pq-or' for 3 iterations.
-Ran 'TestSetP-lt-u32-pq-xor' for 3 iterations.
-Ran 'TestSetP-lt-f32-pq-and-ftz' for 3 iterations.
-Ran 'TestSelp-u16' for 3 iterations.
-Ran 'TestSelp-u32' for 3 iterations.
-Ran 'TestSelp-u64' for 3 iterations.
-Ran 'TestSelp-s16' for 3 iterations.
-Ran 'TestSelp-s32' for 3 iterations.
-Ran 'TestSelp-s64' for 4 iterations.
-Ran 'TestSelp-f32' for 4 iterations.
-Ran 'TestSelp-f64' for 3 iterations.
-Ran 'TestSlct-u16-s32' for 4 iterations.
-Ran 'TestSlct-u32-s32' for 4 iterations.
-Ran 'TestSlct-u64-s32' for 4 iterations.
-Ran 'TestSlct-s16-s32' for 4 iterations.
-Ran 'TestSlct-s32-s32' for 4 iterations.
-Ran 'TestSlct-s64-s32' for 4 iterations.
-Ran 'TestSlct-f32-s32' for 4 iterations.
-Ran 'TestSlct-f64-s32' for 4 iterations.
-Ran 'TestSlct-u16-f32' for 4 iterations.
-Ran 'TestSlct-u32-f32' for 4 iterations.
-Ran 'TestSlct-u64-f32' for 4 iterations.
-Ran 'TestSlct-s16-f32' for 4 iterations.
-Ran 'TestSlct-s32-f32' for 3 iterations.
-Ran 'TestSlct-s64-f32' for 3 iterations.
-Ran 'TestSlct-f32-f32' for 3 iterations.
-Ran 'TestSlct-f64-f32' for 3 iterations.
-Ran 'TestSlct-f32-f32-ftz' for 3 iterations.
-Ran 'TestAnd-pred' for 3 iterations.
-Ran 'TestAnd-b16' for 3 iterations.
-Ran 'TestAnd-b32' for 3 iterations.
-Ran 'TestAnd-b64' for 3 iterations.
-Ran 'TestOr-pred' for 3 iterations.
-Ran 'TestOr-b16' for 3 iterations.
-Ran 'TestOr-b32' for 3 iterations.
-Ran 'TestOr-b64' for 3 iterations.
-Ran 'TestXor-pred' for 3 iterations.
-Ran 'TestXor-b16' for 3 iterations.
-Ran 'TestXor-b32' for 3 iterations.
-Ran 'TestXor-b64' for 3 iterations.
-Ran 'TestNot-pred' for 3 iterations.
-Ran 'TestNot-b16' for 3 iterations.
-Ran 'TestNot-b32' for 3 iterations.
-Ran 'TestNot-b64' for 3 iterations.
-Ran 'TestCNot-b16' for 3 iterations.
-Ran 'TestCNot-b32' for 5 iterations.
-Ran 'TestCNot-b64' for 5 iterations.
-Ran 'TestShl-b16' for 3 iterations.
-Ran 'TestShl-b32' for 3 iterations.
-Ran 'TestShl-b64' for 4 iterations.
-Ran 'TestShr-u16' for 4 iterations.
-Ran 'TestShr-u32' for 4 iterations.
-Ran 'TestShr-u64' for 4 iterations.
-Ran 'TestShr-s16' for 4 iterations.
-Ran 'TestShr-s32' for 4 iterations.
-Ran 'TestShr-s64' for 3 iterations.
-Ran 'TestMov-pred' for 3 iterations.
-Ran 'TestMov-u16' for 3 iterations.
-Ran 'TestMov-u32' for 3 iterations.
-Ran 'TestMov-u64' for 3 iterations.
-Ran 'TestMov-s16' for 3 iterations.
-Ran 'TestMov-s32' for 2 iterations.
-Ran 'TestMov-s64' for 2 iterations.
-Ran 'TestMov-f32' for 2 iterations.
-Ran 'TestMov-f64' for 2 iterations.
-Ran 'TestMovLabel-global-v1' for 2 iterations.
-Ran 'TestMovLabel-global-v1-index' for 2 iterations.
-Ran 'TestMovLabel-global-v2' for 2 iterations.
-Ran 'TestMovLabel-global-v4' for 4 iterations.
-Ran 'TestMovLabel-local-v1' for 3 iterations.
-Ran 'TestMovLabel-local-v1-index' for 4 iterations.
-Ran 'TestMovLabel-local-v2' for 3 iterations.
-Ran 'TestMovLabel-local-v4' for 3 iterations.
-Ran 'TestMovLabel-shared-v1' for 3 iterations.
-Ran 'TestMovLabel-shared-v1-index' for 3 iterations.
-Ran 'TestMovLabel-shared-v4' for 3 iterations.
-Ran 'TestCvt-u8-u8' for 3 iterations.
-Ran 'TestCvt-u8-u16' for 4 iterations.
-Ran 'TestCvt-u8-u32' for 5 iterations.
-Ran 'TestCvt-u8-u64' for 4 iterations.
-Ran 'TestCvt-u8-s8' for 4 iterations.
-Ran 'TestCvt-u8-s16' for 5 iterations.
-Ran 'TestCvt-u8-s32' for 4 iterations.
-Ran 'TestCvt-u8-s64' for 3 iterations.
-Ran 'TestCvt-u8-f32' for 4 iterations.
-Ran 'TestCvt-u8-f64' for 3 iterations.
-Ran 'TestCvt-u16-u8' for 4 iterations.
-Ran 'TestCvt-u16-u16' for 3 iterations.
-Ran 'TestCvt-u16-u32' for 3 iterations.
-Ran 'TestCvt-u16-u64' for 3 iterations.
-Ran 'TestCvt-u16-s8' for 3 iterations.
-Ran 'TestCvt-u16-s16' for 3 iterations.
-Ran 'TestCvt-u16-s32' for 3 iterations.
-Ran 'TestCvt-u16-s64' for 3 iterations.
-Ran 'TestCvt-u16-f32' for 3 iterations.
-Ran 'TestCvt-u16-f64' for 3 iterations.
-Ran 'TestCvt-u32-u8' for 3 iterations.
-Ran 'TestCvt-u32-u16' for 3 iterations.
-Ran 'TestCvt-u32-u32' for 3 iterations.
-Ran 'TestCvt-u32-u64' for 3 iterations.
-Ran 'TestCvt-u32-s8' for 3 iterations.
-Ran 'TestCvt-u32-s16' for 3 iterations.
-Ran 'TestCvt-u32-s32' for 3 iterations.
-Ran 'TestCvt-u32-s64' for 3 iterations.
-Ran 'TestCvt-u32-f32' for 3 iterations.
-Ran 'TestCvt-u32-f64' for 3 iterations.
-Ran 'TestCvt-u64-u8' for 3 iterations.
-Ran 'TestCvt-u64-u16' for 3 iterations.
-Ran 'TestCvt-u64-u32' for 3 iterations.
-Ran 'TestCvt-u64-u64' for 3 iterations.
-Ran 'TestCvt-u64-s8' for 3 iterations.
-Ran 'TestCvt-u64-s16' for 3 iterations.
-Ran 'TestCvt-u64-s32' for 3 iterations.
-Ran 'TestCvt-u64-s64' for 5 iterations.
-Ran 'TestCvt-u64-f32' for 4 iterations.
-Ran 'TestCvt-u64-f64' for 3 iterations.
-Ran 'TestCvt-s8-u8' for 4 iterations.
-Ran 'TestCvt-s8-u16' for 3 iterations.
-Ran 'TestCvt-s8-u32' for 3 iterations.
-Ran 'TestCvt-s8-u64' for 3 iterations.
-Ran 'TestCvt-s8-s8' for 3 iterations.
-Ran 'TestCvt-s8-s16' for 3 iterations.
-Ran 'TestCvt-s8-s32' for 3 iterations.
-Ran 'TestCvt-s8-s64' for 3 iterations.
-Ran 'TestCvt-s8-f32' for 3 iterations.
-Ran 'TestCvt-s8-f64' for 3 iterations.
-Ran 'TestCvt-s16-u8' for 3 iterations.
-Ran 'TestCvt-s16-u16' for 3 iterations.
-Ran 'TestCvt-s16-u32' for 3 iterations.
-Ran 'TestCvt-s16-u64' for 3 iterations.
-Ran 'TestCvt-s16-s8' for 3 iterations.
-Ran 'TestCvt-s16-s16' for 3 iterations.
-Ran 'TestCvt-s16-s32' for 3 iterations.
-Ran 'TestCvt-s16-s64' for 3 iterations.
-Ran 'TestCvt-s16-f32' for 3 iterations.
-Ran 'TestCvt-s16-f64' for 4 iterations.
-Ran 'TestCvt-s32-u8' for 3 iterations.
-Ran 'TestCvt-s32-u16' for 3 iterations.
-Ran 'TestCvt-s32-u32' for 3 iterations.
-Ran 'TestCvt-s32-u64' for 3 iterations.
-Ran 'TestCvt-s32-s8' for 3 iterations.
-Ran 'TestCvt-s32-s16' for 3 iterations.
-Ran 'TestCvt-s32-s32' for 5 iterations.
-Ran 'TestCvt-s32-s64' for 5 iterations.
-Ran 'TestCvt-s32-f32' for 4 iterations.
-Ran 'TestCvt-s32-f64' for 3 iterations.
-Ran 'TestCvt-s64-u8' for 4 iterations.
-Ran 'TestCvt-s64-u16' for 3 iterations.
-Ran 'TestCvt-s64-u32' for 3 iterations.
-Ran 'TestCvt-s64-u64' for 3 iterations.
-Ran 'TestCvt-s64-s8' for 3 iterations.
-Ran 'TestCvt-s64-s16' for 3 iterations.
-Ran 'TestCvt-s64-s32' for 3 iterations.
-Ran 'TestCvt-s64-s64' for 3 iterations.
-Ran 'TestCvt-s64-f32' for 3 iterations.
-Ran 'TestCvt-s64-f64' for 3 iterations.
-Ran 'TestCvt-f32-u8' for 3 iterations.
-Ran 'TestCvt-f32-u16' for 3 iterations.
-Ran 'TestCvt-f32-u32' for 3 iterations.
-Ran 'TestCvt-f32-u64' for 3 iterations.
-Ran 'TestCvt-f32-s8' for 3 iterations.
-Ran 'TestCvt-f32-s16' for 3 iterations.
-Ran 'TestCvt-f32-s32' for 3 iterations.
-Ran 'TestCvt-f32-s64' for 3 iterations.
-Ran 'TestCvt-f32-f32' for 3 iterations.
-Ran 'TestCvt-f32-f64' for 3 iterations.
-Ran 'TestCvt-f64-u8' for 3 iterations.
-Ran 'TestCvt-f64-u16' for 3 iterations.
-Ran 'TestCvt-f64-u32' for 3 iterations.
-Ran 'TestCvt-f64-u64' for 3 iterations.
-Ran 'TestCvt-f64-s8' for 3 iterations.
-Ran 'TestCvt-f64-s16' for 3 iterations.
-Ran 'TestCvt-f64-s32' for 3 iterations.
-Ran 'TestCvt-f64-s64' for 3 iterations.
-Ran 'TestCvt-f64-f32' for 3 iterations.
-Ran 'TestCvt-f64-f64' for 3 iterations.
+Description: A unit test for the ability of the CUDA runtime to switch 
+             between devices and use multiple threads Test Points: 1) In a single 
+             threaded application, iterate across all devices launching the same 
+             simple kernel each time 2) Test context migration support in 
+             ocelot. Iterate across all devices, launching a simple kernel that 
+             updates shared variable. Use the context switch mechanism to 
+             migrate the shared data. 3) Test multi-threading support. Launch one 
+             host thread to allocate memory, pass pointers to worker 
+             threads, each of which should launch independent kernels in 
+             parallel.
 
 
+Test Seed : 1300733161
+Test time : 0.0117528
+
+Status : Test Point 1 Passed
+Test Point 2 Passed
+Test Point 3 Passed
+
+
+
+INFO     Test /home/andrew/repositories/gpuocelot-checkout/branches/ocelot-vector-ptx2.1/TestPTXAssembly
+INFO     Test completed in 2.69457817078 seconds
+INFO      It produced the following output:
+TestPTXAssembly: ocelot/executive/implementation/LLVMDynamicTranslationCache.cpp:972: void executive::setupCallTargets(ir::PTXKernel&, const executive::LLVMDynamicTranslationCache&): Assertion `0 && "unimplemented"' failed.
+(0.000000) LLVMModuleManager.cpp:1220: Loading module '_ZOcelotBarrierModule'
+(0.000000) LLVMModuleManager.cpp:1247:  adding subkernel '_ZOcelotBarrierKernel' at index 0
+/*
+* Ocelot Version : 0.0.0
+*/
+.entry _ZOcelotBarrierKernel{
+	.local .u32 _Zocelot_barrier_next_kernel[1];
+	.local .u32 _Zocelot_resume_point[1];
+	.local .b8 _Zocelot_spill_area[];
+
+	.reg .u32 %r0;
+	.reg .u32 %r1;
+	
+	BarrierPrototype: .callprototype () _ ();
+	
+	$BB_1_0002:
+		mov.u32 %r0, _Zocelot_barrier_next_kernel;
+		ld.local.u32 %r1, [%r0 + 0];
+		call.tail (), %r1, (), BarrierPrototype;
+		exit;
+}
 
 INFO     
 Passing tests:
- (0.158s) : /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestLLVMKernels : Passed
- (0.054s) : /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaTexture2D : Passed
- (0.041s) : /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestInstructions : Passed
- (0.044s) : /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestPTXToLLVMTranslator : Passed
- (0.036s) : /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestLexer : Passed
- (0.039s) : /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestParser : Passed
- (0.055s) : /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestKernels : Passed
- (0.089s) : /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestIndirectFunctionCall : Passed
- (0.042s) : /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestEmulator : Passed
- (0.050s) : /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestConvergence : Passed
- (12.168s) : /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestPTXAssembly : Passed
- (0.083s) : /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaMalloc : Passed
- (0.041s) : /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestDataflowGraph : Passed
- (0.081s) : /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaSequence : Passed
- (0.057s) : /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaTextureArray : Passed
- (0.037s) : /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestLLVMInstructions : Passed
- (0.052s) : /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaGlobals : Passed
- (0.063s) : /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestDeviceSwitching : Passed
- (0.038s) : /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCalVectorScale : Passed
- (0.064s) : /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestFunctionCall : Passed
+ (0.041s) : /home/andrew/repositories/gpuocelot-checkout/branches/ocelot-vector-ptx2.1/TestDataflowGraph : Passed
+ (0.141s) : /home/andrew/repositories/gpuocelot-checkout/branches/ocelot-vector-ptx2.1/TestLLVMKernels : Passed
+ (0.032s) : /home/andrew/repositories/gpuocelot-checkout/branches/ocelot-vector-ptx2.1/TestLLVMInstructions : Passed
+ (0.043s) : /home/andrew/repositories/gpuocelot-checkout/branches/ocelot-vector-ptx2.1/TestKernels : Passed
+ (0.042s) : /home/andrew/repositories/gpuocelot-checkout/branches/ocelot-vector-ptx2.1/TestParser : Passed
+ (0.026s) : /home/andrew/repositories/gpuocelot-checkout/branches/ocelot-vector-ptx2.1/TestLexer : Passed
+ (0.092s) : /home/andrew/repositories/gpuocelot-checkout/branches/ocelot-vector-ptx2.1/TestCudaSequence : Passed
+ (0.047s) : /home/andrew/repositories/gpuocelot-checkout/branches/ocelot-vector-ptx2.1/TestDeviceSwitching : Passed
+ (0.066s) : /home/andrew/repositories/gpuocelot-checkout/branches/ocelot-vector-ptx2.1/TestCudaMalloc : Passed
+ (0.051s) : /home/andrew/repositories/gpuocelot-checkout/branches/ocelot-vector-ptx2.1/TestCudaGlobals : Passed
+ (0.027s) : /home/andrew/repositories/gpuocelot-checkout/branches/ocelot-vector-ptx2.1/TestPTXToLLVMTranslator : Passed
+ (0.047s) : /home/andrew/repositories/gpuocelot-checkout/branches/ocelot-vector-ptx2.1/TestCudaTexture2D : Passed
+ (0.038s) : /home/andrew/repositories/gpuocelot-checkout/branches/ocelot-vector-ptx2.1/TestInstructions : Passed
+ (0.040s) : /home/andrew/repositories/gpuocelot-checkout/branches/ocelot-vector-ptx2.1/TestConvergence : Passed
+ (0.056s) : /home/andrew/repositories/gpuocelot-checkout/branches/ocelot-vector-ptx2.1/TestEmulator : Passed
+ (0.042s) : /home/andrew/repositories/gpuocelot-checkout/branches/ocelot-vector-ptx2.1/TestCalVectorScale : Passed
+ (0.067s) : /home/andrew/repositories/gpuocelot-checkout/branches/ocelot-vector-ptx2.1/TestCudaTextureArray : Passed
 
 Failing tests:
-
-Non-Existent tests:
+ (0.045s) : /home/andrew/repositories/gpuocelot-checkout/branches/ocelot-vector-ptx2.1/TestIndirectFunctionCall : Did not complete.
+ (2.695s) : /home/andrew/repositories/gpuocelot-checkout/branches/ocelot-vector-ptx2.1/TestPTXAssembly : Did not complete.
+ (0.045s) : /home/andrew/repositories/gpuocelot-checkout/branches/ocelot-vector-ptx2.1/TestFunctionCall : Did not complete.
 

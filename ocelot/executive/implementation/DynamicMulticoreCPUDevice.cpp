@@ -37,7 +37,7 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -68,14 +68,14 @@ ExecutableKernel* DynamicMulticoreCPUDevice::Module::getKernel(
 		return kernel->second;
 	}
 	
-	ir::Module::KernelMap::const_iterator ptxKernel = ir->kernels().find(name);
+	ir::Module::KernelMap::const_iterator ptxKernel_it = ir->kernels().find(name);
 		
 	DynamicMulticoreCPUDevice* cpu = static_cast<DynamicMulticoreCPUDevice*>(device);
 	assert(cpu);
 	
-	if(ptxKernel != ir->kernels().end()) {
-		
-		kernel = kernels.insert(std::make_pair(name, new LLVMDynamicKernel(*ptxKernel->second, device))).first;
+	if(ptxKernel_it != ir->kernels().end()) {
+		ir::PTXKernel *ptxKernel = static_cast<ir::PTXKernel *>(ptxKernel_it->second);
+		kernel = kernels.insert(std::make_pair(name, new LLVMDynamicKernel(*ptxKernel, device))).first;
 			
 		return kernel->second;
 	}

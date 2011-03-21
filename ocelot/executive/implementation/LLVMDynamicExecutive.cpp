@@ -22,11 +22,13 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
 namespace executive {
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
 
 LLVMDynamicExecutive::Metadata::Metadata() {
 
@@ -38,19 +40,79 @@ LLVMDynamicExecutive::Metadata::~Metadata() {
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
-LLVMDynamicExecutive::LLVMDynamicExecutive(
-	const LLVMDynamicKernel *_kernel, 
-	int procID,
-	HyperblockId _entryId)
-:
-	kernel(_kernel),
-	processor(procID),
-	entryId(_entryId)
-{
-	report("LLVMDynamicExecutive");
-	report(" local memory size: " << _kernel->localMemorySize());
+void LLVMDynamicExecutive::CooperativeThreadArray::initialize(
+	const LLVMDynamicKernel &kernel, 
+	const ir::Dim3 &ctaId,
+	HyperblockId entry,
+	int localMemorySize,
+	int sharedMemorySize) {
+
+	const ir::Dim3 blockDim = kernel.blockDim();
+	
+	int totalThreads = blockDim.x * blockDim.y * blockDim.z;
+
+	report("Initializing CTA with " << totalThreads << " threads");
+	report("  local memory size " << localMemorySize << " bytes");
+	report("  shared memory size: " << sharedMemorySize << " bytes");
+		
+	local.resize(localMemorySize * totalThreads, 0);
+	shared.resize(sharedMemorySize, 0);
+	
+	for (int threadId = 0; threadId < totalThreads; threadId++) {
+		LLVMContext context;
+		context.nctaid.x  = kernel.gridDim().x;
+		context.nctaid.y  = kernel.gridDim().y;
+		context.nctaid.z  = kernel.gridDim().z;
+		context.ctaid.x   = ctaId.x;
+		context.ctaid.y   = ctaId.y;
+		context.ctaid.z   = ctaId.z;
+		context.ntid.x    = blockDim.x;
+		context.ntid.y    = blockDim.y;
+		context.ntid.z    = blockDim.z;
+		context.tid.x     = threadId % context.ntid.x;
+		context.tid.y     = (threadId / context.ntid.x) % context.ntid.y;
+		context.tid.z     = threadId / (context.ntid.x * context.ntid.y);
+		context.shared    = reinterpret_cast<char*>(&shared[0]);
+		context.argument  = kernel.argumentMemory();	//stack.argumentMemory();
+		context.local     = &local[threadId * localMemorySize];	//stack.localMemory();
+		context.parameter = 0;	//stack.parameterMemory();
+		context.constant  = kernel.constantMemory();
+		context.metadata  = 0;
+		
+		setResumePoint(context, entry);
+		readyQueue.push_back(context);
+	}
 }
 
+void LLVMDynamicExecutive::CooperativeThreadArray::resize(
+	int localSize, 
+	int sharedSize, 
+	int constSize,
+	int parameterSize, 
+	int argumentSize) {
+	
+	local.resize(localSize, 0);
+	shared.resize(sharedSize, 0);
+	constant.resize(constSize, 0);
+	parameter.resize(parameterSize, 0);
+	argument.resize(argumentSize, 0);
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+LLVMDynamicExecutive::LLVMDynamicExecutive(
+	const LLVMDynamicKernel *_kernel, 
+	int _procID, 
+	const LLVMDynamicTranslationCache::TranslatedKernel *_translatedKernel, 
+	int _sharedMemSize)
+:
+	kernel(_kernel),
+	processor(_procID),
+	translatedKernel(_translatedKernel),
+	sharedMemorySize(_sharedMemSize + _translatedKernel->sharedMemorySize) {
+	
+}
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -67,7 +129,12 @@ unsigned int LLVMDynamicExecutive::ctaId(const LLVMContext &ctx) {
 
 //! \brief adds a CTA to the dynamic executive's execution list
 void LLVMDynamicExecutive::addCta(const ir::Dim3 &blockId) {
-	ctaMap[ctaId(blockId)].initialize(*kernel, blockId, entryId);
+	ctaMap[ctaId(blockId)].initialize(
+		*kernel, 
+		blockId, 
+		translatedKernel->entryBlockId, 
+		translatedKernel->localMemorySize, 
+		sharedMemorySize);
 }
 
 
@@ -166,9 +233,12 @@ void LLVMDynamicExecutive::executeWarp(Warp &warp) {
 	for (ThreadContextVector::iterator ctx_it = warp.threads.begin(); 
 		ctx_it != warp.threads.end(); 
 		++ctx_it) {
+		
 		ctx_it->metadata = (char *)translation->metadata;
+		assert(ctx_it->metadata);
 		
 		report("thread (" << ctx_it->tid.x << "," << ctx_it->tid.y << "," << ctx_it->tid.z << ") - entering block " << warp.entryId);
+		
 	}
 	
 	translation->execute(&warp.threads[0]);
@@ -248,49 +318,6 @@ void LLVMDynamicExecutive::testBarriers(int &waiting, int &ready) {
 		waiting += (int)cta_it->second.barrierQueue.size();
 	}
 }
-
-void LLVMDynamicExecutive::CooperativeThreadArray::initialize(
-	const LLVMDynamicKernel &kernel, 
-	const ir::Dim3 &ctaId,
-	HyperblockId entry) {
-
-	const ir::Dim3 blockDim = kernel.blockDim();
-	
-	int totalThreads = blockDim.x * blockDim.y * blockDim.z;
-	unsigned int localMemorySize = 256;
-	local.resize(localMemorySize * totalThreads, 0);
-	shared.resize(1024, 0);
-	
-	report("Initializing CTA with " << totalThreads << " threads");
-	report("  local memory size " << local.size() << " bytes");
-	report("  shared memory size: " << shared.size() << " bytes");
-	
-	for (int threadId = 0; threadId < totalThreads; threadId++) {
-		LLVMContext context;
-		context.nctaid.x  = kernel.gridDim().x;
-		context.nctaid.y  = kernel.gridDim().y;
-		context.nctaid.z  = kernel.gridDim().z;
-		context.ctaid.x   = ctaId.x;
-		context.ctaid.y   = ctaId.y;
-		context.ctaid.z   = ctaId.z;
-		context.ntid.x    = blockDim.x;
-		context.ntid.y    = blockDim.y;
-		context.ntid.z    = blockDim.z;
-		context.tid.x     = threadId % context.ntid.x;
-		context.tid.y     = (threadId / context.ntid.x) % context.ntid.y;
-		context.tid.z     = threadId / (context.ntid.x * context.ntid.y);
-		context.shared    = reinterpret_cast<char*>(&shared[0]);
-		context.argument  = kernel.argumentMemory();	//stack.argumentMemory();
-		context.local     = &local[threadId * localMemorySize];	//stack.localMemory();
-		context.parameter = 0;	//stack.parameterMemory();
-		context.constant  = kernel.constantMemory();
-		context.metadata  = 0;
-		
-		setResumePoint(context, entry);
-		readyQueue.push_back(context);
-	}
-}
-
 
 //! \brief searches for an existing translation and compiles it if it doesn't exist
 const LLVMDynamicTranslationCache::Translation *

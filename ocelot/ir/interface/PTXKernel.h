@@ -155,6 +155,11 @@ namespace ir
 			/*! \brief Write this kernel to a parseable string */
 			virtual void write(std::ostream& stream) const;
 			
+			/*! \brief computes the size of .local memory declarations */
+			virtual size_t getLocalMemorySize() const;
+		
+			/*! \brief computes the size of static .shared memory declarations */
+			virtual size_t getSharedMemorySize() const;
 	};
 
 }

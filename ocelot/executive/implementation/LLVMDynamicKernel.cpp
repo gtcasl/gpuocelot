@@ -22,7 +22,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 namespace executive
 {
@@ -77,7 +77,7 @@ void LLVMDynamicKernel::launchGrid(int x, int y)
 	
 	timer.start();
 	
-	LLVMDynamicExecutionManager::get().launch(*this);
+	LLVMDynamicExecutionManager::get().launch(*this, this->sharedMemorySize());
 	
 	timer.stop();
 	
@@ -165,6 +165,7 @@ void LLVMDynamicKernel::updateMemory()
 		}
 	}
 }
+
 
 ExecutableKernel::TextureVector LLVMDynamicKernel::textureReferences() const
 {

@@ -1,7 +1,7 @@
-# 1 "/tmp/tmpxft_00006b42_00000000-1_TestConvergenceLoop.cudafe1.cpp"
+# 1 "/tmp/tmpxft_000037b4_00000000-1_TestConvergenceLoop.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_00006b42_00000000-1_TestConvergenceLoop.cudafe1.cpp"
+# 1 "/tmp/tmpxft_000037b4_00000000-1_TestConvergenceLoop.cudafe1.cpp"
 # 1 "TestConvergenceLoop.cu"
 # 46 "/usr/local/cuda3.2rel/cuda/bin/../include/device_types.h"
 # 149 "/usr/lib/gcc/x86_64-linux-gnu/4.4.3/include/stddef.h" 3
@@ -9670,47 +9670,51 @@ for (int i = 0; (errors < 5) && (i < N); i++) {
 # 103 "TestConvergenceLoop.cu"
 float got = (A_host[i]);
 # 104 "TestConvergenceLoop.cu"
-float expected = ((((2.0F) * ((float)i)) / ((float)(N - 1))) + (i * dt));
+float expected = ((((2.0F) * ((float)i)) / ((float)(N - 1))) + ((i + 1) * dt));
 # 105 "TestConvergenceLoop.cu"
-printf("ERROR 2 [%d] - expected: %f, got: %f\n", i, expected, got);
+if (fabs(got - expected) > (9.999999747e-05F)) {
 # 106 "TestConvergenceLoop.cu"
-++errors;
+printf("ERROR 2 [%d] - expected: %f, got: %f\n", i, expected, got);
 # 107 "TestConvergenceLoop.cu"
+++errors;
+# 108 "TestConvergenceLoop.cu"
 }
 # 109 "TestConvergenceLoop.cu"
+}
+# 111 "TestConvergenceLoop.cu"
 free(A_host);
-# 110 "TestConvergenceLoop.cu"
-cudaFree(A_gpu);
 # 112 "TestConvergenceLoop.cu"
+cudaFree(A_gpu);
+# 114 "TestConvergenceLoop.cu"
 return errors;
-# 113 "TestConvergenceLoop.cu"
+# 115 "TestConvergenceLoop.cu"
 }
-# 117 "TestConvergenceLoop.cu"
-int main(int argc, char **argv)
-# 118 "TestConvergenceLoop.cu"
-{
 # 119 "TestConvergenceLoop.cu"
-int errors = 0;
+int main(int argc, char **argv)
 # 120 "TestConvergenceLoop.cu"
-if (!(errors)) {
+{
 # 121 "TestConvergenceLoop.cu"
-errors += testConvergenceWithLoop();
+int errors = 0;
 # 122 "TestConvergenceLoop.cu"
-}
-# 123 "TestConvergenceLoop.cu"
 if (!(errors)) {
+# 123 "TestConvergenceLoop.cu"
+errors += testConvergenceWithLoop();
 # 124 "TestConvergenceLoop.cu"
-errors += testLoopEarlyExit();
+}
 # 125 "TestConvergenceLoop.cu"
-}
+if (!(errors)) {
+# 126 "TestConvergenceLoop.cu"
+errors += testLoopEarlyExit();
 # 127 "TestConvergenceLoop.cu"
-printf("Pass/Fail : %s\n", (errors) ? ("Fail") : ("Pass"));
-# 129 "TestConvergenceLoop.cu"
-return 0;
-# 130 "TestConvergenceLoop.cu"
 }
-# 1 "/tmp/tmpxft_00006b42_00000000-1_TestConvergenceLoop.cudafe1.stub.c"
-# 1 "/tmp/tmpxft_00006b42_00000000-1_TestConvergenceLoop.cudafe1.stub.c" 1
+# 129 "TestConvergenceLoop.cu"
+printf("Pass/Fail : %s\n", (errors) ? ("Fail") : ("Pass"));
+# 131 "TestConvergenceLoop.cu"
+return 0;
+# 132 "TestConvergenceLoop.cu"
+}
+# 1 "/tmp/tmpxft_000037b4_00000000-1_TestConvergenceLoop.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_000037b4_00000000-1_TestConvergenceLoop.cudafe1.stub.c" 1
 # 1 "/usr/local/cuda3.2rel/cuda/bin/../include/crt/host_runtime.h" 1
 # 91 "/usr/local/cuda3.2rel/cuda/bin/../include/crt/host_runtime.h"
 extern "C" {
@@ -10112,8 +10116,8 @@ extern __attribute__((__weak__)) unsigned long long int ullmax(unsigned long lon
 
 
 #pragma pack()
-# 2 "/tmp/tmpxft_00006b42_00000000-1_TestConvergenceLoop.cudafe1.stub.c" 2
-# 1 "/tmp/tmpxft_00006b42_00000000-3_TestConvergenceLoop.fatbin.c" 1
+# 2 "/tmp/tmpxft_000037b4_00000000-1_TestConvergenceLoop.cudafe1.stub.c" 2
+# 1 "/tmp/tmpxft_000037b4_00000000-3_TestConvergenceLoop.fatbin.c" 1
 # 1 "/usr/local/cuda3.2rel/cuda/bin/../include/__cudaFatFormat.h" 1
 # 83 "/usr/local/cuda3.2rel/cuda/bin/../include/__cudaFatFormat.h"
 extern "C" {
@@ -10191,7 +10195,7 @@ void __cudaFatFreePTX( char* ptx );
 
 
 }
-# 2 "/tmp/tmpxft_00006b42_00000000-3_TestConvergenceLoop.fatbin.c" 2
+# 2 "/tmp/tmpxft_000037b4_00000000-3_TestConvergenceLoop.fatbin.c" 2
 
 asm(
 ".section .rodata\n"
@@ -10203,9 +10207,9 @@ asm(
 ".quad 0x2e332063636e6570,0x20746c6975622032,0x2d30313032206e6f,0x090a0a33302d3131\n"
 ".quad 0x2d2d2d2d2d2d2f2f,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2f090a2d2d2d2d2d\n"
-".quad 0x6c69706d6f43202f,0x706d742f20676e69,0x5f746678706d742f,0x3234623630303030\n"
+".quad 0x6c69706d6f43202f,0x706d742f20676e69,0x5f746678706d742f,0x3462373330303030\n"
 ".quad 0x303030303030305f,0x747365545f372d30,0x65677265766e6f43,0x2e706f6f4c65636e\n"
-".quad 0x2820692e33707063,0x4263632f706d742f,0x696f666b422e2349,0x2d2d2f2f090a2949\n"
+".quad 0x2820692e33707063,0x4263632f706d742f,0x6d724b74582e2349,0x2d2d2f2f090a2943\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2f2f090a0a2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
@@ -10220,7 +10224,7 @@ asm(
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x6c69662e090a0a2d,0x6f633c2209310965\n"
 ".quad 0x696c2d646e616d6d,0x662e090a223e656e,0x2f22093209656c69,0x78706d742f706d74\n"
-".quad 0x36303030305f7466,0x303030305f323462,0x545f362d30303030,0x65766e6f43747365\n"
+".quad 0x33303030305f7466,0x303030305f346237,0x545f362d30303030,0x65766e6f43747365\n"
 ".quad 0x6f4c65636e656772,0x66616475632e706f,0x0a227570672e3265,0x3309656c69662e09\n"
 ".quad 0x6c2f7273752f2209,0x782f6363672f6269,0x696c2d34365f3638,0x2f756e672d78756e\n"
 ".quad 0x6e692f332e342e34,0x74732f6564756c63,0x0a22682e66656464,0x3409656c69662e09\n"
@@ -10442,13 +10446,13 @@ static __cudaFatElfEntry __elfEntries1 = {(char*)"sm_20", (char*)__deviceText_$s
 
 
 
-static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000004,0x2e00b786,(char*)"8b23b6d698dcf2fb",(char*)"TestConvergenceLoop.cu",(char*)" ",__ptxEntries,__cubinEntries,&__debugEntries0,0,0,0,0,0,0xbe018503,&__elfEntries1};
-# 3 "/tmp/tmpxft_00006b42_00000000-1_TestConvergenceLoop.cudafe1.stub.c" 2
+static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000004,0x2e00b786,(char*)"beb6e0374510e513",(char*)"TestConvergenceLoop.cu",(char*)" ",__ptxEntries,__cubinEntries,&__debugEntries0,0,0,0,0,0,0xcc43f56a,&__elfEntries1};
+# 3 "/tmp/tmpxft_000037b4_00000000-1_TestConvergenceLoop.cudafe1.stub.c" 2
 struct __T20 {float *__par0;int __par1;int __dummy_field;};
 struct __T21 {float *__par0;float __par1;int __dummy_field;};
 extern void __device_stub__Z19convergenceWithLoopPfi(float *, int);
 extern void __device_stub__Z13loopEarlyExitPff(float *, float);
-static void __sti____cudaRegisterAll_54_tmpxft_00006b42_00000000_4_TestConvergenceLoop_cpp1_ii_fd46e949(void) __attribute__((__constructor__));
+static void __sti____cudaRegisterAll_54_tmpxft_000037b4_00000000_4_TestConvergenceLoop_cpp1_ii_fd46e949(void) __attribute__((__constructor__));
 void __device_stub__Z19convergenceWithLoopPfi(float *__par0, int __par1){ struct __T20 *__T22 = 0;
 if (cudaSetupArgument((void*)(char*)&__par0, sizeof(__par0), (size_t)&__T22->__par0) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par1, sizeof(__par1), (size_t)&__T22->__par1) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(float *, int))convergenceWithLoop)); (void)cudaLaunch(((char *)((void ( *)(float *, int))convergenceWithLoop))); };}
 void convergenceWithLoop( float *__cuda_0,int __cuda_1)
@@ -10456,7 +10460,7 @@ void convergenceWithLoop( float *__cuda_0,int __cuda_1)
 {__device_stub__Z19convergenceWithLoopPfi( __cuda_0,__cuda_1);
 # 24 "TestConvergenceLoop.cu"
 }
-# 1 "/tmp/tmpxft_00006b42_00000000-1_TestConvergenceLoop.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_000037b4_00000000-1_TestConvergenceLoop.cudafe1.stub.c"
 void __device_stub__Z13loopEarlyExitPff( float *__par0, float __par1) { struct __T21 *__T23 = 0;
 if (cudaSetupArgument((void*)(char*)&__par0, sizeof(__par0), (size_t)&__T23->__par0) != cudaSuccess) return; if (cudaSetupArgument((void*)(char*)&__par1, sizeof(__par1), (size_t)&__T23->__par1) != cudaSuccess) return; { volatile static char *__f; __f = ((char *)((void ( *)(float *, float))loopEarlyExit)); (void)cudaLaunch(((char *)((void ( *)(float *, float))loopEarlyExit))); }; }
 void loopEarlyExit( float *__cuda_0,float __cuda_1)
@@ -10464,6 +10468,6 @@ void loopEarlyExit( float *__cuda_0,float __cuda_1)
 {__device_stub__Z13loopEarlyExitPff( __cuda_0,__cuda_1);
 # 36 "TestConvergenceLoop.cu"
 }
-# 1 "/tmp/tmpxft_00006b42_00000000-1_TestConvergenceLoop.cudafe1.stub.c"
-static void __sti____cudaRegisterAll_54_tmpxft_00006b42_00000000_4_TestConvergenceLoop_cpp1_ii_fd46e949(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, float))loopEarlyExit), (char*)"loopEarlyExit", "loopEarlyExit", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, int))convergenceWithLoop), (char*)"convergenceWithLoop", "convergenceWithLoop", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); }
-# 1 "/tmp/tmpxft_00006b42_00000000-1_TestConvergenceLoop.cudafe1.stub.c" 2
+# 1 "/tmp/tmpxft_000037b4_00000000-1_TestConvergenceLoop.cudafe1.stub.c"
+static void __sti____cudaRegisterAll_54_tmpxft_000037b4_00000000_4_TestConvergenceLoop_cpp1_ii_fd46e949(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, float))loopEarlyExit), (char*)"loopEarlyExit", "loopEarlyExit", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, int))convergenceWithLoop), (char*)"convergenceWithLoop", "convergenceWithLoop", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); }
+# 1 "/tmp/tmpxft_000037b4_00000000-1_TestConvergenceLoop.cudafe1.stub.c" 2

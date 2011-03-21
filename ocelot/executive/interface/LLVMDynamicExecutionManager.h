@@ -41,7 +41,7 @@ namespace executive {
 			LLVMDynamicTranslationCache::HyperblockId, int ws=1);
 
 		/*! \brief launches a pre-configured LLVMDynamicKernel */
-		void launch(const LLVMDynamicKernel & kernel);
+		void launch(const LLVMDynamicKernel & kernel, int sharedMemorySize);
 				
 	private:
 		//! \brief global lock

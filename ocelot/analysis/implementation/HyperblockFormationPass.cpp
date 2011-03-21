@@ -22,7 +22,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -162,6 +162,7 @@ void analysis::HyperblockFormation::runOnKernel(KernelDecomposition &decompositi
 		reg_id++) {
 		registerOffsets[reg_id] = 8*reg_id;
 	}
+	size_t spillSize = (size_t)(8 * parentKernel.dfg()->maxRegister());
 	
 	// revisit all basic block terminators:
 	//	- branches to blocks with multiple in-edges are hyperblock exits
@@ -213,7 +214,7 @@ void analysis::HyperblockFormation::runOnKernel(KernelDecomposition &decompositi
 		
 		ir::BasicBlock epilogBlock;
 		
-		_createSpillRegion(*hyperblock.subkernel, parentKernel);
+		_createSpillRegion(*hyperblock.subkernel, parentKernel, spillSize);
 		_createRestore(*hyperblock.subkernel, restoreSet, registerOffsets);
 		_createHyperblockExit(hyperblock);
 		_createStore(*hyperblock.subkernel, storeSet, registerOffsets);
@@ -231,9 +232,8 @@ void analysis::HyperblockFormation::finalize() {
 
 void analysis::HyperblockFormation::_createSpillRegion(
 	ir::PTXKernel &subkernel, 
-	ir::PTXKernel &parentKernel) {
-	
-	unsigned int spillRegionSize = parentKernel.dfg()->maxRegister()*4;
+	ir::PTXKernel &parentKernel,
+	size_t spillRegionSize) {
 
 	subkernel.arguments  = parentKernel.arguments;
 	subkernel.parameters = parentKernel.parameters;
@@ -258,7 +258,7 @@ void analysis::HyperblockFormation::_createSpillRegion(
 		
 	spillRegion.type = ir::PTXOperand::b8;
 	spillRegion.name = "_Zocelot_spill_area";
-	spillRegion.array.stride.push_back(spillRegionSize);
+	spillRegion.array.stride.push_back((unsigned int)spillRegionSize);
 	
 	subkernel.locals.insert(std::make_pair(spillRegion.name, ir::Local(spillRegion)));
 		

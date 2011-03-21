@@ -508,6 +508,7 @@ nobase_include_HEADERS = ocelot/api/interface/ocelot.h \
 	ocelot/executive/interface/LLVMFunctionCallStack.h \
 	ocelot/executive/interface/EmulatorCallStack.h \
 	ocelot/executive/interface/RemoteDevice.h \
+	ocelot/executive/interface/ReconvergenceMechanism.h \
 	ocelot/executive/test/TestEmulator.h \
 	ocelot/executive/test/sequence.ptx \
 	ocelot/executive/test/kernels.ptx \

@@ -13,6 +13,9 @@
 
 #define Enable_sequence 1
 #define Enable_testSharedConvergent 1
+#define Enable_testShareSimple 1
+#define Enable_v4sequence 1
+#define Enable_testShr 1
 
 #if Enable_sequence
 extern "C" __global__ void sequence(int *A, int N) {
@@ -34,7 +37,7 @@ extern "C" __global__ void testShareConvergent(int *A) {
 }
 #endif
 
-#if 0
+#if Enable_testShareSimple
 extern "C" __global__ void testShareSimple(int *A) {
 	int i = threadIdx.x + blockIdx.x * blockDim.x;
 	__shared__ int Share[32];
@@ -46,14 +49,14 @@ extern "C" __global__ void testShareSimple(int *A) {
 	A[i] = Share[31 - threadIdx.x];
 }
 #endif
-#if 0
+#if Enable_v4sequence
 extern "C" __global__ void v4sequence(int4 *A, int N) {
 	int i = threadIdx.x + blockIdx.x * blockDim.x + 1;
 	int4 b = make_int4(i, 2*i, 3*i, 4*i);
 	A[i-1] = b;
 }
 #endif
-#if 0
+#if Enable_testShr
 extern "C" __global__ void testShr(int *A) {
 	int i = threadIdx.x + blockIdx.x * blockDim.x;
 	int b;
@@ -128,7 +131,7 @@ int main(int argc, char *arg[]) {
 	}
 #endif
 
-#if 0
+#if Enable_v4squence
 	grid.x /= 4;
 	v4sequence<<< grid, block >>>((int4 *)A_gpu, N/4);
 	cudaMemcpy(A_host, A_gpu, bytes, cudaMemcpyDeviceToHost);
@@ -148,7 +151,6 @@ int main(int argc, char *arg[]) {
 		}
 	
 		for (int i = 0; i < N; i++) {
-//			int p = i + 31 - 2 * (i % 32);
 			int p = i;
 			if (p & 0x01) {
 				p --;
@@ -187,7 +189,7 @@ int main(int argc, char *arg[]) {
 		}
 	}
 #endif	
-#if 0
+#if Enable_testShr
 	if (!errors) {
 
 		testShr<<< grid, block >>>(A_gpu);
@@ -217,11 +219,9 @@ int main(int argc, char *arg[]) {
 	cudaFree(A_gpu);
 	free(A_host);
 
-
 	if (errors) {
 		printf("Pass/Fail : Fail\n");
-	}
-	else {
+	} else {
 		printf("Pass/Fail : Pass\n");
 	}
 

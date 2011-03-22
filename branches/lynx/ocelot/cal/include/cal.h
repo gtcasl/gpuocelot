@@ -161,7 +161,7 @@ typedef enum CALresultEnum {
     CAL_RESULT_BAD_NAME_TYPE     = 7, /**< A name parameter is invalid */
     CAL_RESULT_PENDING           = 8, /**< An asynchronous operation is still pending */
     CAL_RESULT_BUSY              = 9,  /**< The resource in question is still in use */
-    CAL_RESULT_WARNING           = 10 /**< Compiler generated a warning */
+    CAL_RESULT_WARNING           = 10, /**< Compiler generated a warning */
 } CALresult;
 
 /** Data format representation */
@@ -244,7 +244,7 @@ typedef enum CALformatEnum {
     // End Deprecated formats.
 
     //CAL_FORMAT_LAST     = CAL_FORMAT_INT_1,
-    CAL_FORMAT_LAST     = CAL_FORMAT_FLOAT16_4
+    CAL_FORMAT_LAST     = CAL_FORMAT_FLOAT16_4,
 
 } CALformat;
 
@@ -252,7 +252,11 @@ typedef enum CALformatEnum {
 typedef enum _CALdimensionEnum {
     CAL_DIM_BUFFER,                     /**< A resource dimension type */
     CAL_DIM_1D,                         /**< A resource type */
-    CAL_DIM_2D                          /**< A resource type */
+    CAL_DIM_2D,                         /**< A resource type */
+    CAL_DIM_3D,                         /**< A resource type */
+    CAL_DIM_CUBEMAP,                    /**< A resource type */
+    CAL_DIM_FIRST = CAL_DIM_BUFFER,     /**< FIRST resource dimension type */
+    CAL_DIM_LAST = CAL_DIM_CUBEMAP,     /**< LAST resource type */
 } CALdimension;
 
 /** Device Kernel ISA */
@@ -266,7 +270,15 @@ typedef enum CALtargetEnum {
     CAL_TARGET_710,                /**< RV710 GPU ISA */
     CAL_TARGET_730,                /**< RV730 GPU ISA */
     CAL_TARGET_CYPRESS,            /**< CYPRESS GPU ISA */
-    CAL_TARGET_JUNIPER             /**< JUNIPER GPU ISA */
+    CAL_TARGET_JUNIPER,            /**< JUNIPER GPU ISA */
+    CAL_TARGET_REDWOOD,            /**< REDWOOD GPU ISA */
+    CAL_TARGET_CEDAR,               /**< CEDAR GPU ISA */
+    CAL_TARGET_RESERVED0,
+    CAL_TARGET_RESERVED1,           
+    CAL_TARGET_WRESTLER,            /**< WRESTLER GPU ISA */
+    CAL_TARGET_CAYMAN,              /**< CAYMAN GPU ISA */
+    CAL_TARGET_RESERVED2,            
+    CAL_TARGET_BARTS,               /**< BARTS GPU ISA */
 } CALtarget;
 
 /** CAL object container */
@@ -326,6 +338,12 @@ typedef struct CALdeviceattribsRec {
     CALboolean b3dProgramGrid;      /**< CALprogramGrid for have height and depth bigger than 1*/
     CALuint    numberOfShaderEngines;/**< Number of shader engines */
     CALuint    targetRevision;      /**< Asic family revision */
+    CALuint    totalVisibleHeap;                    /**< Amount of visible local GPU RAM in megabytes */
+    CALuint    totalInvisibleHeap;                  /**< Amount of invisible local GPU RAM in megabytes */
+    CALuint    totalDirectHeap;                     /**< Amount of direct GPU memory in megabytes */
+    CALuint    totalCoherentHeap;                   /**< Amount of coherent GPU memory in megabytes */
+    CALuint    totalRemoteSharedHeap;               /**< Amount of remote Shared GPU memory in megabytes */
+    CALuint    totalCachedRemoteSharedHeap;         /**< Amount of cached remote Shared GPU memory in megabytes */
 } CALdeviceattribs;
 
 /** CAL device status */
@@ -334,12 +352,26 @@ typedef struct CALdevicestatusRec {
     CALuint   availLocalRAM;          /**< Amount of available local GPU RAM in megabytes */
     CALuint   availUncachedRemoteRAM; /**< Amount of available uncached remote GPU memory in megabytes */
     CALuint   availCachedRemoteRAM;   /**< Amount of available cached remote GPU memory in megabytes */
+    CALuint   availVisibleHeap;                     /**< Amount of available visible local GPU RAM in megabytes */
+    CALuint   availInvisibleHeap;                   /**< Amount of available invisible local GPU RAM in megabytes */
+    CALuint   availDirectHeap;                      /**< Amount of available direct GPU memory in megabytes */
+    CALuint   availCoherentHeap;                    /**< Amount of available coherent GPU memory in megabytes */
+    CALuint   availRemoteSharedHeap;                /**< Amount of available remote Shared GPU memory in megabytes */
+    CALuint   availCachedRemoteSharedHeap;          /**< Amount of available cached remote Shared GPU memory in megabytes */
+    CALuint   largestBlockVisibleHeap;              /**< Largest block available visible local GPU RAM in megabytes */
+    CALuint   largestBlockInvisibleHeap;            /**< Largest block available invisible local GPU RAM in megabytes */
+    CALuint   largestBlockRemoteHeap;               /**< Largest block available remote GPU memory in megabytes */
+    CALuint   largestBlockCachedRemoteHeap;         /**< Largest block available cached remote GPU memory in megabytes */
+    CALuint   largestBlockDirectHeap;               /**< Largest block available direct GPU memory in megabytes */
+    CALuint   largestBlockCoherentHeap;             /**< Largest block available coherent GPU memory in megabytes */
+    CALuint   largestBlockRemoteSharedHeap;         /**< Largest block available remote Shared GPU memory in megabytes */
+    CALuint   largestBlockCachedRemoteSharedHeap;   /**< Largest block available cached remote Shared GPU memory in megabytes */
 } CALdevicestatus;
 
 /** CAL resource allocation flags **/
 typedef enum CALresallocflagsEnum {
     CAL_RESALLOC_GLOBAL_BUFFER  = 1, /**< used for global import/export buffer */
-    CAL_RESALLOC_CACHEABLE      = 2  /**< cacheable memory? */
+    CAL_RESALLOC_CACHEABLE      = 2, /**< cacheable memory? */
 } CALresallocflags;
 
 /** CAL computational 3D domain */
@@ -377,10 +409,16 @@ typedef struct CALfuncInfoRec
     CALuint    numThreadPerGroupY;      /**< y dimension of numThreadPerGroup */
     CALuint    numThreadPerGroupZ;      /**< z dimension of numThreadPerGroup */
     CALuint    totalNumThreadGroup;     /**< Total number of thread groups */
-    CALuint    wavefrontPerSIMD;        /**< Number of wavefronts per SIMD */ //CAL_USE_SC_PRM
     CALuint    numWavefrontPerSIMD;     /**< Number of wavefronts per SIMD */
     CALboolean isMaxNumWavePerSIMD;     /**< Is this the max num active wavefronts per SIMD */
     CALboolean setBufferForNumGroup;    /**< Need to set up buffer for info on number of thread groups? */
+    CALuint    wavefrontSize;           /**< number of threads per wavefront. */
+    CALuint    numGPRsAvailable;        /**< number of GPRs available to the program */
+    CALuint    numGPRsUsed;             /**< number of GPRs used by the program */
+    CALuint    LDSSizeAvailable;        /**< LDS size available to the program */
+    CALuint    LDSSizeUsed;             /**< LDS size used by the program */
+    CALuint    stackSizeAvailable;      /**< stack size availabe to the program */
+    CALuint    stackSizeUsed;           /**< stack size use by the program */
 } CALfuncInfo;
 
 /*============================================================================
@@ -1159,6 +1197,4 @@ CALAPI CALresult CALAPIENTRY calCtxRunProgramGridArray(CALevent* event,
 
 
 #endif /* __CAL_H__ */
-
-
 

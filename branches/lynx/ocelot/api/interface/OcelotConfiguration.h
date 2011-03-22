@@ -206,6 +206,16 @@ namespace api {
 			int warpSize;
 		};
 
+		class Optimizations {
+		public:
+			Optimizations();
+
+		public:
+			//! \brief The target subkernel size in instructions
+			unsigned int subkernelSize;
+		};
+
+
 	public:
 
 		//! \brief construct with default configuration
@@ -252,6 +262,8 @@ namespace api {
         //! \brief configuration for PTX instrumentation
         Instrumentation instrument;
 		
+		//! \brief configuration for Ocelot optimizations
+		Optimizations optimizations;
 	};
 
 }

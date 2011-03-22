@@ -11,6 +11,7 @@
 #include <ocelot/analysis/interface/PassManager.h>
 #include <ocelot/analysis/interface/Pass.h>
 #include <ocelot/analysis/interface/DataflowGraph.h>
+#include <ocelot/analysis/interface/DivergenceAnalysis.h>
 #include <ocelot/ir/interface/Kernel.h>
 #include <ocelot/ir/interface/Module.h>
 
@@ -29,6 +30,12 @@ namespace analysis
 
 static void freeUnusedDataStructures(ir::Kernel* k, int type)
 {
+	if(type < Pass::DivergenceAnalysis)
+	{
+		report("Destroying divergence analysis for kernel" << k->name);
+		k->clear_div_analy();
+	}
+
 	if(type < Pass::StaticSingleAssignment)
 	{
 		if(k->dfg()->ssa())
@@ -88,6 +95,10 @@ static void allocateNewDataStructures(ir::Kernel* k, int type)
 			report("Converting to SSA for kernel " << k->name);
 			k->dfg()->toSsa();
 		}
+	}
+	if(type & Pass::DivergenceAnalysis)
+	{
+		k->div_analy();
 	}
 }
 

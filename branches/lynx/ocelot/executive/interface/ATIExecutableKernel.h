@@ -49,18 +49,24 @@ namespace executive
 			/*!	\brief removes a trace generator from an EmulatedKernel */
 			void removeTraceGenerator(trace::TraceGenerator* generator);
 
-			/*! \brief Initialize shared memory */
-			void initializeSharedMemory();
-
 			/*! \brief Copies data from global objects into const and global
 			 * memory */
 			void updateGlobals();
 
-		protected:
+			/*! A map of register name to register number */
+			ir::PTXKernel::RegisterMap registerMap;
+
+		private:
+			/*!	\brief On construction, allocates registers by computing live 
+			 * ranges */
+			void registerAllocation();
+
+			/*! \brief Initialize shared memory */
+			void initializeSharedMemory();
+
 			/*! \brief Maps identifiers to const memory allocations */
 			void initializeGlobalMemory();
 
-		private:
 			/*! \brief Determine the padding required to satisfy alignment */
 			static unsigned int _pad(size_t& size, unsigned int alignment);
 

@@ -23,7 +23,7 @@
 
 namespace ir
 {
-	ControlTree::ControlTree(ControlFlowGraph *cfg) 
+	ControlTree::ControlTree(CFG *cfg) 
 		: 
 			_nodes(NodeList()),
 			_post(NodeList()),
@@ -33,9 +33,9 @@ namespace ir
 	{
 		Node* start = 0;
 		Node* end = 0;
-		std::unordered_map<ControlFlowGraph::const_iterator, Node*> bmap;
+		std::unordered_map<CFG::const_iterator, Node*> bmap;
 
-		ControlFlowGraph::const_iterator bb;
+		CFG::const_iterator bb;
 		for (bb = cfg->begin() ; bb != cfg->end() ; bb++)
 		{
 			report("Inserting node " << bb->label);
@@ -46,15 +46,23 @@ namespace ir
 		start = bmap[cfg->get_entry_block()];
 		end = bmap[cfg->get_exit_block()];
 
-		ControlFlowGraph::const_edge_iterator e;
+		CFG::const_edge_iterator e;
 		for (e = cfg->edges_begin() ; e != cfg->edges_end() ; e++)
 		{
-			report("Add edge " << e->head->label << " -> " << e->tail->label);
-			bmap[e->head]->succs().insert(bmap[e->tail]);
-			bmap[e->tail]->preds().insert(bmap[e->head]);
+			CFG::const_iterator h = e->head;
+			CFG::const_iterator t = e->tail;
 
-			if (e->type == ir::ControlFlowGraph::Edge::FallThrough)
-				bmap[e->head]->fallthrough() = bmap[e->tail];
+			bmap[h]->succs().insert(bmap[t]);
+			bmap[t]->preds().insert(bmap[h]);
+
+			if (e->type == CFG::Edge::FallThrough)
+			{
+				report("Add edge " << h->label << " --> " << t->label);
+				bmap[h]->fallthrough() = bmap[t];
+			} else
+			{
+				report("Add edge " << h->label << " -> " << t->label);
+			}
 		}
 
 		assertM(start->preds().size() == 0, "Start shouldn't have predecessor");
@@ -92,7 +100,7 @@ namespace ir
 		return _label;
 	}
 
-	ControlTree::Node::RegionType ControlTree::Node::rtype() const
+	ControlTree::RegionType ControlTree::Node::rtype() const
 	{
 		return _rtype;
 	}
@@ -131,20 +139,20 @@ namespace ir
 		for (n = _nodes.begin(), i = 0 ; n != _nodes.end() ; n++, i++)
 		{
 			bmap[*n] = i;
-			if ((*n)->rtype() == Node::Inst)
+			if ((*n)->rtype() == Inst)
 			{
 				out << "  bb_" << i;
 				out	<< " [shape=record,label=\"{" << (*n)->label();
 
 				// emit instructions
-				ControlFlowGraph::InstructionList insts = 
-					static_cast<InstNode*>(*n)->bb()->instructions;
-				ControlFlowGraph::InstructionList::const_iterator ins;
-				for (ins = insts.begin() ; ins != insts.end() ; ins++)
+				InstNode* m = static_cast<InstNode *>(*n);
+				for (InstructionList::const_iterator 
+						ins = m->insts().begin(), end = m->insts().end() ;
+						ins != end ; ins++)
 				{
 					out << " | " << 
 						hydrazine::toGraphVizParsableLabel((*ins)->toString());
-				} 
+				}
 
 				out << "}\"];";
 			} else 
@@ -180,14 +188,14 @@ namespace ir
 		return _root;
 	}
 
-	ControlTree::InstNode::InstNode(const ControlFlowGraph::const_iterator& bb)
+	ControlTree::InstNode::InstNode(const CFG::const_iterator& bb)
 		: Node(bb->label, Inst, NodeList()), _bb(bb)
 	{
 	}
 
-	const ControlFlowGraph::const_iterator ControlTree::InstNode::bb() const
+	const ControlTree::InstructionList& ControlTree::InstNode::insts() const
 	{
-		return _bb;
+		return _bb->instructions;
 	}
 
 	ControlTree::BlockNode::BlockNode(const std::string& label, 
@@ -195,39 +203,13 @@ namespace ir
 	{
 	}
 
-	ControlTree::IfThenNode::IfThenNode(const std::string& label, Node* cond, 
-			Node* ifTrue) : Node(label, IfThen, buildChildren(cond, ifTrue))
+	ControlTree::IfThenNode::IfThenNode(const std::string& label, 
+			Node* cond, Node* ifTrue, Node* ifFalse) 
+		: Node(label, IfThen, buildChildren(cond, ifTrue, ifFalse))
 	{
 	}
 
 	const ControlTree::NodeList ControlTree::IfThenNode::buildChildren(
-			Node* cond, Node* ifTrue) const
-	{
-		NodeList nodes;
-
-		nodes.push_back(cond);
-		nodes.push_back(ifTrue);
-
-		return nodes;
-	}
-
-	const ControlTree::Node* ControlTree::IfThenNode::cond() const
-	{
-		return children().front();
-	}
-
-	const ControlTree::Node* ControlTree::IfThenNode::ifTrue() const
-	{
-		return children().back();
-	}
-
-	ControlTree::IfThenElseNode::IfThenElseNode(const std::string& label, 
-			Node* cond, Node* ifTrue, Node* ifFalse) 
-		: Node(label, IfThenElse, buildChildren(cond, ifTrue, ifFalse))
-	{
-	}
-
-	const ControlTree::NodeList ControlTree::IfThenElseNode::buildChildren(
 			Node* cond, Node* ifTrue, Node* ifFalse) const
 	{
 		NodeList nodes;
@@ -239,23 +221,28 @@ namespace ir
 		return nodes;
 	}
 
-	const ControlTree::Node* ControlTree::IfThenElseNode::cond() const
+	const ControlTree::Node* ControlTree::IfThenNode::cond() const
 	{
 		return children().front();
 	}
 
-	const ControlTree::Node* ControlTree::IfThenElseNode::ifTrue() const
+	const ControlTree::Node* ControlTree::IfThenNode::ifTrue() const
 	{
 		return *(++(children().begin()));
 	}
 
-	const ControlTree::Node* ControlTree::IfThenElseNode::ifFalse() const
+	const ControlTree::Node* ControlTree::IfThenNode::ifFalse() const
 	{
 		return children().back();
 	}
 
-	ControlTree::NaturalLoopNode::NaturalLoopNode(const std::string& label, 
-			const NodeList& children) : Node(label, NaturalLoop, children)
+	ControlTree::WhileNode::WhileNode(const std::string& label, 
+			const NodeList& children) : Node(label, While, children)
+	{
+	}
+
+	ControlTree::NaturalNode::NaturalNode(const std::string& label, 
+			const NodeList& children) : Node(label, Natural, children)
 	{
 	}
 
@@ -377,7 +364,7 @@ namespace ir
 				return new IfThenNode(label, node, m);
 			}
 
-			// check for an IfThenElse (if node then n else m)
+			// check for an IfThen (if node then n else m)
 			if (m->succs().size() == 1 && n->succs().size() == 1 &&
 					m->preds().size() == 1 && n->preds().size() == 1 &&
 					*(m->succs().begin()) == *(n->succs().begin()) &&
@@ -385,7 +372,7 @@ namespace ir
 			{
 				nset.clear(); nset.insert(node); nset.insert(n); nset.insert(m);
 
-				std::string label("IfThenElseNode_");
+				std::string label("IfThenNode_");
 
 				std::stringstream ss;
 				ss << _nodes.size();
@@ -394,10 +381,10 @@ namespace ir
 				report("Found " << label << ":" << " if " << node->label()
 						<< " then " << n->label() << " else " << m->label());
 
-				return new IfThenElseNode(label, node, n, m);
+				return new IfThenNode(label, node, n, m);
 			}
 
-			// check for an IfThenElse (if node then m else n)
+			// check for an IfThen (if node then m else n)
 			if (m->succs().size() == 1 && n->succs().size() == 1 &&
 					m->preds().size() == 1 && n->preds().size() == 1 &&
 					*(m->succs().begin()) == *(n->succs().begin()) &&
@@ -405,7 +392,7 @@ namespace ir
 			{
 				nset.clear(); nset.insert(node); nset.insert(m); nset.insert(n);
 
-				std::string label("IfThenElseNode_");
+				std::string label("IfThenNode_");
 
 				std::stringstream ss;
 				ss << _nodes.size();
@@ -414,7 +401,7 @@ namespace ir
 				report("Found " << label << ":" << " if " << node->label()
 						<< " then " << m->label() << " else " << n->label());
 
-				return new IfThenElseNode(label, node, m, n);
+				return new IfThenNode(label, node, m, n);
 			}
 		}
 
@@ -424,7 +411,8 @@ namespace ir
 
 	bool ControlTree::_isCyclic(Node* node)
 	{
-		if (node->rtype() == Node::NaturalLoop) return true;
+		if (node->rtype() == While) return true;
+		if (node->rtype() == Natural) return true;
 
 		return false;
 	}
@@ -481,11 +469,17 @@ namespace ir
 				report("Del " << (*p)->label() << " -> " << (*n)->label());
 				(*p)->succs().erase(*n);
 
-				report("Add " << (*p)->label() << " -> " << node->label());
 				(*p)->succs().insert(node);
 				node->preds().insert(*p);
 
-				if ((*p)->fallthrough() == *n) (*p)->fallthrough() = node;
+				if ((*p)->fallthrough() == *n)
+				{
+					report("Add " << (*p)->label() << " --> " << node->label());
+					(*p)->fallthrough() = node;
+				} else 
+				{
+					report("Add " << (*p)->label() << " -> " << node->label());
+				}
 			}
 
 			NodeSet::iterator s;
@@ -498,11 +492,17 @@ namespace ir
 				report("Del " << (*n)->label() << " -> " << (*s)->label());
 				(*s)->preds().erase(*n);
 
-				report("Add " << node->label() << " -> " << (*s)->label());
 				(*s)->preds().insert(node);
 				node->succs().insert(*s);
 
-				if ((*n)->fallthrough() == *s) node->fallthrough() = *s;
+				if ((*n)->fallthrough() == *s) 
+				{
+					report("Add " << node->label() << " --> " << (*s)->label());
+					node->fallthrough() = *s;
+				} else
+				{
+					report("Add " << node->label() << " -> " << (*s)->label());
+				}
 			}
 		}
 
@@ -580,15 +580,15 @@ namespace ir
 		{
 			if (node->succs().find(node) != node->succs().end())
 			{
-				// SelfLoopNode is a special case of a NaturalLoopNode
-				std::string label("NaturalLoopNode_");
+				// Self loop is a special case of a Natural loop
+				std::string label("NaturalNode_");
 
 				std::stringstream ss;
 				ss << _nodes.size();
 				label += ss.str();
 
 				report("Found " << label << ": " << node->label());
-				return new NaturalLoopNode(label, NodeList(1, node));
+				return new NaturalNode(label, NodeList(1, node));
 			} else
 			{
 				report("Couldn't find any cyclic regions");
@@ -608,19 +608,26 @@ namespace ir
 			}
 		}
 
-		// check for a WhileLoop
-		Node* m = *(nset.begin()++);
+		// check for a While loop
+		Node* m = *(++nset.begin());
 
 		if (node->succs().size() == 2 && m->succs().size() == 1 
 				&& node->preds().size() == 2 && m->preds().size() == 1)
 		{
-			// TODO WhileLoop regions are not supported yet
-			report("Found WhileLoop region");
-			return new InvalidNode();
+			std::string label("WhileNode_");
+
+			std::stringstream ss;
+			ss << _nodes.size();
+			label += ss.str();
+
+			report("Found " << label << ": " << nset.front()->label() << "..."
+					<< nset.back()->label());
+
+			return new WhileNode(label, nset);
 		}
 
-		// it's a NaturalLoop
-		std::string label("NaturalLoopNode_");
+		// it's a Natural loop
+		std::string label("NaturalNode_");
 
 		std::stringstream ss;
 		ss << _nodes.size();
@@ -629,7 +636,7 @@ namespace ir
 		report("Found " << label << ": " << nset.front()->label() << "..."
 				<< nset.back()->label());
 
-		return new NaturalLoopNode(label, nset);
+		return new NaturalNode(label, nset);
 	}
 
 	void ControlTree::_structural_analysis(Node* entry)
@@ -660,7 +667,7 @@ namespace ir
 				report("Looking for acyclic region from " << n->label());
 				Node* region = _acyclic_region_type(n, nodeSet);
 
-				if (region->rtype() != Node::Invalid)
+				if (region->rtype() != Invalid)
 				{
 					report("Replacing nodeSet for " << region->label());
 					_reduce(region, nodeSet);
@@ -690,7 +697,7 @@ namespace ir
 					report("Looking for cyclic region from " << n->label());
 					region = _cyclic_region_type(n, reachUnder);
 
-					if (region->rtype() != Node::Invalid)
+					if (region->rtype() != Invalid)
 					{
 						report("Replacing nodeSet for " << region->label());
 						_reduce(region, nodeSet);

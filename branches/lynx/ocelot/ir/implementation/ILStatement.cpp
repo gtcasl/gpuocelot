@@ -10,6 +10,12 @@
 // Hydrazine includes
 #include <hydrazine/implementation/debug.h>
 
+#ifdef REPORT_BASE
+#undef REPORT_BASE
+#endif
+
+#define REPORT_BASE 0
+
 namespace ir
 {
 	ILStatement::ILStatement(Type type) : instruction(0), type(type)
@@ -22,6 +28,24 @@ namespace ir
 		instruction = static_cast<ILInstruction*>(i.clone());
 	}
 
+	ILStatement::ILStatement(const ILStatement& s) : instruction(0), 
+		type(s.type), operands(s.operands)
+	{
+		if( s.instruction != 0 )
+		{
+			instruction = static_cast< ILInstruction* >( 
+				s.instruction->clone() );
+			assertM( type == Instruction, "Statement given non-zero " 
+				<< "instruction pointer, but not specified as an "
+				<< "instruction statement." );
+		}
+	}
+
+	ILStatement::~ILStatement()
+	{
+		delete instruction;
+	}
+	
 	std::string ILStatement::toString() const
 	{
 		switch(type)

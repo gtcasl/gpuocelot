@@ -27,184 +27,101 @@ namespace translator
 	{
 	}
 
-	ir::Kernel *PTXToILTranslator::translate(const ir::Kernel *k)
+	ir::Kernel* PTXToILTranslator::translate(const ir::Kernel* k)
 	{
-		assertM(k->ISA == ir::Instruction::PTX,
-				"Kernel must be a PTXKernel to translate to an ILKernel");
+		assertM(0, "Translator needs the kernel to be an executable kernel");
+	}
 
-		_kernel = static_cast<const executive::ATIExecutableKernel* >(k);
+	ir::Kernel* PTXToILTranslator::translate(const ExecutableKernel* k)
+	{
+		report("Translating kernel " << k->name);
 
-		// do a pass of assignRegisters before translation
-		// we have to const_cast in order to call assignRegisters
-		ir::PTXKernel::assignRegisters(
-				const_cast<ir::ControlFlowGraph& >(*_kernel->cfg()));
+		assertM(k->ISA == ir::Instruction::PTX, "Kernel must be in PTX");
 
-		report("Translating kernel " << _kernel->name);
+		_ilKernel = new ir::ILKernel(*k);
 
-		// translate iterating thru the control tree
-		_ilKernel = new ir::ILKernel(*_kernel);
-		_translate(_ilKernel->ctrl_tree()->get_root_node());
-		_addKernelPrefix();
+		_translateInstructions();
+		_addKernelPrefix(k);
 
  		return _ilKernel;
   	}
 
-	void PTXToILTranslator::_translate(const ControlTree::Node* node)
+	void PTXToILTranslator::_translateInstructions()
+	{
+		// translate instructions iterating thru the control tree
+		_translate(_ilKernel->ctrl_tree()->get_root_node());
+	}
+
+	void PTXToILTranslator::_translate(const CT::Node* node)
 	{
 		report("Translating " << node->label());
 
 		switch (node->rtype())
 		{
-			case ControlTree::Node::Inst:
+			case CT::Inst:
 			{
-				_translate(static_cast<const ControlTree::InstNode*>(node));
+				_translate(static_cast<const CT::InstNode*>(node)); 
 				break;
 			}
-			case ControlTree::Node::Block:
+			case CT::Block:
 			{
-				_translate(static_cast<const ControlTree::BlockNode*>(node));
+				_translate(static_cast<const CT::BlockNode*>(node)); 
 				break;
 			}
-			case ControlTree::Node::IfThen:
+			case CT::IfThen:
 			{
-				_translate(static_cast<const ControlTree::IfThenNode*>(node));
+				_translate(static_cast<const CT::IfThenNode*>(node)); 
 				break;
 			}
-			case ControlTree::Node::IfThenElse:
+			case CT::While:
 			{
-				_translate(static_cast<const ControlTree::IfThenElseNode*>(node));
+				_translate(static_cast<const CT::WhileNode*>(node)); 
 				break;
 			}
-			case ControlTree::Node::NaturalLoop:
+			case CT::Natural: 
 			{
-				_translate(static_cast<const ControlTree::NaturalLoopNode*>(node));
+				_translate(static_cast<const CT::NaturalNode*>(node)); 
 				break;
 			}
 			default: assertM(false, "Invalid region type " << node->rtype());
 		}
 	}
 
-	void PTXToILTranslator::_translate(const ControlTree::InstNode* insts)
+	void PTXToILTranslator::_translate(const CT::InstNode* node)
 	{
-		ir::ControlFlowGraph::InstructionList::const_iterator ins;
-		for (ins = insts->bb()->instructions.begin() ; 
-				ins != insts->bb()->instructions.end() ; ins++)
+		for (CT::InstructionList::const_iterator
+				ins = node->insts().begin(), end = node->insts().end() ;
+				ins != end ; ins++)
 		{
 			_translate(static_cast<ir::PTXInstruction &>(**ins));
 		}
 	}
 
-	void PTXToILTranslator::_translate(const ControlTree::BlockNode* block)
+	void PTXToILTranslator::_translate(const CT::BlockNode* node)
 	{
-		ControlTree::NodeList::const_iterator node;
-		for (node = block->children().begin() ; 
-				node != block->children().end() ; node++)
+		for (CT::NodeList::const_iterator child = node->children().begin(),
+				end = node->children().end() ; child != end ; child++)
 		{
-			_translate(*node);
+			_translate(*child);
 		}	
 	}
 
-	void PTXToILTranslator::_translate(const ControlTree::IfThenNode* ifthen)
-	{
-		const ControlTree::Node* cond = ifthen->cond();
-
-		assertM(cond->rtype() == ControlTree::Node::Inst, 
-				"Invalid condition node");
-
-		ir::Instruction* ins =
-			static_cast<const ControlTree::InstNode*>(cond)->bb()->instructions.back();
-
-		ir::PTXInstruction& bra = static_cast<ir::PTXInstruction&>(*ins);
-
-		assertM(bra.opcode == ir::PTXInstruction::Bra, "Invalid instruction");
-		
-		_translate(cond);
-
-		switch (bra.pg.condition)
-		{
-			case ir::PTXOperand::Pred:
-			{
-				ir::ILIfLogicalZ if_logicalz;
-				if_logicalz.a = _translate(bra.pg);
-				_add(if_logicalz);
-				break;
-			}
-			case ir::PTXOperand::InvPred:
-			{
-				ir::ILIfLogicalNZ if_logicalnz;
-				if_logicalnz.a = _translate(bra.pg);
-				_add(if_logicalnz);
-				break;
-			}
-			default: assertM(false, "Invalid predicate condition");
-
-		}
-
-		_translate(ifthen->ifTrue());
-
-		_add(ir::ILEndIf());
-	}
-
-	void PTXToILTranslator::_translate(const ControlTree::IfThenElseNode* ifthenelse)
-	{
-		const ControlTree::Node* cond = ifthenelse->cond();
-
-		assertM(cond->rtype() == ControlTree::Node::Inst, 
-				"Invalid condition node");
-
-		ir::Instruction* ins =
-			static_cast<const ControlTree::InstNode*>(cond)->bb()->instructions.back();
-
-		ir::PTXInstruction& bra = static_cast<ir::PTXInstruction&>(*ins);
-
-		assertM(bra.opcode == ir::PTXInstruction::Bra, "Invalid instruction");
-		
-		_translate(cond);
-
-		switch (bra.pg.condition)
-		{
-			case ir::PTXOperand::Pred:
-			{
-				ir::ILIfLogicalZ if_logicalz;
-				if_logicalz.a = _translate(bra.pg);
-				_add(if_logicalz);
-				break;
-			}
-			case ir::PTXOperand::InvPred:
-			{
-				ir::ILIfLogicalNZ if_logicalnz;
-				if_logicalnz.a = _translate(bra.pg);
-				_add(if_logicalnz);
-				break;
-			}
-			default: assertM(false, "Invalid predicate condition");
-
-		}
-
-		_translate(ifthenelse->ifTrue());
-
-		_add(ir::ILElse());
-		_translate(ifthenelse->ifFalse());
-
-		_add(ir::ILEndIf());
-	}
-
-	ir::PTXInstruction* getLastIns(const ControlTree::Node* node)
+	ir::PTXInstruction* getLastIns(const CT::Node* node)
 	{
 		switch (node->rtype())
 		{
-			case ControlTree::Node::Inst:
+			case CT::Inst:
 			{
-				const ControlTree::InstNode* inode = 
-					static_cast<const ControlTree::InstNode*>(node);
+				const CT::InstNode* inode = 
+					static_cast<const CT::InstNode*>(node);
 
 				return static_cast<ir::PTXInstruction*>(
-						inode->bb()->instructions.back());
+						inode->insts().back());
 			}
-			case ControlTree::Node::Block:
+			case CT::Block:
 			{
-				const ControlTree::BlockNode* bnode =
-					static_cast<const ControlTree::BlockNode*>(node);
+				const CT::BlockNode* bnode =
+					static_cast<const CT::BlockNode*>(node);
 
 				return getLastIns(bnode->children().back());
 			}
@@ -212,53 +129,99 @@ namespace translator
 		}
 	}
 
-	void PTXToILTranslator::_translate(const ControlTree::NaturalLoopNode* naturalloop)
+	void PTXToILTranslator::_translate(const CT::IfThenNode* node)
 	{
+		// translate condition
+		assertM(node->cond()->rtype() == CT::Inst, "Invalid condition node");
+		_translate(node->cond());
+
+		// translate branch
+		ir::PTXInstruction* bra = getLastIns(node->cond());
+		assertM(bra->opcode == ir::PTXInstruction::Bra, "Invalid instruction");
+		_translateBra(*bra);
+		
+		// translate then
+		_translate(node->ifTrue());
+
+		// translate else (if necessary)
+		if (node->ifFalse() != NULL)
+		{
+			_add(ir::ILElse());
+			_translate(node->ifFalse());
+		}
+
+		// done!
+		_add(ir::ILEndIf());
+	}
+
+	void PTXToILTranslator::_translate(const CT::WhileNode* node)
+	{
+		// translate while
 		_add(ir::ILWhileLoop());
 
-		// iterate thru all the blocks except the last one
-		ControlTree::NodeList::const_iterator n;
-		for (n = naturalloop->children().begin() ; 
-				n != (--naturalloop->children().end()) ; n++)
+		// translate body (except last block)
+		CT::NodeList::const_iterator last = (--node->children().end());
+		for (CT::NodeList::const_iterator child = node->children().begin() ; 
+				child != last ; child++)
 		{
 			// the fall-through edge should be the next node in the loop
-			assertM((*n)->fallthrough() == 
-					*(++ControlTree::NodeList::const_iterator(n)),
-					"Invalid NaturalLoop node");
+			CT::NodeList::const_iterator next(child); next++;
+			assertM((*child)->fallthrough() == *next, "Invalid Natural loop");
+			_translate(*child);
 
-			_translate(*n);
-
-			// the last instruction of the node should be a branch.
-			ir::PTXInstruction* ins = getLastIns(*n);
-			assertM(ins->opcode == ir::PTXInstruction::Bra, "Invalid instruction");
-
-			// add loop exit
-			ir::ILIfLogicalNZ if_logicalnz;
-			if_logicalnz.a = _translate(ins->pg);
-			_add(if_logicalnz);
+			// translate side exit (invert logic)
+			ir::PTXInstruction* bra = getLastIns(*child);
+			assert(bra->opcode == ir::PTXInstruction::Bra);
+			bra->pg.condition = ir::PTXOperand::InvPred;
+			_translateBra(*bra);
 			_add(ir::ILBreak());
 			_add(ir::ILEndIf());
 		}
 
-		// the fall-through edge should be the loop exit
-		assertM((*n)->fallthrough() != *(naturalloop->children().begin()),
-				"Invalid NaturalLoop node");
+		// translate last block 
+		_translate(*last);
 
-		// translate the last block (we assume that the fall-through edge is 
-		// the loop exit)
-		_translate(*n);
+		// done!
+		_add(ir::ILEndLoop());
+	}
 
-		// the last instruction of the node should be a branch.
-		ir::PTXInstruction* ins = getLastIns(*n);
-		assertM(ins->opcode == ir::PTXInstruction::Bra, "Invalid instruction");
+	void PTXToILTranslator::_translate(const CT::NaturalNode* node)
+	{
+		// translate while
+		_add(ir::ILWhileLoop());
 
-		// add loop exit
-		ir::ILIfLogicalZ if_logicalz;
-		if_logicalz.a = _translate(ins->pg);
-		_add(if_logicalz);
+		// translate body (except last block)
+		CT::NodeList::const_iterator last = (--node->children().end());
+		for (CT::NodeList::const_iterator child = node->children().begin() ; 
+				child != last ; child++)
+		{
+			// the fall-through edge should be the next node in the loop
+			CT::NodeList::const_iterator next(child); next++;
+			assertM((*child)->fallthrough() == *next, "Invalid Natural loop");
+			_translate(*child);
+
+			// translate side exit (invert logic)
+			ir::PTXInstruction* bra = getLastIns(*child);
+			assert(bra->opcode == ir::PTXInstruction::Bra);
+			bra->pg.condition = ir::PTXOperand::InvPred;
+			_translateBra(*bra);
+			_add(ir::ILBreak());
+			_add(ir::ILEndIf());
+		}
+
+		// translate last block
+		assert((*last)->fallthrough() != *(node->children().begin()));
+		_translate(*last);
+
+		// translate side exit 
+		ir::PTXInstruction* bra = getLastIns(*last);
+		assert(bra->opcode == ir::PTXInstruction::Bra);
+		assert(bra->pg.condition == ir::PTXOperand::Pred);
+		_translateBra(*bra);
 		_add(ir::ILBreak());
 		_add(ir::ILEndIf());
 
+		// done!
 		_add(ir::ILEndLoop());
 	}
 
@@ -272,12 +235,15 @@ namespace translator
 			case ir::PTXInstruction::And:    _translateAnd(i);    break;
 			case ir::PTXInstruction::Atom:   _translateAtom(i);   break;
 			case ir::PTXInstruction::Bar:    _translateBar(i);    break;
-			case ir::PTXInstruction::Bra:    _translateBra(i);    break;
+			case ir::PTXInstruction::Bra:    /* control tree */   break;
+			case ir::PTXInstruction::Clz:    _translateClz(i);    break;
  			case ir::PTXInstruction::Cvt:    _translateCvt(i);    break;
 			case ir::PTXInstruction::Div:    _translateDiv(i);    break;
 			case ir::PTXInstruction::Ex2:    _translateEx2(i);    break;
  			case ir::PTXInstruction::Exit:   _translateExit(i);   break;
+			case ir::PTXInstruction::Fma:    _translateFma(i);    break;
  			case ir::PTXInstruction::Ld:     _translateLd(i);     break;
+ 			case ir::PTXInstruction::Ldu:    _translateLdu(i);    break;
 			case ir::PTXInstruction::Lg2:    _translateLg2(i);    break;
 			case ir::PTXInstruction::Mad:    _translateMad(i);    break;
 			case ir::PTXInstruction::Max:    _translateMax(i);    break;
@@ -291,6 +257,7 @@ namespace translator
 			case ir::PTXInstruction::Or:     _translateOr(i);     break;
 			case ir::PTXInstruction::Rcp:    _translateRcp(i);    break;
 			case ir::PTXInstruction::Rem:    _translateRem(i);    break;
+			case ir::PTXInstruction::Rsqrt:  _translateRsqrt(i);  break;
 			case ir::PTXInstruction::SelP:   _translateSelP(i);   break;
 			case ir::PTXInstruction::Set:    _translateSet(i);    break;
 			case ir::PTXInstruction::SetP:   _translateSetP(i);   break;
@@ -302,9 +269,7 @@ namespace translator
 			case ir::PTXInstruction::Xor:    _translateXor(i);    break;
 			default:
 			{
-				assertM(false, "Opcode \""
-						<< i.toString()
-						<< "\" not supported");
+				assertM(0, "Opcode \"" << i.toString() << "\" not supported");
 			}
 		}
 	}
@@ -420,41 +385,41 @@ namespace translator
 		switch (s)
 		{
 			case ir::PTXOperand::tid:    
-			switch (d)
-			{
-	        case ir::PTXOperand::ix: sr = ir::ILOperand::vTidInGrpX;     break;
-	        case ir::PTXOperand::iy: sr = ir::ILOperand::vTidInGrpY;     break;
-	        case ir::PTXOperand::iz: sr = ir::ILOperand::vTidInGrpZ;     break;
-	        default: assertM(false, "Invalid vector index " << d);
-			}
-			break;
+				switch (d)
+				{
+					case ir::PTXOperand::ix: sr = ir::ILOperand::vTidInGrpX; break;
+					case ir::PTXOperand::iy: sr = ir::ILOperand::vTidInGrpY; break;
+					case ir::PTXOperand::iz: sr = ir::ILOperand::vTidInGrpZ; break;
+					default: assertM(false, "Invalid vector index " << d);
+				}
+				break;
 			case ir::PTXOperand::ntid:   
-			switch (d)
-			{
-	        case ir::PTXOperand::ix: sr = ir::ILOperand::vNTidInGrpX;    break;
-	        case ir::PTXOperand::iy: sr = ir::ILOperand::vNTidInGrpY;    break;
-	        case ir::PTXOperand::iz: sr = ir::ILOperand::vNTidInGrpZ;    break;
-	        default: assertM(false, "Invalid vector index " << d);
-			}
-			break;
+				switch (d)
+				{
+					case ir::PTXOperand::ix: sr = ir::ILOperand::vNTidInGrpX; break;
+					case ir::PTXOperand::iy: sr = ir::ILOperand::vNTidInGrpY; break;
+					case ir::PTXOperand::iz: sr = ir::ILOperand::vNTidInGrpZ; break;
+					default: assertM(false, "Invalid vector index " << d);
+				}
+				break;
 			case ir::PTXOperand::ctaId:  
-			switch (d)
-			{
-	        case ir::PTXOperand::ix: sr = ir::ILOperand::vThreadGrpIdX;  break;
-	        case ir::PTXOperand::iy: sr = ir::ILOperand::vThreadGrpIdY;  break;
-	        case ir::PTXOperand::iz: sr = ir::ILOperand::vThreadGrpIdZ;  break;
-	        default: assertM(false, "Invalid vector index " << d);
-			}
-			break;
+				switch (d)
+				{
+					case ir::PTXOperand::ix: sr = ir::ILOperand::vThreadGrpIdX; break;
+					case ir::PTXOperand::iy: sr = ir::ILOperand::vThreadGrpIdY; break;
+					case ir::PTXOperand::iz: sr = ir::ILOperand::vThreadGrpIdZ; break;
+					default: assertM(false, "Invalid vector index " << d);
+				}
+				break;
 			case ir::PTXOperand::nctaId:
-			switch (d)
-			{
-	        case ir::PTXOperand::ix: sr = ir::ILOperand::vNThreadGrpIdX; break;
-	        case ir::PTXOperand::iy: sr = ir::ILOperand::vNThreadGrpIdY; break;
-	        case ir::PTXOperand::iz: sr = ir::ILOperand::vNThreadGrpIdZ; break;
-	        default: assertM(false, "Invalid vector index " << d);
-			}
-			break;
+				switch (d)
+				{
+					case ir::PTXOperand::ix: sr = ir::ILOperand::vNThreadGrpIdX; break;
+					case ir::PTXOperand::iy: sr = ir::ILOperand::vNThreadGrpIdY; break;
+					case ir::PTXOperand::iz: sr = ir::ILOperand::vNThreadGrpIdZ; break;
+					default: assertM(false, "Invalid vector index " << d);
+				}
+				break;
 			default: assertM(false, "Special Register " << s
 				<< " not supported");
 		}
@@ -725,7 +690,24 @@ namespace translator
 
 	void PTXToILTranslator::_translateBra(const ir::PTXInstruction &i)
 	{
-		// do nothing (bra instructions are handled using the control tree)
+		switch (i.pg.condition)
+		{
+			case ir::PTXOperand::Pred:
+			{
+				ir::ILIfLogicalZ if_logicalz;
+				if_logicalz.a = _translate(i.pg);
+				_add(if_logicalz);
+				break;
+			}
+			case ir::PTXOperand::InvPred:
+			{
+				ir::ILIfLogicalNZ if_logicalnz;
+				if_logicalnz.a = _translate(i.pg);
+				_add(if_logicalnz);
+				break;
+			}
+			default: assertM(false, "Invalid predicate condition");
+		}
 	}
 
 	void PTXToILTranslator::_convertSrc(const ir::PTXInstruction &i,
@@ -814,6 +796,15 @@ namespace translator
 			{
 				switch (i.type)
 				{
+					case ir::PTXOperand::s32:
+					{
+						// do nothing
+						ir::ILMov mov;
+						mov.d = d;
+						mov.a = a;
+						_add(mov);
+						return;
+                    }
 					case ir::PTXOperand::s64:
 					{
 						// zext
@@ -906,7 +897,7 @@ namespace translator
 						if (i.modifier & ir::PTXInstruction::sat) 
 						{
 							ir::ILMov mov;
-							mov.modifier = ir::ILInstruction::sat;
+							mov.clamp = ir::ILInstruction::Clamp;
 							mov.d = d;
 							mov.a = a;
 							_add(mov);
@@ -1103,6 +1094,43 @@ namespace translator
 				<< "\" not supported");
 	}
 
+	void PTXToILTranslator::_translateClz(const ir::PTXInstruction &i)
+	{
+		// clz returns [0, 32]
+		// ffb_hi returns [0, 31] and -1
+		//
+		// ffb_hi r0, i.a
+		// ushr r1, r0, 31
+		// cmov_logical i.d, r1, 32, r0
+		
+		ir::ILOperand r0 = _tempRegister();
+		ir::ILOperand r1 = _tempRegister();
+
+		// ffb_hi r0, i.a
+		{
+			ir::ILFfb_Hi ffb_hi;
+			ffb_hi.d = r0; ffb_hi.a = _translate(i.a);
+			_add(ffb_hi);
+		}
+
+		// ushr r1, r0, 31
+		{
+			ir::ILUshr ushr;
+			ushr.d = r1; ushr.a = r0; ushr.b = _translateLiteral(31);
+			_add(ushr);
+		}
+
+		// cmov_logical i.d, r1, 32, r0
+		{
+			ir::ILCmov_Logical cmov_logical;
+			cmov_logical.d = _translate(i.d); 
+			cmov_logical.a = r1; 
+			cmov_logical.b = _translateLiteral(32);
+			cmov_logical.c = r0;
+			_add(cmov_logical);
+		}
+	}
+
 	void PTXToILTranslator::_translateCvt(const ir::PTXInstruction &i)
 	{
 		ir::ILOperand a, d;
@@ -1263,6 +1291,16 @@ namespace translator
 		_add(end);
 	}
 
+	void PTXToILTranslator::_translateFma(const ir::PTXInstruction &i)
+	{
+		ir::ILFma fma;
+		fma.d = _translate(i.d);
+		fma.a = _translate(i.a);
+		fma.b = _translate(i.b);
+		fma.c = _translate(i.c);
+		_add(fma);
+	}
+
 	void PTXToILTranslator::_translateLd(const ir::PTXInstruction &i)
 	{
 		switch (i.addressSpace)
@@ -1410,7 +1448,7 @@ namespace translator
 
 							ir::ILLds_Load_Id lds_load_id;
 							lds_load_id.a = temp;
-							lds_load_id.d = _translate(*dst);
+							lds_load_id.d = _translate(*dst).x();
 							_add(lds_load_id);
 
 							offset += ir::PTXOperand::bytes(i.type);
@@ -1435,70 +1473,107 @@ namespace translator
 		}
 	}
 
+	void PTXToILTranslator::_translateLdu(const ir::PTXInstruction &i)
+	{
+		_translateLd(i);
+	}
+
 	void PTXToILTranslator::_translateLdSharedByte(const ir::PTXInstruction &i)
 	{
 		// LDS is byte-addressable and the result of a load is a dword. 
 		// However, the two least significant bits of the address must be set to 
 		// zero. Therefore, we need to extract the correct byte from the dword:
 		//
-		// and temp1, i.a, 3
+		// iadd temp3, i.a, i.a.offset
+		// iand temp1, temp3, 3
 		// imul temp1, temp1, 8
-		// and temp2, i.a, 0xFFFFFFFC
+		// iand temp2, temp3, 0xFFFFFFFC
 		// lds_load_id(1) i.d, temp2
 		// ishr i.d, i.d, temp1
 		// ishl i.d, i.d, 24
 		// ishr i.d, i.d, 24
 		
-		assertM(i.a.offset == 0, "Ld Shared Byte from offset not supported");
-
 		ir::ILOperand temp1 = _tempRegister();
 		ir::ILOperand temp2 = _tempRegister();
+		ir::ILOperand temp3 = _tempRegister();
+
+		// add the address and the offset
+		{
+			if (i.a.offset == 0)
+			{
+				ir::ILMov mov;
+				mov.d = temp3;
+				mov.a = _translate(i.a);
+				_add(mov);
+			} else
+			{
+				ir::ILIadd iadd;
+				iadd.d = temp3;
+				iadd.a = _translate(i.a);
+				iadd.b = _translateLiteral(i.a.offset);
+				_add(iadd);
+			}
+		}
 
 		// get the two lsb's of the address.
-		ir::ILAnd iland1;
-		iland1.d = temp1;
-		iland1.a = _translate(i.a);
-		iland1.b = _translateLiteral(3);
-		_add(iland1);
+		{
+			ir::ILIand iand;
+			iand.d = temp1;
+			iand.a = temp3;
+			iand.b = _translateLiteral(3);
+			_add(iand);
+		}
 
 		// calculate the offset inside the dword
-		ir::ILImul imul;
-		imul.d = temp1;
-		imul.a = temp1;
-		imul.b = _translateLiteral(8);
-		_add(imul);
+		{
+			ir::ILImul imul;
+			imul.d = temp1;
+			imul.a = temp1;
+			imul.b = _translateLiteral(8);
+			_add(imul);
+		}
 
 		// set the two lsb's of the address to zero
-		ir::ILAnd iland2;
-		iland2.d = temp2;
-		iland2.a = _translate(i.a);
-		iland2.b = _translateLiteral((int)0xFFFFFFFC);
-		_add(iland2);
+		{
+			ir::ILIand iand;
+			iand.d = temp2;
+			iand.a = temp3;
+			iand.b = _translateLiteral((int)0xFFFFFFFC);
+			_add(iand);
+		}
 
 		// load dword
-		ir::ILLds_Load_Id lds_load_id;
-		lds_load_id.d = _translate(i.d);
-		lds_load_id.a = temp2;
-		_add(lds_load_id);
+		{
+			ir::ILLds_Load_Id lds_load_id;
+			lds_load_id.d = _translate(i.d).x();
+			lds_load_id.a = temp2;
+			_add(lds_load_id);
+		}
 
 		// extract the correct byte from the dword
-		ir::ILIshr ishr1;
-		ishr1.d = _translate(i.d);
-		ishr1.a = _translate(i.d);
-		ishr1.b = temp1;
-		_add(ishr1);
+		{
+			ir::ILIshr ishr;
+			ishr.d = _translate(i.d);
+			ishr.a = _translate(i.d);
+			ishr.b = temp1;
+			_add(ishr);
+		}
 
-		ir::ILIshl ishl;
-		ishl.d = _translate(i.d);
-		ishl.a = _translate(i.d);
-		ishl.b = _translateLiteral(24);
-		_add(ishl);
+		{
+			ir::ILIshl ishl;
+			ishl.d = _translate(i.d);
+			ishl.a = _translate(i.d);
+			ishl.b = _translateLiteral(24);
+			_add(ishl);
+		}
 
-		ir::ILIshr ishr2;
-		ishr2.d = _translate(i.d);
-		ishr2.a = _translate(i.d);
-		ishr2.b = _translateLiteral(24);
-		_add(ishr2);
+		{
+			ir::ILIshr ishr;
+			ishr.d = _translate(i.d);
+			ishr.a = _translate(i.d);
+			ishr.b = _translateLiteral(24);
+			_add(ishr);
+		}
 	}
 
 	void PTXToILTranslator::_translateLdSharedDword(const ir::PTXInstruction &i)
@@ -1507,7 +1582,7 @@ namespace translator
 		{
 			ir::ILLds_Load_Id lds_load_id;
 			lds_load_id.a = _translate(i.a);
-			lds_load_id.d = _translate(i.d);
+			lds_load_id.d = _translate(i.d).x();
 			_add(lds_load_id);
 		} else
 		{
@@ -1521,7 +1596,7 @@ namespace translator
 
 			ir::ILLds_Load_Id lds_load_id;
 			lds_load_id.a = temp;
-			lds_load_id.d = _translate(i.d);
+			lds_load_id.d = _translate(i.d).x();
 			_add(lds_load_id);
 		}
 	}
@@ -1999,6 +2074,678 @@ namespace translator
 		}
 	}
 
+	void PTXToILTranslator::_translateRsqrt(const ir::PTXInstruction &i)
+	{
+		// IEEE 754-compliant
+		// mdef(331)_out(1)_in(1)
+		// mov r0, in0
+		// 
+		// dcl_literal l0, 0x00000000, 0x7FFFFFFF, 0x7F800000, 0x00000000
+		// and r0._yz_, r0.x, l0
+		// 
+		// dcl_literal l1, 0x00000000, 0x00000000, 0x00000000, 0x00000000
+		// ieq r0.__z_, r0.z, l1
+		// 
+		// dcl_literal l2, 0x00000000, 0x00000000, 0x00000000, 0x00000000
+		// ine r0.___w, r0.y, l2
+		// and r0.__z_, r0.z, r0.w
+		// 
+		// dcl_literal l3, 0x00000000, 0x00000000, 0x00000000, 0x00000000
+		// ilt r1.x___, r0.x, l3
+		// and r0.___w, r0.w, r1.x
+		// ior r0.__z_, r0.z, r0.w
+		// 
+		// dcl_literal l4, 0x7F800000, 0x7F800000, 0x7F800000, 0x7F800000
+		// ilt r0._y__, l4, r0.y
+		// ior r0.__z_, r0.z, r0.y
+		// if_logicalnz r0.z
+		//     
+		//     dcl_literal l5, 0x007FFFFF, 0x007FFFFF, 0x007FFFFF, 0x007FFFFF
+		//     and r0.__z_, r0.x, l5
+		//     itof r0.__z_, r0.z
+		//     
+		//     dcl_literal l6, 0x7F800000, 0x007FFFFF, 0x00000000, 0x00000000
+		//     and r1.xy__, r0.z, l6
+		//     
+		//     dcl_literal l7, 0x00000017, 0x00000017, 0x00000017, 0x00000017
+		//     ishr r0.__z_, r1.x, l7
+		//     
+		//     dcl_literal l8, 0x00000018, 0x00000018, 0x00000018, 0x00000018
+		//     iadd r0.__z_, r0.z, l8
+		//     
+		//     dcl_literal l9, 0x00800000, 0x00800000, 0x00800000, 0x00800000
+		//     ior r1.x___, r1.y, l9
+		//     
+		//     dcl_literal l10, 0x00000096, 0x00000096, 0x00000096, 0x00000096
+		//     iadd r0.__z_, l10, r0.z_neg(xyzw)
+		//     
+		//     dcl_literal l11, 0x00000017, 0x00000017, 0x00000017, 0x00000017
+		//     ilt r1._y__, l11, r0.z
+		//     
+		//     dcl_literal l12, 0x00000018, 0x00000018, 0x00000018, 0x00000018
+		//     cmov_logical r0.__z_, r1.y, l12, r0.z
+		//     
+		//     dcl_literal l13, 0x00000000, 0x00000000, 0x00000000, 0x00000000
+		//     ilt r1._y__, l13, r0.z
+		//     ishr r1.__z_, r1.x, r0.z
+		//     inegate r0.__z_, r0.z
+		//     
+		//     dcl_literal l14, 0x00000017, 0x00000017, 0x00000017, 0x00000017
+		//     ishl r0.__z_, r0.z, l14
+		//     iadd r0.__z_, r1.x, r0.z
+		//     cmov_logical r0.__z_, r1.y, r1.z, r0.z
+		//     rsq_vec r0.__z_, r0.z
+		//     
+		//     dcl_literal l15, 0x7F800000, 0x7F800000, 0x7F800000, 0x7F800000
+		//     and r1.x___, r0.z, l15
+		//     if_logicalz r1.x
+		//         
+		//         dcl_literal l16, 0x007FFFFF, 0x007FFFFF, 0x007FFFFF, 0x007FFFFF
+		//         and r1._y__, r0.z, l16
+		//         itof r1._y__, r1.y
+		//         
+		//         dcl_literal l17, 0x00000000, 0x7F800000, 0x007FFFFF, 0x00000000
+		//         and r1._yz_, r1.y, l17
+		//         
+		//         dcl_literal l18, 0x00000017, 0x00000017, 0x00000017, 0x00000017
+		//         ishr r1._y__, r1.y, l18
+		//         
+		//         dcl_literal l19, 0x0000000C, 0x0000000C, 0x0000000C, 0x0000000C
+		//         iadd r1._y__, r1.y, l19
+		//         
+		//         dcl_literal l20, 0x00800000, 0x00800000, 0x00800000, 0x00800000
+		//         ior r1.__z_, r1.z, l20
+		//         
+		//         dcl_literal l21, 0x00000096, 0x00000096, 0x00000096, 0x00000096
+		//         iadd r1._y__, l21, r1.y_neg(xyzw)
+		//         
+		//         dcl_literal l22, 0x00000017, 0x00000017, 0x00000017, 0x00000017
+		//         ilt r1.___w, l22, r1.y
+		//         
+		//         dcl_literal l23, 0x00000018, 0x00000018, 0x00000018, 0x00000018
+		//         cmov_logical r1._y__, r1.w, l23, r1.y
+		//         
+		//         dcl_literal l24, 0x00000000, 0x00000000, 0x00000000, 0x00000000
+		//         ilt r1.___w, l24, r1.y
+		//         ishr r2.x___, r1.z, r1.y
+		//         inegate r1._y__, r1.y
+		//         
+		//         dcl_literal l25, 0x00000017, 0x00000017, 0x00000017, 0x00000017
+		//         ishl r1._y__, r1.y, l25
+		//         iadd r1._y__, r1.z, r1.y
+		//         cmov_logical r1._y__, r1.w, r2.x, r1.y
+		//     else
+		//         
+		//         dcl_literal l26, 0x7FFFFFFF, 0x7FFFFFFF, 0x7FFFFFFF, 0x7FFFFFFF
+		//         and r0.__z_, r0.z, l26
+		//         
+		//         dcl_literal l27, 0x00000017, 0x00000017, 0x00000017, 0x00000017
+		//         ishr r1.x___, r1.x, l27
+		//         
+		//         dcl_literal l28, 0x06000000, 0x06000000, 0x06000000, 0x06000000
+		//         iadd r0.__z_, r0.z, l28
+		//         
+		//         dcl_literal l29, 0xFFFFFF8D, 0xFFFFFF8D, 0xFFFFFF8D, 0xFFFFFF8D
+		//         iadd r1.x___, r1.x, l29
+		//         
+		//         dcl_literal l30, 0x0000007F, 0x0000007F, 0x0000007F, 0x0000007F
+		//         ilt r1.x___, l30, r1.x
+		//         
+		//         dcl_literal l31, 0x7F800000, 0x7F800000, 0x7F800000, 0x7F800000
+		//         cmov_logical r1._y__, r1.x, l31, r0.z
+		//     endif
+		//     
+		//     dcl_literal l32, 0xFFC00000, 0xFFC00000, 0xFFC00000, 0xFFC00000
+		//     cmov_logical r0.__z_, r0.w, l32, r1.y
+		//     
+		//     dcl_literal l33, 0x7FC00000, 0x7FC00000, 0x7FC00000, 0x7FC00000
+		//     ior r0.___w, r0.x, l33
+		//     cmov_logical r0.x___, r0.y, r0.w, r0.z
+		// else
+		//     rsq_vec r0.x___, r0.x
+		// endif
+		// mov out0, r0
+		// mend
+
+		ir::ILOperand r0 = _tempRegister();
+		ir::ILOperand r1 = _tempRegister();
+		ir::ILOperand r2 = _tempRegister();
+
+		// mov r0, in0
+		{
+			ir::ILMov mov;
+			mov.d = r0;
+			mov.a = _translate(i.a);
+			_add(mov);
+		}
+
+		// dcl_literal l0, 0x00000000, 0x7FFFFFFF, 0x7F800000, 0x00000000
+		// and r0._yz_, r0.x, l0
+		{
+			// TODO Implement multi-valued literals. Otherwise, we need to use
+			// two and's.
+			ir::ILAnd and1;
+			and1.d = r0._y__(); 
+			and1.a = r0.x(); 
+			and1.b = _translateLiteral((int)0x7FFFFFFF);
+			_add(and1);
+
+			ir::ILAnd and2;
+			and2.d = r0.__z_();
+			and2.a = r0.x();
+			and2.b = _translateLiteral((int)0x7F800000);
+			_add(and2);
+		}
+
+		// dcl_literal l1, 0x00000000, 0x00000000, 0x00000000, 0x00000000
+		// ieq r0.__z_, r0.z, l1
+		{
+			ir::ILIeq ieq;
+			ieq.d = r0.__z_();
+			ieq.a = r0.z();
+			ieq.b = _translateLiteral(0);
+			_add(ieq);
+		}
+
+		// dcl_literal l2, 0x00000000, 0x00000000, 0x00000000, 0x00000000
+		// ine r0.___w, r0.y, l2
+		// and r0.__z_, r0.z, r0.w
+		{
+			ir::ILIne ine;
+			ine.d = r0.___w();
+			ine.a = r0.y();
+			ine.b = _translateLiteral(0);
+			_add(ine);
+
+			ir::ILAnd and1;
+			and1.d = r0.__z_();
+			and1.a = r0.z();
+			and1.b = r0.w();
+			_add(and1);
+		}
+
+		// dcl_literal l3, 0x00000000, 0x00000000, 0x00000000, 0x00000000
+		// ilt r1.x___, r0.x, l3
+		// and r0.___w, r0.w, r1.x
+		// ior r0.__z_, r0.z, r0.w
+		{
+			ir::ILIlt ilt;
+			ilt.d = r1.x___();
+			ilt.a = r0.x();
+			ilt.b = _translateLiteral(0);
+			_add(ilt);
+
+			ir::ILAnd and1;
+			and1.d = r0.___w();
+			and1.a = r0.w();
+			and1.b = r1.x();
+			_add(and1);
+
+			ir::ILIor ior;
+			ior.d = r0.__z_();
+			ior.a = r0.z();
+			ior.b = r0.w();
+			_add(ior);
+		}
+
+		// dcl_literal l4, 0x7F800000, 0x7F800000, 0x7F800000, 0x7F800000
+		// ilt r0._y__, l4, r0.y
+		// ior r0.__z_, r0.z, r0.y
+		{
+			ir::ILIlt ilt;
+			ilt.d = r0._y__();
+			ilt.a = _translateLiteral((int)0x7F800000);
+			ilt.b = r0.y();
+			_add(ilt);
+
+			ir::ILIor ior;
+			ior.d = r0.__z_();
+			ior.a = r0.z();
+			ior.b = r0.y();
+			_add(ior);
+		}
+
+		// if_logicalnz r0.z
+		{
+			ir::ILIfLogicalNZ if_logicalnz;
+			if_logicalnz.a = r0.z();
+			_add(if_logicalnz);
+		}
+		
+		//     dcl_literal l5, 0x007FFFFF, 0x007FFFFF, 0x007FFFFF, 0x007FFFFF
+		//     and r0.__z_, r0.x, l5
+		//     itof r0.__z_, r0.z
+		{
+			ir::ILAnd and1;
+			and1.d = r0.__z_();
+			and1.a = r0.x();
+			and1.b = _translateLiteral((int)0x007FFFFF);
+			_add(and1);
+
+			ir::ILItoF itof;
+			itof.d = r0.__z_();
+			itof.a = r0.z();
+			_add(itof);
+		}
+
+		//     dcl_literal l6, 0x7F800000, 0x007FFFFF, 0x00000000, 0x00000000
+		//     and r1.xy__, r0.z, l6
+		{
+			// TODO Implement multi-valued literals.
+			ir::ILAnd and1;
+			and1.d = r1.x___();
+			and1.a = r0.z();
+			and1.b = _translateLiteral((int)0x7F800000);
+			_add(and1);
+
+			ir::ILAnd and2;
+			and2.d = r1._y__();
+			and2.a = r0.z();
+			and2.b = _translateLiteral((int)0x007FFFFF);
+			_add(and2);
+		}
+
+		//     dcl_literal l7, 0x00000017, 0x00000017, 0x00000017, 0x00000017
+		//     ishr r0.__z_, r1.x, l7
+		{
+			ir::ILIshr ishr;
+			ishr.d = r0.__z_();
+			ishr.a = r1.x();
+			ishr.b = _translateLiteral((int)0x00000017);
+			_add(ishr);
+		}
+
+		//     dcl_literal l8, 0x00000018, 0x00000018, 0x00000018, 0x00000018
+		//     iadd r0.__z_, r0.z, l8
+		{
+			ir::ILIadd iadd;
+			iadd.d = r0.__z_();
+			iadd.a = r0.z();
+			iadd.b = _translateLiteral((int)0x00000018);
+			_add(iadd);
+		}
+
+		//     dcl_literal l9, 0x00800000, 0x00800000, 0x00800000, 0x00800000
+		//     ior r1.x___, r1.y, l9
+		{
+			ir::ILIor ior;
+			ior.d = r1.x___();
+			ior.a = r1.y();
+			ior.b = _translateLiteral((int)0x00800000);
+			_add(ior);
+		}
+
+		//     dcl_literal l10, 0x00000096, 0x00000096, 0x00000096, 0x00000096
+		//     iadd r0.__z_, l10, r0.z_neg(xyzw)
+		{
+			ir::ILIadd iadd;
+			iadd.d = r0.__z_();
+			iadd.a = _translateLiteral((int)0x00000096);
+			iadd.b = r0.z().neg();
+			_add(iadd);
+		}
+
+		//     dcl_literal l11, 0x00000017, 0x00000017, 0x00000017, 0x00000017
+		//     ilt r1._y__, l11, r0.z
+		{
+			ir::ILIlt ilt;
+			ilt.d = r1._y__();
+			ilt.a = _translateLiteral((int)0x00000017);
+			ilt.b = r0.z();
+			_add(ilt);
+		}
+
+		//     dcl_literal l12, 0x00000018, 0x00000018, 0x00000018, 0x00000018
+		//     cmov_logical r0.__z_, r1.y, l12, r0.z
+		{
+			ir::ILCmov_Logical cmov_logical;
+			cmov_logical.d = r0.__z_();
+			cmov_logical.a = r1.y();
+			cmov_logical.b = _translateLiteral((int)0x00000018);
+			cmov_logical.c = r0.z();
+			_add(cmov_logical);
+		}
+
+		//     dcl_literal l13, 0x00000000, 0x00000000, 0x00000000, 0x00000000
+		//     ilt r1._y__, l13, r0.z
+		//     ishr r1.__z_, r1.x, r0.z
+		//     inegate r0.__z_, r0.z
+		{
+			ir::ILIlt ilt;
+			ilt.d = r1._y__();
+			ilt.a = _translateLiteral(0);
+			ilt.b = r0.z();
+			_add(ilt);
+
+			ir::ILIshr ishr;
+			ishr.d = r1.__z_();
+			ishr.a = r1.x();
+			ishr.b = r0.z();
+			_add(ishr);
+
+			ir::ILInegate inegate;
+			inegate.d = r0.__z_();
+			inegate.a = r0.x();
+			_add(inegate);
+		}
+
+		//     dcl_literal l14, 0x00000017, 0x00000017, 0x00000017, 0x00000017
+		//     ishl r0.__z_, r0.z, l14
+		//     iadd r0.__z_, r1.x, r0.z
+		//     cmov_logical r0.__z_, r1.y, r1.z, r0.z
+		//     rsq_vec r0.__z_, r0.z
+		{
+			ir::ILIshl ishl;
+			ishl.d = r0.__z_();
+			ishl.a = r0.z();
+			ishl.b = _translateLiteral((int)0x00000017);
+			_add(ishl);
+
+			ir::ILIadd iadd;
+			iadd.d = r0.__z_();
+			iadd.a = r1.x();
+			iadd.b = r0.z();
+			_add(iadd);
+
+			ir::ILCmov_Logical cmov_logical;
+			cmov_logical.d = r0.__z_();
+			cmov_logical.a = r1.y();
+			cmov_logical.b = r1.z();
+			cmov_logical.c = r0.z();
+			_add(cmov_logical);
+
+			ir::ILRsq_Vec rsq_vec;
+			rsq_vec.d = r0.__z_();
+			rsq_vec.a = r0.z();
+			_add(rsq_vec);
+		}
+
+		//     dcl_literal l15, 0x7F800000, 0x7F800000, 0x7F800000, 0x7F800000
+		//     and r1.x___, r0.z, l15
+		//     if_logicalz r1.x
+		{
+			ir::ILAnd and1;
+			and1.d = r1.x___();
+			and1.a = r0.z();
+			and1.b = _translateLiteral((int)0x7F800000);
+			_add(and1);
+
+			ir::ILIfLogicalZ if_logicalz;
+			if_logicalz.a = r1.x();
+			_add(if_logicalz);
+		}
+		
+		//         dcl_literal l16, 0x007FFFFF, 0x007FFFFF, 0x007FFFFF, 0x007FFFFF
+		//         and r1._y__, r0.z, l16
+		//         itof r1._y__, r1.y
+		{
+			ir::ILAnd and1;
+			and1.d = r1._y__();
+			and1.a = r0.z();
+			and1.b = _translateLiteral((int)0x007FFFFF);
+			_add(and1);
+
+			ir::ILItoF itof;
+			itof.d = r1._y__();
+			itof.a = r1.y();
+			_add(itof);
+		}
+
+		//         dcl_literal l17, 0x00000000, 0x7F800000, 0x007FFFFF, 0x00000000
+		//         and r1._yz_, r1.y, l17
+		{
+			// TODO Implement multi-valued literals.
+			ir::ILAnd and1;
+			and1.d = r1._y__();
+			and1.a = r1.y();
+			and1.b = _translateLiteral((int)0x7F800000);
+			_add(and1);
+
+			ir::ILAnd and2;
+			and2.d = r1.__z_();
+			and2.a = r1.y();
+			and2.b = _translateLiteral((int)0x007FFFFF);
+			_add(and2);
+		}
+
+		//         dcl_literal l18, 0x00000017, 0x00000017, 0x00000017, 0x00000017
+		//         ishr r1._y__, r1.y, l18
+		{
+			ir::ILIshr ishr;
+			ishr.d = r1._y__();
+			ishr.a = r1.y();
+			ishr.b = _translateLiteral((int)0x00000017);
+			_add(ishr);
+		}
+
+		//         dcl_literal l19, 0x0000000C, 0x0000000C, 0x0000000C, 0x0000000C
+		//         iadd r1._y__, r1.y, l19
+		{
+			ir::ILIadd iadd;
+			iadd.d = r1._y__();
+			iadd.a = r1.y();
+			iadd.b = _translateLiteral((int)0x0000000C);
+			_add(iadd);
+		}
+
+		//         dcl_literal l20, 0x00800000, 0x00800000, 0x00800000, 0x00800000
+		//         ior r1.__z_, r1.z, l20
+		{
+			ir::ILIor ior;
+			ior.d = r1.__z_();
+			ior.a = r1.z();
+			ior.b = _translateLiteral((int)0x00800000);
+			_add(ior);
+		}
+
+		//         dcl_literal l21, 0x00000096, 0x00000096, 0x00000096, 0x00000096
+		//         iadd r1._y__, l21, r1.y_neg(xyzw)
+		{
+			ir::ILIadd iadd;
+			iadd.d = r1._y__();
+			iadd.a = _translateLiteral((int)0x00000096);
+			iadd.b = r1.y().neg();
+			_add(iadd);
+		}
+
+		//         dcl_literal l22, 0x00000017, 0x00000017, 0x00000017, 0x00000017
+		//         ilt r1.___w, l22, r1.y
+		{
+			ir::ILIlt ilt;
+			ilt.d = r1.___w();
+			ilt.a = _translateLiteral((int)0x00000017);
+			ilt.b = r1.y();
+			_add(ilt);
+		}
+
+		//         dcl_literal l23, 0x00000018, 0x00000018, 0x00000018, 0x00000018
+		//         cmov_logical r1._y__, r1.w, l23, r1.y
+		{
+			ir::ILCmov_Logical cmov_logical;
+			cmov_logical.d = r1._y__();
+			cmov_logical.a = r1.w();
+			cmov_logical.b = _translateLiteral((int)0x00000018);
+			cmov_logical.c = r1.y();
+			_add(cmov_logical);
+		}
+
+		//         dcl_literal l24, 0x00000000, 0x00000000, 0x00000000, 0x00000000
+		//         ilt r1.___w, l24, r1.y
+		//         ishr r2.x___, r1.z, r1.y
+		//         inegate r1._y__, r1.y
+		{
+			ir::ILIlt ilt;
+			ilt.d = r1.___w();
+			ilt.a = _translateLiteral(0);
+			ilt.b = r1.y();
+			_add(ilt);
+
+			ir::ILIshr ishr;
+			ishr.d = r2.x___();
+			ishr.a = r1.z();
+			ishr.b = r1.y();
+			_add(ishr);
+
+			ir::ILInegate inegate;
+			inegate.d = r1._y__();
+			inegate.a = r1.y();
+			_add(inegate);
+		}
+
+		//         dcl_literal l25, 0x00000017, 0x00000017, 0x00000017, 0x00000017
+		//         ishl r1._y__, r1.y, l25
+		//         iadd r1._y__, r1.z, r1.y
+		//         cmov_logical r1._y__, r1.w, r2.x, r1.y
+		{
+			ir::ILIshl ishl;
+			ishl.d = r1._y__();
+			ishl.a = r1.y();
+			ishl.b = _translateLiteral((int)0x00000017);
+			_add(ishl);
+
+			ir::ILIadd iadd;
+			iadd.d = r1._y__();
+			iadd.a = r1.z();
+			iadd.b = r1.y();
+			_add(iadd);
+
+			ir::ILCmov_Logical cmov_logical;
+			cmov_logical.d = r1._y__();
+			cmov_logical.a = r1.w();
+			cmov_logical.b = r2.x();
+			cmov_logical.c = r1.y();
+			_add(cmov_logical);
+		}
+
+		//     else
+		{
+			_add(ir::ILElse());
+		}
+		
+		//         dcl_literal l26, 0x7FFFFFFF, 0x7FFFFFFF, 0x7FFFFFFF, 0x7FFFFFFF
+		//         and r0.__z_, r0.z, l26
+		{
+			ir::ILAnd and1;
+			and1.d = r0.__z_();
+			and1.a = r0.z();
+			and1.b = _translateLiteral((int)0x7FFFFFFF);
+			_add(and1);
+		}
+
+		//         dcl_literal l27, 0x00000017, 0x00000017, 0x00000017, 0x00000017
+		//         ishr r1.x___, r1.x, l27
+		{
+			ir::ILIshr ishr;
+			ishr.d = r1.x___();
+			ishr.a = r1.x();
+			ishr.b = _translateLiteral((int)0x00000017);
+			_add(ishr);
+		}
+
+		//         dcl_literal l28, 0x06000000, 0x06000000, 0x06000000, 0x06000000
+		//         iadd r0.__z_, r0.z, l28
+		{
+			ir::ILIadd iadd;
+			iadd.d = r0.__z_();
+			iadd.a = r0.z();
+			iadd.b = _translateLiteral((int)0x06000000);
+			_add(iadd);
+		}
+
+		//         dcl_literal l29, 0xFFFFFF8D, 0xFFFFFF8D, 0xFFFFFF8D, 0xFFFFFF8D
+		//         iadd r1.x___, r1.x, l29
+		{
+			ir::ILIadd iadd;
+			iadd.d = r1.x___();
+			iadd.a = r1.x();
+			iadd.b = _translateLiteral((int)0xFFFFFF8D);
+			_add(iadd);
+		}
+
+		//         dcl_literal l30, 0x0000007F, 0x0000007F, 0x0000007F, 0x0000007F
+		//         ilt r1.x___, l30, r1.x
+		{
+			ir::ILIlt ilt;
+			ilt.d = r1.x___();
+			ilt.a = _translateLiteral((int)0x0000007F);
+			ilt.b = r1.x();
+			_add(ilt);
+		}
+
+		//         dcl_literal l31, 0x7F800000, 0x7F800000, 0x7F800000, 0x7F800000
+		//         cmov_logical r1._y__, r1.x, l31, r0.z
+		{
+			ir::ILCmov_Logical cmov_logical;
+			cmov_logical.d = r1._y__();
+			cmov_logical.a = r1.x();
+			cmov_logical.b = _translateLiteral((int)0x7F800000);
+			cmov_logical.c = r0.z();
+			_add(cmov_logical);
+		}
+
+		//     endif
+		{
+			_add(ir::ILEndIf());
+		}
+
+		//     dcl_literal l32, 0xFFC00000, 0xFFC00000, 0xFFC00000, 0xFFC00000
+		//     cmov_logical r0.__z_, r0.w, l32, r1.y
+		{
+			ir::ILCmov_Logical cmov_logical;
+			cmov_logical.d = r0.__z_();
+			cmov_logical.a = r0.w();
+			cmov_logical.b = _translateLiteral((int)0xFFC00000);
+			cmov_logical.c = r1.y();
+			_add(cmov_logical);
+		}
+
+		//     dcl_literal l33, 0x7FC00000, 0x7FC00000, 0x7FC00000, 0x7FC00000
+		//     ior r0.___w, r0.x, l33
+		//     cmov_logical r0.x___, r0.y, r0.w, r0.z
+		{
+			ir::ILIor ior;
+			ior.d = r0.___w();
+			ior.a = r0.x();
+			ior.b = _translateLiteral((int)0x7FC00000);
+			_add(ior);
+
+			ir::ILCmov_Logical cmov_logical;
+			cmov_logical.d = r0.x___();
+			cmov_logical.a = r0.y();
+			cmov_logical.b = r0.w();
+			cmov_logical.c = r0.z();
+			_add(cmov_logical);
+		}
+
+		// else
+		{
+			_add(ir::ILElse());
+		}
+
+		//     rsq_vec r0.x___, r0.x
+		{
+			ir::ILRsq_Vec rsq_vec;
+			rsq_vec.d = r0.x___();
+			rsq_vec.a = r0.x();
+			_add(rsq_vec);
+		}
+
+		// endif
+		{
+			_add(ir::ILEndIf());
+		}
+
+		// mov out0, r0
+		{
+			ir::ILMov mov;
+			mov.d = _translate(i.d);
+			mov.a = r0;
+			_add(mov);
+		}
+
+		// mend
+	}
+
 	void PTXToILTranslator::_translateSelP(const ir::PTXInstruction &i)
 	{
 		// Note that IL semantic is cmov_logical dest, pred, iftrue, iffalse
@@ -2368,7 +3115,7 @@ namespace translator
 							_add(iadd);
 
 							ir::ILLds_Store_Id lds_store_id;
-							lds_store_id.a = _translate(*src);
+							lds_store_id.a = _translate(*src).x();
 							lds_store_id.d = temp;
 							_add(lds_store_id);
 
@@ -2491,13 +3238,13 @@ namespace translator
 		_add(ishl);
 
 		ir::ILLds_And_Resource lds_and_resource;
-		lds_and_resource.d = _translate(i.d);
-		lds_and_resource.a = temp5;
+		lds_and_resource.d = _translate(i.d).x();
+		lds_and_resource.a = temp5.x();
 		_add(lds_and_resource);
 
 		ir::ILLds_Or_Resource lds_or_resource;
-		lds_or_resource.d = _translate(i.d);
-		lds_or_resource.a = temp2;
+		lds_or_resource.d = _translate(i.d).x();
+		lds_or_resource.a = temp2.x();
 		_add(lds_or_resource);
 	}
 
@@ -2506,7 +3253,7 @@ namespace translator
 		if (i.d.offset == 0)
 		{
 			ir::ILLds_Store_Id lds_store_id;
-			lds_store_id.a = _translate(i.a);
+			lds_store_id.a = _translate(i.a).x();
 			lds_store_id.d = _translate(i.d);
 			_add(lds_store_id);
 		} else
@@ -2520,7 +3267,7 @@ namespace translator
 			_add(iadd);
 
 			ir::ILLds_Store_Id lds_store_id;
-			lds_store_id.a = _translate(i.a);
+			lds_store_id.a = _translate(i.a).x();
 			lds_store_id.d = temp;
 			_add(lds_store_id);
 		}
@@ -2528,9 +3275,9 @@ namespace translator
 
 	void PTXToILTranslator::_translateSub(const ir::PTXInstruction& i)
 	{
-		// There's no sub instruction in IL so we need to use add
 		switch (i.type)
 		{
+			// There's no isub instruction in IL so we need to use add
 			case ir::PTXOperand::s32:
 			case ir::PTXOperand::u32:
 			case ir::PTXOperand::u64:
@@ -2672,7 +3419,7 @@ namespace translator
 		return stream.str();
 	}
 
- 	void PTXToILTranslator::_addKernelPrefix()
+ 	void PTXToILTranslator::_addKernelPrefix(const ExecutableKernel *k)
  	{
 		report("Adding Kernel Prefix");
 
@@ -2741,8 +3488,8 @@ namespace translator
 		_ilKernel->_statements.push_front(dcl_cb0);
 		report("Added \'" << dcl_cb0.toString() << "\'");
 
-		unsigned int totalSharedMemorySize = _kernel->sharedMemorySize() +
-			_kernel->externSharedMemorySize();
+		unsigned int totalSharedMemorySize = k->sharedMemorySize() +
+			k->externSharedMemorySize();
 		if (totalSharedMemorySize > 0)
 		{
 			ir::ILStatement dcl_lds(ir::ILStatement::LocalDataShareDcl);

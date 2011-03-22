@@ -178,6 +178,7 @@ namespace ir {
 		PTXOperand(AddressMode m, DataType t, const std::string& identifier, 
 			int o = 0, Vec v = v1);
 		PTXOperand(AddressMode m, const std::string& identifier);
+		PTXOperand(long long unsigned int v, DataType t = u64);
 		~PTXOperand();
 
 		std::string toString() const;

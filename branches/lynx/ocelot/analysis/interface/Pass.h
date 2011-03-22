@@ -7,9 +7,11 @@
 #ifndef PASS_H_INCLUDED
 #define PASS_H_INCLUDED
 
+// Standard Library Includes
 #include <string>
 #include <list>
 
+// Forward Declarations
 namespace ir
 {
 	class Kernel;
@@ -42,7 +44,8 @@ namespace analysis
 				DominatorTreeAnalysis = 0x2,
 				PostDominatorTreeAnalysis = 0x4,
 				DataflowGraphAnalysis = 0x8,
-				StaticSingleAssignment = 0x10
+				StaticSingleAssignment = 0x10,
+				DivergenceAnalysis = 0x20
 			};
 			
 		public:

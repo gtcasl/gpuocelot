@@ -29,7 +29,9 @@ namespace analysis
 				RemoveBarriers = 0x1,
 				ReverseIfConversion = 0x2,
 				SubkernelFormation = 0x4,
-				StructuralTransform = 0x8
+				StructuralTransform = 0x8,
+				MIMDThreadScheduling = 0x10,
+				SyncElimination = 0x20
 			};
 	
 		public:
@@ -47,6 +49,9 @@ namespace analysis
 			
 			/*! \brief The number of registers to allocate */
 			unsigned int registerCount;
+			
+			/*! \brief The target sub-kernel size */
+			unsigned int subkernelSize;
 			
 			/*! \brief Print out the CFG of optimized kernels */
 			bool cfg;

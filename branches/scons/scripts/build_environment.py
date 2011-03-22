@@ -239,8 +239,9 @@ def Environment():
 		'Build the ocelot unit tests at the given test level', 'none', \
 		allowed_values = ('none', 'basic', 'full')))
 
-	# add a variable to compile the ocelot unit tests
-	vars.Add(BoolVariable('run_tests', 'Run the ocelot unit tests', 0))
+	# add a variable to treat warnings as errors
+	vars.Add(PathVariable('install_path', 'The ocelot install path', \
+		'/usr/local'))
 
 	# create an Environment
 	env = OldEnvironment(tools = getTools(), variables = vars)
@@ -312,15 +313,6 @@ def Environment():
 	
 	# include the build directory in case of generated files
 	env.Prepend(CPPPATH = env.Dir('.'))
-
-	# import the LD_LIBRARY_PATH so we can run commands which depend
-	# on shared libraries
-	# XXX we should probably just copy the entire environment
-	if os.name == 'posix':
-		if env['PLATFORM'] == "darwin":
-			env['ENV']['DYLD_LIBRARY_PATH'] = os.environ['DYLD_LIBRARY_PATH']
-		else:
-			env['ENV']['LD_LIBRARY_PATH'] = os.environ['LD_LIBRARY_PATH']
 
 	# generate help text
 	Help(vars.GenerateHelpText(env))

@@ -104,7 +104,7 @@ PTXOptimizer = env.Program('PTXOptimizer', \
 	[libocelot, 'ocelot/tools/PTXOptimizer.cpp'], LIBS=ocelot_libs)
 OcelotServer = env.Program('OcelotServer', \
 	[libocelot, 'ocelot/tools/OcelotServer.cpp'], LIBS=ocelot_libs)
-OcelotServer = env.Program('OcelotKernelTestHarness', \
+OcelotHarness = env.Program('OcelotKernelTestHarness', \
 	[libocelot, 'ocelot/tools/KernelTestHarness.cpp'], LIBS=ocelot_libs)
 
 Default(OcelotConfig)
@@ -166,3 +166,49 @@ for test in tests:
 	if level_map[env['test_level']] >= level_map[test[2]]:
 		print 'Adding test ' + test[0]
 		Default(test[0])
+
+# find all header files in the source tree
+headers = []
+directories = ['ocelot/ir/interface', 
+	'ocelot/analysis/interface',
+	'ocelot/api/interface', 
+	'ocelot/cal/interface', 
+	'ocelot/cuda/interface', 
+	'ocelot/executive/interface', 
+	'ocelot/parser/interface', 
+	'ocelot/trace/interface', 
+	'ocelot/translator/interface', 
+	'ocelot/util/interface', 
+	'hydrazine/implementation', 
+	'hydrazine/interface' ]
+extensions = ['*.h']
+
+for dir in directories:
+	for ext in extensions:
+		regexp = os.path.join(dir, ext)
+		headers.extend(env.Glob(regexp))
+
+# Install rules
+installed = []
+installed.append(env.Install(os.path.join( \
+	env['install_path'], "lib"), libocelot))
+installed.append(env.Install(os.path.join( \
+	env['install_path'], "bin"), OcelotConfig))
+installed.append(env.Install(os.path.join( \
+	env['install_path'], "bin"), PTXOptimizer))
+installed.append(env.Install(os.path.join( \
+	env['install_path'], "bin"), OcelotServer))
+installed.append(env.Install(os.path.join( \
+	env['install_path'], "bin"), OcelotHarness))
+
+for header in headers:
+	(directoryPath, headerName) = os.path.split( \
+		os.path.relpath(str(header), prefix))
+	installed.append(env.Install(os.path.join( \
+		env['install_path'], "include", directoryPath), header))
+
+for i in installed:
+	env.AddPostAction(str(i), Chmod(str(i), 0644))
+
+env.Alias('install', env['install_path'])
+	

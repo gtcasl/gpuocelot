@@ -14,6 +14,9 @@
 /* Version number of package */
 #define VERSION "%(VERSION)s"
 
+/* Version number of package */
+#define PACKAGE_VERSION "%(VERSION)s"
+
 /* Where is Ocelot installed */
 #define OCELOT_PREFIX_PATH "%(INSTALL_PATH)s"
 

@@ -71,7 +71,7 @@ namespace util {
 			ByteVector data;
 		};
 		
-		typedef std::map<std::string, const ir::Texture*> TextureMap;
+		typedef std::map<std::string, ir::Texture*>       TextureMap;
 		typedef std::map<std::string, GlobalAllocation*>  GlobalVariableMap;
 		typedef std::map<const void *, MemoryAllocation*> GlobalAllocationMap;
 		
@@ -152,7 +152,7 @@ namespace util {
 			
 		};
 	
-		typedef std::map<std::string, Module> ModuleMap;
+		typedef std::map<std::string, Module*> ModuleMap;
 	
 	public:
 	

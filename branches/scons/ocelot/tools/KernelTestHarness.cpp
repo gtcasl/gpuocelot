@@ -87,7 +87,7 @@ void util::KernelTestHarness::execute() {
 			*(const void **)&parameterMemory[i] = p_it->second;
 			report("  remapping parameter value " << pointer
 				<< " to " << p_it->second);
-		}	
+		}
 	}
 
 	report("setting up argument memory, size "
@@ -239,10 +239,91 @@ void util::KernelTestHarness::reset() {
 	ocelot::unregisterModule(state.launch.moduleName);
 }
 
+static cudaTextureFilterMode convert(ir::Texture::Interpolation filter)
+{
+	switch(filter)
+	{
+		case ir::Texture::Nearest:  return cudaFilterModePoint;
+		case ir::Texture::Linear:   return cudaFilterModeLinear;
+	}
+	
+	return cudaFilterModePoint;
+}
+
+static cudaTextureAddressMode convert(ir::Texture::AddressMode mode)
+{
+	switch(mode)
+	{
+		case ir::Texture::Wrap:  return cudaAddressModeWrap;
+		case ir::Texture::Clamp: return cudaAddressModeClamp;
+		default: break;
+	}
+	
+	return cudaAddressModeClamp;
+}
+
+
 void util::KernelTestHarness::_setupTextures(
-	const util::ExtractedDeviceState::Module &module) {
-	// TODO
-	assert(0 && "unimplemented yet");
+	const util::ExtractedDeviceState::Module& module) {
+	
+	for (util::ExtractedDeviceState::TextureMap::const_iterator
+		texture = module.textures.begin();
+		texture != module.textures.end(); ++texture) {
+
+		cudaChannelFormatDesc desc;
+		
+		desc.x = texture->second->x;
+		desc.y = texture->second->y;
+		desc.z = texture->second->z;
+		desc.w = texture->second->w;
+		
+		switch(texture->second->type) 
+		{
+			case ir::Texture::Signed:
+				desc.f = cudaChannelFormatKindSigned;
+				break;
+			case ir::Texture::Unsigned:
+				desc.f = cudaChannelFormatKindUnsigned;
+				break;
+			case ir::Texture::Float:
+				desc.f = cudaChannelFormatKindFloat;
+				break;
+			default:
+				desc.f = cudaChannelFormatKindNone;
+				break;
+		}
+		
+		textureReference texref;
+
+		texref.filterMode = convert(texture->second->interpolation);
+		texref.normalized = texture->second->normalize;
+
+		texref.addressMode[0] = convert(texture->second->addressMode[0]);
+		texref.addressMode[1] = convert(texture->second->addressMode[1]);
+		texref.addressMode[2] = convert(texture->second->addressMode[2]);
+		
+		const void* devicePointer = texture->second->data;
+		size_t offset = 0;
+		
+		PointerMap::iterator p_it = pointers.find(texture->second->data);
+		if (p_it != pointers.end()) {
+			devicePointer = p_it->second;
+			report("  remapping texture reference value " << devicePointer
+				<< " to " << p_it->second);
+		}
+		
+		ocelot::registerTexture(&texref, module.name, texture->second->name,
+			texture->second->normalizedFloat);
+		
+		cudaError_t result = cudaBindTexture(&offset, &texref, devicePointer,
+			&desc);
+		
+		if (result != cudaSuccess) {
+			throw hydrazine::Exception(
+				"Failed to bind texture '" + texture->second->name + "'");
+		}
+	}
+	
 }
 
 void util::KernelTestHarness::_setupMemory() {
@@ -287,13 +368,13 @@ void util::KernelTestHarness::_setupModule() {
 	if (mod_it != state.modules.end()) {
 	
 		// register module
-		{
-			report("registering PTX module '" << state.launch.moduleName
-				<< "'");
-			std::stringstream file(mod_it->second.ptx);
-			ocelot::registerPTXModule(file, state.launch.moduleName);
-		}
-
+		report("registering PTX module '" << state.launch.moduleName
+			<< "'");
+		std::stringstream file(mod_it->second->ptx);
+		ocelot::registerPTXModule(file, state.launch.moduleName);
+		
+		// add textures
+		_setupTextures(*mod_it->second);
 	}
 	
 	// fill out the initial contents of global variables
@@ -371,6 +452,7 @@ int main(int argc, char *argv[]) {
 				catch(const std::exception& e) {
 					stream << e.what() << "\n";
 					pass = false;
+					break;
 				}
 			}
 		}

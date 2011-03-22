@@ -385,17 +385,11 @@ namespace cuda {
 			bool persistent = false );
 		/*! \brief Clear all trace generators */
 		virtual void clearTraceGenerators();
-		/*!
-			\brief Adds a PTX->PTX pass for the next *Module load*
-		*/
+		/*! \brief Adds a PTX->PTX pass for the next *Module load* */
 		virtual void addPTXPass(analysis::Pass &pass);
-		/*!
-			\brief removes the specified pass
-		*/
+		/*!	\brief removes the specified pass */
 		virtual void removePTXPass(analysis::Pass &pass);
-		/*!
-			\brief clears all PTX->PTX passes
-		*/
+		/*! \brief clears all PTX->PTX passes */
 		virtual void clearPTXPasses();
 		
 		/*! \brief Sets a limit on the number of host worker threads to launch
@@ -410,6 +404,10 @@ namespace cuda {
 		*/
 		virtual void registerPTXModule(std::istream& stream, 
 			const std::string& name);
+		/*! \brief Register a texture with the cuda runtime */
+		virtual void registerTexture(const void* texref,
+			const std::string& moduleName,
+			const std::string& textureName, bool normalize);
 		/*! \brief Clear all errors in the Cuda Runtime */
 		virtual void clearErrors();
 		/*! \brief Reset all CUDA runtime state */

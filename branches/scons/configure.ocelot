@@ -35,7 +35,7 @@
 	checkpoint: {
 		enabled: false,
 		path: "./",
-		prefix: "TestCudaGlobals_",
+		prefix: "TestCudaTexture2D_",
 		suffix: ".checkpoint"
 	}
 }

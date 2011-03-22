@@ -858,7 +858,7 @@ namespace executive
 	{
 		switch(filter)
 		{
-			case cudaFilterModePoint: return ir::Texture::Nearest;
+			case cudaFilterModePoint:  return ir::Texture::Nearest;
 			case cudaFilterModeLinear: return ir::Texture::Linear;
 		}
 		
@@ -869,7 +869,7 @@ namespace executive
 	{
 		switch(mode)
 		{
-			case cudaAddressModeWrap: return ir::Texture::Wrap;
+			case cudaAddressModeWrap:  return ir::Texture::Wrap;
 			case cudaAddressModeClamp: return ir::Texture::Clamp;
 		}
 		

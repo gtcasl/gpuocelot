@@ -62,7 +62,7 @@ static std::ostream & serialize(std::ostream &out, const ir::Dim3 &dim) {
 	return out;
 }
 
-static void deserialize(ir::Dim3 &dim, const hydrazine::json::Visitor &array) {
+static void deserialize(ir::Dim3 &dim, const hydrazine::json::Visitor& array) {
 	dim.x = array[0];
 	dim.y = array[1];
 	dim.z = array[2];
@@ -80,6 +80,15 @@ static std::ostream & serialize(std::ostream &out,
 	return out;
 }
 
+
+static void deserialize(std::vector<int>& ints,
+	const hydrazine::json::Visitor& array) {
+	for (hydrazine::json::Array::const_iterator i_it = array.begin_array();
+		i_it != array.end_array(); ++i_it) {
+		ints.push_back(hydrazine::json::Visitor(*i_it));
+	}
+}
+
 static void serializeBinary(std::ostream &out, const size_t size,
 	const char *bytes, bool raw) {
 	const size_t wordSize = 4;
@@ -91,15 +100,17 @@ static void serializeBinary(std::ostream &out, const size_t size,
 				word |= (((unsigned int)bytes[j+n] & 0x0ff) << (j * 8));
 			}
 		}
+
 		if (n) {
 			out << (raw ? " " : ", ");
+		}
+
+		if (!((n) % (8 * wordSize))) {
+			out << "\n";
 		}
 		
 		out << (raw ? "" : "\"0x") << std::setw(2*wordSize)
 			<< std::setfill('0') << word << (raw ? "" : "\"");
-		if (!(n + wordSize - 1) % (4 * wordSize)) {
-			out << "\n";
-		}
 	}	
 	out << std::setbase(10);
 }
@@ -254,7 +265,12 @@ util::ExtractedDeviceState::Module::~Module() {
 }
 
 void util::ExtractedDeviceState::Module::clear() {
-
+	for(TextureMap::iterator texture = textures.begin();
+		texture != textures.end(); ++texture) {
+		delete texture->second;
+	}
+	
+	textures.clear();
 }
 
 void util::ExtractedDeviceState::Module::serializeTexture(
@@ -270,21 +286,21 @@ void util::ExtractedDeviceState::Module::serializeTexture(
 
 	out << "{\n";
 	out << "  \"name\": \"" << texture.name << "\",\n";
-	out << "  \"bits\": " << ::serialize(out, bits) << ",\n";
+	out << "  \"bits\": "; ::serialize(out, bits); out << ",\n";
 	out << "  \"normalize\": "
 		<< (texture.normalize ? "true" : "false") << ",\n";
 	out << "  \"normalizedFloat\": "
 		<< (texture.normalizedFloat ? "true" : "false") << ",\n";
-	out << "  \"size\": " << ::serialize(out, texture.size) << ",\n";
+	out << "  \"size\": "; ::serialize(out, texture.size); out << ",\n";
 	out << "  \"type\": \"" << ir::Texture::toString(texture.type) << "\",\n";
 	out << "  \"addressMode\": [ ";
 	for (int i = 0; i < 3; i++) {
 		out << (i ? ", " : "") << ir::Texture::toString(texture.addressMode[i]);
 	}
-	out << "  ],\n";
+	out << " ],\n";
 	out << "  \"interpolation\": \""
 		<< ir::Texture::toString(texture.interpolation) << "\",\n";
-	out << "  \"data\": \"" << (const void *)texture.data << "\"\n";
+	out << "  \"data\": \"" << texture.data << "\"\n";
 	out << "}\n";
 }
 
@@ -296,45 +312,71 @@ void util::ExtractedDeviceState::Module::serialize(std::ostream &out,
 	emitEscapedString(out, ptx);
 	out << "\"";
 	if (textures.size()) {
-		out << ",\n  \"textures\": {\n";
+		out << ",\n  \"textures\": [\n";
 		int n = 0;
 		for (TextureMap::const_iterator t_it = textures.begin();
 			t_it != textures.end(); ++t_it) {
-				if (!n++) { out << ",\n"; }
-			out << "   \"" << t_it->first << "\": ";
+			
+			if (n++) { out << ",\n"; }
 			serializeTexture(*(t_it->second), out, prefix);
 		}
-		out << "}\n";
+		out << "]\n";
 	}
 	out << "}\n";
 }
 
 void util::ExtractedDeviceState::Module::deserialize(
-	const hydrazine::json::Visitor &object) {
+	const hydrazine::json::Visitor& object) {
 	name = object.parse<std::string>("name", "module");
 	ptx = object.parse<std::string>("ptx", "");
-	if (hydrazine::json::Value *texturesValue = object.find("textures")) {
-		hydrazine::json::Object *textures =
-			static_cast<hydrazine::json::Object *>(texturesValue);
-		for (hydrazine::json::Object::Dictionary::const_iterator
-			tex_it = textures->begin();
-			tex_it != textures->end(); ++tex_it) {
-			
-			ir::Texture *texture = new ir::Texture;
-			this->textures[tex_it->first] = texture;
-			
-			deserializeTexture(*texture,
-				hydrazine::json::Visitor(tex_it->second));
-		}
+
+	hydrazine::json::Visitor texturesArray(object["textures"]);
+	for (hydrazine::json::Array::const_iterator
+		tex_it = texturesArray.begin_array();
+		tex_it != texturesArray.end_array(); ++tex_it) {
+		
+		ir::Texture* texture = new ir::Texture;
+
+		deserializeTexture(*texture, hydrazine::json::Visitor(*tex_it));
+		
+		this->textures[texture->name] = texture;
 	}
 }
 
 void util::ExtractedDeviceState::Module::deserializeTexture(
 	ir::Texture &texture, 
-	const hydrazine::json::Visitor &visitor) {
+	const hydrazine::json::Visitor& object) {
 
-	// TODO
-	assert(0 && "unimplemented yet");
+	texture.name = object.parse<std::string>("name", "unknown-texture");
+
+	std::vector<int> bits;
+	::deserialize(bits, object["bits"]);
+
+	texture.x = bits[0];
+	texture.y = bits[1];
+	texture.z = bits[2];
+	texture.w = bits[3];
+
+	texture.normalize       = object.parse<bool>("normalize", false);
+	texture.normalizedFloat = object.parse<bool>("normalizedFloat", false);
+
+	::deserialize(texture.size, object["size"]);
+
+	texture.type = ir::Texture::typeFromString(
+		object.parse<std::string>("type", "Invalid"));
+
+	hydrazine::json::Visitor modeArray(object["addressMode"]);
+	texture.addressMode[0] = ir::Texture::modeFromString(modeArray[0]);
+	texture.addressMode[1] = ir::Texture::modeFromString(modeArray[1]);
+	texture.addressMode[2] = ir::Texture::modeFromString(modeArray[2]);
+
+	texture.interpolation = ir::Texture::interpolationFromString(
+		object.parse<std::string>("interpolation", "Invalid"));
+	
+	texture.data = hydrazine::bit_cast<void *>(
+		boost::lexical_cast<HexTo<size_t> >(
+		object.parse<std::string>("data", "0x00")));
+	
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -439,11 +481,11 @@ void util::ExtractedDeviceState::serialize(std::ostream &out) const {
 			mod_it != modules.end(); ++mod_it) {
 		
 			out << (n++ ? ",":"");
-			mod_it->second.serialize(out, application.name);
+			mod_it->second->serialize(out, application.name);
 		}
 	}
 	else {
-		mod_it->second.serialize(out);
+		mod_it->second->serialize(out);
 	}
 	out << "]\n";
 	out << "}\n";
@@ -508,9 +550,9 @@ void util::ExtractedDeviceState::deserialize(std::istream &in) {
 			mod_it = modulesArray.begin_array();
 			mod_it != modulesArray.end_array(); ++mod_it) {
 			
-			Module module;
-			module.deserialize(hydrazine::json::Visitor(*mod_it));
-			modules[module.name] = module;
+			Module* module = new Module;
+			module->deserialize(hydrazine::json::Visitor(*mod_it));
+			modules[module->name] = module;
 		}
 	}
 	
@@ -521,7 +563,7 @@ void util::ExtractedDeviceState::deserialize(std::istream &in) {
 void util::ExtractedDeviceState::clear() {
 	for (ModuleMap::iterator mod_it = modules.begin();
 		mod_it != modules.end(); ++mod_it) {
-		mod_it->second.clear();
+		delete mod_it->second;
 	}
 	modules.clear();
 	

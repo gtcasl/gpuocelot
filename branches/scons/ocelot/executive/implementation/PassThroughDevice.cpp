@@ -51,6 +51,7 @@ executive::PassThroughDevice::PassThroughDevice(
 	_properties = _target->properties();
 
 	report("Bound to device '" << properties().name << "'");
+	_state.application.cudaDevice = properties().name;
 }
 
 executive::PassThroughDevice::~PassThroughDevice() {
@@ -195,18 +196,19 @@ void executive::PassThroughDevice::load(const ir::Module* module) {
 	
 	util::ExtractedDeviceState::ModuleMap::iterator eModule =
 		_state.modules.insert(std::make_pair(module->path(),
-		util::ExtractedDeviceState::Module())).first;
+		new util::ExtractedDeviceState::Module())).first;
 	
-	eModule->second.name = module->path();
+	eModule->second->name = module->path();
 	std::stringstream stream;
 	module->writeIR(stream);
-	eModule->second.ptx = stream.str();
+	eModule->second->ptx = stream.str();
 
 	for (ir::Module::TextureMap::const_iterator
 		texture = module->textures().begin();
 		texture != module->textures().end(); ++texture) {
-		eModule->second.textures.insert(
-			std::make_pair(texture->first, &texture->second));
+		eModule->second->textures.insert(
+			std::make_pair(texture->first,
+			new ir::Texture(texture->second.name)));
 	}
 	
 	_target->load(module);
@@ -221,6 +223,7 @@ void executive::PassThroughDevice::unload(const std::string& name) {
 	util::ExtractedDeviceState::ModuleMap::iterator eModule =
 		_state.modules.find(name);
 	if (eModule != _state.modules.end()) {
+		delete eModule->second;
 		_state.modules.erase(eModule);
 	}
 	
@@ -329,6 +332,29 @@ void executive::PassThroughDevice::unselect() {
 	_target->unselect();
 }
 
+
+static ir::Texture::Interpolation convert(cudaTextureFilterMode filter)
+{
+	switch(filter)
+	{
+		case cudaFilterModePoint:  return ir::Texture::Nearest;
+		case cudaFilterModeLinear: return ir::Texture::Linear;
+	}
+	
+	return ir::Texture::Nearest;
+}
+
+static ir::Texture::AddressMode convert(cudaTextureAddressMode mode)
+{
+	switch(mode)
+	{
+		case cudaAddressModeWrap:  return ir::Texture::Wrap;
+		case cudaAddressModeClamp: return ir::Texture::Clamp;
+	}
+	
+	return ir::Texture::Clamp;
+}
+
 void executive::PassThroughDevice::bindTexture(
 	void* pointer, 
 	const std::string& moduleName, 
@@ -338,6 +364,57 @@ void executive::PassThroughDevice::bindTexture(
 	const ir::Dim3& size) {
 	TRACE();
 	CHECK();
+	
+	// bind the texture to the captured state
+	util::ExtractedDeviceState::ModuleMap::iterator
+		module = _state.modules.find(moduleName);
+	if(module == _state.modules.end())
+	{
+		throw hydrazine::Exception("Invalid Module - " + moduleName);
+	}	
+	
+	util::ExtractedDeviceState::TextureMap::iterator
+		tex = module->second->textures.find(textureName);
+	if(tex == module->second->textures.end())
+	{
+		throw hydrazine::Exception("Invalid Texture - " + textureName 
+			+ " in Module - " + moduleName);
+	}	
+
+	ir::Texture& texture = *tex->second;
+
+	texture.x = desc.x;
+	texture.y = desc.y;
+	texture.z = desc.z;
+	texture.w = desc.w;
+
+	switch(desc.f) 
+	{
+		case cudaChannelFormatKindSigned:
+			texture.type = ir::Texture::Signed;
+			break;
+		case cudaChannelFormatKindUnsigned:
+			texture.type = ir::Texture::Unsigned;
+			break;
+		case cudaChannelFormatKindFloat:
+			texture.type = ir::Texture::Float;
+			break;
+		default:
+			texture.type = ir::Texture::Invalid;
+			break;
+	}
+	
+	texture.interpolation = convert(ref.filterMode);
+	texture.addressMode[0] = convert(ref.addressMode[0]);
+	texture.addressMode[1] = convert(ref.addressMode[1]);
+	texture.addressMode[2] = convert(ref.addressMode[2]);
+	texture.normalize = ref.normalized != 0;
+	
+	texture.size.x = size.x;
+	texture.size.y = size.y;
+	texture.size.z = size.z;
+	texture.data = pointer;
+	
 	_target->bindTexture(pointer, moduleName, textureName, ref, desc, size);
 }
 

@@ -628,6 +628,7 @@ namespace executive
 		memcpy.dstY = 0;
 		memcpy.dstZ = 0;
 
+
 		
 		checkError(driver::cuMemcpy3D(&memcpy));
 	}
@@ -725,7 +726,8 @@ namespace executive
 			checkError(driver::cuCtxCreate(&_context, flags, device));
 		}
 		
-		report("NVIDIAGPUDevice::NVIDIAGPUDevice() - created context. _opengl = " << _opengl);		
+		report("NVIDIAGPUDevice::NVIDIAGPUDevice() - created context."
+			"_opengl = " << _opengl);		
 		checkError(driver::cuCtxPopCurrent(&_context));
 				
 		checkError(driver::cuDeviceGetName(_properties.name, 255, device));
@@ -1048,12 +1050,14 @@ namespace executive
 
 			id = stream->second;
 		}
-		CUgraphicsResource * graphicsResources = (CUgraphicsResource *)resourceVoidPtr;
+		CUgraphicsResource * graphicsResources =
+			(CUgraphicsResource *)resourceVoidPtr;
 
 		if(!_opengl) Throw("No active opengl contexts.");
 
 		report("NVIDIAGPUDevice::mapGraphicsResource() - count = " << count );
-		CUresult result = driver::cuGraphicsMapResources(count,	graphicsResources, id);
+		CUresult result = driver::cuGraphicsMapResources(count,
+			graphicsResources, id);
 		report("driver::cuGraphicsMapresources() - " << result << ", " 
 			<< cuda::CudaDriver::toString(result));
 		
@@ -1069,8 +1073,8 @@ namespace executive
 
 		if(!_opengl) Throw("No active opengl contexts.");
 
-		CUresult result = driver::cuGraphicsResourceGetMappedPointer(&pointer, &bytes, 
-			(CUgraphicsResource)resource);
+		CUresult result = driver::cuGraphicsResourceGetMappedPointer(
+			&pointer, &bytes, (CUgraphicsResource)resource);
 		report("  cuGraphicsResourceGetMappedPointer() returned " << result)
 		checkError(result);
 			
@@ -1114,7 +1118,8 @@ namespace executive
 		CUdeviceptr pointer;
 		size_t bytes = 0;
 
-		CUgraphicsResource * graphicsResources = (CUgraphicsResource *)resourceVoidPtr;
+		CUgraphicsResource * graphicsResources =
+			(CUgraphicsResource *)resourceVoidPtr;
 		
 		checkError(driver::cuGraphicsResourceGetMappedPointer(&pointer,
 			&bytes, graphicsResources[0]));

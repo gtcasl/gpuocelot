@@ -629,7 +629,7 @@ void cuda::CudaRuntime::cudaRegisterVar(void **fatCubinHandle, char *hostVar,
 */
 void cuda::CudaRuntime::cudaRegisterTexture(
 	void **fatCubinHandle,
-	const struct textureReference *hostVar,
+	const struct textureReference* hostVar,
 	const void **deviceAddress,
 	const char *deviceName,
 	int dim,
@@ -3262,6 +3262,19 @@ void cuda::CudaRuntime::registerPTXModule(std::istream& ptx,
 		throw;
 	}
 		
+	_unlock();
+}
+
+void cuda::CudaRuntime::registerTexture(const void* texref,
+	const std::string& moduleName,
+	const std::string& textureName, bool normalize) {
+	_lock();
+	
+	report("registerTexture('" << textureName << ", norm: " << normalize );
+
+	_textures[(void*)texref] = RegisteredTexture(moduleName,
+		textureName, normalize);
+	
 	_unlock();
 }
 

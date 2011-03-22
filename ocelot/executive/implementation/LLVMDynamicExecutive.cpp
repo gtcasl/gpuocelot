@@ -22,7 +22,7 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -57,6 +57,9 @@ void LLVMDynamicExecutive::CooperativeThreadArray::initialize(
 		
 	local.resize(localMemorySize * totalThreads, 0);
 	shared.resize(sharedMemorySize, 0);
+	
+	report("  local memory range: " << (const void *)&local[0] << " - " << (const void *)&local[local.size()-1]);
+	report("  shared memory range: " << (const void *)&shared[0] << " - " << (const void *)&shared[shared.size()-1]);
 	
 	for (int threadId = 0; threadId < totalThreads; threadId++) {
 		LLVMContext context;
@@ -239,6 +242,16 @@ void LLVMDynamicExecutive::executeWarp(Warp &warp) {
 		
 		report("thread (" << ctx_it->tid.x << "," << ctx_it->tid.y << "," << ctx_it->tid.z << ") - entering block " << warp.entryId);
 		
+#if REPORT_BASE
+		unsigned int localSize = 352;
+		for (unsigned int i = 0; i < (localSize & (~0x03)); i+=4) {
+			unsigned int word = *(const unsigned int *)&ctx_it->local[i];
+			if (word) {
+				std::cout << ".local[" << i << "]: " << (const void *)word << "\n";
+			}
+		}
+		std::cout << std::endl;
+#endif
 	}
 	
 	translation->execute(&warp.threads[0]);

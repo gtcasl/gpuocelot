@@ -37,7 +37,7 @@
 #define CUDA_VERBOSE 1
 
 // whether debugging messages are printed
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 // report all ptx modules
 #define REPORT_ALL_PTX 0

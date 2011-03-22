@@ -43,8 +43,9 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
 #define REPORT_ALL_LLVM_ASSEMBLY 0
+#define REPORT_OPTIMIZED_LLVM_ASSEMBLY 1
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -87,6 +88,9 @@ LLVMDynamicTranslationCache::getOrInsertTranslationById(HyperblockId id, int ws)
 			device
 		);
 		subkernel->translations[1] = scalarTranslation;
+#if REPORT_OPTIMIZED_LLVM_ASSEMBLY
+		scalarTranslation->llvmFunction->dump();
+#endif
 		
 		report("inserting translation with " 
 			<< static_cast<LLVMDynamicExecutive::Metadata*>(scalarTranslation->metadata)->localSize 
@@ -126,6 +130,9 @@ bool LLVMDynamicTranslationCache::loadModule(const ir::Module *module, executive
 			 ++kernel) {
 			
 			report("Encountered kernel '" << kernel->second->name << "'");
+#if REPORT_BASE
+			kernel->second->write(std::cout);
+#endif
 			
 			TranslatedKernel *translatedKernel = new TranslatedKernel;
 			translatedKernel->kernel = kernel->second;
@@ -158,7 +165,7 @@ bool LLVMDynamicTranslationCache::loadModule(const ir::Module *module, executive
 				translated->localMemorySize = translated->subkernel->getLocalMemorySize();
 				translatedKernel->localMemorySize = std::max(translatedKernel->localMemorySize, translated->localMemorySize);
 				translatedKernel->sharedMemorySize = std::max(translatedKernel->sharedMemorySize, translated->subkernel->getSharedMemorySize());
-				
+
 				report("  adding hyperblock " << translated->entryId);
 #if REPORT_BASE
 				translated->subkernel->write(std::cout);
@@ -996,9 +1003,6 @@ static void translate(
 	report(" Translating kernel.");
 	
 	report("  Converting from PTX IR to LLVM IR.");
-#if REPORT_BASE	
-	kernel.write(std::cout);
-#endif
 	
 	translator::PTXToLLVMTranslator translator(optimization);
 	ir::LLVMKernel* llvmKernel = static_cast<ir::LLVMKernel*>(translator.translate(&kernel));

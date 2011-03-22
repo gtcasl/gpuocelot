@@ -1,0 +1,111 @@
+{
+"application":{
+"name": "cudaApp",
+"cudaDevice":"Ocelot PTX Emulator"},
+"allocations": [{  "device": "0x2f3a600",
+  "data": { "bytes": 128, "image": [
+
+"0x00000000", "0x3f800000", "0x40000000", "0x40400000", "0x40800000", "0x40a00000", "0x40c00000", "0x40e00000", 
+"0x41000000", "0x41100000", "0x41200000", "0x41300000", "0x41400000", "0x41500000", "0x41600000", "0x41700000", 
+"0x41800000", "0x41880000", "0x41900000", "0x41980000", "0x41a00000", "0x41a80000", "0x41b00000", "0x41b80000", 
+"0x41c00000", "0x41c80000", "0x41d00000", "0x41d80000", "0x41e00000", "0x41e80000", "0x41f00000", "0x41f80000"
+] }}],
+"global_allocations": [],
+"post_launch_allocations": [{  "device": "0x2f3a600",
+  "data": { "bytes": 128, "image": [
+
+"0x00000000", "0x3f800000", "0x40800000", "0x41100000", "0x41800000", "0x41c80000", "0x42100000", "0x42440000", 
+"0x42800000", "0x42a20000", "0x42c80000", "0x42f20000", "0x43100000", "0x43290000", "0x43440000", "0x43610000", 
+"0x43800000", "0x43908000", "0x43a20000", "0x43b48000", "0x43c80000", "0x43dc8000", "0x43f20000", "0x44044000", 
+"0x44100000", "0x441c4000", "0x44290000", "0x44364000", "0x44440000", "0x44524000", "0x44610000", "0x44704000"
+] }}],
+"post_launch_global_allocations": [],
+ "kernelLaunch": { "module": "simpleFunc.cu", "kernel": "kernel",
+  "gridDim": [1, 1, 1],
+  "blockDim": [32, 1, 1],
+  "sharedMemorySize": 0,
+  "parameterMemory": { "bytes": 12, "image": [
+
+"0x02f3a600", "0x00000000", "0x00000020"
+] }},
+"modules": [{
+  "name": "simpleFunc.cu",
+  "ptx": ".version 2.3
+.target sm_20
+.address_size 64
+/* Module simpleFunc.cu */
+
+/* Function prototypes */
+.visible .func (.param  .f32 __cudaretf_square) square (.param  .f32 __cudaparmf1_square)
+
+/* Globals */
+
+/* Textures */
+
+/*
+* Ocelot Version : 0.0.0
+*/
+.visible .func (.param  .f32 __cudaretf_square) square(.param  .f32 __cudaparmf1_square)
+{
+
+	.reg .f32 %r0;
+	.reg .f32 %r1;
+	.reg .f32 %r2;
+	$BB_1_0002:				/* $LDWbegin_square */ 
+		ld.param.f32 %r0, [__cudaparmf1_square];
+		mov.f32 %r1, %r0;
+		mul.f32 %r2, %r1, %r1;
+		st.param.f32 [__cudaretf_square], %r2;
+		ret;
+}
+/*
+* Ocelot Version : 0.0.0
+*/
+.entry kernel(.param  .u64 __cudaparm_kernel_A,
+		.param  .s32 __cudaparm_kernel_N)
+{
+
+	.param  .f32 __cudaparma1_square;
+	.param  .f32 __cudareta_square;
+	.reg .u32 %r0;
+	.reg .u32 %r1;
+	.reg .u32 %r2;
+	.reg .u32 %r3;
+	.reg .u32 %r4;
+	.reg .u32 %r5;
+	.reg .pred %p6;
+	.reg .u64 %r7;
+	.reg .u64 %r8;
+	.reg .u64 %r9;
+	.reg .u64 %r10;
+	.reg .f32 %r11;
+	.reg .f32 %r12;
+	.reg .f32 %r13;
+	$BB_2_0002:				/* $LDWbegin_kernel */ 
+		mov.u32 %r0, %tid.x;
+		mov.u32 %r1, %ctaid.x;
+		mov.u32 %r2, %ntid.x;
+		mul.lo.u32 %r3, %r1, %r2;
+		add.u32 %r4, %r0, %r3;
+		ld.param.s32 %r5, [__cudaparm_kernel_N];
+		setp.le.s32 %p6, %r5, %r4;
+		@%p6 bra $BB_2_0004;
+	$BB_2_0003:
+		ld.param.u64 %r7, [__cudaparm_kernel_A];
+		cvt.s64.s32 %r8, %r4;
+		mul.wide.s32 %r9, %r4, 4;
+		add.u64 %r10, %r7, %r9;
+		ld.global.f32 %r11, [%r10 + 0];
+		st.param.f32 [__cudaparma1_square], %r11;
+		call.uni (__cudareta_square), square, (__cudaparma1_square);
+		ld.param.f32 %r12, [__cudareta_square];
+		mov.f32 %r13, %r12;
+		st.global.f32 [%r10 + 0], %r13;
+	$BB_2_0004:				/* $Lt_1_1026 */ 
+		exit;
+}
+
+
+"}
+]
+}

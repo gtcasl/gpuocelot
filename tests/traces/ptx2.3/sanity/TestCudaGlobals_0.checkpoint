@@ -1,0 +1,115 @@
+{
+"application":{
+"name": "cudaApp",
+"cudaDevice":"Ocelot Multicore CPU Backend (LLVM-JIT)"},
+"allocations": [{  "device": "0x1d1b000",
+  "data": { "bytes": 256, "image": [
+
+"0xbf800000", "0xbf800000", "0xbf800000", "0xbf800000", "0xbf800000", "0xbf800000", "0xbf800000", "0xbf800000", 
+"0xbf800000", "0xbf800000", "0xbf800000", "0xbf800000", "0xbf800000", "0xbf800000", "0xbf800000", "0xbf800000", 
+"0xbf800000", "0xbf800000", "0xbf800000", "0xbf800000", "0xbf800000", "0xbf800000", "0xbf800000", "0xbf800000", 
+"0xbf800000", "0xbf800000", "0xbf800000", "0xbf800000", "0xbf800000", "0xbf800000", "0xbf800000", "0xbf800000", 
+"0xbf800000", "0xbf800000", "0xbf800000", "0xbf800000", "0xbf800000", "0xbf800000", "0xbf800000", "0xbf800000", 
+"0xbf800000", "0xbf800000", "0xbf800000", "0xbf800000", "0xbf800000", "0xbf800000", "0xbf800000", "0xbf800000", 
+"0xbf800000", "0xbf800000", "0xbf800000", "0xbf800000", "0xbf800000", "0xbf800000", "0xbf800000", "0xbf800000", 
+"0xbf800000", "0xbf800000", "0xbf800000", "0xbf800000", "0xbf800000", "0xbf800000", "0xbf800000", "0xbf800000"
+] }}],
+"global_allocations": [{  "module": "global.cu",
+  "name": "Pi",
+  "data": { "bytes": 4, "image": [
+
+"0x40490fd0"
+] }}],
+"post_launch_allocations": [{  "device": "0x1d1b000",
+  "data": { "bytes": 256, "image": [
+
+"0x00000000", "0x40490fd0", "0x40c90fd0", "0x4116cbdc", "0x41490fd0", "0x417b53c4", "0x4196cbdc", "0x41afedd6", 
+"0x41c90fd0", "0x41e231ca", "0x41fb53c4", "0x420a3adf", "0x4216cbdc", "0x42235cd9", "0x422fedd6", "0x423c7ed3", 
+"0x42490fd0", "0x4255a0cd", "0x426231ca", "0x426ec2c7", "0x427b53c4", "0x4283f260", "0x428a3adf", "0x4290835e", 
+"0x4296cbdc", "0x429d145a", "0x42a35cd9", "0x42a9a558", "0x42afedd6", "0x42b63654", "0x42bc7ed3", "0x42c2c752", 
+"0x42c90fd0", "0x42cf584e", "0x42d5a0cd", "0x42dbe94c", "0x42e231ca", "0x42e87a48", "0x42eec2c7", "0x42f50b46", 
+"0x42fb53c4", "0x4300ce21", "0x4303f260", "0x430716a0", "0x430a3adf", "0x430d5f1e", "0x4310835e", "0x4313a79d", 
+"0x4316cbdc", "0x4319f01b", "0x431d145a", "0x4320389a", "0x43235cd9", "0x43268118", "0x4329a558", "0x432cc997", 
+"0x432fedd6", "0x43331215", "0x43363654", "0x43395a94", "0x433c7ed3", "0x433fa312", "0x4342c752", "0x4345eb91"
+] }}],
+"post_launch_global_allocations": [{  "module": "global.cu",
+  "name": "Pi",
+  "data": { "bytes": 4, "image": [
+
+"0x40490fd0"
+] }}],
+ "kernelLaunch": { "module": "global.cu", "kernel": "copyFromGlobal",
+  "gridDim": [1, 1, 1],
+  "blockDim": [64, 1, 1],
+  "sharedMemorySize": 0,
+  "parameterMemory": { "bytes": 8, "image": [
+
+"0x01d1b000", "0x00000000"
+] }},
+"modules": [{
+  "name": "global.cu",
+  "ptx": ".version 2.3
+.target sm_20
+.address_size 64
+/* Module global.cu */
+
+/* Function prototypes */
+
+/* Globals */
+.global .f32 Pi;
+
+/* Textures */
+
+/*
+* Ocelot Version : 0.0.0
+*/
+.entry copyFromGlobal(.param  .u64 __cudaparm_copyFromGlobal_result)
+{
+
+	.reg .u32 %r0;
+	.reg .u32 %r1;
+	.reg .u32 %r2;
+	.reg .u32 %r3;
+	.reg .u32 %r4;
+	.reg .u32 %r5;
+	.reg .u32 %r6;
+	.reg .u32 %r7;
+	.reg .u32 %r8;
+	.reg .u32 %r9;
+	.reg .u32 %r10;
+	.reg .u32 %r11;
+	.reg .f32 %r12;
+	.reg .f32 %r13;
+	.reg .f32 %r14;
+	.reg .u64 %r15;
+	.reg .u64 %r16;
+	.reg .u64 %r17;
+	.reg .u64 %r18;
+	$BB_1_0002:				/* $LDWbegin_copyFromGlobal */ 
+		mov.u32 %r0, %tid.x;
+		mov.u32 %r1, %ctaid.x;
+		mov.u32 %r2, %ntid.x;
+		mul.lo.u32 %r3, %r1, %r2;
+		add.u32 %r4, %r0, %r3;
+		shr.s32 %r5, %r4, 31;
+		mov.s32 %r6, 127;
+		and.b32 %r7, %r5, %r6;
+		add.s32 %r8, %r7, %r4;
+		shr.s32 %r9, %r8, 7;
+		mul.lo.s32 %r10, %r9, 128;
+		sub.s32 %r11, %r4, %r10;
+		cvt.rn.f32.s32 %r12, %r11;
+		ld.global.f32 %r13, [Pi];
+		mul.f32 %r14, %r12, %r13;
+		ld.param.u64 %r15, [__cudaparm_copyFromGlobal_result];
+		cvt.s64.s32 %r16, %r4;
+		mul.wide.s32 %r17, %r4, 4;
+		add.u64 %r18, %r15, %r17;
+		st.global.f32 [%r18 + 0], %r14;
+		exit;
+}
+
+
+"}
+]
+}

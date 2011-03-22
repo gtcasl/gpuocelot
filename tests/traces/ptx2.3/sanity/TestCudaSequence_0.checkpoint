@@ -1,0 +1,239 @@
+{
+"application":{
+"name": "cudaApp",
+"cudaDevice":"Ocelot PTX Emulator"},
+"allocations": [{  "device": "0x25d4700",
+  "data": { "bytes": 16, "image": [
+
+"0xffffffff", "0xffffffff", "0xffffffff", "0xffffffff"
+] }}],
+"global_allocations": [],
+"post_launch_allocations": [{  "device": "0x25d4700",
+  "data": { "bytes": 16, "image": [
+
+"0x00000000", "0x00000002", "0x00000004", "0x00000006"
+] }}],
+"post_launch_global_allocations": [],
+ "kernelLaunch": { "module": "ocelot/cuda/test/kernels/sequence.cu", "kernel": "sequence",
+  "gridDim": [1, 1, 1],
+  "blockDim": [4, 1, 1],
+  "sharedMemorySize": 0,
+  "parameterMemory": { "bytes": 12, "image": [
+
+"0x025d4700", "0x00000000", "0x00000004"
+] }},
+"modules": [{
+  "name": "ocelot/cuda/test/kernels/sequence.cu",
+  "ptx": ".version 2.3
+.target sm_20
+.address_size 64
+/* Module ocelot/cuda/test/kernels/sequence.cu */
+
+/* Function prototypes */
+
+/* Globals */
+
+/* Textures */
+
+/*
+* Ocelot Version : 0.0.0
+*/
+.entry sequence(.param  .u64 __cudaparm_sequence_A,
+		.param  .s32 __cudaparm_sequence_N)
+{
+
+	.reg .u32 %r0;
+	.reg .u32 %r1;
+	.reg .u32 %r2;
+	.reg .u32 %r3;
+	.reg .u32 %r4;
+	.reg .u32 %r5;
+	.reg .pred %p6;
+	.reg .u32 %r7;
+	.reg .u64 %r8;
+	.reg .u64 %r9;
+	.reg .u64 %r10;
+	.reg .u64 %r11;
+	$BB_1_0002:				/* $LDWbegin_sequence */ 
+		mov.u32 %r0, %ctaid.x;
+		mov.u32 %r1, %ntid.x;
+		mul.lo.u32 %r2, %r0, %r1;
+		mov.u32 %r3, %tid.x;
+		add.u32 %r4, %r3, %r2;
+		ld.param.s32 %r5, [__cudaparm_sequence_N];
+		setp.le.s32 %p6, %r5, %r4;
+		@%p6 bra $BB_1_0004;
+	$BB_1_0003:
+		mul.lo.s32 %r7, %r4, 2;
+		ld.param.u64 %r8, [__cudaparm_sequence_A];
+		cvt.s64.s32 %r9, %r4;
+		mul.wide.s32 %r10, %r4, 4;
+		add.u64 %r11, %r8, %r10;
+		st.global.s32 [%r11 + 0], %r7;
+	$BB_1_0004:				/* $Lt_0_1026 */ 
+		exit;
+}
+/*
+* Ocelot Version : 0.0.0
+*/
+.entry testShareSimple(.param  .u64 __cudaparm_testShareSimple_A)
+{
+	.shared .align 4 .b8 __cuda___cuda_local_var_32785_30_non_const_Share24[128];
+
+	.reg .u64 %r0;
+	.reg .u32 %r1;
+	.reg .u64 %r2;
+	.reg .u32 %r3;
+	.reg .u32 %r4;
+	.reg .u32 %r5;
+	.reg .u32 %r6;
+	.reg .u64 %r7;
+	.reg .u64 %r8;
+	.reg .u64 %r9;
+	.reg .u32 %r10;
+	.reg .u64 %r11;
+	.reg .u64 %r12;
+	.reg .u64 %r13;
+	.reg .u32 %r14;
+	.reg .u64 %r15;
+	.reg .u64 %r16;
+	.reg .u64 %r17;
+	.reg .u32 %r18;
+	$BB_2_0002:				/* $LDWbegin_testShareSimple */ 
+		mov.u64 %r0, __cuda___cuda_local_var_32785_30_non_const_Share24;
+		mov.u32 %r1, %tid.x;
+		ld.param.u64 %r2, [__cudaparm_testShareSimple_A];
+		mov.u32 %r3, %ctaid.x;
+		mov.u32 %r4, %ntid.x;
+		mul.lo.u32 %r5, %r3, %r4;
+		add.u32 %r6, %r1, %r5;
+		cvt.s64.s32 %r7, %r6;
+		mul.wide.s32 %r8, %r6, 4;
+		add.u64 %r9, %r2, %r8;
+		ld.global.s32 %r10, [%r9 + 0];
+		cvt.u64.u32 %r11, %r1;
+		mul.wide.u32 %r12, %r1, 4;
+		add.u64 %r13, %r0, %r12;
+		st.shared.s32 [%r13 + 0], %r10;
+		bar.sync 0;
+		neg.s32 %r14, %r1;
+		cvt.s64.s32 %r15, %r14;
+		mul.wide.s32 %r16, %r14, 4;
+		add.u64 %r17, %r0, %r16;
+		ld.shared.s32 %r18, [%r17 + 124];
+		st.global.s32 [%r9 + 0], %r18;
+		exit;
+}
+/*
+* Ocelot Version : 0.0.0
+*/
+.entry v4sequence(.param  .u64 __cudaparm_v4sequence_A,
+		.param  .s32 __cudaparm_v4sequence_N)
+{
+
+	.reg .u32 %r0;
+	.reg .u32 %r1;
+	.reg .u32 %r2;
+	.reg .u32 %r3;
+	.reg .u32 %r4;
+	.reg .u64 %r5;
+	.reg .u64 %r6;
+	.reg .u64 %r7;
+	.reg .u64 %r8;
+	.reg .u32 %r9;
+	.reg .u32 %r10;
+	.reg .u32 %r11;
+	.reg .u32 %r12;
+	.reg .u32 %r13;
+	.reg .u32 %r14;
+	.reg .u32 %r15;
+	$BB_3_0002:				/* $LDWbegin_v4sequence */ 
+		mov.u32 %r0, %tid.x;
+		mov.u32 %r1, %ctaid.x;
+		mov.u32 %r2, %ntid.x;
+		mul.lo.u32 %r3, %r1, %r2;
+		add.u32 %r4, %r0, %r3;
+		ld.param.u64 %r5, [__cudaparm_v4sequence_A];
+		cvt.s64.s32 %r6, %r4;
+		mul.wide.s32 %r7, %r4, 16;
+		add.u64 %r8, %r5, %r7;
+		add.s32 %r9, %r4, 1;
+		mul.lo.s32 %r10, %r4, 2;
+		add.s32 %r11, %r10, 2;
+		mul.lo.s32 %r12, %r4, 3;
+		add.s32 %r13, %r12, 3;
+		mul.lo.s32 %r14, %r4, 4;
+		add.s32 %r15, %r14, 4;
+		st.global.v4.s32 [%r8 + 0], {%r9, %r11, %r13, %r15};
+		exit;
+}
+/*
+* Ocelot Version : 0.0.0
+*/
+.entry testShr(.param  .u64 __cudaparm_testShr_A)
+{
+	.shared .align 4 .b8 __cuda___cuda_local_var_32805_30_non_const_storage176[1024];
+
+	.reg .u64 %r0;
+	.reg .u32 %r1;
+	.reg .u32 %r2;
+	.reg .u32 %r3;
+	.reg .u32 %r4;
+	.reg .u32 %r5;
+	.reg .u32 %r6;
+	.reg .u64 %r7;
+	.reg .u64 %r8;
+	.reg .u64 %r9;
+	.reg .u32 %r10;
+	.reg .u64 %r11;
+	.reg .u64 %r12;
+	.reg .u64 %r13;
+	.reg .u32 %r14;
+	.reg .u32 %r15;
+	.reg .u32 %r16;
+	.reg .pred %p17;
+	.reg .u32 %r18;
+	.reg .u64 %r19;
+	.reg .u64 %r20;
+	.reg .u64 %r21;
+	.reg .u64 %r22;
+	$BB_4_0002:				/* $LDWbegin_testShr */ 
+		mov.u64 %r0, __cuda___cuda_local_var_32805_30_non_const_storage176;
+		mov.u32 %r1, %ctaid.x;
+		mov.u32 %r2, %ntid.x;
+		mul.lo.u32 %r3, %r1, %r2;
+		mov.u32 %r4, %tid.x;
+		add.u32 %r5, %r3, %r4;
+		mul.lo.s32 %r6, %r5, 2;
+		cvt.u64.u32 %r7, %r4;
+		mul.wide.u32 %r8, %r4, 4;
+		add.u64 %r9, %r0, %r8;
+		st.shared.s32 [%r9 + 0], %r6;
+		bar.sync 0;
+		xor.b32 %r10, %r4, 1;
+		cvt.u64.u32 %r11, %r10;
+		mul.wide.u32 %r12, %r10, 4;
+		add.u64 %r13, %r0, %r12;
+		ld.shared.s32 %r14, [%r13 + 0];
+		and.b32 %r15, %r5, 1;
+		mov.u32 %r16, 0;
+		setp.eq.s32 %p17, %r15, %r16;
+		@%p17 bra $BB_4_0004;
+	$BB_4_0003:
+		mul.lo.s32 %r18, %r14, 19;
+		bra.uni $BB_4_0005;
+	$BB_4_0004:				/* $Lt_3_1282 */ 
+		mul.lo.s32 %r18, %r14, 13;
+	$BB_4_0005:				/* $Lt_3_1026 */ 
+		ld.param.u64 %r19, [__cudaparm_testShr_A];
+		cvt.s64.s32 %r20, %r5;
+		mul.wide.s32 %r21, %r5, 4;
+		add.u64 %r22, %r19, %r21;
+		st.global.s32 [%r22 + 0], %r18;
+		exit;
+}
+
+
+"}
+]
+}

@@ -16,6 +16,7 @@
 
 namespace analysis {
 	class DataflowGraph;
+	class DivergenceAnalysis;
 }
 
 namespace ir {
@@ -49,6 +50,8 @@ namespace ir {
 		analysis::DataflowGraph* _dfg;
 		/*! \brief Control tree constructed from the cfg */
 		ControlTree* _ct;
+		/*! \brief Divergence analysis constructed from the dfg */
+		analysis::DivergenceAnalysis* _dva;
 		/*! \brief Is this kernel a function? */
 		bool _function;
 		
@@ -79,6 +82,10 @@ namespace ir {
 		virtual analysis::DataflowGraph* dfg();
 		/*! \brief Gets the const dfg */
 		virtual const analysis::DataflowGraph* dfg() const;
+		/*! \brief Builds the divergence analysis within the kernel */
+		virtual analysis::DivergenceAnalysis* div_analy();
+		/*! \brief Gets the const divergence analysis  */
+		virtual const analysis::DivergenceAnalysis* div_analy() const;
 		/*! \brief Builds the Control tree within the kernel */
 		ControlTree* ctrl_tree();
 		/*! \brief Gets the cfg */
@@ -95,6 +102,8 @@ namespace ir {
 		void clear_pdom_tree();
 		/*! \brief Clear dominator tree */
 		void clear_dom_tree();
+		/*! \brief Clear divergence analysis */
+		void clear_div_analy();
 
 	public:	
 		/*!	Returns true if the kernel instance is derived from 

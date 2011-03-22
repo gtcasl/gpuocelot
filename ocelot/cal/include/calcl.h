@@ -116,7 +116,7 @@ extern "C" {
 
 /** Kernel source code language */
 typedef enum CALlanguageEnum {
-    CAL_LANGUAGE_IL=1                /**< IL text */
+    CAL_LANGUAGE_IL=1,               /**< IL text */
 } CALlanguage;
 
 /** Kernel source code type */

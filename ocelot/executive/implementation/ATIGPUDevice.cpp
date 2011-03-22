@@ -31,7 +31,7 @@ namespace executive
 {
     ATIGPUDevice::ATIGPUDevice() 
 		: 
-			_uav0Allocations(),
+			_allocations(),
 			_uav0AllocPtr(Uav0BaseAddr),
 			_uav0Resource(0),
 			_cb0Resource(0),
@@ -53,13 +53,18 @@ namespace executive
 		_status.struct_size = sizeof(CALdevicestatus);
 		CalDriver()->calDeviceGetStatus(&_status, _device);
 
+		CalDriver()->calDeviceGetInfo(&_info, 0);
+
 		report("Setting device properties");
 		_properties.ISA = ir::Instruction::CAL;
 		std::strcpy(_properties.name, "CAL Device");
-		_properties.multiprocessorCount = _attribs.numberOfShaderEngines;
+		_properties.multiprocessorCount = _attribs.numberOfSIMD;
+		_properties.maxThreadsPerBlock = 256;
 		_properties.sharedMemPerBlock = 32768;
-		_properties.major = 1;
-		_properties.minor = 2;
+		_properties.SIMDWidth = _attribs.wavefrontSize;
+		_properties.regsPerBlock = 16384;
+		_properties.major = 2;
+		_properties.minor = 0;
 
         // Multiple contexts per device is not supported yet
         // only one context per device so we can create it in the constructor
@@ -101,6 +106,18 @@ namespace executive
     ATIGPUDevice::~ATIGPUDevice() 
     {
 		report("Destroying ATIGPUDevice");
+
+		for(AllocationMap::iterator allocation = _allocations.begin(); 
+			allocation != _allocations.end(); ++allocation)
+		{
+			delete allocation->second;
+		}
+		
+		for(ModuleMap::iterator module = _modules.begin(); 
+			module != _modules.end(); ++module)
+		{
+			delete module->second;
+		}
 		_modules.clear();
 
 		CalDriver()->calResFree(_uav0Resource);
@@ -162,11 +179,23 @@ namespace executive
     void ATIGPUDevice::unload(const std::string& name)
     {
 		ModuleMap::iterator module = _modules.find(name);
-		if (module == _modules.end())
+		if(module == _modules.end())
 		{
 			Throw("Cannot unload unknown module - " << name);
 		}
-
+		
+		for(Module::GlobalMap::iterator global = module->second->globals.begin();
+			global != module->second->globals.end(); ++global)
+		{
+			AllocationMap::iterator allocation = 
+				_allocations.find(global->second);
+			assert(allocation != _allocations.end());
+			delete allocation->second;
+			_allocations.erase(allocation);
+		}
+		
+		delete module->second;
+		
 		_modules.erase(module);
     }
 
@@ -205,14 +234,18 @@ namespace executive
 		if (type == HostAllocation) {
 			assertM(false, "Not implemented yet");
 		} else {
-			if (!_uav0Allocations.empty()) {
-				// Device pointer arithmetic is not supported yet
-				const AllocationMap::const_iterator alloc = 
-					_uav0Allocations.find((void *)address);
-				if (alloc != _uav0Allocations.end()) {
-					allocation = alloc->second;
-				} else {
-					Throw("No allocation found for this pointer - " << address);
+			if (!_allocations.empty()) {
+				AllocationMap::const_iterator alloc = 
+					_allocations.upper_bound((void*)address);
+				if(alloc != _allocations.begin()) --alloc;
+				if(alloc != _allocations.end())
+				{
+					if(!alloc->second->host()
+					 	&& (char*)address >= (char*)alloc->second->pointer())
+					{
+						allocation = alloc->second;
+						return allocation;
+					}
 				}
 			}
 		}
@@ -240,7 +273,7 @@ namespace executive
 						allocation = allocations.begin(); 
 						allocation != allocations.end(); ++allocation)
 					{
-						_uav0Allocations.insert(std::make_pair(
+						_allocations.insert(std::make_pair(
 							(*allocation)->pointer(), *allocation));
 					}
 				}
@@ -267,7 +300,7 @@ namespace executive
 					allocation = allocations.begin();
 					allocation != allocations.end(); ++allocation)
 			{
-				_uav0Allocations.insert(std::make_pair((*allocation)->pointer(),
+				_allocations.insert(std::make_pair((*allocation)->pointer(),
 									*allocation));
 			}
 		}
@@ -291,7 +324,7 @@ namespace executive
 
 		MemoryAllocation *allocation = 
 			new MemoryAllocation(&_uav0Resource, _uav0AllocPtr, size);
-		_uav0Allocations.insert(
+		_allocations.insert(
 				std::make_pair(allocation->pointer(), allocation));
 
 		_uav0AllocPtr += aSize;
@@ -307,13 +340,20 @@ namespace executive
 
 	void ATIGPUDevice::free(void *pointer)
 	{
-		if (pointer == 0) return;
-
-		AllocationMap::iterator allocation = _uav0Allocations.find(pointer);
-		if (allocation != _uav0Allocations.end()) {
-			_uav0Allocations.erase(allocation);
+		if(pointer == 0) return;
+		
+		AllocationMap::iterator allocation = _allocations.find(pointer);
+		if(allocation != _allocations.end())
+		{
+			if(allocation->second->global())
+			{
+				Throw("Cannot free global pointer - " << pointer);
+			}
 			delete allocation->second;
-		} else {
+			_allocations.erase(allocation);
+		}
+		else
+		{
 			Throw("Tried to free invalid pointer - " << pointer);
 		}
 	}
@@ -467,43 +507,64 @@ namespace executive
 			Throw("Unknown module - " << moduleName);
 		}
 
-		ir::Module::KernelMap::const_iterator irKernel = 
-			module->second->ir->kernels().find(kernelName);
-
-		if (irKernel == module->second->ir->kernels().end())
+		ExecutableKernel* kernel = module->second->getKernel(kernelName);
+		
+		if(kernel == 0)
 		{
-			Throw("Unknown kernel - " << kernelName
-					<< " in module " << moduleName);
+			Throw("Unknown kernel - " << kernelName 
+				<< " in module " << moduleName);
 		}
-
+	
 		report("Launching " << moduleName << ":" << kernelName);
 
-		ATIExecutableKernel kernel(*irKernel->second, &_context, &_event, 
-				&_uav0Resource, &_cb0Resource, &_cb1Resource, this);
-
-		if(kernel.sharedMemorySize() + sharedMemory > 
+		if(kernel->sharedMemorySize() + sharedMemory > 
 			(size_t)properties().sharedMemPerBlock)
 		{
 			Throw("Out of shared memory for kernel \""
-				<< kernel.name << "\" : \n\tpreallocated "
-				<< kernel.sharedMemorySize() << " + requested " 
+				<< kernel->name << "\" : \n\tpreallocated "
+				<< kernel->sharedMemorySize() << " + requested " 
 				<< sharedMemory << " is greater than available " 
 				<< properties().sharedMemPerBlock << " for device " 
 				<< properties().name);
 		}
 		
-		kernel.setKernelShape(block.x, block.y, block.z);
-		kernel.setArgumentBlock((const unsigned char *)argumentBlock, 
+		kernel->setKernelShape(block.x, block.y, block.z);
+		kernel->setArgumentBlock((const unsigned char *)argumentBlock, 
 				argumentBlockSize);
-		kernel.updateArgumentMemory();
-		kernel.setExternSharedMemorySize(sharedMemory);
-		kernel.launchGrid(grid.x, grid.y);
+		kernel->updateArgumentMemory();
+		kernel->updateMemory();
+		kernel->setExternSharedMemorySize(sharedMemory);
+		kernel->launchGrid(grid.x, grid.y);
 	}
 
-	cudaFuncAttributes ATIGPUDevice::getAttributes(const std::string& module, 
-			const std::string& kernel)
+	cudaFuncAttributes ATIGPUDevice::getAttributes(const std::string& path, 
+			const std::string& kernelName)
 	{
-		assertM(false, "Not implemented yet");
+		ModuleMap::iterator module = _modules.find(path);
+		
+		if(module == _modules.end())
+		{
+			Throw("Unknown module - " << path);
+		}
+		
+		ExecutableKernel* kernel = module->second->getKernel(kernelName);
+		
+		if(kernel == 0)
+		{
+			Throw("Unknown kernel - " << kernelName 
+				<< " in module " << path);
+		}
+		
+		cudaFuncAttributes attributes;
+
+		memset(&attributes, 0, sizeof(cudaFuncAttributes));
+		attributes.sharedSizeBytes = kernel->sharedMemorySize();
+		attributes.constSizeBytes = kernel->constMemorySize();
+		attributes.localSizeBytes = kernel->localMemorySize();
+		attributes.maxThreadsPerBlock = kernel->maxThreadsPerBlock();
+		attributes.numRegs = kernel->registerCount();
+		
+		return std::move(attributes);
 	}
 
 	unsigned int ATIGPUDevice::getLastError()
@@ -671,6 +732,15 @@ namespace executive
 	{
 	}
 
+	ATIGPUDevice::Module::~Module()
+	{
+		for(KernelMap::iterator kernel = kernels.begin(); 
+			kernel != kernels.end(); ++kernel)
+		{
+			delete kernel->second;
+		}
+	}
+
 	ATIGPUDevice::Module::AllocationVector ATIGPUDevice::Module::loadGlobals()
 	{
 		assert(globals.empty());
@@ -721,6 +791,29 @@ namespace executive
 		return allocations;
 	}
 
+	ExecutableKernel* ATIGPUDevice::Module::getKernel(const std::string& name)
+	{
+		KernelMap::iterator kernel = kernels.find(name);
+		if(kernel != kernels.end())
+		{
+			return kernel->second;
+		}
+		
+		ir::Module::KernelMap::const_iterator ptxKernel = 
+			ir->kernels().find(name);
+		if(ptxKernel != ir->kernels().end())
+		{
+			kernel = kernels.insert(std::make_pair(name, 
+				new ATIExecutableKernel(*ptxKernel->second, &device->_context, 
+					&device->_event, &device->_uav0Resource, &device->_cb0Resource,
+					&device->_cb1Resource, device))).first;
+
+			return kernel->second;
+		}
+		
+		return 0;
+	}
+	
 	size_t AlignUp(size_t a, size_t b)
 	{
 		return (a % b != 0) ? (a - a % b + b) : a;

@@ -19,7 +19,6 @@
 #define REPORT_BASE 0
 
 ir::DominatorTree::~DominatorTree() {
-	dominated.clear();
 }
 
 ir::DominatorTree::DominatorTree(ControlFlowGraph *c) {
@@ -90,10 +89,17 @@ bool ir::DominatorTree::dominates(ControlFlowGraph::iterator block,
 		dominates = nextId == id;
 		nextId = i_dom[nextId];
 	}
-	while(startId != nextId && dominates);
+	while(startId != nextId && !dominates);
 	
 	return dominates;
 }
+
+ir::ControlFlowGraph::iterator ir::DominatorTree::getDominator(
+	ControlFlowGraph::iterator block) {
+	int n = blocksToIndex[block];
+	return blocks[i_dom[n]];
+}
+
 
 /*! Computes the dominator tree from a CFG using algorithm desrcibed in
 	"A simple and fast dominance algorithm" by 

@@ -45,6 +45,9 @@ private:
 	typedef std::vector<ThreadList> ThreadListVector;
 
 private:
+	void _executeSimpleCta(unsigned int id);
+	void _executeComplexCta(unsigned int id);
+
 	void _executeThread(unsigned int id);
 	void _executeWarp(ThreadList::const_iterator begin,
 		ThreadList::const_iterator end);

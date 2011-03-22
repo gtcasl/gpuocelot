@@ -251,7 +251,8 @@ public:
 		block.
 		
 		\param block The block being split
-		\param the instruction within the block to perform the split
+		\param the instruction within the block to perform the split, it ends
+			up in the newly split block
 		\param the label of the new block
 		\return A pointer to the newly allocated second block
 	*/

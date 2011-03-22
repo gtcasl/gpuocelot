@@ -10,6 +10,12 @@
 // Hydrazine includes
 #include <hydrazine/implementation/debug.h>
 
+#ifdef REPORT_BASE
+#undef REPORT_BASE
+#endif
+
+#define REPORT_BASE 0
+
 // C++ includes
 #include <iostream>
 
@@ -33,6 +39,7 @@ namespace ir
 		for (statement = _statements.begin() ; 
 				statement != _statements.end() ; statement++)
 		{
+			report("Assembling " + statement->toString());
 			_code += statement->toString() + "\n";
 		}
 	}

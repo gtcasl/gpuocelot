@@ -9,6 +9,7 @@
 
 #include <ocelot/ir/interface/PTXKernel.h>
 #include <ocelot/ir/interface/ControlFlowGraph.h>
+#include <ocelot/analysis/interface/DivergenceAnalysis.h>
 
 #include <hydrazine/interface/Version.h>
 #include <hydrazine/implementation/debug.h>
@@ -251,6 +252,21 @@ namespace ir
 	const analysis::DataflowGraph* PTXKernel::dfg() const 
 	{
 		return Kernel::dfg();
+	}
+
+	analysis::DivergenceAnalysis* PTXKernel::div_analy()
+	{
+		assertM(_dfg != 0, "Must create dfg before building divergence analysis.");
+		assertM(_dfg->ssa(), "dfg must be in ssa before building divergence analysis.");
+		if(_dva) return _dva;
+		_dva = new analysis::DivergenceAnalysis();
+		_dva->runOnKernel(*this);
+		return _dva;
+	}
+
+	const analysis::DivergenceAnalysis* PTXKernel::div_analy() const
+	{
+		return Kernel::div_analy();
 	}
 
 	bool PTXKernel::executable() const {

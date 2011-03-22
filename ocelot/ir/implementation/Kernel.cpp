@@ -6,6 +6,7 @@
 
 #include <ocelot/ir/interface/Kernel.h>
 #include <ocelot/analysis/interface/DataflowGraph.h>
+#include <ocelot/analysis/interface/DivergenceAnalysis.h>
 #include <ocelot/ir/interface/ControlFlowGraph.h>
 #include <ocelot/ir/interface/PostdominatorTree.h>
 #include <ocelot/ir/interface/DominatorTree.h>
@@ -28,6 +29,7 @@ ir::Kernel::Kernel(Instruction::Architecture isa, const std::string& n,
 	_pdom_tree = 0;
 	_dfg = 0;
 	_ct = 0;
+	_dva = 0;
 }
 
 ir::Kernel::~Kernel() {
@@ -36,6 +38,7 @@ ir::Kernel::~Kernel() {
 	delete _cfg;
 	delete _dfg;
 	delete _ct;
+	delete _dva;
 }
 
 ir::Kernel::Kernel(const Kernel &kernel) {
@@ -48,7 +51,7 @@ ir::Kernel::Kernel(const Kernel &kernel) {
 	locals = kernel.locals;
 	_function = kernel.function();
 
-	_cfg = 0; _dom_tree = 0; _pdom_tree = 0; _dfg = 0; _ct = 0;
+	_cfg = 0; _dom_tree = 0; _pdom_tree = 0; _dfg = 0; _ct = 0; _dva = 0;
 	_cfg = new ControlFlowGraph;
 	*_cfg = *kernel._cfg;
 	
@@ -65,9 +68,9 @@ const ir::Kernel& ir::Kernel::operator=(const Kernel &kernel) {
 	locals = kernel.locals;
 	_function = kernel.function();
 
-	delete _cfg; delete _dom_tree; delete _pdom_tree; delete _dfg; delete _ct;
+	delete _cfg; delete _dom_tree; delete _pdom_tree; delete _dfg; delete _ct; delete _dva;
 
-	_cfg = 0; _dom_tree = 0; _pdom_tree = 0; _dfg = 0; _ct = 0;
+	_cfg = 0; _dom_tree = 0; _pdom_tree = 0; _dfg = 0; _ct = 0; _dva = 0;
 	_cfg = new ControlFlowGraph;
 	*_cfg = *kernel._cfg;
 	
@@ -153,6 +156,17 @@ ir::ControlTree* ir::Kernel::ctrl_tree() {
 	return _ct;
 }
 
+analysis::DivergenceAnalysis* ir::Kernel::div_analy() {
+	assertM(_dva != 0, "Divergence Analysis not created.");
+	return _dva;
+}
+
+const analysis::DivergenceAnalysis* ir::Kernel::div_analy() const {
+	assertM(_dva != 0, "Divergence Analysis not created.");
+	return _dva;
+}
+
+
 void ir::Kernel::clear_dfg() {
 	delete _dfg;
 	_dfg = 0;
@@ -171,6 +185,11 @@ void ir::Kernel::clear_pdom_tree() {
 void ir::Kernel::clear_dom_tree() {
 	delete _dom_tree;
 	_dom_tree = 0;
+}
+
+void ir::Kernel:: clear_div_analy() {
+	delete _dva;
+	_dva = 0;
 }
 
 bool ir::Kernel::executable() const {

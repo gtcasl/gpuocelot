@@ -7,6 +7,7 @@
 #ifndef PTX_OPTIMIZER_CPP_INCLUDED
 #define PTX_OPTIMIZER_CPP_INCLUDED
 
+// Ocelot Includes
 #include <ocelot/analysis/interface/PTXOptimizer.h>
 #include <ocelot/analysis/interface/PassManager.h>
 #include <ocelot/analysis/interface/LinearScanRegisterAllocationPass.h>
@@ -14,21 +15,26 @@
 #include <ocelot/analysis/interface/StructuralTransform.h>
 #include <ocelot/analysis/interface/ConvertPredicationToSelectPass.h>
 #include <ocelot/analysis/interface/SubkernelFormationPass.h>
+#include <ocelot/analysis/interface/MIMDThreadSchedulingPass.h>
+#include <ocelot/analysis/interface/SyncEliminationPass.h>
 
 #include <ocelot/ir/interface/Module.h>
 
+// Hydrazine Includes
 #include <hydrazine/implementation/ArgumentParser.h>
 #include <hydrazine/implementation/Exception.h>
 #include <hydrazine/implementation/string.h>
 #include <hydrazine/implementation/debug.h>
 
+// Standard Library Includes
+#include <fstream>
+
+// Preprocessor Macros
 #ifdef REPORT_BASE
 #undef REPORT_BASE
 #endif
 
 #define REPORT_BASE 0
-
-#include <fstream>
 
 namespace analysis
 {
@@ -56,7 +62,7 @@ namespace analysis
 
 		if( passes & SubkernelFormation )
 		{
-			Pass* pass = new analysis::SubkernelFormationPass;
+			Pass* pass = new analysis::SubkernelFormationPass( subkernelSize );
 			manager.addPass( *pass );
 		}
 		
@@ -75,6 +81,18 @@ namespace analysis
 		if( passes & ReverseIfConversion )
 		{
 			Pass* pass = new analysis::ConvertPredicationToSelectPass;
+			manager.addPass( *pass );
+		}
+
+		if( passes & MIMDThreadScheduling )
+		{
+			Pass* pass = new analysis::MIMDThreadSchedulingPass;
+			manager.addPass( *pass );
+		}
+		
+		if( passes & SyncElimination )
+		{
+			Pass* pass = new analysis::SyncEliminationPass;
 			manager.addPass( *pass );
 		}
 		
@@ -149,6 +167,16 @@ static int parsePassTypes( const std::string& passList )
 			report( "  Matched subkernel-formation." );
 			types |= analysis::PTXOptimizer::SubkernelFormation;
 		}
+		else if( *pass == "mimd-threading" )
+		{
+			report( "  Matched mimd-threading." );
+			types |= analysis::PTXOptimizer::MIMDThreadScheduling;
+		}
+		else if( *pass == "sync-elimination" )
+		{
+			report( "  Matched sync-elimination." );
+			types |= analysis::PTXOptimizer::SyncElimination;
+		}
 		else if( !pass->empty() )
 		{
 			std::cout << "==Ocelot== Warning: Unknown pass name - '" << *pass 
@@ -174,9 +202,12 @@ int main( int argc, char** argv )
 		"The type of register allocator to use (linearscan)." );
 	parser.parse( "-r", "--max-registers", optimizer.registerCount, 32,
 		"The number of registers available for allocation." );
+	parser.parse( "-s", "--subkernel-size", optimizer.subkernelSize, 70,
+		"The target size for subkernel formation." );
 	parser.parse( "-p", "--passes", passes, "", 
 		"A list of optimization passes (remove-barriers, " 
-		"reverse-if-conversion, subkernel-formation, structural-transform)" );
+		"reverse-if-conversion, subkernel-formation, structural-transform " 
+		"mimd-threading, sync-elimination)");
 	parser.parse( "-c", "--cfg", optimizer.cfg, false, 
 		"Dump out the CFG's of all generated kernels." );
 	parser.parse();

@@ -11,6 +11,8 @@
 #include <ocelot/ir/interface/PTXOperand.h>
 #include <ocelot/ir/interface/Dim3.h>
 #include <ocelot/trace/interface/TraceGenerator.h>
+#include <iostream>
+#include <sstream>
 
 namespace executive
 {
@@ -51,32 +53,23 @@ namespace trace
         			std::vector <Status> map;
 
 			    public:
-			        ShadowMemory()
-			        {
-                        //_map.resize(16*1024);   //4GB / 64KB = 2^32 / 2^16 = 2^16
-			        }
+			        ShadowMemory();
 
-			        void resize(unsigned int size)
-			        {
-			            map.resize(size, NOT_DEFINED);					    
-			        }
+			        void resize(unsigned int size);
 
-			        unsigned int size(void)
-			        {
-			        	return map.size();
-			        }
+			        unsigned int size();
 
-					/*! \brief Check if region is initialized */
+				/*! \brief Check if region is initialized */
 			        Status checkRegion(unsigned int idx, unsigned int size);
 				
-					/*! \brief Set initialization status of a region */
-					void setRegion(unsigned int idx, unsigned int size, Status stat);
+				/*! \brief Set initialization status of a region */
+				void setRegion(unsigned int idx, unsigned int size, Status stat);
 
-					/*! \brief Check if region is initialized */
-					Status checkRegister(ir::PTXOperand::RegisterType idx);
+				/*! \brief Check if region is initialized */
+				Status checkRegister(ir::PTXOperand::RegisterType idx);
 
-					/*! \brief Set initialization status of a register */
-					void setRegister(ir::PTXOperand::RegisterType idx, Status stat);
+				/*! \brief Set initialization status of a register */
+				void setRegister(ir::PTXOperand::RegisterType idx, Status stat);
 			        
 			};
 			
@@ -131,10 +124,12 @@ namespace trace
 			void _checkInitialized(const TraceEvent& e);
 
 			/*! \brief Track initialization status of registers */
-			void _trackInstructions( const TraceEvent& e );
-			
+			void _checkInstructions(const TraceEvent& e);
+
 			/*! \brief Track register-to-register status and control redirect */
-			void trackInstruction( const TraceEvent& e, unsigned int numOp );
+			Status checkInstruction(const TraceEvent& e,
+				bool useMemoryFlag=false, ShadowMemory *shadowMem=NULL);
+			
 
 			
 		public:

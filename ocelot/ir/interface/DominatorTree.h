@@ -49,6 +49,9 @@ namespace ir {
 		bool dominates(ControlFlowGraph::iterator block, 
 			ControlFlowGraph::iterator potentialSuccessor);
 	
+		/*! Get the dominator of a given block */
+		ControlFlowGraph::iterator getDominator(
+			ControlFlowGraph::iterator block);
 	private:
 		void computeDT();
 		int intersect(int b1, int b2) const;

@@ -29,7 +29,7 @@ namespace util {
 		~KernelTestHarness();
 		
 		void execute();
-		bool compare();
+		bool compare(std::ostream& stream);
 		void reset();
 		
 	private:

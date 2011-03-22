@@ -114,8 +114,8 @@ void util::KernelTestHarness::execute() {
 
 typedef long long unsigned int uint64;
 
-static void compareAllocation(unsigned int& errors, uint64 size,
-	const void* referenceAddress, const void* computedAddress) {
+static void compareAllocation(std::ostream& out, unsigned int& errors,
+	uint64 size, const void* referenceAddress, const void* computedAddress) {
 
 	char* computedData = new char[size];
 		
@@ -141,7 +141,7 @@ static void compareAllocation(unsigned int& errors, uint64 size,
 			sizeof(uint64));
 	
 		if(computed != reference) {
-			std::cout << "at " << (void*)(address + (char*)referenceAddress)
+			out << "  at " << (void*)(address + (char*)referenceAddress)
 				<< " - computed '0x" << std::hex << computed
 				<< "' != reference '0x" << std::hex << reference << "'\n";
 			++errors;
@@ -159,7 +159,7 @@ static void compareAllocation(unsigned int& errors, uint64 size,
 			bytes - address);
 	
 		if(computed != reference) {
-			std::cout << "at " << (void*)(address + (char*)referenceAddress)
+			out << "  at " << (void*)(address + (char*)referenceAddress)
 				<< " - computed '0x" << std::hex << computed
 				<< "' != reference '0x" << std::hex << reference << "'\n";
 			++errors;
@@ -169,7 +169,7 @@ static void compareAllocation(unsigned int& errors, uint64 size,
 	delete[] computedData;
 }
 
-bool util::KernelTestHarness::compare() {
+bool util::KernelTestHarness::compare(std::ostream& out) {
 	// visit each allocation and compare 'after' results to 'before'
 	
 	unsigned int errors = 0;
@@ -188,7 +188,7 @@ bool util::KernelTestHarness::compare() {
 			"Reference data corresponding to allocation at " << alloc_it->first
 			<< " not found, malformed kernel checkpoint.");
 		
-		compareAllocation(errors, alloc_it->second->size(),
+		compareAllocation(out, errors, alloc_it->second->size(),
 			referenceAllocation->second->data.data(),
 			pointers[alloc_it->second->devicePointer]);
 
@@ -219,7 +219,7 @@ bool util::KernelTestHarness::compare() {
 				+ alloc_it->second->name + "'");
 		}
 		
-		compareAllocation(errors, alloc_it->second->size(),
+		compareAllocation(out, errors, alloc_it->second->size(),
 			referenceAllocation->second->data.data(), address);
 
 		if (errors > 20) break;
@@ -315,8 +315,9 @@ void util::KernelTestHarness::_setupTextures(
 		ocelot::registerTexture(&texref, module.name, texture->second->name,
 			texture->second->normalizedFloat);
 		
-		cudaError_t result = cudaBindTexture(&offset, &texref, devicePointer,
-			&desc);
+		cudaError_t result = cudaBindTexture2D(&offset, &texref, devicePointer,
+			&desc, texture->second->size.x, texture->second->size.y,
+			texture->second->pitch());
 		
 		if (result != cudaSuccess) {
 			throw hydrazine::Exception(
@@ -432,20 +433,24 @@ int main(int argc, char *argv[]) {
 					cudaDeviceProp properties;
 					cudaGetDeviceProperties(&properties, device);
 			
-					stream << " On device - " << device << " - '" 
-						<< properties.name << "' ";
-				
 					cudaSetDevice(device);
 				
 					test.execute();
 			
-					if(test.compare()) {
+					stream << " On device - " << device << " - '" 
+						<< properties.name << "' ";
+				
+					std::stringstream errors;
+				
+					if(test.compare(errors)) {
 						stream << "Pass\n";
 					}
 					else {
 						stream << "Fail\n";
 						pass = false;
 					}
+				
+					if(!errors.str().empty()) stream << errors.str() << "\n";
 				
 					test.reset();
 				}

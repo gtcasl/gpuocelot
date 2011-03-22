@@ -330,16 +330,20 @@ void util::ExtractedDeviceState::Module::deserialize(
 	name = object.parse<std::string>("name", "module");
 	ptx = object.parse<std::string>("ptx", "");
 
-	hydrazine::json::Visitor texturesArray(object["textures"]);
-	for (hydrazine::json::Array::const_iterator
-		tex_it = texturesArray.begin_array();
-		tex_it != texturesArray.end_array(); ++tex_it) {
-		
-		ir::Texture* texture = new ir::Texture;
+	hydrazine::json::Value* textureValue = object.find("textures");
 
-		deserializeTexture(*texture, hydrazine::json::Visitor(*tex_it));
+	if (textureValue) {
+		hydrazine::json::Visitor texturesArray(textureValue);
+		for (hydrazine::json::Array::const_iterator
+			tex_it = texturesArray.begin_array();
+			tex_it != texturesArray.end_array(); ++tex_it) {
 		
-		this->textures[texture->name] = texture;
+			ir::Texture* texture = new ir::Texture;
+
+			deserializeTexture(*texture, hydrazine::json::Visitor(*tex_it));
+		
+			this->textures[texture->name] = texture;
+		}
 	}
 }
 

@@ -17,6 +17,7 @@
 #include <vector>
 #include <unordered_set>
 #include <unordered_map>
+#include <set>
 
 // Forward Declarations
 
@@ -33,6 +34,7 @@ namespace analysis {
 		typedef unsigned int HyperblockId;
 		typedef std::map< analysis::DataflowGraph::RegisterId, analysis::DataflowGraph::Register > RegisterMap;
 		typedef std::vector< unsigned int> OffsetVector;
+		typedef std::unordered_set< analysis::DataflowGraph::Register > RegisterSet;
 		
 		//! \brief indicates reason for thread exit
 		enum ThreadExitCode {
@@ -128,6 +130,11 @@ namespace analysis {
 	private:
 	
 		void _partitionAtBarrier(ir::PTXKernel &parentKernel);
+		
+		void _determineRegisterUses(
+			RegisterSet &produced, 
+			RegisterSet &used, 
+			ir::PTXKernel &subkernel);
 	
 		//! \brief creates a spill region in the first block
 		void _createSpillRegion(
@@ -138,13 +145,13 @@ namespace analysis {
 		//! \brief restores live variables 
 		size_t _createRestore(
 			ir::PTXKernel &hyperblock,
-			const RegisterMap &liveValues,
+			const RegisterSet &liveValues,
 			OffsetVector &offsets);
 			
 		//! \brief stores live variables to local memory
 		size_t _createStore(
 			ir::PTXKernel &hyperblock,
-			const RegisterMap &liveValues,
+			const RegisterSet &liveValues,
 			OffsetVector &offsets);
 			
 		//! \brief writes the exit point 

@@ -9,6 +9,8 @@
 // C++ includes
 #include <queue>
 #include <boost/lexical_cast.hpp>
+#include <algorithm>
+#include <set>
 
 // Ocelot Includes
 #include <ocelot/analysis/interface/DataflowGraph.h>
@@ -174,8 +176,13 @@ void analysis::HyperblockFormation::runOnKernel(KernelDecomposition &decompositi
 		
 		report("visiting hyperblock " << hyperblock.subkernel->name);
 		
-		RegisterMap restoreSet;
-		RegisterMap storeSet;
+		RegisterSet restoreSet;
+		RegisterSet storeSet;
+		RegisterSet produced;
+		RegisterSet used;
+		
+		_determineRegisterUses(produced, used, *hyperblock.subkernel);
+		
 		
 		// compute union of all live values incoming
 		report("  " << hyperblock.in_edges.size() << " in edges");
@@ -185,7 +192,10 @@ void analysis::HyperblockFormation::runOnKernel(KernelDecomposition &decompositi
 			for (analysis::DataflowGraph::RegisterSet::const_iterator live_it = edge_it->liveValues.begin();
 				live_it != edge_it->liveValues.end(); ++live_it) {
 				
-				restoreSet[live_it->id] = *live_it;
+				//restoreSet[live_it->id] = *live_it;
+				if (true || used.find(live_it->id) != used.end()) {
+					restoreSet.insert(*live_it);
+				}
 			}
 			report(" " << restoreSet.size() << " live in values");
 		}
@@ -199,7 +209,10 @@ void analysis::HyperblockFormation::runOnKernel(KernelDecomposition &decompositi
 			
 			for (analysis::DataflowGraph::RegisterSet::const_iterator live_it = edge_it->liveValues.begin();
 				live_it != edge_it->liveValues.end(); ++live_it) {
-				storeSet[live_it->id] = *live_it;
+				//storeSet[live_it->id] = *live_it;
+				if (true || produced.find(live_it->id) != produced.end()) {
+					storeSet.insert(*live_it);
+				}
 			}
 			KernelDecomposition::HyperblockEntryMap::const_iterator 
 				entry_it = decomposition.hyperblockEntries.find(edge_it->label);
@@ -209,12 +222,13 @@ void analysis::HyperblockFormation::runOnKernel(KernelDecomposition &decompositi
 					<< " [label " << edge_it->label << "]");
 			}
 			
-			report(" " << restoreSet.size() << " live out values");
+			report(" " << storeSet.size() << " live out values");
 		}
 		
 		ir::BasicBlock epilogBlock;
 		
 		_createSpillRegion(*hyperblock.subkernel, parentKernel, spillSize);
+		
 		_createRestore(*hyperblock.subkernel, restoreSet, registerOffsets);
 		_createHyperblockExit(hyperblock);
 		_createStore(*hyperblock.subkernel, storeSet, registerOffsets);
@@ -227,6 +241,55 @@ void analysis::HyperblockFormation::finalize() {
 
 }
 
+void analysis::HyperblockFormation::_determineRegisterUses(
+	RegisterSet &produced, 
+	RegisterSet &used, 
+	ir::PTXKernel &subkernel) {
+	
+	report("determineRegisterUses(" << subkernel.name << ")");
+	
+	analysis::DataflowGraph *dfg = subkernel.rebuildDfg();
+	dfg->compute();
+		
+	for (analysis::DataflowGraph::const_iterator dfgb_it = dfg->begin();
+		dfgb_it != dfg->end();
+		++dfgb_it) {
+		
+		const analysis::DataflowGraph::InstructionVector &instructions = dfgb_it->instructions();
+		for (analysis::DataflowGraph::InstructionVector::const_iterator inst_it = instructions.begin();
+			inst_it != instructions.end(); ++inst_it) {
+			
+			// produced
+			for (analysis::DataflowGraph::RegisterPointerVector::const_iterator d_it = inst_it->d.begin();
+				d_it != inst_it->d.end(); ++d_it) {
+				
+				analysis::DataflowGraph::Register reg(*d_it->pointer, d_it->type);
+				produced.insert( reg );
+			}
+			
+			// used
+			for (analysis::DataflowGraph::RegisterPointerVector::const_iterator s_it = inst_it->s.begin();
+				s_it != inst_it->s.end(); ++s_it) {
+				
+				analysis::DataflowGraph::Register reg(*s_it->pointer, s_it->type);
+				used.insert( reg );
+			}
+		}
+	}
+	for (RegisterSet::const_iterator prod_it = produced.begin(); prod_it != produced.end(); ++prod_it) {
+		RegisterSet::iterator d_it = used.find(*prod_it);
+		if (d_it != used.end()) {
+			used.erase(d_it);
+		}
+	}
+	
+	for (RegisterSet::const_iterator r_it = produced.begin(); r_it != produced.end(); ++r_it) {
+		report("produced: " << r_it->id);
+	}
+	for (RegisterSet::const_iterator r_it = used.begin(); r_it != used.end(); ++r_it) {
+		report("used: " << r_it->id);
+	}
+}
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -270,7 +333,7 @@ void analysis::HyperblockFormation::_createSpillRegion(
 //! \brief restores live variables 
 size_t analysis::HyperblockFormation::_createRestore(
 	ir::PTXKernel &hyperblock,
-	const RegisterMap &liveValues,
+	const RegisterSet &liveValues,
 	OffsetVector &offsets) {
 
 	size_t bytes = 0;
@@ -278,7 +341,7 @@ size_t analysis::HyperblockFormation::_createRestore(
 	ir::BasicBlock::Pointer restoreBlock = hyperblock.cfg()->get_entry_block()->out_edges[0]->tail;
 	
 	ir::PTXInstruction* move = 0;
-	for (RegisterMap::const_iterator reg_it = liveValues.begin(); reg_it != liveValues.end(); ++reg_it) {
+	for (RegisterSet::const_iterator reg_it = liveValues.begin(); reg_it != liveValues.end(); ++reg_it) {
 		
 		if (!move) {
 			move = new ir::PTXInstruction(ir::PTXInstruction::Mov);
@@ -289,19 +352,19 @@ size_t analysis::HyperblockFormation::_createRestore(
 		
 		ir::PTXInstruction* load = new ir::PTXInstruction(ir::PTXInstruction::Ld);
 		
-		bytes = pad(bytes, ir::PTXOperand::bytes(reg_it->second.type));
+		bytes = pad(bytes, ir::PTXOperand::bytes(reg_it->type));
 		
 		load->addressSpace = ir::PTXInstruction::Local;
-		load->type = reg_it->second.type;
+		load->type = reg_it->type;
 
-		load->a = std::move(ir::PTXOperand(ir::PTXOperand::Indirect, ir::PTXOperand::u32, move->d.reg, offsets[reg_it->second.id]));
-		load->d = std::move(ir::PTXOperand(ir::PTXOperand::Register, reg_it->second.type, reg_it->first));
+		load->a = std::move(ir::PTXOperand(ir::PTXOperand::Indirect, ir::PTXOperand::u32, move->d.reg, offsets[reg_it->id]));
+		load->d = std::move(ir::PTXOperand(ir::PTXOperand::Register, reg_it->type, reg_it->id));
 	
 		ir::BasicBlock::InstructionList::iterator iterator = restoreBlock->instructions.begin();
 		++iterator;
 		restoreBlock->instructions.insert(iterator, load);
 	
-		bytes += ir::PTXOperand::bytes(reg_it->second.type);
+		bytes += ir::PTXOperand::bytes(reg_it->type);
 	}
 
 	return bytes;
@@ -312,7 +375,7 @@ size_t analysis::HyperblockFormation::_createRestore(
 //! \brief stores live variables to local memory
 size_t analysis::HyperblockFormation::_createStore(
 	ir::PTXKernel &hyperblock,
-	const RegisterMap &liveValues,
+	const RegisterSet &liveValues,
 	OffsetVector &offsets) {
 	
 	size_t offset = 0;
@@ -322,7 +385,7 @@ size_t analysis::HyperblockFormation::_createStore(
 	ir::BasicBlock::Pointer storeBlock = hyperblock.cfg()->get_exit_block()->in_edges[0]->head;
 	
 	ir::PTXInstruction* move = 0;
-	for (RegisterMap::const_iterator reg_it = liveValues.begin(); reg_it != liveValues.end(); ++reg_it) {
+	for (RegisterSet::const_iterator reg_it = liveValues.begin(); reg_it != liveValues.end(); ++reg_it) {
 		
 		if (!move) {
 			move = new ir::PTXInstruction(ir::PTXInstruction::Mov);
@@ -330,22 +393,22 @@ size_t analysis::HyperblockFormation::_createStore(
 			move->d = std::move(ir::PTXOperand(ir::PTXOperand::Register, ir::PTXOperand::u32, hyperblock.dfg()->newRegister()));
 			storeBlock->instructions.push_back(move);
 		}
-		if (reg_it->first == move->d.reg) {
+		if (reg_it->id == move->d.reg) {
 			continue;
 		}
 		ir::PTXInstruction* store = new ir::PTXInstruction(ir::PTXInstruction::St);
 		
 		store->addressSpace = ir::PTXInstruction::Local;
-		store->type = reg_it->second.type;
+		store->type = reg_it->type;
 		
-		bytes = pad(bytes, ir::PTXOperand::bytes(reg_it->second.type));
+		bytes = pad(bytes, ir::PTXOperand::bytes(reg_it->type));
 
-		store->a = std::move(ir::PTXOperand(ir::PTXOperand::Register, reg_it->second.type, reg_it->first));
-		store->d = std::move(ir::PTXOperand(ir::PTXOperand::Indirect, ir::PTXOperand::u32, move->d.reg, offsets[reg_it->second.id]));
+		store->a = std::move(ir::PTXOperand(ir::PTXOperand::Register, reg_it->type, reg_it->id));
+		store->d = std::move(ir::PTXOperand(ir::PTXOperand::Indirect, ir::PTXOperand::u32, move->d.reg, offsets[reg_it->id]));
 	
 		storeBlock->instructions.push_back(store);
 	
-		bytes += ir::PTXOperand::bytes(reg_it->second.type);
+		bytes += ir::PTXOperand::bytes(reg_it->type);
 	}
 	
 	return offset;

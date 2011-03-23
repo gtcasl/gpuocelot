@@ -77,6 +77,7 @@ namespace analysis
 				public:
 					/*! \brief Needed for comparisons */
 					bool operator==( const Register& r ) const;
+					bool operator<(const Register &r) const;
 			};
 			
 			/*! \brief A vector of register ID pointers */

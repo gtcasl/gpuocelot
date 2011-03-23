@@ -22,7 +22,9 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define REPORT_BASE 1
+#define REPORT_LOCAL_MEMORY 0
+
+#define REPORT_BASE 0
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -242,7 +244,8 @@ void LLVMDynamicExecutive::executeWarp(Warp &warp) {
 		
 		report("thread (" << ctx_it->tid.x << "," << ctx_it->tid.y << "," << ctx_it->tid.z << ") - entering block " << warp.entryId);
 		
-#if REPORT_BASE
+#if REPORT_BASE && REPORT_LOCAL_MEMORY
+		report("Before: ");
 		unsigned int localSize = 352;
 		for (unsigned int i = 0; i < (localSize & (~0x03)); i+=4) {
 			unsigned int word = *(const unsigned int *)&ctx_it->local[i];
@@ -265,6 +268,19 @@ void LLVMDynamicExecutive::executeWarp(Warp &warp) {
 		report(" thread(" << ctx_it->tid.x << ", " << ctx_it->tid.y << ", " << ctx_it->tid.z << ") [cta ] exited with code " 
 			<< analysis::HyperblockFormation::toString(exitCode) << " - resume point: " << getResumePoint(*ctx_it));
 		unsigned int ctaId = LLVMDynamicExecutive::ctaId(*ctx_it);
+		
+		
+#if REPORT_BASE && REPORT_LOCAL_MEMORY
+		unsigned int localSize = 352;
+		report("After: ");
+		for (unsigned int i = 0; i < (localSize & (~0x03)); i+=4) {
+			unsigned int word = *(const unsigned int *)&ctx_it->local[i];
+			if (word) {
+				std::cout << ".local[" << i << "]: " << (const void *)word << "\n";
+			}
+		}
+		std::cout << std::endl;
+#endif
 		
 		switch (exitCode) {
 		case analysis::HyperblockFormation::Thread_fallthrough:

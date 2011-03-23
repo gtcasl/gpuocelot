@@ -38,7 +38,7 @@ namespace executive {
 		typedef std::map< HyperblockId, LLVMDynamicTranslationCache::TranslationWarpMap > TranslationWarpCache;
 		
 		/*!
-		
+			\brief per kernel data structure accessible to the translation
 		*/
 		class Metadata {
 			

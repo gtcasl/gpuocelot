@@ -84,6 +84,9 @@ namespace analysis
 
             /*! \brief The strings representing the basic block labels */
             std::vector<std::string> labels;
+            
+            /*! \brief make sure all conditions have been met to perform this instrumentation */
+            bool conditionsMet;
 
         protected:
             
@@ -91,6 +94,10 @@ namespace analysis
 			
 		public:
 		
+		    PTXInstrumentor();
+		    
+            /*! \brief The checkConditions method verifies that the defined conditions are met for this instrumentation */
+            virtual void checkConditions() = 0;
 
             /*! \brief The analyze method performs any necessary static analysis */
             virtual void analyze(ir::Module &module) = 0;

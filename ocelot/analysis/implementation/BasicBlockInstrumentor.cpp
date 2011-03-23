@@ -27,6 +27,10 @@ using namespace hydrazine;
 namespace analysis
 {
 
+    void BasicBlockInstrumentor::checkConditions() {
+        conditionsMet = true;
+    }
+
     void BasicBlockInstrumentor::analyze(ir::Module &module) {
         basicBlocks = 0;
         if(!kernelName.empty()){

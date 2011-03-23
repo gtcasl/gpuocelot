@@ -188,6 +188,7 @@ namespace cuda {
 	typedef std::map< std::string, ir::Module > ModuleMap;
 	typedef std::unordered_map<unsigned int, void*> GLBufferMap;
 	typedef executive::DeviceVector DeviceVector;
+	typedef analysis::PTXInstrumentorVector PTXInstrumentorVector;
 
 	////////////////////////////////////////////////////////////////////////////////////////////////
 	/*! Cuda runtime context */

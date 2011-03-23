@@ -29,6 +29,9 @@ namespace analysis
 			/*! \brief The default constructor */
 			ClockCycleCountInstrumentor();
 
+            /*! \brief The checkConditions method verifies that the defined conditions are met for this instrumentation */
+            void checkConditions();
+
             /*! \brief The analyze method performs any necessary static analysis */
             virtual void analyze(ir::Module &module);
 

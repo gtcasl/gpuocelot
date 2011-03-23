@@ -445,9 +445,12 @@ void cuda::CudaRuntime::_registerModule(ModuleMap::iterator module) {
 	module->second.loadNow();
 
     HostThreadContext& thread = _getCurrentThread();    
-    if(!thread.instrumentors.empty()){
-        (thread.instrumentors.front())->instrument(module->second);
-    }	
+    for(PTXInstrumentorVector::iterator instrumentor = thread.instrumentors.begin();
+        instrumentor != thread.instrumentors.end(); ++instrumentor){
+        (*instrumentor)->checkConditions();
+        if((*instrumentor)->conditionsMet)
+            (*instrumentor)->instrument(module->second);
+    }
 	
 	for(RegisteredTextureMap::iterator texture = _textures.begin(); 
 		texture != _textures.end(); ++texture) {
@@ -2661,12 +2664,15 @@ cudaError_t cuda::CudaRuntime::_launchKernel(const std::string& moduleName,
 
     _release();
     
-    if(!thread.instrumentors.empty()){        
-        (thread.instrumentors.front())->kernelName = kernelName;
-        (thread.instrumentors.front())->threads = launch.blockDim.x * launch.blockDim.y * launch.blockDim.z;
-        (thread.instrumentors.front())->threadBlocks = launch.gridDim.x * launch.gridDim.y * launch.gridDim.z;
-        (thread.instrumentors.front())->analyze(module->second);
-        (thread.instrumentors.front())->initialize();
+    for(PTXInstrumentorVector::iterator instrumentor = thread.instrumentors.begin();
+        instrumentor != thread.instrumentors.end(); ++instrumentor){
+        if((*instrumentor)->conditionsMet){
+            (*instrumentor)->kernelName = kernelName;
+            (*instrumentor)->threads = launch.blockDim.x * launch.blockDim.y * launch.blockDim.z;
+            (*instrumentor)->threadBlocks = launch.gridDim.x * launch.gridDim.y * launch.gridDim.z;
+            (*instrumentor)->analyze(module->second);
+            (*instrumentor)->initialize();
+        }
     }
     
     _acquire();
@@ -2713,8 +2719,11 @@ cudaError_t cuda::CudaRuntime::_launchKernel(const std::string& moduleName,
 	}
 	_release();
 
-    if(!thread.instrumentors.empty()){
-        (thread.instrumentors.front())->finalize();
+    for(PTXInstrumentorVector::iterator instrumentor = thread.instrumentors.begin();
+        instrumentor != thread.instrumentors.end(); ++instrumentor){
+        if((*instrumentor)->conditionsMet){
+            (*instrumentor)->finalize();
+        }
     }
 	
 	return result;

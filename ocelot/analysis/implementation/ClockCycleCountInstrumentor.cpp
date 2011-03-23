@@ -28,6 +28,10 @@ using namespace hydrazine;
 namespace analysis
 {
 
+    void ClockCycleCountInstrumentor::checkConditions() {
+        conditionsMet = true;
+    }
+
     void ClockCycleCountInstrumentor::analyze(ir::Module &module) {
         /* No static analysis necessary for this instrumentation */
     }

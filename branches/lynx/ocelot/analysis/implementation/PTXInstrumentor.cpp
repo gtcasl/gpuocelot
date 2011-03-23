@@ -139,6 +139,10 @@ namespace analysis
     analysis::KernelProfile PTXInstrumentor::kernelProfile() {
         return this->_kernelProfile;
     }
+    
+    PTXInstrumentor::PTXInstrumentor() : conditionsMet(false) {
+
+    }
 
 }
 

@@ -94,18 +94,21 @@ for source in bison_sources:
 # Create the ocelot library
 libocelot = env.SharedLibrary('ocelot', sources)
 
+libocelot = env.Install(os.path.join( \
+	env['install_path'], "lib"), libocelot)
+
 ocelot_libs = [libocelot]
 ocelot_libs.extend(env['EXTRA_LIBS'])
 ocelot_libs.extend(env['LLVM_LIBS'])
 
 OcelotConfig = env.Program('OcelotConfig', \
-	[libocelot, 'ocelot/tools/OcelotConfig.cpp'], LIBS=ocelot_libs)
+	['ocelot/tools/OcelotConfig.cpp'], LIBS=ocelot_libs)
 PTXOptimizer = env.Program('PTXOptimizer', \
-	[libocelot, 'ocelot/tools/PTXOptimizer.cpp'], LIBS=ocelot_libs)
+	['ocelot/tools/PTXOptimizer.cpp'], LIBS=ocelot_libs)
 OcelotServer = env.Program('OcelotServer', \
-	[libocelot, 'ocelot/tools/OcelotServer.cpp'], LIBS=ocelot_libs)
+	['ocelot/tools/OcelotServer.cpp'], LIBS=ocelot_libs)
 OcelotHarness = env.Program('OcelotKernelTestHarness', \
-	[libocelot, 'ocelot/tools/KernelTestHarness.cpp'], LIBS=ocelot_libs)
+	['ocelot/tools/KernelTestHarness.cpp'], LIBS=ocelot_libs)
 
 Default(OcelotConfig)
 
@@ -155,7 +158,7 @@ tests.append(('TestPTXAssembly', \
 	'ocelot/ir/test/TestPTXAssembly.cpp', 'full'))
 
 for test in tests:
-	Test = env.Program(test[0], [libocelot, test[1]], LIBS=ocelot_libs)
+	Test = env.Program(test[0], [test[1]], LIBS=ocelot_libs)
 
 if env['test_level'] != 'none':
 	print 'Adding unit tests to the build...'
@@ -187,12 +190,6 @@ for dir in directories:
 	for ext in extensions:
 		regexp = os.path.join(dir, ext)
 		headers.extend(env.Glob(regexp))
-
-
-
-# Create the ocelot tools
-libocelot = env.Install(os.path.join( \
-	env['install_path'], "lib"), libocelot)
 
 # Install rules
 installed = []

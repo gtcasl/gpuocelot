@@ -95,7 +95,7 @@ def getLLVMPaths():
 		llvm_config_path = which('llvm-config')
 	except:
 		print 'Failed to find llvm-config'
-		return (False, None, None, None, None, None, None)
+		return (False, '', '', '', '', '', [])
 	
 	# determine defaults
 	if os.name == 'posix':

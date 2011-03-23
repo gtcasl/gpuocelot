@@ -43,9 +43,9 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
 #define REPORT_ALL_LLVM_ASSEMBLY 0
-#define REPORT_OPTIMIZED_LLVM_ASSEMBLY 1
+#define REPORT_OPTIMIZED_LLVM_ASSEMBLY 0
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -88,7 +88,7 @@ LLVMDynamicTranslationCache::getOrInsertTranslationById(HyperblockId id, int ws)
 			device
 		);
 		subkernel->translations[1] = scalarTranslation;
-#if REPORT_OPTIMIZED_LLVM_ASSEMBLY
+#if REPORT_OPTIMIZED_LLVM_ASSEMBLY && REPORT_BASE
 		scalarTranslation->llvmFunction->dump();
 #endif
 		

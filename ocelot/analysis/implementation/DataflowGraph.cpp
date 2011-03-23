@@ -47,6 +47,10 @@ namespace analysis
 		return id == r.id;
 	}
 	
+	bool DataflowGraph::Register::operator<(const Register &r) const {
+		return id < r.id;
+	}
+	
 	bool DataflowGraph::RegisterPointer::operator==( 
 		const RegisterPointer& r ) const
 	{

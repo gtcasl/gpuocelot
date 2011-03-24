@@ -24,6 +24,8 @@
 #undef REPORT_BASE
 #endif
 
+#define REPORT_SUBKERNEL_PTX 1
+
 #define REPORT_BASE 0
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -52,6 +54,58 @@ std::string analysis::HyperblockFormation::toString(const ThreadExitCode &code) 
 
 analysis::HyperblockFormation::HyperblockFormation() {
 
+}
+
+
+//! \brief computes a set of all registers that are generated or used by the subkernel
+void analysis::HyperblockFormation::Hyperblock::computeLiveValues(
+	RegisterSet &generated, 
+	RegisterSet &used) {
+
+	report("computeLiveValues(" << subkernel->name << ")");
+	
+	analysis::DataflowGraph *dfg = subkernel->rebuildDfg();
+	dfg->compute();
+		
+	for (analysis::DataflowGraph::const_iterator dfgb_it = dfg->begin();
+		dfgb_it != dfg->end();
+		++dfgb_it) {
+		
+		const analysis::DataflowGraph::InstructionVector &instructions = dfgb_it->instructions();
+		for (analysis::DataflowGraph::InstructionVector::const_iterator inst_it = instructions.begin();
+			inst_it != instructions.end(); ++inst_it) {
+			
+			// generated
+			for (analysis::DataflowGraph::RegisterPointerVector::const_iterator d_it = inst_it->d.begin();
+				d_it != inst_it->d.end(); ++d_it) {
+				
+				analysis::DataflowGraph::Register reg(*d_it->pointer, d_it->type);
+				generated.insert( reg );
+			}
+			
+			// used
+			for (analysis::DataflowGraph::RegisterPointerVector::const_iterator s_it = inst_it->s.begin();
+				s_it != inst_it->s.end(); ++s_it) {
+				
+				analysis::DataflowGraph::Register reg(*s_it->pointer, s_it->type);
+				used.insert( reg );
+			}
+		}
+	}
+	for (RegisterSet::const_iterator gen_it = generated.begin(); gen_it != generated.end(); ++gen_it) {
+		RegisterSet::iterator d_it = used.find(*gen_it);
+		if (d_it != used.end()) {
+			//used.erase(d_it);
+		}
+	}
+#if REPORT_BASE
+	for (RegisterSet::const_iterator r_it = generated.begin(); r_it != generated.end(); ++r_it) {
+		report("produced: " << r_it->id);
+	}
+	for (RegisterSet::const_iterator r_it = used.begin(); r_it != used.end(); ++r_it) {
+		report("used: " << r_it->id);
+	}
+#endif
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -89,7 +143,8 @@ void analysis::HyperblockFormation::runOnKernel(KernelDecomposition &decompositi
 	// Compute live register sets for each block
 	_partitionAtBarrier(parentKernel);
 	
-	parentKernel.dfg()->compute();
+	parentKernel.rebuildDfg()->compute();
+
 	analysis::DataflowGraph::IteratorMap cfgToDfgMap = parentKernel.dfg()->getCFGtoDFGMap();
 	ir::ControlFlowGraph *cfg = parentKernel.cfg();
 	
@@ -127,19 +182,13 @@ void analysis::HyperblockFormation::runOnKernel(KernelDecomposition &decompositi
 		ir::ControlFlowGraph::edge_iterator entryIterator = hyperblock.subkernel->cfg()->insert_edge(entryEdge);
 		ir::ControlFlowGraph::edge_iterator exitIterator = hyperblock.subkernel->cfg()->insert_edge(exitEdge);
 		
-		report(" visiting (" << (*bb_it)->in_edges.size() << ") in-edges of block '" << (*bb_it)->label << "'");
-		
 		for (ir::BasicBlock::EdgePointerVector::const_iterator edge_it = (*bb_it)->in_edges.begin();
 			edge_it != (*bb_it)->in_edges.end(); ++edge_it) {
 			Hyperblock::Edge edge;
 			edge.liveValues = dfgBlock->second->aliveIn();
 			hyperblock.in_edges.push_back(edge);
-			
-			report("  edge " << (*edge_it)->head->label << " -> " << (*edge_it)->tail->label 
-				<< " (" << edge.liveValues.size() << " live values)");
 		}
 		
-		report(" visitng (" << (*bb_it)->out_edges.size() << ") out edges");
 		for (ir::BasicBlock::EdgePointerVector::const_iterator edge_it = (*bb_it)->out_edges.begin();
 			edge_it != (*bb_it)->out_edges.end(); ++edge_it) {
 			Hyperblock::Edge edge;
@@ -148,9 +197,6 @@ void analysis::HyperblockFormation::runOnKernel(KernelDecomposition &decompositi
 			edge.type = (*edge_it)->type;
 			edge.label = (*edge_it)->tail->label ;
 			hyperblock.out_edges.push_back(edge);
-			
-			report("  edge " << (*edge_it)->head->label << " -> " << (*edge_it)->tail->label 
-				<< " (" << edge.liveValues.size() << " live values)");
 		}
 		
 		decomposition.hyperblocks[hyperblock.hyperblockId] = hyperblock;
@@ -176,13 +222,18 @@ void analysis::HyperblockFormation::runOnKernel(KernelDecomposition &decompositi
 		
 		report("visiting hyperblock " << hyperblock.subkernel->name);
 		
+		RegisterSet generated;
+		RegisterSet used;
+		hyperblock.computeLiveValues(generated, used);
+		bool filterLiveValues = true;
+		
 		RegisterSet restoreSet;
 		RegisterSet storeSet;
-		RegisterSet produced;
-		RegisterSet used;
-		
-		_determineRegisterUses(produced, used, *hyperblock.subkernel);
-		
+				
+#if REPORT_SUBKERNEL_PTX && REPORT_BASE
+		hyperblock.subkernel->write(std::cout);
+		std::cout << std::endl;
+#endif
 		
 		// compute union of all live values incoming
 		report("  " << hyperblock.in_edges.size() << " in edges");
@@ -193,8 +244,9 @@ void analysis::HyperblockFormation::runOnKernel(KernelDecomposition &decompositi
 				live_it != edge_it->liveValues.end(); ++live_it) {
 				
 				//restoreSet[live_it->id] = *live_it;
-				if (true || used.find(live_it->id) != used.end()) {
+				if (!filterLiveValues || used.find(live_it->id) != used.end()) {
 					restoreSet.insert(*live_it);
+					report("  restore: " << live_it->id);
 				}
 			}
 			report(" " << restoreSet.size() << " live in values");
@@ -209,9 +261,9 @@ void analysis::HyperblockFormation::runOnKernel(KernelDecomposition &decompositi
 			
 			for (analysis::DataflowGraph::RegisterSet::const_iterator live_it = edge_it->liveValues.begin();
 				live_it != edge_it->liveValues.end(); ++live_it) {
-				//storeSet[live_it->id] = *live_it;
-				if (true || produced.find(live_it->id) != produced.end()) {
+				if (!filterLiveValues || generated.find(live_it->id) != generated.end()) {
 					storeSet.insert(*live_it);
+					report("  store: " << live_it->id);
 				}
 			}
 			KernelDecomposition::HyperblockEntryMap::const_iterator 
@@ -232,6 +284,11 @@ void analysis::HyperblockFormation::runOnKernel(KernelDecomposition &decompositi
 		_createRestore(*hyperblock.subkernel, restoreSet, registerOffsets);
 		_createHyperblockExit(hyperblock);
 		_createStore(*hyperblock.subkernel, storeSet, registerOffsets);
+
+#if REPORT_SUBKERNEL_PTX && REPORT_BASE
+		hyperblock.subkernel->write(std::cout);
+		std::cout << std::endl;
+#endif
 
 		hyperblock.subkernel->rebuildDfg()->compute();
 	}

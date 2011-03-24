@@ -79,6 +79,11 @@ namespace analysis {
 			
 		public:
 		
+			//! \brief computes a set of all registers that are generated or used by the subkernel
+			void computeLiveValues(RegisterSet &generated, RegisterSet &used);
+		
+		public:
+		
 			//! \brief stores subkernel backing hyperblock
 			ir::PTXKernel *subkernel;
 			

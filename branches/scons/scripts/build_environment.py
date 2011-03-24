@@ -95,7 +95,7 @@ def getLLVMPaths():
 		llvm_config_path = which('llvm-config')
 	except:
 		print 'Failed to find llvm-config'
-		return (False, '', '', '', '', '', [])
+		return (False, [], [], [], [], [], [])
 	
 	# determine defaults
 	if os.name == 'posix':
@@ -273,8 +273,6 @@ def Environment():
 	
 	# get CUDA paths
 	(cuda_exe_path,cuda_lib_path,cuda_inc_path) = getCudaPaths()
-	#env.Append(LIBPATH = [cuda_lib_path])
-	#env.Append(CPPPATH = [cuda_inc_path])
 
 	# get boost paths
 	(boost_exe_path,boost_lib_path,boost_inc_path) = getBoostPaths()

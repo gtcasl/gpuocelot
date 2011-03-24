@@ -208,7 +208,7 @@ def getVersion(base):
 	svn_info = os.popen('svn info ..').read()
 	
 	match = re.search('Last Changed Rev: ', svn_info)
-	revision = ''
+	revision = '0'
 	if match:
 		end = re.search('\n', svn_info[match.end():])
 		if end:

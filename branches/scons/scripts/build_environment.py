@@ -203,7 +203,7 @@ def getVersion(base):
 		svn_path = which('svn')
 	except:
 		print 'Failed to get subversion revision'
-		return base
+		return base + '.0'
 
 	svn_info = os.popen('svn info ..').read()
 	

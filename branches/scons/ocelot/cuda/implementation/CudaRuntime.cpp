@@ -55,8 +55,8 @@ typedef api::OcelotConfiguration config;
 
 ////////////////////////////////////////////////////////////////////////////////
 
-cuda::HostThreadContext::HostThreadContext(): selectedDevice(0), 
-	parameterBlock(0), parameterBlockSize(1<<13) {
+cuda::HostThreadContext::HostThreadContext(): selectedDevice(0),
+	lastError(cudaSuccess), parameterBlock(0), parameterBlockSize(1<<13) {
 	parameterBlock = (unsigned char *)malloc(parameterBlockSize);
 }
 

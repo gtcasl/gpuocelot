@@ -40,7 +40,7 @@ ir::Module::Module(std::istream& stream, const std::string& path)
 }
 
 ir::Module::Module()
-: _ptxPointer(0), _addressSize(64), _loaded(true) {
+: _ptxPointer(0), _addressSize(64), _loaded(false) {
 	PTXStatement version;
 	PTXStatement target;
 	version.directive = PTXStatement::Version;
@@ -261,7 +261,8 @@ void ir::Module::writeIR( std::ostream& stream ) const {
 	for (FunctionPrototypeMap::const_iterator prot_it = _prototypes.begin();
 		prot_it != _prototypes.end(); ++prot_it) {
 		
-		if (prot_it->second.callType != ir::PTXKernel::Prototype::Entry && prot_it->second.identifier != "") {
+		if (prot_it->second.callType != ir::PTXKernel::Prototype::Entry
+			&& prot_it->second.identifier != "") {
 			stream << prot_it->second.toString() << "\n";
 		}
 	}

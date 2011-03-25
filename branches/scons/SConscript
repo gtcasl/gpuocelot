@@ -94,8 +94,9 @@ for source in bison_sources:
 # Create the ocelot library
 libocelot = env.SharedLibrary('ocelot', sources)
 
-libocelot = env.Install(os.path.join( \
-	env['install_path'], "lib"), libocelot)
+if 'install' in COMMAND_LINE_TARGETS:
+	libocelot = env.Install(os.path.join( \
+		env['install_path'], "lib"), libocelot)
 
 ocelot_libs = [libocelot]
 ocelot_libs.extend(env['EXTRA_LIBS'])
@@ -192,25 +193,27 @@ for dir in directories:
 		headers.extend(env.Glob(regexp))
 
 # Install rules
-installed = []
-installed.append(libocelot)
-installed.append(env.Install(os.path.join( \
-	env['install_path'], "bin"), OcelotConfig))
-installed.append(env.Install(os.path.join( \
-	env['install_path'], "bin"), PTXOptimizer))
-installed.append(env.Install(os.path.join( \
-	env['install_path'], "bin"), OcelotServer))
-installed.append(env.Install(os.path.join( \
-	env['install_path'], "bin"), OcelotHarness))
-
-for header in headers:
-	(directoryPath, headerName) = os.path.split( \
-		os.path.relpath(str(header), prefix))
+if 'install' in COMMAND_LINE_TARGETS:
+	print 'Installing ocelot...'
+	installed = []
+	installed.append(libocelot)
 	installed.append(env.Install(os.path.join( \
-		env['install_path'], "include", directoryPath), header))
+		env['install_path'], "bin"), OcelotConfig))
+	installed.append(env.Install(os.path.join( \
+		env['install_path'], "bin"), PTXOptimizer))
+	installed.append(env.Install(os.path.join( \
+		env['install_path'], "bin"), OcelotServer))
+	installed.append(env.Install(os.path.join( \
+		env['install_path'], "bin"), OcelotHarness))
 
-for i in installed:
-	env.AddPostAction(str(i), Chmod(str(i), 0644))
+	for header in headers:
+		(directoryPath, headerName) = os.path.split( \
+			os.path.relpath(str(header), prefix))
+		installed.append(env.Install(os.path.join( \
+			env['install_path'], "include", directoryPath), header))
 
-env.Alias('install', env['install_path'])
+	for i in installed:
+		env.AddPostAction(str(i), Chmod(str(i), 0644))
+
+	env.Alias('install', env['install_path'])
 

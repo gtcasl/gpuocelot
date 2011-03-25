@@ -22,13 +22,6 @@
 #define REPORT_BASE 0
 
 ////////////////////////////////////////////////////////////////////////////////
-static long long unsigned int align(long long unsigned int address,
-	long long unsigned int alignment)
-{
-	long long unsigned int difference = address % alignment;
-	return (difference == 0 ? address : address + alignment - difference);
-}
-
 cuda::FatBinaryContext::FatBinaryContext(const void *ptr): cubin_ptr(ptr) {
 
 	if(*(int*)cubin_ptr == __cudaFatMAGIC) {
@@ -71,13 +64,17 @@ cuda::FatBinaryContext::FatBinaryContext(const void *ptr): cubin_ptr(ptr) {
 			(__cudaFatCudaBinary2Header*) binary->fatbinData;
 		
 		_name = (const char*)(header + 1);
+
+		while(*_name == 0) ++_name;
+		
 		report("Found module named '" << _name << "'");
 		report(" reading ELF binary...");
 		
-		long long unsigned int address =
-			(long long unsigned int)_name + header->length;
+		const char* elfData = _name + header->length;
 
-		hydrazine::ELFFile elf((const char*)align(address, 8));
+		while(*elfData == 0) ++elfData;
+
+		hydrazine::ELFFile elf(elfData);
 		
 		if(elf.header().checkMagic()) {
 			_name = (const char*)elf.endOfFile() + 8;
@@ -85,7 +82,7 @@ cuda::FatBinaryContext::FatBinaryContext(const void *ptr): cubin_ptr(ptr) {
 			while(*_ptx == 0) ++_ptx;
 		}
 		else {
-			_ptx = (const char*)(header + 1);
+			_ptx = elfData;
 		}
 	}
 	else {

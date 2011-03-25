@@ -76,7 +76,7 @@ void util::KernelTestHarness::execute() {
 	char* parameterMemory = new char[state.launch.parameterMemory.size()];
 	std::memcpy(parameterMemory, state.launch.parameterMemory.data(),
 		state.launch.parameterMemory.size());
-	for (size_t i = 0; i < state.launch.parameterMemory.size();
+	for (size_t i = 0; i + sizeof(void*) <= state.launch.parameterMemory.size();
 		i += sizeof(void *)) {
 
 		void *pointer = *(void **)&parameterMemory[i];

@@ -165,7 +165,6 @@ namespace executive
 	
 	void* EmulatorDevice::MemoryAllocation::pointer() const
 	{
-		assert(!host() || (_flags & cudaHostAllocMapped));
 		if(_external) return _pointer;
 		return align(_pointer);
 	}

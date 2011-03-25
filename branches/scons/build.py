@@ -81,6 +81,8 @@ def main():
 	parser.add_option( "-j", "--threads", default = "1" )
 	parser.add_option( "-s", "--submit", \
 		default = False, action = "store_true" )
+	parser.add_option( "-i", "--install", \
+		default = False, action = "store_true", help = "Install ocelot." )
 	parser.add_option( "-b", "--build_target", \
 		default = "", help = "build a specific target." )
 	parser.add_option( "-m", "--message", default = "", \
@@ -101,6 +103,9 @@ def main():
 
 	if options.debug:
 		command += " mode=debug"
+		
+	if options.install:
+		command += " install"
 
 	if options.build_target != '':
 		if options.debug:

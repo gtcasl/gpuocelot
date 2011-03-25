@@ -152,7 +152,7 @@ namespace ir {
 		const StatementVector& statements() const;
 		
 		/*! \brief gets all declared function prototypes */
-		const FunctionPrototypeMap & prototypes() const;
+		const FunctionPrototypeMap& prototypes() const;
 	
 		/*! \brief get the address size */
 		unsigned int addressSize() const;

@@ -32,7 +32,7 @@ check_PROGRAMS = TestLexer TestParser \
 	TestCalVectorScale TestPTXAssembly TestGenericMemory \
 	TestFunctionCall TestIndirectFunctionCall TestIndirectFunctionCallOcelot \
 	KernelTestHarness TestConvergence TestDivergence TestVectorizationLoop \
-	MicroComputeBound MicroMemoryBound
+	MicroComputeBound MicroMemoryBound 
 EXTRA_PROGRAMS = Module PtxToIlTranslator DFG CFG PTXChecker OcelotServer TestOcelotServer
 lib_LTLIBRARIES = libocelot.la libKernelExtractor.la
 

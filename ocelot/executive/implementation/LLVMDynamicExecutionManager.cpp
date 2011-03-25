@@ -61,6 +61,7 @@ void LLVMDynamicExecutionManager::launch(const LLVMDynamicKernel & kernel, int s
 	report("  block dim: " << blockDim.x << ", " << blockDim.y << ", " << blockDim.z);
 	report("  entry id: " << translatedKernel->entryBlockId);
 	report("  local memory size: " << translatedKernel->localMemorySize << " bytes");
+	report("  shared memory size: " << translatedKernel->sharedMemorySize << " bytes ");
 	
 	for (int ctaStart = 0; ctaStart < totalCtas; ctaStart++) {
 		LLVMDynamicExecutive executive(&kernel, 0, translatedKernel, sharedMemorySize);

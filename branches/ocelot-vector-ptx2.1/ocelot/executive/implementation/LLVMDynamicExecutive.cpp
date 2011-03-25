@@ -24,7 +24,9 @@
 
 #define REPORT_LOCAL_MEMORY 0
 
-#define REPORT_BASE 0
+#define REPORT_SCHEDULE_OPERATIONS 0
+
+#define REPORT_BASE 1
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -59,9 +61,13 @@ void LLVMDynamicExecutive::CooperativeThreadArray::initialize(
 		
 	local.resize(localMemorySize * totalThreads, 0);
 	shared.resize(sharedMemorySize, 0);
-	
-	report("  local memory range: " << (const void *)&local[0] << " - " << (const void *)&local[local.size()-1]);
-	report("  shared memory range: " << (const void *)&shared[0] << " - " << (const void *)&shared[shared.size()-1]);
+
+	if (localMemorySize) {	
+		report("  local memory range: " << (const void *)&local[0] << " - " << (const void *)&local[local.size()-1]);
+	}
+	if (sharedMemorySize) {
+		report("  shared memory range: " << (const void *)&shared[0] << " - " << (const void *)&shared[shared.size()-1]);
+	}
 	
 	for (int threadId = 0; threadId < totalThreads; threadId++) {
 		LLVMContext context;
@@ -199,7 +205,7 @@ void LLVMDynamicExecutive::execute() {
 	int waitingThreads = 0;
 	int readyThreads = 0;
 	
-	report("execute()");
+	reportE(REPORT_SCHEDULE_OPERATIONS, "execute()");
 	
 	do {
 		Warp warp;
@@ -211,7 +217,7 @@ void LLVMDynamicExecutive::execute() {
 			// construct a warp
 			warpFormation(warp);
 		
-			report(" formed warp with " << warp.threads.size() << " threads");
+			reportE(REPORT_SCHEDULE_OPERATIONS, " formed warp with " << warp.threads.size() << " threads");
 			// execute a warp
 			executeWarp(warp);
 		}
@@ -226,14 +232,15 @@ void LLVMDynamicExecutive::execute() {
 */
 void LLVMDynamicExecutive::executeWarp(Warp &warp) {
 	
-	report("Executing warp of size " << warp.size() << " on hyperblockId " << warp.entryId);
+	
+	reportE(REPORT_SCHEDULE_OPERATIONS, "Executing warp of size " << warp.size() << " on hyperblockId " << warp.entryId);
 	
 	// lazily fetch translation
 	const LLVMDynamicTranslationCache::Translation *translation = 
 		getOrInsertTranslationById(warp.entryId, warp.size());
 	
 	assert(translation && "failed to obtain translation");
-	report(" obtained translation. Executing warp.");
+	reportE(REPORT_SCHEDULE_OPERATIONS, " obtained translation. Executing warp.");
 	
 	for (ThreadContextVector::iterator ctx_it = warp.threads.begin(); 
 		ctx_it != warp.threads.end(); 
@@ -242,7 +249,9 @@ void LLVMDynamicExecutive::executeWarp(Warp &warp) {
 		ctx_it->metadata = (char *)translation->metadata;
 		assert(ctx_it->metadata);
 		
-		report("thread (" << ctx_it->tid.x << "," << ctx_it->tid.y << "," << ctx_it->tid.z << ") - entering block " << warp.entryId);
+		reportE(REPORT_SCHEDULE_OPERATIONS, 
+			"thread (" << ctx_it->tid.x << "," << ctx_it->tid.y << "," << ctx_it->tid.z 
+			<< ") - entering block " << warp.entryId);
 		
 #if REPORT_BASE && REPORT_LOCAL_MEMORY
 		report("Before: ");
@@ -265,8 +274,12 @@ void LLVMDynamicExecutive::executeWarp(Warp &warp) {
 		++ctx_it) {
 	
 		ThreadExitCode exitCode = getExitCode(*ctx_it);
-		report(" thread(" << ctx_it->tid.x << ", " << ctx_it->tid.y << ", " << ctx_it->tid.z << ") [cta ] exited with code " 
-			<< analysis::HyperblockFormation::toString(exitCode) << " - resume point: " << getResumePoint(*ctx_it));
+		reportE(REPORT_SCHEDULE_OPERATIONS, 
+			" thread(" << ctx_it->tid.x << ", " << ctx_it->tid.y << ", " << ctx_it->tid.z 
+			<< ") [cta ] exited with code " 
+			<< analysis::HyperblockFormation::toString(exitCode) 
+			<< " - resume point: " << getResumePoint(*ctx_it));
+		
 		unsigned int ctaId = LLVMDynamicExecutive::ctaId(*ctx_it);
 		
 		
@@ -355,24 +368,27 @@ LLVMDynamicExecutive::getOrInsertTranslationById(HyperblockId id, int ws) {
 	const LLVMDynamicTranslationCache::Translation *translation =0;
 	TranslationWarpCache::iterator hb_it = translationCache.find(id);
 	
-	report(" getOrInsertTranslationById( id: " << id << ", ws: " << ws << ")");
+	reportE(REPORT_SCHEDULE_OPERATIONS, 
+		" getOrInsertTranslationById( id: " << id << ", ws: " << ws << ")");
 	
 	if (hb_it != translationCache.end()) {
 		LLVMDynamicTranslationCache::TranslationWarpMap::iterator tr_it = hb_it->second.find(ws);
 		if (tr_it != hb_it->second.end()) {
 			translation = tr_it->second;
-			report("hit local translation cache");
+			reportE(REPORT_SCHEDULE_OPERATIONS, "hit local translation cache");
 		}
 		else {
 			// not found for this warp size. query the singleton translation cache
 			translation = LLVMDynamicExecutionManager::get().getOrInsertTranslationById(id, ws);
 			hb_it->second[ws] = translation;
-			report("no translation found for this warp size. Querying global translation cache.");
+			reportE(REPORT_SCHEDULE_OPERATIONS, 
+				"no translation found for this warp size. Querying global translation cache.");
 		}
 	}
 	else {
 		// not found for any warp size. query the singleton translation cache
-		report("no translation found for hyperblock id. Querying global translation cache.");
+		reportE(REPORT_SCHEDULE_OPERATIONS, 
+			"no translation found for hyperblock id. Querying global translation cache.");
 		translation = LLVMDynamicExecutionManager::get().getOrInsertTranslationById(id, ws);
 		LLVMDynamicTranslationCache::TranslationWarpMap warpMap;
 		warpMap[ws] = translation;

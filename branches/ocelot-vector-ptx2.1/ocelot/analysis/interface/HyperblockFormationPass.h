@@ -134,12 +134,8 @@ namespace analysis {
 		
 	private:
 	
+		//! \brief partitions blocks in parent kernel such that bar.sync is last instruction
 		void _partitionAtBarrier(ir::PTXKernel &parentKernel);
-		
-		void _determineRegisterUses(
-			RegisterSet &produced, 
-			RegisterSet &used, 
-			ir::PTXKernel &subkernel);
 	
 		//! \brief creates a spill region in the first block
 		void _createSpillRegion(

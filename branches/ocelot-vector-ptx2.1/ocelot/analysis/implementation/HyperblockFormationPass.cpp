@@ -26,7 +26,7 @@
 
 #define REPORT_SUBKERNEL_PTX 1
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -98,14 +98,6 @@ void analysis::HyperblockFormation::Hyperblock::computeLiveValues(
 			//used.erase(d_it);
 		}
 	}
-#if REPORT_BASE
-	for (RegisterSet::const_iterator r_it = generated.begin(); r_it != generated.end(); ++r_it) {
-		report("produced: " << r_it->id);
-	}
-	for (RegisterSet::const_iterator r_it = used.begin(); r_it != used.end(); ++r_it) {
-		report("used: " << r_it->id);
-	}
-#endif
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -236,7 +228,6 @@ void analysis::HyperblockFormation::runOnKernel(KernelDecomposition &decompositi
 #endif
 		
 		// compute union of all live values incoming
-		report("  " << hyperblock.in_edges.size() << " in edges");
 		for (Hyperblock::EdgeVector::iterator edge_it = hyperblock.in_edges.begin();
 			edge_it != hyperblock.in_edges.end(); ++edge_it) {
 			
@@ -246,16 +237,13 @@ void analysis::HyperblockFormation::runOnKernel(KernelDecomposition &decompositi
 				//restoreSet[live_it->id] = *live_it;
 				if (!filterLiveValues || used.find(live_it->id) != used.end()) {
 					restoreSet.insert(*live_it);
-					report("  restore: " << live_it->id);
 				}
 			}
-			report(" " << restoreSet.size() << " live in values");
 		}
 		
 		//
 		// compute union of all live values outgoing
 		//
-		report("  " << hyperblock.out_edges.size()<< " out edges");
 		for (Hyperblock::EdgeVector::iterator edge_it = hyperblock.out_edges.begin();
 			edge_it != hyperblock.out_edges.end(); ++edge_it) {
 			
@@ -263,18 +251,13 @@ void analysis::HyperblockFormation::runOnKernel(KernelDecomposition &decompositi
 				live_it != edge_it->liveValues.end(); ++live_it) {
 				if (!filterLiveValues || generated.find(live_it->id) != generated.end()) {
 					storeSet.insert(*live_it);
-					report("  store: " << live_it->id);
 				}
 			}
 			KernelDecomposition::HyperblockEntryMap::const_iterator 
 				entry_it = decomposition.hyperblockEntries.find(edge_it->label);
 			if (entry_it != decomposition.hyperblockEntries.end()) {
 				edge_it->externalHyperblock = entry_it->second;
-				report(" --  assigning out edge to target " << edge_it->externalHyperblock 
-					<< " [label " << edge_it->label << "]");
 			}
-			
-			report(" " << storeSet.size() << " live out values");
 		}
 		
 		ir::BasicBlock epilogBlock;
@@ -296,56 +279,6 @@ void analysis::HyperblockFormation::runOnKernel(KernelDecomposition &decompositi
 
 void analysis::HyperblockFormation::finalize() {
 
-}
-
-void analysis::HyperblockFormation::_determineRegisterUses(
-	RegisterSet &produced, 
-	RegisterSet &used, 
-	ir::PTXKernel &subkernel) {
-	
-	report("determineRegisterUses(" << subkernel.name << ")");
-	
-	analysis::DataflowGraph *dfg = subkernel.rebuildDfg();
-	dfg->compute();
-		
-	for (analysis::DataflowGraph::const_iterator dfgb_it = dfg->begin();
-		dfgb_it != dfg->end();
-		++dfgb_it) {
-		
-		const analysis::DataflowGraph::InstructionVector &instructions = dfgb_it->instructions();
-		for (analysis::DataflowGraph::InstructionVector::const_iterator inst_it = instructions.begin();
-			inst_it != instructions.end(); ++inst_it) {
-			
-			// produced
-			for (analysis::DataflowGraph::RegisterPointerVector::const_iterator d_it = inst_it->d.begin();
-				d_it != inst_it->d.end(); ++d_it) {
-				
-				analysis::DataflowGraph::Register reg(*d_it->pointer, d_it->type);
-				produced.insert( reg );
-			}
-			
-			// used
-			for (analysis::DataflowGraph::RegisterPointerVector::const_iterator s_it = inst_it->s.begin();
-				s_it != inst_it->s.end(); ++s_it) {
-				
-				analysis::DataflowGraph::Register reg(*s_it->pointer, s_it->type);
-				used.insert( reg );
-			}
-		}
-	}
-	for (RegisterSet::const_iterator prod_it = produced.begin(); prod_it != produced.end(); ++prod_it) {
-		RegisterSet::iterator d_it = used.find(*prod_it);
-		if (d_it != used.end()) {
-			used.erase(d_it);
-		}
-	}
-	
-	for (RegisterSet::const_iterator r_it = produced.begin(); r_it != produced.end(); ++r_it) {
-		report("produced: " << r_it->id);
-	}
-	for (RegisterSet::const_iterator r_it = used.begin(); r_it != used.end(); ++r_it) {
-		report("used: " << r_it->id);
-	}
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////

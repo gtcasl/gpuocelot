@@ -1143,24 +1143,8 @@ void LLVMModuleManager::Module::shiftId(FunctionId nextId)
 LLVMModuleManager::ModuleDatabase::ModuleDatabase()
 {
 	start();
-	std::stringstream ptx;
 	
-	ptx << 
-		".entry _ZOcelotBarrierKernel()\n"
-		"{\t\n"
-		"\t.reg .u32 %r<2>;\n"
-		"\t.local .u32 _Zocelot_barrier_next_kernel;\n"
-		"\tentry:\n"
-		"\tmov.u32 %r0, _Zocelot_barrier_next_kernel;\n"
-		"\tld.local.u32 %r1, [%r0];\n"
-		"BarrierPrototype: .callprototype _ ();\n"
-		"\tcall.tail %r1, BarrierPrototype;\n"
-		"\texit;\n"
-		"}\n";
-	
-	_barrierModule.load(ptx, "_ZOcelotBarrierModule");
-	
-	loadModule(&_barrierModule, translator::Translator::NoOptimization, 0);
+
 }
 
 LLVMModuleManager::ModuleDatabase::~ModuleDatabase()
@@ -1184,6 +1168,28 @@ LLVMModuleManager::ModuleDatabase::~ModuleDatabase()
 void LLVMModuleManager::ModuleDatabase::loadModule(const ir::Module* module, 
 	translator::Translator::OptimizationLevel level, Device* device)
 {
+	if(!_barrierModule.loaded())
+	{
+		std::stringstream ptx;
+	
+		ptx << 
+			".entry _ZOcelotBarrierKernel()\n"
+			"{\t\n"
+			"\t.reg .u32 %r<2>;\n"
+			"\t.local .u32 _Zocelot_barrier_next_kernel;\n"
+			"\tentry:\n"
+			"\tmov.u32 %r0, _Zocelot_barrier_next_kernel;\n"
+			"\tld.local.u32 %r1, [%r0];\n"
+			"BarrierPrototype: .callprototype _ ();\n"
+			"\tcall.tail %r1, BarrierPrototype;\n"
+			"\texit;\n"
+			"}\n";
+	
+		_barrierModule.load(ptx, "_ZOcelotBarrierModule");
+
+		loadModule(&_barrierModule, translator::Translator::NoOptimization, 0);
+	}
+	
 	typedef api::OcelotConfiguration config;
 
 	assert(!isModuleLoaded(module->path()));

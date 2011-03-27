@@ -1,0 +1,36 @@
+INFO     Reading in test file /home/normal/checkout/gpuocelot/branches/scons/regression/basic.level
+INFO      Found the following tests:
+INFO       /home/normal/checkout/gpuocelot/branches/scons/.release_build/TestLexer
+ERROR    Could not find test program /home/normal/checkout/gpuocelot/branches/scons/.release_build/TestLexer
+INFO       /home/normal/checkout/gpuocelot/branches/scons/.release_build/TestParser
+ERROR    Could not find test program /home/normal/checkout/gpuocelot/branches/scons/.release_build/TestParser
+INFO       /home/normal/checkout/gpuocelot/branches/scons/.release_build/TestEmulator
+ERROR    Could not find test program /home/normal/checkout/gpuocelot/branches/scons/.release_build/TestEmulator
+INFO       /home/normal/checkout/gpuocelot/branches/scons/.release_build/TestInstructions
+ERROR    Could not find test program /home/normal/checkout/gpuocelot/branches/scons/.release_build/TestInstructions
+INFO       /home/normal/checkout/gpuocelot/branches/scons/.release_build/TestKernels
+ERROR    Could not find test program /home/normal/checkout/gpuocelot/branches/scons/.release_build/TestKernels
+INFO       /home/normal/checkout/gpuocelot/branches/scons/.release_build/TestDataflowGraph
+ERROR    Could not find test program /home/normal/checkout/gpuocelot/branches/scons/.release_build/TestDataflowGraph
+INFO       /home/normal/checkout/gpuocelot/branches/scons/.release_build/TestLLVMInstructions
+ERROR    Could not find test program /home/normal/checkout/gpuocelot/branches/scons/.release_build/TestLLVMInstructions
+INFO       /home/normal/checkout/gpuocelot/branches/scons/.release_build/TestPTXToLLVMTranslator
+ERROR    Could not find test program /home/normal/checkout/gpuocelot/branches/scons/.release_build/TestPTXToLLVMTranslator
+INFO       /home/normal/checkout/gpuocelot/branches/scons/.release_build/TestLLVMKernels
+ERROR    Could not find test program /home/normal/checkout/gpuocelot/branches/scons/.release_build/TestLLVMKernels
+INFO     ==== INDIVIDUAL TEST RESULTS ====
+
+INFO     
+Passing tests:
+
+Non-Existent tests:
+ /home/normal/checkout/gpuocelot/branches/scons/.release_build/TestPTXToLLVMTranslator
+ /home/normal/checkout/gpuocelot/branches/scons/.release_build/TestEmulator
+ /home/normal/checkout/gpuocelot/branches/scons/.release_build/TestInstructions
+ /home/normal/checkout/gpuocelot/branches/scons/.release_build/TestLLVMInstructions
+ /home/normal/checkout/gpuocelot/branches/scons/.release_build/TestDataflowGraph
+ /home/normal/checkout/gpuocelot/branches/scons/.release_build/TestParser
+ /home/normal/checkout/gpuocelot/branches/scons/.release_build/TestLLVMKernels
+ /home/normal/checkout/gpuocelot/branches/scons/.release_build/TestLexer
+ /home/normal/checkout/gpuocelot/branches/scons/.release_build/TestKernels
+

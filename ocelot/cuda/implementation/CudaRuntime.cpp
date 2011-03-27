@@ -55,8 +55,8 @@ typedef api::OcelotConfiguration config;
 
 ////////////////////////////////////////////////////////////////////////////////
 
-cuda::HostThreadContext::HostThreadContext(): selectedDevice(0), 
-	parameterBlock(0), parameterBlockSize(1<<13) {
+cuda::HostThreadContext::HostThreadContext(): selectedDevice(0),
+	lastError(cudaSuccess), parameterBlock(0), parameterBlockSize(1<<13) {
 	parameterBlock = (unsigned char *)malloc(parameterBlockSize);
 }
 
@@ -129,12 +129,12 @@ void cuda::HostThreadContext::clear() {
 	nextTraceGenerators.clear();
 }
 
-void cuda::HostThreadContext::mapParameters(const ir::Kernel* kernel) {
-	
+unsigned int cuda::HostThreadContext::mapParameters(const ir::Kernel* kernel) {
+	unsigned int dst = 0;
+
 	if (kernel->arguments.size() == parameterIndices.size()) {
 		IndexVector::iterator offset = parameterIndices.begin();
 		SizeVector::iterator size = parameterSizes.begin();
-		unsigned int dst = 0;
 		unsigned char* temp = (unsigned char*)malloc(parameterBlockSize);
 		for (ir::Kernel::ParameterVector::const_iterator 
 			parameter = kernel->arguments.begin(); 
@@ -171,6 +171,8 @@ void cuda::HostThreadContext::mapParameters(const ir::Kernel* kernel) {
 			<< parameterIndices[0] << ", " 
 			<< parameterSizes[0] << " bytes");
 		clearParameters();
+
+		dst = parameterBlockSize;
 	}
 	else {
 		report("Parameter ERROR: offset " << parameterIndices[0] << ", "
@@ -179,6 +181,8 @@ void cuda::HostThreadContext::mapParameters(const ir::Kernel* kernel) {
 		assert((kernel->arguments.size() == parameterIndices.size()) && 
 			"unaccepted argument formatting");
 	}
+
+	return dst;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -534,72 +538,35 @@ cuda::CudaRuntime::~CudaRuntime() {
 	registers a CUDA fatbinary and returns a handle
 	for referencing the fat binary
 */
-static bool dummy0Flag = false;
 
 void** cuda::CudaRuntime::cudaRegisterFatBinary(void *fatCubin) {
 	size_t handle = 0;
-	__cudaFatCudaBinary *binary = (__cudaFatCudaBinary *)fatCubin;
-	
 	_lock();
-		
+
+	handle = _fatBinaries.size();
+	
+	FatBinaryContext cubinContext(fatCubin);
+
 	for (FatBinaryVector::const_iterator it = _fatBinaries.begin();
 		it != _fatBinaries.end(); ++it) {
-		if (std::string(it->name()) == binary->ident) {
+		if (std::string(it->name()) == cubinContext.name()) {
 			_unlock();
-		
+	
 			assert(0 && "binary already exists");		
 			return 0;
 		}	
 	}
 
-	assertM(binary->ptx != 0, "binary contains no PTX");
-	assertM(binary->ptx->ptx != 0, "binary contains no PTX");
-
-	char* ptx = 0;
-	unsigned int ptxVersion = 0;
-
-	report("Getting the highest PTX version");
-
-	for(unsigned int i = 0; ; ++i)
-	{
-		if((binary->ptx[i].ptx) == 0) break;
-	
-		std::string computeCapability = binary->ptx[i].gpuProfileName;
-		std::string versionString(computeCapability.begin() + 8,
-			computeCapability.end());
-	
-		std::stringstream version;
-		unsigned int thisVersion = 0;
-		
-		version << versionString;
-		version >> thisVersion;
-		if(thisVersion > ptxVersion)
-		{
-			ptxVersion = thisVersion;
-			ptx = binary->ptx[i].ptx;
-		}
-	}
-	
-	report(" Selected version " << ptxVersion);
-
-	// register associated PTX
-	ModuleMap::iterator module = _modules.insert(
-		std::make_pair(binary->ident, ir::Module())).first;
-	module->second.lazyLoad(ptx, binary->ident);
-	
-	if(std::string(binary->ident).find("/cufft/") != std::string::npos)
-	{
-		dummy0Flag = true;
-	}
-	
-	report("Loading module (fatbin) - " << module->first);
-	reportE(REPORT_ALL_PTX, " with PTX\n" << ptx);
-	
-	handle = _fatBinaries.size();
-	
-	FatBinaryContext cubinContext(fatCubin);
 	_fatBinaries.push_back(cubinContext);
 	
+	// register associated PTX
+	ModuleMap::iterator module = _modules.insert(
+		std::make_pair(cubinContext.name(), ir::Module())).first;
+	module->second.lazyLoad(cubinContext.ptx(), cubinContext.name());
+	
+	report("Loading module (fatbin) - " << module->first);
+	reportE(REPORT_ALL_PTX, " with PTX\n" << cubinContext.ptx());
+		
 	_unlock();
 	
 	return (void **)handle;
@@ -635,9 +602,10 @@ void cuda::CudaRuntime::cudaRegisterVar(void **fatCubinHandle, char *hostVar,
 	char *deviceAddress, const char *deviceName, int ext, int size, 
 	int constant, int global) {
 
-	report("cuda::CudaRuntime::cudaRegisterVar() - host var: " << (void *)hostVar 
-		<< ", deviceName: " << deviceName << ", size: " << size << " bytes,"
-		<< (constant ? " constant" : " ") << (global ? " global" : " "));
+	report("cuda::CudaRuntime::cudaRegisterVar() - host var: "
+		<< (void *)hostVar << ", deviceName: " << deviceName << ", size: "
+		<< size << " bytes," << (constant ? " constant" : " ")
+		<< (global ? " global" : " "));
 
 	size_t handle = (size_t)fatCubinHandle;
 	_lock();
@@ -661,7 +629,7 @@ void cuda::CudaRuntime::cudaRegisterVar(void **fatCubinHandle, char *hostVar,
 */
 void cuda::CudaRuntime::cudaRegisterTexture(
 	void **fatCubinHandle,
-	const struct textureReference *hostVar,
+	const struct textureReference* hostVar,
 	const void **deviceAddress,
 	const char *deviceName,
 	int dim,
@@ -750,53 +718,14 @@ void cuda::CudaRuntime::cudaRegisterFunction(
 	_unlock();
 }
 
-// FIXME
-// This is a horrible hack to deal with another horrible hack
-// Thanks nvidia for creating a backdoor interface to your driver rather than 
-//   extending the API in a sane/documented way
-// 201
-// id: simpleCUBLAS - 0x11df21116e3393c6 0x9395d855f368c3a8
-// id: simpleCUFFT  - 0x11df21116e3393c6 0x9395d855f368c3a8
-
-int dummy0() { if(dummy0Flag) return 1; return 0; }
-int dummy1() { return 1 << 20; }
-int dummy2() { return 400; }
-
-typedef int (*ExportedFunction)();
-
-#define DEBUG_MODE 1
-
-#if (DEBUG_MODE == 0)
-static ExportedFunction exportTable[3] = {&dummy0, &dummy1, &dummy2};
-#else
-static CUcontext context = 0;
-#endif
-
 cudaError_t cuda::CudaRuntime::cudaGetExportTable(const void **ppExportTable,
 	const cudaUUID_t *pExportTableId) {
 
-	int assumedValue[4] = {0x6e3393c6, 0x11df2111, 0xf368c3a8, 0x9395d855};
+	assertM(false, "cudaGetExportTable is actually a backdoor to the NVIDIA "
+		"driver.  Ocelot cannot support this because it requires the NVIDIA "
+			"driver to be installed.  If you want to run an application that "
+			"depends on this hack, please complain to NVIDIA.");
 
-	report("Getting export table with id " << hydrazine::dataToString(
-		pExportTableId->bytes, sizeof(pExportTableId->bytes)));
-
-	if(std::memcmp(assumedValue, pExportTableId->bytes, 16) != 0)
-	{
-		assertM(false, "Unknown export table id.");
-	}
-
-#if (DEBUG_MODE == 1)
-    if(context == 0)
-    {
-		cuda::CudaDriver::cuInit(0);
-		
-		cuda::CudaDriver::cuCtxCreate(&context, 0, 0);
-    }
-    
-    cuda::CudaDriver::cuGetExportTable(ppExportTable, pExportTableId);
-#else
-	*ppExportTable = &exportTable;
-#endif
 	return cudaSuccess;
 }
 
@@ -2012,61 +1941,7 @@ cudaError_t cuda::CudaRuntime::cudaMemset3D(struct cudaPitchedPtr pitchedDevPtr,
 	
 	return _setLastError(result);	
 }
-/*
-cudaError_t cuda::CudaRuntime::cudaMemset3D(struct cudaPitchedPtr pitchedDevPtr,
-	int value, struct cudaExtent extent) {
 
-	cudaError_t result = cudaErrorInvalidValue;
-	_acquire();
-	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
-
-	size_t pitch = pitchedDevPtr.pitch;
-	size_t xsize = pitchedDevPtr.xsize;
-	size_t ysize = pitchedDevPtr.ysize;
-
-	size_t width = extent.width;
-	size_t height = extent.height;
-	size_t depth = extent.depth;
-
-	executive::Device::MemoryAllocation* allocation = 
-		_getDevice().getMemoryAllocation(pitchedDevPtr.ptr);
-	
-	if (allocation == 0) {
-		_release();
-		_memoryError(pitchedDevPtr.ptr, pitch * xsize * ysize, "cudaMemset3D");
-	}
-		
-	size_t offset = (char*)pitchedDevPtr.ptr - (char*)allocation->pointer();
-	
-	if (ysize == height && pitch == width) {
-		if (!_getDevice().checkMemoryAccess(pitchedDevPtr.ptr, depth * width * height)) {
-			_release();
-			_memoryError(pitchedDevPtr.ptr, depth * width * height, "cudaMemset3D");
-		}
-		
-		allocation->memset(offset, value, depth * width * height);
-	}
-	else {
-		for (size_t j = 0; j < depth; j++) {
-			for (size_t i = 0; i < height; i++) {
-				size_t ptr = offset + pitch * i + (j * pitch * ysize);
-				void* address = (char*)allocation->pointer() + ptr;
-				if (!_getDevice().checkMemoryAccess(address, width)) {
-					_release();
-					_memoryError(address, width, "cudaMemset3D");
-				}
-			
-				allocation->memset(ptr, value, width);
-			}
-		}
-	}
-
-	result = cudaSuccess;
-	
-	_release();
-	return _setLastError(result);	
-}
-*/
 ////////////////////////////////////////////////////////////////////////////////
 //
 // memory allocation
@@ -2122,7 +1997,8 @@ cudaError_t cuda::CudaRuntime::cudaGetSymbolAddress(void **devPtr,
 	return _setLastError(result);	
 }
 
-cudaError_t cuda::CudaRuntime::cudaGetSymbolSize(size_t *size, const char *symbol) {
+cudaError_t cuda::CudaRuntime::cudaGetSymbolSize(size_t *size,
+	const char *symbol) {
 	cudaError_t result = cudaSuccess;
 	report("cuda::CudaRuntime::cudaGetSymbolSize(" << size << ", " 
 		<< (void*) symbol << ")");
@@ -2646,7 +2522,7 @@ cudaError_t cuda::CudaRuntime::_launchKernel(const std::string& moduleName,
 	KernelLaunchConfiguration launch(thread.launchConfigurations.back());
 	thread.launchConfigurations.pop_back();
 	
-	thread.mapParameters(k);
+	unsigned int paramSize = thread.mapParameters(k);
 	
 	report("kernel launch (" << kernelName 
 		<< ") on thread " << boost::this_thread::get_id());
@@ -2661,7 +2537,7 @@ cudaError_t cuda::CudaRuntime::_launchKernel(const std::string& moduleName,
 
 		_getDevice().launch(moduleName, kernelName, convert(launch.gridDim), 
 			convert(launch.blockDim), launch.sharedMemory, 
-			thread.parameterBlock, thread.parameterBlockSize, traceGens);
+			thread.parameterBlock, paramSize, traceGens);
 		report(" launch completed successfully");	
 	}
 	catch( const executive::RuntimeException& e ) {
@@ -3087,8 +2963,9 @@ cudaError_t cuda::CudaRuntime::cudaGLMapBufferObjectAsync(void **devPtr,
 		
 		size_t bytes = 0;
 		
-		// semantics of this questionable
-		*devPtr = _getDevice().getPointerToMappedGraphicsResource(bytes, buffer->second);
+		// semantics of this are questionable
+		*devPtr = _getDevice().getPointerToMappedGraphicsResource(
+			bytes, buffer->second);
 		result = cudaSuccess;
 	}
 	_release();
@@ -3392,6 +3269,19 @@ void cuda::CudaRuntime::registerPTXModule(std::istream& ptx,
 		throw;
 	}
 		
+	_unlock();
+}
+
+void cuda::CudaRuntime::registerTexture(const void* texref,
+	const std::string& moduleName,
+	const std::string& textureName, bool normalize) {
+	_lock();
+	
+	report("registerTexture('" << textureName << ", norm: " << normalize );
+
+	_textures[(void*)texref] = RegisteredTexture(moduleName,
+		textureName, normalize);
+	
 	_unlock();
 }
 

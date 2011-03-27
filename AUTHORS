@@ -3,6 +3,7 @@ Gregory Diamos <gregory.diamos@gatech.edu>
 	PTX IR
 	LLVM Translator
 	PTX Analysis
+	Cuda Runtime
 	
 Andrew Kerr <arkerr@gatech.edu>
 	PTX IR
@@ -15,3 +16,9 @@ Rodrigo Dominguez <rdomingu@ece.neu.edu>
 Naila Farooqui <naila@cc.gatech.edu>
 	PTX Instrumentation Passes
 
+Si Li <sli@gatech.edu>
+	Correctness Checking Trace Generators
+	
+Diogo Nunes Sampaio <dnsampaio@gmail.com>
+ 	Divergence Analysis
+	

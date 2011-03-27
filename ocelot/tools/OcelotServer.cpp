@@ -5,9 +5,9 @@
 	\brief implements standalone version of Ocelot for remote devices
 */
 
-
+// Ocelot Includes
 #include <ocelot/api/interface/ocelot.h>
-#include <ocelot/util/interface/OcelotServer.h>
+#include <ocelot/tools/OcelotServer.h>
 
 // Hydrazine Includes
 #include <hydrazine/implementation/ArgumentParser.h>

@@ -104,7 +104,7 @@ namespace cuda {
 
 		void clearParameters();
 		void clear();
-		void mapParameters(const ir::Kernel* kernel);
+		unsigned int mapParameters(const ir::Kernel* kernel);
 	};
 	
 	typedef std::map< boost::thread::id, HostThreadContext > HostThreadContextMap;
@@ -575,6 +575,9 @@ namespace cuda {
 		virtual void limitWorkerThreads( unsigned int limit = 1024 );
 		virtual void registerPTXModule(std::istream& stream, 
 			const std::string& name);
+		virtual void registerTexture(const void* texref,
+			const std::string& moduleName,
+			const std::string& textureName, bool normalize);
 		virtual void clearErrors();
 		virtual void reset();
 		virtual ocelot::PointerMap contextSwitch( 

@@ -39,6 +39,9 @@ namespace executive
 			char* argument; //! Pointer to argument memory
 		
 		public:
+			unsigned int externalSharedSize; //! External shared size
+		
+		public:
 			/*! \brief Generic pointer back to other state */
 			char* metadata;
 	};

@@ -314,6 +314,7 @@ unsigned int LLVMCooperativeThreadArray::_initializeNewContext(
 		context.parameter = stack.parameterMemory();
 		context.constant  = _kernel->constantMemory();
 		context.metadata  = reinterpret_cast<char*>(&metadata);
+		context.externalSharedSize = _kernel->externSharedMemorySize();
 	}
 	else
 	{

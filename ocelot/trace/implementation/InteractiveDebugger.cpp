@@ -566,7 +566,15 @@ void InteractiveDebugger::_printAssembly(unsigned int PC,
 			++pc)
 		{
 			std::cout << "(" << pc << ") - " 
-				<< kernel.instructions[pc].toString() << "\n";
+				<< kernel.instructions[pc].toString();
+				
+			if(kernel.instructions[pc].opcode == ir::PTXInstruction::Bra)
+			{
+				std::cout << " (target "
+					<< kernel.instructions[pc].branchTargetInstruction << ")";
+			}
+			
+			std::cout << "\n";
 		}
 	}
 	break;

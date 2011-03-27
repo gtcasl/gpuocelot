@@ -627,8 +627,6 @@ namespace executive
 		memcpy.dstXInBytes = 0;
 		memcpy.dstY = 0;
 		memcpy.dstZ = 0;
-
-
 		
 		checkError(driver::cuMemcpy3D(&memcpy));
 	}

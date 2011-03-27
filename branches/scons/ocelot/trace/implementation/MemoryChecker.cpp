@@ -501,7 +501,8 @@ namespace trace
 			{
 				if( inst.pq.addressMode == ir::PTXOperand::Invalid )
 				{
-					destStatus = (destStatus == MemoryChecker::NOT_DEFINED) ? MemoryChecker::INVALID : destStatus;
+					destStatus = (destStatus == MemoryChecker::NOT_DEFINED)
+						? MemoryChecker::INVALID : destStatus;
 					_registerFileShadow.setRegister(inst.pq.reg, destStatus);
 				}
 			} 
@@ -509,7 +510,8 @@ namespace trace
 			{
 				for( unsigned int i=0; i < inst.d.array.size(); i++ )
 				{
-					_registerFileShadow.setRegister(inst.d.array[i].reg+thread*regPerThread, destStatus);
+					_registerFileShadow.setRegister(
+						inst.d.array[i].reg+thread*regPerThread, destStatus);
 				}
 			} else {
 				_registerFileShadow.setRegister(regD, destStatus);

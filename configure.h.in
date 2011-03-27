@@ -24,12 +24,12 @@
 #define OCELOT_LDFLAGS "%(OCELOT_LDFLAGS)s"
 
 /* Where are the ocelot headers? */
-#define OCELOT_INCLUDE_PATH "%(INSTALL_PATH)s"
+#define OCELOT_INCLUDE_PATH "%(INSTALL_PATH)s/include"
 
 /* Where are the ocelot libraries? */
-#define OCELOT_LIB_PATH "%(INSTALL_PATH)s"
+#define OCELOT_LIB_PATH "%(INSTALL_PATH)s/lib"
 
 /* Where are the ocelot binaries? */
-#define OCELOT_BIN_PATH "%(INSTALL_PATH)s"
+#define OCELOT_BIN_PATH "%(INSTALL_PATH)s/bin"
 
 

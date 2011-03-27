@@ -66,6 +66,11 @@ namespace ocelot
 	*/
 	void registerPTXModule(std::istream& stream, const std::string& name);
 	
+	/*! \brief Register a texture with the cuda runtime */
+	void registerTexture(const void* texref,
+		const std::string& moduleName,
+		const std::string& textureName, bool normalize);
+	
 	/*! \brief Clear all errors in the Cuda Runtime */
 	void clearErrors();
 	

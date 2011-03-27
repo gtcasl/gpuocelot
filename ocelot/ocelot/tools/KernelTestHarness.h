@@ -22,14 +22,15 @@ namespace util {
 
 	class KernelTestHarness {
 	public:
-		typedef std::map< void *, void *> PointerMap;
+		typedef std::map<const void*, const void*> PointerMap;
 	public:
 	
 		KernelTestHarness(std::istream &input);
 		~KernelTestHarness();
 		
 		void execute();
-		bool compare();
+		bool compare(std::ostream& stream);
+		void reset();
 		
 	private:
 	
@@ -37,7 +38,6 @@ namespace util {
 		void _setupTextures(const ExtractedDeviceState::Module &module);
 		void _setupMemory();
 		void _setupModule();
-		void _extractResultState();
 	
 	private:
 		//! extracted device state de-serialized from file

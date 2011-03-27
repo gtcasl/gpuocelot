@@ -303,7 +303,7 @@ void executive::CooperativeThreadArray::postTrace() {
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 void executive::CooperativeThreadArray::reset() {
 
@@ -2435,6 +2435,7 @@ void executive::CooperativeThreadArray::eval_Call(CTAContext &context,
 		unsigned int stackSize = functionCallStack.stackFrameSize();
 		unsigned int stackOffset = functionCallStack.offset();
 		unsigned int callPC = context.PC;
+		functionCallStack.saveFrame();
 
 		++context.PC;
 		
@@ -2467,8 +2468,8 @@ void executive::CooperativeThreadArray::eval_Call(CTAContext &context,
 				argument != instr.b.array.end(); ++argument) {
 				for (int threadID = 0; threadID != threadCount; ++threadID) {
 					if(!targetContext->second.active[threadID]) continue;
-					char* base = (char*)functionCallStack.offsetToPointer(
-						stackOffset) + stackSize * threadID;
+					char* base = (char*)
+						functionCallStack.savedStackFramePointer(threadID);
 					char* target = (char*)functionCallStack.stackFramePointer(
 						threadID);
 					std::memcpy(target + offset, base + argument->offset, 
@@ -2549,7 +2550,8 @@ void executive::CooperativeThreadArray::eval_Call(CTAContext &context,
 				functionCallStack.pushFrame(jittedInstr.a.stackMemorySize, 
 					jittedInstr.a.registerCount, jittedInstr.a.localMemorySize, 
 					jittedInstr.a.sharedMemorySize, context.PC, 
-					functionCallStack.offset(), functionCallStack.stackSize());
+					functionCallStack.offset(),
+					functionCallStack.stackFrameSize());
 				unsigned int offset = instr.b.offset;
 				for (ir::PTXOperand::Array::const_iterator 
 					argument = jittedInstr.b.array.begin();
@@ -2602,7 +2604,8 @@ void executive::CooperativeThreadArray::eval_Clz(CTAContext &context,
 /*!
 
 */
-void executive::CooperativeThreadArray::eval_CNot(CTAContext &context, const PTXInstruction &instr) {
+void executive::CooperativeThreadArray::eval_CNot(CTAContext &context,
+	const PTXInstruction &instr) {
 	trace();
 	if (instr.type == PTXOperand::b16) {
 		for (int threadID = 0; threadID < threadCount; threadID++) {
@@ -2635,7 +2638,8 @@ void executive::CooperativeThreadArray::eval_CNot(CTAContext &context, const PTX
 	}
 }
 
-void executive::CooperativeThreadArray::eval_CopySign(CTAContext &context, const ir::PTXInstruction &instr) {
+void executive::CooperativeThreadArray::eval_CopySign(CTAContext &context,
+	const ir::PTXInstruction &instr) {
 	trace();
 	if (instr.type == PTXOperand::f32) {
 		for (int tid = 0; tid < threadCount; tid++) {
@@ -4622,7 +4626,6 @@ void executive::CooperativeThreadArray::eval_Ld(CTAContext &context,
 				break;
 			case PTXInstruction::Shared:
 				{
-					source = (char*)(0xffffffff & (PTXU64) source);
 					source += (PTXU64) functionCallStack.sharedMemoryPointer();
 				}
 				break;
@@ -6229,10 +6232,7 @@ void executive::CooperativeThreadArray::eval_Ret(CTAContext &context,
 	const PTXInstruction& call = kernel->instructions[
 		functionCallStack.returnPC()];
 	reportE(REPORT_RET, " Previous stack size (" 
-		<< functionCallStack.callerFrameSize() << ") offset (" 
-		<< functionCallStack.callerOffset() << ")" );
-	char* callerStack = (char*)functionCallStack.offsetToPointer(
-		functionCallStack.callerOffset());
+		<< functionCallStack.callerFrameSize() );
 	unsigned int callerStackSize = functionCallStack.callerFrameSize();
 	unsigned int offset = 0;
 	for (ir::PTXOperand::Array::const_iterator argument = call.d.array.begin();
@@ -6240,8 +6240,10 @@ void executive::CooperativeThreadArray::eval_Ret(CTAContext &context,
 		for (int threadID = 0; threadID != threadCount; ++threadID) {
 			if (!context.predicated(threadID, instr)) continue;
 			
-			char* callerPointer = callerStack + threadID * callerStackSize;
-			char* pointer = (char*)functionCallStack.stackFramePointer(threadID);
+			char* callerPointer =
+				(char*)functionCallStack.callerFramePointer(threadID);
+			char* pointer =
+				(char*)functionCallStack.stackFramePointer(threadID);
 			
 			reportE(REPORT_RET, " For thread " << threadID << " copying " 
 				<< argument->toString() << " ["
@@ -6300,7 +6302,8 @@ void executive::CooperativeThreadArray::eval_Rsqrt(CTAContext &context,
           .s16, .s32, .s64 };
 
 */		
-void executive::CooperativeThreadArray::eval_Sad(CTAContext &context, const PTXInstruction &instr) {
+void executive::CooperativeThreadArray::eval_Sad(CTAContext &context,
+	const PTXInstruction &instr) {
 	trace();
 	switch (instr.type) {
 	case PTXOperand::u16:

@@ -143,6 +143,7 @@ namespace parser
 				public:
 					void preprocessor( int token );
 					void version( double version, YYLTYPE& location );
+					void addressSize( unsigned int size );
 					void identifierList( const std::string& identifier );
 					void identifierList2( const std::string& identifier );
 					void decimalListSingle( long long int value );

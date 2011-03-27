@@ -2,7 +2,8 @@
 	\file PassThroughDevice.h
 	\author Andrew Kerr
 	\date 15 February 2011
-	\brief Defines a wrapper for Ocelot devices enabling monitoring, serialization, and decoupling
+	\brief Defines a wrapper for Ocelot devices enabling monitoring,
+		serialization, and decoupling
 */
 
 #ifndef OCELOT_PASSTHROUGHDEVICE_H_INCLUDED
@@ -10,6 +11,7 @@
 
 // Ocelot includes
 #include <ocelot/executive/interface/Device.h>
+#include <ocelot/util/interface/ExtractedDeviceState.h>
 
 namespace executive
 {
@@ -21,121 +23,112 @@ namespace executive
 	/*! Interface for controlling an Ocelot device */
 	class PassThroughDevice: public Device 
 	{
-		protected:
-					
-			/*! \brief function calls target this device*/
-			Device *_target;
-
 		public:
 			/*! \brief Check a memory access against all allocations */
-			virtual bool checkMemoryAccess(const void* pointer, 
+			bool checkMemoryAccess(const void* pointer, 
 				size_t size) const;
 			/*! \brief Get the allocation containing a pointer or 0 */
-			virtual Device::MemoryAllocation* getMemoryAllocation(const void* address, 
+			Device::MemoryAllocation* getMemoryAllocation(const void* address, 
 				AllocationType type = DeviceAllocation) const;
 			/*! \brief Get the address of a global by name */
-			virtual Device::MemoryAllocation* getGlobalAllocation(
+			Device::MemoryAllocation* getGlobalAllocation(
 				const std::string& module, const std::string& name);
 			/*! \brief Allocate some new dynamic memory on this device */
-			virtual Device::MemoryAllocation* allocate(size_t size);
+			Device::MemoryAllocation* allocate(size_t size);
 			/*! \brief Make this a host memory allocation */
-			virtual Device::MemoryAllocation* allocateHost(size_t size, 
+			Device::MemoryAllocation* allocateHost(size_t size, 
 				unsigned int flags = 0);
 			/*! \brief Free an existing non-global allocation */
-			virtual void free(void* pointer);
+			void free(void* pointer);
 			/*! \brief Get nearby allocations to a pointer */
-			virtual Device::MemoryAllocationVector getNearbyAllocations(
+			Device::MemoryAllocationVector getNearbyAllocations(
 				void* pointer) const;
 			/*! \brief Get all allocations, host, global, and device */
-			virtual Device::MemoryAllocationVector getAllAllocations() const;
+			Device::MemoryAllocationVector getAllAllocations() const;
 			/*! \brief Get a string representation of nearby allocations */
-			virtual std::string nearbyAllocationsToString(void* pointer) const;
+			std::string nearbyAllocationsToString(void* pointer) const;
 			/*! \brief Wipe all memory allocations, but keep modules */
-			virtual void clearMemory();
+			void clearMemory();
 		
 		public:
 			/*! \brief Registers an opengl buffer with a resource */
-			virtual void* glRegisterBuffer(unsigned int buffer, 
+			void* glRegisterBuffer(unsigned int buffer, 
 				unsigned int flags);
 			/*! \brief Registers an opengl image with a resource */
-			virtual void* glRegisterImage(unsigned int image, 
+			void* glRegisterImage(unsigned int image, 
 				unsigned int target, unsigned int flags);
 			/*! \brief Unregister a resource */
-			virtual void unRegisterGraphicsResource(void* resource);
+			void unRegisterGraphicsResource(void* resource);
 			/*! \brief Map a graphics resource for use with this device */
-			virtual void mapGraphicsResource(void** resource, int count, 
+			void mapGraphicsResource(void** resource, int count, 
 				unsigned int stream);
 			/*! \brief Get a pointer to a mapped resource along with its size */
-			virtual void* getPointerToMappedGraphicsResource(size_t& size, 
+			void* getPointerToMappedGraphicsResource(size_t& size, 
 				void* resource);
 			/*! \brief Change the flags of a mapped resource */
-			virtual void setGraphicsResourceFlags(void* resource, 
+			void setGraphicsResourceFlags(void* resource, 
 				unsigned int flags);
 			/*! \brief Unmap a mapped resource */
-			virtual void unmapGraphicsResource(void** resource, int count,
+			void unmapGraphicsResource(void** resource, int count,
 				unsigned int stream);
 
 		public:
 			/*! \brief Load a module, must have a unique name */
-			virtual void load(const ir::Module* module);
+			void load(const ir::Module* module);
 			/*! \brief Unload a module by name */
-			virtual void unload(const std::string& name);
+			void unload(const std::string& name);
 			/*! \brief Get a translated kernel from the device */
-			virtual ExecutableKernel* getKernel(const std::string& module, 
+			ExecutableKernel* getKernel(const std::string& module, 
 				const std::string& kernel);
 
 		public:
-			/*! \brief Get the device properties */
-			const Properties& properties() const;
-
-		public:
 			/*! \brief Create a new event */
-			virtual unsigned int createEvent(int flags);
+			unsigned int createEvent(int flags);
 			/*! \brief Destroy an existing event */
-			virtual void destroyEvent(unsigned int event);
+			void destroyEvent(unsigned int event);
 			/*! \brief Query to see if an event has been recorded (yes/no) */
-			virtual bool queryEvent(unsigned int event);
+			bool queryEvent(unsigned int event);
 			/*! \brief Record something happening on an event */
-			virtual void recordEvent(unsigned int event, 
+			void recordEvent(unsigned int event, 
 				unsigned int stream);
 			/*! \brief Synchronize on an event */
-			virtual void synchronizeEvent(unsigned int event);
+			void synchronizeEvent(unsigned int event);
 			/*! \brief Get the elapsed time in ms between two recorded events */
-			virtual float getEventTime(unsigned int start, 
+			float getEventTime(unsigned int start, 
 				unsigned int end);
 		
 		public:
 			/*! \brief Create a new stream */
-			virtual unsigned int createStream();
+			unsigned int createStream();
 			/*! \brief Destroy an existing stream */
-			virtual void destroyStream(unsigned int stream);
+			void destroyStream(unsigned int stream);
 			/*! \brief Query the status of an existing stream (ready/not) */
-			virtual bool queryStream(unsigned int stream);
+			bool queryStream(unsigned int stream);
 			/*! \brief Synchronize a particular stream */
-			virtual void synchronizeStream(unsigned int stream);
+			void synchronizeStream(unsigned int stream);
 			/*! \brief Sets the current stream */
-			virtual void setStream(unsigned int stream);
+			void setStream(unsigned int stream);
 			
 		public:
 			/*! \brief Select this device as the current device. 
 				Only one device is allowed to be selected at any time. */
-			virtual void select();
+			void select();
 			/*! \brief is this device selected? */
-			virtual bool selected() const;
+			bool selected() const;
 			/*! \brief Deselect this device. */
-			virtual void unselect();
+			void unselect();
 		
 		public:
 			/*! \brief Binds a texture to a memory allocation at a pointer */
-			virtual void bindTexture(void* pointer, 
+			void bindTexture(void* pointer, 
 				const std::string& moduleName, const std::string& textureName,
 				const textureReference& ref, const cudaChannelFormatDesc& desc, 
 				const ir::Dim3& size);
 			/*! \brief unbinds anything bound to a particular texture */
-			virtual void unbindTexture(const std::string& moduleName, 
+			void unbindTexture(const std::string& moduleName, 
 				const std::string& textureName);
 			/*! \brief Get's a reference to an internal texture */
-			virtual void* getTextureReference(const std::string& moduleName, 
+			void* getTextureReference(const std::string& moduleName, 
 				const std::string& textureName);
 		
 		public:
@@ -150,29 +143,63 @@ namespace executive
 				\param traceGenerators vector of trace generators to add 
 					and remove from kernel
 			*/
-			virtual void launch(const std::string& module, 
+			void launch(const std::string& module, 
 				const std::string& kernel, const ir::Dim3& grid, 
 				const ir::Dim3& block, size_t sharedMemory, 
 				const void* argumentBlock, size_t argumentBlockSize, 
 				const trace::TraceGeneratorVector& 
 				traceGenerators = trace::TraceGeneratorVector());
 			/*! \brief Get the function attributes of a specific kernel */
-			virtual cudaFuncAttributes getAttributes(const std::string& module, 
+			cudaFuncAttributes getAttributes(const std::string& module, 
 				const std::string& kernel);
 			/*! \brief Get the last error from this device */
-			virtual unsigned int getLastError();
+			unsigned int getLastError();
 			/*! \brief Wait until all asynchronous operations have completed */
-			virtual void synchronize();
+			void synchronize();
 			
 		public:
-			virtual void limitWorkerThreads(unsigned int threads);
-			virtual void setOptimizationLevel(
+			void limitWorkerThreads(unsigned int threads);
+			void setOptimizationLevel(
 				translator::Translator::OptimizationLevel level);
 			
 		public:
 			PassThroughDevice(Device *target, unsigned int flags = 0);
-			virtual ~PassThroughDevice();
+			~PassThroughDevice();
+
+		private:
+			/*! \brief A vector of module pointers */
+			typedef std::vector<const ir::Module*> ModuleVector;
+
+		private:
+			/*! \brief Record all of the state that could affect the execution
+				of the kernel */
+			void _recordStatePreExecution();
 			
+			/*! \brief Record information representing the kernel launch */
+			void _recordKernelLaunch(const std::string& module, 
+				const std::string& kernel, 
+				const ir::Dim3& grid, 
+				const ir::Dim3& block, 
+				size_t sharedMemory, 
+				const void* argumentBlock, 
+				size_t argumentBlockSize);
+
+			/*! \brief Record the memory state after the kernel launch for
+				comparison, serialize it to disk */
+			void _recordStatePostExecution();
+
+		private:
+			/*! \brief a counter for the number of kernels launched */
+			unsigned int _kernelCount;
+		
+			/*! \brief maintains a snapshot of state when the kernel executes */
+			util::ExtractedDeviceState _state;
+			
+			/*! \brief function calls target this device*/
+			Device* _target;
+			
+			/*! \brief The list of all modules */
+			ModuleVector _modules;			
 	};
 }
 

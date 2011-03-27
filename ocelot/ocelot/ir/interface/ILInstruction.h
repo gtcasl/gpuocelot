@@ -17,6 +17,7 @@ namespace ir
 	class ILInstruction : public Instruction
 	{
 		public:
+			/*! \brief The opcode of the instruction */
 			enum Opcode
 			{
 				Abs,

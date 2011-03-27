@@ -4,13 +4,19 @@
 	\brief The source file for the Device class
 */
 
+// Ocelot Includes
 #include <ocelot/executive/interface/Device.h>
 #include <ocelot/executive/interface/NVIDIAGPUDevice.h>
 #include <ocelot/executive/interface/ATIGPUDevice.h>
 #include <ocelot/executive/interface/EmulatorDevice.h>
 #include <ocelot/executive/interface/MulticoreCPUDevice.h>
 #include <ocelot/executive/interface/RemoteDevice.h>
+#include <ocelot/executive/interface/PassThroughDevice.h>
+#include <ocelot/api/interface/OcelotConfiguration.h>
 
+#include <configure.h>
+
+// Hydrazine Includes
 #include <hydrazine/implementation/debug.h>
 
 #ifdef REPORT_BASE
@@ -19,8 +25,11 @@
 
 #define REPORT_BASE 0
 
+typedef api::OcelotConfiguration config;
+
 executive::Device::MemoryAllocation::MemoryAllocation(bool g, 
-	bool h) : _global(g), _host(h) {
+	bool h) : _global(g), _host(h)
+{
 
 }
 
@@ -29,18 +38,23 @@ executive::Device::MemoryAllocation::~MemoryAllocation()
 
 }
 
-bool executive::Device::MemoryAllocation::host() const {
+bool executive::Device::MemoryAllocation::host() const
+{
 	return _host;
 }
 
-bool executive::Device::MemoryAllocation::global() const {
+bool executive::Device::MemoryAllocation::global() const
+{
 	return _global;
 }
 
-executive::Device::Properties::Properties(const PropertiesData& props) : PropertiesData(props) {
+executive::Device::Properties::Properties(const PropertiesData& props)
+	: PropertiesData(props)
+{
 }
 
-std::ostream& executive::Device::Properties::write(std::ostream &out) const {
+std::ostream& executive::Device::Properties::write(std::ostream &out) const
+{
 	out << name << " ):\n";
 	out << "  " << "total memory: " << (totalMemory >> 10) << " kB\n";
 	out << "  " << "ISA: " << ir::Instruction::toString(ISA) << "\n";
@@ -56,47 +70,62 @@ std::ostream& executive::Device::Properties::write(std::ostream &out) const {
 
 executive::DeviceVector executive::Device::createDevices(
 	ir::Instruction::Architecture isa, unsigned int flags,
-	int computeCapability) {
-	switch(isa) {
+	int computeCapability) 
+{
+	DeviceVector devices;
+	
+	switch(isa)
+	{
 		case ir::Instruction::SASS:
 		{
-			return NVIDIAGPUDevice::createDevices(flags, computeCapability);
+			devices = NVIDIAGPUDevice::createDevices(flags, computeCapability);
 		}
 		break;
 		case ir::Instruction::Emulated:
 		{
-			DeviceVector emulators;
-			emulators.push_back(new EmulatorDevice(flags));
-			return emulators;
+			devices.push_back(new EmulatorDevice(flags));
 		}
 		break;
 		case ir::Instruction::LLVM:
 		{
-			DeviceVector cpus;
 			#ifdef HAVE_LLVM
-			cpus.push_back(new MulticoreCPUDevice(flags));
+			devices.push_back(new MulticoreCPUDevice(flags));
 			#endif
-			return cpus;
 		}
 		break;
 		case ir::Instruction::CAL:
 		{
-			return ATIGPUDevice::createDevices(flags, computeCapability);
+			devices = ATIGPUDevice::createDevices(flags, computeCapability);
 		}
 		break;
 		case ir::Instruction::Remote:
 		{
-			return RemoteDevice::createDevices(flags, computeCapability);
+			devices = RemoteDevice::createDevices(flags, computeCapability);
 		}
 		break;
-		default: break;
+		default:
+		{
+			assertM(false, "Invalid ISA - " << ir::Instruction::toString(isa));
+		}
 	}
-	assertM(false, "Invalid ISA - " << ir::Instruction::toString(isa));
+	
+	if(config::get().checkpoint.enabled) 
+	{
+		for(DeviceVector::iterator device = devices.begin();
+			device != devices.end(); ++device)
+		{
+			*device = new PassThroughDevice(*device);
+		}
+	}
+	
+	return devices;
 }
 
 unsigned int executive::Device::deviceCount(ir::Instruction::Architecture isa,
-	int computeCapability) {
-	switch(isa) {
+	int computeCapability) 
+{
+	switch(isa)
+	{
 		case ir::Instruction::SASS:
 		{
 			return NVIDIAGPUDevice::deviceCount(computeCapability);
@@ -157,7 +186,8 @@ bool executive::Device::checkMemoryAccess(const void* pointer,
 }
 
 
-std::string executive::Device::nearbyAllocationsToString(void* pointer) const {
+std::string executive::Device::nearbyAllocationsToString(void* pointer) const
+{
 	std::stringstream result;
 	MemoryAllocationVector allocations = getNearbyAllocations(pointer);
 	
@@ -172,15 +202,18 @@ std::string executive::Device::nearbyAllocationsToString(void* pointer) const {
 	return result.str();
 }
 
-const executive::Device::Properties& executive::Device::properties() const {
+const executive::Device::Properties& executive::Device::properties() const
+{
 	return _properties;
 }
 
-int executive::Device::driverVersion() const {
+int executive::Device::driverVersion() const
+{
 	return _driverVersion;
 }
 
-int executive::Device::runtimeVersion() const {
+int executive::Device::runtimeVersion() const
+{
 	return _runtimeVersion;
 }
 

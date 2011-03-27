@@ -70,15 +70,15 @@
 
 %token<value> TOKEN_ENTRY TOKEN_EXTERN TOKEN_FILE TOKEN_VISIBLE TOKEN_LOC
 %token<value> TOKEN_FUNCTION TOKEN_STRUCT TOKEN_UNION TOKEN_TARGET TOKEN_VERSION
-%token<value> TOKEN_SECTION
+%token<value> TOKEN_SECTION TOKEN_ADDRESS_SIZE
 
-%token<value> TOKEN_MAXNREG TOKEN_MAXNTID TOKEN_MAXNCTAPERSM TOKEN_MINNCTAPERSM TOKEN_SM10
+%token<value> TOKEN_MAXNREG TOKEN_MAXNTID TOKEN_MAXNCTAPERSM TOKEN_MINNCTAPERSM 
 %token<value> TOKEN_SM11 TOKEN_SM12 TOKEN_SM13 TOKEN_SM20 TOKEN_MAP_F64_TO_F32
-%token<value> TOKEN_SM21
+%token<value> TOKEN_SM21 TOKEN_SM10
 
 %token<value> TOKEN_CONST TOKEN_GLOBAL TOKEN_LOCAL TOKEN_PARAM TOKEN_PRAGMA 
-%token<value> TOKEN_REG TOKEN_SHARED TOKEN_TEXREF TOKEN_CTA TOKEN_SURFREF TOKEN_SAMPLERREF
-%token<value> TOKEN_GL TOKEN_SYS
+%token<value> TOKEN_REG TOKEN_SHARED TOKEN_TEXREF TOKEN_CTA TOKEN_SURFREF 
+%token<value> TOKEN_GL TOKEN_SYS TOKEN_SAMPLERREF
 
 %token<value> TOKEN_U32 TOKEN_S32 TOKEN_S8 TOKEN_S16 TOKEN_S64 TOKEN_U8 
 %token<value> TOKEN_U16 TOKEN_U64 TOKEN_B8 TOKEN_B16 TOKEN_B32 TOKEN_B64 
@@ -144,7 +144,7 @@
 
 nonEntryStatements : version | target | registerDeclaration | fileDeclaration 
 	| preprocessor | samplerDeclaration | surfaceDeclaration | textureDeclaration 
-	| globalSharedDeclaration | globalLocalDeclaration;
+	| globalSharedDeclaration | globalLocalDeclaration | addressSize;
 
 nonEntryStatement : nonEntryStatements
 {
@@ -246,6 +246,11 @@ targetElementList : /* empty string */ | targetElement
 target : TOKEN_TARGET targetElementList
 {
 	state.target();
+};
+
+addressSize : TOKEN_ADDRESS_SIZE TOKEN_DECIMAL_CONSTANT
+{
+	state.addressSize( $<value>2 );
 };
 
 addressSpaceIdentifier : TOKEN_CONST | TOKEN_GLOBAL | TOKEN_LOCAL

@@ -7,47 +7,79 @@
 #ifndef OCELOT_CONFIG_CPP_INCLUDED
 #define OCELOT_CONFIG_CPP_INCLUDED
 
-#include <ocelot/util/interface/OcelotConfig.h>
-#include <configure.h>
+// Ocelot Includes
+#include <ocelot/tools/OcelotConfig.h>
 
+// Hydrazine Includes
 #include <hydrazine/implementation/ArgumentParser.h>
+
+// Generated Includes
+#include <configure.h>
 
 namespace util
 {
 
 	std::string OcelotConfig::_flags() const
 	{
+		#ifdef OCELOT_CXXFLAGS
 		return OCELOT_CXXFLAGS;
+		#else
+		assertM(false, "Unknown CXX flags, is ocelot configured?.");
+		#endif
 	}
 
 	std::string OcelotConfig::_version() const
 	{
-		return PACKAGE_VERSION;
+		#ifdef VERSION
+		return VERSION;
+		#else
+		assertM(false, "Unknown version, is ocelot configured?.");
+		#endif
 	}
 
 	std::string OcelotConfig::_prefix() const
 	{
+		#ifdef OCELOT_PREFIX_PATH
 		return OCELOT_PREFIX_PATH;
+		#else
+		assertM(false, "Unknown prefix, is ocelot configured?.");
+		#endif
 	}
 
 	std::string OcelotConfig::_libs() const
 	{
+		#ifdef OCELOT_LDFLAGS
 		return OCELOT_LDFLAGS;
+		#else
+		assertM(false, "Unknown lib flags, is ocelot configured?.");
+		#endif
 	}
 
 	std::string OcelotConfig::_includedir() const
 	{
+		#ifdef OCELOT_INCLUDE_PATH
 		return OCELOT_INCLUDE_PATH;
+		#else
+		assertM(false, "Unknown include dir, is ocelot configured?.");
+		#endif
 	}
 
 	std::string OcelotConfig::_libdir() const
 	{
+		#ifdef OCELOT_LIB_PATH
 		return OCELOT_LIB_PATH;
+		#else
+		assertM(false, "Unknown lib dir, is ocelot configured?.");
+		#endif
 	}
 
 	std::string OcelotConfig::_bindir() const
 	{
+		#ifdef OCELOT_BIN_PATH
 		return OCELOT_BIN_PATH;
+		#else
+		assertM(false, "Unknown bin dir, is ocelot configured?.");
+		#endif
 	}
 
 	std::string OcelotConfig::_tracelibs() const

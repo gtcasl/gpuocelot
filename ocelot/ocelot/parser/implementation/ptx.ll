@@ -11,19 +11,27 @@
 %option noyywrap
 %option yyclass="parser::PTXLexer"
 %option prefix="ptx"
+%option c++
 
 %{
 	
 	#ifndef PTX_LPP_INCLUDED
 	#define PTX_LPP_INCLUDED
 
+	// Ocelot Includes
+	#include <ocelot/parser/interface/PTXLexer.h>
+
+	// Hydrazine Includes
 	#include <hydrazine/implementation/macros.h>
 	#include <hydrazine/implementation/string.h>
-	#include <ocelot/parser/interface/PTXLexer.h>
-	#include <configure.h>
+
+	// Standard Library Includes
 	#include <cassert>
 	#include <sstream>
 	#include <cstring>
+	
+	// Auto Generated Includes
+	#include <configure.h>
 	
 	void strlcpy( char* destination, const char* source, unsigned int max );
 	
@@ -236,6 +244,8 @@ WHITESPACE [ \t]*
 
 ".align"                        { yylval->value = TOKEN_ALIGN; \
                                     return TOKEN_ALIGN; }
+".address_size"                 { yylval->value = TOKEN_ADDRESS_SIZE; \
+                                    return TOKEN_ADDRESS_SIZE; }
 ".callprototype"                { yylval->value = TOKEN_CALL_PROTOTYPE; \
                                     return TOKEN_CALL_PROTOTYPE; }
 ".calltargets"                  { yylval->value = TOKEN_CALL_TARGETS; \

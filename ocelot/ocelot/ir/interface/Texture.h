@@ -88,23 +88,29 @@ namespace ir
 			static std::string toString(AddressMode type);
 			static std::string toString(Type type);
 			
-			static ir::PTXOperand::DataType convertFromChannelDataType(ChannelDataType);
-			static ChannelDataType convertFromPTXDataType(ir::PTXOperand::DataType);
+			static Type typeFromString(const std::string&);
+			static AddressMode modeFromString(const std::string&);
+			static Interpolation interpolationFromString(const std::string&);
+			
+			static ir::PTXOperand::DataType
+				convertFromChannelDataType(ChannelDataType);
+			static ChannelDataType
+				convertFromPTXDataType(ir::PTXOperand::DataType);
 
 		public:
-			unsigned int pitch() {
+			unsigned int pitch() const {
 				return ((x + y + z + w) / 8) * size.x;
 			}
 
-			unsigned int bytes() {
+			unsigned int bytes() const {
 				return pitch() * size.y * size.z;
 			}
 
-			unsigned int components() {
+			unsigned int components() const {
 				return (x ? 1 : 0) + (y ? 1 : 0) + (z ? 1 : 0) 
 					+ (w ? 1 : 0);
 			}
-			unsigned int dimensions() {
+			unsigned int dimensions() const {
 				return (size.x - 1 ? 1 : 0) + (size.y - 1 ? 1 : 0) 
 					+ (size.z - 1 ? 1 : 0);
 			}

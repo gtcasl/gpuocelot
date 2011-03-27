@@ -38,7 +38,7 @@ namespace api {
 			//! \brief suffix for all checkpoint files
 			std::string suffix;
 			
-			//! \brief if existing checkpoints exist, verify allocations match them
+			//! \brief if checkpoints exist, verify allocations match them
 			bool verify;
 		};
 

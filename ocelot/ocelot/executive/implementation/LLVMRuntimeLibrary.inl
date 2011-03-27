@@ -559,7 +559,8 @@ extern "C"
 		
 		char* address = (char*) _address;
 		char* end = address + bytes;
-		char* allocationEnd = context->shared + state->sharedSize;
+		char* allocationEnd = context->shared + state->sharedSize
+			+ context->externalSharedSize;
 		
 		if( end > allocationEnd )
 		{

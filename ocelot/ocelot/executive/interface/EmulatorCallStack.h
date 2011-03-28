@@ -65,8 +65,6 @@ class EmulatorCallStack
 		/*! \brief Get a pointer to the previous stack frame */
 		void* callerFramePointer(unsigned int thread);
 
-		/*! \brief Get a pointer to an offset from the base of the stack */
-		void* offsetToPointer(unsigned int offset);
 		/*! \brief Get the offset of the current stack frame, save it */
 		unsigned int offset() const;
 		/*! \brief Save the offset of the current stack frame */

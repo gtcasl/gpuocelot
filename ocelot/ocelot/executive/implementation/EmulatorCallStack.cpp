@@ -51,7 +51,7 @@ namespace executive
 		
 		_resizeStack(threads * align(initialFrameSize)
 			+ threads * registerCount() * sizeof(RegisterType)
-			+ threads * localMemorySize() + 3 * sizeof(unsigned int));
+			+ threads * localMemorySize() + align(3 * sizeof(unsigned int)));
 	}
 
 	void* EmulatorCallStack::stackFramePointer(unsigned int thread)
@@ -76,8 +76,9 @@ namespace executive
 		unsigned int totalPreviousSize =
 			(_stackFrameSizes.at(previousIndex)
 			+ _registerFileSizes.at(previousIndex - 1) * sizeof(RegisterType)
-			+ _localMemorySizes.at(previousIndex - 1)) * _threadCount;
-		return _stackBase(_stackPointer
+			+ _localMemorySizes.at(previousIndex - 1)) * _threadCount
+			+ align(3 * sizeof(unsigned int));
+		return _stackBase(_stackPointer + align(3 * sizeof(unsigned int))
 			- totalPreviousSize + thread * previousFrameSize());
 	}
 
@@ -87,12 +88,6 @@ namespace executive
 		return _stackBase(callerOffset() + thread * callerFrameSize());
 	}
 
-	void* EmulatorCallStack::offsetToPointer(unsigned int offset)
-	{
-		assert(offset < _stackSize());
-		return _stackBase(offset);
-	}
-	
 	unsigned int EmulatorCallStack::offset() const
 	{
 		return _stackPointer + align(3 * sizeof(unsigned int));
@@ -202,8 +197,8 @@ namespace executive
 			+ align(3 * sizeof(unsigned int));
 		
 		_stackPointer += totalPreviousSize;
-		_localMemoryBase = _stackPointer + align(3 * sizeof(unsigned int))
-			+ stackSize * _threadCount;
+		_localMemoryBase = _stackPointer
+			+ stackSize * _threadCount + align(3 * sizeof(unsigned int));
 		_registerFileBase = _localMemoryBase + localSize * _threadCount;
 		
 		_stackFrameSizes.push_back(stackSize);
@@ -244,7 +239,7 @@ namespace executive
 			+ _threadCount * stackFrameSize();
 		_registerFileBase = _localMemoryBase + localMemorySize() * _threadCount;
 		
-		_stack.resize(_stack.size() - totalSize);
+		_resizeStack(_stackSize() - totalSize);
 	}
 
 	void* EmulatorCallStack::_stackBase(unsigned int byteOffset) const
@@ -254,7 +249,15 @@ namespace executive
 	
 	void EmulatorCallStack::_resizeStack(unsigned int size)
 	{
+		void* data = _stackBase(0);
+		unsigned int previousSize = _stack.size();
+		size_t previousOffset = (size_t)data - (size_t)_stack.data();
 		_stack.resize(size + globalAlignment);
+		if(data != _stackBase(0))
+		{
+			std::memmove(_stackBase(0),
+				(char*)_stack.data() + previousOffset, previousSize);
+		}
 	}
 	
 	unsigned int EmulatorCallStack::_stackSize() const
@@ -264,7 +267,15 @@ namespace executive
 	
 	void EmulatorCallStack::_resizeSharedMemory(unsigned int size)
 	{
+		void* data = sharedMemoryPointer();
+		unsigned int previousSize = _sharedMemory.size();
+		size_t previousOffset = (size_t)data - (size_t)_sharedMemory.data();
 		_sharedMemory.resize(size + globalAlignment);
+		if(data != sharedMemoryPointer())
+		{
+			std::memmove(sharedMemoryPointer(),
+				(char*)_sharedMemory.data() + previousOffset, previousSize);
+		}
 	}
 	
 	unsigned int EmulatorCallStack::_sharedMemorySize() const

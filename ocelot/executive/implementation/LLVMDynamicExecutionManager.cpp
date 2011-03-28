@@ -66,7 +66,7 @@ void LLVMDynamicExecutionManager::launch(const LLVMDynamicKernel & kernel, int s
 	for (int ctaStart = 0; ctaStart < totalCtas; ctaStart++) {
 		LLVMDynamicExecutive executive(&kernel, 0, translatedKernel, sharedMemorySize);
 		
-		ir::Dim3 ctaId(ctaStart % gridDim.y, ctaStart / gridDim.y );
+		ir::Dim3 ctaId(ctaStart % gridDim.x, ctaStart / gridDim.x );
 		report("Executing CTA " << ctaId.x << ", " << ctaId.y);
 		
 		executive.addCta(ctaId);

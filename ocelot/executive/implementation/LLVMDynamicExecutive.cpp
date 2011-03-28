@@ -26,7 +26,7 @@
 
 #define REPORT_SCHEDULE_OPERATIONS 0
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -55,7 +55,7 @@ void LLVMDynamicExecutive::CooperativeThreadArray::initialize(
 	
 	int totalThreads = blockDim.x * blockDim.y * blockDim.z;
 
-	report("Initializing CTA with " << totalThreads << " threads");
+	report("Initializing CTA (" << ctaId.x << ", " << ctaId.y << ", " << ctaId.z << ") with " << totalThreads << " threads");
 	report("  local memory size " << localMemorySize << " bytes");
 	report("  shared memory size: " << sharedMemorySize << " bytes");
 		
@@ -282,7 +282,6 @@ void LLVMDynamicExecutive::executeWarp(Warp &warp) {
 		
 		unsigned int ctaId = LLVMDynamicExecutive::ctaId(*ctx_it);
 		
-		
 #if REPORT_BASE && REPORT_LOCAL_MEMORY
 		unsigned int localSize = 352;
 		report("After: ");
@@ -353,7 +352,6 @@ void LLVMDynamicExecutive::testBarriers(int &waiting, int &ready) {
 		if (cta_it->second.barrierQueue.size() && !cta_it->second.readyQueue.size()) {
 			cta_it->second.readyQueue = cta_it->second.barrierQueue;
 			cta_it->second.barrierQueue.clear();
-			
 		}
 		
 		ready += (int)cta_it->second.readyQueue.size();

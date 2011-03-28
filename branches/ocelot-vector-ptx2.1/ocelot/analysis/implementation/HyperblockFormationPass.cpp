@@ -25,8 +25,9 @@
 #endif
 
 #define REPORT_SUBKERNEL_PTX 1
+#define REPORT_SUBKERNEL_BARE 0
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -222,7 +223,7 @@ void analysis::HyperblockFormation::runOnKernel(KernelDecomposition &decompositi
 		RegisterSet restoreSet;
 		RegisterSet storeSet;
 				
-#if REPORT_SUBKERNEL_PTX && REPORT_BASE
+#if REPORT_SUBKERNEL_BARE && REPORT_BASE
 		hyperblock.subkernel->write(std::cout);
 		std::cout << std::endl;
 #endif

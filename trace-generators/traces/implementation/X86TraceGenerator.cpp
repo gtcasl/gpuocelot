@@ -409,15 +409,18 @@ trace::X86TraceGenerator::X86TraceGenerator() :
   ifstream kernel_info_file;
   
   kernel_info_file.open(kernel_info_path);
-  assert(!kernel_info_file.fail());
 
   string kernel_name;
   int register_num;
   int sharedmem;
 
-  while (kernel_info_file >> kernel_name >> register_num >> sharedmem) {
-    m_kernel_register_map[kernel_name] = register_num;
-    m_kernel_sharedmem_map[kernel_name] = sharedmem;
+  if (!kernel_info_file.fail()) {
+    while (kernel_info_file >> kernel_name >> register_num >> sharedmem) {
+      m_kernel_register_map[kernel_name] = register_num;
+      m_kernel_sharedmem_map[kernel_name] = sharedmem;
+    }
+  }
+  else {
   }
 
   // get compute version
@@ -959,13 +962,16 @@ void trace::X86TraceGenerator::event(const trace::TraceEvent & event)
     // mov, ld, ldu, st, prefetch, prefetchu, isspacep, cvta, cvt
     
     // load
-    if (ptx_inst->opcode == ir::PTXInstruction::Ld) {
+    // TOCHECK (generic type not in ptx document)
+    if (ptx_inst->opcode == ir::PTXInstruction::Ld ||
+        ptx_inst->opcode == ir::PTXInstruction::Ldu) {
       switch (ptx_inst->addressSpace) {
         case ir::PTXInstruction::Const:
           inst_info->opcode = TR_MEM_LD_CM;
           break;
 
         case ir::PTXInstruction::Global:
+        case ir::PTXInstruction::Generic:
           inst_info->opcode = TR_MEM_LD_GM; 
           break;
 
@@ -981,12 +987,18 @@ void trace::X86TraceGenerator::event(const trace::TraceEvent & event)
           inst_info->opcode = TR_MEM_LD_SM; 
           break;
 
+        case ir::PTXInstruction::Texture:
+          report("texture load - tocheck");
+          assert(0);
+          break;
+
         default:
           assert(0);
       }
     }
+    // FIXME : support LDU
     // load uniform
-    else if (ptx_inst->opcode == ir::PTXInstruction::Ldu) {
+    else if (0 && ptx_inst->opcode == ir::PTXInstruction::Ldu) {
       report("LDU currently not supported");
       assert(0);
       switch (ptx_inst->addressSpace) {
@@ -1002,6 +1014,7 @@ void trace::X86TraceGenerator::event(const trace::TraceEvent & event)
     else if (ptx_inst->opcode == ir::PTXInstruction::St) {
       switch (ptx_inst->addressSpace) {
         case ir::PTXInstruction::Global:
+        case ir::PTXInstruction::Generic:
           inst_info->opcode = TR_MEM_ST_GM;
           break;
 

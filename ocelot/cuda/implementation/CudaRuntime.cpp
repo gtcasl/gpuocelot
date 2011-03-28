@@ -391,7 +391,7 @@ cuda::HostThreadContext& cuda::CudaRuntime::_bind() {
 }
 
 void cuda::CudaRuntime::_unbind() {
-	HostThreadContext& thread = _getCurrentThread();
+	_getCurrentThread();
 	executive::Device& device = _getDevice();
 	assert(thread.selectedDevice == _selectedDevice);
 	
@@ -654,14 +654,12 @@ void cuda::CudaRuntime::cudaRegisterShared(
 	void **fatCubinHandle,
 	void **devicePtr) {
 	
-	size_t handle = (size_t)fatCubinHandle;
 	_lock();
 	
-	const char *moduleName = _fatBinaries[handle].name();
-	const char *variableName = (const char *)devicePtr;
-	
-	report("cudaRegisterShared() - module " << moduleName << ", devicePtr: " 
-		<< devicePtr << " named " << variableName);
+	report("cudaRegisterShared() - module " 
+		<< _fatBinaries[(size_t)fatCubinHandle].name()
+		<< ", devicePtr: " << devicePtr << " named "
+		<< (const char *)devicePtr);
 	
 	report(" Ignoring this variable.");
 	
@@ -675,14 +673,11 @@ void cuda::CudaRuntime::cudaRegisterSharedVar(
 	size_t alignment,
 	int storage) {
 
-	size_t handle = (size_t)fatCubinHandle;
 	_lock();
 	
-	const char *moduleName = _fatBinaries[handle].name();
-	const char *variableName = (const char *)devicePtr;
-	
-	report("cudaRegisterSharedVar() - module " << moduleName 
-		<< ", devicePtr: " << devicePtr << " named " << variableName 
+	report("cudaRegisterSharedVar() - module " 
+		<< _fatBinaries[(size_t)fatCubinHandle].name() 
+		<< ", devicePtr: " << devicePtr << " named " << (const char *)devicePtr 
 		<< ", size: " << size << ", alignment: " << alignment << ", storage: " 
 		<< storage);
 	
@@ -3173,6 +3168,7 @@ cudaError_t cuda::CudaRuntime::cudaGraphicsSubResourceGetMappedArray(
 	struct cudaArray **arrayPtr, struct cudaGraphicsResource *resource, 
 	unsigned int arrayIndex, unsigned int mipLevel) {
 	assertM(false, "Not implemented.");
+	return cudaSuccess;
 }
 
 

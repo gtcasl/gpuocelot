@@ -27,13 +27,7 @@ namespace analysis
 
         protected:
 
-            void _runOnEntryBlock( ir::PTXKernel *kernel, DataflowGraph::iterator block, DataflowGraph::RegisterId registerId, std::map<std::string, DataflowGraph::RegisterId> registerMap);
-
-            void _runOnBlock( ir::PTXKernel* kernel, DataflowGraph::iterator block, std::map<std::string, DataflowGraph::RegisterId> registerMap, DataflowGraph::RegisterId registerId, unsigned int offset);
-			
-        public:
-			/*! \brief The id of the basic block counter base pointer */			
-             std::string basicBlockCounterBase() const;
+            size_t incrementBasicBlockCounter( ir::PTXKernel *kernel, DataflowGraph::iterator block, DataflowGraph::RegisterId registerId, std::map<std::string, DataflowGraph::RegisterId> registerMap, size_t location);
 
         public:
 			/*! \brief Initialize the pass using a specific module */

@@ -22,9 +22,15 @@ namespace analysis
 	/*! \brief Implements the generic basic block counter instrumentation */
 	class BasicBlockInstrumentationPass 
 	{
-        public:            		
-            std::map<std::string, DataflowGraph::RegisterId> _runOnEntryBlock( ir::PTXKernel* kernel, DataflowGraph::iterator block);
-			
+        public:
+            std::map<std::string, DataflowGraph::RegisterId> registerMap;
+
+        public:           
+            /*! \brief The id of the basic block counter base pointer */			
+             std::string basicBlockCounterBase() const;
+ 		
+            size_t calculateThreadId( ir::PTXKernel* kernel, DataflowGraph::iterator block, size_t location );
+			size_t calculateBasicBlockCounterOffset( ir::PTXKernel *kernel, DataflowGraph::iterator block, size_t basicBlockId, size_t location );
 	};
 }
 

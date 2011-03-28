@@ -29,24 +29,24 @@ namespace analysis
 
         ir::PTXOperand::DataType type = (sizeof(size_t) == 8 ? ir::PTXOperand::u64: ir::PTXOperand::u32);
 
-	size_t loc = 0;
+	    size_t loc = 0;
 
-	ir::PTXInstruction cvt(ir::PTXInstruction::Cvt);
-	ir::PTXInstruction mov(ir::PTXInstruction::Mov);
+	    ir::PTXInstruction cvt(ir::PTXInstruction::Cvt);
+	    ir::PTXInstruction mov(ir::PTXInstruction::Mov);
 
-	DataflowGraph::RegisterId tidX = kernel->dfg()->newRegister();
+	    DataflowGraph::RegisterId tidX = kernel->dfg()->newRegister();
 
-	cvt.type = type;
+	    cvt.type = type;
         cvt.d.addressMode = ir::PTXOperand::Register;
         cvt.d.reg = tidX;
         cvt.d.type = type;
         cvt.a = ir::PTXOperand(ir::PTXOperand::tid, ir::PTXOperand::ix, ir::PTXOperand::u32);
-	cvt.a.addressMode = ir::PTXOperand::Special;
-	cvt.a.vec = ir::PTXOperand::v1;
+	    cvt.a.addressMode = ir::PTXOperand::Special;
+	    cvt.a.vec = ir::PTXOperand::v1;
 
 
-	kernel->dfg()->insert(block, cvt, loc);
-	loc++;   
+	    kernel->dfg()->insert(block, cvt, loc);
+	    loc++;   
  
         DataflowGraph::RegisterId clockStart = kernel->dfg()->newRegister();
         DataflowGraph::RegisterId clockEnd = kernel->dfg()->newRegister();
@@ -65,43 +65,43 @@ namespace analysis
         setp.b.imm_int = 0;
 
         kernel->dfg()->insert(block, setp, loc);
-	loc++;
+	    loc++;
   
-	if(type == ir::PTXOperand::u64){
+	    if(type == ir::PTXOperand::u64){
 
-		mov.type = type;
-		mov.d.type = type;
-		mov.d.reg = clockStart;
-		mov.d.addressMode = ir::PTXOperand::Register;
-		mov.a = ir::PTXOperand(ir::PTXOperand::clock64);
-		mov.a.type = ir::PTXOperand::u64;
+		    mov.type = type;
+		    mov.d.type = type;
+		    mov.d.reg = clockStart;
+		    mov.d.addressMode = ir::PTXOperand::Register;
+		    mov.a = ir::PTXOperand(ir::PTXOperand::clock64);
+		    mov.a.type = ir::PTXOperand::u64;
 
-		kernel->dfg()->insert(block, mov, loc);
-		loc++;
+		    kernel->dfg()->insert(block, mov, loc);
+		    loc++;
 
-		mov.d.reg = clockEnd;
-        
-	}
-	else {
-		cvt.type = type;
-		cvt.d.type = type;
-		cvt.d.reg = clockStart;
-		cvt.d.addressMode = ir::PTXOperand::Register;
-		cvt.a = ir::PTXOperand(ir::PTXOperand::clock);
-		cvt.a.type = ir::PTXOperand::u32;
+		    mov.d.reg = clockEnd;
+            
+	    }
+	    else {
+		    cvt.type = type;
+		    cvt.d.type = type;
+		    cvt.d.reg = clockStart;
+		    cvt.d.addressMode = ir::PTXOperand::Register;
+		    cvt.a = ir::PTXOperand(ir::PTXOperand::clock);
+		    cvt.a.type = ir::PTXOperand::u32;
 		
-		kernel->dfg()->insert(block, cvt, loc);
-		loc++;
+		    kernel->dfg()->insert(block, cvt, loc);
+		    loc++;
 
-		cvt.d.reg = clockEnd;
-	}
+		    cvt.d.reg = clockEnd;
+	    }
 
         ir::PTXInstruction bar(ir::PTXInstruction::Bar);
         bar.d.addressMode = ir::PTXOperand::Immediate;
         bar.d.imm_int = 0;
         
         kernel->dfg()->insert(block, bar, loc);
-	loc++;
+	    loc++;
     
         DataflowGraph::iterator lastBlock = --(kernel->dfg()->end());
         while(lastBlock->instructions().size() == 0) {
@@ -110,12 +110,12 @@ namespace analysis
 
         kernel->dfg()->insert(lastBlock, bar, lastBlock->instructions().size() - 1);
 
-	if(type == ir::PTXOperand::u64){
-		kernel->dfg()->insert(lastBlock, mov, lastBlock->instructions().size() - 1);
-	}
-	else {
-        	kernel->dfg()->insert(lastBlock, cvt, lastBlock->instructions().size() - 1);
-	}
+	    if(type == ir::PTXOperand::u64){
+		    kernel->dfg()->insert(lastBlock, mov, lastBlock->instructions().size() - 1);
+	    }
+	    else {
+            	kernel->dfg()->insert(lastBlock, cvt, lastBlock->instructions().size() - 1);
+	    }
 
         ir::PTXInstruction sub(ir::PTXInstruction::Sub);
         sub.type = type;
@@ -123,7 +123,7 @@ namespace analysis
         sub.d.type = type;
         sub.d.addressMode = ir::PTXOperand::Register;
         sub.a.reg = clockEnd;
-	sub.a.type = type;
+	    sub.a.type = type;
         sub.b = sub.d;
 
         kernel->dfg()->insert(lastBlock, sub, lastBlock->instructions().size() - 1);  
@@ -168,19 +168,19 @@ namespace analysis
 
         cvt.d.reg = ctaidX;
         cvt.a = ir::PTXOperand(ir::PTXOperand::ctaId, ir::PTXOperand::ix, ir::PTXOperand::u32);
-	cvt.a.vec = ir::PTXOperand::v1;        
+	    cvt.a.vec = ir::PTXOperand::v1;        
 
         kernel->dfg()->insert(lastBlock, cvt, lastBlock->instructions().size() - 1);
 
         cvt.d.reg = ctaidY;
         cvt.a = ir::PTXOperand(ir::PTXOperand::ctaId, ir::PTXOperand::iy, ir::PTXOperand::u32);
-	cvt.a.vec = ir::PTXOperand::v1;        
+	    cvt.a.vec = ir::PTXOperand::v1;        
 
         kernel->dfg()->insert(lastBlock, cvt, lastBlock->instructions().size() - 1);
 
         cvt.d.reg = nctaidX;
         cvt.a = ir::PTXOperand(ir::PTXOperand::nctaId, ir::PTXOperand::ix, ir::PTXOperand::u32);
-	cvt.a.vec = ir::PTXOperand::v1;
+	    cvt.a.vec = ir::PTXOperand::v1;
 
         kernel->dfg()->insert(lastBlock, cvt, lastBlock->instructions().size() - 1);
 

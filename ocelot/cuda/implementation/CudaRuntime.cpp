@@ -391,9 +391,8 @@ cuda::HostThreadContext& cuda::CudaRuntime::_bind() {
 }
 
 void cuda::CudaRuntime::_unbind() {
-	_getCurrentThread();
 	executive::Device& device = _getDevice();
-	assert(thread.selectedDevice == _selectedDevice);
+	assert(_getCurrentThread().selectedDevice == _selectedDevice);
 	
 	_selectedDevice = -1;
 	assert(device.selected());

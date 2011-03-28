@@ -9,7 +9,6 @@
 
 #include <ocelot/analysis/interface/DataflowGraph.h>
 #include <ocelot/ir/interface/PTXKernel.h>
-#include <ocelot/analysis/interface/Pass.h>
 
 #include <map>
 
@@ -21,23 +20,10 @@ namespace ir
 namespace analysis
 {
 	/*! \brief Implements the generic basic block counter instrumentation */
-	class BasicBlockInstrumentationPass : public ModulePass
+	class BasicBlockInstrumentationPass 
 	{
-	    public:
-			/*! \brief The id of the basic block counter base pointer */			
-             std::string basicBlockCounterBase() const;
-
-		public:
-			/*! \brief Initialize the pass using a specific module */
-			void initialize( const ir::Module& m );
-			/*! \brief Run the pass on a specific module */
-			void runOnModule( ir::Module& m );
-			/*! \brief Finalize the pass */
-			void finalize( );
-
-        protected:
-            		std::map<std::string, DataflowGraph::RegisterId> _runOnEntryBlock( ir::PTXKernel* kernel, DataflowGraph::iterator block, DataflowGraph::RegisterId registerId);
-			virtual void _runOnBlock( ir::PTXKernel* kernel, DataflowGraph::iterator block, std::map<std::string, DataflowGraph::RegisterId>, DataflowGraph::RegisterId registerId, unsigned int offset ) = 0;
+        public:            		
+            std::map<std::string, DataflowGraph::RegisterId> _runOnEntryBlock( ir::PTXKernel* kernel, DataflowGraph::iterator block);
 			
 	};
 }

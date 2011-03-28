@@ -11,7 +11,6 @@
 
 #include <ocelot/cuda/interface/cuda_runtime.h>
 
-#include <ocelot/analysis/interface/BasicBlockInstrumentationPass.h>
 #include <ocelot/analysis/interface/BasicBlockExecutionCountPass.h>
 #include <ocelot/ir/interface/Module.h>
 
@@ -65,7 +64,7 @@ namespace analysis
             throw hydrazine::Exception( "cudaMemset failed!" );
         }
         
-        if(cudaMemcpyToSymbol(((BasicBlockInstrumentationPass *)pass)->basicBlockCounterBase().c_str(), &counter, sizeof(*counter), 0, cudaMemcpyHostToDevice) != cudaSuccess) {
+        if(cudaMemcpyToSymbol(((BasicBlockExecutionCountPass *)pass)->basicBlockCounterBase().c_str(), &counter, sizeof(*counter), 0, cudaMemcpyHostToDevice) != cudaSuccess) {
             throw hydrazine::Exception( "cudaMemcpyToSymbol failed!");
         }
     }

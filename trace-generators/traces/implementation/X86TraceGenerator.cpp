@@ -385,13 +385,45 @@ trace::X86TraceGenerator::X86TraceGenerator() :
   m_compute = "2.0";
   mem_addr_flag = ~0u;
 
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+// destructor
+// Ptx to X86 trace generator
+///////////////////////////////////////////////////////////////////////////////////////////////
+trace::X86TraceGenerator::~X86TraceGenerator()
+{
+  report("destructor");
+  if (can_gen_traces) {
+    finalize();
+
+    if (init) {
+#if WRITE_DEBUG == 1
+      debug_stream->close();
+      delete debug_stream;
+#endif
+      txt_kernel_config_file.close();
+    }
+  }
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+// called when a traced kernel is launched to retrieve some parameters from the kernel
+///////////////////////////////////////////////////////////////////////////////////////////////
+void trace::X86TraceGenerator::initialize(const executive::ExecutableKernel& kernel)
+{
+  static bool init_x86_tracegenerator = false;
+  if (!init_x86_tracegenerator) {
+    init_x86_tracegenerator = true;
 #ifndef GEN_PTX_TRACE_GEN
   char *t_name;
   char *t_path;
 
   // get TRACE_PATH environment variable
   t_path = getenv("TRACE_PATH");
-  assert(t_path != NULL);
+//  assert(t_path != NULL);
 
   trace_path = t_path;
   trace_path.append("/");
@@ -435,34 +467,9 @@ trace::X86TraceGenerator::X86TraceGenerator() :
 
   last_block_id = -1;
 #endif
-}
-
-
-///////////////////////////////////////////////////////////////////////////////////////////////
-// destructor
-// Ptx to X86 trace generator
-///////////////////////////////////////////////////////////////////////////////////////////////
-trace::X86TraceGenerator::~X86TraceGenerator()
-{
-  if (can_gen_traces) {
-    finalize();
-
-    if (init) {
-#if WRITE_DEBUG == 1
-      debug_stream->close();
-      delete debug_stream;
-#endif
-      txt_kernel_config_file.close();
-    }
   }
-}
 
 
-///////////////////////////////////////////////////////////////////////////////////////////////
-// called when a traced kernel is launched to retrieve some parameters from the kernel
-///////////////////////////////////////////////////////////////////////////////////////////////
-void trace::X86TraceGenerator::initialize(const executive::ExecutableKernel& kernel)
-{
   ///
   /// If multiple kernels exist in the program, initialize() function will be called several times
   /// there are some structures that are used in the previous kernel
@@ -1577,6 +1584,7 @@ void trace::X86TraceGenerator::event(const trace::TraceEvent & event)
 ///////////////////////////////////////////////////////////////////////////////////////////////
 void trace::X86TraceGenerator::finalize()
 {
+  report("finalize");
   if (!init)
     return ;
 

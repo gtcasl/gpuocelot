@@ -42,8 +42,13 @@ srad_cuda_1(
   __shared__ float  west[BLOCK_SIZE][BLOCK_SIZE];
 
   //load data to shared memory
-  north[ty][tx] = J_cuda[index_n]; 
-  south[ty][tx] = J_cuda[index_s];
+  if( index_n > 0 ) {
+	north[ty][tx] = J_cuda[index_n];
+  }
+  if( index_s < cols * rows) {
+	south[ty][tx] = J_cuda[index_s];
+  
+  }
   if ( by == 0 ){
   north[ty][tx] = J_cuda[BLOCK_SIZE * bx + tx]; 
   }
@@ -51,10 +56,15 @@ srad_cuda_1(
   south[ty][tx] = J_cuda[cols * BLOCK_SIZE * (gridDim.y - 1) + BLOCK_SIZE * bx + cols * ( BLOCK_SIZE - 1 ) + tx];
   }
    __syncthreads();
- 
-  west[ty][tx] = J_cuda[index_w];
-  east[ty][tx] = J_cuda[index_e];
-
+  
+  if ( index_w > 0 ) {
+	  west[ty][tx] = J_cuda[index_w];
+  }
+  
+  if( index_e < cols * rows) {
+	east[ty][tx] = J_cuda[index_e];
+  }
+  
   if ( bx == 0 ){
   west[ty][tx] = J_cuda[cols * BLOCK_SIZE * by + cols * ty]; 
   }
@@ -196,16 +206,18 @@ srad_cuda_2(
 	temp[ty][tx]      = J_cuda[index];
 
     __syncthreads();
-	 
-	south_c[ty][tx] = C_cuda[index_s];
-
+	if( index_s < cols * rows) {
+      south_c[ty][tx] = C_cuda[index_s];
+	}
+	
 	if ( by == gridDim.y - 1 ){
 	south_c[ty][tx] = C_cuda[cols * BLOCK_SIZE * (gridDim.y - 1) + BLOCK_SIZE * bx + cols * ( BLOCK_SIZE - 1 ) + tx];
 	}
 	__syncthreads();
 	 
-	 
-	east_c[ty][tx] = C_cuda[index_e];
+	if( index_e < cols * rows) {
+	  east_c[ty][tx] = C_cuda[index_e];
+	}
 	
 	if ( bx == gridDim.x - 1 ){
 	east_c[ty][tx] = C_cuda[cols * BLOCK_SIZE * by + BLOCK_SIZE * ( gridDim.x - 1) + cols * ty + BLOCK_SIZE-1];

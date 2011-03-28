@@ -15,10 +15,10 @@
 #include <vector_types.h>
 
 // includes, kernels
-#include <common.cu>
+#include <common.cuh>
 
 #include <mummergpu.h>
-#include <mummergpu_kernel.cu>
+#include <mummergpu_kernel.cuh>
 
 int USE_PRINT_KERNEL = 1;
 

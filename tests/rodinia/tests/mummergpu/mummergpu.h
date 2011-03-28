@@ -1,5 +1,5 @@
 #include <stdlib.h>
-#include "common.cu"
+#include "common.cuh"
 
 
 extern "C" {

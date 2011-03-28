@@ -2,7 +2,7 @@
 #define _MUMMERGPU_KERNEL_H_
 
 #include <stdio.h>
-#include <common.cu>
+#include <common.cuh>
 
 #ifdef  n__DEVICE_EMULATION__
 
@@ -303,7 +303,7 @@ __device__ void arrayToAddress(uchar3 arr, unsigned int& addr)
 /// getRef
 //////////////////////////////////
 
-__device__ char getRef(int refpos
+inline __device__ char getRef(int refpos
 #if !REFTEX
 					   ,char* ref
 #endif

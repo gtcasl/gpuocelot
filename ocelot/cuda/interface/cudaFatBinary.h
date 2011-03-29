@@ -107,10 +107,29 @@ typedef struct __cudaFatCudaBinaryRec {
 } __cudaFatCudaBinary;
 
 typedef struct __cudaFatCudaBinary2HeaderRec { 
-	char unknown[52];
-	unsigned int length;
-	char unknown2[16];
+    unsigned int            magic;
+    unsigned int            version;
+	unsigned long long int  length;
 } __cudaFatCudaBinary2Header;
+
+enum FatBin2EntryType {
+	FATBIN_2_PTX = 0x1
+};
+
+typedef struct __cudaFatCudaBinary2EntryRec { 
+	unsigned int           type;
+	unsigned int           binary;
+	unsigned int           binarySize;
+	unsigned int           unknown2;
+	unsigned int           kindOffset;
+	unsigned int           unknown3;
+	unsigned int           unknown4;
+	unsigned int           unknown5;
+	unsigned int           name;
+	unsigned int           nameSize;
+	unsigned long long int unknown6;
+	unsigned long long int unknown7;
+} __cudaFatCudaBinary2Entry;
 
 
 typedef struct __cudaFatCudaBinaryRec2 {

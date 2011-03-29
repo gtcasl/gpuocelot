@@ -8,7 +8,6 @@
 #include <ocelot/cuda/interface/FatBinaryContext.h>
 
 // Hydrazine Includes
-#include <hydrazine/interface/ELFFile.h>
 #include <hydrazine/implementation/debug.h>
 
 // Standard Library Includes
@@ -63,27 +62,24 @@ cuda::FatBinaryContext::FatBinaryContext(const void *ptr): cubin_ptr(ptr) {
 		__cudaFatCudaBinary2Header* header =
 			(__cudaFatCudaBinary2Header*) binary->fatbinData;
 		
-		_name = (const char*)(header + 1);
-
-		while(*_name == 0) ++_name;
+		report(" binary size is: " << header->length << " bytes");
+				
+		char* base = (char*)(header + 1);
+		long long unsigned int offset = 0;
+		__cudaFatCudaBinary2EntryRec* entry
+			= (__cudaFatCudaBinary2EntryRec*)(base);
 		
-		report("Found module named '" << _name << "'");
-		report(" reading ELF binary...");
-		
-		const char* elfData = _name + header->length;
-
-		while(*elfData == 0) ++elfData;
-
-		hydrazine::ELFFile elf(elfData);
-		
-		if(elf.header().checkMagic()) {
-			_name = (const char*)elf.endOfFile() + 8;
-			_ptx = _name + std::strlen(_name);
-			while(*_ptx == 0) ++_ptx;
+		// find the PTX
+		while(!(entry->type & FATBIN_2_PTX) && offset < header->length)
+		{
+			entry = (__cudaFatCudaBinary2EntryRec*)(base + offset);
+			offset = entry->binary + entry->binarySize;
 		}
-		else {
-			_ptx = elfData;
-		}
+		
+		assertM(entry->type & FATBIN_2_PTX, "Binary contains no PTX.");
+		
+		_name = (char*)entry + entry->name;
+		_ptx  = (char*)entry + entry->binary;
 	}
 	else {
 		assertM(false, "unknown fat binary magic number "

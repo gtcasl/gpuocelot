@@ -85,6 +85,10 @@ def main():
 		default = False, action = "store_true", help = "Install ocelot." )
 	parser.add_option( "-b", "--build_target", \
 		default = "", help = "build a specific target." )
+	parser.add_option( "-p", "--install_prefix", \
+		default = "/usr/local", help = "The base path to install ocelot in." )
+	parser.add_option( "--no_llvm", \
+		default = False, action = "store_true", help = "Disable llvm support." )
 	parser.add_option( "-m", "--message", default = "", \
 		help = "the message describing the changes being committed." )
 	
@@ -103,9 +107,14 @@ def main():
 
 	if options.debug:
 		command += " mode=debug"
-		
+
+	if options.no_llvm:
+		command += " enable_llvm=false"
+
 	if options.install:
 		command += " install"
+
+	command += " install_path=" + options.install_prefix
 
 	if options.build_target != '':
 		if options.debug:

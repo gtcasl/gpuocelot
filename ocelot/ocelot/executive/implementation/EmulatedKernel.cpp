@@ -720,7 +720,8 @@ void executive::EmulatedKernel::initializeLocalMemory() {
 		// look for mov and ld/st instructions
 		if (instr.opcode == ir::PTXInstruction::Mov
 			|| instr.opcode == ir::PTXInstruction::Ld 
-			|| instr.opcode == ir::PTXInstruction::St) {
+			|| instr.opcode == ir::PTXInstruction::St 
+			|| instr.opcode == ir::PTXInstruction::Cvta) {
 			for (int n = 0; n < 4; n++) {
 				if ((instr.*operands[n]).addressMode 
 					== ir::PTXOperand::Address) {

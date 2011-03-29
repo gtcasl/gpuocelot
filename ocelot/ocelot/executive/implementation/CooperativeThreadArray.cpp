@@ -3737,22 +3737,14 @@ void executive::CooperativeThreadArray::eval_Cvta(CTAContext &context,
 		case ir::PTXOperand::u32:
 		{
 			ir::PTXU32 addrSpaceBase = 0;
-			ir::PTXU32 addrSpaceSize = 0;
 			switch (instr.addressSpace) {
 				case ir::PTXInstruction::Global: // DO NOTHING
+				case ir::PTXInstruction::Local: // DO NOTHING
 					break;
 				case ir::PTXInstruction::Shared:
 				{
 					hydrazine::bit_cast(addrSpaceBase, 
 						functionCallStack.sharedMemoryPointer());
-					addrSpaceSize = hydrazine::bit_cast<ir::PTXU32>(
-						functionCallStack.sharedMemorySize());
-				}
-					break;
-				case ir::PTXInstruction::Local:
-				{
-					addrSpaceSize = hydrazine::bit_cast<ir::PTXU32>(
-						functionCallStack.localMemorySize());
 				}
 					break;
 				default:
@@ -3782,22 +3774,14 @@ void executive::CooperativeThreadArray::eval_Cvta(CTAContext &context,
 		case ir::PTXOperand::u64: 
 		{
 			ir::PTXU64 addrSpaceBase = 0;
-			ir::PTXU64 addrSpaceSize = 0;
 			switch (instr.addressSpace) {
 				case ir::PTXInstruction::Global: // DO NOTHING
+				case ir::PTXInstruction::Local: // DO NOTHING
 					break;
 				case ir::PTXInstruction::Shared:
 				{
 					hydrazine::bit_cast(addrSpaceBase, 
 						functionCallStack.sharedMemoryPointer());
-					addrSpaceSize = hydrazine::bit_cast<ir::PTXU64>(
-						functionCallStack.sharedMemorySize());
-				}
-					break;
-				case ir::PTXInstruction::Local:
-				{
-					addrSpaceSize = hydrazine::bit_cast<ir::PTXU64>(
-						functionCallStack.localMemorySize());
 				}
 					break;
 				default:

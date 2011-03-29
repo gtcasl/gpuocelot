@@ -85,11 +85,14 @@ def getGLEWPaths():
 
 	return (bin_path,lib_path,inc_path)
 
-def getLLVMPaths():
+def getLLVMPaths(enabled):
 	"""Determines LLVM {have,bin,lib,include,cflags,lflags,libs} paths
 	
 	returns (have,bin_path,lib_path,inc_path,cflags,lflags,libs)
 	"""
+	
+	if not enabled:
+		return (False, [], [], [], [], [], [])
 	
 	try:
 		llvm_config_path = which('llvm-config')
@@ -234,6 +237,10 @@ def Environment():
 	# add a variable to treat warnings as errors
 	vars.Add(BoolVariable('Werror', 'Treat warnings as errors', 1))
 
+	# add a variable to treat warnings as errors
+	vars.Add(BoolVariable('enable_llvm', \
+		'Compile in support for LLVM if available', 1))
+	
 	# add a variable to compile the ocelot unit tests
 	vars.Add(EnumVariable('test_level', \
 		'Build the ocelot unit tests at the given test level', 'none', \
@@ -286,7 +293,7 @@ def Environment():
 
 	# get llvm paths
 	(llvm, llvm_exe_path,llvm_lib_path,llvm_inc_path,llvm_cflags,\
-		llvm_lflags,llvm_libs) = getLLVMPaths()
+		llvm_lflags,llvm_libs) = getLLVMPaths(env['enable_llvm'])
 	env.AppendUnique(LIBPATH = llvm_lib_path)
 	env.AppendUnique(CPPPATH = llvm_inc_path)
 	env.AppendUnique(CXXFLAGS = llvm_cflags)

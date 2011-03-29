@@ -307,7 +307,7 @@ namespace executive
 		_properties.maxGridSize[2] = 65536;
 		_properties.sharedMemPerBlock = _properties.totalMemory;
 		_properties.totalConstantMemory = _properties.totalMemory;
-		_properties.SIMDWidth = 512;
+		_properties.SIMDWidth = _properties.maxThreadsPerBlock;
 		_properties.memPitch = 1;
 		_properties.regsPerBlock = _properties.totalMemory;
 		_properties.clockRate = 2;
@@ -315,7 +315,7 @@ namespace executive
 		_properties.integrated = 1;
 		_properties.concurrentKernels = 0;
 		_properties.major = 2;
-		_properties.minor = 0;
+		_properties.minor = 3;
 	}
 	
 	EmulatorDevice::~EmulatorDevice()
@@ -613,6 +613,7 @@ namespace executive
 		
 		AllocationMap::const_iterator allocation = _allocations.find(
 			graphic->second.pointer);
+
 		assert(allocation != _allocations.end());
 		
 		size = allocation->second->size();

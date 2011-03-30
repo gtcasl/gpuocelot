@@ -812,8 +812,14 @@ cudaError_t cuda::CudaRuntime::cudaMallocArray(struct cudaArray **array,
 	_acquire();
 	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
 	
-	size_t size = width * height * ( desc->x 
-		+ desc->y + desc->z + desc->w ) / 8;
+	unsigned int x = desc->x == 0 ? 1 : desc->x;
+	unsigned int y = desc->y == 0 ? 1 : desc->y;
+	unsigned int z = desc->z == 0 ? 1 : desc->z;
+	unsigned int w = desc->w == 0 ? 1 : desc->w;
+	
+	height = height == 0 ? 1 : height;
+	
+	size_t size = width * height * ( x + y + z + w ) / 8;
 	
 	try {
 		executive::Device::MemoryAllocation* 

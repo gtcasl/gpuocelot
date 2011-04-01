@@ -35,6 +35,29 @@ extern "C" __global__ void loopEarlyExit(float *A, float dt) {
 	A[i] = f;
 }
 
+/*!
+	\brief sums the elements of an array
+*/
+extern "C" __global__ void reduction(float *A, int N) {
+	__shared__ float buffer[8];
+	
+	int idx = threadIdx.x;
+	float sum = 0.0;
+	
+	for (int i = 0; i < N; i+= blockDim.x, idx += blockDim.x) {
+		buffer[threadIdx.x] = 0;
+		if (idx < N) {
+			buffer[threadIdx.x] = A[idx];
+		}
+		__syncthreads();
+		for (int j = 0; j < 8; j++) {
+			sum += buffer[j];
+		}
+		__syncthreads();
+	}
+	A[threadIdx.x] = sum;
+}
+
 static float expectedValue(int n,  int P) {
 	int i = n;
 	float f = i * 2.0f + 1.0f;;
@@ -114,16 +137,56 @@ static int testLoopEarlyExit() {
 	return errors;
 }
 
+static int testReduction() {
+	const int N = 32;
+	float *A_host, *A_gpu;
+	
+	size_t bytes = sizeof(float)*N;
+	cudaMalloc((void **)&A_gpu, bytes);
+	A_host = (float *)malloc(bytes);
+	
+	float sum = 0.0f;
+	for (int i = 0; i < N; i++) {
+		A_host[i] = 2.0f * (float)i / (float)(N-1);
+		sum += A_host[i];
+	}
+	
+	cudaMemcpy(A_gpu, A_host, bytes, cudaMemcpyHostToDevice);
+	
+	dim3 grid(1,1);
+	dim3 block(8,1,1);
+	
+	reduction<<< grid, block >>>(A_gpu, N);
+
+	cudaMemcpy(A_host, A_gpu, bytes, cudaMemcpyDeviceToHost);
+	int errors = 0;
+	
+	if (fabs(A_host[0] - sum) > 0.001f) {
+		++errors;
+		printf("ERROR 3 - expected sum: %f, got: %f\n", sum, A_host[0]);
+	}
+	
+	free(A_host);
+	cudaFree(A_gpu);
+	
+	return errors;
+}
+
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
 int main( int argc, char** argv )
 {
 	int errors = 0;
+	/*
 	if (!errors) {
 		errors += testConvergenceWithLoop();
 	}
 	if (!errors) {
 		errors += testLoopEarlyExit();
+	}
+	*/
+	if (!errors) {
+		errors += testReduction();
 	}
 
 	printf("Pass/Fail : %s\n", (errors ? "Fail":"Pass"));

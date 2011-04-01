@@ -1,7 +1,7 @@
-# 1 "/tmp/tmpxft_000037b4_00000000-1_TestConvergenceLoop.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00000b6e_00000000-1_TestConvergenceLoop.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_000037b4_00000000-1_TestConvergenceLoop.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00000b6e_00000000-1_TestConvergenceLoop.cudafe1.cpp"
 # 1 "TestConvergenceLoop.cu"
 # 46 "/usr/local/cuda3.2rel/cuda/bin/../include/device_types.h"
 # 149 "/usr/lib/gcc/x86_64-linux-gnu/4.4.3/include/stddef.h" 3
@@ -9565,156 +9565,202 @@ extern "C" void funlockfile(FILE *) throw();
 extern "C" void convergenceWithLoop(float *A, int P) ;
 # 29 "TestConvergenceLoop.cu"
 extern "C" void loopEarlyExit(float *A, float dt) ;
-# 38 "TestConvergenceLoop.cu"
-static float expectedValue(int n, int P) {
-# 39 "TestConvergenceLoop.cu"
-int i = n;
-# 40 "TestConvergenceLoop.cu"
-float f = ((i * (2.0F)) + (1.0F)); ;
 # 41 "TestConvergenceLoop.cu"
-for (int p = 0; p < P; p++) {
-# 42 "TestConvergenceLoop.cu"
-f *= ((1.25F) - (2.0F));
-# 43 "TestConvergenceLoop.cu"
-}
-# 44 "TestConvergenceLoop.cu"
-return f;
-# 45 "TestConvergenceLoop.cu"
-}
-# 47 "TestConvergenceLoop.cu"
-static int testConvergenceWithLoop() {
-# 48 "TestConvergenceLoop.cu"
-const int N = 4;
-# 49 "TestConvergenceLoop.cu"
-const int P = 3;
-# 50 "TestConvergenceLoop.cu"
-float *A_host, *A_device;
-# 51 "TestConvergenceLoop.cu"
-size_t bytes = ((N) * sizeof(float));
-# 53 "TestConvergenceLoop.cu"
-A_host = ((float *)malloc(bytes));
-# 54 "TestConvergenceLoop.cu"
-cudaMalloc((void **)(&A_device), bytes);
-# 56 "TestConvergenceLoop.cu"
-for (int i = 0; i < N; i++) {
-# 57 "TestConvergenceLoop.cu"
-(A_host[i]) = ((float)(i + 1));
-# 58 "TestConvergenceLoop.cu"
-}
-# 59 "TestConvergenceLoop.cu"
-cudaMemcpy(A_device, A_host, bytes, cudaMemcpyHostToDevice);
+extern "C" void reduction(float *A, int N) ;
 # 61 "TestConvergenceLoop.cu"
-cudaConfigureCall(dim3(1, 1), dim3(N, 1, 1)) ? ((void)0) : convergenceWithLoop(A_device, P);
+static float expectedValue(int n, int P) {
+# 62 "TestConvergenceLoop.cu"
+int i = n;
 # 63 "TestConvergenceLoop.cu"
-cudaMemcpy(A_host, A_device, bytes, cudaMemcpyDeviceToHost);
+float f = ((i * (2.0F)) + (1.0F)); ;
+# 64 "TestConvergenceLoop.cu"
+for (int p = 0; p < P; p++) {
 # 65 "TestConvergenceLoop.cu"
-int errors = 0;
+f *= ((1.25F) - (2.0F));
 # 66 "TestConvergenceLoop.cu"
-for (int i = 0; (errors < 5) && (i < N); i++) {
+}
 # 67 "TestConvergenceLoop.cu"
-float expected = expectedValue(i, P);
+return f;
 # 68 "TestConvergenceLoop.cu"
-float got = (A_host[i]);
-# 69 "TestConvergenceLoop.cu"
-if (fabs(expected - got) > (0.001000000047F)) {
+}
 # 70 "TestConvergenceLoop.cu"
-++errors;
+static int testConvergenceWithLoop() {
 # 71 "TestConvergenceLoop.cu"
-printf("error 1 [%d] - expected: %f, got %f\n", i, expected, got);
+const int N = 4;
 # 72 "TestConvergenceLoop.cu"
-}
+const int P = 3;
 # 73 "TestConvergenceLoop.cu"
-}
-# 75 "TestConvergenceLoop.cu"
-cudaFree(A_device);
+float *A_host, *A_device;
+# 74 "TestConvergenceLoop.cu"
+size_t bytes = ((N) * sizeof(float));
 # 76 "TestConvergenceLoop.cu"
-free(A_host);
-# 77 "TestConvergenceLoop.cu"
-return errors;
-# 78 "TestConvergenceLoop.cu"
-}
-# 80 "TestConvergenceLoop.cu"
-static int testLoopEarlyExit() {
-# 81 "TestConvergenceLoop.cu"
-const int N = 8;
-# 82 "TestConvergenceLoop.cu"
-float *A_host, *A_gpu;
-# 84 "TestConvergenceLoop.cu"
-size_t bytes = (sizeof(float) * (N));
-# 85 "TestConvergenceLoop.cu"
-cudaMalloc((void **)(&A_gpu), bytes);
-# 86 "TestConvergenceLoop.cu"
 A_host = ((float *)malloc(bytes));
-# 88 "TestConvergenceLoop.cu"
+# 77 "TestConvergenceLoop.cu"
+cudaMalloc((void **)(&A_device), bytes);
+# 79 "TestConvergenceLoop.cu"
 for (int i = 0; i < N; i++) {
+# 80 "TestConvergenceLoop.cu"
+(A_host[i]) = ((float)(i + 1));
+# 81 "TestConvergenceLoop.cu"
+}
+# 82 "TestConvergenceLoop.cu"
+cudaMemcpy(A_device, A_host, bytes, cudaMemcpyHostToDevice);
+# 84 "TestConvergenceLoop.cu"
+cudaConfigureCall(dim3(1, 1), dim3(N, 1, 1)) ? ((void)0) : convergenceWithLoop(A_device, P);
+# 86 "TestConvergenceLoop.cu"
+cudaMemcpy(A_host, A_device, bytes, cudaMemcpyDeviceToHost);
+# 88 "TestConvergenceLoop.cu"
+int errors = 0;
 # 89 "TestConvergenceLoop.cu"
-(A_host[i]) = (((2.0F) * ((float)i)) / ((float)(N - 1)));
-# 90 "TestConvergenceLoop.cu"
-}
-# 92 "TestConvergenceLoop.cu"
-cudaMemcpy(A_gpu, A_host, bytes, cudaMemcpyHostToDevice);
-# 94 "TestConvergenceLoop.cu"
-float dt = (0.25F);
-# 95 "TestConvergenceLoop.cu"
-dim3 grid(1, 1);
-# 96 "TestConvergenceLoop.cu"
-dim3 block(N, 1, 1);
-# 98 "TestConvergenceLoop.cu"
-cudaConfigureCall(grid, block) ? ((void)0) : loopEarlyExit(A_gpu, dt);
-# 100 "TestConvergenceLoop.cu"
-cudaMemcpy(A_host, A_gpu, bytes, cudaMemcpyDeviceToHost);
-# 101 "TestConvergenceLoop.cu"
-int errors = 0;
-# 102 "TestConvergenceLoop.cu"
 for (int i = 0; (errors < 5) && (i < N); i++) {
-# 103 "TestConvergenceLoop.cu"
+# 90 "TestConvergenceLoop.cu"
+float expected = expectedValue(i, P);
+# 91 "TestConvergenceLoop.cu"
 float got = (A_host[i]);
-# 104 "TestConvergenceLoop.cu"
-float expected = ((((2.0F) * ((float)i)) / ((float)(N - 1))) + ((i + 1) * dt));
-# 105 "TestConvergenceLoop.cu"
-if (fabs(got - expected) > (9.999999747e-05F)) {
-# 106 "TestConvergenceLoop.cu"
-printf("ERROR 2 [%d] - expected: %f, got: %f\n", i, expected, got);
-# 107 "TestConvergenceLoop.cu"
+# 92 "TestConvergenceLoop.cu"
+if (fabs(expected - got) > (0.001000000047F)) {
+# 93 "TestConvergenceLoop.cu"
 ++errors;
-# 108 "TestConvergenceLoop.cu"
+# 94 "TestConvergenceLoop.cu"
+printf("error 1 [%d] - expected: %f, got %f\n", i, expected, got);
+# 95 "TestConvergenceLoop.cu"
 }
-# 109 "TestConvergenceLoop.cu"
+# 96 "TestConvergenceLoop.cu"
 }
-# 111 "TestConvergenceLoop.cu"
+# 98 "TestConvergenceLoop.cu"
+cudaFree(A_device);
+# 99 "TestConvergenceLoop.cu"
 free(A_host);
-# 112 "TestConvergenceLoop.cu"
-cudaFree(A_gpu);
-# 114 "TestConvergenceLoop.cu"
+# 100 "TestConvergenceLoop.cu"
 return errors;
+# 101 "TestConvergenceLoop.cu"
+}
+# 103 "TestConvergenceLoop.cu"
+static int testLoopEarlyExit() {
+# 104 "TestConvergenceLoop.cu"
+const int N = 8;
+# 105 "TestConvergenceLoop.cu"
+float *A_host, *A_gpu;
+# 107 "TestConvergenceLoop.cu"
+size_t bytes = (sizeof(float) * (N));
+# 108 "TestConvergenceLoop.cu"
+cudaMalloc((void **)(&A_gpu), bytes);
+# 109 "TestConvergenceLoop.cu"
+A_host = ((float *)malloc(bytes));
+# 111 "TestConvergenceLoop.cu"
+for (int i = 0; i < N; i++) {
+# 112 "TestConvergenceLoop.cu"
+(A_host[i]) = (((2.0F) * ((float)i)) / ((float)(N - 1)));
+# 113 "TestConvergenceLoop.cu"
+}
 # 115 "TestConvergenceLoop.cu"
-}
+cudaMemcpy(A_gpu, A_host, bytes, cudaMemcpyHostToDevice);
+# 117 "TestConvergenceLoop.cu"
+float dt = (0.25F);
+# 118 "TestConvergenceLoop.cu"
+dim3 grid(1, 1);
 # 119 "TestConvergenceLoop.cu"
-int main(int argc, char **argv)
-# 120 "TestConvergenceLoop.cu"
-{
+dim3 block(N, 1, 1);
 # 121 "TestConvergenceLoop.cu"
-int errors = 0;
-# 122 "TestConvergenceLoop.cu"
-if (!(errors)) {
+cudaConfigureCall(grid, block) ? ((void)0) : loopEarlyExit(A_gpu, dt);
 # 123 "TestConvergenceLoop.cu"
-errors += testConvergenceWithLoop();
+cudaMemcpy(A_host, A_gpu, bytes, cudaMemcpyDeviceToHost);
 # 124 "TestConvergenceLoop.cu"
-}
+int errors = 0;
 # 125 "TestConvergenceLoop.cu"
-if (!(errors)) {
+for (int i = 0; (errors < 5) && (i < N); i++) {
 # 126 "TestConvergenceLoop.cu"
-errors += testLoopEarlyExit();
+float got = (A_host[i]);
 # 127 "TestConvergenceLoop.cu"
-}
+float expected = ((((2.0F) * ((float)i)) / ((float)(N - 1))) + ((i + 1) * dt));
+# 128 "TestConvergenceLoop.cu"
+if (fabs(got - expected) > (9.999999747e-05F)) {
 # 129 "TestConvergenceLoop.cu"
-printf("Pass/Fail : %s\n", (errors) ? ("Fail") : ("Pass"));
+printf("ERROR 2 [%d] - expected: %f, got: %f\n", i, expected, got);
+# 130 "TestConvergenceLoop.cu"
+++errors;
 # 131 "TestConvergenceLoop.cu"
-return 0;
+}
 # 132 "TestConvergenceLoop.cu"
 }
-# 1 "/tmp/tmpxft_000037b4_00000000-1_TestConvergenceLoop.cudafe1.stub.c"
-# 1 "/tmp/tmpxft_000037b4_00000000-1_TestConvergenceLoop.cudafe1.stub.c" 1
+# 134 "TestConvergenceLoop.cu"
+free(A_host);
+# 135 "TestConvergenceLoop.cu"
+cudaFree(A_gpu);
+# 137 "TestConvergenceLoop.cu"
+return errors;
+# 138 "TestConvergenceLoop.cu"
+}
+# 140 "TestConvergenceLoop.cu"
+static int testReduction() {
+# 141 "TestConvergenceLoop.cu"
+const int N = 32;
+# 142 "TestConvergenceLoop.cu"
+float *A_host, *A_gpu;
+# 144 "TestConvergenceLoop.cu"
+size_t bytes = (sizeof(float) * (N));
+# 145 "TestConvergenceLoop.cu"
+cudaMalloc((void **)(&A_gpu), bytes);
+# 146 "TestConvergenceLoop.cu"
+A_host = ((float *)malloc(bytes));
+# 148 "TestConvergenceLoop.cu"
+float sum = (0.0F);
+# 149 "TestConvergenceLoop.cu"
+for (int i = 0; i < N; i++) {
+# 150 "TestConvergenceLoop.cu"
+(A_host[i]) = (((2.0F) * ((float)i)) / ((float)(N - 1)));
+# 151 "TestConvergenceLoop.cu"
+sum += (A_host[i]);
+# 152 "TestConvergenceLoop.cu"
+}
+# 154 "TestConvergenceLoop.cu"
+cudaMemcpy(A_gpu, A_host, bytes, cudaMemcpyHostToDevice);
+# 156 "TestConvergenceLoop.cu"
+dim3 grid(1, 1);
+# 157 "TestConvergenceLoop.cu"
+dim3 block(8, 1, 1);
+# 159 "TestConvergenceLoop.cu"
+cudaConfigureCall(grid, block) ? ((void)0) : reduction(A_gpu, N);
+# 161 "TestConvergenceLoop.cu"
+cudaMemcpy(A_host, A_gpu, bytes, cudaMemcpyDeviceToHost);
+# 162 "TestConvergenceLoop.cu"
+int errors = 0;
+# 164 "TestConvergenceLoop.cu"
+if (fabs((A_host[0]) - sum) > (0.001000000047F)) {
+# 165 "TestConvergenceLoop.cu"
+++errors;
+# 166 "TestConvergenceLoop.cu"
+printf("ERROR 3 - expected sum: %f, got: %f\n", sum, A_host[0]);
+# 167 "TestConvergenceLoop.cu"
+}
+# 169 "TestConvergenceLoop.cu"
+free(A_host);
+# 170 "TestConvergenceLoop.cu"
+cudaFree(A_gpu);
+# 172 "TestConvergenceLoop.cu"
+return errors;
+# 173 "TestConvergenceLoop.cu"
+}
+# 177 "TestConvergenceLoop.cu"
+int main(int argc, char **argv)
+# 178 "TestConvergenceLoop.cu"
+{
+# 179 "TestConvergenceLoop.cu"
+int errors = 0;
+# 188 "TestConvergenceLoop.cu"
+if (!(errors)) {
+# 189 "TestConvergenceLoop.cu"
+errors += testReduction();
+# 190 "TestConvergenceLoop.cu"
+}
+# 192 "TestConvergenceLoop.cu"
+printf("Pass/Fail : %s\n", (errors) ? ("Fail") : ("Pass"));
+# 194 "TestConvergenceLoop.cu"
+return 0;
+# 195 "TestConvergenceLoop.cu"
+}
+# 1 "/tmp/tmpxft_00000b6e_00000000-1_TestConvergenceLoop.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00000b6e_00000000-1_TestConvergenceLoop.cudafe1.stub.c" 1
 # 1 "/usr/local/cuda3.2rel/cuda/bin/../include/crt/host_runtime.h" 1
 # 91 "/usr/local/cuda3.2rel/cuda/bin/../include/crt/host_runtime.h"
 extern "C" {
@@ -10116,8 +10162,8 @@ extern __attribute__((__weak__)) unsigned long long int ullmax(unsigned long lon
 
 
 #pragma pack()
-# 2 "/tmp/tmpxft_000037b4_00000000-1_TestConvergenceLoop.cudafe1.stub.c" 2
-# 1 "/tmp/tmpxft_000037b4_00000000-3_TestConvergenceLoop.fatbin.c" 1
+# 2 "/tmp/tmpxft_00000b6e_00000000-1_TestConvergenceLoop.cudafe1.stub.c" 2
+# 1 "/tmp/tmpxft_00000b6e_00000000-3_TestConvergenceLoop.fatbin.c" 1
 # 1 "/usr/local/cuda3.2rel/cuda/bin/../include/__cudaFatFormat.h" 1
 # 83 "/usr/local/cuda3.2rel/cuda/bin/../include/__cudaFatFormat.h"
 extern "C" {
@@ -10195,7 +10241,7 @@ void __cudaFatFreePTX( char* ptx );
 
 
 }
-# 2 "/tmp/tmpxft_000037b4_00000000-3_TestConvergenceLoop.fatbin.c" 2
+# 2 "/tmp/tmpxft_00000b6e_00000000-3_TestConvergenceLoop.fatbin.c" 2
 
 asm(
 ".section .rodata\n"
@@ -10207,9 +10253,9 @@ asm(
 ".quad 0x2e332063636e6570,0x20746c6975622032,0x2d30313032206e6f,0x090a0a33302d3131\n"
 ".quad 0x2d2d2d2d2d2d2f2f,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2f090a2d2d2d2d2d\n"
-".quad 0x6c69706d6f43202f,0x706d742f20676e69,0x5f746678706d742f,0x3462373330303030\n"
+".quad 0x6c69706d6f43202f,0x706d742f20676e69,0x5f746678706d742f,0x6536623030303030\n"
 ".quad 0x303030303030305f,0x747365545f372d30,0x65677265766e6f43,0x2e706f6f4c65636e\n"
-".quad 0x2820692e33707063,0x4263632f706d742f,0x6d724b74582e2349,0x2d2d2f2f090a2943\n"
+".quad 0x2820692e33707063,0x4263632f706d742f,0x4b577531752e2349,0x2d2d2f2f090a296a\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2f2f090a0a2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
@@ -10224,7 +10270,7 @@ asm(
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x6c69662e090a0a2d,0x6f633c2209310965\n"
 ".quad 0x696c2d646e616d6d,0x662e090a223e656e,0x2f22093209656c69,0x78706d742f706d74\n"
-".quad 0x33303030305f7466,0x303030305f346237,0x545f362d30303030,0x65766e6f43747365\n"
+".quad 0x30303030305f7466,0x303030305f653662,0x545f362d30303030,0x65766e6f43747365\n"
 ".quad 0x6f4c65636e656772,0x66616475632e706f,0x0a227570672e3265,0x3309656c69662e09\n"
 ".quad 0x6c2f7273752f2209,0x782f6363672f6269,0x696c2d34365f3638,0x2f756e672d78756e\n"
 ".quad 0x6e692f332e342e34,0x74732f6564756c63,0x0a22682e66656464,0x3409656c69662e09\n"
@@ -10346,12 +10392,80 @@ asm(
 ".quad 0x7473090a30093533,0x2e6c61626f6c672e,0x72255b0920323366,0x25202c5d302b3464\n"
 ".quad 0x6f6c2e090a3b3166,0x0936330937310963,0x3b74697865090a30,0x646e6557444c240a\n"
 ".quad 0x726145706f6f6c5f,0x0a3a74697845796c,0x6f6c202f2f207d09,0x45796c726145706f\n"
-".quad 0x0000000a0a746978\n"
+".quad 0x652e090a0a746978,0x646572207972746e,0x28206e6f69746375,0x617261702e09090a\n"
+".quad 0x5f203436752e206d,0x726170616475635f,0x7463756465725f6d,0x090a2c415f6e6f69\n"
+".quad 0x206d617261702e09,0x635f5f203233732e,0x5f6d726170616475,0x6f69746375646572\n"
+".quad 0x0a7b090a294e5f6e,0x752e206765722e09,0x3e383c7225203233,0x206765722e090a3b\n"
+".quad 0x647225203436752e,0x2e090a3b3e33313c,0x3233662e20676572,0x3b3e30323c662520\n"
+".quad 0x2e206765722e090a,0x3c70252064657270,0x68732e090a3b3e35,0x6c612e2064657261\n"
+".quad 0x2e203631206e6769,0x6475635f5f203862,0x616475635f5f5f61,0x765f6c61636f6c5f\n"
+".quad 0x32363038325f7261,0x5f6e6f6e5f32335f,0x75625f74736e6f63,0x335b343472656666\n"
+".quad 0x6f6c2e090a3b5d32,0x0931340937310963,0x656257444c240a30,0x756465725f6e6967\n"
+".quad 0x090a3a6e6f697463,0x09373109636f6c2e,0x7663090a30093434,0x33752e3233732e74\n"
+".quad 0x202c317225092032,0x0a3b782e64697425,0x3233732e766f6d09,0x25202c3272250920\n"
+".quad 0x2e646c090a3b3172,0x33732e6d61726170,0x202c337225092032,0x70616475635f5f5b\n"
+".quad 0x756465725f6d7261,0x5d4e5f6e6f697463,0x752e766f6d090a3b,0x2c34722509203233\n"
+".quad 0x746573090a3b3020,0x3233732e656c2e70,0x25202c3170250920,0x3b347225202c3372\n"
+".quad 0x622031702540090a,0x5f744c2409206172,0x0a3b303136345f32,0x3436752e766f6d09\n"
+".quad 0x202c316472250920,0x5f5f616475635f5f,0x6f6c5f616475635f,0x5f7261765f6c6163\n"
+".quad 0x32335f3236303832,0x6e6f635f6e6f6e5f,0x65666675625f7473,0x7663090a3b343472\n"
+".quad 0x33732e3436732e74,0x2c32647225092032,0x6d090a3b31722520,0x2e656469772e6c75\n"
+".quad 0x6472250920323373,0x202c317225202c33,0x2e646461090a3b34,0x6472250920343675\n"
+".quad 0x2c31647225202c34,0x090a3b3364722520,0x203233752e766f6d,0x6e25202c35722509\n"
+".quad 0x090a3b782e646974,0x6d617261702e646c,0x722509203436752e,0x635f5f5b202c3564\n"
+".quad 0x5f6d726170616475,0x6f69746375646572,0x6d090a3b5d415f6e,0x09203233732e766f\n"
+".quad 0x0a3b30202c367225,0x3233662e766f6d09,0x30202c3166250920,0x3030303030303066\n"
+".quad 0x0920202020203b30,0x744c240a30202f2f,0x3a363835335f325f,0x6f6f6c3c2f2f200a\n"
+".quad 0x20706f6f4c203e70,0x6e696c2079646f62,0x656e202c34342065,0x656420676e697473\n"
+".quad 0x202c31203a687470,0x6574616d69747365,0x7461726574692064,0x6e75203a736e6f69\n"
+".quad 0x2e090a6e776f6e6b,0x3409373109636f6c,0x766f6d090a300938,0x662509203233662e\n"
+".quad 0x3030306630202c32,0x20203b3030303030,0x30202f2f09202020,0x6168732e7473090a\n"
+".quad 0x203233662e646572,0x302b346472255b09,0x0a3b326625202c5d,0x65672e7074657309\n"
+".quad 0x702509203233732e,0x202c327225202c32,0x2540090a3b337225,0x0920617262203270\n"
+".quad 0x38335f325f744c24,0x3c2f2f200a3b3234,0x6150203e706f6f6c,0x6f6c20666f207472\n"
+".quad 0x2079646f6220706f,0x2c343420656e696c,0x616c206461656820,0x4c242064656c6562\n"
+".quad 0x363835335f325f74,0x3109636f6c2e090a,0x090a300930350937,0x2e3436732e747663\n"
+".quad 0x6472250920323373,0x0a3b327225202c36,0x6469772e6c756d09,0x2509203233732e65\n"
+".quad 0x327225202c376472,0x6461090a3b34202c,0x2509203436752e64,0x647225202c386472\n"
+".quad 0x3b37647225202c35,0x6f6c672e646c090a,0x203233662e6c6162,0x255b202c33662509\n"
+".quad 0x0a3b5d302b386472,0x726168732e747309,0x09203233662e6465,0x5d302b346472255b\n"
+".quad 0x240a3b336625202c,0x3438335f325f744c,0x6c3c2f2f200a3a32,0x726150203e706f6f\n"
+".quad 0x6f6f6c20666f2074,0x6c2079646f622070,0x202c343420656e69,0x62616c2064616568\n"
+".quad 0x744c242064656c65,0x0a363835335f325f,0x373109636f6c2e09,0x62090a3009323509\n"
+".quad 0x20636e79732e7261,0x2e646c090a3b3009,0x762e646572616873,0x7b09203233662e34\n"
+".quad 0x2c3566252c346625,0x7d3766252c366625,0x6475635f5f5b202c,0x616475635f5f5f61\n"
+".quad 0x765f6c61636f6c5f,0x32363038325f7261,0x5f6e6f6e5f32335f,0x75625f74736e6f63\n"
+".quad 0x302b343472656666,0x636f6c2e090a3b5d,0x3009343509373109,0x33662e646461090a\n"
+".quad 0x202c386625092032,0x316625202c346625,0x662e646461090a3b,0x2c39662509203233\n"
+".quad 0x6625202c35662520,0x2e646461090a3b38,0x3166250920323366,0x202c366625202c30\n"
+".quad 0x6461090a3b396625,0x2509203233662e64,0x376625202c313166,0x0a3b30316625202c\n"
+".quad 0x726168732e646c09,0x33662e34762e6465,0x323166257b092032,0x66252c333166252c\n"
+".quad 0x7d353166252c3431,0x6475635f5f5b202c,0x616475635f5f5f61,0x765f6c61636f6c5f\n"
+".quad 0x32363038325f7261,0x5f6e6f6e5f32335f,0x75625f74736e6f63,0x312b343472656666\n"
+".quad 0x646461090a3b5d36,0x662509203233662e,0x32316625202c3631,0x0a3b31316625202c\n"
+".quad 0x3233662e64646109,0x202c373166250920,0x6625202c33316625,0x646461090a3b3631\n"
+".quad 0x662509203233662e,0x34316625202c3831,0x0a3b37316625202c,0x3233662e64646109\n"
+".quad 0x25202c3166250920,0x316625202c353166,0x636f6c2e090a3b38,0x3009363509373109\n"
+".quad 0x79732e726162090a,0x090a3b300920636e,0x09373109636f6c2e,0x6461090a30093734\n"
+".quad 0x2509203233752e64,0x2c327225202c3272,0x61090a3b35722520,0x09203233752e6464\n"
+".quad 0x367225202c367225,0x090a3b357225202c,0x2e74672e70746573,0x3370250920323373\n"
+".quad 0x25202c337225202c,0x702540090a3b3672,0x2409206172622033,0x3835335f325f744c\n"
+".quad 0x2e617262090a3b36,0x744c240920696e75,0x3b343730335f325f,0x345f325f744c240a\n"
+".quad 0x646c090a3a303136,0x752e6d617261702e,0x3564722509203436,0x6475635f5f5b202c\n"
+".quad 0x65725f6d72617061,0x5f6e6f6974637564,0x766f6d090a3b5d41,0x662509203233662e\n"
+".quad 0x3030306630202c31,0x20203b3030303030,0x30202f2f09202020,0x335f325f744c240a\n"
+".quad 0x6c2e090a3a343730,0x383509373109636f,0x2e747663090a3009,0x203233732e343675\n"
+".quad 0x25202c3964722509,0x6c756d090a3b3172,0x33732e656469772e,0x3031647225092032\n"
+".quad 0x34202c317225202c,0x752e646461090a3b,0x3164722509203436,0x2c35647225202c31\n"
+".quad 0x0a3b303164722520,0x626f6c672e747309,0x09203233662e6c61,0x302b31316472255b\n"
+".quad 0x0a3b316625202c5d,0x373109636f6c2e09,0x65090a3009393509,0x444c240a3b746978\n"
+".quad 0x6465725f646e6557,0x0a3a6e6f69746375,0x6572202f2f207d09,0x0a6e6f6974637564\n"
+".quad 0x000000000000000a\n"
 ".text");
 
 extern "C" {
 
-extern const unsigned long long __deviceText_$compute_20$[581];
+extern const unsigned long long __deviceText_$compute_20$[853];
 
 }
 
@@ -10360,81 +10474,113 @@ asm(
 ".align 32\n"
 "__deviceText_$sm_20$:\n"
 ".quad 0x33010102464c457f,0x0000000000000004,0x0000000100be0002,0x0000000000000000\n"
-".quad 0x0000000000000818,0x0000000000000040,0x0038004000140114,0x0001000c00400003\n"
+".quad 0x0000000000000bc4,0x0000000000000040,0x0038004000140114,0x0001001000400005\n"
 ".quad 0x0000000000000000,0x0000000000000000,0x0000000000000000,0x0000000000000000\n"
 ".quad 0x0000000000000000,0x0000000000000000,0x0000000000000000,0x0000000000000000\n"
-".quad 0x0000000300000001,0x0000000000000000,0x0000000000000000,0x0000000000000340\n"
-".quad 0x00000000000000fc,0x0000000000000000,0x0000000000000004,0x0000000000000000\n"
-".quad 0x000000030000000b,0x0000000000000000,0x0000000000000000,0x000000000000043c\n"
-".quad 0x0000000000000023,0x0000000000000000,0x0000000000000001,0x0000000000000000\n"
-".quad 0x0000000200000013,0x0000000000000000,0x0000000000000000,0x000000000000045f\n"
-".quad 0x0000000000000180,0x0000000e00000002,0x0000000000000001,0x0000000000000018\n"
-".quad 0x000000010000006a,0x0000000000000006,0x0000000000000000,0x00000000000005df\n"
-".quad 0x0000000000000090,0x0600000900000003,0x0000000000000004,0x0000000000000000\n"
-".quad 0x00000001000000da,0x0000000000000002,0x0000000000000000,0x000000000000066f\n"
+".quad 0x0000000300000001,0x0000000000000000,0x0000000000000000,0x0000000000000440\n"
+".quad 0x0000000000000148,0x0000000000000000,0x0000000000000004,0x0000000000000000\n"
+".quad 0x000000030000000b,0x0000000000000000,0x0000000000000000,0x0000000000000588\n"
+".quad 0x000000000000002d,0x0000000000000000,0x0000000000000001,0x0000000000000000\n"
+".quad 0x0000000200000013,0x0000000000000000,0x0000000000000000,0x00000000000005b5\n"
+".quad 0x00000000000001f8,0x0000001200000002,0x0000000000000001,0x0000000000000018\n"
+".quad 0x000000010000008d,0x0000000000000006,0x0000000000000000,0x00000000000007ad\n"
+".quad 0x0000000000000090,0x0600000b00000003,0x0000000000000004,0x0000000000000000\n"
+".quad 0x00000001000000e0,0x0000000000000002,0x0000000000000000,0x000000000000083d\n"
 ".quad 0x000000000000002c,0x0000000400000000,0x0000000000000004,0x0000000000000000\n"
-".quad 0x0000000100000084,0x0000000000000002,0x0000000000000000,0x000000000000069b\n"
+".quad 0x00000001000000a7,0x0000000000000002,0x0000000000000000,0x0000000000000869\n"
 ".quad 0x000000000000003c,0x0000000400000000,0x0000000000000001,0x0000000000000000\n"
-".quad 0x0000000100000036,0x0000000000000006,0x0000000000000000,0x00000000000006d7\n"
-".quad 0x0000000000000098,0x0600000600000003,0x0000000000000004,0x0000000000000000\n"
-".quad 0x00000001000000be,0x0000000000000002,0x0000000000000000,0x000000000000076f\n"
+".quad 0x0000000100000062,0x0000000000000006,0x0000000000000000,0x00000000000008a5\n"
+".quad 0x0000000000000098,0x0600000900000003,0x0000000000000004,0x0000000000000000\n"
+".quad 0x00000001000000c4,0x0000000000000002,0x0000000000000000,0x000000000000093d\n"
 ".quad 0x000000000000002c,0x0000000700000000,0x0000000000000004,0x0000000000000000\n"
-".quad 0x00000001000000a1,0x0000000000000002,0x0000000000000000,0x000000000000079b\n"
-".quad 0x0000000000000004,0x0000000700000000,0x0000000000000004,0x0000000000000000\n"
-".quad 0x000000010000004a,0x0000000000000002,0x0000000000000000,0x000000000000079f\n"
+".quad 0x0000000100000076,0x0000000000000002,0x0000000000000000,0x0000000000000969\n"
 ".quad 0x0000000000000048,0x0000000700000000,0x0000000000000001,0x0000000000000000\n"
-".quad 0x0000000100000061,0x0000000000000002,0x0000000000000000,0x00000000000007e7\n"
-".quad 0x0000000000000030,0x0000000000000000,0x0000000000000001,0x0000000000000000\n"
+".quad 0x0000000100000036,0x0000000000100006,0x0000000000000000,0x00000000000009b1\n"
+".quad 0x0000000000000150,0x0d00000600000003,0x0000000000000004,0x0000000000000000\n"
+".quad 0x0000000100000130,0x0000000000000002,0x0000000000000000,0x0000000000000b01\n"
+".quad 0x000000000000002c,0x0000000a00000000,0x0000000000000004,0x0000000000000000\n"
+".quad 0x0000000100000117,0x0000000000000002,0x0000000000000000,0x0000000000000b2d\n"
+".quad 0x0000000000000004,0x0000000a00000000,0x0000000000000004,0x0000000000000000\n"
+".quad 0x0000000100000046,0x0000000000000002,0x0000000000000000,0x0000000000000b31\n"
+".quad 0x0000000000000048,0x0000000a00000000,0x0000000000000001,0x0000000000000000\n"
+".quad 0x0000000800000102,0x0000000000000003,0x0000000000000000,0x0000000000000b79\n"
+".quad 0x0000000000000020,0x0000000a00000000,0x0000000000000004,0x0000000000000000\n"
+".quad 0x0000000100000059,0x0000000000000002,0x0000000000000000,0x0000000000000b79\n"
+".quad 0x0000000000000048,0x0000000000000000,0x0000000000000001,0x0000000000000000\n"
 ".quad 0x7472747368732e00,0x747274732e006261,0x746d79732e006261,0x672e766e2e006261\n"
-".quad 0x6e692e6c61626f6c,0x672e766e2e007469,0x742e006c61626f6c,0x706f6f6c2e747865\n"
-".quad 0x697845796c726145,0x6e692e766e2e0074,0x45706f6f6c2e6f66,0x74697845796c7261\n"
-".quad 0x666e692e766e2e00,0x2e747865742e006f,0x65677265766e6f63,0x4c6874695765636e\n"
-".quad 0x2e766e2e00706f6f,0x6e6f632e6f666e69,0x65636e6567726576,0x706f6f4c68746957\n"
-".quad 0x6e6f632e766e2e00,0x2e3631746e617473,0x6c726145706f6f6c,0x6e2e007469784579\n"
-".quad 0x6174736e6f632e76,0x706f6f6c2e30746e,0x697845796c726145,0x6f632e766e2e0074\n"
-".quad 0x2e30746e6174736e,0x65677265766e6f63,0x4c6874695765636e,0x6f6f6c0000706f6f\n"
-".quad 0x7845796c72614570,0x65766e6f63007469,0x695765636e656772,0x0000706f6f4c6874\n"
-".quad 0x0000000000000000,0x0000000000000000,0x0000000000000000,0x0000010003000000\n"
-".quad 0x0000000000000000,0x0000000000000000,0x0000020003000000,0x0000000000000000\n"
-".quad 0x0000000000000000,0x0000030003000000,0x0000000000000000,0x0000000000000000\n"
-".quad 0x0000000003000000,0x0000000000000000,0x0000000000000000,0x0000000003000000\n"
-".quad 0x0000000000000000,0x0000000000000000,0x0000070003000000,0x9800000000000000\n"
-".quad 0x0000000000000000,0x00000a0003000000,0x0000000000000000,0x0000000000000000\n"
-".quad 0x00000b0003000000,0x0000000000000000,0x0000000000000000,0x0000040003000000\n"
-".quad 0x9000000000000000,0x0000000000000000,0x0000060003000000,0x0000000000000000\n"
-".quad 0x0000000000000000,0x0000090003000000,0x0000000000000000,0x0000000000000000\n"
-".quad 0x0000080003000000,0x0000000000000000,0x0000000000000000,0x0000050003000000\n"
-".quad 0x0000000000000000,0x0100000000000000,0x0000071012000000,0x9800000000000000\n"
-".quad 0x0f00000000000000,0x0000041012000000,0x9000000000000000,0xe400000000000000\n"
-".quad 0x042800440400005d,0x232c0000008400dc,0x041b0e4000a3f1dc,0x00180000000d201e\n"
-".quad 0x005000000000001c,0xe75000cfe000001c,0xe440000000a00001,0x0328000000fc009d\n"
-".quad 0x004800c00004209c,0x235800efd000001c,0xe71a8e4000a021dc,0xe44003ffff800001\n"
-".quad 0xe32800400080011d,0xa35000c00010309c,0x432009c00010311c,0x854800400090215c\n"
-".quad 0xe79400000000401c,0x008000000000001d,0x0000000000000000,0x0000000000000000\n"
-".quad 0x0000000000000000,0x0000000000000000,0x0000000000000000,0x0000080c04000000\n"
-".quad 0x0400000008000000,0x200000000d00080a,0x04000c1903000c00,0x01ffffffff000c17\n"
-".quad 0x040011f000000800,0x00ffffffff000c17,0xe40021f000000000,0x042800440400005d\n"
-".quad 0xe42c00000084009c,0x072800400080001d,0x0360000001a00000,0xa34800c0000420dc\n"
-".quad 0xe32001c00010211c,0x235000c00010201c,0x43198e0000fc31dc,0x854800400090015c\n"
-".quad 0xe78400000000401c,0xe440000000a00001,0x0328000000fc009d,0x004800c00004209c\n"
-".quad 0x2350004000a0001c,0xe71a8e00000831dc,0xf44003ffff800001,0x854000000000001d\n"
-".quad 0xe79400000000401c,0x008000000000001d,0x0000000000000000,0x0000000000000000\n"
-".quad 0x0000000000000000,0x0000000000000000,0x0000000000000000,0x0400000001000000\n"
-".quad 0x080000000000080c,0x0c00080a04000000,0x03000c0020000000,0xff000c1704000c19\n"
-".quad 0x0000080001ffffff,0xff000c17040011f0,0x0000000000ffffff,0x8c00080d040021f0\n"
-".quad 0x0400000020002101,0x000000000f000812,0x0f00081104000000,0x0400000000000000\n"
-".quad 0x000000000e000812,0x0e00081104000000,0x0000000000000000,0x0000000500000006\n"
-".quad 0x0000000000000818,0x0000000000000000,0x0000000000000000,0x00000000000000a8\n"
-".quad 0x00000000000000a8,0x0000000000000004,0x00000f0560000000,0x00000000000005df\n"
-".quad 0x0000000000000000,0x0000000000000000,0x00000000000000f8,0x00000000000000f8\n"
-".quad 0x0000000000000004,0x00000e0560000000,0x00000000000006d7,0x0000000000000000\n"
-".quad 0x0000000000000000,0x0000000000000110,0x0000000000000110,0x0000000000000004\n"
-".quad 0x0000000000000000\n"
+".quad 0x6e692e6c61626f6c,0x672e766e2e007469,0x742e006c61626f6c,0x756465722e747865\n"
+".quad 0x6e2e006e6f697463,0x722e6f666e692e76,0x6e6f697463756465,0x666e692e766e2e00\n"
+".quad 0x2e747865742e006f,0x6c726145706f6f6c,0x6e2e007469784579,0x6c2e6f666e692e76\n"
+".quad 0x796c726145706f6f,0x65742e0074697845,0x65766e6f632e7478,0x695765636e656772\n"
+".quad 0x2e00706f6f4c6874,0x2e6f666e692e766e,0x65677265766e6f63,0x4c6874695765636e\n"
+".quad 0x2e766e2e00706f6f,0x746e6174736e6f63,0x6145706f6f6c2e30,0x0074697845796c72\n"
+".quad 0x736e6f632e766e2e,0x6f632e30746e6174,0x636e65677265766e,0x6f6f4c6874695765\n"
+".quad 0x68732e766e2e0070,0x6465722e64657261,0x2e006e6f69746375,0x74736e6f632e766e\n"
+".quad 0x65722e3631746e61,0x006e6f6974637564,0x736e6f632e766e2e,0x65722e30746e6174\n"
+".quad 0x006e6f6974637564,0x6974637564657200,0x45706f6f6c006e6f,0x74697845796c7261\n"
+".quad 0x677265766e6f6300,0x6874695765636e65,0x00000000706f6f4c,0x0000000000000000\n"
+".quad 0x0000000000000000,0x0000000000000000,0x0000000001000300,0x0000000000000000\n"
+".quad 0x0000000000000000,0x0000000002000300,0x0000000000000000,0x0000000000000000\n"
+".quad 0x0000000003000300,0x0000000000000000,0x0000000000000000,0x0000000000000300\n"
+".quad 0x0000000000000000,0x0000000000000000,0x0000000000000300,0x0000000000000000\n"
+".quad 0x0000000000000000,0x000000000a000300,0x0001500000000000,0x0000000000000000\n"
+".quad 0x000000000d000300,0x0000000000000000,0x0000000000000000,0x000000000f000300\n"
+".quad 0x0000000000000000,0x0000000000000000,0x0000000007000300,0x0000980000000000\n"
+".quad 0x0000000000000000,0x0000000009000300,0x0000000000000000,0x0000000000000000\n"
+".quad 0x0000000004000300,0x0000900000000000,0x0000000000000000,0x0000000006000300\n"
+".quad 0x0000000000000000,0x0000000000000000,0x0000000008000300,0x0000000000000000\n"
+".quad 0x0000000000000000,0x0000000005000300,0x0000000000000000,0x0000000000000000\n"
+".quad 0x000000000e000300,0x0000000000000000,0x0000000000000000,0x000000000c000300\n"
+".quad 0x0000000000000000,0x0000000000000000,0x000000000b000300,0x0000000000000000\n"
+".quad 0x0000010000000000,0x000000000a101200,0x0001500000000000,0x00000b0000000000\n"
+".quad 0x0000000007101200,0x0000980000000000,0x0000190000000000,0x0000000004101200\n"
+".quad 0x0000900000000000,0x005de40000000000,0x00dc042800440400,0xf1dc232c00000084\n"
+".quad 0x201e041b0e4000a3,0x001c00180000000d,0x001c005000000000,0x0001e75000cfe000\n"
+".quad 0x009de440000000a0,0x209c0328000000fc,0x001c004800c00004,0x21dc235800efd000\n"
+".quad 0x0001e71a8e4000a0,0x011de44003ffff80,0x309ce32800400080,0x311ca35000c00010\n"
+".quad 0x215c432009c00010,0x401c854800400090,0x001de79400000000,0x0000008000000000\n"
+".quad 0x0000000000000000,0x0000000000000000,0x0000000000000000,0x0000000000000000\n"
+".quad 0x0000000000000000,0x00000000080c0400,0x080a040000000800,0x0c00200000000e00\n"
+".quad 0x0c1704000c190300,0x080001ffffffff00,0x0c17040011f00000,0x000000ffffffff00\n"
+".quad 0x005de40021f00000,0x009c042800440400,0x001de42c00000084,0x0000072800400080\n"
+".quad 0x20dc0360000001a0,0x211ca34800c00004,0x201ce32001c00010,0x31dc235000c00010\n"
+".quad 0x015c43198e0000fc,0x401c854800400090,0x0001e78400000000,0x009de440000000a0\n"
+".quad 0x209c0328000000fc,0x001c004800c00004,0x31dc2350004000a0,0x0001e71a8e000008\n"
+".quad 0x001df44003ffff80,0x401c854000000000,0x001de79400000000,0x0000008000000000\n"
+".quad 0x0000000000000000,0x0000000000000000,0x0000000000000000,0x0000000000000000\n"
+".quad 0x0000000000000000,0x00000000080c0400,0x080a040000000800,0x0c00200000000d00\n"
+".quad 0x0c1704000c190300,0x080001ffffffff00,0x0c17040011f00000,0x000000ffffffff00\n"
+".quad 0x080d040021f00000,0x0000200021018c00,0x00440400005de400,0x0000008400dc0428\n"
+".quad 0x0e4000a3f1dc232c,0x0000000c001de41b,0x000003c00001e728,0x00c00008331e0340\n"
+".quad 0x000000fc009de460,0x000000fc011de428,0x0e4000a001dc2328,0x00000000cfdc851b\n"
+".quad 0x000000c00081e7c9,0x0040008001a1e440,0x00c000100160e328,0x0dc0001001a0a350\n"
+".quad 0x0040009051e04320,0x0000000061608548,0x00000000c1608584,0x7e0000fc1fdc03c9\n"
+".quad 0xee0000ffffdc0420,0x00000003f21cc550,0x00000010811c00c1,0x00000010911c0050\n"
+".quad 0x00000010a21c0050,0x00000043f11cc550,0x00000020b21c00c1,0x00000020411c0050\n"
+".quad 0x00000010511c0050,0x00000010611c0050,0x00000010711c0050,0xee0000ffffdc0450\n"
+".quad 0x00400020209c0350,0x00400020001c0348,0x8e4000a021dc2348,0x03fffcc00001e718\n"
+".quad 0x00000020001de740,0x000000fc011de440,0x00400080009de428,0x00c00010301ce328\n"
+".quad 0x05c00010309ca350,0x0040009000dc4320,0x00000000211c8548,0x00000000001de794\n"
+".quad 0x0000000000000080,0x0000000000000000,0x0000000000000000,0x0000000000000000\n"
+".quad 0x0000000000000000,0x0000010000000000,0x00000000080c0400,0x080a040000000800\n"
+".quad 0x0c00200000001100,0x0c1704000c190300,0x080001ffffffff00,0x0c17040011f00000\n"
+".quad 0x000000ffffffff00,0x080d040021f00000,0x0000010002001800,0x0000140008120400\n"
+".quad 0x0811040000000000,0x0000000000001400,0x0000130008120400,0x0811040000000000\n"
+".quad 0x0000000000001300,0x0000120008120400,0x0811040000000000,0x0000000000001200\n"
+".quad 0x0000000600000000,0x00000bc400000005,0x0000000000000000,0x0000000000000000\n"
+".quad 0x0000011800000000,0x0000011800000000,0x0000000400000000,0x6000000000000000\n"
+".quad 0x000007ad00001405,0x0000000000000000,0x0000000000000000,0x000000f800000000\n"
+".quad 0x000000f800000000,0x0000000400000000,0x6000000000000000,0x000008a500001305\n"
+".quad 0x0000000000000000,0x0000000000000000,0x0000010c00000000,0x0000010c00000000\n"
+".quad 0x0000000400000000,0x6000000000000000,0x000009b100001205,0x0000000000000000\n"
+".quad 0x0000000000000000,0x000001c800000000,0x000001c800000000,0x0000000400000000\n"
+".quad 0x6000000000000000,0x00000b7900001206,0x0000000000000000,0x0000000000000000\n"
+".quad 0x0000000000000000,0x0000002000000000,0x0000000400000000,0x0000000000000000\n"
 ".text");
 
 extern "C" {
 
-extern const unsigned long long __deviceText_$sm_20$[281];
+extern const unsigned long long __deviceText_$sm_20$[412];
 
 }
 
@@ -10446,28 +10592,38 @@ static __cudaFatElfEntry __elfEntries1 = {(char*)"sm_20", (char*)__deviceText_$s
 
 
 
-static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000004,0x2e00b786,(char*)"beb6e0374510e513",(char*)"TestConvergenceLoop.cu",(char*)" ",__ptxEntries,__cubinEntries,&__debugEntries0,0,0,0,0,0,0xcc43f56a,&__elfEntries1};
-# 3 "/tmp/tmpxft_000037b4_00000000-1_TestConvergenceLoop.cudafe1.stub.c" 2
+static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000004,0x2e00b786,(char*)"38a91941438851f4",(char*)"TestConvergenceLoop.cu",(char*)" ",__ptxEntries,__cubinEntries,&__debugEntries0,0,0,0,0,0,0xf2bd873f,&__elfEntries1};
+# 3 "/tmp/tmpxft_00000b6e_00000000-1_TestConvergenceLoop.cudafe1.stub.c" 2
 struct __T20 {float *__par0;int __par1;int __dummy_field;};
 struct __T21 {float *__par0;float __par1;int __dummy_field;};
+struct __T22 {float *__par0;int __par1;int __dummy_field;};
 extern void __device_stub__Z19convergenceWithLoopPfi(float *, int);
 extern void __device_stub__Z13loopEarlyExitPff(float *, float);
-static void __sti____cudaRegisterAll_54_tmpxft_000037b4_00000000_4_TestConvergenceLoop_cpp1_ii_fd46e949(void) __attribute__((__constructor__));
-void __device_stub__Z19convergenceWithLoopPfi(float *__par0, int __par1){ struct __T20 *__T22 = 0;
-if (cudaSetupArgument((void*)(char*)&__par0, sizeof(__par0), (size_t)&__T22->__par0) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par1, sizeof(__par1), (size_t)&__T22->__par1) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(float *, int))convergenceWithLoop)); (void)cudaLaunch(((char *)((void ( *)(float *, int))convergenceWithLoop))); };}
+extern void __device_stub__Z9reductionPfi(float *, int);
+static void __sti____cudaRegisterAll_54_tmpxft_00000b6e_00000000_4_TestConvergenceLoop_cpp1_ii_fd46e949(void) __attribute__((__constructor__));
+void __device_stub__Z19convergenceWithLoopPfi(float *__par0, int __par1){ struct __T20 *__T23 = 0;
+if (cudaSetupArgument((void*)(char*)&__par0, sizeof(__par0), (size_t)&__T23->__par0) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par1, sizeof(__par1), (size_t)&__T23->__par1) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(float *, int))convergenceWithLoop)); (void)cudaLaunch(((char *)((void ( *)(float *, int))convergenceWithLoop))); };}
 void convergenceWithLoop( float *__cuda_0,int __cuda_1)
 # 17 "TestConvergenceLoop.cu"
 {__device_stub__Z19convergenceWithLoopPfi( __cuda_0,__cuda_1);
 # 24 "TestConvergenceLoop.cu"
 }
-# 1 "/tmp/tmpxft_000037b4_00000000-1_TestConvergenceLoop.cudafe1.stub.c"
-void __device_stub__Z13loopEarlyExitPff( float *__par0, float __par1) { struct __T21 *__T23 = 0;
-if (cudaSetupArgument((void*)(char*)&__par0, sizeof(__par0), (size_t)&__T23->__par0) != cudaSuccess) return; if (cudaSetupArgument((void*)(char*)&__par1, sizeof(__par1), (size_t)&__T23->__par1) != cudaSuccess) return; { volatile static char *__f; __f = ((char *)((void ( *)(float *, float))loopEarlyExit)); (void)cudaLaunch(((char *)((void ( *)(float *, float))loopEarlyExit))); }; }
+# 1 "/tmp/tmpxft_00000b6e_00000000-1_TestConvergenceLoop.cudafe1.stub.c"
+void __device_stub__Z13loopEarlyExitPff( float *__par0, float __par1) { struct __T21 *__T24 = 0;
+if (cudaSetupArgument((void*)(char*)&__par0, sizeof(__par0), (size_t)&__T24->__par0) != cudaSuccess) return; if (cudaSetupArgument((void*)(char*)&__par1, sizeof(__par1), (size_t)&__T24->__par1) != cudaSuccess) return; { volatile static char *__f; __f = ((char *)((void ( *)(float *, float))loopEarlyExit)); (void)cudaLaunch(((char *)((void ( *)(float *, float))loopEarlyExit))); }; }
 void loopEarlyExit( float *__cuda_0,float __cuda_1)
 # 29 "TestConvergenceLoop.cu"
 {__device_stub__Z13loopEarlyExitPff( __cuda_0,__cuda_1);
 # 36 "TestConvergenceLoop.cu"
 }
-# 1 "/tmp/tmpxft_000037b4_00000000-1_TestConvergenceLoop.cudafe1.stub.c"
-static void __sti____cudaRegisterAll_54_tmpxft_000037b4_00000000_4_TestConvergenceLoop_cpp1_ii_fd46e949(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, float))loopEarlyExit), (char*)"loopEarlyExit", "loopEarlyExit", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, int))convergenceWithLoop), (char*)"convergenceWithLoop", "convergenceWithLoop", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); }
-# 1 "/tmp/tmpxft_000037b4_00000000-1_TestConvergenceLoop.cudafe1.stub.c" 2
+# 1 "/tmp/tmpxft_00000b6e_00000000-1_TestConvergenceLoop.cudafe1.stub.c"
+void __device_stub__Z9reductionPfi( float *__par0, int __par1) { struct __T22 *__T25 = 0;
+if (cudaSetupArgument((void*)(char*)&__par0, sizeof(__par0), (size_t)&__T25->__par0) != cudaSuccess) return; if (cudaSetupArgument((void*)(char*)&__par1, sizeof(__par1), (size_t)&__T25->__par1) != cudaSuccess) return; { volatile static char *__f; __f = ((char *)((void ( *)(float *, int))reduction)); (void)cudaLaunch(((char *)((void ( *)(float *, int))reduction))); }; }
+void reduction( float *__cuda_0,int __cuda_1)
+# 41 "TestConvergenceLoop.cu"
+{__device_stub__Z9reductionPfi( __cuda_0,__cuda_1);
+# 59 "TestConvergenceLoop.cu"
+}
+# 1 "/tmp/tmpxft_00000b6e_00000000-1_TestConvergenceLoop.cudafe1.stub.c"
+static void __sti____cudaRegisterAll_54_tmpxft_00000b6e_00000000_4_TestConvergenceLoop_cpp1_ii_fd46e949(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, int))reduction), (char*)"reduction", "reduction", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, float))loopEarlyExit), (char*)"loopEarlyExit", "loopEarlyExit", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(float *, int))convergenceWithLoop), (char*)"convergenceWithLoop", "convergenceWithLoop", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); }
+# 1 "/tmp/tmpxft_00000b6e_00000000-1_TestConvergenceLoop.cudafe1.stub.c" 2

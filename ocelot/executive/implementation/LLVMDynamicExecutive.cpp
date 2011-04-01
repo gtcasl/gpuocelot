@@ -24,7 +24,7 @@
 
 #define REPORT_LOCAL_MEMORY 0
 
-#define REPORT_SCHEDULE_OPERATIONS 0
+#define REPORT_SCHEDULE_OPERATIONS 1
 
 #define REPORT_BASE 0
 
@@ -284,7 +284,7 @@ void LLVMDynamicExecutive::executeWarp(Warp &warp) {
 		
 #if REPORT_BASE && REPORT_LOCAL_MEMORY
 		unsigned int localSize = 352;
-		report("After: ");
+		reportE(REPORT_SCHEDULE_OPERATIONS, "After: ");
 		for (unsigned int i = 0; i < (localSize & (~0x03)); i+=4) {
 			unsigned int word = *(const unsigned int *)&ctx_it->local[i];
 			if (word) {

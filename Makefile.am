@@ -60,6 +60,7 @@ libocelot_la_SOURCES = \
 	ocelot/analysis/implementation/ClockCycleCountPass.cpp \
 	ocelot/analysis/implementation/BasicBlockInstrumentationPass.cpp \
     ocelot/analysis/implementation/BasicBlockExecutionCountPass.cpp \
+    ocelot/analysis/implementation/DynamicInstructionCountPass.cpp \
     ocelot/analysis/implementation/PTXInstrumentor.cpp \
     ocelot/analysis/implementation/ClockCycleCountInstrumentor.cpp \
     ocelot/analysis/implementation/BasicBlockInstrumentor.cpp \
@@ -543,6 +544,7 @@ nobase_include_HEADERS = ocelot/api/interface/ocelot.h \
 	ocelot/analysis/interface/SubkernelFormationPass.h \
     ocelot/analysis/interface/ClockCycleCountPass.h \
     ocelot/analysis/interface/BasicBlockExecutionCountPass.h \
+	ocelot/analysis/interface/DynamicInstructionCountPass.h \
 	ocelot/analysis/interface/PTXOptimizer.h \
 	ocelot/analysis/interface/RemoveBarrierPass.h \
 	ocelot/analysis/interface/AssignFallThroughEdge.h \

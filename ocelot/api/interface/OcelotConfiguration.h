@@ -125,10 +125,17 @@ namespace api {
 					BasicBlockInstrumentor();
 				
 			public:
+			        enum BasicBlockInstrumentationType {
+			            executionCount,
+			            instructionCount
+		            };	
+			
 					//! \brief specifies if instrumentation is enabled */
 					bool enabled;
                     //! \brief specifies the logfile for storing results of this instrumentation */
-                    std::string logfile;				
+                    std::string logfile;			
+                    //! \brief type of basic block instrumentation */
+                    BasicBlockInstrumentationType type;
 			};
 
 		public:

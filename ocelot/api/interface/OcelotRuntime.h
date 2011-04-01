@@ -25,7 +25,7 @@ namespace ocelot
 		trace::InteractiveDebugger _debugger;
 		
         analysis::ClockCycleCountInstrumentor _clockCycleCountInstrumentor;
-		analysis::BasicBlockInstrumentor _basicBlockExecutionCountInstrumentor;
+		analysis::BasicBlockInstrumentor _basicBlockInstrumentor;
 
 		bool _initialized;
 		

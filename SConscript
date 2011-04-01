@@ -216,6 +216,6 @@ if 'install' in COMMAND_LINE_TARGETS:
 
 	for i in installed:
 		env.AddPostAction(str(i), Chmod(str(i), 0644))
-
+	
 	env.Alias('install', env['install_path'])
 

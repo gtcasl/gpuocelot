@@ -6,8 +6,10 @@
 ################################################################################
 
 if ARGUMENTS.get('mode', 'release') == 'debug':
-	SConscript('SConscript', variant_dir='.debug_build',   duplicate=0, exports={'mode':'debug'})
+	SConscript('SConscript', variant_dir='.debug_build',   duplicate=0, 
+		exports={'mode':'debug'})
 else:
-	SConscript('SConscript', variant_dir='.release_build', duplicate=0, exports={'mode':'release'})
+	SConscript('SConscript', variant_dir='.release_build', duplicate=0,
+		exports={'mode':'release'})
 
 

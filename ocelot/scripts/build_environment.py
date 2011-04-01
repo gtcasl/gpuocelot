@@ -276,8 +276,11 @@ def Environment():
 	env.AppendUnique(YACCFLAGS = "-d")
 	
 	# Install paths
-	env.Replace(INSTALL_PATH = os.path.abspath(env['install_path']))
-	
+	if 'install' in COMMAND_LINE_TARGETS:
+		env.Replace(INSTALL_PATH = os.path.abspath(env['install_path']))
+	else:
+		env.Replace(INSTALL_PATH = os.path.abspath('.'))
+
 	# get CUDA paths
 	(cuda_exe_path,cuda_lib_path,cuda_inc_path) = getCudaPaths()
 

@@ -32,12 +32,13 @@ namespace analysis
 
         ir::PTXInstruction ld(ir::PTXInstruction::Ld);
         ld.addressSpace = ir::PTXInstruction::Global; 
-        ld.type = type;       
+        ld.type = type;  
+	ld.a.type = type;     
         ld.a.addressMode = ir::PTXOperand::Indirect;
         ld.a.reg = registerMap["counterPtrReg"];
         ld.d.reg = registerId;
         ld.d.addressMode = ir::PTXOperand::Register;
-	    ld.d.type = type;		
+	ld.d.type = type;		
         
         ir::PTXInstruction add(ir::PTXInstruction::Add);
         add.addressSpace = ir::PTXInstruction::Global; 

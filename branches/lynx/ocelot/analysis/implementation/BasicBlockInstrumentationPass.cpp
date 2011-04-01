@@ -278,9 +278,9 @@ namespace analysis
 
         DataflowGraph::RegisterId counterPtrReg = kernel->dfg()->newRegister();    
 
-	    registerMap["counterPtr"] = counterPtr;	
-	    registerMap["counterPtrReg"] = counterPtrReg;
-	    registerMap["threadId"] = threadId;
+        registerMap["counterPtr"] = counterPtr;	
+        registerMap["counterPtrReg"] = counterPtrReg;
+        registerMap["threadId"] = threadId;
         registerMap["ntid"] = ntid;
 
         return location - initial;
@@ -349,10 +349,13 @@ namespace analysis
         ir::PTXInstruction add(ir::PTXInstruction::Add);   
         add.type = type;
         add.d.type = type;
+	add.d.addressMode = ir::PTXOperand::Register;
         add.d.reg = registerMap["counterPtrReg"];
         add.a.type = type;
+	add.a.addressMode = ir::PTXOperand::Register;
         add.a.reg = registerMap["counterPtr"];
         add.b.type = type;
+	add.b.addressMode = ir::PTXOperand::Register;
         add.b.reg = offset;
 
         kernel->dfg()->insert(block, add, location++);

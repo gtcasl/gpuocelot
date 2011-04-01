@@ -59,8 +59,16 @@ namespace ocelot
         if(c.instrument.basicBlockInstrumentor.enabled)
         {   
             report("Creating basic block execution count instrumentor");
-            _basicBlockExecutionCountInstrumentor.output = c.instrument.basicBlockInstrumentor.logfile;
-            ocelot::addInstrumentor(_basicBlockExecutionCountInstrumentor);    
+            switch(c.instrument.basicBlockInstrumentor.type) {
+                case api::OcelotConfiguration::Instrumentation::BasicBlockInstrumentor::executionCount:
+                    _basicBlockInstrumentor.type = analysis::BasicBlockInstrumentor::executionCount;
+                    break;
+                case api::OcelotConfiguration::Instrumentation::BasicBlockInstrumentor::instructionCount:
+                    _basicBlockInstrumentor.type = analysis::BasicBlockInstrumentor::instructionCount;
+            }
+             
+            _basicBlockInstrumentor.output = c.instrument.basicBlockInstrumentor.logfile;
+            ocelot::addInstrumentor(_basicBlockInstrumentor);    
         }
 
 

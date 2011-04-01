@@ -37,10 +37,10 @@ namespace analysis
 	    DataflowGraph::RegisterId tidX = kernel->dfg()->newRegister();
 
 	    cvt.type = type;
-        cvt.d.addressMode = ir::PTXOperand::Register;
-        cvt.d.reg = tidX;
-        cvt.d.type = type;
-        cvt.a = ir::PTXOperand(ir::PTXOperand::tid, ir::PTXOperand::ix, ir::PTXOperand::u32);
+    cvt.d.addressMode = ir::PTXOperand::Register;
+    cvt.d.reg = tidX;
+    cvt.d.type = type;
+    cvt.a = ir::PTXOperand(ir::PTXOperand::tid, ir::PTXOperand::ix, ir::PTXOperand::u32);
 	    cvt.a.addressMode = ir::PTXOperand::Special;
 	    cvt.a.vec = ir::PTXOperand::v1;
 
@@ -96,19 +96,19 @@ namespace analysis
 		    cvt.d.reg = clockEnd;
 	    }
 
-        ir::PTXInstruction bar(ir::PTXInstruction::Bar);
-        bar.d.addressMode = ir::PTXOperand::Immediate;
-        bar.d.imm_int = 0;
-        
-        kernel->dfg()->insert(block, bar, loc);
+    ir::PTXInstruction bar(ir::PTXInstruction::Bar);
+    bar.d.addressMode = ir::PTXOperand::Immediate;
+    bar.d.imm_int = 0;
+    
+    kernel->dfg()->insert(block, bar, loc);
 	    loc++;
     
-        DataflowGraph::iterator lastBlock = --(kernel->dfg()->end());
-        while(lastBlock->instructions().size() == 0) {
-            lastBlock--;
-        }
+    DataflowGraph::iterator lastBlock = --(kernel->dfg()->end());
+    while(lastBlock->instructions().size() == 0) {
+        lastBlock--;
+    }
 
-        kernel->dfg()->insert(lastBlock, bar, lastBlock->instructions().size() - 1);
+    kernel->dfg()->insert(lastBlock, bar, lastBlock->instructions().size() - 1);
 
 	    if(type == ir::PTXOperand::u64){
 		    kernel->dfg()->insert(lastBlock, mov, lastBlock->instructions().size() - 1);

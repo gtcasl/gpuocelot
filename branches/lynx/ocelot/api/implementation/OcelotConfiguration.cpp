@@ -117,6 +117,16 @@ static void initializeInstrument(api::OcelotConfiguration::Instrumentation &inst
     if (!basicBlockConfig.is_null()) {
             instrument.basicBlockInstrumentor.enabled = basicBlockConfig.parse<bool>("enabled", true);
             instrument.basicBlockInstrumentor.logfile = basicBlockConfig.parse<std::string>("logfile", "");
+            instrument.basicBlockInstrumentor.type =        
+                api::OcelotConfiguration::Instrumentation::BasicBlockInstrumentor::executionCount;
+    }
+    
+    basicBlockConfig = config["dynamicInstructionCount"];
+    if (!basicBlockConfig.is_null()) {
+            instrument.basicBlockInstrumentor.enabled = basicBlockConfig.parse<bool>("enabled", true);
+            instrument.basicBlockInstrumentor.logfile = basicBlockConfig.parse<std::string>("logfile", "");
+            instrument.basicBlockInstrumentor.type =        
+                api::OcelotConfiguration::Instrumentation::BasicBlockInstrumentor::instructionCount;
     }
 
 }

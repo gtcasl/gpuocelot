@@ -11,6 +11,7 @@
 
 #include <ocelot/cuda/interface/cuda_runtime.h>
 
+#include <ocelot/analysis/interface/DynamicInstructionCountPass.h>
 #include <ocelot/analysis/interface/BasicBlockExecutionCountPass.h>
 #include <ocelot/analysis/interface/BasicBlockInstrumentationPass.h>
 #include <ocelot/ir/interface/Module.h>
@@ -71,7 +72,20 @@ namespace analysis
     }
 
     analysis::Pass *BasicBlockInstrumentor::createPass() {
-        return new analysis::BasicBlockExecutionCountPass;           
+        
+        analysis::Pass *basicBlockPass;
+        switch(type) {
+            case executionCount:
+                basicBlockPass = new analysis::BasicBlockExecutionCountPass;
+                break;
+            case instructionCount:
+                basicBlockPass = new analysis::DynamicInstructionCountPass;
+                break;
+            default:
+                basicBlockPass = new analysis::DynamicInstructionCountPass;
+                break;
+        }
+        return basicBlockPass;          
     }
 
     size_t* BasicBlockInstrumentor::extractResults(std::ostream *out) {
@@ -111,8 +125,8 @@ namespace analysis
     }
 
     BasicBlockInstrumentor::BasicBlockInstrumentor() : description("Basic Block Execution Count Per Thread") {
-
     }
+    
 
 }
 

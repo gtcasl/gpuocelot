@@ -18,6 +18,11 @@ namespace analysis
 	class BasicBlockInstrumentor : public analysis::PTXInstrumentor
 	{
 		public:
+		
+		    enum BasicBlockInstrumentationType {
+		        instructionCount,
+		        executionCount
+		    };
 			
             /*! \brief The basic block counter */
             size_t *counter;        
@@ -27,10 +32,13 @@ namespace analysis
         
             /*! \brief The description of the specified pass */
             std::string description;
+            
+            /*! \brief type of basic block instrumentation */
+            BasicBlockInstrumentationType type;
 			
 		public:
 			/*! \brief The default constructor */
-			BasicBlockInstrumentor(); 
+			BasicBlockInstrumentor();
 
             /*! \brief The checkConditions method verifies that the defined conditions are met for this instrumentation */
             void checkConditions();

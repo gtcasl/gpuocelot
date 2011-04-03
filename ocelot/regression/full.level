@@ -1,11 +1,11 @@
-TestLexer -i ../../tests/ptx
-TestParser -i ../../tests/ptx
+TestLexer -i ../tests/ptx
+TestParser -i ../tests/ptx
 TestEmulator
 TestInstructions
 TestKernels
-TestDataflowGraph -i ../../tests/ptx
+TestDataflowGraph -i ../tests/ptx
 TestLLVMInstructions
-TestPTXToLLVMTranslator -i ../../tests/ptx
+TestPTXToLLVMTranslator -i ../tests/ptx
 TestLLVMKernels
 
 TestCudaMalloc 

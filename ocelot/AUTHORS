@@ -2,6 +2,7 @@ Gregory Diamos <gregory.diamos@gatech.edu>
 	PTX Parser
 	PTX IR
 	LLVM Translator
+	Subkernel formation
 	PTX Analysis
 	Cuda Runtime
 	
@@ -9,6 +10,7 @@ Andrew Kerr <arkerr@gatech.edu>
 	PTX IR
 	PTX Emulator
 	Trace Generators
+	PTX Vectorization
 
 Rodrigo Dominguez <rdomingu@ece.neu.edu>
 	AMD Backend
@@ -21,4 +23,8 @@ Si Li <sli@gatech.edu>
 	
 Diogo Nunes Sampaio <dnsampaio@gmail.com>
  	Divergence Analysis
+
+Haicheng Wu <hwu36@gatech.edu>
+	Unstructured to Structured Transform
 	
+

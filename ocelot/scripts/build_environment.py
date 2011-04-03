@@ -6,6 +6,30 @@ import inspect
 import platform
 import re
 
+def getDebianArchitecture():
+	"""Determines the debian architecture
+	
+	return {deb_arch}
+	"""
+
+	# check for supported OS
+	if os.name != 'posix':
+		raise ValueError, 'Error: unknown OS.  Can only build .deb on linux.'
+	
+	try:
+		dpkg_arch_path = which('dpkg-architecture')
+	except:
+		raise ValueError, 'Failed to find dpkg-architecture'
+
+	# setup .deb environment variables
+	arch = os.popen( \
+		'dpkg-architecture -c \'echo $DEB_BUILD_ARCH\'').read().split()
+
+	if len(arch) == 0:
+		raise ValueError, 'Failed to get architecture from dpkg-architecture'
+
+	return arch[0]
+
 def getCudaPaths():
 	"""Determines CUDA {bin,lib,include} paths
 	
@@ -246,7 +270,7 @@ def Environment():
 		'Build the ocelot unit tests at the given test level', 'none', \
 		allowed_values = ('none', 'basic', 'full')))
 
-	# add a variable to treat warnings as errors
+	# add a variable to determine the install path
 	vars.Add(PathVariable('install_path', 'The ocelot install path', \
 		'/usr/local'))
 
@@ -280,6 +304,10 @@ def Environment():
 		env.Replace(INSTALL_PATH = os.path.abspath(env['install_path']))
 	else:
 		env.Replace(INSTALL_PATH = os.path.abspath('.'))
+
+	# Set the debian architecture
+	if 'debian' in COMMAND_LINE_TARGETS:
+		env.Replace(deb_arch = getDebianArchitecture())
 
 	# get CUDA paths
 	(cuda_exe_path,cuda_lib_path,cuda_inc_path) = getCudaPaths()

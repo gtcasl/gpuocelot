@@ -87,6 +87,8 @@ def main():
 		default = "", help = "build a specific target." )
 	parser.add_option( "-p", "--install_prefix", \
 		default = "/usr/local", help = "The base path to install ocelot in." )
+	parser.add_option( "--build_deb", \
+		default = False, help = "Build a .deb package of Ocelot." )
 	parser.add_option( "--no_llvm", \
 		default = False, action = "store_true", help = "Disable llvm support." )
 	parser.add_option( "-m", "--message", default = "", \
@@ -110,6 +112,12 @@ def main():
 
 	if options.no_llvm:
 		command += " enable_llvm=false"
+
+	if options.build_deb:
+		if not options.install:
+			print "Install must be set for a debian build, setting it"
+			options.install = True
+		command += " debian"
 
 	if options.install:
 		command += " install"

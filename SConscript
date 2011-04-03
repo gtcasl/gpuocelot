@@ -195,6 +195,7 @@ for dir in directories:
 		headers.extend(env.Glob(regexp))
 
 # Install rules
+
 if 'install' in COMMAND_LINE_TARGETS:
 	print 'Installing ocelot...'
 	installed = []
@@ -218,4 +219,9 @@ if 'install' in COMMAND_LINE_TARGETS:
 		env.AddPostAction(str(i), Chmod(str(i), 0644))
 	
 	env.Alias('install', env['install_path'])
+
+	env.Replace(installed_files = installed)
+
+	Export('env')
+	SConscript('deb/DebSConscript')
 

@@ -9761,7 +9761,7 @@ struct __T20 {int *__par0;int *__par1;int __dummy_field;};
 extern void __device_stub__Z11vectorScalePiS_(int *, int *);
 static void __sti____cudaRegisterAll_46_tmpxft_00000a6b_00000000_4_vectorScale_cpp1_ii_hA(void) __attribute__((__constructor__));
 void __device_stub__Z11vectorScalePiS_(int *__par0, int *__par1){ struct __T20 *__T21;
-*(void**)(void*)&__T21 = (void*)0;if (cudaSetupArgument((void*)(char*)&__par0, sizeof(__par0), (size_t)&__T21->__par0) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par1, sizeof(__par1), (size_t)&__T21->__par1) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(int *, int *))vectorScale)); (void)cudaLaunch(((char *)((void ( *)(int *, int *))vectorScale))); };}
+__T21 = 0;if (cudaSetupArgument((void*)(char*)&__par0, sizeof(__par0), (size_t)&__T21->__par0) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par1, sizeof(__par1), (size_t)&__T21->__par1) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(int *, int *))vectorScale)); (void)cudaLaunch(((char *)((void ( *)(int *, int *))vectorScale))); };}
 void vectorScale( int *__cuda_0,int *__cuda_1)
 # 12 "/home/andrew/repositories/gpuocelot/branches/ocelot-ptx-2.1/ocelot/cal/test/vectorScale.cu"
 {__device_stub__Z11vectorScalePiS_( __cuda_0,__cuda_1);

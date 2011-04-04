@@ -14,7 +14,9 @@
 
 namespace ir {
 
-	static void write(std::ostream &out, const ir::PTXStatement::ArrayVector & values, ir::PTXOperand::DataType type) {
+	static void write(std::ostream &out,
+		const ir::PTXStatement::ArrayVector & values,
+		ir::PTXOperand::DataType type) {
 		ir::PTXStatement::ArrayVector::const_iterator it = values.begin();
 		for (int n = 0; it != values.end(); ++it, ++n) {
 			out << (n ? ", " : "");
@@ -288,6 +290,11 @@ namespace ir {
 		switch( directive ) {
 			case Instr: {
 				return instruction.toString() + ";";
+				break;
+			}
+			case AddressSize: {
+				std::stringstream stream;
+				stream << ".address_size " << addressSize;
 				break;
 			}
 			case CallTargets: {

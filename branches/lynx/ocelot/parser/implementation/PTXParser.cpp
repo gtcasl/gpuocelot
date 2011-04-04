@@ -364,9 +364,16 @@ namespace parser
 		{
 			throw_exception( toString( location, *this ) 
 				<< "Cannot parse PTX version " << statement.major 
-				<< "." << statement.minor << " with version 2.1 parser.", 
+				<< "." << statement.minor << " with version 2.3 parser.", 
 				NotVersion2_1 );
 		}
+	}
+	
+	void PTXParser::State::addressSize( unsigned int size )
+	{
+		report( "  Rule: ADDRESS_SIZE DECIMAL_CONSTANT" );
+		statement.directive = ir::PTXStatement::AddressSize;
+		statement.addressSize = size; 
 	}
 	
 	void PTXParser::State::identifierList( const std::string& identifier )

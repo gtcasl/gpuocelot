@@ -429,6 +429,8 @@ namespace ir
 		if (*n == tail) return false;
 
 		assertM(false, "Neither head nor tail are valid nodes");
+		
+		return false;
 	}
 
 	void ControlTree::_compact(Node* node, NodeSet nodeSet)

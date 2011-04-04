@@ -38,14 +38,16 @@ static void destroyInstance() {
 
 cuda::CudaRuntimeInterface * cuda::CudaRuntimeInterface::get() {
 	if (!cuda::CudaRuntimeInterface::instance) {
-		if (api::OcelotConfiguration::get().cuda.implementation == "CudaRuntime") {
+		if (api::OcelotConfiguration::get().cuda.implementation
+			== "CudaRuntime") {
 			cuda::CudaRuntimeInterface::instance = new CudaRuntime;
 			cuda::CudaRuntimeInterface::instance->ocelotRuntime.configure(
 				api::OcelotConfiguration::get());
 			std::atexit(destroyInstance);
 		}
 		else {
-			assert(0 && "no CUDA runtime implementation matches what is requested");
+			assertM(false,"no CUDA runtime implementation "
+				"matches what is requested");
 		}
 	}
 	return cuda::CudaRuntimeInterface::instance;
@@ -101,6 +103,13 @@ void cuda::CudaRuntimeInterface::registerPTXModule(std::istream& stream,
 	assert(0 && "unimplemented");
 }
 
+void cuda::CudaRuntimeInterface::registerTexture(
+	const void* texref,
+	const std::string& moduleName,
+	const std::string& textureName, bool normalize){
+	assert(0 && "unimplemented");
+}
+
 void cuda::CudaRuntimeInterface::clearErrors() {
 	assert(0 && "unimplemented");
 }
@@ -127,18 +136,20 @@ void cuda::CudaRuntimeInterface::setOptimizationLevel(
 	translator::Translator::OptimizationLevel l) {
 	assert(0 && "unimplemented");
 }
-//////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 void** cuda::CudaRuntimeInterface::cudaRegisterFatBinary(void *fatCubin) {
 	assert(0 && "unimplemented");
 }
 
-void cuda::CudaRuntimeInterface::cudaUnregisterFatBinary(void **fatCubinHandle) {
+void cuda::CudaRuntimeInterface::cudaUnregisterFatBinary(
+	void **fatCubinHandle) {
 	assert(0 && "unimplemented");
 }
 
-void cuda::CudaRuntimeInterface::cudaRegisterVar(void **fatCubinHandle, char *hostVar, 
-	char *deviceAddress, const char *deviceName, int ext, int size, int constant, int global) {
+void cuda::CudaRuntimeInterface::cudaRegisterVar(void **fatCubinHandle,
+	char *hostVar, char *deviceAddress, const char *deviceName, int ext,
+	int size, int constant, int global) {
 	assert(0 && "unimplemented");
 }
 
@@ -182,7 +193,7 @@ void cuda::CudaRuntimeInterface::cudaRegisterFunction(
 	assert(0 && "unimplemented");
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 cudaError_t cuda::CudaRuntimeInterface::cudaMalloc3D(struct cudaPitchedPtr* pitchedDevPtr, 
 	struct cudaExtent extent) {
@@ -547,7 +558,8 @@ cudaError_t cuda::CudaRuntimeInterface::cudaStreamDestroy(cudaStream_t stream) {
 	return cudaErrorNotYetImplemented;
 }
 
-cudaError_t cuda::CudaRuntimeInterface::cudaStreamSynchronize(cudaStream_t stream) {
+cudaError_t cuda::CudaRuntimeInterface::cudaStreamSynchronize(
+	cudaStream_t stream) {
 	assert(0 && "unimplemented");
 	return cudaErrorNotYetImplemented;
 }
@@ -564,12 +576,14 @@ cudaError_t cuda::CudaRuntimeInterface::cudaEventCreate(cudaEvent_t *event) {
 	return cudaErrorNotYetImplemented;
 }
 
-cudaError_t cuda::CudaRuntimeInterface::cudaEventCreateWithFlags(cudaEvent_t *event, int flags) {
+cudaError_t cuda::CudaRuntimeInterface::cudaEventCreateWithFlags(
+	cudaEvent_t *event, int flags) {
 	assert(0 && "unimplemented");
 	return cudaErrorNotYetImplemented;
 }
 
-cudaError_t cuda::CudaRuntimeInterface::cudaEventRecord(cudaEvent_t event, cudaStream_t stream) {
+cudaError_t cuda::CudaRuntimeInterface::cudaEventRecord(
+	cudaEvent_t event, cudaStream_t stream) {
 	assert(0 && "unimplemented");
 	return cudaErrorNotYetImplemented;
 }
@@ -579,7 +593,8 @@ cudaError_t cuda::CudaRuntimeInterface::cudaEventQuery(cudaEvent_t event) {
 	return cudaErrorNotYetImplemented;
 }
 
-cudaError_t cuda::CudaRuntimeInterface::cudaEventSynchronize(cudaEvent_t event) {
+cudaError_t cuda::CudaRuntimeInterface::cudaEventSynchronize(
+	cudaEvent_t event) {
 	assert(0 && "unimplemented");
 	return cudaErrorNotYetImplemented;
 }
@@ -589,28 +604,33 @@ cudaError_t cuda::CudaRuntimeInterface::cudaEventDestroy(cudaEvent_t event) {
 	return cudaErrorNotYetImplemented;
 }
 
-cudaError_t cuda::CudaRuntimeInterface::cudaEventElapsedTime(float *ms, cudaEvent_t start, cudaEvent_t end) {
+cudaError_t cuda::CudaRuntimeInterface::cudaEventElapsedTime(
+	float *ms, cudaEvent_t start, cudaEvent_t end) {
 	assert(0 && "unimplemented");
 	return cudaErrorNotYetImplemented;
 }
 
 
-cudaError_t cuda::CudaRuntimeInterface::cudaGLMapBufferObject(void **devPtr, GLuint bufObj) {
+cudaError_t cuda::CudaRuntimeInterface::cudaGLMapBufferObject(
+	void **devPtr, GLuint bufObj) {
 	assert(0 && "unimplemented");
 	return cudaErrorNotYetImplemented;
 }
 
-cudaError_t cuda::CudaRuntimeInterface::cudaGLMapBufferObjectAsync(void **devPtr, GLuint bufObj, cudaStream_t stream) {
+cudaError_t cuda::CudaRuntimeInterface::cudaGLMapBufferObjectAsync(
+	void **devPtr, GLuint bufObj, cudaStream_t stream) {
 	assert(0 && "unimplemented");
 	return cudaErrorNotYetImplemented;
 }
 
-cudaError_t cuda::CudaRuntimeInterface::cudaGLRegisterBufferObject(GLuint bufObj) {
+cudaError_t cuda::CudaRuntimeInterface::cudaGLRegisterBufferObject(
+	GLuint bufObj) {
 	assert(0 && "unimplemented");
 	return cudaErrorNotYetImplemented;
 }
 
-cudaError_t cuda::CudaRuntimeInterface::cudaGLSetBufferObjectMapFlags(GLuint bufObj, unsigned int flags) {
+cudaError_t cuda::CudaRuntimeInterface::cudaGLSetBufferObjectMapFlags(
+	GLuint bufObj, unsigned int flags) {
 	assert(0 && "unimplemented");
 	return cudaErrorNotYetImplemented;
 }
@@ -707,17 +727,20 @@ cudaError_t cuda::CudaRuntimeInterface::cudaThreadSynchronize(void) {
 	return cudaErrorNotYetImplemented;
 }
 
-cudaError_t cuda::CudaRuntimeInterface::cudaThreadSetLimit(enum cudaLimit limit, size_t value) {
+cudaError_t cuda::CudaRuntimeInterface::cudaThreadSetLimit(enum cudaLimit limit,
+	size_t value) {
 	assert(0 && "unimplemented");
 	return cudaErrorNotYetImplemented;
 }
 
-cudaError_t cuda::CudaRuntimeInterface::cudaDriverGetVersion(int *driverVersion) {
+cudaError_t cuda::CudaRuntimeInterface::cudaDriverGetVersion(
+	int *driverVersion) {
 	assert(0 && "unimplemented");
 	return cudaErrorNotYetImplemented;
 }
 
-cudaError_t cuda::CudaRuntimeInterface::cudaRuntimeGetVersion(int *runtimeVersion) {
+cudaError_t cuda::CudaRuntimeInterface::cudaRuntimeGetVersion(
+	int *runtimeVersion) {
 	assert(0 && "unimplemented");
 	return cudaErrorNotYetImplemented;
 }
@@ -729,11 +752,11 @@ cudaError_t cuda::CudaRuntimeInterface::cudaGetExportTable(
 }
 
 
-void cuda::CudaRuntimeInterface::cudaMutexOperation( int lock ) {
+void cuda::CudaRuntimeInterface::cudaMutexOperation(int lock) {
 	assert(0 && "unimplemented");
 }
 
-int cuda::CudaRuntimeInterface::cudaSynchronizeThreads( void** one, void* two ) {
+int cuda::CudaRuntimeInterface::cudaSynchronizeThreads(void** one, void* two) {
 	assert(0 && "unimplemented");
 	return 0;
 }

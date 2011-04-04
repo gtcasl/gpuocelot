@@ -756,6 +756,22 @@ namespace translator
 				}
 				break;
 			}
+			case ir::PTXOperand::s64:
+			{
+				switch (i.type)
+				{
+					case ir::PTXOperand::s32:
+					{
+						// chop (but there are no 64-bit registers in IL)
+						ir::ILMov mov;
+						mov.d = d;
+						mov.a = a;
+						_add(mov);
+						return;
+					}
+					default: break;
+				}
+			}
 			case ir::PTXOperand::u8:
 			{
 				switch (i.type)
@@ -945,6 +961,15 @@ namespace translator
 					case ir::PTXOperand::u32:
 					{
 						// allowed, no conversion needed
+						ir::ILMov mov;
+						mov.d = _translate(i.d);
+						mov.a = d;
+						_add(mov);
+						return;
+					}
+					case ir::PTXOperand::u64:
+					{
+						// sext (but there are no 64-bit registers in IL)
 						ir::ILMov mov;
 						mov.d = _translate(i.d);
 						mov.a = d;

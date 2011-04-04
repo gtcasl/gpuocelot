@@ -28,7 +28,8 @@ int main(int argc, char *arg[]) {
 	
 	result = cudaMalloc((void **)&A_gpu, bytes);
 	if (result != cudaSuccess) {
-		printf("cudaMalloc() - failed to allocate %d on the device \n", bytes);
+		printf("cudaMalloc() - failed to allocate %d on the device \n",
+			(int)bytes);
 		return 2;
 	}
 	
@@ -39,7 +40,8 @@ int main(int argc, char *arg[]) {
 	
 	result = cudaMemcpy(A_gpu, A_cpu, bytes, cudaMemcpyHostToDevice);
 	if (result != cudaSuccess) {
-		printf("cudaMemcpy() - failed to copy %d bytes TO the device\n", bytes);
+		printf("cudaMemcpy() - failed to copy %d bytes TO the device\n",
+			(int)bytes);
 		return 2;
 	}
 	
@@ -61,7 +63,8 @@ int main(int argc, char *arg[]) {
 	
 	result = cudaMemcpy(A_cpu, A_gpu, bytes, cudaMemcpyDeviceToHost);
 	if (result != cudaSuccess) {
-		printf("cudaMemcpy() - failed to copy %d bytes FROM the device\n", bytes);
+		printf("cudaMemcpy() - failed to copy %d bytes FROM the device\n",
+			(int)bytes);
 		return 2;
 	}
 	

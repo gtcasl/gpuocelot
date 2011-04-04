@@ -61,7 +61,11 @@ namespace executive
 		//using namespace std;
 		report("Allocating registers");
 		registerMap = ir::PTXKernel::assignRegisters( *cfg() );
-		_registerCount = registerMap.size();
+
+        // HACK: we need to hard-code the number of hw registers since
+        // registerMap only refers to virtual ptx registers
+		//_registerCount = registerMap.size();
+        _registerCount = 10;
 		report(" Allocated " << _registerCount << " registers");
 	}
 

@@ -437,7 +437,6 @@ size_t analysis::HyperblockFormation::_createHyperblockExit(
 				ir::PTXInstruction *selp = new ir::PTXInstruction(ir::PTXInstruction::SelP);
 				selp->d = std::move(ir::PTXOperand(ir::PTXOperand::Register, ir::PTXOperand::u32, 
 					hyperblock.subkernel->dfg()->newRegister()));
-				
 				selp->a = std::move(ir::PTXOperand(ir::PTXOperand::Immediate, ir::PTXOperand::u32));
 				selp->b = std::move(ir::PTXOperand(ir::PTXOperand::Immediate, ir::PTXOperand::u32));
 				
@@ -457,6 +456,14 @@ size_t analysis::HyperblockFormation::_createHyperblockExit(
 				
 				report("  branch target id: " << branchTargetId);
 				report("  fallthrough id: " << fallthroughTargetId);
+				
+				// if predicates are inverted...
+				if (terminator->pg.condition == ir::PTXOperand::InvPred) {
+					std::swap(branchTargetId, fallthroughTargetId);
+				}
+				else if (terminator->pg.condition != ir::PTXOperand::Pred) {
+					assert(0 && "invalid predicate condition for conditional branch");
+				}
 				
 				selp->a.imm_uint = branchTargetId;		// branch target
 				selp->b.imm_uint = fallthroughTargetId;		// fallthrough target

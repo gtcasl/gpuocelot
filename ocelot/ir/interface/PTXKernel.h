@@ -9,7 +9,6 @@
 
 #include <ocelot/ir/interface/Kernel.h>
 #include <ocelot/analysis/interface/DataflowGraph.h>
-//#include <ocelot/analysis/interface/DivergenceAnalysis.h>
 
 namespace ir 
 {
@@ -34,7 +33,7 @@ namespace ir
 			*/
 			class Prototype {
 			public:
-				typedef std::vector< ir::Parameter > ArgumentVector;
+				typedef std::vector<ir::Parameter> ArgumentVector;
 			
 				enum CallType {
 					Entry,
@@ -44,7 +43,7 @@ namespace ir
 				
 				enum LinkingDirective {
 					Extern,		//!< externally-defined function
-					Visible,	//!< locally defined function visible outside this module
+					Visible,	//!< visible outside this module
 					LinkingDirective_invalid
 				};
 			

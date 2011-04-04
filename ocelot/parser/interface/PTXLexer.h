@@ -8,7 +8,7 @@
 #ifndef PTX_LEXER_H_INCLUDED
 #define PTX_LEXER_H_INCLUDED
 
-#include <ptxgrammar.h>
+#include <ptxgrammar.hpp>
 
 namespace parser
 {

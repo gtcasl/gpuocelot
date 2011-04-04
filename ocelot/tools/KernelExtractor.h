@@ -1,138 +1,90 @@
 /*!
-	\file CudaDriverFrontend.h
-
+	\file KernelExtractor.h
 	\author Andrew Kerr <arkerr@gatech.edu>
-	\brief implements a CUDA Driver API front-end interface for GPU Ocelot
-	\date Sept 16 2010
-	\location somewhere over western Europe
+	\brief wraps CUDA Driver API, tracks allocations and state in global memory, serializes contents
+		before and after each kernel invocation
 */
 
-#ifndef OCELOT_CUDADRIVERFRONTEND_H_INCLUDED
-#define OCELOT_CUDADRIVERFRONTEND_H_INCLUDED
+#ifndef OCELOT_KERNELEXTRACTOR_H_INCLUDED
+#define OCELOT_KERNELEXTRACTOR_H_INCLUDED
 
-// C++ libs
-#include <deque>
-#include <string>
-#include <list>
-#include <vector>
-#include <map>
+// C++ includes
+#include <unordered_map>
 #include <set>
+#include <fstream>
 
-// Boost libs
-#include <boost/thread/thread.hpp>
-
-// Ocelot libs
+// Ocelot includes
+#include <ocelot/cuda/interface/CudaDriver.h>
 #include <ocelot/cuda/interface/CudaDriverInterface.h>
-#include <ocelot/executive/interface/Device.h>
-#include <ocelot/cuda/interface/CudaRuntimeContext.h>
+#include <ocelot/util/interface/ExtractedDeviceState.h>
 
-// Hydrazine includes
-#include <hydrazine/implementation/Timer.h>
+namespace util {
 
-namespace cuda {
-
-	/*!
-		\brief implements the CUDA Driver API front-end to GPU Ocelot
-	*/
-	class CudaDriverFrontend : public CudaDriverInterface {
+	class KernelExtractorDriver: public cuda::CudaDriverInterface {
 	public:
-
-		//! \brief CUDA Driver API context
-		class Context {
-		public:
-
-			enum MemcpyKind {
-				HostToHost = 0,
-				HostToDevice = 1,
-				DeviceToHost = 2,
-				DeviceToDevice = 3,
-				MemcpyKind_invalid
-			};
-
-		public:
-
-			Context();
-			~Context();
-
-		public:
-			//! \brief performs a memcpy on selected device
-			void _memcpy(void *dst, const void *src, size_t count, MemcpyKind kind);
-
-			//! \brief report a memory error and throw an exception
-			void _memoryError(const void *address, size_t count, const std::string &func = "");
-
-			//! \brief create devices if they do not exist
-			void _enumerateDevices();
-
-			//! \brief gets the current device for the current thread
-			executive::Device& _getDevice();
-			//! \brief returns an Ocelot-formatted error message
-			std::string _formatError(const std::string & message);
-			// Load module and register it with all devices
-			void _registerModule(ModuleMap::iterator module);
-			// Load module and register it with all devices
-			void _registerModule(const std::string& name);
-			// Load all modules and register them with all devices
-			void _registerAllModules();
-
-		public:
+		typedef std::unordered_map< CUmodule, std::string > ModuleNameMap;
+		typedef std::unordered_map< CUfunction, std::pair< std::string, std::string > > FunctionNameMap;
+		typedef std::unordered_map< CUtexref, std::pair< std::string, std::string > > TextureNameMap;
 		
-			//! Registered modules
-			ModuleMap _modules;
-		
-			//! \brief object storing context information needed while configuring calls
-			HostThreadContext _hostThreadContext;
-			
-			//! \brieflaunch configuration of next kernel
-			KernelLaunchConfiguration _launchConfiguration;
-		
-			//! maps kernel symbols to module-kernels
-			RegisteredKernelMap _kernels;
-		
-			//! maps texture symbols to module-textures
-			RegisteredTextureMap _textures;
-
-			//! maps symbol pointers onto their device names
-			RegisteredGlobalMap _globals;
-		
-			//! The dimensions for multi-dimensional allocations
-			DimensionMap _dimensions;
-		
-			//! Registered opengl buffers and mapping to graphics resources
-			GLBufferMap _buffers;
-		
-			//! device
-			executive::Device *_device;
-			
-			//! index of device bound to context
-			int _selectedDevice;
-		
-			//! the next symbol for dynamically registered kernels
-			int _nextSymbol;
-		
-			//! The device flags
-			unsigned int _flags;
-		
-			//! fatbinaries
-			FatBinaryVector _fatBinaries;
-
-			//! optimization level
-			translator::Translator::OptimizationLevel _optimization;
-
-			//! \brief number of references to this context
-			int _referenceCount;
-		};
-
-		typedef std::deque<Context*> ContextQueue;
-		typedef std::map< boost::thread::id , ContextQueue > ContextQueueThreadMap;
-
 	public:
+	
+		KernelExtractorDriver();
+		virtual ~KernelExtractorDriver();
+		
+		//! \brief copies data from device to host-side allocations
+		void synchronizeFromDevice();
+		
+		//! \brief copies data from host-side allocations to device
+		void synchronizeToDevice();
+		
+		//! \brief binds module handle to PTX image
+		void loadModule(CUresult result, CUmodule module, const char *ptxImage, const char *name=0);
+		
+		//! \brief binds a function handle to a module and kernel name
+		void bindKernel(CUresult result, CUmodule module, CUfunction function, const char *name);
+		
+		//! \brief binds a texture handle to a module and texture name
+		void bindTexture(CUresult result, CUmodule module, CUtexref texture, const char *name);
+		
+		//! \brief binds a global variable to a pointer
+		void bindGlobal(CUresult result, CUmodule module, void *ptr, const char *name);
+		
+		//! \brief called when a kernel is launched
+		void kernelLaunch(CUfunction f, int gridX = 1, int gridY = 1);
+		
+		//! \brief called when a kernel returns
+		void kernelReturn(CUresult result);
+		
+		//! \brief allocates device memory
+		void allocate(CUresult result, void *dptr, size_t bytes);
+		
+		//! \brief deletes an allocation
+		void free(void *dptr);
+		
+	public:
+	
+		//! \brief singleton instance
+		static KernelExtractorDriver instance;
+	
+		// CUDA Driver API 
+		cuda::CudaDriver::Interface cudaDriver;
+	
+		//!  object for serializing CUDA kernels and device state
+		ExtractedDeviceState state;
+		
+		//! determines whether kernels are actually extracted
+		bool enabled;
+		
+		//! maps module handles to module names
+		ModuleNameMap moduleNameMap;
+		
+		//! maps function handles to (module name, function name) pairs
+		FunctionNameMap functionNameMap;
+		
+		//! maps texture handles to (module name, texture name) pairs
+		TextureNameMap textureNameMap;
 
-		CudaDriverFrontend();
-		~CudaDriverFrontend();
-
-		static CudaDriverFrontend *get();
-
+	// CUDA Driver API Interface
 	public:
 		/*********************************
 		** Initialization
@@ -143,6 +95,9 @@ namespace cuda {
 		** Driver Version Query
 		*********************************/
 		CUresult cuDriverGetVersion(int *driverVersion);
+		
+		CUresult cuGetExportTable(const void **ppExportTable,
+			const CUuuid *pExportTableId);
 
 		/************************************
 		**
@@ -205,8 +160,7 @@ namespace cuda {
 		**
 		***********************************/
 
-		CUresult cuMemGetInfo(size_t *free, 
-			size_t *total);
+		CUresult cuMemGetInfo(size_t *free, size_t *total);
 
 		CUresult cuMemAlloc( CUdeviceptr *dptr, 
 			unsigned int bytesize);
@@ -382,7 +336,7 @@ namespace cuda {
 		CUresult cuTexRefSetArray( CUtexref hTexRef, CUarray hArray, 
 			unsigned int Flags );
 		CUresult cuTexRefSetAddress( size_t *ByteOffset, 
-			CUtexref hTexRef, CUdeviceptr dptr, unsigned int bytes );
+			CUtexref hTexRef, CUdeviceptr dptr, size_t bytes );
 		CUresult cuTexRefSetAddress2D( CUtexref hTexRef, 
 			const CUDA_ARRAY_DESCRIPTOR *desc, CUdeviceptr dptr, 
 			unsigned int Pitch);
@@ -496,65 +450,12 @@ namespace cuda {
 		CUresult cuGraphicsGLRegisterImage( 
 			CUgraphicsResource *pCudaResource, unsigned int image, 
 			int target, unsigned int Flags);
-			
-		/*
-			CUDA Driver API Support Functions
-		*/
-		CUresult cuGetExportTable(const void **ppExportTable,
-			const CUuuid *pExportTableId);
+		CUresult cuGLRegisterBufferObject(GLuint bufferobj);		
+		CUresult cuGLSetBufferObjectMapFlags(GLuint buffer, unsigned int flags);	
 
 		std::string toString(CUresult result);
-
-	private:
-		//! \brief gets active context
-		Context * _getContext();
-
-		//! \brief gets the current thread's context queue
-		ContextQueue & _getThreadContextQueue();
-
-		//! \brief gets the calling thread's ID
-		boost::thread::id _getThreadId();
-
-		//! \brief locks context thread map
-		void _lock();
-
-		//! \brief unlocks context thread map
-		void _unlock();
-
-		//! \brief locks and gets the thread's active context
-		Context *_bind();
-
-		//! \brief unlocks thread's active context
-		void _unbind();
-		
-		//! \brief lists devices present
-		void _enumerateDevices();
-
-	public:
-		
-		//
-		unsigned int _flags;
-
-		//! locking object for _contexts queue [each contex has its own mutex]
-		boost::mutex _mutex;
-
-		//! \brief contexts
-		ContextQueueThreadMap _contexts;
-
-		//! \brief singleton instance of front end
-		static CudaDriverFrontend *_instance;
-		
-		//! \brief true if devices are loaded
-		bool _devicesLoaded;
-
-		//! The minimum supoported compute capability
-		int _computeCapability;
-		
-		//! set of available devices
-		executive::DeviceVector _devices;
 	};
 
 }
-
 #endif
 

@@ -22,6 +22,10 @@ namespace cuda {
 	public:
 		const char *name() const;
 		const char *ptx() const;
+
+	private:
+		const char* _name;
+		const char* _ptx;
 	};
 }
 

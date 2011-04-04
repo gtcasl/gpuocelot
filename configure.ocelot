@@ -1,8 +1,7 @@
 {
 	ocelot: "ocelot",
     instrument: {
-        dynamicInstructionCount: {
-        }
+        dynamicInstructionCount: {}
     },
 	trace: { 
 		database: "traces/database.trace",
@@ -35,6 +34,12 @@
 	},
 	optimizations: {
 		subkernelSize: 600
+	},
+	checkpoint: {
+		enabled: false,
+		path: "./",
+		prefix: "TestCudaIndirectFunctionCall_",
+		suffix: ".checkpoint"
 	}
 }
 

@@ -1,7 +1,7 @@
-Take a look at http://code.google.com/p/gpuocelot/ for detailed installation info
+Take a look at http://code.google.com/p/gpuocelot/ for more details
 
-To Install Ocelot:
-	./configure; sudo make install
+To Build Ocelot:
+	./build.py --install
 
 To Link Against Ocelot:
 	g++ program.cu.cpp `OcelotConfig -l`
@@ -10,39 +10,24 @@ To Run Ocelot:
 	Run your CUDA program normally with a 'configure.ocelot' file 
 		in the same directory (see the website for samples)
 
-Ocelot Version 1.1.560 Features:
- 1) Three target devices
-	 a) PTX 1.4 Emulator 
-	 	i) Memory Checker
-	 		-out of bounds accesses
-	 		-misalgined accesses
-	 	ii) Shared Memory Race Detector
-	 b) PTX 1.4 JIT Compiler and CPU Runtime
-	 	i) Execute CUDA programs natively on CPU targets without emulation
-	 	ii) Support for any LLVM target
-	 	*iii) Requires LLVM 2.8svn
-	 	iv) Can achieve over 80% of theoretical peak FLOPs/OPs on CPU targets
-	 c) NVIDIA GPU JIT
-	 	i) Recompiles PTX kernels using the NVIDIA Driver
- 2) Reimplementation of the CUDA Runtime
- 	a) Device Switching
- 		- The same host thread can simultaneously control multiple devices.
- 	b) New Memory Model
- 		- Device allocations are shared among all host threads
- 3) PTXOptimizer
- 	a) Extendible optimization pass interface for PTX
- 		- Per-Block, Per-Kernel, Per-Module passes 
- 4) Trace Generator
- 	a) Extendible interface for instrumenting PTX kernels
- 	b) Can examine the complete system state after each instruction is executed
- 		i) Registers
- 		ii) Memory Accesses
- 		iii) Last instruction executed
- 		iv) Thread activity mask
+Ocelot Version 2.0.969 Features:
+    * PTX 2.2 and Fermi device support: Floating point results should be within
+    	the ULP limits in the PTX ISA manual. Over 500 unit tests verify that
+    	the behaviour matches NVIDIA devices.
+    * Four target device types: A functional PTX emulator. A PTX to LLVM to
+    	x86/ARM JIT. A PTX to CAL JIT for AMD devices (beta). A PTX to PTX JIT
+    	for NVIDIA devices.
+    * A full-featured PTX 2.2 IR: An analysis/optimization pass interface over
+    	PTX (Control flow graph, dataflow graph, dominator/postdominator trees,
+    	structured control tree). Optimizations can be plugged in as modules.
+    * Correctness checking tools: A memory checker (detects unaligned and out
+    	of bounds accesses). A race detector. An interactive debugger (allows
+    	stepping through PTX instructions).
+    * An instruction trace analyzer interface: Allows user-defined modules to
+    	receive callbacks when PTX instructions are executed. Can be used to
+    		compute metrics over applications or perform correctness checks.
+    * A CUDA API frontend: Existing CUDA programs can be directly linked against
+    	Ocelot. Device pointers can be shared across host threads. Multiple
+    	devices can be controlled from the same host thread (cudaSetDevice can
+    	be called multiple times).
 
-Open Projects for Ocelot 1.2
- 1) Full PTX 2.0 support
- 2) AMD GPU Devices
- 3) Asynchronous kernel execution
- 4) Multi-threaded emulator device
- 5) SIMT on CPU vector units

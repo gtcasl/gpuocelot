@@ -56,12 +56,41 @@ namespace ir
 	std::string Texture::toString(Type type) {
 		switch (type) {
 		case Unsigned: return "Unsigned";
-		case Signed: return "Signed";
-		case Float: return "Float";
-		case Invalid: return "Invalid";
+		case Signed:   return "Signed";
+		case Float:    return "Float";
+		case Invalid:  return "Invalid";
 		default: break;
 		}
 		return "Type_unknown";
+	}
+
+	Texture::Type Texture::typeFromString(const std::string& s)
+	{
+		if(s == toString(Unsigned)) return Unsigned;
+		if(s == toString(Signed))   return Signed;
+		if(s == toString(Float))    return Float;
+		
+		return Invalid;
+	}
+
+	Texture::AddressMode Texture::modeFromString(const std::string& s)
+	{
+		if(s == toString(Wrap))         return Wrap;
+		if(s == toString(Clamp))        return Clamp;
+		if(s == toString(Mirror))       return Mirror;
+		if(s == toString(Clamp_ogl))    return Clamp_ogl;
+		if(s == toString(Clamp_edge))   return Clamp_edge;
+		if(s == toString(Clamp_border)) return Clamp_border;
+		
+		return AddressMode_Invalid;
+	}
+	
+	Texture::Interpolation Texture::interpolationFromString(
+		const std::string& s)
+	{
+		if(s == toString(Linear)) return Linear;
+		
+		return Nearest;
 	}
 
 	std::string Texture::toString() const {

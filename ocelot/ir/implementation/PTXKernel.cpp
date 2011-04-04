@@ -355,7 +355,8 @@ namespace ir
 					edge.head = block;
 					edge.tail = cfg.get_exit_block();
 					edge.type = ControlFlowGraph::Edge::FallThrough;
-
+					cfg.insert_edge(edge);
+					
 					block = cfg.insert_block(
 						ControlFlowGraph::BasicBlock("", cfg.newId()));
 					edge.type = ControlFlowGraph::Edge::Invalid;
@@ -369,6 +370,7 @@ namespace ir
 					edge.head = block;
 					edge.tail = cfg.get_exit_block();
 					edge.type = ControlFlowGraph::Edge::Branch;
+					cfg.insert_edge(edge);
 
 					block = cfg.insert_block(
 						ControlFlowGraph::BasicBlock("", cfg.newId()));
@@ -379,7 +381,8 @@ namespace ir
 			{
 				if( inParameterList )
 				{
-					arguments.push_back( Parameter( statement, true, isReturnArgument) );
+					arguments.push_back( Parameter( statement,
+						true, isReturnArgument) );
 				}
 				else
 				{
@@ -417,40 +420,8 @@ namespace ir
 			}
 		}
 
-		if (block->instructions.size()) 
+		if (!block->instructions.size()) 
 		{
-			if (edge.type != ControlFlowGraph::Edge::Invalid) {
-				cfg.insert_edge(edge);
-			}
-			edge.head = block;
-			edge.tail = cfg.get_exit_block();
-			edge.type = ControlFlowGraph::Edge::FallThrough;
-			cfg.insert_edge(edge);
-		}
-		else 
-		{
-			if(last_inserted_block!=cfg.end()) 
-			{
-				// make sure there is a fall through edge from the last 
-				// inserted block to the exit node
-				ControlFlowGraph::edge_iterator ft_e = cfg.edges_end();
-				for( ControlFlowGraph::edge_pointer_iterator 
-					it = last_inserted_block->out_edges.begin(); 
-					it != last_inserted_block->out_edges.end(); ++it )
-				{
-					if( (*it)->type == ControlFlowGraph::Edge::FallThrough 
-						&& (*it)->tail == cfg.get_exit_block() )
-					{
-						ft_e = (*it);
-						break;
-					}
-				}
-				if( ft_e == cfg.edges_end() )
-				{
-					cfg.insert_edge(ControlFlowGraph::Edge(last_inserted_block, 
-						cfg.get_exit_block()));
-				}
-			}
 			cfg.remove_block(block);
 		}
 
@@ -630,13 +601,14 @@ namespace ir
 			}
 		}
 		
+		typedef std::map<std::string, ir::PTXInstruction*> IndirectCallMap;
 		
 		// issue actual instructions
 		if (_cfg != 0) {
 			ControlFlowGraph::BlockPointerVector 
 				blocks = _cfg->executable_sequence();
 				
-			std::map< std::string, ir::PTXInstruction *> indirectCalls;
+			IndirectCallMap indirectCalls;
 		
 			// look for and emit function prototypes
 			for (ControlFlowGraph::BlockPointerVector::iterator 
@@ -646,11 +618,14 @@ namespace ir
 					instruction = (*block)->instructions.begin(); 
 					instruction != (*block)->instructions.end();
 					++instruction ) {
-					ir::PTXInstruction * inst = static_cast<ir::PTXInstruction *>(*instruction);
+					ir::PTXInstruction* inst =
+						static_cast<ir::PTXInstruction *>(*instruction);
 					
-					if (inst->opcode == ir::PTXInstruction::Call && inst->a.addressMode == PTXOperand::Register ) {
+					if (inst->opcode == ir::PTXInstruction::Call
+						&& inst->a.addressMode == PTXOperand::Register ) {
 						// indirect call
-						if (indirectCalls.find(inst->c.identifier) == indirectCalls.end()) {
+						if (indirectCalls.find(inst->c.identifier)
+							== indirectCalls.end()) {
 							indirectCalls[inst->c.identifier] = inst;
 						}
 					}
@@ -658,25 +633,32 @@ namespace ir
 			}
 			if (indirectCalls.size()) {
 				stream << "\t\n";
-				for (std::map< std::string, ir::PTXInstruction *>::const_iterator indCall = indirectCalls.begin();
+				for (IndirectCallMap::const_iterator
+					indCall = indirectCalls.begin();
 					indCall != indirectCalls.end(); ++indCall) {
 
 					stream << "\t" << indCall->first << ": .callprototype ";
 					stream << "(";
 
 					unsigned int n = 0;
-					for (ir::PTXOperand::Array::const_iterator arg_it = indCall->second->d.array.begin();
-						arg_it != indCall->second->d.array.end(); ++arg_it, ++n) {
+					for (ir::PTXOperand::Array::const_iterator
+						arg_it = indCall->second->d.array.begin();
+						arg_it != indCall->second->d.array.end();
+						++arg_it, ++n) {
 					
-						stream << (n ? ", " : "") << ".param ." << ir::PTXOperand::toString(arg_it->type) << " _";
+						stream << (n ? ", " : "") << ".param ."
+							<< ir::PTXOperand::toString(arg_it->type) << " _";
 					}
 				
 					stream << ") _ (";
 					n = 0;
-					for (ir::PTXOperand::Array::const_iterator arg_it = indCall->second->b.array.begin();
-						arg_it != indCall->second->b.array.end(); ++arg_it, ++n) {
+					for (ir::PTXOperand::Array::const_iterator
+						arg_it = indCall->second->b.array.begin();
+						arg_it != indCall->second->b.array.end();
+						++arg_it, ++n) {
 					
-						stream << (n ? ", " : "") << ".param ." << ir::PTXOperand::toString(arg_it->type) << " _";
+						stream << (n ? ", " : "") << ".param ."
+							<< ir::PTXOperand::toString(arg_it->type) << " _";
 					}
 					stream << ");\n";
 				}
@@ -740,7 +722,7 @@ namespace ir
 			block->label = ss.str();
 		}
 		
-		// visit every branch and rewrite the branch target according to the label map
+		// visit branches and set the branch target according to the label map
 
 		for (ControlFlowGraph::iterator block = cfg()->begin(); 
 			block != cfg()->end(); ++block) {

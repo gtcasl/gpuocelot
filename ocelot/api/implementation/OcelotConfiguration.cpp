@@ -43,7 +43,7 @@ void api::OcelotConfiguration::destroy() {
 ////////////////////////////////////////////////////////////////////////////////
 
 api::OcelotConfiguration::Checkpoint::Checkpoint():
-	enabled(false), path("."), prefix("check"), suffix(".binary"), verify(false)
+	enabled(false), path("./"), prefix("check"), suffix(".binary"), verify(false)
 {
 	
 }

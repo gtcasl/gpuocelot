@@ -20,25 +20,27 @@
 #undef REPORT_BASE
 #endif
 
-/////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 // this toggles emitting function prototypes in Module::writeIR()
 #define EMIT_FUNCTION_PROTOTYPES 1
 
 #define REPORT_BASE 0
 
-/////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
-ir::Module::Module(const std::string& path) : _ptxPointer(0), _loaded(true) {
+ir::Module::Module(const std::string& path)
+: _ptxPointer(0), _addressSize(64), _loaded(true) {
 	load(path);
 }
 
-ir::Module::Module(std::istream& stream, 
-	const std::string& path) : _ptxPointer(0), _loaded(true) {
+ir::Module::Module(std::istream& stream, const std::string& path)
+: _ptxPointer(0), _addressSize(64), _loaded(true) {
 	load(stream, path);
 }
 
-ir::Module::Module() : _ptxPointer(0), _loaded(true) {
+ir::Module::Module()
+: _ptxPointer(0), _addressSize(64), _loaded(false) {
 	PTXStatement version;
 	PTXStatement target;
 	version.directive = PTXStatement::Version;
@@ -248,8 +250,9 @@ void ir::Module::writeIR( std::ostream& stream ) const {
 	assert( loaded() );
 	report("Writing module (IR) - " << _modulePath << " - to output stream.");
 
-	stream << ".version 2.1\n";
+	stream << ".version 2.3\n";
 	stream << ".target sm_20\n";
+	stream << ".address_size " << addressSize() << "\n";
 
 	stream << "/* Module " << _modulePath << " */\n\n";
 	
@@ -258,7 +261,8 @@ void ir::Module::writeIR( std::ostream& stream ) const {
 	for (FunctionPrototypeMap::const_iterator prot_it = _prototypes.begin();
 		prot_it != _prototypes.end(); ++prot_it) {
 		
-		if (prot_it->second.callType != ir::PTXKernel::Prototype::Entry && prot_it->second.identifier != "") {
+		if (prot_it->second.callType != ir::PTXKernel::Prototype::Entry
+			&& prot_it->second.identifier != "") {
 			stream << prot_it->second.toString() << "\n";
 		}
 	}
@@ -330,6 +334,21 @@ const ir::Module::StatementVector& ir::Module::statements() const {
 	assert( loaded() );
 	return _statements;
 }
+
+const ir::Module::FunctionPrototypeMap& ir::Module::prototypes() const {
+	assert( loaded() );
+	return _prototypes;
+}
+
+unsigned int ir::Module::addressSize() const {
+	return _addressSize;
+}
+
+void ir::Module::addPrototype(const std::string &identifier,
+	const ir::PTXKernel::Prototype &prototype) {
+	report("adding prototype: " << prototype.toString());
+	_prototypes[identifier] = prototype;
+}
 		
 void ir::Module::insertGlobal(const PTXStatement &statement) {
 	loadNow();
@@ -337,7 +356,7 @@ void ir::Module::insertGlobal(const PTXStatement &statement) {
 		throw hydrazine::Exception("Inserted duplicated global - " 
 			+ statement.name);
 	}
-}	
+}		
 
 ir::PTXKernel* ir::Module::getKernel(const std::string& kernelName) {
 	loadNow();
@@ -501,7 +520,11 @@ void ir::Module::extractPTXKernels() {
 				_globals.insert(std::make_pair(statement.name, Global(statement)));
 			}
 			break;
-		
+
+		case PTXStatement::AddressSize:
+			_addressSize = statement.addressSize;
+			break;
+
 		case PTXStatement::Texref:
 			if (!inKernel) {
 				assert(_textures.count(statement.name) == 0);
@@ -529,15 +552,5 @@ void ir::Module::extractPTXKernels() {
 		}
 
 	}
-}
-
-void ir::Module::addPrototype(const std::string &identifier, const ir::PTXKernel::Prototype &prototype) {
-	report("adding prototype: " << prototype.toString());
-	_prototypes[identifier] = prototype;
-}
-
-/*! \brief gets all declared function prototypes */
-const ir::Module::FunctionPrototypeMap & ir::Module::prototypes() const {
-	return _prototypes;
 }
 

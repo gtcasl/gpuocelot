@@ -386,34 +386,19 @@ namespace cuda {
 			bool persistent = false );
 		/*! \brief Clear all trace generators */
 		virtual void clearTraceGenerators();
-        
-        /*! \brief Adds an instrumentor for the next kernel invocation 
-	
-			\param gen A reference to the instrumentor being added, it must not
-				be destroyed until the next kernel is executed.
-			\param persistent The instrumentor will be associated with all
-				subsequent kernels until clear is called, otherwise it will
-				only be associated with the next kernel.
-		*/
-		virtual void addInstrumentor( analysis::PTXInstrumentor& instrumentor);
-		/*! \brief Clear all instrumentors */
+
+        /*! \brief Adds an instrumentor for the next kernel invocation */
+        virtual void addInstrumentor( analysis::PTXInstrumentor& instrumentor);
+        /*! \brief Clear all instrumentors */
 		virtual void clearInstrumentors();
-
         /*! \brief Retrieves the kernel profile from online instrumentation */
-        virtual analysis::KernelProfile kernelProfile();    
+        virtual analysis::KernelProfile kernelProfile();
 
-
-		/*!
-			\brief Adds a PTX->PTX pass for the next *Module load*
-		*/
+		/*! \brief Adds a PTX->PTX pass for the next *Module load* */
 		virtual void addPTXPass(analysis::Pass &pass);
-		/*!
-			\brief removes the specified pass
-		*/
+		/*!	\brief removes the specified pass */
 		virtual void removePTXPass(analysis::Pass &pass);
-		/*!
-			\brief clears all PTX->PTX passes
-		*/
+		/*! \brief clears all PTX->PTX passes */
 		virtual void clearPTXPasses();
 		
 		/*! \brief Sets a limit on the number of host worker threads to launch
@@ -428,6 +413,10 @@ namespace cuda {
 		*/
 		virtual void registerPTXModule(std::istream& stream, 
 			const std::string& name);
+		/*! \brief Register a texture with the cuda runtime */
+		virtual void registerTexture(const void* texref,
+			const std::string& moduleName,
+			const std::string& textureName, bool normalize);
 		/*! \brief Clear all errors in the Cuda Runtime */
 		virtual void clearErrors();
 		/*! \brief Reset all CUDA runtime state */

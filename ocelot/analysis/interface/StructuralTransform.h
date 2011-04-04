@@ -1,10 +1,10 @@
-//- llvm/Transform/Ocelot/StructuralAnalysis.h - Structural Analysis - *C++ -*-// 
-// 
-//                     The LLVM Compiler Infrastructure 
-// 
-// This file is distributed under the University of Illinois Open Source 
-// License. See LICENSE.TXT for details. 
-// 
+/*! \file   StructuralTransform.h
+	\author Haicheng Wu <hwu36@gatech.edu>
+	\date   Monday April 4, 2011
+	\brief  The header file for the StructuralTransform pass.
+*/
+
+
 //===----------------------------------------------------------------------===// 
 // 
 // This file defines the class of Structural Analysis which will return the 
@@ -15,10 +15,12 @@
 #ifndef LLVM_ANALYSIS_STRUCTURALTRANSFORM_H 
 #define LLVM_ANALYSIS_STRUCTURALTRANSFORM_H
 
+// Ocelot Includes
 #include <ocelot/ir/interface/ControlFlowGraph.h>
 #include <ocelot/analysis/interface/StructuralAnalysis.h> 
 #include <ocelot/analysis/interface/AssignFallThroughEdge.h>
 
+// Stanard Library Includes
 #include <unordered_map>
 #include <list>
 
@@ -38,11 +40,13 @@ namespace analysis {
   private:
     int index;
 
-    typedef std::unordered_map<ir::ControlFlowGraph::iterator, ir::ControlFlowGraph::iterator> ValueToValueMapTy;
+    typedef std::unordered_map<ir::ControlFlowGraph::iterator,
+    	ir::ControlFlowGraph::iterator> ValueToValueMapTy;
 
     ir::PTXKernel* _kernel;
 
-    ir::ControlFlowGraph::iterator SplitBlockPredecessors(ir::ControlFlowGraph::iterator BB, BBVecTy::iterator begin, int size);
+    ir::ControlFlowGraph::iterator SplitBlockPredecessors(
+    	ir::ControlFlowGraph::iterator BB, BBVecTy::iterator begin, int size);
 
     // Algorithm 2 of Zhang's paper -- elimination of outgoing branches
     bool Cut(NodeTy *N); 
@@ -86,3 +90,4 @@ namespace analysis {
 }
 
 #endif
+

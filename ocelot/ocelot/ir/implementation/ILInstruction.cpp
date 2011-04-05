@@ -92,6 +92,7 @@ namespace ir
 		}
 
 		assertM(false, "Unreachable line");
+		return "";
 	}
 
 	std::string ILInstruction::toString(DataType d)
@@ -105,7 +106,9 @@ namespace ir
 			{
 				assertM(false, "DataType " << d << " not supported");
 			}
-		};
+		}
+		
+		return "";
 	}
 	
 	std::string ILInstruction::toString(const ClampOperation &c)
@@ -145,6 +148,7 @@ namespace ir
 	std::string ILInstruction::valid() const
 	{
 		assertM(false, "Not implemented yet");
+		return "";
 	}
 
 	ILUnaryInstruction::ILUnaryInstruction(Opcode op) : ILInstruction(op)

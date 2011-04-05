@@ -109,6 +109,7 @@ void cuda::CudaRuntimeInterface::reset() {
 ocelot::PointerMap cuda::CudaRuntimeInterface::contextSwitch( 
 	unsigned int destinationDevice, unsigned int sourceDevice ) {
 	assert(0 && "unimplemented");
+	return ocelot::PointerMap();
 }
 
 void cuda::CudaRuntimeInterface::unregisterModule( const std::string& name ) {
@@ -128,6 +129,7 @@ void cuda::CudaRuntimeInterface::setOptimizationLevel(
 
 void** cuda::CudaRuntimeInterface::cudaRegisterFatBinary(void *fatCubin) {
 	assert(0 && "unimplemented");
+	return 0;
 }
 
 void cuda::CudaRuntimeInterface::cudaUnregisterFatBinary(

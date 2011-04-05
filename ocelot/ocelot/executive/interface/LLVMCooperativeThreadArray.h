@@ -57,6 +57,7 @@ private:
 	void _destroyContext(unsigned int context);
 	bool _finishContext(unsigned int context);
 	void _destroyContexts();
+	unsigned int _threadId(const LLVMContext& context);
 
 private:
 	LLVMModuleManager::FunctionId _entryPoint;

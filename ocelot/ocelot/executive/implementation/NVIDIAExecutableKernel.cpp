@@ -126,6 +126,8 @@ void executive::NVIDIAExecutableKernel::updateMemory() {
 executive::ExecutableKernel::TextureVector 
 	executive::NVIDIAExecutableKernel::textureReferences() const {
 	assertM(false, "no support for getting texture references");
+	
+	return executive::ExecutableKernel::TextureVector();
 }
 
 void executive::NVIDIAExecutableKernel::updateGlobalMemory() {

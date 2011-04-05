@@ -512,6 +512,7 @@ namespace executive
 		ATIExecutableKernel::textureReferences() const
 	{
 		assertM(false, "Not implemented yet");
+		return ExecutableKernel::TextureVector();
 	}
 
 	void ATIExecutableKernel::addTraceGenerator(trace::TraceGenerator* generator)

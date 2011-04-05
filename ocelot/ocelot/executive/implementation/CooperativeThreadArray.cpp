@@ -6217,7 +6217,6 @@ void executive::CooperativeThreadArray::eval_Ret(CTAContext &context,
 		functionCallStack.returnPC()];
 	reportE(REPORT_RET, " Previous stack size (" 
 		<< functionCallStack.callerFrameSize() );
-	unsigned int callerStackSize = functionCallStack.callerFrameSize();
 	unsigned int offset = 0;
 	for (ir::PTXOperand::Array::const_iterator argument = call.d.array.begin();
 		argument != call.d.array.end(); ++argument) {
@@ -6237,7 +6236,8 @@ void executive::CooperativeThreadArray::eval_Ret(CTAContext &context,
 				<< argument->offset
 				<< " - destination: "
 				<< (void *)(callerPointer + argument->offset)
-				<< " - caller stack size: " << callerStackSize);
+				<< " - caller stack size: "
+					<< functionCallStack.callerFrameSize());
 			
 			std::memcpy(callerPointer + argument->offset, pointer + offset, 
 				ir::PTXOperand::bytes(argument->type));

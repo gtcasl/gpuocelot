@@ -62,15 +62,6 @@ int main(int argc, char *arg[]) {
 
 	size_t bytes = sizeof(int)*N;
 	
-	void *driverApiHandle = dlopen("libcuda.so", RTLD_NOW);
-	if (driverApiHandle) {
-		printf("Loaded libcuda.so explicitly; unloading now.\n");
-		dlclose(driverApiHandle);
-	}
-	else {
-		printf("Error: %s\n", dlerror());
-	}	
-
 	cudaError_t result = cudaThreadSynchronize();
 	if (result != cudaSuccess) {
 		printf("cudaThreadSynchronize() = %s\n", cudaGetErrorString(result));

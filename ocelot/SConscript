@@ -105,12 +105,16 @@ ocelot_libs.extend(env['LLVM_LIBS'])
 
 OcelotConfig = env.Program('OcelotConfig', \
 	['ocelot/tools/OcelotConfig.cpp'], LIBS=ocelot_libs)
+env.Depends(OcelotConfig, libocelot)
 PTXOptimizer = env.Program('PTXOptimizer', \
 	['ocelot/tools/PTXOptimizer.cpp'], LIBS=ocelot_libs)
+env.Depends(PTXOptimizer, libocelot)
 OcelotServer = env.Program('OcelotServer', \
 	['ocelot/tools/OcelotServer.cpp'], LIBS=ocelot_libs)
+env.Depends(OcelotServer, libocelot)
 OcelotHarness = env.Program('OcelotKernelTestHarness', \
 	['ocelot/tools/KernelTestHarness.cpp'], LIBS=ocelot_libs)
+env.Depends(OcelotHarness, libocelot)
 
 Default(OcelotConfig)
 
@@ -161,6 +165,7 @@ tests.append(('TestPTXAssembly', \
 
 for test in tests:
 	Test = env.Program(test[0], [test[1]], LIBS=ocelot_libs)
+	env.Depends(Test, libocelot)
 
 if env['test_level'] != 'none':
 	print 'Adding unit tests to the build...'

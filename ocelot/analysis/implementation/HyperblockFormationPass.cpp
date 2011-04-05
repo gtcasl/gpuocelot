@@ -169,7 +169,6 @@ void analysis::HyperblockFormation::runOnKernel(KernelDecomposition &decompositi
 			computationalBlock->instructions.push_back((*inst_it)->clone());
 		}
 		
-		
 		ir::BasicBlock::Edge entryEdge(hyperblock.subkernel->cfg()->get_entry_block(), computationalBlock );
 		ir::BasicBlock::Edge exitEdge(computationalBlock, hyperblock.subkernel->cfg()->get_exit_block() );
 		ir::ControlFlowGraph::edge_iterator entryIterator = hyperblock.subkernel->cfg()->insert_edge(entryEdge);
@@ -184,12 +183,17 @@ void analysis::HyperblockFormation::runOnKernel(KernelDecomposition &decompositi
 		
 		for (ir::BasicBlock::EdgePointerVector::const_iterator edge_it = (*bb_it)->out_edges.begin();
 			edge_it != (*bb_it)->out_edges.end(); ++edge_it) {
-			Hyperblock::Edge edge;
-			edge.liveValues = dfgBlock->second->aliveOut();
-			edge.externalBlock = (*bb_it);
-			edge.type = (*edge_it)->type;
-			edge.label = (*edge_it)->tail->label ;
-			hyperblock.out_edges.push_back(edge);
+			
+			if ((*edge_it)->type == ir::BasicBlock::Edge::FallThrough || 
+				(*edge_it)->type == ir::BasicBlock::Edge::Branch) {
+				
+				Hyperblock::Edge edge;
+				edge.liveValues = dfgBlock->second->aliveOut();
+				edge.externalBlock = (*bb_it);
+				edge.type = (*edge_it)->type;
+				edge.label = (*edge_it)->tail->label ;
+				hyperblock.out_edges.push_back(edge);
+			}
 		}
 		
 		decomposition.hyperblocks[hyperblock.hyperblockId] = hyperblock;
@@ -429,7 +433,8 @@ size_t analysis::HyperblockFormation::_createHyperblockExit(
 		{
 			if (terminator->pg.addressMode == ir::PTXOperand::Register && 
 				terminator->pg.type == ir::PTXOperand::pred &&
-				hyperblock.out_edges.size() >= 2) {
+				hyperblock.out_edges.size() >= 2 &&
+				!terminator->uni) {
 				
 				report(" conditional branch");
 				
@@ -462,6 +467,7 @@ size_t analysis::HyperblockFormation::_createHyperblockExit(
 					std::swap(branchTargetId, fallthroughTargetId);
 				}
 				else if (terminator->pg.condition != ir::PTXOperand::Pred) {
+					std::cerr << terminator->toString() << std::endl;
 					assert(0 && "invalid predicate condition for conditional branch");
 				}
 				
@@ -478,11 +484,15 @@ size_t analysis::HyperblockFormation::_createHyperblockExit(
 				// unconditional branch
 				report(" unconditional branch");
 				resumePointOperand = std::move(ir::PTXOperand(ir::PTXOperand::Immediate, ir::PTXOperand::u32));
-				
+				bool setResumePoint = false;
 				for (Hyperblock::EdgeVector::const_iterator edge_it = hyperblock.out_edges.begin();
 					edge_it != hyperblock.out_edges.end(); ++edge_it) {
-					resumePointOperand.imm_uint = edge_it->externalHyperblock;
+					if (edge_it->type == ir::BasicBlock::Edge::Branch) {
+						resumePointOperand.imm_uint = edge_it->externalHyperblock;
+						setResumePoint = true;
+					}
 				}
+				assert(setResumePoint && "Failed to set resume point; no out-edges are branch edges");
 				
 				exitBlock->instructions.erase(last);
 			}

@@ -14,6 +14,9 @@ from optparse import OptionParser
 ################################################################################
 ## Run Unit Tests
 def runUnitTests(options):
+	if options.clean:
+		return False
+	
 	if options.test_level == 'none':
 		return False
 	

@@ -158,6 +158,8 @@ unsigned int executive::Device::deviceCount(ir::Instruction::Architecture isa,
 		default: break;
 	}
 	assertM(false, "Invalid ISA - " << ir::Instruction::toString(isa));
+	
+	return 0;
 }
 
 executive::Device::Device( unsigned int flags) : _driverVersion(3000), 

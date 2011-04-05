@@ -99,7 +99,7 @@ if 'install' in COMMAND_LINE_TARGETS:
 	libocelot = env.Install(os.path.join( \
 		env['install_path'], "lib"), libocelot)
 
-ocelot_libs = [libocelot]
+ocelot_libs = ['-locelot']
 ocelot_libs.extend(env['EXTRA_LIBS'])
 ocelot_libs.extend(env['LLVM_LIBS'])
 

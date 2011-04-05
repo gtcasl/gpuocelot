@@ -2394,6 +2394,8 @@ std::string ir::PTXInstruction::toString() const {
 	}
 	assertM(false, "Instruction opcode " << toString(opcode) 
 		<< " not implemented.");
+		
+	return "";
 }
 
 ir::Instruction* ir::PTXInstruction::clone(bool copy) const {

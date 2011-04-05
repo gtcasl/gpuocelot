@@ -19,7 +19,8 @@ def getDebianArchitecture():
 	try:
 		dpkg_arch_path = which('dpkg-architecture')
 	except:
-		raise ValueError, 'Failed to find dpkg-architecture'
+		raise ValueError, "Failed to find 'dpkg-architecture' needed for .deb" \
+			". Try installing dpkg-dev"
 
 	# setup .deb environment variables
 	arch = os.popen( \
@@ -135,6 +136,15 @@ def getLLVMPaths(enabled):
 			asmparser instcombine').read().split()
 	else:
 		raise ValueError, 'Error: unknown OS.  Where is LLVM installed?'
+	
+	# remove -DNDEBUG
+	if '-DNDEBUG' in cflags:
+		cflags.remove('-DNDEBUG')
+
+	# remove lib_path from libs
+	for lib in libs:
+		if lib[0:2] == "-L":
+			libs.remove(lib)
 
 	return (True,bin_path,lib_path,inc_path,cflags,lflags,libs)
 	
@@ -308,7 +318,9 @@ def Environment():
 	# Set the debian architecture
 	if 'debian' in COMMAND_LINE_TARGETS:
 		env.Replace(deb_arch = getDebianArchitecture())
-
+	else:
+		env.Replace(deb_arch = 'unknown')
+		
 	# get CUDA paths
 	(cuda_exe_path,cuda_lib_path,cuda_inc_path) = getCudaPaths()
 

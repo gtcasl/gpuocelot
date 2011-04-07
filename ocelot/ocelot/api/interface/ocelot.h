@@ -86,6 +86,15 @@ namespace ocelot
 
 	/*! \brief Launch a cuda kernel by name */
 	void launch(const std::string& moduleName, const std::string& kernelName);
+
+	/*! \brief Register a callable host function with Ocelot 
+
+		This function will be callable as a PTX function.
+	*/
+	void registerExternalFunction(const std::string& name, void* function);
+
+	/*! \brief Remove a previously registered host function */
+	void removeExternalFunction(const std::string& name);
 }
 
 #endif

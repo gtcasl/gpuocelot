@@ -51,6 +51,10 @@ namespace ocelot
 				ocelot::addTraceGenerator(_debugger, true);
 		}
 
+		// add built-in functions
+		registerExternalFunction("malloc", (void*)(std::malloc));
+		registerExternalFunction("free",   (void*)(std::free));
+		registerExternalFunction("printf", (void*)(std::printf));
 	}
 
 }

@@ -110,8 +110,10 @@ void executive::EmulatedKernel::launchGrid(int width, int height) {
 	report("  param: " << parameterMemorySize() << " bytes");
 	report("  max threads: " << maxThreadsPerBlock() << " threads per block");
 	report("  registers: " << registerCount() << " registers");
-	report("  grid: " << gridDim().x << ", " << gridDim().y << ", " << gridDim().z);
-	report("  block: " << blockDim().x << ", " << blockDim().y << ", " << blockDim().z);
+	report("  grid: " << gridDim().x << ", " << gridDim().y
+		<< ", " << gridDim().z);
+	report("  block: " << blockDim().x << ", " << blockDim().y
+		<< ", " << blockDim().z);
 #endif
 
 	CooperativeThreadArray cta(this, gridDim(), !_generators.empty());
@@ -164,6 +166,17 @@ void executive::EmulatedKernel::removeTraceGenerator(
 		}
 	}
 }
+
+
+void executive::EmulatedKernel::setExternalFunctionSet(
+	const ir::ExternalFunctionSet& s) {
+	_externals = &s;
+}
+
+void executive::EmulatedKernel::clearExternalFunctionSet() {
+	_externals = 0;
+}
+
 
 void executive::EmulatedKernel::freeAll() {
 	delete [] ConstMemory;
@@ -456,7 +469,8 @@ void executive::EmulatedKernel::updateArgumentMemory() {
 				- (size % argument.getAlignment());
 			padding = (argument.getAlignment() == padding) ? 0 : padding;
 			
-			report("  offset: " << size << ", alignment: " << argument.getAlignment() << ", padding: " << padding);
+			report("  offset: " << size << ", alignment: "
+				<< argument.getAlignment() << ", padding: " << padding);
 			
 			size += padding;
 			

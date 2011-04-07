@@ -21,6 +21,8 @@ struct cudaChannelFormatDesc;
 struct cudaFuncAttributes;
 struct textureReference;
 
+namespace ir { class ExternalFunctionSet; }
+
 namespace executive 
 {
 	/*! Interface for controlling an Ocelot device */
@@ -305,7 +307,8 @@ namespace executive
 				const ir::Dim3& block, size_t sharedMemory, 
 				const void* argumentBlock, size_t argumentBlockSize, 
 				const trace::TraceGeneratorVector& 
-				traceGenerators = trace::TraceGeneratorVector()) = 0;
+				traceGenerators = trace::TraceGeneratorVector(),
+				const ir::ExternalFunctionSet* externals = 0) = 0;
 			/*! \brief Get the function attributes of a specific kernel */
 			virtual cudaFuncAttributes getAttributes(const std::string& module, 
 				const std::string& kernel) = 0;
@@ -320,7 +323,7 @@ namespace executive
 			/*! \brief Set the optimization level for kernels in this device */
 			virtual void setOptimizationLevel(
 				translator::Translator::OptimizationLevel level) = 0;
-			
+		
 		public:
 			/*! \brief Sets the device properties */
 			Device(unsigned int flags = 0);

@@ -150,6 +150,18 @@ void executive::NVIDIAExecutableKernel::removeTraceGenerator(
 	assertM(false, "No trace generation support in GPU kernel.");	
 }
 
+
+void executive::NVIDIAExecutableKernel::setExternalFunctionSet(
+	const ir::ExternalFunctionSet& s) {
+	assertM(false, "No external function support in GPU kernel.");	
+
+}
+
+void executive::NVIDIAExecutableKernel::clearExternalFunctionSet() {
+	assertM(false, "No external function support in GPU kernel.");	
+}
+
+
 void executive::NVIDIAExecutableKernel::setWorkerThreads(unsigned int limit) {
 
 }

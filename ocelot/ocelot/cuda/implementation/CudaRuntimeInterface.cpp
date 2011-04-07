@@ -23,7 +23,7 @@
 
 #define REPORT_BASE 0
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 cuda::CudaRuntimeInterface * cuda::CudaRuntimeInterface::instance = 0;
 
@@ -34,7 +34,7 @@ static void destroyInstance() {
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 cuda::CudaRuntimeInterface * cuda::CudaRuntimeInterface::get() {
 	if (!cuda::CudaRuntimeInterface::instance) {
@@ -61,7 +61,7 @@ cuda::CudaRuntimeInterface::~CudaRuntimeInterface() {
 
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 void cuda::CudaRuntimeInterface::addTraceGenerator( trace::TraceGenerator& gen, 
 	bool persistent ) {
@@ -125,6 +125,17 @@ void cuda::CudaRuntimeInterface::setOptimizationLevel(
 	translator::Translator::OptimizationLevel l) {
 	assert(0 && "unimplemented");
 }
+
+void cuda::CudaRuntimeInterface::registerExternalFunction(
+	const std::string& name, void* function) {
+	assert(0 && "unimplemented");
+}
+
+void cuda::CudaRuntimeInterface::removeExternalFunction(
+	const std::string& name) {
+	assert(0 && "unimplemented");
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 
 void** cuda::CudaRuntimeInterface::cudaRegisterFatBinary(void *fatCubin) {
@@ -185,31 +196,36 @@ void cuda::CudaRuntimeInterface::cudaRegisterFunction(
 
 ////////////////////////////////////////////////////////////////////////////////
 
-cudaError_t cuda::CudaRuntimeInterface::cudaMalloc3D(struct cudaPitchedPtr* pitchedDevPtr, 
+cudaError_t cuda::CudaRuntimeInterface::cudaMalloc3D(
+	struct cudaPitchedPtr* pitchedDevPtr, 
 	struct cudaExtent extent) {
 	
 	assert(0 && "unimplemented");
 	return cudaErrorNotYetImplemented;
 }
 
-cudaError_t cuda::CudaRuntimeInterface::cudaMalloc3DArray(struct cudaArray** arrayPtr, 
+cudaError_t cuda::CudaRuntimeInterface::cudaMalloc3DArray(
+	struct cudaArray** arrayPtr, 
 	const struct cudaChannelFormatDesc* desc, struct cudaExtent extent) {
 	assert(0 && "unimplemented");
 	return cudaErrorNotYetImplemented;
 }
 
-cudaError_t cuda::CudaRuntimeInterface::cudaMemset3D(struct cudaPitchedPtr pitchedDevPtr, int value, 
+cudaError_t cuda::CudaRuntimeInterface::cudaMemset3D(
+	struct cudaPitchedPtr pitchedDevPtr, int value, 
 	struct cudaExtent extent) {
 	assert(0 && "unimplemented");
 	return cudaErrorNotYetImplemented;
 }
 
-cudaError_t cuda::CudaRuntimeInterface::cudaMemcpy3D(const struct cudaMemcpy3DParms *p) {
+cudaError_t cuda::CudaRuntimeInterface::cudaMemcpy3D(
+	const struct cudaMemcpy3DParms *p) {
 	assert(0 && "unimplemented");
 	return cudaErrorNotYetImplemented;
 }
 
-cudaError_t cuda::CudaRuntimeInterface::cudaMemcpy3DAsync(const struct cudaMemcpy3DParms *p, 
+cudaError_t cuda::CudaRuntimeInterface::cudaMemcpy3DAsync(
+	const struct cudaMemcpy3DParms *p, 
 	cudaStream_t stream) {
 	assert(0 && "unimplemented");
 	return cudaErrorNotYetImplemented;
@@ -222,18 +238,21 @@ cudaError_t cuda::CudaRuntimeInterface::cudaMalloc(void **devPtr, size_t size) {
 	return cudaErrorNotYetImplemented;
 }
 
-cudaError_t cuda::CudaRuntimeInterface::cudaMallocHost(void **ptr, size_t size) {
+cudaError_t cuda::CudaRuntimeInterface::cudaMallocHost(
+	void **ptr, size_t size) {
 	assert(0 && "unimplemented");
 	return cudaErrorNotYetImplemented;
 }
 
-cudaError_t cuda::CudaRuntimeInterface::cudaMallocPitch(void **devPtr, size_t *pitch, size_t width, 
+cudaError_t cuda::CudaRuntimeInterface::cudaMallocPitch(void **devPtr,
+	size_t *pitch, size_t width, 
 	size_t height) {
 	assert(0 && "unimplemented");
 	return cudaErrorNotYetImplemented;
 }
 
-cudaError_t cuda::CudaRuntimeInterface::cudaMallocArray(struct cudaArray **array, 
+cudaError_t cuda::CudaRuntimeInterface::cudaMallocArray(
+	struct cudaArray **array, 
 	const struct cudaChannelFormatDesc *desc, size_t width, size_t height) {
 	assert(0 && "unimplemented");
 	return cudaErrorNotYetImplemented;
@@ -255,83 +274,99 @@ cudaError_t cuda::CudaRuntimeInterface::cudaFreeArray(struct cudaArray *array) {
 }
 
 
-cudaError_t cuda::CudaRuntimeInterface::cudaHostAlloc(void **pHost, size_t bytes, unsigned int flags) {
+cudaError_t cuda::CudaRuntimeInterface::cudaHostAlloc(void **pHost,
+	size_t bytes, unsigned int flags) {
 	assert(0 && "unimplemented");
 	return cudaErrorNotYetImplemented;
 }
 
-cudaError_t cuda::CudaRuntimeInterface::cudaHostGetDevicePointer(void **pDevice, void *pHost, 
+cudaError_t cuda::CudaRuntimeInterface::cudaHostGetDevicePointer(
+	void **pDevice, void *pHost, 
 	unsigned int flags) {
 	assert(0 && "unimplemented");
 	return cudaErrorNotYetImplemented;
 }
 
-cudaError_t cuda::CudaRuntimeInterface::cudaHostGetFlags(unsigned int *pFlags, void *pHost) {
+cudaError_t cuda::CudaRuntimeInterface::cudaHostGetFlags(
+	unsigned int *pFlags, void *pHost) {
 	assert(0 && "unimplemented");
 	return cudaErrorNotYetImplemented;
 }
 
 
 
-cudaError_t cuda::CudaRuntimeInterface::cudaMemcpy(void *dst, const void *src, size_t count, 
+cudaError_t cuda::CudaRuntimeInterface::cudaMemcpy(void *dst,
+	const void *src, size_t count, 
 	enum cudaMemcpyKind kind) {
 	assert(0 && "unimplemented");
 	return cudaErrorNotYetImplemented;
 }
 
-cudaError_t cuda::CudaRuntimeInterface::cudaMemcpyToArray(struct cudaArray *dst, size_t wOffset, 
+cudaError_t cuda::CudaRuntimeInterface::cudaMemcpyToArray(
+	struct cudaArray *dst, size_t wOffset, 
 	size_t hOffset, const void *src, size_t count, enum cudaMemcpyKind kind) {
 	assert(0 && "unimplemented");
 	return cudaErrorNotYetImplemented;
 }
 
-cudaError_t cuda::CudaRuntimeInterface::cudaMemcpyFromArray(void *dst, const struct cudaArray *src, 
+cudaError_t cuda::CudaRuntimeInterface::cudaMemcpyFromArray(
+	void *dst, const struct cudaArray *src, 
 	size_t wOffset, size_t hOffset, size_t count, enum cudaMemcpyKind kind) {
 	assert(0 && "unimplemented");
 	return cudaErrorNotYetImplemented;
 }
 
-cudaError_t cuda::CudaRuntimeInterface::cudaMemcpyArrayToArray(struct cudaArray *dst, size_t wOffsetDst, 
-	size_t hOffsetDst, const struct cudaArray *src, size_t wOffsetSrc, size_t hOffsetSrc, 
+cudaError_t cuda::CudaRuntimeInterface::cudaMemcpyArrayToArray(
+	struct cudaArray *dst, size_t wOffsetDst, 
+	size_t hOffsetDst, const struct cudaArray *src, size_t wOffsetSrc,
+	size_t hOffsetSrc, 
 	size_t count, enum cudaMemcpyKind kind) {
 	assert(0 && "unimplemented");
 	return cudaErrorNotYetImplemented;
 }
 
-cudaError_t cuda::CudaRuntimeInterface::cudaMemcpy2D(void *dst, size_t dpitch, const void *src, 
+cudaError_t cuda::CudaRuntimeInterface::cudaMemcpy2D(
+	void *dst, size_t dpitch, const void *src, 
 	size_t spitch, size_t width, size_t height, enum cudaMemcpyKind kind) {
 	assert(0 && "unimplemented");
 	return cudaErrorNotYetImplemented;
 }
 
-cudaError_t cuda::CudaRuntimeInterface::cudaMemcpy2DToArray(struct cudaArray *dst, size_t wOffset, 
+cudaError_t cuda::CudaRuntimeInterface::cudaMemcpy2DToArray(
+	struct cudaArray *dst, size_t wOffset, 
 	size_t hOffset, const void *src, size_t spitch, size_t width, size_t height, 
 	enum cudaMemcpyKind kind) {
 	assert(0 && "unimplemented");
 	return cudaErrorNotYetImplemented;
 }
 
-cudaError_t cuda::CudaRuntimeInterface::cudaMemcpy2DFromArray(void *dst, size_t dpitch, 	
-	const struct cudaArray *src, size_t wOffset, size_t hOffset, size_t width, size_t height, 
+cudaError_t cuda::CudaRuntimeInterface::cudaMemcpy2DFromArray(
+	void *dst, size_t dpitch, 	
+	const struct cudaArray *src, size_t wOffset, size_t hOffset,
+	size_t width, size_t height, 
 	enum cudaMemcpyKind kind) {
 	assert(0 && "unimplemented");
 	return cudaErrorNotYetImplemented;
 }
 
-cudaError_t cuda::CudaRuntimeInterface::cudaMemcpy2DArrayToArray(struct cudaArray *dst, size_t wOffsetDst, 
-	size_t hOffsetDst, const struct cudaArray *src, size_t wOffsetSrc, size_t hOffsetSrc, 
+cudaError_t cuda::CudaRuntimeInterface::cudaMemcpy2DArrayToArray(
+	struct cudaArray *dst, size_t wOffsetDst, 
+	size_t hOffsetDst, const struct cudaArray *src, size_t wOffsetSrc,
+	size_t hOffsetSrc, 
 	size_t width, size_t height, enum cudaMemcpyKind kind) {
 	assert(0 && "unimplemented");
 	return cudaErrorNotYetImplemented;
 }
 
-cudaError_t cuda::CudaRuntimeInterface::cudaMemcpyToSymbol(const char *symbol, const void *src, 
+cudaError_t cuda::CudaRuntimeInterface::cudaMemcpyToSymbol(const char *symbol,
+	const void *src, 
 	size_t count, size_t offset, enum cudaMemcpyKind kind) {
 	assert(0 && "unimplemented");
 	return cudaErrorNotYetImplemented;
 }
 
-cudaError_t cuda::CudaRuntimeInterface::cudaMemcpyFromSymbol(void *dst, const char *symbol, size_t count, 
+cudaError_t cuda::CudaRuntimeInterface::cudaMemcpyFromSymbol(void *dst, 
+	const char *symbol, size_t count, 
 	size_t offset, enum cudaMemcpyKind kind) {
 	assert(0 && "unimplemented");
 	return cudaErrorNotYetImplemented;
@@ -339,64 +374,80 @@ cudaError_t cuda::CudaRuntimeInterface::cudaMemcpyFromSymbol(void *dst, const ch
 
 
 
-cudaError_t cuda::CudaRuntimeInterface::cudaMemcpyAsync(void *dst, const void *src, size_t count, 
+cudaError_t cuda::CudaRuntimeInterface::cudaMemcpyAsync(void *dst,
+	const void *src, size_t count, 
 	enum cudaMemcpyKind kind, cudaStream_t stream) {
 	assert(0 && "unimplemented");
 	return cudaErrorNotYetImplemented;
 }
 
-cudaError_t cuda::CudaRuntimeInterface::cudaMemcpyToArrayAsync(struct cudaArray *dst, size_t wOffset, 
-	size_t hOffset, const void *src, size_t count, enum cudaMemcpyKind kind, cudaStream_t stream) {
+cudaError_t cuda::CudaRuntimeInterface::cudaMemcpyToArrayAsync(
+	struct cudaArray *dst, size_t wOffset, 
+	size_t hOffset, const void *src, size_t count,
+	enum cudaMemcpyKind kind, cudaStream_t stream) {
 	assert(0 && "unimplemented");
 	return cudaErrorNotYetImplemented;
 }
 
-cudaError_t cuda::CudaRuntimeInterface::cudaMemcpyFromArrayAsync(void *dst, const struct cudaArray *src, 
-	size_t wOffset, size_t hOffset, size_t count, enum cudaMemcpyKind kind, cudaStream_t stream) {
+cudaError_t cuda::CudaRuntimeInterface::cudaMemcpyFromArrayAsync(void *dst,
+	const struct cudaArray *src, 
+	size_t wOffset, size_t hOffset, size_t count, enum cudaMemcpyKind kind,
+	cudaStream_t stream) {
 	assert(0 && "unimplemented");
 	return cudaErrorNotYetImplemented;
 }
 
-cudaError_t cuda::CudaRuntimeInterface::cudaMemcpy2DAsync(void *dst, size_t dpitch, const void *src, 
-	size_t spitch, size_t width, size_t height, enum cudaMemcpyKind kind, cudaStream_t stream) {
+cudaError_t cuda::CudaRuntimeInterface::cudaMemcpy2DAsync(
+	void *dst, size_t dpitch, const void *src, 
+	size_t spitch, size_t width, size_t height,
+	enum cudaMemcpyKind kind, cudaStream_t stream) {
 	assert(0 && "unimplemented");
 	return cudaErrorNotYetImplemented;
 }
 
-cudaError_t cuda::CudaRuntimeInterface::cudaMemcpy2DToArrayAsync(struct cudaArray *dst, size_t wOffset, 
+cudaError_t cuda::CudaRuntimeInterface::cudaMemcpy2DToArrayAsync(
+	struct cudaArray *dst, size_t wOffset, 
 	size_t hOffset, const void *src, size_t spitch, size_t width, size_t height, 
 	enum cudaMemcpyKind kind, cudaStream_t stream) {
 	assert(0 && "unimplemented");
 	return cudaErrorNotYetImplemented;
 }
 
-cudaError_t cuda::CudaRuntimeInterface::cudaMemcpy2DFromArrayAsync(void *dst, size_t dpitch, 
-	const struct cudaArray *src, size_t wOffset, size_t hOffset, size_t width, size_t height, 
+cudaError_t cuda::CudaRuntimeInterface::cudaMemcpy2DFromArrayAsync(
+	void *dst, size_t dpitch, 
+	const struct cudaArray *src, size_t wOffset, size_t hOffset,
+	size_t width, size_t height, 
 	enum cudaMemcpyKind kind, cudaStream_t stream) {
 	assert(0 && "unimplemented");
 	return cudaErrorNotYetImplemented;
 }
 
-cudaError_t cuda::CudaRuntimeInterface::cudaMemcpyToSymbolAsync(const char *symbol, const void *src, 
-	size_t count, size_t offset, enum cudaMemcpyKind kind, cudaStream_t stream) {
+cudaError_t cuda::CudaRuntimeInterface::cudaMemcpyToSymbolAsync(
+	const char *symbol, const void *src, 
+	size_t count, size_t offset, enum cudaMemcpyKind kind,
+	cudaStream_t stream) {
 	assert(0 && "unimplemented");
 	return cudaErrorNotYetImplemented;
 }
 
-cudaError_t cuda::CudaRuntimeInterface::cudaMemcpyFromSymbolAsync(void *dst, const char *symbol, 
-	size_t count, size_t offset, enum cudaMemcpyKind kind, cudaStream_t stream) {
+cudaError_t cuda::CudaRuntimeInterface::cudaMemcpyFromSymbolAsync(
+	void *dst, const char *symbol, 
+	size_t count, size_t offset, enum cudaMemcpyKind kind,
+	cudaStream_t stream) {
 	assert(0 && "unimplemented");
 	return cudaErrorNotYetImplemented;
 }
 
 
 
-cudaError_t cuda::CudaRuntimeInterface::cudaMemset(void *devPtr, int value, size_t count) {
+cudaError_t cuda::CudaRuntimeInterface::cudaMemset(
+	void *devPtr, int value, size_t count) {
 	assert(0 && "unimplemented");
 	return cudaErrorNotYetImplemented;
 }
 
-cudaError_t cuda::CudaRuntimeInterface::cudaMemset2D(void *devPtr, size_t pitch, int value, size_t width, 
+cudaError_t cuda::CudaRuntimeInterface::cudaMemset2D(
+	void *devPtr, size_t pitch, int value, size_t width, 
 	size_t height) {
 	assert(0 && "unimplemented");
 	return cudaErrorNotYetImplemented;
@@ -404,12 +455,14 @@ cudaError_t cuda::CudaRuntimeInterface::cudaMemset2D(void *devPtr, size_t pitch,
 
 
 
-cudaError_t cuda::CudaRuntimeInterface::cudaGetSymbolAddress(void **devPtr, const char *symbol) {
+cudaError_t cuda::CudaRuntimeInterface::cudaGetSymbolAddress(
+	void **devPtr, const char *symbol) {
 	assert(0 && "unimplemented");
 	return cudaErrorNotYetImplemented;
 }
 
-cudaError_t cuda::CudaRuntimeInterface::cudaGetSymbolSize(size_t *size, const char *symbol) {
+cudaError_t cuda::CudaRuntimeInterface::cudaGetSymbolSize(
+	size_t *size, const char *symbol) {
 	assert(0 && "unimplemented");
 	return cudaErrorNotYetImplemented;
 }
@@ -420,12 +473,14 @@ cudaError_t cuda::CudaRuntimeInterface::cudaGetDeviceCount(int *count) {
 	return cudaErrorNotYetImplemented;
 }
 
-cudaError_t cuda::CudaRuntimeInterface::cudaGetDeviceProperties(struct cudaDeviceProp *prop, int device) {
+cudaError_t cuda::CudaRuntimeInterface::cudaGetDeviceProperties(
+	struct cudaDeviceProp *prop, int device) {
 	assert(0 && "unimplemented");
 	return cudaErrorNotYetImplemented;
 }
 
-cudaError_t cuda::CudaRuntimeInterface::cudaChooseDevice(int *device, const struct cudaDeviceProp *prop) {
+cudaError_t cuda::CudaRuntimeInterface::cudaChooseDevice(
+	int *device, const struct cudaDeviceProp *prop) {
 	assert(0 && "unimplemented");
 	return cudaErrorNotYetImplemented;
 }
@@ -440,7 +495,8 @@ cudaError_t cuda::CudaRuntimeInterface::cudaGetDevice(int *device) {
 	return cudaErrorNotYetImplemented;
 }
 
-cudaError_t cuda::CudaRuntimeInterface::cudaSetValidDevices(int *device_arr, int len) {
+cudaError_t cuda::CudaRuntimeInterface::cudaSetValidDevices(
+	int *device_arr, int len) {
 	assert(0 && "unimplemented");
 	return cudaErrorNotYetImplemented;
 }
@@ -461,29 +517,34 @@ cudaError_t cuda::CudaRuntimeInterface::cudaBindTexture(size_t *offset,
 
 cudaError_t cuda::CudaRuntimeInterface::cudaBindTexture2D(size_t *offset,
 	const struct textureReference *texref,const void *devPtr, 
-	const struct cudaChannelFormatDesc *desc,size_t width, size_t height, size_t pitch) {
+	const struct cudaChannelFormatDesc *desc,size_t width, size_t height,
+	size_t pitch) {
 	assert(0 && "unimplemented");
 	return cudaErrorNotYetImplemented;
 }
 
-cudaError_t cuda::CudaRuntimeInterface::cudaBindTextureToArray(const struct textureReference *texref, 
+cudaError_t cuda::CudaRuntimeInterface::cudaBindTextureToArray(
+	const struct textureReference *texref, 
 	const struct cudaArray *array, const struct cudaChannelFormatDesc *desc) {
 	assert(0 && "unimplemented");
 	return cudaErrorNotYetImplemented;
 }
 
-cudaError_t cuda::CudaRuntimeInterface::cudaUnbindTexture(const struct textureReference *texref) {
-	assert(0 && "unimplemented");
-	return cudaErrorNotYetImplemented;
-}
-
-cudaError_t cuda::CudaRuntimeInterface::cudaGetTextureAlignmentOffset(size_t *offset, 
+cudaError_t cuda::CudaRuntimeInterface::cudaUnbindTexture(
 	const struct textureReference *texref) {
 	assert(0 && "unimplemented");
 	return cudaErrorNotYetImplemented;
 }
 
-cudaError_t cuda::CudaRuntimeInterface::cudaGetTextureReference(const struct textureReference **texref, 
+cudaError_t cuda::CudaRuntimeInterface::cudaGetTextureAlignmentOffset(
+	size_t *offset, 
+	const struct textureReference *texref) {
+	assert(0 && "unimplemented");
+	return cudaErrorNotYetImplemented;
+}
+
+cudaError_t cuda::CudaRuntimeInterface::cudaGetTextureReference(
+	const struct textureReference **texref, 
 	const char *symbol) {
 	assert(0 && "unimplemented");
 	return cudaErrorNotYetImplemented;
@@ -491,13 +552,15 @@ cudaError_t cuda::CudaRuntimeInterface::cudaGetTextureReference(const struct tex
 
 
 
-cudaError_t cuda::CudaRuntimeInterface::cudaGetChannelDesc(struct cudaChannelFormatDesc *desc, 
+cudaError_t cuda::CudaRuntimeInterface::cudaGetChannelDesc(
+	struct cudaChannelFormatDesc *desc, 
 	const struct cudaArray *array) {
 	assert(0 && "unimplemented");
 	return cudaErrorNotYetImplemented;
 }
 
-struct cudaChannelFormatDesc cuda::CudaRuntimeInterface::cudaCreateChannelDesc(int x, int y, int z, int w, 
+struct cudaChannelFormatDesc cuda::CudaRuntimeInterface::cudaCreateChannelDesc(
+	int x, int y, int z, int w, 
 	enum cudaChannelFormatKind f) {
 	struct cudaChannelFormatDesc desc = {x, y, z, w, f};
 	return desc;
@@ -510,13 +573,15 @@ cudaError_t cuda::CudaRuntimeInterface::cudaGetLastError(void) {
 	return cudaErrorNotYetImplemented;
 }
 
-cudaError_t cuda::CudaRuntimeInterface::cudaConfigureCall(dim3 gridDim, dim3 blockDim, 
+cudaError_t cuda::CudaRuntimeInterface::cudaConfigureCall(dim3 gridDim,
+	dim3 blockDim, 
 	size_t sharedMem, cudaStream_t stream) {
 	assert(0 && "unimplemented");
 	return cudaErrorNotYetImplemented;
 }
 
-cudaError_t cuda::CudaRuntimeInterface::cudaSetupArgument(const void *arg, size_t size, size_t offset) {
+cudaError_t cuda::CudaRuntimeInterface::cudaSetupArgument(const void *arg,
+	size_t size, size_t offset) {
 	assert(0 && "unimplemented");
 	return cudaErrorNotYetImplemented;
 }
@@ -526,7 +591,8 @@ cudaError_t cuda::CudaRuntimeInterface::cudaLaunch(const char *entry) {
 	return cudaErrorNotYetImplemented;
 }
 
-cudaError_t cuda::CudaRuntimeInterface::cudaFuncGetAttributes(struct cudaFuncAttributes *attr, const char *func) {
+cudaError_t cuda::CudaRuntimeInterface::cudaFuncGetAttributes(
+	struct cudaFuncAttributes *attr, const char *func) {
 	assert(0 && "unimplemented");
 	return cudaErrorNotYetImplemented;
 }

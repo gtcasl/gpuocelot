@@ -626,7 +626,8 @@ namespace executive
 		
 		memcpy.dstXInBytes = 0;
 		memcpy.dstY = 0;
-		memcpy.dstZ = 0;
+		memcpy.dstZ = 0;
+
 		
 		checkError(driver::cuMemcpy3D(&memcpy));
 	}
@@ -1468,7 +1469,8 @@ namespace executive
 		const std::string& kernelName, const ir::Dim3& grid, 
 		const ir::Dim3& block, size_t sharedMemory, 
 		const void* argumentBlock, size_t argumentBlockSize,
-		const trace::TraceGeneratorVector& traceGenerators)
+		const trace::TraceGeneratorVector& traceGenerators,
+		const ir::ExternalFunctionSet* externals)
 	{
 		ModuleMap::iterator module = _modules.find(moduleName);
 		

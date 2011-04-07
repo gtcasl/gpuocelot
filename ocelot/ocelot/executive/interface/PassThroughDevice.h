@@ -148,7 +148,8 @@ namespace executive
 				const ir::Dim3& block, size_t sharedMemory, 
 				const void* argumentBlock, size_t argumentBlockSize, 
 				const trace::TraceGeneratorVector& 
-				traceGenerators = trace::TraceGeneratorVector());
+				traceGenerators = trace::TraceGeneratorVector(),
+				const ir::ExternalFunctionSet* externals = 0);
 			/*! \brief Get the function attributes of a specific kernel */
 			cudaFuncAttributes getAttributes(const std::string& module, 
 				const std::string& kernel);

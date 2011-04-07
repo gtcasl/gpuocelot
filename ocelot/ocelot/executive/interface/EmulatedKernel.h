@@ -75,6 +75,12 @@ namespace executive {
 		/*!	removes a trace generator from an EmulatedKernel */
 		void removeTraceGenerator(trace::TraceGenerator *generator);
 
+		/*! sets an external function table for the emulated kernel */
+		void setExternalFunctionSet(const ir::ExternalFunctionSet& s);
+		
+		/*! clear the external function table for the emulated kernel */
+		void clearExternalFunctionSet();
+
 		/*! \brief Initialize the kernel */
 		void initialize();
 
@@ -170,16 +176,19 @@ namespace executive {
 		/*! Maps program counters of header instructions to basic block label */
 		ProgramCounterBlockMap branchTargetsToBlock;
 		
-		/*! maps the program counter of the terminating instructions to owning basic block */
+		/*! maps the program counter of the terminating
+			instructions to owning basic block */
 		ProgramCounterBlockMap basicBlockMap;
 		
 		/*! maps a PC to the basic block it starts */
 		ProgramCounterBlockMap basicBlockPC;
 		
-		/*! maps a block label to the PCs of the first and last instructions in the block */
+		/*! maps a block label to the PCs of the first
+			and last instructions in the block */
 		BlockRangeMap blockPCRange;
 		
-		/*! maps a basic block terminator PC onto that block's thread frontier */
+		/*! maps a basic block terminator PC onto
+			that block's thread frontier */
 		ThreadFrontierMap threadFrontiers;
 
 		/*!	Packed vector of mapped textures */
@@ -217,7 +226,8 @@ namespace executive {
 			specified by the PC */
 		std::string getInstructionBlock(int PC) const;
 		
-		/*! \brief accessor for obtaining PCs of first and last instructions in a block */
+		/*! \brief accessor for obtaining PCs of first and
+			last instructions in a block */
 		std::pair<int,int> getBlockRange(const std::string &label) const;
 	};
 

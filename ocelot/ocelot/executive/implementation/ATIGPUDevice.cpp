@@ -522,7 +522,8 @@ namespace executive
 			size_t sharedMemory, 
 			const void *argumentBlock, 
 			size_t argumentBlockSize, 
-			const trace::TraceGeneratorVector& traceGenerators)
+			const trace::TraceGeneratorVector& traceGenerators,
+			const ir::ExternalFunctionSet* externals)
 	{
 		ModuleMap::iterator moduleIt = _modules.find(moduleName);
 

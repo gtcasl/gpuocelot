@@ -86,6 +86,17 @@ namespace ocelot
 	{
 		get()->launch(module, name);
 	}
+
+	void registerExternalFunction(const std::string& name, void* function)
+	{
+		get()->registerExternalFunction(name, function);
+	}
+
+	void removeExternalFunction(const std::string& name)
+	{
+		get()->removeExternalFunction(name);
+	}
+
 }
 
 #endif

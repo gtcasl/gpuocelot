@@ -2,7 +2,9 @@
 
 /* Define if llvm is installed */
 #if %(HAVE_LLVM)d
-#define HAVE_LLVM
+#define HAVE_LLVM 1
+#else 
+#define HAVE_LLVM 0
 #endif
 
 /* "Define the ocelot compile flags" */

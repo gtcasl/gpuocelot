@@ -10,6 +10,7 @@
 #include <ocelot/ir/interface/Kernel.h>
 #include <ocelot/ir/interface/Texture.h>
 #include <ocelot/ir/interface/Dim3.h>
+#include <ocelot/ir/interface/ExternalFunctionSet.h>
 
 namespace executive {
 	class Device;
@@ -95,6 +96,17 @@ namespace executive {
 		/*!	removes a trace generator from an EmulatedKernel */
 		virtual void removeTraceGenerator(trace::TraceGenerator* generator)=0;
 
+		/*! sets an external function table for the emulated kernel */
+		virtual void setExternalFunctionSet(
+			const ir::ExternalFunctionSet& s) = 0;
+		
+		/*! clear the external function table for the emulated kernel */
+		virtual void clearExternalFunctionSet() = 0;
+
+		/*! Find an external function */
+		const ir::ExternalFunctionSet::ExternalFunction* findExternalFunction(
+			const std::string& name) const;
+
 	public:
 		/*! attribute accessors - things every executable kernel should know */
 		unsigned int constMemorySize() const;
@@ -132,6 +144,8 @@ namespace executive {
 		ir::Dim3 _gridDim;
 		/*! \brief Attached trace generators */
 		TraceGeneratorVector _generators;
+		/*! \brief Registered external functions */
+		const ir::ExternalFunctionSet* _externals;
 
 	};
 	

@@ -141,11 +141,6 @@ def getLLVMPaths(enabled):
 	if '-DNDEBUG' in cflags:
 		cflags.remove('-DNDEBUG')
 
-	# remove lib_path from libs
-	for lib in libs:
-		if lib[0:2] == "-L":
-			libs.remove(lib)
-
 	return (True,bin_path,lib_path,inc_path,cflags,lflags,libs)
 	
 def getTools():
@@ -342,7 +337,10 @@ def Environment():
 	env.AppendUnique(CXXFLAGS = llvm_cflags)
 	env.AppendUnique(LINKFLAGS = llvm_lflags)
 	env.Replace(HAVE_LLVM = llvm)
-	env.Replace(LLVM_LIBS = llvm_libs)
+
+	for lib in llvm_libs:
+		if lib[0:2] != "-L":
+			env.AppendUnique(LLVM_LIBS = [lib])
 	
 	# set ocelot include path
 	env.Prepend(CPPPATH = os.path.dirname(thisDir))
@@ -356,10 +354,10 @@ def Environment():
 	ocelot_libs = '-locelot'
 	for lib in env['EXTRA_LIBS']:
 		ocelot_libs += ' ' + lib
-	for lib in env['LLVM_LIBS']:
+	for lib in llvm_libs:
 		ocelot_libs += ' ' + lib
 	env.Replace(OCELOT_LDFLAGS=ocelot_libs)
-	
+		
 	# include the build directory in case of generated files
 	env.Prepend(CPPPATH = env.Dir('.'))
 

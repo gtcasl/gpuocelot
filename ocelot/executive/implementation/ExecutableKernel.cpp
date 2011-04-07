@@ -75,6 +75,14 @@ void ExecutableKernel::tracePostEvent(const trace::TraceEvent & event) const
 	}
 }
 
+const ir::ExternalFunctionSet::ExternalFunction*
+	ExecutableKernel::findExternalFunction(
+	const std::string& name) const {
+	if(_externals == 0) return 0;
+	
+	return _externals->find(name);
+}
+
 unsigned int ExecutableKernel::constMemorySize() const
 {
 	return _constMemorySize; 

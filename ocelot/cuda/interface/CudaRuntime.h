@@ -21,6 +21,7 @@
 #include <ocelot/executive/interface/Device.h>
 #include <ocelot/analysis/interface/PassManager.h>
 #include <ocelot/cuda/interface/FatBinaryContext.h>
+#include <ocelot/ir/interface/ExternalFunctionSet.h>
 
 // Hydrazine includes
 #include <hydrazine/implementation/Timer.h>
@@ -107,7 +108,7 @@ namespace cuda {
 		unsigned int mapParameters(const ir::Kernel* kernel);
 	};
 	
-	typedef std::map< boost::thread::id, HostThreadContext > HostThreadContextMap;
+	typedef std::map<boost::thread::id, HostThreadContext> HostThreadContextMap;
 	
 	//! references a kernel registered to CUDA runtime
 	class RegisteredKernel {
@@ -186,7 +187,7 @@ namespace cuda {
 	typedef std::unordered_map<unsigned int, void*> GLBufferMap;
 	typedef executive::DeviceVector DeviceVector;
 
-	////////////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////
 	/*! Cuda runtime context */
 	class CudaRuntime: public CudaRuntimeInterface {
 	private:
@@ -276,6 +277,9 @@ namespace cuda {
 		
 		//! optimization level
 		translator::Translator::OptimizationLevel _optimization;
+	
+		//! external functions
+		ir::ExternalFunctionSet _externals;
 	
 	private:
 		cudaError_t _launchKernel(const std::string& module, 
@@ -587,7 +591,9 @@ namespace cuda {
 			const std::string& kernelName);
 		virtual void setOptimizationLevel(
 			translator::Translator::OptimizationLevel l);
-
+		virtual void registerExternalFunction(const std::string& name,
+			void* function);
+		virtual void removeExternalFunction(const std::string& name);
 	};
 
 }

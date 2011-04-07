@@ -352,8 +352,8 @@ void cuda::CudaRuntime::_enumerateDevices() {
 				(*device)->unselect();
 			}
 		}
-
 	}
+	
 }
 
 //! acquires mutex and locks the runtime
@@ -482,6 +482,7 @@ cuda::CudaRuntime::CudaRuntime() : _deviceCount(0), _devicesLoaded(false),
 	_optimization((translator::Translator::OptimizationLevel)
 		config::get().executive.optimizationLevel) {
 
+	// get device count
 	if(config::get().executive.enableNVIDIA) {
 		_deviceCount += executive::Device::deviceCount(
 			ir::Instruction::SASS, _computeCapability);
@@ -2537,7 +2538,7 @@ cudaError_t cuda::CudaRuntime::_launchKernel(const std::string& moduleName,
 
 		_getDevice().launch(moduleName, kernelName, convert(launch.gridDim), 
 			convert(launch.blockDim), launch.sharedMemory, 
-			thread.parameterBlock, paramSize, traceGens);
+			thread.parameterBlock, paramSize, traceGens, &_externals);
 		report(" launch completed successfully");	
 	}
 	catch( const executive::RuntimeException& e ) {
@@ -3492,6 +3493,28 @@ void cuda::CudaRuntime::setOptimizationLevel(
 
 	_unlock();
 }
+
+void cuda::CudaRuntime::registerExternalFunction(const std::string& name,
+	void* function) {
+	
+	_lock();
+
+	report("Adding external function '" << name << "'");
+	_externals.add(name, function);
+
+	_unlock();
+}
+
+void cuda::CudaRuntime::removeExternalFunction(const std::string& name) {
+	_lock();
+
+	report("Removing external function '" << name << "'");
+
+	_externals.remove(name);
+
+	_unlock();	
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////
 

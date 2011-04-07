@@ -9,6 +9,7 @@
 
 #include <ocelot/ir/interface/PTXOperand.h>
 #include <ocelot/ir/interface/PTXInstruction.h>
+#include <ocelot/ir/interface/Module.h>
 
 #include <ocelot/executive/interface/RuntimeException.h>
 #include <ocelot/executive/interface/CooperativeThreadArray.h>
@@ -2402,7 +2403,7 @@ void executive::CooperativeThreadArray::eval_Call(CTAContext &context,
 	const PTXInstruction &instr) {
 	typedef std::unordered_map<int, CTAContext> TargetMap;
 	trace();
-		
+	
 	// Is this a direct or indirect call?
 	if (instr.a.addressMode == ir::PTXOperand::Register) {
 		// Complex indirect call handling
@@ -2483,90 +2484,121 @@ void executive::CooperativeThreadArray::eval_Call(CTAContext &context,
 		}
 	}
 	else {
-		reportE(REPORT_CALL, " direct call to PC " 
-			<< instr.branchTargetInstruction)
 
-		// Handle lazy function linking
-		if (instr.branchTargetInstruction == -1) {
-			reportE(REPORT_CALL, " lazy linking against kernel '" 
-				<< instr.a.identifier << "'");
-			kernel->lazyLink(context.PC, instr.a.identifier);
-		}
-
-		const PTXInstruction& jittedInstr = currentInstruction(context);
-		assert(jittedInstr.branchTargetInstruction != -1);
-
-		// Simple direct call handling
-		if (jittedInstr.uni) {
-			reportE(REPORT_CALL, " uniform direct call" );
-			int firstActive = context.active.find_first();
-			bool taken = context.predicated(firstActive, jittedInstr);		
-			
-			if (taken) {
-				reportE(REPORT_CALL, 
-					"  call was taken, increasing stack size by (" 
-					<< jittedInstr.a.stackMemorySize << " stack) (" 
-					<< jittedInstr.a.registerCount << " registers) (" 
-					<< jittedInstr.a.localMemorySize << " local memory) (" 
-					<< jittedInstr.a.sharedMemorySize << " sharedMemorySize)");
-				functionCallStack.pushFrame(jittedInstr.a.stackMemorySize, 
-					jittedInstr.a.registerCount, jittedInstr.a.localMemorySize, 
-					jittedInstr.a.sharedMemorySize, context.PC, 
-					functionCallStack.offset(),
-					functionCallStack.stackFrameSize());
-				unsigned int offset = jittedInstr.b.offset;
-				for (ir::PTXOperand::Array::const_iterator 
-					argument = jittedInstr.b.array.begin();
-					argument != jittedInstr.b.array.end(); ++argument) {
-					copyArgument(offset, *argument, context);
-					offset += ir::PTXOperand::bytes(argument->type);
-				}
-				
-				CTAContext targetContext(context);
-				
-				targetContext.PC = jittedInstr.branchTargetInstruction;
-				++context.PC;
-				
-				reconvergenceMechanism->runtimeStack.push_back(targetContext);
+		// was this function external?
+		const ir::ExternalFunctionSet::ExternalFunction*
+			external = kernel->findExternalFunction(instr.a.identifier);
+		if(external != 0) {
+			// get the prototype
+			ir::Module::FunctionPrototypeMap::const_iterator prototype
+				= kernel->module->prototypes().find(instr.a.identifier);
+			if(prototype == kernel->module->prototypes().end()) {
+				throw RuntimeException("no prototype for external function '"
+					+ instr.a.identifier + "' in module '"
+					+ kernel->module->path() + "'", context.PC, instr);
 			}
-		}
-		else {
-			reportE(REPORT_CALL, " divergent direct call" );
-
-			CTAContext targetContext(context);
-
+			
 			for (int threadID = 0; threadID != threadCount; ++threadID) {
-				targetContext.active[threadID] = 
-					context.predicated(threadID, jittedInstr);
+				if(!context.predicated(threadID, instr)) continue;
+				reportE(REPORT_CALL, " thread " << threadID
+					<< " calling external function " << instr.a.identifier);			
+				external->call(functionCallStack.stackFramePointer(threadID),
+					prototype->second);
 			}
+		}
+		else
+		{
+			reportE(REPORT_CALL, " direct call to PC " 
+				<< instr.branchTargetInstruction)
+
+			// Handle lazy function linking
+			if (instr.branchTargetInstruction == -1) {
+				reportE(REPORT_CALL, " lazy linking against kernel '" 
+					<< instr.a.identifier << "'");
+				kernel->lazyLink(context.PC, instr.a.identifier);
+			}
+
+			const PTXInstruction& jittedInstr = currentInstruction(context);
+			assert(jittedInstr.branchTargetInstruction != -1);
+
+			// Simple direct call handling
+			if (jittedInstr.uni) {
+				reportE(REPORT_CALL, " uniform direct call" );
+				int firstActive = context.active.find_first();
+				bool taken = context.predicated(firstActive, jittedInstr);		
 			
-			if (targetContext.active.any()) {
-				reportE(REPORT_CALL, 
-					"  call was taken, increasing stack size by (" 
-					<< jittedInstr.a.stackMemorySize << " stack) (" 
-					<< jittedInstr.a.registerCount << " registers) (" 
-					<< jittedInstr.a.localMemorySize << " local memory) (" 
-					<< jittedInstr.a.sharedMemorySize << " sharedMemorySize)");
-				functionCallStack.pushFrame(jittedInstr.a.stackMemorySize, 
-					jittedInstr.a.registerCount, jittedInstr.a.localMemorySize, 
-					jittedInstr.a.sharedMemorySize, context.PC, 
-					functionCallStack.offset(),
-					functionCallStack.stackFrameSize());
-				unsigned int offset = instr.b.offset;
-				for (ir::PTXOperand::Array::const_iterator 
-					argument = jittedInstr.b.array.begin();
-					argument != jittedInstr.b.array.end(); ++argument) {
-					copyArgument(offset, *argument, targetContext);
-					offset += ir::PTXOperand::bytes(argument->type);
+				if (taken) {
+					reportE(REPORT_CALL, 
+						"  call was taken, increasing stack size by (" 
+						<< jittedInstr.a.stackMemorySize << " stack) (" 
+						<< jittedInstr.a.registerCount << " registers) (" 
+						<< jittedInstr.a.localMemorySize << " local memory) (" 
+						<< jittedInstr.a.sharedMemorySize
+						<< " sharedMemorySize)");
+					functionCallStack.pushFrame(jittedInstr.a.stackMemorySize, 
+						jittedInstr.a.registerCount,
+						jittedInstr.a.localMemorySize, 
+						jittedInstr.a.sharedMemorySize, context.PC, 
+						functionCallStack.offset(),
+						functionCallStack.stackFrameSize());
+					unsigned int offset = jittedInstr.b.offset;
+					for (ir::PTXOperand::Array::const_iterator 
+						argument = jittedInstr.b.array.begin();
+						argument != jittedInstr.b.array.end(); ++argument) {
+						copyArgument(offset, *argument, context);
+						offset += ir::PTXOperand::bytes(argument->type);
+					}
+				
+					CTAContext targetContext(context);
+				
+					targetContext.PC = jittedInstr.branchTargetInstruction;
+					++context.PC;
+				
+					reconvergenceMechanism->runtimeStack.push_back(
+						targetContext);
 				}
-				
-				targetContext.PC = jittedInstr.branchTargetInstruction;
-				
-				++context.PC;
-				reconvergenceMechanism->runtimeStack.push_back(targetContext);
 			}
 			else {
-				++context.PC;
+				reportE(REPORT_CALL, " divergent direct call" );
+
+				CTAContext targetContext(context);
+
+				for (int threadID = 0; threadID != threadCount; ++threadID) {
+					targetContext.active[threadID] = 
+						context.predicated(threadID, jittedInstr);
+				}
+			
+				if (targetContext.active.any()) {
+					reportE(REPORT_CALL, 
+						"  call was taken, increasing stack size by (" 
+						<< jittedInstr.a.stackMemorySize << " stack) (" 
+						<< jittedInstr.a.registerCount << " registers) (" 
+						<< jittedInstr.a.localMemorySize << " local memory) (" 
+						<< jittedInstr.a.sharedMemorySize
+						<< " sharedMemorySize)");
+					functionCallStack.pushFrame(jittedInstr.a.stackMemorySize, 
+						jittedInstr.a.registerCount,
+						jittedInstr.a.localMemorySize, 
+						jittedInstr.a.sharedMemorySize, context.PC, 
+						functionCallStack.offset(),
+						functionCallStack.stackFrameSize());
+					unsigned int offset = instr.b.offset;
+					for (ir::PTXOperand::Array::const_iterator 
+						argument = jittedInstr.b.array.begin();
+						argument != jittedInstr.b.array.end(); ++argument) {
+						copyArgument(offset, *argument, targetContext);
+						offset += ir::PTXOperand::bytes(argument->type);
+					}
+				
+					targetContext.PC = jittedInstr.branchTargetInstruction;
+				
+					++context.PC;
+					reconvergenceMechanism->runtimeStack.push_back(
+						targetContext);
+				}
+				else {
+					++context.PC;
+				}
 			}
 		}
 	}
@@ -7784,7 +7816,8 @@ void executive::CooperativeThreadArray::eval_Sin(CTAContext &context,
 
 	d = (c >= 0) ? a : b;
 */
-void executive::CooperativeThreadArray::eval_SlCt(CTAContext &context, const PTXInstruction &instr) {
+void executive::CooperativeThreadArray::eval_SlCt(CTAContext &context,
+	const PTXInstruction &instr) {
 	trace();
 
 	assert(instr.opcode == PTXInstruction::SlCt);
@@ -7880,7 +7913,7 @@ void executive::CooperativeThreadArray::eval_Sqrt(CTAContext &context,
 	}
 }
 
-///////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 void executive::CooperativeThreadArray::normalStore(int threadID, 
 	const PTXInstruction &instr, char* source) {

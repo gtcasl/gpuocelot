@@ -179,6 +179,18 @@ void LLVMExecutableKernel::removeTraceGenerator(
 	assertM(false, "No trace generation support in LLVM kernel.");	
 }
 
+void LLVMExecutableKernel::setExternalFunctionSet(
+	const ir::ExternalFunctionSet& s)
+{
+	LLVMExecutionManager::flushTranslatedKernels();
+	_externals = &s;
+}
+
+void LLVMExecutableKernel::clearExternalFunctionSet()
+{
+	_externals = 0;
+}
+
 void LLVMExecutableKernel::_allocateMemory()
 {
 	_allocateArgumentMemory();

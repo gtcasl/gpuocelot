@@ -442,7 +442,8 @@ void executive::PassThroughDevice::launch(
 	size_t sharedMemory, 
 	const void* argumentBlock, 
 	size_t argumentBlockSize, 
-	const trace::TraceGeneratorVector & traceGenerators) {
+	const trace::TraceGeneratorVector & traceGenerators,
+	const ir::ExternalFunctionSet* externals) {
 	TRACE();
 	CHECK();
 	
@@ -450,7 +451,7 @@ void executive::PassThroughDevice::launch(
 	_recordKernelLaunch(module, kernel, grid, block, sharedMemory,
 		argumentBlock, argumentBlockSize);
 	_target->launch(module, kernel, grid, block, sharedMemory, argumentBlock,
-		argumentBlockSize, traceGenerators);
+		argumentBlockSize, traceGenerators, externals);
 	_recordStatePostExecution();
 	
 }

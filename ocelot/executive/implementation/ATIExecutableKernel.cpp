@@ -515,12 +515,25 @@ namespace executive
 		return ExecutableKernel::TextureVector();
 	}
 
-	void ATIExecutableKernel::addTraceGenerator(trace::TraceGenerator* generator)
+	void ATIExecutableKernel::addTraceGenerator(
+		trace::TraceGenerator* generator)
 	{
 		assertM(false, "Not implemented yet");
 	}
 
-	void ATIExecutableKernel::removeTraceGenerator(trace::TraceGenerator* generator)
+	void ATIExecutableKernel::removeTraceGenerator(
+		trace::TraceGenerator* generator)
+	{
+		assertM(false, "Not implemented yet");
+	}
+
+	void ATIExecutableKernel::setExternalFunctionSet(
+		const ir::ExternalFunctionSet& s)
+	{
+		assertM(false, "Not implemented yet");
+	}
+
+	void ATIExecutableKernel::clearExternalFunctionSet()
 	{
 		assertM(false, "Not implemented yet");
 	}

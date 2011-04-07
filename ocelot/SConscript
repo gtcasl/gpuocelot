@@ -104,7 +104,8 @@ ocelot_libs.extend(env['EXTRA_LIBS'])
 ocelot_libs.extend(env['LLVM_LIBS'])
 
 OcelotConfig = env.Program('OcelotConfig', \
-	['ocelot/tools/OcelotConfig.cpp'], LIBS=ocelot_libs)
+	['ocelot/tools/OcelotConfig.cpp'], LIBS=ocelot_libs, \
+	CXXFLAGS = env['OCELOT_CONFIG_FLAGS'])
 env.Depends(OcelotConfig, libocelot)
 PTXOptimizer = env.Program('PTXOptimizer', \
 	['ocelot/tools/PTXOptimizer.cpp'], LIBS=ocelot_libs)

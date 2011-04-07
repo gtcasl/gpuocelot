@@ -29,7 +29,7 @@
 #include <hydrazine/interface/Casts.h>
 
 // LLVM Includes
-#ifdef HAVE_LLVM
+#if HAVE_LLVM
 #include <llvm/Transforms/Scalar.h>
 #include <llvm/PassManager.h>
 #include <llvm/Target/TargetData.h>
@@ -90,7 +90,7 @@ hydrazine::Thread::Id LLVMModuleManager::id()
 
 ////////////////////////////////////////////////////////////////////////////////
 // Helper Functions
-#ifdef HAVE_LLVM
+#if HAVE_LLVM
 static unsigned int pad(unsigned int& size, unsigned int alignment)
 {
 	unsigned int padding = alignment - (size % alignment);
@@ -984,7 +984,7 @@ LLVMModuleManager::KernelAndTranslation::KernelAndTranslation(ir::PTXKernel* k,
 
 void LLVMModuleManager::KernelAndTranslation::unload()
 {
-	#ifdef HAVE_LLVM
+	#if HAVE_LLVM
 	if(_metadata == 0)
 	{
 		delete _kernel;
@@ -1008,7 +1008,7 @@ void LLVMModuleManager::KernelAndTranslation::unload()
 LLVMModuleManager::KernelAndTranslation::MetaData*
 	LLVMModuleManager::KernelAndTranslation::metadata()
 {
-	#ifdef HAVE_LLVM
+	#if HAVE_LLVM
 	report("Getting metadata for kernel '" << _kernel->name << "'");
 
 	if(_metadata != 0) return _metadata;

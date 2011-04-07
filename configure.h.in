@@ -7,31 +7,6 @@
 #define HAVE_LLVM 0
 #endif
 
-/* "Define the ocelot compile flags" */
-#define OCELOT_CXXFLAGS "%(CXXFLAGS)s"
-
-/* Name of package */
-#define PACKAGE "ocelot"
-
-/* Version number of package */
-#define VERSION "%(VERSION)s"
-
 /* Version number of package */
 #define PACKAGE_VERSION "%(VERSION)s"
-
-/* Where is Ocelot installed */
-#define OCELOT_PREFIX_PATH "%(INSTALL_PATH)s"
-
-/* "Define the ocelot linker flags" */
-#define OCELOT_LDFLAGS "%(OCELOT_LDFLAGS)s"
-
-/* Where are the ocelot headers? */
-#define OCELOT_INCLUDE_PATH "%(INSTALL_PATH)s/include"
-
-/* Where are the ocelot libraries? */
-#define OCELOT_LIB_PATH "%(INSTALL_PATH)s/lib"
-
-/* Where are the ocelot binaries? */
-#define OCELOT_BIN_PATH "%(INSTALL_PATH)s/bin"
-
 

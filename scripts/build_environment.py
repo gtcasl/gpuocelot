@@ -248,6 +248,25 @@ def getVersion(base):
 	
 	return base + '.' + revision
 
+def defineConfigFlags(env):
+	
+	include_path = os.path.join(env['INSTALL_PATH'], "include")
+	library_path = os.path.join(env['INSTALL_PATH'], "lib")
+	bin_path     = os.path.join(env['INSTALL_PATH'], "bin")
+
+	configFlags =  '-DOCELOT_CXXFLAGS="\\"' + env['CXXFLAGS'] + '\\""' \
+		+ ' -DPACKAGE="\\"ocelot\\""' \
+		+ ' -DVERSION="\\"' + env['VERSION'] + '\\""' \
+		+ ' -DOCELOT_PREFIX_PATH="\\"' + env['INSTALL_PATH'] + '\\""' \
+		+ ' -DOCELOT_LDFLAGS="\\"' + env['OCELOT_LDFLAGS'] + '\\""' \
+		+ ' -DOCELOT_INCLUDE_PATH="\\"'+ include_path + '\\""' \
+		+ ' -DOCELOT_LIB_PATH="\\"' + library_path + '\\""' \
+		+ ' -DOCELOT_BIN_PATH="\\"' + bin_path + '\\""'
+
+	print configFlags
+
+	env.Replace(OCELOT_CONFIG_FLAGS = configFlags)
+
 def Environment():
 	vars = Variables()
 
@@ -361,8 +380,12 @@ def Environment():
 	# include the build directory in case of generated files
 	env.Prepend(CPPPATH = env.Dir('.'))
 
+	# generate OcelotConfig flags
+	defineConfigFlags(env)
+
 	# generate help text
 	Help(vars.GenerateHelpText(env))
 
 	return env
+
 

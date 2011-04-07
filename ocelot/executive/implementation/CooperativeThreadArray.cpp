@@ -3356,7 +3356,7 @@ void executive::CooperativeThreadArray::eval_Cvt(CTAContext &context,
 						{
 							PTXU64 a = operandAsU64(threadID, instr.a);
 							if(instr.modifier & PTXInstruction::sat) {
-								a = min(a, LONG_LONG_MAX);
+								a = min(a, LLONG_MAX);
 							}
 							PTXS64 d = a;
 							setRegAsS64(threadID, instr.d.reg, d);
@@ -4128,7 +4128,8 @@ void executive::CooperativeThreadArray::eval_Exit(CTAContext &context,
 /*!
 
 */
-void executive::CooperativeThreadArray::eval_Fma(CTAContext &context, const ir::PTXInstruction &instr) {
+void executive::CooperativeThreadArray::eval_Fma(CTAContext &context,
+	const ir::PTXInstruction &instr) {
 	trace();
 	if (instr.type == PTXOperand::f32) {
 		for (int tid = 0; tid < threadCount; tid++) {
@@ -4469,7 +4470,8 @@ void executive::CooperativeThreadArray::vectorLoad(int threadID,
 
 #if REPORT_LD
 					report( "    Loaded " << word << " from " 
-						<< (int*)source << " - register " << instr.d.reg << "; alternative " << i->reg); 
+						<< (int*)source << " - register " << instr.d.reg
+						<< "; alternative " << i->reg); 
 #endif
 
 				setRegAsF32(threadID, i->reg, word);
@@ -4740,7 +4742,8 @@ void executive::CooperativeThreadArray::eval_Ldu(CTAContext &context,
 	
 	if (instr.addressSpace != ir::PTXInstruction::Global &&
 		instr.addressSpace != ir::PTXInstruction::Generic) {
-		throw RuntimeException("ldu - only generic and .global address space supported", context.PC, instr);
+		throw RuntimeException("ldu - only generic and .global address "
+			"space supported", context.PC, instr);
 		return;
 	}
 
@@ -4767,7 +4770,8 @@ void executive::CooperativeThreadArray::eval_Ldu(CTAContext &context,
 
 		source += instr.a.offset;
 		
-		// these should just work if we don't add any offsets to them since it's a generic pointer
+		// these should just work if we don't add any offsets to them since 
+		// it's a generic pointer
 
 		if(instr.d.vec == PTXOperand::v1) {
 			normalLoad(threadID, instr, source);		
@@ -4800,7 +4804,8 @@ void executive::CooperativeThreadArray::eval_Lg2(CTAContext &context,
 /*!
 
 */
-void executive::CooperativeThreadArray::eval_Mad24(CTAContext &context, const PTXInstruction &instr) {
+void executive::CooperativeThreadArray::eval_Mad24(CTAContext &context,
+	const PTXInstruction &instr) {
 	trace();
 	throw RuntimeException("instruction not implemented", context.PC, instr);
 }
@@ -4818,7 +4823,8 @@ void executive::CooperativeThreadArray::eval_Mad24(CTAContext &context, const PT
 		d = t<n-1..0> + c;    // for .lo variant
 
 */
-void executive::CooperativeThreadArray::eval_Mad(CTAContext &context, const PTXInstruction &instr) {
+void executive::CooperativeThreadArray::eval_Mad(CTAContext &context,
+	const PTXInstruction &instr) {
 	trace();
 	PTXOperand::DataType type = instr.type;
 
@@ -5193,7 +5199,8 @@ void executive::CooperativeThreadArray::eval_Min(CTAContext &context,
 		for (int threadID = 0; threadID < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;
 			
-			PTXS16 d, a = operandAsS16(threadID, instr.a), b = operandAsS16(threadID, instr.b);
+			PTXS16 d, a = operandAsS16(threadID, instr.a),
+				b = operandAsS16(threadID, instr.b);
 			d = (a < b ? a : b);
 			setRegAsS16(threadID, instr.d.reg, d);
 		}
@@ -5202,7 +5209,8 @@ void executive::CooperativeThreadArray::eval_Min(CTAContext &context,
 		for (int threadID = 0; threadID < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;
 			
-			PTXS32 d, a = operandAsS32(threadID, instr.a), b = operandAsS32(threadID, instr.b);
+			PTXS32 d, a = operandAsS32(threadID, instr.a),
+				b = operandAsS32(threadID, instr.b);
 			d = (a < b ? a : b);
 			setRegAsS32(threadID, instr.d.reg, d);
 		}
@@ -5211,7 +5219,8 @@ void executive::CooperativeThreadArray::eval_Min(CTAContext &context,
 		for (int threadID = 0; threadID < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;
 			
-			PTXS64 d, a = operandAsS64(threadID, instr.a), b = operandAsS64(threadID, instr.b);
+			PTXS64 d, a = operandAsS64(threadID, instr.a),
+				b = operandAsS64(threadID, instr.b);
 			d = (a < b ? a : b);
 			setRegAsS64(threadID, instr.d.reg, d);
 		}
@@ -5220,7 +5229,8 @@ void executive::CooperativeThreadArray::eval_Min(CTAContext &context,
 		for (int threadID = 0; threadID < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;
 			
-			PTXU16 d, a = operandAsU16(threadID, instr.a), b = operandAsU16(threadID, instr.b);
+			PTXU16 d, a = operandAsU16(threadID, instr.a),
+				b = operandAsU16(threadID, instr.b);
 			d = (a < b ? a : b);
 			setRegAsU16(threadID, instr.d.reg, d);
 		}
@@ -5229,7 +5239,8 @@ void executive::CooperativeThreadArray::eval_Min(CTAContext &context,
 		for (int threadID = 0; threadID < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;
 			
-			PTXU32 d, a = operandAsU32(threadID, instr.a), b = operandAsU32(threadID, instr.b);
+			PTXU32 d, a = operandAsU32(threadID, instr.a),
+				b = operandAsU32(threadID, instr.b);
 			d = (a < b ? a : b);
 			setRegAsU32(threadID, instr.d.reg, d);
 		}
@@ -5238,7 +5249,8 @@ void executive::CooperativeThreadArray::eval_Min(CTAContext &context,
 		for (int threadID = 0; threadID < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;
 			
-			PTXU64 d, a = operandAsU64(threadID, instr.a), b = operandAsU64(threadID, instr.b);
+			PTXU64 d, a = operandAsU64(threadID, instr.a),
+				b = operandAsU64(threadID, instr.b);
 			d = (a < b ? a : b);
 			setRegAsU64(threadID, instr.d.reg, d);
 		}

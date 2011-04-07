@@ -26,6 +26,16 @@ namespace ir
 		ISA = Instruction::LLVM;
 	}
 	
+	void LLVMKernel::push_back(const LLVMStatement& statement)
+	{
+		_statements.push_back(statement);
+	}
+	
+	void LLVMKernel::push_front(const LLVMStatement& statement)
+	{
+		_statements.push_front(statement);
+	}
+	
 	void LLVMKernel::assemble()
 	{
 		_code.clear();

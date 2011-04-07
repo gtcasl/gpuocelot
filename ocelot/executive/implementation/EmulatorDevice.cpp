@@ -17,6 +17,7 @@
 #include <hydrazine/implementation/debug.h>
 #include <hydrazine/implementation/Exception.h>
 #include <hydrazine/interface/Casts.h>
+#include <hydrazine/interface/SystemCompatibility.h>
 
 #ifdef REPORT_BASE
 #undef REPORT_BASE
@@ -24,9 +25,6 @@
 
 // OpenGL includes
 #include <GL/glew.h>
-
-// Linux includes
-#include <sys/sysinfo.h>
 
 // Standard library includes
 #include <cstring>
@@ -295,7 +293,7 @@ namespace executive
 		_properties.addressSpace = 0;
 		std::strcpy(_properties.name, "Ocelot PTX Emulator");
 		
-		_properties.totalMemory = get_avphys_pages() * getpagesize();
+		_properties.totalMemory = hydrazine::getFreePhysicalMemory();
 		_properties.multiprocessorCount = 1;
 		_properties.memcpyOverlap = false;
 		_properties.maxThreadsPerBlock = 1024;

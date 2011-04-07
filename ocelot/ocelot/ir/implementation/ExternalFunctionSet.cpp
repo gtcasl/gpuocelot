@@ -54,7 +54,11 @@ void ExternalFunctionSet::ExternalFunction::call(void* parameters,
 	const ir::PTXKernel::Prototype& p) const
 {
 	#if 0
-	if(_)
+	if(_externalFunctionPointer)
+	{
+		_externalFunctionPointer(parameters);
+		return;
+	}
 	
 	assert(_module);
 	
@@ -64,8 +68,6 @@ void ExternalFunctionSet::ExternalFunction::call(void* parameters,
 	
 	ExternalCallType functionPointer = hydrazine::bit_cast<ExternalCallType>(
 		LLVMState::jit()->getPointerToFunction(function));
-	
-	
 	
 	#else
 	assertM(false, "LLVM required to call external host functions from PTX.");

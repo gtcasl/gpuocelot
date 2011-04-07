@@ -355,6 +355,7 @@ def Environment():
 	env.AppendUnique(LINKFLAGS = llvm_lflags)
 	env.Replace(HAVE_LLVM = llvm)
 
+	env.Replace(LLVM_LIBS = [])
 	for lib in llvm_libs:
 		if lib[0:2] != "-L":
 			env.AppendUnique(LLVM_LIBS = [lib])

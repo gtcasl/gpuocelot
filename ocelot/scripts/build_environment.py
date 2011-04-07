@@ -263,8 +263,6 @@ def defineConfigFlags(env):
 		+ ' -DOCELOT_LIB_PATH="\\"' + library_path + '\\""' \
 		+ ' -DOCELOT_BIN_PATH="\\"' + bin_path + '\\""'
 
-	print configFlags
-
 	env.Replace(OCELOT_CONFIG_FLAGS = configFlags)
 
 def Environment():

@@ -34,9 +34,18 @@
 namespace ir
 {
 
+#if 0
+static llvm::Function* jitFunction(
+	const ExternalFunctionSet::ExternalFunction& f)
+{
+	
+}
+
+#endif
+
 ExternalFunctionSet::ExternalFunction::ExternalFunction(const std::string& i,
-	void* f)
-: _name(i), _functionPointer(f)
+	void* f, llvm::Module* m)
+: _name(i), _functionPointer(f), _module(m), _externalFunctionPointer(0)
 {
 
 }
@@ -44,8 +53,20 @@ ExternalFunctionSet::ExternalFunction::ExternalFunction(const std::string& i,
 void ExternalFunctionSet::ExternalFunction::call(void* parameters,
 	const ir::PTXKernel::Prototype& p) const
 {
-	#ifdef HAVE_LLVM
-	assertM(false, "Not implemented.");
+	#if 0
+	if(_)
+	
+	assert(_module);
+	
+	llvm::Function* function = _module->getFunction(name());
+	
+	if(function == 0) function = jitFunction(*this);
+	
+	ExternalCallType functionPointer = hydrazine::bit_cast<ExternalCallType>(
+		LLVMState::jit()->getPointerToFunction(function));
+	
+	
+	
 	#else
 	assertM(false, "LLVM required to call external host functions from PTX.");
 	#endif
@@ -91,7 +112,8 @@ void ExternalFunctionSet::add(const std::string& name, void* pointer)
 {
 	assert(_functions.count(name) == 0);
 
-	_functions.insert(std::make_pair(name, ExternalFunction()));
+	_functions.insert(std::make_pair(name,
+		ExternalFunction(name, pointer, _module)));
 }
 
 void ExternalFunctionSet::remove(const std::string& name)

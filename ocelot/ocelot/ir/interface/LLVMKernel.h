@@ -11,18 +11,12 @@
 #include <ocelot/ir/interface/LLVMInstruction.h>
 #include <ocelot/ir/interface/LLVMStatement.h>
 
-namespace translator
-{
-	class PTXToLLVMTranslator;
-}
-
 namespace ir
 {
 
 	/*! \brief A class containing a complete representation of an LLVM kernel */
 	class LLVMKernel : public Kernel
 	{
-		friend class translator::PTXToLLVMTranslator;
 		public:
 			/*! \brief A vector of LLVM instructions */
 			typedef std::vector< LLVMInstruction* > LLVMInstructionVector;
@@ -40,7 +34,13 @@ namespace ir
 			LLVMKernel();
 			/*! \brief Initialized the base class from a kernel and executive */
 			LLVMKernel( const Kernel& k );
-			
+		
+		public:
+			/*! \brief Add a statement to the end */
+			void push_back(const LLVMStatement& statement);
+			/*! \brief Add a statement to the beginning */
+			void push_front(const LLVMStatement& statement);
+		
 		public:
 			/*! \brief Assemble the LLVM kernel from the set of statements */
 			void assemble();

@@ -33,7 +33,7 @@ public:
 	{
 	public:
 		ExternalFunction(const std::string& identifier = "",
-			void* functionPointer = 0);
+			void* functionPointer = 0, llvm::Module* m = 0);
 	
 	public:
 		void call(void* parameters, const ir::PTXKernel::Prototype& p) const;
@@ -41,8 +41,13 @@ public:
 		void* externalFunctionPointer() const;
 		
 	private:
-		std::string _name;
-		void* _functionPointer;
+		typedef void (*ExternalCallType)(void*);
+		
+	private:
+		std::string      _name;
+		void*            _functionPointer;
+		llvm::Module*    _module;
+		ExternalCallType _externalFunctionPointer;
 	};
 
 	typedef std::map<std::string, ExternalFunction> FunctionSet;

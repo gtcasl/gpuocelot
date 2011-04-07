@@ -645,25 +645,25 @@ namespace translator
 		check.parameters[3].type.category = ir::LLVMInstruction::Type::Element;
 		check.parameters[3].type.type = ir::LLVMInstruction::I32;
 	
-		_llvmKernel->_statements.push_front( check );		
+		_llvmKernel->push_front( check );		
 
 		check.label = "__ocelot_check_global_memory_access";
-		_llvmKernel->_statements.push_front( check );		
+		_llvmKernel->push_front( check );		
 
 		check.label = "__ocelot_check_shared_memory_access";
-		_llvmKernel->_statements.push_front( check );		
+		_llvmKernel->push_front( check );		
 
 		check.label = "__ocelot_check_constant_memory_access";
-		_llvmKernel->_statements.push_front( check );		
+		_llvmKernel->push_front( check );		
 
 		check.label = "__ocelot_check_local_memory_access";
-		_llvmKernel->_statements.push_front( check );
+		_llvmKernel->push_front( check );
 		
 		check.label = "__ocelot_check_param_memory_access";
-		_llvmKernel->_statements.push_front( check );
+		_llvmKernel->push_front( check );
 		
 		check.label = "__ocelot_check_argument_memory_access";
-		_llvmKernel->_statements.push_front( check );
+		_llvmKernel->push_front( check );
 	}
 
 	void PTXToLLVMTranslator::_insertDebugSymbols()
@@ -689,7 +689,7 @@ namespace translator
 		block.parameters[1].type.category = ir::LLVMInstruction::Type::Element;
 		block.parameters[1].type.type = ir::LLVMInstruction::I32;
 	
-		_llvmKernel->_statements.push_front( block );
+		_llvmKernel->push_front( block );
 
 		ir::LLVMStatement instruction( ir::LLVMStatement::FunctionDeclaration );
 
@@ -710,7 +710,7 @@ namespace translator
 			= ir::LLVMInstruction::Type::Element;
 		instruction.parameters[1].type.type = ir::LLVMInstruction::I64;
 	
-		_llvmKernel->_statements.push_front( instruction );
+		_llvmKernel->push_front( instruction );
 
 		if( optimizationLevel != ReportOptimization ) return;		
 
@@ -724,54 +724,54 @@ namespace translator
 
 		instruction.parameters[1].type.type = ir::LLVMInstruction::I8;
 		instruction.label = "__ocelot_register_write_u8";
-		_llvmKernel->_statements.push_front( instruction );
+		_llvmKernel->push_front( instruction );
 		instruction.label = "__ocelot_register_write_s8";
-		_llvmKernel->_statements.push_front( instruction );
+		_llvmKernel->push_front( instruction );
 		instruction.label = "__ocelot_register_read_u8";
-		_llvmKernel->_statements.push_front( instruction );
+		_llvmKernel->push_front( instruction );
 		instruction.label = "__ocelot_register_read_s8";
-		_llvmKernel->_statements.push_front( instruction );
+		_llvmKernel->push_front( instruction );
 
 		instruction.parameters[1].type.type = ir::LLVMInstruction::I16;
 		instruction.label = "__ocelot_register_write_u16";
-		_llvmKernel->_statements.push_front( instruction );
+		_llvmKernel->push_front( instruction );
 		instruction.label = "__ocelot_register_write_s16";
-		_llvmKernel->_statements.push_front( instruction );
+		_llvmKernel->push_front( instruction );
 		instruction.label = "__ocelot_register_read_u16";
-		_llvmKernel->_statements.push_front( instruction );
+		_llvmKernel->push_front( instruction );
 		instruction.label = "__ocelot_register_read_s16";
-		_llvmKernel->_statements.push_front( instruction );
+		_llvmKernel->push_front( instruction );
 
 		instruction.parameters[1].type.type = ir::LLVMInstruction::I32;
 		instruction.label = "__ocelot_register_write_u32";
-		_llvmKernel->_statements.push_front( instruction );
+		_llvmKernel->push_front( instruction );
 		instruction.label = "__ocelot_register_write_s32";
-		_llvmKernel->_statements.push_front( instruction );
+		_llvmKernel->push_front( instruction );
 		instruction.label = "__ocelot_register_read_u32";
-		_llvmKernel->_statements.push_front( instruction );
+		_llvmKernel->push_front( instruction );
 		instruction.label = "__ocelot_register_read_s32";
-		_llvmKernel->_statements.push_front( instruction );
+		_llvmKernel->push_front( instruction );
 
 		instruction.parameters[1].type.type = ir::LLVMInstruction::I64;
 		instruction.label = "__ocelot_register_write_u64";
-		_llvmKernel->_statements.push_front( instruction );
+		_llvmKernel->push_front( instruction );
 		instruction.label = "__ocelot_register_write_s64";
-		_llvmKernel->_statements.push_front( instruction );
+		_llvmKernel->push_front( instruction );
 		instruction.label = "__ocelot_register_read_u64";
-		_llvmKernel->_statements.push_front( instruction );
+		_llvmKernel->push_front( instruction );
 		instruction.label = "__ocelot_register_read_s64";
-		_llvmKernel->_statements.push_front( instruction );
+		_llvmKernel->push_front( instruction );
 
 		instruction.parameters[1].type.type = ir::LLVMInstruction::F32;
 		instruction.label = "__ocelot_register_write_f32";
-		_llvmKernel->_statements.push_front( instruction );
+		_llvmKernel->push_front( instruction );
 		instruction.label = "__ocelot_register_read_f32";
-		_llvmKernel->_statements.push_front( instruction );
+		_llvmKernel->push_front( instruction );
 		instruction.parameters[1].type.type = ir::LLVMInstruction::F64;
 		instruction.label = "__ocelot_register_write_f64";
-		_llvmKernel->_statements.push_front( instruction );
+		_llvmKernel->push_front( instruction );
 		instruction.label = "__ocelot_register_read_f64";
-		_llvmKernel->_statements.push_front( instruction );
+		_llvmKernel->push_front( instruction );
 	}
 			
 	void PTXToLLVMTranslator::_yield( unsigned int type,
@@ -1030,7 +1030,7 @@ namespace translator
 	void PTXToLLVMTranslator::_newBlock( const std::string& name )
 	{
 		report( " Translating basic block: " << name );
-		_llvmKernel->_statements.push_back( ir::LLVMStatement( name ) );
+		_llvmKernel->push_back( ir::LLVMStatement( name ) );
 	}
 
 	void PTXToLLVMTranslator::_translate( 
@@ -8190,7 +8190,7 @@ namespace translator
 		assertM( i.valid() == "", "Instruction " << i.toString() 
 			<< " is not valid: " << i.valid() );
 		report( "    Added instruction '" << i.toString() << "'" );
-		_llvmKernel->_statements.push_back( ir::LLVMStatement( i ) );	
+		_llvmKernel->push_back( ir::LLVMStatement( i ) );	
 	}
 
 	void PTXToLLVMTranslator::_initializeRegisters()
@@ -8202,7 +8202,7 @@ namespace translator
 			ir::LLVMBr branch;
 			branch.iftrue = "%" + (++_ptx->dfg()->begin())->label();
 		
-			_llvmKernel->_statements.push_front( 
+			_llvmKernel->push_front( 
 				ir::LLVMStatement( branch ) );
 		}
 
@@ -8225,12 +8225,12 @@ namespace translator
 			
 			report( "  Adding instruction '" << move.toString() << "'" );		
 			
-			_llvmKernel->_statements.push_front( ir::LLVMStatement( move ) );
+			_llvmKernel->push_front( ir::LLVMStatement( move ) );
 		}
 		
 		if( !_uninitialized.empty() )
 		{
-			_llvmKernel->_statements.push_front( 
+			_llvmKernel->push_front( 
 				ir::LLVMStatement( "$OcelotRegisterInitializerBlock" ) );
 		}
 	}
@@ -8278,7 +8278,7 @@ namespace translator
 			statement.alignment = ir::PTXOperand::bytes( 
 				global->second.statement.type );
 		
-			_llvmKernel->_statements.push_front( statement );
+			_llvmKernel->push_front( statement );
 		}
 	}
 
@@ -8297,7 +8297,7 @@ namespace translator
 			branch.iftrue = "%$OcelotRegisterInitializerBlock";
 		}
 		
-		_llvmKernel->_statements.push_front( ir::LLVMStatement( branch ) );
+		_llvmKernel->push_front( ir::LLVMStatement( branch ) );
 		
 		ir::LLVMAlloca allocate( 4, 16 );
 		
@@ -8305,15 +8305,15 @@ namespace translator
 		allocate.d.type.category = ir::LLVMInstruction::Type::Pointer;
 		allocate.d.type.type = ir::LLVMInstruction::F32;
 		
-		_llvmKernel->_statements.push_front( 
+		_llvmKernel->push_front( 
 			ir::LLVMStatement( allocate ) );
 
 		allocate.d.name = "%integerTexture";
 		allocate.d.type.type = ir::LLVMInstruction::I32;
 
-		_llvmKernel->_statements.push_front( ir::LLVMStatement( allocate ) );
+		_llvmKernel->push_front( ir::LLVMStatement( allocate ) );
 
-		_llvmKernel->_statements.push_front( 
+		_llvmKernel->push_front( 
 			ir::LLVMStatement( "$OcelotTextureAllocateBlock" ) );
 	}
 
@@ -8342,34 +8342,34 @@ namespace translator
 		tex.parameters[3].type.category = ir::LLVMInstruction::Type::Element;
 		tex.parameters[3].type.type = ir::LLVMInstruction::I32;
 		
-		_llvmKernel->_statements.push_front( tex );
+		_llvmKernel->push_front( tex );
 
 		tex.label = "__ocelot_tex_1d_us";
-		_llvmKernel->_statements.push_front( tex );
+		_llvmKernel->push_front( tex );
 
 		tex.label = "__ocelot_tex_1d_su";
-		_llvmKernel->_statements.push_front( tex );
+		_llvmKernel->push_front( tex );
 
 		tex.label = "__ocelot_tex_1d_ss";
-		_llvmKernel->_statements.push_front( tex );
+		_llvmKernel->push_front( tex );
 
 		tex.label = "__ocelot_tex_1d_uf";
 		tex.parameters[3].type.type = ir::LLVMInstruction::F32;
-		_llvmKernel->_statements.push_front( tex );
+		_llvmKernel->push_front( tex );
 
 		tex.label = "__ocelot_tex_1d_sf";
-		_llvmKernel->_statements.push_front( tex );
+		_llvmKernel->push_front( tex );
 
 		tex.label = "__ocelot_tex_1d_ff";
 		tex.parameters[0].type.type = ir::LLVMInstruction::F32;
-		_llvmKernel->_statements.push_front( tex );
+		_llvmKernel->push_front( tex );
 
 		tex.label = "__ocelot_tex_1d_fu";
 		tex.parameters[3].type.type = ir::LLVMInstruction::I32;
-		_llvmKernel->_statements.push_front( tex );
+		_llvmKernel->push_front( tex );
 
 		tex.label = "__ocelot_tex_1d_fs";
-		_llvmKernel->_statements.push_front( tex );
+		_llvmKernel->push_front( tex );
 		
 
 		tex.label = "__ocelot_tex_2d_uu";
@@ -8382,36 +8382,36 @@ namespace translator
 		tex.parameters[4].type.category = ir::LLVMInstruction::Type::Element;
 		tex.parameters[4].type.type = ir::LLVMInstruction::I32;
 		
-		_llvmKernel->_statements.push_front( tex );
+		_llvmKernel->push_front( tex );
 
 		tex.label = "__ocelot_tex_2d_us";
-		_llvmKernel->_statements.push_front( tex );
+		_llvmKernel->push_front( tex );
 
 		tex.label = "__ocelot_tex_2d_su";
-		_llvmKernel->_statements.push_front( tex );
+		_llvmKernel->push_front( tex );
 
 		tex.label = "__ocelot_tex_2d_ss";
-		_llvmKernel->_statements.push_front( tex );
+		_llvmKernel->push_front( tex );
 
 		tex.label = "__ocelot_tex_2d_uf";
 		tex.parameters[3].type.type = ir::LLVMInstruction::F32;
 		tex.parameters[4].type.type = ir::LLVMInstruction::F32;
-		_llvmKernel->_statements.push_front( tex );
+		_llvmKernel->push_front( tex );
 
 		tex.label = "__ocelot_tex_2d_sf";
-		_llvmKernel->_statements.push_front( tex );
+		_llvmKernel->push_front( tex );
 
 		tex.label = "__ocelot_tex_2d_ff";
 		tex.parameters[0].type.type = ir::LLVMInstruction::F32;
-		_llvmKernel->_statements.push_front( tex );
+		_llvmKernel->push_front( tex );
 
 		tex.label = "__ocelot_tex_2d_fu";
 		tex.parameters[3].type.type = ir::LLVMInstruction::I32;
 		tex.parameters[4].type.type = ir::LLVMInstruction::I32;
-		_llvmKernel->_statements.push_front( tex );
+		_llvmKernel->push_front( tex );
 
 		tex.label = "__ocelot_tex_2d_fs";
-		_llvmKernel->_statements.push_front( tex );
+		_llvmKernel->push_front( tex );
 
 		tex.label = "__ocelot_tex_3d_uu";
 		tex.parameters[0].type.type = ir::LLVMInstruction::I32;
@@ -8428,40 +8428,40 @@ namespace translator
 		tex.parameters[6].type.category = ir::LLVMInstruction::Type::Element;
 		tex.parameters[6].type.type = ir::LLVMInstruction::I32;
 		
-		_llvmKernel->_statements.push_front( tex );
+		_llvmKernel->push_front( tex );
 
 		tex.label = "__ocelot_tex_3d_us";
-		_llvmKernel->_statements.push_front( tex );
+		_llvmKernel->push_front( tex );
 
 		tex.label = "__ocelot_tex_3d_su";
-		_llvmKernel->_statements.push_front( tex );
+		_llvmKernel->push_front( tex );
 
 		tex.label = "__ocelot_tex_3d_ss";
-		_llvmKernel->_statements.push_front( tex );
+		_llvmKernel->push_front( tex );
 
 		tex.label = "__ocelot_tex_3d_uf";
 		tex.parameters[3].type.type = ir::LLVMInstruction::F32;
 		tex.parameters[4].type.type = ir::LLVMInstruction::F32;
 		tex.parameters[5].type.type = ir::LLVMInstruction::F32;
 		tex.parameters[6].type.type = ir::LLVMInstruction::F32;
-		_llvmKernel->_statements.push_front( tex );
+		_llvmKernel->push_front( tex );
 
 		tex.label = "__ocelot_tex_3d_sf";
-		_llvmKernel->_statements.push_front( tex );
+		_llvmKernel->push_front( tex );
 
 		tex.label = "__ocelot_tex_3d_ff";
 		tex.parameters[0].type.type = ir::LLVMInstruction::F32;
-		_llvmKernel->_statements.push_front( tex );
+		_llvmKernel->push_front( tex );
 
 		tex.label = "__ocelot_tex_3d_fu";
 		tex.parameters[3].type.type = ir::LLVMInstruction::I32;
 		tex.parameters[4].type.type = ir::LLVMInstruction::I32;
 		tex.parameters[5].type.type = ir::LLVMInstruction::I32;
 		tex.parameters[6].type.type = ir::LLVMInstruction::I32;
-		_llvmKernel->_statements.push_front( tex );
+		_llvmKernel->push_front( tex );
 
 		tex.label = "__ocelot_tex_3d_fs";
-		_llvmKernel->_statements.push_front( tex );
+		_llvmKernel->push_front( tex );
 	}
 
 	void PTXToLLVMTranslator::_addSurfaceCalls()
@@ -8494,7 +8494,7 @@ namespace translator
 		query.parameters[2].type.type = ir::LLVMInstruction::I32;
 		
 		query.label = "__ocelot_txq";
-		_llvmKernel->_statements.push_front( query );
+		_llvmKernel->push_front( query );
 	}
 
 	void PTXToLLVMTranslator::_addAtomicCalls()
@@ -8517,11 +8517,11 @@ namespace translator
 		atom.parameters[1].type.category = ir::LLVMInstruction::Type::Element;
 		atom.parameters[1].type.type = ir::LLVMInstruction::I32;
 
-		_llvmKernel->_statements.push_front( atom );		
+		_llvmKernel->push_front( atom );		
 
 		atom.label = "__ocelot_atomic_dec_32";
 		
-		_llvmKernel->_statements.push_front( atom );
+		_llvmKernel->push_front( atom );
 	}
 
 	void PTXToLLVMTranslator::_addMathCalls()
@@ -8544,11 +8544,11 @@ namespace translator
 		mul.parameters[1].type.category = ir::LLVMInstruction::Type::Element;
 		mul.parameters[1].type.type = ir::LLVMInstruction::I64;
 
-		_llvmKernel->_statements.push_front( mul );		
+		_llvmKernel->push_front( mul );		
 
 		mul.label = "__ocelot_mul_hi_s64";
 		
-		_llvmKernel->_statements.push_front( mul );
+		_llvmKernel->push_front( mul );
 	}
 
 	void PTXToLLVMTranslator::_addLLVMIntrinsics()
@@ -8572,51 +8572,51 @@ namespace translator
 		atom.parameters[1].type.category = ir::LLVMInstruction::Type::Element;
 		atom.parameters[1].type.type = ir::LLVMInstruction::I32;
 
-		_llvmKernel->_statements.push_front( atom );
+		_llvmKernel->push_front( atom );
 
 		atom.label = "llvm.atomic.load.and.i32.p0i32";
-		_llvmKernel->_statements.push_front( atom );
+		_llvmKernel->push_front( atom );
 		atom.label = "llvm.atomic.load.or.i32.p0i32";
-		_llvmKernel->_statements.push_front( atom );
+		_llvmKernel->push_front( atom );
 		atom.label = "llvm.atomic.load.xor.i32.p0i32";
-		_llvmKernel->_statements.push_front( atom );
+		_llvmKernel->push_front( atom );
 		atom.label = "llvm.atomic.load.min.i32.p0i32";
-		_llvmKernel->_statements.push_front( atom );
+		_llvmKernel->push_front( atom );
 		atom.label = "llvm.atomic.load.umin.i32.p0i32";
-		_llvmKernel->_statements.push_front( atom );
+		_llvmKernel->push_front( atom );
 		atom.label = "llvm.atomic.load.max.i32.p0i32";
-		_llvmKernel->_statements.push_front( atom );
+		_llvmKernel->push_front( atom );
 		atom.label = "llvm.atomic.load.umax.i32.p0i32";
-		_llvmKernel->_statements.push_front( atom );
+		_llvmKernel->push_front( atom );
 		atom.label = "llvm.atomic.load.min.i32.p0i32";
-		_llvmKernel->_statements.push_front( atom );
+		_llvmKernel->push_front( atom );
 		atom.label = "llvm.atomic.swap.i32.p0i32";
-		_llvmKernel->_statements.push_front( atom );
+		_llvmKernel->push_front( atom );
 
 		atom.operand.type.type = ir::LLVMInstruction::I64;
 		atom.parameters[0].type.type = ir::LLVMInstruction::I64;
 		atom.parameters[1].type.type = ir::LLVMInstruction::I64;
 
 		atom.label = "llvm.atomic.load.add.i64.p0i64";
-		_llvmKernel->_statements.push_front( atom );
+		_llvmKernel->push_front( atom );
 		atom.label = "llvm.atomic.load.and.i64.p0i64";
-		_llvmKernel->_statements.push_front( atom );
+		_llvmKernel->push_front( atom );
 		atom.label = "llvm.atomic.load.or.i64.p0i64";
-		_llvmKernel->_statements.push_front( atom );
+		_llvmKernel->push_front( atom );
 		atom.label = "llvm.atomic.load.xor.i64.p0i64";
-		_llvmKernel->_statements.push_front( atom );
+		_llvmKernel->push_front( atom );
 		atom.label = "llvm.atomic.load.min.i64.p0i64";
-		_llvmKernel->_statements.push_front( atom );
+		_llvmKernel->push_front( atom );
 		atom.label = "llvm.atomic.load.umin.i64.p0i64";
-		_llvmKernel->_statements.push_front( atom );
+		_llvmKernel->push_front( atom );
 		atom.label = "llvm.atomic.load.max.i64.p0i64";
-		_llvmKernel->_statements.push_front( atom );
+		_llvmKernel->push_front( atom );
 		atom.label = "llvm.atomic.load.umax.i64.p0i64";
-		_llvmKernel->_statements.push_front( atom );
+		_llvmKernel->push_front( atom );
 		atom.label = "llvm.atomic.load.min.i64.p0i64";
-		_llvmKernel->_statements.push_front( atom );
+		_llvmKernel->push_front( atom );
 		atom.label = "llvm.atomic.swap.i64.p0i64";
-		_llvmKernel->_statements.push_front( atom );
+		_llvmKernel->push_front( atom );
 
 		// @llvm.atomic.cmp.swap
 		ir::LLVMStatement cmp( ir::LLVMStatement::FunctionDeclaration );
@@ -8640,7 +8640,7 @@ namespace translator
 		cmp.parameters[2].type.category = ir::LLVMInstruction::Type::Element;
 		cmp.parameters[2].type.type = ir::LLVMInstruction::I32;
 
-		_llvmKernel->_statements.push_front( cmp );
+		_llvmKernel->push_front( cmp );
 
 		cmp.operand.type.type = ir::LLVMInstruction::I64;
 		cmp.parameters[0].type.type = ir::LLVMInstruction::I64;
@@ -8648,7 +8648,7 @@ namespace translator
 		cmp.parameters[2].type.type = ir::LLVMInstruction::I64;
 		cmp.label = "llvm.atomic.cmp.swap.i64.p0i64";
 
-		_llvmKernel->_statements.push_front( cmp );
+		_llvmKernel->push_front( cmp );
 		
 		// @llvm.ctpop
 		ir::LLVMStatement ctpop( ir::LLVMStatement::FunctionDeclaration );
@@ -8666,22 +8666,22 @@ namespace translator
 		ctpop.parameters[0].type.category = ir::LLVMInstruction::Type::Element;
 		ctpop.parameters[0].type.type = ir::LLVMInstruction::I8;
 
-		_llvmKernel->_statements.push_front( ctpop );
+		_llvmKernel->push_front( ctpop );
 
 		ctpop.label = "llvm.ctpop.i16";
 		ctpop.operand.type.type = ir::LLVMInstruction::I16;
 		ctpop.parameters[0].type.type = ir::LLVMInstruction::I16;
-		_llvmKernel->_statements.push_front( ctpop );
+		_llvmKernel->push_front( ctpop );
 
 		ctpop.label = "llvm.ctpop.i32";
 		ctpop.operand.type.type = ir::LLVMInstruction::I32;
 		ctpop.parameters[0].type.type = ir::LLVMInstruction::I32;
-		_llvmKernel->_statements.push_front( ctpop );
+		_llvmKernel->push_front( ctpop );
 
 		ctpop.label = "llvm.ctpop.i64";
 		ctpop.operand.type.type = ir::LLVMInstruction::I64;
 		ctpop.parameters[0].type.type = ir::LLVMInstruction::I64;
-		_llvmKernel->_statements.push_front( ctpop );
+		_llvmKernel->push_front( ctpop );
 
 		// @llvm.readcyclecounter
 		ir::LLVMStatement rdtsc( ir::LLVMStatement::FunctionDeclaration );
@@ -8694,7 +8694,7 @@ namespace translator
 		rdtsc.operand.type.category = ir::LLVMInstruction::Type::Element;
 		rdtsc.operand.type.type = ir::LLVMInstruction::I64;
 
-		_llvmKernel->_statements.push_front( rdtsc );
+		_llvmKernel->push_front( rdtsc );
 
 		// @llvm.ctlz
 		ir::LLVMStatement ctlz( ir::LLVMStatement::FunctionDeclaration );
@@ -8712,22 +8712,22 @@ namespace translator
 		ctlz.parameters[0].type.category = ir::LLVMInstruction::Type::Element;
 		ctlz.parameters[0].type.type     = ir::LLVMInstruction::I8;
 
-		_llvmKernel->_statements.push_front( ctlz );
+		_llvmKernel->push_front( ctlz );
 
 		ctlz.label = "llvm.ctlz.i16";
 		ctlz.operand.type.type = ir::LLVMInstruction::I16;
 		ctlz.parameters[0].type.type = ir::LLVMInstruction::I16;
-		_llvmKernel->_statements.push_front( ctlz );
+		_llvmKernel->push_front( ctlz );
 
 		ctlz.label = "llvm.ctlz.i32";
 		ctlz.operand.type.type = ir::LLVMInstruction::I32;
 		ctlz.parameters[0].type.type = ir::LLVMInstruction::I32;
-		_llvmKernel->_statements.push_front( ctlz );
+		_llvmKernel->push_front( ctlz );
 
 		ctlz.label = "llvm.ctlz.i64";
 		ctlz.operand.type.type = ir::LLVMInstruction::I64;
 		ctlz.parameters[0].type.type = ir::LLVMInstruction::I64;
-		_llvmKernel->_statements.push_front( ctlz );
+		_llvmKernel->push_front( ctlz );
 		
 		// @llvm.sqrt
 		ir::LLVMStatement sqrt( ir::LLVMStatement::FunctionDeclaration );
@@ -8745,13 +8745,13 @@ namespace translator
 		sqrt.parameters[0].type.category = ir::LLVMInstruction::Type::Element;
 		sqrt.parameters[0].type.type     = ir::LLVMInstruction::F32;
 
-		_llvmKernel->_statements.push_front( sqrt );
+		_llvmKernel->push_front( sqrt );
 
 		sqrt.label                   = "llvm.sqrt.f64";
 		sqrt.operand.type.type       = ir::LLVMInstruction::F64;
 		sqrt.parameters[0].type.type = ir::LLVMInstruction::F64;
 		
-		_llvmKernel->_statements.push_front( sqrt );
+		_llvmKernel->push_front( sqrt );
 
 		// @llvm.cos
 		ir::LLVMStatement cos( ir::LLVMStatement::FunctionDeclaration );
@@ -8769,19 +8769,19 @@ namespace translator
 		cos.parameters[0].type.category = ir::LLVMInstruction::Type::Element;
 		cos.parameters[0].type.type     = ir::LLVMInstruction::F32;
 
-		_llvmKernel->_statements.push_front( cos );
+		_llvmKernel->push_front( cos );
 
 		// @llvm.sin
 		cos.label      = "llvm.sin.f32";
-		_llvmKernel->_statements.push_front( cos );
+		_llvmKernel->push_front( cos );
 
 		// @llvm.log2
 		cos.label      = "llvm.log2.f32";
-		_llvmKernel->_statements.push_front( cos );
+		_llvmKernel->push_front( cos );
 
 		// @llvm.exp2
 		cos.label      = "llvm.exp2.f32";
-		_llvmKernel->_statements.push_front( cos );
+		_llvmKernel->push_front( cos );
 	}
 	
 	void PTXToLLVMTranslator::_addUtilityCalls()
@@ -8807,12 +8807,12 @@ namespace translator
 		extent.parameters[1].type.category = ir::LLVMInstruction::Type::Element;
 		extent.parameters[1].type.type = ir::LLVMInstruction::I32;
 		
-		_llvmKernel->_statements.push_front( extent );
+		_llvmKernel->push_front( extent );
 	}
 	
 	void PTXToLLVMTranslator::_addKernelPrefix()
 	{
-		_llvmKernel->_statements.push_front( 
+		_llvmKernel->push_front( 
 			ir::LLVMStatement( ir::LLVMStatement::BeginFunctionBody ) );
 
 		ir::LLVMStatement kernel( ir::LLVMStatement::FunctionDefinition );
@@ -8830,7 +8830,7 @@ namespace translator
 			= ir::LLVMInstruction::Type::Pointer;
 		kernel.parameters[ 0 ].name = "%__ctaContext";
 		
-		_llvmKernel->_statements.push_front( kernel );
+		_llvmKernel->push_front( kernel );
 
 		ir::LLVMStatement dim3( ir::LLVMStatement::TypeDeclaration );
 		
@@ -8843,9 +8843,9 @@ namespace translator
 		dim3.operand.type.members[1] = dim3.operand.type.members[0];
 		dim3.operand.type.members[2] = dim3.operand.type.members[0];
 		
-		_llvmKernel->_statements.push_front( dim3 );
+		_llvmKernel->push_front( dim3 );
 
-		_llvmKernel->_statements.push_front( 
+		_llvmKernel->push_front( 
 			ir::LLVMStatement( ir::LLVMStatement::NewLine ) );		
 
 		ir::LLVMStatement brev( ir::LLVMStatement::FunctionDeclaration );
@@ -8862,11 +8862,11 @@ namespace translator
 		brev.parameters[0].type.category = ir::LLVMInstruction::Type::Element;
 		brev.parameters[0].type.type = ir::LLVMInstruction::I32;
 	
-		_llvmKernel->_statements.push_front( brev );		
+		_llvmKernel->push_front( brev );		
 		brev.operand.type.type = ir::LLVMInstruction::I64;
 		brev.parameters[0].type.type = ir::LLVMInstruction::I64;
 		brev.label = "__ocelot_brev_b64";
-		_llvmKernel->_statements.push_front( brev );		
+		_llvmKernel->push_front( brev );		
 
 		ir::LLVMStatement bfi( ir::LLVMStatement::FunctionDeclaration );
 
@@ -8888,13 +8888,13 @@ namespace translator
 		bfi.parameters[3].type.category = ir::LLVMInstruction::Type::Element;
 		bfi.parameters[3].type.type = ir::LLVMInstruction::I32;
 	
-		_llvmKernel->_statements.push_front( bfi );		
+		_llvmKernel->push_front( bfi );		
 		
 		bfi.label = "__ocelot_bfi_b64";
 		bfi.operand.type.type = ir::LLVMInstruction::I64;
 		bfi.parameters[0].type.type = ir::LLVMInstruction::I64;
 		bfi.parameters[1].type.type = ir::LLVMInstruction::I64;
-		_llvmKernel->_statements.push_front( bfi );
+		_llvmKernel->push_front( bfi );
 		
 		ir::LLVMStatement bfind( ir::LLVMStatement::FunctionDeclaration );
 
@@ -8912,10 +8912,10 @@ namespace translator
 		bfind.parameters[1].type.category = ir::LLVMInstruction::Type::Element;
 		bfind.parameters[1].type.type = ir::LLVMInstruction::I1;
 	
-		_llvmKernel->_statements.push_front( bfind );
+		_llvmKernel->push_front( bfind );
 		bfind.parameters[0].type.type = ir::LLVMInstruction::I64;
 		bfind.label = "__ocelot_bfind_b64";
-		_llvmKernel->_statements.push_front( bfind );		
+		_llvmKernel->push_front( bfind );		
 
 		ir::LLVMStatement prmt( ir::LLVMStatement::FunctionDeclaration );
 
@@ -8935,19 +8935,19 @@ namespace translator
 		prmt.parameters[2].type.category = ir::LLVMInstruction::Type::Element;
 		prmt.parameters[2].type.type = ir::LLVMInstruction::I32;
 	
-		_llvmKernel->_statements.push_front( prmt );		
+		_llvmKernel->push_front( prmt );		
 		prmt.label = "__ocelot_prmt_f4e";
-		_llvmKernel->_statements.push_front( prmt );		
+		_llvmKernel->push_front( prmt );		
 		prmt.label = "__ocelot_prmt_b4e";
-		_llvmKernel->_statements.push_front( prmt );		
+		_llvmKernel->push_front( prmt );		
 		prmt.label = "__ocelot_prmt_rc8";
-		_llvmKernel->_statements.push_front( prmt );		
+		_llvmKernel->push_front( prmt );		
 		prmt.label = "__ocelot_prmt_ecl";
-		_llvmKernel->_statements.push_front( prmt );		
+		_llvmKernel->push_front( prmt );		
 		prmt.label = "__ocelot_prmt_ecr";
-		_llvmKernel->_statements.push_front( prmt );		
+		_llvmKernel->push_front( prmt );		
 		prmt.label = "__ocelot_prmt_rc16";
-		_llvmKernel->_statements.push_front( prmt );
+		_llvmKernel->push_front( prmt );
 
 		ir::LLVMStatement vote( ir::LLVMStatement::FunctionDeclaration );
 
@@ -8967,7 +8967,7 @@ namespace translator
 		vote.parameters[2].type.category = ir::LLVMInstruction::Type::Element;
 		vote.parameters[2].type.type = ir::LLVMInstruction::I1;
 	
-		_llvmKernel->_statements.push_front( vote );		
+		_llvmKernel->push_front( vote );		
 
 		_addMemoryCheckingDeclarations();
 		_insertDebugSymbols();
@@ -8979,7 +8979,7 @@ namespace translator
 		_addLLVMIntrinsics();
 		_addUtilityCalls();
 
-		_llvmKernel->_statements.push_back( 
+		_llvmKernel->push_back( 
 			ir::LLVMStatement( ir::LLVMStatement::NewLine ) );
 		
 		ir::LLVMStatement contextType( ir::LLVMStatement::TypeDeclaration );
@@ -8987,15 +8987,15 @@ namespace translator
 		contextType.label = "%LLVMContext";
 		contextType.operand.type = _getCtaContextType();
 		
-		_llvmKernel->_statements.push_front( contextType );
+		_llvmKernel->push_front( contextType );
 
-		_llvmKernel->_statements.push_front( 
+		_llvmKernel->push_front( 
 			ir::LLVMStatement( ir::LLVMStatement::NewLine ) );
 	}
 	
 	void PTXToLLVMTranslator::_addKernelSuffix()
 	{
-		_llvmKernel->_statements.push_back( 
+		_llvmKernel->push_back( 
 			ir::LLVMStatement( ir::LLVMStatement::EndFunctionBody ) );	
 	}
 

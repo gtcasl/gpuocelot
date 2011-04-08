@@ -42,13 +42,13 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define REPORT_PTX_KERNELS 1
-#define REPORT_PTX_SUBKERNELS 1
+#define REPORT_PTX_KERNELS 0
+#define REPORT_PTX_SUBKERNELS 0
 
 #define REPORT_ALL_LLVM_ASSEMBLY 0
 #define REPORT_OPTIMIZED_LLVM_ASSEMBLY 0
 #define REPORT_SCHEDULE_OPERATIONS 0
-#define REPORT_TRANSLATION_OPERATIONS 0
+#define REPORT_TRANSLATION_OPERATIONS 1
 
 #define REPORT_BASE 0
 
@@ -78,40 +78,38 @@ LLVMDynamicTranslationCache::getOrInsertTranslationById(HyperblockId id, int ws)
 	TranslatedSubkernel *subkernel = sk_it->second;
 	const Translation *translation = 0;
 	
-	TranslationWarpMap::const_iterator sk_tr_it = subkernel->translations.find(1);
+	TranslationWarpMap::const_iterator sk_tr_it = subkernel->translations.find(ws);
 	if (sk_tr_it == subkernel->translations.end()) {
 		reportE(REPORT_TRANSLATION_OPERATIONS, "scalar version not found. Compiling");
 		
-		Translation *scalarTranslation = new Translation;
+		Translation *newTranslation = new Translation;		
+		newTranslation->warpSize = ws;
+		
 		executive::Device *device = modules[subkernel->parent->kernel->module->path()].device;
-		scalarTranslation->metadata = compileTranslation(
+		newTranslation->metadata = compileTranslation(
 			*subkernel->parent,
 			*subkernel,
-			*scalarTranslation,
+			*newTranslation,
 			subkernel->parent->kernel,
 			(translator::Translator::OptimizationLevel)api::OcelotConfiguration::get().executive.optimizationLevel,
 			device
 		);
-		subkernel->translations[1] = scalarTranslation;
+		subkernel->translations[ws] = newTranslation;
 #if REPORT_OPTIMIZED_LLVM_ASSEMBLY && REPORT_BASE
-		scalarTranslation->llvmFunction->dump();
+		newTranslation->llvmFunction->dump();
 #endif
 		
 		report("inserting translation " << id << " with " 
-			<< static_cast<LLVMDynamicExecutive::Metadata*>(scalarTranslation->metadata)->localSize 
+			<< static_cast<LLVMDynamicExecutive::Metadata*>(newTranslation->metadata)->localSize 
 			<< " bytes of local memory");
 		
-		assert(scalarTranslation->llvmFunction);
-		assert(scalarTranslation->function);
+		assert(newTranslation->llvmFunction);
+		assert(newTranslation->function);
 		
-		translation = scalarTranslation;
+		translation = newTranslation;
 	}
 	else {
 		translation = sk_tr_it->second;
-	}
-	assert(translation && "failed to find scalar translation");
-	if (ws > 1) {
-		assert(0 && "non-scalar translation unimplemented");
 	}
 	
 	return translation;
@@ -951,7 +949,7 @@ static void optimizePTX(
 	convertPredicationToSelect.initialize(*kernel.module);
 	convertPredicationToSelect.runOnKernel(kernel);
 	convertPredicationToSelect.finalize();
-			
+
 	kernel.dfg()->toSsa();
 }
 
@@ -1100,8 +1098,8 @@ static void optimize(
 	reportE(REPORT_TRANSLATION_OPERATIONS, " Optimizing kernel at level " 
 		<< translator::Translator::toString(optimization));
 
-    unsigned int level = 0;
-    bool space         = false;
+	unsigned int level = 0;
+	bool space         = false;
 
 	if(optimization == translator::Translator::BasicOptimization)
 	{
@@ -1127,7 +1125,8 @@ static void optimize(
 	manager.add(new llvm::TargetData(*LLVMState::jit()->getTargetData()));
 	
 	if (warpSize > 1) {
-		reportE(REPORT_TRANSLATION_OPERATIONS, "\n\nAdding LLVM vectorization pass\n\n");
+		reportE(REPORT_TRANSLATION_OPERATIONS, 
+			"\n\nAdding LLVM vectorization pass (ws: " << warpSize << ")\n\n");
 		manager.add(new analysis::LLVMUniformVectorization(warpSize));
 	}
 
@@ -1331,6 +1330,62 @@ void *LLVMDynamicTranslationCache::compileTranslation(
 	}
 
 	return metadata;
+	#else
+	assertM(false, "LLVM support not compiled into ocelot.");
+	#endif
+}
+
+
+/*!
+	\brief entry point into PTX->LLVM translation process
+	
+	\param translation - existing translation instance to receive results of compilation
+	\param module - pointer to module
+	\param parent - pointer to parent PTX kernel
+	\param optimization - optimziation level
+	\param device - pointer to target device
+*/
+void LLVMDynamicTranslationCache::recompileTranslation(
+	LLVMDynamicTranslationCache::TranslatedSubkernel &translatedSubkernel,
+	LLVMDynamicTranslationCache::Translation &translation,
+	translator::Translator::OptimizationLevel optimization,
+	executive::Device *device) {
+
+	#ifdef HAVE_LLVM
+	reportE(REPORT_TRANSLATION_OPERATIONS, "Getting metadata for kernel '" << translatedSubkernel.subkernel->name << "'");
+	
+	reportE(REPORT_TRANSLATION_OPERATIONS, "Translating PTX");
+		
+	try
+	{
+		// apply optimizations on the reuslting LLVM function
+		optimize(*translatedSubkernel.kernelModule, optimization, translation.warpSize);
+		
+		// dynamically compile LLVM to host ISA
+		translation.llvmFunction = codegen(
+			translation.function, 
+			*translatedSubkernel.kernelModule, 
+			*translatedSubkernel.subkernel, 
+			device);
+		
+		// this step may be ellided for performance
+		std::string errors;
+		if (llvm::verifyModule(*translatedSubkernel.kernelModule, llvm::ReturnStatusAction, &errors)) {
+			std::cerr << "llvm::verifyModule failed:" << errors << std::endl;
+		}
+	}
+	catch(...)
+	{
+		llvm::Function* llvmFunction = translatedSubkernel.kernelModule->getFunction(translatedSubkernel.subkernel->name);
+
+		LLVMState::jit()->freeMachineCodeForFunction(llvmFunction);
+
+		LLVMState::jit()->removeModule(translatedSubkernel.kernelModule);
+		delete translatedSubkernel.kernelModule;
+		
+		throw;
+	}
+
 	#else
 	assertM(false, "LLVM support not compiled into ocelot.");
 	#endif

@@ -8,6 +8,9 @@
 #define OCELOT_EXECUTIVE_LLVMDYNAMICEXECUTIVE_H_INCLUDED
 
 // C++ includes
+#include <map>
+#include <vector>
+#include <list>
 
 // Ocelot includes
 #include <ocelot/executive/interface/LLVMContext.h>
@@ -80,9 +83,11 @@ namespace executive {
 		class CooperativeThreadArray {
 		public:
 		
-			void initialize(const LLVMDynamicKernel &kernel, const ir::Dim3 & ctaId, HyperblockId entry, int localSize = 0, int sharedSize = 0);
+			void initialize(const LLVMDynamicKernel &kernel, const ir::Dim3 & ctaId, 
+				HyperblockId entry, int localSize = 0, int sharedSize = 0);
 		
-			void resize(int localSize = 0, int sharedSize = 0, int constSize = 0, int parameterSize = 0, int argumentSize = 0);
+			void resize(int localSize = 0, int sharedSize = 0, int constSize = 0, 
+				int parameterSize = 0, int argumentSize = 0);
 			
 		public:
 			ByteVector local;
@@ -93,7 +98,7 @@ namespace executive {
 			
 			ir::Dim3 blockId;
 			ir::Dim3 blockDim;
-			
+						
 			//! threads ready to execute
 			ThreadContextQueue readyQueue;
 			

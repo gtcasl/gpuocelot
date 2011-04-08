@@ -166,6 +166,16 @@ namespace executive {
 			ir::PTXKernel *parent,
 			translator::Translator::OptimizationLevel optimization,
 			executive::Device *device);
+		
+		/*!
+			\brief given an *UNOPTIMIZED* translated form of a subkernel, apply optimizations
+				and code generation for a particular warp size
+		*/
+		void recompileTranslation(
+			LLVMDynamicTranslationCache::TranslatedSubkernel &translatedSubkernel,
+			LLVMDynamicTranslationCache::Translation &translation,
+			translator::Translator::OptimizationLevel optimization,
+			executive::Device *device);
 	
 	private:
 	

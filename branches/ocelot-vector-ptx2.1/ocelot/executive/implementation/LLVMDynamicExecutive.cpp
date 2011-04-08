@@ -63,10 +63,12 @@ void LLVMDynamicExecutive::CooperativeThreadArray::initialize(
 	shared.resize(sharedMemorySize, 0);
 
 	if (localMemorySize) {	
-		report("  local memory range: " << (const void *)&local[0] << " - " << (const void *)&local[local.size()-1]);
+		report("  local memory range: " << (const void *)&local[0] 
+			<< " - " << (const void *)&local[local.size()-1]);
 	}
 	if (sharedMemorySize) {
-		report("  shared memory range: " << (const void *)&shared[0] << " - " << (const void *)&shared[shared.size()-1]);
+		report("  shared memory range: " << (const void *)&shared[0] 
+			<< " - " << (const void *)&shared[shared.size()-1]);
 	}
 	
 	for (int threadId = 0; threadId < totalThreads; threadId++) {
@@ -232,8 +234,8 @@ void LLVMDynamicExecutive::execute() {
 */
 void LLVMDynamicExecutive::executeWarp(Warp &warp) {
 	
-	
-	reportE(REPORT_SCHEDULE_OPERATIONS, "Executing warp of size " << warp.size() << " on hyperblockId " << warp.entryId);
+	reportE(REPORT_SCHEDULE_OPERATIONS, "Executing warp of size " << warp.size() 
+		<< " on hyperblockId " << warp.entryId);
 	
 	// lazily fetch translation
 	const LLVMDynamicTranslationCache::Translation *translation = 
@@ -249,11 +251,11 @@ void LLVMDynamicExecutive::executeWarp(Warp &warp) {
 		ctx_it->metadata = (char *)translation->metadata;
 		assert(ctx_it->metadata);
 		
+#if REPORT_BASE && REPORT_LOCAL_MEMORY
 		reportE(REPORT_SCHEDULE_OPERATIONS, 
 			"thread (" << ctx_it->tid.x << "," << ctx_it->tid.y << "," << ctx_it->tid.z 
 			<< ") - entering block " << warp.entryId);
 		
-#if REPORT_BASE && REPORT_LOCAL_MEMORY
 		report("Before: ");
 		unsigned int localSize = 352;
 		for (unsigned int i = 0; i < (localSize & (~0x03)); i+=4) {
@@ -266,21 +268,24 @@ void LLVMDynamicExecutive::executeWarp(Warp &warp) {
 #endif
 	}
 	
-	translation->execute(&warp.threads[0]);
-	
+	// primitive warp scheduler
+	for (size_t tid = 0; tid < warp.threads.size(); tid += translation->warpSize) {
+		translation->execute(&warp.threads[tid]);
+	}
+
 	for (
 		ThreadContextVector::iterator ctx_it = warp.threads.begin(); 
 		ctx_it != warp.threads.end(); 
 		++ctx_it) {
 	
 		ThreadExitCode exitCode = getExitCode(*ctx_it);
+		unsigned int ctaId = LLVMDynamicExecutive::ctaId(*ctx_it);
+		
 		reportE(REPORT_SCHEDULE_OPERATIONS, 
 			" thread(" << ctx_it->tid.x << ", " << ctx_it->tid.y << ", " << ctx_it->tid.z 
-			<< ") [cta ] exited with code " 
+			<< ") [cta " << ctaId << "] exited with code " 
 			<< analysis::HyperblockFormation::toString(exitCode) 
 			<< " - resume point: " << getResumePoint(*ctx_it));
-		
-		unsigned int ctaId = LLVMDynamicExecutive::ctaId(*ctx_it);
 		
 #if REPORT_BASE && REPORT_LOCAL_MEMORY
 		unsigned int localSize = 352;
@@ -294,13 +299,21 @@ void LLVMDynamicExecutive::executeWarp(Warp &warp) {
 		std::cout << std::endl;
 #endif
 		
+		assert(ctaMap.find(ctaId) != ctaMap.end() && "CtaID not present in ctaMap");
+		
 		switch (exitCode) {
 		case analysis::HyperblockFormation::Thread_fallthrough:
 			// update its next thread Id
+			reportE(REPORT_SCHEDULE_OPERATIONS, 
+				"inserting thread " << ctx_it->tid.x << ", " << ctx_it->tid.y << ", " << ctx_it->tid.z 
+					<< " into ready queue of CTA " << ctaId);
 			ctaMap[ctaId].readyQueue.push_back(*ctx_it);
 			break;
 		case analysis::HyperblockFormation::Thread_branch:
 			// update its next thread Id
+			reportE(REPORT_SCHEDULE_OPERATIONS, 
+				"inserting thread " << ctx_it->tid.x << ", " << ctx_it->tid.y << ", " << ctx_it->tid.z 
+					<< " into ready queue of CTA " << ctaId);
 			ctaMap[ctaId].readyQueue.push_back(*ctx_it);
 			break;
 		case analysis::HyperblockFormation::Thread_tailcall:
@@ -313,6 +326,9 @@ void LLVMDynamicExecutive::executeWarp(Warp &warp) {
 			break;
 		case analysis::HyperblockFormation::Thread_barrier:
 			// update its next thread Id, place into a waiting queue
+			reportE(REPORT_SCHEDULE_OPERATIONS, 
+				"inserting thread " << ctx_it->tid.x << ", " << ctx_it->tid.y << ", " << ctx_it->tid.z 
+					<< " into barrier queue of CTA " << ctaId);
 			ctaMap[ctaId].barrierQueue.push_back(*ctx_it);
 			break;
 		case analysis::HyperblockFormation::Thread_exit:
@@ -328,18 +344,30 @@ void LLVMDynamicExecutive::executeWarp(Warp &warp) {
 
 //! \brief construct a warp - for now, simply choose a ready thread
 void LLVMDynamicExecutive::warpFormation(Warp &warp) {
-	warp.threads.resize(1);
+	const size_t warpSize = 1;
+	warp.threads.resize(0);
+	warp.threads.reserve(warpSize);
+	
 	for (CooperativeThreadArrayMap::iterator cta_it = ctaMap.begin();
-		cta_it != ctaMap.end();
+		cta_it != ctaMap.end() && warp.threads.size() < warpSize;
 		++cta_it) {
 		
-		if (cta_it->second.readyQueue.size()) {
-			warp.threads[0] = cta_it->second.readyQueue.front();
-			cta_it->second.readyQueue.pop_front();
-			warp.entryId = getResumePoint(warp.threads[0]);
-			return; 
+		for (ThreadContextQueue::iterator ctx_it = cta_it->second.readyQueue.begin();
+			ctx_it != cta_it->second.readyQueue.end() && warp.threads.size() < warpSize;) {
+			HyperblockId entryId = getResumePoint(*ctx_it);
+			if (!warp.threads.size() || entryId == warp.entryId) {
+				warp.entryId = entryId;
+				warp.threads.push_back(*ctx_it);
+				ctx_it = cta_it->second.readyQueue.erase(ctx_it);
+			}
+			else {
+				++ctx_it;
+			}
 		}
 	}
+	reportE(REPORT_SCHEDULE_OPERATIONS, 
+		"formed warp of size " << warp.threads.size() << " with entryId " << warp.entryId);
+	assert(warp.threads.size() && " failed to choose threads to form warp");
 }
 
 //! \brief determine if any barriers have been reached
@@ -348,7 +376,7 @@ void LLVMDynamicExecutive::testBarriers(int &waiting, int &ready) {
 	for (CooperativeThreadArrayMap::iterator cta_it = ctaMap.begin();
 		cta_it != ctaMap.end();
 		++cta_it) {
-				
+		
 		if (cta_it->second.barrierQueue.size() && !cta_it->second.readyQueue.size()) {
 			cta_it->second.readyQueue = cta_it->second.barrierQueue;
 			cta_it->second.barrierQueue.clear();

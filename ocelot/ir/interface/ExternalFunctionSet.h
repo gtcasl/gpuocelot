@@ -36,9 +36,10 @@ public:
 			void* functionPointer = 0, llvm::Module* m = 0);
 	
 	public:
-		void call(void* parameters, const ir::PTXKernel::Prototype& p) const;
+		void call(void* parameters, const ir::PTXKernel::Prototype& p);
 		const std::string& name() const;
 		void* externalFunctionPointer() const;
+		std::string mangledName() const;
 		
 	private:
 		typedef void (*ExternalCallType)(void*);
@@ -67,7 +68,7 @@ public:
 	void remove(const std::string& name);
 	
 	/*! \brief Get a callable external function or 0 if it doesn't exist */
-	const ExternalFunction* find(const std::string& name) const;
+	ExternalFunction* find(const std::string& name) const;
 	
 private:
 	FunctionSet   _functions;

@@ -17,13 +17,11 @@
 #include <ocelot/cuda/interface/cuda_runtime.h>
 
 // hydrazine includes
+#include <hydrazine/interface/SystemCompatibility.h>
 #include <hydrazine/interface/Casts.h>
 #include <hydrazine/implementation/Exception.h>
 #include <hydrazine/implementation/debug.h>
 #include <hydrazine/implementation/string.h>
-
-// opengl includes
-#include <GL/glx.h>
 
 // standard library includes
 #include <cstring>
@@ -628,6 +626,7 @@ namespace executive
 		memcpy.dstY = 0;
 		memcpy.dstZ = 0;
 
+
 		
 		checkError(driver::cuMemcpy3D(&memcpy));
 	}
@@ -714,11 +713,12 @@ namespace executive
 		CUdevice device;
 		checkError(driver::cuDeviceGet(&device, id));
 		
-		GLXContext openglContext = glXGetCurrentContext();
-		if(openglContext != 0)
+		_opengl = hydrazine::isAnOpenGLContextAvailable();
+
+		if(_opengl)
 		{
 			checkError(driver::cuGLCtxCreate(&_context, flags, device));
-			_opengl = true;
+			
 		}
 		else
 		{

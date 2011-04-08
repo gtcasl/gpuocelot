@@ -161,6 +161,8 @@ tests.append(('TestCalVectorScale', \
 	'ocelot/cal/test/vectorScale.cu.cpp', 'full'))
 tests.append(('TestDeviceSwitching', \
 	'ocelot/api/test/TestDeviceSwitching.cpp', 'full'))
+tests.append(('TestExternalFunctions', \
+	'ocelot/api/test/TestExternalFunctions.cpp', 'full'))
 tests.append(('TestPTXAssembly', \
 	'ocelot/ir/test/TestPTXAssembly.cpp', 'full'))
 

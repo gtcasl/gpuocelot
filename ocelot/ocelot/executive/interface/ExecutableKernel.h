@@ -104,7 +104,7 @@ namespace executive {
 		virtual void clearExternalFunctionSet() = 0;
 
 		/*! Find an external function */
-		const ir::ExternalFunctionSet::ExternalFunction* findExternalFunction(
+		ir::ExternalFunctionSet::ExternalFunction* findExternalFunction(
 			const std::string& name) const;
 
 	public:

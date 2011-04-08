@@ -75,7 +75,7 @@ void ExecutableKernel::tracePostEvent(const trace::TraceEvent & event) const
 	}
 }
 
-const ir::ExternalFunctionSet::ExternalFunction*
+ir::ExternalFunctionSet::ExternalFunction*
 	ExecutableKernel::findExternalFunction(
 	const std::string& name) const {
 	if(_externals == 0) return 0;

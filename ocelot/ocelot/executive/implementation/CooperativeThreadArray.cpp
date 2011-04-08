@@ -2486,7 +2486,7 @@ void executive::CooperativeThreadArray::eval_Call(CTAContext &context,
 	else {
 
 		// was this function external?
-		const ir::ExternalFunctionSet::ExternalFunction*
+		ir::ExternalFunctionSet::ExternalFunction*
 			external = kernel->findExternalFunction(instr.a.identifier);
 		if(external != 0) {
 			// get the prototype

@@ -4,7 +4,7 @@
 	\brief  The header file for the ExternalFunctionSet class.
 */
 
-#ifndef EXTERNAL_FUCNTION_SET_H_INCLUDED
+#ifndef EXTERNAL_FUNCTION_SET_H_INCLUDED
 #define EXTERNAL_FUNCTION_SET_H_INCLUDED
 
 // Ocelot Includes

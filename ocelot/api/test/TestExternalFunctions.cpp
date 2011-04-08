@@ -42,6 +42,7 @@ bool TestExternalFunctions::testMallocFree()
 		"\t.reg .u64 %r<10>;\n"
 		"\t.param .u64 returned;\n"
 		"\t.param .u64 value;\n"
+		"\t.param .u64 freeValue;\n"
 		"\t\n"
 		"\tmov.u64 %r0, 8;\n"
 		"\tst.param.u64 [value], %r0;\n"
@@ -51,8 +52,8 @@ bool TestExternalFunctions::testMallocFree()
 		"\tld.global.u64 %r2, [%r1];\n"
 		"\tld.param.u64 %r3, [result];\n"
 		"\tst.global.u64 [%r3], %r2;\n"
-		"\tst.param.u64 [value], %r1;\n"
-		"\tcall.uni free, (value);\n"
+		"\tst.param.u64 [freeValue], %r1;\n"
+		"\tcall.uni free, (freeValue);\n"
 		"\texit;\n"
 		"}\n";
 

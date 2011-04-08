@@ -602,7 +602,7 @@ void  executive::PassThroughDevice::_recordStatePostExecution() {
 	stream << config::get().checkpoint.path
 		<< config::get().checkpoint.prefix << _kernelCount++
 		<< config::get().checkpoint.suffix;
-	std::ofstream file(stream.str());
+	std::ofstream file(stream.str().c_str());
 	if(!file.is_open())
 	{
 		throw hydrazine::Exception("Failed to open checkpoint file '"

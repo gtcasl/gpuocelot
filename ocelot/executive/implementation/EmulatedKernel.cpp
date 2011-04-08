@@ -49,6 +49,14 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 
+
+static unsigned int align(unsigned int offset, unsigned int size) {
+	unsigned int difference = offset % size;
+	unsigned int alignedOffset = difference == 0 
+		? offset : offset + size - difference;
+	return alignedOffset;
+}
+
 executive::EmulatedKernel::EmulatedKernel(
 	ir::Kernel* kernel, 
 	Device* d, 
@@ -427,27 +435,32 @@ void executive::EmulatedKernel::initializeArgumentMemory() {
 	delete[] ArgumentMemory;
 	ArgumentMemory = 0;
 	_argumentMemorySize = 0;
-	for(ParameterVector::iterator i_it = arguments.begin();
-		i_it != arguments.end(); ++i_it) {
-		ir::Parameter& argument = *i_it;
-		// align parameter memory
-		unsigned int padding = argument.getAlignment() 
-			- ( _argumentMemorySize % argument.getAlignment() );
-		padding = (argument.getAlignment() == padding) ? 0 : padding;
+
+	if(!function()) {
+		for(ParameterVector::iterator i_it = arguments.begin();
+			i_it != arguments.end(); ++i_it) {
+			ir::Parameter& argument = *i_it;
+			// align parameter memory
+			unsigned int padding = argument.getAlignment() 
+				- ( _argumentMemorySize % argument.getAlignment() );
+			padding = (argument.getAlignment() == padding) ? 0 : padding;
 		
-		report("  offset: " << _argumentMemorySize << ", alignment: "
-			<< argument.getAlignment() << ", padding: " << padding);
-		_argumentMemorySize += padding;
-		argument.offset = _argumentMemorySize;
+			report("  offset: " << _argumentMemorySize << ", alignment: "
+				<< argument.getAlignment() << ", padding: " << padding);
+			_argumentMemorySize += padding;
+			argument.offset = _argumentMemorySize;
 		
-		report( " Initializing memory for argument " << argument.name 
-			<< " of size " << argument.getSize() << " at offset "
-			<< argument.offset << " with " << padding
-			<< " bytes padding from previous element" );
+			report( " Initializing memory for argument " << argument.name 
+				<< " of size " << argument.getSize() << " at offset "
+				<< argument.offset << " with " << padding
+				<< " bytes padding from previous element" );
 			
-		_argumentMemorySize += argument.getSize();
+			_argumentMemorySize += argument.getSize();
+		}
+	
+		ArgumentMemory = new char[_argumentMemorySize];
 	}
-	ArgumentMemory = new char[_argumentMemorySize];
+	
 	report(" Total argument size is " << argumentMemorySize());
 }
 
@@ -515,11 +528,7 @@ void executive::EmulatedKernel::_computeOffset(
 	const ir::PTXStatement& statement, unsigned int& offset, 
 	unsigned int& totalOffset) {
 	
-	unsigned int padding = statement.accessAlignment() - 
-		(totalOffset % statement.accessAlignment());
-	padding = ( padding == (unsigned int) statement.accessAlignment() ) 
-		? 0 : padding;
-	offset = totalOffset + padding;
+	offset = align(totalOffset, statement.accessAlignment());
 
 	totalOffset = offset;
 	if(statement.array.stride.empty()) {
@@ -975,13 +984,6 @@ unsigned int
 	return CTA->functionCallStack.stackFrameSize();
 }
 
-static unsigned int align(unsigned int offset, unsigned int size) {
-	unsigned int difference = offset & (size - 1);
-	unsigned int alignedOffset = difference == 0 
-		? offset : offset + size - difference;
-	return alignedOffset;
-}
-
 void executive::EmulatedKernel::initializeStackMemory() {
 	_parameterMemorySize = 0;
 	typedef std::unordered_map<std::string, unsigned int> OffsetMap;
@@ -991,73 +993,83 @@ void executive::EmulatedKernel::initializeStackMemory() {
 	OffsetMap offsets;
 
 	if(function()) {
+		unsigned int offset = 0;
 		for(ParameterVector::iterator i_it = arguments.begin();
 			i_it != arguments.end(); ++i_it) {
 			ir::Parameter& parameter = *i_it;
 			// align parameter memory
-			unsigned int padding = parameter.getAlignment() 
-				- ( _parameterMemorySize % parameter.getAlignment() );
-			padding = (parameter.getAlignment() == padding) ? 0 : padding;
-			_parameterMemorySize += padding;
-			parameter.offset = _parameterMemorySize;
-			offsets[parameter.name] = _parameterMemorySize;
+			offset = align(offset, parameter.getAlignment());
+			parameter.offset = offset;
 			report( " Initializing memory for stack parameter " 
 				<< parameter.name 
 				<< " of size " << parameter.getSize() << " at offset " 
-				<< _parameterMemorySize );
-			_parameterMemorySize += parameter.getSize();
+				<< offset );
+			offset += parameter.getSize();
+		}
+		
+		_parameterMemorySize = std::max(_parameterMemorySize, offset);
+	}
+	
+	unsigned int callParameterStackBase = _parameterMemorySize;
+	
+	report( " Setting offsets of operands to call instructions." );
+	for (PTXInstructionVector::iterator fi = instructions.begin(); 
+		fi != instructions.end(); ++fi) {
+		
+		if (fi->opcode == ir::PTXInstruction::Call) {
+			report( "  For '" << fi->toString() << "'" );
+			unsigned int offset = 0;
+
+			fi->b.offset = callParameterStackBase;
+		
+			for (ir::PTXOperand::Array::iterator argument = fi->d.array.begin(); 
+				argument != fi->d.array.end(); ++argument) {
+				offset = align(offset, ir::PTXOperand::bytes(argument->type));
+				argument->offset = offset;
+				report( "   For return argument '" << argument->identifier 
+					<< "' stack offset " << offset << " -> argument offset " 
+					<< argument->offset );
+
+				assert(offsets.count(argument->identifier) == 0);
+				offsets.insert(std::make_pair(argument->identifier, offset));
+
+				offset += ir::PTXOperand::bytes(argument->type);
+			}
+						
+			for (ir::PTXOperand::Array::iterator argument = fi->b.array.begin(); 
+				argument != fi->b.array.end(); ++argument) {
+				offset = align(offset, ir::PTXOperand::bytes(argument->type));
+				argument->offset = offset;
+				
+				assert(offsets.count(argument->identifier) == 0);
+				offsets.insert(std::make_pair(argument->identifier, offset));
+
+				report( "   For call argument '" << argument->identifier 
+					<< "' argument offset " << argument->offset 
+					<< " -> stack offset " << offset );
+				offset += ir::PTXOperand::bytes(argument->type);
+			}
+			
+			_parameterMemorySize = std::max(_parameterMemorySize,
+				callParameterStackBase + offset);
 		}
 	}
 	
 	for (ParameterMap::iterator i_it = parameters.begin();
 		i_it != parameters.end(); ++i_it) {
 		ir::Parameter& parameter = i_it->second;
-		// align parameter memory
-		unsigned int padding = parameter.getAlignment() 
-			- ( _parameterMemorySize % parameter.getAlignment() );
-		padding = (parameter.getAlignment() == padding) ? 0 : padding;
-		_parameterMemorySize += padding;
-		parameter.offset = _parameterMemorySize;
-		offsets[parameter.name] = _parameterMemorySize;
-		report( " Initializing memory for stack parameter " << parameter.name 
-			<< " of size " << parameter.getSize() << " at offset " 
-			<< _parameterMemorySize );
-		_parameterMemorySize += parameter.getSize();
+		
+		OffsetMap::iterator offset = offsets.find(parameter.name);
+		assert(offset != offsets.end());
+		
+		parameter.offset = offset->second;
+		
+		report( " Setting offset of stack parameter " << parameter.name 
+			<< " of size " << parameter.getSize() << " to " 
+			<< offset->second );
 	}
 	
-	report( "Setting offsets of operands to call instructions." );
-	for (PTXInstructionVector::iterator fi = instructions.begin(); 
-		fi != instructions.end(); ++fi) {
-		
-		if (fi->opcode == ir::PTXInstruction::Call) {
-			report( " For '" << fi->toString() << "'" );
-			unsigned int offset = 0;
-		
-			for (ir::PTXOperand::Array::iterator argument = fi->d.array.begin(); 
-				argument != fi->d.array.end(); ++argument) {
-				offset = align(offset, ir::PTXOperand::bytes(argument->type));
-				argument->offset = offsets[argument->identifier];
-				report( "  For return argument '" << argument->identifier 
-					<< "' stack offset " << offset << " -> argument offset " 
-					<< argument->offset );
-				offset += ir::PTXOperand::bytes(argument->type);
-			}
-			
-			fi->b.offset = offset;
-			
-			for (ir::PTXOperand::Array::iterator argument = fi->b.array.begin(); 
-				argument != fi->b.array.end(); ++argument) {
-				offset = align(offset, ir::PTXOperand::bytes(argument->type));
-				argument->offset = offsets[argument->identifier];
-				report( "  For call argument '" << argument->identifier 
-					<< "' argument offset " << argument->offset 
-					<< " -> stack offset " << offset );
-				offset += ir::PTXOperand::bytes(argument->type);
-			}
-			
-		}
-	}
-
+	report(" Parameter stack memory requirement is " << _parameterMemorySize);
 }
 
 void executive::EmulatedKernel::initializeTextureMemory() {

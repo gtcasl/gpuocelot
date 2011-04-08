@@ -184,7 +184,7 @@ void DivergenceDrawer::drawFullGraph() const{
 	DataflowGraph::const_iterator endBlock = divAnalysis->getDFG()->end();
 	const graph_utils::DivergenceGraph &divergenceGraph = divAnalysis->getDivergenceGraph();
 
-	std::ofstream file(_path + "prof." + _kernelName + "_fullDFG.dot");
+	std::ofstream file(std::string(_path + "prof." + _kernelName + "_fullDFG.dot").c_str());
 	if( !file.is_open() ){
 		cerr << "Couldn't open file '" + _path + "prof." + _kernelName + "_fullDFG.dot' for writing";
 		return;

@@ -10,6 +10,7 @@
 // Ocelot Includes
 #include <ocelot/executive/interface/LLVMExecutableKernel.h>
 #include <ocelot/executive/interface/LLVMExecutionManager.h>
+#include <ocelot/executive/interface/LLVMModuleManager.h>
 #include <ocelot/executive/interface/Device.h>
 
 // Hydrazine Includes
@@ -182,13 +183,12 @@ void LLVMExecutableKernel::removeTraceGenerator(
 void LLVMExecutableKernel::setExternalFunctionSet(
 	const ir::ExternalFunctionSet& s)
 {
-	LLVMExecutionManager::flushTranslatedKernels();
-	_externals = &s;
+	LLVMModuleManager::setExternalFunctionSet(s);
 }
 
 void LLVMExecutableKernel::clearExternalFunctionSet()
 {
-	_externals = 0;
+	LLVMModuleManager::clearExternalFunctionSet();
 }
 
 void LLVMExecutableKernel::_allocateMemory()

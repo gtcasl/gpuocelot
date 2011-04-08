@@ -10,6 +10,7 @@
 
 // Ocelot Includes
 #include <ocelot/translator/interface/PTXToLLVMTranslator.h>
+#include <ocelot/ir/interface/ExternalFunctionSet.h>
 #include <ocelot/ir/interface/LLVMInstruction.h>
 #include <ocelot/ir/interface/LLVMKernel.h>
 #include <ocelot/ir/interface/PTXKernel.h>
@@ -2143,6 +2144,11 @@ namespace translator
 				if( i.reentryPoint == -1 )
 				{
 					_yield( executive::LLVMExecutableKernel::BarrierCall );
+				}
+				else if( i.reentryPoint == -2 )
+				{
+					assertM(false, "External function calls not supported "
+						"in LLVM backend yet.");
 				}
 				else
 				{
@@ -8999,10 +9005,11 @@ namespace translator
 			ir::LLVMStatement( ir::LLVMStatement::EndFunctionBody ) );	
 	}
 
-	PTXToLLVMTranslator::PTXToLLVMTranslator( OptimizationLevel l ) 
+	PTXToLLVMTranslator::PTXToLLVMTranslator( OptimizationLevel l,
+		const ir::ExternalFunctionSet* s ) 
 		: Translator( ir::Instruction::PTX, ir::Instruction::LLVM, l ),
 		_tempRegisterCount( 0 ), _tempCCRegisterCount( 0 ),
-		_tempBlockCount( 0 ), _usesTextures( false )
+		_tempBlockCount( 0 ), _usesTextures( false ), _externals( s )
 	{
 	
 	}

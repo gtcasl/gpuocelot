@@ -366,7 +366,7 @@ def Environment():
 	
 	# set extra libs 
 	env.Replace(EXTRA_LIBS=['-lboost_system-mt', '-lboost_filesystem-mt', \
-		'-lboost_thread-mt', '-lboost_serialization-mt', '-lGLEW'])
+		'-lboost_thread-mt', '-lGLEW'])
 	
 	# set ocelot libs
 	ocelot_libs = '-locelot'

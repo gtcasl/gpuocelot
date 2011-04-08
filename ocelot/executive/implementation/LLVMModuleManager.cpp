@@ -86,6 +86,18 @@ hydrazine::Thread::Id LLVMModuleManager::id()
 {
 	return _database.id();
 }
+
+void LLVMModuleManager::setExternalFunctionSet(
+	const ir::ExternalFunctionSet& s)
+{
+	_database.setExternalFunctionSet(s);
+}
+
+void LLVMModuleManager::clearExternalFunctionSet()
+{
+	_database.clearExternalFunctionSet();
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -760,14 +772,15 @@ static void setupCallTargets(ir::PTXKernel& kernel,
 }
 
 static void translate(llvm::Module*& module, ir::PTXKernel& kernel,
-	translator::Translator::OptimizationLevel optimization)
+	translator::Translator::OptimizationLevel optimization,
+	const ir::ExternalFunctionSet& externals)
 {
 	assert(module == 0);
 
 	report(" Translating kernel.");
 	
 	report("  Converting from PTX IR to LLVM IR.");
-	translator::PTXToLLVMTranslator translator(optimization);
+	translator::PTXToLLVMTranslator translator(optimization, &externals);
 	ir::LLVMKernel* llvmKernel = static_cast<ir::LLVMKernel*>(
 		translator.translate(&kernel));
 	
@@ -1026,7 +1039,8 @@ LLVMModuleManager::KernelAndTranslation::MetaData*
 		
 		setupPTXMemoryReferences(*_kernel, _metadata, *_parent, _device);
 		setupCallTargets(*_kernel, *_database);
-		translate(_module, *_kernel, _optimizationLevel);
+		translate(_module, *_kernel, _optimizationLevel,
+			_database->getExternalFunctionSet());
 
 		// Converting out of ssa makes the assembly easier to read
 		if(_optimizationLevel == translator::Translator::ReportOptimization 
@@ -1090,7 +1104,7 @@ LLVMModuleManager::FunctionId LLVMModuleManager::Module::getFunctionId(
 {
 	FunctionIdMap::const_iterator id = _ids.find(kernelName);
 	
-	assert(id != _ids.end());
+	if(id == _ids.end()) return -2;
 	
 	return id->second;
 }
@@ -1304,6 +1318,23 @@ LLVMModuleManager::FunctionId LLVMModuleManager::ModuleDatabase::getFunctionId(
 
 	assert(module != _modules.end());
 	return module->second.getFunctionId(kernelName);
+}
+
+void LLVMModuleManager::ModuleDatabase::setExternalFunctionSet(
+	const ir::ExternalFunctionSet& s)
+{
+	_externals = &s;
+}
+
+void LLVMModuleManager::ModuleDatabase::clearExternalFunctionSet()
+{
+	_externals = 0;
+}
+
+const ir::ExternalFunctionSet& 
+	LLVMModuleManager::ModuleDatabase::getExternalFunctionSet() const
+{
+	return *_externals;
 }
 
 void LLVMModuleManager::ModuleDatabase::execute()

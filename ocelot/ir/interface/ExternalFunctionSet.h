@@ -38,7 +38,7 @@ public:
 	public:
 		void call(void* parameters, const ir::PTXKernel::Prototype& p);
 		const std::string& name() const;
-		void* externalFunctionPointer() const;
+		void* functionPointer() const;
 		std::string mangledName() const;
 		
 	private:

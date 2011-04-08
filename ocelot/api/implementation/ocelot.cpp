@@ -96,7 +96,6 @@ namespace ocelot
 	{
 		get()->removeExternalFunction(name);
 	}
-
 }
 
 #endif

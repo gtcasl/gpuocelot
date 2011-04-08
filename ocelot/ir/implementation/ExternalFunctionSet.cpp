@@ -238,6 +238,8 @@ static llvm::Function* jitFunction(
 		bitcast.d = pointer;
 		bitcast.a = get.d;
 		
+		kernel.push_back(LLVMStatement(bitcast));
+		
 		LLVMLoad load;
 		
 		load.d = operand;
@@ -260,17 +262,27 @@ static llvm::Function* jitFunction(
 			call.d.name + "p",
 			LLVMInstruction::Type(translateType(parameter.type),
 			LLVMInstruction::Type::Pointer));
-			
+		
 		LLVMGetelementptr get;
 		
-		get.d = pointer;
-		get.a = LLVMInstruction::Operand("%parameters", 
+		get.d = LLVMInstruction::Operand(
+			getValueString(value++), 
+			LLVMInstruction::Type(LLVMInstruction::I8,
+			LLVMInstruction::Type::Pointer));
+		get.a = LLVMInstruction::Operand("%parameters",
 			LLVMInstruction::Type(LLVMInstruction::I8,
 			LLVMInstruction::Type::Pointer));
 		
 		get.indices.push_back(0);
 		
 		kernel.push_back(LLVMStatement(get));
+		
+		LLVMBitcast bitcast;
+		
+		bitcast.d = pointer;
+		bitcast.a = get.d;
+		
+		kernel.push_back(LLVMStatement(bitcast));
 		
 		LLVMStore store;
 		

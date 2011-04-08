@@ -4,7 +4,7 @@
 		database: "traces/database.trace",
 		memory: true,
 		memoryChecker: {
-			enabled: true,
+			enabled: false,
 			checkInitialization: false
 		},
 		raceDetector: {

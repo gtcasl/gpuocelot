@@ -2381,17 +2381,17 @@ void executive::CooperativeThreadArray::eval_Brkpt(CTAContext &context,
 	context.running = false;
 }
 
-void executive::CooperativeThreadArray::copyArgument(unsigned int offset, 
-	const ir::PTXOperand& s, CTAContext& context) {
+void executive::CooperativeThreadArray::copyArgument(const ir::PTXOperand& s,
+	CTAContext& context) {
 	reportE(REPORT_CALL, " Copying " << ir::PTXOperand::bytes(s.type) 
 		<< " bytes from previous stack frame at " << s.offset
-		<< " to current frame at " << offset );
+		<< " to current frame at " << s.offset );
 	for (int thread = 0; thread < threadCount; ++thread) {
 		if (!context.active[thread]) continue;
 		char* stackPointer = (char*)functionCallStack.stackFramePointer(thread);
 		char* previousStackPointer =
 			(char*)functionCallStack.previousStackFramePointer(thread);
-		std::memcpy(stackPointer + offset, previousStackPointer + s.offset,
+		std::memcpy(stackPointer + s.offset, previousStackPointer + s.offset,
 			ir::PTXOperand::bytes(s.type));
 	}
 }
@@ -2463,7 +2463,6 @@ void executive::CooperativeThreadArray::eval_Call(CTAContext &context,
 				targetKernel->registerCount(), targetKernel->localMemorySize(), 
 				targetKernel->totalSharedMemorySize(), callPC, 
 				stackOffset, stackSize);
-			unsigned int offset = instr.b.offset;
 			for (ir::PTXOperand::Array::const_iterator 
 				argument = instr.b.array.begin();
 				argument != instr.b.array.end(); ++argument) {
@@ -2473,10 +2472,10 @@ void executive::CooperativeThreadArray::eval_Call(CTAContext &context,
 						functionCallStack.savedStackFramePointer(threadID);
 					char* target = (char*)functionCallStack.stackFramePointer(
 						threadID);
-					std::memcpy(target + offset, base + argument->offset, 
+					std::memcpy(target + argument->offset,
+						base + argument->offset, 
 						ir::PTXOperand::bytes(argument->type));
 				}
-				offset += ir::PTXOperand::bytes(argument->type);
 			}
 
 			reconvergenceMechanism->runtimeStack.push_back(
@@ -2543,12 +2542,10 @@ void executive::CooperativeThreadArray::eval_Call(CTAContext &context,
 						jittedInstr.a.sharedMemorySize, context.PC, 
 						functionCallStack.offset(),
 						functionCallStack.stackFrameSize());
-					unsigned int offset = jittedInstr.b.offset;
 					for (ir::PTXOperand::Array::const_iterator 
 						argument = jittedInstr.b.array.begin();
 						argument != jittedInstr.b.array.end(); ++argument) {
-						copyArgument(offset, *argument, context);
-						offset += ir::PTXOperand::bytes(argument->type);
+						copyArgument(*argument, context);
 					}
 				
 					CTAContext targetContext(context);
@@ -2584,12 +2581,10 @@ void executive::CooperativeThreadArray::eval_Call(CTAContext &context,
 						jittedInstr.a.sharedMemorySize, context.PC, 
 						functionCallStack.offset(),
 						functionCallStack.stackFrameSize());
-					unsigned int offset = instr.b.offset;
 					for (ir::PTXOperand::Array::const_iterator 
 						argument = jittedInstr.b.array.begin();
 						argument != jittedInstr.b.array.end(); ++argument) {
-						copyArgument(offset, *argument, targetContext);
-						offset += ir::PTXOperand::bytes(argument->type);
+						copyArgument(*argument, targetContext);
 					}
 				
 					targetContext.PC = jittedInstr.branchTargetInstruction;

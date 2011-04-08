@@ -18,6 +18,7 @@ namespace ir
 	class Instruction;
 	class LLVMKernel;
 	class PTXOperand;
+	class ExternalFunctionSet;
 }
 
 namespace translator
@@ -38,6 +39,7 @@ namespace translator
 			bool _usesTextures;
 			RegisterVector _uninitialized;
 			const ir::PTXKernel* _ptx;
+			const ir::ExternalFunctionSet* _externals;
 		
 		private:
 			static ir::LLVMInstruction::DataType _translate( 
@@ -201,7 +203,8 @@ namespace translator
 			void _addKernelSuffix();
 
 		public:
-			PTXToLLVMTranslator( OptimizationLevel l = NoOptimization );
+			PTXToLLVMTranslator( OptimizationLevel l = NoOptimization,
+				const ir::ExternalFunctionSet* s = 0 );
 			~PTXToLLVMTranslator();
 			
 		public:

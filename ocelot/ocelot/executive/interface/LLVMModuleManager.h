@@ -58,6 +58,12 @@ public:
 	/*! \brief unLoad module from the database, this invalidates all ids */
 	static void unloadModule(const std::string& moduleName);
 
+	/*! \brief Sets the current external function set for linking */
+	static void setExternalFunctionSet(const ir::ExternalFunctionSet& s);
+
+	/*! \brief Clears the current external function set for linking */
+	static void clearExternalFunctionSet();
+
 public:
 	/*! \brief Associate a hydrazine thread with this manager, 
 		allowing it to communicate */
@@ -193,20 +199,30 @@ public:
 		
 		/*! \brief Gets the total number of functions in all modules */
 		unsigned int totalFunctionCount() const;
-	
+
+		/*! \brief Sets the current external function set for linking */
+		void setExternalFunctionSet(const ir::ExternalFunctionSet& s);
+
+		/*! \brief Clears the current external function set for linking */
+		void clearExternalFunctionSet();
+		
 	public:
 		/*! \brief Get the id of a kernel by module and kernel name */
 		FunctionId getFunctionId(const std::string& moduleName,
 			const std::string& kernelName) const;
+
+		/*! \brief Get the external function set */
+		const ir::ExternalFunctionSet& getExternalFunctionSet() const;
 
 	private:
 		/*! \brief The entry point to the thread */
 		void execute();
 	
 	private:
-		ModuleMap     _modules;
-		KernelVector  _kernels;
-		ir::Module    _barrierModule;
+		ModuleMap                      _modules;
+		KernelVector                   _kernels;
+		ir::Module                     _barrierModule;
+		const ir::ExternalFunctionSet* _externals;
 	};
 	
 private:

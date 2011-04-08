@@ -506,8 +506,7 @@ namespace executive {
 		void eval_Mov_func(CTAContext &context,
 			const ir::PTXInstruction &instr);
 
-		void copyArgument(unsigned int offset, const ir::PTXOperand& s, 
-			CTAContext& context);
+		void copyArgument(const ir::PTXOperand& s, CTAContext& context);
 
 	};
 

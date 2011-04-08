@@ -43,19 +43,19 @@ void DivergenceAnalysis::_analyzeDataFlow()
 			if (typeid(ir::PTXInstruction) == typeid(*(ii->i))) {
 				ptxInstruction = static_cast<ir::PTXInstruction*> (ii->i);
 
-				if (ptxInstruction->a.addressMode == ir::PTXOperand::AddressMode::Special) {
+				if (ptxInstruction->a.addressMode == ir::PTXOperand::Special) {
 					if( (ptxInstruction->a.special == ir::PTXOperand::tid)
 						|| (ptxInstruction->a.special == ir::PTXOperand::laneId))
 						divergenceSources.insert(&ptxInstruction->a);
 				}
 
-				if (ptxInstruction->b.addressMode == ir::PTXOperand::AddressMode::Special) {
+				if (ptxInstruction->b.addressMode == ir::PTXOperand::Special) {
 					if( (ptxInstruction->b.special == ir::PTXOperand::tid)
 						|| (ptxInstruction->b.special == ir::PTXOperand::laneId))
 						divergenceSources.insert(&ptxInstruction->b);
 				}
 
-				if (ptxInstruction->c.addressMode == ir::PTXOperand::AddressMode::Special) {
+				if (ptxInstruction->c.addressMode == ir::PTXOperand::Special) {
 					if( (ptxInstruction->c.special == ir::PTXOperand::tid)
 						|| (ptxInstruction->c.special == ir::PTXOperand::laneId))
 						divergenceSources.insert(&ptxInstruction->c);

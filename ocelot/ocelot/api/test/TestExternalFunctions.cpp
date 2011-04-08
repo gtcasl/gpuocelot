@@ -69,7 +69,7 @@ bool TestExternalFunctions::testMallocFree()
 	long long unsigned int result = 0;
 	
 	cudaMemcpy(&result, sizeOfData, sizeof(long long unsigned int),
-		cudaMemcpyHostToDevice);
+		cudaMemcpyDeviceToHost);
 	
 	cudaFree(sizeOfData);
 	ocelot::unregisterModule("someModule");

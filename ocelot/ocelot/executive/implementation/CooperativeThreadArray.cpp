@@ -2505,6 +2505,8 @@ void executive::CooperativeThreadArray::eval_Call(CTAContext &context,
 				external->call(functionCallStack.stackFramePointer(threadID),
 					prototype->second);
 			}
+			
+			++context.PC;
 		}
 		else
 		{

@@ -3451,7 +3451,7 @@ ocelot::PointerMap cuda::CudaRuntime::contextSwitch(unsigned int destinationId,
 		
 	_unlock();
 	
-	return mappings;	
+	return mappings;
 }
 
 void cuda::CudaRuntime::unregisterModule(const std::string& name) {

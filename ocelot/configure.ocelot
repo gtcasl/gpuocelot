@@ -4,7 +4,7 @@
 		database: "traces/database.trace",
 		memory: true,
 		memoryChecker: {
-			enabled: false,
+			enabled: true,
 			checkInitialization: false
 		},
 		raceDetector: {
@@ -22,7 +22,7 @@
 		runtimeApiTrace: "trace/CudaAPI.trace"
 	},
 	executive: {
-		devices: [ emulated, llvm, ati ],
+		devices: [ emulated, llvm, nvidia, ati ],
 		port: 2011,
 		host: "127.0.0.1",
 		optimizationLevel: none,

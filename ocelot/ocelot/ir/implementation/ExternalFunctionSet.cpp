@@ -329,6 +329,11 @@ static llvm::Function* jitFunction(
 			+ kernel.name + " : \"" + verifyError + "\"");
 	}
 	
+	llvm::GlobalValue* global = m->getNamedValue(f.name());
+	assertM(global != 0, "Global function " << f.name()
+		<< " not found in llvm module.");
+	executive::LLVMState::jit()->addGlobalMapping(global, f.functionPointer());
+	
 	// done, the function is now in the module
 	return m->getFunction(f.mangledName());
 }
@@ -371,6 +376,11 @@ void ExternalFunctionSet::ExternalFunction::call(void* parameters,
 const std::string& ExternalFunctionSet::ExternalFunction::name() const
 {
 	return _name;
+}
+
+void* ExternalFunctionSet::ExternalFunction::functionPointer() const
+{
+	return _functionPointer;
 }
 
 std::string ExternalFunctionSet::ExternalFunction::mangledName() const

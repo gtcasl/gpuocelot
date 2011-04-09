@@ -48,20 +48,16 @@ namespace ir
 				};
 			
 			public:
-				//! \brief 
 				static std::string toString(const LinkingDirective ld);
 				static std::string toString(const CallType ct);
-				
+	
+			public:			
 				Prototype();
 				
-				/*!
-					\brief emits a PTX form of the prototype
-				*/
+				/*! \brief emits a PTX form of the prototype */
 				std::string toString() const;
 				
-				/*!
-					\brief emits a mangled form of the function prototype
-				*/
+				/*! \brief emits a mangled form of the function prototype */
 				std::string getMangledName() const;
 				
 				void clear();

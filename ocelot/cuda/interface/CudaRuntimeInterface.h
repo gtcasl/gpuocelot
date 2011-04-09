@@ -432,7 +432,14 @@ namespace cuda {
 		/*! \brief Set the optimization level */
 		virtual void setOptimizationLevel(
 			translator::Translator::OptimizationLevel l);
+		/*! \brief Register a callable host function with Ocelot 
 
+			This function will be callable as a PTX function.
+		*/
+		virtual void registerExternalFunction(const std::string& name,
+			void* function);
+		/*! \brief Remove a previously registered host function */
+		virtual void removeExternalFunction(const std::string& name);
 	};
 
 }

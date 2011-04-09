@@ -1,18 +1,28 @@
-//- llvm/Transform/Ocelot/StructuralAnalysis.h - Structural Analysis - *C++ -*-// 
-// 
-//                     The LLVM Compiler Infrastructure 
-// 
-// This file is distributed under the University of Illinois Open Source 
-// License. See LICENSE.TXT for details. 
-// 
+/*! \file StructuralAnalysis.cpp
+	\author Haicheng Wu <hwu36@gatech.edu>
+	\date   Monday April 4, 2011
+	\brief  The source file for the StructuralAnalysis pass.
+*/
+
 //===----------------------------------------------------------------------===// 
 // 
 // This file defines the class of Structural Analysis which will return the 
 // control tree and unstructured branches of a function 
 // 
 //===----------------------------------------------------------------------===// 
- 
+
+// Ocelot Includes 
 #include <ocelot/analysis/interface/StructuralAnalysis.h>
+
+// Hydrazine Includes
+#include <hydrazine/implementation/debug.h>
+
+// Preprocessor Macros
+#ifdef REPORT_BASE
+#undef REPORT_BASE
+#endif
+
+#define REPORT_BASE 0
 
 namespace analysis {
   // buildSimpleCFG - Build a Simple CFG out of the LLVM CFG
@@ -42,7 +52,8 @@ namespace analysis {
       // Setup the predecessor of every node
       ir::ControlFlowGraph::BlockPointerVector PredVec = i->predecessors;
 
-      for (ir::ControlFlowGraph::BlockPointerVector::iterator PI = PredVec.begin(), E = PredVec.end(); PI != E; ++PI) {
+      for (ir::ControlFlowGraph::BlockPointerVector::iterator
+        PI = PredVec.begin(), E = PredVec.end(); PI != E; ++PI) {
         NodeTy *p = BB2NodeMap[*PI];
         n->predNode.insert(p);
       }
@@ -50,7 +61,8 @@ namespace analysis {
       // Setup the successor of every node
       ir::ControlFlowGraph::BlockPointerVector SuccVec = i->successors;
 
-      for (ir::ControlFlowGraph::BlockPointerVector::iterator SI = SuccVec.begin(), E = SuccVec.end(); SI != E; ++SI) {
+      for (ir::ControlFlowGraph::BlockPointerVector::iterator
+        SI = SuccVec.begin(), E = SuccVec.end(); SI != E; ++SI) {
         NodeTy *s = BB2NodeMap[*SI];
         n->succNode.insert(s);
       }
@@ -63,7 +75,8 @@ namespace analysis {
   }
   
   // structuralAnalysis - Follow Fig 7.39 of Muchnick book
-  void StructuralAnalysis::structuralAnalysis(NodeSetTy &N, NodeTy *entry, bool debug) {
+  void StructuralAnalysis::structuralAnalysis(NodeSetTy &N,
+    NodeTy *entry, bool debug) {
     NodeTy *n = NULL, *p = NULL, *entryNode = NULL, *exitNode = NULL;
     RegionTy rType;
     NodeSetTy nodeSet, reachUnder;
@@ -150,7 +163,8 @@ namespace analysis {
           NodeTy *backEdgeNode;
   
           if ((backEdgeNode = pathBack(n, N, reachUnder))) {
-            rType = cyclicRegionType(N, reachUnder, n, backEdgeNode, &exitNode, entry);
+            rType = cyclicRegionType(N, reachUnder,
+              n, backEdgeNode, &exitNode, entry);
   
             if (rType == Improper) {
               change = true;
@@ -306,15 +320,17 @@ namespace analysis {
           }
         } 
       }
+      
+      #if REPORT_BASE != 0
+        std::stringstream stream;
+        dumpCTNode(stream, p);
+        dumpUnstructuredBR(stream);
+        report(stream.str());
+        report(N.size() << "\n");
+        report("********************\n");
+      #endif
 
-      if (debug) {
-        dumpCTNode(p);
-        dumpUnstructuredBR();
-        printf("%ld\n", (long int)N.size());
-        std::cerr << "********************\n";
-      }
-  
-      assertM(change != false, "Cannot reduce any more in structural analysis ");
+      assertM(change != false, "Cannot reduce any more in structural analysis");
     } while (N.size() != 1);
   }
   
@@ -346,7 +362,8 @@ namespace analysis {
   }
   
   // acyclicRegionType - Follow Fig 7.41 of Muchnick book
-  RegionTy StructuralAnalysis::acyclicRegionType(NodeSetTy &N, NodeTy *node, NodeSetTy &nset, NodeTy **entryNode, NodeTy **exitNode, NodeTy *entry) {
+  RegionTy StructuralAnalysis::acyclicRegionType(NodeSetTy &N, NodeTy *node,
+    NodeSetTy &nset, NodeTy **entryNode, NodeTy **exitNode, NodeTy *entry) {
     NodeTy *m, *n;
     bool p, s;
   
@@ -468,7 +485,8 @@ namespace analysis {
       }
       // Check for an IfThen
       // n is the Then part
-      else if (n->succNode.size() == 1 && n->predNode.size() == 1 && m == *(n->succNode.begin())) {
+      else if (n->succNode.size() == 1 && n->predNode.size() == 1
+        && m == *(n->succNode.begin())) {
         if (edge2ClassMap[std::make_pair(n, m)] != BACK) {
           if (edge2ClassMap[std::make_pair(n, *entryNode)] == BACK) return Nil;
   
@@ -480,7 +498,8 @@ namespace analysis {
         }
       } 
       // m is the Then part
-      else if (m->succNode.size() == 1 && m->predNode.size() == 1 && n == *(m->succNode.begin())) {
+      else if (m->succNode.size() == 1 && m->predNode.size() == 1
+        && n == *(m->succNode.begin())) {
         if (edge2ClassMap[std::make_pair(m, n)] != BACK) {
           if (edge2ClassMap[std::make_pair(m, *entryNode)] == BACK) return Nil;
   
@@ -526,13 +545,15 @@ namespace analysis {
         if (n->predNode.count(*(n->succNode.begin())) == 0 &&
           m->predNode.count(*(m->succNode.begin())) == 0) {
         
-          if (m->predNode.count(*(m->succNode.begin())) > 0 || n->predNode.count(*(n->succNode.begin())) > 0)
+          if (m->predNode.count(*(m->succNode.begin())) > 0
+            || n->predNode.count(*(n->succNode.begin())) > 0)
             return Nil;
   
           bool improperFlag = false;
   
           if (m->predNode.size() > 1) {
-            for (NodeSetTy::iterator pi = m->predNode.begin(), pe = m->predNode.end(); pi != pe; ++pi)  
+            for (NodeSetTy::iterator pi = m->predNode.begin(),
+              pe = m->predNode.end(); pi != pe; ++pi)  
               if (*pi != *entryNode && isStillReachableFromEntry(N, entry, m, *pi) 
                 && edge2ClassMap[std::make_pair(*pi, m)] != BACK) {
                 findUnstructuredBR(N, *pi, m, true, true);          
@@ -541,7 +562,8 @@ namespace analysis {
           }
     
           if (n->predNode.size() > 1) {
-            for (NodeSetTy::iterator pi = n->predNode.begin(), pe = n->predNode.end(); pi != pe; ++pi)  
+            for (NodeSetTy::iterator pi = n->predNode.begin(),
+              pe = n->predNode.end(); pi != pe; ++pi)  
               if (*pi != *entryNode && isStillReachableFromEntry(N, entry, n, *pi) 
                 && edge2ClassMap[std::make_pair(*pi, n)] != BACK) {
                 findUnstructuredBR(N, *pi, n, true, true);          
@@ -554,7 +576,8 @@ namespace analysis {
       }
       // Check for an IfThen with incoming edges
       // n is the Then part
-      else if (n->succNode.size() == 1 && n->predNode.size() > 1 && m == *(n->succNode.begin())) {
+      else if (n->succNode.size() == 1 && n->predNode.size() > 1
+        && m == *(n->succNode.begin())) {
         if (edge2ClassMap[std::make_pair(n, *entryNode)] == BACK) return Nil;
   
         if (edge2ClassMap[std::make_pair(n, m)] != BACK) {
@@ -563,7 +586,8 @@ namespace analysis {
   
           bool improperFlag = false;
   
-          for (NodeSetTy::iterator pi = n->predNode.begin(), pe = n->predNode.end(); pi != pe; ++pi)  
+          for (NodeSetTy::iterator pi = n->predNode.begin(),
+            pe = n->predNode.end(); pi != pe; ++pi)  
             if (*pi != *entryNode && isStillReachableFromEntry(N, entry, n, *pi) 
                 && edge2ClassMap[std::make_pair(*pi, n)] != BACK) {
               findUnstructuredBR(N, *pi, n, true, true);          
@@ -574,7 +598,8 @@ namespace analysis {
         }
       } 
       // m is the Then part
-      else if (m->succNode.size() == 1 && m->predNode.size() > 1 && n == *(m->succNode.begin())) {
+      else if (m->succNode.size() == 1 && m->predNode.size() > 1
+        && n == *(m->succNode.begin())) {
         if (edge2ClassMap[std::make_pair(m, *entryNode)] == BACK) return Nil;
   
         if (edge2ClassMap[std::make_pair(m, n)] != BACK) {
@@ -583,7 +608,8 @@ namespace analysis {
   
           bool improperFlag = false;
   
-          for (NodeSetTy::iterator pi = m->predNode.begin(), pe = m->predNode.end(); pi != pe; ++pi)  
+          for (NodeSetTy::iterator pi = m->predNode.begin(),
+            pe = m->predNode.end(); pi != pe; ++pi)  
             if (*pi != *entryNode && isStillReachableFromEntry(N, entry, m, *pi) 
                 && edge2ClassMap[std::make_pair(*pi, m)] != BACK) {
               findUnstructuredBR(N, *pi, m, true, true);          
@@ -598,7 +624,8 @@ namespace analysis {
         bool improperFlag = false;
   
         if (m->predNode.size() > 1) {
-          for (NodeSetTy::iterator pi = m->predNode.begin(), pe = m->predNode.end(); pi != pe; ++pi)  
+          for (NodeSetTy::iterator pi = m->predNode.begin(),
+            pe = m->predNode.end(); pi != pe; ++pi)  
             if (*pi != *entryNode && isStillReachableFromEntry(N, entry, m, *pi)) {
               findUnstructuredBR(N, *pi, m, true, true);          
               improperFlag = true;
@@ -606,7 +633,8 @@ namespace analysis {
         }
   
         if (n->predNode.size() > 1) {
-          for (NodeSetTy::iterator pi = n->predNode.begin(), pe = n->predNode.end(); pi != pe; ++pi)  
+          for (NodeSetTy::iterator pi = n->predNode.begin(),
+            pe = n->predNode.end(); pi != pe; ++pi)  
             if (*pi != *entryNode && isStillReachableFromEntry(N, entry, n, *pi)) {
               findUnstructuredBR(N, *pi, n, true, true);          
               improperFlag = true;
@@ -625,8 +653,10 @@ namespace analysis {
   
           bool improperFlag = false;
   
-          for (NodeSetTy::iterator pi = n->predNode.begin(), pe = n->predNode.end(); pi != pe; ++pi)
-            if (*pi != *entryNode && isStillReachableFromEntry(N, entry, n, *pi)) {
+          for (NodeSetTy::iterator pi = n->predNode.begin(),
+            pe = n->predNode.end(); pi != pe; ++pi)
+            if (*pi != *entryNode
+              && isStillReachableFromEntry(N, entry, n, *pi)) {
               findUnstructuredBR(N, *pi, n, true, true);
               improperFlag = true;
             }
@@ -644,8 +674,10 @@ namespace analysis {
   
           bool improperFlag = false;
   
-          for (NodeSetTy::iterator pi = m->predNode.begin(), pe = m->predNode.end(); pi != pe; ++pi)
-            if (*pi != *entryNode && isStillReachableFromEntry(N, entry, n, *pi)) {
+          for (NodeSetTy::iterator pi = m->predNode.begin(),
+            pe = m->predNode.end(); pi != pe; ++pi)
+            if (*pi != *entryNode
+              && isStillReachableFromEntry(N, entry, n, *pi)) {
               findUnstructuredBR(N, *pi, m, true, true);
               improperFlag = true;
             }
@@ -686,7 +718,8 @@ namespace analysis {
   }
   
   // isCaseWithDefault - Check if node leads a case block
-  bool StructuralAnalysis::isCaseWithDefault(NodeSetTy &N, NodeTy * entryNode, NodeTy **exitNode, NodeTy *entry) {
+  bool StructuralAnalysis::isCaseWithDefault(NodeSetTy &N, NodeTy * entryNode,
+    NodeTy **exitNode, NodeTy *entry) {
     *exitNode = NULL; 
   
     for (NodeSetTy::iterator i = entryNode->succNode.begin(),
@@ -711,7 +744,8 @@ namespace analysis {
         NodeTy *predNode2 = *pi;
   
         if (predNode1 != entryNode || entryNode->succNode.count(predNode2) == 0)
-          if (entryNode->succNode.count(predNode1) == 0 || predNode2 != entryNode)
+          if (entryNode->succNode.count(predNode1) == 0
+            || predNode2 != entryNode)
             return false;
       }
       // The predecessor node number has to be less than 3
@@ -724,7 +758,7 @@ namespace analysis {
       
       if (succNode == entryNode) return false;
   
-      // Check if the successor of the successor node is not another successor node
+      // Check if the successor of the successor node is not another successor 
       if (entryNode->succNode.count(succNode) == 0) {
         // Check if the successor of the successor node is the only exit node
         if (!*exitNode) *exitNode = succNode;
@@ -750,7 +784,8 @@ namespace analysis {
   }
   
   // isImproperCaseWithDefault - Check if node leads a case block
-  bool StructuralAnalysis::isImproperCaseWithDefault(NodeSetTy &N, NodeTy *entryNode, NodeTy *entry) {
+  bool StructuralAnalysis::isImproperCaseWithDefault(NodeSetTy &N,
+    NodeTy *entryNode, NodeTy *entry) {
     NodeTy *exitNode = NULL; 
     EdgeSetTy improperEdgeSet;  
   
@@ -767,7 +802,8 @@ namespace analysis {
       if (succNode) { 
         if (succNode == entryNode) return false;
     
-        // Check if the successor of the successor node is not another successor node
+        // Check if the successor of the successor node 
+        // is not another successor node
         if (entryNode->succNode.count(succNode) == 0) {
           // Check if the successor of the successor node is the only exit node
           if (!exitNode) exitNode = succNode;
@@ -792,7 +828,8 @@ namespace analysis {
         NodeTy *predNode2 = *pi;
   
         if (predNode1 != entryNode || entryNode->succNode.count(predNode2) == 0)
-          if (entryNode->succNode.count(predNode1) == 0 || predNode2 != entryNode)
+          if (entryNode->succNode.count(predNode1) == 0
+            || predNode2 != entryNode)
             return false;
       }
       // The predecessor node number has to be less than 3
@@ -803,7 +840,8 @@ namespace analysis {
                                  pe = (*i)->predNode.end();
                                  pi != pe; ++pi) {
   
-          if (edge2ClassMap[std::make_pair(*pi, *i)] != BACK && *pi != exitNode && *pi != entryNode) { 
+          if (edge2ClassMap[std::make_pair(*pi, *i)] != BACK
+            && *pi != exitNode && *pi != entryNode) { 
             if (entryNode->succNode.count(*pi) == 0) 
               improperEdgeSet.insert(std::make_pair(*pi, *i));
             else {
@@ -831,7 +869,8 @@ namespace analysis {
   
     bool improperFlag = false;
   
-    for (EdgeSetTy::iterator i = improperEdgeSet.begin(), e = improperEdgeSet.end(); i != e; ++i) 
+    for (EdgeSetTy::iterator i = improperEdgeSet.begin(),
+      e = improperEdgeSet.end(); i != e; ++i) 
       if (isStillReachableFromEntry(N, entry, i->second, i->first)) {
         findUnstructuredBR(N, i->first, i->second, true, true);
         improperFlag = true;
@@ -841,7 +880,8 @@ namespace analysis {
   }
   
   // isCaseWithoutDefault - Check if node leads a case block
-  bool StructuralAnalysis::isCaseWithoutDefault(NodeSetTy &N, NodeTy * entryNode, NodeTy **exitNode, NodeTy *entry) {
+  bool StructuralAnalysis::isCaseWithoutDefault(NodeSetTy &N,
+    NodeTy * entryNode, NodeTy **exitNode, NodeTy *entry) {
     // Find the exit node first
     *exitNode = NULL; 
   
@@ -906,10 +946,12 @@ namespace analysis {
         
         if (edge2ClassMap[std::make_pair(entryNode, *i)] == BACK) return false;
     
-        // The successor of the successor node should be the the another successor node of node
+        // The successor of the successor node should be the the another
+        // successor node of node
         if (entryNode->succNode.count(succNode) == 0) return false;
         // There is no loop between successors
-        else if (succNode != *exitNode && succNode->succNode.count(*i) > 0) return false;
+        else if (succNode != *exitNode
+          && succNode->succNode.count(*i) > 0) return false;
       }
   
       // If successor has only one predessor, it has to be the entry node    
@@ -926,7 +968,8 @@ namespace analysis {
         NodeTy *predNode2 = *pi;
   
         if (predNode1 != entryNode || entryNode->succNode.count(predNode2) == 0)
-          if (entryNode->succNode.count(predNode1) == 0 || predNode2 != entryNode)
+          if (entryNode->succNode.count(predNode1) == 0
+            || predNode2 != entryNode)
             return false;
       }
       // The predecessor node number has to be less than 3
@@ -949,7 +992,8 @@ namespace analysis {
   }
   
   // isImproperCaseoutWithDefault - Check if node leads a case block with incoming edges
-  bool StructuralAnalysis::isImproperCaseWithoutDefault(NodeSetTy &N, NodeTy *entryNode, NodeTy **exitNode, NodeTy *entry) {
+  bool StructuralAnalysis::isImproperCaseWithoutDefault(NodeSetTy &N,
+    NodeTy *entryNode, NodeTy **exitNode, NodeTy *entry) {
     EdgeSetTy improperEdgeSet;
   
     // Find the exit node first
@@ -1016,7 +1060,8 @@ namespace analysis {
       if (succNode) {
         if (succNode == NULL) continue;
     
-        // The successor of the successor node should be the the another successor node of node
+        // The successor of the successor node should be the the another
+        // successor node of node
         if (entryNode->succNode.count(succNode) == 0) return false;
         // There is no loop between successors
         else if (succNode != *exitNode && succNode->succNode.count(*i) > 0) 
@@ -1037,7 +1082,8 @@ namespace analysis {
         NodeTy *predNode2 = *pi;
   
         if (predNode1 != entryNode || entryNode->succNode.count(predNode2) == 0)
-          if (entryNode->succNode.count(predNode1) == 0|| predNode2 != entryNode)
+          if (entryNode->succNode.count(predNode1) == 0
+            || predNode2 != entryNode)
             return false;
   
         if (predNode1 == *exitNode) 
@@ -1054,7 +1100,8 @@ namespace analysis {
                                  pe = (*i)->predNode.end();
                                  pi != pe; ++pi) {
   
-          if (edge2ClassMap[std::make_pair(*pi, *i)] != BACK && (*i) != *exitNode && (*pi) != entryNode && (*pi) != *exitNode) {
+          if (edge2ClassMap[std::make_pair(*pi, *i)] != BACK
+            && (*i) != *exitNode && (*pi) != entryNode && (*pi) != *exitNode) {
             if (entryNode->succNode.count(*pi) == 0)
               improperEdgeSet.insert(std::make_pair(*pi, *i));
             else {
@@ -1082,7 +1129,8 @@ namespace analysis {
   
     bool improperFlag = false;
   
-    for (EdgeSetTy::iterator i = improperEdgeSet.begin(), e = improperEdgeSet.end(); i != e; ++i) 
+    for (EdgeSetTy::iterator i = improperEdgeSet.begin(),
+      e = improperEdgeSet.end(); i != e; ++i) 
       if (isStillReachableFromEntry(N, entry, i->second, i->first)) {
         findUnstructuredBR(N, i->first, i->second, true, true);
         improperFlag = true;
@@ -1092,7 +1140,9 @@ namespace analysis {
   }
   
   // cyclicRegionType - Follow Fig 7.42 of Muchnick book
-  RegionTy StructuralAnalysis::cyclicRegionType(NodeSetTy &N, NodeSetTy &nset, NodeTy *loopHeaderNode, NodeTy *backEdgeNode, NodeTy **exitNode, NodeTy *entry) {
+  RegionTy StructuralAnalysis::cyclicRegionType(NodeSetTy &N, NodeSetTy &nset,
+    NodeTy *loopHeaderNode, NodeTy *backEdgeNode, NodeTy **exitNode,
+    NodeTy *entry) {
     // Check for a SelfLoop
     if (nset.size() == 1) { 
       if (loopHeaderNode == backEdgeNode) {
@@ -1109,7 +1159,8 @@ namespace analysis {
   
     if (nset.size() == 2) {
       if (backEdgeNode->succNode.size() == 1) {
-        for (NodeSetTy::iterator i = loopHeaderNode->predNode.begin(), e = loopHeaderNode->predNode.end(); i != e; ++i) {
+        for (NodeSetTy::iterator i = loopHeaderNode->predNode.begin(),
+          e = loopHeaderNode->predNode.end(); i != e; ++i) {
           NodeTy *pred = *i;
        
           if (pred != backEdgeNode) {
@@ -1118,7 +1169,8 @@ namespace analysis {
           }
         }
     
-        for (NodeSetTy::iterator i = loopHeaderNode->succNode.begin(), e = loopHeaderNode->succNode.end(); i != e; ++i) {
+        for (NodeSetTy::iterator i = loopHeaderNode->succNode.begin(),
+          e = loopHeaderNode->succNode.end(); i != e; ++i) {
           NodeTy *succ = *i;
        
           if (succ != backEdgeNode) {
@@ -1127,12 +1179,14 @@ namespace analysis {
           }
         }
     
-        if (backEdgeNode->predNode.size() != 1 || backEdgeNode->succNode.size() != 1 )
+        if (backEdgeNode->predNode.size() != 1
+          || backEdgeNode->succNode.size() != 1 )
           return Nil;
     
         return NaturalLoop;
       } else if (backEdgeNode->succNode.size() > 1) {
-        for (NodeSetTy::iterator i = loopHeaderNode->predNode.begin(), e = loopHeaderNode->predNode.end(); i != e; ++i) {
+        for (NodeSetTy::iterator i = loopHeaderNode->predNode.begin(),
+          e = loopHeaderNode->predNode.end(); i != e; ++i) {
           NodeTy *pred = *i;
        
           if (pred != backEdgeNode) {
@@ -1141,7 +1195,8 @@ namespace analysis {
           }
         }
     
-        for (NodeSetTy::iterator i = loopHeaderNode->succNode.begin(), e = loopHeaderNode->succNode.end(); i != e; ++i) {
+        for (NodeSetTy::iterator i = loopHeaderNode->succNode.begin(),
+          e = loopHeaderNode->succNode.end(); i != e; ++i) {
           NodeTy *succ = *i;
        
           if (succ != backEdgeNode) {
@@ -1161,7 +1216,8 @@ namespace analysis {
   }
   
   // reduce - Follow Fig 7.43 of Muchnick book
-  NodeTy * StructuralAnalysis::reduce(NodeSetTy &N, RegionTy rType, NodeSetTy &nodeSet, NodeTy *entryNode, NodeTy *exitNode) {
+  NodeTy * StructuralAnalysis::reduce(NodeSetTy &N, RegionTy rType,
+    NodeSetTy &nodeSet, NodeTy *entryNode, NodeTy *exitNode) {
     NodeTy *node = new NodeTy;
   
     replace(N, node, nodeSet/*, addSelfEdge*/);
@@ -1180,7 +1236,8 @@ namespace analysis {
     if (exitNode) node->exitBB = findEntryBB(exitNode);
     else node->exitBB = _kernel->cfg()->end();
   
-    for (NodeSetTy::iterator i = nodeSet.begin(), e = nodeSet.end(); i != e; ++i)
+    for (NodeSetTy::iterator i = nodeSet.begin(),
+      e = nodeSet.end(); i != e; ++i)
       findBB(*i, &(node->containedBB));
   
     node->nodeType = rType;
@@ -1192,19 +1249,23 @@ namespace analysis {
   }
   
   // replace - Follow Fig 7.44 of Muchnick book
-  void StructuralAnalysis::replace(NodeSetTy &N, NodeTy *node, NodeSetTy &nodeSet/*, bool addSelfEdge*/) {
+  void StructuralAnalysis::replace(NodeSetTy &N, NodeTy *node,
+    NodeSetTy &nodeSet/*, bool addSelfEdge*/) {
     // Link region node into abstract flowgraph, adjust the postorder traversal
     // and predecessor and successor functions, and augment the control tree
     compact(N, node, nodeSet/*, addSelfEdge*/);
   
-    for (NodeSetTy::iterator i = nodeSet.begin(), e = nodeSet.end(); i != e; ++i) { 
+    for (NodeSetTy::iterator i = nodeSet.begin(),
+      e = nodeSet.end(); i != e; ++i) { 
       node->childNode.insert(*i);
       (*i)->parentNode = node;
     }
   }
   
   // isImproper - Follow Fig 7.45 of Muchnick book
-  bool StructuralAnalysis::isImproper(NodeSetTy &N, NodeSetTy &nset, NodeTy *loopHeaderNode, NodeTy *backEdgeNode, NodeTy **exitNode, NodeTy *entry) {
+  bool StructuralAnalysis::isImproper(NodeSetTy &N, NodeSetTy &nset,
+    NodeTy *loopHeaderNode, NodeTy *backEdgeNode, NodeTy **exitNode,
+    NodeTy *entry) {
     bool improperFlag = false;  
   
     // Check loopHeaderNode first
@@ -1214,7 +1275,8 @@ namespace analysis {
       NodeTy *predNode = *i;
   
       if (edge2ClassMap[std::make_pair(predNode, loopHeaderNode)] == BACK) {
-        if (nset.count(predNode) == 0 && isStillReachableFromEntry(N, entry, loopHeaderNode, predNode)) {
+        if (nset.count(predNode) == 0
+          && isStillReachableFromEntry(N, entry, loopHeaderNode, predNode)) {
           findUnstructuredBR(N, predNode, loopHeaderNode, true, true);
           improperFlag = true;
         } else if (nset.count(predNode) > 0 && predNode != backEdgeNode) { 
@@ -1232,7 +1294,8 @@ namespace analysis {
         for (NodeSetTy::iterator ii = node->predNode.begin(),
                                  ee = node->predNode.end();
                                  ii != ee; ++ii) {
-          if (nset.count(*ii) == 0 /*&& isStillReachableFromEntry(N, entry, node, *ii)*/) {
+          if (nset.count(*ii) == 0
+            /*&& isStillReachableFromEntry(N, entry, node, *ii)*/) {
             improperFlag = true;
   
             findUnstructuredBR(N, *ii, node, false, true);
@@ -1271,7 +1334,8 @@ namespace analysis {
     else if (exitNodeOfBackEdge)
       mainExitNode = exitNodeOfBackEdge;
   
-    for (EdgeSetTy::iterator i = exitEdgeSet.begin(), e = exitEdgeSet.end(); i != e; ++i) {
+    for (EdgeSetTy::iterator i = exitEdgeSet.begin(),
+      e = exitEdgeSet.end(); i != e; ++i) {
       EdgeTy exitEdge = *i;
   
       if (exitEdge.second != mainExitNode) {
@@ -1282,14 +1346,16 @@ namespace analysis {
     }
   
     if (exitNodeOfHeader) {
-      for (EdgeSetTy::iterator i = exitEdgeSet.begin(), e = exitEdgeSet.end(); i != e; ++i) {
+      for (EdgeSetTy::iterator i = exitEdgeSet.begin(),
+        e = exitEdgeSet.end(); i != e; ++i) {
         if (i->first != loopHeaderNode && (*i).second == mainExitNode) {
           findUnstructuredBR(N, i->first, i->second, false, false);
           improperFlag = true;
         }
       }  
     } else if (exitNodeOfBackEdge) {
-      for (EdgeSetTy::iterator i = exitEdgeSet.begin(), e = exitEdgeSet.end(); i != e; ++i) {
+      for (EdgeSetTy::iterator i = exitEdgeSet.begin(),
+        e = exitEdgeSet.end(); i != e; ++i) {
         if (i->first != backEdgeNode && i->second == mainExitNode) {
           findUnstructuredBR(N, i->first, i->second, false, false);
           improperFlag = true;
@@ -1307,7 +1373,8 @@ namespace analysis {
   
   // pathBack - Check if there is a node k such that there is a path from
   // m to k that does not pass through n and an edge k->n that is a back edge
-  NodeTy *StructuralAnalysis::pathBack(NodeTy *n, NodeSetTy &N, NodeSetTy &reachUnder) {
+  NodeTy *StructuralAnalysis::pathBack(NodeTy *n, NodeSetTy &N,
+    NodeSetTy &reachUnder) {
     NodeTy *backEdgeNode = NULL;
   
     reachUnder.clear();
@@ -1327,7 +1394,8 @@ namespace analysis {
           reachUnder.insert(n);
           reachUnder.insert(backEdgeNode);
         
-          for (NodeSetTy::iterator ii = N.begin(), ee = N.end(); ii != ee; ++ii) {
+          for (NodeSetTy::iterator ii = N.begin(), ee = N.end();
+            ii != ee; ++ii) {
             NodeTy *m = *ii;
   
             // Check if there is a path from m to loop exit node
@@ -1348,7 +1416,8 @@ namespace analysis {
   
   // path(n, m, I) - Return true if there is a path from from n to m 
   // such that all the nodes in it are in I and false otherwise
-  bool StructuralAnalysis::path(NodeTy *n, NodeTy *m, NodeSetTy &I, NodeTy *esc) {
+  bool StructuralAnalysis::path(NodeTy *n, NodeTy *m,
+    NodeSetTy &I, NodeTy *esc) {
     visitPath[n] = true;
   
     if (n == esc || m == esc) return false;
@@ -1369,8 +1438,10 @@ namespace analysis {
   }
 
   // path(n, m, I, src, dst ) - Return true if there is a path from from n to m 
-  //such that all the nodes in it are in I without going through edge src->dst and false otherwise
-  bool StructuralAnalysis::path(NodeTy *n, NodeTy *m, NodeSetTy &I, NodeTy *src, NodeTy *dst) {
+  // such that all the nodes in it are in I without going through edge src->dst
+  // and false otherwise
+  bool StructuralAnalysis::path(NodeTy *n, NodeTy *m,
+    NodeSetTy &I, NodeTy *src, NodeTy *dst) {
     visitPath[n] = true;
   
     if (n == m) return true;
@@ -1391,20 +1462,23 @@ namespace analysis {
   }
   
   // compact - Compact nodes in nset into n;
-  void StructuralAnalysis::compact(NodeSetTy &N, NodeTy *n, NodeSetTy &nset/*, bool addSelfEdge*/) {
+  void StructuralAnalysis::compact(NodeSetTy &N, NodeTy *n,
+    NodeSetTy &nset/*, bool addSelfEdge*/) {
     // Adds node n to N
     N.insert(n);
   
     // Remove the nodes in nset from both N and post()
     for (NodeSetTy::iterator i = nset.begin(), e = nset.end(); i != e; ++i) {
-      for (NodeSetTy::iterator si = (*i)->succNode.begin(), se = (*i)->succNode.end(); si != se; ++si) 
+      for (NodeSetTy::iterator si = (*i)->succNode.begin(),
+        se = (*i)->succNode.end(); si != se; ++si) 
         if(nset.count(*si) == 0) {
           n->succNode.insert(*si);
           (*si)->predNode.insert(n);
           (*si)->predNode.erase(*i);
         }
      
-      for (NodeSetTy::iterator pi = (*i)->predNode.begin(), pe = (*i)->predNode.end(); pi != pe; ++pi) 
+      for (NodeSetTy::iterator pi = (*i)->predNode.begin(),
+        pe = (*i)->predNode.end(); pi != pe; ++pi) 
         if(nset.count(*pi) == 0) {
           n->predNode.insert(*pi);
           (*pi)->succNode.insert(n);
@@ -1441,81 +1515,90 @@ namespace analysis {
   }
   
   // dumpCTNode - dump one CT node
-  void StructuralAnalysis::dumpCTNode(NodeTy *node) {
+  void StructuralAnalysis::dumpCTNode(std::ostream& stream,
+  	NodeTy *node) const {
     if(!node->isCombined) return;
   
-    std::cerr << "\t"; 
+    stream << "\t"; 
   
     switch (node->nodeType) {
     case Block:
-      std::cerr << "Block      ";
+      stream << "Block      ";
       break;
     case IfThen:
-      std::cerr << "IfThen     ";
+      stream << "IfThen     ";
       break;
     case IfThenElse:
-      std::cerr << "IfThenElse ";
+      stream << "IfThenElse ";
       break;
     case Case:
-      std::cerr << "Case       ";
+      stream << "Case       ";
       break;
     case SelfLoop:
-      std::cerr << "SelfLoop   ";
+      stream << "SelfLoop   ";
       break;
     case NaturalLoop:
-      std::cerr << "NaturalLoop";
+      stream << "NaturalLoop";
       break;
     default:
       break;
     }
     
-    std::cerr << "\t";
+    stream << "\t";
   
-    dumpNode(node);
+    dumpNode(stream, node);
   
-    std::cerr << '\n';
+    stream << '\n';
   
     for (NodeSetTy::iterator i = node->childNode.begin(),
                              e = node->childNode.end();
-                             i != e; ++i)
-      dumpCTNode(*i);
+                             i != e; ++i) {
+      dumpCTNode(stream, *i);
+    }
   }
   
   // dumpNode - dump one node
-  void StructuralAnalysis::dumpNode(NodeTy *node) {
+  void StructuralAnalysis::dumpNode(std::ostream& stream, NodeTy *node) const {
     BBSetTy *BBVec = new BBSetTy;
   
     findBB(node, BBVec);
   
     for (BBSetTy::iterator i = BBVec->begin(), e = BBVec->end(); i != e; ++i)
-      std::cerr << (*i)->label << "\t";
+      stream << (*i)->label << "\t";
   }
 
   // findUnstructuredBR - Record the branch and remove it from CFG 
-  void StructuralAnalysis::findUnstructuredBR(NodeSetTy &N, NodeTy *srcNode, NodeTy *dstNode, bool needForwardCopy, bool isGoto) {
+  void StructuralAnalysis::findUnstructuredBR(NodeSetTy &N, NodeTy *srcNode,
+    NodeTy *dstNode, bool needForwardCopy, bool isGoto) {
     BBSetTy *srcNodeVec = new BBSetTy;
     BBSetTy *dstNodeVec = new BBSetTy;
   
     findBB(srcNode, srcNodeVec);
     findBB(dstNode, dstNodeVec);
   
-    for (BBSetTy::iterator SRCI = srcNodeVec->begin(), SRCE = srcNodeVec->end(); SRCI != SRCE; ++SRCI) {
+    for (BBSetTy::iterator SRCI = srcNodeVec->begin(), SRCE = srcNodeVec->end();
+      SRCI != SRCE; ++SRCI) {
       ir::ControlFlowGraph::iterator srcBB= *SRCI;
   
       ir::ControlFlowGraph::BlockPointerVector SuccVec = srcBB->successors;
 
-      for (ir::ControlFlowGraph::BlockPointerVector::iterator SI = SuccVec.begin(), E = SuccVec.end(); SI != E; ++SI) {
+      for (ir::ControlFlowGraph::BlockPointerVector::iterator
+        SI = SuccVec.begin(), E = SuccVec.end(); SI != E; ++SI) {
         ir::ControlFlowGraph::iterator succ = *SI;
   
-        for (BBSetTy::iterator DSTI = dstNodeVec->begin(), DSTE = dstNodeVec->end(); DSTI != DSTE; ++DSTI) {
+        for (BBSetTy::iterator DSTI = dstNodeVec->begin(),
+          DSTE = dstNodeVec->end(); DSTI != DSTE; ++DSTI) {
           ir::ControlFlowGraph::iterator dstBB = *DSTI;
   
           if (*DSTI == succ) {
-            if (isGoto)
+            if (isGoto) {
               unstructuredBRVec.push_back(std::make_pair(srcBB, dstBB));
-  
-            if (needForwardCopy)
-              dstNode->incomingForwardBR.push_back(std::make_pair(srcBB, dstBB));
+            }
+            
+            if (needForwardCopy) {
+              dstNode->incomingForwardBR.push_back(
+                std::make_pair(srcBB, dstBB));
+            }
           }
         }
       }
@@ -1531,36 +1614,40 @@ namespace analysis {
   }
   
   // findBB - put all Basic Blocks in node into nodeVec
-  void StructuralAnalysis::findBB(NodeTy *node, BBSetTy *nodeVec) {
+  void StructuralAnalysis::findBB(NodeTy *node, BBSetTy *nodeVec) const {
     if (!node->isCombined) 
       nodeVec->insert(node->BB);
     else {
       NodeSetTy nodeSet = node->childNode;
   
-      for (NodeSetTy::iterator i = nodeSet.begin(), e = nodeSet.end(); i != e; ++i) 
+      for (NodeSetTy::const_iterator i = nodeSet.begin(),
+        e = nodeSet.end(); i != e; ++i) 
         findBB(*i, nodeVec);    
     }
   }
   
   // dumpUnstructuredBR - Dump all found unstructured branches
-  void StructuralAnalysis::dumpUnstructuredBR() {
-    std::cerr << "\nUnstructured Branches:\n";
+  void StructuralAnalysis::dumpUnstructuredBR(std::ostream& stream) const {
+    stream << "\nUnstructured Branches:\n";
     
-    for (EdgeVecTy::iterator i = unstructuredBRVec.begin(), e = unstructuredBRVec.end(); i != e; ++i) 
-       std::cerr << "\t" << i->first->label << "\t" << i->second->label << "\n";
-  
-    std::cerr << "\n";
+    for (EdgeVecTy::const_iterator i = unstructuredBRVec.begin(),
+      e = unstructuredBRVec.end(); i != e; ++i) {
+       stream << "\t" << i->first->label << "\t" << i->second->label << "\n";
+    }
+    
+    stream << "\n";
   }
   
-  //Return true if after erasing edge src->dst, dst is still reachable from entry
-  bool StructuralAnalysis::isStillReachableFromEntry(NodeSetTy &N, NodeTy *entry, NodeTy *dstNode, NodeTy *srcNode) {
+  //True if after erasing edge src->dst, dst is still reachable from entry
+  bool StructuralAnalysis::isStillReachableFromEntry(NodeSetTy &N,
+    NodeTy *entry, NodeTy *dstNode, NodeTy *srcNode) {
     visitPath.clear();
 
     return path(entry, dstNode, N, srcNode, dstNode);
   }
   
   //findEntryBB - find the entry Basic Block of the node
-  ir::ControlFlowGraph::iterator StructuralAnalysis::findEntryBB (NodeTy *node) {
+  ir::ControlFlowGraph::iterator StructuralAnalysis::findEntryBB(NodeTy *node) {
     if (!node->isCombined) 
       return node->BB;
     else 
@@ -1568,7 +1655,8 @@ namespace analysis {
   }
  
   void StructuralAnalysis::cleanupUnreachable() {
-    for (NodeSetTy::iterator i = unreachableNodeSet.begin(), e = unreachableNodeSet.end(); i != e; ++i) {
+    for (NodeSetTy::iterator i = unreachableNodeSet.begin(),
+      e = unreachableNodeSet.end(); i != e; ++i) {
       cleanup(*i);
     }
   }
@@ -1578,14 +1666,17 @@ namespace analysis {
     if (!node->isCombined) 
       return;
     else {
-      if ((node->nodeType == NaturalLoop || node->nodeType == SelfLoop) && node->containedBB.size() > 1) {
-        for (BBSetTy::iterator i = node->containedBB.begin(), e = node->containedBB.end(); i != e; ++i) {
+      if ((node->nodeType == NaturalLoop || node->nodeType == SelfLoop)
+        && node->containedBB.size() > 1) {
+        for (BBSetTy::iterator i = node->containedBB.begin(),
+          e = node->containedBB.end(); i != e; ++i) {
           ir::ControlFlowGraph::iterator BB = *i;
   
           if (BB != node->entryBB) {
             ir::ControlFlowGraph::BlockPointerVector PredVec = BB->predecessors;
 
-            for (ir::ControlFlowGraph::BlockPointerVector::iterator PI = PredVec.begin(), E = PredVec.end(); PI != E; ++PI) {
+            for (ir::ControlFlowGraph::BlockPointerVector::iterator
+              PI = PredVec.begin(), E = PredVec.end(); PI != E; ++PI) {
               ir::ControlFlowGraph::iterator Pred = *PI;
    
                if (node->containedBB.count(Pred) == 0)
@@ -1594,7 +1685,8 @@ namespace analysis {
  
             ir::ControlFlowGraph::BlockPointerVector SuccVec = BB->successors;
 
-            for (ir::ControlFlowGraph::BlockPointerVector::iterator SI = SuccVec.begin(), E = SuccVec.end(); SI != E; ++SI) {
+            for (ir::ControlFlowGraph::BlockPointerVector::iterator
+              SI = SuccVec.begin(), E = SuccVec.end(); SI != E; ++SI) {
               ir::ControlFlowGraph::iterator Succ = *SI;
   
               if (node->containedBB.count(Succ) == 0 && Succ != node->exitBB)
@@ -1606,12 +1698,13 @@ namespace analysis {
   
       NodeSetTy nodeSet = node->childNode;
   
-      for (NodeSetTy::iterator i = nodeSet.begin(), e = nodeSet.end(); i != e; ++i) 
+      for (NodeSetTy::iterator i = nodeSet.begin(),
+        e = nodeSet.end(); i != e; ++i) 
         cleanup(*i);   
     }
   }
   
-  // deleteUnreachableNode - delete nodes that is no longer reachable from the entry
+  // deleteUnreachableNode - delete nodes no longer reachable from the entry
   void StructuralAnalysis::deleteUnreachableNodes(NodeSetTy &N, NodeTy *entry) {
     for(NodeSetTy::iterator i = N.begin(), e = N.end(); i != e; ++i) {
       visitPath.clear();
@@ -1640,10 +1733,12 @@ namespace analysis {
 BEGIN:
     bool merge = false;
 
-    for (NodeSetTy::iterator i = unreachableNodeSet.begin(), e = unreachableNodeSet.end(); i != e; ++i) {
+    for (NodeSetTy::iterator i = unreachableNodeSet.begin(),
+      e = unreachableNodeSet.end(); i != e; ++i) {
       NodeTy *node1 = *i;
 
-      for (NodeSetTy::iterator ii = unreachableNodeSet.begin(), ee = unreachableNodeSet.end(); ii != ee; ++ii) {
+      for (NodeSetTy::iterator ii = unreachableNodeSet.begin(),
+        ee = unreachableNodeSet.end(); ii != ee; ++ii) {
         NodeTy *node2 = *i;
 
         if (node1 == node2) continue;
@@ -1689,16 +1784,14 @@ BEGIN:
   void StructuralAnalysis::runOnKernel(ir::PTXKernel *k) {
     _kernel = k;
 
-    std::cerr << _kernel->name <<":\n";
- 
-    // build a Simple CFG out of the LLVM CFG
+   // build a Simple CFG out of the LLVM CFG
     buildSimpleCFG(Net);
   
     NodeTy *entry = BB2NodeMap[_kernel->cfg()->get_entry_block()];
   
     bool debug = false;
     
-// Follow the Fig 7.39 of Muchnick book
+	  // Follow the Fig 7.39 of Muchnick book
     structuralAnalysis(Net, entry, debug);
   
     cleanup(*(Net.begin()));
@@ -1706,11 +1799,14 @@ BEGIN:
     reconstructUnreachable();
  
     cleanupUnreachable();
+  }
+  
+  void StructuralAnalysis::write(std::ostream& stream) const {
+    stream << _kernel->name <<":\n";
  
-    dumpCTNode(*(Net.begin()));
+    dumpCTNode(stream, *(Net.begin()));
   
-    dumpUnstructuredBR();
-  
-    return;
+    dumpUnstructuredBR(stream);
   }
 }
+

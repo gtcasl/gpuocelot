@@ -21,6 +21,7 @@
 #include <ocelot/executive/interface/Device.h>
 #include <ocelot/analysis/interface/PassManager.h>
 #include <ocelot/cuda/interface/FatBinaryContext.h>
+#include <ocelot/ir/interface/ExternalFunctionSet.h>
 
 // Hydrazine includes
 #include <hydrazine/implementation/Timer.h>
@@ -110,7 +111,7 @@ namespace cuda {
 		unsigned int mapParameters(const ir::Kernel* kernel);
 	};
 	
-	typedef std::map< boost::thread::id, HostThreadContext > HostThreadContextMap;
+	typedef std::map<boost::thread::id, HostThreadContext> HostThreadContextMap;
 	
 	//! references a kernel registered to CUDA runtime
 	class RegisteredKernel {
@@ -190,7 +191,7 @@ namespace cuda {
 	typedef executive::DeviceVector DeviceVector;
 	typedef analysis::PTXInstrumentorVector PTXInstrumentorVector;
 
-	////////////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////
 	/*! Cuda runtime context */
 	class CudaRuntime: public CudaRuntimeInterface {
 	private:
@@ -216,6 +217,8 @@ namespace cuda {
 		void _acquire();
 		/*! \brief Unbind the thread and unlock the mutex */
 		void _release();
+		//! \brief Does the current thread own the selected device and lock?
+		bool _ownsLock();
 		//! \brief gets the current device for the current thread
 		executive::Device& _getDevice();
 		//! \brief returns an Ocelot-formatted error message
@@ -232,6 +235,9 @@ namespace cuda {
 	private:
 		//! locking object for cuda runtime
 		boost::mutex _mutex;
+		
+		//! The thread that owns the lock
+		boost::thread::id _lockOwner;
 		
 		//! Registered modules
 		ModuleMap _modules;
@@ -280,6 +286,9 @@ namespace cuda {
 		
 		//! optimization level
 		translator::Translator::OptimizationLevel _optimization;
+	
+		//! external functions
+		ir::ExternalFunctionSet _externals;
 	
 	private:
 		cudaError_t _launchKernel(const std::string& module, 
@@ -595,7 +604,9 @@ namespace cuda {
 			const std::string& kernelName);
 		virtual void setOptimizationLevel(
 			translator::Translator::OptimizationLevel l);
-
+		virtual void registerExternalFunction(const std::string& name,
+			void* function);
+		virtual void removeExternalFunction(const std::string& name);
 	};
 
 }

@@ -11,6 +11,8 @@
 #include <ocelot/api/interface/OcelotRuntime.h>
 #include <ocelot/api/interface/ocelot.h>
 
+#include <ocelot/cuda/interface/cuda_runtime.h>
+
 // Hydrazine includes
 #include <hydrazine/implementation/debug.h>
 
@@ -19,6 +21,18 @@
 #endif
 
 #define REPORT_BASE 0
+
+static void* cudaMallocWrapper(long long unsigned int bytes)
+{
+	void* pointer = 0;
+	cudaMalloc(&pointer, bytes);
+	return pointer;
+}
+
+static void cudaFreeWrapper(void* pointer)
+{
+	cudaFree(pointer);
+}
 
 namespace ocelot
 {
@@ -71,7 +85,10 @@ namespace ocelot
             ocelot::addInstrumentor(_basicBlockInstrumentor);    
         }
 
-
+		// add built-in functions
+		registerExternalFunction("malloc", (void*)(cudaMallocWrapper));
+		registerExternalFunction("free",   (void*)(cudaFreeWrapper));
+		registerExternalFunction("printf", (void*)(std::printf));
 	}
 
 }

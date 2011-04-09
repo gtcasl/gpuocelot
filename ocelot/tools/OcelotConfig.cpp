@@ -92,35 +92,31 @@ namespace util
 		std::string result;
 		if( version )
 		{
-			result = _version();
+			result += _version() + " ";
 		}
-		else if( flags )
+		if( flags )
 		{
-			result = _flags();
+			result += _flags() + " ";
 		}
-		else if( prefix )
+		if( prefix )
 		{
-			result = _prefix();
+			result += _prefix() + " ";
 		}
-		else if( libs )
+		if( libs )
 		{
-			result = _libs();
+			result += _libs() + " ";
 		}
-		else if( includedir )
+		if( includedir )
 		{
-			result = _includedir();
+			result += _includedir() + " ";
 		}
-		else if( libdir )
+		if( libdir )
 		{
-			result = _libdir();
+			result += _libdir() + " ";
 		}
-		else if( bindir )
+		if( bindir )
 		{
-			result = _bindir();
-		}
-		else
-		{
-			return "";
+			result += _bindir() + " ";
 		}
 
 		if( trace )

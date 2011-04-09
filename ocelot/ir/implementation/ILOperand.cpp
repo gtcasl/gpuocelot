@@ -45,6 +45,8 @@ namespace ir
 			case CompSel_Invalid: return "";
 			default: assertM(false, "Invalid component select" << c);
 		}
+		
+		return "";
 	}
 
 	std::string ILOperand::toStringRegister() const
@@ -111,6 +113,7 @@ namespace ir
 				break;
 			}
 		}
+		return "";
 	}
 
 	std::string ILOperand::toString(SpecialRegister sr) const

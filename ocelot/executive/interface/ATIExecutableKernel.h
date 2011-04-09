@@ -49,6 +49,12 @@ namespace executive
 			/*!	\brief removes a trace generator from an EmulatedKernel */
 			void removeTraceGenerator(trace::TraceGenerator* generator);
 
+			/*! sets an external function table for the emulated kernel */
+			void setExternalFunctionSet(const ir::ExternalFunctionSet& s);
+
+			/*! clear the external function table for the emulated kernel */
+			void clearExternalFunctionSet();
+
 			/*! \brief Copies data from global objects into const and global
 			 * memory */
 			void updateGlobals();

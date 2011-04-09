@@ -10,6 +10,7 @@
 // Ocelot Includes
 #include <ocelot/executive/interface/LLVMExecutableKernel.h>
 #include <ocelot/executive/interface/LLVMExecutionManager.h>
+#include <ocelot/executive/interface/LLVMModuleManager.h>
 #include <ocelot/executive/interface/Device.h>
 
 // Hydrazine Includes
@@ -177,6 +178,17 @@ void LLVMExecutableKernel::removeTraceGenerator(
 	trace::TraceGenerator *generator)
 {
 	assertM(false, "No trace generation support in LLVM kernel.");	
+}
+
+void LLVMExecutableKernel::setExternalFunctionSet(
+	const ir::ExternalFunctionSet& s)
+{
+	LLVMModuleManager::setExternalFunctionSet(s);
+}
+
+void LLVMExecutableKernel::clearExternalFunctionSet()
+{
+	LLVMModuleManager::clearExternalFunctionSet();
 }
 
 void LLVMExecutableKernel::_allocateMemory()

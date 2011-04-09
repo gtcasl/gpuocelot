@@ -28,15 +28,6 @@
 namespace executive
 {
 
-////////////////////////////////////////////////////////////////////////////////
-// Helper Functions
-static unsigned int threadId(LLVMContext& context)
-{
-	return context.tid.x + context.tid.y * context.ntid.x
-		+ context.tid.z * context.ntid.y * context.ntid.z;
-}
-////////////////////////////////////////////////////////////////////////////////
-
 LLVMCooperativeThreadArray::LLVMCooperativeThreadArray(LLVMWorkerThread* w) :
 	_warpSize(std::max(api::OcelotConfiguration::get().executive.warpSize, 1)),
 	_worker(w)
@@ -257,7 +248,7 @@ void LLVMCooperativeThreadArray::_executeThread(unsigned int contextId)
 	LLVMModuleManager::MetaData* metadata = _functions[_nextFunction];
 	context.metadata = (char*) metadata;
 	
-	report("   executing thread " << threadId(context) 
+	report("   executing thread " << _threadId(context)
 		<< " in context " << contextId << " of " << _contexts.size() 
 		<< ", _nextFunction: " << _nextFunction << " of " << _functions.size());
 	
@@ -513,6 +504,12 @@ void LLVMCooperativeThreadArray::_destroyContexts()
 		_reclaimedContexts.end());
 
 	_reclaimedContexts.clear();
+}
+
+unsigned int LLVMCooperativeThreadArray::_threadId(const LLVMContext& context)
+{
+	return context.tid.x + context.tid.y * context.ntid.x
+		+ context.tid.z * context.ntid.y * context.ntid.z;
 }
 
 }

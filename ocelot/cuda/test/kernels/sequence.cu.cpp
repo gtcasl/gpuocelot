@@ -10565,21 +10565,7 @@ int errors = 0;
 # 63 "ocelot/cuda/test/kernels/sequence.cu"
 size_t bytes = (sizeof(int) * N);
 # 65 "ocelot/cuda/test/kernels/sequence.cu"
-void *driverApiHandle = dlopen("libcuda.so", 2);
-# 66 "ocelot/cuda/test/kernels/sequence.cu"
-if (driverApiHandle) {
-# 67 "ocelot/cuda/test/kernels/sequence.cu"
-printf("Loaded libcuda.so explicitly; unloading now.\n");
-# 68 "ocelot/cuda/test/kernels/sequence.cu"
-dlclose(driverApiHandle);
-# 69 "ocelot/cuda/test/kernels/sequence.cu"
-} else
-# 70 "ocelot/cuda/test/kernels/sequence.cu"
-{
-# 71 "ocelot/cuda/test/kernels/sequence.cu"
-printf("Error: %s\n", dlerror());
-# 72 "ocelot/cuda/test/kernels/sequence.cu"
-}
+
 # 74 "ocelot/cuda/test/kernels/sequence.cu"
 cudaError_t result = cudaThreadSynchronize();
 # 75 "ocelot/cuda/test/kernels/sequence.cu"

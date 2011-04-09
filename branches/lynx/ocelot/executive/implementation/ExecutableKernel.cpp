@@ -26,6 +26,8 @@
 
 #define REPORT_BASE 0
 
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
 namespace executive 
 {
 ExecutableKernel::ExecutableKernel( const ir::Kernel& k, 
@@ -71,6 +73,14 @@ void ExecutableKernel::tracePostEvent(const trace::TraceEvent & event) const
 		generator != _generators.end(); ++generator) {
 		(*generator)->postEvent(event);
 	}
+}
+
+ir::ExternalFunctionSet::ExternalFunction*
+	ExecutableKernel::findExternalFunction(
+	const std::string& name) const {
+	if(_externals == 0) return 0;
+	
+	return _externals->find(name);
 }
 
 unsigned int ExecutableKernel::constMemorySize() const
@@ -153,17 +163,19 @@ void ExecutableKernel::setArgumentBlock(const unsigned char *parameter,
 	size_t size) {
 	mapArgumentOffsets();
 
-	report("ExecutableKernel::setArgumentBlock() - paramSize = " << size);
+	report("ExecutableKernel::setArgumentBlock() - parameterSize = " << size);
 
 	for (ParameterVector::iterator it = arguments.begin();
 		it != arguments.end(); ++it) {
 		const unsigned char *ptr = parameter + it->offset;
+
 		for (ir::Parameter::ValueVector::iterator 
 			val_it = it->arrayValues.begin();
 			val_it != it->arrayValues.end(); 
 			++val_it, ptr += it->getElementSize()) {
+			
 			assert((size_t)ptr - (size_t)parameter
-				+ it->getElementSize() < (size_t)size);
+				+ it->getElementSize() <= (size_t)size);
 			memcpy(&val_it->val_u64, ptr, it->getElementSize());
 		}
 

@@ -5,7 +5,6 @@
     },
 	trace: { 
 		database: "traces/database.trace",
-		memory: true,
 		memoryChecker: {
 			enabled: true,
 			checkInitialization: false

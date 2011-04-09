@@ -355,20 +355,21 @@ void cuda::CudaRuntime::_enumerateDevices() {
 				(*device)->unselect();
 			}
 		}
-
 	}
+	
 }
 
 //! acquires mutex and locks the runtime
 void cuda::CudaRuntime::_lock() {
 	_mutex.lock();
+	_lockOwner = boost::this_thread::get_id();
 }
 
 //! releases mutex
 void cuda::CudaRuntime::_unlock() {
+	_lockOwner = boost::thread::id();
 	_mutex.unlock();
 }
-
 
 //! sets the last error state for the CudaRuntime object
 cudaError_t cuda::CudaRuntime::_setLastError(cudaError_t result) {
@@ -413,6 +414,10 @@ void cuda::CudaRuntime::_release() {
 	_unlock();
 }
 
+bool cuda::CudaRuntime::_ownsLock() {
+	return _lockOwner == boost::this_thread::get_id();
+}
+
 executive::Device& cuda::CudaRuntime::_getDevice() {
 	assert(_selectedDevice >= 0);
 	assert(_selectedDevice < (int)_devices.size());
@@ -454,7 +459,7 @@ void cuda::CudaRuntime::_registerModule(ModuleMap::iterator module) {
         if((*instrumentor)->conditionsMet)
             (*instrumentor)->instrument(module->second);
     }
-	
+
 	for(RegisteredTextureMap::iterator texture = _textures.begin(); 
 		texture != _textures.end(); ++texture) {
 		if(texture->second.module != module->first) continue;
@@ -488,11 +493,13 @@ void cuda::CudaRuntime::_registerAllModules() {
 
 ////////////////////////////////////////////////////////////////////////////////
 
-cuda::CudaRuntime::CudaRuntime() : _deviceCount(0), _devicesLoaded(false), 
+cuda::CudaRuntime::CudaRuntime() : _deviceCount(0),
+	_devicesLoaded(false), 
 	_selectedDevice(-1), _nextSymbol(1), _computeCapability(2), _flags(0), 
 	_optimization((translator::Translator::OptimizationLevel)
 		config::get().executive.optimizationLevel) {
 
+	// get device count
 	if(config::get().executive.enableNVIDIA) {
 		_deviceCount += executive::Device::deviceCount(
 			ir::Instruction::SASS, _computeCapability);
@@ -742,6 +749,20 @@ cudaError_t cuda::CudaRuntime::cudaGetExportTable(const void **ppExportTable,
 
 cudaError_t cuda::CudaRuntime::cudaMalloc(void **devPtr, size_t size) {
 	cudaError_t result = cudaErrorMemoryAllocation;
+
+	if (_ownsLock()) {
+		try {
+			executive::Device::MemoryAllocation* 
+				allocation = _getDevice().allocate(size);
+			*devPtr = allocation->pointer();
+			result = cudaSuccess;
+		}
+		catch(hydrazine::Exception&) {
+		
+		}
+		return result;
+	}
+
 	_acquire();
 	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
 	
@@ -852,6 +873,20 @@ cudaError_t cuda::CudaRuntime::cudaMallocArray(struct cudaArray **array,
 
 cudaError_t cuda::CudaRuntime::cudaFree(void *devPtr) {
 	cudaError_t result = cudaErrorMemoryAllocation;
+
+	if(_ownsLock()) {
+		try {
+			if (devPtr) {
+				_getDevice().free(devPtr);
+			}
+			result = cudaSuccess;
+		}
+		catch(hydrazine::Exception&) {
+		
+		}
+		return result;
+	}
+
 	_acquire();
 	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
 
@@ -2564,7 +2599,7 @@ cudaError_t cuda::CudaRuntime::_launchKernel(const std::string& moduleName,
 
 		_getDevice().launch(moduleName, kernelName, convert(launch.gridDim), 
 			convert(launch.blockDim), launch.sharedMemory, 
-			thread.parameterBlock, paramSize, traceGens);
+			thread.parameterBlock, paramSize, traceGens, &_externals);
 		report(" launch completed successfully");	
 	}
 	catch( const executive::RuntimeException& e ) {
@@ -3505,7 +3540,7 @@ ocelot::PointerMap cuda::CudaRuntime::contextSwitch(unsigned int destinationId,
 		
 	_unlock();
 	
-	return mappings;	
+	return mappings;
 }
 
 void cuda::CudaRuntime::unregisterModule(const std::string& name) {
@@ -3547,6 +3582,28 @@ void cuda::CudaRuntime::setOptimizationLevel(
 
 	_unlock();
 }
+
+void cuda::CudaRuntime::registerExternalFunction(const std::string& name,
+	void* function) {
+	
+	_lock();
+
+	report("Adding external function '" << name << "'");
+	_externals.add(name, function);
+
+	_unlock();
+}
+
+void cuda::CudaRuntime::removeExternalFunction(const std::string& name) {
+	_lock();
+
+	report("Removing external function '" << name << "'");
+
+	_externals.remove(name);
+
+	_unlock();	
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////
 

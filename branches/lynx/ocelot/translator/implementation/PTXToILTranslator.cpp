@@ -30,6 +30,7 @@ namespace translator
 	ir::Kernel* PTXToILTranslator::translate(const ir::Kernel* k)
 	{
 		assertM(0, "Translator needs the kernel to be an executable kernel");
+		return 0;
 	}
 
 	ir::Kernel* PTXToILTranslator::translate(const ExecutableKernel* k)
@@ -127,6 +128,8 @@ namespace translator
 			}
 			default: assertM(false, "Invalid region type " << node->rtype());
 		}
+		
+		return 0;
 	}
 
 	void PTXToILTranslator::_translate(const CT::IfThenNode* node)
@@ -351,6 +354,8 @@ namespace translator
 				assertM(false, "DataType " << d << " not supported");
 			}
 		}
+		
+		return ir::ILInstruction::Byte;
 	}
 
 	ir::ILOperand PTXToILTranslator::_tempRegister()

@@ -99,18 +99,23 @@ if 'install' in COMMAND_LINE_TARGETS:
 	libocelot = env.Install(os.path.join( \
 		env['install_path'], "lib"), libocelot)
 
-ocelot_libs = [libocelot]
+ocelot_libs = ['-locelot']
 ocelot_libs.extend(env['EXTRA_LIBS'])
 ocelot_libs.extend(env['LLVM_LIBS'])
 
 OcelotConfig = env.Program('OcelotConfig', \
-	['ocelot/tools/OcelotConfig.cpp'], LIBS=ocelot_libs)
+	['ocelot/tools/OcelotConfig.cpp'], LIBS=ocelot_libs, \
+	CXXFLAGS = env['OCELOT_CONFIG_FLAGS'])
+env.Depends(OcelotConfig, libocelot)
 PTXOptimizer = env.Program('PTXOptimizer', \
 	['ocelot/tools/PTXOptimizer.cpp'], LIBS=ocelot_libs)
+env.Depends(PTXOptimizer, libocelot)
 OcelotServer = env.Program('OcelotServer', \
 	['ocelot/tools/OcelotServer.cpp'], LIBS=ocelot_libs)
+env.Depends(OcelotServer, libocelot)
 OcelotHarness = env.Program('OcelotKernelTestHarness', \
 	['ocelot/tools/KernelTestHarness.cpp'], LIBS=ocelot_libs)
+env.Depends(OcelotHarness, libocelot)
 
 Default(OcelotConfig)
 
@@ -156,11 +161,14 @@ tests.append(('TestCalVectorScale', \
 	'ocelot/cal/test/vectorScale.cu.cpp', 'full'))
 tests.append(('TestDeviceSwitching', \
 	'ocelot/api/test/TestDeviceSwitching.cpp', 'full'))
+tests.append(('TestExternalFunctions', \
+	'ocelot/api/test/TestExternalFunctions.cpp', 'full'))
 tests.append(('TestPTXAssembly', \
 	'ocelot/ir/test/TestPTXAssembly.cpp', 'full'))
 
 for test in tests:
 	Test = env.Program(test[0], [test[1]], LIBS=ocelot_libs)
+	env.Depends(Test, libocelot)
 
 if env['test_level'] != 'none':
 	print 'Adding unit tests to the build...'

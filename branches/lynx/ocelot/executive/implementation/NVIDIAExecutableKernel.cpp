@@ -126,6 +126,8 @@ void executive::NVIDIAExecutableKernel::updateMemory() {
 executive::ExecutableKernel::TextureVector 
 	executive::NVIDIAExecutableKernel::textureReferences() const {
 	assertM(false, "no support for getting texture references");
+	
+	return executive::ExecutableKernel::TextureVector();
 }
 
 void executive::NVIDIAExecutableKernel::updateGlobalMemory() {
@@ -147,6 +149,18 @@ void executive::NVIDIAExecutableKernel::removeTraceGenerator(
 {
 	assertM(false, "No trace generation support in GPU kernel.");	
 }
+
+
+void executive::NVIDIAExecutableKernel::setExternalFunctionSet(
+	const ir::ExternalFunctionSet& s) {
+	assertM(false, "No external function support in GPU kernel.");	
+
+}
+
+void executive::NVIDIAExecutableKernel::clearExternalFunctionSet() {
+	assertM(false, "No external function support in GPU kernel.");	
+}
+
 
 void executive::NVIDIAExecutableKernel::setWorkerThreads(unsigned int limit) {
 

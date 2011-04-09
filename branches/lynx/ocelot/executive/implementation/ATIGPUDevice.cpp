@@ -336,6 +336,7 @@ namespace executive
 			unsigned int flags)
 	{
 		assertM(false, "Not implemented yet");
+		return 0;
 	}
 
 	void ATIGPUDevice::free(void *pointer)
@@ -362,11 +363,13 @@ namespace executive
 		void *pointer) const
 	{
 		assertM(false, "Not implemented yet");
+		return Device::MemoryAllocationVector();
 	}
 
 	Device::MemoryAllocationVector ATIGPUDevice::getAllAllocations() const
 	{
 		assertM(false, "Not implemented yet");
+		return Device::MemoryAllocationVector();
 	}
 
 	void ATIGPUDevice::clearMemory()
@@ -378,12 +381,14 @@ namespace executive
 			unsigned int flags)
 	{
 		assertM(false, "Not implemented yet");
+		return 0;
 	}
 
 	void *ATIGPUDevice::glRegisterImage(unsigned int image, unsigned int target, 
 			unsigned int flags)
 	{
 		assertM(false, "Not implemented yet");
+		return 0;
 	}
 
 	void ATIGPUDevice::unRegisterGraphicsResource(void* resource)
@@ -401,6 +406,7 @@ namespace executive
 			void* resource)
 	{
 		assertM(false, "Not implemented yet");
+		return 0;
 	}
 
 	void ATIGPUDevice::setGraphicsResourceFlags(void* resource, 
@@ -428,6 +434,7 @@ namespace executive
 	bool ATIGPUDevice::queryEvent(unsigned int event)
 	{
 		assertM(false, "Not implemented yet");
+		return false;
 	}
 
 	void ATIGPUDevice::recordEvent(unsigned int event, unsigned int stream)
@@ -449,6 +456,7 @@ namespace executive
 	unsigned int ATIGPUDevice::createStream()
 	{
 		assertM(false, "Not implemented yet");
+		return 0;
 	}
 
 	void ATIGPUDevice::destroyStream(unsigned int stream)
@@ -459,6 +467,7 @@ namespace executive
 	bool ATIGPUDevice::queryStream(unsigned int stream)
 	{
 		assertM(false, "Not implemented yet");
+		return false;
 	}
 
 	void ATIGPUDevice::synchronizeStream(unsigned int stream)
@@ -488,6 +497,7 @@ namespace executive
 		const std::string& textureName)
 	{
 		assertM(false, "Not implemented yet");
+		return 0;
 	}
 
 	void ATIGPUDevice::launch(
@@ -498,7 +508,8 @@ namespace executive
 			size_t sharedMemory, 
 			const void *argumentBlock, 
 			size_t argumentBlockSize, 
-			const trace::TraceGeneratorVector& traceGenerators)
+			const trace::TraceGeneratorVector& traceGenerators,
+			const ir::ExternalFunctionSet* externals)
 	{
 		ModuleMap::iterator module = _modules.find(moduleName);
 
@@ -570,6 +581,7 @@ namespace executive
 	unsigned int ATIGPUDevice::getLastError()
 	{
 		assertM(false, "Not implemented yet");
+		return 0;
 	}
 
 	void ATIGPUDevice::synchronize()
@@ -604,11 +616,13 @@ namespace executive
 	unsigned int ATIGPUDevice::MemoryAllocation::flags() const
 	{
 		assertM(false, "Not implemented yet");
+		return 0;
 	}
 
 	void *ATIGPUDevice::MemoryAllocation::mappedPointer() const
 	{
 		assertM(false, "Not implemented yet");
+		return 0;
 	}
 
 	void *ATIGPUDevice::MemoryAllocation::pointer() const

@@ -17,6 +17,7 @@
 #include <hydrazine/implementation/debug.h>
 #include <hydrazine/implementation/Exception.h>
 #include <hydrazine/interface/Casts.h>
+#include <hydrazine/interface/SystemCompatibility.h>
 
 #ifdef REPORT_BASE
 #undef REPORT_BASE
@@ -24,9 +25,6 @@
 
 // OpenGL includes
 #include <GL/glew.h>
-
-// Linux includes
-#include <sys/sysinfo.h>
 
 // Standard library includes
 #include <cstring>
@@ -296,7 +294,7 @@ namespace executive
 		_properties.addressSpace = 0;
 		std::strcpy(_properties.name, "Ocelot PTX Emulator");
 		
-		_properties.totalMemory = get_avphys_pages() * getpagesize();
+		_properties.totalMemory = hydrazine::getFreePhysicalMemory();
 		_properties.multiprocessorCount = 1;
 		_properties.memcpyOverlap = false;
 		_properties.maxThreadsPerBlock = 1024;
@@ -549,7 +547,8 @@ namespace executive
 			<< count << ", " << stream << ")");
 		
 		for (int i = 0; i < count; i++) {
-			unsigned int handle = hydrazine::bit_cast<unsigned int>(resource[i]);
+			unsigned int handle = hydrazine::bit_cast<unsigned int>(
+				resource[i]);
 			GraphicsMap::iterator graphic = _graphics.find(handle);
 			if(graphic == _graphics.end())
 			{
@@ -565,7 +564,8 @@ namespace executive
 			}
 
 			report(" Mapping GL buffer.");
-			graphic->second.pointer = glMapBuffer(GL_ARRAY_BUFFER, GL_READ_WRITE);
+			graphic->second.pointer = glMapBuffer(
+				GL_ARRAY_BUFFER, GL_READ_WRITE);
 		
 			if(glGetError() != GL_NO_ERROR)
 			{
@@ -633,10 +633,12 @@ namespace executive
 		// we ignore flags
 	}
 
-	void EmulatorDevice::unmapGraphicsResource(void** resource, int count, unsigned int streamID)
+	void EmulatorDevice::unmapGraphicsResource(void** resource, int count,
+		unsigned int streamID)
 	{
 		for (int i = 0; i < count; i++) {
-			unsigned int handle = hydrazine::bit_cast<unsigned int>(resource[i]);
+			unsigned int handle = hydrazine::bit_cast<unsigned int>(
+				resource[i]);
 			GraphicsMap::iterator graphic = _graphics.find(handle);
 			if(graphic == _graphics.end())
 			{
@@ -659,7 +661,8 @@ namespace executive
 
 			if(glGetError() != GL_NO_ERROR)
 			{
-				Throw("OpenGL Error in unmapGraphicsResource() - glUnmapBuffer.")
+				Throw("OpenGL Error in "
+					"unmapGraphicsResource() - glUnmapBuffer.")
 			}
 
 			AllocationMap::iterator allocation = _allocations.find(
@@ -963,7 +966,8 @@ namespace executive
 		const std::string& kernelName, const ir::Dim3& grid, 
 		const ir::Dim3& block, size_t sharedMemory, 
 		const void* argumentBlock, size_t argumentBlockSize, 
-		const trace::TraceGeneratorVector& traceGenerators)
+		const trace::TraceGeneratorVector& traceGenerators,
+		const ir::ExternalFunctionSet* externals)
 	{
 		ModuleMap::iterator module = _modules.find(moduleName);
 		report("EmulatorDevice::launch() - " << moduleName << "::" << kernelName);
@@ -1007,6 +1011,7 @@ namespace executive
 		kernel->updateArgumentMemory();
 		kernel->updateMemory();
 		kernel->setExternSharedMemorySize(sharedMemory);
+		kernel->setExternalFunctionSet(*externals);
 	
 		for(trace::TraceGeneratorVector::const_iterator 
 			gen = traceGenerators.begin(); 
@@ -1036,6 +1041,8 @@ namespace executive
 		{
 			kernel->removeTraceGenerator(*gen);
 		}
+		
+		kernel->clearExternalFunctionSet();
 	}
 	
 	cudaFuncAttributes EmulatorDevice::getAttributes(const std::string& path, 
@@ -1091,6 +1098,7 @@ namespace executive
 	{
 		// This is emulation so we probably don't ever want to do optimization
 	}
+
 }
 
 #endif

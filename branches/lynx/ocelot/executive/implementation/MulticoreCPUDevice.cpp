@@ -103,7 +103,8 @@ namespace executive
 		const std::string& kernelName, const ir::Dim3& grid, 
 		const ir::Dim3& block, size_t sharedMemory, 
 		const void* argumentBlock, size_t argumentBlockSize, 
-		const trace::TraceGeneratorVector& traceGenerators)
+		const trace::TraceGeneratorVector& traceGenerators,
+		const ir::ExternalFunctionSet* externals)
 	{
 		ModuleMap::iterator module = _modules.find(moduleName);
 		
@@ -147,8 +148,11 @@ namespace executive
 		kernel->updateMemory();
 		kernel->setExternSharedMemorySize(sharedMemory);
 		kernel->setWorkerThreads(_workerThreads);
+		kernel->setExternalFunctionSet(*externals);
 		
 		kernel->launchGrid(grid.x, grid.y);
+		
+		kernel->clearExternalFunctionSet();
 	}
 
 	void MulticoreCPUDevice::limitWorkerThreads(unsigned int threads)

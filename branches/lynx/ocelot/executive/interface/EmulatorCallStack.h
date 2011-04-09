@@ -19,9 +19,9 @@ namespace executive
 class EmulatorCallStack
 {
 	private:
-		typedef std::vector<char> DataVector;
-		typedef std::vector<unsigned int> SizeStack;
 		typedef long long unsigned int RegisterType;
+		typedef std::vector<unsigned int> SizeStack;
+		typedef std::vector<char> DataVector;
 
 	private:
 		/*! \brief The current stack pointer */
@@ -42,8 +42,12 @@ class EmulatorCallStack
 		SizeStack _sharedMemorySizes;
 		/*! \brief The actual data for the stack */
 		DataVector _stack;
-		/*! \brief A resizable array for shared memory */
+		/*! \brief The actual data for shared memory */
 		DataVector _sharedMemory;
+		/*! \brief The offset of the previously svaed frame */
+		unsigned int _savedOffset;
+		/*! \brief The offset of the previously svaed frame */
+		unsigned int _savedFrameSize;
 
 	public:
 		/*! \brief Create a new call stack for a set number of threads */
@@ -54,13 +58,17 @@ class EmulatorCallStack
 	
 		/*! \brief Get a pointer to the base of the current stack frame */
 		void* stackFramePointer(unsigned int thread);
-		/*! \brief Get a pointer to the previous stack frame */
+		/*! \brief Get a pointer to the stack frame at the saved offset */
 		void* previousStackFramePointer(unsigned int thread);
+		/*! \brief Get a pointer to the stack frame at the saved offset */
+		void* savedStackFramePointer(unsigned int thread);
+		/*! \brief Get a pointer to the previous stack frame */
+		void* callerFramePointer(unsigned int thread);
 
-		/*! \brief Get a pointer to an offset from the base of the stack */
-		void* offsetToPointer(unsigned int offset);
-		/*! \brief Get the offset of the current stack frame */
+		/*! \brief Get the offset of the current stack frame, save it */
 		unsigned int offset() const;
+		/*! \brief Save the offset of the current stack frame */
+		void saveFrame();
 
 		/*! \brief Get a pointer to the register file for a given thread */
 		RegisterType* registerFilePointer(unsigned int thread);
@@ -88,8 +96,6 @@ class EmulatorCallStack
 		unsigned int callerOffset() const;
 		/*! \brief Get the offset of the caller frame */
 		unsigned int callerFrameSize() const;
-		/*! \brief Get the total size of the stack in bytes */
-		unsigned int stackSize() const;
 
 		/*! \brief Push a new frame onto the stack */
 		void pushFrame(unsigned int stackSize, unsigned int registers, 
@@ -98,6 +104,18 @@ class EmulatorCallStack
 			unsigned int callerStackSize);
 		/*! \brief Pop the current frame */
 		void popFrame();
+
+	private:
+		/*! \brief Get a pointer to the base of the stack. */
+		void* _stackBase(unsigned int byteOffset = 0) const;
+		/*! \brieg Resize the stack */
+		void _resizeStack(unsigned int size);
+		/*! \brief Get the aligned stack size */
+		unsigned int _stackSize() const;
+		/*! \brief Resize shared memory */
+		void _resizeSharedMemory(unsigned int size);
+		/*! \brief Get the aligned shared memory size */
+		unsigned int _sharedMemorySize() const;
 };
 
 }

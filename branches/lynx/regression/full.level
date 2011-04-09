@@ -18,4 +18,5 @@ TestCalVectorScale
 TestPTXAssembly
 TestFunctionCall
 TestIndirectFunctionCall
+TestExternalFunctions
 

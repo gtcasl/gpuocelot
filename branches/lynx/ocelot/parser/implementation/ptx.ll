@@ -29,11 +29,8 @@
 	#include <cassert>
 	#include <sstream>
 	#include <cstring>
-	
-	// Auto Generated Includes
-	#include <configure.h>
-	
-	void strlcpy( char* destination, const char* source, unsigned int max );
+		
+	void sstrcpy( char* destination, const char* source, unsigned int max );
 	
 	// Convert binary string to uint
 	long long unsigned int binaryToUint( const std::string& );
@@ -106,139 +103,139 @@ WHITESPACE [ \t]*
 "#file"                         { yylval->value = PREPROCESSOR_FILE; \
                                     return PREPROCESSOR_FILE; }
 
-"add"                           { strlcpy( yylval->text, yytext, 1024 ); \
+"add"                           { sstrcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_ADD; }
-"addc"                          { strlcpy( yylval->text, yytext, 1024 ); \
+"addc"                          { sstrcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_ADDC; }
-"and"                           { strlcpy( yylval->text, yytext, 1024 ); \
+"and"                           { sstrcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_AND; }
-"atom"                          { strlcpy( yylval->text, yytext, 1024 ); \
+"atom"                          { sstrcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_ATOM; }
-"abs"                           { strlcpy( yylval->text, yytext, 1024 ); \
+"abs"                           { sstrcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_ABS; }
-"bar"                           { strlcpy( yylval->text, yytext, 1024 ); \
+"bar"                           { sstrcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_BAR; }
-"bfi"                           { strlcpy( yylval->text, yytext, 1024 ); \
+"bfi"                           { sstrcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_BFI; }
-"bfind"                         { strlcpy( yylval->text, yytext, 1024 ); \
+"bfind"                         { sstrcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_BFIND; }
-"bra"                           { strlcpy( yylval->text, yytext, 1024 ); \
+"bra"                           { sstrcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_BRA; }
-"brev"                          { strlcpy( yylval->text, yytext, 1024 ); \
+"brev"                          { sstrcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_BREV; }
-"brkpt"                         { strlcpy( yylval->text, yytext, 1024 ); \
+"brkpt"                         { sstrcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_BRKPT; }
-"call"                          { strlcpy( yylval->text, yytext, 1024 ); \
+"call"                          { sstrcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_CALL; }
-"clz"                           { strlcpy( yylval->text, yytext, 1024 ); \
+"clz"                           { sstrcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_CLZ; }
-"cnot"                          { strlcpy( yylval->text, yytext, 1024 ); \
+"cnot"                          { sstrcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_CNOT; }
-"copysign"                      { strlcpy( yylval->text, yytext, 1024 ); \
+"copysign"                      { sstrcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_COPYSIGN; }
-"cos"                           { strlcpy( yylval->text, yytext, 1024 ); \
+"cos"                           { sstrcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_COS; }
-"cvt"                           { strlcpy( yylval->text, yytext, 1024 ); \
+"cvt"                           { sstrcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_CVT; }
-"cvta"                           { strlcpy( yylval->text, yytext, 1024 ); \
+"cvta"                          { sstrcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_CVTA; }
-"div"                           { strlcpy( yylval->text, yytext, 1024 ); \
+"div"                           { sstrcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_DIV; }
-"ex2"                           { strlcpy( yylval->text, yytext, 1024 ); \
+"ex2"                           { sstrcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_EX2; }
-"exit"                          { strlcpy( yylval->text, yytext, 1024 ); \
+"exit"                          { sstrcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_EXIT; }
-"fma"                           { strlcpy( yylval->text, yytext, 1024 ); \
+"fma"                           { sstrcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_FMA; }
-"isspacep"                      { strlcpy( yylval->text, yytext, 1024 ); \
+"isspacep"                      { sstrcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_ISSPACEP; }
-"ld"                            { strlcpy( yylval->text, yytext, 1024 ); \
+"ld"                            { sstrcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_LD; }
-"ldu"                            { strlcpy( yylval->text, yytext, 1024 ); \
+"ldu"                            { sstrcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_LDU; }
-"lg2"                           { strlcpy( yylval->text, yytext, 1024 ); \
+"lg2"                           { sstrcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_LG2; }
-"membar"                        { strlcpy( yylval->text, yytext, 1024 ); \
+"membar"                        { sstrcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_MEMBAR; }
-"min"                           { strlcpy( yylval->text, yytext, 1024 ); \
+"min"                           { sstrcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_MIN; }
-"mad"                           { strlcpy( yylval->text, yytext, 1024 ); \
+"mad"                           { sstrcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_MAD; }
-"mad24"                         { strlcpy( yylval->text, yytext, 1024 ); \
+"mad24"                         { sstrcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_MAD24; }
-"max"                           { strlcpy( yylval->text, yytext, 1024 ); \
+"max"                           { sstrcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_MAX; }
-"mov"                           { strlcpy( yylval->text, yytext, 1024 ); \
+"mov"                           { sstrcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_MOV; }
-"mul"                           { strlcpy( yylval->text, yytext, 1024 ); \
+"mul"                           { sstrcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_MUL; }
-"mul24"                         { strlcpy( yylval->text, yytext, 1024 ); \
+"mul24"                         { sstrcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_MUL24; }
-"neg"                           { strlcpy( yylval->text, yytext, 1024 ); \
+"neg"                           { sstrcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_NEG; }
-"not"                           { strlcpy( yylval->text, yytext, 1024 ); \
+"not"                           { sstrcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_NOT; }
-"or"                            { strlcpy( yylval->text, yytext, 1024 ); \
+"or"                            { sstrcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_OR; }
-"pmevent"                       { strlcpy( yylval->text, yytext, 1024 ); \
+"pmevent"                       { sstrcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_PMEVENT; }
-"popc"                          { strlcpy( yylval->text, yytext, 1024 ); \
+"popc"                          { sstrcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_POPC; }
-"prmt"                          { strlcpy( yylval->text, yytext, 1024 ); \
+"prmt"                          { sstrcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_PRMT; }
-"rcp"                           { strlcpy( yylval->text, yytext, 1024 ); \
+"rcp"                           { sstrcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_RCP; }
-"red"                           { strlcpy( yylval->text, yytext, 1024 ); \
+"red"                           { sstrcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_RED; }
-"rem"                           { strlcpy( yylval->text, yytext, 1024 ); \
+"rem"                           { sstrcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_REM; }
-"ret"                           { strlcpy( yylval->text, yytext, 1024 ); \
+"ret"                           { sstrcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_RET; }
-"rsqrt"                         { strlcpy( yylval->text, yytext, 1024 ); \
+"rsqrt"                         { sstrcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_RSQRT; }
-"sad"                           { strlcpy( yylval->text, yytext, 1024 ); \
+"sad"                           { sstrcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_SAD; }
-"selp"                          { strlcpy( yylval->text, yytext, 1024 ); \
+"selp"                          { sstrcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_SELP; }
-"set"                           { strlcpy( yylval->text, yytext, 1024 ); \
+"set"                           { sstrcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_SET; }
-"setp"                          { strlcpy( yylval->text, yytext, 1024 ); \
+"setp"                          { sstrcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_SETP; }
-"shl"                           { strlcpy( yylval->text, yytext, 1024 ); \
+"shl"                           { sstrcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_SHL; }
-"shr"                           { strlcpy( yylval->text, yytext, 1024 ); \
+"shr"                           { sstrcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_SHR; }
-"sin"                           { strlcpy( yylval->text, yytext, 1024 ); \
+"sin"                           { sstrcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_SIN; }
-"slct"                          { strlcpy( yylval->text, yytext, 1024 ); \
+"slct"                          { sstrcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_SLCT; }
-"sqrt"                          { strlcpy( yylval->text, yytext, 1024 ); \
+"sqrt"                          { sstrcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_SQRT; }
-"st"                            { strlcpy( yylval->text, yytext, 1024 ); \
+"st"                            { sstrcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_ST; }
-"sub"                           { strlcpy( yylval->text, yytext, 1024 ); \
+"sub"                           { sstrcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_SUB; }
-"subc"                          { strlcpy( yylval->text, yytext, 1024 ); \
+"subc"                          { sstrcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_SUBC; }
-"suld"                          { strlcpy( yylval->text, yytext, 1024 ); \
+"suld"                          { sstrcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_SULD; }
-"sust"                          { strlcpy( yylval->text, yytext, 1024 ); \
+"sust"                          { sstrcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_SUST; }
-"sured"                          { strlcpy( yylval->text, yytext, 1024 ); \
+"sured"                         { sstrcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_SURED; }
-"suq"                          { strlcpy( yylval->text, yytext, 1024 ); \
+"suq"                           { sstrcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_SUQ; }
-"testp"                         { strlcpy( yylval->text, yytext, 1024 ); \
+"testp"                         { sstrcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_TESTP; }
-"tex"                           { strlcpy( yylval->text, yytext, 1024 ); \
+"tex"                           { sstrcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_TEX; }
-"trap"                          { strlcpy( yylval->text, yytext, 1024 ); \
+"trap"                          { sstrcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_TRAP; }
-"txq"                          { strlcpy( yylval->text, yytext, 1024 ); \
+"txq"                           { sstrcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_TXQ; }
-"vote"                          { strlcpy( yylval->text, yytext, 1024 ); \
+"vote"                          { sstrcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_VOTE; }
-"xor"                           { strlcpy( yylval->text, yytext, 1024 ); \
+"xor"                           { sstrcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_XOR; }
 
 
@@ -526,16 +523,16 @@ WHITESPACE [ \t]*
                                     stream >> yylval->doubleFloat; \
                                     return TOKEN_DOUBLE_CONSTANT; }
 
-{IDENTIFIER}":"                 { strlcpy( yylval->text, yytext, \
+{IDENTIFIER}":"                 { sstrcpy( yylval->text, yytext, \
                                     MIN( strlen( yytext ), 1024 ) ); \
                                     return TOKEN_LABEL; }
-@{IDENTIFIER}                   { strlcpy( yylval->text, yytext + 1, 1024 ); \
+@{IDENTIFIER}                   { sstrcpy( yylval->text, yytext + 1, 1024 ); \
                                     return TOKEN_PREDICATE_IDENTIFIER; }
-@!{IDENTIFIER}                  { strlcpy( yylval->text, yytext + 2, 1024 ); \
+@!{IDENTIFIER}                  { sstrcpy( yylval->text, yytext + 2, 1024 ); \
                                     return TOKEN_INV_PREDICATE_IDENTIFIER; }
-{IDENTIFIER}                    { strlcpy( yylval->text, yytext, 1024 ); \
+{IDENTIFIER}                    { sstrcpy( yylval->text, yytext, 1024 ); \
                                     return TOKEN_IDENTIFIER;}
-{STRING}                        { strlcpy( yylval->text, yytext + 1, \
+{STRING}                        { sstrcpy( yylval->text, yytext + 1, \
                                     MIN( strlen( yytext ) - 1, 1024 ) ); \
                                     return TOKEN_STRING;}
 
@@ -594,12 +591,10 @@ long long unsigned int binaryToUint( const std::string& string )
 	return hydrazine::binaryToUint( string );
 }
 
-#ifndef HAVE_STRLCPY
-void strlcpy( char* destination, const char* source, unsigned int max )
+void sstrcpy( char* destination, const char* source, unsigned int max )
 {
 	return hydrazine::strlcpy( destination, source, max );
 }
-#endif
 
 #endif
 

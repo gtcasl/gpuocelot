@@ -5,6 +5,7 @@ import os
 import inspect
 import platform
 import re
+from SCons import SConf
 
 def getDebianArchitecture():
 	"""Determines the debian architecture
@@ -19,7 +20,8 @@ def getDebianArchitecture():
 	try:
 		dpkg_arch_path = which('dpkg-architecture')
 	except:
-		raise ValueError, 'Failed to find dpkg-architecture'
+		raise ValueError, "Failed to find 'dpkg-architecture' needed for .deb" \
+			". Try installing dpkg-dev"
 
 	# setup .deb environment variables
 	arch = os.popen( \
@@ -81,7 +83,7 @@ def getBoostPaths():
 	if 'BOOST_LIB_PATH' in os.environ:
 		lib_path = os.path.abspath(os.environ['BOOST_LIB_PATH'])
 	if 'BOOST_INC_PATH' in os.environ:
-		inc_path = os.path.abspath(os.environ['BOOST_INC_PATH'])
+		inc_path = oSConfs.path.abspath(os.environ['BOOST_INC_PATH'])
 
 	return (bin_path,lib_path,inc_path)
 
@@ -116,7 +118,9 @@ def getLLVMPaths(enabled):
 	"""
 	
 	if not enabled:
-		return (False, [], [], [], [], [], [])
+		return (False, [SCons.SConf
+
+], [], [], [], [], [])
 	
 	try:
 		llvm_config_path = which('llvm-config')
@@ -135,6 +139,10 @@ def getLLVMPaths(enabled):
 			asmparser instcombine').read().split()
 	else:
 		raise ValueError, 'Error: unknown OS.  Where is LLVM installed?'
+	
+	# remove -DNDEBUG
+	if '-DNDEBUG' in cflags:
+		cflags.remove('-DNDEBUG')
 
 	return (True,bin_path,lib_path,inc_path,cflags,lflags,libs)
 	
@@ -243,6 +251,23 @@ def getVersion(base):
 	
 	return base + '.' + revision
 
+def defineConfigFlags(env):
+	
+	include_path = os.path.join(env['INSTALL_PATH'], "include")
+	library_path = os.path.join(env['INSTALL_PATH'], "lib")
+	bin_path     = os.path.join(env['INSTALL_PATH'], "bin")
+
+	configFlags =  '-DOCELOT_CXXFLAGS="\\"' + env['CXXFLAGS'] + '\\""' \
+		+ ' -DPACKAGE="\\"ocelot\\""' \
+		+ ' -DVERSION="\\"' + env['VERSION'] + '\\""' \
+		+ ' -DOCELOT_PREFIX_PATH="\\"' + env['INSTALL_PATH'] + '\\""' \
+		+ ' -DOCELOT_LDFLAGS="\\"' + env['OCELOT_LDFLAGS'] + '\\""' \
+		+ ' -DOCELOT_INCLUDE_PATH="\\"'+ include_path + '\\""' \
+		+ ' -DOCELOT_LIB_PATH="\\"' + library_path + '\\""' \
+		+ ' -DOCELOT_BIN_PATH="\\"' + bin_path + '\\""'
+
+	env.Replace(OCELOT_CONFIG_FLAGS = configFlags)
+
 def Environment():
 	vars = Variables()
 
@@ -308,7 +333,9 @@ def Environment():
 	# Set the debian architecture
 	if 'debian' in COMMAND_LINE_TARGETS:
 		env.Replace(deb_arch = getDebianArchitecture())
-
+	else:
+		env.Replace(deb_arch = 'unknown')
+		
 	# get CUDA paths
 	(cuda_exe_path,cuda_lib_path,cuda_inc_path) = getCudaPaths()
 
@@ -330,10 +357,15 @@ def Environment():
 	env.AppendUnique(CXXFLAGS = llvm_cflags)
 	env.AppendUnique(LINKFLAGS = llvm_lflags)
 	env.Replace(HAVE_LLVM = llvm)
-	env.Replace(LLVM_LIBS = llvm_libs)
+
+	env.Replace(LLVM_LIBS = [])
+	for lib in llvm_libs:
+		if lib[0:2] != "-L":
+			env.AppendUnique(LLVM_LIBS = [lib])
 	
 	# set ocelot include path
 	env.Prepend(CPPPATH = os.path.dirname(thisDir))
+	env.AppendUnique(LIBPATH = os.path.abspath('.'))
 	
 	# set extra libs 
 	env.Replace(EXTRA_LIBS=['-lboost_system-mt', '-lboost_filesystem-mt', \
@@ -343,15 +375,19 @@ def Environment():
 	ocelot_libs = '-locelot'
 	for lib in env['EXTRA_LIBS']:
 		ocelot_libs += ' ' + lib
-	for lib in env['LLVM_LIBS']:
+	for lib in llvm_libs:
 		ocelot_libs += ' ' + lib
 	env.Replace(OCELOT_LDFLAGS=ocelot_libs)
-	
+		
 	# include the build directory in case of generated files
 	env.Prepend(CPPPATH = env.Dir('.'))
+
+	# generate OcelotConfig flags
+	defineConfigFlags(env)
 
 	# generate help text
 	Help(vars.GenerateHelpText(env))
 
 	return env
+
 

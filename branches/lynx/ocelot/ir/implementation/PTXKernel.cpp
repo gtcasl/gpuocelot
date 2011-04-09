@@ -14,7 +14,7 @@
 #include <hydrazine/interface/Version.h>
 #include <hydrazine/implementation/debug.h>
 
-/////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 #ifdef REPORT_BASE
 #undef REPORT_BASE
@@ -22,7 +22,7 @@
 
 #define REPORT_BASE 0
 
-/////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 namespace ir
 {
@@ -67,7 +67,8 @@ namespace ir
 		if (returnArguments.size()) {
 			ss << "(";
 			int n = 0;
-			for (ParameterVector::const_iterator op_it = returnArguments.begin();
+			for (ParameterVector::const_iterator op_it
+				= returnArguments.begin();
 				op_it != returnArguments.end(); ++op_it) {
 			
 				ss << (n++ ? ", " : "") << op_it->toString();	
@@ -90,7 +91,8 @@ namespace ir
 	}
 				
 	/*!
-		\brief emits a mangled form of the function prototype that can be used to identify the function
+		\brief emits a mangled form of the function prototype that can be 
+		used to identify the function
 	*/
 	std::string PTXKernel::Prototype::getMangledName() const {
 		std::stringstream ss;
@@ -109,7 +111,7 @@ namespace ir
 		return ss.str();
 	}
 	
-	///////////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////
 
 	PTXKernel::PTXKernel( const std::string& name, bool isFunction,
 		const ir::Module* module ) :
@@ -199,7 +201,8 @@ namespace ir
 								report( "   Added %r" << d.reg );
 								analysis::DataflowGraph::Register live_reg( 
 									d.reg, d.type );
-								if (addedRegisters.find(live_reg.id) == addedRegisters.end()) {
+								if (addedRegisters.find(live_reg.id)
+									== addedRegisters.end()) {
 									regs.push_back( live_reg );
 									addedRegisters.insert(live_reg.id);
 								}
@@ -214,7 +217,8 @@ namespace ir
 								report( "   Added %r" << operand->reg );
 								analysis::DataflowGraph::Register live_reg( 
 									operand->reg, operand->type );
-								if (addedRegisters.find(live_reg.id) == addedRegisters.end()) {
+								if (addedRegisters.find(live_reg.id)
+									== addedRegisters.end()) {
 									regs.push_back( live_reg );
 									addedRegisters.insert(live_reg.id);
 								}
@@ -228,7 +232,8 @@ namespace ir
 							report( "   Added %p" << d.reg );
 							analysis::DataflowGraph::Register live_reg( 
 								d.reg, d.type );
-							if (addedRegisters.find(live_reg.id) == addedRegisters.end()) {
+							if (addedRegisters.find(live_reg.id)
+								== addedRegisters.end()) {
 								regs.push_back( live_reg );
 								addedRegisters.insert(live_reg.id);
 							}
@@ -256,8 +261,10 @@ namespace ir
 
 	analysis::DivergenceAnalysis* PTXKernel::div_analy()
 	{
-		assertM(_dfg != 0, "Must create dfg before building divergence analysis.");
-		assertM(_dfg->ssa(), "dfg must be in ssa before building divergence analysis.");
+		assertM(_dfg != 0, "Must create dfg before building "
+			"divergence analysis.");
+		assertM(_dfg->ssa(), "dfg must be in ssa before "
+			"building divergence analysis.");
 		if(_dva) return _dva;
 		_dva = new analysis::DivergenceAnalysis();
 		_dva->runOnKernel(*this);

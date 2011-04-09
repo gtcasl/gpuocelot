@@ -90,12 +90,14 @@ void executive::RemoteDevice::ConnectionManager::exchange(
 		Throw("Message exchange failed.");
 	}
 	
-	if(message.header.operation != remote::RemoteDeviceMessage::Client_acknowledge) {
+	if(message.header.operation 
+		!= remote::RemoteDeviceMessage::Client_acknowledge) {
 		Throw("Received invalid acknowledgement.");
 	}
 }
 
-executive::RemoteDevice::ConnectionManager executive::RemoteDevice::connectionManager;
+executive::RemoteDevice::ConnectionManager
+	executive::RemoteDevice::connectionManager;
 
 executive::Device::DeviceVector executive::RemoteDevice::createDevices(
 	unsigned int flags, int computeCapability) {
@@ -172,7 +174,8 @@ unsigned int executive::RemoteDevice::deviceCount(int computeCapability) {
 ////////////////////////////////////////////////////////////////////////////////
 
 /*! \brief Sets the device properties, bind this to the cuda id */
-executive::RemoteDevice::RemoteDevice(unsigned int id, const PropertiesData& props, 
+executive::RemoteDevice::RemoteDevice(unsigned int id,
+	const PropertiesData& props, 
 	unsigned int flags) : _selected(false), _id(id) {
 	_properties = Properties(props);
 	
@@ -188,7 +191,7 @@ executive::RemoteDevice::~RemoteDevice() {
 	}
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 static void* align(void* pointer)
 {
@@ -204,19 +207,22 @@ executive::RemoteDevice::MemoryAllocation::MemoryAllocation()
 	_flags(0), _external(false), _device(0) {
 }
 
-executive::RemoteDevice::MemoryAllocation::MemoryAllocation(RemoteDevice* d, size_t s, void* p)
+executive::RemoteDevice::MemoryAllocation::MemoryAllocation(
+	RemoteDevice* d, size_t s, void* p)
 	: Device::MemoryAllocation(false, false), _size(s), _pointer(p),
 	_flags(0), _external(false), _device(d) {
 }
 
-executive::RemoteDevice::MemoryAllocation::MemoryAllocation(RemoteDevice* d, size_t s,
+executive::RemoteDevice::MemoryAllocation::MemoryAllocation(
+	RemoteDevice* d, size_t s,
 	unsigned int f)
 	: Device::MemoryAllocation(false, true), _size(s),
 	_pointer(std::malloc(s + ALIGNMENT)),
 	_flags(f), _external(false), _device(d) {
 }
 
-executive::RemoteDevice::MemoryAllocation::MemoryAllocation(RemoteDevice* d, void* p,
+executive::RemoteDevice::MemoryAllocation::MemoryAllocation(
+	RemoteDevice* d, void* p,
 	size_t s)
 	: Device::MemoryAllocation(false, false), _size(s), _pointer(p),
 	_flags(0), _external(true), _device(d) {
@@ -245,7 +251,8 @@ size_t executive::RemoteDevice::MemoryAllocation::size() const {
 	return _size;
 }
 
-void executive::RemoteDevice::MemoryAllocation::copy(size_t dOffset, const void* host, size_t size) {
+void executive::RemoteDevice::MemoryAllocation::copy(size_t dOffset,
+	const void* host, size_t size) {
 	long long unsigned int tSize = 2 * sizeof(long long unsigned int) + size;
 	
 	report("Memcpy host to device from offset " << dOffset << " of allocation "
@@ -278,7 +285,8 @@ void executive::RemoteDevice::MemoryAllocation::copy(size_t dOffset, const void*
 	}
 }
 
-void executive::RemoteDevice::MemoryAllocation::copy(void* host, size_t dOffset, size_t size) const {
+void executive::RemoteDevice::MemoryAllocation::copy(void* host,
+	size_t dOffset, size_t size) const {
 	long long unsigned int tSize = 2 * sizeof(long long unsigned int);
 	
 	report("Memcpy device to host from offset " << dOffset << " of allocation "
@@ -310,8 +318,10 @@ void executive::RemoteDevice::MemoryAllocation::copy(void* host, size_t dOffset,
 	std::memcpy(host, _message.data(), size);
 }
 
-void executive::RemoteDevice::MemoryAllocation::memset(size_t toOffset, int value, size_t size) {
-	long long unsigned int tSize = 2 * sizeof(long long unsigned int) + sizeof(int);
+void executive::RemoteDevice::MemoryAllocation::memset(size_t toOffset,
+	int value, size_t size) {
+	long long unsigned int tSize
+		= 2 * sizeof(long long unsigned int) + sizeof(int);
 	
 	assert(_device != 0);
 	remote::RemoteDeviceMessage& _message = _device->_message;
@@ -340,11 +350,13 @@ void executive::RemoteDevice::MemoryAllocation::memset(size_t toOffset, int valu
 	}
 }
 
-void executive::RemoteDevice::MemoryAllocation::copy(Device::MemoryAllocation* allocation, 
+void executive::RemoteDevice::MemoryAllocation::copy(
+	Device::MemoryAllocation* allocation, 
 	size_t toOffset, size_t fromOffset, size_t size) const {
 	long long unsigned int tSize = 3 * sizeof(long long unsigned int);
 	
-	report("Memcpy device to device from offset " << fromOffset << " of allocation "
+	report("Memcpy device to device from offset "
+		<< fromOffset << " of allocation "
 		<< pointer() << " of size " << size);
 	
 	assert(_device != 0);
@@ -377,7 +389,8 @@ void executive::RemoteDevice::MemoryAllocation::copy(Device::MemoryAllocation* a
 }
 
 
-executive::Device::MemoryAllocation* executive::RemoteDevice::getMemoryAllocation(const void* address, 
+executive::Device::MemoryAllocation*
+	executive::RemoteDevice::getMemoryAllocation(const void* address, 
 	AllocationType type) const {
 	assert(selected());
 
@@ -425,7 +438,8 @@ executive::Device::MemoryAllocation* executive::RemoteDevice::getMemoryAllocatio
 }
 
 /*! \brief Get the address of a global by stream */
-executive::Device::MemoryAllocation* executive::RemoteDevice::getGlobalAllocation(
+executive::Device::MemoryAllocation*
+	executive::RemoteDevice::getGlobalAllocation(
 	const std::string& module, const std::string& name) {
 	assert(selected());
 
@@ -434,7 +448,8 @@ executive::Device::MemoryAllocation* executive::RemoteDevice::getGlobalAllocatio
 }
 
 /*! \brief Allocate some new dynamic memory on this device */
-executive::Device::MemoryAllocation* executive::RemoteDevice::allocate(size_t size) {
+executive::Device::MemoryAllocation*
+	executive::RemoteDevice::allocate(size_t size) {
 	assert(selected());
 	
 	_message.header.operation   = M::Memory_allocate;
@@ -461,7 +476,8 @@ executive::Device::MemoryAllocation* executive::RemoteDevice::allocate(size_t si
 }
 
 /*! \brief Make this a host memory allocation */
-executive::Device::MemoryAllocation* executive::RemoteDevice::allocateHost(size_t size, 
+executive::Device::MemoryAllocation* executive::RemoteDevice::allocateHost(
+	size_t size, 
 	unsigned int flags) {
 	assert(selected());
 
@@ -509,7 +525,8 @@ void executive::RemoteDevice::free(void* pointer) {
 }
 
 /*! \brief Get nearby allocations to a pointer */
-executive::Device::MemoryAllocationVector executive::RemoteDevice::getNearbyAllocations(void* pointer) const {
+executive::Device::MemoryAllocationVector
+	executive::RemoteDevice::getNearbyAllocations(void* pointer) const {
 	assert(selected());
 	MemoryAllocationVector allocations;
 	for(AllocationMap::const_iterator allocation = _allocations.begin(); 
@@ -521,7 +538,8 @@ executive::Device::MemoryAllocationVector executive::RemoteDevice::getNearbyAllo
 }
 
 /*! \brief Get all allocations, host, global, and device */
-executive::Device::MemoryAllocationVector executive::RemoteDevice::getAllAllocations() const {
+executive::Device::MemoryAllocationVector
+	executive::RemoteDevice::getAllAllocations() const {
 	assert(selected());
 	MemoryAllocationVector allocations;
 	for(AllocationMap::const_iterator allocation = _allocations.begin(); 
@@ -533,7 +551,7 @@ executive::Device::MemoryAllocationVector executive::RemoteDevice::getAllAllocat
 	return allocations;
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 /*! \brief Wipe all memory allocations, but keep modules */
 void executive::RemoteDevice::clearMemory() {
@@ -681,7 +699,8 @@ void executive::RemoteDevice::unload(const std::string& name) {
 }
 
 /*! \brief Get a translated kernel from the device */
-executive::ExecutableKernel* executive::RemoteDevice::getKernel(const std::string& module, 
+executive::ExecutableKernel* executive::RemoteDevice::getKernel(
+	const std::string& module, 
 	const std::string& kernel) {
 	assert(selected());
 
@@ -749,7 +768,8 @@ bool executive::RemoteDevice::queryEvent(unsigned int event) {
 }
 
 /*! \brief Record something happening on an event */
-void executive::RemoteDevice::recordEvent(unsigned int event, unsigned int stream) {
+void executive::RemoteDevice::recordEvent(unsigned int event,
+	unsigned int stream) {
 	assert(selected());
 
 	_message.header.operation   = M::Device_recordEvent;
@@ -791,7 +811,8 @@ void executive::RemoteDevice::synchronizeEvent(unsigned int event) {
 }
 
 /*! \brief Get the elapsed time in ms between two recorded events */
-float executive::RemoteDevice::getEventTime(unsigned int start, unsigned int end) {
+float executive::RemoteDevice::getEventTime(unsigned int start,
+	unsigned int end) {
 	assert(selected());
 
 	_message.header.operation   = M::Device_getEventTime;
@@ -816,7 +837,7 @@ float executive::RemoteDevice::getEventTime(unsigned int start, unsigned int end
 	return *(float*)(_message.data());
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 /*! \brief Create a new stream */
 unsigned int executive::RemoteDevice::createStream() {
@@ -910,7 +931,7 @@ void executive::RemoteDevice::setStream(unsigned int stream) {
 	}
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 /*! \brief Select this device as the current device. 
 	Only one device is allowed to be selected at any time. */
@@ -931,7 +952,7 @@ void executive::RemoteDevice::unselect() {
 }
 
 
-/////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 /*! \brief Binds a texture to a memory allocation at a pointer */
 void executive::RemoteDevice::bindTexture(void* pointer,
@@ -1019,7 +1040,8 @@ void executive::RemoteDevice::unbindTexture(const std::string& module,
 }
 
 /*! \brief Get's a reference to an internal texture */
-void* executive::RemoteDevice::getTextureReference(const std::string& moduleName, 
+void* executive::RemoteDevice::getTextureReference(
+	const std::string& moduleName, 
 	const std::string& textureName) {
 	assert(selected());
 
@@ -1028,7 +1050,7 @@ void* executive::RemoteDevice::getTextureReference(const std::string& moduleName
 }
 
 
-/////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 /*! \brief helper function for launching a kernel
 	\param module module name
@@ -1045,7 +1067,8 @@ void executive::RemoteDevice::launch(const std::string& module,
 	const std::string& kernel, const ir::Dim3& grid, 
 	const ir::Dim3& block, size_t sharedMemory, 
 	const void* argumentBlock, size_t argumentBlockSize, 
-	const trace::TraceGeneratorVector & traceGenerators) {
+	const trace::TraceGeneratorVector & traceGenerators,
+	const ir::ExternalFunctionSet* externals) {
 	assert(selected());
 
 	unsigned int size = 4 * sizeof(unsigned int)
@@ -1094,7 +1117,7 @@ void executive::RemoteDevice::launch(const std::string& module,
 }
 
 
-/////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 /*! \brief Get the function attributes of a specific kernel */
 cudaFuncAttributes executive::RemoteDevice::getAttributes(
@@ -1192,5 +1215,5 @@ void executive::RemoteDevice::setOptimizationLevel(
 	connectionManager.exchange(_message);
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 

@@ -5,6 +5,7 @@ import os
 import inspect
 import platform
 import re
+from SCons import SConf
 
 def getDebianArchitecture():
 	"""Determines the debian architecture
@@ -82,7 +83,7 @@ def getBoostPaths():
 	if 'BOOST_LIB_PATH' in os.environ:
 		lib_path = os.path.abspath(os.environ['BOOST_LIB_PATH'])
 	if 'BOOST_INC_PATH' in os.environ:
-		inc_path = os.path.abspath(os.environ['BOOST_INC_PATH'])
+		inc_path = oSConfs.path.abspath(os.environ['BOOST_INC_PATH'])
 
 	return (bin_path,lib_path,inc_path)
 
@@ -117,7 +118,9 @@ def getLLVMPaths(enabled):
 	"""
 	
 	if not enabled:
-		return (False, [], [], [], [], [], [])
+		return (False, [SCons.SConf
+
+], [], [], [], [], [])
 	
 	try:
 		llvm_config_path = which('llvm-config')

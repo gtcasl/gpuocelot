@@ -22,6 +22,8 @@ public:
 
 public:
 	bool testMallocFree();
+	bool testPrintf();
+	bool testUserFunction();
 
 public:
 	/*! \brief The entry point of the test */

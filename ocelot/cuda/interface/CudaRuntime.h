@@ -213,8 +213,6 @@ namespace cuda {
 		void _acquire();
 		/*! \brief Unbind the thread and unlock the mutex */
 		void _release();
-		//! \brief Does the current thread own the selected device and lock?
-		bool _ownsLock();
 		//! \brief gets the current device for the current thread
 		executive::Device& _getDevice();
 		//! \brief returns an Ocelot-formatted error message
@@ -232,8 +230,11 @@ namespace cuda {
 		//! locking object for cuda runtime
 		boost::mutex _mutex;
 		
-		//! The thread that owns the lock
-		boost::thread::id _lockOwner;
+		//! There is a thread in execute
+		bool _inExecute;
+		
+		//! locking object for access to the runtime from worker threads
+		boost::mutex _executingMutex;
 		
 		//! Registered modules
 		ModuleMap _modules;

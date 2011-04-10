@@ -17,6 +17,7 @@
 #include <ocelot/analysis/interface/SubkernelFormationPass.h>
 #include <ocelot/analysis/interface/ConvertPredicationToSelectPass.h>
 #include <ocelot/analysis/interface/RemoveBarrierPass.h>
+#include <ocelot/analysis/interface/SimplifyExternalCallsPass.h>
 
 #include <ocelot/ir/interface/LLVMKernel.h>
 #include <ocelot/ir/interface/Module.h>
@@ -207,7 +208,7 @@ static void setupArgumentMemoryReferences(ir::PTXKernel& kernel,
 
 static void setupParameterMemoryReferences(ir::PTXKernel& kernel,
 	LLVMModuleManager::KernelAndTranslation::MetaData* metadata,
-	const ir::PTXKernel& parent)
+	const ir::PTXKernel& parent, const ir::ExternalFunctionSet& externals)
 {
 	typedef std::unordered_map<std::string, unsigned int> OffsetMap;
 	report("  Setting up parameter memory references.");
@@ -227,7 +228,11 @@ static void setupParameterMemoryReferences(ir::PTXKernel& kernel,
 			ir::PTXInstruction& ptx = static_cast<
 				ir::PTXInstruction&>(**instruction);
 			if(ptx.opcode != ir::PTXInstruction::Call) continue;
-			
+			if(&externals != 0)
+			{
+				if(externals.find(ptx.a.identifier) != 0)  continue;
+			}
+					
 			unsigned int offset = 0;
 			
 			report("   For arguments of call instruction '"
@@ -701,13 +706,14 @@ static void setupLocalMemoryReferences(ir::PTXKernel& kernel,
 
 static void setupPTXMemoryReferences(ir::PTXKernel& kernel,
 	LLVMModuleManager::KernelAndTranslation::MetaData* metadata,
-	const ir::PTXKernel& parent, executive::Device* device)
+	const ir::PTXKernel& parent, executive::Device* device,
+	const ir::ExternalFunctionSet& externals)
 {
 	report(" Setting up memory references for kernel variables.");
 	
 	setupGlobalMemoryReferences(kernel, parent);
 	setupArgumentMemoryReferences(kernel, metadata, parent);
-	setupParameterMemoryReferences(kernel, metadata, parent);
+	setupParameterMemoryReferences(kernel, metadata, parent, externals);
 	setupSharedMemoryReferences(kernel, metadata, parent);
 	setupConstantMemoryReferences(kernel, metadata, parent);
 	setupTextureMemoryReferences(kernel, metadata, parent, device);
@@ -716,14 +722,24 @@ static void setupPTXMemoryReferences(ir::PTXKernel& kernel,
 
 static unsigned int optimizePTX(ir::PTXKernel& kernel,
 	translator::Translator::OptimizationLevel optimization,
-	LLVMModuleManager::FunctionId id)
+	LLVMModuleManager::FunctionId id, const ir::ExternalFunctionSet& externals)
 {
+	report(" Optimizing PTX");
+	analysis::SimplifyExternalCallsPass simplifyExternals(externals);
+
+	report("  Running simplify externals pass");
+	if(&externals != 0)
+	{
+		simplifyExternals.initialize(*kernel.module);
+		simplifyExternals.runOnKernel(kernel);
+		simplifyExternals.finalize();
+	}
+	
 	report(" Building dataflow graph.");
 	kernel.dfg();
 
-	report(" Optimizing PTX");
 	analysis::ConvertPredicationToSelectPass convertPredicationToSelect;
-	analysis::RemoveBarrierPass              removeBarriers(id);
+	analysis::RemoveBarrierPass              removeBarriers(id, &externals);
 	
 	report("  Running convert predication to select pass");
 	convertPredicationToSelect.initialize(*kernel.module);
@@ -756,7 +772,19 @@ static void setupCallTargets(ir::PTXKernel& kernel,
 				ir::PTXInstruction&>(**instruction);
 			if(ptx.opcode != ir::PTXInstruction::Call 
 				&& ptx.opcode != ir::PTXInstruction::Mov) continue;
-			if(ptx.tailCall) continue;
+
+			if(ptx.opcode == ir::PTXInstruction::Call )
+			{
+				if(ptx.tailCall) continue;
+				
+				const ir::ExternalFunctionSet& externals =
+					database.getExternalFunctionSet();
+
+				if(&externals != 0)
+				{
+					if(externals.find(ptx.a.identifier) != 0) continue;
+				}
+			}
 			
 			if(ptx.a.addressMode == ir::PTXOperand::FunctionName)
 			{
@@ -936,7 +964,7 @@ static void optimize(llvm::Module& module,
 
 
 static void link(llvm::Module& module, const ir::PTXKernel& kernel, 
-	Device* device)
+	Device* device, const ir::ExternalFunctionSet& externals)
 {
 	report("  Linking global variables.");
 	
@@ -959,16 +987,38 @@ static void link(llvm::Module& module, const ir::PTXKernel& kernel,
 			LLVMState::jit()->addGlobalMapping(value, allocation->pointer());
 		}
 	}
+	
+	if(&externals == 0) return;
+	
+	for(ir::Module::FunctionPrototypeMap::const_iterator
+		prototype = kernel.module->prototypes().begin();
+		prototype != kernel.module->prototypes().end(); ++prototype)
+	{
+		ir::ExternalFunctionSet::ExternalFunction* external = externals.find(
+			prototype->second.identifier);
+	
+		if(external != 0)
+		{
+			llvm::GlobalValue* value = module.getNamedValue(external->name());
+			assertM(value != 0, "Global function " << external->name() 
+				<< " not found in llvm module.");
+			report("  Binding global variable " << external->name() 
+				<< " to " << external->functionPointer());
+			LLVMState::jit()->addGlobalMapping(value,
+				external->functionPointer());
+		}
+	}
 }
 
 static void codegen(LLVMModuleManager::Function& function, llvm::Module& module,
-	const ir::PTXKernel& kernel, Device* device)
+	const ir::PTXKernel& kernel, Device* device,
+	const ir::ExternalFunctionSet& externals)
 {
 	report(" Generating native code.");
 	
 	LLVMState::jit()->addModule(&module);
 
-	link(module, kernel, device);
+	link(module, kernel, device, externals);
 
 	report("  Invoking LLVM to Native JIT");
 
@@ -1029,7 +1079,7 @@ LLVMModuleManager::KernelAndTranslation::MetaData*
 	report("Translating PTX");
 	
 	unsigned int barriers = optimizePTX(*_kernel,
-		_optimizationLevel, _offsetId);
+		_optimizationLevel, _offsetId, _database->getExternalFunctionSet());
 	
 	try
 	{
@@ -1037,7 +1087,8 @@ LLVMModuleManager::KernelAndTranslation::MetaData*
 		
 		_metadata->subkernels = barriers + _subkernels;
 		
-		setupPTXMemoryReferences(*_kernel, _metadata, *_parent, _device);
+		setupPTXMemoryReferences(*_kernel, _metadata, *_parent, _device,
+			_database->getExternalFunctionSet());
 		setupCallTargets(*_kernel, *_database);
 		translate(_module, *_kernel, _optimizationLevel,
 			_database->getExternalFunctionSet());
@@ -1059,7 +1110,8 @@ LLVMModuleManager::KernelAndTranslation::MetaData*
 	try
 	{
 		optimize(*_module, _optimizationLevel);
-		codegen(_metadata->function, *_module, *_kernel, _device);
+		codegen(_metadata->function, *_module, *_kernel, _device,
+			_database->getExternalFunctionSet());
 	}
 	catch(...)
 	{
@@ -1104,7 +1156,7 @@ LLVMModuleManager::FunctionId LLVMModuleManager::Module::getFunctionId(
 {
 	FunctionIdMap::const_iterator id = _ids.find(kernelName);
 	
-	if(id == _ids.end()) return -2;
+	assert(id != _ids.end());
 	
 	return id->second;
 }

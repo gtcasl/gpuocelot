@@ -30,6 +30,7 @@ namespace translator
 			typedef std::vector< analysis::DataflowGraph::Register > 
 				RegisterVector;
 			typedef std::vector< std::string > StringVector;
+			typedef std::unordered_set< std::string > StringSet;
 		
 		private:
 			ir::LLVMKernel* _llvmKernel;
@@ -37,6 +38,7 @@ namespace translator
 			unsigned int _tempCCRegisterCount;
 			unsigned int _tempBlockCount;
 			bool _usesTextures;
+			StringSet _usedExternalCalls;
 			RegisterVector _uninitialized;
 			const ir::PTXKernel* _ptx;
 			const ir::ExternalFunctionSet* _externals;
@@ -200,6 +202,7 @@ namespace translator
 			void _addUtilityCalls();
 			void _addKernelPrefix();
 			void _addGlobalDeclarations();
+			void _addExternalFunctionDeclarations();
 			void _addKernelSuffix();
 
 		public:

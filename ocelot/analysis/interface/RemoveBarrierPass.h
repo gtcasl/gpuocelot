@@ -13,6 +13,7 @@
 namespace ir
 {
 	class PTXKernel;
+	class ExternalFunctionSet;
 }
 
 namespace analysis
@@ -35,10 +36,11 @@ namespace analysis
 	class RemoveBarrierPass : public KernelPass
 	{
 		private:
-			ir::PTXKernel* _kernel;
-			unsigned int   _reentryPoint;
-			unsigned int   _kernelId;
-			unsigned int   _spillBytes;
+			ir::PTXKernel*                 _kernel;
+			unsigned int                   _reentryPoint;
+			unsigned int                   _kernelId;
+			unsigned int                   _spillBytes;
+			const ir::ExternalFunctionSet* _externals;
 			
 		private:
 			DataflowGraph::RegisterId _tempRegister( );
@@ -55,7 +57,8 @@ namespace analysis
 			void _runOnBlock( DataflowGraph::iterator block );
 		
 		public:
-			RemoveBarrierPass( unsigned int kernelId = 0 );
+			RemoveBarrierPass( unsigned int kernelId = 0,
+				const ir::ExternalFunctionSet* externals = 0 );
 			
 		public:
 			void initialize( const ir::Module& m );

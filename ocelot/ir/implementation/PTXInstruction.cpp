@@ -628,12 +628,16 @@ std::string ir::PTXInstruction::valid() const {
 				return "operand A must be a function name or register.";
 			}
 			if( d.addressMode != PTXOperand::ArgumentList 
+				&& d.addressMode != PTXOperand::Register 
 				&& d.addressMode != PTXOperand::Invalid ) {
-				return "operand D must be an argument list if it is specified.";
+				return "operand D must be an argument/register "
+					"list if it is specified.";
 			}
 			if( b.addressMode != PTXOperand::ArgumentList
+				&& b.addressMode != PTXOperand::Register 
 				&& b.addressMode != PTXOperand::Invalid ) {
-				return "operand B must be an argument list if it is specified.";
+				return "operand B must be an argument/register "
+					"list if it is specified.";
 			}
 			if( a.addressMode == PTXOperand::Register
 				&& c.addressMode != PTXOperand::FunctionName ) {

@@ -9,6 +9,7 @@
 
 #include <ocelot/analysis/interface/RemoveBarrierPass.h>
 #include <ocelot/ir/interface/PTXKernel.h>
+#include <ocelot/ir/interface/ExternalFunctionSet.h>
 
 #include <hydrazine/implementation/debug.h>
 
@@ -279,6 +280,17 @@ namespace analysis
 				|| ( instruction.opcode == ir::PTXInstruction::Call 
 					&& !instruction.tailCall ) )
 			{
+				if( _externals != 0
+					&& instruction.opcode == ir::PTXInstruction::Call )
+				{
+					if( _externals->find( instruction.a.identifier ) != 0 )
+					{
+						report( "Skipping external call "
+							<< instruction.toString() );
+						continue;
+					}
+				}
+
 				unsigned int bytes = _spillBytes;
 				_spillBytes = 1;
 				usesBarriers = true;
@@ -294,6 +306,8 @@ namespace analysis
 
 	void RemoveBarrierPass::_addLocalVariables()
 	{
+		if( !usesBarriers ) return;
+		
 		if( _kernel->locals.count( "_Zocelot_resume_point" ) == 0 )
 		{
 			ir::PTXStatement syncVariable( ir::PTXStatement::Local );
@@ -342,9 +356,10 @@ namespace analysis
 		}
 	}
 	
-	RemoveBarrierPass::RemoveBarrierPass( unsigned int i )
-		: KernelPass( DataflowGraphAnalysis, "RemoveBarriersPass" ),
-		_kernelId( i )
+	RemoveBarrierPass::RemoveBarrierPass( unsigned int i,
+		const ir::ExternalFunctionSet* s )
+	: KernelPass( DataflowGraphAnalysis, "RemoveBarriersPass" ),
+		_kernelId( i ), _externals( s )
 	{
 
 	}

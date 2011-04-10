@@ -359,12 +359,10 @@ void cuda::CudaRuntime::_enumerateDevices() {
 //! acquires mutex and locks the runtime
 void cuda::CudaRuntime::_lock() {
 	_mutex.lock();
-	_lockOwner = boost::this_thread::get_id();
 }
 
 //! releases mutex
 void cuda::CudaRuntime::_unlock() {
-	_lockOwner = boost::thread::id();
 	_mutex.unlock();
 }
 
@@ -409,10 +407,6 @@ void cuda::CudaRuntime::_acquire() {
 void cuda::CudaRuntime::_release() {
 	_unbind();
 	_unlock();
-}
-
-bool cuda::CudaRuntime::_ownsLock() {
-	return _lockOwner == boost::this_thread::get_id();
 }
 
 executive::Device& cuda::CudaRuntime::_getDevice() {
@@ -482,7 +476,7 @@ void cuda::CudaRuntime::_registerAllModules() {
 
 ////////////////////////////////////////////////////////////////////////////////
 
-cuda::CudaRuntime::CudaRuntime() : _deviceCount(0),
+cuda::CudaRuntime::CudaRuntime() : _inExecute(false), _deviceCount(0),
 	_devicesLoaded(false), 
 	_selectedDevice(-1), _nextSymbol(1), _computeCapability(2), _flags(0), 
 	_optimization((translator::Translator::OptimizationLevel)
@@ -739,22 +733,14 @@ cudaError_t cuda::CudaRuntime::cudaGetExportTable(const void **ppExportTable,
 cudaError_t cuda::CudaRuntime::cudaMalloc(void **devPtr, size_t size) {
 	cudaError_t result = cudaErrorMemoryAllocation;
 
-	if (_ownsLock()) {
-		try {
-			executive::Device::MemoryAllocation* 
-				allocation = _getDevice().allocate(size);
-			*devPtr = allocation->pointer();
-			result = cudaSuccess;
-		}
-		catch(hydrazine::Exception&) {
-		
-		}
-		return result;
-	}
+	 _executingMutex.lock();
 
-	_acquire();
-	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
-	
+	if(!_inExecute)
+	{
+		_acquire();
+		if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
+	}
+		
 	try {
 		executive::Device::MemoryAllocation* 
 			allocation = _getDevice().allocate(size);
@@ -768,8 +754,13 @@ cudaError_t cuda::CudaRuntime::cudaMalloc(void **devPtr, size_t size) {
 	report("cudaMalloc( *devPtr = " << (void *)*devPtr 
 	<< ", size = " << size << ")");
 
-	_release();
-
+	if(!_inExecute)
+	{
+		_release();
+	}
+	
+	_executingMutex.unlock();
+	
 	return _setLastError(result);
 }
 
@@ -863,22 +854,14 @@ cudaError_t cuda::CudaRuntime::cudaMallocArray(struct cudaArray **array,
 cudaError_t cuda::CudaRuntime::cudaFree(void *devPtr) {
 	cudaError_t result = cudaErrorMemoryAllocation;
 
-	if(_ownsLock()) {
-		try {
-			if (devPtr) {
-				_getDevice().free(devPtr);
-			}
-			result = cudaSuccess;
-		}
-		catch(hydrazine::Exception&) {
-		
-		}
-		return result;
+	 _executingMutex.lock();
+
+	if(!_inExecute)
+	{
+		_acquire();
+		if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
 	}
-
-	_acquire();
-	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
-
+	
 	report("cudaFree(" << devPtr << ")");
 	
 	try {
@@ -891,7 +874,13 @@ cudaError_t cuda::CudaRuntime::cudaFree(void *devPtr) {
 		
 	}
 
-	_release();
+	if(!_inExecute)
+	{
+		_release();
+	}
+
+	 _executingMutex.unlock();
+	
 	return _setLastError(result);
 }
 
@@ -2527,6 +2516,7 @@ cudaError_t cuda::CudaRuntime::_launchKernel(const std::string& moduleName,
 	const std::string& kernelName )
 {
 	_lock();
+
 	_enumerateDevices();
 	if (_devices.empty()) {
 		_unlock();
@@ -2570,9 +2560,11 @@ cudaError_t cuda::CudaRuntime::_launchKernel(const std::string& moduleName,
 			thread.nextTraceGenerators.begin(), 
 			thread.nextTraceGenerators.end());
 
+		_inExecute = true;
 		_getDevice().launch(moduleName, kernelName, convert(launch.gridDim), 
 			convert(launch.blockDim), launch.sharedMemory, 
 			thread.parameterBlock, paramSize, traceGens, &_externals);
+		_inExecute = false;
 		report(" launch completed successfully");	
 	}
 	catch( const executive::RuntimeException& e ) {
@@ -2582,6 +2574,7 @@ cudaError_t cuda::CudaRuntime::_launchKernel(const std::string& moduleName,
 		std::cerr << _formatError( e.toString() ) 
 			<< "\n" << std::flush;
 		thread.lastError = cudaErrorLaunchFailure;
+		_inExecute = false;
 		_release();
 		throw;
 	}
@@ -2593,11 +2586,13 @@ cudaError_t cuda::CudaRuntime::_launchKernel(const std::string& moduleName,
 		std::cerr << _formatError( e.what() )
 			<< "\n" << std::flush;
 		thread.lastError = cudaErrorLaunchFailure;
+		_inExecute = false;
 		_release();
 		throw;
 	}
 	catch(...) {
 		thread.lastError = cudaErrorLaunchFailure;
+		_inExecute = false;
 		_release();
 		throw;
 	}

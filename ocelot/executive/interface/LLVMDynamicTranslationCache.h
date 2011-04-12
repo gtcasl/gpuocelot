@@ -74,6 +74,9 @@ namespace executive {
 			//! \brief each kernel is translated as its own module
 			llvm::Module *kernelModule;
 			
+			//! \brief unoptimized direct translation from PTX to LLVM
+			llvm::Function *scalarTranslation;
+			
 			//! \brief pointer to parent kernel
 			TranslatedKernel *parent;
 		
@@ -88,6 +91,9 @@ namespace executive {
 			
 			//! \brief each translated subkernel offers a certain storage requirement
 			size_t localMemorySize;
+			
+			//! \brief stores information needed by the translated function and the execution manager
+			void *metadata;
 		};
 		typedef std::unordered_map< HyperblockId, TranslatedSubkernel *> TranslatedSubkernelMap;
 		
@@ -156,6 +162,13 @@ namespace executive {
 	
 	private:
 	
+		void translateFromPTX(
+			TranslatedKernel &translatedKernel,
+			TranslatedSubkernel &translatedSubkernel,
+			ir::PTXKernel *parent,
+			translator::Translator::OptimizationLevel optimization,
+			executive::Device *device);
+	
 		/*!
 			\brief entry point of PTX->LLVM compilation
 		*/
@@ -167,13 +180,9 @@ namespace executive {
 			translator::Translator::OptimizationLevel optimization,
 			executive::Device *device);
 		
-		/*!
-			\brief given an *UNOPTIMIZED* translated form of a subkernel, apply optimizations
-				and code generation for a particular warp size
-		*/
-		void recompileTranslation(
-			LLVMDynamicTranslationCache::TranslatedSubkernel &translatedSubkernel,
-			LLVMDynamicTranslationCache::Translation &translation,
+		void specializeTranslation(
+			TranslatedSubkernel &translatedSubkernel,
+			Translation *translation,
 			translator::Translator::OptimizationLevel optimization,
 			executive::Device *device);
 	

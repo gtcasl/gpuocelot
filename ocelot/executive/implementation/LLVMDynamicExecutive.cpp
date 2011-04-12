@@ -344,7 +344,7 @@ void LLVMDynamicExecutive::executeWarp(Warp &warp) {
 
 //! \brief construct a warp - for now, simply choose a ready thread
 void LLVMDynamicExecutive::warpFormation(Warp &warp) {
-	const size_t warpSize = 1;
+	const size_t warpSize = 2;
 	warp.threads.resize(0);
 	warp.threads.reserve(warpSize);
 	

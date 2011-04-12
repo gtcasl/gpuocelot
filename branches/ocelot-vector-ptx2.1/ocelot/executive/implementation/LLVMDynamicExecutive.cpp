@@ -5,9 +5,10 @@
 */
 
 // C++ includes
+#include <fstream>
 
 // Ocelot includes
-#include <fstream>
+#include <ocelot/api/interface/OcelotConfiguration.h>
 #include <ocelot/executive/interface/LLVMDynamicExecutive.h>
 #include <ocelot/executive/interface/LLVMDynamicExecutionManager.h>
 
@@ -344,7 +345,7 @@ void LLVMDynamicExecutive::executeWarp(Warp &warp) {
 
 //! \brief construct a warp - for now, simply choose a ready thread
 void LLVMDynamicExecutive::warpFormation(Warp &warp) {
-	const size_t warpSize = 2;
+	const size_t warpSize = api::OcelotConfiguration::get().executive.warpSize;
 	warp.threads.resize(0);
 	warp.threads.reserve(warpSize);
 	

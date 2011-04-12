@@ -134,6 +134,11 @@ namespace executive {
 		*/
 		class ModuleMetadata {
 		public:
+			ModuleMetadata();
+			~ModuleMetadata();
+			
+			void clear();
+		public:
 		
 			//! \brief registered PTX module
 			const ir::Module *ptxModule;
@@ -165,17 +170,6 @@ namespace executive {
 		void translateFromPTX(
 			TranslatedKernel &translatedKernel,
 			TranslatedSubkernel &translatedSubkernel,
-			ir::PTXKernel *parent,
-			translator::Translator::OptimizationLevel optimization,
-			executive::Device *device);
-	
-		/*!
-			\brief entry point of PTX->LLVM compilation
-		*/
-		void *compileTranslation(
-			TranslatedKernel &translatedKernel,
-			TranslatedSubkernel &translatedSubkernel,
-			Translation &translation,
 			ir::PTXKernel *parent,
 			translator::Translator::OptimizationLevel optimization,
 			executive::Device *device);

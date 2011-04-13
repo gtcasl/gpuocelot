@@ -55,6 +55,8 @@
 #define REPORT_SCHEDULE_OPERATIONS 0
 #define REPORT_TRANSLATION_OPERATIONS 0
 
+#define REPORT_TRANSLATIONS 0
+
 #define REPORT_BASE 0
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -66,6 +68,10 @@ LLVMDynamicTranslationCache::LLVMDynamicTranslationCache() {
 }
 
 LLVMDynamicTranslationCache::~LLVMDynamicTranslationCache() {
+#if REPORT_TRANSLATIONS
+	write(std::cerr);
+#endif
+
 	for (ModuleMap::iterator mod_it = modules.begin(); mod_it != modules.end(); ++mod_it) {
 		mod_it->second.clear();
 	}
@@ -245,8 +251,8 @@ LLVMDynamicTranslationCache::TranslatedSubkernel::TranslatedSubkernel()
 
 }
 
-LLVMDynamicTranslationCache::TranslatedSubkernel::~TranslatedSubkernel() {
-	for (TranslationWarpMap::iterator trans_it = translations.begin(); trans_it != translations.end(); ++trans_it) {
+LLVMDynamicTranslationCache::TranslatedSubkernel::~TranslatedSubkernel() {	
+	for (TranslationWarpMap::iterator trans_it = translations.begin(); trans_it != translations.end(); ++trans_it) {	
 		delete const_cast<Translation*>(trans_it->second);
 	}
 	translations.clear();
@@ -289,6 +295,35 @@ void LLVMDynamicTranslationCache::ModuleMetadata::clear() {
 		delete k_it->second;
 	}
 	kernels.clear();
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+void LLVMDynamicTranslationCache::write(std::ostream &out) {
+	int moduleIndex = 0;
+	out << "modules = {\n";
+	for (ModuleMap::iterator mod_it = modules.begin(); mod_it != modules.end(); ++mod_it) {
+		out << "'module" << moduleIndex++ << "': {\n" << std::endl;
+		for (KernelTranslationMap::iterator kernel_it = mod_it->second.kernels.begin();
+			kernel_it != mod_it->second.kernels.end(); ++kernel_it) {
+			
+			out << "'" << kernel_it->first << "': {" << std::endl;
+			for (TranslatedSubkernelMap::iterator sk_it = kernel_it->second->subkernels.begin();
+				sk_it != kernel_it->second->subkernels.end(); ++sk_it ) {
+			
+				out << " " << sk_it->second->entryId << ": (";
+				for (TranslationWarpMap::iterator t_it = sk_it->second->translations.begin();
+					t_it != sk_it->second->translations.end(); ++t_it) {
+				
+					out << t_it->second->warpSize << ",";
+				}
+				out << "),  # " << sk_it->second->subkernel->name << "\n";
+			}
+			out << "},\n";
+		}
+		out << "},\n";
+	}
+	out << "}\n";
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////

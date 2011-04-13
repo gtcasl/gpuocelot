@@ -14,6 +14,7 @@
 
 // Hydrazine Includes
 #include <hydrazine/implementation/debug.h>
+#include <hydrazine/implementation/math.h>
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -368,7 +369,21 @@ void LLVMDynamicExecutive::warpFormation(Warp &warp) {
 	}
 	reportE(REPORT_SCHEDULE_OPERATIONS, 
 		"formed warp of size " << warp.threads.size() << " with entryId " << warp.entryId);
+		
 	assert(warp.threads.size() && " failed to choose threads to form warp");
+	
+	size_t p = warp.threads.size();
+	while (!hydrazine::isPowerOfTwo((unsigned int)p)) {
+		LLVMContext & ctx = warp.threads[p - 1];
+		
+		unsigned int ctaId = LLVMDynamicExecutive::ctaId(ctx);
+		ctaMap[ctaId].readyQueue.push_back(ctx);
+		--p;
+	}
+	if (p < warp.threads.size()) {
+		warp.threads.resize(p);
+	}
+	assert(hydrazine::isPowerOfTwo((unsigned int)warp.threads.size()) && "warp size must be power of two");
 }
 
 //! \brief determine if any barriers have been reached

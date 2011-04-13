@@ -179,6 +179,8 @@ namespace executive {
 			Translation *translation,
 			translator::Translator::OptimizationLevel optimization,
 			executive::Device *device);
+			
+		void write(std::ostream &out);
 	
 	private:
 	

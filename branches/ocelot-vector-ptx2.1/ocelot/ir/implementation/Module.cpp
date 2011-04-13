@@ -306,8 +306,8 @@ ir::Global* ir::Module::getGlobal(const std::string& name) {
 	return 0;
 }
 
-const std::string& ir::Module::path() const {
-	assert( loaded() );
+const std::string& ir::Module::path(bool loadSensitive) const {
+	assert( !loadSensitive || loaded() );
 	return _modulePath;
 }
 

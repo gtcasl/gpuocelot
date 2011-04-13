@@ -136,7 +136,7 @@ namespace ir {
 		Global* getGlobal(const std::string& name);
 
 		/*! \brief Gets the module path */
-		const std::string& path() const;
+		const std::string& path(bool loadSensitive = true) const;
 		
 		/*! \brief Gets the kernel map */
 		const KernelMap& kernels() const;

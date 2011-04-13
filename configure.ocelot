@@ -2,7 +2,7 @@
 	ocelot: "ocelot",
     instrument: {
         memoryIntensity: {
-
+            logfile: "/proc/gpuinfo"
         }
     },
 	trace: { 

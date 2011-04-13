@@ -8,7 +8,6 @@
 #define BASIC_BLOCK_EXECUTION_COUNT_PASS_CPP_INCLUDED
 
 #include <ocelot/analysis/interface/BasicBlockExecutionCountPass.h>
-#include <ocelot/analysis/interface/BasicBlockInstrumentationPass.h>
 #include <ocelot/ir/interface/Module.h>
 #include <ocelot/ir/interface/PTXStatement.h>
 #include <ocelot/ir/interface/PTXKernel.h>
@@ -66,11 +65,9 @@ namespace analysis
     void BasicBlockExecutionCountPass::runOnModule( ir::Module& m )
 	{
 		report( "Adding global variable to " << m.path() );
-
-        analysis::BasicBlockInstrumentationPass instrumentationPass = analysis::BasicBlockInstrumentationPass();
      
 		ir::PTXStatement counter = ir::PTXStatement(ir::PTXStatement::Global);
-        counter.name = instrumentationPass.basicBlockCounterBase();
+        counter.name = basicBlockCounterBase();
         counter.type = (sizeof(size_t) == 8 ? ir::PTXOperand::u64: ir::PTXOperand::u32);
 
 
@@ -92,19 +89,19 @@ namespace analysis
             ++entry;
 
             /* instrumenting ptx at the beginning of the first basic block. */
-            size_t count = instrumentationPass.calculateThreadId((kernel->second), entry, 0);
+            size_t count = calculateThreadId((kernel->second), entry, 0);
             size_t location = count;
-            count = instrumentationPass.calculateBasicBlockCounterOffset((kernel->second), entry, 0, location);
+            count = calculateBasicBlockCounterOffset((kernel->second), entry, 0, location);
             location += count;  
-            count = incrementBasicBlockCounter((kernel->second), entry, registerId, instrumentationPass.registerMap, location);
+            count = incrementBasicBlockCounter((kernel->second), entry, registerId, registerMap, location);
    
             unsigned int basicBlockId = 1;
             for( analysis::DataflowGraph::iterator block = ++(entry); 
 			    block != (kernel->second)->dfg()->end(); ++block )
 		        {
                    if(!block->instructions().empty()){
-                        count = instrumentationPass.calculateBasicBlockCounterOffset((kernel->second), block, basicBlockId, 0);
-                        count = incrementBasicBlockCounter((kernel->second), block, registerId, instrumentationPass.registerMap, count);
+                        count = calculateBasicBlockCounterOffset((kernel->second), block, basicBlockId, 0);
+                        count = incrementBasicBlockCounter((kernel->second), block, registerId, registerMap, count);
                         basicBlockId++;        
                     } 
 		        }
@@ -112,17 +109,6 @@ namespace analysis
 
         /* inserting the global counter array into the module */
         m.insertGlobal(counter);
-	}
-
-
-    void BasicBlockExecutionCountPass::initialize( const ir::Module& m )
-	{
-    
-	}
-
-    void BasicBlockExecutionCountPass::finalize( )
-	{
-	
 	}
 }
 

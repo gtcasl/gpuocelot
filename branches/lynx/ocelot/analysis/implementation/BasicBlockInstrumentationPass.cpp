@@ -293,9 +293,9 @@ namespace analysis
 
         The remaining instructions determine the thread counter offset in global memory:
             
-            offset = (threadId + ntid * basic-block-id) * sizeof(size_t)
+            offset = (threadId + ntid * basic-block-id) * (entries * sizeof(size_t))
             mad offset, ntid, basic-block-id, threadId
-            mul offset, offset, sizeof(size_t)	
+            mul offset, offset, entries * sizeof(size_t)	
 
             add counterPtr, counterPtr, offset 
 
@@ -341,7 +341,7 @@ namespace analysis
 	    mul.a = mul.d;
         mul.b.type = type;
         mul.b.addressMode = ir::PTXOperand::Immediate;
-        mul.b.imm_int = sizeof(size_t);
+        mul.b.imm_int = entries * sizeof(size_t);
 
         kernel->dfg()->insert(block, mul, location++);
         
@@ -368,6 +368,21 @@ namespace analysis
 	{
 		return "__ocelot_basic_block_counter_base";
 	}
+
+    void BasicBlockInstrumentationPass::initialize( const ir::Module& m )
+	{
+    
+	}
+
+    void BasicBlockInstrumentationPass::finalize( )
+	{
+	
+	}
+
+    void BasicBlockInstrumentationPass::runOnModule( ir::Module& m ) 
+    {
+
+    }
   
 }
 

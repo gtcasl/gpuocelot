@@ -127,7 +127,8 @@ namespace api {
 			public:
 			        enum BasicBlockInstrumentationType {
 			            executionCount,
-			            instructionCount
+			            instructionCount,
+                        memoryIntensity
 		            };	
 			
 					//! \brief specifies if instrumentation is enabled */

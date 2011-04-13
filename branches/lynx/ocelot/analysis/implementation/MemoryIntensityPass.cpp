@@ -1,14 +1,14 @@
-/*! \file DynamicInstructionCountPass.cpp
-	\date Friday April 1, 2011
+/*! \file MemoryIntensityPass.cpp
+	\date Wednesday April 13, 2011
 	\author Naila Farooqui <naila@cc.gatech.edu>
-	\brief The source file for the DynamicInstructionCountPass class
+	\brief The source file for the MemoryIntensityPass class
 */
 
-#ifndef DYNAMIC_INSTRUCTION_COUNT_PASS_CPP_INCLUDED
-#define DYNAMIC_INSTRUCTION_COUNT_PASS_CPP_INCLUDED
+#ifndef MEMORY_INTENSITY_PASS_CPP_INCLUDED
+#define MEMORY_INTENSITY_PASS_CPP_INCLUDED
 
+#include <ocelot/analysis/interface/MemoryIntensityPass.h>
 #include <ocelot/analysis/interface/DynamicInstructionCountPass.h>
-#include <ocelot/analysis/interface/BasicBlockInstrumentationPass.h>
 #include <ocelot/ir/interface/Module.h>
 #include <ocelot/ir/interface/PTXStatement.h>
 #include <ocelot/ir/interface/PTXKernel.h>
@@ -17,13 +17,16 @@
 namespace analysis
 {
 
-    DynamicInstructionCountPass::DynamicInstructionCountPass() {
+    MemoryIntensityPass::MemoryIntensityPass() {
 
     }
 
-    void DynamicInstructionCountPass::countInstructions(  ir::PTXKernel *kernel, DataflowGraph::iterator block, DataflowGraph::RegisterId registerId, std::map<std::string, DataflowGraph::RegisterId> registerMap, size_t instructionCount ) {
+    void MemoryIntensityPass::countMemoryOperations(  ir::PTXKernel *kernel, DataflowGraph::iterator block, DataflowGraph::RegisterId registerId, std::map<std::string, DataflowGraph::RegisterId> registerMap, size_t memOpsCount ) {
 
-        /* Load, count dynamic instructions, and store back the result into the
+        if(memOpsCount == 0)
+            return;
+
+        /* Load, count memory operations, and store back the result into the
             global counter */
         
         ir::PTXOperand::DataType type = (sizeof(size_t) == 8 ? ir::PTXOperand::u64: ir::PTXOperand::u32);
@@ -34,6 +37,7 @@ namespace analysis
 	    ld.a.type = type;     
         ld.a.addressMode = ir::PTXOperand::Indirect;
         ld.a.reg = registerMap["counterPtrReg"];
+        ld.a.offset = sizeof(size_t);
         ld.d.reg = registerId;
         ld.d.addressMode = ir::PTXOperand::Register;
 	    ld.d.type = type;		
@@ -47,7 +51,7 @@ namespace analysis
         add.a = ld.d;
         add.b.type = type;	
         add.b.addressMode = ir::PTXOperand::Immediate;
-        add.b.imm_int = instructionCount;
+        add.b.imm_int = memOpsCount;
         
         kernel->dfg()->insert( block, add, block->instructions().size() - 1  );
         
@@ -56,7 +60,8 @@ namespace analysis
         for(analysis::DataflowGraph::InstructionVector::const_iterator instruction = block->instructions().begin();
 		instruction != block->instructions().end(); ++instruction){
 		    ir::PTXInstruction *ptxInstruction = (ir::PTXInstruction *)instruction->i;
-		    if(ptxInstruction->pg.condition == ir::PTXOperand::Pred)
+		    if((ptxInstruction->opcode == ir::PTXInstruction::Ld || ptxInstruction->opcode == ir::PTXInstruction::St) 
+                && ptxInstruction->pg.condition == ir::PTXOperand::Pred)
 			    predicateMap[ptxInstruction->pg.toString()]++;
 	    }
 	
@@ -96,12 +101,25 @@ namespace analysis
 
     }
 
-    void DynamicInstructionCountPass::runOnModule( ir::Module& m )
+    size_t MemoryIntensityPass::_memOpsCount(DataflowGraph::iterator block) {
+
+        size_t memOpsCount = 0;
+        for(analysis::DataflowGraph::InstructionVector::const_iterator instruction = block->instructions().begin();
+		instruction != block->instructions().end(); ++instruction){
+		    ir::PTXInstruction *ptxInstruction = (ir::PTXInstruction *)instruction->i;
+		    if(ptxInstruction->opcode == ir::PTXInstruction::Ld || ptxInstruction->opcode == ir::PTXInstruction::St)
+			    memOpsCount++;
+	    }
+        return memOpsCount;
+    }
+
+    void MemoryIntensityPass::runOnModule( ir::Module& m )
 	{
 		report( "Adding global variable to " << m.path() );
+        analysis::DynamicInstructionCountPass dynamicInstructionPass = analysis::DynamicInstructionCountPass();
      
 		ir::PTXStatement counter = ir::PTXStatement(ir::PTXStatement::Global);
-        counter.name =basicBlockCounterBase();
+        counter.name = basicBlockCounterBase();
         counter.type = (sizeof(size_t) == 8 ? ir::PTXOperand::u64: ir::PTXOperand::u32);
 
 
@@ -121,23 +139,32 @@ namespace analysis
             
             DataflowGraph::iterator entry = (kernel->second)->dfg()->begin();
             ++entry;
+    
+            /* obtain instruction count and memory operations count prior to instrumenting */            
+            size_t instructionCount = entry->instructions().size();
+            size_t memOpsCount = _memOpsCount(entry); 
 
             /* instrumenting ptx at the beginning of the first basic block. */
-            size_t instructionCount = entry->instructions().size();
             size_t count = calculateThreadId((kernel->second), entry, 0);
             size_t location = count;
             count = calculateBasicBlockCounterOffset((kernel->second), entry, 0, location);
             location += count;  
-            countInstructions((kernel->second), entry, registerId, registerMap, instructionCount);
-   
+            dynamicInstructionPass.countInstructions((kernel->second), entry, registerId, registerMap, instructionCount);  
+            countMemoryOperations((kernel->second), entry, registerId, registerMap, memOpsCount);
+            
+
             unsigned int basicBlockId = 1;
             for( analysis::DataflowGraph::iterator block = ++(entry); 
 			    block != (kernel->second)->dfg()->end(); ++block )
 		        {
                    if(!block->instructions().empty()){
+
                         instructionCount = block->instructions().size();
+                        memOpsCount = _memOpsCount(block);
+
                         count = calculateBasicBlockCounterOffset((kernel->second), block, basicBlockId, 0);
-                        countInstructions((kernel->second), block, registerId, registerMap, instructionCount);
+                        dynamicInstructionPass.countInstructions((kernel->second), block, registerId, registerMap, instructionCount);
+                        countMemoryOperations((kernel->second), block, registerId, registerMap, memOpsCount);
                         basicBlockId++;        
                     } 
 		        }

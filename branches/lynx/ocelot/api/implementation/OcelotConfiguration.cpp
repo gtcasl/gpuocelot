@@ -129,6 +129,14 @@ static void initializeInstrument(api::OcelotConfiguration::Instrumentation &inst
                 api::OcelotConfiguration::Instrumentation::BasicBlockInstrumentor::instructionCount;
     }
 
+    basicBlockConfig = config["memoryIntensity"];
+    if (!basicBlockConfig.is_null()) {
+            instrument.basicBlockInstrumentor.enabled = basicBlockConfig.parse<bool>("enabled", true);
+            instrument.basicBlockInstrumentor.logfile = basicBlockConfig.parse<std::string>("logfile", "");
+            instrument.basicBlockInstrumentor.type =        
+                api::OcelotConfiguration::Instrumentation::BasicBlockInstrumentor::memoryIntensity;
+    }
+
 }
 
 static void initializeTrace(api::OcelotConfiguration::TraceGeneration &trace, 

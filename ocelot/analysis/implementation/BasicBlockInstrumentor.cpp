@@ -11,6 +11,7 @@
 
 #include <ocelot/cuda/interface/cuda_runtime.h>
 
+#include <ocelot/analysis/interface/MemoryIntensityPass.h>
 #include <ocelot/analysis/interface/DynamicInstructionCountPass.h>
 #include <ocelot/analysis/interface/BasicBlockExecutionCountPass.h>
 #include <ocelot/analysis/interface/BasicBlockInstrumentationPass.h>
@@ -59,10 +60,11 @@ namespace analysis
     void BasicBlockInstrumentor::initialize() {
         
         counter = 0;
-        if(cudaMalloc((void **) &counter, basicBlocks * threadBlocks * threads * sizeof(size_t)) != cudaSuccess){
+
+        if(cudaMalloc((void **) &counter, entries * basicBlocks * threadBlocks * threads * sizeof(size_t)) != cudaSuccess){
             throw hydrazine::Exception( "Could not allocate sufficient memory on device (cudaMalloc failed)!" );
         }
-        if(cudaMemset( counter, 0, basicBlocks * threadBlocks * threads * sizeof( size_t )) != cudaSuccess){
+        if(cudaMemset( counter, 0, entries * basicBlocks * threadBlocks * threads * sizeof( size_t )) != cudaSuccess){
             throw hydrazine::Exception( "cudaMemset failed!" );
         }
         
@@ -73,7 +75,9 @@ namespace analysis
 
     analysis::Pass *BasicBlockInstrumentor::createPass() {
         
-        analysis::Pass *basicBlockPass;
+        analysis::BasicBlockInstrumentationPass *basicBlockPass;
+        entries = 1;        
+
         switch(type) {
             case executionCount:
                 basicBlockPass = new analysis::BasicBlockExecutionCountPass;
@@ -81,18 +85,23 @@ namespace analysis
             case instructionCount:
                 basicBlockPass = new analysis::DynamicInstructionCountPass;
                 break;
-            default:
-                basicBlockPass = new analysis::DynamicInstructionCountPass;
+            case memoryIntensity:
+                basicBlockPass = new analysis::MemoryIntensityPass;
+                entries = 2;
                 break;
+            default:
+                throw hydrazine::Exception( "No basic block instrumentation pass specified!" );
         }
+
+        basicBlockPass->entries = entries;
         return basicBlockPass;          
     }
 
     size_t* BasicBlockInstrumentor::extractResults(std::ostream *out) {
 
-        size_t *info = new size_t[basicBlocks * threads * threadBlocks];
+        size_t *info = new size_t[entries * basicBlocks * threads * threadBlocks];
         if(counter) {
-            cudaMemcpy(info, counter, basicBlocks * threads * threadBlocks * sizeof( size_t ), cudaMemcpyDeviceToHost);
+            cudaMemcpy(info, counter, entries * basicBlocks * threads * threadBlocks * sizeof( size_t ), cudaMemcpyDeviceToHost);
             cudaFree(counter);
         }
 
@@ -102,6 +111,7 @@ namespace analysis
         *out << "\n\"counters\": {\n";
 
         _kernelProfile.basicBlockExecutionCountMap.clear();
+        _kernelProfile.memoryOperationsMap.clear();
 
         size_t i = 0;
         size_t j = 0;
@@ -109,14 +119,21 @@ namespace analysis
         
         for(k = 0; k < threadBlocks; k++) {
             for(i = 0; i < basicBlocks; i++) {
-                for(j = 0; j < threads; j++) {
-                    _kernelProfile.basicBlockExecutionCountMap[i] += info[(i * threads) + (k * basicBlocks * threads) + j];
+                for(j = 0; j < (threads * entries); j = j + entries) {
+                    _kernelProfile.basicBlockExecutionCountMap[i] += info[(i * entries * threads) + (k * basicBlocks * threads * entries) + j];
+                    if(type == memoryIntensity)
+                        _kernelProfile.memoryOperationsMap[i] += info[(i * entries * threads) + (k * basicBlocks * threads * entries) + (j + 1)];
+                    
                 }
             }   
         }
 
         for(j = 0; j < basicBlocks; j++) {
-            *out << "\"" << labels[j] << "\": " << _kernelProfile.basicBlockExecutionCountMap[j] << ",\n";
+            *out << "\"" << labels[j] << "\": " << _kernelProfile.basicBlockExecutionCountMap[j] << ", ";
+            if(type == memoryIntensity)
+                 *out << _kernelProfile.memoryOperationsMap[j];
+        
+            *out << "\n";
         }
         
         *out << "\n}\n}\n";

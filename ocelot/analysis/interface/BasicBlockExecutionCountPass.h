@@ -9,7 +9,7 @@
 
 #include <ocelot/analysis/interface/DataflowGraph.h>
 #include <ocelot/ir/interface/PTXKernel.h>
-#include <ocelot/analysis/interface/Pass.h>
+#include <ocelot/analysis/interface/BasicBlockInstrumentationPass.h>
 
 namespace ir
 {
@@ -19,7 +19,7 @@ namespace ir
 namespace analysis
 {
 	/*! \brief Implements the basic block execution count instrumentation */
-	class BasicBlockExecutionCountPass : public ModulePass
+	class BasicBlockExecutionCountPass : public BasicBlockInstrumentationPass
 	{
 	    public:
             /*! \brief default constructor */
@@ -30,13 +30,8 @@ namespace analysis
             size_t incrementBasicBlockCounter( ir::PTXKernel *kernel, DataflowGraph::iterator block, DataflowGraph::RegisterId registerId, std::map<std::string, DataflowGraph::RegisterId> registerMap, size_t location);
 
         public:
-			/*! \brief Initialize the pass using a specific module */
-			void initialize( const ir::Module& m );
 			/*! \brief Run the pass on a specific module */
 			void runOnModule( ir::Module& m );
-			/*! \brief Finalize the pass */
-			void finalize( );
-
 	};
 }
 

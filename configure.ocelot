@@ -1,7 +1,9 @@
 {
 	ocelot: "ocelot",
     instrument: {
-        dynamicInstructionCount: {}
+        memoryIntensity: {
+
+        }
     },
 	trace: { 
 		database: "traces/database.trace",

@@ -51,6 +51,7 @@ namespace analysis
             ProcessorToThreadBlockCountMap processorToThreadBlockCountMap;
 
             BasicBlockToExecCountMap basicBlockExecutionCountMap;
+            BasicBlockToExecCountMap memoryOperationsMap;
 	};
 
 	/*! \brief Able to run various instrumentation passes over PTX modules */

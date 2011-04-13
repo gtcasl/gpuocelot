@@ -21,15 +21,19 @@ namespace analysis
 		
 		    enum BasicBlockInstrumentationType {
 		        instructionCount,
-		        executionCount
+		        executionCount,
+                memoryIntensity
 		    };
-			
+
             /*! \brief The basic block counter */
             size_t *counter;        
 
             /*! \brief The number of basic blocks */
             unsigned int basicBlocks;
         
+            /*! \brief Number of entries per basic block */
+            size_t entries;
+
             /*! \brief The description of the specified pass */
             std::string description;
             

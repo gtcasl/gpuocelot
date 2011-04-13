@@ -79,6 +79,10 @@ namespace ocelot
                     break;
                 case api::OcelotConfiguration::Instrumentation::BasicBlockInstrumentor::instructionCount:
                     _basicBlockInstrumentor.type = analysis::BasicBlockInstrumentor::instructionCount;
+                    break;
+                case api::OcelotConfiguration::Instrumentation::BasicBlockInstrumentor::memoryIntensity:
+                    _basicBlockInstrumentor.type = analysis::BasicBlockInstrumentor::memoryIntensity;
+                    break;
             }
              
             _basicBlockInstrumentor.output = c.instrument.basicBlockInstrumentor.logfile;

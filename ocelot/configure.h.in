@@ -7,6 +7,13 @@
 #define HAVE_LLVM 0
 #endif
 
+/* Define if glew is installed */
+#if %(HAVE_GLEW)d
+#define HAVE_GLEW 1
+#else 
+#define HAVE_GLEW 0
+#endif
+
 /* Version number of package */
 #define PACKAGE_VERSION "%(VERSION)s"
 

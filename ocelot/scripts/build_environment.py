@@ -87,12 +87,15 @@ def getBoostPaths():
 
 	return (bin_path,lib_path,inc_path)
 
-def getGLEWPaths():
-	"""Determines GLEW {bin,lib,include} paths
-	
-	returns (bin_path,lib_path,inc_path)
+def getGLEWPaths(env):
+	"""Determines GLEW {bin,lib,include} paths and is it installed?
+
+	returns (have_glew,bin_path,lib_path,inc_path)
 	"""
 
+	configure = Configure(env)
+	glew = configure.CheckLib('GLEW')		
+		
 	# determine defaults
 	if os.name == 'posix':
 		bin_path = '/usr/bin'
@@ -109,7 +112,7 @@ def getGLEWPaths():
 	if 'GLEW_INC_PATH' in os.environ:
 		inc_path = os.path.abspath(os.environ['GLEW_INC_PATH'])
 
-	return (bin_path,lib_path,inc_path)
+	return (glew,bin_path,lib_path,inc_path)
 
 def getLLVMPaths(enabled):
 	"""Determines LLVM {have,bin,lib,include,cflags,lflags,libs} paths
@@ -118,9 +121,7 @@ def getLLVMPaths(enabled):
 	"""
 	
 	if not enabled:
-		return (False, [SCons.SConf
-
-], [], [], [], [], [])
+		return (False, [], [], [], [], [], [])
 	
 	try:
 		llvm_config_path = which('llvm-config')
@@ -345,9 +346,10 @@ def Environment():
 	env.AppendUnique(CPPPATH = [boost_inc_path])
 
 	# get GLEW paths
-	(glew_exe_path,glew_lib_path,glew_inc_path) = getGLEWPaths()
+	(glew,glew_exe_path,glew_lib_path,glew_inc_path) = getGLEWPaths(env)
 	env.AppendUnique(LIBPATH = [glew_lib_path])
 	env.AppendUnique(CPPPATH = [glew_inc_path])
+	env.Replace(HAVE_GLEW = glew)
 
 	# get llvm paths
 	(llvm, llvm_exe_path,llvm_lib_path,llvm_inc_path,llvm_cflags,\
@@ -369,7 +371,9 @@ def Environment():
 	
 	# set extra libs 
 	env.Replace(EXTRA_LIBS=['-lboost_system-mt', '-lboost_filesystem-mt', \
-		'-lboost_thread-mt', '-lGLEW'])
+		'-lboost_thread-mt'])
+	if glew:
+		env.AppendUnique(EXTRA_LIBS = ['-lGLEW'])
 	
 	# set ocelot libs
 	ocelot_libs = '-locelot'

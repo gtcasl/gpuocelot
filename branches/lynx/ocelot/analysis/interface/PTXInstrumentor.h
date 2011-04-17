@@ -59,6 +59,13 @@ namespace analysis
 	{
 		
         public:
+
+            enum FormatType {
+                json,
+                text
+            };
+        
+
 			/*! \brief device name for JSON output */
 			std::string deviceName;
 			
@@ -67,6 +74,9 @@ namespace analysis
 			
 			/*! \brief The output file being generated */
 			std::string output;
+
+            /*! \brief The output stream for writing instrumentation results */
+            std::ostream *out;
             
             /*! \brief The PTX module being instrumented */
             ir::Module *module;
@@ -88,6 +98,10 @@ namespace analysis
             
             /*! \brief make sure all conditions have been met to perform this instrumentation */
             bool conditionsMet;
+    
+             /*! \brief format for display */
+            FormatType fmt;
+
 
         protected:
             
@@ -96,6 +110,7 @@ namespace analysis
 		public:
 		
 		    PTXInstrumentor();
+            ~PTXInstrumentor();
 		    
             /*! \brief The checkConditions method verifies that the defined conditions are met for this instrumentation */
             virtual void checkConditions() = 0;
@@ -122,7 +137,7 @@ namespace analysis
             void jsonEmitter(std::string metric, hydrazine::json::Object *stats);
 			
             /*! \brief Extracts instrumentation-specific data */
-            virtual size_t* extractResults(std::ostream *out) = 0;
+            virtual void extractResults(std::ostream *out) = 0;
 
             /*! \brief obtain kernel profile */
             KernelProfile kernelProfile();

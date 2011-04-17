@@ -2145,11 +2145,6 @@ namespace translator
 				{
 					_yield( executive::LLVMExecutableKernel::BarrierCall );
 				}
-				else if( i.reentryPoint == -2 )
-				{
-					assertM(false, "External function calls not supported "
-						"in LLVM backend yet.");
-				}
 				else
 				{
 					_yield( executive::LLVMExecutableKernel::TailCall, 
@@ -2174,6 +2169,41 @@ namespace translator
 		}
 		else
 		{
+			ir::ExternalFunctionSet::ExternalFunction* external = 0;
+
+			if( i.a.addressMode == ir::PTXOperand::FunctionName
+				&& _externals != 0 )
+			{
+				external = _externals->find( i.a.identifier );
+			}
+			
+			if( external != 0 )
+			{
+				_usedExternalCalls.insert( external->name() );
+			
+				ir::LLVMCall call;
+
+				call.name = "@" + external->name();
+				
+				assert( i.d.array.size() < 2 );
+
+				if( i.d.array.size() == 1 )
+				{
+					call.d = _translate( i.d.array[ 0 ] );
+				}
+				
+				for( ir::PTXOperand::Array::const_iterator
+					operand = i.b.array.begin();
+					operand != i.b.array.end(); ++operand )
+				{
+					call.parameters.push_back( _translate( *operand ) );
+				}
+				
+				_add( call );
+
+				return;
+			}
+
 			ir::LLVMBr branch;
 		
 			std::string yieldLabel = "Ocelot_yield_" + block.label();
@@ -8288,6 +8318,50 @@ namespace translator
 		}
 	}
 
+	void PTXToLLVMTranslator::_addExternalFunctionDeclarations()
+	{
+		if( _externals == 0 ) return;
+		
+		for( StringSet::const_iterator name = _usedExternalCalls.begin();
+			name != _usedExternalCalls.end(); ++name )
+		{
+			ir::ExternalFunctionSet::ExternalFunction*
+				external = _externals->find( *name );
+			assert( external != 0 );
+
+			ir::LLVMStatement function(
+				ir::LLVMStatement::FunctionDeclaration );
+
+			function.label      = external->name();
+			function.linkage    = ir::LLVMStatement::InvalidLinkage;
+			function.convention = ir::LLVMInstruction::DefaultCallingConvention;
+			function.visibility = ir::LLVMStatement::Default;
+			
+			ir::Module::FunctionPrototypeMap::const_iterator prototype =
+				_ptx->module->prototypes().find( *name );
+			assert( prototype != _ptx->module->prototypes().end() );
+			
+			if( prototype->second.returnArguments.size() > 0 )
+			{
+				function.operand.type.type = _translate(
+					prototype->second.returnArguments[ 0 ].type );
+				function.operand.type.category = 
+					ir::LLVMInstruction::Type::Element;
+			}
+			
+			for( ir::PTXKernel::Prototype::ArgumentVector::const_iterator
+				argument = prototype->second.arguments.begin();
+				argument != prototype->second.arguments.end(); ++argument )
+			{
+				function.parameters.push_back( ir::LLVMInstruction::Operand( "", 
+					ir::LLVMInstruction::Type( _translate( argument->type ), 
+					ir::LLVMInstruction::Type::Element ) ) );
+			}
+			
+			_llvmKernel->push_front( function );
+		}
+	}
+
 	void PTXToLLVMTranslator::_addStackAllocations()
 	{
 		if( !_usesTextures ) return;
@@ -9036,10 +9110,12 @@ namespace translator
 		_addKernelPrefix();
 		_addKernelSuffix();
 		_addGlobalDeclarations();
+		_addExternalFunctionDeclarations();
 		
 		_tempRegisterCount = 0;
 		_tempBlockCount = 0;
 		_uninitialized.clear();
+		_usedExternalCalls.clear();
 		_usesTextures = false;
 		
 		return _llvmKernel;

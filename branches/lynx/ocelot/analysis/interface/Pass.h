@@ -74,7 +74,7 @@ namespace analysis
 	
 	
 	/*! \brief A pass that generates information about a 
-		program without modifying it */
+		program without modifying it, used to generate data structures */
 	class ImmutablePass : public Pass
 	{
 		public:

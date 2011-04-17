@@ -87,24 +87,16 @@ namespace analysis
 
     void PTXInstrumentor::finalize() {
 
-        size_t *info = 0;
-        std::ostream *out;
-
-        if(!output.empty()){
-            out = new std::ofstream(output.c_str(), std::fstream::app);
-		}
-        else {
-			   out = &std::cout;
-		}
-
-        info = extractResults(out);
-		
-        if(info)
-            delete[] info;
-
-        if(out != &std::cout && out != NULL){
-            delete out;
+        if(out == NULL) {
+            if(!output.empty()){
+                out = new std::ofstream(output.c_str(), std::fstream::app);
+		    }
+            else {
+			       out = &std::cout;
+		    }
         }
+
+        extractResults(out);
     }
 
     void PTXInstrumentor::jsonEmitter(std::string metric, hydrazine::json::Object *stats) {
@@ -140,8 +132,14 @@ namespace analysis
         return this->_kernelProfile;
     }
     
-    PTXInstrumentor::PTXInstrumentor() : conditionsMet(false) {
+    PTXInstrumentor::PTXInstrumentor() : conditionsMet(false), fmt(text) {
+        out = NULL;
+    }
 
+    PTXInstrumentor::~PTXInstrumentor() {
+        if(out != &std::cout && out != NULL){
+            delete out;
+        }
     }
 
 }

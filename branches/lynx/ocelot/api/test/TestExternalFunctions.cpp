@@ -79,9 +79,54 @@ bool TestExternalFunctions::testMallocFree()
 	
 }
 
+bool TestExternalFunctions::testPrintf()
+{
+	return true;
+}
+
+static void randomHostFunction(long long unsigned int address)
+{
+	(*(int*)address) = 0xfeedcaa7;
+}
+
+bool TestExternalFunctions::testUserFunction()
+{
+	std::string ptx = ".version 2.3\n"
+		".address_size 64\n"
+		"\n"
+		".extern .func hostFunction (.param .u64 bytes)\n"
+		"\n"
+		".entry kernel(.param .u64 result) {\n"
+		"\t.reg .u64 %r<10>;\n"
+		"\t.param .u64 value;\n"
+		"\t\n"
+		"\tld.param.u64 %r0, [result];\n"
+		"\tst.param.u64 [value], %r0;\n"
+		"\tcall.uni hostFunction, (value);\n"
+		"\texit;\n"
+		"}\n";
+
+	std::stringstream stream(ptx);
+	ocelot::registerExternalFunction("hostFunction",
+		(void*)(randomHostFunction));
+
+	ocelot::registerPTXModule(stream, "someModule");
+	
+	int data = 0;
+	long long unsigned int address = (long long unsigned int)(&data);
+	
+	cudaSetupArgument(&address, sizeof(long long unsigned int), 0);
+	cudaConfigureCall(dim3(1, 1, 1), dim3(1, 1, 1), 0, 0);
+	ocelot::launch("someModule", "kernel");
+	
+	ocelot::unregisterModule("someModule");
+	
+	return data == (int)0xfeedcaa7;
+}
+
 bool TestExternalFunctions::doTest()
 {
-	return testMallocFree();
+	return testMallocFree() && testPrintf() && testUserFunction();
 }
 
 }

@@ -765,11 +765,13 @@ static void createScheduler(ir::PTXKernel& kernel,
 }
 
 static void addVariables(ir::PTXKernel& subkernel, const ir::Kernel& kernel,
-	unsigned int spillRegionSize)
+	unsigned int spillRegionSize, bool needsTransition)
 {
 	subkernel.arguments  = kernel.arguments;
 	subkernel.parameters = kernel.parameters;
 	subkernel.locals     = kernel.locals;
+	
+	if(!needsTransition) return;
 	
 	ir::PTXStatement resume(ir::PTXStatement::Local);
 		
@@ -910,8 +912,8 @@ void SubkernelFormationPass::ExtractKernelsPass::runOnKernel(ir::Kernel& k)
 		
 		createScheduler(*newKernel, ptx, savedBlocks);
 
-		addVariables(*newKernel, k, spillRegionSize);
-
+		addVariables(*newKernel, k, spillRegionSize, splitKernels.size() > 1);
+		
 		// restart with a new kernel if there are any blocks left
 		if(entry == ptx.cfg()->get_exit_block()) break;
 	

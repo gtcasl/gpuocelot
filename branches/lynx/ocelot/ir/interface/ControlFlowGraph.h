@@ -36,9 +36,9 @@ public:
 		};
 	
 	public:
-		Edge( BlockList::iterator h = BlockList::iterator(), 
+		Edge(BlockList::iterator h = BlockList::iterator(), 
 			BlockList::iterator t = BlockList::iterator(), 
-			Type y = FallThrough );
+			Type y = FallThrough);
 
 		/*!	pointer to head node of edge */
 		BlockList::iterator head;
@@ -48,10 +48,10 @@ public:
 		Type type;
 	};
 
-	typedef std::list< Edge > EdgeList;
-	typedef std::vector< Pointer > BlockPointerVector;
-	typedef std::vector< EdgeList::iterator > EdgePointerVector;
-	typedef std::list< Instruction* > InstructionList;
+	typedef std::list<Edge> EdgeList;
+	typedef std::vector<Pointer> BlockPointerVector;
+	typedef std::vector<EdgeList::iterator> EdgePointerVector;
+	typedef std::list<Instruction*> InstructionList;
 	typedef unsigned int Id;
 
 public:
@@ -348,44 +348,44 @@ private:
 namespace std
 {
 	template<> 
-	class hash< ir::ControlFlowGraph::iterator >
+	class hash<ir::ControlFlowGraph::iterator>
 	{
 	public:
-		size_t operator()( ir::ControlFlowGraph::iterator it ) const
+		size_t operator()(ir::ControlFlowGraph::iterator it) const
 		{
-			return ( size_t )it->id;
+			return (size_t)it->id;
 		}
 	};
 
 	template<> 
-	class hash< ir::ControlFlowGraph::const_iterator >
+	class hash<ir::ControlFlowGraph::const_iterator>
 	{
 	public:
-		size_t operator()( ir::ControlFlowGraph::const_iterator it ) const
+		size_t operator()( ir::ControlFlowGraph::const_iterator it) const
 		{
-			return ( size_t )it->id;
+			return (size_t)it->id;
 		}
 	};
 
 	template<> 
-	class hash< ir::ControlFlowGraph::InstructionList::iterator >
+	class hash<ir::ControlFlowGraph::InstructionList::iterator>
 	{
 	public:
 		size_t operator()( 
-			ir::ControlFlowGraph::InstructionList::iterator it ) const
+			ir::ControlFlowGraph::InstructionList::iterator it) const
 		{
-			return ( size_t )&( *it );
+			return (size_t)&(*it);
 		}
 	};
 
 	template<> 
-	class hash< ir::ControlFlowGraph::InstructionList::const_iterator >
+	class hash<ir::ControlFlowGraph::InstructionList::const_iterator>
 	{
 	public:
 		size_t operator()( 
-			ir::ControlFlowGraph::InstructionList::const_iterator it ) const
+			ir::ControlFlowGraph::InstructionList::const_iterator it) const
 		{
-			return ( size_t )&( *it );
+			return (size_t)&(*it);
 		}
 	};
 }

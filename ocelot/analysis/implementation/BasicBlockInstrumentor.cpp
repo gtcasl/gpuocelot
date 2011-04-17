@@ -97,18 +97,13 @@ namespace analysis
         return basicBlockPass;          
     }
 
-    size_t* BasicBlockInstrumentor::extractResults(std::ostream *out) {
+    void BasicBlockInstrumentor::extractResults(std::ostream *out) {
 
         size_t *info = new size_t[entries * basicBlocks * threads * threadBlocks];
         if(counter) {
             cudaMemcpy(info, counter, entries * basicBlocks * threads * threadBlocks * sizeof( size_t ), cudaMemcpyDeviceToHost);
             cudaFree(counter);
         }
-
-        *out << "{\n\"kernel\": " << kernelName << ",\n";
-        *out << "\n\"threadBlocks\": " << threadBlocks << ",\n";
-        *out << "\n\"threads\": " << threads << ",\n";
-        *out << "\n\"counters\": {\n";
 
         _kernelProfile.basicBlockExecutionCountMap.clear();
         _kernelProfile.memoryOperationsMap.clear();
@@ -128,17 +123,58 @@ namespace analysis
             }   
         }
 
-        for(j = 0; j < basicBlocks; j++) {
-            *out << "\"" << labels[j] << "\": " << _kernelProfile.basicBlockExecutionCountMap[j] << ", ";
-            if(type == memoryIntensity)
-                 *out << _kernelProfile.memoryOperationsMap[j];
-        
-            *out << "\n";
-        }
-        
-        *out << "\n}\n}\n";
+        switch(fmt) {
 
-        return info;
+            case json:
+
+                *out << "{\n\"kernel\": " << kernelName << ",\n";
+                *out << "\n\"threadBlocks\": " << threadBlocks << ",\n";
+                *out << "\n\"threads\": " << threads << ",\n";
+                *out << "\n\"counters\": {\n";
+
+                for(j = 0; j < basicBlocks; j++) {
+                    *out << "\"" << labels[j] << "\": " << _kernelProfile.basicBlockExecutionCountMap[j] << ", ";
+                    if(type == memoryIntensity)
+                         *out << _kernelProfile.memoryOperationsMap[j];
+                
+                    *out << "\n";
+                }
+                
+                *out << "\n}\n}\n";
+
+            break;
+            case text:
+
+                *out << "Kernel Name: " << kernelName << "\n";
+                *out << "Thread Block Count: " << threadBlocks << "\n";
+                *out << "Thread Count: " << threads << "\n";
+                
+
+                
+                if(type == executionCount)
+                    *out << "\nBasic Block Execution Count:\n\n";
+                else
+                    *out << "\nDynamic Instruction Count:\n\n";
+
+                for(j = 0; j < basicBlocks; j++) {
+                    *out << "\"" << labels[j] << "\": " << _kernelProfile.basicBlockExecutionCountMap[j] << "\n";
+                }
+
+                if(type == memoryIntensity){
+                    *out << "\nMemory Intensity:\n\n";
+
+                    for(j = 0; j < basicBlocks; j++) {
+                        *out << "\"" << labels[j] << "\": " << "[" << _kernelProfile.memoryOperationsMap[j] << ":" << _kernelProfile.basicBlockExecutionCountMap[j] << "]\n";
+                    }
+                }
+
+                *out << "\n\n";
+
+            break;
+        }
+
+        if(info)
+            delete[] info;
     }
 
     BasicBlockInstrumentor::BasicBlockInstrumentor() : description("Basic Block Execution Count Per Thread") {

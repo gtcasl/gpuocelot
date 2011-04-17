@@ -60,7 +60,7 @@ namespace analysis
             void finalize();	
 
             /*! \brief extracts results for the basic block execution count instrumentation */
-            size_t* extractResults(std::ostream *out);
+            void extractResults(std::ostream *out);
 
             /*! \brief emits JSON for the basic block execution count instrumentation */
             void emitJSON(size_t* info);

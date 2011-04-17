@@ -45,7 +45,7 @@ namespace analysis
             void finalize();	
 
             /*! \brief extracts results for the clock cycle count instrumentation */
-            size_t* extractResults(std::ostream *out);
+            void extractResults(std::ostream *out);
 
         private:
             bool pred(const std::pair<size_t, size_t>& lhs, const std::pair<size_t, size_t>& rhs);

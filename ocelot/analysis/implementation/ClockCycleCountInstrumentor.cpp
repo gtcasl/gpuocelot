@@ -50,7 +50,7 @@ namespace analysis
         return new analysis::ClockCycleCountPass();
     }
 
-    size_t* ClockCycleCountInstrumentor::extractResults(std::ostream *out) {
+    void ClockCycleCountInstrumentor::extractResults(std::ostream *out) {
                 
         size_t *info = new size_t[2 * threadBlocks];
         if(clock_sm_info) {
@@ -90,32 +90,61 @@ namespace analysis
         _kernelProfile.maxSMRuntime = *(std::max_element(clockCyclesPerSM.begin(), clockCyclesPerSM.end()))/properties.clockRate;
         _kernelProfile.name = kernelName;
     
-        *out << kernelName << "_maxSMRuntime = " << _kernelProfile.maxSMRuntime << "\n\n";
-        *out << kernelName << "_threadBlockToProcessorMap = {";
+        switch(fmt) {
+    
+            case json:
 
-        for (KernelProfile::ThreadBlockToProcessorMap::const_iterator it = _kernelProfile.threadBlockToProcessorMap.begin(); 
-            it != _kernelProfile.threadBlockToProcessorMap.end(); ++it) {
-			*out << it->first << ":(";
+                *out << kernelName << "_maxSMRuntime = " << _kernelProfile.maxSMRuntime << "\n\n";
+                *out << kernelName << "_threadBlockToProcessorMap = {";
+
+                for (KernelProfile::ThreadBlockToProcessorMap::const_iterator it = _kernelProfile.threadBlockToProcessorMap.begin(); 
+                    it != _kernelProfile.threadBlockToProcessorMap.end(); ++it) {
+			        *out << it->first << ":(";
+                    
+                    for(std::vector<size_t>::const_iterator mappedIt = it->second.begin(); mappedIt != it->second.end(); ++mappedIt){
+                        *out << *mappedIt << ","; 
+                    }
+
+                    *out << "),";
+		        }
+                
+                *out << "}\n\n";   
+
+                *out << kernelName << "_processorToThreadBlockCountMap = {";
+                    for(KernelProfile::ProcessorToThreadBlockCountMap::const_iterator it = _kernelProfile.processorToThreadBlockCountMap.begin();
+                        it != _kernelProfile.processorToThreadBlockCountMap.end(); ++it){
+                        *out << it->first << ":" << it->second << ",";
+                    }
+
+                *out << "}\n\n";
             
-            for(std::vector<size_t>::const_iterator mappedIt = it->second.begin(); mappedIt != it->second.end(); ++mappedIt){
-                *out << *mappedIt << ","; 
-            }
+            break;
+            
+            case text:   
 
-            *out << "),";
-		}
-        
-        *out << "}\n\n";   
+                *out << "Kernel Name: " << kernelName << "\n";
+                *out << "Thread Block Count: " << threadBlocks << "\n";
+                *out << "Thread Count: " << threads << "\n";
+                
 
-        *out << kernelName << "_processorToThreadBlockCountMap = {";
-            for(KernelProfile::ProcessorToThreadBlockCountMap::const_iterator it = _kernelProfile.processorToThreadBlockCountMap.begin();
-                it != _kernelProfile.processorToThreadBlockCountMap.end(); ++it){
-                *out << it->first << ":" << it->second << ",";
-            }
+                *out << "Total Kernel Runtime: " << _kernelProfile.maxSMRuntime << "ms\n";
+                
+                *out << "\nSM to Clock Cycles Mapping [SM ID: Clock Cycles]:\n\n";
+                
+                for(KernelProfile::ProcessorToClockCyclesMap::const_iterator it = _kernelProfile.processorToClockCyclesMap.begin();
+            it != _kernelProfile.processorToClockCyclesMap.end(); ++it) {
+                    *out << "[" << it->first << ":" << it->second << "]\n";
+                }
+    
+                *out << "\n\n";
+  
+            
+            break;
 
-        *out << "}\n\n";
+        }
 
-
-        return info;
+        if(info)
+            delete[] info;
     }
 
     ClockCycleCountInstrumentor::ClockCycleCountInstrumentor() : description("Clock Cycles and SM (Processor) ID") {

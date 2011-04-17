@@ -267,6 +267,7 @@ ir::PTXU32 executive::CooperativeThreadArray::getSpecialValue(
 			break;
 		}
 		case ir::PTXOperand::clock: return clock; break;
+        case ir::PTXOperand::clock64: return clock; break;
 		default: break;
 	}
 	

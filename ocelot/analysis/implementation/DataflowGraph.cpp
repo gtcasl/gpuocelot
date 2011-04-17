@@ -97,7 +97,24 @@ namespace analysis
 
 		for( unsigned int j = 0; j < limit; ++j )
 		{
-			if( ( i.*sources[ j ] ).addressMode == ir::PTXOperand::Register 
+			if( !( i.*sources[ j ] ).array.empty() )
+			{
+				for( ir::PTXOperand::Array::iterator 
+					fi = ( i.*sources[ j ] ).array.begin(); 
+					fi != ( i.*sources[ j ] ).array.end(); ++fi )
+				{
+					if( fi->addressMode != ir::PTXOperand::Register )
+					{
+						continue;
+					}
+					reportE( REPORT_CONVERT, "  Converting register \"" 
+						<< fi->identifier << "\" to id " << fi->reg );
+					_maxRegister = std::max( _maxRegister, fi->reg );
+					result.s.push_back( 
+						RegisterPointer( &fi->reg, fi->type ) );
+				}
+			}			
+			else if( ( i.*sources[ j ] ).addressMode == ir::PTXOperand::Register 
 				|| ( i.*sources[ j ] ).addressMode == ir::PTXOperand::Indirect )
 			{
 				if( ( i.*sources[ j ] ).type == ir::PTXOperand::pred )
@@ -109,31 +126,15 @@ namespace analysis
 						continue;
 					}
 				}
-			
-				if( !( i.*sources[ j ] ).array.empty() )
-				{
-					for( ir::PTXOperand::Array::iterator 
-						fi = ( i.*sources[ j ] ).array.begin(); 
-						fi != ( i.*sources[ j ] ).array.end(); ++fi )
-					{
-						reportE( REPORT_CONVERT, "  Converting register \"" 
-							<< fi->identifier << "\" to id " << fi->reg );
-						_maxRegister = std::max( _maxRegister, fi->reg );
-						result.s.push_back( 
-							RegisterPointer( &fi->reg, fi->type ) );
-					}
-				}
-				else
-				{
-					reportE( REPORT_CONVERT, "  Converting register \"" 
-						<< ( i.*sources[ j ] ).identifier 
-						<< "\" to id " << ( i.*sources[ j ] ).reg );
-					_maxRegister = std::max( _maxRegister, 
-						( i.*sources[ j ] ).reg );
-					result.s.push_back( 
-						RegisterPointer( &( i.*sources[ j ] ).reg, 
-						( i.*sources[ j ] ).type ) );
-				}
+
+				reportE( REPORT_CONVERT, "  Converting register \"" 
+					<< ( i.*sources[ j ] ).identifier 
+					<< "\" to id " << ( i.*sources[ j ] ).reg );
+				_maxRegister = std::max( _maxRegister, 
+					( i.*sources[ j ] ).reg );
+				result.s.push_back( 
+					RegisterPointer( &( i.*sources[ j ] ).reg, 
+					( i.*sources[ j ] ).type ) );
 			}
 		}
 
@@ -156,7 +157,25 @@ namespace analysis
 
 		for( unsigned int j = 0; j < limit; ++j )
 		{
-			if( ( i.*destinations[ j ] ).addressMode 
+			if( !( i.*destinations[ j ] ).array.empty() )
+			{
+				for( ir::PTXOperand::Array::iterator 
+					fi =  ( i.*destinations[ j ] ).array.begin(); 
+					fi != ( i.*destinations[ j ] ).array.end(); ++fi )
+				{
+					if( fi->addressMode != ir::PTXOperand::Register )
+					{
+						continue;
+					}
+					reportE( REPORT_CONVERT, "  Converting register \"" 
+						<< fi->identifier 
+						<< "\" to id " << fi->reg );
+					_maxRegister = std::max( _maxRegister, fi->reg );
+					result.d.push_back( 
+						RegisterPointer( &fi->reg, fi->type ) );
+				}
+			} 
+			else if( ( i.*destinations[ j ] ).addressMode 
 				== ir::PTXOperand::Register )
 			{
 				if( ( i.*destinations[ j ] ).type == ir::PTXOperand::pred )
@@ -167,34 +186,18 @@ namespace analysis
 					{
 						continue;
 					}
-				}
-			
-				if( !( i.*destinations[ j ] ).array.empty() )
-				{
-					for( ir::PTXOperand::Array::iterator 
-						fi = ( i.*destinations[ j ] ).array.begin(); 
-						fi != ( i.*destinations[ j ] ).array.end(); ++fi )
-					{
-						reportE( REPORT_CONVERT, "  Converting register \"" 
-							<< fi->identifier 
-							<< "\" to id " << fi->reg );
-						_maxRegister = std::max( _maxRegister, fi->reg );
-						result.d.push_back( 
-							RegisterPointer( &fi->reg, fi->type ) );
-					}
-				}
-				else
-				{
-					reportE( REPORT_CONVERT, "  Converting register \"" 
-						<< ( i.*destinations[ j ] ).identifier 
-						<< "\" to id " << ( i.*destinations[ j ] ).reg );
-					_maxRegister = std::max( _maxRegister, 
-						( i.*destinations[ j ] ).reg );
-					result.d.push_back( 
-						RegisterPointer( &( i.*destinations[ j ] ).reg, 
-						( i.*destinations[ j ] ).type ) );
-				}
+				}			
+
+				reportE( REPORT_CONVERT, "  Converting register \"" 
+					<< ( i.*destinations[ j ] ).identifier 
+					<< "\" to id " << ( i.*destinations[ j ] ).reg );
+				_maxRegister = std::max( _maxRegister, 
+					( i.*destinations[ j ] ).reg );
+				result.d.push_back( 
+					RegisterPointer( &( i.*destinations[ j ] ).reg, 
+					( i.*destinations[ j ] ).type ) );
 			}
+
 		}
 		
 		result.i = &i;

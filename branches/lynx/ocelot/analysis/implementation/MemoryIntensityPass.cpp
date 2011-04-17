@@ -61,7 +61,7 @@ namespace analysis
 		instruction != block->instructions().end(); ++instruction){
 		    ir::PTXInstruction *ptxInstruction = (ir::PTXInstruction *)instruction->i;
 		    if((ptxInstruction->opcode == ir::PTXInstruction::Ld || ptxInstruction->opcode == ir::PTXInstruction::St) 
-                && ptxInstruction->pg.condition == ir::PTXOperand::Pred)
+                && ptxInstruction->addressSpace == ir::PTXInstruction::Global && ptxInstruction->pg.condition == ir::PTXOperand::Pred)
 			    predicateMap[ptxInstruction->pg.toString()]++;
 	    }
 	
@@ -107,7 +107,7 @@ namespace analysis
         for(analysis::DataflowGraph::InstructionVector::const_iterator instruction = block->instructions().begin();
 		instruction != block->instructions().end(); ++instruction){
 		    ir::PTXInstruction *ptxInstruction = (ir::PTXInstruction *)instruction->i;
-		    if(ptxInstruction->opcode == ir::PTXInstruction::Ld || ptxInstruction->opcode == ir::PTXInstruction::St)
+		    if((ptxInstruction->opcode == ir::PTXInstruction::Ld || ptxInstruction->opcode == ir::PTXInstruction::St) && ptxInstruction->addressSpace == ir::PTXInstruction::Global)
 			    memOpsCount++;
 	    }
         return memOpsCount;

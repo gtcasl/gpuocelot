@@ -129,10 +129,23 @@ namespace analysis
 
                 *out << "Total Kernel Runtime: " << _kernelProfile.maxSMRuntime << "ms\n";
                 
-                *out << "\nSM to Clock Cycles Mapping [SM ID: Clock Cycles]:\n\n";
+                *out << "\nSM to CTA Mapping [SM ID: (CTA ID, Clock Cycles)]:\n\n";
                 
-                for(KernelProfile::ProcessorToClockCyclesMap::const_iterator it = _kernelProfile.processorToClockCyclesMap.begin();
-            it != _kernelProfile.processorToClockCyclesMap.end(); ++it) {
+                for(KernelProfile::ThreadBlockToProcessorMap::const_iterator it = _kernelProfile.threadBlockToProcessorMap.begin();
+            it != _kernelProfile.threadBlockToProcessorMap.end(); ++it) {
+                    *out << "[" << it->first << ": (";
+
+                    for(std::vector<size_t>::const_iterator mappedIt = it->second.begin(); mappedIt != it->second.end(); ++mappedIt){
+                        *out << *mappedIt << ","; 
+                    }
+
+                    *out << ")\n";
+                }
+
+                *out << "\nCTAs per SM [SM ID: CTA Count]:\n\n";
+                
+                for(KernelProfile::ProcessorToThreadBlockCountMap::const_iterator it = _kernelProfile.processorToThreadBlockCountMap.begin();
+            it != _kernelProfile.processorToThreadBlockCountMap.end(); ++it) {
                     *out << "[" << it->first << ":" << it->second << "]\n";
                 }
     

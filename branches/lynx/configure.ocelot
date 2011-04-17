@@ -1,7 +1,7 @@
 {
 	ocelot: "ocelot",
     instrument: {
-        clockCycleCount: {
+        memoryIntensity: {
             logfile: "/proc/gpuinfo"
         }
     },

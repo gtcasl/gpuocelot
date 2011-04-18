@@ -280,6 +280,17 @@ def defineConfigFlags(env):
 
 	env.Replace(OCELOT_CONFIG_FLAGS = configFlags)
 
+def importEnvironment():
+	env = {  }
+	
+	if 'PATH' in os.environ:
+		env['PATH'] = os.environ['PATH']
+
+	if 'LD_LIBRARY_PATH' in os.environ:
+		env['LD_LIBRARY_PATH'] = os.environ['LD_LIBRARY_PATH']
+
+	return env
+
 def Environment():
 	vars = Variables()
 
@@ -312,7 +323,8 @@ def Environment():
 		'/usr/local'))
 
 	# create an Environment
-	env = OldEnvironment(ENV = {'PATH' : os.environ['PATH'], 'LD_LIBRARY_PATH' : os.environ['LD_LIBRARY_PATH']}, tools = getTools(), variables = vars)
+	env = OldEnvironment(ENV = importEnvironment(), \
+		tools = getTools(), variables = vars)
 
 	# set the version
 	env.Replace(VERSION = getVersion("2.1"))

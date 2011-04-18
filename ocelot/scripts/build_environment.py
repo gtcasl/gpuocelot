@@ -5,6 +5,7 @@ import os
 import inspect
 import platform
 import re
+import subprocess
 from SCons import SConf
 
 def getDebianArchitecture():
@@ -145,6 +146,11 @@ def getLLVMPaths(enabled):
 	if '-DNDEBUG' in cflags:
 		cflags.remove('-DNDEBUG')
 
+	# remove lib_path from libs
+	for lib in libs:
+		if lib[0:2] == "-L":
+			libs.remove(lib)
+
 	return (True,bin_path,lib_path,inc_path,cflags,lflags,libs)
 	
 def getTools():
@@ -241,15 +247,20 @@ def getVersion(base):
 		print 'Failed to get subversion revision'
 		return base + '.0'
 
-	svn_info = os.popen('svn info ..').read()
+	process = subprocess.Popen('svn info ..', shell=True,
+		stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+	(svn_info, std_err_data) = process.communicate()
 	
 	match = re.search('Last Changed Rev: ', svn_info)
-	revision = '0'
+	revision = 'unknown'
 	if match:
 		end = re.search('\n', svn_info[match.end():])
 		if end:
 			revision = svn_info[match.end():match.end()+end.start()]
-	
+	else:
+		print 'Failed to get SVN repository version!'
+
 	return base + '.' + revision
 
 def defineConfigFlags(env):
@@ -359,12 +370,8 @@ def Environment():
 	env.AppendUnique(CXXFLAGS = llvm_cflags)
 	env.AppendUnique(LINKFLAGS = llvm_lflags)
 	env.Replace(HAVE_LLVM = llvm)
+	env.Replace(LLVM_LIBS = llvm_libs)
 
-	env.Replace(LLVM_LIBS = [])
-	for lib in llvm_libs:
-		if lib[0:2] != "-L":
-			env.AppendUnique(LLVM_LIBS = [lib])
-	
 	# set ocelot include path
 	env.Prepend(CPPPATH = os.path.dirname(thisDir))
 	env.AppendUnique(LIBPATH = os.path.abspath('.'))

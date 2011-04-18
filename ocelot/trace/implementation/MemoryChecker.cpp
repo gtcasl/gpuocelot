@@ -265,7 +265,13 @@ namespace trace
 				_local.base, _local.extent, e, _kernel ); break;
 			case ir::PTXInstruction::Param:
 			{
-				if( e.instruction->a.isArgument )
+				bool isArgument =
+					(e.instruction->opcode == ir::PTXInstruction::Ld
+					&& e.instruction->a.isArgument) ||
+					(e.instruction->opcode == ir::PTXInstruction::St
+					&& e.instruction->d.isArgument);
+			
+				if( isArgument )
 				{
 					checkLocalAccess( "Argument", _dim, 
 						0, _kernel->getCurrentFrameArgumentMemorySize(),

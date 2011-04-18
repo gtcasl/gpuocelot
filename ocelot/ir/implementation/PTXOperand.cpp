@@ -41,7 +41,6 @@ std::string ir::PTXOperand::toString( DataType type ) {
 		case f32:  return "f32";  break;
 		case f64:  return "f64";  break;
 		case pred: return "pred"; break;
-		case _: return "_"; break;
 		default: break;
 	}
 	return "Invalid";
@@ -638,7 +637,7 @@ static std::ostream & write(std::ostream &stream, double value) {
 
 std::string ir::PTXOperand::toString() const {
 	
-	if(type == ir::PTXOperand::_ || addressMode == BitBucket ) {
+	if( addressMode == BitBucket ) {
 		return "_";
 	} else if( addressMode == Indirect ) {
 		std::stringstream stream;

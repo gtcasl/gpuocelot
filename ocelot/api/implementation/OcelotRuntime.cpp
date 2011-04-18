@@ -34,6 +34,94 @@ static void cudaFreeWrapper(void* pointer)
 	cudaFree(pointer);
 }
 
+static long long unsigned int align(long long unsigned int address,
+	long long unsigned int alignment)
+{
+	long long unsigned int remainder = address % alignment;
+	return remainder == 0 ? address : address + alignment - remainder;
+}
+
+template<typename T>
+void parse(std::string& result, long long unsigned int& parameters,
+	std::ios_base& (*format)(std::ios_base&) = std::dec)
+{
+	std::stringstream stream;
+	parameters = align(parameters, sizeof(T));
+	stream << format << *(T*)parameters;
+	result.append(stream.str());
+	parameters += sizeof(T);
+}
+
+static int printfWrapper(long long unsigned int string,
+	long long unsigned int parameters)
+{
+	const char* format = (const char*)string;
+	std::string result;
+
+	bool escape = false;
+	for(const char* f = format; *f != 0; ++f)
+	{
+		if(escape)
+		{
+			if(*f == 'c')
+			{
+				parse<char>(result, parameters);
+			}
+			else if(*f == 'd' || *f == 'i')
+			{
+				parse<int>(result, parameters);
+			}
+			else if (*f == 'f')
+			{
+				parse<float>(result, parameters);			
+			}
+			else if (*f == 'o')
+			{
+				parse<unsigned>(result, parameters, std::oct);			
+			}
+			else if (*f == 's')
+			{
+				std::string temp((const char*)parameters);
+				result += temp;
+				parameters += temp.size() + 1;
+			}
+			else if (*f == 'u')
+			{
+				parse<unsigned>(result, parameters);			
+			}
+			else if (*f == 'x')
+			{
+				parse<unsigned>(result, parameters, std::hex);			
+			}
+			else if (*f == 'p')
+			{
+				parse<void*>(result, parameters);			
+			}
+			else
+			{
+				result.push_back(*f);
+			}
+
+			escape = false;
+		}
+		else
+		{
+			if(*f == '%')
+			{
+				escape = true;
+			}
+			else
+			{
+				result.push_back(*f);
+			}
+		}
+	}
+	
+	std::cout << result;
+	
+	return 0;
+}
+
 namespace ocelot
 {
 	OcelotRuntime::OcelotRuntime() : _initialized( false )
@@ -66,9 +154,9 @@ namespace ocelot
 		}
 
 		// add built-in functions
-		registerExternalFunction("malloc", (void*)(cudaMallocWrapper));
-		registerExternalFunction("free",   (void*)(cudaFreeWrapper));
-		registerExternalFunction("printf", (void*)(std::printf));
+		registerExternalFunction("malloc",  (void*)(cudaMallocWrapper));
+		registerExternalFunction("free",    (void*)(cudaFreeWrapper));
+		registerExternalFunction("vprintf", (void*)(printfWrapper));
 	}
 
 }

@@ -50,7 +50,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 
-static unsigned int align(unsigned int offset, unsigned int size) {
+static unsigned int align(unsigned int offset, unsigned int _size) {
+	unsigned int size = _size == 0 ? 1 : _size;
 	unsigned int difference = offset % size;
 	unsigned int alignedOffset = difference == 0 
 		? offset : offset + size - difference;
@@ -882,6 +883,7 @@ void executive::EmulatedKernel::initializeGlobalMemory() {
 		if (instr.opcode == ir::PTXInstruction::Mov
 			|| instr.opcode == ir::PTXInstruction::Ld 
 			|| instr.opcode == ir::PTXInstruction::St
+			|| instr.opcode == ir::PTXInstruction::Cvta
 			|| instr.opcode == ir::PTXInstruction::Atom) {
 			for (int n = 0; n < 4; n++) {
 				if ((instr.*operands[n]).addressMode 
@@ -1012,7 +1014,7 @@ void executive::EmulatedKernel::initializeStackMemory() {
 	
 	unsigned int callParameterStackBase = _parameterMemorySize;
 	
-	report( " Setting offsets of operands to call instructions." );
+	report(" Setting offsets of operands to call instructions.");
 	for (PTXInstructionVector::iterator fi = instructions.begin(); 
 		fi != instructions.end(); ++fi) {
 		
@@ -1026,9 +1028,9 @@ void executive::EmulatedKernel::initializeStackMemory() {
 				argument != fi->d.array.end(); ++argument) {
 				offset = align(offset, ir::PTXOperand::bytes(argument->type));
 				argument->offset = offset;
-				report( "   For return argument '" << argument->identifier 
+				report("   For return argument '" << argument->identifier 
 					<< "' stack offset " << offset << " -> argument offset " 
-					<< argument->offset );
+					<< argument->offset);
 
 				assert(offsets.count(argument->identifier) == 0);
 				offsets.insert(std::make_pair(argument->identifier, offset));

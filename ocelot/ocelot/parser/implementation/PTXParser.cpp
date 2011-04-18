@@ -52,29 +52,30 @@ namespace parser
 	bool PTXParser::State::FunctionPrototype::compare( 
 		const FunctionPrototype& t )
 	{
-		// it seems calls can ignore return types
-		bool returnTypesEqual = true;
-		
-		if (!(t.returnTypes.size() == 1 && t.returnTypes[0]
-			== ir::PTXOperand::DataType::_)) {
-		
-			FunctionPrototype::TypeVector::const_iterator
-				callee_it = t.returnTypes.begin(), 
-				prototype_it = returnTypes.begin();
-			for (; 
-				returnTypesEqual && 
-					callee_it != t.returnTypes.end()
-					&& prototype_it != returnTypes.end();
-				++callee_it, ++prototype_it) {
-			
-				if (*callee_it != ir::PTXOperand::DataType::_
-					&& *callee_it != *prototype_it) {
-					returnTypesEqual =false;
-				}
+		if( t.returnTypes.size()   != returnTypes.size()   ) return false;
+		if( t.argumentTypes.size() != argumentTypes.size() ) return false;
+	
+		for( TypeVector::const_iterator fromType = returnTypes.begin(),
+			toType = t.returnTypes.begin(); fromType != returnTypes.end();
+			++fromType, ++toType )
+		{
+			if( !ir::PTXOperand::relaxedValid( *fromType, *toType ) )
+			{
+				return false;
 			}
 		}
 
-		return returnTypesEqual	&& t.argumentTypes == argumentTypes;
+		for( TypeVector::const_iterator fromType = t.argumentTypes.begin(),
+			toType = argumentTypes.begin(); fromType != t.argumentTypes.end();
+			++fromType, ++toType )
+		{
+			if( !ir::PTXOperand::relaxedValid( *fromType, *toType ) )
+			{
+				return false;
+			}
+		}
+	
+		return true;
 	}
 	
 	std::string PTXParser::State::FunctionPrototype::toString() const
@@ -1366,7 +1367,12 @@ namespace parser
 		}
 		else
 		{
-			if( mode->second.operand.addressMode == ir::PTXOperand::Register )
+			if( name == "_" )
+			{
+				operand.addressMode = ir::PTXOperand::BitBucket;
+			}
+			else if( mode->second.operand.addressMode
+				== ir::PTXOperand::Register )
 			{
 				operand.addressMode = ir::PTXOperand::Indirect;
 			}
@@ -1386,9 +1392,6 @@ namespace parser
 		}
 		operand.offset = (int) value;
 		operand.type = mode->second.operand.type;
-		if (operand.identifier == "_") {
-			operand.type = ir::PTXOperand::DataType::_;
-		}
 	
 		operandVector.push_back( operand );
 	}
@@ -1408,18 +1411,6 @@ namespace parser
 				<< "\" has more than 4 elements.", InvalidArray );
 		}
 
-#if 0
-		// I don't think this is a valid check
-		if( identifiers.size() == 3 )
-		{
-			throw_exception( toString( location, *this ) 
-				<< "Array operand \"" 
-				<< hydrazine::toString( identifiers.begin(), 
-				identifiers.end(), "," ) 
-				<< "\" has exactly 3 elements.", InvalidArray );
-		}
-#endif
-	
 		if( mode == operands.end() )
 		{
 			throw_exception( toString( location, *this ) << "Operand " 
@@ -1723,6 +1714,8 @@ namespace parser
 				InvalidInstruction );
 		}
 		
+		report( "   name: " << operand->second.operand.identifier );
+		
 		statement.instruction.a = operand->second.operand;
 	
 		statement.instruction.d.addressMode = ir::PTXOperand::ArgumentList;
@@ -1730,16 +1723,22 @@ namespace parser
 
 		FunctionPrototype proto;
 		
+		report( "   return operands(" << returnOperands << "):" );
+		
 		unsigned int operandIndex = 1;
 		for( ; returnOperands > 0; --returnOperands, ++operandIndex )
 		{
+			report( "    " << operandVector[ operandIndex ].toString() );
 			statement.instruction.d.array.push_back( 
 				operandVector[ operandIndex ] );
 			proto.returnTypes.push_back( operandVector[ operandIndex ].type );
 		}
+
+		report( "   operands:" );
 		
 		for( ; operandIndex < operandVector.size(); ++operandIndex )
 		{
+			report( "    " << operandVector[ operandIndex ].toString() );
 			statement.instruction.b.array.push_back(
 				operandVector[ operandIndex ] );
 			proto.argumentTypes.push_back( operandVector[ operandIndex ].type );

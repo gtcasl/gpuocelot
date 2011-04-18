@@ -6504,7 +6504,6 @@ namespace translator
 			{
 				switch( dType )
 				{
-					case ir::PTXOperand::_:
 					case ir::PTXOperand::pred:
 					case ir::PTXOperand::s16:
 					case ir::PTXOperand::b16:
@@ -6565,7 +6564,6 @@ namespace translator
 						_add( trunc );
 						break;
 					}
-					case ir::PTXOperand::_:
 					case ir::PTXOperand::b32:
 					case ir::PTXOperand::u32:
 					case ir::PTXOperand::s32:
@@ -6632,7 +6630,6 @@ namespace translator
 						_bitcast( d, a );
 						break;
 					}
-					case ir::PTXOperand::_:
 					case ir::PTXOperand::s64:
 					case ir::PTXOperand::b64:
 					case ir::PTXOperand::u64:
@@ -6685,7 +6682,6 @@ namespace translator
 						_add( trunc );
 						break;
 					}
-					case ir::PTXOperand::_:
 					case ir::PTXOperand::s64:
 					case ir::PTXOperand::b64:
 					case ir::PTXOperand::u64:
@@ -6718,7 +6714,6 @@ namespace translator
 			{
 				switch( dType )
 				{
-					case ir::PTXOperand::_:
 					case ir::PTXOperand::s16:
 					case ir::PTXOperand::s32:
 					case ir::PTXOperand::s64:
@@ -6780,7 +6775,6 @@ namespace translator
 						_add( trunc );
 						break;
 					}
-					case ir::PTXOperand::_:
 					case ir::PTXOperand::s32:
 					case ir::PTXOperand::s64:
 					case ir::PTXOperand::b32:
@@ -6845,7 +6839,6 @@ namespace translator
 						_add( trunc );
 						break;
 					}
-					case ir::PTXOperand::_:
 					case ir::PTXOperand::b64:
 					case ir::PTXOperand::u64:
 					case ir::PTXOperand::s64:
@@ -6887,7 +6880,6 @@ namespace translator
 				}
 				break;
 			}
-			case ir::PTXOperand::_:
 			case ir::PTXOperand::b64:
 			case ir::PTXOperand::u64:
 			{
@@ -6911,7 +6903,6 @@ namespace translator
 						_add( trunc );
 						break;
 					}
-					case ir::PTXOperand::_:
 					case ir::PTXOperand::b64:
 					case ir::PTXOperand::s64:
 					case ir::PTXOperand::u64:
@@ -6958,7 +6949,6 @@ namespace translator
 						_add( fptosi );
 						break;
 					}
-					case ir::PTXOperand::_:
 					case ir::PTXOperand::pred:
 					case ir::PTXOperand::b8:
 					case ir::PTXOperand::u8:
@@ -7172,7 +7162,6 @@ namespace translator
 						_floatToIntSaturate( d, fptosi.d, tempA, true );
 						break;
 					}
-					case ir::PTXOperand::_:
 					case ir::PTXOperand::pred:
 					case ir::PTXOperand::b8:
 					case ir::PTXOperand::u8:
@@ -7243,7 +7232,6 @@ namespace translator
 						_floatToIntSaturate( d, fptosi.d, a, true );
 						break;
 					}
-					case ir::PTXOperand::_:
 					case ir::PTXOperand::pred:
 					case ir::PTXOperand::b8:
 					case ir::PTXOperand::u8:

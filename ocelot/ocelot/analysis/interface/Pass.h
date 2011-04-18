@@ -14,7 +14,7 @@
 // Forward Declarations
 namespace ir
 {
-	class Kernel;
+	class IRKernel;
 	class Module;
 	class BasicBlock;
 }
@@ -115,7 +115,7 @@ namespace analysis
 			/*! \brief Initialize the pass using a specific module */
 			virtual void initialize( const ir::Module& m ) = 0;
 			/*! \brief Run the pass on a specific kernel in the module */
-			virtual void runOnKernel( ir::Kernel& k ) = 0;		
+			virtual void runOnKernel( ir::IRKernel& k ) = 0;		
 			/*! \brief Finalize the pass */
 			virtual void finalize( ) = 0;
 	};
@@ -133,7 +133,7 @@ namespace analysis
 			/*! \brief Initialize the pass using a specific module */
 			virtual void initialize( const ir::Module& m ) = 0;
 			/*! \brief Initialize the pass using a specific kernel */
-			virtual void initialize( const ir::Kernel& m ) = 0;
+			virtual void initialize( const ir::IRKernel& m ) = 0;
 			/*! \brief Run the pass on a specific kernel in the module */
 			virtual void runOnBlock( ir::BasicBlock& b ) = 0;		
 			/*! \brief Finalize the pass on the kernel */

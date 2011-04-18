@@ -26,7 +26,7 @@ namespace ir
 		ISA = Instruction::CAL;
 	}
 
-	ILKernel::ILKernel(const Kernel &k) : Kernel(k)
+	ILKernel::ILKernel(const IRKernel &k) : IRKernel(k)
 	{
 		ISA = Instruction::CAL;
 	}

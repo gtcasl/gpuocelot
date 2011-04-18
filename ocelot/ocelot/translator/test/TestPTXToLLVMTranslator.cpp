@@ -113,7 +113,7 @@ namespace test
 
 		for (; k_it != module.kernels().end(); ++k_it) 
 		{
-			ir::Kernel* kernel = module.getKernel( k_it->first );
+			ir::IRKernel* kernel = module.getKernel( k_it->first );
 
 			kernel->dfg();
 

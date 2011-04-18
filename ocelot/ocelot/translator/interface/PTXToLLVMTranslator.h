@@ -212,7 +212,6 @@ namespace translator
 			
 		public:
 			ir::Kernel* translate( const ir::Kernel* i );
-			void addProfile( const ProfilingData& d );
 	};
 }
 

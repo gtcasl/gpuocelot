@@ -369,7 +369,7 @@ namespace analysis
 		usesBarriers = false;
 	}
 	
-	void RemoveBarrierPass::runOnKernel( ir::Kernel& k )
+	void RemoveBarrierPass::runOnKernel( ir::IRKernel& k )
 	{
 		report( "Removing barriers from kernel " << k.name );
 		assertM( k.ISA == ir::Instruction::PTX, 

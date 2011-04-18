@@ -59,7 +59,7 @@ static unsigned int align(unsigned int offset, unsigned int _size) {
 }
 
 executive::EmulatedKernel::EmulatedKernel(
-	ir::Kernel* kernel, 
+	ir::IRKernel* kernel, 
 	Device* d, 
 	bool _initialize) 
 : 

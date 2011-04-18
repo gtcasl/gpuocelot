@@ -185,7 +185,7 @@ static void sinkBarrier(ir::PTXKernel& kernel, BlockSet& barriers,
 	
 }
 
-void MIMDThreadSchedulingPass::runOnKernel(ir::Kernel& k)
+void MIMDThreadSchedulingPass::runOnKernel(ir::IRKernel& k)
 {
 	assertM(k.ISA == ir::Instruction::PTX,
 		"This pass is valid for PTX kernels only.");

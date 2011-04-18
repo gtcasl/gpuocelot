@@ -88,7 +88,7 @@ namespace analysis
 
 	}
 	
-	void ConvertPredicationToSelectPass::runOnKernel( ir::Kernel& k )
+	void ConvertPredicationToSelectPass::runOnKernel( ir::IRKernel& k )
 	{
 		assertM( k.ISA == ir::Instruction::PTX, 
 			"This pass is valid for PTX kernels only." );

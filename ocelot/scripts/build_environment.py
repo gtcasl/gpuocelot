@@ -83,7 +83,7 @@ def getBoostPaths():
 	if 'BOOST_LIB_PATH' in os.environ:
 		lib_path = os.path.abspath(os.environ['BOOST_LIB_PATH'])
 	if 'BOOST_INC_PATH' in os.environ:
-		inc_path = oSConfs.path.abspath(os.environ['BOOST_INC_PATH'])
+		inc_path = os.path.abspath(os.environ['BOOST_INC_PATH'])
 
 	return (bin_path,lib_path,inc_path)
 
@@ -301,7 +301,7 @@ def Environment():
 		'/usr/local'))
 
 	# create an Environment
-	env = OldEnvironment(tools = getTools(), variables = vars)
+	env = OldEnvironment(ENV = {'PATH' : os.environ['PATH'], 'LD_LIBRARY_PATH' : os.environ['LD_LIBRARY_PATH']}, tools = getTools(), variables = vars)
 
 	# set the version
 	env.Replace(VERSION = getVersion("2.1"))
@@ -382,7 +382,7 @@ def Environment():
 	for lib in llvm_libs:
 		ocelot_libs += ' ' + lib
 	env.Replace(OCELOT_LDFLAGS=ocelot_libs)
-		
+	
 	# include the build directory in case of generated files
 	env.Prepend(CPPPATH = env.Dir('.'))
 
@@ -393,5 +393,4 @@ def Environment():
 	Help(vars.GenerateHelpText(env))
 
 	return env
-
 

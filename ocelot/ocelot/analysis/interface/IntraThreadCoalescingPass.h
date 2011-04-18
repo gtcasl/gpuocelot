@@ -17,7 +17,7 @@ namespace analysis
 	{
 		public:
 			void initialize(const ir::Module& m);
-			void runOnKernel(ir::Kernel& k);
+			void runOnKernel(ir::IRKernel& k);
 			void finalize();
 
 		private:

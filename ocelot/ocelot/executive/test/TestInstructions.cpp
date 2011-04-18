@@ -60,7 +60,7 @@ public:
 			return;
 		}
 		
-		Kernel* rawKernel = module.getKernel("_Z17k_simple_sequencePi");
+		IRKernel* rawKernel = module.getKernel("_Z17k_simple_sequencePi");
 		if (rawKernel == 0) {
 			status << "failed to get kernel\n";
 			valid = false;

@@ -33,9 +33,6 @@ namespace translator
 			ir::Kernel *translate(const ir::Kernel *k);
 			ir::Kernel *translate(const ExecutableKernel *k);
 
-			/*! \brief Add profiling data for the translator */
-			void addProfile(const ProfilingData &d);
-
 		private:
 			typedef std::map<int, std::string> ILiteralMap;
 			typedef std::map<float, std::string> FLiteralMap;

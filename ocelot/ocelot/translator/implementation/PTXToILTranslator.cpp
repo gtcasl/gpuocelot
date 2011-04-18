@@ -3543,9 +3543,4 @@ namespace translator
 		report("Added instruction '" << i.toString() << "'");
 		_ilKernel->_statements.push_back(ir::ILStatement(i));
 	}
-
-	void PTXToILTranslator::addProfile(const ProfilingData &d)
-	{
-		assertM(false, "Not implemented yet");
-	}
 }

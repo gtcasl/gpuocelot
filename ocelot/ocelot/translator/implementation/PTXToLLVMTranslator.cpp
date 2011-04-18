@@ -9109,10 +9109,6 @@ namespace translator
 		return _llvmKernel;
 	}
 	
-	void PTXToLLVMTranslator::addProfile( const ProfilingData& d )
-	{
-		// profiling not yet implemented
-	}
 }
 
 #endif

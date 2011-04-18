@@ -115,21 +115,21 @@ namespace ir
 
 	PTXKernel::PTXKernel( const std::string& name, bool isFunction,
 		const ir::Module* module ) :
-		Kernel( Instruction::PTX, name, isFunction, module )
+		IRKernel( Instruction::PTX, name, isFunction, module )
 	{
 		_cfg = new ControlFlowGraph;
 	}
 
 	PTXKernel::PTXKernel( PTXStatementVector::const_iterator start,
 		PTXStatementVector::const_iterator end, bool function) : 
-		Kernel( Instruction::PTX, "", function )
+		IRKernel( Instruction::PTX, "", function )
 	{
 		_cfg = new ControlFlowGraph;
 		constructCFG( *_cfg, start, end );
 		assignRegisters( *_cfg );
 	}
 
-	PTXKernel::PTXKernel( const PTXKernel& kernel ) : Kernel( kernel )
+	PTXKernel::PTXKernel( const PTXKernel& kernel ) : IRKernel( kernel )
 	{
 		
 	}
@@ -138,7 +138,7 @@ namespace ir
 	{
 		if( &kernel == this ) return *this;
 		
-		Kernel::operator=(kernel);
+		IRKernel::operator=(kernel);
 		_function = kernel.function();
 
 		return *this;	
@@ -256,7 +256,7 @@ namespace ir
 
 	const analysis::DataflowGraph* PTXKernel::dfg() const 
 	{
-		return Kernel::dfg();
+		return IRKernel::dfg();
 	}
 
 	analysis::DivergenceAnalysis* PTXKernel::div_analy()
@@ -273,7 +273,7 @@ namespace ir
 
 	const analysis::DivergenceAnalysis* PTXKernel::div_analy() const
 	{
-		return Kernel::div_analy();
+		return IRKernel::div_analy();
 	}
 
 	bool PTXKernel::executable() const {

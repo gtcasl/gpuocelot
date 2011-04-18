@@ -65,7 +65,7 @@ namespace analysis
 
 		private:
 			/*! \brief The kernel being operated on */
-			ir::Kernel* _kernel;
+			ir::IRKernel* _kernel;
 			/*! \brief This is the number of registers reserved for spills */
 			RegisterId _reserved;
 			/*! \brief This is the total number of spilled registers */
@@ -103,7 +103,7 @@ namespace analysis
 			/*! \brief Initialize the pass using a specific module */
 			void initialize( const ir::Module& m );
 			/*! \brief Run the pass on a specific kernel in the module */
-			void runOnKernel( ir::Kernel& k );
+			void runOnKernel( ir::IRKernel& k );
 			/*! \brief Finalize the pass */
 			void finalize( );
 			

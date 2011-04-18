@@ -18,9 +18,6 @@ namespace ir
 /*! \brief A namespace for IR to IR translators */
 namespace translator
 {
-	/*! \brief Forward declaration of profiling data used for optimization */
-	class ProfilingData;
-
 	/*! \brief An interface for a translator from one ISA to another */
 	class Translator
 	{
@@ -79,9 +76,6 @@ namespace translator
 				caller.  It is the caller's resposibility to free it.
 			*/
 			virtual ir::Kernel* translate( const ir::Kernel* i ) = 0;
-			
-			/*! \brief Add profiling data for the translator */
-			virtual void addProfile( const ProfilingData& d ) = 0;
 	};
 }
 

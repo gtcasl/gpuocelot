@@ -87,7 +87,7 @@ public:
 		using namespace ir;
 		using namespace executive;
 
-		Kernel *rawKernel = 0;
+		IRKernel *rawKernel = 0;
 		
 		bool result = true;
 		

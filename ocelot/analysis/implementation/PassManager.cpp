@@ -12,7 +12,7 @@
 #include <ocelot/analysis/interface/Pass.h>
 #include <ocelot/analysis/interface/DataflowGraph.h>
 #include <ocelot/analysis/interface/DivergenceAnalysis.h>
-#include <ocelot/ir/interface/Kernel.h>
+#include <ocelot/ir/interface/IRKernel.h>
 #include <ocelot/ir/interface/Module.h>
 
 //! Hydrazine Includes
@@ -28,7 +28,7 @@
 namespace analysis
 {
 
-static void freeUnusedDataStructures(ir::Kernel* k, int type)
+static void freeUnusedDataStructures(ir::IRKernel* k, int type)
 {
 	if(type < Pass::DivergenceAnalysis)
 	{
@@ -66,7 +66,7 @@ static void freeUnusedDataStructures(ir::Kernel* k, int type)
 	}
 }
 
-static void allocateNewDataStructures(ir::Kernel* k, int type)
+static void allocateNewDataStructures(ir::IRKernel* k, int type)
 {
 	if(type & Pass::ControlTreeAnalysis)
 	{
@@ -102,7 +102,7 @@ static void allocateNewDataStructures(ir::Kernel* k, int type)
 	}
 }
 
-static void runKernelPass(ir::Kernel* kernel, Pass* pass)
+static void runKernelPass(ir::IRKernel* kernel, Pass* pass)
 {
 	report("  Running pass '" << pass->toString() << "' on kernel '"
 		<< kernel->name << "'" );
@@ -141,7 +141,7 @@ static void runKernelPass(ir::Kernel* kernel, Pass* pass)
 	}
 }
 
-static void runKernelPass(ir::Module* module, ir::Kernel* kernel, Pass* pass)
+static void runKernelPass(ir::Module* module, ir::IRKernel* kernel, Pass* pass)
 {
 	switch(pass->type)
 	{
@@ -278,7 +278,8 @@ void PassManager::runOnKernel(const std::string& name)
 {
 	_module->loadNow();
 	
-	ir::Kernel* kernel = _module->getKernel(name);
+	ir::IRKernel* kernel = dynamic_cast<ir::IRKernel*>(
+		_module->getKernel(name));
 
 	for(PassMap::iterator pass = _passes.begin(); pass != _passes.end(); ++pass)
 	{

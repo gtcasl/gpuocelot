@@ -34,7 +34,7 @@ executive::NVIDIAExecutableKernel::~NVIDIAExecutableKernel() {
 	Construct a NVIDIAExecutableKernel from an existing kernel
 */
 executive::NVIDIAExecutableKernel::NVIDIAExecutableKernel(
-	ir::Kernel& kernel, const CUfunction& function, 
+	ir::IRKernel& kernel, const CUfunction& function, 
 	executive::Device* d ): ExecutableKernel(kernel, d), 
 	cuFunction(function) {
 	

@@ -764,7 +764,7 @@ static void createScheduler(ir::PTXKernel& kernel,
 	scheduler->instructions.push_back(branch);
 }
 
-static void addVariables(ir::PTXKernel& subkernel, const ir::Kernel& kernel,
+static void addVariables(ir::PTXKernel& subkernel, const ir::IRKernel& kernel,
 	unsigned int spillRegionSize, bool needsTransition)
 {
 	subkernel.arguments  = kernel.arguments;
@@ -804,7 +804,7 @@ static void addVariables(ir::PTXKernel& subkernel, const ir::Kernel& kernel,
       d) redirect each edge to the kernel exit point
       e) create a new kernel rooted in the new scheduler block, goto 1
 */
-void SubkernelFormationPass::ExtractKernelsPass::runOnKernel(ir::Kernel& k)
+void SubkernelFormationPass::ExtractKernelsPass::runOnKernel(ir::IRKernel& k)
 {
 	typedef std::vector<ir::ControlFlowGraph::iterator> BlockQueue;
 	

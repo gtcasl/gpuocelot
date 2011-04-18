@@ -418,7 +418,7 @@ namespace analysis
 			<< m.path() );
 	}
 
-	void LinearScanRegisterAllocationPass::runOnKernel( ir::Kernel& k )
+	void LinearScanRegisterAllocationPass::runOnKernel( ir::IRKernel& k )
 	{
 		report( "Running on kernel " << k.name );
 		_kernel = &k;

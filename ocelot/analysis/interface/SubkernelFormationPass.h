@@ -52,7 +52,7 @@ namespace analysis
 		public:
 			ExtractKernelsPass(unsigned int expectedRegionSize = 50);
 			void initialize(const ir::Module& m);
-			void runOnKernel(ir::Kernel& k);
+			void runOnKernel(ir::IRKernel& k);
 			void finalize();
 			
 		public:

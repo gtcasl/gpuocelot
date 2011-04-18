@@ -24,7 +24,7 @@ public:
 	/*! \brief Initialize the pass using a specific module */
 	void initialize(const ir::Module& m);
 	/*! \brief Run the pass on a specific kernel in the module */
-	void runOnKernel(ir::Kernel& k);		
+	void runOnKernel(ir::IRKernel& k);		
 	/*! \brief Finalize the pass */
 	void finalize();
 

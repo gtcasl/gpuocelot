@@ -27,7 +27,7 @@ namespace analysis
 	{
 	}
 
-	void IntraThreadCoalescingPass::runOnKernel(ir::Kernel& k)
+	void IntraThreadCoalescingPass::runOnKernel(ir::IRKernel& k)
 	{
 		report("Running IntraThreadCoalescingPass on " << k.name);
 

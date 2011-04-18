@@ -17,7 +17,7 @@ SyncEliminationPass::SyncEliminationPass()
 
 /*! \brief The SyncEliminationPass converts all non divergent
 	bra instructions into bra.uni */
-void SyncEliminationPass::runOnKernel(ir::Kernel& k)
+void SyncEliminationPass::runOnKernel(ir::IRKernel& k)
 {
 	const analysis::DivergenceAnalysis *divAnalysis = k.div_analy();
 

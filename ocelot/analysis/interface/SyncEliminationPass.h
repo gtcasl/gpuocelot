@@ -20,7 +20,7 @@ public:
 	SyncEliminationPass();
 	virtual ~SyncEliminationPass() {};
 	virtual void initialize( const ir::Module& m ){};
-	virtual void runOnKernel( ir::Kernel& k );
+	virtual void runOnKernel( ir::IRKernel& k );
 	virtual void finalize(){};
 };
 

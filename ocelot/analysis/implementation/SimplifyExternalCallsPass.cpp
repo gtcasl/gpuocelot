@@ -161,7 +161,7 @@ void SimplifyExternalCallsPass::initialize(const ir::Module& m)
 
 }
 
-void SimplifyExternalCallsPass::runOnKernel(ir::Kernel& k)
+void SimplifyExternalCallsPass::runOnKernel(ir::IRKernel& k)
 {
 	ir::PTXKernel& kernel = static_cast<ir::PTXKernel&>(k);
 

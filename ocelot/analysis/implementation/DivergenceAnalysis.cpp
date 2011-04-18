@@ -8,7 +8,8 @@
 #include <ocelot/ir/interface/PostdominatorTree.h>
 #include <assert.h>
 
-namespace analysis {
+namespace analysis
+{
 
 void DivergenceAnalysis::_analyzeDataFlow()
 {
@@ -245,12 +246,15 @@ DivergenceAnalysis::DivergenceAnalysis() : KernelPass( DataflowGraphAnalysis | S
 	_kernel = NULL;
 }
 
-/*! \brief Analyze the control and data flow graphs searching for divergent variables and blocks
+/*! \brief Analyze the control and data flow graphs searching for divergent 
+ *    variables and blocks
  *
- * 1) Makes data flow analysis that detects divergent variables and blocks based on divergent sources, such as t.id, laneId
- * 2) Makes control flow analysis that detects new divergent variables based on the dependency of variables of variables created on divergent paths
+ * 1) Makes data flow analysis that detects divergent variables and blocks 
+ *    based on divergent sources, such as t.id, laneId
+ * 2) Makes control flow analysis that detects new divergent variables based
+ *    on the dependency of variables of variables created on divergent paths
  */
-void DivergenceAnalysis::runOnKernel(ir::Kernel &k)
+void DivergenceAnalysis::runOnKernel(ir::IRKernel &k)
 {
 
 	if (typeid(ir::PTXKernel) == typeid(k)) {
@@ -269,9 +273,12 @@ void DivergenceAnalysis::runOnKernel(ir::Kernel &k)
 	_notDivergentBranches.clear();
 
 	graph_utils::DivergenceGraph::node_set predicates;
-	/* 1) Makes data flow analysis that detects divergent variables and blocks based on divergent sources, such as t.id, laneId */
+	/* 1) Makes data flow analysis that detects divergent variables and blocks
+		based on divergent sources, such as t.id, laneId */
 	_analyzeDataFlow();
-	/* 2) Makes control flow analysis that detects new divergent variables based on the dependency of variables of variables created on divergent paths */
+	/* 2) Makes control flow analysis that detects new divergent variables
+		based on the dependency of variables of variables created on divergent
+		paths */
 	if(_doCFGanalysis){
 		_analyzeControlFlow();
 	}
@@ -336,9 +343,36 @@ bool DivergenceAnalysis::isDivInstruction(const DataflowGraph::Instruction &inst
 	return isDivergent;
 }
 
+DivergenceAnalysis::branch_set &DivergenceAnalysis::getDivergentBranches()
+{
+	return _divergentBranches;
 }
 
-namespace std {
+DivergenceAnalysis::branch_set &DivergenceAnalysis::getNonDivergentBranches()
+{
+	return _notDivergentBranches;
+}
+
+const graph_utils::DivergenceGraph&
+	DivergenceAnalysis::getDivergenceGraph() const
+{
+	return _divergGraph;
+}
+
+const DataflowGraph* DivergenceAnalysis::getDFG() const
+{
+	return _kernel->dfg();
+}
+
+void DivergenceAnalysis::setControlFlowAnalysis(bool doControlFlowAnalysis)
+{
+	_doCFGanalysis = doControlFlowAnalysis;
+}
+
+}
+
+namespace std 
+{
 bool operator<(const analysis::BranchInfo x, const analysis::BranchInfo y)
 {
 	return x.block()->id() < y.block()->id();

@@ -585,7 +585,7 @@ namespace analysis {
     return change;  
   } 
   
-  void StructuralTransform::runOnKernel(ir::Kernel& k) {
+  void StructuralTransform::runOnKernel(ir::IRKernel& k) {
     bool change = false;
     _kernel = static_cast<ir::PTXKernel *>(&k);
     index = 0;

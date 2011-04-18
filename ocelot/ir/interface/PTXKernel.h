@@ -7,13 +7,13 @@
 #ifndef IR_PTX_KERNEL_H_INCLUDED
 #define IR_PTX_KERNEL_H_INCLUDED
 
-#include <ocelot/ir/interface/Kernel.h>
+#include <ocelot/ir/interface/IRKernel.h>
 #include <ocelot/analysis/interface/DataflowGraph.h>
 
 namespace ir 
 {
 	/*!	A specialization of the kernel class for PTX */
-	class PTXKernel : public Kernel 
+	class PTXKernel : public IRKernel 
 	{
 		public:
 			/*!	\brief Vector of statements */

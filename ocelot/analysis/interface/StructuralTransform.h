@@ -34,7 +34,7 @@ namespace analysis {
   public:
     StructuralTransform() : KernelPass() {}
     void initialize(const ir::Module& m) {};
-    void runOnKernel(ir::Kernel& k);
+    void runOnKernel(ir::IRKernel& k);
     void finalize() {};
 
   private:
@@ -90,4 +90,3 @@ namespace analysis {
 }
 
 #endif
-

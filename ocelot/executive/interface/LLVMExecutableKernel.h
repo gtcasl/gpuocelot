@@ -42,7 +42,7 @@ public:
 
 public:
 	/*! \brief Creates a new instance of the runtime bound to a kernel*/
-	LLVMExecutableKernel(const ir::Kernel& kernel, Device* d = 0,
+	LLVMExecutableKernel(const ir::IRKernel& kernel, Device* d = 0,
 		OptimizationLevel l = translator::Translator::NoOptimization);
 	/*! \brief Clean up the runtime */
 	~LLVMExecutableKernel();

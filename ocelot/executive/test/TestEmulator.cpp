@@ -28,7 +28,7 @@ namespace test {
 class TestEmulator: public Test {
 public:
 	ir::Module module;
-	ir::Kernel* rawKernel;	
+	ir::IRKernel* rawKernel;	
 
 public:
 	TestEmulator() {

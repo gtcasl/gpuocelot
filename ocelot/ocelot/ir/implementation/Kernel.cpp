@@ -46,6 +46,8 @@ const ir::Kernel& ir::Kernel::operator=(const Kernel &kernel) {
 	locals = kernel.locals;
 	_function = kernel.function();
 
+	module = kernel.module;
+
 	return *this;	
 }
 

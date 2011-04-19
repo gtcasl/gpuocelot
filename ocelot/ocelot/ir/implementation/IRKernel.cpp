@@ -43,21 +43,13 @@ ir::IRKernel::~IRKernel() {
 	delete _dva;
 }
 
-ir::IRKernel::IRKernel(const IRKernel &kernel) {
+ir::IRKernel::IRKernel(const IRKernel &kernel) : Kernel(kernel) {
 	// deep copy the elements from a kernel to this one
-
-	name = kernel.name;
-	ISA = kernel.ISA;
-	parameters = kernel.parameters;
-	arguments = kernel.arguments;
-	locals = kernel.locals;
-	_function = kernel.function();
 
 	_cfg = 0; _dom_tree = 0; _pdom_tree = 0; _dfg = 0; _ct = 0; _dva = 0;
 	_cfg = new ControlFlowGraph;
 	*_cfg = *kernel._cfg;
 	
-	module = kernel.module;
 }
 
 const ir::IRKernel& ir::IRKernel::operator=(const IRKernel &kernel) {
@@ -66,13 +58,12 @@ const ir::IRKernel& ir::IRKernel::operator=(const IRKernel &kernel) {
 	
 	Kernel::operator=(kernel);
 	
-	delete _cfg; delete _dom_tree; delete _pdom_tree; delete _dfg; delete _ct; delete _dva;
+	delete _cfg; delete _dom_tree; delete _pdom_tree;
+	delete _dfg; delete _ct;       delete _dva;
 
 	_cfg = 0; _dom_tree = 0; _pdom_tree = 0; _dfg = 0; _ct = 0; _dva = 0;
 	_cfg = new ControlFlowGraph;
 	*_cfg = *kernel._cfg;
-	
-	module = kernel.module;
 
 	return *this;	
 }

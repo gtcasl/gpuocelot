@@ -22,7 +22,6 @@
 
 #include <fstream>
 
-
 using namespace hydrazine;
 
 namespace analysis
@@ -79,7 +78,7 @@ namespace analysis
             _kernelProfile.threadBlockToProcessorMap[i] = threadBlockInfo;        
         } 
 
-        std::vector<size_t> clockCyclesPerSM;
+        std::vector<double> clockCyclesPerSM;
         clockCyclesPerSM.clear();
 
         for(KernelProfile::ProcessorToClockCyclesMap::const_iterator it = _kernelProfile.processorToClockCyclesMap.begin();
@@ -122,12 +121,17 @@ namespace analysis
             
             case text:   
 
+                if(!deviceInfoWritten){
+                    deviceInfo(out);
+                    deviceInfoWritten = true;
+                }
+
                 *out << "Kernel Name: " << kernelName << "\n";
                 *out << "Thread Block Count: " << threadBlocks << "\n";
                 *out << "Thread Count: " << threads << "\n";
                 
 
-                *out << "Total Kernel Runtime: " << _kernelProfile.maxSMRuntime << "ms\n";
+                *out << "Total Kernel Runtime: " << _kernelProfile.maxSMRuntime << " ms\n";
                 
                 *out << "\nSM to CTA Mapping [SM ID: (CTA ID, Clock Cycles)]:\n\n";
                 

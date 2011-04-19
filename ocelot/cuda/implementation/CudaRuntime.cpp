@@ -450,8 +450,9 @@ void cuda::CudaRuntime::_registerModule(ModuleMap::iterator module) {
     for(PTXInstrumentorVector::iterator instrumentor = thread.instrumentors.begin();
         instrumentor != thread.instrumentors.end(); ++instrumentor){
         (*instrumentor)->checkConditions();
-        if((*instrumentor)->conditionsMet)
+        if((*instrumentor)->conditionsMet) {
             (*instrumentor)->instrument(module->second);
+        }
     }
 
 	for(RegisteredTextureMap::iterator texture = _textures.begin(); 

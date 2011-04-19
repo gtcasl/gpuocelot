@@ -111,6 +111,8 @@ namespace analysis
         size_t i = 0;
         size_t j = 0;
         size_t k = 0;
+        double totalMemOps = 0;
+        double totalCount = 0;
         
         for(k = 0; k < threadBlocks; k++) {
             for(i = 0; i < basicBlocks; i++) {
@@ -145,6 +147,11 @@ namespace analysis
             break;
             case text:
 
+                if(!deviceInfoWritten){
+                    deviceInfo(out);
+                    deviceInfoWritten = true;
+                }
+
                 *out << "Kernel Name: " << kernelName << "\n";
                 *out << "Thread Block Count: " << threadBlocks << "\n";
                 *out << "Thread Count: " << threads << "\n";
@@ -157,7 +164,9 @@ namespace analysis
                     *out << "\nDynamic Instruction Count:\n\n";
 
                 for(j = 0; j < basicBlocks; j++) {
-                    *out << "\"" << labels[j] << "\": " << _kernelProfile.basicBlockExecutionCountMap[j] << "\n";
+                    *out << labels[j] << ": " << _kernelProfile.basicBlockExecutionCountMap[j] << "\n";
+                    totalCount += _kernelProfile.basicBlockExecutionCountMap[j];
+                    
                 }
 
                 if(type == memoryIntensity){
@@ -165,10 +174,19 @@ namespace analysis
 
                     for(j = 0; j < basicBlocks; j++) {
                         *out << "\"" << labels[j] << "\": " << "[" << _kernelProfile.memoryOperationsMap[j] << ":" << _kernelProfile.basicBlockExecutionCountMap[j] << "]\n";
+                        totalMemOps += _kernelProfile.memoryOperationsMap[j];
                     }
                 }
 
-                *out << "\n\n";
+                if(type == instructionCount || type == memoryIntensity){
+
+                    *out << "\nTotal Dynamic Instruction Count: " << totalCount << "\n";
+                }            
+                if(type == memoryIntensity) {
+                    *out << "Aggregate Memory Intensity: " << "[" << totalMemOps << ":" << totalCount << "] " << (totalMemOps / totalCount) * 100 << " %\n";
+                }    
+
+                *out << "\n\n";        
 
             break;
         }

@@ -102,6 +102,9 @@ namespace analysis
              /*! \brief format for display */
             FormatType fmt;
 
+            /*! \brief check if device info has already been written */
+            bool deviceInfoWritten;
+
 
         protected:
             
@@ -132,6 +135,9 @@ namespace analysis
 
             /*! \brief The createPass method instantiates the instrumentation pass */
             virtual analysis::Pass *createPass() = 0;
+
+            /*! \brief Output device info */
+            void deviceInfo(std::ostream *out);
 
             /*! \brief The jsonEmitter method creates a JSON emitter to display JSON */
             void jsonEmitter(std::string metric, hydrazine::json::Object *stats);

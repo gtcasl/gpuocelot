@@ -93,15 +93,16 @@ for source in bison_sources:
 	sources.append(bison[0])
 
 # Create the ocelot library
-libocelot = env.SharedLibrary('ocelot', sources)
+ocelot_dep_libs = env['EXTRA_LIBS']
+ocelot_dep_libs.extend(env['LLVM_LIBS'])
+
+libocelot = env.SharedLibrary('ocelot', sources, LIBS=ocelot_dep_libs)
 
 if 'install' in COMMAND_LINE_TARGETS:
 	libocelot = env.Install(os.path.join( \
 		env['install_path'], "lib"), libocelot)
 
 ocelot_libs = ['-locelot']
-ocelot_libs.extend(env['EXTRA_LIBS'])
-ocelot_libs.extend(env['LLVM_LIBS'])
 
 OcelotConfig = env.Program('OcelotConfig', \
 	['ocelot/tools/OcelotConfig.cpp'], LIBS=ocelot_libs, \

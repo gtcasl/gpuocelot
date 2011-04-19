@@ -396,10 +396,6 @@ def Environment():
 	
 	# set ocelot libs
 	ocelot_libs = '-locelot'
-	for lib in env['EXTRA_LIBS']:
-		ocelot_libs += ' ' + lib
-	for lib in llvm_libs:
-		ocelot_libs += ' ' + lib
 	env.Replace(OCELOT_LDFLAGS=ocelot_libs)
 	
 	# include the build directory in case of generated files

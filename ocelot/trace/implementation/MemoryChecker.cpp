@@ -470,7 +470,8 @@ namespace trace
 				{
 					errorOut << "[thread: " << thread 
 						<< "] Loading uninitialized value from " << space << 
-						"address space\n";
+						" address space" << "Near " << _kernel->location( e.PC ) 
+						<< "\n";
 					destStatus = MemoryChecker::NOT_DEFINED;
 				}
 			}
@@ -490,7 +491,8 @@ namespace trace
 				{
 					errorOut << "[thread: " << thread 
 						<< "] Storing uninitialized value to " << space 
-						<< "address space\n";
+						<< " address space near " << "Near " << _kernel->location( e.PC ) 
+						<< "\n";
 				}
 			}
 
@@ -525,6 +527,7 @@ namespace trace
 			
 			if( destStatus != MemoryChecker::DEFINED )
 			{
+			  
 				report( prefix( thread, _dim, e ) << errorOut.str() << "\n" );
 			}
 			

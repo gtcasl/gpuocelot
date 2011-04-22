@@ -510,7 +510,8 @@ namespace executive
 			Throw("Unknown module - " << moduleName);
 		}
 
-		ExecutableKernel* kernel = module->second->getKernel(kernelName);
+		ATIExecutableKernel* kernel = 
+			static_cast<ATIExecutableKernel*>(module->second->getKernel(kernelName));
 		
 		if(kernel == 0)
 		{
@@ -537,6 +538,7 @@ namespace executive
 		kernel->updateArgumentMemory();
 		kernel->updateMemory();
 		kernel->setExternSharedMemorySize(sharedMemory);
+		kernel->setVoteMemorySize(_properties.maxThreadsPerBlock / 32 * 4); 
 		kernel->launchGrid(grid.x, grid.y);
 	}
 

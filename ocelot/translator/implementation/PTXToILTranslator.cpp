@@ -32,7 +32,7 @@ namespace translator
 		assertM(0, "Translator needs the kernel to be an executable kernel");
 	}
 
-	ir::Kernel* PTXToILTranslator::translate(const ExecutableKernel* k)
+	ir::Kernel* PTXToILTranslator::translate(const ATIExecutableKernel* k)
 	{
 		report("Translating kernel " << k->name);
 
@@ -3550,7 +3550,7 @@ namespace translator
 		return stream.str();
 	}
 
- 	void PTXToILTranslator::_addKernelPrefix(const ExecutableKernel *k)
+ 	void PTXToILTranslator::_addKernelPrefix(const ATIExecutableKernel *k)
  	{
 		report("Adding Kernel Prefix");
 
@@ -3620,7 +3620,8 @@ namespace translator
 		report("Added \'" << dcl_cb0.toString() << "\'");
 
 		unsigned int totalSharedMemorySize = k->sharedMemorySize() +
-			k->externSharedMemorySize();
+			k->externSharedMemorySize() + k->voteMemorySize();
+
 		if (totalSharedMemorySize > 0)
 		{
 			ir::ILStatement dcl_lds(ir::ILStatement::LocalDataShareDcl);

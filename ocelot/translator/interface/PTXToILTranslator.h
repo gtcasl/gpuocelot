@@ -15,10 +15,10 @@
 #include <ocelot/translator/interface/Translator.h>
 #include <ocelot/ir/interface/ILKernel.h>
 #include <ocelot/ir/interface/ControlTree.h>
-#include <ocelot/executive/interface/ExecutableKernel.h>
+#include <ocelot/executive/interface/ATIExecutableKernel.h>
 
 typedef ir::ControlTree CT;
-typedef executive::ExecutableKernel ExecutableKernel;
+typedef executive::ATIExecutableKernel ATIExecutableKernel;
 
 namespace translator
 {
@@ -31,7 +31,7 @@ namespace translator
 
 			/*! \brief Translate a module from PTX to IL */
 			ir::Kernel *translate(const ir::Kernel *k);
-			ir::Kernel *translate(const ExecutableKernel *k);
+			ir::Kernel *translate(const ATIExecutableKernel *k);
 
 			/*! \brief Add profiling data for the translator */
 			void addProfile(const ProfilingData &d);
@@ -48,7 +48,7 @@ namespace translator
 			ir::ILInstruction::RegisterType _tempRegisterCount;
 
 			void _translateInstructions();
-			void _addKernelPrefix(const ExecutableKernel *k);
+			void _addKernelPrefix(const ATIExecutableKernel *k);
 
 			void _translate(const CT::Node* node);
 			void _translate(const CT::InstNode* node);

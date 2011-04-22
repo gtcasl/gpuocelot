@@ -43,6 +43,8 @@ namespace translator
 			ir::ILKernel *_ilKernel;
 			ILiteralMap _intLiterals;
 			FLiteralMap _floatLiterals;
+
+			static const ir::ILInstruction::RegisterType _tempRegisterMin = 5000;
 			ir::ILInstruction::RegisterType _tempRegisterCount;
 
 			void _translateInstructions();
@@ -87,6 +89,7 @@ namespace translator
 			void _translateNeg(const ir::PTXInstruction &i);
 			void _translateNot(const ir::PTXInstruction &i);
 			void _translateOr(const ir::PTXInstruction &i);
+			void _translatePopc(const ir::PTXInstruction &i);
 			void _translateRcp(const ir::PTXInstruction &i);
 			void _translateRem(const ir::PTXInstruction &i);
 			void _translateRsqrt(const ir::PTXInstruction &i);
@@ -98,8 +101,10 @@ namespace translator
 			void _translateSqrt(const ir::PTXInstruction &i);
 			void _translateSt(const ir::PTXInstruction &i);
 			void _translateSub(const ir::PTXInstruction &i);
+			void _translateVote(const ir::PTXInstruction& i);
 			void _translateXor(const ir::PTXInstruction& i);
 
+			void _translateLdParam(const ir::PTXInstruction &i);
 			void _translateLdSharedByte(const ir::PTXInstruction &i);
 			void _translateLdSharedDword(const ir::PTXInstruction &i);
 			void _translateStSharedByte(const ir::PTXInstruction &i);
@@ -117,7 +122,7 @@ namespace translator
 
 			ir::ILOperand _translateLiteral(int l);
 			ir::ILOperand _translateLiteral(float l);
-			std::string   _translateConstantBuffer(const ir::PTXOperand o);
+			std::string   _translateConstantBuffer(const ir::PTXOperand o, unsigned int offset);
 
 			void _convertSrc(const ir::PTXInstruction &i, ir::ILOperand& a);
 			void _convert(const ir::PTXInstruction &i);

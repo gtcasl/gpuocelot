@@ -23,7 +23,7 @@ namespace translator
 		:
 			Translator(ir::Instruction::PTX, ir::Instruction::CAL, l),
 			_ilKernel(0),
-			_tempRegisterCount(1000)
+			_tempRegisterCount(_tempRegisterMin)
 	{
 	}
 
@@ -255,6 +255,7 @@ namespace translator
 			case ir::PTXInstruction::Neg:    _translateNeg(i);    break;
 			case ir::PTXInstruction::Not:    _translateNot(i);    break;
 			case ir::PTXInstruction::Or:     _translateOr(i);     break;
+			case ir::PTXInstruction::Popc:   _translatePopc(i);   break;
 			case ir::PTXInstruction::Rcp:    _translateRcp(i);    break;
 			case ir::PTXInstruction::Rem:    _translateRem(i);    break;
 			case ir::PTXInstruction::Rsqrt:  _translateRsqrt(i);  break;
@@ -266,6 +267,7 @@ namespace translator
 			case ir::PTXInstruction::Sqrt:   _translateSqrt(i);   break;
  			case ir::PTXInstruction::St:     _translateSt(i);     break;
 			case ir::PTXInstruction::Sub:    _translateSub(i);    break;
+			case ir::PTXInstruction::Vote:   _translateVote(i);   break;
 			case ir::PTXInstruction::Xor:    _translateXor(i);    break;
 			default:
 			{
@@ -292,6 +294,7 @@ namespace translator
 			{
 				switch (o.type)
 				{
+					case ir::PTXOperand::s8:
 					case ir::PTXOperand::s32:
 					case ir::PTXOperand::u16:
 					case ir::PTXOperand::u32:
@@ -314,12 +317,6 @@ namespace translator
 							   << "\" not supported");
 					}
 				}
-				break;
-			}
-			case ir::PTXOperand::Address:
-			{
-				op.addressMode = ir::ILOperand::ConstantBuffer;
-				op.identifier = _translateConstantBuffer(o);
 				break;
 			}
 			case ir::PTXOperand::Special:
@@ -368,7 +365,7 @@ namespace translator
 	std::string PTXToILTranslator::_translate(
 			const ir::PTXOperand::RegisterType &reg)
 	{
-		assertM(reg < 1000, "Register name " << reg 
+		assertM(reg < _tempRegisterMin, "Register name " << reg 
 				<< " collides with temp registers");
 
 		std::stringstream stream;
@@ -728,6 +725,16 @@ namespace translator
 			{
 				switch (i.type)
 				{
+					case ir::PTXOperand::s8:
+					{
+						// chop
+						ir::ILIand iand;
+						iand.d = d;
+						iand.a = a;
+						iand.b = _translateLiteral((int)0x000000FF);
+						_add(iand);
+                        return;
+					}
 					case ir::PTXOperand::s64:
 					case ir::PTXOperand::u64:
 					{
@@ -954,6 +961,23 @@ namespace translator
 	{
 		switch (i.type)
 		{
+			case ir::PTXOperand::s8:
+			{
+				switch (i.d.type)
+				{
+					case ir::PTXOperand::u32:
+					{
+						// sext
+						ir::ILMov mov;
+						mov.d = _translate(i.d);
+						mov.a = d;
+						_add(mov);
+						return;
+					}
+					default: break;
+				}
+				break;
+			}
 			case ir::PTXOperand::s32:
 			{
 				switch (i.d.type)
@@ -1326,19 +1350,63 @@ namespace translator
 		_add(fma);
 	}
 
+	void PTXToILTranslator::_translateLdParam(const ir::PTXInstruction &i)
+	{
+		int bytes  = ir::PTXOperand::bytes(i.type);
+		int bytesA = ir::PTXOperand::bytes(i.a.type);
+
+		// IL registers are 32 bits
+		bytes  = (bytes > 4 ? 4 : bytes);
+		bytesA = (bytesA > 4 ? 4 : bytesA);
+
+		assertM(bytes >= bytesA,
+				"Type mismatch: " << ir::PTXOperand::toString(i.type) << 
+				" != " << ir::PTXOperand::toString(i.a.type));
+
+		assertM(bytes % bytesA == 0,
+				"Type mismatch: " << ir::PTXOperand::toString(i.type) << 
+				" != " << ir::PTXOperand::toString(i.a.type));
+
+		ir::ILOperand temp1 = _tempRegister();
+		ir::ILOperand d = _translate(i.d);
+		for (int b = 0 ; b < bytes / bytesA ; ++b)
+		{
+			if (b == 0)
+			{
+				ir::ILMov mov;
+				mov.a.addressMode = ir::ILOperand::ConstantBuffer;
+				mov.a.identifier = _translateConstantBuffer(i.a, 0);
+				mov.d = d;
+				_add(mov);
+			}
+			else
+			{
+				ir::ILMov mov;
+				mov.a.addressMode = ir::ILOperand::ConstantBuffer;
+				mov.a.identifier = _translateConstantBuffer(i.a, b);
+				mov.d = temp1;
+				_add(mov);
+
+				ir::ILIshl ishl;
+				ishl.d = temp1;
+				ishl.a = temp1;
+				ishl.b = _translateLiteral(b * bytesA * 8);
+				_add(ishl);
+
+				ir::ILIadd iadd;
+				iadd.d = d;
+				iadd.a = d;
+				iadd.b = temp1;
+				_add(iadd);
+			}
+		}
+	}
+
 	void PTXToILTranslator::_translateLd(const ir::PTXInstruction &i)
 	{
 		switch (i.addressSpace)
 		{
-			case ir::PTXInstruction::Param:
-			{
-				ir::ILMov mov;
-				mov.a = _translate(i.a);
-				mov.d = _translate(i.d);
-				_add(mov);
-
-				break;
-			}
+			case ir::PTXInstruction::Param: _translateLdParam(i); break;
 			case ir::PTXInstruction::Global:
 			case ir::PTXInstruction::Const:
 			{
@@ -1906,6 +1974,14 @@ namespace translator
 
 		_add(ior);
 	}
+
+	void PTXToILTranslator::_translatePopc(const ir::PTXInstruction &i)
+    {
+        ir::ILIcbits icbits;
+        icbits.d = _translate(i.d);
+        icbits.a = _translate(i.a);
+        _add(icbits);
+    }
 
 	void PTXToILTranslator::_translateRcp(const ir::PTXInstruction &i)
 	{
@@ -3372,6 +3448,36 @@ namespace translator
 		}
 	}
 
+	void PTXToILTranslator::_translateVote(const ir::PTXInstruction& i)
+    {
+        switch(i.vote)
+        {
+            case ir::PTXInstruction::All:
+            {
+                ir::ILMov mov;
+                mov.a = _translateLiteral(1);
+                mov.d = _translate(i.d);
+                _add(mov);
+                break;
+            }
+            case ir::PTXInstruction::Ballot:
+            {
+                ir::ILMov mov;
+                mov.a = _translateLiteral((int)0xFFFFFFFF);
+                mov.d = _translate(i.d);
+                _add(mov);
+                break;
+            }
+			default:
+			{
+				assertM(false, "Type "
+						<< ir::PTXInstruction::toString(i.vote)
+						<< " not supported in "
+						<< i.toString());
+			}
+        }
+    }
+
 	void PTXToILTranslator::_translateXor(const ir::PTXInstruction& i)
 	{
 		ir::ILIxor ixor;
@@ -3422,7 +3528,7 @@ namespace translator
 	}
 
 	std::string PTXToILTranslator::_translateConstantBuffer(
-			const ir::PTXOperand o)
+			const ir::PTXOperand o, unsigned int offset)
 	{
 		const std::string ident = o.identifier;
 		std::stringstream stream;
@@ -3436,7 +3542,7 @@ namespace translator
 		}
 
 		if (it != _ilKernel->arguments.end()) {
-			stream << "cb1[" << i + o.offset << "]";
+			stream << "cb1[" << i + o.offset + offset << "]";
 		} else {
 			assertM(false, "Argument " << ident << " not declared");
 		}

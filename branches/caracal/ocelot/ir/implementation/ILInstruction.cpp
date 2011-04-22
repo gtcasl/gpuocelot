@@ -39,6 +39,7 @@ namespace ir
 			case FtoU:                  return "ftou";
 			case Iadd:                  return "iadd";
 			case Iand:                  return "iand";
+			case Icbits:                return "icbits";
 			case Ieq:                   return "ieq";
 			case IfLogicalNZ:           return "if_logicalnz";
 			case IfLogicalZ:            return "if_logicalz";
@@ -359,6 +360,15 @@ namespace ir
 	Instruction *ILIand::clone(bool copy) const
 	{
 		return new ILIand(*this);
+	}
+
+	ILIcbits::ILIcbits() : ILUnaryInstruction(Icbits)
+	{
+	}
+
+	Instruction *ILIcbits::clone(bool copy) const
+	{
+		return new ILIcbits(*this);
 	}
 
 	ILIeq::ILIeq() : ILBinaryInstruction(Ieq)

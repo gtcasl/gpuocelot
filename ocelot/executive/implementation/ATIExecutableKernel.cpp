@@ -387,6 +387,10 @@ namespace executive
 		int i = 0;
 		ParameterVector::const_iterator it;
 		for (it = arguments.begin(); it != arguments.end(); it++) {
+			report("Updating argument " << it->name <<
+					", type " << ir::PTXOperand::toString(it->type) <<
+					", array size " << it->arrayValues.size());
+
 			unsigned int j;
 			for (j = 0 ; j < it->arrayValues.size() ; j++)
 			{
@@ -398,8 +402,7 @@ namespace executive
 						// CUDA pointers are 32-bits
 						assertM(v.val_u64 >> 32 == 0, 
 								"Pointer out of range");
-						cb1[i].x = (v.val_u32 < ATIGPUDevice::Uav0BaseAddr) ? 
-							0 : v.val_u32 - ATIGPUDevice::Uav0BaseAddr; 
+						cb1[i].x = v.val_u32; 
 						report("cb1[" << i << "] = {" << cb1[i].x << "}");
 						i++;
 						break;
@@ -484,8 +487,7 @@ namespace executive
 
 							operand->addressMode = ir::PTXOperand::Immediate;
 							operand->imm_uint = 
-								(long long unsigned int)allocation->pointer() -
-								ATIGPUDevice::Uav0BaseAddr;
+								(long long unsigned int)allocation->pointer();
 						} else {
 							operand->addressMode = ir::PTXOperand::Immediate;
 							operand->imm_uint = 0;

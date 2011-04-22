@@ -37,6 +37,7 @@ namespace ir
 				FtoU,
 				Iadd,
 				Iand,
+				Icbits,
 				Ieq,
 				IfLogicalNZ,
 				IfLogicalZ,
@@ -352,6 +353,13 @@ namespace ir
 	{
 		public:
 			ILIand();
+			Instruction *clone(bool copy=true) const;
+	};
+
+	class ILIcbits: public ILUnaryInstruction
+	{
+		public:
+			ILIcbits();
 			Instruction *clone(bool copy=true) const;
 	};
 

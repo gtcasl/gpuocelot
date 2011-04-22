@@ -32,7 +32,7 @@ namespace executive
     ATIGPUDevice::ATIGPUDevice() 
 		: 
 			_allocations(),
-			_uav0AllocPtr(Uav0BaseAddr),
+			_uav0AllocPtr(0),
 			_uav0Resource(0),
 			_cb0Resource(0),
 			_cb1Resource(0),
@@ -317,8 +317,8 @@ namespace executive
 		size_t aSize = AlignUp(size, 4);
 
 		// Check uav0 size limits
-		assertM(_uav0AllocPtr - Uav0BaseAddr + aSize < Uav0Size,
-				"Out of global memory: " << _uav0AllocPtr - Uav0BaseAddr
+		assertM(_uav0AllocPtr + aSize < Uav0Size,
+				"Out of global memory: " << _uav0AllocPtr
 				<< " + " << aSize
 				<< " greater than " << Uav0Size);
 
@@ -328,6 +328,9 @@ namespace executive
 				std::make_pair(allocation->pointer(), allocation));
 
 		_uav0AllocPtr += aSize;
+
+		report("New allocation of " << size << " bytes at " 
+				<< std::hex << allocation->pointer());
 
 		return allocation;
 	}
@@ -597,7 +600,6 @@ namespace executive
 		: _resource(resource), _basePtr(basePtr), _size(size)
 	{
 		assertM(resource, "Invalid resource");
-		assertM(basePtr, "Invalid device pointer");
 		assertM(size, "Invalid size");
 	}
 
@@ -634,7 +636,7 @@ namespace executive
 
 		CalDriver()->calResMap(&data, &pitch, *_resource, flags);
 
-		CALdeviceptr addr = (_basePtr - ATIGPUDevice::Uav0BaseAddr) + offset;
+		CALdeviceptr addr = _basePtr + offset;
 		std::memcpy((char *)data + addr, host, size);
 
 		report("MemoryAllocation::copy("
@@ -659,7 +661,7 @@ namespace executive
 
 		CalDriver()->calResMap(&data, &pitch, *_resource, flags);
 
-		CALdeviceptr addr = (_basePtr - ATIGPUDevice::Uav0BaseAddr) + offset;
+		CALdeviceptr addr = _basePtr + offset;
 		std::memcpy(host, (char *)data + addr, size);
 		report("MemoryAllocation::copy("
 				<< "host = " << std::hex << std::showbase << host
@@ -681,7 +683,7 @@ namespace executive
 
 		CalDriver()->calResMap(&data, &pitch, *_resource, flags);
 
-		CALdeviceptr addr = (_basePtr - ATIGPUDevice::Uav0BaseAddr) + offset;
+		CALdeviceptr addr = _basePtr + offset;
 		std::memset((char *)data + addr, value, size);
 
 		report("MemoryAllocation::memset("
@@ -709,10 +711,10 @@ namespace executive
 
 		CalDriver()->calResMap(&data, &pitch, *_resource, flags);
 
-		CALdeviceptr baseFromAddr = (_basePtr - ATIGPUDevice::Uav0BaseAddr);
+		CALdeviceptr baseFromAddr = _basePtr;
 		CALdeviceptr fromAddr = baseFromAddr + fromOffset;
 
-		CALdeviceptr baseToAddr = (allocation->_basePtr - ATIGPUDevice::Uav0BaseAddr);
+		CALdeviceptr baseToAddr = allocation->_basePtr;
 		CALdeviceptr toAddr = baseToAddr + toOffset;
 
 		std::memcpy((char*)data + toAddr, (char *)data + fromAddr, size);
@@ -765,9 +767,9 @@ namespace executive
 
 			// Check uav0 size limits
 			assertM(
-				device->_uav0AllocPtr - ATIGPUDevice::Uav0BaseAddr + aSize 
+				device->_uav0AllocPtr + aSize 
 				< ATIGPUDevice::Uav0Size, "Out of global memory: " 
-				<< device->_uav0AllocPtr - ATIGPUDevice::Uav0BaseAddr
+				<< device->_uav0AllocPtr
 				<< " + " << aSize
 				<< " greater than " << ATIGPUDevice::Uav0Size);
 

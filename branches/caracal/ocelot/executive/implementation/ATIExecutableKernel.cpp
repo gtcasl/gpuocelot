@@ -28,6 +28,7 @@ namespace executive
 			CALresource *cb1, Device* d)
 		: 
 			ExecutableKernel(k, d), 
+			_voteMemorySize(0),
 			_context(context),
 			_event(event),
 			_info(),
@@ -365,6 +366,17 @@ namespace executive
 	{
 		report("Setting external shared memory size to " << bytes);
 		_externSharedMemorySize = bytes;
+	}
+
+	unsigned int ATIExecutableKernel::voteMemorySize() const 
+	{ 
+		return _voteMemorySize; 
+	}
+
+	void ATIExecutableKernel::setVoteMemorySize(unsigned int bytes)
+	{
+		report("Setting vote memory size to " << bytes);
+		_voteMemorySize = bytes;
 	}
 
 	void ATIExecutableKernel::setWorkerThreads(unsigned int workerThreadLimit)

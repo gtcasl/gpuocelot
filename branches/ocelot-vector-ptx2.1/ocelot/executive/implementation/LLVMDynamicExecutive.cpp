@@ -26,9 +26,11 @@
 
 #define REPORT_LOCAL_MEMORY 0
 
-#define REPORT_SCHEDULE_OPERATIONS 1
+#define REPORT_SCHEDULE_OPERATIONS 0
 
-#define REPORT_BASE 0
+#define REPORT_STATISTICS 1
+
+#define REPORT_BASE 1
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -56,22 +58,9 @@ void LLVMDynamicExecutive::CooperativeThreadArray::initialize(
 	const ir::Dim3 blockDim = kernel.blockDim();
 	
 	int totalThreads = blockDim.x * blockDim.y * blockDim.z;
-
-	report("Initializing CTA (" << ctaId.x << ", " << ctaId.y << ", " << ctaId.z << ") with " << totalThreads << " threads");
-	report("  local memory size " << localMemorySize << " bytes");
-	report("  shared memory size: " << sharedMemorySize << " bytes");
 		
 	local.resize(localMemorySize * totalThreads, 0);
 	shared.resize(sharedMemorySize, 0);
-
-	if (localMemorySize) {	
-		report("  local memory range: " << (const void *)&local[0] 
-			<< " - " << (const void *)&local[local.size()-1]);
-	}
-	if (sharedMemorySize) {
-		report("  shared memory range: " << (const void *)&shared[0] 
-			<< " - " << (const void *)&shared[shared.size()-1]);
-	}
 	
 	for (int threadId = 0; threadId < totalThreads; threadId++) {
 		LLVMContext context;
@@ -211,21 +200,84 @@ void LLVMDynamicExecutive::execute() {
 	
 	reportE(REPORT_SCHEDULE_OPERATIONS, "execute()");
 	
+	iterations = 0;
+	size_t scheduleCycles = 0;
+	
+	translationTime = managerTime = 0;
+	managerTimer.start();
+	
+	hydrazine::Timer testBarriersTimer;
+	hydrazine::Timer warpFormationTimer;
+	hydrazine::Timer warpExecutionTimer;
+	
+	double testBarriersTime = 0;
+	double warpFormationTime = 0;
+	double warpExecutionTime = 0;
+	
+	eTime0 = eTime1 = eTime2 = 0;
+	
+	reportE(REPORT_STATISTICS, "\nCTA");
+	
 	do {
 		Warp warp;
 		
+		testBarriersTimer.start();
+		
 		testBarriers(waitingThreads, readyThreads);
+		
+		testBarriersTimer.stop();
+		testBarriersTime += testBarriersTimer.seconds();
 		
 		if (readyThreads) {
 			
+			warpFormationTimer.start();
+			
 			// construct a warp
 			warpFormation(warp);
+			
+			warpFormationTimer.stop();
+			warpFormationTime += warpFormationTimer.seconds();
 		
 			reportE(REPORT_SCHEDULE_OPERATIONS, " formed warp with " << warp.threads.size() << " threads");
+			
+			warpExecutionTimer.start();
+			
 			// execute a warp
 			executeWarp(warp);
+			
+			warpExecutionTimer.stop();
+			warpExecutionTime += warpExecutionTimer.seconds();
+			
+			++scheduleCycles;
 		}
 	} while (waitingThreads || readyThreads);
+	
+	managerTimer.stop();
+	managerTime += managerTimer.seconds();
+	
+	reportE(REPORT_STATISTICS,
+		"Time spent in manager: " << managerTime << " seconds");
+	reportE(REPORT_STATISTICS,
+		"Time spent in translation: " << translationTime << " seconds");
+		
+	reportE(REPORT_STATISTICS,
+		"Test barriers time: " << testBarriersTime << " seconds");
+	reportE(REPORT_STATISTICS,
+		"Warp formation time: " << warpFormationTime << " seconds");
+	reportE(REPORT_STATISTICS,
+		"Warp execution time: " << warpExecutionTime << " seconds");
+		
+	reportE(REPORT_STATISTICS,
+		"Accumulated time 0: " << eTime0 << " seconds");
+	reportE(REPORT_STATISTICS,
+		"Accumulated time 1: " << eTime1 << " seconds");
+	reportE(REPORT_STATISTICS,
+		"Accumulated time 2: " << eTime2 << " seconds");
+	
+	if (scheduleCycles) {
+		reportE(REPORT_STATISTICS, 
+			"Average number of iterations to form a warp: " << (double)iterations / (double)scheduleCycles);
+	}
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -236,8 +288,12 @@ void LLVMDynamicExecutive::execute() {
 */
 void LLVMDynamicExecutive::executeWarp(Warp &warp) {
 	
+	hydrazine::Timer genTimer;
+	
 	reportE(REPORT_SCHEDULE_OPERATIONS, "Executing warp of size " << warp.size() 
 		<< " on hyperblockId " << warp.entryId);
+	
+	genTimer.start();
 	
 	// lazily fetch translation
 	const LLVMDynamicTranslationCache::Translation *translation = 
@@ -246,35 +302,39 @@ void LLVMDynamicExecutive::executeWarp(Warp &warp) {
 	assert(translation && "failed to obtain translation");
 	reportE(REPORT_SCHEDULE_OPERATIONS, " obtained translation. Executing warp.");
 	
+	genTimer.stop();
+	eTime0 += genTimer.seconds();
+	
+	genTimer.start();
+	
 	for (ThreadContextVector::iterator ctx_it = warp.threads.begin(); 
 		ctx_it != warp.threads.end(); 
 		++ctx_it) {
 		
 		ctx_it->metadata = (char *)translation->metadata;
 		assert(ctx_it->metadata);
-		
-#if REPORT_BASE && REPORT_LOCAL_MEMORY
-		reportE(REPORT_SCHEDULE_OPERATIONS, 
-			"thread (" << ctx_it->tid.x << "," << ctx_it->tid.y << "," << ctx_it->tid.z 
-			<< ") - entering block " << warp.entryId);
-		
-		report("Before: ");
-		unsigned int localSize = 352;
-		for (unsigned int i = 0; i < (localSize & (~0x03)); i+=4) {
-			unsigned int word = *(const unsigned int *)&ctx_it->local[i];
-			if (word) {
-				std::cout << ".local[" << i << "]: " << (const void *)word << "\n";
-			}
-		}
-		std::cout << std::endl;
-#endif
 	}
+	
+	genTimer.stop();
+	eTime1 += genTimer.seconds();
+	
+	managerTimer.stop();
+	managerTime += managerTimer.seconds();
+	
+	translationTimer.start();
 	
 	// primitive warp scheduler
 	for (size_t tid = 0; tid < warp.threads.size(); tid += translation->warpSize) {
 		translation->execute(&warp.threads[tid]);
 	}
+	
+	translationTimer.stop();
+	translationTime += translationTimer.seconds();
+	
+	managerTimer.start();
 
+		genTimer.start();
+		
 	for (
 		ThreadContextVector::iterator ctx_it = warp.threads.begin(); 
 		ctx_it != warp.threads.end(); 
@@ -289,19 +349,9 @@ void LLVMDynamicExecutive::executeWarp(Warp &warp) {
 			<< analysis::HyperblockFormation::toString(exitCode) 
 			<< " - resume point: " << getResumePoint(*ctx_it));
 		
-#if REPORT_BASE && REPORT_LOCAL_MEMORY
-		unsigned int localSize = 352;
-		reportE(REPORT_SCHEDULE_OPERATIONS, "After: ");
-		for (unsigned int i = 0; i < (localSize & (~0x03)); i+=4) {
-			unsigned int word = *(const unsigned int *)&ctx_it->local[i];
-			if (word) {
-				std::cout << ".local[" << i << "]: " << (const void *)word << "\n";
-			}
-		}
-		std::cout << std::endl;
-#endif
-		
 		assert(ctaMap.find(ctaId) != ctaMap.end() && "CtaID not present in ctaMap");
+		
+		CooperativeThreadArray & cta = ctaMap[ctaId];
 		
 		switch (exitCode) {
 		case analysis::HyperblockFormation::Thread_fallthrough:
@@ -309,14 +359,14 @@ void LLVMDynamicExecutive::executeWarp(Warp &warp) {
 			reportE(REPORT_SCHEDULE_OPERATIONS, 
 				"inserting thread " << ctx_it->tid.x << ", " << ctx_it->tid.y << ", " << ctx_it->tid.z 
 					<< " into ready queue of CTA " << ctaId);
-			ctaMap[ctaId].readyQueue.push_back(*ctx_it);
+			cta.readyQueue.push_back(*ctx_it);
 			break;
 		case analysis::HyperblockFormation::Thread_branch:
 			// update its next thread Id
 			reportE(REPORT_SCHEDULE_OPERATIONS, 
 				"inserting thread " << ctx_it->tid.x << ", " << ctx_it->tid.y << ", " << ctx_it->tid.z 
 					<< " into ready queue of CTA " << ctaId);
-			ctaMap[ctaId].readyQueue.push_back(*ctx_it);
+			cta.readyQueue.push_back(*ctx_it);
 			break;
 		case analysis::HyperblockFormation::Thread_tailcall:
 			// update its next thread Id
@@ -331,7 +381,7 @@ void LLVMDynamicExecutive::executeWarp(Warp &warp) {
 			reportE(REPORT_SCHEDULE_OPERATIONS, 
 				"inserting thread " << ctx_it->tid.x << ", " << ctx_it->tid.y << ", " << ctx_it->tid.z 
 					<< " into barrier queue of CTA " << ctaId);
-			ctaMap[ctaId].barrierQueue.push_back(*ctx_it);
+			cta.barrierQueue.push_back(*ctx_it);
 			break;
 		case analysis::HyperblockFormation::Thread_exit:
 			// kill off the thread
@@ -342,6 +392,9 @@ void LLVMDynamicExecutive::executeWarp(Warp &warp) {
 			break;
 		}
 	}
+		genTimer.stop();
+		eTime2 += genTimer.seconds();
+	
 }
 
 //! \brief construct a warp - for now, simply choose a ready thread
@@ -365,6 +418,8 @@ void LLVMDynamicExecutive::warpFormation(Warp &warp) {
 			else {
 				++ctx_it;
 			}
+			
+			++iterations;
 		}
 	}
 	reportE(REPORT_SCHEDULE_OPERATIONS, 
@@ -379,6 +434,8 @@ void LLVMDynamicExecutive::warpFormation(Warp &warp) {
 		unsigned int ctaId = LLVMDynamicExecutive::ctaId(ctx);
 		ctaMap[ctaId].readyQueue.push_back(ctx);
 		--p;
+		
+		++iterations;
 	}
 	if (p < warp.threads.size()) {
 		warp.threads.resize(p);
@@ -400,6 +457,8 @@ void LLVMDynamicExecutive::testBarriers(int &waiting, int &ready) {
 		
 		ready += (int)cta_it->second.readyQueue.size();
 		waiting += (int)cta_it->second.barrierQueue.size();
+		
+		++iterations;
 	}
 }
 

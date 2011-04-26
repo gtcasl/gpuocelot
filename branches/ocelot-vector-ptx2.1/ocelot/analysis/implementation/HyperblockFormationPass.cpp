@@ -25,7 +25,7 @@
 #endif
 
 #define REPORT_SUBKERNEL_PTX 1
-#define REPORT_SUBKERNEL_BARE 0
+#define REPORT_SUBKERNEL_BARE 1
 
 #define REPORT_BASE 0
 
@@ -140,7 +140,7 @@ void analysis::HyperblockFormation::runOnKernel(KernelDecomposition &decompositi
 
 	analysis::DataflowGraph::IteratorMap cfgToDfgMap = parentKernel.dfg()->getCFGtoDFGMap();
 	ir::ControlFlowGraph *cfg = parentKernel.cfg();
-	
+		
 	ir::ControlFlowGraph::BlockPointerVector blocks = cfg->topological_sequence();
 	for (ir::ControlFlowGraph::BlockPointerVector::const_iterator bb_it = blocks.begin(); 
 		bb_it != blocks.end(); 
@@ -239,7 +239,6 @@ void analysis::HyperblockFormation::runOnKernel(KernelDecomposition &decompositi
 			for (analysis::DataflowGraph::RegisterSet::const_iterator live_it = edge_it->liveValues.begin();
 				live_it != edge_it->liveValues.end(); ++live_it) {
 				
-				//restoreSet[live_it->id] = *live_it;
 				if (!filterLiveValues || used.find(live_it->id) != used.end()) {
 					restoreSet.insert(*live_it);
 				}
@@ -594,7 +593,6 @@ void analysis::HyperblockFormation::_createExit(
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
-
 void analysis::HyperblockFormation::_partitionAtBarrier(ir::PTXKernel &parentKernel) {
 
 	typedef std::map< std::string, std::vector< unsigned int > > Barriers;
@@ -628,4 +626,5 @@ void analysis::HyperblockFormation::_partitionAtBarrier(ir::PTXKernel &parentKer
 	}
 }
 
+/////////////////////////////////////////////////////////////////////////////////////////////////
 

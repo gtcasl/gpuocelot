@@ -640,7 +640,7 @@ namespace trace
 			_checkValidity( event );
 			if( checkInitialization )
 				_checkInitialized( event );
-		} 
+		}
 		else 
 		{
 			if( checkInitialization )

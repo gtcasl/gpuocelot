@@ -39,6 +39,7 @@ static void simplifyCall(ir::PTXKernel& kernel,
 	for(ir::PTXOperand::Array::const_iterator parameter = call.d.array.begin();
 		parameter != call.d.array.end(); ++parameter)
 	{
+		if(parameter->addressMode == ir::PTXOperand::BitBucket) continue;
 		report("   " << parameter->identifier);
 		parameterNames.insert(parameter->identifier);
 	}
@@ -47,6 +48,7 @@ static void simplifyCall(ir::PTXKernel& kernel,
 	for(ir::PTXOperand::Array::const_iterator parameter = call.b.array.begin();
 		parameter != call.b.array.end(); ++parameter)
 	{
+		if(parameter->addressMode == ir::PTXOperand::BitBucket) continue;
 		report("   " << parameter->identifier);
 		parameterNames.insert(parameter->identifier);
 	}
@@ -102,6 +104,7 @@ static void simplifyCall(ir::PTXKernel& kernel,
 	for(ir::PTXOperand::Array::iterator parameter = call.d.array.begin();
 		parameter != call.d.array.end(); ++parameter)
 	{
+		if(parameter->addressMode == ir::PTXOperand::BitBucket) continue;
 		RegisterMap::iterator mapping = nameToRegister.find(
 			parameter->identifier);
 		assert(mapping != nameToRegister.end());
@@ -115,6 +118,7 @@ static void simplifyCall(ir::PTXKernel& kernel,
 	for(ir::PTXOperand::Array::iterator parameter = call.b.array.begin();
 		parameter != call.b.array.end(); ++parameter)
 	{
+		if(parameter->addressMode == ir::PTXOperand::BitBucket) continue;
 		RegisterMap::iterator mapping = nameToRegister.find(
 			parameter->identifier);
 		assert(mapping != nameToRegister.end());

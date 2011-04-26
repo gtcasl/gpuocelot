@@ -210,7 +210,7 @@ namespace parser
 		operands.insert( std::make_pair( "%nctaid", OperandWrapper( 
 			ir::PTXOperand( ir::PTXOperand::nctaId,
 			ir::PTXOperand::iAll ) ) ) );
-		operands.insert( std::make_pair( "%simd", OperandWrapper( 
+		operands.insert( std::make_pair( "%smid", OperandWrapper( 
 			ir::PTXOperand( ir::PTXOperand::smId, ir::PTXOperand::ix ) ) ) );
 		operands.insert( std::make_pair( "%nsmid", OperandWrapper( 
 			ir::PTXOperand( ir::PTXOperand::nsmId, ir::PTXOperand::ix ) ) ) );

@@ -1654,6 +1654,11 @@ namespace translator
 						call.name += ".i64.p0i64";
 						break;
 					}
+					case ir::PTXOperand::f32:
+					{
+						call.name += ".f32.p0f32";
+						break;
+					}
 					default: assertM(false, "Invalid type.");
 				}
 			}
@@ -2189,14 +2194,38 @@ namespace translator
 
 				if( i.d.array.size() == 1 )
 				{
-					call.d = _translate( i.d.array[ 0 ] );
+					if( i.d.array[ 0 ].addressMode
+						!= ir::PTXOperand::BitBucket )
+					{
+						call.d = _translate( i.d.array[ 0 ] );
+					}
+					else
+					{
+						ir::Module::FunctionPrototypeMap::const_iterator
+							prototype = _ptx->module->prototypes().find(
+								external->name() );
+						assert( prototype != _ptx->module->prototypes().end() );
+						
+						call.d = ir::LLVMInstruction::Operand( _tempRegister(),
+							ir::LLVMInstruction::Type( _translate(
+								prototype->second.returnArguments[ 0 ].type ),
+							ir::LLVMInstruction::Type::Element ) );
+					}
 				}
 				
 				for( ir::PTXOperand::Array::const_iterator
 					operand = i.b.array.begin();
 					operand != i.b.array.end(); ++operand )
 				{
-					call.parameters.push_back( _translate( *operand ) );
+					if( operand->addressMode != ir::PTXOperand::BitBucket )
+					{
+						call.parameters.push_back( _translate( *operand ) );
+					}
+					else
+					{
+						assertM(false, "Bit bucked function "
+							"parameters not supported.");
+					}
 				}
 				
 				_add( call );
@@ -7699,21 +7728,45 @@ namespace translator
 			}
 			case ir::PTXOperand::laneId:
 			{
-				assertM( false, "Special register " 
-					<< ir::PTXOperand::toString( s ) << " not supported." );
-				break;
+				ir::LLVMBitcast bitcast;
+				
+				bitcast.d.type.category = ir::LLVMInstruction::Type::Element;
+				bitcast.d.type.type = ir::LLVMInstruction::I32;
+				bitcast.d.name = _tempRegister();
+				
+				bitcast.a = ir::LLVMInstruction::Operand((ir::LLVMI32) 0);
+				
+				_add( bitcast );
+				
+				return bitcast.d.name;
 			}
 			case ir::PTXOperand::warpId:
 			{
-				assertM( false, "Special register " 
-					<< ir::PTXOperand::toString( s ) << " not supported." );
-				break;
+				ir::LLVMBitcast bitcast;
+				
+				bitcast.d.type.category = ir::LLVMInstruction::Type::Element;
+				bitcast.d.type.type = ir::LLVMInstruction::I32;
+				bitcast.d.name = _tempRegister();
+				
+				bitcast.a = ir::LLVMInstruction::Operand((ir::LLVMI32) 0);
+				
+				_add( bitcast );
+				
+				return bitcast.d.name;
 			}
 			case ir::PTXOperand::warpSize:
 			{
-				assertM( false, "Special register " 
-					<< ir::PTXOperand::toString( s ) << " not supported." );
-				break;
+				ir::LLVMBitcast bitcast;
+				
+				bitcast.d.type.category = ir::LLVMInstruction::Type::Element;
+				bitcast.d.type.type = ir::LLVMInstruction::I32;
+				bitcast.d.name = _tempRegister();
+				
+				bitcast.a = ir::LLVMInstruction::Operand((ir::LLVMI32) 1);
+				
+				_add( bitcast );
+				
+				return bitcast.d.name;
 			}
 			case ir::PTXOperand::ctaId:
 			{
@@ -7771,15 +7824,31 @@ namespace translator
 			}
 			case ir::PTXOperand::smId:
 			{
-				assertM( false, "Special register " 
-					<< ir::PTXOperand::toString( s ) << " not supported." );
-				break;
+				ir::LLVMBitcast bitcast;
+				
+				bitcast.d.type.category = ir::LLVMInstruction::Type::Element;
+				bitcast.d.type.type = ir::LLVMInstruction::I32;
+				bitcast.d.name = _tempRegister();
+				
+				bitcast.a = ir::LLVMInstruction::Operand((ir::LLVMI32) 0);
+				
+				_add( bitcast );
+				
+				return bitcast.d.name;
 			}
 			case ir::PTXOperand::nsmId:
 			{
-				assertM( false, "Special register " 
-					<< ir::PTXOperand::toString( s ) << " not supported." );
-				break;
+				ir::LLVMBitcast bitcast;
+				
+				bitcast.d.type.category = ir::LLVMInstruction::Type::Element;
+				bitcast.d.type.type = ir::LLVMInstruction::I32;
+				bitcast.d.name = _tempRegister();
+				
+				bitcast.a = ir::LLVMInstruction::Operand((ir::LLVMI32) 1);
+				
+				_add( bitcast );
+				
+				return bitcast.d.name;
 			}
 			case ir::PTXOperand::gridId:
 			{
@@ -8684,6 +8753,13 @@ namespace translator
 		atom.label = "llvm.atomic.load.min.i64.p0i64";
 		_llvmKernel->push_front( atom );
 		atom.label = "llvm.atomic.swap.i64.p0i64";
+		_llvmKernel->push_front( atom );
+
+		// @llvm.atomic.load.add
+		atom.label = "llvm.atomic.swap.f32.p0f32";
+		atom.operand.type.type = ir::LLVMInstruction::F32;
+		atom.parameters[0].type.type = ir::LLVMInstruction::I64;
+		atom.parameters[1].type.type = ir::LLVMInstruction::F32;
 		_llvmKernel->push_front( atom );
 
 		// @llvm.atomic.cmp.swap

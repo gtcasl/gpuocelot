@@ -19,6 +19,7 @@
 #include <ocelot/analysis/interface/HyperblockFormationPass.h>
 
 // Hydrazine includes
+#include <hydrazine/implementation/Timer.h>
 
 namespace executive {
 	
@@ -173,6 +174,13 @@ namespace executive {
 		//! \brief thread-local cache of translations
 		TranslationWarpCache translationCache;
 		
+		size_t iterations;
+		
+		hydrazine::Timer translationTimer, managerTimer;
+		
+		double translationTime, managerTime;
+		
+		double eTime0, eTime1, eTime2;
 	};
 }	
 #endif

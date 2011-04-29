@@ -362,7 +362,6 @@ void ExternalFunctionSet::ExternalFunction::call(void* parameters,
 		// This invokes the jit
 		_externalFunctionPointer = hydrazine::bit_cast<ExternalCallType>(
 			executive::LLVMState::jit()->getPointerToFunction(function));
-
 	}
 	
 	// call through the interface to the external function

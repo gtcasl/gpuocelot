@@ -2280,7 +2280,9 @@ void executive::CooperativeThreadArray::eval_Bar(CTAContext& context,
 	}
 	
 	if (instr.barrierOperation == ir::PTXInstruction::BarSync) {
-#if RECONVERGENCE_MECHANISM == IPDOM_RECONVERGENCE
+#if RECONVERGENCE_MECHANISM == IPDOM_RECONVERGENCE \
+	|| RECONVERGENCE_MECHANISM == GEN6_RECONVERGENCE \
+	|| RECONVERGENCE_MECHANISM == SORTED_PREDICATE_STACK_RECONVERGENCE
 		if (context.active.count() < context.active.size() ||
 			!barriers[barrierName].satisfied()) {
 			// deadlock - not all threads reach synchronization barrier

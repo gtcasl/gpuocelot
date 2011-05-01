@@ -125,7 +125,7 @@ static void setupGlobalMemoryReferences(ir::PTXKernel& kernel,
 			ir::PTXInstruction& ptx = static_cast<
 				ir::PTXInstruction&>(**instruction);
 
-			if(ptx.opcode == ir::PTXInstruction::Mov 
+			if(ptx.mayHaveAddressableOperand()
 				&& (ptx.a.addressMode == ir::PTXOperand::Address
 				|| ptx.a.addressMode == ir::PTXOperand::Indirect))
 			{
@@ -176,9 +176,7 @@ static void setupArgumentMemoryReferences(ir::PTXKernel& kernel,
 
 			ir::PTXOperand* operands[] = {&ptx.d, &ptx.a, &ptx.b, &ptx.c};
 
-			if(ptx.opcode == ir::PTXInstruction::Mov
-				|| ptx.opcode == ir::PTXInstruction::Ld
-				|| ptx.opcode == ir::PTXInstruction::St)
+			if(ptx.mayHaveAddressableOperand())
 			{
 				for(unsigned int i = 0; i != 4; ++i)
 				{
@@ -277,9 +275,7 @@ static void setupParameterMemoryReferences(ir::PTXKernel& kernel,
 
 			ir::PTXOperand* operands[] = {&ptx.d, &ptx.a, &ptx.b, &ptx.c};
 
-			if(ptx.opcode == ir::PTXInstruction::Mov
-				|| ptx.opcode == ir::PTXInstruction::Ld
-				|| ptx.opcode == ir::PTXInstruction::St)
+			if(ptx.mayHaveAddressableOperand())
 			{
 				for(unsigned int i = 0; i != 4; ++i)
 				{
@@ -417,10 +413,7 @@ static void setupSharedMemoryReferences(ir::PTXKernel& kernel,
 
 			ir::PTXOperand* operands[] = {&ptx.d, &ptx.a, &ptx.b, &ptx.c};
 
-			if(ptx.opcode == ir::PTXInstruction::Mov
-				|| ptx.opcode == ir::PTXInstruction::Ld
-				|| ptx.opcode == ir::PTXInstruction::St
-				|| ptx.opcode == ir::PTXInstruction::Cvta)
+			if(ptx.mayHaveAddressableOperand())
 			{
 				for(unsigned int i = 0; i != 4; ++i)
 				{
@@ -507,9 +500,7 @@ static void setupConstantMemoryReferences(ir::PTXKernel& kernel,
 				ir::PTXInstruction&>(**instruction);
 			ir::PTXOperand* operands[] = {&ptx.d, &ptx.a, &ptx.b, &ptx.c};
 
-			if(ptx.opcode == ir::PTXInstruction::Mov
-				|| ptx.opcode == ir::PTXInstruction::Ld
-				|| ptx.opcode == ir::PTXInstruction::St)
+			if(ptx.mayHaveAddressableOperand())
 			{
 				for(unsigned int i = 0; i != 4; ++i)
 				{
@@ -677,9 +668,7 @@ static void setupLocalMemoryReferences(ir::PTXKernel& kernel,
 				ir::PTXInstruction&>(**instruction);
 			ir::PTXOperand* operands[] = {&ptx.d, &ptx.a, &ptx.b, &ptx.c};
 	
-			if(ptx.opcode == ir::PTXInstruction::Mov
-				|| ptx.opcode == ir::PTXInstruction::Ld
-				|| ptx.opcode == ir::PTXInstruction::St)
+			if(ptx.mayHaveAddressableOperand())
 			{
 				for(unsigned int i = 0; i != 4; ++i)
 				{

@@ -341,6 +341,12 @@ namespace ir {
 		Instruction* clone( bool copy = true ) const;
 
 	public:
+		/*! \brief Is the instruction a branch */
+		bool isBranch() const;
+		/*! \brief Does the instruction accept an address as an operand */
+		bool mayHaveAddressableOperand() const;
+
+	public:
 		/*! Opcode of PTX instruction */
 		Opcode opcode;
 

@@ -2411,3 +2411,13 @@ ir::Instruction* ir::PTXInstruction::clone(bool copy) const {
 	}
 }
 
+bool ir::PTXInstruction::isBranch() const {
+	return opcode == Bra || opcode == Call;
+}
+
+bool ir::PTXInstruction::mayHaveAddressableOperand() const {
+	return opcode == Mov || opcode == Ld || opcode == St || opcode == Cvta
+		|| opcode == Atom;
+}
+
+

@@ -626,11 +626,7 @@ void executive::EmulatedKernel::initializeSharedMemory() {
 		ir::PTXInstruction &instr = *i_it;
 
 		// look for mov and ld/st instructions
-		if (instr.opcode == ir::PTXInstruction::Mov
-			|| instr.opcode == ir::PTXInstruction::Cvta
-			|| instr.opcode == ir::PTXInstruction::Ld 
-			|| instr.opcode == ir::PTXInstruction::St
-			|| instr.opcode == ir::PTXInstruction::Atom) {
+		if (instr.mayHaveAddressableOperand()) {
 			for (int n = 0; n < 4; n++) {
 				if ((instr.*operands[n]).addressMode 
 					== ir::PTXOperand::Address) {
@@ -742,10 +738,7 @@ void executive::EmulatedKernel::initializeLocalMemory() {
 		ir::PTXInstruction &instr = *i_it;
 
 		// look for mov and ld/st instructions
-		if (instr.opcode == ir::PTXInstruction::Mov
-			|| instr.opcode == ir::PTXInstruction::Ld 
-			|| instr.opcode == ir::PTXInstruction::St 
-			|| instr.opcode == ir::PTXInstruction::Cvta) {
+		if (instr.mayHaveAddressableOperand()) {
 			for (int n = 0; n < 4; n++) {
 				if ((instr.*operands[n]).addressMode 
 					== ir::PTXOperand::Address) {
@@ -803,9 +796,7 @@ void executive::EmulatedKernel::initializeConstMemory() {
 		ir::PTXInstruction &instr = *i_it;
 
 		// look for mov instructions or ld/st instruction
-		if (instr.opcode == ir::PTXInstruction::Mov
-			|| instr.opcode == ir::PTXInstruction::Ld 
-			|| instr.opcode == ir::PTXInstruction::St) {
+		if (instr.mayHaveAddressableOperand()) {
 			for (int n = 0; n < 4; n++) {
 				if ((instr.*operands[n]).addressMode 
 					== ir::PTXOperand::Address) {
@@ -880,11 +871,7 @@ void executive::EmulatedKernel::initializeGlobalMemory() {
 		ir::PTXInstruction &instr = *i_it;
 
 		// look for mov instructions or ld/st/atom instruction
-		if (instr.opcode == ir::PTXInstruction::Mov
-			|| instr.opcode == ir::PTXInstruction::Ld 
-			|| instr.opcode == ir::PTXInstruction::St
-			|| instr.opcode == ir::PTXInstruction::Cvta
-			|| instr.opcode == ir::PTXInstruction::Atom) {
+		if (instr.mayHaveAddressableOperand()) {
 			for (int n = 0; n < 4; n++) {
 				if ((instr.*operands[n]).addressMode 
 					== ir::PTXOperand::Address) {

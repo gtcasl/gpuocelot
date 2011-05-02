@@ -36,6 +36,7 @@ namespace ir
 				Fence,
 				Fma,
 				FtoU,
+				Ge,
 				Iadd,
 				Iand,
 				Ieq,
@@ -339,6 +340,13 @@ namespace ir
 	{
 		public:
 			ILFtoU();
+			Instruction *clone(bool copy=true) const;
+	};
+
+	class ILGe : public ILBinaryInstruction
+	{
+		public:
+			ILGe();
 			Instruction *clone(bool copy=true) const;
 	};
 

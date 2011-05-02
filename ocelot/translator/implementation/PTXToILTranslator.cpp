@@ -2912,6 +2912,16 @@ namespace translator
 				_add(eq);
 				break;
 			}
+			case ir::PTXInstruction::Le:
+			{
+				// IL doesn't have le but it has ge so switch a & b operands
+				ir::ILGe ge;
+				ge.d = _translate(i.d);
+				ge.a = _translate(i.b);
+				ge.b = _translate(i.a);
+				_add(ge);
+				break;
+			}
 			case ir::PTXInstruction::Lt:
 			{
 				ir::ILLt lt;
@@ -2922,6 +2932,15 @@ namespace translator
 
 				_add(lt);
 
+				break;
+			}
+			case ir::PTXInstruction::Ge:
+			{
+				ir::ILGe ge;
+				ge.d = _translate(i.d);
+				ge.a = _translate(i.a);
+				ge.b = _translate(i.b);
+				_add(ge);
 				break;
 			}
 			case ir::PTXInstruction::Gt:

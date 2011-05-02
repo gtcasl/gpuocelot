@@ -1367,12 +1367,7 @@ namespace parser
 		}
 		else
 		{
-			if( name == "_" )
-			{
-				operand.addressMode = ir::PTXOperand::BitBucket;
-			}
-			else if( mode->second.operand.addressMode
-				== ir::PTXOperand::Register )
+			if( mode->second.operand.addressMode == ir::PTXOperand::Register )
 			{
 				operand.addressMode = ir::PTXOperand::Indirect;
 			}
@@ -1418,7 +1413,8 @@ namespace parser
 				NoDeclaration );
 		}
 		
-		operand = mode->second.operand;
+		operand.addressMode = ir::PTXOperand::Register;
+		operand.type        = mode->second.operand.type;
 	
 		if( identifiers.size() == 1 )
 		{
@@ -1631,7 +1627,6 @@ namespace parser
 	void PTXParser::State::instruction( const std::string& opcode,
 		int dataType )
 	{
-		
 		_setImmediateTypes();
 
 		statement.directive = ir::PTXStatement::Instr;
@@ -2067,7 +2062,7 @@ namespace parser
 		ir::PTXOperand bucket;
 		bucket.identifier = "_";
 		bucket.type = ir::PTXOperand::b64;
-		bucket.addressMode = ir::PTXOperand::Register;
+		bucket.addressMode = ir::PTXOperand::BitBucket;
 		bucket.vec = ir::PTXOperand::v1;
 		
 		state.operands.insert( std::make_pair( "_", 

@@ -46,6 +46,7 @@ env.AlwaysBuild(env.Command('configure.h', 'configure.h.in', config_h_build))
 
 # find all source files in the source tree
 sources = []
+intermediate_headers = []
 directories = ['ocelot/ir/implementation', 
 	'ocelot/analysis/implementation',
 	'ocelot/api/implementation', 
@@ -91,6 +92,8 @@ for source in bison_sources:
 	bison = env.CXXFile(os.path.splitext(os.path.basename(str(source)))[0] \
 		+ '.cpp', str(source))
 	sources.append(bison[0])
+	bison_header = bison[1]
+	intermediate_headers.append(os.path.basename(str(bison_header)))
 
 # Create the ocelot library
 ocelot_dep_libs = env['EXTRA_LIBS']
@@ -221,6 +224,12 @@ if 'install' in COMMAND_LINE_TARGETS:
 	for header in headers:
 		(directoryPath, headerName) = os.path.split( \
 			os.path.relpath(str(header), prefix))
+		installed.append(env.Install(os.path.join( \
+			env['install_path'], "include", directoryPath), header))
+
+	for header in intermediate_headers:
+		(directoryPath, headerName) = os.path.split( \
+			os.path.relpath(str(header), '.'))
 		installed.append(env.Install(os.path.join( \
 			env['install_path'], "include", directoryPath), header))
 

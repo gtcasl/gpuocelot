@@ -347,12 +347,13 @@ namespace translator
 	void PTXToLLVMTranslator::_reportReads( 
 		const analysis::DataflowGraph::Instruction& i )
 	{
-		if( optimizationLevel != ReportOptimization ) return;
+		if( optimizationLevel != DebugOptimization
+			&& optimizationLevel != ReportOptimization ) return;
 
 		ir::LLVMCall call;
 		
 		call.parameters.resize( 2 );
-
+		
 		call.parameters[0] = _context();
 		
 		for( analysis::DataflowGraph::RegisterPointerVector::const_iterator 
@@ -445,7 +446,8 @@ namespace translator
 	void PTXToLLVMTranslator::_reportWrites( 
 		const analysis::DataflowGraph::Instruction& i )
 	{
-		if( optimizationLevel != ReportOptimization ) return;
+		if( optimizationLevel != DebugOptimization
+			&& optimizationLevel != ReportOptimization ) return;
 
 		ir::LLVMCall call;
 		
@@ -545,7 +547,6 @@ namespace translator
 		bool isArgument, unsigned int statement )
 	{
 		if( optimizationLevel != MemoryCheckOptimization 
-			&& optimizationLevel != ReportOptimization
 			&& optimizationLevel != DebugOptimization) return;
 
 		ir::LLVMCall call;

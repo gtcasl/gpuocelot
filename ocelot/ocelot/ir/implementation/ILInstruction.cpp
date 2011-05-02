@@ -37,6 +37,7 @@ namespace ir
 			case Ffb_Hi:                return "ffb_hi";
 			case Fma:                   return "fma";
 			case FtoU:                  return "ftou";
+			case Ge:                    return "ge";
 			case Iadd:                  return "iadd";
 			case Iand:                  return "iand";
 			case Ieq:                   return "ieq";
@@ -345,6 +346,15 @@ namespace ir
 	Instruction *ILFtoU::clone(bool copy) const
 	{
 		return new ILFtoU(*this);
+	}
+
+	ILGe::ILGe() : ILBinaryInstruction(Ge)
+	{
+	}
+
+	Instruction *ILGe::clone(bool copy) const
+	{
+		return new ILGe(*this);
 	}
 
 	ILIadd::ILIadd() : ILBinaryInstruction(Iadd)

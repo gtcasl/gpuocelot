@@ -13,7 +13,7 @@
 
 // Ocelot Includes 
 #include <ocelot/analysis/interface/StructuralAnalysis.h>
-
+#include <algorithm>
 // Hydrazine Includes
 #include <hydrazine/implementation/debug.h>
 
@@ -1592,12 +1592,14 @@ namespace analysis {
   
           if (*DSTI == succ) {
             if (isGoto) {
-              unstructuredBRVec.push_back(std::make_pair(srcBB, dstBB));
+              if (checkUnique(unstructuredBRVec, srcBB, dstBB))
+                unstructuredBRVec.push_back(std::make_pair(srcBB, dstBB));
             }
             
             if (needForwardCopy) {
-              dstNode->incomingForwardBR.push_back(
-                std::make_pair(srcBB, dstBB));
+              if (checkUnique(dstNode->incomingForwardBR, srcBB, dstBB))
+                dstNode->incomingForwardBR.push_back(
+                  std::make_pair(srcBB, dstBB));
             }
           }
         }
@@ -1799,6 +1801,11 @@ BEGIN:
     reconstructUnreachable();
  
     cleanupUnreachable();
+
+//    dumpCTNode(std::cout, *(Net.begin()));
+  
+//    dumpUnstructuredBR(std::cout);
+
   }
   
   void StructuralAnalysis::write(std::ostream& stream) const {
@@ -1808,5 +1815,15 @@ BEGIN:
   
     dumpUnstructuredBR(stream);
   }
-}
 
+  bool StructuralAnalysis::checkUnique(EdgeVecTy &edgeVec, ir::ControlFlowGraph::iterator srcBB, ir::ControlFlowGraph::iterator dstBB) {
+    for (EdgeVecTy::iterator i = edgeVec.begin(),
+        e = edgeVec.end(); i != e; ++i) {
+
+      if (i->first == srcBB && i->second == dstBB)
+        return false;
+    }
+
+    return true;
+  }
+}

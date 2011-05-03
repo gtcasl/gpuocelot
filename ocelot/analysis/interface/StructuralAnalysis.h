@@ -226,6 +226,8 @@ namespace analysis {
     ////Interface to PTXToILTranslator
     ///*! \brief Returns a pointer to the root node of the control tree */
     const NodeTy* get_root_node() const;
+
+    bool checkUnique(EdgeVecTy &edgeVec, ir::ControlFlowGraph::iterator srcBB, ir::ControlFlowGraph::iterator dstBB);
   };
 }
 

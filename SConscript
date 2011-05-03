@@ -120,6 +120,8 @@ env.Depends(OcelotServer, libocelot)
 OcelotHarness = env.Program('OcelotKernelTestHarness', \
 	['ocelot/tools/KernelTestHarness.cpp'], LIBS=ocelot_libs)
 env.Depends(OcelotHarness, libocelot)
+CFG = env.Program('CFG', ['ocelot/tools/CFG.cpp'], LIBS=ocelot_libs)
+env.Depends(CFG, libocelot)
 
 Default(OcelotConfig)
 

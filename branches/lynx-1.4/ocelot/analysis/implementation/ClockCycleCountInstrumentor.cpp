@@ -86,30 +86,39 @@ namespace analysis
         _kernelProfile.maxSMRuntime = *(std::max_element(clockCyclesPerSM.begin(), clockCyclesPerSM.end()))/properties.clockRate;
         _kernelProfile.name = kernelName;
     
-        *out << kernelName << "_maxSMRuntime = " << _kernelProfile.maxSMRuntime << "\n\n";
-        *out << kernelName << "_threadBlockToProcessorMap = {";
+        if(!deviceInfoWritten){
+            deviceInfo(out);
+            deviceInfoWritten = true;
+        }
 
-        for (KernelProfile::ThreadBlockToProcessorMap::const_iterator it = _kernelProfile.threadBlockToProcessorMap.begin(); 
+        *out << "Kernel Name: " << kernelName << "\n";
+        *out << "Thread Block Count: " << threadBlocks << "\n";
+        *out << "Thread Count: " << threads << "\n";
+                
+
+        *out << "Total Kernel Runtime: " << _kernelProfile.maxSMRuntime << " ms\n";
+        
+        *out << "\nSM to CTA Mapping [SM ID: (Clock Cycles, CTA ID)]:\n\n";
+                
+        for(KernelProfile::ThreadBlockToProcessorMap::const_iterator it = _kernelProfile.threadBlockToProcessorMap.begin();
             it != _kernelProfile.threadBlockToProcessorMap.end(); ++it) {
-			*out << it->first << ":(";
-            
+            *out << "[" << it->first << ": (";
+
             for(std::vector<size_t>::const_iterator mappedIt = it->second.begin(); mappedIt != it->second.end(); ++mappedIt){
                 *out << *mappedIt << ","; 
             }
 
-            *out << "),";
-		}
+            *out << ")\n";
+        }
+
+        *out << "\nCTAs per SM [SM ID: CTA Count]:\n\n";
         
-        *out << "}\n\n";   
+        for(KernelProfile::ProcessorToThreadBlockCountMap::const_iterator it = _kernelProfile.processorToThreadBlockCountMap.begin();
+            it != _kernelProfile.processorToThreadBlockCountMap.end(); ++it) {
+            *out << "[" << it->first << ":" << it->second << "]\n";
+        }
 
-        *out << kernelName << "_processorToThreadBlockCountMap = {";
-            for(KernelProfile::ProcessorToThreadBlockCountMap::const_iterator it = _kernelProfile.processorToThreadBlockCountMap.begin();
-                it != _kernelProfile.processorToThreadBlockCountMap.end(); ++it){
-                *out << it->first << ":" << it->second << ",";
-            }
-
-        *out << "}\n\n";
-
+        *out << "\n\n";
 
         return info;
     }

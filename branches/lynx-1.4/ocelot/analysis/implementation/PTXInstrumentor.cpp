@@ -136,6 +136,40 @@ namespace analysis
 
     }
 
+    void PTXInstrumentor::deviceInfo(std::ostream *out) {
+
+        if(out == NULL) {
+            return;
+        }
+
+        struct cudaDeviceProp properties;
+        cudaGetDeviceProperties(&properties, 0);
+    
+        *out << "DEVICE INFO:\n\n";
+        *out << "Multiprocessor Count: " << properties.multiProcessorCount << "\n"; 
+        
+        *out << "Total amount of global memory: " << properties.totalGlobalMem << "\n";
+        
+        *out << "Total amount of constant memory: " << properties.totalConstMem << "\n";
+        *out << "Total amount of shared memory per block: " << properties.sharedMemPerBlock << "\n";
+        *out << "Total number of registers available per block: " << properties.regsPerBlock << "\n";
+        
+        *out << "Warp size: " << properties.warpSize << "\n";
+        *out << "Maximum number of threads per block: " << properties.maxThreadsPerBlock << "\n";
+        *out << "Maximum sizes of each dimension of a block: " << properties.maxThreadsDim[0] << " x " << properties.maxThreadsDim[1] << " x " << 
+                properties.maxThreadsDim[2] << "\n";     
+        *out << "Maximum sizes of each dimension of a grid: " << properties.maxGridSize[0] << " x " << properties.maxGridSize[1] << " x " << 
+                properties.maxGridSize[2] << "\n";     
+        
+        *out << "Clock rate: " << properties.clockRate * 1e-6f << " GHz\n";
+
+        *out << "\n\n";
+
+    }
+
+    PTXInstrumentor::PTXInstrumentor() : deviceInfoWritten(false) {
+    }
+
     analysis::KernelProfile PTXInstrumentor::kernelProfile() {
         return this->_kernelProfile;
     }

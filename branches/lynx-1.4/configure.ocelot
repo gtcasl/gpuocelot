@@ -1,15 +1,5 @@
 {
 	ocelot: "ocelot",
-    instrument: {
-	    clockCycleCount: {
-            enabled: false,
-            logfile: ""
-        },
-        basicBlock: {
-            executionCount: true,
-            logfile: ""
-        }
-    },
 	trace: { 
 		enabled: true,
 		database: "traces/database.trace",
@@ -49,7 +39,7 @@
 		runtimeApiTrace: "trace/CudaAPI.trace"
 	},
 	executive: {
-		devices: [ emulated, nvidia, llvm ],
+		devices: [ emulated ],
 		optimizationLevel: basic,
 		workerThreadLimit: 2
 	}

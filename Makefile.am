@@ -90,7 +90,7 @@ libocelot_la_SOURCES = \
 	hydrazine/implementation/debug.cpp \
 	hydrazine/implementation/string.cpp \
 	hydrazine/implementation/json.cpp \
-	hydrazine/implementation/WindowsCompatibility.cpp \
+	hydrazine/implementation/SystemCompatibility.cpp \
 	hydrazine/interface/Configurable.cpp \
 	hydrazine/interface/Test.cpp \
 	hydrazine/interface/Stringable.cpp \

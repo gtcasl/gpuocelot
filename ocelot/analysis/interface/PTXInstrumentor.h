@@ -85,12 +85,16 @@ namespace analysis
             /*! \brief The strings representing the basic block labels */
             std::vector<std::string> labels;
 
+            bool deviceInfoWritten;
+
         protected:
             
             KernelProfile _kernelProfile;
 			
 		public:
 		
+
+            PTXInstrumentor();
 
             /*! \brief The analyze method performs any necessary static analysis */
             virtual void analyze(ir::Module &module) = 0;
@@ -118,6 +122,8 @@ namespace analysis
 
             /*! \brief obtain kernel profile */
             KernelProfile kernelProfile();
+
+            void deviceInfo(std::ostream *out);
 	};
 
     typedef std::vector< PTXInstrumentor *> PTXInstrumentorVector;

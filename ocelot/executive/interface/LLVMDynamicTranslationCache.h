@@ -9,6 +9,7 @@
 
 // Ocelot includes
 #include <ocelot/analysis/interface/HyperblockFormationPass.h>
+#include <ocelot/analysis/interface/KernelPartitioningPass.h>
 #include <ocelot/translator/interface/Translator.h>
 
 namespace llvm {

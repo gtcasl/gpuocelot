@@ -1,8 +1,9 @@
 {
 	ocelot: "ocelot",
 	trace: { 
+		enabled: false,
 		database: "traces/database.trace",
-		memory: true,
+		memory: false,
 		memoryChecker: {
 			enabled: true,
 			checkInitialization: false

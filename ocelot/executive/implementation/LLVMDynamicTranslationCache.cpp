@@ -170,6 +170,17 @@ bool LLVMDynamicTranslationCache::loadModule(const ir::Module *module, executive
 			report(" static .local declarations: " << translatedKernel->localMemorySize << " bytes");
 			report(" static .shared declarations: " << translatedKernel->sharedMemorySize << " bytes");
 			
+			//
+			// KernelParitioningPass
+			//
+			analysis::KernelPartitioningPass kernelFormationPass;
+			analysis::KernelPartitioningPass::KernelDecomposition decomposition;
+			kernelFormationPass.initialize(*module);
+			kernelFormationPass.runOnKernel(decomposition, *kernel->second, 0);
+			kernelFormationPass.finalize();
+			
+			assert(0 && "early exit");
+			
 			analysis::HyperblockFormation formationPass;
 			
 			formationPass.initialize(*module);

@@ -73,7 +73,7 @@ then
 	LLVM_VERSION=$(llvm-config --version)
 	if test `expr match "$LLVM_VERSION" '3.0'` = '0'
 	then
-		AC_WARN(LLVM Disabled: version $LLVM_VERSION found, 2.9 required )
+		AC_WARN(LLVM Disabled: version $LLVM_VERSION found, 3.0 required )
 		AC_SUBST(LLVM_CFLAGS, "")
 		AC_SUBST(LLVM_LDFLAGS, "")
 	else

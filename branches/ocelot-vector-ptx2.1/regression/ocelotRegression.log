@@ -22,41 +22,248 @@ INFO       /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/Tes
 INFO       /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestConvergence
 INFO     ==== INDIVIDUAL TEST RESULTS ====
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestInstructions 
-INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestDataflowGraph -i ../tests/ptx 
-INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaGlobals 
-INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestLLVMInstructions 
-INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestDataflowGraph
-INFO     Test completed in 0.0370230674744 seconds
+INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestParser -i ../tests/ptx 
+INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestPTXToLLVMTranslator -i ../tests/ptx 
+INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestPTXToLLVMTranslator
+INFO     Test completed in 0.60474395752 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
 
-Name : TestDataflowGraph
+Name : TestPTXToLLVMTranslator
 
-Description: A test for the DataflowGraph class. Test Points: 1) 
-             Generic: load PTX files, convert them into dataflow graphs, verify that 
-             all live ranges spanning blocks are consistent. 2) SSA: convert to 
-             ssa form, verify that no register is declared more than once. 3) 
-             reverse SSA: convert to ssa then out of ssa, verify that all live 
-             ranges spanning blocks are consistent.
+Description: This is a basic test that just tries to get through a 
+             translation successfully of as many PTX programs as possible Test 
+             Points: 1) Scan for all PTX files in a directory, try to 
+             translate them.
 
 
-Test Seed : 1303241380
-Test time : 2.26498e-05
+Test Seed : 1304988880
+Test time : 0.0104651
 
-Status : Testing Generic Dataflow
- Test Passed
-Testing SSA Dataflow
- Test Passed
-Testing SSA then back Dataflow
- Test Passed
+Status : 
 
 
+INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestParser
+INFO     Test completed in 0.608844995499 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestParser -i ../tests/ptx 
+
+Name : TestParser
+
+Description: A test for the PTXParser class. Test Points: 1) Load a PTX file 
+             and run it through the parser generating a module. Write the 
+             module to an intermediate stream. Parse the stream again 
+             generating a new module, compare both to make sure that they match.
+
+
+Test Seed : 1304988880
+Test time : 0.0104795
+
+Status : 
+
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaMalloc 
+INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaTexture2D 
+INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaTexture2D
+INFO     Test completed in 0.065691947937 seconds
+INFO      It produced the following output:
+TestCudaTexture2D: ocelot/executive/implementation/LLVMDynamicTranslationCache.cpp:182: bool executive::LLVMDynamicTranslationCache::loadModule(const ir::Module*, executive::Device*): Assertion `0 && "early exit"' failed.
+(0.004037) KernelPartitioningPass.cpp:518:  Run on kernel '_Z6kernelPfii'
+/*
+* Ocelot Version : 2.0.896
+*/
+.entry _Z6kernelPfii(.param  .u64 __cudaparm__Z6kernelPfii_out,
+		.param  .s32 __cudaparm__Z6kernelPfii_width,
+		.param  .s32 __cudaparm__Z6kernelPfii_height)
+{
+
+	.reg .u32 %r0;
+	.reg .u32 %r1;
+	.reg .u32 %r2;
+	.reg .u32 %r3;
+	.reg .u32 %r4;
+	.reg .u32 %r5;
+	.reg .u32 %r6;
+	.reg .u32 %r7;
+	.reg .u32 %r8;
+	.reg .u32 %r9;
+	.reg .f32 %r10;
+	.reg .f32 %r11;
+	.reg .f32 %r12;
+	.reg .f32 %r13;
+	.reg .f32 %r14;
+	.reg .f32 %r15;
+	.reg .f32 %r16;
+	.reg .f32 %r17;
+	.reg .f32 %r18;
+	.reg .u64 %r19;
+	.reg .u32 %r20;
+	.reg .u32 %r21;
+	.reg .u32 %r22;
+	.reg .u64 %r23;
+	.reg .u64 %r24;
+	.reg .u64 %r25;
+	$BB_1_0002:				/* $LDWbegin__Z6kernelPfii */ 
+		mov.u32 %r0, %ctaid.x;
+		mov.u32 %r1, %ntid.x;
+		mul.lo.u32 %r2, %r0, %r1;
+		mov.u32 %r3, %ctaid.y;
+		mov.u32 %r4, %ntid.y;
+		mul.lo.u32 %r5, %r3, %r4;
+		mov.u32 %r6, %tid.x;
+		add.u32 %r7, %r6, %r2;
+		mov.u32 %r8, %tid.y;
+		add.u32 %r9, %r8, %r5;
+		cvt.rn.f32.u32 %r10, %r7;
+		cvt.rn.f32.u32 %r11, %r9;
+		mov.f32 %r12, 0f00000000;
+		mov.f32 %r13, 0f00000000;
+		tex.2d.v4.f32.f32 {%r14, %r15, %r16, %r17}, [Surface, {%r10, %r11, %r12, %r13}];
+		mov.f32 %r18, %r14;
+		ld.param.u64 %r19, [__cudaparm__Z6kernelPfii_out];
+		ld.param.u32 %r20, [__cudaparm__Z6kernelPfii_width];
+		mul.lo.u32 %r21, %r20, %r9;
+		add.u32 %r22, %r7, %r21;
+		cvt.u64.u32 %r23, %r22;
+		mul.wide.u32 %r24, %r22, 4;
+		add.u64 %r25, %r19, %r24;
+		st.global.f32 [%r25 + 0], %r18;
+		exit;
+}
+(0.004449) KernelPartitioningPass.cpp:521:  
+
+
+(0.004803) KernelPartitioningPass.cpp:131:    Spill region size is 200
+(0.004817) KernelPartitioningPass.cpp:138:  partitioning blocks at barriers
+(0.004828) KernelPartitioningPass.cpp:145:   block entry
+(0.004839) KernelPartitioningPass.cpp:145:   block exit
+(0.004850) KernelPartitioningPass.cpp:145:   block $BB_1_0002
+(0.005208) KernelPartitioningPass.cpp:171:  identifying transition points
+(0.005230) KernelPartitioningPass.cpp:185:   block $BB_1_0002
+(0.005263) KernelPartitioningPass.cpp:397:   unconditional branch
+(0.005283) KernelPartitioningPass.cpp:498:  created exit in block '$BB_1_0002_exit' with code 2
+/*
+* Ocelot Version : 2.0.896
+*/
+.entry _Z6kernelPfii(.param  .u64 __cudaparm__Z6kernelPfii_out,
+		.param  .s32 __cudaparm__Z6kernelPfii_width,
+		.param  .s32 __cudaparm__Z6kernelPfii_height)
+{
+	.local .u32 _Zocelot_resume_point[1];
+	.local .u32 _Zocelot_resume_status[1];
+	.local .b8 _Zocelot_spill_area[200];
+
+	.reg .u32 %r0;
+	.reg .u32 %r1;
+	.reg .u32 %r2;
+	.reg .u32 %r3;
+	.reg .u32 %r4;
+	.reg .u32 %r5;
+	.reg .u32 %r6;
+	.reg .u32 %r7;
+	.reg .u32 %r8;
+	.reg .u32 %r9;
+	.reg .f32 %r10;
+	.reg .f32 %r11;
+	.reg .f32 %r12;
+	.reg .f32 %r13;
+	.reg .f32 %r14;
+	.reg .f32 %r15;
+	.reg .f32 %r16;
+	.reg .f32 %r17;
+	.reg .f32 %r18;
+	.reg .u64 %r19;
+	.reg .u32 %r20;
+	.reg .u32 %r21;
+	.reg .u32 %r22;
+	.reg .u64 %r23;
+	.reg .u64 %r24;
+	.reg .u64 %r25;
+	.reg .u32 %r26;
+	$BB_1_0002:				/* $LDWbegin__Z6kernelPfii */ 
+		mov.u32 %r0, %ctaid.x;
+		mov.u32 %r1, %ntid.x;
+		mul.lo.u32 %r2, %r0, %r1;
+		mov.u32 %r3, %ctaid.y;
+		mov.u32 %r4, %ntid.y;
+		mul.lo.u32 %r5, %r3, %r4;
+		mov.u32 %r6, %tid.x;
+		add.u32 %r7, %r6, %r2;
+		mov.u32 %r8, %tid.y;
+		add.u32 %r9, %r8, %r5;
+		cvt.rn.f32.u32 %r10, %r7;
+		cvt.rn.f32.u32 %r11, %r9;
+		mov.f32 %r12, 0f00000000;
+		mov.f32 %r13, 0f00000000;
+		tex.2d.v4.f32.f32 {%r14, %r15, %r16, %r17}, [Surface, {%r10, %r11, %r12, %r13}];
+		mov.f32 %r18, %r14;
+		ld.param.u64 %r19, [__cudaparm__Z6kernelPfii_out];
+		ld.param.u32 %r20, [__cudaparm__Z6kernelPfii_width];
+		mul.lo.u32 %r21, %r20, %r9;
+		add.u32 %r22, %r7, %r21;
+		cvt.u64.u32 %r23, %r22;
+		mul.wide.u32 %r24, %r22, 4;
+		add.u64 %r25, %r19, %r24;
+		st.global.f32 [%r25 + 0], %r18;
+		exit;
+	$BB_1_0002_entry:
+		bra $BB_1_0002;
+	$BB_1_0002_exit:
+		mov.u32 %r26, _Zocelot_resume_point;
+		st.local.u32 [%r26 + 0], 0;
+		mov.u32 %r26, _Zocelot_resume_status;
+		st.local.u32 [%r26 + 0], 2;
+}
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestInstructions 
+INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaMalloc
+INFO     Test completed in 0.0926280021667 seconds
+INFO      It produced the following output:
+test_malloc(256, 128)
+PASSED
+test_mallocArray(256, 128)
+checking results from last cudaMemcpyFromArray
+PASSED
+[1] mallocing pitch
+[2] memcpying2d
+[3] memcpying
+[4] checking for errors
+[5] mallocing
+[6] memcpying
+[7] memcpying
+[8] final free
+Pass/Fail : Pass
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestEmulator 
+INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestEmulator
+INFO     Test completed in 0.069591999054 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+
+Name : TestEmulator
+
+Description: 
+
+
+Test Seed : 1304988881
+Test time : 0.0160582
+
+Status : Test output:
+10 registers
+Register test passed
+Load test passed
+Store test passed
+no errors
+Full kernel test passed
+
+
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestConvergence 
 INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestInstructions
-INFO     Test completed in 0.0437541007996 seconds
+INFO     Test completed in 0.118447065353 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -66,8 +273,8 @@ Name : TestInstructions
 Description: 
 
 
-Test Seed : 1303241380
-Test time : 0.000635862
+Test Seed : 1304988881
+Test time : 0.0149612
 
 Status : Test output:
 Accessors test passed.
@@ -83,9 +290,701 @@ pass: control flow instructions
 
 
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCalVectorScale 
+INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaTextureArray 
+INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestConvergence
+INFO     Test completed in 0.0437638759613 seconds
+INFO      It produced the following output:
+TestConvergence: ocelot/executive/implementation/LLVMDynamicTranslationCache.cpp:182: bool executive::LLVMDynamicTranslationCache::loadModule(const ir::Module*, executive::Device*): Assertion `0 && "early exit"' failed.
+(0.003857) KernelPartitioningPass.cpp:518:  Run on kernel 'convergence'
+/*
+* Ocelot Version : 2.0.896
+*/
+.entry convergence(.param  .u64 __cudaparm_convergence_A)
+{
+
+	.reg .u32 %r0;
+	.reg .f32 %r1;
+	.reg .f32 %r2;
+	.reg .f32 %r3;
+	.reg .f32 %r4;
+	.reg .u64 %r5;
+	.reg .u64 %r6;
+	.reg .u64 %r7;
+	.reg .u64 %r8;
+	$BB_1_0002:				/* $LDWbegin_convergence */ 
+		cvt.s32.u32 %r0, %tid.x;
+		cvt.rn.f32.s32 %r1, %r0;
+		add.f32 %r2, %r1, %r1;
+		mov.f32 %r3, 0f3f800000;
+		add.f32 %r4, %r2, %r3;
+		ld.param.u64 %r5, [__cudaparm_convergence_A];
+		cvt.s64.s32 %r6, %r0;
+		mul.wide.s32 %r7, %r0, 4;
+		add.u64 %r8, %r5, %r7;
+		st.global.f32 [%r8 + 0], %r4;
+		exit;
+}
+(0.004105) KernelPartitioningPass.cpp:521:  
+
+
+(0.004288) KernelPartitioningPass.cpp:131:    Spill region size is 64
+(0.004302) KernelPartitioningPass.cpp:138:  partitioning blocks at barriers
+(0.004313) KernelPartitioningPass.cpp:145:   block entry
+(0.004325) KernelPartitioningPass.cpp:145:   block exit
+(0.004336) KernelPartitioningPass.cpp:145:   block $BB_1_0002
+(0.004509) KernelPartitioningPass.cpp:171:  identifying transition points
+(0.004536) KernelPartitioningPass.cpp:185:   block $BB_1_0002
+(0.004573) KernelPartitioningPass.cpp:397:   unconditional branch
+(0.004594) KernelPartitioningPass.cpp:498:  created exit in block '$BB_1_0002_exit' with code 2
+/*
+* Ocelot Version : 2.0.896
+*/
+.entry convergence(.param  .u64 __cudaparm_convergence_A)
+{
+	.local .u32 _Zocelot_resume_point[1];
+	.local .u32 _Zocelot_resume_status[1];
+	.local .b8 _Zocelot_spill_area[64];
+
+	.reg .u32 %r0;
+	.reg .f32 %r1;
+	.reg .f32 %r2;
+	.reg .f32 %r3;
+	.reg .f32 %r4;
+	.reg .u64 %r5;
+	.reg .u64 %r6;
+	.reg .u64 %r7;
+	.reg .u64 %r8;
+	.reg .u32 %r9;
+	$BB_1_0002:				/* $LDWbegin_convergence */ 
+		cvt.s32.u32 %r0, %tid.x;
+		cvt.rn.f32.s32 %r1, %r0;
+		add.f32 %r2, %r1, %r1;
+		mov.f32 %r3, 0f3f800000;
+		add.f32 %r4, %r2, %r3;
+		ld.param.u64 %r5, [__cudaparm_convergence_A];
+		cvt.s64.s32 %r6, %r0;
+		mul.wide.s32 %r7, %r0, 4;
+		add.u64 %r8, %r5, %r7;
+		st.global.f32 [%r8 + 0], %r4;
+		exit;
+	$BB_1_0002_entry:
+		bra $BB_1_0002;
+	$BB_1_0002_exit:
+		mov.u32 %r9, _Zocelot_resume_point;
+		st.local.u32 [%r9 + 0], 0;
+		mov.u32 %r9, _Zocelot_resume_status;
+		st.local.u32 [%r9 + 0], 2;
+}
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestFunctionCall 
+INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestFunctionCall
+INFO     Test completed in 0.0421369075775 seconds
+INFO      It produced the following output:
+TestFunctionCall: ocelot/executive/implementation/LLVMDynamicTranslationCache.cpp:182: bool executive::LLVMDynamicTranslationCache::loadModule(const ir::Module*, executive::Device*): Assertion `0 && "early exit"' failed.
+(0.003971) KernelPartitioningPass.cpp:518:  Run on kernel 'square'
+/*
+* Ocelot Version : 2.0.896
+*/
+.visible .func (.param  .f32 __cudaretf_square) square(.param  .f32 __cudaparmf1_square)
+{
+
+	.reg .f32 %r0;
+	.reg .f32 %r1;
+	.reg .f32 %r2;
+	$BB_1_0002:				/* $LDWbegin_square */ 
+		ld.param.f32 %r0, [__cudaparmf1_square];
+		mov.f32 %r1, %r0;
+		mul.f32 %r2, %r1, %r1;
+		st.param.f32 [__cudaretf_square], %r2;
+		ret;
+}
+(0.004109) KernelPartitioningPass.cpp:521:  
+
+
+(0.004211) KernelPartitioningPass.cpp:131:    Spill region size is 16
+(0.004225) KernelPartitioningPass.cpp:138:  partitioning blocks at barriers
+(0.004237) KernelPartitioningPass.cpp:145:   block entry
+(0.004248) KernelPartitioningPass.cpp:145:   block exit
+(0.004259) KernelPartitioningPass.cpp:145:   block $BB_1_0002
+(0.004346) KernelPartitioningPass.cpp:171:  identifying transition points
+(0.004368) KernelPartitioningPass.cpp:185:   block $BB_1_0002
+(0.004402) KernelPartitioningPass.cpp:397:   unconditional branch
+(0.004422) KernelPartitioningPass.cpp:498:  created exit in block '$BB_1_0002_exit' with code 2
+/*
+* Ocelot Version : 2.0.896
+*/
+.visible .func (.param  .f32 __cudaretf_square) square(.param  .f32 __cudaparmf1_square)
+{
+	.local .u32 _Zocelot_resume_point[1];
+	.local .u32 _Zocelot_resume_status[1];
+	.local .b8 _Zocelot_spill_area[16];
+
+	.reg .f32 %r0;
+	.reg .f32 %r1;
+	.reg .f32 %r2;
+	.reg .u32 %r3;
+	$BB_1_0002:				/* $LDWbegin_square */ 
+		ld.param.f32 %r0, [__cudaparmf1_square];
+		mov.f32 %r1, %r0;
+		mul.f32 %r2, %r1, %r1;
+		st.param.f32 [__cudaretf_square], %r2;
+		ret;
+	$BB_1_0002_entry:
+		bra $BB_1_0002;
+	$BB_1_0002_exit:
+		mov.u32 %r3, _Zocelot_resume_point;
+		st.local.u32 [%r3 + 0], 0;
+		mov.u32 %r3, _Zocelot_resume_status;
+		st.local.u32 [%r3 + 0], 2;
+}
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestPTXAssembly 
+INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaTextureArray
+INFO     Test completed in 0.0688149929047 seconds
+INFO      It produced the following output:
+TestCudaTextureArray: ocelot/executive/implementation/LLVMDynamicTranslationCache.cpp:182: bool executive::LLVMDynamicTranslationCache::loadModule(const ir::Module*, executive::Device*): Assertion `0 && "early exit"' failed.
+(0.006630) KernelPartitioningPass.cpp:518:  Run on kernel '_Z6kernelPfii'
+/*
+* Ocelot Version : 2.0.896
+*/
+.entry _Z6kernelPfii(.param  .u64 __cudaparm__Z6kernelPfii_out,
+		.param  .s32 __cudaparm__Z6kernelPfii_width,
+		.param  .s32 __cudaparm__Z6kernelPfii_height)
+{
+
+	.reg .u32 %r0;
+	.reg .u32 %r1;
+	.reg .u32 %r2;
+	.reg .u32 %r3;
+	.reg .u32 %r4;
+	.reg .u32 %r5;
+	.reg .u32 %r6;
+	.reg .u32 %r7;
+	.reg .u32 %r8;
+	.reg .u32 %r9;
+	.reg .f32 %r10;
+	.reg .f32 %r11;
+	.reg .f32 %r12;
+	.reg .f32 %r13;
+	.reg .f32 %r14;
+	.reg .f32 %r15;
+	.reg .f32 %r16;
+	.reg .f32 %r17;
+	.reg .f32 %r18;
+	.reg .u64 %r19;
+	.reg .u32 %r20;
+	.reg .u32 %r21;
+	.reg .u32 %r22;
+	.reg .u64 %r23;
+	.reg .u64 %r24;
+	.reg .u64 %r25;
+	$BB_1_0002:				/* $LDWbegin__Z6kernelPfii */ 
+		mov.u32 %r0, %ctaid.x;
+		mov.u32 %r1, %ntid.x;
+		mul.lo.u32 %r2, %r0, %r1;
+		mov.u32 %r3, %ctaid.y;
+		mov.u32 %r4, %ntid.y;
+		mul.lo.u32 %r5, %r3, %r4;
+		mov.u32 %r6, %tid.x;
+		add.u32 %r7, %r6, %r2;
+		mov.u32 %r8, %tid.y;
+		add.u32 %r9, %r8, %r5;
+		cvt.rn.f32.u32 %r10, %r7;
+		cvt.rn.f32.u32 %r11, %r9;
+		mov.f32 %r12, 0f00000000;
+		mov.f32 %r13, 0f00000000;
+		tex.2d.v4.f32.f32 {%r14, %r15, %r16, %r17}, [Surface, {%r10, %r11, %r12, %r13}];
+		mov.f32 %r18, %r14;
+		ld.param.u64 %r19, [__cudaparm__Z6kernelPfii_out];
+		ld.param.u32 %r20, [__cudaparm__Z6kernelPfii_width];
+		mul.lo.u32 %r21, %r20, %r9;
+		add.u32 %r22, %r7, %r21;
+		cvt.u64.u32 %r23, %r22;
+		mul.wide.u32 %r24, %r22, 4;
+		add.u64 %r25, %r19, %r24;
+		st.global.f32 [%r25 + 0], %r18;
+		exit;
+}
+(0.007064) KernelPartitioningPass.cpp:521:  
+
+
+(0.007429) KernelPartitioningPass.cpp:131:    Spill region size is 200
+(0.007444) KernelPartitioningPass.cpp:138:  partitioning blocks at barriers
+(0.007456) KernelPartitioningPass.cpp:145:   block entry
+(0.007469) KernelPartitioningPass.cpp:145:   block exit
+(0.007481) KernelPartitioningPass.cpp:145:   block $BB_1_0002
+(0.007847) KernelPartitioningPass.cpp:171:  identifying transition points
+(0.007870) KernelPartitioningPass.cpp:185:   block $BB_1_0002
+(0.007905) KernelPartitioningPass.cpp:397:   unconditional branch
+(0.007926) KernelPartitioningPass.cpp:498:  created exit in block '$BB_1_0002_exit' with code 2
+/*
+* Ocelot Version : 2.0.896
+*/
+.entry _Z6kernelPfii(.param  .u64 __cudaparm__Z6kernelPfii_out,
+		.param  .s32 __cudaparm__Z6kernelPfii_width,
+		.param  .s32 __cudaparm__Z6kernelPfii_height)
+{
+	.local .u32 _Zocelot_resume_point[1];
+	.local .u32 _Zocelot_resume_status[1];
+	.local .b8 _Zocelot_spill_area[200];
+
+	.reg .u32 %r0;
+	.reg .u32 %r1;
+	.reg .u32 %r2;
+	.reg .u32 %r3;
+	.reg .u32 %r4;
+	.reg .u32 %r5;
+	.reg .u32 %r6;
+	.reg .u32 %r7;
+	.reg .u32 %r8;
+	.reg .u32 %r9;
+	.reg .f32 %r10;
+	.reg .f32 %r11;
+	.reg .f32 %r12;
+	.reg .f32 %r13;
+	.reg .f32 %r14;
+	.reg .f32 %r15;
+	.reg .f32 %r16;
+	.reg .f32 %r17;
+	.reg .f32 %r18;
+	.reg .u64 %r19;
+	.reg .u32 %r20;
+	.reg .u32 %r21;
+	.reg .u32 %r22;
+	.reg .u64 %r23;
+	.reg .u64 %r24;
+	.reg .u64 %r25;
+	.reg .u32 %r26;
+	$BB_1_0002:				/* $LDWbegin__Z6kernelPfii */ 
+		mov.u32 %r0, %ctaid.x;
+		mov.u32 %r1, %ntid.x;
+		mul.lo.u32 %r2, %r0, %r1;
+		mov.u32 %r3, %ctaid.y;
+		mov.u32 %r4, %ntid.y;
+		mul.lo.u32 %r5, %r3, %r4;
+		mov.u32 %r6, %tid.x;
+		add.u32 %r7, %r6, %r2;
+		mov.u32 %r8, %tid.y;
+		add.u32 %r9, %r8, %r5;
+		cvt.rn.f32.u32 %r10, %r7;
+		cvt.rn.f32.u32 %r11, %r9;
+		mov.f32 %r12, 0f00000000;
+		mov.f32 %r13, 0f00000000;
+		tex.2d.v4.f32.f32 {%r14, %r15, %r16, %r17}, [Surface, {%r10, %r11, %r12, %r13}];
+		mov.f32 %r18, %r14;
+		ld.param.u64 %r19, [__cudaparm__Z6kernelPfii_out];
+		ld.param.u32 %r20, [__cudaparm__Z6kernelPfii_width];
+		mul.lo.u32 %r21, %r20, %r9;
+		add.u32 %r22, %r7, %r21;
+		cvt.u64.u32 %r23, %r22;
+		mul.wide.u32 %r24, %r22, 4;
+		add.u64 %r25, %r19, %r24;
+		st.global.f32 [%r25 + 0], %r18;
+		exit;
+	$BB_1_0002_entry:
+		bra $BB_1_0002;
+	$BB_1_0002_exit:
+		mov.u32 %r26, _Zocelot_resume_point;
+		st.local.u32 [%r26 + 0], 0;
+		mov.u32 %r26, _Zocelot_resume_status;
+		st.local.u32 [%r26 + 0], 2;
+}
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestIndirectFunctionCall 
+INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestIndirectFunctionCall
+INFO     Test completed in 0.0465149879456 seconds
+INFO      It produced the following output:
+TestIndirectFunctionCall: ocelot/executive/implementation/LLVMDynamicTranslationCache.cpp:182: bool executive::LLVMDynamicTranslationCache::loadModule(const ir::Module*, executive::Device*): Assertion `0 && "early exit"' failed.
+(0.005990) KernelPartitioningPass.cpp:518:  Run on kernel 'funcQuadruple'
+/*
+* Ocelot Version : 2.0.896
+*/
+.visible .func (.param  .s32 __cudaretf_funcQuadruple) funcQuadruple(.param  .s32 __cudaparmf1_funcQuadruple)
+{
+
+	.reg .u32 %r0;
+	.reg .u32 %r1;
+	.reg .u32 %r2;
+	$BB_3_0002:				/* $LDWbegin_funcQuadruple */ 
+		ld.param.u32 %r0, [__cudaparmf1_funcQuadruple];
+		mov.s32 %r1, %r0;
+		mul.lo.s32 %r2, %r1, 4;
+		st.param.s32 [__cudaretf_funcQuadruple], %r2;
+		ret;
+}
+(0.006134) KernelPartitioningPass.cpp:521:  
+
+
+(0.006229) KernelPartitioningPass.cpp:131:    Spill region size is 16
+(0.006242) KernelPartitioningPass.cpp:138:  partitioning blocks at barriers
+(0.006253) KernelPartitioningPass.cpp:145:   block entry
+(0.006264) KernelPartitioningPass.cpp:145:   block exit
+(0.006275) KernelPartitioningPass.cpp:145:   block $BB_3_0002
+(0.006361) KernelPartitioningPass.cpp:171:  identifying transition points
+(0.006383) KernelPartitioningPass.cpp:185:   block $BB_3_0002
+(0.006418) KernelPartitioningPass.cpp:397:   unconditional branch
+(0.006438) KernelPartitioningPass.cpp:498:  created exit in block '$BB_3_0002_exit' with code 2
+/*
+* Ocelot Version : 2.0.896
+*/
+.visible .func (.param  .s32 __cudaretf_funcQuadruple) funcQuadruple(.param  .s32 __cudaparmf1_funcQuadruple)
+{
+	.local .u32 _Zocelot_resume_point[1];
+	.local .u32 _Zocelot_resume_status[1];
+	.local .b8 _Zocelot_spill_area[16];
+
+	.reg .u32 %r0;
+	.reg .u32 %r1;
+	.reg .u32 %r2;
+	.reg .u32 %r3;
+	$BB_3_0002:				/* $LDWbegin_funcQuadruple */ 
+		ld.param.u32 %r0, [__cudaparmf1_funcQuadruple];
+		mov.s32 %r1, %r0;
+		mul.lo.s32 %r2, %r1, 4;
+		st.param.s32 [__cudaretf_funcQuadruple], %r2;
+		ret;
+	$BB_3_0002_entry:
+		bra $BB_3_0002;
+	$BB_3_0002_exit:
+		mov.u32 %r3, _Zocelot_resume_point;
+		st.local.u32 [%r3 + 0], 0;
+		mov.u32 %r3, _Zocelot_resume_status;
+		st.local.u32 [%r3 + 0], 2;
+}
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestLexer -i ../tests/ptx 
+INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestPTXAssembly
+INFO     Test completed in 0.0584721565247 seconds
+INFO      It produced the following output:
+TestPTXAssembly: ocelot/executive/implementation/LLVMDynamicTranslationCache.cpp:182: bool executive::LLVMDynamicTranslationCache::loadModule(const ir::Module*, executive::Device*): Assertion `0 && "early exit"' failed.
+(0.006745) KernelPartitioningPass.cpp:518:  Run on kernel 'test'
+/*
+* Ocelot Version : 2.0.896
+*/
+.entry test(.param  .u64 out,
+		.param  .u64 in)
+{
+
+	.reg .u64 %r0;
+	.reg .u64 %r1;
+	.reg .u32 %r2;
+	.reg .u32 %r3;
+	.reg .u32 %r4;
+	.reg .u32 %r5;
+	.reg .u32 %r6;
+	.reg .u32 %r7;
+	.reg .u32 %r8;
+	.reg .u32 %r9;
+	$BB_1_0002:
+		ld.param.u64 %r0, [in];
+		ld.param.u64 %r1, [out];
+		ld.global.v4.u32 {%r2, %r3, %r4, %r5}, [%r0 + 0];
+		mov.u32 %r6, %r3;
+		mov.u32 %r7, %r4;
+		mov.u32 %r8, %r5;
+		mov.u32 %r9, %r2;
+		st.global.v4.u32 [%r1 + 0], {%r6, %r7, %r8, %r9};
+		exit;
+}
+(0.006942) KernelPartitioningPass.cpp:521:  
+
+
+(0.007104) KernelPartitioningPass.cpp:131:    Spill region size is 72
+(0.007118) KernelPartitioningPass.cpp:138:  partitioning blocks at barriers
+(0.007131) KernelPartitioningPass.cpp:145:   block entry
+(0.007144) KernelPartitioningPass.cpp:145:   block exit
+(0.007154) KernelPartitioningPass.cpp:145:   block $BB_1_0002
+(0.007310) KernelPartitioningPass.cpp:171:  identifying transition points
+(0.007332) KernelPartitioningPass.cpp:185:   block $BB_1_0002
+(0.007364) KernelPartitioningPass.cpp:397:   unconditional branch
+(0.007384) KernelPartitioningPass.cpp:498:  created exit in block '$BB_1_0002_exit' with code 2
+/*
+* Ocelot Version : 2.0.896
+*/
+.entry test(.param  .u64 out,
+		.param  .u64 in)
+{
+	.local .u32 _Zocelot_resume_point[1];
+	.local .u32 _Zocelot_resume_status[1];
+	.local .b8 _Zocelot_spill_area[72];
+
+	.reg .u64 %r0;
+	.reg .u64 %r1;
+	.reg .u32 %r2;
+	.reg .u32 %r3;
+	.reg .u32 %r4;
+	.reg .u32 %r5;
+	.reg .u32 %r6;
+	.reg .u32 %r7;
+	.reg .u32 %r8;
+	.reg .u32 %r9;
+	.reg .u32 %r10;
+	$BB_1_0002:
+		ld.param.u64 %r0, [in];
+		ld.param.u64 %r1, [out];
+		ld.global.v4.u32 {%r2, %r3, %r4, %r5}, [%r0 + 0];
+		mov.u32 %r6, %r3;
+		mov.u32 %r7, %r4;
+		mov.u32 %r8, %r5;
+		mov.u32 %r9, %r2;
+		st.global.v4.u32 [%r1 + 0], {%r6, %r7, %r8, %r9};
+		exit;
+	$BB_1_0002_entry:
+		bra $BB_1_0002;
+	$BB_1_0002_exit:
+		mov.u32 %r10, _Zocelot_resume_point;
+		st.local.u32 [%r10 + 0], 0;
+		mov.u32 %r10, _Zocelot_resume_status;
+		st.local.u32 [%r10 + 0], 2;
+}
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestKernels 
+INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestLexer
+INFO     Test completed in 0.0507760047913 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+
+Name : TestLexer
+
+Description: Tests for the PTX lexer. Test Point 1: Scan a PTX file and 
+             write out a temp stream, scan the stream again and make sure that the 
+             two sets of tokens match
+
+
+Test Seed : 1304988881
+Test time : 1.71661e-05
+
+Status : 
+
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaGlobals 
+INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaGlobals
+INFO     Test completed in 0.0425469875336 seconds
+INFO      It produced the following output:
+TestCudaGlobals: ocelot/executive/implementation/LLVMDynamicTranslationCache.cpp:182: bool executive::LLVMDynamicTranslationCache::loadModule(const ir::Module*, executive::Device*): Assertion `0 && "early exit"' failed.
+cudaSetDevice() - 0 - Ocelot Dynamic Multicore CPU Backend (LLVM-JIT) 
+(0.003981) KernelPartitioningPass.cpp:518:  Run on kernel 'copyFromGlobal'
+/*
+* Ocelot Version : 2.0.896
+*/
+.entry copyFromGlobal(.param  .u64 __cudaparm_copyFromGlobal_result)
+{
+
+	.reg .u32 %r0;
+	.reg .u32 %r1;
+	.reg .u32 %r2;
+	.reg .u32 %r3;
+	.reg .u32 %r4;
+	.reg .u32 %r5;
+	.reg .u32 %r6;
+	.reg .u32 %r7;
+	.reg .u32 %r8;
+	.reg .u32 %r9;
+	.reg .u32 %r10;
+	.reg .u32 %r11;
+	.reg .f32 %r12;
+	.reg .f32 %r13;
+	.reg .f32 %r14;
+	.reg .u64 %r15;
+	.reg .u64 %r16;
+	.reg .u64 %r17;
+	.reg .u64 %r18;
+	$BB_1_0002:				/* $LDWbegin_copyFromGlobal */ 
+		mov.u32 %r0, %tid.x;
+		mov.u32 %r1, %ctaid.x;
+		mov.u32 %r2, %ntid.x;
+		mul.lo.u32 %r3, %r1, %r2;
+		add.u32 %r4, %r0, %r3;
+		shr.s32 %r5, %r4, 31;
+		mov.s32 %r6, 127;
+		and.b32 %r7, %r5, %r6;
+		add.s32 %r8, %r7, %r4;
+		shr.s32 %r9, %r8, 7;
+		mul.lo.s32 %r10, %r9, 128;
+		sub.s32 %r11, %r4, %r10;
+		cvt.rn.f32.s32 %r12, %r11;
+		ld.global.f32 %r13, [Pi];
+		mul.f32 %r14, %r12, %r13;
+		ld.param.u64 %r15, [__cudaparm_copyFromGlobal_result];
+		cvt.s64.s32 %r16, %r4;
+		mul.wide.s32 %r17, %r4, 4;
+		add.u64 %r18, %r15, %r17;
+		st.global.f32 [%r18 + 0], %r14;
+		exit;
+}
+(0.004320) KernelPartitioningPass.cpp:521:  
+
+
+(0.004623) KernelPartitioningPass.cpp:131:    Spill region size is 144
+(0.004637) KernelPartitioningPass.cpp:138:  partitioning blocks at barriers
+(0.004648) KernelPartitioningPass.cpp:145:   block entry
+(0.004662) KernelPartitioningPass.cpp:145:   block exit
+(0.004673) KernelPartitioningPass.cpp:145:   block $BB_1_0002
+(0.004978) KernelPartitioningPass.cpp:171:  identifying transition points
+(0.005001) KernelPartitioningPass.cpp:185:   block $BB_1_0002
+(0.005040) KernelPartitioningPass.cpp:397:   unconditional branch
+(0.005061) KernelPartitioningPass.cpp:498:  created exit in block '$BB_1_0002_exit' with code 2
+/*
+* Ocelot Version : 2.0.896
+*/
+.entry copyFromGlobal(.param  .u64 __cudaparm_copyFromGlobal_result)
+{
+	.local .u32 _Zocelot_resume_point[1];
+	.local .u32 _Zocelot_resume_status[1];
+	.local .b8 _Zocelot_spill_area[144];
+
+	.reg .u32 %r0;
+	.reg .u32 %r1;
+	.reg .u32 %r2;
+	.reg .u32 %r3;
+	.reg .u32 %r4;
+	.reg .u32 %r5;
+	.reg .u32 %r6;
+	.reg .u32 %r7;
+	.reg .u32 %r8;
+	.reg .u32 %r9;
+	.reg .u32 %r10;
+	.reg .u32 %r11;
+	.reg .f32 %r12;
+	.reg .f32 %r13;
+	.reg .f32 %r14;
+	.reg .u64 %r15;
+	.reg .u64 %r16;
+	.reg .u64 %r17;
+	.reg .u64 %r18;
+	.reg .u32 %r19;
+	$BB_1_0002:				/* $LDWbegin_copyFromGlobal */ 
+		mov.u32 %r0, %tid.x;
+		mov.u32 %r1, %ctaid.x;
+		mov.u32 %r2, %ntid.x;
+		mul.lo.u32 %r3, %r1, %r2;
+		add.u32 %r4, %r0, %r3;
+		shr.s32 %r5, %r4, 31;
+		mov.s32 %r6, 127;
+		and.b32 %r7, %r5, %r6;
+		add.s32 %r8, %r7, %r4;
+		shr.s32 %r9, %r8, 7;
+		mul.lo.s32 %r10, %r9, 128;
+		sub.s32 %r11, %r4, %r10;
+		cvt.rn.f32.s32 %r12, %r11;
+		ld.global.f32 %r13, [Pi];
+		mul.f32 %r14, %r12, %r13;
+		ld.param.u64 %r15, [__cudaparm_copyFromGlobal_result];
+		cvt.s64.s32 %r16, %r4;
+		mul.wide.s32 %r17, %r4, 4;
+		add.u64 %r18, %r15, %r17;
+		st.global.f32 [%r18 + 0], %r14;
+		exit;
+	$BB_1_0002_entry:
+		bra $BB_1_0002;
+	$BB_1_0002_exit:
+		mov.u32 %r19, _Zocelot_resume_point;
+		st.local.u32 [%r19 + 0], 0;
+		mov.u32 %r19, _Zocelot_resume_status;
+		st.local.u32 [%r19 + 0], 2;
+}
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestDeviceSwitching 
+INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestKernels
+INFO     Test completed in 0.101136922836 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+
+Name : TestKernels
+
+Description: 
+
+
+Test Seed : 1304988881
+Test time : 0.0416465
+
+Status : Test output:
+looping kernel succeeded
+matrix vector kernel succeeded
+
+
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestLLVMInstructions 
+INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestDeviceSwitching
+INFO     Test completed in 0.0541541576385 seconds
+INFO      It produced the following output:
+TestDeviceSwitching: ocelot/executive/implementation/LLVMDynamicTranslationCache.cpp:182: bool executive::LLVMDynamicTranslationCache::loadModule(const ir::Module*, executive::Device*): Assertion `0 && "early exit"' failed.
+(0.002430) KernelPartitioningPass.cpp:518:  Run on kernel 'increment'
+/*
+* Ocelot Version : 2.0.896
+*/
+.entry increment(.param  .u64 memory)
+{
+
+	.reg .u64 %r0;
+	.reg .u32 %r1;
+	.reg .u32 %r2;
+	$BB_1_0002:				/* Entry */ 
+		ld.param.u64 %r0, [memory];
+		ld.global.u32 %r1, [%r0 + 0];
+		add.u32 %r2, %r1, 1;
+		st.global.u32 [%r0 + 0], %r2;
+	$BB_1_0003:				/* Exit */ 
+		exit;
+}
+(0.002583) KernelPartitioningPass.cpp:521:  
+
+
+(0.002692) KernelPartitioningPass.cpp:131:    Spill region size is 16
+(0.002709) KernelPartitioningPass.cpp:138:  partitioning blocks at barriers
+(0.002721) KernelPartitioningPass.cpp:145:   block entry
+(0.002732) KernelPartitioningPass.cpp:145:   block exit
+(0.002743) KernelPartitioningPass.cpp:145:   block $BB_1_0002
+(0.002754) KernelPartitioningPass.cpp:145:   block $BB_1_0003
+(0.002854) KernelPartitioningPass.cpp:171:  identifying transition points
+(0.002882) KernelPartitioningPass.cpp:185:   block $BB_1_0002
+(0.002908) KernelPartitioningPass.cpp:185:   block $BB_1_0003
+(0.002941) KernelPartitioningPass.cpp:397:   unconditional branch
+(0.002963) KernelPartitioningPass.cpp:498:  created exit in block '$BB_1_0002_exit' with code 2
+(0.002982) KernelPartitioningPass.cpp:397:   unconditional branch
+(0.003001) KernelPartitioningPass.cpp:498:  created exit in block '$BB_1_0003_exit' with code 2
+/*
+* Ocelot Version : 2.0.896
+*/
+.entry increment(.param  .u64 memory)
+{
+	.local .u32 _Zocelot_resume_point[1];
+	.local .u32 _Zocelot_resume_status[1];
+	.local .b8 _Zocelot_spill_area[16];
+
+	.reg .u64 %r0;
+	.reg .u32 %r1;
+	.reg .u32 %r2;
+	.reg .u32 %r3;
+	.reg .u32 %r4;
+	$BB_1_0002:				/* Entry */ 
+		ld.param.u64 %r0, [memory];
+		ld.global.u32 %r1, [%r0 + 0];
+		add.u32 %r2, %r1, 1;
+		st.global.u32 [%r0 + 0], %r2;
+	$BB_1_0003:				/* Exit */ 
+		exit;
+	$BB_1_0002_entry:
+		bra $BB_1_0002;
+	$BB_1_0002_exit:
+		mov.u32 %r3, _Zocelot_resume_point;
+		st.local.u32 [%r3 + 0], 0;
+		mov.u32 %r3, _Zocelot_resume_status;
+		st.local.u32 [%r3 + 0], 2;
+	$BB_1_0003_entry:
+		bra $BB_1_0003;
+	$BB_1_0003_exit:
+		mov.u32 %r4, _Zocelot_resume_point;
+		st.local.u32 [%r4 + 0], 0;
+		mov.u32 %r4, _Zocelot_resume_status;
+		st.local.u32 [%r4 + 0], 2;
+}
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestDataflowGraph -i ../tests/ptx 
 INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestLLVMInstructions
-INFO     Test completed in 0.043016910553 seconds
+INFO     Test completed in 0.059054851532 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -99,8 +998,8 @@ Description: A test for the assembly code generation and automatic
              check, compare to references from the LLVM manual.
 
 
-Test Seed : 1303241380
-Test time : 0.000912666
+Test Seed : 1304988881
+Test time : 0.00129032
 
 Status :  Checked instruction "<result> = add i32 4, %var"
 Add Instruction Passed
@@ -232,248 +1131,188 @@ Zext Instruction Passed
 
 
 INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaSequence 
-INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaGlobals
-INFO     Test completed in 0.0591058731079 seconds
-INFO      It produced the following output:
-cudaSetDevice() - 0 - Ocelot Dynamic Multicore CPU Backend (LLVM-JIT) 
-Pass/Fail : Pass
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaTextureArray 
-INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestParser
-INFO     Test completed in 0.0348551273346 seconds
+INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestDataflowGraph
+INFO     Test completed in 0.188884019852 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
 
-Name : TestParser
+Name : TestDataflowGraph
 
-Description: A test for the PTXParser class. Test Points: 1) Load a PTX file 
-             and run it through the parser generating a module. Write the 
-             module to an intermediate stream. Parse the stream again 
-             generating a new module, compare both to make sure that they match.
-
-
-Test Seed : 1303241380
-Test time : 1.54972e-05
-
-Status : 
+Description: A test for the DataflowGraph class. Test Points: 1) 
+             Generic: load PTX files, convert them into dataflow graphs, verify that 
+             all live ranges spanning blocks are consistent. 2) SSA: convert to 
+             ssa form, verify that no register is declared more than once. 3) 
+             reverse SSA: convert to ssa then out of ssa, verify that all live 
+             ranges spanning blocks are consistent.
 
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestConvergence 
+Test Seed : 1304988881
+Test time : 2.74181e-05
+
+Status : Testing Generic Dataflow
+ Test Passed
+Testing SSA Dataflow
+ Test Passed
+Testing SSA then back Dataflow
+ Test Passed
+
+
+
+INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCalVectorScale 
 INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCalVectorScale
-INFO     Test completed in 0.0379509925842 seconds
+INFO     Test completed in 0.0406038761139 seconds
 INFO      It produced the following output:
 No CAL devices found
 Pass/Fail : Pass
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestEmulator 
-INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestEmulator
-INFO     Test completed in 0.0317118167877 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-
-Name : TestEmulator
-
-Description: 
-
-
-Test Seed : 1303241380
-Test time : 0.00299597
-
-Status : Test output:
-10 registers
-Register test passed
-Load test passed
-Store test passed
-no errors
-Full kernel test passed
-
-
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestPTXToLLVMTranslator -i ../tests/ptx 
-INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaTextureArray
-INFO     Test completed in 0.0545170307159 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestPTXAssembly 
-INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestConvergence
-INFO     Test completed in 0.0438179969788 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaMalloc 
-INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestPTXToLLVMTranslator
-INFO     Test completed in 0.0347490310669 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-
-Name : TestPTXToLLVMTranslator
-
-Description: This is a basic test that just tries to get through a 
-             translation successfully of as many PTX programs as possible Test 
-             Points: 1) Scan for all PTX files in a directory, try to 
-             translate them.
-
-
-Test Seed : 1303241380
-Test time : 1.16825e-05
-
-Status : 
-
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestFunctionCall 
-INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaSequence
-INFO     Test completed in 0.108155012131 seconds
-INFO      It produced the following output:
-Loaded libcuda.so explicitly; unloading now.
-A_host = 0x33efb80
-A_gpu = 0x33e7f00
-cudaMemcpy(0x33efb80, 0x33e7f00) - APP
-Pass/Fail : Pass
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestIndirectFunctionCall 
-INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaMalloc
-INFO     Test completed in 0.0640690326691 seconds
-INFO      It produced the following output:
-test_malloc(256, 128)
-PASSED
-test_mallocArray(256, 128)
-checking results from last cudaMemcpyFromArray
-PASSED
-[1] mallocing pitch
-[2] memcpying2d
-[3] memcpying
-[4] checking for errors
-[5] mallocing
-[6] memcpying
-[7] memcpying
-[8] final free
-Pass/Fail : Pass
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestLexer -i ../tests/ptx 
-INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestFunctionCall
-INFO     Test completed in 0.0433328151703 seconds
-INFO      It produced the following output:
-TestFunctionCall: ocelot/executive/implementation/LLVMDynamicTranslationCache.cpp:1074: void executive::setupCallTargets(ir::PTXKernel&, const executive::LLVMDynamicTranslationCache&): Assertion `0 && "unimplemented"' failed.
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaTexture2D 
-INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestIndirectFunctionCall
-INFO     Test completed in 0.0454580783844 seconds
-INFO      It produced the following output:
-TestIndirectFunctionCall: ocelot/executive/implementation/LLVMDynamicTranslationCache.cpp:1074: void executive::setupCallTargets(ir::PTXKernel&, const executive::LLVMDynamicTranslationCache&): Assertion `0 && "unimplemented"' failed.
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestDeviceSwitching 
-INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestLexer
-INFO     Test completed in 0.027734041214 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-
-Name : TestLexer
-
-Description: Tests for the PTX lexer. Test Point 1: Scan a PTX file and 
-             write out a temp stream, scan the stream again and make sure that the 
-             two sets of tokens match
-
-
-Test Seed : 1303241380
-Test time : 1.33514e-05
-
-Status : 
-
-
 INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestLLVMKernels 
-INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaTexture2D
-INFO     Test completed in 0.0518357753754 seconds
+INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaSequence
+INFO     Test completed in 0.263236045837 seconds
 INFO      It produced the following output:
-Pass/Fail : Pass
+TestCudaSequence: ocelot/executive/implementation/LLVMDynamicTranslationCache.cpp:182: bool executive::LLVMDynamicTranslationCache::loadModule(const ir::Module*, executive::Device*): Assertion `0 && "early exit"' failed.
+Loaded libcuda.so explicitly; unloading now.
+A_host = 0x15370f0
+A_gpu = 0x1535700
+(0.212055) KernelPartitioningPass.cpp:518:  Run on kernel 'v4sequence'
+/*
+* Ocelot Version : 2.0.896
+*/
+.entry v4sequence(.param  .u64 __cudaparm_v4sequence_A,
+		.param  .s32 __cudaparm_v4sequence_N)
+{
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestKernels 
-INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestDeviceSwitching
-INFO     Test completed in 0.0575308799744 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
+	.reg .u32 %r0;
+	.reg .u32 %r1;
+	.reg .u32 %r2;
+	.reg .u32 %r3;
+	.reg .u32 %r4;
+	.reg .u64 %r5;
+	.reg .u64 %r6;
+	.reg .u64 %r7;
+	.reg .u64 %r8;
+	.reg .u32 %r9;
+	.reg .u32 %r10;
+	.reg .u32 %r11;
+	.reg .u32 %r12;
+	.reg .u32 %r13;
+	.reg .u32 %r14;
+	.reg .u32 %r15;
+	$BB_4_0002:				/* $LDWbegin_v4sequence */ 
+		mov.u32 %r0, %tid.x;
+		mov.u32 %r1, %ctaid.x;
+		mov.u32 %r2, %ntid.x;
+		mul.lo.u32 %r3, %r1, %r2;
+		add.u32 %r4, %r0, %r3;
+		ld.param.u64 %r5, [__cudaparm_v4sequence_A];
+		cvt.s64.s32 %r6, %r4;
+		mul.wide.s32 %r7, %r4, 16;
+		add.u64 %r8, %r5, %r7;
+		add.s32 %r9, %r4, 1;
+		mul.lo.s32 %r10, %r4, 2;
+		add.s32 %r11, %r10, 2;
+		mul.lo.s32 %r12, %r4, 3;
+		add.s32 %r13, %r12, 3;
+		mul.lo.s32 %r14, %r4, 4;
+		add.s32 %r15, %r14, 4;
+		st.global.v4.s32 [%r8 + 0], {%r9, %r11, %r13, %r15};
+		exit;
+}
+(0.212372) KernelPartitioningPass.cpp:521:  
 
 
-Name : TestDeviceSwitching
+(0.212651) KernelPartitioningPass.cpp:131:    Spill region size is 120
+(0.212665) KernelPartitioningPass.cpp:138:  partitioning blocks at barriers
+(0.212676) KernelPartitioningPass.cpp:145:   block entry
+(0.212687) KernelPartitioningPass.cpp:145:   block exit
+(0.212698) KernelPartitioningPass.cpp:145:   block $BB_4_0002
+(0.212978) KernelPartitioningPass.cpp:171:  identifying transition points
+(0.213000) KernelPartitioningPass.cpp:185:   block $BB_4_0002
+(0.218179) KernelPartitioningPass.cpp:397:   unconditional branch
+(0.218211) KernelPartitioningPass.cpp:498:  created exit in block '$BB_4_0002_exit' with code 2
+/*
+* Ocelot Version : 2.0.896
+*/
+.entry v4sequence(.param  .u64 __cudaparm_v4sequence_A,
+		.param  .s32 __cudaparm_v4sequence_N)
+{
+	.local .u32 _Zocelot_resume_point[1];
+	.local .u32 _Zocelot_resume_status[1];
+	.local .b8 _Zocelot_spill_area[120];
 
-Description: A unit test for the ability of the CUDA runtime to switch 
-             between devices and use multiple threads Test Points: 1) In a single 
-             threaded application, iterate across all devices launching the same 
-             simple kernel each time 2) Test context migration support in 
-             ocelot. Iterate across all devices, launching a simple kernel that 
-             updates shared variable. Use the context switch mechanism to 
-             migrate the shared data. 3) Test multi-threading support. Launch one 
-             host thread to allocate memory, pass pointers to worker 
-             threads, each of which should launch independent kernels in 
-             parallel.
-
-
-Test Seed : 1303241380
-Test time : 0.0131702
-
-Status : Test Point 1 Passed
-Test Point 2 Passed
-Test Point 3 Passed
-
-
-
-INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestKernels
-INFO     Test completed in 0.0462110042572 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-
-Name : TestKernels
-
-Description: 
-
-
-Test Seed : 1303241380
-Test time : 0.0115311
-
-Status : Test output:
-looping kernel succeeded
-matrix vector kernel succeeded
-
-
+	.reg .u32 %r0;
+	.reg .u32 %r1;
+	.reg .u32 %r2;
+	.reg .u32 %r3;
+	.reg .u32 %r4;
+	.reg .u64 %r5;
+	.reg .u64 %r6;
+	.reg .u64 %r7;
+	.reg .u64 %r8;
+	.reg .u32 %r9;
+	.reg .u32 %r10;
+	.reg .u32 %r11;
+	.reg .u32 %r12;
+	.reg .u32 %r13;
+	.reg .u32 %r14;
+	.reg .u32 %r15;
+	.reg .u32 %r16;
+	$BB_4_0002:				/* $LDWbegin_v4sequence */ 
+		mov.u32 %r0, %tid.x;
+		mov.u32 %r1, %ctaid.x;
+		mov.u32 %r2, %ntid.x;
+		mul.lo.u32 %r3, %r1, %r2;
+		add.u32 %r4, %r0, %r3;
+		ld.param.u64 %r5, [__cudaparm_v4sequence_A];
+		cvt.s64.s32 %r6, %r4;
+		mul.wide.s32 %r7, %r4, 16;
+		add.u64 %r8, %r5, %r7;
+		add.s32 %r9, %r4, 1;
+		mul.lo.s32 %r10, %r4, 2;
+		add.s32 %r11, %r10, 2;
+		mul.lo.s32 %r12, %r4, 3;
+		add.s32 %r13, %r12, 3;
+		mul.lo.s32 %r14, %r4, 4;
+		add.s32 %r15, %r14, 4;
+		st.global.v4.s32 [%r8 + 0], {%r9, %r11, %r13, %r15};
+		exit;
+	$BB_4_0002_entry:
+		bra $BB_4_0002;
+	$BB_4_0002_exit:
+		mov.u32 %r16, _Zocelot_resume_point;
+		st.local.u32 [%r16 + 0], 0;
+		mov.u32 %r16, _Zocelot_resume_status;
+		st.local.u32 [%r16 + 0], 2;
+}
 
 INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestLLVMKernels
-INFO     Test completed in 0.087856054306 seconds
+INFO     Test completed in 0.156135082245 seconds
 INFO      It produced the following output:
 Kernel execution aborted - code 1: Unhandled divergent condition
 TestLLVMKernels: ./ocelot/executive/implementation/LLVMRuntimeLibrary.inl:147: void __ocelot_abort(unsigned int, unsigned int): Assertion `0 && "execution aborted"' failed.
 
-INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestPTXAssembly
-INFO     Test completed in 2.70219492912 seconds
-INFO      It produced the following output:
-TestPTXAssembly: ocelot/executive/implementation/LLVMDynamicTranslationCache.cpp:1074: void executive::setupCallTargets(ir::PTXKernel&, const executive::LLVMDynamicTranslationCache&): Assertion `0 && "unimplemented"' failed.
-
 INFO     
 Passing tests:
- (0.044s) : /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestConvergence : Passed
- (0.035s) : /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestPTXToLLVMTranslator : Passed
- (0.044s) : /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestInstructions : Passed
- (0.028s) : /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestLexer : Passed
- (0.035s) : /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestParser : Passed
- (0.064s) : /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaMalloc : Passed
- (0.032s) : /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestEmulator : Passed
- (0.052s) : /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaTexture2D : Passed
- (0.037s) : /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestDataflowGraph : Passed
- (0.108s) : /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaSequence : Passed
- (0.055s) : /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaTextureArray : Passed
- (0.043s) : /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestLLVMInstructions : Passed
- (0.059s) : /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaGlobals : Passed
- (0.058s) : /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestDeviceSwitching : Passed
- (0.038s) : /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCalVectorScale : Passed
- (0.046s) : /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestKernels : Passed
+ (0.605s) : /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestPTXToLLVMTranslator : Passed
+ (0.118s) : /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestInstructions : Passed
+ (0.609s) : /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestParser : Passed
+ (0.093s) : /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaMalloc : Passed
+ (0.051s) : /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestLexer : Passed
+ (0.101s) : /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestKernels : Passed
+ (0.189s) : /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestDataflowGraph : Passed
+ (0.070s) : /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestEmulator : Passed
+ (0.059s) : /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestLLVMInstructions : Passed
+ (0.041s) : /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCalVectorScale : Passed
 
 Failing tests:
- (0.088s) : /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestLLVMKernels : Did not complete.
- (2.702s) : /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestPTXAssembly : Did not complete.
- (0.043s) : /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestFunctionCall : Did not complete.
- (0.045s) : /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestIndirectFunctionCall : Did not complete.
+ (0.044s) : /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestConvergence : Did not complete.
+ (0.156s) : /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestLLVMKernels : Did not complete.
+ (0.042s) : /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestFunctionCall : Did not complete.
+ (0.054s) : /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestDeviceSwitching : Did not complete.
+ (0.047s) : /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestIndirectFunctionCall : Did not complete.
+ (0.058s) : /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestPTXAssembly : Did not complete.
+ (0.263s) : /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaSequence : Did not complete.
+ (0.069s) : /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaTextureArray : Did not complete.
+ (0.043s) : /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaGlobals : Did not complete.
+ (0.066s) : /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaTexture2D : Did not complete.
 

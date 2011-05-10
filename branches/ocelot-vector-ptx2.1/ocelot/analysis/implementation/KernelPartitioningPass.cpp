@@ -90,6 +90,8 @@ void KernelPartitioningPass::KernelDecomposition::runOnKernel(ir::PTXKernel *_ke
 	
 	// 
 	_identifyTransitionPoints();
+	
+	kernel->write(std::cout);
 }
 
 /*!
@@ -159,6 +161,7 @@ void KernelPartitioningPass::KernelDecomposition::_partitionBlocksAtBarrier() {
 			}
 		}
 	}
+	kernel->rebuildDfg()->compute();
 }
 
 /*!
@@ -179,11 +182,10 @@ void KernelPartitioningPass::KernelDecomposition::_identifyTransitionPoints() {
 			continue;
 		}
 		
-		DataflowGraph::IteratorMap::const_iterator dfgBlock = cfgToDfgMap.find(*bb_it);
-		assert(dfgBlock != cfgToDfgMap.end() && "failed to find block in CFT-to-DFG mapping");
-
 		report(" block " << (*bb_it)->label);
 		
+		DataflowGraph::IteratorMap::const_iterator dfgBlock = cfgToDfgMap.find(*bb_it);
+		assert(dfgBlock != cfgToDfgMap.end() && "failed to find block in CFT-to-DFG mapping");
 		
 		// live in
 		KernelTransitionPoint transitionEntry;
@@ -194,16 +196,18 @@ void KernelPartitioningPass::KernelDecomposition::_identifyTransitionPoints() {
 		transitionEntry.id = (EntryId)transitionPoints.size() + baseId;
 		transitionPoints[transitionEntry.id] = transitionEntry;
 		
+		EntryId exitId = -1;
+		
 		// live out
 		KernelTransitionPoint transitionExit;
-		transitionExit.type = Thread_exit;
+		transitionExit.type = Thread_branch;
 		transitionExit.block = *bb_it;
 		transitionExit.liveValues = dfgBlock->second->aliveOut();
 		transitionExit.handler = kernel->cfg()->insert_new_block((*bb_it)->label + "_exit");
 		transitionExit.id = (EntryId)transitionPoints.size() + baseId;
 		transitionPoints[transitionExit.id] = transitionExit;
-		
-		entryTransitions[(*bb_it)->label] = std::make_pair(transitionEntry.id, transitionExit.id);
+		exitId = transitionExit.id;
+		entryTransitions[(*bb_it)->label] = std::make_pair(transitionEntry.id, exitId);
 	}
 	
 	// revisit transitions
@@ -254,9 +258,14 @@ void KernelPartitioningPass::KernelDecomposition::_constructTransition(
 			
 			bytes += ir::PTXOperand::bytes(reg_it->type);
 		}
-		
+				
+		ir::PTXInstruction *branch = new ir::PTXInstruction(ir::PTXInstruction::Bra);
+		branch->d.addressMode = ir::PTXOperand::Label;
+		branch->d.identifier = transition.block->label;
+		transition.handler->instructions.insert(transition.handler->instructions.end(), branch);
+			
 		// create edge from handler to block
-		ir::BasicBlock::Edge edge(transition.handler, transition.block);
+		ir::BasicBlock::Edge edge(transition.handler, transition.block, ir::BasicBlock::Edge::Branch);
 		transition.edge = kernel->cfg()->insert_edge(edge);
 	}
 	break;
@@ -300,10 +309,6 @@ void KernelPartitioningPass::KernelDecomposition::_constructTransition(
 			bytes += ir::PTXOperand::bytes(reg_it->type);
 		}
 		
-		// create edge from block to handler
-		ir::BasicBlock::Edge edge(transition.block, transition.handler);
-		transition.edge = kernel->cfg()->insert_edge(edge);
-		
 		_transformExitTransitions(transition);
 	}
 		break;
@@ -319,6 +324,9 @@ void KernelPartitioningPass::KernelDecomposition::_transformExitTransitions(Kern
 	--last;
 	ir::PTXInstruction *terminator = static_cast<ir::PTXInstruction *>(*last);
 	
+	report("transformExitTransition() - terminator->opcode = " << ir::PTXInstruction::toString(terminator->opcode));
+	report("  terminator->toString() = " << terminator->toString());
+	
 	ir::PTXOperand resumePointOperand;
 	switch (terminator->opcode) {
 		case ir::PTXInstruction::Bra:
@@ -329,14 +337,26 @@ void KernelPartitioningPass::KernelDecomposition::_transformExitTransitions(Kern
 				!terminator->uni) {
 				
 				report(" conditional branch");
-				
-				// conditional branch
-				ir::PTXInstruction *selp = new ir::PTXInstruction(ir::PTXInstruction::SelP);
-				selp->d = std::move(ir::PTXOperand(ir::PTXOperand::Register, ir::PTXOperand::u32, 
+				transition.block->instructions.erase(last);
+								
+				ir::PTXInstruction *call = new ir::PTXInstruction(ir::PTXInstruction::Call);
+				call->d = std::move(ir::PTXOperand(ir::PTXOperand::Register, ir::PTXOperand::pred,
 					kernel->dfg()->newRegister()));
-				selp->a = std::move(ir::PTXOperand(ir::PTXOperand::Immediate, ir::PTXOperand::u32));
-				selp->b = std::move(ir::PTXOperand(ir::PTXOperand::Immediate, ir::PTXOperand::u32));
+				call->a = std::move(ir::PTXOperand(ir::PTXOperand::FunctionName, ir::PTXOperand::pred, 
+					"ptx.warp.divergent"));
+				call->b = terminator->pg;
+				transition.block->instructions.push_back(call);
 				
+				ir::PTXInstruction *branch = new ir::PTXInstruction(ir::PTXInstruction::Bra);
+				branch->pg = call->d;
+				branch->d.addressMode = ir::PTXOperand::Label;
+				branch->d.identifier = transition.handler->label;
+				transition.block->instructions.insert(transition.block->instructions.end(), branch);
+				
+				transition.branchBlock = kernel->cfg()->insert_new_block(transition.block->label + "_branch");
+				transition.branchBlock->instructions.push_back(terminator);
+				
+				// identify branch target entry points
 				EntryId branchTargetId = 0;
 				EntryId fallthroughTargetId = 0;
 				
@@ -355,6 +375,28 @@ void KernelPartitioningPass::KernelDecomposition::_transformExitTransitions(Kern
 				report("  branch target id: " << branchTargetId);
 				report("  fallthrough id: " << fallthroughTargetId);
 				
+				// delete out edges
+				for (ir::BasicBlock::EdgePointerVector::iterator edge_it = transition.block->out_edges.begin();
+					edge_it != transition.block->out_edges.end(); ) {
+					
+					kernel->cfg()->remove_edge(*edge_it);
+					edge_it = transition.block->out_edges.begin();
+				}
+				
+				// create two out edges - fall through to the branch block and branch edge to the handler
+				ir::BasicBlock::Edge divergedEdge(transition.block, transition.handler, ir::BasicBlock::Edge::Branch);
+				kernel->cfg()->insert_edge(divergedEdge);
+				ir::BasicBlock::Edge convergentEdge(transition.block, transition.branchBlock, ir::BasicBlock::Edge::FallThrough);
+				kernel->cfg()->insert_edge(convergentEdge);
+				
+				// in cases of actual divergence, insert the thread exit into the handler block
+				ir::PTXInstruction *selp = new ir::PTXInstruction(ir::PTXInstruction::SelP);
+				selp->d = std::move(ir::PTXOperand(ir::PTXOperand::Register, ir::PTXOperand::u32, 
+					kernel->dfg()->newRegister()));
+				selp->a = std::move(ir::PTXOperand(ir::PTXOperand::Immediate, ir::PTXOperand::u32));
+				selp->b = std::move(ir::PTXOperand(ir::PTXOperand::Immediate, ir::PTXOperand::u32));
+				
+				
 				// if predicates are inverted...
 				if (terminator->pg.condition == ir::PTXOperand::InvPred) {
 					std::swap(branchTargetId, fallthroughTargetId);
@@ -367,35 +409,17 @@ void KernelPartitioningPass::KernelDecomposition::_transformExitTransitions(Kern
 				selp->a.imm_uint = branchTargetId;		// branch target
 				selp->b.imm_uint = fallthroughTargetId;		// fallthrough target
 				selp->c = std::move(ir::PTXOperand(ir::PTXOperand::Register, ir::PTXOperand::pred, terminator->pg.reg, 0));
-								
+				transition.handler->instructions.push_back(selp);
 				resumePointOperand = std::move(ir::PTXOperand(ir::PTXOperand::Register, ir::PTXOperand::u32, selp->d.reg, 0));
 				
-				transition.block->instructions.erase(last);
-				transition.block->instructions.push_back(selp);
-				
-				// TODO
-				//
-				// a bit more complicated. create a new block - the branch block - that performs the actual
-				// branching
-				//
-				
+				_createExitCode(transition, resumePointOperand, Thread_branch);
+				assert(0 && "divergent branching not yet handled");
 			}
 			else {
-				// unconditional branch
-				report(" unconditional branch");
-				resumePointOperand = std::move(ir::PTXOperand(ir::PTXOperand::Immediate, ir::PTXOperand::u32));
-				bool setResumePoint = false;
-				for (ir::BasicBlock::EdgePointerVector::const_iterator edge_it = transition.block->out_edges.begin();
-					edge_it != transition.block->out_edges.end(); ++edge_it) {
-					
-					resumePointOperand.imm_uint = entryTransitions[(*edge_it)->tail->label].first;
-					setResumePoint = true;
-				}
-				assert(setResumePoint && "Failed to set resume point; no out-edges are branch edges");
-				
-				transition.block->instructions.erase(last);
+				// unconditional branches do not result in divergence
+				kernel->cfg()->remove_block(transition.handler);
+				transition.handler = kernel->cfg()->end();
 			}
-			_createExitCode(transition, resumePointOperand, Thread_branch);
 		}
 		break;
 		case ir::PTXInstruction::Bar:
@@ -406,6 +430,12 @@ void KernelPartitioningPass::KernelDecomposition::_transformExitTransitions(Kern
 				resumePointOperand.imm_uint = entryTransitions[(*edge_it)->tail->label].first;
 			}
 			transition.block->instructions.erase(last);
+			
+			ir::PTXInstruction *branch = new ir::PTXInstruction(ir::PTXInstruction::Bra);
+			branch->d.addressMode = ir::PTXOperand::Label;
+			branch->d.identifier = transition.handler->label;
+			transition.block->instructions.insert(transition.block->instructions.end(), branch);
+			
 			// insert unconditional branch
 			_createExitCode(transition, resumePointOperand, Thread_barrier);
 		}
@@ -416,8 +446,21 @@ void KernelPartitioningPass::KernelDecomposition::_transformExitTransitions(Kern
 		}
 		break;
 		case ir::PTXInstruction::Exit:
-		{			
+		{
+		
+			ir::BasicBlock::InstructionList::iterator last = transition.block->instructions.end();
+			--last;
 			transition.block->instructions.erase(last);
+			
+			// create edge from block to handler
+			ir::BasicBlock::Edge edge(transition.block, transition.handler, ir::BasicBlock::Edge::Branch);
+			transition.edge = kernel->cfg()->insert_edge(edge);
+		
+			ir::PTXInstruction *branch = new ir::PTXInstruction(ir::PTXInstruction::Bra);
+			branch->d.addressMode = ir::PTXOperand::Label;
+			branch->d.identifier = transition.handler->label;
+			transition.block->instructions.insert(transition.block->instructions.end(), branch);
+		
 			_createExitCode(transition, Thread_exit);
 		}
 		break;
@@ -482,6 +525,9 @@ void KernelPartitioningPass::KernelDecomposition::_createExitCode(
 
 	transition.handler->instructions.push_back(move);
 	transition.handler->instructions.push_back(store);
+	
+	ir::PTXInstruction *exit = new ir::PTXInstruction(ir::PTXInstruction::Exit);
+	transition.handler->instructions.push_back(exit);
 	
 	report("created exit in block '" << transition.handler->label << "' with code " << (int)exitCode);
 }

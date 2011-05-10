@@ -38,7 +38,7 @@ namespace executive {
 		
 		/*! \brief locks the translation cache and fetches a translation */
 		const LLVMDynamicTranslationCache::Translation *getOrInsertTranslationById(
-			LLVMDynamicTranslationCache::EntryId, int ws=1);
+			LLVMDynamicTranslationCache::HyperblockId, int ws=1);
 
 		/*! \brief launches a pre-configured LLVMDynamicKernel */
 		void launch(const LLVMDynamicKernel & kernel, int sharedMemorySize);
@@ -54,6 +54,7 @@ namespace executive {
 	
 		//! \brief stores a listing
 		LLVMDynamicTranslationCache translationCache;
+		
 		
 	public:
 	

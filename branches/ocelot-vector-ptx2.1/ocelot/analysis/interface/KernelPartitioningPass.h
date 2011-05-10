@@ -120,6 +120,8 @@ namespace analysis {
 				const ir::PTXOperand &resumePointOperand,
 				ThreadExitCode exitCode);
 			
+			void _createDummyScheduler();
+			
 		public:
 		
 			//! \brief 

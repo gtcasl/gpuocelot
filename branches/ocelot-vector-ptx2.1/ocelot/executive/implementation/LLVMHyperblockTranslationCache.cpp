@@ -57,7 +57,7 @@
 
 #define REPORT_TRANSLATIONS 0
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -75,47 +75,49 @@ LLVMDynamicTranslationCache::~LLVMDynamicTranslationCache() {
 	for (ModuleMap::iterator mod_it = modules.begin(); mod_it != modules.end(); ++mod_it) {
 		mod_it->second.clear();
 	}
-	kernelMap.clear();
+	subkernelMap.clear();
 }
 
 /*!
 	\brief gets a translation via its hyperblock ID or constructs it.
 */
 const LLVMDynamicTranslationCache::Translation *
-LLVMDynamicTranslationCache::getOrInsertTranslationById(EntryId id, int ws) {
+LLVMDynamicTranslationCache::getOrInsertTranslationById(HyperblockId id, int ws) {
 
 	reportE(REPORT_SCHEDULE_OPERATIONS, "LLVMDynamicTranslationCache::getOrInsertTranslationById( id: " << id << ", ws: " << ws << ")");
 		
-	TranslatedKernelMap::const_iterator sk_it = kernelMap.find(id);
-	assert(sk_it != kernelMap.end());
+	TranslatedSubkernelMap::const_iterator sk_it = subkernelMap.find(id);
+	assert(sk_it != subkernelMap.end());
 	
-	TranslatedKernel *translatedKernel = sk_it->second;
+	TranslatedSubkernel *subkernel = sk_it->second;
 	const Translation *translation = 0;
 	executive::Device *device = 0;
 	
 	// does the subkernel have a scalar translation?
 	// if not, construct it
-	if (!translatedKernel->kernelModule || !translatedKernel->scalarTranslation) {
-		device = modules[translatedKernel->kernel->module->path()].device;
+	if (!subkernel->kernelModule || !subkernel->scalarTranslation) {
+		device = modules[subkernel->parent->kernel->module->path()].device;
 		translateFromPTX(
-			*translatedKernel,
+			*subkernel->parent, 
+			*subkernel, 
+			subkernel->parent->kernel,
 			(translator::Translator::OptimizationLevel)api::OcelotConfiguration::get().executive.optimizationLevel,
 			device);
 	}
 	
 	// does the subkernel have a translation for the indicated warp size?
 	// if not, construct it
-	TranslationWarpMap::const_iterator sk_tr_it = translatedKernel->translations.find(ws);
-	if (sk_tr_it == translatedKernel->translations.end()) {
+	TranslationWarpMap::const_iterator sk_tr_it = subkernel->translations.find(ws);
+	if (sk_tr_it == subkernel->translations.end()) {
 		Translation *newTranslation = new Translation;
 		newTranslation->warpSize = ws;
 		
 		specializeTranslation(
-			*translatedKernel, 
+			*subkernel, 
 			newTranslation, 
 			(translator::Translator::OptimizationLevel)api::OcelotConfiguration::get().executive.optimizationLevel,
 			device);
-		translatedKernel->translations[ws] = newTranslation;
+		subkernel->translations[ws] = newTranslation;
 #if REPORT_OPTIMIZED_LLVM_ASSEMBLY && REPORT_BASE
 		newTranslation->llvmFunction->dump();
 #endif
@@ -160,7 +162,9 @@ bool LLVMDynamicTranslationCache::loadModule(const ir::Module *module, executive
 			
 			TranslatedKernel *translatedKernel = new TranslatedKernel;
 			translatedKernel->kernel = kernel->second;
-			translatedKernel->entryId = (EntryId)(kernelMap.size() << 16);
+			translatedKernel->entryBlockId = (HyperblockId)subkernelMap.size();
+			translatedKernel->localMemorySize = kernel->second->getLocalMemorySize();
+			translatedKernel->sharedMemorySize = kernel->second->getSharedMemorySize();
 			metadata.kernels[kernel->second->name] = translatedKernel;
 			
 			report(" static .local declarations: " << translatedKernel->localMemorySize << " bytes");
@@ -170,13 +174,42 @@ bool LLVMDynamicTranslationCache::loadModule(const ir::Module *module, executive
 			// KernelParitioningPass
 			//
 			analysis::KernelPartitioningPass kernelFormationPass;
+			analysis::KernelPartitioningPass::KernelDecomposition decomposition;
 			kernelFormationPass.initialize(*module);
-			kernelFormationPass.runOnKernel(translatedKernel->decomposition, *kernel->second, 0);
+			kernelFormationPass.runOnKernel(decomposition, *kernel->second, 0);
 			kernelFormationPass.finalize();
-			kernelMap[translatedKernel->entryId] = translatedKernel;
 			
-			translatedKernel->localMemorySize = translatedKernel->kernel->getLocalMemorySize();
-			translatedKernel->sharedMemorySize = translatedKernel->kernel->getSharedMemorySize();
+			assert(0 && "early exit");
+			
+			analysis::HyperblockFormation formationPass;
+			
+			formationPass.initialize(*module);
+			formationPass.runOnKernel(translatedKernel->decomposition, *kernel->second, 
+				translatedKernel->entryBlockId);
+			formationPass.finalize();
+			
+			// create subkernels
+			typedef analysis::HyperblockFormation::KernelDecomposition::HyperblockMap HyperblockMap;
+			for (HyperblockMap::const_iterator hb_it = translatedKernel->decomposition.hyperblocks.begin();
+				hb_it != translatedKernel->decomposition.hyperblocks.end();
+				++hb_it) {
+				
+				TranslatedSubkernel *translated = new TranslatedSubkernel;
+				translatedKernel->subkernels[hb_it->second.hyperblockId] = translated;
+				translated->parent = translatedKernel;
+				translated->subkernel = hb_it->second.subkernel;
+				translated->entryId = hb_it->second.hyperblockId;
+				translated->localMemorySize = translated->subkernel->getLocalMemorySize();
+				translatedKernel->localMemorySize = std::max(translatedKernel->localMemorySize, translated->localMemorySize);
+				translatedKernel->sharedMemorySize = std::max(translatedKernel->sharedMemorySize, translated->subkernel->getSharedMemorySize());
+
+				reportE(REPORT_PTX_KERNELS, "  adding hyperblock " << translated->entryId);
+#if REPORT_BASE && REPORT_PTX_SUBKERNELS
+				translated->subkernel->write(std::cout);
+#endif
+				
+				subkernelMap[translated->entryId] = translated;
+			}
 		}
 		
 		modules.insert(std::make_pair(module->path(), metadata));
@@ -194,7 +227,7 @@ LLVMDynamicTranslationCache::getTranslatedKernel(
 	ModuleMap::const_iterator mod_it = modules.find(module);
 	assert(mod_it != modules.end());
 
-	TranslatedKernelNameMap::const_iterator k_it = mod_it->second.kernels.find(kernel);
+	KernelTranslationMap::const_iterator k_it = mod_it->second.kernels.find(kernel);
 	assert(k_it != mod_it->second.kernels.end());
 	
 	return k_it->second;
@@ -203,17 +236,33 @@ LLVMDynamicTranslationCache::getTranslatedKernel(
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
 LLVMDynamicTranslationCache::TranslatedKernel::TranslatedKernel():
-	kernelModule(0), 
-	scalarTranslation(0),
-	entryId(0),
-	metadata(0),
+	kernel(0), 
 	localMemorySize(0), 
-	sharedMemorySize(0)
-{
+	sharedMemorySize(0) {
 
 }
 
 LLVMDynamicTranslationCache::TranslatedKernel::~TranslatedKernel() {
+	for (TranslatedSubkernelMap::iterator sk_it = subkernels.begin(); sk_it != subkernels.end();
+		++sk_it) {
+		delete sk_it->second;
+	}
+	subkernels.clear();
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
+LLVMDynamicTranslationCache::TranslatedSubkernel::TranslatedSubkernel()
+: 
+	kernelModule(0),  
+	parent(0), 
+	subkernel(0), 
+	entryId(0), 
+	metadata(0) {
+
+}
+
+LLVMDynamicTranslationCache::TranslatedSubkernel::~TranslatedSubkernel() {	
 	for (TranslationWarpMap::iterator trans_it = translations.begin(); trans_it != translations.end(); ++trans_it) {	
 		delete const_cast<Translation*>(trans_it->second);
 	}
@@ -228,10 +277,8 @@ LLVMDynamicTranslationCache::TranslatedKernel::~TranslatedKernel() {
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
-LLVMDynamicTranslationCache::Translation::Translation()
-:
-	llvmFunction(0), function(0), metadata(0), warpSize(1) 
-{
+LLVMDynamicTranslationCache::Translation::Translation():
+llvmFunction(0), function(0), metadata(0), warpSize(1) {
 
 }
 
@@ -255,7 +302,7 @@ LLVMDynamicTranslationCache::ModuleMetadata::~ModuleMetadata() {
 }
 
 void LLVMDynamicTranslationCache::ModuleMetadata::clear() {
-	for (TranslatedKernelNameMap::iterator k_it = kernels.begin(); k_it != kernels.end(); ++k_it) {
+	for (KernelTranslationMap::iterator k_it = kernels.begin(); k_it != kernels.end(); ++k_it) {
 		delete k_it->second;
 	}
 	kernels.clear();
@@ -264,7 +311,6 @@ void LLVMDynamicTranslationCache::ModuleMetadata::clear() {
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
 void LLVMDynamicTranslationCache::write(std::ostream &out) {
-#if 0
 	int moduleIndex = 0;
 	out << "modules = {\n";
 	for (ModuleMap::iterator mod_it = modules.begin(); mod_it != modules.end(); ++mod_it) {
@@ -289,7 +335,6 @@ void LLVMDynamicTranslationCache::write(std::ostream &out) {
 		out << "},\n";
 	}
 	out << "}\n";
-#endif
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -314,7 +359,9 @@ static unsigned int pad(unsigned int& size, unsigned int alignment) {
 /*!
 	\brief sets addres space identifier to global for uses of global variables 
 */
-static void setupGlobalMemoryReferences(ir::PTXKernel& kernel)
+static void setupGlobalMemoryReferences(
+	ir::PTXKernel& kernel,
+	const ir::PTXKernel& parent)
 {
 	for(ir::ControlFlowGraph::iterator block = kernel.cfg()->begin(); 
 		block != kernel.cfg()->end(); ++block) {
@@ -330,16 +377,16 @@ static void setupGlobalMemoryReferences(ir::PTXKernel& kernel)
 				|| ptx.a.addressMode == ir::PTXOperand::Indirect)) {
 				
 				ir::Module::GlobalMap::const_iterator global = 
-					kernel.module->globals().find(ptx.a.identifier);
+					parent.module->globals().find(ptx.a.identifier);
 					
-				if(global == kernel.module->globals().end()) {
+				if(global == parent.module->globals().end()) {
 					continue;
 				}
 				if(global->second.statement.directive != ir::PTXStatement::Global) {
 					continue;
 				}
 					
-				ptx.addressSpace = ir::PTXInstruction::Global;
+				ptx.addressSpace = ir::PTXInstruction::Global;		
 						
 				reportE(REPORT_TRANSLATION_OPERATIONS, "   For instruction \"" << ptx.toString() 
 					<< "\" setting address space to global.");
@@ -353,7 +400,8 @@ static void setupGlobalMemoryReferences(ir::PTXKernel& kernel)
 */
 static void setupArgumentMemoryReferences(
 	ir::PTXKernel& kernel,
-	LLVMDynamicExecutive::Metadata* metadata)
+	LLVMDynamicExecutive::Metadata* metadata,
+	const ir::PTXKernel& parent)
 {
 	typedef std::unordered_map<std::string, unsigned int> OffsetMap;
 	reportE(REPORT_TRANSLATION_OPERATIONS, "  Setting up argument memory references.");
@@ -363,8 +411,8 @@ static void setupArgumentMemoryReferences(
 	OffsetMap offsets;
 	
 	for(ir::Kernel::ParameterVector::const_iterator
-		argument = kernel.arguments.begin();
-		argument != kernel.arguments.end(); ++argument) {
+		argument = parent.arguments.begin();
+		argument != parent.arguments.end(); ++argument) {
 		
 		pad(offset, argument->getAlignment());
 		offsets.insert(std::make_pair(argument->name, offset));
@@ -421,7 +469,8 @@ static void setupArgumentMemoryReferences(
 */
 static void setupParameterMemoryReferences(
 	ir::PTXKernel& kernel,
-	LLVMDynamicExecutive::Metadata* metadata)
+	LLVMDynamicExecutive::Metadata* metadata,
+	const ir::PTXKernel& parent)
 {
 	typedef std::unordered_map<std::string, unsigned int> OffsetMap;
 	reportE(REPORT_TRANSLATION_OPERATIONS, "  Setting up parameter memory references.");
@@ -540,7 +589,8 @@ static void setupParameterMemoryReferences(
 */
 static void setupSharedMemoryReferences(
 	ir::PTXKernel& kernel,
-	LLVMDynamicExecutive::Metadata* metadata)
+	LLVMDynamicExecutive::Metadata* metadata,
+	const ir::PTXKernel& parent)
 {
 	typedef std::unordered_map<std::string, unsigned int> OffsetMap;
 	typedef std::unordered_set<std::string> StringSet;
@@ -588,8 +638,8 @@ static void setupSharedMemoryReferences(
 		}
 	}
 
-	ir::Kernel::LocalMap::const_iterator local = kernel.locals.begin();
-	for( ; local != kernel.locals.end(); ++local)
+	ir::Kernel::LocalMap::const_iterator local = parent.locals.begin();
+	for( ; local != parent.locals.end(); ++local)
 	{
 		if(local->second.space == ir::PTXInstruction::Shared)
 		{
@@ -685,7 +735,8 @@ static void setupSharedMemoryReferences(
 */
 static void setupConstantMemoryReferences(
 	ir::PTXKernel& kernel,
-	LLVMDynamicExecutive::Metadata* metadata)
+	LLVMDynamicExecutive::Metadata* metadata,
+	const ir::PTXKernel& parent)
 {
 	reportE(REPORT_TRANSLATION_OPERATIONS,  "  Setting up constant memory references." );
 	typedef std::unordered_map<std::string, unsigned int> OffsetMap;
@@ -694,8 +745,8 @@ static void setupConstantMemoryReferences(
 	OffsetMap constants;
 	
 	for(ir::Module::GlobalMap::const_iterator 
-		global = kernel.module->globals().begin(); 
-		global != kernel.module->globals().end(); ++global) 
+		global = parent.module->globals().begin(); 
+		global != parent.module->globals().end(); ++global) 
 	{
 		if(global->second.statement.directive == ir::PTXStatement::Const) 
 		{
@@ -753,7 +804,8 @@ static void setupConstantMemoryReferences(
 */
 static void setupTextureMemoryReferences(
 	ir::PTXKernel& kernel,
-	LLVMDynamicExecutive::Metadata* metadata, 
+	LLVMDynamicExecutive::Metadata* metadata,
+	const ir::PTXKernel& parent, 
 	executive::Device* device)
 {
 	typedef std::unordered_map<std::string, unsigned int> TextureMap;
@@ -803,7 +855,8 @@ static void setupTextureMemoryReferences(
 */
 static void setupLocalMemoryReferences(
 	ir::PTXKernel& kernel,
-	LLVMDynamicExecutive::Metadata* metadata)
+	LLVMDynamicExecutive::Metadata* metadata,
+	const ir::PTXKernel& parent)
 {
 	reportE(REPORT_TRANSLATION_OPERATIONS,  "  Setting up local memory references." );
 	typedef std::unordered_map<std::string, unsigned int> OffsetMap;
@@ -811,7 +864,7 @@ static void setupLocalMemoryReferences(
 	OffsetMap offsets;
 	
 	// Reserve the first few 32-bit words
-	// [0] == kernel-id
+	// [0] == subkernel-id
 	// [1] == call type
 	// [2] == barrier resume point if it exists
 	metadata->localSize = 0;
@@ -834,10 +887,46 @@ static void setupLocalMemoryReferences(
 		}
 	}
 	
+	/*
+	// give preference to barrier resume point
+	local = kernel.locals.find("_Zocelot_resume_status");
+	if(local != kernel.locals.end())
+	{
+		if(local->second.space == ir::PTXInstruction::Local)
+		{
+			report("   Found local local variable " 
+				<< local->second.name << " of size " 
+				<< local->second.getSize());
+			
+			pad(metadata->localSize, local->second.alignment);
+			offsets.insert(std::make_pair(local->second.name,
+				metadata->localSize));
+			metadata->localSize += local->second.getSize();
+		}
+	}
+	*/
 	pad(metadata->localSize, sizeof(int));
 	offsets.insert(std::make_pair("_Zocelot_resume_status", metadata->localSize));
 	metadata->localSize += sizeof(int);
 
+	/*
+	// give preference to resume point
+	local = kernel.locals.find("_Zocelot_resume_point");
+	if(local != kernel.locals.end())
+	{
+		if(local->second.space == ir::PTXInstruction::Local)
+		{
+			report("   Found local local variable " 
+				<< local->second.name << " of size " 
+				<< local->second.getSize());
+			
+			pad(metadata->localSize, local->second.alignment);
+			offsets.insert(std::make_pair(local->second.name,
+				metadata->localSize));
+			metadata->localSize += local->second.getSize();
+		}
+	}
+	*/
 	pad(metadata->localSize, sizeof(int));
 	offsets.insert(std::make_pair("_Zocelot_resume_point", metadata->localSize));
 	metadata->localSize += sizeof(int);
@@ -899,6 +988,12 @@ static void setupLocalMemoryReferences(
 				{
 					if(operands[i]->addressMode == ir::PTXOperand::Address)
 					{
+						/*
+						if(operands[i]->identifier == "_Zocelot_barrier_next_kernel") continue;
+						if(operands[i]->identifier == "_Zocelot_spill_area")          continue;
+						if(operands[i]->identifier == "_Zocelot_resume_point")        continue;
+						if(operands[i]->identifier == "_Zocelot_resume_status")        continue;
+						*/
 						OffsetMap::iterator offset = offsets.find(operands[i]->identifier);
 						if(offsets.end() != offset) 
 						{
@@ -922,17 +1017,17 @@ static void setupLocalMemoryReferences(
 static void setupPTXMemoryReferences(
 	ir::PTXKernel& kernel,
 	LLVMDynamicExecutive::Metadata* metadata,
-	executive::Device* device)
+	const ir::PTXKernel& parent, executive::Device* device)
 {
 	reportE(REPORT_TRANSLATION_OPERATIONS, " Setting up memory references for kernel variables.");
 	
-	setupGlobalMemoryReferences(kernel);
-	setupArgumentMemoryReferences(kernel, metadata);
-	setupParameterMemoryReferences(kernel, metadata);
-	setupSharedMemoryReferences(kernel, metadata);
-	setupConstantMemoryReferences(kernel, metadata);
-	setupTextureMemoryReferences(kernel, metadata, device);
-	setupLocalMemoryReferences(kernel, metadata);
+	setupGlobalMemoryReferences(kernel, parent);
+	setupArgumentMemoryReferences(kernel, metadata, parent);
+	setupParameterMemoryReferences(kernel, metadata, parent);
+	setupSharedMemoryReferences(kernel, metadata, parent);
+	setupConstantMemoryReferences(kernel, metadata, parent);
+	setupTextureMemoryReferences(kernel, metadata, parent, device);
+	setupLocalMemoryReferences(kernel, metadata, parent);
 }
 
 /*!
@@ -980,7 +1075,13 @@ static void setupCallTargets(
 			if(ptx.tailCall) continue;
 			
 			if(ptx.a.addressMode == ir::PTXOperand::FunctionName)
-			{		
+			{
+				/*
+					// TODO: setupCallTargets not implemented
+				LLVMModuleManager::FunctionId id = database.getFunctionId(
+					kernel.module->path(), ptx.a.identifier);
+					*/
+				
 				assert(0 && "unimplemented");
 				
 				reportE(REPORT_TRANSLATION_OPERATIONS, "   setting target '" << ptx.a.identifier 
@@ -1028,8 +1129,8 @@ static llvm::Function *translatePTXtoLLVM(
 		std::string m;
 		llvm::raw_string_ostream message(m);
 		message << "LLVM Parser failed: ";
-		
 		error.Print(kernel.name.c_str(), message);
+
 		kernel.dfg()->fromSsa();
 
 		throw hydrazine::Exception(message.str());
@@ -1094,7 +1195,7 @@ static LLVMDynamicExecutive::Metadata* generateMetadata(
 	\param warpSize number of threads executed per function call
 */
 static void cloneAndOptimizeTranslation(
-	executive::LLVMDynamicTranslationCache::TranslatedKernel &translatedKernel,
+	executive::LLVMDynamicTranslationCache::TranslatedSubkernel &subkernel,
 	executive::LLVMDynamicTranslationCache::Translation *translation,
 	translator::Translator::OptimizationLevel optimization,
 	int warpSize) {
@@ -1124,16 +1225,16 @@ static void cloneAndOptimizeTranslation(
 			break;
 	}
 
-	llvm::FunctionPassManager manager(translatedKernel.kernelModule);
+	llvm::FunctionPassManager manager(subkernel.kernelModule);
 
 	std::stringstream ss;
-	ss << translatedKernel.scalarTranslation->getNameStr() << "_opt" << level << "_ws" << warpSize;
+	ss << subkernel.scalarTranslation->getNameStr() << "_opt" << level << "_ws" << warpSize;
 
 	manager.add(new llvm::TargetData(*LLVMState::jit()->getTargetData()));
-	translation->llvmFunction = llvm::CloneFunction(translatedKernel.scalarTranslation);
+	translation->llvmFunction = llvm::CloneFunction(subkernel.scalarTranslation);
 	translation->llvmFunction->setName(ss.str());
 	translation->llvmFunction->setLinkage(llvm::GlobalValue::InternalLinkage);
-	translatedKernel.kernelModule->getFunctionList().push_back(translation->llvmFunction);
+	subkernel.kernelModule->getFunctionList().push_back(translation->llvmFunction);
 	
 	if (warpSize > 1) {
 		reportE(REPORT_TRANSLATION_OPERATIONS, 
@@ -1229,44 +1330,43 @@ static void link(
 */
 void LLVMDynamicTranslationCache::translateFromPTX(
 	TranslatedKernel &translatedKernel,
+	TranslatedSubkernel &translatedSubkernel,
+	ir::PTXKernel *parent,
 	translator::Translator::OptimizationLevel optimization,
 	executive::Device *device) {
 	
 	#ifdef HAVE_LLVM
-	reportE(REPORT_TRANSLATION_OPERATIONS, "Getting metadata for kernel '" 
-		<< translatedKernel.kernel->name << "'");
+	reportE(REPORT_TRANSLATION_OPERATIONS, "Getting metadata for kernel '" << translatedSubkernel.subkernel->name << "'");
 	
 	reportE(REPORT_TRANSLATION_OPERATIONS, "Translating PTX");
 	
 	LLVMDynamicExecutive::Metadata *metadata = 0;
 	
 	// apply PTX optimizations and transformations needed to support the dynamic translation cache
-	optimizePTX(*translatedKernel.kernel, optimization);
+	optimizePTX(*translatedSubkernel.subkernel, optimization);
 		
 	try {
 	
 		// compte memory sizes and layouts
-		metadata = generateMetadata(*translatedKernel.kernel, optimization);
+		metadata = generateMetadata(*translatedSubkernel.subkernel, optimization);
 		
 		// translate global memory references
-		setupPTXMemoryReferences(*translatedKernel.kernel, metadata, device);
+		setupPTXMemoryReferences(*translatedSubkernel.subkernel, metadata, *parent, device);
 
 		// rewrite call functions with hyperblock exits chained to target functions
-		setupCallTargets(*translatedKernel.kernel, *this);
+		setupCallTargets(*translatedSubkernel.subkernel, *this);
 		
 		// perform PTX to LLVM translation - construct a new LLVM module
-		translatedKernel.scalarTranslation = translatePTXtoLLVM(
-			translatedKernel.kernelModule, 
-			*translatedKernel.kernel, 
-			optimization);
+		translatedSubkernel.scalarTranslation = translatePTXtoLLVM(translatedSubkernel.kernelModule, 
+			*translatedSubkernel.subkernel, optimization);
 
 		// Converting out of ssa makes the assembly easier to read
 		if(optimization == translator::Translator::ReportOptimization 
 			|| optimization == translator::Translator::DebugOptimization)
 		{
-			translatedKernel.kernel->dfg()->fromSsa();
+			translatedSubkernel.subkernel->dfg()->fromSsa();
 		}
-		translatedKernel.metadata = metadata;
+		translatedSubkernel.metadata = metadata;
 	}
 	catch(...)
 	{
@@ -1285,11 +1385,12 @@ void LLVMDynamicTranslationCache::translateFromPTX(
 	
 	\param translation - existing translation instance to receive results of compilation
 	\param module - pointer to module
+	\param parent - pointer to parent PTX kernel
 	\param optimization - optimziation level
 	\param device - pointer to target device
 */
 void LLVMDynamicTranslationCache::specializeTranslation(
-	LLVMDynamicTranslationCache::TranslatedKernel &translatedKernel,
+	LLVMDynamicTranslationCache::TranslatedSubkernel &translatedSubkernel,
 	LLVMDynamicTranslationCache::Translation *translation,
 	translator::Translator::OptimizationLevel optimization,
 	executive::Device *device) {
@@ -1297,16 +1398,16 @@ void LLVMDynamicTranslationCache::specializeTranslation(
 	#ifdef HAVE_LLVM
 	try {
 		// apply optimizations on the resulting LLVM function
-		translation->metadata = translatedKernel.metadata;
-		cloneAndOptimizeTranslation(translatedKernel, translation, optimization, translation->warpSize);
+		translation->metadata = translatedSubkernel.metadata;
+		cloneAndOptimizeTranslation(translatedSubkernel, translation, optimization, translation->warpSize);
 		
 		// dynamically compile LLVM to host ISA
 		reportE(REPORT_TRANSLATION_OPERATIONS, " Generating native code.");
 	
-		LLVMState::jit()->addModule(translatedKernel.kernelModule);
+		LLVMState::jit()->addModule(translatedSubkernel.kernelModule);
 		
 		if (device) {
-			link(*translatedKernel.kernelModule, *translatedKernel.kernel, device);
+			link(*translatedSubkernel.kernelModule, *translatedSubkernel.subkernel, device);
 		}
 
 		reportE(REPORT_TRANSLATION_OPERATIONS, "  Invoking LLVM to Native JIT");
@@ -1316,17 +1417,17 @@ void LLVMDynamicTranslationCache::specializeTranslation(
 			LLVMState::jit()->getPointerToFunction(translation->llvmFunction));
 			
 		if (api::OcelotConfiguration::get().executive.printLLVMModule) {
-			translatedKernel.kernelModule->dump();
+			translatedSubkernel.kernelModule->dump();
 		}
 		
 		// this step may be ellided for performance
 		std::string errors;
-		if (llvm::verifyModule(*translatedKernel.kernelModule, llvm::ReturnStatusAction, &errors)) {
+		if (llvm::verifyModule(*translatedSubkernel.kernelModule, llvm::ReturnStatusAction, &errors)) {
 			std::cerr << "llvm::verifyModule failed:" << errors << std::endl;
 		}
 	}
 	catch(...) {
-		LLVMState::jit()->removeModule(translatedKernel.kernelModule);
+		LLVMState::jit()->removeModule(translatedSubkernel.kernelModule);
 		throw;
 	}
 

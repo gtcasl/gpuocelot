@@ -79,7 +79,7 @@ void KernelPartitioningPass::KernelDecomposition::runOnKernel(ir::PTXKernel *_ke
 		registerOffsets[reg_id] = 8*reg_id;
 	}
 	size_t spillSize = (size_t)(8 * kernel->dfg()->maxRegister());
-	
+		
 	_createSpillRegion(spillSize);
 	
 	// create transition points
@@ -91,7 +91,11 @@ void KernelPartitioningPass::KernelDecomposition::runOnKernel(ir::PTXKernel *_ke
 	// 
 	_identifyTransitionPoints();
 	
+	_createDummyScheduler();
+	
 	kernel->write(std::cout);
+	std::cout << "\n\n";
+	kernel->cfg()->write(std::cout);
 }
 
 /*!
@@ -186,7 +190,7 @@ void KernelPartitioningPass::KernelDecomposition::_identifyTransitionPoints() {
 		
 		DataflowGraph::IteratorMap::const_iterator dfgBlock = cfgToDfgMap.find(*bb_it);
 		assert(dfgBlock != cfgToDfgMap.end() && "failed to find block in CFT-to-DFG mapping");
-		
+				
 		// live in
 		KernelTransitionPoint transitionEntry;
 		transitionEntry.type = Thread_entry;
@@ -194,7 +198,13 @@ void KernelPartitioningPass::KernelDecomposition::_identifyTransitionPoints() {
 		transitionEntry.liveValues = dfgBlock->second->aliveIn();
 		transitionEntry.handler = kernel->cfg()->insert_new_block((*bb_it)->label + "_entry");
 		transitionEntry.id = (EntryId)transitionPoints.size() + baseId;
+		
+		std::stringstream ss;
+		ss << "entryId: " << transitionEntry.id;
+		
+		transitionEntry.handler->comment = ss.str();
 		transitionPoints[transitionEntry.id] = transitionEntry;
+		
 		
 		EntryId exitId = -1;
 		
@@ -359,6 +369,7 @@ void KernelPartitioningPass::KernelDecomposition::_transformExitTransitions(Kern
 				// identify branch target entry points
 				EntryId branchTargetId = 0;
 				EntryId fallthroughTargetId = 0;
+				std::string fallthroughBlockLabel = "";
 				
 				for (ir::BasicBlock::EdgePointerVector::const_iterator edge_it = transition.block->out_edges.begin();
 					edge_it != transition.block->out_edges.end(); ++edge_it) {
@@ -369,18 +380,20 @@ void KernelPartitioningPass::KernelDecomposition::_transformExitTransitions(Kern
 					}
 					else {
 						fallthroughTargetId = targetId;
+						fallthroughBlockLabel = (*edge_it)->tail->label;
 					}
 				}
-				
-				report("  branch target id: " << branchTargetId);
-				report("  fallthrough id: " << fallthroughTargetId);
 				
 				// delete out edges
 				for (ir::BasicBlock::EdgePointerVector::iterator edge_it = transition.block->out_edges.begin();
 					edge_it != transition.block->out_edges.end(); ) {
 					
+					ir::BasicBlock::Edge newEdge(transition.branchBlock, (*edge_it)->tail, (*edge_it)->type);
+					
 					kernel->cfg()->remove_edge(*edge_it);
 					edge_it = transition.block->out_edges.begin();
+					
+					kernel->cfg()->insert_edge(newEdge);
 				}
 				
 				// create two out edges - fall through to the branch block and branch edge to the handler
@@ -395,7 +408,6 @@ void KernelPartitioningPass::KernelDecomposition::_transformExitTransitions(Kern
 					kernel->dfg()->newRegister()));
 				selp->a = std::move(ir::PTXOperand(ir::PTXOperand::Immediate, ir::PTXOperand::u32));
 				selp->b = std::move(ir::PTXOperand(ir::PTXOperand::Immediate, ir::PTXOperand::u32));
-				
 				
 				// if predicates are inverted...
 				if (terminator->pg.condition == ir::PTXOperand::InvPred) {
@@ -412,8 +424,10 @@ void KernelPartitioningPass::KernelDecomposition::_transformExitTransitions(Kern
 				transition.handler->instructions.push_back(selp);
 				resumePointOperand = std::move(ir::PTXOperand(ir::PTXOperand::Register, ir::PTXOperand::u32, selp->d.reg, 0));
 				
+				transition.handler->comment = "divergent branch";
+				transition.branchBlock->comment = "fallthrough target should be: " + fallthroughBlockLabel;
+				
 				_createExitCode(transition, resumePointOperand, Thread_branch);
-				assert(0 && "divergent branching not yet handled");
 			}
 			else {
 				// unconditional branches do not result in divergence
@@ -430,11 +444,13 @@ void KernelPartitioningPass::KernelDecomposition::_transformExitTransitions(Kern
 				resumePointOperand.imm_uint = entryTransitions[(*edge_it)->tail->label].first;
 			}
 			transition.block->instructions.erase(last);
+			transition.type = Thread_barrier;
 			
 			ir::PTXInstruction *branch = new ir::PTXInstruction(ir::PTXInstruction::Bra);
 			branch->d.addressMode = ir::PTXOperand::Label;
 			branch->d.identifier = transition.handler->label;
 			transition.block->instructions.insert(transition.block->instructions.end(), branch);
+			transition.handler->comment = "barrier handler";
 			
 			// insert unconditional branch
 			_createExitCode(transition, resumePointOperand, Thread_barrier);
@@ -460,7 +476,9 @@ void KernelPartitioningPass::KernelDecomposition::_transformExitTransitions(Kern
 			branch->d.addressMode = ir::PTXOperand::Label;
 			branch->d.identifier = transition.handler->label;
 			transition.block->instructions.insert(transition.block->instructions.end(), branch);
-		
+
+			transition.handler->comment = "exit";
+			
 			_createExitCode(transition, Thread_exit);
 		}
 		break;
@@ -529,7 +547,27 @@ void KernelPartitioningPass::KernelDecomposition::_createExitCode(
 	ir::PTXInstruction *exit = new ir::PTXInstruction(ir::PTXInstruction::Exit);
 	transition.handler->instructions.push_back(exit);
 	
+	ir::BasicBlock::Edge exitEdge(transition.handler, kernel->cfg()->get_exit_block(), ir::BasicBlock::Edge::Dummy);
+	kernel->cfg()->insert_edge(exitEdge);
+	
 	report("created exit in block '" << transition.handler->label << "' with code " << (int)exitCode);
+}
+
+void KernelPartitioningPass::KernelDecomposition::_createDummyScheduler() {
+
+	ir::BasicBlock schedulerBlock(kernel->name + "_scheduler");
+	ir::ControlFlowGraph::EdgePair edgePair = kernel->cfg()->split_edge(
+		kernel->cfg()->get_entry_block()->out_edges[0], schedulerBlock);
+	scheduler = edgePair.first->tail;
+
+	for (BlockEntryTransitionMap::const_iterator transition_it = entryTransitions.begin();
+		transition_it != entryTransitions.end();
+		++transition_it) {
+		
+		ir::BasicBlock::Edge edge(scheduler, transitionPoints[transition_it->second.first].handler, 
+			ir::BasicBlock::Edge::Dummy);
+		kernel->cfg()->insert_edge(edge);
+	}
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////

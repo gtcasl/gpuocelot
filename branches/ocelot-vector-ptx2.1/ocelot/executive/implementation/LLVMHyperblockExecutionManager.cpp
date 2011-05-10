@@ -20,7 +20,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 namespace executive {
 
@@ -59,7 +59,7 @@ void LLVMDynamicExecutionManager::launch(const LLVMDynamicKernel & kernel, int s
 	
 	report("  loaded. Executing grid " << gridDim.x << ", " << gridDim.y);
 	report("  block dim: " << blockDim.x << ", " << blockDim.y << ", " << blockDim.z);
-	report("  entry id: " << translatedKernel->entryId);
+	report("  entry id: " << translatedKernel->entryBlockId);
 	report("  local memory size: " << translatedKernel->localMemorySize << " bytes");
 	report("  shared memory size: " << translatedKernel->sharedMemorySize << " bytes ");
 	
@@ -77,7 +77,7 @@ void LLVMDynamicExecutionManager::launch(const LLVMDynamicKernel & kernel, int s
 /*! \brief locks the translation cache and fetches a translation */
 const LLVMDynamicTranslationCache::Translation *
 LLVMDynamicExecutionManager::getOrInsertTranslationById(
-	LLVMDynamicTranslationCache::EntryId id, 
+	LLVMDynamicTranslationCache::HyperblockId id, 
 	int ws) {
 
 	report("LLVMDynamicExecutionManager::getOrInsertTranslation( id: " 

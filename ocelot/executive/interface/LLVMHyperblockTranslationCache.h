@@ -8,6 +8,7 @@
 #define OCELOT_EXECUTIVE_LLVMDYNAMICTRANSLATIONCACHE_H_INCLUDED
 
 // Ocelot includes
+#include <ocelot/analysis/interface/HyperblockFormationPass.h>
 #include <ocelot/analysis/interface/KernelPartitioningPass.h>
 #include <ocelot/translator/interface/Translator.h>
 
@@ -27,10 +28,12 @@ namespace executive {
 	*/
 	class LLVMDynamicTranslationCache {
 	public:
-		typedef analysis::KernelPartitioningPass::EntryId EntryId;
+		typedef analysis::HyperblockFormation::HyperblockId HyperblockId;
 		typedef void (*TranslatedFunction)(LLVMContext *);
 		
 	public:
+	
+		class TranslatedKernel;
 		
 		/*!
 			\brief data structure regarding an individual translation of a subkernel
@@ -61,7 +64,42 @@ namespace executive {
 		typedef std::map< int, const Translation *> TranslationWarpMap;
 		
 		/*!
-			\brief 
+			\brief contains elements of the kernel decomposition as well as a set of existing translations
+		*/
+		class TranslatedSubkernel {
+		public:
+			TranslatedSubkernel();
+			~TranslatedSubkernel();
+			
+		public:
+			//! \brief each kernel is translated as its own module
+			llvm::Module *kernelModule;
+			
+			//! \brief unoptimized direct translation from PTX to LLVM
+			llvm::Function *scalarTranslation;
+			
+			//! \brief pointer to parent kernel
+			TranslatedKernel *parent;
+		
+			//! \brief subkernel
+			ir::PTXKernel *subkernel;
+			
+			//! \brief id of entry
+			HyperblockId entryId;
+		
+			//! \brief 
+			TranslationWarpMap translations;
+			
+			//! \brief each translated subkernel offers a certain storage requirement
+			size_t localMemorySize;
+			
+			//! \brief stores information needed by the translated function and the execution manager
+			void *metadata;
+		};
+		typedef std::unordered_map< HyperblockId, TranslatedSubkernel *> TranslatedSubkernelMap;
+		
+		/*!
+			\brief data structure for translated kernels
 		*/
 		class TranslatedKernel {
 		public:
@@ -70,26 +108,17 @@ namespace executive {
 			
 		public:
 		
-			//! \brief each kernel is translated as its own module
-			llvm::Module *kernelModule;
+			//! \brief this data structure maintains the kernel's structure
+			analysis::HyperblockFormation::KernelDecomposition decomposition;
 			
 			//! \brief
 			ir::PTXKernel *kernel;
 			
-			//! \brief unoptimized direct translation from PTX to LLVM
-			llvm::Function *scalarTranslation;
-		
-			//! \brief id of entry
-			EntryId entryId;
-			
 			//! \brief
-			analysis::KernelPartitioningPass::KernelDecomposition decomposition;
-		
-			//! \brief 
-			TranslationWarpMap translations;
+			HyperblockId entryBlockId;
 			
-			//! \brief stores information needed by the translated function and the execution manager
-			void *metadata;
+			//! \brief set of translations for each subkernel
+			TranslatedSubkernelMap subkernels;
 			
 			//! \brief maximum amount of local memory required for translated kernel
 			size_t localMemorySize;
@@ -98,9 +127,8 @@ namespace executive {
 			size_t sharedMemorySize;
 		};
 		
-		typedef std::unordered_map< EntryId, TranslatedKernel *> TranslatedKernelMap;
-		typedef std::unordered_map< std::string, TranslatedKernel *> TranslatedKernelNameMap;
-						
+		typedef std::map< std::string, TranslatedKernel * > KernelTranslationMap;
+				
 		/*!
 			\brief stores module-level information such as the decomposition of kernels
 				to hyperblocks
@@ -111,7 +139,6 @@ namespace executive {
 			~ModuleMetadata();
 			
 			void clear();
-			
 		public:
 		
 			//! \brief registered PTX module
@@ -121,7 +148,7 @@ namespace executive {
 			executive::Device *device;
 		
 			//! \brief kernel decomposition of hyperblocks 
-			TranslatedKernelNameMap kernels;
+			KernelTranslationMap kernels;
 		};
 		typedef std::unordered_map< std::string, ModuleMetadata> ModuleMap;
 	
@@ -137,17 +164,19 @@ namespace executive {
 		const TranslatedKernel *getTranslatedKernel(const std::string &module, const std::string &kernel);
 				
 		//! \brief searches for an existing translation and compiles it if it doesn't exist
-		const Translation *getOrInsertTranslationById(EntryId, int ws=1);
+		const Translation *getOrInsertTranslationById(HyperblockId, int ws=1);
 	
 	private:
 	
 		void translateFromPTX(
 			TranslatedKernel &translatedKernel,
+			TranslatedSubkernel &translatedSubkernel,
+			ir::PTXKernel *parent,
 			translator::Translator::OptimizationLevel optimization,
 			executive::Device *device);
 		
 		void specializeTranslation(
-			TranslatedKernel &translatedSubkernel,
+			TranslatedSubkernel &translatedSubkernel,
 			Translation *translation,
 			translator::Translator::OptimizationLevel optimization,
 			executive::Device *device);
@@ -163,7 +192,7 @@ namespace executive {
 		ModuleMap modules;
 		
 		//! \brief references translated 
-		TranslatedKernelMap kernelMap;
+		TranslatedSubkernelMap subkernelMap;
 	};
 }
 

@@ -16,7 +16,7 @@
 #include <ocelot/executive/interface/LLVMContext.h>
 #include <ocelot/executive/interface/LLVMDynamicTranslationCache.h>
 #include <ocelot/executive/interface/LLVMDynamicKernel.h>
-#include <ocelot/analysis/interface/KernelPartitioningPass.h>
+#include <ocelot/analysis/interface/HyperblockFormationPass.h>
 
 // Hydrazine includes
 #include <hydrazine/implementation/Timer.h>
@@ -35,11 +35,11 @@ namespace executive {
 		//! maps CTA ID to a queue of waiting threads
 		typedef std::map< unsigned int, ThreadContextQueue > CtaThreadQueue;
 		
-		typedef analysis::KernelPartitioningPass::EntryId EntryId;
-		typedef analysis::KernelPartitioningPass::ThreadExitCode ThreadExitCode;
+		typedef analysis::HyperblockFormation::HyperblockId HyperblockId;
+		typedef analysis::HyperblockFormation::ThreadExitCode ThreadExitCode;
 		typedef std::vector< LLVMContext > ThreadContextVector;
 		
-		typedef std::map< EntryId, LLVMDynamicTranslationCache::TranslationWarpMap > TranslationWarpCache;
+		typedef std::map< HyperblockId, LLVMDynamicTranslationCache::TranslationWarpMap > TranslationWarpCache;
 		
 		/*!
 			\brief per kernel data structure accessible to the translation
@@ -60,7 +60,7 @@ namespace executive {
 			
 		public:
 			const ir::PTXKernel* kernel;
-			EntryId	nextEntryId;
+			HyperblockId	nextEntryId;
 			TextureVector textures;
 			
 		};
@@ -78,14 +78,14 @@ namespace executive {
 			ThreadContextVector threads;
 			
 			//! \brief 
-			EntryId entryId;
+			HyperblockId entryId;
 		};
 		
 		class CooperativeThreadArray {
 		public:
 		
 			void initialize(const LLVMDynamicKernel &kernel, const ir::Dim3 & ctaId, 
-				EntryId entry, int localSize = 0, int sharedSize = 0);
+				HyperblockId entry, int localSize = 0, int sharedSize = 0);
 		
 			void resize(int localSize = 0, int sharedSize = 0, int constSize = 0, 
 				int parameterSize = 0, int argumentSize = 0);
@@ -125,7 +125,7 @@ namespace executive {
 	private:
 	
 		//! \brief searches for an existing translation and compiles it if it doesn't exist
-		const LLVMDynamicTranslationCache::Translation *getOrInsertTranslationById(EntryId, int ws=1);
+		const LLVMDynamicTranslationCache::Translation *getOrInsertTranslationById(HyperblockId, int ws=1);
 	
 		//! \brief construct a warp
 		void warpFormation(Warp &warp);
@@ -149,10 +149,10 @@ namespace executive {
 		static ThreadExitCode getExitCode(const LLVMContext &context);
 				
 		//! \brief determines a thread's next subkernel
-		static EntryId getResumePoint(const LLVMContext &context);
+		static HyperblockId getResumePoint(const LLVMContext &context);
 		
 		//! \brief sets the resume point of the context
-		static void setResumePoint(const LLVMContext &context, EntryId resumeId);
+		static void setResumePoint(const LLVMContext &context, HyperblockId resumeId);
 		
 	public:
 	
@@ -173,6 +173,14 @@ namespace executive {
 		
 		//! \brief thread-local cache of translations
 		TranslationWarpCache translationCache;
+		
+		size_t iterations;
+		
+		hydrazine::Timer translationTimer, managerTimer;
+		
+		double translationTime, managerTime;
+		
+		double eTime0, eTime1, eTime2;
 	};
 }	
 #endif

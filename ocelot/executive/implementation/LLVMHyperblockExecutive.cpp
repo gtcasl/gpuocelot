@@ -26,7 +26,7 @@
 
 #define REPORT_LOCAL_MEMORY 0
 
-#define REPORT_SCHEDULE_OPERATIONS 1
+#define REPORT_SCHEDULE_OPERATIONS 0
 
 #define REPORT_STATISTICS 1
 
@@ -51,17 +51,13 @@ LLVMDynamicExecutive::Metadata::~Metadata() {
 void LLVMDynamicExecutive::CooperativeThreadArray::initialize(
 	const LLVMDynamicKernel &kernel, 
 	const ir::Dim3 &ctaId,
-	EntryId entry,
+	HyperblockId entry,
 	int localMemorySize,
 	int sharedMemorySize) {
 
 	const ir::Dim3 blockDim = kernel.blockDim();
 	
 	int totalThreads = blockDim.x * blockDim.y * blockDim.z;
-		
-	report("CTA::initialize() - localMemorySize: " << localMemorySize 
-		<< ", total threads: " << totalThreads 
-		<< ", shared memory size: " << sharedMemorySize);
 		
 	local.resize(localMemorySize * totalThreads, 0);
 	shared.resize(sharedMemorySize, 0);
@@ -137,12 +133,10 @@ unsigned int LLVMDynamicExecutive::ctaId(const LLVMContext &ctx) {
 
 //! \brief adds a CTA to the dynamic executive's execution list
 void LLVMDynamicExecutive::addCta(const ir::Dim3 &blockId) {
-	reportE(REPORT_SCHEDULE_OPERATIONS, "addCta() - " << ctaId(blockId));
-	
 	ctaMap[ctaId(blockId)].initialize(
 		*kernel, 
 		blockId, 
-		translatedKernel->entryId, 
+		translatedKernel->entryBlockId, 
 		translatedKernel->localMemorySize, 
 		sharedMemorySize);
 }
@@ -161,17 +155,17 @@ LLVMDynamicExecutive::ThreadExitCode LLVMDynamicExecutive::getExitCode(
 	return (ThreadExitCode)*((int *)&context.local[0]);
 }
 
-LLVMDynamicExecutive::EntryId LLVMDynamicExecutive::getResumePoint(
+LLVMDynamicExecutive::HyperblockId LLVMDynamicExecutive::getResumePoint(
 	const LLVMContext &context) {
 	
-	return *((EntryId *)&context.local[4]);
+	return *((HyperblockId *)&context.local[4]);
 }
 
 //! \brief sets the resume point of the context
 void LLVMDynamicExecutive::setResumePoint(
 	const LLVMContext &context, 
-	LLVMDynamicExecutive::EntryId entryId) {
-	*((EntryId *)&context.local[4]) = entryId;
+	LLVMDynamicExecutive::HyperblockId hbId) {
+	*((HyperblockId *)&context.local[4]) = hbId;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -206,21 +200,84 @@ void LLVMDynamicExecutive::execute() {
 	
 	reportE(REPORT_SCHEDULE_OPERATIONS, "execute()");
 	
+	iterations = 0;
+	size_t scheduleCycles = 0;
+	
+	translationTime = managerTime = 0;
+	managerTimer.start();
+	
+	hydrazine::Timer testBarriersTimer;
+	hydrazine::Timer warpFormationTimer;
+	hydrazine::Timer warpExecutionTimer;
+	
+	double testBarriersTime = 0;
+	double warpFormationTime = 0;
+	double warpExecutionTime = 0;
+	
+	eTime0 = eTime1 = eTime2 = 0;
+	
+	reportE(REPORT_STATISTICS, "\nCTA");
+	
 	do {
 		Warp warp;
+		
+		testBarriersTimer.start();
+		
 		testBarriers(waitingThreads, readyThreads);
+		
+		testBarriersTimer.stop();
+		testBarriersTime += testBarriersTimer.seconds();
 		
 		if (readyThreads) {
 			
+			warpFormationTimer.start();
+			
 			// construct a warp
 			warpFormation(warp);
+			
+			warpFormationTimer.stop();
+			warpFormationTime += warpFormationTimer.seconds();
 		
 			reportE(REPORT_SCHEDULE_OPERATIONS, " formed warp with " << warp.threads.size() << " threads");
 			
+			warpExecutionTimer.start();
+			
 			// execute a warp
 			executeWarp(warp);
+			
+			warpExecutionTimer.stop();
+			warpExecutionTime += warpExecutionTimer.seconds();
+			
+			++scheduleCycles;
 		}
 	} while (waitingThreads || readyThreads);
+	
+	managerTimer.stop();
+	managerTime += managerTimer.seconds();
+	
+	reportE(REPORT_STATISTICS,
+		"Time spent in manager: " << managerTime << " seconds");
+	reportE(REPORT_STATISTICS,
+		"Time spent in translation: " << translationTime << " seconds");
+		
+	reportE(REPORT_STATISTICS,
+		"Test barriers time: " << testBarriersTime << " seconds");
+	reportE(REPORT_STATISTICS,
+		"Warp formation time: " << warpFormationTime << " seconds");
+	reportE(REPORT_STATISTICS,
+		"Warp execution time: " << warpExecutionTime << " seconds");
+		
+	reportE(REPORT_STATISTICS,
+		"Accumulated time 0: " << eTime0 << " seconds");
+	reportE(REPORT_STATISTICS,
+		"Accumulated time 1: " << eTime1 << " seconds");
+	reportE(REPORT_STATISTICS,
+		"Accumulated time 2: " << eTime2 << " seconds");
+	
+	if (scheduleCycles) {
+		reportE(REPORT_STATISTICS, 
+			"Average number of iterations to form a warp: " << (double)iterations / (double)scheduleCycles);
+	}
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -231,15 +288,24 @@ void LLVMDynamicExecutive::execute() {
 */
 void LLVMDynamicExecutive::executeWarp(Warp &warp) {
 	
+	hydrazine::Timer genTimer;
+	
 	reportE(REPORT_SCHEDULE_OPERATIONS, "Executing warp of size " << warp.size() 
 		<< " on hyperblockId " << warp.entryId);
-		
+	
+	genTimer.start();
+	
 	// lazily fetch translation
 	const LLVMDynamicTranslationCache::Translation *translation = 
 		getOrInsertTranslationById(warp.entryId, warp.size());
 	
 	assert(translation && "failed to obtain translation");
 	reportE(REPORT_SCHEDULE_OPERATIONS, " obtained translation. Executing warp.");
+	
+	genTimer.stop();
+	eTime0 += genTimer.seconds();
+	
+	genTimer.start();
 	
 	for (ThreadContextVector::iterator ctx_it = warp.threads.begin(); 
 		ctx_it != warp.threads.end(); 
@@ -248,12 +314,27 @@ void LLVMDynamicExecutive::executeWarp(Warp &warp) {
 		ctx_it->metadata = (char *)translation->metadata;
 		assert(ctx_it->metadata);
 	}
-		
+	
+	genTimer.stop();
+	eTime1 += genTimer.seconds();
+	
+	managerTimer.stop();
+	managerTime += managerTimer.seconds();
+	
+	translationTimer.start();
+	
 	// primitive warp scheduler
 	for (size_t tid = 0; tid < warp.threads.size(); tid += translation->warpSize) {
 		translation->execute(&warp.threads[tid]);
 	}
-			
+	
+	translationTimer.stop();
+	translationTime += translationTimer.seconds();
+	
+	managerTimer.start();
+
+		genTimer.start();
+		
 	for (
 		ThreadContextVector::iterator ctx_it = warp.threads.begin(); 
 		ctx_it != warp.threads.end(); 
@@ -265,7 +346,7 @@ void LLVMDynamicExecutive::executeWarp(Warp &warp) {
 		reportE(REPORT_SCHEDULE_OPERATIONS, 
 			" thread(" << ctx_it->tid.x << ", " << ctx_it->tid.y << ", " << ctx_it->tid.z 
 			<< ") [cta " << ctaId << "] exited with code " 
-			<< analysis::KernelPartitioningPass::toString(exitCode) 
+			<< analysis::HyperblockFormation::toString(exitCode) 
 			<< " - resume point: " << getResumePoint(*ctx_it));
 		
 		assert(ctaMap.find(ctaId) != ctaMap.end() && "CtaID not present in ctaMap");
@@ -273,44 +354,47 @@ void LLVMDynamicExecutive::executeWarp(Warp &warp) {
 		CooperativeThreadArray & cta = ctaMap[ctaId];
 		
 		switch (exitCode) {
-		case analysis::KernelPartitioningPass::Thread_fallthrough:
+		case analysis::HyperblockFormation::Thread_fallthrough:
 			// update its next thread Id
 			reportE(REPORT_SCHEDULE_OPERATIONS, 
 				"inserting thread " << ctx_it->tid.x << ", " << ctx_it->tid.y << ", " << ctx_it->tid.z 
 					<< " into ready queue of CTA " << ctaId);
 			cta.readyQueue.push_back(*ctx_it);
 			break;
-		case analysis::KernelPartitioningPass::Thread_branch:
+		case analysis::HyperblockFormation::Thread_branch:
 			// update its next thread Id
 			reportE(REPORT_SCHEDULE_OPERATIONS, 
 				"inserting thread " << ctx_it->tid.x << ", " << ctx_it->tid.y << ", " << ctx_it->tid.z 
 					<< " into ready queue of CTA " << ctaId);
 			cta.readyQueue.push_back(*ctx_it);
 			break;
-		case analysis::KernelPartitioningPass::Thread_tailcall:
+		case analysis::HyperblockFormation::Thread_tailcall:
 			// update its next thread Id
 			assert(0 && "calls not implemented");
 			break;
-		case analysis::KernelPartitioningPass::Thread_call:
+		case analysis::HyperblockFormation::Thread_call:
 			// update its next thread Id
 			assert(0 && "calls not implemented");
 			break;
-		case analysis::KernelPartitioningPass::Thread_barrier:
+		case analysis::HyperblockFormation::Thread_barrier:
 			// update its next thread Id, place into a waiting queue
 			reportE(REPORT_SCHEDULE_OPERATIONS, 
 				"inserting thread " << ctx_it->tid.x << ", " << ctx_it->tid.y << ", " << ctx_it->tid.z 
 					<< " into barrier queue of CTA " << ctaId);
 			cta.barrierQueue.push_back(*ctx_it);
 			break;
-		case analysis::KernelPartitioningPass::Thread_exit:
+		case analysis::HyperblockFormation::Thread_exit:
 			// kill off the thread
 			break;
-		case analysis::KernelPartitioningPass::Thread_exit_other:
+		case analysis::HyperblockFormation::Thread_exit_other:
 			break;
 		default: assert(0 && "invalid ThreadExitCode");
 			break;
 		}
 	}
+		genTimer.stop();
+		eTime2 += genTimer.seconds();
+	
 }
 
 //! \brief construct a warp - for now, simply choose a ready thread
@@ -325,7 +409,7 @@ void LLVMDynamicExecutive::warpFormation(Warp &warp) {
 		
 		for (ThreadContextQueue::iterator ctx_it = cta_it->second.readyQueue.begin();
 			ctx_it != cta_it->second.readyQueue.end() && warp.threads.size() < warpSize;) {
-			EntryId entryId = getResumePoint(*ctx_it);
+			HyperblockId entryId = getResumePoint(*ctx_it);
 			if (!warp.threads.size() || entryId == warp.entryId) {
 				warp.entryId = entryId;
 				warp.threads.push_back(*ctx_it);
@@ -334,6 +418,8 @@ void LLVMDynamicExecutive::warpFormation(Warp &warp) {
 			else {
 				++ctx_it;
 			}
+			
+			++iterations;
 		}
 	}
 	reportE(REPORT_SCHEDULE_OPERATIONS, 
@@ -348,6 +434,8 @@ void LLVMDynamicExecutive::warpFormation(Warp &warp) {
 		unsigned int ctaId = LLVMDynamicExecutive::ctaId(ctx);
 		ctaMap[ctaId].readyQueue.push_back(ctx);
 		--p;
+		
+		++iterations;
 	}
 	if (p < warp.threads.size()) {
 		warp.threads.resize(p);
@@ -369,12 +457,14 @@ void LLVMDynamicExecutive::testBarriers(int &waiting, int &ready) {
 		
 		ready += (int)cta_it->second.readyQueue.size();
 		waiting += (int)cta_it->second.barrierQueue.size();
+		
+		++iterations;
 	}
 }
 
 //! \brief searches for an existing translation and compiles it if it doesn't exist
 const LLVMDynamicTranslationCache::Translation *
-LLVMDynamicExecutive::getOrInsertTranslationById(EntryId id, int ws) {
+LLVMDynamicExecutive::getOrInsertTranslationById(HyperblockId id, int ws) {
 
 	const LLVMDynamicTranslationCache::Translation *translation =0;
 	TranslationWarpCache::iterator hb_it = translationCache.find(id);

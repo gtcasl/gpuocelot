@@ -70,9 +70,6 @@ namespace analysis {
 			//! \brief references a transition handler block for placing spill code
 			ir::BasicBlock::Pointer handler;
 			
-			//! \brief on divergent branches, this is the block that is reached if the convergence test passes
-			ir::BasicBlock::Pointer branchBlock;
-			
 			//! \brief control edge between transition point and block
 			ir::ControlFlowGraph::edge_iterator edge;
 		};

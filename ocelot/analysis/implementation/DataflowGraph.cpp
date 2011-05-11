@@ -321,6 +321,12 @@ namespace analysis
 		return _fallthrough;
 	}
 	
+	DataflowGraph::BlockVector::iterator 
+		DataflowGraph::Block::branch() const
+	{
+		return _branch;
+	}
+	
 	const DataflowGraph::BlockPointerSet& 
 		DataflowGraph::Block::targets() const
 	{
@@ -456,6 +462,7 @@ namespace analysis
 		_blocks.front()._block = cfg.get_entry_block();
 		_blocks.back()._block = cfg.get_exit_block();
 		_blocks.back()._fallthrough = _blocks.end();
+		_blocks.back()._branch = _blocks.end();
 
 		report( "Adding edges from CFG" );
 		ir::ControlFlowGraph::BlockPointerVector::iterator bbi = blocks.begin();
@@ -488,6 +495,7 @@ namespace analysis
 					report( "  branch " << begin->second->label() << " -> "
 						<< bi->second->label() );
 					begin->second->_targets.insert( bi->second );
+					begin->second->_branch = bi->second;
 					bi->second->_predecessors.insert( begin->second );	
 				}
 				else

@@ -53,11 +53,11 @@
 #define REPORT_ALL_LLVM_ASSEMBLY 1
 #define REPORT_OPTIMIZED_LLVM_ASSEMBLY 0
 #define REPORT_SCHEDULE_OPERATIONS 0
-#define REPORT_TRANSLATION_OPERATIONS 0
+#define REPORT_TRANSLATION_OPERATIONS 1
 
 #define REPORT_TRANSLATIONS 0
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -960,18 +960,8 @@ static void optimizePTX(
 	convertPredicationToSelect.initialize(*kernel.module);
 	convertPredicationToSelect.runOnKernel(kernel);
 	convertPredicationToSelect.finalize();
-	
-	kernel.rebuildDfg()->compute();
-	
-	report("after convertPredicationToSelect():");
-	kernel.write(std::cout);
-	report("\n");
 
 	kernel.dfg()->toSsa();
-	
-	report("after kernel.dfg()->toSsa():");
-	kernel.write(std::cout);
-	report("\n");
 }
 
 /*!
@@ -1033,11 +1023,6 @@ static llvm::Function *translatePTXtoLLVM(
 	
 	translator::PTXToLLVMTranslator translator(optimization);
 	
-#if REPORT_ALL_LLVM_ASSEMBLY
-	std::cout << "DynamicTranslationCache:\n";
-	kernel.write(std::cout);
-#endif
-	
 	ir::LLVMKernel* llvmKernel = static_cast<ir::LLVMKernel*>(translator.translate(&kernel));
 	
 	reportE(REPORT_TRANSLATION_OPERATIONS, "  Assembling LLVM kernel.");
@@ -1065,25 +1050,6 @@ static llvm::Function *translatePTXtoLLVM(
 	}
 	else {
 		reportE(REPORT_TRANSLATION_OPERATIONS, " parsed kernel");
-	}
-
-	reportE(REPORT_TRANSLATION_OPERATIONS, "  Checking llvm module for errors.");
-	std::string verifyError;
-	
-	if (llvm::verifyModule(*module, llvm::ReturnStatusAction, &verifyError)) {
-		reportE(REPORT_TRANSLATION_OPERATIONS, "   Checking kernel failed, dumping code:\n" << llvmKernel->numberedCode());
-			
-		delete llvmKernel;
-		delete module;
-		module = 0;
-
-		kernel.dfg()->fromSsa();
-
-		throw hydrazine::Exception("LLVM Verifier failed for kernel: " 
-			+ kernel.name + " : \"" + verifyError + "\"");
-	}
-	else {
-		reportE(REPORT_TRANSLATION_OPERATIONS, " verified module");
 	}
 
 	delete llvmKernel;
@@ -1169,6 +1135,7 @@ static void cloneAndOptimizeTranslation(
 			"\n\nAdding LLVM vectorization pass (ws: " << warpSize << ")\n\n");
 		manager.add(new analysis::LLVMUniformVectorization(warpSize));
 	}
+	level = 0;
 
 	if (level == 0) {
 		reportE(REPORT_TRANSLATION_OPERATIONS, "no optimizations");
@@ -1212,6 +1179,28 @@ static void cloneAndOptimizeTranslation(
 	}
 	
 	manager.run(*translation->llvmFunction);
+	
+	// we can't verify errors until this point
+	reportE(REPORT_TRANSLATION_OPERATIONS, "  Checking llvm module for errors.");
+	std::string verifyError;
+	
+	if (llvm::verifyModule(*translatedKernel.kernelModule, llvm::ReturnStatusAction, &verifyError)) {
+	
+#if REPORT_TRANSLATION_OPERATIONS
+		translatedKernel.kernelModule->dump();
+#endif
+	
+		delete translatedKernel.kernelModule;
+		translatedKernel.kernelModule = 0;
+		
+		translatedKernel.kernel->dfg()->fromSsa();;
+		
+		throw hydrazine::Exception("LLVM Verifier failed for kernel: " 
+			+ translatedKernel.kernel->name + " : \"" + verifyError + "\"");
+	}
+	else {
+		reportE(REPORT_TRANSLATION_OPERATIONS, " verified module");
+	}
 }
 
 /*!

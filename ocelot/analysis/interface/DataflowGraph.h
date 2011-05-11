@@ -158,6 +158,8 @@ namespace analysis
 					RegisterSet _aliveOut;
 					/*! \brief The fallthrough block */
 					BlockVector::iterator _fallthrough;
+					/*! \brief The branch target block */
+					BlockVector::iterator _branch;
 					/*! \brief The target blocks */
 					BlockPointerSet _targets;
 					/*! \brief A list of predecessor blocks */
@@ -193,6 +195,8 @@ namespace analysis
 					const RegisterSet& aliveOut() const;
 					/*! \brief Get the fallthrough block */
 					BlockVector::iterator fallthrough() const;
+					/*! \brief Get the branch block */
+					BlockVector::iterator branch() const;
 					/*! \brief Get a list of target blocks */
 					const BlockPointerSet& targets() const;
 					/*! \brief Get a list of predecessor blocks */

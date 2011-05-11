@@ -102,7 +102,8 @@ namespace analysis
 		for( unsigned int j = 0; j < limit; ++j )
 		{
 			if( ( i.*sources[ j ] ).addressMode == ir::PTXOperand::Register 
-				|| ( i.*sources[ j ] ).addressMode == ir::PTXOperand::Indirect )
+				|| ( i.*sources[ j ] ).addressMode == ir::PTXOperand::Indirect
+				|| ( i.*sources[ j ] ).addressMode == ir::PTXOperand::ArgumentList )
 			{
 				if( ( i.*sources[ j ] ).type == ir::PTXOperand::pred )
 				{
@@ -123,8 +124,7 @@ namespace analysis
 						reportE( REPORT_CONVERT, "  Converting register \"" 
 							<< fi->identifier << "\" to id " << fi->reg );
 						_maxRegister = std::max( _maxRegister, fi->reg );
-						result.s.push_back( 
-							RegisterPointer( &fi->reg, fi->type ) );
+						result.s.push_back( RegisterPointer( &fi->reg, fi->type ) );
 					}
 				}
 				else
@@ -161,7 +161,8 @@ namespace analysis
 		for( unsigned int j = 0; j < limit; ++j )
 		{
 			if( ( i.*destinations[ j ] ).addressMode 
-				== ir::PTXOperand::Register )
+				== ir::PTXOperand::Register || 
+				( i.*destinations[ j ] ).addressMode == ir::PTXOperand::ArgumentList )
 			{
 				if( ( i.*destinations[ j ] ).type == ir::PTXOperand::pred )
 				{
@@ -183,8 +184,7 @@ namespace analysis
 							<< fi->identifier 
 							<< "\" to id " << fi->reg );
 						_maxRegister = std::max( _maxRegister, fi->reg );
-						result.d.push_back( 
-							RegisterPointer( &fi->reg, fi->type ) );
+						result.d.push_back(	RegisterPointer( &fi->reg, fi->type ) );
 					}
 				}
 				else

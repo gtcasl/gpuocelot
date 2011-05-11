@@ -47,10 +47,10 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define REPORT_PTX_KERNELS 0
+#define REPORT_PTX_KERNELS 1
 #define REPORT_PTX_SUBKERNELS 0
 
-#define REPORT_ALL_LLVM_ASSEMBLY 0
+#define REPORT_ALL_LLVM_ASSEMBLY 1
 #define REPORT_OPTIMIZED_LLVM_ASSEMBLY 0
 #define REPORT_SCHEDULE_OPERATIONS 0
 #define REPORT_TRANSLATION_OPERATIONS 0
@@ -154,17 +154,12 @@ bool LLVMDynamicTranslationCache::loadModule(const ir::Module *module, executive
 			 ++kernel) {
 			
 			reportE(REPORT_PTX_KERNELS, "Encountered kernel '" << kernel->second->name << "'");
-#if REPORT_BASE && REPORT_PTX_KERNELS
-			kernel->second->write(std::cout);
-#endif
+
 			
 			TranslatedKernel *translatedKernel = new TranslatedKernel;
 			translatedKernel->kernel = kernel->second;
 			translatedKernel->entryId = (EntryId)(kernelMap.size() << 16);
 			metadata.kernels[kernel->second->name] = translatedKernel;
-			
-			report(" static .local declarations: " << translatedKernel->localMemorySize << " bytes");
-			report(" static .shared declarations: " << translatedKernel->sharedMemorySize << " bytes");
 			
 			//
 			// KernelParitioningPass
@@ -173,10 +168,18 @@ bool LLVMDynamicTranslationCache::loadModule(const ir::Module *module, executive
 			kernelFormationPass.initialize(*module);
 			kernelFormationPass.runOnKernel(translatedKernel->decomposition, *kernel->second, 0);
 			kernelFormationPass.finalize();
+			translatedKernel->kernel = translatedKernel->decomposition.kernel;
 			kernelMap[translatedKernel->entryId] = translatedKernel;
 			
 			translatedKernel->localMemorySize = translatedKernel->kernel->getLocalMemorySize();
 			translatedKernel->sharedMemorySize = translatedKernel->kernel->getSharedMemorySize();
+			
+#if REPORT_BASE && REPORT_PTX_KERNELS
+			report(" static .local declarations: " << translatedKernel->localMemorySize << " bytes");
+			report(" static .shared declarations: " << translatedKernel->sharedMemorySize << " bytes");
+			report("Dynamic translation cache, just after partitioning");
+			translatedKernel->kernel->write(std::cout);
+#endif
 		}
 		
 		modules.insert(std::make_pair(module->path(), metadata));
@@ -441,6 +444,10 @@ static void setupParameterMemoryReferences(
 			ir::PTXInstruction& ptx = static_cast<
 				ir::PTXInstruction&>(**instruction);
 			if(ptx.opcode != ir::PTXInstruction::Call) continue;
+			
+			if (ptx.a.identifier == "ptx.warp.divergent") {
+				continue;
+			}
 			
 			unsigned int offset = 0;
 			
@@ -947,14 +954,24 @@ static void optimizePTX(
 	kernel.dfg();
 
 	reportE(REPORT_TRANSLATION_OPERATIONS, " Optimizing PTX");
-	
+		
 	analysis::ConvertPredicationToSelectPass convertPredicationToSelect;
 	reportE(REPORT_TRANSLATION_OPERATIONS, "  Running convert predication to select pass");
 	convertPredicationToSelect.initialize(*kernel.module);
 	convertPredicationToSelect.runOnKernel(kernel);
 	convertPredicationToSelect.finalize();
+	
+	kernel.rebuildDfg()->compute();
+	
+	report("after convertPredicationToSelect():");
+	kernel.write(std::cout);
+	report("\n");
 
 	kernel.dfg()->toSsa();
+	
+	report("after kernel.dfg()->toSsa():");
+	kernel.write(std::cout);
+	report("\n");
 }
 
 /*!
@@ -967,25 +984,31 @@ static void setupCallTargets(
 	// replace all call instruction operands with kernel id
 	reportE(REPORT_TRANSLATION_OPERATIONS, "  Setting up targets of call instructions.");
 	for(ir::ControlFlowGraph::iterator block = kernel.cfg()->begin(); 
-		block != kernel.cfg()->end(); ++block)
-	{
+		block != kernel.cfg()->end(); ++block) {
+		
 		for(ir::ControlFlowGraph::InstructionList::iterator 
 			instruction = block->instructions.begin(); 
-			instruction != block->instructions.end(); ++instruction)
-		{
-			ir::PTXInstruction& ptx = static_cast<
-				ir::PTXInstruction&>(**instruction);
-			if(ptx.opcode != ir::PTXInstruction::Call 
-				&& ptx.opcode != ir::PTXInstruction::Mov) continue;
-			if(ptx.tailCall) continue;
+			instruction != block->instructions.end(); ++instruction) {
 			
-			if(ptx.a.addressMode == ir::PTXOperand::FunctionName)
-			{		
-				assert(0 && "unimplemented");
-				
-				reportE(REPORT_TRANSLATION_OPERATIONS, "   setting target '" << ptx.a.identifier 
-					<< "' of instruction '" << ptx.toString());
-//				ptx.reentryPoint = id;
+			ir::PTXInstruction& ptx = static_cast<ir::PTXInstruction&>(**instruction);
+			
+			if(ptx.opcode != ir::PTXInstruction::Call && ptx.opcode != ir::PTXInstruction::Mov) {
+				continue;
+			}
+			if(ptx.tailCall) {
+				continue;
+			}
+			
+			if(ptx.a.addressMode == ir::PTXOperand::FunctionName) {
+				if (ptx.a.identifier == "ptx.warp.divergent") {
+					// this is a special intrinsic that will be lowered
+				}
+				else {
+					assert(0 && "arbitrary function calls not yet supported");
+					reportE(REPORT_TRANSLATION_OPERATIONS, "   setting target '" << ptx.a.identifier 
+						<< "' of instruction '" << ptx.toString());
+//					ptx.reentryPoint = id;
+				}
 			}
 		}
 	}
@@ -1009,6 +1032,12 @@ static llvm::Function *translatePTXtoLLVM(
 	reportE(REPORT_TRANSLATION_OPERATIONS, "  Converting from PTX IR to LLVM IR.");
 	
 	translator::PTXToLLVMTranslator translator(optimization);
+	
+#if REPORT_ALL_LLVM_ASSEMBLY
+	std::cout << "DynamicTranslationCache:\n";
+	kernel.write(std::cout);
+#endif
+	
 	ir::LLVMKernel* llvmKernel = static_cast<ir::LLVMKernel*>(translator.translate(&kernel));
 	
 	reportE(REPORT_TRANSLATION_OPERATIONS, "  Assembling LLVM kernel.");

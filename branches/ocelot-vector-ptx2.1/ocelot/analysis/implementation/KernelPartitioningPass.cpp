@@ -25,8 +25,9 @@
 
 #define REPORT_SUBKERNEL_PTX 1
 #define REPORT_SUBKERNEL_BARE 1
+#define REPORT_SUBKERNEL_CFG 0
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -93,9 +94,17 @@ void KernelPartitioningPass::KernelDecomposition::runOnKernel(ir::PTXKernel *_ke
 	
 	_createDummyScheduler();
 	
+	kernel->rebuildDfg()->compute();
+	
+#if REPORT_SUBKERNEL_PTX
+	std::cout << "KernelPartitioningPass:\n";
 	kernel->write(std::cout);
+#endif
+
+#if REPORT_SUBKERNEL_CFG
 	std::cout << "\n\n";
 	kernel->cfg()->write(std::cout);
+#endif
 }
 
 /*!
@@ -350,15 +359,17 @@ void KernelPartitioningPass::KernelDecomposition::_transformExitTransitions(Kern
 				transition.block->instructions.erase(last);
 								
 				ir::PTXInstruction *call = new ir::PTXInstruction(ir::PTXInstruction::Call);
-				call->d = std::move(ir::PTXOperand(ir::PTXOperand::Register, ir::PTXOperand::pred,
-					kernel->dfg()->newRegister()));
+				call->d.addressMode = ir::PTXOperand::ArgumentList;
+				call->d.array.push_back( std::move(ir::PTXOperand(ir::PTXOperand::Register, ir::PTXOperand::pred,
+					kernel->dfg()->newRegister())));
 				call->a = std::move(ir::PTXOperand(ir::PTXOperand::FunctionName, ir::PTXOperand::pred, 
 					"ptx.warp.divergent"));
-				call->b = terminator->pg;
+				call->b.addressMode = ir::PTXOperand::ArgumentList;
+				call->b.array.push_back(terminator->pg);
 				transition.block->instructions.push_back(call);
 				
 				ir::PTXInstruction *branch = new ir::PTXInstruction(ir::PTXInstruction::Bra);
-				branch->pg = call->d;
+				branch->pg = call->d.array[0];
 				branch->d.addressMode = ir::PTXOperand::Label;
 				branch->d.identifier = transition.handler->label;
 				transition.block->instructions.insert(transition.block->instructions.end(), branch);

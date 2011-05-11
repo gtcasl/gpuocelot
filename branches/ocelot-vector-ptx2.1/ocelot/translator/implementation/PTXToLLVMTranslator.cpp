@@ -896,7 +896,12 @@ namespace translator
 			}
 			case ir::PTXOperand::ArgumentList:
 			{
-				assertM( false, "Argument Lists not supported yet ." );
+				if (o.array.size() == 1) {
+					return _translate(o.array[0]);
+				}
+				else {
+					assertM( false, "Argument Lists not supported yet ." );
+				}
 				break;
 			}
 			case ir::PTXOperand::FunctionName:
@@ -2168,8 +2173,26 @@ namespace translator
 				_add( branch );
 			}
 		}
-		else
-		{
+		else if (i.a.identifier == "ptx.warp.divergent") {
+			// LLVM intrinsic - emit an actual call we can lower in subsequent passes
+			ir::LLVMCall call;
+
+			call.name = "@ptx.warp.divergent";
+			
+			
+			call.d.name          = _tempRegister();
+			call.d.type.type     = ir::LLVMInstruction::I1;
+			call.d.type.category = ir::LLVMInstruction::Type::Element;
+			/*
+			call.d = _destination( i );
+			*/
+			call.parameters.resize(1);
+			call.parameters[0] = _translate(i.b);
+				
+			_add( call );
+		}
+		else {
+			// general call
 			ir::LLVMBr branch;
 		
 			std::string yieldLabel = "Ocelot_yield_" + block.label();

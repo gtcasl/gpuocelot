@@ -795,9 +795,29 @@ void analysis::LLVMUniformVectorization::Translation::handleDivergentBranch(
 		llvm::ConstantInt *constZero = pass->getConstInt32(0);
 		llvm::ConstantInt *constFull = pass->getConstInt32(warpSize);
 		
+#if 0
 		std::stringstream ss;
-		ss << divergent.warpBlock->getNameStr() << "_diverge";
+		ss << divergent.warpBlock->getNameStr() << "_diverge";		
 		divergent.handler = llvm::BasicBlock::Create(F->getContext(), ss.str(), F);
+		
+		// insert dummy return statement
+		llvm::ReturnInst::Create(F->getContext(), divergent.handler);
+		
+		// and insert a call to abort on divergence
+		divergenceHandlerBranch(divergent, ws_it->second);
+#else
+		// find the existing divergence handler by convention
+		std::string divergenceHandlerLabel = divergent.scalarBlock->getNameStr() + "_exit";
+		divergent.handler = 0;
+		for (llvm::Function::iterator bb_it = F->begin(); bb_it != F->end(); ++bb_it) {
+			if (bb_it->getNameStr() == divergenceHandlerLabel) {
+				divergent.handler = &*bb_it;
+				break;
+			}
+		}
+		assert(divergent.handler && "Failed in finding existing divergence handler");
+		
+#endif
 			
 		llvm::BasicBlock *succZero = warpBlocksMap[scBranch->getSuccessor(1)];
 		llvm::BasicBlock *succFull = warpBlocksMap[scBranch->getSuccessor(0)];
@@ -807,10 +827,6 @@ void analysis::LLVMUniformVectorization::Translation::handleDivergentBranch(
 		switchInst->addCase(constFull, succFull);
 		switchInst->addCase(constZero, succZero);
 		
-		// insert dummy return statement
-		llvm::ReturnInst::Create(F->getContext(), divergent.handler);
-		
-		divergenceHandlerBranch(divergent, ws_it->second);
 	}
 	else {
 		Ocelot_Exception("unexpected divergent terminator");

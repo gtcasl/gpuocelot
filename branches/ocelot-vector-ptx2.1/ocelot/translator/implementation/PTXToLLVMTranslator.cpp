@@ -1019,6 +1019,7 @@ namespace translator
 			
 			if( block->targets().empty() )
 			{
+				report(" Terminating block");
 				if( block->fallthrough() != _ptx->dfg()->end() )
 				{
 					ir::LLVMBr branch;
@@ -2069,13 +2070,31 @@ namespace translator
 	{
 		ir::LLVMBr branch;
 		
+		report(" _translateBra()");
+		
 		if( block.targets().empty() )
 		{
+			report("  block.targets.empty()");
 			branch.iftrue = "%" + block.fallthrough()->label();
 		}
 		else
 		{
-			branch.iftrue = "%" + (*block.targets().begin())->label();
+			report(" block.targets.size() = " << block.targets().size());
+			for (analysis::DataflowGraph::BlockPointerSet::const_iterator target_it = block.targets().begin();
+				target_it != block.targets().end(); ++target_it ) {
+				report("  target: " << (*target_it)->label());
+			}
+			
+			if (block.branch() != _ptx->dfg()->end()) {
+				branch.iftrue = "%" + (*block.branch()).label();
+			}
+			else {
+				branch.iftrue = "%" + (*block.targets().begin())->label();
+			}
+			
+			report("    if true target: " << branch.iftrue);
+			
+			
 			if( block.fallthrough() != _ptx->dfg()->end() )
 			{
 				if( (*block.targets().begin()) != block.fallthrough() )
@@ -2083,10 +2102,13 @@ namespace translator
 					if( ir::PTXOperand::PT != i.pg.condition 
 						&& ir::PTXOperand::nPT != i.pg.condition )
 					{
+						report("  conditional branch");
 						branch.condition = _translate( i.pg );
 					}
 					else
 					{
+						report("  unconditional branch");
+						
 						branch.condition.type.category 
 							= ir::LLVMInstruction::Type::Element;
 						branch.condition.type.type = ir::LLVMInstruction::I1;
@@ -2102,7 +2124,9 @@ namespace translator
 						}
 					}
 					branch.iffalse = "%" + block.fallthrough()->label();
+					report("    if false target: " << block.fallthrough()->label());
 				}
+				
 				if( i.pg.condition == ir::PTXOperand::InvPred )
 				{
 					std::swap( branch.iftrue, branch.iffalse );

@@ -25,7 +25,7 @@
 
 #define REPORT_SUBKERNEL_PTX 1
 #define REPORT_SUBKERNEL_BARE 1
-#define REPORT_SUBKERNEL_CFG 0
+#define REPORT_SUBKERNEL_CFG 1
 
 #define REPORT_BASE 0
 
@@ -96,12 +96,12 @@ void KernelPartitioningPass::KernelDecomposition::runOnKernel(ir::PTXKernel *_ke
 	
 	kernel->rebuildDfg()->compute();
 	
-#if REPORT_SUBKERNEL_PTX
+#if REPORT_BASE && REPORT_SUBKERNEL_PTX
 	std::cout << "KernelPartitioningPass:\n";
 	kernel->write(std::cout);
 #endif
 
-#if REPORT_SUBKERNEL_CFG
+#if REPORT_BASE && REPORT_SUBKERNEL_CFG
 	std::cout << "\n\n";
 	kernel->cfg()->write(std::cout);
 #endif
@@ -355,32 +355,11 @@ void KernelPartitioningPass::KernelDecomposition::_transformExitTransitions(Kern
 				transition.block->out_edges.size() >= 2 &&
 				!terminator->uni) {
 				
-				report(" conditional branch");
-				transition.block->instructions.erase(last);
-								
-				ir::PTXInstruction *call = new ir::PTXInstruction(ir::PTXInstruction::Call);
-				call->d.addressMode = ir::PTXOperand::ArgumentList;
-				call->d.array.push_back( std::move(ir::PTXOperand(ir::PTXOperand::Register, ir::PTXOperand::pred,
-					kernel->dfg()->newRegister())));
-				call->a = std::move(ir::PTXOperand(ir::PTXOperand::FunctionName, ir::PTXOperand::pred, 
-					"ptx.warp.divergent"));
-				call->b.addressMode = ir::PTXOperand::ArgumentList;
-				call->b.array.push_back(terminator->pg);
-				transition.block->instructions.push_back(call);
-				
-				ir::PTXInstruction *branch = new ir::PTXInstruction(ir::PTXInstruction::Bra);
-				branch->pg = call->d.array[0];
-				branch->d.addressMode = ir::PTXOperand::Label;
-				branch->d.identifier = transition.handler->label;
-				transition.block->instructions.insert(transition.block->instructions.end(), branch);
-				
-				transition.branchBlock = kernel->cfg()->insert_new_block(transition.block->label + "_branch");
-				transition.branchBlock->instructions.push_back(terminator);
-				
 				// identify branch target entry points
 				EntryId branchTargetId = 0;
 				EntryId fallthroughTargetId = 0;
 				std::string fallthroughBlockLabel = "";
+				
 				
 				for (ir::BasicBlock::EdgePointerVector::const_iterator edge_it = transition.block->out_edges.begin();
 					edge_it != transition.block->out_edges.end(); ++edge_it) {
@@ -395,23 +374,9 @@ void KernelPartitioningPass::KernelDecomposition::_transformExitTransitions(Kern
 					}
 				}
 				
-				// delete out edges
-				for (ir::BasicBlock::EdgePointerVector::iterator edge_it = transition.block->out_edges.begin();
-					edge_it != transition.block->out_edges.end(); ) {
-					
-					ir::BasicBlock::Edge newEdge(transition.branchBlock, (*edge_it)->tail, (*edge_it)->type);
-					
-					kernel->cfg()->remove_edge(*edge_it);
-					edge_it = transition.block->out_edges.begin();
-					
-					kernel->cfg()->insert_edge(newEdge);
-				}
-				
-				// create two out edges - fall through to the branch block and branch edge to the handler
-				ir::BasicBlock::Edge divergedEdge(transition.block, transition.handler, ir::BasicBlock::Edge::Branch);
-				kernel->cfg()->insert_edge(divergedEdge);
-				ir::BasicBlock::Edge convergentEdge(transition.block, transition.branchBlock, ir::BasicBlock::Edge::FallThrough);
-				kernel->cfg()->insert_edge(convergentEdge);
+				// create a dummy edge
+				ir::BasicBlock::Edge dummyEdge(transition.block, transition.handler, ir::BasicBlock::Edge::Dummy);
+				kernel->cfg()->insert_edge(dummyEdge);
 				
 				// in cases of actual divergence, insert the thread exit into the handler block
 				ir::PTXInstruction *selp = new ir::PTXInstruction(ir::PTXInstruction::SelP);
@@ -434,9 +399,7 @@ void KernelPartitioningPass::KernelDecomposition::_transformExitTransitions(Kern
 				selp->c = std::move(ir::PTXOperand(ir::PTXOperand::Register, ir::PTXOperand::pred, terminator->pg.reg, 0));
 				transition.handler->instructions.push_back(selp);
 				resumePointOperand = std::move(ir::PTXOperand(ir::PTXOperand::Register, ir::PTXOperand::u32, selp->d.reg, 0));
-				
 				transition.handler->comment = "divergent branch";
-				transition.branchBlock->comment = "fallthrough target should be: " + fallthroughBlockLabel;
 				
 				_createExitCode(transition, resumePointOperand, Thread_branch);
 			}
@@ -566,10 +529,18 @@ void KernelPartitioningPass::KernelDecomposition::_createExitCode(
 
 void KernelPartitioningPass::KernelDecomposition::_createDummyScheduler() {
 
-	ir::BasicBlock schedulerBlock(kernel->name + "_scheduler");
+	ir::PTXInstruction *branch = new ir::PTXInstruction(ir::PTXInstruction::Bra);
+	branch->d.addressMode = ir::PTXOperand::Label;
+	branch->d.identifier = kernel->cfg()->get_entry_block()->out_edges[0]->tail->label;
+	
+	ir::BasicBlock schedulerBlock("$" + kernel->name + "_scheduler");
 	ir::ControlFlowGraph::EdgePair edgePair = kernel->cfg()->split_edge(
 		kernel->cfg()->get_entry_block()->out_edges[0], schedulerBlock);
 	scheduler = edgePair.first->tail;
+	edgePair.second->type = ir::BasicBlock::Edge::Branch;
+		
+	scheduler->instructions.push_back(branch);
+	
 
 	for (BlockEntryTransitionMap::const_iterator transition_it = entryTransitions.begin();
 		transition_it != entryTransitions.end();

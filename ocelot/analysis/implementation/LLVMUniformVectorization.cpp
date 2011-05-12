@@ -222,18 +222,19 @@ void analysis::LLVMUniformVectorization::Translation::runOnFunction() {
 	
 	// we do not use the translator's scheduler block, so this transformation must insert its own
 	if (warpSize >= 1) {
+		report("Breadth first traversal:");
+		breadthFirstTraversal(traversal, F);
+
 		report("Creating prolog block to replace scheduler");
 		createSubkernelPrologue();
 		
 		report("Loading thread-local values");
-//		loadThreadLocalArguments();
+		loadThreadLocalArguments();
 	}
 	
 	// omit these transformations for scalar case
 	if (warpSize > 1) {
 				
-		report("Breadth first traversal:");
-		breadthFirstTraversal(traversal, F);
 		
 		report("Adding interleaved and replicated instructions:");
 		addInterleavedInstructions();
@@ -341,7 +342,7 @@ llvm::Value * analysis::LLVMUniformVectorization::Translation::getLocalMemoryPoi
 
 */
 void analysis::LLVMUniformVectorization::Translation::finalizeSubkernel() {
-		
+		/*
 	llvm::TerminatorInst *termInst = subkernelEntry.prologue->getTerminator();
 	llvm::BasicBlock *wsTarget = getWarpBlockFromScalar(subkernelEntry.start);
 	
@@ -349,6 +350,7 @@ void analysis::LLVMUniformVectorization::Translation::finalizeSubkernel() {
 	
 	llvm::BranchInst *branchInst = static_cast<llvm::BranchInst *>(termInst);
 	branchInst->setSuccessor(0, wsTarget);
+	*/
 }
 			
 /*!
@@ -378,30 +380,19 @@ void analysis::LLVMUniformVectorization::Translation::loadThreadLocalArguments()
 
 	report("loadThreadLocalArguments");
 	llvm::Value *context = &*(F->arg_begin());
-	
-	for (int tid = 0; tid < warpSize; tid++) {
-	
-		llvm::GetElementPtrInst *contextPtr = 0;
-		{
-			std::stringstream ss;
-			std::vector< llvm::Value *> idx;
-			idx.push_back(pass->getConstInt32(tid));
-			//idx.push_back(pass->getConstInt32(0));
-			
-			ss << "context." << tid;
-			contextPtr = llvm::GetElementPtrInst::Create(context, idx.begin(), idx.end(), ss.str(), schedulerBlock);
-		}
+	llvm::BasicBlock *schedulerBlock = subkernelEntry.prologue;
 		
+	for (int tid = 0; tid < warpSize; tid++) {
+			
 		report("thread " << tid);
 		report("localMemPtr");
-		
 		{
 			std::stringstream ss;
 			std::vector< llvm::Value *> idx;
 			idx.push_back(pass->getConstInt32(tid));
-			idx.push_back(pass->getConstInt32(0));
+			idx.push_back(pass->getConstInt32(4));
 		
-			llvm::Instruction *ptr = llvm::GetElementPtrInst::Create(contextPtr,
+			llvm::Instruction *ptr = llvm::GetElementPtrInst::Create(context,
 				idx.begin(), idx.end(), "ptrLocalMemPtr", schedulerBlock);
 		
 			ss << "localMemPtr." << tid;
@@ -415,7 +406,7 @@ void analysis::LLVMUniformVectorization::Translation::loadThreadLocalArguments()
 			idx.push_back(pass->getConstInt32(3));
 			idx.push_back(pass->getConstInt32(0));
 		
-			llvm::Instruction *ptr = llvm::GetElementPtrInst::Create(contextPtr,
+			llvm::Instruction *ptr = llvm::GetElementPtrInst::Create(context,
 				idx.begin(), idx.end(), "ptrTidXptr", schedulerBlock);
 		
 			ss << "tid_x." << tid;
@@ -429,7 +420,7 @@ void analysis::LLVMUniformVectorization::Translation::loadThreadLocalArguments()
 			idx.push_back(pass->getConstInt32(3));
 			idx.push_back(pass->getConstInt32(1));
 		
-			llvm::Instruction *ptr = llvm::GetElementPtrInst::Create(contextPtr,
+			llvm::Instruction *ptr = llvm::GetElementPtrInst::Create(context,
 				idx.begin(), idx.end(), "ptrTidYptr", schedulerBlock);
 		
 			ss << "tid_y." << tid;
@@ -444,7 +435,7 @@ void analysis::LLVMUniformVectorization::Translation::loadThreadLocalArguments()
 			idx.push_back(pass->getConstInt32(3));
 			idx.push_back(pass->getConstInt32(2));
 		
-			llvm::Instruction *ptr = llvm::GetElementPtrInst::Create(contextPtr,
+			llvm::Instruction *ptr = llvm::GetElementPtrInst::Create(context,
 				idx.begin(), idx.end(), "ptrTidZptr", schedulerBlock);
 		
 			ss << "tid_z." << tid;
@@ -452,107 +443,6 @@ void analysis::LLVMUniformVectorization::Translation::loadThreadLocalArguments()
 		}
 	}
 }
-
-#if 0
-/*!
-	\brief fetches metadata object and obtains thread local arguments
-		(i.e. localMemory pointer, threadIdx.x)
-*/
-void analysis::LLVMUniformVectorization::Translation::loadThreadLocalArguments() {
-
-	report("loadThreadLocalArguments");
-
-	// do this from the start of the subkernel
-	llvm::Instruction *firstInst = subkernelEntry.prologue->getFirstNonPHI();
-	llvm::Value *context = &*(F->arg_begin());
-	
-	report("metadata ptr");
-	std::vector< llvm::Value *> idx;
-	idx.push_back(pass->getConstInt32(0));
-	idx.push_back(pass->getConstInt32(9));
-	llvm::GetElementPtrInst *gempMetadataPtr = llvm::GetElementPtrInst::Create(context, idx.begin(), 
-		idx.end(), "pMetadataPtrI8", firstInst);
-	
-	llvm::LoadInst *loadedMetadataPtr = new llvm::LoadInst(gempMetadataPtr, "metadataPtrI8", firstInst);
-	
-	llvm::CastInst *castedMetadataPtr = llvm::CastInst::CreatePointerCast(loadedMetadataPtr, 
-		llvm::PointerType::get(pass->tyMetadata,0), "metadataPtr", firstInst );
-	
-	idx.clear();
-	idx.push_back(pass->getConstInt32(0));
-	idx.push_back(pass->getConstInt32(6));
-		
-	llvm::Instruction *threadDescriptorPtr = llvm::GetElementPtrInst::Create(castedMetadataPtr, 
-		idx.begin(), idx.end(), "threadDescriptorPtr", firstInst);
-	threadLocalArguments.ptrThreadDescriptorArray = new llvm::LoadInst(threadDescriptorPtr,
-		"threadDescriptorArray", firstInst);
-	
-	report("getting thread local values");
-	
-	for (int tid = 0; tid < warpSize; tid++) {
-		llvm::GetElementPtrInst *ptr = 0;
-		
-		report("thread " << tid);
-		report("localMemPtr");
-		
-		{
-			std::stringstream ss;
-			std::vector< llvm::Value *> idx;
-			idx.push_back(pass->getConstInt32(tid));
-			idx.push_back(pass->getConstInt32(0));
-		
-			ptr = llvm::GetElementPtrInst::Create(threadLocalArguments.ptrThreadDescriptorArray,
-				idx.begin(), idx.end(), "", firstInst);
-		
-			ss << "localMemPtr." << tid;
-			threadLocalArguments.localPointer.push_back(new llvm::LoadInst(ptr, ss.str(), firstInst));
-		}
-		report(" tid_x");
-		{
-			std::stringstream ss;
-			std::vector< llvm::Value *> idx;
-			idx.push_back(pass->getConstInt32(tid));
-			idx.push_back(pass->getConstInt32(3));
-			idx.push_back(pass->getConstInt32(0));
-		
-			ptr = llvm::GetElementPtrInst::Create(threadLocalArguments.ptrThreadDescriptorArray,
-				idx.begin(), idx.end(), "", firstInst);
-		
-			ss << "tid_x." << tid;
-			threadLocalArguments.threadId_x.push_back(new llvm::LoadInst(ptr, ss.str(), firstInst));
-		}
-		report(" tid_y");
-		{
-			std::stringstream ss;
-			std::vector< llvm::Value *> idx;
-			idx.push_back(pass->getConstInt32(tid));
-			idx.push_back(pass->getConstInt32(3));
-			idx.push_back(pass->getConstInt32(1));
-		
-			ptr = llvm::GetElementPtrInst::Create(threadLocalArguments.ptrThreadDescriptorArray,
-				idx.begin(), idx.end(), "", firstInst);
-		
-			ss << "tid_y." << tid;
-			threadLocalArguments.threadId_y.push_back(new llvm::LoadInst(ptr, ss.str(), firstInst));
-		}
-		
-		report(" tid_z");
-		{
-			std::stringstream ss;
-			std::vector< llvm::Value *> idx;
-			idx.push_back(pass->getConstInt32(tid));
-			idx.push_back(pass->getConstInt32(3));
-			idx.push_back(pass->getConstInt32(2));
-		
-			ptr = llvm::GetElementPtrInst::Create(threadLocalArguments.ptrThreadDescriptorArray,
-				idx.begin(), idx.end(), "", firstInst);
-		
-			ss << "tid_z." << tid;
-			threadLocalArguments.threadId_z.push_back(new llvm::LoadInst(ptr, ss.str(), firstInst));
-		}
-	}
-}
-#endif
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -990,8 +880,9 @@ void analysis::LLVMUniformVectorization::Translation::divergenceHandlerBranch(
 */
 void analysis::LLVMUniformVectorization::Translation::createSchedulerBlock() {
 	llvm::BasicBlock *entry = & F->front();
-	schedulerBlock = llvm::BasicBlock::Create(F->getContext(), "WarpSyncScheduler", F, entry);
+	subkernelEntry.prologue = llvm::BasicBlock::Create(F->getContext(), "WarpSyncScheduler", F, entry);
 	
+#if 0
 	// for now, have scheduler block chain to previous entry point
 	llvm::BasicBlock *startBlock = entry;
 	if (!warpSchedulerBlocks.size()) {
@@ -999,6 +890,7 @@ void analysis::LLVMUniformVectorization::Translation::createSchedulerBlock() {
 	}
 	llvm::BranchInst *braInst = llvm::BranchInst::Create(startBlock, schedulerBlock);
 	assert(braInst);
+#endif
 }
 
 /*
@@ -1428,7 +1320,35 @@ void analysis::LLVMUniformVectorization::Translation::vectorize() {
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
+/*!
 
+*/
+llvm::BasicBlock *analysis::LLVMUniformVectorization::Translation::getWarpBlockByEntryId(
+	EntryId entryId) {
+	
+	report("getWarpBlockByEntryId(" << entryId << ")");
+	
+	llvm::BasicBlock *block = 0;
+	
+	EntryIdBlockLabelMap::const_iterator entryLabel_it = pass->labelMap->find(entryId);
+	assert(entryLabel_it != pass->labelMap->end());
+	std::string label = entryLabel_it->second.substr(1) + "_ws_";
+	
+	report("  block label: " << label);
+	
+	// do a lookup based on block name
+	for (llvm::Function::iterator bb_it = F->begin(); bb_it != F->end(); ++bb_it) {
+		std::string entryLabel = bb_it->getNameStr();
+		if (entryLabel.find(label) != std::string::npos) {
+			block = &*bb_it;
+			report("  target block: " << block->getNameStr());
+			break;
+		}
+	}
+	
+	return block;
+}
+			
 /*!
 	\brief creates a scheduler block in 'WarpSynchronousEntry' with an indirect branch to each
 		subkernel entry point
@@ -1436,15 +1356,12 @@ void analysis::LLVMUniformVectorization::Translation::vectorize() {
 void analysis::LLVMUniformVectorization::Translation::updateSubkernelEntries() {
 	report("Updating subkernel entries");
 	
+	llvm::BasicBlock *schedulerBlock = subkernelEntry.prologue;
+
 	assert(schedulerBlock);
 	assert(threadLocalArguments.localPointer.size());
 	assert(threadLocalArguments.localPointer[0]);
 	
-	std::cerr << "local pointer:\n";
-	threadLocalArguments.localPointer[0]->dump();
-	threadLocalArguments.localPointer[0]->getType()->dump();
-	
-	std::cerr << "\n.. creating gemp" << std::endl;
 	// get the warp entry ID from one of the thread's resume point
 	const llvm::IntegerType *int32Ty = pass->getTyInt(32);
 	std::vector<llvm::Value *> idx;
@@ -1455,9 +1372,7 @@ void analysis::LLVMUniformVectorization::Translation::updateSubkernelEntries() {
 		idx.end(),
 		"ptr", 
 		schedulerBlock);
-	
-	report("created GEMP");
-	
+		
 	llvm::CastInst *castInst = llvm::CastInst::CreatePointerCast(gempInst, 
 		llvm::PointerType::get(int32Ty, 0), "ptrEntryPoint", schedulerBlock);
 	llvm::LoadInst *loadedEntryId = new llvm::LoadInst(castInst, "warpEntryId", schedulerBlock);
@@ -1465,36 +1380,55 @@ void analysis::LLVMUniformVectorization::Translation::updateSubkernelEntries() {
 		loadedEntryId, llvm::ConstantInt::get(int32Ty, 0x0ffff), "warpEntryPoint", schedulerBlock );
 	assert(warpEntryId);
 	
-	report("counting indirect branch successors");
+	report("There are " << pass->labelMap->size() << " entry points");
+	
+	llvm::AllocaInst *blockAddressArray = new llvm::AllocaInst(
+		llvm::PointerType::get(pass->getTyInt(8), 0), 
+		llvm::ConstantInt::get(int32Ty, (unsigned int)pass->labelMap->size()),
+		"blockAddressArray", schedulerBlock);
 	
 	// construct an indirect branch to the entry points
-	unsigned int maxEntries = 0;
-	for (EntryIdBlockLabelMap::const_iterator entry_it = pass->labelMap->begin();
-		entry_it != pass->labelMap->end();
-		++entry_it) {
-		if (maxEntries < (entry_it->first & 0x0ffff)) {
-			maxEntries = (entry_it->first & 0x0ffff);
-		}
-	}
-	maxEntries ++;
-	
-	report("setting indirect branch successors");
-		
-	llvm::IndirectBrInst *indirectBr = llvm::IndirectBrInst::Create(warpEntryId, 
-		maxEntries, schedulerBlock);
+	std::vector< llvm::BasicBlock *> entryBlocks;
 	for (EntryIdBlockLabelMap::const_iterator entry_it = pass->labelMap->begin();
 		entry_it != pass->labelMap->end();
 		++entry_it) {
 		
-		unsigned int entryId = (unsigned int)(entry_it->first & 0x0ffff);
-		EntryIdBlockLabelMap::const_iterator entryLabel_it = pass->labelMap->find(entryId);
-		assert(entryLabel_it != pass->labelMap->end());
-		
-		llvm::BasicBlock *successor = 0;
-		std::string label = entryLabel_it->second;
+		unsigned int entryId = (unsigned int)(entry_it->first & 0x0ffff);		
+		llvm::BasicBlock *successor = getWarpBlockByEntryId(entryId);
 		assert(successor);
-		indirectBr->setSuccessor(entryId, successor);
+		
+		llvm::BlockAddress *blockAddress = llvm::BlockAddress::get(successor);
+		assert(blockAddress);
+		
+		llvm::Instruction *ptr = llvm::GetElementPtrInst::Create(
+			blockAddressArray,
+			llvm::ConstantInt::get(int32Ty, (unsigned int)entryBlocks.size()),
+			"block",
+			schedulerBlock);
+		
+		llvm::StoreInst *store = new llvm::StoreInst(blockAddress, ptr, schedulerBlock);
+		assert(store);
+		entryBlocks.push_back(successor);
 	}
+	
+	llvm::Instruction *entryBlockAddressPtr = llvm::GetElementPtrInst::Create(
+		blockAddressArray,
+		warpEntryId,
+		"entryBlockAddressPtr",
+		schedulerBlock);
+	llvm::LoadInst *entryBlockAddress = new llvm::LoadInst(entryBlockAddressPtr, 
+		"entryBlockAddress", schedulerBlock);
+		
+	llvm::IndirectBrInst *indirectBr = llvm::IndirectBrInst::Create(entryBlockAddress, 
+		(unsigned int)entryBlocks.size(), schedulerBlock);
+	unsigned int i = 0;
+	for (std::vector< llvm::BasicBlock *>::const_iterator block_it = entryBlocks.begin();
+		block_it != entryBlocks.end(); ++block_it, ++i) {
+		//indirectBr->setSuccessor(i, *block_it);
+		indirectBr->addDestination(*block_it);
+	}
+	
+	report("created indirect branch");
 }
 
 /*!

@@ -317,6 +317,11 @@ namespace analysis
 				\brief visits subkernel exits and assigns exit descriptors
 			*/
 			void updateSubkernelExits();
+			
+			/*!
+			
+			*/
+			llvm::BasicBlock *getWarpBlockByEntryId(EntryId id);
 		
 		public:
 		
@@ -362,11 +367,6 @@ namespace analysis
 				\brief subkernel entry
 			*/
 			SubkernelEntry subkernelEntry;
-			
-			/*!
-				\brief indirect jumps based on warp id and last divergent branch handled by this block
-			*/
-			llvm::BasicBlock *schedulerBlock;
 			
 			/*!
 				\brief maps basic blocks to warp scheduler blocks

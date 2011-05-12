@@ -39,6 +39,7 @@ namespace llvm {
 
 namespace analysis
 {
+	typedef KernelPartitioningPass::EntryId EntryId;
 	typedef KernelPartitioningPass::EntryIdBlockLabelMap EntryIdBlockLabelMap;
 
 	/*!
@@ -334,11 +335,6 @@ namespace analysis
 			*/
 			int warpSize;
 			
-			/*!
-				\brief maps an EntryId to a basic block
-			*/
-			EntryIdBlockLabelMap entryIdToBlockLabel;
-			
 		public:
 		
 			/*!
@@ -395,6 +391,7 @@ namespace analysis
 			\param warpSize number of logical threads per warp
 		*/
 		LLVMUniformVectorization(int warpSize = LLVM_UNIFORMCONTROL_WARPSIZE);
+		LLVMUniformVectorization(const EntryIdBlockLabelMap &labelMap, int warpSize = LLVM_UNIFORMCONTROL_WARPSIZE);
 		~LLVMUniformVectorization();
 
 	public:
@@ -422,6 +419,11 @@ namespace analysis
 
 		//! \brief number of consecutive threads to pack into a single hardware thread
 		int warpSize;
+		
+		/*!
+			\brief maps an EntryId to a basic block
+		*/
+		const EntryIdBlockLabelMap *labelMap;
 		
 		//! \brief (int,int,int)
 		llvm::Type *tyDimension;

@@ -87,6 +87,8 @@ namespace analysis {
 			
 			void runOnKernel(ir::PTXKernel *kernel, EntryId base = 0);
 			
+			void extractEntryPoints(EntryIdBlockLabelMap &entryMap) const;
+			
 		private:
 		
 			//! \brief

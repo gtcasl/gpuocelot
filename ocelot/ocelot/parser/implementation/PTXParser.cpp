@@ -1713,12 +1713,16 @@ namespace parser
 		
 		statement.instruction.a = operand->second.operand;
 	
-		statement.instruction.d.addressMode = ir::PTXOperand::ArgumentList;
 		statement.instruction.b.addressMode = ir::PTXOperand::ArgumentList;
 
 		FunctionPrototype proto;
 		
 		report( "   return operands(" << returnOperands << "):" );
+		
+		if( returnOperands > 0 )
+		{
+			statement.instruction.d.addressMode = ir::PTXOperand::ArgumentList;
+		}
 		
 		unsigned int operandIndex = 1;
 		for( ; returnOperands > 0; --returnOperands, ++operandIndex )

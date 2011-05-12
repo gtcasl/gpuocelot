@@ -807,7 +807,9 @@ void analysis::LLVMUniformVectorization::Translation::handleDivergentBranch(
 		divergenceHandlerBranch(divergent, ws_it->second);
 #else
 		// find the existing divergence handler by convention
-		std::string divergenceHandlerLabel = divergent.scalarBlock->getNameStr() + "_exit";
+		std::stringstream suffix;
+		suffix << "_exit_ws_" << warpSize;
+		std::string divergenceHandlerLabel = divergent.scalarBlock->getNameStr() + suffix.str();
 		divergent.handler = 0;
 		for (llvm::Function::iterator bb_it = F->begin(); bb_it != F->end(); ++bb_it) {
 			if (bb_it->getNameStr() == divergenceHandlerLabel) {
@@ -1301,6 +1303,45 @@ void analysis::LLVMUniformVectorization::Translation::vectorize() {
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
+
+/*!
+	
+*/
+void analysis::LLVMUniformVectorization::Translation::updateSubkernelEntries() {
+	
+	// get the warp entry ID from one of the thread's resume point
+	const llvm::IntegerType *int32Ty = pass->getTyInt(32);
+	llvm::GetElementPtrInst *gempInst = llvm::GetElementPtrInst::Create(
+		threadLocalArguments.localPointer[0], llvm::ConstantInt::get(int32Ty, 4),
+		"ptr", schedulerBlock);
+	llvm::CastInst *castInst = llvm::CastInst::CreatePointerCast(gempInst, 
+		llvm::PointerType::get(int32Ty, 0), "ptrEntryPoint", schedulerBlock);
+	llvm::LoadInst *loadedEntryId = new llvm::LoadInst(castInst, "warpEntryId", schedulerBlock);
+	llvm::BinaryOperator *warpEntryId = llvm::BinaryOperator::Create(llvm::Instruction::And, 
+		loadedEntryId, llvm::ConstantInt::get(int32Ty, 0x0ffff), "warpEntryPoint", schedulerBlock );
+	assert(warpEntryId);
+	
+	// construct an indirect branch to the entry points
+	unsigned int maxEntries = 0;
+	for (EntryIdBlockLabelMap::const_iterator entry_it = entryIdToBlockLabel.begin();
+		entry_it != entryIdToBlockLabel.end();
+		++entry_it) {
+		if (maxEntries < (entry_it->first & 0x0ffff)) {
+			maxEntries = (entry_it->first & 0x0ffff);
+		}
+	}
+	maxEntries ++;
+	
+	llvm::IndirectBrInst *indirectBr = llvm::IndirectBrInst::Create(warpEntryId, 
+		maxEntries, schedulerBlock);
+	for (EntryIdBlockLabelMap::const_iterator entry_it = entryIdToBlockLabel.begin();
+		entry_it != entryIdToBlockLabel.end();
+		++entry_it) {
+		
+		llvm::BasicBlock *successor = 0;
+		indirectBr->setSuccessor((unsigned int)(entry_it->first & 0x0ffff), successor);
+	}
+}
 
 /*!
 	\brief visits all subkernel exits

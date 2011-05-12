@@ -30,6 +30,7 @@ namespace analysis {
 		typedef std::vector< unsigned int> OffsetVector;
 		typedef std::unordered_set< analysis::DataflowGraph::Register > RegisterSet;
 		typedef std::set< ir::BasicBlock::Pointer > BasicBlockSet;
+		typedef std::map< EntryId, std::string > EntryIdBlockLabelMap;
 		
 		//! \brief indicates reason for thread exit
 		enum ThreadExitCode {

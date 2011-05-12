@@ -14,6 +14,7 @@
 #include <vector>
 
 // Ocelot includes
+#include <ocelot/analysis/interface/KernelPartitioningPass.h>
 
 // Hydrazine includes
 
@@ -38,6 +39,7 @@ namespace llvm {
 
 namespace analysis
 {
+	typedef KernelPartitioningPass::EntryIdBlockLabelMap EntryIdBlockLabelMap;
 
 	/*!
 		\brief pass applied to kernels with completely uniform control flow for warps of a given
@@ -292,7 +294,6 @@ namespace analysis
 			*/
 			void vectorize();
 			
-			
 			void vectorizeBinaryOperator(
 				llvm::BinaryOperator *, 
 				VectorizedInstruction &vecInstr, 
@@ -307,9 +308,13 @@ namespace analysis
 				llvm::Instruction *before);
 			
 			/*!
+				\brief constructs an indirect branch from the scheduler to kernel entry points
+			*/
+			void updateSubkernelEntries();
+			
+			/*!
 				\brief visits subkernel exits and assigns exit descriptors
 			*/
-
 			void updateSubkernelExits();
 		
 		public:
@@ -328,6 +333,11 @@ namespace analysis
 			
 			*/
 			int warpSize;
+			
+			/*!
+				\brief maps an EntryId to a basic block
+			*/
+			EntryIdBlockLabelMap entryIdToBlockLabel;
 			
 		public:
 		

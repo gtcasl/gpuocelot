@@ -214,8 +214,21 @@ void KernelPartitioningPass::KernelDecomposition::_identifyTransitionPoints() {
 		transitionEntry.handler->comment = ss.str();
 		transitionPoints[transitionEntry.id] = transitionEntry;
 		
+		entryTransitions[(*bb_it)->label] = std::make_pair(transitionEntry.id, 0);
+	}
+	
+	for (ir::ControlFlowGraph::BlockPointerVector::const_iterator bb_it = blocks.begin(); 
+		bb_it != blocks.end(); 
+		++bb_it) {
 		
-		EntryId exitId = -1;
+		if (!(*bb_it)->instructions.size()) {
+			continue;
+		}
+		
+		report(" block " << (*bb_it)->label);
+		
+		DataflowGraph::IteratorMap::const_iterator dfgBlock = cfgToDfgMap.find(*bb_it);
+		assert(dfgBlock != cfgToDfgMap.end() && "failed to find block in CFT-to-DFG mapping");
 		
 		// live out
 		KernelTransitionPoint transitionExit;
@@ -225,8 +238,7 @@ void KernelPartitioningPass::KernelDecomposition::_identifyTransitionPoints() {
 		transitionExit.handler = kernel->cfg()->insert_new_block((*bb_it)->label + "_exit");
 		transitionExit.id = (EntryId)transitionPoints.size() + baseId;
 		transitionPoints[transitionExit.id] = transitionExit;
-		exitId = transitionExit.id;
-		entryTransitions[(*bb_it)->label] = std::make_pair(transitionEntry.id, exitId);
+		entryTransitions[(*bb_it)->label].second = transitionExit.id;
 	}
 	
 	// revisit transitions

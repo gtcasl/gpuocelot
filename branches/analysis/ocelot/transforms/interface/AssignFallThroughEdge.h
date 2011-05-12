@@ -1,10 +1,6 @@
-//- llvm/Transform/Ocelot/StructuralAnalysis.h - Structural Analysis - *C++ -*-// 
+//- StructuralAnalysis.h - Structural Analysis - *C++ -*-// 
 // 
-//                     The LLVM Compiler Infrastructure 
-// 
-// This file is distributed under the University of Illinois Open Source 
-// License. See LICENSE.TXT for details. 
-// 
+//                      
 //===----------------------------------------------------------------------===// 
 // 
 // This file defines the class of Structural Analysis which will return the 
@@ -12,10 +8,10 @@
 // 
 //===----------------------------------------------------------------------===// 
  
-#ifndef LLVM_ANALYSIS_ASSIGNFALLTHROUGHEDGE_H 
-#define LLVM_ANALYSIS_ASSIGNFALLTHROUGHEDGE_H
+#ifndef ASSIGN_FALLTHROUGH_EDGE_H 
+#define ASSIGN_FALLTHROUGH_EDGE_H
 
-#include <ocelot/analysis/interface/Pass.h>
+#include <ocelot/transforms/interface/Pass.h>
 #include <ocelot/ir/interface/ControlFlowGraph.h>
 #include <ocelot/ir/interface/PTXKernel.h>
 
@@ -31,7 +27,7 @@ namespace ir {
   class PTXKernel;
 }
 
-namespace analysis {
+namespace transforms {
   typedef struct NodeCFG {
     ir::ControlFlowGraph::iterator BB;  // Map to the corresponding ir::BasicBlock * if it is original
     std::set<struct NodeCFG *> predNode; // Predecessor of the node
@@ -64,7 +60,8 @@ namespace analysis {
 
     VisitMapCFGTy visit;
     
-    std::unordered_set<ir::ControlFlowGraph::iterator> hasIncomingFallThroughNode;
+    std::unordered_set<ir::ControlFlowGraph::iterator>
+    	hasIncomingFallThroughNode;
 
     std::map<NodeCFGTy *, int> preTree, postTree, sortedVal;
 
@@ -91,3 +88,4 @@ namespace analysis {
 }
 
 #endif
+

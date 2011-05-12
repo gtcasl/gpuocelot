@@ -7,6 +7,11 @@
 #ifndef ANALYSIS_H_INCLUDED
 #define ANALYSIS_H_INCLUDED
 
+// Forward Declarations
+namespace transforms { class PassManager; }
+namespace ir         { class IRKernel;    }
+namespace ir         { class Module;      }
+
 namespace analysis
 {
 
@@ -28,15 +33,45 @@ public:
 	};
 
 public:
-	Analysis(Type t = NoAnalysis);
+	/*! \brief Initialize the analysis, register it with a pass manager */
+	Analysis(Type t = NoAnalysis, transforms::PassManager* m = 0);
 
 public:
+	/*! \brief Get the analysis type */
 	Type type() const;
 
 private:
-	Type _type;
+	Type                     _type;
+	transforms::PassManager* _manager;
 
 };
+
+/*! \brief An analysis over a single kernel */
+class KernelAnalysis : public Analysis
+{
+
+public:
+	/*! \brief Initialize the analysis, register it with a pass manager */
+	KernelAnalysis(Type t = NoAnalysis, transforms::PassManager* m = 0);
+
+public:
+	virtual void analyze(ir::IRKernel& kernel) = 0;
+
+};
+
+/*! \brief An analysis over a complete module */
+class ModuleAnalysis : public Analysis
+{
+
+public:
+	/*! \brief Initialize the analysis, register it with a pass manager */
+	ModuleAnalysis(Type t = NoAnalysis, transforms::PassManager* m = 0);
+
+public:
+	virtual void analyze(ir::Module& module) = 0;
+
+};
+
 
 }
 

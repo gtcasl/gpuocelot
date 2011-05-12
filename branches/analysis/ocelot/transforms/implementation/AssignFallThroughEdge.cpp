@@ -1,9 +1,6 @@
-//- llvm/Transform/Ocelot/StructuralAnalysis.h - Structural Analysis - *C++ -*-// 
+//- StructuralAnalysis.h - Structural Analysis - *C++ -*-// 
 // 
-//                     The LLVM Compiler Infrastructure 
-// 
-// This file is distributed under the University of Illinois Open Source 
-// License. See LICENSE.TXT for details. 
+//                     
 // 
 //===----------------------------------------------------------------------===// 
 // 
@@ -12,22 +9,25 @@
 // 
 //===----------------------------------------------------------------------===// 
  
-#include <ocelot/analysis/interface/AssignFallThroughEdge.h>
+#include <ocelot/transforms/interface/AssignFallThroughEdge.h>
 
-namespace analysis {  
+namespace transforms {  
   void AssignFallThroughEdge::replaceWithDummyEdge() {
     for(ir::ControlFlowGraph::iterator i = _kernel->cfg()->begin(),
                                        e = _kernel->cfg()->end();
                                        i != e; ++i) {
       ir::BasicBlock::EdgePointerVector edges = i->out_edges;
 
-      for (ir::BasicBlock::EdgePointerVector::iterator ei = edges.begin(), ee = edges.end(); ei != ee; ++ei) {
+      for (ir::BasicBlock::EdgePointerVector::iterator ei = edges.begin(),
+      	ee = edges.end(); ei != ee; ++ei) {
         ir::ControlFlowGraph::edge_iterator oldEdge = *ei;
 
-        if (oldEdge->type == ir::Edge::Branch || oldEdge->type == ir::Edge::FallThrough) {
+        if (oldEdge->type == ir::Edge::Branch
+        	|| oldEdge->type == ir::Edge::FallThrough) {
           ir::ControlFlowGraph::iterator oldDest = oldEdge->tail;
           _kernel->cfg()->remove_edge(oldEdge);
-          _kernel->cfg()->insert_edge(ir::ControlFlowGraph::Edge(i, oldDest, ir::Edge::Dummy));
+          _kernel->cfg()->insert_edge(ir::ControlFlowGraph::Edge(
+          	i, oldDest, ir::Edge::Dummy));
         }
       }
     }
@@ -50,14 +50,16 @@ namespace analysis {
 
       ir::ControlFlowGraph::BlockPointerVector PredVec = i->predecessors;
 
-      for (ir::ControlFlowGraph::BlockPointerVector::iterator PI = PredVec.begin(), E = PredVec.end(); PI != E; ++PI) {
+      for (ir::ControlFlowGraph::BlockPointerVector::iterator
+      	PI = PredVec.begin(), E = PredVec.end(); PI != E; ++PI) {
         NodeCFGTy *p = BB2NodeMap[*PI];
         n->predNode.insert(p);
       }
 
       ir::ControlFlowGraph::BlockPointerVector SuccVec = i->successors;
 
-      for (ir::ControlFlowGraph::BlockPointerVector::iterator SI = SuccVec.begin(), E = SuccVec.end(); SI != E; ++SI) {
+      for (ir::ControlFlowGraph::BlockPointerVector::iterator
+      	SI = SuccVec.begin(), E = SuccVec.end(); SI != E; ++SI) {
         NodeCFGTy *s = BB2NodeMap[*SI];
         n->succNode.insert(s);
       }
@@ -84,15 +86,18 @@ namespace analysis {
   }
 
   void AssignFallThroughEdge::assignExitNode() {
-    for (ir::ControlFlowGraph::iterator i = _kernel->cfg()->begin(), e = _kernel->cfg()->end(); i != e; ++i) {
+    for (ir::ControlFlowGraph::iterator i = _kernel->cfg()->begin(),
+    	e = _kernel->cfg()->end(); i != e; ++i) {
       ir::ControlFlowGraph::BlockPointerVector SuccVec = i->successors;
 
-      for (ir::ControlFlowGraph::BlockPointerVector::iterator SI = SuccVec.begin(), E = SuccVec.end(); SI != E; ++SI) {
+      for (ir::ControlFlowGraph::BlockPointerVector::iterator
+      	SI = SuccVec.begin(), E = SuccVec.end(); SI != E; ++SI) {
         ir::ControlFlowGraph::iterator succ = *SI;
 
         if (succ->label == "exit") {
           _kernel->cfg()->remove_edge(i->get_edge(succ));
-          _kernel->cfg()->insert_edge(ir::ControlFlowGraph::Edge(i, succ, ir::Edge::FallThrough));
+          _kernel->cfg()->insert_edge(ir::ControlFlowGraph::Edge(
+          	i, succ, ir::Edge::FallThrough));
           hasIncomingFallThroughNode.insert(succ);
         }
       } 
@@ -100,7 +105,8 @@ namespace analysis {
   }
 
   void AssignFallThroughEdge::assignBackEdge() {
-    for (EdgeCFGVecTy::iterator i = backEdgeVec.begin(), e = backEdgeVec.end(); i != e; ++i) {
+    for (EdgeCFGVecTy::iterator i = backEdgeVec.begin(),
+    	e = backEdgeVec.end(); i != e; ++i) {
       NodeCFGTy *srcNode = i->first;
       NodeCFGTy *dstNode = i->second;
       ir::ControlFlowGraph::iterator srcBB = srcNode->BB;
@@ -111,7 +117,8 @@ namespace analysis {
       
       ir::ControlFlowGraph::edge_iterator edge = srcBB->get_edge(dstBB); 
       _kernel->cfg()->remove_edge(edge);
-      _kernel->cfg()->insert_edge(ir::ControlFlowGraph::Edge(srcBB, dstBB, ir::Edge::Branch));
+      _kernel->cfg()->insert_edge(ir::ControlFlowGraph::Edge(
+      	srcBB, dstBB, ir::Edge::Branch));
     }
   }
 
@@ -168,7 +175,8 @@ namespace analysis {
     for(ir::ControlFlowGraph::iterator i = _kernel->cfg()->begin(),
                                        e = _kernel->cfg()->end();
                                        i != e; ++i) {
-      ir::PTXInstruction *term = static_cast<ir::PTXInstruction *>(i->instructions.back());
+      ir::PTXInstruction *term =
+      	static_cast<ir::PTXInstruction *>(i->instructions.back());
 
       if (term->opcode == ir::PTXInstruction::Bra) {
         if (i->out_edges.size() == 2) {
@@ -208,7 +216,8 @@ namespace analysis {
           ir::ControlFlowGraph::edge_iterator braEdge = i->get_branch_edge();
           ir::ControlFlowGraph::iterator braDst = braEdge->tail;
 
-          ir::PTXInstruction* branch = new ir::PTXInstruction(ir::PTXInstruction::Bra);
+          ir::PTXInstruction* branch =
+          	new ir::PTXInstruction(ir::PTXInstruction::Bra);
           branch->uni = true;
           branch->d = std::move(ir::PTXOperand(braDst->label));
           i->instructions.push_back(branch);
@@ -236,7 +245,8 @@ namespace analysis {
 
     topoSort();
 
-    for (NodeCFGVecTy::iterator i = sortedNodes.begin(), e = sortedNodes.end(); i != e; ++i) {
+    for (NodeCFGVecTy::iterator i = sortedNodes.begin(),
+    	e = sortedNodes.end(); i != e; ++i) {
       NodeCFGTy *node = *i;
       ir::ControlFlowGraph::iterator BB = node->BB;
       ir::BasicBlock::EdgePointerVector edges = BB->out_edges;
@@ -249,11 +259,14 @@ namespace analysis {
 
         if (edge1->type == ir::Edge::FallThrough) {
           _kernel->cfg()->remove_edge(edge2);
-          _kernel->cfg()->insert_edge(ir::ControlFlowGraph::Edge(BB, edge2->tail, ir::Edge::Branch));
+          _kernel->cfg()->insert_edge(ir::ControlFlowGraph::Edge(BB,
+          	edge2->tail, ir::Edge::Branch));
         } else if (edge2->type == ir::Edge::FallThrough) {
           _kernel->cfg()->remove_edge(edge1);
-          _kernel->cfg()->insert_edge(ir::ControlFlowGraph::Edge(BB, edge1->tail, ir::Edge::Branch));
-        } else if (edge1->type == ir::Edge::Dummy && edge2->type == ir::Edge::Dummy) {
+          _kernel->cfg()->insert_edge(ir::ControlFlowGraph::Edge(
+          	BB, edge1->tail, ir::Edge::Branch));
+        } else if (edge1->type == ir::Edge::Dummy
+        	&& edge2->type == ir::Edge::Dummy) {
           ir::ControlFlowGraph::iterator dstBB1 = edge1->tail;
           NodeCFGTy *dstNode1 = BB2NodeMap[dstBB1];
           ir::ControlFlowGraph::iterator dstBB2 = edge2->tail;
@@ -273,24 +286,33 @@ namespace analysis {
           _kernel->cfg()->remove_edge(edge2);
       
           if (hasIncomingFallThroughNode.count(closeBB) == 0) {
-            _kernel->cfg()->insert_edge(ir::ControlFlowGraph::Edge(BB, closeBB, ir::Edge::FallThrough));
-            _kernel->cfg()->insert_edge(ir::ControlFlowGraph::Edge(BB, remoteBB, ir::Edge::Branch));
+            _kernel->cfg()->insert_edge(ir::ControlFlowGraph::Edge(BB,
+            	closeBB, ir::Edge::FallThrough));
+            _kernel->cfg()->insert_edge(ir::ControlFlowGraph::Edge(BB,
+            	remoteBB, ir::Edge::Branch));
             hasIncomingFallThroughNode.insert(closeBB); 
           } else if (hasIncomingFallThroughNode.count(remoteBB) == 0) {
-            _kernel->cfg()->insert_edge(ir::ControlFlowGraph::Edge(BB, remoteBB, ir::Edge::FallThrough));
-            _kernel->cfg()->insert_edge(ir::ControlFlowGraph::Edge(BB, closeBB, ir::Edge::Branch));
+            _kernel->cfg()->insert_edge(ir::ControlFlowGraph::Edge(BB,
+            	remoteBB, ir::Edge::FallThrough));
+            _kernel->cfg()->insert_edge(ir::ControlFlowGraph::Edge(BB,
+            	closeBB, ir::Edge::Branch));
             hasIncomingFallThroughNode.insert(remoteBB); 
           } else {
-            ir::ControlFlowGraph::iterator NewBB = _kernel->cfg()->insert_block(ir::BasicBlock(BB->label + "_fallthrough",
-                    _kernel->cfg()->newId()));
-            ir::PTXInstruction* branch = new ir::PTXInstruction(ir::PTXInstruction::Bra);
+            ir::ControlFlowGraph::iterator NewBB = _kernel->cfg()->insert_block(
+            	ir::BasicBlock(BB->label + "_fallthrough",
+                _kernel->cfg()->newId()));
+            ir::PTXInstruction* branch = new ir::PTXInstruction(
+            	ir::PTXInstruction::Bra);
             branch->uni = true;
             branch->d = std::move(ir::PTXOperand(closeBB->label));
             NewBB->instructions.push_back(branch);
 
-            _kernel->cfg()->insert_edge(ir::ControlFlowGraph::Edge(NewBB, closeBB, ir::Edge::Branch));
-            _kernel->cfg()->insert_edge(ir::ControlFlowGraph::Edge(BB, NewBB, ir::Edge::FallThrough));
-            _kernel->cfg()->insert_edge(ir::ControlFlowGraph::Edge(BB, NewBB, ir::Edge::Branch));
+            _kernel->cfg()->insert_edge(ir::ControlFlowGraph::Edge(
+            	NewBB, closeBB, ir::Edge::Branch));
+            _kernel->cfg()->insert_edge(ir::ControlFlowGraph::Edge(
+            	BB, NewBB, ir::Edge::FallThrough));
+            _kernel->cfg()->insert_edge(ir::ControlFlowGraph::Edge(
+            	BB, NewBB, ir::Edge::Branch));
           }
         } else {
           ir::ControlFlowGraph::iterator remainBB;
@@ -305,18 +327,23 @@ namespace analysis {
           }
 
           if (hasIncomingFallThroughNode.count(remainBB) == 0) {
-            _kernel->cfg()->insert_edge(ir::ControlFlowGraph::Edge(BB, remainBB, ir::Edge::FallThrough));
+            _kernel->cfg()->insert_edge(ir::ControlFlowGraph::Edge(BB,
+            	remainBB, ir::Edge::FallThrough));
             hasIncomingFallThroughNode.insert(remainBB); 
           } else {
-            ir::ControlFlowGraph::iterator NewBB = _kernel->cfg()->insert_block(ir::BasicBlock(BB->label + "_fallthrough",
-                    _kernel->cfg()->newId()));
-            ir::PTXInstruction* branch = new ir::PTXInstruction(ir::PTXInstruction::Bra);
+            ir::ControlFlowGraph::iterator NewBB = _kernel->cfg()->insert_block(
+            	ir::BasicBlock(BB->label + "_fallthrough",
+                _kernel->cfg()->newId()));
+            ir::PTXInstruction* branch = new ir::PTXInstruction(
+            	ir::PTXInstruction::Bra);
             branch->uni = true;
             branch->d = std::move(ir::PTXOperand(remainBB->label));
             NewBB->instructions.push_back(branch);
 
-            _kernel->cfg()->insert_edge(ir::ControlFlowGraph::Edge(NewBB, remainBB, ir::Edge::Branch));
-            _kernel->cfg()->insert_edge(ir::ControlFlowGraph::Edge(BB, NewBB, ir::Edge::FallThrough));
+            _kernel->cfg()->insert_edge(ir::ControlFlowGraph::Edge(
+            	NewBB, remainBB, ir::Edge::Branch));
+            _kernel->cfg()->insert_edge(ir::ControlFlowGraph::Edge(
+            	BB, NewBB, ir::Edge::FallThrough));
           }
         }
       } else if (edges.size() == 1) {
@@ -327,10 +354,12 @@ namespace analysis {
           _kernel->cfg()->remove_edge(edge);
 
           if (hasIncomingFallThroughNode.count(dstBB) == 0) {
-            _kernel->cfg()->insert_edge(ir::ControlFlowGraph::Edge(BB, dstBB, ir::Edge::FallThrough));
+            _kernel->cfg()->insert_edge(ir::ControlFlowGraph::Edge(BB,
+            	dstBB, ir::Edge::FallThrough));
             hasIncomingFallThroughNode.insert(dstBB); 
           } else {
-            _kernel->cfg()->insert_edge(ir::ControlFlowGraph::Edge(BB, dstBB, ir::Edge::Branch));
+            _kernel->cfg()->insert_edge(ir::ControlFlowGraph::Edge(BB,
+            	dstBB, ir::Edge::Branch));
             hasIncomingFallThroughNode.insert(dstBB); 
           }
         }

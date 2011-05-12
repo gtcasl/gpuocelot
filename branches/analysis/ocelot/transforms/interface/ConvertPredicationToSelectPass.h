@@ -27,15 +27,6 @@ namespace transforms
 	*/
 	class ConvertPredicationToSelectPass : public KernelPass
 	{
-		private:
-			ir::PTXKernel* _kernel;
-			
-		private:
-			analysis::DataflowGraph::RegisterId _tempRegister( );
-			void _replacePredicate( analysis::DataflowGraph::iterator block, 
-				unsigned int instruction );
-			void _runOnBlock( analysis::DataflowGraph::iterator block );
-		
 		public:
 			ConvertPredicationToSelectPass();
 			
@@ -44,6 +35,16 @@ namespace transforms
 			void runOnKernel( ir::IRKernel& k );		
 			void finalize( );
 
+		private:
+			ir::PTXKernel* _kernel;
+			
+		private:
+			analysis::DataflowGraph& dfg();
+			analysis::DataflowGraph::RegisterId _tempRegister( );
+			void _replacePredicate( analysis::DataflowGraph::iterator block, 
+				unsigned int instruction );
+			void _runOnBlock( analysis::DataflowGraph::iterator block );
+		
 	};
 }
 

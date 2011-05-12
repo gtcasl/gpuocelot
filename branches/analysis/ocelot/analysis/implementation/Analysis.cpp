@@ -13,8 +13,8 @@
 namespace analysis
 {
 
-Analysis::Analysis(Type t)
-: _type(t)
+Analysis::Analysis(Type t, transforms::PassManager* m)
+: _type(t), _manager(m)
 {
 
 }
@@ -22,6 +22,18 @@ Analysis::Analysis(Type t)
 Analysis::Type Analysis::type() const
 {
 	return _type;
+}
+
+KernelAnalysis::KernelAnalysis(Type t, transforms::PassManager* m)
+: Analysis(t, m)
+{
+
+}
+
+ModuleAnalysis::ModuleAnalysis(Type t, transforms::PassManager* m)
+: Analysis(t, m)
+{
+
 }
 
 }

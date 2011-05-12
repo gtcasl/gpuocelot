@@ -33,14 +33,15 @@ namespace translator
 			typedef std::unordered_set< std::string > StringSet;
 		
 		private:
-			ir::LLVMKernel* _llvmKernel;
-			unsigned int _tempRegisterCount;
-			unsigned int _tempCCRegisterCount;
-			unsigned int _tempBlockCount;
-			bool _usesTextures;
-			StringSet _usedExternalCalls;
-			RegisterVector _uninitialized;
-			const ir::PTXKernel* _ptx;
+			ir::LLVMKernel*                _llvmKernel;
+			unsigned int                   _tempRegisterCount;
+			unsigned int                   _tempCCRegisterCount;
+			unsigned int                   _tempBlockCount;
+			bool                           _usesTextures;
+			StringSet                      _usedExternalCalls;
+			RegisterVector                 _uninitialized;
+			const ir::PTXKernel*           _ptx;
+			analysis::DataflowGraph*       _dfg;
 			const ir::ExternalFunctionSet* _externals;
 		
 		private:

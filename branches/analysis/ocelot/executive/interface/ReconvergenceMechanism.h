@@ -42,7 +42,8 @@ namespace executive {
 		};
 			
 	public:
-		ReconvergenceMechanism(const executive::EmulatedKernel *kernel, CooperativeThreadArray *cta);
+		ReconvergenceMechanism(const executive::EmulatedKernel *kernel,
+			CooperativeThreadArray *cta);
 		ReconvergenceMechanism(CooperativeThreadArray *cta);
 		
 	public:
@@ -50,7 +51,8 @@ namespace executive {
 		//! \brief initializes the reconvergence mechanism
 		virtual void initialize();
 	
-		//! \brief updates the predicate mask of the active context before instructions execute
+		//! \brief updates the predicate mask of the active context
+		// before instructions execute
 		virtual void evalPredicate(executive::CTAContext &context);
 		
 		/*! 
@@ -65,22 +67,26 @@ namespace executive {
 		/*! 
 			\brief implements a barrier instruction
 		*/
-		virtual void eval_Bar(executive::CTAContext &context, const ir::PTXInstruction &instr);
+		virtual void eval_Bar(executive::CTAContext &context,
+			const ir::PTXInstruction &instr);
 		
 		/*!
 			\brief implements reconverge instruction
 		*/
-		virtual void eval_Reconverge(executive::CTAContext &context, const ir::PTXInstruction &instr);
+		virtual void eval_Reconverge(executive::CTAContext &context,
+			const ir::PTXInstruction &instr);
 		
 		/*!
 			\brief implements exit instruction
 		*/
-		virtual void eval_Exit(executive::CTAContext &context, const ir::PTXInstruction &instr);
+		virtual void eval_Exit(executive::CTAContext &context,
+			const ir::PTXInstruction &instr);
 
 		/*! 
 			\brief updates the active context to the next instruction
 		*/
-		virtual bool nextInstruction(executive::CTAContext &context, const ir::PTXInstruction &instr);
+		virtual bool nextInstruction(executive::CTAContext &context,
+			const ir::PTXInstruction &instr);
 		
 		//! \brief gets the active context
 		virtual executive::CTAContext & getContext();
@@ -116,31 +122,41 @@ namespace executive {
 	class ReconvergenceIPDOM: public ReconvergenceMechanism {
 	public:
 	
-		ReconvergenceIPDOM(const executive::EmulatedKernel *kernel, CooperativeThreadArray *cta);
+		ReconvergenceIPDOM(const executive::EmulatedKernel *kernel,
+			CooperativeThreadArray *cta);
 		
 		virtual bool eval_Bra(executive::CTAContext &context, 
 			const ir::PTXInstruction &instr, 
 			const boost::dynamic_bitset<> & branch, 
 			const boost::dynamic_bitset<> & fallthrough);
-		virtual void eval_Bar(executive::CTAContext &context, const ir::PTXInstruction &instr);
-		virtual void eval_Reconverge(executive::CTAContext &context, const ir::PTXInstruction &instr);
-		virtual void eval_Exit(executive::CTAContext &context, const ir::PTXInstruction &instr);
-		virtual bool nextInstruction(executive::CTAContext &context, const ir::PTXInstruction &instr);
+		virtual void eval_Bar(executive::CTAContext &context,
+			const ir::PTXInstruction &instr);
+		virtual void eval_Reconverge(executive::CTAContext &context,
+			const ir::PTXInstruction &instr);
+		virtual void eval_Exit(executive::CTAContext &context,
+			const ir::PTXInstruction &instr);
+		virtual bool nextInstruction(executive::CTAContext &context,
+			const ir::PTXInstruction &instr);
 	};
 	
 	class ReconvergenceBarrier: public ReconvergenceMechanism {
 	public:
 
-		ReconvergenceBarrier(const executive::EmulatedKernel *kernel, CooperativeThreadArray *cta);
+		ReconvergenceBarrier(const executive::EmulatedKernel *kernel,
+			CooperativeThreadArray *cta);
 		
 		virtual bool eval_Bra(executive::CTAContext &context, 
 			const ir::PTXInstruction &instr, 
 			const boost::dynamic_bitset<> & branch, 
 			const boost::dynamic_bitset<> & fallthrough);
-		virtual void eval_Bar(executive::CTAContext &context, const ir::PTXInstruction &instr);
-		virtual void eval_Reconverge(executive::CTAContext &context, const ir::PTXInstruction &instr);
-		virtual void eval_Exit(executive::CTAContext &context, const ir::PTXInstruction &instr);
-		virtual bool nextInstruction(executive::CTAContext &context, const ir::PTXInstruction &instr);
+		virtual void eval_Bar(executive::CTAContext &context,
+			const ir::PTXInstruction &instr);
+		virtual void eval_Reconverge(executive::CTAContext &context,
+			const ir::PTXInstruction &instr);
+		virtual void eval_Exit(executive::CTAContext &context,
+			const ir::PTXInstruction &instr);
+		virtual bool nextInstruction(executive::CTAContext &context,
+			const ir::PTXInstruction &instr);
 	};
 	
 	
@@ -149,7 +165,8 @@ namespace executive {
 		typedef std::vector <int> ThreadIdVector;
 		
 	public:
-		ReconvergenceTFGen6(const executive::EmulatedKernel *kernel, CooperativeThreadArray *cta);
+		ReconvergenceTFGen6(const executive::EmulatedKernel *kernel,
+			CooperativeThreadArray *cta);
 	
 		virtual void initialize();
 		virtual void evalPredicate(executive::CTAContext &context);
@@ -157,10 +174,14 @@ namespace executive {
 			const ir::PTXInstruction &instr, 
 			const boost::dynamic_bitset<> & branch, 
 			const boost::dynamic_bitset<> & fallthrough);
-		virtual void eval_Bar(executive::CTAContext &context, const ir::PTXInstruction &instr);
-		virtual void eval_Reconverge(executive::CTAContext &context, const ir::PTXInstruction &instr);
-		virtual void eval_Exit(executive::CTAContext &context, const ir::PTXInstruction &instr);
-		virtual bool nextInstruction(executive::CTAContext &context, const ir::PTXInstruction &instr);
+		virtual void eval_Bar(executive::CTAContext &context,
+			const ir::PTXInstruction &instr);
+		virtual void eval_Reconverge(executive::CTAContext &context,
+			const ir::PTXInstruction &instr);
+		virtual void eval_Exit(executive::CTAContext &context,
+			const ir::PTXInstruction &instr);
+		virtual bool nextInstruction(executive::CTAContext &context,
+			const ir::PTXInstruction &instr);
 		
 	public:
 	
@@ -170,17 +191,22 @@ namespace executive {
 	
 	class ReconvergenceTFSortedStack: public ReconvergenceMechanism {
 	public:
-		ReconvergenceTFSortedStack(const executive::EmulatedKernel *kernel, CooperativeThreadArray *cta);
+		ReconvergenceTFSortedStack(const executive::EmulatedKernel *kernel,
+			CooperativeThreadArray *cta);
 	
 		virtual void evalPredicate(executive::CTAContext &context);
 		virtual bool eval_Bra(executive::CTAContext &context, 
 			const ir::PTXInstruction &instr, 
 			const boost::dynamic_bitset<> & branch, 
 			const boost::dynamic_bitset<> & fallthrough);
-		virtual void eval_Bar(executive::CTAContext &context, const ir::PTXInstruction &instr);
-		virtual void eval_Reconverge(executive::CTAContext &context, const ir::PTXInstruction &instr);
-		virtual void eval_Exit(executive::CTAContext &context, const ir::PTXInstruction &instr);
-		virtual bool nextInstruction(executive::CTAContext &context, const ir::PTXInstruction &instr);
+		virtual void eval_Bar(executive::CTAContext &context,
+			const ir::PTXInstruction &instr);
+		virtual void eval_Reconverge(executive::CTAContext &context,
+			const ir::PTXInstruction &instr);
+		virtual void eval_Exit(executive::CTAContext &context,
+			const ir::PTXInstruction &instr);
+		virtual bool nextInstruction(executive::CTAContext &context,
+			const ir::PTXInstruction &instr);
 	};
 }
 

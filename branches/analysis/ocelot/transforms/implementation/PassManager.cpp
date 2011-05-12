@@ -25,7 +25,7 @@
 
 #define REPORT_BASE 0
 
-namespace analysis
+namespace transforms
 {
 
 static void freeUnusedDataStructures(ir::IRKernel* k, int type)

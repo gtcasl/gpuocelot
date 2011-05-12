@@ -7,15 +7,18 @@
 
 #include <ocelot/analysis/interface/DivergenceAnalysis.h>
 
-namespace graph_utils{
-/* This class draws many graphs, such as cfg, dfg and data dependency, and how divergency is spread. */
+namespace util
+{
+
+/* This class draws many graphs, such as cfg, dfg and
+	data dependency, and how divergency is spread. */
 class DivergenceDrawer
 {
 	private:
 		/*!\brief kernel name analyzed */
-		string _kernelName;
+		std::string _kernelName;
 		/*!\brief ptx path, for writing dot graph */
-		string _path;
+		std::string _path;
 		/*!\brief The static divergence analysis of the kernel */
 		analysis::DivergenceAnalysis *divAnalysis;
 		/*!\brief Prints all graphs */
@@ -30,7 +33,8 @@ class DivergenceDrawer
 		bool _cfg;
 
 		inline void _sanityTest() const;
-		inline string _edges ( const analysis::DataflowGraph::Block &block, const bool isFullGraph = false ) const;
+		inline std::string _edges ( const analysis::DataflowGraph::Block &block,
+			const bool isFullGraph = false ) const;
 
 	public:
 		void drawVariablesGraph() const;
@@ -38,12 +42,19 @@ class DivergenceDrawer
 		void drawControlFlowGraph() const;
 		void drawFullGraph() const;
 		void draw() const;
-		DivergenceDrawer( const string &kernelName, const string &path, analysis::DivergenceAnalysis *divergenceAnalysis,
-				const bool &allGraphs, const bool &divergenceGraph = false,
-				const bool &varsGraph = false, const bool &dfgGraph = false, const bool &cfgGraph = false);
+		DivergenceDrawer( const std::string &kernelName,
+			const std::string &path,
+			analysis::DivergenceAnalysis *divergenceAnalysis,
+			const bool &allGraphs, const bool &divergenceGraph = false,
+			const bool &varsGraph = false, const bool &dfgGraph = false,
+			const bool &cfgGraph = false);
 
-		DivergenceDrawer( const string &kernelName, const string &path, analysis::DivergenceAnalysis *divergenceAnalysis,
-						const bool &allGraphs = true);
+		DivergenceDrawer( const std::string &kernelName,
+			const std::string &path,
+			analysis::DivergenceAnalysis *divergenceAnalysis,
+			const bool &allGraphs = true);
 };
+
 }
 #endif /* DIVERGENCEDRAWER_H_ */
+

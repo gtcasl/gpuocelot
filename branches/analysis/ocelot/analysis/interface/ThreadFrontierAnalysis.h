@@ -13,10 +13,9 @@
 #define THREAD_FRONTIER_ANALYSIS_H_INCLUDED
 
 // Ocelot Incudes
-#include <ocelot/analysis/interfac/Analysis.h>
+#include <ocelot/analysis/interface/Analysis.h>
 
-// Forward Declaration
-namespace transforms { class PassManager; }
+#include <ocelot/ir/interface/ControlFlowGraph.h>
 
 namespace analysis
 {
@@ -35,7 +34,7 @@ namespace analysis
 	
 	[1] - "SIMD Reconvergence at Thread Frontiers" by Diamos et al. 
 */
-class ThreadFrontierAnalysis: public Analysis
+class ThreadFrontierAnalysis: public KernelAnalysis
 {
 public:
 	typedef ir::ControlFlowGraph::BlockPointerVector BlockVector;
@@ -44,10 +43,10 @@ public:
 
 public:
 	/*! \brief Create the analysis over a specific cfg */
-	ThreadFrontierAnalysis(const ir::ControlFlowGraph* cfg);
+	ThreadFrontierAnalysis(transforms::PassManager* manager);
 
 	/*! \brief Computes an up to date set of thread frontiers */
-	void computeFrontiers();
+	void analyze(ir::IRKernel& kernel);
 
 public:
 	/*! \brief Get the blocks in the thread frontier of a specified block */

@@ -8,17 +8,34 @@
 #define IPDOM_RECONVERGENCE_PASS_CPP_INCLUDED
 
 // Ocelot Includes
-#include <ocelot/ir/interface/PTXInstruction.h>
-#include <ocelot/transforms/interface/Pass.h>
+#include <ocelot/transforms/interface/IPDOMReconvergencePass.h>
+
+#include <ocelot/ir/interface/IRKernel.h>
+#include <ocelot/ir/interface/ControlFlowGraph.h>
+
+#include <ocelot/analysis/interface/PostdominatorTree.h>
+#include <ocelot/analysis/interface/DominatorTree.h>
+
+// Hydrazine Includes
+#include <hydrazine/implementation/debug.h>
 
 // Standard Library Includes
-#include <vector>
+#include <unordered_map>
+#include <set>
+#include <cassert>
+
+// Preprocessor Macros
+#ifdef REPORT_BASE
+#undef REPORT_BASE
+#endif
+
+#define REPORT_BASE 0
 
 namespace transforms
 {
 
 IPDOMReconvergencePass::IPDOMReconvergencePass()
-: KernelPass(analysis::Analysis::PostDominatorTreeAnalysis,
+: KernelPass(Analysis::PostDominatorTreeAnalysis,
 	"IPDOMReconvergencePass")
 {
 
@@ -38,18 +55,16 @@ void IPDOMReconvergencePass::runOnKernel(ir::IRKernel& k)
 	typedef std::unordered_map<ir::ControlFlowGraph::InstructionList::iterator,
 		ir::ControlFlowGraph::iterator> ReconvergeToBlockMap;
 
-	analysis::Analysis* pdom_structure = getAnalysis(
-		analysis::PostDominatorTreeAnalysis);
+	Analysis* pdom_structure = getAnalysis(Analysis::PostDominatorTreeAnalysis);
 	assert(pdom_structure != 0);
 	
 	analysis::PostdominatorTree* pdom_tree
 		= static_cast<analysis::PostdominatorTree*>(pdom_structure);
 
-	analysis::Analysis* dom_structure = getAnalysis(
-		analysis::DominatorTreeAnalysis);
+	Analysis* dom_structure = getAnalysis(Analysis::DominatorTreeAnalysis);
 	assert(dom_structure != 0);
 	
-	analysis::PostdominatorTree* dom_tree
+	analysis::DominatorTree* dom_tree
 		= static_cast<analysis::PostdominatorTree*>(dom_structure);
 	
 	// visit basic blocks and add reconverge instructions
@@ -85,8 +100,7 @@ void IPDOMReconvergencePass::runOnKernel(ir::IRKernel& k)
 						break;
 					}
 					
-					if( !dom_tree()->dominates(
-						reconvergeSources[reconverge], *bb_it) ) {
+					if( !dom_tree->dominates(reconvergeSources[reconverge], *bb_it) ) {
 						allDominate = false;
 						break;
 					}
@@ -117,7 +131,7 @@ void IPDOMReconvergencePass::runOnKernel(ir::IRKernel& k)
 		bb_it != bb_sequence.end(); ++bb_it) {
 		branchTargetsToBlock[(int)instructions.size()] = (*bb_it)->label;
 		int n = 0;
-		blockPCRange[(*bb_it)->label].first = (int)instructions.size();
+		
 		for (ir::ControlFlowGraph::InstructionList::iterator 
 			i_it = (*bb_it)->instructions.begin(); 
 			i_it != (*bb_it)->instructions.end(); ++i_it, ++n) {
@@ -131,14 +145,7 @@ void IPDOMReconvergencePass::runOnKernel(ir::IRKernel& k)
 			if (!n) { basicBlockPC[ptx.pc] = (*bb_it)->label; }
 			instructions.push_back(ptx);
 		}
-		blockPCRange[(*bb_it)->label].second = (int)lastPC;
 		
-		report("  blockPCRange[" << (*bb_it)->label << "] = " << lastPC);
-		
-		// trivial TF
-		threadFrontiers[(int)lastPC] = std::make_pair<int,int>(
-			(int)lastPC+1, (int)lastPC+1);
-
 		if (n) {
 			basicBlockMap[lastPC] = (*bb_it)->label;
 		}
@@ -154,14 +161,7 @@ void IPDOMReconvergencePass::runOnKernel(ir::IRKernel& k)
 			i_it = (*bb_it)->instructions.begin(); 
 			i_it != (*bb_it)->instructions.end(); ++i_it, ++id) {
 			ir::PTXInstruction& ptx = static_cast<ir::PTXInstruction&>(**i_it);				
-			
-			// thread frontier algorithm
-			std::pair<int,int> blockRange = blockPCRange[(*bb_it)->label];
-			std::set<int>::iterator target_it = targets.find(blockRange.first);
-			if (target_it != targets.end()) {
-				targets.erase(target_it);
-			}
-				
+						
 			if (ptx.opcode == ir::PTXInstruction::Bra) {
 				//report( "  Instruction " << ptx.toString() );
 				if (!ptx.uni) {

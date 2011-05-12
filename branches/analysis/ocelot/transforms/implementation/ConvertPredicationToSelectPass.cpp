@@ -7,7 +7,7 @@
 #ifndef REMOVE_BARRIER_PASS_CPP_INCLUDED
 #define REMOVE_BARRIER_PASS_CPP_INCLUDED
 
-#include <ocelot/analysis/interface/ConvertPredicationToSelectPass.h>
+#include <ocelot/transforms/interface/ConvertPredicationToSelectPass.h>
 #include <ocelot/ir/interface/PTXKernel.h>
 
 #include <hydrazine/implementation/debug.h>
@@ -18,19 +18,29 @@
 
 #define REPORT_BASE 0
 
-namespace analysis
+namespace transforms
 {
-	DataflowGraph::RegisterId ConvertPredicationToSelectPass::_tempRegister()
+	analysis::DataflowGraph& ConvertPredicationToSelectPass::dfg()
 	{
-		return _kernel->dfg()->newRegister();
+		analysis::Analysis* graph = getAnalysis(
+			analysis::Analysis::DataflowGraphAnalysis);
+		assert(graph != 0);
+		
+		return static_cast<analysis::DataflowGraph&>(*graph);
+	}
+
+	analysis::DataflowGraph::RegisterId
+		ConvertPredicationToSelectPass::_tempRegister()
+	{
+		return dfg().newRegister();
 	}
 
 	void ConvertPredicationToSelectPass::_replacePredicate( 
-		DataflowGraph::iterator block, unsigned int id )
+		analysis::DataflowGraph::iterator block, unsigned int id )
 	{
-		typedef DataflowGraph::Block::RegisterSet RegisterSet;
+		typedef analysis::DataflowGraph::Block::RegisterSet RegisterSet;
 
-		DataflowGraph::InstructionVector::const_iterator 
+		analysis::DataflowGraph::InstructionVector::const_iterator 
 			instruction( block->instructions().begin() );
 		std::advance( instruction, id );
 
@@ -51,13 +61,13 @@ namespace analysis
 		ptx.pg.condition = ir::PTXOperand::PT;
 		ptx.d.reg        = select.a.reg;
 			
-		_kernel->dfg()->insert( block, select, id + 1 );
+		dfg().insert( block, select, id + 1 );
 	}
 	
 	void ConvertPredicationToSelectPass::_runOnBlock( 
-		DataflowGraph::iterator block )
+		analysis::DataflowGraph::iterator block )
 	{
-		for( DataflowGraph::InstructionVector::const_iterator 
+		for( analysis::DataflowGraph::InstructionVector::const_iterator 
 			instruction = block->instructions().begin(); 
 			instruction != block->instructions().end(); ++instruction )
 		{
@@ -79,7 +89,7 @@ namespace analysis
 
 	
 	ConvertPredicationToSelectPass::ConvertPredicationToSelectPass()
-		: KernelPass( NoAnalysis, "ConvertPredicationToSelectPass" )
+		: KernelPass( Analysis::NoAnalysis, "ConvertPredicationToSelectPass" )
 	{
 	}
 
@@ -93,10 +103,9 @@ namespace analysis
 		assertM( k.ISA == ir::Instruction::PTX, 
 			"This pass is valid for PTX kernels only." );
 		_kernel = static_cast< ir::PTXKernel* >( &k );
-		k.dfg()->compute();
 		
-		for( DataflowGraph::iterator block = k.dfg()->begin(); 
-			block != k.dfg()->end(); ++block )
+		for( analysis::DataflowGraph::iterator block = dfg().begin(); 
+			block != dfg().end(); ++block )
 		{
 			_runOnBlock( block );
 		}

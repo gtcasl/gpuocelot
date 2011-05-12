@@ -940,8 +940,8 @@ namespace translator
 	void PTXToLLVMTranslator::_translateInstructions()
 	{
 		for( analysis::DataflowGraph::const_iterator 
-			block = ++_ptx->dfg()->begin(); 
-			block != _ptx->dfg()->end(); ++block )
+			block = ++_dfg->begin(); 
+			block != _dfg->end(); ++block )
 		{
 			_newBlock( block->label() );
 			report( "  Translating Phi Instructions" );
@@ -1014,7 +1014,7 @@ namespace translator
 			
 			if( block->targets().empty() )
 			{
-				if( block->fallthrough() != _ptx->dfg()->end() )
+				if( block->fallthrough() != _dfg->end() )
 				{
 					ir::LLVMBr branch;
 				
@@ -2076,7 +2076,7 @@ namespace translator
 		else
 		{
 			branch.iftrue = "%" + (*block.targets().begin())->label();
-			if( block.fallthrough() != _ptx->dfg()->end() )
+			if( block.fallthrough() != _dfg->end() )
 			{
 				if( (*block.targets().begin()) != block.fallthrough() )
 				{
@@ -2239,7 +2239,7 @@ namespace translator
 			std::string yieldLabel = "Ocelot_yield_" + block.label();
 		
 			branch.iftrue = "%" + yieldLabel;
-			if( block.fallthrough() != _ptx->dfg()->end() )
+			if( block.fallthrough() != _dfg->end() )
 			{
 				if( (*block.targets().begin()) != block.fallthrough() )
 				{
@@ -8294,7 +8294,7 @@ namespace translator
 		if( !_uninitialized.empty() )
 		{
 			ir::LLVMBr branch;
-			branch.iftrue = "%" + (++_ptx->dfg()->begin())->label();
+			branch.iftrue = "%" + (++_dfg->begin())->label();
 		
 			_llvmKernel->push_front( 
 				ir::LLVMStatement( branch ) );
@@ -8428,7 +8428,7 @@ namespace translator
 		
 		if( _uninitialized.empty() )
 		{
-			branch.iftrue = "%" + (++_ptx->dfg()->begin())->label();
+			branch.iftrue = "%" + (++_dfg->begin())->label();
 		}
 		else
 		{
@@ -9168,6 +9168,10 @@ namespace translator
 		_ptx = static_cast< const ir::PTXKernel* >( k );
 		
 		_llvmKernel = new ir::LLVMKernel( *k );
+		_dfg = new analysis::DataflowGraph(
+			*const_cast< ir::ControlFlowGraph* >( _ptx->cfg() ) );
+		
+		_dfg->toSsa();
 		
 		_translateInstructions();
 		_initializeRegisters();
@@ -9182,6 +9186,8 @@ namespace translator
 		_uninitialized.clear();
 		_usedExternalCalls.clear();
 		_usesTextures = false;
+		
+		delete _dfg;
 		
 		return _llvmKernel;
 	}

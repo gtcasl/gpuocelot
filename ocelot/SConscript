@@ -201,7 +201,7 @@ directories = ['ocelot/ir/interface',
 	'ocelot/util/interface', 
 	'hydrazine/implementation', 
 	'hydrazine/interface' ]
-extensions = ['*.h']
+extensions = ['*.h', '*.hpp']
 
 for dir in directories:
 	for ext in extensions:

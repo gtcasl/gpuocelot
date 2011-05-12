@@ -564,6 +564,17 @@ void KernelPartitioningPass::KernelDecomposition::_createDummyScheduler() {
 	}
 }
 
+
+void KernelPartitioningPass::KernelDecomposition::extractEntryPoints(EntryIdBlockLabelMap &entryMap) const {
+	entryMap.clear();
+	for (KernelTransitionPointMap::const_iterator t_it = transitionPoints.begin();
+		t_it != transitionPoints.end(); ++t_it) {
+		if (t_it->second.type == Thread_entry) {
+			entryMap[t_it->first] = t_it->second.handler->label;
+		}
+	}
+}
+
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
 KernelPartitioningPass::KernelPartitioningPass() {

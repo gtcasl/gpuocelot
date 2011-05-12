@@ -1130,10 +1130,13 @@ static void cloneAndOptimizeTranslation(
 	translation->llvmFunction->setLinkage(llvm::GlobalValue::InternalLinkage);
 	translatedKernel.kernelModule->getFunctionList().push_back(translation->llvmFunction);
 	
-	if (warpSize > 1) {
+	analysis::KernelPartitioningPass::EntryIdBlockLabelMap labelMap;
+	translatedKernel.decomposition.extractEntryPoints(labelMap);
+	
+	if (warpSize >= 1) {
 		reportE(REPORT_TRANSLATION_OPERATIONS, 
 			"\n\nAdding LLVM vectorization pass (ws: " << warpSize << ")\n\n");
-		manager.add(new analysis::LLVMUniformVectorization(warpSize));
+		manager.add(new analysis::LLVMUniformVectorization(labelMap, warpSize));
 	}
 	level = 0;
 

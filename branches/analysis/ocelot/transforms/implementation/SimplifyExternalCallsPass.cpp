@@ -5,7 +5,8 @@
 */
 
 // Ocelot Includes
-#include <ocelot/analysis/interface/SimplifyExternalCallsPass.h>
+#include <ocelot/transforms/interface/SimplifyExternalCallsPass.h>
+
 #include <ocelot/ir/interface/ExternalFunctionSet.h>
 #include <ocelot/ir/interface/Module.h>
 
@@ -19,7 +20,7 @@
 
 #define REPORT_BASE 0
 
-namespace analysis
+namespace transforms
 {
 
 static void simplifyCall(ir::PTXKernel& kernel,
@@ -155,7 +156,8 @@ static void simplifyCall(ir::PTXKernel& kernel,
 
 SimplifyExternalCallsPass::SimplifyExternalCallsPass(
 	const ir::ExternalFunctionSet& e) 
-: KernelPass(NoAnalysis, "SimplifyExternalCallsPass"), _externals(&e)
+: KernelPass(analysis::Analysis::NoAnalysis,
+	"SimplifyExternalCallsPass"), _externals(&e)
 {
 
 }

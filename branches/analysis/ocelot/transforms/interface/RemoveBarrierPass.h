@@ -34,39 +34,39 @@ namespace transforms
 */
 class RemoveBarrierPass : public KernelPass
 {
-	private:
-		ir::PTXKernel*                 _kernel;
-		unsigned int                   _reentryPoint;
-		unsigned int                   _kernelId;
-		unsigned int                   _spillBytes;
-		const ir::ExternalFunctionSet* _externals;
-		
-	private:
-		analysis::DataflowGraph& dfg();
-		analysis::DataflowGraph::RegisterId _tempRegister( );
-		void _addSpillCode( analysis::DataflowGraph::iterator block, 
-			analysis::DataflowGraph::iterator target, 
-			const analysis::DataflowGraph::Block::RegisterSet& alive,
-			bool isBarrier );
-		void _addRestoreCode( analysis::DataflowGraph::iterator block, 
-			const analysis::DataflowGraph::Block::RegisterSet& alive );
-		void _addEntryPoint( analysis::DataflowGraph::iterator block );
-		void _removeBarrier( analysis::DataflowGraph::iterator block, 
-			unsigned int instruction );
-		void _addLocalVariables();
-		void _runOnBlock( analysis::DataflowGraph::iterator block );
+private:
+	ir::PTXKernel*                 _kernel;
+	unsigned int                   _reentryPoint;
+	unsigned int                   _kernelId;
+	unsigned int                   _spillBytes;
+	const ir::ExternalFunctionSet* _externals;
 	
-	public:
-		RemoveBarrierPass( unsigned int kernelId = 0,
-			const ir::ExternalFunctionSet* externals = 0 );
-		
-	public:
-		void initialize( const ir::Module& m );
-		void runOnKernel( ir::IRKernel& k );		
-		void finalize( );
-		
-	public:
-		bool usesBarriers;
+private:
+	analysis::DataflowGraph& _dfg();
+	analysis::DataflowGraph::RegisterId _tempRegister( );
+	void _addSpillCode( analysis::DataflowGraph::iterator block, 
+		analysis::DataflowGraph::iterator target, 
+		const analysis::DataflowGraph::Block::RegisterSet& alive,
+		bool isBarrier );
+	void _addRestoreCode( analysis::DataflowGraph::iterator block, 
+		const analysis::DataflowGraph::Block::RegisterSet& alive );
+	void _addEntryPoint( analysis::DataflowGraph::iterator block );
+	void _removeBarrier( analysis::DataflowGraph::iterator block, 
+		unsigned int instruction );
+	void _addLocalVariables();
+	void _runOnBlock( analysis::DataflowGraph::iterator block );
+
+public:
+	RemoveBarrierPass( unsigned int kernelId = 0,
+		const ir::ExternalFunctionSet* externals = 0 );
+	
+public:
+	void initialize( const ir::Module& m );
+	void runOnKernel( ir::IRKernel& k );		
+	void finalize( );
+	
+public:
+	bool usesBarriers;
 
 };
 

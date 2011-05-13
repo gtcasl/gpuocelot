@@ -7,7 +7,7 @@
 #ifndef REMOVE_BARRIER_PASS_CPP_INCLUDED
 #define REMOVE_BARRIER_PASS_CPP_INCLUDED
 
-#include <ocelot/analysis/interface/RemoveBarrierPass.h>
+#include <ocelot/transforms/interface/RemoveBarrierPass.h>
 #include <ocelot/ir/interface/PTXKernel.h>
 #include <ocelot/ir/interface/ExternalFunctionSet.h>
 
@@ -19,17 +19,25 @@
 
 #define REPORT_BASE 0
 
-namespace analysis
+namespace transforms
 {
 
-DataflowGraph::RegisterId RemoveBarrierPass::_tempRegister()
+analysis::DataflowGraph& RemoveBarrierPass::_dfg()
 {
-	return _kernel->dfg()->newRegister();
+	Analysis* dfg_structure = getAnalysis(Analysis::DataflowGraphAnalysis);
+	assert(dfg_structure != 0);
+
+	return *static_cast<analysis::DataflowGraph*>(dfg_structure);
 }
 
-void RemoveBarrierPass::_addSpillCode( DataflowGraph::iterator block, 
-	DataflowGraph::iterator target, 
-	const DataflowGraph::Block::RegisterSet& alive, bool isBarrier )
+analysis::DataflowGraph::RegisterId RemoveBarrierPass::_tempRegister()
+{
+	return _dfg().newRegister();
+}
+
+void RemoveBarrierPass::_addSpillCode( analysis::DataflowGraph::iterator block, 
+	analysis::DataflowGraph::iterator target, 
+	const analysis::DataflowGraph::Block::RegisterSet& alive, bool isBarrier )
 {
 	unsigned int bytes = 0;
 	
@@ -44,11 +52,11 @@ void RemoveBarrierPass::_addSpillCode( DataflowGraph::iterator block,
 	move.d.addressMode = ir::PTXOperand::Register;
 	move.d.type = ir::PTXOperand::u32;
 	
-	_kernel->dfg()->insert( block, move, block->instructions().size() - 1 );
+	_dfg().insert( block, move, block->instructions().size() - 1 );
 
 	report( "   Saving " << alive.size() << " Registers" );
 	
-	for( DataflowGraph::Block::RegisterSet::const_iterator 
+	for( analysis::DataflowGraph::Block::RegisterSet::const_iterator 
 		reg = alive.begin(); reg != alive.end(); ++reg )
 	{
 		report( "    r" << reg->id << " (" 
@@ -69,7 +77,7 @@ void RemoveBarrierPass::_addSpillCode( DataflowGraph::iterator block,
 		save.a.type = reg->type;
 		save.a.reg = reg->id;
 		
-		_kernel->dfg()->insert( block, save, 
+		_dfg().insert( block, save, 
 			block->instructions().size() - 1 );
 	}
 	
@@ -84,7 +92,7 @@ void RemoveBarrierPass::_addSpillCode( DataflowGraph::iterator block,
 	move.d.addressMode = ir::PTXOperand::Register;
 	move.d.type = ir::PTXOperand::u32;
 	
-	_kernel->dfg()->insert( block, move, block->instructions().size() - 1 );
+	_dfg().insert( block, move, block->instructions().size() - 1 );
 	
 	ir::PTXInstruction save( ir::PTXInstruction::St );
 
@@ -99,26 +107,27 @@ void RemoveBarrierPass::_addSpillCode( DataflowGraph::iterator block,
 	save.a.type = ir::PTXOperand::u32;
 	save.a.imm_uint = target->id();
 	
-	_kernel->dfg()->insert( block, save, block->instructions().size() - 1 );
+	_dfg().insert( block, save, block->instructions().size() - 1 );
 
 	if( isBarrier )
 	{
 		move.d.reg = _tempRegister();
 		move.a.identifier = "_Zocelot_barrier_next_kernel";
 	
-		_kernel->dfg()->insert( block, move,
+		_dfg().insert( block, move,
 			block->instructions().size() - 1 );
 
 		save.d.reg = move.d.reg;
 		save.a.imm_uint = _kernelId;
 
-		_kernel->dfg()->insert( block, save,
+		_dfg().insert( block, save,
 			block->instructions().size() - 1 );
 	}
 }
 
-void RemoveBarrierPass::_addRestoreCode( DataflowGraph::iterator block, 
-	const DataflowGraph::Block::RegisterSet& alive )
+void RemoveBarrierPass::_addRestoreCode(
+	analysis::DataflowGraph::iterator block, 
+	const analysis::DataflowGraph::Block::RegisterSet& alive )
 {
 	unsigned int bytes = 0;
 
@@ -133,7 +142,7 @@ void RemoveBarrierPass::_addRestoreCode( DataflowGraph::iterator block,
 	move.d.addressMode = ir::PTXOperand::Register;
 	move.d.type = ir::PTXOperand::u32;
 
-	for( DataflowGraph::Block::RegisterSet::const_iterator 
+	for( analysis::DataflowGraph::Block::RegisterSet::const_iterator 
 		reg = alive.begin(); reg != alive.end(); ++reg )
 	{
 		ir::PTXInstruction load( 
@@ -153,21 +162,22 @@ void RemoveBarrierPass::_addRestoreCode( DataflowGraph::iterator block,
 		load.d.type = reg->type;
 		load.d.reg = reg->id;
 		
-		_kernel->dfg()->insert( block, load, 0 );
+		_dfg().insert( block, load, 0 );
 	}
 
-	_kernel->dfg()->insert( block, move, 0 );
+	_dfg().insert( block, move, 0 );
 }
 
-void RemoveBarrierPass::_addEntryPoint( DataflowGraph::iterator block )
+void RemoveBarrierPass::_addEntryPoint(
+	analysis::DataflowGraph::iterator block )
 {
 	std::stringstream stream;
 	
 	stream << "$" << _kernel->name << "_barrier_"
 		<< _reentryPoint << "_scheduler";
 	
-	DataflowGraph::iterator entry = _kernel->dfg()->insert( 
-		_kernel->dfg()->begin(), stream.str() );
+	analysis::DataflowGraph::iterator entry = _dfg().insert( 
+		_dfg().begin(), stream.str() );
 			
 	ir::PTXInstruction move( ir::PTXInstruction::Mov );
 	
@@ -180,7 +190,7 @@ void RemoveBarrierPass::_addEntryPoint( DataflowGraph::iterator block )
 	move.d.addressMode = ir::PTXOperand::Register;
 	move.d.type = ir::PTXOperand::u32;
 	
-	_kernel->dfg()->insert( entry, move, 0 );
+	_dfg().insert( entry, move, 0 );
 
 	ir::PTXInstruction load( ir::PTXInstruction::Ld );
 
@@ -192,7 +202,7 @@ void RemoveBarrierPass::_addEntryPoint( DataflowGraph::iterator block )
 	load.d.addressMode = ir::PTXOperand::Register;
 	load.d.type = ir::PTXOperand::u32;
 	
-	_kernel->dfg()->insert( entry, load, 1 );
+	_dfg().insert( entry, load, 1 );
 
 	ir::PTXInstruction setp( ir::PTXInstruction::SetP );
 	
@@ -209,7 +219,7 @@ void RemoveBarrierPass::_addEntryPoint( DataflowGraph::iterator block )
 	setp.b.type = ir::PTXOperand::u32;
 	setp.b.imm_uint = block->id();
 	
-	_kernel->dfg()->insert( entry, setp, 2 );
+	_dfg().insert( entry, setp, 2 );
 	
 	ir::PTXInstruction branch( ir::PTXInstruction::Bra );
 	
@@ -217,20 +227,20 @@ void RemoveBarrierPass::_addEntryPoint( DataflowGraph::iterator block )
 	branch.d.identifier = block->label();
 	branch.pg = setp.d;
 
-	_kernel->dfg()->insert( entry, branch, 3 );
+	_dfg().insert( entry, branch, 3 );
 	
-	_kernel->dfg()->target( entry, block );
+	_dfg().target( entry, block );
 }
 
-void RemoveBarrierPass::_removeBarrier( DataflowGraph::iterator block, 
+void RemoveBarrierPass::_removeBarrier( analysis::DataflowGraph::iterator block, 
 	unsigned int id )
 {
-	typedef DataflowGraph::Block::RegisterSet RegisterSet;
+	typedef analysis::DataflowGraph::Block::RegisterSet RegisterSet;
 	
-	DataflowGraph::InstructionVector::const_iterator 
+	analysis::DataflowGraph::InstructionVector::const_iterator 
 		_instruction( block->instructions().begin() );
 	std::advance( _instruction, id );
-	DataflowGraph::iterator exitBlock( _kernel->dfg()->end() );
+	analysis::DataflowGraph::iterator exitBlock( _dfg().end() );
 	std::advance( exitBlock, -1 );
 
 	ir::PTXInstruction& instruction = static_cast< ir::PTXInstruction& >( 
@@ -253,25 +263,25 @@ void RemoveBarrierPass::_removeBarrier( DataflowGraph::iterator block,
 	
 	RegisterSet alive = block->alive( _instruction );
 	
-	DataflowGraph::iterator bottom = _kernel->dfg()->split( block, 
+	analysis::DataflowGraph::iterator bottom = _dfg().split( block, 
 		id + 1, false );
 
 	_addSpillCode( block, bottom, alive, isBarrier );
 	_addRestoreCode( bottom, alive );
 	
-	_kernel->dfg()->redirect( block, bottom, exitBlock );
+	_dfg().redirect( block, bottom, exitBlock );
 	
 	if( !isBarrier && instruction.pg.condition != ir::PTXOperand::PT )
 	{
-		_kernel->dfg()->target( block, bottom, true );
+		_dfg().target( block, bottom, true );
 	}
 	
 	_addEntryPoint( bottom );
 }
 
-void RemoveBarrierPass::_runOnBlock( DataflowGraph::iterator block )
+void RemoveBarrierPass::_runOnBlock( analysis::DataflowGraph::iterator block )
 {
-	for( DataflowGraph::InstructionVector::const_iterator 
+	for( analysis::DataflowGraph::InstructionVector::const_iterator 
 		_instruction = block->instructions().begin(); 
 		_instruction != block->instructions().end(); ++_instruction )
 	{
@@ -299,7 +309,7 @@ void RemoveBarrierPass::_runOnBlock( DataflowGraph::iterator block )
 				block->instructions().begin(), _instruction ) );
 			_spillBytes = std::max( bytes, _spillBytes );
 			++_reentryPoint;
-			_kernel->dfg()->compute();
+			_dfg().compute();
 			break;
 		}
 	}
@@ -359,7 +369,7 @@ void RemoveBarrierPass::_addLocalVariables()
 
 RemoveBarrierPass::RemoveBarrierPass( unsigned int i,
 	const ir::ExternalFunctionSet* s )
-: KernelPass( DataflowGraphAnalysis, "RemoveBarriersPass" ),
+: KernelPass( analysis::Analysis::DataflowGraphAnalysis, "RemoveBarriersPass" ),
 	_kernelId( i ), _externals( s )
 {
 
@@ -378,10 +388,10 @@ void RemoveBarrierPass::runOnKernel( ir::IRKernel& k )
 	_reentryPoint = 1;
 	_spillBytes = 1;
 	_kernel = static_cast< ir::PTXKernel* >( &k );
-	k.dfg()->compute();
+	_dfg().compute();
 	
-	for( DataflowGraph::iterator block = k.dfg()->begin(); 
-		block != k.dfg()->end(); ++block )
+	for( analysis::DataflowGraph::iterator block = _dfg().begin(); 
+		block != _dfg().end(); ++block )
 	{
 		_runOnBlock( block );
 	}

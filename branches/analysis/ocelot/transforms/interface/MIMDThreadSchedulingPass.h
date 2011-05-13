@@ -8,9 +8,9 @@
 #define MIMD_THREAD_SCHEDULING_PASS_H_INCLUDED
 
 // Ocelot Includes
-#include <ocelot/analysis/interface/Pass.h>
+#include <ocelot/transforms/interface/Pass.h>
 
-namespace analysis
+namespace transforms
 {
 /*! \brief A class for changing the scheduling order of threads assuming
 	execution on a SIMT IPDOM machine. */

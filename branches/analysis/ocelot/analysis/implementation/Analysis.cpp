@@ -13,25 +13,24 @@
 namespace analysis
 {
 
-Analysis::Analysis(Type t, transforms::PassManager* m)
-: _type(t), _manager(m)
+Analysis::Analysis(Type t, const std::string& n,
+	int r, transforms::PassManager* m)
+: type(t), name(n), _required(r), _manager(m)
 {
 
 }
 
-Analysis::Type Analysis::type() const
-{
-	return _type;
-}
 
-KernelAnalysis::KernelAnalysis(Type t, transforms::PassManager* m)
-: Analysis(t, m)
+KernelAnalysis::KernelAnalysis(Type t, const std::string& n,
+	int r, transforms::PassManager* m)
+: Analysis(t, n, r, m)
 {
 
 }
 
-ModuleAnalysis::ModuleAnalysis(Type t, transforms::PassManager* m)
-: Analysis(t, m)
+ModuleAnalysis::ModuleAnalysis(Type t, const std::string& n,
+	int r, transforms::PassManager* m)
+: Analysis(t, n, r, m)
 {
 
 }

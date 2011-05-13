@@ -9,69 +9,83 @@
 
 // Standard Library Includes
 #include <map>
+#include <unordered_map>
 #include <string>
 
 // Forward Declarations
-namespace ir { class Module; }
-namespace ir { class Kernel; }
+namespace analysis   { class Analysis; }
+namespace ir         { class Module;   }
+namespace ir         { class Kernel;   }
+namespace transforms { class Pass;     }
 
 namespace transforms
 {
-	//! Forward Declarations
-	class Pass;
-	
-	/*! \brief A class to orchestrate the execution of many passes */
-	class PassManager
-	{
-	public:
-		/*! \brief The constructor creates an empty pass manager associated
-			with an existing Module.  
-			
-			The module is not owned by the PassManager.
-			
-			\param module The module that this manager is associated with.
-		*/
-		explicit PassManager(ir::Module* module);
-		
-	public:
-		/*! \brief Adds a pass that needs to be eventually run
-		
-			The pass is not owned by the manager and must not be deallocated
-			before it is run by the manager.
-		
-			\param pass The pass being added
-		 */
-		void addPass(Pass& pass);
-		
-		/*! \brief Clears all added passes */
-		void clear();
-		
-		/*! \brief Deletes all added passes */
-		void destroyPasses();
-		
-	public:
-		/*! \brief Runs passes on a specific Kernel contained in the module.
-		
-			\param name The name of the kernel to run all passes on.
-		*/
-		void runOnKernel(const std::string& name);
 
-		/*! \brief Runs passes on a specific Kernel.
+//! Forward Declarations
+class Pass;
+
+/*! \brief A class to orchestrate the execution of many passes */
+class PassManager
+{
+public:
+	/*! \brief A map from analysis id to an up to date copy */
+	typedef std::unordered_map<int, analysis::Analysis*> AnalysisMap;
+
+public:
+	/*! \brief The constructor creates an empty pass manager associated
+		with an existing Module.  
 		
-			\param kernel The kernel to run all passes on.
-		*/
-		void runOnKernel(ir::Kernel& kernel);
+		The module is not owned by the PassManager.
 		
-		/*! \brief Runs passes on the entire module. */
-		void runOnModule();
+		\param module The module that this manager is associated with.
+	*/
+	explicit PassManager(ir::Module* module);
 		
-	private:
-		typedef std::multimap<int, Pass*, std::greater<int>> PassMap;
-		
-	private:
-		PassMap     _passes;
-		ir::Module* _module;
-	};
+public:
+	/*! \brief Adds a pass that needs to be eventually run
+	
+		The pass is not owned by the manager and must not be deallocated
+		before it is run by the manager.
+	
+		\param pass The pass being added
+	 */
+	void addPass(Pass& pass);
+	
+	/*! \brief Clears all added passes */
+	void clear();
+	
+	/*! \brief Deletes all added passes */
+	void destroyPasses();
+	
+public:
+	/*! \brief Runs passes on a specific Kernel contained in the module.
+	
+		\param name The name of the kernel to run all passes on.
+	*/
+	void runOnKernel(const std::string& name);
+
+	/*! \brief Runs passes on a specific Kernel.
+	
+		\param kernel The kernel to run all passes on.
+	*/
+	void runOnKernel(ir::Kernel& kernel);
+	
+	/*! \brief Runs passes on the entire module. */
+	void runOnModule();
+
+public:
+	PassManager(const PassManager&) = delete;
+	const PassManager& operator=(const PassManager&) = delete;
+	
+private:
+	typedef std::multimap<int, Pass*, std::greater<int>> PassMap;
+	
+private:
+	PassMap     _passes;
+	AnalysisMap _analyses;
+	ir::Module* _module;
+};
+
 }
 
 #endif

@@ -8,10 +8,13 @@
 #define MIMD_THREAD_SCHEDULING_PASS_CPP_INCLUDED
 
 // Ocelot Includes
-#include <ocelot/analysis/interface/MIMDThreadSchedulingPass.h>
+#include <ocelot/transforms/interface/MIMDThreadSchedulingPass.h>
+
 #include <ocelot/ir/interface/PTXKernel.h>
-#include <ocelot/ir/interface/DominatorTree.h>
-#include <ocelot/ir/interface/PostdominatorTree.h>
+
+#include <ocelot/analysis/interface/DominatorTree.h>
+#include <ocelot/analysis/interface/PostdominatorTree.h>
+#include <ocelot/analysis/interface/DataflowGraph.h>
 
 // Preprocessor Macros
 #ifdef REPORT_BASE
@@ -20,11 +23,14 @@
 
 #define REPORT_BASE 1
 
-namespace analysis
+namespace transforms
 {
 
 MIMDThreadSchedulingPass::MIMDThreadSchedulingPass()
-	: KernelPass(DataflowGraphAnalysis, "MIMDThreadSchedulingPass")
+	: KernelPass(Analysis::DataflowGraphAnalysis
+		| Analysis::PostDominatorTreeAnalysis
+		| Analysis::DominatorTreeAnalysis, 
+		"MIMDThreadSchedulingPass")
 {
 
 }
@@ -138,13 +144,13 @@ static void addYield(ir::PTXKernel& kernel, BlockSet& barriers,
 	}
 }
 
-static void sinkBarrier(ir::PTXKernel& kernel, BlockSet& barriers,
+void sinkBarrier(ir::PTXKernel& kernel, BlockSet& barriers,
 	ir::ControlFlowGraph::iterator block, ir::ControlFlowGraph::iterator dom,
-	ir::ControlFlowGraph::iterator pdom)
+	ir::ControlFlowGraph::iterator pdom, analysis::DataflowGraph* dfg)
 {
 	bool split = true;
 	ir::ControlFlowGraph::iterator currentBlock = block;
-	
+
 	while(split)
 	{
 		split = false;
@@ -171,7 +177,7 @@ static void sinkBarrier(ir::PTXKernel& kernel, BlockSet& barriers,
 				report("   created resume block " << successor->id);
 				
 				ir::Instruction::RegisterType
-					predicate = kernel.dfg()->newRegister();
+					predicate = dfg->newRegister();
 				
 				addPredicateInitialValue(dom, predicate);
 				addYield(kernel, barriers, block, successor, pdom, predicate);
@@ -195,6 +201,24 @@ void MIMDThreadSchedulingPass::runOnKernel(ir::IRKernel& k)
 	bool changed = true;
 	BlockSet barriers;
 
+	Analysis* pdom_structure = getAnalysis(Analysis::PostDominatorTreeAnalysis);
+	assert(pdom_structure != 0);
+
+	analysis::PostdominatorTree* pdom_tree = static_cast<
+		analysis::PostdominatorTree*>(pdom_structure);
+
+	Analysis* dom_structure = getAnalysis(Analysis::DominatorTreeAnalysis);
+	assert(dom_structure != 0);
+
+	analysis::DominatorTree* dom_tree = static_cast<
+		analysis::DominatorTree*>(dom_structure);
+
+	Analysis* dfg_structure = getAnalysis(Analysis::DataflowGraphAnalysis);
+	assert(dfg_structure != 0);
+
+	analysis::DataflowGraph* dfg = static_cast<
+		analysis::DataflowGraph*>(dfg_structure);
+
 	while(changed)
 	{
 		changed = false;
@@ -209,7 +233,7 @@ void MIMDThreadSchedulingPass::runOnKernel(ir::IRKernel& k)
 			block != kernel->cfg()->end(); ++block)
 		{
 			// skip blocks that are post dominators of the entry point	
-			if(kernel->pdom_tree()->postDominates(
+			if(pdom_tree->postDominates(
 				block, kernel->cfg()->get_entry_block()))
 			{
 				report(" Skipping block " << block->id);
@@ -225,9 +249,9 @@ void MIMDThreadSchedulingPass::runOnKernel(ir::IRKernel& k)
 				if(ptx.opcode == ir::PTXInstruction::Bar)
 				{
 					ir::ControlFlowGraph::iterator
-						pdom = kernel->pdom_tree()->getPostDominator(block);
+						pdom = pdom_tree->getPostDominator(block);
 					ir::ControlFlowGraph::iterator
-						dom = kernel->dom_tree()->getDominator(block);
+						dom = dom_tree->getDominator(block);
 					report(" Found barrier " << ptx.toString()
 						<< " in block " << block->id << " (postdominator "
 						<< pdom->id << ") (dominator " << dom->id << ")");
@@ -245,7 +269,7 @@ void MIMDThreadSchedulingPass::runOnKernel(ir::IRKernel& k)
 		ir::ControlFlowGraph::pointer_iterator pdom  = postDominators.begin();
 		for( ; block != schedulingPoints.end(); ++block, ++dom, ++pdom)
 		{
-			sinkBarrier(*kernel, barriers, *block, *dom, *pdom);
+			sinkBarrier(*kernel, barriers, *block, *dom, *pdom, dfg);
 		}
 	}
 }

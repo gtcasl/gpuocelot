@@ -17,7 +17,8 @@ namespace analysis
 {
 
 ThreadFrontierAnalysis::ThreadFrontierAnalysis(transforms::PassManager* m)
-: KernelAnalysis(Analysis::ThreadFrontierAnalysis, m)
+: KernelAnalysis(Analysis::ThreadFrontierAnalysis, "ThreadFrontierAnalysis",
+	Analysis::NoAnalysis, m)
 {
 
 }

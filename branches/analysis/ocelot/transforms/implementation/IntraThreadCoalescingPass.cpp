@@ -5,7 +5,8 @@
  */
 
 // Ocelot includes
-#include <ocelot/analysis/interface/IntraThreadCoalescingPass.h>
+#include <ocelot/transforms/interface/IntraThreadCoalescingPass.h>
+
 #include <ocelot/ir/interface/PTXKernel.h>
 
 // Hydrazine includes
@@ -17,13 +18,14 @@
 
 #define REPORT_BASE 0
 
-namespace analysis
+namespace transforms
 {
 	void IntraThreadCoalescingPass::initialize(const ir::Module& m)
 	{
 	}
 
-	void IntraThreadCoalescingPass::_runOnBlock(DataflowGraph::iterator block)
+	void IntraThreadCoalescingPass::_runOnBlock(
+		analysis::DataflowGraph::iterator block)
 	{
 	}
 
@@ -34,10 +36,17 @@ namespace analysis
 		assertM( k.ISA == ir::Instruction::PTX, 
 			"This pass is valid for PTX kernels only." );
 		_kernel = static_cast< ir::PTXKernel* >( &k );
-		k.dfg()->compute();
 		
-		for( DataflowGraph::iterator block = k.dfg()->begin(); 
-			block != k.dfg()->end(); ++block )
+		Analysis* dfg_structure = getAnalysis(Analysis::DataflowGraphAnalysis);
+		assert(dfg_structure != 0);
+	
+		analysis::DataflowGraph* dfg
+			= static_cast<analysis::DataflowGraph*>(dfg_structure);
+
+		dfg->compute();
+		
+		for(analysis::DataflowGraph::iterator block = dfg->begin(); 
+			block != dfg->end(); ++block)
 		{
 			_runOnBlock( block );
 		}
@@ -47,3 +56,4 @@ namespace analysis
 	{
 	}
 }
+

@@ -17,7 +17,7 @@ namespace analysis
    analysis goes over the program dataflow graph and finds all the variables
    that will always hold the same values for every thread.
  */
-class DivergenceAnalysis : public transforms::KernelPass
+class DivergenceAnalysis : public Analysis
 {
 	public:
 		typedef std::set<BranchInfo> branch_set;
@@ -46,13 +46,9 @@ class DivergenceAnalysis : public transforms::KernelPass
 		bool doControlFlowAnalysis() const { return _doCFGanalysis; };
 
 	public:
-		DivergenceAnalysis();
-		/* inherit from KernelPass */
-		virtual void initialize( const ir::Module& m ) {};
-		/* inherit from KernelPass */
-		virtual void runOnKernel( ir::IRKernel& k );
-		/* inherit from KernelPass */
-		virtual void finalize() {};
+		DivergenceAnalysis(ir::IRKernel& k);
+		
+		void runOnKernel( ir::IRKernel& k );
 
 		// TODO: see if it is possible to use only the call on block,
 		// eliminating the call on iterator.

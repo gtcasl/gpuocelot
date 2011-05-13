@@ -292,12 +292,14 @@ void DivergenceAnalysis::_addPredicate(const DataflowGraph::PhiInstruction &phi,
 }
 
 /*! \brief Constructor, already making the analysis of a input kernel */
-DivergenceAnalysis::DivergenceAnalysis()
-: KernelPass( Analysis::DataflowGraphAnalysis
-	| Analysis::StaticSingleAssignment, "DivergenceAnalysis" )
+DivergenceAnalysis::DivergenceAnalysis(ir::IRKernel& k)
+: Analysis( Analysis::DivergenceAnalysis, "DivergenceAnalysis",
+	Analysis::DataflowGraphAnalysis | Analysis::StaticSingleAssignment )
 {
 	_doCFGanalysis = true;
 	_kernel = NULL;
+	
+	runOnKernel(k);
 }
 
 /*! \brief Analyze the control and data flow graphs searching for divergent 
@@ -323,7 +325,7 @@ void DivergenceAnalysis::runOnKernel(ir::IRKernel &k)
 
 	DataflowGraph &dfg = static_cast<DataflowGraph&>(*dfgAnalysis);
 
-	if(!dfg.ssa()) dfg.toSsa();
+	assert(dfg.ssa());
 
 	_divergGraph.clear();
 	_divergentBranches.clear();
@@ -371,7 +373,8 @@ bool DivergenceAnalysis::isDivBranch(
 
 /*!\brief Tests if a instruction is a branch instruction
 	with possibility of divergence */
-bool DivergenceAnalysis::isPossibleDivBranch(const DataflowGraph::InstructionVector::const_iterator &instruction) const
+bool DivergenceAnalysis::isPossibleDivBranch(
+	const DataflowGraph::InstructionVector::const_iterator &instruction) const
 {
 	if(typeid(ir::PTXInstruction) == typeid(*(instruction->i))) {
 		const ir::PTXInstruction &ptxI =

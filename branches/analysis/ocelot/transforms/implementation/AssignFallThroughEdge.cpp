@@ -129,7 +129,8 @@ namespace transforms {
     }
   }
 
-  NodeCFGTy * AssignFallThroughEdge::pickOneNode(NodeCFGSetTy &S) {
+  AssignFallThroughEdge::NodeCFGTy * AssignFallThroughEdge::pickOneNode(
+  	NodeCFGSetTy &S) {
     int min = preMax + 1;
     NodeCFGTy *tmpNode = NULL;
 

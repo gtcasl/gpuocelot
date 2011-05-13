@@ -7,6 +7,9 @@
 #ifndef ANALYSIS_H_INCLUDED
 #define ANALYSIS_H_INCLUDED
 
+// Standard Library Includes
+#include <string>
+
 // Forward Declarations
 namespace transforms { class PassManager; }
 namespace ir         { class IRKernel;    }
@@ -34,14 +37,33 @@ public:
 
 public:
 	/*! \brief Initialize the analysis, register it with a pass manager */
-	Analysis(Type t = NoAnalysis, transforms::PassManager* m = 0);
+	Analysis(Type t = NoAnalysis, const std::string& name = "",
+		int required = NoAnalysis,
+		transforms::PassManager* m = 0);
 
 public:
 	/*! \brief Get the analysis type */
-	Type type() const;
+	const Type type;
+
+	/*! \brief The name of the analysis */
+	const std::string name;
+
+public:
+	/*! \brief Set the attached pass manager */
+	void setPassManager(transforms::PassManager* manager);
+
+	/*! \brief Get an up to date analysis by type */
+	Analysis* getAnalysis(Analysis::Type type);
+
+	/*! \brief Get an up to date analysis by type (const) */
+	const Analysis* getAnalysis(Analysis::Type type) const;
+	
+	/*! \brief Invalidate the analysis, the pass manager will
+		need to generate it again for other users */
+	void invalidateAnalysis(Analysis::Type type);
 
 private:
-	Type                     _type;
+	int                      _required;
 	transforms::PassManager* _manager;
 
 };
@@ -52,7 +74,9 @@ class KernelAnalysis : public Analysis
 
 public:
 	/*! \brief Initialize the analysis, register it with a pass manager */
-	KernelAnalysis(Type t = NoAnalysis, transforms::PassManager* m = 0);
+	KernelAnalysis(Type t = NoAnalysis, const std::string& name = "",
+		int required = NoAnalysis,
+		transforms::PassManager* m = 0);
 
 public:
 	virtual void analyze(ir::IRKernel& kernel) = 0;
@@ -65,7 +89,9 @@ class ModuleAnalysis : public Analysis
 
 public:
 	/*! \brief Initialize the analysis, register it with a pass manager */
-	ModuleAnalysis(Type t = NoAnalysis, transforms::PassManager* m = 0);
+	ModuleAnalysis(Type t = NoAnalysis, const std::string& name = "",
+		int required = NoAnalysis,
+		transforms::PassManager* m = 0);
 
 public:
 	virtual void analyze(ir::Module& module) = 0;

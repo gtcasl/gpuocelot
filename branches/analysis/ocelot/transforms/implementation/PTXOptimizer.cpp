@@ -8,15 +8,15 @@
 #define PTX_OPTIMIZER_CPP_INCLUDED
 
 // Ocelot Includes
-#include <ocelot/analysis/interface/PTXOptimizer.h>
-#include <ocelot/analysis/interface/PassManager.h>
-#include <ocelot/analysis/interface/LinearScanRegisterAllocationPass.h>
-#include <ocelot/analysis/interface/RemoveBarrierPass.h>
-#include <ocelot/analysis/interface/StructuralTransform.h>
-#include <ocelot/analysis/interface/ConvertPredicationToSelectPass.h>
-#include <ocelot/analysis/interface/SubkernelFormationPass.h>
-#include <ocelot/analysis/interface/MIMDThreadSchedulingPass.h>
-#include <ocelot/analysis/interface/SyncEliminationPass.h>
+#include <ocelot/transforms/interface/PTXOptimizer.h>
+#include <ocelot/transforms/interface/PassManager.h>
+#include <ocelot/transforms/interface/LinearScanRegisterAllocationPass.h>
+#include <ocelot/transforms/interface/RemoveBarrierPass.h>
+#include <ocelot/transforms/interface/StructuralTransform.h>
+#include <ocelot/transforms/interface/ConvertPredicationToSelectPass.h>
+#include <ocelot/transforms/interface/SubkernelFormationPass.h>
+#include <ocelot/transforms/interface/MIMDThreadSchedulingPass.h>
+#include <ocelot/transforms/interface/SyncEliminationPass.h>
 
 #include <ocelot/ir/interface/Module.h>
 
@@ -36,109 +36,111 @@
 
 #define REPORT_BASE 0
 
-namespace analysis
+namespace transforms
 {
-	PTXOptimizer::PTXOptimizer() : registerAllocationType( 
-		InvalidRegisterAllocationType ), passes( 0 )
-	{
+
+PTXOptimizer::PTXOptimizer() : registerAllocationType( 
+	InvalidRegisterAllocationType ), passes( 0 )
+{
+
+}
+
+void PTXOptimizer::optimize()
+{		
+	report("Running PTX to PTX Optimizer.");
 	
+	report(" Loading module '" << input << "'");
+	ir::Module module( input );
+
+	PassManager manager( &module );
+
+	if( registerAllocationType == LinearScan )
+	{
+		Pass* pass = new transforms::LinearScanRegisterAllocationPass( 
+			registerCount );
+		manager.addPass( *pass );
 	}
 
-	void PTXOptimizer::optimize()
-	{		
-		report("Running PTX to PTX Optimizer.");
-		
-		report(" Loading module '" << input << "'");
-		ir::Module module( input );
+	if( passes & SubkernelFormation )
+	{
+		Pass* pass = new transforms::SubkernelFormationPass( subkernelSize );
+		manager.addPass( *pass );
+	}
+	
+	if( passes & RemoveBarriers )
+	{
+		Pass* pass = new transforms::RemoveBarrierPass;
+		manager.addPass( *pass );
+	}
 
-		PassManager manager( &module );
+	if( passes & StructuralTransform )
+	{
+		Pass* pass = new transforms::StructuralTransform;
+		manager.addPass( *pass );
+	}
 
-		if( registerAllocationType == LinearScan )
-		{
-			Pass* pass = new analysis::LinearScanRegisterAllocationPass( 
-				registerCount );
-			manager.addPass( *pass );
-		}
+	if( passes & ReverseIfConversion )
+	{
+		Pass* pass = new transforms::ConvertPredicationToSelectPass;
+		manager.addPass( *pass );
+	}
 
-		if( passes & SubkernelFormation )
-		{
-			Pass* pass = new analysis::SubkernelFormationPass( subkernelSize );
-			manager.addPass( *pass );
-		}
-		
-		if( passes & RemoveBarriers )
-		{
-			Pass* pass = new analysis::RemoveBarrierPass;
-			manager.addPass( *pass );
-		}
+	if( passes & MIMDThreadScheduling )
+	{
+		Pass* pass = new transforms::MIMDThreadSchedulingPass;
+		manager.addPass( *pass );
+	}
+	
+	if( passes & SyncElimination )
+	{
+		Pass* pass = new transforms::SyncEliminationPass;
+		manager.addPass( *pass );
+	}
+	
+	if( input.empty() )
+	{
+		std::cout << "No input file name given.  Bailing out." << std::endl;
+		return;
+	}
 
-		if( passes & StructuralTransform )
-		{
-			Pass* pass = new analysis::StructuralTransform;
-			manager.addPass( *pass );
-		}
+	manager.runOnModule();
+	manager.destroyPasses();
+	
+	std::ofstream out( output.c_str() );
+	
+	if( !out.is_open() )
+	{
+		throw hydrazine::Exception( "Could not open output file " 
+			+ output + " for writing." );
+	}
+	
+	module.writeIR( out );
 
-		if( passes & ReverseIfConversion )
-		{
-			Pass* pass = new analysis::ConvertPredicationToSelectPass;
-			manager.addPass( *pass );
-		}
-
-		if( passes & MIMDThreadScheduling )
-		{
-			Pass* pass = new analysis::MIMDThreadSchedulingPass;
-			manager.addPass( *pass );
-		}
-		
-		if( passes & SyncElimination )
-		{
-			Pass* pass = new analysis::SyncEliminationPass;
-			manager.addPass( *pass );
-		}
-		
-		if( input.empty() )
-		{
-			std::cout << "No input file name given.  Bailing out." << std::endl;
-			return;
-		}
-
-		manager.runOnModule();
-		manager.destroyPasses();
-		
-		std::ofstream out( output.c_str() );
-		
+	if(!cfg) return;
+	
+	for( ir::Module::KernelMap::const_iterator 
+		kernel = module.kernels().begin(); 
+		kernel != module.kernels().end(); ++kernel )
+	{
+		report(" Writing CFG for kernel '" << kernel->first << "'");
+		std::ofstream out( std::string( 
+			kernel->first + "_cfg.dot" ).c_str() );
+	
 		if( !out.is_open() )
 		{
 			throw hydrazine::Exception( "Could not open output file " 
 				+ output + " for writing." );
 		}
-		
-		module.writeIR( out );
-
-		if(!cfg) return;
-		
-		for( ir::Module::KernelMap::const_iterator 
-			kernel = module.kernels().begin(); 
-			kernel != module.kernels().end(); ++kernel )
-		{
-			report(" Writing CFG for kernel '" << kernel->first << "'");
-			std::ofstream out( std::string( 
-				kernel->first + "_cfg.dot" ).c_str() );
-		
-			if( !out.is_open() )
-			{
-				throw hydrazine::Exception( "Could not open output file " 
-					+ output + " for writing." );
-			}
-		
-			module.getKernel( kernel->first )->cfg()->write( out );
-		}
+	
+		module.getKernel( kernel->first )->cfg()->write( out );
 	}
+}
+
 }
 
 static int parsePassTypes( const std::string& passList )
 {
-	int types = analysis::PTXOptimizer::InvalidPassType;
+	int types = transforms::PTXOptimizer::InvalidPassType;
 	
 	report("Checking for pass types.");
 	hydrazine::StringVector passes = hydrazine::split( passList, "," );
@@ -150,32 +152,32 @@ static int parsePassTypes( const std::string& passList )
 		if( *pass == "remove-barriers" )
 		{
 			report( "  Matched remove-barriers." );
-			types |= analysis::PTXOptimizer::RemoveBarriers;
+			types |= transforms::PTXOptimizer::RemoveBarriers;
 		}
 		else if( *pass == "reverse-if-conversion" )
 		{
 			report( "  Matched reverse-if-conversion." );
-			types |= analysis::PTXOptimizer::ReverseIfConversion;
+			types |= transforms::PTXOptimizer::ReverseIfConversion;
 		}
 		else if( *pass == "structural-transform" )
 		{
 			report( "  Matched structural-transform." );
-			types |= analysis::PTXOptimizer::StructuralTransform;
+			types |= transforms::PTXOptimizer::StructuralTransform;
 		}
 		else if( *pass == "subkernel-formation" )
 		{
 			report( "  Matched subkernel-formation." );
-			types |= analysis::PTXOptimizer::SubkernelFormation;
+			types |= transforms::PTXOptimizer::SubkernelFormation;
 		}
 		else if( *pass == "mimd-threading" )
 		{
 			report( "  Matched mimd-threading." );
-			types |= analysis::PTXOptimizer::MIMDThreadScheduling;
+			types |= transforms::PTXOptimizer::MIMDThreadScheduling;
 		}
 		else if( *pass == "sync-elimination" )
 		{
 			report( "  Matched sync-elimination." );
-			types |= analysis::PTXOptimizer::SyncElimination;
+			types |= transforms::PTXOptimizer::SyncElimination;
 		}
 		else if( !pass->empty() )
 		{
@@ -190,7 +192,7 @@ int main( int argc, char** argv )
 {
 	hydrazine::ArgumentParser parser( argc, argv );
 	parser.description( "The Ocelot PTX to PTX optimizer." );
-	analysis::PTXOptimizer optimizer;
+	transforms::PTXOptimizer optimizer;
 	std::string allocator;
 	std::string passes;
 	
@@ -214,7 +216,7 @@ int main( int argc, char** argv )
 
 	if( allocator == "linearscan" )
 	{
-		optimizer.registerAllocationType = analysis::PTXOptimizer::LinearScan;
+		optimizer.registerAllocationType = transforms::PTXOptimizer::LinearScan;
 	}
 	
 	optimizer.passes = parsePassTypes( passes );

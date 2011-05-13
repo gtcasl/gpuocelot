@@ -7,8 +7,8 @@
 #ifndef SYNCELIMINATIONPASS_H_
 #define SYNCELIMINATIONPASS_H_
 
-#include <ocelot/analysis/interface/Pass.h>
-namespace analysis {
+#include <ocelot/transforms/interface/Pass.h>
+namespace transforms {
 /*! \brief This pass converts ordinary bra instructions into bra.uni, whenever
     the divergence analysis deems it safe to do so.
  */
@@ -27,3 +27,4 @@ public:
 }
 
 #endif /* BLOCKUNIFICATIONPASS_H_ */
+

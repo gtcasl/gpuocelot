@@ -10,6 +10,8 @@
 #define IR_DOMINATORTREE_H_INCLUDED
 
 // Ocelot Includes
+#include <ocelot/analysis/interface/Analysis.h>
+
 #include <ocelot/ir/interface/ControlFlowGraph.h>
 
 // Standard Library Includes
@@ -22,7 +24,7 @@ namespace analysis {
 		control flow graph such that each node's block is immediately dominated
 		by its parent. Each node is owned by its parent.
 	*/
-	class DominatorTree {
+	class DominatorTree : public Analysis {
 		
 	public:
 		DominatorTree(ir::ControlFlowGraph *cfg);

@@ -28,20 +28,23 @@ namespace ir {
 }
 
 namespace transforms {
-  typedef struct NodeCFG {
-    ir::ControlFlowGraph::iterator BB;  // Map to the corresponding ir::BasicBlock * if it is original
-    std::set<struct NodeCFG *> predNode; // Predecessor of the node
-    std::set<struct NodeCFG *> succNode; // Successor of the node
-  } NodeCFGTy;
-
-  typedef std::unordered_map<ir::ControlFlowGraph::iterator, NodeCFGTy *> BB2NodeCFGMapTy;
-  typedef std::set<NodeCFGTy *> NodeCFGSetTy;
-  typedef std::vector<NodeCFGTy *> NodeCFGVecTy;
-  typedef std::pair<NodeCFGTy *, NodeCFGTy *> EdgeCFGTy;
-  typedef std::vector<EdgeCFGTy> EdgeCFGVecTy;
-  typedef std::map<NodeCFGTy *, bool> VisitMapCFGTy;
 
   class AssignFallThroughEdge {
+  public:
+    typedef struct NodeCFG {
+      ir::ControlFlowGraph::iterator BB;  // Map to the corresponding ir::BasicBlock * if it is original
+      std::set<struct NodeCFG *> predNode; // Predecessor of the node
+      std::set<struct NodeCFG *> succNode; // Successor of the node
+    } NodeCFGTy;
+
+    typedef std::unordered_map<ir::ControlFlowGraph::iterator,
+    	NodeCFGTy *> BB2NodeCFGMapTy;
+    typedef std::set<NodeCFGTy *> NodeCFGSetTy;
+    typedef std::vector<NodeCFGTy *> NodeCFGVecTy;
+    typedef std::pair<NodeCFGTy *, NodeCFGTy *> EdgeCFGTy;
+    typedef std::vector<EdgeCFGTy> EdgeCFGVecTy;
+    typedef std::map<NodeCFGTy *, bool> VisitMapCFGTy;
+
   public:
     AssignFallThroughEdge(ir::PTXKernel *k) {_kernel = k;}
 

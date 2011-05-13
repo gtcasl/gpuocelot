@@ -29,137 +29,138 @@ namespace transforms
 
 namespace transforms
 {
-	/*! \brief A class modeled after the LLVM notion of an optimization pass.  
-		Allows different transformations to be applied to PTX modules */
-	class Pass
+/*! \brief A class modeled after the LLVM notion of an optimization pass.  
+	Allows different transformations to be applied to PTX modules */
+class Pass
+{
+public:
+	/*! \brief For virtual classes, the type of pass */
+	enum Type
 	{
-		public:
-			/*! \brief For virtual classes, the type of pass */
-			enum Type
-			{
-				ImmutablePass,
-				ModulePass,
-				KernelPass,
-				BasicBlockPass,
-				InvalidPass
-			};
-			
-			/*! \brief shorthand for analysis */
-			typedef analysis::Analysis Analysis;
-			
-		public:
-			/*! \brief The type of this pass */
-			const Type type;
-			
-			/*! \brief What types of analysis routines does the pass require? */
-			const int analyses;
-			
-			/*! \brief The name of the pass */
-			const std::string name;
-		
-		public:
-			/*! \brief The default constructor sets the type */
-			explicit Pass(Type t = InvalidPass, int a = Analysis::NoAnalysis,
-				const std::string& n = "");
-			/*! \brief Virtual destructor */
-			virtual ~Pass();
-			/*! \brief The type requires a new copy constructor */
-			Pass(const Pass& p);
-			/*! \brief The type requires a new assignment operator */
-			Pass& operator=(const Pass& p);
-		
-		public:
-			/*! \brief Set the attached pass manager */
-			void setPassManager(PassManager* manager);
-		
-			/*! \brief Get an up to date analysis by type */
-			Analysis* getAnalysis(Analysis::Type type);
-		
-			/*! \brief Get an up to date analysis by type (const) */
-			const Analysis* getAnalysis(Analysis::Type type) const;
-			
-			/*! \brief Invalidate the analysis, the pass manager will
-				need to generate it again for other applications */
-			void invalidateAnalysis(Analysis::Type type);
-		
-		public:
-			/*! \brief Report the name of the pass */
-			std::string toString() const;
+		ImmutablePass,
+		ModulePass,
+		KernelPass,
+		BasicBlockPass,
+		InvalidPass
 	};
 	
+	/*! \brief shorthand for analysis */
+	typedef analysis::Analysis Analysis;
 	
-	/*! \brief A pass that generates information about a 
-		program without modifying it, used to generate data structures */
-	class ImmutablePass : public Pass
-	{
-		public:
-			/*! \brief The default constructor sets the type */
-			ImmutablePass(int a = Analysis::NoAnalysis,
-				const std::string& n = "");
-			/*! \brief Virtual destructor */
-			virtual ~ImmutablePass();
-			
-		public:
-			/*! \brief Run the pass on a specific module */
-			virtual void runOnModule(const ir::Module& m) = 0;
-	};
+public:
+	/*! \brief The type of this pass */
+	const Type type;
 	
-	/*! \brief A pass over an entire module */
-	class ModulePass : public Pass
-	{
-		public:
-			/*! \brief The default constructor sets the type */
-			ModulePass(int a = Analysis::NoAnalysis, const std::string& n = "");
-			/*! \brief Virtual destructor */
-			virtual ~ModulePass();
-			
-		public:
-			/*! \brief Run the pass on a specific module */
-			virtual void runOnModule(ir::Module& m) = 0;		
-	};
+	/*! \brief What types of analysis routines does the pass require? */
+	const int analyses;
 	
-	/*! \brief A pass over a single kernel in a module */
-	class KernelPass : public Pass
-	{
-		public:
-			/*! \brief The default constructor sets the type */
-			KernelPass(int a = Analysis::NoAnalysis, const std::string& n = "");
-			/*! \brief Virtual destructor */
-			virtual ~KernelPass();
-			
-		public:
-			/*! \brief Initialize the pass using a specific module */
-			virtual void initialize(const ir::Module& m) = 0;
-			/*! \brief Run the pass on a specific kernel in the module */
-			virtual void runOnKernel(ir::IRKernel& k) = 0;		
-			/*! \brief Finalize the pass */
-			virtual void finalize() = 0;
-	};
+	/*! \brief The name of the pass */
+	const std::string name;
 
-	/*! \brief A pass over a single basic block in a kernel */
-	class BasicBlockPass : public Pass
-	{
-		public:
-			/*! \brief The default constructor sets the type */
-			BasicBlockPass(int a = Analysis::NoAnalysis,
-				const std::string& n = "");
-			/*! \brief Virtual destructor */
-			virtual ~BasicBlockPass();
-			
-		public:
-			/*! \brief Initialize the pass using a specific module */
-			virtual void initialize(const ir::Module& m) = 0;
-			/*! \brief Initialize the pass using a specific kernel */
-			virtual void initialize(const ir::IRKernel& m) = 0;
-			/*! \brief Run the pass on a specific kernel in the module */
-			virtual void runOnBlock(ir::BasicBlock& b) = 0;		
-			/*! \brief Finalize the pass on the kernel */
-			virtual void finalizeKernel() = 0;
-			/*! \brief Finalize the pass on the module */
-			virtual void finalize() = 0;
-	};
+public:
+	/*! \brief The default constructor sets the type */
+	explicit Pass(Type t = InvalidPass, int a = Analysis::NoAnalysis,
+		const std::string& n = "");
+	/*! \brief Virtual destructor */
+	virtual ~Pass();
+	/*! \brief The type requires a new copy constructor */
+	Pass(const Pass& p);
+	/*! \brief The type requires a new assignment operator */
+	Pass& operator=(const Pass& p);
 
-	typedef std::list<Pass*> PassList;
+public:
+	/*! \brief Set the attached pass manager */
+	void setPassManager(PassManager* manager);
+
+	/*! \brief Get an up to date analysis by type */
+	Analysis* getAnalysis(Analysis::Type type);
+
+	/*! \brief Get an up to date analysis by type (const) */
+	const Analysis* getAnalysis(Analysis::Type type) const;
+	
+	/*! \brief Invalidate the analysis, the pass manager will
+		need to generate it again for other applications */
+	void invalidateAnalysis(Analysis::Type type);
+
+public:
+	/*! \brief Report the name of the pass */
+	std::string toString() const;
+};
+
+
+/*! \brief A pass that generates information about a 
+	program without modifying it, used to generate data structures */
+class ImmutablePass : public Pass
+{
+public:
+	/*! \brief The default constructor sets the type */
+	ImmutablePass(int a = Analysis::NoAnalysis,
+		const std::string& n = "");
+	/*! \brief Virtual destructor */
+	virtual ~ImmutablePass();
+	
+public:
+	/*! \brief Run the pass on a specific module */
+	virtual void runOnModule(const ir::Module& m) = 0;
+};
+
+/*! \brief A pass over an entire module */
+class ModulePass : public Pass
+{
+public:
+	/*! \brief The default constructor sets the type */
+	ModulePass(int a = Analysis::NoAnalysis, const std::string& n = "");
+	/*! \brief Virtual destructor */
+	virtual ~ModulePass();
+	
+public:
+	/*! \brief Run the pass on a specific module */
+	virtual void runOnModule(ir::Module& m) = 0;		
+};
+
+/*! \brief A pass over a single kernel in a module */
+class KernelPass : public Pass
+{
+public:
+	/*! \brief The default constructor sets the type */
+	KernelPass(int a = Analysis::NoAnalysis, const std::string& n = "");
+	/*! \brief Virtual destructor */
+	virtual ~KernelPass();
+	
+public:
+	/*! \brief Initialize the pass using a specific module */
+	virtual void initialize(const ir::Module& m) = 0;
+	/*! \brief Run the pass on a specific kernel in the module */
+	virtual void runOnKernel(ir::IRKernel& k) = 0;		
+	/*! \brief Finalize the pass */
+	virtual void finalize() = 0;
+};
+
+/*! \brief A pass over a single basic block in a kernel */
+class BasicBlockPass : public Pass
+{
+public:
+	/*! \brief The default constructor sets the type */
+	BasicBlockPass(int a = Analysis::NoAnalysis,
+		const std::string& n = "");
+	/*! \brief Virtual destructor */
+	virtual ~BasicBlockPass();
+	
+public:
+	/*! \brief Initialize the pass using a specific module */
+	virtual void initialize(const ir::Module& m) = 0;
+	/*! \brief Initialize the pass using a specific kernel */
+	virtual void initialize(const ir::IRKernel& m) = 0;
+	/*! \brief Run the pass on a specific kernel in the module */
+	virtual void runOnBlock(ir::BasicBlock& b) = 0;		
+	/*! \brief Finalize the pass on the kernel */
+	virtual void finalizeKernel() = 0;
+	/*! \brief Finalize the pass on the module */
+	virtual void finalize() = 0;
+};
+
+typedef std::list<Pass*> PassList;
+
 }
 
 #endif

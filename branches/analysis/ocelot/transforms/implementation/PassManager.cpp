@@ -8,10 +8,15 @@
 #define PASS_MANAGER_CPP_INCLUDED
 
 //! Ocelot Includes
-#include <ocelot/analysis/interface/PassManager.h>
-#include <ocelot/analysis/interface/Pass.h>
+#include <ocelot/transforms/interface/PassManager.h>
+#include <ocelot/transforms/interface/Pass.h>
+
 #include <ocelot/analysis/interface/DataflowGraph.h>
 #include <ocelot/analysis/interface/DivergenceAnalysis.h>
+#include <ocelot/analysis/interface/ControlTree.h>
+#include <ocelot/analysis/interface/DominatorTree.h>
+#include <ocelot/analysis/interface/PostdominatorTree.h>
+
 #include <ocelot/ir/interface/IRKernel.h>
 #include <ocelot/ir/interface/Module.h>
 
@@ -28,77 +33,94 @@
 namespace transforms
 {
 
-static void freeUnusedDataStructures(ir::IRKernel* k, int type)
+static void freeUnusedDataStructures(PassManager::AnalysisMap& analyses,
+	ir::IRKernel* k, int type)
 {
-	if(type < Pass::DivergenceAnalysis)
+	typedef std::vector<int> TypeVector;
+	
+	TypeVector types = {analysis::Analysis::DivergenceAnalysis,
+		analysis::Analysis::DataflowGraphAnalysis,
+		analysis::Analysis::PostDominatorTreeAnalysis,
+		analysis::Analysis::DominatorTreeAnalysis,
+		analysis::Analysis::ControlTreeAnalysis};
+	
+	for(TypeVector::const_iterator t = types.begin(); t != types.end(); ++t)
 	{
-		report("Destroying divergence analysis for kernel" << k->name);
-		k->clear_div_analy();
-	}
-
-	if(type < Pass::StaticSingleAssignment)
-	{
-		if(k->dfg()->ssa())
+		if(type < *t)
 		{
-			report("Converting out of SSA form for kernel " << k->name);
-			k->dfg()->fromSsa();
+			PassManager::AnalysisMap::iterator structure = analyses.find(*t);
+			
+			if(structure != analyses.end())
+			{
+				report("Destroying " << structure->second->name
+					<< " for kernel" << k->name);
+				delete structure->second;
+				analyses.erase(structure);
+			}
 		}
-	}
-	if(type < Pass::DataflowGraphAnalysis)
-	{
-		report("Destroying dataflow graph for kernel " << k->name);
-		k->clear_dfg();
-	}
-	if(type < Pass::PostDominatorTreeAnalysis)
-	{
-		report("Destroying post-dominator tree for kernel " << k->name);
-		k->clear_pdom_tree();
-	}
-	if(type < Pass::DominatorTreeAnalysis)
-	{
-		report("Destroying dominator tree for kernel " << k->name);
-		k->clear_dom_tree();
-	}
-	if(type < Pass::ControlTreeAnalysis)
-	{
-		report("Destroying control tree for kernel " << k->name);
-		k->clear_ctrl_tree();
 	}
 }
 
-static void allocateNewDataStructures(ir::IRKernel* k, int type)
+static void allocateNewDataStructures(PassManager::AnalysisMap& analyses,
+	ir::IRKernel* k, int type)
 {
-	if(type & Pass::ControlTreeAnalysis)
+	if(type & analysis::Analysis::ControlTreeAnalysis)
 	{
-		report("Allocating control tree for kernel " << k->name);
-		k->ctrl_tree();
-	}
-	if(type & Pass::DominatorTreeAnalysis)
-	{
-		report("Allocating dominator tree for kernel " << k->name);
-		k->dom_tree();
-	}
-	if(type & Pass::PostDominatorTreeAnalysis)
-	{
-		report("Allocating post-dominator tree for kernel " << k->name);
-		k->pdom_tree();
-	}
-	if(type & Pass::DataflowGraphAnalysis)
-	{
-		report("Allocating dataflow graph for kernel " << k->name);
-		k->dfg();
-	}
-	if(type & Pass::StaticSingleAssignment)
-	{
-		if(!k->dfg()->ssa())
+		if(analyses.count(analysis::Analysis::ControlTreeAnalysis) == 0)
 		{
-			report("Converting to SSA for kernel " << k->name);
-			k->dfg()->toSsa();
+			report("Allocating control tree for kernel " << k->name);
+			analyses.insert(std::make_pair(
+				analysis::Analysis::ControlTreeAnalysis,
+				new analysis::ControlTree(k->cfg())));
 		}
 	}
-	if(type & Pass::DivergenceAnalysis)
+	if(type & analysis::Analysis::DominatorTreeAnalysis)
 	{
-		k->div_analy();
+		if(analyses.count(analysis::Analysis::DominatorTreeAnalysis) == 0)
+		{
+			report("Allocating dominator tree for kernel " << k->name);
+			analyses.insert(std::make_pair(
+				analysis::Analysis::DominatorTreeAnalysis,
+				new analysis::DominatorTree(k->cfg())));
+		}
+	}
+	if(type & analysis::Analysis::PostDominatorTreeAnalysis)
+	{
+		if(analyses.count(analysis::Analysis::PostDominatorTreeAnalysis) == 0)
+		{
+			report("Allocating post-dominator tree for kernel " << k->name);
+			analyses.insert(std::make_pair(
+				analysis::Analysis::PostDominatorTreeAnalysis,
+				new analysis::PostdominatorTree(k->cfg())));
+		}
+	}
+	if(type & analysis::Analysis::DataflowGraphAnalysis)
+	{
+		PassManager::AnalysisMap::iterator dom = analyses.find(
+			analysis::Analysis::DataFlowGraphAnalysis);
+		
+		if(analyses.end() == dom)
+		{
+			report("Allocating dataflow graph for kernel " << k->name);
+			dom = analyses.insert(std::make_pair(
+				analysis::Analysis::DataflowGraph,
+				new analysis::DataflowGraph(k->cfg()))).first;
+		}
+		if(type & analysis::Analysis::StaticSingleAssignment)
+		{
+			report("Converting DFG into SSA for " << k->name);
+			static_cast<analysis::DataflowGraph*>(dom->second)->toSsa();
+		}
+	}
+	if(type & analysis::Analysis::DivergenceAnalysis)
+	{
+		if(analyses.count(analysis::Analysis::DivergenceAnalysis) == 0)
+		{
+			report("Allocating divergence analysis for kernel " << k->name);
+			analyses.insert(std::make_pair(
+				analysis::Analysis::DivergenceAnalysis,
+				new analysis::DivergenceAnalysis(*k)));
+		}
 	}
 }
 
@@ -128,11 +150,11 @@ static void runKernelPass(ir::IRKernel* kernel, Pass* pass)
 	{
 		BasicBlockPass* bbPass = static_cast<BasicBlockPass*>(pass);
 		bbPass->initialize(*kernel);
-		for( ir::ControlFlowGraph::iterator 
+		for(ir::ControlFlowGraph::iterator 
 			block = kernel->cfg()->begin(); 
-			block != kernel->cfg()->end(); ++block )
+			block != kernel->cfg()->end(); ++block)
 		{
-			bbPass->runOnBlock( *block );
+			bbPass->runOnBlock(*block);
 		}
 		bbPass->finalizeKernel();
 	}
@@ -162,9 +184,9 @@ static void runKernelPass(ir::Module* module, ir::IRKernel* kernel, Pass* pass)
 			<< "' on kernel '" << kernel->name << "'" );
 		BasicBlockPass* bbPass = static_cast<BasicBlockPass*>(pass);
 		bbPass->initialize(*kernel);
-		for( ir::ControlFlowGraph::iterator 
+		for(ir::ControlFlowGraph::iterator 
 			block = kernel->cfg()->begin(); 
-			block != kernel->cfg()->end(); ++block )
+			block != kernel->cfg()->end(); ++block)
 		{
 			bbPass->runOnBlock( *block );
 		}
@@ -288,13 +310,13 @@ void PassManager::runOnKernel(const std::string& name)
 	
 	for(PassMap::iterator pass = _passes.begin(); pass != _passes.end(); ++pass)
 	{
-		freeUnusedDataStructures(kernel, pass->first);
-		allocateNewDataStructures(kernel, pass->first);
+		freeUnusedDataStructures(_analyses, kernel, pass->first);
+		allocateNewDataStructures(_analyses, kernel, pass->first);
 		
 		runKernelPass(kernel, pass->second);
 	}
 
-	freeUnusedDataStructures(kernel, Pass::NoAnalysis);
+	freeUnusedDataStructures(_analyses, kernel, analysis::Analysis::NoAnalysis);
 
 	for(PassMap::iterator pass = _passes.begin(); pass != _passes.end(); ++pass)
 	{
@@ -317,7 +339,7 @@ void PassManager::runOnModule()
 			kernel = _module->kernels().begin();
 			kernel != _module->kernels().end(); ++kernel)
 		{
-			allocateNewDataStructures(kernel->second, pass->first);
+			allocateNewDataStructures(_analyses, kernel->second, pass->first);
 		}
 		
 		runModulePass(_module, pass->second);
@@ -340,13 +362,14 @@ void PassManager::runOnModule()
 			if(pass->second->type == Pass::ImmutablePass) continue;
 			if(pass->second->type == Pass::ModulePass) continue;
 
-			freeUnusedDataStructures(kernel->second, pass->first);
-			allocateNewDataStructures(kernel->second, pass->first);
+			freeUnusedDataStructures(_analyses, kernel->second, pass->first);
+			allocateNewDataStructures(_analyses, kernel->second, pass->first);
 		
 			runKernelPass(_module, kernel->second, pass->second);
 		}
 
-		freeUnusedDataStructures(kernel->second, Pass::NoAnalysis);
+		freeUnusedDataStructures(_analyses, kernel->second,
+			analysis::Analysis::NoAnalysis);
 
 		for(PassMap::iterator pass = _passes.begin();
 			pass != _passes.end(); ++pass)

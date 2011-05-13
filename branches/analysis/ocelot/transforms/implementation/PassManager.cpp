@@ -97,14 +97,14 @@ static void allocateNewDataStructures(PassManager::AnalysisMap& analyses,
 	if(type & analysis::Analysis::DataflowGraphAnalysis)
 	{
 		PassManager::AnalysisMap::iterator dom = analyses.find(
-			analysis::Analysis::DataFlowGraphAnalysis);
+			analysis::Analysis::DataflowGraphAnalysis);
 		
 		if(analyses.end() == dom)
 		{
 			report("Allocating dataflow graph for kernel " << k->name);
 			dom = analyses.insert(std::make_pair(
-				analysis::Analysis::DataflowGraph,
-				new analysis::DataflowGraph(k->cfg()))).first;
+				analysis::Analysis::DataflowGraphAnalysis,
+				new analysis::DataflowGraph(*k->cfg()))).first;
 		}
 		if(type & analysis::Analysis::StaticSingleAssignment)
 		{

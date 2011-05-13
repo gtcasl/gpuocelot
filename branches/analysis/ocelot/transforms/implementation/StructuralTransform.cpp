@@ -25,6 +25,9 @@
 #define REPORT_BASE 1
 
 namespace transforms {
+
+typedef analysis::StructuralAnalysis SA;
+
 ir::ControlFlowGraph::iterator StructuralTransform::SplitBlockPredecessors(
 	ir::ControlFlowGraph::iterator BB, BBVecTy::iterator iter, int size) {
 	int i = 1;
@@ -70,23 +73,25 @@ bool StructuralTransform::Cut(NodeTy *N) {
 report("Applying cut transform");
 	bool change = false; 
 
-	for (NodeSetTy::iterator i = N->childNode.begin(),
+	for (SA::NodeSetTy::iterator i = N->childNode.begin(),
 		e = N->childNode.end(); i != e; ++i) {
 		change |= Cut(*i);
 	}
 	
 	if (!stopCut) {
-		if (N->isCombined && (N->nodeType == NaturalLoop
-			|| N->nodeType == SelfLoop) && N->containedBB.size() > 1
+		if (N->isCombined && (N->nodeType == SA::NaturalLoop
+			|| N->nodeType == SA::SelfLoop)
+			&& N->containedBB.size() > 1
 			&& N->outgoingBR.size() > 0) {
 			change = true;
 	
 			ir::ControlFlowGraph::iterator TopExitBB = N->exitBB;
 
-			for (EdgeVecTy::iterator i = N->outgoingBR.begin(),
+			for (SA::EdgeVecTy::iterator i = N->outgoingBR.begin(),
 				e = N->outgoingBR.end(); i != e; ++i) {
 				// 1. Before loop, insert fp = false
-				DataflowGraph::RegisterId fp = _kernel->dfg()->newRegister();	
+				analysis::DataflowGraph::RegisterId
+					fp = dfg().newRegister();	
 
 				ir::PTXInstruction* move1 = new ir::PTXInstruction(
 					ir::PTXInstruction::Mov);
@@ -149,7 +154,7 @@ report("Applying cut transform");
 				
 				// For each BasicBlock
 				// Remap Values here for Instructions
-				for (BBSetTy::iterator BBI = N->containedBB.begin(),
+				for (SA::BBSetTy::iterator BBI = N->containedBB.begin(),
 					BBE = N->containedBB.end(); BBI != BBE; ++BBI) { 
 					ir::ControlFlowGraph::iterator BB = *BBI;
 					ir::BasicBlock::EdgePointerVector edges = BB->out_edges;
@@ -258,7 +263,7 @@ report("Applying cut transform");
 						ir::PTXOperand::Immediate, ir::PTXOperand::u32, 1));
 					setp->b.imm_uint = 1;
 					setp->d = std::move(ir::PTXOperand(ir::PTXOperand::Register,
-						ir::PTXOperand::u32, _kernel->dfg()->newRegister()));
+						ir::PTXOperand::u32, dfg().newRegister()));
 					setp->d.type = ir::PTXOperand::pred;
 					setp->type = ir::PTXOperand::u32;
 					setp->comparisonOperator = ir::PTXInstruction::Eq;
@@ -305,13 +310,13 @@ bool StructuralTransform::BackwardCopy(NodeTy *N) {
 report("Applying backward copy");
 	bool change = false; 
 
-	for (NodeSetTy::iterator i = N->childNode.begin(),
+	for (SA::NodeSetTy::iterator i = N->childNode.begin(),
 		e = N->childNode.end(); i != e; ++i) {
 		change |= BackwardCopy(*i);
 	}
 	
-	if (N->isCombined && (N->nodeType == NaturalLoop
-		|| N->nodeType == SelfLoop) && N->containedBB.size() > 1
+	if (N->isCombined && (N->nodeType == SA::NaturalLoop
+		|| N->nodeType == SA::SelfLoop) && N->containedBB.size() > 1
 		&& N->incomingBR.size() > 0) {
 		change = true;
 
@@ -331,11 +336,11 @@ report("Applying backward copy");
 
 		// ValueMap
 		ValueToValueMapTy ValueMap;
-		BBSetTy clonedBBSet;
+		SA::BBSetTy clonedBBSet;
 		ir::ControlFlowGraph::iterator clonedEntryBB;
 
 		// Clone BasicBlocks to the new function
-		for (BBSetTy::iterator BI = N->containedBB.begin(),
+		for (SA::BBSetTy::iterator BI = N->containedBB.begin(),
 			BE = N->containedBB.end(); BI != BE; ++BI){
 			ir::ControlFlowGraph::iterator BB = *BI;
 			char tmp[20];
@@ -464,7 +469,7 @@ report("Applying backward copy");
 		}				 
 
 		// point the incoming edges to the unrolled iteration
-		for (EdgeVecTy::iterator i = N->incomingBR.begin(),
+		for (SA::EdgeVecTy::iterator i = N->incomingBR.begin(),
 			e = N->incomingBR.end(); i != e; ++i) {
 			_kernel->cfg()->remove_edge(i->first->get_edge(i->second));
 			_kernel->cfg()->insert_edge(ir::ControlFlowGraph::Edge(
@@ -491,20 +496,20 @@ bool StructuralTransform::ForwardCopy(NodeTy *N) {
 report("Applying forward copy");
 	bool change = false; 
 
-	for (NodeSetTy::iterator i = N->childNode.begin(),
+	for (SA::NodeSetTy::iterator i = N->childNode.begin(),
 		e = N->childNode.end(); i != e; ++i) 
 		change |= ForwardCopy(*i);
 	
 	if (N->incomingForwardBR.size() > 0) {
 		change = true;
 
-		for (EdgeVecTy::iterator i = N->incomingForwardBR.begin(),
+		for (SA::EdgeVecTy::iterator i = N->incomingForwardBR.begin(),
 			e = N->incomingForwardBR.end(); i != e; ++i) {
 			// ValueMap
 			ValueToValueMapTy ValueMap;
  
 			// Clone BasicBlocks to the new function
-			for (BBSetTy::iterator BI = N->containedBB.begin(),
+			for (SA::BBSetTy::iterator BI = N->containedBB.begin(),
 				BE = N->containedBB.end(); BI != BE; ++BI) {
 				ir::ControlFlowGraph::iterator BB = *BI;
 				char tmp[20];
@@ -668,7 +673,7 @@ void StructuralTransform::runOnKernel(ir::IRKernel& k) {
 
 		stopCut = false;	
 
-		for (NodeSetTy::iterator i = SA.unreachableNodeSet.begin(),
+		for (SA::NodeSetTy::iterator i = SA.unreachableNodeSet.begin(),
 			e = SA.unreachableNodeSet.end(); i != e; ++i) {
 			if (Cut(*i)) {
 				change = true;
@@ -712,7 +717,7 @@ ANALYSIS:
 	SA.runOnKernel(_kernel);
 }
 
-const NodeTy* StructuralTransform::get_root_node() const {
+const SA::NodeTy* StructuralTransform::get_root_node() const {
 	return *(SA.Net.begin());
 } 
 
@@ -730,7 +735,7 @@ const StructuralTransform::NodeListTy& StructuralTransform::children(
 	NodeTy *tmp = NULL;
 
 	switch (node->nodeType) {
-	case Block:
+	case SA::Block:
 		tmp = node->entryNode;
 		nList->push_back(tmp);
 
@@ -740,21 +745,21 @@ const StructuralTransform::NodeListTy& StructuralTransform::children(
 		}	
 
 		break;
-	case IfThen:
+	case SA::IfThen:
 		nList->push_back(cond(node));
 		nList->push_back(*(node->childNode.begin()));
 
 		break;
-	case IfThenElse:
+	case SA::IfThenElse:
 		nList->push_back(cond(node));
 		nList->push_back(ifTrue(node));
 		nList->push_back(ifFalse(node));
 	 
 		break;
-	case SelfLoop:
+	case SA::SelfLoop:
 		nList->push_back(*(node->childNode.begin()));
 		break;
-	case NaturalLoop:
+	case SA::NaturalLoop:
 		tmp = node->entryNode;
 		nList->push_back(tmp);
 
@@ -769,12 +774,12 @@ const StructuralTransform::NodeListTy& StructuralTransform::children(
 	return *nList; 
 }
 
-const NodeTy* StructuralTransform::cond(const NodeTy *node) const {
+const SA::NodeTy* StructuralTransform::cond(const NodeTy *node) const {
 	return node->entryNode;
 }
 
-const NodeTy* StructuralTransform::ifTrue(const NodeTy *node) const {
-	if (node->nodeType == IfThen)
+const SA::NodeTy* StructuralTransform::ifTrue(const NodeTy *node) const {
+	if (node->nodeType == SA::IfThen)
 		return *(node->childNode.begin());		
 
 	const NodeTy* lastChild = node;
@@ -785,7 +790,7 @@ const NodeTy* StructuralTransform::ifTrue(const NodeTy *node) const {
 	ir::PTXInstruction *term = static_cast<ir::PTXInstruction *>(
 		lastChild->BB->instructions.back());
 
-	NodeSetTy::iterator tmpNode = node->childNode.begin();
+	SA::NodeSetTy::iterator tmpNode = node->childNode.begin();
 	NodeTy* childNode1 = *tmpNode;
 	++tmpNode;
 	NodeTy* childNode2 = *tmpNode;
@@ -796,7 +801,7 @@ const NodeTy* StructuralTransform::ifTrue(const NodeTy *node) const {
 		return childNode1;		
 }
 
-const NodeTy* StructuralTransform::ifFalse(const NodeTy *node) const {
+const SA::NodeTy* StructuralTransform::ifFalse(const NodeTy *node) const {
 	const NodeTy* lastChild = node;
 
 	while (!lastChild->isCombined)
@@ -805,7 +810,7 @@ const NodeTy* StructuralTransform::ifFalse(const NodeTy *node) const {
 	ir::PTXInstruction *term = static_cast<ir::PTXInstruction *>(
 		lastChild->BB->instructions.back());
 
-	NodeSetTy::iterator tmpNode = node->childNode.begin();
+	SA::NodeSetTy::iterator tmpNode = node->childNode.begin();
 	NodeTy* childNode1 = *tmpNode;
 	++tmpNode;
 	NodeTy* childNode2 = *tmpNode;

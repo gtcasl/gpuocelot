@@ -17,6 +17,7 @@
 
 // Ocelot Includes
 #include <ocelot/ir/interface/ControlFlowGraph.h>
+#include <ocelot/analysis/interface/DataflowGraph.h>
 #include <ocelot/analysis/interface/StructuralAnalysis.h> 
 #include <ocelot/transforms/interface/AssignFallThroughEdge.h>
 
@@ -102,6 +103,8 @@ private:
 	const NodeTy* ifTrue(const NodeTy *node) const;
 	///*! \brief Get if-false node from IfThenElse */
 	const NodeTy* ifFalse(const NodeTy *node) const;
+	
+	analysis::DataflowGraph& dfg();
 };
 
 }

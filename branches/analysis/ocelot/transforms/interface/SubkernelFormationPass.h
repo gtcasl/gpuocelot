@@ -15,56 +15,59 @@
 #include <unordered_map>
 
 // Forward Declarations
-namespace ir
-{
-	class PTXKernel;
-}
+namespace analysis { class DataflowGraph; }
+namespace ir       { class PTXKernel;     }
 
 namespace transforms
 {
-	/*! \brief Split all kernels in a module into sub-kernels.  The sub-kernels
-		should be called as functions from the main kernel.  The assumption
-		is that all threads will execute a sub-kernel, hit a barrier, and
-		enter the next sub-kernel.
+
+/*! \brief Split all kernels in a module into sub-kernels.  The sub-kernels
+	should be called as functions from the main kernel.  The assumption
+	is that all threads will execute a sub-kernel, hit a barrier, and
+	enter the next sub-kernel.
+	
+	This pass may optionally insert an explicit scheduler kernel that is
+	responsible for doing fine-grained scheduling of the next function
+	to execute and control transition between functions.  This is necessary
+	to support intelligent scheduling on architectures without runtime 
+	support (mainly GPUs).
+ */
+class SubkernelFormationPass : public ModulePass
+{
+public:
+	typedef std::vector<ir::PTXKernel*> KernelVector;
 		
-		This pass may optionally insert an explicit scheduler kernel that is
-		responsible for doing fine-grained scheduling of the next function
-		to execute and control transition between functions.  This is necessary
-		to support intelligent scheduling on architectures without runtime 
-		support (mainly GPUs).
-	 */
-	class SubkernelFormationPass : public ModulePass
+public:
+	SubkernelFormationPass(unsigned int expectedRegionSize = 50);
+	void runOnModule(ir::Module& m);
+
+public:
+	class ExtractKernelsPass : public KernelPass
 	{
 	public:
-		typedef std::vector<ir::PTXKernel*> KernelVector;
+		typedef std::unordered_map<ir::PTXKernel*, 
+			KernelVector> KernelVectorMap;
 			
 	public:
-		SubkernelFormationPass(unsigned int expectedRegionSize = 50);
-		void runOnModule(ir::Module& m);
-
+		ExtractKernelsPass(unsigned int expectedRegionSize = 50);
+		void initialize(const ir::Module& m);
+		void runOnKernel(ir::IRKernel& k);
+		void finalize();
+		
 	public:
-		class ExtractKernelsPass : public KernelPass
-		{
-		public:
-			typedef std::unordered_map<ir::PTXKernel*, 
-				KernelVector> KernelVectorMap;
-				
-		public:
-			ExtractKernelsPass(unsigned int expectedRegionSize = 50);
-			void initialize(const ir::Module& m);
-			void runOnKernel(ir::IRKernel& k);
-			void finalize();
-			
-		public:
-			KernelVectorMap kernels;
-		
-		private:
-			unsigned int _expectedRegionSize;
-		};
-		
+		KernelVectorMap kernels;
+	
+	private:
+		analysis::DataflowGraph& _dfg();
+	
 	private:
 		unsigned int _expectedRegionSize;
 	};
+	
+private:
+	unsigned int _expectedRegionSize;
+};
+
 }
 
 #endif

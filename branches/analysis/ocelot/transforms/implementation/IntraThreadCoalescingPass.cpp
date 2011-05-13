@@ -43,8 +43,6 @@ namespace transforms
 		analysis::DataflowGraph* dfg
 			= static_cast<analysis::DataflowGraph*>(dfg_structure);
 
-		dfg->compute();
-		
 		for(analysis::DataflowGraph::iterator block = dfg->begin(); 
 			block != dfg->end(); ++block)
 		{

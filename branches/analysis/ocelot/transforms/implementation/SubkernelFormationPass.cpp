@@ -21,7 +21,7 @@
 #include <queue>
 
 // Ocelot Includes
-#include <ocelot/analysis/interface/SubkernelFormationPass.h>
+#include <ocelot/transforms/interface/SubkernelFormationPass.h>
 #include <ocelot/ir/interface/Module.h>
 
 // Hydrazine Includes
@@ -33,11 +33,11 @@
 
 #define REPORT_BASE 0
 
-namespace analysis
+namespace transforms
 {
 
 SubkernelFormationPass::SubkernelFormationPass(unsigned int e)
-	: ModulePass(DataflowGraphAnalysis, "SubkernelFormationPass"), 
+	: ModulePass(Analysis::DataflowGraphAnalysis, "SubkernelFormationPass"), 
 	_expectedRegionSize(e)
 {
 	report("Constructing SubkernelFormationPass() - expected region size: "
@@ -82,7 +82,7 @@ void SubkernelFormationPass::runOnModule(ir::Module& m)
 
 SubkernelFormationPass::ExtractKernelsPass::ExtractKernelsPass(
 	unsigned int regionSize) : 
-	KernelPass(DataflowGraphAnalysis, "ExtractKernelsPass"), 
+	KernelPass(Analysis::DataflowGraphAnalysis, "ExtractKernelsPass"), 
 	_expectedRegionSize(regionSize)
 {
 
@@ -93,17 +93,26 @@ void SubkernelFormationPass::ExtractKernelsPass::initialize(const ir::Module& m)
 	
 }
 
+analysis::DataflowGraph& SubkernelFormationPass::ExtractKernelsPass::_dfg()
+{
+	Analysis* dfg_structure = getAnalysis(Analysis::DataflowGraphAnalysis);
+	assert(dfg_structure != 0);
+
+	return *static_cast<analysis::DataflowGraph*>(dfg_structure);
+}
+
 typedef std::unordered_set<ir::ControlFlowGraph::iterator> BlockSet;
 
 static unsigned int createRestorePoint(ir::PTXKernel& newKernel,
 	ir::PTXKernel& ptx, ir::ControlFlowGraph::iterator newBlock, 
 	ir::ControlFlowGraph::iterator oldBlock, 
 	ir::ControlFlowGraph::edge_iterator newEdge,
-	const DataflowGraph::IteratorMap& cfgToDfgMap, BlockSet& savedBlocks)
+	const analysis::DataflowGraph::IteratorMap& cfgToDfgMap,
+	BlockSet& savedBlocks, analysis::DataflowGraph& dfg)
 {
 	report("   Creating restore point for block '" << newBlock->label << "'");
 
-	DataflowGraph::IteratorMap::const_iterator
+	analysis::DataflowGraph::IteratorMap::const_iterator
 		dfgBlock = cfgToDfgMap.find(oldBlock);
 
 	if(dfgBlock->second->aliveIn().empty()) return 0;
@@ -120,14 +129,14 @@ static unsigned int createRestorePoint(ir::PTXKernel& newKernel,
 	move->a = std::move(ir::PTXOperand(ir::PTXOperand::Address,
 		ir::PTXOperand::u32, "_Zocelot_spill_area"));
 	move->d = std::move(ir::PTXOperand(ir::PTXOperand::Register, 
-		ir::PTXOperand::u32, ptx.dfg()->newRegister()));
+		ir::PTXOperand::u32, dfg.newRegister()));
 	move->type = ir::PTXOperand::u32;
 	
 	unsigned int offset = 0;
 
 	splitEdge->head->instructions.push_back(move);
 
-	for(DataflowGraph::RegisterSet::const_iterator
+	for(analysis::DataflowGraph::RegisterSet::const_iterator
 		reg = dfgBlock->second->aliveIn().begin();
 		reg != dfgBlock->second->aliveIn().end(); ++reg)
 	{
@@ -169,7 +178,8 @@ static unsigned int createSavePoint(ir::PTXKernel& newKernel,
 	ir::PTXKernel& ptx, BlockLabelMap& saveBlocks,
 	ir::ControlFlowGraph::iterator oldBlock,
 	ir::ControlFlowGraph::edge_iterator newEdge,
-	const DataflowGraph::IteratorMap& cfgToDfgMap)
+	const analysis::DataflowGraph::IteratorMap& cfgToDfgMap,
+	analysis::DataflowGraph& dfg)
 {
 	report("   Creating save point for edge '" << newEdge->head->label
 		<< "' -> '" << oldBlock->label << "'");
@@ -197,7 +207,7 @@ static unsigned int createSavePoint(ir::PTXKernel& newKernel,
 		return 0;
 	}
 	
-	DataflowGraph::IteratorMap::const_iterator
+	analysis::DataflowGraph::IteratorMap::const_iterator
 		dfgBlock = cfgToDfgMap.find(oldBlock);
 
 	ir::ControlFlowGraph::edge_iterator splitEdge = newKernel.cfg()->split_edge(
@@ -214,12 +224,12 @@ static unsigned int createSavePoint(ir::PTXKernel& newKernel,
 		move->a = std::move(ir::PTXOperand(ir::PTXOperand::Address,
 			ir::PTXOperand::u32, "_Zocelot_spill_area"));
 		move->d = std::move(ir::PTXOperand(ir::PTXOperand::Register, 
-			ir::PTXOperand::u32, ptx.dfg()->newRegister()));
+			ir::PTXOperand::u32, dfg.newRegister()));
 		move->type = ir::PTXOperand::u32;
 		
 		splitEdge->head->instructions.push_back(move);
 
-		for(DataflowGraph::RegisterSet::const_iterator
+		for(analysis::DataflowGraph::RegisterSet::const_iterator
 			reg = dfgBlock->second->aliveIn().begin();
 			reg != dfgBlock->second->aliveIn().end(); ++reg)
 		{
@@ -248,7 +258,7 @@ static unsigned int createSavePoint(ir::PTXKernel& newKernel,
 	move->a = std::move(ir::PTXOperand(ir::PTXOperand::Address,
 		ir::PTXOperand::u32, "_Zocelot_resume_point"));
 	move->d = std::move(ir::PTXOperand(ir::PTXOperand::Register, 
-		ir::PTXOperand::u32, ptx.dfg()->newRegister()));
+		ir::PTXOperand::u32, dfg.newRegister()));
 	move->type = ir::PTXOperand::u32;
 
 	splitEdge->head->instructions.push_back(move);
@@ -287,8 +297,9 @@ static ir::ControlFlowGraph::iterator createRegion(
 	ir::PTXKernel& newKernel, unsigned int& spillRegionSize, ir::PTXKernel& ptx,
 	const BlockSet& region, const BlockSet& inEdges, 
 	ir::ControlFlowGraph::iterator entry,
-	const DataflowGraph::IteratorMap& cfgToDfgMap,
-	const BlockSet& alreadyAdded, BlockSet& savedBlocks)
+	const analysis::DataflowGraph::IteratorMap& cfgToDfgMap,
+	const BlockSet& alreadyAdded, BlockSet& savedBlocks,
+	analysis::DataflowGraph& dfg)
 {
 	typedef std::vector<ir::Edge> EdgeVector;
 	typedef std::unordered_map<ir::ControlFlowGraph::iterator, 
@@ -403,7 +414,7 @@ static ir::ControlFlowGraph::iterator createRegion(
 
 			spillRegionSize = std::max(spillRegionSize, 
 				createSavePoint(newKernel, ptx, saveBlocks,
-				tail, newEdge, cfgToDfgMap));
+				tail, newEdge, cfgToDfgMap, dfg));
 			
 			// skip edges that go to an already created subkernel
 			if(alreadyAdded.count(tail) != 0) continue;
@@ -453,7 +464,7 @@ static ir::ControlFlowGraph::iterator createRegion(
 			
 			spillRegionSize = std::max(spillRegionSize, 
 				createRestorePoint(newKernel, ptx, newTail->second, 
-				tail, newEdge, cfgToDfgMap, savedBlocks));
+				tail, newEdge, cfgToDfgMap, savedBlocks, dfg));
 		}
 	}
 
@@ -552,7 +563,8 @@ static void updateTailCallTargets(
 }
 
 static void createScheduler(ir::PTXKernel& kernel,
-	ir::PTXKernel& originalKernel, const BlockSet& savedBlocks)
+	ir::PTXKernel& originalKernel, const BlockSet& savedBlocks,
+	analysis::DataflowGraph& dfg)
 {
 	typedef ir::BasicBlock::EdgePointerVector EdgePointerVector;
 	typedef std::vector<ir::Edge> EdgeVector;
@@ -576,7 +588,7 @@ static void createScheduler(ir::PTXKernel& kernel,
 	move->a = std::move(ir::PTXOperand(ir::PTXOperand::Address,
 		ir::PTXOperand::u32, "_Zocelot_resume_point"));
 	move->d = std::move(ir::PTXOperand(ir::PTXOperand::Register, 
-		ir::PTXOperand::u32, originalKernel.dfg()->newRegister()));
+		ir::PTXOperand::u32, dfg.newRegister()));
 	move->type = ir::PTXOperand::u32;
 	
 	scheduler->instructions.push_back(move);
@@ -590,7 +602,7 @@ static void createScheduler(ir::PTXKernel& kernel,
 	load->a = std::move(ir::PTXOperand(ir::PTXOperand::Indirect,
 		ir::PTXOperand::u32, move->d.reg));
 	load->d = std::move(ir::PTXOperand(ir::PTXOperand::Register,
-		ir::PTXOperand::u32, originalKernel.dfg()->newRegister()));
+		ir::PTXOperand::u32, dfg.newRegister()));
 
 	scheduler->instructions.push_back(load);
 
@@ -649,7 +661,7 @@ static void createScheduler(ir::PTXKernel& kernel,
 		}
 
 		compare->d = std::move(ir::PTXOperand(ir::PTXOperand::Register,
-			ir::PTXOperand::pred, originalKernel.dfg()->newRegister()));
+			ir::PTXOperand::pred, dfg.newRegister()));
 		compare->comparisonOperator = ir::PTXInstruction::Eq;
 		compare->type = ir::PTXOperand::u32;
 	
@@ -749,7 +761,7 @@ static void createScheduler(ir::PTXKernel& kernel,
 	}
 	
 	compare->d = std::move(ir::PTXOperand(ir::PTXOperand::Register,
-		ir::PTXOperand::pred, originalKernel.dfg()->newRegister()));
+		ir::PTXOperand::pred, dfg.newRegister()));
 	compare->comparisonOperator = ir::PTXInstruction::Eq;
 	compare->type = ir::PTXOperand::u32;
 	
@@ -827,10 +839,7 @@ void SubkernelFormationPass::ExtractKernelsPass::runOnKernel(ir::IRKernel& k)
 	
 	ir::PTXKernel& ptx = static_cast<ir::PTXKernel&>(k);
 
-	// Compute live register sets for each block
-	ptx.dfg()->compute();
-	
-	DataflowGraph::IteratorMap cfgToDfgMap = ptx.dfg()->getCFGtoDFGMap();
+	analysis::DataflowGraph::IteratorMap cfgToDfgMap = _dfg().getCFGtoDFGMap();
 	
 	// This is the new kernel entry point
 	splitKernels.push_back(new ir::PTXKernel(k.name, false, k.module));
@@ -907,10 +916,10 @@ void SubkernelFormationPass::ExtractKernelsPass::runOnKernel(ir::IRKernel& k)
 		unsigned int spillRegionSize = 0;
 		
 		entry = createRegion(*newKernel, spillRegionSize, ptx, region,
-			inEdges, entry, cfgToDfgMap, alreadyAdded, savedBlocks);
+			inEdges, entry, cfgToDfgMap, alreadyAdded, savedBlocks, _dfg());
 		alreadyAdded.insert(region.begin(), region.end());
 		
-		createScheduler(*newKernel, ptx, savedBlocks);
+		createScheduler(*newKernel, ptx, savedBlocks, _dfg());
 
 		addVariables(*newKernel, k, spillRegionSize, splitKernels.size() > 1);
 		

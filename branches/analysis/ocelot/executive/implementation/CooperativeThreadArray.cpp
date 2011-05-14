@@ -142,21 +142,23 @@ executive::CooperativeThreadArray::CooperativeThreadArray(
 
 	typedef api::OcelotConfiguration config;
 
-	if (config::get().executive.reconvergenceMechanism == "ipdom") {
+	if (config::get().executive.reconvergenceMechanism
+		== ReconvergenceMechanism::Reconverge_IPDOM) {
 		reconvergenceMechanism = new ReconvergenceIPDOM(kernel, this);
 	}
-	else if (config::get().executive.reconvergenceMechanism == "barrier") {
+	else if (config::get().executive.reconvergenceMechanism
+		== ReconvergenceMechanism::Reconverge_Barrier) {
 		reconvergenceMechanism = new ReconvergenceBarrier(kernel, this);
 	}
-	else if (config::get().executive.reconvergenceMechanism == "gen6") {
+	else if (config::get().executive.reconvergenceMechanism
+		== ReconvergenceMechanism::Reconverge_TFGen6) {
 		reconvergenceMechanism = new ReconvergenceTFGen6(kernel, this);
 	}
 	else if (config::get().executive.reconvergenceMechanism
-		== "thread-frontier") {
+		== ReconvergenceMechanism::Reconverge_TFSortedStack) {
 		reconvergenceMechanism = new ReconvergenceTFSortedStack(kernel, this);
 	}
-	else
-	{
+	else {
 		assertM(false, "unknown thread reconvergence mechanism - "
 			<< config::get().executive.reconvergenceMechanism);
 	}

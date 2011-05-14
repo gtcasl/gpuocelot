@@ -38,8 +38,7 @@ public:
 public:
 	/*! \brief Initialize the analysis, register it with a pass manager */
 	Analysis(Type t = NoAnalysis, const std::string& name = "",
-		int required = NoAnalysis,
-		transforms::PassManager* m = 0);
+		int required = NoAnalysis);
 
 public:
 	/*! \brief Get the analysis type */
@@ -49,6 +48,9 @@ public:
 	const std::string name;
 
 public:
+	/*! \brief Set the pass manager used to supply dependent analyses */
+	void setPassManager(transforms::PassManager* m);
+	
 	/*! \brief Get an up to date analysis by type */
 	Analysis* getAnalysis(Analysis::Type type);
 
@@ -72,8 +74,7 @@ class KernelAnalysis : public Analysis
 public:
 	/*! \brief Initialize the analysis, register it with a pass manager */
 	KernelAnalysis(Type t = NoAnalysis, const std::string& name = "",
-		int required = NoAnalysis,
-		transforms::PassManager* m = 0);
+		int required = NoAnalysis);
 
 public:
 	virtual void analyze(ir::IRKernel& kernel) = 0;
@@ -87,8 +88,7 @@ class ModuleAnalysis : public Analysis
 public:
 	/*! \brief Initialize the analysis, register it with a pass manager */
 	ModuleAnalysis(Type t = NoAnalysis, const std::string& name = "",
-		int required = NoAnalysis,
-		transforms::PassManager* m = 0);
+		int required = NoAnalysis);
 
 public:
 	virtual void analyze(ir::Module& module) = 0;

@@ -18,26 +18,28 @@
 namespace analysis
 {
 
-Analysis::Analysis(Type t, const std::string& n,
-	int r, transforms::PassManager* m)
-: type(t), name(n), _required(r), _manager(m)
+Analysis::Analysis(Type t, const std::string& n, int r)
+: type(t), name(n), _required(r), _manager(0)
 {
 
 }
 
 
-KernelAnalysis::KernelAnalysis(Type t, const std::string& n,
-	int r, transforms::PassManager* m)
-: Analysis(t, n, r, m)
+KernelAnalysis::KernelAnalysis(Type t, const std::string& n, int r)
+: Analysis(t, n, r)
 {
 
 }
 
-ModuleAnalysis::ModuleAnalysis(Type t, const std::string& n,
-	int r, transforms::PassManager* m)
-: Analysis(t, n, r, m)
+ModuleAnalysis::ModuleAnalysis(Type t, const std::string& n, int r)
+: Analysis(t, n, r)
 {
 
+}
+
+void Analysis::setPassManager(transforms::PassManager* m)
+{
+	_manager = m;
 }
 
 Analysis* Analysis::getAnalysis(Analysis::Type type)

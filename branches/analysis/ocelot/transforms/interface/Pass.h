@@ -60,11 +60,14 @@ public:
 public:
 	/*! \brief The default constructor sets the type */
 	Pass(Type t = InvalidPass, int a = Analysis::NoAnalysis,
-		const std::string& n = "", PassManager* m = 0);
+		const std::string& n = "");
 	/*! \brief Virtual destructor */
 	virtual ~Pass();
 
 public:
+	/*! \brief Set the pass manager used to supply dependent analyses */
+	void setPassManager(transforms::PassManager* m);
+
 	/*! \brief Get an up to date analysis by type */
 	Analysis* getAnalysis(Analysis::Type type);
 
@@ -91,7 +94,7 @@ class ImmutablePass : public Pass
 public:
 	/*! \brief The default constructor sets the type */
 	ImmutablePass(int a = Analysis::NoAnalysis,
-		const std::string& n = "", PassManager* m = 0);
+		const std::string& n = "");
 	/*! \brief Virtual destructor */
 	virtual ~ImmutablePass();
 	
@@ -105,8 +108,7 @@ class ModulePass : public Pass
 {
 public:
 	/*! \brief The default constructor sets the type */
-	ModulePass(int a = Analysis::NoAnalysis, const std::string& n = "",
-		PassManager* m = 0);
+	ModulePass(int a = Analysis::NoAnalysis, const std::string& n = "");
 	/*! \brief Virtual destructor */
 	virtual ~ModulePass();
 	
@@ -120,8 +122,7 @@ class KernelPass : public Pass
 {
 public:
 	/*! \brief The default constructor sets the type */
-	KernelPass(int a = Analysis::NoAnalysis, const std::string& n = "",
-		PassManager* m = 0);
+	KernelPass(int a = Analysis::NoAnalysis, const std::string& n = "");
 	/*! \brief Virtual destructor */
 	virtual ~KernelPass();
 	
@@ -140,7 +141,7 @@ class BasicBlockPass : public Pass
 public:
 	/*! \brief The default constructor sets the type */
 	BasicBlockPass(int a = Analysis::NoAnalysis,
-		const std::string& n = "", PassManager* m = 0);
+		const std::string& n = "");
 	/*! \brief Virtual destructor */
 	virtual ~BasicBlockPass();
 	

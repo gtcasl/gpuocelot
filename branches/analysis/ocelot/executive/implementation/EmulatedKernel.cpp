@@ -215,7 +215,7 @@ void executive::EmulatedKernel::constructInstructionSequence() {
 	transforms::PassManager manager(const_cast<ir::Module*>(module));
 	
 	transforms::IPDOMReconvergencePass* pass
-		= new transforms::IPDOMReconvergencePass();
+		= new transforms::IPDOMReconvergencePass;
 
 	manager.addPass(*pass);
 	manager.runOnKernel(name);

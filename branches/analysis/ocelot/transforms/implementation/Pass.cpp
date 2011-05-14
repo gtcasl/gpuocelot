@@ -17,8 +17,8 @@
 namespace transforms
 {
 
-Pass::Pass(Type t, int a, const std::string& n, PassManager* m)
-	: type(t), analyses(a), name(n), _manager(m)
+Pass::Pass(Type t, int a, const std::string& n)
+	: type(t), analyses(a), name(n), _manager(0)
 {
 
 }
@@ -26,6 +26,11 @@ Pass::Pass(Type t, int a, const std::string& n, PassManager* m)
 Pass::~Pass()
 {
 
+}
+
+void Pass::setPassManager(PassManager* m)
+{
+	_manager = m;
 }
 
 analysis::Analysis* Pass::getAnalysis(Analysis::Type type)
@@ -54,7 +59,7 @@ std::string Pass::toString() const
 	return name;
 }
 
-ImmutablePass::ImmutablePass(int a, const std::string& n, PassManager* m) 
+ImmutablePass::ImmutablePass(int a, const std::string& n) 
 	: Pass(Pass::ImmutablePass, a, n)
 {
 
@@ -65,8 +70,8 @@ ImmutablePass::~ImmutablePass()
 
 }
 
-ModulePass::ModulePass(int a, const std::string& n, PassManager* m) 
-	: Pass( Pass::ModulePass, a, n )
+ModulePass::ModulePass(int a, const std::string& n) 
+	: Pass( Pass::ModulePass, a, n)
 {
 
 }
@@ -76,8 +81,8 @@ ModulePass::~ModulePass()
 
 }
 
-KernelPass::KernelPass(int a, const std::string& n, PassManager* m)
-	: Pass(Pass::KernelPass, a, n, m)
+KernelPass::KernelPass(int a, const std::string& n)
+	: Pass(Pass::KernelPass, a, n)
 {
 
 }
@@ -87,8 +92,8 @@ KernelPass::~KernelPass()
 
 }
 
-BasicBlockPass::BasicBlockPass(int a, const std::string& n, PassManager* m)
-	: Pass(Pass::BasicBlockPass, a, n, m)
+BasicBlockPass::BasicBlockPass(int a, const std::string& n)
+	: Pass(Pass::BasicBlockPass, a, n)
 {
 
 }

@@ -9,6 +9,8 @@
 // Ocelot includes
 #include <ocelot/api/interface/OcelotConfiguration.h>
 
+#include <ocelot/executive/interface/ReconvergenceMechanism.h>
+
 #include <ocelot/ir/interface/Instruction.h>
 #include <ocelot/translator/interface/Translator.h>
 
@@ -162,7 +164,9 @@ static void initializeExecutive(api::OcelotConfiguration::Executive &executive,
 		"preferredISA", "emulated");
 	std::string strOptLevel = config.parse<std::string>(
 		"optimizationLevel", "full");
-
+	std::string strReconvMech = config.parse<std::string>(
+		"reconvergenceMechanism", "ipdom");
+		
 	executive.preferredISA = (int)ir::Instruction::Emulated;
 	if (strPrefISA == "emulated" || strPrefISA == "Emulated") {
 		executive.preferredISA = (int)ir::Instruction::Emulated;
@@ -222,6 +226,28 @@ static void initializeExecutive(api::OcelotConfiguration::Executive &executive,
 	}
 	else {
 		report("Unknown optimization level - using none");
+	}
+
+	executive.reconvergenceMechanism
+		= (int)executive::ReconvergenceMechanism::Reconverge_IPDOM;
+	if (strReconvMech == "ipdom") {
+		executive.reconvergenceMechanism
+			= (int)executive::ReconvergenceMechanism::Reconverge_IPDOM;
+	}
+	else if (strReconvMech == "barrier") {
+		executive.reconvergenceMechanism
+			= (int)executive::ReconvergenceMechanism::Reconverge_Barrier;
+	}
+	else if (strReconvMech == "tf-gen6") {
+		executive.reconvergenceMechanism
+			= (int)executive::ReconvergenceMechanism::Reconverge_TFGen6;
+	}
+	else if (strReconvMech == "tf-stack") {
+		executive.reconvergenceMechanism
+			= (int)executive::ReconvergenceMechanism::Reconverge_TFSortedStack;
+	}
+	else {
+		report("Unknown reconvergence mechanism - ipdom");
 	}
 
 	executive.defaultDeviceID = config.parse<int>("defaultDeviceID", 0);

@@ -35,8 +35,8 @@ namespace transforms
 {
 
 IPDOMReconvergencePass::IPDOMReconvergencePass()
-: KernelPass(Analysis::PostDominatorTreeAnalysis,
-	"IPDOMReconvergencePass")
+: KernelPass(Analysis::PostDominatorTreeAnalysis
+	| Analysis::DominatorTreeAnalysis, "IPDOMReconvergencePass")
 {
 
 }
@@ -152,6 +152,7 @@ void IPDOMReconvergencePass::runOnKernel(ir::IRKernel& k)
 			ptx.pc = instructions.size();
 			lastPC = ptx.pc;
 			instructions.push_back(ptx);
+			report("[" << lastPC << "] - " << ptx.toString());
 		}
 		
 	}

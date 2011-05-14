@@ -158,7 +158,7 @@ namespace api {
 			std::string host;
 
 			//! \brief Reconvergence mechanism
-			std::string reconvergenceMechanism;
+			int reconvergenceMechanism;
 
 			//! \brief maximum number of worker threads - a non-positive 
 			//         number indicates no limit

@@ -43,7 +43,7 @@ public:
 
 public:
 	/*! \brief Create the analysis over a specific cfg */
-	ThreadFrontierAnalysis(transforms::PassManager* manager);
+	ThreadFrontierAnalysis();
 
 	/*! \brief Computes an up to date set of thread frontiers */
 	void analyze(ir::IRKernel& kernel);

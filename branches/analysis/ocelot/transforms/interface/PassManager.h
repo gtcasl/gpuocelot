@@ -15,7 +15,7 @@
 // Forward Declarations
 namespace analysis   { class Analysis; }
 namespace ir         { class Module;   }
-namespace ir         { class Kernel;   }
+namespace ir         { class IRKernel; }
 namespace transforms { class Pass;     }
 
 namespace transforms
@@ -68,22 +68,35 @@ public:
 	
 		\param kernel The kernel to run all passes on.
 	*/
-	void runOnKernel(ir::Kernel& kernel);
+	void runOnKernel(ir::IRKernel& kernel);
 	
 	/*! \brief Runs passes on the entire module. */
 	void runOnModule();
 
 public:
+	/*! \brief Get an up to date analysis by type */
+	analysis::Analysis* getAnalysis(int type);
+
+	/*! \brief Get an up to date analysis by type (const) */
+	const analysis::Analysis* getAnalysis(int type) const;
+	
+	/*! \brief Invalidate the analysis, the pass manager will
+		need to generate it again for other applications */
+	void invalidateAnalysis(int type);
+
+public:
+	/*! \brief Disallow the copy constructor */
 	PassManager(const PassManager&) = delete;
+	/*! \brief Disallow the assignment operator */
 	const PassManager& operator=(const PassManager&) = delete;
 	
 private:
 	typedef std::multimap<int, Pass*, std::greater<int>> PassMap;
 	
 private:
-	PassMap     _passes;
-	AnalysisMap _analyses;
-	ir::Module* _module;
+	PassMap           _passes;
+	ir::Module*       _module;
+	AnalysisMap*      _analyses;
 };
 
 }

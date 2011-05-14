@@ -39,7 +39,7 @@
 executive::ReconvergenceMechanism::ReconvergenceMechanism(
 	const EmulatedKernel *_kernel, CooperativeThreadArray *_cta)
 : 
-	type(Reconverge_default),
+	type(Reconverge_unknown),
 	kernel(_kernel),
 	cta(_cta)
 {
@@ -48,7 +48,7 @@ executive::ReconvergenceMechanism::ReconvergenceMechanism(
 executive::ReconvergenceMechanism::ReconvergenceMechanism(
 	 CooperativeThreadArray *_cta)
 : 
-	type(Reconverge_default),
+	type(Reconverge_unknown),
 	kernel(0),
 	cta(_cta)
 {
@@ -61,75 +61,13 @@ void executive::ReconvergenceMechanism::initialize() {
 	runtimeStack.push_back(context);
 }
 
-//! \brief gets the active context
 executive::CTAContext & executive::ReconvergenceMechanism::getContext() {
 	return runtimeStack.back();
 }
 
-//! \brief set predicate mask of the active context before instructions execute
-void executive::ReconvergenceMechanism::evalPredicate(
-	executive::CTAContext &context) {
-	return;
-}
-
-/*! 
-	\brief implements branch instruction and updates CooperativeThreadArray
-		state
-	\return true on divergent branch
-*/
-bool executive::ReconvergenceMechanism::eval_Bra(
-	executive::CTAContext &context, 
-	const ir::PTXInstruction &instr, 
-	const boost::dynamic_bitset<> & branch, 
-	const boost::dynamic_bitset<> & fallthrough) {
-
-	return false;
-}
-
-/*! 
-	\brief implements a barrier instruction
-*/
-void executive::ReconvergenceMechanism::eval_Bar(
-	executive::CTAContext &context, 
-	const ir::PTXInstruction &instr) {
-
-}
-
-/*!
-	\brief implements reconverge instructions
-*/
-void executive::ReconvergenceMechanism::eval_Reconverge(
-	executive::CTAContext &context, 
-	const ir::PTXInstruction &instr) {
-
-}
-
-void executive::ReconvergenceMechanism::eval_Exit(
-	executive::CTAContext &context, 
-	const ir::PTXInstruction &instr) {
-	context.running = false;
-}
-
-/*! 
-	\brief updates the active context to the next instruction
-*/
-bool executive::ReconvergenceMechanism::nextInstruction(
-	executive::CTAContext &context, 
-	const ir::PTXInstruction &instr) {
-
-	if (instr.opcode != ir::PTXInstruction::Reconverge) {
-		context.PC ++;
-	}
-	return context.running;
-}
-
-/*!
-	\brief gets the stack size
-*/
 size_t executive::ReconvergenceMechanism::stackSize() const {
 	return runtimeStack.size();
 }
-
 
 //! \brief gets a string-representation of the type
 std::string executive::ReconvergenceMechanism::toString(Type type) {
@@ -138,7 +76,6 @@ std::string executive::ReconvergenceMechanism::toString(Type type) {
 	case Reconverge_Barrier: return "barrier";
 	case Reconverge_TFGen6: return "tf-gen6";
 	case Reconverge_TFSortedStack: return "tf-sorted-stack";
-	case Reconverge_default: return "default-reconverge";
 	case Reconverge_unknown:
 	default:
 		break;
@@ -154,6 +91,11 @@ executive::ReconvergenceIPDOM::ReconvergenceIPDOM(const EmulatedKernel *_kernel,
 	ReconvergenceMechanism(_kernel, cta)
 {
 	type = Reconverge_IPDOM;
+}
+
+void executive::ReconvergenceIPDOM::evalPredicate(
+	executive::CTAContext &context) {
+	
 }
 
 bool executive::ReconvergenceIPDOM::eval_Bra(executive::CTAContext &context, 
@@ -271,6 +213,11 @@ executive::ReconvergenceBarrier::ReconvergenceBarrier(
 	ReconvergenceMechanism(_kernel, cta)
 {
 	type = Reconverge_Barrier;
+}
+
+void executive::ReconvergenceBarrier::evalPredicate(
+	executive::CTAContext &context) {
+
 }
 
 bool executive::ReconvergenceBarrier::eval_Bra(executive::CTAContext &context, 

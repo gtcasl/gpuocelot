@@ -49,9 +49,6 @@ public:
 	const std::string name;
 
 public:
-	/*! \brief Set the attached pass manager */
-	void setPassManager(transforms::PassManager* manager);
-
 	/*! \brief Get an up to date analysis by type */
 	Analysis* getAnalysis(Analysis::Type type);
 

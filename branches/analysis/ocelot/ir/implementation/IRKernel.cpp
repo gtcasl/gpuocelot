@@ -52,6 +52,14 @@ const ir::IRKernel& ir::IRKernel::operator=(const IRKernel &kernel) {
 	return *this;	
 }
 
+ir::ControlFlowGraph* ir::IRKernel::cfg() {
+	return _cfg;
+}
+
+const ir::ControlFlowGraph* ir::IRKernel::cfg() const {
+	return _cfg;
+}
+
 bool ir::IRKernel::executable() const {
 	return false;
 }

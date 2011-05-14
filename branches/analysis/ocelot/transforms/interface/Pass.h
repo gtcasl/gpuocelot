@@ -59,19 +59,12 @@ public:
 
 public:
 	/*! \brief The default constructor sets the type */
-	explicit Pass(Type t = InvalidPass, int a = Analysis::NoAnalysis,
-		const std::string& n = "");
+	Pass(Type t = InvalidPass, int a = Analysis::NoAnalysis,
+		const std::string& n = "", PassManager* m = 0);
 	/*! \brief Virtual destructor */
 	virtual ~Pass();
-	/*! \brief The type requires a new copy constructor */
-	Pass(const Pass& p);
-	/*! \brief The type requires a new assignment operator */
-	Pass& operator=(const Pass& p);
 
 public:
-	/*! \brief Set the attached pass manager */
-	void setPassManager(PassManager* manager);
-
 	/*! \brief Get an up to date analysis by type */
 	Analysis* getAnalysis(Analysis::Type type);
 
@@ -85,6 +78,9 @@ public:
 public:
 	/*! \brief Report the name of the pass */
 	std::string toString() const;
+	
+private:
+	PassManager* _manager;
 };
 
 
@@ -95,7 +91,7 @@ class ImmutablePass : public Pass
 public:
 	/*! \brief The default constructor sets the type */
 	ImmutablePass(int a = Analysis::NoAnalysis,
-		const std::string& n = "");
+		const std::string& n = "", PassManager* m = 0);
 	/*! \brief Virtual destructor */
 	virtual ~ImmutablePass();
 	
@@ -109,7 +105,8 @@ class ModulePass : public Pass
 {
 public:
 	/*! \brief The default constructor sets the type */
-	ModulePass(int a = Analysis::NoAnalysis, const std::string& n = "");
+	ModulePass(int a = Analysis::NoAnalysis, const std::string& n = "",
+		PassManager* m = 0);
 	/*! \brief Virtual destructor */
 	virtual ~ModulePass();
 	
@@ -123,7 +120,8 @@ class KernelPass : public Pass
 {
 public:
 	/*! \brief The default constructor sets the type */
-	KernelPass(int a = Analysis::NoAnalysis, const std::string& n = "");
+	KernelPass(int a = Analysis::NoAnalysis, const std::string& n = "",
+		PassManager* m = 0);
 	/*! \brief Virtual destructor */
 	virtual ~KernelPass();
 	
@@ -142,7 +140,7 @@ class BasicBlockPass : public Pass
 public:
 	/*! \brief The default constructor sets the type */
 	BasicBlockPass(int a = Analysis::NoAnalysis,
-		const std::string& n = "");
+		const std::string& n = "", PassManager* m = 0);
 	/*! \brief Virtual destructor */
 	virtual ~BasicBlockPass();
 	

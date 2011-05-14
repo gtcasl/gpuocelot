@@ -4,14 +4,13 @@
 	\brief The source file for the SyncEliminationPass class
 */
 
-#include <ocelot/analysis/interface/SyncEliminationPass.h>
+#include <ocelot/transforms/interface/SyncEliminationPass.h>
 #include <ocelot/analysis/interface/DivergenceAnalysis.h>
 
-namespace analysis {
+namespace transforms {
 
 SyncEliminationPass::SyncEliminationPass()
-	: KernelPass(DataflowGraphAnalysis
-	| StaticSingleAssignment | DivergenceAnalysis, "SyncElimination")
+	: KernelPass(Analysis::DivergenceAnalysis, "SyncElimination")
 {
 }
 
@@ -19,19 +18,29 @@ SyncEliminationPass::SyncEliminationPass()
 	bra instructions into bra.uni */
 void SyncEliminationPass::runOnKernel(ir::IRKernel& k)
 {
-	const analysis::DivergenceAnalysis *divAnalysis = k.div_analy();
+	Analysis* div_structure = getAnalysis(Analysis::DivergenceAnalysis);
+	assert(div_structure != 0);
+
+	const analysis::DivergenceAnalysis *divAnalysis =
+		static_cast<analysis::DivergenceAnalysis*>(div_structure);
+
+	Analysis* dfg_structure = getAnalysis(Analysis::DataflowGraphAnalysis);
+	assert(dfg_structure != 0);
+
+	analysis::DataflowGraph& dfg =
+		*static_cast<analysis::DataflowGraph*>(dfg_structure);
 
         // Ocelot uses guards to represent the first and last basic block of
         // each kernel. These special blocks hold no instruction; hence, we
         // do not need to go through them.
-	DataflowGraph::iterator block = ++k.dfg()->begin();
-	DataflowGraph::iterator blockEnd = --k.dfg()->end();
+	analysis::DataflowGraph::iterator block = ++dfg.begin();
+	analysis::DataflowGraph::iterator blockEnd = --dfg.end();
 
 	for (; block != blockEnd; block++) {
 		if (!divAnalysis->isDivBlock(block)) {
-			DataflowGraph::Instruction inst = *(--block->_instructions.end());
 			ir::PTXInstruction *ptxInst
-				= static_cast<ir::PTXInstruction*> (inst.i);
+				= static_cast<ir::PTXInstruction*> (
+					block->block()->instructions.back());
 			if (ptxInst->opcode == ir::PTXInstruction::Bra) {
 				ptxInst->uni = true;
 			}

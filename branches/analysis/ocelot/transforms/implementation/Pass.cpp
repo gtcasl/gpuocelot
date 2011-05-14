@@ -7,14 +7,18 @@
 #ifndef PASS_CPP_INCLUDED
 #define PASS_CPP_INCLUDED
 
+// Ocelot Includes
+#include <ocelot/transforms/interface/PassManager.h>
 #include <ocelot/transforms/interface/Pass.h>
+
+// Hydrazine Includes
 #include <hydrazine/implementation/debug.h>
 
 namespace transforms
 {
 
-Pass::Pass( Type t, int a, const std::string& n )
-	: type( t ), analyses( a ), name( n )
+Pass::Pass(Type t, int a, const std::string& n, PassManager* m)
+	: type(t), analyses(a), name(n), _manager(m)
 {
 
 }
@@ -24,16 +28,25 @@ Pass::~Pass()
 
 }
 
-Pass::Pass( const Pass& p ) : type( p.type ), 
-	analyses( p.analyses ), name( p.name )
+analysis::Analysis* Pass::getAnalysis(Analysis::Type type)
 {
+	assert(_manager != 0);
 
+	return _manager->getAnalysis(type);
 }
 
-Pass& Pass::operator=( const Pass& p )
+const analysis::Analysis* Pass::getAnalysis(Analysis::Type type) const
 {
-	assertM( p.type == type, "Cannot copy passes of different types." );
-	return *this;
+	assert(_manager != 0);
+
+	return _manager->getAnalysis(type);
+}
+
+void Pass::invalidateAnalysis(Analysis::Type type)
+{
+	assert(_manager != 0);
+
+	return _manager->invalidateAnalysis(type);
 }
 
 std::string Pass::toString() const
@@ -41,8 +54,8 @@ std::string Pass::toString() const
 	return name;
 }
 
-ImmutablePass::ImmutablePass( int a, const std::string& n) 
-	: Pass( Pass::ImmutablePass, a, n )
+ImmutablePass::ImmutablePass(int a, const std::string& n, PassManager* m) 
+	: Pass(Pass::ImmutablePass, a, n)
 {
 
 }
@@ -52,7 +65,7 @@ ImmutablePass::~ImmutablePass()
 
 }
 
-ModulePass::ModulePass( int a, const std::string& n ) 
+ModulePass::ModulePass(int a, const std::string& n, PassManager* m) 
 	: Pass( Pass::ModulePass, a, n )
 {
 
@@ -63,8 +76,8 @@ ModulePass::~ModulePass()
 
 }
 
-KernelPass::KernelPass( int a, const std::string& n )
-	: Pass( Pass::KernelPass, a, n )
+KernelPass::KernelPass(int a, const std::string& n, PassManager* m)
+	: Pass(Pass::KernelPass, a, n, m)
 {
 
 }
@@ -74,8 +87,8 @@ KernelPass::~KernelPass()
 
 }
 
-BasicBlockPass::BasicBlockPass( int a, const std::string& n )
-	: Pass( Pass::BasicBlockPass, a, n )
+BasicBlockPass::BasicBlockPass(int a, const std::string& n, PassManager* m)
+	: Pass(Pass::BasicBlockPass, a, n, m)
 {
 
 }

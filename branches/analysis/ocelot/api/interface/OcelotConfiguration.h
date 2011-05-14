@@ -157,6 +157,9 @@ namespace api {
 			//! \brief The hostname of the ocelot server to connect
 			std::string host;
 
+			//! \brief Reconvergence mechanism
+			std::string reconvergenceMechanism;
+
 			//! \brief maximum number of worker threads - a non-positive 
 			//         number indicates no limit
 			int workerThreadLimit;

@@ -85,10 +85,11 @@ namespace executive {
 
 		/*! Given a thread's ID, determine if the instruction should execute */
 		bool predicated(int threadID, const ir::PTXInstruction &instr);
+	
+		/*! Get the active mask after predication */
+		boost::dynamic_bitset<> predicateMask( const ir::PTXInstruction &instr);
+
 		
-		/*! Increments PCs of active threads as well as PC
-		*/
-		void incrementPC();
 	};
 }
 

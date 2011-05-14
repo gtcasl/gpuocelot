@@ -5,8 +5,7 @@
 		with associated code for emulating its execution
 */
 
-#include <hydrazine/interface/Casts.h>
-
+// Ocelot Includes
 #include <ocelot/ir/interface/PTXOperand.h>
 #include <ocelot/ir/interface/PTXInstruction.h>
 #include <ocelot/ir/interface/Module.h>
@@ -17,6 +16,14 @@
 #include <ocelot/executive/interface/CTAContext.h>
 #include <ocelot/executive/interface/TextureOperations.h>
 
+#include <ocelot/api/interface/OcelotConfiguration.h>
+
+// Hydrazine Includes
+#include <hydrazine/interface/Casts.h>
+#include <hydrazine/implementation/debug.h>
+#include <hydrazine/implementation/math.h>
+
+// Standard Library Includes
 #include <cassert>
 #include <cmath>
 #include <cstring>
@@ -25,21 +32,7 @@
 #include <cfenv> 
 #include <algorithm>
 
-#include <hydrazine/implementation/debug.h>
-#include <hydrazine/implementation/math.h>
-
-////////////////////////////////////////////////////////////////////////////////
-
-#define IPDOM_RECONVERGENCE 1
-#define BARRIER_RECONVERGENCE 2
-#define GEN6_RECONVERGENCE 3
-#define SORTED_PREDICATE_STACK_RECONVERGENCE 4
-
-// specify reconvergence mechanism here
-#define RECONVERGENCE_MECHANISM IPDOM_RECONVERGENCE
-
-////////////////////////////////////////////////////////////////////////////////
-
+// Preprocessor Macros
 #ifdef REPORT_BASE
 #undef REPORT_BASE
 #endif
@@ -147,24 +140,32 @@ executive::CooperativeThreadArray::CooperativeThreadArray(
 	clock(0),
 	traceEvents(trace) {
 
-#if RECONVERGENCE_MECHANISM == IPDOM_RECONVERGENCE
-	reconvergenceMechanism = new ReconvergenceIPDOM(kernel, this);
-#elif RECONVERGENCE_MECHANISM == BARRIER_RECONVERGENCE
-	reconvergenceMechanism = new ReconvergenceBarrier(kernel, this);
-#elif RECONVERGENCE_MECHANISM == GEN6_RECONVERGENCE
-	reconvergenceMechanism = new ReconvergenceTFGen6(kernel, this);
-#elif RECONVERGENCE_MECHANISM == SORTED_PREDICATE_STACK_RECONVERGENCE
-	reconvergenceMechanism = new ReconvergenceTFSortedStack(kernel, this);
-#else
-	assert(0 && "unimplemented thread reconvergence mechanism");
-#endif
+	typedef api::OcelotConfiguration config;
+
+	if (config::get().executive.reconvergenceMechanism == "ipdom") {
+		reconvergenceMechanism = new ReconvergenceIPDOM(kernel, this);
+	}
+	else if (config::get().executive.reconvergenceMechanism == "barrier") {
+		reconvergenceMechanism = new ReconvergenceBarrier(kernel, this);
+	}
+	else if (config::get().executive.reconvergenceMechanism == "gen6") {
+		reconvergenceMechanism = new ReconvergenceTFGen6(kernel, this);
+	}
+	else if (config::get().executive.reconvergenceMechanism
+		== "thread-frontier") {
+		reconvergenceMechanism = new ReconvergenceTFSortedStack(kernel, this);
+	}
+	else
+	{
+		assertM(false, "unknown thread reconvergence mechanism - "
+			<< config::get().executive.reconvergenceMechanism);
+	}
 
 	initialize(k->blockDim());
 }
 
-executive::CooperativeThreadArray::CooperativeThreadArray() : kernel(0) {
-
-	reconvergenceMechanism = new ReconvergenceMechanism(this);
+executive::CooperativeThreadArray::CooperativeThreadArray() : kernel(0),
+	reconvergenceMechanism(0) {
 }
 
 /*!
@@ -372,7 +373,7 @@ void executive::CooperativeThreadArray::execute(const ir::Dim3& block) {
 			currentEvent.reset();
 			currentEvent.PC = context.PC;
 			currentEvent.instruction = &instr;
-			currentEvent.active = context.active;
+			currentEvent.active = context.predicateMask(instr);
 		}
 		
 		switch (instr.opcode) {

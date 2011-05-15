@@ -30,7 +30,7 @@
 		warpSize: 4
 	},
 	optimizations: {
-		subkernelSize: 600
+		subkernelSize: 1
 	},
 	checkpoint: {
 		enabled: false,

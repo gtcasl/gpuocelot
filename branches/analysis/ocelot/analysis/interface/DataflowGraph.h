@@ -34,7 +34,7 @@ namespace analysis
 /*! \brief A class representing a graph of block of instructions, showing
 		which registers are alive in each basic block.
 */
-class DataflowGraph : public Analysis
+class DataflowGraph : public KernelAnalysis
 {
 	friend class SSAGraph;
 	public:			
@@ -261,8 +261,11 @@ class DataflowGraph : public Analysis
 		Instruction convert( ir::PTXInstruction& i );
 
 	public:
-		/*! \brief Build from a CFG */
-		DataflowGraph( ir::ControlFlowGraph& cfg );
+		/*! \brief Build from a kernel CFG */
+		void analyze(ir::IRKernel& kernel);
+
+		/*! \brief The constructor */
+		DataflowGraph();
 
 	public:
 		/*! \brief Return an iterator to the program entry point */

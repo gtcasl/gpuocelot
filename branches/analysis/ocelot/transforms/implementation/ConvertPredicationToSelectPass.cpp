@@ -89,7 +89,8 @@ namespace transforms
 
 	
 	ConvertPredicationToSelectPass::ConvertPredicationToSelectPass()
-		: KernelPass( Analysis::NoAnalysis, "ConvertPredicationToSelectPass" )
+		: KernelPass( Analysis::DataflowGraphAnalysis,
+			"ConvertPredicationToSelectPass" )
 	{
 	}
 

@@ -28,7 +28,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 namespace transforms
 {
@@ -54,7 +54,7 @@ static void freeUnusedDataStructures(AnalysisMap& analyses,
 			
 			if(structure != analyses.end())
 			{
-				report("Destroying " << structure->second->name
+				report("   Destroying " << structure->second->name
 					<< " for kernel" << k->name);
 				delete structure->second;
 				analyses.erase(structure);
@@ -70,7 +70,7 @@ static void allocateNewDataStructures(AnalysisMap& analyses,
 	{
 		if(analyses.count(analysis::Analysis::ControlTreeAnalysis) == 0)
 		{
-			report("Allocating control tree for kernel " << k->name);
+			report("   Allocating control tree for kernel " << k->name);
 			AnalysisMap::iterator analysis = analyses.insert(std::make_pair(
 				analysis::Analysis::ControlTreeAnalysis,
 				new analysis::ControlTree(k->cfg()))).first;
@@ -82,7 +82,7 @@ static void allocateNewDataStructures(AnalysisMap& analyses,
 	{
 		if(analyses.count(analysis::Analysis::DominatorTreeAnalysis) == 0)
 		{
-			report("Allocating dominator tree for kernel " << k->name);
+			report("   Allocating dominator tree for kernel " << k->name);
 			AnalysisMap::iterator analysis = analyses.insert(std::make_pair(
 				analysis::Analysis::DominatorTreeAnalysis,
 				new analysis::DominatorTree(k->cfg()))).first;
@@ -94,7 +94,7 @@ static void allocateNewDataStructures(AnalysisMap& analyses,
 	{
 		if(analyses.count(analysis::Analysis::PostDominatorTreeAnalysis) == 0)
 		{
-			report("Allocating post-dominator tree for kernel " << k->name);
+			report("   Allocating post-dominator tree for kernel " << k->name);
 			AnalysisMap::iterator analysis = analyses.insert(std::make_pair(
 				analysis::Analysis::PostDominatorTreeAnalysis,
 				new analysis::PostdominatorTree(k->cfg()))).first;
@@ -104,29 +104,29 @@ static void allocateNewDataStructures(AnalysisMap& analyses,
 	}
 	if(type & analysis::Analysis::DataflowGraphAnalysis)
 	{
-		AnalysisMap::iterator dom = analyses.find(
+		AnalysisMap::iterator dfg = analyses.find(
 			analysis::Analysis::DataflowGraphAnalysis);
 		
-		if(analyses.end() == dom)
+		if(analyses.end() == dfg)
 		{
-			report("Allocating dataflow graph for kernel " << k->name);
-			dom = analyses.insert(std::make_pair(
+			report("   Allocating dataflow graph for kernel " << k->name);
+			dfg = analyses.insert(std::make_pair(
 				analysis::Analysis::DataflowGraphAnalysis,
-				new analysis::DataflowGraph(*k->cfg()))).first;
+				new analysis::DataflowGraph())).first;
 			
-			dom->second->setPassManager(manager);
+			dfg->second->setPassManager(manager);
 		}
 		if(type & analysis::Analysis::StaticSingleAssignment)
 		{
-			report("Converting DFG into SSA for " << k->name);
-			static_cast<analysis::DataflowGraph*>(dom->second)->toSsa();
+			report("   Converting DFG into SSA for " << k->name);
+			static_cast<analysis::DataflowGraph*>(dfg->second)->toSsa();
 		}
 	}
 	if(type & analysis::Analysis::DivergenceAnalysis)
 	{
 		if(analyses.count(analysis::Analysis::DivergenceAnalysis) == 0)
 		{
-			report("Allocating divergence analysis for kernel " << k->name);
+			report("   Allocating divergence analysis for kernel " << k->name);
 			AnalysisMap::iterator analysis = analyses.insert(std::make_pair(
 				analysis::Analysis::DivergenceAnalysis,
 				new analysis::DivergenceAnalysis(*k))).first;
@@ -327,6 +327,8 @@ void PassManager::runOnKernel(ir::IRKernel& kernel)
 {
 	assert(_module->loaded());
 
+	report("Running pass manager on kernel " << kernel.name);
+
 	for(PassMap::iterator pass = _passes.begin(); pass != _passes.end(); ++pass)
 	{
 		initializeKernelPass(_module, pass->second);
@@ -357,6 +359,8 @@ void PassManager::runOnKernel(ir::IRKernel& kernel)
 
 void PassManager::runOnModule()
 {
+	report("Running pass manager on module " << _module->path());
+
 	_module->loadNow();
 	
 	typedef std::vector<AnalysisMap> AnalysisMapVector;

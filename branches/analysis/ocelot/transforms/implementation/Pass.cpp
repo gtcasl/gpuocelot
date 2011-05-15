@@ -92,6 +92,17 @@ KernelPass::~KernelPass()
 
 }
 
+ImmutableKernelPass::ImmutableKernelPass(int a, const std::string& n)
+	: Pass(Pass::ImmutableKernelPass, a, n)
+{
+
+}
+
+ImmutableKernelPass::~ImmutableKernelPass()
+{
+
+}
+
 BasicBlockPass::BasicBlockPass(int a, const std::string& n)
 	: Pass(Pass::BasicBlockPass, a, n)
 {

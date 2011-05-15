@@ -792,8 +792,14 @@ static void translate(llvm::Module*& module, ir::PTXKernel& kernel,
 	
 	report("  Converting from PTX IR to LLVM IR.");
 	translator::PTXToLLVMTranslator translator(optimization, &externals);
+
+	transforms::PassManager manager;
+	
+	manager.addPass(&translator);
+	manager.runOnKernel(kernel);
+
 	ir::LLVMKernel* llvmKernel = static_cast<ir::LLVMKernel*>(
-		translator.translate(&kernel));
+		translator.translatedKernel());
 	
 	report("  Assembling LLVM kernel.");
 	llvmKernel->assemble();

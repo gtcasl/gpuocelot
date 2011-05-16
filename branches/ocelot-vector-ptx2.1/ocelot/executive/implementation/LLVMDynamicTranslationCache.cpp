@@ -1142,7 +1142,7 @@ static void cloneAndOptimizeTranslation(
 			"\n\nAdding LLVM vectorization pass (ws: " << warpSize << ")\n\n");
 		manager.add(new analysis::LLVMUniformVectorization(labelMap, warpSize));
 	}
-	level = 0;
+	level = 1;
 
 	if (level == 0) {
 		reportE(REPORT_TRANSLATION_OPERATIONS, "no optimizations");
@@ -1186,7 +1186,7 @@ static void cloneAndOptimizeTranslation(
 	}
 	
 	manager.run(*translation->llvmFunction);
-#if 0
+
 	// we can't verify errors until this point
 	reportE(REPORT_TRANSLATION_OPERATIONS, "  Checking llvm module for errors.");
 	std::string verifyError;
@@ -1208,14 +1208,18 @@ static void cloneAndOptimizeTranslation(
 	else {
 		reportE(REPORT_TRANSLATION_OPERATIONS, " verified module");
 	}
+
+#if REPORT_OPTIMIZED_LLVM_ASSEMBLY
+	translation->llvmFunction->getParent()->dump();
 #endif
+	translation->llvmFunction->getParent()->dump();
 	report("performed transformations");
 }
 
 /*!
 
 */
-static void link(
+static void linkLLVMModule(
 	llvm::Module& module, 
 	const ir::PTXKernel& kernel, 
 	Device* device)
@@ -1337,7 +1341,7 @@ void LLVMDynamicTranslationCache::specializeTranslation(
 		LLVMState::jit()->addModule(translatedKernel.kernelModule);
 		
 		if (device) {
-			link(*translatedKernel.kernelModule, *translatedKernel.kernel, device);
+			linkLLVMModule(*translatedKernel.kernelModule, *translatedKernel.kernel, device);
 		}
 
 		reportE(REPORT_TRANSLATION_OPERATIONS, "  Invoking LLVM to Native JIT");

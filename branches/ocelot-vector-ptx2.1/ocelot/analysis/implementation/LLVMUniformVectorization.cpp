@@ -31,7 +31,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -248,15 +248,15 @@ void analysis::LLVMUniformVectorization::Translation::runOnFunction() {
 		report("Vectorizing replicated instruction bundles");		
 		vectorize();
 	}
-	
+
 	// perform this for all warp sizes including the scalar case
 	if (warpSize >= 1) {
 
-		report("Creating scheduler block");
-		updateSubkernelEntries();
-	
 		report("Removing superfluous scalar blocks");
 		removeScalarBlocks();
+		
+		report("Creating scheduler block");
+		updateSubkernelEntries();
 	
 		report("Finalizing subkernel");
 		finalizeSubkernel();
@@ -312,6 +312,14 @@ void analysis::LLVMUniformVectorization::Translation::breadthFirstTraversal(
 		llvm::TerminatorInst *termInst = bb->getTerminator();
 		for (unsigned int i = 0; i < termInst->getNumSuccessors(); ++i) {
 			workList.push_back(termInst->getSuccessor(i));
+		}
+	}
+	for (BasicBlockList::iterator bb_it = blockList.begin(); bb_it != blockList.end(); ++bb_it ) {
+
+		llvm::BasicBlock *bb = *bb_it;
+		if (visited.find(bb) == visited.end()) {
+			traversal.push_back(bb);
+			visited.insert(bb);
 		}
 	}
 }
@@ -438,14 +446,17 @@ void analysis::LLVMUniformVectorization::Translation::loadThreadLocalArguments()
 	\brief 
 */
 void analysis::LLVMUniformVectorization::Translation::addInterleavedInstructions() {
-
+	report("AddInterleavedInstructions()");
+	
 	// create blocks	
 	llvm::Function::BasicBlockListType & basicBlocks = F->getBasicBlockList();
 
+	report("  traversal contains:");
 	for (BasicBlockList::iterator bb_it = traversal.begin(); 
 		bb_it != traversal.end(); ++bb_it) {
 		
 		llvm::BasicBlock *bb = *bb_it;
+		report("  - " << bb->getNameStr());
 		if (bb->getNameStr() == "") { continue; }
 		
 		// ignore ocelot-inserted blocks for fusing thread blocks together
@@ -458,6 +469,8 @@ void analysis::LLVMUniformVectorization::Translation::addInterleavedInstructions
 		// construct a warp-synchronous block
 		std::stringstream ss;
 		ss << bb->getNameStr() << "_ws_" << warpSize;
+		report("    [ constructed as " << ss.str() << "]");
+		
 		llvm::BasicBlock *warpBlock = llvm::BasicBlock::Create(
 			F->getContext(), ss.str(), 0, 0);
 		warpBlocksMap[bb] = warpBlock;
@@ -776,6 +789,7 @@ void analysis::LLVMUniformVectorization::Translation::removeScalarBlocks() {
 	}
 	for (BasicBlockMap::iterator scalar_it = warpBlocksMap.begin(); scalar_it != warpBlocksMap.end(); 
 		++scalar_it ) {
+		scalar_it->first->replaceAllUsesWith(&scalar_it->first->getParent()->getEntryBlock());
 		scalar_it->first->eraseFromParent();
 	}
 }
@@ -825,11 +839,15 @@ void analysis::LLVMUniformVectorization::Translation::handleDivergentBranch(
 		suffix << "_exit_ws_" << warpSize;
 		std::string divergenceHandlerLabel = divergent.scalarBlock->getNameStr() + suffix.str();
 		divergent.handler = 0;
+
 		for (llvm::Function::iterator bb_it = F->begin(); bb_it != F->end(); ++bb_it) {
 			if (bb_it->getNameStr() == divergenceHandlerLabel) {
 				divergent.handler = &*bb_it;
 				break;
 			}
+		}
+		if (!divergent.handler) {
+			report("Failed in finding existing divergence handler for block " << divergenceHandlerLabel);
 		}
 		assert(divergent.handler && "Failed in finding existing divergence handler");
 			
@@ -1317,11 +1335,14 @@ llvm::BasicBlock *analysis::LLVMUniformVectorization::Translation::getWarpBlockB
 	EntryId entryId) {
 		
 	llvm::BasicBlock *block = 0;
+	llvm::BasicBlock *failBlock = 0;
 	
 	EntryIdBlockLabelMap::const_iterator entryLabel_it = pass->labelMap->find(entryId);
 	assert(entryLabel_it != pass->labelMap->end());
-	std::string label = entryLabel_it->second.substr(1) + "_ws_";
-		
+	std::string label = entryLabel_it->second.substr(1) + "_ws";
+	std::string blockLabel = label.substr(0, label.size() - 9) + "_ws";
+	report("seeking label " << label);
+	
 	// do a lookup based on block name
 	for (llvm::Function::iterator bb_it = F->begin(); bb_it != F->end(); ++bb_it) {
 		std::string entryLabel = bb_it->getNameStr();
@@ -1329,8 +1350,18 @@ llvm::BasicBlock *analysis::LLVMUniformVectorization::Translation::getWarpBlockB
 			block = &*bb_it;
 			break;
 		}
+		else if (entryLabel.find(blockLabel) != std::string::npos) {
+			failBlock = &*bb_it;
+		}
+		report("possible entry block: " << entryLabel);
 	}
-	
+	if (!block && failBlock) {
+		block = failBlock;
+		report(" failed over to block " << failBlock->getNameStr());
+	}
+	if (!block && !failBlock) {
+		report("failed to find warp block with entry ID " << entryId);
+	}
 	return block;
 }
 			
@@ -1339,7 +1370,7 @@ llvm::BasicBlock *analysis::LLVMUniformVectorization::Translation::getWarpBlockB
 		subkernel entry point
 */
 void analysis::LLVMUniformVectorization::Translation::updateSubkernelEntries() {
-	report("Updating subkernel entries");
+	report("Updating subkernel entry points");
 	
 	llvm::BasicBlock *schedulerBlock = subkernelEntry.prologue;
 
@@ -1366,7 +1397,6 @@ void analysis::LLVMUniformVectorization::Translation::updateSubkernelEntries() {
 	assert(warpEntryId);
 	
 	report("There are " << pass->labelMap->size() << " entry points");
-	
 
 	std::vector< llvm::BasicBlock *> entryPoints;
 	for (EntryIdBlockLabelMap::const_iterator entry_it = pass->labelMap->begin();
@@ -1392,65 +1422,6 @@ void analysis::LLVMUniformVectorization::Translation::updateSubkernelEntries() {
 		switchInst->addCase(llvm::ConstantInt::get(int32Ty, idx), *entry_it);
 	}
 	report("Created large switch statement in scheduler");
-	
-	/*
-	for (EntryIdBlockLabelMap::const_iterator entry_it = pass->labelMap->begin();
-		entry_it != pass->labelMap->end();
-		++entry_it) {
-		unsigned int entryId = (unsigned int)(entry_it->first & 0x0ffff);		
-		llvm::BasicBlock *successor = getWarpBlockByEntryId(entryId);
-		assert(successor);
-		switchInst->setSuccessor(entryId, successor);
-	}
-	
-	llvm::AllocaInst *blockAddressArray = new llvm::AllocaInst(
-		llvm::PointerType::get(pass->getTyInt(8), 0), 
-		llvm::ConstantInt::get(int32Ty, (unsigned int)pass->labelMap->size()),
-		"blockAddressArray", schedulerBlock);
-	
-	// construct an indirect branch to the entry points
-	std::vector< llvm::BasicBlock *> entryBlocks;
-	for (EntryIdBlockLabelMap::const_iterator entry_it = pass->labelMap->begin();
-		entry_it != pass->labelMap->end();
-		++entry_it) {
-		
-		unsigned int entryId = (unsigned int)(entry_it->first & 0x0ffff);		
-		llvm::BasicBlock *successor = getWarpBlockByEntryId(entryId);
-		assert(successor);
-		
-		llvm::BlockAddress *blockAddress = llvm::BlockAddress::get(successor);
-		assert(blockAddress);
-		
-		llvm::Instruction *ptr = llvm::GetElementPtrInst::Create(
-			blockAddressArray,
-			llvm::ConstantInt::get(int32Ty, (unsigned int)entryBlocks.size()),
-			"block",
-			schedulerBlock);
-		
-		llvm::StoreInst *store = new llvm::StoreInst(blockAddress, ptr, schedulerBlock);
-		assert(store);
-		entryBlocks.push_back(successor);
-	}
-	
-	llvm::Instruction *entryBlockAddressPtr = llvm::GetElementPtrInst::Create(
-		blockAddressArray,
-		warpEntryId,
-		"entryBlockAddressPtr",
-		schedulerBlock);
-	llvm::LoadInst *entryBlockAddress = new llvm::LoadInst(entryBlockAddressPtr, 
-		"entryBlockAddress", schedulerBlock);
-		
-	llvm::IndirectBrInst *indirectBr = llvm::IndirectBrInst::Create(entryBlockAddress, 
-		(unsigned int)entryBlocks.size(), schedulerBlock);
-	unsigned int i = 0;
-	for (std::vector< llvm::BasicBlock *>::const_iterator block_it = entryBlocks.begin();
-		block_it != entryBlocks.end(); ++block_it, ++i) {
-		//indirectBr->setSuccessor(i, *block_it);
-		indirectBr->addDestination(*block_it);
-	}
-	
-	report("created indirect branch");
-	*/
 }
 
 /*!

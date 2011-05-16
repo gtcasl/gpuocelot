@@ -17,6 +17,7 @@
 // LLVM includes
 #include <llvm/Instructions.h>
 #include <llvm/Constants.h>
+#include <llvm/Support/CFG.h>
 #include <llvm/Support/raw_ostream.h>
 
 // Hydrazine includes
@@ -255,6 +256,10 @@ void analysis::LLVMUniformVectorization::Translation::runOnFunction() {
 		report("Creating scheduler block");
 		updateSubkernelEntries();
 	
+		report("Removing superfluous scalar blocks");
+		removeScalarBlocks();
+	
+		report("Finalizing subkernel");
 		finalizeSubkernel();
 	}
 	
@@ -357,19 +362,9 @@ void analysis::LLVMUniformVectorization::Translation::finalizeSubkernel() {
 	
 */
 void analysis::LLVMUniformVectorization::Translation::createSubkernelPrologue() {
-
 	subkernelEntry.start = & F->front();
 	subkernelEntry.prologue = llvm::BasicBlock::Create(F->getContext(), "WarpSynchronousEntry", 
 		F, subkernelEntry.start);
-	
-/*
-	llvm::BasicBlock *startBlock = subkernelEntry.start;
-	if (!warpSchedulerBlocks.size()) {
-		startBlock = getWarpBlockFromScalar(subkernelEntry.start);
-	}
-	llvm::BranchInst *braInst = llvm::BranchInst::Create(subkernelEntry.start, subkernelEntry.prologue);
-	assert(braInst);
-	*/
 }
 
 /*!
@@ -763,6 +758,36 @@ void analysis::LLVMUniformVectorization::Translation::resolveControlFlow() {
 }
 
 /*!
+	\brief removes all superfluous and unreachable scalar blocks
+*/
+void analysis::LLVMUniformVectorization::Translation::removeScalarBlocks() {
+	for (BasicBlockMap::iterator scalar_it = warpBlocksMap.begin(); scalar_it != warpBlocksMap.end(); 
+		++scalar_it ) {
+	
+		if (scalar_it->first->getNameStr() == "WarpSynchronousEntry") {
+			continue;
+		}
+		
+		report("would like to delete " << scalar_it->first->getNameStr());
+		while (llvm::PHINode *phi = llvm::dyn_cast<llvm::PHINode>(scalar_it->first->begin())) {
+			phi->replaceAllUsesWith(llvm::Constant::getNullValue(phi->getType()));
+			scalar_it->first->getInstList().pop_front();
+		}
+		for (llvm::succ_iterator SI = llvm::succ_begin(scalar_it->first), 
+			SE = llvm::succ_end(scalar_it->first); SI != SE; ++SI) {
+			
+			(*SI)->removePredecessor(scalar_it->first);
+		}
+		scalar_it->first->dropAllReferences();
+	}
+	for (BasicBlockMap::iterator scalar_it = warpBlocksMap.begin(); scalar_it != warpBlocksMap.end(); 
+		++scalar_it ) {
+		report("  actually deleted " << scalar_it->first->getNameStr());
+		scalar_it->first->eraseFromParent();
+	}
+}
+
+/*!
 	\brief deals with a particular divergent branch
 */
 void analysis::LLVMUniformVectorization::Translation::handleDivergentBranch(
@@ -791,14 +816,6 @@ void analysis::LLVMUniformVectorization::Translation::handleDivergentBranch(
 		
 		// insert reduction code 
 		for (int n = 1; n < warpSize; n++) {
-			/*
-			llvm::BinaryOperator *shlOp = llvm::BinaryOperator::Create(llvm::Instruction::Shl, branchConditional, 
-				constOne, "condZsl", divergent.warpBlock);
-			llvm::Instruction *cmpInt16 = new llvm::ZExtInst(ws_it->second.replicated[n], int16ty, "cmpws",
-				divergent.warpBlock);
-			branchConditional = llvm::BinaryOperator::Create(llvm::Instruction::Or, shlOp, cmpInt16, "condZ", 
-				divergent.warpBlock);
-			*/
 			llvm::Instruction *cmpInt16 = new llvm::ZExtInst(ws_it->second.replicated[n], intTy, "cmpws",
 				divergent.warpBlock);
 			branchConditional = llvm::BinaryOperator::Create(llvm::Instruction::Add, branchConditional, cmpInt16, "cmpws", divergent.warpBlock);
@@ -810,17 +827,6 @@ void analysis::LLVMUniformVectorization::Translation::handleDivergentBranch(
 		llvm::ConstantInt *constZero = pass->getConstInt32(0);
 		llvm::ConstantInt *constFull = pass->getConstInt32(warpSize);
 		
-#if 0
-		std::stringstream ss;
-		ss << divergent.warpBlock->getNameStr() << "_diverge";		
-		divergent.handler = llvm::BasicBlock::Create(F->getContext(), ss.str(), F);
-		
-		// insert dummy return statement
-		llvm::ReturnInst::Create(F->getContext(), divergent.handler);
-		
-		// and insert a call to abort on divergence
-		divergenceHandlerBranch(divergent, ws_it->second);
-#else
 		// find the existing divergence handler by convention
 		std::stringstream suffix;
 		suffix << "_exit_ws_" << warpSize;
@@ -833,8 +839,6 @@ void analysis::LLVMUniformVectorization::Translation::handleDivergentBranch(
 			}
 		}
 		assert(divergent.handler && "Failed in finding existing divergence handler");
-		
-#endif
 			
 		llvm::BasicBlock *succZero = warpBlocksMap[scBranch->getSuccessor(1)];
 		llvm::BasicBlock *succFull = warpBlocksMap[scBranch->getSuccessor(0)];
@@ -843,7 +847,6 @@ void analysis::LLVMUniformVectorization::Translation::handleDivergentBranch(
 			branchConditional, divergent.handler, 2, divergent.warpBlock);
 		switchInst->addCase(constFull, succFull);
 		switchInst->addCase(constZero, succZero);
-		
 	}
 	else {
 		Ocelot_Exception("unexpected divergent terminator");
@@ -1382,6 +1385,42 @@ void analysis::LLVMUniformVectorization::Translation::updateSubkernelEntries() {
 	
 	report("There are " << pass->labelMap->size() << " entry points");
 	
+
+	std::vector< llvm::BasicBlock *> entryPoints;
+	for (EntryIdBlockLabelMap::const_iterator entry_it = pass->labelMap->begin();
+		entry_it != pass->labelMap->end();
+		++entry_it) {
+		unsigned int entryId = (unsigned int)(entry_it->first & 0x0ffff);
+		llvm::BasicBlock *successor = getWarpBlockByEntryId(entryId);
+		assert(successor);
+		if (entryId >= (unsigned int)entryPoints.size()) {
+			entryPoints.resize(entryId+1, 0);
+		}
+		entryPoints[entryId] = successor;
+	}
+	assert(entryPoints.size());
+	report("Created switch with " << entryPoints.size() << " cases");
+	llvm::SwitchInst *switchInst = llvm::SwitchInst::Create(warpEntryId, entryPoints[0], 
+		(unsigned int)entryPoints.size(), schedulerBlock);
+	for (std::vector< llvm::BasicBlock *>::const_iterator entry_it = entryPoints.begin();
+		entry_it != entryPoints.end(); ++entry_it ) { 
+		
+		unsigned int idx = (unsigned int)(entry_it - entryPoints.begin());
+		report("adding successor " << idx << " - " << (*entry_it)->getNameStr());
+		switchInst->addCase(llvm::ConstantInt::get(int32Ty, idx), *entry_it);
+	}
+	report("Created large switch statement in scheduler");
+	
+	/*
+	for (EntryIdBlockLabelMap::const_iterator entry_it = pass->labelMap->begin();
+		entry_it != pass->labelMap->end();
+		++entry_it) {
+		unsigned int entryId = (unsigned int)(entry_it->first & 0x0ffff);		
+		llvm::BasicBlock *successor = getWarpBlockByEntryId(entryId);
+		assert(successor);
+		switchInst->setSuccessor(entryId, successor);
+	}
+	
 	llvm::AllocaInst *blockAddressArray = new llvm::AllocaInst(
 		llvm::PointerType::get(pass->getTyInt(8), 0), 
 		llvm::ConstantInt::get(int32Ty, (unsigned int)pass->labelMap->size()),
@@ -1429,6 +1468,7 @@ void analysis::LLVMUniformVectorization::Translation::updateSubkernelEntries() {
 	}
 	
 	report("created indirect branch");
+	*/
 }
 
 /*!

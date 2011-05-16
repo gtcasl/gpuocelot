@@ -138,9 +138,6 @@ namespace analysis {
 			
 			//! \brief maps a basic block label to a vector of its transitions
 			BlockEntryTransitionMap entryTransitions;
-		
-			//! \brief basic block of scheduler to be completed later
-			ir::BasicBlock::Pointer scheduler;
 		};
 	
 	public:

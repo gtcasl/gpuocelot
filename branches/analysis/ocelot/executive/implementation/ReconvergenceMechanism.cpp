@@ -192,13 +192,13 @@ void executive::ReconvergenceIPDOM::eval_Exit(executive::CTAContext &context,
 
 bool executive::ReconvergenceIPDOM::nextInstruction(
 	executive::CTAContext &context, 
-	const ir::PTXInstruction &instr) {
+	const ir::PTXInstruction::Opcode &opcode) {
 
 	// advance to next instruction if the current instruction wasn't a branch
-	if (instr.opcode != ir::PTXInstruction::Bra
-		&& instr.opcode != ir::PTXInstruction::Reconverge
-		&& instr.opcode != ir::PTXInstruction::Call
-		&& instr.opcode != ir::PTXInstruction::Ret ) {
+	if (opcode != ir::PTXInstruction::Bra
+		&& opcode != ir::PTXInstruction::Reconverge
+		&& opcode != ir::PTXInstruction::Call
+		&& opcode != ir::PTXInstruction::Ret ) {
 		context.PC++;
 	}
 	return context.running;
@@ -207,10 +207,8 @@ bool executive::ReconvergenceIPDOM::nextInstruction(
 ////////////////////////////////////////////////////////////////////////////////
 
 executive::ReconvergenceBarrier::ReconvergenceBarrier(
-	const EmulatedKernel *_kernel, 
-	CooperativeThreadArray *cta)
-: 
-	ReconvergenceMechanism(_kernel, cta)
+	const EmulatedKernel *_kernel, CooperativeThreadArray *cta)
+: ReconvergenceMechanism(_kernel, cta)
 {
 	type = Reconverge_Barrier;
 }
@@ -240,19 +238,16 @@ bool executive::ReconvergenceBarrier::eval_Bra(executive::CTAContext &context,
 	}
 	else {
 		// divergence - complicated
-		CTAContext branchContext(context), fallthroughContext(context), 
-			reconvergeContext(context);
+		CTAContext branchContext(context), fallthroughContext(context);
 
 		branchContext.active = branch;
 		branchContext.PC = instr.branchTargetInstruction;
 
 		fallthroughContext.active = fallthrough;
 		fallthroughContext.PC++;
-		
-		reconvergeContext.PC = instr.reconvergeInstruction + 1;
-		
-		runtimeStack.pop_back();
 
+		runtimeStack.pop_back();
+		
 		if (branchContext.active.any()) {
 			runtimeStack.push_back(branchContext);
 		}
@@ -286,8 +281,7 @@ void executive::ReconvergenceBarrier::eval_Reconverge(
 
 void executive::ReconvergenceBarrier::eval_Exit(executive::CTAContext &context, 
 	const ir::PTXInstruction &instr) {
-	if (context.active.count() == context.active.size()
-		|| runtimeStack.size() == 1) {
+	if (runtimeStack.size() == 1) {
 		context.running = false;
 	}
 	else {
@@ -297,11 +291,13 @@ void executive::ReconvergenceBarrier::eval_Exit(executive::CTAContext &context,
 
 bool executive::ReconvergenceBarrier::nextInstruction(
 	executive::CTAContext &context, 
-	const ir::PTXInstruction &instr) {
+	const ir::PTXInstruction::Opcode &opcode) {
 
 	// advance to next instruction if the current instruction wasn't a branch
-	if (instr.opcode != ir::PTXInstruction::Bra
-		&& instr.opcode != ir::PTXInstruction::Bar) {
+	if (opcode != ir::PTXInstruction::Bra
+		&& opcode != ir::PTXInstruction::Bar
+		&& opcode != ir::PTXInstruction::Call
+		&& opcode != ir::PTXInstruction::Ret) {
 		context.PC++;
 	}
 	return context.running;
@@ -480,20 +476,20 @@ void executive::ReconvergenceTFGen6::eval_Exit(executive::CTAContext &context,
 
 bool executive::ReconvergenceTFGen6::nextInstruction(
 	executive::CTAContext &context, 
-	const ir::PTXInstruction &instr) {
+	const ir::PTXInstruction::Opcode &opcode) {
 	
 	// advance to next instruction if the current instruction wasn't a branch
-	if (instr.opcode != ir::PTXInstruction::Bra
-		&& instr.opcode != ir::PTXInstruction::Reconverge 
-		&& instr.opcode != ir::PTXInstruction::Exit) {
+	if (opcode != ir::PTXInstruction::Bra
+		&& opcode != ir::PTXInstruction::Reconverge 
+		&& opcode != ir::PTXInstruction::Exit) {
 		
 		context.PC++;
 	}
 	
 	// GEN6 must manually increment the warp PC if instructions
 	// are branch or reconverge
-	if (instr.opcode != ir::PTXInstruction::Bra
-		&& instr.opcode != ir::PTXInstruction::Exit) {
+	if (opcode != ir::PTXInstruction::Bra
+		&& opcode != ir::PTXInstruction::Exit) {
 		//
 		// these instruction handlers have to update each thread PC individually
 		//
@@ -623,12 +619,12 @@ void executive::ReconvergenceTFSortedStack::eval_Exit(
 
 bool executive::ReconvergenceTFSortedStack::nextInstruction(
 	executive::CTAContext &context,
-	const ir::PTXInstruction &instr) {
+	const ir::PTXInstruction::Opcode &opcode) {
 
 	// advance to next instruction if the current instruction wasn't a branch
-	if (instr.opcode != ir::PTXInstruction::Bra && 
-		instr.opcode != ir::PTXInstruction::Bar &&
-		instr.opcode != ir::PTXInstruction::Reconverge ) {
+	if (opcode != ir::PTXInstruction::Bra && 
+		opcode != ir::PTXInstruction::Bar &&
+		opcode != ir::PTXInstruction::Reconverge ) {
 		context.PC++;
 	}
 	return context.running;

@@ -85,7 +85,7 @@ public:
 		\brief updates the active context to the next instruction
 	*/
 	virtual bool nextInstruction(executive::CTAContext &context,
-		const ir::PTXInstruction &instr) = 0;
+		const ir::PTXInstruction::Opcode &opcode) = 0;
 	
 	//! \brief gets the active context
 	executive::CTAContext& getContext();
@@ -136,7 +136,7 @@ public:
 	void eval_Exit(executive::CTAContext &context,
 		const ir::PTXInstruction &instr);
 	bool nextInstruction(executive::CTAContext &context,
-		const ir::PTXInstruction &instr);
+		const ir::PTXInstruction::Opcode &opcode);
 };
 
 class ReconvergenceBarrier: public ReconvergenceMechanism {
@@ -157,7 +157,8 @@ public:
 	void eval_Exit(executive::CTAContext &context,
 		const ir::PTXInstruction &instr);
 	bool nextInstruction(executive::CTAContext &context,
-		const ir::PTXInstruction &instr);
+		const ir::PTXInstruction::Opcode &opcode);
+
 };
 
 
@@ -182,7 +183,7 @@ public:
 	void eval_Exit(executive::CTAContext &context,
 		const ir::PTXInstruction &instr);
 	bool nextInstruction(executive::CTAContext &context,
-		const ir::PTXInstruction &instr);
+		const ir::PTXInstruction::Opcode &opcode);
 	
 public:
 
@@ -207,7 +208,7 @@ public:
 	void eval_Exit(executive::CTAContext &context,
 		const ir::PTXInstruction &instr);
 	bool nextInstruction(executive::CTAContext &context,
-		const ir::PTXInstruction &instr);
+		const ir::PTXInstruction::Opcode &opcode);
 };
 }
 

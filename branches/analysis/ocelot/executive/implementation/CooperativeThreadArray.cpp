@@ -360,8 +360,9 @@ void executive::CooperativeThreadArray::execute(const ir::Dim3& block) {
 		assert(reconvergenceMechanism->stackSize());
 
 		// get the context and advance the program counter
-		CTAContext& context = reconvergenceMechanism->getContext();
-		const PTXInstruction& instr = currentInstruction(context);
+		CTAContext& context = getActiveContext();
+		const PTXInstruction& instr  = currentInstruction(context);
+		const PTXInstruction::Opcode opcode = instr.opcode;
 
 		reconvergenceMechanism->evalPredicate(context);
 
@@ -513,8 +514,7 @@ void executive::CooperativeThreadArray::execute(const ir::Dim3& block) {
 				break;
 		}
 	
-		running = reconvergenceMechanism->nextInstruction(
-			getActiveContext(), instr);
+		running = reconvergenceMechanism->nextInstruction(context, opcode);
 
 		postTrace();
 
@@ -2258,7 +2258,8 @@ void executive::CooperativeThreadArray::eval_Bar(CTAContext& context,
 	}
 	else if (instr.a.addressMode != ir::PTXOperand::Invalid) {
 		report("eval_Bar() - barrier name must be constant");
-		throw RuntimeException("barrier name must be a constant in this version of Ocelot PTX Emulator",
+		throw RuntimeException("barrier name must be a constant in this "
+			"version of Ocelot PTX Emulator",
 			context.PC, instr);
 	}
 	
@@ -2267,14 +2268,14 @@ void executive::CooperativeThreadArray::eval_Bar(CTAContext& context,
 			participating = (size_t)instr.b.imm_uint;
 		}
 		else {
-			report("eval_Bar() - number of threads participating in barrier must be constant");
+			report("eval_Bar() - number of threads participating in barrier "
+				"must be constant");
 			throw RuntimeException(
-				"number of threads participating in barrier must be constant operand in this version of Ocelot",
+				"number of threads participating in barrier must be "
+					"constant operand in this version of Ocelot",
 				context.PC, instr);
 		}
 	}
-	barriers[barrierName].setParticipating(participating);
-	barriers[barrierName].arrive(context.active);
 	
 	if (participating != context.active.size()) {
 		throw RuntimeException(
@@ -2282,48 +2283,7 @@ void executive::CooperativeThreadArray::eval_Bar(CTAContext& context,
 			context.PC, instr);
 	}
 	
-	if (instr.barrierOperation == ir::PTXInstruction::BarSync) {
-#if RECONVERGENCE_MECHANISM == IPDOM_RECONVERGENCE \
-	|| RECONVERGENCE_MECHANISM == GEN6_RECONVERGENCE \
-	|| RECONVERGENCE_MECHANISM == SORTED_PREDICATE_STACK_RECONVERGENCE
-		if (context.active.count() < context.active.size() ||
-			!barriers[barrierName].satisfied()) {
-			// deadlock - not all threads reach synchronization barrier
-#if REPORT_BAR
-			report(" Bar called - " << context.active.count() << " of " 
-				<< context.active.size() << " threads active");
-#endif
-			throw RuntimeException("barrier deadlock at: " 
-				+ kernel->location(context.PC), context.PC, instr);
-		}
-#elif RECONVERGENCE_MECHANISM == BARRIER_RECONVERGENCE
-		CTAContext continuation(context);
-		runtimeStack.pop_back();
-		if (runtimeStack.size() == 0) {
-		
-			if (!barriers[barrierName].satisfied()) {
-				throw RuntimeException("barrier deadlock at: " 
-					+ kernel->location(context.PC), context.PC, instr);
-			}
-		
-			continuation.active.set();
-			continuation.PC = context.PC + 1;
-			runtimeStack.push_back(continuation);
-			barriers[barrierName].clear();
-		}
-#else
-#error "Undefined reconvergence mechanism"
-#endif
-	}
-	else if (instr.barrierOperation == ir::PTXInstruction::BarReduction) {
-	
-	}
-	else if (instr.barrierOperation == ir::PTXInstruction::BarArrive) {
-
-	}
-	else {
-		throw RuntimeException("unrecognized barrier operation", context.PC, instr);
-	}
+	reconvergenceMechanism->eval_Bar(context, instr);
 }
 
 void executive::CooperativeThreadArray::eval_Bra(CTAContext &context,
@@ -2352,9 +2312,11 @@ void executive::CooperativeThreadArray::eval_Bra(CTAContext &context,
 	}
 
 #if REPORT_BRA
-	report("  active threads       [" << context.active.count() << "] " << context.active);
+	report("  active threads       [" << context.active.count() << "] "
+		<< context.active);
 	report("  branching threads    [" << branch.count() << "] " << branch);
-	report("  fall-through threads [" << fall_through.count() << "] " << fall_through);
+	report("  fall-through threads [" << fall_through.count() << "] "
+		<< fall_through);
 	report("  branch target PC " << instr.branchTargetInstruction);
 	report("  reconverge PC " << instr.reconvergeInstruction);
 #endif

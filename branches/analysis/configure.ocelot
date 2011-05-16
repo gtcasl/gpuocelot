@@ -21,12 +21,12 @@
 		runtimeApiTrace: "trace/CudaAPI.trace"
 	},
 	executive: {
-		devices: [ llvm, emulated, nvidia, amd ],
+		devices: [ emulated ],
 		port: 2011,
 		host: "127.0.0.1",
 		optimizationLevel: none,
 		workerThreadLimit: 2,
-		reconvergenceMechanism: "ipdom",
+		reconvergenceMechanism: "barrier",
 		warpSize: 4
 	},
 	optimizations: {

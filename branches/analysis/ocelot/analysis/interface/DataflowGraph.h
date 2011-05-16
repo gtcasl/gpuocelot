@@ -262,8 +262,9 @@ class DataflowGraph : public KernelAnalysis
 
 	public:
 		/*! \brief Build from a kernel CFG */
-		void analyze(ir::IRKernel& kernel);
+		void analyze( ir::IRKernel& kernel );
 
+	public:
 		/*! \brief The constructor */
 		DataflowGraph();
 

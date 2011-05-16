@@ -44,10 +44,10 @@ namespace translator
 
 PTXToLLVMTranslator::PTXToLLVMTranslator( OptimizationLevel l,
 	const ir::ExternalFunctionSet* s ) 
-	: Translator( ir::Instruction::PTX, ir::Instruction::LLVM, l ),
-	ImmutableKernelPass( Analysis::DataflowGraphAnalysis
-		| Analysis::StaticSingleAssignment ), _llvmKernel( 0 ),
-	_tempRegisterCount( 0 ), _tempCCRegisterCount( 0 ),
+	: Translator( ir::Instruction::PTX, ir::Instruction::LLVM, l, 
+		Analysis::DataflowGraphAnalysis | Analysis::StaticSingleAssignment,
+		"PTXToLLVMTranslator" ),
+	_llvmKernel( 0 ), _tempRegisterCount( 0 ), _tempCCRegisterCount( 0 ),
 	_tempBlockCount( 0 ), _usesTextures( false ), _externals( s )
 {
 
@@ -58,8 +58,13 @@ PTXToLLVMTranslator::~PTXToLLVMTranslator()
 
 }
 
-void PTXToLLVMTranslator::initialize(const ir::Module& m)
+ir::Kernel* PTXToLLVMTranslator::translate( const ir::Kernel* k )
 {
+	report( "Translating PTX kernel " << k->name );
+
+	assertM( k->ISA == ir::Instruction::PTX, 
+		"Kernel must a PTXKernel to translate to an LLVMKernel" );
+	
 	_tempRegisterCount = 0;
 	_tempBlockCount = 0;
 	_uninitialized.clear();
@@ -67,24 +72,6 @@ void PTXToLLVMTranslator::initialize(const ir::Module& m)
 	_usesTextures = false;
 	
 	_dfg = 0;
-}
-
-void PTXToLLVMTranslator::runOnKernel(const ir::IRKernel& k)
-{
-	translate( &k );
-}
-
-void PTXToLLVMTranslator::finalize()
-{
-	// nop
-}
-
-ir::Kernel* PTXToLLVMTranslator::translate( const ir::IRKernel* k )
-{
-	report( "Translating PTX kernel " << k->name );
-	
-	assertM( k->ISA == ir::Instruction::PTX, 
-		"Kernel must a PTXKernel to translate to an LLVMKernel" );
 	
 	_ptx = static_cast< const ir::PTXKernel* >( k );
 	
@@ -419,8 +406,7 @@ void PTXToLLVMTranslator::_debug(
 void PTXToLLVMTranslator::_reportReads( 
 	const analysis::DataflowGraph::Instruction& i )
 {
-	if( optimizationLevel != DebugOptimization
-		&& optimizationLevel != ReportOptimization ) return;
+	if( optimizationLevel != ReportOptimization ) return;
 
 	ir::LLVMCall call;
 	
@@ -518,8 +504,7 @@ void PTXToLLVMTranslator::_reportReads(
 void PTXToLLVMTranslator::_reportWrites( 
 	const analysis::DataflowGraph::Instruction& i )
 {
-	if( optimizationLevel != DebugOptimization
-		&& optimizationLevel != ReportOptimization ) return;
+	if( optimizationLevel != ReportOptimization ) return;
 
 	ir::LLVMCall call;
 	
@@ -2605,32 +2590,10 @@ void PTXToLLVMTranslator::_translateCvta( const ir::PTXInstruction& i )
 		toint.a = _getLoadOrStorePointer( i.a, 
 			i.addressSpace, _translate( i.type ), i.vec );
 
-		if( i.a.offset == 0 )
-		{
-			toint.d = _destination( i );
+		toint.d = _destination( i );
 
-			_add( toint );
-		}
-		else
-		{
-			toint.d = ir::LLVMInstruction::Operand( 
-				_tempRegister(),
-				ir::LLVMInstruction::Type( 
-				_translate( i.type ), 
-				ir::LLVMInstruction::Type::Element ) );
-		
-			_add( toint );
-		
-			ir::LLVMAdd add;
-		
-			add.a          = toint.d;
-			add.d          = _destination( i );
-			add.b.constant = true;
-			add.b.type     = add.a.type;
-			add.b.i64      = i.a.offset;
-		
-			_add( add );
-		}
+		_add( toint );
+
 		break;
 	}
 	default: assertM(false, "Invalid address space for cvta.");

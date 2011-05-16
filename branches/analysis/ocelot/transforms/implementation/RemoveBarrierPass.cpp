@@ -388,7 +388,6 @@ void RemoveBarrierPass::runOnKernel( ir::IRKernel& k )
 	_reentryPoint = 1;
 	_spillBytes = 1;
 	_kernel = static_cast< ir::PTXKernel* >( &k );
-	_dfg().compute();
 	
 	for( analysis::DataflowGraph::iterator block = _dfg().begin(); 
 		block != _dfg().end(); ++block )

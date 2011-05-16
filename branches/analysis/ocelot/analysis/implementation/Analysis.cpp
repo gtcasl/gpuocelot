@@ -24,6 +24,10 @@ Analysis::Analysis(Type t, const std::string& n, int r)
 
 }
 
+Analysis::~Analysis()
+{
+
+}
 
 KernelAnalysis::KernelAnalysis(Type t, const std::string& n, int r)
 : Analysis(t, n, r)

@@ -584,7 +584,8 @@ static void setupLocalMemoryReferences(ir::PTXKernel& kernel,
 	// [0] == subkernel-id
 	// [1] == call type
 	// [2] == barrier resume point if it exists
-	metadata->localSize = 8;
+	// [3] == resume point if it exists
+	metadata->localSize = 16;
 	
 	// give preference to barrier resume point
 	ir::Kernel::LocalMap::const_iterator local = kernel.locals.find(
@@ -597,10 +598,7 @@ static void setupLocalMemoryReferences(ir::PTXKernel& kernel,
 				<< local->second.name << " of size " 
 				<< local->second.getSize());
 			
-			pad(metadata->localSize, local->second.alignment);
-			offsets.insert(std::make_pair(local->second.name,
-				metadata->localSize));
-			metadata->localSize += local->second.getSize();
+			offsets.insert(std::make_pair(local->second.name, 8));
 		}
 	}
 
@@ -614,10 +612,7 @@ static void setupLocalMemoryReferences(ir::PTXKernel& kernel,
 				<< local->second.name << " of size " 
 				<< local->second.getSize());
 			
-			pad(metadata->localSize, local->second.alignment);
-			offsets.insert(std::make_pair(local->second.name,
-				metadata->localSize));
-			metadata->localSize += local->second.getSize();
+			offsets.insert(std::make_pair(local->second.name, 12));
 		}
 	}
 
@@ -793,9 +788,9 @@ static void translate(llvm::Module*& module, ir::PTXKernel& kernel,
 	report("  Converting from PTX IR to LLVM IR.");
 	translator::PTXToLLVMTranslator translator(optimization, &externals);
 
-	transforms::PassManager manager;
+	transforms::PassManager manager(const_cast<ir::Module*>(kernel.module));
 	
-	manager.addPass(&translator);
+	manager.addPass(translator);
 	manager.runOnKernel(kernel);
 
 	ir::LLVMKernel* llvmKernel = static_cast<ir::LLVMKernel*>(

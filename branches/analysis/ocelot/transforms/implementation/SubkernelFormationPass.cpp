@@ -209,7 +209,8 @@ static unsigned int createSavePoint(ir::PTXKernel& newKernel,
 	
 	analysis::DataflowGraph::IteratorMap::const_iterator
 		dfgBlock = cfgToDfgMap.find(oldBlock);
-
+	assert(dfgBlock != cfgToDfgMap.end());
+	
 	ir::ControlFlowGraph::edge_iterator splitEdge = newKernel.cfg()->split_edge(
 		newEdge, ir::BasicBlock(oldBlock->label + "_save", 
 		newKernel.cfg()->newId())).second;
@@ -834,7 +835,8 @@ void SubkernelFormationPass::ExtractKernelsPass::runOnKernel(ir::IRKernel& k)
 
 	unsigned int currentRegionSize = 0;
 	unsigned int kernelId = 0;
-
+	unsigned int spillRegionSize = 0;
+		
 	std::string originalName = k.name;
 	
 	ir::PTXKernel& ptx = static_cast<ir::PTXKernel&>(k);
@@ -913,16 +915,12 @@ void SubkernelFormationPass::ExtractKernelsPass::runOnKernel(ir::IRKernel& k)
 		// create a new region if there are enough blocks
 		if(currentRegionSize < _expectedRegionSize && !queue.empty()) continue;
 		
-		unsigned int spillRegionSize = 0;
-		
 		entry = createRegion(*newKernel, spillRegionSize, ptx, region,
 			inEdges, entry, cfgToDfgMap, alreadyAdded, savedBlocks, _dfg());
 		alreadyAdded.insert(region.begin(), region.end());
 		
 		createScheduler(*newKernel, ptx, savedBlocks, _dfg());
 
-		addVariables(*newKernel, k, spillRegionSize, splitKernels.size() > 1);
-		
 		// restart with a new kernel if there are any blocks left
 		if(entry == ptx.cfg()->get_exit_block()) break;
 	
@@ -940,6 +938,13 @@ void SubkernelFormationPass::ExtractKernelsPass::runOnKernel(ir::IRKernel& k)
 		
 		newKernel = splitKernels.back();
 		report(" New kernel name is " << newKernel->name);
+	}
+
+	// Add variables
+	for(KernelVector::iterator kernel = splitKernels.begin();
+		kernel != splitKernels.end(); ++kernel)
+	{
+		addVariables(**kernel, k, spillRegionSize, splitKernels.size() > 1);
 	}
 	
 	// Rename 

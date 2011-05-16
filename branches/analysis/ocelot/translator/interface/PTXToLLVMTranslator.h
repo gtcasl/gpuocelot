@@ -31,7 +31,7 @@ namespace translator
 {
 
 /*! \brief A translator from PTX to LLVM */
-class PTXToLLVMTranslator : public Translator, public ImmutableKernelPass
+class PTXToLLVMTranslator : public Translator
 {
 public:
 	PTXToLLVMTranslator( OptimizationLevel l = NoOptimization,
@@ -39,15 +39,7 @@ public:
 	~PTXToLLVMTranslator();
 
 public:
-	/*! \brief Initialize the pass using a specific module */
-	void initialize(const ir::Module& m);
-	/*! \brief Run the pass on a specific kernel in the module */
-	void runOnKernel(const ir::IRKernel& k);		
-	/*! \brief Finalize the pass */
-	void finalize();
-
-public:
-	ir::Kernel* translate( const ir::IRKernel* i );
+	ir::Kernel* translate( const ir::Kernel* i );
 
 public:
 	ir::Kernel* translatedKernel() const;

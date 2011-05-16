@@ -40,6 +40,8 @@ public:
 	Analysis(Type t = NoAnalysis, const std::string& name = "",
 		int required = NoAnalysis);
 
+	virtual ~Analysis();
+
 public:
 	/*! \brief Get the analysis type */
 	const Type type;

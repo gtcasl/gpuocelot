@@ -108,7 +108,9 @@ static void simplifyCall(ir::PTXKernel& kernel,
 		if(parameter->addressMode == ir::PTXOperand::BitBucket) continue;
 		RegisterMap::iterator mapping = nameToRegister.find(
 			parameter->identifier);
-		assert(mapping != nameToRegister.end());
+		assertM(mapping != nameToRegister.end(),
+			"Could not find register source of operand "
+			<< parameter->identifier);
 		
 		parameter->addressMode = ir::PTXOperand::Register;
 		parameter->reg         = mapping->second;

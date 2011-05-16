@@ -28,7 +28,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 namespace transforms
 {
@@ -110,11 +110,13 @@ static void allocateNewDataStructures(AnalysisMap& analyses,
 		if(analyses.end() == dfg)
 		{
 			report("   Allocating dataflow graph for kernel " << k->name);
+			analysis::DataflowGraph* graph = new analysis::DataflowGraph;
+
 			dfg = analyses.insert(std::make_pair(
-				analysis::Analysis::DataflowGraphAnalysis,
-				new analysis::DataflowGraph())).first;
+				analysis::Analysis::DataflowGraphAnalysis, graph)).first;
 			
-			dfg->second->setPassManager(manager);
+			graph->setPassManager(manager);
+			graph->analyze(*k);
 		}
 		if(type & analysis::Analysis::StaticSingleAssignment)
 		{
@@ -158,6 +160,12 @@ static void runKernelPass(ir::IRKernel* kernel, Pass* pass)
 		kernelPass->runOnKernel(*kernel);
 	}
 	break;
+	case Pass::ImmutableKernelPass:
+	{
+		ImmutableKernelPass* k = static_cast<ImmutableKernelPass*>(pass);
+		k->runOnKernel(*kernel);
+	}
+	break;
 	case Pass::BasicBlockPass:
 	{
 		BasicBlockPass* bbPass = static_cast<BasicBlockPass*>(pass);
@@ -190,14 +198,22 @@ static void runKernelPass(ir::Module* module, ir::IRKernel* kernel, Pass* pass)
 		kernelPass->runOnKernel(*kernel);
 	}
 	break;
+	case Pass::ImmutableKernelPass:
+	{
+		report("  Running immutable kernel pass '" << pass->toString()
+			<< "' on kernel '" << kernel->name << "'" );
+		ImmutableKernelPass* k = static_cast<ImmutableKernelPass*>(pass);
+		k->runOnKernel(*kernel);
+	}
+	break;
 	case Pass::BasicBlockPass:
 	{
 		report("  Running basic block pass '" << pass->toString() 
 			<< "' on kernel '" << kernel->name << "'" );
 		BasicBlockPass* bbPass = static_cast<BasicBlockPass*>(pass);
 		bbPass->initialize(*kernel);
-		for(ir::ControlFlowGraph::iterator 
-			block = kernel->cfg()->begin(); 
+		for(ir::ControlFlowGraph::iterator
+			block = kernel->cfg()->begin();
 			block != kernel->cfg()->end(); ++block)
 		{
 			bbPass->runOnBlock( *block );
@@ -223,6 +239,14 @@ static void initializeKernelPass(ir::Module* module, Pass* pass)
 		kernelPass->initialize(*module);
 	}
 	break;
+	case Pass::ImmutableKernelPass:
+	{
+		report("  Initializing immutable kernel pass '"
+			<< pass->toString() << "'" );
+		ImmutableKernelPass* k = static_cast<ImmutableKernelPass*>(pass);
+		k->initialize(*module);
+	}
+	break;
 	case Pass::BasicBlockPass:
 	{
 		report("  Initializing basic block pass '" << pass->toString() << "'" );
@@ -246,6 +270,14 @@ static void finalizeKernelPass(ir::Module* module, Pass* pass)
 		report("  Finalizing kernel pass '" << pass->toString() << "'" );
 		KernelPass* kernelPass = static_cast<KernelPass*>(pass);
 		kernelPass->finalize();
+	}
+	break;
+	case Pass::ImmutableKernelPass:
+	{
+		report("  Finalizing immutable kernel pass '"
+			<< pass->toString() << "'" );
+		ImmutableKernelPass* k = static_cast<ImmutableKernelPass*>(pass);
+		k->finalize();
 	}
 	break;
 	case Pass::BasicBlockPass:
@@ -276,8 +308,9 @@ static void runModulePass(ir::Module* module, Pass* pass)
 		modulePass->runOnModule(*module);
 	}
 	break;
-	case Pass::KernelPass: /* fall through */
-	case Pass::BasicBlockPass:
+	case Pass::KernelPass:     /* fall through */
+	case Pass::BasicBlockPass: /* fall through */
+	case Pass::ImmutableKernelPass:
 	break;
 	case Pass::InvalidPass: assertM(false, "Invalid pass type.");
 	}
@@ -405,18 +438,18 @@ void PassManager::runOnModule()
 		{
 			if(pass->second->type == Pass::ImmutablePass) continue;
 			if(pass->second->type == Pass::ModulePass)    continue;
-
+			
 			freeUnusedDataStructures( *analyses, kernel->second, pass->first);
 			allocateNewDataStructures(*analyses, kernel->second,
 				pass->first, this);
-		
+			
 			runKernelPass(_module, kernel->second, pass->second);
 		}
 		
-		_analyses = 0;
-		
 		freeUnusedDataStructures(*analyses, kernel->second,
 			analysis::Analysis::NoAnalysis);
+		
+		_analyses = 0;
 
 		for(PassMap::iterator pass = _passes.begin();
 			pass != _passes.end(); ++pass)

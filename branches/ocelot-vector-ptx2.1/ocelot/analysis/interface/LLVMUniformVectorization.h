@@ -252,6 +252,11 @@ namespace analysis
 					or returns to Ocelot multicore runtime
 			*/
 			void resolveControlFlow();
+			
+			/*!
+				\brief removes all superfluous and unreachable scalar blocks
+			*/
+			void removeScalarBlocks();
 		
 			/*!
 				\brief visits each of the warp scheduler blocks and changes control flow to point

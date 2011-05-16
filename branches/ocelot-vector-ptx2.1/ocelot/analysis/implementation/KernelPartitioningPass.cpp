@@ -23,11 +23,11 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_SUBKERNEL_PTX 1
-#define REPORT_SUBKERNEL_BARE 1
+#define REPORT_SUBKERNEL_PTX 0
+#define REPORT_SUBKERNEL_BARE 0
 #define REPORT_SUBKERNEL_CFG 1
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -70,6 +70,7 @@ KernelPartitioningPass::KernelDecomposition::KernelDecomposition() {
 */
 void KernelPartitioningPass::KernelDecomposition::runOnKernel(ir::PTXKernel *_kernel, EntryId _base) {
 
+
 	kernel = _kernel;
 	baseId = _base;
 	
@@ -104,6 +105,7 @@ void KernelPartitioningPass::KernelDecomposition::runOnKernel(ir::PTXKernel *_ke
 #if REPORT_BASE && REPORT_SUBKERNEL_CFG
 	std::cout << "\n\n";
 	kernel->cfg()->write(std::cout);
+	std::cout << std::endl;
 #endif
 }
 
@@ -373,7 +375,8 @@ void KernelPartitioningPass::KernelDecomposition::_transformExitTransitions(Kern
 				std::string fallthroughBlockLabel = "";
 				
 				
-				for (ir::BasicBlock::EdgePointerVector::const_iterator edge_it = transition.block->out_edges.begin();
+				for (ir::BasicBlock::EdgePointerVector::const_iterator edge_it = 
+						transition.block->out_edges.begin();
 					edge_it != transition.block->out_edges.end(); ++edge_it) {
 					
 					EntryId targetId = entryTransitions[(*edge_it)->tail->label].first;
@@ -387,7 +390,8 @@ void KernelPartitioningPass::KernelDecomposition::_transformExitTransitions(Kern
 				}
 				
 				// create a dummy edge
-				ir::BasicBlock::Edge dummyEdge(transition.block, transition.handler, ir::BasicBlock::Edge::Dummy);
+				ir::BasicBlock::Edge dummyEdge(transition.block, transition.handler, 
+					ir::BasicBlock::Edge::Dummy);
 				kernel->cfg()->insert_edge(dummyEdge);
 				
 				// in cases of actual divergence, insert the thread exit into the handler block
@@ -408,9 +412,11 @@ void KernelPartitioningPass::KernelDecomposition::_transformExitTransitions(Kern
 				
 				selp->a.imm_uint = branchTargetId;		// branch target
 				selp->b.imm_uint = fallthroughTargetId;		// fallthrough target
-				selp->c = std::move(ir::PTXOperand(ir::PTXOperand::Register, ir::PTXOperand::pred, terminator->pg.reg, 0));
+				selp->c = std::move(ir::PTXOperand(ir::PTXOperand::Register, ir::PTXOperand::pred, 
+					terminator->pg.reg, 0));
 				transition.handler->instructions.push_back(selp);
-				resumePointOperand = std::move(ir::PTXOperand(ir::PTXOperand::Register, ir::PTXOperand::u32, selp->d.reg, 0));
+				resumePointOperand = std::move(ir::PTXOperand(ir::PTXOperand::Register, ir::PTXOperand::u32,
+					selp->d.reg, 0));
 				transition.handler->comment = "divergent branch";
 				
 				_createExitCode(transition, resumePointOperand, Thread_branch);
@@ -425,7 +431,8 @@ void KernelPartitioningPass::KernelDecomposition::_transformExitTransitions(Kern
 		case ir::PTXInstruction::Bar:
 		{
 			resumePointOperand = std::move(ir::PTXOperand(ir::PTXOperand::Immediate, ir::PTXOperand::u32));
-			for (ir::BasicBlock::EdgePointerVector::const_iterator edge_it = transition.block->out_edges.begin();
+			for (ir::BasicBlock::EdgePointerVector::const_iterator edge_it = 
+					transition.block->out_edges.begin();
 				edge_it != transition.block->out_edges.end(); ++edge_it) {
 				resumePointOperand.imm_uint = entryTransitions[(*edge_it)->tail->label].first;
 			}
@@ -500,8 +507,10 @@ void KernelPartitioningPass::KernelDecomposition::_createExitCode(
 	ir::PTXInstruction *store = 0;
 	if (exitCode != Thread_exit) {
 		move = new ir::PTXInstruction(ir::PTXInstruction::Mov);
-		move->a = std::move(ir::PTXOperand(ir::PTXOperand::Address, ir::PTXOperand::u32, "_Zocelot_resume_point"));
-		move->d = std::move(ir::PTXOperand(ir::PTXOperand::Register, ir::PTXOperand::u32, addrRegister));
+		move->a = std::move(ir::PTXOperand(ir::PTXOperand::Address, ir::PTXOperand::u32, 
+			"_Zocelot_resume_point"));
+		move->d = std::move(ir::PTXOperand(ir::PTXOperand::Register, ir::PTXOperand::u32, 
+			addrRegister));
 		move->type = ir::PTXOperand::u32;
 
 		store = new ir::PTXInstruction(ir::PTXInstruction::St);
@@ -516,7 +525,8 @@ void KernelPartitioningPass::KernelDecomposition::_createExitCode(
 
 	// store 
 	move = new ir::PTXInstruction(ir::PTXInstruction::Mov);
-	move->a = std::move(ir::PTXOperand(ir::PTXOperand::Address, ir::PTXOperand::u32, "_Zocelot_resume_status"));
+	move->a = std::move(ir::PTXOperand(ir::PTXOperand::Address, ir::PTXOperand::u32, 
+		"_Zocelot_resume_status"));
 	move->d = std::move(ir::PTXOperand(ir::PTXOperand::Register, ir::PTXOperand::u32, addrRegister));
 	move->type = ir::PTXOperand::u32;
 
@@ -533,39 +543,28 @@ void KernelPartitioningPass::KernelDecomposition::_createExitCode(
 	ir::PTXInstruction *exit = new ir::PTXInstruction(ir::PTXInstruction::Exit);
 	transition.handler->instructions.push_back(exit);
 	
-	ir::BasicBlock::Edge exitEdge(transition.handler, kernel->cfg()->get_exit_block(), ir::BasicBlock::Edge::Dummy);
+	ir::BasicBlock::Edge exitEdge(transition.handler, kernel->cfg()->get_exit_block(), 
+		ir::BasicBlock::Edge::Dummy);
 	kernel->cfg()->insert_edge(exitEdge);
 	
 	report("created exit in block '" << transition.handler->label << "' with code " << (int)exitCode);
 }
 
 void KernelPartitioningPass::KernelDecomposition::_createDummyScheduler() {
-
-	ir::PTXInstruction *branch = new ir::PTXInstruction(ir::PTXInstruction::Bra);
-	branch->d.addressMode = ir::PTXOperand::Label;
-	branch->d.identifier = kernel->cfg()->get_entry_block()->out_edges[0]->tail->label;
-	
-	ir::BasicBlock schedulerBlock("$" + kernel->name + "_scheduler");
-	ir::ControlFlowGraph::EdgePair edgePair = kernel->cfg()->split_edge(
-		kernel->cfg()->get_entry_block()->out_edges[0], schedulerBlock);
-	scheduler = edgePair.first->tail;
-	edgePair.second->type = ir::BasicBlock::Edge::Branch;
-		
-	scheduler->instructions.push_back(branch);
-	
-
 	for (BlockEntryTransitionMap::const_iterator transition_it = entryTransitions.begin();
 		transition_it != entryTransitions.end();
 		++transition_it) {
-		
-		ir::BasicBlock::Edge edge(scheduler, transitionPoints[transition_it->second.first].handler, 
-			ir::BasicBlock::Edge::Dummy);
+
+		ir::BasicBlock::Edge edge(kernel->cfg()->get_entry_block(), 
+			transitionPoints[transition_it->second.first].handler, ir::BasicBlock::Edge::Dummy);
 		kernel->cfg()->insert_edge(edge);
 	}
 }
 
 
-void KernelPartitioningPass::KernelDecomposition::extractEntryPoints(EntryIdBlockLabelMap &entryMap) const {
+void KernelPartitioningPass::KernelDecomposition::extractEntryPoints(
+	EntryIdBlockLabelMap &entryMap) const {
+	
 	entryMap.clear();
 	for (KernelTransitionPointMap::const_iterator t_it = transitionPoints.begin();
 		t_it != transitionPoints.end(); ++t_it) {

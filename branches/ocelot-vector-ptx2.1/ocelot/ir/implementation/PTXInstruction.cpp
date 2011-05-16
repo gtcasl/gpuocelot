@@ -356,6 +356,7 @@ std::string ir::PTXInstruction::toString( Opcode opcode ) {
 		case Reconverge: return "reconverge"; break;
 		case Phi:        return "phi";        break;
 		case Nop:        return "nop";        break;
+		case Yield:			 return "yield";			break;
 	}
 	return "INVALID";
 }
@@ -1884,6 +1885,9 @@ std::string ir::PTXInstruction::valid() const {
 			}
 			break;
 		}
+		case Yield: {
+			break;
+		}
 		default: return "check not implemented for " + toString(opcode); break;
 	}
 	return "";
@@ -2389,6 +2393,9 @@ std::string ir::PTXInstruction::toString() const {
 		}
 		case Reconverge: {
 			return "reconverge";
+		}
+		case Yield: {
+			return "yield";
 		}
 		default: break;
 	}

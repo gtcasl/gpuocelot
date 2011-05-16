@@ -1126,6 +1126,7 @@ namespace translator
 		case ir::PTXInstruction::Trap:     _translateTrap( i );        break;
 		case ir::PTXInstruction::Vote:     _translateVote( i );        break;
 		case ir::PTXInstruction::Xor:      _translateXor( i );         break;
+		case ir::PTXInstruction::Yield:      _translateYield( i );         break;
 		default:
 		{
 			assertM( false, "Opcode " 
@@ -2639,6 +2640,13 @@ namespace translator
 	{
 		_yield( executive::LLVMExecutableKernel::ExitCall );
 
+		ir::LLVMBr branch;
+		branch.iftrue = "%exit";
+		
+		_add( branch );
+	}
+		
+	void PTXToLLVMTranslator::_translateYield( const ir::PTXInstruction& i ) {
 		ir::LLVMBr branch;
 		branch.iftrue = "%exit";
 		

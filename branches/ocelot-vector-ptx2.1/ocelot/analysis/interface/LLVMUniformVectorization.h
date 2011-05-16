@@ -41,7 +41,7 @@ namespace analysis
 {
 	typedef KernelPartitioningPass::EntryId EntryId;
 	typedef KernelPartitioningPass::EntryIdBlockLabelMap EntryIdBlockLabelMap;
-
+		
 	/*!
 		\brief pass applied to kernels with completely uniform control flow for warps of a given
 			size
@@ -388,6 +388,7 @@ namespace analysis
 			*/
 			ThreadLocalArgument threadLocalArguments;
 		};
+		
 
 	public:
 		/*!

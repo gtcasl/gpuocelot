@@ -231,7 +231,7 @@ void LLVMDynamicExecutive::execute() {
 */
 void LLVMDynamicExecutive::executeWarp(Warp &warp) {
 	
-	reportE(REPORT_SCHEDULE_OPERATIONS, "Executing warp of size " << warp.size() 
+	reportE(REPORT_SCHEDULE_OPERATIONS, "\n\nExecuting warp of size " << warp.size() 
 		<< " on hyperblockId " << warp.entryId);
 		
 	// lazily fetch translation
@@ -239,7 +239,7 @@ void LLVMDynamicExecutive::executeWarp(Warp &warp) {
 		getOrInsertTranslationById(warp.entryId, warp.size());
 	
 	assert(translation && "failed to obtain translation");
-	reportE(REPORT_SCHEDULE_OPERATIONS, " obtained translation. Executing warp.");
+	reportE(REPORT_SCHEDULE_OPERATIONS, " obtained translation. Executing warp on subkernel " << warp.entryId);
 	
 	for (ThreadContextVector::iterator ctx_it = warp.threads.begin(); 
 		ctx_it != warp.threads.end(); 

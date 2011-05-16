@@ -47,17 +47,17 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define REPORT_PTX_KERNELS 1
+#define REPORT_PTX_KERNELS 0
 #define REPORT_PTX_SUBKERNELS 0
 
 #define REPORT_ALL_LLVM_ASSEMBLY 1
-#define REPORT_OPTIMIZED_LLVM_ASSEMBLY 0
+#define REPORT_OPTIMIZED_LLVM_ASSEMBLY 1
 #define REPORT_SCHEDULE_OPERATIONS 0
-#define REPORT_TRANSLATION_OPERATIONS 1
+#define REPORT_TRANSLATION_OPERATIONS 0
 
 #define REPORT_TRANSLATIONS 0
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -85,7 +85,9 @@ const LLVMDynamicTranslationCache::Translation *
 LLVMDynamicTranslationCache::getOrInsertTranslationById(EntryId id, int ws) {
 
 	reportE(REPORT_SCHEDULE_OPERATIONS, "LLVMDynamicTranslationCache::getOrInsertTranslationById( id: " << id << ", ws: " << ws << ")");
-		
+	
+	id &= 0x0ffff0000;
+	
 	TranslatedKernelMap::const_iterator sk_it = kernelMap.find(id);
 	assert(sk_it != kernelMap.end());
 	
@@ -135,8 +137,6 @@ LLVMDynamicTranslationCache::getOrInsertTranslationById(EntryId id, int ws) {
 	return translation;
 }
 
-
-
 //! \brief loads a module into the translation cache
 bool LLVMDynamicTranslationCache::loadModule(const ir::Module *module, executive::Device *device) {
 	ModuleMap::iterator mod_it = modules.find(module->path());
@@ -155,7 +155,6 @@ bool LLVMDynamicTranslationCache::loadModule(const ir::Module *module, executive
 			
 			reportE(REPORT_PTX_KERNELS, "Encountered kernel '" << kernel->second->name << "'");
 
-			
 			TranslatedKernel *translatedKernel = new TranslatedKernel;
 			translatedKernel->kernel = kernel->second;
 			translatedKernel->entryId = (EntryId)(kernelMap.size() << 16);
@@ -206,6 +205,7 @@ LLVMDynamicTranslationCache::getTranslatedKernel(
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
 LLVMDynamicTranslationCache::TranslatedKernel::TranslatedKernel():
+	sourceModule(0),
 	kernelModule(0), 
 	scalarTranslation(0),
 	entryId(0),
@@ -226,6 +226,9 @@ LLVMDynamicTranslationCache::TranslatedKernel::~TranslatedKernel() {
 	}
 	if (kernelModule) {
 		delete kernelModule;
+	}
+	if (sourceModule) {
+		delete sourceModule;
 	}
 }
 
@@ -1119,12 +1122,10 @@ static void cloneAndOptimizeTranslation(
 			break;
 	}
 
-	llvm::FunctionPassManager manager(translatedKernel.kernelModule);
 
 	std::stringstream ss;
 	ss << translatedKernel.scalarTranslation->getNameStr() << "_opt" << level << "_ws" << warpSize;
 
-	manager.add(new llvm::TargetData(*LLVMState::jit()->getTargetData()));
 	translation->llvmFunction = llvm::CloneFunction(translatedKernel.scalarTranslation);
 	translation->llvmFunction->setName(ss.str());
 	translation->llvmFunction->setLinkage(llvm::GlobalValue::InternalLinkage);
@@ -1132,6 +1133,9 @@ static void cloneAndOptimizeTranslation(
 	
 	analysis::KernelPartitioningPass::EntryIdBlockLabelMap labelMap;
 	translatedKernel.decomposition.extractEntryPoints(labelMap);
+	
+	llvm::FunctionPassManager manager(translatedKernel.kernelModule);
+	manager.add(new llvm::TargetData(*LLVMState::jit()->getTargetData()));
 	
 	if (warpSize >= 1) {
 		reportE(REPORT_TRANSLATION_OPERATIONS, 
@@ -1182,7 +1186,7 @@ static void cloneAndOptimizeTranslation(
 	}
 	
 	manager.run(*translation->llvmFunction);
-	
+#if 0
 	// we can't verify errors until this point
 	reportE(REPORT_TRANSLATION_OPERATIONS, "  Checking llvm module for errors.");
 	std::string verifyError;
@@ -1204,6 +1208,8 @@ static void cloneAndOptimizeTranslation(
 	else {
 		reportE(REPORT_TRANSLATION_OPERATIONS, " verified module");
 	}
+#endif
+	report("performed transformations");
 }
 
 /*!
@@ -1277,9 +1283,13 @@ void LLVMDynamicTranslationCache::translateFromPTX(
 		
 		// perform PTX to LLVM translation - construct a new LLVM module
 		translatedKernel.scalarTranslation = translatePTXtoLLVM(
-			translatedKernel.kernelModule, 
+			translatedKernel.sourceModule, 
 			*translatedKernel.kernel, 
 			optimization);
+		
+		// clone the module but delete the functions
+		translatedKernel.kernelModule = llvm::CloneModule(translatedKernel.sourceModule);
+		translatedKernel.kernelModule->getFunctionList().clear();
 
 		// Converting out of ssa makes the assembly easier to read
 		if(optimization == translator::Translator::ReportOptimization 

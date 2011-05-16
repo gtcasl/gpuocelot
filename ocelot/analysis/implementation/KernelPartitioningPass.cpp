@@ -23,9 +23,9 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_SUBKERNEL_PTX 0
+#define REPORT_SUBKERNEL_PTX 1
 #define REPORT_SUBKERNEL_BARE 0
-#define REPORT_SUBKERNEL_CFG 1
+#define REPORT_SUBKERNEL_CFG 0
 
 #define REPORT_BASE 1
 
@@ -90,7 +90,6 @@ void KernelPartitioningPass::KernelDecomposition::runOnKernel(ir::PTXKernel *_ke
 	// partition blocks at barriers
 	_partitionBlocksAtBarrier();
 	
-	// 
 	_identifyTransitionPoints();
 	
 	_createDummyScheduler();
@@ -540,8 +539,8 @@ void KernelPartitioningPass::KernelDecomposition::_createExitCode(
 	transition.handler->instructions.push_back(move);
 	transition.handler->instructions.push_back(store);
 	
-	ir::PTXInstruction *exit = new ir::PTXInstruction(ir::PTXInstruction::Exit);
-	transition.handler->instructions.push_back(exit);
+	ir::PTXInstruction *yield = new ir::PTXInstruction(ir::PTXInstruction::Yield);
+	transition.handler->instructions.push_back(yield);
 	
 	ir::BasicBlock::Edge exitEdge(transition.handler, kernel->cfg()->get_exit_block(), 
 		ir::BasicBlock::Edge::Dummy);

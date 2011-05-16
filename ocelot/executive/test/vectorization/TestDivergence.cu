@@ -9,6 +9,8 @@
 #include <stdio.h>
 #include <math.h>
 
+#define INCLUDE_TRANSPOSE 0
+
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
 extern "C" __global__ void divergence(float *A) {
@@ -21,6 +23,7 @@ extern "C" __global__ void divergence(float *A) {
 	}
 }
 
+#if INCLUDE_TRANSPOSE
 /*!
 	\brief computes the out-of-place transpose of an M-by-N matrix where M and N are divible by 4
 */
@@ -46,7 +49,7 @@ extern "C" __global__ void transpose(float *A, const float *B, int M, int N) {
 		A[ai + i * M] = block[threadIdx.x][i];
 	}
 }
-
+#endif
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
 static float expectedValue(int n) {
@@ -93,6 +96,7 @@ static int testDivergence() {
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
+#if INCLUDE_TRANSPOSE
 static int testTranspose() {
 	const int M = 4;
 	const int N = 4;
@@ -137,6 +141,7 @@ testTranspose_exit:
 	
 	return errors;
 }
+#endif
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -146,10 +151,11 @@ int main( int argc, char** argv )
 	if (!errors) {
 		errors = testDivergence();
 	}
+#if INCLUDE_TRANSPOSE
 	if (!errors) {
 		errors = testTranspose();
 	}
-
+#endif
 
 	printf("Test %s\n", (errors ? "FAILED": "Passed"));
 	return 0;

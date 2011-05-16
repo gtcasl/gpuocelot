@@ -143,6 +143,7 @@ namespace translator
 			void _translateTrap( const ir::PTXInstruction& i );
 			void _translateVote( const ir::PTXInstruction& i );
 			void _translateXor( const ir::PTXInstruction& i );
+			void _translateYield( const ir::PTXInstruction& i );
 			
 			void _bitcast( const ir::PTXInstruction& i );
 			void _bitcast( const ir::PTXOperand& d, const ir::PTXOperand& s );

@@ -31,7 +31,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -234,8 +234,7 @@ void analysis::LLVMUniformVectorization::Translation::runOnFunction() {
 	}
 	
 	// omit these transformations for scalar case
-	if (warpSize > 1) {
-				
+	if (warpSize > 1) {				
 		
 		report("Adding interleaved and replicated instructions:");
 		addInterleavedInstructions();
@@ -378,9 +377,7 @@ void analysis::LLVMUniformVectorization::Translation::loadThreadLocalArguments()
 	llvm::BasicBlock *schedulerBlock = subkernelEntry.prologue;
 		
 	for (int tid = 0; tid < warpSize; tid++) {
-			
-		report("thread " << tid);
-		report("localMemPtr");
+		
 		{
 			std::stringstream ss;
 			std::vector< llvm::Value *> idx;
@@ -393,7 +390,6 @@ void analysis::LLVMUniformVectorization::Translation::loadThreadLocalArguments()
 			ss << "localMemPtr." << tid;
 			threadLocalArguments.localPointer.push_back(new llvm::LoadInst(ptr, ss.str(), schedulerBlock));
 		}
-		report(" tid_x");
 		{
 			std::stringstream ss;
 			std::vector< llvm::Value *> idx;
@@ -407,7 +403,6 @@ void analysis::LLVMUniformVectorization::Translation::loadThreadLocalArguments()
 			ss << "tid_x." << tid;
 			threadLocalArguments.threadId_x.push_back(new llvm::LoadInst(ptr, ss.str(), schedulerBlock));
 		}
-		report(" tid_y");
 		{
 			std::stringstream ss;
 			std::vector< llvm::Value *> idx;
@@ -421,8 +416,6 @@ void analysis::LLVMUniformVectorization::Translation::loadThreadLocalArguments()
 			ss << "tid_y." << tid;
 			threadLocalArguments.threadId_y.push_back(new llvm::LoadInst(ptr, ss.str(), schedulerBlock));
 		}
-		
-		report(" tid_z");
 		{
 			std::stringstream ss;
 			std::vector< llvm::Value *> idx;
@@ -456,7 +449,8 @@ void analysis::LLVMUniformVectorization::Translation::addInterleavedInstructions
 		if (bb->getNameStr() == "") { continue; }
 		
 		// ignore ocelot-inserted blocks for fusing thread blocks together
-		if (bb->getNameStr().substr(0, 30) == "$__ocelot_remove_barrier_entry") { 
+		if (bb->getNameStr().substr(0, 30) == "$__ocelot_remove_barrier_entry" ||
+			bb->getNameStr().substr(0, 20) == "WarpSynchronousEntry") { 
 			WarpScheduler warpSched;
 			warpSchedulerBlocks[bb] = warpSched;
 		}
@@ -764,11 +758,11 @@ void analysis::LLVMUniformVectorization::Translation::removeScalarBlocks() {
 	for (BasicBlockMap::iterator scalar_it = warpBlocksMap.begin(); scalar_it != warpBlocksMap.end(); 
 		++scalar_it ) {
 	
-		if (scalar_it->first->getNameStr() == "WarpSynchronousEntry") {
+		if (scalar_it->first->getNameStr() == "WarpSynchronousEntry" ||
+			warpSchedulerBlocks.find(scalar_it->first) != warpSchedulerBlocks.end()) {
 			continue;
 		}
 		
-		report("would like to delete " << scalar_it->first->getNameStr());
 		while (llvm::PHINode *phi = llvm::dyn_cast<llvm::PHINode>(scalar_it->first->begin())) {
 			phi->replaceAllUsesWith(llvm::Constant::getNullValue(phi->getType()));
 			scalar_it->first->getInstList().pop_front();
@@ -782,7 +776,6 @@ void analysis::LLVMUniformVectorization::Translation::removeScalarBlocks() {
 	}
 	for (BasicBlockMap::iterator scalar_it = warpBlocksMap.begin(); scalar_it != warpBlocksMap.end(); 
 		++scalar_it ) {
-		report("  actually deleted " << scalar_it->first->getNameStr());
 		scalar_it->first->eraseFromParent();
 	}
 }
@@ -811,19 +804,19 @@ void analysis::LLVMUniformVectorization::Translation::handleDivergentBranch(
 		
 		// construct reduction
 		const llvm::Type *intTy = pass->getTyInt(32);
-		llvm::Instruction *branchConditional = new llvm::ZExtInst(ws_it->second.replicated[0], intTy, "condZ", 
-			divergent.warpBlock);
+		llvm::Instruction *branchConditional = new llvm::ZExtInst(ws_it->second.replicated[0], intTy, 
+			"condZ", divergent.warpBlock);
 		
 		// insert reduction code 
 		for (int n = 1; n < warpSize; n++) {
 			llvm::Instruction *cmpInt16 = new llvm::ZExtInst(ws_it->second.replicated[n], intTy, "cmpws",
 				divergent.warpBlock);
-			branchConditional = llvm::BinaryOperator::Create(llvm::Instruction::Add, branchConditional, cmpInt16, "cmpws", divergent.warpBlock);
+			branchConditional = llvm::BinaryOperator::Create(llvm::Instruction::Add, branchConditional, 
+				cmpInt16, "cmpws", divergent.warpBlock);
 		}
 		
 		// if branchConditional is 0, all conditions were 0s. if z is (warpSize), all conditions were 1
 		// else, diverge!
-
 		llvm::ConstantInt *constZero = pass->getConstInt32(0);
 		llvm::ConstantInt *constFull = pass->getConstInt32(warpSize);
 		
@@ -1306,17 +1299,11 @@ void analysis::LLVMUniformVectorization::Translation::vectorizePhiNode(
 */
 void analysis::LLVMUniformVectorization::Translation::vectorize() {
 
-	report("vectorize(translation)");
-
 	for (BasicBlockList::iterator bb_it = traversal.begin(); 
 		bb_it != traversal.end(); ++bb_it) {
 		llvm::BasicBlock *block = *bb_it;
-
-		report("  vectorizing block " << block->getNameStr());
 		
-		for (llvm::BasicBlock::iterator inst_it = block->begin(); inst_it != block->end(); ++inst_it) {
-			report("  vectorizing scalar instruction " << &*inst_it);
-		
+		for (llvm::BasicBlock::iterator inst_it = block->begin(); inst_it != block->end(); ++inst_it) {		
 			vectorize(&*inst_it);
 		}		
 	}
@@ -1328,23 +1315,18 @@ void analysis::LLVMUniformVectorization::Translation::vectorize() {
 */
 llvm::BasicBlock *analysis::LLVMUniformVectorization::Translation::getWarpBlockByEntryId(
 	EntryId entryId) {
-	
-	report("getWarpBlockByEntryId(" << entryId << ")");
-	
+		
 	llvm::BasicBlock *block = 0;
 	
 	EntryIdBlockLabelMap::const_iterator entryLabel_it = pass->labelMap->find(entryId);
 	assert(entryLabel_it != pass->labelMap->end());
 	std::string label = entryLabel_it->second.substr(1) + "_ws_";
-	
-	report("  block label: " << label);
-	
+		
 	// do a lookup based on block name
 	for (llvm::Function::iterator bb_it = F->begin(); bb_it != F->end(); ++bb_it) {
 		std::string entryLabel = bb_it->getNameStr();
 		if (entryLabel.find(label) != std::string::npos) {
 			block = &*bb_it;
-			report("  target block: " << block->getNameStr());
 			break;
 		}
 	}

@@ -69,11 +69,13 @@ namespace executive {
 			~TranslatedKernel();
 			
 		public:
+			//! \brief 
+			llvm::Module *sourceModule;
 		
 			//! \brief each kernel is translated as its own module
 			llvm::Module *kernelModule;
 			
-			//! \brief
+			//! \brief source PTX kernel
 			ir::PTXKernel *kernel;
 			
 			//! \brief unoptimized direct translation from PTX to LLVM

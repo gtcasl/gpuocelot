@@ -110,9 +110,9 @@ void ThreadFrontierAnalysis::_computePriorities(ir::IRKernel& kernel)
 
 void ThreadFrontierAnalysis::_computeFrontiers(ir::IRKernel& kernel)
 {
-	typedef std::map<Priority, iterator,
+	typedef std::map<Priority, const_iterator,
 		std::greater<Priority>> ReversePriorityMap;
-	typedef std::unordered_set<iterator> BlockSet;
+	typedef std::unordered_set<const_iterator> BlockSet;
 
 	ReversePriorityMap priorityToBlocks;
 
@@ -133,7 +133,7 @@ void ThreadFrontierAnalysis::_computeFrontiers(ir::IRKernel& kernel)
 		priorityAndBlock = priorityToBlocks.begin();
 		priorityAndBlock != priorityToBlocks.end(); ++priorityAndBlock)
 	{
-		iterator block = priorityAndBlock->second;
+		const_iterator block = priorityAndBlock->second;
 
 		// this block can no longer have a divergent warp
 		outstandingWarps.erase(block);
@@ -142,7 +142,7 @@ void ThreadFrontierAnalysis::_computeFrontiers(ir::IRKernel& kernel)
 		
 		BlockVector frontier;
 		
-		for(BlockSet::iterator b = outstandingWarps.begin();
+		for(BlockSet::const_iterator b = outstandingWarps.begin();
 			b != outstandingWarps.end(); ++b)
 		{
 			report("  " << (*b)->label);
@@ -152,7 +152,7 @@ void ThreadFrontierAnalysis::_computeFrontiers(ir::IRKernel& kernel)
 		_frontiers.insert(std::make_pair(block, frontier));
 		
 		// add block successors if they have not already been scheduled
-		for(ir::BasicBlock::BlockPointerVector::iterator
+		for(ir::BasicBlock::BlockPointerVector::const_iterator
 			successor = block->successors.begin();
 			successor != block->successors.end(); ++successor)
 		{

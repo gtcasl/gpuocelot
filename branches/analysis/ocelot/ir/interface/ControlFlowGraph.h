@@ -22,8 +22,9 @@ class Instruction;
 class BasicBlock {
 public:
 	/*! \brief A list of blocks */
-	typedef std::list< BasicBlock > BlockList;
-	typedef BlockList::iterator Pointer;
+	typedef std::list< BasicBlock >   BlockList;
+	typedef BlockList::iterator       Pointer;
+	typedef BlockList::const_iterator ConstPointer;
 
 	/*! \brief An edge connects two basic blocks */
 	class Edge {
@@ -48,11 +49,12 @@ public:
 		Type type;
 	};
 
-	typedef std::list<Edge> EdgeList;
-	typedef std::vector<Pointer> BlockPointerVector;
+	typedef std::list<Edge>                 EdgeList;
+	typedef std::vector<Pointer>            BlockPointerVector;
+	typedef std::vector<ConstPointer>       ConstBlockPointerVector;
 	typedef std::vector<EdgeList::iterator> EdgePointerVector;
-	typedef std::list<Instruction*> InstructionList;
-	typedef unsigned int Id;
+	typedef std::list<Instruction*>         InstructionList;
+	typedef unsigned int                    Id;
 
 public:
 	BasicBlock(const std::string& l = "", Id i = 0, 
@@ -151,6 +153,8 @@ public:
 	typedef BasicBlock::EdgePointerVector EdgePointerVector;
 	/*! \brief A vector of block pointers */
 	typedef BasicBlock::BlockPointerVector BlockPointerVector;
+	/*! \brief A const vector of block pointers */
+	typedef BasicBlock::ConstBlockPointerVector ConstBlockPointerVector;
 	
 	/*! \brief An iterator over basic blocks */
 	typedef BlockList::iterator iterator;

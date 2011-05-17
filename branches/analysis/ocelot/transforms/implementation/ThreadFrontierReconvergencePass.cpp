@@ -12,8 +12,20 @@
 
 #include <ocelot/analysis/interface/ThreadFrontierAnalysis.h>
 
+#include <ocelot/ir/interface/IRKernel.h>
+
 // Hydrazine Includes
 #include <hydrazine/implementation/debug.h>
+
+// Standard Library Includes
+#include <map>
+
+// Preprocessor Macros
+#ifdef REPORT_BASE
+#undef REPORT_BASE
+#endif
+
+#define REPORT_BASE 1
 
 namespace transforms
 {
@@ -35,12 +47,16 @@ void ThreadFrontierReconvergencePass::runOnKernel(const ir::IRKernel& k)
 	report("Running thread frontier reconvergence pass");
 	typedef analysis::ThreadFrontierAnalysis::Priority Priority;
 	typedef std::map<Priority, ir::ControlFlowGraph::const_iterator,
-		std::greater<Priority>> PriorityMap;
+		std::greater<Priority>> ReversePriorityMap;
 	typedef std::vector<ir::ControlFlowGraph::const_iterator> BlockVector;
+	typedef analysis::ThreadFrontierAnalysis TFAnalysis;
+
+	Analysis* analysis = getAnalysis(Analysis::ThreadFrontierAnalysis);
+	assert(analysis != 0);
+	
+	TFAnalysis* tfAnalysis = static_cast<TFAnalysis*>(analysis);
 
 	ReversePriorityMap priorityToBlocks;
-
-	report("Computing basic block thread frontiers.");
 	
 	// sort by priority (high to low)
 	for(ir::ControlFlowGraph::const_iterator block = k.cfg()->begin();
@@ -57,7 +73,7 @@ void ThreadFrontierReconvergencePass::runOnKernel(const ir::IRKernel& k)
 		priorityAndBlock = priorityToBlocks.begin();
 		priorityAndBlock != priorityToBlocks.end(); ++priorityAndBlock)
 	{
-		blocks->push_back(priorityAndBlock->second);
+		blocks.push_back(priorityAndBlock->second);
 	}
 	
 	typedef std::unordered_map<ir::BasicBlock::Id, unsigned int> IdToPCMap;
@@ -87,7 +103,7 @@ void ThreadFrontierReconvergencePass::runOnKernel(const ir::IRKernel& k)
 
 			if(instruction == --(*block)->instructions.end())
 			{
-				if(!ptx.isBranch() && block->has_fallthrough_edge())
+				if(!ptx.isBranch() && (*block)->has_fallthrough_edge())
 				{
 					// if the original layout assumed a fallthrough, but the
 					//  priority changed it, we need a branch
@@ -97,8 +113,8 @@ void ThreadFrontierReconvergencePass::runOnKernel(const ir::IRKernel& k)
 						BlockVector::const_iterator next = block;
 						++next;
 						
-						needsBranch =
-							next->id != block->get_fallthrough_edge()->tail->id;
+						needsBranch = (*next)->id !=
+							(*block)->get_fallthrough_edge()->tail->id;
 					}
 					else
 					{
@@ -121,7 +137,7 @@ void ThreadFrontierReconvergencePass::runOnKernel(const ir::IRKernel& k)
 	for(BlockVector::const_iterator block = blocks.begin();
 		block != blocks.end(); ++block)
 	{
-		for(ir::ControlFlowGraph::InstructionList::iterator 
+		for(ir::ControlFlowGraph::InstructionList::const_iterator 
 			instruction = (*block)->instructions.begin();
 			instruction != (*block)->instructions.end(); ++instruction, ++pc)
 		{
@@ -138,14 +154,48 @@ void ThreadFrontierReconvergencePass::runOnKernel(const ir::IRKernel& k)
 				
 				instructions[pc].branchTargetInstruction = target->second;
 				
-				ir::ControlFlowGraph::const_iterator firstBlock = k.end();
+				ir::ControlFlowGraph::const_iterator firstBlock =
+					k.cfg()->end();
+				
+				TFAnalysis::BlockVector frontier =
+					tfAnalysis->getThreadFrontier(*block);
+				
+				TFAnalysis::Priority highest = 0;
+				
+				if(_gen6)
+				{
+					// gen6 re-converges at the block with the highest priority
+					for(TFAnalysis::BlockVector::const_iterator
+						stalledBlock = frontier.begin();
+						stalledBlock != frontier.end(); ++stalledBlock)
+					{
+						TFAnalysis::Priority priority =
+							tfAnalysis->getPriority(*stalledBlock);
+						if(priority >= highest)
+						{
+							highest    = priority;
+							firstBlock = *stalledBlock;
+						}
+					}
+				}
+				else
+				{
+					assertM(false, "Not implemented.");
+				}
 				
 				// set the reconverge point to the first block in the frontier
-				if(firstBlock != k.end())
+				if(firstBlock != k.cfg()->end())
 				{
 					IdToPCMap::const_iterator target = pcs.find(firstBlock->id);
 					assert(target != pcs.end());
 					instructions[pc].reconvergeInstruction = target->second;
+					report("   re-converge point "  << target->second);
+				}
+				else
+				{
+					// if there is no TF, set it to the target
+					instructions[pc].reconvergeInstruction = target->second;
+					report("   re-converge point "  << target->second);
 				}
 			}
 		}

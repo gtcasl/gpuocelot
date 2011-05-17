@@ -28,8 +28,8 @@ namespace analysis
 		2) For each basic block, determine all other possible blocks where
 			stalled threads may be waiting.
 
-	The intersection of this set and the current block's successors is the
-	thread frontier of that block. The algorithm used here is taken directly
+	The intersection of this set and a branch target's predecessors need to be
+	checked for re-convergence. The algorithm used here is taken directly
 	from [1].
 	
 	[1] - "SIMD Reconvergence at Thread Frontiers" by Diamos et al. 
@@ -37,10 +37,9 @@ namespace analysis
 class ThreadFrontierAnalysis: public KernelAnalysis
 {
 public:
-	typedef ir::ControlFlowGraph::BlockPointerVector BlockVector;
-	typedef ir::ControlFlowGraph::iterator           iterator;
-	typedef ir::ControlFlowGraph::const_iterator     const_iterator;
-	typedef unsigned int Priority;
+	typedef ir::ControlFlowGraph::ConstBlockPointerVector BlockVector;
+	typedef ir::ControlFlowGraph::const_iterator          const_iterator;
+	typedef unsigned int                                  Priority;
 
 public:
 	/*! \brief Create the analysis */
@@ -60,8 +59,8 @@ private:
 	void _computeFrontiers(ir::IRKernel& kernel);
 
 private:
-	typedef std::unordered_map<iterator, Priority>    PriorityMap;
-	typedef std::unordered_map<iterator, BlockVector> BlockMap;
+	typedef std::unordered_map<const_iterator, Priority>    PriorityMap;
+	typedef std::unordered_map<const_iterator, BlockVector> BlockMap;
 
 private:
 	PriorityMap _priorities;

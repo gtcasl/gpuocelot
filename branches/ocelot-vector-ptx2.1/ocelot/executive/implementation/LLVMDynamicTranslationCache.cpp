@@ -50,8 +50,8 @@
 #define REPORT_PTX_KERNELS 0
 #define REPORT_PTX_SUBKERNELS 0
 
-#define REPORT_ALL_LLVM_ASSEMBLY 1
-#define REPORT_OPTIMIZED_LLVM_ASSEMBLY 1
+#define REPORT_ALL_LLVM_ASSEMBLY 0
+#define REPORT_OPTIMIZED_LLVM_ASSEMBLY 0
 #define REPORT_SCHEDULE_OPERATIONS 0
 #define REPORT_TRANSLATION_OPERATIONS 0
 
@@ -1193,7 +1193,8 @@ static void cloneAndOptimizeTranslation(
 	
 	if (llvm::verifyModule(*translatedKernel.kernelModule, llvm::ReturnStatusAction, &verifyError)) {
 	
-#if REPORT_TRANSLATION_OPERATIONS
+#if REPORT_TRANSLATION_OPERATIONS && REPORT_BASE
+		std::cerr << "LLVMDynamicTranslationCache.cpp:" << __LINE__ << ":" << std::endl;
 		translatedKernel.kernelModule->dump();
 #endif
 	
@@ -1209,10 +1210,9 @@ static void cloneAndOptimizeTranslation(
 		reportE(REPORT_TRANSLATION_OPERATIONS, " verified module");
 	}
 
-#if REPORT_OPTIMIZED_LLVM_ASSEMBLY
+#if REPORT_BASE && REPORT_OPTIMIZED_LLVM_ASSEMBLY
 	translation->llvmFunction->getParent()->dump();
 #endif
-	translation->llvmFunction->getParent()->dump();
 	report("performed transformations");
 }
 

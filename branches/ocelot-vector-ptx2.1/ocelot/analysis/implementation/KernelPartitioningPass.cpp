@@ -23,7 +23,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_SUBKERNEL_PTX 1
+#define REPORT_SUBKERNEL_PTX 0
 #define REPORT_SUBKERNEL_BARE 0
 #define REPORT_SUBKERNEL_CFG 0
 
@@ -196,8 +196,6 @@ void KernelPartitioningPass::KernelDecomposition::_identifyTransitionPoints() {
 			continue;
 		}
 		
-		report(" block " << (*bb_it)->label);
-		
 		DataflowGraph::IteratorMap::const_iterator dfgBlock = cfgToDfgMap.find(*bb_it);
 		assert(dfgBlock != cfgToDfgMap.end() && "failed to find block in CFT-to-DFG mapping");
 				
@@ -225,8 +223,6 @@ void KernelPartitioningPass::KernelDecomposition::_identifyTransitionPoints() {
 		if (!(*bb_it)->instructions.size()) {
 			continue;
 		}
-		
-		report(" block " << (*bb_it)->label);
 		
 		DataflowGraph::IteratorMap::const_iterator dfgBlock = cfgToDfgMap.find(*bb_it);
 		assert(dfgBlock != cfgToDfgMap.end() && "failed to find block in CFT-to-DFG mapping");
@@ -355,9 +351,6 @@ void KernelPartitioningPass::KernelDecomposition::_transformExitTransitions(Kern
 	ir::BasicBlock::InstructionList::iterator last = transition.block->instructions.end();
 	--last;
 	ir::PTXInstruction *terminator = static_cast<ir::PTXInstruction *>(*last);
-	
-	report("transformExitTransition() - terminator->opcode = " << ir::PTXInstruction::toString(terminator->opcode));
-	report("  terminator->toString() = " << terminator->toString());
 	
 	ir::PTXOperand resumePointOperand;
 	switch (terminator->opcode) {
@@ -591,7 +584,7 @@ void KernelPartitioningPass::runOnKernel(
 
 	ir::PTXKernel& parentKernel = static_cast<ir::PTXKernel&>(parent);
 	report("Run on kernel '" << parentKernel.name << "'");
-#if REPORT_BASE > 0
+#if REPORT_BASE && REPORT_SUBKERNEL_PTX
 	parentKernel.write(std::cout);
 	report("\n\n");
 #endif

@@ -514,7 +514,8 @@ void executive::CooperativeThreadArray::execute(const ir::Dim3& block) {
 				break;
 		}
 	
-		running = reconvergenceMechanism->nextInstruction(context, opcode);
+		running = reconvergenceMechanism->nextInstruction(
+			getActiveContext(), opcode);
 
 		postTrace();
 

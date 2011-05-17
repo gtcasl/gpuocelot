@@ -297,7 +297,8 @@ bool executive::ReconvergenceBarrier::nextInstruction(
 	if (opcode != ir::PTXInstruction::Bra
 		&& opcode != ir::PTXInstruction::Bar
 		&& opcode != ir::PTXInstruction::Call
-		&& opcode != ir::PTXInstruction::Ret) {
+		&& opcode != ir::PTXInstruction::Ret
+		&& opcode != ir::PTXInstruction::Exit) {
 		context.PC++;
 	}
 	return context.running;

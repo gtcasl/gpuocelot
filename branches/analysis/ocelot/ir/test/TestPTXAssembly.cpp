@@ -6357,6 +6357,12 @@ namespace test
 				ir::PTXOperand::f32, false, false, true),
 			testCvt_INOUT(I32), testCvt_INOUT(FP32),
 			uniformFloat<float, 1>, 1, 1);
+		add("TestCvt-u32-f32-ftz-sat-rzi",
+			testCvt_REF<unsigned int, float, true, true, true>,
+			testCvt_PTX(ir::PTXOperand::u32,
+				ir::PTXOperand::f32, true, true, true),
+			testCvt_INOUT(I32), testCvt_INOUT(FP32),
+			uniformFloat<float, 1>, 1, 1);
 		add("TestCvt-u32-f64",
 			testCvt_REF<unsigned int, double, false, false, true>,
 			testCvt_PTX(ir::PTXOperand::u32,

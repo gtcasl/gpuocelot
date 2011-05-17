@@ -36,7 +36,7 @@ namespace ir {
 namespace analysis {
 
 // StructuralAnalysis - This class holds all the methods and data structures 
-class StructuralAnalysis {
+class StructuralAnalysis : public KernelAnalysis {
 public:
 	typedef enum {TREE, FORWARD, BACK, CROSS} EdgeClass;
 	typedef std::pair<ir::ControlFlowGraph::iterator,
@@ -95,7 +95,12 @@ public:
 
 public:
 	StructuralAnalysis() {}
-	void runOnKernel(ir::PTXKernel *k);
+	void analyze(ir::IRKernel& k);
+
+	// Get a text representation of the analysis
+	void write(std::ostream& stream) const;
+
+public:
 	NodeSetTy Net;
 
 	// unstructuredBRVec - store the detected unstructured branches
@@ -224,9 +229,6 @@ private:
 	// deleteUnreachableNode - delete nodes that is no longer 
 	// reachable from the entry
 	void deleteUnreachableNodes(NodeSetTy &N, NodeTy *entry);
-
-	// Get a text representation of the analysis
-	void write(std::ostream& stream) const;
 
 	////Interface to PTXToILTranslator
 	///*! \brief Returns a pointer to the root node of the control tree */

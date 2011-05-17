@@ -32,7 +32,8 @@ public:
 		DataflowGraphAnalysis     = 0x8,
 		StaticSingleAssignment    = 0x10,
 		DivergenceAnalysis        = 0x20,
-		ThreadFrontierAnalysis    = 0x40
+		StructuralAnalysis        = 0x40,
+		ThreadFrontierAnalysis    = 0x80,
 	};
 
 public:
@@ -49,6 +50,9 @@ public:
 	/*! \brief The name of the analysis */
 	const std::string name;
 
+	/*! \brief The analysis dependencies */
+	const int required;
+
 public:
 	/*! \brief Set the pass manager used to supply dependent analyses */
 	void setPassManager(transforms::PassManager* m);
@@ -64,7 +68,6 @@ public:
 	void invalidateAnalysis(Analysis::Type type);
 
 private:
-	int                      _required;
 	transforms::PassManager* _manager;
 
 };

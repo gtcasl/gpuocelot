@@ -38,11 +38,12 @@ class ThreadFrontierAnalysis: public KernelAnalysis
 {
 public:
 	typedef ir::ControlFlowGraph::BlockPointerVector BlockVector;
-	typedef ir::ControlFlowGraph::const_iterator const_iterator;
+	typedef ir::ControlFlowGraph::iterator           iterator;
+	typedef ir::ControlFlowGraph::const_iterator     const_iterator;
 	typedef unsigned int Priority;
 
 public:
-	/*! \brief Create the analysis over a specific cfg */
+	/*! \brief Create the analysis */
 	ThreadFrontierAnalysis();
 
 	/*! \brief Computes an up to date set of thread frontiers */
@@ -55,8 +56,12 @@ public:
 	Priority getPriority(const_iterator block) const;
 
 private:
-	typedef std::unordered_map<const_iterator, Priority>    PriorityMap;
-	typedef std::unordered_map<const_iterator, BlockVector> BlockMap;
+	void _computePriorities(ir::IRKernel& kernel);
+	void _computeFrontiers(ir::IRKernel& kernel);
+
+private:
+	typedef std::unordered_map<iterator, Priority>    PriorityMap;
+	typedef std::unordered_map<iterator, BlockVector> BlockMap;
 
 private:
 	PriorityMap _priorities;

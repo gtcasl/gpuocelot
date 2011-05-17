@@ -666,7 +666,7 @@ void StructuralTransform::runOnKernel(ir::IRKernel& k) {
 
 	SA.Net.clear();
 
-	SA.runOnKernel(_kernel);
+	SA.analyze(*_kernel);
 
 	while (SA.unstructuredBRVec.size() > 0) {
 		NodeTy *entry = *(SA.Net.begin()); 
@@ -707,14 +707,14 @@ ANALYSIS:
 
 		SA.Net.clear();
  
-		SA.runOnKernel(_kernel);
+		SA.analyze(*_kernel);
 	}
 
 	AF->assignEdges();
 
 	SA.Net.clear();
  
-	SA.runOnKernel(_kernel);
+	SA.analyze(*_kernel);
 }
 
 const SA::NodeTy* StructuralTransform::get_root_node() const {

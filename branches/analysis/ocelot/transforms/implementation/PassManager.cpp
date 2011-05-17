@@ -16,6 +16,8 @@
 #include <ocelot/analysis/interface/ControlTree.h>
 #include <ocelot/analysis/interface/DominatorTree.h>
 #include <ocelot/analysis/interface/PostdominatorTree.h>
+#include <ocelot/analysis/interface/StructuralAnalysis.h>
+#include <ocelot/analysis/interface/ThreadFrontierAnalysis.h>
 
 #include <ocelot/ir/interface/IRKernel.h>
 #include <ocelot/ir/interface/Module.h>
@@ -44,7 +46,10 @@ static void freeUnusedDataStructures(AnalysisMap& analyses,
 		analysis::Analysis::DataflowGraphAnalysis,
 		analysis::Analysis::PostDominatorTreeAnalysis,
 		analysis::Analysis::DominatorTreeAnalysis,
-		analysis::Analysis::ControlTreeAnalysis};
+		analysis::Analysis::ControlTreeAnalysis,
+		analysis::Analysis::StructuralAnalysis,
+		analysis::Analysis::ThreadFrontierAnalysis
+		};
 	
 	for(TypeVector::const_iterator t = types.begin(); t != types.end(); ++t)
 	{
@@ -116,6 +121,7 @@ static void allocateNewDataStructures(AnalysisMap& analyses,
 				analysis::Analysis::DataflowGraphAnalysis, graph)).first;
 			
 			graph->setPassManager(manager);
+			allocateNewDataStructures(analyses, k, graph->required, manager);
 			graph->analyze(*k);
 		}
 		if(type & analysis::Analysis::StaticSingleAssignment)
@@ -134,6 +140,43 @@ static void allocateNewDataStructures(AnalysisMap& analyses,
 				new analysis::DivergenceAnalysis(*k))).first;
 			
 			analysis->second->setPassManager(manager);
+		}
+	}
+	if(type & analysis::Analysis::StructuralAnalysis)
+	{
+		if(analyses.count(analysis::Analysis::StructuralAnalysis) == 0)
+		{
+			analysis::StructuralAnalysis* structuralAnalysis =
+				new analysis::StructuralAnalysis;
+			
+			report("   Allocating structural analysis for kernel " << k->name);
+			AnalysisMap::iterator analysis = analyses.insert(std::make_pair(
+				analysis::Analysis::StructuralAnalysis,
+				structuralAnalysis)).first;
+			
+			structuralAnalysis->setPassManager(manager);
+			allocateNewDataStructures(analyses, k,
+				structuralAnalysis->required, manager);
+			structuralAnalysis->analyze(*k);
+		}
+	}
+	if(type & analysis::Analysis::ThreadFrontierAnalysis)
+	{
+		if(analyses.count(analysis::Analysis::ThreadFrontierAnalysis) == 0)
+		{
+			analysis::ThreadFrontierAnalysis* frontierAnalysis =
+				new analysis::ThreadFrontierAnalysis;
+			
+			report("   Allocating thread frontier analysis"
+				" for kernel " << k->name);
+			AnalysisMap::iterator analysis = analyses.insert(std::make_pair(
+				analysis::Analysis::ThreadFrontierAnalysis,
+				frontierAnalysis)).first;
+			
+			frontierAnalysis->setPassManager(manager);
+			allocateNewDataStructures(analyses, k,
+				frontierAnalysis->required, manager);
+			frontierAnalysis->analyze(*k);
 		}
 	}
 }

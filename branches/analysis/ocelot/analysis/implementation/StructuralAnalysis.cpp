@@ -1817,10 +1817,10 @@ BEGIN:
 	}
 }
 
-void StructuralAnalysis::runOnKernel(ir::PTXKernel *k) {
-	_kernel = k;
+void StructuralAnalysis::analyze(ir::IRKernel& k) {
+	_kernel = static_cast<ir::PTXKernel*>(&k);
 
- // build a Simple CFG out of the LLVM CFG
+ // build a Simple CFG out of the PTX CFG
 	buildSimpleCFG(Net);
 
 	NodeTy *entry = BB2NodeMap[_kernel->cfg()->get_entry_block()];

@@ -19,7 +19,7 @@ namespace analysis
 {
 
 Analysis::Analysis(Type t, const std::string& n, int r)
-: type(t), name(n), _required(r), _manager(0)
+: type(t), name(n), required(r), _manager(0)
 {
 
 }

@@ -13,15 +13,22 @@
 #include <cstring>
 
 // Ocelot includes
-#include <ocelot/ir/interface/Parameter.h>
-#include <ocelot/ir/interface/Module.h>
-#include <ocelot/ir/interface/ControlFlowGraph.h>
-#include <ocelot/transforms/interface/PassManager.h>
-#include <ocelot/transforms/interface/IPDOMReconvergencePass.h>
 #include <ocelot/executive/interface/EmulatedKernel.h>
 #include <ocelot/executive/interface/Device.h>
 #include <ocelot/executive/interface/RuntimeException.h>
 #include <ocelot/executive/interface/CooperativeThreadArray.h>
+
+#include <ocelot/api/interface/OcelotConfiguration.h>
+
+#include <ocelot/ir/interface/Parameter.h>
+#include <ocelot/ir/interface/Module.h>
+#include <ocelot/ir/interface/ControlFlowGraph.h>
+
+#include <ocelot/transforms/interface/PassManager.h>
+#include <ocelot/transforms/interface/IPDOMReconvergencePass.h>
+#include <ocelot/transforms/interface/ThreadFrontierReconvergencePass.h>
+#include <ocelot/transforms/interface/DefaultLayoutPass.h>
+
 #include <ocelot/trace/interface/TraceGenerator.h>
 
 // Hydrazine includes
@@ -37,15 +44,6 @@
 
 #define REPORT_KERNEL_INSTRUCTIONS 0
 #define REPORT_LAUNCH_CONFIGURATION 0
-#define REPORT_THREAD_FRONTIERS 1
-
-#define IPDOM_RECONVERGENCE 1
-#define BARRIER_RECONVERGENCE 2
-#define GEN6_RECONVERGENCE 3
-#define SORTED_PREDICATE_STACK_RECONVERGENCE 4
-
-// specify reconvergence mechanism here
-#define RECONVERGENCE_MECHANISM IPDOM_RECONVERGENCE
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -214,14 +212,57 @@ void executive::EmulatedKernel::constructInstructionSequence() {
 
 	transforms::PassManager manager(const_cast<ir::Module*>(module));
 	
-	transforms::IPDOMReconvergencePass* pass
-		= new transforms::IPDOMReconvergencePass;
+	typedef api::OcelotConfiguration config;
 
-	manager.addPass(*pass);
-	manager.runOnKernel(name);
+	if (config::get().executive.reconvergenceMechanism
+		== ReconvergenceMechanism::Reconverge_IPDOM) {
+		
+		transforms::IPDOMReconvergencePass* pass
+			= new transforms::IPDOMReconvergencePass;
 
-	instructions = std::move(pass->instructions);
+		manager.addPass(*pass);
+		manager.runOnKernel(name);
 
+		instructions = std::move(pass->instructions);
+	}
+	else if (config::get().executive.reconvergenceMechanism
+		== ReconvergenceMechanism::Reconverge_Barrier) {
+		// just pack the instructions into a vector
+		transforms::DefaultLayoutPass* pass
+			= new transforms::DefaultLayoutPass;
+
+		manager.addPass(*pass);
+		manager.runOnKernel(name);
+
+		instructions = std::move(pass->instructions);
+	}
+	else if (config::get().executive.reconvergenceMechanism
+		== ReconvergenceMechanism::Reconverge_TFSortedStack) {
+
+		transforms::ThreadFrontierReconvergencePass* pass
+			= new transforms::ThreadFrontierReconvergencePass(false);
+
+		manager.addPass(*pass);
+		manager.runOnKernel(name);
+
+		instructions = std::move(pass->instructions);
+	}
+	else if (config::get().executive.reconvergenceMechanism
+		== ReconvergenceMechanism::Reconverge_TFGen6) {
+
+		transforms::ThreadFrontierReconvergencePass* pass
+			= new transforms::ThreadFrontierReconvergencePass(true);
+
+		manager.addPass(*pass);
+		manager.runOnKernel(name);
+
+		instructions = std::move(pass->instructions);
+	}
+	else {
+		assertM(false, "unknown thread reconvergence mechanism - "
+			<< config::get().executive.reconvergenceMechanism);
+	}	
+	
 	manager.destroyPasses();
 }
 
@@ -257,6 +298,7 @@ void executive::EmulatedKernel::updateParamReferences() {
                     << "' setting destination parameter '" << instr.d.toString() 
                     << "' offset to " << param.offset << " " 
                     << ( instr.d.isArgument ? "(argument)" : "" ) );
+
                 instr.d.offset += param.offset;
                 instr.d.imm_uint = 0;
             }

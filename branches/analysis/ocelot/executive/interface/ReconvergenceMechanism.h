@@ -245,9 +245,10 @@ public:
 
 private:
 	typedef std::map<int, CTAContext> RuntimeStack;
+	typedef std::vector<RuntimeStack> StackVector; 
 		
 public:
-	RuntimeStack runtimeStack;
+	StackVector stack;
 };
 }
 

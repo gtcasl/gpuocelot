@@ -5,15 +5,6 @@
 	\brief extracts the reconvergence mechanism from CooperativeThreadArray
 */
 
-// C++ includes
-#include <cassert>
-#include <cmath>
-#include <cstring>
-#include <climits>
-#include <cfloat>
-#include <cfenv> 
-#include <algorithm>
-
 // Ocelot includes
 #include <ocelot/executive/interface/ReconvergenceMechanism.h>
 #include <ocelot/executive/interface/RuntimeException.h>
@@ -21,7 +12,6 @@
 
 // Hydrazine includes
 #include <hydrazine/implementation/debug.h>
-#include <hydrazine/implementation/math.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -438,8 +428,9 @@ bool executive::ReconvergenceTFGen6::nextInstruction(
 	
 	// advance to next instruction if the current instruction wasn't a branch
 	if (opcode != ir::PTXInstruction::Bra
-		&& opcode != ir::PTXInstruction::Reconverge 
-		&& opcode != ir::PTXInstruction::Exit) {
+		&& opcode != ir::PTXInstruction::Exit
+		&& opcode != ir::PTXInstruction::Call
+		&& opcode != ir::PTXInstruction::Ret) {
 		
 		context.PC++;
 	}
@@ -486,8 +477,9 @@ executive::ReconvergenceTFSortedStack::ReconvergenceTFSortedStack(
 }
 
 void executive::ReconvergenceTFSortedStack::initialize() {
-	runtimeStack.clear();
-	runtimeStack.insert(std::make_pair(0, CTAContext(cta->kernel, cta)));
+	stack.clear();
+	stack.push_back(RuntimeStack());
+	stack.back().insert(std::make_pair(0, CTAContext(cta->kernel, cta)));
 }
 
 void executive::ReconvergenceTFSortedStack::evalPredicate(
@@ -506,14 +498,14 @@ bool executive::ReconvergenceTFSortedStack::eval_Bra(
 	// is there a check necessary?
 	CTAContext branchContext(context), fallthroughContext(context);
 	
-	runtimeStack.erase(runtimeStack.begin());
+	stack.back().erase(stack.back().begin());
 
 	if (!instr.needsReconvergenceCheck) {
 		if (branch.any()) {
 			branchContext.active = branch;
 			branchContext.PC = instr.branchTargetInstruction;
 			
-			runtimeStack.insert(std::make_pair(
+			stack.back().insert(std::make_pair(
 				branchContext.PC, branchContext));
 		}
 
@@ -521,7 +513,7 @@ bool executive::ReconvergenceTFSortedStack::eval_Bra(
 			fallthroughContext.active = fallthrough;
 			fallthroughContext.PC++;
 		
-			runtimeStack.insert(std::make_pair(
+			stack.back().insert(std::make_pair(
 				fallthroughContext.PC, fallthroughContext));	
 		}
 	}
@@ -530,14 +522,14 @@ bool executive::ReconvergenceTFSortedStack::eval_Bra(
 			branchContext.active = branch;
 			branchContext.PC = instr.branchTargetInstruction;
 			
-			RuntimeStack::iterator existing = runtimeStack.find(
+			RuntimeStack::iterator existing = stack.back().find(
 				branchContext.PC);
 			
-			if (existing != runtimeStack.end()) {
+			if (existing != stack.back().end()) {
 				existing->second.active |= branchContext.active;
 			}
 			else {
-				runtimeStack.insert(std::make_pair(
+				stack.back().insert(std::make_pair(
 					branchContext.PC, branchContext));
 			}
 		}
@@ -547,14 +539,14 @@ bool executive::ReconvergenceTFSortedStack::eval_Bra(
 			fallthroughContext.active = fallthrough;
 			fallthroughContext.PC++;
 		
-			RuntimeStack::iterator existing = runtimeStack.find(
+			RuntimeStack::iterator existing = stack.back().find(
 				fallthroughContext.PC);
 			
-			if (existing != runtimeStack.end()) {
+			if (existing != stack.back().end()) {
 				existing->second.active |= fallthroughContext.active;
 			}
 			else {
-				runtimeStack.insert(std::make_pair(
+				stack.back().insert(std::make_pair(
 					fallthroughContext.PC, fallthroughContext));
 			}
 		}
@@ -563,52 +555,6 @@ bool executive::ReconvergenceTFSortedStack::eval_Bra(
 	}
 	
 	return divergent;
-
-	/*
-	CTAContext branchContext(context), fallthroughContext(context), 
-		reconvergeContext(context);
-
-	branchContext.active = branch;
-	branchContext.PC = instr.branchTargetInstruction;
-
-	fallthroughContext.active = fallthrough;
-	fallthroughContext.PC++;
-	
-	reconvergeContext.PC = instr.reconvergeInstruction + 1;
-	
-	runtimeStack.pop_back();
-	
-	//
-	// insert branch target with greatest PC onto stack, and resume with branch
-	// target with least PC
-	//
-	CTAContext branchContexts[3];
-	int ctxCount = 0, ctxStart = 1;
-	
-	// insert the largest PC first
-	if (branchContext.active.any()) {
-		branchContexts[ctxStart+ctxCount] = branchContext;
-		ctxCount ++;
-	}
-	if (fallthroughContext.active.any()) {
-		int ctxInsert = ctxStart;
-		if (ctxCount) {
-			if (branchContext.PC > fallthroughContext.PC) {
-				ctxInsert = 2;
-			}
-			else {
-				ctxInsert = 0;
-				ctxStart = 0;
-			}
-		}
-		branchContexts[ctxInsert] = fallthroughContext;
-		ctxCount ++;
-	}
-	
-	isDivergent = (ctxCount > 1);
-	
-	return isDivergent;
-	*/
 }
 
 void executive::ReconvergenceTFSortedStack::eval_Bar(
@@ -634,7 +580,7 @@ void executive::ReconvergenceTFSortedStack::eval_Reconverge(
 void executive::ReconvergenceTFSortedStack::eval_Exit(
 	executive::CTAContext &context, 
 	const ir::PTXInstruction &instr) {
-	if (runtimeStack.size() == 1) {
+	if (stack.back().size() == 1) {
 		context.running = false;
 	}
 	else {
@@ -648,26 +594,30 @@ bool executive::ReconvergenceTFSortedStack::nextInstruction(
 	const ir::PTXInstruction::Opcode &opcode) {
 
 	// advance to next instruction if the current instruction wasn't a branch
-	if (opcode != ir::PTXInstruction::Bra ) {
+	if (opcode != ir::PTXInstruction::Bra
+		&& opcode != ir::PTXInstruction::Call
+		&& opcode != ir::PTXInstruction::Ret) {
 		context.PC++;
 	}
 	return context.running;
 }
 
 executive::CTAContext& executive::ReconvergenceTFSortedStack::getContext() {
-	return runtimeStack.begin()->second;
+	return stack.back().begin()->second;
 }
 
 size_t executive::ReconvergenceTFSortedStack::stackSize() const {
-	return runtimeStack.size();
+	return stack.back().size();
 }
 
 void executive::ReconvergenceTFSortedStack::push(executive::CTAContext& c) {
-	assertM(false, "TF stack does not support call/ret yet.");
+	stack.push_back(RuntimeStack());
+	stack.back().insert(std::make_pair(c.PC, c));
 }
 
 void executive::ReconvergenceTFSortedStack::pop() {
-	assertM(false, "TF stack does not support call/ret yet.");
+	assert(stack.size() > 1);
+	stack.pop_back();
 }
 
 ////////////////////////////////////////////////////////////////////////////////

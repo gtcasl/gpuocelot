@@ -25,9 +25,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
 #define REPORT_LOCAL_MEMORY 0
-
-#define REPORT_SCHEDULE_OPERATIONS 1
-
+#define REPORT_SCHEDULE_OPERATIONS 0
 #define REPORT_STATISTICS 1
 
 #define REPORT_BASE 1

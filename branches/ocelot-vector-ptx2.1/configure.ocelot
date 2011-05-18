@@ -29,7 +29,7 @@
 		optimizationLevel: full,
 		workerThreadLimit: 1,
 		warpSize: 2,
-		printLLVMModule: true
+		printLLVMModule: false
 	},
 	optimizations: {
 		subkernelSize: 60

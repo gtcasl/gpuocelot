@@ -27,7 +27,7 @@
 #define REPORT_SUBKERNEL_BARE 0
 #define REPORT_SUBKERNEL_CFG 0
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -70,6 +70,7 @@ KernelPartitioningPass::KernelDecomposition::KernelDecomposition() {
 */
 void KernelPartitioningPass::KernelDecomposition::runOnKernel(ir::PTXKernel *_kernel, EntryId _base) {
 
+	report("KernelDecomposition::runOnKernel( '" << _kernel->name << "', entryId: " << _base << ")");
 
 	kernel = _kernel;
 	baseId = _base;
@@ -431,11 +432,17 @@ void KernelPartitioningPass::KernelDecomposition::_transformExitTransitions(Kern
 			transition.block->instructions.erase(last);
 			transition.type = Thread_barrier;
 			
+			// create a branch edge
+			ir::BasicBlock::Edge dummyEdge(transition.block, transition.handler, 
+				ir::BasicBlock::Edge::Branch);
+			kernel->cfg()->insert_edge(dummyEdge);
+			
 			ir::PTXInstruction *branch = new ir::PTXInstruction(ir::PTXInstruction::Bra);
 			branch->d.addressMode = ir::PTXOperand::Label;
 			branch->d.identifier = transition.handler->label;
-			transition.block->instructions.insert(transition.block->instructions.end(), branch);
+			transition.block->instructions.insert(transition.block->instructions.end(), branch);			
 			transition.handler->comment = "barrier handler";
+			
 			
 			// insert unconditional branch
 			_createExitCode(transition, resumePointOperand, Thread_barrier);
@@ -557,11 +564,14 @@ void KernelPartitioningPass::KernelDecomposition::_createDummyScheduler() {
 void KernelPartitioningPass::KernelDecomposition::extractEntryPoints(
 	EntryIdBlockLabelMap &entryMap) const {
 	
+	report("KernelDecomposition::extractEntryPoints():");
+	
 	entryMap.clear();
 	for (KernelTransitionPointMap::const_iterator t_it = transitionPoints.begin();
 		t_it != transitionPoints.end(); ++t_it) {
 		if (t_it->second.type == Thread_entry) {
 			entryMap[t_it->first] = t_it->second.handler->label;
+			report("  " << t_it->first << " -> '" << t_it->second.handler->label << "'");
 		}
 	}
 }

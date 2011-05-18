@@ -30,8 +30,6 @@ class CooperativeThreadArray;
 */
 class ReconvergenceMechanism {
 public:
-	typedef std::vector<CTAContext> RuntimeStack;
-		
 	enum Type {
 		Reconverge_IPDOM,
 		Reconverge_Barrier,
@@ -41,14 +39,12 @@ public:
 	};
 		
 public:
-	ReconvergenceMechanism(const executive::EmulatedKernel *kernel,
-		CooperativeThreadArray *cta);
 	ReconvergenceMechanism(CooperativeThreadArray *cta);
 	
 public:
 
 	//! \brief initializes the reconvergence mechanism
-	virtual void initialize();
+	virtual void initialize() = 0;
 
 	//! \brief updates the predicate mask of the active context
 	// before instructions execute
@@ -88,10 +84,16 @@ public:
 		const ir::PTXInstruction::Opcode &opcode) = 0;
 	
 	//! \brief gets the active context
-	executive::CTAContext& getContext();
+	virtual executive::CTAContext& getContext() = 0;
 	
 	//! \brief gets the stack size
-	size_t stackSize() const;
+	virtual size_t stackSize() const = 0;
+
+	//! \brief push a context
+	virtual void push(executive::CTAContext&) = 0;
+
+	//! \brief pop a context
+	virtual void pop() = 0;
 	
 	//! \brief gets the reconvergence mechanism type
 	Type getType() const { return type; }
@@ -99,19 +101,13 @@ public:
 	//! \brief gets a string-representation of the type
 	static std::string toString(Type type);
 
-public:
+protected:
 
 	//! \brief dynamic type information for convergence mechanism
 	Type type;
-
-	//! \brief emulated kernel instance
-	const EmulatedKernel *kernel;
 	
 	//! \brief executing CTA
 	CooperativeThreadArray *cta;
-
-	//! \brief context stack
-	RuntimeStack runtimeStack;
 };
 
 //
@@ -121,9 +117,9 @@ public:
 class ReconvergenceIPDOM: public ReconvergenceMechanism {
 public:
 
-	ReconvergenceIPDOM(const executive::EmulatedKernel *kernel,
-		CooperativeThreadArray *cta);
+	ReconvergenceIPDOM(CooperativeThreadArray *cta);
 	
+	void initialize();
 	void evalPredicate(executive::CTAContext &context);
 	bool eval_Bra(executive::CTAContext &context, 
 		const ir::PTXInstruction &instr, 
@@ -137,14 +133,26 @@ public:
 		const ir::PTXInstruction &instr);
 	bool nextInstruction(executive::CTAContext &context,
 		const ir::PTXInstruction::Opcode &opcode);
+
+	executive::CTAContext& getContext();
+	size_t stackSize() const;
+	void push(executive::CTAContext&);
+	void pop();
+	
+private:
+	typedef std::vector<CTAContext> RuntimeStack;
+
+private:
+	//! \brief context stack
+	RuntimeStack runtimeStack;
 };
 
 class ReconvergenceBarrier: public ReconvergenceMechanism {
 public:
 
-	ReconvergenceBarrier(const executive::EmulatedKernel *kernel,
-		CooperativeThreadArray *cta);
+	ReconvergenceBarrier(CooperativeThreadArray *cta);
 	
+	void initialize();
 	void evalPredicate(executive::CTAContext &context);
 	bool eval_Bra(executive::CTAContext &context, 
 		const ir::PTXInstruction &instr, 
@@ -159,6 +167,17 @@ public:
 	bool nextInstruction(executive::CTAContext &context,
 		const ir::PTXInstruction::Opcode &opcode);
 
+	executive::CTAContext& getContext();
+	size_t stackSize() const;
+	void push(executive::CTAContext&);
+	void pop();
+	
+private:
+	typedef std::vector<CTAContext> RuntimeStack;
+
+private:
+	//! \brief context stack
+	RuntimeStack runtimeStack;
 };
 
 
@@ -167,8 +186,7 @@ public:
 	typedef std::vector <int> ThreadIdVector;
 	
 public:
-	ReconvergenceTFGen6(const executive::EmulatedKernel *kernel,
-		CooperativeThreadArray *cta);
+	ReconvergenceTFGen6(CooperativeThreadArray *cta);
 
 	void initialize();
 	void evalPredicate(executive::CTAContext &context);
@@ -184,8 +202,18 @@ public:
 		const ir::PTXInstruction &instr);
 	bool nextInstruction(executive::CTAContext &context,
 		const ir::PTXInstruction::Opcode &opcode);
+
+	executive::CTAContext& getContext();
+	size_t stackSize() const;
+	void push(executive::CTAContext&);
+	void pop();
 	
-public:
+private:
+	typedef std::vector<CTAContext> RuntimeStack;
+
+private:
+	//! \brief context stack
+	RuntimeStack runtimeStack;
 
 	//! \brief program counters for each thread
 	ThreadIdVector threadPCs;
@@ -193,9 +221,9 @@ public:
 
 class ReconvergenceTFSortedStack: public ReconvergenceMechanism {
 public:
-	ReconvergenceTFSortedStack(const executive::EmulatedKernel *kernel,
-		CooperativeThreadArray *cta);
+	ReconvergenceTFSortedStack(CooperativeThreadArray *cta);
 
+	void initialize();
 	void evalPredicate(executive::CTAContext &context);
 	bool eval_Bra(executive::CTAContext &context, 
 		const ir::PTXInstruction &instr, 
@@ -209,6 +237,17 @@ public:
 		const ir::PTXInstruction &instr);
 	bool nextInstruction(executive::CTAContext &context,
 		const ir::PTXInstruction::Opcode &opcode);
+
+	executive::CTAContext& getContext();
+	size_t stackSize() const;
+	void push(executive::CTAContext&);
+	void pop();
+
+private:
+	typedef std::map<int, CTAContext> RuntimeStack;
+		
+public:
+	RuntimeStack runtimeStack;
 };
 }
 

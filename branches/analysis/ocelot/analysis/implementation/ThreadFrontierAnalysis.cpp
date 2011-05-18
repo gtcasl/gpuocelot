@@ -24,7 +24,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 namespace analysis
 {
@@ -62,9 +62,9 @@ ThreadFrontierAnalysis::Priority ThreadFrontierAnalysis::getPriority(
 
 void ThreadFrontierAnalysis::_computePriorities(ir::IRKernel& kernel)
 {
-	typedef std::stack<StructuralAnalysis::Node*>  NodeStack;
-	typedef std::unordered_set<ir::BasicBlock::Id> BlockSet;
-	typedef std::set<StructuralAnalysis::Node*>    NodeSet;
+	typedef std::stack<StructuralAnalysis::Node*>    NodeStack;
+	typedef std::unordered_set<ir::BasicBlock::Id>   BlockSet;
+	typedef std::set<StructuralAnalysis::Node*>      NodeSet;
 
 	report("Setting basic block priorities.");
 	
@@ -76,9 +76,14 @@ void ThreadFrontierAnalysis::_computePriorities(ir::IRKernel& kernel)
 
 	NodeStack nextNode;
 	NodeSet   visited;
-
+	BlockSet  visitedBlocks;
+	
 	nextNode.push(*structuralAnalysis->Net.begin());
 	visited.insert(nextNode.top());
+
+	#if (REPORT_BASE != 0)
+	structuralAnalysis->write(std::cout);
+	#endif
 
 	// do a depth first traversal of the control tree, set priorities
 	Priority priority = kernel.cfg()->size();
@@ -89,19 +94,45 @@ void ThreadFrontierAnalysis::_computePriorities(ir::IRKernel& kernel)
 
 		if(!node->isCombined)
 		{
-			report(" setting block " << node->BB->label
-				<< " priority to " << priority);
+			if(visitedBlocks.insert(node->BB->id).second)
+			{		
+				report(" setting block " << node->BB->label
+					<< " priority to " << priority);
 	
-			assert(priority != 0);
-			_priorities.insert(std::make_pair(node->BB, priority--));
+				assert(priority != 0);
+				_priorities.insert(std::make_pair(node->BB, priority--));
+			
+				// set all fallthrough blocks
+				ir::ControlFlowGraph::const_iterator block = node->BB;
+				
+				while(block->has_fallthrough_edge())
+				{
+					block = block->get_fallthrough_edge()->tail;
+					report(" setting block " << block->label
+						<< " priority to " << priority);
+					_priorities.insert(std::make_pair(block, priority--));
+					assert(visitedBlocks.count(block->id) == 0);
+					visitedBlocks.insert(block->id);
+				}
+			}
 		}
-	
-		for(NodeSet::const_iterator child = node->childNode.begin();
-			child != node->childNode.end(); ++child)
+		else
 		{
-			if(visited.insert(*child).second)
+			// Make sure the entry is visited first
+			bool insertEntry = visited.insert(node->entryNode).second;
+			
+			for(NodeSet::const_iterator child = node->childNode.begin();
+				child != node->childNode.end(); ++child)
 			{
-				nextNode.push(*child);
+				if(visited.insert(*child).second)
+				{
+					nextNode.push(*child);
+				}
+			}
+
+			if(insertEntry)
+			{
+				nextNode.push(node->entryNode);
 			}
 		}
 	}

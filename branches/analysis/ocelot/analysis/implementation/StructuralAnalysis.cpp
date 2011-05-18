@@ -1546,19 +1546,19 @@ void StructuralAnalysis::dumpCTNode(std::ostream& stream,
 
 	switch (node->nodeType) {
 	case Block:
-		stream << "Block			";
+		stream << "Block      ";
 		break;
 	case IfThen:
-		stream << "IfThen		 ";
+		stream << "IfThen     ";
 		break;
 	case IfThenElse:
 		stream << "IfThenElse ";
 		break;
 	case Case:
-		stream << "Case			 ";
+		stream << "Case       ";
 		break;
 	case SelfLoop:
-		stream << "SelfLoop	 ";
+		stream << "SelfLoop   ";
 		break;
 	case NaturalLoop:
 		stream << "NaturalLoop";

@@ -144,19 +144,19 @@ executive::CooperativeThreadArray::CooperativeThreadArray(
 
 	if (config::get().executive.reconvergenceMechanism
 		== ReconvergenceMechanism::Reconverge_IPDOM) {
-		reconvergenceMechanism = new ReconvergenceIPDOM(kernel, this);
+		reconvergenceMechanism = new ReconvergenceIPDOM(this);
 	}
 	else if (config::get().executive.reconvergenceMechanism
 		== ReconvergenceMechanism::Reconverge_Barrier) {
-		reconvergenceMechanism = new ReconvergenceBarrier(kernel, this);
+		reconvergenceMechanism = new ReconvergenceBarrier(this);
 	}
 	else if (config::get().executive.reconvergenceMechanism
 		== ReconvergenceMechanism::Reconverge_TFGen6) {
-		reconvergenceMechanism = new ReconvergenceTFGen6(kernel, this);
+		reconvergenceMechanism = new ReconvergenceTFGen6(this);
 	}
 	else if (config::get().executive.reconvergenceMechanism
 		== ReconvergenceMechanism::Reconverge_TFSortedStack) {
-		reconvergenceMechanism = new ReconvergenceTFSortedStack(kernel, this);
+		reconvergenceMechanism = new ReconvergenceTFSortedStack(this);
 	}
 	else {
 		assertM(false, "unknown thread reconvergence mechanism - "
@@ -2446,8 +2446,7 @@ void executive::CooperativeThreadArray::eval_Call(CTAContext &context,
 				}
 			}
 
-			reconvergenceMechanism->runtimeStack.push_back(
-				targetContext->second);			
+			reconvergenceMechanism->push(targetContext->second);	
 		}
 	}
 	else {
@@ -2521,8 +2520,7 @@ void executive::CooperativeThreadArray::eval_Call(CTAContext &context,
 					targetContext.PC = jittedInstr.branchTargetInstruction;
 					++context.PC;
 				
-					reconvergenceMechanism->runtimeStack.push_back(
-						targetContext);
+					reconvergenceMechanism->push(targetContext);
 				}
 			}
 			else {
@@ -2558,8 +2556,7 @@ void executive::CooperativeThreadArray::eval_Call(CTAContext &context,
 					targetContext.PC = jittedInstr.branchTargetInstruction;
 				
 					++context.PC;
-					reconvergenceMechanism->runtimeStack.push_back(
-						targetContext);
+					reconvergenceMechanism->push(targetContext);
 				}
 				else {
 					++context.PC;
@@ -6254,7 +6251,7 @@ void executive::CooperativeThreadArray::eval_Ret(CTAContext &context,
 		offset += ir::PTXOperand::bytes(argument->type);
 	}
 	functionCallStack.popFrame();
-	reconvergenceMechanism->runtimeStack.pop_back();
+	reconvergenceMechanism->pop();
 }
 
 /*!

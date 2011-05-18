@@ -164,6 +164,8 @@ public:
 	/*! \brief A pointer to an iterator */
 	typedef BlockPointerVector::iterator pointer_iterator;
 	/*! \brief A pointer to an iterator */
+	typedef BlockPointerVector::const_iterator const_pointer_iterator;
+	/*! \brief A pointer to an iterator */
 	typedef BlockPointerVector::reverse_iterator reverse_pointer_iterator;	
 	
 	/*! \brief An iterator over edges */

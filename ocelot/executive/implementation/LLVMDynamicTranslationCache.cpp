@@ -47,13 +47,17 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define REPORT_PTX_KERNELS 0
+#define REPORT_PTX_MASTER 1								// master toggle for reporting PTX kernels
+#define REPORT_SOURCE_PTX_KERNELS 1				// PTX prior to transformations
+#define REPORT_PARITIONED_PTX_KERNELS 1		// final output PTX ready to be translated
 #define REPORT_PTX_SUBKERNELS 0
 
-#define REPORT_ALL_LLVM_ASSEMBLY 0
-#define REPORT_OPTIMIZED_LLVM_ASSEMBLY 0
-#define REPORT_SCHEDULE_OPERATIONS 0
-#define REPORT_TRANSLATION_OPERATIONS 0
+#define REPORT_LLVM_MASTER 1							// master toggle for reporting LLVM kernels
+#define REPORT_SOURCE_LLVM_ASSEMBLY 1			// assembly output of translator
+#define REPORT_ALL_LLVM_ASSEMBLY 1				// turns on LLOVM assembly at each state
+#define REPORT_OPTIMIZED_LLVM_ASSEMBLY 1	// final output of LLVM translation and optimization
+#define REPORT_SCHEDULE_OPERATIONS 0			// scheduling events
+#define REPORT_TRANSLATION_OPERATIONS 0		// translation events
 
 #define REPORT_TRANSLATIONS 0
 
@@ -84,7 +88,8 @@ LLVMDynamicTranslationCache::~LLVMDynamicTranslationCache() {
 const LLVMDynamicTranslationCache::Translation *
 LLVMDynamicTranslationCache::getOrInsertTranslationById(EntryId id, int ws) {
 
-	reportE(REPORT_SCHEDULE_OPERATIONS, "LLVMDynamicTranslationCache::getOrInsertTranslationById( id: " << id << ", ws: " << ws << ")");
+	reportE(REPORT_SCHEDULE_OPERATIONS, 
+		"LLVMDynamicTranslationCache::getOrInsertTranslationById( id: " << id << ", ws: " << ws << ")");
 	
 	id &= 0x0ffff0000;
 	
@@ -153,19 +158,26 @@ bool LLVMDynamicTranslationCache::loadModule(const ir::Module *module, executive
 			kernel != module->kernels().end();
 			 ++kernel) {
 			
-			reportE(REPORT_PTX_KERNELS, "Encountered kernel '" << kernel->second->name << "'");
+			reportE(REPORT_PTX_MASTER, "Encountered kernel '" << kernel->second->name << "'");
 
 			TranslatedKernel *translatedKernel = new TranslatedKernel;
 			translatedKernel->kernel = kernel->second;
 			translatedKernel->entryId = (EntryId)(kernelMap.size() << 16);
 			metadata.kernels[kernel->second->name] = translatedKernel;
 			
+#if REPORT_BASE && REPORT_PTX_MASTER && REPORT_SOURCE_PTX_KERNELS
+			report("Prior to decomposition:");
+			translatedKernel->kernel->write(std::cout);
+			report("");
+#endif
+			
 			//
 			// KernelParitioningPass
 			//
 			analysis::KernelPartitioningPass kernelFormationPass;
 			kernelFormationPass.initialize(*module);
-			kernelFormationPass.runOnKernel(translatedKernel->decomposition, *kernel->second, 0);
+			kernelFormationPass.runOnKernel(translatedKernel->decomposition, *kernel->second, 
+				translatedKernel->entryId);
 			kernelFormationPass.finalize();
 			translatedKernel->kernel = translatedKernel->decomposition.kernel;
 			kernelMap[translatedKernel->entryId] = translatedKernel;
@@ -173,11 +185,12 @@ bool LLVMDynamicTranslationCache::loadModule(const ir::Module *module, executive
 			translatedKernel->localMemorySize = translatedKernel->kernel->getLocalMemorySize();
 			translatedKernel->sharedMemorySize = translatedKernel->kernel->getSharedMemorySize();
 			
-#if REPORT_BASE && REPORT_PTX_KERNELS
+#if REPORT_BASE && REPORT_PTX_MASTER && REPORT_PARITIONED_PTX_KERNELS
 			report(" static .local declarations: " << translatedKernel->localMemorySize << " bytes");
 			report(" static .shared declarations: " << translatedKernel->sharedMemorySize << " bytes");
 			report("Dynamic translation cache, just after partitioning");
 			translatedKernel->kernel->write(std::cout);
+			
 #endif
 		}
 		
@@ -217,7 +230,8 @@ LLVMDynamicTranslationCache::TranslatedKernel::TranslatedKernel():
 }
 
 LLVMDynamicTranslationCache::TranslatedKernel::~TranslatedKernel() {
-	for (TranslationWarpMap::iterator trans_it = translations.begin(); trans_it != translations.end(); ++trans_it) {	
+	for (TranslationWarpMap::iterator trans_it = translations.begin(); 
+		trans_it != translations.end(); ++trans_it) {	
 		delete const_cast<Translation*>(trans_it->second);
 	}
 	translations.clear();
@@ -246,7 +260,8 @@ LLVMDynamicTranslationCache::Translation::~Translation() {
 }
 
 void LLVMDynamicTranslationCache::Translation::execute(LLVMContext *contexts) const {
-	reportE(REPORT_SCHEDULE_OPERATIONS, "Executing translation [contexts at " << (const void *)contexts << "]");
+	reportE(REPORT_SCHEDULE_OPERATIONS, "Executing translation [contexts at " 
+		<< (const void *)contexts << "]");
 	function(contexts);
 }
 
@@ -302,7 +317,7 @@ void LLVMDynamicTranslationCache::write(std::ostream &out) {
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 //
-// This part is copied from Greg's excellent implementation and is used to complete the 
+// This part stems from Greg's excellent implementation and is used to complete the 
 // translation to LLVM. We could probably abstract this part to enable multiple implementations
 // of execution managers.
 //
@@ -419,7 +434,8 @@ static void setupArgumentMemoryReferences(
 	
 	metadata->argumentSize = offset;
 	
-	reportE(REPORT_TRANSLATION_OPERATIONS, "   total argument memory size is " << metadata->argumentSize);
+	reportE(REPORT_TRANSLATION_OPERATIONS, "   total argument memory size is " 
+		<< metadata->argumentSize);
 }
 
 /*!
@@ -542,7 +558,8 @@ static void setupParameterMemoryReferences(
 		metadata->parameterSize = std::max(bytes, metadata->parameterSize);
 	}
 	
-	reportE(REPORT_TRANSLATION_OPERATIONS, "   total parameter memory size is " << metadata->parameterSize);
+	reportE(REPORT_TRANSLATION_OPERATIONS, "   total parameter memory size is " 
+		<< metadata->parameterSize);
 }
 
 /*!
@@ -687,7 +704,8 @@ static void setupSharedMemoryReferences(
 		(*operand)->offset += metadata->sharedSize;
 	}
 
-	reportE(REPORT_TRANSLATION_OPERATIONS,  "   Total shared memory size is " << metadata->sharedSize << "." );
+	reportE(REPORT_TRANSLATION_OPERATIONS,  "   Total shared memory size is " 
+		<< metadata->sharedSize << "." );
 }
 
 /*!
@@ -719,7 +737,8 @@ static void setupConstantMemoryReferences(
 		}
 	}
 
-	reportE(REPORT_TRANSLATION_OPERATIONS, "   Total constant memory size is " << metadata->constantSize);
+	reportE(REPORT_TRANSLATION_OPERATIONS, "   Total constant memory size is " 
+		<< metadata->constantSize);
 
 	for(ir::ControlFlowGraph::iterator block = kernel.cfg()->begin(); 
 		block != kernel.cfg()->end(); ++block)
@@ -923,7 +942,8 @@ static void setupLocalMemoryReferences(
 			}
 		}
 	}
-	reportE(REPORT_TRANSLATION_OPERATIONS, "   Total local memory size is " << metadata->localSize << ".");
+	reportE(REPORT_TRANSLATION_OPERATIONS, "   Total local memory size is " 
+		<< metadata->localSize << ".");
 }
 
 /*!
@@ -1034,13 +1054,18 @@ static llvm::Function *translatePTXtoLLVM(
 
 	module = new llvm::Module(kernel.name.c_str(), llvm::getGlobalContext());
 
-	reportE(REPORT_ALL_LLVM_ASSEMBLY, llvmKernel->code());
+#if REPORT_LLVM_MASTER
+	report("translated PTX to LLVM");
+	reportE(REPORT_SOURCE_LLVM_ASSEMBLY, llvmKernel->code());
+#endif
 
 	reportE(REPORT_TRANSLATION_OPERATIONS, "  Parsing LLVM assembly.");
-	module = llvm::ParseAssemblyString(llvmKernel->code().c_str(), module, error, llvm::getGlobalContext());
+	module = llvm::ParseAssemblyString(llvmKernel->code().c_str(), module, error, 
+		llvm::getGlobalContext());
 
 	if (module == 0) {
-		reportE(REPORT_TRANSLATION_OPERATIONS, "   Parsing kernel failed, dumping code:\n" << llvmKernel->numberedCode());
+		reportE(REPORT_TRANSLATION_OPERATIONS, "   Parsing kernel failed, dumping code:\n" 
+			<< llvmKernel->numberedCode());
 			
 		std::string m;
 		llvm::raw_string_ostream message(m);
@@ -1142,7 +1167,7 @@ static void cloneAndOptimizeTranslation(
 			"\n\nAdding LLVM vectorization pass (ws: " << warpSize << ")\n\n");
 		manager.add(new analysis::LLVMUniformVectorization(labelMap, warpSize));
 	}
-	level = 1;
+	level = 0;
 
 	if (level == 0) {
 		reportE(REPORT_TRANSLATION_OPERATIONS, "no optimizations");
@@ -1187,13 +1212,18 @@ static void cloneAndOptimizeTranslation(
 	
 	manager.run(*translation->llvmFunction);
 
+
+#if REPORT_BASE && REPORT_LLVM_MASTER && REPORT_OPTIMIZED_LLVM_ASSEMBLY
+	translation->llvmFunction->getParent()->dump();
+#endif
+
 	// we can't verify errors until this point
 	reportE(REPORT_TRANSLATION_OPERATIONS, "  Checking llvm module for errors.");
 	std::string verifyError;
 	
 	if (llvm::verifyModule(*translatedKernel.kernelModule, llvm::ReturnStatusAction, &verifyError)) {
 	
-#if REPORT_TRANSLATION_OPERATIONS && REPORT_BASE
+#if REPORT_OPTIMIZED_LLVM_ASSEMBLY && REPORT_BASE
 		std::cerr << "LLVMDynamicTranslationCache.cpp:" << __LINE__ << ":" << std::endl;
 		translatedKernel.kernelModule->dump();
 #endif
@@ -1210,9 +1240,6 @@ static void cloneAndOptimizeTranslation(
 		reportE(REPORT_TRANSLATION_OPERATIONS, " verified module");
 	}
 
-#if REPORT_BASE && REPORT_OPTIMIZED_LLVM_ASSEMBLY
-	translation->llvmFunction->getParent()->dump();
-#endif
 	report("performed transformations");
 }
 

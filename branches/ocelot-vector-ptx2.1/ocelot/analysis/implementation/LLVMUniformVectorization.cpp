@@ -53,7 +53,7 @@ std::ostream &operator<<(std::ostream &out, llvm::Value &value) {
 	return out;
 }
 
-std::ostream &Instruction_print(std::ostream &out, llvm::Instruction *& inst) {
+std::ostream &Instruction_print(std::ostream &out, llvm::Instruction * inst) {
 	std::string str;
 	llvm::raw_string_ostream os(str);
 	inst->print(os);
@@ -267,6 +267,9 @@ void analysis::LLVMUniformVectorization::Translation::runOnFunction() {
 		report("Creating scheduler block");
 		updateSubkernelEntries();
 	
+		report("Remove dead blocks");
+		removeUnreachable();
+		
 		report("Finalizing subkernel");
 		finalizeSubkernel();
 	}
@@ -372,54 +375,48 @@ llvm::Value * analysis::LLVMUniformVectorization::Translation::getLocalMemoryPoi
 
 */
 void analysis::LLVMUniformVectorization::Translation::finalizeSubkernel() {
-		/*
-	llvm::TerminatorInst *termInst = subkernelEntry.prologue->getTerminator();
-	llvm::BasicBlock *wsTarget = getWarpBlockFromScalar(subkernelEntry.start);
-	
-	assert(llvm::BranchInst::classof(termInst));
-	
-	llvm::BranchInst *branchInst = static_cast<llvm::BranchInst *>(termInst);
-	branchInst->setSuccessor(0, wsTarget);
-	*/
 }
 			
 /*!
 	
 */
 void analysis::LLVMUniformVectorization::Translation::createSubkernelPrologue() {
-		
-	for (BasicBlockList::iterator bb_it = traversal.begin(); bb_it != traversal.end(); ++bb_it) {
-		if ((*bb_it)->getNameStr() == "$OcelotRegisterInitializerBlock") {
-			traversal.erase(bb_it);
-			break;
-		}
-	}
-	// sink all instructions in the Ocelot initializer block into their single successor
-	for (llvm::Function::iterator bb_it = F->begin(); bb_it != F->end(); ++bb_it) {
-		if (bb_it->getNameStr() == "$OcelotRegisterInitializerBlock") {
-			
-			llvm::TerminatorInst *terminator = bb_it->getTerminator();
-			assert(terminator->getNumSuccessors() == 1);
-			llvm::BasicBlock *successor = terminator->getSuccessor(0);
-			llvm::Instruction *firstNonPhi = successor->getFirstNonPHI();
-			
-			for (llvm::BasicBlock::iterator inst_it = bb_it->begin(); inst_it != bb_it->end(); ) {
-				llvm::Instruction *inst = &*inst_it++;
-				if (!llvm::TerminatorInst::classof(inst)) {
-					inst->removeFromParent();
-					inst->insertBefore(firstNonPhi);
-				}
-				else {
-					inst->eraseFromParent();
-				}
+	const char *sinkBlocks[] = {
+		"$OcelotRegisterInitializerBlock", "$OcelotTextureAllocateBlock", 0
+	};
+	for (int i = 0; sinkBlocks[i]; ++i) {
+		for (BasicBlockList::iterator bb_it = traversal.begin(); bb_it != traversal.end(); ++bb_it) {
+			if ((*bb_it)->getNameStr() == sinkBlocks[i]) {
+				traversal.erase(bb_it);
+				break;
 			}
-			subkernelEntry.start = successor;
-			bb_it->replaceAllUsesWith(successor);
-			bb_it->eraseFromParent();
-			break;
+		}
+		// sink all instructions in the Ocelot initializer block into their single successor
+		for (llvm::Function::iterator bb_it = F->begin(); bb_it != F->end(); ++bb_it) {
+			if (bb_it->getNameStr() == sinkBlocks[i]) {
+			
+				llvm::TerminatorInst *terminator = bb_it->getTerminator();
+				assert(terminator->getNumSuccessors() == 1);
+				llvm::BasicBlock *successor = terminator->getSuccessor(0);
+				llvm::Instruction *firstNonPhi = successor->getFirstNonPHI();
+			
+				for (llvm::BasicBlock::iterator inst_it = bb_it->begin(); inst_it != bb_it->end(); ) {
+					llvm::Instruction *inst = &*inst_it++;
+					if (!llvm::TerminatorInst::classof(inst)) {
+						inst->removeFromParent();
+						inst->insertBefore(firstNonPhi);
+					}
+					else {
+						inst->eraseFromParent();
+					}
+				}
+				subkernelEntry.start = successor;
+				bb_it->replaceAllUsesWith(successor);
+				bb_it->eraseFromParent();
+				break;
+			}
 		}
 	}
-	
 	subkernelEntry.start = & F->front();
 	subkernelEntry.prologue = llvm::BasicBlock::Create(F->getContext(), "WarpSynchronousEntry", 
 		F, subkernelEntry.start);
@@ -815,6 +812,8 @@ void analysis::LLVMUniformVectorization::Translation::resolveControlFlow() {
 	}
 }
 
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
 /*!
 	\brief removes all superfluous and unreachable scalar blocks
 */
@@ -844,6 +843,34 @@ void analysis::LLVMUniformVectorization::Translation::removeScalarBlocks() {
 		scalar_it->first->eraseFromParent();
 	}
 }
+
+void analysis::LLVMUniformVectorization::Translation::removeUnreachable() {
+	// remove all blocks that still lack predecessors
+	report("removeUnreachable()");
+	std::vector<llvm::BasicBlock *> dead;
+	for (llvm::Function::iterator bb_it = F->begin(); bb_it != F->end(); ++bb_it) {
+		if (llvm::pred_begin(&*bb_it) == llvm::pred_end(&*bb_it) &&
+			bb_it->getNameStr() != "WarpSynchronousEntry") {
+			
+			while (llvm::PHINode *phi = llvm::dyn_cast<llvm::PHINode>(bb_it->begin())) {
+				phi->replaceAllUsesWith(llvm::Constant::getNullValue(phi->getType()));
+				bb_it->getInstList().pop_front();
+			}
+			for (llvm::succ_iterator SI = llvm::succ_begin(&*bb_it), 
+				SE = llvm::succ_end(&*bb_it); SI != SE; ++SI) {
+			
+				(*SI)->removePredecessor(&*bb_it);
+			}
+			dead.push_back(&*bb_it);
+		}
+	}
+	for (std::vector<llvm::BasicBlock *>::iterator bb_it = dead.begin(); bb_it != dead.end(); ++bb_it) {	
+		report("  attempting to erase " << (*bb_it)->getNameStr());
+		(*bb_it)->eraseFromParent();
+	}
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
 
 /*!
 	\brief deals with a particular divergent branch
@@ -1465,6 +1492,7 @@ void analysis::LLVMUniformVectorization::Translation::updateSubkernelEntries() {
 		switchInst->addCase(llvm::ConstantInt::get(int32Ty, idx), *entry_it);
 	}
 	report("Created large switch statement in scheduler");
+	
 }
 
 /*!

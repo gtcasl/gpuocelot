@@ -259,6 +259,11 @@ namespace analysis
 			void removeScalarBlocks();
 		
 			/*!
+			
+			*/
+			void removeUnreachable();
+			
+			/*!
 				\brief visits each of the warp scheduler blocks and changes control flow to point
 					to warp-synchronous regions
 

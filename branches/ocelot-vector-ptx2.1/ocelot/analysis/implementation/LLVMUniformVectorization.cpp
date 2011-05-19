@@ -818,6 +818,7 @@ void analysis::LLVMUniformVectorization::Translation::resolveControlFlow() {
 	\brief removes all superfluous and unreachable scalar blocks
 */
 void analysis::LLVMUniformVectorization::Translation::removeScalarBlocks() {
+	report("Removing scalar blocks");
 	for (BasicBlockMap::iterator scalar_it = warpBlocksMap.begin(); scalar_it != warpBlocksMap.end(); 
 		++scalar_it ) {
 	
@@ -839,6 +840,7 @@ void analysis::LLVMUniformVectorization::Translation::removeScalarBlocks() {
 	}
 	for (BasicBlockMap::iterator scalar_it = warpBlocksMap.begin(); scalar_it != warpBlocksMap.end(); 
 		++scalar_it ) {
+		report("  removed " << scalar_it->first->getNameStr());
 		scalar_it->first->replaceAllUsesWith(&scalar_it->first->getParent()->getEntryBlock());
 		scalar_it->first->eraseFromParent();
 	}
@@ -1407,12 +1409,20 @@ llvm::BasicBlock *analysis::LLVMUniformVectorization::Translation::getWarpBlockB
 	
 	EntryIdBlockLabelMap::const_iterator entryLabel_it = pass->labelMap->find(entryId);
 	assert(entryLabel_it != pass->labelMap->end());
-	std::string label = entryLabel_it->second.substr(1) + "_ws";
-	std::string blockLabel = label.substr(0, label.size() - 9) + "_ws";
+
+	std::string label = entryLabel_it->second.substr(1);
+	std::string blockLabel = label.substr(0, label.size() - 9);
+	if (warpSize > 1) {
+		label += "_ws";
+		blockLabel += "_ws";
+	}
+	
+	report("seeking block " << label << " or " << blockLabel);
 	
 	// do a lookup based on block name
 	for (llvm::Function::iterator bb_it = F->begin(); bb_it != F->end(); ++bb_it) {
 		std::string entryLabel = bb_it->getNameStr();
+		report("  encountered block " << entryLabel);
 		if (entryLabel.find(label) != std::string::npos) {
 			block = &*bb_it;
 			break;
@@ -1425,7 +1435,7 @@ llvm::BasicBlock *analysis::LLVMUniformVectorization::Translation::getWarpBlockB
 		block = failBlock;
 	}
 	if (!block && !failBlock) {
-		report("failed to find warp block with entry ID " << entryId);
+		report("failed to find warp block with entry ID " << entryId << " and label " << blockLabel);
 	}
 	return block;
 }
@@ -1492,57 +1502,6 @@ void analysis::LLVMUniformVectorization::Translation::updateSubkernelEntries() {
 		switchInst->addCase(llvm::ConstantInt::get(int32Ty, idx), *entry_it);
 	}
 	report("Created large switch statement in scheduler");
-	
-}
-
-/*!
-	\brief visits all subkernel exits
-*/
-void analysis::LLVMUniformVectorization::Translation::updateSubkernelExits() {
-	for (BasicBlockMap::const_iterator ws_bb_it = warpBlocksMap.begin(); 
-		ws_bb_it != warpBlocksMap.end(); ++ws_bb_it) {
-		
-		llvm::BasicBlock * const wsBlock = ws_bb_it->second;
-		for (llvm::BasicBlock::iterator inst_it = wsBlock->begin(); inst_it != wsBlock->end(); 
-			++inst_it) {
-			if (llvm::BitCastInst *castInst = llvm::dyn_cast<llvm::BitCastInst>(&*inst_it)) {
-				// bitcast i8* to i32*
-				// source is localMemPtr
-				// user of bitcast instruction is a store instruction
-				// store source value is a constant integer
-				//
-				const llvm::Type *sourceType = castInst->getOperand(0)->getType();
-				const llvm::Type *destType = castInst->getType();
-				
-				const llvm::Type *sourceElementType = 0;
-				const llvm::Type *destElementType = 0;
-
-				if (sourceType->isPointerTy() && 
-					(sourceElementType = static_cast<const llvm::PointerType *>(sourceType)->getElementType())
-						->isIntegerTy(8) && 
-					destType->isPointerTy() &&
-						(destElementType = static_cast<const llvm::PointerType *>(destType)->getElementType())
-						->isIntegerTy(32)) {
-					
-					for (ThreadLocalArgument::ThreadLocalArgumentVector::const_iterator 
-						localMemPtr_it = threadLocalArguments.localPointer.begin();
-						localMemPtr_it != threadLocalArguments.localPointer.end(); ++localMemPtr_it) {
-						
-						if (static_cast<const llvm::Value *>(*localMemPtr_it) == castInst->getOperand(0)) {
-							// if all users are in this block and store constants
-							for (llvm::Value::use_iterator use_it = castInst->use_begin(); 
-								use_it != castInst->use_end(); ++use_it) {
-								
-								if (llvm::StoreInst *storeInst = llvm::dyn_cast<llvm::StoreInst>(*use_it)) {
-									assert(storeInst);
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-	}
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////

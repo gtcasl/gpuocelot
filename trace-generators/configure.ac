@@ -47,6 +47,11 @@ AM_PROG_CC_C_O
 
 ################################################################################
 # Check for libraries
+AC_CHECK_LIB([z], [deflate], [], \
+	AC_MSG_ERROR("libz required"))
+AC_CHECK_LIB([boost_serialization-mt], [main], [], \
+	AC_MSG_ERROR("libboost_serialization-mt required"))
+
 ################################################################################
 
 ################################################################################

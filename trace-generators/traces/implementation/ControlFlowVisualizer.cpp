@@ -35,10 +35,12 @@ unsigned int trace::ControlFlowVisualizer::_counter = 0;
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
-class ControlFlowVisualizerFormatter: public ir::ControlFlowGraph::BasicBlock::DotFormatter {
+class ControlFlowVisualizerFormatter:
+	public ir::ControlFlowGraph::BasicBlock::DotFormatter {
 public:
 
-	ControlFlowVisualizerFormatter(trace::ControlFlowVisualizer * gen, bool _all): generator(gen), allInstructions(_all) {
+	ControlFlowVisualizerFormatter(trace::ControlFlowVisualizer * gen,
+		bool _all): generator(gen), allInstructions(_all) {
 
 	}
 	
@@ -66,11 +68,9 @@ public:
 		out << "shape=record,label=\"{";
 
 		std::pair<int,int> blockRange = generator->kernel->getBlockRange(block->label);
-		std::pair<int,int> threadFrontier = generator->kernel->threadFrontiers.at(blockRange.second);
 		
 		out << hydrazine::toGraphVizParsableLabel(block->label);
 		out << " | PCs: [" << blockRange.first << " ,  " << blockRange.second << "] ";
-		out << " | thread frontier: [" << threadFrontier.first << " - " << threadFrontier.second << "] ";
 		for (int i = blockRange.first; i <= blockRange.second; i++) {
 			const ir::PTXInstruction & instr = generator->kernel->instructions.at(i);
 			if (instr.opcode == ir::PTXInstruction::Bra) {

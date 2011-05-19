@@ -62,7 +62,8 @@ namespace trace
 		_header.instructions = 0;
 		_header.branches = 0;
 		_header.divergent = 0;
-		_header.threads = kernel.maxThreadsPerBlock();
+		_header.threads =
+			kernel.blockDim().x*kernel.blockDim().y*kernel.blockDim().z;
 		_header.activeThreads = 0;
 		_header.maxContextStackSize = 0;
 	}

@@ -45,7 +45,7 @@ TraceConfiguration::TraceConfiguration()
 	convergence.enabled = false;
 	loadBalance = false;
 	basicBlockCount = false;
-  x86trace = false;
+	x86trace = false;
 
 	try
 	{
@@ -69,7 +69,7 @@ TraceConfiguration::TraceConfiguration()
 			parallelism = traceConfig.parse<bool>("parallelism", false);
 			loadBalance = traceConfig.parse<bool>("loadBalance", false);
 			basicBlockCount = traceConfig.parse<bool>("basicBlockCount", false);
-      x86trace = traceConfig.parse<bool>("x86Trace", false);
+			x86trace = traceConfig.parse<bool>("x86Trace", false);
 
 			// more detailed configuration for this trace generator
 			hydrazine::json::Visitor warpSyncConfig =
@@ -111,19 +111,23 @@ TraceConfiguration::TraceConfiguration()
 			{
 				performanceBound.enabled = perfConfig.parse<bool>(
 					"enabled", false);
-				performanceBound.render = perfConfig.parse<bool>("render", false);
+				performanceBound.render =
+					perfConfig.parse<bool>("render", false);
 				std::string protocol = 
 					perfConfig.parse<std::string>("protocol", "sm_20");
 				std::string output = 
 					perfConfig.parse<std::string>("output", "dot");
 				
 				
-				performanceBound.outputFormat = PerformanceBoundGenerator::Output_dot;
+				performanceBound.outputFormat =
+					PerformanceBoundGenerator::Output_dot;
 				if (output == "dot") {
-					performanceBound.outputFormat = PerformanceBoundGenerator::Output_dot;
+					performanceBound.outputFormat =
+						PerformanceBoundGenerator::Output_dot;
 				}
 				else if (output == "csv") {
-					performanceBound.outputFormat = PerformanceBoundGenerator::Output_append_csv;
+					performanceBound.outputFormat =
+						PerformanceBoundGenerator::Output_append_csv;
 				}
 				
 				performanceBound.protocol =
@@ -162,7 +166,8 @@ TraceConfiguration::TraceConfiguration()
 				{
 					std::cerr << "Invalid protocol '" << protocol << "'\n";
 				}
-				report("performanceBound.enabled = " << (performanceBound.enabled ? "true":"false"));
+				report("performanceBound.enabled = "
+					<< (performanceBound.enabled ? "true":"false"));
 			}
 	
 			hydrazine::json::Visitor convConfig = traceConfig["convergence"];
@@ -175,10 +180,14 @@ TraceConfiguration::TraceConfiguration()
 				convergence.render = convConfig.parse<bool>("render", false);
 			}
 			
-			hydrazine::json::Visitor cfgConfig = traceConfig["controlFlowVisualizer"];
-			if (!cfgConfig.is_null()) {
-				controlFlowVisualizer.enabled = cfgConfig.parse<bool>("enabled", false);
-				controlFlowVisualizer.allInstructions = cfgConfig.parse<bool>("allInstructions", false);
+			hydrazine::json::Visitor cfgConfig =
+				traceConfig["controlFlowVisualizer"];
+			if(!cfgConfig.is_null())
+			{
+				controlFlowVisualizer.enabled =
+					cfgConfig.parse<bool>("enabled", false);
+				controlFlowVisualizer.allInstructions =
+					cfgConfig.parse<bool>("allInstructions", false);
 			}
 		}
 	}
@@ -272,24 +281,28 @@ TraceConfiguration::TraceConfiguration()
 		ocelot::addTraceGenerator(_loadBalance, true);
 	}
 	
-	if (controlFlowVisualizer.enabled) {
+	if (controlFlowVisualizer.enabled)
+	{
 		report("Creating ControlFlowVisualizer generator");
 		_controlFlowVisualizer.database = database;
-		_controlFlowVisualizer.allInstructions = controlFlowVisualizer.allInstructions;
+		_controlFlowVisualizer.allInstructions =
+			controlFlowVisualizer.allInstructions;
 		ocelot::addTraceGenerator(_controlFlowVisualizer, true);
 	}
 	
-	if (basicBlockCount) {
+	if (basicBlockCount)
+	{
+		report("Creating basic block counter generator");
 		_basicBlockCountGenerator.database = database;
 		ocelot::addTraceGenerator(_basicBlockCountGenerator, true);
 	}
 
-  if(x86trace) 
-  {
-    report("Creating x86 trace generator");
-    _x86TraceGenerator.database = database;
-    ocelot::addTraceGenerator(_x86TraceGenerator, true);
-  }
+	if(x86trace)
+	{
+		report("Creating x86 trace generator");
+		_x86TraceGenerator.database = database;
+		ocelot::addTraceGenerator(_x86TraceGenerator, true);
+	}
 }
 
 }

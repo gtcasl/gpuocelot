@@ -25,13 +25,32 @@ INFO     ==== INDIVIDUAL TEST RESULTS ====
 INFO     Running test program /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestLexer -i ../tests/ptx 
 INFO     Running test program /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestPTXToLLVMTranslator -i ../tests/ptx 
 INFO     Running test program /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaTexture2D 
-INFO     Running test program /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaMalloc 
+INFO     Running test program /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestLLVMInstructions 
 INFO     Running test program /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestKernels 
 INFO     Running test program /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestInstructions 
 INFO     Running test program /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaGlobals 
-INFO     Running test program /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCalVectorScale 
+INFO     Running test program /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestIndirectFunctionCall 
+INFO     Test /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestLexer
+INFO     Test completed in 0.0247609615326 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+
+Name : TestLexer
+
+Description: Tests for the PTX lexer. Test Point 1: Scan a PTX file and 
+             write out a temp stream, scan the stream again and make sure that the 
+             two sets of tokens match
+
+
+Test Seed : 1305836544
+Test time : 1.35899e-05
+
+Status : 
+
+
 INFO     Test /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestPTXToLLVMTranslator
-INFO     Test completed in 0.0257081985474 seconds
+INFO     Test completed in 0.0243699550629 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -44,439 +63,16 @@ Description: This is a basic test that just tries to get through a
              translate them.
 
 
-Test Seed : 1305751871
-Test time : 1.04904e-05
-
-Status : 
-
-
-INFO     Test /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestLexer
-INFO     Test completed in 0.0268659591675 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-
-Name : TestLexer
-
-Description: Tests for the PTX lexer. Test Point 1: Scan a PTX file and 
-             write out a temp stream, scan the stream again and make sure that the 
-             two sets of tokens match
-
-
-Test Seed : 1305751871
-Test time : 1.38283e-05
+Test Seed : 1305836544
+Test time : 1.12057e-05
 
 Status : 
 
 
 INFO     Running test program /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestParser -i ../tests/ptx 
 INFO     Running test program /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestDataflowGraph -i ../tests/ptx 
-INFO     Test /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaTexture2D
-INFO     Test completed in 0.0327210426331 seconds
-INFO      It produced the following output:
-While deleting: void (float*, { { i32, i32, i32 }, { i32, i32, i32 }, { i32, i32, i32 }, { i32, i32, i32 }, i8*, i8*, i8*, i8*, i8*, i8* }*, i32, float, float)* %__ocelot_tex_2d_ff
-Use still stuck around after Def is destroyed:  call void @__ocelot_tex_2d_ff(float* %floatingPointTexture, %LLVMContext* %__ctaContext, i32 0, float %r10, float %r11)
-TestCudaTexture2D: Value.cpp:76: virtual llvm::Value::~Value(): Assertion `use_empty() && "Uses remain when a value is destroyed!"' failed.
-(0.002838) LLVMDynamicExecutionManager.cpp:47:   Launching LLVM kernel '_Z6kernelPfii'.
-(0.002862) LLVMDynamicTranslationCache.cpp:150:  LLVMDynamicTranslationCache::loadModule() - texture2D.cu
-(0.003635) LLVMDynamicExecutionManager.cpp:60:     loaded. Executing grid 4, 4
-(0.003647) LLVMDynamicExecutionManager.cpp:61:     block dim: 16, 16, 1
-(0.003655) LLVMDynamicExecutionManager.cpp:62:     entry id: 0
-(0.003664) LLVMDynamicExecutionManager.cpp:63:     local memory size: 208 bytes
-(0.003672) LLVMDynamicExecutionManager.cpp:64:     shared memory size: 0 bytes 
-(0.003680) LLVMDynamicExecutionManager.cpp:70:   Executing CTA 0, 0
-(0.003693) LLVMDynamicExecutive.cpp:62:   CTA::initialize() - localMemorySize: 208, total threads: 256, shared memory size: 0
-(0.003772) LLVMDynamicExecutionManager.cpp:84:   LLVMDynamicExecutionManager::getOrInsertTranslation( id: 0, warpsize: 2)
-(0.003782) LLVMDynamicExecutionManager.cpp:98:   Locking dynamic execution manager
-(0.005543) LLVMDynamicTranslationCache.cpp:1057: translated PTX to LLVM
-
-INFO     Running test program /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaTextureArray 
-INFO     Test /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCalVectorScale
-INFO     Test completed in 0.0280578136444 seconds
-INFO      It produced the following output:
-No CAL devices found
-Pass/Fail : Pass
-
-INFO     Running test program /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestIndirectFunctionCall 
-INFO     Test /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaGlobals
-INFO     Test completed in 0.0304918289185 seconds
-INFO      It produced the following output:
-cudaSetDevice() - 0 - Ocelot Dynamic Multicore CPU Backend (LLVM-JIT) 
-(0.002878) LLVMDynamicExecutionManager.cpp:47:   Launching LLVM kernel 'copyFromGlobal'.
-(0.002903) LLVMDynamicTranslationCache.cpp:150:  LLVMDynamicTranslationCache::loadModule() - global.cu
-(0.003586) LLVMDynamicExecutionManager.cpp:60:     loaded. Executing grid 1, 1
-(0.003598) LLVMDynamicExecutionManager.cpp:61:     block dim: 64, 1, 1
-(0.003608) LLVMDynamicExecutionManager.cpp:62:     entry id: 0
-(0.003616) LLVMDynamicExecutionManager.cpp:63:     local memory size: 152 bytes
-(0.003624) LLVMDynamicExecutionManager.cpp:64:     shared memory size: 0 bytes 
-(0.003633) LLVMDynamicExecutionManager.cpp:70:   Executing CTA 0, 0
-(0.003646) LLVMDynamicExecutive.cpp:62:   CTA::initialize() - localMemorySize: 152, total threads: 64, shared memory size: 0
-(0.003671) LLVMDynamicExecutionManager.cpp:84:   LLVMDynamicExecutionManager::getOrInsertTranslation( id: 0, warpsize: 2)
-(0.003679) LLVMDynamicExecutionManager.cpp:98:   Locking dynamic execution manager
-(0.005228) LLVMDynamicTranslationCache.cpp:1057: translated PTX to LLVM
-==Ocelot== Ocelot Dynamic Multicore CPU Backend (LLVM-JIT) failed to run kernel "copyFromGlobal" with exception: 
-==Ocelot== LLVM Verifier failed for kernel: copyFromGlobal : "Referencing global in another module!
-==Ocelot==   %rt6.t0 = bitcast float* @Pi to float*
-==Ocelot== Referencing global in another module!
-==Ocelot==   %rt6.t1 = bitcast float* @Pi to float*
-==Ocelot== Instruction does not dominate all uses!
-==Ocelot==   %rt6.t0 = bitcast float* @Pi to float*
-==Ocelot==   %r13.t0 = load float* %rt6.t0, align 4
-==Ocelot== Instruction does not dominate all uses!
-==Ocelot==   %rt6.t1 = bitcast float* @Pi to float*
-==Ocelot==   %r13.t1 = load float* %rt6.t1, align 4
-==Ocelot== Instruction does not dominate all uses!
-==Ocelot==   %r13.t0 = load float* %rt6.t0, align 4
-==Ocelot==   %32 = insertelement <2 x float> undef, float %r13.t0, i32 0
-==Ocelot== Instruction does not dominate all uses!
-==Ocelot==   %32 = insertelement <2 x float> undef, float %r13.t0, i32 0
-==Ocelot==   %33 = insertelement <2 x float> %32, float %r13.t1, i32 1
-==Ocelot== Instruction does not dominate all uses!
-==Ocelot==   %33 = insertelement <2 x float> %32, float %r13.t1, i32 1
-==Ocelot==   %34 = fmul <2 x float> %31, %33
-==Ocelot== Instruction does not dominate all uses!
-==Ocelot==   %34 = fmul <2 x float> %31, %33
-==Ocelot==   %35 = extractelement <2 x float> %34, i32 0
-==Ocelot== Instruction does not dominate all uses!
-==Ocelot==   %34 = fmul <2 x float> %31, %33
-==Ocelot==   %36 = extractelement <2 x float> %34, i32 1
-==Ocelot== Instruction does not dominate all uses!
-==Ocelot==   %35 = extractelement <2 x float> %34, i32 0
-==Ocelot==   store float %35, float* %rt11.t0, align 4
-==Ocelot== Instruction does not dominate all uses!
-==Ocelot==   %36 = extractelement <2 x float> %34, i32 1
-==Ocelot==   store float %36, float* %rt11.t1, align 4
-==Ocelot== Broken module found, compilation terminated.
-==Ocelot== Broken module found, compilation terminated.
-==Ocelot== "
-terminate called after throwing an instance of 'hydrazine::Exception'
-  what():  LLVM Verifier failed for kernel: copyFromGlobal : "Referencing global in another module!
-  %rt6.t0 = bitcast float* @Pi to float*
-Referencing global in another module!
-  %rt6.t1 = bitcast float* @Pi to float*
-Instruction does not dominate all uses!
-  %rt6.t0 = bitcast float* @Pi to float*
-  %r13.t0 = load float* %rt6.t0, align 4
-Instruction does not dominate all uses!
-  %rt6.t1 = bitcast float* @Pi to float*
-  %r13.t1 = load float* %rt6.t1, align 4
-Instruction does not dominate all uses!
-  %r13.t0 = load float* %rt6.t0, align 4
-  %32 = insertelement <2 x float> undef, float %r13.t0, i32 0
-Instruction does not dominate all uses!
-  %32 = insertelement <2 x float> undef, float %r13.t0, i32 0
-  %33 = insertelement <2 x float> %32, float %r13.t1, i32 1
-Instruction does not dominate all uses!
-  %33 = insertelement <2 x float> %32, float %r13.t1, i32 1
-  %34 = fmul <2 x float> %31, %33
-Instruction does not dominate all uses!
-  %34 = fmul <2 x float> %31, %33
-  %35 = extractelement <2 x float> %34, i32 0
-Instruction does not dominate all uses!
-  %34 = fmul <2 x float> %31, %33
-  %36 = extractelement <2 x float> %34, i32 1
-Instruction does not dominate all uses!
-  %35 = extractelement <2 x float> %34, i32 0
-  store float %35, float* %rt11.t0, align 4
-Instruction does not dominate all uses!
-  %36 = extractelement <2 x float> %34, i32 1
-  store float %36, float* %rt11.t1, align 4
-Broken module found, compilation terminated.
-Broken module found, compilation terminated.
-"
-
-INFO     Running test program /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaSequence 
-INFO     Test /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestKernels
-INFO     Test completed in 0.0376491546631 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-
-Name : TestKernels
-
-Description: 
-
-
-Test Seed : 1305751871
-Test time : 0.0118282
-
-Status : Test output:
-looping kernel succeeded
-matrix vector kernel succeeded
-
-
-
-INFO     Running test program /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestConvergence 
-INFO     Test /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestInstructions
-INFO     Test completed in 0.0372722148895 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-
-Name : TestInstructions
-
-Description: 
-
-
-Test Seed : 1305751871
-Test time : 0.00158906
-
-Status : Test output:
-Accessors test passed.
-pass: load and store instructions
-Abs test passed.
-pass: arithmetic instructions
-pass: exotic arithmetic instructions
-pass: floating-point instructions
-pass: logical instructions
-pass: comparison instructions
-pass: predicated Add and Ld isntructions
-pass: control flow instructions
-
-
-
-INFO     Running test program /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestEmulator 
-INFO     Test /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestDataflowGraph
-INFO     Test completed in 0.022754907608 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-
-Name : TestDataflowGraph
-
-Description: A test for the DataflowGraph class. Test Points: 1) 
-             Generic: load PTX files, convert them into dataflow graphs, verify that 
-             all live ranges spanning blocks are consistent. 2) SSA: convert to 
-             ssa form, verify that no register is declared more than once. 3) 
-             reverse SSA: convert to ssa then out of ssa, verify that all live 
-             ranges spanning blocks are consistent.
-
-
-Test Seed : 1305751871
-Test time : 1.90735e-05
-
-Status : Testing Generic Dataflow
- Test Passed
-Testing SSA Dataflow
- Test Passed
-Testing SSA then back Dataflow
- Test Passed
-
-
-
-INFO     Running test program /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestLLVMKernels 
-INFO     Test /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestParser
-INFO     Test completed in 0.0253829956055 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-
-Name : TestParser
-
-Description: A test for the PTXParser class. Test Points: 1) Load a PTX file 
-             and run it through the parser generating a module. Write the 
-             module to an intermediate stream. Parse the stream again 
-             generating a new module, compare both to make sure that they match.
-
-
-Test Seed : 1305751871
-Test time : 1.35899e-05
-
-Status : 
-
-
-INFO     Running test program /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestFunctionCall 
-INFO     Test /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaMalloc
-INFO     Test completed in 0.0557417869568 seconds
-INFO      It produced the following output:
-test_malloc(256, 128)
-PASSED
-test_mallocArray(256, 128)
-checking results from last cudaMemcpyFromArray
-PASSED
-[1] mallocing pitch
-[2] memcpying2d
-[3] memcpying
-[4] checking for errors
-[5] mallocing
-[6] memcpying
-[7] memcpying
-[8] final free
-Pass/Fail : Pass
-
-INFO     Running test program /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestPTXAssembly 
-INFO     Test /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaTextureArray
-INFO     Test completed in 0.0324029922485 seconds
-INFO      It produced the following output:
-While deleting: void (float*, { { i32, i32, i32 }, { i32, i32, i32 }, { i32, i32, i32 }, { i32, i32, i32 }, i8*, i8*, i8*, i8*, i8*, i8* }*, i32, float, float)* %__ocelot_tex_2d_ff
-Use still stuck around after Def is destroyed:  call void @__ocelot_tex_2d_ff(float* %floatingPointTexture, %LLVMContext* %__ctaContext, i32 0, float %r10, float %r11)
-TestCudaTextureArray: Value.cpp:76: virtual llvm::Value::~Value(): Assertion `use_empty() && "Uses remain when a value is destroyed!"' failed.
-(0.002026) LLVMDynamicExecutionManager.cpp:47:   Launching LLVM kernel '_Z6kernelPfii'.
-(0.002051) LLVMDynamicTranslationCache.cpp:150:  LLVMDynamicTranslationCache::loadModule() - textureArray.cu
-(0.002513) LLVMDynamicExecutionManager.cpp:60:     loaded. Executing grid 4, 4
-(0.002521) LLVMDynamicExecutionManager.cpp:61:     block dim: 16, 16, 1
-(0.002526) LLVMDynamicExecutionManager.cpp:62:     entry id: 0
-(0.002531) LLVMDynamicExecutionManager.cpp:63:     local memory size: 208 bytes
-(0.002535) LLVMDynamicExecutionManager.cpp:64:     shared memory size: 0 bytes 
-(0.002540) LLVMDynamicExecutionManager.cpp:70:   Executing CTA 0, 0
-(0.002548) LLVMDynamicExecutive.cpp:62:   CTA::initialize() - localMemorySize: 208, total threads: 256, shared memory size: 0
-(0.002607) LLVMDynamicExecutionManager.cpp:84:   LLVMDynamicExecutionManager::getOrInsertTranslation( id: 0, warpsize: 2)
-(0.002617) LLVMDynamicExecutionManager.cpp:98:   Locking dynamic execution manager
-(0.004421) LLVMDynamicTranslationCache.cpp:1057: translated PTX to LLVM
-
-INFO     Running test program /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestLLVMInstructions 
-INFO     Test /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestEmulator
-INFO     Test completed in 0.0235998630524 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-
-Name : TestEmulator
-
-Description: 
-
-
-Test Seed : 1305751871
-Test time : 0.00305557
-
-Status : Test output:
-10 registers
-Register test passed
-Load test passed
-Store test passed
-no errors
-Full kernel test passed
-
-
-
-INFO     Running test program /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestDeviceSwitching 
-INFO     Test /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestIndirectFunctionCall
-INFO     Test completed in 0.0339159965515 seconds
-INFO      It produced the following output:
-TestIndirectFunctionCall: ocelot/executive/implementation/LLVMDynamicTranslationCache.cpp:1020: void executive::setupCallTargets(ir::PTXKernel&, const executive::LLVMDynamicTranslationCache&): Assertion `0 && "arbitrary function calls not yet supported"' failed.
-(0.004121) LLVMDynamicExecutionManager.cpp:47:   Launching LLVM kernel 'kernelEntry'.
-(0.004143) LLVMDynamicTranslationCache.cpp:150:  LLVMDynamicTranslationCache::loadModule() - indirectCall.cu
-(0.006562) LLVMDynamicExecutionManager.cpp:60:     loaded. Executing grid 1, 1
-(0.006576) LLVMDynamicExecutionManager.cpp:61:     block dim: 32, 1, 1
-(0.006585) LLVMDynamicExecutionManager.cpp:62:     entry id: 65536
-(0.006593) LLVMDynamicExecutionManager.cpp:63:     local memory size: 216 bytes
-(0.006601) LLVMDynamicExecutionManager.cpp:64:     shared memory size: 0 bytes 
-(0.006609) LLVMDynamicExecutionManager.cpp:70:   Executing CTA 0, 0
-(0.006625) LLVMDynamicExecutive.cpp:62:   CTA::initialize() - localMemorySize: 216, total threads: 32, shared memory size: 0
-(0.006649) LLVMDynamicExecutionManager.cpp:84:   LLVMDynamicExecutionManager::getOrInsertTranslation( id: 65536, warpsize: 2)
-(0.006659) LLVMDynamicExecutionManager.cpp:98:   Locking dynamic execution manager
-
-INFO     Test /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestFunctionCall
-INFO     Test completed in 0.027302980423 seconds
-INFO      It produced the following output:
-TestFunctionCall: ocelot/executive/implementation/LLVMDynamicTranslationCache.cpp:1020: void executive::setupCallTargets(ir::PTXKernel&, const executive::LLVMDynamicTranslationCache&): Assertion `0 && "arbitrary function calls not yet supported"' failed.
-(0.002815) LLVMDynamicExecutionManager.cpp:47:   Launching LLVM kernel 'kernel'.
-(0.002842) LLVMDynamicTranslationCache.cpp:150:  LLVMDynamicTranslationCache::loadModule() - simpleFunc.cu
-(0.003854) LLVMDynamicExecutionManager.cpp:60:     loaded. Executing grid 1, 1
-(0.003866) LLVMDynamicExecutionManager.cpp:61:     block dim: 32, 1, 1
-(0.003875) LLVMDynamicExecutionManager.cpp:62:     entry id: 65536
-(0.003883) LLVMDynamicExecutionManager.cpp:63:     local memory size: 112 bytes
-(0.003891) LLVMDynamicExecutionManager.cpp:64:     shared memory size: 0 bytes 
-(0.003899) LLVMDynamicExecutionManager.cpp:70:   Executing CTA 0, 0
-(0.003912) LLVMDynamicExecutive.cpp:62:   CTA::initialize() - localMemorySize: 112, total threads: 32, shared memory size: 0
-(0.003931) LLVMDynamicExecutionManager.cpp:84:   LLVMDynamicExecutionManager::getOrInsertTranslation( id: 65536, warpsize: 2)
-(0.003939) LLVMDynamicExecutionManager.cpp:98:   Locking dynamic execution manager
-
-INFO     Test /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestConvergence
-INFO     Test completed in 0.0445971488953 seconds
-INFO      It produced the following output:
-(0.001759) LLVMDynamicExecutionManager.cpp:47:   Launching LLVM kernel 'convergence'.
-(0.001779) LLVMDynamicTranslationCache.cpp:150:  LLVMDynamicTranslationCache::loadModule() - TestConvergence.cu
-(0.002060) LLVMDynamicExecutionManager.cpp:60:     loaded. Executing grid 1, 1
-(0.002067) LLVMDynamicExecutionManager.cpp:61:     block dim: 4, 1, 1
-(0.002072) LLVMDynamicExecutionManager.cpp:62:     entry id: 0
-(0.002077) LLVMDynamicExecutionManager.cpp:63:     local memory size: 72 bytes
-(0.002081) LLVMDynamicExecutionManager.cpp:64:     shared memory size: 0 bytes 
-(0.002086) LLVMDynamicExecutionManager.cpp:70:   Executing CTA 0, 0
-(0.002095) LLVMDynamicExecutive.cpp:62:   CTA::initialize() - localMemorySize: 72, total threads: 4, shared memory size: 0
-(0.002103) LLVMDynamicExecutionManager.cpp:84:   LLVMDynamicExecutionManager::getOrInsertTranslation( id: 0, warpsize: 2)
-(0.002108) LLVMDynamicExecutionManager.cpp:98:   Locking dynamic execution manager
-(0.002926) LLVMDynamicTranslationCache.cpp:1057: translated PTX to LLVM
-(0.005092) LLVMDynamicTranslationCache.cpp:1239: performed transformations
-(0.006933) LLVMDynamicTranslationCache.cpp:131:  inserting translation 0 with 72 bytes of local memory
-(0.006947) LLVMDynamicExecutionManager.cpp:103:  Unlocking dynamic execution manager
-Pass/Fail : Pass
-
-INFO     Test /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaSequence
-INFO     Test completed in 0.057765007019 seconds
-INFO      It produced the following output:
-Loaded libcuda.so explicitly; unloading now.
-A_host = 0x2854120
-A_gpu = 0x2853200
-(0.009619) LLVMDynamicExecutionManager.cpp:47:   Launching LLVM kernel 'sequence'.
-(0.009634) LLVMDynamicTranslationCache.cpp:150:  LLVMDynamicTranslationCache::loadModule() - sequence.cu
-(0.012528) LLVMDynamicExecutionManager.cpp:60:     loaded. Executing grid 1, 1
-(0.012547) LLVMDynamicExecutionManager.cpp:61:     block dim: 4, 1, 1
-(0.012556) LLVMDynamicExecutionManager.cpp:62:     entry id: 262144
-(0.012564) LLVMDynamicExecutionManager.cpp:63:     local memory size: 96 bytes
-(0.012573) LLVMDynamicExecutionManager.cpp:64:     shared memory size: 0 bytes 
-(0.012582) LLVMDynamicExecutionManager.cpp:70:   Executing CTA 0, 0
-(0.012595) LLVMDynamicExecutive.cpp:62:   CTA::initialize() - localMemorySize: 96, total threads: 4, shared memory size: 0
-(0.012613) LLVMDynamicExecutionManager.cpp:84:   LLVMDynamicExecutionManager::getOrInsertTranslation( id: 262144, warpsize: 2)
-(0.012622) LLVMDynamicExecutionManager.cpp:98:   Locking dynamic execution manager
-(0.014515) LLVMDynamicTranslationCache.cpp:1057: translated PTX to LLVM
-(0.018631) LLVMDynamicTranslationCache.cpp:1239: performed transformations
-(0.022448) LLVMDynamicTranslationCache.cpp:131:  inserting translation 262144 with 96 bytes of local memory
-(0.022463) LLVMDynamicExecutionManager.cpp:103:  Unlocking dynamic execution manager
-cudaMemcpy(0x2854120, 0x2853200) - APP
-(0.022498) LLVMDynamicExecutionManager.cpp:47:   Launching LLVM kernel 'testShr'.
-(0.022507) LLVMDynamicExecutionManager.cpp:60:     loaded. Executing grid 1, 1
-(0.022516) LLVMDynamicExecutionManager.cpp:61:     block dim: 4, 1, 1
-(0.022523) LLVMDynamicExecutionManager.cpp:62:     entry id: 131072
-(0.022530) LLVMDynamicExecutionManager.cpp:63:     local memory size: 184 bytes
-(0.022537) LLVMDynamicExecutionManager.cpp:64:     shared memory size: 1024 bytes 
-(0.022545) LLVMDynamicExecutionManager.cpp:70:   Executing CTA 0, 0
-(0.022553) LLVMDynamicExecutive.cpp:62:   CTA::initialize() - localMemorySize: 184, total threads: 4, shared memory size: 1024
-(0.022564) LLVMDynamicExecutionManager.cpp:84:   LLVMDynamicExecutionManager::getOrInsertTranslation( id: 131072, warpsize: 2)
-(0.022572) LLVMDynamicExecutionManager.cpp:98:   Locking dynamic execution manager
-(0.026163) LLVMDynamicTranslationCache.cpp:1057: translated PTX to LLVM
-==Ocelot== Ocelot Dynamic Multicore CPU Backend (LLVM-JIT) failed to run kernel "testShr" with exception: 
-==Ocelot== LLVM Verifier failed for kernel: testShr : "PHINode should have one entry for each predecessor of its parent basic block!
-==Ocelot==   %r59.t0 = phi i32 [ %ri59.t0, %"$BB_5_0002_ws_2" ]
-==Ocelot== Broken module found, compilation terminated.
-==Ocelot== Broken module found, compilation terminated.
-==Ocelot== "
-terminate called after throwing an instance of 'hydrazine::Exception'
-  what():  LLVM Verifier failed for kernel: testShr : "PHINode should have one entry for each predecessor of its parent basic block!
-  %r59.t0 = phi i32 [ %ri59.t0, %"$BB_5_0002_ws_2" ]
-Broken module found, compilation terminated.
-Broken module found, compilation terminated.
-"
-
-INFO     Test /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestPTXAssembly
-INFO     Test completed in 0.0389499664307 seconds
-INFO      It produced the following output:
-TestPTXAssembly: ocelot/analysis/implementation/LLVMUniformVectorization.cpp:1450: void analysis::LLVMUniformVectorization::Translation::updateSubkernelEntries(): Assertion `successor' failed.
-(0.004457) LLVMDynamicExecutionManager.cpp:47:   Launching LLVM kernel 'test'.
-(0.004480) LLVMDynamicTranslationCache.cpp:150:  LLVMDynamicTranslationCache::loadModule() - TestVectorElements-u32
-(0.004846) LLVMDynamicExecutionManager.cpp:60:     loaded. Executing grid 1, 1
-(0.004856) LLVMDynamicExecutionManager.cpp:61:     block dim: 1, 1, 1
-(0.004864) LLVMDynamicExecutionManager.cpp:62:     entry id: 0
-(0.004872) LLVMDynamicExecutionManager.cpp:63:     local memory size: 80 bytes
-(0.004880) LLVMDynamicExecutionManager.cpp:64:     shared memory size: 0 bytes 
-(0.004888) LLVMDynamicExecutionManager.cpp:70:   Executing CTA 0, 0
-(0.004901) LLVMDynamicExecutive.cpp:62:   CTA::initialize() - localMemorySize: 80, total threads: 1, shared memory size: 0
-(0.004915) LLVMDynamicExecutionManager.cpp:84:   LLVMDynamicExecutionManager::getOrInsertTranslation( id: 0, warpsize: 1)
-(0.004923) LLVMDynamicExecutionManager.cpp:98:   Locking dynamic execution manager
-(0.006286) LLVMDynamicTranslationCache.cpp:1057: translated PTX to LLVM
-Stack dump:
-0.	Running pass 'Ocelot LLVM Uniform Vectorization' on function '@_Z_ocelotTranslated_test_opt3_ws1'
-
-INFO     Test /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestLLVMKernels
-INFO     Test completed in 0.0462250709534 seconds
-INFO      It produced the following output:
-TestLLVMKernels: ocelot/analysis/implementation/LLVMUniformVectorization.cpp:903: void analysis::LLVMUniformVectorization::Translation::handleDivergentBranch(analysis::LLVMUniformVectorization::DivergentBranch&): Assertion `divergent.handler && "Failed in finding existing divergence handler"' failed.
-Stack dump:
-0.	Running pass 'Function Pass Manager' on module '_Z17k_sequenceLoopingPfi'.
-1.	Running pass 'Ocelot LLVM Uniform Vectorization' on function '@_Z_ocelotTranslated__Z17k_sequenceLoopingPfi'
-
 INFO     Test /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestLLVMInstructions
-INFO     Test completed in 0.0303421020508 seconds
+INFO     Test completed in 0.0255641937256 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -490,8 +86,8 @@ Description: A test for the assembly code generation and automatic
              check, compare to references from the LLVM manual.
 
 
-Test Seed : 1305751871
-Test time : 0.000950575
+Test Seed : 1305836544
+Test time : 0.000916719
 
 Status :  Checked instruction "<result> = add i32 4, %var"
 Add Instruction Passed
@@ -622,47 +218,244 @@ Zext Instruction Passed
 
 
 
-INFO     Test /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestDeviceSwitching
-INFO     Test completed in 0.0304088592529 seconds
+INFO     Running test program /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestFunctionCall 
+INFO     Test /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestInstructions
+INFO     Test completed in 0.0267901420593 seconds
 INFO      It produced the following output:
-TestDeviceSwitching: ocelot/analysis/implementation/LLVMUniformVectorization.cpp:1450: void analysis::LLVMUniformVectorization::Translation::updateSubkernelEntries(): Assertion `successor' failed.
-(0.001578) LLVMDynamicExecutionManager.cpp:47:   Launching LLVM kernel 'increment'.
-(0.001603) LLVMDynamicTranslationCache.cpp:150:  LLVMDynamicTranslationCache::loadModule() - simpleKernels
-(0.001886) LLVMDynamicExecutionManager.cpp:60:     loaded. Executing grid 1, 1
-(0.001904) LLVMDynamicExecutionManager.cpp:61:     block dim: 1, 1, 1
-(0.001913) LLVMDynamicExecutionManager.cpp:62:     entry id: 0
-(0.001922) LLVMDynamicExecutionManager.cpp:63:     local memory size: 24 bytes
-(0.001930) LLVMDynamicExecutionManager.cpp:64:     shared memory size: 0 bytes 
-(0.001939) LLVMDynamicExecutionManager.cpp:70:   Executing CTA 0, 0
-(0.001952) LLVMDynamicExecutive.cpp:62:   CTA::initialize() - localMemorySize: 24, total threads: 1, shared memory size: 0
-(0.001965) LLVMDynamicExecutionManager.cpp:84:   LLVMDynamicExecutionManager::getOrInsertTranslation( id: 0, warpsize: 1)
-(0.001974) LLVMDynamicExecutionManager.cpp:98:   Locking dynamic execution manager
-(0.003064) LLVMDynamicTranslationCache.cpp:1057: translated PTX to LLVM
+Pass/Fail : Pass
+
+
+Name : TestInstructions
+
+Description: 
+
+
+Test Seed : 1305836544
+Test time : 0.000589609
+
+Status : Test output:
+Accessors test passed.
+pass: load and store instructions
+Abs test passed.
+pass: arithmetic instructions
+pass: exotic arithmetic instructions
+pass: floating-point instructions
+pass: logical instructions
+pass: comparison instructions
+pass: predicated Add and Ld isntructions
+pass: control flow instructions
+
+
+
+INFO     Running test program /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaSequence 
+INFO     Test /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestKernels
+INFO     Test completed in 0.033374786377 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+
+Name : TestKernels
+
+Description: 
+
+
+Test Seed : 1305836544
+Test time : 0.00924015
+
+Status : Test output:
+looping kernel succeeded
+matrix vector kernel succeeded
+
+
+
+INFO     Running test program /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCalVectorScale 
+INFO     Test /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaTexture2D
+INFO     Test completed in 0.0414390563965 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+INFO     Running test program /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestEmulator 
+INFO     Test /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestIndirectFunctionCall
+INFO     Test completed in 0.0374879837036 seconds
+INFO      It produced the following output:
+TestIndirectFunctionCall: ocelot/executive/implementation/LLVMDynamicTranslationCache.cpp:1023: void executive::setupCallTargets(ir::PTXKernel&, const executive::LLVMDynamicTranslationCache&): Assertion `0 && "arbitrary function calls not yet supported"' failed.
+
+INFO     Running test program /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestLLVMKernels 
+INFO     Test /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestParser
+INFO     Test completed in 0.0240120887756 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+
+Name : TestParser
+
+Description: A test for the PTXParser class. Test Points: 1) Load a PTX file 
+             and run it through the parser generating a module. Write the 
+             module to an intermediate stream. Parse the stream again 
+             generating a new module, compare both to make sure that they match.
+
+
+Test Seed : 1305836544
+Test time : 1.21593e-05
+
+Status : 
+
+
+INFO     Test /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestDataflowGraph
+INFO     Test completed in 0.0237329006195 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+
+Name : TestDataflowGraph
+
+Description: A test for the DataflowGraph class. Test Points: 1) 
+             Generic: load PTX files, convert them into dataflow graphs, verify that 
+             all live ranges spanning blocks are consistent. 2) SSA: convert to 
+             ssa form, verify that no register is declared more than once. 3) 
+             reverse SSA: convert to ssa then out of ssa, verify that all live 
+             ranges spanning blocks are consistent.
+
+
+Test Seed : 1305836544
+Test time : 1.85966e-05
+
+Status : Testing Generic Dataflow
+ Test Passed
+Testing SSA Dataflow
+ Test Passed
+Testing SSA then back Dataflow
+ Test Passed
+
+
+
+INFO     Running test program /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaTextureArray 
+INFO     Running test program /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestDeviceSwitching 
+INFO     Test /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaGlobals
+INFO     Test completed in 0.0479490756989 seconds
+INFO      It produced the following output:
+cudaSetDevice() - 0 - Ocelot Dynamic Multicore CPU Backend (LLVM-JIT) 
+Pass/Fail : Pass
+
+INFO     Running test program /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestConvergence 
+INFO     Test /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestFunctionCall
+INFO     Test completed in 0.0281181335449 seconds
+INFO      It produced the following output:
+TestFunctionCall: ocelot/executive/implementation/LLVMDynamicTranslationCache.cpp:1023: void executive::setupCallTargets(ir::PTXKernel&, const executive::LLVMDynamicTranslationCache&): Assertion `0 && "arbitrary function calls not yet supported"' failed.
+
+INFO     Running test program /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestPTXAssembly 
+INFO     Test /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCalVectorScale
+INFO     Test completed in 0.0279211997986 seconds
+INFO      It produced the following output:
+No CAL devices found
+Pass/Fail : Pass
+
+INFO     Running test program /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaMalloc 
+INFO     Test /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestDeviceSwitching
+INFO     Test completed in 0.0299940109253 seconds
+INFO      It produced the following output:
+TestDeviceSwitching: ocelot/analysis/implementation/LLVMUniformVectorization.cpp:1477: void analysis::LLVMUniformVectorization::Translation::updateSubkernelEntries(): Assertion `successor' failed.
 Stack dump:
 0.	Running pass 'Ocelot LLVM Uniform Vectorization' on function '@_Z_ocelotTranslated_increment_opt3_ws1'
 
+INFO     Test /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestEmulator
+INFO     Test completed in 0.0404229164124 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+
+Name : TestEmulator
+
+Description: 
+
+
+Test Seed : 1305836544
+Test time : 0.0029912
+
+Status : Test output:
+10 registers
+Register test passed
+Load test passed
+Store test passed
+no errors
+Full kernel test passed
+
+
+
+INFO     Test /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestPTXAssembly
+INFO     Test completed in 0.0290241241455 seconds
+INFO      It produced the following output:
+TestPTXAssembly: ocelot/analysis/implementation/LLVMUniformVectorization.cpp:1477: void analysis::LLVMUniformVectorization::Translation::updateSubkernelEntries(): Assertion `successor' failed.
+Stack dump:
+0.	Running pass 'Ocelot LLVM Uniform Vectorization' on function '@_Z_ocelotTranslated_test_opt3_ws1'
+
+INFO     Test /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestConvergence
+INFO     Test completed in 0.037143945694 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+INFO     Test /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaSequence
+INFO     Test completed in 0.0677230358124 seconds
+INFO      It produced the following output:
+Loaded libcuda.so explicitly; unloading now.
+A_host = 0x26d6120
+A_gpu = 0x26d5200
+cudaMemcpy(0x26d6120, 0x26d5200) - APP
+Pass/Fail : Pass
+
+INFO     Test /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestLLVMKernels
+INFO     Test completed in 0.0514039993286 seconds
+INFO      It produced the following output:
+TestLLVMKernels: ocelot/analysis/implementation/LLVMUniformVectorization.cpp:930: void analysis::LLVMUniformVectorization::Translation::handleDivergentBranch(analysis::LLVMUniformVectorization::DivergentBranch&): Assertion `divergent.handler && "Failed in finding existing divergence handler"' failed.
+Stack dump:
+0.	Running pass 'Function Pass Manager' on module '_Z17k_sequenceLoopingPfi'.
+1.	Running pass 'Ocelot LLVM Uniform Vectorization' on function '@_Z_ocelotTranslated__Z17k_sequenceLoopingPfi'
+
+INFO     Test /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaTextureArray
+INFO     Test completed in 0.0468139648438 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+INFO     Test /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaMalloc
+INFO     Test completed in 0.0476408004761 seconds
+INFO      It produced the following output:
+test_malloc(256, 128)
+PASSED
+test_mallocArray(256, 128)
+checking results from last cudaMemcpyFromArray
+PASSED
+[1] mallocing pitch
+[2] memcpying2d
+[3] memcpying
+[4] checking for errors
+[5] mallocing
+[6] memcpying
+[7] memcpying
+[8] final free
+Pass/Fail : Pass
+
 INFO     
 Passing tests:
- (0.026s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestPTXToLLVMTranslator : Passed
+ (0.024s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestPTXToLLVMTranslator : Passed
+ (0.048s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaGlobals : Passed
+ (0.026s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestLLVMInstructions : Passed
+ (0.024s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestDataflowGraph : Passed
+ (0.027s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestInstructions : Passed
+ (0.041s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaTexture2D : Passed
+ (0.047s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaTextureArray : Passed
+ (0.025s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestLexer : Passed
+ (0.037s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestConvergence : Passed
+ (0.048s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaMalloc : Passed
+ (0.068s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaSequence : Passed
+ (0.033s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestKernels : Passed
+ (0.024s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestParser : Passed
+ (0.040s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestEmulator : Passed
  (0.028s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCalVectorScale : Passed
- (0.030s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestLLVMInstructions : Passed
- (0.037s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestInstructions : Passed
- (0.023s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestDataflowGraph : Passed
- (0.027s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestLexer : Passed
- (0.045s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestConvergence : Passed
- (0.056s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaMalloc : Passed
- (0.038s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestKernels : Passed
- (0.025s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestParser : Passed
- (0.024s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestEmulator : Passed
 
 Failing tests:
- (0.058s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaSequence : Did not complete.
- (0.030s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaGlobals : Did not complete.
- (0.033s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaTexture2D : Did not complete.
+ (0.037s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestIndirectFunctionCall : Did not complete.
+ (0.029s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestPTXAssembly : Did not complete.
+ (0.028s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestFunctionCall : Did not complete.
+ (0.051s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestLLVMKernels : Did not complete.
  (0.030s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestDeviceSwitching : Did not complete.
- (0.034s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestIndirectFunctionCall : Did not complete.
- (0.039s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestPTXAssembly : Did not complete.
- (0.046s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestLLVMKernels : Did not complete.
- (0.027s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestFunctionCall : Did not complete.
- (0.032s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaTextureArray : Did not complete.
 

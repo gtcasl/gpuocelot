@@ -38,6 +38,8 @@
 #include <llvm/Module.h>
 #include <llvm/Support/SourceMgr.h>
 #include <llvm/Support/raw_ostream.h>
+#include <llvm/Instructions.h>
+#include <llvm/Support/CFG.h>
 #endif
 
 // Preprocessor Macros
@@ -47,23 +49,26 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define REPORT_PTX_MASTER 1								// master toggle for reporting PTX kernels
-#define REPORT_SOURCE_PTX_KERNELS 1				// PTX prior to transformations
-#define REPORT_PARITIONED_PTX_KERNELS 1		// final output PTX ready to be translated
+#define REPORT_PTX_MASTER 0								// master toggle for reporting PTX kernels
+#define REPORT_SOURCE_PTX_KERNELS 0				// PTX prior to transformations
+#define REPORT_PARITIONED_PTX_KERNELS 0		// final output PTX ready to be translated
 #define REPORT_PTX_SUBKERNELS 0
 
 #define REPORT_LLVM_MASTER 1							// master toggle for reporting LLVM kernels
-#define REPORT_SOURCE_LLVM_ASSEMBLY 1			// assembly output of translator
-#define REPORT_ALL_LLVM_ASSEMBLY 1				// turns on LLOVM assembly at each state
-#define REPORT_OPTIMIZED_LLVM_ASSEMBLY 1	// final output of LLVM translation and optimization
+#define REPORT_SOURCE_LLVM_ASSEMBLY 0			// assembly output of translator
+#define REPORT_ALL_LLVM_ASSEMBLY 0				// turns on LLOVM assembly at each state
+#define REPORT_OPTIMIZED_LLVM_ASSEMBLY 0	// final output of LLVM translation and optimization
+#define REPORT_LLVM_VERIFY_FAILURE 0			// emit assembly if verification fails
 #define REPORT_SCHEDULE_OPERATIONS 0			// scheduling events
 #define REPORT_TRANSLATION_OPERATIONS 0		// translation events
 
 #define REPORT_TRANSLATIONS 0
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
+
+std::ostream &Instruction_print(std::ostream &out, llvm::Instruction * inst);
 
 namespace executive {
 
@@ -123,9 +128,7 @@ LLVMDynamicTranslationCache::getOrInsertTranslationById(EntryId id, int ws) {
 			(translator::Translator::OptimizationLevel)api::OcelotConfiguration::get().executive.optimizationLevel,
 			device);
 		translatedKernel->translations[ws] = newTranslation;
-#if REPORT_OPTIMIZED_LLVM_ASSEMBLY && REPORT_BASE
-		newTranslation->llvmFunction->dump();
-#endif
+
 		report("inserting translation " << id << " with " 
 			<< static_cast<LLVMDynamicExecutive::Metadata*>(newTranslation->metadata)->localSize 
 			<< " bytes of local memory");
@@ -239,7 +242,7 @@ LLVMDynamicTranslationCache::TranslatedKernel::~TranslatedKernel() {
 		delete static_cast<LLVMDynamicExecutive::Metadata *>(metadata);
 	}
 	if (kernelModule) {
-		delete kernelModule;
+//		delete kernelModule;
 	}
 	if (sourceModule) {
 		delete sourceModule;
@@ -1109,6 +1112,54 @@ static LLVMDynamicExecutive::Metadata* generateMetadata(
 }
 
 /*!
+	\brief displays just the control flow instructions and blocks of a function
+*/
+void debugEmitLLVMKernel(std::ostream &out, llvm::Function *function) {
+	out << function->getNameStr() << " {\n";
+	for (llvm::Function::iterator bb_it = function->begin(); bb_it != function->end(); ++bb_it) {
+		
+		std::stringstream preds;
+		std::stringstream phis;
+		std::stringstream term;
+		
+		int pcount = 0;
+		for (llvm::pred_iterator PI = llvm::pred_begin(&*bb_it); PI != llvm::pred_end(&*bb_it); ++PI) {
+			preds << (*PI)->getNameStr() << ",  ";
+			++pcount;
+		}
+		
+		int elided = 0;
+		for (llvm::BasicBlock::iterator inst_it = bb_it->begin(); inst_it != bb_it->end(); ++inst_it) {
+			if (llvm::PHINode::classof(&*inst_it)) {
+				Instruction_print(phis, &*inst_it);
+				phis << "\n";
+			}
+			else if (llvm::TerminatorInst::classof(&*inst_it)) {
+				Instruction_print(term, &*inst_it);
+				term << "\n";
+			}
+			else {
+				++elided;
+			}
+		}
+		out << "\"" << bb_it->getNameStr() << "\": ";
+		if (pcount) {
+			out << "      // predecessors: { " << preds.str() << " }\n";
+		}
+		else {
+			out << "      //  NO PREDECESSORS\n";
+		}
+		
+		out << phis.str();
+		if (elided) {
+			out << "  //\n  // " << elided << " instructions ommitted\n  //\n";
+		}
+		out << term.str() << "\n";
+	}
+	out << "}\n";	
+}
+
+/*!
 	\brief given a translated function, apply a selection of LLVM transformation
 		passes before JIT compilation
 	
@@ -1214,7 +1265,7 @@ static void cloneAndOptimizeTranslation(
 
 
 #if REPORT_BASE && REPORT_LLVM_MASTER && REPORT_OPTIMIZED_LLVM_ASSEMBLY
-	translation->llvmFunction->getParent()->dump();
+	debugEmitLLVMKernel(std::cerr, translation->llvmFunction);
 #endif
 
 	// we can't verify errors until this point
@@ -1223,7 +1274,7 @@ static void cloneAndOptimizeTranslation(
 	
 	if (llvm::verifyModule(*translatedKernel.kernelModule, llvm::ReturnStatusAction, &verifyError)) {
 	
-#if REPORT_OPTIMIZED_LLVM_ASSEMBLY && REPORT_BASE
+#if REPORT_OPTIMIZED_LLVM_ASSEMBLY && REPORT_BASE && REPORT_LLVM_VERIFY_FAILURE
 		std::cerr << "LLVMDynamicTranslationCache.cpp:" << __LINE__ << ":" << std::endl;
 		translatedKernel.kernelModule->dump();
 #endif
@@ -1274,6 +1325,45 @@ static void linkLLVMModule(
 	}
 }
 
+/*!
+
+*/
+static llvm::Module *cloneSourceModule(llvm::Module *sourceModule) {
+	report("cloning source module");
+	
+	// return llvm::CloneModule(sourceModule);
+	llvm::Module *cloned = new llvm::Module(sourceModule->getModuleIdentifier(), 
+		sourceModule->getContext());
+	
+	// clone globals
+	for (llvm::Module::global_iterator global = sourceModule->global_begin(); 
+		global != sourceModule->global_end(); ++global) {
+		llvm::GlobalVariable *duplicate = new llvm::GlobalVariable(
+			*cloned,
+			global->getType()->getElementType(), 
+			global->isConstant(), 
+			global->getLinkage(), 
+			(global->hasInitializer() ? global->getInitializer() : 0), 
+			global->getName(), 
+			0,
+			global->isThreadLocal(), 
+			global->getType()->getAddressSpace());
+		global->replaceAllUsesWith(duplicate);
+	}
+	
+	// clone function prototypes
+	for (llvm::Module::iterator func = sourceModule->begin(); func != sourceModule->end(); ++func) {
+		if (func->isDeclaration()) {
+			llvm::Function *duplicate = llvm::Function::Create(func->getFunctionType(), func->getLinkage(), 
+				func->getName(), cloned);
+			assert(duplicate);
+			func->replaceAllUsesWith(duplicate);
+		}
+	}
+	
+	return cloned;
+}
+
 #endif
 
 /*!
@@ -1317,10 +1407,8 @@ void LLVMDynamicTranslationCache::translateFromPTX(
 			translatedKernel.sourceModule, 
 			*translatedKernel.kernel, 
 			optimization);
-		
-		// clone the module but delete the functions
-		translatedKernel.kernelModule = llvm::CloneModule(translatedKernel.sourceModule);
-		translatedKernel.kernelModule->getFunctionList().clear();
+
+		translatedKernel.kernelModule = cloneSourceModule(translatedKernel.sourceModule);
 
 		// Converting out of ssa makes the assembly easier to read
 		if(optimization == translator::Translator::ReportOptimization 

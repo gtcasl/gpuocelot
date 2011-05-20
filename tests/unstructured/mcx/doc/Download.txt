@@ -1,0 +1,111 @@
+   #[1]Monte Carlo eXtreme: GPU-based Monte Carlo Simulations
+
+How to get MCX
+
+          1. [2]Download the Latest Release
+
+          2. [3]Download Development Snapshot from SVN (not fully tested)
+
+                2.1. [4]Anonymous SVN Access
+
+                2.2. [5]Developer SVN Access
+
+          3. [6]References
+
+1. Download the Latest Release
+
+Beta release: MCX 0.4.9, released on Aug. 01, 2010
+
+   Please read the [7]Release notes here. Before downloading the software,
+   please read the [8]System Requirements for MCX and make sure you have
+   both the hardware and software supports.
+
+   Please download MCX v0.4.9 (aka Black-hole Beta) release at our
+   [9]registration/download page. We are greatly appreciated if you can
+   tell us a little bit about you and your related research by
+   [10]registering your copy of mcx. Binary executable (for 32bit and
+   64bit machines) and source code packages are both provided.
+  [os-icons3.png]
+
+Stable release: MCX 0.2 (final), released on Dec 19, 2009
+
+   Please download MCX v0.2 (Aurora) stable release at our
+   [11]registration/download page.
+
+2. Download Development Snapshot from SVN (not fully tested)
+
+   If you want to get the latest development branch of MCX, you can
+   download it from our svn. You have to be aware that an SVN snapshot is
+   not a stable release. It may have partially implemented features and,
+   thus, cause crash or erroneous results.
+
+   First, make sure you have installed svn client on your system. If you
+   are using a Debian-based GNU/Linux system (such as Ubuntu, Knoppix
+   etc), you can install svn by
+ sudo apt-get install subversion
+
+   if you are using a Redhat-based GNU/Linux system (such as Fedora,
+   CentOS etc), you can do this by
+ su -c 'yum install subversion'
+
+   If your operating system is Windows, we recommend you installing
+   [12]TortoiseSVN.
+
+2.1. Anonymous SVN Access
+
+   The latest code snapshot can be checked out from project's SVN
+   repository. This can be done anonymously by the following command.
+
+ svn checkout --username anonymous_user https://orbit.nmr.mgh.harvard.edu/svn/mcextreme/mcextreme_cuda/trunk/ mcx
+
+   The password is the same as the username. After you checking out the
+   code, you can [13]compile and run the software.
+
+2.2. Developer SVN Access
+
+   If you are one of the developers who have SVN write permission, you can
+   checkout the latest code with the following command:
+
+ svn checkout --username youraccount https://orbit.nmr.mgh.harvard.edu/svn/mcextreme/mcextreme_cuda/trunk/ mcx
+
+   where youraccount is your registered account in [14]orbit (of course,
+   you have to [15]register first and ask the [16]project maintainer to
+   grant you svn write permission).
+
+   You can simply make changes or debug your changes in your local copy.
+   If your local changes have passed review by other co-developers, you
+   can then commit your changes back to the svn repository by
+ cd /path/to/mcx/local/copy
+ svn commit -m "a short summary of your changes"
+
+3. References
+
+   The author of this software would like you to acknowledge the use of
+   this software in your related publications by citing the following
+   paper:
+
+     * Qianqian Fang and David A. Boas, "Monte Carlo Simulation of Photon
+       Migration in 3D Turbid Media Accelerated by Graphics Processing
+       Units," Opt. Express, vol. 17, issue 22, pp. 20178-20190 (2009)
+
+   You can also find more algorithm and implementation details about MCX
+   in this paper.
+
+References
+
+   1. http://mcx.sourceforge.net/cgi-bin/index.cgi?action=rss
+   2. http://mcx.sourceforge.net/cgi-bin/index.cgi?Download#Download_the_Latest_Release
+   3. http://mcx.sourceforge.net/cgi-bin/index.cgi?Download#Download_Development_Snapshot_from_SVN_not_fully_tested
+   4. http://mcx.sourceforge.net/cgi-bin/index.cgi?Download#Anonymous_SVN_Access
+   5. http://mcx.sourceforge.net/cgi-bin/index.cgi?Download#Developer_SVN_Access
+   6. http://mcx.sourceforge.net/cgi-bin/index.cgi?Download#References
+   7. http://mcx.sourceforge.net/cgi-bin/index.cgi?Doc/ReleaseNotes/0.4.9
+   8. http://mcx.sourceforge.net/cgi-bin/index.cgi?Doc/Installation
+   9. http://mcx.sourceforge.net/cgi-bin/index.cgi?register/mcx
+  10. http://mcx.sourceforge.net/cgi-bin/index.cgi?action=edit&editmode=prepend&id=register/mcx
+  11. http://mcx.sourceforge.net/cgi-bin/index.cgi?register/mcx
+  12. http://tortoisesvn.net/downloads
+  13. http://mcx.sourceforge.net/cgi-bin/index.cgi?Doc/Installation
+  14. https://orbit.nmr.mgh.harvard.edu/
+  15. https://orbit.nmr.mgh.harvard.edu/account/register.php
+  16. https://orbit.nmr.mgh.harvard.edu/users/fangq/

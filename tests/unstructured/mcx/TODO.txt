@@ -1,0 +1,28 @@
+= MCX TODO list =
+
+== Short term projects ==
+
+*. support NIFTI input & output [2009/04/30, FangQ]
+*. support object description file to produce volume at run-time [2010/07/29, FangQ]
+*. extend the reflection model to support mis-match at internal boundaries [2010/07/29, FangQ]
+
+== Long term projects ==
+
+*. support more complicated source forms [2009/09/30, FangQ]
+*. fluorescent material support [2009/09/30, FangQ]
+*. study the round-off errors for the two RNGs [2009/04/30, FangQ]
+
+== Completed ==
+
+[done] *. results does not repeat with identical random number seed, need to check [2009/04/07, FangQ]
+[done] *. normalizing the solution with -U option. [2009/04/07, FangQ]
+[done] *. hardware/driver check and inform users for actions [2009/04/30, FangQ]
+[done] *. code cleaning [2009/09/24, FangQ]
+[done] *. compile on windows [2009/09/30, FangQ]
+[done] *. crate a GUI for MCX [2009/09/30, FangQ]
+[done] *. save photon history info at detector sites [2009/04/30, FangQ] (experimental)
+[done] *. set up mailing lists [2009/09/30, FangQ]
+[done] *. OpenCL variant of MCX [2009/10/21, FangQ] [2010/02/10, FangQ]
+[dropped] *. Brook+ variant of MCX [2009/10/21, FangQ]
+[dropped] *. support ini based input file format (or perl script format) [2009/04/30, FangQ]
+[dropped] *. multiple-GPU support [2009/09/30, FangQ]

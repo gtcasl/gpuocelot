@@ -1,20 +1,24 @@
 {
 	ocelot: "ocelot",
 	trace: { 
-		database: "traces/database.trace",
+		database: "traces/database1.trace",
 		memoryChecker: {
 			enabled: true,
 			checkInitialization: false
 		},
 		raceDetector: {
-			enabled: true,
+			enabled: false,
 			ignoreIrrelevantWrites: true
 		},
 		debugger: {
 			enabled: false,
 			kernelFilter: "_Z13scalarProdGPUPfS_S_ii",
 			alwaysAttach: true
-		}
+		},
+		cacheSimulator: {
+			enabled: false,
+		},
+		branch: true
 	},
 	cuda: {
 		implementation: CudaRuntime,
@@ -24,13 +28,13 @@
 		devices: [ emulated ],
 		port: 2011,
 		host: "127.0.0.1",
-		optimizationLevel: none,
-		workerThreadLimit: 2,
+		optimizationLevel: report,
+		workerThreadLimit: 1,
 		reconvergenceMechanism: "tf-stack",
 		warpSize: 4
 	},
 	optimizations: {
-		subkernelSize: 1
+		subkernelSize: 1000000000
 	},
 	checkpoint: {
 		enabled: false,

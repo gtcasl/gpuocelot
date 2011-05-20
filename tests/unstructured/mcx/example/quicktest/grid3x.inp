@@ -1,0 +1,16 @@
+1000000              # total photon (not used)
+29012392             # RNG seed, negative to generate
+90.0 90.0 1.0        # source position (in grid unit)
+0 0 1                # initial directional vector
+0.e+00 5.e-09 5.e-09 # time-gates(s): start, end, step
+semi180x180x180.bin  # volume ('uchar' format)
+1 180 1 180          # x: voxel size, dim, start/end indices
+1 180 1 180          # y: voxel size, dim, start/end indices 
+1 180 1 180          # z: voxel size, dim, start/end indices
+1                    # num of media
+1 0.01 0.005 1.0     # scat(1/mm), g, mua (1/mm), n
+4	2            # detector number and radius (grid)
+90.0	60.0	1.0  # detector 1 position (grid)
+90.0	120.0	1.0  # ...
+60.0	90.0	1.0
+120.0	90.0	1.0

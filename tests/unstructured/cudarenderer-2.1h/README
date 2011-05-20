@@ -1,0 +1,80 @@
+Interactive raytracer, supporting .3ds, .ply (ascii) and .tri (binary) formats.
+
+COMPILE/INSTALL/RUN
+===================
+
+Under Windows
+-------------
+Make sure you have the CUDA toolkit installed (I used version 3.2).
+Then:
+
+1. Open the cudaRenderer_vc90.sln with your Visual Studio
+2. Compile in Release mode
+3. Right-click on "cudaRenderer" in the Solution explorer, and select "Properties"
+4. Click on "Configuration Properties/Debugging"
+5. In the "Command Arguments", enter "..\3D-objects\chessboard.tri" and click OK
+6. Hit Ctrl-F5 to run.
+
+You should see a rotating chessboard... 
+
+Read below for keyboard control intructions, or just press 'H' for help.
+
+Note: I used the free Visual C++ 2008 Express Edition, but this should work 
+with the commercial one, too.
+
+Under Linux
+-----------
+(Should also work on OS/X with minor changes)
+
+The code has 3 dependencies: You must have installed...
+    - OpenGL (with GLEW and GLUT)
+    - libSDL
+    - CUDA toolkit 
+
+If you are using Debian, simply...
+
+    sudo apt-get install libglew1.5-dev freeglut3-dev mesa-common-dev
+
+...and install the CUDA toolkit from NVIDIA (I downloaded version 3.2, 
+and installed it in /opt/cuda-3.2/). After this, a simple...
+
+    ./configure --with-cuda=/path/to/your/cudaToolkit
+    make
+    ./src/cudaRenderer 3D-objects/chessboard.tri
+
+...will work.
+
+Keyboard controls
+-----------------
+
+Use the following keys to navigate around the object:
+
+- Hit 'H' for help.
+- Hit 'R' to stop/start auto-spin (camera rotates around the object).
+- Fly using the cursorKeys/A/Z. 
+- Rotate the light with W/Q.
+- S/F are 'strafe' left/right
+- E/D are 'strafe' up/down
+   (strafe keys don't work in auto-spin mode).
+- F4 toggles points mode
+- F5 toggles specular lighting
+- F6 toggles phong normal interpolation
+- F7 toggles reflections
+- F8 toggles shadows
+- F9 toggles anti-aliasing
+- ESC quits.
+
+MISC
+====
+Since it reports frame rate at the end, you can use this as a benchmark 
+for CUDA cards. Just spawn with "-b" to request benchmarking:
+(Note: keys don't work in benchmarking mode)
+
+    ./src/cudaRenderer -b 150 3D-objects/chessboard.tri
+
+This will draw 150 frames and report speed back. With my GT240, it reports:
+
+    Rendering 150 frames in 8.117 seconds. (18.4797 fps)
+
+Read my blog post about this code at: 
+http://users.softlab.ece.ntua.gr/~ttsiod/cudarenderer.html

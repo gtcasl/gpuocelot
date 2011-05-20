@@ -1,0 +1,121 @@
+   #[1]Monte Carlo eXtreme: GPU-based Monte Carlo Simulations
+
+Frequently Asked Questions about MCX
+
+          1. [2]I am getting a "kernel launch timed-out" error, what is
+          that?
+
+          2. [3]When should I use the atomic version of MCX ?
+
+          3. [4]How do I interpret MCX's output data?
+
+          4. [5]Does MCX support multiple GPUs in a single computer?
+
+          5. [6]Will you consider porting MCX to MPI to run on my cluster?
+
+1. I am getting a "kernel launch timed-out" error, what is that?
+
+   Answer: This error happens only when you are using a non-dedicated GPU.
+   A non-dedicated GPU refers to a graphics card that is used both for
+   display and GPU computation. Because you connect your display to the
+   card and the nvidia graphics driver imposes a time-limit to the
+   response time of a kernel (a function running on a GPU). This
+   time-limit is referred as the "driver watch-dog time limit". For Linux,
+   this limit is usually about 10 seconds; for Windows, this limit is
+   about 5 seconds. When a kernel is running on a GPU for longer than this
+   limit, the driver will kill this kernel for safety purposes.
+
+   If you have only one graphics card to use and you have to use it in a
+   non-dedicated way (i.e. connect to your monitor and for MCX
+   simulations), MCX allows you to slice the entire simulations into
+   chunks, with the run-time for each chunk smaller than the watch-dog
+   time limit. This is done by setting "-r" (repetition) parameters and
+   setting "-m" for each run with a smaller number of moves (total
+   moves/repetition count).
+
+   If you have a high-end dual-GPU graphics card, such as GTX295 series,
+   you can simply run MCX without worrying about this limit. Because MCX
+   will use the second GPU to perform the simulation and it is usually not
+   connected to a monitor. Alternatively, if you can install a second
+   graphics card (PCI type) to your machine and connect your display to
+   the second card, this will make your CUDA-enabled nVidia card a
+   dedicated device.
+
+2. When should I use the atomic version of MCX ?
+
+   Answer: In an MCX Monte Carlo simulation, we need to save photon
+   weights to the global memory from many parallel threads. This may cause
+   problems when multiple threads write to the same global memory address
+   at the same time, which we referred to as the race condition. To avoid
+   race conditions, CUDA provides a set of "atomic" operations, where
+   read-compute-write process in a thread can not be interrupted by other
+   threads. Unfortunately, there is a great speed penalty for using these
+   functions. As we have shown in Fig. 7 in our [7]paper, the atomic
+   version of MCX can only achieve about 75x acceleration at an optimal
+   thread number around 500~1000, compared with 300x acceleration with the
+   non-atomic versions. More importantly, the performance of atomic MCX
+   can not be scaled with better graphics hardware.
+
+   Fortunately, in our algorithm, the photon propagation for each thread
+   is maximally asynchronized, together with the exponential decay of the
+   fluence, the overall impact of the race condition is negligible (as
+   shown in Fig. 4 of [8]Fang2009). For a range of scattering
+   coefficients, the accumulation-miss due to race condition is around 1%
+   for over 1000 threads. Using the non-atomic version can give quite
+   accurate solutions as long as it is a few voxels away from the source.
+
+   In the newer versions of MCX (v0.4.9 or later), we provide a new
+   binary, Cachebox MCX, that takes advantage of the atomic operations in
+   the shared memory. This binary can ensure an accurate solution near the
+   source, and is only 20% slower than the non-atomic version (i.e. the
+   Vanilla MCX). If the accuracy near the source is important for your
+   application, please use this binary for your simulation. More details
+   can be found in [9]this document.
+
+3. How do I interpret MCX's output data?
+
+   Please read the [10]output interpretation of MMC (Mesh-based Monte
+   Carlo). The meanings of the outputs from both software are almost
+   identical. The only difference is that MCX saves the output on a
+   voxelated grid, and MMC saves on a mesh.
+
+4. Does MCX support multiple GPUs in a single computer?
+
+   Answer: No, but you can launch parallel jobs and utilize all GPUs you
+   have simultaneously. You must use the "-G" option to specify a
+   different GPU ID for each job, and seed them independently by using
+   different input files (change the second row of each input file). All
+   of these can be done automatically using [11]GNU Parallel. You can find
+   examples of running parallel jobs using this tool at [12]this page.
+   This approach also supports running MCX over a distributed system such
+   as a cluster.
+
+   In addition, the author of MCX has also developed an OpenCL code that
+   is targeted at a heterogeneous computing platform involving multiple
+   GPUs and CPUs. This code will be announced at a later time.
+
+5. Will you consider porting MCX to MPI to run on my cluster?
+
+   Answer: There are simple alternatives, and you can find my arguments on
+   this at [13]this link]. The support for distributed systems is similar
+   to the support for multiple GPUs in the same box. You are recommended
+   to use [14]GNU Parallel to manage parallel jobs. Examples can be found
+   [15]here.
+
+References
+
+   1. http://mcx.sourceforge.net/cgi-bin/index.cgi?action=rss
+   2. http://mcx.sourceforge.net/cgi-bin/index.cgi?Doc/FAQ#I_am_getting_a_kernel_launch_timed_out_error_what_is_that
+   3. http://mcx.sourceforge.net/cgi-bin/index.cgi?Doc/FAQ#When_should_I_use_the_atomic_version_of_MCX
+   4. http://mcx.sourceforge.net/cgi-bin/index.cgi?Doc/FAQ#How_do_I_interpret_MCX_s_output_data
+   5. http://mcx.sourceforge.net/cgi-bin/index.cgi?Doc/FAQ#Does_MCX_support_multiple_GPUs_in_a_single_computer
+   6. http://mcx.sourceforge.net/cgi-bin/index.cgi?Doc/FAQ#Will_you_consider_porting_MCX_to_MPI_to_run_on_my_cluster
+   7. http://mcx.sourceforge.net/cgi-bin/index.cgi?Doc/Reference
+   8. http://mcx.sourceforge.net/cgi-bin/index.cgi?Doc/Reference
+   9. http://mcx.sourceforge.net/cgi-bin/index.cgi?Doc/ReleaseNotes/0.4.9
+  10. http://mcx.sourceforge.net/cgi-bin/index.cgi?MMC/Doc/FAQ#How_do_I_interpret_MMC_s_output_data
+  11. http://www.gnu.org/software/parallel/
+  12. http://mcx.sourceforge.net/cgi-bin/index.cgi?MMC/Doc/MMCCluster
+  13. http://mcx.sourceforge.net/cgi-bin/index.cgi?MMC/Doc/FAQ#Will_you_consider_porting_MMC_to_MPI_to_run_on_my_cluster
+  14. http://www.gnu.org/software/parallel/
+  15. http://mcx.sourceforge.net/cgi-bin/index.cgi?MMC/Doc/MMCCluster

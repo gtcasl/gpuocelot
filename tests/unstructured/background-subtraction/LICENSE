@@ -1,0 +1,12 @@
+The following conditions are derived from Zivkovic's original CPU implementation:
+
+    This work may not be copied or reproduced in whole or in part for any commercial purpose. Permission to copy in whole or in part without payment of fee is granted for nonprofit educational and research purposes provided that all such whole or partial copies include the following:
+
+        * this notice,
+        * an acknowledgment of the authors and individual contributions to the work; 
+
+    Copying, reproduction, or republishing for any other purpose shall require a license. Please contact the author in such cases. All the code is provided without any guarantee. 
+
+If you use this project in academic publications, please cite:
+
+    Vu Pham, Phong Vo, Hung Vu Thanh, Bac Le Hoai, "GPU Implementation of Extended Gaussian Mixture Model for Background Subtraction", IEEE-RIVF 2010 International Conference on Computing and Telecommunication Technologies, Vietnam National University, Nov. 01-04, 2010. DOI: 10.1109/RIVF.2010.5634007. 

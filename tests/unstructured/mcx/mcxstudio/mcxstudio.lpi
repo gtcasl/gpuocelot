@@ -1,0 +1,464 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <ProjectOptions>
+    <Version Value="7"/>
+    <General>
+      <MainUnit Value="0"/>
+      <TargetFileExt Value=""/>
+      <Title Value="MCX Studio"/>
+      <Icon Value="0"/>
+      <UseXPManifest Value="True"/>
+      <ActiveEditorIndexAtStart Value="0"/>
+    </General>
+    <VersionInfo>
+      <UseVersionInfo Value="True"/>
+      <AutoIncrementBuild Value="True"/>
+      <CurrentMajorRevNr Value="5"/>
+      <CurrentBuildNr Value="484"/>
+      <ProjectVersion Value="0.0.0.1"/>
+      <FileDescription Value="GUI for Monte Carlo eXtreme"/>
+      <LegalCopyright Value="2009,2010 Qianqian Fang"/>
+    </VersionInfo>
+    <PublishOptions>
+      <Version Value="2"/>
+      <IgnoreBinaries Value="False"/>
+      <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
+      <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
+    </PublishOptions>
+    <RunParams>
+      <local>
+        <FormatVersion Value="1"/>
+        <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
+      </local>
+    </RunParams>
+    <RequiredPackages Count="2">
+      <Item1>
+        <PackageName Value="FCL"/>
+        <MinVersion Major="1" Valid="True"/>
+      </Item1>
+      <Item2>
+        <PackageName Value="LCL"/>
+      </Item2>
+    </RequiredPackages>
+    <Units Count="35">
+      <Unit0>
+        <Filename Value="mcxstudio.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="mcxstudio"/>
+        <CursorPos X="17" Y="6"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="3"/>
+        <UsageCount Value="82"/>
+        <Loaded Value="True"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="mcxgui.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="fmMCX"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="mcxgui"/>
+        <CursorPos X="28" Y="786"/>
+        <TopLine Value="784"/>
+        <EditorIndex Value="0"/>
+        <UsageCount Value="82"/>
+        <Loaded Value="True"/>
+      </Unit1>
+      <Unit2>
+        <Filename Value="mcxabout.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="fmAbout"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="mcxabout"/>
+        <CursorPos X="49" Y="8"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="2"/>
+        <UsageCount Value="81"/>
+        <Loaded Value="True"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="../../../../../usr/lib/lazarus/lcl/stringhashlist.pas"/>
+        <UnitName Value="StringHashList"/>
+        <CursorPos X="57" Y="69"/>
+        <TopLine Value="49"/>
+        <UsageCount Value="10"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="../../../../../usr/share/fpcsrc/2.2.2/rtl/inc/objpash.inc"/>
+        <CursorPos X="8" Y="142"/>
+        <TopLine Value="137"/>
+        <UsageCount Value="8"/>
+      </Unit4>
+      <Unit5>
+        <Filename Value="../../../../../usr/lib/lazarus/lcl/comctrls.pp"/>
+        <UnitName Value="ComCtrls"/>
+        <CursorPos X="14" Y="721"/>
+        <TopLine Value="707"/>
+        <UsageCount Value="10"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="../../../../../usr/share/fpcsrc/2.2.2/rtl/objpas/sysutils/sysstrh.inc"/>
+        <CursorPos X="10" Y="194"/>
+        <TopLine Value="180"/>
+        <UsageCount Value="8"/>
+      </Unit6>
+      <Unit7>
+        <Filename Value="../../../../../usr/lib/lazarus/lcl/include/customlistview.inc"/>
+        <CursorPos X="1" Y="715"/>
+        <TopLine Value="701"/>
+        <UsageCount Value="9"/>
+      </Unit7>
+      <Unit8>
+        <Filename Value="../../../../../usr/lib/lazarus/lcl/include/control.inc"/>
+        <CursorPos X="1" Y="1594"/>
+        <TopLine Value="1580"/>
+        <UsageCount Value="8"/>
+      </Unit8>
+      <Unit9>
+        <Filename Value="../../../../../usr/lib/lazarus/lcl/include/wincontrol.inc"/>
+        <CursorPos X="17" Y="5922"/>
+        <TopLine Value="5912"/>
+        <UsageCount Value="8"/>
+      </Unit9>
+      <Unit10>
+        <Filename Value="../../../../../usr/lib/lazarus/lcl/lclmessageglue.pas"/>
+        <UnitName Value="LCLMessageGlue"/>
+        <CursorPos X="1" Y="121"/>
+        <TopLine Value="107"/>
+        <UsageCount Value="8"/>
+      </Unit10>
+      <Unit11>
+        <Filename Value="../../../../../usr/lib/lazarus/lcl/interfaces/gtk/gtkproc.inc"/>
+        <CursorPos X="33" Y="8168"/>
+        <TopLine Value="8155"/>
+        <UsageCount Value="8"/>
+      </Unit11>
+      <Unit12>
+        <Filename Value="../../../../../usr/lib/lazarus/lcl/interfaces/gtk2/gtk2wscustomlistview.inc"/>
+        <CursorPos X="40" Y="160"/>
+        <TopLine Value="153"/>
+        <UsageCount Value="8"/>
+      </Unit12>
+      <Unit13>
+        <Filename Value="../../../../../usr/lib/lazarus/lcl/include/messagedialogs.inc"/>
+        <CursorPos X="1" Y="230"/>
+        <TopLine Value="216"/>
+        <UsageCount Value="8"/>
+      </Unit13>
+      <Unit14>
+        <Filename Value="../../../../../usr/lib/lazarus/lcl/include/lclintf.inc"/>
+        <CursorPos X="1" Y="390"/>
+        <TopLine Value="376"/>
+        <UsageCount Value="8"/>
+      </Unit14>
+      <Unit15>
+        <Filename Value="../../../../../usr/lib/lazarus/lcl/include/intfbaselcl.inc"/>
+        <CursorPos X="14" Y="596"/>
+        <TopLine Value="581"/>
+        <UsageCount Value="8"/>
+      </Unit15>
+      <Unit16>
+        <Filename Value="../../../../../usr/lib/lazarus/lcl/include/promptdialog.inc"/>
+        <CursorPos X="12" Y="206"/>
+        <TopLine Value="192"/>
+        <UsageCount Value="8"/>
+      </Unit16>
+      <Unit17>
+        <Filename Value="../../../../../usr/lib/lazarus/lcl/dialogs.pp"/>
+        <UnitName Value="Dialogs"/>
+        <CursorPos X="49" Y="506"/>
+        <TopLine Value="502"/>
+        <UsageCount Value="9"/>
+      </Unit17>
+      <Unit18>
+        <Filename Value="../../../../../usr/lib/lazarus/lcl/themes.pas"/>
+        <UnitName Value="Themes"/>
+        <CursorPos X="1" Y="522"/>
+        <TopLine Value="508"/>
+        <UsageCount Value="8"/>
+      </Unit18>
+      <Unit19>
+        <Filename Value="../../../../../usr/lib/lazarus/lcl/interfaces/gtk2/gtk2themes.pas"/>
+        <UnitName Value="Gtk2Themes"/>
+        <CursorPos X="24" Y="187"/>
+        <TopLine Value="183"/>
+        <UsageCount Value="8"/>
+      </Unit19>
+      <Unit20>
+        <Filename Value="../../../../../usr/lib/lazarus/lcl/include/customform.inc"/>
+        <CursorPos X="23" Y="1390"/>
+        <TopLine Value="1376"/>
+        <UsageCount Value="8"/>
+      </Unit20>
+      <Unit21>
+        <Filename Value="../../../../../usr/lib/lazarus/0.9.28/lcl/lcltype.pp"/>
+        <UnitName Value="LCLType"/>
+        <CursorPos X="20" Y="55"/>
+        <TopLine Value="34"/>
+        <UsageCount Value="8"/>
+      </Unit21>
+      <Unit22>
+        <Filename Value="../../../../../usr/lib/lazarus/0.9.28.2/lcl/include/customlistview.inc"/>
+        <CursorPos X="1" Y="715"/>
+        <TopLine Value="694"/>
+        <UsageCount Value="10"/>
+      </Unit22>
+      <Unit23>
+        <Filename Value="../../../../../usr/lib/lazarus/0.9.28.2/lcl/forms.pp"/>
+        <UnitName Value="Forms"/>
+        <CursorPos X="28" Y="520"/>
+        <TopLine Value="499"/>
+        <UsageCount Value="9"/>
+      </Unit23>
+      <Unit24>
+        <Filename Value="../../../../../usr/lib/lazarus/0.9.28.2/lcl/customtimer.pas"/>
+        <UnitName Value="CustomTimer"/>
+        <CursorPos X="82" Y="173"/>
+        <TopLine Value="161"/>
+        <UsageCount Value="8"/>
+      </Unit24>
+      <Unit25>
+        <Filename Value="../../../../../usr/lib/lazarus/0.9.28.2/lcl/interfaces/gtk2/gtk2memostrings.inc"/>
+        <CursorPos X="1" Y="102"/>
+        <TopLine Value="81"/>
+        <UsageCount Value="8"/>
+      </Unit25>
+      <Unit26>
+        <Filename Value="../../../../../usr/lib/lazarus/0.9.28.2/lcl/include/customform.inc"/>
+        <CursorPos X="45" Y="2316"/>
+        <TopLine Value="2297"/>
+        <UsageCount Value="8"/>
+      </Unit26>
+      <Unit27>
+        <Filename Value="mcxgui.lfm"/>
+        <CursorPos X="28" Y="10"/>
+        <TopLine Value="289"/>
+        <UsageCount Value="9"/>
+        <SyntaxHighlighter Value="LFM"/>
+      </Unit27>
+      <Unit28>
+        <Filename Value="../../../../../usr/share/fpcsrc/2.4.0/rtl/objpas/classes/classesh.inc"/>
+        <CursorPos X="10" Y="1787"/>
+        <TopLine Value="1766"/>
+        <UsageCount Value="10"/>
+      </Unit28>
+      <Unit29>
+        <Filename Value="../../../../../Application/lazarus/lcl/include/fileutil.inc"/>
+        <CursorPos X="21" Y="1486"/>
+        <TopLine Value="1445"/>
+        <UsageCount Value="10"/>
+      </Unit29>
+      <Unit30>
+        <Filename Value="../../../../../Application/lazarus/fpc/2.2.4/source/rtl/win32/system.pp"/>
+        <UnitName Value="System"/>
+        <CursorPos X="2" Y="40"/>
+        <TopLine Value="283"/>
+        <UsageCount Value="10"/>
+      </Unit30>
+      <Unit31>
+        <Filename Value="../../../../../Application/lazarus/lcl/forms.pp"/>
+        <UnitName Value="Forms"/>
+        <CursorPos X="71" Y="1225"/>
+        <TopLine Value="1208"/>
+        <UsageCount Value="9"/>
+      </Unit31>
+      <Unit32>
+        <Filename Value="../../../../../Application/lazarus/fpc/2.2.4/source/rtl/objpas/sysutils/finah.inc"/>
+        <CursorPos X="38" Y="36"/>
+        <TopLine Value="8"/>
+        <UsageCount Value="9"/>
+      </Unit32>
+      <Unit33>
+        <Filename Value="../../../../../../../usr/lib/lazarus/lcl/interfaces/gtk2/gtk2themes.pas"/>
+        <UnitName Value="Gtk2Themes"/>
+        <CursorPos X="1" Y="198"/>
+        <TopLine Value="182"/>
+        <UsageCount Value="9"/>
+      </Unit33>
+      <Unit34>
+        <Filename Value="../../../../../../../usr/share/fpcsrc/2.4.0/packages/fcl-base/src/inifiles.pp"/>
+        <UnitName Value="IniFiles"/>
+        <CursorPos X="43" Y="185"/>
+        <TopLine Value="155"/>
+        <EditorIndex Value="1"/>
+        <UsageCount Value="13"/>
+        <Loaded Value="True"/>
+      </Unit34>
+    </Units>
+    <JumpHistory Count="30" HistoryIndex="29">
+      <Position1>
+        <Filename Value="mcxgui.pas"/>
+        <Caret Line="305" Column="17" TopLine="289"/>
+      </Position1>
+      <Position2>
+        <Filename Value="mcxgui.pas"/>
+        <Caret Line="309" Column="22" TopLine="289"/>
+      </Position2>
+      <Position3>
+        <Filename Value="mcxgui.pas"/>
+        <Caret Line="405" Column="12" TopLine="386"/>
+      </Position3>
+      <Position4>
+        <Filename Value="mcxgui.pas"/>
+        <Caret Line="441" Column="17" TopLine="422"/>
+      </Position4>
+      <Position5>
+        <Filename Value="mcxgui.pas"/>
+        <Caret Line="480" Column="52" TopLine="461"/>
+      </Position5>
+      <Position6>
+        <Filename Value="mcxgui.pas"/>
+        <Caret Line="485" Column="18" TopLine="480"/>
+      </Position6>
+      <Position7>
+        <Filename Value="mcxgui.pas"/>
+        <Caret Line="694" Column="18" TopLine="689"/>
+      </Position7>
+      <Position8>
+        <Filename Value="mcxgui.pas"/>
+        <Caret Line="710" Column="24" TopLine="689"/>
+      </Position8>
+      <Position9>
+        <Filename Value="mcxgui.pas"/>
+        <Caret Line="758" Column="45" TopLine="733"/>
+      </Position9>
+      <Position10>
+        <Filename Value="mcxgui.pas"/>
+        <Caret Line="761" Column="37" TopLine="744"/>
+      </Position10>
+      <Position11>
+        <Filename Value="mcxgui.pas"/>
+        <Caret Line="444" Column="29" TopLine="437"/>
+      </Position11>
+      <Position12>
+        <Filename Value="mcxgui.pas"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
+      </Position12>
+      <Position13>
+        <Filename Value="mcxgui.pas"/>
+        <Caret Line="189" Column="31" TopLine="170"/>
+      </Position13>
+      <Position14>
+        <Filename Value="mcxgui.pas"/>
+        <Caret Line="444" Column="29" TopLine="425"/>
+      </Position14>
+      <Position15>
+        <Filename Value="mcxgui.pas"/>
+        <Caret Line="446" Column="29" TopLine="425"/>
+      </Position15>
+      <Position16>
+        <Filename Value="mcxgui.pas"/>
+        <Caret Line="857" Column="47" TopLine="839"/>
+      </Position16>
+      <Position17>
+        <Filename Value="mcxgui.pas"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
+      </Position17>
+      <Position18>
+        <Filename Value="mcxgui.pas"/>
+        <Caret Line="824" Column="71" TopLine="804"/>
+      </Position18>
+      <Position19>
+        <Filename Value="mcxgui.pas"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
+      </Position19>
+      <Position20>
+        <Filename Value="mcxgui.pas"/>
+        <Caret Line="189" Column="31" TopLine="170"/>
+      </Position20>
+      <Position21>
+        <Filename Value="mcxgui.pas"/>
+        <Caret Line="444" Column="29" TopLine="425"/>
+      </Position21>
+      <Position22>
+        <Filename Value="mcxgui.pas"/>
+        <Caret Line="446" Column="29" TopLine="425"/>
+      </Position22>
+      <Position23>
+        <Filename Value="mcxgui.pas"/>
+        <Caret Line="731" Column="96" TopLine="700"/>
+      </Position23>
+      <Position24>
+        <Filename Value="mcxgui.pas"/>
+        <Caret Line="720" Column="36" TopLine="712"/>
+      </Position24>
+      <Position25>
+        <Filename Value="mcxgui.pas"/>
+        <Caret Line="457" Column="19" TopLine="451"/>
+      </Position25>
+      <Position26>
+        <Filename Value="mcxgui.pas"/>
+        <Caret Line="933" Column="55" TopLine="916"/>
+      </Position26>
+      <Position27>
+        <Filename Value="mcxgui.pas"/>
+        <Caret Line="738" Column="12" TopLine="731"/>
+      </Position27>
+      <Position28>
+        <Filename Value="mcxgui.pas"/>
+        <Caret Line="171" Column="19" TopLine="152"/>
+      </Position28>
+      <Position29>
+        <Filename Value="mcxgui.pas"/>
+        <Caret Line="176" Column="42" TopLine="152"/>
+      </Position29>
+      <Position30>
+        <Filename Value="mcxgui.pas"/>
+        <Caret Line="171" Column="42" TopLine="152"/>
+      </Position30>
+    </JumpHistory>
+  </ProjectOptions>
+  <CompilerOptions>
+    <Version Value="8"/>
+    <SearchPaths>
+      <IncludeFiles Value="$(ProjOutDir)/"/>
+      <UnitOutputDirectory Value="debug"/>
+    </SearchPaths>
+    <Parsing>
+      <SyntaxOptions>
+        <CStyleOperator Value="False"/>
+      </SyntaxOptions>
+    </Parsing>
+    <CodeGeneration>
+      <SmartLinkUnit Value="True"/>
+    </CodeGeneration>
+    <Linking>
+      <Debugging>
+        <UseLineInfoUnit Value="False"/>
+        <StripSymbols Value="True"/>
+      </Debugging>
+      <LinkSmart Value="True"/>
+      <Options>
+        <Win32>
+          <GraphicApplication Value="True"/>
+        </Win32>
+      </Options>
+    </Linking>
+    <Other>
+      <CompilerPath Value="$(CompPath)"/>
+    </Other>
+  </CompilerOptions>
+  <Debugging>
+    <Watches Count="2">
+      <Item1>
+        <Expression Value="cb"/>
+      </Item1>
+      <Item2>
+        <Expression Value="pMCX.Running"/>
+      </Item2>
+    </Watches>
+    <Exceptions Count="4">
+      <Item1>
+        <Name Value="EAbort"/>
+      </Item1>
+      <Item2>
+        <Name Value="ECodetoolError"/>
+      </Item2>
+      <Item3>
+        <Name Value="EFOpenError"/>
+      </Item3>
+      <Item4>
+        <Name Value="EConvertError"/>
+      </Item4>
+    </Exceptions>
+  </Debugging>
+</CONFIG>

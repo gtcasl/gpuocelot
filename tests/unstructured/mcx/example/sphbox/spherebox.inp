@@ -1,0 +1,17 @@
+1000000              # total photon (not used)
+29012392             # RNG seed, negative to generate
+30.5 30.5 1.        # source position (mm)
+0 0 1.                # initial directional vector
+0.e+00 5.e-09 1.e-10  # time-gates(s): start, end, step
+spherebox.bin     # volume ('uchar' format)
+1 60 1 60            # x: voxel size, dim, start/end indices
+1 60 1 60            # y: voxel size, dim, start/end indices 
+1 60 1 60            # z: voxel size, dim, start/end indices
+2                    # num of media
+1. 0.01 0.002 1.37  # scat(1/mm), g, mua (1/mm), n
+5. 0.9  0.050 1.37  # scat(1/mm), g, mua (1/mm), n
+4	1            # detector number and radius (mm)
+30.0	20.0	1.0  # detector 1 position (mm)
+30.0	40.0	1.0  # ...
+20.0	30.0	1.0
+40.0	30.0	1.0

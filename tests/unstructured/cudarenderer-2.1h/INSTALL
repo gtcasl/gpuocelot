@@ -1,0 +1,6 @@
+This is not meant to be installed, it is just an
+experiment... I hence used the noinst_ prefix in the
+Makefile.am file. Even if you try 'make install',
+you won't be doing anything to your system.
+
+See 'README' for how to use the program.

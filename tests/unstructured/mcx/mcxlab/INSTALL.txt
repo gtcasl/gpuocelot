@@ -1,0 +1,26 @@
+= Additional Installation Notes =
+
+=== For Ubuntu users: ===
+
+Because the Octave mex binaries were compiled on two CentOS 
+workstations (i386 and x86_64), the library names may be 
+slightly different from Ubuntu's default installation.
+To use these mex files on your Octave, you need to install the 
+following libraries on your Ubuntu machine:
+
+  sudo apt-get install libblas3gf libhdf5-serial-1.8.4 libgfortran3
+
+then create the following links:
+
+  sudo ln -sf /usr/lib/libblas.so.3gf /usr/lib/libblas.so.3
+  sudo ln -sf /usr/lib/libhdf5.so.6.0.3 /usr/lib/libhdf5.so.0
+  sudo ln -sf /usr/lib/libgfortran.so.3.0.0 /usr/lib/libgfortran.so.1
+
+
+=== For 64bit Windows 7 users: ===
+
+The MATLAB mex file was compiled with CUDA toolkit 3.2. You must
+install CUDA 3.2 or above to run the mex file. All others were 
+compiled against CUDA toolkit 2.3, and are compatible with CUDA 
+version equal or newer than 2.3.
+

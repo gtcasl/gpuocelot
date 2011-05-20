@@ -24,7 +24,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 namespace analysis
 {
@@ -114,6 +114,8 @@ void ThreadFrontierAnalysis::_computePriorities(ir::IRKernel& kernel)
 					assert(visitedBlocks.count(block->id) == 0);
 					visitedBlocks.insert(block->id);
 				}
+				
+				
 			}
 		}
 		else

@@ -1,0 +1,13 @@
+Xmas 2010: Born, in 4 hours of agony
+
+Day after new year of 2011: Reddited. Clobbered by rude people.
+
+A month later:
+  - SAH/AABB/BVH, calculated with SSE and cached
+  - Data stored in textures
+  - Z-order curve for primary rays
+  - Compile-time recursion via templates (CUDA has no recursion)
+  - 32 raytracers generated at compile-time via templates
+    (specular, Phong normal interpolation, reflections, shadows,
+    anti-aliasing. Run-time switching of any of these 5 booleans)
+  - Win32 build added

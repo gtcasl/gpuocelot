@@ -2,7 +2,6 @@
 	ocelot: "ocelot",
 	trace: { 
 		database: "traces/database.trace",
-		memory: true,
 		memoryChecker: {
 			enabled: true,
 			checkInitialization: false
@@ -13,7 +12,7 @@
 		},
 		debugger: {
 			enabled: false,
-			kernelFilter: "_Z11srad_cuda_1PfS_S_S_S_S_iif",
+			kernelFilter: "_Z13scalarProdGPUPfS_S_ii",
 			alwaysAttach: true
 		}
 	},
@@ -27,15 +26,16 @@
 		host: "127.0.0.1",
 		optimizationLevel: none,
 		workerThreadLimit: 2,
+		reconvergenceMechanism: "ipdom",
 		warpSize: 4
 	},
 	optimizations: {
-		subkernelSize: 600
+		subkernelSize: 1
 	},
 	checkpoint: {
-		enabled: true,
-		path: "../../tests/traces/ptx2.3/benchmarks/rodinia/",
-		prefix: "srad_",
+		enabled: false,
+		path: "./",
+		prefix: "mummer_cbriggs_",
 		suffix: ".checkpoint"
 	}
 }

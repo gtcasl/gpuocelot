@@ -141,10 +141,13 @@ public:
 	
 private:
 	typedef std::vector<CTAContext> RuntimeStack;
+	typedef std::vector<int>        PCStack;
 
 private:
 	//! \brief context stack
 	RuntimeStack runtimeStack;
+	//! \brief context stack
+	PCStack pcStack;
 };
 
 class ReconvergenceBarrier: public ReconvergenceMechanism {

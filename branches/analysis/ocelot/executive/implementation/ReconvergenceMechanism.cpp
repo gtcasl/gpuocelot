@@ -59,7 +59,9 @@ executive::ReconvergenceIPDOM::ReconvergenceIPDOM(CooperativeThreadArray *cta)
 void executive::ReconvergenceIPDOM::initialize() {
 	CTAContext context(cta->kernel, cta);
 	runtimeStack.clear();
+	pcStack.clear();
 	runtimeStack.push_back(context);
+	pcStack.push_back(0);
 }
 
 void executive::ReconvergenceIPDOM::evalPredicate(
@@ -86,7 +88,7 @@ bool executive::ReconvergenceIPDOM::eval_Bra(executive::CTAContext &context,
 		}
 	}
 	else {
-			// divergence - complicated
+		// divergence - complicated
 		CTAContext branchContext(context), fallthroughContext(context),
 			reconvergeContext(context);
 
@@ -97,12 +99,14 @@ bool executive::ReconvergenceIPDOM::eval_Bra(executive::CTAContext &context,
 		fallthroughContext.PC++;
 		
 		reconvergeContext.PC = instr.reconvergeInstruction + 1;
+		int reconverge = pcStack.back();
 		
 		runtimeStack.pop_back();
+		pcStack.pop_back();
 
 		bool reconvergeContextAlreadyExists = false;
 		for(RuntimeStack::reverse_iterator si = runtimeStack.rbegin(); 
-			si != runtimeStack.rend(); ++si ) {
+			si != runtimeStack.rend(); ++si) {
 			if(si->PC == reconvergeContext.PC) {
 				reconvergeContextAlreadyExists = true;
 				break;
@@ -111,14 +115,17 @@ bool executive::ReconvergenceIPDOM::eval_Bra(executive::CTAContext &context,
 
 		if(!reconvergeContextAlreadyExists) {
 			runtimeStack.push_back(reconvergeContext);
+			pcStack.push_back(reconverge);
 		}
 		
 		if (branchContext.active.any()) {
 			runtimeStack.push_back(branchContext);
+			pcStack.push_back(instr.reconvergeInstruction);
 		}
 		
 		if (fallthroughContext.active.any()) {
 			runtimeStack.push_back(fallthroughContext);		
+			pcStack.push_back(instr.reconvergeInstruction);
 		}
 	}
 
@@ -134,22 +141,23 @@ void executive::ReconvergenceIPDOM::eval_Bar(executive::CTAContext &context,
 		report(" Bar called - " << context.active.count() << " of " 
 			<< context.active.size() << " threads active");
 #endif
-/*
-		throw RuntimeException("barrier deadlock at: " 
-			+ kernel->location(context.PC), context.PC, instr);
-			*/
 		throw RuntimeException("barrier deadlock at: ", context.PC, instr);
 	}
 }
 
 void executive::ReconvergenceIPDOM::eval_Reconverge(
-	executive::CTAContext &context, 
-	const ir::PTXInstruction &instr) {
+	executive::CTAContext &context, const ir::PTXInstruction &instr) {
 	if(runtimeStack.size() > 1)	{
-		runtimeStack.pop_back();
+		if(pcStack.back() == context.PC) {
+			pcStack.pop_back();
+			runtimeStack.pop_back();
+		}
+		else {
+			context.PC++;
+		}
 	}
 	else {
-		context.PC ++;
+		context.PC++;
 	}
 }
 

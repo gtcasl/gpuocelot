@@ -49,7 +49,7 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define REPORT_PTX_MASTER 0								// master toggle for reporting PTX kernels
+#define REPORT_PTX_MASTER 1								// master toggle for reporting PTX kernels
 #define REPORT_SOURCE_PTX_KERNELS 0				// PTX prior to transformations
 #define REPORT_PARITIONED_PTX_KERNELS 0		// final output PTX ready to be translated
 #define REPORT_PTX_SUBKERNELS 0
@@ -57,14 +57,14 @@
 #define REPORT_LLVM_MASTER 1							// master toggle for reporting LLVM kernels
 #define REPORT_SOURCE_LLVM_ASSEMBLY 0			// assembly output of translator
 #define REPORT_ALL_LLVM_ASSEMBLY 0				// turns on LLOVM assembly at each state
-#define REPORT_OPTIMIZED_LLVM_ASSEMBLY 0	// final output of LLVM translation and optimization
+#define REPORT_OPTIMIZED_LLVM_ASSEMBLY 1	// final output of LLVM translation and optimization
 #define REPORT_LLVM_VERIFY_FAILURE 0			// emit assembly if verification fails
 #define REPORT_SCHEDULE_OPERATIONS 0			// scheduling events
 #define REPORT_TRANSLATION_OPERATIONS 0		// translation events
 
 #define REPORT_TRANSLATIONS 0
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1263,7 +1263,6 @@ static void cloneAndOptimizeTranslation(
 	
 	manager.run(*translation->llvmFunction);
 
-
 #if REPORT_BASE && REPORT_LLVM_MASTER && REPORT_OPTIMIZED_LLVM_ASSEMBLY
 	debugEmitLLVMKernel(std::cerr, translation->llvmFunction);
 #endif
@@ -1278,6 +1277,9 @@ static void cloneAndOptimizeTranslation(
 		std::cerr << "LLVMDynamicTranslationCache.cpp:" << __LINE__ << ":" << std::endl;
 		translatedKernel.kernelModule->dump();
 #endif
+	
+		report("verification failed for kernel " << translatedKernel.kernel->name << " : \"" 
+			<< verifyError << "\"");
 	
 		delete translatedKernel.kernelModule;
 		translatedKernel.kernelModule = 0;
@@ -1335,6 +1337,7 @@ static llvm::Module *cloneSourceModule(llvm::Module *sourceModule) {
 	llvm::Module *cloned = new llvm::Module(sourceModule->getModuleIdentifier(), 
 		sourceModule->getContext());
 	
+	report("  cloning variables");
 	// clone globals
 	for (llvm::Module::global_iterator global = sourceModule->global_begin(); 
 		global != sourceModule->global_end(); ++global) {
@@ -1351,6 +1354,7 @@ static llvm::Module *cloneSourceModule(llvm::Module *sourceModule) {
 		global->replaceAllUsesWith(duplicate);
 	}
 	
+	report("  cloning functions");
 	// clone function prototypes
 	for (llvm::Module::iterator func = sourceModule->begin(); func != sourceModule->end(); ++func) {
 		if (func->isDeclaration()) {
@@ -1360,6 +1364,8 @@ static llvm::Module *cloneSourceModule(llvm::Module *sourceModule) {
 			func->replaceAllUsesWith(duplicate);
 		}
 	}
+	
+	report("  done");
 	
 	return cloned;
 }

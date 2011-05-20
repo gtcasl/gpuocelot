@@ -7128,7 +7128,8 @@ namespace translator
 					tempA = add.d;
 				}
 				
-				if( ir::PTXInstruction::sat & modifier )
+				if( (ir::PTXInstruction::sat & modifier) &&
+					ir::PTXOperand::isFloat( dType ) )
 				{
 					ir::LLVMFcmp compare;
 					

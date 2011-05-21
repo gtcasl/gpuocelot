@@ -1,7 +1,7 @@
 {
 	ocelot: "ocelot",
 	trace: { 
-		database: "traces/database1.trace",
+		database: "traces/database-stack.trace",
 		memoryChecker: {
 			enabled: true,
 			checkInitialization: false
@@ -30,7 +30,7 @@
 		host: "127.0.0.1",
 		optimizationLevel: report,
 		workerThreadLimit: 1,
-		reconvergenceMechanism: "ipdom",
+		reconvergenceMechanism: "tf-stack",
 		warpSize: 4
 	},
 	optimizations: {

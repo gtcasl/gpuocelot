@@ -40,6 +40,7 @@ public:
 	typedef ir::ControlFlowGraph::ConstBlockPointerVector BlockVector;
 	typedef ir::ControlFlowGraph::const_iterator          const_iterator;
 	typedef unsigned int                                  Priority;
+	typedef std::unordered_map<const_iterator, Priority>  PriorityMap;
 
 public:
 	/*! \brief Create the analysis */
@@ -59,7 +60,6 @@ private:
 	void _computeFrontiers(ir::IRKernel& kernel);
 
 private:
-	typedef std::unordered_map<const_iterator, Priority>    PriorityMap;
 	typedef std::unordered_map<const_iterator, BlockVector> BlockMap;
 
 private:

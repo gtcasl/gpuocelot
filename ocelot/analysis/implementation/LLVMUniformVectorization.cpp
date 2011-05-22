@@ -25,6 +25,8 @@
 #include <hydrazine/implementation/Exception.h>
 #include <hydrazine/implementation/math.h>
 
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
 #define Ocelot_Exception(x) { std::stringstream ss; ss << x; std::cerr << x << std::endl; throw hydrazine::Exception(ss.str()); }
 
 #ifdef REPORT_BASE
@@ -378,12 +380,23 @@ void analysis::LLVMUniformVectorization::Translation::finalizeSubkernel() {
 }
 			
 /*!
-	
+	\brief these contents need to be inserted ahead of the scheduler
 */
 void analysis::LLVMUniformVectorization::Translation::createSubkernelPrologue() {
 	const char *sinkBlocks[] = {
 		"$OcelotRegisterInitializerBlock", "$OcelotTextureAllocateBlock", 0
 	};
+	
+	llvm::BasicBlock *firstBlock = & F->front();
+	llvm::BasicBlock *initializerBlock = llvm::BasicBlock::Create(F->getContext(), "InitializerBlock", 
+		F, firstBlock);
+		
+	llvm::ReturnInst *dummyReturn = llvm::ReturnInst::Create(F->getParent()->getContext(), initializerBlock);
+	
+	int movedInstructions = 0;
+	
+	report("Moving instructions");
+		
 	for (int i = 0; sinkBlocks[i]; ++i) {
 		for (BasicBlockList::iterator bb_it = traversal.begin(); bb_it != traversal.end(); ++bb_it) {
 			if ((*bb_it)->getNameStr() == sinkBlocks[i]) {
@@ -391,35 +404,57 @@ void analysis::LLVMUniformVectorization::Translation::createSubkernelPrologue() 
 				break;
 			}
 		}
-		// sink all instructions in the Ocelot initializer block into their single successor
+		// relocate all instructions in the Ocelot initializer blocks into the WarpSynchronousEntry block
 		for (llvm::Function::iterator bb_it = F->begin(); bb_it != F->end(); ++bb_it) {
 			if (bb_it->getNameStr() == sinkBlocks[i]) {
 			
-				llvm::TerminatorInst *terminator = bb_it->getTerminator();
-				assert(terminator->getNumSuccessors() == 1);
-				llvm::BasicBlock *successor = terminator->getSuccessor(0);
-				llvm::Instruction *firstNonPhi = successor->getFirstNonPHI();
+				llvm::Instruction *firstNonPhi = initializerBlock->getFirstNonPHI();
 			
 				for (llvm::BasicBlock::iterator inst_it = bb_it->begin(); inst_it != bb_it->end(); ) {
 					llvm::Instruction *inst = &*inst_it++;
 					if (!llvm::TerminatorInst::classof(inst)) {
 						inst->removeFromParent();
 						inst->insertBefore(firstNonPhi);
+						++movedInstructions;
 					}
 					else {
 						inst->eraseFromParent();
 					}
 				}
-				subkernelEntry.start = successor;
-				bb_it->replaceAllUsesWith(successor);
+				bb_it->replaceAllUsesWith(initializerBlock);
 				bb_it->eraseFromParent();
 				break;
 			}
 		}
 	}
-	subkernelEntry.start = & F->front();
+	report(" done moving - " << movedInstructions << " relocated");	
+
+	if (!movedInstructions) {
+		initializerBlock->eraseFromParent();
+		initializerBlock = 0;
+		firstBlock = & F->front();
+	}
+	else {
+		for (llvm::Function::iterator bb_it = F->begin(); bb_it != F->end(); ++bb_it) {
+			if (&*bb_it != initializerBlock) {
+				firstBlock = &*bb_it;
+				break;
+			}
+		}
+	}
+	report(" first block: " << firstBlock->getNameStr());
+	report(" creating WarpSynchronousEntry block with scheduler");
+	
 	subkernelEntry.prologue = llvm::BasicBlock::Create(F->getContext(), "WarpSynchronousEntry", 
-		F, subkernelEntry.start);
+		F, firstBlock);
+	
+	if (movedInstructions) {
+		report("  linking to scheduler block");
+		dummyReturn->eraseFromParent();
+		llvm::BranchInst::Create(subkernelEntry.prologue, initializerBlock);
+		traversal.push_front(initializerBlock);
+	}
+	report( "  finished creating subkernel prologue" );
 }
 
 /*!
@@ -571,7 +606,12 @@ void analysis::LLVMUniformVectorization::Translation::addInterleavedInstructions
 
 		// insert a dummy terminator
 		llvm::ReturnInst::Create(F->getContext(), 0, warpBlock);	
-		basicBlocks.push_back(warpBlock);
+		if (warpBlock->getNameStr().find("InitializerBlock") != std::string::npos) {
+			basicBlocks.push_front(warpBlock);
+		}
+		else {
+			basicBlocks.push_back(warpBlock);
+		}
 	}
 }
 
@@ -735,9 +775,11 @@ void analysis::LLVMUniformVectorization::Translation::updateDependencies(
 			}
 			else {
 				// problem
+#if 0
 				operand->getType()->dump();
 				operand->dump();
 				Ocelot_Exception("undefined operand encountered");
+#endif
 			}
 		}
 	}	
@@ -785,7 +827,10 @@ void analysis::LLVMUniformVectorization::Translation::resolveControlFlow() {
 				bb_it->second->getTerminator()->eraseFromParent();
 				
 				// insert uniform branch to successor
-				llvm::BasicBlock *succ = warpBlocksMap[braInst->getSuccessor(0)];
+				llvm::BasicBlock *succ = braInst->getSuccessor(0);
+				if (warpBlocksMap.find(braInst->getSuccessor(0)) != warpBlocksMap.end()) {
+					succ = warpBlocksMap[braInst->getSuccessor(0)];
+				}
 				llvm::BranchInst::Create(succ, bb_it->second);
 			}
 			else {
@@ -840,8 +885,8 @@ void analysis::LLVMUniformVectorization::Translation::removeScalarBlocks() {
 	}
 	for (BasicBlockMap::iterator scalar_it = warpBlocksMap.begin(); scalar_it != warpBlocksMap.end(); 
 		++scalar_it ) {
-		report("  removed " << scalar_it->first->getNameStr());
-		scalar_it->first->replaceAllUsesWith(&scalar_it->first->getParent()->getEntryBlock());
+		report("  removing " << scalar_it->first->getNameStr());
+		scalar_it->first->replaceAllUsesWith(subkernelEntry.prologue);
 		scalar_it->first->eraseFromParent();
 	}
 }
@@ -852,7 +897,8 @@ void analysis::LLVMUniformVectorization::Translation::removeUnreachable() {
 	std::vector<llvm::BasicBlock *> dead;
 	for (llvm::Function::iterator bb_it = F->begin(); bb_it != F->end(); ++bb_it) {
 		if (llvm::pred_begin(&*bb_it) == llvm::pred_end(&*bb_it) &&
-			bb_it->getNameStr() != "WarpSynchronousEntry") {
+			bb_it->getNameStr() != "WarpSynchronousEntry" && 
+			bb_it->getNameStr().find("InitializerBlock") == std::string::npos) {
 			
 			while (llvm::PHINode *phi = llvm::dyn_cast<llvm::PHINode>(bb_it->begin())) {
 				phi->replaceAllUsesWith(llvm::Constant::getNullValue(phi->getType()));
@@ -982,6 +1028,7 @@ void analysis::LLVMUniformVectorization::Translation::createSchedulerBlock() {
 		to warp-synchronous regions
 */
 void analysis::LLVMUniformVectorization::Translation::updateSchedulerBlocks() {
+
 	WarpSchedulerMap::const_iterator ws_it = warpSchedulerBlocks.begin();
 	for (; ws_it != warpSchedulerBlocks.end(); ++ws_it) {
 		llvm::BasicBlock *scalar = ws_it->first;

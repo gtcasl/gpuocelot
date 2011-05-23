@@ -885,7 +885,6 @@ void analysis::LLVMUniformVectorization::Translation::removeScalarBlocks() {
 	}
 	for (BasicBlockMap::iterator scalar_it = warpBlocksMap.begin(); scalar_it != warpBlocksMap.end(); 
 		++scalar_it ) {
-		report("  removing " << scalar_it->first->getNameStr());
 		scalar_it->first->replaceAllUsesWith(subkernelEntry.prologue);
 		scalar_it->first->eraseFromParent();
 	}
@@ -913,7 +912,7 @@ void analysis::LLVMUniformVectorization::Translation::removeUnreachable() {
 		}
 	}
 	for (std::vector<llvm::BasicBlock *>::iterator bb_it = dead.begin(); bb_it != dead.end(); ++bb_it) {	
-		report("  attempting to erase " << (*bb_it)->getNameStr());
+		//report("  attempting to erase " << (*bb_it)->getNameStr());
 		(*bb_it)->eraseFromParent();
 	}
 }
@@ -973,7 +972,9 @@ void analysis::LLVMUniformVectorization::Translation::handleDivergentBranch(
 			}
 		}
 		if (!divergent.handler) {
-			report("Failed in finding existing divergence handler for block " << divergenceHandlerLabel);
+			std::cerr << "Failed in finding existing divergence handler for block " 
+				<< divergent.scalarBlock->getNameStr() << " - candidate would have label "
+				<< divergenceHandlerLabel << std::endl;
 		}
 		assert(divergent.handler && "Failed in finding existing divergence handler");
 			
@@ -1253,6 +1254,9 @@ void analysis::LLVMUniformVectorization::Translation::vectorize(llvm::Instructio
 		found = true;
 	}
 
+	report(" vectorizing " << inst->getNameStr() << " - inserting before " 
+		<< before->getNameStr() << " and after " << after->getNameStr());
+
 	assert(found && before);
 	const llvm::Type *tyInt32 = llvm::Type::getInt32Ty(F->getContext());
 	
@@ -1271,10 +1275,11 @@ void analysis::LLVMUniformVectorization::Translation::vectorize(llvm::Instructio
 		}
 
 		InstructionVector extracted;
+		std::string name = inst->getNameStr() + ".vec.ext.";
 		for (int tid = 0; tid < warpSize; tid++) {
 			llvm::Constant *idx = llvm::ConstantInt::get(tyInt32, tid);
 			llvm::Instruction *element = llvm::ExtractElementInst::Create(ws_it->second.vector, 
-				idx, "", before);
+				idx, name, before);
 			extracted.push_back(element);
 		}
 
@@ -1292,10 +1297,11 @@ void analysis::LLVMUniformVectorization::Translation::vectorize(llvm::Instructio
 			// it's already replicated, so pack into a vector
 			llvm::VectorType *vecType = llvm::VectorType::get(inst->getType(), warpSize);
 			llvm::Value *vectorValue = llvm::UndefValue::get(vecType);
+			std::string name = inst->getNameStr() + ".vec.ins.";
 			for (int tid = 0; tid < warpSize; tid++) {
 				llvm::Constant *idx = llvm::ConstantInt::get(tyInt32, tid);
 				vectorValue = llvm::InsertElementInst::Create(vectorValue, 
-					ws_it->second.replicated[tid], idx, "", before);
+					ws_it->second.replicated[tid], idx, name, before);
 			}
 			ws_it->second.vector = static_cast<llvm::Instruction *>(vectorValue);
 		}
@@ -1316,8 +1322,10 @@ void analysis::LLVMUniformVectorization::Translation::vectorizeBinaryOperator(
 	for (unsigned int op = 0; op < binOp->getNumOperands(); ++op) {
 		operands.push_back(getInstructionAsVectorized(binOp->getOperand(op), before));
 	}
+	
+	std::string name = binOp->getNameStr() + ".vec.";
 	llvm::BinaryOperator *vecOp = llvm::BinaryOperator::Create(binOp->getOpcode(), 
-		operands[0], operands[1], "", before);
+		operands[0], operands[1], name, before);
 	vecInstr.vector = vecOp;
 }
 
@@ -1386,8 +1394,10 @@ void analysis::LLVMUniformVectorization::Translation::vectorizeCall(
 	}
 	
 	report("  vectorizing call to function type " << funcIntrinsic << " with " << args.size() << " arguments");
-	
-	llvm::CallInst *vecCallInst = llvm::CallInst::Create(funcIntrinsic, args.begin(), args.end(), "", before);
+
+	std::string name = callInst->getNameStr() + ".vec.";
+	llvm::CallInst *vecCallInst = llvm::CallInst::Create(funcIntrinsic, args.begin(), args.end(), 
+		name, before);
 	vecInstr.vector = vecCallInst;
 }
 
@@ -1404,9 +1414,9 @@ void analysis::LLVMUniformVectorization::Translation::vectorizePhiNode(
 		<< " before \"" << before->getNameStr() << "\"");
 
 	// phi nodes are special little creatures
-	std::string s = phiNode->getNameStr() + ".vec";
+	std::string name = phiNode->getNameStr() + ".vec.";
 	llvm::VectorType *vecType = llvm::VectorType::get(phiNode->getType(), warpSize);
-	llvm::PHINode *vecPhi = llvm::PHINode::Create(vecType, s, before);
+	llvm::PHINode *vecPhi = llvm::PHINode::Create(vecType, name, before);
 	
 	vecInstr.vector = vecPhi;
 	
@@ -1437,6 +1447,7 @@ void analysis::LLVMUniformVectorization::Translation::vectorize() {
 		bb_it != traversal.end(); ++bb_it) {
 		llvm::BasicBlock *block = *bb_it;
 		
+		report("\nVectorizing block " << block->getNameStr());
 		for (llvm::BasicBlock::iterator inst_it = block->begin(); inst_it != block->end(); ++inst_it) {		
 			vectorize(&*inst_it);
 		}		
@@ -1464,12 +1475,9 @@ llvm::BasicBlock *analysis::LLVMUniformVectorization::Translation::getWarpBlockB
 		blockLabel += "_ws";
 	}
 	
-	report("seeking block " << label << " or " << blockLabel);
-	
 	// do a lookup based on block name
 	for (llvm::Function::iterator bb_it = F->begin(); bb_it != F->end(); ++bb_it) {
 		std::string entryLabel = bb_it->getNameStr();
-		report("  encountered block " << entryLabel);
 		if (entryLabel.find(label) != std::string::npos) {
 			block = &*bb_it;
 			break;
@@ -1545,7 +1553,7 @@ void analysis::LLVMUniformVectorization::Translation::updateSubkernelEntries() {
 		entry_it != entryPoints.end(); ++entry_it ) { 
 		
 		unsigned int idx = (unsigned int)(entry_it - entryPoints.begin());
-		report("adding successor " << idx << " - " << (*entry_it)->getNameStr());
+		//report("adding successor " << idx << " - " << (*entry_it)->getNameStr());
 		switchInst->addCase(llvm::ConstantInt::get(int32Ty, idx), *entry_it);
 	}
 	report("Created large switch statement in scheduler");

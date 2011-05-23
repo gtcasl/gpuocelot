@@ -25,13 +25,13 @@ INFO     ==== INDIVIDUAL TEST RESULTS ====
 INFO     Running test program /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestLexer -i ../tests/ptx 
 INFO     Running test program /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestPTXToLLVMTranslator -i ../tests/ptx 
 INFO     Running test program /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaTexture2D 
+INFO     Running test program /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaSequence 
 INFO     Running test program /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestConvergence 
 INFO     Running test program /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestKernels 
 INFO     Running test program /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestInstructions 
 INFO     Running test program /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestFunctionCall 
-INFO     Running test program /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaGlobals 
 INFO     Test /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestPTXToLLVMTranslator
-INFO     Test completed in 0.0232529640198 seconds
+INFO     Test completed in 0.0238919258118 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -44,14 +44,14 @@ Description: This is a basic test that just tries to get through a
              translate them.
 
 
-Test Seed : 1306091594
-Test time : 1.28746e-05
+Test Seed : 1306162890
+Test time : 1.19209e-05
 
 Status : 
 
 
 INFO     Test /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestLexer
-INFO     Test completed in 0.0248517990112 seconds
+INFO     Test completed in 0.0247478485107 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -63,16 +63,16 @@ Description: Tests for the PTX lexer. Test Point 1: Scan a PTX file and
              two sets of tokens match
 
 
-Test Seed : 1306091594
-Test time : 1.52588e-05
+Test Seed : 1306162890
+Test time : 1.16825e-05
 
 Status : 
 
 
-INFO     Running test program /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaTextureArray 
+INFO     Running test program /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaGlobals 
 INFO     Running test program /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestLLVMInstructions 
 INFO     Test /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestInstructions
-INFO     Test completed in 0.022383928299 seconds
+INFO     Test completed in 0.02698802948 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -82,8 +82,8 @@ Name : TestInstructions
 Description: 
 
 
-Test Seed : 1306091594
-Test time : 0.000589371
+Test Seed : 1306162890
+Test time : 0.000611305
 
 Status : Test output:
 Accessors test passed.
@@ -99,9 +99,15 @@ pass: control flow instructions
 
 
 
+INFO     Test /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaTexture2D
+INFO     Test completed in 0.0346558094025 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
 INFO     Running test program /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestDeviceSwitching 
+INFO     Running test program /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestParser -i ../tests/ptx 
 INFO     Test /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestKernels
-INFO     Test completed in 0.035019159317 seconds
+INFO     Test completed in 0.0345540046692 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -111,8 +117,8 @@ Name : TestKernels
 Description: 
 
 
-Test Seed : 1306091594
-Test time : 0.0108671
+Test Seed : 1306162890
+Test time : 0.00948143
 
 Status : Test output:
 looping kernel succeeded
@@ -120,37 +126,15 @@ matrix vector kernel succeeded
 
 
 
-INFO     Running test program /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestParser -i ../tests/ptx 
-INFO     Test /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestConvergence
-INFO     Test completed in 0.0382401943207 seconds
-INFO      It produced the following output:
-(0.002283) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestConvergence.cu
-(0.004191) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(0.005684) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(0.005697) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(0.005709) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(0.005871) LLVMDynamicTranslationCache.cpp:1368:   done
-(0.007555) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(0.009950) LLVMDynamicTranslationCache.cpp:134:  inserting translation 0 with 72 bytes of local memory
-Pass/Fail : Pass
-
 INFO     Running test program /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestDataflowGraph -i ../tests/ptx 
-INFO     Test /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaTexture2D
-INFO     Test completed in 0.0466339588165 seconds
+INFO     Test /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestConvergence
+INFO     Test completed in 0.0403218269348 seconds
 INFO      It produced the following output:
-(0.002774) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - texture2D.cu
-(0.004810) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(0.005884) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(0.005900) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(0.005908) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(0.006016) LLVMDynamicTranslationCache.cpp:1368:   done
-(0.007422) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(0.010355) LLVMDynamicTranslationCache.cpp:134:  inserting translation 0 with 208 bytes of local memory
 Pass/Fail : Pass
 
-INFO     Running test program /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaSequence 
+INFO     Running test program /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaTextureArray 
 INFO     Test /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestLLVMInstructions
-INFO     Test completed in 0.0248720645905 seconds
+INFO     Test completed in 0.0221610069275 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -164,8 +148,8 @@ Description: A test for the assembly code generation and automatic
              check, compare to references from the LLVM manual.
 
 
-Test Seed : 1306091594
-Test time : 0.00106168
+Test Seed : 1306162890
+Test time : 0.000970364
 
 Status :  Checked instruction "<result> = add i32 4, %var"
 Add Instruction Passed
@@ -296,37 +280,15 @@ Zext Instruction Passed
 
 
 
-INFO     Running test program /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestIndirectFunctionCall 
 INFO     Test /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestFunctionCall
-INFO     Test completed in 0.0454921722412 seconds
+INFO     Test completed in 0.0416481494904 seconds
 INFO      It produced the following output:
 TestFunctionCall: ocelot/executive/implementation/LLVMDynamicTranslationCache.cpp:1023: void executive::setupCallTargets(ir::PTXKernel&, const executive::LLVMDynamicTranslationCache&): Assertion `0 && "arbitrary function calls not yet supported"' failed.
-(0.002533) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - simpleFunc.cu
 
-INFO     Running test program /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestPTXAssembly 
-INFO     Test /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestParser
-INFO     Test completed in 0.0233900547028 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-
-Name : TestParser
-
-Description: A test for the PTXParser class. Test Points: 1) Load a PTX file 
-             and run it through the parser generating a module. Write the 
-             module to an intermediate stream. Parse the stream again 
-             generating a new module, compare both to make sure that they match.
-
-
-Test Seed : 1306091594
-Test time : 1.74046e-05
-
-Status : 
-
-
+INFO     Running test program /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestIndirectFunctionCall 
 INFO     Running test program /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestEmulator 
 INFO     Test /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestDataflowGraph
-INFO     Test completed in 0.0233700275421 seconds
+INFO     Test completed in 0.0243241786957 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -341,8 +303,8 @@ Description: A test for the DataflowGraph class. Test Points: 1)
              ranges spanning blocks are consistent.
 
 
-Test Seed : 1306091594
-Test time : 1.93119e-05
+Test Seed : 1306162890
+Test time : 1.78814e-05
 
 Status : Testing Generic Dataflow
  Test Passed
@@ -354,46 +316,9 @@ Testing SSA then back Dataflow
 
 
 INFO     Running test program /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestLLVMKernels 
-INFO     Test /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaGlobals
-INFO     Test completed in 0.0551791191101 seconds
-INFO      It produced the following output:
-cudaSetDevice() - 0 - Ocelot Dynamic Multicore CPU Backend (LLVM-JIT) 
-(0.002730) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - global.cu
-(0.004910) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(0.006339) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(0.006350) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(0.006361) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(0.006522) LLVMDynamicTranslationCache.cpp:1368:   done
-(0.008420) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(0.011187) LLVMDynamicTranslationCache.cpp:134:  inserting translation 0 with 152 bytes of local memory
-Pass/Fail : Pass
-
-INFO     Test /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaTextureArray
-INFO     Test completed in 0.0420179367065 seconds
-INFO      It produced the following output:
-(0.002675) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - textureArray.cu
-(0.004976) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(0.006683) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(0.006697) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(0.006709) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(0.006875) LLVMDynamicTranslationCache.cpp:1368:   done
-(0.009038) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(0.012969) LLVMDynamicTranslationCache.cpp:134:  inserting translation 0 with 208 bytes of local memory
-Pass/Fail : Pass
-
-INFO     Running test program /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCalVectorScale 
-INFO     Running test program /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaMalloc 
 INFO     Test /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestDeviceSwitching
-INFO     Test completed in 0.0551249980927 seconds
+INFO     Test completed in 0.029275894165 seconds
 INFO      It produced the following output:
-(0.001313) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - simpleKernels
-(0.002898) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(0.004287) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(0.004306) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(0.004318) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(0.004482) LLVMDynamicTranslationCache.cpp:1368:   done
-(0.005857) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(0.011779) LLVMDynamicTranslationCache.cpp:134:  inserting translation 0 with 24 bytes of local memory
 Pass/Fail : Pass
 
 
@@ -411,8 +336,8 @@ Description: A unit test for the ability of the CUDA runtime to switch
              parallel.
 
 
-Test Seed : 1306091594
-Test time : 0.0213356
+Test Seed : 1306162890
+Test time : 0.00662208
 
 Status : Test Point 1 Passed
 Test Point 2 Passed
@@ -420,8 +345,51 @@ Test Point 3 Passed
 
 
 
+INFO     Running test program /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCalVectorScale 
+INFO     Test /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestParser
+INFO     Test completed in 0.0337181091309 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+
+Name : TestParser
+
+Description: A test for the PTXParser class. Test Points: 1) Load a PTX file 
+             and run it through the parser generating a module. Write the 
+             module to an intermediate stream. Parse the stream again 
+             generating a new module, compare both to make sure that they match.
+
+
+Test Seed : 1306162890
+Test time : 1.52588e-05
+
+Status : 
+
+
+INFO     Running test program /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaMalloc 
+INFO     Test /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaGlobals
+INFO     Test completed in 0.0525178909302 seconds
+INFO      It produced the following output:
+cudaSetDevice() - 0 - Ocelot Dynamic Multicore CPU Backend (LLVM-JIT) 
+Pass/Fail : Pass
+
+INFO     Running test program /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestPTXAssembly 
+INFO     Test /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestIndirectFunctionCall
+INFO     Test completed in 0.029333114624 seconds
+INFO      It produced the following output:
+TestIndirectFunctionCall: ocelot/executive/implementation/LLVMDynamicTranslationCache.cpp:1023: void executive::setupCallTargets(ir::PTXKernel&, const executive::LLVMDynamicTranslationCache&): Assertion `0 && "arbitrary function calls not yet supported"' failed.
+
+INFO     Test /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaSequence
+INFO     Test completed in 0.0814387798309 seconds
+INFO      It produced the following output:
+Loaded libcuda.so explicitly; unloading now.
+A_host = 0x29be440
+A_gpu = 0x29bd100
+cudaMemcpy(0x29be440, 0x29bd100) - APP
+Pass/Fail : Pass
+
 INFO     Test /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestEmulator
-INFO     Test completed in 0.0257120132446 seconds
+INFO     Test completed in 0.0314121246338 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -431,8 +399,8 @@ Name : TestEmulator
 Description: 
 
 
-Test Seed : 1306091594
-Test time : 0.00267625
+Test Seed : 1306162890
+Test time : 0.00300956
 
 Status : Test output:
 10 registers
@@ -444,44 +412,19 @@ Full kernel test passed
 
 
 
-INFO     Test /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestIndirectFunctionCall
-INFO     Test completed in 0.0427730083466 seconds
+INFO     Test /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaTextureArray
+INFO     Test completed in 0.0471298694611 seconds
 INFO      It produced the following output:
-TestIndirectFunctionCall: ocelot/executive/implementation/LLVMDynamicTranslationCache.cpp:1023: void executive::setupCallTargets(ir::PTXKernel&, const executive::LLVMDynamicTranslationCache&): Assertion `0 && "arbitrary function calls not yet supported"' failed.
-(0.002801) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - indirectCall.cu
+Pass/Fail : Pass
 
 INFO     Test /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCalVectorScale
-INFO     Test completed in 0.0269708633423 seconds
+INFO     Test completed in 0.0264179706573 seconds
 INFO      It produced the following output:
 No CAL devices found
 Pass/Fail : Pass
 
-INFO     Test /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaSequence
-INFO     Test completed in 0.0531320571899 seconds
-INFO      It produced the following output:
-Loaded libcuda.so explicitly; unloading now.
-A_host = 0x181d440
-A_gpu = 0x181c100
-(0.007331) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - sequence.cu
-(0.010680) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(0.011670) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(0.011678) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(0.011686) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(0.011795) LLVMDynamicTranslationCache.cpp:1368:   done
-(0.013683) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(0.016411) LLVMDynamicTranslationCache.cpp:134:  inserting translation 262144 with 96 bytes of local memory
-cudaMemcpy(0x181d440, 0x181c100) - APP
-(0.019230) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(0.021379) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(0.021392) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(0.021401) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(0.021583) LLVMDynamicTranslationCache.cpp:1368:   done
-(0.024550) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(0.028875) LLVMDynamicTranslationCache.cpp:134:  inserting translation 131072 with 184 bytes of local memory
-Pass/Fail : Pass
-
 INFO     Test /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestLLVMKernels
-INFO     Test completed in 0.0441238880157 seconds
+INFO     Test completed in 0.0442168712616 seconds
 INFO      It produced the following output:
 TestLLVMKernels: ocelot/analysis/implementation/LLVMUniformVectorization.cpp:978: void analysis::LLVMUniformVectorization::Translation::handleDivergentBranch(analysis::LLVMUniformVectorization::DivergentBranch&): Assertion `divergent.handler && "Failed in finding existing divergence handler"' failed.
 Stack dump:
@@ -489,7 +432,7 @@ Stack dump:
 1.	Running pass 'Ocelot LLVM Uniform Vectorization' on function '@_Z_ocelotTranslated__Z17k_sequenceLoopingPfi'
 
 INFO     Test /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaMalloc
-INFO     Test completed in 0.0439760684967 seconds
+INFO     Test completed in 0.0402669906616 seconds
 INFO      It produced the following output:
 test_malloc(256, 128)
 PASSED
@@ -507,921 +450,32 @@ PASSED
 Pass/Fail : Pass
 
 INFO     Test /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestPTXAssembly
-INFO     Test completed in 2.7298169136 seconds
+INFO     Test completed in 2.71805477142 seconds
 INFO      It produced the following output:
-(0.004367) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestVectorElements-u32
-(0.006280) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(0.007725) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(0.007737) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(0.007749) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(0.007910) LLVMDynamicTranslationCache.cpp:1368:   done
-(0.009299) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(0.011115) LLVMDynamicTranslationCache.cpp:134:  inserting translation 0 with 80 bytes of local memory
-(0.027684) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestAdd-u16
-(0.028538) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(0.029244) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(0.029251) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(0.029257) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(0.029360) LLVMDynamicTranslationCache.cpp:1368:   done
-(0.029590) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(0.030459) LLVMDynamicTranslationCache.cpp:134:  inserting translation 65536 with 40 bytes of local memory
-(0.052263) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestAdd-s16
-(0.053914) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(0.055356) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(0.055372) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(0.055383) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(0.055607) LLVMDynamicTranslationCache.cpp:1368:   done
-(0.056052) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(0.057536) LLVMDynamicTranslationCache.cpp:134:  inserting translation 131072 with 40 bytes of local memory
-(0.076373) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestAdd-u32
-(0.078078) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(0.079494) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(0.079509) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(0.079521) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(0.079746) LLVMDynamicTranslationCache.cpp:1368:   done
-(0.080178) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(0.081639) LLVMDynamicTranslationCache.cpp:134:  inserting translation 196608 with 40 bytes of local memory
-(0.100386) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestAdd-s32
-(0.102125) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(0.103564) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(0.103579) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(0.103591) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(0.103819) LLVMDynamicTranslationCache.cpp:1368:   done
-(0.104251) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(0.105672) LLVMDynamicTranslationCache.cpp:134:  inserting translation 262144 with 40 bytes of local memory
-(0.124246) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestAdd-s32-sat
-(0.126080) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(0.127532) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(0.127548) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(0.127559) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(0.127786) LLVMDynamicTranslationCache.cpp:1368:   done
-(0.128243) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(0.130052) LLVMDynamicTranslationCache.cpp:134:  inserting translation 327680 with 40 bytes of local memory
-(0.148824) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestAdd-u64
-(0.150565) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(0.152003) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(0.152019) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(0.152030) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(0.152290) LLVMDynamicTranslationCache.cpp:1368:   done
-(0.152735) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(0.154169) LLVMDynamicTranslationCache.cpp:134:  inserting translation 393216 with 40 bytes of local memory
-(0.172842) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestAdd-s64
-(0.174582) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(0.175999) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(0.176014) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(0.176026) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(0.176252) LLVMDynamicTranslationCache.cpp:1368:   done
-(0.176681) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(0.178081) LLVMDynamicTranslationCache.cpp:134:  inserting translation 458752 with 40 bytes of local memory
-(0.196914) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestSub-u16
-(0.198658) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(0.200072) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(0.200087) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(0.200098) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(0.200324) LLVMDynamicTranslationCache.cpp:1368:   done
-(0.200762) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(0.202190) LLVMDynamicTranslationCache.cpp:134:  inserting translation 524288 with 40 bytes of local memory
-(0.221337) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestSub-s16
-(0.223069) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(0.224555) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(0.224571) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(0.224583) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(0.224808) LLVMDynamicTranslationCache.cpp:1368:   done
-(0.225237) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(0.226643) LLVMDynamicTranslationCache.cpp:134:  inserting translation 589824 with 40 bytes of local memory
-(0.245776) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestSub-u32
-(0.247511) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(0.248934) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(0.248950) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(0.248961) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(0.249185) LLVMDynamicTranslationCache.cpp:1368:   done
-(0.249617) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(0.251038) LLVMDynamicTranslationCache.cpp:134:  inserting translation 655360 with 40 bytes of local memory
-(0.270188) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestSub-s32
-(0.271925) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(0.273364) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(0.273379) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(0.273391) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(0.273617) LLVMDynamicTranslationCache.cpp:1368:   done
-(0.274050) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(0.275454) LLVMDynamicTranslationCache.cpp:134:  inserting translation 720896 with 40 bytes of local memory
-(0.294475) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestSub-s32-sat
-(0.296299) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(0.297748) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(0.297764) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(0.297776) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(0.298002) LLVMDynamicTranslationCache.cpp:1368:   done
-(0.298455) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(0.300135) LLVMDynamicTranslationCache.cpp:134:  inserting translation 786432 with 40 bytes of local memory
-(0.318167) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestSub-u64
-(0.319928) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(0.321370) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(0.321386) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(0.321398) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(0.321624) LLVMDynamicTranslationCache.cpp:1368:   done
-(0.322059) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(0.323488) LLVMDynamicTranslationCache.cpp:134:  inserting translation 851968 with 40 bytes of local memory
-(0.342775) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestSub-s64
-(0.344537) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(0.345953) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(0.345968) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(0.345979) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(0.346204) LLVMDynamicTranslationCache.cpp:1368:   done
-(0.346635) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(0.348043) LLVMDynamicTranslationCache.cpp:134:  inserting translation 917504 with 40 bytes of local memory
-(0.367250) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestSub-Carry-s32
-(0.369321) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(0.370811) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(0.370827) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(0.370838) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(0.371068) LLVMDynamicTranslationCache.cpp:1368:   done
-(0.371544) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(0.373760) LLVMDynamicTranslationCache.cpp:134:  inserting translation 983040 with 64 bytes of local memory
-(0.391526) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestSub-Carry-u32
-(0.393601) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(0.395086) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(0.395101) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(0.395113) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(0.395339) LLVMDynamicTranslationCache.cpp:1368:   done
-(0.395813) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(0.397920) LLVMDynamicTranslationCache.cpp:134:  inserting translation 1048576 with 64 bytes of local memory
-(0.415689) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestAdd-Carry-s32
-(0.417679) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(0.419140) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(0.419156) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(0.419168) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(0.419394) LLVMDynamicTranslationCache.cpp:1368:   done
-(0.419865) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(0.421896) LLVMDynamicTranslationCache.cpp:134:  inserting translation 1114112 with 64 bytes of local memory
-(0.439414) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestAdd-Carry-u32
-(0.441418) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(0.442880) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(0.442895) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(0.442907) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(0.443134) LLVMDynamicTranslationCache.cpp:1368:   done
-(0.443627) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(0.445621) LLVMDynamicTranslationCache.cpp:134:  inserting translation 1179648 with 64 bytes of local memory
-(0.464000) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestMul-Lo-u16
-(0.465745) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(0.467158) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(0.467173) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(0.467184) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(0.467436) LLVMDynamicTranslationCache.cpp:1368:   done
-(0.467868) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(0.469289) LLVMDynamicTranslationCache.cpp:134:  inserting translation 1245184 with 40 bytes of local memory
-(0.488698) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestMul-Hi-u16
-(0.490480) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(0.491940) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(0.491955) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(0.491967) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(0.492193) LLVMDynamicTranslationCache.cpp:1368:   done
-(0.492630) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(0.494210) LLVMDynamicTranslationCache.cpp:134:  inserting translation 1310720 with 40 bytes of local memory
-(0.512370) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestMul-Wide-u16
-(0.514143) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(0.515573) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(0.515588) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(0.515599) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(0.515825) LLVMDynamicTranslationCache.cpp:1368:   done
-(0.516255) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(0.517707) LLVMDynamicTranslationCache.cpp:134:  inserting translation 1376256 with 40 bytes of local memory
-(0.536974) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestMul-Lo-s16
-(0.538733) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(0.540155) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(0.540171) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(0.540182) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(0.540408) LLVMDynamicTranslationCache.cpp:1368:   done
-(0.540850) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(0.542260) LLVMDynamicTranslationCache.cpp:134:  inserting translation 1441792 with 40 bytes of local memory
-(0.561342) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestMul-Hi-s16
-(0.563127) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(0.564582) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(0.564597) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(0.564609) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(0.564834) LLVMDynamicTranslationCache.cpp:1368:   done
-(0.565272) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(0.566809) LLVMDynamicTranslationCache.cpp:134:  inserting translation 1507328 with 40 bytes of local memory
-(0.585294) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestMul-Wide-s16
-(0.587055) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(0.588490) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(0.588505) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(0.588516) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(0.588742) LLVMDynamicTranslationCache.cpp:1368:   done
-(0.589181) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(0.590681) LLVMDynamicTranslationCache.cpp:134:  inserting translation 1572864 with 40 bytes of local memory
-(0.609992) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestMul-Lo-u32
-(0.611771) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(0.613209) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(0.613225) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(0.613236) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(0.613463) LLVMDynamicTranslationCache.cpp:1368:   done
-(0.613893) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(0.615302) LLVMDynamicTranslationCache.cpp:134:  inserting translation 1638400 with 40 bytes of local memory
-(0.634346) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestMul-Hi-u32
-(0.636157) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(0.637590) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(0.637605) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(0.637617) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(0.637842) LLVMDynamicTranslationCache.cpp:1368:   done
-(0.638280) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(0.639816) LLVMDynamicTranslationCache.cpp:134:  inserting translation 1703936 with 40 bytes of local memory
-(0.658962) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestMul-Wide-u32
-(0.660724) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(0.662153) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(0.662168) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(0.662180) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(0.662407) LLVMDynamicTranslationCache.cpp:1368:   done
-(0.662844) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(0.664378) LLVMDynamicTranslationCache.cpp:134:  inserting translation 1769472 with 40 bytes of local memory
-(0.683568) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestMul-Lo-s32
-(0.685307) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(0.686720) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(0.686735) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(0.686746) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(0.686971) LLVMDynamicTranslationCache.cpp:1368:   done
-(0.687403) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(0.688824) LLVMDynamicTranslationCache.cpp:134:  inserting translation 1835008 with 40 bytes of local memory
-(0.708170) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestMul-Hi-s32
-(0.709960) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(0.711409) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(0.711424) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(0.711436) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(0.711661) LLVMDynamicTranslationCache.cpp:1368:   done
-(0.712097) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(0.713661) LLVMDynamicTranslationCache.cpp:134:  inserting translation 1900544 with 40 bytes of local memory
-(0.732859) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestMul-Wide-s32
-(0.734618) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(0.736049) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(0.736064) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(0.736075) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(0.736301) LLVMDynamicTranslationCache.cpp:1368:   done
-(0.736736) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(0.738194) LLVMDynamicTranslationCache.cpp:134:  inserting translation 1966080 with 40 bytes of local memory
-(0.757360) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestMul-Lo-u64
-(0.759090) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(0.760506) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(0.760521) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(0.760533) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(0.760774) LLVMDynamicTranslationCache.cpp:1368:   done
-(0.761208) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(0.762625) LLVMDynamicTranslationCache.cpp:134:  inserting translation 2031616 with 40 bytes of local memory
-(0.781802) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestMul-Hi-u64
-(0.783606) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(0.785048) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(0.785063) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(0.785075) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(0.785331) LLVMDynamicTranslationCache.cpp:1368:   done
-(0.785771) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(0.787609) LLVMDynamicTranslationCache.cpp:134:  inserting translation 2097152 with 40 bytes of local memory
-(0.805683) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestMul-Lo-s64
-(0.807416) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(0.808835) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(0.808850) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(0.808862) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(0.809088) LLVMDynamicTranslationCache.cpp:1368:   done
-(0.809519) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(0.810939) LLVMDynamicTranslationCache.cpp:134:  inserting translation 2162688 with 40 bytes of local memory
-(0.830240) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestMul-Hi-s64
-(0.831993) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(0.833443) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(0.833459) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(0.833470) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(0.833699) LLVMDynamicTranslationCache.cpp:1368:   done
-(0.834137) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(0.835891) LLVMDynamicTranslationCache.cpp:134:  inserting translation 2228224 with 40 bytes of local memory
-(0.853996) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestMad-Lo-u16
-(0.855833) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(0.857264) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(0.857279) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(0.857291) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(0.857510) LLVMDynamicTranslationCache.cpp:1368:   done
-(0.857948) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(0.859424) LLVMDynamicTranslationCache.cpp:134:  inserting translation 2293760 with 48 bytes of local memory
-(0.878254) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestMad-Hi-u16
-(0.880144) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(0.881604) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(0.881620) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(0.881631) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(0.881851) LLVMDynamicTranslationCache.cpp:1368:   done
-(0.882306) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(0.883928) LLVMDynamicTranslationCache.cpp:134:  inserting translation 2359296 with 48 bytes of local memory
-(0.902637) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestMad-Wide-u16
-(0.904492) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(0.905941) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(0.905956) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(0.905968) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(0.906188) LLVMDynamicTranslationCache.cpp:1368:   done
-(0.906629) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(0.908152) LLVMDynamicTranslationCache.cpp:134:  inserting translation 2424832 with 48 bytes of local memory
-(0.926828) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestMad-Lo-s16
-(0.928657) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(0.930088) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(0.930104) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(0.930115) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(0.930334) LLVMDynamicTranslationCache.cpp:1368:   done
-(0.930781) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(0.932256) LLVMDynamicTranslationCache.cpp:134:  inserting translation 2490368 with 48 bytes of local memory
-(0.950958) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestMad-Hi-s16
-(0.952850) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(0.954327) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(0.954343) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(0.954354) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(0.954574) LLVMDynamicTranslationCache.cpp:1368:   done
-(0.955030) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(0.956637) LLVMDynamicTranslationCache.cpp:134:  inserting translation 2555904 with 48 bytes of local memory
-(0.975327) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestMad-Wide-s16
-(0.977183) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(0.978629) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(0.978644) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(0.978656) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(0.978876) LLVMDynamicTranslationCache.cpp:1368:   done
-(0.979318) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(0.980848) LLVMDynamicTranslationCache.cpp:134:  inserting translation 2621440 with 48 bytes of local memory
-(0.999550) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestMad-Lo-u32
-(1.001382) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(1.002815) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(1.002830) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(1.002841) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(1.003060) LLVMDynamicTranslationCache.cpp:1368:   done
-(1.003501) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(1.005030) LLVMDynamicTranslationCache.cpp:134:  inserting translation 2686976 with 48 bytes of local memory
-(1.023918) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestMad-Hi-u32
-(1.025785) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(1.027236) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(1.027251) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(1.027262) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(1.027481) LLVMDynamicTranslationCache.cpp:1368:   done
-(1.027939) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(1.029535) LLVMDynamicTranslationCache.cpp:134:  inserting translation 2752512 with 48 bytes of local memory
-(1.048081) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestMad-Wide-u32
-(1.049936) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(1.051382) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(1.051397) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(1.051408) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(1.051628) LLVMDynamicTranslationCache.cpp:1368:   done
-(1.052103) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(1.053595) LLVMDynamicTranslationCache.cpp:134:  inserting translation 2818048 with 48 bytes of local memory
-(1.072252) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestMad-Lo-s32
-(1.074103) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(1.075539) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(1.075554) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(1.075565) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(1.075784) LLVMDynamicTranslationCache.cpp:1368:   done
-(1.076217) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(1.077682) LLVMDynamicTranslationCache.cpp:134:  inserting translation 2883584 with 48 bytes of local memory
-(1.096391) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestMad-Hi-s32
-(1.098298) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(1.099747) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(1.099762) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(1.099774) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(1.099995) LLVMDynamicTranslationCache.cpp:1368:   done
-(1.100479) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(1.102093) LLVMDynamicTranslationCache.cpp:134:  inserting translation 2949120 with 48 bytes of local memory
-(1.120857) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestMad-Sat-Hi-s32
-(1.122823) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(1.124321) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(1.124336) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(1.124348) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(1.124569) LLVMDynamicTranslationCache.cpp:1368:   done
-(1.125033) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(1.126852) LLVMDynamicTranslationCache.cpp:134:  inserting translation 3014656 with 48 bytes of local memory
-(1.144610) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestMad-Wide-s32
-(1.146487) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(1.147935) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(1.147965) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(1.147977) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(1.148188) LLVMDynamicTranslationCache.cpp:1368:   done
-(1.148625) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(1.150157) LLVMDynamicTranslationCache.cpp:134:  inserting translation 3080192 with 48 bytes of local memory
-(1.168833) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestMad-Lo-u64
-(1.170678) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(1.172117) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(1.172132) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(1.172143) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(1.172364) LLVMDynamicTranslationCache.cpp:1368:   done
-(1.172798) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(1.174289) LLVMDynamicTranslationCache.cpp:134:  inserting translation 3145728 with 48 bytes of local memory
-(1.192913) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestMad-Hi-u64
-(1.194785) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(1.196230) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(1.196244) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(1.196256) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(1.196475) LLVMDynamicTranslationCache.cpp:1368:   done
-(1.196913) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(1.198788) LLVMDynamicTranslationCache.cpp:134:  inserting translation 3211264 with 48 bytes of local memory
-(1.217417) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestMad-Lo-s64
-(1.219250) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(1.220685) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(1.220700) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(1.220712) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(1.220931) LLVMDynamicTranslationCache.cpp:1368:   done
-(1.221366) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(1.222830) LLVMDynamicTranslationCache.cpp:134:  inserting translation 3276800 with 48 bytes of local memory
-(1.241444) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestMad-Hi-s64
-(1.243294) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(1.244777) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(1.244792) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(1.244803) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(1.245024) LLVMDynamicTranslationCache.cpp:1368:   done
-(1.245464) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(1.247335) LLVMDynamicTranslationCache.cpp:134:  inserting translation 3342336 with 48 bytes of local memory
-(1.266067) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestSad-u16
-(1.267978) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(1.269423) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(1.269438) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(1.269449) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(1.269675) LLVMDynamicTranslationCache.cpp:1368:   done
-(1.270128) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(1.271911) LLVMDynamicTranslationCache.cpp:134:  inserting translation 3407872 with 48 bytes of local memory
-(1.290581) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestSad-s16
-(1.292460) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(1.293991) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(1.294007) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(1.294019) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(1.294245) LLVMDynamicTranslationCache.cpp:1368:   done
-(1.294698) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(1.296444) LLVMDynamicTranslationCache.cpp:134:  inserting translation 3473408 with 48 bytes of local memory
-(1.315045) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestSad-u32
-(1.316911) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(1.318369) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(1.318384) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(1.318395) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(1.318623) LLVMDynamicTranslationCache.cpp:1368:   done
-(1.319076) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(1.320724) LLVMDynamicTranslationCache.cpp:134:  inserting translation 3538944 with 48 bytes of local memory
-(1.339272) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestSad-s32
-(1.341139) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(1.342598) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(1.342613) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(1.342624) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(1.342851) LLVMDynamicTranslationCache.cpp:1368:   done
-(1.343303) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(1.345009) LLVMDynamicTranslationCache.cpp:134:  inserting translation 3604480 with 48 bytes of local memory
-(1.363605) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestSad-u64
-(1.365468) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(1.366914) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(1.366930) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(1.366941) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(1.367167) LLVMDynamicTranslationCache.cpp:1368:   done
-(1.367618) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(1.369260) LLVMDynamicTranslationCache.cpp:134:  inserting translation 3670016 with 48 bytes of local memory
-(1.387849) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestSad-s64
-(1.389720) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(1.391171) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(1.391186) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(1.391198) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(1.391426) LLVMDynamicTranslationCache.cpp:1368:   done
-(1.391878) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(1.393517) LLVMDynamicTranslationCache.cpp:134:  inserting translation 3735552 with 48 bytes of local memory
-(1.412139) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestDiv-u16
-(1.413899) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(1.415310) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(1.415325) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(1.415337) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(1.415566) LLVMDynamicTranslationCache.cpp:1368:   done
-(1.416032) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(1.417523) LLVMDynamicTranslationCache.cpp:134:  inserting translation 3801088 with 40 bytes of local memory
-(1.435734) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestDiv-s16
-(1.437475) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(1.438893) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(1.438908) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(1.438919) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(1.439144) LLVMDynamicTranslationCache.cpp:1368:   done
-(1.439576) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(1.441054) LLVMDynamicTranslationCache.cpp:134:  inserting translation 3866624 with 40 bytes of local memory
-(1.460444) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestDiv-u32
-(1.462231) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(1.463649) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(1.463664) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(1.463675) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(1.463927) LLVMDynamicTranslationCache.cpp:1368:   done
-(1.464359) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(1.465848) LLVMDynamicTranslationCache.cpp:134:  inserting translation 3932160 with 40 bytes of local memory
-(1.485123) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestDiv-s32
-(1.486854) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(1.488277) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(1.488292) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(1.488303) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(1.488528) LLVMDynamicTranslationCache.cpp:1368:   done
-(1.488959) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(1.490425) LLVMDynamicTranslationCache.cpp:134:  inserting translation 3997696 with 40 bytes of local memory
-(1.509561) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestDiv-u64
-(1.511317) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(1.512733) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(1.512748) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(1.512759) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(1.512985) LLVMDynamicTranslationCache.cpp:1368:   done
-(1.513426) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(1.514921) LLVMDynamicTranslationCache.cpp:134:  inserting translation 4063232 with 40 bytes of local memory
-(1.533967) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestDiv-s64
-(1.535691) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(1.537112) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(1.537127) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(1.537138) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(1.537363) LLVMDynamicTranslationCache.cpp:1368:   done
-(1.537795) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(1.539276) LLVMDynamicTranslationCache.cpp:134:  inserting translation 4128768 with 40 bytes of local memory
-(1.558309) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestRem-u16
-(1.560057) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(1.561499) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(1.561514) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(1.561525) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(1.561751) LLVMDynamicTranslationCache.cpp:1368:   done
-(1.562181) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(1.563669) LLVMDynamicTranslationCache.cpp:134:  inserting translation 4194304 with 40 bytes of local memory
-(1.582850) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestRem-s16
-(1.584639) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(1.586084) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(1.586099) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(1.586111) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(1.586337) LLVMDynamicTranslationCache.cpp:1368:   done
-(1.586769) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(1.588276) LLVMDynamicTranslationCache.cpp:134:  inserting translation 4259840 with 40 bytes of local memory
-(1.607473) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestRem-u32
-(1.609210) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(1.610623) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(1.610638) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(1.610656) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(1.610892) LLVMDynamicTranslationCache.cpp:1368:   done
-(1.611324) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(1.612805) LLVMDynamicTranslationCache.cpp:134:  inserting translation 4325376 with 40 bytes of local memory
-(1.631911) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestRem-s32
-(1.633677) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(1.635097) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(1.635112) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(1.635123) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(1.635349) LLVMDynamicTranslationCache.cpp:1368:   done
-(1.635779) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(1.637255) LLVMDynamicTranslationCache.cpp:134:  inserting translation 4390912 with 40 bytes of local memory
-(1.656628) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestRem-u64
-(1.658364) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(1.659782) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(1.659797) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(1.659809) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(1.660034) LLVMDynamicTranslationCache.cpp:1368:   done
-(1.660466) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(1.661963) LLVMDynamicTranslationCache.cpp:134:  inserting translation 4456448 with 40 bytes of local memory
-(1.681149) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestRem-s64
-(1.682891) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(1.684339) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(1.684354) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(1.684365) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(1.684590) LLVMDynamicTranslationCache.cpp:1368:   done
-(1.685022) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(1.686498) LLVMDynamicTranslationCache.cpp:134:  inserting translation 4521984 with 40 bytes of local memory
-(1.705725) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestAbs-s16
-(1.707429) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(1.708857) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(1.708872) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(1.708884) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(1.709109) LLVMDynamicTranslationCache.cpp:1368:   done
-(1.709541) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(1.711185) LLVMDynamicTranslationCache.cpp:134:  inserting translation 4587520 with 32 bytes of local memory
-(1.729920) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestAbs-s32
-(1.731642) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(1.733056) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(1.733071) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(1.733082) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(1.733334) LLVMDynamicTranslationCache.cpp:1368:   done
-(1.733766) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(1.735302) LLVMDynamicTranslationCache.cpp:134:  inserting translation 4653056 with 32 bytes of local memory
-(1.753910) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestAbs-s64
-(1.755605) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(1.757026) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(1.757041) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(1.757052) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(1.757278) LLVMDynamicTranslationCache.cpp:1368:   done
-(1.757710) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(1.759212) LLVMDynamicTranslationCache.cpp:134:  inserting translation 4718592 with 32 bytes of local memory
-(1.777958) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestNeg-s16
-(1.779627) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(1.781046) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(1.781062) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(1.781073) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(1.781299) LLVMDynamicTranslationCache.cpp:1368:   done
-(1.781725) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(1.783115) LLVMDynamicTranslationCache.cpp:134:  inserting translation 4784128 with 32 bytes of local memory
-(1.801722) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestNeg-s32
-(1.803418) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(1.804824) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(1.804839) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(1.804851) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(1.805075) LLVMDynamicTranslationCache.cpp:1368:   done
-(1.805499) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(1.806914) LLVMDynamicTranslationCache.cpp:134:  inserting translation 4849664 with 32 bytes of local memory
-(1.825567) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestNeg-s64
-(1.827237) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(1.828648) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(1.828664) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(1.828675) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(1.828901) LLVMDynamicTranslationCache.cpp:1368:   done
-(1.829328) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(1.830728) LLVMDynamicTranslationCache.cpp:134:  inserting translation 4915200 with 32 bytes of local memory
-(1.849708) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestMax-u16
-(1.851457) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(1.852884) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(1.852899) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(1.852910) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(1.853135) LLVMDynamicTranslationCache.cpp:1368:   done
-(1.853594) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(1.855111) LLVMDynamicTranslationCache.cpp:134:  inserting translation 4980736 with 40 bytes of local memory
-(1.874257) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestMax-u32
-(1.876011) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(1.877430) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(1.877445) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(1.877457) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(1.877684) LLVMDynamicTranslationCache.cpp:1368:   done
-(1.878118) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(1.879627) LLVMDynamicTranslationCache.cpp:134:  inserting translation 5046272 with 40 bytes of local memory
-(1.898850) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestMax-u64
-(1.900626) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(1.902275) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(1.902336) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(1.902351) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(1.902581) LLVMDynamicTranslationCache.cpp:1368:   done
-(1.903160) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(1.904829) LLVMDynamicTranslationCache.cpp:134:  inserting translation 5111808 with 40 bytes of local memory
-(1.922868) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestMax-s16
-(1.924620) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(1.926045) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(1.926060) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(1.926071) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(1.926297) LLVMDynamicTranslationCache.cpp:1368:   done
-(1.926732) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(1.928239) LLVMDynamicTranslationCache.cpp:134:  inserting translation 5177344 with 40 bytes of local memory
-(1.947386) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestMax-s32
-(1.949138) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(1.950562) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(1.950577) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(1.950588) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(1.950829) LLVMDynamicTranslationCache.cpp:1368:   done
-(1.951268) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(1.952784) LLVMDynamicTranslationCache.cpp:134:  inserting translation 5242880 with 40 bytes of local memory
-(1.971875) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestMax-s64
-(1.973665) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(1.975085) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(1.975100) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(1.975111) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(1.975338) LLVMDynamicTranslationCache.cpp:1368:   done
-(1.975773) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(1.977278) LLVMDynamicTranslationCache.cpp:134:  inserting translation 5308416 with 40 bytes of local memory
-(1.996556) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestMin-u16
-(1.998306) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(1.999732) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(1.999747) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(1.999758) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(1.999985) LLVMDynamicTranslationCache.cpp:1368:   done
-(2.000424) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(2.001947) LLVMDynamicTranslationCache.cpp:134:  inserting translation 5373952 with 40 bytes of local memory
-(2.021026) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestMin-u32
-(2.022778) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(2.024317) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(2.024332) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(2.024344) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(2.024570) LLVMDynamicTranslationCache.cpp:1368:   done
-(2.025004) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(2.026508) LLVMDynamicTranslationCache.cpp:134:  inserting translation 5439488 with 40 bytes of local memory
-(2.045670) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestMin-u64
-(2.047424) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(2.048843) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(2.048858) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(2.048869) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(2.049096) LLVMDynamicTranslationCache.cpp:1368:   done
-(2.049530) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(2.051036) LLVMDynamicTranslationCache.cpp:134:  inserting translation 5505024 with 40 bytes of local memory
-(2.070359) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestMin-s16
-(2.072124) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(2.073576) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(2.073592) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(2.073603) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(2.073830) LLVMDynamicTranslationCache.cpp:1368:   done
-(2.074267) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(2.075769) LLVMDynamicTranslationCache.cpp:134:  inserting translation 5570560 with 40 bytes of local memory
-(2.094852) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestMin-s32
-(2.096600) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(2.098025) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(2.098040) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(2.098052) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(2.098278) LLVMDynamicTranslationCache.cpp:1368:   done
-(2.098717) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(2.100219) LLVMDynamicTranslationCache.cpp:134:  inserting translation 5636096 with 40 bytes of local memory
-(2.119292) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestMin-s64
-(2.121054) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(2.122477) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(2.122492) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(2.122503) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(2.122729) LLVMDynamicTranslationCache.cpp:1368:   done
-(2.123176) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(2.124679) LLVMDynamicTranslationCache.cpp:134:  inserting translation 5701632 with 40 bytes of local memory
-(2.143937) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestPopc-b32
-(2.145591) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(2.147003) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(2.147018) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(2.147029) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(2.147254) LLVMDynamicTranslationCache.cpp:1368:   done
-(2.147699) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(2.149514) LLVMDynamicTranslationCache.cpp:134:  inserting translation 5767168 with 32 bytes of local memory
-(2.167906) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestPopc-b64
-(2.169579) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(2.171005) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(2.171020) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(2.171031) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(2.171258) LLVMDynamicTranslationCache.cpp:1368:   done
-(2.171700) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(2.173610) LLVMDynamicTranslationCache.cpp:134:  inserting translation 5832704 with 32 bytes of local memory
-(2.192045) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestClz-b32
-(2.193716) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(2.195148) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(2.195163) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(2.195174) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(2.195399) LLVMDynamicTranslationCache.cpp:1368:   done
-(2.195837) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(2.197363) LLVMDynamicTranslationCache.cpp:134:  inserting translation 5898240 with 32 bytes of local memory
-(2.215770) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestClz-b64
-(2.217435) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(2.218845) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(2.218892) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(2.218904) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(2.219130) LLVMDynamicTranslationCache.cpp:1368:   done
-(2.219571) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(2.221123) LLVMDynamicTranslationCache.cpp:134:  inserting translation 5963776 with 32 bytes of local memory
-(2.239561) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestBfind-u32
-(2.241219) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(2.242637) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(2.242652) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(2.242664) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(2.242889) LLVMDynamicTranslationCache.cpp:1368:   done
-(2.243318) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(2.245111) LLVMDynamicTranslationCache.cpp:134:  inserting translation 6029312 with 32 bytes of local memory
-(2.263664) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestBfind-u64
-(2.265334) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(2.266744) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(2.266759) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(2.266770) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(2.266996) LLVMDynamicTranslationCache.cpp:1368:   done
-(2.267426) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(2.269177) LLVMDynamicTranslationCache.cpp:134:  inserting translation 6094848 with 32 bytes of local memory
-(2.287587) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestBfind-s32
-(2.289297) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(2.290725) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(2.290740) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(2.290751) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(2.290977) LLVMDynamicTranslationCache.cpp:1368:   done
-(2.291414) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(2.293350) LLVMDynamicTranslationCache.cpp:134:  inserting translation 6160384 with 32 bytes of local memory
-(2.311670) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestBfind-s64
-(2.313383) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(2.314840) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(2.314871) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(2.314883) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(2.315101) LLVMDynamicTranslationCache.cpp:1368:   done
-(2.315537) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(2.317468) LLVMDynamicTranslationCache.cpp:134:  inserting translation 6225920 with 32 bytes of local memory
-(2.335920) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestBfind-shiftamount-u32
-(2.337582) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(2.338999) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(2.339014) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(2.339025) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(2.339249) LLVMDynamicTranslationCache.cpp:1368:   done
-(2.339679) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(2.341426) LLVMDynamicTranslationCache.cpp:134:  inserting translation 6291456 with 32 bytes of local memory
-(2.360001) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestBfind-shiftamount-u64
-(2.361700) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(2.363112) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(2.363127) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(2.363138) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(2.363364) LLVMDynamicTranslationCache.cpp:1368:   done
-(2.363816) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(2.365571) LLVMDynamicTranslationCache.cpp:134:  inserting translation 6356992 with 32 bytes of local memory
-(2.384142) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestBfind-shiftamount-s32
-(2.385855) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(2.387276) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(2.387290) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(2.387302) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(2.387527) LLVMDynamicTranslationCache.cpp:1368:   done
-(2.388039) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(2.389914) LLVMDynamicTranslationCache.cpp:134:  inserting translation 6422528 with 32 bytes of local memory
-(2.408378) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestBfind-shiftamount-s64
-(2.410081) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(2.411510) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(2.411525) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(2.411536) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(2.411762) LLVMDynamicTranslationCache.cpp:1368:   done
-(2.412195) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(2.414105) LLVMDynamicTranslationCache.cpp:134:  inserting translation 6488064 with 32 bytes of local memory
-(2.432516) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestBrev-b32
-(2.434191) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(2.435607) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(2.435622) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(2.435633) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(2.435859) LLVMDynamicTranslationCache.cpp:1368:   done
-(2.436282) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(2.437998) LLVMDynamicTranslationCache.cpp:134:  inserting translation 6553600 with 32 bytes of local memory
-(2.456593) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestBrev-b64
-(2.458245) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(2.459662) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(2.459677) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(2.459688) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(2.459914) LLVMDynamicTranslationCache.cpp:1368:   done
-(2.460337) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(2.462062) LLVMDynamicTranslationCache.cpp:134:  inserting translation 6619136 with 32 bytes of local memory
-(2.480741) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestBfi-b32
-(2.482792) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(2.484290) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(2.484306) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(2.484317) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(2.484544) LLVMDynamicTranslationCache.cpp:1368:   done
-(2.485006) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(2.487084) LLVMDynamicTranslationCache.cpp:134:  inserting translation 6684672 with 56 bytes of local memory
-(2.504515) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestBfi-b64
-(2.506591) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(2.508056) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(2.508072) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(2.508083) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(2.508309) LLVMDynamicTranslationCache.cpp:1368:   done
-(2.508775) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(2.510864) LLVMDynamicTranslationCache.cpp:134:  inserting translation 6750208 with 56 bytes of local memory
-(2.528097) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestPrmt-b32
-(2.529913) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(2.531351) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(2.531396) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(2.531409) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(2.531636) LLVMDynamicTranslationCache.cpp:1368:   done
-(2.532074) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(2.533916) LLVMDynamicTranslationCache.cpp:134:  inserting translation 6815744 with 48 bytes of local memory
-(2.552406) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestPrmt-f4e-b32
-(2.554283) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(2.555720) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(2.555735) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(2.555747) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(2.555974) LLVMDynamicTranslationCache.cpp:1368:   done
-(2.556411) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(2.558238) LLVMDynamicTranslationCache.cpp:134:  inserting translation 6881280 with 48 bytes of local memory
-(2.576679) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestPrmt-b4e-b32
-(2.578504) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(2.579944) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(2.579959) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(2.579970) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(2.580198) LLVMDynamicTranslationCache.cpp:1368:   done
-(2.580636) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(2.582464) LLVMDynamicTranslationCache.cpp:134:  inserting translation 6946816 with 48 bytes of local memory
-(2.601012) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestPrmt-rc8-b32
-(2.602835) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(2.604311) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(2.604326) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(2.604337) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(2.604564) LLVMDynamicTranslationCache.cpp:1368:   done
-(2.605000) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(2.606822) LLVMDynamicTranslationCache.cpp:134:  inserting translation 7012352 with 48 bytes of local memory
-(2.625437) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestPrmt-ecl-b32
-(2.627257) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(2.628695) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(2.628710) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(2.628722) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(2.628947) LLVMDynamicTranslationCache.cpp:1368:   done
-(2.629385) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(2.631233) LLVMDynamicTranslationCache.cpp:134:  inserting translation 7077888 with 48 bytes of local memory
-(2.649625) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestPrmt-ecr-b32
-(2.651442) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(2.652871) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(2.652887) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(2.652898) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(2.653124) LLVMDynamicTranslationCache.cpp:1368:   done
-(2.653560) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(2.655405) LLVMDynamicTranslationCache.cpp:134:  inserting translation 7143424 with 48 bytes of local memory
-(2.673940) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestPrmt-rc16-b32
-(2.675759) LLVMDynamicTranslationCache.cpp:1061: translated PTX to LLVM
-(2.677197) LLVMDynamicTranslationCache.cpp:1334: cloning source module
-(2.677212) LLVMDynamicTranslationCache.cpp:1340:   cloning variables
-(2.677223) LLVMDynamicTranslationCache.cpp:1357:   cloning functions
-(2.677450) LLVMDynamicTranslationCache.cpp:1368:   done
-(2.677885) LLVMDynamicTranslationCache.cpp:1296: performed transformations
-(2.679727) LLVMTestPTXAssembly: ocelot/executive/implementation/LLVMDynamicTranslationCache.cpp:1023: void executive::setupCallTargets(ir::PTXKernel&, const executive::LLVMDynamicTranslationCache&): Assertion `0 && "arbitrary function calls not yet supported"' failed.
-DynamicTranslationCache.cpp:134:  inserting translation 7208960 with 48 bytes of local memory
-(2.698870) LLVMDynamicTranslationCache.cpp:153:  LLVMDynamicTranslationCache::loadModule() - TestCall-Uni
+TestPTXAssembly: ocelot/executive/implementation/LLVMDynamicTranslationCache.cpp:1023: void executive::setupCallTargets(ir::PTXKernel&, const executive::LLVMDynamicTranslationCache&): Assertion `0 && "arbitrary function calls not yet supported"' failed.
 
 INFO     
 Passing tests:
- (0.027s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCalVectorScale : Passed
- (0.023s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestPTXToLLVMTranslator : Passed
- (0.025s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestLLVMInstructions : Passed
- (0.055s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaGlobals : Passed
- (0.023s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestDataflowGraph : Passed
- (0.022s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestInstructions : Passed
- (0.047s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaTexture2D : Passed
+ (0.026s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCalVectorScale : Passed
+ (0.024s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestPTXToLLVMTranslator : Passed
+ (0.022s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestLLVMInstructions : Passed
+ (0.053s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaGlobals : Passed
+ (0.024s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestDataflowGraph : Passed
+ (0.027s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestInstructions : Passed
+ (0.035s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaTexture2D : Passed
  (0.025s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestLexer : Passed
- (0.038s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestConvergence : Passed
- (0.055s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestDeviceSwitching : Passed
- (0.053s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaSequence : Passed
+ (0.040s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestConvergence : Passed
+ (0.029s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestDeviceSwitching : Passed
+ (0.081s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaSequence : Passed
  (0.035s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestKernels : Passed
- (0.023s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestParser : Passed
- (0.044s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaMalloc : Passed
- (0.026s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestEmulator : Passed
- (0.042s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaTextureArray : Passed
+ (0.034s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestParser : Passed
+ (0.040s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaMalloc : Passed
+ (0.031s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestEmulator : Passed
+ (0.047s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaTextureArray : Passed
 
 Failing tests:
- (0.043s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestIndirectFunctionCall : Did not complete.
- (2.730s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestPTXAssembly : Did not complete.
- (0.045s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestFunctionCall : Did not complete.
+ (0.029s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestIndirectFunctionCall : Did not complete.
+ (2.718s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestPTXAssembly : Did not complete.
+ (0.042s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestFunctionCall : Did not complete.
  (0.044s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestLLVMKernels : Did not complete.
 

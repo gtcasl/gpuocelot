@@ -58,12 +58,6 @@ void IPDOMReconvergencePass::runOnKernel(ir::IRKernel& k)
 	
 	analysis::PostdominatorTree* pdom_tree
 		= static_cast<analysis::PostdominatorTree*>(pdom_structure);
-
-	Analysis* dom_structure = getAnalysis(Analysis::DominatorTreeAnalysis);
-	assert(dom_structure != 0);
-	
-	analysis::DominatorTree* dom_tree
-		= static_cast<analysis::DominatorTree*>(dom_structure);
 	
 	// visit basic blocks and add reconverge instructions
 	ir::ControlFlowGraph::BlockPointerVector
@@ -87,11 +81,6 @@ void IPDOMReconvergencePass::runOnKernel(ir::IRKernel& k)
 			{
 				ir::ControlFlowGraph::iterator 
 					pdom = pdom_tree->getPostDominator(*bb_it);
-
-				ir::ControlFlowGraph::iterator 
-					dom = dom_tree->getDominator(pdom);
-
-				pdom = pdom_tree->getPostDominator(dom);
 
 				report( "  Getting post dominator block " << pdom->label 
 					<< " of instruction " << ptx_instr.toString() );

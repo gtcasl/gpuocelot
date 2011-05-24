@@ -503,64 +503,46 @@ bool executive::ReconvergenceTFSortedStack::eval_Bra(
 
 	bool divergent = false;
 
-	// is there a check necessary?
 	CTAContext branchContext(context), fallthroughContext(context);
 	
 	stack.back().erase(stack.back().begin());
 
-	if (!instr.needsReconvergenceCheck) {
-		if (branch.any()) {
-			branchContext.active = branch;
-			branchContext.PC = instr.branchTargetInstruction;
-			
+	// TODO: set the check condition correctly
+
+	if (branch.any()) {
+		branchContext.active = branch;
+		branchContext.PC = instr.branchTargetInstruction;
+		
+		RuntimeStack::iterator existing = stack.back().find(
+			branchContext.PC);
+		
+		if (existing != stack.back().end()) {
+			existing->second.active |= branchContext.active;
+		}
+		else {
 			stack.back().insert(std::make_pair(
 				branchContext.PC, branchContext));
 		}
+	}
 
-		if (fallthrough.any()) {
-			fallthroughContext.active = fallthrough;
-			fallthroughContext.PC++;
+	if (fallthrough.any())
+	{
+		fallthroughContext.active = fallthrough;
+		fallthroughContext.PC++;
+	
+		RuntimeStack::iterator existing = stack.back().find(
+			fallthroughContext.PC);
 		
+		if (existing != stack.back().end()) {
+			existing->second.active |= fallthroughContext.active;
+		}
+		else {
 			stack.back().insert(std::make_pair(
-				fallthroughContext.PC, fallthroughContext));	
+				fallthroughContext.PC, fallthroughContext));
 		}
 	}
-	else {
-		if (branch.any()) {
-			branchContext.active = branch;
-			branchContext.PC = instr.branchTargetInstruction;
-			
-			RuntimeStack::iterator existing = stack.back().find(
-				branchContext.PC);
-			
-			if (existing != stack.back().end()) {
-				existing->second.active |= branchContext.active;
-			}
-			else {
-				stack.back().insert(std::make_pair(
-					branchContext.PC, branchContext));
-			}
-		}
-
-		if (fallthrough.any())
-		{
-			fallthroughContext.active = fallthrough;
-			fallthroughContext.PC++;
-		
-			RuntimeStack::iterator existing = stack.back().find(
-				fallthroughContext.PC);
-			
-			if (existing != stack.back().end()) {
-				existing->second.active |= fallthroughContext.active;
-			}
-			else {
-				stack.back().insert(std::make_pair(
-					fallthroughContext.PC, fallthroughContext));
-			}
-		}
-		
-		divergent = true;
-	}
+	
+	divergent = true;
 	
 	return divergent;
 }

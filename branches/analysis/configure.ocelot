@@ -1,7 +1,7 @@
 {
 	ocelot: "ocelot",
 	trace: { 
-		database: "traces/database-stack.trace",
+		database: "traces-stack/database.trace",
 		memoryChecker: {
 			enabled: true,
 			checkInitialization: false
@@ -18,17 +18,17 @@
 		cacheSimulator: {
 			enabled: false,
 		},
-		branch: true
+		branch: false
 	},
 	cuda: {
 		implementation: CudaRuntime,
 		runtimeApiTrace: "trace/CudaAPI.trace"
 	},
 	executive: {
-		devices: [ emulated ],
+		devices: [ emulated, llvm ],
 		port: 2011,
 		host: "127.0.0.1",
-		optimizationLevel: report,
+		optimizationLevel: none,
 		workerThreadLimit: 1,
 		reconvergenceMechanism: "tf-stack",
 		warpSize: 4

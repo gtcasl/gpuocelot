@@ -12,6 +12,7 @@
 
 // Hydrazine Includes
 #include <hydrazine/implementation/debug.h>
+#include <hydrazine/implementation/LowLevelTimer.h>
 
 // Standard Library Includes
 #include <algorithm>
@@ -43,10 +44,14 @@ LLVMDynamicExecutionManager & LLVMDynamicExecutionManager::get() {
 
 LLVMDynamicExecutionManager::LLVMDynamicExecutionManager() {
 	workerThreadLimit = api::OcelotConfiguration::get().executive.workerThreadLimit;
+	std::ofstream file("performance.json", std::ios_base::app);
+	file << "[\n";
 }
 
 LLVMDynamicExecutionManager::~LLVMDynamicExecutionManager() {
 
+	std::ofstream file("performance.json", std::ios_base::app);
+	file << "],\n";
 }
 
 class WorkerThreadContext {
@@ -88,6 +93,10 @@ void LLVMDynamicExecutionManager::launch(const LLVMDynamicKernel & kernel, int s
 	report("  shared memory size: " << executingKernel.translatedKernel->sharedMemorySize << " bytes ");
 	report("  " << workerThreadLimit << " worker threads");
 	
+	// record start time
+	hydrazine::LowLevelTimer timer;
+	timer.start();
+	
 	// spawn worker threads
 	if (workerThreadLimit > 1) {
 		std::vector< pthread_t > threadIds;
@@ -112,12 +121,22 @@ void LLVMDynamicExecutionManager::launch(const LLVMDynamicKernel & kernel, int s
 			void *return_ptr = 0;
 			pthread_join(threadIds[threadId], &return_ptr);
 		}
-		
-		pthread_mutex_destroy(&mutex);
 	}
 	else {
 		workerThread(0);
 	}
+	
+	// record finish time
+	timer.stop();
+	const char *appName = getenv("APPNAME");
+	if (!appName) { appName = "unknown"; }
+	std::ofstream file("performance.json", std::ios_base::app);
+	file << "  { \"app\": \"" << appName
+		<< "\", \"kernel\": \"" << kernel.name 
+		<< "\", \"warpsize\": " << api::OcelotConfiguration::get().executive.warpSize
+		<< ", \"runtime\": " << timer.seconds() 
+		<< " },\n";
+	file.close();
 }
 
 //! \brief entry point for worker thread

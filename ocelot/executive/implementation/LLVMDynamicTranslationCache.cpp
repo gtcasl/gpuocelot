@@ -148,6 +148,7 @@ LLVMDynamicTranslationCache::getOrInsertTranslationById(EntryId id, int ws) {
 //! \brief loads a module into the translation cache
 bool LLVMDynamicTranslationCache::loadModule(const ir::Module *module, executive::Device *device) {
 	ModuleMap::iterator mod_it = modules.find(module->path());
+	std::vector< EntryId > entries;
 	if (mod_it == modules.end()) {
 	
 		report("LLVMDynamicTranslationCache::loadModule() - " << module->path());
@@ -188,6 +189,8 @@ bool LLVMDynamicTranslationCache::loadModule(const ir::Module *module, executive
 			translatedKernel->localMemorySize = translatedKernel->kernel->getLocalMemorySize();
 			translatedKernel->sharedMemorySize = translatedKernel->kernel->getSharedMemorySize();
 			
+			entries.push_back(translatedKernel->entryId);
+			
 #if REPORT_BASE && REPORT_PTX_MASTER && REPORT_PARITIONED_PTX_KERNELS
 			report(" static .local declarations: " << translatedKernel->localMemorySize << " bytes");
 			report(" static .shared declarations: " << translatedKernel->sharedMemorySize << " bytes");
@@ -198,8 +201,14 @@ bool LLVMDynamicTranslationCache::loadModule(const ir::Module *module, executive
 		}
 		
 		modules.insert(std::make_pair(module->path(), metadata));
+		
+		for (std::vector< EntryId >::iterator entry_it = entries.begin(); entry_it != entries.end(); ++entry_it ) {
+			for (int ws = 1; ws <= api::OcelotConfiguration::get().executive.warpSize; (ws <<= 1)) {
+				getOrInsertTranslationById(*entry_it, ws); 
+			}
+		}
 		return true;
-	}
+	}	
 	return false;
 }
 
@@ -1218,7 +1227,6 @@ static void cloneAndOptimizeTranslation(
 			"\n\nAdding LLVM vectorization pass (ws: " << warpSize << ")\n\n");
 		manager.add(new analysis::LLVMUniformVectorization(labelMap, warpSize));
 	}
-	level = 0;
 
 	if (level == 0) {
 		reportE(REPORT_TRANSLATION_OPERATIONS, "no optimizations");

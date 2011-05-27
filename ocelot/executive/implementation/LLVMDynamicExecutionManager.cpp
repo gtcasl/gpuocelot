@@ -146,14 +146,17 @@ void LLVMDynamicExecutionManager::workerThread(int workerId) {
 	
 	int totalCtas = executingKernel.gridDim.x * executingKernel.gridDim.y;
 	int ctaStart = workerId;
-	for (; ctaStart < totalCtas; ctaStart += workerThreadLimit) {
+	for (; ctaStart < totalCtas; ) {
 		LLVMDynamicExecutive executive(executingKernel.kernel, 0, executingKernel.translatedKernel, 
 			executingKernel.sharedMemorySize);
 	
-		ir::Dim3 ctaId(ctaStart % executingKernel.gridDim.x, ctaStart / executingKernel.gridDim.x );
-		report("Worker " << workerId << " executing CTA " << ctaId.x << ", " << ctaId.y);
-	
-		executive.addCta(ctaId);
+		for (int i = 0; i < 2 && ctaStart < totalCtas; i++) {
+			ir::Dim3 ctaId(ctaStart % executingKernel.gridDim.x, ctaStart / executingKernel.gridDim.x );
+			report("Worker " << workerId << " executing CTA " << ctaId.x << ", " << ctaId.y);
+			executive.addCta(ctaId);
+			ctaStart += workerThreadLimit;
+		}
+		
 		executive.execute();
 	}
 }

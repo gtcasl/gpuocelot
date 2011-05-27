@@ -16,6 +16,9 @@
 			enabled: false,
 			kernelFilter: "_Z13scalarProdGPUPfS_S_ii",
 			alwaysAttach: true
+		},
+		warpSynchronous: {
+			enabled: true	
 		}
 	},
 	cuda: {
@@ -28,7 +31,7 @@
 		host: "127.0.0.1",
 		optimizationLevel: full,
 		workerThreadLimit: 2,
-		warpSize: 2,
+		warpSize: 4,
 		printLLVMModule: false
 	},
 	optimizations: {

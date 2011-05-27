@@ -30,7 +30,7 @@
 		port: 2011,
 		host: "127.0.0.1",
 		optimizationLevel: full,
-		workerThreadLimit: 4,
+		workerThreadLimit: 2,
 		warpSize: 4,
 		printLLVMModule: false
 	},

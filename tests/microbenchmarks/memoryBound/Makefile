@@ -1,16 +1,16 @@
 
 
-all: MemoryBound
+all: MemoryStride
 
-run: MemoryBound
-	./MemoryBound
+run: MemoryStride
+	./MemoryStride
 
-MemoryBound: memoryBound.cu.cpp
-	g++ memoryBound.cu.cpp `OcelotConfig --libs` -o MemoryBound -O2
+MemoryStride: memoryStride.cu.cpp
+	g++ memoryStride.cu.cpp `OcelotConfig --libs` -o MemoryStride -O2
 
-memoryBound.cu.cpp: memoryBound.cu
-	nvcc -arch=sm_20 memoryBound.cu -cuda
+memoryStride.cu.cpp: memoryStride.cu
+	nvcc -arch=sm_20 memoryStride.cu -cuda
 
 clean:
-	rm -f MemoryBound memoryBound.cu.cpp
+	rm -f MemoryStride memoryStride.cu.cpp
 

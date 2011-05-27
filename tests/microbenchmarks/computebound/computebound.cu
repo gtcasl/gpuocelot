@@ -19,7 +19,7 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define Iterations 1024
+#define Iterations 1536
 
 #define BLOCK1 { p1 = p1 * a + b; p2 = p2 * b + c; p3 = p3 * c + d; p4 = p4 * d + e; }
 
@@ -76,9 +76,10 @@ void run(const int M) {
 	float *A_cpu;
 	float *A_gpu;
 	
-	const int N = 576;
+	const size_t N = 576;
 	
-	const int K = M * N;
+	const size_t kernelLaunches = 8;
+	const size_t K = M * N;
 	size_t bytes = sizeof(float)*K;
 	
 	A_cpu = (float *)malloc(bytes);
@@ -92,7 +93,7 @@ void run(const int M) {
 	
 	timer.start();
 	
-	for (int i = 0; i < 4; i++) {
+	for (size_t i = 0; i < kernelLaunches; i++) {
 		dim3 grid(M,1);
 		dim3 block(N, 1, 1);
 		FloatComputeBound<<< grid, block >>>(A_gpu, 1, 1.125f, 0.125f, 0.5f, 1.25f, 1.25f, 0);
@@ -101,7 +102,7 @@ void run(const int M) {
 	timer.stop();
 	
 	double s = timer.seconds();
-	double GFLOPs = (2 * MADs + ADDs + MULs) / 1.0e6 * Iterations * K / 1.0e3;
+	double GFLOPs = (MADs + ADDs + MULs) / 1.0e6 * Iterations * K / 1.0e3 * kernelLaunches;
 	double GFLOPsPerSec = (GFLOPs / s);
 	
 	printf("%d\t\t%f\n", M, GFLOPsPerSec );
@@ -115,7 +116,8 @@ void run(const int M) {
 int main() {
 	int i;
 	printf("\n%s\n# blocks\tGFLOPs/second\n", (TOOLCHAIN == 1 ? "gcc" : (TOOLCHAIN == 2 ? "llvm" : "")));
-	for (i = 1; i <= 4; i++) {
+	run(8);
+	for (i = 8; i <= 33; i+=8) {
 		run(i);
 	}
 	return 0;

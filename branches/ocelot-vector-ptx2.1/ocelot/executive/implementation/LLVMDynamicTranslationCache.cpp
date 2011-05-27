@@ -49,7 +49,7 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define REPORT_PTX_MASTER 0								// master toggle for reporting PTX kernels
+#define REPORT_PTX_MASTER 1								// master toggle for reporting PTX kernels
 #define REPORT_SOURCE_PTX_KERNELS 0				// PTX prior to transformations
 #define REPORT_PARITIONED_PTX_KERNELS 0		// final output PTX ready to be translated
 #define REPORT_PTX_SUBKERNELS 0
@@ -57,7 +57,7 @@
 #define REPORT_LLVM_MASTER 1							// master toggle for reporting LLVM kernels
 #define REPORT_SOURCE_LLVM_ASSEMBLY 1			// assembly output of translator
 #define REPORT_ALL_LLVM_ASSEMBLY 0				// turns on LLOVM assembly at each state
-#define REPORT_OPTIMIZED_LLVM_ASSEMBLY 0	// final output of LLVM translation and optimization
+#define REPORT_OPTIMIZED_LLVM_ASSEMBLY 1	// final output of LLVM translation and optimization
 #define REPORT_LLVM_VERIFY_FAILURE 1			// emit assembly if verification fails
 #define REPORT_SCHEDULE_OPERATIONS 0			// scheduling events
 #define REPORT_TRANSLATION_OPERATIONS 0		// translation events
@@ -1227,6 +1227,8 @@ static void cloneAndOptimizeTranslation(
 			"\n\nAdding LLVM vectorization pass (ws: " << warpSize << ")\n\n");
 		manager.add(new analysis::LLVMUniformVectorization(labelMap, warpSize));
 	}
+	
+	level = 1;
 
 	if (level == 0) {
 		reportE(REPORT_TRANSLATION_OPERATIONS, "no optimizations");

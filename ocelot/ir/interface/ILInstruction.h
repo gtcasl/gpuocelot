@@ -35,6 +35,7 @@ namespace ir
 				Fence,
 				Fma,
 				FtoU,
+				Ge,
 				Iadd,
 				Iand,
 				Icbits,
@@ -93,12 +94,14 @@ namespace ir
 				Dword
 			};
 
+			// TODO Deprecate
 			enum ClampOperation
 			{
 				Clamp,
 				NoClamp
 			};
 
+			// TODO Deprecate
 			enum ShiftScale
 			{
 				Shift_D2,			// shift value right by 1 bit
@@ -339,6 +342,13 @@ namespace ir
 	{
 		public:
 			ILFtoU();
+			Instruction *clone(bool copy=true) const;
+	};
+
+	class ILGe : public ILBinaryInstruction
+	{
+		public:
+			ILGe();
 			Instruction *clone(bool copy=true) const;
 	};
 

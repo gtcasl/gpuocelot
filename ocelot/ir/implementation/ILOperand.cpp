@@ -10,6 +10,9 @@
 // Hydrazine includes
 #include <hydrazine/implementation/debug.h>
 
+// Boost includes
+#include <boost/lexical_cast.hpp>
+
 #ifdef REPORT_BASE
 #undef REPORT_BASE
 #endif
@@ -43,7 +46,7 @@ namespace ir
 			case CompSel_W:       return "w";
 			case CompSel_NoWrite: return "_";
 			case CompSel_Invalid: return "";
-			default: assertM(false, "Invalid component select" << c);
+			default: assertM(false, "Invalid component select " << c);
 		}
 	}
 
@@ -72,6 +75,83 @@ namespace ir
 		}
 
 		return r;
+	}
+
+	std::string ILOperand::toString(RegType rt)
+	{
+		switch (rt)
+		{
+			case RegType_Temp: return "r"; break;
+			default: assertM(false, "Invalid register type " << rt);
+		}
+	}
+
+	std::string ILOperand::Dst_Mod::toString(ModDstComponent dc)
+	{
+		switch (dc)
+		{
+			case ModComp_NoWrite: return "_";
+			case ModComp_0:       return "0";
+			case ModComp_1:       return "1";
+			default: assertM(false, "Invalid dest component select " << dc);
+		}
+	}
+
+	std::string ILOperand::Dst_Mod::toString() const
+	{
+		return "." + 
+			(component_x == ModComp_Write ? "x" : toString(component_x)) + 
+			(component_y == ModComp_Write ? "y" : toString(component_y)) + 
+			(component_z == ModComp_Write ? "z" : toString(component_z)) + 
+			(component_w == ModComp_Write ? "w" : toString(component_w));
+	}
+
+	std::string ILOperand::Src_Mod::toString(ComponentSelect c)
+	{
+		switch (c)
+		{
+			case CompSel_X: return "x";
+			case CompSel_Y: return "y";
+			case CompSel_Z: return "z";
+			case CompSel_W: return "w";
+			case CompSel_0: return "0";
+			case CompSel_1: return "1";
+			default: assertM(false, "Invalid component select " << c);
+		}
+	}
+
+	std::string ILOperand::Src_Mod::swizzleString() const
+	{
+		return toString(swizzle_x) + toString(swizzle_y) + toString(swizzle_z) +
+			toString(swizzle_w);
+	}
+
+	std::string ILOperand::Src_Mod::negateString() const
+	{
+		return (negate_x || negate_y || negate_z || negate_w ? 
+				std::string("_neg(") + 
+				(negate_x ? "x" : "") +
+				(negate_y ? "y" : "") +
+				(negate_z ? "z" : "") +
+				(negate_w ? "w" : "") +
+				")" : "");
+	}
+
+	std::string ILOperand::Src_Mod::toString() const
+	{
+		return "." + swizzleString() + negateString();
+	}
+
+	std::string ILOperand::dstString() const
+	{
+		return toString(rtype) + boost::lexical_cast<std::string>(num) +
+			(modifier_present ? dst_mod.toString() : "");
+	}
+
+	std::string ILOperand::srcString() const
+	{
+		return toString(rtype) + boost::lexical_cast<std::string>(num) +
+			(modifier_present ? src_mod.toString() : "");
 	}
 
 	std::string ILOperand::toString() const

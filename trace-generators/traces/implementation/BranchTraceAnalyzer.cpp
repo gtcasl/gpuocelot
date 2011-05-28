@@ -113,6 +113,9 @@ namespace trace
 				std::cout << "  statistics:\n";
 				std::cout << "   max branch depth: " 
 					<< header.maxContextStackSize << "\n";
+				std::cout << "   average branch depth: " 
+					<< ((float)header.totalContextStackSize / header.instructions)
+					<< "\n";
 				std::cout << "   branches: " << header.branches << "\n";
 				std::cout << "   instructions: " << header.instructions << "\n";
 

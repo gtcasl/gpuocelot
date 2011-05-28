@@ -55,6 +55,7 @@ namespace trace
 					unsigned int threads; //! Threads in the cta
 					//! maximum number of elements in the call stack
 					unsigned int maxContextStackSize; 
+					long long unsigned int totalContextStackSize;
 			};
 			
 		private:
@@ -116,6 +117,7 @@ namespace boost
 			ar & header.threads;
 			ar & header.activeThreads;
 			ar & header.maxContextStackSize;
+			ar & header.totalContextStackSize;
 		}
 	}
 }

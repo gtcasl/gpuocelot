@@ -66,6 +66,7 @@ namespace trace
 			kernel.blockDim().x*kernel.blockDim().y*kernel.blockDim().z;
 		_header.activeThreads = 0;
 		_header.maxContextStackSize = 0;
+		_header.totalContextStackSize = 0;
 	}
 
 	void BranchTraceGenerator::event( const TraceEvent& event )
@@ -74,6 +75,8 @@ namespace trace
 		{
 			_header.maxContextStackSize = event.contextStackSize;
 		}
+		
+		_header.totalContextStackSize += event.contextStackSize;
 
 		if( event.instruction->opcode == ir::PTXInstruction::Bra )
 		{

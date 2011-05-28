@@ -296,7 +296,8 @@ void trace::MemoryTraceGenerator::initialize(
 	_header.blockDimX = kernel.blockDim().x;
 	_header.blockDimY = kernel.blockDim().y;
 	_header.blockDimZ = kernel.blockDim().z;
-	_header.thread_count = kernel.maxThreadsPerBlock();
+	_header.thread_count = kernel.blockDim().x * kernel.blockDim().y
+		* kernel.blockDim().z;
 	_header.headerOnly = headerOnly;
 	_header.global_extent = extent(kernel);
 }
@@ -329,6 +330,11 @@ void trace::MemoryTraceGenerator::event(const TraceEvent & event) {
 		PTXU32 threadID = 0;
 		PTXU64 starting_address = -1;
 		PTXU32 halfwarpSize = _header.thread_count / 2;
+		
+		if(!event.memory_addresses.empty())
+		{
+			++_header.halfwarps;
+		}
 		
 		for (TraceEvent::U64Vector::const_iterator it = event.memory_addresses.begin();
 			it != event.memory_addresses.end(); ++it, ++threadID) {

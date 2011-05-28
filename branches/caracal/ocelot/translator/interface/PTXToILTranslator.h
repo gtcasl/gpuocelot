@@ -39,10 +39,12 @@ namespace translator
 		private:
 			typedef std::map<int, std::string> ILiteralMap;
 			typedef std::map<float, std::string> FLiteralMap;
+			typedef std::map<int, ir::ILOperand> OperandMap;
 
 			ir::ILKernel *_ilKernel;
 			ILiteralMap _intLiterals;
 			FLiteralMap _floatLiterals;
+			OperandMap _operandMap;
 
 			static const ir::ILInstruction::RegisterType _tempRegisterMin = 5000;
 			ir::ILInstruction::RegisterType _tempRegisterCount;

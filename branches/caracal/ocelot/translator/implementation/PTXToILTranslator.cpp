@@ -368,55 +368,74 @@ namespace translator
 		assertM(reg < _tempRegisterMin, "Register name " << reg 
 				<< " collides with temp registers");
 
-		std::stringstream stream;
-		stream << "r" << reg;
-		return stream.str();
+		const OperandMap::const_iterator it = _operandMap.find(reg);
+		if (it == _operandMap.end()) 
+		{
+			ir::ILOperand op;
+			std::stringstream ss;
+			ss << _operandMap.size();
+			op.identifier = ss.str();
+			_operandMap.insert(std::make_pair(reg, op));
+		}
+
+		return ("r" + _operandMap[reg].identifier);
 	}
 
 	ir::ILOperand::SpecialRegister PTXToILTranslator::_translate(
 		const ir::PTXOperand::SpecialRegister &s,
         const ir::PTXOperand::VectorIndex& d)
 	{
+		typedef ir::PTXOperand PTXOperand;
+		typedef ir::ILOperand ILOperand;
+
 		ir::ILOperand::SpecialRegister sr;
 
 		switch (s)
 		{
-			case ir::PTXOperand::tid:    
+			case PTXOperand::tid:
+			{
 				switch (d)
 				{
-					case ir::PTXOperand::ix: sr = ir::ILOperand::vTidInGrpX; break;
-					case ir::PTXOperand::iy: sr = ir::ILOperand::vTidInGrpY; break;
-					case ir::PTXOperand::iz: sr = ir::ILOperand::vTidInGrpZ; break;
+					case PTXOperand::ix: sr = ILOperand::vTidInGrpX; break;
+					case PTXOperand::iy: sr = ILOperand::vTidInGrpY; break;
+					case PTXOperand::iz: sr = ILOperand::vTidInGrpZ; break;
 					default: assertM(false, "Invalid vector index " << d);
 				}
 				break;
-			case ir::PTXOperand::ntid:   
+			}
+			case PTXOperand::ntid:
+			{
 				switch (d)
 				{
-					case ir::PTXOperand::ix: sr = ir::ILOperand::vNTidInGrpX; break;
-					case ir::PTXOperand::iy: sr = ir::ILOperand::vNTidInGrpY; break;
-					case ir::PTXOperand::iz: sr = ir::ILOperand::vNTidInGrpZ; break;
+					case PTXOperand::ix: sr = ILOperand::vNTidInGrpX; break;
+					case PTXOperand::iy: sr = ILOperand::vNTidInGrpY; break;
+					case PTXOperand::iz: sr = ILOperand::vNTidInGrpZ; break;
 					default: assertM(false, "Invalid vector index " << d);
 				}
 				break;
-			case ir::PTXOperand::ctaId:  
+			}
+			case PTXOperand::ctaId:
+			{
 				switch (d)
 				{
-					case ir::PTXOperand::ix: sr = ir::ILOperand::vThreadGrpIdX; break;
-					case ir::PTXOperand::iy: sr = ir::ILOperand::vThreadGrpIdY; break;
-					case ir::PTXOperand::iz: sr = ir::ILOperand::vThreadGrpIdZ; break;
+					case PTXOperand::ix: sr = ILOperand::vThreadGrpIdX; break;
+					case PTXOperand::iy: sr = ILOperand::vThreadGrpIdY; break;
+					case PTXOperand::iz: sr = ILOperand::vThreadGrpIdZ; break;
 					default: assertM(false, "Invalid vector index " << d);
 				}
 				break;
-			case ir::PTXOperand::nctaId:
+			}
+			case PTXOperand::nctaId:
+			{
 				switch (d)
 				{
-					case ir::PTXOperand::ix: sr = ir::ILOperand::vNThreadGrpIdX; break;
-					case ir::PTXOperand::iy: sr = ir::ILOperand::vNThreadGrpIdY; break;
-					case ir::PTXOperand::iz: sr = ir::ILOperand::vNThreadGrpIdZ; break;
+					case PTXOperand::ix: sr = ILOperand::vNThreadGrpIdX; break;
+					case PTXOperand::iy: sr = ILOperand::vNThreadGrpIdY; break;
+					case PTXOperand::iz: sr = ILOperand::vNThreadGrpIdZ; break;
 					default: assertM(false, "Invalid vector index " << d);
 				}
 				break;
+			}
 			default: assertM(false, "Special Register " << s
 				<< " not supported");
 		}
@@ -2983,6 +3002,16 @@ namespace translator
 				_add(eq);
 				break;
 			}
+			case ir::PTXInstruction::Le:
+			{
+				// IL doesn't have le but it has ge so switch a & b operands
+				ir::ILGe ge;
+				ge.d = _translate(i.d);
+				ge.a = _translate(i.b);
+				ge.b = _translate(i.a);
+				_add(ge);
+				break;
+			}
 			case ir::PTXInstruction::Lt:
 			{
 				ir::ILLt lt;
@@ -2993,6 +3022,15 @@ namespace translator
 
 				_add(lt);
 
+				break;
+			}
+			case ir::PTXInstruction::Ge:
+			{
+				ir::ILGe ge;
+				ge.d = _translate(i.d);
+				ge.a = _translate(i.a);
+				ge.b = _translate(i.b);
+				_add(ge);
 				break;
 			}
 			case ir::PTXInstruction::Gt:

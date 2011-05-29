@@ -40,6 +40,7 @@
 #include <llvm/Support/raw_ostream.h>
 #include <llvm/Instructions.h>
 #include <llvm/Support/CFG.h>
+#include <llvm/Support/raw_os_ostream.h>
 #endif
 
 // Preprocessor Macros
@@ -1288,9 +1289,11 @@ static void cloneAndOptimizeTranslation(
 		translatedKernel.kernelModule->dump();
 #endif
 	
-		report("verification failed for kernel " << translatedKernel.kernel->name << " : \"" 
-			<< verifyError << "\"");
+		std::cerr << "verification failed for kernel " << translatedKernel.kernel->name << " : \"" 
+			<< verifyError << "\"" << std::endl;
 	
+		assert(0 && "quitting");
+		
 		delete translatedKernel.kernelModule;
 		translatedKernel.kernelModule = 0;
 		

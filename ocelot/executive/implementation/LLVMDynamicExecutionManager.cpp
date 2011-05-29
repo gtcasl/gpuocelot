@@ -24,6 +24,10 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
+#define METRIC_RUNTIME 0
+#define METRIC_WARPSIZE 1
+
+
 // Preprocessor Macros
 #ifdef REPORT_BASE
 #undef REPORT_BASE
@@ -125,7 +129,8 @@ void LLVMDynamicExecutionManager::launch(const LLVMDynamicKernel & kernel, int s
 	else {
 		workerThread(0);
 	}
-	
+
+#if METRIC_RUNTIME	
 	// record finish time
 	timer.stop();
 	const char *appName = getenv("APPNAME");
@@ -137,6 +142,7 @@ void LLVMDynamicExecutionManager::launch(const LLVMDynamicKernel & kernel, int s
 		<< ", \"runtime\": " << timer.seconds() 
 		<< " },\n";
 	file.close();
+#endif
 }
 
 //! \brief entry point for worker thread
@@ -144,13 +150,19 @@ void LLVMDynamicExecutionManager::workerThread(int workerId) {
 	LLVMDynamicExecutive executive(executingKernel.kernel, 0, executingKernel.translatedKernel,
 		executingKernel.sharedMemorySize);
 	
+	LLVMDynamicExecutive::EntryCounter counter;
+
+	for (int ws = 1; ws <= api::OcelotConfiguration::get().executive.warpSize; ws <<= 1) {
+		counter[ws] = 0;
+	}
+	
 	int totalCtas = executingKernel.gridDim.x * executingKernel.gridDim.y;
 	int ctaStart = workerId;
 	for (; ctaStart < totalCtas; ) {
 		LLVMDynamicExecutive executive(executingKernel.kernel, 0, executingKernel.translatedKernel, 
 			executingKernel.sharedMemorySize);
 	
-		for (int i = 0; i < 2 && ctaStart < totalCtas; i++) {
+		for (int i = 0; i < 1 && ctaStart < totalCtas; i++) {
 			ir::Dim3 ctaId(ctaStart % executingKernel.gridDim.x, ctaStart / executingKernel.gridDim.x );
 			report("Worker " << workerId << " executing CTA " << ctaId.x << ", " << ctaId.y);
 			executive.addCta(ctaId);
@@ -158,7 +170,28 @@ void LLVMDynamicExecutionManager::workerThread(int workerId) {
 		}
 		
 		executive.execute();
+		
+		for (int ws = 1; ws <= api::OcelotConfiguration::get().executive.warpSize; ws <<= 1) {
+			counter[ws] += executive.entryCounter[ws];
+		}
 	}
+
+#if METRIC_WARPSIZE
+	const char *appName = getenv("APPNAME");
+	if (!appName) { appName = "unknown"; }
+	std::ofstream file("characterization.json", std::ios_base::app);
+	file << "  { \"app\": \"" << appName
+		<< "\", \"kernel\": \"" << executingKernel.kernel->name 
+		<< "\", \"warpsize\": " << api::OcelotConfiguration::get().executive.warpSize
+		<< ", \"entryCount\": { ";
+	
+	for (int ws = 1; ws <= api::OcelotConfiguration::get().executive.warpSize; ws <<= 1) {
+		file << " " << ws << ": " << counter[ws] << ", ";
+	}
+	
+	file << "}, " << " },\n";
+	file.close();
+#endif
 }
 
 /*! \brief locks the translation cache and fetches a translation */

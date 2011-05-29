@@ -305,15 +305,15 @@ namespace analysis
 			*/
 			void vectorize();
 			
-			void vectorizeBinaryOperator(
+			bool vectorizeBinaryOperator(
 				llvm::BinaryOperator *, 
 				VectorizedInstruction &vecInstr, 
 				llvm::Instruction *before);
-			void vectorizeCall(
+			bool vectorizeCall(
 				llvm::CallInst *, 
 				VectorizedInstruction &vecInstr, 
 				llvm::Instruction *before);
-			void vectorizePhiNode(
+			bool vectorizePhiNode(
 				llvm::PHINode *, 
 				VectorizedInstruction &vecInstr, 
 				llvm::Instruction *before);

@@ -28,6 +28,7 @@ namespace executive {
 	*/
 	class LLVMDynamicExecutive {
 	public:
+		typedef std::map< int, size_t > EntryCounter;
 		typedef ExecutableKernel::TextureVector TextureVector;
 		typedef std::list< LLVMContext > ThreadContextQueue;
 		typedef std::vector< char > ByteVector;
@@ -173,6 +174,8 @@ namespace executive {
 		
 		//! \brief thread-local cache of translations
 		TranslationWarpCache translationCache;
+		
+		EntryCounter entryCounter;
 	};
 }	
 #endif

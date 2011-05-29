@@ -539,7 +539,6 @@ void analysis::LLVMUniformVectorization::Translation::addInterleavedInstructions
 		bb_it != traversal.end(); ++bb_it) {
 		
 		llvm::BasicBlock *bb = *bb_it;
-		report("  - " << bb->getNameStr());
 		if (bb->getNameStr() == "") { continue; }
 		
 		// ignore ocelot-inserted blocks for fusing thread blocks together
@@ -552,7 +551,6 @@ void analysis::LLVMUniformVectorization::Translation::addInterleavedInstructions
 		// construct a warp-synchronous block
 		std::stringstream ss;
 		ss << bb->getNameStr() << "_ws_" << warpSize;
-		report("    [ constructed as " << ss.str() << "]");
 		
 		llvm::BasicBlock *warpBlock = llvm::BasicBlock::Create(
 			F->getContext(), ss.str(), 0, 0);
@@ -1227,6 +1225,7 @@ void analysis::LLVMUniformVectorization::Translation::vectorize(llvm::Instructio
 		return;
 	}
 
+	
 	llvm::Instruction *before = 0; // TODO - it seems like LLVM should have a good way of inserting
 																	//	an instruction AFTER another instruction
 
@@ -1254,41 +1253,48 @@ void analysis::LLVMUniformVectorization::Translation::vectorize(llvm::Instructio
 		found = true;
 	}
 
-	report(" vectorizing " << inst->getNameStr() << " - inserting before " 
-		<< before->getNameStr() << " and after " << after->getNameStr());
+	report("\n\n");
+	report("vectorizing " << inst->getNameStr() << " - inserting before " << before->getNameStr());
 
 	assert(found && before);
 	const llvm::Type *tyInt32 = llvm::Type::getInt32Ty(F->getContext());
 	
 	if (ws_it->second.isVectorizable()) {
+		report("  is vectorizable " << inst->getNameStr());
+		bool created = false;
 		if (llvm::BinaryOperator *binOp = llvm::dyn_cast<llvm::BinaryOperator>(inst)) {
-			vectorizeBinaryOperator(binOp, ws_it->second, before);
+			report("  isBinaryOperator "  << binOp->getNameStr());
+			created = vectorizeBinaryOperator(binOp, ws_it->second, before);
+			report("  vectorized binary operator " << binOp->getNameStr());
 		}
 		else if (llvm::CallInst *callInst = llvm::dyn_cast<llvm::CallInst>(inst)) {
-			vectorizeCall(callInst, ws_it->second, before);
+			created = vectorizeCall(callInst, ws_it->second, before);
 		}
 		else if (llvm::PHINode *phiNode = llvm::dyn_cast<llvm::PHINode>(inst)) {
-			vectorizePhiNode(phiNode, ws_it->second, before);
+			created = vectorizePhiNode(phiNode, ws_it->second, before);
 		}
 		else {
 			throw hydrazine::Exception("Unhandled vectorizable LLVM instruction");
 		}
 
-		InstructionVector extracted;
-		std::string name = inst->getNameStr() + ".vec.ext.";
-		for (int tid = 0; tid < warpSize; tid++) {
-			llvm::Constant *idx = llvm::ConstantInt::get(tyInt32, tid);
-			llvm::Instruction *element = llvm::ExtractElementInst::Create(ws_it->second.vector, 
-				idx, name, before);
-			extracted.push_back(element);
-		}
+		if (created) {
+			InstructionVector extracted;
+			std::string name = inst->getNameStr() + ".vec.ext.";
+			// before = ws_it->second.replicated[0];
+			for (int tid = 0; tid < warpSize; tid++) {
+				llvm::Constant *idx = llvm::ConstantInt::get(tyInt32, tid);
+				llvm::Instruction *element = llvm::ExtractElementInst::Create(ws_it->second.vector, 
+					idx, name, before);
+				extracted.push_back(element);
+			}
 
-		// update uses
-		for (int tid = 0; tid < warpSize; tid++) {
-			ws_it->second.replicated[tid]->replaceAllUsesWith(extracted[tid]);
-			ws_it->second.replicated[tid]->eraseFromParent();
+			// update uses
+			for (int tid = 0; tid < warpSize; tid++) {
+				ws_it->second.replicated[tid]->replaceAllUsesWith(extracted[tid]);
+				ws_it->second.replicated[tid]->eraseFromParent();
+			}
+			ws_it->second.replicated = extracted;
 		}
-		ws_it->second.replicated = extracted;
 	}
 	else {
 		const llvm::Type *instType = inst->getType();
@@ -1313,26 +1319,35 @@ void analysis::LLVMUniformVectorization::Translation::vectorize(llvm::Instructio
 /*!
 
 */
-void analysis::LLVMUniformVectorization::Translation::vectorizeBinaryOperator(
+bool analysis::LLVMUniformVectorization::Translation::vectorizeBinaryOperator(
 	llvm::BinaryOperator *binOp, 
 	VectorizedInstruction &vecInstr, 
 	llvm::Instruction *before) {
 
+	bool created = true;
+	
 	InstructionVector operands;
 	for (unsigned int op = 0; op < binOp->getNumOperands(); ++op) {
 		operands.push_back(getInstructionAsVectorized(binOp->getOperand(op), before));
 	}
-	
-	std::string name = binOp->getNameStr() + ".vec.";
-	llvm::BinaryOperator *vecOp = llvm::BinaryOperator::Create(binOp->getOpcode(), 
-		operands[0], operands[1], name, before);
-	vecInstr.vector = vecOp;
+
+	if (!vecInstr.vector) {
+		std::string name = binOp->getNameStr() + ".vec.";
+		llvm::BinaryOperator *vecOp = llvm::BinaryOperator::Create(binOp->getOpcode(), 
+			operands[0], operands[1], name, before);
+		vecInstr.vector = vecOp;
+		created = true;
+	}
+	else {
+		created = false;
+	}
+	return created;
 }
 
 /*!
 
 */
-void analysis::LLVMUniformVectorization::Translation::vectorizeCall(
+bool analysis::LLVMUniformVectorization::Translation::vectorizeCall(
 	llvm::CallInst *callInst, 
 	VectorizedInstruction &vecInstr, 
 	llvm::Instruction *before) {
@@ -1399,12 +1414,13 @@ void analysis::LLVMUniformVectorization::Translation::vectorizeCall(
 	llvm::CallInst *vecCallInst = llvm::CallInst::Create(funcIntrinsic, args.begin(), args.end(), 
 		name, before);
 	vecInstr.vector = vecCallInst;
+	return true;
 }
 
 /*!
 
 */
-void analysis::LLVMUniformVectorization::Translation::vectorizePhiNode(
+bool analysis::LLVMUniformVectorization::Translation::vectorizePhiNode(
 	llvm::PHINode *phiNode, 
 	VectorizedInstruction &vecInstr, 
 	llvm::Instruction *before) {
@@ -1434,6 +1450,7 @@ void analysis::LLVMUniformVectorization::Translation::vectorizePhiNode(
 				incomingBlock);
 		}
 	}
+	return true;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////

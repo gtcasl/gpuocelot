@@ -117,7 +117,6 @@ LLVMDynamicExecutive::LLVMDynamicExecutive(
 	processor(_procID),
 	translatedKernel(_translatedKernel),
 	sharedMemorySize(_sharedMemSize + _translatedKernel->sharedMemorySize) {
-	
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -251,7 +250,15 @@ void LLVMDynamicExecutive::executeWarp(Warp &warp) {
 	for (size_t tid = 0; tid < warp.threads.size(); tid += translation->warpSize) {
 		translation->execute(&warp.threads[tid]);
 	}
-			
+
+	EntryCounter::iterator counter = entryCounter.find((int)warp.threads.size());
+	if (counter == entryCounter.end()) {
+		entryCounter[(int)warp.threads.size()] = 1;
+	}
+	else {
+		counter->second ++;
+	}
+	
 	for (
 		ThreadContextVector::iterator ctx_it = warp.threads.begin(); 
 		ctx_it != warp.threads.end(); 

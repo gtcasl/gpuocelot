@@ -141,10 +141,13 @@ namespace executive {
 		void finishContext(LLVMContext &context);
 		
 		//! \brief computes the CTA ID
-		unsigned int ctaId(const ir::Dim3 &ctaId);
+		unsigned int ctaId(const ir::Dim3 &ctaId) const;
 		
 		//! \brief computes the CTA ID
-		unsigned int ctaId(const LLVMContext &ctx);
+		unsigned int ctaId(const LLVMContext &ctx) const;
+		
+		//! \brief computes the CTA ID
+		unsigned int getThreadId(const LLVMContext &ctx) const;
 		
 		//! \brief gets the exit code of a thread
 		static ThreadExitCode getExitCode(const LLVMContext &context);

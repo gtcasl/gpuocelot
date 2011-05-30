@@ -58,11 +58,24 @@ namespace analysis
 		
 			llvm::Instruction *ptrThreadDescriptorArray;
 		
-			ThreadLocalArgumentVector localPointer;
-			ThreadLocalArgumentVector parameterPointer;
 			ThreadLocalArgumentVector threadId_x;
 			ThreadLocalArgumentVector threadId_y;
 			ThreadLocalArgumentVector threadId_z;
+			
+			ThreadLocalArgumentVector blockDim_x;
+			ThreadLocalArgumentVector blockDim_y;
+			ThreadLocalArgumentVector blockDim_z;
+			
+			ThreadLocalArgumentVector blockId_x;
+			ThreadLocalArgumentVector blockId_y;
+			ThreadLocalArgumentVector blockId_z;
+			
+			ThreadLocalArgumentVector gridDim_x;
+			ThreadLocalArgumentVector gridDim_y;
+			ThreadLocalArgumentVector gridDim_z;
+			
+			ThreadLocalArgumentVector localPointer;
+			ThreadLocalArgumentVector parameterPointer;			
 		};
 
 		/*!
@@ -213,6 +226,16 @@ namespace analysis
 					(i.e. localMemory pointer, threadIdx.x)
 			*/
 			void loadThreadLocalArguments();
+			
+			/*!
+				\brief helper
+			*/
+			void replaceContextReferences(llvm::BasicBlock *bb);
+			
+			/*!
+				\brief visits 
+			*/
+			void replaceContextReferences();
 		
 			/*!
 
@@ -322,6 +345,7 @@ namespace analysis
 				\brief constructs an indirect branch from the scheduler to kernel entry points
 			*/
 			void updateSubkernelEntries();
+			
 			
 			/*!
 			
@@ -442,7 +466,6 @@ namespace analysis
 
 		static char ID;
 	};
-
 }
 
 #endif

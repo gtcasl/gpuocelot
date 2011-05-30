@@ -24,8 +24,8 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define METRIC_RUNTIME 0
-#define METRIC_WARPSIZE 1
+#define METRIC_RUNTIME 1
+#define METRIC_WARPSIZE 0
 
 
 // Preprocessor Macros
@@ -149,13 +149,14 @@ void LLVMDynamicExecutionManager::launch(const LLVMDynamicKernel & kernel, int s
 void LLVMDynamicExecutionManager::workerThread(int workerId) {
 	LLVMDynamicExecutive executive(executingKernel.kernel, 0, executingKernel.translatedKernel,
 		executingKernel.sharedMemorySize);
-	
+#if METRIC_WARPSIZE
 	LLVMDynamicExecutive::EntryCounter counter;
 
 	for (int ws = 1; ws <= api::OcelotConfiguration::get().executive.warpSize; ws <<= 1) {
 		counter[ws] = 0;
 	}
-	
+#endif
+
 	int totalCtas = executingKernel.gridDim.x * executingKernel.gridDim.y;
 	int ctaStart = workerId;
 	for (; ctaStart < totalCtas; ) {
@@ -170,10 +171,11 @@ void LLVMDynamicExecutionManager::workerThread(int workerId) {
 		}
 		
 		executive.execute();
-		
+#if METRIC_WARPSIZE
 		for (int ws = 1; ws <= api::OcelotConfiguration::get().executive.warpSize; ws <<= 1) {
 			counter[ws] += executive.entryCounter[ws];
 		}
+#endif
 	}
 
 #if METRIC_WARPSIZE

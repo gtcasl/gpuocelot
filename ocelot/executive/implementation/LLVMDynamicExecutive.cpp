@@ -24,9 +24,13 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
+#define METRIC_WARPSIZE 0
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
 #define REPORT_LOCAL_MEMORY 0
 #define REPORT_SCHEDULE_OPERATIONS 0
-#define REPORT_STATISTICS 1
+#define REPORT_STATISTICS 0
 
 #define REPORT_BASE 0
 
@@ -123,13 +127,17 @@ LLVMDynamicExecutive::LLVMDynamicExecutive(
 
 
 //! \brief computes the CTA ID
-unsigned int LLVMDynamicExecutive::ctaId(const ir::Dim3 &ctaId) {
+unsigned int LLVMDynamicExecutive::ctaId(const ir::Dim3 &ctaId) const {
 	return (unsigned int)(kernel->gridDim().x * ctaId.y + ctaId.x);
 }
 
 
-unsigned int LLVMDynamicExecutive::ctaId(const LLVMContext &ctx) {
+unsigned int LLVMDynamicExecutive::ctaId(const LLVMContext &ctx) const {
 	return (unsigned int)(kernel->gridDim().x * ctx.ctaid.y + ctx.ctaid.x);
+}
+
+unsigned int LLVMDynamicExecutive::getThreadId(const LLVMContext &ctx) const {
+	return (unsigned int)(ctx.tid.x + ctx.tid.y * ctx.ntid.x + ctx.tid.z * ctx.ntid.x * ctx.ntid.y);
 }
 
 //! \brief adds a CTA to the dynamic executive's execution list
@@ -250,7 +258,7 @@ void LLVMDynamicExecutive::executeWarp(Warp &warp) {
 	for (size_t tid = 0; tid < warp.threads.size(); tid += translation->warpSize) {
 		translation->execute(&warp.threads[tid]);
 	}
-
+#if METRIC_WARPSIZE
 	EntryCounter::iterator counter = entryCounter.find((int)warp.threads.size());
 	if (counter == entryCounter.end()) {
 		entryCounter[(int)warp.threads.size()] = 1;
@@ -258,7 +266,8 @@ void LLVMDynamicExecutive::executeWarp(Warp &warp) {
 	else {
 		counter->second ++;
 	}
-	
+#endif
+
 	for (
 		ThreadContextVector::iterator ctx_it = warp.threads.begin(); 
 		ctx_it != warp.threads.end(); 
@@ -321,35 +330,64 @@ void LLVMDynamicExecutive::executeWarp(Warp &warp) {
 //! \brief construct a warp - for now, simply choose a ready thread
 void LLVMDynamicExecutive::warpFormation(Warp &warp) {
 	const size_t warpSize = api::OcelotConfiguration::get().executive.warpSize;
+	bool dynamicWarpFormation = api::OcelotConfiguration::get().executive.dynamicWarpFormation;
+	
 	warp.threads.resize(0);
 	warp.threads.reserve(warpSize);
 	
-	for (CooperativeThreadArrayMap::iterator cta_it = ctaMap.begin();
-		cta_it != ctaMap.end() && warp.threads.size() < warpSize;
-		++cta_it) {
+	if (dynamicWarpFormation) {
+		for (CooperativeThreadArrayMap::iterator cta_it = ctaMap.begin();
+			cta_it != ctaMap.end() && warp.threads.size() < warpSize;
+			++cta_it) {
 		
-		for (ThreadContextQueue::iterator ctx_it = cta_it->second.readyQueue.begin();
-			ctx_it != cta_it->second.readyQueue.end() && warp.threads.size() < warpSize;) {
-			EntryId entryId = getResumePoint(*ctx_it);
-			if (!warp.threads.size() || entryId == warp.entryId) {
-				warp.entryId = entryId;
-				warp.threads.push_back(*ctx_it);
-				ctx_it = cta_it->second.readyQueue.erase(ctx_it);
-			}
-			else {
-				++ctx_it;
+			for (ThreadContextQueue::iterator ctx_it = cta_it->second.readyQueue.begin();
+				ctx_it != cta_it->second.readyQueue.end() && warp.threads.size() < warpSize;) {
+				EntryId entryId = getResumePoint(*ctx_it);
+				if (!warp.threads.size() || entryId == warp.entryId) {
+					warp.entryId = entryId;
+					warp.threads.push_back(*ctx_it);
+					ctx_it = cta_it->second.readyQueue.erase(ctx_it);
+				}
+				else {
+					++ctx_it;
+				}
 			}
 		}
 	}
-	reportE(REPORT_SCHEDULE_OPERATIONS, 
-		"formed warp of size " << warp.threads.size() << " with entryId " << warp.entryId);
+	else {
+		// statically choose warp<=>thread mapping
+		bool earlyExit = true;
+		for (CooperativeThreadArrayMap::iterator cta_it = ctaMap.begin();
+			cta_it != ctaMap.end() && warp.threads.size() < warpSize && earlyExit;
+			++cta_it) {
 		
-	assert(warp.threads.size() && " failed to choose threads to form warp");
+			for (ThreadContextQueue::iterator ctx_it = cta_it->second.readyQueue.begin();
+				ctx_it != cta_it->second.readyQueue.end() && warp.threads.size() < warpSize  && earlyExit;) {
+				EntryId entryId = getResumePoint(*ctx_it);
+				
+				reportE(REPORT_SCHEDULE_OPERATIONS, "  ready thread " << getThreadId(*ctx_it) << " for entry " << entryId);
+				
+				if (!warp.threads.size()) {
+					warp.entryId = entryId;
+					warp.threads.push_back(*ctx_it);
+					ctx_it = cta_it->second.readyQueue.erase(ctx_it);
+				}
+				else if (entryId == warp.entryId && 
+					getThreadId(*ctx_it) == getThreadId(warp.threads.back()) + 1) {
+					warp.threads.push_back(*ctx_it);
+					ctx_it = cta_it->second.readyQueue.erase(ctx_it);
+				}
+				else {
+					earlyExit = false;
+				}
+			}
+		}
+	}
 	
 	size_t p = warp.threads.size();
 	while (!hydrazine::isPowerOfTwo((unsigned int)p)) {
 		LLVMContext & ctx = warp.threads[p - 1];
-		
+	
 		unsigned int ctaId = LLVMDynamicExecutive::ctaId(ctx);
 		ctaMap[ctaId].readyQueue.push_back(ctx);
 		--p;
@@ -357,6 +395,11 @@ void LLVMDynamicExecutive::warpFormation(Warp &warp) {
 	if (p < warp.threads.size()) {
 		warp.threads.resize(p);
 	}
+	reportE(REPORT_SCHEDULE_OPERATIONS, 
+		"formed warp of size " << warp.threads.size() << " with entryId " << warp.entryId);
+	
+	assert(warp.threads.size() && " failed to choose threads to form warp");
+
 	assert(hydrazine::isPowerOfTwo((unsigned int)warp.threads.size()) && "warp size must be power of two");
 }
 

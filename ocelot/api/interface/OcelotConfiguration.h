@@ -168,6 +168,9 @@ namespace api {
 			//! \brief suggested warp size
 			int warpSize;
 			
+			//! \brief if true, dynamically reforms warps
+			bool dynamicWarpFormation;
+			
 			//! \brief indicates whether to print LLVM module
 			bool printLLVMModule;
 			

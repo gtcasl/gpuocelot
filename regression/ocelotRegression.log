@@ -1,31 +1,56 @@
-INFO     Reading in test file /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/regression/ocelotRegressionTests.txt
+INFO     Reading in test file /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/regression/ocelotRegressionTests.txt
 INFO      Found the following tests:
-INFO       /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestLexer
-INFO       /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestParser
-INFO       /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestEmulator
-INFO       /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestInstructions
-INFO       /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestKernels
-INFO       /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestDataflowGraph
-INFO       /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestLLVMInstructions
-INFO       /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestPTXToLLVMTranslator
-INFO       /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestLLVMKernels
-INFO       /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaMalloc
-INFO       /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaTexture2D
-INFO       /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaTextureArray
-INFO       /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaGlobals
-INFO       /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestDeviceSwitching
-INFO       /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaSequence
-INFO       /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCalVectorScale
-INFO       /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestPTXAssembly
-INFO       /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestFunctionCall
-INFO       /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestIndirectFunctionCall
-INFO       /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestConvergence
+INFO       /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestLexer
+INFO       /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestParser
+INFO       /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestEmulator
+INFO       /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestInstructions
+INFO       /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestKernels
+INFO       /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestDataflowGraph
+INFO       /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestLLVMInstructions
+INFO       /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestPTXToLLVMTranslator
+INFO       /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestLLVMKernels
+INFO       /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaMalloc
+INFO       /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaTexture2D
+INFO       /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaTextureArray
+INFO       /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaGlobals
+INFO       /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestDeviceSwitching
+INFO       /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaSequence
+INFO       /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCalVectorScale
+INFO       /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestPTXAssembly
+INFO       /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestFunctionCall
+INFO       /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestIndirectFunctionCall
+INFO       /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestConvergence
 INFO     ==== INDIVIDUAL TEST RESULTS ====
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestParser -i ../tests/ptx 
-INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestPTXToLLVMTranslator -i ../tests/ptx 
-INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestPTXToLLVMTranslator
-INFO     Test completed in 2.23782682419 seconds
+INFO     Running test program /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestLexer -i ../tests/ptx 
+INFO     Running test program /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestPTXToLLVMTranslator -i ../tests/ptx 
+INFO     Running test program /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaTexture2D 
+INFO     Running test program /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCalVectorScale 
+INFO     Running test program /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestKernels 
+INFO     Running test program /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestInstructions 
+INFO     Running test program /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaTextureArray 
+INFO     Running test program /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaGlobals 
+INFO     Test /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestLexer
+INFO     Test completed in 0.0246469974518 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+
+Name : TestLexer
+
+Description: Tests for the PTX lexer. Test Point 1: Scan a PTX file and 
+             write out a temp stream, scan the stream again and make sure that the 
+             two sets of tokens match
+
+
+Test Seed : 1306777466
+Test time : 1.14441e-05
+
+Status : 
+
+
+INFO     Test /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestPTXToLLVMTranslator
+INFO     Test completed in 0.024924993515 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -38,55 +63,23 @@ Description: This is a basic test that just tries to get through a
              translate them.
 
 
-Test Seed : 1306620399
-Test time : 0.0107837
+Test Seed : 1306777466
+Test time : 1.07288e-05
 
 Status : 
 
 
-INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestParser
-INFO     Test completed in 2.24299502373 seconds
+INFO     Running test program /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestConvergence 
+INFO     Running test program /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestParser -i ../tests/ptx 
+INFO     Test /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCalVectorScale
+INFO     Test completed in 0.0275728702545 seconds
 INFO      It produced the following output:
+No CAL devices found
 Pass/Fail : Pass
 
-
-Name : TestParser
-
-Description: A test for the PTXParser class. Test Points: 1) Load a PTX file 
-             and run it through the parser generating a module. Write the 
-             module to an intermediate stream. Parse the stream again 
-             generating a new module, compare both to make sure that they match.
-
-
-Test Seed : 1306620399
-Test time : 4.64916e-05
-
-Status : 
-
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaMalloc 
-INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestPTXAssembly 
-INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaMalloc
-INFO     Test completed in 0.956967830658 seconds
-INFO      It produced the following output:
-test_malloc(256, 128)
-PASSED
-test_mallocArray(256, 128)
-checking results from last cudaMemcpyFromArray
-PASSED
-[1] mallocing pitch
-[2] memcpying2d
-[3] memcpying
-[4] checking for errors
-[5] mallocing
-[6] memcpying
-[7] memcpying
-[8] final free
-Pass/Fail : Pass
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestInstructions 
-INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestInstructions
-INFO     Test completed in 0.220674037933 seconds
+INFO     Running test program /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestDataflowGraph -i ../tests/ptx 
+INFO     Test /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestInstructions
+INFO     Test completed in 0.0286538600922 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -96,8 +89,8 @@ Name : TestInstructions
 Description: 
 
 
-Test Seed : 1306620400
-Test time : 0.00254679
+Test Seed : 1306777466
+Test time : 0.000636578
 
 Status : Test output:
 Accessors test passed.
@@ -113,109 +106,9 @@ pass: control flow instructions
 
 
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestEmulator 
-INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestEmulator
-INFO     Test completed in 0.122488975525 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-
-Name : TestEmulator
-
-Description: 
-
-
-Test Seed : 1306620400
-Test time : 0.0141468
-
-Status : Test output:
-10 registers
-Register test passed
-Load test passed
-Store test passed
-no errors
-Full kernel test passed
-
-
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaGlobals 
-INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaGlobals
-INFO     Test completed in 0.831752061844 seconds
-INFO      It produced the following output:
-cudaSetDevice() - 0 - Ocelot Dynamic Multicore CPU Backend (LLVM-JIT) 
-Pass/Fail : Pass
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaTextureArray 
-INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestPTXAssembly
-INFO     Test completed in 3.01268696785 seconds
-INFO      It produced the following output:
-TestPTXAssembly: ocelot/executive/implementation/LLVMDynamicTranslationCache.cpp:1032: void executive::setupCallTargets(ir::PTXKernel&, const executive::LLVMDynamicTranslationCache&): Assertion `0 && "arbitrary function calls not yet supported"' failed.
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestIndirectFunctionCall 
-INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestIndirectFunctionCall
-INFO     Test completed in 0.0703010559082 seconds
-INFO      It produced the following output:
-TestIndirectFunctionCall: ocelot/executive/implementation/LLVMDynamicTranslationCache.cpp:1032: void executive::setupCallTargets(ir::PTXKernel&, const executive::LLVMDynamicTranslationCache&): Assertion `0 && "arbitrary function calls not yet supported"' failed.
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestLexer -i ../tests/ptx 
-INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestLexer
-INFO     Test completed in 0.202409982681 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-
-Name : TestLexer
-
-Description: Tests for the PTX lexer. Test Point 1: Scan a PTX file and 
-             write out a temp stream, scan the stream again and make sure that the 
-             two sets of tokens match
-
-
-Test Seed : 1306620402
-Test time : 1.66893e-05
-
-Status : 
-
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestKernels 
-INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaTextureArray
-INFO     Test completed in 1.30299401283 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestDeviceSwitching 
-INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestDeviceSwitching
-INFO     Test completed in 0.0614621639252 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-
-Name : TestDeviceSwitching
-
-Description: A unit test for the ability of the CUDA runtime to switch 
-             between devices and use multiple threads Test Points: 1) In a single 
-             threaded application, iterate across all devices launching the same 
-             simple kernel each time 2) Test context migration support in 
-             ocelot. Iterate across all devices, launching a simple kernel that 
-             updates shared variable. Use the context switch mechanism to 
-             migrate the shared data. 3) Test multi-threading support. Launch one 
-             host thread to allocate memory, pass pointers to worker 
-             threads, each of which should launch independent kernels in 
-             parallel.
-
-
-Test Seed : 1306620402
-Test time : 0.0193343
-
-Status : Test Point 1 Passed
-Test Point 2 Passed
-Test Point 3 Passed
-
-
-
-INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestLLVMInstructions 
-INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestKernels
-INFO     Test completed in 0.316438913345 seconds
+INFO     Running test program /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestFunctionCall 
+INFO     Test /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestKernels
+INFO     Test completed in 0.0357739925385 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -225,8 +118,8 @@ Name : TestKernels
 Description: 
 
 
-Test Seed : 1306620402
-Test time : 0.10517
+Test Seed : 1306777466
+Test time : 0.0115111
 
 Status : Test output:
 looping kernel succeeded
@@ -234,9 +127,78 @@ matrix vector kernel succeeded
 
 
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaTexture2D 
-INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestLLVMInstructions
-INFO     Test completed in 0.149970054626 seconds
+INFO     Running test program /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaSequence 
+INFO     Test /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestParser
+INFO     Test completed in 0.0200340747833 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+
+Name : TestParser
+
+Description: A test for the PTXParser class. Test Points: 1) Load a PTX file 
+             and run it through the parser generating a module. Write the 
+             module to an intermediate stream. Parse the stream again 
+             generating a new module, compare both to make sure that they match.
+
+
+Test Seed : 1306777466
+Test time : 1.04904e-05
+
+Status : 
+
+
+INFO     Running test program /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestLLVMInstructions 
+INFO     Test /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestDataflowGraph
+INFO     Test completed in 0.0256538391113 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+
+Name : TestDataflowGraph
+
+Description: A test for the DataflowGraph class. Test Points: 1) 
+             Generic: load PTX files, convert them into dataflow graphs, verify that 
+             all live ranges spanning blocks are consistent. 2) SSA: convert to 
+             ssa form, verify that no register is declared more than once. 3) 
+             reverse SSA: convert to ssa then out of ssa, verify that all live 
+             ranges spanning blocks are consistent.
+
+
+Test Seed : 1306777466
+Test time : 2.00272e-05
+
+Status : Testing Generic Dataflow
+ Test Passed
+Testing SSA Dataflow
+ Test Passed
+Testing SSA then back Dataflow
+ Test Passed
+
+
+
+INFO     Test /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaTexture2D
+INFO     Test completed in 0.0548579692841 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+INFO     Running test program /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestDeviceSwitching 
+INFO     Running test program /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestEmulator 
+INFO     Test /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaTextureArray
+INFO     Test completed in 0.0549948215485 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+INFO     Running test program /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestLLVMKernels 
+INFO     Test /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaGlobals
+INFO     Test completed in 0.0608179569244 seconds
+INFO      It produced the following output:
+cudaSetDevice() - 0 - Ocelot Dynamic Multicore CPU Backend (LLVM-JIT) 
+Pass/Fail : Pass
+
+INFO     Running test program /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestPTXAssembly 
+INFO     Test /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestLLVMInstructions
+INFO     Test completed in 0.0241050720215 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -250,8 +212,8 @@ Description: A test for the assembly code generation and automatic
              check, compare to references from the LLVM manual.
 
 
-Test Seed : 1306620403
-Test time : 0.00131226
+Test Seed : 1306777466
+Test time : 0.00104189
 
 Status :  Checked instruction "<result> = add i32 4, %var"
 Add Instruction Passed
@@ -382,101 +344,139 @@ Zext Instruction Passed
 
 
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestDataflowGraph -i ../tests/ptx 
-INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestDataflowGraph
-INFO     Test completed in 0.375170946121 seconds
+INFO     Test /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestFunctionCall
+INFO     Test completed in 0.0394220352173 seconds
+INFO      It produced the following output:
+TestFunctionCall: ocelot/executive/implementation/LLVMDynamicTranslationCache.cpp:1033: void executive::setupCallTargets(ir::PTXKernel&, const executive::LLVMDynamicTranslationCache&): Assertion `0 && "arbitrary function calls not yet supported"' failed.
+
+INFO     Test /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestConvergence
+INFO     Test completed in 0.0476360321045 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+INFO     Running test program /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaMalloc 
+INFO     Running test program /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestIndirectFunctionCall 
+INFO     Test /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestEmulator
+INFO     Test completed in 0.0218069553375 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
 
-Name : TestDataflowGraph
+Name : TestEmulator
 
-Description: A test for the DataflowGraph class. Test Points: 1) 
-             Generic: load PTX files, convert them into dataflow graphs, verify that 
-             all live ranges spanning blocks are consistent. 2) SSA: convert to 
-             ssa form, verify that no register is declared more than once. 3) 
-             reverse SSA: convert to ssa then out of ssa, verify that all live 
-             ranges spanning blocks are consistent.
+Description: 
 
 
-Test Seed : 1306620403
-Test time : 5.26905e-05
+Test Seed : 1306777466
+Test time : 0.0030787
 
-Status : Testing Generic Dataflow
- Test Passed
-Testing SSA Dataflow
- Test Passed
-Testing SSA then back Dataflow
- Test Passed
+Status : Test output:
+10 registers
+Register test passed
+Load test passed
+Store test passed
+no errors
+Full kernel test passed
 
 
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaSequence 
-INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaSequence
-INFO     Test completed in 0.519169807434 seconds
+INFO     Test /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestDeviceSwitching
+INFO     Test completed in 0.0458400249481 seconds
 INFO      It produced the following output:
-Loaded libcuda.so explicitly; unloading now.
-A_host = 0x1c36db0
-A_gpu = 0x1c37600
-cudaMemcpy(0x1c36db0, 0x1c37600) - APP
 Pass/Fail : Pass
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestFunctionCall 
-INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestFunctionCall
-INFO     Test completed in 0.0587480068207 seconds
-INFO      It produced the following output:
-TestFunctionCall: ocelot/executive/implementation/LLVMDynamicTranslationCache.cpp:1032: void executive::setupCallTargets(ir::PTXKernel&, const executive::LLVMDynamicTranslationCache&): Assertion `0 && "arbitrary function calls not yet supported"' failed.
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCalVectorScale 
-INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCalVectorScale
-INFO     Test completed in 0.0455839633942 seconds
-INFO      It produced the following output:
-No CAL devices found
-Pass/Fail : Pass
+Name : TestDeviceSwitching
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestLLVMKernels 
-INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestLLVMKernels
-INFO     Test completed in 0.0869081020355 seconds
+Description: A unit test for the ability of the CUDA runtime to switch 
+             between devices and use multiple threads Test Points: 1) In a single 
+             threaded application, iterate across all devices launching the same 
+             simple kernel each time 2) Test context migration support in 
+             ocelot. Iterate across all devices, launching a simple kernel that 
+             updates shared variable. Use the context switch mechanism to 
+             migrate the shared data. 3) Test multi-threading support. Launch one 
+             host thread to allocate memory, pass pointers to worker 
+             threads, each of which should launch independent kernels in 
+             parallel.
+
+
+Test Seed : 1306777466
+Test time : 0.0100551
+
+Status : Test Point 1 Passed
+Test Point 2 Passed
+Test Point 3 Passed
+
+
+
+INFO     Test /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestIndirectFunctionCall
+INFO     Test completed in 0.0287909507751 seconds
+INFO      It produced the following output:
+TestIndirectFunctionCall: ocelot/executive/implementation/LLVMDynamicTranslationCache.cpp:1033: void executive::setupCallTargets(ir::PTXKernel&, const executive::LLVMDynamicTranslationCache&): Assertion `0 && "arbitrary function calls not yet supported"' failed.
+
+INFO     Test /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestLLVMKernels
+INFO     Test completed in 0.0478920936584 seconds
 INFO      It produced the following output:
 Failed in finding existing divergence handler for block _Z17k_sequenceLoopingPfi_scheduler - candidate would have label _Z17k_sequenceLoopingPfi_scheduler_exit_ws_4
-TestLLVMKernels: ocelot/analysis/implementation/LLVMUniformVectorization.cpp:977: void analysis::LLVMUniformVectorization::Translation::handleDivergentBranch(analysis::LLVMUniformVectorization::DivergentBranch&): Assertion `divergent.handler && "Failed in finding existing divergence handler"' failed.
+TestLLVMKernels: ocelot/analysis/implementation/LLVMUniformVectorization.cpp:1083: void analysis::LLVMUniformVectorization::Translation::handleDivergentBranch(analysis::LLVMUniformVectorization::DivergentBranch&): Assertion `divergent.handler && "Failed in finding existing divergence handler"' failed.
 Stack dump:
 0.	Running pass 'Function Pass Manager' on module '_Z17k_sequenceLoopingPfi'.
 1.	Running pass 'Ocelot LLVM Uniform Vectorization' on function '@_Z_ocelotTranslated__Z17k_sequenceLoopingPfi'
 
-INFO     Running test program /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestConvergence 
-INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestConvergence
-INFO     Test completed in 0.0626380443573 seconds
+INFO     Test /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaMalloc
+INFO     Test completed in 0.0517861843109 seconds
 INFO      It produced the following output:
+test_malloc(256, 128)
+PASSED
+test_mallocArray(256, 128)
+checking results from last cudaMemcpyFromArray
+PASSED
+[1] mallocing pitch
+[2] memcpying2d
+[3] memcpying
+[4] checking for errors
+[5] mallocing
+[6] memcpying
+[7] memcpying
+[8] final free
 Pass/Fail : Pass
 
-INFO     Test /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaTexture2D
-INFO     Test completed in 1.61084103584 seconds
+INFO     Test /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaSequence
+INFO     Test completed in 0.132911920547 seconds
 INFO      It produced the following output:
+Loaded libcuda.so explicitly; unloading now.
+A_host = 0x2237850
+A_gpu = 0x2234f00
+cudaMemcpy(0x2237850, 0x2234f00) - APP
 Pass/Fail : Pass
+
+INFO     Test /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestPTXAssembly
+INFO     Test completed in 2.67132616043 seconds
+INFO      It produced the following output:
+TestPTXAssembly: ocelot/executive/implementation/LLVMDynamicTranslationCache.cpp:1033: void executive::setupCallTargets(ir::PTXKernel&, const executive::LLVMDynamicTranslationCache&): Assertion `0 && "arbitrary function calls not yet supported"' failed.
 
 INFO     
 Passing tests:
- (0.063s) : /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestConvergence : Passed
- (2.238s) : /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestPTXToLLVMTranslator : Passed
- (0.221s) : /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestInstructions : Passed
- (0.202s) : /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestLexer : Passed
- (2.243s) : /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestParser : Passed
- (0.957s) : /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaMalloc : Passed
- (0.046s) : /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCalVectorScale : Passed
- (1.303s) : /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaTextureArray : Passed
- (0.316s) : /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestKernels : Passed
- (0.375s) : /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestDataflowGraph : Passed
- (0.519s) : /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaSequence : Passed
- (0.122s) : /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestEmulator : Passed
- (0.150s) : /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestLLVMInstructions : Passed
- (0.832s) : /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaGlobals : Passed
- (0.061s) : /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestDeviceSwitching : Passed
- (1.611s) : /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaTexture2D : Passed
+ (0.024s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestLLVMInstructions : Passed
+ (0.025s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestPTXToLLVMTranslator : Passed
+ (0.028s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCalVectorScale : Passed
+ (0.061s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaGlobals : Passed
+ (0.026s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestDataflowGraph : Passed
+ (0.029s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestInstructions : Passed
+ (0.055s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaTexture2D : Passed
+ (0.025s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestLexer : Passed
+ (0.048s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestConvergence : Passed
+ (0.046s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestDeviceSwitching : Passed
+ (0.133s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaSequence : Passed
+ (0.036s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestKernels : Passed
+ (0.020s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestParser : Passed
+ (0.052s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaMalloc : Passed
+ (0.022s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestEmulator : Passed
+ (0.055s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestCudaTextureArray : Passed
 
 Failing tests:
- (0.087s) : /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestLLVMKernels : Did not complete.
- (3.013s) : /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestPTXAssembly : Did not complete.
- (0.059s) : /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestFunctionCall : Did not complete.
- (0.070s) : /home/andrew/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestIndirectFunctionCall : Did not complete.
+ (0.029s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestIndirectFunctionCall : Did not complete.
+ (2.671s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestPTXAssembly : Did not complete.
+ (0.039s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestFunctionCall : Did not complete.
+ (0.048s) : /home/akerr/repositories/gpuocelot/branches/ocelot-vector-ptx2.1/TestLLVMKernels : Did not complete.
 

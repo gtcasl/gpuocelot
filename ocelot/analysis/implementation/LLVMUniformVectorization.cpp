@@ -27,6 +27,10 @@
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
+#define DYNAMIC_WARP_FORMATION 1
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
 #define Ocelot_Exception(x) { std::stringstream ss; ss << x; std::cerr << x << std::endl; throw hydrazine::Exception(ss.str()); }
 
 #ifdef REPORT_BASE
@@ -256,6 +260,9 @@ void analysis::LLVMUniformVectorization::Translation::runOnFunction() {
 		report("Updating control flow among warp-synchronous replicated blocks");
 		resolveControlFlow();
 		
+		report("Replacing uses of context object with thread-local accesses");
+		replaceContextReferences();
+		
 		report("Vectorizing replicated instruction bundles");		
 		vectorize();
 	}
@@ -277,6 +284,7 @@ void analysis::LLVMUniformVectorization::Translation::runOnFunction() {
 	}
 	
 	report("Iterating over predecessors to WarpSynchronousEntry");
+	
 	
 	for (llvm::pred_iterator PI = llvm::pred_begin(subkernelEntry.prologue); 
 		PI != llvm::pred_end(subkernelEntry.prologue); ++PI) {
@@ -466,7 +474,9 @@ void analysis::LLVMUniformVectorization::Translation::loadThreadLocalArguments()
 	report("loadThreadLocalArguments");
 	llvm::Value *context = &*(F->arg_begin());
 	llvm::BasicBlock *schedulerBlock = subkernelEntry.prologue;
-		
+	
+	const char *label[] = {"threadId", "blockDim", "blockId", "gridDim"};
+	const char *suffix[] = {"x", "y", "z"};
 	for (int tid = 0; tid < warpSize; tid++) {
 		
 		{
@@ -481,49 +491,144 @@ void analysis::LLVMUniformVectorization::Translation::loadThreadLocalArguments()
 			ss << "localMemPtr." << tid;
 			threadLocalArguments.localPointer.push_back(new llvm::LoadInst(ptr, ss.str(), schedulerBlock));
 		}
-		{
-			std::stringstream ss;
-			std::vector< llvm::Value *> idx;
-			idx.push_back(pass->getConstInt32(tid));
-			idx.push_back(pass->getConstInt32(3));
-			idx.push_back(pass->getConstInt32(0));
 		
-			llvm::Instruction *ptr = llvm::GetElementPtrInst::Create(context,
-				idx.begin(), idx.end(), "ptrTidXptr", schedulerBlock);
+		ThreadLocalArgument::ThreadLocalArgumentVector ThreadLocalArgument::* localArgumentVector[] = {
+			& ThreadLocalArgument::threadId_x,
+			& ThreadLocalArgument::threadId_y,
+			& ThreadLocalArgument::threadId_z,
+			
+			& ThreadLocalArgument::blockDim_x,
+			& ThreadLocalArgument::blockDim_y,
+			& ThreadLocalArgument::blockDim_z,
+			
+			& ThreadLocalArgument::blockId_x,
+			& ThreadLocalArgument::blockId_y,
+			& ThreadLocalArgument::blockId_z,
+			
+			& ThreadLocalArgument::gridDim_x,
+			& ThreadLocalArgument::gridDim_y,
+			& ThreadLocalArgument::gridDim_z,
+		};
+		for (int j = 0; j < 4; j++) {
+			for (int xx = 0; xx < 3; xx++)  {
+				std::stringstream ss;
+				std::vector< llvm::Value *> idx;
+				idx.push_back(pass->getConstInt32(tid));
+				idx.push_back(pass->getConstInt32(j));
+				idx.push_back(pass->getConstInt32(xx));
 		
-			ss << "tid_x." << tid;
-			threadLocalArguments.threadId_x.push_back(new llvm::LoadInst(ptr, ss.str(), schedulerBlock));
-		}
-		{
-			std::stringstream ss;
-			std::vector< llvm::Value *> idx;
-			idx.push_back(pass->getConstInt32(tid));
-			idx.push_back(pass->getConstInt32(3));
-			idx.push_back(pass->getConstInt32(1));
+				llvm::Instruction *ptr = llvm::GetElementPtrInst::Create(context,
+					idx.begin(), idx.end(), std::string("ptr.") + label[j] + "." + suffix[xx], schedulerBlock);
 		
-			llvm::Instruction *ptr = llvm::GetElementPtrInst::Create(context,
-				idx.begin(), idx.end(), "ptrTidYptr", schedulerBlock);
-		
-			ss << "tid_y." << tid;
-			threadLocalArguments.threadId_y.push_back(new llvm::LoadInst(ptr, ss.str(), schedulerBlock));
-		}
-		{
-			std::stringstream ss;
-			std::vector< llvm::Value *> idx;
-			idx.push_back(pass->getConstInt32(tid));
-			idx.push_back(pass->getConstInt32(3));
-			idx.push_back(pass->getConstInt32(2));
-		
-			llvm::Instruction *ptr = llvm::GetElementPtrInst::Create(context,
-				idx.begin(), idx.end(), "ptrTidZptr", schedulerBlock);
-		
-			ss << "tid_z." << tid;
-			threadLocalArguments.threadId_z.push_back(new llvm::LoadInst(ptr, ss.str(), schedulerBlock));
+				ss << label[j] << "_" << suffix[xx] << "." << tid;
+				(threadLocalArguments.*localArgumentVector[j*3+xx]).push_back(
+					new llvm::LoadInst(ptr, ss.str(), schedulerBlock));
+			}
 		}
 	}
 }
 
+
 //////////////////////////////////////////////////////////////////////////////////////////////////
+
+/*!
+	\brief given a scalar block, visit its instructions and identify loads or stores that
+		use thread local arguments - replace them with uses of the vectorized thread-local elements
+*/
+void analysis::LLVMUniformVectorization::Translation::replaceContextReferences(llvm::BasicBlock *bb) {
+
+	std::vector< llvm::GetElementPtrInst *> removeThese;
+	report("replaceContextReferences(" << bb->getNameStr() << ")");
+	
+	ThreadLocalArgument::ThreadLocalArgumentVector ThreadLocalArgument::* localArgumentVector[] = {
+		& ThreadLocalArgument::threadId_x,
+		& ThreadLocalArgument::threadId_y,
+		& ThreadLocalArgument::threadId_z,
+
+		& ThreadLocalArgument::blockDim_x,
+		& ThreadLocalArgument::blockDim_y,
+		& ThreadLocalArgument::blockDim_z,
+
+		& ThreadLocalArgument::blockId_x,
+		& ThreadLocalArgument::blockId_y,
+		& ThreadLocalArgument::blockId_z,
+
+		& ThreadLocalArgument::gridDim_x,
+		& ThreadLocalArgument::gridDim_y,
+		& ThreadLocalArgument::gridDim_z,
+	};
+					
+	for (llvm::BasicBlock::iterator instr = bb->begin(); instr != bb->end(); ++instr) { 	
+		if (llvm::GetElementPtrInst *ptrInst = llvm::dyn_cast<llvm::GetElementPtrInst>(&*instr)) {
+			if (ptrInst->getPointerOperand()->getNameStr() != "__ctaContext") {
+				continue;		
+			}
+			
+			// it's a thread-local object - replace with a use
+			//
+			// local mem pointer (0, 4)
+			// thread idx (0, 3, 0)
+			// thread idy (0, 3, 1)
+			// thread idz (0, 3, 2)			
+			ThreadLocalArgument::ThreadLocalArgumentVector ThreadLocalArgument::* threadLocal;
+			bool found = false;
+			std::vector< int > indices;
+			for (llvm::GetElementPtrInst::op_iterator idx = ptrInst->idx_begin(); 
+				idx != ptrInst->idx_end(); ++idx) {
+				int idxValue = (int)llvm::dyn_cast<llvm::ConstantInt>(*idx)->getZExtValue();
+				indices.push_back(idxValue);
+			}
+			
+			if(indices.size() > 1) {
+				if (indices[1] == 4 && indices.size() == 2) {
+					// local memory pointer
+					threadLocal = &ThreadLocalArgument::localPointer;
+					found = true;
+				}
+				else if (indices[1] < 4 && indices.size() == 3) {
+					threadLocal = localArgumentVector[indices[1] * 3 + indices[2]];
+					found = true;
+				}
+			}
+			if (found) {
+				bool remove = true;
+				for (llvm::Value::use_iterator use = ptrInst->use_begin(); 
+					remove && use != ptrInst->use_end(); ++use) {
+					
+					remove = false;
+					if (llvm::LoadInst *loadInst = llvm::dyn_cast<llvm::LoadInst>(*use)) {
+						WarpInstructionMap::iterator warp_it = warpInstructionMap.find(loadInst);
+						if (warp_it != warpInstructionMap.end()) {
+							ThreadLocalArgument::ThreadLocalArgumentVector &local = (threadLocalArguments.*threadLocal);
+							
+							for (InstructionVector::iterator rep_it = warp_it->second.replicated.begin();
+								rep_it != warp_it->second.replicated.end(); ++rep_it) {
+								int tid = rep_it - warp_it->second.replicated.begin();
+								(*rep_it)->replaceAllUsesWith(local[tid]);
+							}
+							remove = true;
+							warpInstructionMap.erase(warp_it);
+						}
+					}
+				}
+				if (remove) {
+					removeThese.push_back(ptrInst);
+				}
+			}
+		}
+	}
+}
+
+/*!
+	\brief iterates over scalar representation and updates the vectorized representation
+*/
+void analysis::LLVMUniformVectorization::Translation::replaceContextReferences() {
+	for (BasicBlockList::iterator bb_it = traversal.begin(); bb_it != traversal.end(); ++bb_it ) {
+		replaceContextReferences(*bb_it);
+	}
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /*!
 	\brief 
@@ -592,7 +697,7 @@ void analysis::LLVMUniformVectorization::Translation::addInterleavedInstructions
 					instList.push_back(instr);
 
 					warpInstructionMap[(&*inst_it)].replicated.push_back(instr);
-					
+				
 					if (llvm::GetElementPtrInst *ptrInst = llvm::dyn_cast<llvm::GetElementPtrInst>(instr)) {
 						if (ptrInst->getPointerOperand()->getNameStr() == "__ctaContext") {
 							ptrInst->setOperand(1, pass->getConstInt32(tid));
@@ -612,6 +717,7 @@ void analysis::LLVMUniformVectorization::Translation::addInterleavedInstructions
 		}
 	}
 }
+
 
 /*!
 	\brief visits all cloned instructions and resolves dependencies

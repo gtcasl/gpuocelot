@@ -32,6 +32,7 @@
 		optimizationLevel: full,
 		workerThreadLimit: 1,
 		warpSize: 4,
+		dynamicWarpFormation: false,
 		printLLVMModule: false
 	},
 	optimizations: {

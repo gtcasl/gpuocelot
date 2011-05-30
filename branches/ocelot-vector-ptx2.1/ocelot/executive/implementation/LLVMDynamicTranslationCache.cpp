@@ -56,7 +56,7 @@
 #define REPORT_PTX_SUBKERNELS 0
 
 #define REPORT_LLVM_MASTER 1							// master toggle for reporting LLVM kernels
-#define REPORT_SOURCE_LLVM_ASSEMBLY 1			// assembly output of translator
+#define REPORT_SOURCE_LLVM_ASSEMBLY 0			// assembly output of translator
 #define REPORT_ALL_LLVM_ASSEMBLY 0				// turns on LLOVM assembly at each state
 #define REPORT_OPTIMIZED_LLVM_ASSEMBLY 1	// final output of LLVM translation and optimization
 #define REPORT_LLVM_VERIFY_FAILURE 1			// emit assembly if verification fails
@@ -1124,7 +1124,7 @@ static LLVMDynamicExecutive::Metadata* generateMetadata(
 /*!
 	\brief displays just the control flow instructions and blocks of a function
 */
-void debugEmitLLVMKernel(std::ostream &out, llvm::Function *function) {
+void debugEmitLLVMKernel(std::ostream &out, llvm::Function *function, bool elide = true) {
 	out << function->getNameStr() << " {\n";
 	for (llvm::Function::iterator bb_it = function->begin(); bb_it != function->end(); ++bb_it) {
 		
@@ -1148,8 +1148,12 @@ void debugEmitLLVMKernel(std::ostream &out, llvm::Function *function) {
 				Instruction_print(term, &*inst_it);
 				term << "\n";
 			}
-			else {
+			else if (elided) {
 				++elided;
+			}
+			else {
+				Instruction_print(term, &*inst_it);
+				term << "\n";
 			}
 		}
 		out << "\"" << bb_it->getNameStr() << "\": ";
@@ -1275,7 +1279,7 @@ static void cloneAndOptimizeTranslation(
 	manager.run(*translation->llvmFunction);
 
 #if REPORT_BASE && REPORT_LLVM_MASTER && REPORT_OPTIMIZED_LLVM_ASSEMBLY
-	debugEmitLLVMKernel(std::cerr, translation->llvmFunction);
+	debugEmitLLVMKernel(std::cerr, translation->llvmFunction, false);
 #endif
 
 	// we can't verify errors until this point

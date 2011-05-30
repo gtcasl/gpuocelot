@@ -3,9 +3,6 @@
 	\brief configuration class for GPU Ocelot
 */
 
-// C stdlib includes
-#include <assert.h>
-
 // Ocelot includes
 #include <ocelot/api/interface/OcelotConfiguration.h>
 
@@ -19,6 +16,9 @@
 #include <hydrazine/interface/Version.h>
 #include <hydrazine/implementation/Exception.h>
 #include <hydrazine/implementation/debug.h>
+
+// C stdlib includes
+#include <cassert>
 
 #ifdef REPORT_BASE
 #undef REPORT_BASE
@@ -300,6 +300,21 @@ static void initializeOptimizations(
 	hydrazine::json::Visitor config) {
 
 	optimizations.subkernelSize = config.parse<int>("subkernelSize", 50);
+
+	optimizations.structuralTransform =
+		config.parse<bool>("structuralTransform", false);
+			
+	optimizations.predicateToSelect =
+		config.parse<bool>("predicateToSelect", false);
+			
+	optimizations.linearScanAllocation =
+		config.parse<bool>("linearScanAllocation", false);
+			
+	optimizations.mimdThreadScheduling =
+		config.parse<bool>("mimdThreadScheduling", false);
+			
+	optimizations.syncElimination =
+		config.parse<bool>("syncElimination", false);			
 }
 
 api::OcelotConfiguration::OcelotConfiguration() {

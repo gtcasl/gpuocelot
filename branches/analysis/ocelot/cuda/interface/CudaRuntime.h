@@ -19,12 +19,15 @@
 // Ocelot libs
 #include <ocelot/cuda/interface/CudaRuntimeInterface.h>
 #include <ocelot/executive/interface/Device.h>
-#include <ocelot/transforms/interface/PassManager.h>
 #include <ocelot/cuda/interface/FatBinaryContext.h>
 #include <ocelot/ir/interface/ExternalFunctionSet.h>
 
 // Hydrazine includes
 #include <hydrazine/implementation/Timer.h>
+
+// Forward Declarations
+
+namespace transforms { class Pass; }
 
 namespace cuda {
 
@@ -90,8 +93,6 @@ namespace cuda {
 
 		//! set of trace generators to be inserted into emulated kernels
 		trace::TraceGeneratorVector nextTraceGenerators;
-		
-		int ptxPasses;
 			
 	public:
 		HostThreadContext();
@@ -179,6 +180,9 @@ namespace cuda {
 			cudaChannelFormatDesc format;
 	};
 	
+	/*! \brief Set of PTX passes */
+	typedef std::set< transforms::Pass* > PassSet;
+
 	typedef std::vector< FatBinaryContext > FatBinaryVector;
 	typedef std::map< void*, RegisteredGlobal > RegisteredGlobalMap;
 	typedef std::map< void*, RegisteredTexture > RegisteredTextureMap;
@@ -286,6 +290,9 @@ namespace cuda {
 	
 		//! external functions
 		ir::ExternalFunctionSet _externals;
+		
+		//! PTX passes
+		PassSet _passes;
 	
 	private:
 		cudaError_t _launchKernel(const std::string& module, 

@@ -337,6 +337,10 @@ void ThreadFrontierAnalysis::_computeFrontiers(ir::IRKernel& kernel)
 	
 	BlockSet outstandingWarps;
 	
+	unsigned int min = -1;
+	unsigned int max =  0;
+	unsigned int avg =  0;
+	
 	// walk the list in priority order, track possibly divergent warps
 	for(ReversePriorityMap::const_iterator
 		priorityAndBlock = priorityToBlocks.begin();
@@ -358,6 +362,10 @@ void ThreadFrontierAnalysis::_computeFrontiers(ir::IRKernel& kernel)
 			frontier.push_back(*b);	
 		}
 		
+		avg += frontier.size();
+		min =  std::min(min, frontier.size());
+		max =  std::max(max, frontier.size());
+		
 		_frontiers.insert(std::make_pair(block, frontier));
 		
 		// add block successors if they have not already been scheduled
@@ -371,6 +379,10 @@ void ThreadFrontierAnalysis::_computeFrontiers(ir::IRKernel& kernel)
 			}
 		}
 	}
+	
+	std::cout << "Min: " << min << "\n";
+	std::cout << "Max: " << max << "\n";
+	std::cout << "Avg: " << ((float)avg/priorityToBlocks.size()) << "\n";
 }
 
 }

@@ -15,6 +15,7 @@
 #include <ocelot/cuda/interface/CudaDriver.h>
 #include <ocelot/ir/interface/PTXInstruction.h>
 #include <ocelot/executive/interface/RuntimeException.h>
+#include <ocelot/transforms/interface/PassManager.h>
 
 // Hydrazine includes
 #include <hydrazine/implementation/Exception.h>
@@ -71,8 +72,7 @@ cuda::HostThreadContext::HostThreadContext(const HostThreadContext& c):
 	parameterIndices(c.parameterIndices),
 	parameterSizes(c.parameterSizes),
 	persistentTraceGenerators(c.persistentTraceGenerators),
-	nextTraceGenerators(c.nextTraceGenerators),
-	ptxPasses(c.ptxPasses) {
+	nextTraceGenerators(c.nextTraceGenerators) {
 	memcpy(parameterBlock, c.parameterBlock, parameterBlockSize);
 }
 
@@ -87,7 +87,6 @@ cuda::HostThreadContext& cuda::HostThreadContext::operator=(
 	parameterSizes = c.parameterSizes;
 	persistentTraceGenerators = c.persistentTraceGenerators;
 	nextTraceGenerators = c.nextTraceGenerators;
-	ptxPasses = c.ptxPasses;
 	memcpy(parameterBlock, c.parameterBlock, parameterBlockSize);
 	return *this;
 }
@@ -109,7 +108,6 @@ cuda::HostThreadContext& cuda::HostThreadContext::operator=(
 	std::swap(parameterSizes, c.parameterSizes);
 	std::swap(persistentTraceGenerators, c.persistentTraceGenerators);
 	std::swap(nextTraceGenerators, c.nextTraceGenerators);
-	std::swap(ptxPasses, c.ptxPasses);
 	return *this;
 }
 
@@ -447,6 +445,15 @@ void cuda::CudaRuntime::_registerModule(ModuleMap::iterator module) {
 		assert(tex != 0);
 		tex->normalizedFloat = texture->second.norm;
 	}
+	
+	transforms::PassManager manager(&module->second);
+	
+	for(PassSet::iterator pass = _passes.begin(); pass != _passes.end(); ++pass)
+	{
+		manager.addPass(**pass);
+	}
+	
+	manager.runOnModule();
 	
 	for(DeviceVector::iterator device = _devices.begin(); 
 		device != _devices.end(); ++device) {
@@ -3229,35 +3236,22 @@ void cuda::CudaRuntime::clearTraceGenerators() {
 
 void cuda::CudaRuntime::addPTXPass(transforms::Pass &pass) {
 	_lock();
-#if 0
-	HostThreadContext& thread = _getCurrentThread();
-
-	thread.ptxPersistentPassesList.push_back(&pass);
-#endif
+	_passes.insert(&pass);
 	_unlock();
 }
 
 void cuda::CudaRuntime::removePTXPass(transforms::Pass &pass) {
 	_lock();
-#if 0
-	HostThreadContext& thread = _getCurrentThread();
 
-	analysis::PassList::iterator p_it = thread.ptxPersistentPassesList.begin();
-	for (; p_it != thread.ptxPersistentPassesList.end(); ++p_it) {
-		if ((*p_it) == &pass) {
-			p_it = thread.ptxPersistentPassesList.erase(p_it);
-		}
-	}
-#endif
+	assert(_passes.count(&pass) != 0);
+	_passes.erase(&pass);
+
 	_unlock();
 }
 
 void cuda::CudaRuntime::clearPTXPasses() {
 	_lock();
-#if 0
-	HostThreadContext& thread = _getCurrentThread();
-	thread.ptxPersistentPassesList.clear();
-#endif
+	_passes.clear();
 	_unlock();
 }
 

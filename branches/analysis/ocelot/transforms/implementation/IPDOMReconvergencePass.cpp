@@ -65,6 +65,8 @@ void IPDOMReconvergencePass::runOnKernel(ir::IRKernel& k)
 	
 	InstructionMap reconvergeTargets;
 	
+	unsigned int reconverges = 0;
+	
 	report(" Adding reconverge instructions");
 	// Create reconverge instructions
 	for(ir::ControlFlowGraph::pointer_iterator bb_it = bb_sequence.begin(); 
@@ -90,12 +92,15 @@ void IPDOMReconvergencePass::runOnKernel(ir::IRKernel& k)
 				{
 					pdom->instructions.push_front(ir::PTXInstruction(
 						ir::PTXInstruction::Reconverge).clone());
+					++reconverges;
 				}
 				reconvergeTargets.insert(std::make_pair(i_it, 
 					pdom->instructions.begin()));
 			}
 		}
 	}
+
+	std::cout << reconverges << " reconverge points\n";
 
 	InstructionIdMap ids;
 

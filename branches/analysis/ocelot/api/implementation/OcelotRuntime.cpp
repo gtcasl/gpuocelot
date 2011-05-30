@@ -153,6 +153,31 @@ namespace ocelot
 				ocelot::addTraceGenerator(_debugger, true);
 		}
 
+		if (c.optimizations.structuralTransform)
+		{
+			ocelot::addPTXPass(_structuralTransform);
+		}
+			
+		if (c.optimizations.predicateToSelect)
+		{
+			ocelot::addPTXPass(_predicationToSelect);		
+		}
+		
+		if (c.optimizations.linearScanAllocation)
+		{
+			ocelot::addPTXPass(_linearScanAllocation);		
+		}
+			
+		if (c.optimizations.mimdThreadScheduling)
+		{
+			ocelot::addPTXPass(_mimdThreadScheduling);
+		}
+			
+		if (c.optimizations.syncElimination)
+		{
+			ocelot::addPTXPass(_syncElimination);
+		}
+
 		// add built-in functions
 		registerExternalFunction("malloc",  (void*)(cudaMallocWrapper));
 		registerExternalFunction("free",    (void*)(cudaFreeWrapper));

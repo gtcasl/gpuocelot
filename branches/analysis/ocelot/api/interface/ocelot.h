@@ -48,10 +48,10 @@ namespace ocelot
 	
 		\param pass reference to the PTX pass to be added
 	*/
-	void addPTXPass(transforms::Pass &pass);
+	void addPTXPass(transforms::Pass& pass);
 	
 	/*! \brief removes the specified pass */
-	void removePTXPass(transforms::Pass &pass);
+	void removePTXPass(transforms::Pass& pass);
 	
 	/*! \brief clears all PTX->PTX passes */
 	void clearPTXPasses();

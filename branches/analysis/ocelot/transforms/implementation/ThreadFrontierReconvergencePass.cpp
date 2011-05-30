@@ -69,6 +69,7 @@ void ThreadFrontierReconvergencePass::runOnKernel(const ir::IRKernel& k)
 	typedef std::unordered_map<ir::BasicBlock::Id, unsigned int> IdToPCMap;
 
 	IdToPCMap pcs;
+	unsigned int checks = 0;
 	
 	// lay the code out in priority order
 	report(" Packing instructions into a vector");
@@ -135,6 +136,7 @@ void ThreadFrontierReconvergencePass::runOnKernel(const ir::IRKernel& k)
 						<< instructions.back().toString());
 					report("    - artificial branch for check on"
 						" fallthrough into TF.");
+					++checks;
 				}
 			}
 		}
@@ -233,10 +235,13 @@ void ThreadFrontierReconvergencePass::runOnKernel(const ir::IRKernel& k)
 					}
 					
 					instructions[pc].needsReconvergenceCheck = needsCheck;
+					++checks;
 				}
 			}
 		}
 	}
+	
+	std::cout << checks << "reconvergence checks\n";
 }
 
 void ThreadFrontierReconvergencePass::finalize()

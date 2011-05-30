@@ -11,7 +11,6 @@
 #include <ocelot/executive/interface/ATIGPUDevice.h>
 #include <ocelot/executive/interface/ATIExecutableKernel.h>
 #include <ocelot/transforms/interface/PassManager.h>
-#include <ocelot/transforms/interface/IntraThreadCoalescingPass.h>
 
 // Hydrazine includes
 #include <hydrazine/implementation/Exception.h>
@@ -507,9 +506,7 @@ namespace executive
 		using namespace transforms;
 
 		PassManager manager(const_cast<ir::Module*>(m->ir));
-		Pass *pass = new IntraThreadCoalescingPass();
 
-		manager.addPass(*pass);
 		manager.runOnKernel(k);
 		manager.destroyPasses();
 	}

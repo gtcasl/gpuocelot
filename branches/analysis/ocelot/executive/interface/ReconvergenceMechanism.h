@@ -146,7 +146,7 @@ private:
 private:
 	//! \brief context stack
 	RuntimeStack runtimeStack;
-	//! \brief context stack
+	//! \brief stack of reconvergence points for the current context
 	PCStack pcStack;
 };
 

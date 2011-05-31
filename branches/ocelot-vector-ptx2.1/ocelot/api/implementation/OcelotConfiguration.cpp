@@ -146,6 +146,7 @@ api::OcelotConfiguration::Executive::Executive():
 	workerThreadLimit(-1),
 	warpSize(-1),
 	dynamicWarpFormation(true),
+	threadInvariantElimination(false),
 	printLLVMModule(false),
 	printKernelRuntimes(false)
 {
@@ -236,8 +237,14 @@ static void initializeExecutive(api::OcelotConfiguration::Executive &executive,
 	executive.workerThreadLimit = config.parse<int>("workerThreadLimit", -1);
 	executive.warpSize = config.parse<int>("warpSize", -1);
 	executive.dynamicWarpFormation = config.parse<bool>("dynamicWarpFormation", true);
+	executive.threadInvariantElimination = config.parse<bool>("threadInvariantElimination", false);
 	executive.printLLVMModule = config.parse<bool>("printLLVMModule", false);
 	executive.printKernelRuntimes = config.parse<bool>("printKernelRuntimes", false);
+	
+	if (executive.dynamicWarpFormation) {
+		// only applicable for static warp formation
+		executive.threadInvariantElimination = false;
+	}
 	
 	if (config.find("devices")) {
 		hydrazine::json::Visitor devices = config["devices"];

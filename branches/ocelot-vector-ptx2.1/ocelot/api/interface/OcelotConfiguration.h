@@ -171,6 +171,9 @@ namespace api {
 			//! \brief if true, dynamically reforms warps
 			bool dynamicWarpFormation;
 			
+			//! \brief enables thread-invariant elimination optimization
+			bool threadInvariantElimination;
+			
 			//! \brief indicates whether to print LLVM module
 			bool printLLVMModule;
 			

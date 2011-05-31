@@ -133,12 +133,17 @@ void LLVMDynamicExecutionManager::launch(const LLVMDynamicKernel & kernel, int s
 #if METRIC_RUNTIME	
 	// record finish time
 	timer.stop();
+	bool threadInvariantElim = (!api::OcelotConfiguration::get().executive.dynamicWarpFormation &&
+		api::OcelotConfiguration::get().executive.threadInvariantElimination);
 	const char *appName = getenv("APPNAME");
 	if (!appName) { appName = "unknown"; }
 	std::ofstream file("performance.json", std::ios_base::app);
 	file << "  { \"app\": \"" << appName
 		<< "\", \"kernel\": \"" << kernel.name 
-		<< "\", \"warpsize\": " << api::OcelotConfiguration::get().executive.warpSize
+		<< "\", \"workerThreads\": " << api::OcelotConfiguration::get().executive.workerThreadLimit
+		<< ", \"dynamicWarpFormation\": " << (api::OcelotConfiguration::get().executive.dynamicWarpFormation ? "true" : "false")
+		<< ", \"threadInvariantElim\": " << (threadInvariantElim ? "true" : "false")
+		<< ", \"warpsize\": " << api::OcelotConfiguration::get().executive.warpSize
 		<< ", \"runtime\": " << timer.seconds() 
 		<< " },\n";
 	file.close();

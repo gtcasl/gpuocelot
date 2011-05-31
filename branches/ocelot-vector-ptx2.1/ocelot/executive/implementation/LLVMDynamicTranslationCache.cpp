@@ -19,6 +19,7 @@
 #include <ocelot/analysis/interface/ConvertPredicationToSelectPass.h>
 #include <ocelot/analysis/interface/LLVMUniformVectorization.h>
 #include <ocelot/translator/interface/PTXToLLVMTranslator.h>
+#include <ocelot/executive/interface/LLVMDynamicExecutionMetrics.h>
 
 // Hydrazine includes
 #include <hydrazine/implementation/debug.h>
@@ -1121,6 +1122,8 @@ static LLVMDynamicExecutive::Metadata* generateMetadata(
 	return metadata;
 }
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
 /*!
 	\brief displays just the control flow instructions and blocks of a function
 */
@@ -1172,6 +1175,55 @@ void debugEmitLLVMKernel(std::ostream &out, llvm::Function *function, bool elide
 	}
 	out << "}\n";	
 }
+
+//! \brief maintains a count of non-Phi instructions by vector width
+typedef std::map< int, size_t > LLVMInstructionCount;
+
+void llvmInstructionCounter(LLVMInstructionCount &counts, llvm::Function *function) {
+	
+	for (llvm::Function::iterator bb = function->begin(); bb != function->end(); ++bb) {
+		for (llvm::BasicBlock::iterator inst = bb->begin(); inst != bb->end(); ++inst) {
+			llvm::Instruction *instruction = &*inst;
+			
+			if (!llvm::PHINode::classof(instruction)) {
+				const llvm::Type *type = instruction->getType();
+				int ws = 1;
+				if (const llvm::VectorType *vecType = llvm::dyn_cast<const llvm::VectorType>(type)) {
+					ws = vecType->getNumElements();
+				}
+				counts[ws] ++;
+			}
+		}
+	}
+}
+
+void llvmMetricInstructionCount(llvm::Function *function) {
+	const char *appName = getenv("APPNAME");
+	if (!appName) { appName = "unknown"; }
+	std::ofstream file("instructioncount.json", std::ios_base::app);
+	
+	LLVMInstructionCount instructionCounter;
+	llvmInstructionCounter(instructionCounter, function);
+	
+	bool threadInvariantElim = (!api::OcelotConfiguration::get().executive.dynamicWarpFormation &&
+		api::OcelotConfiguration::get().executive.threadInvariantElimination);
+	
+	file << "  { \"app\": \"" << appName
+		<< "\", \"kernel\": \"" << function->getNameStr()
+		<< "\", \"workerThreads\": " << api::OcelotConfiguration::get().executive.workerThreadLimit
+		<< ", \"threadInvariantElim\": " << (threadInvariantElim ? "true" : "false")
+		<< ", \"warpsize\": " << api::OcelotConfiguration::get().executive.warpSize
+		<< ", \"instructionCount\": {";
+	for (LLVMInstructionCount::const_iterator counter = instructionCounter.begin();
+		counter != instructionCounter.end(); ++counter) {
+		file << " " << counter->first << ": " << counter->second << ", ";
+	}
+	file << " }, "
+		<< " },\n";
+	file.close();
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /*!
 	\brief given a translated function, apply a selection of LLVM transformation
@@ -1277,6 +1329,12 @@ static void cloneAndOptimizeTranslation(
 	}
 	
 	manager.run(*translation->llvmFunction);
+	
+#if METRIC_LLVM_INSTRUCTIONCOUNTS
+	if (warpSize == api::OcelotConfiguration::get().executive.warpSize) {
+		llvmMetricInstructionCount(translation->llvmFunction);
+	}
+#endif
 
 #if REPORT_BASE && REPORT_LLVM_MASTER && REPORT_OPTIMIZED_LLVM_ASSEMBLY
 	debugEmitLLVMKernel(std::cerr, translation->llvmFunction, false);

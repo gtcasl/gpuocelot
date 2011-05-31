@@ -53,7 +53,7 @@ namespace analysis
 		//! \brief usage of a thread-local parameter (either thread ID or local memory ptr)
 		class ThreadLocalArgument {
 		public:
-			typedef std::vector< llvm::LoadInst *> ThreadLocalArgumentVector;
+			typedef std::vector< llvm::Instruction *> ThreadLocalArgumentVector;
 		public:
 		
 			llvm::Instruction *ptrThreadDescriptorArray;

@@ -12,6 +12,7 @@
 #include <set>
 
 // Ocelot includes
+#include <ocelot/api/interface/OcelotConfiguration.h>
 #include <ocelot/analysis/interface/LLVMUniformVectorization.h>
 
 // LLVM includes
@@ -24,10 +25,6 @@
 #include <hydrazine/implementation/debug.h>
 #include <hydrazine/implementation/Exception.h>
 #include <hydrazine/implementation/math.h>
-
-//////////////////////////////////////////////////////////////////////////////////////////////////
-
-#define DYNAMIC_WARP_FORMATION 1
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -289,6 +286,7 @@ void analysis::LLVMUniformVectorization::Translation::runOnFunction() {
 	for (llvm::pred_iterator PI = llvm::pred_begin(subkernelEntry.prologue); 
 		PI != llvm::pred_end(subkernelEntry.prologue); ++PI) {
 		llvm::BasicBlock *predecessor = *PI;
+
 		report(" predecessor: " << predecessor->getNameStr());
 	}
 	
@@ -475,40 +473,47 @@ void analysis::LLVMUniformVectorization::Translation::loadThreadLocalArguments()
 	llvm::Value *context = &*(F->arg_begin());
 	llvm::BasicBlock *schedulerBlock = subkernelEntry.prologue;
 	
+	bool dynamicWarpFormation = (api::OcelotConfiguration::get().executive.dynamicWarpFormation || 
+		!api::OcelotConfiguration::get().executive.threadInvariantElimination);
+		
 	const char *label[] = {"threadId", "blockDim", "blockId", "gridDim"};
 	const char *suffix[] = {"x", "y", "z"};
+	
+	// all threads must load this
 	for (int tid = 0; tid < warpSize; tid++) {
+		std::stringstream ss;
+		std::vector< llvm::Value *> idx;
+		idx.push_back(pass->getConstInt32(tid));
+		idx.push_back(pass->getConstInt32(4));
+	
+		llvm::Instruction *ptr = llvm::GetElementPtrInst::Create(context,
+			idx.begin(), idx.end(), "ptrLocalMemPtr", schedulerBlock);
+	
+		ss << "localMemPtr." << tid;
+		threadLocalArguments.localPointer.push_back(new llvm::LoadInst(ptr, ss.str(), schedulerBlock));
+	}
+	
+	ThreadLocalArgument::ThreadLocalArgumentVector ThreadLocalArgument::* localArgumentVector[] = {
+		& ThreadLocalArgument::threadId_x,
+		& ThreadLocalArgument::threadId_y,
+		& ThreadLocalArgument::threadId_z,
 		
-		{
-			std::stringstream ss;
-			std::vector< llvm::Value *> idx;
-			idx.push_back(pass->getConstInt32(tid));
-			idx.push_back(pass->getConstInt32(4));
+		& ThreadLocalArgument::blockDim_x,
+		& ThreadLocalArgument::blockDim_y,
+		& ThreadLocalArgument::blockDim_z,
 		
-			llvm::Instruction *ptr = llvm::GetElementPtrInst::Create(context,
-				idx.begin(), idx.end(), "ptrLocalMemPtr", schedulerBlock);
+		& ThreadLocalArgument::blockId_x,
+		& ThreadLocalArgument::blockId_y,
+		& ThreadLocalArgument::blockId_z,
 		
-			ss << "localMemPtr." << tid;
-			threadLocalArguments.localPointer.push_back(new llvm::LoadInst(ptr, ss.str(), schedulerBlock));
-		}
+		& ThreadLocalArgument::gridDim_x,
+		& ThreadLocalArgument::gridDim_y,
+		& ThreadLocalArgument::gridDim_z,
+	};
 		
-		ThreadLocalArgument::ThreadLocalArgumentVector ThreadLocalArgument::* localArgumentVector[] = {
-			& ThreadLocalArgument::threadId_x,
-			& ThreadLocalArgument::threadId_y,
-			& ThreadLocalArgument::threadId_z,
-			
-			& ThreadLocalArgument::blockDim_x,
-			& ThreadLocalArgument::blockDim_y,
-			& ThreadLocalArgument::blockDim_z,
-			
-			& ThreadLocalArgument::blockId_x,
-			& ThreadLocalArgument::blockId_y,
-			& ThreadLocalArgument::blockId_z,
-			
-			& ThreadLocalArgument::gridDim_x,
-			& ThreadLocalArgument::gridDim_y,
-			& ThreadLocalArgument::gridDim_z,
-		};
+	// load as few blockDimensions, blockIDs, gridDims, and threadIds as possible
+	int contextCount = (dynamicWarpFormation ? warpSize : 1);
+	for (int tid = 0; tid < contextCount; tid++) {
 		for (int j = 0; j < 4; j++) {
 			for (int xx = 0; xx < 3; xx++)  {
 				std::stringstream ss;
@@ -516,14 +521,37 @@ void analysis::LLVMUniformVectorization::Translation::loadThreadLocalArguments()
 				idx.push_back(pass->getConstInt32(tid));
 				idx.push_back(pass->getConstInt32(j));
 				idx.push_back(pass->getConstInt32(xx));
-		
+	
 				llvm::Instruction *ptr = llvm::GetElementPtrInst::Create(context,
 					idx.begin(), idx.end(), std::string("ptr.") + label[j] + "." + suffix[xx], schedulerBlock);
-		
-				ss << label[j] << "_" << suffix[xx] << "." << tid;
+	
+				ss << label[j] << "_" << suffix[xx] << "." << tid << ".";
 				(threadLocalArguments.*localArgumentVector[j*3+xx]).push_back(
 					new llvm::LoadInst(ptr, ss.str(), schedulerBlock));
 			}
+		}
+	}
+	
+	if (!dynamicWarpFormation) {
+		// replicate uses of CTA-wide values and threadIdx.{y,z}
+		for (int j = 0; j < 4; j++) {
+			int start = (j ? 0 : 1);
+			for (int xx = start; xx < 3; xx++) {
+				llvm::Instruction *loadInst = (threadLocalArguments.*localArgumentVector[j*3+xx])[0];
+				for (int tid = contextCount; tid < warpSize; ++tid) {
+					(threadLocalArguments.*localArgumentVector[j*3+xx]).push_back(loadInst);
+				}
+			}
+		}
+		
+		// statically compute threadIdx.x
+		llvm::Instruction *loadInst = (threadLocalArguments.*localArgumentVector[0])[0];
+		for (int tid = contextCount; tid < warpSize; ++tid) {
+			std::stringstream ss;
+			ss << label[0] << "_x." << tid << ".";
+			llvm::BinaryOperator *addInst = llvm::BinaryOperator::Create(llvm::BinaryOperator::Add, 
+				loadInst, pass->getConstInt32(tid), ss.str(), schedulerBlock);
+			(threadLocalArguments.*localArgumentVector[0]).push_back(addInst);
 		}
 	}
 }
@@ -538,7 +566,7 @@ void analysis::LLVMUniformVectorization::Translation::loadThreadLocalArguments()
 void analysis::LLVMUniformVectorization::Translation::replaceContextReferences(llvm::BasicBlock *bb) {
 
 	std::vector< llvm::GetElementPtrInst *> removeThese;
-	report("replaceContextReferences(" << bb->getNameStr() << ")");
+	report("replaceContextReferences(" << bb->getNameStr() << ")");	
 	
 	ThreadLocalArgument::ThreadLocalArgumentVector ThreadLocalArgument::* localArgumentVector[] = {
 		& ThreadLocalArgument::threadId_x,
@@ -599,11 +627,14 @@ void analysis::LLVMUniformVectorization::Translation::replaceContextReferences(l
 					if (llvm::LoadInst *loadInst = llvm::dyn_cast<llvm::LoadInst>(*use)) {
 						WarpInstructionMap::iterator warp_it = warpInstructionMap.find(loadInst);
 						if (warp_it != warpInstructionMap.end()) {
-							ThreadLocalArgument::ThreadLocalArgumentVector &local = (threadLocalArguments.*threadLocal);
+							ThreadLocalArgument::ThreadLocalArgumentVector &local = 
+								(threadLocalArguments.*threadLocal);
 							
 							for (InstructionVector::iterator rep_it = warp_it->second.replicated.begin();
 								rep_it != warp_it->second.replicated.end(); ++rep_it) {
 								int tid = rep_it - warp_it->second.replicated.begin();
+								
+								report(" replacing " << (*rep_it)->getNameStr() << " with [" << tid << "] " << local[tid]->getNameStr());
 								(*rep_it)->replaceAllUsesWith(local[tid]);
 							}
 							remove = true;
@@ -879,11 +910,7 @@ void analysis::LLVMUniformVectorization::Translation::updateDependencies(
 			}
 			else {
 				// problem
-#if 0
-				operand->getType()->dump();
-				operand->dump();
-				Ocelot_Exception("undefined operand encountered");
-#endif
+				assert(0 && "unhandled problem with vectorization");
 			}
 		}
 	}	

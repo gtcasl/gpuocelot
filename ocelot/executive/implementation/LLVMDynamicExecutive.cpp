@@ -365,7 +365,8 @@ void LLVMDynamicExecutive::warpFormation(Warp &warp) {
 				ctx_it != cta_it->second.readyQueue.end() && warp.threads.size() < warpSize  && earlyExit;) {
 				EntryId entryId = getResumePoint(*ctx_it);
 				
-				reportE(REPORT_SCHEDULE_OPERATIONS, "  ready thread " << getThreadId(*ctx_it) << " for entry " << entryId);
+				reportE(REPORT_SCHEDULE_OPERATIONS, 
+					"  ready thread " << getThreadId(*ctx_it) << " for entry " << entryId);
 				
 				if (!warp.threads.size()) {
 					warp.entryId = entryId;
@@ -373,13 +374,18 @@ void LLVMDynamicExecutive::warpFormation(Warp &warp) {
 					ctx_it = cta_it->second.readyQueue.erase(ctx_it);
 				}
 				else if (entryId == warp.entryId && 
-					getThreadId(*ctx_it) == getThreadId(warp.threads.back()) + 1) {
+					getThreadId(*ctx_it) == getThreadId(warp.threads.back()) + 1 &&
+					ctx_it->tid.y == warp.threads.front().tid.y &&
+					ctx_it->tid.z == warp.threads.front().tid.z) {
 					warp.threads.push_back(*ctx_it);
 					ctx_it = cta_it->second.readyQueue.erase(ctx_it);
 				}
 				else {
 					earlyExit = false;
 				}
+			}
+			if (warp.threads.size()) {
+				earlyExit = false;
 			}
 		}
 	}

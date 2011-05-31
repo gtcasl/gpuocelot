@@ -5,6 +5,7 @@
 */
 
 // Ocelot includes
+#include <ocelot/executive/interface/LLVMDynamicExecutionMetrics.h>
 #include <ocelot/executive/interface/LLVMDynamicExecutionManager.h>
 #include <ocelot/executive/interface/LLVMDynamicExecutive.h>
 #include <ocelot/ir/interface/Module.h>
@@ -23,10 +24,6 @@
 	<< __LINE__ << " " << x << std::endl; throw hydrazine::Exception(ss.str()); }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
-
-#define METRIC_RUNTIME 1
-#define METRIC_WARPSIZE 0
-
 
 // Preprocessor Macros
 #ifdef REPORT_BASE
@@ -48,14 +45,9 @@ LLVMDynamicExecutionManager & LLVMDynamicExecutionManager::get() {
 
 LLVMDynamicExecutionManager::LLVMDynamicExecutionManager() {
 	workerThreadLimit = api::OcelotConfiguration::get().executive.workerThreadLimit;
-	std::ofstream file("performance.json", std::ios_base::app);
-	file << "[\n";
 }
 
 LLVMDynamicExecutionManager::~LLVMDynamicExecutionManager() {
-
-	std::ofstream file("performance.json", std::ios_base::app);
-	file << "],\n";
 }
 
 class WorkerThreadContext {
@@ -156,10 +148,13 @@ void LLVMDynamicExecutionManager::workerThread(int workerId) {
 		executingKernel.sharedMemorySize);
 #if METRIC_WARPSIZE
 	LLVMDynamicExecutive::EntryCounter counter;
-
 	for (int ws = 1; ws <= api::OcelotConfiguration::get().executive.warpSize; ws <<= 1) {
 		counter[ws] = 0;
 	}
+#endif
+#if METRIC_ENTRYPOINT_LIVENESS
+	typedef LLVMDynamicExecutive::LivenessEntryCounterMap LivenessEntryCounterMap;
+	LivenessEntryCounterMap livenessMap;
 #endif
 
 	int totalCtas = executingKernel.gridDim.x * executingKernel.gridDim.y;
@@ -181,6 +176,24 @@ void LLVMDynamicExecutionManager::workerThread(int workerId) {
 			counter[ws] += executive.entryCounter[ws];
 		}
 #endif
+#if METRIC_ENTRYPOINT_LIVENESS
+		if (livenessMap.size()) {
+			for (LivenessEntryCounterMap::iterator counter = executive.livenessEntryCounter.begin();
+				counter != executive.livenessEntryCounter.end(); ++counter ) {
+				LivenessEntryCounterMap::iterator global_it = livenessMap.find(counter->first);
+				if (global_it == livenessMap.end()) {
+					livenessMap[counter->first] = counter->second;
+				}
+				else {
+					assert(counter->second.liveValues == global_it->second.liveValues);
+					global_it->second.entries += counter->second.entries;
+				}
+			}
+		}
+		else {
+			livenessMap = executive.livenessEntryCounter;
+		}
+#endif
 	}
 
 #if METRIC_WARPSIZE
@@ -197,6 +210,39 @@ void LLVMDynamicExecutionManager::workerThread(int workerId) {
 	}
 	
 	file << "}, " << " },\n";
+	file.close();
+#endif
+#if METRIC_ENTRYPOINT_LIVENESS
+	const char *appName = getenv("APPNAME");
+	if (!appName) { appName = "unknown"; }
+	std::ofstream file("liveness.json", std::ios_base::app);
+	size_t totalEntries = 0;
+	size_t weightedLiveValues = 0;
+	
+	bool threadInvariantElim = (!api::OcelotConfiguration::get().executive.dynamicWarpFormation &&
+		api::OcelotConfiguration::get().executive.threadInvariantElimination);
+		
+	for (LivenessEntryCounterMap::iterator counter = livenessMap.begin(); 
+		counter != livenessMap.end(); ++counter ) {
+		totalEntries += counter->second.entries;
+		weightedLiveValues += counter->second.liveValues * counter->second.entries;
+	}
+	double averageLiveness = 0;
+	if (totalEntries) {
+		averageLiveness = (double)weightedLiveValues / (double)totalEntries;
+	}
+	
+	file << "  { \"app\": \"" << appName
+		<< "\", \"kernel\": \"" << executingKernel.kernel->name
+		<< "\", \"workerThreads\": " << api::OcelotConfiguration::get().executive.workerThreadLimit
+		<< ", \"dynamicWarpFormation\": " << (api::OcelotConfiguration::get().executive.dynamicWarpFormation 
+			? "true" : "false")
+		<< ", \"threadInvariantElim\": " << (threadInvariantElim ? "true" : "false")
+		<< ", \"warpsize\": " << api::OcelotConfiguration::get().executive.warpSize
+		<< ", \"averageLiveness\": " << averageLiveness
+		<< ", \"weightedLiveValues\": " << weightedLiveValues
+		<< ", \"totalEntries\": " << totalEntries
+		<< " },\n";
 	file.close();
 #endif
 }

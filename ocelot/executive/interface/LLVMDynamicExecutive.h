@@ -28,7 +28,8 @@ namespace executive {
 	*/
 	class LLVMDynamicExecutive {
 	public:
-		typedef std::map< int, size_t > EntryCounter;
+	
+		
 		typedef ExecutableKernel::TextureVector TextureVector;
 		typedef std::list< LLVMContext > ThreadContextQueue;
 		typedef std::vector< char > ByteVector;
@@ -39,8 +40,27 @@ namespace executive {
 		typedef analysis::KernelPartitioningPass::EntryId EntryId;
 		typedef analysis::KernelPartitioningPass::ThreadExitCode ThreadExitCode;
 		typedef std::vector< LLVMContext > ThreadContextVector;
-		
 		typedef std::map< EntryId, LLVMDynamicTranslationCache::TranslationWarpMap > TranslationWarpCache;
+		
+		
+		//
+		// data structures used to instrument the executive
+		//
+		
+		class LivenessEntryCounter {
+		public:
+			LivenessEntryCounter(int _live = 0): entries(0), liveValues(_live) { }
+			
+			size_t entries;
+			int liveValues;
+		};
+	
+		typedef std::map< int, size_t > EntryCounter;
+		typedef std::map< EntryId, LivenessEntryCounter > LivenessEntryCounterMap;
+		
+		//
+		//
+		//
 		
 		/*!
 			\brief per kernel data structure accessible to the translation
@@ -179,6 +199,9 @@ namespace executive {
 		TranslationWarpCache translationCache;
 		
 		EntryCounter entryCounter;
+		
+		//! \brief used for computing weighted average of liveness
+		LivenessEntryCounterMap livenessEntryCounter;
 	};
 }	
 #endif

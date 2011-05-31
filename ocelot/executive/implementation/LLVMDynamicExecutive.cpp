@@ -11,6 +11,7 @@
 #include <ocelot/api/interface/OcelotConfiguration.h>
 #include <ocelot/executive/interface/LLVMDynamicExecutive.h>
 #include <ocelot/executive/interface/LLVMDynamicExecutionManager.h>
+#include <ocelot/executive/interface/LLVMDynamicExecutionMetrics.h>
 
 // Hydrazine Includes
 #include <hydrazine/implementation/debug.h>
@@ -21,10 +22,6 @@
 #ifdef REPORT_BASE
 #undef REPORT_BASE
 #endif
-
-/////////////////////////////////////////////////////////////////////////////////////////////////
-
-#define METRIC_WARPSIZE 0
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -121,6 +118,18 @@ LLVMDynamicExecutive::LLVMDynamicExecutive(
 	processor(_procID),
 	translatedKernel(_translatedKernel),
 	sharedMemorySize(_sharedMemSize + _translatedKernel->sharedMemorySize) {
+	
+#if METRIC_ENTRYPOINT_LIVENESS
+	for (analysis::KernelPartitioningPass::KernelTransitionPointMap::const_iterator 
+		trans_it = translatedKernel->decomposition.transitionPoints.begin();
+		trans_it != translatedKernel->decomposition.transitionPoints.end(); ++trans_it) {
+		
+		if (trans_it->second.type == analysis::KernelPartitioningPass::Thread_entry) {
+			LivenessEntryCounter entry(trans_it->second.liveValues.size());
+			livenessEntryCounter[trans_it->second.id] = entry;
+		}
+	}
+#endif
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -253,7 +262,11 @@ void LLVMDynamicExecutive::executeWarp(Warp &warp) {
 		ctx_it->metadata = (char *)translation->metadata;
 		assert(ctx_it->metadata);
 	}
-		
+	
+#if METRIC_ENTRYPOINT_LIVENESS
+	livenessEntryCounter[warp.entryId].entries += warp.threads.size();
+#endif
+
 	// primitive warp scheduler
 	for (size_t tid = 0; tid < warp.threads.size(); tid += translation->warpSize) {
 		translation->execute(&warp.threads[tid]);

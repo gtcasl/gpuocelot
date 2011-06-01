@@ -50,7 +50,10 @@ namespace translator
 	void PTXToILTranslator::_translateInstructions()
 	{
 		// translate instructions iterating thru the control tree
-		_translate(_ilKernel->ctrl_tree()->get_root_node());
+		
+		analysis::ControlTree controlTree(_ilKernel->cfg());
+		
+		_translate(controlTree.get_root_node());
 	}
 
 	void PTXToILTranslator::_translate(const CT::Node* node)

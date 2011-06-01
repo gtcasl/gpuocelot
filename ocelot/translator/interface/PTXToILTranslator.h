@@ -14,10 +14,10 @@
 //Ocelot includes
 #include <ocelot/translator/interface/Translator.h>
 #include <ocelot/ir/interface/ILKernel.h>
-#include <ocelot/ir/interface/ControlTree.h>
 #include <ocelot/executive/interface/ExecutableKernel.h>
+#include <ocelot/analysis/interface/ControlTree.h>
 
-typedef ir::ControlTree CT;
+typedef analysis::ControlTree CT;
 typedef executive::ExecutableKernel ExecutableKernel;
 
 namespace translator
@@ -139,3 +139,4 @@ namespace translator
 }
 
 #endif
+

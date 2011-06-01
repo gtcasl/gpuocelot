@@ -387,16 +387,18 @@ void testCvt_REF(void* output, void* input)
 		if(issubnormal(r0)) r0 = (stype)0;
 	}
 
+	dtype r1 = r0;
+
 	if(sat)
 	{
 		if(typeid(float) != typeid(dtype) && typeid(double) != typeid(dtype))
 		{
-			r0 = std::min((stype)std::numeric_limits<dtype>::max(), r0);
-			r0 = std::max((stype)std::numeric_limits<dtype>::min(), r0);
+			r1 = (stype)std::numeric_limits<dtype>::max() > r0
+				? r0 : std::numeric_limits<dtype>::max();
+			r1 = (stype)std::numeric_limits<dtype>::min() < r0
+				? r0 : std::numeric_limits<dtype>::min();
 		}
 	}
-
-	dtype r1 = r0;
 
 	if(isFloat<stype>() && !isFloat<dtype>())
 	{
@@ -6355,6 +6357,12 @@ namespace test
 			testCvt_REF<unsigned int, float, false, false, true>,
 			testCvt_PTX(ir::PTXOperand::u32,
 				ir::PTXOperand::f32, false, false, true),
+			testCvt_INOUT(I32), testCvt_INOUT(FP32),
+			uniformFloat<float, 1>, 1, 1);
+		add("TestCvt-u32-f32-ftz-sat-rzi",
+			testCvt_REF<unsigned int, float, true, true, true>,
+			testCvt_PTX(ir::PTXOperand::u32,
+				ir::PTXOperand::f32, true, true, true),
 			testCvt_INOUT(I32), testCvt_INOUT(FP32),
 			uniformFloat<float, 1>, 1, 1);
 		add("TestCvt-u32-f64",

@@ -2048,6 +2048,10 @@ std::string ir::PTXInstruction::toString() const {
 				} else if( modifier & rp ) {
 					result += "rpi.";
 				}
+
+				if( modifier & ftz ) {
+					result += "ftz.";
+				}
 				if( modifier & sat ) {
 					result += "sat.";
 				}

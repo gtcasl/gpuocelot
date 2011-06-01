@@ -127,18 +127,6 @@ namespace ir
 			RegisterVector getReferencedRegisters() const;
 
 		public:
-			/*! \brief Builds the data flow graph within the kernel */
-			virtual analysis::DataflowGraph* dfg();
-
-			/*! \brief Gets the datalow graph */
-			virtual const analysis::DataflowGraph* dfg() const;
-
-			/*! \brief Sets the divergence analysis */
-			virtual analysis::DivergenceAnalysis* div_analy();
-
-			/*! \brief Gets the divergence analysis */
-			virtual const analysis::DivergenceAnalysis* div_analy() const;
-
 			/*! \brief renames all the blocks with canonical names */
 			virtual void canonicalBlockLabels(int kernelID=1);
 

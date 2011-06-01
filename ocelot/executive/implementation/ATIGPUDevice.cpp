@@ -10,8 +10,7 @@
 // Ocelot includes
 #include <ocelot/executive/interface/ATIGPUDevice.h>
 #include <ocelot/executive/interface/ATIExecutableKernel.h>
-#include <ocelot/analysis/interface/PassManager.h>
-#include <ocelot/analysis/interface/IntraThreadCoalescingPass.h>
+#include <ocelot/transforms/interface/PassManager.h>
 
 // Hydrazine includes
 #include <hydrazine/implementation/Exception.h>
@@ -504,12 +503,10 @@ namespace executive
 
 	void ATIGPUDevice::_optimizePTX(Module* m, const std::string& k)
 	{
-		using namespace analysis;
+		using namespace transforms;
 
 		PassManager manager(const_cast<ir::Module*>(m->ir));
-		Pass *pass = new IntraThreadCoalescingPass();
 
-		manager.addPass(*pass);
 		manager.runOnKernel(k);
 		manager.destroyPasses();
 	}

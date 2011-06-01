@@ -9,7 +9,7 @@
 
 #include <ocelot/ir/interface/Module.h>
 #include <ocelot/analysis/interface/BranchInfo.h>
-#include <ocelot/analysis/interface/Pass.h>
+#include <ocelot/transforms/interface/Pass.h>
 
 namespace analysis 
 {
@@ -17,7 +17,7 @@ namespace analysis
    analysis goes over the program dataflow graph and finds all the variables
    that will always hold the same values for every thread.
  */
-class DivergenceAnalysis : public KernelPass
+class DivergenceAnalysis : public Analysis
 {
 	public:
 		typedef std::set<BranchInfo> branch_set;
@@ -27,7 +27,7 @@ class DivergenceAnalysis : public KernelPass
 	private:
 		ir::PTXKernel *_kernel;
 		/*!\brief Holds the variables marks of divergent blocks */
-		graph_utils::DivergenceGraph _divergGraph;
+		DivergenceGraph _divergGraph;
 		/*!\brief A set with all divergent branch instructions of the kernel */
 		branch_set _divergentBranches;
 		/*!\brief Set with all not divergent branch instructions of the kernel*/
@@ -41,17 +41,14 @@ class DivergenceAnalysis : public KernelPass
 		void _analyzeControlFlow();
 		/*!\brief Taints the destination of a phi instr with a predicate */
 		void _addPredicate(const DataflowGraph::PhiInstruction &phi,
-			const graph_utils::DivergenceGraph::node_type &predicate);
+			const DivergenceGraph::node_type &predicate);
 
 		bool doControlFlowAnalysis() const { return _doCFGanalysis; };
+
 	public:
-		DivergenceAnalysis();
-		/* inherit from KernelPass */
-		virtual void initialize( const ir::Module& m ) {};
-		/* inherit from KernelPass */
-		virtual void runOnKernel( ir::IRKernel& k );
-		/* inherit from KernelPass */
-		virtual void finalize() {};
+		DivergenceAnalysis(ir::IRKernel& k);
+		
+		void runOnKernel( ir::IRKernel& k );
 
 		// TODO: see if it is possible to use only the call on block,
 		// eliminating the call on iterator.
@@ -75,8 +72,8 @@ class DivergenceAnalysis : public KernelPass
 		/*!\brief Returns a set of all not divergent branches of the kernel */
 		branch_set &getNonDivergentBranches();
 
-		/*!\brief Returns the data-flow/divergence graph build by the analysis */
-		const graph_utils::DivergenceGraph& getDivergenceGraph() const;
+		/*!\brief Get the data-flow/divergence graph built by the analysis */
+		const DivergenceGraph& getDivergenceGraph() const;
 		/*!\brief Returns the kernel dataflow graph */
 		const DataflowGraph *getDFG() const;
         /*! If doControlFlowAnalysis is set to false, then we have the
@@ -96,3 +93,4 @@ bool operator>=(const analysis::BranchInfo x, const analysis::BranchInfo y);
 }
 
 #endif /* DIVERGINGENCEANALYSIS_H_ */
+

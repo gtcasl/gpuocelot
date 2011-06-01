@@ -9,15 +9,65 @@
 
 import os
 import re
+import subprocess
+import time
 from optparse import OptionParser
 
 ################################################################################
+## Build Ocelot
+def build(options):
+	command = "scons"
+
+	if options.clean:
+		command += " -c"
+
+	if options.debug:
+		command += " mode=debug"
+
+	if options.no_llvm:
+		command += " enable_llvm=false"
+
+	if options.build_deb:
+		if not options.install:
+			print "Install must be set for a debian build, setting it"
+			options.install = True
+		command += " debian"
+
+	if options.install:
+		command += " install"
+
+	command += " install_path=" + options.install_prefix
+
+	if options.build_target != '':
+		if options.debug:
+			command += " .debug_build/"
+		else:
+			command += " .release_build/"
+		command += options.build_target
+		
+	command += " test_level=" + options.test_level
+	command += " -j" + options.threads
+
+	# Run SCons
+	print command
+
+	scons = subprocess.Popen(command, shell=True)
+
+	return scons.wait() == 0
+	
+################################################################################
+
+################################################################################
 ## Run Unit Tests
-def runUnitTests(options):
+def runUnitTests(options, buildSucceeded):
 	if options.clean:
 		return False
 	
 	if options.test_level == 'none':
+		return False
+
+	if not buildSucceeded:
+		print "Build failed..."
 		return False
 	
 	command = "hydrazine/python/RunRegression.py -v"
@@ -99,50 +149,17 @@ def main():
 	
 	( options, arguments ) = parser.parse_args()
 	
-	command = "scons"
-
 	if options.submit:
 		if options.test_level != 'full':
 			print "Full test level required for a submit."
 		options.test_level = 'full'
 		options.build_target = ''
 
-	if options.clean:
-		command += " -c"
-
-	if options.debug:
-		command += " mode=debug"
-
-	if options.no_llvm:
-		command += " enable_llvm=false"
-
-	if options.build_deb:
-		if not options.install:
-			print "Install must be set for a debian build, setting it"
-			options.install = True
-		command += " debian"
-
-	if options.install:
-		command += " install"
-
-	command += " install_path=" + options.install_prefix
-
-	if options.build_target != '':
-		if options.debug:
-			command += " .debug_build/"
-		else:
-			command += " .release_build/"
-		command += options.build_target
-		
-	command += " test_level=" + options.test_level
-	command += " -j" + options.threads
-
-	# Run SCons
-	print command
-	os.system(command)
+	# Do the build
+	buildSucceeded = build(options)
 
 	# Run unit tests
-	testsPassed = runUnitTests(options)
+	testsPassed = runUnitTests(options, buildSucceeded)
 
 	# Submit if the tests pass
 	submit(options, testsPassed)

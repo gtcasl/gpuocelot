@@ -11,12 +11,15 @@
 #include <istream>
 #include <unordered_map>
 
-// Ocelot includes
-#include <ocelot/analysis/interface/Pass.h>
-
+// Forward Declarations
 namespace trace
 {
 	class TraceGenerator;
+}
+
+namespace transforms
+{
+	class Pass;
 }
 
 /*! \brief A namespace for ocelot API functions */
@@ -45,10 +48,10 @@ namespace ocelot
 	
 		\param pass reference to the PTX pass to be added
 	*/
-	void addPTXPass(analysis::Pass &pass);
+	void addPTXPass(transforms::Pass& pass);
 	
 	/*! \brief removes the specified pass */
-	void removePTXPass(analysis::Pass &pass);
+	void removePTXPass(transforms::Pass& pass);
 	
 	/*! \brief clears all PTX->PTX passes */
 	void clearPTXPasses();

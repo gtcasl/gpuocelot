@@ -386,9 +386,9 @@ namespace cuda {
 		/*! \brief Clear all trace generators */
 		virtual void clearTraceGenerators();
 		/*! \brief Adds a PTX->PTX pass for the next *Module load* */
-		virtual void addPTXPass(analysis::Pass &pass);
+		virtual void addPTXPass(transforms::Pass &pass);
 		/*!	\brief removes the specified pass */
-		virtual void removePTXPass(analysis::Pass &pass);
+		virtual void removePTXPass(transforms::Pass &pass);
 		/*! \brief clears all PTX->PTX passes */
 		virtual void clearPTXPasses();
 		

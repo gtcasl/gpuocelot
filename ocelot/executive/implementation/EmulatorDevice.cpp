@@ -19,6 +19,8 @@
 #include <hydrazine/interface/Casts.h>
 #include <hydrazine/interface/SystemCompatibility.h>
 
+#include <configure.h>
+
 #ifdef REPORT_BASE
 #undef REPORT_BASE
 #endif

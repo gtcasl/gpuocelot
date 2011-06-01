@@ -75,7 +75,10 @@ namespace analysis
 			ThreadLocalArgumentVector gridDim_z;
 			
 			ThreadLocalArgumentVector localPointer;
-			ThreadLocalArgumentVector parameterPointer;			
+			ThreadLocalArgumentVector sharedPointer;
+			ThreadLocalArgumentVector constantPointer;
+			ThreadLocalArgumentVector parameterPointer;
+			ThreadLocalArgumentVector argumentPointer;
 		};
 
 		/*!

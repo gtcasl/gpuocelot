@@ -115,6 +115,7 @@ std::string ir::PTXOperand::toString( AddressMode mode ) {
 		case Address:   return "Address";   break;
 		case Label:     return "Label";     break;
 		case Special:   return "Special";   break;
+		case BitBucket: return "BitBucket"; break;
 		default: break;
 	}
 	return "Invalid";

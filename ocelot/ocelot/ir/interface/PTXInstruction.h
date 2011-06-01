@@ -466,9 +466,15 @@ namespace ir {
 				at analysis time
 		*/
 		
-		/*! \brief Index of post dominator instruction at which possibly 
-			divergent branches reconverge */
-		int reconvergeInstruction;
+		union
+		{
+			/*! \brief Index of post dominator instruction at which possibly 
+				divergent branches reconverge */
+			int reconvergeInstruction;
+			/*! \brief If this is a branch, is a check for re-convergence with
+				threads waiting at the target necessary */
+			bool needsReconvergenceCheck;
+		};
 
 		union
 		{

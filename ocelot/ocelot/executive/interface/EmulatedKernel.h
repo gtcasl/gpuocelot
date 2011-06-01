@@ -27,7 +27,6 @@ namespace executive {
 		typedef std::map<int, std::string> ProgramCounterBlockMap;
 		typedef std::unordered_map<std::string, int> FunctionNameMap;
 		typedef std::map< std::string, std::pair<int, int> > BlockRangeMap;
-		typedef std::map< int, std::pair< int, int > > ThreadFrontierMap;
 		typedef std::unordered_map<int, const EmulatedKernel*> PCToKernelMap;
 		typedef CooperativeThreadArray::RegisterFile RegisterFile;
 
@@ -186,10 +185,6 @@ namespace executive {
 		/*! maps a block label to the PCs of the first
 			and last instructions in the block */
 		BlockRangeMap blockPCRange;
-		
-		/*! maps a basic block terminator PC onto
-			that block's thread frontier */
-		ThreadFrontierMap threadFrontiers;
 
 		/*!	Packed vector of mapped textures */
 		TextureVector textures;

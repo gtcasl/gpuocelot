@@ -9,7 +9,7 @@
 
 #include <string>
 
-namespace analysis
+namespace tools
 {
 	/*! \brief Able to run various optimization passes over PTX modules */
 	class PTXOptimizer

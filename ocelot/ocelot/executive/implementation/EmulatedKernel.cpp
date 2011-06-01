@@ -13,15 +13,22 @@
 #include <cstring>
 
 // Ocelot includes
-#include <ocelot/ir/interface/Parameter.h>
-#include <ocelot/ir/interface/Module.h>
-#include <ocelot/ir/interface/ControlFlowGraph.h>
-#include <ocelot/ir/interface/DominatorTree.h>
-#include <ocelot/ir/interface/PostdominatorTree.h>
 #include <ocelot/executive/interface/EmulatedKernel.h>
 #include <ocelot/executive/interface/Device.h>
 #include <ocelot/executive/interface/RuntimeException.h>
 #include <ocelot/executive/interface/CooperativeThreadArray.h>
+
+#include <ocelot/api/interface/OcelotConfiguration.h>
+
+#include <ocelot/ir/interface/Parameter.h>
+#include <ocelot/ir/interface/Module.h>
+#include <ocelot/ir/interface/ControlFlowGraph.h>
+
+#include <ocelot/transforms/interface/PassManager.h>
+#include <ocelot/transforms/interface/IPDOMReconvergencePass.h>
+#include <ocelot/transforms/interface/ThreadFrontierReconvergencePass.h>
+#include <ocelot/transforms/interface/DefaultLayoutPass.h>
+
 #include <ocelot/trace/interface/TraceGenerator.h>
 
 // Hydrazine includes
@@ -37,15 +44,6 @@
 
 #define REPORT_KERNEL_INSTRUCTIONS 0
 #define REPORT_LAUNCH_CONFIGURATION 0
-#define REPORT_THREAD_FRONTIERS 1
-
-#define IPDOM_RECONVERGENCE 1
-#define BARRIER_RECONVERGENCE 2
-#define GEN6_RECONVERGENCE 3
-#define SORTED_PREDICATE_STACK_RECONVERGENCE 4
-
-// specify reconvergence mechanism here
-#define RECONVERGENCE_MECHANISM IPDOM_RECONVERGENCE
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -207,188 +205,65 @@ void executive::EmulatedKernel::initialize() {
 		
 void executive::EmulatedKernel::constructInstructionSequence() {
 
-	typedef std::unordered_map<ir::ControlFlowGraph::InstructionList::iterator, 
-		ir::ControlFlowGraph::InstructionList::iterator > InstructionMap;
-	typedef std::unordered_map<ir::ControlFlowGraph::InstructionList::iterator,
-		unsigned int> InstructionIdMap;
-	typedef std::unordered_map<ir::ControlFlowGraph::InstructionList::iterator,
-		ir::ControlFlowGraph::iterator> ReconvergeToBlockMap;
 	report("Constructing emulated instruction sequence.");
 
 	// This kernel/function begins at the first instruction
 	functionEntryPoints.insert(std::make_pair(name, 0));
 
-	// visit basic blocks and add reconverge instructions
-	ir::ControlFlowGraph::BlockPointerVector
-		bb_sequence = cfg()->executable_sequence();
+	transforms::PassManager manager(const_cast<ir::Module*>(module));
 	
-	InstructionMap reconvergeTargets;
-	ReconvergeToBlockMap reconvergeSources;
-	
-	threadFrontiers.clear();
-	
-	report(" Adding reconverge instructions");
-	// Create reconverge instructions
-	for (ir::ControlFlowGraph::pointer_iterator bb_it = bb_sequence.begin(); 
-		bb_it != bb_sequence.end(); ++bb_it) {
-#if RECONVERGENCE_MECHANISM == IPDOM_RECONVERGENCE
-		ir::ControlFlowGraph::InstructionList::iterator 
-			i_it = (*bb_it)->instructions.begin();
-		for (; i_it != (*bb_it)->instructions.end(); ++i_it) {
+	typedef api::OcelotConfiguration config;
 
-			ir::PTXInstruction &ptx_instr = static_cast<
-				ir::PTXInstruction&>(**i_it);
-			if (ptx_instr.opcode == ir::PTXInstruction::Bra && !ptx_instr.uni) {
-				ir::ControlFlowGraph::iterator 
-					pdom = pdom_tree()->getPostDominator(*bb_it);
-
-				// only add a new reconverge point if all other reconverge 
-				// points originate from branches that dominate this branch
-				bool allDominate = true;
-				ir::ControlFlowGraph::InstructionList::iterator 
-					reconverge = pdom->instructions.begin();
-				for ( ; reconverge != pdom->instructions.end(); ++reconverge) {
-					ir::PTXInstruction& ptx = static_cast<
-						ir::PTXInstruction&>(**reconverge);
-					if (ptx.opcode != ir::PTXInstruction::Reconverge) {
-						break;
-					}
-					
-					if( !dom_tree()->dominates(
-						reconvergeSources[reconverge], *bb_it) ) {
-						allDominate = false;
-						break;
-					}
-				}
-				
-				if (allDominate) {
-					pdom->instructions.push_front(ir::PTXInstruction(
-						ir::PTXInstruction::Reconverge).clone());
-					report( "  Getting post dominator block " << pdom->label 
-						<< " of instruction " << ptx_instr.toString() );
-					reconvergeTargets.insert(std::make_pair(i_it, 
-						pdom->instructions.begin()));
-					reconvergeSources.insert(std::make_pair(
-						pdom->instructions.begin(), *bb_it));
-				}
-				else {
-					reconvergeTargets.insert(std::make_pair(i_it, reconverge));
-				}
-			}
-		}
+	if (config::get().executive.reconvergenceMechanism
+		== ReconvergenceMechanism::Reconverge_IPDOM) {
 		
-#elif RECONVERGENCE_MECHANISM == SORTED_PREDICATE_STACK_RECONVERGENCE
-		// every basic block with multiple predecessors gets a reconverge instruction
-		if ((*bb_it)->predecessors.size() > 1) {
-			report("inserted reconverge into " << (*bb_it)->label);
-			(*bb_it)->instructions.push_back(
-				ir::PTXInstruction(ir::PTXInstruction::Reconverge).clone());
-		}
-#endif
+		transforms::IPDOMReconvergencePass* pass
+			= new transforms::IPDOMReconvergencePass;
+
+		manager.addPass(*pass);
+		manager.runOnKernel(name);
+
+		instructions = std::move(pass->instructions);
 	}
+	else if (config::get().executive.reconvergenceMechanism
+		== ReconvergenceMechanism::Reconverge_Barrier) {
+		// just pack the instructions into a vector
+		transforms::DefaultLayoutPass* pass
+			= new transforms::DefaultLayoutPass;
 
-	InstructionIdMap ids;
+		manager.addPass(*pass);
+		manager.runOnKernel(name);
 
-	report(" Packing instructions into a vector");
-	size_t lastPC = 0;
-	for (ir::ControlFlowGraph::pointer_iterator bb_it = bb_sequence.begin(); 
-		bb_it != bb_sequence.end(); ++bb_it) {
-		branchTargetsToBlock[(int)instructions.size()] = (*bb_it)->label;
-		int n = 0;
-		blockPCRange[(*bb_it)->label].first = (int)instructions.size();
-		for (ir::ControlFlowGraph::InstructionList::iterator 
-			i_it = (*bb_it)->instructions.begin(); 
-			i_it != (*bb_it)->instructions.end(); ++i_it, ++n) {
-			ir::PTXInstruction& ptx = static_cast<ir::PTXInstruction&>(**i_it);
-			if (ptx.opcode == ir::PTXInstruction::Reconverge 
-				|| i_it == (*bb_it)->instructions.begin()) {
-				ids.insert(std::make_pair(i_it, instructions.size()));
-			}
-			ptx.pc = instructions.size();
-#if REPORT_KERNEL_INSTRUCTIONS
-			report("  pc " << ptx.pc << ": " << ptx.toString() );
-#endif
-			lastPC = ptx.pc;
-			if (!n) { basicBlockPC[ptx.pc] = (*bb_it)->label; }
-			instructions.push_back(ptx);
-		}
-		blockPCRange[(*bb_it)->label].second = (int)lastPC;
-		
-		report("  blockPCRange[" << (*bb_it)->label << "] = " << lastPC);
-		
-		// trivial TF
-		threadFrontiers[(int)lastPC] = std::make_pair<int,int>(
-			(int)lastPC+1, (int)lastPC+1);
-
-		if (n) {
-			basicBlockMap[lastPC] = (*bb_it)->label;
-		}
+		instructions = std::move(pass->instructions);
 	}
+	else if (config::get().executive.reconvergenceMechanism
+		== ReconvergenceMechanism::Reconverge_TFSortedStack) {
 
+		transforms::ThreadFrontierReconvergencePass* pass
+			= new transforms::ThreadFrontierReconvergencePass(false);
 
-	std::set< int > targets;	// set of branch targets
+		manager.addPass(*pass);
+		manager.runOnKernel(name);
 
-	report( "\n\n    Updating branch targets and reconverge points" );
-	unsigned int id = 0;
-	for (ir::ControlFlowGraph::pointer_iterator bb_it = bb_sequence.begin();
-		bb_it != bb_sequence.end(); ++bb_it) {
-		for (ir::ControlFlowGraph::InstructionList::iterator 
-			i_it = (*bb_it)->instructions.begin(); 
-			i_it != (*bb_it)->instructions.end(); ++i_it, ++id) {
-			ir::PTXInstruction& ptx = static_cast<ir::PTXInstruction&>(**i_it);				
-			
-			// thread frontier algorithm
-			std::pair<int,int> blockRange = blockPCRange[(*bb_it)->label];
-			std::set<int>::iterator target_it = targets.find(blockRange.first);
-			if (target_it != targets.end()) {
-				targets.erase(target_it);
-			}
-				
-			if (ptx.opcode == ir::PTXInstruction::Bra) {
-#if RECONVERGENCE_MECHANISM == IPDOM_RECONVERGENCE
-				//report( "  Instruction " << ptx.toString() );
-				if (!ptx.uni) {
-					InstructionMap::iterator 
-						reconverge = reconvergeTargets.find(i_it);
-					assert(reconverge != reconvergeTargets.end());
-					InstructionIdMap::iterator 
-						target = ids.find(reconverge->second);
-					assert(target != ids.end());
-					instructions[id].reconvergeInstruction = target->second;
-					//report("   reconverge at " << target->second);
-				}
-#endif
-				
-				InstructionIdMap::iterator branch = ids.find(
-					(*bb_it)->get_branch_edge()->tail->instructions.begin());
-				assert(branch != ids.end());
-				instructions[id].branchTargetInstruction = branch->second;
-				//report("   target at " << branch->second);
-
-				int successors[2] = { instructions[id].branchTargetInstruction,
-					blockPCRange[(*bb_it)->label].second + 1 };
-				
-				if (targets.size()) {
-					threadFrontiers[blockRange.second].first =
-						*std::min_element(targets.begin(), targets.end()); // min of targets
-					threadFrontiers[blockRange.second].second =
-						*std::max_element(targets.begin(), targets.end()); // max of targets
-#if REPORT_THREAD_FRONTIERS == 1
-					report("  frontier: " 
-						<< threadFrontiers[blockRange.second].first << " - "
-						<< threadFrontiers[blockRange.second].second << "\n");
-#endif
-				}
-				
-				for (int i = 0; i < 2; i++) {
-					if (successors[i] > blockRange.first) {
-						targets.insert(successors[i]);
-					}
-				}
-			}
-		}
+		instructions = std::move(pass->instructions);
 	}
+	else if (config::get().executive.reconvergenceMechanism
+		== ReconvergenceMechanism::Reconverge_TFGen6) {
+
+		transforms::ThreadFrontierReconvergencePass* pass
+			= new transforms::ThreadFrontierReconvergencePass(true);
+
+		manager.addPass(*pass);
+		manager.runOnKernel(name);
+
+		instructions = std::move(pass->instructions);
+	}
+	else {
+		assertM(false, "unknown thread reconvergence mechanism - "
+			<< config::get().executive.reconvergenceMechanism);
+	}	
 	
+	manager.destroyPasses();
 }
 
 /*!
@@ -423,6 +298,7 @@ void executive::EmulatedKernel::updateParamReferences() {
                     << "' setting destination parameter '" << instr.d.toString() 
                     << "' offset to " << param.offset << " " 
                     << ( instr.d.isArgument ? "(argument)" : "" ) );
+
                 instr.d.offset += param.offset;
                 instr.d.imm_uint = 0;
             }

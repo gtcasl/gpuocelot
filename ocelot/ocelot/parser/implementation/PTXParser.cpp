@@ -7,11 +7,17 @@
 #ifndef PTX_PARSER_CPP_INCLUDED
 #define PTX_PARSER_CPP_INCLUDED
 
+// Ocelot Includes
 #include <ocelot/parser/interface/PTXParser.h>
-#include <cassert>
+
+// Hydrazine Includes
 #include <hydrazine/implementation/debug.h>
 #include <hydrazine/implementation/string.h>
 
+// Standard Library Includes
+#include <cassert>
+
+// Preprocessor Macros
 #define throw_exception( messageData, type ) \
 	{\
 		std::stringstream error;\
@@ -1373,7 +1379,10 @@ namespace parser
 			}
 			else
 			{
-				operand.addressMode = ir::PTXOperand::Address;
+				report(" Operand: " << name << " mode: "
+					<< ir::PTXOperand::toString(
+					mode->second.operand.addressMode));
+				operand.addressMode = mode->second.operand.addressMode;
 			}
 		}
 	

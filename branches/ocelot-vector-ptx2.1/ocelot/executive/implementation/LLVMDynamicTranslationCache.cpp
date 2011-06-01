@@ -1284,8 +1284,6 @@ static void cloneAndOptimizeTranslation(
 			"\n\nAdding LLVM vectorization pass (ws: " << warpSize << ")\n\n");
 		manager.add(new analysis::LLVMUniformVectorization(labelMap, warpSize));
 	}
-	
-	level = 1;
 
 	if (level == 0) {
 		reportE(REPORT_TRANSLATION_OPERATIONS, "no optimizations");

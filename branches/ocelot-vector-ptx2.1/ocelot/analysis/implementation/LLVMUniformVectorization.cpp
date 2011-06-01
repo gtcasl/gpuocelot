@@ -476,7 +476,8 @@ void analysis::LLVMUniformVectorization::Translation::loadThreadLocalArguments()
 	bool dynamicWarpFormation = (api::OcelotConfiguration::get().executive.dynamicWarpFormation || 
 		!api::OcelotConfiguration::get().executive.threadInvariantElimination);
 		
-	const char *label[] = {"threadId", "blockDim", "blockId", "gridDim"};
+	const char *label[] = {"threadId", "blockDim", "blockId", "gridDim", "localMem", "sharedMem", 
+		"constMem", "paramMem", "argMem"};
 	const char *suffix[] = {"x", "y", "z"};
 	
 	// all threads must load this
@@ -510,6 +511,13 @@ void analysis::LLVMUniformVectorization::Translation::loadThreadLocalArguments()
 		& ThreadLocalArgument::gridDim_y,
 		& ThreadLocalArgument::gridDim_z,
 	};
+	
+	ThreadLocalArgument::ThreadLocalArgumentVector ThreadLocalArgument::* ctaArgumentsVector[] = {
+		& ThreadLocalArgument::sharedPointer,
+		& ThreadLocalArgument::constantPointer,
+		& ThreadLocalArgument::parameterPointer,
+		& ThreadLocalArgument::argumentPointer,
+	};
 		
 	// load as few blockDimensions, blockIDs, gridDims, and threadIds as possible
 	int contextCount = (dynamicWarpFormation ? warpSize : 1);
@@ -530,6 +538,19 @@ void analysis::LLVMUniformVectorization::Translation::loadThreadLocalArguments()
 					new llvm::LoadInst(ptr, ss.str(), schedulerBlock));
 			}
 		}
+		for (int j = 0; j < 4; j++) {
+			std::stringstream ss;
+			std::vector< llvm::Value *> idx;
+			idx.push_back(pass->getConstInt32(tid));
+			idx.push_back(pass->getConstInt32(j + 5));
+
+			llvm::Instruction *ptr = llvm::GetElementPtrInst::Create(context,
+				idx.begin(), idx.end(), std::string("ptr.") + label[j + 5] + ".", schedulerBlock);
+
+			ss << label[j] << "Ptr." << tid << ".";
+			(threadLocalArguments.*ctaArgumentsVector[j]).push_back(
+				new llvm::LoadInst(ptr, ss.str(), schedulerBlock));
+		}
 	}
 	
 	if (!dynamicWarpFormation) {
@@ -541,6 +562,14 @@ void analysis::LLVMUniformVectorization::Translation::loadThreadLocalArguments()
 				for (int tid = contextCount; tid < warpSize; ++tid) {
 					(threadLocalArguments.*localArgumentVector[j*3+xx]).push_back(loadInst);
 				}
+			}
+		}
+		
+		// replicate uses of other CTA-wide values
+		for (int j = 0; j < 4; j++) {
+			llvm::Instruction *loadInst = (threadLocalArguments.*ctaArgumentsVector[j])[0];
+			for (int tid = contextCount; tid < warpSize; ++tid) {
+				(threadLocalArguments.*ctaArgumentsVector[j]).push_back(loadInst);
 			}
 		}
 		
@@ -585,6 +614,13 @@ void analysis::LLVMUniformVectorization::Translation::replaceContextReferences(l
 		& ThreadLocalArgument::gridDim_y,
 		& ThreadLocalArgument::gridDim_z,
 	};
+	
+	ThreadLocalArgument::ThreadLocalArgumentVector ThreadLocalArgument::* ctaArgumentsVector[] = {
+		& ThreadLocalArgument::sharedPointer,
+		& ThreadLocalArgument::constantPointer,
+		& ThreadLocalArgument::parameterPointer,
+		& ThreadLocalArgument::argumentPointer,
+	};
 					
 	for (llvm::BasicBlock::iterator instr = bb->begin(); instr != bb->end(); ++instr) { 	
 		if (llvm::GetElementPtrInst *ptrInst = llvm::dyn_cast<llvm::GetElementPtrInst>(&*instr)) {
@@ -617,6 +653,10 @@ void analysis::LLVMUniformVectorization::Translation::replaceContextReferences(l
 					threadLocal = localArgumentVector[indices[1] * 3 + indices[2]];
 					found = true;
 				}
+				else if (indices[1] >= 5 && indices.size() == 2) {
+					threadLocal = ctaArgumentsVector[indices[1] - 5];
+					found = true;
+				}
 			}
 			if (found) {
 				bool remove = true;
@@ -632,9 +672,8 @@ void analysis::LLVMUniformVectorization::Translation::replaceContextReferences(l
 							
 							for (InstructionVector::iterator rep_it = warp_it->second.replicated.begin();
 								rep_it != warp_it->second.replicated.end(); ++rep_it) {
-								int tid = rep_it - warp_it->second.replicated.begin();
 								
-								report(" replacing " << (*rep_it)->getNameStr() << " with [" << tid << "] " << local[tid]->getNameStr());
+								int tid = rep_it - warp_it->second.replicated.begin();								
 								(*rep_it)->replaceAllUsesWith(local[tid]);
 							}
 							remove = true;

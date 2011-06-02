@@ -103,8 +103,7 @@ ocelot_dep_libs.extend(env['LLVM_LIBS'])
 libocelot = env.SharedLibrary('ocelot', sources, LIBS=ocelot_dep_libs)
 
 if 'install' in COMMAND_LINE_TARGETS:
-	libocelot = env.Install(os.path.join( \
-		env['install_path'], "lib"), libocelot)
+	libocelot = env.Install(os.path.join(env['install_path'], "lib"), libocelot)
 
 ocelot_libs = ['-locelot']
 

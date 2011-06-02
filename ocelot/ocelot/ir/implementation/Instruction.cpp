@@ -17,6 +17,7 @@ std::string ir::Instruction::toString( Architecture a ) {
 		case Emulated: return "Emulated"; break;
 		case SASS:     return "SASS";     break;
 		case CAL:      return "CAL";      break;
+		case VIR:      return "VIR";      break;
 		case x86:      return "x86";      break;
 		case x86_64:   return "x86_64";   break;
 		case SPU:      return "SPU";      break;

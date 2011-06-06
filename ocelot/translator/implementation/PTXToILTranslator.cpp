@@ -322,7 +322,7 @@ namespace translator
 			case ir::PTXOperand::Special:
 			{
 				op.addressMode = ir::ILOperand::Special;
-				op.special = _translate(o.special, o.vIndex);
+				op = _translate(o.special, o.vIndex);
 				break;
 			}
 			default:
@@ -368,79 +368,75 @@ namespace translator
 		assertM(reg < _tempRegisterMin, "Register name " << reg 
 				<< " collides with temp registers");
 
-		const OperandMap::const_iterator it = _operandMap.find(reg);
-		if (it == _operandMap.end()) 
+		const OperandMap::const_iterator it = _operands.find(reg);
+		if (it == _operands.end()) 
 		{
 			ir::ILOperand op;
 			std::stringstream ss;
-			ss << _operandMap.size();
+			ss << _operands.size();
 			op.identifier = ss.str();
-			_operandMap.insert(std::make_pair(reg, op));
+			_operands.insert(std::make_pair(reg, op));
 		}
 
-		return ("r" + _operandMap[reg].identifier);
+		return ("r" + _operands[reg].identifier);
 	}
 
-	ir::ILOperand::SpecialRegister PTXToILTranslator::_translate(
-		const ir::PTXOperand::SpecialRegister &s,
-        const ir::PTXOperand::VectorIndex& d)
+	ir::ILOperand PTXToILTranslator::_translate(
+			const ir::PTXOperand::SpecialRegister &s,
+			const ir::PTXOperand::VectorIndex& d)
 	{
 		typedef ir::PTXOperand PTXOperand;
 		typedef ir::ILOperand ILOperand;
 
-		ir::ILOperand::SpecialRegister sr;
+		ir::ILOperand op;
 
+		op.addressMode = ILOperand::Special;
 		switch (s)
 		{
 			case PTXOperand::tid:
 			{
-				switch (d)
-				{
-					case PTXOperand::ix: sr = ILOperand::vTidInGrpX; break;
-					case PTXOperand::iy: sr = ILOperand::vTidInGrpY; break;
-					case PTXOperand::iz: sr = ILOperand::vTidInGrpZ; break;
-					default: assertM(false, "Invalid vector index " << d);
-				}
+				op.type = ILOperand::RegType_Thread_Id_In_Group;
 				break;
 			}
 			case PTXOperand::ntid:
 			{
-				switch (d)
-				{
-					case PTXOperand::ix: sr = ILOperand::vNTidInGrpX; break;
-					case PTXOperand::iy: sr = ILOperand::vNTidInGrpY; break;
-					case PTXOperand::iz: sr = ILOperand::vNTidInGrpZ; break;
-					default: assertM(false, "Invalid vector index " << d);
-				}
+				// Translate to cb0[0]
+				op.num = 0;
+				op.type = ILOperand::RegType_Const_Buf;
+				op.immediate_present = true;
+				op.imm = 0;
 				break;
 			}
 			case PTXOperand::ctaId:
 			{
-				switch (d)
-				{
-					case PTXOperand::ix: sr = ILOperand::vThreadGrpIdX; break;
-					case PTXOperand::iy: sr = ILOperand::vThreadGrpIdY; break;
-					case PTXOperand::iz: sr = ILOperand::vThreadGrpIdZ; break;
-					default: assertM(false, "Invalid vector index " << d);
-				}
+				op.type = ILOperand::RegType_Thread_Group_Id;
 				break;
 			}
 			case PTXOperand::nctaId:
 			{
-				switch (d)
-				{
-					case PTXOperand::ix: sr = ILOperand::vNThreadGrpIdX; break;
-					case PTXOperand::iy: sr = ILOperand::vNThreadGrpIdY; break;
-					case PTXOperand::iz: sr = ILOperand::vNThreadGrpIdZ; break;
-					default: assertM(false, "Invalid vector index " << d);
-				}
+				// Translate to cb0[1]
+				op.num = 0;
+				op.type = ILOperand::RegType_Const_Buf;
+				op.immediate_present = true;
+				op.imm = 1;
 				break;
 			}
 			default: assertM(false, "Special Register " << s
 				<< " not supported");
 		}
 
-		return sr;
+		// Translate modifier
+		// TODO No need to set modifier present
+		op.modifier_present = true;
+		switch (d)
+		{
+			case PTXOperand::ix: op = op.x(); break;
+			case PTXOperand::iy: op = op.y(); break;
+			case PTXOperand::iz: op = op.z(); break;
+			default: assertM(false, "Invalid vector index " << d);
+		}
+
+		return op;
 	}
 
 	void PTXToILTranslator::_translateAbs(const ir::PTXInstruction &i)
@@ -3529,40 +3525,24 @@ namespace translator
 
 	ir::ILOperand PTXToILTranslator::_translateLiteral(int l)
 	{
-		std::stringstream stream;
-
-		const ILiteralMap::const_iterator it = _intLiterals.find(l);
-		if (it != _intLiterals.end()) {
-			stream << it->second;
-		} else {
-			stream << "l" << _intLiterals.size() + _floatLiterals.size();
-			_intLiterals.insert(std::make_pair(l, stream.str()));
-		}
+		const LiteralMap::const_iterator it = _literals.find(l);
+		if (it != _literals.end()) return it->second;
 
 		ir::ILOperand op;
 		op.addressMode = ir::ILOperand::Literal;
-		op.identifier = stream.str();
+		op.num = _literals.size();
+		op.type = ir::ILOperand::RegType_Literal;
+		op = op.x();
+		_literals.insert(std::make_pair(l, op));
 
 		return op;
 	}
 
 	ir::ILOperand PTXToILTranslator::_translateLiteral(float l)
 	{
-		std::stringstream stream;
-
-		const FLiteralMap::const_iterator it = _floatLiterals.find(l);
-		if (it != _floatLiterals.end()) {
-			stream << it->second;
-		} else {
-			stream << "l" << _intLiterals.size() + _floatLiterals.size();
-			_floatLiterals.insert(std::make_pair(l, stream.str()));
-		}
-
-		ir::ILOperand op;
-		op.addressMode = ir::ILOperand::Literal;
-		op.identifier = stream.str();
-
-		return op;
+		union { float f; int i; } convert;
+		convert.f = l;
+		return _translateLiteral(convert.i);
 	}
 
 	std::string PTXToILTranslator::_translateConstantBuffer(
@@ -3592,39 +3572,20 @@ namespace translator
  	{
 		report("Adding Kernel Prefix");
 
-		if (_intLiterals.size() > 0) {
-			ILiteralMap::const_iterator it;
-			for (it = _intLiterals.begin() ; it != _intLiterals.end() ; it++) 
+		if (_literals.size() > 0) {
+			LiteralMap::const_iterator it;
+			for (it = _literals.begin() ; it != _literals.end() ; it++) 
 			{
 				ir::ILStatement dcl_literal(ir::ILStatement::LiteralDcl);
 
-				dcl_literal.operands.resize(2);
-				dcl_literal.operands[0].identifier = it->second;
-				dcl_literal.operands[0].addressMode = ir::ILOperand::Literal;
+				dcl_literal.operands.resize(1);
+				dcl_literal.operands[0] = it->second;
 
-				dcl_literal.operands[1].imm_int = it->first;
-				dcl_literal.operands[1].addressMode = ir::ILOperand::Immediate;
-				dcl_literal.operands[1].type = ir::ILOperand::I32;
-
-				_ilKernel->_statements.push_front(dcl_literal);
-
-				report("Added \'" << dcl_literal.toString() << "\'");
-			}
-		}
-
-		if (_floatLiterals.size() > 0) {
-			FLiteralMap::const_iterator it;
-			for (it = _floatLiterals.begin() ; it != _floatLiterals.end() ; it++) 
-			{
-				ir::ILStatement dcl_literal(ir::ILStatement::LiteralDcl);
-
-				dcl_literal.operands.resize(2);
-				dcl_literal.operands[0].identifier = it->second;
-				dcl_literal.operands[0].addressMode = ir::ILOperand::Literal;
-
-				dcl_literal.operands[1].imm_float = it->first;
-				dcl_literal.operands[1].addressMode = ir::ILOperand::Immediate;
-				dcl_literal.operands[1].type = ir::ILOperand::F32;
+				dcl_literal.arguments.resize(4);
+				dcl_literal.arguments[0] = it->first;
+				dcl_literal.arguments[1] = it->first;
+				dcl_literal.arguments[2] = it->first;
+				dcl_literal.arguments[3] = it->first;
 
 				_ilKernel->_statements.push_front(dcl_literal);
 
@@ -3664,10 +3625,8 @@ namespace translator
 		{
 			ir::ILStatement dcl_lds(ir::ILStatement::LocalDataShareDcl);
 
-			dcl_lds.operands.resize(1);
-			dcl_lds.operands[0].imm_int = totalSharedMemorySize;
-			dcl_lds.operands[0].addressMode = ir::ILOperand::Immediate;
-			dcl_lds.operands[0].type = ir::ILOperand::I32;
+			dcl_lds.arguments.resize(1);
+			dcl_lds.arguments[0] = totalSharedMemorySize;
 
 			_ilKernel->_statements.push_front(dcl_lds);
 		

@@ -30,6 +30,7 @@ namespace ir
 			};
 
 			typedef std::vector<ILOperand> OperandVector;
+			typedef std::vector<int> ArgumentVector;
 
 			/*! \brief If this is an instruction, a pointer to the instruction
 			 * object.
@@ -41,6 +42,8 @@ namespace ir
 			Type type;
 			/*! \brief The operands if this is a declaration */
 			OperandVector operands;
+
+			ArgumentVector arguments;
 
 			/*! \brief Default constructor */
 			ILStatement(Type type = InvalidType);

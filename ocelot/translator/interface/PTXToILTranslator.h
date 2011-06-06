@@ -37,14 +37,12 @@ namespace translator
 			void addProfile(const ProfilingData &d);
 
 		private:
-			typedef std::map<int, std::string> ILiteralMap;
-			typedef std::map<float, std::string> FLiteralMap;
+			typedef std::map<int, ir::ILOperand> LiteralMap;
 			typedef std::map<int, ir::ILOperand> OperandMap;
 
 			ir::ILKernel *_ilKernel;
-			ILiteralMap _intLiterals;
-			FLiteralMap _floatLiterals;
-			OperandMap _operandMap;
+			LiteralMap _literals;
+			OperandMap _operands;
 
 			static const ir::ILInstruction::RegisterType _tempRegisterMin = 5000;
 			ir::ILInstruction::RegisterType _tempRegisterCount;
@@ -64,7 +62,7 @@ namespace translator
 			ir::ILOperand                  _translate(const ir::PTXOperand &o);
 			ir::ILInstruction::DataType    _translate(const ir::PTXOperand::DataType d);
 			std::string                    _translate(const ir::PTXOperand::RegisterType &reg);
-			ir::ILOperand::SpecialRegister _translate(const ir::PTXOperand::SpecialRegister &s, const ir::PTXOperand::VectorIndex& d);
+			ir::ILOperand _translate(const ir::PTXOperand::SpecialRegister &s, const ir::PTXOperand::VectorIndex& d);
 
 			void _translateAbs(const ir::PTXInstruction &i);
 			void _translateAdd(const ir::PTXInstruction &i);

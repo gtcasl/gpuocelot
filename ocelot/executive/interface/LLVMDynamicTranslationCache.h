@@ -28,7 +28,7 @@ namespace executive {
 	class LLVMDynamicTranslationCache {
 	public:
 		typedef analysis::KernelPartitioningPass::EntryId EntryId;
-		typedef void (*TranslatedFunction)(LLVMContext *);
+		typedef void (*TranslatedFunction)(LLVMContext **);
 		
 	public:
 		
@@ -41,7 +41,7 @@ namespace executive {
 			~Translation();
 			
 			//! \brief executes a translation
-			void execute(LLVMContext *contexts) const;
+			void execute(LLVMContext **contexts) const;
 			
 		public:
 			//! \brief LLVM function backing translation

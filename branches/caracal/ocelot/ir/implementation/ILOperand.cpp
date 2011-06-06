@@ -30,7 +30,10 @@ namespace ir
 			negate_x(false),
 			negate_y(false),
 			negate_z(false),
-			negate_w(false)
+			negate_w(false),
+			type(RegType_Invalid),
+			modifier_present(false),
+			immediate_present(false)
 	{
 	}
 
@@ -81,7 +84,11 @@ namespace ir
 	{
 		switch (rt)
 		{
-			case RegType_Temp: return "r"; break;
+			case RegType_Temp:               return "r";
+			case RegType_Const_Buf:          return "cb";
+			case RegType_Literal:            return "l";
+			case RegType_Thread_Id_In_Group: return "vTidInGrp";
+			case RegType_Thread_Group_Id:    return "vThreadGrpId";
 			default: assertM(false, "Invalid register type " << rt);
 		}
 	}
@@ -104,6 +111,18 @@ namespace ir
 			(component_y == ModComp_Write ? "y" : toString(component_y)) + 
 			(component_z == ModComp_Write ? "z" : toString(component_z)) + 
 			(component_w == ModComp_Write ? "w" : toString(component_w));
+	}
+
+	ILOperand::Src_Mod::Src_Mod() : 
+			swizzle_x(CompSel_Invalid), 
+			swizzle_y(CompSel_Invalid), 
+			swizzle_z(CompSel_Invalid), 
+			swizzle_w(CompSel_Invalid), 
+			negate_x(false), 
+			negate_y(false), 
+			negate_z(false),
+			negate_w(false)
+	{
 	}
 
 	std::string ILOperand::Src_Mod::toString(ComponentSelect c)
@@ -142,16 +161,39 @@ namespace ir
 		return "." + swizzleString() + negateString();
 	}
 
+	std::string ILOperand::immediateString() const
+	{
+		return "[" + boost::lexical_cast<std::string>(imm) + "]";
+	}
+
 	std::string ILOperand::dstString() const
 	{
-		return toString(rtype) + boost::lexical_cast<std::string>(num) +
+		return toString(type) + boost::lexical_cast<std::string>(num) +
 			(modifier_present ? dst_mod.toString() : "");
 	}
 
 	std::string ILOperand::srcString() const
 	{
-		return toString(rtype) + boost::lexical_cast<std::string>(num) +
-			(modifier_present ? src_mod.toString() : "");
+		switch (type)
+		{
+			case RegType_Thread_Id_In_Group:
+			case RegType_Thread_Group_Id:
+			{
+				return toString(type) + 
+					(modifier_present ? src_mod.toString() : "");
+			}
+			case RegType_Const_Buf: /* fall thru */
+			case RegType_Literal:
+			{
+				return toString(type) + 
+					boost::lexical_cast<std::string>(num) +
+					(immediate_present ? immediateString() : "") +
+					(modifier_present ? src_mod.toString() : "");
+			}
+			default: assertM(false, "Invalid register type " << type);
+		}
+		
+		return toString(type) + (modifier_present ? src_mod.toString() : "");
 	}
 
 	std::string ILOperand::toString() const
@@ -159,31 +201,9 @@ namespace ir
 		switch (addressMode)
 		{
 			case Register: return toStringRegister();
-			case Immediate:
-			{
-				std::stringstream stream;
-				switch (type)
-				{
-					case I32: stream << imm_int; break;
-					case F32: 
-					{
-						union
-						{
-							float f;
-							int i;
-						} convert;
-						
-						convert.f = imm_float;
-						stream << "0x" << std::hex << convert.i; 
-						break;
-					}
-					default: assertM(false, "Invalid data type");
-				}
-				return stream.str();	
-			}
-			case Literal: return identifier;
 			case ConstantBuffer: return identifier;
-			case Special: return toString(special);
+			case Literal: /* fall thru */
+			case Special: return srcString();
 			default:
 			{
 				assertM(false, "Address Mode " << addressMode 
@@ -193,56 +213,59 @@ namespace ir
 		}
 	}
 
-	std::string ILOperand::toString(SpecialRegister sr) const
-	{
-		switch (sr)
-		{
-			case vTidInGrpX:     return "vTidInGrp.x";    break;
-			case vTidInGrpY:     return "vTidInGrp.y";    break;
-			case vTidInGrpZ:     return "vTidInGrp.z";    break;
-			case vNTidInGrpX:    return "cb0[0].x";       break;
-			case vNTidInGrpY:    return "cb0[0].y";       break;
-			case vNTidInGrpZ:    return "cb0[0].z";       break;
-			case vThreadGrpIdX:  return "vThreadGrpId.x"; break;
-			case vThreadGrpIdY:  return "vThreadGrpId.y"; break;
-			case vThreadGrpIdZ:  return "vThreadGrpId.z"; break;
-			case vNThreadGrpIdX: return "cb0[1].x";       break;
-			case vNThreadGrpIdY: return "cb0[1].y";       break;
-			case vNThreadGrpIdZ: return "cb0[1].z";       break;
-			default: break;
-		}
-		
-		return "SpecialRegister_invalid";
-	}
-
 	ILOperand ILOperand::x() const
 	{
+		// TODO Deprecate
 		ILOperand o(*this);
 		o.swizzle_x = CompSel_X;
+
+		// TODO Set modifier present
+		o.src_mod.swizzle_x = Src_Mod::CompSel_X;
+		o.src_mod.swizzle_y = Src_Mod::CompSel_X;
+		o.src_mod.swizzle_z = Src_Mod::CompSel_X;
+		o.src_mod.swizzle_w = Src_Mod::CompSel_X;
 
 		return o;
 	}
 
 	ILOperand ILOperand::y() const
 	{
+		// TODO Deprecate
 		ILOperand o(*this);
 		o.swizzle_y = CompSel_Y;
+
+		o.src_mod.swizzle_x = Src_Mod::CompSel_Y;
+		o.src_mod.swizzle_y = Src_Mod::CompSel_Y;
+		o.src_mod.swizzle_z = Src_Mod::CompSel_Y;
+		o.src_mod.swizzle_w = Src_Mod::CompSel_Y;
 
 		return o;
 	}
 
 	ILOperand ILOperand::z() const
 	{
+		// TODO Deprecate
 		ILOperand o(*this);
 		o.swizzle_z = CompSel_Z;
+
+		o.src_mod.swizzle_x = Src_Mod::CompSel_Z;
+		o.src_mod.swizzle_y = Src_Mod::CompSel_Z;
+		o.src_mod.swizzle_z = Src_Mod::CompSel_Z;
+		o.src_mod.swizzle_w = Src_Mod::CompSel_Z;
 
 		return o;
 	}
 
 	ILOperand ILOperand::w() const
 	{
+		// TODO Deprecate
 		ILOperand o(*this);
 		o.swizzle_w = CompSel_W;
+
+		o.src_mod.swizzle_x = Src_Mod::CompSel_W;
+		o.src_mod.swizzle_y = Src_Mod::CompSel_W;
+		o.src_mod.swizzle_z = Src_Mod::CompSel_W;
+		o.src_mod.swizzle_w = Src_Mod::CompSel_W;
 
 		return o;
 	}

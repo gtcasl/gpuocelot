@@ -25,35 +25,10 @@ namespace ir
 			/*! \brief Addressing modes of operand */
 			enum AddressMode {
 				Register,              // use as a register variable
-				Immediate,             // immediate value
 				Literal,               // literal value (immediate)
 				ConstantBuffer,        // constant buffer (parameter)
 				Special,               // special register
 				Invalid
-			};
-
-			/*! \brief Type specifier */
-			enum DataType {
-				I32,
-				F32,
-				InvalidDataType
-			};
-
-			/*! \brief Special register names */
-			enum SpecialRegister {
-				vTidInGrpX,
-				vTidInGrpY,
-				vTidInGrpZ,
-				vNTidInGrpX,
-				vNTidInGrpY,
-				vNTidInGrpZ,
-				vThreadGrpIdX,
-				vThreadGrpIdY,
-				vThreadGrpIdZ,
-				vNThreadGrpIdX,
-				vNThreadGrpIdY,
-				vNThreadGrpIdZ,
-				SpecialRegister_invalid
 			};
 
 			/*! \brief Component selection for source modifiers */
@@ -70,10 +45,6 @@ namespace ir
 
 			/*! \brief Addressing mode of operand */
 			AddressMode addressMode;
-			/*! \brief Data type */
-			DataType type;
-			/*! \brief Value of operand */
-			SpecialRegister special;
 
 			/*****************************//**
 			 * \name Source modifiers
@@ -87,15 +58,9 @@ namespace ir
 
 			/*! \brief Identifier of operand */
 			std::string identifier;
-			/*! \brief Immediate value */
-			union {
-			   int imm_int;
-			   float imm_float;
-			};
 
 			std::string toString() const;
 			std::string toString(ComponentSelect c) const;
-			std::string toString(SpecialRegister sr) const;
 			std::string toStringRegister() const;
 
 			/*****************************//**
@@ -170,11 +135,9 @@ namespace ir
 			/*! \brief Source modifier */
 			class Src_Mod {
 				public:
-					std::string toString() const;
+					Src_Mod();
 
-				private:
-					std::string swizzleString() const;
-					std::string negateString() const;
+					std::string toString() const;
 
 					/*! \brief Source component */
 					enum ComponentSelect {
@@ -187,8 +150,6 @@ namespace ir
 						CompSel_Invalid
 					};
 
-					static std::string toString(ComponentSelect c);
-
 					ComponentSelect swizzle_x;
 					ComponentSelect swizzle_y;
 					ComponentSelect swizzle_z;
@@ -197,6 +158,11 @@ namespace ir
 					bool negate_y;
 					bool negate_z;
 					bool negate_w;
+
+				private:
+					std::string swizzleString() const;
+					std::string negateString() const;
+					static std::string toString(ComponentSelect c);
 			};
 
 			/*****************************//**
@@ -204,14 +170,15 @@ namespace ir
 			 ********************************/
 			//@{
 			unsigned int num;
-			RegType rtype;
+			RegType type;
 			bool modifier_present;
-			union {
-				Dst_Mod dst_mod; // destination modifier
-				Src_Mod src_mod; // source modifier
-			};
+			bool immediate_present;
+			Dst_Mod dst_mod; // destination modifier
+			Src_Mod src_mod; // source modifier
+			unsigned int imm;
 			//@}
 
+			std::string immediateString() const;
 			static std::string toString(RegType rt);
 
 			std::string dstString() const;

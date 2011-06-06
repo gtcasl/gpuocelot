@@ -34,7 +34,6 @@ void PtxToIlTranslator::translate()
 			new executive::ATIExecutableKernel(*k_it->second, NULL, NULL, NULL, 
 					NULL, NULL, NULL);
 		kernel->updateGlobals();
-		kernel->allocateSharedMemory();
 
 		std::string il = kernel->name + ".il";
 

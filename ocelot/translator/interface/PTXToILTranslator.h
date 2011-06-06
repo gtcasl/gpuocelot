@@ -122,7 +122,7 @@ namespace translator
 
 			ir::ILOperand _translateLiteral(int l);
 			ir::ILOperand _translateLiteral(float l);
-			std::string   _translateConstantBuffer(const ir::PTXOperand o, unsigned int offset);
+			ir::ILOperand  _translateConstantBuffer(const ir::PTXOperand o, unsigned int offset);
 
 			void _convertSrc(const ir::PTXInstruction &i, ir::ILOperand& a);
 			void _convert(const ir::PTXInstruction &i);

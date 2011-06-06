@@ -313,7 +313,7 @@ namespace executive
 		CalDriver()->calModuleGetName(&_cb0Name, *_context, _module, "cb0");
 		CalDriver()->calCtxSetMem(*_context, _cb0Name, _cb0Mem);
 
-		if (parameters.size()) {
+		if (arguments.size()) {
 			CalDriver()->calCtxGetMem(&_cb1Mem, *_context, *_cb1Resource);
 			CalDriver()->calModuleGetName(&_cb1Name, *_context, _module, "cb1");
 			CalDriver()->calCtxSetMem(*_context, _cb1Name, _cb1Mem);
@@ -341,7 +341,7 @@ namespace executive
 		// release memory handles
 		CalDriver()->calCtxReleaseMem(*_context, _uav0Mem);
 		CalDriver()->calCtxReleaseMem(*_context, _cb0Mem);
-		if (parameters.size()) 
+		if (arguments.size()) 
 			CalDriver()->calCtxReleaseMem(*_context, _cb1Mem);
 
 		// unload module

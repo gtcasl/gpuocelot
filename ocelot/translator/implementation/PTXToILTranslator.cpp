@@ -1389,16 +1389,16 @@ namespace translator
 			if (b == 0)
 			{
 				ir::ILMov mov;
+				mov.a = _translateConstantBuffer(i.a, 0);
 				mov.a.addressMode = ir::ILOperand::ConstantBuffer;
-				mov.a.identifier = _translateConstantBuffer(i.a, 0);
 				mov.d = d;
 				_add(mov);
 			}
 			else
 			{
 				ir::ILMov mov;
+				mov.a = _translateConstantBuffer(i.a, b);
 				mov.a.addressMode = ir::ILOperand::ConstantBuffer;
-				mov.a.identifier = _translateConstantBuffer(i.a, b);
 				mov.d = temp1;
 				_add(mov);
 
@@ -3545,7 +3545,7 @@ namespace translator
 		return _translateLiteral(convert.i);
 	}
 
-	std::string PTXToILTranslator::_translateConstantBuffer(
+	ir::ILOperand PTXToILTranslator::_translateConstantBuffer(
 			const ir::PTXOperand o, unsigned int offset)
 	{
 		const std::string ident = o.identifier;
@@ -3559,13 +3559,16 @@ namespace translator
 			i += it->arrayValues.size();
 		}
 
-		if (it != _ilKernel->arguments.end()) {
-			stream << "cb1[" << i + o.offset + offset << "]";
-		} else {
-			assertM(false, "Argument " << ident << " not declared");
-		}
+		assertM(it != _ilKernel->arguments.end(), 
+				"Argument " << ident << " not declared");
 
-		return stream.str();
+		ir::ILOperand op;
+		op.num = 1;
+		op.type = ir::ILOperand::RegType_Const_Buf;
+		op.immediate_present = true;
+		op.imm = i + o.offset + offset;
+
+		return op;
 	}
 
  	void PTXToILTranslator::_addKernelPrefix(const ATIExecutableKernel *k)
@@ -3593,13 +3596,15 @@ namespace translator
 			}
 		}
 
-		if (_ilKernel->parameters.size() > 0) {
+		if (_ilKernel->arguments.size() > 0) {
 			ir::ILStatement dcl_cb1(ir::ILStatement::ConstantBufferDcl);
 
-			std::stringstream stream;
-			stream << "cb1[" << _ilKernel->parameters.size() << "]";
 			dcl_cb1.operands.resize(1);
-			dcl_cb1.operands[0].identifier = stream.str();
+			dcl_cb1.operands[0].num = 1;
+			dcl_cb1.operands[0].type = ir::ILOperand::RegType_Const_Buf;
+			dcl_cb1.operands[0].immediate_present = true;
+			dcl_cb1.operands[0].imm = _ilKernel->arguments.size();
+
 			dcl_cb1.operands[0].addressMode = ir::ILOperand::ConstantBuffer;
 
 			_ilKernel->_statements.push_front(dcl_cb1);
@@ -3609,10 +3614,13 @@ namespace translator
 
 		ir::ILStatement dcl_cb0(ir::ILStatement::ConstantBufferDcl);
 
-		std::stringstream stream;
-		stream << "cb0[2]";
 		dcl_cb0.operands.resize(1);
-		dcl_cb0.operands[0].identifier = stream.str();
+		dcl_cb0.operands.resize(1);
+		dcl_cb0.operands[0].num = 0;
+		dcl_cb0.operands[0].type = ir::ILOperand::RegType_Const_Buf;
+		dcl_cb0.operands[0].immediate_present = true;
+		dcl_cb0.operands[0].imm = 2;
+
 		dcl_cb0.operands[0].addressMode = ir::ILOperand::ConstantBuffer;
 
 		_ilKernel->_statements.push_front(dcl_cb0);

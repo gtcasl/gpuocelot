@@ -106,13 +106,29 @@ namespace executive {
 			//! \brief 
 			EntryId entryId;
 			
+			//
+			// These are only needed for warp-level scheduling
+			//  v v 
+			//
+			
+			//! \brief index of first ready thread
+			int warpBase;
+			
+			//! \brief number of threads available
+			int warpSize;
+			
 			//! \brief indicate ready, barrier, or terminated status of threads
-			std::vector< ThreadExitCode > threadStatus;
+			ThreadExitCode threadStatus[LLVMDYNAMICEXECUTIVE_MAXIMUM_WARP_SIZE];
 			
 			//! \brief avoid copying around contexts
 			LLVMContext *contextPointers[LLVMDYNAMICEXECUTIVE_MAXIMUM_WARP_SIZE];
+
 		};
+		typedef std::vector< Warp > WarpVector;
 		
+		/*!
+			\brief maintains CTA-local data structures
+		*/
 		class CooperativeThreadArray {
 		public:
 		
@@ -121,6 +137,11 @@ namespace executive {
 		
 			void resize(int localSize = 0, int sharedSize = 0, int constSize = 0, 
 				int parameterSize = 0, int argumentSize = 0);
+				
+			void initializeContext(	LLVMContext &context, int threadId, 
+				const LLVMDynamicKernel &kernel, 
+				const ir::Dim3 &ctaId,
+				int localMemorySize);
 			
 		public:
 			ByteVector local;
@@ -140,8 +161,18 @@ namespace executive {
 			ThreadContextQueue barrierQueue;
 			
 #elif THREAD_SCHEDULER == SCHEDULER_WARP_LEVEL
-			// keep warps together, executing one until completion
+
+			//! \brief			
+			WarpVector warps;
 			
+			//! \brief points to the current warp being scheduled
+			int warpIndex;
+			
+			//! \brief
+			int barrierCount;
+			
+			//! \brief counts the number of threads that have exited
+			int exitCount;
 #endif
 		};
 		typedef std::map< unsigned int, CooperativeThreadArray > CooperativeThreadArrayMap;
@@ -168,8 +199,20 @@ namespace executive {
 		//! \brief construct a warp
 		void warpFormation(Warp &warp);
 		
+		//! \brief construct a warp
+		Warp * warpFormationWarpLevel();
+		
 		//! \brief execute a warp
-		void executeWarp(Warp &warp);
+		void executeWarpThreadLevel(Warp & warp);
+		
+		//! \brief execute a warp
+		void updateWarpThreadLevel(Warp &warp);
+		
+		//! \brief execute a warp
+		void executeWarpWarpLevel(Warp & warp);
+		
+		//! \brief execute a warp
+		void updateWarpWarpLevel(Warp * warp);
 		
 		//! \brief determine whether barriers have been reached
 		void testBarriers(int &waiting, int &ready);
@@ -188,6 +231,9 @@ namespace executive {
 		
 		//! \brief gets the exit code of a thread
 		static ThreadExitCode getExitCode(const LLVMContext &context);
+		
+		//! \brief gets the exit code of a thread
+		static void setExitCode(const LLVMContext &context, ThreadExitCode status);
 				
 		//! \brief determines a thread's next subkernel
 		static EntryId getResumePoint(const LLVMContext &context);
@@ -212,9 +258,13 @@ namespace executive {
 		//! \brief set of active CTAs
 		CooperativeThreadArrayMap ctaMap;
 		
+		//! \brief references a single CTA
+		CooperativeThreadArray *activeCta;
+		
 		//! \brief thread-local cache of translations
 		TranslationWarpCache translationCache;
 		
+		//! \brief counters for characterization
 		EntryCounter entryCounter;
 		
 		//! \brief used for computing weighted average of liveness

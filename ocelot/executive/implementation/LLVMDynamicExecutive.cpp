@@ -54,6 +54,7 @@ void LLVMDynamicExecutive::CooperativeThreadArray::initialize(
 	int localMemorySize,
 	int sharedMemorySize) {
 
+	const ir::Dim3 gridDim = kernel.gridDim();
 	const ir::Dim3 blockDim = kernel.blockDim();
 	
 	int totalThreads = blockDim.x * blockDim.y * blockDim.z;
@@ -64,31 +65,61 @@ void LLVMDynamicExecutive::CooperativeThreadArray::initialize(
 		
 	local.resize(localMemorySize * totalThreads, 0);
 	shared.resize(sharedMemorySize, 0);
-	
+
+#if THREAD_SCHEDULER == SCHEDULER_WARP_LEVEL
+	Warp warp;
+#endif
 	for (int threadId = 0; threadId < totalThreads; threadId++) {
+	
 		LLVMContext context;
-		context.nctaid.x  = kernel.gridDim().x;
-		context.nctaid.y  = kernel.gridDim().y;
-		context.nctaid.z  = kernel.gridDim().z;
-		context.ctaid.x   = ctaId.x;
-		context.ctaid.y   = ctaId.y;
-		context.ctaid.z   = ctaId.z;
-		context.ntid.x    = blockDim.x;
-		context.ntid.y    = blockDim.y;
-		context.ntid.z    = blockDim.z;
-		context.tid.x     = threadId % context.ntid.x;
-		context.tid.y     = (threadId / context.ntid.x) % context.ntid.y;
-		context.tid.z     = threadId / (context.ntid.x * context.ntid.y);
-		context.shared    = reinterpret_cast<char*>(&shared[0]);
-		context.argument  = kernel.argumentMemory();	//stack.argumentMemory();
-		context.local     = &local[threadId * localMemorySize];	//stack.localMemory();
-		context.parameter = 0;	//stack.parameterMemory();
-		context.constant  = kernel.constantMemory();
-		context.metadata  = 0;
 		
+		initializeContext(context, threadId, kernel, ctaId, localMemorySize);
 		setResumePoint(context, entry);
+		
+#if THREAD_SCHEDULER == SCHEDULER_THREAD_LEVEL
 		readyQueue.push_back(context);
+#elif THREAD_SCHEDULER == SCHEDULER_WARP_LEVEL
+		warp.threadStatuses[warp.threads.size()] = analysis::KernelPartitioningPass::Thread_entry;
+		warp.threads.push_back(context);
+		if (warp.threads.size() == api::OcelotConfiguration::get().executive.warpSize) {
+			warps.push_back(warp);
+		}
+		warp.threads.clear();
+#endif
 	}
+#if THREAD_SCHEDULER == SCHEDULER_WARP_LEVEL
+	if (warp.threads.size()) {
+		warps.push_back(warp);
+	}
+#endif
+}
+
+
+void LLVMDynamicExecutive::CooperativeThreadArray::initializeContext(
+	LLVMContext &context, 
+	int threadId,
+	const LLVMDynamicKernel &kernel, 
+	const ir::Dim3 &ctaId,
+	int localMemorySize) {
+	
+	context.nctaid.x  = kernel.gridDim().x;
+	context.nctaid.y  = kernel.gridDim().y;
+	context.nctaid.z  = kernel.gridDim().z;
+	context.ctaid.x   = ctaId.x;
+	context.ctaid.y   = ctaId.y;
+	context.ctaid.z   = ctaId.z;
+	context.ntid.x    = kernel.blockDim().x;
+	context.ntid.y    = kernel.blockDim().y;
+	context.ntid.z    = kernel.blockDim().z;
+	context.tid.x     = threadId % context.ntid.x;
+	context.tid.y     = (threadId / context.ntid.x) % context.ntid.y;
+	context.tid.z     = threadId / (context.ntid.x * context.ntid.y);
+	context.shared    = reinterpret_cast<char*>(&shared[0]);
+	context.argument  = kernel.argumentMemory();
+	context.local     = &local[threadId * localMemorySize];
+	context.parameter = 0;
+	context.constant  = kernel.constantMemory();
+	context.metadata  = 0;
 }
 
 void LLVMDynamicExecutive::CooperativeThreadArray::resize(
@@ -177,9 +208,15 @@ LLVMDynamicExecutive::ThreadExitCode LLVMDynamicExecutive::getExitCode(
 	return (ThreadExitCode)*((int *)&context.local[0]);
 }
 
+
+//! \brief gets the exit code of a thread
+void LLVMDynamicExecutive::setExitCode(const LLVMContext &context, 
+	ThreadExitCode status) {
+	*((ThreadExitCode *)&context.local[0]) = status;
+}
+
 LLVMDynamicExecutive::EntryId LLVMDynamicExecutive::getResumePoint(
 	const LLVMContext &context) {
-	
 	return *((EntryId *)&context.local[4]);
 }
 
@@ -217,6 +254,8 @@ void LLVMDynamicExecutive::setResumePoint(
 
 */
 void LLVMDynamicExecutive::execute() {
+	
+#if THREAD_SCHEDULER == SCHEDULER_THREAD_LEVEL
 	int waitingThreads = 0;
 	int readyThreads = 0;
 	
@@ -231,12 +270,37 @@ void LLVMDynamicExecutive::execute() {
 			// construct a warp
 			warpFormation(warp);
 		
+			// gratuitous debug messaging
 			reportE(REPORT_SCHEDULE_OPERATIONS, " formed warp with " << warp.threads.size() << " threads");
 			
 			// execute a warp
-			executeWarp(warp);
+			executeWarpThreadLevel(warp);
+			
+			// update the warp
+			updateWarpThreadLevel(warp);
 		}
 	} while (waitingThreads || readyThreads);
+			
+#elif THREAD_SCHEDULER == SCHEDULER_WARP_LEVEL
+
+	reportE(REPORT_SCHEDULE_OPERATIONS, "execute()");
+	
+	Warp *readyWarp = 0;
+	do {
+		
+		// Warp formation:
+		// look for more threads in the current warp
+		readyWarp = warpFormationWarpLevel();
+		
+		if (readyWarp) {
+			// Dispatch the warp
+			executeWarpWarpLevel(*readyWarp);
+
+			// now examine final state and update accordingly
+			updateWarpWarpLevel(*readyWarp);
+		}
+	} while (readyWarp);
+#endif
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -245,19 +309,23 @@ void LLVMDynamicExecutive::execute() {
 	\brief execute a warp
 	
 */
-void LLVMDynamicExecutive::executeWarp(Warp &warp) {
+void LLVMDynamicExecutive::executeWarpThreadLevel(Warp &warp) {
 	
 	reportE(REPORT_SCHEDULE_OPERATIONS, "\n\nExecuting warp of size " << warp.size() 
 		<< " on hyperblockId " << warp.entryId);
-		
+	
+	//
 	// lazily fetch translation
+	//
 	const LLVMDynamicTranslationCache::Translation *translation = 
 		getOrInsertTranslationById(warp.entryId, warp.size());
 	
 	assert(translation && "failed to obtain translation");
 	reportE(REPORT_SCHEDULE_OPERATIONS, " obtained translation. Executing warp on subkernel " << warp.entryId);
 	
-	
+	//
+	// Update context objects for the translation - hopefully this part isn't the slow part
+	//
 	unsigned int n = 0;
 	for (ThreadContextVector::iterator ctx_it = warp.threads.begin(); 
 		ctx_it != warp.threads.end(); 
@@ -273,10 +341,13 @@ void LLVMDynamicExecutive::executeWarp(Warp &warp) {
 	livenessEntryCounter[warp.entryId].entries += warp.threads.size();
 #endif
 
-	// primitive warp scheduler
+	//
+	// Execute the warp for all threads
+	//
 	for (size_t tid = 0; tid < warp.threads.size(); tid += translation->warpSize) {
 		translation->execute(&warp.contextPointers[tid]);
 	}
+	
 #if METRIC_WARPSIZE
 	EntryCounter::iterator counter = entryCounter.find((int)warp.threads.size());
 	if (counter == entryCounter.end()) {
@@ -286,6 +357,40 @@ void LLVMDynamicExecutive::executeWarp(Warp &warp) {
 		counter->second ++;
 	}
 #endif
+	
+}
+
+//! \brief execute a warp
+void LLVMDynamicExecutive::executeWarpWarpLevel(Warp & warp) {
+	reportE(REPORT_SCHEDULE_OPERATIONS, "\n\nExecuting warp of size " << warp.size() 
+		<< " on hyperblockId " << warp.entryId);
+	
+	//
+	// lazily fetch translation
+	//
+	const LLVMDynamicTranslationCache::Translation *translation = getOrInsertTranslationById(
+		warp.entryId, warp.warpSize);
+	
+	assert(translation && "failed to obtain translation");
+	reportE(REPORT_SCHEDULE_OPERATIONS, " obtained translation. Executing warp on subkernel " 
+		<< warp.entryId);
+
+	for (int tid = 0; tid < warp.warpSize; tid++) {
+		warp.contextPointers[tid]->metadata = (char *)translation->metadata;
+	}
+
+	//
+	// Execute the warp for all threads
+	//
+	for (int tid = 0; tid < warp.warpSize; tid += translation->warpSize) {
+		translation->execute(&warp.contextPointers[tid]);
+	}
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//! \brief execute a warp
+void LLVMDynamicExecutive::updateWarpThreadLevel(Warp &warp) {
 
 	for (
 		ThreadContextVector::iterator ctx_it = warp.threads.begin(); 
@@ -345,6 +450,66 @@ void LLVMDynamicExecutive::executeWarp(Warp &warp) {
 		}
 	}
 }
+
+//! \brief execute a warp
+void LLVMDynamicExecutive::updateWarpWarpLevel(Warp * warp) {
+	for (int tid = 0; tid < warp->warpSize; ++tid) {
+	
+		LLVMContext &context = *warp->contextPointers[tid];
+		ThreadExitCode exitCode = getExitCode(context);
+		unsigned int ctaId = LLVMDynamicExecutive::ctaId(context);
+		
+		reportE(REPORT_SCHEDULE_OPERATIONS, 
+			" thread(" << context.tid.x << ", " << context.tid.y << ", " << context.tid.z 
+			<< ") [cta " << ctaId << "] exited with code " 
+			<< analysis::KernelPartitioningPass::toString(exitCode) 
+			<< " - resume point: " << getResumePoint(context));
+				
+		warp->threadStatus[warp->warpBase + tid] = exitCode;
+				
+#if THREAD_SCHEDULER == SCHEDULER_WARP_LEVEL
+		switch (exitCode) {
+		case analysis::KernelPartitioningPass::Thread_fallthrough:
+			// update its next thread Id
+			reportE(REPORT_SCHEDULE_OPERATIONS, 
+				"inserting thread " << context.tid.x << ", " << context.tid.y << ", " << context.tid.z 
+					<< " into ready queue of CTA " << ctaId);
+			break;
+		case analysis::KernelPartitioningPass::Thread_branch:
+			// update its next thread Id
+			reportE(REPORT_SCHEDULE_OPERATIONS, 
+				"inserting thread " << context.tid.x << ", " << context.tid.y << ", " << context.tid.z 
+					<< " into ready queue of CTA " << ctaId);
+			break;
+		case analysis::KernelPartitioningPass::Thread_tailcall:
+			// update its next thread Id
+			assert(0 && "calls not implemented");
+			break;
+		case analysis::KernelPartitioningPass::Thread_call:
+			// update its next thread Id
+			assert(0 && "calls not implemented");
+			break;
+		case analysis::KernelPartitioningPass::Thread_barrier:
+			// update its next thread Id, place into a waiting queue
+			reportE(REPORT_SCHEDULE_OPERATIONS, 
+				"inserting thread " << context.tid.x << ", " << context.tid.y << ", " << context.tid.z 
+					<< " into barrier queue of CTA " << ctaId);
+			activeCta->barrierCount ++;
+			break;
+		case analysis::KernelPartitioningPass::Thread_exit:
+			// kill off the thread
+			activeCta->exitCount ++;
+			break;
+		case analysis::KernelPartitioningPass::Thread_exit_other:
+			break;
+		default: assert(0 && "invalid ThreadExitCode");
+			break;
+		}
+#endif
+	}
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //! \brief construct a warp - for now, simply choose a ready thread
 void LLVMDynamicExecutive::warpFormation(Warp &warp) {
@@ -444,6 +609,67 @@ void LLVMDynamicExecutive::testBarriers(int &waiting, int &ready) {
 		waiting += (int)cta_it->second.barrierQueue.size();
 	}
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//! \brief construct a warp
+LLVMDynamicExecutive::Warp *LLVMDynamicExecutive::warpFormationWarpLevel() {
+	Warp *warp = 0;
+#if THREAD_SCHEDULER == SCHEDULER_WARP_LEVEL
+	
+	if (activeCta->exitCount == activeCta->blockDim.size()) {
+		warp = 0;
+		return warp;
+	}
+	
+	// if every thread is at a barrier, fix that
+	if (activeCta->barrierCount == activeCta->blockDim.size()) {
+		for (WarpVector::iterator warp_it = activeCta->warps.begin();
+			warp_it != activeCta->warps.end(); ++warp_it) {
+			for (int tid = 0; tid < warpSize; tid++) {
+				setExitCode(warp_it->threads[tid], analysis::KernelPartitioningPass::Thread_entry);
+			}
+			warp_it->warpBase = 0;
+		}
+		activeCta->barrierCount = 0;
+	}
+	
+	do {
+		warp = & cta.warps[cta.warpIndex];
+		warp->warpSize = 0;
+		int tid = 0;
+		for (tid = 0; tid < warpSize; tid++) {
+			EntryId entryId = getResumePoint(warp->threads[tid]);
+			ThreadExitCode exitStatus = getExitCode(warp->threads[tid]);			
+			
+			if (exitStatus < analysis::KernelPartitioningPass::Thread_barrier && 
+				(!warp->warpSize || warp->entryId == entryId)) {
+				warp.contextPointers[warp->warpSize] = &warp->threads[tid];
+				warp->warpSize ++;
+				warp->entryId = entryId;
+			}
+		}
+		if (!warp->warpSize) {
+			warp_it->warpBase = 0;
+			activeCta->warpIndex++;
+			if (activeCta->warpIndex > activeCta->warps.size()) {
+				activeCta->warpIndex = 0;		
+			}
+		}
+		else {
+			int nextPowerOfTwo = hydrazine::powerOfTwo(warp->warpSize);
+			if (nextPowerOfTwo > warp->warpSize) {
+				warp->warpSize = (nextPowerOfTwo >> 1);
+			}
+		}
+	}	while (!warp->warpSize);
+	
+#endif
+
+	return warp;
+}
+		
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //! \brief searches for an existing translation and compiles it if it doesn't exist
 const LLVMDynamicTranslationCache::Translation *

@@ -26,7 +26,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
 #define REPORT_LOCAL_MEMORY 0
-#define REPORT_SCHEDULE_OPERATIONS 0
+#define REPORT_SCHEDULE_OPERATIONS 1
 #define REPORT_STATISTICS 0
 
 #define REPORT_BASE 0
@@ -118,6 +118,8 @@ LLVMDynamicExecutive::LLVMDynamicExecutive(
 	processor(_procID),
 	translatedKernel(_translatedKernel),
 	sharedMemorySize(_sharedMemSize + _translatedKernel->sharedMemorySize) {
+	
+	assert(LLVMDYNAMICEXECUTIVE_MAXIMUM_WARP_SIZE >= api::OcelotConfiguration::get().executive.warpSize);
 	
 #if METRIC_ENTRYPOINT_LIVENESS
 	for (analysis::KernelPartitioningPass::KernelTransitionPointMap::const_iterator 
@@ -255,11 +257,15 @@ void LLVMDynamicExecutive::executeWarp(Warp &warp) {
 	assert(translation && "failed to obtain translation");
 	reportE(REPORT_SCHEDULE_OPERATIONS, " obtained translation. Executing warp on subkernel " << warp.entryId);
 	
+	
+	unsigned int n = 0;
 	for (ThreadContextVector::iterator ctx_it = warp.threads.begin(); 
 		ctx_it != warp.threads.end(); 
 		++ctx_it) {
 		
 		ctx_it->metadata = (char *)translation->metadata;
+		warp.contextPointers[n++] = (& *ctx_it);
+		
 		assert(ctx_it->metadata);
 	}
 	
@@ -269,7 +275,7 @@ void LLVMDynamicExecutive::executeWarp(Warp &warp) {
 
 	// primitive warp scheduler
 	for (size_t tid = 0; tid < warp.threads.size(); tid += translation->warpSize) {
-		translation->execute(&warp.threads[tid]);
+		translation->execute(&warp.contextPointers[tid]);
 	}
 #if METRIC_WARPSIZE
 	EntryCounter::iterator counter = entryCounter.find((int)warp.threads.size());

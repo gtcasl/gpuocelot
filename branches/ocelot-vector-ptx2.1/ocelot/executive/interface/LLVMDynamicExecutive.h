@@ -21,6 +21,12 @@
 // Hydrazine includes
 #include <hydrazine/implementation/Timer.h>
 
+#define SCHEDULER_WARP_LEVEL 1
+#define SCHEDULER_THREAD_LEVEL 2
+
+#define THREAD_SCHEDULER 			SCHEDULER_THREAD_LEVEL
+#define LLVMDYNAMICEXECUTIVE_MAXIMUM_WARP_SIZE 		4
+
 namespace executive {
 	
 	/*!
@@ -41,7 +47,6 @@ namespace executive {
 		typedef analysis::KernelPartitioningPass::ThreadExitCode ThreadExitCode;
 		typedef std::vector< LLVMContext > ThreadContextVector;
 		typedef std::map< EntryId, LLVMDynamicTranslationCache::TranslationWarpMap > TranslationWarpCache;
-		
 		
 		//
 		// data structures used to instrument the executive
@@ -100,6 +105,12 @@ namespace executive {
 			
 			//! \brief 
 			EntryId entryId;
+			
+			//! \brief indicate ready, barrier, or terminated status of threads
+			std::vector< ThreadExitCode > threadStatus;
+			
+			//! \brief avoid copying around contexts
+			LLVMContext *contextPointers[LLVMDYNAMICEXECUTIVE_MAXIMUM_WARP_SIZE];
 		};
 		
 		class CooperativeThreadArray {
@@ -120,12 +131,18 @@ namespace executive {
 			
 			ir::Dim3 blockId;
 			ir::Dim3 blockDim;
-						
+
+#if THREAD_SCHEDULER == SCHEDULER_THREAD_LEVEL
 			//! threads ready to execute
 			ThreadContextQueue readyQueue;
 			
 			//! threads waiting on a barrier
 			ThreadContextQueue barrierQueue;
+			
+#elif THREAD_SCHEDULER == SCHEDULER_WARP_LEVEL
+			// keep warps together, executing one until completion
+			
+#endif
 		};
 		typedef std::map< unsigned int, CooperativeThreadArray > CooperativeThreadArrayMap;
 		

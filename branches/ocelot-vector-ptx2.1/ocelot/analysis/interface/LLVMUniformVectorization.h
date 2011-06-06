@@ -57,6 +57,8 @@ namespace analysis
 		public:
 		
 			llvm::Instruction *ptrThreadDescriptorArray;
+			
+			ThreadLocalArgumentVector contextObject;
 		
 			ThreadLocalArgumentVector threadId_x;
 			ThreadLocalArgumentVector threadId_y;
@@ -79,6 +81,7 @@ namespace analysis
 			ThreadLocalArgumentVector constantPointer;
 			ThreadLocalArgumentVector parameterPointer;
 			ThreadLocalArgumentVector argumentPointer;
+			ThreadLocalArgumentVector metadataPointer;
 		};
 
 		/*!
@@ -196,11 +199,6 @@ namespace analysis
 			/*! \brief given an instruction from the scalar set, get a vector from the vectorized set that
 				is either a promoted-to-vector instruction or a set of scalar values packed into a vector*/
 			llvm::Instruction *getInstructionAsVectorized(llvm::Value *inst, llvm::Instruction *before=0);
-			
-			/*! 
-				
-			*/
-			llvm::Value * getLocalMemorySize(llvm::Instruction *insertBefore);
 			
 			/*! 
 				\brief gets a pointer to local memory

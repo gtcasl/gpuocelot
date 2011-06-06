@@ -273,9 +273,7 @@ LLVMDynamicTranslationCache::Translation::~Translation() {
 
 }
 
-void LLVMDynamicTranslationCache::Translation::execute(LLVMContext *contexts) const {
-	reportE(REPORT_SCHEDULE_OPERATIONS, "Executing translation [contexts at " 
-		<< (const void *)contexts << "]");
+void LLVMDynamicTranslationCache::Translation::execute(LLVMContext **contexts) const {
 	function(contexts);
 }
 

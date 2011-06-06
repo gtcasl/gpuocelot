@@ -201,7 +201,7 @@ namespace ir
 		switch (addressMode)
 		{
 			case Register: return toStringRegister();
-			case ConstantBuffer: return identifier;
+			case ConstantBuffer: /* fall thru */
 			case Literal: /* fall thru */
 			case Special: return srcString();
 			default:

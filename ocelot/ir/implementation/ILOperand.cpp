@@ -23,61 +23,10 @@ namespace ir
 {
 	ILOperand::ILOperand()
 		:
-			swizzle_x(CompSel_Invalid),
-			swizzle_y(CompSel_Invalid),
-			swizzle_z(CompSel_Invalid),
-			swizzle_w(CompSel_Invalid),
-			negate_x(false),
-			negate_y(false),
-			negate_z(false),
-			negate_w(false),
 			type(RegType_Invalid),
 			modifier_present(false),
 			immediate_present(false)
 	{
-	}
-
-	std::string ILOperand::toString(ComponentSelect c) const
-	{
-		switch (c)
-		{
-			case CompSel_0:       return "0";
-			case CompSel_1:       return "1";
-			case CompSel_X:       return "x";
-			case CompSel_Y:       return "y";
-			case CompSel_Z:       return "z";
-			case CompSel_W:       return "w";
-			case CompSel_NoWrite: return "_";
-			case CompSel_Invalid: return "";
-			default: assertM(false, "Invalid component select " << c);
-		}
-	}
-
-	std::string ILOperand::toStringRegister() const
-	{
-		std::string r(identifier);
-
-		if (swizzle_x != CompSel_Invalid || swizzle_y != CompSel_Invalid ||
-				swizzle_z != CompSel_Invalid || swizzle_w != CompSel_Invalid)
-		{
-			r += ".";
-			r += toString(swizzle_x);
-			r += toString(swizzle_y);
-			r += toString(swizzle_z);
-			r += toString(swizzle_w);
-		}
-
-		if (negate_x || negate_y || negate_z || negate_w)
-		{
-			r+= "_neg(";
-			r+= negate_x ? "x" : "";
-			r+= negate_y ? "y" : "";
-			r+= negate_z ? "z" : "";
-			r+= negate_w ? "w" : "";
-			r+= ")";
-		}
-
-		return r;
 	}
 
 	std::string ILOperand::toString(RegType rt)
@@ -91,6 +40,16 @@ namespace ir
 			case RegType_Thread_Group_Id:    return "vThreadGrpId";
 			default: assertM(false, "Invalid register type " << rt);
 		}
+	}
+
+	ILOperand::Dst_Mod::Dst_Mod() :
+		component_x(ModComp_Invalid),
+		component_y(ModComp_Invalid),
+		component_z(ModComp_Invalid),
+		component_w(ModComp_Invalid),
+		clamp(false),
+		shift_scale(Shift_Invalid)
+	{
 	}
 
 	std::string ILOperand::Dst_Mod::toString(ModDstComponent dc)
@@ -114,14 +73,14 @@ namespace ir
 	}
 
 	ILOperand::Src_Mod::Src_Mod() : 
-			swizzle_x(CompSel_Invalid), 
-			swizzle_y(CompSel_Invalid), 
-			swizzle_z(CompSel_Invalid), 
-			swizzle_w(CompSel_Invalid), 
-			negate_x(false), 
-			negate_y(false), 
-			negate_z(false),
-			negate_w(false)
+		swizzle_x(CompSel_Invalid), 
+		swizzle_y(CompSel_Invalid), 
+		swizzle_z(CompSel_Invalid), 
+		swizzle_w(CompSel_Invalid), 
+		negate_x(false), 
+		negate_y(false), 
+		negate_z(false),
+		negate_w(false)
 	{
 	}
 
@@ -176,12 +135,7 @@ namespace ir
 	{
 		switch (type)
 		{
-			case RegType_Thread_Id_In_Group:
-			case RegType_Thread_Group_Id:
-			{
-				return toString(type) + 
-					(modifier_present ? src_mod.toString() : "");
-			}
+			case RegType_Temp:      /* fall thru */
 			case RegType_Const_Buf: /* fall thru */
 			case RegType_Literal:
 			{
@@ -190,36 +144,52 @@ namespace ir
 					(immediate_present ? immediateString() : "") +
 					(modifier_present ? src_mod.toString() : "");
 			}
+			case RegType_Thread_Id_In_Group:
+			case RegType_Thread_Group_Id:
+			{
+				return toString(type) + 
+					(modifier_present ? src_mod.toString() : "");
+			}
 			default: assertM(false, "Invalid register type " << type);
 		}
 		
 		return toString(type) + (modifier_present ? src_mod.toString() : "");
 	}
 
-	std::string ILOperand::toString() const
+	std::string ILOperand::clampString() const
 	{
-		switch (addressMode)
+		return modifier_present && dst_mod.clamp ? "_sat" : "";
+	}
+
+	std::string ILOperand::shift_scaleString() const
+	{
+		if (!modifier_present) return "";
+
+		switch (dst_mod.shift_scale)
 		{
-			case Register: return toStringRegister();
-			case ConstantBuffer: /* fall thru */
-			case Literal: /* fall thru */
-			case Special: return srcString();
-			default:
-			{
-				assertM(false, "Address Mode " << addressMode 
-						<< " not supported");
-				break;
-			}
+			case Dst_Mod::Shift_None: return "";
+			case Dst_Mod::Shift_X2:   return "_x2";
+			case Dst_Mod::Shift_X4:   return "_x4";
+			case Dst_Mod::Shift_X8:   return "_x8";
+			case Dst_Mod::Shift_D2:   return "_d2";
+			case Dst_Mod::Shift_D4:   return "_d4";
+			case Dst_Mod::Shift_D8:   return "_d8";
+			default: assertM(false, "Invalid shift scale " << dst_mod.shift_scale);
 		}
 	}
 
 	ILOperand ILOperand::x() const
 	{
-		// TODO Deprecate
 		ILOperand o(*this);
-		o.swizzle_x = CompSel_X;
+		o.modifier_present = true;
 
-		// TODO Set modifier present
+		o.dst_mod.component_x = Dst_Mod::ModComp_Write;
+		o.dst_mod.component_y = Dst_Mod::ModComp_NoWrite;
+		o.dst_mod.component_z = Dst_Mod::ModComp_NoWrite;
+		o.dst_mod.component_w = Dst_Mod::ModComp_NoWrite;
+		o.dst_mod.clamp = false;
+		o.dst_mod.shift_scale = Dst_Mod::Shift_None;
+
 		o.src_mod.swizzle_x = Src_Mod::CompSel_X;
 		o.src_mod.swizzle_y = Src_Mod::CompSel_X;
 		o.src_mod.swizzle_z = Src_Mod::CompSel_X;
@@ -230,9 +200,15 @@ namespace ir
 
 	ILOperand ILOperand::y() const
 	{
-		// TODO Deprecate
 		ILOperand o(*this);
-		o.swizzle_y = CompSel_Y;
+		o.modifier_present = true;
+
+		o.dst_mod.component_x = Dst_Mod::ModComp_NoWrite;
+		o.dst_mod.component_y = Dst_Mod::ModComp_Write;
+		o.dst_mod.component_z = Dst_Mod::ModComp_NoWrite;
+		o.dst_mod.component_w = Dst_Mod::ModComp_NoWrite;
+		o.dst_mod.clamp = false;
+		o.dst_mod.shift_scale = Dst_Mod::Shift_None;
 
 		o.src_mod.swizzle_x = Src_Mod::CompSel_Y;
 		o.src_mod.swizzle_y = Src_Mod::CompSel_Y;
@@ -244,9 +220,15 @@ namespace ir
 
 	ILOperand ILOperand::z() const
 	{
-		// TODO Deprecate
 		ILOperand o(*this);
-		o.swizzle_z = CompSel_Z;
+		o.modifier_present = true;
+
+		o.dst_mod.component_x = Dst_Mod::ModComp_NoWrite;
+		o.dst_mod.component_y = Dst_Mod::ModComp_NoWrite;
+		o.dst_mod.component_z = Dst_Mod::ModComp_Write;
+		o.dst_mod.component_w = Dst_Mod::ModComp_NoWrite;
+		o.dst_mod.clamp = false;
+		o.dst_mod.shift_scale = Dst_Mod::Shift_None;
 
 		o.src_mod.swizzle_x = Src_Mod::CompSel_Z;
 		o.src_mod.swizzle_y = Src_Mod::CompSel_Z;
@@ -258,9 +240,15 @@ namespace ir
 
 	ILOperand ILOperand::w() const
 	{
-		// TODO Deprecate
 		ILOperand o(*this);
-		o.swizzle_w = CompSel_W;
+		o.modifier_present = true;
+
+		o.dst_mod.component_x = Dst_Mod::ModComp_NoWrite;
+		o.dst_mod.component_y = Dst_Mod::ModComp_NoWrite;
+		o.dst_mod.component_z = Dst_Mod::ModComp_NoWrite;
+		o.dst_mod.component_w = Dst_Mod::ModComp_Write;
+		o.dst_mod.clamp = false;
+		o.dst_mod.shift_scale = Dst_Mod::Shift_None;
 
 		o.src_mod.swizzle_x = Src_Mod::CompSel_W;
 		o.src_mod.swizzle_y = Src_Mod::CompSel_W;
@@ -273,63 +261,19 @@ namespace ir
 	ILOperand ILOperand::xy() const
 	{
 		ILOperand o(*this);
-		o.swizzle_x = CompSel_X;
-		o.swizzle_y = CompSel_Y;
+		o.modifier_present = true;
 
-		return o;
-	}
+		o.dst_mod.component_x = Dst_Mod::ModComp_Write;
+		o.dst_mod.component_y = Dst_Mod::ModComp_Write;
+		o.dst_mod.component_z = Dst_Mod::ModComp_NoWrite;
+		o.dst_mod.component_w = Dst_Mod::ModComp_NoWrite;
+		o.dst_mod.clamp = false;
+		o.dst_mod.shift_scale = Dst_Mod::Shift_None;
 
-	ILOperand ILOperand::xxxx() const
-	{
-		ILOperand o(*this);
-		o.swizzle_x = CompSel_X;
-		o.swizzle_y = CompSel_X;
-		o.swizzle_z = CompSel_X;
-		o.swizzle_w = CompSel_X;
-
-		return o;
-	}
-
-	ILOperand ILOperand::x___() const
-	{
-		ILOperand o(*this);
-		o.swizzle_x = CompSel_X;
-		o.swizzle_y = CompSel_NoWrite;
-		o.swizzle_z = CompSel_NoWrite;
-		o.swizzle_w = CompSel_NoWrite;
-
-		return o;
-	}
-
-	ILOperand ILOperand::_y__() const
-	{
-		ILOperand o(*this);
-		o.swizzle_x = CompSel_NoWrite;
-		o.swizzle_y = CompSel_Y;
-		o.swizzle_z = CompSel_NoWrite;
-		o.swizzle_w = CompSel_NoWrite;
-
-		return o;
-	}
-
-	ILOperand ILOperand::__z_() const
-	{
-		ILOperand o(*this);
-		o.swizzle_x = CompSel_NoWrite;
-		o.swizzle_y = CompSel_NoWrite;
-		o.swizzle_z = CompSel_Z;
-		o.swizzle_w = CompSel_NoWrite;
-
-		return o;
-	}
-
-	ILOperand ILOperand::___w() const
-	{
-		ILOperand o(*this);
-		o.swizzle_x = CompSel_NoWrite;
-		o.swizzle_y = CompSel_NoWrite;
-		o.swizzle_z = CompSel_NoWrite;
-		o.swizzle_w = CompSel_W;
+		o.src_mod.swizzle_x = Src_Mod::CompSel_X;
+		o.src_mod.swizzle_y = Src_Mod::CompSel_Y;
+		o.src_mod.swizzle_z = Src_Mod::CompSel_X;
+		o.src_mod.swizzle_w = Src_Mod::CompSel_X;
 
 		return o;
 	}
@@ -337,11 +281,51 @@ namespace ir
 	ILOperand ILOperand::neg() const
 	{
 		ILOperand o(*this);
-		o.negate_x = true;
-		o.negate_y = true;
-		o.negate_z = true;
-		o.negate_w = true;
+		o.modifier_present = true;
+
+		o.dst_mod.component_x = Dst_Mod::ModComp_Write;
+		o.dst_mod.component_y = Dst_Mod::ModComp_Write;
+		o.dst_mod.component_z = Dst_Mod::ModComp_Write;
+		o.dst_mod.component_w = Dst_Mod::ModComp_Write;
+		o.dst_mod.clamp = false;
+		o.dst_mod.shift_scale = Dst_Mod::Shift_None;
+
+		o.src_mod.swizzle_x = Src_Mod::CompSel_X;
+		o.src_mod.swizzle_y = Src_Mod::CompSel_Y;
+		o.src_mod.swizzle_z = Src_Mod::CompSel_Z;
+		o.src_mod.swizzle_w = Src_Mod::CompSel_W;
+
+		o.src_mod.negate_x = true;
+		o.src_mod.negate_y = true;
+		o.src_mod.negate_z = true;
+		o.src_mod.negate_w = true;
 
 		return o;
+	}
+
+	ILOperand ILOperand::clamp() const
+	{
+		ILOperand o(*this);
+		o.modifier_present = true;
+
+		o.dst_mod.component_x = Dst_Mod::ModComp_Write;
+		o.dst_mod.component_y = Dst_Mod::ModComp_Write;
+		o.dst_mod.component_z = Dst_Mod::ModComp_Write;
+		o.dst_mod.component_w = Dst_Mod::ModComp_Write;
+		o.dst_mod.clamp = true;
+		o.dst_mod.shift_scale = Dst_Mod::Shift_None;
+
+		o.src_mod.swizzle_x = Src_Mod::CompSel_X;
+		o.src_mod.swizzle_y = Src_Mod::CompSel_Y;
+		o.src_mod.swizzle_z = Src_Mod::CompSel_Z;
+		o.src_mod.swizzle_w = Src_Mod::CompSel_W;
+
+		o.src_mod.negate_x = false;
+		o.src_mod.negate_y = false;
+		o.src_mod.negate_z = false;
+		o.src_mod.negate_w = false;
+
+		return o;
+
 	}
 }

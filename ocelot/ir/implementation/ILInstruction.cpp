@@ -12,8 +12,7 @@
 
 namespace ir
 {
-	ILInstruction::ILInstruction(Opcode op) : opcode(op), clamp(NoClamp), 
-		shift_scale(Shift_None)
+	ILInstruction::ILInstruction(Opcode op) : opcode(op)
 	{
 	}
 
@@ -57,10 +56,10 @@ namespace ir
 			case Ishr:                  return "ishr";
 			case ItoF:                  return "itof";
 			case Ixor:                  return "ixor";
-			case Lds_And_Resource:      return "lds_and_resource(1)";
+			case Lds_And_Id:      return "lds_and_id(1)";
 			case Lds_Load_Id:           return "lds_load_id(1)";
-			case Lds_Or_Resource:       return "lds_or_resource(1)";
-			case Lds_Read_Add_Resource: return "lds_read_add_resource(1)";
+			case Lds_Or_Id:       return "lds_or_id(1)";
+			case Lds_Read_Add_Id: return "lds_read_add_id(1)";
 			case Lds_Store_Id:          return "lds_store_id(1)";
 			case Log_Vec:               return "log_vec";
 			case Lt:                    return "lt";
@@ -109,39 +108,10 @@ namespace ir
 			}
 		};
 	}
-	
-	std::string ILInstruction::toString(const ClampOperation &c)
-	{
-		std::string result;
-		switch(c)
-		{
-			case Clamp:   result += "_sat"; break;
-			case NoClamp:                   break;
-		}
-
-		return result;
-	}
-
-	std::string ILInstruction::toString(const ShiftScale &s)
-	{
-		std::string result;
-		switch(s)
-		{
-			case Shift_D2:   result += "_d2"; break;
-			case Shift_D4:   result += "_d4"; break;
-			case Shift_D8:   result += "_d8"; break;
-			case Shift_None:                  break;
-			case Shift_X2:   result += "_x2"; break;
-			case Shift_X4:   result += "_x4"; break;
-			case Shift_X8:   result += "_x8"; break;
-		}
-
-		return result;
-	}
 
 	std::string ILInstruction::toString() const
 	{
-		return toString(opcode) + toString(shift_scale) + toString(clamp);
+		return toString(opcode);
 	}
 
 	std::string ILInstruction::valid() const
@@ -155,8 +125,9 @@ namespace ir
 
 	std::string ILUnaryInstruction::toString() const
 	{
-		return ILInstruction::toString(opcode) + " " + d.toString() + ", " 
-			+ a.toString();
+		return ILInstruction::toString(opcode) +
+			d.shift_scaleString() + d.clampString() + 
+			" " + d.dstString() + ", " + a.srcString();
 	}
 
 	ILBinaryInstruction::ILBinaryInstruction(Opcode op) : ILInstruction(op)
@@ -165,8 +136,9 @@ namespace ir
 
 	std::string ILBinaryInstruction::toString() const
 	{
-		return ILInstruction::toString(opcode) + " " + d.toString() + ", " 
-			+ a.toString() + ", " + b.toString();
+		return ILInstruction::toString(opcode) + 
+			d.shift_scaleString() + d.clampString() + 
+			" " + d.dstString() + ", " + a.srcString() + ", " + b.srcString();
 	}
 
 	ILTrinaryInstruction::ILTrinaryInstruction(Opcode op) : ILInstruction(op)
@@ -175,8 +147,10 @@ namespace ir
 
 	std::string ILTrinaryInstruction::toString() const
 	{
-		return ILInstruction::toString(opcode) + " " + d.toString() + ", " 
-			+ a.toString() + ", " + b.toString() + ", " + c.toString();
+		return ILInstruction::toString(opcode) + 
+			d.shift_scaleString() + d.clampString() + 
+			" " + d.dstString() + ", " + a.srcString() + ", " + b.srcString() + 
+			", " + c.srcString();
 	}
 
 	ILAbs::ILAbs() : ILUnaryInstruction(Abs)
@@ -396,7 +370,7 @@ namespace ir
 
 	std::string ILIfLogicalNZ::toString() const
 	{
-		return ILInstruction::toString(opcode) + " " + a.toString();
+		return ILInstruction::toString(opcode) + " " + a.srcString();
 	}
 
 	Instruction *ILIfLogicalNZ::clone(bool copy) const
@@ -410,7 +384,7 @@ namespace ir
 
 	std::string ILIfLogicalZ::toString() const
 	{
-		return ILInstruction::toString(opcode) + " " + a.toString();
+		return ILInstruction::toString(opcode) + " " + a.srcString();
 	}
 
 	Instruction *ILIfLogicalZ::clone(bool copy) const
@@ -535,14 +509,19 @@ namespace ir
 		return new ILIxor(*this);
 	}
 
-	ILLds_And_Resource::ILLds_And_Resource() 
-		: ILUnaryInstruction(Lds_And_Resource)
+	ILLds_And_Id::ILLds_And_Id() 
+		: ILInstruction(Lds_And_Id)
 	{
 	}
 
-	Instruction *ILLds_And_Resource::clone(bool copy) const
+	Instruction *ILLds_And_Id::clone(bool copy) const
 	{
-		return new ILLds_And_Resource(*this);
+		return new ILLds_And_Id(*this);
+	}
+
+	std::string ILLds_And_Id::toString() const
+	{
+		return ILInstruction::toString(opcode) + " " + a.srcString() + ", " + b.srcString();
 	}
 
 	ILLds_Load_Id::ILLds_Load_Id() : ILUnaryInstruction(Lds_Load_Id)
@@ -554,23 +533,28 @@ namespace ir
 		return new ILLds_Load_Id(*this);
 	}
 
-	ILLds_Or_Resource::ILLds_Or_Resource() : ILUnaryInstruction(Lds_Or_Resource)
+	ILLds_Or_Id::ILLds_Or_Id() : ILInstruction(Lds_Or_Id)
 	{
 	}
 
-	Instruction *ILLds_Or_Resource::clone(bool copy) const
+	Instruction *ILLds_Or_Id::clone(bool copy) const
 	{
-		return new ILLds_Or_Resource(*this);
+		return new ILLds_Or_Id(*this);
 	}
 
-	ILLds_Read_Add_Resource::ILLds_Read_Add_Resource() 
-		: ILBinaryInstruction(Lds_Read_Add_Resource)
+	std::string ILLds_Or_Id::toString() const
+	{
+		return ILInstruction::toString(opcode) + " " + a.srcString() + ", " + b.srcString();
+	}
+
+	ILLds_Read_Add_Id::ILLds_Read_Add_Id() 
+		: ILBinaryInstruction(Lds_Read_Add_Id)
 	{
 	}
 
-	Instruction *ILLds_Read_Add_Resource::clone(bool copy) const
+	Instruction *ILLds_Read_Add_Id::clone(bool copy) const
 	{
-		return new ILLds_Read_Add_Resource(*this);
+		return new ILLds_Read_Add_Id(*this);
 	}
 
 	ILLds_Store_Id::ILLds_Store_Id() : ILUnaryInstruction(Lds_Store_Id)
@@ -680,8 +664,8 @@ namespace ir
 	std::string ILUav_Arena_Load_Id::toString() const
 	{
 		return ILInstruction::toString(opcode) + "_size(" 
-			+ ILInstruction::toString(type) + ") " + d.toString() + ", " 
-			+ a.toString();
+			+ ILInstruction::toString(type) + ") " + d.dstString() + ", " 
+			+ a.srcString();
 	}
 
 	Instruction *ILUav_Arena_Load_Id::clone(bool copy) const
@@ -702,8 +686,8 @@ namespace ir
 	std::string ILUav_Arena_Store_Id::toString() const
 	{
 		return ILInstruction::toString(opcode) + "_size(" 
-			+ ILInstruction::toString(type) + ") " + d.toString() + ", " 
-			+ a.toString();
+			+ ILInstruction::toString(type) + ") " + d.dstString() + ", " 
+			+ a.srcString();
 	}
 
 	ILUav_Raw_Load_Id::ILUav_Raw_Load_Id() 

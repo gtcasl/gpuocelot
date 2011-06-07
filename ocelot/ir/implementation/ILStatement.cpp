@@ -56,7 +56,7 @@ namespace ir
 				std::stringstream stream;
 
 				stream << "dcl_cb ";
-				stream << operands[0].toString();
+				stream << operands[0].srcString();
 
 				return stream.str();
 			}
@@ -65,7 +65,7 @@ namespace ir
 				std::stringstream stream;
 
 				stream << "dcl_literal ";
-				stream << operands[0].toString() << ", ";
+				stream << operands[0].dstString() << ", ";
 				stream << std::hex;
 				stream << "0x" << arguments[0] << ", ";
 				stream << "0x" << arguments[1] << ", ";

@@ -38,7 +38,7 @@ namespace translator
 
 		private:
 			typedef std::map<int, ir::ILOperand> LiteralMap;
-			typedef std::map<int, ir::ILOperand> OperandMap;
+			typedef std::map<ir::PTXOperand::RegisterType, ir::ILOperand> OperandMap;
 
 			ir::ILKernel *_ilKernel;
 			LiteralMap _literals;
@@ -59,9 +59,9 @@ namespace translator
 
 			void _translate(const ir::PTXInstruction &i); 
 
-			ir::ILOperand                  _translate(const ir::PTXOperand &o);
+			ir::ILOperand _translate(const ir::PTXOperand &o);
 			ir::ILInstruction::DataType    _translate(const ir::PTXOperand::DataType d);
-			std::string                    _translate(const ir::PTXOperand::RegisterType &reg);
+			ir::ILOperand _translate(const ir::PTXOperand::RegisterType &reg);
 			ir::ILOperand _translate(const ir::PTXOperand::SpecialRegister &s, const ir::PTXOperand::VectorIndex& d);
 
 			void _translateAbs(const ir::PTXInstruction &i);

@@ -22,69 +22,6 @@ namespace ir
 			ILOperand();
 
 		public:
-			/*! \brief Addressing modes of operand */
-			enum AddressMode {
-				Register,              // use as a register variable
-				Literal,               // literal value (immediate)
-				ConstantBuffer,        // constant buffer (parameter)
-				Special,               // special register
-				Invalid
-			};
-
-			/*! \brief Component selection for source modifiers */
-			enum ComponentSelect {
-				CompSel_0,       // force this component to 0.0
-				CompSel_1,       // force this component to 1.0
-				CompSel_X,       // select the 1st component
-				CompSel_Y,       // select the 2nd component
-				CompSel_Z,       // select the 3rd component
-				CompSel_W,       // select the 4th component
-				CompSel_NoWrite, // dont' write this component
-				CompSel_Invalid
-			};
-
-			/*! \brief Addressing mode of operand */
-			AddressMode addressMode;
-
-			/*****************************//**
-			 * \name Source modifiers
-			 ********************************/
-			//@{
-			/*! \brief Swizzle */
-			ComponentSelect swizzle_x, swizzle_y, swizzle_z, swizzle_w;
-			/*! \brief Negate */
-			bool negate_x, negate_y, negate_z, negate_w;
-			//@}
-
-			/*! \brief Identifier of operand */
-			std::string identifier;
-
-			std::string toString() const;
-			std::string toString(ComponentSelect c) const;
-			std::string toStringRegister() const;
-
-			/*****************************//**
-			 * \name Swizzles
-			 *
-			 * Returns a copy of the operand.
-			 ********************************/
-			//@{
-			ILOperand x() const;
-			ILOperand y() const;
-			ILOperand z() const;
-			ILOperand w() const;
-			ILOperand xy() const;
-			ILOperand xxxx() const;
-			ILOperand x___() const;
-			ILOperand _y__() const;
-			ILOperand __z_() const;
-			ILOperand ___w() const;
-			//@}
-			
-			/*! \brief Negate */
-			ILOperand neg() const;
-
-		public:
 			/*! \brief Register type */
 			enum RegType {
 				RegType_Temp,
@@ -98,9 +35,10 @@ namespace ir
 			/*! \brief Destination modifier */
 			class Dst_Mod {
 				public:
+					Dst_Mod();
+
 					std::string toString() const;
 
-				private:
 					/*! \brief Destination component */
 					enum ModDstComponent {
 						ModComp_NoWrite, // do not write this component
@@ -183,6 +121,26 @@ namespace ir
 
 			std::string dstString() const;
 			std::string srcString() const;
+			std::string clampString() const;
+			std::string shift_scaleString() const;
+
+			/*****************************//**
+			 * \name Swizzles
+			 *
+			 * Returns a copy of the operand.
+			 ********************************/
+			//@{
+			ILOperand x() const;
+			ILOperand y() const;
+			ILOperand z() const;
+			ILOperand w() const;
+			ILOperand xy() const;
+			//@}
+			
+			/*! \brief Negate */
+			ILOperand neg() const;
+			/*! \brief Clamp */
+			ILOperand clamp() const;
 	};
 }
 

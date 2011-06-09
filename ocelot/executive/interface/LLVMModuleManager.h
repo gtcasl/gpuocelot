@@ -93,6 +93,7 @@ public:
 		public:
 			unsigned int sharedSize;
 			unsigned int localSize;
+			unsigned int globalLocalSize;
 			unsigned int parameterSize;
 			unsigned int argumentSize;
 			unsigned int constantSize;

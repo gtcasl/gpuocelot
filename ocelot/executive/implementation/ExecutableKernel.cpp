@@ -32,8 +32,8 @@ namespace executive
 {
 ExecutableKernel::ExecutableKernel( const ir::IRKernel& k, 
 	executive::Device* d ) : ir::IRKernel( k ), device( d ), 
-	_constMemorySize( 0 ), _localMemorySize( 0 ), _maxThreadsPerBlock( 16384 ), 
-	_registerCount( 0 ), _sharedMemorySize( 0 ), 
+	_constMemorySize( 0 ), _localMemorySize( 0 ), _globalLocalMemorySize( 0 ),
+	_maxThreadsPerBlock( 16384 ), _registerCount( 0 ), _sharedMemorySize( 0 ), 
 	_externSharedMemorySize( 0 ), _argumentMemorySize( 0 ),
 	_parameterMemorySize( 0 )
 {
@@ -41,9 +41,9 @@ ExecutableKernel::ExecutableKernel( const ir::IRKernel& k,
 }
 
 ExecutableKernel::ExecutableKernel( executive::Device* d ) :
-	device( d ), _constMemorySize( 0 ), _localMemorySize( 0 ), 
-	_maxThreadsPerBlock( 16384 ), _registerCount( 0 ), 
-	_sharedMemorySize( 0 ), _externSharedMemorySize( 0 ), 
+	device( d ), _constMemorySize( 0 ), _localMemorySize( 0 ),
+	_globalLocalMemorySize( 0 ),  _maxThreadsPerBlock( 16384 ),
+	_registerCount( 0 ), _sharedMemorySize( 0 ), _externSharedMemorySize( 0 ), 
 	_argumentMemorySize( 0 ), _parameterMemorySize( 0 )
 {
 	
@@ -91,6 +91,11 @@ unsigned int ExecutableKernel::constMemorySize() const
 unsigned int ExecutableKernel::localMemorySize() const
 { 
 	return _localMemorySize; 
+}
+
+unsigned int ExecutableKernel::globalLocalMemorySize() const
+{ 
+	return _globalLocalMemorySize; 
 }
 
 unsigned int ExecutableKernel::maxThreadsPerBlock() const

@@ -79,7 +79,8 @@ private:
 	void _reportWrites( const analysis::DataflowGraph::Instruction& i );
 	void _check( ir::PTXInstruction::AddressSpace space,
 		const ir::LLVMInstruction::Operand& address, 
-		unsigned int bytes, bool isArgument, unsigned int statement );
+		unsigned int bytes, bool isArgument, bool isGlobalLocal,
+		unsigned int statement );
 	void _addMemoryCheckingDeclarations();
 	void _insertDebugSymbols();
 	
@@ -188,7 +189,8 @@ private:
 		ir::PTXOperand::SpecialRegister s, 
 		ir::PTXOperand::VectorIndex index );
 	ir::LLVMInstruction::Operand _getMemoryBasePointer( 
-	 	ir::PTXInstruction::AddressSpace space, bool isArgument );
+	 	ir::PTXInstruction::AddressSpace space,
+	 	bool isGlobalLocal, bool isArgument );
 	ir::LLVMInstruction::Operand _getMemoryExtent( 
 	 	ir::PTXInstruction::AddressSpace space );
 	ir::LLVMInstruction::Operand _getAddressableVariablePointer( 

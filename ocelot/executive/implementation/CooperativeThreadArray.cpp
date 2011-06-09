@@ -136,7 +136,7 @@ executive::CooperativeThreadArray::CooperativeThreadArray(
 	kernel(k),
 	functionCallStack(blockDim.x*blockDim.y*blockDim.z, k->argumentMemorySize(), 
 		k->parameterMemorySize(), k->registerCount(), k->localMemorySize(),
-		k->totalSharedMemorySize()),
+		k->globalLocalMemorySize(), k->totalSharedMemorySize()),
 	clock(0),
 	traceEvents(trace) {
 
@@ -4611,8 +4611,16 @@ void executive::CooperativeThreadArray::eval_Ld(CTAContext &context,
 				break;
 			case PTXInstruction::Local:
 				{
-					source += (PTXU64) 
-						functionCallStack.localMemoryPointer(threadID);
+					if (instr.a.addressMode == PTXOperand::Address &&
+						instr.a.isGlobalLocal) {
+						source += (PTXU64) 
+							functionCallStack.globalLocalMemoryPointer(
+							threadID);
+					}
+					else {
+						source += (PTXU64) 
+							functionCallStack.localMemoryPointer(threadID);
+					}				
 				}
 				break;
 			default:
@@ -8215,8 +8223,16 @@ void executive::CooperativeThreadArray::eval_St(CTAContext &context,
 				break;
 			case PTXInstruction::Local:
 				{
-					source += (PTXU64) 
-						functionCallStack.localMemoryPointer(threadID);
+					if (instr.d.addressMode == PTXOperand::Address &&
+						instr.d.isGlobalLocal) {
+						source += (PTXU64) 
+							functionCallStack.globalLocalMemoryPointer(
+							threadID);
+					}
+					else {
+						source += (PTXU64) 
+							functionCallStack.localMemoryPointer(threadID);
+					}				
 				}
 				break;
 			default:

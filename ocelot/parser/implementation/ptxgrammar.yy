@@ -884,7 +884,9 @@ optionalUniOrTail : optionalUni
 	state.tail( false );
 };
 
-branch : OPCODE_CALL optionalUniOrTail optionalReturnOperandList identifier 
+branch : call;
+
+call : OPCODE_CALL optionalUniOrTail optionalReturnOperandList identifier 
 	optionalPrototypeName ';'
 {
 	state.call( $<text>4, @1 );

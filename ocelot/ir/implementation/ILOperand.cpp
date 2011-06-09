@@ -21,9 +21,9 @@
 
 namespace ir
 {
-	ILOperand::ILOperand()
+	ILOperand::ILOperand(RegType t)
 		:
-			type(RegType_Invalid),
+			type(t),
 			modifier_present(false),
 			immediate_present(false)
 	{
@@ -161,7 +161,7 @@ namespace ir
 		return modifier_present && dst_mod.clamp ? "_sat" : "";
 	}
 
-	std::string ILOperand::shift_scaleString() const
+	std::string ILOperand::shiftString() const
 	{
 		if (!modifier_present) return "";
 

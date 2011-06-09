@@ -406,7 +406,8 @@ void PTXToLLVMTranslator::_debug(
 void PTXToLLVMTranslator::_reportReads( 
 	const analysis::DataflowGraph::Instruction& i )
 {
-	if( optimizationLevel != ReportOptimization ) return;
+	if( optimizationLevel != DebugOptimization
+		&& optimizationLevel != ReportOptimization ) return;
 
 	ir::LLVMCall call;
 	
@@ -504,7 +505,8 @@ void PTXToLLVMTranslator::_reportReads(
 void PTXToLLVMTranslator::_reportWrites( 
 	const analysis::DataflowGraph::Instruction& i )
 {
-	if( optimizationLevel != ReportOptimization ) return;
+	if( optimizationLevel != DebugOptimization
+		&& optimizationLevel != ReportOptimization ) return;
 
 	ir::LLVMCall call;
 	
@@ -604,7 +606,8 @@ void PTXToLLVMTranslator::_check( ir::PTXInstruction::AddressSpace space,
 	bool isArgument, bool isGlobalLocal, unsigned int statement )
 {
 	if( optimizationLevel != MemoryCheckOptimization 
-		&& optimizationLevel != DebugOptimization) return;
+		&& optimizationLevel != DebugOptimization
+		&& optimizationLevel != ReportOptimization) return;
 
 	ir::LLVMCall call;
 
@@ -971,9 +974,7 @@ ir::LLVMInstruction::Operand PTXToLLVMTranslator::_translate(
 		}
 		case ir::PTXOperand::BitBucket:
 		{
-			std::stringstream stream;
-			stream << "%r_" << o.reg;
-			op.name = stream.str();
+			op.name = _tempRegister();
 			break;
 		}
 		case ir::PTXOperand::Invalid:

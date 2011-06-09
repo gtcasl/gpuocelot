@@ -23,7 +23,7 @@ namespace translator
 		:
 			Translator(ir::Instruction::PTX, ir::Instruction::CAL, l),
 			_ilKernel(0),
-			_tempRegisterCount(_tempRegisterMin)
+			_temps(_maxRegs)
 	{
 	}
 
@@ -286,8 +286,18 @@ namespace translator
 			case ir::PTXOperand::Indirect:
 			case ir::PTXOperand::BitBucket:
 			{
-				op = _translate(o.reg);
-				break;
+				assertM(o.reg < _maxRegs, "Max number of registers exceeded");
+
+				// look-up register table
+				const RegisterMap::const_iterator it = _registers.find(o.reg);
+				if (it != _registers.end()) return it->second;
+
+				// create new il register
+				ir::ILOperand op(ir::ILOperand::RegType_Temp);
+				op.num = _registers.size();
+				_registers.insert(std::make_pair(o.reg, op));
+
+				return op;
 			}
 			case ir::PTXOperand::Immediate:
 			{
@@ -301,12 +311,14 @@ namespace translator
 					case ir::PTXOperand::b8:
 					{
 						//TODO Need to check for out-of-range literals
-						op = _translateLiteral((int)o.imm_uint);
+						op = _translateLiteral(o.imm_uint);
 						break;
 					}
 					case ir::PTXOperand::f32:
 					{
-						op = _translateLiteral((float)o.imm_float);
+						union { float f; int i; } convert;
+						convert.f = o.imm_float;
+						op = _translateLiteral(convert.i);
 						break;
 					}
 					default:
@@ -350,26 +362,8 @@ namespace translator
 
 	ir::ILOperand PTXToILTranslator::_tempRegister()
 	{
-		ir::ILOperand r;
-		r.num = _tempRegisterCount++;
-		r.type = ir::ILOperand::RegType_Temp;
-		return r;
-	}
-
-	ir::ILOperand PTXToILTranslator::_translate(
-			const ir::PTXOperand::RegisterType &reg)
-	{
-		assertM(reg < _tempRegisterMin, "Register name " << reg 
-				<< " collides with temp registers");
-
-		const OperandMap::const_iterator it = _operands.find(reg);
-		if (it != _operands.end()) return it->second;
-
-		ir::ILOperand op;
-		op.num = _operands.size();
-		op.type = ir::ILOperand::RegType_Temp;
-		_operands.insert(std::make_pair(reg, op));
-
+		ir::ILOperand op(ir::ILOperand::RegType_Temp);
+		op.num = _temps++;
 		return op;
 	}
 
@@ -735,7 +729,7 @@ namespace translator
 						ir::ILIand iand;
 						iand.d = d;
 						iand.a = a;
-						iand.b = _translateLiteral((int)0x000000FF);
+						iand.b = _translateLiteral(0x000000FF);
 						_add(iand);
                         return;
 					}
@@ -847,7 +841,7 @@ namespace translator
 						ir::ILIand iand;
 						iand.d = d;
 						iand.a = a;
-						iand.b = _translateLiteral((int)0x000000FF);
+						iand.b = _translateLiteral(0x000000FF);
 						_add(iand);
 						return;
 					}
@@ -857,7 +851,7 @@ namespace translator
 						ir::ILIand iand;
 						iand.d = d;
 						iand.a = a;
-						iand.b = _translateLiteral((int)0x0000FFFF);
+						iand.b = _translateLiteral(0x0000FFFF);
 						_add(iand);
 						return;
 					}
@@ -1632,7 +1626,7 @@ namespace translator
 			ir::ILIand iand;
 			iand.d = temp2;
 			iand.a = temp3;
-			iand.b = _translateLiteral((int)0xFFFFFFFC);
+			iand.b = _translateLiteral(0xFFFFFFFC);
 			_add(iand);
 		}
 
@@ -2329,13 +2323,13 @@ namespace translator
 			ir::ILAnd and1;
 			and1.d = r0.y(); 
 			and1.a = r0.x(); 
-			and1.b = _translateLiteral((int)0x7FFFFFFF);
+			and1.b = _translateLiteral(0x7FFFFFFF);
 			_add(and1);
 
 			ir::ILAnd and2;
 			and2.d = r0.z();
 			and2.a = r0.x();
-			and2.b = _translateLiteral((int)0x7F800000);
+			and2.b = _translateLiteral(0x7F800000);
 			_add(and2);
 		}
 
@@ -2396,7 +2390,7 @@ namespace translator
 		{
 			ir::ILIlt ilt;
 			ilt.d = r0.y();
-			ilt.a = _translateLiteral((int)0x7F800000);
+			ilt.a = _translateLiteral(0x7F800000);
 			ilt.b = r0.y();
 			_add(ilt);
 
@@ -2421,7 +2415,7 @@ namespace translator
 			ir::ILAnd and1;
 			and1.d = r0.z();
 			and1.a = r0.x();
-			and1.b = _translateLiteral((int)0x007FFFFF);
+			and1.b = _translateLiteral(0x007FFFFF);
 			_add(and1);
 
 			ir::ILItoF itof;
@@ -2437,13 +2431,13 @@ namespace translator
 			ir::ILAnd and1;
 			and1.d = r1.x();
 			and1.a = r0.z();
-			and1.b = _translateLiteral((int)0x7F800000);
+			and1.b = _translateLiteral(0x7F800000);
 			_add(and1);
 
 			ir::ILAnd and2;
 			and2.d = r1.y();
 			and2.a = r0.z();
-			and2.b = _translateLiteral((int)0x007FFFFF);
+			and2.b = _translateLiteral(0x007FFFFF);
 			_add(and2);
 		}
 
@@ -2453,7 +2447,7 @@ namespace translator
 			ir::ILIshr ishr;
 			ishr.d = r0.z();
 			ishr.a = r1.x();
-			ishr.b = _translateLiteral((int)0x00000017);
+			ishr.b = _translateLiteral(0x00000017);
 			_add(ishr);
 		}
 
@@ -2463,7 +2457,7 @@ namespace translator
 			ir::ILIadd iadd;
 			iadd.d = r0.z();
 			iadd.a = r0.z();
-			iadd.b = _translateLiteral((int)0x00000018);
+			iadd.b = _translateLiteral(0x00000018);
 			_add(iadd);
 		}
 
@@ -2473,7 +2467,7 @@ namespace translator
 			ir::ILIor ior;
 			ior.d = r1.x();
 			ior.a = r1.y();
-			ior.b = _translateLiteral((int)0x00800000);
+			ior.b = _translateLiteral(0x00800000);
 			_add(ior);
 		}
 
@@ -2482,7 +2476,7 @@ namespace translator
 		{
 			ir::ILIadd iadd;
 			iadd.d = r0.z();
-			iadd.a = _translateLiteral((int)0x00000096);
+			iadd.a = _translateLiteral(0x00000096);
 			iadd.b = r0.z().neg();
 			_add(iadd);
 		}
@@ -2492,7 +2486,7 @@ namespace translator
 		{
 			ir::ILIlt ilt;
 			ilt.d = r1.y();
-			ilt.a = _translateLiteral((int)0x00000017);
+			ilt.a = _translateLiteral(0x00000017);
 			ilt.b = r0.z();
 			_add(ilt);
 		}
@@ -2503,7 +2497,7 @@ namespace translator
 			ir::ILCmov_Logical cmov_logical;
 			cmov_logical.d = r0.z();
 			cmov_logical.a = r1.y();
-			cmov_logical.b = _translateLiteral((int)0x00000018);
+			cmov_logical.b = _translateLiteral(0x00000018);
 			cmov_logical.c = r0.z();
 			_add(cmov_logical);
 		}
@@ -2540,7 +2534,7 @@ namespace translator
 			ir::ILIshl ishl;
 			ishl.d = r0.z();
 			ishl.a = r0.z();
-			ishl.b = _translateLiteral((int)0x00000017);
+			ishl.b = _translateLiteral(0x00000017);
 			_add(ishl);
 
 			ir::ILIadd iadd;
@@ -2569,7 +2563,7 @@ namespace translator
 			ir::ILAnd and1;
 			and1.d = r1.x();
 			and1.a = r0.z();
-			and1.b = _translateLiteral((int)0x7F800000);
+			and1.b = _translateLiteral(0x7F800000);
 			_add(and1);
 
 			ir::ILIfLogicalZ if_logicalz;
@@ -2584,7 +2578,7 @@ namespace translator
 			ir::ILAnd and1;
 			and1.d = r1.y();
 			and1.a = r0.z();
-			and1.b = _translateLiteral((int)0x007FFFFF);
+			and1.b = _translateLiteral(0x007FFFFF);
 			_add(and1);
 
 			ir::ILItoF itof;
@@ -2600,13 +2594,13 @@ namespace translator
 			ir::ILAnd and1;
 			and1.d = r1.y();
 			and1.a = r1.y();
-			and1.b = _translateLiteral((int)0x7F800000);
+			and1.b = _translateLiteral(0x7F800000);
 			_add(and1);
 
 			ir::ILAnd and2;
 			and2.d = r1.z();
 			and2.a = r1.y();
-			and2.b = _translateLiteral((int)0x007FFFFF);
+			and2.b = _translateLiteral(0x007FFFFF);
 			_add(and2);
 		}
 
@@ -2616,7 +2610,7 @@ namespace translator
 			ir::ILIshr ishr;
 			ishr.d = r1.y();
 			ishr.a = r1.y();
-			ishr.b = _translateLiteral((int)0x00000017);
+			ishr.b = _translateLiteral(0x00000017);
 			_add(ishr);
 		}
 
@@ -2626,7 +2620,7 @@ namespace translator
 			ir::ILIadd iadd;
 			iadd.d = r1.y();
 			iadd.a = r1.y();
-			iadd.b = _translateLiteral((int)0x0000000C);
+			iadd.b = _translateLiteral(0x0000000C);
 			_add(iadd);
 		}
 
@@ -2636,7 +2630,7 @@ namespace translator
 			ir::ILIor ior;
 			ior.d = r1.z();
 			ior.a = r1.z();
-			ior.b = _translateLiteral((int)0x00800000);
+			ior.b = _translateLiteral(0x00800000);
 			_add(ior);
 		}
 
@@ -2645,7 +2639,7 @@ namespace translator
 		{
 			ir::ILIadd iadd;
 			iadd.d = r1.y();
-			iadd.a = _translateLiteral((int)0x00000096);
+			iadd.a = _translateLiteral(0x00000096);
 			iadd.b = r1.y().neg();
 			_add(iadd);
 		}
@@ -2655,7 +2649,7 @@ namespace translator
 		{
 			ir::ILIlt ilt;
 			ilt.d = r1.w();
-			ilt.a = _translateLiteral((int)0x00000017);
+			ilt.a = _translateLiteral(0x00000017);
 			ilt.b = r1.y();
 			_add(ilt);
 		}
@@ -2666,7 +2660,7 @@ namespace translator
 			ir::ILCmov_Logical cmov_logical;
 			cmov_logical.d = r1.y();
 			cmov_logical.a = r1.w();
-			cmov_logical.b = _translateLiteral((int)0x00000018);
+			cmov_logical.b = _translateLiteral(0x00000018);
 			cmov_logical.c = r1.y();
 			_add(cmov_logical);
 		}
@@ -2702,7 +2696,7 @@ namespace translator
 			ir::ILIshl ishl;
 			ishl.d = r1.y();
 			ishl.a = r1.y();
-			ishl.b = _translateLiteral((int)0x00000017);
+			ishl.b = _translateLiteral(0x00000017);
 			_add(ishl);
 
 			ir::ILIadd iadd;
@@ -2730,7 +2724,7 @@ namespace translator
 			ir::ILAnd and1;
 			and1.d = r0.z();
 			and1.a = r0.z();
-			and1.b = _translateLiteral((int)0x7FFFFFFF);
+			and1.b = _translateLiteral(0x7FFFFFFF);
 			_add(and1);
 		}
 
@@ -2740,7 +2734,7 @@ namespace translator
 			ir::ILIshr ishr;
 			ishr.d = r1.x();
 			ishr.a = r1.x();
-			ishr.b = _translateLiteral((int)0x00000017);
+			ishr.b = _translateLiteral(0x00000017);
 			_add(ishr);
 		}
 
@@ -2750,7 +2744,7 @@ namespace translator
 			ir::ILIadd iadd;
 			iadd.d = r0.z();
 			iadd.a = r0.z();
-			iadd.b = _translateLiteral((int)0x06000000);
+			iadd.b = _translateLiteral(0x06000000);
 			_add(iadd);
 		}
 
@@ -2760,7 +2754,7 @@ namespace translator
 			ir::ILIadd iadd;
 			iadd.d = r1.x();
 			iadd.a = r1.x();
-			iadd.b = _translateLiteral((int)0xFFFFFF8D);
+			iadd.b = _translateLiteral(0xFFFFFF8D);
 			_add(iadd);
 		}
 
@@ -2769,7 +2763,7 @@ namespace translator
 		{
 			ir::ILIlt ilt;
 			ilt.d = r1.x();
-			ilt.a = _translateLiteral((int)0x0000007F);
+			ilt.a = _translateLiteral(0x0000007F);
 			ilt.b = r1.x();
 			_add(ilt);
 		}
@@ -2780,7 +2774,7 @@ namespace translator
 			ir::ILCmov_Logical cmov_logical;
 			cmov_logical.d = r1.y();
 			cmov_logical.a = r1.x();
-			cmov_logical.b = _translateLiteral((int)0x7F800000);
+			cmov_logical.b = _translateLiteral(0x7F800000);
 			cmov_logical.c = r0.z();
 			_add(cmov_logical);
 		}
@@ -2796,7 +2790,7 @@ namespace translator
 			ir::ILCmov_Logical cmov_logical;
 			cmov_logical.d = r0.z();
 			cmov_logical.a = r0.w();
-			cmov_logical.b = _translateLiteral((int)0xFFC00000);
+			cmov_logical.b = _translateLiteral(0xFFC00000);
 			cmov_logical.c = r1.y();
 			_add(cmov_logical);
 		}
@@ -2808,7 +2802,7 @@ namespace translator
 			ir::ILIor ior;
 			ior.d = r0.w();
 			ior.a = r0.x();
-			ior.b = _translateLiteral((int)0x7FC00000);
+			ior.b = _translateLiteral(0x7FC00000);
 			_add(ior);
 
 			ir::ILCmov_Logical cmov_logical;
@@ -3304,7 +3298,7 @@ namespace translator
 		ir::ILAnd iland1;
 		iland1.d = temp1;
 		iland1.a = _translate(i.a);
-		iland1.b = _translateLiteral((int)0x000000FF);
+		iland1.b = _translateLiteral(0x000000FF);
 		_add(iland1);
 
 		// get the two lsb's of the address.
@@ -3334,22 +3328,22 @@ namespace translator
 		ir::ILCmov_Logical cmov_logical1;
 		cmov_logical1.d = temp5;
 		cmov_logical1.a = temp3W;
-		cmov_logical1.b = _translateLiteral((int)0xFFFFFF00);
-		cmov_logical1.c = _translateLiteral((int)0x00FFFFFF);
+		cmov_logical1.b = _translateLiteral(0xFFFFFF00);
+		cmov_logical1.c = _translateLiteral(0x00FFFFFF);
 		_add(cmov_logical1);
 
 		ir::ILCmov_Logical cmov_logical2;
 		cmov_logical2.d = temp5;
 		cmov_logical2.a = temp3Z;
 		cmov_logical2.b = temp5;
-		cmov_logical2.c = _translateLiteral((int)0xFF00FFFF);
+		cmov_logical2.c = _translateLiteral(0xFF00FFFF);
 		_add(cmov_logical2);
 
 		ir::ILCmov_Logical cmov_logical3;
 		cmov_logical3.d = temp5;
 		cmov_logical3.a = temp3Y;
 		cmov_logical3.b = temp5;
-		cmov_logical3.c = _translateLiteral((int)0xFFFF00FF);
+		cmov_logical3.c = _translateLiteral(0xFFFF00FF);
 		_add(cmov_logical3);
 
 		ir::ILIshl ishl;
@@ -3483,7 +3477,7 @@ namespace translator
             case ir::PTXInstruction::Ballot:
             {
                 ir::ILMov mov;
-                mov.a = _translateLiteral((int)0xFFFFFFFF);
+                mov.a = _translateLiteral(0xFFFFFFFF);
                 mov.d = _translate(i.d);
                 _add(mov);
                 break;
@@ -3522,13 +3516,6 @@ namespace translator
 		return op;
 	}
 
-	ir::ILOperand PTXToILTranslator::_translateLiteral(float l)
-	{
-		union { float f; int i; } convert;
-		convert.f = l;
-		return _translateLiteral(convert.i);
-	}
-
 	ir::ILOperand PTXToILTranslator::_translateConstantBuffer(
 			const ir::PTXOperand o, unsigned int offset)
 	{
@@ -3546,9 +3533,8 @@ namespace translator
 		assertM(it != _ilKernel->arguments.end(), 
 				"Argument " << ident << " not declared");
 
-		ir::ILOperand op;
+		ir::ILOperand op(ir::ILOperand::RegType_Const_Buf);
 		op.num = 1;
-		op.type = ir::ILOperand::RegType_Const_Buf;
 		op.immediate_present = true;
 		op.imm = i + o.offset + offset;
 

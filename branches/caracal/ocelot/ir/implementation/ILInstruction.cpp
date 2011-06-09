@@ -56,10 +56,10 @@ namespace ir
 			case Ishr:                  return "ishr";
 			case ItoF:                  return "itof";
 			case Ixor:                  return "ixor";
-			case Lds_And_Id:      return "lds_and_id(1)";
+			case Lds_And_Id:            return "lds_and_id(1)";
 			case Lds_Load_Id:           return "lds_load_id(1)";
-			case Lds_Or_Id:       return "lds_or_id(1)";
-			case Lds_Read_Add_Id: return "lds_read_add_id(1)";
+			case Lds_Or_Id:             return "lds_or_id(1)";
+			case Lds_Read_Add_Id:       return "lds_read_add_id(1)";
 			case Lds_Store_Id:          return "lds_store_id(1)";
 			case Log_Vec:               return "log_vec";
 			case Lt:                    return "lt";
@@ -126,7 +126,7 @@ namespace ir
 	std::string ILUnaryInstruction::toString() const
 	{
 		return ILInstruction::toString(opcode) +
-			d.shift_scaleString() + d.clampString() + 
+			d.shiftString() + d.clampString() + 
 			" " + d.dstString() + ", " + a.srcString();
 	}
 
@@ -137,7 +137,7 @@ namespace ir
 	std::string ILBinaryInstruction::toString() const
 	{
 		return ILInstruction::toString(opcode) + 
-			d.shift_scaleString() + d.clampString() + 
+			d.shiftString() + d.clampString() + 
 			" " + d.dstString() + ", " + a.srcString() + ", " + b.srcString();
 	}
 
@@ -148,7 +148,7 @@ namespace ir
 	std::string ILTrinaryInstruction::toString() const
 	{
 		return ILInstruction::toString(opcode) + 
-			d.shift_scaleString() + d.clampString() + 
+			d.shiftString() + d.clampString() + 
 			" " + d.dstString() + ", " + a.srcString() + ", " + b.srcString() + 
 			", " + c.srcString();
 	}

@@ -18,10 +18,6 @@ namespace ir
 	/*! \brief A class for a basic IL Operand */
 	class ILOperand {
 		public:
-			/*! \brief Default constructor */
-			ILOperand();
-
-		public:
 			/*! \brief Register type */
 			enum RegType {
 				RegType_Temp,
@@ -103,6 +99,9 @@ namespace ir
 					static std::string toString(ComponentSelect c);
 			};
 
+			/*! \brief Default constructor */
+			ILOperand(RegType type = RegType_Invalid);
+
 			/*****************************//**
 			 * \name Operand information
 			 ********************************/
@@ -122,7 +121,7 @@ namespace ir
 			std::string dstString() const;
 			std::string srcString() const;
 			std::string clampString() const;
-			std::string shift_scaleString() const;
+			std::string shiftString() const;
 
 			/*****************************//**
 			 * \name Swizzles
@@ -145,5 +144,3 @@ namespace ir
 }
 
 #endif
-
-

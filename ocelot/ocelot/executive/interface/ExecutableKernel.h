@@ -111,6 +111,7 @@ namespace executive {
 		/*! attribute accessors - things every executable kernel should know */
 		unsigned int constMemorySize() const;
 		unsigned int localMemorySize() const;
+		unsigned int globalLocalMemorySize() const;
 		unsigned int maxThreadsPerBlock() const;
 		unsigned int registerCount() const;
 		unsigned int sharedMemorySize() const;
@@ -126,6 +127,8 @@ namespace executive {
 		unsigned int _constMemorySize;
 		/*! \brief Total amount of allocated local memory size */
 		unsigned int _localMemorySize;
+		/*! \brief Total amount of allocated global local memory per thread */
+		unsigned int _globalLocalMemorySize;
 		/*! \brief Maxmimum number of threads launched per block */
 		unsigned int _maxThreadsPerBlock;
 		/*! \brief Number of registered required by each thread */

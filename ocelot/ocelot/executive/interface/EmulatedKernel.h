@@ -142,6 +142,10 @@ namespace executive {
 			allocations. */
 		void initializeLocalMemory();
 
+		/*!	Allocates arrays in globally scoped memory and maps identifiers to 
+			allocations. */
+		void initializeGlobalLocalMemory();
+
 		/*!	Maps identifiers to const memory allocations. */
 		void initializeConstMemory();
 
@@ -168,7 +172,7 @@ namespace executive {
 
 		/*!	Pointer to byte-addressable const memory */
 		char* ConstMemory;
-
+		
 		/*!	Packed and allocated vector of instructions */
 		PTXInstructionVector instructions;
 

@@ -328,20 +328,20 @@ ir::LLVMInstruction::Type PTXToLLVMTranslator::_getCtaContextType()
 	context.members.resize( 10 );
 
 	context.members[0].category = ir::LLVMInstruction::Type::Structure;
-	context.members[0].label = "%Dimension";
+	context.members[0].label    = "%Dimension";
 
 	context.members[1] = context.members[0];
 	context.members[2] = context.members[0];
 	context.members[3] = context.members[0];
 
 	context.members[4].category = ir::LLVMInstruction::Type::Pointer;
-	context.members[4].type = ir::LLVMInstruction::I8;
+	context.members[4].type     = ir::LLVMInstruction::I8;
 
-	context.members[5] = context.members[4];
-	context.members[6] = context.members[4];
-	context.members[7] = context.members[4];	
-	context.members[8] = context.members[4];
-	context.members[9] = context.members[4];
+	context.members[5]  = context.members[4];
+	context.members[6]  = context.members[4];
+	context.members[7]  = context.members[4];	
+	context.members[8]  = context.members[4];
+	context.members[9]  = context.members[4];
 	
 	return context;
 }
@@ -601,7 +601,7 @@ void PTXToLLVMTranslator::_reportWrites(
 
 void PTXToLLVMTranslator::_check( ir::PTXInstruction::AddressSpace space,
 	const ir::LLVMInstruction::Operand& address, unsigned int bytes,
-	bool isArgument, unsigned int statement )
+	bool isArgument, bool isGlobalLocal, unsigned int statement )
 {
 	if( optimizationLevel != MemoryCheckOptimization 
 		&& optimizationLevel != DebugOptimization) return;
@@ -838,7 +838,8 @@ void PTXToLLVMTranslator::_yield( unsigned int type,
 {
 	ir::LLVMBitcast bitcast;
 	
-	bitcast.a = _getMemoryBasePointer( ir::PTXInstruction::Local, false );
+	bitcast.a = _getMemoryBasePointer( ir::PTXInstruction::Local,
+		false, false );
 
 	bitcast.d.type = ir::LLVMInstruction::Type( 
 		ir::LLVMInstruction::I32, ir::LLVMInstruction::Type::Pointer );
@@ -2585,8 +2586,13 @@ void PTXToLLVMTranslator::_translateCvta( const ir::PTXInstruction& i )
 	case ir::PTXInstruction::Shared:
 	case ir::PTXInstruction::Local:
 	{
+		assertM( i.addressSpace != ir::PTXInstruction::Local
+			|| i.a.addressMode != ir::PTXOperand::Address
+			|| !i.a.isGlobalLocal, "Taking the address of a globally local "
+			"value is not supported." );
+		
 		ir::LLVMPtrtoint toint;
-			
+		
 		toint.a = _getLoadOrStorePointer( i.a, 
 			i.addressSpace, _translate( i.type ), i.vec );
 
@@ -2705,7 +2711,7 @@ void PTXToLLVMTranslator::_translateIsspacep( const ir::PTXInstruction& i )
 	case ir::PTXInstruction::Local:
 	{
 		ir::LLVMInstruction::Operand base = _getMemoryBasePointer( 
-		 	i.addressSpace, false );
+		 	i.addressSpace, false, false );
 		ir::LLVMInstruction::Operand extent = _getMemoryExtent(
 			i.addressSpace );
 			
@@ -2781,7 +2787,7 @@ void PTXToLLVMTranslator::_translateIsspacep( const ir::PTXInstruction& i )
 	case ir::PTXInstruction::Global:
 	{
 		ir::LLVMInstruction::Operand base = _getMemoryBasePointer( 
-		 	ir::PTXInstruction::Shared, false );
+		 	ir::PTXInstruction::Shared, false, false );
 		ir::LLVMInstruction::Operand extent = _getMemoryExtent(
 			ir::PTXInstruction::Shared );
 			
@@ -2858,7 +2864,8 @@ void PTXToLLVMTranslator::_translateIsspacep( const ir::PTXInstruction& i )
 		_add( land );
 		
 		// is the allocation local?
-		base   = _getMemoryBasePointer( ir::PTXInstruction::Local, false );
+		base   = _getMemoryBasePointer( ir::PTXInstruction::Local,
+			false, false );
 		extent = _getMemoryExtent( ir::PTXInstruction::Local );
 			
 		baseInt.name = _tempRegister();
@@ -2972,21 +2979,21 @@ void PTXToLLVMTranslator::_translateLd( const ir::PTXInstruction& i )
 			temp.type.type = _translate( i.d.type );
 			load.d.name = _tempRegister();
 			_check( i.addressSpace, load.a, load.alignment,
-				i.a.isArgument, i.statementIndex );
+				i.a.isArgument, i.a.isGlobalLocal, i.statementIndex );
 			_add( load );
 			_convert( temp, i.d.type, load.d, i.type );				
 		}
 		else
 		{
 			_check( i.addressSpace, load.a, load.alignment,
-				i.a.isArgument, i.statementIndex );
+				i.a.isArgument, i.a.isGlobalLocal, i.statementIndex );
 			_add( load );
 		}
 	}
 	else
 	{
 		_check( i.addressSpace, load.a, load.alignment,
-				i.a.isArgument, i.statementIndex );
+				i.a.isArgument, i.a.isGlobalLocal, i.statementIndex );
 		_add( load );
 	}
 	
@@ -3042,14 +3049,14 @@ void PTXToLLVMTranslator::_translateLd( const ir::PTXInstruction& i )
 			temp.type.type = _translate( i.d.type );
 			load.d.name = _tempRegister();
 			_check( i.addressSpace, load.a, load.alignment,
-				i.a.isArgument, i.statementIndex );
+				i.a.isArgument, i.a.isGlobalLocal, i.statementIndex );
 			_add( load );
 			_convert( temp, i.d.type, load.d, i.type );				
 		}
 		else
 		{
 			_check( i.addressSpace, load.a, load.alignment,
-				i.a.isArgument, i.statementIndex );
+				i.a.isArgument, i.a.isGlobalLocal, i.statementIndex );
 			_add( load );
 		}
 	}
@@ -3074,7 +3081,7 @@ void PTXToLLVMTranslator::_translateLd( const ir::PTXInstruction& i )
 			load.alignment = ir::PTXOperand::bytes( i.type );
 			load.a = get.d;
 			_check( i.addressSpace, load.a, load.alignment,
-					i.a.isArgument, i.statementIndex );
+					i.a.isArgument, i.a.isGlobalLocal, i.statementIndex );
 
 			if( _translate( i.d.type ) != _translate( i.type ) )
 			{
@@ -3920,6 +3927,12 @@ void PTXToLLVMTranslator::_translateMov( const ir::PTXInstruction& i )
 
 							if( i.a.addressMode == ir::PTXOperand::Address )
 							{
+								assertM( i.addressSpace !=
+									ir::PTXInstruction::Local
+									|| !i.a.isGlobalLocal, "Taking the address "
+									"of a globally local "
+									"value is not supported." );
+								
 								cast.a.i64 = i.a.offset;
 							}
 							else
@@ -5514,7 +5527,7 @@ void PTXToLLVMTranslator::_translateSt( const ir::PTXInstruction& i )
 	}
 	
 	_check( i.addressSpace, store.d, store.alignment,
-		i.d.isArgument, i.statementIndex );
+		i.d.isArgument, i.d.isGlobalLocal, i.statementIndex );
 	_add( store );
 	#else
 	ir::LLVMStore store;
@@ -5546,7 +5559,8 @@ void PTXToLLVMTranslator::_translateSt( const ir::PTXInstruction& i )
 		}
 
 		_check( i.addressSpace, store.d, 
-			store.alignment, i.d.isArgument, i.statementIndex );
+			store.alignment, i.d.isArgument, i.d.isGlobalLocal,
+			i.statementIndex );
 		_add( store );
 	}
 	else
@@ -5581,7 +5595,8 @@ void PTXToLLVMTranslator::_translateSt( const ir::PTXInstruction& i )
 			}
 
 			_check( i.addressSpace, store.d, 
-				store.alignment, i.d.isArgument, i.statementIndex );
+				store.alignment, i.d.isArgument, i.d.isGlobalLocal,
+				i.statementIndex );
 			_add( store );
 		}
 	}
@@ -7986,7 +8001,8 @@ ir::LLVMInstruction::Operand PTXToLLVMTranslator::_getMemoryExtent(
 }			
 
 ir::LLVMInstruction::Operand PTXToLLVMTranslator::_getMemoryBasePointer( 
-	ir::PTXInstruction::AddressSpace space, bool isArgument )
+	ir::PTXInstruction::AddressSpace space, bool isArgument,
+	bool isGlobalLocal )
 {
 	ir::LLVMGetelementptr get;
 	
@@ -8013,7 +8029,14 @@ ir::LLVMInstruction::Operand PTXToLLVMTranslator::_getMemoryBasePointer(
 		}
 		case ir::PTXInstruction::Local:
 		{
-			get.indices.push_back( 4 );
+			if( isGlobalLocal )
+			{
+				get.indices.push_back( 9 );
+			}
+			else
+			{
+				get.indices.push_back( 4 );
+			}
 			break;
 		}
 		case ir::PTXInstruction::Param:
@@ -8063,7 +8086,8 @@ ir::LLVMInstruction::Operand
 		getIndex.d.type.category = ir::LLVMInstruction::Type::Pointer;
 		getIndex.d.type.type = ir::LLVMInstruction::I8;
 	
-		getIndex.a = _getMemoryBasePointer( space, o.isArgument );
+		getIndex.a = _getMemoryBasePointer( space, o.isArgument,
+			o.isGlobalLocal );
 		getIndex.indices.push_back( o.offset );
 	
 		_add( getIndex );
@@ -8072,7 +8096,7 @@ ir::LLVMInstruction::Operand
 	}
 	else
 	{
-		index = _getMemoryBasePointer( space, o.isArgument );
+		index = _getMemoryBasePointer( space, o.isArgument, o.isGlobalLocal );
 	}
 	
 	return index;
@@ -8219,7 +8243,7 @@ ir::LLVMInstruction::Operand PTXToLLVMTranslator::_getLoadOrStorePointer(
 		{
 			ir::LLVMPtrtoint toint;
 		
-			toint.a = _getMemoryBasePointer( space, o.isArgument );
+			toint.a = _getMemoryBasePointer( space, false, false );
 			toint.d.name = _tempRegister();
 			toint.d.type.category = ir::LLVMInstruction::Type::Element;
 			toint.d.type.type = reg.type.type;

@@ -33,7 +33,8 @@ namespace executive
 	EmulatorCallStack::EmulatorCallStack(unsigned int threads,
 		unsigned int initialArgumentSize,
 		unsigned int initialFrameSize, unsigned int registers, 
-		unsigned int localSize, unsigned int sharedSize) :
+		unsigned int localSize, unsigned int globalLocalSize,
+		unsigned int sharedSize) :
 		_stackPointer(0),
 		_threadCount(threads),
 		_localMemoryBase(align(3 * sizeof(unsigned int))
@@ -43,7 +44,10 @@ namespace executive
 		_localMemorySizes(1, align(localSize)),
 		_registerFileSizes(1, align(registers,
 			globalAlignment / sizeof(RegisterType))),
-		_sharedMemorySizes(1, sharedSize)
+		_sharedMemorySizes(1, sharedSize),
+		_globalLocalMemory(align(globalLocalSize) * threads +
+			globalAlignment, 0),
+		_globalLocalSize(align(globalLocalSize))
 	{
 		_stackFrameSizes.push_back(align(initialFrameSize));
 		
@@ -128,6 +132,11 @@ namespace executive
 	void* EmulatorCallStack::sharedMemoryPointer()
 	{
 		return align(_sharedMemory.data());
+	}
+
+	void* EmulatorCallStack::globalLocalMemoryPointer(unsigned int thread)
+	{
+		return (char*)_globalLocalMemory.data() + thread * _globalLocalSize;
 	}
 
 	unsigned int EmulatorCallStack::registerCount() const

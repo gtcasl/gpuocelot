@@ -58,6 +58,8 @@ void LLVMCooperativeThreadArray::setup(const LLVMExecutableKernel& kernel)
 	_stacks.resize(threads);
 	_sharedMemory.resize(kernel.externSharedMemorySize()
 		+ _functions[_entryPoint]->sharedSize);
+	_globallyScopedLocalMemory.resize(
+		threads*_functions[_entryPoint]->globalLocalSize);
 	_kernel = &kernel;
 
 	_freeContexts.resize(threads);
@@ -304,8 +306,11 @@ unsigned int LLVMCooperativeThreadArray::_initializeNewContext(
 		context.local     = stack.localMemory();
 		context.parameter = stack.parameterMemory();
 		context.constant  = _kernel->constantMemory();
-		context.metadata  = reinterpret_cast<char*>(&metadata);
-		context.externalSharedSize = _kernel->externSharedMemorySize();
+		context.globallyScopedLocal =
+			reinterpret_cast<char*>(_globallyScopedLocalMemory.data()) +
+			metadata.globalLocalSize * threadId;
+		context.externalSharedSize  = _kernel->externSharedMemorySize();
+		context.metadata            = reinterpret_cast<char*>(&metadata);
 	}
 	else
 	{

@@ -675,6 +675,7 @@ static void setupLocalMemoryReferences(ir::PTXKernel& kernel,
 						if(offsets.end() != offset) 
 						{
 							ptx.addressSpace = ir::PTXInstruction::Local;
+							operands[i]->isGlobalLocal = false;
 							operands[i]->offset += offset->second;
 							report("   For instruction " 
 								<< ptx.toString() << ", mapping local label " 
@@ -687,6 +688,73 @@ static void setupLocalMemoryReferences(ir::PTXKernel& kernel,
 	}
 
     report("   Total local memory size is " << metadata->localSize << ".");
+}
+
+static void setupGlobalLocalMemoryReferences(ir::PTXKernel& kernel,
+	LLVMModuleManager::KernelAndTranslation::MetaData* metadata,
+	const ir::PTXKernel& parent)
+{
+	report( "  Setting up globally scoped local memory references." );
+	typedef std::unordered_map<std::string, unsigned int> OffsetMap;
+
+	OffsetMap offsets;
+	metadata->globalLocalSize = 0;
+	
+	for(ir::Module::GlobalMap::const_iterator global =
+		kernel.module->globals().begin();
+		global != kernel.module->globals().end(); ++global)
+	{
+		if(global->second.statement.directive == ir::PTXStatement::Local)
+		{
+			report("   Found globally scoped local variable " 
+				<< global->second.statement.name << " of size " 
+				<< global->second.statement.bytes());
+			
+			pad(metadata->globalLocalSize,
+				global->second.statement.accessAlignment());
+			offsets.insert(std::make_pair(global->second.statement.name,
+				metadata->globalLocalSize));
+			metadata->globalLocalSize += global->second.statement.bytes();
+		}
+	}
+    
+	for(ir::ControlFlowGraph::iterator block = kernel.cfg()->begin(); 
+		block != kernel.cfg()->end(); ++block)
+	{
+		for(ir::ControlFlowGraph::InstructionList::iterator 
+			instruction = block->instructions.begin(); 
+			instruction != block->instructions.end(); ++instruction)
+		{
+			ir::PTXInstruction& ptx = static_cast<
+				ir::PTXInstruction&>(**instruction);
+			ir::PTXOperand* operands[] = {&ptx.d, &ptx.a, &ptx.b, &ptx.c};
+	
+			if(ptx.mayHaveAddressableOperand())
+			{
+				for(unsigned int i = 0; i != 4; ++i)
+				{
+					if(operands[i]->addressMode == ir::PTXOperand::Address)
+					{
+						OffsetMap::iterator offset = offsets.find( 
+							operands[i]->identifier);
+						if(offsets.end() != offset) 
+						{
+							ptx.addressSpace = ir::PTXInstruction::Local;
+							operands[i]->isGlobalLocal = true;
+							operands[i]->offset += offset->second;
+							report("   For instruction " 
+								<< ptx.toString()
+								<< ", mapping globally scoped local label " 
+								<< offset->first << " to " << offset->second);
+						}
+					}
+				}
+			}
+		}
+	}
+
+    report("   Total globally scoped local memory size is "
+    	<< metadata->globalLocalSize << ".");
 }
 
 static void setupPTXMemoryReferences(ir::PTXKernel& kernel,
@@ -703,6 +771,7 @@ static void setupPTXMemoryReferences(ir::PTXKernel& kernel,
 	setupConstantMemoryReferences(kernel, metadata, parent);
 	setupTextureMemoryReferences(kernel, metadata, parent, device);
 	setupLocalMemoryReferences(kernel, metadata, parent);
+	setupGlobalLocalMemoryReferences(kernel, metadata, parent);
 }
 
 static unsigned int optimizePTX(ir::PTXKernel& kernel,

@@ -214,6 +214,7 @@ namespace ir {
 			/*! Identifier for register */
 			RegisterType reg;
 			bool isArgument;
+			bool isGlobalLocal;
 			unsigned int sharedMemorySize;
 		};
 		

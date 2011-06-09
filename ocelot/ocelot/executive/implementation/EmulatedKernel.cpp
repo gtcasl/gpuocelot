@@ -200,6 +200,7 @@ void executive::EmulatedKernel::initialize() {
 	initializeStackMemory();
 	updateParamReferences();
 	initializeLocalMemory();
+	initializeGlobalLocalMemory();
 	invalidateCallTargets();
 }
 		
@@ -576,23 +577,7 @@ void executive::EmulatedKernel::initializeLocalMemory() {
 	map<string, unsigned int> label_map;
 	
 	report("Initialize local memory");
-	
-	if(module != 0) {
-		for(ir::Module::GlobalMap::const_iterator 
-			it = module->globals().begin(); 
-			it != module->globals().end(); ++it) {
-			if (it->second.statement.directive == ir::PTXStatement::Local) {
-				unsigned int offset;
-
-				report("Found global local variable " 
-					<< it->second.statement.name);
-				_computeOffset(it->second.statement, 
-					offset, localOffset);						
-				label_map[it->second.statement.name] = offset;
-			}
-		}
-	}
-	
+		
 	LocalMap::const_iterator it = locals.begin();
 	for (; it != locals.end(); ++it) {
 		if (it->second.space == ir::PTXInstruction::Local) {
@@ -613,7 +598,7 @@ void executive::EmulatedKernel::initializeLocalMemory() {
 	for (; i_it != instructions.end(); ++i_it) {
 		ir::PTXInstruction &instr = *i_it;
 
-		// look for mov and ld/st instructions
+		// look for instructions that can reference addresses
 		if (instr.mayHaveAddressableOperand()) {
 			for (int n = 0; n < 4; n++) {
 				if ((instr.*operands[n]).addressMode 
@@ -621,6 +606,7 @@ void executive::EmulatedKernel::initializeLocalMemory() {
 					map<string, unsigned int>::iterator 
 						l_it = label_map.find((instr.*operands[n]).identifier);
 					if (label_map.end() != l_it) {
+						(instr.*operands[n]).isGlobalLocal = false;
 						(instr.*operands[n]).type = ir::PTXOperand::u64;
 						(instr.*operands[n]).imm_uint = l_it->second;
 						report("For instruction " << instr.toString() 
@@ -635,6 +621,62 @@ void executive::EmulatedKernel::initializeLocalMemory() {
 	// allocate local memory object
 	_localMemorySize = localOffset;
 }
+
+void executive::EmulatedKernel::initializeGlobalLocalMemory() {
+	unsigned int localOffset = 0;
+
+	std::map<std::string, unsigned int> label_map;
+	
+	report("Initialize global local memory");
+	
+	if(module != 0) {
+		for(ir::Module::GlobalMap::const_iterator 
+			it = module->globals().begin(); 
+			it != module->globals().end(); ++it) {
+			if (it->second.statement.directive == ir::PTXStatement::Local) {
+				unsigned int offset;
+
+				report(" Found globally scoped local variable " 
+					<< it->second.statement.name);
+				_computeOffset(it->second.statement, 
+					offset, localOffset);						
+				label_map[it->second.statement.name] = offset;
+			}
+		}
+	}
+
+	ir::PTXOperand ir::PTXInstruction:: *operands[] = {&ir::PTXInstruction::d,
+		&ir::PTXInstruction::a, &ir::PTXInstruction::b, &ir::PTXInstruction::c};
+	PTXInstructionVector::iterator 
+		i_it = instructions.begin();
+	for (; i_it != instructions.end(); ++i_it) {
+		ir::PTXInstruction &instr = *i_it;
+
+		// look for instructions that can reference addresses
+		if (instr.mayHaveAddressableOperand()) {
+			for (int n = 0; n < 4; n++) {
+				if ((instr.*operands[n]).addressMode 
+					== ir::PTXOperand::Address) {
+					std::map<std::string, unsigned int>::iterator 
+						l_it = label_map.find((instr.*operands[n]).identifier);
+					if (label_map.end() != l_it) {
+						(instr.*operands[n]).isGlobalLocal = true;
+						(instr.*operands[n]).type = ir::PTXOperand::u64;
+						(instr.*operands[n]).imm_uint = l_it->second;
+						report(" For instruction " << instr.toString() 
+							<< ", mapping globally scoped local " << l_it->first 
+							<< " to " << l_it->second);
+					}
+				}
+			}
+		}
+	}
+
+	report(" Total globally scoped local memory size is " << localOffset);
+	// get size for global local memory object
+	_globalLocalMemorySize = localOffset;
+}
+
 
 /*! Maps identifiers to const memory allocations. */
 void executive::EmulatedKernel::initializeConstMemory() {
@@ -925,13 +967,14 @@ void executive::EmulatedKernel::initializeStackMemory() {
 		ir::Parameter& parameter = i_it->second;
 		
 		OffsetMap::iterator offset = offsets.find(parameter.name);
-		assert(offset != offsets.end());
+		if(offset != offsets.end())
+		{
+			parameter.offset = offset->second;
 		
-		parameter.offset = offset->second;
-		
-		report( " Setting offset of stack parameter " << parameter.name 
-			<< " of size " << parameter.getSize() << " to " 
-			<< offset->second );
+			report( " Setting offset of stack parameter " << parameter.name 
+				<< " of size " << parameter.getSize() << " to " 
+				<< offset->second );
+		}
 	}
 	
 	report(" Parameter stack memory requirement is " << _parameterMemorySize);

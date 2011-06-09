@@ -261,8 +261,29 @@ namespace trace
 				}
 				break;
 			}
-			case ir::PTXInstruction::Local: checkLocalAccess( "Local", _dim,
-				_local.base, _local.extent, e, _kernel ); break;
+			case ir::PTXInstruction::Local: 
+			{
+				bool isGlobalLocal =
+					(e.instruction->opcode == ir::PTXInstruction::Ld
+					&& e.instruction->a.isGlobalLocal
+					&& e.instruction->a.addressMode == ir::PTXOperand::Address)
+					|| (e.instruction->opcode == ir::PTXInstruction::St
+					&& e.instruction->d.isGlobalLocal
+					&& e.instruction->d.addressMode == ir::PTXOperand::Address);
+				
+				if( isGlobalLocal )
+				{
+					checkLocalAccess( "GlobalLocal", _dim,
+						_globalLocal.base, _globalLocal.extent,
+						e, _kernel );
+				}
+				else
+				{
+					checkLocalAccess( "Local", _dim,
+						_local.base, _local.extent, e, _kernel );
+				}
+				break;
+			}
 			case ir::PTXInstruction::Param:
 			{
 				bool isArgument =
@@ -610,6 +631,9 @@ namespace trace
 		
 		_local.base = 0;
 		_local.extent = kernel.localMemorySize();
+		
+		_globalLocal.base = 0;
+		_globalLocal.extent = kernel.globalLocalMemorySize();
 		
 		_kernel = static_cast< const executive::EmulatedKernel* >( &kernel );
 

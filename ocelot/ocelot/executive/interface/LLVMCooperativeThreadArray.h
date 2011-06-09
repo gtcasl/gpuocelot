@@ -66,6 +66,7 @@ private:
 	FunctionTable                 _functions;
 	const LLVMExecutableKernel*   _kernel;
 	DataVector                    _sharedMemory;
+	DataVector                    _globallyScopedLocalMemory;
 	LLVMContextVector             _contexts;
 	StackVector                   _stacks;
 	ThreadListVector              _queuedThreads;

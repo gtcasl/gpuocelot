@@ -516,11 +516,20 @@ namespace ir
 			Instruction *clone(bool copy=true) const;
 	};
 
-	class ILLds_Store_Id : public ILUnaryInstruction
+	class ILLds_Store_Id : public ILInstruction
 	{
 		public:
 			ILLds_Store_Id();
 			Instruction *clone(bool copy=true) const;
+
+			/*! \brief The first source operand */
+			ILOperand a;
+
+			/*! \brief The second source operand */
+			ILOperand b;
+
+			/*! \brief Parsable IL strings */
+			std::string toString() const;
 	};
 
 	class ILLog_Vec : public ILUnaryInstruction
@@ -606,11 +615,17 @@ namespace ir
 			DataType type;
 	};
 
-	class ILUav_Arena_Store_Id : public ILUnaryInstruction
+	class ILUav_Arena_Store_Id : public ILInstruction
 	{
 		public:
 			ILUav_Arena_Store_Id();
 			Instruction *clone(bool copy=true) const;
+
+			/*! \brief The first source operand */
+			ILOperand a;
+
+			/*! \brief The second source operand */
+			ILOperand b;
 
 			/*! \brief Parsable IL strings */
 			std::string toString() const;
@@ -626,11 +641,20 @@ namespace ir
 			Instruction *clone(bool copy=true) const;
 	};
 
-	class ILUav_Raw_Store_Id : public ILUnaryInstruction
+	class ILUav_Raw_Store_Id : public ILInstruction
 	{
 		public:
 			ILUav_Raw_Store_Id();
 			Instruction *clone(bool copy=true) const;
+
+			/*! \brief The first source operand */
+			ILOperand a;
+
+			/*! \brief The second source operand */
+			ILOperand b;
+
+			/*! \brief Parsable IL strings */
+			std::string toString() const;
 	};
 
 	class ILUav_Read_Add_Id : public ILBinaryInstruction

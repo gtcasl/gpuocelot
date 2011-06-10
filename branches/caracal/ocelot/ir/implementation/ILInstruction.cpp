@@ -74,7 +74,7 @@ namespace ir
 			case Uav_Arena_Load_Id:     return "uav_arena_load_id(8)";
 			case Uav_Arena_Store_Id:    return "uav_arena_store_id(8)";
 			case Uav_Raw_Load_Id:       return "uav_raw_load_id(0)";
-			case Uav_Raw_Store_Id:      return "uav_raw_store_id(0) mem.x,";
+			case Uav_Raw_Store_Id:      return "uav_raw_store_id(0)";
 			case Uav_Read_Add_Id:       return "uav_read_add_id(0)";
 			case Uav_Read_Max_Id:       return "uav_read_max_id(0)";
 			case Uav_Read_Min_Id:       return "uav_read_min_id(0)";
@@ -557,13 +557,18 @@ namespace ir
 		return new ILLds_Read_Add_Id(*this);
 	}
 
-	ILLds_Store_Id::ILLds_Store_Id() : ILUnaryInstruction(Lds_Store_Id)
+	ILLds_Store_Id::ILLds_Store_Id() : ILInstruction(Lds_Store_Id)
 	{
 	}
 
 	Instruction *ILLds_Store_Id::clone(bool copy) const
 	{
 		return new ILLds_Store_Id(*this);
+	}
+
+	std::string ILLds_Store_Id::toString() const
+	{
+		return ILInstruction::toString(opcode) + " " + a.srcString() + ", " + b.srcString();
 	}
 
 	ILLog_Vec::ILLog_Vec() : ILUnaryInstruction(Log_Vec)
@@ -674,7 +679,7 @@ namespace ir
 	}
 
 	ILUav_Arena_Store_Id::ILUav_Arena_Store_Id() 
-		: ILUnaryInstruction(Uav_Arena_Store_Id)
+		: ILInstruction(Uav_Arena_Store_Id)
 	{
 	}
 
@@ -686,8 +691,8 @@ namespace ir
 	std::string ILUav_Arena_Store_Id::toString() const
 	{
 		return ILInstruction::toString(opcode) + "_size(" 
-			+ ILInstruction::toString(type) + ") " + d.dstString() + ", " 
-			+ a.srcString();
+			+ ILInstruction::toString(type) + ") " + a.srcString() + ", " 
+			+ b.srcString();
 	}
 
 	ILUav_Raw_Load_Id::ILUav_Raw_Load_Id() 
@@ -701,13 +706,19 @@ namespace ir
 	}
 
 	ILUav_Raw_Store_Id::ILUav_Raw_Store_Id() 
-		: ILUnaryInstruction(Uav_Raw_Store_Id)
+		: ILInstruction(Uav_Raw_Store_Id)
 	{
 	}
 
 	Instruction *ILUav_Raw_Store_Id::clone(bool copy) const
 	{
 		return new ILUav_Raw_Store_Id(*this);
+	}
+
+	std::string ILUav_Raw_Store_Id::toString() const
+	{
+		return ILInstruction::toString(opcode) + " mem.x, " +
+			a.srcString() + ", " + b.srcString();
 	}
 
 	ILUav_Read_Add_Id::ILUav_Read_Add_Id() 

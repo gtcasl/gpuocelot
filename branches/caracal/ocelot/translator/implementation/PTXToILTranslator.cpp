@@ -295,6 +295,7 @@ namespace translator
 				// create new il register
 				ir::ILOperand op(ir::ILOperand::RegType_Temp);
 				op.num = _registers.size();
+				op = op.x();
 				_registers.insert(std::make_pair(o.reg, op));
 
 				return op;
@@ -364,7 +365,7 @@ namespace translator
 	{
 		ir::ILOperand op(ir::ILOperand::RegType_Temp);
 		op.num = _temps++;
-		return op;
+		return op.x();
 	}
 
 	ir::ILOperand PTXToILTranslator::_translate(
@@ -3111,14 +3112,14 @@ namespace translator
 							if (ir::PTXOperand::bytes(i.type) == 4)
 							{
 								ir::ILUav_Raw_Store_Id uav_raw_store_id;
-								uav_raw_store_id.a = _translate(i.a);
-								uav_raw_store_id.d = _translate(i.d);
+								uav_raw_store_id.a = _translate(i.d);
+								uav_raw_store_id.b = _translate(i.a);
 								_add(uav_raw_store_id);
 							} else
 							{
 								ir::ILUav_Arena_Store_Id uav_arena_store_id;
-								uav_arena_store_id.a = _translate(i.a);
-								uav_arena_store_id.d = _translate(i.d);
+								uav_arena_store_id.a = _translate(i.d);
+								uav_arena_store_id.b = _translate(i.a);
 								uav_arena_store_id.type = _translate(i.type);
 								_add(uav_arena_store_id);
 							}
@@ -3135,14 +3136,14 @@ namespace translator
 							if (ir::PTXOperand::bytes(i.type) == 4)
 							{
 								ir::ILUav_Raw_Store_Id uav_raw_store_id;
-								uav_raw_store_id.a = _translate(i.a);
-								uav_raw_store_id.d = temp;
+								uav_raw_store_id.a = temp;
+								uav_raw_store_id.b = _translate(i.a);
 								_add(uav_raw_store_id);
 							} else
 							{
 								ir::ILUav_Arena_Store_Id uav_arena_store_id;
-								uav_arena_store_id.a = _translate(i.a);
-								uav_arena_store_id.d = temp;
+								uav_arena_store_id.a = temp;
+								uav_arena_store_id.b = _translate(i.a);
 								uav_arena_store_id.type = _translate(i.type);
 								_add(uav_arena_store_id);
 							}
@@ -3168,14 +3169,14 @@ namespace translator
 							if (ir::PTXOperand::bytes(i.type) == 4)
 							{
 								ir::ILUav_Raw_Store_Id uav_raw_store_id;
-								uav_raw_store_id.a = _translate(*src);
-								uav_raw_store_id.d = temp;
+								uav_raw_store_id.a = temp;
+								uav_raw_store_id.b = _translate(*src);
 								_add(uav_raw_store_id);
 							} else
 							{
 								ir::ILUav_Arena_Store_Id uav_arena_store_id;
-								uav_arena_store_id.a = _translate(*src);
-								uav_arena_store_id.d = temp;
+								uav_arena_store_id.a = temp;
+								uav_arena_store_id.b = _translate(*src);
 								uav_arena_store_id.type = _translate(i.type);
 								_add(uav_arena_store_id);
 							}
@@ -3230,8 +3231,8 @@ namespace translator
 							_add(iadd);
 
 							ir::ILLds_Store_Id lds_store_id;
-							lds_store_id.a = _translate(*src).x();
-							lds_store_id.d = temp;
+							lds_store_id.a = temp;
+							lds_store_id.b = _translate(*src).x();
 							_add(lds_store_id);
 
 							offset += ir::PTXOperand::bytes(i.type);
@@ -3368,8 +3369,8 @@ namespace translator
 		if (i.d.offset == 0)
 		{
 			ir::ILLds_Store_Id lds_store_id;
-			lds_store_id.a = _translate(i.a).x();
-			lds_store_id.d = _translate(i.d);
+			lds_store_id.a = _translate(i.d);
+			lds_store_id.b = _translate(i.a).x();
 			_add(lds_store_id);
 		} else
 		{
@@ -3382,8 +3383,8 @@ namespace translator
 			_add(iadd);
 
 			ir::ILLds_Store_Id lds_store_id;
-			lds_store_id.a = _translate(i.a).x();
-			lds_store_id.d = temp;
+			lds_store_id.a = temp;
+			lds_store_id.b = _translate(i.a).x();
 			_add(lds_store_id);
 		}
 	}
@@ -3508,12 +3509,11 @@ namespace translator
 		const LiteralMap::const_iterator it = _literals.find(l);
 		if (it != _literals.end()) return it->second;
 
-		ir::ILOperand op;
+		ir::ILOperand op(ir::ILOperand::RegType_Literal);
 		op.num = _literals.size();
-		op.type = ir::ILOperand::RegType_Literal;
 		_literals.insert(std::make_pair(l, op));
 
-		return op;
+		return op.x();
 	}
 
 	ir::ILOperand PTXToILTranslator::_translateConstantBuffer(
@@ -3538,7 +3538,7 @@ namespace translator
 		op.immediate_present = true;
 		op.imm = i + o.offset + offset;
 
-		return op;
+		return op.x();
 	}
 
  	void PTXToILTranslator::_addKernelPrefix(const ATIExecutableKernel *k)

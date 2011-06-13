@@ -641,20 +641,11 @@ namespace ir
 			Instruction *clone(bool copy=true) const;
 	};
 
-	class ILUav_Raw_Store_Id : public ILInstruction
+	class ILUav_Raw_Store_Id : public ILBinaryInstruction
 	{
 		public:
 			ILUav_Raw_Store_Id();
 			Instruction *clone(bool copy=true) const;
-
-			/*! \brief The first source operand */
-			ILOperand a;
-
-			/*! \brief The second source operand */
-			ILOperand b;
-
-			/*! \brief Parsable IL strings */
-			std::string toString() const;
 	};
 
 	class ILUav_Read_Add_Id : public ILBinaryInstruction

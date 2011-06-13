@@ -346,6 +346,163 @@ namespace translator
 		return op;
 	}
 
+	ir::ILOperand PTXToILTranslator::_translateArrayDst(
+			const ir::PTXOperand::Array a)
+	{
+		// create new il register with 2/4 components
+		ir::ILOperand op(ir::ILOperand::RegType_Temp);
+		op.num = _registers.size();
+
+		switch (a.size())
+		{
+			case 2: 
+			{
+				_registers.insert(std::make_pair(a[0].reg, op.x()));
+				_registers.insert(std::make_pair(a[1].reg, op.y()));
+				op = op.xy();
+				break;
+			}
+			case 4:
+			{
+				_registers.insert(std::make_pair(a[0].reg, op.x()));
+				_registers.insert(std::make_pair(a[1].reg, op.y()));
+				_registers.insert(std::make_pair(a[2].reg, op.z()));
+				_registers.insert(std::make_pair(a[3].reg, op.w()));
+				break;
+			}
+			default:
+			{
+				assertM(false, "Invalid array size " << a.size());
+				break;
+			}
+		}
+
+		return op;
+	}
+
+	ir::ILOperand PTXToILTranslator::_translateArraySrc(
+			const ir::PTXOperand::Array a)
+	{
+		// create new il register with 2/4 components
+		ir::ILOperand op(ir::ILOperand::RegType_Temp);
+		op.num = _registers.size();
+
+		switch (a.size())
+		{
+			case 2:
+			{
+				// look-up register table
+				const RegisterMap::const_iterator a0 = _registers.find(a[0].reg);
+				const RegisterMap::const_iterator a1 = _registers.find(a[1].reg);
+
+				assert(a0 != _registers.end() && a1 != _registers.end());
+
+				if (a0->second.num == a1->second.num)
+				{
+					op.num = a0->second.num;
+					return op.xy();
+				}
+
+				// x component
+				{
+					ir::ILMov mov;
+					mov.d = op.x();
+					mov.a = a0->second;
+					_add(mov);
+				}
+
+				// y component
+				{
+					ir::ILMov mov;
+					mov.d = op.y();
+					mov.a = a1->second;
+					_add(mov);
+				}
+
+				op = op.xy();
+
+				break;
+			}
+			case 4:
+			{
+				// look-up register table
+				const RegisterMap::const_iterator a0 = _registers.find(a[0].reg);
+				const RegisterMap::const_iterator a1 = _registers.find(a[1].reg);
+				const RegisterMap::const_iterator a2 = _registers.find(a[2].reg);
+				const RegisterMap::const_iterator a3 = _registers.find(a[3].reg);
+
+				assert(a0 != _registers.end() && a1 != _registers.end() &&
+						a2 != _registers.end() && a3 != _registers.end());
+
+				if (a0->second.num == a1->second.num && 
+						a2->second.num == a3->second.num &&
+						a0->second.num == a2->second.num)
+				{
+					op.num = a0->second.num;
+					return op;
+				}
+
+				// x component
+				{
+					ir::ILMov mov;
+					mov.d = op.x();
+					mov.a = a0->second;
+					_add(mov);
+				}
+
+				// y component
+				{
+					ir::ILMov mov;
+					mov.d = op.y();
+					mov.a = a1->second;
+					_add(mov);
+				}
+
+				// z component
+				{
+					ir::ILMov mov;
+					mov.d = op.z();
+					mov.a = a2->second;
+					_add(mov);
+				}
+
+				// w component
+				{
+					ir::ILMov mov;
+					mov.d = op.w();
+					mov.a = a3->second;
+					_add(mov);
+				}
+				break;
+			}
+			default:
+			{
+				assertM(false, "Invalid array size " << a.size());
+				break;
+			}
+		}
+
+		return op;
+	}
+
+	ir::ILOperand PTXToILTranslator::_translateMemMask(unsigned int i)
+	{
+		ir::ILOperand op(ir::ILOperand::RegType_Generic_Mem);
+		op.num = 0;
+
+		switch(i)
+		{
+			case 1: return op.x();
+			case 2: return op.xy();
+			case 4: return op;
+			default:
+			{
+				assertM(false, "Invalid memory mask");
+				break;
+			}
+		}
+	}
+
 	ir::ILInstruction::DataType PTXToILTranslator::_translate(
 			const ir::PTXOperand::DataType d)
 	{
@@ -1458,34 +1615,51 @@ namespace translator
 					case ir::PTXOperand::v2:
 					case ir::PTXOperand::v4:
 					{
-						ir::ILOperand temp = _tempRegister();
-						ir::PTXOperand::Array::const_iterator dst;
-						int offset = i.a.offset;
-						for (dst = i.d.array.begin() ;
-								dst != i.d.array.end() ; dst++)
+						if (ir::PTXOperand::bytes(i.type) == 4)
 						{
-							ir::ILIadd iadd;
-							iadd.a = _translate(i.a);
-							iadd.b = _translateLiteral(offset);
-							iadd.d = temp;
-							_add(iadd);
+							ir::ILOperand temp;
 
-							if (ir::PTXOperand::bytes(i.type) == 4)
+							// translate base + offset addressing
+							if (i.a.offset == 0)
 							{
-								ir::ILUav_Raw_Load_Id uav_raw_load_id;
-								uav_raw_load_id.a = temp;
-								uav_raw_load_id.d = _translate(*dst);
-								_add(uav_raw_load_id);
+								temp = _translate(i.a);
 							} else
 							{
+								temp = _tempRegister();
+
+								ir::ILIadd iadd;
+								iadd.a = _translate(i.a);
+								iadd.b = _translateLiteral(i.a.offset);
+								iadd.d = temp;
+								_add(iadd);
+							}
+
+							ir::ILUav_Raw_Load_Id uav_raw_load_id;
+							uav_raw_load_id.a = temp;
+							uav_raw_load_id.d = _translateArrayDst(i.d.array);
+							_add(uav_raw_load_id);
+						} else
+						{
+							ir::ILOperand temp = _tempRegister();
+							ir::PTXOperand::Array::const_iterator dst;
+							int offset = i.a.offset;
+							for (dst = i.d.array.begin() ;
+									dst != i.d.array.end() ; dst++)
+							{
+								ir::ILIadd iadd;
+								iadd.a = _translate(i.a);
+								iadd.b = _translateLiteral(offset);
+								iadd.d = temp;
+								_add(iadd);
+
 								ir::ILUav_Arena_Load_Id uav_arena_load_id;
 								uav_arena_load_id.a = temp;
 								uav_arena_load_id.d = _translate(*dst);
 								uav_arena_load_id.type = _translate(i.type);
 								_add(uav_arena_load_id);
-							}
 
-							offset += ir::PTXOperand::bytes(i.type);
+								offset += ir::PTXOperand::bytes(i.type);
+							}
 						}
 
 						break;
@@ -3112,6 +3286,7 @@ namespace translator
 							if (ir::PTXOperand::bytes(i.type) == 4)
 							{
 								ir::ILUav_Raw_Store_Id uav_raw_store_id;
+								uav_raw_store_id.d = _translateMemMask(1);
 								uav_raw_store_id.a = _translate(i.d);
 								uav_raw_store_id.b = _translate(i.a);
 								_add(uav_raw_store_id);
@@ -3136,6 +3311,7 @@ namespace translator
 							if (ir::PTXOperand::bytes(i.type) == 4)
 							{
 								ir::ILUav_Raw_Store_Id uav_raw_store_id;
+								uav_raw_store_id.d = _translateMemMask(1);
 								uav_raw_store_id.a = temp;
 								uav_raw_store_id.b = _translate(i.a);
 								_add(uav_raw_store_id);
@@ -3154,34 +3330,52 @@ namespace translator
 					case ir::PTXOperand::v2:
 					case ir::PTXOperand::v4:
 					{
-						ir::ILOperand temp = _tempRegister();
-						ir::PTXOperand::Array::const_iterator src;
-						int offset = i.d.offset;
-						for (src = i.a.array.begin() ;
-								src != i.a.array.end() ; src++)
+						if (ir::PTXOperand::bytes(i.type) == 4)
 						{
-							ir::ILIadd iadd;
-							iadd.a = _translate(i.d);
-							iadd.b = _translateLiteral(offset);
-							iadd.d = temp;
-							_add(iadd);
+							ir::ILOperand temp;
 
-							if (ir::PTXOperand::bytes(i.type) == 4)
+							// translate base + offset addressing
+							if (i.d.offset == 0)
 							{
-								ir::ILUav_Raw_Store_Id uav_raw_store_id;
-								uav_raw_store_id.a = temp;
-								uav_raw_store_id.b = _translate(*src);
-								_add(uav_raw_store_id);
+								temp = _translate(i.d);
 							} else
 							{
+								temp = _tempRegister();
+
+								ir::ILIadd iadd;
+								iadd.a = _translate(i.d);
+								iadd.b = _translateLiteral(i.d.offset);
+								iadd.d = temp;
+								_add(iadd);
+							}
+
+							ir::ILUav_Raw_Store_Id uav_raw_store_id;
+							uav_raw_store_id.d = _translateMemMask(i.a.array.size());
+							uav_raw_store_id.a = temp;
+							uav_raw_store_id.b = _translateArraySrc(i.a.array);
+							_add(uav_raw_store_id);
+						} else
+						{
+							ir::ILOperand temp = _tempRegister();
+							ir::PTXOperand::Array::const_iterator src;
+							int offset = i.d.offset;
+							for (src = i.a.array.begin() ;
+									src != i.a.array.end() ; src++)
+							{
+								ir::ILIadd iadd;
+								iadd.a = _translate(i.d);
+								iadd.b = _translateLiteral(offset);
+								iadd.d = temp;
+								_add(iadd);
+
 								ir::ILUav_Arena_Store_Id uav_arena_store_id;
 								uav_arena_store_id.a = temp;
 								uav_arena_store_id.b = _translate(*src);
 								uav_arena_store_id.type = _translate(i.type);
 								_add(uav_arena_store_id);
-							}
 
-							offset += ir::PTXOperand::bytes(i.type);
+								offset += ir::PTXOperand::bytes(i.type);
+							}
 						}
 						break;
 					}

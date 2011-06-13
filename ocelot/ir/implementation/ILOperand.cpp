@@ -38,6 +38,7 @@ namespace ir
 			case RegType_Literal:            return "l";
 			case RegType_Thread_Id_In_Group: return "vTidInGrp";
 			case RegType_Thread_Group_Id:    return "vThreadGrpId";
+			case RegType_Generic_Mem:        return "mem";
 			default: assertM(false, "Invalid register type " << rt);
 		}
 	}

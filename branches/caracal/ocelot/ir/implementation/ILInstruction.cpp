@@ -706,19 +706,13 @@ namespace ir
 	}
 
 	ILUav_Raw_Store_Id::ILUav_Raw_Store_Id() 
-		: ILInstruction(Uav_Raw_Store_Id)
+		: ILBinaryInstruction(Uav_Raw_Store_Id)
 	{
 	}
 
 	Instruction *ILUav_Raw_Store_Id::clone(bool copy) const
 	{
 		return new ILUav_Raw_Store_Id(*this);
-	}
-
-	std::string ILUav_Raw_Store_Id::toString() const
-	{
-		return ILInstruction::toString(opcode) + " mem.x, " +
-			a.srcString() + ", " + b.srcString();
 	}
 
 	ILUav_Read_Add_Id::ILUav_Read_Add_Id() 

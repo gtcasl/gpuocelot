@@ -66,6 +66,9 @@ namespace translator
 			void _translate(const ir::PTXInstruction &i); 
 
 			ir::ILOperand _translate(const ir::PTXOperand &o);
+			ir::ILOperand _translateArrayDst(const ir::PTXOperand::Array a);
+			ir::ILOperand _translateArraySrc(const ir::PTXOperand::Array a);
+			ir::ILOperand _translateMemMask(unsigned int i);
 			ir::ILOperand _translate(const ir::PTXOperand::SpecialRegister &s, 
 					const ir::PTXOperand::VectorIndex& d);
 

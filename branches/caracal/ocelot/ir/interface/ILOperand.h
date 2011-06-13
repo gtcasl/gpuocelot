@@ -25,6 +25,7 @@ namespace ir
 				RegType_Literal,
 				RegType_Thread_Id_In_Group,
 				RegType_Thread_Group_Id,
+				RegType_Generic_Mem,
 				RegType_Invalid
 			};
 

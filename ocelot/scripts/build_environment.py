@@ -370,8 +370,9 @@ def Environment():
 
 	# get GLEW paths
 	(glew,glew_exe_path,glew_lib_path,glew_inc_path) = getGLEWPaths(env)
-	env.AppendUnique(LIBPATH = [glew_lib_path])
-	env.AppendUnique(CPPPATH = [glew_inc_path])
+	if glew:
+		env.AppendUnique(LIBPATH = [glew_lib_path])
+		env.AppendUnique(CPPPATH = [glew_inc_path])
 	env.Replace(HAVE_GLEW = glew)
 
 	# get llvm paths
@@ -393,6 +394,10 @@ def Environment():
 		'-lboost_thread-mt'])
 	if glew:
 		env.AppendUnique(EXTRA_LIBS = ['-lGLEW'])
+	
+	# we need libdl on linux
+	if os.name == 'posix':
+		env.AppendUnique(EXTRA_LIBS = ['-ldl']) 
 	
 	# set ocelot libs
 	ocelot_libs = '-locelot'

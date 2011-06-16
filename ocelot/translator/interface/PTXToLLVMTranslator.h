@@ -91,7 +91,8 @@ private:
 	ir::LLVMInstruction::Operand _translate( const ir::PTXOperand& o );
 	void _swapAllExceptName( ir::LLVMInstruction::Operand& o, 
 		const ir::PTXOperand& i );
-	
+
+private:
 	void _translateInstructions();
 	void _newBlock( const std::string& name );
 	void _translate( const analysis::DataflowGraph::Instruction& i, 
@@ -167,7 +168,8 @@ private:
 	void _translateTrap( const ir::PTXInstruction& i );
 	void _translateVote( const ir::PTXInstruction& i );
 	void _translateXor( const ir::PTXInstruction& i );
-	
+
+private:
 	void _bitcast( const ir::PTXInstruction& i );
 	void _bitcast( const ir::PTXOperand& d, const ir::PTXOperand& s );
 	void _bitcast( const ir::LLVMInstruction::Operand& d, 
@@ -176,14 +178,24 @@ private:
 		ir::PTXOperand::DataType dType, 
 		const ir::LLVMInstruction::Operand& s, 
 		ir::PTXOperand::DataType sType, int modifier = 0 );
-	void _flushToZero(const ir::LLVMInstruction::Operand& d, 
-		const ir::LLVMInstruction::Operand& a);
-	void _saturate(const ir::LLVMInstruction::Operand& d, 
-		const ir::LLVMInstruction::Operand& a);
-	void _floatToIntSaturate(const ir::LLVMInstruction::Operand& d, 
+	void _flushToZero( const ir::LLVMInstruction::Operand& d, 
+		const ir::LLVMInstruction::Operand& a );
+	void _saturate( const ir::LLVMInstruction::Operand& d, 
+		const ir::LLVMInstruction::Operand& a );
+	void _floatToIntSaturate( const ir::LLVMInstruction::Operand& d, 
 		const ir::LLVMInstruction::Operand& ftoint,
-		const ir::LLVMInstruction::Operand& f, bool isSigned);
-	
+		const ir::LLVMInstruction::Operand& f, bool isSigned );
+
+	void _trunc( const ir::LLVMInstruction::Operand& d, 
+		const ir::LLVMInstruction::Operand& a );
+	void _nearbyint( const ir::LLVMInstruction::Operand& d, 
+		const ir::LLVMInstruction::Operand& a );
+	void _floor( const ir::LLVMInstruction::Operand& d, 
+		const ir::LLVMInstruction::Operand& a );
+	void _ceil( const ir::LLVMInstruction::Operand& d, 
+		const ir::LLVMInstruction::Operand& a );
+
+private:
 	std::string _tempRegister();
 	std::string _loadSpecialRegister( 
 		ir::PTXOperand::SpecialRegister s, 
@@ -213,6 +225,7 @@ private:
 	
 	void _initializeRegisters();
 
+private:
 	void _addStackAllocations();
 	void _addTextureCalls();
 	void _addSurfaceCalls();

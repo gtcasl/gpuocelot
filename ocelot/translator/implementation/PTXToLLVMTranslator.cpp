@@ -7275,7 +7275,26 @@ void PTXToLLVMTranslator::_convert( const ir::LLVMInstruction::Operand& d,
 				}
 				case ir::PTXOperand::f32:
 				{
-					_bitcast( d, tempA );
+					if( ir::PTXInstruction::rz & modifier )
+					{
+						_trunc( d, tempA );
+					}
+					else if( ir::PTXInstruction::rn & modifier )
+					{
+						_nearbyint( d, tempA );
+					}
+					else if( ir::PTXInstruction::rm & modifier )
+					{
+						_floor( d, tempA );
+					}
+					else if( ir::PTXInstruction::rp & modifier )
+					{
+						_ceil( d, tempA );
+					}
+					else
+					{
+						_bitcast( d, tempA );
+					}
 					break;
 				}
 				case ir::PTXOperand::f64:
@@ -7702,6 +7721,87 @@ void PTXToLLVMTranslator::_floatToIntSaturate(
 	select.d         = d;
 	
 	_add( select );
+}
+
+void PTXToLLVMTranslator::_trunc(const ir::LLVMInstruction::Operand& d, 
+	const ir::LLVMInstruction::Operand& a)
+{
+	ir::LLVMCall call;
+	
+	if( d.type.type == ir::LLVMInstruction::F32 )
+	{
+		call.name = "@truncf";
+	}
+	else
+	{
+		call.name = "@trunc";
+	}
+	
+	call.d = d;
+	call.parameters.push_back( a );
+	
+	_add( call );
+}
+
+void PTXToLLVMTranslator::_nearbyint(const ir::LLVMInstruction::Operand& d, 
+	const ir::LLVMInstruction::Operand& a)
+{
+	ir::LLVMCall call;
+	
+	if( d.type.type == ir::LLVMInstruction::F32 )
+	{
+		call.name = "@nearbyintf";
+	}
+	else
+	{
+		call.name = "@nearbyint";
+	}
+	
+	call.d = d;
+	call.parameters.push_back( a );
+	
+	_add( call );
+
+}
+
+void PTXToLLVMTranslator::_floor(const ir::LLVMInstruction::Operand& d, 
+	const ir::LLVMInstruction::Operand& a)
+{
+	ir::LLVMCall call;
+	
+	if( d.type.type == ir::LLVMInstruction::F32 )
+	{
+		call.name = "@floorf";
+	}
+	else
+	{
+		call.name = "@floor";
+	}
+	
+	call.d = d;
+	call.parameters.push_back( a );
+	
+	_add( call );
+}
+
+void PTXToLLVMTranslator::_ceil(const ir::LLVMInstruction::Operand& d, 
+	const ir::LLVMInstruction::Operand& a)
+{
+	ir::LLVMCall call;
+	
+	if( d.type.type == ir::LLVMInstruction::F32 )
+	{
+		call.name = "@ceilf";
+	}
+	else
+	{
+		call.name = "@ceil";
+	}
+	
+	call.d = d;
+	call.parameters.push_back( a );
+	
+	_add( call );
 }
 
 std::string PTXToLLVMTranslator::_tempRegister()
@@ -8748,6 +8848,47 @@ void PTXToLLVMTranslator::_addMathCalls()
 	mul.label = "__ocelot_mul_hi_s64";
 	
 	_llvmKernel->push_front( mul );
+
+	ir::LLVMStatement math( ir::LLVMStatement::FunctionDeclaration );
+
+	math.label = "floor";
+	math.linkage = ir::LLVMStatement::InvalidLinkage;
+	math.convention = ir::LLVMInstruction::DefaultCallingConvention;
+	math.visibility = ir::LLVMStatement::Default;
+	
+	math.operand.type.category = ir::LLVMInstruction::Type::Element;
+	math.operand.type.type = ir::LLVMInstruction::F64;
+	
+	math.parameters.resize( 1 );
+
+	math.parameters[0].type.category = ir::LLVMInstruction::Type::Element;
+	math.parameters[0].type.type = ir::LLVMInstruction::F64;
+
+	_llvmKernel->push_front( math );
+
+	math.label = "ceil";
+	_llvmKernel->push_front( math );
+
+	math.label = "trunc";
+	_llvmKernel->push_front( math );
+
+	math.label = "nearbyint";
+	_llvmKernel->push_front( math );
+
+	math.operand.type.type = ir::LLVMInstruction::F32;
+	math.parameters[0].type.type = ir::LLVMInstruction::F32;
+
+	math.label = "floorf";
+	_llvmKernel->push_front( math );
+
+	math.label = "ceilf";
+	_llvmKernel->push_front( math );
+
+	math.label = "truncf";
+	_llvmKernel->push_front( math );
+
+	math.label = "nearbyintf";
+	_llvmKernel->push_front( math );
 }
 
 void PTXToLLVMTranslator::_addLLVMIntrinsics()

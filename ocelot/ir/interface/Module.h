@@ -33,8 +33,6 @@ namespace ir {
 
 		typedef std::unordered_map< std::string, PTXKernel* > KernelMap;
 		
-		typedef std::vector< std::string > NameVector;
-		
 		typedef std::vector< PTXKernel* > KernelVector;
 
 		/*! \brief Map from unique identifier to global variable */
@@ -50,7 +48,7 @@ namespace ir {
 			load and parse the PTX file,
 			and extract kernels into Kernel objects
 		*/
-		Module(const std::string& path);
+		Module(const std::string& path, bool dontLoad = false);
 
 		/*! Given a stream constaining a PTX file, parse the PTX file,
 			and extract kernels into Kernel objects
@@ -156,6 +154,8 @@ namespace ir {
 	
 		/*! \brief get the address size */
 		unsigned int addressSize() const;
+
+
 		
 		void addPrototype(const std::string &identifier,
 			const ir::PTXKernel::Prototype &prototype);
@@ -185,9 +185,6 @@ namespace ir {
 
 		/*! Set of kernels belonging to Module.  These are PTX Kernels */
 		KernelMap _kernels;	
-		
-		/*! The original sequence of PTX kernels must be preserved */
-		NameVector _kernelSequence;
 		
 		/*! Set of textures in the module */
 		TextureMap _textures;

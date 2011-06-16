@@ -512,6 +512,14 @@ void testCvt_REF(void* output, void* input)
 		}
 	}
 
+	if(round)
+	{
+		if(typeid(float) == typeid(dtype) && typeid(float) == typeid(stype))
+		{
+			r1 = trunc(r0);
+		}
+	}
+
 	if(isFloat<stype>() && !isFloat<dtype>())
 	{
 		if((stype)std::numeric_limits<dtype>::max() < r0)
@@ -6851,6 +6859,12 @@ namespace test
 			testCvt_REF<float, float, false, false, false>,
 			testCvt_PTX(ir::PTXOperand::f32,
 				ir::PTXOperand::f32, false, false, false),
+			testCvt_INOUT(FP32), testCvt_INOUT(FP32),
+			uniformFloat<float, 1>, 1, 1);
+		add("TestCvt-f32-f32-rz",
+			testCvt_REF<float, float, false, false, true>,
+			testCvt_PTX(ir::PTXOperand::f32,
+				ir::PTXOperand::f32, false, false, true),
 			testCvt_INOUT(FP32), testCvt_INOUT(FP32),
 			uniformFloat<float, 1>, 1, 1);
 		add("TestCvt-f32-f64",

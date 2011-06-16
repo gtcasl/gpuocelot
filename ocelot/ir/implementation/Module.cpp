@@ -29,9 +29,9 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 
-ir::Module::Module(const std::string& path)
-: _ptxPointer(0), _addressSize(64), _loaded(true) {
-	load(path);
+ir::Module::Module(const std::string& path, bool dontLoad)
+: _ptxPointer(0), _modulePath(path), _addressSize(64), _loaded(true) {
+	if(!dontLoad) load(path);
 }
 
 ir::Module::Module(std::istream& stream, const std::string& path)
@@ -282,10 +282,9 @@ void ir::Module::writeIR( std::ostream& stream ) const {
 	}
 	stream << "\n";
 	
-	for (NameVector::const_iterator kernelName = _kernelSequence.begin();
-		kernelName != _kernelSequence.end(); ++kernelName) {
-		
-		KernelMap::const_iterator kernel = _kernels.find(*kernelName);
+	stream << "/* Kernels */\n";
+	for (KernelMap::const_iterator kernel = _kernels.begin();
+		kernel != _kernels.end(); ++kernel) {
 		(kernel->second)->write(stream);
 	}
 	
@@ -456,7 +455,6 @@ void ir::Module::extractPTXKernels() {
 					        endIterator, isFunction);
 					kernel->module = this;
 					_kernels[kernel->name] = (kernel);
-					_kernelSequence.push_back(kernel->name);
 					kernel->canonicalBlockLabels(kernelInstance++);
 				}
 			}
@@ -526,8 +524,8 @@ void ir::Module::extractPTXKernels() {
 			break;
 		case PTXStatement::Surfref:
 			if (!inKernel) {
-        assert(_textures.count(statement.name) == 0);
-        _textures.insert(std::make_pair(statement.name, 
+				assert(_textures.count(statement.name) == 0);
+				_textures.insert(std::make_pair(statement.name, 
                 Texture(statement.name, Texture::Surfref)));
 			}
 			break;

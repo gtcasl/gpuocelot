@@ -54,9 +54,6 @@ namespace ir {
 		virtual Instruction* clone(bool copy = true) const = 0;
 
 	public:
-		/*! \brief Label that may identify the instruction */
-		std::string label;
-
 		/*!	\brief Indicates ISA of the instruction */
 		Architecture ISA;
 	};

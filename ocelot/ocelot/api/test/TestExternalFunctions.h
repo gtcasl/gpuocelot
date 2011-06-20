@@ -24,6 +24,7 @@ public:
 	bool testMallocFree();
 	bool testPrintf();
 	bool testUserFunction();
+	bool testMismatchingTypes();
 
 public:
 	/*! \brief The entry point of the test */

@@ -7,6 +7,8 @@
 // Ocelot Includes
 #include <ocelot/transforms/interface/SimplifyExternalCallsPass.h>
 
+#include <ocelot/analysis/interface/DataflowGraph.h>
+
 #include <ocelot/ir/interface/ExternalFunctionSet.h>
 #include <ocelot/ir/interface/Module.h>
 
@@ -24,7 +26,8 @@ namespace transforms
 {
 
 static void simplifyCall(ir::PTXKernel& kernel,
-	ir::ControlFlowGraph::iterator block, ir::PTXInstruction& call)
+	ir::ControlFlowGraph::iterator block, ir::PTXInstruction& call,
+	analysis::DataflowGraph& dfg)
 {
 	typedef std::unordered_set<std::string> StringSet;
 	typedef std::unordered_map<std::string,
@@ -75,9 +78,29 @@ static void simplifyCall(ir::PTXKernel& kernel,
 					{
 						assert(ptx.a.addressMode == ir::PTXOperand::Register);
 						assert(nameToRegister.count(ptx.d.identifier) == 0);
-						nameToRegister.insert(std::make_pair(ptx.d.identifier,
-							ptx.a.reg));
-						killList.push_back(instruction);
+						
+						// if the types match, kill the store
+						if(ptx.type == ptx.a.type)
+						{
+							nameToRegister.insert(std::make_pair(
+								ptx.d.identifier, ptx.a.reg));
+							killList.push_back(instruction);
+						}
+						else
+						{
+							// otherwise, convert it into a cast
+							ir::PTXOperand temp = ir::PTXOperand(
+								ir::PTXOperand::Register, ptx.type,
+								dfg.newRegister());
+
+							nameToRegister.insert(std::make_pair(
+								ptx.d.identifier, temp.reg));
+						
+							ptx.opcode = ir::PTXInstruction::Cvt;
+							ptx.d = temp;
+							ptx.modifier =
+								ir::PTXInstruction::Modifier_invalid;
+						}
 					}
 				}
 			}
@@ -92,9 +115,29 @@ static void simplifyCall(ir::PTXKernel& kernel,
 					{
 						assert(ptx.d.addressMode == ir::PTXOperand::Register);
 						assert(nameToRegister.count(ptx.a.identifier) == 0);
-						nameToRegister.insert(std::make_pair(ptx.a.identifier,
-							ptx.d.reg));
-						killList.push_back(instruction);
+						// if the types match, kill the load
+						if(ptx.type == ptx.d.type)
+						{
+							nameToRegister.insert(std::make_pair(
+								ptx.a.identifier, ptx.d.reg));
+							killList.push_back(instruction);
+						}
+						else
+						{
+							// otherwise, convert it into a cast
+							ir::PTXOperand temp = ir::PTXOperand(
+								ir::PTXOperand::Register, ptx.type,
+								dfg.newRegister());
+
+							nameToRegister.insert(std::make_pair(
+								ptx.a.identifier, temp.reg));
+						
+							ptx.opcode = ir::PTXInstruction::Cvt;
+							ptx.a = temp;
+							ptx.modifier =
+								ir::PTXInstruction::Modifier_invalid;
+						}
+
 					}
 				}
 			}
@@ -158,7 +201,7 @@ static void simplifyCall(ir::PTXKernel& kernel,
 
 SimplifyExternalCallsPass::SimplifyExternalCallsPass(
 	const ir::ExternalFunctionSet& e) 
-: KernelPass(analysis::Analysis::NoAnalysis,
+: KernelPass(analysis::Analysis::DataflowGraphAnalysis,
 	"SimplifyExternalCallsPass"), _externals(&e)
 {
 
@@ -172,6 +215,12 @@ void SimplifyExternalCallsPass::initialize(const ir::Module& m)
 void SimplifyExternalCallsPass::runOnKernel(ir::IRKernel& k)
 {
 	ir::PTXKernel& kernel = static_cast<ir::PTXKernel&>(k);
+
+	Analysis* analysis = getAnalysis(Analysis::DataflowGraphAnalysis);
+	assert(analysis != 0);
+	
+	analysis::DataflowGraph* dfg =
+		static_cast<analysis::DataflowGraph*>(analysis);
 
 	report("Running SimplifyExternalCallsPass on kernel '" + k.name + "'");
 
@@ -192,7 +241,7 @@ void SimplifyExternalCallsPass::runOnKernel(ir::IRKernel& k)
 					if(_externals->find(ptx.a.identifier) != 0)
 					{
 						report(" For " << ptx.toString());
-						simplifyCall(kernel, block, ptx);
+						simplifyCall(kernel, block, ptx, *dfg);
 					}
 				}
 			}

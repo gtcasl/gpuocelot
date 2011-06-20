@@ -655,7 +655,7 @@ void PTXKernel::write(std::ostream& stream) const
 				|| (label != "entry" && label != "exit" && label != "")) {
 				if (label == "") {
 					std::stringstream ss;
-					ss << "$__Block_" << blockIndex;
+					ss << "$__Block_" << (*block)->id;
 					label = ss.str();
 				}
 				stream << "\t" << label << ":";

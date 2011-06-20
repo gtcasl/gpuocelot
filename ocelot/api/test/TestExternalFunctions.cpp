@@ -160,15 +160,71 @@ bool TestExternalFunctions::testUserFunction()
 	ocelot::launch("someModule", "kernel");
 	
 	ocelot::unregisterModule("someModule");
+	ocelot::removeExternalFunction("hostFunction");
 	
 	return data == (int)0xfeedcaa7;
 }
 
+static void randomHostFunction2(long long unsigned int address, unsigned int d)
+{
+	(*(unsigned int*)address) = d;
+}
+
+bool TestExternalFunctions::testMismatchingTypes()
+{
+	std::string ptx = ".version 2.3\n"
+		".address_size 64\n"
+		"\n"
+		".extern .func hostFunction (.param .u64 bytes, .param .u32 data)\n"
+		"\n"
+		".entry kernel(.param .u64 result, .param .u32 result2) {\n"
+		"\t.reg .u64 %r<10>;\n"
+		"\t.param .u64 value0;\n"
+		"\t.param .u32 value1;\n"
+		"\t\n"
+		"\tld.param.u64 %r0, [result];\n"
+		"\tld.param.u32 %r1, [result2];\n"
+		"\tst.param.u64 [value0], %r0;\n"
+		"\tst.param.u32 [value1], %r1;\n"
+		"\tcall.uni hostFunction, (value0, value1);\n"
+		"\texit;\n"
+		"}\n";
+
+	std::stringstream stream(ptx);
+	ocelot::registerExternalFunction("hostFunction",
+		(void*)(randomHostFunction2));
+
+	ocelot::registerPTXModule(stream, "someModule");
+	
+	unsigned int data = 0;
+	long long unsigned int address = (long long unsigned int)(&data);
+	unsigned int value = 0xcaa7f00d;
+	
+	cudaSetupArgument(&address, sizeof(long long unsigned int), 0);
+	cudaSetupArgument(&value, sizeof(unsigned int),
+		sizeof(long long unsigned int));
+	cudaConfigureCall(dim3(1, 1, 1), dim3(1, 1, 1), 0, 0);
+	ocelot::launch("someModule", "kernel");
+	
+	ocelot::unregisterModule("someModule");
+	ocelot::removeExternalFunction("hostFunction");
+
+	if(data != 0xcaa7f00d)
+	{
+		status << "TestMismatchingTypes failed, "
+			"expecting 0xcaa7f00d, got " << std::hex << data 
+			<< std::dec << "\n";
+	}
+	
+	return data == 0xcaa7f00d;
+}
+
 bool TestExternalFunctions::doTest()
 {
-	return testMallocFree() && 
-		testPrintf() 
-		&& testUserFunction();
+	return testMallocFree() 
+		&& testPrintf() 
+		&& testUserFunction()
+		&& testMismatchingTypes();
 }
 
 }

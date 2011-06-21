@@ -208,9 +208,9 @@ std::string ir::PTXInstruction::toString( Modifier modifier ) {
 
 std::string ir::PTXInstruction::toString( BarrierOperation operation) {
 	switch (operation) {
-		case BarSync:      return ".sync";
-		case BarArrive:    return ".arrive";
-		case BarReduction: return ".red";
+		case BarSync:      return "sync";
+		case BarArrive:    return "arrive";
+		case BarReduction: return "red";
 		default: break;
 	}
 	return "";
@@ -1943,7 +1943,7 @@ std::string ir::PTXInstruction::toString() const {
 			return result;
 		}
 		case Bar: {
-			std::string result = guard() + "bar" + toString(barrierOperation);
+			std::string result = guard() + "bar." + toString(barrierOperation);
 			ir::PTXOperand ir::PTXInstruction::* instrMembers [] = { 
 				&ir::PTXInstruction::d, 
 				&ir::PTXInstruction::a, 
@@ -1954,7 +1954,8 @@ std::string ir::PTXInstruction::toString() const {
 			switch (barrierOperation) {
 				case BarReduction: 
 				{
-					result += toString(reductionOperation) + PTXOperand::toString(type);
+					result += toString(reductionOperation)
+						+ PTXOperand::toString(type);
 				}
 				break;
 				default: break;

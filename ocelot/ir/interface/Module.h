@@ -113,8 +113,10 @@ namespace ir {
 		/*! \brief Adds a new kernel.
 			\param kernel The kernel being inserted, it will be owned
 				by the module.
+			
+			\return A pointer to the newly inserted kernel.
 		*/
-		void insertKernel(PTXKernel* kernel);		
+		PTXKernel* insertKernel(PTXKernel* kernel);		
 		
 		/*! \brief Gets a texture instance by name. 
 

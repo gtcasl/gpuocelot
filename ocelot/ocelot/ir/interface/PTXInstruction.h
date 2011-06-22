@@ -89,6 +89,7 @@ namespace ir {
 			Suq,
 			TestP,
 			Tex,
+			Tld4,
 			Txq,
 			Trap,
 			Vabsdiff,
@@ -195,11 +196,19 @@ namespace ir {
 		};
 		
 		enum ClampOperation {
-			TrapOOB,	// avoid colliding with PTXInstruction::Opcode::Trap
+			TrapOOB,
 			Clamp,
 			Zero,
 			Mirror,
 			ClampOperation_Invalid
+		};
+
+		enum ColorComponent {
+			red,
+			green,
+			blue,
+			alpha,
+			ColorComponent_Invalid
 		};
 
 		/*! comparison operator */
@@ -312,6 +321,7 @@ namespace ir {
 		static std::string toString( Geometry );
 		static std::string modifierString( unsigned int, CarryFlag = None );
 		static std::string toString( VoteMode );
+		static std::string toString( ColorComponent );
 		static std::string toString( Opcode );
 		static bool isPt( const PTXOperand& );
 
@@ -386,6 +396,9 @@ namespace ir {
 			
 			/*! Indicates which type of bar. instruction should be used */
 			BarrierOperation barrierOperation;
+			
+			/*! For tld4 instructions, the color component */
+			ColorComponent colorComponent;
 		};
 	
 		/*! If the instruction is predicated, the guard */

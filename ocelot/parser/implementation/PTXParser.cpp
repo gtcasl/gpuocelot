@@ -1692,6 +1692,21 @@ namespace parser
 		statement.instruction.a      = operandVector[2];
 		statement.instruction.c      = operandVector[3];		
 	}
+
+	void PTXParser::State::tld4( int dataType )
+	{
+		report( "  Rule: instruction : tld4" );
+
+		assert( operandVector.size() == 4 );
+
+		statement.directive          = ir::PTXStatement::Instr;
+		statement.instruction.type   = tokenToDataType( dataType );
+		statement.instruction.opcode = stringToOpcode( "tld4" );
+		statement.instruction.pg     = operandVector[0];
+		statement.instruction.d      = operandVector[1];
+		statement.instruction.a      = operandVector[2];
+		statement.instruction.c      = operandVector[3];		
+	}
 	
 	void PTXParser::State::callPrototypeName( const std::string& identifier )
 	{
@@ -1878,6 +1893,10 @@ namespace parser
 	void PTXParser::State::surfaceQuery(int token) {
 		report("surfaceQuery(" << token << ")");
 		statement.instruction.surfaceQuery = tokenToSurfaceQuery(token);
+	}
+	
+	void PTXParser::State::colorComponent(int token) {
+		statement.instruction.colorComponent = tokenToColorComponent(token);
 	}
 
 	void PTXParser::State::returnType( int token )
@@ -2157,7 +2176,7 @@ namespace parser
 	}
 
 	ir::PTXInstruction::Opcode PTXParser::stringToOpcode( std::string string )
-	{ // | OPCODE_SULD | OPCODE_TXQ | OPCODE_SUST | OPCODE_SURED | OPCODE_SUQ
+	{
 		if( string == "abs" ) return ir::PTXInstruction::Abs; 
 		if( string == "add" ) return ir::PTXInstruction::Add;
 		if( string == "addc" ) return ir::PTXInstruction::AddC;
@@ -2216,14 +2235,15 @@ namespace parser
 		if( string == "st" ) return ir::PTXInstruction::St;
 		if( string == "sub" ) return ir::PTXInstruction::Sub;
 		if( string == "subc" ) return ir::PTXInstruction::SubC;
-		if( string == "suld") return ir::PTXInstruction::Suld;
-		if( string == "sust") return ir::PTXInstruction::Sust;
-		if( string == "sured") return ir::PTXInstruction::Sured;
-		if( string == "suq") return ir::PTXInstruction::Suq;
-		if( string == "txq") return ir::PTXInstruction::Txq;
-		if( string == "testp" ) return ir::PTXInstruction::TestP;
+		if( string == "suld" ) return ir::PTXInstruction::Suld;
+		if( string == "sust" ) return ir::PTXInstruction::Sust;
+		if( string == "sured" ) return ir::PTXInstruction::Sured;
+		if( string == "suq" ) return ir::PTXInstruction::Suq;
 		if( string == "tex" ) return ir::PTXInstruction::Tex;
+		if( string == "testp" ) return ir::PTXInstruction::TestP;
+		if( string == "tld4" ) return ir::PTXInstruction::Tld4;
 		if( string == "trap" ) return ir::PTXInstruction::Trap;
+		if( string == "txq" ) return ir::PTXInstruction::Txq;
 		if( string == "vote" ) return ir::PTXInstruction::Vote;
 		if( string == "xor" ) return ir::PTXInstruction::Xor;
 	
@@ -2384,7 +2404,6 @@ namespace parser
 	{
 		switch (token)
 		{
-			case TOKEN_Z: return ir::PTXInstruction::Unformatted;
 			case TOKEN_B: return ir::PTXInstruction::Unformatted;
 			case TOKEN_P: return ir::PTXInstruction::Formatted;
 			default: break;
@@ -2413,6 +2432,20 @@ namespace parser
 		return ir::PTXInstruction::SurfaceQuery_Invalid;
 	}
 	
+	ir::PTXInstruction::ColorComponent PTXParser::tokenToColorComponent(
+		int token)
+	{
+		switch (token)
+		{
+			case TOKEN_R: return ir::PTXInstruction::red;
+			case TOKEN_G: return ir::PTXInstruction::green;
+			case TOKEN_B: return ir::PTXInstruction::blue;
+			case TOKEN_A: return ir::PTXInstruction::alpha;
+			default: break;
+		}
+		return ir::PTXInstruction::ColorComponent_Invalid;
+	}
+
 	ir::PTXInstruction::BarrierOperation PTXParser::tokenToBarrierOp(int token)
 	{
 		switch( token )

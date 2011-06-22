@@ -272,6 +272,17 @@ std::string ir::PTXInstruction::toString( VoteMode mode ) {
 	return "";
 }
 
+std::string ir::PTXInstruction::toString( ColorComponent color ) {
+	switch( color ) {
+		case red:   return "r"; break;
+		case green: return "g"; break;
+		case blue:  return "b"; break;
+		case alpha: return "a"; break;
+		default: break;
+	}
+	return "";
+}
+
 std::string ir::PTXInstruction::toString( Opcode opcode ) {
 	switch( opcode ) {
 		case Abs:        return "abs";        break;
@@ -340,6 +351,7 @@ std::string ir::PTXInstruction::toString( Opcode opcode ) {
 		case Suq:        return "suq";        break;
 		case TestP:      return "testp";      break;
 		case Tex:        return "tex";        break;
+		case Tld4:       return "tld4";       break;
 		case Txq:        return "txq";        break;
 		case Trap:       return "trap";       break;
 		case Vabsdiff:   return "vabsdiff";   break;
@@ -1789,6 +1801,21 @@ std::string ir::PTXInstruction::valid() const {
 			}
 			break;
 		}
+		case Tld4: {
+			if( type != PTXOperand::f32 && type != PTXOperand::s32
+				&& type != PTXOperand::u32 ) {
+				return "invalid instruction type " 
+					+ PTXOperand::toString( type );
+			}
+			if( c.type != PTXOperand::f32 ) {
+				return "invalid source C type " 
+					+ PTXOperand::toString( d.type );
+			}
+			if( c.vec != PTXOperand::v2 ) {
+				return "operand C must be a 2-component vector ";
+			}
+			break;
+		}
 		case Txq: {
 			if (type != ir::PTXOperand::b32) {
 				return "data type must be .b32";
@@ -2377,6 +2404,12 @@ std::string ir::PTXInstruction::toString() const {
 			return guard() + "tex." + toString( geometry ) + ".v4." 
 				+ PTXOperand::toString( d.type ) + "." 
 				+ PTXOperand::toString( type ) + " " + d.toString() + ", [" 
+				+ a.toString() + ", " + c.toString() + "]"; 
+		}
+		case Tld4: {
+			return guard() + "tld4." + toString( colorComponent ) + ".2d.v4." 
+				+ PTXOperand::toString( d.type ) + "." 
+				+ PTXOperand::toString( c.type ) + " " + d.toString() + ", [" 
 				+ a.toString() + ", " + c.toString() + "]"; 
 		}
 		case Trap: {

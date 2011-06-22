@@ -246,6 +246,7 @@ namespace parser
 					void instruction( const std::string& opcode, int dataType );
 					void instruction( const std::string& opcode );
 					void tex( int dataType );
+					void tld4( int dataType );
 					void callPrototypeName( const std::string& identifier );
 					void call( const std::string& identifier,
 						YYLTYPE& location );
@@ -260,6 +261,7 @@ namespace parser
 					void clampOperation(int token);
 					void formatMode(int token);
 					void surfaceQuery(int token);
+					void colorComponent(int token);
 					
 					void returnType( int token );
 					void argumentType( int token );
@@ -308,6 +310,8 @@ namespace parser
 			static ir::PTXInstruction::ClampOperation tokenToClampOperation(int);
 			static ir::PTXInstruction::FormatMode tokenToFormatMode(int);
 			static ir::PTXInstruction::SurfaceQuery tokenToSurfaceQuery(int);
+			static ir::PTXInstruction::ColorComponent
+				tokenToColorComponent(int);
 			static ir::PTXInstruction::BoolOp tokenToBoolOp( int );
 			static ir::PTXInstruction::Geometry tokenToGeometry( int );
 			static ir::PTXInstruction::VoteMode tokenToVoteMode( int );

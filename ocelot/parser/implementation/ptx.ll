@@ -229,6 +229,8 @@ WHITESPACE [ \t]*
                                     return OPCODE_TESTP; }
 "tex"                           { sstrcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_TEX; }
+"tld4"                          { sstrcpy( yylval->text, yytext, 1024 ); \
+                                    return OPCODE_TLD4; }
 "trap"                          { sstrcpy( yylval->text, yytext, 1024 ); \
                                     return OPCODE_TRAP; }
 "txq"                           { sstrcpy( yylval->text, yytext, 1024 ); \
@@ -390,10 +392,10 @@ WHITESPACE [ \t]*
 ".y"                            { yylval->value = TOKEN_Y; return TOKEN_Y; }
 ".z"                            { yylval->value = TOKEN_Z; return TOKEN_Z; }
 ".w"                            { yylval->value = TOKEN_W; return TOKEN_W; }
-".r"                            { yylval->value = TOKEN_X; return TOKEN_X; }
-".g"                            { yylval->value = TOKEN_Y; return TOKEN_Y; }
-".b"                            { yylval->value = TOKEN_Z; return TOKEN_Z; }
-".a"                            { yylval->value = TOKEN_W; return TOKEN_W; }
+".r"                            { yylval->value = TOKEN_R; return TOKEN_R; }
+".g"                            { yylval->value = TOKEN_G; return TOKEN_G; }
+".b"                            { yylval->value = TOKEN_B; return TOKEN_B; }
+".a"                            { yylval->value = TOKEN_A; return TOKEN_A; }
 
 ".any"                          { yylval->value = TOKEN_ANY; return TOKEN_ANY; }
 ".all"                          { yylval->value = TOKEN_ALL; return TOKEN_ALL; }

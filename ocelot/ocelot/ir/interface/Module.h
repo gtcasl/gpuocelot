@@ -127,6 +127,15 @@ namespace ir {
 		*/
 		Texture* getTexture(const std::string& name);
 
+		/*! \brief Insert a texture into the module.
+
+			\param texture the texture being inserted, it will be
+				owned by the module.
+
+			\return pointer to texture instance being inserted
+		*/
+		Texture* insertTexture(const Texture& texture);
+
 		/*! \brief Gets a global instance by name. 
 
 			\param name [mangled] name of global
@@ -135,6 +144,15 @@ namespace ir {
 				or 0 if it does not exist
 		*/
 		Global* getGlobal(const std::string& name);
+
+		/*! \brief Insert a global into the module.
+
+			\param global the global being inserted, it will be
+				owned by the module.
+
+			\return pointer to global instance being inserted
+		*/
+		Global* insertGlobal(const Global& global);
 
 		/*! \brief Gets the module path */
 		const std::string& path() const;
@@ -156,8 +174,6 @@ namespace ir {
 	
 		/*! \brief get the address size */
 		unsigned int addressSize() const;
-
-
 		
 		void addPrototype(const std::string &identifier,
 			const ir::PTXKernel::Prototype &prototype);

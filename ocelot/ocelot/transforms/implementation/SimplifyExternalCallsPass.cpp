@@ -20,7 +20,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 namespace transforms
 {
@@ -44,6 +44,7 @@ static void simplifyCall(ir::PTXKernel& kernel,
 		parameter != call.d.array.end(); ++parameter)
 	{
 		if(parameter->addressMode == ir::PTXOperand::BitBucket) continue;
+		if(parameter->addressMode == ir::PTXOperand::Immediate) continue;
 		report("   " << parameter->identifier);
 		parameterNames.insert(parameter->identifier);
 	}
@@ -53,6 +54,7 @@ static void simplifyCall(ir::PTXKernel& kernel,
 		parameter != call.b.array.end(); ++parameter)
 	{
 		if(parameter->addressMode == ir::PTXOperand::BitBucket) continue;
+		if(parameter->addressMode == ir::PTXOperand::Immediate) continue;
 		report("   " << parameter->identifier);
 		parameterNames.insert(parameter->identifier);
 	}
@@ -76,30 +78,48 @@ static void simplifyCall(ir::PTXKernel& kernel,
 				{
 					if(parameterNames.count(ptx.d.identifier) != 0)
 					{
-						assert(ptx.a.addressMode == ir::PTXOperand::Register);
-						assert(nameToRegister.count(ptx.d.identifier) == 0);
-						
-						// if the types match, kill the store
-						if(ptx.type == ptx.a.type)
+						if(ptx.a.addressMode == ir::PTXOperand::Register)
 						{
-							nameToRegister.insert(std::make_pair(
-								ptx.d.identifier, ptx.a.reg));
-							killList.push_back(instruction);
+							assert(nameToRegister.count(ptx.d.identifier) == 0);
+						
+							// if the types match, kill the store
+							if(ptx.type == ptx.a.type)
+							{
+								nameToRegister.insert(std::make_pair(
+									ptx.d.identifier, ptx.a.reg));
+								killList.push_back(instruction);
+							}
+							else
+							{
+								// otherwise, convert it into a cast
+								ir::PTXOperand temp = ir::PTXOperand(
+									ir::PTXOperand::Register, ptx.type,
+									dfg.newRegister());
+
+								nameToRegister.insert(std::make_pair(
+									ptx.d.identifier, temp.reg));
+						
+								ptx.opcode = ir::PTXInstruction::Cvt;
+								ptx.d = temp;
+								ptx.modifier =
+									ir::PTXInstruction::Modifier_invalid;
+							}
 						}
 						else
 						{
-							// otherwise, convert it into a cast
+							assert(ptx.a.addressMode
+								== ir::PTXOperand::Immediate);
+						
+							// handle immediate operands
 							ir::PTXOperand temp = ir::PTXOperand(
 								ir::PTXOperand::Register, ptx.type,
 								dfg.newRegister());
 
 							nameToRegister.insert(std::make_pair(
 								ptx.d.identifier, temp.reg));
-						
-							ptx.opcode = ir::PTXInstruction::Cvt;
+					
+							ptx.opcode = ir::PTXInstruction::Mov;
 							ptx.d = temp;
-							ptx.modifier =
-								ir::PTXInstruction::Modifier_invalid;
 						}
 					}
 				}
@@ -149,6 +169,7 @@ static void simplifyCall(ir::PTXKernel& kernel,
 		parameter != call.d.array.end(); ++parameter)
 	{
 		if(parameter->addressMode == ir::PTXOperand::BitBucket) continue;
+		if(parameter->addressMode == ir::PTXOperand::Immediate) continue;
 		RegisterMap::iterator mapping = nameToRegister.find(
 			parameter->identifier);
 		assertM(mapping != nameToRegister.end(),
@@ -165,6 +186,7 @@ static void simplifyCall(ir::PTXKernel& kernel,
 		parameter != call.b.array.end(); ++parameter)
 	{
 		if(parameter->addressMode == ir::PTXOperand::BitBucket) continue;
+		if(parameter->addressMode == ir::PTXOperand::Immediate) continue;
 		RegisterMap::iterator mapping = nameToRegister.find(
 			parameter->identifier);
 		assert(mapping != nameToRegister.end());

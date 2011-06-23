@@ -81,7 +81,7 @@ public:
 	const analysis::Analysis* getAnalysis(int type) const;
 	
 	/*! \brief Invalidate the analysis, the pass manager will
-		need to generate it again for other applications */
+		need to generate it again the next time 'get' is called */
 	void invalidateAnalysis(int type);
 
 public:

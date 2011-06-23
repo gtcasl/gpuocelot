@@ -22,7 +22,7 @@ INFO       /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestIndirectFunct
 INFO       /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestExternalFunctions
 INFO     ==== INDIVIDUAL TEST RESULTS ====
 
-INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestExternalFunctions 
+INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestDataflowGraph -i ../tests/ptx 
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaGlobals 
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestPTXAssembly 
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaMalloc 
@@ -30,33 +30,8 @@ INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_buil
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestDeviceSwitching 
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestLLVMInstructions 
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestFunctionCall 
-INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestEmulator
-INFO     Test completed in 0.0810718536377 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-
-Name : TestEmulator
-
-Description: 
-
-
-Test Seed : 1308863765
-Test time : 0.0121875
-
-Status : Test output:
-10 registers
-Register test passed
-Load test passed
-Store test passed
-no errors
-Full kernel test passed
-
-
-
-INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaTexture2D 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestLLVMInstructions
-INFO     Test completed in 0.0777840614319 seconds
+INFO     Test completed in 0.0668869018555 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -70,8 +45,8 @@ Description: A test for the assembly code generation and automatic
              check, compare to references from the LLVM manual.
 
 
-Test Seed : 1308863765
-Test time : 0.00136542
+Test Seed : 1308871452
+Test time : 0.00145721
 
 Status :  Checked instruction "<result> = add i32 4, %var"
 Add Instruction Passed
@@ -202,46 +177,44 @@ Zext Instruction Passed
 
 
 
-INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestInstructions 
+INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaTexture2D 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestFunctionCall
-INFO     Test completed in 0.0831689834595 seconds
+INFO     Test completed in 0.082535982132 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
-INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaSequence 
-INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaGlobals
-INFO     Test completed in 0.0997920036316 seconds
+INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestInstructions 
+INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestEmulator
+INFO     Test completed in 0.0884909629822 seconds
 INFO      It produced the following output:
-cudaSetDevice() - 0 - Ocelot PTX Emulator 
-cudaSetDevice() - 1 - Ocelot Multicore CPU Backend (LLVM-JIT) 
-Pass/Fail : Pass
-
-INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestExternalFunctions
-INFO     Test completed in 0.101387023926 seconds
-INFO      It produced the following output:
-Hello CUDA 2
 Pass/Fail : Pass
 
 
-Name : TestExternalFunctions
+Name : TestEmulator
 
-Description: A unit test for calling an external host function from PTX 1) 
-             The first test calls malloc/free from a PTX kernel. 2) The 
-             second test calls printf from a PTX kernel. 3) The last test calls a 
-             user defined function from a PTX kernel. 
+Description: 
 
 
-Test Seed : 1308863765
-Test time : 0.0237472
+Test Seed : 1308871452
+Test time : 0.0121472
 
-Status : 
+Status : Test output:
+10 registers
+Register test passed
+Load test passed
+Store test passed
+no errors
+Full kernel test passed
 
 
-INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestPTXToLLVMTranslator -i ../tests/ptx 
-INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestLexer -i ../tests/ptx 
+
+INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestExternalFunctions 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestDeviceSwitching
-INFO     Test completed in 0.114341020584 seconds
+INFO     Test completed in 0.0961921215057 seconds
 INFO      It produced the following output:
+(0.010899) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'increment'
+(0.025028) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'increment'
+(0.033792) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'increment'
 Pass/Fail : Pass
 
 
@@ -259,8 +232,8 @@ Description: A unit test for the ability of the CUDA runtime to switch
              parallel.
 
 
-Test Seed : 1308863765
-Test time : 0.0432293
+Test Seed : 1308871452
+Test time : 0.0390809
 
 Status : Test Point 1 Passed
 Test Point 2 Passed
@@ -268,9 +241,18 @@ Test Point 3 Passed
 
 
 
-INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaTextureArray 
+INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaSequence 
+INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaGlobals
+INFO     Test completed in 0.136459827423 seconds
+INFO      It produced the following output:
+cudaSetDevice() - 0 - Ocelot PTX Emulator 
+cudaSetDevice() - 1 - Ocelot Multicore CPU Backend (LLVM-JIT) 
+(0.018909) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'copyFromGlobal'
+Pass/Fail : Pass
+
+INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestPTXToLLVMTranslator -i ../tests/ptx 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestInstructions
-INFO     Test completed in 0.080570936203 seconds
+INFO     Test completed in 0.0866248607635 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -280,8 +262,8 @@ Name : TestInstructions
 Description: 
 
 
-Test Seed : 1308863766
-Test time : 0.00403309
+Test Seed : 1308871452
+Test time : 0.00443506
 
 Status : Test output:
 Accessors test passed.
@@ -296,21 +278,21 @@ pass: predicated Add and Ld isntructions
 
 
 
-INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestIndirectFunctionCall 
+INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestLexer -i ../tests/ptx 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaSequence
-INFO     Test completed in 0.0862200260162 seconds
+INFO     Test completed in 0.0873980522156 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
-INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestDataflowGraph -i ../tests/ptx 
+INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestIndirectFunctionCall 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaTexture2D
-INFO     Test completed in 0.142501831055 seconds
+INFO     Test completed in 0.135020971298 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
-INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestKernels 
+INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaTextureArray 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaMalloc
-INFO     Test completed in 0.235022068024 seconds
+INFO     Test completed in 0.209893941879 seconds
 INFO      It produced the following output:
 test_malloc(256, 128)
 PASSED
@@ -327,27 +309,44 @@ PASSED
 [8] final free
 Pass/Fail : Pass
 
+INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestKernels 
+INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestExternalFunctions
+INFO     Test completed in 0.120170116425 seconds
+INFO      It produced the following output:
+Hello CUDA 2
+Pass/Fail : Pass
+
+
+Name : TestExternalFunctions
+
+Description: A unit test for calling an external host function from PTX 1) 
+             The first test calls malloc/free from a PTX kernel. 2) The 
+             second test calls printf from a PTX kernel. 3) The last test calls a 
+             user defined function from a PTX kernel. 
+
+
+Test Seed : 1308871452
+Test time : 0.0351176
+
+Status : 
+
+
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCalVectorScale 
-INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestIndirectFunctionCall
-INFO     Test completed in 0.0952370166779 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestLLVMKernels 
-INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaTextureArray
-INFO     Test completed in 0.158294916153 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestParser -i ../tests/ptx 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCalVectorScale
-INFO     Test completed in 0.108973026276 seconds
+INFO     Test completed in 0.058032989502 seconds
 INFO      It produced the following output:
 No CAL devices found
 Pass/Fail : Pass
 
+INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestLLVMKernels 
+INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestIndirectFunctionCall
+INFO     Test completed in 0.0880889892578 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestParser -i ../tests/ptx 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestKernels
-INFO     Test completed in 0.130078077316 seconds
+INFO     Test completed in 0.118266105652 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -357,8 +356,8 @@ Name : TestKernels
 Description: 
 
 
-Test Seed : 1308863766
-Test time : 0.0445912
+Test Seed : 1308871452
+Test time : 0.0370359
 
 Status : Test output:
 looping kernel succeeded
@@ -366,8 +365,13 @@ matrix vector kernel succeeded
 
 
 
+INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaTextureArray
+INFO     Test completed in 0.161974906921 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestLLVMKernels
-INFO     Test completed in 0.232511043549 seconds
+INFO     Test completed in 0.158152103424 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -378,8 +382,8 @@ Description: A unit test for the LLVM executive runtime. Test Points: 1)
              Execute a kernel with a loop. 2) Execute a matrix multiply kernel.
 
 
-Test Seed : 1308863766
-Test time : 0.149859
+Test Seed : 1308871452
+Test time : 0.0810502
 
 Status : A = [
  1 0 0 0 0 0 0 0 ;
@@ -415,7 +419,7 @@ R = [
 
 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestLexer
-INFO     Test completed in 8.30190682411 seconds
+INFO     Test completed in 9.04023814201 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -427,8 +431,8 @@ Description: Tests for the PTX lexer. Test Point 1: Scan a PTX file and
              two sets of tokens match
 
 
-Test Seed : 1308863766
-Test time : 8.22551
+Test Seed : 1308871452
+Test time : 8.96034
 
 Status : For file ../tests/ptx/sdk2.2/simpleTexture.ptx, Test Point 1 (Scan): Passed
 For file ../tests/ptx/sdk2.2/SobelFilter_kernels.ptx, Test Point 1 (Scan): Passed
@@ -537,8 +541,1015 @@ For file ../tests/ptx/thrust/Sort.ptx, Test Point 1 (Scan): Passed
 
 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestPTXAssembly
-INFO     Test completed in 11.0358438492 seconds
+INFO     Test completed in 11.5242760181 seconds
 INFO      It produced the following output:
+(0.024105) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(0.061506) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(0.087198) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(0.126733) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(0.141793) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(0.150419) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(0.165433) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(0.174506) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(0.190598) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(0.203788) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(0.212780) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(0.227906) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(0.236884) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(0.249163) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(0.272678) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(0.296415) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(0.311158) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(0.319936) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(0.334826) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(0.343950) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(0.355577) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(0.365291) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(0.374897) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(0.382504) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(0.394816) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(0.403833) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(0.411165) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(0.423287) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(0.430825) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(0.443623) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(0.454858) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(0.467372) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(0.478211) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(0.490300) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(0.501127) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(0.509856) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(0.522161) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(0.532624) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(0.541157) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(0.558348) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(0.565846) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(0.583449) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(0.591408) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(0.608933) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(0.616871) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(0.634845) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(0.642480) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(0.660098) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(0.667972) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(0.685584) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(0.693262) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(0.703871) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(0.713317) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(0.720980) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(0.732576) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(0.741842) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(0.749375) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(0.760010) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(0.769003) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(0.776375) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(0.787157) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(0.796347) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(0.803823) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(0.815007) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(0.824515) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(0.832305) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(0.843201) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(0.852333) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(0.861613) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(0.869032) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(0.881618) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(0.890766) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(0.898423) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(0.910858) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(0.920158) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(0.927505) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(0.939843) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(0.948922) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(0.956369) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(0.968884) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(0.978293) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(0.992837) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.002127) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.016861) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.024827) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.035963) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.045515) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.054965) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.069429) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.079060) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.094575) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.102969) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.114130) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.123663) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.134891) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.142634) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.150114) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.161213) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.169227) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.177069) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.186800) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.194562) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.207513) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.218971) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.226678) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.234250) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.245395) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.253322) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.261136) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.272364) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.281055) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.289243) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.299342) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.307264) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.320267) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.328066) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.335618) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.343122) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.351043) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.358641) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.366697) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.374612) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.382460) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.390123) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.397921) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.405751) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.413893) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.422257) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.430016) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.439567) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.454481) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.464393) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.479330) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.491473) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.499422) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.507082) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.518610) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.526938) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.535204) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.543028) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.550894) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.558673) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.566553) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.574342) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.582237) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.589947) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.607263) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.614804) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.632787) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.640820) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.651877) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.660988) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.668467) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.679605) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.688984) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.698352) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.706138) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.718315) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.727317) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.734638) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.746858) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.754212) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.772248) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.779451) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.796649) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.804145) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.820247) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.829625) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.845791) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.858094) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.866539) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.881103) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.889713) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.916009) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.924857) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.933094) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.959221) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.973758) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(1.997257) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(2.006057) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(2.014752) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(2.038112) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(2.052721) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(2.064314) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(2.088549) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(2.103594) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(2.115458) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(2.124357) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(2.136276) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(2.160467) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(2.175775) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(2.187956) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(2.196905) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(2.208740) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(2.232399) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(2.247236) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(2.259055) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(2.267897) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(2.279522) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(2.303555) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(2.319128) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(2.331222) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(2.339895) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(2.351510) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(2.374899) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(2.389856) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(2.398796) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(2.422285) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(2.436761) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(2.448110) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(2.472020) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(2.486719) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(2.495441) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(2.518863) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(2.534118) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(2.543323) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(2.567516) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(2.582444) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(2.591128) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(2.614796) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(2.629978) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(2.639112) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(2.662850) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(2.677571) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(2.690250) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(2.700559) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(2.710691) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(2.720593) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(2.730707) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(2.746762) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(2.755995) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(2.771421) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(2.780696) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(2.796248) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(2.805634) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(2.821755) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(2.831302) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(2.846927) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(2.856507) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(2.872666) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(2.882191) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(2.897659) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(2.907060) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(2.917806) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(2.927392) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'add'
+(2.942831) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(2.952160) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'add'
+(2.973380) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(2.986208) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'add'
+(2.996914) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(3.006200) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'count'
+(3.026057) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(3.038116) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'add0'
+(3.042918) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'add1'
+(3.047833) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'add2'
+(3.052621) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'add3'
+(3.065542) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(3.078009) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(3.090537) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(3.102532) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(3.114467) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(3.126539) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(3.138497) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(3.150597) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(3.162910) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(3.176150) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(3.189023) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(3.201730) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(3.214437) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(3.226686) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(3.238672) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(3.250769) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(3.262896) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(3.275166) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(3.287326) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(3.299349) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(3.311375) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(3.324019) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(3.336725) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(3.349063) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(3.358197) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(3.383190) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(3.408150) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(3.432682) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(3.457892) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(3.483477) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(3.509215) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(3.534261) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(3.559206) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(3.584836) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(3.609856) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(3.634444) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(3.658603) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(3.682688) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(3.706706) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(3.733365) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(3.756733) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(3.781146) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(3.790082) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(3.802116) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(3.810996) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(3.820654) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(3.833321) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(3.843112) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(3.853700) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(3.867262) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(3.879453) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(3.893817) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(3.902577) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(3.914894) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(3.923951) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(3.932717) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(3.944892) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(3.953903) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(3.963408) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(3.975757) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(3.985319) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(3.995942) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(4.010864) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(4.021997) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(4.036240) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(4.045232) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(4.057376) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(4.066154) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(4.090719) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(4.116872) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(4.141510) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(4.165714) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(4.191961) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(4.217794) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(4.245301) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(4.257090) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(4.268690) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(4.281201) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(4.293799) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(4.306162) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(4.318031) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(4.329574) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(4.337837) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(4.349266) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(4.361794) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(4.373864) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(4.386788) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(4.395382) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(4.421478) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(4.446852) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(4.472347) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(4.497510) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(4.523108) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(4.549616) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(4.560717) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(4.569211) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(4.580523) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(4.592638) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(4.604050) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(4.615924) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(4.628271) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(4.640685) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(4.652754) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(4.664141) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(4.672554) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(4.684322) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(4.696560) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(4.708917) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(4.720866) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(4.732307) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(4.744865) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(4.757512) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(4.770204) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(4.782821) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(4.797072) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(4.810684) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(4.825039) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(4.836968) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(4.848959) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(4.860459) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(4.873167) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(4.886127) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(4.897957) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(4.910024) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(4.923606) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(4.936363) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(4.949865) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(4.963351) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(4.976603) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(4.989424) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.002947) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.016108) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.027858) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.039217) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.051515) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.063855) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.076284) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.088558) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.101970) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.116217) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.126004) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.142924) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.152582) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.169029) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.178805) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.191735) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.201306) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.210719) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.220028) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.236548) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.249372) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.259125) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.272176) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.281683) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.291118) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.300495) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.316985) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.326843) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.336335) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.349247) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.359032) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.368852) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.382279) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.391780) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.404763) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.414377) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.424014) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.433668) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.442850) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.451952) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.461249) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.470684) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.480514) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.490054) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.499671) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.509170) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.518622) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.528044) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.537480) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.547294) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.557106) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.566847) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.576609) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.586345) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.596185) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.606201) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.616149) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.626099) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.635974) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.645717) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.655229) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.664728) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.674174) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.684148) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.697673) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.707656) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.720409) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.729617) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.739300) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.752677) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.762639) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.772089) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.785226) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.794764) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.804223) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.817230) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.826870) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.836292) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.849724) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.859695) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.869713) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.879636) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.889116) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.898841) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.908133) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.917585) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.927025) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.936264) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.945513) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.954788) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.964077) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.973855) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.983407) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(5.996354) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(6.005790) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(6.015187) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(6.028257) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(6.037857) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(6.047428) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(6.060578) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(6.070143) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(6.080091) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(6.093709) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(6.103455) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(6.116813) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(6.126415) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(6.135969) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(6.148896) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(6.158275) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(6.167720) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(6.180526) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(6.190382) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(6.200135) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(6.213068) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(6.222272) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(6.231436) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(6.241217) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(6.251379) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(6.261304) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(6.271322) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(6.281334) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(6.291270) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(6.301218) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(6.311145) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(6.321164) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(6.331017) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(6.344910) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(6.355261) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(6.365753) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(6.376020) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(6.385997) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(6.396200) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(6.406748) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(6.417235) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(6.427439) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(6.445079) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(6.458938) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(6.468706) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(6.478597) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(6.488663) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(6.498685) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(6.508521) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(6.524937) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(6.535634) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(6.546267) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(6.556395) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(6.566458) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(6.584463) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(6.595056) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(6.606350) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(6.617341) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(6.628264) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(6.639566) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(6.650687) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(6.662229) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(6.673326) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(6.684843) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(6.696304) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(6.707894) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(6.719514) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(6.733393) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(6.742641) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(6.755527) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(6.764871) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(6.774371) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(6.784006) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(6.800848) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(6.814257) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(6.823981) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(6.837123) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(6.846922) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(6.856424) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(6.865776) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(6.882338) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(6.891968) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(6.901821) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(6.915048) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(6.924592) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(6.934047) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(6.946790) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(6.955924) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(6.971529) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(6.987318) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(6.996526) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(7.005957) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(7.018999) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(7.028255) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(7.037277) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(7.052915) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(7.068786) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(7.078202) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(7.087816) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(7.100480) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(7.109785) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(7.119033) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(7.128212) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(7.140778) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(7.149829) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(7.159282) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(7.171723) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(7.180991) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(7.196741) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(7.212673) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(7.222126) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(7.231701) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(7.244562) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(7.253992) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(7.263068) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(7.278755) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(7.294089) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(7.303470) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(7.312596) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(7.324945) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(7.334390) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(7.343917) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(7.353277) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(7.365733) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(7.374742) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(7.383839) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(7.396461) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(7.405767) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(7.414970) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(7.427672) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(7.437504) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(7.447624) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(7.463906) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(7.491710) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(7.500876) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(7.509591) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(7.518104) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(7.526690) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(7.536028) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(7.546007) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(7.562853) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(7.590977) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(7.600008) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(7.608486) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(7.616834) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(7.625394) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(7.634869) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(7.644825) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(7.661327) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(7.689191) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(7.698266) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(7.707231) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(7.716209) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(7.725065) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(7.748656) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(7.757798) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(7.781450) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(7.796028) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(7.811253) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(7.820153) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(7.832325) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(7.856525) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(7.871677) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(7.883273) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(7.891832) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(7.906557) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(7.921835) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(7.937324) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(7.946252) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(7.954931) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(7.963678) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(7.972331) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(7.981140) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(7.997321) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(8.012696) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(8.022356) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(8.031296) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(8.040101) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(8.048826) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(8.057692) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(8.073144) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(8.088554) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(8.097665) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(8.106751) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(8.115946) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(8.125379) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(8.138703) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(8.152133) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(8.173331) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(8.181990) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(8.202620) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(8.211211) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(8.219440) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(8.233984) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(8.255136) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(8.263849) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(8.272240) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(8.295887) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(8.310616) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(8.325134) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(8.337190) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(8.348958) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(8.360692) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(8.369534) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(8.395287) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(8.419071) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(8.443506) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(8.468667) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(8.494813) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(8.521466) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(8.545521) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(8.570399) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(8.596523) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(8.620667) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(8.647403) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(8.659245) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(8.682656) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(8.691353) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(8.699579) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(8.723160) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(8.738027) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(8.749858) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(8.761586) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(8.785265) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(8.793790) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(8.802183) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(8.825905) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(8.840751) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(8.852761) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(8.866045) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(8.879866) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(8.893225) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(8.906754) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(8.919166) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(8.941795) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(8.950756) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(8.959800) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(8.984638) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(8.999901) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.012267) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.025121) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.047781) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.056961) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.066018) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.091175) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.107860) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.120806) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.134582) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.145396) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.156326) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.165162) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.175725) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.185018) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.195505) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.209551) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.216780) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.225886) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.233379) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.250880) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.258042) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.268434) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.277128) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.286294) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.295593) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.306271) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.320211) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.327422) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.336397) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.343792) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.361244) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.368822) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.379942) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.389378) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.398529) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.408726) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.416956) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.427008) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.436997) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.445255) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.455291) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.465333) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.473586) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.483450) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.494998) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.519747) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.528226) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.536543) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.560439) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.575143) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.589000) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.595972) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.604402) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.616194) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.621953) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.628370) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.633056) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.648253) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.653203) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.657898) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.666331) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.672844) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.679206) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.685800) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.695402) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.701310) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.711320) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.719297) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.725208) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.734808) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.741641) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.750202) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.755233) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.767175) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.772334) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.779221) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.784433) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.799747) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.805090) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.809788) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.817901) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.824299) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.830752) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.837134) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.843494) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.851632) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.856548) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.868892) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.874180) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.880618) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.885756) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.903253) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.908831) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.913803) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.922475) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.929257) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.935920) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.943825) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.952859) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.958840) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.967414) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.975940) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.982030) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.991549) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(9.999450) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.008336) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.028175) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.035317) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.044738) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.062126) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.067362) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.079600) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.086864) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.093631) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.100958) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.110953) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.123673) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.128912) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.136475) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.142998) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.159862) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.165366) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.172106) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.181438) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.188589) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.197484) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.205575) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.211464) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.219389) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.227765) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.235743) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.242110) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.251318) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.258540) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.266877) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.271933) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.283890) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.288717) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.297498) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.302600) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.318115) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.324566) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.333179) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.342475) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.349214) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.358187) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.364920) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.373621) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.378700) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.395004) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.402469) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.407359) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.424012) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.431998) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.438824) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.447579) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.454316) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.460980) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.467852) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.476713) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.482604) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.492648) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.502311) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.508152) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.517118) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.524190) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.533549) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.547375) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.552450) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.558876) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.563936) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.578837) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.583650) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.588345) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.596452) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.603256) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.609978) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.616420) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.622876) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.631244) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.636094) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.647695) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.652811) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.659264) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.663979) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.668865) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.683862) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.688775) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.693922) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.704263) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.711186) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.719818) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.727219) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.732770) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.740164) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.747422) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.754819) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.760645) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.767959) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.775232) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.781960) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.790560) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.795699) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.808474) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.814035) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.821098) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.826224) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.842060) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.847180) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.852294) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.861183) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.868306) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.877186) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.884083) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.892712) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.899110) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.912104) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.917292) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.924568) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.929859) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.945663) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.950950) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.956218) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.965138) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.971973) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.978442) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.985188) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.991778) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(10.996544) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(11.003169) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(11.012368) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(11.020866) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(11.025787) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(11.034783) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(11.041451) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(11.046160) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(11.053034) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(11.059536) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(11.066009) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(11.074270) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(11.078996) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(11.090490) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(11.095432) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(11.103871) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(11.108602) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(11.124305) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(11.129195) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(11.133935) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(11.142326) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(11.149208) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(11.156483) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(11.163620) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(11.170487) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(11.178843) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(11.183615) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(11.196176) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(11.201394) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(11.208123) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(11.213338) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(11.229020) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(11.234215) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(11.239001) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(11.247320) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(11.254040) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(11.260677) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(11.267790) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(11.274463) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(11.279283) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(11.286077) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(11.292616) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(11.300853) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(11.306067) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(11.312797) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(11.319745) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(11.326499) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(11.331914) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(11.338854) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(11.346054) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(11.352970) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(11.357858) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(11.364661) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(11.372772) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(11.377950) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'function'
+(11.386227) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(11.391468) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'function'
+(11.399888) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(11.405316) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'function'
+(11.413342) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'test'
+(11.418082) SimplifyExternalCallsPass.cpp:247:  Running SimplifyExternalCallsPass on kernel 'function'
 Pass/Fail : Pass
 
 
@@ -548,444 +1559,444 @@ Description: A unit test framework for PTX. Runs random inputs through unit
              tests on all available devices until a timer expires.
 
 
-Test Seed : 1308863765
-Test time : 10.9688
+Test Seed : 1308871452
+Test time : 11.4201
 
 Status : Ran 'TestVectorElements-u32' for 2 iterations.
-Ran 'TestAdd-u16' for 3 iterations.
-Ran 'TestAdd-s16' for 3 iterations.
-Ran 'TestAdd-u32' for 5 iterations.
-Ran 'TestAdd-s32' for 5 iterations.
-Ran 'TestAdd-s32-sat' for 5 iterations.
-Ran 'TestAdd-u64' for 6 iterations.
-Ran 'TestAdd-s64' for 6 iterations.
-Ran 'TestSub-u16' for 5 iterations.
+Ran 'TestAdd-u16' for 7 iterations.
+Ran 'TestAdd-s16' for 6 iterations.
+Ran 'TestAdd-u32' for 4 iterations.
+Ran 'TestAdd-s32' for 4 iterations.
+Ran 'TestAdd-s32-sat' for 4 iterations.
+Ran 'TestAdd-u64' for 4 iterations.
+Ran 'TestAdd-s64' for 4 iterations.
+Ran 'TestSub-u16' for 6 iterations.
 Ran 'TestSub-s16' for 6 iterations.
-Ran 'TestSub-u32' for 7 iterations.
-Ran 'TestSub-s32' for 6 iterations.
-Ran 'TestSub-s32-sat' for 5 iterations.
-Ran 'TestSub-u64' for 5 iterations.
-Ran 'TestSub-s64' for 4 iterations.
+Ran 'TestSub-u32' for 4 iterations.
+Ran 'TestSub-s32' for 4 iterations.
+Ran 'TestSub-s32-sat' for 6 iterations.
+Ran 'TestSub-u64' for 7 iterations.
+Ran 'TestSub-s64' for 7 iterations.
 Ran 'TestSub-Carry-s32' for 5 iterations.
-Ran 'TestSub-Carry-u32' for 7 iterations.
-Ran 'TestAdd-Carry-s32' for 7 iterations.
-Ran 'TestAdd-Carry-u32' for 7 iterations.
-Ran 'TestMul-Lo-u16' for 7 iterations.
-Ran 'TestMul-Hi-u16' for 6 iterations.
-Ran 'TestMul-Wide-u16' for 6 iterations.
-Ran 'TestMul-Lo-s16' for 6 iterations.
-Ran 'TestMul-Hi-s16' for 6 iterations.
-Ran 'TestMul-Wide-s16' for 6 iterations.
-Ran 'TestMul-Lo-u32' for 8 iterations.
-Ran 'TestMul-Hi-u32' for 8 iterations.
-Ran 'TestMul-Wide-u32' for 8 iterations.
-Ran 'TestMul-Lo-s32' for 8 iterations.
-Ran 'TestMul-Hi-s32' for 8 iterations.
-Ran 'TestMul-Wide-s32' for 8 iterations.
+Ran 'TestSub-Carry-u32' for 5 iterations.
+Ran 'TestAdd-Carry-s32' for 6 iterations.
+Ran 'TestAdd-Carry-u32' for 6 iterations.
+Ran 'TestMul-Lo-u16' for 8 iterations.
+Ran 'TestMul-Hi-u16' for 8 iterations.
+Ran 'TestMul-Wide-u16' for 8 iterations.
+Ran 'TestMul-Lo-s16' for 8 iterations.
+Ran 'TestMul-Hi-s16' for 8 iterations.
+Ran 'TestMul-Wide-s16' for 8 iterations.
+Ran 'TestMul-Lo-u32' for 6 iterations.
+Ran 'TestMul-Hi-u32' for 6 iterations.
+Ran 'TestMul-Wide-u32' for 6 iterations.
+Ran 'TestMul-Lo-s32' for 6 iterations.
+Ran 'TestMul-Hi-s32' for 6 iterations.
+Ran 'TestMul-Wide-s32' for 6 iterations.
 Ran 'TestMul-Lo-u64' for 7 iterations.
 Ran 'TestMul-Hi-u64' for 7 iterations.
 Ran 'TestMul-Lo-s64' for 7 iterations.
 Ran 'TestMul-Hi-s64' for 7 iterations.
 Ran 'TestMad-Lo-u16' for 7 iterations.
 Ran 'TestMad-Hi-u16' for 7 iterations.
-Ran 'TestMad-Wide-u16' for 7 iterations.
+Ran 'TestMad-Wide-u16' for 6 iterations.
 Ran 'TestMad-Lo-s16' for 7 iterations.
 Ran 'TestMad-Hi-s16' for 7 iterations.
-Ran 'TestMad-Wide-s16' for 8 iterations.
-Ran 'TestMad-Lo-u32' for 7 iterations.
-Ran 'TestMad-Hi-u32' for 6 iterations.
+Ran 'TestMad-Wide-s16' for 6 iterations.
+Ran 'TestMad-Lo-u32' for 5 iterations.
+Ran 'TestMad-Hi-u32' for 5 iterations.
 Ran 'TestMad-Wide-u32' for 7 iterations.
-Ran 'TestMad-Lo-s32' for 8 iterations.
-Ran 'TestMad-Hi-s32' for 8 iterations.
-Ran 'TestMad-Sat-Hi-s32' for 7 iterations.
+Ran 'TestMad-Lo-s32' for 5 iterations.
+Ran 'TestMad-Hi-s32' for 5 iterations.
+Ran 'TestMad-Sat-Hi-s32' for 5 iterations.
 Ran 'TestMad-Wide-s32' for 7 iterations.
-Ran 'TestMad-Lo-u64' for 8 iterations.
-Ran 'TestMad-Hi-u64' for 7 iterations.
-Ran 'TestMad-Lo-s64' for 7 iterations.
-Ran 'TestMad-Hi-s64' for 7 iterations.
+Ran 'TestMad-Lo-u64' for 4 iterations.
+Ran 'TestMad-Hi-u64' for 3 iterations.
+Ran 'TestMad-Lo-s64' for 4 iterations.
+Ran 'TestMad-Hi-s64' for 3 iterations.
 Ran 'TestSad-u16' for 7 iterations.
 Ran 'TestSad-s16' for 7 iterations.
-Ran 'TestSad-u32' for 8 iterations.
-Ran 'TestSad-s32' for 7 iterations.
-Ran 'TestSad-u64' for 8 iterations.
-Ran 'TestSad-s64' for 7 iterations.
-Ran 'TestDiv-u16' for 7 iterations.
-Ran 'TestDiv-s16' for 7 iterations.
-Ran 'TestDiv-u32' for 8 iterations.
-Ran 'TestDiv-s32' for 8 iterations.
+Ran 'TestSad-u32' for 5 iterations.
+Ran 'TestSad-s32' for 5 iterations.
+Ran 'TestSad-u64' for 3 iterations.
+Ran 'TestSad-s64' for 3 iterations.
+Ran 'TestDiv-u16' for 8 iterations.
+Ran 'TestDiv-s16' for 8 iterations.
+Ran 'TestDiv-u32' for 6 iterations.
+Ran 'TestDiv-s32' for 6 iterations.
 Ran 'TestDiv-u64' for 7 iterations.
 Ran 'TestDiv-s64' for 7 iterations.
-Ran 'TestRem-u16' for 7 iterations.
-Ran 'TestRem-s16' for 7 iterations.
-Ran 'TestRem-u32' for 8 iterations.
-Ran 'TestRem-s32' for 8 iterations.
-Ran 'TestRem-u64' for 7 iterations.
-Ran 'TestRem-s64' for 7 iterations.
-Ran 'TestAbs-s16' for 9 iterations.
+Ran 'TestRem-u16' for 8 iterations.
+Ran 'TestRem-s16' for 8 iterations.
+Ran 'TestRem-u32' for 4 iterations.
+Ran 'TestRem-s32' for 4 iterations.
+Ran 'TestRem-u64' for 4 iterations.
+Ran 'TestRem-s64' for 5 iterations.
+Ran 'TestAbs-s16' for 6 iterations.
 Ran 'TestAbs-s32' for 7 iterations.
-Ran 'TestAbs-s64' for 8 iterations.
-Ran 'TestNeg-s16' for 9 iterations.
+Ran 'TestAbs-s64' for 5 iterations.
+Ran 'TestNeg-s16' for 6 iterations.
 Ran 'TestNeg-s32' for 6 iterations.
-Ran 'TestNeg-s64' for 8 iterations.
+Ran 'TestNeg-s64' for 5 iterations.
 Ran 'TestMax-u16' for 6 iterations.
-Ran 'TestMax-u32' for 8 iterations.
-Ran 'TestMax-u64' for 7 iterations.
+Ran 'TestMax-u32' for 4 iterations.
+Ran 'TestMax-u64' for 4 iterations.
 Ran 'TestMax-s16' for 6 iterations.
-Ran 'TestMax-s32' for 8 iterations.
-Ran 'TestMax-s64' for 7 iterations.
+Ran 'TestMax-s32' for 4 iterations.
+Ran 'TestMax-s64' for 4 iterations.
 Ran 'TestMin-u16' for 6 iterations.
-Ran 'TestMin-u32' for 8 iterations.
-Ran 'TestMin-u64' for 7 iterations.
-Ran 'TestMin-s16' for 7 iterations.
-Ran 'TestMin-s32' for 8 iterations.
-Ran 'TestMin-s64' for 7 iterations.
-Ran 'TestPopc-b32' for 7 iterations.
-Ran 'TestPopc-b64' for 8 iterations.
-Ran 'TestClz-b32' for 7 iterations.
-Ran 'TestClz-b64' for 7 iterations.
+Ran 'TestMin-u32' for 4 iterations.
+Ran 'TestMin-u64' for 4 iterations.
+Ran 'TestMin-s16' for 6 iterations.
+Ran 'TestMin-s32' for 4 iterations.
+Ran 'TestMin-s64' for 4 iterations.
+Ran 'TestPopc-b32' for 6 iterations.
+Ran 'TestPopc-b64' for 4 iterations.
+Ran 'TestClz-b32' for 6 iterations.
+Ran 'TestClz-b64' for 5 iterations.
 Ran 'TestBfind-u32' for 6 iterations.
-Ran 'TestBfind-u64' for 7 iterations.
+Ran 'TestBfind-u64' for 4 iterations.
 Ran 'TestBfind-s32' for 6 iterations.
-Ran 'TestBfind-s64' for 8 iterations.
-Ran 'TestBfind-shiftamount-u32' for 7 iterations.
-Ran 'TestBfind-shiftamount-u64' for 8 iterations.
+Ran 'TestBfind-s64' for 4 iterations.
+Ran 'TestBfind-shiftamount-u32' for 6 iterations.
+Ran 'TestBfind-shiftamount-u64' for 4 iterations.
 Ran 'TestBfind-shiftamount-s32' for 6 iterations.
-Ran 'TestBfind-shiftamount-s64' for 8 iterations.
+Ran 'TestBfind-shiftamount-s64' for 4 iterations.
 Ran 'TestBrev-b32' for 6 iterations.
-Ran 'TestBrev-b64' for 8 iterations.
-Ran 'TestBfi-b32' for 6 iterations.
-Ran 'TestBfi-b64' for 7 iterations.
-Ran 'TestPrmt-b32' for 8 iterations.
-Ran 'TestPrmt-f4e-b32' for 8 iterations.
-Ran 'TestPrmt-b4e-b32' for 8 iterations.
-Ran 'TestPrmt-rc8-b32' for 7 iterations.
-Ran 'TestPrmt-ecl-b32' for 8 iterations.
-Ran 'TestPrmt-ecr-b32' for 8 iterations.
-Ran 'TestPrmt-rc16-b32' for 7 iterations.
-Ran 'TestCall-Uni' for 5 iterations.
-Ran 'TestCall-Nondivergent' for 5 iterations.
-Ran 'TestCall-Divergent' for 3 iterations.
-Ran 'TestCall-Recursive' for 3 iterations.
+Ran 'TestBrev-b64' for 4 iterations.
+Ran 'TestBfi-b32' for 3 iterations.
+Ran 'TestBfi-b64' for 3 iterations.
+Ran 'TestPrmt-b32' for 4 iterations.
+Ran 'TestPrmt-f4e-b32' for 4 iterations.
+Ran 'TestPrmt-b4e-b32' for 4 iterations.
+Ran 'TestPrmt-rc8-b32' for 4 iterations.
+Ran 'TestPrmt-ecl-b32' for 4 iterations.
+Ran 'TestPrmt-ecr-b32' for 4 iterations.
+Ran 'TestPrmt-rc16-b32' for 4 iterations.
+Ran 'TestCall-Uni' for 2 iterations.
+Ran 'TestCall-Nondivergent' for 2 iterations.
+Ran 'TestCall-Divergent' for 2 iterations.
+Ran 'TestCall-Recursive' for 1 iterations.
 Ran 'TestCall-Indirect' for 1 iterations.
-Ran 'TestTestP-f32-Finite' for 6 iterations.
-Ran 'TestTestP-f32-Infinite' for 6 iterations.
-Ran 'TestTestP-f32-Number' for 6 iterations.
-Ran 'TestTestP-f32-NotANumber' for 6 iterations.
-Ran 'TestTestP-f32-Normal' for 5 iterations.
-Ran 'TestTestP-f32-SubNormal' for 6 iterations.
-Ran 'TestTestP-f64-Finite' for 6 iterations.
-Ran 'TestTestP-f64-Infinite' for 6 iterations.
-Ran 'TestTestP-f64-Number' for 6 iterations.
-Ran 'TestTestP-f64-NotANumber' for 6 iterations.
-Ran 'TestTestP-f64-Normal' for 5 iterations.
-Ran 'TestTestP-f64-SubNormal' for 6 iterations.
-Ran 'TestCopysign-f32' for 8 iterations.
-Ran 'TestCopysign-f64' for 8 iterations.
-Ran 'TestAdd-f32' for 8 iterations.
-Ran 'TestAdd-f32-sat' for 8 iterations.
-Ran 'TestAdd-f32-ftz' for 7 iterations.
-Ran 'TestAdd-f32-ftz-sat' for 7 iterations.
-Ran 'TestAdd-f64' for 8 iterations.
-Ran 'TestSub-f32' for 8 iterations.
-Ran 'TestSub-f32-sat' for 8 iterations.
-Ran 'TestSub-f32-ftz' for 7 iterations.
+Ran 'TestTestP-f32-Finite' for 4 iterations.
+Ran 'TestTestP-f32-Infinite' for 4 iterations.
+Ran 'TestTestP-f32-Number' for 4 iterations.
+Ran 'TestTestP-f32-NotANumber' for 4 iterations.
+Ran 'TestTestP-f32-Normal' for 4 iterations.
+Ran 'TestTestP-f32-SubNormal' for 4 iterations.
+Ran 'TestTestP-f64-Finite' for 4 iterations.
+Ran 'TestTestP-f64-Infinite' for 4 iterations.
+Ran 'TestTestP-f64-Number' for 4 iterations.
+Ran 'TestTestP-f64-NotANumber' for 4 iterations.
+Ran 'TestTestP-f64-Normal' for 4 iterations.
+Ran 'TestTestP-f64-SubNormal' for 4 iterations.
+Ran 'TestCopysign-f32' for 6 iterations.
+Ran 'TestCopysign-f64' for 6 iterations.
+Ran 'TestAdd-f32' for 6 iterations.
+Ran 'TestAdd-f32-sat' for 6 iterations.
+Ran 'TestAdd-f32-ftz' for 6 iterations.
+Ran 'TestAdd-f32-ftz-sat' for 6 iterations.
+Ran 'TestAdd-f64' for 6 iterations.
+Ran 'TestSub-f32' for 6 iterations.
+Ran 'TestSub-f32-sat' for 6 iterations.
+Ran 'TestSub-f32-ftz' for 6 iterations.
 Ran 'TestSub-f32-ftz-sat' for 6 iterations.
-Ran 'TestSub-f64' for 8 iterations.
-Ran 'TestMul-f32' for 8 iterations.
-Ran 'TestMul-f32-sat' for 8 iterations.
-Ran 'TestMul-f32-ftz' for 7 iterations.
-Ran 'TestMul-f32-ftz-sat' for 6 iterations.
-Ran 'TestMul-f64' for 8 iterations.
-Ran 'TestMad-f32' for 10 iterations.
-Ran 'TestMad-f32-sat' for 9 iterations.
-Ran 'TestMad-f32-ftz' for 9 iterations.
-Ran 'TestMad-f32-ftz-sat' for 8 iterations.
-Ran 'TestMad-f64' for 9 iterations.
-Ran 'TestFma-f32' for 10 iterations.
-Ran 'TestFma-f32-sat' for 9 iterations.
-Ran 'TestFma-f32-ftz' for 9 iterations.
-Ran 'TestFma-f32-ftz-sat' for 9 iterations.
-Ran 'TestFma-f64' for 10 iterations.
-Ran 'TestDiv-f32' for 7 iterations.
+Ran 'TestSub-f64' for 6 iterations.
+Ran 'TestMul-f32' for 6 iterations.
+Ran 'TestMul-f32-sat' for 6 iterations.
+Ran 'TestMul-f32-ftz' for 6 iterations.
+Ran 'TestMul-f32-ftz-sat' for 5 iterations.
+Ran 'TestMul-f64' for 6 iterations.
+Ran 'TestMad-f32' for 4 iterations.
+Ran 'TestMad-f32-sat' for 4 iterations.
+Ran 'TestMad-f32-ftz' for 3 iterations.
+Ran 'TestMad-f32-ftz-sat' for 3 iterations.
+Ran 'TestMad-f64' for 4 iterations.
+Ran 'TestFma-f32' for 4 iterations.
+Ran 'TestFma-f32-sat' for 4 iterations.
+Ran 'TestFma-f32-ftz' for 3 iterations.
+Ran 'TestFma-f32-ftz-sat' for 3 iterations.
+Ran 'TestFma-f64' for 4 iterations.
+Ran 'TestDiv-f32' for 6 iterations.
 Ran 'TestDiv-f32-ftz' for 6 iterations.
-Ran 'TestDiv-f32-approx' for 8 iterations.
-Ran 'TestDiv-f32-full' for 8 iterations.
-Ran 'TestDiv-f32-approx-ftz' for 7 iterations.
-Ran 'TestDiv-f32-full-ftz' for 7 iterations.
-Ran 'TestDiv-f64' for 8 iterations.
-Ran 'TestAbs-f32' for 6 iterations.
-Ran 'TestAbs-f32-ftz' for 5 iterations.
-Ran 'TestAbs-f64' for 6 iterations.
-Ran 'TestNeg-f32' for 7 iterations.
-Ran 'TestNeg-f32-ftz' for 6 iterations.
-Ran 'TestNeg-f64' for 7 iterations.
-Ran 'TestMin-f32' for 8 iterations.
-Ran 'TestMin-f32-ftz' for 7 iterations.
-Ran 'TestMin-f64' for 8 iterations.
-Ran 'TestMax-f32' for 7 iterations.
-Ran 'TestMax-f32-ftz' for 7 iterations.
-Ran 'TestMax-f64' for 7 iterations.
-Ran 'TestRcp-f32' for 7 iterations.
-Ran 'TestRcp-f32-approx' for 6 iterations.
-Ran 'TestRcp-f32-ftz' for 6 iterations.
-Ran 'TestRcp-f32-approx-ftz' for 6 iterations.
-Ran 'TestRcp-f64' for 6 iterations.
-Ran 'TestRcp-f64-approx-ftz' for 5 iterations.
-Ran 'TestSqrt-f32' for 7 iterations.
-Ran 'TestSqrt-f32-approx' for 6 iterations.
-Ran 'TestSqrt-f32-ftz' for 6 iterations.
-Ran 'TestSqrt-f32-approx-ftz' for 5 iterations.
-Ran 'TestSqrt-f64' for 7 iterations.
-Ran 'TestRsqrt-f32' for 7 iterations.
-Ran 'TestRsqrt-f32-ftz' for 5 iterations.
-Ran 'TestRsqrt-f64' for 5 iterations.
-Ran 'TestCos-f32' for 5 iterations.
-Ran 'TestCos-f32-ftz' for 5 iterations.
-Ran 'TestSin-f32' for 5 iterations.
-Ran 'TestSin-f32-ftz' for 5 iterations.
-Ran 'TestEx2-f32' for 7 iterations.
-Ran 'TestEx2-f32-ftz' for 5 iterations.
-Ran 'TestLg2-f32' for 6 iterations.
-Ran 'TestLg2-f32-ftz' for 5 iterations.
-Ran 'TestSet-lt-u32-u16' for 7 iterations.
-Ran 'TestSet-lt-s32-u16' for 6 iterations.
-Ran 'TestSet-lt-f32-u16' for 7 iterations.
-Ran 'TestSet-lt-s32-u32' for 8 iterations.
-Ran 'TestSet-lt-s32-u64' for 7 iterations.
-Ran 'TestSet-lt-s32-s16' for 7 iterations.
-Ran 'TestSet-lt-s32-s32' for 9 iterations.
-Ran 'TestSet-lt-s32-s64' for 6 iterations.
-Ran 'TestSet-lt-s32-f32' for 8 iterations.
-Ran 'TestSet-lt-s32-f64' for 9 iterations.
-Ran 'TestSet-lt-ftz-s32-f32' for 8 iterations.
-Ran 'TestSet-Eq-s32-s32' for 9 iterations.
-Ran 'TestSet-Ne-s32-s32' for 9 iterations.
-Ran 'TestSet-Le-s32-s32' for 9 iterations.
-Ran 'TestSet-Gt-s32-s32' for 9 iterations.
-Ran 'TestSet-Ge-s32-s32' for 8 iterations.
-Ran 'TestSet-Lo-s32-u32' for 9 iterations.
-Ran 'TestSet-Ls-s32-u32' for 9 iterations.
-Ran 'TestSet-Hi-s32-u32' for 9 iterations.
-Ran 'TestSet-Hs-s32-u32' for 9 iterations.
-Ran 'TestSet-Eq-s32-f32' for 9 iterations.
-Ran 'TestSet-Ne-s32-f32' for 9 iterations.
-Ran 'TestSet-Lt-s32-f32' for 8 iterations.
-Ran 'TestSet-Le-s32-f32' for 8 iterations.
-Ran 'TestSet-Gt-s32-f32' for 9 iterations.
-Ran 'TestSet-Ge-s32-f32' for 9 iterations.
-Ran 'TestSet-Lo-s32-u32' for 9 iterations.
-Ran 'TestSet-Ls-s32-u32' for 9 iterations.
-Ran 'TestSet-Hi-s32-u32' for 9 iterations.
-Ran 'TestSet-Hs-s32-u32' for 9 iterations.
-Ran 'TestSet-Equ-s32-f32' for 8 iterations.
-Ran 'TestSet-Neu-s32-f32' for 8 iterations.
-Ran 'TestSet-Ltu-s32-f32' for 9 iterations.
-Ran 'TestSet-Leu-s32-f32' for 9 iterations.
-Ran 'TestSet-Gtu-s32-f32' for 9 iterations.
-Ran 'TestSet-Geu-s32-f32' for 8 iterations.
-Ran 'TestSet-Num-s32-f32' for 9 iterations.
-Ran 'TestSet-Nan-s32-f32' for 8 iterations.
-Ran 'TestSet-Lt-s32-s32-And' for 8 iterations.
-Ran 'TestSet-Lt-s32-s32-Or' for 8 iterations.
-Ran 'TestSet-Lt-s32-s32-Xor' for 8 iterations.
-Ran 'TestSet-Lt-s32-s32-And-Inv' for 8 iterations.
-Ran 'TestSetP-lt-u16' for 6 iterations.
-Ran 'TestSetP-lt-u32' for 8 iterations.
-Ran 'TestSetP-lt-u32-pq' for 7 iterations.
-Ran 'TestSetP-lt-u64' for 6 iterations.
-Ran 'TestSetP-lt-s16' for 6 iterations.
-Ran 'TestSetP-lt-s32' for 7 iterations.
-Ran 'TestSetP-lt-s64' for 6 iterations.
-Ran 'TestSetP-lt-f32' for 8 iterations.
-Ran 'TestSetP-lt-f64' for 7 iterations.
-Ran 'TestSetP-lt-u32-pq-and' for 7 iterations.
-Ran 'TestSetP-lt-u32-pq-or' for 7 iterations.
-Ran 'TestSetP-lt-u32-pq-xor' for 7 iterations.
-Ran 'TestSetP-lt-f32-pq-and-ftz' for 7 iterations.
-Ran 'TestSelp-u16' for 6 iterations.
-Ran 'TestSelp-u32' for 9 iterations.
-Ran 'TestSelp-u64' for 7 iterations.
-Ran 'TestSelp-s16' for 7 iterations.
-Ran 'TestSelp-s32' for 9 iterations.
-Ran 'TestSelp-s64' for 7 iterations.
-Ran 'TestSelp-f32' for 9 iterations.
-Ran 'TestSelp-f64' for 7 iterations.
-Ran 'TestSlct-u16-s32' for 7 iterations.
-Ran 'TestSlct-u32-s32' for 8 iterations.
-Ran 'TestSlct-u64-s32' for 6 iterations.
-Ran 'TestSlct-s16-s32' for 7 iterations.
-Ran 'TestSlct-s32-s32' for 6 iterations.
-Ran 'TestSlct-s64-s32' for 6 iterations.
-Ran 'TestSlct-f32-s32' for 9 iterations.
-Ran 'TestSlct-f64-s32' for 8 iterations.
-Ran 'TestSlct-u16-f32' for 7 iterations.
-Ran 'TestSlct-u32-f32' for 7 iterations.
-Ran 'TestSlct-u64-f32' for 6 iterations.
-Ran 'TestSlct-s16-f32' for 7 iterations.
-Ran 'TestSlct-s32-f32' for 7 iterations.
-Ran 'TestSlct-s64-f32' for 6 iterations.
-Ran 'TestSlct-f32-f32' for 9 iterations.
-Ran 'TestSlct-f64-f32' for 8 iterations.
-Ran 'TestSlct-f32-f32-ftz' for 8 iterations.
-Ran 'TestAnd-pred' for 7 iterations.
+Ran 'TestDiv-f32-approx' for 6 iterations.
+Ran 'TestDiv-f32-full' for 6 iterations.
+Ran 'TestDiv-f32-approx-ftz' for 6 iterations.
+Ran 'TestDiv-f32-full-ftz' for 6 iterations.
+Ran 'TestDiv-f64' for 6 iterations.
+Ran 'TestAbs-f32' for 4 iterations.
+Ran 'TestAbs-f32-ftz' for 4 iterations.
+Ran 'TestAbs-f64' for 4 iterations.
+Ran 'TestNeg-f32' for 5 iterations.
+Ran 'TestNeg-f32-ftz' for 4 iterations.
+Ran 'TestNeg-f64' for 4 iterations.
+Ran 'TestMin-f32' for 6 iterations.
+Ran 'TestMin-f32-ftz' for 6 iterations.
+Ran 'TestMin-f64' for 6 iterations.
+Ran 'TestMax-f32' for 6 iterations.
+Ran 'TestMax-f32-ftz' for 6 iterations.
+Ran 'TestMax-f64' for 6 iterations.
+Ran 'TestRcp-f32' for 5 iterations.
+Ran 'TestRcp-f32-approx' for 4 iterations.
+Ran 'TestRcp-f32-ftz' for 4 iterations.
+Ran 'TestRcp-f32-approx-ftz' for 4 iterations.
+Ran 'TestRcp-f64' for 5 iterations.
+Ran 'TestRcp-f64-approx-ftz' for 4 iterations.
+Ran 'TestSqrt-f32' for 4 iterations.
+Ran 'TestSqrt-f32-approx' for 4 iterations.
+Ran 'TestSqrt-f32-ftz' for 4 iterations.
+Ran 'TestSqrt-f32-approx-ftz' for 4 iterations.
+Ran 'TestSqrt-f64' for 4 iterations.
+Ran 'TestRsqrt-f32' for 4 iterations.
+Ran 'TestRsqrt-f32-ftz' for 4 iterations.
+Ran 'TestRsqrt-f64' for 4 iterations.
+Ran 'TestCos-f32' for 4 iterations.
+Ran 'TestCos-f32-ftz' for 4 iterations.
+Ran 'TestSin-f32' for 4 iterations.
+Ran 'TestSin-f32-ftz' for 4 iterations.
+Ran 'TestEx2-f32' for 4 iterations.
+Ran 'TestEx2-f32-ftz' for 4 iterations.
+Ran 'TestLg2-f32' for 4 iterations.
+Ran 'TestLg2-f32-ftz' for 4 iterations.
+Ran 'TestSet-lt-u32-u16' for 4 iterations.
+Ran 'TestSet-lt-s32-u16' for 4 iterations.
+Ran 'TestSet-lt-f32-u16' for 4 iterations.
+Ran 'TestSet-lt-s32-u32' for 3 iterations.
+Ran 'TestSet-lt-s32-u64' for 4 iterations.
+Ran 'TestSet-lt-s32-s16' for 4 iterations.
+Ran 'TestSet-lt-s32-s32' for 3 iterations.
+Ran 'TestSet-lt-s32-s64' for 4 iterations.
+Ran 'TestSet-lt-s32-f32' for 4 iterations.
+Ran 'TestSet-lt-s32-f64' for 3 iterations.
+Ran 'TestSet-lt-ftz-s32-f32' for 4 iterations.
+Ran 'TestSet-Eq-s32-s32' for 3 iterations.
+Ran 'TestSet-Ne-s32-s32' for 3 iterations.
+Ran 'TestSet-Le-s32-s32' for 3 iterations.
+Ran 'TestSet-Gt-s32-s32' for 3 iterations.
+Ran 'TestSet-Ge-s32-s32' for 3 iterations.
+Ran 'TestSet-Lo-s32-u32' for 3 iterations.
+Ran 'TestSet-Ls-s32-u32' for 3 iterations.
+Ran 'TestSet-Hi-s32-u32' for 3 iterations.
+Ran 'TestSet-Hs-s32-u32' for 3 iterations.
+Ran 'TestSet-Eq-s32-f32' for 3 iterations.
+Ran 'TestSet-Ne-s32-f32' for 4 iterations.
+Ran 'TestSet-Lt-s32-f32' for 4 iterations.
+Ran 'TestSet-Le-s32-f32' for 4 iterations.
+Ran 'TestSet-Gt-s32-f32' for 4 iterations.
+Ran 'TestSet-Ge-s32-f32' for 4 iterations.
+Ran 'TestSet-Lo-s32-u32' for 3 iterations.
+Ran 'TestSet-Ls-s32-u32' for 3 iterations.
+Ran 'TestSet-Hi-s32-u32' for 3 iterations.
+Ran 'TestSet-Hs-s32-u32' for 3 iterations.
+Ran 'TestSet-Equ-s32-f32' for 4 iterations.
+Ran 'TestSet-Neu-s32-f32' for 4 iterations.
+Ran 'TestSet-Ltu-s32-f32' for 4 iterations.
+Ran 'TestSet-Leu-s32-f32' for 3 iterations.
+Ran 'TestSet-Gtu-s32-f32' for 4 iterations.
+Ran 'TestSet-Geu-s32-f32' for 4 iterations.
+Ran 'TestSet-Num-s32-f32' for 4 iterations.
+Ran 'TestSet-Nan-s32-f32' for 4 iterations.
+Ran 'TestSet-Lt-s32-s32-And' for 3 iterations.
+Ran 'TestSet-Lt-s32-s32-Or' for 3 iterations.
+Ran 'TestSet-Lt-s32-s32-Xor' for 3 iterations.
+Ran 'TestSet-Lt-s32-s32-And-Inv' for 3 iterations.
+Ran 'TestSetP-lt-u16' for 3 iterations.
+Ran 'TestSetP-lt-u32' for 3 iterations.
+Ran 'TestSetP-lt-u32-pq' for 3 iterations.
+Ran 'TestSetP-lt-u64' for 4 iterations.
+Ran 'TestSetP-lt-s16' for 3 iterations.
+Ran 'TestSetP-lt-s32' for 3 iterations.
+Ran 'TestSetP-lt-s64' for 4 iterations.
+Ran 'TestSetP-lt-f32' for 3 iterations.
+Ran 'TestSetP-lt-f64' for 4 iterations.
+Ran 'TestSetP-lt-u32-pq-and' for 3 iterations.
+Ran 'TestSetP-lt-u32-pq-or' for 3 iterations.
+Ran 'TestSetP-lt-u32-pq-xor' for 3 iterations.
+Ran 'TestSetP-lt-f32-pq-and-ftz' for 3 iterations.
+Ran 'TestSelp-u16' for 4 iterations.
+Ran 'TestSelp-u32' for 3 iterations.
+Ran 'TestSelp-u64' for 4 iterations.
+Ran 'TestSelp-s16' for 4 iterations.
+Ran 'TestSelp-s32' for 3 iterations.
+Ran 'TestSelp-s64' for 4 iterations.
+Ran 'TestSelp-f32' for 4 iterations.
+Ran 'TestSelp-f64' for 4 iterations.
+Ran 'TestSlct-u16-s32' for 4 iterations.
+Ran 'TestSlct-u32-s32' for 4 iterations.
+Ran 'TestSlct-u64-s32' for 4 iterations.
+Ran 'TestSlct-s16-s32' for 4 iterations.
+Ran 'TestSlct-s32-s32' for 4 iterations.
+Ran 'TestSlct-s64-s32' for 4 iterations.
+Ran 'TestSlct-f32-s32' for 4 iterations.
+Ran 'TestSlct-f64-s32' for 4 iterations.
+Ran 'TestSlct-u16-f32' for 4 iterations.
+Ran 'TestSlct-u32-f32' for 4 iterations.
+Ran 'TestSlct-u64-f32' for 4 iterations.
+Ran 'TestSlct-s16-f32' for 4 iterations.
+Ran 'TestSlct-s32-f32' for 4 iterations.
+Ran 'TestSlct-s64-f32' for 4 iterations.
+Ran 'TestSlct-f32-f32' for 4 iterations.
+Ran 'TestSlct-f64-f32' for 4 iterations.
+Ran 'TestSlct-f32-f32-ftz' for 4 iterations.
+Ran 'TestAnd-pred' for 3 iterations.
 Ran 'TestAnd-b16' for 6 iterations.
-Ran 'TestAnd-b32' for 7 iterations.
-Ran 'TestAnd-b64' for 8 iterations.
-Ran 'TestOr-pred' for 8 iterations.
-Ran 'TestOr-b16' for 7 iterations.
-Ran 'TestOr-b32' for 8 iterations.
-Ran 'TestOr-b64' for 7 iterations.
-Ran 'TestXor-pred' for 8 iterations.
-Ran 'TestXor-b16' for 7 iterations.
-Ran 'TestXor-b32' for 8 iterations.
-Ran 'TestXor-b64' for 7 iterations.
-Ran 'TestNot-pred' for 6 iterations.
+Ran 'TestAnd-b32' for 4 iterations.
+Ran 'TestAnd-b64' for 3 iterations.
+Ran 'TestOr-pred' for 3 iterations.
+Ran 'TestOr-b16' for 6 iterations.
+Ran 'TestOr-b32' for 4 iterations.
+Ran 'TestOr-b64' for 3 iterations.
+Ran 'TestXor-pred' for 3 iterations.
+Ran 'TestXor-b16' for 6 iterations.
+Ran 'TestXor-b32' for 4 iterations.
+Ran 'TestXor-b64' for 3 iterations.
+Ran 'TestNot-pred' for 5 iterations.
 Ran 'TestNot-b16' for 6 iterations.
-Ran 'TestNot-b32' for 8 iterations.
-Ran 'TestNot-b64' for 7 iterations.
-Ran 'TestCNot-b16' for 7 iterations.
-Ran 'TestCNot-b32' for 8 iterations.
-Ran 'TestCNot-b64' for 7 iterations.
-Ran 'TestShl-b16' for 8 iterations.
-Ran 'TestShl-b32' for 8 iterations.
-Ran 'TestShl-b64' for 8 iterations.
-Ran 'TestShr-u16' for 7 iterations.
-Ran 'TestShr-u32' for 8 iterations.
-Ran 'TestShr-u64' for 7 iterations.
-Ran 'TestShr-s16' for 7 iterations.
-Ran 'TestShr-s32' for 8 iterations.
-Ran 'TestShr-s64' for 8 iterations.
-Ran 'TestMov-pred' for 6 iterations.
-Ran 'TestMov-u16' for 8 iterations.
-Ran 'TestMov-u32' for 8 iterations.
-Ran 'TestMov-u64' for 8 iterations.
-Ran 'TestMov-s16' for 9 iterations.
-Ran 'TestMov-s32' for 5 iterations.
-Ran 'TestMov-s64' for 6 iterations.
-Ran 'TestMov-f32' for 5 iterations.
-Ran 'TestMov-f64' for 7 iterations.
+Ran 'TestNot-b32' for 5 iterations.
+Ran 'TestNot-b64' for 4 iterations.
+Ran 'TestCNot-b16' for 6 iterations.
+Ran 'TestCNot-b32' for 4 iterations.
+Ran 'TestCNot-b64' for 5 iterations.
+Ran 'TestShl-b16' for 4 iterations.
+Ran 'TestShl-b32' for 4 iterations.
+Ran 'TestShl-b64' for 3 iterations.
+Ran 'TestShr-u16' for 4 iterations.
+Ran 'TestShr-u32' for 4 iterations.
+Ran 'TestShr-u64' for 3 iterations.
+Ran 'TestShr-s16' for 4 iterations.
+Ran 'TestShr-s32' for 4 iterations.
+Ran 'TestShr-s64' for 3 iterations.
+Ran 'TestMov-pred' for 4 iterations.
+Ran 'TestMov-u16' for 6 iterations.
+Ran 'TestMov-u32' for 6 iterations.
+Ran 'TestMov-u64' for 4 iterations.
+Ran 'TestMov-s16' for 6 iterations.
+Ran 'TestMov-s32' for 6 iterations.
+Ran 'TestMov-s64' for 5 iterations.
+Ran 'TestMov-f32' for 4 iterations.
+Ran 'TestMov-f64' for 4 iterations.
 Ran 'TestMovLabel-global-v1' for 6 iterations.
 Ran 'TestMovLabel-global-v1-index' for 5 iterations.
-Ran 'TestMovLabel-global-v2' for 6 iterations.
+Ran 'TestMovLabel-global-v2' for 5 iterations.
 Ran 'TestMovLabel-global-v4' for 5 iterations.
 Ran 'TestMovLabel-local-v1' for 6 iterations.
 Ran 'TestMovLabel-local-v1-index' for 6 iterations.
-Ran 'TestMovLabel-local-v2' for 6 iterations.
+Ran 'TestMovLabel-local-v2' for 5 iterations.
 Ran 'TestMovLabel-local-v4' for 5 iterations.
 Ran 'TestMovLabel-shared-v1' for 6 iterations.
 Ran 'TestMovLabel-shared-v1-index' for 5 iterations.
-Ran 'TestMovLabel-shared-v4' for 4 iterations.
-Ran 'TestCvt-u8-u8' for 7 iterations.
-Ran 'TestCvt-u8-u16' for 7 iterations.
+Ran 'TestMovLabel-shared-v4' for 5 iterations.
+Ran 'TestCvt-u8-u8' for 5 iterations.
+Ran 'TestCvt-u8-u16' for 6 iterations.
 Ran 'TestCvt-u8-u32' for 6 iterations.
-Ran 'TestCvt-u8-u64' for 8 iterations.
-Ran 'TestCvt-u8-s8' for 7 iterations.
-Ran 'TestCvt-u8-s16' for 7 iterations.
-Ran 'TestCvt-u8-s32' for 7 iterations.
-Ran 'TestCvt-u8-s64' for 8 iterations.
-Ran 'TestCvt-u8-f32' for 5 iterations.
-Ran 'TestCvt-u8-f64' for 5 iterations.
-Ran 'TestCvt-u16-u8' for 7 iterations.
-Ran 'TestCvt-u16-u16' for 8 iterations.
+Ran 'TestCvt-u8-u64' for 4 iterations.
+Ran 'TestCvt-u8-s8' for 5 iterations.
+Ran 'TestCvt-u8-s16' for 6 iterations.
+Ran 'TestCvt-u8-s32' for 6 iterations.
+Ran 'TestCvt-u8-s64' for 4 iterations.
+Ran 'TestCvt-u8-f32' for 4 iterations.
+Ran 'TestCvt-u8-f64' for 4 iterations.
+Ran 'TestCvt-u16-u8' for 4 iterations.
+Ran 'TestCvt-u16-u16' for 6 iterations.
 Ran 'TestCvt-u16-u32' for 6 iterations.
-Ran 'TestCvt-u16-u64' for 8 iterations.
-Ran 'TestCvt-u16-s8' for 7 iterations.
-Ran 'TestCvt-u16-s16' for 7 iterations.
+Ran 'TestCvt-u16-u64' for 4 iterations.
+Ran 'TestCvt-u16-s8' for 4 iterations.
+Ran 'TestCvt-u16-s16' for 6 iterations.
 Ran 'TestCvt-u16-s32' for 6 iterations.
-Ran 'TestCvt-u16-s64' for 8 iterations.
-Ran 'TestCvt-u16-f32' for 5 iterations.
+Ran 'TestCvt-u16-s64' for 4 iterations.
+Ran 'TestCvt-u16-f32' for 4 iterations.
 Ran 'TestCvt-u16-f64' for 5 iterations.
 Ran 'TestCvt-u32-u8' for 7 iterations.
-Ran 'TestCvt-u32-u16' for 7 iterations.
-Ran 'TestCvt-u32-u32' for 6 iterations.
-Ran 'TestCvt-u32-u64' for 7 iterations.
+Ran 'TestCvt-u32-u16' for 8 iterations.
+Ran 'TestCvt-u32-u32' for 8 iterations.
+Ran 'TestCvt-u32-u64' for 6 iterations.
 Ran 'TestCvt-u32-s8' for 7 iterations.
 Ran 'TestCvt-u32-s16' for 8 iterations.
-Ran 'TestCvt-u32-s32' for 6 iterations.
-Ran 'TestCvt-u32-s64' for 8 iterations.
+Ran 'TestCvt-u32-s32' for 8 iterations.
+Ran 'TestCvt-u32-s64' for 6 iterations.
 Ran 'TestCvt-u32-f32' for 5 iterations.
 Ran 'TestCvt-u32-f32-ftz-sat-rzi' for 5 iterations.
 Ran 'TestCvt-u32-f64' for 5 iterations.
-Ran 'TestCvt-u64-u8' for 6 iterations.
-Ran 'TestCvt-u64-u16' for 7 iterations.
+Ran 'TestCvt-u64-u8' for 5 iterations.
+Ran 'TestCvt-u64-u16' for 6 iterations.
 Ran 'TestCvt-u64-u32' for 6 iterations.
-Ran 'TestCvt-u64-u64' for 7 iterations.
+Ran 'TestCvt-u64-u64' for 5 iterations.
 Ran 'TestCvt-u64-s8' for 7 iterations.
-Ran 'TestCvt-u64-s16' for 7 iterations.
-Ran 'TestCvt-u64-s32' for 6 iterations.
-Ran 'TestCvt-u64-s64' for 7 iterations.
-Ran 'TestCvt-u64-f32' for 5 iterations.
-Ran 'TestCvt-u64-f64' for 5 iterations.
-Ran 'TestCvt-s8-u8' for 7 iterations.
+Ran 'TestCvt-u64-s16' for 8 iterations.
+Ran 'TestCvt-u64-s32' for 9 iterations.
+Ran 'TestCvt-u64-s64' for 8 iterations.
+Ran 'TestCvt-u64-f32' for 6 iterations.
+Ran 'TestCvt-u64-f64' for 6 iterations.
+Ran 'TestCvt-s8-u8' for 8 iterations.
 Ran 'TestCvt-s8-u16' for 8 iterations.
-Ran 'TestCvt-s8-u32' for 6 iterations.
+Ran 'TestCvt-s8-u32' for 9 iterations.
 Ran 'TestCvt-s8-u64' for 8 iterations.
-Ran 'TestCvt-s8-s8' for 7 iterations.
+Ran 'TestCvt-s8-s8' for 8 iterations.
 Ran 'TestCvt-s8-s16' for 8 iterations.
-Ran 'TestCvt-s8-s32' for 6 iterations.
+Ran 'TestCvt-s8-s32' for 9 iterations.
 Ran 'TestCvt-s8-s64' for 8 iterations.
 Ran 'TestCvt-s8-f32' for 5 iterations.
-Ran 'TestCvt-s8-f64' for 5 iterations.
+Ran 'TestCvt-s8-f64' for 6 iterations.
 Ran 'TestCvt-s16-u8' for 7 iterations.
-Ran 'TestCvt-s16-u16' for 7 iterations.
-Ran 'TestCvt-s16-u32' for 6 iterations.
-Ran 'TestCvt-s16-u64' for 7 iterations.
+Ran 'TestCvt-s16-u16' for 6 iterations.
+Ran 'TestCvt-s16-u32' for 8 iterations.
+Ran 'TestCvt-s16-u64' for 6 iterations.
 Ran 'TestCvt-s16-s8' for 7 iterations.
 Ran 'TestCvt-s16-s16' for 8 iterations.
-Ran 'TestCvt-s16-s32' for 6 iterations.
+Ran 'TestCvt-s16-s32' for 9 iterations.
 Ran 'TestCvt-s16-s64' for 7 iterations.
-Ran 'TestCvt-s16-f32' for 4 iterations.
-Ran 'TestCvt-s16-f64' for 4 iterations.
-Ran 'TestCvt-s32-u8' for 7 iterations.
+Ran 'TestCvt-s16-f32' for 7 iterations.
+Ran 'TestCvt-s16-f64' for 6 iterations.
+Ran 'TestCvt-s32-u8' for 8 iterations.
 Ran 'TestCvt-s32-u16' for 8 iterations.
-Ran 'TestCvt-s32-u32' for 6 iterations.
+Ran 'TestCvt-s32-u32' for 9 iterations.
 Ran 'TestCvt-s32-u64' for 7 iterations.
-Ran 'TestCvt-s32-s8' for 7 iterations.
-Ran 'TestCvt-s32-s16' for 8 iterations.
-Ran 'TestCvt-s32-s32' for 6 iterations.
+Ran 'TestCvt-s32-s8' for 8 iterations.
+Ran 'TestCvt-s32-s16' for 6 iterations.
+Ran 'TestCvt-s32-s32' for 9 iterations.
 Ran 'TestCvt-s32-s64' for 8 iterations.
 Ran 'TestCvt-s32-f32' for 5 iterations.
-Ran 'TestCvt-s32-f64' for 5 iterations.
+Ran 'TestCvt-s32-f64' for 6 iterations.
 Ran 'TestCvt-s64-u8' for 7 iterations.
-Ran 'TestCvt-s64-u16' for 7 iterations.
-Ran 'TestCvt-s64-u32' for 6 iterations.
+Ran 'TestCvt-s64-u16' for 8 iterations.
+Ran 'TestCvt-s64-u32' for 9 iterations.
 Ran 'TestCvt-s64-u64' for 8 iterations.
-Ran 'TestCvt-s64-s8' for 7 iterations.
-Ran 'TestCvt-s64-s16' for 7 iterations.
-Ran 'TestCvt-s64-s32' for 6 iterations.
-Ran 'TestCvt-s64-s64' for 8 iterations.
-Ran 'TestCvt-s64-f32' for 5 iterations.
-Ran 'TestCvt-s64-f64' for 5 iterations.
-Ran 'TestCvt-f32-u8' for 7 iterations.
+Ran 'TestCvt-s64-s8' for 8 iterations.
+Ran 'TestCvt-s64-s16' for 9 iterations.
+Ran 'TestCvt-s64-s32' for 9 iterations.
+Ran 'TestCvt-s64-s64' for 7 iterations.
+Ran 'TestCvt-s64-f32' for 7 iterations.
+Ran 'TestCvt-s64-f64' for 7 iterations.
+Ran 'TestCvt-f32-u8' for 8 iterations.
 Ran 'TestCvt-f32-u16' for 8 iterations.
-Ran 'TestCvt-f32-u32' for 6 iterations.
-Ran 'TestCvt-f32-u64' for 8 iterations.
-Ran 'TestCvt-f32-s8' for 7 iterations.
-Ran 'TestCvt-f32-s16' for 9 iterations.
-Ran 'TestCvt-f32-s32' for 7 iterations.
+Ran 'TestCvt-f32-u32' for 9 iterations.
+Ran 'TestCvt-f32-u64' for 7 iterations.
+Ran 'TestCvt-f32-s8' for 8 iterations.
+Ran 'TestCvt-f32-s16' for 8 iterations.
+Ran 'TestCvt-f32-s32' for 9 iterations.
 Ran 'TestCvt-f32-s64' for 8 iterations.
 Ran 'TestCvt-f32-f32' for 7 iterations.
 Ran 'TestCvt-f32-f32-rz' for 6 iterations.
 Ran 'TestCvt-f32-f64' for 7 iterations.
-Ran 'TestCvt-f64-u8' for 7 iterations.
+Ran 'TestCvt-f64-u8' for 8 iterations.
 Ran 'TestCvt-f64-u16' for 8 iterations.
-Ran 'TestCvt-f64-u32' for 6 iterations.
-Ran 'TestCvt-f64-u64' for 7 iterations.
-Ran 'TestCvt-f64-s8' for 7 iterations.
+Ran 'TestCvt-f64-u32' for 9 iterations.
+Ran 'TestCvt-f64-u64' for 8 iterations.
+Ran 'TestCvt-f64-s8' for 8 iterations.
 Ran 'TestCvt-f64-s16' for 8 iterations.
-Ran 'TestCvt-f64-s32' for 6 iterations.
+Ran 'TestCvt-f64-s32' for 9 iterations.
 Ran 'TestCvt-f64-s64' for 8 iterations.
-Ran 'TestCvt-f64-f32' for 6 iterations.
-Ran 'TestCvt-f64-f64' for 6 iterations.
-Ran 'TestLocalMemory-u8' for 6 iterations.
-Ran 'TestLocalMemory-u8-global' for 6 iterations.
+Ran 'TestCvt-f64-f32' for 7 iterations.
+Ran 'TestCvt-f64-f64' for 7 iterations.
+Ran 'TestLocalMemory-u8' for 7 iterations.
+Ran 'TestLocalMemory-u8-global' for 7 iterations.
 Ran 'TestLocalMemory-u8-scoped' for 4 iterations.
 Ran 'TestLocalMemory-u8-global-scoped' for 4 iterations.
 
 
 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestParser
-INFO     Test completed in 38.8152868748 seconds
+INFO     Test completed in 36.3860170841 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -998,8 +2009,8 @@ Description: A test for the PTXParser class. Test Points: 1) Load a PTX file
              generating a new module, compare both to make sure that they match.
 
 
-Test Seed : 1308863766
-Test time : 38.7371
+Test Seed : 1308871452
+Test time : 36.3204
 
 Status : For file ../tests/ptx/sdk2.2/simpleTexture.ptx, Test Point 1 (Parse): Passed
 For file ../tests/ptx/sdk2.2/SobelFilter_kernels.ptx, Test Point 1 (Parse): Passed
@@ -1108,7 +2119,7 @@ For file ../tests/ptx/thrust/Sort.ptx, Test Point 1 (Parse): Passed
 
 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestDataflowGraph
-INFO     Test completed in 49.1512980461 seconds
+INFO     Test completed in 50.501541853 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -1123,8 +2134,8 @@ Description: A test for the DataflowGraph class. Test Points: 1)
              ranges spanning blocks are consistent.
 
 
-Test Seed : 1308863766
-Test time : 49.0741
+Test Seed : 1308871452
+Test time : 50.4341
 
 Status : Testing Generic Dataflow
  For File: ../tests/ptx/sdk2.2/simpleTexture.ptx
@@ -4961,7 +5972,7 @@ Testing SSA then back Dataflow
 
 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestPTXToLLVMTranslator
-INFO     Test completed in 70.2473359108 seconds
+INFO     Test completed in 69.1167690754 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -4974,8 +5985,8 @@ Description: This is a basic test that just tries to get through a
              translate them.
 
 
-Test Seed : 1308863766
-Test time : 70.1882
+Test Seed : 1308871452
+Test time : 69.0495
 
 Status : For file ../tests/ptx/sdk2.2/simpleTexture.ptx, Test Point 1 (Translate): Passed
 For file ../tests/ptx/sdk2.2/SobelFilter_kernels.ptx, Test Point 1 (Translate): Passed
@@ -5085,24 +6096,24 @@ For file ../tests/ptx/thrust/Sort.ptx, Test Point 1 (Translate): Passed
 
 INFO     
 Passing tests:
- (0.101s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestExternalFunctions : Passed
- (70.247s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestPTXToLLVMTranslator : Passed
- (0.095s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestIndirectFunctionCall : Passed
- (0.233s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestLLVMKernels : Passed
- (0.100s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaGlobals : Passed
- (49.151s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestDataflowGraph : Passed
- (0.143s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaTexture2D : Passed
- (0.081s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestEmulator : Passed
- (0.078s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestLLVMInstructions : Passed
- (0.114s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestDeviceSwitching : Passed
- (0.158s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaTextureArray : Passed
- (0.235s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaMalloc : Passed
- (11.036s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestPTXAssembly : Passed
- (0.086s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaSequence : Passed
- (0.081s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestInstructions : Passed
- (38.815s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestParser : Passed
- (0.130s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestKernels : Passed
- (0.109s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCalVectorScale : Passed
- (8.302s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestLexer : Passed
+ (0.087s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestInstructions : Passed
+ (0.120s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestExternalFunctions : Passed
+ (0.158s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestLLVMKernels : Passed
+ (0.136s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaGlobals : Passed
+ (0.096s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestDeviceSwitching : Passed
+ (0.088s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestEmulator : Passed
+ (0.067s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestLLVMInstructions : Passed
+ (50.502s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestDataflowGraph : Passed
+ (0.162s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaTextureArray : Passed
+ (0.210s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaMalloc : Passed
+ (11.524s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestPTXAssembly : Passed
+ (0.087s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaSequence : Passed
+ (0.088s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestIndirectFunctionCall : Passed
+ (36.386s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestParser : Passed
+ (0.118s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestKernels : Passed
+ (0.135s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaTexture2D : Passed
+ (0.058s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCalVectorScale : Passed
+ (9.040s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestLexer : Passed
+ (69.117s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestPTXToLLVMTranslator : Passed
  (0.083s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestFunctionCall : Passed
 

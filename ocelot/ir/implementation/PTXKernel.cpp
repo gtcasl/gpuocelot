@@ -190,9 +190,9 @@ PTXKernel::RegisterVector PTXKernel::getReferencedRegisters() const
 			for( unsigned int i = 0; i < 3; ++i )
 			{
 				const ir::PTXOperand& d = *operands[i];
-				
-				if( d.addressMode != ir::PTXOperand::Register ) continue;
-				
+				if( d.addressMode != ir::PTXOperand::Register &&
+					d.addressMode != ir::PTXOperand::ArgumentList ) continue;
+										
 				if( d.type != ir::PTXOperand::pred )
 				{
 					if( d.array.empty() )
@@ -216,6 +216,8 @@ PTXKernel::RegisterVector PTXKernel::getReferencedRegisters() const
 							operand != d.array.end(); ++operand )
 						{
 							report( "   Added %r" << operand->reg );
+							if( operand->addressMode
+								!= ir::PTXOperand::Register ) continue;
 							analysis::DataflowGraph::Register live_reg( 
 								operand->reg, operand->type );
 							if (addedRegisters.find(live_reg.id)

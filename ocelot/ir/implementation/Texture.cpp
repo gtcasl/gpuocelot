@@ -14,8 +14,9 @@
 
 namespace ir
 {
-	Texture::Texture(const std::string& n, SurfaceType _surfType) : name(n), surfaceType(_surfType),
-		normalize(false),  type(Invalid), size( Dim3(0, 0, 0) ), data( 0 ) {
+	Texture::Texture(const std::string& n, SurfaceType _surfType, Type t)
+	: name(n), surfaceType(_surfType),
+		normalize(false),  type(t), size( Dim3(0, 0, 0) ), data( 0 ) {
 		
 	}
 	

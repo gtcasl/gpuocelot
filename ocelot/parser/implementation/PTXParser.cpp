@@ -75,7 +75,7 @@ namespace parser
 			toType = argumentTypes.begin(); fromType != t.argumentTypes.end();
 			++fromType, ++toType )
 		{
-			if( !ir::PTXOperand::relaxedValid( *fromType, *toType ) )
+			if( !ir::PTXOperand::relaxedValid( *toType, *fromType ) )
 			{
 				return false;
 			}

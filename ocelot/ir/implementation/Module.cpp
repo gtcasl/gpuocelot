@@ -300,6 +300,21 @@ ir::Texture* ir::Module::getTexture(const std::string& name) {
 	return 0;
 }
 
+ir::Texture* ir::Module::insertTexture(const Texture& texture) {
+	typedef std::pair<TextureMap::iterator, bool> Insertion;
+	
+	loadNow();
+	
+	Insertion insertion = _textures.insert(
+		std::make_pair(texture.name, texture));
+	if(!insertion.second) {
+		throw hydrazine::Exception("Inserted duplicated texture - " 
+			+ texture.name);
+	}
+	
+	return &insertion.first->second;
+}
+
 ir::Global* ir::Module::getGlobal(const std::string& name) {
 	loadNow();
 	GlobalMap::iterator global = _globals.find(name);
@@ -307,6 +322,21 @@ ir::Global* ir::Module::getGlobal(const std::string& name) {
 		return &global->second;
 	}
 	return 0;
+}
+
+ir::Global* ir::Module::insertGlobal(const Global& global) {
+	typedef std::pair<GlobalMap::iterator, bool> Insertion;
+	
+	loadNow();
+	
+	Insertion insertion = _globals.insert(
+		std::make_pair(global.name(), global));
+	
+	if(!insertion.second) {
+		throw hydrazine::Exception("Inserted duplicated global - " 
+			+ global.name());
+	}
+	return &insertion.first->second;
 }
 
 const std::string& ir::Module::path() const {

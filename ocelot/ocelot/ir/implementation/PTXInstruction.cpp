@@ -368,6 +368,7 @@ std::string ir::PTXInstruction::toString( Opcode opcode ) {
 		case Reconverge: return "reconverge"; break;
 		case Phi:        return "phi";        break;
 		case Nop:        return "nop";        break;
+		case Invalid_Opcode: break;
 	}
 	return "INVALID";
 }

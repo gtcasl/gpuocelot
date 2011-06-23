@@ -107,7 +107,8 @@ namespace ir {
 			// Special instructions inserted by the analysis procedures
 			Reconverge,
 			Phi,
-			Nop
+			Nop,
+			Invalid_Opcode
 		};
 
 		/*!

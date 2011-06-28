@@ -7074,109 +7074,112 @@ void PTXToLLVMTranslator::_convert( const ir::LLVMInstruction::Operand& d,
 		{
 			ir::LLVMInstruction::Operand tempA = a;
 			
-			if( modifier & ir::PTXInstruction::rn )
+			if( !ir::PTXOperand::isFloat( dType ) )
 			{
-				ir::LLVMFcmp compare;
+				if( modifier & ir::PTXInstruction::rn )
+				{
+					ir::LLVMFcmp compare;
 				
-				compare.d.type.category 
-					= ir::LLVMInstruction::Type::Element;
-				compare.d.type.type = ir::LLVMInstruction::I1;
-				compare.d.name = _tempRegister();
-				compare.comparison = ir::LLVMInstruction::Olt;
+					compare.d.type.category 
+						= ir::LLVMInstruction::Type::Element;
+					compare.d.type.type = ir::LLVMInstruction::I1;
+					compare.d.name = _tempRegister();
+					compare.comparison = ir::LLVMInstruction::Olt;
 
-				compare.a = tempA;
-				compare.b.constant = true;
-				compare.b.f32 = 0.0;
-				compare.b.type.category 
-					= ir::LLVMInstruction::Type::Element;
-				compare.b.type.type = ir::LLVMInstruction::F32;
+					compare.a = tempA;
+					compare.b.constant = true;
+					compare.b.f32 = 0.0;
+					compare.b.type.category 
+						= ir::LLVMInstruction::Type::Element;
+					compare.b.type.type = ir::LLVMInstruction::F32;
 				
-				_add( compare );
+					_add( compare );
 				
-				ir::LLVMSelect select;
+					ir::LLVMSelect select;
 				
-				select.d = tempA;
-				select.d.name = _tempRegister();
+					select.d = tempA;
+					select.d.name = _tempRegister();
 				
-				select.condition = compare.d;
-				select.a = compare.b;
-				select.a.f32 = -0.5;
-				select.b = compare.b;
-				select.b.f32 = 0.5;
+					select.condition = compare.d;
+					select.a = compare.b;
+					select.a.f32 = -0.5;
+					select.b = compare.b;
+					select.b.f32 = 0.5;
 				
-				_add( select );
+					_add( select );
 				
-				ir::LLVMFadd add;
+					ir::LLVMFadd add;
 				
-				add.d = tempA;
-				add.d.name = _tempRegister();
-				add.a = tempA;
+					add.d = tempA;
+					add.d.name = _tempRegister();
+					add.a = tempA;
 				
-				add.b = select.d;
+					add.b = select.d;
 				
-				_add( add );
+					_add( add );
 
-				ir::LLVMFptosi fptosi;
+					ir::LLVMFptosi fptosi;
 				
-				fptosi.d.name = _tempRegister();
-				fptosi.d.type.category = ir::LLVMInstruction::Type::Element;
-				fptosi.d.type.type = ir::LLVMInstruction::I32;
+					fptosi.d.name = _tempRegister();
+					fptosi.d.type.category = ir::LLVMInstruction::Type::Element;
+					fptosi.d.type.type = ir::LLVMInstruction::I32;
 
-				fptosi.a = add.d;
+					fptosi.a = add.d;
 				
-				_add( fptosi );
+					_add( fptosi );
 
-				ir::LLVMSitofp sitofp;
+					ir::LLVMSitofp sitofp;
 				
-				sitofp.d.name = _tempRegister();
-				sitofp.d.type.category = ir::LLVMInstruction::Type::Element;
-				sitofp.d.type.type = ir::LLVMInstruction::F32;
+					sitofp.d.name = _tempRegister();
+					sitofp.d.type.category = ir::LLVMInstruction::Type::Element;
+					sitofp.d.type.type = ir::LLVMInstruction::F32;
 
-				sitofp.a = fptosi.d;
+					sitofp.a = fptosi.d;
 				
-				_add( sitofp );
+					_add( sitofp );
 				
-				tempA = sitofp.d;
-			}
-			else if( modifier & ir::PTXInstruction::rm )
-			{
-				ir::LLVMFsub subtract;
+					tempA = sitofp.d;
+				}
+				else if( modifier & ir::PTXInstruction::rm )
+				{
+					ir::LLVMFsub subtract;
 				
-				subtract.d.name = _tempRegister();
-				subtract.d.type.category = ir::LLVMInstruction::Type::Element;
-				subtract.d.type.type = ir::LLVMInstruction::F32;
+					subtract.d.name = _tempRegister();
+					subtract.d.type.category = ir::LLVMInstruction::Type::Element;
+					subtract.d.type.type = ir::LLVMInstruction::F32;
 
-				subtract.a = tempA;
+					subtract.a = tempA;
 				
-				subtract.b.constant = true;
-				subtract.b.f32 = 0.5;
-				subtract.b.type.category 
-					= ir::LLVMInstruction::Type::Element;
-				subtract.b.type.type = ir::LLVMInstruction::F32;
+					subtract.b.constant = true;
+					subtract.b.f32 = 0.5;
+					subtract.b.type.category 
+						= ir::LLVMInstruction::Type::Element;
+					subtract.b.type.type = ir::LLVMInstruction::F32;
 				
-				_add( subtract );
+					_add( subtract );
 				
-				tempA = subtract.d;
-			}
-			else if( modifier & ir::PTXInstruction::rp )
-			{
-				ir::LLVMFadd add;
+					tempA = subtract.d;
+				}
+				else if( modifier & ir::PTXInstruction::rp )
+				{
+					ir::LLVMFadd add;
 				
-				add.d.name = _tempRegister();
-				add.d.type.category = ir::LLVMInstruction::Type::Element;
-				add.d.type.type = ir::LLVMInstruction::F32;
+					add.d.name = _tempRegister();
+					add.d.type.category = ir::LLVMInstruction::Type::Element;
+					add.d.type.type = ir::LLVMInstruction::F32;
 
-				add.a = tempA;
+					add.a = tempA;
 				
-				add.b.constant = true;
-				add.b.f32 = 0.5;
-				add.b.type.category 
-					= ir::LLVMInstruction::Type::Element;
-				add.b.type.type = ir::LLVMInstruction::F32;
+					add.b.constant = true;
+					add.b.f32 = 0.5;
+					add.b.type.category 
+						= ir::LLVMInstruction::Type::Element;
+					add.b.type.type = ir::LLVMInstruction::F32;
 				
-				_add( add );
+					_add( add );
 				
-				tempA = add.d;
+					tempA = add.d;
+				}
 			}
 			
 			if( (ir::PTXInstruction::sat & modifier) &&

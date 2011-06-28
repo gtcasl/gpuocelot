@@ -44,13 +44,13 @@ public:
 public:
 	ir::Kernel* translatedKernel() const;
 
-private:
+protected:
 	typedef std::vector< analysis::DataflowGraph::Register > 
 		RegisterVector;
 	typedef std::vector< std::string > StringVector;
 	typedef std::unordered_set< std::string > StringSet;
 
-private:
+protected:
 	ir::LLVMKernel*                _llvmKernel;
 	unsigned int                   _tempRegisterCount;
 	unsigned int                   _tempCCRegisterCount;
@@ -62,7 +62,7 @@ private:
 	analysis::DataflowGraph*       _dfg;
 	const ir::ExternalFunctionSet* _externals;
 
-private:
+protected:
 	static ir::LLVMInstruction::DataType _translate( 
 		ir::PTXOperand::DataType type );
 	static void _doubleWidth( ir::LLVMInstruction::DataType& v );
@@ -72,7 +72,7 @@ private:
 	static ir::LLVMInstruction::Type _getCtaContextType();
 	static ir::LLVMInstruction::Operand _context();
 
-private:
+protected:
 	void _debug( const analysis::DataflowGraph::Block& b );
 	void _debug( const analysis::DataflowGraph::Instruction& i );
 	void _reportReads( const analysis::DataflowGraph::Instruction& i );
@@ -84,7 +84,7 @@ private:
 	void _addMemoryCheckingDeclarations();
 	void _insertDebugSymbols();
 	
-private:
+protected:
 	void _yield( unsigned int type, const ir::LLVMInstruction::Operand&
 		continuation = ir::LLVMInstruction::Operand() );
 
@@ -92,7 +92,7 @@ private:
 	void _swapAllExceptName( ir::LLVMInstruction::Operand& o, 
 		const ir::PTXOperand& i );
 
-private:
+protected:
 	void _translateInstructions();
 	void _newBlock( const std::string& name );
 	void _translate( const analysis::DataflowGraph::Instruction& i, 
@@ -169,7 +169,7 @@ private:
 	void _translateVote( const ir::PTXInstruction& i );
 	void _translateXor( const ir::PTXInstruction& i );
 
-private:
+protected:
 	void _bitcast( const ir::PTXInstruction& i );
 	void _bitcast( const ir::PTXOperand& d, const ir::PTXOperand& s );
 	void _bitcast( const ir::LLVMInstruction::Operand& d, 
@@ -195,7 +195,7 @@ private:
 	void _ceil( const ir::LLVMInstruction::Operand& d, 
 		const ir::LLVMInstruction::Operand& a );
 
-private:
+protected:
 	std::string _tempRegister();
 	std::string _loadSpecialRegister( 
 		ir::PTXOperand::SpecialRegister s, 
@@ -225,7 +225,7 @@ private:
 	
 	void _initializeRegisters();
 
-private:
+protected:
 	void _addStackAllocations();
 	void _addTextureCalls();
 	void _addSurfaceCalls();

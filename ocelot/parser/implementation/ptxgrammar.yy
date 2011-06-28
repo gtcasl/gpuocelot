@@ -1405,7 +1405,7 @@ colorComponent : colorComponentId
 tld4 : OPCODE_TLD4 colorComponent TOKEN_2D TOKEN_V4 dataType dataType
 	arrayOperand ',' '[' operand ',' arrayOperand ']' ';'
 {
-	state.tld4( $<value>4 );
+	state.tld4( $<value>5 );
 };
 
 //

@@ -2126,14 +2126,7 @@ namespace parser
 			case TOKEN_F64:  return ir::PTXOperand::f64; break;
 			default:
 			{
-				Exception exception;
-				exception.error = State::InvalidDataType;
-				
-				std::stringstream stream;
-				stream << token;
-				exception.message = "Got invalid data type " + stream.str();
-				report("PTXParser::tokenToDataType(" << token << ") - " << exception.message);
-				throw exception;
+				assertM(false, "Parsed invalid data type");
 				break;
 			}
 		}

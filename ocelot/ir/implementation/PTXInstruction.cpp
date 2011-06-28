@@ -1809,8 +1809,8 @@ std::string ir::PTXInstruction::valid() const {
 					+ PTXOperand::toString( type );
 			}
 			if( c.type != PTXOperand::f32 ) {
-				return "invalid source C type " 
-					+ PTXOperand::toString( d.type );
+				return "source C type must be f32 " 
+					+ PTXOperand::toString( c.type );
 			}
 			if( c.vec != PTXOperand::v2 ) {
 				return "operand C must be a 2-component vector ";

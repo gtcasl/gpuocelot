@@ -1,0 +1,453 @@
+.version 2.0
+
+.visible .func () gregtest (.param .u32 p1, .param .u32 p2)
+
+  // CPU Function "closest_hit_radiance"
+  //    from /Users/greg/Perforce/cpu/build/lib/ptx/tex_test_generated_textured_material.cu.ptx
+.visible .func () closest_hit_radiance(.param .align 8 .u32 __optix__cpu__parameters__[512])
+     .visible  .func _rt_trace_optix_cpu (.param .u32 $passback, .param .u32 $node, .param .f32 $ox, .param .f32 $oy, .param .f32 $oz, .param .f32 $dx, .param .f32 $dy, .param .f32 $dz, .param .u32 $raytype, .param .f32 $tmin, .param .f32 $tmax, .param .u32 $prd, .param .u32 $prd_size)
+     .visible  .func _rt_trace_64_optix_cpu (.param .u64 $passback, .param .u32 $node, .param .f32 $ox, .param .f32 $oy, .param .f32 $oz, .param .f32 $dx, .param .f32 $dy, .param .f32 $dz, .param .u32 $raytype, .param .f32 $tmin, .param .f32 $tmax, .param .u64 $prd, .param .u32 $prd_size)
+     .visible  .func () _rti_compute_aabb_geometry_instance_64_optix_cpu (.param .u64 $passback, .param .u32 $instance, .param .u32 $primitive, .param .u64 $buffer)
+     .visible  .func () _rti_compute_aabb_geometry_instance_optix_cpu (.param .u32 $passback, .param .u32 $instance, .param .u32 $primitive, .param .u32 $buffer)
+     .visible  .func () _rt_cpu_debug_string_optix_cpu (.param .u32 $passback, .param .u32 $val)
+     .visible  .func () _rt_cpu_debug_string_64_optix_cpu (.param .u64 $passback, .param .u64 $val)
+     .visible  .func (.param .u32 $bool) _rt_report_intersection_optix_cpu (.param .u64 $passback, .param .u32 $matl)
+     .visible  .func () _rt_intersect_child_optix_cpu (.param .u64 $passback, .param .u32 $index)
+     .visible  .func () _rt_ignore_intersection_optix_cpu (.param .u64 $passback)
+     .visible  .func () _rt_terminate_ray_optix_cpu (.param .u64 $passback)
+     .visible  .func () _rt_throw_optix_cpu (.param .u64 $passback, .param .u32 $code)
+     .visible  .func () _rti_intersect_primitive_optix_cpu (.param .u64 $passback, .param .u32 $child, .param .u32 $primitive)
+     .visible  .func () _rti_node_visit_2_optix_cpu (.param .u64 $passback)
+     .visible  .func (.param .u32 $bool) _rt_potential_intersection_optix_cpu (.param .u64 $passback, .param .f32 $t)
+     .visible  .func () _rt_transform_tuple_optix_cpu(.param .u64 $passback, .param .u32 $id, .param .f32 $a0, .param .f32 $a1, .param .f32 $a2, .param .f32 $a3, .param .u64 $result_pointer)
+     .visible  .func () _rt_get_transform_optix_cpu(.param .u64 $passback, .param .u32 $kind, .param .u64 $result_pointer )
+     .visible  .func () _rti_intersect_node_optix_cpu (.param .u64 $passback, .param .u32 $child)
+     .visible  .func () _rt_cpu_debug_optix_cpu (.param .u64 $passback, .param .u32 $val)
+     .visible  .func () _rt_cpu_debug_float_optix_cpu (.param .u64 $passback, .param .f32 $val)
+     .visible  .func () _rti_transform_push_optix_cpu(.param .u64 $passback)
+     .visible  .func () _rti_transform_pop_optix_cpu(.param .u64 $passback)
+.global .align 4 .s32 _ZN19rti_internal_device16execution_failedE;
+.global .align 16 .b8 object_records[16920];
+.global .align 1 .b8 __constant937_optix_0[47] = {67, 97, 117, 103, 104, 116, 32, 101, 120, 99, 101, 112, 116, 105, 111, 110, 32, 48, 120, 37, 88, 32, 97, 116, 32, 108, 97, 117, 110, 99, 104, 32, 105, 110, 100, 101, 120, 32, 40, 37, 100, 44, 37, 100, 41, 10, 0};
+.global .align 16 .b8 ray[36];
+.global .align 16 .b8 prd[20];
+.global .align 8 .b8 texcoord[12];
+.global .align 16 .b8 geometric_normal[12];
+.global .align 16 .b8 shading_normal[12];
+.global .align 4 .f32 t_hit;
+.global .align 1 .b8 lights[1];
+.global .align 4 .b8 _ZN21rti_internal_typeinfo3rayE[8] = {82, 97, 121, 0, 36, 0, 0, 0};
+.global .align 4 .b8 _ZN21rti_internal_typeinfo5t_hitE[8] = {82, 97, 121, 0, 4, 0, 0, 0};
+.global .align 4 .b8 _ZN21rti_internal_typeinfo3prdE[8] = {82, 97, 121, 0, 20, 0, 0, 0};
+.global .align 4 .b8 _ZN21rti_internal_typeinfo8texcoordE[8] = {82, 97, 121, 0, 12, 0, 0, 0};
+.global .align 4 .b8 _ZN21rti_internal_typeinfo16geometric_normalE[8] = {82, 97, 121, 0, 12, 0, 0, 0};
+.global .align 4 .b8 _ZN21rti_internal_typeinfo14shading_normalE[8] = {82, 97, 121, 0, 12, 0, 0, 0};
+.global .align 1 .b8 _ZN21rti_internal_typename3rayE[11] = {111, 112, 116, 105, 120, 58, 58, 82, 97, 121, 0};
+.global .align 1 .b8 _ZN21rti_internal_typename5t_hitE[6] = {102, 108, 111, 97, 116, 0};
+.global .align 1 .b8 _ZN21rti_internal_typename3prdE[20] = {80, 101, 114, 82, 97, 121, 68, 97, 116, 97, 95, 114, 97, 100, 105, 97, 110, 99, 101, 0};
+.global .align 1 .b8 _ZN21rti_internal_typename8texcoordE[7] = {102, 108, 111, 97, 116, 51, 0};
+.global .align 1 .b8 _ZN21rti_internal_typename16geometric_normalE[7] = {102, 108, 111, 97, 116, 51, 0};
+.global .align 1 .b8 _ZN21rti_internal_typename14shading_normalE[7] = {102, 108, 111, 97, 116, 51, 0};
+.global .align 1 .b8 _ZN21rti_internal_semantic3rayE[13] = {114, 116, 67, 117, 114, 114, 101, 110, 116, 82, 97, 121, 0};
+.global .align 1 .b8 _ZN21rti_internal_semantic5t_hitE[23] = {114, 116, 73, 110, 116, 101, 114, 115, 101, 99, 116, 105, 111, 110, 68, 105, 115, 116, 97, 110, 99, 101, 0};
+.global .align 1 .b8 _ZN21rti_internal_semantic3prdE[10] = {114, 116, 80, 97, 121, 108, 111, 97, 100, 0};
+.global .align 1 .b8 _ZN21rti_internal_semantic8texcoordE[19] = {97, 116, 116, 114, 105, 98, 117, 116, 101, 32, 116, 101, 120, 99, 111, 111, 114, 100, 0};
+.global .align 1 .b8 _ZN21rti_internal_semantic16geometric_normalE[27] = {97, 116, 116, 114, 105, 98, 117, 116, 101, 32, 103, 101, 111, 109, 101, 116, 114, 105, 99, 95, 110, 111, 114, 109, 97, 108, 0};
+.global .align 1 .b8 _ZN21rti_internal_semantic14shading_normalE[25] = {97, 116, 116, 114, 105, 98, 117, 116, 101, 32, 115, 104, 97, 100, 105, 110, 103, 95, 110, 111, 114, 109, 97, 108, 0};
+.global .align 1 .b8 _ZN23rti_internal_annotation3rayE[1] = {0};
+.global .align 1 .b8 _ZN23rti_internal_annotation5t_hitE[1] = {0};
+.global .align 1 .b8 _ZN23rti_internal_annotation3prdE[1] = {0};
+.global .align 1 .b8 _ZN23rti_internal_annotation8texcoordE[1] = {0};
+.global .align 1 .b8 _ZN23rti_internal_annotation16geometric_normalE[1] = {0};
+.global .align 1 .b8 _ZN23rti_internal_annotation14shading_normalE[1] = {0};
+.visible .func () closest_hit_radiance(.param .align 8 .u32 __optix__cpu__parameters__[512])
+{
+  .param .u32 p1;
+  .param .u32 p2;
+  .reg   .u32 testreg<2>;
+.local .align 4 .f32 _rt_transform_tuple_retlocalstorage0[4];
+.local .align 4 .f32 _rt_transform_tuple_retlocalstorage1[4];
+  .reg .u64 $cpu_passback;
+  .reg .u64 $object_records;
+  .reg .u64 $page_table;
+  .reg .u64 $page_request_bits;
+  .reg .u64 $current_program_ptr;
+  .reg .u32 $virtual_pc;
+  .reg .u32 $current_vpc;
+  .reg .u32 $return_vpc;
+  .reg .u64 $current_node;
+  .reg .u64 $current_geometry;
+  .reg .u64 $current_instance;
+  .reg .u64 $current_material;
+  .reg .u64 $closest_instance;
+  .reg .u64 $closest_material;
+  .reg .u64 $current_attribute_frame;
+  .reg .u64 $closest_attribute_frame;
+  .reg .u32 $rayIndex_x;
+  .reg .u32 $rayIndex_y;
+  .reg .u32 $rayIndex_z;
+  .reg .u32 $launchDim_x;
+  .reg .u32 $launchDim_y;
+  .reg .u32 $launchDim_z;
+  .reg .u64 $current_prd;
+  .reg .s32 $current_primitive;
+  .reg .u64 $stack_cur;
+  .reg .u32 $terminate_closure;
+  .reg .f32 $ray_ox;
+  .reg .f32 $ray_oy;
+  .reg .f32 $ray_oz;
+  .reg .f32 $ray_dx;
+  .reg .f32 $ray_dy;
+  .reg .f32 $ray_dz;
+  .reg .f32 $ray_tmin;
+  .reg .f32 $ray_tmax;
+  .reg .s32 $ray_type;
+  .reg .f32 $saved_tmax;
+  .reg .u32 $vpc_visitation;
+  .reg .u32 $warp_activation;
+  .reg .u32 $device_id;
+  .reg .u32 $trav_bvh_cur;
+  .reg .u32 $trav_bvh_sp;
+  .reg .u32 $trav_bvh_prim_begin;
+  .reg .u32 $trav_bvh_prim_end;
+  .reg .u64 $trav_bvh_stack;
+  .reg .u32 $coords0_reg0;
+  .reg .u32 $coords0_reg1;
+  .reg .u32 $coords0_reg2;
+  .reg .u32 $coords0_reg3;
+  .reg .u32 $coords0_reg4;
+  .reg .f32 $coords0_reg5;
+  .reg .u64 $bufferAddr<6>;
+  .reg .u64 $bufferFetchAddr<4>;
+  .reg .u64 $buffer_address<20>;
+  .reg .f32 $coord_floor<2>;
+  .reg .f32 $coords1_reg<1>;
+  .reg .f32 $copy_f32_<15>;
+  .reg .u32 $copy_u32_<20>;
+  .reg .u64 $current_program<16>;
+  .reg .u64 $exception_64_detail<10>;
+  .reg .u32 $exception_detail<10>;
+  .reg .f32 $floatValues0_reg<1>;
+  .reg .f32 $floatValues1_reg<1>;
+  .reg .f32 $floatValues2_reg<1>;
+  .reg .f32 $floatValues3_reg<1>;
+  .reg .u32 $lookup00_<1>;
+  .reg .u32 $lookup01_<1>;
+  .reg .u32 $lookup10_<1>;
+  .reg .u32 $lookup11_<1>;
+  .reg .u64 $offset<11>;
+  .reg .u32 $one<1>;
+  .reg .u32 $pos2_0_reg<1>;
+  .reg .u32 $pos2_1_reg<1>;
+  .reg .pred $prd<2>;
+  .reg .pred $pred<1>;
+  .reg .u64 $record_address<11>;
+  .reg .u64 $record_ptr<11>;
+  .reg .u64 $size<2>;
+  .reg .u64 $stride<2>;
+  .reg .f32 $texelPosGlobalFloat0_reg<6>;
+  .reg .f32 $texelPosGlobalFloat1_reg<1>;
+  .reg .u32 $texelPosGlobalInt0_reg<6>;
+  .reg .u32 $texelPosGlobalInt1_reg<1>;
+  .reg .f32 $textureSizeFloat<1>;
+  .reg .u32 $textureSizeInt0_reg<6>;
+  .reg .u32 $textureSizeInt1_reg<1>;
+  .reg .u32 $texunit<6>;
+  .reg .u64 $texunit_ptr<6>;
+  .reg .u64 $texunit_record<6>;
+  .reg .f32 $tmp<2>;
+  .reg .u64 $tmp_u64_<1>;
+  .reg .s32 $tmpint<1>;
+  .reg .f32 $val0_reg<1>;
+  .reg .f32 $val1_reg<1>;
+  .reg .f32 $val2_reg<1>;
+  .reg .f32 $val3_reg<1>;
+  .reg .u8 $valsToConvert0_reg<4>;
+  .reg .u8 $valsToConvert1_reg<4>;
+  .reg .u8 $valsToConvert2_reg<4>;
+  .reg .u8 $valsToConvert3_reg<4>;
+  .reg .f32 $weight00_<1>;
+  .reg .f32 $weight01_<1>;
+  .reg .f32 $weight10_<1>;
+  .reg .f32 $weight11_<1>;
+  .reg .f32 $weight_x0_<1>;
+  .reg .f32 $weight_x1_<1>;
+  .reg .f32 $wrapped<2>;
+  .reg .s32 $zero<1>;
+  .reg .f32 $zeroFloat<6>;
+  .reg .f32 %closest_hit_radiance_f<99>;
+  .reg .pred %closest_hit_radiance_p<4>;
+  .reg .u32 %closest_hit_radiance_r<26>;
+  .reg .u64 %closest_hit_radiance_rd<22>;
+  .reg .b32 A<8>;
+  .reg .u64 _rt_transform_tuple_retlocalstorage_addr<2>;
+  .param .align 8 .u64 $cpu_passback_param0;
+  .param .align 4 .u32 _rti_compute_aabb_geometry_instance_64_param0;
+  .param .align 4 .u32 _rti_compute_aabb_geometry_instance_64_param1;
+  .param .align 8 .u64 _rti_compute_aabb_geometry_instance_64_param2;
+  .param .align 8 .u64 $cpu_passback_param1;
+  .param .align 4 .u32 _rt_trace_64_param0;
+  .param .align 4 .f32 _rt_trace_64_param1;
+  .param .align 4 .f32 _rt_trace_64_param2;
+  .param .align 4 .f32 _rt_trace_64_param3;
+  .param .align 4 .f32 _rt_trace_64_param4;
+  .param .align 4 .f32 _rt_trace_64_param5;
+  .param .align 4 .f32 _rt_trace_64_param6;
+  .param .align 4 .u32 _rt_trace_64_param7;
+  .param .align 4 .f32 _rt_trace_64_param8;
+  .param .align 4 .f32 _rt_trace_64_param9;
+  .param .align 8 .u64 _rt_trace_64_param10;
+  .param .align 4 .u32 _rt_trace_64_param11;
+  .param .align 8 .u64 $cpu_passback_param2;
+  .param .align 8 .u64 $cpu_passback_param3;
+  .param .align 4 .u32 _rti_intersect_primitive_param0;
+  .param .align 4 .u32 _rti_intersect_primitive_param1;
+  .param .align 8 .u64 $cpu_passback_param4;
+  .param .align 4 .u32 _rt_transform_tuple_param0;
+  .param .align 4 .f32 _rt_transform_tuple_param1;
+  .param .align 4 .f32 _rt_transform_tuple_param2;
+  .param .align 4 .f32 _rt_transform_tuple_param3;
+  .param .align 4 .f32 _rt_transform_tuple_param4;
+  .param .align 8 .u64 _rt_transform_tuple_ret_arrayparam0;
+  .param .align 8 .u64 $cpu_passback_param5;
+  .param .align 4 .u32 _rt_transform_tuple_param5;
+  .param .align 4 .f32 _rt_transform_tuple_param6;
+  .param .align 4 .f32 _rt_transform_tuple_param7;
+  .param .align 4 .f32 _rt_transform_tuple_param8;
+  .param .align 4 .f32 _rt_transform_tuple_param9;
+  .param .align 8 .u64 _rt_transform_tuple_ret_arrayparam1;
+  .param .align 4 .s32 __cudaparma1__ZN5optix16rt_undefined_useEi;
+  .param .align 8 .u64 __cudaparma1__ZN5optix18rt_undefined_use64Ey;
+// This BB is not part of any VPC.
+  ld.param.u64	$closest_attribute_frame, [__optix__cpu__parameters__+112];
+  ld.param.u64	$cpu_passback, [__optix__cpu__parameters__];
+  ld.param.u64	$current_instance, [__optix__cpu__parameters__+72];
+  ld.param.u64	$current_prd, [__optix__cpu__parameters__+144];
+  ld.param.u64	$object_records, [__optix__cpu__parameters__+8];
+  ld.param.f32	$ray_dx, [__optix__cpu__parameters__+184];
+  ld.param.f32	$ray_dy, [__optix__cpu__parameters__+188];
+  ld.param.f32	$ray_dz, [__optix__cpu__parameters__+192];
+  ld.param.f32	$ray_ox, [__optix__cpu__parameters__+172];
+  ld.param.f32	$ray_oy, [__optix__cpu__parameters__+176];
+  ld.param.f32	$ray_oz, [__optix__cpu__parameters__+180];
+  ld.param.f32	$ray_tmax, [__optix__cpu__parameters__+200];
+  mov.s32	%closest_hit_radiance_r1, 7937;
+  ld.global.v4.f32	{%closest_hit_radiance_f1, %closest_hit_radiance_f2, %closest_hit_radiance_f3, _}, [$closest_attribute_frame+16];
+  mov.f32	%closest_hit_radiance_f7, 0F00000000; //  0
+  
+  // Call to _rt_transform_tuple begins
+  st.param.u64	[$cpu_passback_param4], $cpu_passback;
+  st.param.u32	[_rt_transform_tuple_param0], %closest_hit_radiance_r1;
+  st.param.f32	[_rt_transform_tuple_param1], %closest_hit_radiance_f1;
+  st.param.f32	[_rt_transform_tuple_param2], %closest_hit_radiance_f2;
+  st.param.f32	[_rt_transform_tuple_param3], %closest_hit_radiance_f3;
+  st.param.f32	[_rt_transform_tuple_param4], %closest_hit_radiance_f7;
+  mov.b64	_rt_transform_tuple_retlocalstorage_addr0, _rt_transform_tuple_retlocalstorage0;
+  st.param.u64	[_rt_transform_tuple_ret_arrayparam0], _rt_transform_tuple_retlocalstorage_addr0;
+  call.uni	_rt_transform_tuple_optix_cpu, ($cpu_passback_param4, _rt_transform_tuple_param0, _rt_transform_tuple_param1, _rt_transform_tuple_param2, _rt_transform_tuple_param3, _rt_transform_tuple_param4, _rt_transform_tuple_ret_arrayparam0);
+  ld.local.f32	%closest_hit_radiance_f9, [_rt_transform_tuple_retlocalstorage0];
+  ld.local.f32	%closest_hit_radiance_f10, [_rt_transform_tuple_retlocalstorage0+4];
+  ld.local.f32	%closest_hit_radiance_f11, [_rt_transform_tuple_retlocalstorage0+8];
+  // Call to _rt_transform_tuple ends
+  
+  mul.ftz.f32	%closest_hit_radiance_f17, %closest_hit_radiance_f10, %closest_hit_radiance_f10;
+  fma.rn.ftz.f32	%closest_hit_radiance_f18, %closest_hit_radiance_f9, %closest_hit_radiance_f9, %closest_hit_radiance_f17;
+  fma.rn.ftz.f32	%closest_hit_radiance_f19, %closest_hit_radiance_f11, %closest_hit_radiance_f11, %closest_hit_radiance_f18;
+  sqrt.approx.ftz.f32	%closest_hit_radiance_f20, %closest_hit_radiance_f19;
+  rcp.approx.ftz.f32	%closest_hit_radiance_f21, %closest_hit_radiance_f20;
+  mul.ftz.f32	%closest_hit_radiance_f22, %closest_hit_radiance_f21, %closest_hit_radiance_f9;
+  mul.ftz.f32	%closest_hit_radiance_f23, %closest_hit_radiance_f21, %closest_hit_radiance_f10;
+  mul.ftz.f32	%closest_hit_radiance_f24, %closest_hit_radiance_f21, %closest_hit_radiance_f11;
+  mov.s32	%closest_hit_radiance_r7, 7937;
+  ld.global.v4.f32	{%closest_hit_radiance_f25, %closest_hit_radiance_f26, %closest_hit_radiance_f27, _}, [$closest_attribute_frame];
+  mov.f32	%closest_hit_radiance_f31, 0F00000000; //  0
+  
+  // Call to _rt_transform_tuple begins
+  st.param.u64	[$cpu_passback_param5], $cpu_passback;
+  st.param.u32	[_rt_transform_tuple_param5], %closest_hit_radiance_r7;
+  st.param.f32	[_rt_transform_tuple_param6], %closest_hit_radiance_f25;
+  st.param.f32	[_rt_transform_tuple_param7], %closest_hit_radiance_f26;
+  st.param.f32	[_rt_transform_tuple_param8], %closest_hit_radiance_f27;
+  st.param.f32	[_rt_transform_tuple_param9], %closest_hit_radiance_f31;
+  mov.b64	_rt_transform_tuple_retlocalstorage_addr1, _rt_transform_tuple_retlocalstorage1;
+  st.param.u64	[_rt_transform_tuple_ret_arrayparam1], _rt_transform_tuple_retlocalstorage_addr1;
+  call.uni	_rt_transform_tuple_optix_cpu, ($cpu_passback_param5, _rt_transform_tuple_param5, _rt_transform_tuple_param6, _rt_transform_tuple_param7, _rt_transform_tuple_param8, _rt_transform_tuple_param9, _rt_transform_tuple_ret_arrayparam1);
+  // Call to _rt_transform_tuple ends
+  
+  fma.rn.ftz.f32	%closest_hit_radiance_f46, $ray_dx, $ray_tmax, $ray_ox;
+  fma.rn.ftz.f32	%closest_hit_radiance_f49, $ray_dy, $ray_tmax, $ray_oy;
+  fma.rn.ftz.f32	%closest_hit_radiance_f50, $ray_dz, $ray_tmax, $ray_oz;
+  ld.global.v2.f32	{%closest_hit_radiance_f51, %closest_hit_radiance_f52}, [$closest_attribute_frame+32];
+  ld.global.u32	$texunit_ptr5, [$current_instance+12];
+  add.u64	$texunit_record5, $texunit_ptr5, $object_records;
+  // Begin replacing dynamic texture fetch with static rewrite: diffuse_map
+  // Begin rewriteTextureStatic():
+  // begin load tex sizes
+  ld.global.u64	$bufferAddr5, [$texunit_record5+8];
+  ld.global.u32	$textureSizeInt0_reg5, [$texunit_record5+16];
+  shr.b32	$textureSizeInt1_reg0, $textureSizeInt0_reg5, 16U;
+  and.b32	$textureSizeInt0_reg5, $textureSizeInt0_reg5, 65535;
+  // end load tex sizes
+  // begin compute base texel offset
+  cvt.rz.f32.u32	$textureSizeFloat0, $textureSizeInt0_reg5;
+  // begin wrap mode
+  cvt.rmi.f32.f32	$coord_floor0, %closest_hit_radiance_f51;
+  sub.rz.sat.f32	$texelPosGlobalFloat0_reg5, %closest_hit_radiance_f51, $coord_floor0;
+  mad.f32	$texelPosGlobalFloat0_reg5, $texelPosGlobalFloat0_reg5, $textureSizeFloat0, 0Fbf000000; //  -0.5
+  add.rz.f32	$wrapped0, $textureSizeFloat0, $texelPosGlobalFloat0_reg5;
+  slct.f32.f32	$texelPosGlobalFloat0_reg5, $texelPosGlobalFloat0_reg5, $wrapped0, $texelPosGlobalFloat0_reg5;
+  // end wrap mode
+  cvt.rmi.u32.f32	$texelPosGlobalInt0_reg5, $texelPosGlobalFloat0_reg5;
+  cvt.rz.f32.u32	$textureSizeFloat0, $textureSizeInt1_reg0;
+  // begin wrap mode
+  cvt.rmi.f32.f32	$coord_floor1, %closest_hit_radiance_f52;
+  sub.rz.sat.f32	$texelPosGlobalFloat1_reg0, %closest_hit_radiance_f52, $coord_floor1;
+  mad.f32	$texelPosGlobalFloat1_reg0, $texelPosGlobalFloat1_reg0, $textureSizeFloat0, 0Fbf000000; //  -0.5
+  add.rz.f32	$wrapped1, $textureSizeFloat0, $texelPosGlobalFloat1_reg0;
+  slct.f32.f32	$texelPosGlobalFloat1_reg0, $texelPosGlobalFloat1_reg0, $wrapped1, $texelPosGlobalFloat1_reg0;
+  // end wrap mode
+  cvt.rmi.u32.f32	$texelPosGlobalInt1_reg0, $texelPosGlobalFloat1_reg0;
+  // end compute base texel offset
+  // begin RT_FILTER_LINEAR
+  cvt.rmi.f32.f32	$tmp0, $texelPosGlobalFloat0_reg5;
+  sub.f32	$weight_x1_0, $texelPosGlobalFloat0_reg5, $tmp0;
+  sub.f32	$weight_x0_0, 0F3f800000, $weight_x1_0; //  1
+  cvt.rmi.f32.f32	$tmp1, $texelPosGlobalFloat1_reg0;
+  sub.f32	$weight11_0, $texelPosGlobalFloat1_reg0, $tmp1;
+  sub.f32	$weight10_0, 0F3f800000, $weight11_0; //  1
+  mul.rn.f32	$weight00_0, $weight_x0_0, $weight10_0;
+  mul.rn.f32	$weight01_0, $weight_x1_0, $weight10_0;
+  mul.rn.f32	$weight10_0, $weight_x0_0, $weight11_0;
+  mul.rn.f32	$weight11_0, $weight_x1_0, $weight11_0;
+  mul.rz.f32	$weight00_0, $weight00_0, 0F3b808081; //  0.00392157
+  mul.rz.f32	$weight01_0, $weight01_0, 0F3b808081; //  0.00392157
+  mul.rz.f32	$weight10_0, $weight10_0, 0F3b808081; //  0.00392157
+  mul.rz.f32	$weight11_0, $weight11_0, 0F3b808081; //  0.00392157
+  add.u32	$pos2_0_reg0, $texelPosGlobalInt0_reg5, 1;
+  setp.ge.u32	$prd0, $pos2_0_reg0, $textureSizeInt0_reg5;
+  @$prd0 mov.u32	$pos2_0_reg0, 0;
+  add.u32	$pos2_1_reg0, $texelPosGlobalInt1_reg0, 1;
+  setp.ge.u32	$prd1, $pos2_1_reg0, $textureSizeInt1_reg0;
+  @$prd1 mov.u32	$pos2_1_reg0, 0;
+  mad.lo.u32	$lookup00_0, $textureSizeInt0_reg5, $texelPosGlobalInt1_reg0, $texelPosGlobalInt0_reg5;
+  mad.lo.u32	$lookup01_0, $textureSizeInt0_reg5, $texelPosGlobalInt1_reg0, $pos2_0_reg0;
+  mad.lo.u32	$lookup10_0, $textureSizeInt0_reg5, $pos2_1_reg0, $texelPosGlobalInt0_reg5;
+  mad.lo.u32	$lookup11_0, $textureSizeInt0_reg5, $pos2_1_reg0, $pos2_0_reg0;
+  mad.wide.u32	$bufferFetchAddr0, $lookup00_0, 4U, $bufferAddr5;
+  ld.global.v4.u8	{$valsToConvert0_reg0, $valsToConvert1_reg0, $valsToConvert2_reg0, $valsToConvert3_reg0}, [$bufferFetchAddr0];
+  cvt.rz.f32.u8	$val0_reg0, $valsToConvert0_reg0;
+  cvt.rz.f32.u8	$val1_reg0, $valsToConvert1_reg0;
+  cvt.rz.f32.u8	$val2_reg0, $valsToConvert2_reg0;
+  mul.rn.f32	$floatValues0_reg0, $val0_reg0, $weight00_0;
+  mul.rn.f32	$floatValues1_reg0, $val1_reg0, $weight00_0;
+  mul.rn.f32	$floatValues2_reg0, $val2_reg0, $weight00_0;
+  mad.wide.u32	$bufferFetchAddr1, $lookup01_0, 4U, $bufferAddr5;
+  ld.global.v4.u8	{$valsToConvert0_reg1, $valsToConvert1_reg1, $valsToConvert2_reg1, $valsToConvert3_reg1}, [$bufferFetchAddr1];
+  cvt.rz.f32.u8	$val0_reg0, $valsToConvert0_reg1;
+  cvt.rz.f32.u8	$val1_reg0, $valsToConvert1_reg1;
+  cvt.rz.f32.u8	$val2_reg0, $valsToConvert2_reg1;
+  mad.rn.f32	$floatValues0_reg0, $val0_reg0, $weight01_0, $floatValues0_reg0;
+  mad.rn.f32	$floatValues1_reg0, $val1_reg0, $weight01_0, $floatValues1_reg0;
+  mad.rn.f32	$floatValues2_reg0, $val2_reg0, $weight01_0, $floatValues2_reg0;
+  mad.wide.u32	$bufferFetchAddr2, $lookup10_0, 4U, $bufferAddr5;
+  ld.global.v4.u8	{$valsToConvert0_reg2, $valsToConvert1_reg2, $valsToConvert2_reg2, $valsToConvert3_reg2}, [$bufferFetchAddr2];
+  cvt.rz.f32.u8	$val0_reg0, $valsToConvert0_reg2;
+  cvt.rz.f32.u8	$val1_reg0, $valsToConvert1_reg2;
+  cvt.rz.f32.u8	$val2_reg0, $valsToConvert2_reg2;
+  mad.rn.f32	$floatValues0_reg0, $val0_reg0, $weight10_0, $floatValues0_reg0;
+  mad.rn.f32	$floatValues1_reg0, $val1_reg0, $weight10_0, $floatValues1_reg0;
+  mad.rn.f32	$floatValues2_reg0, $val2_reg0, $weight10_0, $floatValues2_reg0;
+  mad.wide.u32	$bufferFetchAddr3, $lookup11_0, 4U, $bufferAddr5;
+  ld.global.v4.u8	{$valsToConvert0_reg3, $valsToConvert1_reg3, $valsToConvert2_reg3, $valsToConvert3_reg3}, [$bufferFetchAddr3];
+  cvt.rz.f32.u8	$val0_reg0, $valsToConvert0_reg3;
+  cvt.rz.f32.u8	$val1_reg0, $valsToConvert1_reg3;
+  cvt.rz.f32.u8	$val2_reg0, $valsToConvert2_reg3;
+  mad.rn.f32	$floatValues0_reg0, $val0_reg0, $weight11_0, $floatValues0_reg0;
+  mad.rn.f32	$floatValues1_reg0, $val1_reg0, $weight11_0, $floatValues1_reg0;
+  mad.rn.f32	$floatValues2_reg0, $val2_reg0, $weight11_0, $floatValues2_reg0;
+  // end RT_FILTER_LINEAR
+  // End rewriteTextureStatic():
+  // End replacing dynamic texture fetch with static rewrite: diffuse_map
+  mov.f32	%closest_hit_radiance_f66, 0F3e4ccccd; //  0.2
+  mul.ftz.f32	%closest_hit_radiance_f67, $floatValues0_reg0, %closest_hit_radiance_f66;
+  mov.f32	%closest_hit_radiance_f68, 0F3e4ccccd; //  0.2
+  mul.ftz.f32	%closest_hit_radiance_f69, $floatValues1_reg0, %closest_hit_radiance_f68;
+  mov.f32	%closest_hit_radiance_f70, 0F3e4ccccd; //  0.2
+  mul.ftz.f32	%closest_hit_radiance_f71, $floatValues2_reg0, %closest_hit_radiance_f70;
+  add.u64	%closest_hit_radiance_rd1, $object_records, 160;
+  
+  // Call to _rt_buffer_get_size_64 begins
+  ld.global.u32	$record_ptr9, [%closest_hit_radiance_rd1];
+  add.u64	$record_address9, $record_ptr9, $object_records;
+  ld.global.u64	$size1, [$record_address9+8];
+  // Call to _rt_buffer_get_size_64 ends
+  
+  mov.s32	%closest_hit_radiance_r17, 0;
+  cvt.u32.u64	%closest_hit_radiance_r18, $size1;
+  mov.u32	%closest_hit_radiance_r19, 0;
+  setp.eq.u32	%closest_hit_radiance_p1, %closest_hit_radiance_r18, %closest_hit_radiance_r19;
+  @%closest_hit_radiance_p1 bra	closest_hit_radiance_$Lt_0_2050;
+// This BB is not part of any VPC.
+  mov.u64	%closest_hit_radiance_rd9, 0;
+
+closest_hit_radiance_$Lt_0_2562:
+// This BB is not part of any VPC.
+  add.u64	%closest_hit_radiance_rd10, $object_records, 160;
+  
+  // Call to _rt_buffer_get_64 begins
+  ld.global.u32	$record_ptr10, [%closest_hit_radiance_rd10];
+  add.u64	$record_address10, $record_ptr10, $object_records;
+  ld.global.u64	$buffer_address18, [$record_address10];
+  mul.lo.u64	$offset10, %closest_hit_radiance_rd9, 32;
+  add.u64	$buffer_address19, $buffer_address18, $offset10;
+  cvta.global.u64	%closest_hit_radiance_rd19, $buffer_address19;
+  // Call to _rt_buffer_get_64 ends
+  
+  ld.f32	%closest_hit_radiance_f72, [%closest_hit_radiance_rd19+0];
+  ld.f32	%closest_hit_radiance_f73, [%closest_hit_radiance_rd19+4];
+  ld.f32	%closest_hit_radiance_f74, [%closest_hit_radiance_rd19+8];
+  sub.ftz.f32	%closest_hit_radiance_f75, %closest_hit_radiance_f73, %closest_hit_radiance_f49;
+  sub.ftz.f32	%closest_hit_radiance_f76, %closest_hit_radiance_f72, %closest_hit_radiance_f46;
+  sub.ftz.f32	%closest_hit_radiance_f77, %closest_hit_radiance_f74, %closest_hit_radiance_f50;
+  mul.ftz.f32	%closest_hit_radiance_f78, %closest_hit_radiance_f75, %closest_hit_radiance_f75;
+  fma.rn.ftz.f32	%closest_hit_radiance_f79, %closest_hit_radiance_f76, %closest_hit_radiance_f76, %closest_hit_radiance_f78;
+  fma.rn.ftz.f32	%closest_hit_radiance_f80, %closest_hit_radiance_f77, %closest_hit_radiance_f77, %closest_hit_radiance_f79;
+  sqrt.approx.ftz.f32	%closest_hit_radiance_f81, %closest_hit_radiance_f80;
+  rcp.approx.ftz.f32	%closest_hit_radiance_f82, %closest_hit_radiance_f81;
+  mul.ftz.f32	%closest_hit_radiance_f83, %closest_hit_radiance_f75, %closest_hit_radiance_f82;
+  mul.ftz.f32	%closest_hit_radiance_f84, %closest_hit_radiance_f76, %closest_hit_radiance_f82;
+  mul.ftz.f32	%closest_hit_radiance_f85, %closest_hit_radiance_f77, %closest_hit_radiance_f82;
+  mul.ftz.f32	%closest_hit_radiance_f86, %closest_hit_radiance_f83, %closest_hit_radiance_f23;
+  fma.rn.ftz.f32	%closest_hit_radiance_f87, %closest_hit_radiance_f22, %closest_hit_radiance_f84, %closest_hit_radiance_f86;
+  fma.rn.ftz.f32	%closest_hit_radiance_f88, %closest_hit_radiance_f24, %closest_hit_radiance_f85, %closest_hit_radiance_f87;
+  mov.f32	%closest_hit_radiance_f89, 0F00000000; //  0
+  setp.ftz.gt.f32	%closest_hit_radiance_p2, %closest_hit_radiance_f88, %closest_hit_radiance_f89;
+  @!%closest_hit_radiance_p2 bra	closest_hit_radiance_$Lt_0_2818;
+// This BB is not part of any VPC.
+  ld.f32	%closest_hit_radiance_f90, [%closest_hit_radiance_rd19+12];
+  mul.ftz.f32	%closest_hit_radiance_f91, %closest_hit_radiance_f88, $floatValues0_reg0;
+  mul.ftz.f32	%closest_hit_radiance_f92, %closest_hit_radiance_f90, %closest_hit_radiance_f91;
+  ld.f32	%closest_hit_radiance_f93, [%closest_hit_radiance_rd19+16];
+  mul.ftz.f32	%closest_hit_radiance_f94, %closest_hit_radiance_f88, $floatValues1_reg0;
+  mul.ftz.f32	%closest_hit_radiance_f95, %closest_hit_radiance_f93, %closest_hit_radiance_f94;
+  ld.f32	%closest_hit_radiance_f96, [%closest_hit_radiance_rd19+20];
+  mul.ftz.f32	%closest_hit_radiance_f97, %closest_hit_radiance_f88, $floatValues2_reg0;
+  mul.ftz.f32	%closest_hit_radiance_f98, %closest_hit_radiance_f96, %closest_hit_radiance_f97;
+  add.ftz.f32	%closest_hit_radiance_f67, %closest_hit_radiance_f92, %closest_hit_radiance_f67;
+  add.ftz.f32	%closest_hit_radiance_f69, %closest_hit_radiance_f95, %closest_hit_radiance_f69;
+  add.ftz.f32	%closest_hit_radiance_f71, %closest_hit_radiance_f98, %closest_hit_radiance_f71;
+
+closest_hit_radiance_$Lt_0_2818:
+// This BB is not part of any VPC.
+  add.s32	%closest_hit_radiance_r17, %closest_hit_radiance_r17, 1;
+  add.u64	%closest_hit_radiance_rd9, %closest_hit_radiance_rd9, 1;
+  setp.ne.u32	%closest_hit_radiance_p3, %closest_hit_radiance_r17, %closest_hit_radiance_r18;
+  @%closest_hit_radiance_p3 bra	closest_hit_radiance_$Lt_0_2562;
+
+closest_hit_radiance_$Lt_0_2050:
+// This BB is not part of any VPC.
+  st.global.f32	[$current_prd], %closest_hit_radiance_f67;
+  st.global.f32	[$current_prd+4], %closest_hit_radiance_f69;
+  st.global.f32	[$current_prd+8], %closest_hit_radiance_f71;
+  ret;
+}

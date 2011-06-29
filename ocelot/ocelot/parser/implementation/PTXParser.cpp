@@ -121,10 +121,10 @@ namespace parser
 		switch( directive )
 		{
 			case ir::PTXStatement::Shared : return ir::PTXInstruction::Shared;
-			case ir::PTXStatement::Local : return ir::PTXInstruction::Local;
-			case ir::PTXStatement::Param : return ir::PTXInstruction::Param;
+			case ir::PTXStatement::Local  : return ir::PTXInstruction::Local;
+			case ir::PTXStatement::Param  : return ir::PTXInstruction::Param;
 			case ir::PTXStatement::Global : return ir::PTXInstruction::Global;
-			case ir::PTXStatement::Const : return ir::PTXInstruction::Const;
+			case ir::PTXStatement::Const  : return ir::PTXInstruction::Const;
 			default: break;
 		}
 		return ir::PTXInstruction::AddressSpace_Invalid;
@@ -132,28 +132,18 @@ namespace parser
 	
 	void PTXParser::State::_setImmediateTypes()
 	{
-		ir::PTXOperand::DataType type = ir::PTXOperand::TypeSpecifier_invalid;
-		for( OperandVector::iterator operand = operandVector.begin(); 
-			operand != operandVector.end(); ++operand )
-		{
-			if( operand->addressMode != ir::PTXOperand::Immediate 
-				&& operand->addressMode != ir::PTXOperand::Invalid
-				&& operand->type != ir::PTXOperand::pred )
-			{
-				type = operand->type;
-			}
-		}
+		ir::PTXInstruction& instruction = statement.instruction;
 		
-		if( type == ir::PTXOperand::TypeSpecifier_invalid ) return;
-		
-		for( OperandVector::iterator operand = operandVector.begin(); 
-			operand != operandVector.end(); ++operand )
+		ir::PTXOperand* sources[] =
+			{ &instruction.a, &instruction.b, &instruction.c };
+				
+		for( unsigned int i = 0; i < 3; ++i )
 		{
-			if( operand->addressMode == ir::PTXOperand::Immediate 
-				&& ( ir::PTXOperand::isFloat( operand->type ) 
-				== ir::PTXOperand::isFloat( type ) ) )
+			ir::PTXOperand& operand = *sources[i];
+		
+			if( operand.addressMode == ir::PTXOperand::Immediate )
 			{
-				operand->type = type;
+				operand.type = instruction.type;
 			}
 		}
 	}
@@ -1636,8 +1626,6 @@ namespace parser
 	void PTXParser::State::instruction( const std::string& opcode,
 		int dataType )
 	{
-		_setImmediateTypes();
-
 		statement.directive = ir::PTXStatement::Instr;
 		statement.instruction.type = tokenToDataType( dataType );
 		statement.instruction.opcode = stringToOpcode( opcode );
@@ -1671,6 +1659,8 @@ namespace parser
 		{
 			statement.instruction.c = operandVector[index++];
 		}
+
+		_setImmediateTypes();
 	}
 	
 	void PTXParser::State::instruction( const std::string& opcode )
@@ -1690,7 +1680,9 @@ namespace parser
 		statement.instruction.pg     = operandVector[0];
 		statement.instruction.d      = operandVector[1];
 		statement.instruction.a      = operandVector[2];
-		statement.instruction.c      = operandVector[3];		
+		statement.instruction.c      = operandVector[3];
+
+		_setImmediateTypes();
 	}
 
 	void PTXParser::State::tld4( int dataType )
@@ -1705,7 +1697,9 @@ namespace parser
 		statement.instruction.pg     = operandVector[0];
 		statement.instruction.d      = operandVector[1];
 		statement.instruction.a      = operandVector[2];
-		statement.instruction.c      = operandVector[3];		
+		statement.instruction.c      = operandVector[3];
+
+		_setImmediateTypes();	
 	}
 	
 	void PTXParser::State::callPrototypeName( const std::string& identifier )

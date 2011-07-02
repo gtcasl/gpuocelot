@@ -7,7 +7,7 @@
 #ifndef CLOCK_CYCLE_COUNT_PASS_CPP_INCLUDED
 #define CLOCK_CYCLE_COUNT_PASS_CPP_INCLUDED
 
-#include <ocelot/analysis/interface/ClockCycleCountPass.h>
+#include <ocelot/transforms/interface/ClockCycleCountPass.h>
 #include <ocelot/ir/interface/Module.h>
 #include <ocelot/ir/interface/PTXStatement.h>
 #include <ocelot/ir/interface/PTXKernel.h>
@@ -15,17 +15,22 @@
 
 #include <climits>
 
-namespace analysis
+namespace transforms
 {
 
-    ClockCycleCountPass::ClockCycleCountPass() {
-
-    }
-
-    void ClockCycleCountPass::_runOnKernel( ir::PTXKernel* kernel)
+    analysis::DataflowGraph& ClockCycleCountPass::dfg()
 	{
+		analysis::Analysis* graph = getAnalysis(
+			analysis::Analysis::DataflowGraphAnalysis);
 
-        DataflowGraph::iterator block = kernel->dfg()->begin();
+		assert(graph != 0);
+		
+		return static_cast<analysis::DataflowGraph&>(*graph);
+	}
+
+    void ClockCycleCountPass::runOnKernel( ir::IRKernel & k)
+	{
+        analysis::DataflowGraph::iterator block = dfg().begin();
 
         ir::PTXOperand::DataType type = (sizeof(size_t) == 8 ? ir::PTXOperand::u64: ir::PTXOperand::u32);
 
@@ -34,25 +39,25 @@ namespace analysis
 	    ir::PTXInstruction cvt(ir::PTXInstruction::Cvt);
 	    ir::PTXInstruction mov(ir::PTXInstruction::Mov);
 
-	    DataflowGraph::RegisterId tidX = kernel->dfg()->newRegister();
+	    analysis::DataflowGraph::RegisterId tidX = dfg().newRegister();
 
 	    cvt.type = type;
-    cvt.d.addressMode = ir::PTXOperand::Register;
-    cvt.d.reg = tidX;
-    cvt.d.type = type;
-    cvt.a = ir::PTXOperand(ir::PTXOperand::tid, ir::PTXOperand::ix, ir::PTXOperand::u32);
+        cvt.d.addressMode = ir::PTXOperand::Register;
+        cvt.d.reg = tidX;
+        cvt.d.type = type;
+        cvt.a = ir::PTXOperand(ir::PTXOperand::tid, ir::PTXOperand::ix, ir::PTXOperand::u32);
 	    cvt.a.addressMode = ir::PTXOperand::Special;
 	    cvt.a.vec = ir::PTXOperand::v1;
 
 
-	    kernel->dfg()->insert(block, cvt, loc);
+	    dfg().insert(block, cvt, loc);
 	    loc++;   
  
-        DataflowGraph::RegisterId clockStart = kernel->dfg()->newRegister();
-        DataflowGraph::RegisterId clockEnd = kernel->dfg()->newRegister();
+        analysis::DataflowGraph::RegisterId clockStart = dfg().newRegister();
+        analysis::DataflowGraph::RegisterId clockEnd = dfg().newRegister();
 
         //setp.eq p, tidX, 0
-        DataflowGraph::RegisterId pred = kernel->dfg()->newRegister();
+        analysis::DataflowGraph::RegisterId pred = dfg().newRegister();
 
         ir::PTXInstruction setp(ir::PTXInstruction::SetP);
         setp.type = type;
@@ -64,7 +69,7 @@ namespace analysis
         setp.b.addressMode = ir::PTXOperand::Immediate;
         setp.b.imm_int = 0;
 
-        kernel->dfg()->insert(block, setp, loc);
+        dfg().insert(block, setp, loc);
 	    loc++;
   
 	    if(type == ir::PTXOperand::u64){
@@ -76,7 +81,7 @@ namespace analysis
 		    mov.a = ir::PTXOperand(ir::PTXOperand::clock64);
 		    mov.a.type = ir::PTXOperand::u64;
 
-		    kernel->dfg()->insert(block, mov, loc);
+		    dfg().insert(block, mov, loc);
 		    loc++;
 
 		    mov.d.reg = clockEnd;
@@ -90,7 +95,7 @@ namespace analysis
 		    cvt.a = ir::PTXOperand(ir::PTXOperand::clock);
 		    cvt.a.type = ir::PTXOperand::u32;
 		
-		    kernel->dfg()->insert(block, cvt, loc);
+		    dfg().insert(block, cvt, loc);
 		    loc++;
 
 		    cvt.d.reg = clockEnd;
@@ -100,21 +105,21 @@ namespace analysis
     bar.d.addressMode = ir::PTXOperand::Immediate;
     bar.d.imm_int = 0;
     
-    kernel->dfg()->insert(block, bar, loc);
+    dfg().insert(block, bar, loc);
 	    loc++;
     
-    DataflowGraph::iterator lastBlock = --(kernel->dfg()->end());
+    analysis::DataflowGraph::iterator lastBlock = --(dfg().end());
     while(lastBlock->instructions().size() == 0) {
         lastBlock--;
     }
 
-    kernel->dfg()->insert(lastBlock, bar, lastBlock->instructions().size() - 1);
+    dfg().insert(lastBlock, bar, lastBlock->instructions().size() - 1);
 
 	    if(type == ir::PTXOperand::u64){
-		    kernel->dfg()->insert(lastBlock, mov, lastBlock->instructions().size() - 1);
+		    dfg().insert(lastBlock, mov, lastBlock->instructions().size() - 1);
 	    }
 	    else {
-            	kernel->dfg()->insert(lastBlock, cvt, lastBlock->instructions().size() - 1);
+            	dfg().insert(lastBlock, cvt, lastBlock->instructions().size() - 1);
 	    }
 
         ir::PTXInstruction sub(ir::PTXInstruction::Sub);
@@ -126,9 +131,9 @@ namespace analysis
 	    sub.a.type = type;
         sub.b = sub.d;
 
-        kernel->dfg()->insert(lastBlock, sub, lastBlock->instructions().size() - 1);  
+        dfg().insert(lastBlock, sub, lastBlock->instructions().size() - 1);  
 
-        DataflowGraph::RegisterId clockSMInfoAddress = kernel->dfg()->newRegister();        
+        analysis::DataflowGraph::RegisterId clockSMInfoAddress = dfg().newRegister();        
 
         mov.type = type;
         mov.d.addressMode = ir::PTXOperand::Register;
@@ -138,9 +143,9 @@ namespace analysis
         mov.a.type = type;
         mov.a.addressMode = ir::PTXOperand::Address;
 
-        kernel->dfg()->insert(lastBlock, mov, lastBlock->instructions().size() - 1);
+        dfg().insert(lastBlock, mov, lastBlock->instructions().size() - 1);
 
-        DataflowGraph::RegisterId clockSMInfo = kernel->dfg()->newRegister();        
+        analysis::DataflowGraph::RegisterId clockSMInfo = dfg().newRegister();        
 
         ir::PTXInstruction ld(ir::PTXInstruction::Ld);
         ld.addressSpace = ir::PTXInstruction::Global; 
@@ -151,40 +156,40 @@ namespace analysis
         ld.a = mov.d;
         ld.a.addressMode = ir::PTXOperand::Indirect;
 
-        kernel->dfg()->insert(lastBlock, ld, lastBlock->instructions().size() - 1);
+        dfg().insert(lastBlock, ld, lastBlock->instructions().size() - 1);
 
-        DataflowGraph::RegisterId smid = kernel->dfg()->newRegister();
+        analysis::DataflowGraph::RegisterId smid = dfg().newRegister();
 
         cvt.d.reg = smid;
         cvt.d.addressMode = ir::PTXOperand::Register;
         cvt.a = ir::PTXOperand(ir::PTXOperand::smId);
         cvt.a.type = ir::PTXOperand::u32;
 
-        kernel->dfg()->insert(lastBlock, cvt, lastBlock->instructions().size() - 1);
+        dfg().insert(lastBlock, cvt, lastBlock->instructions().size() - 1);
 
-        DataflowGraph::RegisterId ctaidX = kernel->dfg()->newRegister();
-        DataflowGraph::RegisterId nctaidX = kernel->dfg()->newRegister();
-        DataflowGraph::RegisterId ctaidY = kernel->dfg()->newRegister();
+        analysis::DataflowGraph::RegisterId ctaidX = dfg().newRegister();
+        analysis::DataflowGraph::RegisterId nctaidX = dfg().newRegister();
+        analysis::DataflowGraph::RegisterId ctaidY = dfg().newRegister();
 
         cvt.d.reg = ctaidX;
         cvt.a = ir::PTXOperand(ir::PTXOperand::ctaId, ir::PTXOperand::ix, ir::PTXOperand::u32);
 	    cvt.a.vec = ir::PTXOperand::v1;        
 
-        kernel->dfg()->insert(lastBlock, cvt, lastBlock->instructions().size() - 1);
+        dfg().insert(lastBlock, cvt, lastBlock->instructions().size() - 1);
 
         cvt.d.reg = ctaidY;
         cvt.a = ir::PTXOperand(ir::PTXOperand::ctaId, ir::PTXOperand::iy, ir::PTXOperand::u32);
 	    cvt.a.vec = ir::PTXOperand::v1;        
 
-        kernel->dfg()->insert(lastBlock, cvt, lastBlock->instructions().size() - 1);
+        dfg().insert(lastBlock, cvt, lastBlock->instructions().size() - 1);
 
         cvt.d.reg = nctaidX;
         cvt.a = ir::PTXOperand(ir::PTXOperand::nctaId, ir::PTXOperand::ix, ir::PTXOperand::u32);
 	    cvt.a.vec = ir::PTXOperand::v1;
 
-        kernel->dfg()->insert(lastBlock, cvt, lastBlock->instructions().size() - 1);
+        dfg().insert(lastBlock, cvt, lastBlock->instructions().size() - 1);
 
-        DataflowGraph::RegisterId ctaid = kernel->dfg()->newRegister();
+        analysis::DataflowGraph::RegisterId ctaid = dfg().newRegister();
 
         ir::PTXInstruction mad(ir::PTXInstruction::Mad);
         mad.type = type;
@@ -202,7 +207,7 @@ namespace analysis
         mad.c.type = type;
         mad.c.reg = ctaidX;
 
-        kernel->dfg()->insert(lastBlock, mad, lastBlock->instructions().size() - 1);
+        dfg().insert(lastBlock, mad, lastBlock->instructions().size() - 1);
 
         mad.d.reg = clockSMInfo;
         mad.a.reg = ctaid;
@@ -210,7 +215,7 @@ namespace analysis
         mad.b.imm_int = sizeof(size_t) * 2;
         mad.c = mad.d;
 
-        kernel->dfg()->insert(lastBlock, mad, lastBlock->instructions().size() - 1);
+        dfg().insert(lastBlock, mad, lastBlock->instructions().size() - 1);
 
         ir::PTXInstruction st(ir::PTXInstruction::St);
         st.addressSpace = ir::PTXInstruction::Global; 
@@ -223,35 +228,27 @@ namespace analysis
         st.pg.condition = ir::PTXOperand::Pred;
         st.pg.reg = pred;  
         
-        kernel->dfg()->insert(lastBlock, st, lastBlock->instructions().size() - 1);
+        dfg().insert(lastBlock, st, lastBlock->instructions().size() - 1);
 
         st.d.offset = sizeof(size_t);
         st.a.reg = smid;
         
-        kernel->dfg()->insert(lastBlock, st, lastBlock->instructions().size() - 1);
+        dfg().insert(lastBlock, st, lastBlock->instructions().size() - 1);
 
 	}
-
-    void ClockCycleCountPass::runOnModule( ir::Module& m )
+	
+    void ClockCycleCountPass::initialize( ir::Module& m )
 	{
-		report( "Adding global variable to " << m.path() );
-     
+	
+	    report( "Adding global variable to " << m.path() );
+
 		ir::PTXStatement clock_sm_info = ir::PTXStatement(ir::PTXStatement::Global);
         clock_sm_info.name = kernelClockSMInfo();
         clock_sm_info.type = (sizeof(size_t) == 8 ? ir::PTXOperand::u64: ir::PTXOperand::u32);
-
-        for (ir::Module::KernelMap::const_iterator kernel = m.kernels().begin(); 
-		    kernel != m.kernels().end(); ++kernel) {
-            _runOnKernel(kernel->second);            
-        }
-
+        
         /* inserting the global info object into the module */
-        m.insertGlobal(clock_sm_info);
-	}
-
-    void ClockCycleCountPass::initialize( const ir::Module& m )
-	{
-    
+        m.insertGlobalAsStatement(clock_sm_info);
+	    
 	}
 
     void ClockCycleCountPass::finalize( )
@@ -262,6 +259,12 @@ namespace analysis
     std::string ClockCycleCountPass::kernelClockSMInfo() const
 	{
 		return "__ocelot_kernel_clock_sm_info";
+	}
+
+    ClockCycleCountPass::ClockCycleCountPass()
+		: KernelPass( Analysis::DataflowGraphAnalysis,
+			"ClockCycleCountPass" )
+	{
 	}
 
 }

@@ -9,14 +9,14 @@
 
 #include <ocelot/analysis/interface/DataflowGraph.h>
 #include <ocelot/ir/interface/PTXKernel.h>
-#include <ocelot/analysis/interface/BasicBlockInstrumentationPass.h>
+#include <ocelot/transforms/interface/BasicBlockInstrumentationPass.h>
 
 namespace ir
 {
 	class Module;
 }
 
-namespace analysis
+namespace transforms
 {
 	/*! \brief Implements the basic block execution count instrumentation */
 	class BasicBlockExecutionCountPass : public BasicBlockInstrumentationPass
@@ -27,11 +27,11 @@ namespace analysis
 
         protected:
 
-            size_t incrementBasicBlockCounter( ir::PTXKernel *kernel, DataflowGraph::iterator block, DataflowGraph::RegisterId registerId, std::map<std::string, DataflowGraph::RegisterId> registerMap, size_t location);
+            size_t incrementBasicBlockCounter(analysis::DataflowGraph::iterator block, analysis::DataflowGraph::RegisterId registerId, std::map<std::string, analysis::DataflowGraph::RegisterId> registerMap, size_t location);
 
         public:
-			/*! \brief Run the pass on a specific module */
-			void runOnModule( ir::Module& m );
+			/*! \brief Run the pass on a specific kernel */
+			void runOnKernel( ir::IRKernel& k );
 	};
 }
 

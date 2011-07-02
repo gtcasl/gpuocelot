@@ -9,17 +9,17 @@
 
 #include <ocelot/analysis/interface/DataflowGraph.h>
 #include <ocelot/ir/interface/PTXKernel.h>
-#include <ocelot/analysis/interface/BasicBlockInstrumentationPass.h>
+#include <ocelot/transforms/interface/InstructionCountPass.h>
 
 namespace ir
 {
 	class Module;
 }
 
-namespace analysis
+namespace transforms
 {
 	/*! \brief Implements the memory intensity instrumentation */
-	class MemoryIntensityPass : public BasicBlockInstrumentationPass
+	class MemoryIntensityPass : public InstructionCountPass
 	{
 	    public:
             /*! \brief default constructor */
@@ -27,15 +27,15 @@ namespace analysis
 
         protected:
 
-            void countMemoryOperations( ir::PTXKernel *kernel, DataflowGraph::iterator block, DataflowGraph::RegisterId registerId, std::map<std::string, DataflowGraph::RegisterId> registerMap, size_t memOpsCount);
+            void countMemoryOperations( analysis::DataflowGraph::iterator block, analysis::DataflowGraph::RegisterId registerId, std::map<std::string, analysis::DataflowGraph::RegisterId> registerMap, size_t memOpsCount);
 
         public:
-			/*! \brief Run the pass on a specific module */
-			void runOnModule( ir::Module& m );
+			/*! \brief Run the pass on a specific kernel */
+			void runOnKernel( ir::IRKernel& k );
 
 
         private:
-            size_t _memOpsCount(DataflowGraph::iterator block);
+            size_t _memOpsCount(analysis::DataflowGraph::iterator block);
 
 	};
 }

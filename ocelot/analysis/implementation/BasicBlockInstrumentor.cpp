@@ -192,6 +192,7 @@ namespace analysis
 
         if(info)
             delete[] info;
+            
     }
 
     BasicBlockInstrumentor::BasicBlockInstrumentor() : description("Basic Block Execution Count Per Thread") {

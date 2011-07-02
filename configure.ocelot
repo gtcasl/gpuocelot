@@ -1,7 +1,7 @@
 {
 	ocelot: "ocelot",
     instrument: {
-        dynamicInstructionCount: {
+        memoryIntensity: {
             logfile: ""
         }
     },

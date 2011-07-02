@@ -7,7 +7,7 @@
 #ifndef KERNEL_CLOCK_CYCLE_COUNT_PASS_H_INCLUDED
 #define KERNEL_CLOCK_CYCLE_COUNT_PASS_H_INCLUDED
 
-#include <ocelot/analysis/interface/Pass.h>
+#include <ocelot/transforms/interface/Pass.h>
 #include <ocelot/analysis/interface/DataflowGraph.h>
 
 namespace ir
@@ -16,32 +16,31 @@ namespace ir
     class PTXKernel;
 }
 
-namespace analysis
+namespace transforms
 {
 
 	/*! \brief A class for an instrumentation pass that retrieves the 
         number of clock cycles and SM ID per kernel execution.
 	*/
-	class ClockCycleCountPass : public ModulePass
+	class ClockCycleCountPass : public KernelPass
 	{
 		private:
 			ir::PTXKernel* _kernel;
 			
+		protected:
+		    analysis::DataflowGraph& dfg();
 		
 		public:
 			ClockCycleCountPass();
             std::string kernelClockSMInfo() const;
 			
 		public:
-			/*! \brief Initialize the pass using a specific module */
-			void initialize( const ir::Module& m );
-			/*! \brief Run the pass on a specific module */
-			void runOnModule( ir::Module& m );
+			/*! \brief Initialize the pass using a specific kernel */
+			void initialize( ir::Module& m );
+			/*! \brief Run the pass on a specific kernel */
+			void runOnKernel(ir::IRKernel& k);
 			/*! \brief Finalize the pass */
-			void finalize( );		
-
-        private:
-            void _runOnKernel( ir::PTXKernel* kernel);       
+			void finalize( );		     
             
 	};
 }

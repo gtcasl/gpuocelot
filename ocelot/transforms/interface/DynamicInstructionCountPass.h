@@ -9,7 +9,7 @@
 
 #include <ocelot/analysis/interface/DataflowGraph.h>
 #include <ocelot/ir/interface/PTXKernel.h>
-#include <ocelot/analysis/interface/BasicBlockInstrumentationPass.h>
+#include <ocelot/transforms/interface/InstructionCountPass.h>
 
 
 namespace ir
@@ -17,22 +17,18 @@ namespace ir
 	class Module;
 }
 
-namespace analysis
+namespace transforms
 {
 	/*! \brief Implements the dynamic instruction count instrumentation */
-	class DynamicInstructionCountPass : public BasicBlockInstrumentationPass
+	class DynamicInstructionCountPass : public InstructionCountPass
 	{
 	    public:
             /*! \brief default constructor */
             DynamicInstructionCountPass();
 
         public:
-
-            void countInstructions( ir::PTXKernel *kernel, DataflowGraph::iterator block, DataflowGraph::RegisterId registerId, std::map<std::string, DataflowGraph::RegisterId> registerMap, size_t instructionCount);
-
-        public:
-			/*! \brief Run the pass on a specific module */
-			void runOnModule( ir::Module& m );
+			/*! \brief Run the pass on a specific kernel */
+			void runOnKernel( ir::IRKernel& k );
 	};
 }
 

@@ -9,7 +9,7 @@
 
 #include <ocelot/analysis/interface/DataflowGraph.h>
 #include <ocelot/ir/interface/PTXKernel.h>
-#include <ocelot/analysis/interface/Pass.h>
+#include <ocelot/transforms/interface/Pass.h>
 
 #include <map>
 
@@ -18,31 +18,34 @@ namespace ir
 	class Module;
 }
 
-namespace analysis
+namespace transforms
 {
 	/*! \brief Implements the generic basic block counter instrumentation */
-	class BasicBlockInstrumentationPass : public ModulePass
+	class BasicBlockInstrumentationPass : public KernelPass
 	{
         public:
         /*! brief The number of entries per basic block */
         size_t entries;
 
         protected:
-            std::map<std::string, DataflowGraph::RegisterId> registerMap;
-
+            std::map<std::string, analysis::DataflowGraph::RegisterId> registerMap;
+          
         public:           
+            BasicBlockInstrumentationPass();
             /*! \brief The id of the basic block counter base pointer */			
              std::string basicBlockCounterBase() const;
+ 		    analysis::DataflowGraph& dfg();
+
  		
         protected:
-            size_t calculateThreadId( ir::PTXKernel* kernel, DataflowGraph::iterator block, size_t location );
-			size_t calculateBasicBlockCounterOffset( ir::PTXKernel *kernel, DataflowGraph::iterator block, size_t basicBlockId, size_t location );
+            size_t calculateThreadId(analysis::DataflowGraph::iterator block, size_t location );
+			size_t calculateBasicBlockCounterOffset(analysis::DataflowGraph::iterator block, size_t basicBlockId, size_t location );
 
         public:
 			/*! \brief Initialize the pass using a specific module */
-			void initialize( const ir::Module& m );
-			/*! \brief Run the pass on a specific module */
-			void runOnModule( ir::Module& m );
+			void initialize(ir::Module& m );
+			/*! \brief Run the pass on a specific kernel */
+			void runOnKernel( ir::IRKernel& k );
 			/*! \brief Finalize the pass */
 			void finalize( );
 	};

@@ -1,0 +1,51 @@
+dnl Process this file with autoconf to produce a configure script.
+AC_INIT(env.c)
+AC_CONFIG_AUX_DIR([config])
+AC_CONFIG_MACRO_DIR([config])
+AM_INIT_AUTOMAKE(cercs_env,0.1)
+AM_MAINTAINER_MODE
+AM_CONFIG_HEADER(config.h)
+
+dnl Checks for programs.
+AC_PROG_CC
+AC_LIBTOOL_WIN32_DLL
+AM_PROG_LIBTOOL
+AC_SUBST(LIBTOOL_DEPS)
+test "$CC" = "gcc" && CFLAGS="$CFLAGS -Wall"
+CPPFLAGS="$CPPFLAGS -DATL_SOURCE"
+
+dnl Checks for libraries.
+
+dnl Checks for header files.
+
+dnl Checks for typedefs, structures, and compiler characteristics.
+
+dnl Checks for library functions.
+AC_CHECK_FUNCS(gethrtime)
+
+if test $ac_cv_func_gethrtime = yes; then
+    TIMING=hrtime
+fi
+
+case $host_os in
+   linux-gnu | cygwin | mingw32)
+	case $GCC,$host_cpu in
+	yes,i*86|yes,x86_64)
+	    TIMING=gcc_x86
+	    ;;
+	esac
+    ;;
+esac
+
+if test -z "$TIMING"; then
+    TIMING=gettimeofday
+fi
+
+TIMING_C=timing_${TIMING}.c
+TIMING_O=timing_${TIMING}.lo
+AC_SUBST(TIMING_O)
+AC_SUBST(TIMING_C)
+
+AC_DEFINE_DIR(INSTALL_DIR, libdir, [Location of installed config file])
+
+AC_OUTPUT(Makefile)

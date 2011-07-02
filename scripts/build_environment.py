@@ -114,20 +114,6 @@ def getGLEWPaths(env):
 		inc_path = os.path.abspath(os.environ['GLEW_INC_PATH'])
 
 	return (glew,bin_path,lib_path,inc_path)
-	
-def getCODPaths(env):
-	"""Determines COD {bin,lib,include} paths and is it installed?
-
-	returns (bin_path,lib_path,inc_path)
-	"""		
-		
-	# determine defaults
-	bin_path = 'cod/bin'
-	lib_path = 'cod/lib'
-	inc_path = 'cod/include'
-	
-
-	return (bin_path,lib_path,inc_path)
 
 def getLLVMPaths(enabled):
 	"""Determines LLVM {have,bin,lib,include,cflags,lflags,libs} paths
@@ -388,12 +374,6 @@ def Environment():
 		env.AppendUnique(CPPPATH = [glew_inc_path])
 	env.Replace(HAVE_GLEW = glew)
 	
-	# get COD paths
-	(cod_exe_path,cod_lib_path,cod_inc_path) = getCODPaths(env)
-	env.AppendUnique(LIBPATH = [cod_lib_path])
-	env.AppendUnique(CPPPATH = [cod_inc_path])
-
-
 	# get llvm paths
 	(llvm, llvm_exe_path,llvm_lib_path,llvm_inc_path,llvm_cflags,\
 		llvm_lflags,llvm_libs) = getLLVMPaths(env['enable_llvm'])

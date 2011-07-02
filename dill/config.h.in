@@ -1,0 +1,159 @@
+/* config.h.in.  Generated from configure.ac by autoheader.  */
+
+/* Define if bfd functions use bfd_byte arguments. */
+#undef BFD_BYTE
+
+/* Define to 1 if the emulator should be built */
+#undef BUILD_EMULATOR
+
+/* Define if dill should attempt to DCG */
+#undef EMULATION_ONLY
+
+/* Define to 1 if you have the <dis-asm.h> header file. */
+#undef HAVE_DIS_ASM_H
+
+/* Define to 1 if you have the <dlfcn.h> header file. */
+#undef HAVE_DLFCN_H
+
+/* Define to 1 if you have the <inttypes.h> header file. */
+#undef HAVE_INTTYPES_H
+
+/* Define to 1 if you have the <malloc.h> header file. */
+#undef HAVE_MALLOC_H
+
+/* Define to 1 if you have the <memory.h> header file. */
+#undef HAVE_MEMORY_H
+
+/* Define if you have the `print_insn_arm' function. */
+#undef HAVE_PRINT_INSN_ARM
+
+/* Define if you have the `print_insn_big_powerpc' function. */
+#undef HAVE_PRINT_INSN_BIG_POWERPC
+
+/* Define if you have the `print_insn_i386' function. */
+#undef HAVE_PRINT_INSN_I386
+
+/* Define if you have the `print_insn_ia64' function. */
+#undef HAVE_PRINT_INSN_IA64
+
+/* Define if you have the `print_insn_little_arm' function. */
+#undef HAVE_PRINT_INSN_LITTLE_ARM
+
+/* Define if you have the `print_insn_sparc' function. */
+#undef HAVE_PRINT_INSN_SPARC
+
+/* Define to 1 if you have the <stdint.h> header file. */
+#undef HAVE_STDINT_H
+
+/* Define to 1 if you have the <stdlib.h> header file. */
+#undef HAVE_STDLIB_H
+
+/* Define to 1 if you have the <strings.h> header file. */
+#undef HAVE_STRINGS_H
+
+/* Define to 1 if you have the <string.h> header file. */
+#undef HAVE_STRING_H
+
+/* Define to 1 if you have the <sys/stat.h> header file. */
+#undef HAVE_SYS_STAT_H
+
+/* Define to 1 if you have the <sys/types.h> header file. */
+#undef HAVE_SYS_TYPES_H
+
+/* Define to 1 if you have the <unistd.h> header file. */
+#undef HAVE_UNISTD_H
+
+/* Define if the host processor is ARM */
+#undef HOST_ARM
+
+/* Define if the host processor is an ia64 */
+#undef HOST_IA64
+
+/* Define if the host processor is a powerpc */
+#undef HOST_POWERPC
+
+/* Define if the host processor is a powerpc64 */
+#undef HOST_POWERPC64
+
+/* Define if the host processor is a sparc */
+#undef HOST_SPARC
+
+/* Define if the host processor is a sparcv9 */
+#undef HOST_SPARCV9
+
+/* Define if the host processor is an x86 */
+#undef HOST_X86
+
+/* Define if the host processor is an x86_64 */
+#undef HOST_X86_64
+
+/* Define if INIT_DISASSEMBLE_INFO takes three arguments instead of two */
+#undef INIT_DISASSEMBLE_INFO_THREE_ARG
+
+/* Define if integrating with kernel plugins */
+#undef KPLUGINS_INTEGRATION
+
+/* Define if compiling for linux kernel */
+#undef LINUX_KERNEL_MODULE
+
+/* Define to the sub-directory in which libtool stores uninstalled libraries.
+   */
+#undef LT_OBJDIR
+
+/* Define if you want more than just native target */
+#undef MULTI_TARGET
+
+/* Define for the host architecture type */
+#undef NATIVE_ARCH
+
+/* Define if there is no disassembler */
+#undef NO_DISASSEMBLER
+
+/* Define if we should not use inlined procedures from BFD */
+#undef NO_INLINED_BFD_PROCS
+
+/* Name of package */
+#undef PACKAGE
+
+/* Define to the address where bug reports for this package should be sent. */
+#undef PACKAGE_BUGREPORT
+
+/* Define to the full name of this package. */
+#undef PACKAGE_NAME
+
+/* Define to the full name and version of this package. */
+#undef PACKAGE_STRING
+
+/* Define to the one symbol short name of this package. */
+#undef PACKAGE_TARNAME
+
+/* Define to the home page for this package. */
+#undef PACKAGE_URL
+
+/* Define to the version of this package. */
+#undef PACKAGE_VERSION
+
+/* The number of bytes in type long */
+#undef SIZEOF_LONG
+
+/* Define to 1 if you have the ANSI C header files. */
+#undef STDC_HEADERS
+
+/* Define if the membar instruction should be used to sync Icache and Dcache
+   */
+#undef USE_MEMBAR
+
+/* Define this is mmap should be used instead of malloc() for code memory */
+#undef USE_MMAP_CODE_SEG
+
+/* Version number of package */
+#undef VERSION
+
+/* Define if byteorder is bigendian */
+#undef WORDS_BIGENDIAN
+
+/* Define to `__inline__' or `__inline' if that's what the C compiler
+   calls it, or to nothing if 'inline' is not supported under any name.  */
+#ifndef __cplusplus
+#undef inline
+#endif

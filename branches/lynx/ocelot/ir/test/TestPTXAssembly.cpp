@@ -193,6 +193,118 @@ char* uniformFloat(test::Test::MersenneTwister& generator)
 ////////////////////////////////////////////////////////////////////////////////
 
 ////////////////////////////////////////////////////////////////////////////////
+// TEST LOCAL MEMORY
+std::string testLocalMemory_PTX(ir::PTXOperand::DataType dtype,
+	bool global, bool scoped)
+{
+	std::stringstream ptx;
+
+	std::string dTypeString = "." + ir::PTXOperand::toString(dtype);
+
+	ptx << ".version 2.3\n";
+
+	std::stringstream local;
+
+	local << ".local " << dTypeString << " localMemory";
+
+	if(global)
+	{
+		ptx << local.str() << ";\n";
+	}
+
+	if(scoped)
+	{
+		if(global)
+		{
+			ptx << ".visible .func (.param " << dTypeString
+				<< " return) function() \n";
+			ptx << "{\t                                                 \n";
+			ptx << "\t.reg " << dTypeString << " %r<4>;                 \n";
+			ptx << "\t                                                  \n";
+			ptx << "\tld.local" << dTypeString << " %r0, [localMemory]; \n";
+			ptx << "\tst.param" << dTypeString << " [return], %r0;      \n";
+			ptx << "\tret;                                              \n";
+			ptx << "}\t                                                 \n";
+		}
+		else
+		{
+			ptx << ".visible .func () function()                        \n";
+			ptx << "{\t                                                 \n";
+			ptx << "\t" << local.str() << ";                            \n";
+			ptx << "\t.reg " << dTypeString << " %r<4>;                 \n";
+			ptx << "\t                                                  \n";
+			ptx << "\tst.local" << dTypeString << " [localMemory], 0;   \n";
+			ptx << "\tret;                                              \n";
+			ptx << "}\t                                                 \n";
+		}
+	}
+
+	ptx << ".entry test(.param .u64 out, .param .u64 in)   \n";
+	ptx << "{\t                                            \n";
+	ptx << "\t.reg .u64 %rIn, %rOut;                       \n";
+	ptx << "\t.reg " << dTypeString << " %r<4>;            \n";
+
+	if(scoped && global)
+	{
+		ptx << "\t.param " << dTypeString << " result;\n";
+	}
+
+	if(!global)
+	{
+		ptx << "\t" << local.str() << ";                   \n";
+	}
+	
+	ptx << "\t                                             \n";
+	ptx << "\tld.param.u64 %rIn, [in];                     \n";
+	ptx << "\tld.param.u64 %rOut, [out];                   \n";
+	ptx << "\tld.global" << dTypeString << " %r0, [%rIn];  \n";
+
+
+	if(scoped)
+	{
+		if(global)
+		{
+			ptx << "\tst.local" << dTypeString << " [localMemory], %r0;  \n";
+			ptx << "\tcall.uni (result), function;                       \n";
+			ptx << "\tld.param" << dTypeString << " %r0, [result];       \n";
+		}
+		else
+		{
+			ptx << "\tst.local" << dTypeString << " [localMemory], %r0;  \n";
+			ptx << "\tcall.uni function;                                 \n";
+			ptx << "\tld.local" << dTypeString << " %r0, [localMemory];  \n";
+		}
+	}
+	else
+	{
+		ptx << "\tst.local" << dTypeString << " [localMemory], %r0; \n";
+		ptx << "\tld.local" << dTypeString << " %r0, [localMemory]; \n";
+	}
+
+	ptx << "\tst.global" << dTypeString << " [%rOut], %r0; \n";
+	ptx << "\texit;                                        \n";
+	ptx << "}                                              \n";
+	ptx << "                                               \n";
+	
+	return ptx.str();
+}
+
+template<typename dtype>
+void testLocalMemory_REF(void* output, void* input)
+{
+	dtype r0 = getParameter<dtype>(input, 0);
+	
+	setParameter(output, 0, r0);
+}
+
+test::TestPTXAssembly::TypeVector testLocalMemory_INOUT(
+	test::TestPTXAssembly::DataType type)
+{
+	return test::TestPTXAssembly::TypeVector(1, type);
+}
+////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////
 // TEST TEXTURES
 std::string testTex_PTX(ir::PTXInstruction::Geometry dim,
 	ir::PTXOperand::DataType dtype,
@@ -387,16 +499,26 @@ void testCvt_REF(void* output, void* input)
 		if(issubnormal(r0)) r0 = (stype)0;
 	}
 
+	dtype r1 = r0;
+
 	if(sat)
 	{
 		if(typeid(float) != typeid(dtype) && typeid(double) != typeid(dtype))
 		{
-			r0 = std::min((stype)std::numeric_limits<dtype>::max(), r0);
-			r0 = std::max((stype)std::numeric_limits<dtype>::min(), r0);
+			r1 = (stype)std::numeric_limits<dtype>::max() > r0
+				? r0 : std::numeric_limits<dtype>::max();
+			r1 = (stype)std::numeric_limits<dtype>::min() < r0
+				? r0 : std::numeric_limits<dtype>::min();
 		}
 	}
 
-	dtype r1 = r0;
+	if(round)
+	{
+		if(typeid(float) == typeid(dtype) && typeid(float) == typeid(stype))
+		{
+			r1 = trunc(r0);
+		}
+	}
 
 	if(isFloat<stype>() && !isFloat<dtype>())
 	{
@@ -451,7 +573,8 @@ std::string testMovLabel_PTX(ir::PTXInstruction::AddressSpace space, bool index,
 	
 	ptx << ".version 2.1\n";
 
-	if(space != ir::PTXInstruction::Param)
+	if(space != ir::PTXInstruction::Param
+		&& space != ir::PTXInstruction::Local)
 	{	
 		if(index)
 		{
@@ -468,7 +591,8 @@ std::string testMovLabel_PTX(ir::PTXInstruction::AddressSpace space, bool index,
 	ptx << ".entry test(.param .u64 out, .param .u64 in)   \n";
 	ptx << "{\t                                            \n";
 
-	if(space == ir::PTXInstruction::Param)
+	if(space == ir::PTXInstruction::Param
+		|| space == ir::PTXInstruction::Local)
 	{	
 		if(index)
 		{
@@ -6357,6 +6481,12 @@ namespace test
 				ir::PTXOperand::f32, false, false, true),
 			testCvt_INOUT(I32), testCvt_INOUT(FP32),
 			uniformFloat<float, 1>, 1, 1);
+		add("TestCvt-u32-f32-ftz-sat-rzi",
+			testCvt_REF<unsigned int, float, true, true, true>,
+			testCvt_PTX(ir::PTXOperand::u32,
+				ir::PTXOperand::f32, true, true, true),
+			testCvt_INOUT(I32), testCvt_INOUT(FP32),
+			uniformFloat<float, 1>, 1, 1);
 		add("TestCvt-u32-f64",
 			testCvt_REF<unsigned int, double, false, false, true>,
 			testCvt_PTX(ir::PTXOperand::u32,
@@ -6731,6 +6861,12 @@ namespace test
 				ir::PTXOperand::f32, false, false, false),
 			testCvt_INOUT(FP32), testCvt_INOUT(FP32),
 			uniformFloat<float, 1>, 1, 1);
+		add("TestCvt-f32-f32-rz",
+			testCvt_REF<float, float, false, false, true>,
+			testCvt_PTX(ir::PTXOperand::f32,
+				ir::PTXOperand::f32, false, false, true),
+			testCvt_INOUT(FP32), testCvt_INOUT(FP32),
+			uniformFloat<float, 1>, 1, 1);
 		add("TestCvt-f32-f64",
 			testCvt_REF<float, double, false, false, true>,
 			testCvt_PTX(ir::PTXOperand::f32,
@@ -6799,6 +6935,27 @@ namespace test
 				ir::PTXOperand::f64, false, false, false),
 			testCvt_INOUT(FP64), testCvt_INOUT(FP64),
 			uniformFloat<double, 1>, 1, 1);
+	
+		add("TestLocalMemory-u8",
+			testLocalMemory_REF<unsigned char>,
+			testLocalMemory_PTX(ir::PTXOperand::u8, false, false),
+			testLocalMemory_INOUT(I8), testLocalMemory_INOUT(I8),
+			uniformFloat<unsigned char, 1>, 1, 1);
+		add("TestLocalMemory-u8-global",
+			testLocalMemory_REF<unsigned char>,
+			testLocalMemory_PTX(ir::PTXOperand::u8, true, false),
+			testLocalMemory_INOUT(I8), testLocalMemory_INOUT(I8),
+			uniformFloat<unsigned char, 1>, 1, 1);
+		add("TestLocalMemory-u8-scoped",
+			testLocalMemory_REF<unsigned char>,
+			testLocalMemory_PTX(ir::PTXOperand::u8, false, true),
+			testLocalMemory_INOUT(I8), testLocalMemory_INOUT(I8),
+			uniformFloat<unsigned char, 1>, 1, 1);
+		add("TestLocalMemory-u8-global-scoped",
+			testLocalMemory_REF<unsigned char>,
+			testLocalMemory_PTX(ir::PTXOperand::u8, true, true),
+			testLocalMemory_INOUT(I8), testLocalMemory_INOUT(I8),
+			uniformFloat<unsigned char, 1>, 1, 1);
 	}
 
 	TestPTXAssembly::TestPTXAssembly(hydrazine::Timer::Second l, 

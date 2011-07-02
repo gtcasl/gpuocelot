@@ -7,7 +7,7 @@
 #ifndef EXECUTABLE_KERNEL_H_INCLUDED
 #define EXECUTABLE_KERNEL_H_INCLUDED
 
-#include <ocelot/ir/interface/Kernel.h>
+#include <ocelot/ir/interface/IRKernel.h>
 #include <ocelot/ir/interface/Texture.h>
 #include <ocelot/ir/interface/Dim3.h>
 #include <ocelot/ir/interface/ExternalFunctionSet.h>
@@ -22,7 +22,7 @@ namespace trace {
 }
 
 namespace executive {
-	class ExecutableKernel : public ir::Kernel {
+	class ExecutableKernel : public ir::IRKernel {
 	public:
 		typedef std::vector< trace::TraceGenerator* > TraceGeneratorVector;
 		typedef std::vector< const ir::Texture* > TextureVector;
@@ -31,7 +31,7 @@ namespace executive {
 		executive::Device* device;
 
 	public:
-		ExecutableKernel(const ir::Kernel& k, 
+		ExecutableKernel(const ir::IRKernel& k, 
 			executive::Device* d = 0);
 		ExecutableKernel(executive::Device* d = 0);
 		virtual ~ExecutableKernel();
@@ -111,6 +111,7 @@ namespace executive {
 		/*! attribute accessors - things every executable kernel should know */
 		unsigned int constMemorySize() const;
 		unsigned int localMemorySize() const;
+		unsigned int globalLocalMemorySize() const;
 		unsigned int maxThreadsPerBlock() const;
 		unsigned int registerCount() const;
 		unsigned int sharedMemorySize() const;
@@ -126,6 +127,8 @@ namespace executive {
 		unsigned int _constMemorySize;
 		/*! \brief Total amount of allocated local memory size */
 		unsigned int _localMemorySize;
+		/*! \brief Total amount of allocated global local memory per thread */
+		unsigned int _globalLocalMemorySize;
 		/*! \brief Maxmimum number of threads launched per block */
 		unsigned int _maxThreadsPerBlock;
 		/*! \brief Number of registered required by each thread */

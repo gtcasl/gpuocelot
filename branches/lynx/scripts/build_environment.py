@@ -5,6 +5,7 @@ import os
 import inspect
 import platform
 import re
+import subprocess
 from SCons import SConf
 
 def getDebianArchitecture():
@@ -83,16 +84,19 @@ def getBoostPaths():
 	if 'BOOST_LIB_PATH' in os.environ:
 		lib_path = os.path.abspath(os.environ['BOOST_LIB_PATH'])
 	if 'BOOST_INC_PATH' in os.environ:
-		inc_path = oSConfs.path.abspath(os.environ['BOOST_INC_PATH'])
+		inc_path = os.path.abspath(os.environ['BOOST_INC_PATH'])
 
 	return (bin_path,lib_path,inc_path)
 
-def getGLEWPaths():
-	"""Determines GLEW {bin,lib,include} paths
-	
-	returns (bin_path,lib_path,inc_path)
+def getGLEWPaths(env):
+	"""Determines GLEW {bin,lib,include} paths and is it installed?
+
+	returns (have_glew,bin_path,lib_path,inc_path)
 	"""
 
+	configure = Configure(env)
+	glew = configure.CheckLib('GLEW')		
+		
 	# determine defaults
 	if os.name == 'posix':
 		bin_path = '/usr/bin'
@@ -109,7 +113,7 @@ def getGLEWPaths():
 	if 'GLEW_INC_PATH' in os.environ:
 		inc_path = os.path.abspath(os.environ['GLEW_INC_PATH'])
 
-	return (bin_path,lib_path,inc_path)
+	return (glew,bin_path,lib_path,inc_path)
 
 def getLLVMPaths(enabled):
 	"""Determines LLVM {have,bin,lib,include,cflags,lflags,libs} paths
@@ -118,9 +122,7 @@ def getLLVMPaths(enabled):
 	"""
 	
 	if not enabled:
-		return (False, [SCons.SConf
-
-], [], [], [], [], [])
+		return (False, [], [], [], [], [], [])
 	
 	try:
 		llvm_config_path = which('llvm-config')
@@ -143,6 +145,11 @@ def getLLVMPaths(enabled):
 	# remove -DNDEBUG
 	if '-DNDEBUG' in cflags:
 		cflags.remove('-DNDEBUG')
+
+	# remove lib_path from libs
+	for lib in libs:
+		if lib[0:2] == "-L":
+			libs.remove(lib)
 
 	return (True,bin_path,lib_path,inc_path,cflags,lflags,libs)
 	
@@ -240,15 +247,20 @@ def getVersion(base):
 		print 'Failed to get subversion revision'
 		return base + '.0'
 
-	svn_info = os.popen('svn info ..').read()
+	process = subprocess.Popen('svn info ..', shell=True,
+		stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+	(svn_info, std_err_data) = process.communicate()
 	
 	match = re.search('Last Changed Rev: ', svn_info)
-	revision = '0'
+	revision = 'unknown'
 	if match:
 		end = re.search('\n', svn_info[match.end():])
 		if end:
 			revision = svn_info[match.end():match.end()+end.start()]
-	
+	else:
+		print 'Failed to get SVN repository version!'
+
 	return base + '.' + revision
 
 def defineConfigFlags(env):
@@ -267,6 +279,17 @@ def defineConfigFlags(env):
 		+ ' -DOCELOT_BIN_PATH="\\"' + bin_path + '\\""'
 
 	env.Replace(OCELOT_CONFIG_FLAGS = configFlags)
+
+def importEnvironment():
+	env = {  }
+	
+	if 'PATH' in os.environ:
+		env['PATH'] = os.environ['PATH']
+
+	if 'LD_LIBRARY_PATH' in os.environ:
+		env['LD_LIBRARY_PATH'] = os.environ['LD_LIBRARY_PATH']
+
+	return env
 
 def Environment():
 	vars = Variables()
@@ -300,7 +323,8 @@ def Environment():
 		'/usr/local'))
 
 	# create an Environment
-	env = OldEnvironment(tools = getTools(), variables = vars)
+	env = OldEnvironment(ENV = importEnvironment(), \
+		tools = getTools(), variables = vars)
 
 	# set the version
 	env.Replace(VERSION = getVersion("2.1"))
@@ -345,9 +369,11 @@ def Environment():
 	env.AppendUnique(CPPPATH = [boost_inc_path])
 
 	# get GLEW paths
-	(glew_exe_path,glew_lib_path,glew_inc_path) = getGLEWPaths()
-	env.AppendUnique(LIBPATH = [glew_lib_path])
-	env.AppendUnique(CPPPATH = [glew_inc_path])
+	(glew,glew_exe_path,glew_lib_path,glew_inc_path) = getGLEWPaths(env)
+	if glew:
+		env.AppendUnique(LIBPATH = [glew_lib_path])
+		env.AppendUnique(CPPPATH = [glew_inc_path])
+	env.Replace(HAVE_GLEW = glew)
 
 	# get llvm paths
 	(llvm, llvm_exe_path,llvm_lib_path,llvm_inc_path,llvm_cflags,\
@@ -357,28 +383,26 @@ def Environment():
 	env.AppendUnique(CXXFLAGS = llvm_cflags)
 	env.AppendUnique(LINKFLAGS = llvm_lflags)
 	env.Replace(HAVE_LLVM = llvm)
+	env.Replace(LLVM_LIBS = llvm_libs)
 
-	env.Replace(LLVM_LIBS = [])
-	for lib in llvm_libs:
-		if lib[0:2] != "-L":
-			env.AppendUnique(LLVM_LIBS = [lib])
-	
 	# set ocelot include path
 	env.Prepend(CPPPATH = os.path.dirname(thisDir))
 	env.AppendUnique(LIBPATH = os.path.abspath('.'))
 	
 	# set extra libs 
 	env.Replace(EXTRA_LIBS=['-lboost_system-mt', '-lboost_filesystem-mt', \
-		'-lboost_thread-mt', '-lGLEW'])
+		'-lboost_thread-mt'])
+	if glew:
+		env.AppendUnique(EXTRA_LIBS = ['-lGLEW'])
+	
+	# we need libdl on linux
+	if os.name == 'posix':
+		env.AppendUnique(EXTRA_LIBS = ['-ldl']) 
 	
 	# set ocelot libs
 	ocelot_libs = '-locelot'
-	for lib in env['EXTRA_LIBS']:
-		ocelot_libs += ' ' + lib
-	for lib in llvm_libs:
-		ocelot_libs += ' ' + lib
 	env.Replace(OCELOT_LDFLAGS=ocelot_libs)
-		
+	
 	# include the build directory in case of generated files
 	env.Prepend(CPPPATH = env.Dir('.'))
 
@@ -389,5 +413,4 @@ def Environment():
 	Help(vars.GenerateHelpText(env))
 
 	return env
-
 

@@ -37,7 +37,7 @@ namespace test
 			return false;
 		}
 		
-		ir::Kernel* kernel = _module.getKernel( "_Z17k_sequenceLoopingPfi" );
+		ir::IRKernel* kernel = _module.getKernel( "_Z17k_sequenceLoopingPfi" );
 		if( !kernel )
 		{
 			status << "Failed to get kernel _Z17k_sequenceLoopingPfi\n";

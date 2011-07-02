@@ -44,6 +44,10 @@ class EmulatorCallStack
 		DataVector _stack;
 		/*! \brief The actual data for shared memory */
 		DataVector _sharedMemory;
+		/*! \brief The actual data for global local memory */
+		DataVector _globalLocalMemory;
+		/*! \brief The amount of per-thread global local memory */
+		unsigned int _globalLocalSize;
 		/*! \brief The offset of the previously svaed frame */
 		unsigned int _savedOffset;
 		/*! \brief The offset of the previously svaed frame */
@@ -54,7 +58,8 @@ class EmulatorCallStack
 		EmulatorCallStack(unsigned int threads = 0,
 			unsigned int initialArgumentSize = 0, 
 			unsigned int initialFrameSize = 0, unsigned int registers = 0, 
-			unsigned int localSize = 0, unsigned int sharedSize = 0);
+			unsigned int localSize = 0, unsigned int globalLocalSize = 0,
+			unsigned int sharedSize = 0);
 	
 		/*! \brief Get a pointer to the base of the current stack frame */
 		void* stackFramePointer(unsigned int thread);
@@ -78,7 +83,9 @@ class EmulatorCallStack
 		void* localMemoryPointer(unsigned int thread);
 		/*! \brief Get a pointer to shared memory */
 		void* sharedMemoryPointer();
-	
+		/*! \brief Get a pointer to global local memory */
+		void* globalLocalMemoryPointer(unsigned int thread);
+		
 		/*! \brief Get the current register file size */
 		unsigned int registerCount() const;
 		/*! \brief Get the current size of local memory */

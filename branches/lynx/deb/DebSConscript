@@ -19,7 +19,7 @@ DEBMAINT = "Gregory Diamos <gregory.diamos@gatech.edu>"
 DEBARCH = env['deb_arch']
 DEBDEPENDS = "libboost-all-dev, llvm, llvm-dev" \
 	", freeglut3-dev, libglew1.5-dev, libc6"
-DEBDESC = "The ocelot dynamic compiler."
+DEBDESC = "Ocelot is a dynamic compilation framework for PTX."
 DEBDDESC = """ Ocelot is a compiler framework for PTX that includes several
  backend code generators for NVIDIA and AMD GPUs as well as x86 CPUs."""
 DEBWEB = "http://code.google.com/p/gpuocelot/"
@@ -121,6 +121,7 @@ def make_control(target=None, source=None, env=None):
 	installed_size = 0
 	for i in DEBFILES:
 		installed_size += os.stat(str(env.File(i[1])))[6]
+	installed_size = int(installed_size / 1024)
 	control_info = CONTROL_TEMPLATE % (
 		DEBNAME, installed_size, DEBMAINT, DEBARCH,
 		DEBVERSION, DEBDEPENDS, DEBDESC, DEBDDESC)

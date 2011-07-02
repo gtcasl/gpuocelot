@@ -7,13 +7,13 @@
 #ifndef IR_PTX_KERNEL_H_INCLUDED
 #define IR_PTX_KERNEL_H_INCLUDED
 
-#include <ocelot/ir/interface/Kernel.h>
+#include <ocelot/ir/interface/IRKernel.h>
 #include <ocelot/analysis/interface/DataflowGraph.h>
 
 namespace ir 
 {
 	/*!	A specialization of the kernel class for PTX */
-	class PTXKernel : public Kernel 
+	class PTXKernel : public IRKernel 
 	{
 		public:
 			/*!	\brief Vector of statements */
@@ -127,18 +127,6 @@ namespace ir
 			RegisterVector getReferencedRegisters() const;
 
 		public:
-			/*! \brief Builds the data flow graph within the kernel */
-			virtual analysis::DataflowGraph* dfg();
-
-			/*! \brief Gets the datalow graph */
-			virtual const analysis::DataflowGraph* dfg() const;
-
-			/*! \brief Sets the divergence analysis */
-			virtual analysis::DivergenceAnalysis* div_analy();
-
-			/*! \brief Gets the divergence analysis */
-			virtual const analysis::DivergenceAnalysis* div_analy() const;
-
 			/*! \brief renames all the blocks with canonical names */
 			virtual void canonicalBlockLabels(int kernelID=1);
 

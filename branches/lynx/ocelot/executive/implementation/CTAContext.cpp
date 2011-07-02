@@ -15,7 +15,7 @@
 
 #define REPORT_BASE 0
 
-/////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 executive::CTAContext::CTAContext(
 	const executive::EmulatedKernel *k, 
@@ -41,15 +41,10 @@ executive::CTAContext::~CTAContext() {
 
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////////////
-
-/*! Increments PCs of active threads as well as PC
-*/
-void executive::CTAContext::incrementPC() {
-	PC ++;
-}
+////////////////////////////////////////////////////////////////////////////////
 		
-bool executive::CTAContext::predicated(int threadID, const ir::PTXInstruction &instr) {
+bool executive::CTAContext::predicated(int threadID,
+	const ir::PTXInstruction &instr) {
 	using namespace ir;
 	
 	bool on = false;
@@ -74,5 +69,17 @@ bool executive::CTAContext::predicated(int threadID, const ir::PTXInstruction &i
 	return on;
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////////////
+boost::dynamic_bitset<> executive::CTAContext::predicateMask(
+	const ir::PTXInstruction &instr) {
+	boost::dynamic_bitset<> result(active.size(), false);
+	
+	int threads = result.size();
+	for (int i = 0; i < threads; ++i) {
+		result[i] = predicated(i, instr);
+	}
+	
+	return result;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 

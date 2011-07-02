@@ -625,8 +625,6 @@ namespace executive
 		memcpy.dstXInBytes = 0;
 		memcpy.dstY = 0;
 		memcpy.dstZ = 0;
-
-
 		
 		checkError(driver::cuMemcpy3D(&memcpy));
 	}
@@ -718,7 +716,6 @@ namespace executive
 		if(_opengl)
 		{
 			checkError(driver::cuGLCtxCreate(&_context, flags, device));
-			
 		}
 		else
 		{
@@ -1463,7 +1460,7 @@ namespace executive
 
 	void NVIDIAGPUDevice::launch(const std::string& moduleName, 
 		const std::string& kernelName, const ir::Dim3& grid, 
-		const ir::Dim3& block, size_t sharedMemory, 
+		const ir::Dim3& block, size_t sharedMemory,
 		const void* argumentBlock, size_t argumentBlockSize,
 		const trace::TraceGeneratorVector& traceGenerators,
 		const ir::ExternalFunctionSet* externals)
@@ -1620,6 +1617,6 @@ namespace executive
 	}
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 #endif

@@ -42,12 +42,13 @@ namespace ocelot
         return get()->kernelProfile();
     }
 
-	void addPTXPass(analysis::Pass &pass) 
+
+	void addPTXPass(transforms::Pass &pass) 
 	{
 		get()->addPTXPass(pass);
 	}
 
-	void removePTXPass(analysis::Pass &pass) 
+	void removePTXPass(transforms::Pass &pass) 
 	{
 		get()->removePTXPass(pass);
 	}

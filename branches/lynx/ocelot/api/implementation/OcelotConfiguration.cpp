@@ -3,11 +3,10 @@
 	\brief configuration class for GPU Ocelot
 */
 
-// C stdlib includes
-#include <assert.h>
-
 // Ocelot includes
 #include <ocelot/api/interface/OcelotConfiguration.h>
+
+#include <ocelot/executive/interface/ReconvergenceMechanism.h>
 
 #include <ocelot/ir/interface/Instruction.h>
 #include <ocelot/translator/interface/Translator.h>
@@ -17,6 +16,9 @@
 #include <hydrazine/interface/Version.h>
 #include <hydrazine/implementation/Exception.h>
 #include <hydrazine/implementation/debug.h>
+
+// C stdlib includes
+#include <cassert>
 
 #ifdef REPORT_BASE
 #undef REPORT_BASE
@@ -193,7 +195,7 @@ api::OcelotConfiguration::Executive::Executive():
 	enableEmulated(true),
 	enableNVIDIA(true),
 	enableAMD(true),
-	enableRemote(true),
+	enableRemote(false),
 	port(2011),
 	host("127.0.0.1"),
 	workerThreadLimit(-1),
@@ -215,7 +217,9 @@ static void initializeExecutive(api::OcelotConfiguration::Executive &executive,
 		"preferredISA", "emulated");
 	std::string strOptLevel = config.parse<std::string>(
 		"optimizationLevel", "full");
-
+	std::string strReconvMech = config.parse<std::string>(
+		"reconvergenceMechanism", "ipdom");
+		
 	executive.preferredISA = (int)ir::Instruction::Emulated;
 	if (strPrefISA == "emulated" || strPrefISA == "Emulated") {
 		executive.preferredISA = (int)ir::Instruction::Emulated;
@@ -277,13 +281,35 @@ static void initializeExecutive(api::OcelotConfiguration::Executive &executive,
 		report("Unknown optimization level - using none");
 	}
 
+	executive.reconvergenceMechanism
+		= (int)executive::ReconvergenceMechanism::Reconverge_IPDOM;
+	if (strReconvMech == "ipdom") {
+		executive.reconvergenceMechanism
+			= (int)executive::ReconvergenceMechanism::Reconverge_IPDOM;
+	}
+	else if (strReconvMech == "barrier") {
+		executive.reconvergenceMechanism
+			= (int)executive::ReconvergenceMechanism::Reconverge_Barrier;
+	}
+	else if (strReconvMech == "tf-gen6") {
+		executive.reconvergenceMechanism
+			= (int)executive::ReconvergenceMechanism::Reconverge_TFGen6;
+	}
+	else if (strReconvMech == "tf-stack") {
+		executive.reconvergenceMechanism
+			= (int)executive::ReconvergenceMechanism::Reconverge_TFSortedStack;
+	}
+	else {
+		report("Unknown reconvergence mechanism - ipdom");
+	}
+
 	executive.defaultDeviceID = config.parse<int>("defaultDeviceID", 0);
 	executive.required = config.parse<bool>("required", false);
 	executive.enableLLVM = config.parse<bool>("enableLLVM", true);
 	executive.enableEmulated = config.parse<bool>("enableEmulated", true);
 	executive.enableNVIDIA = config.parse<bool>("enableNVIDIA", true);
 	executive.enableAMD = config.parse<bool>("enableAMD", true);
-	executive.enableRemote = config.parse<bool>("enableRemote", true);
+	executive.enableRemote = config.parse<bool>("enableRemote", false);
 	executive.port = config.parse<int>("port", 2011);
 	executive.host = config.parse<std::string>("host", "127.0.0.1");
 	executive.workerThreadLimit = config.parse<int>("workerThreadLimit", -1);
@@ -327,6 +353,21 @@ static void initializeOptimizations(
 	hydrazine::json::Visitor config) {
 
 	optimizations.subkernelSize = config.parse<int>("subkernelSize", 50);
+
+	optimizations.structuralTransform =
+		config.parse<bool>("structuralTransform", false);
+			
+	optimizations.predicateToSelect =
+		config.parse<bool>("predicateToSelect", false);
+			
+	optimizations.linearScanAllocation =
+		config.parse<bool>("linearScanAllocation", false);
+			
+	optimizations.mimdThreadScheduling =
+		config.parse<bool>("mimdThreadScheduling", false);
+			
+	optimizations.syncElimination =
+		config.parse<bool>("syncElimination", false);			
 }
 
 api::OcelotConfiguration::OcelotConfiguration() {

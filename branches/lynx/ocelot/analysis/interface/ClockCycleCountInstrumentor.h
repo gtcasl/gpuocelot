@@ -12,7 +12,7 @@
 #include <algorithm>
 #include <ocelot/ir/interface/Module.h>
 #include <ocelot/analysis/interface/PTXInstrumentor.h>
-#include <ocelot/analysis/interface/Pass.h>
+#include <ocelot/transforms/interface/Pass.h>
 
 namespace analysis
 {
@@ -39,7 +39,7 @@ namespace analysis
             void initialize();
 
             /*! \brief The createPass method instantiates the instrumentation pass */
-            analysis::Pass *createPass();
+            transforms::Pass *createPass();
 
             /*! \brief The finalize method performs any necessary CUDA runtime actions after instrumentation */
             void finalize();	

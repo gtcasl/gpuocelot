@@ -58,11 +58,11 @@
 %token<text> OPCODE_CVTA OPCODE_ISSPACEP OPCODE_LDU
 %token<text> OPCODE_SULD OPCODE_TXQ OPCODE_SUST OPCODE_SURED OPCODE_SUQ
 %token<text> OPCODE_BRA OPCODE_CALL OPCODE_RET OPCODE_EXIT OPCODE_TRAP 
-%token<text> OPCODE_BRKPT OPCODE_SUBC OPCODE_TEX OPCODE_LD OPCODE_BARSYNC OPCODE_BAR
+%token<text> OPCODE_BRKPT OPCODE_SUBC OPCODE_TEX OPCODE_LD OPCODE_BARSYNC
 %token<text> OPCODE_ATOM OPCODE_RED OPCODE_NOT OPCODE_CNOT OPCODE_VOTE
 %token<text> OPCODE_SHR OPCODE_SHL OPCODE_FMA OPCODE_MEMBAR OPCODE_PMEVENT
 %token<text> OPCODE_POPC OPCODE_PRMT OPCODE_CLZ OPCODE_BFIND OPCODE_BREV 
-%token<text> OPCODE_BFI OPCODE_TESTP
+%token<text> OPCODE_BFI OPCODE_TESTP OPCODE_TLD4 OPCODE_BAR
 
 %token<value> PREPROCESSOR_INCLUDE PREPROCESSOR_DEFINE PREPROCESSOR_IF 
 %token<value> PREPROCESSOR_IFDEF PREPROCESSOR_ELSE PREPROCESSOR_ENDIF 
@@ -93,6 +93,7 @@
 %token<value> TOKEN_TAIL TOKEN_UNI TOKEN_ALIGN TOKEN_BYTE TOKEN_WIDE TOKEN_CARRY
 %token<value> TOKEN_RNI TOKEN_RMI TOKEN_RZI TOKEN_RPI
 %token<value> TOKEN_FTZ TOKEN_APPROX TOKEN_FULL TOKEN_SHIFT_AMOUNT
+%token<value> TOKEN_R TOKEN_G TOKEN_B TOKEN_A
 
 %token<value> TOKEN_TO
 
@@ -112,7 +113,7 @@
 
 %token<value> TOKEN_L1 TOKEN_L2
 
-%token<value> TOKEN_B TOKEN_P
+%token<value> TOKEN_P
 
 %token<value> TOKEN_WIDTH TOKEN_DEPTH TOKEN_HEIGHT TOKEN_NORMALIZED_COORDS
 %token<value> TOKEN_FILTER_MODE TOKEN_ADDR_MODE_0 TOKEN_ADDR_MODE_1
@@ -610,7 +611,7 @@ opcode : OPCODE_COS | OPCODE_SQRT | OPCODE_ADD | OPCODE_RSQRT | OPCODE_ADDC
 	| OPCODE_SUQ | OPCODE_ATOM | OPCODE_RED | OPCODE_NOT | OPCODE_CNOT
 	| OPCODE_VOTE | OPCODE_SHR | OPCODE_SHL | OPCODE_MEMBAR | OPCODE_FMA
 	| OPCODE_PMEVENT | OPCODE_POPC | OPCODE_CLZ | OPCODE_BFIND | OPCODE_BREV
-	| OPCODE_BFI | OPCODE_TESTP;
+	| OPCODE_BFI | OPCODE_TESTP | OPCODE_TLD4;
 
 uninitializableDeclaration : uninitializable addressableVariablePrefix 
 	identifier arrayDimensions ';'
@@ -777,9 +778,10 @@ optionalFloatRounding : floatRounding | /* empty string */;
 instruction : ftzInstruction2 | ftzInstruction3 | approxInstruction2 
 	| basicInstruction3 | bfi | bfind | brev | branch | addOrSub | addCOrSubC 
 	| atom | bar | brkpt | clz | cvt | cvta | isspacep | div | exit
-	| ld | ldu | mad | mad24 | membar | mov | mul24 | mul | notInstruction | pmevent
-	| popc | prmt | rcpSqrtInstruction | red | ret | sad | selp | set | setp
-	| slct | st | suld | suq | sured | sust | testp | tex | trap | txq | vote;
+	| ld | ldu | mad | mad24 | membar | mov | mul24 | mul | notInstruction
+	| pmevent | popc | prmt | rcpSqrtInstruction | red | ret | sad | selp | set
+	| setp | slct | st | suld | suq | sured | sust | testp | tex | tld4 | trap
+	| txq | vote;
 
 basicInstruction3Opcode : OPCODE_AND | OPCODE_OR 
 	| OPCODE_REM | OPCODE_SHL | OPCODE_SHR | OPCODE_XOR | OPCODE_COPYSIGN;
@@ -884,7 +886,9 @@ optionalUniOrTail : optionalUni
 	state.tail( false );
 };
 
-branch : OPCODE_CALL optionalUniOrTail optionalReturnOperandList identifier 
+branch : call;
+
+call : OPCODE_CALL optionalUniOrTail optionalReturnOperandList identifier 
 	optionalPrototypeName ';'
 {
 	state.call( $<text>4, @1 );
@@ -1020,11 +1024,10 @@ intRoundingModifier : intRounding
 
 cvtRoundingModifier : intRoundingModifier | floatRoundingModifier;
 
-cvtModifier : cvtRoundingModifier ftz sat;
-cvtModifier : sat cvtRoundingModifier ftz;
+cvtModifier : cvtRoundingModifier optionalFtz sat;
 cvtModifier : cvtRoundingModifier optionalFtz;
+cvtModifier : optionalFtz sat;
 cvtModifier : optionalFtz;
-cvtModifier : sat;
 
 cvt : OPCODE_CVT cvtModifier dataType dataType operand ',' operand ';'
 {
@@ -1315,10 +1318,6 @@ selp : OPCODE_SELP dataType operand ',' operand ',' operand ',' operand ';'
 
 /*
 	multiple orderings of modifiers for OptiX support
-
- OPTIX
-  set.ftz.ge.u32.f32	%closest_hit_radiance1_r45, 
-  	%closest_hit_radiance1_f165, %closest_hit_radiance1_f166;
 */
 setModifier : comparison optionalFtz;
 setModifier : ftz comparison;
@@ -1396,6 +1395,19 @@ tex : OPCODE_TEX geometry TOKEN_V4 dataType dataType arrayOperand ',' '['
 	state.convertD( $<value>4, @1 );
 };
 
+colorComponentId : TOKEN_A | TOKEN_B | TOKEN_R | TOKEN_G;
+
+colorComponent : colorComponentId
+{
+	state.colorComponent( $<value>1 );
+};
+
+tld4 : OPCODE_TLD4 colorComponent TOKEN_2D TOKEN_V4 dataType dataType
+	arrayOperand ',' '[' operand ',' arrayOperand ']' ';'
+{
+	state.tld4( $<value>5 );
+};
+
 //
 // Surface sampling 
 // 
@@ -1406,7 +1418,7 @@ surfaceQuery : TOKEN_WIDTH | TOKEN_HEIGHT | TOKEN_DEPTH
 	| TOKEN_ADDR_MODE_2
 {
 	state.surfaceQuery( $<value>1 );
-}
+};
 
 txq : OPCODE_TXQ surfaceQuery dataType operand ',' '[' operand ']' ';'
 {
@@ -1432,7 +1444,7 @@ clampOperation : TOKEN_CLAMP | TOKEN_ZERO | TOKEN_TRAP
 	state.clampOperation( $<value>1 );
 };
 
-formatMode : TOKEN_Z | TOKEN_P
+formatMode : TOKEN_B | TOKEN_P
 {
 	state.formatMode( $<value>1 );
 };

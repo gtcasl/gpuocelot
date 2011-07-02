@@ -84,10 +84,10 @@ void cuda::CudaRuntimeInterface::clearInstrumentors() {
 	assert(0 && "unimplemented");
 }
 
-void cuda::CudaRuntimeInterface::addPTXPass(analysis::Pass &pass) {
+void cuda::CudaRuntimeInterface::addPTXPass(transforms::Pass &pass) {
 	assert(0 && "unimplemented");
 }
-void cuda::CudaRuntimeInterface::removePTXPass(analysis::Pass &pass) {
+void cuda::CudaRuntimeInterface::removePTXPass(transforms::Pass &pass) {
 	assert(0 && "unimplemented");
 }
 void cuda::CudaRuntimeInterface::clearPTXPasses() {

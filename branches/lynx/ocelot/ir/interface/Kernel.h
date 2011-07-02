@@ -4,8 +4,8 @@
 	\brief implements the Kernel base class
 */
 
-#ifndef IR_KERNEL_H_INCLUDED
-#define IR_KERNEL_H_INCLUDED
+#ifndef KERNEL_H_INCLUDED
+#define KERNEL_H_INCLUDED
 
 #include <deque>
 #include <map>
@@ -14,17 +14,8 @@
 #include <ocelot/ir/interface/Parameter.h>
 #include <ocelot/ir/interface/Instruction.h>
 
-namespace analysis {
-	class DataflowGraph;
-	class DivergenceAnalysis;
-}
-
 namespace ir {
 	class Module;
-	class ControlFlowGraph;
-	class DominatorTree;
-	class PostdominatorTree;
-	class ControlTree;
 }
 
 namespace ir {
@@ -39,20 +30,7 @@ namespace ir {
 		typedef std::map<std::string, Local> LocalMap;
 
 	protected:
-		/*!	Control flow graph of kernel - this is the primary store of 
-				instructions belonging to the kernel */
-		ControlFlowGraph* _cfg;
-		/*!	Dominator tree constructed from the cfg */
-		DominatorTree* _dom_tree;
-		/*!	Post-dominator tree constructed from the cfg */
-		PostdominatorTree* _pdom_tree;
-		/*! \brief Dataflow graph constructed from the cfg */
-		analysis::DataflowGraph* _dfg;
-		/*! \brief Control tree constructed from the cfg */
-		ControlTree* _ct;
-		/*! \brief Divergence analysis constructed from the dfg */
-		analysis::DivergenceAnalysis* _dva;
-		/*! \brief Is this kernel a function? */
+	/*! \brief Is this kernel a function? */
 		bool _function;
 		
 	public:
@@ -66,6 +44,8 @@ namespace ir {
 		Kernel( const Kernel& k );
 		/*! \brief Assignment operator (deep) */
 		const Kernel& operator=( const Kernel& k );
+		/*! \brief Write this kernel to a parseable string */
+		virtual void write(std::ostream& stream) const;
 
 	public:
 		/*!	Returns a pointer to a parameter identified by 'name' */		
@@ -73,46 +53,9 @@ namespace ir {
 		/*!	Returns a const pointer to a parameter identified by 'name' */
 		const Parameter* getParameter(const std::string& name) const;
 
-	public:
-		/*! \brief Builds the Pdom tree within the kernel */
-		PostdominatorTree* pdom_tree();
-		/*! \brief Builds the dominator tree within the kernel */
-		DominatorTree* dom_tree();
-		/*! \brief Builds the data flow graph within the kernel */
-		virtual analysis::DataflowGraph* dfg();
-		/*! \brief Gets the const dfg */
-		virtual const analysis::DataflowGraph* dfg() const;
-		/*! \brief Builds the divergence analysis within the kernel */
-		virtual analysis::DivergenceAnalysis* div_analy();
-		/*! \brief Gets the const divergence analysis  */
-		virtual const analysis::DivergenceAnalysis* div_analy() const;
-		/*! \brief Builds the Control tree within the kernel */
-		ControlTree* ctrl_tree();
-		/*! \brief Gets the cfg */
-		ControlFlowGraph* cfg();
-		/*! \brief Gets the const cfg */
-		const ControlFlowGraph* cfg() const;
-
-	public:
-		/*! \brief Clear dataflow graph */
-		void clear_dfg();
-		/*! \brief Clear control tree */
-		void clear_ctrl_tree();
-		/*! \brief Clear post dominator tree */
-		void clear_pdom_tree();
-		/*! \brief Clear dominator tree */
-		void clear_dom_tree();
-		/*! \brief Clear divergence analysis */
-		void clear_div_analy();
-
 	public:	
-		/*!	Returns true if the kernel instance is derived from 
-			ExecutableKernel */
-		virtual bool executable() const;
 		/*! \brief Is this kernel actually a function, not a kernel? */
 		bool function() const;
-		/*! \brief Write this kernel to a parseable string */
-		virtual void write(std::ostream& stream) const;
 		
 	public:
 		/*!	[mangled] name of kernel within module */

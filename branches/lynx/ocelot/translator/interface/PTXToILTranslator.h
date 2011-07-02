@@ -14,10 +14,10 @@
 //Ocelot includes
 #include <ocelot/translator/interface/Translator.h>
 #include <ocelot/ir/interface/ILKernel.h>
-#include <ocelot/ir/interface/ControlTree.h>
 #include <ocelot/executive/interface/ExecutableKernel.h>
+#include <ocelot/analysis/interface/ControlTree.h>
 
-typedef ir::ControlTree CT;
+typedef analysis::ControlTree CT;
 typedef executive::ExecutableKernel ExecutableKernel;
 
 namespace translator
@@ -32,9 +32,6 @@ namespace translator
 			/*! \brief Translate a module from PTX to IL */
 			ir::Kernel *translate(const ir::Kernel *k);
 			ir::Kernel *translate(const ExecutableKernel *k);
-
-			/*! \brief Add profiling data for the translator */
-			void addProfile(const ProfilingData &d);
 
 		private:
 			typedef std::map<int, std::string> ILiteralMap;
@@ -69,6 +66,7 @@ namespace translator
 			void _translateBar(const ir::PTXInstruction &i);
 			void _translateBra(const ir::PTXInstruction &i);
 			void _translateClz(const ir::PTXInstruction &i);
+			void _translateCos(const ir::PTXInstruction &i);
 			void _translateCvt(const ir::PTXInstruction &i);
 			void _translateDiv(const ir::PTXInstruction &i);
 			void _translateEx2(const ir::PTXInstruction &i);
@@ -93,6 +91,7 @@ namespace translator
 			void _translateSelP(const ir::PTXInstruction &i);
 			void _translateSet(const ir::PTXInstruction &i);
 			void _translateSetP(const ir::PTXInstruction &i);
+			void _translateSin(const ir::PTXInstruction &i);
 			void _translateShl(const ir::PTXInstruction &i);
 			void _translateShr(const ir::PTXInstruction &i);
 			void _translateSqrt(const ir::PTXInstruction &i);
@@ -140,3 +139,4 @@ namespace translator
 }
 
 #endif
+

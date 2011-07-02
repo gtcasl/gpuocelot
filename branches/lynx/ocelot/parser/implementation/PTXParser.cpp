@@ -7,11 +7,17 @@
 #ifndef PTX_PARSER_CPP_INCLUDED
 #define PTX_PARSER_CPP_INCLUDED
 
+// Ocelot Includes
 #include <ocelot/parser/interface/PTXParser.h>
-#include <cassert>
+
+// Hydrazine Includes
 #include <hydrazine/implementation/debug.h>
 #include <hydrazine/implementation/string.h>
 
+// Standard Library Includes
+#include <cassert>
+
+// Preprocessor Macros
 #define throw_exception( messageData, type ) \
 	{\
 		std::stringstream error;\
@@ -52,29 +58,30 @@ namespace parser
 	bool PTXParser::State::FunctionPrototype::compare( 
 		const FunctionPrototype& t )
 	{
-		// it seems calls can ignore return types
-		bool returnTypesEqual = true;
-		
-		if (!(t.returnTypes.size() == 1 && t.returnTypes[0]
-			== ir::PTXOperand::DataType::_)) {
-		
-			FunctionPrototype::TypeVector::const_iterator
-				callee_it = t.returnTypes.begin(), 
-				prototype_it = returnTypes.begin();
-			for (; 
-				returnTypesEqual && 
-					callee_it != t.returnTypes.end()
-					&& prototype_it != returnTypes.end();
-				++callee_it, ++prototype_it) {
-			
-				if (*callee_it != ir::PTXOperand::DataType::_
-					&& *callee_it != *prototype_it) {
-					returnTypesEqual =false;
-				}
+		if( t.returnTypes.size()   != returnTypes.size()   ) return false;
+		if( t.argumentTypes.size() != argumentTypes.size() ) return false;
+	
+		for( TypeVector::const_iterator fromType = returnTypes.begin(),
+			toType = t.returnTypes.begin(); fromType != returnTypes.end();
+			++fromType, ++toType )
+		{
+			if( !ir::PTXOperand::relaxedValid( *fromType, *toType ) )
+			{
+				return false;
 			}
 		}
 
-		return returnTypesEqual	&& t.argumentTypes == argumentTypes;
+		for( TypeVector::const_iterator fromType = t.argumentTypes.begin(),
+			toType = argumentTypes.begin(); fromType != t.argumentTypes.end();
+			++fromType, ++toType )
+		{
+			if( !ir::PTXOperand::relaxedValid( *toType, *fromType ) )
+			{
+				return false;
+			}
+		}
+	
+		return true;
 	}
 	
 	std::string PTXParser::State::FunctionPrototype::toString() const
@@ -114,10 +121,10 @@ namespace parser
 		switch( directive )
 		{
 			case ir::PTXStatement::Shared : return ir::PTXInstruction::Shared;
-			case ir::PTXStatement::Local : return ir::PTXInstruction::Local;
-			case ir::PTXStatement::Param : return ir::PTXInstruction::Param;
+			case ir::PTXStatement::Local  : return ir::PTXInstruction::Local;
+			case ir::PTXStatement::Param  : return ir::PTXInstruction::Param;
 			case ir::PTXStatement::Global : return ir::PTXInstruction::Global;
-			case ir::PTXStatement::Const : return ir::PTXInstruction::Const;
+			case ir::PTXStatement::Const  : return ir::PTXInstruction::Const;
 			default: break;
 		}
 		return ir::PTXInstruction::AddressSpace_Invalid;
@@ -125,28 +132,18 @@ namespace parser
 	
 	void PTXParser::State::_setImmediateTypes()
 	{
-		ir::PTXOperand::DataType type = ir::PTXOperand::TypeSpecifier_invalid;
-		for( OperandVector::iterator operand = operandVector.begin(); 
-			operand != operandVector.end(); ++operand )
-		{
-			if( operand->addressMode != ir::PTXOperand::Immediate 
-				&& operand->addressMode != ir::PTXOperand::Invalid
-				&& operand->type != ir::PTXOperand::pred )
-			{
-				type = operand->type;
-			}
-		}
+		ir::PTXInstruction& instruction = statement.instruction;
 		
-		if( type == ir::PTXOperand::TypeSpecifier_invalid ) return;
-		
-		for( OperandVector::iterator operand = operandVector.begin(); 
-			operand != operandVector.end(); ++operand )
+		ir::PTXOperand* sources[] =
+			{ &instruction.a, &instruction.b, &instruction.c };
+				
+		for( unsigned int i = 0; i < 3; ++i )
 		{
-			if( operand->addressMode == ir::PTXOperand::Immediate 
-				&& ( ir::PTXOperand::isFloat( operand->type ) 
-				== ir::PTXOperand::isFloat( type ) ) )
+			ir::PTXOperand& operand = *sources[i];
+		
+			if( operand.addressMode == ir::PTXOperand::Immediate )
 			{
-				operand->type = type;
+				operand.type = instruction.type;
 			}
 		}
 	}
@@ -209,7 +206,7 @@ namespace parser
 		operands.insert( std::make_pair( "%nctaid", OperandWrapper( 
 			ir::PTXOperand( ir::PTXOperand::nctaId,
 			ir::PTXOperand::iAll ) ) ) );
-		operands.insert( std::make_pair( "%simd", OperandWrapper( 
+		operands.insert( std::make_pair( "%smid", OperandWrapper( 
 			ir::PTXOperand( ir::PTXOperand::smId, ir::PTXOperand::ix ) ) ) );
 		operands.insert( std::make_pair( "%nsmid", OperandWrapper( 
 			ir::PTXOperand( ir::PTXOperand::nsmId, ir::PTXOperand::ix ) ) ) );
@@ -1372,7 +1369,10 @@ namespace parser
 			}
 			else
 			{
-				operand.addressMode = ir::PTXOperand::Address;
+				report(" Operand: " << name << " mode: "
+					<< ir::PTXOperand::toString(
+					mode->second.operand.addressMode));
+				operand.addressMode = mode->second.operand.addressMode;
 			}
 		}
 	
@@ -1386,9 +1386,6 @@ namespace parser
 		}
 		operand.offset = (int) value;
 		operand.type = mode->second.operand.type;
-		if (operand.identifier == "_") {
-			operand.type = ir::PTXOperand::DataType::_;
-		}
 	
 		operandVector.push_back( operand );
 	}
@@ -1408,18 +1405,6 @@ namespace parser
 				<< "\" has more than 4 elements.", InvalidArray );
 		}
 
-#if 0
-		// I don't think this is a valid check
-		if( identifiers.size() == 3 )
-		{
-			throw_exception( toString( location, *this ) 
-				<< "Array operand \"" 
-				<< hydrazine::toString( identifiers.begin(), 
-				identifiers.end(), "," ) 
-				<< "\" has exactly 3 elements.", InvalidArray );
-		}
-#endif
-	
 		if( mode == operands.end() )
 		{
 			throw_exception( toString( location, *this ) << "Operand " 
@@ -1427,7 +1412,8 @@ namespace parser
 				NoDeclaration );
 		}
 		
-		operand = mode->second.operand;
+		operand.addressMode = ir::PTXOperand::Register;
+		operand.type        = mode->second.operand.type;
 	
 		if( identifiers.size() == 1 )
 		{
@@ -1640,9 +1626,6 @@ namespace parser
 	void PTXParser::State::instruction( const std::string& opcode,
 		int dataType )
 	{
-		
-		_setImmediateTypes();
-
 		statement.directive = ir::PTXStatement::Instr;
 		statement.instruction.type = tokenToDataType( dataType );
 		statement.instruction.opcode = stringToOpcode( opcode );
@@ -1676,6 +1659,8 @@ namespace parser
 		{
 			statement.instruction.c = operandVector[index++];
 		}
+
+		_setImmediateTypes();
 	}
 	
 	void PTXParser::State::instruction( const std::string& opcode )
@@ -1695,7 +1680,26 @@ namespace parser
 		statement.instruction.pg     = operandVector[0];
 		statement.instruction.d      = operandVector[1];
 		statement.instruction.a      = operandVector[2];
-		statement.instruction.c      = operandVector[3];		
+		statement.instruction.c      = operandVector[3];
+
+		_setImmediateTypes();
+	}
+
+	void PTXParser::State::tld4( int dataType )
+	{
+		report( "  Rule: instruction : tld4" );
+
+		assert( operandVector.size() == 4 );
+
+		statement.directive          = ir::PTXStatement::Instr;
+		statement.instruction.type   = tokenToDataType( dataType );
+		statement.instruction.opcode = stringToOpcode( "tld4" );
+		statement.instruction.pg     = operandVector[0];
+		statement.instruction.d      = operandVector[1];
+		statement.instruction.a      = operandVector[2];
+		statement.instruction.c      = operandVector[3];
+
+		_setImmediateTypes();	
 	}
 	
 	void PTXParser::State::callPrototypeName( const std::string& identifier )
@@ -1723,23 +1727,35 @@ namespace parser
 				InvalidInstruction );
 		}
 		
+		report( "   name: " << operand->second.operand.identifier );
+		
 		statement.instruction.a = operand->second.operand;
 	
-		statement.instruction.d.addressMode = ir::PTXOperand::ArgumentList;
 		statement.instruction.b.addressMode = ir::PTXOperand::ArgumentList;
 
 		FunctionPrototype proto;
 		
+		report( "   return operands(" << returnOperands << "):" );
+		
+		if( returnOperands > 0 )
+		{
+			statement.instruction.d.addressMode = ir::PTXOperand::ArgumentList;
+		}
+		
 		unsigned int operandIndex = 1;
 		for( ; returnOperands > 0; --returnOperands, ++operandIndex )
 		{
+			report( "    " << operandVector[ operandIndex ].toString() );
 			statement.instruction.d.array.push_back( 
 				operandVector[ operandIndex ] );
 			proto.returnTypes.push_back( operandVector[ operandIndex ].type );
 		}
+
+		report( "   operands:" );
 		
 		for( ; operandIndex < operandVector.size(); ++operandIndex )
 		{
+			report( "    " << operandVector[ operandIndex ].toString() );
 			statement.instruction.b.array.push_back(
 				operandVector[ operandIndex ] );
 			proto.argumentTypes.push_back( operandVector[ operandIndex ].type );
@@ -1871,6 +1887,10 @@ namespace parser
 	void PTXParser::State::surfaceQuery(int token) {
 		report("surfaceQuery(" << token << ")");
 		statement.instruction.surfaceQuery = tokenToSurfaceQuery(token);
+	}
+	
+	void PTXParser::State::colorComponent(int token) {
+		statement.instruction.colorComponent = tokenToColorComponent(token);
 	}
 
 	void PTXParser::State::returnType( int token )
@@ -2068,7 +2088,7 @@ namespace parser
 		ir::PTXOperand bucket;
 		bucket.identifier = "_";
 		bucket.type = ir::PTXOperand::b64;
-		bucket.addressMode = ir::PTXOperand::Register;
+		bucket.addressMode = ir::PTXOperand::BitBucket;
 		bucket.vec = ir::PTXOperand::v1;
 		
 		state.operands.insert( std::make_pair( "_", 
@@ -2100,14 +2120,7 @@ namespace parser
 			case TOKEN_F64:  return ir::PTXOperand::f64; break;
 			default:
 			{
-				Exception exception;
-				exception.error = State::InvalidDataType;
-				
-				std::stringstream stream;
-				stream << token;
-				exception.message = "Got invalid data type " + stream.str();
-				report("PTXParser::tokenToDataType(" << token << ") - " << exception.message);
-				throw exception;
+				assertM(false, "Parsed invalid data type");
 				break;
 			}
 		}
@@ -2150,7 +2163,7 @@ namespace parser
 	}
 
 	ir::PTXInstruction::Opcode PTXParser::stringToOpcode( std::string string )
-	{ // | OPCODE_SULD | OPCODE_TXQ | OPCODE_SUST | OPCODE_SURED | OPCODE_SUQ
+	{
 		if( string == "abs" ) return ir::PTXInstruction::Abs; 
 		if( string == "add" ) return ir::PTXInstruction::Add;
 		if( string == "addc" ) return ir::PTXInstruction::AddC;
@@ -2209,14 +2222,15 @@ namespace parser
 		if( string == "st" ) return ir::PTXInstruction::St;
 		if( string == "sub" ) return ir::PTXInstruction::Sub;
 		if( string == "subc" ) return ir::PTXInstruction::SubC;
-		if( string == "suld") return ir::PTXInstruction::Suld;
-		if( string == "sust") return ir::PTXInstruction::Sust;
-		if( string == "sured") return ir::PTXInstruction::Sured;
-		if( string == "suq") return ir::PTXInstruction::Suq;
-		if( string == "txq") return ir::PTXInstruction::Txq;
-		if( string == "testp" ) return ir::PTXInstruction::TestP;
+		if( string == "suld" ) return ir::PTXInstruction::Suld;
+		if( string == "sust" ) return ir::PTXInstruction::Sust;
+		if( string == "sured" ) return ir::PTXInstruction::Sured;
+		if( string == "suq" ) return ir::PTXInstruction::Suq;
 		if( string == "tex" ) return ir::PTXInstruction::Tex;
+		if( string == "testp" ) return ir::PTXInstruction::TestP;
+		if( string == "tld4" ) return ir::PTXInstruction::Tld4;
 		if( string == "trap" ) return ir::PTXInstruction::Trap;
+		if( string == "txq" ) return ir::PTXInstruction::Txq;
 		if( string == "vote" ) return ir::PTXInstruction::Vote;
 		if( string == "xor" ) return ir::PTXInstruction::Xor;
 	
@@ -2377,7 +2391,6 @@ namespace parser
 	{
 		switch (token)
 		{
-			case TOKEN_Z: return ir::PTXInstruction::Unformatted;
 			case TOKEN_B: return ir::PTXInstruction::Unformatted;
 			case TOKEN_P: return ir::PTXInstruction::Formatted;
 			default: break;
@@ -2406,6 +2419,20 @@ namespace parser
 		return ir::PTXInstruction::SurfaceQuery_Invalid;
 	}
 	
+	ir::PTXInstruction::ColorComponent PTXParser::tokenToColorComponent(
+		int token)
+	{
+		switch (token)
+		{
+			case TOKEN_R: return ir::PTXInstruction::red;
+			case TOKEN_G: return ir::PTXInstruction::green;
+			case TOKEN_B: return ir::PTXInstruction::blue;
+			case TOKEN_A: return ir::PTXInstruction::alpha;
+			default: break;
+		}
+		return ir::PTXInstruction::ColorComponent_Invalid;
+	}
+
 	ir::PTXInstruction::BarrierOperation PTXParser::tokenToBarrierOp(int token)
 	{
 		switch( token )

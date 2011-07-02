@@ -12,36 +12,41 @@
 
 namespace executive
 {
-	/*! \brief A class contains the state for executing a kernel */
-	class LLVMContext
+
+/*! \brief A class contains the state for executing a kernel */
+class LLVMContext
+{
+public:
+	/*! \brief A 3-D dimension corresponding to the CUDA notion */
+	class Dimension
 	{
 		public:
-			/*! \brief A 3-D dimension corresponding to the CUDA notion */
-			class Dimension
-			{
-				public:
-					unsigned int x;
-					unsigned int y;
-					unsigned int z;
-			};
-	
-		public:
-			Dimension tid; //! Thread ids
-			Dimension ntid; //! CTA dimensions
-			Dimension ctaid; //! CTA ids
-			Dimension nctaid; //! Kernel dimensions
-		
-		public:
-			char* local; //! Pointer to local memory
-			char* shared; //! Pointer to shared memory
-			char* constant; //! Pointer to constant memory
-			char* parameter; //! Pointer to parameter memory
-			char* argument; //! Pointer to argument memory
-		
-		public:
-			/*! \brief Generic pointer back to other state */
-			char* metadata;
+			unsigned int x;
+			unsigned int y;
+			unsigned int z;
 	};
+
+public:
+	Dimension tid;    //! Thread ids
+	Dimension ntid;   //! CTA dimensions
+	Dimension ctaid;  //! CTA ids
+	Dimension nctaid; //! Kernel dimensions
+
+public:
+	char* local;               //! Pointer to local memory
+	char* shared;              //! Pointer to shared memory
+	char* constant;            //! Pointer to constant memory
+	char* parameter;           //! Pointer to parameter memory
+	char* argument;            //! Pointer to argument memory
+	char* globallyScopedLocal; //! Pointer to globally scoped local memory
+	
+public:
+	unsigned int externalSharedSize; //! External shared size
+
+public:
+	/*! \brief Generic pointer back to other state */
+	char* metadata;
+};
 
 }
 

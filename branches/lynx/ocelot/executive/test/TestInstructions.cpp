@@ -60,7 +60,7 @@ public:
 			return;
 		}
 		
-		Kernel* rawKernel = module.getKernel("_Z17k_simple_sequencePi");
+		IRKernel* rawKernel = module.getKernel("_Z17k_simple_sequencePi");
 		if (rawKernel == 0) {
 			status << "failed to get kernel\n";
 			valid = false;
@@ -4415,169 +4415,6 @@ public:
 		return result;
 	}
 
-	/////////////////////////////////////////////////////////////////////////////////////////////////
-
-	bool test_Bra_uni() {
-		bool result = true;
-
-		PTXInstruction ins;
-		ins.opcode = PTXInstruction::Bra;
-		ins.branchTargetInstruction = 3;
-		ins.reconvergeInstruction = 7;
-
-		cta->reset();
-		if (cta->reconvergenceMechanism->stackSize() != 1) {
-			result = false;
-			status << "test_Bra_uni failed - expected runtime stack to include 1 context before Bra instruction. " 
-				<< cta->reconvergenceMechanism->stackSize() << " context(s) encountered \n";
-			return (result);
-		}
-
-		for (int i = 0; i < threadCount; i++) {
-			cta->getActiveContext().active[i] = true;
-		}
-
-		cta->eval_Bra(cta->getActiveContext(), ins);
-
-		if (cta->reconvergenceMechanism->stackSize() != 2) {
-			result = false;
-			status << "test_Bra_uni failed - expected runtime stack to include 2 contexts. " 
-				<< cta->reconvergenceMechanism->stackSize() << " contexts encountered \n";
-		}
-
-		if (result) {
-			for (int i = 0; i < threadCount; i++) {
-				if (!cta->getActiveContext().active[i]) {
-					result = false;
-					status << "test_Bra_uni failed (1)\n";
-					break;
-				}
-			}
-		}
-		if (result) {
-			for (int i = 0; i < threadCount; i++) {
-				if (!cta->reconvergenceMechanism->runtimeStack.front().active[i]) {
-					result = false;
-					status << "test_Bra_uni failed (2)\n";
-					break;
-				}
-			}
-		}
-
-		return result;
-	}
-	
-	bool test_Bra_div() {
-		bool result = true;
-
-		PTXInstruction ins;
-		ins.opcode = PTXInstruction::Bra;
-		ins.branchTargetInstruction = 3;
-		ins.reconvergeInstruction = 7;
-		ins.pg.reg = 1;
-		ins.pg.condition = PTXOperand::Pred;
-		
-		cta->reset();
-		if (cta->reconvergenceMechanism->stackSize() != 1) {
-			result = false;
-			status << "test_Bra_div failed - expected runtime stack to include 1 context before Bra instruction. " 
-				<< cta->reconvergenceMechanism->stackSize() << " context(s) encountered \n";
-			return (result);
-		}
-
-		for (int i = 0; i < threadCount; i++) {
-			cta->getActiveContext().active[i] = (i > 3);
-			cta->setRegAsPredicate(i, ins.pg.reg, ((i % 2) ? false : true));
-		}
-		
-		cta->eval_Bra(cta->getActiveContext(), ins);
-		
-		if (cta->reconvergenceMechanism->stackSize() != 3) {
-			result = false;
-			status << "test_Bra_div failed - expected activation stack to have size 3. instead, " 
-				<< cta->reconvergenceMechanism->stackSize() << " context(s) encountered\n";
-		}
-
-		ReconvergenceMechanism::RuntimeStack::const_reverse_iterator 
-			ctx_it = cta->reconvergenceMechanism->runtimeStack.rbegin();
-
-		if (result && ctx_it->PC != 1) {
-			for (int i = 0; i < threadCount; i++) {
-				bool expected = ((i > 3) && (!(i % 2)));
-				if (ctx_it->active[i] != expected) {
-					status << "test_Bra_div [" << i << "] - failed (1)\n";
-					break;
-				}
-			}
-		}
-		if (result) { ++ ctx_it; }
-		if (result && ctx_it->PC != 3) {
-			for (int i = 0; i < threadCount; i++) {
-				bool expected = ((i > 3) && ((i % 2)));
-				if (ctx_it->active[i] != expected) {
-					status << "test_Bra_div [" << i << "] - failed (2)\n";
-					break;
-				}
-			}
-		}
-
-		if (result) { ++ ctx_it; }
-		if (result && ctx_it->PC != 8) {
-			for (int i = 0; i < threadCount; i++) {
-				bool expected = (i > 3);
-				if (ctx_it->active[i] != expected) {
-					status << "test_Bra_div [" << i << "] - failed (3)\n";
-					break;
-				}
-			}
-		}
-		
-		return result;	
-	}
-	
-	bool test_Bra() {
-		bool result = test_Bra_uni() && test_Bra_div();
-		return result;
-	}
-	
-	bool test_Reconverge() {
-		bool result = true;
-
-		PTXInstruction ins;
-		ins.opcode = PTXInstruction::Bra;
-		ins.branchTargetInstruction = 3;
-		ins.reconvergeInstruction = 7;
-		ins.pg.reg = 1;
-		ins.pg.condition = PTXOperand::Pred;
-		
-		cta->reset();
-
-		for (int i = 0; i < threadCount; i++) {
-			cta->getActiveContext().active[i] = (i > 3);										// turn off some threads
-			cta->setRegAsPredicate(i, ins.pg.reg, ((i % 2) ? false : true));	// diverge every other thread
-		}
-		
-		cta->eval_Bra(cta->getActiveContext(), ins);
-		
-		if (cta->reconvergenceMechanism->stackSize() != 3) {
-			result = false;
-			status << "test_Reconverge failed - expected activation stack to have size 3. instead, " 
-				<< cta->reconvergenceMechanism->stackSize() << " context(s) encountered\n";
-		}
-		
-		// now evaluate reconverge and see what happens
-		int n = 0;
-		while (result && cta->getActiveContext().PC < 8) {
-			if (++n >= 3 || cta->reconvergenceMechanism->stackSize() == 1) {
-				status << "test_Reconverge failed - threads have not reconverged past the reconverge instruction\n";
-				result = false;
-				break;
-			}
-			cta->eval_Reconverge(cta->getActiveContext(), ins);
-		}
-		
-		return result;
-	}
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -4665,12 +4502,6 @@ public:
 				status << "pass: predicated Add and Ld isntructions\n";
 			}
 
-			// control-flow instructions
-//			result = (result && test_Bra());
-//			result = (result && test_Reconverge());
-			if (prolix && result) {
-				status << "pass: control flow instructions\n";
-			}
 
 			// if you made it here, the instruction-level tests have succeeded
 		}

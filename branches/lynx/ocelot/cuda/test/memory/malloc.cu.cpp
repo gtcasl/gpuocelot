@@ -1,12 +1,12 @@
-# 1 "/tmp/tmpxft_00003b80_00000000-1_malloc.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00000eea_00000000-1_malloc.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_00003b80_00000000-1_malloc.cudafe1.cpp"
-# 1 "malloc.cu"
+# 1 "/tmp/tmpxft_00000eea_00000000-1_malloc.cudafe1.cpp"
+# 1 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 # 60 "/usr/local/cuda/bin/../include/device_types.h"
-# 149 "/usr/lib/gcc/x86_64-linux-gnu/4.4.5/include/stddef.h" 3
+# 149 "/usr/lib/x86_64-linux-gnu/gcc/x86_64-linux-gnu/4.5.2/include/stddef.h" 3
 typedef long ptrdiff_t;
-# 211 "/usr/lib/gcc/x86_64-linux-gnu/4.4.5/include/stddef.h" 3
+# 211 "/usr/lib/x86_64-linux-gnu/gcc/x86_64-linux-gnu/4.5.2/include/stddef.h" 3
 typedef unsigned long size_t;
 # 1 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 1 3
 # 69 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 3
@@ -1197,7 +1197,7 @@ typedef struct dim3 dim3;
 # 70 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 2 3
 # 1 "/usr/local/cuda/bin/../include/crt/storage_class.h" 1 3
 # 71 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 2 3
-# 213 "/usr/lib/gcc/x86_64-linux-gnu/4.4.5/include/stddef.h" 2 3
+# 213 "/usr/lib/x86_64-linux-gnu/gcc/x86_64-linux-gnu/4.5.2/include/stddef.h" 2 3
 # 123 "/usr/local/cuda/bin/../include/driver_types.h"
 # 559 "/usr/local/cuda/bin/../include/driver_types.h"
 # 571 "/usr/local/cuda/bin/../include/driver_types.h"
@@ -3055,7 +3055,7 @@ extern "C" float coshf(float ) throw(); extern "C" float __coshf(float ) throw()
 extern "C" float sinhf(float ) throw(); extern "C" float __sinhf(float ) throw();
 # 77 "/usr/include/bits/mathcalls.h" 3
 extern "C" float tanhf(float ) throw(); extern "C" float __tanhf(float ) throw();
-# 82 "/usr/include/bits/mathcalls.h" 3
+# 83 "/usr/include/bits/mathcalls.h" 3
 extern "C" void sincosf(float , float * , float * ) throw();
 # 89 "/usr/include/bits/mathcalls.h" 3
 extern "C" float acoshf(float ) throw(); extern "C" float __acoshf(float ) throw();
@@ -3217,8 +3217,10 @@ extern "C" long double coshl(long double ) throw(); extern "C" long double __cos
 extern "C" long double sinhl(long double ) throw(); extern "C" long double __sinhl(long double ) throw();
 # 77 "/usr/include/bits/mathcalls.h" 3
 extern "C" long double tanhl(long double ) throw(); extern "C" long double __tanhl(long double ) throw();
-# 82 "/usr/include/bits/mathcalls.h" 3
-extern "C" void sincosl(long double , long double * , long double * ) throw(); extern "C" void __sincosl(long double , long double * , long double * ) throw();
+# 83 "/usr/include/bits/mathcalls.h" 3
+extern "C" void sincosl(long double , long double * , long double * ) throw();
+# 83 "/usr/include/bits/mathcalls.h" 3
+extern "C" void __sincosl(long double , long double * , long double * ) throw();
 # 89 "/usr/include/bits/mathcalls.h" 3
 extern "C" long double acoshl(long double ) throw(); extern "C" long double __acoshl(long double ) throw();
 # 91 "/usr/include/bits/mathcalls.h" 3
@@ -4183,552 +4185,584 @@ extern "C" int getpt();
 extern "C" int getloadavg(double [], int ) throw()
 # 949 "/usr/include/stdlib.h" 3
  __attribute((__nonnull__(1)));
-# 69 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 69 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 namespace __gnu_cxx __attribute((__visibility__("default"))) {
-# 71 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 71 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 template< class _Iterator, class _Container> class __normal_iterator;
-# 74 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 74 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 }
-# 76 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 76 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 namespace std __attribute((__visibility__("default")))
-# 77 "/usr/include/c++/4.4/cmath" 3
+# 77 "/usr/include/c++/4.5/cmath" 3
  __attribute((__visibility__("default")))
-# 492 "/usr/include/c++/4.4/cmath" 3
+# 498 "/usr/include/c++/4.5/cmath" 3
  __attribute((__visibility__("default")))
-# 35 "/usr/include/c++/4.4/bits/cmath.tcc" 3
+# 35 "/usr/include/c++/4.5/bits/cmath.tcc" 3
  __attribute((__visibility__("default")))
-# 49 "/usr/include/c++/4.4/cstddef" 3
+# 49 "/usr/include/c++/4.5/cstddef" 3
  __attribute((__visibility__("default")))
-# 100 "/usr/include/c++/4.4/cstdlib" 3
+# 100 "/usr/include/c++/4.5/cstdlib" 3
  __attribute((__visibility__("default")))
-# 199 "/usr/include/c++/4.4/cstdlib" 3
+# 199 "/usr/include/c++/4.5/cstdlib" 3
  __attribute((__visibility__("default"))) {
-# 78 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 78 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 struct __true_type { };
-# 79 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 79 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 struct __false_type { };
-# 81 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 81 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 template< bool __T0>
-# 82 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 82 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 struct __truth_type {
-# 83 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 83 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 typedef __false_type __type; };
-# 86 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 86 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 template<> struct __truth_type< true> {
-# 87 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 87 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 typedef __true_type __type; };
-# 91 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 91 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 template< class _Sp, class _Tp>
-# 92 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 92 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 struct __traitor {
-# 94 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 94 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 enum { __value = (((bool)_Sp::__value) || ((bool)_Tp::__value))};
-# 95 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 95 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 typedef typename __truth_type< __value> ::__type __type;
-# 96 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 96 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 };
-# 99 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 99 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 template< class , class >
-# 100 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 100 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 struct __are_same {
-# 102 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 102 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 enum { __value};
-# 103 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 103 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 typedef __false_type __type;
-# 104 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 104 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 };
-# 106 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 106 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 template< class _Tp>
-# 107 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 107 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 struct __are_same< _Tp, _Tp> {
-# 109 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 109 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 enum { __value = 1};
-# 110 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 110 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 typedef __true_type __type;
-# 111 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 111 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 };
-# 114 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 114 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 template< class _Tp>
-# 115 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 115 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 struct __is_void {
-# 117 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 117 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 enum { __value};
-# 118 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 118 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 typedef __false_type __type;
-# 119 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 119 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 };
-# 122 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 122 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 template<> struct __is_void< void> {
-# 124 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 124 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 enum { __value = 1};
-# 125 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 125 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 typedef __true_type __type;
-# 126 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 126 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 };
-# 131 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 131 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 template< class _Tp>
-# 132 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 132 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 struct __is_integer {
-# 134 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 134 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 enum { __value};
-# 135 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 135 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 typedef __false_type __type;
-# 136 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 136 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 };
-# 142 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 142 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 template<> struct __is_integer< bool> {
-# 144 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 144 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 enum { __value = 1};
-# 145 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 145 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 typedef __true_type __type;
-# 146 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 146 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 };
-# 149 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 149 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 template<> struct __is_integer< char> {
-# 151 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 151 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 enum { __value = 1};
-# 152 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 152 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 typedef __true_type __type;
-# 153 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 153 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 };
-# 156 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 156 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 template<> struct __is_integer< signed char> {
-# 158 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 158 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 enum { __value = 1};
-# 159 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 159 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 typedef __true_type __type;
-# 160 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 160 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 };
-# 163 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 163 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 template<> struct __is_integer< unsigned char> {
-# 165 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 165 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 enum { __value = 1};
-# 166 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 166 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 typedef __true_type __type;
-# 167 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 167 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 };
-# 171 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 171 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 template<> struct __is_integer< wchar_t> {
-# 173 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 173 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 enum { __value = 1};
-# 174 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 174 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 typedef __true_type __type;
-# 175 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 175 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 };
-# 195 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 195 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 template<> struct __is_integer< short> {
-# 197 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 197 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 enum { __value = 1};
-# 198 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 198 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 typedef __true_type __type;
-# 199 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 199 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 };
-# 202 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 202 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 template<> struct __is_integer< unsigned short> {
-# 204 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 204 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 enum { __value = 1};
-# 205 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 205 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 typedef __true_type __type;
-# 206 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 206 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 };
-# 209 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 209 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 template<> struct __is_integer< int> {
-# 211 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 211 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 enum { __value = 1};
-# 212 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 212 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 typedef __true_type __type;
-# 213 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 213 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 };
-# 216 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 216 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 template<> struct __is_integer< unsigned> {
-# 218 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 218 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 enum { __value = 1};
-# 219 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 219 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 typedef __true_type __type;
-# 220 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 220 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 };
-# 223 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 223 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 template<> struct __is_integer< long> {
-# 225 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 225 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 enum { __value = 1};
-# 226 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 226 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 typedef __true_type __type;
-# 227 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 227 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 };
-# 230 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 230 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 template<> struct __is_integer< unsigned long> {
-# 232 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 232 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 enum { __value = 1};
-# 233 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 233 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 typedef __true_type __type;
-# 234 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 234 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 };
-# 237 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 237 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 template<> struct __is_integer< long long> {
-# 239 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 239 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 enum { __value = 1};
-# 240 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 240 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 typedef __true_type __type;
-# 241 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 241 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 };
-# 244 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 244 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 template<> struct __is_integer< unsigned long long> {
-# 246 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 246 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 enum { __value = 1};
-# 247 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 247 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 typedef __true_type __type;
-# 248 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 248 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 };
-# 253 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 253 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 template< class _Tp>
-# 254 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 254 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 struct __is_floating {
-# 256 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 256 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 enum { __value};
-# 257 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 257 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 typedef __false_type __type;
-# 258 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 258 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 };
-# 262 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 262 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 template<> struct __is_floating< float> {
-# 264 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 264 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 enum { __value = 1};
-# 265 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 265 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 typedef __true_type __type;
-# 266 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 266 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 };
-# 269 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 269 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 template<> struct __is_floating< double> {
-# 271 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 271 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 enum { __value = 1};
-# 272 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 272 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 typedef __true_type __type;
-# 273 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 273 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 };
-# 276 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 276 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 template<> struct __is_floating< long double> {
-# 278 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 278 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 enum { __value = 1};
-# 279 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 279 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 typedef __true_type __type;
-# 280 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 280 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 };
-# 285 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 285 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 template< class _Tp>
-# 286 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 286 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 struct __is_pointer {
-# 288 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 288 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 enum { __value};
-# 289 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 289 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 typedef __false_type __type;
-# 290 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 290 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 };
-# 292 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 292 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 template< class _Tp>
-# 293 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 293 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 struct __is_pointer< _Tp *> {
-# 295 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 295 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 enum { __value = 1};
-# 296 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 296 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 typedef __true_type __type;
-# 297 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 297 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 };
-# 302 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 302 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 template< class _Tp>
-# 303 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 303 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 struct __is_normal_iterator {
-# 305 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 305 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 enum { __value};
-# 306 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 306 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 typedef __false_type __type;
-# 307 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 307 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 };
-# 309 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 309 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 template< class _Iterator, class _Container>
-# 310 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 310 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 struct __is_normal_iterator< __gnu_cxx::__normal_iterator< _Iterator, _Container> > {
-# 313 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 313 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 enum { __value = 1};
-# 314 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 314 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 typedef __true_type __type;
-# 315 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 315 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 };
-# 320 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 320 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 template< class _Tp>
-# 321 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 321 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 struct __is_arithmetic : public __traitor< __is_integer< _Tp> , __is_floating< _Tp> > {
-# 323 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 323 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 };
-# 328 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 328 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 template< class _Tp>
-# 329 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 329 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 struct __is_fundamental : public __traitor< __is_void< _Tp> , __is_arithmetic< _Tp> > {
-# 331 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 331 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 };
-# 336 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 336 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 template< class _Tp>
-# 337 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 337 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 struct __is_scalar : public __traitor< __is_arithmetic< _Tp> , __is_pointer< _Tp> > {
-# 339 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 339 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 };
-# 344 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 344 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 template< class _Tp>
-# 345 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 345 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 struct __is_char {
-# 347 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 347 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 enum { __value};
-# 348 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 348 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 typedef __false_type __type;
-# 349 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 349 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 };
-# 352 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 352 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 template<> struct __is_char< char> {
-# 354 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 354 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 enum { __value = 1};
-# 355 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 355 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 typedef __true_type __type;
-# 356 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 356 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 };
-# 360 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 360 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 template<> struct __is_char< wchar_t> {
-# 362 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 362 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 enum { __value = 1};
-# 363 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 363 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 typedef __true_type __type;
-# 364 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 364 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 };
-# 367 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 367 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 template< class _Tp>
-# 368 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 368 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 struct __is_byte {
-# 370 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 370 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 enum { __value};
-# 371 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 371 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 typedef __false_type __type;
-# 372 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 372 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 };
-# 375 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 375 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 template<> struct __is_byte< char> {
-# 377 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 377 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 enum { __value = 1};
-# 378 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 378 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 typedef __true_type __type;
-# 379 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 379 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 };
-# 382 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 382 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 template<> struct __is_byte< signed char> {
-# 384 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 384 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 enum { __value = 1};
-# 385 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 385 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 typedef __true_type __type;
-# 386 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 386 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 };
-# 389 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 389 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 template<> struct __is_byte< unsigned char> {
-# 391 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 391 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 enum { __value = 1};
-# 392 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 392 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 typedef __true_type __type;
-# 393 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 393 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 };
-# 398 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 398 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 template< class _Tp>
-# 399 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 399 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 struct __is_move_iterator {
-# 401 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 401 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 enum { __value};
-# 402 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 402 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 typedef __false_type __type;
-# 403 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 403 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 };
-# 417 "/usr/include/c++/4.4/bits/cpp_type_traits.h" 3
+# 417 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+template< class _Tp>
+# 418 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+class __is_iterator_helper {
+# 420 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+typedef char __one;
+# 421 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+typedef struct { char __arr[2]; } __two;
+# 423 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+template< class _Up>
+# 424 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+struct _Wrap_type {
+# 425 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+};
+# 427 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+template< class _Up> static __one __test(_Wrap_type< typename _Up::iterator_category> *);
+# 430 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+template< class _Up> static __two __test(...);
+# 434 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+public: static const bool __value = ((sizeof(__test< _Tp> (0)) == (1)) || __is_pointer< _Tp> ::__value);
+# 436 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+};
+# 438 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+template< class _Tp>
+# 439 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+struct __is_iterator {
+# 441 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+enum { __value = __is_iterator_helper< _Tp> ::__value};
+# 442 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+typedef typename __truth_type< __value> ::__type __type;
+# 443 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
+};
+# 445 "/usr/include/c++/4.5/bits/cpp_type_traits.h" 3
 }
-# 37 "/usr/include/c++/4.4/ext/type_traits.h" 3
+# 37 "/usr/include/c++/4.5/ext/type_traits.h" 3
 namespace __gnu_cxx __attribute((__visibility__("default")))
-# 157 "/usr/include/c++/4.4/cstdlib" 3
+# 157 "/usr/include/c++/4.5/cstdlib" 3
  __attribute((__visibility__("default"))) {
-# 40 "/usr/include/c++/4.4/ext/type_traits.h" 3
+# 40 "/usr/include/c++/4.5/ext/type_traits.h" 3
 template< bool __T1, class >
-# 41 "/usr/include/c++/4.4/ext/type_traits.h" 3
+# 41 "/usr/include/c++/4.5/ext/type_traits.h" 3
 struct __enable_if {
-# 42 "/usr/include/c++/4.4/ext/type_traits.h" 3
+# 42 "/usr/include/c++/4.5/ext/type_traits.h" 3
 };
-# 44 "/usr/include/c++/4.4/ext/type_traits.h" 3
+# 44 "/usr/include/c++/4.5/ext/type_traits.h" 3
 template< class _Tp>
-# 45 "/usr/include/c++/4.4/ext/type_traits.h" 3
+# 45 "/usr/include/c++/4.5/ext/type_traits.h" 3
 struct __enable_if< true, _Tp> {
-# 46 "/usr/include/c++/4.4/ext/type_traits.h" 3
+# 46 "/usr/include/c++/4.5/ext/type_traits.h" 3
 typedef _Tp __type; };
-# 50 "/usr/include/c++/4.4/ext/type_traits.h" 3
+# 50 "/usr/include/c++/4.5/ext/type_traits.h" 3
 template< bool _Cond, class _Iftrue, class _Iffalse>
-# 51 "/usr/include/c++/4.4/ext/type_traits.h" 3
+# 51 "/usr/include/c++/4.5/ext/type_traits.h" 3
 struct __conditional_type {
-# 52 "/usr/include/c++/4.4/ext/type_traits.h" 3
+# 52 "/usr/include/c++/4.5/ext/type_traits.h" 3
 typedef _Iftrue __type; };
-# 54 "/usr/include/c++/4.4/ext/type_traits.h" 3
+# 54 "/usr/include/c++/4.5/ext/type_traits.h" 3
 template< class _Iftrue, class _Iffalse>
-# 55 "/usr/include/c++/4.4/ext/type_traits.h" 3
+# 55 "/usr/include/c++/4.5/ext/type_traits.h" 3
 struct __conditional_type< false, _Iftrue, _Iffalse> {
-# 56 "/usr/include/c++/4.4/ext/type_traits.h" 3
+# 56 "/usr/include/c++/4.5/ext/type_traits.h" 3
 typedef _Iffalse __type; };
-# 60 "/usr/include/c++/4.4/ext/type_traits.h" 3
+# 60 "/usr/include/c++/4.5/ext/type_traits.h" 3
 template< class _Tp>
-# 61 "/usr/include/c++/4.4/ext/type_traits.h" 3
+# 61 "/usr/include/c++/4.5/ext/type_traits.h" 3
 struct __add_unsigned {
-# 64 "/usr/include/c++/4.4/ext/type_traits.h" 3
+# 64 "/usr/include/c++/4.5/ext/type_traits.h" 3
 private: typedef __enable_if< std::__is_integer< _Tp> ::__value, _Tp> __if_type;
-# 67 "/usr/include/c++/4.4/ext/type_traits.h" 3
+# 67 "/usr/include/c++/4.5/ext/type_traits.h" 3
 public: typedef typename __enable_if< std::__is_integer< _Tp> ::__value, _Tp> ::__type __type;
-# 68 "/usr/include/c++/4.4/ext/type_traits.h" 3
+# 68 "/usr/include/c++/4.5/ext/type_traits.h" 3
 };
-# 71 "/usr/include/c++/4.4/ext/type_traits.h" 3
+# 71 "/usr/include/c++/4.5/ext/type_traits.h" 3
 template<> struct __add_unsigned< char> {
-# 72 "/usr/include/c++/4.4/ext/type_traits.h" 3
+# 72 "/usr/include/c++/4.5/ext/type_traits.h" 3
 typedef unsigned char __type; };
-# 75 "/usr/include/c++/4.4/ext/type_traits.h" 3
+# 75 "/usr/include/c++/4.5/ext/type_traits.h" 3
 template<> struct __add_unsigned< signed char> {
-# 76 "/usr/include/c++/4.4/ext/type_traits.h" 3
+# 76 "/usr/include/c++/4.5/ext/type_traits.h" 3
 typedef unsigned char __type; };
-# 79 "/usr/include/c++/4.4/ext/type_traits.h" 3
+# 79 "/usr/include/c++/4.5/ext/type_traits.h" 3
 template<> struct __add_unsigned< short> {
-# 80 "/usr/include/c++/4.4/ext/type_traits.h" 3
+# 80 "/usr/include/c++/4.5/ext/type_traits.h" 3
 typedef unsigned short __type; };
-# 83 "/usr/include/c++/4.4/ext/type_traits.h" 3
+# 83 "/usr/include/c++/4.5/ext/type_traits.h" 3
 template<> struct __add_unsigned< int> {
-# 84 "/usr/include/c++/4.4/ext/type_traits.h" 3
+# 84 "/usr/include/c++/4.5/ext/type_traits.h" 3
 typedef unsigned __type; };
-# 87 "/usr/include/c++/4.4/ext/type_traits.h" 3
+# 87 "/usr/include/c++/4.5/ext/type_traits.h" 3
 template<> struct __add_unsigned< long> {
-# 88 "/usr/include/c++/4.4/ext/type_traits.h" 3
+# 88 "/usr/include/c++/4.5/ext/type_traits.h" 3
 typedef unsigned long __type; };
-# 91 "/usr/include/c++/4.4/ext/type_traits.h" 3
+# 91 "/usr/include/c++/4.5/ext/type_traits.h" 3
 template<> struct __add_unsigned< long long> {
-# 92 "/usr/include/c++/4.4/ext/type_traits.h" 3
+# 92 "/usr/include/c++/4.5/ext/type_traits.h" 3
 typedef unsigned long long __type; };
-# 96 "/usr/include/c++/4.4/ext/type_traits.h" 3
+# 96 "/usr/include/c++/4.5/ext/type_traits.h" 3
 template<> struct __add_unsigned< bool> ;
-# 99 "/usr/include/c++/4.4/ext/type_traits.h" 3
+# 99 "/usr/include/c++/4.5/ext/type_traits.h" 3
 template<> struct __add_unsigned< wchar_t> ;
-# 103 "/usr/include/c++/4.4/ext/type_traits.h" 3
+# 103 "/usr/include/c++/4.5/ext/type_traits.h" 3
 template< class _Tp>
-# 104 "/usr/include/c++/4.4/ext/type_traits.h" 3
+# 104 "/usr/include/c++/4.5/ext/type_traits.h" 3
 struct __remove_unsigned {
-# 107 "/usr/include/c++/4.4/ext/type_traits.h" 3
+# 107 "/usr/include/c++/4.5/ext/type_traits.h" 3
 private: typedef __enable_if< std::__is_integer< _Tp> ::__value, _Tp> __if_type;
-# 110 "/usr/include/c++/4.4/ext/type_traits.h" 3
+# 110 "/usr/include/c++/4.5/ext/type_traits.h" 3
 public: typedef typename __enable_if< std::__is_integer< _Tp> ::__value, _Tp> ::__type __type;
-# 111 "/usr/include/c++/4.4/ext/type_traits.h" 3
+# 111 "/usr/include/c++/4.5/ext/type_traits.h" 3
 };
-# 114 "/usr/include/c++/4.4/ext/type_traits.h" 3
+# 114 "/usr/include/c++/4.5/ext/type_traits.h" 3
 template<> struct __remove_unsigned< char> {
-# 115 "/usr/include/c++/4.4/ext/type_traits.h" 3
+# 115 "/usr/include/c++/4.5/ext/type_traits.h" 3
 typedef signed char __type; };
-# 118 "/usr/include/c++/4.4/ext/type_traits.h" 3
+# 118 "/usr/include/c++/4.5/ext/type_traits.h" 3
 template<> struct __remove_unsigned< unsigned char> {
-# 119 "/usr/include/c++/4.4/ext/type_traits.h" 3
+# 119 "/usr/include/c++/4.5/ext/type_traits.h" 3
 typedef signed char __type; };
-# 122 "/usr/include/c++/4.4/ext/type_traits.h" 3
+# 122 "/usr/include/c++/4.5/ext/type_traits.h" 3
 template<> struct __remove_unsigned< unsigned short> {
-# 123 "/usr/include/c++/4.4/ext/type_traits.h" 3
+# 123 "/usr/include/c++/4.5/ext/type_traits.h" 3
 typedef short __type; };
-# 126 "/usr/include/c++/4.4/ext/type_traits.h" 3
+# 126 "/usr/include/c++/4.5/ext/type_traits.h" 3
 template<> struct __remove_unsigned< unsigned> {
-# 127 "/usr/include/c++/4.4/ext/type_traits.h" 3
+# 127 "/usr/include/c++/4.5/ext/type_traits.h" 3
 typedef int __type; };
-# 130 "/usr/include/c++/4.4/ext/type_traits.h" 3
+# 130 "/usr/include/c++/4.5/ext/type_traits.h" 3
 template<> struct __remove_unsigned< unsigned long> {
-# 131 "/usr/include/c++/4.4/ext/type_traits.h" 3
+# 131 "/usr/include/c++/4.5/ext/type_traits.h" 3
 typedef long __type; };
-# 134 "/usr/include/c++/4.4/ext/type_traits.h" 3
+# 134 "/usr/include/c++/4.5/ext/type_traits.h" 3
 template<> struct __remove_unsigned< unsigned long long> {
-# 135 "/usr/include/c++/4.4/ext/type_traits.h" 3
+# 135 "/usr/include/c++/4.5/ext/type_traits.h" 3
 typedef long long __type; };
-# 139 "/usr/include/c++/4.4/ext/type_traits.h" 3
+# 139 "/usr/include/c++/4.5/ext/type_traits.h" 3
 template<> struct __remove_unsigned< bool> ;
-# 142 "/usr/include/c++/4.4/ext/type_traits.h" 3
+# 142 "/usr/include/c++/4.5/ext/type_traits.h" 3
 template<> struct __remove_unsigned< wchar_t> ;
-# 146 "/usr/include/c++/4.4/ext/type_traits.h" 3
+# 146 "/usr/include/c++/4.5/ext/type_traits.h" 3
 template < typename _Type >
     inline bool
     __is_null_pointer ( _Type * __ptr )
     { return __ptr == 0; }
-# 151 "/usr/include/c++/4.4/ext/type_traits.h" 3
+# 151 "/usr/include/c++/4.5/ext/type_traits.h" 3
 template < typename _Type >
     inline bool
     __is_null_pointer ( _Type )
     { return false; }
-# 158 "/usr/include/c++/4.4/ext/type_traits.h" 3
+# 158 "/usr/include/c++/4.5/ext/type_traits.h" 3
 template< class _Tp, bool __T2 = std::__is_integer< _Tp> ::__value>
-# 159 "/usr/include/c++/4.4/ext/type_traits.h" 3
+# 159 "/usr/include/c++/4.5/ext/type_traits.h" 3
 struct __promote {
-# 160 "/usr/include/c++/4.4/ext/type_traits.h" 3
+# 160 "/usr/include/c++/4.5/ext/type_traits.h" 3
 typedef double __type; };
-# 162 "/usr/include/c++/4.4/ext/type_traits.h" 3
+# 162 "/usr/include/c++/4.5/ext/type_traits.h" 3
 template< class _Tp>
-# 163 "/usr/include/c++/4.4/ext/type_traits.h" 3
+# 163 "/usr/include/c++/4.5/ext/type_traits.h" 3
 struct __promote< _Tp, false> {
-# 164 "/usr/include/c++/4.4/ext/type_traits.h" 3
+# 164 "/usr/include/c++/4.5/ext/type_traits.h" 3
 typedef _Tp __type; };
-# 166 "/usr/include/c++/4.4/ext/type_traits.h" 3
+# 166 "/usr/include/c++/4.5/ext/type_traits.h" 3
 template< class _Tp, class _Up>
-# 167 "/usr/include/c++/4.4/ext/type_traits.h" 3
+# 167 "/usr/include/c++/4.5/ext/type_traits.h" 3
 struct __promote_2 {
-# 170 "/usr/include/c++/4.4/ext/type_traits.h" 3
+# 170 "/usr/include/c++/4.5/ext/type_traits.h" 3
 private: typedef typename __promote< _Tp, std::__is_integer< _Tp> ::__value> ::__type __type1;
-# 171 "/usr/include/c++/4.4/ext/type_traits.h" 3
+# 171 "/usr/include/c++/4.5/ext/type_traits.h" 3
 typedef typename __promote< _Up, std::__is_integer< _Up> ::__value> ::__type __type2;
-# 174 "/usr/include/c++/4.4/ext/type_traits.h" 3
+# 174 "/usr/include/c++/4.5/ext/type_traits.h" 3
 public: typedef __typeof__((__type1() + __type2())) __type;
-# 175 "/usr/include/c++/4.4/ext/type_traits.h" 3
+# 175 "/usr/include/c++/4.5/ext/type_traits.h" 3
 };
-# 177 "/usr/include/c++/4.4/ext/type_traits.h" 3
+# 177 "/usr/include/c++/4.5/ext/type_traits.h" 3
 template< class _Tp, class _Up, class _Vp>
-# 178 "/usr/include/c++/4.4/ext/type_traits.h" 3
+# 178 "/usr/include/c++/4.5/ext/type_traits.h" 3
 struct __promote_3 {
-# 181 "/usr/include/c++/4.4/ext/type_traits.h" 3
+# 181 "/usr/include/c++/4.5/ext/type_traits.h" 3
 private: typedef typename __promote< _Tp, std::__is_integer< _Tp> ::__value> ::__type __type1;
-# 182 "/usr/include/c++/4.4/ext/type_traits.h" 3
+# 182 "/usr/include/c++/4.5/ext/type_traits.h" 3
 typedef typename __promote< _Up, std::__is_integer< _Up> ::__value> ::__type __type2;
-# 183 "/usr/include/c++/4.4/ext/type_traits.h" 3
+# 183 "/usr/include/c++/4.5/ext/type_traits.h" 3
 typedef typename __promote< _Vp, std::__is_integer< _Vp> ::__value> ::__type __type3;
-# 186 "/usr/include/c++/4.4/ext/type_traits.h" 3
+# 186 "/usr/include/c++/4.5/ext/type_traits.h" 3
 public: typedef __typeof__(((__type1() + __type2()) + __type3())) __type;
-# 187 "/usr/include/c++/4.4/ext/type_traits.h" 3
+# 187 "/usr/include/c++/4.5/ext/type_traits.h" 3
 };
-# 189 "/usr/include/c++/4.4/ext/type_traits.h" 3
+# 189 "/usr/include/c++/4.5/ext/type_traits.h" 3
 template< class _Tp, class _Up, class _Vp, class _Wp>
-# 190 "/usr/include/c++/4.4/ext/type_traits.h" 3
+# 190 "/usr/include/c++/4.5/ext/type_traits.h" 3
 struct __promote_4 {
-# 193 "/usr/include/c++/4.4/ext/type_traits.h" 3
+# 193 "/usr/include/c++/4.5/ext/type_traits.h" 3
 private: typedef typename __promote< _Tp, std::__is_integer< _Tp> ::__value> ::__type __type1;
-# 194 "/usr/include/c++/4.4/ext/type_traits.h" 3
+# 194 "/usr/include/c++/4.5/ext/type_traits.h" 3
 typedef typename __promote< _Up, std::__is_integer< _Up> ::__value> ::__type __type2;
-# 195 "/usr/include/c++/4.4/ext/type_traits.h" 3
+# 195 "/usr/include/c++/4.5/ext/type_traits.h" 3
 typedef typename __promote< _Vp, std::__is_integer< _Vp> ::__value> ::__type __type3;
-# 196 "/usr/include/c++/4.4/ext/type_traits.h" 3
+# 196 "/usr/include/c++/4.5/ext/type_traits.h" 3
 typedef typename __promote< _Wp, std::__is_integer< _Wp> ::__value> ::__type __type4;
-# 199 "/usr/include/c++/4.4/ext/type_traits.h" 3
+# 199 "/usr/include/c++/4.5/ext/type_traits.h" 3
 public: typedef __typeof__((((__type1() + __type2()) + __type3()) + __type4())) __type;
-# 200 "/usr/include/c++/4.4/ext/type_traits.h" 3
+# 200 "/usr/include/c++/4.5/ext/type_traits.h" 3
 };
-# 202 "/usr/include/c++/4.4/ext/type_traits.h" 3
+# 202 "/usr/include/c++/4.5/ext/type_traits.h" 3
 }
-# 77 "/usr/include/c++/4.4/cmath" 3
+# 77 "/usr/include/c++/4.5/cmath" 3
 namespace std __attribute((__visibility__("default")))
-# 492 "/usr/include/c++/4.4/cmath" 3
+# 498 "/usr/include/c++/4.5/cmath" 3
  __attribute((__visibility__("default")))
-# 35 "/usr/include/c++/4.4/bits/cmath.tcc" 3
+# 35 "/usr/include/c++/4.5/bits/cmath.tcc" 3
  __attribute((__visibility__("default")))
-# 49 "/usr/include/c++/4.4/cstddef" 3
+# 49 "/usr/include/c++/4.5/cstddef" 3
  __attribute((__visibility__("default")))
-# 100 "/usr/include/c++/4.4/cstdlib" 3
+# 100 "/usr/include/c++/4.5/cstdlib" 3
  __attribute((__visibility__("default")))
-# 199 "/usr/include/c++/4.4/cstdlib" 3
+# 199 "/usr/include/c++/4.5/cstdlib" 3
  __attribute((__visibility__("default"))) {
-# 81 "/usr/include/c++/4.4/cmath" 3
+# 81 "/usr/include/c++/4.5/cmath" 3
 template < typename _Tp >
     _Tp __cmath_power ( _Tp, unsigned int );
-# 84 "/usr/include/c++/4.4/cmath" 3
+# 84 "/usr/include/c++/4.5/cmath" 3
 template < typename _Tp >
     inline _Tp
     __pow_helper ( _Tp __x, int __n )
@@ -4737,77 +4771,83 @@ template < typename _Tp >
         ? _Tp ( 1 ) / __cmath_power ( __x, - __n )
         : __cmath_power ( __x, __n );
     }
-# 94 "/usr/include/c++/4.4/cmath" 3
+# 94 "/usr/include/c++/4.5/cmath" 3
 inline double abs(double __x)
-# 95 "/usr/include/c++/4.4/cmath" 3
+# 95 "/usr/include/c++/4.5/cmath" 3
 { return __builtin_fabs(__x); }
-# 98 "/usr/include/c++/4.4/cmath" 3
+# 98 "/usr/include/c++/4.5/cmath" 3
 inline float abs(float __x)
-# 99 "/usr/include/c++/4.4/cmath" 3
+# 99 "/usr/include/c++/4.5/cmath" 3
 { return __builtin_fabsf(__x); }
-# 102 "/usr/include/c++/4.4/cmath" 3
+# 102 "/usr/include/c++/4.5/cmath" 3
 inline long double abs(long double __x)
-# 103 "/usr/include/c++/4.4/cmath" 3
+# 103 "/usr/include/c++/4.5/cmath" 3
 { return __builtin_fabsl(__x); }
-# 105 "/usr/include/c++/4.4/cmath" 3
+# 105 "/usr/include/c++/4.5/cmath" 3
+template < typename _Tp >
+    inline typename __gnu_cxx :: __enable_if < __is_integer < _Tp > :: __value,
+        double > :: __type
+    abs ( _Tp __x )
+    { return __builtin_fabs ( __x ); }
+# 111 "/usr/include/c++/4.5/cmath" 3
 using ::acos;
-# 108 "/usr/include/c++/4.4/cmath" 3
+# 114 "/usr/include/c++/4.5/cmath" 3
 inline float acos(float __x)
-# 109 "/usr/include/c++/4.4/cmath" 3
+# 115 "/usr/include/c++/4.5/cmath" 3
 { return __builtin_acosf(__x); }
-# 112 "/usr/include/c++/4.4/cmath" 3
+# 118 "/usr/include/c++/4.5/cmath" 3
 inline long double acos(long double __x)
-# 113 "/usr/include/c++/4.4/cmath" 3
+# 119 "/usr/include/c++/4.5/cmath" 3
 { return __builtin_acosl(__x); }
-# 115 "/usr/include/c++/4.4/cmath" 3
+# 121 "/usr/include/c++/4.5/cmath" 3
 template < typename _Tp >
     inline typename __gnu_cxx :: __enable_if < __is_integer < _Tp > :: __value,
         double > :: __type
     acos ( _Tp __x )
     { return __builtin_acos ( __x ); }
-# 121 "/usr/include/c++/4.4/cmath" 3
+# 127 "/usr/include/c++/4.5/cmath" 3
 using ::asin;
-# 124 "/usr/include/c++/4.4/cmath" 3
+# 130 "/usr/include/c++/4.5/cmath" 3
 inline float asin(float __x)
-# 125 "/usr/include/c++/4.4/cmath" 3
+# 131 "/usr/include/c++/4.5/cmath" 3
 { return __builtin_asinf(__x); }
-# 128 "/usr/include/c++/4.4/cmath" 3
+# 134 "/usr/include/c++/4.5/cmath" 3
 inline long double asin(long double __x)
-# 129 "/usr/include/c++/4.4/cmath" 3
+# 135 "/usr/include/c++/4.5/cmath" 3
 { return __builtin_asinl(__x); }
-# 131 "/usr/include/c++/4.4/cmath" 3
+# 137 "/usr/include/c++/4.5/cmath" 3
 template < typename _Tp >
     inline typename __gnu_cxx :: __enable_if < __is_integer < _Tp > :: __value,
         double > :: __type
     asin ( _Tp __x )
     { return __builtin_asin ( __x ); }
-# 137 "/usr/include/c++/4.4/cmath" 3
+# 143 "/usr/include/c++/4.5/cmath" 3
 using ::atan;
-# 140 "/usr/include/c++/4.4/cmath" 3
+# 146 "/usr/include/c++/4.5/cmath" 3
 inline float atan(float __x)
-# 141 "/usr/include/c++/4.4/cmath" 3
+# 147 "/usr/include/c++/4.5/cmath" 3
 { return __builtin_atanf(__x); }
-# 144 "/usr/include/c++/4.4/cmath" 3
+# 150 "/usr/include/c++/4.5/cmath" 3
 inline long double atan(long double __x)
-# 145 "/usr/include/c++/4.4/cmath" 3
+# 151 "/usr/include/c++/4.5/cmath" 3
 { return __builtin_atanl(__x); }
-# 147 "/usr/include/c++/4.4/cmath" 3
+# 153 "/usr/include/c++/4.5/cmath" 3
 template < typename _Tp >
     inline typename __gnu_cxx :: __enable_if < __is_integer < _Tp > :: __value,
         double > :: __type
     atan ( _Tp __x )
     { return __builtin_atan ( __x ); }
-# 153 "/usr/include/c++/4.4/cmath" 3
+# 159 "/usr/include/c++/4.5/cmath" 3
 using ::atan2;
-# 156 "/usr/include/c++/4.4/cmath" 3
+# 162 "/usr/include/c++/4.5/cmath" 3
 inline float atan2(float __y, float __x)
-# 157 "/usr/include/c++/4.4/cmath" 3
+# 163 "/usr/include/c++/4.5/cmath" 3
 { return __builtin_atan2f(__y, __x); }
-# 160 "/usr/include/c++/4.4/cmath" 3
+# 166 "/usr/include/c++/4.5/cmath" 3
 inline long double atan2(long double __y, long double __x)
-# 161 "/usr/include/c++/4.4/cmath" 3
+# 167 "/usr/include/c++/4.5/cmath" 3
 { return __builtin_atan2l(__y, __x); }
-# 163 "/usr/include/c++/4.4/cmath" 3
+# 169 "/usr/include/c++/4.5/cmath" 3
 template < typename _Tp, typename _Up >
     inline
     typename __gnu_cxx :: __promote_2 <
@@ -4819,209 +4859,209 @@ template < typename _Tp, typename _Up >
       typedef typename __gnu_cxx :: __promote_2 < _Tp, _Up > :: __type __type;
       return atan2 ( __type ( __y ), __type ( __x ) );
     }
-# 175 "/usr/include/c++/4.4/cmath" 3
+# 181 "/usr/include/c++/4.5/cmath" 3
 using ::ceil;
-# 178 "/usr/include/c++/4.4/cmath" 3
+# 184 "/usr/include/c++/4.5/cmath" 3
 inline float ceil(float __x)
-# 179 "/usr/include/c++/4.4/cmath" 3
+# 185 "/usr/include/c++/4.5/cmath" 3
 { return __builtin_ceilf(__x); }
-# 182 "/usr/include/c++/4.4/cmath" 3
+# 188 "/usr/include/c++/4.5/cmath" 3
 inline long double ceil(long double __x)
-# 183 "/usr/include/c++/4.4/cmath" 3
+# 189 "/usr/include/c++/4.5/cmath" 3
 { return __builtin_ceill(__x); }
-# 185 "/usr/include/c++/4.4/cmath" 3
+# 191 "/usr/include/c++/4.5/cmath" 3
 template < typename _Tp >
     inline typename __gnu_cxx :: __enable_if < __is_integer < _Tp > :: __value,
         double > :: __type
     ceil ( _Tp __x )
     { return __builtin_ceil ( __x ); }
-# 191 "/usr/include/c++/4.4/cmath" 3
+# 197 "/usr/include/c++/4.5/cmath" 3
 using ::cos;
-# 194 "/usr/include/c++/4.4/cmath" 3
+# 200 "/usr/include/c++/4.5/cmath" 3
 inline float cos(float __x)
-# 195 "/usr/include/c++/4.4/cmath" 3
+# 201 "/usr/include/c++/4.5/cmath" 3
 { return __builtin_cosf(__x); }
-# 198 "/usr/include/c++/4.4/cmath" 3
+# 204 "/usr/include/c++/4.5/cmath" 3
 inline long double cos(long double __x)
-# 199 "/usr/include/c++/4.4/cmath" 3
+# 205 "/usr/include/c++/4.5/cmath" 3
 { return __builtin_cosl(__x); }
-# 201 "/usr/include/c++/4.4/cmath" 3
+# 207 "/usr/include/c++/4.5/cmath" 3
 template < typename _Tp >
     inline typename __gnu_cxx :: __enable_if < __is_integer < _Tp > :: __value,
         double > :: __type
     cos ( _Tp __x )
     { return __builtin_cos ( __x ); }
-# 207 "/usr/include/c++/4.4/cmath" 3
+# 213 "/usr/include/c++/4.5/cmath" 3
 using ::cosh;
-# 210 "/usr/include/c++/4.4/cmath" 3
+# 216 "/usr/include/c++/4.5/cmath" 3
 inline float cosh(float __x)
-# 211 "/usr/include/c++/4.4/cmath" 3
+# 217 "/usr/include/c++/4.5/cmath" 3
 { return __builtin_coshf(__x); }
-# 214 "/usr/include/c++/4.4/cmath" 3
+# 220 "/usr/include/c++/4.5/cmath" 3
 inline long double cosh(long double __x)
-# 215 "/usr/include/c++/4.4/cmath" 3
+# 221 "/usr/include/c++/4.5/cmath" 3
 { return __builtin_coshl(__x); }
-# 217 "/usr/include/c++/4.4/cmath" 3
+# 223 "/usr/include/c++/4.5/cmath" 3
 template < typename _Tp >
     inline typename __gnu_cxx :: __enable_if < __is_integer < _Tp > :: __value,
         double > :: __type
     cosh ( _Tp __x )
     { return __builtin_cosh ( __x ); }
-# 223 "/usr/include/c++/4.4/cmath" 3
+# 229 "/usr/include/c++/4.5/cmath" 3
 using ::exp;
-# 226 "/usr/include/c++/4.4/cmath" 3
+# 232 "/usr/include/c++/4.5/cmath" 3
 inline float exp(float __x)
-# 227 "/usr/include/c++/4.4/cmath" 3
+# 233 "/usr/include/c++/4.5/cmath" 3
 { return __builtin_expf(__x); }
-# 230 "/usr/include/c++/4.4/cmath" 3
+# 236 "/usr/include/c++/4.5/cmath" 3
 inline long double exp(long double __x)
-# 231 "/usr/include/c++/4.4/cmath" 3
+# 237 "/usr/include/c++/4.5/cmath" 3
 { return __builtin_expl(__x); }
-# 233 "/usr/include/c++/4.4/cmath" 3
+# 239 "/usr/include/c++/4.5/cmath" 3
 template < typename _Tp >
     inline typename __gnu_cxx :: __enable_if < __is_integer < _Tp > :: __value,
         double > :: __type
     exp ( _Tp __x )
     { return __builtin_exp ( __x ); }
-# 239 "/usr/include/c++/4.4/cmath" 3
+# 245 "/usr/include/c++/4.5/cmath" 3
 using ::fabs;
-# 242 "/usr/include/c++/4.4/cmath" 3
+# 248 "/usr/include/c++/4.5/cmath" 3
 inline float fabs(float __x)
-# 243 "/usr/include/c++/4.4/cmath" 3
+# 249 "/usr/include/c++/4.5/cmath" 3
 { return __builtin_fabsf(__x); }
-# 246 "/usr/include/c++/4.4/cmath" 3
+# 252 "/usr/include/c++/4.5/cmath" 3
 inline long double fabs(long double __x)
-# 247 "/usr/include/c++/4.4/cmath" 3
+# 253 "/usr/include/c++/4.5/cmath" 3
 { return __builtin_fabsl(__x); }
-# 249 "/usr/include/c++/4.4/cmath" 3
+# 255 "/usr/include/c++/4.5/cmath" 3
 template < typename _Tp >
     inline typename __gnu_cxx :: __enable_if < __is_integer < _Tp > :: __value,
         double > :: __type
     fabs ( _Tp __x )
     { return __builtin_fabs ( __x ); }
-# 255 "/usr/include/c++/4.4/cmath" 3
+# 261 "/usr/include/c++/4.5/cmath" 3
 using ::floor;
-# 258 "/usr/include/c++/4.4/cmath" 3
+# 264 "/usr/include/c++/4.5/cmath" 3
 inline float floor(float __x)
-# 259 "/usr/include/c++/4.4/cmath" 3
+# 265 "/usr/include/c++/4.5/cmath" 3
 { return __builtin_floorf(__x); }
-# 262 "/usr/include/c++/4.4/cmath" 3
+# 268 "/usr/include/c++/4.5/cmath" 3
 inline long double floor(long double __x)
-# 263 "/usr/include/c++/4.4/cmath" 3
+# 269 "/usr/include/c++/4.5/cmath" 3
 { return __builtin_floorl(__x); }
-# 265 "/usr/include/c++/4.4/cmath" 3
+# 271 "/usr/include/c++/4.5/cmath" 3
 template < typename _Tp >
     inline typename __gnu_cxx :: __enable_if < __is_integer < _Tp > :: __value,
         double > :: __type
     floor ( _Tp __x )
     { return __builtin_floor ( __x ); }
-# 271 "/usr/include/c++/4.4/cmath" 3
+# 277 "/usr/include/c++/4.5/cmath" 3
 using ::fmod;
-# 274 "/usr/include/c++/4.4/cmath" 3
+# 280 "/usr/include/c++/4.5/cmath" 3
 inline float fmod(float __x, float __y)
-# 275 "/usr/include/c++/4.4/cmath" 3
+# 281 "/usr/include/c++/4.5/cmath" 3
 { return __builtin_fmodf(__x, __y); }
-# 278 "/usr/include/c++/4.4/cmath" 3
+# 284 "/usr/include/c++/4.5/cmath" 3
 inline long double fmod(long double __x, long double __y)
-# 279 "/usr/include/c++/4.4/cmath" 3
+# 285 "/usr/include/c++/4.5/cmath" 3
 { return __builtin_fmodl(__x, __y); }
-# 281 "/usr/include/c++/4.4/cmath" 3
+# 287 "/usr/include/c++/4.5/cmath" 3
 using ::frexp;
-# 284 "/usr/include/c++/4.4/cmath" 3
+# 290 "/usr/include/c++/4.5/cmath" 3
 inline float frexp(float __x, int *__exp)
-# 285 "/usr/include/c++/4.4/cmath" 3
+# 291 "/usr/include/c++/4.5/cmath" 3
 { return __builtin_frexpf(__x, __exp); }
-# 288 "/usr/include/c++/4.4/cmath" 3
+# 294 "/usr/include/c++/4.5/cmath" 3
 inline long double frexp(long double __x, int *__exp)
-# 289 "/usr/include/c++/4.4/cmath" 3
+# 295 "/usr/include/c++/4.5/cmath" 3
 { return __builtin_frexpl(__x, __exp); }
-# 291 "/usr/include/c++/4.4/cmath" 3
+# 297 "/usr/include/c++/4.5/cmath" 3
 template < typename _Tp >
     inline typename __gnu_cxx :: __enable_if < __is_integer < _Tp > :: __value,
         double > :: __type
     frexp ( _Tp __x, int * __exp )
     { return __builtin_frexp ( __x, __exp ); }
-# 297 "/usr/include/c++/4.4/cmath" 3
+# 303 "/usr/include/c++/4.5/cmath" 3
 using ::ldexp;
-# 300 "/usr/include/c++/4.4/cmath" 3
+# 306 "/usr/include/c++/4.5/cmath" 3
 inline float ldexp(float __x, int __exp)
-# 301 "/usr/include/c++/4.4/cmath" 3
+# 307 "/usr/include/c++/4.5/cmath" 3
 { return __builtin_ldexpf(__x, __exp); }
-# 304 "/usr/include/c++/4.4/cmath" 3
+# 310 "/usr/include/c++/4.5/cmath" 3
 inline long double ldexp(long double __x, int __exp)
-# 305 "/usr/include/c++/4.4/cmath" 3
+# 311 "/usr/include/c++/4.5/cmath" 3
 { return __builtin_ldexpl(__x, __exp); }
-# 307 "/usr/include/c++/4.4/cmath" 3
+# 313 "/usr/include/c++/4.5/cmath" 3
 template < typename _Tp >
     inline typename __gnu_cxx :: __enable_if < __is_integer < _Tp > :: __value,
         double > :: __type
   ldexp ( _Tp __x, int __exp )
   { return __builtin_ldexp ( __x, __exp ); }
-# 313 "/usr/include/c++/4.4/cmath" 3
+# 319 "/usr/include/c++/4.5/cmath" 3
 using ::log;
-# 316 "/usr/include/c++/4.4/cmath" 3
+# 322 "/usr/include/c++/4.5/cmath" 3
 inline float log(float __x)
-# 317 "/usr/include/c++/4.4/cmath" 3
+# 323 "/usr/include/c++/4.5/cmath" 3
 { return __builtin_logf(__x); }
-# 320 "/usr/include/c++/4.4/cmath" 3
+# 326 "/usr/include/c++/4.5/cmath" 3
 inline long double log(long double __x)
-# 321 "/usr/include/c++/4.4/cmath" 3
+# 327 "/usr/include/c++/4.5/cmath" 3
 { return __builtin_logl(__x); }
-# 323 "/usr/include/c++/4.4/cmath" 3
+# 329 "/usr/include/c++/4.5/cmath" 3
 template < typename _Tp >
     inline typename __gnu_cxx :: __enable_if < __is_integer < _Tp > :: __value,
         double > :: __type
     log ( _Tp __x )
     { return __builtin_log ( __x ); }
-# 329 "/usr/include/c++/4.4/cmath" 3
+# 335 "/usr/include/c++/4.5/cmath" 3
 using ::log10;
-# 332 "/usr/include/c++/4.4/cmath" 3
+# 338 "/usr/include/c++/4.5/cmath" 3
 inline float log10(float __x)
-# 333 "/usr/include/c++/4.4/cmath" 3
+# 339 "/usr/include/c++/4.5/cmath" 3
 { return __builtin_log10f(__x); }
-# 336 "/usr/include/c++/4.4/cmath" 3
+# 342 "/usr/include/c++/4.5/cmath" 3
 inline long double log10(long double __x)
-# 337 "/usr/include/c++/4.4/cmath" 3
+# 343 "/usr/include/c++/4.5/cmath" 3
 { return __builtin_log10l(__x); }
-# 339 "/usr/include/c++/4.4/cmath" 3
+# 345 "/usr/include/c++/4.5/cmath" 3
 template < typename _Tp >
     inline typename __gnu_cxx :: __enable_if < __is_integer < _Tp > :: __value,
         double > :: __type
     log10 ( _Tp __x )
     { return __builtin_log10 ( __x ); }
-# 345 "/usr/include/c++/4.4/cmath" 3
+# 351 "/usr/include/c++/4.5/cmath" 3
 using ::modf;
-# 348 "/usr/include/c++/4.4/cmath" 3
+# 354 "/usr/include/c++/4.5/cmath" 3
 inline float modf(float __x, float *__iptr)
-# 349 "/usr/include/c++/4.4/cmath" 3
+# 355 "/usr/include/c++/4.5/cmath" 3
 { return __builtin_modff(__x, __iptr); }
-# 352 "/usr/include/c++/4.4/cmath" 3
+# 358 "/usr/include/c++/4.5/cmath" 3
 inline long double modf(long double __x, long double *__iptr)
-# 353 "/usr/include/c++/4.4/cmath" 3
+# 359 "/usr/include/c++/4.5/cmath" 3
 { return __builtin_modfl(__x, __iptr); }
-# 355 "/usr/include/c++/4.4/cmath" 3
+# 361 "/usr/include/c++/4.5/cmath" 3
 using ::pow;
-# 358 "/usr/include/c++/4.4/cmath" 3
+# 364 "/usr/include/c++/4.5/cmath" 3
 inline float pow(float __x, float __y)
-# 359 "/usr/include/c++/4.4/cmath" 3
+# 365 "/usr/include/c++/4.5/cmath" 3
 { return __builtin_powf(__x, __y); }
-# 362 "/usr/include/c++/4.4/cmath" 3
+# 368 "/usr/include/c++/4.5/cmath" 3
 inline long double pow(long double __x, long double __y)
-# 363 "/usr/include/c++/4.4/cmath" 3
+# 369 "/usr/include/c++/4.5/cmath" 3
 { return __builtin_powl(__x, __y); }
-# 369 "/usr/include/c++/4.4/cmath" 3
+# 375 "/usr/include/c++/4.5/cmath" 3
 inline double pow(double __x, int __i)
-# 370 "/usr/include/c++/4.4/cmath" 3
+# 376 "/usr/include/c++/4.5/cmath" 3
 { return __builtin_powi(__x, __i); }
-# 373 "/usr/include/c++/4.4/cmath" 3
+# 379 "/usr/include/c++/4.5/cmath" 3
 inline float pow(float __x, int __n)
-# 374 "/usr/include/c++/4.4/cmath" 3
+# 380 "/usr/include/c++/4.5/cmath" 3
 { return __builtin_powif(__x, __n); }
-# 377 "/usr/include/c++/4.4/cmath" 3
+# 383 "/usr/include/c++/4.5/cmath" 3
 inline long double pow(long double __x, int __n)
-# 378 "/usr/include/c++/4.4/cmath" 3
+# 384 "/usr/include/c++/4.5/cmath" 3
 { return __builtin_powil(__x, __n); }
-# 381 "/usr/include/c++/4.4/cmath" 3
+# 387 "/usr/include/c++/4.5/cmath" 3
 template < typename _Tp, typename _Up >
     inline
     typename __gnu_cxx :: __promote_2 <
@@ -5033,99 +5073,99 @@ template < typename _Tp, typename _Up >
       typedef typename __gnu_cxx :: __promote_2 < _Tp, _Up > :: __type __type;
       return pow ( __type ( __x ), __type ( __y ) );
     }
-# 393 "/usr/include/c++/4.4/cmath" 3
+# 399 "/usr/include/c++/4.5/cmath" 3
 using ::sin;
-# 396 "/usr/include/c++/4.4/cmath" 3
+# 402 "/usr/include/c++/4.5/cmath" 3
 inline float sin(float __x)
-# 397 "/usr/include/c++/4.4/cmath" 3
+# 403 "/usr/include/c++/4.5/cmath" 3
 { return __builtin_sinf(__x); }
-# 400 "/usr/include/c++/4.4/cmath" 3
+# 406 "/usr/include/c++/4.5/cmath" 3
 inline long double sin(long double __x)
-# 401 "/usr/include/c++/4.4/cmath" 3
+# 407 "/usr/include/c++/4.5/cmath" 3
 { return __builtin_sinl(__x); }
-# 403 "/usr/include/c++/4.4/cmath" 3
+# 409 "/usr/include/c++/4.5/cmath" 3
 template < typename _Tp >
     inline typename __gnu_cxx :: __enable_if < __is_integer < _Tp > :: __value,
         double > :: __type
     sin ( _Tp __x )
     { return __builtin_sin ( __x ); }
-# 409 "/usr/include/c++/4.4/cmath" 3
+# 415 "/usr/include/c++/4.5/cmath" 3
 using ::sinh;
-# 412 "/usr/include/c++/4.4/cmath" 3
+# 418 "/usr/include/c++/4.5/cmath" 3
 inline float sinh(float __x)
-# 413 "/usr/include/c++/4.4/cmath" 3
+# 419 "/usr/include/c++/4.5/cmath" 3
 { return __builtin_sinhf(__x); }
-# 416 "/usr/include/c++/4.4/cmath" 3
+# 422 "/usr/include/c++/4.5/cmath" 3
 inline long double sinh(long double __x)
-# 417 "/usr/include/c++/4.4/cmath" 3
+# 423 "/usr/include/c++/4.5/cmath" 3
 { return __builtin_sinhl(__x); }
-# 419 "/usr/include/c++/4.4/cmath" 3
+# 425 "/usr/include/c++/4.5/cmath" 3
 template < typename _Tp >
     inline typename __gnu_cxx :: __enable_if < __is_integer < _Tp > :: __value,
         double > :: __type
     sinh ( _Tp __x )
     { return __builtin_sinh ( __x ); }
-# 425 "/usr/include/c++/4.4/cmath" 3
+# 431 "/usr/include/c++/4.5/cmath" 3
 using ::sqrt;
-# 428 "/usr/include/c++/4.4/cmath" 3
+# 434 "/usr/include/c++/4.5/cmath" 3
 inline float sqrt(float __x)
-# 429 "/usr/include/c++/4.4/cmath" 3
+# 435 "/usr/include/c++/4.5/cmath" 3
 { return __builtin_sqrtf(__x); }
-# 432 "/usr/include/c++/4.4/cmath" 3
+# 438 "/usr/include/c++/4.5/cmath" 3
 inline long double sqrt(long double __x)
-# 433 "/usr/include/c++/4.4/cmath" 3
+# 439 "/usr/include/c++/4.5/cmath" 3
 { return __builtin_sqrtl(__x); }
-# 435 "/usr/include/c++/4.4/cmath" 3
+# 441 "/usr/include/c++/4.5/cmath" 3
 template < typename _Tp >
     inline typename __gnu_cxx :: __enable_if < __is_integer < _Tp > :: __value,
         double > :: __type
     sqrt ( _Tp __x )
     { return __builtin_sqrt ( __x ); }
-# 441 "/usr/include/c++/4.4/cmath" 3
+# 447 "/usr/include/c++/4.5/cmath" 3
 using ::tan;
-# 444 "/usr/include/c++/4.4/cmath" 3
+# 450 "/usr/include/c++/4.5/cmath" 3
 inline float tan(float __x)
-# 445 "/usr/include/c++/4.4/cmath" 3
+# 451 "/usr/include/c++/4.5/cmath" 3
 { return __builtin_tanf(__x); }
-# 448 "/usr/include/c++/4.4/cmath" 3
+# 454 "/usr/include/c++/4.5/cmath" 3
 inline long double tan(long double __x)
-# 449 "/usr/include/c++/4.4/cmath" 3
+# 455 "/usr/include/c++/4.5/cmath" 3
 { return __builtin_tanl(__x); }
-# 451 "/usr/include/c++/4.4/cmath" 3
+# 457 "/usr/include/c++/4.5/cmath" 3
 template < typename _Tp >
     inline typename __gnu_cxx :: __enable_if < __is_integer < _Tp > :: __value,
         double > :: __type
     tan ( _Tp __x )
     { return __builtin_tan ( __x ); }
-# 457 "/usr/include/c++/4.4/cmath" 3
+# 463 "/usr/include/c++/4.5/cmath" 3
 using ::tanh;
-# 460 "/usr/include/c++/4.4/cmath" 3
+# 466 "/usr/include/c++/4.5/cmath" 3
 inline float tanh(float __x)
-# 461 "/usr/include/c++/4.4/cmath" 3
+# 467 "/usr/include/c++/4.5/cmath" 3
 { return __builtin_tanhf(__x); }
-# 464 "/usr/include/c++/4.4/cmath" 3
+# 470 "/usr/include/c++/4.5/cmath" 3
 inline long double tanh(long double __x)
-# 465 "/usr/include/c++/4.4/cmath" 3
+# 471 "/usr/include/c++/4.5/cmath" 3
 { return __builtin_tanhl(__x); }
-# 467 "/usr/include/c++/4.4/cmath" 3
+# 473 "/usr/include/c++/4.5/cmath" 3
 template < typename _Tp >
     inline typename __gnu_cxx :: __enable_if < __is_integer < _Tp > :: __value,
         double > :: __type
     tanh ( _Tp __x )
     { return __builtin_tanh ( __x ); }
-# 473 "/usr/include/c++/4.4/cmath" 3
+# 479 "/usr/include/c++/4.5/cmath" 3
 }
-# 492 "/usr/include/c++/4.4/cmath" 3
+# 498 "/usr/include/c++/4.5/cmath" 3
 namespace std __attribute((__visibility__("default")))
-# 35 "/usr/include/c++/4.4/bits/cmath.tcc" 3
+# 35 "/usr/include/c++/4.5/bits/cmath.tcc" 3
  __attribute((__visibility__("default")))
-# 49 "/usr/include/c++/4.4/cstddef" 3
+# 49 "/usr/include/c++/4.5/cstddef" 3
  __attribute((__visibility__("default")))
-# 100 "/usr/include/c++/4.4/cstdlib" 3
+# 100 "/usr/include/c++/4.5/cstdlib" 3
  __attribute((__visibility__("default")))
-# 199 "/usr/include/c++/4.4/cstdlib" 3
+# 199 "/usr/include/c++/4.5/cstdlib" 3
  __attribute((__visibility__("default"))) {
-# 494 "/usr/include/c++/4.4/cmath" 3
+# 500 "/usr/include/c++/4.5/cmath" 3
 template < typename _Tp >
     inline typename __gnu_cxx :: __enable_if < __is_arithmetic < _Tp > :: __value,
         int > :: __type
@@ -5135,7 +5175,7 @@ template < typename _Tp >
       return __builtin_fpclassify ( FP_NAN, FP_INFINITE, FP_NORMAL,
       FP_SUBNORMAL, FP_ZERO, __type ( __f ) );
     }
-# 504 "/usr/include/c++/4.4/cmath" 3
+# 510 "/usr/include/c++/4.5/cmath" 3
 template < typename _Tp >
     inline typename __gnu_cxx :: __enable_if < __is_arithmetic < _Tp > :: __value,
         int > :: __type
@@ -5144,7 +5184,7 @@ template < typename _Tp >
       typedef typename __gnu_cxx :: __promote < _Tp > :: __type __type;
       return __builtin_isfinite ( __type ( __f ) );
     }
-# 513 "/usr/include/c++/4.4/cmath" 3
+# 519 "/usr/include/c++/4.5/cmath" 3
 template < typename _Tp >
     inline typename __gnu_cxx :: __enable_if < __is_arithmetic < _Tp > :: __value,
         int > :: __type
@@ -5153,7 +5193,7 @@ template < typename _Tp >
       typedef typename __gnu_cxx :: __promote < _Tp > :: __type __type;
       return __builtin_isinf ( __type ( __f ) );
     }
-# 522 "/usr/include/c++/4.4/cmath" 3
+# 528 "/usr/include/c++/4.5/cmath" 3
 template < typename _Tp >
     inline typename __gnu_cxx :: __enable_if < __is_arithmetic < _Tp > :: __value,
         int > :: __type
@@ -5162,7 +5202,7 @@ template < typename _Tp >
       typedef typename __gnu_cxx :: __promote < _Tp > :: __type __type;
       return __builtin_isnan ( __type ( __f ) );
     }
-# 531 "/usr/include/c++/4.4/cmath" 3
+# 537 "/usr/include/c++/4.5/cmath" 3
 template < typename _Tp >
     inline typename __gnu_cxx :: __enable_if < __is_arithmetic < _Tp > :: __value,
         int > :: __type
@@ -5171,7 +5211,7 @@ template < typename _Tp >
       typedef typename __gnu_cxx :: __promote < _Tp > :: __type __type;
       return __builtin_isnormal ( __type ( __f ) );
     }
-# 540 "/usr/include/c++/4.4/cmath" 3
+# 546 "/usr/include/c++/4.5/cmath" 3
 template < typename _Tp >
     inline typename __gnu_cxx :: __enable_if < __is_arithmetic < _Tp > :: __value,
         int > :: __type
@@ -5180,7 +5220,7 @@ template < typename _Tp >
       typedef typename __gnu_cxx :: __promote < _Tp > :: __type __type;
       return __builtin_signbit ( __type ( __f ) );
     }
-# 549 "/usr/include/c++/4.4/cmath" 3
+# 555 "/usr/include/c++/4.5/cmath" 3
 template < typename _Tp >
     inline typename __gnu_cxx :: __enable_if < __is_arithmetic < _Tp > :: __value,
         int > :: __type
@@ -5189,7 +5229,7 @@ template < typename _Tp >
       typedef typename __gnu_cxx :: __promote < _Tp > :: __type __type;
       return __builtin_isgreater ( __type ( __f1 ), __type ( __f2 ) );
     }
-# 558 "/usr/include/c++/4.4/cmath" 3
+# 564 "/usr/include/c++/4.5/cmath" 3
 template < typename _Tp >
     inline typename __gnu_cxx :: __enable_if < __is_arithmetic < _Tp > :: __value,
         int > :: __type
@@ -5198,7 +5238,7 @@ template < typename _Tp >
       typedef typename __gnu_cxx :: __promote < _Tp > :: __type __type;
       return __builtin_isgreaterequal ( __type ( __f1 ), __type ( __f2 ) );
     }
-# 567 "/usr/include/c++/4.4/cmath" 3
+# 573 "/usr/include/c++/4.5/cmath" 3
 template < typename _Tp >
     inline typename __gnu_cxx :: __enable_if < __is_arithmetic < _Tp > :: __value,
         int > :: __type
@@ -5207,7 +5247,7 @@ template < typename _Tp >
       typedef typename __gnu_cxx :: __promote < _Tp > :: __type __type;
       return __builtin_isless ( __type ( __f1 ), __type ( __f2 ) );
     }
-# 576 "/usr/include/c++/4.4/cmath" 3
+# 582 "/usr/include/c++/4.5/cmath" 3
 template < typename _Tp >
     inline typename __gnu_cxx :: __enable_if < __is_arithmetic < _Tp > :: __value,
         int > :: __type
@@ -5216,7 +5256,7 @@ template < typename _Tp >
       typedef typename __gnu_cxx :: __promote < _Tp > :: __type __type;
       return __builtin_islessequal ( __type ( __f1 ), __type ( __f2 ) );
     }
-# 585 "/usr/include/c++/4.4/cmath" 3
+# 591 "/usr/include/c++/4.5/cmath" 3
 template < typename _Tp >
     inline typename __gnu_cxx :: __enable_if < __is_arithmetic < _Tp > :: __value,
         int > :: __type
@@ -5225,7 +5265,7 @@ template < typename _Tp >
       typedef typename __gnu_cxx :: __promote < _Tp > :: __type __type;
       return __builtin_islessgreater ( __type ( __f1 ), __type ( __f2 ) );
     }
-# 594 "/usr/include/c++/4.4/cmath" 3
+# 600 "/usr/include/c++/4.5/cmath" 3
 template < typename _Tp >
     inline typename __gnu_cxx :: __enable_if < __is_arithmetic < _Tp > :: __value,
         int > :: __type
@@ -5234,17 +5274,17 @@ template < typename _Tp >
       typedef typename __gnu_cxx :: __promote < _Tp > :: __type __type;
       return __builtin_isunordered ( __type ( __f1 ), __type ( __f2 ) );
     }
-# 603 "/usr/include/c++/4.4/cmath" 3
+# 609 "/usr/include/c++/4.5/cmath" 3
 }
-# 35 "/usr/include/c++/4.4/bits/cmath.tcc" 3
+# 35 "/usr/include/c++/4.5/bits/cmath.tcc" 3
 namespace std __attribute((__visibility__("default")))
-# 49 "/usr/include/c++/4.4/cstddef" 3
+# 49 "/usr/include/c++/4.5/cstddef" 3
  __attribute((__visibility__("default")))
-# 100 "/usr/include/c++/4.4/cstdlib" 3
+# 100 "/usr/include/c++/4.5/cstdlib" 3
  __attribute((__visibility__("default")))
-# 199 "/usr/include/c++/4.4/cstdlib" 3
+# 199 "/usr/include/c++/4.5/cstdlib" 3
  __attribute((__visibility__("default"))) {
-# 37 "/usr/include/c++/4.4/bits/cmath.tcc" 3
+# 37 "/usr/include/c++/4.5/bits/cmath.tcc" 3
 template < typename _Tp >
     inline _Tp
     __cmath_power ( _Tp __x, unsigned int __n )
@@ -5260,143 +5300,143 @@ template < typename _Tp >
 
       return __y;
     }
-# 53 "/usr/include/c++/4.4/bits/cmath.tcc" 3
+# 53 "/usr/include/c++/4.5/bits/cmath.tcc" 3
 }
-# 49 "/usr/include/c++/4.4/cstddef" 3
+# 49 "/usr/include/c++/4.5/cstddef" 3
 namespace std __attribute((__visibility__("default")))
-# 100 "/usr/include/c++/4.4/cstdlib" 3
+# 100 "/usr/include/c++/4.5/cstdlib" 3
  __attribute((__visibility__("default")))
-# 199 "/usr/include/c++/4.4/cstdlib" 3
+# 199 "/usr/include/c++/4.5/cstdlib" 3
  __attribute((__visibility__("default"))) {
-# 51 "/usr/include/c++/4.4/cstddef" 3
+# 51 "/usr/include/c++/4.5/cstddef" 3
 using ::ptrdiff_t;
-# 52 "/usr/include/c++/4.4/cstddef" 3
+# 52 "/usr/include/c++/4.5/cstddef" 3
 using ::size_t;
-# 54 "/usr/include/c++/4.4/cstddef" 3
+# 54 "/usr/include/c++/4.5/cstddef" 3
 }
-# 100 "/usr/include/c++/4.4/cstdlib" 3
+# 100 "/usr/include/c++/4.5/cstdlib" 3
 namespace std __attribute((__visibility__("default")))
-# 199 "/usr/include/c++/4.4/cstdlib" 3
+# 199 "/usr/include/c++/4.5/cstdlib" 3
  __attribute((__visibility__("default"))) {
-# 102 "/usr/include/c++/4.4/cstdlib" 3
+# 102 "/usr/include/c++/4.5/cstdlib" 3
 using ::div_t;
-# 103 "/usr/include/c++/4.4/cstdlib" 3
+# 103 "/usr/include/c++/4.5/cstdlib" 3
 using ::ldiv_t;
-# 105 "/usr/include/c++/4.4/cstdlib" 3
+# 105 "/usr/include/c++/4.5/cstdlib" 3
 using ::abort;
-# 106 "/usr/include/c++/4.4/cstdlib" 3
+# 106 "/usr/include/c++/4.5/cstdlib" 3
 using ::abs;
-# 107 "/usr/include/c++/4.4/cstdlib" 3
+# 107 "/usr/include/c++/4.5/cstdlib" 3
 using ::atexit;
-# 108 "/usr/include/c++/4.4/cstdlib" 3
+# 108 "/usr/include/c++/4.5/cstdlib" 3
 using ::atof;
-# 109 "/usr/include/c++/4.4/cstdlib" 3
+# 109 "/usr/include/c++/4.5/cstdlib" 3
 using ::atoi;
-# 110 "/usr/include/c++/4.4/cstdlib" 3
+# 110 "/usr/include/c++/4.5/cstdlib" 3
 using ::atol;
-# 111 "/usr/include/c++/4.4/cstdlib" 3
+# 111 "/usr/include/c++/4.5/cstdlib" 3
 using ::bsearch;
-# 112 "/usr/include/c++/4.4/cstdlib" 3
+# 112 "/usr/include/c++/4.5/cstdlib" 3
 using ::calloc;
-# 113 "/usr/include/c++/4.4/cstdlib" 3
+# 113 "/usr/include/c++/4.5/cstdlib" 3
 using ::div;
-# 114 "/usr/include/c++/4.4/cstdlib" 3
+# 114 "/usr/include/c++/4.5/cstdlib" 3
 using ::exit;
-# 115 "/usr/include/c++/4.4/cstdlib" 3
+# 115 "/usr/include/c++/4.5/cstdlib" 3
 using ::free;
-# 116 "/usr/include/c++/4.4/cstdlib" 3
+# 116 "/usr/include/c++/4.5/cstdlib" 3
 using ::getenv;
-# 117 "/usr/include/c++/4.4/cstdlib" 3
+# 117 "/usr/include/c++/4.5/cstdlib" 3
 using ::labs;
-# 118 "/usr/include/c++/4.4/cstdlib" 3
+# 118 "/usr/include/c++/4.5/cstdlib" 3
 using ::ldiv;
-# 119 "/usr/include/c++/4.4/cstdlib" 3
+# 119 "/usr/include/c++/4.5/cstdlib" 3
 using ::malloc;
-# 121 "/usr/include/c++/4.4/cstdlib" 3
+# 121 "/usr/include/c++/4.5/cstdlib" 3
 using ::mblen;
-# 122 "/usr/include/c++/4.4/cstdlib" 3
+# 122 "/usr/include/c++/4.5/cstdlib" 3
 using ::mbstowcs;
-# 123 "/usr/include/c++/4.4/cstdlib" 3
+# 123 "/usr/include/c++/4.5/cstdlib" 3
 using ::mbtowc;
-# 125 "/usr/include/c++/4.4/cstdlib" 3
+# 125 "/usr/include/c++/4.5/cstdlib" 3
 using ::qsort;
-# 126 "/usr/include/c++/4.4/cstdlib" 3
+# 126 "/usr/include/c++/4.5/cstdlib" 3
 using ::rand;
-# 127 "/usr/include/c++/4.4/cstdlib" 3
+# 127 "/usr/include/c++/4.5/cstdlib" 3
 using ::realloc;
-# 128 "/usr/include/c++/4.4/cstdlib" 3
+# 128 "/usr/include/c++/4.5/cstdlib" 3
 using ::srand;
-# 129 "/usr/include/c++/4.4/cstdlib" 3
+# 129 "/usr/include/c++/4.5/cstdlib" 3
 using ::strtod;
-# 130 "/usr/include/c++/4.4/cstdlib" 3
+# 130 "/usr/include/c++/4.5/cstdlib" 3
 using ::strtol;
-# 131 "/usr/include/c++/4.4/cstdlib" 3
+# 131 "/usr/include/c++/4.5/cstdlib" 3
 using ::strtoul;
-# 132 "/usr/include/c++/4.4/cstdlib" 3
+# 132 "/usr/include/c++/4.5/cstdlib" 3
 using ::system;
-# 134 "/usr/include/c++/4.4/cstdlib" 3
+# 134 "/usr/include/c++/4.5/cstdlib" 3
 using ::wcstombs;
-# 135 "/usr/include/c++/4.4/cstdlib" 3
+# 135 "/usr/include/c++/4.5/cstdlib" 3
 using ::wctomb;
-# 139 "/usr/include/c++/4.4/cstdlib" 3
+# 139 "/usr/include/c++/4.5/cstdlib" 3
 inline long abs(long __i) { return labs(__i); }
-# 142 "/usr/include/c++/4.4/cstdlib" 3
+# 142 "/usr/include/c++/4.5/cstdlib" 3
 inline ldiv_t div(long __i, long __j) { return ldiv(__i, __j); }
-# 144 "/usr/include/c++/4.4/cstdlib" 3
+# 144 "/usr/include/c++/4.5/cstdlib" 3
 }
-# 157 "/usr/include/c++/4.4/cstdlib" 3
+# 157 "/usr/include/c++/4.5/cstdlib" 3
 namespace __gnu_cxx __attribute((__visibility__("default"))) {
-# 160 "/usr/include/c++/4.4/cstdlib" 3
+# 160 "/usr/include/c++/4.5/cstdlib" 3
 using ::lldiv_t;
-# 166 "/usr/include/c++/4.4/cstdlib" 3
+# 166 "/usr/include/c++/4.5/cstdlib" 3
 using ::_Exit;
-# 170 "/usr/include/c++/4.4/cstdlib" 3
+# 170 "/usr/include/c++/4.5/cstdlib" 3
 inline long long abs(long long __x) { return (__x >= (0)) ? __x : (-__x); }
-# 173 "/usr/include/c++/4.4/cstdlib" 3
+# 173 "/usr/include/c++/4.5/cstdlib" 3
 using ::llabs;
-# 176 "/usr/include/c++/4.4/cstdlib" 3
+# 176 "/usr/include/c++/4.5/cstdlib" 3
 inline lldiv_t div(long long __n, long long __d)
-# 177 "/usr/include/c++/4.4/cstdlib" 3
+# 177 "/usr/include/c++/4.5/cstdlib" 3
 { lldiv_t __q; (__q.quot) = (__n / __d); (__q.rem) = (__n % __d); return __q; }
-# 179 "/usr/include/c++/4.4/cstdlib" 3
+# 179 "/usr/include/c++/4.5/cstdlib" 3
 using ::lldiv;
-# 190 "/usr/include/c++/4.4/cstdlib" 3
+# 190 "/usr/include/c++/4.5/cstdlib" 3
 using ::atoll;
-# 191 "/usr/include/c++/4.4/cstdlib" 3
+# 191 "/usr/include/c++/4.5/cstdlib" 3
 using ::strtoll;
-# 192 "/usr/include/c++/4.4/cstdlib" 3
+# 192 "/usr/include/c++/4.5/cstdlib" 3
 using ::strtoull;
-# 194 "/usr/include/c++/4.4/cstdlib" 3
+# 194 "/usr/include/c++/4.5/cstdlib" 3
 using ::strtof;
-# 195 "/usr/include/c++/4.4/cstdlib" 3
+# 195 "/usr/include/c++/4.5/cstdlib" 3
 using ::strtold;
-# 197 "/usr/include/c++/4.4/cstdlib" 3
+# 197 "/usr/include/c++/4.5/cstdlib" 3
 }
-# 199 "/usr/include/c++/4.4/cstdlib" 3
+# 199 "/usr/include/c++/4.5/cstdlib" 3
 namespace std __attribute((__visibility__("default"))) {
-# 202 "/usr/include/c++/4.4/cstdlib" 3
+# 202 "/usr/include/c++/4.5/cstdlib" 3
 using __gnu_cxx::lldiv_t;
-# 204 "/usr/include/c++/4.4/cstdlib" 3
+# 204 "/usr/include/c++/4.5/cstdlib" 3
 using __gnu_cxx::_Exit;
-# 205 "/usr/include/c++/4.4/cstdlib" 3
+# 205 "/usr/include/c++/4.5/cstdlib" 3
 using __gnu_cxx::abs;
-# 207 "/usr/include/c++/4.4/cstdlib" 3
+# 207 "/usr/include/c++/4.5/cstdlib" 3
 using __gnu_cxx::llabs;
-# 208 "/usr/include/c++/4.4/cstdlib" 3
+# 208 "/usr/include/c++/4.5/cstdlib" 3
 using __gnu_cxx::div;
-# 209 "/usr/include/c++/4.4/cstdlib" 3
+# 209 "/usr/include/c++/4.5/cstdlib" 3
 using __gnu_cxx::lldiv;
-# 211 "/usr/include/c++/4.4/cstdlib" 3
+# 211 "/usr/include/c++/4.5/cstdlib" 3
 using __gnu_cxx::atoll;
-# 212 "/usr/include/c++/4.4/cstdlib" 3
+# 212 "/usr/include/c++/4.5/cstdlib" 3
 using __gnu_cxx::strtof;
-# 213 "/usr/include/c++/4.4/cstdlib" 3
+# 213 "/usr/include/c++/4.5/cstdlib" 3
 using __gnu_cxx::strtoll;
-# 214 "/usr/include/c++/4.4/cstdlib" 3
+# 214 "/usr/include/c++/4.5/cstdlib" 3
 using __gnu_cxx::strtoull;
-# 215 "/usr/include/c++/4.4/cstdlib" 3
+# 215 "/usr/include/c++/4.5/cstdlib" 3
 using __gnu_cxx::strtold;
-# 217 "/usr/include/c++/4.4/cstdlib" 3
+# 217 "/usr/include/c++/4.5/cstdlib" 3
 }
 # 85 "/usr/local/cuda/bin/../include/math_functions.h"
 extern "C" int abs(int) throw();
@@ -10024,7 +10064,7 @@ extern "C" { typedef int _G_int32_t __attribute((__mode__(__SI__))); }
 extern "C" { typedef unsigned short _G_uint16_t __attribute((__mode__(__HI__))); }
 # 56 "/usr/include/_G_config.h" 3
 extern "C" { typedef unsigned _G_uint32_t __attribute((__mode__(__SI__))); }
-# 40 "/usr/lib/gcc/x86_64-linux-gnu/4.4.5/include/stdarg.h" 3
+# 40 "/usr/lib/x86_64-linux-gnu/gcc/x86_64-linux-gnu/4.5.2/include/va.h" 3
 extern "C" { typedef __builtin_va_list __gnuc_va_list; }
 # 170 "/usr/include/libio.h" 3
 struct _IO_jump_t; struct _IO_FILE;
@@ -10442,668 +10482,668 @@ extern "C" void flockfile(FILE * ) throw();
 extern "C" int ftrylockfile(FILE * ) throw();
 # 913 "/usr/include/stdio.h" 3
 extern "C" void funlockfile(FILE * ) throw();
-# 13 "malloc.cu"
+# 13 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 static int test_malloc(bool verbose) {
-# 14 "malloc.cu"
+# 14 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 int errors = 0;
-# 15 "malloc.cu"
+# 15 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 const int width = 256;
-# 16 "malloc.cu"
+# 16 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 const int height = 128;
-# 18 "malloc.cu"
+# 18 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 float *block = (0);
-# 20 "malloc.cu"
+# 20 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 printf("test_malloc(%d, %d)\n", width, height);
-# 22 "malloc.cu"
+# 22 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 size_t bytes = ((width * height) * sizeof(float));
-# 24 "malloc.cu"
+# 24 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 float *host = ((float *)malloc(bytes));
-# 25 "malloc.cu"
+# 25 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 if ((cudaMalloc((void **)(&block), bytes)) != (cudaSuccess)) {
-# 26 "malloc.cu"
+# 26 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 printf("cudaMalloc() 0 - failed to allocate %d bytes\n", (int)bytes);
-# 27 "malloc.cu"
+# 27 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 return ++errors;
-# 28 "malloc.cu"
+# 28 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 }
-# 30 "malloc.cu"
+# 30 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 for (int j = 0; j < height; j++) {
-# 31 "malloc.cu"
+# 31 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 float *ptr = (&(host[j * width]));
-# 32 "malloc.cu"
+# 32 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 for (int i = 0; i < width; i++) {
-# 33 "malloc.cu"
+# 33 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 (ptr[i]) = (((float)((i + (j * width)) % 128)) / (128.0F));
-# 34 "malloc.cu"
+# 34 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 }
-# 35 "malloc.cu"
+# 35 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 }
-# 37 "malloc.cu"
+# 37 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 if ((cudaMemcpy(block, host, bytes, cudaMemcpyHostToDevice)) != (cudaSuccess)) {
-# 38 "malloc.cu"
+# 38 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 printf("cudaMemcpy() - failed to copy %d bytes to block\n", (int)bytes);
-# 39 "malloc.cu"
+# 39 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 cudaFree(block);
-# 40 "malloc.cu"
+# 40 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 free(host);
-# 41 "malloc.cu"
+# 41 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 return ++errors;
-# 42 "malloc.cu"
+# 42 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 }
-# 44 "malloc.cu"
+# 44 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 for (int i = 0; i < (width * height); i++) {
-# 45 "malloc.cu"
+# 45 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 (host[i]) = (-1);
-# 46 "malloc.cu"
+# 46 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 }
-# 48 "malloc.cu"
+# 48 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 if ((cudaMemcpy(host, block, bytes, cudaMemcpyDeviceToHost)) != (cudaSuccess)) {
-# 49 "malloc.cu"
+# 49 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 printf("cudaMemcpy() - failed to copy %d bytes from block\n", (int)bytes);
-# 50 "malloc.cu"
+# 50 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 cudaFree(block);
-# 51 "malloc.cu"
+# 51 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 free(host);
-# 52 "malloc.cu"
+# 52 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 return ++errors;
-# 53 "malloc.cu"
+# 53 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 }
-# 55 "malloc.cu"
+# 55 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 for (int j = 0; (j < height) && (errors < 10); j++) {
-# 56 "malloc.cu"
+# 56 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 float *ptr = (&(host[j * width]));
-# 57 "malloc.cu"
+# 57 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 for (int i = 0; (i < width) && (errors < 10); i++) {
-# 58 "malloc.cu"
+# 58 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 float expected = (((float)((i + (j * width)) % 128)) / (128.0F));
-# 59 "malloc.cu"
+# 59 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 float got = (ptr[i]);
-# 60 "malloc.cu"
+# 60 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 if (fabs(expected - got) > (0.001000000047F)) {
-# 61 "malloc.cu"
+# 61 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 printf("ERROR 1: (%d, %d) - expected: %f, got: %f\n", i, j, expected, got);
-# 63 "malloc.cu"
+# 63 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 ++errors;
-# 64 "malloc.cu"
+# 64 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 }
-# 65 "malloc.cu"
+# 65 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 }
-# 66 "malloc.cu"
+# 66 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 }
-# 68 "malloc.cu"
+# 68 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 if (errors) {
-# 69 "malloc.cu"
+# 69 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 cudaFree(block);
-# 70 "malloc.cu"
+# 70 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 free(host);
-# 71 "malloc.cu"
+# 71 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 return errors;
-# 72 "malloc.cu"
+# 72 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 }
-# 75 "malloc.cu"
+# 75 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 for (int j = 0; (j < height) && (errors < 5); j++) {
-# 76 "malloc.cu"
+# 76 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 for (int i = 0; (i < width) && (errors < 5); i++) {
-# 77 "malloc.cu"
+# 77 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 float x = (-1);
-# 78 "malloc.cu"
+# 78 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 float expected = (((float)((i + (j * width)) % 128)) / (128.0F));
-# 79 "malloc.cu"
+# 79 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 if ((cudaMemcpy(&x, (block + i) + (j * width), sizeof(float), cudaMemcpyDeviceToHost)) != (cudaSuccess))
-# 80 "malloc.cu"
+# 80 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 {
-# 82 "malloc.cu"
+# 82 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 printf("FAILED to cudaMemcpy() on element (%d, %d)\n", i, j);
-# 83 "malloc.cu"
+# 83 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 cudaFree(block);
-# 84 "malloc.cu"
+# 84 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 free(host);
-# 85 "malloc.cu"
+# 85 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 printf("FAILED\n");
-# 86 "malloc.cu"
+# 86 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 return errors;
-# 87 "malloc.cu"
+# 87 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 }
-# 88 "malloc.cu"
+# 88 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 if (fabs(x - expected) > (9.999999747e-05F)) {
-# 89 "malloc.cu"
+# 89 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 ++errors;
-# 90 "malloc.cu"
+# 90 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 printf("ERROR 2: (%d, %d) - expected: %f, got: %f\n", i, j, expected, x);
-# 91 "malloc.cu"
+# 91 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 if (errors > 10) {
-# 92 "malloc.cu"
+# 92 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 cudaFree(block);
-# 93 "malloc.cu"
+# 93 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 free(host);
-# 94 "malloc.cu"
+# 94 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 printf("FAILED\n");
-# 95 "malloc.cu"
+# 95 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 return errors;
-# 96 "malloc.cu"
+# 96 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 }
-# 97 "malloc.cu"
+# 97 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 }
-# 98 "malloc.cu"
+# 98 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 }
-# 99 "malloc.cu"
+# 99 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 }
-# 101 "malloc.cu"
+# 101 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 if (verbose) {
-# 102 "malloc.cu"
+# 102 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 printf("%s\n", (errors) ? ("FAILED") : ("PASSED"));
-# 103 "malloc.cu"
+# 103 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 fflush(stdout);
-# 104 "malloc.cu"
+# 104 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 }
-# 106 "malloc.cu"
+# 106 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 cudaFree(block);
-# 107 "malloc.cu"
+# 107 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 free(host);
-# 109 "malloc.cu"
+# 109 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 return errors;
-# 110 "malloc.cu"
+# 110 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 }
-# 112 "malloc.cu"
+# 112 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 static int test_mallocArray(bool verbose) {
-# 113 "malloc.cu"
+# 113 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 int errors = 0;
-# 114 "malloc.cu"
+# 114 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 cudaArray *array = (0);
-# 115 "malloc.cu"
+# 115 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 cudaArray *array2 = (0);
-# 117 "malloc.cu"
+# 117 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 const int width = 256;
-# 118 "malloc.cu"
+# 118 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 const int height = 128;
-# 119 "malloc.cu"
+# 119 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 size_t bytes = ((width * height) * sizeof(float));
-# 121 "malloc.cu"
+# 121 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 printf("test_mallocArray(%d, %d)\n", width, height);
-# 123 "malloc.cu"
+# 123 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 float *host = ((float *)malloc(bytes));
-# 124 "malloc.cu"
+# 124 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 cudaChannelFormatDesc desc = cudaCreateChannelDesc(32, 0, 0, 0, cudaChannelFormatKindFloat);
-# 125 "malloc.cu"
+# 125 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 if ((cudaMallocArray(&array, &desc, width, height)) != (cudaSuccess)) {
-# 126 "malloc.cu"
+# 126 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 printf("cudaMallocArray() 0 - failed to allocate %d bytes\n", (int)bytes);
-# 127 "malloc.cu"
+# 127 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 printf(" error: %s\n", cudaGetErrorString(cudaGetLastError()));
-# 128 "malloc.cu"
+# 128 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 return ++errors;
-# 129 "malloc.cu"
+# 129 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 }
-# 131 "malloc.cu"
+# 131 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 for (int j = 0; j < height; j++) {
-# 132 "malloc.cu"
+# 132 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 float *ptr = (&(host[j * width]));
-# 133 "malloc.cu"
+# 133 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 for (int i = 0; i < width; i++) {
-# 134 "malloc.cu"
+# 134 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 (ptr[i]) = (((float)((i + (j * width)) % 128)) / (128.0F));
-# 135 "malloc.cu"
+# 135 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 }
-# 136 "malloc.cu"
+# 136 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 }
-# 138 "malloc.cu"
+# 138 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 if ((cudaMemcpyToArray(array, 0, 0, host, bytes, cudaMemcpyHostToDevice)) != (cudaSuccess))
-# 139 "malloc.cu"
+# 139 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 {
-# 140 "malloc.cu"
+# 140 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 printf("cudaMemcpyToArray() - failed to copy %d bytes to array\n", (int)bytes);
-# 141 "malloc.cu"
+# 141 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 cudaFreeArray(array);
-# 142 "malloc.cu"
+# 142 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 free(host);
-# 143 "malloc.cu"
+# 143 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 return ++errors;
-# 144 "malloc.cu"
+# 144 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 }
-# 146 "malloc.cu"
+# 146 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 for (int i = 0; i < (width * height); i++) {
-# 147 "malloc.cu"
+# 147 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 (host[i]) = (-1);
-# 148 "malloc.cu"
+# 148 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 }
-# 150 "malloc.cu"
+# 150 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 if ((cudaMemcpyFromArray(host, array, 0, 0, bytes, cudaMemcpyDeviceToHost)) != (cudaSuccess))
-# 151 "malloc.cu"
+# 151 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 {
-# 152 "malloc.cu"
+# 152 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 printf("cudaMemcpyFromArray() - failed to copy %d bytes from array\n", (int)bytes);
-# 153 "malloc.cu"
+# 153 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 cudaFreeArray(array);
-# 154 "malloc.cu"
+# 154 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 free(host);
-# 155 "malloc.cu"
+# 155 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 return ++errors;
-# 156 "malloc.cu"
+# 156 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 }
-# 158 "malloc.cu"
+# 158 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 for (int j = 0; (j < height) && (errors < 10); j++) {
-# 159 "malloc.cu"
+# 159 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 float *ptr = (&(host[j * width]));
-# 160 "malloc.cu"
+# 160 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 for (int i = 0; (i < width) && (errors < 10); i++) {
-# 161 "malloc.cu"
+# 161 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 float expected = (((float)((i + (j * width)) % 128)) / (128.0F));
-# 162 "malloc.cu"
+# 162 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 float got = (ptr[i]);
-# 163 "malloc.cu"
+# 163 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 if (fabs(expected - got) > (0.001000000047F)) {
-# 164 "malloc.cu"
+# 164 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 printf("ERROR 1: (%d, %d) - expected: %f, got: %f\n", i, j, expected, got);
-# 166 "malloc.cu"
+# 166 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 ++errors;
-# 167 "malloc.cu"
+# 167 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 }
-# 168 "malloc.cu"
+# 168 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 }
-# 169 "malloc.cu"
+# 169 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 }
-# 172 "malloc.cu"
+# 172 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 for (int j = 0; (j < height) && (errors < 5); j++) {
-# 173 "malloc.cu"
+# 173 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 for (int i = 0; (i < width) && (errors < 5); i++) {
-# 174 "malloc.cu"
+# 174 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 float x = (-1);
-# 175 "malloc.cu"
+# 175 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 float expected = (((float)((i + (j * width)) % 128)) / (128.0F));
-# 176 "malloc.cu"
+# 176 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 if ((cudaMemcpyFromArray(&x, array, i * sizeof(float), j, sizeof(float), cudaMemcpyDeviceToHost)) != (cudaSuccess))
-# 177 "malloc.cu"
+# 177 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 {
-# 178 "malloc.cu"
+# 178 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 printf("FAILED to memcpyFromArray(%d, %d)\n", i, j);
-# 179 "malloc.cu"
+# 179 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 cudaFreeArray(array);
-# 180 "malloc.cu"
+# 180 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 free(host);
-# 181 "malloc.cu"
+# 181 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 printf("FAILED\n");
-# 182 "malloc.cu"
+# 182 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 return -1;
-# 183 "malloc.cu"
+# 183 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 }
-# 184 "malloc.cu"
+# 184 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 if (fabs(x - expected) > (9.999999747e-05F)) {
-# 185 "malloc.cu"
+# 185 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 ++errors;
-# 186 "malloc.cu"
+# 186 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 printf("ERROR 0: (%d, %d) - expected: %f, got: %f\n", i, j, expected, x);
-# 187 "malloc.cu"
+# 187 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 if (errors > 10) {
-# 188 "malloc.cu"
+# 188 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 cudaFreeArray(array);
-# 189 "malloc.cu"
+# 189 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 free(host);
-# 190 "malloc.cu"
+# 190 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 printf("FAILED\n");
-# 191 "malloc.cu"
+# 191 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 return -1;
-# 192 "malloc.cu"
+# 192 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 }
-# 193 "malloc.cu"
+# 193 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 }
-# 194 "malloc.cu"
+# 194 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 }
-# 195 "malloc.cu"
+# 195 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 }
-# 197 "malloc.cu"
+# 197 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 if ((cudaMallocArray(&array2, &desc, width * 2, height * 2)) != (cudaSuccess)) {
-# 198 "malloc.cu"
+# 198 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 printf("cudaMallocArray() 1 - failed to allocate array2\n");
-# 199 "malloc.cu"
+# 199 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 cudaFreeArray(array);
-# 200 "malloc.cu"
+# 200 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 free(host);
-# 201 "malloc.cu"
+# 201 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 }
-# 203 "malloc.cu"
+# 203 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 for (int i = 0; i < (width * height); i++) {
-# 204 "malloc.cu"
+# 204 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 (host[i]) = (-1);
-# 205 "malloc.cu"
+# 205 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 }
-# 207 "malloc.cu"
+# 207 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 if ((cudaMemcpyArrayToArray(array2, width, height, array, 0, 0, bytes, cudaMemcpyDeviceToDevice)) != (cudaSuccess))
-# 208 "malloc.cu"
+# 208 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 {
-# 209 "malloc.cu"
+# 209 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 printf("cudaMemcpyArrayToArray() - failed\n");
-# 210 "malloc.cu"
+# 210 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 cudaFreeArray(array2);
-# 211 "malloc.cu"
+# 211 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 cudaFreeArray(array);
-# 212 "malloc.cu"
+# 212 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 free(host);
-# 213 "malloc.cu"
+# 213 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 return ++errors;
-# 214 "malloc.cu"
+# 214 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 }
-# 216 "malloc.cu"
+# 216 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 if ((cudaMemcpyFromArray(host, array2, width, height, bytes, cudaMemcpyDeviceToHost)) != (cudaSuccess))
-# 217 "malloc.cu"
+# 217 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 {
-# 218 "malloc.cu"
+# 218 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 printf("cudaMemcpyFromArray(host, array2) - failed\n");
-# 219 "malloc.cu"
+# 219 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 cudaFreeArray(array2);
-# 220 "malloc.cu"
+# 220 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 cudaFreeArray(array);
-# 221 "malloc.cu"
+# 221 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 free(host);
-# 222 "malloc.cu"
+# 222 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 }
-# 224 "malloc.cu"
+# 224 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 printf("checking results from last cudaMemcpyFromArray\n"); fflush(stdout);
-# 226 "malloc.cu"
+# 226 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 for (int j = 0; (j < height) && (errors < 10); j++) {
-# 227 "malloc.cu"
+# 227 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 float *ptr = (&(host[j * width]));
-# 228 "malloc.cu"
+# 228 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 for (int i = 0; (i < width) && (errors < 10); i++) {
-# 229 "malloc.cu"
+# 229 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 float expected = (((float)((i + (j * width)) % 128)) / (128.0F));
-# 230 "malloc.cu"
+# 230 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 float got = (ptr[i]);
-# 231 "malloc.cu"
+# 231 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 if (fabs(expected - got) > (0.001000000047F)) {
-# 232 "malloc.cu"
+# 232 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 printf("ERROR 2: (%d, %d) - expected: %f, got: %f\n", i, j, expected, got);
-# 234 "malloc.cu"
+# 234 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 ++errors;
-# 235 "malloc.cu"
+# 235 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 }
-# 236 "malloc.cu"
+# 236 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 }
-# 237 "malloc.cu"
+# 237 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 }
-# 239 "malloc.cu"
+# 239 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 if (verbose) {
-# 240 "malloc.cu"
+# 240 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 printf("%s\n", (errors) ? ("FAILED") : ("PASSED"));
-# 241 "malloc.cu"
+# 241 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 fflush(stdout);
-# 242 "malloc.cu"
+# 242 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 }
-# 244 "malloc.cu"
+# 244 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 cudaFreeArray(array);
-# 245 "malloc.cu"
+# 245 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 free(host);
-# 247 "malloc.cu"
+# 247 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 return errors;
-# 248 "malloc.cu"
+# 248 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 }
-# 250 "malloc.cu"
+# 250 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 static int test_mallocPitch(bool verbose) {
-# 251 "malloc.cu"
+# 251 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 int errors = 0;
-# 253 "malloc.cu"
+# 253 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 const int width = 125;
-# 254 "malloc.cu"
+# 254 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 const int height = 128;
-# 255 "malloc.cu"
+# 255 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 size_t pitch;
-# 257 "malloc.cu"
+# 257 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 if (verbose) { printf("[1] mallocing pitch\n"); fflush(stdout); }
-# 259 "malloc.cu"
+# 259 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 float *gpu0 = (0);
-# 260 "malloc.cu"
+# 260 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 if ((cudaMallocPitch((void **)(&gpu0), &pitch, sizeof(float) * width, height)) != (cudaSuccess)) {
-# 261 "malloc.cu"
+# 261 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 printf("cudaMallocPitch() 0 - failed to allocate %d x %d on device\n", width, height);
-# 262 "malloc.cu"
+# 262 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 return ++errors;
-# 263 "malloc.cu"
+# 263 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 }
-# 265 "malloc.cu"
+# 265 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 size_t bytes = ((width * height) * sizeof(float));
-# 266 "malloc.cu"
+# 266 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 float *host = ((float *)malloc(bytes));
-# 267 "malloc.cu"
+# 267 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 for (int j = 0; j < height; j++) {
-# 268 "malloc.cu"
+# 268 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 float *ptr = (&(host[j * width]));
-# 269 "malloc.cu"
+# 269 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 for (int i = 0; i < width; i++) {
-# 270 "malloc.cu"
+# 270 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 (ptr[i]) = ((((float)(i % 128)) / (64.0F)) + (2.0F));
-# 271 "malloc.cu"
+# 271 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 }
-# 272 "malloc.cu"
+# 272 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 }
-# 274 "malloc.cu"
+# 274 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 if (verbose) { printf("[2] memcpying2d\n"); fflush(stdout); }
-# 276 "malloc.cu"
+# 276 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 if ((cudaMemcpy2D(gpu0, pitch, host, width * sizeof(float), sizeof(float) * width, height, cudaMemcpyHostToDevice)) != (cudaSuccess))
-# 277 "malloc.cu"
+# 277 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 {
-# 279 "malloc.cu"
+# 279 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 printf("cudaMemcpy2D() 0 - failed to copy %d x %d matrix to device\n", width, height);
-# 280 "malloc.cu"
+# 280 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 free(host);
-# 281 "malloc.cu"
+# 281 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 cudaFree(gpu0);
-# 282 "malloc.cu"
+# 282 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 return ++errors;
-# 283 "malloc.cu"
+# 283 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 }
-# 285 "malloc.cu"
+# 285 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 for (int i = 0; i < (width * height); i++) {
-# 286 "malloc.cu"
+# 286 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 (host[i]) = (-1);
-# 287 "malloc.cu"
+# 287 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 }
-# 289 "malloc.cu"
+# 289 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 if (verbose) { printf("[3] memcpying\n"); fflush(stdout); }
-# 291 "malloc.cu"
+# 291 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 if ((cudaMemcpy2D(host, sizeof(float) * width, gpu0, pitch, sizeof(float) * width, height, cudaMemcpyDeviceToHost)) != (cudaSuccess))
-# 292 "malloc.cu"
+# 292 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 {
-# 294 "malloc.cu"
+# 294 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 printf("cudaMemcpy2D() 1 - failed to copy %d x %d matrix to host\n", width, height);
-# 295 "malloc.cu"
+# 295 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 free(host);
-# 296 "malloc.cu"
+# 296 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 cudaFree(gpu0);
-# 297 "malloc.cu"
+# 297 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 return ++errors;
-# 298 "malloc.cu"
+# 298 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 }
-# 300 "malloc.cu"
+# 300 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 for (int j = 0; (j < height) && (errors < 5); j++) {
-# 301 "malloc.cu"
+# 301 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 float *ptr = (&(host[j * width]));
-# 302 "malloc.cu"
+# 302 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 for (int i = 0; (i < width) && (errors < 5); i++) {
-# 303 "malloc.cu"
+# 303 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 float got = (ptr[i]);
-# 304 "malloc.cu"
+# 304 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 float expected = ((((float)(i % 128)) / (64.0F)) + (2.0F));
-# 305 "malloc.cu"
+# 305 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 if (fabs(got - expected) > (0.001000000047F)) {
-# 306 "malloc.cu"
+# 306 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 printf("ERROR 0 (%d, %d) - expected: %f, got: %f\n", i, j, expected, got);
-# 307 "malloc.cu"
+# 307 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 ++errors;
-# 308 "malloc.cu"
+# 308 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 }
-# 309 "malloc.cu"
+# 309 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 }
-# 310 "malloc.cu"
+# 310 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 }
-# 312 "malloc.cu"
+# 312 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 if (verbose) { printf("[4] checking for errors\n"); fflush(stdout); }
-# 314 "malloc.cu"
+# 314 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 if (errors) {
-# 315 "malloc.cu"
+# 315 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 cudaFree(gpu0);
-# 316 "malloc.cu"
+# 316 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 free(host);
-# 317 "malloc.cu"
+# 317 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 return ++errors;
-# 318 "malloc.cu"
+# 318 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 }
-# 320 "malloc.cu"
+# 320 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 if (verbose) { printf("[5] mallocing\n"); fflush(stdout); }
-# 323 "malloc.cu"
+# 323 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 float *gpu1 = (0);
-# 324 "malloc.cu"
+# 324 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 size_t pitch1 = (0);
-# 325 "malloc.cu"
+# 325 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 if ((cudaMallocPitch((void **)(&gpu1), &pitch1, sizeof(float) * (width + 1), height)) != (cudaSuccess)) {
-# 326 "malloc.cu"
+# 326 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 cudaFree(gpu0);
-# 327 "malloc.cu"
+# 327 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 free(host);
-# 328 "malloc.cu"
+# 328 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 printf("cudaMallocPitch() 1 - failed to allocate on device\n");
-# 329 "malloc.cu"
+# 329 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 return ++errors;
-# 330 "malloc.cu"
+# 330 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 }
-# 332 "malloc.cu"
+# 332 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 if (verbose) { printf("[6] memcpying\n"); fflush(stdout); }
-# 334 "malloc.cu"
+# 334 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 if ((cudaMemcpy2D(gpu1, pitch1, gpu0, pitch, sizeof(float) * width, height, cudaMemcpyDeviceToDevice)) != (cudaSuccess))
-# 335 "malloc.cu"
+# 335 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 {
-# 337 "malloc.cu"
+# 337 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 cudaFree(gpu0);
-# 338 "malloc.cu"
+# 338 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 cudaFree(gpu1);
-# 339 "malloc.cu"
+# 339 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 free(host);
-# 340 "malloc.cu"
+# 340 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 printf("cudaMemcpy2D() 2 - failed to copy from buffer with pitch %d to buffer with pitch %d\n", (int)pitch, (int)pitch1);
-# 342 "malloc.cu"
+# 342 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 return ++errors;
-# 343 "malloc.cu"
+# 343 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 }
-# 344 "malloc.cu"
+# 344 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 for (int i = 0; i < (width * height); i++) {
-# 345 "malloc.cu"
+# 345 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 (host[i]) = (-1);
-# 346 "malloc.cu"
+# 346 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 }
-# 348 "malloc.cu"
+# 348 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 if (verbose) { printf("[7] memcpying\n"); fflush(stdout); }
-# 350 "malloc.cu"
+# 350 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 if ((cudaMemcpy2D(host, sizeof(float) * width, gpu1, pitch1, sizeof(float) * width, height, cudaMemcpyDeviceToHost)) != (cudaSuccess))
-# 351 "malloc.cu"
+# 351 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 {
-# 353 "malloc.cu"
+# 353 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 cudaFree(gpu0);
-# 354 "malloc.cu"
+# 354 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 cudaFree(gpu1);
-# 355 "malloc.cu"
+# 355 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 free(host);
-# 356 "malloc.cu"
+# 356 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 printf("cudaMemcpy2D() 3 - failed to copy from buffer with pitch %d to buffer with pitch %d\n", (int)pitch, (int)(sizeof(float) * width));
-# 358 "malloc.cu"
+# 358 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 return ++errors;
-# 359 "malloc.cu"
+# 359 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 }
-# 361 "malloc.cu"
+# 361 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 for (int j = 0; (j < height) && (errors < 5); j++) {
-# 362 "malloc.cu"
+# 362 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 float *ptr = (&(host[j * width]));
-# 363 "malloc.cu"
+# 363 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 for (int i = 0; (i < width) && (errors < 5); i++) {
-# 364 "malloc.cu"
+# 364 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 float got = (ptr[i]);
-# 365 "malloc.cu"
+# 365 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 float expected = ((((float)(i % 128)) / (64.0F)) + (2.0F));
-# 366 "malloc.cu"
+# 366 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 if (fabs(got - expected) > (0.001000000047F)) {
-# 367 "malloc.cu"
+# 367 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 printf("ERROR 0 (%d, %d) - expected: %f, got: %f\n", i, j, expected, got);
-# 368 "malloc.cu"
+# 368 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 ++errors;
-# 369 "malloc.cu"
+# 369 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 }
-# 370 "malloc.cu"
+# 370 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 }
-# 371 "malloc.cu"
+# 371 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 }
-# 373 "malloc.cu"
+# 373 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 if (verbose) { printf("[8] final free\n"); fflush(stdout); }
-# 375 "malloc.cu"
+# 375 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 cudaFree(gpu0);
-# 376 "malloc.cu"
+# 376 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 cudaFree(gpu1);
-# 377 "malloc.cu"
+# 377 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 free(host);
-# 379 "malloc.cu"
+# 379 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 return errors;
-# 380 "malloc.cu"
+# 380 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 }
-# 382 "malloc.cu"
+# 382 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 static int test_malloc2d(bool verbose) {
-# 383 "malloc.cu"
+# 383 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 int errors = 0;
-# 385 "malloc.cu"
+# 385 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 return errors;
-# 386 "malloc.cu"
+# 386 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 }
-# 388 "malloc.cu"
+# 388 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 static int test_malloc3d(bool verbose) {
-# 389 "malloc.cu"
+# 389 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 int errors = 0;
-# 391 "malloc.cu"
+# 391 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 return errors;
-# 392 "malloc.cu"
+# 392 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 }
-# 396 "malloc.cu"
+# 396 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 int main(int argc, char *arg[]) {
-# 397 "malloc.cu"
+# 397 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 int errors = 0;
-# 398 "malloc.cu"
+# 398 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 bool verbose = true;
-# 400 "malloc.cu"
+# 400 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 if (!(errors)) {
-# 401 "malloc.cu"
+# 401 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 errors += test_malloc(verbose);
-# 402 "malloc.cu"
+# 402 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 }
-# 404 "malloc.cu"
+# 404 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 if (!(errors)) {
-# 405 "malloc.cu"
+# 405 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 errors += test_mallocArray(verbose);
-# 406 "malloc.cu"
+# 406 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 }
-# 407 "malloc.cu"
+# 407 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 if (!(errors)) {
-# 408 "malloc.cu"
+# 408 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 errors += test_mallocPitch(verbose);
-# 409 "malloc.cu"
+# 409 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 }
-# 410 "malloc.cu"
+# 410 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 if (!(errors)) {
-# 411 "malloc.cu"
+# 411 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 errors += test_malloc2d(verbose);
-# 412 "malloc.cu"
+# 412 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 }
-# 413 "malloc.cu"
+# 413 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 if (!(errors)) {
-# 414 "malloc.cu"
+# 414 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 errors += test_malloc3d(verbose);
-# 415 "malloc.cu"
+# 415 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 }
-# 417 "malloc.cu"
+# 417 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 {
-# 418 "malloc.cu"
+# 418 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 printf("Pass/Fail : %s\n", (errors) ? ("Fail") : ("Pass"));
-# 419 "malloc.cu"
+# 419 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 }
-# 421 "malloc.cu"
+# 421 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 return -errors;
-# 422 "malloc.cu"
+# 422 "/home/normal/checkout/gpuocelot/ocelot/ocelot/cuda/test/memory/malloc.cu"
 }
-# 1 "/tmp/tmpxft_00003b80_00000000-1_malloc.cudafe1.stub.c"
-# 1 "/tmp/tmpxft_00003b80_00000000-1_malloc.cudafe1.stub.c" 1
+# 1 "/tmp/tmpxft_00000eea_00000000-1_malloc.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00000eea_00000000-1_malloc.cudafe1.stub.c" 1
 # 1 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 1
 # 74 "/usr/local/cuda/bin/../include/crt/host_runtime.h"
 template <typename T>
@@ -11546,37 +11586,17 @@ inline unsigned long long int ullmax(unsigned long long int a, unsigned long lon
 
 
 #pragma pack()
-# 2 "/tmp/tmpxft_00003b80_00000000-1_malloc.cudafe1.stub.c" 2
-# 1 "/tmp/tmpxft_00003b80_00000000-3_malloc.fatbin.c" 1
+# 2 "/tmp/tmpxft_00000eea_00000000-1_malloc.cudafe1.stub.c" 2
+# 1 "/tmp/tmpxft_00000eea_00000000-3_malloc.fatbin.c" 1
 asm(
 ".section .rodata\n"
 ".align 32\n"
 "fatbinData:\n"
-".quad 0x00100001ba55ed50,0x0000000000000c01,0x0000004801000002,0x0000000000000278\n"
-".quad 0x0000000000000000,0x0000001700010004,0x0000000900000038,0x0000000000000015\n"
-".quad 0x0000000000000000,0x632e636f6c6c616d,0x0000000000000075,0x33010102464c457f\n"
-".quad 0x0000000000000004,0x0000000100be0002,0x0000000000000000,0x0000000000000208\n"
-".quad 0x0000000000000040,0x0038004000140117,0x0001000400400002,0x0000000000000000\n"
-".quad 0x0000000000000000,0x0000000000000000,0x0000000000000000,0x0000000000000000\n"
-".quad 0x0000000000000000,0x0000000000000000,0x0000000000000000,0x0000000300000001\n"
-".quad 0x0000000000000000,0x0000000000000000,0x0000000000000140,0x0000000000000036\n"
-".quad 0x0000000000000000,0x0000000000000004,0x0000000000000000,0x000000030000000b\n"
-".quad 0x0000000000000000,0x0000000000000000,0x0000000000000176,0x0000000000000001\n"
-".quad 0x0000000000000000,0x0000000000000001,0x0000000000000000,0x0000000200000013\n"
-".quad 0x0000000000000000,0x0000000000000000,0x0000000000000177,0x0000000000000090\n"
-".quad 0x0000000600000002,0x0000000000000001,0x0000000000000018,0x7472747368732e00\n"
-".quad 0x747274732e006261,0x746d79732e006261,0x672e766e2e006261,0x6e692e6c61626f6c\n"
-".quad 0x672e766e2e007469,0x0000006c61626f6c,0x0000000000000000,0x0000000000000000\n"
-".quad 0x0000000000000000,0x0000010003000000,0x0000000000000000,0x0000000000000000\n"
-".quad 0x0000020003000000,0x0000000000000000,0x0000000000000000,0x0000030003000000\n"
-".quad 0x0000000000000000,0x0000000000000000,0x0000000003000000,0x0000000000000000\n"
-".quad 0x0000000000000000,0x0000000003000000,0x0000000000000000,0x0000000000000000\n"
-".quad 0x0000000500000006,0x0000000000000208,0x0000000000000000,0x0000000000000000\n"
-".quad 0x0000000000000070,0x0000000000000070,0x0000000000000004,0x0000000560000000\n"
-".quad 0x0000000000000000,0x0000000000000000,0x0000000000000000,0x0000000000000207\n"
-".quad 0x0000000000000207,0x0000000000000004,0x0000005001000001,0x00000000000008f1\n"
-".quad 0x0000003800000000,0x0000001400020003,0x0000000900000040,0x0000000000000015\n"
-".quad 0x0000000000000000,0x0000000000000000,0x632e636f6c6c616d,0x0000000000000075\n"
+".quad 0x00100001ba55ed50,0x0000000000000c92,0x0000009001000001,0x0000000000000902\n"
+".quad 0x0000003800000000,0x0000001400020003,0x0000004800000040,0x0000000000000015\n"
+".quad 0x0000000000000000,0x0000000000000000,0x6f6e2f656d6f682f,0x6568632f6c616d72\n"
+".quad 0x70672f74756f6b63,0x2f746f6c65636f75,0x6f2f746f6c65636f,0x75632f746f6c6563\n"
+".quad 0x2f747365742f6164,0x6d2f79726f6d656d,0x75632e636f6c6c61,0x0000000000000000\n"
 ".quad 0x6f69737265762e09,0x2e090a332e32206e,0x7320746567726174,0x612e090a30325f6d\n"
 ".quad 0x735f737365726464,0x090a343620657a69,0x69706d6f63202f2f,0x687469772064656c\n"
 ".quad 0x6f6c2f7273752f20,0x616475632f6c6163,0x2f34366e65706f2f,0x0a65622f2f62696c\n"
@@ -11584,8 +11604,8 @@ asm(
 ".quad 0x2f090a0a38312d32,0x2d2d2d2d2d2d2d2f,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2f2f090a2d2d2d2d,0x696c69706d6f4320,0x2f706d742f20676e,0x305f746678706d74\n"
-".quad 0x5f30386233303030,0x3030303030303030,0x6f6c6c616d5f372d,0x692e337070632e63\n"
-".quad 0x632f706d742f2820,0x4e55312e23494263,0x2f2f090a29714139,0x2d2d2d2d2d2d2d2d\n"
+".quad 0x5f61656530303030,0x3030303030303030,0x6f6c6c616d5f372d,0x692e337070632e63\n"
+".quad 0x632f706d742f2820,0x50326f2e23494263,0x2f2f090a296b6978,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2f2f090a0a2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
@@ -11600,67 +11620,92 @@ asm(
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x662e090a0a2d2d2d,0x3c22093109656c69,0x2d646e616d6d6f63\n"
 ".quad 0x090a223e656e696c,0x093209656c69662e,0x6d742f706d742f22,0x3030305f74667870\n"
-".quad 0x30305f3038623330,0x362d303030303030,0x2e636f6c6c616d5f,0x2e32656661647563\n"
-".quad 0x662e090a22757067,0x2f22093309656c69,0x2f62696c2f727375,0x5f3638782f636367\n"
-".quad 0x78756e696c2d3436,0x342e342f756e672d,0x756c636e692f352e,0x65646474732f6564\n"
-".quad 0x662e090a22682e66,0x2f22093409656c69,0x61636f6c2f727375,0x622f616475632f6c\n"
-".quad 0x6e692f2e2e2f6e69,0x72632f6564756c63,0x6563697665642f74,0x656d69746e75725f\n"
-".quad 0x69662e090a22682e,0x752f22093509656c,0x6c61636f6c2f7273,0x69622f616475632f\n"
-".quad 0x636e692f2e2e2f6e,0x736f682f6564756c,0x656e696665645f74,0x662e090a22682e73\n"
-".quad 0x2f22093609656c69,0x61636f6c2f727375,0x622f616475632f6c,0x6e692f2e2e2f6e69\n"
-".quad 0x75622f6564756c63,0x79745f6e69746c69,0x090a22682e736570,0x093709656c69662e\n"
+".quad 0x30305f6165653030,0x362d303030303030,0x2e636f6c6c616d5f,0x2e32656661647563\n"
+".quad 0x662e090a22757067,0x2f22093309656c69,0x2f62696c2f727375,0x6c2d34365f363878\n"
+".quad 0x756e672d78756e69,0x3638782f6363672f,0x756e696c2d34365f,0x2e342f756e672d78\n"
+".quad 0x6c636e692f322e35,0x646474732f656475,0x2e090a22682e6665,0x22093409656c6966\n"
+".quad 0x636f6c2f7273752f,0x2f616475632f6c61,0x692f2e2e2f6e6962,0x632f6564756c636e\n"
+".quad 0x63697665642f7472,0x6d69746e75725f65,0x662e090a22682e65,0x2f22093509656c69\n"
+".quad 0x61636f6c2f727375,0x622f616475632f6c,0x6e692f2e2e2f6e69,0x6f682f6564756c63\n"
+".quad 0x6e696665645f7473,0x2e090a22682e7365,0x22093609656c6966,0x636f6c2f7273752f\n"
+".quad 0x2f616475632f6c61,0x692f2e2e2f6e6962,0x622f6564756c636e,0x745f6e69746c6975\n"
+".quad 0x0a22682e73657079,0x3709656c69662e09,0x6c2f7273752f2209,0x6475632f6c61636f\n"
+".quad 0x2e2e2f6e69622f61,0x6564756c636e692f,0x5f6563697665642f,0x22682e7365707974\n"
+".quad 0x09656c69662e090a,0x2f7273752f220938,0x75632f6c61636f6c,0x2e2f6e69622f6164\n"
+".quad 0x64756c636e692f2e,0x7265766972642f65,0x682e73657079745f,0x656c69662e090a22\n"
+".quad 0x7273752f22093909,0x632f6c61636f6c2f,0x2f6e69622f616475,0x756c636e692f2e2e\n"
+".quad 0x61667275732f6564,0x73657079745f6563,0x69662e090a22682e,0x2f2209303109656c\n"
+".quad 0x61636f6c2f727375,0x622f616475632f6c,0x6e692f2e2e2f6e69,0x65742f6564756c63\n"
+".quad 0x79745f6572757478,0x090a22682e736570,0x313109656c69662e,0x6c2f7273752f2209\n"
+".quad 0x6475632f6c61636f,0x2e2e2f6e69622f61,0x6564756c636e692f,0x5f726f746365762f\n"
+".quad 0x22682e7365707974,0x09656c69662e090a,0x7273752f22093231,0x632f6c61636f6c2f\n"
+".quad 0x2f6e69622f616475,0x756c636e692f2e2e,0x63697665642f6564,0x68636e75616c5f65\n"
+".quad 0x74656d617261705f,0x090a22682e737265,0x333109656c69662e,0x6c2f7273752f2209\n"
+".quad 0x6475632f6c61636f,0x2e2e2f6e69622f61,0x6564756c636e692f,0x6f74732f7472632f\n"
+".quad 0x616c635f65676172,0x2e090a22682e7373,0x09343109656c6966,0x6e692f7273752f22\n"
+".quad 0x69622f6564756c63,0x73657079742f7374,0x69662e090a22682e,0x2f2209353109656c\n"
+".quad 0x6c636e692f727375,0x656d69742f656475,0x69662e090a22682e,0x2f2209363109656c\n"
+".quad 0x61636f6c2f727375,0x622f616475632f6c,0x6e692f2e2e2f6e69,0x6f632f6564756c63\n"
+".quad 0x6e75665f6e6f6d6d,0x682e736e6f697463,0x656c69662e090a22,0x73752f2209373109\n"
+".quad 0x2f6c61636f6c2f72,0x6e69622f61647563,0x6c636e692f2e2e2f,0x6874616d2f656475\n"
+".quad 0x6f6974636e75665f,0x2e090a22682e736e,0x09383109656c6966,0x6f6c2f7273752f22\n"
+".quad 0x616475632f6c6163,0x2f2e2e2f6e69622f,0x2f6564756c636e69,0x6e6f635f6874616d\n"
+".quad 0x682e73746e617473,0x656c69662e090a22,0x73752f2209393109,0x2f6c61636f6c2f72\n"
+".quad 0x6e69622f61647563,0x6c636e692f2e2e2f,0x697665642f656475,0x74636e75665f6563\n"
+".quad 0x0a22682e736e6f69,0x3209656c69662e09,0x2f7273752f220930,0x75632f6c61636f6c\n"
+".quad 0x2e2f6e69622f6164,0x64756c636e692f2e,0x5f31315f6d732f65,0x665f63696d6f7461\n"
+".quad 0x736e6f6974636e75,0x69662e090a22682e,0x2f2209313209656c,0x61636f6c2f727375\n"
+".quad 0x622f616475632f6c,0x6e692f2e2e2f6e69,0x6d732f6564756c63,0x6d6f74615f32315f\n"
+".quad 0x74636e75665f6369,0x0a22682e736e6f69,0x3209656c69662e09,0x2f7273752f220932\n"
+".quad 0x75632f6c61636f6c,0x2e2f6e69622f6164,0x64756c636e692f2e,0x5f33315f6d732f65\n"
+".quad 0x665f656c62756f64,0x736e6f6974636e75,0x69662e090a22682e,0x2f2209333209656c\n"
+".quad 0x61636f6c2f727375,0x622f616475632f6c,0x6e692f2e2e2f6e69,0x6d732f6564756c63\n"
+".quad 0x6d6f74615f30325f,0x74636e75665f6369,0x0a22682e736e6f69,0x3209656c69662e09\n"
+".quad 0x2f7273752f220934,0x75632f6c61636f6c,0x2e2f6e69622f6164,0x64756c636e692f2e\n"
+".quad 0x5f30325f6d732f65,0x69736e6972746e69,0x2e090a22682e7363,0x09353209656c6966\n"
 ".quad 0x6f6c2f7273752f22,0x616475632f6c6163,0x2f2e2e2f6e69622f,0x2f6564756c636e69\n"
-".quad 0x745f656369766564,0x0a22682e73657079,0x3809656c69662e09,0x6c2f7273752f2209\n"
-".quad 0x6475632f6c61636f,0x2e2e2f6e69622f61,0x6564756c636e692f,0x5f7265766972642f\n"
-".quad 0x22682e7365707974,0x09656c69662e090a,0x2f7273752f220939,0x75632f6c61636f6c\n"
-".quad 0x2e2f6e69622f6164,0x64756c636e692f2e,0x6361667275732f65,0x2e73657079745f65\n"
-".quad 0x6c69662e090a2268,0x752f220930310965,0x6c61636f6c2f7273,0x69622f616475632f\n"
-".quad 0x636e692f2e2e2f6e,0x7865742f6564756c,0x7079745f65727574,0x2e090a22682e7365\n"
-".quad 0x09313109656c6966,0x6f6c2f7273752f22,0x616475632f6c6163,0x2f2e2e2f6e69622f\n"
-".quad 0x2f6564756c636e69,0x745f726f74636576,0x0a22682e73657079,0x3109656c69662e09\n"
-".quad 0x2f7273752f220932,0x75632f6c61636f6c,0x2e2f6e69622f6164,0x64756c636e692f2e\n"
-".quad 0x6563697665642f65,0x5f68636e75616c5f,0x6574656d61726170,0x2e090a22682e7372\n"
-".quad 0x09333109656c6966,0x6f6c2f7273752f22,0x616475632f6c6163,0x2f2e2e2f6e69622f\n"
-".quad 0x2f6564756c636e69,0x726f74732f747263,0x73616c635f656761,0x662e090a22682e73\n"
-".quad 0x2209343109656c69,0x636e692f7273752f,0x7469622f6564756c,0x2e73657079742f73\n"
-".quad 0x6c69662e090a2268,0x752f220935310965,0x756c636e692f7273,0x2e656d69742f6564\n"
-".quad 0x6c69662e090a2268,0x752f220936310965,0x6c61636f6c2f7273,0x69622f616475632f\n"
-".quad 0x636e692f2e2e2f6e,0x6d6f632f6564756c,0x636e75665f6e6f6d,0x22682e736e6f6974\n"
-".quad 0x09656c69662e090a,0x7273752f22093731,0x632f6c61636f6c2f,0x2f6e69622f616475\n"
-".quad 0x756c636e692f2e2e,0x5f6874616d2f6564,0x6e6f6974636e7566,0x662e090a22682e73\n"
-".quad 0x2209383109656c69,0x636f6c2f7273752f,0x2f616475632f6c61,0x692f2e2e2f6e6962\n"
-".quad 0x6d2f6564756c636e,0x736e6f635f687461,0x22682e73746e6174,0x09656c69662e090a\n"
-".quad 0x7273752f22093931,0x632f6c61636f6c2f,0x2f6e69622f616475,0x756c636e692f2e2e\n"
-".quad 0x63697665642f6564,0x6974636e75665f65,0x090a22682e736e6f,0x303209656c69662e\n"
-".quad 0x6c2f7273752f2209,0x6475632f6c61636f,0x2e2e2f6e69622f61,0x6564756c636e692f\n"
-".quad 0x615f31315f6d732f,0x75665f63696d6f74,0x2e736e6f6974636e,0x6c69662e090a2268\n"
-".quad 0x752f220931320965,0x6c61636f6c2f7273,0x69622f616475632f,0x636e692f2e2e2f6e\n"
-".quad 0x5f6d732f6564756c,0x696d6f74615f3231,0x6974636e75665f63,0x090a22682e736e6f\n"
-".quad 0x323209656c69662e,0x6c2f7273752f2209,0x6475632f6c61636f,0x2e2e2f6e69622f61\n"
-".quad 0x6564756c636e692f,0x645f33315f6d732f,0x75665f656c62756f,0x2e736e6f6974636e\n"
-".quad 0x6c69662e090a2268,0x752f220933320965,0x6c61636f6c2f7273,0x69622f616475632f\n"
-".quad 0x636e692f2e2e2f6e,0x5f6d732f6564756c,0x696d6f74615f3032,0x6974636e75665f63\n"
-".quad 0x090a22682e736e6f,0x343209656c69662e,0x6c2f7273752f2209,0x6475632f6c61636f\n"
-".quad 0x2e2e2f6e69622f61,0x6564756c636e692f,0x695f30325f6d732f,0x6369736e6972746e\n"
-".quad 0x662e090a22682e73,0x2209353209656c69,0x636f6c2f7273752f,0x2f616475632f6c61\n"
-".quad 0x692f2e2e2f6e6962,0x732f6564756c636e,0x665f656361667275,0x736e6f6974636e75\n"
-".quad 0x69662e090a22682e,0x2f2209363209656c,0x61636f6c2f727375,0x622f616475632f6c\n"
-".quad 0x6e692f2e2e2f6e69,0x65742f6564756c63,0x65665f6572757478,0x636e75665f686374\n"
-".quad 0x22682e736e6f6974,0x09656c69662e090a,0x7273752f22093732,0x632f6c61636f6c2f\n"
-".quad 0x2f6e69622f616475,0x756c636e692f2e2e,0x5f6874616d2f6564,0x6e6f6974636e7566\n"
-".quad 0x74705f6c62645f73,0x0a0a0a22682e3378,0x0000000000000000\n"
+".quad 0x5f65636166727573,0x6e6f6974636e7566,0x662e090a22682e73,0x2209363209656c69\n"
+".quad 0x636f6c2f7273752f,0x2f616475632f6c61,0x692f2e2e2f6e6962,0x742f6564756c636e\n"
+".quad 0x665f657275747865,0x6e75665f68637465,0x682e736e6f697463,0x656c69662e090a22\n"
+".quad 0x73752f2209373209,0x2f6c61636f6c2f72,0x6e69622f61647563,0x6c636e692f2e2e2f\n"
+".quad 0x6874616d2f656475,0x6f6974636e75665f,0x705f6c62645f736e,0x0a0a22682e337874\n"
+".quad 0x008801000002000a,0x0000000002780000,0x0000000000000000,0x0015000100040000\n"
+".quad 0x0048000000380000,0x0000000000150000,0x0000000000000000,0x2f656d6f682f0000\n"
+".quad 0x632f6c616d726f6e,0x2f74756f6b636568,0x6f6c65636f757067,0x746f6c65636f2f74\n"
+".quad 0x2f746f6c65636f2f,0x7365742f61647563,0x79726f6d656d2f74,0x2e636f6c6c616d2f\n"
+".quad 0x0000000000007563,0x0102464c457f0000,0x0000000000043301,0x000100be00020000\n"
+".quad 0x0000000000000000,0x0000000002080000,0x0000000000400000,0x0040001401150000\n"
+".quad 0x0004004000020038,0x0000000000000001,0x0000000000000000,0x0000000000000000\n"
+".quad 0x0000000000000000,0x0000000000000000,0x0000000000000000,0x0000000000000000\n"
+".quad 0x0000000000000000,0x0003000000010000,0x0000000000000000,0x0000000000000000\n"
+".quad 0x0000000001400000,0x0000000000360000,0x0000000000000000,0x0000000000040000\n"
+".quad 0x0000000000000000,0x00030000000b0000,0x0000000000000000,0x0000000000000000\n"
+".quad 0x0000000001760000,0x0000000000010000,0x0000000000000000,0x0000000000010000\n"
+".quad 0x0000000000000000,0x0002000000130000,0x0000000000000000,0x0000000000000000\n"
+".quad 0x0000000001770000,0x0000000000900000,0x0006000000020000,0x0000000000010000\n"
+".quad 0x0000000000180000,0x747368732e000000,0x74732e0062617472,0x79732e0062617472\n"
+".quad 0x766e2e006261746d,0x2e6c61626f6c672e,0x766e2e0074696e69,0x006c61626f6c672e\n"
+".quad 0x0000000000000000,0x0000000000000000,0x0000000000000000,0x0100030000000000\n"
+".quad 0x0000000000000000,0x0000000000000000,0x0200030000000000,0x0000000000000000\n"
+".quad 0x0000000000000000,0x0300030000000000,0x0000000000000000,0x0000000000000000\n"
+".quad 0x0000030000000000,0x0000000000000000,0x0000000000000000,0x0000030000000000\n"
+".quad 0x0000000000000000,0x0000000000000000,0x0005000000060000,0x0000000002080000\n"
+".quad 0x0000000000000000,0x0000000000000000,0x0000000000700000,0x0000000000700000\n"
+".quad 0x0000000000040000,0x0005600000000000,0x0000000000000000,0x0000000000000000\n"
+".quad 0x0000000000000000,0x0000000002070000,0x0000000002070000,0x0000000000040000\n"
+".quad 0x0000000000000000\n"
 ".text");
 
 extern "C" {
 
-extern const unsigned long long fatbinData[387];
+extern const unsigned long long fatbinData[405];
 
 }
 
 
 static struct {int m; int v; const unsigned long long* d; char* f;} __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))=
  { 0x466243b1, 1, fatbinData, 0 };
-# 3 "/tmp/tmpxft_00003b80_00000000-1_malloc.cudafe1.stub.c" 2
-static void __sti____cudaRegisterAll_41_tmpxft_00003b80_00000000_4_malloc_cpp1_ii_main(void) __attribute__((__constructor__));
-static void __sti____cudaRegisterAll_41_tmpxft_00003b80_00000000_4_malloc_cpp1_ii_main(void){__cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil);}
-# 1 "/tmp/tmpxft_00003b80_00000000-1_malloc.cudafe1.stub.c" 2
+# 3 "/tmp/tmpxft_00000eea_00000000-1_malloc.cudafe1.stub.c" 2
+static void __sti____cudaRegisterAll_41_tmpxft_00000eea_00000000_4_malloc_cpp1_ii_main(void) __attribute__((__constructor__));
+static void __sti____cudaRegisterAll_41_tmpxft_00000eea_00000000_4_malloc_cpp1_ii_main(void){__cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil);}
+# 1 "/tmp/tmpxft_00000eea_00000000-1_malloc.cudafe1.stub.c" 2

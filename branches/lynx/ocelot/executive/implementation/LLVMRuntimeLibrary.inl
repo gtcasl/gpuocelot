@@ -628,9 +628,15 @@ extern "C"
 		
 		char* address = (char*) _address;
 		char* end = address + bytes;
-		char* allocationEnd = context->local + state->localSize;
+		char* allocationEnd  = context->local + state->localSize;
+		char* globalLocalEnd = context->globallyScopedLocal +
+			state->globalLocalSize;
 		
-		if( end > allocationEnd )
+		bool inLocal = (address < allocationEnd) && (address >= context->local);
+		bool inGlobalLocal = (address < globalLocalEnd) &&
+			(address >= context->globallyScopedLocal);
+		
+		if( !inLocal && !inGlobalLocal )
 		{
 			unsigned int thread = context->tid.x 
 				+ context->ntid.x * context->tid.y 

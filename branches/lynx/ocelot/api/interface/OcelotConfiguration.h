@@ -206,6 +206,9 @@ namespace api {
 			//! \brief The hostname of the ocelot server to connect
 			std::string host;
 
+			//! \brief Reconvergence mechanism
+			int reconvergenceMechanism;
+
 			//! \brief maximum number of worker threads - a non-positive 
 			//         number indicates no limit
 			int workerThreadLimit;
@@ -221,6 +224,21 @@ namespace api {
 		public:
 			//! \brief The target subkernel size in instructions
 			unsigned int subkernelSize;
+		
+			/*! \brief Enable the structural transform */
+			bool structuralTransform;
+			
+			/*! \brief Enable convert predication to select */
+			bool predicateToSelect;
+			
+			/*! \brief Enable linear scan register allocation pass */
+			bool linearScanAllocation;
+			
+			/*! \brief Enable MIMD thread scheduling pass */
+			bool mimdThreadScheduling;
+			
+			/*! \brief Sync elimination pass */
+			bool syncElimination;			
 		};
 
 

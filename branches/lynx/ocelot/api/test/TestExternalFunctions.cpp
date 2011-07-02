@@ -13,6 +13,9 @@
 
 #include <ocelot/cuda/interface/cuda_runtime.h>
 
+// Standard Library Includes
+#include <fstream>
+
 // Hydrazine Includes
 #include <hydrazine/implementation/ArgumentParser.h>
 
@@ -81,6 +84,43 @@ bool TestExternalFunctions::testMallocFree()
 
 bool TestExternalFunctions::testPrintf()
 {
+	std::string ptx = ".version 2.3\n"
+		".address_size 64\n"
+		"\n"
+		".extern .func (.param .s32 return) vprintf (.param .u64 string,"
+		" .param .u64 parameters)\n"
+		"\n"
+		".global .align 1 .b8 message[15]"
+		" = {0x48,0x65,0x6c,0x6c,0x6f,0x20,0x43,0x55,0x44,"
+		" 0x41,0x20,0x25,0x64,0xa,0x0};\n"
+		"\n"
+		".entry kernel() {\n"
+		"\t\t.reg .u64 %r<5>;\n"
+		"\t\t.local .align 8 .b8 parameters[8];\n"
+		"\t\t.param .u64 string;\n"
+		"\t\t.param .u64 parameters_pointer;\n"
+		"\t$begin:\n"
+		"\t\tmov.s64            %r1,                  2;\n"
+		"\t\tst.local.s64       [parameters+0],       %r1;\n"
+		"\t\tcvta.global.u64    %r2,                  message;\n"
+		"\t\tst.param.u64       [string],             %r2;\n"
+		"\t\tcvta.local.u64     %r3,                  parameters;\n"
+		"\t\tst.param.u64       [parameters_pointer], %r3;\n"
+		"\t\tcall.uni (_),      vprintf, (string, parameters_pointer);\n"
+		"\t\texit;\n"
+		"\t$end:\n"
+		"}\n";
+
+	std::stringstream stream(ptx);
+
+	ocelot::registerPTXModule(stream, "someModule");
+	
+	cudaConfigureCall(dim3(1, 1, 1), dim3(1, 1, 1), 0, 0);
+
+	ocelot::launch("someModule", "kernel");
+
+	ocelot::unregisterModule("someModule");
+	
 	return true;
 }
 
@@ -120,13 +160,71 @@ bool TestExternalFunctions::testUserFunction()
 	ocelot::launch("someModule", "kernel");
 	
 	ocelot::unregisterModule("someModule");
+	ocelot::removeExternalFunction("hostFunction");
 	
 	return data == (int)0xfeedcaa7;
 }
 
+static void randomHostFunction2(long long unsigned int address, unsigned int d)
+{
+	(*(unsigned int*)address) = d;
+}
+
+bool TestExternalFunctions::testMismatchingTypes()
+{
+	std::string ptx = ".version 2.3\n"
+		".address_size 64\n"
+		"\n"
+		".extern .func hostFunction (.param .u64 bytes, .param .u32 data)\n"
+		"\n"
+		".entry kernel(.param .u64 result, .param .u32 result2) {\n"
+		"\t.reg .u64 %r<10>;\n"
+		"\t.param .u64 value0;\n"
+		"\t.param .u32 value1;\n"
+		"\t\n"
+		"\tld.param.u64 %r0, [result];\n"
+		"\tld.param.u32 %r1, [result2];\n"
+		"\tst.param.u64 [value0], %r0;\n"
+		"\tst.param.u32 [value1], %r1;\n"
+		"\tcall.uni hostFunction, (value0, value1);\n"
+		"\texit;\n"
+		"}\n";
+
+	std::stringstream stream(ptx);
+	ocelot::registerExternalFunction("hostFunction",
+		(void*)(randomHostFunction2));
+
+	ocelot::registerPTXModule(stream, "someModule");
+	
+	unsigned int data = 0;
+	long long unsigned int address = (long long unsigned int)(&data);
+	unsigned int value = 0xcaa7f00d;
+	
+	cudaSetupArgument(&address, sizeof(long long unsigned int), 0);
+	cudaSetupArgument(&value, sizeof(unsigned int),
+		sizeof(long long unsigned int));
+	cudaConfigureCall(dim3(1, 1, 1), dim3(1, 1, 1), 0, 0);
+	ocelot::launch("someModule", "kernel");
+	
+	ocelot::unregisterModule("someModule");
+	ocelot::removeExternalFunction("hostFunction");
+
+	if(data != 0xcaa7f00d)
+	{
+		status << "TestMismatchingTypes failed, "
+			"expecting 0xcaa7f00d, got " << std::hex << data 
+			<< std::dec << "\n";
+	}
+	
+	return data == 0xcaa7f00d;
+}
+
 bool TestExternalFunctions::doTest()
 {
-	return testMallocFree() && testPrintf() && testUserFunction();
+	return testMallocFree() 
+		&& testPrintf() 
+		&& testUserFunction()
+		&& testMismatchingTypes();
 }
 
 }

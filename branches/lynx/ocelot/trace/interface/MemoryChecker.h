@@ -59,18 +59,18 @@ namespace trace
 
 			        unsigned int size();
 
-				/*! \brief Check if region is initialized */
+					/*! \brief Check if region is initialized */
 			        Status checkRegion(unsigned int idx, unsigned int size);
 				
-				/*! \brief Set initialization status of a region */
-				void setRegion(unsigned int idx, unsigned int size, Status stat);
+					/*! \brief Set initialization status of a region */
+					void setRegion(unsigned int idx, unsigned int size, Status stat);
 
-				/*! \brief Check if region is initialized */
-				Status checkRegister(ir::PTXOperand::RegisterType idx);
+					/*! \brief Check if region is initialized */
+					Status checkRegister(ir::PTXOperand::RegisterType idx);
 
-				/*! \brief Set initialization status of a register */
-				void setRegister(ir::PTXOperand::RegisterType idx, Status stat);
-			        
+					/*! \brief Set initialization status of a register */
+					void setRegister(ir::PTXOperand::RegisterType idx, Status stat);
+					    
 			};
 			
 		private:
@@ -88,6 +88,9 @@ namespace trace
 			
 			/*! \brief Local memory allocation */
 			Allocation _local;
+			
+			/*! \brief Global local memory allocation */
+			Allocation _globalLocal;
 			
 			/*! \brief Constant memory allocation */
 			Allocation _constant;

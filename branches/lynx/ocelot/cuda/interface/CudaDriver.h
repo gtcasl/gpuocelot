@@ -6,9 +6,10 @@
 #ifndef CUDA_DRIVER_H_INCLUDED
 #define CUDA_DRIVER_H_INCLUDED
 
+#include <GL/gl.h>
 #include <ocelot/cuda/interface/cuda.h>
-
 #include <string>
+
 
 namespace cuda
 {
@@ -248,12 +249,14 @@ namespace cuda
 					CUresult (*cuGLInit)();
 					CUresult (*cuGLCtxCreate)(CUcontext *pCtx, 
 						unsigned int Flags, CUdevice device);
+					CUresult (*cuGLRegisterBufferObject)(GLuint bufferobj);
 					CUresult (*cuGraphicsGLRegisterBuffer)( 
 						CUgraphicsResource *pCudaResource, unsigned int buffer, 
 						unsigned int Flags );
 					CUresult (*cuGraphicsGLRegisterImage)( 
 						CUgraphicsResource *pCudaResource, unsigned int image, 
 						int target, unsigned int Flags);
+					CUresult (*cuGLSetBufferObjectMapFlags)(GLuint buffer, unsigned int flags);
 				
 				public:
 					/*! \brief The constructor zeros out all of the pointers */
@@ -640,12 +643,14 @@ namespace cuda
 			static CUresult cuGLInit();
 			static CUresult cuGLCtxCreate(CUcontext *pCtx, 
 				unsigned int Flags, CUdevice device);
+			static CUresult cuGLRegisterBufferObject(GLuint bufferobj);
 			static CUresult cuGraphicsGLRegisterBuffer( 
 				CUgraphicsResource *pCudaResource, unsigned int buffer, 
 				unsigned int Flags );
 			static CUresult cuGraphicsGLRegisterImage( 
 				CUgraphicsResource *pCudaResource, unsigned int image, 
 				int target, unsigned int Flags);
+			static CUresult cuGLSetBufferObjectMapFlags(GLuint buffer, unsigned int flags);
 
 			static std::string toString(CUresult result);
 

@@ -12,7 +12,7 @@
 
 #include <ocelot/cuda/interface/cuda_runtime.h>
 
-#include <ocelot/analysis/interface/PassManager.h>
+#include <ocelot/transforms/interface/PassManager.h>
 #include <ocelot/ir/interface/Module.h>
 
 #include <hydrazine/implementation/Exception.h>
@@ -30,7 +30,7 @@ namespace analysis
         pass = createPass();
 
         if(pass != NULL) {
-            analysis::PassManager manager( module );
+            transforms::PassManager manager( module );
 		    manager.addPass( *pass );
 
 		    manager.runOnModule();
@@ -74,7 +74,7 @@ namespace analysis
 
         if(pass != NULL) {
 
-            analysis::PassManager manager( &module );
+            transforms::PassManager manager( &module );
 
 		    manager.addPass( *pass );
 
@@ -162,7 +162,6 @@ namespace analysis
         *out << "\n\n";
 
     }
-
     
     PTXInstrumentor::PTXInstrumentor() : conditionsMet(false), fmt(text), deviceInfoWritten(false) {
         out = NULL;

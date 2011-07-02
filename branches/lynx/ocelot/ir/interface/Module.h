@@ -33,8 +33,6 @@ namespace ir {
 
 		typedef std::unordered_map< std::string, PTXKernel* > KernelMap;
 		
-		typedef std::vector< std::string > NameVector;
-		
 		typedef std::vector< PTXKernel* > KernelVector;
 
 		/*! \brief Map from unique identifier to global variable */
@@ -50,7 +48,7 @@ namespace ir {
 			load and parse the PTX file,
 			and extract kernels into Kernel objects
 		*/
-		Module(const std::string& path);
+		Module(const std::string& path, bool dontLoad = false);
 
 		/*! Given a stream constaining a PTX file, parse the PTX file,
 			and extract kernels into Kernel objects
@@ -115,8 +113,10 @@ namespace ir {
 		/*! \brief Adds a new kernel.
 			\param kernel The kernel being inserted, it will be owned
 				by the module.
+			
+			\return A pointer to the newly inserted kernel.
 		*/
-		void insertKernel(PTXKernel* kernel);		
+		PTXKernel* insertKernel(PTXKernel* kernel);		
 		
 		/*! \brief Gets a texture instance by name. 
 
@@ -126,6 +126,15 @@ namespace ir {
 				or 0 if it does not exist
 		*/
 		Texture* getTexture(const std::string& name);
+
+		/*! \brief Insert a texture into the module.
+
+			\param texture the texture being inserted, it will be
+				owned by the module.
+
+			\return pointer to texture instance being inserted
+		*/
+		Texture* insertTexture(const Texture& texture);
 
 		/*! \brief Gets a global instance by name. 
 
@@ -141,7 +150,16 @@ namespace ir {
                 the global being inserted, it will be owned
 				by the module.
 		*/
-		void insertGlobal(const PTXStatement &statement);	
+		void insertGlobalAsStatement(const PTXStatement &statement);	
+
+		/*! \brief Insert a global into the module.
+
+			\param global the global being inserted, it will be
+				owned by the module.
+
+			\return pointer to global instance being inserted
+		*/
+		Global* insertGlobal(const Global& global);
 
 		/*! \brief Gets the module path */
 		const std::string& path() const;
@@ -192,9 +210,6 @@ namespace ir {
 
 		/*! Set of kernels belonging to Module.  These are PTX Kernels */
 		KernelMap _kernels;	
-		
-		/*! The original sequence of PTX kernels must be preserved */
-		NameVector _kernelSequence;
 		
 		/*! Set of textures in the module */
 		TextureMap _textures;

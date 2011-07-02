@@ -61,12 +61,11 @@ std::string ir::Parameter::value( const Parameter& p ) {
 	return stream.str();
 }
 
-ir::Parameter::Parameter() {
-	type = PTXOperand::u64;
-	offset = 0;
-	vector = PTXOperand::v1;
-	argument = false;
-	returnArgument = false;
+ir::Parameter::Parameter(const std::string& s, ir::PTXOperand::DataType t,
+	unsigned int a, ir::PTXInstruction::Vec v, bool arg, bool r) 
+: type(t), name(s), alignment(a), vector(v), argument(arg), returnArgument(r)
+{
+
 }
 
 ir::Parameter::~Parameter() {

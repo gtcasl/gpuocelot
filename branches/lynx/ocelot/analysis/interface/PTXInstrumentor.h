@@ -11,7 +11,7 @@
 #include <vector>
 #include <map>
 #include <ocelot/ir/interface/Module.h>
-#include <ocelot/analysis/interface/Pass.h>
+#include <ocelot/transforms/interface/Pass.h>
 #include <hydrazine/implementation/json.h>
 
 #include <ostream>
@@ -85,7 +85,7 @@ namespace analysis
 			std::string kernelName;        
 
             /*! \brief The instrumentation pass */
-            analysis::Pass *pass;
+            transforms::Pass *pass;
             
             /*! \brief The number of thread blocks or CTAs specified for this execution */
             unsigned int threadBlocks;
@@ -134,7 +134,7 @@ namespace analysis
             void finalize();
 
             /*! \brief The createPass method instantiates the instrumentation pass */
-            virtual analysis::Pass *createPass() = 0;
+            virtual transforms::Pass *createPass() = 0;
 
             /*! \brief Output device info */
             void deviceInfo(std::ostream *out);

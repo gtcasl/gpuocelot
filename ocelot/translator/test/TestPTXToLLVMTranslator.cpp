@@ -18,8 +18,9 @@
 #include <ocelot/ir/interface/Module.h>
 #include <ocelot/ir/interface/LLVMKernel.h>
 
-#include <ocelot/analysis/interface/RemoveBarrierPass.h>
-#include <ocelot/analysis/interface/ConvertPredicationToSelectPass.h>
+#include <ocelot/transforms/interface/RemoveBarrierPass.h>
+#include <ocelot/transforms/interface/ConvertPredicationToSelectPass.h>
+#include <ocelot/transforms/interface/PassManager.h>
 
 #include <ocelot/parser/interface/PTXParser.h>
 
@@ -87,7 +88,6 @@ namespace test
 	{
 		report( " Loading file " << ptxFile );
 		
-		translator::PTXToLLVMTranslator translator;
 		ir::Module module;
 		
 		try 
@@ -113,26 +113,25 @@ namespace test
 
 		for (; k_it != module.kernels().end(); ++k_it) 
 		{
-			ir::Kernel* kernel = module.getKernel( k_it->first );
+			ir::IRKernel* kernel = module.getKernel( k_it->first );
 
-			kernel->dfg();
+			transforms::PassManager manager(&module);
 
-			analysis::ConvertPredicationToSelectPass pass1;
-		
-			pass1.initialize( module );
-			pass1.runOnKernel( *kernel );
-			pass1.finalize();
-		
-			analysis::RemoveBarrierPass pass2;
-		
-			pass2.initialize( module );
-			pass2.runOnKernel( *kernel );
-			pass2.finalize();
+			transforms::ConvertPredicationToSelectPass pass1;
+			transforms::RemoveBarrierPass pass2;
+			translator::PTXToLLVMTranslator translator;
 
-			kernel->dfg()->toSsa();
+			manager.addPass(pass1);
+			manager.addPass(pass2);
+
+			manager.runOnKernel(*kernel);
+			manager.clear();
+			
+			manager.addPass(translator);
+			manager.runOnKernel(*kernel);
 
 			ir::LLVMKernel* translatedKernel = dynamic_cast< ir::LLVMKernel* >( 
-				translator.translate( kernel ) );
+				translator.translatedKernel() );
 			translatedKernel->assemble();
 			
 			std::string outputFile = ptxFile + "." + kernel->name + ".ll";

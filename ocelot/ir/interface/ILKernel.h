@@ -8,7 +8,7 @@
 #define IL_KERNEL_H_INCLUDED
 
 // Ocelot includes
-#include <ocelot/ir/interface/Kernel.h>
+#include <ocelot/ir/interface/IRKernel.h>
 #include <ocelot/ir/interface/ILStatement.h>
 
 namespace translator
@@ -19,7 +19,7 @@ namespace translator
 namespace ir
 {
 	/*! \brief A class containing a complete representation of an IL kernel */
-	class ILKernel : public Kernel
+	class ILKernel : public IRKernel
 	{
 		friend class translator::PTXToILTranslator;
 		public:
@@ -34,7 +34,7 @@ namespace ir
 			/*! \brief Default constructor */
 			ILKernel();
 			/*! \brief Constructor from a base class */
-			ILKernel(const Kernel &k);
+			ILKernel(const IRKernel &k);
 
 		private:
 			/*! \brief The assembled IL kernel */

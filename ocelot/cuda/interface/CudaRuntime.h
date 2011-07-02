@@ -19,12 +19,15 @@
 // Ocelot libs
 #include <ocelot/cuda/interface/CudaRuntimeInterface.h>
 #include <ocelot/executive/interface/Device.h>
-#include <ocelot/analysis/interface/PassManager.h>
 #include <ocelot/cuda/interface/FatBinaryContext.h>
 #include <ocelot/ir/interface/ExternalFunctionSet.h>
 
 // Hydrazine includes
 #include <hydrazine/implementation/Timer.h>
+
+// Forward Declarations
+
+namespace transforms { class Pass; }
 
 namespace cuda {
 
@@ -93,9 +96,7 @@ namespace cuda {
 
         //! set of instrumentors to be inserted into kernels
         analysis::PTXInstrumentorVector instrumentors;
-		
-		int ptxPasses;
-			
+	
 	public:
 		HostThreadContext();
 		~HostThreadContext();
@@ -182,6 +183,9 @@ namespace cuda {
 			cudaChannelFormatDesc format;
 	};
 	
+	/*! \brief Set of PTX passes */
+	typedef std::set< transforms::Pass* > PassSet;
+
 	typedef std::vector< FatBinaryContext > FatBinaryVector;
 	typedef std::map< void*, RegisteredGlobal > RegisteredGlobalMap;
 	typedef std::map< void*, RegisteredTexture > RegisteredTextureMap;
@@ -290,6 +294,9 @@ namespace cuda {
 	
 		//! external functions
 		ir::ExternalFunctionSet _externals;
+		
+		//! PTX passes
+		PassSet _passes;
 	
 	private:
 		cudaError_t _launchKernel(const std::string& module, 
@@ -587,8 +594,9 @@ namespace cuda {
 		virtual void clearInstrumentors();
         virtual analysis::KernelProfile kernelProfile();    
 
-		virtual void addPTXPass(analysis::Pass &pass);
-		virtual void removePTXPass(analysis::Pass &pass);
+		virtual void addPTXPass(transforms::Pass &pass);
+		virtual void removePTXPass(transforms::Pass &pass);
+
 		virtual void clearPTXPasses();
 		virtual void limitWorkerThreads( unsigned int limit = 1024 );
 		virtual void registerPTXModule(std::istream& stream, 

@@ -10,6 +10,8 @@
 #include <ocelot/analysis/interface/DataflowGraph.h>
 #include <ocelot/analysis/interface/SSAGraph.h>
 
+#include <ocelot/ir/interface/IRKernel.h>
+
 #include <hydrazine/implementation/string.h>
 
 #include <unordered_map>
@@ -417,13 +419,23 @@ namespace analysis
 		return _block;
 	}
 
-	DataflowGraph::DataflowGraph( ir::ControlFlowGraph& cfg )  
-		: _cfg( &cfg ), _consistent( cfg.empty() ), 
-		_ssa( false ), _maxRegister( 0 )
+	DataflowGraph::DataflowGraph()  
+		: KernelAnalysis(Analysis::DataflowGraphAnalysis,
+			"DataflowGraphAnalysis"), _cfg( 0 ), _consistent( false ), 
+			_ssa( false ), _maxRegister( 0 )
 	{
+	}
+	
+	void DataflowGraph::analyze(ir::IRKernel& kernel)
+	{
+		_cfg        = kernel.cfg();
+		_consistent = _cfg->empty();
+		
 		typedef std::unordered_map< ir::ControlFlowGraph::iterator, 
 			iterator > BlockMap;
 		BlockMap map;
+		
+		ir::ControlFlowGraph& cfg = *_cfg;
 		
 		ir::ControlFlowGraph::BlockPointerVector blocks 
 			= cfg.executable_sequence();
@@ -491,7 +503,7 @@ namespace analysis
 				}
 				else
 				{
-/*					assertM( false, "Got invalid edge type between " 
+					/* assertM( false, "Got invalid edge type between " 
 						<< begin->second->label() << " and " 
 						<< bi->second->label() );*/
 					begin->second->_targets.insert( bi->second );
@@ -499,6 +511,8 @@ namespace analysis
 				}
 			}
 		}
+		
+		compute();
 	}
 	
 	DataflowGraph::iterator DataflowGraph::begin()

@@ -208,9 +208,9 @@ std::string ir::PTXInstruction::toString( Modifier modifier ) {
 
 std::string ir::PTXInstruction::toString( BarrierOperation operation) {
 	switch (operation) {
-		case BarSync:      return ".sync";
-		case BarArrive:    return ".arrive";
-		case BarReduction: return ".red";
+		case BarSync:      return "sync";
+		case BarArrive:    return "arrive";
+		case BarReduction: return "red";
 		default: break;
 	}
 	return "";
@@ -267,6 +267,17 @@ std::string ir::PTXInstruction::toString( VoteMode mode ) {
 		case Any:    return "any";    break;
 		case Uni:    return "uni";    break;
 		case Ballot: return "ballot"; break;
+		default: break;
+	}
+	return "";
+}
+
+std::string ir::PTXInstruction::toString( ColorComponent color ) {
+	switch( color ) {
+		case red:   return "r"; break;
+		case green: return "g"; break;
+		case blue:  return "b"; break;
+		case alpha: return "a"; break;
 		default: break;
 	}
 	return "";
@@ -340,6 +351,7 @@ std::string ir::PTXInstruction::toString( Opcode opcode ) {
 		case Suq:        return "suq";        break;
 		case TestP:      return "testp";      break;
 		case Tex:        return "tex";        break;
+		case Tld4:       return "tld4";       break;
 		case Txq:        return "txq";        break;
 		case Trap:       return "trap";       break;
 		case Vabsdiff:   return "vabsdiff";   break;
@@ -356,6 +368,7 @@ std::string ir::PTXInstruction::toString( Opcode opcode ) {
 		case Reconverge: return "reconverge"; break;
 		case Phi:        return "phi";        break;
 		case Nop:        return "nop";        break;
+		case Invalid_Opcode: break;
 	}
 	return "INVALID";
 }
@@ -1789,6 +1802,21 @@ std::string ir::PTXInstruction::valid() const {
 			}
 			break;
 		}
+		case Tld4: {
+			if( type != PTXOperand::f32 && type != PTXOperand::s32
+				&& type != PTXOperand::u32 ) {
+				return "invalid instruction type " 
+					+ PTXOperand::toString( type );
+			}
+			if( c.type != PTXOperand::f32 ) {
+				return "source C type must be f32 " 
+					+ PTXOperand::toString( c.type );
+			}
+			if( c.vec != PTXOperand::v2 ) {
+				return "operand C must be a 2-component vector ";
+			}
+			break;
+		}
 		case Txq: {
 			if (type != ir::PTXOperand::b32) {
 				return "data type must be .b32";
@@ -1943,7 +1971,7 @@ std::string ir::PTXInstruction::toString() const {
 			return result;
 		}
 		case Bar: {
-			std::string result = guard() + "bar" + toString(barrierOperation);
+			std::string result = guard() + "bar." + toString(barrierOperation);
 			ir::PTXOperand ir::PTXInstruction::* instrMembers [] = { 
 				&ir::PTXInstruction::d, 
 				&ir::PTXInstruction::a, 
@@ -1954,7 +1982,8 @@ std::string ir::PTXInstruction::toString() const {
 			switch (barrierOperation) {
 				case BarReduction: 
 				{
-					result += toString(reductionOperation) + PTXOperand::toString(type);
+					result += toString(reductionOperation)
+						+ PTXOperand::toString(type);
 				}
 				break;
 				default: break;
@@ -2047,6 +2076,10 @@ std::string ir::PTXInstruction::toString() const {
 					result += "rmi.";
 				} else if( modifier & rp ) {
 					result += "rpi.";
+				}
+
+				if( modifier & ftz ) {
+					result += "ftz.";
 				}
 				if( modifier & sat ) {
 					result += "sat.";
@@ -2374,6 +2407,12 @@ std::string ir::PTXInstruction::toString() const {
 				+ PTXOperand::toString( type ) + " " + d.toString() + ", [" 
 				+ a.toString() + ", " + c.toString() + "]"; 
 		}
+		case Tld4: {
+			return guard() + "tld4." + toString( colorComponent ) + ".2d.v4." 
+				+ PTXOperand::toString( d.type ) + "." 
+				+ PTXOperand::toString( c.type ) + " " + d.toString() + ", [" 
+				+ a.toString() + ", " + c.toString() + "]"; 
+		}
 		case Trap: {
 			return guard() + "trap";
 		}
@@ -2410,4 +2449,14 @@ ir::Instruction* ir::PTXInstruction::clone(bool copy) const {
 		return new PTXInstruction;
 	}
 }
+
+bool ir::PTXInstruction::isBranch() const {
+	return opcode == Bra || opcode == Call;
+}
+
+bool ir::PTXInstruction::mayHaveAddressableOperand() const {
+	return opcode == Mov || opcode == Ld || opcode == St || opcode == Cvta
+		|| opcode == Atom;
+}
+
 

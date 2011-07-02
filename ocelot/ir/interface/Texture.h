@@ -137,7 +137,8 @@ namespace ir
 			void* data; //! Pointer to mapped variable
 			
 		public:
-			Texture(const std::string& n = "", SurfaceType surfType = Texref);
+			Texture(const std::string& n = "", SurfaceType surfType = Texref,
+				Type type = Float);
 
 		public:
 			std::string toString() const;

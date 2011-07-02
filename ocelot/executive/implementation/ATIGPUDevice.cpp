@@ -10,6 +10,7 @@
 // Ocelot includes
 #include <ocelot/executive/interface/ATIGPUDevice.h>
 #include <ocelot/executive/interface/ATIExecutableKernel.h>
+#include <ocelot/transforms/interface/PassManager.h>
 
 // Hydrazine includes
 #include <hydrazine/implementation/Exception.h>
@@ -500,6 +501,16 @@ namespace executive
 		return 0;
 	}
 
+	void ATIGPUDevice::_optimizePTX(Module* m, const std::string& k)
+	{
+		using namespace transforms;
+
+		PassManager manager(const_cast<ir::Module*>(m->ir));
+
+		manager.runOnKernel(k);
+		manager.destroyPasses();
+	}
+	
 	void ATIGPUDevice::launch(
 			const std::string& moduleName,
 			const std::string& kernelName, 
@@ -511,21 +522,25 @@ namespace executive
 			const trace::TraceGeneratorVector& traceGenerators,
 			const ir::ExternalFunctionSet* externals)
 	{
-		ModuleMap::iterator module = _modules.find(moduleName);
+		ModuleMap::iterator moduleIt = _modules.find(moduleName);
 
-		if (module == _modules.end())
+		if (moduleIt == _modules.end())
 		{
 			Throw("Unknown module - " << moduleName);
 		}
 
-		ExecutableKernel* kernel = module->second->getKernel(kernelName);
+		Module* module = moduleIt->second;
+		ExecutableKernel* kernel = module->getKernel(kernelName);
 		
 		if(kernel == 0)
 		{
 			Throw("Unknown kernel - " << kernelName 
 				<< " in module " << moduleName);
 		}
-	
+
+		report("Running PTX optimizations");
+		_optimizePTX(module, kernelName);
+
 		report("Launching " << moduleName << ":" << kernelName);
 
 		if(kernel->sharedMemorySize() + sharedMemory > 

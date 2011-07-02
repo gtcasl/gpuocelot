@@ -11,7 +11,7 @@
 
 #include <ocelot/cuda/interface/cuda_runtime.h>
 
-#include <ocelot/analysis/interface/ClockCycleCountPass.h>
+#include <ocelot/transforms/interface/ClockCycleCountPass.h>
 #include <ocelot/ir/interface/Module.h>
 
 #include <hydrazine/implementation/ArgumentParser.h>
@@ -42,11 +42,11 @@ namespace analysis
         cudaMalloc((void **) &clock_sm_info, 2 * threadBlocks * sizeof(size_t));
         cudaMemset( clock_sm_info, 0, 2 * threadBlocks * sizeof( size_t ));
 
-        cudaMemcpyToSymbol(((ClockCycleCountPass *)pass)->kernelClockSMInfo().c_str(), &clock_sm_info, sizeof(size_t *), 0, cudaMemcpyHostToDevice);
+        cudaMemcpyToSymbol(((transforms::ClockCycleCountPass *)pass)->kernelClockSMInfo().c_str(), &clock_sm_info, sizeof(size_t *), 0, cudaMemcpyHostToDevice);
     }
 
-    analysis::Pass *ClockCycleCountInstrumentor::createPass() {
-        return new analysis::ClockCycleCountPass();
+    transforms::Pass *ClockCycleCountInstrumentor::createPass() {
+        return new transforms::ClockCycleCountPass();
     }
 
     void ClockCycleCountInstrumentor::extractResults(std::ostream *out) {

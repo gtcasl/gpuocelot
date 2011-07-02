@@ -14,10 +14,11 @@
 
 #include <ocelot/translator/interface/PTXToLLVMTranslator.h>
 
-#include <ocelot/analysis/interface/SubkernelFormationPass.h>
-#include <ocelot/analysis/interface/ConvertPredicationToSelectPass.h>
-#include <ocelot/analysis/interface/RemoveBarrierPass.h>
-#include <ocelot/analysis/interface/SimplifyExternalCallsPass.h>
+#include <ocelot/transforms/interface/SubkernelFormationPass.h>
+#include <ocelot/transforms/interface/ConvertPredicationToSelectPass.h>
+#include <ocelot/transforms/interface/RemoveBarrierPass.h>
+#include <ocelot/transforms/interface/SimplifyExternalCallsPass.h>
+#include <ocelot/transforms/interface/PassManager.h>
 
 #include <ocelot/ir/interface/LLVMKernel.h>
 #include <ocelot/ir/interface/Module.h>
@@ -125,7 +126,7 @@ static void setupGlobalMemoryReferences(ir::PTXKernel& kernel,
 			ir::PTXInstruction& ptx = static_cast<
 				ir::PTXInstruction&>(**instruction);
 
-			if(ptx.opcode == ir::PTXInstruction::Mov 
+			if(ptx.mayHaveAddressableOperand()
 				&& (ptx.a.addressMode == ir::PTXOperand::Address
 				|| ptx.a.addressMode == ir::PTXOperand::Indirect))
 			{
@@ -176,9 +177,7 @@ static void setupArgumentMemoryReferences(ir::PTXKernel& kernel,
 
 			ir::PTXOperand* operands[] = {&ptx.d, &ptx.a, &ptx.b, &ptx.c};
 
-			if(ptx.opcode == ir::PTXInstruction::Mov
-				|| ptx.opcode == ir::PTXInstruction::Ld
-				|| ptx.opcode == ir::PTXInstruction::St)
+			if(ptx.mayHaveAddressableOperand())
 			{
 				for(unsigned int i = 0; i != 4; ++i)
 				{
@@ -277,9 +276,7 @@ static void setupParameterMemoryReferences(ir::PTXKernel& kernel,
 
 			ir::PTXOperand* operands[] = {&ptx.d, &ptx.a, &ptx.b, &ptx.c};
 
-			if(ptx.opcode == ir::PTXInstruction::Mov
-				|| ptx.opcode == ir::PTXInstruction::Ld
-				|| ptx.opcode == ir::PTXInstruction::St)
+			if(ptx.mayHaveAddressableOperand())
 			{
 				for(unsigned int i = 0; i != 4; ++i)
 				{
@@ -417,10 +414,7 @@ static void setupSharedMemoryReferences(ir::PTXKernel& kernel,
 
 			ir::PTXOperand* operands[] = {&ptx.d, &ptx.a, &ptx.b, &ptx.c};
 
-			if(ptx.opcode == ir::PTXInstruction::Mov
-				|| ptx.opcode == ir::PTXInstruction::Ld
-				|| ptx.opcode == ir::PTXInstruction::St
-				|| ptx.opcode == ir::PTXInstruction::Cvta)
+			if(ptx.mayHaveAddressableOperand())
 			{
 				for(unsigned int i = 0; i != 4; ++i)
 				{
@@ -507,9 +501,7 @@ static void setupConstantMemoryReferences(ir::PTXKernel& kernel,
 				ir::PTXInstruction&>(**instruction);
 			ir::PTXOperand* operands[] = {&ptx.d, &ptx.a, &ptx.b, &ptx.c};
 
-			if(ptx.opcode == ir::PTXInstruction::Mov
-				|| ptx.opcode == ir::PTXInstruction::Ld
-				|| ptx.opcode == ir::PTXInstruction::St)
+			if(ptx.mayHaveAddressableOperand())
 			{
 				for(unsigned int i = 0; i != 4; ++i)
 				{
@@ -592,7 +584,8 @@ static void setupLocalMemoryReferences(ir::PTXKernel& kernel,
 	// [0] == subkernel-id
 	// [1] == call type
 	// [2] == barrier resume point if it exists
-	metadata->localSize = 8;
+	// [3] == resume point if it exists
+	metadata->localSize = 16;
 	
 	// give preference to barrier resume point
 	ir::Kernel::LocalMap::const_iterator local = kernel.locals.find(
@@ -605,10 +598,7 @@ static void setupLocalMemoryReferences(ir::PTXKernel& kernel,
 				<< local->second.name << " of size " 
 				<< local->second.getSize());
 			
-			pad(metadata->localSize, local->second.alignment);
-			offsets.insert(std::make_pair(local->second.name,
-				metadata->localSize));
-			metadata->localSize += local->second.getSize();
+			offsets.insert(std::make_pair(local->second.name, 8));
 		}
 	}
 
@@ -622,10 +612,7 @@ static void setupLocalMemoryReferences(ir::PTXKernel& kernel,
 				<< local->second.name << " of size " 
 				<< local->second.getSize());
 			
-			pad(metadata->localSize, local->second.alignment);
-			offsets.insert(std::make_pair(local->second.name,
-				metadata->localSize));
-			metadata->localSize += local->second.getSize();
+			offsets.insert(std::make_pair(local->second.name, 12));
 		}
 	}
 
@@ -677,9 +664,7 @@ static void setupLocalMemoryReferences(ir::PTXKernel& kernel,
 				ir::PTXInstruction&>(**instruction);
 			ir::PTXOperand* operands[] = {&ptx.d, &ptx.a, &ptx.b, &ptx.c};
 	
-			if(ptx.opcode == ir::PTXInstruction::Mov
-				|| ptx.opcode == ir::PTXInstruction::Ld
-				|| ptx.opcode == ir::PTXInstruction::St)
+			if(ptx.mayHaveAddressableOperand())
 			{
 				for(unsigned int i = 0; i != 4; ++i)
 				{
@@ -690,6 +675,7 @@ static void setupLocalMemoryReferences(ir::PTXKernel& kernel,
 						if(offsets.end() != offset) 
 						{
 							ptx.addressSpace = ir::PTXInstruction::Local;
+							operands[i]->isGlobalLocal = false;
 							operands[i]->offset += offset->second;
 							report("   For instruction " 
 								<< ptx.toString() << ", mapping local label " 
@@ -702,6 +688,73 @@ static void setupLocalMemoryReferences(ir::PTXKernel& kernel,
 	}
 
     report("   Total local memory size is " << metadata->localSize << ".");
+}
+
+static void setupGlobalLocalMemoryReferences(ir::PTXKernel& kernel,
+	LLVMModuleManager::KernelAndTranslation::MetaData* metadata,
+	const ir::PTXKernel& parent)
+{
+	report( "  Setting up globally scoped local memory references." );
+	typedef std::unordered_map<std::string, unsigned int> OffsetMap;
+
+	OffsetMap offsets;
+	metadata->globalLocalSize = 0;
+	
+	for(ir::Module::GlobalMap::const_iterator global =
+		kernel.module->globals().begin();
+		global != kernel.module->globals().end(); ++global)
+	{
+		if(global->second.statement.directive == ir::PTXStatement::Local)
+		{
+			report("   Found globally scoped local variable " 
+				<< global->second.statement.name << " of size " 
+				<< global->second.statement.bytes());
+			
+			pad(metadata->globalLocalSize,
+				global->second.statement.accessAlignment());
+			offsets.insert(std::make_pair(global->second.statement.name,
+				metadata->globalLocalSize));
+			metadata->globalLocalSize += global->second.statement.bytes();
+		}
+	}
+    
+	for(ir::ControlFlowGraph::iterator block = kernel.cfg()->begin(); 
+		block != kernel.cfg()->end(); ++block)
+	{
+		for(ir::ControlFlowGraph::InstructionList::iterator 
+			instruction = block->instructions.begin(); 
+			instruction != block->instructions.end(); ++instruction)
+		{
+			ir::PTXInstruction& ptx = static_cast<
+				ir::PTXInstruction&>(**instruction);
+			ir::PTXOperand* operands[] = {&ptx.d, &ptx.a, &ptx.b, &ptx.c};
+	
+			if(ptx.mayHaveAddressableOperand())
+			{
+				for(unsigned int i = 0; i != 4; ++i)
+				{
+					if(operands[i]->addressMode == ir::PTXOperand::Address)
+					{
+						OffsetMap::iterator offset = offsets.find( 
+							operands[i]->identifier);
+						if(offsets.end() != offset) 
+						{
+							ptx.addressSpace = ir::PTXInstruction::Local;
+							operands[i]->isGlobalLocal = true;
+							operands[i]->offset += offset->second;
+							report("   For instruction " 
+								<< ptx.toString()
+								<< ", mapping globally scoped local label " 
+								<< offset->first << " to " << offset->second);
+						}
+					}
+				}
+			}
+		}
+	}
+
+    report("   Total globally scoped local memory size is "
+    	<< metadata->globalLocalSize << ".");
 }
 
 static void setupPTXMemoryReferences(ir::PTXKernel& kernel,
@@ -718,6 +771,7 @@ static void setupPTXMemoryReferences(ir::PTXKernel& kernel,
 	setupConstantMemoryReferences(kernel, metadata, parent);
 	setupTextureMemoryReferences(kernel, metadata, parent, device);
 	setupLocalMemoryReferences(kernel, metadata, parent);
+	setupGlobalLocalMemoryReferences(kernel, metadata, parent);
 }
 
 static unsigned int optimizePTX(ir::PTXKernel& kernel,
@@ -725,33 +779,26 @@ static unsigned int optimizePTX(ir::PTXKernel& kernel,
 	LLVMModuleManager::FunctionId id, const ir::ExternalFunctionSet& externals)
 {
 	report(" Optimizing PTX");
-	analysis::SimplifyExternalCallsPass simplifyExternals(externals);
+	transforms::PassManager manager(const_cast<ir::Module*>(kernel.module));
 
-	report("  Running simplify externals pass");
+	transforms::SimplifyExternalCallsPass simplifyExternals(externals);
+
 	if(&externals != 0)
 	{
-		simplifyExternals.initialize(*kernel.module);
-		simplifyExternals.runOnKernel(kernel);
-		simplifyExternals.finalize();
+		report("  Adding simplify externals pass");
+		manager.addPass(simplifyExternals);
 	}
 	
-	report(" Building dataflow graph.");
-	kernel.dfg();
+	transforms::ConvertPredicationToSelectPass convertPredicationToSelect;
+	transforms::RemoveBarrierPass              removeBarriers(id, &externals);
+	
+	report("  Adding convert predication to select pass");
+	manager.addPass(convertPredicationToSelect);
 
-	analysis::ConvertPredicationToSelectPass convertPredicationToSelect;
-	analysis::RemoveBarrierPass              removeBarriers(id, &externals);
+	report("  Adding remove barriers pass");
+	manager.addPass(removeBarriers);
 	
-	report("  Running convert predication to select pass");
-	convertPredicationToSelect.initialize(*kernel.module);
-	convertPredicationToSelect.runOnKernel(kernel);
-	convertPredicationToSelect.finalize();
-	
-	report("  Running remove barriers pass");
-	removeBarriers.initialize(*kernel.module);
-	removeBarriers.runOnKernel(kernel);
-	removeBarriers.finalize();
-	
-	kernel.dfg()->toSsa();
+	manager.runOnKernel(kernel);
 
 	return removeBarriers.usesBarriers;
 }
@@ -809,8 +856,14 @@ static void translate(llvm::Module*& module, ir::PTXKernel& kernel,
 	
 	report("  Converting from PTX IR to LLVM IR.");
 	translator::PTXToLLVMTranslator translator(optimization, &externals);
+
+	transforms::PassManager manager(const_cast<ir::Module*>(kernel.module));
+	
+	manager.addPass(translator);
+	manager.runOnKernel(kernel);
+
 	ir::LLVMKernel* llvmKernel = static_cast<ir::LLVMKernel*>(
-		translator.translate(&kernel));
+		translator.translatedKernel());
 	
 	report("  Assembling LLVM kernel.");
 	llvmKernel->assemble();
@@ -833,8 +886,6 @@ static void translate(llvm::Module*& module, ir::PTXKernel& kernel,
 		message << "LLVM Parser failed: ";
 		error.Print(kernel.name.c_str(), message);
 
-		kernel.dfg()->fromSsa();
-
 		throw hydrazine::Exception(message.str());
 	}
 
@@ -848,8 +899,6 @@ static void translate(llvm::Module*& module, ir::PTXKernel& kernel,
 		delete llvmKernel;
 		delete module;
 		module = 0;
-
-		kernel.dfg()->fromSsa();
 
 		throw hydrazine::Exception("LLVM Verifier failed for kernel: " 
 			+ kernel.name + " : \"" + verifyError + "\"");
@@ -871,12 +920,11 @@ static LLVMModuleManager::KernelAndTranslation::MetaData* generateMetadata(
 		report("  Adding debugging symbols");
 		ir::ControlFlowGraph::BasicBlock::Id id = 0;
 		
-		for(analysis::DataflowGraph::iterator block = kernel.dfg()->begin();
-			block != kernel.dfg()->end(); ++block)
+		for(ir::ControlFlowGraph::iterator block = kernel.cfg()->begin();
+			block != kernel.cfg()->end(); ++block)
 		{
-			block->block()->id = id++;
-			metadata->blocks.insert(std::make_pair(block->id(), 
-				block->block()));
+			block->id = id++;
+			metadata->blocks.insert(std::make_pair(block->id, block));
 		}
 	}
 	
@@ -1092,13 +1140,6 @@ LLVMModuleManager::KernelAndTranslation::MetaData*
 		setupCallTargets(*_kernel, *_database);
 		translate(_module, *_kernel, _optimizationLevel,
 			_database->getExternalFunctionSet());
-
-		// Converting out of ssa makes the assembly easier to read
-		if(_optimizationLevel == translator::Translator::ReportOptimization 
-			|| _optimizationLevel == translator::Translator::DebugOptimization)
-		{
-			_kernel->dfg()->fromSsa();
-		}
 	}
 	catch(...)
 	{
@@ -1256,19 +1297,12 @@ void LLVMModuleManager::ModuleDatabase::loadModule(const ir::Module* module,
 
 	report("Loading module '" << module->path() << "'");
 
-	typedef analysis::SubkernelFormationPass::ExtractKernelsPass Pass;
+	typedef transforms::SubkernelFormationPass::ExtractKernelsPass Pass;
 	Pass pass(config::get().optimizations.subkernelSize);
+	transforms::PassManager manager(const_cast<ir::Module*>(module));
 
-	pass.initialize(*module);
-
-	for(ir::Module::KernelMap::const_iterator
-		kernel = module->kernels().begin(); 
-		kernel != module->kernels().end(); ++kernel)
-	{
-		pass.runOnKernel(*kernel->second);
-	}
-
-	pass.finalize();
+	manager.addPass(pass);
+	manager.runOnModule();
 
 	KernelVector subkernels;
 
@@ -1276,7 +1310,7 @@ void LLVMModuleManager::ModuleDatabase::loadModule(const ir::Module* module,
 		kernel = pass.kernels.begin(); 
 		kernel != pass.kernels.end(); ++kernel)
 	{
-		for(analysis::SubkernelFormationPass::KernelVector::const_iterator 
+		for(transforms::SubkernelFormationPass::KernelVector::const_iterator 
 			subkernel = kernel->second.begin();
 			subkernel != kernel->second.end(); ++subkernel)
 		{

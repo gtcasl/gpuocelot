@@ -36,7 +36,7 @@ static unsigned int pad(unsigned int& size, unsigned int alignment)
 	return padding;
 }
 
-LLVMExecutableKernel::LLVMExecutableKernel(const ir::Kernel& k, 
+LLVMExecutableKernel::LLVMExecutableKernel(const ir::IRKernel& k, 
 	executive::Device* d, translator::Translator::OptimizationLevel l) : 
 	ExecutableKernel(d), _optimizationLevel(l), _argumentMemory(0),
 	_constantMemory(0)

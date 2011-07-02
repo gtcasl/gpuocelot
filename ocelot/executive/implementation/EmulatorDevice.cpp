@@ -19,12 +19,16 @@
 #include <hydrazine/interface/Casts.h>
 #include <hydrazine/interface/SystemCompatibility.h>
 
+#include <configure.h>
+
 #ifdef REPORT_BASE
 #undef REPORT_BASE
 #endif
 
 // OpenGL includes
+#if HAVE_GLEW
 #include <GL/glew.h>
+#endif
 
 // Standard library includes
 #include <cstring>
@@ -546,6 +550,8 @@ namespace executive
 		report("mapGraphicsResource(" << resource << ", " 
 			<< count << ", " << stream << ")");
 		
+		#if HAVE_GLEW
+		
 		for (int i = 0; i < count; i++) {
 			unsigned int handle = hydrazine::bit_cast<unsigned int>(
 				resource[i]);
@@ -595,6 +601,10 @@ namespace executive
 				Throw("OpenGL Error in mapGraphicsResource() - glBindBuffer2.")
 			}
 		}
+		
+		#else
+		assertM(false, "GLEW required for OpenGL support.");
+		#endif
 	}
 
 	void* EmulatorDevice::getPointerToMappedGraphicsResource(size_t& size, 
@@ -636,6 +646,7 @@ namespace executive
 	void EmulatorDevice::unmapGraphicsResource(void** resource, int count,
 		unsigned int streamID)
 	{
+		#if HAVE_GLEW
 		for (int i = 0; i < count; i++) {
 			unsigned int handle = hydrazine::bit_cast<unsigned int>(
 				resource[i]);
@@ -681,6 +692,9 @@ namespace executive
 				Throw("OpenGL Error in unmapGraphicsResource() - glBindBuffer.")
 			}
 		}
+		#else
+		assertM(false, "GLEW required for OpenGL support.");
+		#endif
 	}
 
 	void EmulatorDevice::load(const ir::Module* module)

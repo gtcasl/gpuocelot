@@ -235,6 +235,9 @@ namespace executive
 			static const size_t Uav0Size = 150000000;
 
 		private:
+			/*! \brief Run PTX optimization on the kernel k in the module m */
+			void _optimizePTX(Module* m, const std::string& k);
+
 			/*! \brief A map of registered modules */
 			typedef std::unordered_map<std::string, Module*> ModuleMap;
 

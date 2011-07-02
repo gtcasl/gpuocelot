@@ -709,6 +709,13 @@ CUresult cuda::CudaDriverInterface::cuGraphicsGLRegisterImage(
 	return CUDA_ERROR_NOT_FOUND;
 }
 
+CUresult cuda::CudaDriverInterface::cuGLRegisterBufferObject(GLuint bufferobj) {
+	return CUDA_ERROR_NOT_FOUND;
+}
+
+CUresult cuda::CudaDriverInterface::cuGLSetBufferObjectMapFlags(GLuint buffer, unsigned int flags) {
+	return CUDA_ERROR_NOT_FOUND;
+}
 
 std::string cuda::CudaDriverInterface::toString(CUresult result) {
 	return "CUresult - blah";

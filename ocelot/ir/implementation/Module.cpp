@@ -29,9 +29,9 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 
-ir::Module::Module(const std::string& path)
-: _ptxPointer(0), _addressSize(64), _loaded(true) {
-	load(path);
+ir::Module::Module(const std::string& path, bool dontLoad)
+: _ptxPointer(0), _modulePath(path), _addressSize(64), _loaded(true) {
+	if(!dontLoad) load(path);
 }
 
 ir::Module::Module(std::istream& stream, const std::string& path)
@@ -282,10 +282,9 @@ void ir::Module::writeIR( std::ostream& stream ) const {
 	}
 	stream << "\n";
 	
-	for (NameVector::const_iterator kernelName = _kernelSequence.begin();
-		kernelName != _kernelSequence.end(); ++kernelName) {
-		
-		KernelMap::const_iterator kernel = _kernels.find(*kernelName);
+	stream << "/* Kernels */\n";
+	for (KernelMap::const_iterator kernel = _kernels.begin();
+		kernel != _kernels.end(); ++kernel) {
 		(kernel->second)->write(stream);
 	}
 	
@@ -301,6 +300,21 @@ ir::Texture* ir::Module::getTexture(const std::string& name) {
 	return 0;
 }
 
+ir::Texture* ir::Module::insertTexture(const Texture& texture) {
+	typedef std::pair<TextureMap::iterator, bool> Insertion;
+	
+	loadNow();
+	
+	Insertion insertion = _textures.insert(
+		std::make_pair(texture.name, texture));
+	if(!insertion.second) {
+		throw hydrazine::Exception("Inserted duplicated texture - " 
+			+ texture.name);
+	}
+	
+	return &insertion.first->second;
+}
+
 ir::Global* ir::Module::getGlobal(const std::string& name) {
 	loadNow();
 	GlobalMap::iterator global = _globals.find(name);
@@ -308,6 +322,21 @@ ir::Global* ir::Module::getGlobal(const std::string& name) {
 		return &global->second;
 	}
 	return 0;
+}
+
+ir::Global* ir::Module::insertGlobal(const Global& global) {
+	typedef std::pair<GlobalMap::iterator, bool> Insertion;
+	
+	loadNow();
+	
+	Insertion insertion = _globals.insert(
+		std::make_pair(global.name(), global));
+	
+	if(!insertion.second) {
+		throw hydrazine::Exception("Inserted duplicated global - " 
+			+ global.name());
+	}
+	return &insertion.first->second;
 }
 
 const std::string& ir::Module::path() const {
@@ -350,8 +379,12 @@ void ir::Module::addPrototype(const std::string &identifier,
 	_prototypes[identifier] = prototype;
 }
 		
-void ir::Module::insertGlobal(const PTXStatement &statement) {
+void ir::Module::insertGlobalAsStatement(const PTXStatement &statement) {
 	loadNow();
+	
+	if(_globals.find(statement.name) != _globals.end())
+	    return;
+	
 	if(!_globals.insert(std::make_pair(statement.name, Global(statement))).second) {
 		throw hydrazine::Exception("Inserted duplicated global - " 
 			+ statement.name);
@@ -376,12 +409,14 @@ void ir::Module::removeKernel(const std::string& name) {
 	}
 }
 
-void ir::Module::insertKernel(PTXKernel* kernel) {
+ir::PTXKernel* ir::Module::insertKernel(PTXKernel* kernel) {
 	loadNow();
 	if(!_kernels.insert(std::make_pair(kernel->name, kernel)).second) {
 		throw hydrazine::Exception("Inserted duplicated kernel - " 
 			+ kernel->name);
 	}
+	
+	return kernel;
 }
 
 /*!
@@ -464,7 +499,6 @@ void ir::Module::extractPTXKernels() {
 					        endIterator, isFunction);
 					kernel->module = this;
 					_kernels[kernel->name] = (kernel);
-					_kernelSequence.push_back(kernel->name);
 					kernel->canonicalBlockLabels(kernelInstance++);
 				}
 			}
@@ -534,8 +568,8 @@ void ir::Module::extractPTXKernels() {
 			break;
 		case PTXStatement::Surfref:
 			if (!inKernel) {
-        assert(_textures.count(statement.name) == 0);
-        _textures.insert(std::make_pair(statement.name, 
+				assert(_textures.count(statement.name) == 0);
+				_textures.insert(std::make_pair(statement.name, 
                 Texture(statement.name, Texture::Surfref)));
 			}
 			break;

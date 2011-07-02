@@ -27,7 +27,6 @@ namespace executive {
 		typedef std::map<int, std::string> ProgramCounterBlockMap;
 		typedef std::unordered_map<std::string, int> FunctionNameMap;
 		typedef std::map< std::string, std::pair<int, int> > BlockRangeMap;
-		typedef std::map< int, std::pair< int, int > > ThreadFrontierMap;
 		typedef std::unordered_map<int, const EmulatedKernel*> PCToKernelMap;
 		typedef CooperativeThreadArray::RegisterFile RegisterFile;
 
@@ -36,7 +35,7 @@ namespace executive {
 			unsigned int& offset, unsigned int& totalOffset);
 
 	public:
-		EmulatedKernel(ir::Kernel* kernel, Device* d = 0, 
+		EmulatedKernel(ir::IRKernel* kernel, Device* d = 0, 
 			bool initialize = true);
 		EmulatedKernel(Device *c);
 		EmulatedKernel();
@@ -143,6 +142,10 @@ namespace executive {
 			allocations. */
 		void initializeLocalMemory();
 
+		/*!	Allocates arrays in globally scoped memory and maps identifiers to 
+			allocations. */
+		void initializeGlobalLocalMemory();
+
 		/*!	Maps identifiers to const memory allocations. */
 		void initializeConstMemory();
 
@@ -169,7 +172,7 @@ namespace executive {
 
 		/*!	Pointer to byte-addressable const memory */
 		char* ConstMemory;
-
+		
 		/*!	Packed and allocated vector of instructions */
 		PTXInstructionVector instructions;
 
@@ -186,10 +189,6 @@ namespace executive {
 		/*! maps a block label to the PCs of the first
 			and last instructions in the block */
 		BlockRangeMap blockPCRange;
-		
-		/*! maps a basic block terminator PC onto
-			that block's thread frontier */
-		ThreadFrontierMap threadFrontiers;
 
 		/*!	Packed vector of mapped textures */
 		TextureVector textures;

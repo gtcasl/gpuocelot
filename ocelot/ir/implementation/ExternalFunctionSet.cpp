@@ -39,7 +39,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0 
 
 namespace ir
 {
@@ -362,7 +362,6 @@ void ExternalFunctionSet::ExternalFunction::call(void* parameters,
 		// This invokes the jit
 		_externalFunctionPointer = hydrazine::bit_cast<ExternalCallType>(
 			executive::LLVMState::jit()->getPointerToFunction(function));
-
 	}
 	
 	// call through the interface to the external function
@@ -404,7 +403,7 @@ ExternalFunctionSet::~ExternalFunctionSet()
 		external != _functions.end(); ++external)
 	{
 		llvm::Function* function = _module->getFunction(
-			external->second.name());
+			external->second.mangledName());
 		executive::LLVMState::jit()->freeMachineCodeForFunction(function);
 	}
 
@@ -418,6 +417,9 @@ void ExternalFunctionSet::add(const std::string& name, void* pointer)
 {
 	assert(_functions.count(name) == 0);
 
+	report("Adding function " << name << " with CPU function pointer "
+		<< pointer);
+
 	_functions.insert(std::make_pair(name,
 		ExternalFunction(name, pointer, _module)));
 }
@@ -427,6 +429,23 @@ void ExternalFunctionSet::remove(const std::string& name)
 	FunctionSet::iterator function = _functions.find(name);
 	assert(function != _functions.end());
 	
+	report("Removing function " << name);
+
+	#if HAVE_LLVM
+	llvm::Function* llvmFunction = _module->getFunction(
+		function->second.mangledName());
+	assert(llvmFunction != 0);
+	executive::LLVMState::jit()->freeMachineCodeForFunction(llvmFunction);
+	llvmFunction->eraseFromParent();
+	assert(_module->getFunction(function->second.mangledName()) == 0);
+	
+	llvm::GlobalValue* global = _module->getNamedValue(
+		function->second.name());
+	assertM(global != 0, "Could not find global "
+		<< function->second.name() << " in module.");
+	global->eraseFromParent();
+	#endif
+
 	_functions.erase(function);
 }
 

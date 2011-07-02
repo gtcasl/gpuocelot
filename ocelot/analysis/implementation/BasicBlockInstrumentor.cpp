@@ -11,10 +11,10 @@
 
 #include <ocelot/cuda/interface/cuda_runtime.h>
 
-#include <ocelot/analysis/interface/MemoryIntensityPass.h>
-#include <ocelot/analysis/interface/DynamicInstructionCountPass.h>
-#include <ocelot/analysis/interface/BasicBlockExecutionCountPass.h>
-#include <ocelot/analysis/interface/BasicBlockInstrumentationPass.h>
+#include <ocelot/transforms/interface/MemoryIntensityPass.h>
+#include <ocelot/transforms/interface/DynamicInstructionCountPass.h>
+#include <ocelot/transforms/interface/BasicBlockExecutionCountPass.h>
+#include <ocelot/transforms/interface/BasicBlockInstrumentationPass.h>
 #include <ocelot/ir/interface/Module.h>
 
 #include <hydrazine/implementation/ArgumentParser.h>
@@ -34,24 +34,23 @@ namespace analysis
     }
 
     void BasicBlockInstrumentor::analyze(ir::Module &module) {
+    
         basicBlocks = 0;
         if(!kernelName.empty()){
-            basicBlocks = module.kernels().find(kernelName)->second->dfg()->size() - 2;
+            basicBlocks = module.getKernel(kernelName)->cfg()->size() - 2;
         }
         else {
             for (ir::Module::KernelMap::const_iterator kernel = module.kernels().begin(); 
 		        kernel != module.kernels().end(); ++kernel) {
-                basicBlocks += (kernel->second)->dfg()->size();
+                basicBlocks += (kernel->second)->cfg()->size();
             }
         }
 
-
-        ir::Kernel *kernel = module.kernels().find(kernelName)->second;
-        for(ir::ControlFlowGraph::const_iterator basicBlock = kernel->cfg()->begin();
-            basicBlock != kernel->cfg()->end(); ++basicBlock) {
-            if(basicBlock->label == "entry" || basicBlock->label == "exit")
+        for( ir::ControlFlowGraph::const_iterator block = module.getKernel(kernelName)->cfg()->begin(); 
+			block != module.getKernel(kernelName)->cfg()->end(); ++block ) {
+            if(block->label == "entry" || block->label == "exit")
                 continue;
-            labels.push_back(basicBlock->label);
+            labels.push_back(block->label);
         }
 
         
@@ -68,25 +67,25 @@ namespace analysis
             throw hydrazine::Exception( "cudaMemset failed!" );
         }
         
-        if(cudaMemcpyToSymbol(((BasicBlockInstrumentationPass *)pass)->basicBlockCounterBase().c_str(), &counter, sizeof(*counter), 0, cudaMemcpyHostToDevice) != cudaSuccess) {
+        if(cudaMemcpyToSymbol(((transforms::BasicBlockInstrumentationPass *)pass)->basicBlockCounterBase().c_str(), &counter, sizeof(*counter), 0, cudaMemcpyHostToDevice) != cudaSuccess) {
             throw hydrazine::Exception( "cudaMemcpyToSymbol failed!");
         }
     }
 
-    analysis::Pass *BasicBlockInstrumentor::createPass() {
+    transforms::Pass *BasicBlockInstrumentor::createPass() {
         
-        analysis::BasicBlockInstrumentationPass *basicBlockPass;
+        transforms::BasicBlockInstrumentationPass *basicBlockPass;
         entries = 1;        
 
         switch(type) {
             case executionCount:
-                basicBlockPass = new analysis::BasicBlockExecutionCountPass;
+                basicBlockPass = new transforms::BasicBlockExecutionCountPass;
                 break;
             case instructionCount:
-                basicBlockPass = new analysis::DynamicInstructionCountPass;
+                basicBlockPass = new transforms::DynamicInstructionCountPass;
                 break;
             case memoryIntensity:
-                basicBlockPass = new analysis::MemoryIntensityPass;
+                basicBlockPass = new transforms::MemoryIntensityPass;
                 entries = 2;
                 break;
             default:

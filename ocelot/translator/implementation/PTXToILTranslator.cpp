@@ -50,7 +50,10 @@ namespace translator
 	void PTXToILTranslator::_translateInstructions()
 	{
 		// translate instructions iterating thru the control tree
-		_translate(_ilKernel->ctrl_tree()->get_root_node());
+		
+		analysis::ControlTree controlTree(_ilKernel->cfg());
+		
+		_translate(controlTree.get_root_node());
 	}
 
 	void PTXToILTranslator::_translate(const CT::Node* node)
@@ -240,6 +243,7 @@ namespace translator
 			case ir::PTXInstruction::Bar:    _translateBar(i);    break;
 			case ir::PTXInstruction::Bra:    /* control tree */   break;
 			case ir::PTXInstruction::Clz:    _translateClz(i);    break;
+			case ir::PTXInstruction::Cos:    _translateCos(i);    break;
  			case ir::PTXInstruction::Cvt:    _translateCvt(i);    break;
 			case ir::PTXInstruction::Div:    _translateDiv(i);    break;
 			case ir::PTXInstruction::Ex2:    _translateEx2(i);    break;
@@ -264,6 +268,7 @@ namespace translator
 			case ir::PTXInstruction::SelP:   _translateSelP(i);   break;
 			case ir::PTXInstruction::Set:    _translateSet(i);    break;
 			case ir::PTXInstruction::SetP:   _translateSetP(i);   break;
+			case ir::PTXInstruction::Sin:    _translateSin(i);    break;
 			case ir::PTXInstruction::Shl:    _translateShl(i);    break;
 			case ir::PTXInstruction::Shr:    _translateShr(i);    break;
 			case ir::PTXInstruction::Sqrt:   _translateSqrt(i);   break;
@@ -733,6 +738,16 @@ namespace translator
 			{
 				switch (i.type)
 				{
+					case ir::PTXOperand::s8:
+					{
+						// chop
+						ir::ILIand iand;
+						iand.d = d;
+						iand.a = a;
+						iand.b = _translateLiteral((int)0x0000000F);
+						_add(iand);
+						return;
+					}
 					case ir::PTXOperand::s64:
 					case ir::PTXOperand::u64:
 					{
@@ -913,6 +928,15 @@ namespace translator
 						_add(ftou);
 						return;
 					}
+					case ir::PTXOperand::s32:
+					{
+						// f2i
+						ir::ILFtoI ftoi;
+						ftoi.d = d;
+						ftoi.a = a;
+						_add(ftoi);
+						return;
+					}
 					case ir::PTXOperand::f32: 
 					{
 						if (i.modifier & ir::PTXInstruction::sat) 
@@ -942,6 +966,14 @@ namespace translator
 							_add(round_nearest);
 							return;
 						}
+						if (i.modifier & ir::PTXInstruction::rm)
+						{
+							ir::ILRound_Neginf round_neginf;
+							round_neginf.d = d;
+							round_neginf.a = a;
+							_add(round_neginf);
+							return;
+						}
 						break;
 					}
 					default: break;
@@ -959,6 +991,31 @@ namespace translator
 	{
 		switch (i.type)
 		{
+			case ir::PTXOperand::s8:
+			{
+				switch (i.d.type)
+				{
+					case ir::PTXOperand::u32:
+					{
+						// sext
+						ir::ILIshl ishl;
+						ishl.d = _translate(i.d);
+						ishl.a = d;
+						ishl.b = _translateLiteral(24);
+						_add(ishl);
+
+						ir::ILIshr ishr;
+						ishr.d = _translate(i.d);
+						ishr.a = _translate(i.d);
+						ishr.b = _translateLiteral(24);
+						_add(ishr);
+
+						return;
+					}
+					default: break;
+				}
+				break;
+			}
 			case ir::PTXOperand::s32:
 			{
 				switch (i.d.type)
@@ -1159,6 +1216,14 @@ namespace translator
 			cmov_logical.c = r0;
 			_add(cmov_logical);
 		}
+	}
+
+	void PTXToILTranslator::_translateCos(const ir::PTXInstruction &i)
+	{
+		ir::ILCos_Vec cos_vec;
+		cos_vec.d = _translate(i.d);
+		cos_vec.a = _translate(i.a);
+		_add(cos_vec);
 	}
 
 	void PTXToILTranslator::_translateCvt(const ir::PTXInstruction &i)
@@ -2912,6 +2977,26 @@ namespace translator
 				_add(eq);
 				break;
 			}
+			case ir::PTXInstruction::Ne: /* fall-thru */
+			case ir::PTXInstruction::Neu:
+			{
+				ir::ILNe ne;
+				ne.d = _translate(i.d);
+				ne.a = _translate(i.a);
+				ne.b = _translate(i.b);
+				_add(ne);
+				break;
+			}
+			case ir::PTXInstruction::Le:
+			{
+				// IL doesn't have le but it has ge so switch a & b operands
+				ir::ILGe ge;
+				ge.d = _translate(i.d);
+				ge.a = _translate(i.b);
+				ge.b = _translate(i.a);
+				_add(ge);
+				break;
+			}
 			case ir::PTXInstruction::Lt:
 			{
 				ir::ILLt lt;
@@ -2922,6 +3007,15 @@ namespace translator
 
 				_add(lt);
 
+				break;
+			}
+			case ir::PTXInstruction::Ge:
+			{
+				ir::ILGe ge;
+				ge.d = _translate(i.d);
+				ge.a = _translate(i.a);
+				ge.b = _translate(i.b);
+				_add(ge);
 				break;
 			}
 			case ir::PTXInstruction::Gt:
@@ -2944,6 +3038,14 @@ namespace translator
 						<< " not supported");
 			}
 		}
+	}
+
+	void PTXToILTranslator::_translateSin(const ir::PTXInstruction &i)
+	{
+		ir::ILSin_Vec sin_vec;
+		sin_vec.d = _translate(i.d);
+		sin_vec.a = _translate(i.a);
+		_add(sin_vec);
 	}
 
 	void PTXToILTranslator::_translateShl(const ir::PTXInstruction &i)
@@ -3542,10 +3644,5 @@ namespace translator
 	{
 		report("Added instruction '" << i.toString() << "'");
 		_ilKernel->_statements.push_back(ir::ILStatement(i));
-	}
-
-	void PTXToILTranslator::addProfile(const ProfilingData &d)
-	{
-		assertM(false, "Not implemented yet");
 	}
 }

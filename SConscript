@@ -46,15 +46,17 @@ env.AlwaysBuild(env.Command('configure.h', 'configure.h.in', config_h_build))
 
 # find all source files in the source tree
 sources = []
+intermediate_headers = []
 directories = ['ocelot/ir/implementation', 
 	'ocelot/analysis/implementation',
-	'ocelot/api/implementation', 
-	'ocelot/cal/implementation', 
-	'ocelot/cuda/implementation', 
-	'ocelot/executive/implementation', 
-	'ocelot/graphs/implementation', 
-	'ocelot/parser/implementation', 
-	'ocelot/trace/implementation', 
+	'ocelot/api/implementation',
+	'ocelot/cal/implementation',
+	'ocelot/cuda/implementation',
+	'ocelot/executive/implementation',
+	'ocelot/graphs/implementation',
+	'ocelot/parser/implementation',
+	'ocelot/trace/implementation',
+	'ocelot/transforms/implementation',
 	'ocelot/translator/implementation', 
 	'ocelot/util/implementation', 
 	'hydrazine/implementation', 
@@ -91,17 +93,19 @@ for source in bison_sources:
 	bison = env.CXXFile(os.path.splitext(os.path.basename(str(source)))[0] \
 		+ '.cpp', str(source))
 	sources.append(bison[0])
+	bison_header = bison[1]
+	intermediate_headers.append(os.path.basename(str(bison_header)))
 
 # Create the ocelot library
-libocelot = env.SharedLibrary('ocelot', sources)
+ocelot_dep_libs = env['EXTRA_LIBS']
+ocelot_dep_libs.extend(env['LLVM_LIBS'])
+
+libocelot = env.SharedLibrary('ocelot', sources, LIBS=ocelot_dep_libs)
 
 if 'install' in COMMAND_LINE_TARGETS:
-	libocelot = env.Install(os.path.join( \
-		env['install_path'], "lib"), libocelot)
+	libocelot = env.Install(os.path.join(env['install_path'], "lib"), libocelot)
 
 ocelot_libs = ['-locelot']
-ocelot_libs.extend(env['EXTRA_LIBS'])
-ocelot_libs.extend(env['LLVM_LIBS'])
 
 OcelotConfig = env.Program('OcelotConfig', \
 	['ocelot/tools/OcelotConfig.cpp'], LIBS=ocelot_libs, \
@@ -116,6 +120,8 @@ env.Depends(OcelotServer, libocelot)
 OcelotHarness = env.Program('OcelotKernelTestHarness', \
 	['ocelot/tools/KernelTestHarness.cpp'], LIBS=ocelot_libs)
 env.Depends(OcelotHarness, libocelot)
+CFG = env.Program('CFG', ['ocelot/tools/CFG.cpp'], LIBS=ocelot_libs)
+env.Depends(CFG, libocelot)
 
 Default(OcelotConfig)
 
@@ -191,11 +197,12 @@ directories = ['ocelot/ir/interface',
 	'ocelot/graphs/interface', 
 	'ocelot/parser/interface', 
 	'ocelot/trace/interface', 
-	'ocelot/translator/interface', 
+	'ocelot/transforms/interface',
+	'ocelot/translator/interface',
 	'ocelot/util/interface', 
 	'hydrazine/implementation', 
 	'hydrazine/interface' ]
-extensions = ['*.h']
+extensions = ['*.h', '*.hpp']
 
 for dir in directories:
 	for ext in extensions:
@@ -220,6 +227,12 @@ if 'install' in COMMAND_LINE_TARGETS:
 	for header in headers:
 		(directoryPath, headerName) = os.path.split( \
 			os.path.relpath(str(header), prefix))
+		installed.append(env.Install(os.path.join( \
+			env['install_path'], "include", directoryPath), header))
+
+	for header in intermediate_headers:
+		(directoryPath, headerName) = os.path.split( \
+			os.path.relpath(str(header), '.'))
 		installed.append(env.Install(os.path.join( \
 			env['install_path'], "include", directoryPath), header))
 

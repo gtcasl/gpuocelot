@@ -5,8 +5,7 @@
 		with associated code for emulating its execution
 */
 
-#include <hydrazine/interface/Casts.h>
-
+// Ocelot Includes
 #include <ocelot/ir/interface/PTXOperand.h>
 #include <ocelot/ir/interface/PTXInstruction.h>
 #include <ocelot/ir/interface/Module.h>
@@ -17,6 +16,14 @@
 #include <ocelot/executive/interface/CTAContext.h>
 #include <ocelot/executive/interface/TextureOperations.h>
 
+#include <ocelot/api/interface/OcelotConfiguration.h>
+
+// Hydrazine Includes
+#include <hydrazine/interface/Casts.h>
+#include <hydrazine/implementation/debug.h>
+#include <hydrazine/implementation/math.h>
+
+// Standard Library Includes
 #include <cassert>
 #include <cmath>
 #include <cstring>
@@ -25,21 +32,7 @@
 #include <cfenv> 
 #include <algorithm>
 
-#include <hydrazine/implementation/debug.h>
-#include <hydrazine/implementation/math.h>
-
-////////////////////////////////////////////////////////////////////////////////
-
-#define IPDOM_RECONVERGENCE 1
-#define BARRIER_RECONVERGENCE 2
-#define GEN6_RECONVERGENCE 3
-#define SORTED_PREDICATE_STACK_RECONVERGENCE 4
-
-// specify reconvergence mechanism here
-#define RECONVERGENCE_MECHANISM IPDOM_RECONVERGENCE
-
-////////////////////////////////////////////////////////////////////////////////
-
+// Preprocessor Macros
 #ifdef REPORT_BASE
 #undef REPORT_BASE
 #endif
@@ -143,28 +136,38 @@ executive::CooperativeThreadArray::CooperativeThreadArray(
 	kernel(k),
 	functionCallStack(blockDim.x*blockDim.y*blockDim.z, k->argumentMemorySize(), 
 		k->parameterMemorySize(), k->registerCount(), k->localMemorySize(),
-		k->totalSharedMemorySize()),
+		k->globalLocalMemorySize(), k->totalSharedMemorySize()),
 	clock(0),
 	traceEvents(trace) {
 
-#if RECONVERGENCE_MECHANISM == IPDOM_RECONVERGENCE
-	reconvergenceMechanism = new ReconvergenceIPDOM(kernel, this);
-#elif RECONVERGENCE_MECHANISM == BARRIER_RECONVERGENCE
-	reconvergenceMechanism = new ReconvergenceBarrier(kernel, this);
-#elif RECONVERGENCE_MECHANISM == GEN6_RECONVERGENCE
-	reconvergenceMechanism = new ReconvergenceTFGen6(kernel, this);
-#elif RECONVERGENCE_MECHANISM == SORTED_PREDICATE_STACK_RECONVERGENCE
-	reconvergenceMechanism = new ReconvergenceTFSortedStack(kernel, this);
-#else
-	assert(0 && "unimplemented thread reconvergence mechanism");
-#endif
+	typedef api::OcelotConfiguration config;
+
+	if (config::get().executive.reconvergenceMechanism
+		== ReconvergenceMechanism::Reconverge_IPDOM) {
+		reconvergenceMechanism = new ReconvergenceIPDOM(this);
+	}
+	else if (config::get().executive.reconvergenceMechanism
+		== ReconvergenceMechanism::Reconverge_Barrier) {
+		reconvergenceMechanism = new ReconvergenceBarrier(this);
+	}
+	else if (config::get().executive.reconvergenceMechanism
+		== ReconvergenceMechanism::Reconverge_TFGen6) {
+		reconvergenceMechanism = new ReconvergenceTFGen6(this);
+	}
+	else if (config::get().executive.reconvergenceMechanism
+		== ReconvergenceMechanism::Reconverge_TFSortedStack) {
+		reconvergenceMechanism = new ReconvergenceTFSortedStack(this);
+	}
+	else {
+		assertM(false, "unknown thread reconvergence mechanism - "
+			<< config::get().executive.reconvergenceMechanism);
+	}
 
 	initialize(k->blockDim());
 }
 
-executive::CooperativeThreadArray::CooperativeThreadArray() : kernel(0) {
-
-	reconvergenceMechanism = new ReconvergenceMechanism(this);
+executive::CooperativeThreadArray::CooperativeThreadArray() : kernel(0),
+	reconvergenceMechanism(0) {
 }
 
 /*!
@@ -358,8 +361,9 @@ void executive::CooperativeThreadArray::execute(const ir::Dim3& block) {
 		assert(reconvergenceMechanism->stackSize());
 
 		// get the context and advance the program counter
-		CTAContext& context = reconvergenceMechanism->getContext();
-		const PTXInstruction& instr = currentInstruction(context);
+		CTAContext& context = getActiveContext();
+		const PTXInstruction& instr  = currentInstruction(context);
+		const PTXInstruction::Opcode opcode = instr.opcode;
 
 		reconvergenceMechanism->evalPredicate(context);
 
@@ -373,7 +377,7 @@ void executive::CooperativeThreadArray::execute(const ir::Dim3& block) {
 			currentEvent.reset();
 			currentEvent.PC = context.PC;
 			currentEvent.instruction = &instr;
-			currentEvent.active = context.active;
+			currentEvent.active = context.predicateMask(instr);
 		}
 		
 		switch (instr.opcode) {
@@ -512,7 +516,7 @@ void executive::CooperativeThreadArray::execute(const ir::Dim3& block) {
 		}
 	
 		running = reconvergenceMechanism->nextInstruction(
-			getActiveContext(), instr);
+			getActiveContext(), opcode);
 
 		postTrace();
 
@@ -2256,7 +2260,8 @@ void executive::CooperativeThreadArray::eval_Bar(CTAContext& context,
 	}
 	else if (instr.a.addressMode != ir::PTXOperand::Invalid) {
 		report("eval_Bar() - barrier name must be constant");
-		throw RuntimeException("barrier name must be a constant in this version of Ocelot PTX Emulator",
+		throw RuntimeException("barrier name must be a constant in this "
+			"version of Ocelot PTX Emulator",
 			context.PC, instr);
 	}
 	
@@ -2265,14 +2270,14 @@ void executive::CooperativeThreadArray::eval_Bar(CTAContext& context,
 			participating = (size_t)instr.b.imm_uint;
 		}
 		else {
-			report("eval_Bar() - number of threads participating in barrier must be constant");
+			report("eval_Bar() - number of threads participating in barrier "
+				"must be constant");
 			throw RuntimeException(
-				"number of threads participating in barrier must be constant operand in this version of Ocelot",
+				"number of threads participating in barrier must be "
+					"constant operand in this version of Ocelot",
 				context.PC, instr);
 		}
 	}
-	barriers[barrierName].setParticipating(participating);
-	barriers[barrierName].arrive(context.active);
 	
 	if (participating != context.active.size()) {
 		throw RuntimeException(
@@ -2280,46 +2285,7 @@ void executive::CooperativeThreadArray::eval_Bar(CTAContext& context,
 			context.PC, instr);
 	}
 	
-	if (instr.barrierOperation == ir::PTXInstruction::BarSync) {
-#if RECONVERGENCE_MECHANISM == IPDOM_RECONVERGENCE
-		if (context.active.count() < context.active.size() ||
-			!barriers[barrierName].satisfied()) {
-			// deadlock - not all threads reach synchronization barrier
-#if REPORT_BAR
-			report(" Bar called - " << context.active.count() << " of " 
-				<< context.active.size() << " threads active");
-#endif
-			throw RuntimeException("barrier deadlock at: " 
-				+ kernel->location(context.PC), context.PC, instr);
-		}
-#elif RECONVERGENCE_MECHANISM == BARRIER_RECONVERGENCE
-		CTAContext continuation(context);
-		runtimeStack.pop_back();
-		if (runtimeStack.size() == 0) {
-		
-			if (!barriers[barrierName].satisfied()) {
-				throw RuntimeException("barrier deadlock at: " 
-					+ kernel->location(context.PC), context.PC, instr);
-			}
-		
-			continuation.active.set();
-			continuation.PC = context.PC + 1;
-			runtimeStack.push_back(continuation);
-			barriers[barrierName].clear();
-		}
-#else
-#error "Undefined reconvergence mechanism"
-#endif
-	}
-	else if (instr.barrierOperation == ir::PTXInstruction::BarReduction) {
-	
-	}
-	else if (instr.barrierOperation == ir::PTXInstruction::BarArrive) {
-
-	}
-	else {
-		throw RuntimeException("unrecognized barrier operation", context.PC, instr);
-	}
+	reconvergenceMechanism->eval_Bar(context, instr);
 }
 
 void executive::CooperativeThreadArray::eval_Bra(CTAContext &context,
@@ -2348,9 +2314,11 @@ void executive::CooperativeThreadArray::eval_Bra(CTAContext &context,
 	}
 
 #if REPORT_BRA
-	report("  active threads       [" << context.active.count() << "] " << context.active);
+	report("  active threads       [" << context.active.count() << "] "
+		<< context.active);
 	report("  branching threads    [" << branch.count() << "] " << branch);
-	report("  fall-through threads [" << fall_through.count() << "] " << fall_through);
+	report("  fall-through threads [" << fall_through.count() << "] "
+		<< fall_through);
 	report("  branch target PC " << instr.branchTargetInstruction);
 	report("  reconverge PC " << instr.reconvergeInstruction);
 #endif
@@ -2479,8 +2447,7 @@ void executive::CooperativeThreadArray::eval_Call(CTAContext &context,
 				}
 			}
 
-			reconvergenceMechanism->runtimeStack.push_back(
-				targetContext->second);			
+			reconvergenceMechanism->push(targetContext->second);	
 		}
 	}
 	else {
@@ -2554,8 +2521,7 @@ void executive::CooperativeThreadArray::eval_Call(CTAContext &context,
 					targetContext.PC = jittedInstr.branchTargetInstruction;
 					++context.PC;
 				
-					reconvergenceMechanism->runtimeStack.push_back(
-						targetContext);
+					reconvergenceMechanism->push(targetContext);
 				}
 			}
 			else {
@@ -2591,8 +2557,7 @@ void executive::CooperativeThreadArray::eval_Call(CTAContext &context,
 					targetContext.PC = jittedInstr.branchTargetInstruction;
 				
 					++context.PC;
-					reconvergenceMechanism->runtimeStack.push_back(
-						targetContext);
+					reconvergenceMechanism->push(targetContext);
 				}
 				else {
 					++context.PC;
@@ -4647,8 +4612,16 @@ void executive::CooperativeThreadArray::eval_Ld(CTAContext &context,
 				break;
 			case PTXInstruction::Local:
 				{
-					source += (PTXU64) 
-						functionCallStack.localMemoryPointer(threadID);
+					if (instr.a.addressMode == PTXOperand::Address &&
+						instr.a.isGlobalLocal) {
+						source += (PTXU64) 
+							functionCallStack.globalLocalMemoryPointer(
+							threadID);
+					}
+					else {
+						source += (PTXU64) 
+							functionCallStack.localMemoryPointer(threadID);
+					}				
 				}
 				break;
 			default:
@@ -6287,7 +6260,7 @@ void executive::CooperativeThreadArray::eval_Ret(CTAContext &context,
 		offset += ir::PTXOperand::bytes(argument->type);
 	}
 	functionCallStack.popFrame();
-	reconvergenceMechanism->runtimeStack.pop_back();
+	reconvergenceMechanism->pop();
 }
 
 /*!
@@ -8251,8 +8224,16 @@ void executive::CooperativeThreadArray::eval_St(CTAContext &context,
 				break;
 			case PTXInstruction::Local:
 				{
-					source += (PTXU64) 
-						functionCallStack.localMemoryPointer(threadID);
+					if (instr.d.addressMode == PTXOperand::Address &&
+						instr.d.isGlobalLocal) {
+						source += (PTXU64) 
+							functionCallStack.globalLocalMemoryPointer(
+							threadID);
+					}
+					else {
+						source += (PTXU64) 
+							functionCallStack.localMemoryPointer(threadID);
+					}				
 				}
 				break;
 			default:

@@ -13,8 +13,7 @@
 namespace test
 {
 	
-	/*!
-		\brief This is a basic test that just tries to get through 
+	/*! \brief This is a basic test that just tries to get through 
 			a translation successfully of as many PTX programs as possible
 			
 		Test Points:

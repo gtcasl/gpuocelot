@@ -1,0 +1,9 @@
+COD SETUP:
+
+1. Configure, make and make install cercs_env.
+2. Configure, make and make install atl.
+3. Configure, make and make install ffs/fm.
+4. Configure, make and make install dill.
+5. Configure, make and make install ffs/cod.
+
+Now building ocelot will correctly link with the cod dependencies.

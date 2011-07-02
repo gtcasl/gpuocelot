@@ -1,0 +1,11 @@
+#!/bin/sh
+#
+#  usage:  install_dummy_la  directory_of_libs name_of_lib install_dir
+. .libs/lib$2.la
+ echo librarynames is $library_names
+for dll in $library_names
+do
+  echo linking $dll into $libdir
+  (cd $libdir; ln -s $1/$dll)
+done
+cp .libs/lib$2.la $3

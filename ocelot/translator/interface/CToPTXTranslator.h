@@ -67,12 +67,15 @@ namespace translator {
 		    typedef std::map<std::string, std::string> RegisterMap;
 		    typedef std::map<std::string, size_t> FunctionCallMap;
 		    typedef std::vector<PredicateInfo> PredicateList;
+		    typedef std::vector<std::string> RegisterVector;
 		    
 		    ir::PTXKernel *kernel;
 		    ir::PTXKernel::PTXStatementVector statements;
+		    ir::PTXKernel::PTXStatementVector globals;
 		    RegisterMap registerMap;	
 		    FunctionCallMap functionCalls;
 		    PredicateList predicateList;
+		    RegisterVector registers;
 		    
 		    unsigned int maxRegister;	
 		    unsigned int maxPredicate;
@@ -84,10 +87,11 @@ namespace translator {
 		    /* default constructor */
 		    CToPTXTranslator();
 		    
+		    std::string baseAddress() const;
 		    void setPredicate(ir::PTXInstruction & instruction);
 		    int translate(dill_stream c, void *info_ptr, void *i);
-		    //void foreign_code_generator(dill_stream s, virtual_insn *start, virtual_insn *end);
 		    void generate();
+		    
 	};
 
 }

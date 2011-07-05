@@ -82,7 +82,6 @@ namespace analysis
 
             manager.destroyPasses();
         }
-
     }
 
     void PTXInstrumentor::finalize() {

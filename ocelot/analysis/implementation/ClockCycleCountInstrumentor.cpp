@@ -11,7 +11,7 @@
 
 #include <ocelot/cuda/interface/cuda_runtime.h>
 
-#include <ocelot/transforms/interface/ClockCycleCountPass.h>
+#include <ocelot/transforms/interface/CToPTXInstrumentationPass.h>
 #include <ocelot/ir/interface/Module.h>
 
 #include <hydrazine/implementation/ArgumentParser.h>
@@ -36,22 +36,24 @@ namespace analysis
     }
 
     void ClockCycleCountInstrumentor::initialize() {
-              
+        /*      
         clock_sm_info = 0;
 
         cudaMalloc((void **) &clock_sm_info, 2 * threadBlocks * sizeof(size_t));
         cudaMemset( clock_sm_info, 0, 2 * threadBlocks * sizeof( size_t ));
 
-        cudaMemcpyToSymbol(((transforms::ClockCycleCountPass *)pass)->kernelClockSMInfo().c_str(), &clock_sm_info, sizeof(size_t *), 0, cudaMemcpyHostToDevice);
+        cudaMemcpyToSymbol(((transforms::CToPTXInstrumentationPass *)pass)->kernelClockSMInfo().c_str(), &clock_sm_info, sizeof(size_t *), 0, cudaMemcpyHostToDevice);
+        */
     }
 
     transforms::Pass *ClockCycleCountInstrumentor::createPass() {
-        return new transforms::ClockCycleCountPass();
+        return new transforms::CToPTXInstrumentationPass();
     }
 
     void ClockCycleCountInstrumentor::extractResults(std::ostream *out) {
-                
+        /*        
         size_t *info = new size_t[2 * threadBlocks];
+        
         if(clock_sm_info) {
             cudaMemcpy(info, clock_sm_info, 2 * threadBlocks * sizeof( size_t ), cudaMemcpyDeviceToHost);      
             cudaFree(clock_sm_info);
@@ -162,6 +164,7 @@ namespace analysis
 
         if(info)
             delete[] info;
+            */
     }
 
     ClockCycleCountInstrumentor::ClockCycleCountInstrumentor() : description("Clock Cycles and SM (Processor) ID") {

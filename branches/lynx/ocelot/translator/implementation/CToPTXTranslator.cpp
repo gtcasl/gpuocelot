@@ -16,17 +16,54 @@
 namespace translator
 {
 
-unsigned long ptx_clock() { return 1; }
-unsigned long tid_x() { return 0; }
-unsigned long smid() { return 0; }
-unsigned long ctaid() { return 0; }
-void bar_sync() {}
-unsigned long data[2];
+    unsigned long ptx_clock() { return 1; }
+    unsigned long tid_x() { return 0; }
+    unsigned long smid() { return 0; }
+    unsigned long ctaid() { return 0; }
+    void bar_sync() {}
+    unsigned long data[2];
 
 
-std::string arith3_name[] = {"addi", "addu", "addul", "addl", "subi", "subu", "subul", "subl", "muli", "mulu", "mulul", "mull", "divi", "divu", "divul", "divl", "modi", "modu", "modul", "modl", "xori", "xoru", "xorul", "xorl", "andi", "andu", "andul", "andl", "ori", "oru", "orul", "orl", "lshi", "lshu", "lshul", "lshl", "rshi", "rshu", "rshul", "rshl", "addp", "subp", "addf", "addd", "subf", "subd", "mulf", "muld", "divf", "divd"};
+    std::string arith3_name[] = {"addi", "addu", "addul", "addl", "subi", "subu", "subul", "subl", "muli", "mulu", "mulul", "mull", "divi", "divu", "divul", "divl", "modi",        "modu", "modul", "modl", "xori", "xoru", "xorul", "xorl", "andi", "andu", "andul", "andl", "ori", "oru", "orul", "orl", "lshi", "lshu", "lshul", "lshl", "rshi", "rshu", "rshul", "rshl", "addp", "subp", "addf", "addd", "subf", "subd", "mulf", "muld", "divf", "divd"};
 
-std::string branch_op_names[] = {"eqc", "equc", "eqs", "equs", "eqi", "equ", "eql", "equl", "eqp", "eqf", "eqd", "gec", "geuc", "ges", "geus", "gei", "geu", "gel", "geul", "gep", "gef", "ged", "gtc", "gtuc", "gts", "gtus", "gti", "gtu", "gtl", "gtul", "gtp", "gtf", "gtd", "lec", "leuc", "les", "leus", "lei", "leu", "lel", "leul", "lep", "lef", "led", "ltc", "ltuc", "lts", "ltus", "lti", "ltu", "ltl", "ltul", "ltp", "ltf", "ltd", "nec", "neuc", "nes", "neus", "nei", "neu", "nel", "neul", "nep", "nef", "ned"};
+    std::string branch_op_names[] = {"eqc", "equc", "eqs", "equs", "eqi", "equ", "eql", "equl", "eqp", "eqf", "eqd", "gec", "geuc", "ges", "geus", "gei", "geu", "gel", "geul", "gep", "gef", "ged", "gtc", "gtuc", "gts", "gtus", "gti", "gtu", "gtl", "gtul", "gtp", "gtf", "gtd", "lec", "leuc", "les", "leus", "lei", "leu", "lel", "leul", "lep", "lef", "led", "ltc", "ltuc", "lts", "ltus", "lti", "ltu", "ltl", "ltul", "ltp", "ltf", "ltd", "nec", "neuc", "nes", "neus", "nei", "neu", "nel", "neul", "nep", "nef", "ned"};
+
+    translator::CToPTXTranslator translator;
+
+    void foreign_code_generator(dill_stream s, virtual_insn *start, virtual_insn *end)
+    {
+        void *info;
+        void *base = s->p->code_base;
+        if (base == NULL) {
+	        base = s->p->native.code_base;
+        }
+        if (base == NULL) {
+	        return;
+        }
+     
+        void *p;
+	    int l;
+	    int insn_count = 0;
+
+	    if ((s->j != s->p->_virtual.mach_jump) && (s->p->fp != NULL) )
+	        base = s->p->fp;
+	
+	    for (p =base; (char*) p < s->p->cur_ip;) {
+	      
+	        l = translator.translate(s, &info, (void *)p);
+	        //l = s->j->print_insn(s, &info, (void *)p);
+	        //printf("\n");
+	        if (l <= 0) return;
+	        p = (char*)p + l;
+	        insn_count++;
+	    }
+    }
+
+
+    std::string CToPTXTranslator::baseAddress() const
+	{
+		return "__ocelot_base_address_";
+	}
 
     void CToPTXTranslator::setPredicate(ir::PTXInstruction & instruction) {
 
@@ -61,12 +98,17 @@ std::string branch_op_names[] = {"eqc", "equc", "eqs", "equs", "eqi", "equ", "eq
         case iclass_lea:
         {
             src1 = new std::stringstream;
-            *src1 << "b" << insn->opnds.a3.src1;
+            *src1 << baseAddress() << insn->opnds.a3.src1;
+            ir::PTXStatement global = ir::PTXStatement(ir::PTXStatement::Global);
+            global.name = src1->str();
+            global.type = type;
+            globals.push_back(global);
             
             inst.opcode = ir::PTXInstruction::Mov;
                  
             dst = new std::stringstream;
             *dst << COD_REG << ++maxRegister;
+            registers.push_back(dst->str());
             inst.d.identifier = dst->str();		      
             delete dst;
                  
@@ -87,6 +129,7 @@ std::string branch_op_names[] = {"eqc", "equc", "eqs", "equs", "eqi", "equ", "eq
             inst.d.type = type;
             dst = new std::stringstream;
             *dst << COD_REG << ++maxRegister;
+            registers.push_back(dst->str());
             inst.d.identifier = dst->str();
             inst.a.identifier = statements.back().instruction.d.identifier;
             inst.a.addressMode = ir::PTXOperand::Indirect;
@@ -108,6 +151,7 @@ std::string branch_op_names[] = {"eqc", "equc", "eqs", "equs", "eqi", "equ", "eq
        
             dst = new std::stringstream;
             *dst << COD_REG << ++maxRegister;
+            registers.push_back(dst->str());
             inst.d.identifier = dst->str();		      
             
             
@@ -177,6 +221,7 @@ std::string branch_op_names[] = {"eqc", "equc", "eqs", "equs", "eqi", "equ", "eq
             
             dst = new std::stringstream;
             *dst << COD_REG << ++maxRegister;
+            registers.push_back(dst->str());
             inst.d.identifier = dst->str();	
             delete dst;	
             
@@ -230,6 +275,7 @@ std::string branch_op_names[] = {"eqc", "equc", "eqs", "equs", "eqi", "equ", "eq
                         inst.d.addressMode = ir::PTXOperand::Register;
                         dst = new std::stringstream;
                         *dst << COD_REG << ++maxRegister;
+                        registers.push_back(dst->str());
                         inst.d.identifier = dst->str();
                         std::string ctaidX = inst.d.identifier;
                         delete dst;		
@@ -247,6 +293,7 @@ std::string branch_op_names[] = {"eqc", "equc", "eqs", "equs", "eqi", "equ", "eq
 	                    
 	                    dst = new std::stringstream;
                         *dst << COD_REG << ++maxRegister;
+                        registers.push_back(dst->str());
                         inst.d.identifier = dst->str();		 
                         std::string ctaidY = inst.d.identifier;
                         delete dst;
@@ -260,6 +307,7 @@ std::string branch_op_names[] = {"eqc", "equc", "eqs", "equs", "eqi", "equ", "eq
 	                    
 	                    dst = new std::stringstream;
                         *dst << COD_REG << ++maxRegister;
+                        registers.push_back(dst->str());
                         inst.d.identifier = dst->str();
                         std::string nctaidX = inst.d.identifier;		 
                         delete dst;
@@ -278,6 +326,7 @@ std::string branch_op_names[] = {"eqc", "equc", "eqs", "equs", "eqi", "equ", "eq
                         dst = new std::stringstream;
                         *dst << COD_REG << ++maxRegister;
                         inst.d.identifier = dst->str();
+                        registers.push_back(dst->str());
                         std::string ctaid = inst.d.identifier;		 
                         delete dst;
                         
@@ -311,6 +360,7 @@ std::string branch_op_names[] = {"eqc", "equc", "eqs", "equs", "eqi", "equ", "eq
                         
                         dst = new std::stringstream;
                         *dst << COD_REG << ++maxRegister;
+                        registers.push_back(dst->str());
                         inst.d.identifier = dst->str();
                         delete dst;
                         
@@ -339,6 +389,7 @@ std::string branch_op_names[] = {"eqc", "equc", "eqs", "equs", "eqi", "equ", "eq
 		                
 		                dst = new std::stringstream;
                         *dst << COD_REG << ++maxRegister;
+                        registers.push_back(dst->str());
                         inst.d.identifier = dst->str();		      
                         delete dst;
                                   
@@ -373,6 +424,7 @@ std::string branch_op_names[] = {"eqc", "equc", "eqs", "equs", "eqi", "equ", "eq
                         inst.d.addressMode = ir::PTXOperand::Register;
                         dst = new std::stringstream;
                         *dst << COD_REG << ++maxRegister;
+                        registers.push_back(dst->str());
                         inst.d.identifier = dst->str();
                         delete dst;		
                         inst.d.type = type;
@@ -411,6 +463,7 @@ std::string branch_op_names[] = {"eqc", "equc", "eqs", "equs", "eqi", "equ", "eq
             
             dst = new std::stringstream;
             *dst << COD_PRED << ++maxPredicate;
+            registers.push_back(dst->str());
             
             inst.d.type = ir::PTXOperand::pred;
             inst.d.addressMode = ir::PTXOperand::Register;
@@ -561,52 +614,6 @@ std::string branch_op_names[] = {"eqc", "equc", "eqs", "equs", "eqi", "equ", "eq
         return sizeof(*insn);
     }
     
-    void foreign_code_generator(dill_stream s, virtual_insn *start, virtual_insn *end)
-    {
-        translator::CToPTXTranslator translator;
-    
-        void *info;
-        void *base = s->p->code_base;
-        if (base == NULL) {
-	        base = s->p->native.code_base;
-        }
-        if (base == NULL) {
-	        std::cout << "No code to dump\n";
-	        return;
-        }
-     
-        void *p;
-	    int l;
-	    int insn_count = 0;
-
-	    if ((s->j != s->p->_virtual.mach_jump) && (s->p->fp != NULL) )
-	        base = s->p->fp;
-	
-	    for (p =base; (char*) p < s->p->cur_ip;) {
-	      
-	        l = translator.translate(s, &info, (void *)p);
-	        l = s->j->print_insn(s, &info, (void *)p);
-	        printf("\n");
-	        if (l <= 0) return;
-	        p = (char*)p + l;
-	        insn_count++;
-	    }
-	
-	    /*
-        std::cout << "\n\nDumping Register Map:\n\n";
-	
-	    for (RegisterMap::const_iterator reg = registerMap.begin(); 
-	        reg != registerMap.end(); ++reg) {
-            std::cout << reg->first << " : " << reg->second << std::endl;
-        }
-        */
-        std::cout << "\n\nDumping Kernel:\n\n";
-        
-        translator.kernel = new ir::PTXKernel(translator.statements.begin(), translator.statements.end(), false);
-        translator.kernel->write(std::cout);   
-
-    }
-    
     void CToPTXTranslator::generate(void) {
     
         char code_string[] = "\
@@ -666,7 +673,11 @@ std::string branch_op_names[] = {"eqc", "equc", "eqs", "equs", "eqi", "equ", "eq
 	    cod_exec_context_free(ec);
 	    cod_code_free(gen_code);
 	    cod_free_parse_context(context);
-    
+	    
+	    statements = translator.statements;
+	    globals = translator.globals;
+	    registers = translator.registers;
+	    
     }
     
     CToPTXTranslator::CToPTXTranslator()

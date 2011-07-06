@@ -34,8 +34,8 @@ namespace transforms
 	{
 	
 	    std::map<std::string, analysis::DataflowGraph::RegisterId> newRegisterMap;
-	    for(translator::CToPTXTranslator::RegisterVector::const_iterator reg = translator.registers.begin();
-	        reg != translator.registers.end(); ++reg) {
+	    for(translator::CToPTXData::RegisterVector::const_iterator reg = translation.registers.begin();
+	        reg != translation.registers.end(); ++reg) {
 	        newRegisterMap[*reg] = dfg().newRegister();   
 	    }
 	
@@ -45,8 +45,8 @@ namespace transforms
         
         size_t loc = 0;
         
-        for(ir::PTXKernel::PTXStatementVector::iterator statement = translator.statements.begin();
-            statement != translator.statements.end(); ++statement) {
+        for(ir::PTXKernel::PTXStatementVector::iterator statement = translation.statements.begin();
+            statement != translation.statements.end(); ++statement) {
             
             if((statement->instruction.a.addressMode == ir::PTXOperand::Register || statement->instruction.a.addressMode == ir::PTXOperand::Indirect) && !statement->instruction.a.identifier.empty()) {
                 statement->instruction.a.reg = newRegisterMap[statement->instruction.a.identifier];
@@ -88,8 +88,8 @@ namespace transforms
     void CToPTXInstrumentationPass::initialize( ir::Module& m )
 	{   
 	    /* inserting globals into the module */
-	    for(ir::PTXKernel::PTXStatementVector::const_iterator global = translator.globals.begin();
-	        global != translator.globals.end(); ++global) {
+	    for(ir::PTXKernel::PTXStatementVector::const_iterator global = translation.globals.begin();
+	        global != translation.globals.end(); ++global) {
             m.insertGlobalAsStatement(*global);
 	    }
 	}
@@ -101,7 +101,7 @@ namespace transforms
 	
 	std::string CToPTXInstrumentationPass::kernelClockSMInfo() const
 	{
-		return translator.globals.front().name;
+		return translation.globals.front().name;
 	}
 
     
@@ -109,7 +109,8 @@ namespace transforms
 		: KernelPass( Analysis::DataflowGraphAnalysis,
 			"CToPTXInstrumentationPass" )
 	{
-	    translator.generate();
+	    translator::CToPTXTranslator translator;
+	    translation = translator.generate();
 	}
 
 }

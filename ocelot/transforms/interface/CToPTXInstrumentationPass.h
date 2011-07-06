@@ -26,7 +26,7 @@ namespace transforms
 	class CToPTXInstrumentationPass : public KernelPass
 	{
 		private:
-			translator::CToPTXTranslator translator;
+			translator::CToPTXData translation;
 			
 		protected:
 		    analysis::DataflowGraph& dfg();

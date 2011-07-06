@@ -614,7 +614,7 @@ namespace translator
         return sizeof(*insn);
     }
     
-    void CToPTXTranslator::generate(void) {
+    CToPTXData CToPTXTranslator::generate(void) {
     
         char code_string[] = "\
         {\n\
@@ -674,10 +674,13 @@ namespace translator
 	    cod_code_free(gen_code);
 	    cod_free_parse_context(context);
 	    
-	    statements = translator.statements;
-	    globals = translator.globals;
-	    registers = translator.registers;
+	    CToPTXData data;
 	    
+	    data.statements = translator.statements;
+	    data.globals = translator.globals;
+	    data.registers = translator.registers;
+	    
+	    return data;
     }
     
     CToPTXTranslator::CToPTXTranslator()

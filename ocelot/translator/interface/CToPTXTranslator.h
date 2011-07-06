@@ -46,6 +46,20 @@ namespace translator {
     
     };
 
+    /*! \brief A class containing C-to-PTX translation data.
+	*/
+	class CToPTXData
+	{
+	    public:
+	    
+	        typedef std::vector<std::string> RegisterVector;
+	        
+	        ir::PTXKernel::PTXStatementVector statements;
+		    ir::PTXKernel::PTXStatementVector globals;
+		    RegisterVector registers;
+	
+	};
+
 
 	/*! \brief A class translating C-on-Demand (COD) IR to PTX.
 	*/
@@ -90,7 +104,7 @@ namespace translator {
 		    std::string baseAddress() const;
 		    void setPredicate(ir::PTXInstruction & instruction);
 		    int translate(dill_stream c, void *info_ptr, void *i);
-		    void generate();
+		    translator::CToPTXData generate();
 		    
 	};
 

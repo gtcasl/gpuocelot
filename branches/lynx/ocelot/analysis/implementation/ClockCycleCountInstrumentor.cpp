@@ -12,6 +12,7 @@
 #include <ocelot/cuda/interface/cuda_runtime.h>
 
 #include <ocelot/transforms/interface/CToPTXInstrumentationPass.h>
+#include <ocelot/transforms/interface/ClockCycleCountPass.h>
 #include <ocelot/ir/interface/Module.h>
 
 #include <hydrazine/implementation/ArgumentParser.h>

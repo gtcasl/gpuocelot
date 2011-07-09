@@ -8,6 +8,7 @@
 #define C_TO_PTX_TRANSLATOR_CPP_INCLUDED
 
 #include <ocelot/translator/interface/CToPTXTranslator.h>
+#include <ocelot/translator/interface/CToPTXInterface.h>
 
 #define REG         "r"
 #define COD_REG     "\%codr"
@@ -15,14 +16,6 @@
 
 namespace translator
 {
-
-    unsigned long ptx_clock() { return 1; }
-    unsigned long tid_x() { return 0; }
-    unsigned long smid() { return 0; }
-    unsigned long ctaid() { return 0; }
-    void bar_sync() {}
-    unsigned long data[2];
-
 
     std::string arith3_name[] = {"addi", "addu", "addul", "addl", "subi", "subu", "subul", "subl", "muli", "mulu", "mulul", "mull", "divi", "divu", "divul", "divl", "modi",        "modu", "modul", "modl", "xori", "xoru", "xorul", "xorl", "andi", "andu", "andul", "andl", "ori", "oru", "orul", "orl", "lshi", "lshu", "lshul", "lshl", "rshi", "rshu", "rshul", "rshl", "addp", "subp", "addf", "addd", "subf", "subd", "mulf", "muld", "divf", "divd"};
 
@@ -268,7 +261,7 @@ namespace translator
                         
                        
                 switch(functionCalls[call_name]) {
-                    case ctaId:
+                    case ctaid:
                     {  
                         inst.opcode = ir::PTXInstruction::Cvt;  
 
@@ -351,7 +344,7 @@ namespace translator
                         delete src1;            
                     }
                     break;
-                    case smId:
+                    case smid:
                     {    
                         inst.opcode = ir::PTXInstruction::Cvt;
                         setPredicate(inst);
@@ -416,7 +409,7 @@ namespace translator
                         statements.push_back(stmt);
                     }
                     break;
-                    case tidX:
+                    case tidx:
                     {
                         inst.opcode = ir::PTXInstruction::Cvt;
                         setPredicate(inst);
@@ -620,17 +613,17 @@ namespace translator
         {\n\
             unsigned long start;\n\
             unsigned long stop;\n\
-            BEGIN_KERNEL:{\n\
-                start = clock();\n\
-                bar_sync();\n\
+            ENTER_KERNEL:{\n\
+                start = clockCounter();\n\
+                syncThreads();\n\
             }\n\
-            END_KERNEL:{\n\
-            bar_sync();\n\
-            stop = clock();\n\
-                if (tid_x() == 0) {\n\
-                    unsigned long a = ctaid();\n\
-                    data[2 * a] = stop - start;\n\
-                    data[2 * a + 1] = smid();\n\
+            EXIT_KERNEL:{\n\
+            syncThreads();\n\
+            stop = clockCounter();\n\
+                if (threadIdx() == 0) {\n\
+                    unsigned long currentBlockId = blockId();\n\
+                    deviceMem[2 * currentBlockId] = stop - start;\n\
+                    deviceMem[2 * currentBlockId + 1] = smId();\n\
                 }\n\
             }\n\
         }";
@@ -638,21 +631,35 @@ namespace translator
 	    cod_parse_context context;
 	    cod_exec_context ec;
 	
-	    static char extern_string[] = "unsigned long tid_x();\
-					    unsigned long clock();\
-                        unsigned long ctaid();\
-                        unsigned long smid();\
-                        void bar_sync();\
-                        unsigned long data[2];";
+	    static char extern_string[] =   "unsigned long clockCounter();\
+                                        unsigned long numThreadsPerBlock();\
+                                        unsigned long threadId();\
+                                        unsigned long threadIdx();\
+                                        unsigned long threadIdy();\
+                                        unsigned long threadIdz();\
+                                        unsigned long blockId();\
+                                        unsigned long blockIdx();\
+                                        unsigned long blockIdy();\
+                                        unsigned long blockIdz();\
+                                        unsigned long smId();\
+                                        void syncThreads();\
+                                        unsigned long deviceMem[2];";
                         
 	    static cod_extern_entry externs[] = 
 	    {
-	        {(char *)"tid_x", (void*)(unsigned long)(*tid_x)},
-	        {(char *)"clock", (void*)(unsigned long)(*ptx_clock)},
-	        {(char *)"ctaid", (void*)(unsigned long)(*ctaid)},
-            {(char *)"smid", (void*)(unsigned long)(*smid)},
-            {(char *)"bar_sync", (void *)(*bar_sync)},
-            {(char *)"data", (void *)data},
+	        {(char *)"clockCounter", (void*)(unsigned long)(*clockCounter)},
+	        {(char *)"numThreadsPerBlock", (void*)(unsigned long)(*numThreadsPerBlock)},
+	        {(char *)"threadId", (void*)(unsigned long)(*threadId)},
+	        {(char *)"threadIdx", (void*)(unsigned long)(*threadIdx)},
+	        {(char *)"threadIdy", (void*)(unsigned long)(*threadIdy)},
+	        {(char *)"threadIdz", (void*)(unsigned long)(*threadIdz)},
+	        {(char *)"blockIdx", (void*)(unsigned long)(*blockId)},
+	        {(char *)"blockId", (void*)(unsigned long)(*blockIdx)},
+	        {(char *)"blockIdy", (void*)(unsigned long)(*blockIdy)},
+	        {(char *)"blockIdz", (void*)(unsigned long)(*blockIdz)},
+            {(char *)"smId", (void*)(unsigned long)(*smId)},
+            {(char *)"syncThreads", (void *)(*syncThreads)},
+            {(char *)"deviceMem", (void *)deviceMem},
 	        {NULL, (void*)0}
 	    };
      
@@ -686,11 +693,11 @@ namespace translator
     CToPTXTranslator::CToPTXTranslator()
         : maxRegister(0), maxPredicate(0)
     {
-        functionCalls["ctaid"] = ctaId;
-        functionCalls["clock"] = clock64;
-        functionCalls["bar_sync"] = bar;
-        functionCalls["smid"] = smId;
-        functionCalls["tid_x"] = tidX;
+        functionCalls["threadIdx"] = tidx;
+        functionCalls["blockId"] = ctaid;
+        functionCalls["clockCounter"] = clock64;
+        functionCalls["syncThreads"] = bar;
+        functionCalls["smId"] = smid;
     }
 }
 

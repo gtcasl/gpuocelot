@@ -69,11 +69,11 @@ namespace translator {
 		public:
 		    
 		    enum SpecialSymbols {
-			    ctaId,
-			    smId,
+			    ctaid,
+			    smid,
 			    clock64,
 			    bar,
-			    tidX
+			    tidx
 		    };
 		
 		    SpecialSymbols symbols;

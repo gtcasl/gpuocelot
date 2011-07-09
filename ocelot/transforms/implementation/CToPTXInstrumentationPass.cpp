@@ -15,7 +15,7 @@
 #include <ocelot/ir/interface/PTXKernel.h>
 #include <ocelot/analysis/interface/DataflowGraph.h>
 
-#define END_KERNEL "END_KERNEL"
+#define EXIT_KERNEL "EXIT_KERNEL"
 
 namespace transforms
 {
@@ -39,38 +39,39 @@ namespace transforms
 	        newRegisterMap[*reg] = dfg().newRegister();   
 	    }
 	
-	
 	    /* by default, insert each statement to the beginning of the kernel */
 	    analysis::DataflowGraph::iterator block = dfg().begin();
         
         size_t loc = 0;
         
-        for(ir::PTXKernel::PTXStatementVector::iterator statement = translation.statements.begin();
+        for(ir::PTXKernel::PTXStatementVector::const_iterator statement = translation.statements.begin();
             statement != translation.statements.end(); ++statement) {
             
+            ir::PTXStatement toInsert = *statement;
+            
             if((statement->instruction.a.addressMode == ir::PTXOperand::Register || statement->instruction.a.addressMode == ir::PTXOperand::Indirect) && !statement->instruction.a.identifier.empty()) {
-                statement->instruction.a.reg = newRegisterMap[statement->instruction.a.identifier];
-                statement->instruction.a.identifier.clear();
+                toInsert.instruction.a.reg = newRegisterMap[statement->instruction.a.identifier];
+                toInsert.instruction.a.identifier.clear();
             }
             if(statement->instruction.b.addressMode == ir::PTXOperand::Register && !statement->instruction.b.identifier.empty()) {
-                statement->instruction.b.reg = newRegisterMap[statement->instruction.b.identifier];
-                statement->instruction.b.identifier.clear();
+                toInsert.instruction.b.reg = newRegisterMap[statement->instruction.b.identifier];
+                toInsert.instruction.b.identifier.clear();
             }
             if(statement->instruction.c.addressMode == ir::PTXOperand::Register && !statement->instruction.c.identifier.empty()) {
-                statement->instruction.c.reg = newRegisterMap[statement->instruction.c.identifier];
-                statement->instruction.c.identifier.clear();
+                toInsert.instruction.c.reg = newRegisterMap[statement->instruction.c.identifier];
+                toInsert.instruction.c.identifier.clear();
             }
             if((statement->instruction.d.addressMode == ir::PTXOperand::Register || statement->instruction.d.addressMode == ir::PTXOperand::Indirect) && !statement->instruction.d.identifier.empty()) {
-                statement->instruction.d.reg = newRegisterMap[statement->instruction.d.identifier];
-                statement->instruction.d.identifier.clear();
+                toInsert.instruction.d.reg = newRegisterMap[statement->instruction.d.identifier];
+                toInsert.instruction.d.identifier.clear();
             }
             if(statement->instruction.pg.condition == ir::PTXOperand::Pred && !statement->instruction.pg.identifier.empty()){
-                statement->instruction.pg.reg = newRegisterMap[statement->instruction.pg.identifier];
-                statement->instruction.pg.identifier.clear();
+                toInsert.instruction.pg.reg = newRegisterMap[statement->instruction.pg.identifier];
+                toInsert.instruction.pg.identifier.clear();
             }
             
             if(statement->directive == ir::PTXStatement::Label) {
-                if(statement->name == END_KERNEL) {
+                if(statement->name == EXIT_KERNEL) {
                     block = --(dfg().end());
                     while(block->instructions().size() == 0) {
                         block--;
@@ -80,7 +81,7 @@ namespace transforms
                 continue;
             }
             
-            dfg().insert(block, statement->instruction, loc);
+            dfg().insert(block, toInsert.instruction, loc);
             loc++;
         }
 	}

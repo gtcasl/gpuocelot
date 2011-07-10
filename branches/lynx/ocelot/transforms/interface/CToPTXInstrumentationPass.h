@@ -11,6 +11,13 @@
 #include <ocelot/analysis/interface/DataflowGraph.h>
 #include <ocelot/translator/interface/CToPTXTranslator.h>
 
+/* special instrumentation labels */
+#define ENTER_KERNEL        "ENTER_KERNEL"
+#define EXIT_KERNEL         "EXIT_KERNEL"
+#define ENTER_BASIC_BLOCK   "ENTER_BASIC_BLOCK"
+#define EXIT_BASIC_BLOCK    "EXIT_BASIC_BLOCK"
+
+
 namespace ir
 {
 	class Module;

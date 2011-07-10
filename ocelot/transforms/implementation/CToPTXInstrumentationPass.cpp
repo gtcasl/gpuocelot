@@ -15,8 +15,6 @@
 #include <ocelot/ir/interface/PTXKernel.h>
 #include <ocelot/analysis/interface/DataflowGraph.h>
 
-#define EXIT_KERNEL "EXIT_KERNEL"
-
 namespace transforms
 {
 

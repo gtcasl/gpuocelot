@@ -620,10 +620,10 @@ namespace translator
             EXIT_KERNEL:{\n\
             syncThreads();\n\
             stop = clockCounter();\n\
-                if (threadIdx() == 0) {\n\
-                    unsigned long currentBlockId = blockId();\n\
-                    deviceMem[2 * currentBlockId] = stop - start;\n\
-                    deviceMem[2 * currentBlockId + 1] = smId();\n\
+                if (threadIdxX() == 0) {\n\
+                    unsigned long currentBlockIdx = blockIdx();\n\
+                    deviceMem[2 * currentBlockIdx] = stop - start;\n\
+                    deviceMem[2 * currentBlockIdx + 1] = smId();\n\
                 }\n\
             }\n\
         }";
@@ -631,16 +631,24 @@ namespace translator
 	    cod_parse_context context;
 	    cod_exec_context ec;
 	
-	    static char extern_string[] =   "unsigned long clockCounter();\
-                                        unsigned long numThreadsPerBlock();\
+	    static char extern_string[] =  "unsigned long clockCounter();\
                                         unsigned long threadId();\
-                                        unsigned long threadIdx();\
-                                        unsigned long threadIdy();\
-                                        unsigned long threadIdz();\
-                                        unsigned long blockId();\
+                                        unsigned long threadIdxX();\
+                                        unsigned long threadIdxY();\
+                                        unsigned long threadIdxZ();\
                                         unsigned long blockIdx();\
-                                        unsigned long blockIdy();\
-                                        unsigned long blockIdz();\
+                                        unsigned long blockIdxX();\
+                                        unsigned long blockIdxY();\
+                                        unsigned long blockIdxZ();\
+                                        unsigned long blockDim();\
+                                        unsigned long blockDimX();\
+                                        unsigned long blockDimY();\
+                                        unsigned long blockDimZ();\
+                                        unsigned long gridDim();\
+                                        unsigned long gridDimX();\
+                                        unsigned long gridDimY();\
+                                        unsigned long gridDimZ();\
+                                        unsigned long gridId();\
                                         unsigned long smId();\
                                         void syncThreads();\
                                         unsigned long deviceMem[2];";
@@ -648,15 +656,23 @@ namespace translator
 	    static cod_extern_entry externs[] = 
 	    {
 	        {(char *)"clockCounter", (void*)(unsigned long)(*clockCounter)},
-	        {(char *)"numThreadsPerBlock", (void*)(unsigned long)(*numThreadsPerBlock)},
 	        {(char *)"threadId", (void*)(unsigned long)(*threadId)},
-	        {(char *)"threadIdx", (void*)(unsigned long)(*threadIdx)},
-	        {(char *)"threadIdy", (void*)(unsigned long)(*threadIdy)},
-	        {(char *)"threadIdz", (void*)(unsigned long)(*threadIdz)},
-	        {(char *)"blockIdx", (void*)(unsigned long)(*blockId)},
-	        {(char *)"blockId", (void*)(unsigned long)(*blockIdx)},
-	        {(char *)"blockIdy", (void*)(unsigned long)(*blockIdy)},
-	        {(char *)"blockIdz", (void*)(unsigned long)(*blockIdz)},
+	        {(char *)"threadIdxX", (void*)(unsigned long)(*threadIdxX)},
+	        {(char *)"threadIdxY", (void*)(unsigned long)(*threadIdxY)},
+	        {(char *)"threadIdxZ", (void*)(unsigned long)(*threadIdxZ)},
+	        {(char *)"blockIdx", (void*)(unsigned long)(*blockIdx)},
+	        {(char *)"blockIdxX", (void*)(unsigned long)(*blockIdxX)},
+	        {(char *)"blockIdxY", (void*)(unsigned long)(*blockIdxY)},
+	        {(char *)"blockIdxZ", (void*)(unsigned long)(*blockIdxZ)},
+	        {(char *)"blockDim", (void*)(unsigned long)(*blockDim)},
+	        {(char *)"blockDimX", (void*)(unsigned long)(*blockDimX)},
+	        {(char *)"blockDimY", (void*)(unsigned long)(*blockDimY)},
+	        {(char *)"blockDimZ", (void*)(unsigned long)(*blockDimZ)},
+	        {(char *)"gridDim", (void*)(unsigned long)(*gridDim)},
+	        {(char *)"gridDimX", (void*)(unsigned long)(*gridDimX)},
+	        {(char *)"gridDimY", (void*)(unsigned long)(*gridDimY)},
+	        {(char *)"gridDimZ", (void*)(unsigned long)(*gridDimZ)},
+            {(char *)"gridId", (void*)(unsigned long)(*gridId)},
             {(char *)"smId", (void*)(unsigned long)(*smId)},
             {(char *)"syncThreads", (void *)(*syncThreads)},
             {(char *)"deviceMem", (void *)deviceMem},
@@ -693,11 +709,26 @@ namespace translator
     CToPTXTranslator::CToPTXTranslator()
         : maxRegister(0), maxPredicate(0)
     {
-        functionCalls["threadIdx"] = tidx;
-        functionCalls["blockId"] = ctaid;
         functionCalls["clockCounter"] = clock64;
-        functionCalls["syncThreads"] = bar;
+        functionCalls["threadIdxX"] = tidx;
+        functionCalls["threadIdxY"] = tidy;
+        functionCalls["threadIdxZ"] = tidz;
+        functionCalls["threadIdx"] = tid;
+        functionCalls["blockDimX"] = ntidx;
+        functionCalls["blockDimY"] = ntidy;
+        functionCalls["blockDimZ"] = ntidz;
+        functionCalls["blockDim"] = ntid;
+        functionCalls["blockIdxX"] = ctaidx;
+        functionCalls["blockIdxY"] = ctaidy;
+        functionCalls["blockIdxZ"] = ctaidz;
+        functionCalls["blockIdx"] = ctaid;
+        functionCalls["gridDimX"] = nctaidx;
+        functionCalls["gridDimY"] = nctaidy;
+        functionCalls["gridDimZ"] = nctaidz;
+        functionCalls["gridDim"] = nctaid;
+        functionCalls["gridId"] = gridid;
         functionCalls["smId"] = smid;
+        functionCalls["syncThreads"] = bar;
     }
 }
 

@@ -11,27 +11,35 @@ unsigned long clockCounter() {
     return 1; 
 }
 
-unsigned long numThreadsPerBlock() {
-    return 1;
-}
-
 unsigned long threadId() {
     return 0;
+}
+
+unsigned long threadIdxX() { 
+    return 0; 
+}
+
+unsigned long threadIdxY() { 
+    return 0; 
+}
+
+unsigned long threadIdxZ() { 
+    return 0; 
 }
 
 unsigned long threadIdx() { 
     return 0; 
 }
 
-unsigned long threadIdy() { 
+unsigned long blockIdxX() { 
     return 0; 
 }
 
-unsigned long threadIdz() { 
+unsigned long blockIdxY() { 
     return 0; 
 }
 
-unsigned long blockId() { 
+unsigned long blockIdxZ() { 
     return 0; 
 }
 
@@ -39,12 +47,40 @@ unsigned long blockIdx() {
     return 0; 
 }
 
-unsigned long blockIdy() { 
-    return 0; 
+unsigned long blockDimX() {
+    return 0;
 }
 
-unsigned long blockIdz() { 
-    return 0; 
+unsigned long blockDimY() {
+    return 0;
+}
+
+unsigned long blockDimZ() {
+    return 0;
+}
+
+unsigned long blockDim() {
+    return 0;
+}
+
+unsigned long gridDimX() {
+    return 0;
+}
+
+unsigned long gridDimY() {
+    return 0;
+}
+
+unsigned long gridDimZ() {
+    return 0;
+}
+
+unsigned long gridDim() {
+    return 0;
+}
+
+unsigned long gridId() {
+    return 0;
 }
 
 unsigned long smId() { 

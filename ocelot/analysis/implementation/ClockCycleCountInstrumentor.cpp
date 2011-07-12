@@ -37,22 +37,22 @@ namespace analysis
     }
 
     void ClockCycleCountInstrumentor::initialize() {
-        /*      
         clock_sm_info = 0;
 
         cudaMalloc((void **) &clock_sm_info, 2 * threadBlocks * sizeof(size_t));
         cudaMemset( clock_sm_info, 0, 2 * threadBlocks * sizeof( size_t ));
 
-        cudaMemcpyToSymbol(((transforms::CToPTXInstrumentationPass *)pass)->kernelClockSMInfo().c_str(), &clock_sm_info, sizeof(size_t *), 0, cudaMemcpyHostToDevice);
-        */
+        cudaMemcpyToSymbol(symbol.c_str(), &clock_sm_info, sizeof(size_t *), 0, cudaMemcpyHostToDevice);
     }
 
     transforms::Pass *ClockCycleCountInstrumentor::createPass() {
-        return new transforms::CToPTXInstrumentationPass();
+        transforms::CToPTXInstrumentationPass *pass = new transforms::CToPTXInstrumentationPass();
+        symbol = pass->baseAddress;
+        return pass;
     }
 
     void ClockCycleCountInstrumentor::extractResults(std::ostream *out) {
-        /*        
+            
         size_t *info = new size_t[2 * threadBlocks];
         
         if(clock_sm_info) {
@@ -165,7 +165,7 @@ namespace analysis
 
         if(info)
             delete[] info;
-            */
+            
     }
 
     ClockCycleCountInstrumentor::ClockCycleCountInstrumentor() : description("Clock Cycles and SM (Processor) ID") {

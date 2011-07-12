@@ -196,7 +196,7 @@ ir::PTXU32 executive::CooperativeThreadArray::getSpecialValue(
 	assert( reg != ir::PTXOperand::pm1 );
 	assert( reg != ir::PTXOperand::pm2 );
 	assert( reg != ir::PTXOperand::pm3 );
-	assert( reg != ir::PTXOperand::smId );
+	//assert( reg != ir::PTXOperand::smId );
 	assert( reg != ir::PTXOperand::nsmId );
 	assert( reg != ir::PTXOperand::gridId );
 
@@ -234,6 +234,7 @@ ir::PTXU32 executive::CooperativeThreadArray::getSpecialValue(
 			break;
 		}
 		case ir::PTXOperand::warpId: return 0;
+		case ir::PTXOperand::smId: return 0;
 		case ir::PTXOperand::warpSize: {
 			return blockDim.z * blockDim.y * blockDim.x;
 		}

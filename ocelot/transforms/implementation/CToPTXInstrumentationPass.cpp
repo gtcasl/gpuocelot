@@ -100,7 +100,7 @@ namespace transforms
 	
 	std::string CToPTXInstrumentationPass::kernelClockSMInfo() const
 	{
-		return translation.globals.front().name;
+		return baseAddress;
 	}
 
     
@@ -110,6 +110,7 @@ namespace transforms
 	{
 	    translator::CToPTXTranslator translator;
 	    translation = translator.generate();
+	    baseAddress = translation.globals.front().name;
 	}
 
 }

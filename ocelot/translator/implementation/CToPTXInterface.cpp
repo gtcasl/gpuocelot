@@ -90,4 +90,12 @@ unsigned long smId() {
 void syncThreads() {
 }
 
+unsigned long basicBlockId() {
+    return 0;
+}
+
+unsigned long instructionsPerBasicBlock() {
+    return 1;
+}
+
 #endif

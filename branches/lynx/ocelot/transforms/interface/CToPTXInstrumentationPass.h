@@ -42,6 +42,8 @@ namespace transforms
 			CToPTXInstrumentationPass();
 			std::string kernelClockSMInfo() const;
 			
+			std::string baseAddress;
+			
 		public:
 			/*! \brief Initialize the pass using a specific kernel */
 			void initialize( ir::Module& m );

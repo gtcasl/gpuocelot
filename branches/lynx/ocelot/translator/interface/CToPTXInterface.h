@@ -66,4 +66,8 @@ unsigned long smId();
 
 void syncThreads();
 
+unsigned long basicBlockId();
+unsigned long instructionsPerBasicBlock();
+
+
 #endif

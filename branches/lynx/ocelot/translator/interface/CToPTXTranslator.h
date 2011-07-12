@@ -70,6 +70,7 @@ namespace translator {
 		    
 		    enum SpecialSymbols {
 			    clock64,
+			    threadCounter,
 			    tidx,
 			    tidy,
 			    tidz,
@@ -102,6 +103,7 @@ namespace translator {
 		    ir::PTXKernel::PTXStatementVector statements;
 		    ir::PTXKernel::PTXStatementVector globals;
 		    RegisterMap registerMap;	
+		    RegisterMap specialRegisterMap;
 		    FunctionCallMap functionCalls;
 		    PredicateList predicateList;
 		    RegisterVector registers;

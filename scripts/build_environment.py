@@ -88,6 +88,26 @@ def getBoostPaths():
 
 	return (bin_path,lib_path,inc_path)
 
+def getFlexPaths(env):
+	"""Determines Flex {include} paths
+
+	returns (inc_path)
+	"""
+
+	# determine defaults
+	if os.name == 'posix':
+		inc_path = '/usr/include'
+	elif os.name == 'nt':
+		inc_path = 'C:\MinGW\1.0'
+	else:
+		raise ValueError, 'Error: unknown OS.  Where is GLEW installed?'
+
+	# override with environement variables
+	if 'FLEX_INC_PATH' in os.environ:
+		inc_path = os.path.abspath(os.environ['GLEW_INC_PATH'])
+
+	return (inc_path)
+
 def getGLEWPaths(env):
 	"""Determines GLEW {bin,lib,include} paths and is it installed?
 
@@ -96,7 +116,10 @@ def getGLEWPaths(env):
 
 	configure = Configure(env)
 	glew = configure.CheckLib('GLEW')		
-		
+	
+	if not glew:
+		return (glew, '', '', '')
+
 	# determine defaults
 	if os.name == 'posix':
 		bin_path = '/usr/bin'
@@ -374,6 +397,10 @@ def Environment():
 		env.AppendUnique(LIBPATH = [glew_lib_path])
 		env.AppendUnique(CPPPATH = [glew_inc_path])
 	env.Replace(HAVE_GLEW = glew)
+
+	# get Flex paths
+	(flex_inc_path) = getFlexPaths(env)
+	env.AppendUnique(CPPPATH = [flex_inc_path])
 
 	# get llvm paths
 	(llvm, llvm_exe_path,llvm_lib_path,llvm_inc_path,llvm_cflags,\

@@ -13,7 +13,9 @@
 #include <hydrazine/implementation/debug.h>
 
 // Linux system headers
+#if __GNUC__
 #include <dlfcn.h>
+#endif
 
 #ifdef REPORT_BASE
 #undef REPORT_BASE
@@ -32,6 +34,7 @@ namespace cal
 	CalDriver::CalDriver() : _driver(0), _compiler(0)
 	{
 		report("Loading libaticalrt.so");
+		#if __GNUC__
 		_driver = dlopen("libaticalrt.so", RTLD_LAZY);
 		if (_driver == 0) {
 			Throw("Failed to load cal driver: " << dlerror());
@@ -77,12 +80,16 @@ namespace cal
 		hydrazine::bit_cast(_calclFreeImage,  dlsym(_compiler, "calclFreeImage"));
 
 		calInit();
+		#else
+		assertM(false, "CAL Driver support not compiled into Ocelot.");
+		#endif
 	}
 
 	CalDriver::~CalDriver()
 	{
 		calShutdown();
 
+		#if __GNUC__
 		if (_driver) {
 			dlclose(_driver);
 		}
@@ -90,6 +97,9 @@ namespace cal
 		if (_compiler) {
 			dlclose(_compiler);
 		}
+		#else
+		assertM(false, "CAL Driver support not compiled into Ocelot.");
+		#endif
 
         // don't delete _instance as this would call the destructor again
         // let the memory be reclaimed when the program terminates

@@ -98,18 +98,12 @@ namespace transforms
 	
 	}
 	
-	std::string CToPTXInstrumentationPass::kernelClockSMInfo() const
-	{
-		return baseAddress;
-	}
-
-    
-    CToPTXInstrumentationPass::CToPTXInstrumentationPass()
+    CToPTXInstrumentationPass::CToPTXInstrumentationPass(std::string resource)
 		: KernelPass( Analysis::DataflowGraphAnalysis,
 			"CToPTXInstrumentationPass" )
 	{
 	    translator::CToPTXTranslator translator;
-	    translation = translator.generate();
+	    translation = translator.generate(resource);
 	    baseAddress = translation.globals.front().name;
 	}
 

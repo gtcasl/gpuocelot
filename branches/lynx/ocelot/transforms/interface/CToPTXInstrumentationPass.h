@@ -39,8 +39,7 @@ namespace transforms
 		    analysis::DataflowGraph& dfg();
 		
 		public:
-			CToPTXInstrumentationPass();
-			std::string kernelClockSMInfo() const;
+			CToPTXInstrumentationPass(std::string resource);
 			
 			std::string baseAddress;
 			

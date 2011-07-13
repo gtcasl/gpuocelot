@@ -168,9 +168,16 @@ namespace translator
         case iclass_arith3i:
         {
             std::string src1, src2;
+            
+            inst.d.addressMode = ir::PTXOperand::Register;
+            inst.a.addressMode = ir::PTXOperand::Register;
+            inst.b.addressMode = ir::PTXOperand::Register;
+            
+            inst.d.type = type;
+            inst.a.type = type;
+            inst.b.type = type;
         
             if(insn->class_code == iclass_arith3){
-                inst.b.addressMode = ir::PTXOperand::Register;
                 src1 = REG + boost::lexical_cast<std::string>(insn->opnds.a3.src1);
                 src2 = REG + boost::lexical_cast<std::string>(insn->opnds.a3.src2);
             }
@@ -180,12 +187,6 @@ namespace translator
                 inst.b.imm_int = insn->opnds.a3i.u.imm;
             }
         
-            inst.d.type = type;
-            inst.a.type = type;
-            inst.b.type = type;
-            inst.d.addressMode = ir::PTXOperand::Register;
-            inst.a.addressMode = ir::PTXOperand::Register;
-            
             inst.d.identifier = COD_REG + boost::lexical_cast<std::string>(++maxRegister);
             registers.push_back(inst.d.identifier);
             
@@ -575,6 +576,7 @@ namespace translator
                         
                         //add (tid.y * ntid.x + tid.x) + (ntid.x * ntid.y * tid.z)
                         inst.opcode = ir::PTXInstruction::Add;     
+                        inst.modifier = ir::PTXInstruction::Modifier_invalid;
                         setPredicate(inst);
                         
                         inst.d.addressMode = ir::PTXOperand::Register;
@@ -805,43 +807,20 @@ namespace translator
         return sizeof(*insn);
     }
     
-    CToPTXData CToPTXTranslator::generate(void) {
+    CToPTXData CToPTXTranslator::generate(std::string resource) {
     
-        char code_string[] = "\
-        {\n\
-            unsigned long start;\n\
-            unsigned long stop;\n\
-            ENTER_KERNEL:{\n\
-                start = clockCounter();\n\
-                syncThreads();\n\
-            }\n\
-            EXIT_KERNEL:{\n\
-            syncThreads();\n\
-            stop = clockCounter();\n\
-                if (threadIdxX() == 0) {\n\
-                    unsigned long currentBlockIdx = blockIdx();\n\
-                    deviceMem[2 * currentBlockIdx] = stop - start;\n\
-                    deviceMem[2 * currentBlockIdx + 1] = smId();\n\
-                }\n\
-            }\n\
-        }";
         
-        /*      
-        
-        char code_string[] = "\
-        {\n\
-            unsigned long currentBlockDim = blockDim();\n\
-            unsigned long currentThreadId = threadId();\n\
-            ENTER_BASIC_BLOCK:{\n\
-            }\n\
-        }";
-        */
-        
-            /*
-                deviceMem[currentBlockDim * basicBlockId() + currentThreadId] =\n\
-                     deviceMem[currentBlockDim * basicBlockId() + currentThreadId] + instructionsPerBasicBlock();\n\
-            */
-            
+        std::string code;
+        std::string line;
+        std::ifstream codeFile( resource );
+
+        if(codeFile.is_open()){
+            while(codeFile.good()){
+                getline(codeFile, line);
+                code.append(line + "\n");
+            }
+            codeFile.close();
+        }
         
 	    cod_parse_context context;
 	    cod_exec_context ec;
@@ -907,7 +886,7 @@ namespace translator
 	    context = new_cod_parse_context();
 	    cod_assoc_externs(context, externs);
 	    cod_parse_for_context(extern_string, context);
-	    gen_code = cod_code_gen(code_string, context);
+	    gen_code = cod_code_gen((char *)code.c_str(), context);
 	    ec = cod_create_exec_context(gen_code);
 	    func = (void(*)()) gen_code->func;
         

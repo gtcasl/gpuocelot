@@ -14,6 +14,7 @@
 #include <algorithm>
 #include <iostream>
 #include <sstream>
+#include <fstream>
 #include <set>
 
 #include <ocelot/ir/interface/PTXOperand.h>
@@ -91,7 +92,7 @@ namespace translator {
 			    smid,
 			    bar
 		    };
-		
+		    
 		    SpecialSymbols symbols;
 		
 		    typedef std::map<std::string, std::string> RegisterMap;
@@ -121,7 +122,7 @@ namespace translator {
 		    std::string baseAddress() const;
 		    void setPredicate(ir::PTXInstruction & instruction);
 		    int translate(dill_stream c, void *info_ptr, void *i);
-		    translator::CToPTXData generate();
+		    translator::CToPTXData generate(std::string resource);
 		    
 	};
 

@@ -1,35 +1,47 @@
 {
 	ocelot: "ocelot",
 	trace: { 
-		memoryChecker: true,
-		raceDetector: {
+		database: "traces-ipdom/database.trace",
+		memoryChecker: {
 			enabled: true,
-			ignoreIrrelevantWrites: true
+			checkInitialization: false
 		},
-		cacheSimulator: {
+		raceDetector: {
 			enabled: false,
-			writebackTime: 50,
-			cacheSize: 8192,
-			lineSize: 64,
-			hitTime: 1,
-			missTime: 200,
-			associativity: 1,
-			instructionMemory: 1
+			ignoreIrrelevantWrites: true
 		},
 		debugger: {
 			enabled: false,
-			kernelFilter: "none",
-			alwaysAttach: false
-		}
+			kernelFilter: "_Z13scalarProdGPUPfS_S_ii",
+			alwaysAttach: true
+		},
+		cacheSimulator: {
+			enabled: false,
+		},
+		branch: true,
+		memory: true
 	},
 	cuda: {
 		implementation: CudaRuntime,
 		runtimeApiTrace: "trace/CudaAPI.trace"
 	},
 	executive: {
-		devices: [ llvm ],
-		optimizationLevel: basic,
-		workerThreadLimit: 2
+		devices: [ emulated ],
+		port: 2011,
+		host: "127.0.0.1",
+		optimizationLevel: none,
+		workerThreadLimit: 1,
+		reconvergenceMechanism: "ipdom",
+		warpSize: 4
+	},
+	optimizations: {
+		subkernelSize: 1000000000
+	},
+	checkpoint: {
+		enabled: false,
+		path: "./",
+		prefix: "TestCudaIndirectFunctionCall_",
+		suffix: ".checkpoint"
 	}
 }
 

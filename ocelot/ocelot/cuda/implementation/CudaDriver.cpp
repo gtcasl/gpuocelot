@@ -14,7 +14,9 @@
 #include <hydrazine/implementation/debug.h>
 
 // Linux system headers
+#if __GNUC__
 #include <dlfcn.h>
+#endif
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -56,14 +58,17 @@ namespace cuda
 		unload();
 	}
 	
-
 	/*! \brief unloads the driver */
 	void CudaDriver::Interface::unload() {
 	
 		if( _driver )
 		{
 			report( "Closing " << _libname );
+			#if __GNUC__
 			dlclose( _driver );
+			#else
+			assertM(false, "CUDA Driver support not compiled into Ocelot.");
+			#endif
 			report("closed.");
 		}
 	}
@@ -71,6 +76,7 @@ namespace cuda
 	void CudaDriver::Interface::load()
 	{
 		if( _driver != 0 ) return;
+		#if __GNUC__
 		report( "Loading " << _libname );
 		_driver = dlopen( _libname.c_str(), RTLD_LAZY );
 		if( _driver == 0 )
@@ -216,6 +222,10 @@ namespace cuda
 		else {
 			report("cuDriverGetVersion() returned " << result);
 		}
+
+		#else
+		assertM(false, "CUDA Driver support not compiled into Ocelot.");
+		#endif
 	}
 
 	bool CudaDriver::Interface::loaded() const
@@ -1030,7 +1040,8 @@ namespace cuda
 		return (*_interface.cuGLRegisterBufferObject)(bufferobj);
 	}
 	
-	CUresult CudaDriver::cuGLSetBufferObjectMapFlags(GLuint buffer, unsigned int flags) {
+	CUresult CudaDriver::cuGLSetBufferObjectMapFlags(GLuint buffer,
+		unsigned int flags) {
 		CHECK();
 		return (*_interface.cuGLSetBufferObjectMapFlags)(buffer, flags);
 	}

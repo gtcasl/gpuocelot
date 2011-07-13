@@ -31,7 +31,8 @@ namespace trace
 		class WarpSynchronous 
 		{
 		public:
-			WarpSynchronous() : enabled(false), emitHotPaths(false), csv("warpsynchronous.csv") { }
+			WarpSynchronous() : enabled(false), emitHotPaths(false),
+				csv("warpsynchronous.csv") { }
 			
 			//! \brief whether trace generator is enabled
 			bool enabled;
@@ -48,8 +49,10 @@ namespace trace
 		*/
 		class PerformanceBound {
 		public:
-			PerformanceBound(): enabled(false), protocol(PerformanceBoundGenerator::Protocol_sm_20), 
-				render(false), outputFormat(PerformanceBoundGenerator::Output_dot) {} 
+			PerformanceBound(): enabled(false),
+				protocol(PerformanceBoundGenerator::Protocol_sm_20), 
+				render(false),
+				outputFormat(PerformanceBoundGenerator::Output_dot) {} 
 		
 			/*! \brief Enable the performance bound trace generator */
 			bool enabled;
@@ -66,7 +69,8 @@ namespace trace
 		/*! \brief configuration properties for ConvergenceGenerator */
 		class Convergence {
 		public:
-			Convergence() : enabled(false), logfile("convergence"), dot(false), render(false) { }
+			Convergence() : enabled(false), logfile("convergence"),
+				dot(false), render(false) { }
 		
 			//! \brief indicates trace generator is enabled
 			bool enabled;
@@ -161,8 +165,8 @@ namespace trace
 		//! \brief trace::LoadBalanceGenerator
 		bool loadBalance;
 
-    //! \brief trace:X86TraceGenerator
-    bool x86trace;
+		//! \brief trace:X86TraceGenerator
+		bool x86trace;
 		
 		ControlFlow controlFlowVisualizer;
 		
@@ -184,7 +188,7 @@ namespace trace
 		trace::LoadBalanceGenerator _loadBalance;
 		trace::ControlFlowVisualizer _controlFlowVisualizer;
 		trace::BasicBlockCountGenerator _basicBlockCountGenerator;
-    trace::X86TraceGenerator _x86TraceGenerator;
+		trace::X86TraceGenerator _x86TraceGenerator;
 	};
 }
 

@@ -87,6 +87,9 @@ namespace analysis
             /*! \brief The instrumentation pass */
             transforms::Pass *pass;
             
+            /*! \brief The symbol name for data structure storing instrumentation results */
+            std::string symbol;
+            
             /*! \brief The number of thread blocks or CTAs specified for this execution */
             unsigned int threadBlocks;
 

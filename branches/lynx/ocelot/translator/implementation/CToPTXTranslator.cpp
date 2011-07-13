@@ -655,6 +655,26 @@ namespace translator
                     
                     }
                     break;
+                    case basic_block_id:
+                    case basic_block_size: 
+                    {
+                    
+                        inst.opcode = ir::PTXInstruction::Mov;
+                 
+                        inst.d.identifier = call_name;
+                        registerMap[REG + boost::lexical_cast<std::string>(insn->opnds.calli.src)] = inst.d.identifier; 
+                             
+                        inst.d.type = type;          
+                        inst.d.addressMode = ir::PTXOperand::Register;
+                        inst.a.addressMode = ir::PTXOperand::Immediate;
+                        inst.a.type = type;
+                        inst.a.imm_int = 0;
+                        
+                        setPredicate(inst);
+                        stmt.instruction = inst;
+                        statements.push_back(stmt);     
+                    }
+                    break;
                     default:
                     break;
                 }
@@ -720,48 +740,56 @@ namespace translator
         {
             std::string src1, dst;
         
-            if(insn->class_code == iclass_loadstore){
-                
-            }
-            else {
-                dst = REG + boost::lexical_cast<std::string>(insn->opnds.a3i.src);
-                src1 = REG + boost::lexical_cast<std::string>(insn->opnds.a3i.dest);
+            if(insn->class_code == iclass_loadstorei)
+            {
+                src1 = REG + boost::lexical_cast<std::string>(insn->opnds.a3i.src);
+                dst = REG + boost::lexical_cast<std::string>(insn->opnds.a3i.dest);
                 inst.d.offset = insn->opnds.a3i.u.imm;
             }
+            
+            inst.addressSpace = ir::PTXInstruction::Global; 
+            inst.type = type;
             
 	        int store = (insn->insn_code & 0x10) && 0x10;
 	        if(store) {
 	            
 	            inst.opcode = ir::PTXInstruction::St;
 	            
-                inst.addressSpace = ir::PTXInstruction::Global; 
-                inst.type = type;
-                
-                inst.d.identifier = registerMap[dst];		
-                inst.a.identifier = registerMap[src1];	
+                inst.d.identifier = registerMap[src1];		
+                inst.a.identifier = registerMap[dst];	
                 
                 inst.d.addressMode = ir::PTXOperand::Indirect;
                 inst.a.addressMode = ir::PTXOperand::Register;
                 inst.a.type = type;
-	     
-	     
-	            ir::PTXInstruction prev = statements.back().instruction;
-                if(prev.opcode == ir::PTXInstruction::Add && prev.d.identifier == inst.d.identifier) {
-                    prev.b.addressMode = ir::PTXOperand::Register;
-                    prev.b.identifier = baseReg;
-                    statements.pop_back();
-                    stmt.instruction = prev;
-                    statements.push_back(stmt);
-                }
-                   
-                setPredicate(inst);
-                stmt.instruction = inst;
-	            statements.push_back(stmt);
-	        
 	        }
 	        else {
-	       
+	            
+	            inst.opcode = ir::PTXInstruction::Ld;
+	            
+                inst.a.identifier = registerMap[src1];		
+                inst.d.identifier = COD_REG + boost::lexical_cast<std::string>(++maxRegister);
+                registers.push_back(inst.d.identifier);
+                
+                registerMap[dst] = inst.d.identifier;
+                
+                inst.a.addressMode = ir::PTXOperand::Indirect;
+                inst.d.addressMode = ir::PTXOperand::Register;
+                inst.d.type = type;
 	        }
+	           
+	        ir::PTXInstruction prev = statements.back().instruction;
+	        
+            if(prev.opcode == ir::PTXInstruction::Add && (prev.d.identifier == inst.d.identifier || prev.d.identifier == inst.a.identifier)) {
+                prev.b.addressMode = ir::PTXOperand::Register;
+                prev.b.identifier = baseReg;
+                statements.pop_back();
+                stmt.instruction = prev;
+                statements.push_back(stmt);
+            }
+               
+            setPredicate(inst);
+            stmt.instruction = inst;
+            statements.push_back(stmt);   
 	           
             break;
         }
@@ -928,6 +956,8 @@ namespace translator
         functionCalls["gridId"] = gridid;
         functionCalls["smId"] = smid;
         functionCalls["syncThreads"] = bar;
+        functionCalls["basicBlockId"] = basic_block_id;
+        functionCalls["instructionsPerBasicBlock"] = basic_block_size;
     }
 }
 

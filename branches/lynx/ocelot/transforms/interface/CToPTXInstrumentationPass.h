@@ -17,6 +17,10 @@
 #define ENTER_BASIC_BLOCK   "ENTER_BASIC_BLOCK"
 #define EXIT_BASIC_BLOCK    "EXIT_BASIC_BLOCK"
 
+/* basic block constructs */
+#define BASIC_BLOCK_ID "basicBlockId"
+#define BASIC_BLOCK_SIZE "instructionsPerBasicBlock"
+
 
 namespace ir
 {
@@ -41,7 +45,11 @@ namespace transforms
 		public:
 			CToPTXInstrumentationPass(std::string resource);
 			
+			std::map<std::string, analysis::DataflowGraph::RegisterId> newRegisterMap;
 			std::string baseAddress;
+			
+	    private:
+	        ir::PTXStatement prepareStatementToInsert(ir::PTXStatement statement, unsigned int basicBlockSize, unsigned int basicBlockId);
 			
 		public:
 			/*! \brief Initialize the pass using a specific kernel */

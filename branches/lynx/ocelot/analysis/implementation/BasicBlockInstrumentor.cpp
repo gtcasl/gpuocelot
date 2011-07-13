@@ -11,6 +11,7 @@
 
 #include <ocelot/cuda/interface/cuda_runtime.h>
 
+#include <ocelot/transforms/interface/CToPTXInstrumentationPass.h>
 #include <ocelot/transforms/interface/MemoryIntensityPass.h>
 #include <ocelot/transforms/interface/DynamicInstructionCountPass.h>
 #include <ocelot/transforms/interface/BasicBlockExecutionCountPass.h>
@@ -67,12 +68,19 @@ namespace analysis
             throw hydrazine::Exception( "cudaMemset failed!" );
         }
         
-        if(cudaMemcpyToSymbol(((transforms::BasicBlockInstrumentationPass *)pass)->basicBlockCounterBase().c_str(), &counter, sizeof(*counter), 0, cudaMemcpyHostToDevice) != cudaSuccess) {
+        if(cudaMemcpyToSymbol(symbol.c_str(), &counter, sizeof(size_t *), 0, cudaMemcpyHostToDevice) != cudaSuccess) {
             throw hydrazine::Exception( "cudaMemcpyToSymbol failed!");
         }
     }
 
     transforms::Pass *BasicBlockInstrumentor::createPass() {
+        
+        transforms::CToPTXInstrumentationPass *pass = new transforms::CToPTXInstrumentationPass("resources/dynamicInstructionCount.c");
+        symbol = pass->baseAddress;
+        entries = 1;
+        return pass;
+        
+        /*
         
         transforms::BasicBlockInstrumentationPass *basicBlockPass;
         entries = 1;        
@@ -91,9 +99,11 @@ namespace analysis
             default:
                 throw hydrazine::Exception( "No basic block instrumentation pass specified!" );
         }
+        
 
         basicBlockPass->entries = entries;
         return basicBlockPass;          
+        */
     }
 
     void BasicBlockInstrumentor::extractResults(std::ostream *out) {

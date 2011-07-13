@@ -90,7 +90,9 @@ namespace translator {
 			    nctaid,
 			    gridid,
 			    smid,
-			    bar
+			    bar,
+			    basic_block_id,
+			    basic_block_size
 		    };
 		    
 		    SpecialSymbols symbols;

@@ -202,19 +202,25 @@ class ControlTree : public Analysis
 
 namespace std
 {
-	template<> inline size_t hash< 
-		analysis::ControlTree::NodeList::iterator >::operator()( 
-		analysis::ControlTree::NodeList::iterator it ) const
+	template<> struct hash<
+		ir::ControlTree::NodeList::iterator >
 	{
-		return ( size_t )&( *it );
-	}
+		inline size_t operator()(
+				ir::ControlTree::NodeList::iterator it ) const
+		{
+			return ( size_t)&( *it );
+		}
+	};
 
-	template<> inline size_t hash< 
-		analysis::ControlTree::NodeList::const_iterator >::operator()( 
-		analysis::ControlTree::NodeList::const_iterator it ) const
+	template<> struct hash<
+		ir::ControlTree::NodeList::const_iterator >
 	{
-		return ( size_t )&( *it );
-	}
+		inline size_t operator()(
+				ir::ControlTree::NodeList::const_iterator it ) const
+		{
+			return ( size_t)&( *it );
+		}
+	};
 }
 #endif
 

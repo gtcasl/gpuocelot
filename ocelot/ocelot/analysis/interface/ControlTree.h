@@ -203,20 +203,20 @@ class ControlTree : public Analysis
 namespace std
 {
 	template<> struct hash<
-		ir::ControlTree::NodeList::iterator >
+		analysis::ControlTree::NodeList::iterator >
 	{
 		inline size_t operator()(
-				ir::ControlTree::NodeList::iterator it ) const
+				analysis::ControlTree::NodeList::iterator it ) const
 		{
 			return ( size_t)&( *it );
 		}
 	};
 
 	template<> struct hash<
-		ir::ControlTree::NodeList::const_iterator >
+		analysis::ControlTree::NodeList::const_iterator >
 	{
 		inline size_t operator()(
-				ir::ControlTree::NodeList::const_iterator it ) const
+				analysis::ControlTree::NodeList::const_iterator it ) const
 		{
 			return ( size_t)&( *it );
 		}

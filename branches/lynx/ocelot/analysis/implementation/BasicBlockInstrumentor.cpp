@@ -75,35 +75,33 @@ namespace analysis
 
     transforms::Pass *BasicBlockInstrumentor::createPass() {
         
-        transforms::CToPTXInstrumentationPass *pass = new transforms::CToPTXInstrumentationPass("resources/dynamicInstructionCount.c");
-        symbol = pass->baseAddress;
         entries = 1;
-        return pass;
         
-        /*
-        
-        transforms::BasicBlockInstrumentationPass *basicBlockPass;
-        entries = 1;        
-
         switch(type) {
             case executionCount:
-                basicBlockPass = new transforms::BasicBlockExecutionCountPass;
-                break;
+            {
+                transforms::BasicBlockInstrumentationPass *basicBlockPass = new transforms::BasicBlockExecutionCountPass;
+                basicBlockPass->entries = entries;
+                symbol = basicBlockPass->basicBlockCounterBase();
+                return basicBlockPass;
+            }
             case instructionCount:
-                basicBlockPass = new transforms::DynamicInstructionCountPass;
-                break;
+            {
+                transforms::CToPTXInstrumentationPass *pass = new transforms::CToPTXInstrumentationPass("resources/dynamicInstructionCount.c");
+                symbol = pass->baseAddress;
+                return pass;     
+            }
             case memoryIntensity:
-                basicBlockPass = new transforms::MemoryIntensityPass;
-                entries = 2;
-                break;
+            {
+                transforms::BasicBlockInstrumentationPass *basicBlockPass = new transforms::MemoryIntensityPass;
+                basicBlockPass->entries = entries = 2;
+                symbol = basicBlockPass->basicBlockCounterBase();
+                return basicBlockPass;
+            }
             default:
                 throw hydrazine::Exception( "No basic block instrumentation pass specified!" );
         }
         
-
-        basicBlockPass->entries = entries;
-        return basicBlockPass;          
-        */
     }
 
     void BasicBlockInstrumentor::extractResults(std::ostream *out) {

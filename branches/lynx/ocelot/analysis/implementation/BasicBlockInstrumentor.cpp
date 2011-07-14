@@ -80,10 +80,9 @@ namespace analysis
         switch(type) {
             case executionCount:
             {
-                transforms::BasicBlockInstrumentationPass *basicBlockPass = new transforms::BasicBlockExecutionCountPass;
-                basicBlockPass->entries = entries;
-                symbol = basicBlockPass->basicBlockCounterBase();
-                return basicBlockPass;
+                transforms::CToPTXInstrumentationPass *pass = new transforms::CToPTXInstrumentationPass("resources/basicBlockExecutionCount.c");
+                symbol = pass->baseAddress;
+                return pass;   
             }
             case instructionCount:
             {

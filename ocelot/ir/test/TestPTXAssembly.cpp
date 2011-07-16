@@ -430,7 +430,8 @@ test::TestPTXAssembly::TypeVector testTex_OUT(
 ////////////////////////////////////////////////////////////////////////////////
 // TEST CVT
 std::string testCvt_PTX(ir::PTXOperand::DataType dtype, 
-	ir::PTXOperand::DataType stype, bool ftz, bool sat, bool round)
+	ir::PTXOperand::DataType stype, bool ftz, bool sat, bool round,
+	bool rmi = false)
 {
 	std::stringstream ptx;
 
@@ -463,11 +464,25 @@ std::string testCvt_PTX(ir::PTXOperand::DataType dtype,
 	{
 		if(ir::PTXOperand::isFloat(stype))
 		{
-			ptx << ".rz";
+			if(rmi)
+			{
+				ptx << ".rm";
+			}
+			else
+			{
+				ptx << ".rz";
+			}
 		}
 		else
 		{
-			ptx << ".rzi";
+			if(rmi)
+			{
+				ptx << ".rmi";
+			}
+			else
+			{
+				ptx << ".rzi";
+			}
 		}
 	}
 	
@@ -484,7 +499,8 @@ std::string testCvt_PTX(ir::PTXOperand::DataType dtype,
 	return ptx.str();
 }
 
-template<typename dtype, typename stype, bool ftz, bool sat, bool round>
+template<typename dtype, typename stype, bool ftz, bool sat, bool round,
+	bool rmi = false>
 void testCvt_REF(void* output, void* input)
 {
 	stype r0 = getParameter<stype>(input, 0);
@@ -516,7 +532,14 @@ void testCvt_REF(void* output, void* input)
 	{
 		if(typeid(float) == typeid(dtype) && typeid(float) == typeid(stype))
 		{
-			r1 = trunc(r0);
+			if(rmi)
+			{
+				r1 = floor(r0);
+			}
+			else
+			{
+				r1 = trunc(r0);
+			}
 		}
 	}
 
@@ -6485,6 +6508,12 @@ namespace test
 			testCvt_REF<unsigned int, float, true, true, true>,
 			testCvt_PTX(ir::PTXOperand::u32,
 				ir::PTXOperand::f32, true, true, true),
+			testCvt_INOUT(I32), testCvt_INOUT(FP32),
+			uniformFloat<float, 1>, 1, 1);
+		add("TestCvt-u32-f32-rmi",
+			testCvt_REF<unsigned int, float, false, false, true, true>,
+			testCvt_PTX(ir::PTXOperand::u32,
+				ir::PTXOperand::f32, false, false, true, true),
 			testCvt_INOUT(I32), testCvt_INOUT(FP32),
 			uniformFloat<float, 1>, 1, 1);
 		add("TestCvt-u32-f64",

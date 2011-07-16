@@ -415,12 +415,18 @@ ExternalFunctionSet::~ExternalFunctionSet()
 
 void ExternalFunctionSet::add(const std::string& name, void* pointer)
 {
-	assert(_functions.count(name) == 0);
+	FunctionSet::iterator function = _functions.find(name);
+	if(function != _functions.end())
+	{
+		ExternalFunction* ef = const_cast<ExternalFunction*>(&function->second);
+		assert(ef->functionPointer() == pointer);
+		return;
+	}
 
 	report("Adding function " << name << " with CPU function pointer "
 		<< pointer);
 
-	_functions.insert(std::make_pair(name,
+	_functions.insert(std::make_pair(name, 
 		ExternalFunction(name, pointer, _module)));
 }
 

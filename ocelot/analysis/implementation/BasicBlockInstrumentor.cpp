@@ -11,6 +11,7 @@
 
 #include <ocelot/cuda/interface/cuda_runtime.h>
 
+#include <ocelot/transforms/interface/CToPTXInstrumentationPass.h>
 #include <ocelot/transforms/interface/MemoryIntensityPass.h>
 #include <ocelot/transforms/interface/DynamicInstructionCountPass.h>
 #include <ocelot/transforms/interface/BasicBlockExecutionCountPass.h>
@@ -67,33 +68,39 @@ namespace analysis
             throw hydrazine::Exception( "cudaMemset failed!" );
         }
         
-        if(cudaMemcpyToSymbol(((transforms::BasicBlockInstrumentationPass *)pass)->basicBlockCounterBase().c_str(), &counter, sizeof(*counter), 0, cudaMemcpyHostToDevice) != cudaSuccess) {
+        if(cudaMemcpyToSymbol(symbol.c_str(), &counter, sizeof(size_t *), 0, cudaMemcpyHostToDevice) != cudaSuccess) {
             throw hydrazine::Exception( "cudaMemcpyToSymbol failed!");
         }
     }
 
     transforms::Pass *BasicBlockInstrumentor::createPass() {
         
-        transforms::BasicBlockInstrumentationPass *basicBlockPass;
-        entries = 1;        
-
+        entries = 1;
+        
         switch(type) {
             case executionCount:
-                basicBlockPass = new transforms::BasicBlockExecutionCountPass;
-                break;
+            {
+                transforms::CToPTXInstrumentationPass *pass = new transforms::CToPTXInstrumentationPass("resources/basicBlockExecutionCount.c");
+                symbol = pass->baseAddress;
+                return pass;   
+            }
             case instructionCount:
-                basicBlockPass = new transforms::DynamicInstructionCountPass;
-                break;
+            {
+                transforms::CToPTXInstrumentationPass *pass = new transforms::CToPTXInstrumentationPass("resources/dynamicInstructionCount.c");
+                symbol = pass->baseAddress;
+                return pass;     
+            }
             case memoryIntensity:
-                basicBlockPass = new transforms::MemoryIntensityPass;
-                entries = 2;
-                break;
+            {
+                transforms::BasicBlockInstrumentationPass *basicBlockPass = new transforms::MemoryIntensityPass;
+                basicBlockPass->entries = entries = 2;
+                symbol = basicBlockPass->basicBlockCounterBase();
+                return basicBlockPass;
+            }
             default:
                 throw hydrazine::Exception( "No basic block instrumentation pass specified!" );
         }
-
-        basicBlockPass->entries = entries;
-        return basicBlockPass;          
+        
     }
 
     void BasicBlockInstrumentor::extractResults(std::ostream *out) {

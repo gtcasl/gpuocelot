@@ -17,6 +17,10 @@
 #define ENTER_BASIC_BLOCK   "ENTER_BASIC_BLOCK"
 #define EXIT_BASIC_BLOCK    "EXIT_BASIC_BLOCK"
 
+/* basic block constructs */
+#define BASIC_BLOCK_ID          "basicBlockId"
+#define BASIC_BLOCK_INST_COUNT  "basicBlockInstructionCount"
+
 
 namespace ir
 {
@@ -26,6 +30,17 @@ namespace ir
 
 namespace transforms
 {
+
+    class TranslationBasicBlock {
+    
+        public:
+        
+            typedef std::vector<ir::PTXStatement> StatementVector;
+            
+            StatementVector statements; 
+            std::string label;
+    
+    };
 
 	/*! \brief A class for an instrumentation pass that adds generated PTX from
 	    CToPTXTranslator to the kernel.
@@ -39,10 +54,13 @@ namespace transforms
 		    analysis::DataflowGraph& dfg();
 		
 		public:
-			CToPTXInstrumentationPass();
-			std::string kernelClockSMInfo() const;
+			CToPTXInstrumentationPass(std::string resource);
 			
+			std::map<std::string, analysis::DataflowGraph::RegisterId> newRegisterMap;
 			std::string baseAddress;
+			
+	    private:
+	        ir::PTXStatement prepareStatementToInsert(ir::PTXStatement statement, unsigned int basicBlockSize, unsigned int basicBlockId);
 			
 		public:
 			/*! \brief Initialize the pass using a specific kernel */

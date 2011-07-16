@@ -67,7 +67,12 @@ unsigned long smId();
 void syncThreads();
 
 unsigned long basicBlockId();
-unsigned long instructionsPerBasicBlock();
+unsigned long basicBlockInstructionCount();
 
+/*  Only instructions that are actually executed will be counted. 
+    Instructions that are predicated and the predicate is false
+    will be ignored 
+*/
+unsigned long basicBlockExecutedInstructionCount();
 
 #endif

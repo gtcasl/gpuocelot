@@ -22,8 +22,7 @@ namespace analysis
 		public:       
             /*! \brief The description of the specified pass */
             std::string description;
-            std::string symbol;
-            
+      
             size_t *clock_sm_info;
 			
 		public:

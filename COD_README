@@ -5,5 +5,7 @@ COD SETUP:
 3. Configure, make and make install ffs/fm.
 4. Configure, make and make install dill.
 5. Configure, make and make install ffs/cod.
+6. Make sure atl.h, cercs_env.h, cod.h, dill.h, dill_internal.h and fm.h have been copied to /usr/local/include.
+7. Make sure LD_LIBRARY_PATH is set to /usr/local/lib.
 
 Now building ocelot will correctly link with the cod dependencies.

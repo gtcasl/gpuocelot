@@ -14,6 +14,7 @@
 #include <algorithm>
 #include <iostream>
 #include <sstream>
+#include <fstream>
 #include <set>
 
 #include <ocelot/ir/interface/PTXOperand.h>
@@ -69,29 +70,32 @@ namespace translator {
 		public:
 		    
 		    enum SpecialSymbols {
-			    clock64,
-			    threadCounter,
-			    tidx,
-			    tidy,
-			    tidz,
-			    tid,
-			    ntidx,
-			    ntidy,
-			    ntidz,
-			    ntid,
-			    ctaidx,
-			    ctaidy,
-			    ctaidz,
-			    ctaid,
-			    nctaidx,
-			    nctaidy,
-			    nctaidz,
-			    nctaid,
-			    gridid,
-			    smid,
-			    bar
+			    clockCounterSymbol,
+			    threadIdSymbol,
+			    threadIdxXSymbol,
+			    threadIdxYSymbol,
+			    threadIdxZSymbol,
+			    threadIdxSymbol,
+			    blockDimXSymbol,
+			    blockDimYSymbol,
+			    blockDimZSymbol,
+			    blockDimSymbol,
+			    blockIdxXSymbol,
+			    blockIdxYSymbol,
+			    blockIdxZSymbol,
+			    blockIdxSymbol,
+			    gridDimXSymbol,
+			    gridDimYSymbol,
+			    gridDimZSymbol,
+			    gridDimSymbol,
+			    gridIdSymbol,
+			    smIdSymbol,
+			    syncThreadsSymbol,
+			    basicBlockIdSymbol,
+                basicBlockInstCountSymbol,
+                basicBlockExecInstCountSymbol
 		    };
-		
+		    
 		    SpecialSymbols symbols;
 		
 		    typedef std::map<std::string, std::string> RegisterMap;
@@ -113,6 +117,16 @@ namespace translator {
 		    
 		    std::string baseReg;	  
 		    
+		    private:
+		        void generateBlockId(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn);
+		        void generateSMId(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn);
+		        void generateClockCounter(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn);
+		        void generateThreadIndexX(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn);
+		        void generateBlockDim(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn);
+		        void generateGlobalThreadId(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn);
+		        void generateSyncThreads(ir::PTXInstruction inst, ir::PTXStatement stmt);
+		        void generateBasicBlockConstructs(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn, std::string callName);
+		    
 		    public: 
 		    
 		    /* default constructor */
@@ -121,7 +135,7 @@ namespace translator {
 		    std::string baseAddress() const;
 		    void setPredicate(ir::PTXInstruction & instruction);
 		    int translate(dill_stream c, void *info_ptr, void *i);
-		    translator::CToPTXData generate();
+		    translator::CToPTXData generate(std::string resource);
 		    
 	};
 

@@ -94,7 +94,11 @@ unsigned long basicBlockId() {
     return 0;
 }
 
-unsigned long instructionsPerBasicBlock() {
+unsigned long basicBlockInstructionCount() {
+    return 1;
+}
+
+unsigned long basicBlockExecutedInstructionCount() {
     return 1;
 }
 

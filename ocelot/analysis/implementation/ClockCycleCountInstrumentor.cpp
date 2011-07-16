@@ -46,7 +46,7 @@ namespace analysis
     }
 
     transforms::Pass *ClockCycleCountInstrumentor::createPass() {
-        transforms::CToPTXInstrumentationPass *pass = new transforms::CToPTXInstrumentationPass();
+        transforms::CToPTXInstrumentationPass *pass = new transforms::CToPTXInstrumentationPass("resources/clockCycleCount.c");
         symbol = pass->baseAddress;
         return pass;
     }

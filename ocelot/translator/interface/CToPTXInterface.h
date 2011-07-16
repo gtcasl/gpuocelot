@@ -24,23 +24,23 @@ unsigned long clockCounter();
     blockDim = blockDimX * blockDimY * blockDimZ
     threadId = (blockIdxX + blockIdxY * gridDimX) * blockDim + threadIdx
 */
-unsigned long threadId();
+unsigned long globalThreadId();
 
 /* corresponds to PTX register tid */
-unsigned long threadIdxX();
-unsigned long threadIdxY();
-unsigned long threadIdxZ();
+unsigned long threadIndexX();
+unsigned long threadIndexY();
+unsigned long threadIndexZ();
 
 /* threadIdx = threadIdxX + threadIdxY * blockDimX + threadIdxZ * blockDimX * blockDimY */
-unsigned long threadIdx();
+unsigned long blockThreadId();
 
 /* corresponds to PTX register ctaid */
-unsigned long blockIdxX();
-unsigned long blockIdxY();
-unsigned long blockIdxZ();
+unsigned long blockIndexX();
+unsigned long blockIndexY();
+unsigned long blockIndexZ();
 
 /* blockIdx = blockIdxX + blockIdxY * gridDimX */
-unsigned long blockIdx();
+unsigned long blockId();
 
 /* corresponds to PTX register ntid */
 unsigned long blockDimX();

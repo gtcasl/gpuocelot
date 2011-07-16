@@ -675,7 +675,7 @@ namespace translator
                         
                        
                 switch(functionCalls[call_name]) {
-                    case blockIdxSymbol:
+                    case blockIdSymbol:
                     {  
                         generateBlockId(inst, stmt, type, insn);
                     }
@@ -706,7 +706,7 @@ namespace translator
                         generateBlockDim(inst, stmt, type, insn);
                     }
                     break;
-                    case threadIdSymbol: 
+                    case globalThreadIdSymbol: 
                     {
                         generateGlobalThreadId(inst, stmt, type, insn);
                     
@@ -897,14 +897,14 @@ namespace translator
 	    cod_exec_context ec;
 	
 	    static char extern_string[] =  "unsigned long clockCounter();\
-                                        unsigned long threadId();\
-                                        unsigned long threadIdxX();\
-                                        unsigned long threadIdxY();\
-                                        unsigned long threadIdxZ();\
-                                        unsigned long blockIdx();\
-                                        unsigned long blockIdxX();\
-                                        unsigned long blockIdxY();\
-                                        unsigned long blockIdxZ();\
+                                        unsigned long globalThreadId();\
+                                        unsigned long threadIndexX();\
+                                        unsigned long threadIndexY();\
+                                        unsigned long threadIndexZ();\
+                                        unsigned long blockId();\
+                                        unsigned long blockIndexX();\
+                                        unsigned long blockIndexY();\
+                                        unsigned long blockIndexZ();\
                                         unsigned long blockDim();\
                                         unsigned long blockDimX();\
                                         unsigned long blockDimY();\
@@ -923,14 +923,14 @@ namespace translator
 	    static cod_extern_entry externs[] = 
 	    {
 	        {(char *)"clockCounter", (void*)(unsigned long)(*clockCounter)},
-	        {(char *)"threadId", (void*)(unsigned long)(*threadId)},
-	        {(char *)"threadIdxX", (void*)(unsigned long)(*threadIdxX)},
-	        {(char *)"threadIdxY", (void*)(unsigned long)(*threadIdxY)},
-	        {(char *)"threadIdxZ", (void*)(unsigned long)(*threadIdxZ)},
-	        {(char *)"blockIdx", (void*)(unsigned long)(*blockIdx)},
-	        {(char *)"blockIdxX", (void*)(unsigned long)(*blockIdxX)},
-	        {(char *)"blockIdxY", (void*)(unsigned long)(*blockIdxY)},
-	        {(char *)"blockIdxZ", (void*)(unsigned long)(*blockIdxZ)},
+	        {(char *)"globalThreadId", (void*)(unsigned long)(*globalThreadId)},
+	        {(char *)"threadIndexX", (void*)(unsigned long)(*threadIndexX)},
+	        {(char *)"threadIndexY", (void*)(unsigned long)(*threadIndexY)},
+	        {(char *)"threadIndexZ", (void*)(unsigned long)(*threadIndexZ)},
+	        {(char *)"blockId", (void*)(unsigned long)(*blockId)},
+	        {(char *)"blockIndexX", (void*)(unsigned long)(*blockIndexX)},
+	        {(char *)"blockIndexY", (void*)(unsigned long)(*blockIndexY)},
+	        {(char *)"blockIndexZ", (void*)(unsigned long)(*blockIndexZ)},
 	        {(char *)"blockDim", (void*)(unsigned long)(*blockDim)},
 	        {(char *)"blockDimX", (void*)(unsigned long)(*blockDimX)},
 	        {(char *)"blockDimY", (void*)(unsigned long)(*blockDimY)},
@@ -980,11 +980,11 @@ namespace translator
         : maxRegister(0), maxPredicate(0)
     {
         functionCalls["clockCounter"] = clockCounterSymbol;
-        functionCalls["threadId"] = threadIdSymbol;
-        functionCalls["threadIdxX"] = threadIdxXSymbol;
-        functionCalls["threadIdxY"] = threadIdxYSymbol;
-        functionCalls["threadIdxZ"] = threadIdxZSymbol;
-        functionCalls["threadIdx"] = threadIdxSymbol;
+        functionCalls["globalThreadId"] = globalThreadIdSymbol;
+        functionCalls["threadIndexX"] = threadIdxXSymbol;
+        functionCalls["threadIndexY"] = threadIdxYSymbol;
+        functionCalls["threadIndexZ"] = threadIdxZSymbol;
+        functionCalls["blockThreadId"] = blockThreadIdSymbol;
         functionCalls["blockDimX"] = blockDimXSymbol;
         functionCalls["blockDimY"] = blockDimYSymbol;
         functionCalls["blockDimZ"] = blockDimZSymbol;
@@ -992,7 +992,7 @@ namespace translator
         functionCalls["blockIdxX"] = blockIdxXSymbol;
         functionCalls["blockIdxY"] = blockIdxYSymbol;
         functionCalls["blockIdxZ"] = blockIdxZSymbol;
-        functionCalls["blockIdx"] = blockIdxSymbol;
+        functionCalls["blockId"] = blockIdSymbol;
         functionCalls["gridDimX"] = gridDimXSymbol;
         functionCalls["gridDimY"] = gridDimYSymbol;
         functionCalls["gridDimZ"] = gridDimZSymbol;

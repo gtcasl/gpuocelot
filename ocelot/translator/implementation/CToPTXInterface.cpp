@@ -11,39 +11,39 @@ unsigned long clockCounter() {
     return 1; 
 }
 
-unsigned long threadId() {
+unsigned long globalThreadId() {
     return 0;
 }
 
-unsigned long threadIdxX() { 
+unsigned long threadIndexX() { 
     return 0; 
 }
 
-unsigned long threadIdxY() { 
+unsigned long threadIndexY() { 
     return 0; 
 }
 
-unsigned long threadIdxZ() { 
+unsigned long threadIndexZ() { 
     return 0; 
 }
 
-unsigned long threadIdx() { 
+unsigned long blockThreadId() { 
     return 0; 
 }
 
-unsigned long blockIdxX() { 
+unsigned long blockIndexX() { 
     return 0; 
 }
 
-unsigned long blockIdxY() { 
+unsigned long blockIndexY() { 
     return 0; 
 }
 
-unsigned long blockIdxZ() { 
+unsigned long blockIndexZ() { 
     return 0; 
 }
 
-unsigned long blockIdx() { 
+unsigned long blockId() { 
     return 0; 
 }
 

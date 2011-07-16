@@ -71,11 +71,11 @@ namespace translator {
 		    
 		    enum SpecialSymbols {
 			    clockCounterSymbol,
-			    threadIdSymbol,
+			    globalThreadIdSymbol,
 			    threadIdxXSymbol,
 			    threadIdxYSymbol,
 			    threadIdxZSymbol,
-			    threadIdxSymbol,
+			    blockThreadIdSymbol,
 			    blockDimXSymbol,
 			    blockDimYSymbol,
 			    blockDimZSymbol,
@@ -83,7 +83,7 @@ namespace translator {
 			    blockIdxXSymbol,
 			    blockIdxYSymbol,
 			    blockIdxZSymbol,
-			    blockIdxSymbol,
+			    blockIdSymbol,
 			    gridDimXSymbol,
 			    gridDimYSymbol,
 			    gridDimZSymbol,

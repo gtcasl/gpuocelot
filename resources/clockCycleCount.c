@@ -1,17 +1,17 @@
 {
     unsigned long start;
     unsigned long stop;
-    ENTER_KERNEL:{
+    ON_KERNEL_ENTRY:{
         start = clockCounter();
         syncThreads();
     }
-    EXIT_KERNEL:{
+    ON_KERNEL_EXIT:{
     syncThreads();
     stop = clockCounter();
-        if (threadIdxX() == 0) {
-            unsigned long currentBlockIdx = blockIdx();
-            deviceMem[2 * currentBlockIdx] = stop - start;
-            deviceMem[2 * currentBlockIdx + 1] = smId();
+        if (threadIndexX() == 0) {
+            unsigned long currentBlockId = blockId();
+            deviceMem[2 * currentBlockId] = stop - start;
+            deviceMem[2 * currentBlockId + 1] = smId();
         }
     }
 }

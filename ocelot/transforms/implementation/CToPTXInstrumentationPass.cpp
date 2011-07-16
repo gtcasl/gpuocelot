@@ -28,7 +28,7 @@ namespace transforms
 		return static_cast<analysis::DataflowGraph&>(*graph);
 	}
 
-    ir::PTXStatement CToPTXInstrumentationPass::prepareStatementToInsert(ir::PTXStatement statement, unsigned int basicBlockSize, unsigned int basicBlockId) {
+    ir::PTXStatement CToPTXInstrumentationPass::prepareStatementToInsert(ir::PTXStatement statement, StaticAttributes attributes) {
     
         ir::PTXStatement toInsert = statement;
         
@@ -36,7 +36,7 @@ namespace transforms
             toInsert.instruction.d.reg = dfg().newRegister();
             newRegisterMap[toInsert.instruction.d.identifier] = toInsert.instruction.d.reg;
             toInsert.instruction.d.identifier.clear();
-            toInsert.instruction.a.imm_int = basicBlockSize;
+            toInsert.instruction.a.imm_int = attributes.basicBlockInstructionCount;
             return toInsert;
         }
         
@@ -44,7 +44,7 @@ namespace transforms
             toInsert.instruction.d.reg = dfg().newRegister();
             newRegisterMap[toInsert.instruction.d.identifier] = toInsert.instruction.d.reg;
             toInsert.instruction.d.identifier.clear();
-            toInsert.instruction.a.imm_int = basicBlockId;
+            toInsert.instruction.a.imm_int = attributes.basicBlockId;
             return toInsert;
         }
             
@@ -72,6 +72,45 @@ namespace transforms
         return toInsert;
     }
 
+    void CToPTXInstrumentationPass::instrumentBasicBlock(std::vector<TranslationBlock> translationBlocks) 
+    {
+        StaticAttributes attributes;
+        attributes.basicBlockId = 1;
+        analysis::DataflowGraph::iterator block = dfg().begin();
+        ++block;
+        
+        for( analysis::DataflowGraph::iterator basicBlock = ++(block); 
+            basicBlock != dfg().end(); ++basicBlock )
+        {
+           if(basicBlock->instructions().empty())
+              continue;
+
+            attributes.basicBlockInstructionCount = basicBlock->instructions().size();
+        
+            unsigned int i = 0, j = 0;
+            for( i = 0; i < translationBlocks.size(); i++)
+            {
+                if(translationBlocks.at(i).statements.empty())
+                    continue;
+                
+                unsigned int loc = 0;
+                
+                if(translationBlocks.at(i).label == EXIT_BASIC_BLOCK)
+                    loc = basicBlock->instructions().size() - 1;
+                
+                for( j = 0; j < translationBlocks.at(i).statements.size(); j++) {
+                    ir::PTXStatement toInsert = prepareStatementToInsert(translationBlocks.at(i).statements.at(j), attributes);
+                    if(toInsert.instruction.opcode == ir::PTXInstruction::Nop)
+                        continue;
+                    dfg().insert(basicBlock, toInsert.instruction, loc);
+                    loc++;
+                }
+            }
+           
+           attributes.basicBlockId++;          
+        }    
+    }
+
     void CToPTXInstrumentationPass::runOnKernel( ir::IRKernel & k)
 	{
 	    /* ensure that there is at least one basic block -- otherwise, skip this kernel */
@@ -82,7 +121,7 @@ namespace transforms
 	    analysis::DataflowGraph::iterator block = dfg().begin();
 	    ++block;
 	    
-	    std::vector<transforms::TranslationBasicBlock> translationBlocks;
+	    std::vector<TranslationBlock> translationBlocks;
 
 	    for(translator::CToPTXData::RegisterVector::const_iterator reg = translation.registers.begin();
 	        reg != translation.registers.end(); ++reg) {
@@ -90,7 +129,9 @@ namespace transforms
 	    }
 	
         size_t loc = 0;
-        unsigned int basicBlockSize = block->instructions().size();
+        StaticAttributes attributes;
+        attributes.basicBlockId = 0;
+        attributes.basicBlockInstructionCount = block->instructions().size();
         bool basicBlockStart = false;
         bool basicBlockInstrumentation = false;
         
@@ -111,7 +152,7 @@ namespace transforms
                     
                     basicBlockInstrumentation = true;
                     
-                    transforms::TranslationBasicBlock translationBlock;
+                    transforms::TranslationBlock translationBlock;
                     translationBlock.label = statement->name;
                     translationBlocks.push_back(translationBlock);
                     basicBlockStart = true;
@@ -124,51 +165,20 @@ namespace transforms
             }
             
             if(translationBlocks.size() > 0 && basicBlockStart){
-                transforms::TranslationBasicBlock last = translationBlocks.back();
+                transforms::TranslationBlock last = translationBlocks.back();
                 last.statements.push_back(*statement);
                 translationBlocks.pop_back();
                 translationBlocks.push_back(last);
             }
             
-            ir::PTXStatement toInsert = prepareStatementToInsert(*statement, basicBlockSize, 0);
+            ir::PTXStatement toInsert = prepareStatementToInsert(*statement, attributes);
             dfg().insert(block, toInsert.instruction, loc);
             loc++;
         }
         
         
         if(basicBlockInstrumentation) {
-        
-            unsigned int basicBlockId = 1;
-            for( analysis::DataflowGraph::iterator basicBlock = ++(block); 
-	            basicBlock != dfg().end(); ++basicBlock )
-            {
-               if(basicBlock->instructions().empty())
-                  continue;
-
-                basicBlockSize = basicBlock->instructions().size();
-            
-                unsigned int i = 0, j = 0;
-                for( i = 0; i < translationBlocks.size(); i++)
-                {
-                    if(translationBlocks.at(i).statements.empty())
-                        continue;
-                    
-                    if(translationBlocks.at(i).label == ENTER_BASIC_BLOCK)
-                        loc = 0;
-                    else if(translationBlocks.at(i).label == EXIT_BASIC_BLOCK)
-                        loc = basicBlock->instructions().size() - 1;
-                    
-                    for( j = 0; j < translationBlocks.at(i).statements.size(); j++) {
-                        ir::PTXStatement toInsert = prepareStatementToInsert(translationBlocks.at(i).statements.at(j), basicBlockSize, basicBlockId);
-                        if(toInsert.instruction.opcode == ir::PTXInstruction::Nop)
-                            continue;
-                        dfg().insert(basicBlock, toInsert.instruction, loc);
-                        loc++;
-                    }
-                }
-               
-               basicBlockId++;          
-            }    
+            instrumentBasicBlock(translationBlocks);
         }
 	}
 	

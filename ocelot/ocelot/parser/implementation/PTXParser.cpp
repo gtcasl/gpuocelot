@@ -1803,10 +1803,11 @@ namespace parser
 	void PTXParser::State::relaxedConvert( int token, YYLTYPE& location )
 	{
 		if( !ir::PTXOperand::relaxedValid( tokenToDataType( token ),
-			statement.instruction.a.type ) )
+			statement.instruction.a.type )
+			&& statement.instruction.a.addressMode == ir::PTXOperand::Register )
 		{
 			throw_exception( parser::PTXParser::toString( location, *this ) 
-				<< "Type of " << statement.instruction.a.identifier << " " 
+				<< "Type of " << statement.instruction.a.toString() << " " 
 				<< ir::PTXOperand::toString( statement.instruction.a.type ) 
 				<< " not convertable to type " 
 				<< ir::PTXOperand::toString( tokenToDataType( token ) ) 
@@ -2091,8 +2092,19 @@ namespace parser
 		bucket.addressMode = ir::PTXOperand::BitBucket;
 		bucket.vec = ir::PTXOperand::v1;
 		
-		state.operands.insert( std::make_pair( "_", 
+		state.operands.insert( std::make_pair( bucket.identifier, 
 			State::OperandWrapper( bucket, 
+			ir::PTXInstruction::Global ) ) );
+		
+		ir::PTXOperand pt;
+		pt.identifier = "%pt";
+		pt.type = ir::PTXOperand::pred;
+		pt.addressMode = ir::PTXOperand::Register;
+		pt.condition = ir::PTXOperand::PT;
+		pt.vec = ir::PTXOperand::v1;
+		
+		state.operands.insert( std::make_pair( pt.identifier, 
+			State::OperandWrapper( pt, 
 			ir::PTXInstruction::Global ) ) );
 		
 		state.addSpecialRegisters();	
@@ -2585,17 +2597,23 @@ namespace parser
 		}
 		catch( Exception& e )
 		{
+			if( !input.good() )
+			{
+				input.clear();
+			}
+			
 			input.seekg( 0, std::ios::end );
 			unsigned int length = input.tellg();
 			input.seekg( 0, std::ios::beg );
-			
+		
 			char* temp = new char[ length + 1 ];
 			temp[ length ] = '\0';
 			input.read( temp, length );
 			e.message = "\nFailed to parse file '" + fileName + "':\n" 
 				+ hydrazine::addLineNumbers(temp) + "\n" + e.message;
 			delete[] temp;
-			
+		
+
 			report("parse error");
 			report(e.what());
 			throw e;

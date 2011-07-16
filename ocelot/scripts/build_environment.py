@@ -308,7 +308,13 @@ def importEnvironment():
 	
 	if 'PATH' in os.environ:
 		env['PATH'] = os.environ['PATH']
-
+	
+	if 'CXX' in os.environ:
+		env['CXX'] = os.environ['CXX']
+	
+	if 'CC' in os.environ:
+		env['CC'] = os.environ['CC']
+	
 	if 'LD_LIBRARY_PATH' in os.environ:
 		env['LD_LIBRARY_PATH'] = os.environ['LD_LIBRARY_PATH']
 

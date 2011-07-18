@@ -152,7 +152,12 @@ api::OcelotConfiguration::Executive::Executive():
 }
 
 api::OcelotConfiguration::Optimizations::Optimizations():
-	subkernelSize(50)
+	subkernelSize(50),
+	structuralTransform(false),
+	predicateToSelect(false),
+	linearScanAllocation(false),
+	mimdThreadScheduling(false),
+	syncElimination(false)
 {
 
 }

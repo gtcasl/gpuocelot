@@ -1262,9 +1262,6 @@ StructuralAnalysis::NodeTy * StructuralAnalysis::reduce(
 
 	node->nodeType = rType;
 
-	NodeSetTy *set = new NodeSetTy;
-	*set = nodeSet;
-
 	return node;
 }
 

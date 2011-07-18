@@ -14,6 +14,7 @@
 #include <ocelot/trace/interface/InteractiveDebugger.h>
 #include <ocelot/analysis/interface/ClockCycleCountInstrumentor.h>
 #include <ocelot/analysis/interface/BasicBlockInstrumentor.h>
+#include <ocelot/analysis/interface/BranchDivergenceInstrumentor.h>
 
 #include <ocelot/transforms/interface/StructuralTransform.h>
 #include <ocelot/transforms/interface/ConvertPredicationToSelectPass.h>
@@ -38,6 +39,7 @@ namespace ocelot
 		
         analysis::ClockCycleCountInstrumentor _clockCycleCountInstrumentor;
 		analysis::BasicBlockInstrumentor _basicBlockInstrumentor;
+		analysis::BranchDivergenceInstrumentor _branchDivergenceInstrumentor;
 
 		bool _initialized;
 		

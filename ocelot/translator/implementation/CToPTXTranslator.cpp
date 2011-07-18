@@ -167,6 +167,50 @@ namespace translator
     
     }
     
+    void CToPTXTranslator::generateWarpId(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn)
+    {
+        inst.opcode = ir::PTXInstruction::Cvt;
+        setPredicate(inst);
+        
+        inst.d.type = type;
+        
+        inst.d.identifier = COD_REG + boost::lexical_cast<std::string>(++maxRegister);
+        registers.push_back(inst.d.identifier);
+        
+        inst.d.addressMode = ir::PTXOperand::Register;
+        inst.a = ir::PTXOperand(ir::PTXOperand::warpId);
+        inst.a.addressMode = ir::PTXOperand::Special;
+        inst.a.type = ir::PTXOperand::u32;
+        
+        stmt.instruction = inst;
+        statements.push_back(stmt);        
+        
+        registerMap[REG + boost::lexical_cast<std::string>(insn->opnds.calli.src)] = inst.d.identifier;    
+    
+    }
+    
+    void CToPTXTranslator::generateWarpCount(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn)
+    {
+        inst.opcode = ir::PTXInstruction::Cvt;
+        setPredicate(inst);
+        
+        inst.d.type = type;
+        
+        inst.d.identifier = COD_REG + boost::lexical_cast<std::string>(++maxRegister);
+        registers.push_back(inst.d.identifier);
+        
+        inst.d.addressMode = ir::PTXOperand::Register;
+        inst.a = ir::PTXOperand(ir::PTXOperand::nwarpId);
+        inst.a.addressMode = ir::PTXOperand::Special;
+        inst.a.type = ir::PTXOperand::u32;
+        
+        stmt.instruction = inst;
+        statements.push_back(stmt);        
+        
+        registerMap[REG + boost::lexical_cast<std::string>(insn->opnds.calli.src)] = inst.d.identifier;    
+    
+    }
+    
     void CToPTXTranslator::generateClockCounter(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn)
     {
         inst.opcode = ir::PTXInstruction::Mov;
@@ -492,6 +536,50 @@ namespace translator
         specialRegisterMap["threadId"] = globalThreadId;
     }
     
+    void CToPTXTranslator::generatePredicateEvalAllUniform(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn)
+    {
+    
+        inst.opcode = ir::PTXInstruction::Vote;
+        inst.vote = ir::PTXInstruction::Uni;
+        inst.type = ir::PTXOperand::pred;
+        
+        inst.d.type = ir::PTXOperand::pred;
+        inst.d.addressMode = ir::PTXOperand::Register;
+        inst.d.identifier = COD_PRED + boost::lexical_cast<std::string>(++maxPredicate);
+        registers.push_back(inst.d.identifier);
+        
+        inst.a = inst.d;
+        
+        PredicateInfo predicateInfo;
+        predicateInfo.id = inst.d.identifier;
+        
+        stmt.instruction = inst;
+        statements.push_back(stmt);
+          
+        predicateList.push_back(predicateInfo);
+        
+        inst.opcode = ir::PTXInstruction::SelP;
+        inst.type = type;
+        inst.d.type = type;
+        inst.d.addressMode = ir::PTXOperand::Register;
+        inst.d.identifier = COD_REG + boost::lexical_cast<std::string>(++maxRegister);
+        registers.push_back(inst.d.identifier);  
+        
+        inst.a.type = inst.b.type = type;
+        inst.a.addressMode = inst.b.addressMode = ir::PTXOperand::Immediate;
+        inst.a.imm_int = 1;
+        inst.b.imm_int = 0;
+        
+        inst.c.type = ir::PTXOperand::pred;
+        inst.c.addressMode = ir::PTXOperand::Register;
+        inst.c.identifier = predicateInfo.id;
+        
+        stmt.instruction = inst;
+        statements.push_back(stmt);
+        
+        registerMap[REG + boost::lexical_cast<std::string>(insn->opnds.calli.src)] = inst.d.identifier;  
+    }
+    
     void CToPTXTranslator::generateSyncThreads(ir::PTXInstruction inst, ir::PTXStatement stmt)
     {
         inst.opcode = ir::PTXInstruction::Bar;
@@ -504,7 +592,7 @@ namespace translator
         statements.push_back(stmt);
     }
     
-    void CToPTXTranslator::generateBasicBlockConstructs(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn, std::string callName)
+    void CToPTXTranslator::generateStaticAttributes(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn, std::string callName)
     {
         inst.opcode = ir::PTXInstruction::Mov;
                  
@@ -685,6 +773,16 @@ namespace translator
                         generateSMId(inst, stmt, type, insn);
                     }            
                     break;
+                    case warpIdSymbol: 
+                    {
+                        generateWarpId(inst, stmt, type, insn);
+                    }
+                    break;
+                    case warpCountSymbol: 
+                    {
+                        generateWarpCount(inst, stmt, type, insn);
+                    }
+                    break;
                     case clockCounterSymbol:
                     {   
                         generateClockCounter(inst, stmt, type, insn);    
@@ -712,10 +810,16 @@ namespace translator
                     
                     }
                     break;
+                    case predicateEvalAllUniformSymbol:
+                    {
+                        generatePredicateEvalAllUniform(inst, stmt, type, insn);
+                    }
+                    break;
                     case basicBlockIdSymbol:
                     case basicBlockInstCountSymbol: 
+                    case instructionIdSymbol:
                     {
-                        generateBasicBlockConstructs(inst, stmt, type, insn, call_name);
+                        generateStaticAttributes(inst, stmt, type, insn, call_name);
                     }
                     break;
                     default:
@@ -913,6 +1017,10 @@ namespace translator
                                         void syncThreads();\
                                         unsigned long basicBlockId();\
                                         unsigned long basicBlockInstructionCount();\
+                                        unsigned long instructionId();\
+                                        unsigned long warpCount();\
+                                        unsigned long warpId();\
+                                        unsigned long predicateEvalAllUniform();\
                                         unsigned long deviceMem[2];";
                         
 	    static cod_extern_entry externs[] = 
@@ -940,6 +1048,10 @@ namespace translator
             {(char *)"basicBlockId", (void*)(unsigned long)(*basicBlockId)},
             {(char *)"basicBlockInstructionCount", (void*)(unsigned long)(*basicBlockInstructionCount)},
             {(char *)"basicBlockExecutedInstructionCount", (void*)(unsigned long)(*basicBlockExecutedInstructionCount)},
+            {(char *)"instructionId", (void*)(unsigned long)(*instructionId)},
+            {(char *)"warpCount", (void*)(unsigned long)(*warpCount)},
+            {(char *)"warpId", (void*)(unsigned long)(*warpId)},
+            {(char *)"predicateEvalAllUniform", (void*)(unsigned long)(*predicateEvalAllUniform)},
             {(char *)"deviceMem", (void *)deviceMem},
 	        {NULL, (void*)0}
 	    };
@@ -998,6 +1110,10 @@ namespace translator
         functionCalls["basicBlockId"] = basicBlockIdSymbol;
         functionCalls["basicBlockInstructionCount"] = basicBlockInstCountSymbol;
         functionCalls["basicBlockExecInstCount"] = basicBlockExecInstCountSymbol;
+        functionCalls["instructionId"] = instructionIdSymbol;
+        functionCalls["warpCount"] = warpCountSymbol;
+        functionCalls["warpId"] = warpIdSymbol;
+        functionCalls["predicateEvalAllUniform"] = predicateEvalAllUniformSymbol;
     }
 }
 

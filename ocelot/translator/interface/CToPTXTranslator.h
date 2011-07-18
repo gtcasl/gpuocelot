@@ -93,7 +93,11 @@ namespace translator {
 			    syncThreadsSymbol,
 			    basicBlockIdSymbol,
                 basicBlockInstCountSymbol,
-                basicBlockExecInstCountSymbol
+                basicBlockExecInstCountSymbol,
+                instructionIdSymbol,
+                warpCountSymbol,
+                warpIdSymbol,
+                predicateEvalAllUniformSymbol
 		    };
 		    
 		    SpecialSymbols symbols;
@@ -120,12 +124,15 @@ namespace translator {
 		    private:
 		        void generateBlockId(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn);
 		        void generateSMId(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn);
+		        void generateWarpId(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn);
+		        void generateWarpCount(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn);
 		        void generateClockCounter(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn);
 		        void generateThreadIndexX(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn);
 		        void generateBlockDim(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn);
 		        void generateGlobalThreadId(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn);
+		        void generatePredicateEvalAllUniform(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn);
 		        void generateSyncThreads(ir::PTXInstruction inst, ir::PTXStatement stmt);
-		        void generateBasicBlockConstructs(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn, std::string callName);
+		        void generateStaticAttributes(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn, std::string callName);
 		    
 		    public: 
 		    

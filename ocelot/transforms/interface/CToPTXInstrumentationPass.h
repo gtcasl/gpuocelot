@@ -11,6 +11,7 @@
 #include <ocelot/analysis/interface/DataflowGraph.h>
 #include <ocelot/translator/interface/CToPTXTranslator.h>
 #include <ocelot/ir/interface/PTXInstruction.h>
+#include <ocelot/ir/interface/PTXOperand.h>
 
 #include <map>
 
@@ -50,7 +51,7 @@
 /* basic block constructs */
 #define BASIC_BLOCK_ID          "basicBlockId"
 #define BASIC_BLOCK_INST_COUNT  "basicBlockInstructionCount"
-
+#define INSTRUCTION_ID          "instructionId"
 
 namespace ir
 {
@@ -69,7 +70,6 @@ namespace transforms
             std::string instructionClass;
             std::string addressSpace;
             std::string type;
-
     };
 
     class TranslationBlock {
@@ -91,6 +91,7 @@ namespace transforms
             unsigned int basicBlockInstructionCount;
             unsigned int instructionId;
             unsigned int kernelInstructionCount;
+            ir::PTXOperand predId;
     
     };
 

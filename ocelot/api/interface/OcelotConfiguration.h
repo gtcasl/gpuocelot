@@ -117,6 +117,19 @@ namespace api {
                     //! \brief specifies the logfile for storing results of this instrumentation */
                     std::string logfile;
 			};
+			
+			/*! \brief configuration properties for BranchDivergenceInstrumentor */
+			class BranchDivergenceInstrumentor
+			{
+			public:
+					BranchDivergenceInstrumentor();
+				
+			public:
+					//! \brief specifies if instrumentation is enabled */
+					bool enabled;
+                    //! \brief specifies the logfile for storing results of this instrumentation */
+                    std::string logfile;
+			};
 
             /*! \brief configuration properties for analysis::BasicBlockInstrumentor */
 			class BasicBlockInstrumentor
@@ -148,6 +161,9 @@ namespace api {
 
             //! \brief Basic block execution count instrumentor
 			BasicBlockInstrumentor basicBlockInstrumentor;
+			
+			//! \brief Branch divergence instrumentor
+			BranchDivergenceInstrumentor branchDivergenceInstrumentor;
 		};
 
 		class CudaRuntimeImplementation {

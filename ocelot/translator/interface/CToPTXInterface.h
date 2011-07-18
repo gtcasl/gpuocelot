@@ -75,4 +75,12 @@ unsigned long basicBlockInstructionCount();
 */
 unsigned long basicBlockExecutedInstructionCount();
 
+unsigned long instructionId();
+
+unsigned long warpCount();
+
+unsigned long warpId();
+
+unsigned long predicateEvalAllUniform();
+
 #endif

@@ -102,4 +102,20 @@ unsigned long basicBlockExecutedInstructionCount() {
     return 1;
 }
 
+unsigned long instructionId() {
+    return 0;
+}
+
+unsigned long warpCount() {
+    return 1;
+}
+
+unsigned long warpId() {
+    return 0;
+}
+
+unsigned long predicateEvalAllUniform(){
+    return 0;
+}
+
 #endif

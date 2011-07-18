@@ -49,6 +49,14 @@ namespace transforms
             toInsert.instruction.a.imm_int = attributes.basicBlockId;
             return toInsert;
         }
+        
+        if(statement.instruction.d.identifier == INSTRUCTION_ID) {
+            toInsert.instruction.d.reg = dfg().newRegister();
+            newRegisterMap[toInsert.instruction.d.identifier] = toInsert.instruction.d.reg;
+            toInsert.instruction.d.identifier.clear();
+            toInsert.instruction.a.imm_int = attributes.instructionId;
+            return toInsert;
+        }
             
         if((statement.instruction.a.addressMode == ir::PTXOperand::Register || statement.instruction.a.addressMode == ir::PTXOperand::Indirect) && !statement.instruction.a.identifier.empty()) {
             toInsert.instruction.a.reg = newRegisterMap[statement.instruction.a.identifier];
@@ -69,6 +77,10 @@ namespace transforms
         if(statement.instruction.pg.condition == ir::PTXOperand::Pred && !statement.instruction.pg.identifier.empty()){
             toInsert.instruction.pg.reg = newRegisterMap[statement.instruction.pg.identifier];
             toInsert.instruction.pg.identifier.clear();
+        }
+
+        if(statement.instruction.opcode == ir::PTXInstruction::Vote){
+            toInsert.instruction.a = attributes.predId;
         }
 
         return toInsert;
@@ -113,12 +125,15 @@ namespace transforms
                         {
                             if(instClass->second == ptxInstruction->opcode)
                             {
+                                if(ptxInstruction->opcode == ir::PTXInstruction::SetP)
+                                    attributes.predId = ptxInstruction->d;
+                                    
                                 for( j = 0; j < translationBlocks.at(i).statements.size(); j++) {
                                     ir::PTXStatement toInsert = prepareStatementToInsert(translationBlocks.at(i).statements.at(j), attributes);
                                     if(toInsert.instruction.opcode == ir::PTXInstruction::Nop)
                                         continue;
+                                    loc++;    
                                     dfg().insert(basicBlock, toInsert.instruction, loc);
-                                    loc++;
                                 }
                                 attributes.instructionId++;
                                 break;

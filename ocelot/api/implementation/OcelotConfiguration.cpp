@@ -68,6 +68,13 @@ api::OcelotConfiguration::Instrumentation::ClockCycleCountInstrumentor::ClockCyc
 
 }
 
+api::OcelotConfiguration::Instrumentation::BranchDivergenceInstrumentor::BranchDivergenceInstrumentor():
+        enabled(false)
+{
+
+}
+
+
 api::OcelotConfiguration::Instrumentation::BasicBlockInstrumentor::BasicBlockInstrumentor():
         enabled(false)
 {
@@ -137,6 +144,12 @@ static void initializeInstrument(api::OcelotConfiguration::Instrumentation &inst
             instrument.basicBlockInstrumentor.logfile = basicBlockConfig.parse<std::string>("logfile", "");
             instrument.basicBlockInstrumentor.type =        
                 api::OcelotConfiguration::Instrumentation::BasicBlockInstrumentor::memoryIntensity;
+    }
+    
+    hydrazine::json::Visitor branchDivConfig = config["branchDivergence"];
+    if (!branchDivConfig.is_null()) {
+            instrument.branchDivergenceInstrumentor.enabled = branchDivConfig.parse<bool>("enabled", true);
+            instrument.branchDivergenceInstrumentor.logfile = branchDivConfig.parse<std::string>("logfile", "");
     }
 
 }

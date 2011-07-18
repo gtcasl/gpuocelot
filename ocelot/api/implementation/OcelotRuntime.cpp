@@ -158,6 +158,12 @@ namespace ocelot
             _clockCycleCountInstrumentor.output = c.instrument.clockCycleCountInstrumentor.logfile;
             ocelot::addInstrumentor(_clockCycleCountInstrumentor);
         }
+        if(c.instrument.branchDivergenceInstrumentor.enabled)
+        {   
+            report("Creating branch divergence instrumentor");
+            _branchDivergenceInstrumentor.output = c.instrument.branchDivergenceInstrumentor.logfile;
+            ocelot::addInstrumentor(_branchDivergenceInstrumentor);
+        }
         if(c.instrument.basicBlockInstrumentor.enabled)
         {   
             report("Creating basic block execution count instrumentor");

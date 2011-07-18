@@ -10,8 +10,12 @@
 #include <ocelot/transforms/interface/Pass.h>
 #include <ocelot/analysis/interface/DataflowGraph.h>
 #include <ocelot/translator/interface/CToPTXTranslator.h>
+#include <ocelot/ir/interface/PTXInstruction.h>
 
-/* special instrumentation labels */
+#include <map>
+
+/* Instrumentation Target Specifiers */
+
 #define ENTER_KERNEL        "ON_KERNEL_ENTRY"
 #define EXIT_KERNEL         "ON_KERNEL_EXIT"
 #define ENTER_BASIC_BLOCK   "ON_BASIC_BLOCK_ENTRY"
@@ -28,10 +32,11 @@
 #define ON_CALL             "ON_CALL"
 #define ON_BARRIER          "ON_BARRIER"
 #define ON_ATOMIC           "ON_ATOMIC_INSTRUCTION"
-#define ON_SPECIAL_INST     "ON_SPECIAL_INSTRUCTION"
 #define ON_ARITH_OP         "ON_ARITH_OPERATION"
-#define ON_INT_OP           "ON_INT_OPERATION"
-#define ON_FP_OP            "ON_FP_OPERATION"
+
+/* Types of arithmetic operation */
+#define TYPE_INT            "TYPE_INT"
+#define TYPE_FP             "TYPE_FP"
 
 
 /* basic block constructs */
@@ -48,6 +53,18 @@ namespace ir
 namespace transforms
 {
 
+    class InstrumentationSpecifier {
+    
+        public:
+            
+            typedef std::multimap<std::string, ir::PTXInstruction::Opcode> InstructionClassMap;    
+        
+            std::string id;
+            InstructionClassMap instructionClassMap;
+            
+            InstrumentationSpecifier();
+    };
+
     class TranslationBlock {
     
         public:
@@ -56,7 +73,7 @@ namespace transforms
             
             StatementVector statements; 
             std::string label;
-    
+            InstrumentationSpecifier specifier;
     };
     
     class StaticAttributes {
@@ -77,6 +94,7 @@ namespace transforms
 	{
 		private:
 			translator::CToPTXData translation;
+			std::vector<std::string> instructionClasses;
 			
 		protected:
 		    analysis::DataflowGraph& dfg();
@@ -89,7 +107,9 @@ namespace transforms
 			
 	    private:
 	        ir::PTXStatement prepareStatementToInsert(ir::PTXStatement statement, StaticAttributes attributes);
+	        void instrumentInstruction(std::vector<TranslationBlock> translationBlocks); 
 	        void instrumentBasicBlock(std::vector<TranslationBlock> translationBlocks);
+	        void instrumentKernel(std::vector<TranslationBlock> translationBlocks);
 			
 		public:
 			/*! \brief Initialize the pass using a specific kernel */

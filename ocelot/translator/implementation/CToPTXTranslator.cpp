@@ -727,7 +727,6 @@ namespace translator
         }
         case iclass_branch:
         {
-         
 	        inst.opcode = ir::PTXInstruction::SetP;
             
             inst.d.type = ir::PTXOperand::pred;
@@ -747,19 +746,16 @@ namespace translator
 	        predicateInfo.id = inst.d.identifier;
 	        
 	        std::string label;
-	        
+
 	        int br_op = insn->insn_code;
 	        struct branch_table *t = &c->p->branch_table;
-            
             if (t->label_name[insn->opnds.br.label] != NULL) {
-	            label = t->label_name[insn->opnds.label.label];
+                label = t->label_name[insn->opnds.br.label];
 	        }
 	        else {
 	            label = "L" + boost::lexical_cast<std::string>(insn->opnds.br.label);
 	        }
-	        
 	        predicateInfo.branchLabel = label;
-	       
 	        if(br_op >= 55 && br_op < 66){
 	            predicateInfo.condition = PredicateInfo::NOT_TAKEN;
 	            predicateInfo.set = true;
@@ -774,8 +770,7 @@ namespace translator
 	        statements.push_back(stmt);
 	          
 	        predicateList.push_back(predicateInfo);  
-	          
-            break;
+	        break;
         }
        
         case iclass_loadstore:

@@ -24,19 +24,27 @@
 #define ON_INSTRUCTION      "ON_INSTRUCTION"
 
 /* Instruction classes */
-#define ON_MEM_RW           "ON_MEM_RW"
-#define ON_MEM_READ         "ON_MEM_READ"
-#define ON_MEM_WRITE        "ON_MEM_WRITE"
-#define ON_PREDICATE        "ON_PREDICATE"
-#define ON_BRANCH           "ON_BRANCH"
-#define ON_CALL             "ON_CALL"
-#define ON_BARRIER          "ON_BARRIER"
-#define ON_ATOMIC           "ON_ATOMIC_INSTRUCTION"
-#define ON_ARITH_OP         "ON_ARITH_OPERATION"
+#define ON_MEM_RW           "MEM_RW"
+#define ON_MEM_READ         "MEM_READ"
+#define ON_MEM_WRITE        "MEM_WRITE"
+#define ON_PREDICATE        "PREDICATE"
+#define ON_BRANCH           "BRANCH"
+#define ON_CALL             "CALL"
+#define ON_BARRIER          "BARRIER"
+#define ON_ATOMIC           "ATOMIC"
+#define ON_ARITH_OP         "ARITHMETIC"
+
+/* Types of address space */
+#define GLOBAL              "GLOBAL"
+#define LOCAL               "LOCAL"
+#define SHARED              "SHARED"
+#define CONST               "CONST"
+#define PARAM               "PARAM"
+#define TEXTURE             "TEXTURE"
 
 /* Types of arithmetic operation */
-#define TYPE_INT            "TYPE_INT"
-#define TYPE_FP             "TYPE_FP"
+#define TYPE_INT            "INTEGER"
+#define TYPE_FP             "FLOATING_POINT"
 
 
 /* basic block constructs */
@@ -57,12 +65,11 @@ namespace transforms
     
         public:
             
-            typedef std::multimap<std::string, ir::PTXInstruction::Opcode> InstructionClassMap;    
-        
             std::string id;
-            InstructionClassMap instructionClassMap;
-            
-            InstrumentationSpecifier();
+            std::string instructionClass;
+            std::string addressSpace;
+            std::string type;
+
     };
 
     class TranslationBlock {
@@ -93,8 +100,19 @@ namespace transforms
 	class CToPTXInstrumentationPass : public KernelPass
 	{
 		private:
+			
+			typedef std::multimap<std::string, ir::PTXInstruction::Opcode> InstructionClassMap; 
+            typedef std::map<std::string, ir::PTXInstruction::AddressSpace> AddressSpaceMap;   
+            typedef std::multimap<std::string, ir::PTXOperand::DataType> TypesMap; 
+			
+			InstructionClassMap instructionClassMap;
+            AddressSpaceMap addressSpaceMap;
+            TypesMap typesMap;
 			translator::CToPTXData translation;
 			std::vector<std::string> instructionClasses;
+			std::vector<std::string> addressSpaceSpecifiers;
+			std::vector<std::string> types;
+			
 			
 		protected:
 		    analysis::DataflowGraph& dfg();

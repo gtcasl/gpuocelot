@@ -103,24 +103,11 @@ namespace transforms
                 {
                     if(translationBlocks.at(i).statements.empty())
                         continue;
-                    
-                    
-                    if(translationBlocks.at(i).specifier.id == ON_INSTRUCTION) {
-                        
-                        for( j = 0; j < translationBlocks.at(i).statements.size(); j++) {
-                                ir::PTXStatement toInsert = prepareStatementToInsert(translationBlocks.at(i).statements.at(j), attributes);
-                                if(toInsert.instruction.opcode == ir::PTXInstruction::Nop)
-                                    continue;
-                                dfg().insert(basicBlock, toInsert.instruction, loc);
-                                loc++;
-                        }
-                        attributes.instructionId++;
-                        loc++;
-                    }
-                    else 
+                  
+                    if(!translationBlocks.at(i).specifier.instructionClass.empty())
                     {
-                        std::pair<std::multimap<std::string, ir::PTXInstruction::Opcode>::iterator, std::multimap<std::string, ir::PTXInstruction::Opcode>::iterator> instClassMap;
-                        instClassMap = translationBlocks.at(i).specifier.instructionClassMap.equal_range(translationBlocks.at(i).specifier.id);
+                            std::pair<std::multimap<std::string, ir::PTXInstruction::Opcode>::iterator, std::multimap<std::string, ir::PTXInstruction::Opcode>::iterator> instClassMap;
+                        instClassMap = instructionClassMap.equal_range(translationBlocks.at(i).specifier.instructionClass);
                         
                         for (std::multimap<std::string, ir::PTXInstruction::Opcode>::iterator instClass = instClassMap.first; instClass != instClassMap.second; ++instClass) 
                         {
@@ -140,6 +127,20 @@ namespace transforms
                                 loc++;
                             }
                         }    
+                    
+                    }
+                    else 
+                    {    
+                        for( j = 0; j < translationBlocks.at(i).statements.size(); j++) 
+                        {
+                                ir::PTXStatement toInsert = prepareStatementToInsert(translationBlocks.at(i).statements.at(j), attributes);
+                                if(toInsert.instruction.opcode == ir::PTXInstruction::Nop)
+                                    continue;
+                                dfg().insert(basicBlock, toInsert.instruction, loc);
+                                loc++;
+                        }
+                        attributes.instructionId++;
+                        loc++;
                     }
                 }
             }
@@ -152,22 +153,65 @@ namespace transforms
     {
         StaticAttributes attributes;
         attributes.basicBlockId = 0;
+        attributes.basicBlockInstructionCount = 0;
+        
         analysis::DataflowGraph::iterator block = dfg().begin();
         ++block;
         
         for( analysis::DataflowGraph::iterator basicBlock = block; 
             basicBlock != dfg().end(); ++basicBlock )
-        {
+        {        
            if(basicBlock->instructions().empty())
               continue;
-
-            attributes.basicBlockInstructionCount = basicBlock->instructions().size();
         
             unsigned int i = 0, j = 0;
             for( i = 0; i < translationBlocks.size(); i++)
             {
                 if(translationBlocks.at(i).statements.empty())
                     continue;
+                
+                attributes.basicBlockInstructionCount = 0;
+                
+                if(!translationBlocks.at(i).specifier.instructionClass.empty())
+                {
+                    for( analysis::DataflowGraph::InstructionVector::const_iterator instruction = basicBlock->instructions().begin();
+                        instruction != basicBlock->instructions().end(); ++instruction)
+                    {
+                        ir::PTXInstruction *ptxInstruction = (ir::PTXInstruction *)instruction->i;
+                        
+                        std::pair<std::multimap<std::string, ir::PTXInstruction::Opcode>::iterator, std::multimap<std::string, ir::PTXInstruction::Opcode>::iterator> instClassMap;
+                        instClassMap = instructionClassMap.equal_range(translationBlocks.at(i).specifier.instructionClass);
+                        
+                        for (std::multimap<std::string, ir::PTXInstruction::Opcode>::iterator instClass = instClassMap.first; instClass != instClassMap.second; ++instClass) 
+                        {
+                            if(instClass->second == ptxInstruction->opcode)
+                            {
+                                if(translationBlocks.at(i).specifier.addressSpace.empty() && translationBlocks.at(i).specifier.type.empty())
+                                    attributes.basicBlockInstructionCount++; 
+                                else if(!translationBlocks.at(i).specifier.addressSpace.empty() && addressSpaceMap[translationBlocks.at(i).specifier.addressSpace] == ptxInstruction->addressSpace)
+                                    attributes.basicBlockInstructionCount++;
+                                else if(!translationBlocks.at(i).specifier.type.empty())
+                                {
+                                    std::pair<std::multimap<std::string, ir::PTXOperand::DataType>::iterator, std::multimap<std::string, ir::PTXOperand::DataType>::iterator> typeMap;
+                                    typeMap = typesMap.equal_range(translationBlocks.at(i).specifier.type);
+                                    
+                                    for (std::multimap<std::string, ir::PTXOperand::DataType>::iterator type = typeMap.first; type != typeMap.second; ++type)
+                                    {
+                                        if(type->second == ptxInstruction->type){
+                                            attributes.basicBlockInstructionCount++;
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        
+                    }
+                
+                }
+                else {
+                    attributes.basicBlockInstructionCount = basicBlock->instructions().size();
+                }
                 
                 unsigned int loc = 0;
                 
@@ -192,6 +236,7 @@ namespace transforms
         StaticAttributes attributes;
         attributes.basicBlockId = 0;
         attributes.instructionId = 0;
+        attributes.kernelInstructionCount = 0;
                 
         /* ensure that there is at least one basic block -- otherwise, skip this kernel */
         if(dfg().empty())
@@ -201,7 +246,11 @@ namespace transforms
 	    analysis::DataflowGraph::iterator block = dfg().begin();
 	    ++block;
 	    
-	    attributes.basicBlockInstructionCount = block->instructions().size();
+	    for( analysis::DataflowGraph::iterator basicBlock = block; 
+            basicBlock != dfg().end(); ++basicBlock )
+        {
+            attributes.kernelInstructionCount += basicBlock->instructions().size();
+        }
 	    
 	    unsigned int i = 0, j = 0;
         for( i = 0; i < translationBlocks.size(); i++)
@@ -243,6 +292,9 @@ namespace transforms
         bool kernelInstrumentation = true;
         bool basicBlockInstrumentation = false;
         bool instructionInstrumentation = false;
+        bool foundInstClass = false;
+        bool foundAddressSpace = false;
+        bool foundType = false;
         
         TranslationBlock initialBlock;
         
@@ -250,42 +302,90 @@ namespace transforms
             statement != translation.statements.end(); ++statement) {
             
             if(statement->directive == ir::PTXStatement::Label) {
-                translationBlockStart = false;
-                
-                if(statement->name == ENTER_KERNEL || statement->name == EXIT_KERNEL) {
-                    
-                    TranslationBlock translationBlock;
-                    translationBlock.label = statement->name;
-                    translationBlocks.push_back(translationBlock);
-                    translationBlockStart = true;
+                        
+                for(std::vector<std::string>::const_iterator instClass = instructionClasses.begin(); instClass != instructionClasses.end();
+                    instClass++)
+                {
+                    if(statement->name == *instClass){
+                        
+                        foundInstClass = true;
+                        
+                        if(translationBlocks.size() > 0 && translationBlockStart){
+                            transforms::TranslationBlock last = translationBlocks.back();
+                            last.specifier.instructionClass = *instClass;
+                            translationBlocks.pop_back();
+                            translationBlocks.push_back(last);
+                        }
+                        else {
+                            initialBlock.specifier.instructionClass = *instClass;
+                        }
+                        break;
+                    }
                 }
-                else if(statement->name == ENTER_BASIC_BLOCK || statement->name == EXIT_BASIC_BLOCK ) {
-                    
-                    basicBlockInstrumentation = true;
-                    kernelInstrumentation = false;
-                    
-                    TranslationBlock translationBlock;
-                    translationBlock.label = statement->name;
-                    translationBlocks.push_back(translationBlock);
-                    translationBlockStart = true;
-                }   
-                else {
-                    for(std::vector<std::string>::const_iterator instClass = instructionClasses.begin();
-                        instClass != instructionClasses.end(); ++instClass) {
-                        if(statement->name == *instClass){
-                            
-                            instructionInstrumentation = true;
-                            kernelInstrumentation = false;
-                            
-                            TranslationBlock translationBlock;
-                            translationBlock.label = translationBlock.specifier.id = statement->name;
-                            translationBlocks.push_back(translationBlock);
-                            translationBlockStart = true;
-                            
-                            break;
-                        }    
+                
+                for(std::vector<std::string>::const_iterator addressSpace = addressSpaceSpecifiers.begin(); addressSpace != addressSpaceSpecifiers.end();
+                    addressSpace++)
+                {
+                    if(statement->name == *addressSpace){
+                        
+                        foundAddressSpace = true;
+                        
+                        if(translationBlocks.size() > 0 && translationBlockStart){
+                            transforms::TranslationBlock last = translationBlocks.back();
+                            last.specifier.addressSpace = *addressSpace;
+                            translationBlocks.pop_back();
+                            translationBlocks.push_back(last);
+                        }
+                        else {
+                            initialBlock.specifier.addressSpace = *addressSpace;
+                        }
+                        break;
+                    }
+                }
+            
+                for(std::vector<std::string>::const_iterator type = types.begin(); type != types.end();
+                    type++)
+                {
+                    if(statement->name == *type){
+                        
+                        foundType = true;
+                        
+                        if(translationBlocks.size() > 0 && translationBlockStart){
+                            transforms::TranslationBlock last = translationBlocks.back();
+                            last.specifier.type = *type;
+                            translationBlocks.pop_back();
+                            translationBlocks.push_back(last);
+                        }
+                        else {
+                            initialBlock.specifier.type = *type;
+                        }
+                        break;
                     }
                 
+                }
+            
+                if(!foundInstClass && !foundAddressSpace && !foundType)
+                    translationBlockStart = false;
+                
+                if(statement->name == ENTER_KERNEL || statement->name == EXIT_KERNEL || statement->name == ENTER_BASIC_BLOCK || statement->name == EXIT_BASIC_BLOCK ||
+                    statement->name == ON_INSTRUCTION) {
+                    
+                    TranslationBlock translationBlock;
+                    translationBlock.label = translationBlock.specifier.id = statement->name;
+                    translationBlocks.push_back(translationBlock);
+                    translationBlockStart = true;
+                    
+                    if(statement->name == ENTER_BASIC_BLOCK || statement->name == EXIT_BASIC_BLOCK)
+                    {
+                        basicBlockInstrumentation = true;
+                        kernelInstrumentation = false;
+                    }
+                    else if(statement->name == ON_INSTRUCTION)
+                    {
+                        instructionInstrumentation = true;
+                        kernelInstrumentation = false;
+                    }
+                    
                 }
                 
                 continue;
@@ -301,6 +401,7 @@ namespace transforms
                 initialBlock.statements.push_back(*statement);
             }
         }
+        
         
         if(instructionInstrumentation) {
             instrumentInstruction(translationBlocks);
@@ -351,8 +452,7 @@ namespace transforms
 	    translator::CToPTXTranslator translator;
 	    translation = translator.generate(resource);
 	    baseAddress = translation.globals.front().name;
-	    
-	    instructionClasses.push_back(ON_INSTRUCTION);
+	
 	    instructionClasses.push_back(ON_MEM_RW);
 	    instructionClasses.push_back(ON_MEM_READ);
 	    instructionClasses.push_back(ON_MEM_WRITE);
@@ -363,10 +463,16 @@ namespace transforms
 	    instructionClasses.push_back(ON_ATOMIC);
 	    instructionClasses.push_back(ON_ARITH_OP);
 	    
-	}
-	
-	InstrumentationSpecifier::InstrumentationSpecifier() 
-	{
+	    addressSpaceSpecifiers.push_back(GLOBAL);
+	    addressSpaceSpecifiers.push_back(LOCAL);
+	    addressSpaceSpecifiers.push_back(SHARED);
+	    addressSpaceSpecifiers.push_back(CONST);
+	    addressSpaceSpecifiers.push_back(PARAM);
+	    addressSpaceSpecifiers.push_back(TEXTURE);
+	    
+	    types.push_back(TYPE_INT);
+	    types.push_back(TYPE_FP);
+	    
 	    instructionClassMap.insert( std::make_pair( ON_MEM_RW, ir::PTXInstruction::Ld ));
 	    instructionClassMap.insert( std::make_pair( ON_MEM_RW, ir::PTXInstruction::St ));
 	    instructionClassMap.insert( std::make_pair( ON_MEM_READ, ir::PTXInstruction::Ld ));
@@ -413,9 +519,26 @@ namespace transforms
 	    instructionClassMap.insert( std::make_pair( ON_ARITH_OP, ir::PTXInstruction::Ex2 ));
 	    instructionClassMap.insert( std::make_pair( ON_ARITH_OP, ir::PTXInstruction::Neg ));
 	    
+	    addressSpaceMap[GLOBAL] = ir::PTXInstruction::Global;
+	    addressSpaceMap[LOCAL] = ir::PTXInstruction::Local;
+	    addressSpaceMap[SHARED] = ir::PTXInstruction::Shared;
+	    addressSpaceMap[CONST] = ir::PTXInstruction::Const;
+	    addressSpaceMap[PARAM] = ir::PTXInstruction::Param;
+	    addressSpaceMap[TEXTURE] = ir::PTXInstruction::Texture;
+	    
+	    typesMap.insert( std::make_pair( TYPE_INT, ir::PTXOperand::s8 ));
+	    typesMap.insert( std::make_pair( TYPE_INT, ir::PTXOperand::s16 ));
+	    typesMap.insert( std::make_pair( TYPE_INT, ir::PTXOperand::s32 ));
+	    typesMap.insert( std::make_pair( TYPE_INT, ir::PTXOperand::s64 ));
+	    typesMap.insert( std::make_pair( TYPE_INT, ir::PTXOperand::u8 ));
+	    typesMap.insert( std::make_pair( TYPE_INT, ir::PTXOperand::u16 ));
+	    typesMap.insert( std::make_pair( TYPE_INT, ir::PTXOperand::u32 ));
+	    typesMap.insert( std::make_pair( TYPE_INT, ir::PTXOperand::u64 ));
+	    typesMap.insert( std::make_pair( TYPE_FP, ir::PTXOperand::f16 ));
+	    typesMap.insert( std::make_pair( TYPE_FP, ir::PTXOperand::f32 ));
+	    typesMap.insert( std::make_pair( TYPE_FP, ir::PTXOperand::f64 ));
+	       
 	}
-	
-
 }
 
 

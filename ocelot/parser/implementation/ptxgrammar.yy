@@ -939,24 +939,19 @@ atomicOperation : atomicOperationId
 	state.atomic( $<value>1 );
 };
 
-/*
-	multiple orderings of modifiers for OptiX support
-*/
+atomModifier: addressSpace;
+atomModifier: /* empty string */
+{
+	state.addressSpace(TOKEN_GLOBAL);
+}
 
-atom : OPCODE_ATOM addressSpace atomicOperation dataType operand ',' '[' 
+atom : OPCODE_ATOM atomModifier atomicOperation dataType operand ',' '[' 
 	memoryOperand ']' ',' operand ';'
 {
 	state.instruction( $<text>1, $<value>4 );
 };
 
-atom : OPCODE_ATOM atomicOperation dataType operand ',' '[' 
-	memoryOperand ']' ',' operand ';'
-{
-	state.addressSpace(TOKEN_GLOBAL);
-	state.instruction( $<text>1, $<value>3 );
-};
-
-atom : OPCODE_ATOM addressSpace atomicOperation dataType operand ',' '[' 
+atom : OPCODE_ATOM atomModifier atomicOperation dataType operand ',' '[' 
 	memoryOperand ']' ',' operand ',' operand ';'
 {
 	state.instruction( $<text>1, $<value>4 );

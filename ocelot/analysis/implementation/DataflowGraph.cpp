@@ -110,7 +110,8 @@ namespace analysis
 						continue;
 					}
 					reportE( REPORT_CONVERT, "  Converting register \"" 
-						<< fi->identifier << "\" to id " << fi->reg );
+						<< fi->identifier << "\" to id " << fi->reg
+						<< " type " << ir::PTXOperand::toString( fi->type ) );
 					_maxRegister = std::max( _maxRegister, fi->reg );
 					result.s.push_back( 
 						RegisterPointer( &fi->reg, fi->type ) );
@@ -131,7 +132,8 @@ namespace analysis
 
 				reportE( REPORT_CONVERT, "  Converting register \"" 
 					<< ( i.*sources[ j ] ).identifier 
-					<< "\" to id " << ( i.*sources[ j ] ).reg );
+					<< "\" to id " << ( i.*sources[ j ] ).reg << " type "
+					<< ir::PTXOperand::toString( ( i.*sources[ j ] ).type ) );
 				_maxRegister = std::max( _maxRegister, 
 					( i.*sources[ j ] ).reg );
 				result.s.push_back( 
@@ -171,7 +173,8 @@ namespace analysis
 					}
 					reportE( REPORT_CONVERT, "  Converting register \"" 
 						<< fi->identifier 
-						<< "\" to id " << fi->reg );
+						<< "\" to id " << fi->reg
+						<< " type " << ir::PTXOperand::toString( fi->type ) );
 					_maxRegister = std::max( _maxRegister, fi->reg );
 					result.d.push_back( 
 						RegisterPointer( &fi->reg, fi->type ) );
@@ -190,14 +193,26 @@ namespace analysis
 					}
 				}			
 
-				reportE( REPORT_CONVERT, "  Converting register \"" 
-					<< ( i.*destinations[ j ] ).identifier 
-					<< "\" to id " << ( i.*destinations[ j ] ).reg );
 				_maxRegister = std::max( _maxRegister, 
 					( i.*destinations[ j ] ).reg );
-				result.d.push_back( 
-					RegisterPointer( &( i.*destinations[ j ] ).reg, 
-					( i.*destinations[ j ] ).type ) );
+				if( ir::PTXInstruction::Cvt == i.opcode )
+				{
+					result.d.push_back( 
+						RegisterPointer( &( i.*destinations[ j ] ).reg, 
+						i.type ) );
+				}
+				else
+				{
+					result.d.push_back( 
+						RegisterPointer( &( i.*destinations[ j ] ).reg, 
+						( i.*destinations[ j ] ).type ) );
+				}
+				
+				reportE( REPORT_CONVERT, "  Converting register \"" 
+					<< ( i.*destinations[ j ] ).identifier 
+					<< "\" to id " << *result.d.back().pointer << " type "
+					<< ir::PTXOperand::toString(
+						result.d.back().type ) );
 			}
 
 		}
@@ -216,7 +231,10 @@ namespace analysis
 		for( RegisterSet::const_iterator fi = one.begin(); 
 			fi != one.end(); ++fi )
 		{
-			if( two.count( *fi ) == 0 ) return false;
+			RegisterSet::const_iterator ti = two.find( *fi );
+			if( ti == two.end() ) return false;
+			
+			if( ti->type != fi->type ) return false;
 		}
 		
 		return true;
@@ -241,6 +259,15 @@ namespace analysis
 		_fallthrough( dfg.end() ), _type( t )
 	{
 		
+	}
+	
+	void DataflowGraph::Block::_resolveTypes( DataflowGraph::Type& d,
+		const DataflowGraph::Type& s )
+	{
+		if( ir::PTXOperand::relaxedValid( d, s ) )
+		{
+			d = s;
+		}
 	}
 	
 	bool DataflowGraph::Block::compute( bool hasFallthrough )
@@ -282,13 +309,24 @@ namespace analysis
 			for( RegisterPointerVector::iterator di = ii->d.begin(); 
 				di != ii->d.end(); ++di )
 			{
-				_aliveIn.erase( *di );
+				RegisterSet::iterator ai = _aliveIn.find( *di );
+				if( ai != _aliveIn.end() )
+				{
+					_resolveTypes( di->type, ai->type );
+					_aliveIn.erase( *ai );
+				}
 			}
 			
 			for( RegisterPointerVector::iterator si = ii->s.begin(); 
 				si != ii->s.end(); ++si )
 			{
-				_aliveIn.insert( *si );
+				std::pair<RegisterSet::iterator, bool> insertion =
+					_aliveIn.insert( *si );
+				
+				if( !insertion.second )
+				{
+					_resolveTypes( si->type, insertion.first->type );
+				}
 			}
 		}
 		
@@ -913,13 +951,15 @@ namespace analysis
 			for( Block::RegisterSet::iterator ri = fi->_aliveIn.begin(); 
 				ri != fi->_aliveIn.end(); ++ri )
 			{
-				report( "   r" << ri->id );
+				report( "   r" << ri->id << " "
+					<< ir::PTXOperand::toString( ri->type ) );
 			}
 			report( "  Alive Out" );
 			for( Block::RegisterSet::iterator ri = fi->_aliveOut.begin(); 
 				ri != fi->_aliveOut.end(); ++ri )
 			{
-				report( "   r" << ri->id );
+				report( "   r" << ri->id << " "
+					<< ir::PTXOperand::toString( ri->type ) );
 			}
 		}
 		#endif

@@ -181,6 +181,11 @@ class DataflowGraph : public KernelAnalysis
 				/*! \brief Compare two register sets */
 				static bool _equal( const RegisterSet& one, 
 					const RegisterSet& two );
+
+			private:
+				/*! \brief Resolve a type ambiguity */
+				void _resolveTypes( DataflowGraph::Type& d,
+					const DataflowGraph::Type& s );
 				/*! \brief Update the live ranges */
 				bool compute( bool hasFallthrough );
 		

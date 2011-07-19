@@ -1,7 +1,7 @@
 {
 	ocelot: "ocelot",
     instrument: {
-        branchDivergence: {
+        dynamicInstructionCount: {
             logfile: ""
         }
     },

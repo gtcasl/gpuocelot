@@ -17,15 +17,13 @@
 
 /* Instrumentation Target Specifiers */
 
-#define ENTER_KERNEL        "ON_KERNEL_ENTRY"
-#define EXIT_KERNEL         "ON_KERNEL_EXIT"
-#define ENTER_BASIC_BLOCK   "ON_BASIC_BLOCK_ENTRY"
-#define EXIT_BASIC_BLOCK    "ON_BASIC_BLOCK_EXIT"
-
-#define ON_INSTRUCTION      "ON_INSTRUCTION"
+#define ENTER_KERNEL            "ON_KERNEL_ENTRY"
+#define EXIT_KERNEL             "ON_KERNEL_EXIT"
+#define ENTER_BASIC_BLOCK       "ON_BASIC_BLOCK_ENTRY"
+#define EXIT_BASIC_BLOCK        "ON_BASIC_BLOCK_EXIT"
+#define ON_INSTRUCTION          "ON_INSTRUCTION"
 
 /* Instruction classes */
-#define ON_MEM_RW           "MEM_RW"
 #define ON_MEM_READ         "MEM_READ"
 #define ON_MEM_WRITE        "MEM_WRITE"
 #define ON_PREDICATE        "PREDICATE"
@@ -66,10 +64,12 @@ namespace transforms
     
         public:
             
+            typedef std::vector<std::string> StringVector;
+            
             std::string id;
-            std::string instructionClass;
-            std::string addressSpace;
-            std::string type;
+            StringVector instructionClassVector;
+            StringVector addressSpaceVector;
+            StringVector dataTypeVector;
     };
 
     class TranslationBlock {
@@ -77,6 +77,14 @@ namespace transforms
         public:
         
             typedef std::vector<ir::PTXStatement> StatementVector;
+            
+            enum InstrumentationTarget {
+                KERNEL,
+                BASIC_BLOCK,
+                INSTRUCTION
+            };
+    
+            InstrumentationTarget target;
             
             StatementVector statements; 
             std::string label;
@@ -102,18 +110,17 @@ namespace transforms
 	{
 		private:
 			
-			typedef std::multimap<std::string, ir::PTXInstruction::Opcode> InstructionClassMap; 
+			typedef std::map<ir::PTXInstruction::Opcode, std::string> OpcodeMap; 
             typedef std::map<std::string, ir::PTXInstruction::AddressSpace> AddressSpaceMap;   
-            typedef std::multimap<std::string, ir::PTXOperand::DataType> TypesMap; 
+            typedef std::map<ir::PTXOperand::DataType, std::string> DataTypeMap; 
 			
-			InstructionClassMap instructionClassMap;
+			OpcodeMap opcodeMap;
             AddressSpaceMap addressSpaceMap;
-            TypesMap typesMap;
+            DataTypeMap dataTypeMap;
 			translator::CToPTXData translation;
 			std::vector<std::string> instructionClasses;
 			std::vector<std::string> addressSpaceSpecifiers;
 			std::vector<std::string> types;
-			
 			
 		protected:
 		    analysis::DataflowGraph& dfg();
@@ -126,9 +133,9 @@ namespace transforms
 			
 	    private:
 	        ir::PTXStatement prepareStatementToInsert(ir::PTXStatement statement, StaticAttributes attributes);
-	        void instrumentInstruction(std::vector<TranslationBlock> translationBlocks); 
-	        void instrumentBasicBlock(std::vector<TranslationBlock> translationBlocks);
-	        void instrumentKernel(std::vector<TranslationBlock> translationBlocks);
+	        void instrumentInstruction(TranslationBlock translationBlock); 
+	        void instrumentBasicBlock(TranslationBlock translationBlock);
+	        void instrumentKernel(TranslationBlock translationBlock);
 			
 		public:
 			/*! \brief Initialize the pass using a specific kernel */

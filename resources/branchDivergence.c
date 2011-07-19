@@ -1,6 +1,7 @@
 {
-    ON_INSTRUCTION: 
-    PREDICATE: {
+    ON_INSTRUCTION:
+    PREDICATE: 
+    {
         unsigned long offset = warpCount() * instructionId() + warpId();
         deviceMem[offset] = predicateEvalAllUniform();
     }

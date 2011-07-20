@@ -136,6 +136,9 @@ namespace transforms
 	        void instrumentInstruction(TranslationBlock translationBlock); 
 	        void instrumentBasicBlock(TranslationBlock translationBlock);
 	        void instrumentKernel(TranslationBlock translationBlock);
+	        bool instrumentationConditionsMet(ir::PTXInstruction instruction, TranslationBlock translationBlock);
+			void insertBefore(TranslationBlock translationBlock, StaticAttributes attributes, analysis::DataflowGraph::iterator basicBlock, unsigned int loc);
+			void insertAfter(TranslationBlock translationBlock, StaticAttributes attributes, analysis::DataflowGraph::iterator basicBlock, unsigned int loc);
 			
 		public:
 			/*! \brief Initialize the pass using a specific kernel */

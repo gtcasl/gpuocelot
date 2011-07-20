@@ -72,6 +72,89 @@ namespace transforms
         return toInsert;
     }
 
+    bool CToPTXInstrumentationPass::instrumentationConditionsMet(ir::PTXInstruction instruction, TranslationBlock translationBlock)
+    {
+        bool instructionClassValid = false;
+        bool addressSpaceValid = false;
+        bool dataTypeValid = false;
+                
+        if(translationBlock.specifier.instructionClassVector.empty())
+        {
+            instructionClassValid = true;
+        }
+        else
+        {  
+            instructionClassValid = false;
+            for (InstrumentationSpecifier::StringVector::iterator instClass = translationBlock.specifier.instructionClassVector.begin(); 
+                instClass != translationBlock.specifier.instructionClassVector.end(); ++instClass) 
+            {
+                if(opcodeMap[instruction.opcode] == *instClass)
+                {
+                    instructionClassValid = true;
+                    break;
+                }       
+            }     
+        }          
+        
+        if(translationBlock.specifier.addressSpaceVector.empty())
+        {
+            addressSpaceValid = true;
+        }
+        else 
+        {
+            addressSpaceValid = false;
+            for(InstrumentationSpecifier::StringVector::iterator addressSpace = translationBlock.specifier.addressSpaceVector.begin();
+                            addressSpace != translationBlock.specifier.addressSpaceVector.end(); ++addressSpace)
+            {
+                if(addressSpaceMap[*addressSpace] == instruction.addressSpace)
+                {
+                    addressSpaceValid = true;
+                    break;
+                }        
+            }
+        
+        }
+        
+        if(translationBlock.specifier.dataTypeVector.empty())
+        {
+            dataTypeValid = true;
+        }
+        else 
+        {
+            dataTypeValid = false;
+            for(InstrumentationSpecifier::StringVector::iterator dataType = translationBlock.specifier.dataTypeVector.begin();
+                            dataType != translationBlock.specifier.dataTypeVector.end(); ++dataType)
+            {
+                if(dataTypeMap[instruction.type] == *dataType)
+                {
+                    dataTypeValid = true;
+                }        
+            }
+        
+        }
+        return (instructionClassValid && addressSpaceValid && dataTypeValid);
+    }
+
+    void CToPTXInstrumentationPass::insertBefore(TranslationBlock translationBlock, StaticAttributes attributes, analysis::DataflowGraph::iterator basicBlock, unsigned int loc)
+    {
+        for( unsigned int j = 0; j < translationBlock.statements.size(); j++) {
+            ir::PTXStatement toInsert = prepareStatementToInsert(translationBlock.statements.at(j), attributes);
+            if(toInsert.instruction.opcode == ir::PTXInstruction::Nop)
+                continue;
+            dfg().insert(basicBlock, toInsert.instruction, loc++);
+        }
+    }
+    
+    void CToPTXInstrumentationPass::insertAfter(TranslationBlock translationBlock, StaticAttributes attributes, analysis::DataflowGraph::iterator basicBlock, unsigned int loc)
+    {
+        for( unsigned int j = 0; j < translationBlock.statements.size(); j++) {
+            ir::PTXStatement toInsert = prepareStatementToInsert(translationBlock.statements.at(j), attributes);
+            if(toInsert.instruction.opcode == ir::PTXInstruction::Nop)
+                continue;
+            dfg().insert(basicBlock, toInsert.instruction, ++loc);
+        }
+    }
+
     void CToPTXInstrumentationPass::instrumentInstruction(TranslationBlock translationBlock) 
     {
         StaticAttributes attributes;
@@ -98,49 +181,26 @@ namespace transforms
             {
             
                 ir::PTXInstruction *ptxInstruction = (ir::PTXInstruction *)instruction->i;
+                /* For the SetP instruction, need to hold the predicate ID. This is required for the branch divergence instrumentation. */
+                if(ptxInstruction->opcode == ir::PTXInstruction::SetP)
+                    attributes.predId = ptxInstruction->d;
                 
-                unsigned int j = 0;
-                
-                /* check if an instruction class was specified for this translation block */
-                if(!translationBlock.specifier.instructionClassVector.empty())
+                if(instrumentationConditionsMet(*ptxInstruction, translationBlock))
                 {
-                    for (InstrumentationSpecifier::StringVector::iterator instClass = translationBlock.specifier.instructionClassVector.begin(); 
-                    instClass != translationBlock.specifier.instructionClassVector.end(); ++instClass) 
-                    {
-                        if(opcodeMap[ptxInstruction->opcode] == *instClass)
-                        {
-                            /* For the SetP instruction, need to hold the predicate ID. This is required for the branch divergence instrumentation. */
-                            if(ptxInstruction->opcode == ir::PTXInstruction::SetP)
-                                attributes.predId = ptxInstruction->d;
-                            
-                            /* Insert each instrumentation-related statement in this translation block right after the instruction for this instruction class is found */    
-                            for( j = 0; j < translationBlock.statements.size(); j++) {
-                                ir::PTXStatement toInsert = prepareStatementToInsert(translationBlock.statements.at(j), attributes);
-                                if(toInsert.instruction.opcode == ir::PTXInstruction::Nop)
-                                    continue;
-                                
-                                dfg().insert(basicBlock, toInsert.instruction, ++loc); 
-                            }
-                            /* Here, instructionId is updated only if the instruction for this instruction class is found. 
-                            Therefore, instructionId maintains the count for all instructions in this specific instruction class. */
-                            attributes.instructionId++;
-                            break;
-                        }
-                    }    
-                }
-                else 
-                {   
-                    /* if no instruction class was specified, insert instrumentation after every single instruction */ 
-                    for( j = 0; j < translationBlock.statements.size(); j++) 
-                    {
-                            ir::PTXStatement toInsert = prepareStatementToInsert(translationBlock.statements.at(j), attributes);
-                            if(toInsert.instruction.opcode == ir::PTXInstruction::Nop)
-                                continue;
-                                
-                            dfg().insert(basicBlock, toInsert.instruction, loc++);
-                    }
-                    /* InstructionId updated for every single instruction */
                     attributes.instructionId++;
+                
+                    /* check if an instruction class was specified for this translation block */
+                    if(!translationBlock.specifier.instructionClassVector.empty())
+                    {
+                        insertAfter(translationBlock, attributes, basicBlock, loc);
+                        loc += translationBlock.statements.size();
+                    }
+                    else 
+                    {   
+                        /* if no instruction class was specified, insert instrumentation before every single instruction */ 
+                        insertBefore(translationBlock, attributes, basicBlock, loc);
+                        loc += translationBlock.statements.size();
+                    }
                 }
                 loc++;
             }
@@ -148,6 +208,7 @@ namespace transforms
            attributes.basicBlockId++;          
         }    
     }
+
 
     void CToPTXInstrumentationPass::instrumentBasicBlock(TranslationBlock translationBlock) 
     {
@@ -162,65 +223,18 @@ namespace transforms
         for( analysis::DataflowGraph::iterator basicBlock = block; 
             basicBlock != dfg().end(); ++basicBlock )
         {        
-           /* check if there are any instrumentation-related statements to insert */ 
            if(basicBlock->instructions().empty())
               continue;
-        
-            unsigned int j = 0;
-            
                 
             attributes.basicBlockInstructionCount = 0;
             
-            /* check if an instruction class was specified for this translation block */
-            if(!translationBlock.specifier.instructionClassVector.empty())
+            /* Iterating through each instruction */
+            for( analysis::DataflowGraph::InstructionVector::const_iterator instruction = basicBlock->instructions().begin();
+                instruction != basicBlock->instructions().end(); ++instruction)
             {
-                /* Iterating through each instruction */
-                for( analysis::DataflowGraph::InstructionVector::const_iterator instruction = basicBlock->instructions().begin();
-                    instruction != basicBlock->instructions().end(); ++instruction)
-                {
-                    ir::PTXInstruction *ptxInstruction = (ir::PTXInstruction *)instruction->i;
-                    
-                    for (InstrumentationSpecifier::StringVector::iterator instClass = translationBlock.specifier.instructionClassVector.begin(); 
-                        instClass != translationBlock.specifier.instructionClassVector.end(); ++instClass) 
-                    {
-                        if(opcodeMap[ptxInstruction->opcode] == *instClass)
-                        {
-                            /*  if address space and type info is not provided, update basicBlockInstructionCount to include all instructions 
-                                of the specified instruction class for this basic block */
-                            if(translationBlock.specifier.addressSpaceVector.empty() && translationBlock.specifier.dataTypeVector.empty())
-                                attributes.basicBlockInstructionCount++; 
-                            /* if address space info is provided, only update basicBlockInstructionCount to include instructions of the specified instruction 
-                                class and address space */
-                            else if(!translationBlock.specifier.addressSpaceVector.empty())
-                            {
-                                for(InstrumentationSpecifier::StringVector::iterator addressSpace = translationBlock.specifier.addressSpaceVector.begin();
-                                    addressSpace != translationBlock.specifier.addressSpaceVector.end(); ++addressSpace)
-                                {
-                                    if(addressSpaceMap[*addressSpace] == ptxInstruction->addressSpace)
-                                        attributes.basicBlockInstructionCount++;
-                                }
-                            
-                            }
-                            /* if data type info is provided, only update basicBlockInstructionCount to include instructions of the specified instruction 
-                                class and data type */
-                            else if(!translationBlock.specifier.dataTypeVector.empty())
-                            {
-                                for(InstrumentationSpecifier::StringVector::iterator dataType = translationBlock.specifier.dataTypeVector.begin();
-                                    dataType != translationBlock.specifier.dataTypeVector.end(); ++dataType)
-                                {
-                                    if(dataTypeMap[ptxInstruction->type] == *dataType)
-                                        attributes.basicBlockInstructionCount++;
-                                }
-                            }  
-                        }
-                    }
-                    
-                }
-            
-            }
-            /* if no instruction class is provided, basicBlockInstructionCount should include all instructions in this basic block */
-            else {
-                attributes.basicBlockInstructionCount = basicBlock->instructions().size();
+                ir::PTXInstruction *ptxInstruction = (ir::PTXInstruction *)instruction->i;
+                if(instrumentationConditionsMet(*ptxInstruction, translationBlock))
+                    attributes.basicBlockInstructionCount++;
             }
             
             unsigned int loc = 0;
@@ -230,15 +244,8 @@ namespace transforms
             if(translationBlock.label == EXIT_BASIC_BLOCK)
                 loc = basicBlock->instructions().size() - 1;
             
-            for( j = 0; j < translationBlock.statements.size(); j++) {
-                ir::PTXStatement toInsert = prepareStatementToInsert(translationBlock.statements.at(j), attributes);
-                if(toInsert.instruction.opcode == ir::PTXInstruction::Nop)
-                    continue;
-                dfg().insert(basicBlock, toInsert.instruction, loc);
-                loc++;
-            }
-        
-           
+            insertBefore(translationBlock, attributes, basicBlock, loc);
+         
            attributes.basicBlockId++;          
         }    
     }
@@ -258,18 +265,28 @@ namespace transforms
 	    analysis::DataflowGraph::iterator block = dfg().begin();
 	    ++block;
 	    
+	    attributes.kernelInstructionCount = 0;
+	    
 	    for( analysis::DataflowGraph::iterator basicBlock = block; 
             basicBlock != dfg().end(); ++basicBlock )
         {
-            attributes.kernelInstructionCount += basicBlock->instructions().size();
+            if(basicBlock->instructions().empty())
+              continue;
+            
+            /* Iterating through each instruction */
+            for( analysis::DataflowGraph::InstructionVector::const_iterator instruction = basicBlock->instructions().begin();
+                instruction != basicBlock->instructions().end(); ++instruction)
+            {
+                ir::PTXInstruction *ptxInstruction = (ir::PTXInstruction *)instruction->i;
+                if(instrumentationConditionsMet(*ptxInstruction, translationBlock))
+                    attributes.kernelInstructionCount++;
+            }
         }
 	    
-	    unsigned int j = 0;
-        
-        unsigned int loc = 0;
+	    unsigned int loc = 0;
         
         /* if inserting at the end of the kernel, insert right before the last statement in the kernel, which is most likely
-            an exit instruction */
+            an exit or return instruction */
         if(translationBlock.label == EXIT_KERNEL) {    
             block = --(dfg().end());
             while(block->instructions().size() == 0) {
@@ -278,14 +295,7 @@ namespace transforms
             loc = block->instructions().size() - 1;
         }
         
-        for( j = 0; j < translationBlock.statements.size(); j++) {
-            ir::PTXStatement toInsert = prepareStatementToInsert(translationBlock.statements.at(j), attributes);
-            if(toInsert.instruction.opcode == ir::PTXInstruction::Nop)
-                continue;
-            dfg().insert(block, toInsert.instruction, loc);
-            loc++;
-        } 
-        
+        insertBefore(translationBlock, attributes, block, loc);
     }
 
     void CToPTXInstrumentationPass::runOnKernel( ir::IRKernel & k)

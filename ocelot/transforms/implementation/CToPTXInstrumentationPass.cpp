@@ -66,7 +66,7 @@ namespace transforms
         }
         
         if(statement.instruction.opcode == ir::PTXInstruction::Vote){
-            toInsert.instruction.a = attributes.predId;
+            toInsert.instruction.a = attributes.predicateGuard;
         }
 
         return toInsert;
@@ -88,12 +88,20 @@ namespace transforms
             for (InstrumentationSpecifier::StringVector::iterator instClass = translationBlock.specifier.instructionClassVector.begin(); 
                 instClass != translationBlock.specifier.instructionClassVector.end(); ++instClass) 
             {
-                if(opcodeMap[instruction.opcode] == *instClass)
+                if(*instClass == ON_PREDICATE)
+                {
+                    if(instruction.pg.condition == ir::PTXOperand::Pred || instruction.pg.condition == ir::PTXOperand::InvPred) 
+                    {
+                        instructionClassValid = true;
+                        break;
+                    }        
+                }
+                else if(opcodeMap[instruction.opcode] == *instClass)
                 {
                     instructionClassValid = true;
                     break;
                 }       
-            }     
+            }    
         }          
         
         if(translationBlock.specifier.addressSpaceVector.empty())
@@ -181,26 +189,17 @@ namespace transforms
             {
             
                 ir::PTXInstruction *ptxInstruction = (ir::PTXInstruction *)instruction->i;
-                /* For the SetP instruction, need to hold the predicate ID. This is required for the branch divergence instrumentation. */
-                if(ptxInstruction->opcode == ir::PTXInstruction::SetP)
-                    attributes.predId = ptxInstruction->d;
+                /* Save the predicate guard for this instruction */
+                if(ptxInstruction->pg.condition == ir::PTXOperand::Pred || ptxInstruction->pg.condition == ir::PTXOperand::InvPred){ 
+                    attributes.predicateGuard = ptxInstruction->pg;
+                }    
                 
                 if(instrumentationConditionsMet(*ptxInstruction, translationBlock))
                 {
                     attributes.instructionId++;
-                
-                    /* check if an instruction class was specified for this translation block */
-                    if(!translationBlock.specifier.instructionClassVector.empty())
-                    {
-                        insertAfter(translationBlock, attributes, basicBlock, loc);
-                        loc += translationBlock.statements.size();
-                    }
-                    else 
-                    {   
-                        /* if no instruction class was specified, insert instrumentation before every single instruction */ 
-                        insertBefore(translationBlock, attributes, basicBlock, loc);
-                        loc += translationBlock.statements.size();
-                    }
+           
+                    insertBefore(translationBlock, attributes, basicBlock, loc);
+                    loc += translationBlock.statements.size();
                 }
                 loc++;
             }
@@ -464,7 +463,6 @@ namespace transforms
 	    
 	    opcodeMap[ir::PTXInstruction::Ld] = ON_MEM_READ;
 	    opcodeMap[ir::PTXInstruction::St] = ON_MEM_WRITE;
-	    opcodeMap[ir::PTXInstruction::SetP] = ON_PREDICATE;
 	    opcodeMap[ir::PTXInstruction::Bra] = ON_BRANCH;
 	    opcodeMap[ir::PTXInstruction::Call] = ON_CALL;
 	    opcodeMap[ir::PTXInstruction::Bar] = ON_BARRIER;

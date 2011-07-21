@@ -99,7 +99,7 @@ namespace transforms
             unsigned int basicBlockInstructionCount;
             unsigned int instructionId;
             unsigned int kernelInstructionCount;
-            ir::PTXOperand predId;
+            ir::PTXOperand predicateGuard;
     
     };
 

@@ -49,8 +49,9 @@
 
 
 /* basic block constructs */
-#define BASIC_BLOCK_ID          "basicBlockId"
-#define BASIC_BLOCK_INST_COUNT  "basicBlockInstructionCount"
+#define BASIC_BLOCK_ID                  "basicBlockId"
+#define BASIC_BLOCK_INST_COUNT          "basicBlockInstructionCount"
+#define BASIC_BLOCK_EXEC_INST_COUNT     "basicBlockExecutedInstructionCount"
 #define INSTRUCTION_ID          "instructionId"
 
 namespace ir
@@ -67,7 +68,7 @@ namespace transforms
         public:
             
             typedef std::vector<std::string> StringVector;
-            
+  
             std::string id;
             StringVector instructionClassVector;
             StringVector addressSpaceVector;
@@ -97,12 +98,18 @@ namespace transforms
     class StaticAttributes {
     
         public:
+            
+            typedef std::map<std::string, size_t> PredicateCountMap;
+            typedef std::map<std::string, ir::PTXOperand> PredicateMap;
         
             unsigned int basicBlockId;
             unsigned int basicBlockInstructionCount;
+            unsigned int basicBlockExecutedInstructionCount;
             unsigned int instructionId;
             unsigned int kernelInstructionCount;
             ir::PTXOperand predicateGuard;
+            PredicateCountMap predicateCountMap;
+            PredicateMap predicateMap;
     };
 
 	/*! \brief A class for an instrumentation pass that adds generated PTX from

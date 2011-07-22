@@ -838,6 +838,7 @@ namespace translator
                     break;
                     case basicBlockIdSymbol:
                     case basicBlockInstCountSymbol: 
+                    case basicBlockExecInstCountSymbol:
                     case instructionIdSymbol:
                     {
                         generateStaticAttributes(inst, stmt, type, insn, call_name);
@@ -1041,6 +1042,7 @@ namespace translator
                                         void syncThreads();\
                                         unsigned long basicBlockId();\
                                         unsigned long basicBlockInstructionCount();\
+                                        unsigned long basicBlockExecutedInstructionCount();\
                                         unsigned long instructionId();\
                                         unsigned long warpCount();\
                                         unsigned long warpId();\
@@ -1135,7 +1137,7 @@ namespace translator
         functionCalls["syncThreads"] = syncThreadsSymbol;
         functionCalls["basicBlockId"] = basicBlockIdSymbol;
         functionCalls["basicBlockInstructionCount"] = basicBlockInstCountSymbol;
-        functionCalls["basicBlockExecInstCount"] = basicBlockExecInstCountSymbol;
+        functionCalls["basicBlockExecutedInstructionCount"] = basicBlockExecInstCountSymbol;
         functionCalls["instructionId"] = instructionIdSymbol;
         functionCalls["warpCount"] = warpCountSymbol;
         functionCalls["warpId"] = warpIdSymbol;

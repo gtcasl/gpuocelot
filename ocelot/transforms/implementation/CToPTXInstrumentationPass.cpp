@@ -33,13 +33,18 @@ namespace transforms
     
         ir::PTXStatement toInsert = statement;
         
-        if(statement.instruction.d.identifier == BASIC_BLOCK_INST_COUNT || statement.instruction.d.identifier == BASIC_BLOCK_ID || statement.instruction.d.identifier == INSTRUCTION_ID) {
+        if(statement.instruction.d.identifier == BASIC_BLOCK_INST_COUNT || 
+            statement.instruction.d.identifier == BASIC_BLOCK_EXEC_INST_COUNT ||
+            statement.instruction.d.identifier == BASIC_BLOCK_ID || 
+            statement.instruction.d.identifier == INSTRUCTION_ID) {
             toInsert.instruction.d.reg = dfg().newRegister();
             newRegisterMap[toInsert.instruction.d.identifier] = toInsert.instruction.d.reg;
             toInsert.instruction.d.identifier.clear();
             
             if(statement.instruction.d.identifier == BASIC_BLOCK_INST_COUNT) 
                 toInsert.instruction.a.imm_int = attributes.basicBlockInstructionCount;
+            else if(statement.instruction.d.identifier == BASIC_BLOCK_EXEC_INST_COUNT) 
+                toInsert.instruction.a.imm_int = attributes.basicBlockExecutedInstructionCount;
             else if(statement.instruction.d.identifier == BASIC_BLOCK_ID)    
                 toInsert.instruction.a.imm_int = attributes.basicBlockId; 
             else if(statement.instruction.d.identifier == INSTRUCTION_ID)    
@@ -231,14 +236,26 @@ namespace transforms
               continue;
                 
             attributes.basicBlockInstructionCount = 0;
+            attributes.basicBlockExecutedInstructionCount = 0;
             
             /* Iterating through each instruction */
             for( analysis::DataflowGraph::InstructionVector::const_iterator instruction = basicBlock->instructions().begin();
                 instruction != basicBlock->instructions().end(); ++instruction)
             {
                 ir::PTXInstruction *ptxInstruction = (ir::PTXInstruction *)instruction->i;
-                if(instrumentationConditionsMet(*ptxInstruction, translationBlock))
+                if(instrumentationConditionsMet(*ptxInstruction, translationBlock)) 
+                {
                     attributes.basicBlockInstructionCount++;
+                    
+                    if(ptxInstruction->pg.condition == ir::PTXOperand::Pred || ptxInstruction->pg.condition == ir::PTXOperand::InvPred){
+                        attributes.predicateCountMap[ptxInstruction->pg.toString()]++;
+                        attributes.predicateMap[ptxInstruction->pg.toString()] = ptxInstruction->pg;
+                    }
+                    else
+                    {
+                        attributes.basicBlockExecutedInstructionCount++;
+                    }
+                }        
             }
             
             unsigned int loc = 0;
@@ -250,7 +267,46 @@ namespace transforms
             
             insertBefore(translationBlock, attributes, basicBlock, loc);
          
-           attributes.basicBlockId++;          
+            TranslationBlock endBlock;
+            
+            for(StaticAttributes::PredicateCountMap::const_iterator pred = attributes.predicateCountMap.begin(); pred != attributes.predicateCountMap.end();
+                ++pred)
+            {
+                analysis::DataflowGraph::RegisterId predCount = dfg().newRegister();
+            
+                ir::PTXOperand::DataType type = (sizeof(size_t) == 8 ? ir::PTXOperand::u64: ir::PTXOperand::u32);
+                ir::PTXInstruction selp(ir::PTXInstruction::SelP);
+	            selp.type = selp.d.type = selp.b.type = selp.a.type = selp.c.type = type;
+	            selp.d.addressMode = selp.c.addressMode = ir::PTXOperand::Register;
+	            selp.a.addressMode = selp.b.addressMode = ir::PTXOperand::Immediate;
+	            
+	            selp.d.reg = predCount;
+	            selp.b.imm_int = 0;
+	            selp.a.imm_int = pred->second;
+	            selp.c = attributes.predicateMap[pred->first];
+
+	            
+	            ir::PTXInstruction add(ir::PTXInstruction::Add);
+                add.type = add.d.type = add.a.type = add.b.type = type;
+                add.d.addressMode = add.a.addressMode = add.b.addressMode = ir::PTXOperand::Register;
+                
+                add.d.reg = add.a.reg = newRegisterMap[BASIC_BLOCK_EXEC_INST_COUNT];
+                add.b.reg = predCount;
+                
+                ir::PTXStatement stmt(ir::PTXStatement::Instr);
+                stmt.instruction = selp;
+                endBlock.statements.push_back(stmt);
+                stmt.instruction = add;
+                endBlock.statements.push_back(stmt);
+            }
+         
+            if(endBlock.statements.size() > 0)
+            {
+                loc = basicBlock->instructions().size() - 1;
+                insertBefore(endBlock, attributes, basicBlock, loc);
+            }
+         
+            attributes.basicBlockId++;          
         }    
     }
 

@@ -36,6 +36,7 @@ namespace translator {
         
             std::string id;
             bool set;
+            bool inv;
             std::string branchLabel;
             
             enum Cond {
@@ -44,6 +45,8 @@ namespace translator {
             };
     
             Cond condition;
+            
+            PredicateInfo();
     
     };
 
@@ -97,7 +100,8 @@ namespace translator {
                 instructionIdSymbol,
                 warpCountSymbol,
                 warpIdSymbol,
-                predicateEvalAllUniformSymbol
+                predicateEvalWarpUniformSymbol,
+                predicateEvalWarpDivergentSymbol
 		    };
 		    
 		    SpecialSymbols symbols;
@@ -130,7 +134,7 @@ namespace translator {
 		        void generateThreadIndexX(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn);
 		        void generateBlockDim(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn);
 		        void generateGlobalThreadId(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn);
-		        void generatePredicateEvalAllUniform(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn);
+		        void generatePredicateEvalWarpUniform(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn, bool isUniform);
 		        void generateSyncThreads(ir::PTXInstruction inst, ir::PTXStatement stmt);
 		        void generateStaticAttributes(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn, std::string callName);
 		    

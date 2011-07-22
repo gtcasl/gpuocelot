@@ -81,6 +81,8 @@ unsigned long warpCount();
 
 unsigned long warpId();
 
-unsigned long predicateEvalAllUniform();
+unsigned long predicateEvalWarpUniform();
+
+unsigned long predicateEvalWarpDivergent();
 
 #endif

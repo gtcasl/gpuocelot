@@ -95,15 +95,18 @@ namespace analysis
 
         unsigned long divergentBranches = 0;
         unsigned long divergentWarps = 0;
+        bool isDivergent = false;
         
         for(size_t i = 0; i < predCount; i++) {
+            isDivergent = false;
             for(size_t j = 0; j < warpCount; j++) {
-                if(info[warpCount * i + j] == 0) {
-                    divergentBranches++;
+                if(info[warpCount * i + j] == 1) {
                     divergentWarps++;
-                }    
-                    
+                    isDivergent = true;
+                }      
             }
+            if(isDivergent)
+                divergentBranches++;
         } 
 
         

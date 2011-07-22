@@ -10,6 +10,8 @@
 #include <ocelot/translator/interface/CToPTXTranslator.h>
 #include <ocelot/translator/interface/CToPTXInterface.h>
 
+#include <hydrazine/implementation/Exception.h>
+
 #include <boost/lexical_cast.hpp>
 
 #define REG         "r"
@@ -66,7 +68,12 @@ namespace translator
 	        pred != predicateList.end(); ++pred) {
 
             if(pred->set && (instruction.opcode == ir::PTXInstruction::St || instruction.opcode == ir::PTXInstruction::Ld)){
-                instruction.pg.condition = ir::PTXOperand::Pred;
+                
+                if(pred->inv)
+                    instruction.pg.condition = ir::PTXOperand::InvPred;
+                else    
+                    instruction.pg.condition = ir::PTXOperand::Pred;
+                
                 instruction.pg.identifier = pred->id;
                 instruction.pg.type = ir::PTXOperand::pred;
                 instruction.pg.addressMode = ir::PTXOperand::Register;
@@ -536,7 +543,7 @@ namespace translator
         specialRegisterMap["threadId"] = globalThreadId;
     }
     
-    void CToPTXTranslator::generatePredicateEvalAllUniform(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn)
+    void CToPTXTranslator::generatePredicateEvalWarpUniform(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn, bool isUniform)
     {
     
         inst.opcode = ir::PTXInstruction::Vote;
@@ -552,12 +559,10 @@ namespace translator
         
         PredicateInfo predicateInfo;
         predicateInfo.id = inst.d.identifier;
-        predicateInfo.set = false;
+        predicateInfo.set = true;
         
         stmt.instruction = inst;
         statements.push_back(stmt);
-          
-        predicateList.push_back(predicateInfo);
         
         inst.opcode = ir::PTXInstruction::SelP;
         inst.type = type;
@@ -568,13 +573,23 @@ namespace translator
         
         inst.a.type = inst.b.type = type;
         inst.a.addressMode = inst.b.addressMode = ir::PTXOperand::Immediate;
-        inst.a.imm_int = 1;
-        inst.b.imm_int = 0;
-        
+        if(isUniform)
+        {
+            inst.a.imm_int = 1;
+            inst.b.imm_int = 0;
+        }
+        else
+        {
+            predicateInfo.inv = true;
+            inst.a.imm_int = 0;
+            inst.b.imm_int = 1;
+        }
+            
         inst.c.type = ir::PTXOperand::pred;
         inst.c.addressMode = ir::PTXOperand::Register;
         inst.c.identifier = predicateInfo.id;
         
+        predicateList.push_back(predicateInfo);
         stmt.instruction = inst;
         statements.push_back(stmt);
         
@@ -811,9 +826,14 @@ namespace translator
                     
                     }
                     break;
-                    case predicateEvalAllUniformSymbol:
+                    case predicateEvalWarpUniformSymbol:
                     {
-                        generatePredicateEvalAllUniform(inst, stmt, type, insn);
+                        generatePredicateEvalWarpUniform(inst, stmt, type, insn, true);
+                    }
+                    break;
+                    case predicateEvalWarpDivergentSymbol:
+                    {
+                        generatePredicateEvalWarpUniform(inst, stmt, type, insn, false);
                     }
                     break;
                     case basicBlockIdSymbol:
@@ -992,6 +1012,9 @@ namespace translator
             }
             codeFile.close();
         }
+        else {
+            throw hydrazine::Exception( "No code specification found for this instrumentation!");
+        }
         
 	    cod_parse_context context;
 	    cod_exec_context ec;
@@ -1021,7 +1044,8 @@ namespace translator
                                         unsigned long instructionId();\
                                         unsigned long warpCount();\
                                         unsigned long warpId();\
-                                        unsigned long predicateEvalAllUniform();\
+                                        unsigned long predicateEvalWarpUniform();\
+                                        unsigned long predicateEvalWarpDivergent();\
                                         unsigned long deviceMem[2];";
                         
 	    static cod_extern_entry externs[] = 
@@ -1052,7 +1076,8 @@ namespace translator
             {(char *)"instructionId", (void*)(unsigned long)(*instructionId)},
             {(char *)"warpCount", (void*)(unsigned long)(*warpCount)},
             {(char *)"warpId", (void*)(unsigned long)(*warpId)},
-            {(char *)"predicateEvalAllUniform", (void*)(unsigned long)(*predicateEvalAllUniform)},
+            {(char *)"predicateEvalWarpUniform", (void*)(unsigned long)(*predicateEvalWarpUniform)},
+            {(char *)"predicateEvalWarpDivergent", (void*)(unsigned long)(*predicateEvalWarpDivergent)},
             {(char *)"deviceMem", (void *)deviceMem},
 	        {NULL, (void*)0}
 	    };
@@ -1114,7 +1139,14 @@ namespace translator
         functionCalls["instructionId"] = instructionIdSymbol;
         functionCalls["warpCount"] = warpCountSymbol;
         functionCalls["warpId"] = warpIdSymbol;
-        functionCalls["predicateEvalAllUniform"] = predicateEvalAllUniformSymbol;
+        functionCalls["predicateEvalWarpUniform"] = predicateEvalWarpUniformSymbol;
+        functionCalls["predicateEvalWarpDivergent"] = predicateEvalWarpDivergentSymbol;
+    }
+    
+    PredicateInfo::PredicateInfo()
+        :set(false), inv(false)
+    {
+    
     }
 }
 

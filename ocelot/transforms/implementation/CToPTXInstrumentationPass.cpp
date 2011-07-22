@@ -15,8 +15,6 @@
 #include <ocelot/ir/interface/PTXKernel.h>
 #include <ocelot/analysis/interface/DataflowGraph.h>
 
-#include <map>
-
 namespace transforms
 {
 
@@ -92,7 +90,14 @@ namespace transforms
                 {
                     if(instruction.pg.condition == ir::PTXOperand::Pred || instruction.pg.condition == ir::PTXOperand::InvPred) 
                     {
-                        instructionClassValid = true;
+                        InstrumentationSpecifier::StringVector::iterator found = std::find(translationBlock.specifier.predicateVector.begin(), 
+                            translationBlock.specifier.predicateVector.end(), instruction.pg.toString());
+                            
+                        if(found == translationBlock.specifier.predicateVector.end())
+                        { 
+                            translationBlock.specifier.predicateVector.push_back(instruction.pg.toString());
+                            instructionClassValid = true;
+                        }          
                         break;
                     }        
                 }
@@ -190,7 +195,7 @@ namespace transforms
             
                 ir::PTXInstruction *ptxInstruction = (ir::PTXInstruction *)instruction->i;
                 /* Save the predicate guard for this instruction */
-                if(ptxInstruction->pg.condition == ir::PTXOperand::Pred || ptxInstruction->pg.condition == ir::PTXOperand::InvPred){ 
+                if(ptxInstruction->pg.condition == ir::PTXOperand::Pred || ptxInstruction->pg.condition == ir::PTXOperand::InvPred){
                     attributes.predicateGuard = ptxInstruction->pg;
                 }    
                 

@@ -114,7 +114,11 @@ unsigned long warpId() {
     return 0;
 }
 
-unsigned long predicateEvalAllUniform(){
+unsigned long predicateEvalWarpUniform(){
+    return 0;
+}
+
+unsigned long predicateEvalWarpDivergent(){
     return 0;
 }
 

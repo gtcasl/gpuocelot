@@ -14,6 +14,8 @@
 #include <ocelot/ir/interface/PTXOperand.h>
 
 #include <map>
+#include <algorithm>
+#include <vector>
 
 /* Instrumentation Target Specifiers */
 
@@ -70,6 +72,7 @@ namespace transforms
             StringVector instructionClassVector;
             StringVector addressSpaceVector;
             StringVector dataTypeVector;
+            StringVector predicateVector;
     };
 
     class TranslationBlock {
@@ -100,7 +103,6 @@ namespace transforms
             unsigned int instructionId;
             unsigned int kernelInstructionCount;
             ir::PTXOperand predicateGuard;
-    
     };
 
 	/*! \brief A class for an instrumentation pass that adds generated PTX from

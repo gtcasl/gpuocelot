@@ -70,10 +70,13 @@ namespace transforms
             typedef std::vector<std::string> StringVector;
   
             std::string id;
+            bool checkForPredication;
             StringVector instructionClassVector;
             StringVector addressSpaceVector;
             StringVector dataTypeVector;
             StringVector predicateVector;
+            
+            InstrumentationSpecifier();
     };
 
     class TranslationBlock {

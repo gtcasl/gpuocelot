@@ -267,43 +267,46 @@ namespace transforms
             
             insertBefore(translationBlock, attributes, basicBlock, loc);
          
-            TranslationBlock endBlock;
-            
-            for(StaticAttributes::PredicateCountMap::const_iterator pred = attributes.predicateCountMap.begin(); pred != attributes.predicateCountMap.end();
-                ++pred)
+            if(translationBlock.specifier.checkForPredication)
             {
-                analysis::DataflowGraph::RegisterId predCount = dfg().newRegister();
-            
-                ir::PTXOperand::DataType type = (sizeof(size_t) == 8 ? ir::PTXOperand::u64: ir::PTXOperand::u32);
-                ir::PTXInstruction selp(ir::PTXInstruction::SelP);
-	            selp.type = selp.d.type = selp.b.type = selp.a.type = selp.c.type = type;
-	            selp.d.addressMode = selp.c.addressMode = ir::PTXOperand::Register;
-	            selp.a.addressMode = selp.b.addressMode = ir::PTXOperand::Immediate;
-	            
-	            selp.d.reg = predCount;
-	            selp.b.imm_int = 0;
-	            selp.a.imm_int = pred->second;
-	            selp.c = attributes.predicateMap[pred->first];
+                TranslationBlock endBlock;
+                
+                for(StaticAttributes::PredicateCountMap::const_iterator pred = attributes.predicateCountMap.begin(); pred != attributes.predicateCountMap.end();
+                    ++pred)
+                {
+                    analysis::DataflowGraph::RegisterId predCount = dfg().newRegister();
+                
+                    ir::PTXOperand::DataType type = (sizeof(size_t) == 8 ? ir::PTXOperand::u64: ir::PTXOperand::u32);
+                    ir::PTXInstruction selp(ir::PTXInstruction::SelP);
+	                selp.type = selp.d.type = selp.b.type = selp.a.type = selp.c.type = type;
+	                selp.d.addressMode = selp.c.addressMode = ir::PTXOperand::Register;
+	                selp.a.addressMode = selp.b.addressMode = ir::PTXOperand::Immediate;
+	                
+	                selp.d.reg = predCount;
+	                selp.b.imm_int = 0;
+	                selp.a.imm_int = pred->second;
+	                selp.c = attributes.predicateMap[pred->first];
 
-	            
-	            ir::PTXInstruction add(ir::PTXInstruction::Add);
-                add.type = add.d.type = add.a.type = add.b.type = type;
-                add.d.addressMode = add.a.addressMode = add.b.addressMode = ir::PTXOperand::Register;
-                
-                add.d.reg = add.a.reg = newRegisterMap[BASIC_BLOCK_EXEC_INST_COUNT];
-                add.b.reg = predCount;
-                
-                ir::PTXStatement stmt(ir::PTXStatement::Instr);
-                stmt.instruction = selp;
-                endBlock.statements.push_back(stmt);
-                stmt.instruction = add;
-                endBlock.statements.push_back(stmt);
-            }
-         
-            if(endBlock.statements.size() > 0)
-            {
-                loc = basicBlock->instructions().size() - 1;
-                insertBefore(endBlock, attributes, basicBlock, loc);
+	                
+	                ir::PTXInstruction add(ir::PTXInstruction::Add);
+                    add.type = add.d.type = add.a.type = add.b.type = type;
+                    add.d.addressMode = add.a.addressMode = add.b.addressMode = ir::PTXOperand::Register;
+                    
+                    add.d.reg = add.a.reg = newRegisterMap[BASIC_BLOCK_EXEC_INST_COUNT];
+                    add.b.reg = predCount;
+                    
+                    ir::PTXStatement stmt(ir::PTXStatement::Instr);
+                    stmt.instruction = selp;
+                    endBlock.statements.push_back(stmt);
+                    stmt.instruction = add;
+                    endBlock.statements.push_back(stmt);
+                }
+             
+                if(endBlock.statements.size() > 0)
+                {
+                    loc = basicBlock->instructions().size() - 1;
+                    insertBefore(endBlock, attributes, basicBlock, loc);
+                }
             }
          
             attributes.basicBlockId++;          
@@ -371,6 +374,21 @@ namespace transforms
         
         for(ir::PTXKernel::PTXStatementVector::const_iterator statement = translation.statements.begin();
             statement != translation.statements.end(); ++statement) {
+            
+            /* check if predication is enabled */
+            if(statement->directive == ir::PTXStatement::Instr && statement->instruction.d.identifier == BASIC_BLOCK_EXEC_INST_COUNT)
+            {
+                if(translationBlocks.size() > 0){
+                    transforms::TranslationBlock last = translationBlocks.back();
+                    last.specifier.checkForPredication = true;
+                    translationBlocks.pop_back();
+                    translationBlocks.push_back(last);
+                }
+                else {
+                    initialBlock.specifier.checkForPredication = true;
+                }
+            }
+                
             
             /* check if a label was encountered */
             if(statement->directive == ir::PTXStatement::Label) {
@@ -577,6 +595,11 @@ namespace transforms
 	    dataTypeMap[ir::PTXOperand::f32] = TYPE_FP;
 	    dataTypeMap[ir::PTXOperand::f64] = TYPE_FP;
 	}
+	
+	InstrumentationSpecifier::InstrumentationSpecifier()
+	    : checkForPredication(false)
+	    {
+	    }
 }
 
 

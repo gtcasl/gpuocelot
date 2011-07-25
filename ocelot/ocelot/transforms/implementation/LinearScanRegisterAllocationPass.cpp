@@ -301,17 +301,18 @@ void LinearScanRegisterAllocationPass::_allocate()
 
 void LinearScanRegisterAllocationPass::_spill()
 {
+	typedef analysis::DataflowGraph::InstructionVector::const_iterator
+		const_iterator;
 	report( "Inserting spill code" );
 	for( analysis::DataflowGraph::iterator block = _dfg().begin(); 
 		block != _dfg().end(); ++block )
 	{
-		for( analysis::DataflowGraph::InstructionVector::const_iterator 
-			i = block->instructions().begin(); 
+		for( const_iterator i = block->instructions().begin(); 
 			i != block->instructions().end(); ++i )
 		{
 			RegisterId temp = _dfg().newRegister();
 			unsigned int index = std::distance( 
-				block->instructions().begin(), i );
+				const_iterator( block->instructions().begin() ), i );
 			report( " For instruction " << i->i->toString() );
 			
 			for( analysis::DataflowGraph::RegisterPointerVector::const_iterator 

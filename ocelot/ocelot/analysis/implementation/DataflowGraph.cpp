@@ -218,7 +218,6 @@ namespace analysis
 		}
 		
 		result.i = &i;
-		result.label = i.toString();
 		
 		return result;
 	}
@@ -353,6 +352,16 @@ namespace analysis
 	{
 		return _aliveOut;
 	}
+
+	DataflowGraph::Block::RegisterSet& DataflowGraph::Block::aliveIn()
+	{
+		return _aliveIn;
+	}
+	
+	DataflowGraph::Block::RegisterSet& DataflowGraph::Block::aliveOut()
+	{
+		return _aliveOut;
+	}
 	
 	DataflowGraph::BlockVector::iterator 
 		DataflowGraph::Block::fallthrough() const
@@ -372,6 +381,16 @@ namespace analysis
 		return _predecessors;
 	}
 	
+	DataflowGraph::BlockPointerSet& DataflowGraph::Block::targets()
+	{
+		return _targets;
+	}
+	
+	DataflowGraph::BlockPointerSet& DataflowGraph::Block::predecessors()
+	{
+		return _predecessors;
+	}
+	
 	DataflowGraph::Block::Type DataflowGraph::Block::type() const
 	{
 		return _type;
@@ -383,8 +402,18 @@ namespace analysis
 		return _instructions;
 	}
 	
+	DataflowGraph::InstructionVector& DataflowGraph::Block::instructions()
+	{
+		return _instructions;
+	}
+	
 	const DataflowGraph::PhiInstructionVector& 
 		DataflowGraph::Block::phis() const
+	{
+		return _phis;
+	}
+	
+	DataflowGraph::PhiInstructionVector& DataflowGraph::Block::phis()
 	{
 		return _phis;
 	}
@@ -898,6 +927,16 @@ namespace analysis
 		std::advance( position, index );
 		
 		block->_instructions.erase( position );
+		
+		// Erase from the CFG
+		ir::ControlFlowGraph::iterator cfgBlock = block->_block;
+		
+		ir::BasicBlock::InstructionList::iterator instruction =
+			cfgBlock->instructions.begin();
+			
+		std::advance( instruction, index );
+		
+		cfgBlock->instructions.erase( instruction );
 	}
 	
 	void DataflowGraph::compute()
@@ -1137,7 +1176,8 @@ namespace analysis
 				}
 				
 				out << "\t\t" << instructionPrefix.str() << "[ label = \"{ " 
-					<< hydrazine::toGraphVizParsableLabel( ii->label )
+					<< hydrazine::toGraphVizParsableLabel(
+						ii->i->toString() )
 					<< " | { ";
 				
 				bool any = false;

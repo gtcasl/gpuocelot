@@ -67,8 +67,10 @@ namespace transforms
 	void ConvertPredicationToSelectPass::_runOnBlock( 
 		analysis::DataflowGraph::iterator block )
 	{
-		for( analysis::DataflowGraph::InstructionVector::const_iterator 
-			instruction = block->instructions().begin(); 
+		typedef analysis::DataflowGraph::InstructionVector::const_iterator 
+			const_iterator;
+	
+		for( const_iterator	instruction = block->instructions().begin(); 
 			instruction != block->instructions().end(); ++instruction )
 		{
 			ir::PTXInstruction& ptx = static_cast< ir::PTXInstruction& >( 
@@ -81,7 +83,8 @@ namespace transforms
 				if( ptx.pg.condition != ir::PTXOperand::PT )
 				{
 					_replacePredicate( block, std::distance( 
-						block->instructions().begin(), instruction ) );
+						const_iterator( block->instructions().begin() ),
+						instruction ) );
 				}
 			}
 		}

@@ -184,7 +184,8 @@ void DivergenceDrawer::drawControlFlowGraph() const{
 				file << " BGCOLOR=\"tomato\"";
 			}
 
-			file << ">" << instruction->label << "</TD></TR>" << std::endl;
+			file << ">" << instruction->i->toString()
+				<< "</TD></TR>" << std::endl;
 		}
 		file << "</TABLE>>];" << std::endl;
 
@@ -469,7 +470,7 @@ void DivergenceDrawer::drawFullGraph() const{
 				file << " BGCOLOR=\"tomato\"";
 			}
 
-			file << '>' << instruction->label << "</TD>";
+			file << '>' << instruction->i->toString() << "</TD>";
 
 			if( sReg != endSReg ){
 				file << "<TD" << sRowSpan.str();

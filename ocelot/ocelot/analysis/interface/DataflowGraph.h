@@ -105,8 +105,6 @@ class DataflowGraph : public KernelAnalysis
 		class Instruction
 		{
 			public:
-				/*! \brief The instruction text */
-				std::string label;
 				/*! \brief The pointer to the instruction */
 				ir::Instruction* i;
 				/*! \brief Destination registers */
@@ -201,18 +199,30 @@ class DataflowGraph : public KernelAnalysis
 				const RegisterSet& aliveIn() const;
 				/*! \brief Get registers that are alive exiting the block */
 				const RegisterSet& aliveOut() const;
+				/*! \brief Get registers that are alive entering the block*/
+				RegisterSet& aliveIn();
+				/*! \brief Get registers that are alive exiting the block */
+				RegisterSet& aliveOut();
 				/*! \brief Get the fallthrough block */
 				BlockVector::iterator fallthrough() const;
 				/*! \brief Get a list of target blocks */
 				const BlockPointerSet& targets() const;
 				/*! \brief Get a list of predecessor blocks */
 				const BlockPointerSet& predecessors() const;
+				/*! \brief Get a list of target blocks */
+				BlockPointerSet& targets();
+				/*! \brief Get a list of predecessor blocks */
+				BlockPointerSet& predecessors();
 				/*! \brief Get the type of the block */
 				Type type() const;
 				/*! \brief Get an ordered set of instructions in the block*/
 				const InstructionVector& instructions() const;
+				/*! \brief Get an ordered set of instructions in the block*/
+				InstructionVector& instructions();
 				/*! \brief Get an ordered set of phis in the block*/
 				const PhiInstructionVector& phis() const;
+				/*! \brief Get an ordered set of phis in the block*/
+				PhiInstructionVector& phis();
 				/*! \brief Get the block label */
 				const std::string& label() const;
 				/*! \brief Get the id of the block */

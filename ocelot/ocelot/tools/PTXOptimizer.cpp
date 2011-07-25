@@ -16,6 +16,7 @@
 #include <ocelot/transforms/interface/ConvertPredicationToSelectPass.h>
 #include <ocelot/transforms/interface/SubkernelFormationPass.h>
 #include <ocelot/transforms/interface/MIMDThreadSchedulingPass.h>
+#include <ocelot/transforms/interface/DeadCodeEliminationPass.h>
 
 #include <ocelot/ir/interface/Module.h>
 
@@ -89,6 +90,12 @@ namespace tools
 		if( passes & MIMDThreadScheduling )
 		{
 			transforms::Pass* pass = new transforms::MIMDThreadSchedulingPass;
+			manager.addPass( *pass );
+		}
+
+		if( passes & DeadCodeElimination )
+		{
+			transforms::Pass* pass = new transforms::DeadCodeEliminationPass;
 			manager.addPass( *pass );
 		}
 		
@@ -168,6 +175,11 @@ static int parsePassTypes( const std::string& passList )
 			report( "  Matched mimd-threading." );
 			types |= tools::PTXOptimizer::MIMDThreadScheduling;
 		}
+		else if( *pass == "dead-code-elimination" )
+		{
+			report( "  Matched dead-code-elimination." );
+			types |= tools::PTXOptimizer::DeadCodeElimination;
+		}
 		else if( !pass->empty() )
 		{
 			std::cout << "==Ocelot== Warning: Unknown pass name - '" << *pass 
@@ -198,7 +210,7 @@ int main( int argc, char** argv )
 	parser.parse( "-p", "--passes", passes, "", 
 		"A list of optimization passes (remove-barriers, " 
 		"reverse-if-conversion, subkernel-formation, structural-transform, "
-		"mimd-threading)" );
+		"mimd-threading, dead-code-elimination)" );
 	parser.parse( "-c", "--cfg", optimizer.cfg, false, 
 		"Dump out the CFG's of all generated kernels." );
 	parser.parse();

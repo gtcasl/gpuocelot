@@ -493,6 +493,11 @@ namespace analysis
 	{
 	}
 	
+	DataflowGraph::~DataflowGraph()
+	{
+		if( _ssa ) fromSsa();	
+	}
+
 	void DataflowGraph::analyze(ir::IRKernel& kernel)
 	{
 		_cfg        = kernel.cfg();

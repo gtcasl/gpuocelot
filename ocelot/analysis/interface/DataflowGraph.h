@@ -282,6 +282,8 @@ class DataflowGraph : public KernelAnalysis
 	public:
 		/*! \brief The constructor */
 		DataflowGraph();
+		/*! \brief The destructor */
+		~DataflowGraph();
 
 	public:
 		/*! \brief Return an iterator to the program entry point */

@@ -87,7 +87,7 @@ namespace test
 				instruction = block->instructions().begin(); 
 				instruction != block->instructions().end(); ++instruction )
 			{
-				report( " " << instruction->label << ":  " 
+				report( " " << instruction->i->toString() << ":  " 
 					<< hydrazine::toFormattedString( instruction->d.begin(), 
 					instruction->d.end(), Double() ) << " <- " 
 					<< hydrazine::toFormattedString( instruction->s.begin(), 
@@ -100,7 +100,7 @@ namespace test
 					if( !defined.count( *reg ) )
 					{
 						status << "  Register " << *reg->pointer 
-							<< " in instruction " << instruction->label 
+							<< " in instruction " << instruction->i->toString()
 							<< " in block " << block->label() 
 							<< " used uninitialized." << std::endl;
 						return false;
@@ -185,7 +185,7 @@ namespace test
 				instruction = block->instructions().begin(); 
 				instruction != block->instructions().end(); ++instruction )
 			{
-				report( " " << instruction->label << ":  " 
+				report( " " << instruction->i->toString() << ":  " 
 					<< hydrazine::toFormattedString( instruction->d.begin(), 
 					instruction->d.end(), Double() ) << " <- " 
 					<< hydrazine::toFormattedString( instruction->s.begin(), 
@@ -198,7 +198,7 @@ namespace test
 					if( !defined.count( *reg ) )
 					{
 						status << "  Register " << *reg->pointer 
-							<< " in instruction " << instruction->label 
+							<< " in instruction " << instruction->i->toString() 
 							<< " in " << block->label() 
 							<< " used uninitialized." << std::endl;
 						return false;
@@ -213,7 +213,8 @@ namespace test
 					{
 						status << "  In " << block->label() 
 							<< ", instruction " 
-							<< instruction->label << ", reg " << *reg->pointer
+							<< instruction->i->toString() << ", reg "
+							<< *reg->pointer
 							<< " already defined globally." << std::endl;
 						return false;
 					}

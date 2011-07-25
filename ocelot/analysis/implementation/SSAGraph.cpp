@@ -45,7 +45,8 @@ namespace analysis
 			instruction = block->_instructions.begin(); 
 			instruction != block->_instructions.end(); ++instruction )
 		{
-			report( "   Initializing instruction: " << instruction->label );
+			report( "   Initializing instruction: "
+				<< instruction->i->toString() );
 			for( DataflowGraph::RegisterPointerVector::iterator 
 				reg = instruction->s.begin(); 
 				reg != instruction->s.end(); ++reg )

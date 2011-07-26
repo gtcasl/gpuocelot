@@ -281,8 +281,9 @@ void RemoveBarrierPass::_removeBarrier( analysis::DataflowGraph::iterator block,
 
 void RemoveBarrierPass::_runOnBlock( analysis::DataflowGraph::iterator block )
 {
-	for( analysis::DataflowGraph::InstructionVector::const_iterator 
-		_instruction = block->instructions().begin(); 
+	typedef analysis::DataflowGraph::InstructionVector::const_iterator
+		const_iterator;
+	for( const_iterator _instruction = block->instructions().begin(); 
 		_instruction != block->instructions().end(); ++_instruction )
 	{
 		ir::PTXInstruction& instruction = static_cast< 
@@ -306,7 +307,8 @@ void RemoveBarrierPass::_runOnBlock( analysis::DataflowGraph::iterator block )
 			_spillBytes = 1;
 			usesBarriers = true;
 			_removeBarrier( block, std::distance( 
-				block->instructions().begin(), _instruction ) );
+				const_iterator( block->instructions().begin() ),
+				_instruction ) );
 			_spillBytes = std::max( bytes, _spillBytes );
 			++_reentryPoint;
 			_dfg().compute();

@@ -169,6 +169,7 @@ void ir::Module::loadNow() {
 	}
 	else
 	{
+		assert( _ptxPointer != 0 );
 		std::stringstream stream( _ptxPointer );
 		_ptxPointer = 0;
 	

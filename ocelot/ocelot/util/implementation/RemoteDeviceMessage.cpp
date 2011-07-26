@@ -12,6 +12,7 @@
 #include <ocelot/util/interface/RemoteDeviceMessage.h>
 
 // Boost includes
+#include <boost/array.hpp>
 
 // Hydrazine includes
 #include <hydrazine/implementation/Exception.h>

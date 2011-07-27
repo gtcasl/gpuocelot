@@ -88,11 +88,14 @@ namespace transforms
         else
         {  
             instructionClassValid = false;
+
             for (InstrumentationSpecifier::StringVector::iterator instClass = translationBlock.specifier.instructionClassVector.begin(); 
                 instClass != translationBlock.specifier.instructionClassVector.end(); ++instClass) 
             {
-                if(*instClass == ON_PREDICATE)
+                if(*instClass == ON_PREDICATED)
                 {
+                    translationBlock.specifier.isPredicated = true;
+                    
                     if(instruction.pg.condition == ir::PTXOperand::Pred || instruction.pg.condition == ir::PTXOperand::InvPred) 
                     {
                         InstrumentationSpecifier::StringVector::iterator found = std::find(translationBlock.specifier.predicateVector.begin(), 
@@ -108,6 +111,9 @@ namespace transforms
                 }
                 else if(opcodeMap[instruction.opcode] == *instClass)
                 {
+                    if(*instClass == ON_BRANCH && translationBlock.specifier.isPredicated)
+                        break;
+                        
                     instructionClassValid = true;
                     break;
                 }       
@@ -206,10 +212,9 @@ namespace transforms
                 
                 if(instrumentationConditionsMet(*ptxInstruction, translationBlock))
                 {
-                    attributes.instructionId++;
-           
                     insertBefore(translationBlock, attributes, basicBlock, loc);
                     loc += translationBlock.statements.size();
+                    attributes.instructionId++;
                 }
                 loc++;
             }
@@ -536,7 +541,7 @@ namespace transforms
 	    translation = translator.generate(resource);
 	    baseAddress = translation.globals.front().name;
 	
-	    instructionClasses = { ON_MEM_READ, ON_MEM_WRITE, ON_PREDICATE, ON_BRANCH, ON_CALL, ON_BARRIER, ON_ATOMIC, ON_ARITH_OP };
+	    instructionClasses = { ON_MEM_READ, ON_MEM_WRITE, ON_PREDICATED, ON_BRANCH, ON_CALL, ON_BARRIER, ON_ATOMIC, ON_ARITH_OP };
 	    addressSpaceSpecifiers = { GLOBAL, LOCAL, SHARED, CONST, PARAM, TEXTURE };
 	    types = { TYPE_INT, TYPE_FP };
 	    
@@ -597,7 +602,7 @@ namespace transforms
 	}
 	
 	InstrumentationSpecifier::InstrumentationSpecifier()
-	    : checkForPredication(false)
+	    : checkForPredication(false), isPredicated(false)
 	    {
 	    }
 }

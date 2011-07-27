@@ -559,7 +559,7 @@ namespace translator
         
         PredicateInfo predicateInfo;
         predicateInfo.id = inst.d.identifier;
-        predicateInfo.set = true;
+        predicateInfo.set = false;
         
         stmt.instruction = inst;
         statements.push_back(stmt);

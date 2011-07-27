@@ -28,7 +28,7 @@
 /* Instruction classes */
 #define ON_MEM_READ         "MEM_READ"
 #define ON_MEM_WRITE        "MEM_WRITE"
-#define ON_PREDICATE        "PREDICATE"
+#define ON_PREDICATED       "PREDICATED"
 #define ON_BRANCH           "BRANCH"
 #define ON_CALL             "CALL"
 #define ON_BARRIER          "BARRIER"
@@ -71,6 +71,7 @@ namespace transforms
   
             std::string id;
             bool checkForPredication;
+            bool isPredicated;
             StringVector instructionClassVector;
             StringVector addressSpaceVector;
             StringVector dataTypeVector;

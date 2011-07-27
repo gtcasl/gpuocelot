@@ -28,8 +28,9 @@ namespace analysis
             size_t *branchDivInfo;
             
         private:
-            unsigned long predCount;
             unsigned long warpCount;
+		    unsigned long totalBranches;
+		    unsigned long conditionalBranches;
 			
 		public:
 			/*! \brief The default constructor */

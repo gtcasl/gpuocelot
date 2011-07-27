@@ -44,6 +44,7 @@ void RemoveBarrierPass::_addSpillCode( analysis::DataflowGraph::iterator block,
 	ir::PTXInstruction move ( ir::PTXInstruction::Mov );
 	
 	move.type = ir::PTXOperand::u32;
+	move.addressSpace = ir::PTXInstruction::Local;
 	move.a.identifier = "_Zocelot_spill_area";
 	move.a.addressMode = ir::PTXOperand::Address;
 	move.a.type = ir::PTXOperand::u32;
@@ -84,6 +85,7 @@ void RemoveBarrierPass::_addSpillCode( analysis::DataflowGraph::iterator block,
 	_spillBytes = std::max( bytes, _spillBytes );
 	
 	move.type = ir::PTXOperand::u32;
+	move.addressSpace = ir::PTXInstruction::Local;
 	move.a.identifier = "_Zocelot_resume_point";
 	move.a.addressMode = ir::PTXOperand::Address;
 	move.a.type = ir::PTXOperand::u32;
@@ -134,6 +136,7 @@ void RemoveBarrierPass::_addRestoreCode(
 	ir::PTXInstruction move ( ir::PTXInstruction::Mov );
 	
 	move.type = ir::PTXOperand::u32;
+	move.addressSpace = ir::PTXInstruction::Local;
 	move.a.identifier = "_Zocelot_spill_area";
 	move.a.addressMode = ir::PTXOperand::Address;
 	move.a.type = ir::PTXOperand::u32;
@@ -182,6 +185,7 @@ void RemoveBarrierPass::_addEntryPoint(
 	ir::PTXInstruction move( ir::PTXInstruction::Mov );
 	
 	move.type = ir::PTXOperand::u32;
+	move.addressSpace = ir::PTXInstruction::Local;
 	move.a.identifier = "_Zocelot_resume_point";
 	move.a.addressMode = ir::PTXOperand::Address;
 	move.a.type = ir::PTXOperand::u32;

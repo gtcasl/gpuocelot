@@ -1,9 +1,9 @@
 {
     ON_INSTRUCTION:
-    PREDICATE: 
+    PREDICATED: 
     BRANCH:
     {
         unsigned long offset = warpCount() * instructionId() + warpId();
-        deviceMem[offset] = predicateEvalWarpDivergent();
+        deviceMem[offset] = deviceMem[offset] + predicateEvalWarpDivergent();
     }
 }

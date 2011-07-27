@@ -34,7 +34,9 @@ namespace analysis
 
     void BranchDivergenceInstrumentor::analyze(ir::Module &module) {
         
-        predCount = 0;
+        totalBranches = 0;
+        conditionalBranches = 0;
+        warpCount = 0;
         
         struct cudaDeviceProp properties;
         cudaGetDeviceProperties(&properties, 0);
@@ -51,20 +53,25 @@ namespace analysis
             {
                 ir::PTXInstruction *ptxInst = (ir::PTXInstruction *)*instruction;
             
-                if(ptxInst->opcode == ir::PTXInstruction::SetP)
-                    predCount++;
+                if(ptxInst->opcode == ir::PTXInstruction::Bra)
+                {
+                    totalBranches++;
+                    
+                    if(ptxInst->pg.condition == ir::PTXOperand::Pred || ptxInst->pg.condition == ir::PTXOperand::InvPred)
+                        conditionalBranches++;
+                }
             }
-        }        
+        }      
     }
 
     void BranchDivergenceInstrumentor::initialize() {
         branchDivInfo = 0;
 
-        if(predCount == 0 || warpCount == 0)
+        if(conditionalBranches == 0 || warpCount == 0)
             return;
 
-        cudaMalloc((void **) &branchDivInfo, predCount * warpCount * sizeof(size_t));
-        cudaMemset( branchDivInfo, 0, predCount * warpCount * sizeof( size_t ));
+        cudaMalloc((void **) &branchDivInfo, conditionalBranches * warpCount * sizeof(size_t));
+        cudaMemset( branchDivInfo, 0, conditionalBranches * warpCount * sizeof( size_t ));
     
         cudaMemcpyToSymbol(symbol.c_str(), &branchDivInfo, sizeof(size_t *), 0, cudaMemcpyHostToDevice);   
     }
@@ -77,36 +84,30 @@ namespace analysis
 
     void BranchDivergenceInstrumentor::extractResults(std::ostream *out) {
             
-        if(predCount == 0 || warpCount == 0)
+        if(conditionalBranches == 0 || warpCount == 0)
         {
             std::cout << "No conditional branches in this kernel.\n";    
             return;
         }    
         
-        size_t *info = new size_t[predCount * warpCount];
+        size_t *info = new size_t[conditionalBranches * warpCount];
         
         if(branchDivInfo) {
-            cudaMemcpy(info, branchDivInfo, predCount * warpCount * sizeof( size_t ), cudaMemcpyDeviceToHost);      
+            cudaMemcpy(info, branchDivInfo, conditionalBranches * warpCount * sizeof( size_t ), cudaMemcpyDeviceToHost);      
             cudaFree(branchDivInfo);
         }
 
         struct cudaDeviceProp properties;
         cudaGetDeviceProperties(&properties, 0);
-
-        unsigned long divergentBranches = 0;
-        unsigned long divergentWarps = 0;
-        bool isDivergent = false;
         
-        for(size_t i = 0; i < predCount; i++) {
-            isDivergent = false;
+        unsigned long dynamicDivergentBranches = 0;
+        
+        for(size_t i = 0; i < conditionalBranches; i++) {
             for(size_t j = 0; j < warpCount; j++) {
                 if(info[warpCount * i + j] == 1) {
-                    divergentWarps++;
-                    isDivergent = true;
+                    dynamicDivergentBranches++;
                 }      
             }
-            if(isDivergent)
-                divergentBranches++;
         } 
 
         
@@ -121,19 +122,11 @@ namespace analysis
             
             case text:   
 
-                if(!deviceInfoWritten){
-                    deviceInfo(out);
-                    deviceInfoWritten = true;
-                }
-
                 *out << "Kernel Name: " << kernelName << "\n";
                 *out << "Thread Block Count: " << threadBlocks << "\n";
                 *out << "Thread Count: " << threads << "\n";
                 
-
-                *out << "\n% Branch Divergence: " << (divergentBranches/predCount) * 100 << "%\n";
-                *out << "Number of Divergent Warps: " << divergentWarps << "\n\n";
-                
+                *out << "\n% Branch Divergence: " << dynamicDivergentBranches << "/" << (warpCount * totalBranches) << "\n\n"; 
             
             break;
 
@@ -144,7 +137,7 @@ namespace analysis
             
     }
 
-    BranchDivergenceInstrumentor::BranchDivergenceInstrumentor() : description("Branch Divergence"), predCount(0), warpCount(0) {
+    BranchDivergenceInstrumentor::BranchDivergenceInstrumentor() : description("Branch Divergence") {
 
     }
 

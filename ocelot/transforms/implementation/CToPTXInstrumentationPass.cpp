@@ -244,7 +244,6 @@ namespace transforms
                 
             attributes.basicBlockInstructionCount = 0;
             attributes.basicBlockExecutedInstructionCount = 0;
-            bool predicateChecking = false;
             
             /* Iterating through each instruction */
             for( analysis::DataflowGraph::InstructionVector::const_iterator instruction = basicBlock->instructions().begin();
@@ -291,8 +290,6 @@ namespace transforms
                             translationBlock.statements.insert(translationBlock.statements.end() - 7, stmt);
                             stmt.instruction = add;
                             translationBlock.statements.insert(translationBlock.statements.end() - 7, stmt);
-                            
-                            predicateChecking = true;
                         }
                         
                     }
@@ -313,11 +310,19 @@ namespace transforms
             
             insertBefore(translationBlock, attributes, basicBlock, loc);
             
-            if(predicateChecking) {
-                translationBlock.statements.erase(translationBlock.statements.end() - 8);
-                translationBlock.statements.erase(translationBlock.statements.end() - 8);
+            if(translationBlock.specifier.checkForPredication)
+            {
+                for(ir::PTXKernel::PTXStatementVector::iterator statement = translationBlock.statements.begin();
+                statement != translationBlock.statements.end(); ++statement) {
+                
+                    if(statement->instruction.opcode == ir::PTXInstruction::SelP && (statement+1)->instruction.opcode == ir::PTXInstruction::Add)
+                    {
+                        translationBlock.statements.erase(statement, statement + 2);
+                    } 
+                
+                }
             }
-         
+            
             attributes.basicBlockId++;          
         }    
     }

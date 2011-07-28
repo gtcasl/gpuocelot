@@ -33,6 +33,15 @@ namespace transforms
     
         ir::PTXStatement toInsert = statement;
         
+        if(statement.instruction.a.identifier == BASIC_BLOCK_EXEC_INST_COUNT && statement.instruction.d.identifier == BASIC_BLOCK_EXEC_INST_COUNT)
+        {
+            toInsert.instruction.d.reg = toInsert.instruction.a.reg = newRegisterMap[BASIC_BLOCK_EXEC_INST_COUNT];
+            toInsert.instruction.d.identifier.clear();
+            toInsert.instruction.a.identifier.clear();
+            
+            return toInsert;
+        }
+        
         if(statement.instruction.d.identifier == BASIC_BLOCK_INST_COUNT || 
             statement.instruction.d.identifier == BASIC_BLOCK_EXEC_INST_COUNT ||
             statement.instruction.d.identifier == BASIC_BLOCK_ID || 
@@ -98,15 +107,8 @@ namespace transforms
                     
                     if(instruction.pg.condition == ir::PTXOperand::Pred || instruction.pg.condition == ir::PTXOperand::InvPred) 
                     {
-                        InstrumentationSpecifier::StringVector::iterator found = std::find(translationBlock.specifier.predicateVector.begin(), 
-                            translationBlock.specifier.predicateVector.end(), instruction.pg.toString());
-                            
-                        if(found == translationBlock.specifier.predicateVector.end())
-                        { 
-                            translationBlock.specifier.predicateVector.push_back(instruction.pg.toString());
-                            instructionClassValid = true;
-                        }          
-                        break;
+                       instructionClassValid = true;
+                       break;
                     }        
                 }
                 else if(opcodeMap[instruction.opcode] == *instClass)
@@ -242,6 +244,7 @@ namespace transforms
                 
             attributes.basicBlockInstructionCount = 0;
             attributes.basicBlockExecutedInstructionCount = 0;
+            bool predicateChecking = false;
             
             /* Iterating through each instruction */
             for( analysis::DataflowGraph::InstructionVector::const_iterator instruction = basicBlock->instructions().begin();
@@ -252,9 +255,46 @@ namespace transforms
                 {
                     attributes.basicBlockInstructionCount++;
                     
-                    if(ptxInstruction->pg.condition == ir::PTXOperand::Pred || ptxInstruction->pg.condition == ir::PTXOperand::InvPred){
-                        attributes.predicateCountMap[ptxInstruction->pg.toString()]++;
-                        attributes.predicateMap[ptxInstruction->pg.toString()] = ptxInstruction->pg;
+                    if(translationBlock.specifier.checkForPredication && 
+                        (ptxInstruction->pg.condition == ir::PTXOperand::Pred || ptxInstruction->pg.condition == ir::PTXOperand::InvPred)){
+                        
+                         InstrumentationSpecifier::StringVector::iterator found = std::find(translationBlock.specifier.predicateVector.begin(), 
+                            translationBlock.specifier.predicateVector.end(), ptxInstruction->pg.toString());
+                            
+                        if(found == translationBlock.specifier.predicateVector.end())
+                        { 
+                            translationBlock.specifier.predicateVector.push_back(ptxInstruction->pg.toString());
+                           
+                            analysis::DataflowGraph::RegisterId predCount = dfg().newRegister();
+                    
+                            ir::PTXOperand::DataType type = (sizeof(size_t) == 8 ? ir::PTXOperand::u64: ir::PTXOperand::u32);
+                            ir::PTXInstruction selp(ir::PTXInstruction::SelP);
+	                        selp.type = selp.d.type = selp.b.type = selp.a.type = selp.c.type = type;
+	                        selp.d.addressMode = selp.c.addressMode = ir::PTXOperand::Register;
+	                        selp.a.addressMode = selp.b.addressMode = ir::PTXOperand::Immediate;
+	                        
+	                        selp.d.reg = predCount;
+	                        selp.b.imm_int = 0;
+	                        selp.a.imm_int = 1;
+	                        selp.c = ptxInstruction->pg;
+
+	                        
+	                        ir::PTXInstruction add(ir::PTXInstruction::Add);
+                            add.type = add.d.type = add.a.type = add.b.type = type;
+                            add.d.addressMode = add.a.addressMode = add.b.addressMode = ir::PTXOperand::Register;
+                            
+                            add.d.identifier = add.a.identifier = BASIC_BLOCK_EXEC_INST_COUNT;
+                            add.b.reg = predCount;
+                            
+                            ir::PTXStatement stmt(ir::PTXStatement::Instr);
+                            stmt.instruction = selp;
+                            translationBlock.statements.insert(translationBlock.statements.end() - 7, stmt);
+                            stmt.instruction = add;
+                            translationBlock.statements.insert(translationBlock.statements.end() - 7, stmt);
+                            
+                            predicateChecking = true;
+                        }
+                        
                     }
                     else
                     {
@@ -262,6 +302,7 @@ namespace transforms
                     }
                 }        
             }
+            
             
             unsigned int loc = 0;
             
@@ -271,47 +312,10 @@ namespace transforms
                 loc = basicBlock->instructions().size() - 1;
             
             insertBefore(translationBlock, attributes, basicBlock, loc);
-         
-            if(translationBlock.specifier.checkForPredication)
-            {
-                TranslationBlock endBlock;
-                
-                for(StaticAttributes::PredicateCountMap::const_iterator pred = attributes.predicateCountMap.begin(); pred != attributes.predicateCountMap.end();
-                    ++pred)
-                {
-                    analysis::DataflowGraph::RegisterId predCount = dfg().newRegister();
-                
-                    ir::PTXOperand::DataType type = (sizeof(size_t) == 8 ? ir::PTXOperand::u64: ir::PTXOperand::u32);
-                    ir::PTXInstruction selp(ir::PTXInstruction::SelP);
-	                selp.type = selp.d.type = selp.b.type = selp.a.type = selp.c.type = type;
-	                selp.d.addressMode = selp.c.addressMode = ir::PTXOperand::Register;
-	                selp.a.addressMode = selp.b.addressMode = ir::PTXOperand::Immediate;
-	                
-	                selp.d.reg = predCount;
-	                selp.b.imm_int = 0;
-	                selp.a.imm_int = pred->second;
-	                selp.c = attributes.predicateMap[pred->first];
-
-	                
-	                ir::PTXInstruction add(ir::PTXInstruction::Add);
-                    add.type = add.d.type = add.a.type = add.b.type = type;
-                    add.d.addressMode = add.a.addressMode = add.b.addressMode = ir::PTXOperand::Register;
-                    
-                    add.d.reg = add.a.reg = newRegisterMap[BASIC_BLOCK_EXEC_INST_COUNT];
-                    add.b.reg = predCount;
-                    
-                    ir::PTXStatement stmt(ir::PTXStatement::Instr);
-                    stmt.instruction = selp;
-                    endBlock.statements.push_back(stmt);
-                    stmt.instruction = add;
-                    endBlock.statements.push_back(stmt);
-                }
-             
-                if(endBlock.statements.size() > 0)
-                {
-                    loc = basicBlock->instructions().size() - 1;
-                    insertBefore(endBlock, attributes, basicBlock, loc);
-                }
+            
+            if(predicateChecking) {
+                translationBlock.statements.erase(translationBlock.statements.end() - 8);
+                translationBlock.statements.erase(translationBlock.statements.end() - 8);
             }
          
             attributes.basicBlockId++;          

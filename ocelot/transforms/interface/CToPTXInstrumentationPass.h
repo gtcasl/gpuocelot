@@ -102,9 +102,6 @@ namespace transforms
     class StaticAttributes {
     
         public:
-            
-            typedef std::map<std::string, size_t> PredicateCountMap;
-            typedef std::map<std::string, ir::PTXOperand> PredicateMap;
         
             unsigned int basicBlockId;
             unsigned int basicBlockInstructionCount;
@@ -112,8 +109,6 @@ namespace transforms
             unsigned int instructionId;
             unsigned int kernelInstructionCount;
             ir::PTXOperand predicateGuard;
-            PredicateCountMap predicateCountMap;
-            PredicateMap predicateMap;
     };
 
 	/*! \brief A class for an instrumentation pass that adds generated PTX from

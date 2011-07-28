@@ -175,18 +175,6 @@ PTXKernel::RegisterVector PTXKernel::getReferencedRegisters() const
 			
 			const ir::PTXOperand* operands[] = {&ptx.pq, &ptx.d, &ptx.a};
 
-			unsigned int limit = 2;
-			
-			if( ir::PTXInstruction::St == ptx.opcode )
-			{
-				limit = 1;
-			}
-			else if( ir::PTXInstruction::Bfi == ptx.opcode )
-			{
-				limit = 1;
-				operands[ 0 ] = &ptx.d;
-			}
-
 			for( unsigned int i = 0; i < 3; ++i )
 			{
 				const ir::PTXOperand& d = *operands[i];

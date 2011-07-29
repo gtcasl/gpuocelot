@@ -709,9 +709,6 @@ void PTXToLLVMTranslator::_addMemoryCheckingDeclarations()
 
 	_llvmKernel->push_front( check );		
 
-	check.label = "__ocelot_check_global_memory_access";
-	_llvmKernel->push_front( check );		
-
 	check.label = "__ocelot_check_shared_memory_access";
 	_llvmKernel->push_front( check );		
 

@@ -181,7 +181,7 @@ def getTools():
 	if os.name == 'nt':
 		result = ['default', 'msvc']
 	elif os.name == 'posix':
-		result = ['default', 'gcc']
+		result = ['default', 'g++', 'c++']
 	else:
 		result = ['default']
 
@@ -196,6 +196,7 @@ OldEnvironment = Environment;
 gCompilerOptions = {
 		'gcc' : {'warn_all' : '-Wall', 'warn_errors' : '-Werror', 'optimization' : '-O2', 'debug' : '-g',  'exception_handling' : '', 'standard': ''},
 		'g++' : {'warn_all' : '-Wall', 'warn_errors' : '-Werror', 'optimization' : '-O2', 'debug' : '-g',  'exception_handling' : '', 'standard': '-std=c++0x'},
+		'c++' : {'warn_all' : '-Wall', 'warn_errors' : '-Werror', 'optimization' : '-O2', 'debug' : '-g',  'exception_handling' : '', 'standard': '-std=c++0x'},
 		'cl'  : {'warn_all' : '/Wall', 'warn_errors' : '/WX',     'optimization' : '/Ox', 'debug' : ['/Zi', '-D_DEBUG', '/MTd'], 'exception_handling' : '/EHsc', 'standard': ''}
 	}
 
@@ -311,6 +312,7 @@ def importEnvironment():
 	
 	if 'CXX' in os.environ:
 		env['CXX'] = os.environ['CXX']
+		print "CXX is " + env['CXX']
 	
 	if 'CC' in os.environ:
 		env['CC'] = os.environ['CC']

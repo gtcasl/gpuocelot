@@ -361,7 +361,8 @@ namespace parser
 		{
 			throw_exception( toString( location, *this ) 
 				<< "Cannot parse PTX version " << statement.major 
-				<< "." << statement.minor << " with version 2.3 parser.", 
+				<< "." << statement.minor << " with version 2.3 parser.\n"
+				<< " Consider recompiling your CUDA source with `nvcc -arch=sm_20`", 
 				NotVersion2_1 );
 		}
 	}

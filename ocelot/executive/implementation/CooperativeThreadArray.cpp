@@ -191,7 +191,6 @@ ir::PTXU32 executive::CooperativeThreadArray::getSpecialValue(
 	const ir::PTXOperand::VectorIndex index ) const
 {
 	assert( reg != ir::PTXOperand::SpecialRegister_invalid );
-	assert( reg != ir::PTXOperand::laneId );
 	assert( reg != ir::PTXOperand::pm0 );
 	assert( reg != ir::PTXOperand::pm1 );
 	assert( reg != ir::PTXOperand::pm2 );
@@ -201,6 +200,9 @@ ir::PTXU32 executive::CooperativeThreadArray::getSpecialValue(
 	assert( reg != ir::PTXOperand::gridId );
 
 	switch( reg ) {
+		case ir::PTXOperand::laneId: {
+			return (threadId % 32);	// assume warp size is 32 threads
+		}
 		case ir::PTXOperand::tid: {
 			switch( index ) {
 				case ir::PTXOperand::ix: {

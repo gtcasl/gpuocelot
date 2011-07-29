@@ -701,7 +701,7 @@ std::string ir::PTXOperand::toString() const {
 		}
 		return stream.str();
 	} else if( addressMode == Special ) {
-		if( vec != v1 || special == clock ) {
+		if( vec != v1 || special == clock || special == laneId) {
 			return toString( special );
 		}
 		else {

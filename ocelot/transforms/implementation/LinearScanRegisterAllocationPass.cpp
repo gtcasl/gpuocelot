@@ -25,7 +25,7 @@ namespace transforms
 {
 
 LinearScanRegisterAllocationPass::CoalescedRegister::CoalescedRegister() 
-: offset( 0 )
+: spilled( false ), offset( 0 )
 {
 
 }
@@ -133,6 +133,8 @@ void LinearScanRegisterAllocationPass::_computeIntervals()
 	
 	_sequence = _dfg().executableSequence();
 	
+	RegisterSet encountered;
+	
 	unsigned int count = 0;
 	for( analysis::DataflowGraph::pointer_iterator block = _sequence.begin(); 
 		block != _sequence.end(); ++block )
@@ -149,16 +151,25 @@ void LinearScanRegisterAllocationPass::_computeIntervals()
 					index = _ssa.find( *d->pointer );
 				assert( index != _ssa.end() );
 				assert( index->second < _coalesced.size() );
-				_intervals.insert( std::make_pair( count, index->second ) );
-				_coalesced[ index->second ].interval.begin = count;
+				
+				// Since .pred registers cannot be used
+				// 	within ld and st instructions, we ignore them
+ 				if( _coalesced[index->second].type
+ 					== ir::PTXOperand::DataType::pred ) continue;
+
+ 				if( encountered.insert( index->second ).second )
+ 				{
+ 					_intervals.insert( std::make_pair( count, index->second ) );
+ 					_coalesced[ index->second ].interval.begin = count;
+ 				}
 			}
 		}
 	}
 	
-	RegisterSet encountered;
-	
 	typedef analysis::DataflowGraph::RegisterPointerVector RegisterVector;
-		
+	
+	encountered.clear();
+	
 	for( analysis::DataflowGraph::reverse_pointer_iterator
 		block = _sequence.rbegin(); 
 		block != _sequence.rend(); ++block )
@@ -255,7 +266,7 @@ void LinearScanRegisterAllocationPass::_allocate()
 		if( active.size() == registers - _reserved )
 		{
 			report( "  Out of free registers, spill required." );
-			RegisterMap::iterator _spilled = active.begin();
+			RegisterMap::iterator _spilled = --active.end();
 			++_spills;
 			CoalescedRegister& spilled = _coalesced[ _spilled->second ];
 			report( "   Comparing " << current.reg 

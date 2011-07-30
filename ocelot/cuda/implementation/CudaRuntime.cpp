@@ -2114,7 +2114,7 @@ cudaError_t cuda::CudaRuntime::cudaGetDeviceProperties(
 			<< ") - major: " << properties.major 
 			<< ", minor: " << properties.minor);
 
-		memset(prop, 0, sizeof(prop));
+		memset(prop, 0, sizeof(struct cudaDeviceProp));
 		hydrazine::strlcpy( prop->name, properties.name, 256 );
 		prop->canMapHostMemory = 1;
 		prop->clockRate = properties.clockRate;

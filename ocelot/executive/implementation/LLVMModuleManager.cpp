@@ -1112,7 +1112,9 @@ void LLVMModuleManager::KernelAndTranslation::unload()
 	delete _module;
 	delete _metadata;
 	#else
-	assertM(false, "LLVM support not compiled into ocelot.");
+	// Is it possible this is called when LLVMModuleManager is being destructed even with no LLVM
+	// device present?
+//	assertM(false, "LLVM support not compiled into ocelot. You should use a different device.");
 	#endif
 }
 

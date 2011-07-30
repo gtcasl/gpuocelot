@@ -255,43 +255,34 @@ namespace transforms
                     attributes.basicBlockInstructionCount++;
                     
                     if(translationBlock.specifier.checkForPredication && 
-                        (ptxInstruction->pg.condition == ir::PTXOperand::Pred || ptxInstruction->pg.condition == ir::PTXOperand::InvPred)){
+                        (ptxInstruction->pg.condition == ir::PTXOperand::Pred || ptxInstruction->pg.condition == ir::PTXOperand::InvPred))
+                    {
+                        analysis::DataflowGraph::RegisterId predCount = dfg().newRegister();
+                
+                        ir::PTXOperand::DataType type = (sizeof(size_t) == 8 ? ir::PTXOperand::u64: ir::PTXOperand::u32);
+                        ir::PTXInstruction selp(ir::PTXInstruction::SelP);
+                        selp.type = selp.d.type = selp.b.type = selp.a.type = selp.c.type = type;
+                        selp.d.addressMode = selp.c.addressMode = ir::PTXOperand::Register;
+                        selp.a.addressMode = selp.b.addressMode = ir::PTXOperand::Immediate;
                         
-                         InstrumentationSpecifier::StringVector::iterator found = std::find(translationBlock.specifier.predicateVector.begin(), 
-                            translationBlock.specifier.predicateVector.end(), ptxInstruction->pg.toString());
-                            
-                        if(found == translationBlock.specifier.predicateVector.end())
-                        { 
-                            translationBlock.specifier.predicateVector.push_back(ptxInstruction->pg.toString());
-                           
-                            analysis::DataflowGraph::RegisterId predCount = dfg().newRegister();
-                    
-                            ir::PTXOperand::DataType type = (sizeof(size_t) == 8 ? ir::PTXOperand::u64: ir::PTXOperand::u32);
-                            ir::PTXInstruction selp(ir::PTXInstruction::SelP);
-	                        selp.type = selp.d.type = selp.b.type = selp.a.type = selp.c.type = type;
-	                        selp.d.addressMode = selp.c.addressMode = ir::PTXOperand::Register;
-	                        selp.a.addressMode = selp.b.addressMode = ir::PTXOperand::Immediate;
-	                        
-	                        selp.d.reg = predCount;
-	                        selp.b.imm_int = 0;
-	                        selp.a.imm_int = 1;
-	                        selp.c = ptxInstruction->pg;
+                        selp.d.reg = predCount;
+                        selp.b.imm_int = 0;
+                        selp.a.imm_int = 1;
+                        selp.c = ptxInstruction->pg;
 
-	                        
-	                        ir::PTXInstruction add(ir::PTXInstruction::Add);
-                            add.type = add.d.type = add.a.type = add.b.type = type;
-                            add.d.addressMode = add.a.addressMode = add.b.addressMode = ir::PTXOperand::Register;
-                            
-                            add.d.identifier = add.a.identifier = BASIC_BLOCK_EXEC_INST_COUNT;
-                            add.b.reg = predCount;
-                            
-                            ir::PTXStatement stmt(ir::PTXStatement::Instr);
-                            stmt.instruction = selp;
-                            translationBlock.statements.insert(translationBlock.statements.end() - 7, stmt);
-                            stmt.instruction = add;
-                            translationBlock.statements.insert(translationBlock.statements.end() - 7, stmt);
-                        }
+                        ir::PTXInstruction add(ir::PTXInstruction::Add);
+                        add.type = add.d.type = add.a.type = add.b.type = type;
+                        add.d.addressMode = add.a.addressMode = add.b.addressMode = ir::PTXOperand::Register;
                         
+                        add.d.identifier = add.a.identifier = BASIC_BLOCK_EXEC_INST_COUNT;
+                        add.b.reg = predCount;
+                        
+                        ir::PTXStatement stmt(ir::PTXStatement::Instr);
+                        stmt.instruction = selp;
+                        translationBlock.statements.insert(translationBlock.statements.end() - 7, stmt);
+                        stmt.instruction = add;
+                        translationBlock.statements.insert(translationBlock.statements.end() - 7, stmt);
+                    
                     }
                     else
                     {

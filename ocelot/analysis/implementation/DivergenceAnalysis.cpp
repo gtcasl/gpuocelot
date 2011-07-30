@@ -36,7 +36,7 @@ void DivergenceAnalysis::_analyzeDataFlow()
 				si = phiInstruction->s.begin();
 				si != phiInstruction->s.end(); ++si) {
 				_divergGraph.insertEdge(si->id, phiInstruction->d.id);
-				si->type;
+				//si->type;
 			}
 		}
 
@@ -442,27 +442,3 @@ void DivergenceAnalysis::setControlFlowAnalysis(bool doControlFlowAnalysis)
 }
 
 }
-
-namespace std 
-{
-bool operator<(const analysis::BranchInfo x, const analysis::BranchInfo y)
-{
-	return x.block()->id() < y.block()->id();
-}
-
-bool operator<=(const analysis::BranchInfo x, const analysis::BranchInfo y)
-{
-	return x.block()->id() <= y.block()->id();
-}
-
-bool operator>(const analysis::BranchInfo x, const analysis::BranchInfo y)
-{
-	return x.block()->id() > y.block()->id();
-}
-
-bool operator>=(const analysis::BranchInfo x, const analysis::BranchInfo y)
-{
-	return x.block()->id() >= y.block()->id();
-}
-}
-

@@ -27,6 +27,11 @@ public:
                 const DataflowGraph::Instruction &dfgInstruction,
                 DivergenceGraph &divergGraph );
 
+  bool operator<(const BranchInfo& x) const;
+  bool operator<=(const BranchInfo& x) const;
+  bool operator>(const BranchInfo& x) const;
+  bool operator>=(const BranchInfo& x) const;
+
 	// TODO: see if you can make this method friend with Div analysis.
 	/*!\brief Tells if a node is control dependent
 		on a divergent branch instruction. */

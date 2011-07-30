@@ -191,7 +191,6 @@ ir::PTXU32 executive::CooperativeThreadArray::getSpecialValue(
 	const ir::PTXOperand::VectorIndex index ) const
 {
 	assert( reg != ir::PTXOperand::SpecialRegister_invalid );
-	assert( reg != ir::PTXOperand::laneId );
 	assert( reg != ir::PTXOperand::pm0 );
 	assert( reg != ir::PTXOperand::pm1 );
 	assert( reg != ir::PTXOperand::pm2 );
@@ -201,6 +200,9 @@ ir::PTXU32 executive::CooperativeThreadArray::getSpecialValue(
 	assert( reg != ir::PTXOperand::gridId );
 
 	switch( reg ) {
+		case ir::PTXOperand::laneId: {
+			return (threadId % 32);	// assume warp size is 32 threads
+		}
 		case ir::PTXOperand::tid: {
 			switch( index ) {
 				case ir::PTXOperand::ix: {
@@ -1292,6 +1294,8 @@ ir::PTXU64 executive::CooperativeThreadArray::operandAsU64(int threadID,
 			return (PTXU64)(op.imm_uint);
 		case PTXOperand::Address:
 			return (PTXU64)(op.imm_uint) + op.offset;
+	    case PTXOperand::Special:
+			return (PTXU64)getSpecialValue(threadID, op.special, op.vIndex);
 		default:
 			assert(0 == "invalid address mode of operand");
 	}
@@ -5473,6 +5477,13 @@ void executive::CooperativeThreadArray::eval_Mov_sreg(CTAContext &context,
 			if (!context.predicated(threadID, instr)) continue;
 			PTXU32 d = operandAsU32(threadID, instr.a);
 			setRegAsU32(threadID, instr.d.reg, d);			
+		}
+	}
+	else if (instr.type == PTXOperand::u64) {
+		for (int threadID = 0; threadID < threadCount; threadID++) {
+			if (!context.predicated(threadID, instr)) continue;
+			PTXU64 d = operandAsU64(threadID, instr.a);
+			setRegAsU64(threadID, instr.d.reg, d);			
 		}
 	}
 	else if (instr.type == PTXOperand::s32) {

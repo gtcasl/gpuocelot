@@ -88,7 +88,7 @@ executive::EmulatedKernel::~EmulatedKernel() {
 	freeAll();
 }
 
-bool executive::EmulatedKernel::executable() {
+bool executive::EmulatedKernel::executable() const {
 	report("EmulatedKernel::executable() returns true");
 	return true;
 }

@@ -121,7 +121,7 @@ namespace util
 
 		if( trace )
 		{
-			result += _tracelibs();
+			result += " " + _tracelibs();
 		}
 		
 		return result + "\n";

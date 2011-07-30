@@ -54,7 +54,7 @@ ExecutableKernel::~ExecutableKernel()
 
 }
 
-bool ExecutableKernel::executable() 
+bool ExecutableKernel::executable() const
 {
 	return true;
 }

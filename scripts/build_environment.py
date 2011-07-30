@@ -181,7 +181,7 @@ def getTools():
 	if os.name == 'nt':
 		result = ['default', 'msvc']
 	elif os.name == 'posix':
-		result = ['default', 'g++', 'c++']
+		result = ['default', 'c++', 'g++']
 	else:
 		result = ['default']
 
@@ -194,19 +194,29 @@ OldEnvironment = Environment;
 # this dictionary maps the name of a compiler program to a dictionary mapping the name of
 # a compiler switch of interest to the specific switch implementing the feature
 gCompilerOptions = {
-		'gcc' : {'warn_all' : '-Wall', 'warn_errors' : '-Werror', 'optimization' : '-O2', 'debug' : '-g',  'exception_handling' : '', 'standard': ''},
-		'g++' : {'warn_all' : '-Wall', 'warn_errors' : '-Werror', 'optimization' : '-O2', 'debug' : '-g',  'exception_handling' : '', 'standard': '-std=c++0x'},
-		'c++' : {'warn_all' : '-Wall', 'warn_errors' : '-Werror', 'optimization' : '-O2', 'debug' : '-g',  'exception_handling' : '', 'standard': '-std=c++0x'},
-		'cl'  : {'warn_all' : '/Wall', 'warn_errors' : '/WX',     'optimization' : '/Ox', 'debug' : ['/Zi', '-D_DEBUG', '/MTd'], 'exception_handling' : '/EHsc', 'standard': ''}
+		'gcc' : {'warn_all' : '-Wall', 'warn_errors' : '-Werror',
+			'optimization' : '-O2', 'debug' : '-g', 
+			'exception_handling' : '', 'standard': ''},
+		'g++' : {'warn_all' : '-Wall', 'warn_errors' : '-Werror',
+			'optimization' : '-O2', 'debug' : '-g', 
+			'exception_handling' : '', 'standard': '-std=c++0x'},
+		'c++' : {'warn_all' : '-Wall', 'warn_errors' : '-Werror',
+			'optimization' : '-O2', 'debug' : '-g',
+			'exception_handling' : '',
+			'standard': ['-stdlib=libc++', '-std=c++0x', '-pthread']},
+		'cl'  : {'warn_all' : '/Wall', 'warn_errors' : '/WX',
+			'optimization' : '/Ox', 'debug' : ['/Zi', '-D_DEBUG', '/MTd'],
+			'exception_handling' : '/EHsc', 'standard': ''}
 	}
 
 
 # this dictionary maps the name of a linker program to a dictionary mapping the name of
 # a linker switch of interest to the specific switch implementing the feature
 gLinkerOptions = {
-		'gcc' : {'debug' : ''},
-		'g++' : {'debug' : ''},
-		'link'  : {'debug' : '/debug'}
+		'gcc'  : {'debug' : ''},
+		'g++'  : {'debug' : ''},
+		'c++'  : {'debug' : ''},
+		'link' : {'debug' : '/debug'}
 	}
 
 
@@ -232,6 +242,26 @@ def getCFLAGS(mode, warn, warnings_as_errors, CC):
 
 	return result
 
+def getLibCXXPaths():
+	"""Determines libc++ path
+
+	returns (inc_path, lib_path)
+	"""
+
+	# determine defaults
+	if os.name == 'posix':
+		inc_path = '/usr/include'
+		lib_path = '/usr/lib/libc++.so'
+	else:
+		raise ValueError, 'Error: unknown OS.  Where is libc++ installed?'
+
+	# override with environement variables
+	if 'LIBCXX_INC_PATH' in os.environ:
+		inc_path = os.path.abspath(os.environ['LIBCXX_INC_PATH'])
+	if 'LIBCXX_LIB_PATH' in os.environ:
+		lib_path = os.path.abspath(os.environ['LIBCXX_LIB_PATH'])
+
+	return (inc_path, lib_path)
 
 def getCXXFLAGS(mode, warn, warnings_as_errors, CXX):
 	result = []
@@ -261,6 +291,9 @@ def getLINKFLAGS(mode, LINK):
 	if mode == 'debug':
 		# turn on debug mode
 		result.append(gLinkerOptions[LINK]['debug'])
+
+	if LINK == 'c++':
+		result.append(getLibCXXPaths()[1]);
 
 	return result
 
@@ -312,7 +345,6 @@ def importEnvironment():
 	
 	if 'CXX' in os.environ:
 		env['CXX'] = os.environ['CXX']
-		print "CXX is " + env['CXX']
 	
 	if 'CC' in os.environ:
 		env['CC'] = os.environ['CC']
@@ -357,6 +389,9 @@ def Environment():
 	env = OldEnvironment(ENV = importEnvironment(), \
 		tools = getTools(), variables = vars)
 
+	# always link with the c++ compiler
+	env['LINK'] = env['CXX']
+	
 	# set the version
 	env.Replace(VERSION = getVersion("2.1"))
 
@@ -392,7 +427,7 @@ def Environment():
 		env.Replace(deb_arch = 'unknown')
 		
 	# get CUDA paths
-	(cuda_exe_path,cuda_lib_path,cuda_inc_path) = getCudaPaths()
+	(cuda_exe_path, cuda_lib_path, cuda_inc_path)  = getCudaPaths()
 
 	# get boost paths
 	(boost_exe_path,boost_lib_path,boost_inc_path) = getBoostPaths()
@@ -409,6 +444,10 @@ def Environment():
 	# get Flex paths
 	(flex_inc_path) = getFlexPaths(env)
 	env.AppendUnique(CPPPATH = [flex_inc_path])
+
+	# get libc++
+	if env['CXX'] == 'c++':
+		env.AppendUnique(CPPPATH = getLibCXXPaths()[0])
 
 	# get llvm paths
 	(llvm, llvm_exe_path,llvm_lib_path,llvm_inc_path,llvm_cflags,\

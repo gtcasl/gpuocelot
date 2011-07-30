@@ -37,8 +37,19 @@
 template<typename T>
 bool issubnormal(T r0)
 {
+	return false;
+}
+
+bool issubnormal(float r0)
+{
 	return !std::isnormal(r0) && !std::isnan(r0)
-		&& !std::isinf(r0) && r0 != (T)0;
+		&& !std::isinf(r0) && r0 != (float)0;
+}
+
+bool issubnormal(double r0)
+{
+	return !std::isnormal(r0) && !std::isnan(r0)
+		&& !std::isinf(r0) && r0 != (double)0;
 }
 
 bool compareFloat(float a, float b, int eps)

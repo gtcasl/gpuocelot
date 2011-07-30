@@ -354,42 +354,43 @@ private:
 namespace std
 {
 	template<> 
-	class hash<ir::ControlFlowGraph::iterator>
+	struct hash<ir::ControlFlowGraph::iterator>
 	{
 	public:
-		size_t operator()(ir::ControlFlowGraph::iterator it) const
+		size_t operator()(const ir::ControlFlowGraph::iterator& it) const
 		{
 			return (size_t)it->id;
 		}
 	};
 
 	template<> 
-	class hash<ir::ControlFlowGraph::const_iterator>
+	struct hash<ir::ControlFlowGraph::const_iterator>
 	{
 	public:
-		size_t operator()( ir::ControlFlowGraph::const_iterator it) const
+		size_t operator()(const ir::ControlFlowGraph::const_iterator& it) const
 		{
 			return (size_t)it->id;
 		}
 	};
 
 	template<> 
-	class hash<ir::ControlFlowGraph::InstructionList::iterator>
+	struct hash<ir::ControlFlowGraph::InstructionList::iterator>
 	{
 	public:
 		size_t operator()( 
-			ir::ControlFlowGraph::InstructionList::iterator it) const
+			const ir::ControlFlowGraph::InstructionList::iterator& it) const
 		{
 			return (size_t)&(*it);
 		}
 	};
 
 	template<> 
-	class hash<ir::ControlFlowGraph::InstructionList::const_iterator>
+	struct hash<ir::ControlFlowGraph::InstructionList::const_iterator>
 	{
 	public:
-		size_t operator()( 
-			ir::ControlFlowGraph::InstructionList::const_iterator it) const
+		typedef ir::ControlFlowGraph::InstructionList::const_iterator type;
+	
+		size_t operator()(const type& it) const
 		{
 			return (size_t)&(*it);
 		}

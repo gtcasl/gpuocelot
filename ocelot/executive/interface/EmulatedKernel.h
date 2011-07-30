@@ -42,7 +42,7 @@ namespace executive {
 		virtual ~EmulatedKernel();
 	
 		/*!	\brief Determines whether kernel is executable */
-		bool executable();
+		bool executable() const;
 		
 		/*!	Launch a kernel on a 2D grid */
 		void launchGrid(int width, int height);

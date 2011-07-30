@@ -84,13 +84,5 @@ class DivergenceAnalysis : public Analysis
 };
 }
 
-namespace std
-{
-bool operator<(const analysis::BranchInfo x, const analysis::BranchInfo y);
-bool operator<=(const analysis::BranchInfo x, const analysis::BranchInfo y);
-bool operator>(const analysis::BranchInfo x, const analysis::BranchInfo y);
-bool operator>=(const analysis::BranchInfo x, const analysis::BranchInfo y);
-}
-
 #endif /* DIVERGINGENCEANALYSIS_H_ */
 

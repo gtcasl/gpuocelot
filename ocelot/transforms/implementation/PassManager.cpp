@@ -42,6 +42,19 @@ static void freeUnusedDataStructures(AnalysisMap& analyses,
 {
 	typedef std::vector<int> TypeVector;
 	
+	#if defined(__clang__)
+	// clang doesn't support initializer lists yet
+	TypeVector types;
+	
+	types.push_back(analysis::Analysis::DivergenceAnalysis);
+	types.push_back(analysis::Analysis::DataflowGraphAnalysis);
+	types.push_back(analysis::Analysis::PostDominatorTreeAnalysis);
+	types.push_back(analysis::Analysis::DominatorTreeAnalysis);
+	types.push_back(analysis::Analysis::ControlTreeAnalysis);
+	types.push_back(analysis::Analysis::StructuralAnalysis);
+	types.push_back(analysis::Analysis::ThreadFrontierAnalysis); 
+	
+	#else
 	TypeVector types = {analysis::Analysis::DivergenceAnalysis,
 		analysis::Analysis::DataflowGraphAnalysis,
 		analysis::Analysis::PostDominatorTreeAnalysis,
@@ -50,6 +63,7 @@ static void freeUnusedDataStructures(AnalysisMap& analyses,
 		analysis::Analysis::StructuralAnalysis,
 		analysis::Analysis::ThreadFrontierAnalysis
 		};
+	#endif
 	
 	for(TypeVector::const_iterator t = types.begin(); t != types.end(); ++t)
 	{

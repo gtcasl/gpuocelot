@@ -13,6 +13,7 @@
 #include <ocelot/transforms/interface/PassManager.h>
 
 // Hydrazine includes
+#include <hydrazine/interface/Casts.h>
 #include <hydrazine/implementation/Exception.h>
 #include <hydrazine/implementation/debug.h>
 
@@ -642,7 +643,7 @@ namespace executive
 
 	void *ATIGPUDevice::MemoryAllocation::pointer() const
 	{
-		return (void *)_basePtr;
+		return hydrazine::bit_cast<void*>(_basePtr);
 	}
 
 	size_t ATIGPUDevice::MemoryAllocation::size() const

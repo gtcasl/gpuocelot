@@ -231,12 +231,17 @@ namespace ir {
 
 }
 
-namespace std {
-	template<> inline size_t hash<ir::PTXOperand::DataType>::operator()( 
-		ir::PTXOperand::DataType t) const
+namespace std 
+{
+	template<> 
+	struct hash<ir::PTXOperand::DataType>
 	{
-		return (size_t)t;
-	}
+	public:
+		size_t operator()(const ir::PTXOperand::DataType& t) const
+		{
+			return (size_t)t;
+		}
+	};
 }
 
 #endif

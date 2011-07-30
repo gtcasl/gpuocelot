@@ -289,8 +289,9 @@ namespace executive
 		report("Block = " << _blockDim.x << ", " << _blockDim.y << ", " 
 				<< _blockDim.z);
 
-		cb_t blockDim = {_blockDim.x, _blockDim.y, _blockDim.z, 0};
-		cb_t gridDim = {width, height, 1, 0};
+		cb_t blockDim = {(unsigned int)_blockDim.x,
+			(unsigned int)_blockDim.y, (unsigned int)_blockDim.z, 0};
+		cb_t gridDim = {(unsigned int)width, (unsigned int)height, 1, 0};
 
 		CalDriver()->calResMap((CALvoid **)&cb0, &pitch, *_cb0Resource, flags);
 		cb0[0] = blockDim;
@@ -324,8 +325,9 @@ namespace executive
 		CalDriver()->calModuleGetEntry(&func, *_context, _module, "main");
 
 		// invoke kernel
-		CALdomain3D gridBlock = {_blockDim.x, _blockDim.y, _blockDim.z};
-		CALdomain3D gridSize = {width, height, 1};
+		CALdomain3D gridBlock = {(unsigned int)_blockDim.x,
+			(unsigned int)_blockDim.y, (unsigned int)_blockDim.z};
+		CALdomain3D gridSize = {(unsigned int)width, (unsigned int)height, 1};
 
 		CALprogramGrid pg;
 		pg.func      = func;

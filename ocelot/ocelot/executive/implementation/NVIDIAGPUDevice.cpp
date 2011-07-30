@@ -392,7 +392,7 @@ namespace executive
 		void* optionValues[3] = {
 			(void*)CU_TARGET_COMPUTE_20,
 			(void*)errorLogBuffer, 
-			(void*)errorLogActualSize, 
+			hydrazine::bit_cast<void*>(errorLogActualSize), 
 		};
 		
 		std::string ptxModule = stream.str();
@@ -1501,6 +1501,7 @@ namespace executive
 				<< kernel->name << "\" : \n\tpreallocated "
 				<< kernel->constMemorySize() << " is greater than available " 
 				<< properties().totalConstantMemory << " for device " 
+
 				<< properties().name);
 		}
 		
@@ -1624,3 +1625,4 @@ namespace executive
 ////////////////////////////////////////////////////////////////////////////////
 
 #endif
+

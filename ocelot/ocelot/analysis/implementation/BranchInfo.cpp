@@ -34,6 +34,26 @@ BranchInfo::BranchInfo(const Block *block, const Block *postDominator,
 	}
 }
 
+bool BranchInfo::operator<(const BranchInfo& x) const
+{
+  return _block->id() < x.block()->id();
+}
+
+bool BranchInfo::operator<=(const BranchInfo& x) const
+{
+  return _block->id() <= x.block()->id();
+}
+
+bool BranchInfo::operator>(const BranchInfo& x) const
+{
+  return _block->id() > x.block()->id();
+}
+
+bool BranchInfo::operator>=(const BranchInfo& x) const
+{
+  return _block->id() >= x.block()->id();
+}
+
 bool BranchInfo::isTainted(const DivergenceGraph::node_type &node) const
 {
 	return ((_branchVariables.find(node) != _branchVariables.end()) || (_fallThroughVariables.find(node)

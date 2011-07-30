@@ -520,7 +520,7 @@ namespace executive
 		report(" Registering opengl buffer " << buffer 
 			<< " to handle " << handle);
 		_graphics.insert(std::make_pair(handle, OpenGLResource(buffer)));
-		return (void*) handle;
+		return hydrazine::bit_cast<void*>(handle);
 	}
 	
 	void* EmulatorDevice::glRegisterImage(unsigned int image, 
@@ -528,7 +528,7 @@ namespace executive
 	{
 		unsigned int handle = _next++;
 		_graphics.insert(std::make_pair(handle, OpenGLResource(image)));
-		return (void*) handle;
+		return hydrazine::bit_cast<void*>(handle);
 	}
 
 	void EmulatorDevice::unRegisterGraphicsResource(void* resource)
@@ -948,6 +948,7 @@ namespace executive
 
 	void EmulatorDevice::unbindTexture(const std::string& moduleName, 
 		const std::string& textureName)
+
 	{
 		ModuleMap::iterator module = _modules.find(moduleName);
 		if(module == _modules.end())

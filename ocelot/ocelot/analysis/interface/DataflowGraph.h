@@ -62,7 +62,7 @@ class DataflowGraph : public KernelAnalysis
 				/*! \brief Needed for comparisons */
 				bool operator==( const RegisterPointer& r ) const;
 		};
-		
+
 		/*! \brief A register with type info */
 		class Register
 		{
@@ -82,6 +82,14 @@ class DataflowGraph : public KernelAnalysis
 			public:
 				/*! \brief Needed for comparisons */
 				bool operator==( const Register& r ) const;
+		};
+
+		struct Register_Hash
+		{
+			inline std::size_t operator()( Register r ) const
+			{
+				return r.id;
+			}
 		};
 		
 		/*! \brief A vector of register ID pointers */
@@ -130,8 +138,17 @@ class DataflowGraph : public KernelAnalysis
 		typedef std::list< PhiInstruction > PhiInstructionVector;
 		/*! \brief A vector of blocks */
 		typedef std::list< Block > BlockVector;
+
+		struct BlockVector_Hash
+		{
+			inline std::size_t operator()( BlockVector::iterator it ) const
+			{
+				return (std::size_t)it->id();
+			}
+		};
+
 		/*! \brief A vector of Block pointers */
-		typedef std::unordered_set< BlockVector::iterator > BlockPointerSet;
+		typedef std::unordered_set< BlockVector::iterator, BlockVector_Hash > BlockPointerSet;
 		
 		/*! \brief A class for referring to a generic basic block of 
 				instructions.
@@ -152,7 +169,7 @@ class DataflowGraph : public KernelAnalysis
 				};
 		
 				/*! \brief A unique set of register Ids */
-				typedef std::unordered_set< Register > RegisterSet;
+				typedef std::unordered_set< Register, Register_Hash > RegisterSet;
 
 			private:
 				/*! \brief Registers that are alive entering the block */
@@ -376,26 +393,35 @@ std::ostream& operator<<( std::ostream& out, const DataflowGraph& graph );
 
 namespace std
 {
-	template<> inline size_t hash< 
-		analysis::DataflowGraph::iterator >::operator()( 
-		analysis::DataflowGraph::iterator it ) const
+	template<>
+	struct hash< analysis::DataflowGraph::iterator >
 	{
-		return ( size_t )it->id();
-	}
-	
-	template<> inline size_t hash< 
-		analysis::DataflowGraph::Register >::operator()( 
-		analysis::DataflowGraph::Register r ) const
+		inline size_t operator()(
+			const analysis::DataflowGraph::iterator& it ) const
+		{
+			return ( size_t )it->id();
+		}
+	};
+
+	template<>
+	struct hash< analysis::DataflowGraph::Register >
 	{
-		return r.id;
-	}
-	
-	template<> inline size_t hash< 
-		analysis::DataflowGraph::RegisterPointer >::operator()( 
-		analysis::DataflowGraph::RegisterPointer r ) const
+		inline size_t operator()(
+			const analysis::DataflowGraph::Register& r ) const
+		{
+			return r.id;
+		}
+	};
+
+	template<>
+	struct hash< analysis::DataflowGraph::RegisterPointer >
 	{
-		return *r.pointer;
-	}
+		inline size_t operator()(
+			const analysis::DataflowGraph::RegisterPointer& r ) const
+		{
+			return *r.pointer;
+		}
+	};
 }
 
 #endif

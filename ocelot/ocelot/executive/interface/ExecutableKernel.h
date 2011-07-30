@@ -37,7 +37,7 @@ namespace executive {
 		virtual ~ExecutableKernel();
 	
 		/*!	\brief Determines whether kernel is executable */
-		virtual bool executable();
+		virtual bool executable() const;
 		
 		/*!	\brief Launch a kernel on a 2D grid */
 		virtual void launchGrid(int width, int height)=0;

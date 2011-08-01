@@ -41,8 +41,8 @@
 #define REPORT_BASE 0
 
 // reporting for kernel instructions
-#define REPORT_STATIC_INSTRUCTIONS 1
-#define REPORT_DYNAMIC_INSTRUCTIONS 1
+#define REPORT_STATIC_INSTRUCTIONS 0
+#define REPORT_DYNAMIC_INSTRUCTIONS 0
 
 // reporting for register accesses
 #define REPORT_NTH_THREAD_ONLY 1
@@ -199,9 +199,44 @@ ir::PTXU32 executive::CooperativeThreadArray::getSpecialValue(
 	assert( reg != ir::PTXOperand::nsmId );
 	assert( reg != ir::PTXOperand::gridId );
 
+	//
+	// some special registers are not warp-agnostic, so we give the option to specify
+	// a constant-size warp in the Ocelot configuration. If this value is 0 or larger
+	// than the CTA size, the warpSize is assumed to be the CTA size
+	//
+	int warpSize = api::OcelotConfiguration::get().executive.warpSize;
+	if (warpSize == 0 || warpSize > threadCount) {
+		warpSize = threadCount;
+	}
+
 	switch( reg ) {
 		case ir::PTXOperand::laneId: {
-			return (threadId % 32);	// assume warp size is 32 threads
+			return (threadId % warpSize);
+		}
+		case ir::PTXOperand::lanemask_eq: {	
+			return (1 << (threadId % warpSize));
+		}
+		case ir::PTXOperand::lanemask_lt: // fall through
+		case ir::PTXOperand::lanemask_le: {
+			// we must assume this->currentEvent.active has been updated
+			unsigned int mask = (reg == ir::PTXOperand::lanemask_le ? (1 << (threadId % warpSize)) : 0);
+			int baseId = 0;
+			for (int tWarpId = (threadId / warpSize); tWarpId < threadId; ++tWarpId) {
+				mask |= ((currentEvent.active[tWarpId] ? 1 : 0) << baseId);
+				++baseId;
+			}
+			return mask;
+		}
+		case ir::PTXOperand::lanemask_gt: // fall through
+		case ir::PTXOperand::lanemask_ge: {
+			// we must assume this->currentEvent.active has been updated
+			unsigned int mask = (reg == ir::PTXOperand::lanemask_ge ? (1 << (threadId % warpSize)) : 0);
+			int endThreadId = (threadId + warpSize - 1)/warpSize;
+			for (int tWarpId = threadId + 1; tWarpId < endThreadId; ++tWarpId) {
+				mask |= (currentEvent.active[tWarpId] ? 1 : 0);
+				mask <<= 1;
+			}
+			return mask;
 		}
 		case ir::PTXOperand::tid: {
 			switch( index ) {

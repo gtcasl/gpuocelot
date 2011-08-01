@@ -561,7 +561,7 @@ namespace executive
 		kernel->updateArgumentMemory();
 		kernel->updateMemory();
 		kernel->setExternSharedMemorySize(sharedMemory);
-		kernel->launchGrid(grid.x, grid.y);
+		kernel->launchGrid(grid.x, grid.y, grid.z);
 	}
 
 	cudaFuncAttributes ATIGPUDevice::getAttributes(const std::string& path, 

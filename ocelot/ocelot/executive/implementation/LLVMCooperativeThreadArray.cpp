@@ -294,7 +294,8 @@ unsigned int LLVMCooperativeThreadArray::_initializeNewContext(
 		context.nctaid.z  = _kernel->gridDim().z;
 		context.ctaid.x   = ctaId % context.nctaid.x;
 		context.ctaid.y   = (ctaId / context.nctaid.x) % context.nctaid.y;
-		context.ctaid.z   = 0;
+		context.ctaid.z   = ((ctaId / context.nctaid.x) / context.nctaid.y) %
+			context.nctaid.z;
 		context.ntid.x    = _kernel->blockDim().x;
 		context.ntid.y    = _kernel->blockDim().y;
 		context.ntid.z    = _kernel->blockDim().z;

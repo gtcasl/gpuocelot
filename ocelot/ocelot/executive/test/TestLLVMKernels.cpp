@@ -89,7 +89,7 @@ namespace test
 		kernel->updateArgumentMemory();
 
 		kernel->setKernelShape( 8, 1, 1 );
-		kernel->launchGrid( 1, 1 );
+		kernel->launchGrid( 1, 1, 1 );
 
 		for( unsigned int i = 0; i < N; ++i ) 
 		{
@@ -169,7 +169,7 @@ namespace test
 		kernel->updateArgumentMemory();
 
 		kernel->setKernelShape( 8, 1, 1 );
-		kernel->launchGrid( 1, 1 );
+		kernel->launchGrid( 1, 1, 1 );
 
 		bool pass = true;
 		status << "R = [\n";

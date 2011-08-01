@@ -150,7 +150,7 @@ namespace executive
 		kernel->setWorkerThreads(_workerThreads);
 		kernel->setExternalFunctionSet(*externals);
 		
-		kernel->launchGrid(grid.x, grid.y);
+		kernel->launchGrid(grid.x, grid.y, grid.z);
 		
 		kernel->clearExternalFunctionSet();
 	}

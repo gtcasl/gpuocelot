@@ -40,7 +40,7 @@ namespace executive {
 		virtual bool executable() const;
 		
 		/*!	\brief Launch a kernel on a 2D grid */
-		virtual void launchGrid(int width, int height)=0;
+		virtual void launchGrid(int width, int height, int depth)=0;
 
 		/*!
 			\brief compute argument offsets for argument data

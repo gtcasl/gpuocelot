@@ -46,8 +46,6 @@ LLVMExecutableKernel::LLVMExecutableKernel(const ir::IRKernel& k,
 		"LLVMExecutable kernel must be constructed from a PTXKernel");
 	ISA = ir::Instruction::LLVM;
 	
-	_gridDim.z = 1;
-	
 	name = k.name;
 	arguments = k.arguments;
 	module = k.module;
@@ -61,13 +59,14 @@ LLVMExecutableKernel::~LLVMExecutableKernel()
 	delete[] _constantMemory;
 }
 
-void LLVMExecutableKernel::launchGrid(int x, int y)
+void LLVMExecutableKernel::launchGrid(int x, int y, int z)
 {	
 	report( "Launching kernel \"" << name << "\" on grid ( x = " 
 		<< x << ", y = " << y << " )"  );
 	
 	_gridDim.x = x;
 	_gridDim.y = y;
+	_gridDim.z = z;
 	
 	LLVMExecutionManager::launch(*this);
 }

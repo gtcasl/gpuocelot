@@ -24,7 +24,7 @@ namespace executive {
 		/*!
 			Launch a kernel on a 2D grid
 		*/
-		void launchGrid(int width, int height);
+		void launchGrid(int width, int height, int depth);
 
 		/*!
 			Sets the shape of a kernel

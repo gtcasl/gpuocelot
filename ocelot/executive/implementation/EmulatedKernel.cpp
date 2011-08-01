@@ -93,11 +93,11 @@ bool executive::EmulatedKernel::executable() const {
 	return true;
 }
 
-void executive::EmulatedKernel::launchGrid(int width, int height) {
+void executive::EmulatedKernel::launchGrid(int width, int height, int depth) {
 	report("EmulatedKernel::launchGrid called for " << name);
 	report("  " << _registerCount << " registers");
 
-	_gridDim = ir::Dim3(width, height, 1);	
+	_gridDim = ir::Dim3(width, height, depth);	
 	
 	// notify trace generator(s)
 	for (TraceGeneratorVector::iterator it = _generators.begin(); 
@@ -125,10 +125,12 @@ void executive::EmulatedKernel::launchGrid(int width, int height) {
 
 	CooperativeThreadArray cta(this, gridDim(), !_generators.empty());
 	CTA = &cta;
-	for (int y = 0; y < height; ++y) {
-		for (int x = 0; x < width; ++x) {	
-			report("  cta: " << x << ", " << y);	
-			cta.execute(ir::Dim3(x,y,0));
+	for (int z = 0; z < depth; ++z) {
+		for (int y = 0; y < height; ++y) {
+			for (int x = 0; x < width; ++x) {	
+				report("  cta: " << x << ", " << y << ", " << z);	
+				cta.execute(ir::Dim3(x,y,z));
+			}
 		}
 	}
 	

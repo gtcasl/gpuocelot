@@ -433,7 +433,7 @@ public:
 		// launch the kernel
 		try {
 			kernel->setKernelShape(N,1,1);
-			kernel->launchGrid(1,1);
+			kernel->launchGrid(1,1,1);
 			// context.synchronize();
 		}
 		catch (RuntimeException &exp) {

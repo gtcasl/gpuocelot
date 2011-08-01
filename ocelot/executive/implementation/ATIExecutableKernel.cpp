@@ -277,7 +277,7 @@ namespace executive
 		delete ilKernel;
 	}
 
-	void ATIExecutableKernel::launchGrid(int width, int height)
+	void ATIExecutableKernel::launchGrid(int width, int height, int depth)
 	{
 		// initialize ABI data
 		cb_t *cb0;
@@ -291,7 +291,8 @@ namespace executive
 
 		cb_t blockDim = {(unsigned int)_blockDim.x,
 			(unsigned int)_blockDim.y, (unsigned int)_blockDim.z, 0};
-		cb_t gridDim = {(unsigned int)width, (unsigned int)height, 1, 0};
+		cb_t gridDim = {(unsigned int)width, (unsigned int)height,
+			(unsigned int) depth, 0};
 
 		CalDriver()->calResMap((CALvoid **)&cb0, &pitch, *_cb0Resource, flags);
 		cb0[0] = blockDim;
@@ -327,7 +328,8 @@ namespace executive
 		// invoke kernel
 		CALdomain3D gridBlock = {(unsigned int)_blockDim.x,
 			(unsigned int)_blockDim.y, (unsigned int)_blockDim.z};
-		CALdomain3D gridSize = {(unsigned int)width, (unsigned int)height, 1};
+		CALdomain3D gridSize = {(unsigned int)width, (unsigned int)height,
+			(unsigned int)depth};
 
 		CALprogramGrid pg;
 		pg.func      = func;

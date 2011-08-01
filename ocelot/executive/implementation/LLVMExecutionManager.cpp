@@ -86,7 +86,8 @@ void LLVMExecutionManager::Manager::launch(const LLVMExecutableKernel& kernel)
 	
 	unsigned int ctasFinished = 0;
 	unsigned int ctasLaunched = 0;
-	unsigned int totalCtas = kernel.gridDim().x * kernel.gridDim().y;
+	unsigned int totalCtas = kernel.gridDim().z * kernel.gridDim().x *
+		kernel.gridDim().y;
 	
 	for(WorkerVector::iterator worker = _workers.begin();
 		worker != _workers.end(); ++worker)

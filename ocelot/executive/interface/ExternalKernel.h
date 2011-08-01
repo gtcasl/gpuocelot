@@ -53,7 +53,7 @@ namespace executive {
 		virtual bool executable();
 		
 		/*!	\brief Launch a kernel on a 2D grid */
-		virtual void launchGrid(int width, int height);
+		virtual void launchGrid(int width, int height, int depth);
 	
 		/*!	\brief Sets the shape of a kernel */
 		virtual void setKernelShape(int x, int y, int z);

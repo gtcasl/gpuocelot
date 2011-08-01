@@ -165,7 +165,7 @@ public:
 			// launch the kernel
 			try {
 				kernel->setKernelShape(ThreadCount,1,1);
-				kernel->launchGrid(1,1);
+				kernel->launchGrid(1,1,1);
 			}
 			catch (RuntimeException &exp) {
 				out << "[looping test] Runtime exception on instruction [ " 
@@ -267,7 +267,7 @@ public:
 			// launch the kernel
 			try {
 				kernel->setKernelShape(ThreadCount,1,1);
-				kernel->launchGrid(1,1);
+				kernel->launchGrid(1,1,1);
 			}
 			catch (RuntimeException &exp) {
 				out << "[m-v test] Runtime exception on instruction [ " 

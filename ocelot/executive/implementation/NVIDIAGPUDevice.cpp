@@ -45,7 +45,7 @@
 #define REPORT_BASE 0
 
 // Print out the full ptx for each module as it is loaded
-#define REPORT_PTX 0
+#define REPORT_PTX 1
 
 // if 1, adds line numbers to reported PTX
 #define REPORT_PTX_WITH_LINENUMBERS 1

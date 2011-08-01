@@ -11,6 +11,7 @@
 #include <cassert>
 #include <sstream>
 #include <iomanip>
+#include <iostream>
 
 std::string ir::PTXOperand::toString( VectorIndex index ) {
 	switch( index ) {
@@ -676,6 +677,7 @@ std::string ir::PTXOperand::toString() const {
 	} else if( addressMode == Immediate ) {
 		std::stringstream stream;
 		switch( type ) {
+			case pred: /* fall through */
 			case s8:  /* fall through */
 			case s16: /* fall through */
 			case s32: /* fall through */
@@ -695,13 +697,27 @@ std::string ir::PTXOperand::toString() const {
 			case f64: {
 				write(stream, imm_float);
 			} break;
-			case pred: /* fall through */
-			default: assertM( false, "Invalid immediate type " 
+			default: 
+				assertM( false, "Invalid immediate type " 
 				+ PTXOperand::toString( type ) ); break;
 		}
 		return stream.str();
 	} else if( addressMode == Special ) {
-		if( vec != v1 || special == clock || special == laneId) {
+		bool isScalar = true;
+		switch (special) {
+		case tid: // fall through
+		case ntid: // fall through
+		case ctaId: // fall through
+		case nctaId:  // fall through
+		case smId:  // fall through
+		case nsmId:  // fall through
+		case gridId:  // fall through
+			isScalar = false;
+			break;
+		default:
+			isScalar = true;
+		}
+		if( vec != v1 || isScalar) {
 			return toString( special );
 		}
 		else {

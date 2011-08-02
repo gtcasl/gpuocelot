@@ -28,6 +28,72 @@ namespace transforms
 		return static_cast<analysis::DataflowGraph&>(*graph);
 	}
 
+    ir::PTXStatement CToPTXInstrumentationPass::computeMaskedAddress(ir::PTXStatement statement, ir::PTXInstruction original)
+    {
+        ir::PTXStatement toInsert = statement;
+        
+        if(statement.instruction.a.identifier == COMPUTE_MASKED_ADDRESS)
+            {
+                toInsert.instruction.d.reg = newRegisterMap[COMPUTE_MASKED_ADDRESS];
+                toInsert.instruction.a.reg = newRegisterMap[COMPUTE_MASKED_ADDRESS];
+                toInsert.instruction.b.reg = newRegisterMap[statement.instruction.b.identifier];
+                toInsert.instruction.d.identifier.clear();
+                toInsert.instruction.a.identifier.clear();
+                toInsert.instruction.b.identifier.clear();
+                return toInsert;
+            }
+        
+            toInsert.instruction.d.reg = dfg().newRegister();
+            newRegisterMap[toInsert.instruction.d.identifier] = toInsert.instruction.d.reg;
+            toInsert.instruction.d.identifier.clear();
+            
+            if(original.opcode == ir::PTXInstruction::St)
+            {
+                if(original.d.addressMode == ir::PTXOperand::Indirect)
+                {
+                    toInsert.instruction.opcode = ir::PTXInstruction::Add;
+                    toInsert.instruction.a.addressMode = ir::PTXOperand::Register;
+                    toInsert.instruction.a.reg = original.d.reg;   
+                    toInsert.instruction.b.addressMode = ir::PTXOperand::Immediate;
+                    toInsert.instruction.b.imm_int = original.a.imm_int;   
+                }
+                else if(original.d.addressMode == ir::PTXOperand::Register || original.d.addressMode == ir::PTXOperand::Address)
+                {
+                    toInsert.instruction.a.addressMode = ir::PTXOperand::Register;
+                    toInsert.instruction.a.reg = original.d.reg;   
+                }
+                else if(original.d.addressMode == ir::PTXOperand::Immediate)
+                {
+                    toInsert.instruction.a.addressMode = ir::PTXOperand::Immediate;
+                    toInsert.instruction.a.imm_uint = original.d.imm_uint;   
+                }
+            }
+            else if(original.opcode == ir::PTXInstruction::Ld)
+            {
+                if(original.a.addressMode == ir::PTXOperand::Indirect)
+                {
+                    toInsert.instruction.opcode = ir::PTXInstruction::Add;
+                    toInsert.instruction.a.addressMode = ir::PTXOperand::Register;
+                    toInsert.instruction.a.reg = original.a.reg;   
+                    toInsert.instruction.b.addressMode = ir::PTXOperand::Immediate;
+                    toInsert.instruction.b.imm_int = original.b.imm_int;   
+                }
+                else if(original.a.addressMode == ir::PTXOperand::Register || original.a.addressMode == ir::PTXOperand::Address)
+                {
+                    toInsert.instruction.a.addressMode = ir::PTXOperand::Register;
+                    toInsert.instruction.a.reg = original.a.reg;   
+                }
+                else if(original.a.addressMode == ir::PTXOperand::Immediate)
+                {
+                    toInsert.instruction.a.addressMode = ir::PTXOperand::Immediate;
+                    toInsert.instruction.a.imm_uint = original.a.imm_uint;   
+                }
+            
+            }
+    
+            return toInsert;
+    }
+
     /* This method assigns unused registers for each PTX statement to be inserted and replaces all static attribute place-holders with actual values */
     ir::PTXStatement CToPTXInstrumentationPass::prepareStatementToInsert(ir::PTXStatement statement, StaticAttributes attributes) {
     
@@ -45,7 +111,8 @@ namespace transforms
         if(statement.instruction.d.identifier == BASIC_BLOCK_INST_COUNT || 
             statement.instruction.d.identifier == BASIC_BLOCK_EXEC_INST_COUNT ||
             statement.instruction.d.identifier == BASIC_BLOCK_ID || 
-            statement.instruction.d.identifier == INSTRUCTION_ID) {
+            statement.instruction.d.identifier == INSTRUCTION_ID ||
+            statement.instruction.d.identifier == INSTRUCTION_COUNT) {
             toInsert.instruction.d.reg = dfg().newRegister();
             newRegisterMap[toInsert.instruction.d.identifier] = toInsert.instruction.d.reg;
             toInsert.instruction.d.identifier.clear();
@@ -58,7 +125,31 @@ namespace transforms
                 toInsert.instruction.a.imm_int = attributes.basicBlockId; 
             else if(statement.instruction.d.identifier == INSTRUCTION_ID)    
                 toInsert.instruction.a.imm_int = attributes.instructionId;
-                 
+            else if(statement.instruction.d.identifier == INSTRUCTION_COUNT)   
+                toInsert.instruction.a.imm_int = attributes.kernelInstructionCount;
+          
+            return toInsert;
+        }
+        
+        if(statement.instruction.d.identifier == COMPUTE_MASKED_ADDRESS)
+        {
+            return computeMaskedAddress(statement, attributes.originalInstruction);
+        }
+        
+        if(statement.instruction.opcode == ir::PTXInstruction::Bra)
+        {
+            if(statement.instruction.pg.condition == ir::PTXOperand::Pred || statement.instruction.pg.condition == ir::PTXOperand::InvPred)
+            {
+                toInsert.instruction.pg.reg = newRegisterMap[statement.instruction.pg.identifier];
+                toInsert.instruction.pg.identifier.clear();
+            }
+            if(statement.instruction.d.identifier == EXIT)
+            {
+                analysis::DataflowGraph::iterator endBlock = --dfg().end();
+                --endBlock;
+                toInsert.instruction.d.identifier = endBlock->label();
+            }
+
             return toInsert;
         }
         
@@ -77,8 +168,8 @@ namespace transforms
             }
         }
         
-        if(statement.instruction.opcode == ir::PTXInstruction::Vote){
-            toInsert.instruction.a = attributes.predicateGuard;
+        if(statement.instruction.opcode == ir::PTXInstruction::Vote && statement.instruction.vote == ir::PTXInstruction::Uni){
+            toInsert.instruction.a = attributes.originalInstruction.pg;
         }
 
         return toInsert;
@@ -161,14 +252,78 @@ namespace transforms
         return (instructionClassValid && addressSpaceValid && dataTypeValid);
     }
 
-    void CToPTXInstrumentationPass::insertBefore(TranslationBlock translationBlock, StaticAttributes attributes, analysis::DataflowGraph::iterator basicBlock, unsigned int loc)
+    unsigned long CToPTXInstrumentationPass::insertBefore(TranslationBlock translationBlock, StaticAttributes attributes, analysis::DataflowGraph::iterator basicBlock, unsigned int loc)
     {
+    
+        unsigned long count = 0;
         for( unsigned int j = 0; j < translationBlock.statements.size(); j++) {
             ir::PTXStatement toInsert = prepareStatementToInsert(translationBlock.statements.at(j), attributes);
-            if(toInsert.instruction.opcode == ir::PTXInstruction::Nop)
+
+            for(translator::CToPTXData::StringVector::const_iterator splitBlockLabel = translation.splitBlockLabels.begin(); 
+                splitBlockLabel != translation.splitBlockLabels.end(); ++splitBlockLabel)
+            {    
+                if(toInsert.name == *splitBlockLabel)
+                {
+                    if(basicBlock->instructions().size() == 1)
+                    {
+                        analysis::DataflowGraph::iterator prev = --basicBlock;
+                        ++basicBlock;
+                        basicBlock = dfg().insert(prev, basicBlock, toInsert.name); 
+                    }
+                    else
+                    {
+                        analysis::DataflowGraph::iterator splitBasicBlock = dfg().split(basicBlock, basicBlock->instructions().size() - 1, true);
+                        basicBlock = dfg().insert(basicBlock, splitBasicBlock, toInsert.name);
+                    }            
+                    loc = 0;
+                }
+            }
+            for(translator::CToPTXData::StringVector::const_iterator newBlockLabel = translation.newBlockLabels.begin(); 
+                newBlockLabel != translation.newBlockLabels.end(); ++newBlockLabel)
+            {    
+                if(toInsert.name == *newBlockLabel)
+                {                
+                    analysis::DataflowGraph::iterator prev = basicBlock;
+                    ++basicBlock;
+                    basicBlock = dfg().insert(prev, basicBlock, toInsert.name);
+                    loc = 0;
+                }
+            }
+          
+            if(toInsert.instruction.opcode == ir::PTXInstruction::Bra)
+            {
+                translationBlock.branchTargetVector.push_back(BranchTargetHandler(toInsert.instruction.d.identifier, basicBlock));
+            }
+            
+            else if(toInsert.instruction.opcode == ir::PTXInstruction::Nop)
+            {
                 continue;
+            }
+            
             dfg().insert(basicBlock, toInsert.instruction, loc++);
+            count++;
         }
+        
+        for(TranslationBlock::BranchTargetVector::const_iterator branchTarget = translationBlock.branchTargetVector.begin();
+            branchTarget != translationBlock.branchTargetVector.end(); ++branchTarget)
+            {
+                analysis::DataflowGraph::iterator beginBlock = dfg().begin();
+                ++beginBlock;   
+                analysis::DataflowGraph::iterator targetBlock = beginBlock;
+            
+                for( analysis::DataflowGraph::iterator b = beginBlock; b != dfg().end(); ++b )
+                {
+                    if(b->label() == branchTarget->target)
+                    {
+                        targetBlock = b;
+                        break;
+                    }
+                }
+            
+               ir::Edge edge(branchTarget->current->block(), targetBlock->block(), ir::Edge::Branch);
+               dfg().cfg()->insert_edge(edge); 
+            }
+        return count;
     }
     
     void CToPTXInstrumentationPass::insertAfter(TranslationBlock translationBlock, StaticAttributes attributes, analysis::DataflowGraph::iterator basicBlock, unsigned int loc)
@@ -185,6 +340,8 @@ namespace transforms
     {
         StaticAttributes attributes;
         attributes.basicBlockId = 0;
+        attributes.kernelInstructionCount = kernelInstructionCount(translationBlock);
+        
         
         analysis::DataflowGraph::iterator block = dfg().begin();
         ++block;
@@ -207,15 +364,12 @@ namespace transforms
             {
             
                 ir::PTXInstruction *ptxInstruction = (ir::PTXInstruction *)instruction->i;
-                /* Save the predicate guard for this instruction */
-                if(ptxInstruction->pg.condition == ir::PTXOperand::Pred || ptxInstruction->pg.condition == ir::PTXOperand::InvPred){
-                    attributes.predicateGuard = ptxInstruction->pg;
-                }    
+                /* Save the instruction for inspection */
+                attributes.originalInstruction = *ptxInstruction;
                 
                 if(instrumentationConditionsMet(*ptxInstruction, translationBlock))
                 {
-                    insertBefore(translationBlock, attributes, basicBlock, loc);
-                    loc += translationBlock.statements.size();
+                    loc += insertBefore(translationBlock, attributes, basicBlock, loc);
                     attributes.instructionId++;
                 }
                 loc++;
@@ -318,6 +472,33 @@ namespace transforms
         }    
     }
 
+    unsigned int CToPTXInstrumentationPass::kernelInstructionCount(TranslationBlock translationBlock)
+    {
+        analysis::DataflowGraph::iterator block = dfg().begin();
+	    ++block;
+	    
+	    unsigned long kernelInstructionCount = 0;
+	    
+	    for( analysis::DataflowGraph::iterator basicBlock = block; 
+            basicBlock != dfg().end(); ++basicBlock )
+        {
+            if(basicBlock->instructions().empty())
+              continue;
+            
+            /* Iterating through each instruction */
+            for( analysis::DataflowGraph::InstructionVector::const_iterator instruction = basicBlock->instructions().begin();
+                instruction != basicBlock->instructions().end(); ++instruction)
+            {
+                ir::PTXInstruction *ptxInstruction = (ir::PTXInstruction *)instruction->i;
+                if(instrumentationConditionsMet(*ptxInstruction, translationBlock))
+                    kernelInstructionCount++;
+            }
+        }
+        
+        return kernelInstructionCount;
+    
+    }
+
     void CToPTXInstrumentationPass::instrumentKernel(TranslationBlock translationBlock) 
     {
         StaticAttributes attributes;
@@ -333,23 +514,7 @@ namespace transforms
 	    analysis::DataflowGraph::iterator block = dfg().begin();
 	    ++block;
 	    
-	    attributes.kernelInstructionCount = 0;
-	    
-	    for( analysis::DataflowGraph::iterator basicBlock = block; 
-            basicBlock != dfg().end(); ++basicBlock )
-        {
-            if(basicBlock->instructions().empty())
-              continue;
-            
-            /* Iterating through each instruction */
-            for( analysis::DataflowGraph::InstructionVector::const_iterator instruction = basicBlock->instructions().begin();
-                instruction != basicBlock->instructions().end(); ++instruction)
-            {
-                ir::PTXInstruction *ptxInstruction = (ir::PTXInstruction *)instruction->i;
-                if(instrumentationConditionsMet(*ptxInstruction, translationBlock))
-                    attributes.kernelInstructionCount++;
-            }
-        }
+	    attributes.kernelInstructionCount = kernelInstructionCount(translationBlock);
 	    
 	    unsigned int loc = 0;
         
@@ -379,6 +544,13 @@ namespace transforms
         
         for(ir::PTXKernel::PTXStatementVector::const_iterator statement = translation.statements.begin();
             statement != translation.statements.end(); ++statement) {
+            
+            if(statement->directive == ir::PTXStatement::Shared)
+            {
+                ir::PTXKernel *ptxKernel = (ir::PTXKernel *)&k;
+                ptxKernel->insertVariable(*statement);
+                continue;
+            }
             
             /* check if predication is enabled */
             if(statement->directive == ir::PTXStatement::Instr && statement->instruction.d.identifier == BASIC_BLOCK_EXEC_INST_COUNT)
@@ -476,13 +648,12 @@ namespace transforms
                     }
                     
                     translationBlocks.push_back(translationBlock);
-                    
+                  
                 }
                 
-                continue;
             }
             
-            /* insert each statement that is NOT a label into the most recently inserted translation block */
+            /* insert each statement into the most recently inserted translation block */
             if(translationBlocks.size() > 0){
                 transforms::TranslationBlock last = translationBlocks.back();
                 last.statements.push_back(*statement);
@@ -532,6 +703,7 @@ namespace transforms
 	{
 	
 	}
+	
 	
     CToPTXInstrumentationPass::CToPTXInstrumentationPass(std::string resource)
 		: KernelPass( Analysis::DataflowGraphAnalysis,
@@ -605,6 +777,11 @@ namespace transforms
 	    : checkForPredication(false), isPredicated(false)
 	    {
 	    }
+
+    BranchTargetHandler::BranchTargetHandler(std::string target, analysis::DataflowGraph::iterator current)
+        : target(target), current(current)
+    {
+    }
 }
 
 

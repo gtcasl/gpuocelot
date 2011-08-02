@@ -365,6 +365,7 @@ class DataflowGraph : public KernelAnalysis
 		void erase( iterator block, unsigned int index );
 		
 	public:
+	    ir::ControlFlowGraph* cfg();
 		/*! \brief Compute live ranges */
 		void compute();
 		/*! \brief Determine the max register used in the graph */

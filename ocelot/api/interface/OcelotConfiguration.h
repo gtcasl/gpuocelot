@@ -152,6 +152,22 @@ namespace api {
                     BasicBlockInstrumentationType type;
 			};
 
+            /*! \brief configuration properties for analysis::MemoryEfficiencyInstrumentor */
+			class MemoryEfficiencyInstrumentor
+			{
+			public:
+					MemoryEfficiencyInstrumentor();
+				
+			public:
+			
+					//! \brief specifies if instrumentation is enabled */
+					bool enabled;
+                    //! \brief specifies the logfile for storing results of this instrumentation */
+                    std::string logfile;			
+          
+			};
+
+
 		public:
 			Instrumentation();
 
@@ -164,6 +180,9 @@ namespace api {
 			
 			//! \brief Branch divergence instrumentor
 			BranchDivergenceInstrumentor branchDivergenceInstrumentor;
+			
+			//! \brief Memory efficiency instrumentor
+			MemoryEfficiencyInstrumentor memoryEfficiencyInstrumentor;
 		};
 
 		class CudaRuntimeImplementation {

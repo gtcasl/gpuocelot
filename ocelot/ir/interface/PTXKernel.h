@@ -125,6 +125,10 @@ namespace ir
 			/*! \brief Get the set of all referenced 
 				registers in the instruction set */
 			RegisterVector getReferencedRegisters() const;
+			
+			/*! \brief inserts a variable declaration into the kernel */
+            virtual void insertVariable(const ir::PTXStatement &statement);
+
 
 		public:
 			/*! \brief renames all the blocks with canonical names */

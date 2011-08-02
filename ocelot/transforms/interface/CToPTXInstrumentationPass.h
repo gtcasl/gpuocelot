@@ -52,7 +52,10 @@
 #define BASIC_BLOCK_ID                  "basicBlockId"
 #define BASIC_BLOCK_INST_COUNT          "basicBlockInstructionCount"
 #define BASIC_BLOCK_EXEC_INST_COUNT     "basicBlockExecutedInstructionCount"
-#define INSTRUCTION_ID          "instructionId"
+#define INSTRUCTION_ID                  "instructionId"
+#define INSTRUCTION_COUNT               "instructionCount"
+
+#define COMPUTE_MASKED_ADDRESS          "computeMaskedAddress"
 
 namespace ir
 {
@@ -80,11 +83,22 @@ namespace transforms
             InstrumentationSpecifier();
     };
 
+    class BranchTargetHandler {
+    
+        public:
+            
+            std::string target;
+            analysis::DataflowGraph::iterator current;
+            
+            BranchTargetHandler(std::string target, analysis::DataflowGraph::iterator current);
+    };
+    
     class TranslationBlock {
     
         public:
         
             typedef std::vector<ir::PTXStatement> StatementVector;
+            typedef std::vector<BranchTargetHandler> BranchTargetVector;
             
             enum InstrumentationTarget {
                 KERNEL,
@@ -97,6 +111,7 @@ namespace transforms
             StatementVector statements; 
             std::string label;
             InstrumentationSpecifier specifier;
+            BranchTargetVector branchTargetVector;
     };
     
     class StaticAttributes {
@@ -108,7 +123,7 @@ namespace transforms
             unsigned int basicBlockExecutedInstructionCount;
             unsigned int instructionId;
             unsigned int kernelInstructionCount;
-            ir::PTXOperand predicateGuard;
+            ir::PTXInstruction originalInstruction;
     };
 
 	/*! \brief A class for an instrumentation pass that adds generated PTX from
@@ -134,18 +149,21 @@ namespace transforms
 		    analysis::DataflowGraph& dfg();
 		
 		public:
+
 			CToPTXInstrumentationPass(std::string resource);
 			
 			std::map<std::string, analysis::DataflowGraph::RegisterId> newRegisterMap;
 			std::string baseAddress;
 			
 	    private:
+	        ir::PTXStatement computeMaskedAddress(ir::PTXStatement statement, ir::PTXInstruction original);
 	        ir::PTXStatement prepareStatementToInsert(ir::PTXStatement statement, StaticAttributes attributes);
+	        unsigned int kernelInstructionCount(TranslationBlock translationBlock);
 	        void instrumentInstruction(TranslationBlock translationBlock); 
 	        void instrumentBasicBlock(TranslationBlock translationBlock);
 	        void instrumentKernel(TranslationBlock translationBlock);
 	        bool instrumentationConditionsMet(ir::PTXInstruction instruction, TranslationBlock translationBlock);
-			void insertBefore(TranslationBlock translationBlock, StaticAttributes attributes, analysis::DataflowGraph::iterator basicBlock, unsigned int loc);
+			unsigned long insertBefore(TranslationBlock translationBlock, StaticAttributes attributes, analysis::DataflowGraph::iterator basicBlock, unsigned int loc);
 			void insertAfter(TranslationBlock translationBlock, StaticAttributes attributes, analysis::DataflowGraph::iterator basicBlock, unsigned int loc);
 			
 		public:

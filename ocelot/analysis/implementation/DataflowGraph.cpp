@@ -407,6 +407,11 @@ namespace analysis
 		return _instructions;
 	}
 	
+	ir::ControlFlowGraph* DataflowGraph::cfg()
+	{
+		return _cfg;
+	}
+	
 	const DataflowGraph::PhiInstructionVector& 
 		DataflowGraph::Block::phis() const
 	{

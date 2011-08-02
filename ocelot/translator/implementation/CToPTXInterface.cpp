@@ -122,4 +122,16 @@ unsigned long predicateEvalWarpDivergent(){
     return 0;
 }
 
+unsigned long computeMaskedAddress(){
+    return 0;
+}
+
+void computeUniqueMemoryTransactions() {
+
+}
+
+unsigned long instructionCount() {
+    return 1;
+}
+
 #endif

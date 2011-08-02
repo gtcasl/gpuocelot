@@ -162,7 +162,7 @@ namespace analysis
 
     }
     
-    PTXInstrumentor::PTXInstrumentor() : conditionsMet(false), fmt(text), deviceInfoWritten(false) {
+    PTXInstrumentor::PTXInstrumentor() : conditionsMet(false), fmt(text), deviceInfoWritten(false), sharedMemSize(0) {
         out = NULL;
     }
 

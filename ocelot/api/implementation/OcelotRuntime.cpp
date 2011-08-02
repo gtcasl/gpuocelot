@@ -164,6 +164,12 @@ namespace ocelot
             _branchDivergenceInstrumentor.output = c.instrument.branchDivergenceInstrumentor.logfile;
             ocelot::addInstrumentor(_branchDivergenceInstrumentor);
         }
+        if(c.instrument.memoryEfficiencyInstrumentor.enabled)
+        {   
+            report("Creating memory efficiency instrumentor");
+            _memoryEfficiencyInstrumentor.output = c.instrument.memoryEfficiencyInstrumentor.logfile;
+            ocelot::addInstrumentor(_memoryEfficiencyInstrumentor);
+        }
         if(c.instrument.basicBlockInstrumentor.enabled)
         {   
             report("Creating basic block execution count instrumentor");

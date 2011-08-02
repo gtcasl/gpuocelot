@@ -2580,6 +2580,7 @@ cudaError_t cuda::CudaRuntime::_launchKernel(const std::string& moduleName,
             (*instrumentor)->threadBlocks = launch.gridDim.x * launch.gridDim.y * launch.gridDim.z;
             (*instrumentor)->analyze(module->second);
             (*instrumentor)->initialize();
+            launch.sharedMemory = (*instrumentor)->sharedMemSize;
         }
     }
     

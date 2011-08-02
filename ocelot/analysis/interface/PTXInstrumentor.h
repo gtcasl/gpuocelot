@@ -107,6 +107,8 @@ namespace analysis
 
             /*! \brief check if device info has already been written */
             bool deviceInfoWritten;
+            
+            unsigned int sharedMemSize;
 
 
         protected:

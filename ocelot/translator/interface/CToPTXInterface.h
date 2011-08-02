@@ -85,4 +85,10 @@ unsigned long predicateEvalWarpUniform();
 
 unsigned long predicateEvalWarpDivergent();
 
+unsigned long computeMaskedAddress();
+
+void computeUniqueMemoryTransactions();
+
+unsigned long instructionCount();
+
 #endif

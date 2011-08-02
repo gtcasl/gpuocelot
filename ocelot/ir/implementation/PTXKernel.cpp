@@ -145,6 +145,14 @@ const PTXKernel& PTXKernel::operator=(const PTXKernel &kernel)
 	return *this;	
 }
 
+ /*! \brief inserts a variable declaration into the kernel */
+void PTXKernel::insertVariable(const ir::PTXStatement &statement) {
+        assert( statement.directive == PTXStatement::Local
+                        || statement.directive == PTXStatement::Shared );
+        locals.insert( std::make_pair( statement.name, Local( statement ) ) );
+}
+
+
 PTXKernel::RegisterVector PTXKernel::getReferencedRegisters() const
 {
 	report( "Getting list of all referenced registers" );				

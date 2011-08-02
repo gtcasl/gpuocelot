@@ -28,6 +28,17 @@
 #include "dill.h"
 #include "dill_internal.h"
 
+#define LEAST_ACTIVE_THREAD     "$leastActiveThread"
+#define BEGIN_REDUCTION         "$beginReduction"
+#define BEGIN_FIRST_LOOP        "$beginFirstLoop"
+#define BEGIN_SECOND_LOOP       "$beginSecondLoop"
+#define FIRST_LOOP              "$firstLoop"
+#define SECOND_LOOP             "$secondLoop"
+#define FIRST_LOOP_INC          "$firstLoopInc"
+#define SECOND_LOOP_INC         "$secondLoopInc"
+#define STORE_REDUCTION_RESULTS "$storeReductionResults"
+#define EXIT                    "$exit"
+
 namespace translator {
 
     class PredicateInfo {
@@ -57,10 +68,13 @@ namespace translator {
 	    public:
 	    
 	        typedef std::vector<std::string> RegisterVector;
+	        typedef std::vector<std::string> StringVector;
 	        
 	        ir::PTXKernel::PTXStatementVector statements;
 		    ir::PTXKernel::PTXStatementVector globals;
 		    RegisterVector registers;
+		    StringVector newBlockLabels;
+		    StringVector splitBlockLabels;
 	
 	};
 
@@ -71,6 +85,13 @@ namespace translator {
 	{
 			
 		public:
+		
+		    enum MemoryType {
+		        GLOBAL,
+		        SHARED
+		    };
+		    
+		    MemoryType memoryType;
 		    
 		    enum SpecialSymbols {
 			    clockCounterSymbol,
@@ -98,10 +119,13 @@ namespace translator {
                 basicBlockInstCountSymbol,
                 basicBlockExecInstCountSymbol,
                 instructionIdSymbol,
+                instructionCountSymbol,
                 warpCountSymbol,
                 warpIdSymbol,
                 predicateEvalWarpUniformSymbol,
-                predicateEvalWarpDivergentSymbol
+                predicateEvalWarpDivergentSymbol,
+                computeMaskedAddressSymbol,
+                computeUniqueMemTransactionsSymbol
 		    };
 		    
 		    SpecialSymbols symbols;
@@ -110,6 +134,7 @@ namespace translator {
 		    typedef std::map<std::string, size_t> FunctionCallMap;
 		    typedef std::vector<PredicateInfo> PredicateList;
 		    typedef std::vector<std::string> RegisterVector;
+		    typedef std::vector<std::string> StringVector;
 		    
 		    ir::PTXKernel *kernel;
 		    ir::PTXKernel::PTXStatementVector statements;
@@ -119,11 +144,14 @@ namespace translator {
 		    FunctionCallMap functionCalls;
 		    PredicateList predicateList;
 		    RegisterVector registers;
+		    StringVector newBlockLabels;
+		    StringVector splitBlockLabels;
 		    
 		    unsigned int maxRegister;	
 		    unsigned int maxPredicate;
 		    
-		    std::string baseReg;	  
+		    std::string baseReg;	
+		    std::string sharedMemReg;  
 		    
 		    private:
 		        void generateBlockId(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn);
@@ -133,7 +161,11 @@ namespace translator {
 		        void generateClockCounter(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn);
 		        void generateThreadIndexX(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn);
 		        void generateBlockDim(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn);
+		        void generateGridDim(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn);
 		        void generateGlobalThreadId(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn);
+		        void generateBlockThreadId(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn);
+		        void generateComputeMaskedAddress(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn, std::string callName);
+		        void generateComputeUniqueMemoryTransactions(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn);
 		        void generatePredicateEvalWarpUniform(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn, bool isUniform);
 		        void generateSyncThreads(ir::PTXInstruction inst, ir::PTXStatement stmt);
 		        void generateStaticAttributes(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn, std::string callName);

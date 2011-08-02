@@ -1,7 +1,7 @@
 {
 	ocelot: "ocelot",
     instrument: {
-        clockCycleCount: {
+        memoryEfficiency: {
             logfile: ""
         }
     },
@@ -37,7 +37,7 @@
 		optimizationLevel: none,
 		workerThreadLimit: 1,
 		reconvergenceMechanism: "tf-stack",
-		warpSize: 4
+		warpSize: 32
 	},
 	optimizations: {
 		subkernelSize: 1000

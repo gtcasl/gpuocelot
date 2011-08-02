@@ -81,6 +81,13 @@ api::OcelotConfiguration::Instrumentation::BasicBlockInstrumentor::BasicBlockIns
 
 }
 
+api::OcelotConfiguration::Instrumentation::MemoryEfficiencyInstrumentor::MemoryEfficiencyInstrumentor():
+        enabled(false)
+{
+
+}
+
+
 api::OcelotConfiguration::Instrumentation::Instrumentation()
 {
 
@@ -150,6 +157,12 @@ static void initializeInstrument(api::OcelotConfiguration::Instrumentation &inst
     if (!branchDivConfig.is_null()) {
             instrument.branchDivergenceInstrumentor.enabled = branchDivConfig.parse<bool>("enabled", true);
             instrument.branchDivergenceInstrumentor.logfile = branchDivConfig.parse<std::string>("logfile", "");
+    }
+    
+    hydrazine::json::Visitor memoryEfficiencyConfig = config["memoryEfficiency"];
+    if (!memoryEfficiencyConfig.is_null()) {
+            instrument.memoryEfficiencyInstrumentor.enabled = branchDivConfig.parse<bool>("enabled", true);
+            instrument.memoryEfficiencyInstrumentor.logfile = branchDivConfig.parse<std::string>("logfile", "");
     }
 
 }

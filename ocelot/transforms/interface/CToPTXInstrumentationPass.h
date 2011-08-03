@@ -17,46 +17,6 @@
 #include <algorithm>
 #include <vector>
 
-/* Instrumentation Target Specifiers */
-
-#define ENTER_KERNEL            "ON_KERNEL_ENTRY"
-#define EXIT_KERNEL             "ON_KERNEL_EXIT"
-#define ENTER_BASIC_BLOCK       "ON_BASIC_BLOCK_ENTRY"
-#define EXIT_BASIC_BLOCK        "ON_BASIC_BLOCK_EXIT"
-#define ON_INSTRUCTION          "ON_INSTRUCTION"
-
-/* Instruction classes */
-#define ON_MEM_READ         "MEM_READ"
-#define ON_MEM_WRITE        "MEM_WRITE"
-#define ON_PREDICATED       "PREDICATED"
-#define ON_BRANCH           "BRANCH"
-#define ON_CALL             "CALL"
-#define ON_BARRIER          "BARRIER"
-#define ON_ATOMIC           "ATOMIC"
-#define ON_ARITH_OP         "ARITHMETIC"
-
-/* Types of address space */
-#define GLOBAL              "GLOBAL"
-#define LOCAL               "LOCAL"
-#define SHARED              "SHARED"
-#define CONST               "CONST"
-#define PARAM               "PARAM"
-#define TEXTURE             "TEXTURE"
-
-/* Types of arithmetic operation */
-#define TYPE_INT            "INTEGER"
-#define TYPE_FP             "FLOATING_POINT"
-
-
-/* basic block constructs */
-#define BASIC_BLOCK_ID                  "basicBlockId"
-#define BASIC_BLOCK_INST_COUNT          "basicBlockInstructionCount"
-#define BASIC_BLOCK_EXEC_INST_COUNT     "basicBlockExecutedInstructionCount"
-#define INSTRUCTION_ID                  "instructionId"
-#define INSTRUCTION_COUNT               "instructionCount"
-
-#define COMPUTE_MASKED_ADDRESS          "computeMaskedAddress"
-
 namespace ir
 {
 	class Module;

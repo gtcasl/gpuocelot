@@ -18,8 +18,6 @@
 #define COD_REG     "\%codr"
 #define COD_PRED    "\%codp"
 
-#define SHARED_MEM  "SHARED_MEM"
-
 namespace translator
 {
 
@@ -854,13 +852,14 @@ namespace translator
         statements.push_back(stmt);     
     }
     
-    void CToPTXTranslator::generateComputeMaskedAddress(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn, std::string callName)
+    void CToPTXTranslator::generateMemoryTransactionCount(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn, std::string callName)
     {
     
         inst.opcode = ir::PTXInstruction::Mov;
                  
         inst.d.identifier = callName;
         registerMap[REG + boost::lexical_cast<std::string>(insn->opnds.calli.src)] = inst.d.identifier; 
+        registers.push_back(inst.d.identifier);
              
         inst.d.type = type;          
         inst.d.addressMode = ir::PTXOperand::Register;
@@ -871,6 +870,58 @@ namespace translator
         setPredicate(inst);
         stmt.instruction = inst;
         statements.push_back(stmt);     
+
+        ir::PTXStatement specifierLabel(ir::PTXStatement::Label);
+        specifierLabel.name = ENTER_KERNEL;
+        statements.push_back(specifierLabel);
+        
+        for(StringVector::const_iterator specifier = specifiers.begin(); specifier != specifiers.end();
+            ++specifier)
+        {
+            specifierLabel.name = *specifier;
+            statements.push_back(specifierLabel);
+        }
+        
+        ir::PTXStatement shared(ir::PTXStatement::Shared);
+        shared.name = "_Reduction";
+        shared.array.stride = ir::PTXStatement::ArrayStrideVector(1, 4);
+        shared.alignment = 64;
+        shared.type = type;
+
+        statements.push_back(shared);
+        
+        inst.opcode = ir::PTXInstruction::Mov;
+         
+        inst.d.identifier = COD_REG + boost::lexical_cast<std::string>(++maxRegister);
+        registers.push_back(inst.d.identifier);
+        sharedMemReg = inst.d.identifier;
+             
+        inst.d.type = type;          
+        inst.d.addressMode = ir::PTXOperand::Register;
+        inst.a.identifier = shared.name;
+        inst.a.type = type;
+        inst.a.addressMode = ir::PTXOperand::Address;
+        
+        setPredicate(inst);
+        stmt.instruction = inst;
+        statements.push_back(stmt);     
+        
+        generateGlobalThreadId(inst, stmt, type, insn);
+        
+        if(specialRegisterMap["ntid"].empty())
+            generateBlockDim(inst, stmt, type, insn); 
+        if(specialRegisterMap["nctaid"].empty())
+            generateGridDim(inst, stmt, type, insn); 
+
+        specifierLabel.name = targets.back();
+        statements.push_back(specifierLabel);
+
+        for(StringVector::const_iterator specifier = specifiers.begin(); specifier != specifiers.end();
+            ++specifier)
+        {
+            specifierLabel.name = *specifier;
+            statements.push_back(specifierLabel);
+        }
         
         inst.opcode = ir::PTXInstruction::Not;
         inst.type = ir::PTXOperand::b64;
@@ -895,27 +946,13 @@ namespace translator
         
         setPredicate(inst);
         stmt.instruction = inst;
-        statements.push_back(stmt);     
+        statements.push_back(stmt);    
         
-    }
-    
-    
-    void CToPTXTranslator::generateComputeUniqueMemoryTransactions(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn)
-    {
-    
-        inst.type = type;
+        inst.type = inst.d.type = inst.a.type = inst.b.type = type;
         
-        ir::PTXStatement leastActiveThread(ir::PTXStatement::Label);
-        leastActiveThread.name = LEAST_ACTIVE_THREAD;
-        statements.push_back(leastActiveThread);
+        //store in reduction shared buffer
+        //Reduction[threads * instructionId() + globalThreadId()] = maskedAddress;
         
-        generateSyncThreads(inst, stmt);
-        
-        if(specialRegisterMap["ntid"].empty())
-            generateBlockDim(inst, stmt, type, insn); 
-        if(specialRegisterMap["nctaid"].empty())
-            generateGridDim(inst, stmt, type, insn); 
-            
         inst.opcode = ir::PTXInstruction::Mul;     
         setPredicate(inst);
            
@@ -937,6 +974,116 @@ namespace translator
         
         stmt.instruction = inst;
         statements.push_back(stmt);     
+        
+        specialRegisterMap["sharedMemSize"] = sharedMemSize;
+       
+        generateStaticAttributes(inst, stmt, type, insn, INSTRUCTION_ID);
+       
+        inst.opcode = ir::PTXInstruction::Mad;     
+        inst.d.identifier = COD_REG + boost::lexical_cast<std::string>(++maxRegister);
+        registers.push_back(inst.d.identifier);
+        std::string offset = inst.d.identifier;		 
+        
+        inst.c.type = type;
+        inst.c.addressMode = ir::PTXOperand::Register;
+        
+        inst.a.identifier = sharedMemSize;
+        inst.b.identifier = INSTRUCTION_ID;
+        inst.c.identifier = specialRegisterMap["threadId"];
+        
+        stmt.instruction = inst;
+        statements.push_back(stmt);     
+        
+        inst.opcode = ir::PTXInstruction::Mul;     
+        setPredicate(inst);
+           
+        inst.modifier = ir::PTXInstruction::lo;
+        inst.d.addressMode = ir::PTXOperand::Register;
+        inst.d.type = type;
+        
+        inst.d.identifier = COD_REG + boost::lexical_cast<std::string>(++maxRegister);
+        registers.push_back(inst.d.identifier);
+        std::string mul_offset = inst.d.identifier;		 
+        
+        inst.a.addressMode = ir::PTXOperand::Register;
+        inst.a.type = type;
+        inst.a.identifier = offset;
+        inst.b.addressMode = ir::PTXOperand::Immediate;
+        inst.b.type = type;
+        inst.b.imm_uint = sizeof(size_t);
+         
+        stmt.instruction = inst;
+        statements.push_back(stmt);
+        
+        inst.opcode = ir::PTXInstruction::Add;     
+        setPredicate(inst);
+           
+        inst.modifier = ir::PTXInstruction::Modifier_invalid;
+        inst.d.addressMode = ir::PTXOperand::Register;
+        inst.d.type = type;
+        
+        inst.d.identifier = COD_REG + boost::lexical_cast<std::string>(++maxRegister);
+        registers.push_back(inst.d.identifier);
+        std::string computedAddress = inst.d.identifier;		 
+        
+        inst.a.addressMode = ir::PTXOperand::Register;
+        inst.a.type = type;
+        inst.a.identifier = sharedMemReg;
+        inst.b.addressMode = ir::PTXOperand::Register;
+        inst.b.type = type;
+        inst.b.identifier = mul_offset;
+         
+        stmt.instruction = inst;
+        statements.push_back(stmt);
+
+        
+        inst.opcode = ir::PTXInstruction::St;
+            
+        inst.addressSpace = ir::PTXInstruction::Shared; 
+        inst.d.addressMode = ir::PTXOperand::Indirect;
+        inst.d.type = type;
+        inst.d.identifier = computedAddress;
+        
+        inst.a.addressMode = ir::PTXOperand::Register;
+        inst.a.type = type;
+        inst.a.identifier = callName;
+        
+        setPredicate(inst);
+        stmt.instruction = inst;
+        statements.push_back(stmt);
+        
+        specifierLabel.name = EXIT_KERNEL;
+        statements.push_back(specifierLabel);
+        
+        for(StringVector::const_iterator specifier = specifiers.begin(); specifier != specifiers.end();
+            ++specifier)
+        {
+            specifierLabel.name = *specifier;
+            statements.push_back(specifierLabel);
+        }
+        
+        generateComputeUniqueMemoryTransactions(inst, stmt, type, insn);
+        
+        registerMap[REG + boost::lexical_cast<std::string>(insn->opnds.calli.src)] = "uniqueCount";  
+        
+    }
+    
+    
+    void CToPTXTranslator::generateComputeUniqueMemoryTransactions(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn)
+    {
+    
+        inst.type = type;
+        inst.a.addressMode = ir::PTXOperand::Invalid; 
+        inst.b.addressMode = ir::PTXOperand::Invalid;
+        inst.c.addressMode = ir::PTXOperand::Invalid;
+        inst.d.addressMode = ir::PTXOperand::Invalid;
+        
+        ir::PTXStatement leastActiveThread(ir::PTXStatement::Label);
+        leastActiveThread.name = LEAST_ACTIVE_THREAD;
+        statements.push_back(leastActiveThread);
+        
+        ir::PTXInstruction newInst;
+        generateSyncThreads(newInst, stmt);
             
         //mov.u32 %lmask, %lanemask_lt;
         inst.opcode = ir::PTXInstruction::Mov;
@@ -974,23 +1121,7 @@ namespace translator
         setPredicate(inst);
         stmt.instruction = inst;
         statements.push_back(stmt); 
-        /*
-        inst.opcode = ir::PTXInstruction::Mov;
-            
-        inst.d.type = ir::PTXOperand::pred;
-        inst.d.addressMode = ir::PTXOperand::Register;
-        inst.d.identifier = COD_PRED + boost::lexical_cast<std::string>(++maxPredicate);
-        std::string p0 = inst.d.identifier;
-        registers.push_back(inst.d.identifier);
-        inst.a.type = ir::PTXOperand::u32;
-        inst.a.addressMode = ir::PTXOperand::Immediate;
-        inst.a.imm_uint = 1;
-        
-        setPredicate(inst);
-        stmt.instruction = inst;
-        statements.push_back(stmt);     
-        */
-	    //vote.ballot.b32 %bitmask, %p0;
+        //vote.ballot.b32 %bitmask, %p0;
 	    inst.opcode = ir::PTXInstruction::Vote;
         inst.vote = ir::PTXInstruction::Ballot;
         inst.type = ir::PTXOperand::b32;
@@ -1084,7 +1215,7 @@ namespace translator
         inst.a.type = type;
         inst.b.type = type;
         inst.type = type;
-    
+        
         ir::PTXStatement beginReduction(ir::PTXStatement::Label);
         beginReduction.name = BEGIN_REDUCTION;
         statements.push_back(beginReduction);
@@ -1102,6 +1233,15 @@ namespace translator
         
         setPredicate(inst);
         stmt.instruction = inst;
+        statements.push_back(stmt);    
+        
+        generateStaticAttributes(inst, stmt, type, insn, INSTRUCTION_COUNT);
+        
+        inst.d.identifier = "k";
+        registers.push_back(inst.d.identifier); 
+        
+        setPredicate(inst);
+        stmt.instruction = inst;
         statements.push_back(stmt);     
         
         inst.d.identifier = "i";
@@ -1109,7 +1249,47 @@ namespace translator
         
         setPredicate(inst);
         stmt.instruction = inst;
-        statements.push_back(stmt);     
+        statements.push_back(stmt);    
+        
+        ir::PTXStatement beginInstCountLoop(ir::PTXStatement::Label);
+        beginInstCountLoop.name = BEGIN_INST_COUNT_LOOP;
+        statements.push_back(beginInstCountLoop);
+
+        inst.opcode = ir::PTXInstruction::SetP;
+            
+        inst.d.type = ir::PTXOperand::pred;
+        inst.d.addressMode = ir::PTXOperand::Register;
+        inst.d.identifier = COD_PRED + boost::lexical_cast<std::string>(++maxPredicate);
+        std::string instCountPred = inst.d.identifier;
+        registers.push_back(inst.d.identifier);
+        
+        inst.comparisonOperator = ir::PTXInstruction::Eq;
+        inst.a.type = type;
+        inst.a.addressMode = ir::PTXOperand::Register;
+        inst.a.identifier = "k";
+        inst.b.type = type;
+        inst.b.addressMode = ir::PTXOperand::Register;
+        inst.b.identifier = INSTRUCTION_COUNT;
+        
+        predicateInfo.id = inst.d.identifier;
+        
+        stmt.instruction = inst;
+        statements.push_back(stmt);
+          
+        predicateList.push_back(predicateInfo);  
+        
+        inst.opcode = ir::PTXInstruction::Bra;
+        inst.d.addressMode = ir::PTXOperand::Label;
+        inst.d.identifier = STORE_RESULTS;
+        inst.pg.condition = ir::PTXOperand::Pred;
+        inst.pg.identifier = instCountPred;
+        
+        stmt.instruction = inst;
+        statements.push_back(stmt);
+        
+        inst.pg.condition = ir::PTXOperand::PT;
+        inst.pg.identifier.clear();
+        
         
         ir::PTXStatement beginFirstLoop(ir::PTXStatement::Label);
         beginFirstLoop.name = BEGIN_FIRST_LOOP;
@@ -1129,7 +1309,7 @@ namespace translator
         inst.a.identifier = "i";
         inst.b.type = type;
         inst.b.addressMode = ir::PTXOperand::Register;
-        inst.b.identifier = sharedMemSize;
+        inst.b.identifier = specialRegisterMap["sharedMemSize"];
         
         predicateInfo.id = inst.d.identifier;
         
@@ -1140,7 +1320,7 @@ namespace translator
         
         inst.opcode = ir::PTXInstruction::Bra;
         inst.d.addressMode = ir::PTXOperand::Label;
-        inst.d.identifier = EXIT;
+        inst.d.identifier = STORE_RESULTS;
         inst.pg.condition = ir::PTXOperand::Pred;
         inst.pg.identifier = firstLoopPred;
         
@@ -1209,6 +1389,34 @@ namespace translator
         stmt.instruction = inst;
         statements.push_back(stmt);
         
+        inst.opcode = ir::PTXInstruction::Mad;     
+        setPredicate(inst);
+           
+        inst.modifier = ir::PTXInstruction::lo;
+        inst.d.addressMode = ir::PTXOperand::Register;
+        inst.d.type = type;
+        
+        inst.d.identifier = COD_REG + boost::lexical_cast<std::string>(++maxRegister);
+        registers.push_back(inst.d.identifier);
+        std::string i_offset = inst.d.identifier;		 
+        
+        inst.a.addressMode = ir::PTXOperand::Register;
+        inst.a.type = type;
+        inst.a.identifier = "k";
+        
+        inst.b.type = type;
+        inst.b.addressMode = ir::PTXOperand::Register;
+        inst.b.identifier = specialRegisterMap["sharedMemSize"];
+        
+        inst.c.type = type;
+        inst.c.addressMode = ir::PTXOperand::Register;
+        inst.c.identifier = "i";
+        
+        stmt.instruction = inst;
+        statements.push_back(stmt);
+        
+        inst.c.addressMode = ir::PTXOperand::Invalid;
+        
         inst.opcode = ir::PTXInstruction::Mul;     
         setPredicate(inst);
            
@@ -1222,7 +1430,7 @@ namespace translator
         
         inst.a.addressMode = ir::PTXOperand::Register;
         inst.a.type = type;
-        inst.a.identifier = "i";
+        inst.a.identifier = i_offset;
         
         inst.b.type = type;
         inst.b.addressMode = ir::PTXOperand::Immediate;
@@ -1271,7 +1479,7 @@ namespace translator
         
         inst.opcode = ir::PTXInstruction::Bra;
         inst.d.addressMode = ir::PTXOperand::Label;
-        inst.d.identifier = STORE_REDUCTION_RESULTS;
+        inst.d.identifier = UPDATE_COUNTER;
         inst.pg.condition = ir::PTXOperand::Pred;
         inst.pg.identifier = secondLoopPred;
         
@@ -1284,6 +1492,34 @@ namespace translator
         
         inst.pg.condition = ir::PTXOperand::PT;
         inst.pg.identifier.clear();
+        
+        inst.opcode = ir::PTXInstruction::Mad;     
+        setPredicate(inst);
+           
+        inst.modifier = ir::PTXInstruction::lo;
+        inst.d.addressMode = ir::PTXOperand::Register;
+        inst.d.type = type;
+        
+        inst.d.identifier = COD_REG + boost::lexical_cast<std::string>(++maxRegister);
+        registers.push_back(inst.d.identifier);
+        std::string j_offset = inst.d.identifier;		 
+        
+        inst.a.addressMode = ir::PTXOperand::Register;
+        inst.a.type = type;
+        inst.a.identifier = "k";
+        
+        inst.b.type = type;
+        inst.b.addressMode = ir::PTXOperand::Register;
+        inst.b.identifier = specialRegisterMap["sharedMemSize"];
+        
+        inst.c.type = type;
+        inst.c.addressMode = ir::PTXOperand::Register;
+        inst.c.identifier = "j";
+        
+        stmt.instruction = inst;
+        statements.push_back(stmt);
+        
+        inst.c.addressMode = ir::PTXOperand::Invalid;
         
         inst.opcode = ir::PTXInstruction::Mul;     
         setPredicate(inst);
@@ -1298,7 +1534,7 @@ namespace translator
         
         inst.a.addressMode = ir::PTXOperand::Register;
         inst.a.type = type;
-        inst.a.identifier = "j";
+        inst.a.identifier = j_offset;
         inst.b.addressMode = ir::PTXOperand::Immediate;
         inst.b.type = type;
         inst.b.imm_uint = sizeof(size_t);
@@ -1384,7 +1620,7 @@ namespace translator
         
         inst.opcode = ir::PTXInstruction::Bra;
         inst.d.addressMode = ir::PTXOperand::Label;
-        inst.d.identifier = STORE_REDUCTION_RESULTS;
+        inst.d.identifier = UPDATE_COUNTER;
 
                 
         stmt.instruction = inst;
@@ -1424,9 +1660,9 @@ namespace translator
         stmt.instruction = inst;
         statements.push_back(stmt);
         
-        ir::PTXStatement storeResults(ir::PTXStatement::Label);
-        storeResults.name = STORE_REDUCTION_RESULTS;
-        statements.push_back(storeResults);
+        ir::PTXStatement updateCounter(ir::PTXStatement::Label);
+        updateCounter.name = UPDATE_COUNTER;
+        statements.push_back(updateCounter);
         
         inst.opcode = ir::PTXInstruction::SetP;
             
@@ -1448,7 +1684,7 @@ namespace translator
         
         stmt.instruction = inst;
         statements.push_back(stmt);
-        
+        /*
         inst.opcode = ir::PTXInstruction::Mul;     
         setPredicate(inst);
            
@@ -1491,8 +1727,6 @@ namespace translator
         stmt.instruction = inst;
         statements.push_back(stmt);
         
-        inst.pg.condition = ir::PTXOperand::Pred;
-        inst.pg.identifier = isUniqueTrue;
         
         inst.opcode = ir::PTXInstruction::St;
             
@@ -1508,6 +1742,10 @@ namespace translator
         setPredicate(inst);
         stmt.instruction = inst;
         statements.push_back(stmt);
+        */
+        
+        inst.pg.condition = ir::PTXOperand::Pred;
+        inst.pg.identifier = isUniqueTrue;
         
         inst.opcode = ir::PTXInstruction::Add;     
         setPredicate(inst);
@@ -1561,15 +1799,52 @@ namespace translator
         stmt.instruction = inst;
         statements.push_back(stmt);
         
+        ir::PTXStatement instCountLoopInc(ir::PTXStatement::Label);
+        instCountLoopInc.name = INST_COUNT_LOOP_INC;
+        statements.push_back(instCountLoopInc);
+        
+        inst.opcode = ir::PTXInstruction::Add;     
+        setPredicate(inst);
+           
+        inst.modifier = ir::PTXInstruction::Modifier_invalid;
+        inst.d.addressMode = ir::PTXOperand::Register;
+        inst.d.type = type;
+        
+        inst.d.identifier = "k";
+        
+        inst.a.addressMode = ir::PTXOperand::Register;
+        inst.a.type = type;
+        inst.a.identifier = "k";
+        inst.b.addressMode = ir::PTXOperand::Immediate;
+        inst.b.type = type;
+        inst.b.imm_uint = 1;
+         
+        stmt.instruction = inst;
+        statements.push_back(stmt);
+        
+        inst.opcode = ir::PTXInstruction::Bra;
+        inst.d.addressMode = ir::PTXOperand::Label;
+        inst.d.identifier = BEGIN_INST_COUNT_LOOP;
+        
+        stmt.instruction = inst;
+        statements.push_back(stmt);
+        
+        ir::PTXStatement storeResults(ir::PTXStatement::Label);
+        storeResults.name = STORE_RESULTS;
+        statements.push_back(storeResults);
+        
         splitBlockLabels.push_back(LEAST_ACTIVE_THREAD);
         newBlockLabels.push_back(BEGIN_REDUCTION);
+        newBlockLabels.push_back(BEGIN_INST_COUNT_LOOP);
         newBlockLabels.push_back(BEGIN_FIRST_LOOP);
         newBlockLabels.push_back(BEGIN_SECOND_LOOP);
         newBlockLabels.push_back(FIRST_LOOP);
         newBlockLabels.push_back(SECOND_LOOP);
         newBlockLabels.push_back(FIRST_LOOP_INC);
         newBlockLabels.push_back(SECOND_LOOP_INC);
-        newBlockLabels.push_back(STORE_REDUCTION_RESULTS);
+        newBlockLabels.push_back(INST_COUNT_LOOP_INC);
+        newBlockLabels.push_back(UPDATE_COUNTER);
+        newBlockLabels.push_back(STORE_RESULTS);
         
     }
 
@@ -1790,9 +2065,9 @@ namespace translator
                         generatePredicateEvalWarpUniform(inst, stmt, type, insn, false);
                     }
                     break;
-                    case computeMaskedAddressSymbol:
+                    case memoryTransactionCountSymbol:
                     {
-                        generateComputeMaskedAddress(inst, stmt, type, insn, call_name);
+                        generateMemoryTransactionCount(inst, stmt, type, insn, call_name);
                     }
                     break;
                     case computeUniqueMemTransactionsSymbol:
@@ -1921,13 +2196,7 @@ namespace translator
                 }
             
                 prev.b.addressMode = ir::PTXOperand::Register;
-                if(memoryType == SHARED)
-                {
-                    inst.addressSpace = ir::PTXInstruction::Shared;
-                    prev.b.identifier = sharedMemReg;
-                }
-                else    
-                    prev.b.identifier = baseReg;
+                prev.b.identifier = baseReg;
                 statements.pop_back();
                 stmt.instruction = prev;
                 statements.push_back(stmt);
@@ -1951,53 +2220,37 @@ namespace translator
 	            label = "L" + boost::lexical_cast<std::string>(insn->opnds.label.label);
 	        }
 
-            if(label == SHARED_MEM)
+            for(StringVector::const_iterator specifier = specifierList.begin(); 
+                specifier != specifierList.end(); ++specifier)
             {
-                ir::PTXStatement shared(ir::PTXStatement::Shared);
-                shared.name = "_Reduction";
-                shared.array.stride = ir::PTXStatement::ArrayStrideVector(1, 4);
-                shared.alignment = 64;
-                shared.type = type;
-                
-                memoryType = SHARED;
-                statements.push_back(shared);
-                
-                inst.opcode = ir::PTXInstruction::Mov;
-                 
-                inst.d.identifier = COD_REG + boost::lexical_cast<std::string>(++maxRegister);
-                registers.push_back(inst.d.identifier);
-                sharedMemReg = inst.d.identifier;
-                     
-                inst.d.type = type;          
-                inst.d.addressMode = ir::PTXOperand::Register;
-                inst.a.identifier = shared.name;
-                inst.a.type = type;
-                inst.a.addressMode = ir::PTXOperand::Address;
-                
-                setPredicate(inst);
-                stmt.instruction = inst;
-                statements.push_back(stmt);     
+                if(label == *specifier)
+                    specifiers.push_back(label);
             }
-
-            else
+            
+            for(StringVector::const_iterator target = targetList.begin(); 
+                target != targetList.end(); ++target)
             {
-                stmt.directive = ir::PTXStatement::Label;
-                stmt.name = label;
-                statements.push_back(stmt);
-                
-                for (PredicateList::iterator pred = predicateList.begin(); 
-	            pred != predicateList.end(); ++pred) {
-                
-                    if(pred->branchLabel == stmt.name){ 
-                        if(pred->condition == PredicateInfo::TAKEN){
-                            pred->set = true;
-                        }
-                        else {
-                            pred->set = false;
-                        }
+                if(label == *target)
+                    targets.push_back(label);
+            }
+            
+            stmt.directive = ir::PTXStatement::Label;
+            stmt.name = label;
+            statements.push_back(stmt);
+            
+            for (PredicateList::iterator pred = predicateList.begin(); 
+            pred != predicateList.end(); ++pred) {
+            
+                if(pred->branchLabel == stmt.name){ 
+                    if(pred->condition == PredicateInfo::TAKEN){
+                        pred->set = true;
+                    }
+                    else {
+                        pred->set = false;
                     }
                 }
-            }        
+            }
+                
 	        break;
         }
         
@@ -2062,7 +2315,7 @@ namespace translator
                                         unsigned long warpId();\
                                         unsigned long predicateEvalWarpUniform();\
                                         unsigned long predicateEvalWarpDivergent();\
-                                        unsigned long computeMaskedAddress();\
+                                        unsigned long memoryTransactionCount();\
                                         void computeUniqueMemoryTransactions();\
                                         unsigned long deviceMem[2];";
                         
@@ -2098,7 +2351,7 @@ namespace translator
             {(char *)"warpId", (void*)(unsigned long)(*warpId)},
             {(char *)"predicateEvalWarpUniform", (void*)(unsigned long)(*predicateEvalWarpUniform)},
             {(char *)"predicateEvalWarpDivergent", (void*)(unsigned long)(*predicateEvalWarpDivergent)},
-            {(char *)"computeMaskedAddress", (void*)(unsigned long)(*computeMaskedAddress)},
+            {(char *)"memoryTransactionCount", (void*)(unsigned long)(*memoryTransactionCount)},
             {(char *)"computeUniqueMemoryTransactions", (void*)(*computeUniqueMemoryTransactions)},
             {(char *)"deviceMem", (void *)deviceMem},
 	        {NULL, (void*)0}
@@ -2166,8 +2419,13 @@ namespace translator
         functionCalls["warpId"] = warpIdSymbol;
         functionCalls["predicateEvalWarpUniform"] = predicateEvalWarpUniformSymbol;
         functionCalls["predicateEvalWarpDivergent"] = predicateEvalWarpDivergentSymbol;
-        functionCalls["computeMaskedAddress"] = computeMaskedAddressSymbol;
+        functionCalls["memoryTransactionCount"] = memoryTransactionCountSymbol;
         functionCalls["computeUniqueMemoryTransactions"] = computeUniqueMemTransactionsSymbol;
+        
+        specifierList = { ON_MEM_READ, ON_MEM_WRITE, ON_PREDICATED, ON_BRANCH, ON_CALL, ON_BARRIER, ON_ATOMIC, ON_ARITH_OP,
+            GLOBAL, LOCAL, SHARED, CONST, PARAM, TEXTURE, TYPE_INT, TYPE_FP };
+            
+        targetList = { ENTER_KERNEL, EXIT_KERNEL, ENTER_BASIC_BLOCK, EXIT_BASIC_BLOCK, ON_INSTRUCTION };
     }
     
     PredicateInfo::PredicateInfo()

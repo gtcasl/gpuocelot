@@ -51,6 +51,8 @@ namespace transforms
             {
                 if(original.d.addressMode == ir::PTXOperand::Indirect)
                 {
+                    toInsert.instruction.a.identifier.clear();
+                    toInsert.instruction.b.identifier.clear();
                     toInsert.instruction.opcode = ir::PTXInstruction::Add;
                     toInsert.instruction.a.addressMode = ir::PTXOperand::Register;
                     toInsert.instruction.a.reg = original.d.reg;   
@@ -276,6 +278,7 @@ namespace transforms
                         basicBlock = dfg().insert(basicBlock, splitBasicBlock, toInsert.name);
                     }            
                     loc = 0;
+                    break;
                 }
             }
             for(translator::CToPTXData::StringVector::const_iterator newBlockLabel = translation.newBlockLabels.begin(); 
@@ -287,6 +290,7 @@ namespace transforms
                     ++basicBlock;
                     basicBlock = dfg().insert(prev, basicBlock, toInsert.name);
                     loc = 0;
+                    break;
                 }
             }
           

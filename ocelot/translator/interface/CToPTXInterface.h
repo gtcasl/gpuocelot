@@ -85,7 +85,7 @@ unsigned long predicateEvalWarpUniform();
 
 unsigned long predicateEvalWarpDivergent();
 
-unsigned long computeMaskedAddress();
+unsigned long memoryTransactionCount();
 
 void computeUniqueMemoryTransactions();
 

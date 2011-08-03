@@ -122,7 +122,7 @@ unsigned long predicateEvalWarpDivergent(){
     return 0;
 }
 
-unsigned long computeMaskedAddress(){
+unsigned long memoryTransactionCount(){
     return 0;
 }
 

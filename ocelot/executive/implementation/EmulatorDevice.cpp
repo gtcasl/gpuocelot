@@ -1037,7 +1037,7 @@ namespace executive
 	
 		try
 		{
-			kernel->launchGrid(grid.x, grid.y);
+			kernel->launchGrid(grid.x, grid.y, grid.z);
 		}
 		catch(...)
 		{

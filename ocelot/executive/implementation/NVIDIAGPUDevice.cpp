@@ -1514,7 +1514,7 @@ namespace executive
 			if(array->second != 0) array->second->update();
 		}
 		
-		kernel->launchGrid(grid.x, grid.y);
+		kernel->launchGrid(grid.x, grid.y, grid.z);
 		synchronize();
 	}
 

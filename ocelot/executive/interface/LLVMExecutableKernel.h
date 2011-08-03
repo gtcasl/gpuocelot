@@ -49,7 +49,7 @@ public:
 
 public:
 	/*! \brief Launch a kernel on a 2D grid */
-	void launchGrid(int width, int height);
+	void launchGrid(int width, int height, int depth);
 	/*! \brief Sets the shape of a cta in the kernel */
 	void setKernelShape(int x, int y, int z);
 	/*! \brief Declare an amount of external shared memory */

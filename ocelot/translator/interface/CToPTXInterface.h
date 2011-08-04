@@ -13,6 +13,7 @@
 #define NUM_GRIDS   1
 
 unsigned long deviceMem[NUM_THREADS * NUM_BLOCKS * NUM_GRIDS];
+unsigned long sharedMem[NUM_THREADS * NUM_BLOCKS * NUM_GRIDS];
 
 /* corresponds to PTX register clock/clock64 */
 unsigned long clockCounter();
@@ -90,5 +91,11 @@ unsigned long memoryTransactionCount();
 void computeUniqueMemoryTransactions();
 
 unsigned long instructionCount();
+
+unsigned long computeBaseAddress();
+
+unsigned long leastActiveThreadInWarp();
+
+unsigned long uniqueElementCount(unsigned long *memBuffer, unsigned long startIndex, unsigned long memBufferSize);
 
 #endif

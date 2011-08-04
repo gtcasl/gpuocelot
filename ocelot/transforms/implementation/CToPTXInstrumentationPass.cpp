@@ -28,14 +28,14 @@ namespace transforms
 		return static_cast<analysis::DataflowGraph&>(*graph);
 	}
 
-    ir::PTXStatement CToPTXInstrumentationPass::computeMaskedAddress(ir::PTXStatement statement, ir::PTXInstruction original)
+    ir::PTXStatement CToPTXInstrumentationPass::computeBaseAddress(ir::PTXStatement statement, ir::PTXInstruction original)
     {
         ir::PTXStatement toInsert = statement;
         
-        if(statement.instruction.a.identifier == COMPUTE_MASKED_ADDRESS)
+        if(statement.instruction.a.identifier == COMPUTE_BASE_ADDRESS)
             {
-                toInsert.instruction.d.reg = newRegisterMap[COMPUTE_MASKED_ADDRESS];
-                toInsert.instruction.a.reg = newRegisterMap[COMPUTE_MASKED_ADDRESS];
+                toInsert.instruction.d.reg = newRegisterMap[COMPUTE_BASE_ADDRESS];
+                toInsert.instruction.a.reg = newRegisterMap[COMPUTE_BASE_ADDRESS];
                 toInsert.instruction.b.reg = newRegisterMap[statement.instruction.b.identifier];
                 toInsert.instruction.d.identifier.clear();
                 toInsert.instruction.a.identifier.clear();
@@ -133,9 +133,9 @@ namespace transforms
             return toInsert;
         }
         
-        if(statement.instruction.d.identifier == COMPUTE_MASKED_ADDRESS)
+        if(statement.instruction.d.identifier == COMPUTE_BASE_ADDRESS)
         {
-            return computeMaskedAddress(statement, attributes.originalInstruction);
+            return computeBaseAddress(statement, attributes.originalInstruction);
         }
         
         if(statement.instruction.opcode == ir::PTXInstruction::Bra)
@@ -261,9 +261,9 @@ namespace transforms
         for( unsigned int j = 0; j < translationBlock.statements.size(); j++) {
             ir::PTXStatement toInsert = prepareStatementToInsert(translationBlock.statements.at(j), attributes);
 
-            for(translator::CToPTXData::StringVector::const_iterator splitBlockLabel = translation.splitBlockLabels.begin(); 
-                splitBlockLabel != translation.splitBlockLabels.end(); ++splitBlockLabel)
-            {    
+            if(translation.blockLabels.size() > 0)
+            {
+                translator::CToPTXData::StringVector::const_iterator splitBlockLabel = translation.blockLabels.begin();    
                 if(toInsert.name == *splitBlockLabel)
                 {
                     if(basicBlock->instructions().size() == 1)
@@ -278,22 +278,22 @@ namespace transforms
                         basicBlock = dfg().insert(basicBlock, splitBasicBlock, toInsert.name);
                     }            
                     loc = 0;
-                    break;
+                }
+                
+                for(translator::CToPTXData::StringVector::const_iterator blockLabel = ++translation.blockLabels.begin(); 
+                    blockLabel != translation.blockLabels.end(); ++blockLabel)
+                {    
+                    if(toInsert.name == *blockLabel)
+                    {                
+                        analysis::DataflowGraph::iterator prev = basicBlock;
+                        ++basicBlock;
+                        basicBlock = dfg().insert(prev, basicBlock, toInsert.name);
+                        loc = 0;
+                        break;
+                    }
                 }
             }
-            for(translator::CToPTXData::StringVector::const_iterator newBlockLabel = translation.newBlockLabels.begin(); 
-                newBlockLabel != translation.newBlockLabels.end(); ++newBlockLabel)
-            {    
-                if(toInsert.name == *newBlockLabel)
-                {                
-                    analysis::DataflowGraph::iterator prev = basicBlock;
-                    ++basicBlock;
-                    basicBlock = dfg().insert(prev, basicBlock, toInsert.name);
-                    loc = 0;
-                    break;
-                }
-            }
-          
+            
             if(toInsert.instruction.opcode == ir::PTXInstruction::Bra)
             {
                 translationBlock.branchTargetVector.push_back(BranchTargetHandler(toInsert.instruction.d.identifier, basicBlock));
@@ -303,7 +303,6 @@ namespace transforms
             {
                 continue;
             }
-            
             dfg().insert(basicBlock, toInsert.instruction, loc++);
             count++;
         }

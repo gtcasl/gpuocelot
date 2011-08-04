@@ -134,4 +134,16 @@ unsigned long instructionCount() {
     return 1;
 }
 
+unsigned long computeBaseAddress() {
+    return 0;
+}
+
+unsigned long leastActiveThreadInWarp() {
+    return 1;
+}
+
+unsigned long uniqueElementCount(unsigned long *memBuffer, unsigned long startIndex, unsigned long memBufferSize) {
+    return 1;
+}
+
 #endif

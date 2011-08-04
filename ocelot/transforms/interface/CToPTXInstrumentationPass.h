@@ -116,8 +116,9 @@ namespace transforms
 			std::string baseAddress;
 			
 	    private:
-	        ir::PTXStatement computeMaskedAddress(ir::PTXStatement statement, ir::PTXInstruction original);
+	        ir::PTXStatement computeBaseAddress(ir::PTXStatement statement, ir::PTXInstruction original);
 	        ir::PTXStatement prepareStatementToInsert(ir::PTXStatement statement, StaticAttributes attributes);
+	        void insertNewBasicBlocks(TranslationBlock translationBlock, analysis::DataflowGraph::iterator basicBlock);
 	        unsigned int kernelInstructionCount(TranslationBlock translationBlock);
 	        void instrumentInstruction(TranslationBlock translationBlock); 
 	        void instrumentBasicBlock(TranslationBlock translationBlock);

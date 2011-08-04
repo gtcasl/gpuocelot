@@ -58,6 +58,10 @@
 #define TYPE_INT            "INTEGER"
 #define TYPE_FP             "FLOATING_POINT"
 
+/* Memory type */
+#define SHARED_MEM          "SHARED_MEM"
+#define GLOBAL_MEM          "GLOBAL_MEM"
+
 
 /* basic block constructs */
 #define BASIC_BLOCK_ID                  "basicBlockId"
@@ -66,7 +70,7 @@
 #define INSTRUCTION_ID                  "instructionId"
 #define INSTRUCTION_COUNT               "instructionCount"
 
-#define COMPUTE_MASKED_ADDRESS          "computeMaskedAddress"
+#define COMPUTE_BASE_ADDRESS            "computeBaseAddress"
 
 #define LEAST_ACTIVE_THREAD     "$leastActiveThread"
 #define BEGIN_REDUCTION         "$beginReduction"
@@ -81,6 +85,10 @@
 #define UPDATE_COUNTER          "$updateCounter"
 #define STORE_RESULTS           "$storeResults"
 #define EXIT                    "$exit"
+#define LOOP_BEGIN              "$loopBegin"
+#define LOOP                   "$loop"
+#define LOOP_END                "$loopEnd"
+
 
 namespace translator {
 
@@ -116,8 +124,7 @@ namespace translator {
 	        ir::PTXKernel::PTXStatementVector statements;
 		    ir::PTXKernel::PTXStatementVector globals;
 		    RegisterVector registers;
-		    StringVector newBlockLabels;
-		    StringVector splitBlockLabels;
+		    StringVector blockLabels;
 	
 	};
 
@@ -160,11 +167,21 @@ namespace translator {
                 warpIdSymbol,
                 predicateEvalWarpUniformSymbol,
                 predicateEvalWarpDivergentSymbol,
+                computeBaseAddressSymbol,
                 memoryTransactionCountSymbol,
-                computeUniqueMemTransactionsSymbol
+                computeUniqueMemTransactionsSymbol,
+                uniqueElementCountSymbol,
+                leastActiveThreadInWarpSymbol
 		    };
 		    
 		    SpecialSymbols symbols;
+		    
+		    enum MemoryType {
+		        sharedMemory,
+		        globalMemory
+		    };
+		    
+		    MemoryType memoryType;
 		
 		    typedef std::map<std::string, std::string> RegisterMap;
 		    typedef std::map<std::string, size_t> FunctionCallMap;
@@ -180,8 +197,7 @@ namespace translator {
 		    FunctionCallMap functionCalls;
 		    PredicateList predicateList;
 		    RegisterVector registers;
-		    StringVector newBlockLabels;
-		    StringVector splitBlockLabels;
+		    StringVector blockLabels;
 		    StringVector specifierList;
 		    StringVector specifiers;
 		    StringVector targetList;
@@ -204,6 +220,9 @@ namespace translator {
 		        void generateGridDim(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn);
 		        void generateGlobalThreadId(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn);
 		        void generateBlockThreadId(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn);
+		        void generateComputeBaseAddress(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn, std::string callName);
+		        void generateLeastActiveThreadInWarp(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn);
+		        void generateUniqueElementCount(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn);
 		        void generateMemoryTransactionCount(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn, std::string callName);
 		        void generateComputeUniqueMemoryTransactions(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn);
 		        void generatePredicateEvalWarpUniform(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn, bool isUniform);

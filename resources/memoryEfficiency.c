@@ -2,35 +2,34 @@
     unsigned long threadId = globalThreadId();
     unsigned long sharedMemSize = gridDim() * blockDim();
 
-    ON_INSTRUCTION:
     MEM_READ:
     MEM_WRITE:
     GLOBAL:
     {
-        SHARED_MEM: 
+        ON_INSTRUCTION:
         {
-            sharedMem[instructionId() * sharedMemSize + threadId] = computeBaseAddress();
-        }
-    }
-
-    ON_KERNEL_EXIT:
-    MEM_READ:
-    MEM_WRITE:
-    GLOBAL:
-    {
-    
-        if(leastActiveThreadInWarp())
-        {
-            int i = 0;
-            for(; i < instructionCount(); i++)
+            SHARED_MEM: 
             {
-                unsigned long startIndex = i * sharedMemSize;
-                
-                    GLOBAL_MEM:
-                    {
-                        deviceMem[i] = uniqueElementCount(sharedMem, startIndex, sharedMemSize);
-                    }
-            }        
+                sharedMem[instructionId() * sharedMemSize + threadId] = computeBaseAddress();
+            }
+        }
+
+        ON_KERNEL_EXIT:
+        {
+        
+            if(leastActiveThreadInWarp())
+            {
+                int i = 0;
+                for(; i < instructionCount(); i++)
+                {
+                    unsigned long startIndex = i * sharedMemSize;
+                    
+                        GLOBAL_MEM:
+                        {
+                            deviceMem[i] = uniqueElementCount(sharedMem, startIndex, sharedMemSize);
+                        }
+                }        
+            }
         }
     }    
 }

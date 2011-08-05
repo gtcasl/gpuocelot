@@ -672,6 +672,19 @@ namespace transforms
         unsigned int j = 0;
         for(j = 0; j < translationBlocks.size(); j++)
         {
+        
+            for(std::vector<std::string>::const_iterator instClass = initialBlock.specifier.instructionClassVector.begin(); 
+            instClass != initialBlock.specifier.instructionClassVector.end(); instClass++)
+                    translationBlocks.at(j).specifier.instructionClassVector.push_back(*instClass);
+                    
+            for(std::vector<std::string>::const_iterator addressSpace = initialBlock.specifier.addressSpaceVector.begin(); 
+            addressSpace != initialBlock.specifier.addressSpaceVector.end(); addressSpace++)
+                    translationBlocks.at(j).specifier.addressSpaceVector.push_back(*addressSpace);
+            
+            for(std::vector<std::string>::const_iterator type = initialBlock.specifier.dataTypeVector.begin(); 
+            type != initialBlock.specifier.dataTypeVector.end(); type++)
+                    translationBlocks.at(j).specifier.dataTypeVector.push_back(*type);
+        
             switch(translationBlocks.at(j).target){
                 case TranslationBlock::INSTRUCTION:
                     instrumentInstruction(translationBlocks.at(j));

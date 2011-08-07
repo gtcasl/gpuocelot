@@ -1446,7 +1446,6 @@ namespace translator
         secondLoopInc.name = SECOND_LOOP_INC;
         statements.push_back(secondLoopInc);
         
-        
         inst.opcode = ir::PTXInstruction::Add;     
         setPredicate(inst);
            
@@ -2543,6 +2542,8 @@ namespace translator
                 inst.d.identifier = COD_REG + boost::lexical_cast<std::string>(++maxRegister);
                 registers.push_back(inst.d.identifier);
                 sharedMemReg = inst.d.identifier;
+                
+                specialRegisterMap["sharedMemReg"] = sharedMemReg;
                      
                 inst.d.type = type;          
                 inst.d.addressMode = ir::PTXOperand::Register;
@@ -2590,6 +2591,7 @@ namespace translator
             
             baseReg = inst.d.identifier;
             registers.push_back(inst.d.identifier);
+            specialRegisterMap["baseReg"] = baseReg;
             
             setPredicate(inst);
             stmt.instruction = inst;
@@ -2792,16 +2794,13 @@ namespace translator
                         generateLeastActiveThreadInWarp(inst, stmt, type, insn);
                     }
                     break;
-                    case uniqueElementCountSymbol:
-                    {   
-                        generateUniqueElementCount(inst, stmt, type, insn);
-                    }
-                    break;
+              
                     case basicBlockIdSymbol:
                     case basicBlockInstCountSymbol: 
                     case basicBlockExecInstCountSymbol:
                     case instructionIdSymbol:
                     case instructionCountSymbol:
+                    case uniqueElementCountSymbol:
                     {
                         generateStaticAttributes(inst, stmt, type, insn, call_name);
                     }
@@ -3123,7 +3122,7 @@ namespace translator
                                         void computeUniqueMemoryTransactions();\
                                         unsigned long leastActiveThreadInWarp();\
                                         unsigned long computeBaseAddress();\
-                                        unsigned long uniqueElementCount(unsigned long *memBuffer, unsigned long startIndex, unsigned long memBufferSize);\
+                                        unsigned long uniqueElementCount(unsigned long *memBuffer);\
                                         unsigned long deviceMem[2];\
                                         unsigned long sharedMem[2];";
                         
@@ -3193,6 +3192,7 @@ namespace translator
 	    data.globals = translator.globals;
 	    data.registers = translator.registers;
 	    data.blockLabels = translator.blockLabels;
+	    data.specialRegisterMap = translator.specialRegisterMap;
 	    
 	    return data;
     }

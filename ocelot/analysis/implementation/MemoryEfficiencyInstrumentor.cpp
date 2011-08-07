@@ -31,11 +31,10 @@ namespace analysis
     }
 
     void MemoryEfficiencyInstrumentor::analyze(ir::Module &module) {
-        
         globalMemOps = 0;
         
         for( ir::ControlFlowGraph::const_iterator block = module.getKernel(kernelName)->cfg()->begin(); 
-			block != module.getKernel(kernelName)->cfg()->end(); ++block ) {
+                        block != module.getKernel(kernelName)->cfg()->end(); ++block ) {
             
             for( ir::ControlFlowGraph::InstructionList::const_iterator instruction = block->instructions.begin();
                 instruction != block->instructions.end(); ++instruction)
@@ -49,22 +48,22 @@ namespace analysis
                 }
             }
         }      
-        /* subtract two global memory operations added by the instrumentation */
-        globalMemOps -= 2;
+        /* subtract three global memory operations added by the instrumentation */
+        globalMemOps -= 3;
     }
 
     void MemoryEfficiencyInstrumentor::initialize() {
         
         counter = 0;
 
-        if(cudaMalloc((void **) &counter, globalMemOps * sizeof(size_t)) != cudaSuccess){
+        if(cudaMalloc((void **) &counter, 1 * sizeof(size_t)) != cudaSuccess){
             throw hydrazine::Exception( "Could not allocate sufficient memory on device (cudaMalloc failed)!" );
         }
-        if(cudaMemset( counter, 0, globalMemOps * sizeof( size_t )) != cudaSuccess){
+        if(cudaMemset( counter, 0, 1 * sizeof( size_t )) != cudaSuccess){
             throw hydrazine::Exception( "cudaMemset failed!" );
         }
         
-        sharedMemSize = globalMemOps * threads * threadBlocks * 8;
+        sharedMemSize = threads * threadBlocks * 8;
         
         if(cudaMemcpyToSymbol(symbol.c_str(), &counter, sizeof(size_t *), 0, cudaMemcpyHostToDevice) != cudaSuccess) {
             throw hydrazine::Exception( "cudaMemcpyToSymbol failed!");
@@ -80,9 +79,9 @@ namespace analysis
 
     void MemoryEfficiencyInstrumentor::extractResults(std::ostream *out) {
 
-        size_t *info = new size_t[globalMemOps];
+        size_t *info = new size_t[1];
         if(counter) {
-            cudaMemcpy(info, counter, globalMemOps * sizeof( size_t ), cudaMemcpyDeviceToHost);
+            cudaMemcpy(info, counter, 1 * sizeof( size_t ), cudaMemcpyDeviceToHost);
             cudaFree(counter);
         }
 
@@ -106,8 +105,8 @@ namespace analysis
                 *out << "Thread Block Count: " << threadBlocks << "\n";
                 *out << "Thread Count: " << threads << "\n\n";
                 
-                for(unsigned int i = 0; i < globalMemOps; i++)
-                    std::cout << "Instruction ID " << i << ": " << info[i]  << "\n\n";
+               std::cout << "Total Global Memory Transactions: " << info[0]  << "\n";
+               std::cout << "Transactions / Global Memory Operations: " << info[0] << "/" << globalMemOps  << "\n\n";
 
 
             break;

@@ -71,6 +71,8 @@
 #define INSTRUCTION_COUNT               "instructionCount"
 
 #define COMPUTE_BASE_ADDRESS            "computeBaseAddress"
+#define UNIQUE_ELEMENT_COUNT            "uniqueElementCount"
+#define UNIQUE_COUNT                    "uniqueCount"
 
 #define LEAST_ACTIVE_THREAD     "$leastActiveThread"
 #define BEGIN_REDUCTION         "$beginReduction"
@@ -120,11 +122,13 @@ namespace translator {
 	    
 	        typedef std::vector<std::string> RegisterVector;
 	        typedef std::vector<std::string> StringVector;
+	        typedef std::map<std::string, std::string> RegisterMap;
 	        
 	        ir::PTXKernel::PTXStatementVector statements;
 		    ir::PTXKernel::PTXStatementVector globals;
 		    RegisterVector registers;
 		    StringVector blockLabels;
+		    RegisterMap specialRegisterMap;
 	
 	};
 

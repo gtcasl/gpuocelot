@@ -59,16 +59,6 @@ namespace transforms
                     toInsert.instruction.b.addressMode = ir::PTXOperand::Immediate;
                     toInsert.instruction.b.imm_int = original.a.imm_int;   
                 }
-                else if(original.d.addressMode == ir::PTXOperand::Register || original.d.addressMode == ir::PTXOperand::Address)
-                {
-                    toInsert.instruction.a.addressMode = ir::PTXOperand::Register;
-                    toInsert.instruction.a.reg = original.d.reg;   
-                }
-                else if(original.d.addressMode == ir::PTXOperand::Immediate)
-                {
-                    toInsert.instruction.a.addressMode = ir::PTXOperand::Immediate;
-                    toInsert.instruction.a.imm_uint = original.d.imm_uint;   
-                }
             }
             else if(original.opcode == ir::PTXInstruction::Ld)
             {
@@ -80,16 +70,6 @@ namespace transforms
                     toInsert.instruction.b.addressMode = ir::PTXOperand::Immediate;
                     toInsert.instruction.b.imm_int = original.b.imm_int;   
                 }
-                else if(original.a.addressMode == ir::PTXOperand::Register || original.a.addressMode == ir::PTXOperand::Address)
-                {
-                    toInsert.instruction.a.addressMode = ir::PTXOperand::Register;
-                    toInsert.instruction.a.reg = original.a.reg;   
-                }
-                else if(original.a.addressMode == ir::PTXOperand::Immediate)
-                {
-                    toInsert.instruction.a.addressMode = ir::PTXOperand::Immediate;
-                    toInsert.instruction.a.imm_uint = original.a.imm_uint;   
-                }
             
             }
     
@@ -100,6 +80,12 @@ namespace transforms
     ir::PTXStatement CToPTXInstrumentationPass::prepareStatementToInsert(ir::PTXStatement statement, StaticAttributes attributes) {
     
         ir::PTXStatement toInsert = statement;
+        
+        if(statement.instruction.a.identifier == UNIQUE_ELEMENT_COUNT)
+        {
+            
+            
+        }
         
         if(statement.instruction.a.identifier == BASIC_BLOCK_EXEC_INST_COUNT && statement.instruction.d.identifier == BASIC_BLOCK_EXEC_INST_COUNT)
         {
@@ -114,7 +100,8 @@ namespace transforms
             statement.instruction.d.identifier == BASIC_BLOCK_EXEC_INST_COUNT ||
             statement.instruction.d.identifier == BASIC_BLOCK_ID || 
             statement.instruction.d.identifier == INSTRUCTION_ID ||
-            statement.instruction.d.identifier == INSTRUCTION_COUNT) {
+            statement.instruction.d.identifier == INSTRUCTION_COUNT ||
+            statement.instruction.d.identifier == UNIQUE_ELEMENT_COUNT) {
             toInsert.instruction.d.reg = dfg().newRegister();
             newRegisterMap[toInsert.instruction.d.identifier] = toInsert.instruction.d.reg;
             toInsert.instruction.d.identifier.clear();
@@ -129,6 +116,8 @@ namespace transforms
                 toInsert.instruction.a.imm_int = attributes.instructionId;
             else if(statement.instruction.d.identifier == INSTRUCTION_COUNT)   
                 toInsert.instruction.a.imm_int = attributes.kernelInstructionCount;
+            else if(statement.instruction.d.identifier == UNIQUE_ELEMENT_COUNT)
+                utilityFunction.registers.push_back(toInsert.instruction.d.reg);
           
             return toInsert;
         }
@@ -261,45 +250,7 @@ namespace transforms
         for( unsigned int j = 0; j < translationBlock.statements.size(); j++) {
             ir::PTXStatement toInsert = prepareStatementToInsert(translationBlock.statements.at(j), attributes);
 
-            if(translation.blockLabels.size() > 0)
-            {
-                translator::CToPTXData::StringVector::const_iterator splitBlockLabel = translation.blockLabels.begin();    
-                if(toInsert.name == *splitBlockLabel)
-                {
-                    if(basicBlock->instructions().size() == 1)
-                    {
-                        analysis::DataflowGraph::iterator prev = --basicBlock;
-                        ++basicBlock;
-                        basicBlock = dfg().insert(prev, basicBlock, toInsert.name); 
-                    }
-                    else
-                    {
-                        analysis::DataflowGraph::iterator splitBasicBlock = dfg().split(basicBlock, basicBlock->instructions().size() - 1, true);
-                        basicBlock = dfg().insert(basicBlock, splitBasicBlock, toInsert.name);
-                    }            
-                    loc = 0;
-                }
-                
-                for(translator::CToPTXData::StringVector::const_iterator blockLabel = ++translation.blockLabels.begin(); 
-                    blockLabel != translation.blockLabels.end(); ++blockLabel)
-                {    
-                    if(toInsert.name == *blockLabel)
-                    {                
-                        analysis::DataflowGraph::iterator prev = basicBlock;
-                        ++basicBlock;
-                        basicBlock = dfg().insert(prev, basicBlock, toInsert.name);
-                        loc = 0;
-                        break;
-                    }
-                }
-            }
-            
-            if(toInsert.instruction.opcode == ir::PTXInstruction::Bra)
-            {
-                translationBlock.branchTargetVector.push_back(BranchTargetHandler(toInsert.instruction.d.identifier, basicBlock));
-            }
-            
-            else if(toInsert.instruction.opcode == ir::PTXInstruction::Nop)
+            if(toInsert.instruction.opcode == ir::PTXInstruction::Nop)
             {
                 continue;
             }
@@ -307,25 +258,6 @@ namespace transforms
             count++;
         }
         
-        for(TranslationBlock::BranchTargetVector::const_iterator branchTarget = translationBlock.branchTargetVector.begin();
-            branchTarget != translationBlock.branchTargetVector.end(); ++branchTarget)
-            {
-                analysis::DataflowGraph::iterator beginBlock = dfg().begin();
-                ++beginBlock;   
-                analysis::DataflowGraph::iterator targetBlock = beginBlock;
-            
-                for( analysis::DataflowGraph::iterator b = beginBlock; b != dfg().end(); ++b )
-                {
-                    if(b->label() == branchTarget->target)
-                    {
-                        targetBlock = b;
-                        break;
-                    }
-                }
-            
-               ir::Edge edge(branchTarget->current->block(), targetBlock->block(), ir::Edge::Branch);
-               dfg().cfg()->insert_edge(edge); 
-            }
         return count;
     }
     
@@ -537,6 +469,8 @@ namespace transforms
     void CToPTXInstrumentationPass::runOnKernel( ir::IRKernel & k)
 	{
 	    std::vector<TranslationBlock> translationBlocks;
+	    utilityFunction.registers.clear();
+	    branchTargetVector.clear();
 
 	    for(translator::CToPTXData::RegisterVector::const_iterator reg = translation.registers.begin();
 	        reg != translation.registers.end(); ++reg) {
@@ -704,6 +638,728 @@ namespace transforms
             
         /* insert initial translation block at the beginning of the kernel -- this is the default case */
         instrumentKernel(initialBlock);
+        
+        /* handling utility functions */
+        analysis::DataflowGraph::iterator block = dfg().begin();
+	    ++block;
+	    
+	    for( analysis::DataflowGraph::iterator basicBlock = block; 
+            basicBlock != dfg().end(); ++basicBlock )
+        {
+            if(basicBlock->instructions().empty())
+              continue;
+              
+            unsigned int loc = 0;
+            /* Iterating through each instruction */
+            for( analysis::DataflowGraph::InstructionVector::const_iterator instruction = basicBlock->instructions().begin();
+                instruction != basicBlock->instructions().end(); ++instruction)
+            {
+                ir::PTXInstruction *ptxInstruction = (ir::PTXInstruction *)instruction->i;
+                for(UtilityFunction::RegisterVector::const_iterator reg = utilityFunction.registers.begin();
+                    reg != utilityFunction.registers.end(); ++reg)
+                    {
+                        if(ptxInstruction->d.reg == *reg)
+                        {   
+                            handleFunction(basicBlock, loc + 1);
+                        }
+                    }
+                loc++;
+            }
+        }
+        
+	}
+	
+	void CToPTXInstrumentationPass::handleFunction(analysis::DataflowGraph::iterator basicBlock, unsigned int instruction)
+	{
+        
+	    analysis::DataflowGraph::iterator current = dfg().split(basicBlock, instruction, true);
+	    
+        unsigned int loc = 0;
+        
+        ir::PTXOperand::DataType type = (sizeof(size_t) == 8 ? ir::PTXOperand::u64: ir::PTXOperand::u32);
+        
+        analysis::DataflowGraph::iterator prev = basicBlock;
+        ++basicBlock;
+        current = dfg().insert(prev, basicBlock, LEAST_ACTIVE_THREAD);
+        loc = 0;
+        
+        ir::PTXInstruction inst;
+        inst.opcode = ir::PTXInstruction::Bar;
+        inst.type = type;
+        inst.d.addressMode = ir::PTXOperand::Immediate;
+        inst.d.imm_int = 0;
+        
+	    dfg().insert(current, inst, loc++);
+	    
+	    //mov.u32 %lmask, %lanemask_lt;
+        inst.opcode = ir::PTXInstruction::Mov;
+        inst.type = ir::PTXOperand::u32;
+                 
+        analysis::DataflowGraph::RegisterId lmask = dfg().newRegister();         
+        inst.d.reg = lmask;
+             
+        inst.d.type = ir::PTXOperand::u32;          
+        inst.d.addressMode = ir::PTXOperand::Register;
+        inst.a = ir::PTXOperand(ir::PTXOperand::lanemask_lt, ir::PTXOperand::u32);
+        inst.a.addressMode = ir::PTXOperand::Special;
+        
+        dfg().insert(current, inst, loc++);
+        
+        //mov.pred %p0, 1;
+        inst.opcode = ir::PTXInstruction::SetP;
+            
+        inst.d.type = ir::PTXOperand::pred;
+        inst.d.addressMode = ir::PTXOperand::Register;
+        analysis::DataflowGraph::RegisterId p0 = dfg().newRegister();      
+        inst.d.reg = p0;
+        
+        inst.comparisonOperator = ir::PTXInstruction::Eq;
+        inst.a.type = type;
+        inst.a.addressMode = ir::PTXOperand::Immediate;
+        inst.a.imm_uint = 0;
+        inst.b.type = type;
+        inst.b.addressMode = ir::PTXOperand::Immediate;
+        inst.b.imm_uint = 0;
+        
+        dfg().insert(current, inst, loc++);
+        
+        //vote.ballot.b32 %bitmask, %p0;
+	    inst.opcode = ir::PTXInstruction::Vote;
+        inst.vote = ir::PTXInstruction::Ballot;
+        inst.type = ir::PTXOperand::b32;
+        
+        inst.d.type = ir::PTXOperand::b32;
+        inst.d.addressMode = ir::PTXOperand::Register;
+        analysis::DataflowGraph::RegisterId bitmask = dfg().newRegister();  
+        inst.d.reg = bitmask;
+        inst.a.addressMode = ir::PTXOperand::Register;
+        inst.a.type = ir::PTXOperand::pred;
+        inst.a.reg = p0;
+        
+        dfg().insert(current, inst, loc++);
+        
+        inst.vote = ir::PTXInstruction::VoteMode_Invalid;
+        
+	    //and.b32 %rb0, %bitmask, %lmask;
+	    inst.opcode = ir::PTXInstruction::And;
+        inst.type = ir::PTXOperand::b32;
+        analysis::DataflowGraph::RegisterId rb0 = dfg().newRegister();    
+        inst.d.reg = rb0;
+        inst.a.addressMode = ir::PTXOperand::Register;
+        inst.a.type = ir::PTXOperand::b32;
+        inst.a.reg = bitmask;
+        inst.b.addressMode = ir::PTXOperand::Register;
+        inst.b.reg = lmask;
+        inst.b.type = ir::PTXOperand::u32;
+        
+        dfg().insert(current, inst, loc++);
+           
+	    //setp.ne.b32 %p2, %rb0, 0;
+	    inst.opcode = ir::PTXInstruction::SetP;
+            
+        inst.d.type = ir::PTXOperand::pred;
+        inst.d.addressMode = ir::PTXOperand::Register;
+        analysis::DataflowGraph::RegisterId p2 = dfg().newRegister();    
+        inst.d.reg = p2;
+        
+        inst.comparisonOperator = ir::PTXInstruction::Ne;
+        inst.a.type = ir::PTXOperand::b32;
+        inst.a.addressMode = ir::PTXOperand::Register;
+        inst.a.reg = rb0;
+        inst.b.addressMode = ir::PTXOperand::Immediate;
+        inst.b.imm_uint = 0;
+        
+        dfg().insert(current, inst, loc++);
+        
+	    //mov.s32 %r0, %bitmask;
+	    inst.opcode = ir::PTXInstruction::Mov;
+            
+        inst.d.type = ir::PTXOperand::s32;
+        inst.type = ir::PTXOperand::s32;
+        inst.d.addressMode = ir::PTXOperand::Register;
+        analysis::DataflowGraph::RegisterId r0 = dfg().newRegister();   
+        inst.d.reg = r0;
+        inst.a.type = ir::PTXOperand::b32;
+        inst.a.addressMode = ir::PTXOperand::Register;
+        inst.a.reg = bitmask;
+        
+        dfg().insert(current, inst, loc++);
+        
+        inst.opcode = ir::PTXInstruction::Bra;
+        inst.d.addressMode = ir::PTXOperand::Label;
+        inst.d.identifier = basicBlock->label();
+        inst.pg.condition = ir::PTXOperand::Pred;
+        inst.pg.reg = p2;
+        
+        dfg().insert(current, inst, loc++);
+        
+        branchTargetVector.push_back(BranchTargetHandler(basicBlock->label(), current));
+        
+	    prev = current;
+        ++current;
+        current = dfg().insert(prev, current, BEGIN_REDUCTION);
+        loc = 0;
+        
+        inst.pg.condition = ir::PTXOperand::PT;
+        inst.pg.identifier.clear();
+        inst.d.identifier.clear();
+        
+        inst.type = type;
+        //generate gridDim
+        inst.opcode = ir::PTXInstruction::Cvt;  
+        inst.d.addressMode = ir::PTXOperand::Register;
+        analysis::DataflowGraph::RegisterId nctaidX = dfg().newRegister();    
+        inst.d.reg = nctaidX;
+
+        inst.d.type = type;
+        inst.a = ir::PTXOperand(ir::PTXOperand::nctaId, ir::PTXOperand::ix, ir::PTXOperand::u32);
+        inst.a.addressMode = ir::PTXOperand::Special;
+        inst.a.vec = ir::PTXOperand::v1;
+        
+        dfg().insert(current, inst, loc++);
+        
+        inst.a = ir::PTXOperand(ir::PTXOperand::nctaId, ir::PTXOperand::iy, ir::PTXOperand::u32);
+        inst.a.vec = ir::PTXOperand::v1;       
+        
+        analysis::DataflowGraph::RegisterId nctaidY = dfg().newRegister();
+        inst.d.reg = nctaidY;
+        
+        dfg().insert(current, inst, loc++);    
+        
+        inst.a = ir::PTXOperand(ir::PTXOperand::nctaId, ir::PTXOperand::iz, ir::PTXOperand::u32);
+        inst.a.vec = ir::PTXOperand::v1;       
+        
+        analysis::DataflowGraph::RegisterId nctaidZ = dfg().newRegister();    
+        inst.d.reg = nctaidZ;
+        
+        dfg().insert(current, inst, loc++);    
+        
+        inst.d.identifier.clear();
+        inst.a.identifier.clear();
+        inst.b.identifier.clear();
+
+        inst.opcode = ir::PTXInstruction::Mul;     
+           
+        inst.modifier = ir::PTXInstruction::lo;
+        inst.d.addressMode = ir::PTXOperand::Register;
+        inst.d.type = type;
+        
+        analysis::DataflowGraph::RegisterId nctaid = dfg().newRegister();
+        inst.d.reg = nctaid;
+        
+        inst.a.addressMode = ir::PTXOperand::Register;
+        inst.a.type = type;
+        inst.a.reg = nctaidX;
+        inst.b.addressMode = ir::PTXOperand::Register;
+        inst.b.type = type;
+        inst.b.reg = nctaidY;
+         
+        dfg().insert(current, inst, loc++);    
+        
+        inst.a.addressMode = ir::PTXOperand::Register;
+        inst.a.type = type;
+        inst.a.reg = nctaid;
+        inst.b.addressMode = ir::PTXOperand::Register;
+        inst.b.type = type;
+        inst.b.reg = nctaidZ;
+         
+        dfg().insert(current, inst, loc++);    
+        
+        inst.d.identifier.clear();
+        inst.a.identifier.clear();
+        inst.b.identifier.clear();
+        
+        inst.opcode = ir::PTXInstruction::Mul;     
+           
+        inst.modifier = ir::PTXInstruction::lo;
+        inst.d.addressMode = ir::PTXOperand::Register;
+        inst.d.type = type;
+        
+        analysis::DataflowGraph::RegisterId sharedMemSize = dfg().newRegister();
+        inst.d.reg = sharedMemSize;
+        
+        inst.a.addressMode = ir::PTXOperand::Register;
+        inst.a.type = type;
+        std::string ntid = translation.specialRegisterMap["ntid"];
+        inst.a.reg = newRegisterMap[ntid];
+        
+        inst.b.type = type;
+        inst.b.addressMode = ir::PTXOperand::Register;
+        inst.b.reg = nctaid;
+        
+        dfg().insert(current, inst, loc++); 
+        
+        inst.d.identifier.clear();
+        inst.a.identifier.clear();
+        inst.b.identifier.clear();
+        
+        inst.opcode = ir::PTXInstruction::Mov;
+                 
+        analysis::DataflowGraph::RegisterId uniqueCount = dfg().newRegister();
+        inst.d.reg = uniqueCount;
+             
+        inst.d.type = type;          
+        inst.d.addressMode = ir::PTXOperand::Register;
+        inst.a.addressMode = ir::PTXOperand::Immediate;
+        inst.a.type = type;
+        inst.a.imm_int = 0;
+        
+        dfg().insert(current, inst, loc++);
+        
+        analysis::DataflowGraph::RegisterId i = dfg().newRegister();
+        inst.d.reg = i;
+        
+        dfg().insert(current, inst, loc++);
+        
+        prev = current;
+        ++current;
+        current = dfg().insert(prev, current, BEGIN_FIRST_LOOP);
+        loc = 0;
+
+        inst.d.identifier.clear();
+        inst.a.identifier.clear();
+        inst.b.identifier.clear();
+        
+        inst.opcode = ir::PTXInstruction::SetP;
+            
+        inst.d.type = ir::PTXOperand::pred;
+        inst.d.addressMode = ir::PTXOperand::Register;
+        analysis::DataflowGraph::RegisterId firstLoopPred = dfg().newRegister();
+        inst.d.reg = firstLoopPred;
+        
+        inst.comparisonOperator = ir::PTXInstruction::Eq;
+        inst.a.type = type;
+        inst.a.addressMode = ir::PTXOperand::Register;
+        inst.a.reg = i;
+        inst.b.type = type;
+        inst.b.addressMode = ir::PTXOperand::Register;
+        inst.b.reg = sharedMemSize;
+        
+        dfg().insert(current, inst, loc++);
+          
+        inst.d.identifier.clear();
+        inst.a.identifier.clear();
+        inst.b.identifier.clear();
+        
+        inst.opcode = ir::PTXInstruction::Bra;
+        inst.d.addressMode = ir::PTXOperand::Label;
+        inst.d.identifier = STORE_RESULTS;
+        inst.pg.condition = ir::PTXOperand::Pred;
+        inst.pg.reg = firstLoopPred;
+        
+        branchTargetVector.push_back(BranchTargetHandler(STORE_RESULTS, current));
+        
+        dfg().insert(current, inst, loc++);
+        
+        inst.pg.condition = ir::PTXOperand::PT;
+        inst.pg.identifier.clear();
+        inst.d.identifier.clear();
+        inst.a.identifier.clear();
+        inst.b.identifier.clear();
+        
+        prev = current;
+        ++current;
+        current = dfg().insert(prev, current, FIRST_LOOP);
+        loc = 0;
+        
+        inst.opcode = ir::PTXInstruction::Mov;
+                 
+        analysis::DataflowGraph::RegisterId isUnique = dfg().newRegister();
+        inst.d.reg = isUnique;
+             
+        inst.d.type = type;          
+        inst.d.addressMode = ir::PTXOperand::Register;
+        inst.a.addressMode = ir::PTXOperand::Immediate;
+        inst.a.type = type;
+        inst.a.imm_int = 1;
+        
+        dfg().insert(current, inst, loc++);
+        
+        inst.opcode = ir::PTXInstruction::Mov;
+                 
+        analysis::DataflowGraph::RegisterId j = dfg().newRegister();
+        inst.d.reg = j;
+             
+        inst.d.type = type;          
+        inst.d.addressMode = ir::PTXOperand::Register;
+        inst.a.addressMode = ir::PTXOperand::Immediate;
+        inst.a.type = type;
+        inst.a.imm_int = 0;
+        
+        dfg().insert(current, inst, loc++);  
+        
+        inst.pg.condition = ir::PTXOperand::PT;
+        inst.pg.identifier.clear();
+        inst.d.identifier.clear();
+        inst.a.identifier.clear();
+        inst.b.identifier.clear();
+        
+        prev = current;
+        ++current;
+        current = dfg().insert(prev, current, BEGIN_SECOND_LOOP);
+        loc = 0;
+        
+        inst.opcode = ir::PTXInstruction::SetP;
+            
+        inst.d.type = ir::PTXOperand::pred;
+        inst.d.addressMode = ir::PTXOperand::Register;
+        analysis::DataflowGraph::RegisterId secondLoopPred = dfg().newRegister();
+        inst.d.reg = secondLoopPred;
+        
+        inst.comparisonOperator = ir::PTXInstruction::Eq;
+        inst.a.type = type;
+        inst.a.addressMode = ir::PTXOperand::Register;
+        inst.a.reg = j;
+        inst.b.type = type;
+        inst.b.addressMode = ir::PTXOperand::Register;
+        inst.b.reg = uniqueCount;
+        
+        dfg().insert(current, inst, loc++);
+        
+        inst.opcode = ir::PTXInstruction::Mad;     
+                   
+        inst.modifier = ir::PTXInstruction::lo;
+        inst.d.addressMode = ir::PTXOperand::Register;
+        inst.d.type = type;
+        
+        analysis::DataflowGraph::RegisterId i_offset = dfg().newRegister();
+        inst.d.reg = i_offset;
+        
+        inst.a.addressMode = ir::PTXOperand::Register;
+        inst.a.type = type;
+        inst.a.reg = i;
+        
+        inst.b.type = type;
+        inst.b.addressMode = ir::PTXOperand::Immediate;
+        inst.b.imm_uint = sizeof(size_t);
+        
+        inst.c.type = type;
+        inst.c.addressMode = ir::PTXOperand::Register;
+        std::string sharedMemRegId = translation.specialRegisterMap["sharedMemReg"];
+        inst.c.reg = newRegisterMap[sharedMemRegId];
+        
+        dfg().insert(current, inst, loc++);
+        
+        inst.a.addressMode = inst.b.addressMode = inst.c.addressMode = inst.d.addressMode = ir::PTXOperand::Invalid;
+        
+        inst.opcode = ir::PTXInstruction::Ld;
+            
+        inst.addressSpace = ir::PTXInstruction::Shared; 
+        inst.d.addressMode = ir::PTXOperand::Register;
+        inst.d.type = type;
+        
+        inst.a.addressMode = ir::PTXOperand::Indirect;
+        analysis::DataflowGraph::RegisterId rhs = dfg().newRegister();
+        inst.d.reg = rhs;
+        inst.a.reg = i_offset;
+        inst.a.offset = 0;
+      
+        dfg().insert(current, inst, loc++);
+        
+        
+        inst.opcode = ir::PTXInstruction::Bra;
+        inst.d.addressMode = ir::PTXOperand::Label;
+        inst.d.identifier = UPDATE_COUNTER;
+        inst.pg.condition = ir::PTXOperand::Pred;
+        inst.pg.reg = secondLoopPred;
+        
+        branchTargetVector.push_back(BranchTargetHandler(UPDATE_COUNTER, current));
+        
+        dfg().insert(current, inst, loc++);
+        
+        inst.pg.condition = ir::PTXOperand::PT;
+        inst.pg.identifier.clear();
+        inst.d.identifier.clear();
+        inst.a.identifier.clear();
+        inst.b.identifier.clear();
+        
+        prev = current;
+        ++current;
+        current = dfg().insert(prev, current, SECOND_LOOP);
+        loc = 0;
+        
+        inst.pg.condition = ir::PTXOperand::PT;
+        inst.pg.identifier.clear();
+        
+        inst.opcode = ir::PTXInstruction::Mad;     
+                   
+        inst.modifier = ir::PTXInstruction::lo;
+        inst.d.addressMode = ir::PTXOperand::Register;
+        inst.d.type = type;
+        
+        analysis::DataflowGraph::RegisterId j_offset = dfg().newRegister();
+        inst.d.reg = j_offset;
+        
+        inst.a.addressMode = ir::PTXOperand::Register;
+        inst.a.type = type;
+        inst.a.reg = j;
+        
+        inst.b.type = type;
+        inst.b.addressMode = ir::PTXOperand::Immediate;
+        inst.b.imm_uint = sizeof(size_t);
+        
+        inst.c.type = type;
+        inst.c.addressMode = ir::PTXOperand::Register;
+        inst.c.reg = newRegisterMap[sharedMemRegId];
+        
+        dfg().insert(current, inst, loc++);
+        
+        inst.opcode = ir::PTXInstruction::Ld;
+            
+        inst.addressSpace = ir::PTXInstruction::Shared; 
+        inst.d.addressMode = ir::PTXOperand::Register;
+        inst.d.type = type;
+        
+        inst.a.addressMode = ir::PTXOperand::Indirect;
+        analysis::DataflowGraph::RegisterId lhs = dfg().newRegister();
+        inst.d.reg = lhs;
+        inst.a.reg = j_offset;
+        inst.b.addressMode = ir::PTXOperand::Immediate;
+        inst.b.imm_uint = 0;
+        
+        dfg().insert(current, inst, loc++);
+        
+        inst.a.addressMode = inst.b.addressMode = inst.c.addressMode = inst.d.addressMode = ir::PTXOperand::Invalid;
+        
+        inst.opcode = ir::PTXInstruction::SetP;
+        inst.addressSpace = ir::PTXInstruction::AddressSpace_Invalid;
+            
+        inst.d.type = ir::PTXOperand::pred;
+        inst.d.addressMode = ir::PTXOperand::Register;
+        analysis::DataflowGraph::RegisterId isEqualPred = dfg().newRegister();
+        inst.d.reg = isEqualPred;
+        
+        inst.comparisonOperator = ir::PTXInstruction::Eq;
+        inst.a.type = type;
+        inst.a.addressMode = ir::PTXOperand::Register;
+        inst.a.reg = lhs;
+        inst.b.type = type;
+        inst.b.addressMode = ir::PTXOperand::Register;
+        inst.b.reg = rhs;
+        
+        dfg().insert(current, inst, loc++);
+        
+        inst.opcode = ir::PTXInstruction::Mov;
+             
+        inst.d.type = type;          
+        inst.d.addressMode = ir::PTXOperand::Register;
+        inst.a.addressMode = ir::PTXOperand::Immediate;
+        inst.d.reg = isUnique;
+        inst.a.type = type;
+        inst.a.imm_int = 0;
+        inst.pg.condition = ir::PTXOperand::Pred;
+        inst.pg.reg = isEqualPred;
+        
+        dfg().insert(current, inst, loc++);
+        
+        inst.opcode = ir::PTXInstruction::Bra;
+        inst.d.addressMode = ir::PTXOperand::Label;
+        inst.d.identifier = UPDATE_COUNTER;
+
+        branchTargetVector.push_back(BranchTargetHandler(UPDATE_COUNTER, current));
+
+        dfg().insert(current, inst, loc++);
+                
+        inst.pg.condition = ir::PTXOperand::PT;
+        inst.pg.identifier.clear();
+        inst.d.identifier.clear();
+        inst.a.identifier.clear();
+        inst.b.identifier.clear();
+        
+        prev = current;
+        ++current;
+        current = dfg().insert(prev, current, SECOND_LOOP_INC);
+        loc = 0;
+        
+        inst.opcode = ir::PTXInstruction::Add;     
+           
+        inst.modifier = ir::PTXInstruction::Modifier_invalid;
+        inst.d.addressMode = ir::PTXOperand::Register;
+        inst.d.type = type;
+        
+        inst.d.reg = j;
+        
+        inst.a.addressMode = ir::PTXOperand::Register;
+        inst.a.type = type;
+        inst.a.reg = j;
+        inst.b.addressMode = ir::PTXOperand::Immediate;
+        inst.b.type = type;
+        inst.b.imm_uint = 1;
+         
+        dfg().insert(current, inst, loc++);
+        
+        inst.opcode = ir::PTXInstruction::Bra;
+        inst.d.addressMode = ir::PTXOperand::Label;
+        inst.d.identifier = BEGIN_SECOND_LOOP;
+        
+        branchTargetVector.push_back(BranchTargetHandler(BEGIN_SECOND_LOOP, current));
+        
+        dfg().insert(current, inst, loc++);
+        
+        inst.pg.condition = ir::PTXOperand::PT;
+        inst.pg.identifier.clear();
+        inst.d.identifier.clear();
+        inst.a.identifier.clear();
+        inst.b.identifier.clear();
+        
+        
+        prev = current;
+        ++current;
+        current = dfg().insert(prev, current, UPDATE_COUNTER);
+        loc = 0;
+        
+        inst.opcode = ir::PTXInstruction::SetP;
+            
+        inst.d.type = ir::PTXOperand::pred;
+        inst.d.addressMode = ir::PTXOperand::Register;
+        analysis::DataflowGraph::RegisterId isUniqueTrue = dfg().newRegister();
+        inst.d.reg = isUniqueTrue;
+        
+        inst.comparisonOperator = ir::PTXInstruction::Eq;
+        inst.a.type = type;
+        inst.a.addressMode = ir::PTXOperand::Register;
+        inst.a.reg = isUnique;
+        inst.b.type = type;
+        inst.b.addressMode = ir::PTXOperand::Immediate;
+        inst.b.imm_uint = 1;
+        
+        dfg().insert(current, inst, loc++);
+        
+        inst.pg.condition = ir::PTXOperand::Pred;
+        inst.pg.reg = isUniqueTrue;
+        
+        inst.opcode = ir::PTXInstruction::Add;     
+           
+        inst.modifier = ir::PTXInstruction::Modifier_invalid;
+        inst.d.addressMode = ir::PTXOperand::Register;
+        inst.d.type = type;
+        
+        inst.d.reg = uniqueCount;		 
+        
+        inst.a.addressMode = ir::PTXOperand::Register;
+        inst.a.type = type;
+        inst.a.reg = uniqueCount;
+        inst.b.addressMode = ir::PTXOperand::Immediate;
+        inst.b.type = type;
+        inst.b.imm_uint = 1;
+         
+        dfg().insert(current, inst, loc++);
+        
+        inst.pg.condition = ir::PTXOperand::PT;
+        inst.pg.identifier.clear();
+        inst.d.identifier.clear();
+        inst.a.identifier.clear();
+        inst.b.identifier.clear();
+        
+        prev = current;
+        ++current;
+        current = dfg().insert(prev, current, FIRST_LOOP_INC);
+        loc = 0;
+        
+        inst.opcode = ir::PTXInstruction::Add;     
+           
+        inst.modifier = ir::PTXInstruction::Modifier_invalid;
+        inst.d.addressMode = ir::PTXOperand::Register;
+        inst.d.type = type;
+        
+        inst.d.reg = i;
+        
+        inst.a.addressMode = ir::PTXOperand::Register;
+        inst.a.type = type;
+        inst.a.reg = i;
+        inst.b.addressMode = ir::PTXOperand::Immediate;
+        inst.b.type = type;
+        inst.b.imm_uint = 1;
+         
+        dfg().insert(current, inst, loc++);
+        
+        inst.opcode = ir::PTXInstruction::Bra;
+        inst.d.addressMode = ir::PTXOperand::Label;
+        inst.d.identifier = BEGIN_FIRST_LOOP;
+        
+        branchTargetVector.push_back(BranchTargetHandler(BEGIN_FIRST_LOOP, current));
+        
+        dfg().insert(current, inst, loc++);
+        
+        prev = current;
+        ++current;
+        current = dfg().insert(prev, current, STORE_RESULTS);
+        loc = 0;
+        
+        inst.pg.condition = ir::PTXOperand::PT;
+        inst.pg.identifier.clear();
+        inst.d.identifier.clear();
+        inst.a.identifier.clear();
+        inst.b.identifier.clear();
+        
+        std::string baseRegId = translation.specialRegisterMap["baseReg"];
+        
+        inst.opcode = ir::PTXInstruction::Ld;
+            
+        inst.addressSpace = ir::PTXInstruction::Global; 
+        inst.a.addressMode = ir::PTXOperand::Indirect;
+        inst.a.type = type;
+        inst.a.reg = newRegisterMap[baseRegId];
+        
+        inst.d.addressMode = ir::PTXOperand::Register;
+        inst.d.type = type;
+        analysis::DataflowGraph::RegisterId prevUniqueCount = dfg().newRegister();
+        inst.d.reg = prevUniqueCount;
+        
+        dfg().insert(current, inst, loc++);
+        
+        inst.opcode = ir::PTXInstruction::Add;     
+           
+        inst.modifier = ir::PTXInstruction::Modifier_invalid;
+        inst.d.addressMode = ir::PTXOperand::Register;
+        inst.d.type = type;
+        
+        inst.d.reg = prevUniqueCount;
+        
+        inst.a.addressMode = ir::PTXOperand::Register;
+        inst.a.type = type;
+        inst.a.reg = prevUniqueCount;
+        inst.b.addressMode = ir::PTXOperand::Register;
+        inst.b.type = type;
+        inst.b.reg = uniqueCount;
+         
+        dfg().insert(current, inst, loc++);
+        
+        inst.opcode = ir::PTXInstruction::St;
+            
+        inst.addressSpace = ir::PTXInstruction::Global; 
+        inst.d.addressMode = ir::PTXOperand::Indirect;
+        inst.d.type = type;
+        inst.d.reg = newRegisterMap[baseRegId];
+        
+        inst.a.addressMode = ir::PTXOperand::Register;
+        inst.a.type = type;
+        inst.a.reg = prevUniqueCount;
+        
+        dfg().insert(current, inst, loc++);
+        
+        for(BranchTargetVector::const_iterator branchTarget = branchTargetVector.begin();
+            branchTarget != branchTargetVector.end(); ++branchTarget)
+        {
+            analysis::DataflowGraph::iterator beginBlock = dfg().begin();
+            ++beginBlock;   
+            analysis::DataflowGraph::iterator targetBlock = beginBlock;
+        
+            for( analysis::DataflowGraph::iterator b = beginBlock; b != dfg().end(); ++b )
+            {
+                if(b->label() == branchTarget->target)
+                {
+                    targetBlock = b;
+                    break;
+                }
+            }
+        
+           ir::Edge edge(branchTarget->current->block(), targetBlock->block(), ir::Edge::Branch);
+           dfg().cfg()->insert_edge(edge); 
+        }
+
+        basicBlock = current;
+       
 	}
 	
     void CToPTXInstrumentationPass::initialize( ir::Module& m )
@@ -798,6 +1454,8 @@ namespace transforms
         : target(target), current(current)
     {
     }
+    
+    
 }
 
 

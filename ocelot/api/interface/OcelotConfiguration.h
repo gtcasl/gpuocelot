@@ -166,6 +166,19 @@ namespace api {
                     std::string logfile;			
           
 			};
+			
+			/*! \brief configuration properties for analysis::ModulePassTestInstrumentor */
+			class ModulePassTestInstrumentor
+			{
+
+    			public:
+			
+					//! \brief specifies if instrumentation is enabled */
+					bool enabled;
+                    //! \brief specifies the logfile for storing results of this instrumentation */
+                    std::string logfile;			
+          
+			};
 
 
 		public:
@@ -183,6 +196,9 @@ namespace api {
 			
 			//! \brief Memory efficiency instrumentor
 			MemoryEfficiencyInstrumentor memoryEfficiencyInstrumentor;
+			
+			//! \brief Module pass test instrumentor
+			ModulePassTestInstrumentor modulePassTestInstrumentor;
 		};
 
 		class CudaRuntimeImplementation {

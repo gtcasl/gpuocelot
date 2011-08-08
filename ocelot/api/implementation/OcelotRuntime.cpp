@@ -170,6 +170,12 @@ namespace ocelot
             _memoryEfficiencyInstrumentor.output = c.instrument.memoryEfficiencyInstrumentor.logfile;
             ocelot::addInstrumentor(_memoryEfficiencyInstrumentor);
         }
+        if(c.instrument.modulePassTestInstrumentor.enabled)
+        {   
+            report("Creating module pass test instrumentor");
+            _modulePassTestInstrumentor.output = c.instrument.memoryEfficiencyInstrumentor.logfile;
+            ocelot::addInstrumentor(_modulePassTestInstrumentor);
+        }
         if(c.instrument.basicBlockInstrumentor.enabled)
         {   
             report("Creating basic block execution count instrumentor");

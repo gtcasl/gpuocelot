@@ -161,8 +161,14 @@ static void initializeInstrument(api::OcelotConfiguration::Instrumentation &inst
     
     hydrazine::json::Visitor memoryEfficiencyConfig = config["memoryEfficiency"];
     if (!memoryEfficiencyConfig.is_null()) {
-            instrument.memoryEfficiencyInstrumentor.enabled = branchDivConfig.parse<bool>("enabled", true);
-            instrument.memoryEfficiencyInstrumentor.logfile = branchDivConfig.parse<std::string>("logfile", "");
+            instrument.memoryEfficiencyInstrumentor.enabled = memoryEfficiencyConfig.parse<bool>("enabled", true);
+            instrument.memoryEfficiencyInstrumentor.logfile = memoryEfficiencyConfig.parse<std::string>("logfile", "");
+    }
+    
+    hydrazine::json::Visitor modulePassTestConfig = config["modulePassTest"];
+    if (!modulePassTestConfig.is_null()) {
+            instrument.modulePassTestInstrumentor.enabled = modulePassTestConfig.parse<bool>("enabled", true);
+            instrument.modulePassTestInstrumentor.logfile = modulePassTestConfig.parse<std::string>("logfile", "");
     }
 
 }

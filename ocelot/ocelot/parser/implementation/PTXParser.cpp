@@ -1818,7 +1818,8 @@ namespace parser
 		statement.instruction.a.type = tokenToDataType( token );
 	}
 	
-	void PTXParser::State::cvtaTo(int token, YYLTYPE& location) {
+	void PTXParser::State::cvtaTo()
+	{
 		statement.instruction.toAddrSpace = true;
 	}
 

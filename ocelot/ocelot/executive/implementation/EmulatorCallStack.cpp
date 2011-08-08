@@ -151,6 +151,11 @@ namespace executive
 		return _localMemorySizes.back();
 	}
 	
+	unsigned int EmulatorCallStack::globalLocalMemorySize() const
+	{
+		return _globalLocalSize;
+	}
+	
 	unsigned int EmulatorCallStack::sharedMemorySize() const
 	{
 		assert(!_sharedMemorySizes.empty());

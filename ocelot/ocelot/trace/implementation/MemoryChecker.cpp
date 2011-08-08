@@ -203,6 +203,14 @@ namespace trace
 						++address;
 						continue;
 					}
+					if( (ir::PTXU64)_kernel->getGlobalLocalMemory(thread)
+						<= *address && *address
+						< (ir::PTXU64)_kernel->getGlobalLocalMemory(thread)
+						+ _globalLocal.extent )
+					{
+						++address;
+						continue;
+					}
 					if( _cache.base > *address 
 						|| *address >= _cache.base + _cache.extent
 						|| !_cache.valid )

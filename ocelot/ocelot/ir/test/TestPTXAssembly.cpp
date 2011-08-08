@@ -204,6 +204,71 @@ char* uniformFloat(test::Test::MersenneTwister& generator)
 ////////////////////////////////////////////////////////////////////////////////
 
 ////////////////////////////////////////////////////////////////////////////////
+// TEST CVTA
+std::string testCvta_PTX(ir::PTXOperand::DataType type, 
+	ir::PTXInstruction::AddressSpace space)
+{
+	std::stringstream ptx;
+
+	std::string typeString   = "." + ir::PTXOperand::toString(type);
+	std::string addressSpace = "." + ir::PTXInstruction::toString(space);
+	
+	ptx << ".version 2.1\n";
+	ptx << "\n";
+
+	if(space != ir::PTXInstruction::Local)
+	{	
+		ptx << addressSpace << " " << typeString << " %variable;\n";
+	}
+
+	ptx << "\n";
+	ptx << ".entry test(.param .u64 out, .param .u64 in)   \n";
+	ptx << "{\t                                            \n";
+	ptx << "\t.reg .u64 %rIn, %rOut;                       \n";
+	ptx << "\t.reg .u64 %address;                          \n";
+	ptx << "\t.reg " << typeString    << " %rt;            \n";
+	ptx << "\t.reg .pred %pd;                              \n";
+	if(space == ir::PTXInstruction::Local)
+	{	
+		ptx << addressSpace << " " << typeString << " %variable;\n";
+	}
+
+	ptx << "\tld.param.u64 %rIn, [in];                     \n";
+	ptx << "\tld.param.u64 %rOut, [out];                   \n";
+	ptx << "\tld.global" << typeString << " %rt, [%rIn];   \n";
+	
+	ptx << "\tst" << addressSpace << typeString << " [%variable], %rt;     \n";
+	ptx << "\tcvta" << addressSpace << typeString << " %address, %variable;\n";
+	ptx << "\tld" << typeString << " %rt, [%address];     \n";
+
+	ptx << "\tst" << addressSpace << typeString << " [%variable], %rt;     \n";
+	ptx << "\tcvta.to" << addressSpace << typeString << " %address, %address;\n";
+	ptx << "\tld" << addressSpace << typeString << " %rt, [%address];     \n";
+
+	ptx << "\tst.global" << typeString << " [%rOut], %rt; \n";
+	ptx << "\texit;                                        \n";
+	ptx << "}                                              \n";
+	ptx << "                                               \n";
+	
+	return ptx.str();
+}
+
+template<typename dtype>
+void testCvta_REF(void* output, void* input)
+{
+	dtype r0 = getParameter<dtype>(input, 0);
+
+	setParameter(output, 0, r0);
+}
+
+test::TestPTXAssembly::TypeVector testCvta_INOUT(
+	test::TestPTXAssembly::DataType type)
+{
+	return test::TestPTXAssembly::TypeVector(1, type);
+}
+////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////
 // TEST LOCAL MEMORY
 std::string testLocalMemory_PTX(ir::PTXOperand::DataType dtype,
 	bool global, bool scoped)
@@ -6996,6 +7061,40 @@ namespace test
 			testLocalMemory_PTX(ir::PTXOperand::u8, true, true),
 			testLocalMemory_INOUT(I8), testLocalMemory_INOUT(I8),
 			uniformFloat<unsigned char, 1>, 1, 1);
+
+		add("TestCvta-local-u32",
+			testCvta_REF<unsigned int>,
+			testCvta_PTX(ir::PTXOperand::u32, ir::PTXInstruction::Local),
+			testCvta_INOUT(I32), testCvta_INOUT(I32),
+			uniformFloat<unsigned int, 1>, 1, 1);
+		add("TestCvta-local-u64",
+			testCvta_REF<long long unsigned int>,
+			testCvta_PTX(ir::PTXOperand::u64, ir::PTXInstruction::Local),
+			testCvta_INOUT(I64), testCvta_INOUT(I64),
+			uniformFloat<long long unsigned int, 1>, 1, 1);
+
+		add("TestCvta-global-u32",
+			testCvta_REF<unsigned int>,
+			testCvta_PTX(ir::PTXOperand::u32, ir::PTXInstruction::Global),
+			testCvta_INOUT(I32), testCvta_INOUT(I32),
+			uniformFloat<unsigned int, 1>, 1, 1);
+		add("TestCvta-global-u64",
+			testCvta_REF<long long unsigned int>,
+			testCvta_PTX(ir::PTXOperand::u64, ir::PTXInstruction::Global),
+			testCvta_INOUT(I64), testCvta_INOUT(I64),
+			uniformFloat<long long unsigned int, 1>, 1, 1);
+
+		add("TestCvta-shared-u32",
+			testCvta_REF<unsigned int>,
+			testCvta_PTX(ir::PTXOperand::u32, ir::PTXInstruction::Shared),
+			testCvta_INOUT(I32), testCvta_INOUT(I32),
+			uniformFloat<unsigned int, 1>, 1, 1);
+		add("TestCvta-shared-u64",
+			testCvta_REF<long long unsigned int>,
+			testCvta_PTX(ir::PTXOperand::u64, ir::PTXInstruction::Shared),
+			testCvta_INOUT(I64), testCvta_INOUT(I64),
+			uniformFloat<long long unsigned int, 1>, 1, 1);
+
 	}
 
 	TestPTXAssembly::TestPTXAssembly(hydrazine::Timer::Second l, 

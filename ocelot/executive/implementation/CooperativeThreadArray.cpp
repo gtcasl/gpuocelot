@@ -3790,13 +3790,23 @@ void executive::CooperativeThreadArray::eval_Cvta(CTAContext &context,
 				if (!context.predicated(tid, instr)) {
 					continue;
 				}
-				ir::PTXU32 localMemPtr;
-				hydrazine::bit_cast(localMemPtr, 
-					functionCallStack.localMemoryPointer(tid));
-				ir::PTXU32 srcAddr = operandAsU32(tid, instr.a)
-					+ addrSpaceBase
-					+ (instr.addressSpace == ir::PTXInstruction::Local
-					? localMemPtr : 0);
+				
+				ir::PTXU32 srcAddr = operandAsU32(tid, instr.a) + addrSpaceBase;
+				
+				if (instr.addressSpace == ir::PTXInstruction::Local) {
+					ir::PTXU32 localMemPtr;
+					if (!instr.a.isGlobalLocal) {
+						hydrazine::bit_cast(localMemPtr, 
+							functionCallStack.localMemoryPointer(tid));
+					}
+					else {
+						hydrazine::bit_cast(localMemPtr, 
+							functionCallStack.globalLocalMemoryPointer(tid));
+					}
+						
+					srcAddr += localMemPtr;
+				}
+				
 				setRegAsU32(tid, instr.d.reg, srcAddr);
 			}
 		}
@@ -3827,10 +3837,23 @@ void executive::CooperativeThreadArray::eval_Cvta(CTAContext &context,
 				if (!context.predicated(tid, instr)) {
 					continue;
 				}
-				ir::PTXU64 srcAddr = operandAsU64(tid, instr.a)
-					+ addrSpaceBase
-					+ (instr.addressSpace == ir::PTXInstruction::Local ?
-						(PTXU64)functionCallStack.localMemoryPointer(tid) : 0);
+
+				ir::PTXU64 srcAddr = operandAsU64(tid, instr.a) + addrSpaceBase;
+					
+				if (instr.addressSpace == ir::PTXInstruction::Local) {
+					ir::PTXU64 localMemPtr;
+					if (!instr.a.isGlobalLocal) {
+						hydrazine::bit_cast(localMemPtr, 
+							functionCallStack.localMemoryPointer(tid));
+					}
+					else {
+						hydrazine::bit_cast(localMemPtr, 
+							functionCallStack.globalLocalMemoryPointer(tid));
+					}
+						
+					srcAddr += localMemPtr;
+				}
+
 				setRegAsU64(tid, instr.d.reg, srcAddr);
 			}
 		}
@@ -3850,8 +3873,12 @@ void executive::CooperativeThreadArray::eval_Cvta(CTAContext &context,
 		{
 			ir::PTXU32 addrSpaceBase = 0;
 			ir::PTXU32 addrSpaceSize = 0;
+
 			switch (instr.addressSpace) {
 				case ir::PTXInstruction::Global: // DO NOTHING
+				{
+					addrSpaceSize = (ir::PTXU32)0xffffffff;
+				}
 					break;
 				case ir::PTXInstruction::Shared:
 				{
@@ -3863,8 +3890,7 @@ void executive::CooperativeThreadArray::eval_Cvta(CTAContext &context,
 					break;
 				case ir::PTXInstruction::Local:
 				{
-					addrSpaceSize = hydrazine::bit_cast<ir::PTXU32>(
-						functionCallStack.localMemorySize());
+
 				}
 					break;
 				default:
@@ -3874,30 +3900,42 @@ void executive::CooperativeThreadArray::eval_Cvta(CTAContext &context,
 						context.PC, instr);
 					break;
 			}
-			
+
+
 			for (int tid = 0; tid < threadCount; tid++) {
 				if (!context.predicated(tid, instr)) {
 					continue;
 				}
 				ir::PTXU32 srcAddr = operandAsU32(tid, instr.a);
-				ir::PTXU32 localAddrSpaceBase = addrSpaceBase + 
-					(instr.addressSpace == ir::PTXInstruction::Local ?
-						(PTXU64)functionCallStack.localMemoryPointer(tid) : 0);
+
+				if (instr.addressSpace == ir::PTXInstruction::Local) {
+					ir::PTXU32 localSize = hydrazine::bit_cast<ir::PTXU32>(
+						functionCallStack.localMemorySize());
+					ir::PTXU32 localBase = hydrazine::bit_cast<ir::PTXU32>(
+						functionCallStack.localMemoryPointer(tid));
 				
-				if (srcAddr < localAddrSpaceBase && instr.addressSpace
-					!= ir::PTXInstruction::Global) {
+					if (srcAddr >= localBase ||
+						srcAddr < localSize + localBase) {
+						addrSpaceSize = localSize;
+						addrSpaceBase = localBase;
+					}
+					else {
+						addrSpaceSize = hydrazine::bit_cast<ir::PTXU32>(
+							functionCallStack.globalLocalMemorySize());
+						addrSpaceBase = hydrazine::bit_cast<ir::PTXU32>(
+							functionCallStack.globalLocalMemoryPointer(tid));
+					}
+				}
+
+				if (srcAddr >= addrSpaceSize + addrSpaceBase
+					|| srcAddr < addrSpaceBase) {
 					throw RuntimeException("cvta instruction - source "
 						"address is not part of addressed region",
 						context.PC, instr);
-					return;
 				}
-				srcAddr -= localAddrSpaceBase;
-				if (srcAddr >= addrSpaceSize && instr.addressSpace
-					!= ir::PTXInstruction::Global) {
-					throw RuntimeException("cvta instruction - source "
-						"address is not part of addressed region",
-						context.PC, instr);
-				}
+
+				srcAddr -= addrSpaceBase;
+
 				setRegAsU32(tid, instr.d.reg, srcAddr);
 			}
 		}
@@ -3909,6 +3947,9 @@ void executive::CooperativeThreadArray::eval_Cvta(CTAContext &context,
 			ir::PTXU64 addrSpaceSize = 0;
 			switch (instr.addressSpace) {
 				case ir::PTXInstruction::Global: // DO NOTHING
+				{
+					addrSpaceSize = (ir::PTXU64)0xffffffffffffffffULL;
+				}
 					break;
 				case ir::PTXInstruction::Shared:
 				{
@@ -3920,8 +3961,7 @@ void executive::CooperativeThreadArray::eval_Cvta(CTAContext &context,
 					break;
 				case ir::PTXInstruction::Local:
 				{
-					addrSpaceSize = hydrazine::bit_cast<ir::PTXU64, size_t >(
-						functionCallStack.localMemorySize());
+
 				}
 					break;
 				default:
@@ -3937,23 +3977,35 @@ void executive::CooperativeThreadArray::eval_Cvta(CTAContext &context,
 					continue;
 				}
 				ir::PTXU64 srcAddr = operandAsU64(tid, instr.a);
-				ir::PTXU32 localAddrSpaceBase = addrSpaceBase + 
-					(instr.addressSpace == ir::PTXInstruction::Local ?
-						(PTXU64)functionCallStack.localMemoryPointer(tid) : 0);
-				if (srcAddr < localAddrSpaceBase && instr.addressSpace
-					!= ir::PTXInstruction::Global) {
-					throw RuntimeException("cvta instruction - "
-						"source address is not part of addressed region",
-						context.PC, instr);
-					return;
+
+				if (instr.addressSpace == ir::PTXInstruction::Local) {
+					ir::PTXU64 localSize = hydrazine::bit_cast<ir::PTXU64>(
+						functionCallStack.localMemorySize());
+					ir::PTXU64 localBase = hydrazine::bit_cast<ir::PTXU64>(
+						functionCallStack.localMemoryPointer(tid));
+				
+					if (srcAddr >= localBase ||
+						srcAddr < localSize + localBase) {
+						addrSpaceSize = localSize;
+						addrSpaceBase = localBase;
+					}
+					else {
+						addrSpaceSize = hydrazine::bit_cast<ir::PTXU64>(
+							functionCallStack.globalLocalMemorySize());
+						addrSpaceBase = hydrazine::bit_cast<ir::PTXU64>(
+							functionCallStack.globalLocalMemoryPointer(tid));
+					}
 				}
-				srcAddr -= localAddrSpaceBase;
-				if (srcAddr >= addrSpaceSize && instr.addressSpace
-					!= ir::PTXInstruction::Global) {
-					throw RuntimeException("cvta instruction - "
-						"source address is not part of addressed region",
+
+				if (srcAddr >= addrSpaceSize + addrSpaceBase
+					|| srcAddr < addrSpaceBase) {
+					throw RuntimeException("cvta instruction - source "
+						"address is not part of addressed region",
 						context.PC, instr);
 				}
+
+				srcAddr -= addrSpaceBase;
+
 				setRegAsU64(tid, instr.d.reg, srcAddr);
 			}
 		}

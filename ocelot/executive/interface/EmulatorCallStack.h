@@ -92,6 +92,8 @@ class EmulatorCallStack
 		unsigned int localMemorySize() const;
 		/*! \brief Get the shared memory size */
 		unsigned int sharedMemorySize() const;
+		/*! \brief Get the global local memory size */
+		unsigned int globalLocalMemorySize() const;
 		
 		/*! \brief Get the size of the current frame */
 		unsigned int stackFrameSize() const;

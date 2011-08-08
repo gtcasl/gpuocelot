@@ -57,7 +57,7 @@ namespace transforms
                     toInsert.instruction.a.addressMode = ir::PTXOperand::Register;
                     toInsert.instruction.a.reg = original.d.reg;   
                     toInsert.instruction.b.addressMode = ir::PTXOperand::Immediate;
-                    toInsert.instruction.b.imm_int = original.a.imm_int;   
+                    toInsert.instruction.b.imm_int = original.d.offset;   
                 }
             }
             else if(original.opcode == ir::PTXInstruction::Ld)
@@ -68,7 +68,7 @@ namespace transforms
                     toInsert.instruction.a.addressMode = ir::PTXOperand::Register;
                     toInsert.instruction.a.reg = original.a.reg;   
                     toInsert.instruction.b.addressMode = ir::PTXOperand::Immediate;
-                    toInsert.instruction.b.imm_int = original.b.imm_int;   
+                    toInsert.instruction.b.imm_int = original.a.offset;   
                 }
             
             }

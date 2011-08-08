@@ -28,9 +28,6 @@ namespace analysis
             /*! \brief The basic block counter */
             size_t *counter;        
 
-            /*! \brief The number of basic blocks */
-            unsigned int basicBlocks;
-        
             /*! \brief Number of entries per basic block */
             size_t entries;
 

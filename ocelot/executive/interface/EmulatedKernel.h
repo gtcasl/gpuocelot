@@ -107,6 +107,11 @@ namespace executive {
 			for the specified thread */
 		const char* getLocalMemory(unsigned int threadId) const;
 
+		/* Get a pointer to the base of the current global local memory block
+
+			for the specified thread */
+		const char* getGlobalLocalMemory(unsigned int threadId) const;
+
 		/* Get the argument memory size of the current frame */
 		unsigned int getCurrentFrameArgumentMemorySize() const;
 

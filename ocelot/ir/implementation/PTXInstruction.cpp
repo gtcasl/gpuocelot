@@ -2091,7 +2091,13 @@ std::string ir::PTXInstruction::toString() const {
 			return result;
 		}
 		case Cvta: {
-			std::string result = guard() + "cvta." + toString(addressSpace)
+			std::string result = guard() + "cvta.";
+			
+			if (toAddrSpace) {
+				result += "to.";
+			}
+			
+			result += toString(addressSpace)
 				+ "." + PTXOperand::toString(type) + " " + d.toString() + ", "
 				+ a.toString();
 			return result;

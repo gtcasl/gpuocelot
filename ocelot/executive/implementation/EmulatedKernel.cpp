@@ -508,6 +508,7 @@ void executive::EmulatedKernel::initializeSharedMemory() {
 		if (instr.mayHaveAddressableOperand()) {
 			for (int n = 0; n < 4; n++) {
 				if ((instr.*operands[n]).addressMode 
+
 					== ir::PTXOperand::Address) {
 					StringSet::iterator si = external.find(
 						(instr.*operands[n]).identifier);
@@ -879,6 +880,12 @@ const char* executive::EmulatedKernel::getSharedMemory() const {
 const char* executive::EmulatedKernel::getLocalMemory(unsigned int tid) const {
 	assert(CTA != 0);
 	return (char*) CTA->functionCallStack.localMemoryPointer(tid);
+}
+
+const char* executive::EmulatedKernel::getGlobalLocalMemory(
+	unsigned int tid) const {
+	assert(CTA != 0);
+	return (char*) CTA->functionCallStack.globalLocalMemoryPointer(tid);
 }
 
 unsigned int

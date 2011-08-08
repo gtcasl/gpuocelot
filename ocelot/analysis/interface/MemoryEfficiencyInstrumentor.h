@@ -24,8 +24,6 @@ namespace analysis
 
             /*! \brief The description of the specified pass */
             std::string description;
-            
-            unsigned int globalMemOps;
         	
 		public:
 			/*! \brief The default constructor */

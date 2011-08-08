@@ -1040,8 +1040,8 @@ cvta : OPCODE_CVTA addressSpace pointerDataType operand ',' cvtaOperand ';'
 cvta : OPCODE_CVTA TOKEN_TO addressSpace pointerDataType operand
 	',' cvtaOperand ';'
 {
-	state.instruction( $<text>1, $<value>3 );
-	state.cvtaTo( $<value>4, @1 );
+	state.instruction( $<text>1, $<value>4 );
+	state.cvtaTo();
 };
 
 /*

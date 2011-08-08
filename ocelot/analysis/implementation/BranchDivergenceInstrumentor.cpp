@@ -34,8 +34,6 @@ namespace analysis
 
     void BranchDivergenceInstrumentor::analyze(ir::Module &module) {
         
-        totalBranches = 0;
-        conditionalBranches = 0;
         warpCount = 0;
         
         struct cudaDeviceProp properties;
@@ -44,34 +42,40 @@ namespace analysis
         warpCount = (unsigned long)ceil((threads/threadBlocks)/properties.warpSize);
         if(warpCount == 0)
             warpCount = 1;
-        
-        for( ir::ControlFlowGraph::const_iterator block = module.getKernel(kernelName)->cfg()->begin(); 
-			block != module.getKernel(kernelName)->cfg()->end(); ++block ) {
-            
-            for( ir::ControlFlowGraph::InstructionList::const_iterator instruction = block->instructions.begin();
-                instruction != block->instructions.end(); ++instruction)
-            {
-                ir::PTXInstruction *ptxInst = (ir::PTXInstruction *)*instruction;
-            
-                if(ptxInst->opcode == ir::PTXInstruction::Bra)
+        for (ir::Module::KernelMap::const_iterator kernel = module.kernels().begin(); 
+	        kernel != module.kernels().end(); ++kernel) 
+	    {
+	        totalBranchesMap[kernel->first] = 0;
+	        conditionalBranchesMap[kernel->first] = 0;
+	        
+            for( ir::ControlFlowGraph::const_iterator block = kernel->second->cfg()->begin(); 
+			    block != kernel->second->cfg()->end(); ++block ) {
+                
+                for( ir::ControlFlowGraph::InstructionList::const_iterator instruction = block->instructions.begin();
+                    instruction != block->instructions.end(); ++instruction)
                 {
-                    totalBranches++;
-                    
-                    if(ptxInst->pg.condition == ir::PTXOperand::Pred || ptxInst->pg.condition == ir::PTXOperand::InvPred)
-                        conditionalBranches++;
+                    ir::PTXInstruction *ptxInst = (ir::PTXInstruction *)*instruction;
+                
+                    if(ptxInst->opcode == ir::PTXInstruction::Bra)
+                    {
+                        totalBranchesMap[kernel->first]++;
+                        
+                        if(ptxInst->pg.condition == ir::PTXOperand::Pred || ptxInst->pg.condition == ir::PTXOperand::InvPred)
+                            conditionalBranchesMap[kernel->first]++;
+                    }
                 }
-            }
-        }      
+            } 
+        }     
     }
 
     void BranchDivergenceInstrumentor::initialize() {
         branchDivInfo = 0;
 
-        if(conditionalBranches == 0 || warpCount == 0)
+        if(conditionalBranchesMap[kernelName] == 0 || warpCount == 0)
             return;
 
-        cudaMalloc((void **) &branchDivInfo, conditionalBranches * warpCount * sizeof(size_t));
-        cudaMemset( branchDivInfo, 0, conditionalBranches * warpCount * sizeof( size_t ));
+        cudaMalloc((void **) &branchDivInfo, conditionalBranchesMap[kernelName] * warpCount * sizeof(size_t));
+        cudaMemset( branchDivInfo, 0, conditionalBranchesMap[kernelName] * warpCount * sizeof( size_t ));
     
         cudaMemcpyToSymbol(symbol.c_str(), &branchDivInfo, sizeof(size_t *), 0, cudaMemcpyHostToDevice);   
     }
@@ -84,12 +88,13 @@ namespace analysis
 
     void BranchDivergenceInstrumentor::extractResults(std::ostream *out) {
             
-        if(conditionalBranches == 0 || warpCount == 0)
+        if(conditionalBranchesMap[kernelName] == 0 || warpCount == 0)
         {
             std::cout << "No conditional branches in this kernel.\n";    
             return;
         }    
         
+        size_t conditionalBranches = conditionalBranchesMap[kernelName];
         size_t *info = new size_t[conditionalBranches * warpCount];
         
         if(branchDivInfo) {
@@ -126,7 +131,7 @@ namespace analysis
                 *out << "Thread Block Count: " << threadBlocks << "\n";
                 *out << "Thread Count: " << threads << "\n";
                 
-                *out << "\n% Branch Divergence: " << dynamicDivergentBranches << "/" << (warpCount * totalBranches) << "\n\n"; 
+                *out << "\n% Branch Divergence: " << dynamicDivergentBranches << "/" << (warpCount * totalBranchesMap[kernelName]) << "\n\n"; 
             
             break;
 

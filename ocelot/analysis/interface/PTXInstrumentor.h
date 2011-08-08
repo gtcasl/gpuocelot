@@ -65,6 +65,8 @@ namespace analysis
                 text
             };
         
+            typedef std::map<std::string, size_t> KernelDataMap;
+            typedef std::map<std::string, std::vector<std::string>> KernelLabelsMap;
 
 			/*! \brief device name for JSON output */
 			std::string deviceName;
@@ -97,7 +99,7 @@ namespace analysis
             unsigned int threads;
 
             /*! \brief The strings representing the basic block labels */
-            std::vector<std::string> labels;
+            KernelLabelsMap kernelLabelsMap;
             
             /*! \brief make sure all conditions have been met to perform this instrumentation */
             bool conditionsMet;
@@ -109,6 +111,8 @@ namespace analysis
             bool deviceInfoWritten;
             
             unsigned int sharedMemSize;
+            
+            KernelDataMap kernelDataMap;
 
 
         protected:

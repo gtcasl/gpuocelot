@@ -29,8 +29,8 @@ namespace analysis
             
         private:
             unsigned long warpCount;
-		    unsigned long totalBranches;
-		    unsigned long conditionalBranches;
+		    KernelDataMap totalBranchesMap;
+		    KernelDataMap conditionalBranchesMap;
 			
 		public:
 			/*! \brief The default constructor */

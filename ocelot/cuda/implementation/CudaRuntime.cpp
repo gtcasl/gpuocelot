@@ -446,6 +446,7 @@ void cuda::CudaRuntime::_registerModule(ModuleMap::iterator module) {
         instrumentor != thread.instrumentors.end(); ++instrumentor){
         (*instrumentor)->checkConditions();
         if((*instrumentor)->conditionsMet) {
+            (*instrumentor)->analyze(module->second);
             (*instrumentor)->instrument(module->second);
         }
     }
@@ -2578,7 +2579,6 @@ cudaError_t cuda::CudaRuntime::_launchKernel(const std::string& moduleName,
             (*instrumentor)->kernelName = kernelName;
             (*instrumentor)->threads = launch.blockDim.x * launch.blockDim.y * launch.blockDim.z;
             (*instrumentor)->threadBlocks = launch.gridDim.x * launch.gridDim.y * launch.gridDim.z;
-            (*instrumentor)->analyze(module->second);
             (*instrumentor)->initialize();
             launch.sharedMemory = (*instrumentor)->sharedMemSize;
         }

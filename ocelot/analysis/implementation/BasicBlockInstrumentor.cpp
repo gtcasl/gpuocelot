@@ -35,25 +35,18 @@ namespace analysis
     }
 
     void BasicBlockInstrumentor::analyze(ir::Module &module) {
-    
-        basicBlocks = 0;
-        if(!kernelName.empty()){
-            basicBlocks = module.getKernel(kernelName)->cfg()->size() - 2;
-        }
-        else {
-            for (ir::Module::KernelMap::const_iterator kernel = module.kernels().begin(); 
-		        kernel != module.kernels().end(); ++kernel) {
-                basicBlocks += (kernel->second)->cfg()->size();
+        
+        for (ir::Module::KernelMap::const_iterator kernel = module.kernels().begin(); 
+	        kernel != module.kernels().end(); ++kernel) {
+	        kernelDataMap[kernel->first] = kernel->second->cfg()->size() - 2;
+        
+            for( ir::ControlFlowGraph::const_iterator block = kernel->second->cfg()->begin(); 
+			block != kernel->second->cfg()->end(); ++block ) {
+                if(block->label == "entry" || block->label == "exit")
+                    continue;
+                kernelLabelsMap[kernel->first].push_back(block->label);
             }
         }
-
-        for( ir::ControlFlowGraph::const_iterator block = module.getKernel(kernelName)->cfg()->begin(); 
-			block != module.getKernel(kernelName)->cfg()->end(); ++block ) {
-            if(block->label == "entry" || block->label == "exit")
-                continue;
-            labels.push_back(block->label);
-        }
-
         
     }
 
@@ -61,10 +54,10 @@ namespace analysis
         
         counter = 0;
 
-        if(cudaMalloc((void **) &counter, entries * basicBlocks * threadBlocks * threads * sizeof(size_t)) != cudaSuccess){
+        if(cudaMalloc((void **) &counter, entries * kernelDataMap[kernelName] * threadBlocks * threads * sizeof(size_t)) != cudaSuccess){
             throw hydrazine::Exception( "Could not allocate sufficient memory on device (cudaMalloc failed)!" );
         }
-        if(cudaMemset( counter, 0, entries * basicBlocks * threadBlocks * threads * sizeof( size_t )) != cudaSuccess){
+        if(cudaMemset( counter, 0, entries * kernelDataMap[kernelName] * threadBlocks * threads * sizeof( size_t )) != cudaSuccess){
             throw hydrazine::Exception( "cudaMemset failed!" );
         }
         
@@ -105,9 +98,9 @@ namespace analysis
 
     void BasicBlockInstrumentor::extractResults(std::ostream *out) {
 
-        size_t *info = new size_t[entries * basicBlocks * threads * threadBlocks];
+        size_t *info = new size_t[entries * kernelDataMap[kernelName] * threads * threadBlocks];
         if(counter) {
-            cudaMemcpy(info, counter, entries * basicBlocks * threads * threadBlocks * sizeof( size_t ), cudaMemcpyDeviceToHost);
+            cudaMemcpy(info, counter, entries * kernelDataMap[kernelName] * threads * threadBlocks * sizeof( size_t ), cudaMemcpyDeviceToHost);
             cudaFree(counter);
         }
 
@@ -121,11 +114,11 @@ namespace analysis
         double totalCount = 0;
         
         for(k = 0; k < threadBlocks; k++) {
-            for(i = 0; i < basicBlocks; i++) {
+            for(i = 0; i < kernelDataMap[kernelName]; i++) {
                 for(j = 0; j < (threads * entries); j = j + entries) {
-                    _kernelProfile.basicBlockExecutionCountMap[i] += info[(i * entries * threads) + (k * basicBlocks * threads * entries) + j];
+                    _kernelProfile.basicBlockExecutionCountMap[i] += info[(i * entries * threads) + (k * kernelDataMap[kernelName] * threads * entries) + j];
                     if(type == memoryIntensity)
-                        _kernelProfile.memoryOperationsMap[i] += info[(i * entries * threads) + (k * basicBlocks * threads * entries) + (j + 1)];
+                        _kernelProfile.memoryOperationsMap[i] += info[(i * entries * threads) + (k * kernelDataMap[kernelName] * threads * entries) + (j + 1)];
                     
                 }
             }   
@@ -140,8 +133,8 @@ namespace analysis
                 *out << "\n\"threads\": " << threads << ",\n";
                 *out << "\n\"counters\": {\n";
 
-                for(j = 0; j < basicBlocks; j++) {
-                    *out << "\"" << labels[j] << "\": " << _kernelProfile.basicBlockExecutionCountMap[j] << ", ";
+                for(j = 0; j < kernelDataMap[kernelName]; j++) {
+                    *out << "\"" << kernelLabelsMap[kernelName].at(j) << "\": " << _kernelProfile.basicBlockExecutionCountMap[j] << ", ";
                     if(type == memoryIntensity)
                          *out << _kernelProfile.memoryOperationsMap[j];
                 
@@ -169,8 +162,8 @@ namespace analysis
                 else
                     *out << "\nDynamic Instruction Count:\n\n";
 
-                for(j = 0; j < basicBlocks; j++) {
-                    *out << labels[j] << ": " << _kernelProfile.basicBlockExecutionCountMap[j] << "\n";
+                for(j = 0; j < kernelDataMap[kernelName]; j++) {
+                    *out << kernelLabelsMap[kernelName].at(j) << ": " << _kernelProfile.basicBlockExecutionCountMap[j] << "\n";
                     totalCount += _kernelProfile.basicBlockExecutionCountMap[j];
                     
                 }
@@ -178,8 +171,8 @@ namespace analysis
                 if(type == memoryIntensity){
                     *out << "\nMemory Intensity:\n\n";
 
-                    for(j = 0; j < basicBlocks; j++) {
-                        *out << "\"" << labels[j] << "\": " << "[" << _kernelProfile.memoryOperationsMap[j] << ":" << _kernelProfile.basicBlockExecutionCountMap[j] << "]\n";
+                    for(j = 0; j < kernelDataMap[kernelName]; j++) {
+                        *out << "\"" << kernelLabelsMap[kernelName].at(j) << "\": " << "[" << _kernelProfile.memoryOperationsMap[j] << ":" << _kernelProfile.basicBlockExecutionCountMap[j] << "]\n";
                         totalMemOps += _kernelProfile.memoryOperationsMap[j];
                     }
                 }

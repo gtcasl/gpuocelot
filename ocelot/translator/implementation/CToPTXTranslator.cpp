@@ -48,8 +48,8 @@ namespace translator
 	    for (p =base; (char*) p < s->p->cur_ip;) {
 	      
 	        l = translator.translate(s, &info, (void *)p);
-	        //l = s->j->print_insn(s, &info, (void *)p);
-	        //printf("\n");
+	        l = s->j->print_insn(s, &info, (void *)p);
+	        printf("\n");
 	        if (l <= 0) return;
 	        p = (char*)p + l;
 	        insn_count++;

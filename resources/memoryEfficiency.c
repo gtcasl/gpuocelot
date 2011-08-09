@@ -1,5 +1,5 @@
 {
-    unsigned long threadId = globalThreadId();
+    unsigned long threadId = blockThreadId();
     
     ON_INSTRUCTION:
     MEM_READ:

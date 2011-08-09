@@ -765,6 +765,9 @@ namespace translator
         registers.push_back(madTidYnTidXtidX);
         registers.push_back(addResult);
         
+        specialRegisterMap["ntidx"] = ntidX;
+        specialRegisterMap["ntidy"] = ntidY;
+        
         registerMap[REG + boost::lexical_cast<std::string>(insn->opnds.calli.src)] = addResult;
     
     }
@@ -2531,9 +2534,10 @@ namespace translator
             {
                 ir::PTXStatement shared(ir::PTXStatement::Shared);
                 shared.name = baseAddress() + baseAddressId;
-                shared.array.stride = ir::PTXStatement::ArrayStrideVector(1, 4);
+                shared.array.stride = ir::PTXStatement::ArrayStrideVector(1);
                 shared.alignment = 64;
                 shared.type = type;
+                shared.attribute = ir::PTXStatement::Extern;
 
                 statements.push_back(shared);
                 

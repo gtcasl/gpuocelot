@@ -67,7 +67,7 @@ namespace analysis
             throw hydrazine::Exception( "cudaMemset failed!" );
         }
         
-        sharedMemSize = threads * threadBlocks * 8;
+        sharedMemSize = threads * 8;
         
         if(cudaMemcpyToSymbol(symbol.c_str(), &counter, sizeof(size_t *), 0, cudaMemcpyHostToDevice) != cudaSuccess) {
             throw hydrazine::Exception( "cudaMemcpyToSymbol failed!");

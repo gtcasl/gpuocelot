@@ -805,32 +805,16 @@ namespace transforms
         inst.d.identifier.clear();
         
         inst.type = type;
-        //generate gridDim
+        
+        //generate blockDim
         inst.opcode = ir::PTXInstruction::Cvt;  
         inst.d.addressMode = ir::PTXOperand::Register;
-        analysis::DataflowGraph::RegisterId nctaidX = dfg().newRegister();    
-        inst.d.reg = nctaidX;
 
-        inst.d.type = type;
-        inst.a = ir::PTXOperand(ir::PTXOperand::nctaId, ir::PTXOperand::ix, ir::PTXOperand::u32);
-        inst.a.addressMode = ir::PTXOperand::Special;
-        inst.a.vec = ir::PTXOperand::v1;
-        
-        dfg().insert(current, inst, loc++);
-        
-        inst.a = ir::PTXOperand(ir::PTXOperand::nctaId, ir::PTXOperand::iy, ir::PTXOperand::u32);
+        inst.a = ir::PTXOperand(ir::PTXOperand::ntid, ir::PTXOperand::iz, ir::PTXOperand::u32);
         inst.a.vec = ir::PTXOperand::v1;       
         
-        analysis::DataflowGraph::RegisterId nctaidY = dfg().newRegister();
-        inst.d.reg = nctaidY;
-        
-        dfg().insert(current, inst, loc++);    
-        
-        inst.a = ir::PTXOperand(ir::PTXOperand::nctaId, ir::PTXOperand::iz, ir::PTXOperand::u32);
-        inst.a.vec = ir::PTXOperand::v1;       
-        
-        analysis::DataflowGraph::RegisterId nctaidZ = dfg().newRegister();    
-        inst.d.reg = nctaidZ;
+        analysis::DataflowGraph::RegisterId ntidZ = dfg().newRegister();    
+        inst.d.reg = ntidZ;
         
         dfg().insert(current, inst, loc++);    
         
@@ -844,54 +828,28 @@ namespace transforms
         inst.d.addressMode = ir::PTXOperand::Register;
         inst.d.type = type;
         
-        analysis::DataflowGraph::RegisterId nctaid = dfg().newRegister();
-        inst.d.reg = nctaid;
+        analysis::DataflowGraph::RegisterId ntid = dfg().newRegister();
+        inst.d.reg = ntid;
         
         inst.a.addressMode = ir::PTXOperand::Register;
         inst.a.type = type;
-        inst.a.reg = nctaidX;
+        std::string ntidX = translation.specialRegisterMap["ntidx"];
+        std::string ntidY = translation.specialRegisterMap["ntidy"];
+        inst.a.reg = newRegisterMap[ntidX];;
         inst.b.addressMode = ir::PTXOperand::Register;
         inst.b.type = type;
-        inst.b.reg = nctaidY;
+        inst.b.reg = newRegisterMap[ntidY];
          
         dfg().insert(current, inst, loc++);    
         
         inst.a.addressMode = ir::PTXOperand::Register;
         inst.a.type = type;
-        inst.a.reg = nctaid;
+        inst.a.reg = ntid;
         inst.b.addressMode = ir::PTXOperand::Register;
         inst.b.type = type;
-        inst.b.reg = nctaidZ;
+        inst.b.reg = ntidZ;
          
         dfg().insert(current, inst, loc++);    
-        
-        inst.d.identifier.clear();
-        inst.a.identifier.clear();
-        inst.b.identifier.clear();
-        
-        inst.opcode = ir::PTXInstruction::Mul;     
-           
-        inst.modifier = ir::PTXInstruction::lo;
-        inst.d.addressMode = ir::PTXOperand::Register;
-        inst.d.type = type;
-        
-        analysis::DataflowGraph::RegisterId sharedMemSize = dfg().newRegister();
-        inst.d.reg = sharedMemSize;
-        
-        inst.a.addressMode = ir::PTXOperand::Register;
-        inst.a.type = type;
-        std::string ntid = translation.specialRegisterMap["ntid"];
-        inst.a.reg = newRegisterMap[ntid];
-        
-        inst.b.type = type;
-        inst.b.addressMode = ir::PTXOperand::Register;
-        inst.b.reg = nctaid;
-        
-        dfg().insert(current, inst, loc++); 
-        
-        inst.d.identifier.clear();
-        inst.a.identifier.clear();
-        inst.b.identifier.clear();
         
         inst.opcode = ir::PTXInstruction::Mov;
                  
@@ -915,7 +873,7 @@ namespace transforms
         ++current;
         current = dfg().insert(prev, current, BEGIN_FIRST_LOOP);
         loc = 0;
-
+        
         inst.d.identifier.clear();
         inst.a.identifier.clear();
         inst.b.identifier.clear();
@@ -933,7 +891,7 @@ namespace transforms
         inst.a.reg = i;
         inst.b.type = type;
         inst.b.addressMode = ir::PTXOperand::Register;
-        inst.b.reg = sharedMemSize;
+        inst.b.reg = ntid;
         
         dfg().insert(current, inst, loc++);
           
@@ -1294,7 +1252,8 @@ namespace transforms
         
         std::string baseRegId = translation.specialRegisterMap["baseReg"];
         
-        inst.opcode = ir::PTXInstruction::Ld;
+        inst.opcode = ir::PTXInstruction::Atom;
+        inst.atomicOperation = ir::PTXInstruction::AtomicAdd;
             
         inst.addressSpace = ir::PTXInstruction::Global; 
         inst.a.addressMode = ir::PTXOperand::Indirect;
@@ -1306,35 +1265,9 @@ namespace transforms
         analysis::DataflowGraph::RegisterId prevUniqueCount = dfg().newRegister();
         inst.d.reg = prevUniqueCount;
         
-        dfg().insert(current, inst, loc++);
-        
-        inst.opcode = ir::PTXInstruction::Add;     
-           
-        inst.modifier = ir::PTXInstruction::Modifier_invalid;
-        inst.d.addressMode = ir::PTXOperand::Register;
-        inst.d.type = type;
-        
-        inst.d.reg = prevUniqueCount;
-        
-        inst.a.addressMode = ir::PTXOperand::Register;
-        inst.a.type = type;
-        inst.a.reg = prevUniqueCount;
         inst.b.addressMode = ir::PTXOperand::Register;
         inst.b.type = type;
         inst.b.reg = uniqueCount;
-         
-        dfg().insert(current, inst, loc++);
-        
-        inst.opcode = ir::PTXInstruction::St;
-            
-        inst.addressSpace = ir::PTXInstruction::Global; 
-        inst.d.addressMode = ir::PTXOperand::Indirect;
-        inst.d.type = type;
-        inst.d.reg = newRegisterMap[baseRegId];
-        
-        inst.a.addressMode = ir::PTXOperand::Register;
-        inst.a.type = type;
-        inst.a.reg = prevUniqueCount;
         
         dfg().insert(current, inst, loc++);
         

@@ -457,26 +457,7 @@ void PassManager::runOnModule()
 	
 	AnalysisMapVector kernelAnalyses(_module->kernels().size());
 	
-	// Run all module passes first
-	for(PassMap::iterator pass = _passes.begin();
-		pass != _passes.end(); ++pass)
-	{
-		if(pass->second->type == Pass::KernelPass)     continue;
-		if(pass->second->type == Pass::BasicBlockPass) continue;
-		
-		AnalysisMapVector::iterator analyses = kernelAnalyses.begin();
-		for(ir::Module::KernelMap::const_iterator 
-			kernel = _module->kernels().begin();
-			kernel != _module->kernels().end(); ++kernel, ++analyses)
-		{
-			allocateNewDataStructures(*analyses,
-				kernel->second, pass->first, this);
-		}
-		
-		runModulePass(_module, pass->second);
-	}
-	
-	// Run all kernel and bb passes
+	// Run all kernel and bb passes first
 	AnalysisMapVector::iterator analyses = kernelAnalyses.begin();
 	for(ir::Module::KernelMap::const_iterator 
 		kernel = _module->kernels().begin();
@@ -513,6 +494,25 @@ void PassManager::runOnModule()
 		{
 			finalizeKernelPass(_module, pass->second);
 		}
+	}
+	
+	// Run all module passes 
+	for(PassMap::iterator pass = _passes.begin();
+		pass != _passes.end(); ++pass)
+	{
+		if(pass->second->type == Pass::KernelPass)     continue;
+		if(pass->second->type == Pass::BasicBlockPass) continue;
+		
+		AnalysisMapVector::iterator analyses = kernelAnalyses.begin();
+		for(ir::Module::KernelMap::const_iterator 
+			kernel = _module->kernels().begin();
+			kernel != _module->kernels().end(); ++kernel, ++analyses)
+		{
+			allocateNewDataStructures(*analyses,
+				kernel->second, pass->first, this);
+		}
+		
+		runModulePass(_module, pass->second);
 	}
 }
 

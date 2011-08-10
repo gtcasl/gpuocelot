@@ -50,8 +50,8 @@ namespace analysis
             /*! \brief The initialize method performs any necessary CUDA runtime initialization prior to instrumentation */
             void initialize();
 
-            /*! \brief The createPass method instantiates the instrumentation pass */
-            transforms::Pass *createPass();
+            /*! \brief The createPass method instantiates the instrumentation passes */
+            void createPasses();
 
             /*! \brief The finalize method performs any necessary CUDA runtime actions after instrumentation */
             void finalize();	

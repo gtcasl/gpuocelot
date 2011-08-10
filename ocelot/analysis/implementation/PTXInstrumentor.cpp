@@ -20,6 +20,8 @@
 
 #include <fstream>
 
+#include <ocelot/transforms/interface/CToPTXModulePass.h>
+
 namespace analysis
 {
 
@@ -27,15 +29,19 @@ namespace analysis
 	{ 
 		module = new ir::Module( input );
 
-        pass = createPass();
-
-        if(pass != NULL) {
-            transforms::PassManager manager( module );
-		    manager.addPass( *pass );
-
-		    manager.runOnModule();
-            manager.destroyPasses();
+        createPasses();
+    
+        transforms::PassManager manager( module );
+        
+        for(PassMap::iterator pass = passes.begin(); pass != passes.end(); ++pass)
+        {
+            if(pass->second != NULL)
+                manager.addPass( *(pass->second) ); 
         }
+
+	    manager.runOnModule();
+        manager.destroyPasses();
+    
 
 		std::fstream out( output.c_str() );
 		
@@ -70,18 +76,18 @@ namespace analysis
 
     void PTXInstrumentor::instrument(ir::Module& module) {
 
-        pass = createPass();
-
-        if(pass != NULL) {
-
-            transforms::PassManager manager( &module );
-
-		    manager.addPass( *pass );
-
-		    manager.runOnModule();
-
-            manager.destroyPasses();
+        transforms::PassManager manager( &module );
+        
+        createPasses();
+        for(PassMap::iterator pass = passes.begin(); pass != passes.end(); ++pass)
+        {
+            if(pass->second != NULL)
+                manager.addPass( *(pass->second) ); 
         }
+
+	    manager.runOnModule();
+        manager.destroyPasses();
+        
     }
 
     void PTXInstrumentor::finalize() {

@@ -12,6 +12,7 @@
 #include <ocelot/cuda/interface/cuda_runtime.h>
 
 #include <ocelot/transforms/interface/CToPTXInstrumentationPass.h>
+#include <ocelot/transforms/interface/CToPTXModulePass.h>
 #include <ocelot/ir/interface/Module.h>
 
 #include <hydrazine/implementation/ArgumentParser.h>
@@ -74,11 +75,14 @@ namespace analysis
         }
     }
 
-    transforms::Pass *MemoryEfficiencyInstrumentor::createPass() {
+    void MemoryEfficiencyInstrumentor::createPasses() {
 
         transforms::CToPTXInstrumentationPass *pass = new transforms::CToPTXInstrumentationPass("resources/memoryEfficiency.c");
         symbol = pass->baseAddress;
-        return pass;   
+        transforms::CToPTXModulePass *modulePass = new transforms::CToPTXModulePass;
+        
+        passes[0] = pass;   
+        passes[1] = modulePass;
     }
 
     void MemoryEfficiencyInstrumentor::extractResults(std::ostream *out) {

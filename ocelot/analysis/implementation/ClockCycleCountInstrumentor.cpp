@@ -45,10 +45,11 @@ namespace analysis
         cudaMemcpyToSymbol(symbol.c_str(), &clock_sm_info, sizeof(size_t *), 0, cudaMemcpyHostToDevice);
     }
 
-    transforms::Pass *ClockCycleCountInstrumentor::createPass() {
+    void ClockCycleCountInstrumentor::createPasses() 
+    {
         transforms::CToPTXInstrumentationPass *pass = new transforms::CToPTXInstrumentationPass("resources/clockCycleCount.c");
         symbol = pass->baseAddress;
-        return pass;
+        passes[0] = pass;
     }
 
     void ClockCycleCountInstrumentor::extractResults(std::ostream *out) {

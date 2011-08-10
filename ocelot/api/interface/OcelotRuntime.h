@@ -43,8 +43,7 @@ namespace ocelot
 		analysis::BasicBlockInstrumentor _basicBlockInstrumentor;
 		analysis::BranchDivergenceInstrumentor _branchDivergenceInstrumentor;
 		analysis::MemoryEfficiencyInstrumentor _memoryEfficiencyInstrumentor;
-		analysis::ModulePassTestInstrumentor _modulePassTestInstrumentor;
-
+		
 		bool _initialized;
 		
 	public:

@@ -80,10 +80,11 @@ namespace analysis
         cudaMemcpyToSymbol(symbol.c_str(), &branchDivInfo, sizeof(size_t *), 0, cudaMemcpyHostToDevice);   
     }
 
-    transforms::Pass *BranchDivergenceInstrumentor::createPass() {
+    void BranchDivergenceInstrumentor::createPasses() 
+    {
         transforms::CToPTXInstrumentationPass *pass = new transforms::CToPTXInstrumentationPass("resources/branchDivergence.c");
         symbol = pass->baseAddress;
-        return pass;
+        passes[0] = pass;
     }
 
     void BranchDivergenceInstrumentor::extractResults(std::ostream *out) {

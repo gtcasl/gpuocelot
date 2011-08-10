@@ -66,34 +66,38 @@ namespace analysis
         }
     }
 
-    transforms::Pass *BasicBlockInstrumentor::createPass() {
+    void BasicBlockInstrumentor::createPasses() {
         
         entries = 1;
+        transforms::CToPTXInstrumentationPass *pass;
         
         switch(type) {
             case executionCount:
             {
-                transforms::CToPTXInstrumentationPass *pass = new transforms::CToPTXInstrumentationPass("resources/basicBlockExecutionCount.c");
+                pass = new transforms::CToPTXInstrumentationPass("resources/basicBlockExecutionCount.c");
                 symbol = pass->baseAddress;
-                return pass;   
+                break;
             }
             case instructionCount:
             {
-                transforms::CToPTXInstrumentationPass *pass = new transforms::CToPTXInstrumentationPass("resources/dynamicInstructionCount.c");
+                pass = new transforms::CToPTXInstrumentationPass("resources/dynamicInstructionCount.c");
                 symbol = pass->baseAddress;
-                return pass;     
+                break;
             }
+            /*
             case memoryIntensity:
             {
-                transforms::BasicBlockInstrumentationPass *basicBlockPass = new transforms::MemoryIntensityPass;
-                basicBlockPass->entries = entries = 2;
-                symbol = basicBlockPass->basicBlockCounterBase();
-                return basicBlockPass;
+                pass = new transforms::MemoryIntensityPass;
+                pass->entries = entries = 2;
+                symbol = pass->basicBlockCounterBase();
+                break;
             }
+            */
             default:
                 throw hydrazine::Exception( "No basic block instrumentation pass specified!" );
         }
         
+        passes[0] = pass; 
     }
 
     void BasicBlockInstrumentor::extractResults(std::ostream *out) {

@@ -65,6 +65,7 @@ namespace analysis
                 text
             };
         
+            typedef std::map<int, transforms::Pass *> PassMap;
             typedef std::map<std::string, size_t> KernelDataMap;
             typedef std::map<std::string, std::vector<std::string>> KernelLabelsMap;
 
@@ -86,8 +87,8 @@ namespace analysis
             /*! \brief The name of kernel being instrumented */
 			std::string kernelName;        
 
-            /*! \brief The instrumentation pass */
-            transforms::Pass *pass;
+            /*! \brief The instrumentation passes */
+            PassMap passes;
             
             /*! \brief The symbol name for data structure storing instrumentation results */
             std::string symbol;
@@ -142,8 +143,8 @@ namespace analysis
             /*! \brief The finalize method performs any necessary CUDA runtime actions after instrumentation */
             void finalize();
 
-            /*! \brief The createPass method instantiates the instrumentation pass */
-            virtual transforms::Pass *createPass() = 0;
+            /*! \brief The createPasses method instantiates the instrumentation passes */
+            virtual void createPasses() = 0;
 
             /*! \brief Output device info */
             void deviceInfo(std::ostream *out);

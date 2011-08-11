@@ -8,6 +8,7 @@
 #define C_TO_PTX_MODULE_PASS_H_INCLUDED
 
 #include <ocelot/transforms/interface/Pass.h>
+#include <ocelot/translator/interface/CToPTXTranslator.h>
 #include <ocelot/analysis/interface/DataflowGraph.h>
 #include <ocelot/ir/interface/PTXInstruction.h>
 #include <ocelot/ir/interface/PTXOperand.h>
@@ -33,6 +34,9 @@ namespace transforms
 			/*! \brief Run the pass on a specific module */
 			void runOnModule(ir::Module& m);
 			void finalize();
+			
+        private:
+			ir::PTXKernel * uniqueElementCount();
 	};
 }
 

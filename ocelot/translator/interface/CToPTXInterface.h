@@ -86,10 +86,6 @@ unsigned long predicateEvalWarpUniform();
 
 unsigned long predicateEvalWarpDivergent();
 
-unsigned long memoryTransactionCount();
-
-void computeUniqueMemoryTransactions();
-
 unsigned long instructionCount();
 
 unsigned long computeBaseAddress();

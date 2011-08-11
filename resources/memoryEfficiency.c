@@ -10,7 +10,13 @@
         {
             sharedMem[threadId] = computeBaseAddress();
         }
-       
-        uniqueElementCount(sharedMem); 
+        
+        if(leastActiveThreadInWarp() != 0)
+        {
+            GLOBAL_MEM:
+            {
+                deviceMem[0] = deviceMem[0] + uniqueElementCount(sharedMem);
+            }
+        } 
     }    
 }

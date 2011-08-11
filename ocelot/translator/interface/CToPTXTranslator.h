@@ -71,8 +71,6 @@
 #define INSTRUCTION_COUNT               "instructionCount"
 
 #define COMPUTE_BASE_ADDRESS            "computeBaseAddress"
-#define UNIQUE_ELEMENT_COUNT            "uniqueElementCount"
-#define UNIQUE_COUNT                    "uniqueCount"
 
 #define LEAST_ACTIVE_THREAD     "$leastActiveThread"
 #define BEGIN_REDUCTION         "$beginReduction"
@@ -226,9 +224,7 @@ namespace translator {
 		        void generateBlockThreadId(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn);
 		        void generateComputeBaseAddress(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn, std::string callName);
 		        void generateLeastActiveThreadInWarp(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn);
-		        void generateUniqueElementCount(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn);
-		        void generateMemoryTransactionCount(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn, std::string callName);
-		        void generateComputeUniqueMemoryTransactions(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn);
+		        void generateUniqueElementCount(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn, std::string callName);
 		        void generatePredicateEvalWarpUniform(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn, bool isUniform);
 		        void generateSyncThreads(ir::PTXInstruction inst, ir::PTXStatement stmt);
 		        void generateStaticAttributes(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn, std::string callName);

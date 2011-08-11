@@ -42,16 +42,6 @@ namespace transforms
             
             InstrumentationSpecifier();
     };
-
-    class BranchTargetHandler {
-    
-        public:
-            
-            std::string target;
-            analysis::DataflowGraph::iterator current;
-            
-            BranchTargetHandler(std::string target, analysis::DataflowGraph::iterator current);
-    };
     
     class TranslationBlock {
     
@@ -84,15 +74,6 @@ namespace transforms
             unsigned int kernelInstructionCount;
             ir::PTXInstruction originalInstruction;
     };
-    
-    class UtilityFunction {
-    
-        public:
-        
-        typedef std::vector<analysis::DataflowGraph::RegisterId> RegisterVector;
-        
-        RegisterVector registers;
-    };
 
 	/*! \brief A class for an instrumentation pass that adds generated PTX from
 	    CToPTXTranslator to the kernel.
@@ -104,7 +85,6 @@ namespace transforms
 			typedef std::map<ir::PTXInstruction::Opcode, std::string> OpcodeMap; 
             typedef std::map<std::string, ir::PTXInstruction::AddressSpace> AddressSpaceMap;   
             typedef std::map<ir::PTXOperand::DataType, std::string> DataTypeMap; 
-            typedef std::vector<BranchTargetHandler> BranchTargetVector;
 			
 			OpcodeMap opcodeMap;
             AddressSpaceMap addressSpaceMap;
@@ -113,8 +93,6 @@ namespace transforms
 			std::vector<std::string> instructionClasses;
 			std::vector<std::string> addressSpaceSpecifiers;
 			std::vector<std::string> types;
-			UtilityFunction utilityFunction;
-			BranchTargetVector branchTargetVector;
 			
 		protected:
 		    analysis::DataflowGraph& dfg();
@@ -129,7 +107,6 @@ namespace transforms
 	    private:
 	        ir::PTXStatement computeBaseAddress(ir::PTXStatement statement, ir::PTXInstruction original);
 	        ir::PTXStatement prepareStatementToInsert(ir::PTXStatement statement, StaticAttributes attributes);
-	        void handleFunction(analysis::DataflowGraph::iterator basicBlock, unsigned int instruction);
 	        void insertNewBasicBlocks(TranslationBlock translationBlock, analysis::DataflowGraph::iterator basicBlock);
 	        unsigned int kernelInstructionCount(TranslationBlock translationBlock);
 	        void instrumentInstruction(TranslationBlock translationBlock); 

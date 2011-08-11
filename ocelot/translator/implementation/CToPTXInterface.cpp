@@ -122,14 +122,6 @@ unsigned long predicateEvalWarpDivergent(){
     return 0;
 }
 
-unsigned long memoryTransactionCount(){
-    return 0;
-}
-
-void computeUniqueMemoryTransactions() {
-
-}
-
 unsigned long instructionCount() {
     return 1;
 }

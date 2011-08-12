@@ -128,6 +128,131 @@ bool ProgramStructureGraph::Block::block_iterator::end() const
 	return _iterator == _end;
 }
 
+ProgramStructureGraph::Block::const_block_iterator::const_block_iterator()
+{
+
+}
+
+ProgramStructureGraph::Block::const_block_iterator::const_block_iterator(
+	const block_iterator& i)
+: _iterator(i._iterator), _end(i._end)
+{
+
+}
+
+ProgramStructureGraph::Block::const_block_iterator::const_block_iterator(
+	const const_block_iterator& i)
+: _iterator(i._iterator), _end(i._end)
+{
+
+}
+
+ProgramStructureGraph::Block::const_block_iterator::const_block_iterator(
+	const const_basic_block_iterator& i, const const_basic_block_iterator& b,
+	const const_basic_block_iterator& e)
+: _iterator(i), _begin(b), _end(e)
+{
+
+}
+
+ProgramStructureGraph::Block::const_block_iterator::reference
+	ProgramStructureGraph::Block::const_block_iterator::operator*() const
+{
+	return **_iterator;
+}
+
+ProgramStructureGraph::Block::const_block_iterator::pointer
+	ProgramStructureGraph::Block::const_block_iterator::operator->() const
+{
+	return &**_iterator;
+}
+
+ProgramStructureGraph::Block::const_block_iterator::self&
+	ProgramStructureGraph::Block::const_block_iterator::operator++()
+{
+	while(true)
+	{
+		if(_iterator != _end)
+		{
+			++_iterator;
+			if(!(*_iterator)->instructions.empty())
+			{
+				break;
+			}
+		}
+		else
+		{
+			break;
+		}
+	}
+	
+	return *this;
+}
+
+ProgramStructureGraph::Block::const_block_iterator::self
+	ProgramStructureGraph::Block::const_block_iterator::operator++(int)
+{
+	self copy = *this;
+	
+	++*this;
+	
+	return copy;
+}
+
+ProgramStructureGraph::Block::const_block_iterator::self&
+	ProgramStructureGraph::Block::const_block_iterator::operator--()
+{
+	while(true)
+	{
+		if(_iterator != _begin)
+		{
+			--_iterator;
+			if(!(*_iterator)->instructions.empty())
+			{
+				break;
+			}
+		}
+		else
+		{
+			break;
+		}
+	}
+	
+	return *this;
+}
+
+ProgramStructureGraph::Block::const_block_iterator::self
+	ProgramStructureGraph::Block::const_block_iterator::operator--(int)
+{
+	self copy = *this;
+	
+	--*this;
+	
+	return copy;
+}
+
+bool ProgramStructureGraph::Block::const_block_iterator::operator==(
+	const self& i) const
+{
+	return i._iterator == _iterator && i._end == _end;
+}
+
+bool ProgramStructureGraph::Block::const_block_iterator::operator!=(
+	const self& i) const
+{
+	return !(i == *this);
+}
+
+bool ProgramStructureGraph::Block::const_block_iterator::begin() const
+{
+	return _iterator == _begin;
+}
+
+bool ProgramStructureGraph::Block::const_block_iterator::end() const
+{
+	return _iterator == _end;
+}
+
 ProgramStructureGraph::Block::iterator::iterator()
 {
 
@@ -428,6 +553,110 @@ bool ProgramStructureGraph::Block::successor_iterator::operator!=(
 	return !(i == *this);
 }
 				
+ProgramStructureGraph::Block::const_successor_iterator::const_successor_iterator()
+{
+	
+}
+
+ProgramStructureGraph::Block::const_successor_iterator::const_successor_iterator(
+	const const_successor_iterator& i)
+: _block(i._block), _successor(i._successor)
+{
+
+}
+
+ProgramStructureGraph::Block::const_successor_iterator::const_successor_iterator(
+	const successor_iterator& i)
+: _block(i._block), _successor(i._successor)
+{
+
+}
+
+ProgramStructureGraph::Block::const_successor_iterator::const_successor_iterator(
+	const const_block_iterator& block,
+	const const_basic_block_iterator& successor)
+: _block(block), _successor(successor)
+{
+
+}
+
+ProgramStructureGraph::Block::const_successor_iterator::reference 
+	ProgramStructureGraph::Block::const_successor_iterator::operator*() const
+{
+	return **_successor;
+}
+
+ProgramStructureGraph::Block::const_successor_iterator::pointer 
+	ProgramStructureGraph::Block::const_successor_iterator::operator->() const
+{
+	return &**_successor;
+}
+
+ProgramStructureGraph::Block::const_successor_iterator::self& 
+	ProgramStructureGraph::Block::const_successor_iterator::operator++()
+{
+	++_successor;
+	
+	while(!_block.end() && _successor == _block->successors.end())
+	{
+		++_block;
+		_successor = _block->successors.begin();
+	}
+	
+	return *this;
+}
+
+ProgramStructureGraph::Block::const_successor_iterator::self 
+	ProgramStructureGraph::Block::const_successor_iterator::operator++(int)
+{
+	self copy = *this;
+	
+	++*this;
+
+	return copy;
+}
+
+ProgramStructureGraph::Block::const_successor_iterator::self& 
+	ProgramStructureGraph::Block::const_successor_iterator::operator--()
+{
+	if(_successor != _block->successors.begin())
+	{
+		--_successor;
+	}
+	else
+	{
+		while(!_block.begin() && _block->successors.empty())
+		{
+			--_block;
+		}
+		_successor = --_block->successors.end();
+	}
+	
+	return *this;
+}
+
+ProgramStructureGraph::Block::const_successor_iterator::self 
+	ProgramStructureGraph::Block::const_successor_iterator::operator--(int)
+{
+	self copy = *this;
+	
+	--*this;
+	
+	return copy;
+}
+
+bool ProgramStructureGraph::Block::const_successor_iterator::operator==(
+	const self& i) const
+{
+	return i._block == _block && i._successor != _successor;
+}
+
+bool ProgramStructureGraph::Block::const_successor_iterator::operator!=(
+	const self& i) const
+{
+	return !(i == *this);
+}
+
 ProgramStructureGraph::Block::predecessor_iterator::predecessor_iterator()
 {
 
@@ -519,6 +748,109 @@ bool ProgramStructureGraph::Block::predecessor_iterator::operator==(
 }
 
 bool ProgramStructureGraph::Block::predecessor_iterator::operator!=(
+	const self& i) const
+{
+	return !(i == *this);
+}
+
+ProgramStructureGraph::Block::const_predecessor_iterator::const_predecessor_iterator()
+{
+
+}
+
+ProgramStructureGraph::Block::const_predecessor_iterator::const_predecessor_iterator(
+	const predecessor_iterator& i)
+: _block(i._block), _predecessor(i._predecessor)
+{
+
+}
+
+ProgramStructureGraph::Block::const_predecessor_iterator::const_predecessor_iterator(
+	const const_predecessor_iterator& i)
+: _block(i._block), _predecessor(i._predecessor)
+{
+
+}
+
+ProgramStructureGraph::Block::const_predecessor_iterator::const_predecessor_iterator(
+	const const_block_iterator& b, const const_basic_block_iterator& p)
+: _block(b), _predecessor(p)
+{
+
+}
+
+ProgramStructureGraph::Block::const_predecessor_iterator::reference 
+	ProgramStructureGraph::Block::const_predecessor_iterator::operator*() const
+{
+	return **_predecessor;
+}
+
+ProgramStructureGraph::Block::const_predecessor_iterator::pointer 
+	ProgramStructureGraph::Block::const_predecessor_iterator::operator->() const
+{
+	return &**_predecessor;
+}
+
+ProgramStructureGraph::Block::const_predecessor_iterator::self& 
+	ProgramStructureGraph::Block::const_predecessor_iterator::operator++()
+{
+	++_predecessor;
+	
+	while(!_block.end() && _predecessor == _block->predecessors.end())
+	{
+		++_block;
+		_predecessor = _block->predecessors.begin();
+	}
+	
+	return *this;
+}
+
+ProgramStructureGraph::Block::const_predecessor_iterator::self 
+	ProgramStructureGraph::Block::const_predecessor_iterator::operator++(int)
+{
+	self copy = *this;
+	
+	++*this;
+	
+	return copy;
+}
+
+ProgramStructureGraph::Block::const_predecessor_iterator::self& 
+	ProgramStructureGraph::Block::const_predecessor_iterator::operator--()
+{
+	if(_predecessor != _block->predecessors.begin())
+	{
+		--_predecessor;
+	}
+	else
+	{
+		while(!_block.begin() && _block->predecessors.empty())
+		{
+			--_block;
+		}
+		_predecessor = --_block->predecessors.end();
+	}
+
+	return *this;
+}
+
+ProgramStructureGraph::Block::const_predecessor_iterator::self 
+	ProgramStructureGraph::Block::const_predecessor_iterator::operator--(int)
+{
+	self copy = *this;
+	
+	++*this;
+	
+	return copy;
+}
+
+bool ProgramStructureGraph::Block::const_predecessor_iterator::operator==(
+	const self& i) const
+{
+	return i._block == _block && i._predecessor == _predecessor;
+}
+
+bool ProgramStructureGraph::Block::const_predecessor_iterator::operator!=(
 	const self& i) const
 {
 	return !(i == *this);

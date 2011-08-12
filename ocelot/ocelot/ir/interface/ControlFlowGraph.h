@@ -189,6 +189,8 @@ public:
 
 	/*! \brief An instruction list */
 	typedef BasicBlock::InstructionList InstructionList;
+	/*! \brief An iterator over instructions */
+	typedef InstructionList::iterator instruction_iterator;
 
 	/*! \brief maps a basic block [by label] to a coloring */
 	typedef std::unordered_map<std::string, unsigned int> BasicBlockColorMap;

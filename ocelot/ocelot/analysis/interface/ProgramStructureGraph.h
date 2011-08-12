@@ -82,7 +82,7 @@ public:
 			typedef const value_type&    reference;
 			typedef const value_type*    pointer;
 		
-		public:	      
+		public:
 			const_block_iterator();
 			const_block_iterator(const const_block_iterator&);
 			const_block_iterator(const block_iterator&);
@@ -100,10 +100,10 @@ public:
 			
 			bool operator==(const self&) const;
 			bool operator!=(const self&) const;	
-		
+			
 			bool begin() const;
 			bool end() const;
-		
+			
 		private:
 			const_basic_block_iterator _iterator;	
 			const_basic_block_iterator _begin;
@@ -175,6 +175,8 @@ public:
 			const_block_iterator       _basicBlock;		
 		};
 		
+		class const_successor_iterator;
+		
 		/*! \brief An iterator over block successors */
 		class successor_iterator
 		{
@@ -203,6 +205,8 @@ public:
 		private:
 			block_iterator         _block;
 			basic_block_iterator _successor;		
+		
+			friend class const_successor_iterator;
 		};
 		
 		/*! \brief An iterator over block successors */
@@ -214,12 +218,13 @@ public:
 			typedef const value_type&        reference;
 			typedef const value_type*        pointer;
 		
-		public:	      
+		public:
 			const_successor_iterator();
 			const_successor_iterator(const const_successor_iterator&);
 			const_successor_iterator(const successor_iterator&);
 			explicit const_successor_iterator(const const_block_iterator&,
 				const const_basic_block_iterator&);
+
 		public:
 			reference operator*() const;
 			pointer operator->() const;
@@ -235,6 +240,8 @@ public:
 			const_block_iterator       _block;
 			const_basic_block_iterator _successor;		
 		};
+		
+		class const_predecessor_iterator;
 		
 		/*! \brief An iterator over block predecessors */
 		class predecessor_iterator
@@ -262,8 +269,10 @@ public:
 			bool operator!=(const self&) const;	
 		
 		private:
-			block_iterator         _block;
+			block_iterator       _block;
 			basic_block_iterator _predecessor;	
+		
+			friend class const_predecessor_iterator;
 		};
 		
 		/*! \brief A const iterator over block predecessors */
@@ -293,8 +302,8 @@ public:
 			bool operator!=(const self&) const;	
 		
 		private:
-			block_iterator         _block;
-			basic_block_iterator _predecessor;	
+			const_block_iterator       _block;
+			const_basic_block_iterator _predecessor;	
 		};
 		
 	public:
@@ -391,7 +400,7 @@ public:
 	/*! \brief Is the graph empty? */
 	bool empty() const;
 	
-private:
+protected:
 	BlockVector _blocks;
 };
 

@@ -1032,6 +1032,7 @@ namespace translator
         inst.tailCall = false;
         inst.a.addressMode = ir::PTXOperand::Label;
         inst.a.identifier = callName;
+
         inst.b.addressMode = ir::PTXOperand::ArgumentList;
         ir::PTXOperand input = ir::PTXOperand(ir::PTXOperand::Register, reductionBuffer.name);
         input.type = type;
@@ -1044,7 +1045,7 @@ namespace translator
     
         setPredicate(inst);
         stmt.instruction = inst;
-        //statements.push_back(stmt);    
+        statements.push_back(stmt);    
         
         inst.opcode = ir::PTXInstruction::Ld;
         inst.addressSpace = ir::PTXInstruction::Param;
@@ -1052,15 +1053,15 @@ namespace translator
         inst.d.addressMode = ir::PTXOperand::Register;
         inst.d.type = type;
         
-        inst.d.identifier = COD_REG + boost::lexical_cast<std::string>(++maxRegister);
-        registers.push_back(inst.d.identifier);
+        inst.d.identifier = COD_REG + boost::lexical_cast<std::string>(14);
+        //registers.push_back(inst.d.identifier);
         inst.a.identifier = uniqueCount.name;
         inst.a.addressMode = ir::PTXOperand::Address;
         inst.a.offset = 0;
         
         setPredicate(inst);
         stmt.instruction = inst;
-        //statements.push_back(stmt);
+        statements.push_back(stmt);
         
         registerMap[REG + boost::lexical_cast<std::string>(insn->opnds.calli.src)] = inst.d.identifier;  
     
@@ -1088,7 +1089,7 @@ namespace translator
             {
                 ir::PTXStatement shared(ir::PTXStatement::Shared);
                 shared.name = baseAddress() + baseAddressId;
-                shared.array.stride = ir::PTXStatement::ArrayStrideVector(1, 4);
+                shared.array.stride = ir::PTXStatement::ArrayStrideVector(1, 256);
                 shared.alignment = 64;
                 shared.type = type;
                 //shared.attribute = ir::PTXStatement::Extern;
@@ -1403,6 +1404,8 @@ namespace translator
 	            inst.comparisonOperator = ir::PTXInstruction::Ne;
 	            predicateInfo.condition = PredicateInfo::TAKEN;
 	            inst.type = ir::PTXOperand::b32;
+		    inst.b.addressMode = ir::PTXOperand::Immediate;
+		    inst.b.imm_uint = 0;
 	            predicateInfo.set = true;
 	        }
 	       

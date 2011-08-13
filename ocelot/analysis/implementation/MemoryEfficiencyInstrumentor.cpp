@@ -32,29 +32,7 @@ namespace analysis
     }
 
     void MemoryEfficiencyInstrumentor::analyze(ir::Module &module) {
-       
-        for (ir::Module::KernelMap::const_iterator kernel = module.kernels().begin(); 
-	        kernel != module.kernels().end(); ++kernel) 
-	    {
-	    
-	        kernelDataMap[kernel->first] = 0;
-	             
-            for( ir::ControlFlowGraph::const_iterator block = kernel->second->cfg()->begin(); 
-                            block != kernel->second->cfg()->end(); ++block ) {
-                
-                for( ir::ControlFlowGraph::InstructionList::const_iterator instruction = block->instructions.begin();
-                    instruction != block->instructions.end(); ++instruction)
-                {
-                    ir::PTXInstruction *ptxInst = (ir::PTXInstruction *)*instruction;
-                
-                    if((ptxInst->opcode == ir::PTXInstruction::St || ptxInst->opcode == ir::PTXInstruction::Ld)
-                        && ptxInst->addressSpace == ir::PTXInstruction::Global)
-                    {
-                        kernelDataMap[kernel->first]++;
-                    }
-                }
-            }      
-        }       
+             
     }
 
     void MemoryEfficiencyInstrumentor::initialize() {
@@ -114,9 +92,7 @@ namespace analysis
                 *out << "Thread Count: " << threads << "\n\n";
                 
                std::cout << "Total Global Memory Transactions: " << info[0]  << "\n";
-               std::cout << "Transactions / Global Memory Operations: " << info[0] << "/" << kernelDataMap[kernelName]  << "\n\n";
-
-
+           
             break;
         }
 

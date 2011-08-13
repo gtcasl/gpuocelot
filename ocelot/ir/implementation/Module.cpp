@@ -258,15 +258,30 @@ void ir::Module::writeIR( std::ostream& stream ) const {
 	stream << "/* Module " << _modulePath << " */\n\n";
 	
 #if EMIT_FUNCTION_PROTOTYPES == 1
-	stream << "/* Function prototypes */\n";
-	for (FunctionPrototypeMap::const_iterator prot_it = _prototypes.begin();
-		prot_it != _prototypes.end(); ++prot_it) {
-		
-		if (prot_it->second.callType != ir::PTXKernel::Prototype::Entry
-			&& prot_it->second.identifier != "") {
-			stream << prot_it->second.toString() << "\n";
-		}
-	}
+        {
+                std::set<std::string> encounteredPrototypes;
+                
+                stream << "/* Function prototypes */\n";
+                for (FunctionPrototypeMap::const_iterator prot_it = _prototypes.begin();
+                        prot_it != _prototypes.end(); ++prot_it) {
+                
+                        if (prot_it->second.callType != ir::PTXKernel::Prototype::Entry
+                                && prot_it->second.identifier != "") {
+                                stream << prot_it->second.toString() << "\n";
+                                encounteredPrototypes.insert(prot_it->second.identifier);
+                        }
+                }
+                
+                for (KernelMap::const_iterator kernel = _kernels.begin(); kernel != _kernels.end(); ++kernel) {
+                        if (kernel->second->function() && 
+                                encounteredPrototypes.find((kernel->second)->name) == encounteredPrototypes.end()) {
+                        
+                                stream << kernel->second->getPrototype().toString() << "\n";
+                                encounteredPrototypes.insert(kernel->second->name);
+                        }
+                }
+        }
+
 #endif
 
 	stream << "\n/* Globals */\n";

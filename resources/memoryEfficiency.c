@@ -15,7 +15,7 @@
         {
             GLOBAL_MEM:
             {
-                uniqueElementCount(sharedMem);
+                deviceMem[0] = deviceMem[0] + uniqueElementCount(sharedMem);
             }
         } 
     }    

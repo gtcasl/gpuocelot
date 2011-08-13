@@ -25,13 +25,14 @@ namespace tools
 			/*! \brief The possible PTX to PTX passes */
 			enum PassType
 			{
-				InvalidPassType = 0x0,
-				RemoveBarriers = 0x1,
-				ReverseIfConversion = 0x2,
-				SubkernelFormation = 0x4,
-				StructuralTransform = 0x8,
+				InvalidPassType      = 0x0,
+				RemoveBarriers       = 0x1,
+				ReverseIfConversion  = 0x2,
+				SubkernelFormation   = 0x4,
+				StructuralTransform  = 0x8,
 				MIMDThreadScheduling = 0x10,
-				DeadCodeElimination = 0x20
+				DeadCodeElimination  = 0x20,
+				SplitBasicBlocks     = 0x40
 			};
 	
 		public:
@@ -52,6 +53,9 @@ namespace tools
 			
 			/*! \brief The target sub-kernel size */
 			unsigned int subkernelSize;
+			
+			/*! \brief The target basic block size */
+			unsigned int basicBlockSize;
 			
 			/*! \brief Print out the CFG of optimized kernels */
 			bool cfg;

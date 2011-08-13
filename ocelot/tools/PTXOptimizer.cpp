@@ -17,6 +17,7 @@
 #include <ocelot/transforms/interface/SubkernelFormationPass.h>
 #include <ocelot/transforms/interface/MIMDThreadSchedulingPass.h>
 #include <ocelot/transforms/interface/DeadCodeEliminationPass.h>
+#include <ocelot/transforms/interface/SplitBasicBlockPass.h>
 
 #include <ocelot/ir/interface/Module.h>
 
@@ -96,6 +97,13 @@ namespace tools
 		if( passes & DeadCodeElimination )
 		{
 			transforms::Pass* pass = new transforms::DeadCodeEliminationPass;
+			manager.addPass( *pass );
+		}
+		
+		if( passes & SplitBasicBlocks )
+		{
+			transforms::Pass* pass = new transforms::SplitBasicBlockPass(
+				basicBlockSize );
 			manager.addPass( *pass );
 		}
 		
@@ -180,6 +188,11 @@ static int parsePassTypes( const std::string& passList )
 			report( "  Matched dead-code-elimination." );
 			types |= tools::PTXOptimizer::DeadCodeElimination;
 		}
+		else if( *pass == "split-blocks" )
+		{
+			report( "  Matched split-blocks." );
+			types |= tools::PTXOptimizer::SplitBasicBlocks;
+		}
 		else if( !pass->empty() )
 		{
 			std::cout << "==Ocelot== Warning: Unknown pass name - '" << *pass 
@@ -207,10 +220,12 @@ int main( int argc, char** argv )
 		"The number of registers available for allocation." );
 	parser.parse( "-s", "--subkernel-size", optimizer.subkernelSize, 70,
 		"The target size for subkernel formation." );
+	parser.parse( "-b", "--block-size", optimizer.basicBlockSize, 50,
+		"The target size for block splitting." );
 	parser.parse( "-p", "--passes", passes, "", 
 		"A list of optimization passes (remove-barriers, " 
 		"reverse-if-conversion, subkernel-formation, structural-transform, "
-		"mimd-threading, dead-code-elimination)" );
+		"mimd-threading, dead-code-elimination, split-blocks)" );
 	parser.parse( "-c", "--cfg", optimizer.cfg, false, 
 		"Dump out the CFG's of all generated kernels." );
 	parser.parse();

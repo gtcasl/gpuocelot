@@ -54,14 +54,17 @@ const ir::Kernel& ir::Kernel::operator=(const Kernel &kernel) {
 ir::Parameter* ir::Kernel::getParameter(const std::string& name) {
 	using namespace std;
 
+	
 	ParameterMap::iterator p_it = parameters.find(name);
 	if (p_it != parameters.end()) {
+		report("getParameter(" << name << ") returned in Kernel::parameters");
 		return &p_it->second;
 	}
 
 	for (ParameterVector::iterator p_it = arguments.begin(); 
 		p_it != arguments.end(); ++p_it) {
 		if (p_it->name == name) {
+		report("getParameter(" << name << ") returned in Kernel::arguments");
 			return &*p_it;
 		}
 	}
@@ -95,7 +98,6 @@ void ir::Kernel::insertParameter(const ir::Parameter &parameter, bool asParamete
 		arguments.push_back(parameter);
 	}
 }
-
 
 bool ir::Kernel::function() const {
 	return _function;

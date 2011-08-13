@@ -480,6 +480,12 @@ namespace transforms
         for(ir::PTXKernel::PTXStatementVector::const_iterator statement = translation.statements.begin();
             statement != translation.statements.end(); ++statement) {
             
+            if(statement->directive == ir::PTXStatement::Param)
+            {   
+                k.insertParameter(ir::Parameter(*statement, false, false), true);
+                continue;
+            }
+            
             if(statement->directive == ir::PTXStatement::Shared)
             {
                 ir::PTXKernel *ptxKernel = (ir::PTXKernel *)&k;

@@ -46,26 +46,12 @@ namespace transforms
 	    
 	    ir::PTXStatement reductionBuffer = ir::PTXStatement(ir::PTXStatement::Param);
 	    reductionBuffer.name = "reductionBuffer";
-        
         reductionBuffer.type = type;
         
         ir::PTXStatement uniqueCount = ir::PTXStatement(ir::PTXStatement::Param);
 	    uniqueCount.name = "uniqueCount";
-        
         uniqueCount.type = type;
         
-        ir::PTXStatement startParam = ir::PTXStatement(ir::PTXStatement::StartParam);
-        startParam.isReturnArgument = true;
-        ir::PTXStatement endParam = ir::PTXStatement(ir::PTXStatement::EndParam);
-        endParam.isReturnArgument = true;
-        
-        statements.push_back(startParam);
-        statements.push_back(uniqueCount);
-        statements.push_back(endParam);
-        
-        statements.push_back(ir::PTXStatement(ir::PTXStatement::StartParam));
-        statements.push_back(reductionBuffer);
-        statements.push_back(ir::PTXStatement(ir::PTXStatement::EndParam));
 
         ir::PTXStatement beginReduction(ir::PTXStatement::Label);
         beginReduction.name = BEGIN_REDUCTION;
@@ -579,6 +565,9 @@ namespace transforms
 	    
 	    ir::PTXKernel *kernel = new ir::PTXKernel(statements.begin(), statements.end(), true);
 	    kernel->name = "uniqueElementCount";
+	    
+	    kernel->arguments.push_back(ir::Parameter(reductionBuffer, true, false));
+	    kernel->arguments.push_back(ir::Parameter(uniqueCount, true, true));
 
 	    return kernel;
 	

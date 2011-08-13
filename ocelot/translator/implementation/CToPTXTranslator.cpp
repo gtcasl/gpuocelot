@@ -69,7 +69,8 @@ namespace translator
 
             if(pred->set && (instruction.opcode == ir::PTXInstruction::St 
             || instruction.opcode == ir::PTXInstruction::Ld
-            || instruction.opcode == ir::PTXInstruction::Call)){
+            || instruction.opcode == ir::PTXInstruction::Call
+            || instruction.opcode == ir::PTXInstruction::Add)){
                 
                 if(pred->inv)
                     instruction.pg.condition = ir::PTXOperand::InvPred;
@@ -905,7 +906,7 @@ namespace translator
     void CToPTXTranslator::generateLeastActiveThreadInWarp(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn)
     {
 
-        generateSyncThreads(inst, stmt);
+        //generateSyncThreads(inst, stmt);
             
         //mov.u32 %lmask, %lanemask_lt;
         inst.opcode = ir::PTXInstruction::Mov;
@@ -1004,7 +1005,8 @@ namespace translator
         ir::PTXStatement reductionBuffer = ir::PTXStatement(ir::PTXStatement::Param);
 	    reductionBuffer.name = "reductionBuffer";
 	    reductionBuffer.type = type;
-	    statements.push_back(reductionBuffer);
+	    reductionBuffer.array.stride = ir::PTXStatement::ArrayStrideVector(1, 1);
+        statements.push_back(reductionBuffer);
         
         ir::PTXStatement uniqueCount = ir::PTXStatement(ir::PTXStatement::Param);
 	    uniqueCount.name = "uniqueCount";
@@ -1042,7 +1044,7 @@ namespace translator
     
         setPredicate(inst);
         stmt.instruction = inst;
-        statements.push_back(stmt);    
+        //statements.push_back(stmt);    
         
         inst.opcode = ir::PTXInstruction::Ld;
         inst.addressSpace = ir::PTXInstruction::Param;
@@ -1058,7 +1060,7 @@ namespace translator
         
         setPredicate(inst);
         stmt.instruction = inst;
-        statements.push_back(stmt);
+        //statements.push_back(stmt);
         
         registerMap[REG + boost::lexical_cast<std::string>(insn->opnds.calli.src)] = inst.d.identifier;  
     
@@ -1086,10 +1088,10 @@ namespace translator
             {
                 ir::PTXStatement shared(ir::PTXStatement::Shared);
                 shared.name = baseAddress() + baseAddressId;
-                shared.array.stride = ir::PTXStatement::ArrayStrideVector(1);
+                shared.array.stride = ir::PTXStatement::ArrayStrideVector(1, 4);
                 shared.alignment = 64;
                 shared.type = type;
-                shared.attribute = ir::PTXStatement::Extern;
+                //shared.attribute = ir::PTXStatement::Extern;
 
                 statements.push_back(shared);
                 

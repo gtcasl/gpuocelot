@@ -12,7 +12,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 ir::Kernel::Kernel(Instruction::Architecture isa, const std::string& n, 
 	bool isFunction, const ir::Module* m) :
@@ -54,14 +54,17 @@ const ir::Kernel& ir::Kernel::operator=(const Kernel &kernel) {
 ir::Parameter* ir::Kernel::getParameter(const std::string& name) {
 	using namespace std;
 
+	
 	ParameterMap::iterator p_it = parameters.find(name);
 	if (p_it != parameters.end()) {
+		report("getParameter(" << name << ") returned in Kernel::parameters");
 		return &p_it->second;
 	}
 
 	for (ParameterVector::iterator p_it = arguments.begin(); 
 		p_it != arguments.end(); ++p_it) {
 		if (p_it->name == name) {
+		report("getParameter(" << name << ") returned in Kernel::arguments");
 			return &*p_it;
 		}
 	}
@@ -85,6 +88,15 @@ const ir::Parameter* ir::Kernel::getParameter(const std::string& name) const {
 	}
 
 	return 0;
+}
+
+void ir::Kernel::insertParameter(const ir::Parameter &parameter, bool asParameter) {
+	if (asParameter) {
+		parameters[parameter.name] = parameter;
+	}
+	else {
+		arguments.push_back(parameter);
+	}
 }
 
 bool ir::Kernel::function() const {

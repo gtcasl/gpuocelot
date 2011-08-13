@@ -52,6 +52,12 @@ namespace ir {
 		Parameter* getParameter(const std::string& name);
 		/*!	Returns a const pointer to a parameter identified by 'name' */
 		const Parameter* getParameter(const std::string& name) const;
+		
+		/*! Inserts a parameter into the appropriate data structure
+			\param param defines parameter to insert
+			\param asParameter if true, assumes this is param declaration that is not a kernel argument
+		*/
+		void insertParameter(const ir::Parameter &param, bool asParameter=true);
 
 	public:	
 		/*! \brief Is this kernel actually a function, not a kernel? */

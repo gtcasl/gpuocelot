@@ -60,6 +60,7 @@ namespace ir
 				/*! \brief emits a mangled form of the function prototype */
 				std::string getMangledName() const;
 				
+				/*! \brief */
 				void clear();
 
 			public:
@@ -125,6 +126,9 @@ namespace ir
 			/*! \brief Get the set of all referenced 
 				registers in the instruction set */
 			RegisterVector getReferencedRegisters() const;
+			
+			/*! \brief returns a prototype for this kernel */
+			Prototype getPrototype() const;
 
 		public:
 			/*! \brief renames all the blocks with canonical names */

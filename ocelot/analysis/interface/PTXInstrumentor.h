@@ -41,6 +41,9 @@ namespace analysis
 
             /*! \brief max kernel execution time for a processor (SM) */
             double maxSMRuntime;
+            
+            /*! \brief Dynamic instruction count */
+            double instructionCount;
 
             /*! \brief Maps CTA->(clock cycles, SM) */
             ThreadBlockToProcessorMap threadBlockToProcessorMap;

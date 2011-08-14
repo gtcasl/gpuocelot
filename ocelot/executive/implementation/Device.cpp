@@ -73,9 +73,9 @@ executive::DeviceVector executive::Device::createDevices(
 		case ir::Instruction::LLVM:
 		{
 			DeviceVector cpus;
-			#ifdef HAVE_LLVM
+			//#ifdef HAVE_LLVM
 			cpus.push_back(new MulticoreCPUDevice(flags));
-			#endif
+			//#endif
 			return cpus;
 		}
 		break;
@@ -109,11 +109,11 @@ unsigned int executive::Device::deviceCount(ir::Instruction::Architecture isa,
 		break;
 		case ir::Instruction::LLVM:
 		{
-			#ifdef HAVE_LLVM
+			//#ifdef HAVE_LLVM
 			return 1;
-			#else
-			return 0;
-			#endif
+			//#else
+			//return 0;
+			//#endif
 		}
 		break;
 		case ir::Instruction::CAL:

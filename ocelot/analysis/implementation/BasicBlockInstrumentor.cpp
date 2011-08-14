@@ -115,7 +115,7 @@ namespace analysis
         size_t j = 0;
         size_t k = 0;
         double totalMemOps = 0;
-        double totalCount = 0;
+        _kernelProfile.instructionCount = 0;
         
         for(k = 0; k < threadBlocks; k++) {
             for(i = 0; i < kernelDataMap[kernelName]; i++) {
@@ -168,7 +168,7 @@ namespace analysis
 
                 for(j = 0; j < kernelDataMap[kernelName]; j++) {
                     *out << kernelLabelsMap[kernelName].at(j) << ": " << _kernelProfile.basicBlockExecutionCountMap[j] << "\n";
-                    totalCount += _kernelProfile.basicBlockExecutionCountMap[j];
+                    _kernelProfile.instructionCount += _kernelProfile.basicBlockExecutionCountMap[j];
                     
                 }
 
@@ -183,10 +183,10 @@ namespace analysis
 
                 if(type == instructionCount || type == memoryIntensity){
 
-                    *out << "\nTotal Dynamic Instruction Count: " << totalCount << "\n";
+                    *out << "\nTotal Dynamic Instruction Count: " << _kernelProfile.instructionCount << "\n";
                 }            
                 if(type == memoryIntensity) {
-                    *out << "Aggregate Memory Intensity: " << "[" << totalMemOps << ":" << totalCount << "] " << (totalMemOps / totalCount) * 100 << " %\n";
+                    *out << "Aggregate Memory Intensity: " << "[" << totalMemOps << ":" << _kernelProfile.instructionCount << "] " << (totalMemOps / _kernelProfile.instructionCount) * 100 << " %\n";
                 }    
 
                 *out << "\n\n";        

@@ -31,7 +31,7 @@
 #include <hydrazine/interface/Casts.h>
 
 // LLVM Includes
-#if HAVE_LLVM
+//#if HAVE_LLVM
 #include <llvm/Transforms/Scalar.h>
 #include <llvm/PassManager.h>
 #include <llvm/Target/TargetData.h>
@@ -42,7 +42,7 @@
 #include <llvm/Module.h>
 #include <llvm/Support/SourceMgr.h>
 #include <llvm/Support/raw_ostream.h>
-#endif
+//#endif
 
 // Preprocessor Macros
 #ifdef REPORT_BASE
@@ -104,7 +104,7 @@ void LLVMModuleManager::clearExternalFunctionSet()
 
 ////////////////////////////////////////////////////////////////////////////////
 // Helper Functions
-#if HAVE_LLVM
+//#if HAVE_LLVM
 static unsigned int pad(unsigned int& size, unsigned int alignment)
 {
 	unsigned int padding = alignment - (size % alignment);
@@ -1078,7 +1078,7 @@ static void codegen(LLVMModuleManager::Function& function, llvm::Module& module,
 	function = hydrazine::bit_cast<LLVMModuleManager::Function>(
 		LLVMState::jit()->getPointerToFunction(llvmFunction));
 }
-#endif
+//#endif
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -1095,7 +1095,7 @@ LLVMModuleManager::KernelAndTranslation::KernelAndTranslation(ir::PTXKernel* k,
 
 void LLVMModuleManager::KernelAndTranslation::unload()
 {
-	#if HAVE_LLVM
+	//#if HAVE_LLVM
 	if(_metadata == 0)
 	{
 		delete _kernel;
@@ -1111,17 +1111,17 @@ void LLVMModuleManager::KernelAndTranslation::unload()
 	delete _kernel;
 	delete _module;
 	delete _metadata;
-	#else
+	//#else
 	// Is it possible this is called when LLVMModuleManager is being destructed even with no LLVM
 	// device present?
 //	assertM(false, "LLVM support not compiled into ocelot. You should use a different device.");
-	#endif
+	//#endif
 }
 
 LLVMModuleManager::KernelAndTranslation::MetaData*
 	LLVMModuleManager::KernelAndTranslation::metadata()
 {
-	#if HAVE_LLVM
+	//#if HAVE_LLVM
 	report("Getting metadata for kernel '" << _kernel->name << "'");
 
 	if(_metadata != 0) return _metadata;
@@ -1171,9 +1171,9 @@ LLVMModuleManager::KernelAndTranslation::MetaData*
 	}
 
 	return _metadata;
-	#else
-	assertM(false, "LLVM support not compiled into ocelot.");
-	#endif
+	//#else
+	//assertM(false, "LLVM support not compiled into ocelot.");
+	//#endif
 }
 
 const std::string& LLVMModuleManager::KernelAndTranslation::name() const

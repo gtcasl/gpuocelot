@@ -1,0 +1,3376 @@
+	.version 2.3
+	.target sm_20
+	.address_size 64
+	// compiled with /usr/local/cuda/open64/lib//be
+	// nvopencc 4.0 built on 2011-02-18
+
+	.visible .func _ZN7phalanx10placed_ptrIiNS_13device_memoryEEC1EPiRKS1_ (.param .u64 __cudaparmf1__ZN7phalanx10placed_ptrIiNS_13device_memoryEEC1EPiRKS1_, .param .u64 __cudaparmf2__ZN7phalanx10placed_ptrIiNS_13device_memoryEEC1EPiRKS1_, .param .u64 __cudaparmf3__ZN7phalanx10placed_ptrIiNS_13device_memoryEEC1EPiRKS1_)
+
+	.visible .func _ZN7phalanx9any_placeC1Ev (.param .u64 __cudaparmf1__ZN7phalanx9any_placeC1Ev)
+
+	.visible .func (.param .u64 __cudaretf__ZNK7phalanx20distributed_sequenceIiNS_13device_memoryEE4sizeEv) _ZNK7phalanx20distributed_sequenceIiNS_13device_memoryEE4sizeEv (.param .u64 __cudaparmf1__ZNK7phalanx20distributed_sequenceIiNS_13device_memoryEE4sizeEv)
+
+	.visible .func (.param .u64 __cudaretf__ZN7phalanx20distributed_sequenceIiNS_13device_memoryEEixEi) _ZN7phalanx20distributed_sequenceIiNS_13device_memoryEEixEi (.param .u64 __cudaparmf1__ZN7phalanx20distributed_sequenceIiNS_13device_memoryEEixEi, .param .s32 __cudaparmf2__ZN7phalanx20distributed_sequenceIiNS_13device_memoryEEixEi)
+
+	.visible .func _ZN15bfs_rank_adjcsr17advance_frontier1EN7phalanx9cuda_gridE6adjcsrINS0_13device_memoryEEiR5queueIiENS0_15stored_sequenceIiS3_EES7_ (.param .align 4 .b8 __cudaparmf1__ZN15bfs_rank_adjcsr17advance_frontier1EN7phalanx9cuda_gridE6adjcsrINS0_13device_memoryEEiR5queueIiENS0_15stored_sequenceIiS3_EES7_[12], .param .align 8 .b8 __cudaparmf2__ZN15bfs_rank_adjcsr17advance_frontier1EN7phalanx9cuda_gridE6adjcsrINS0_13device_memoryEEiR5queueIiENS0_15stored_sequenceIiS3_EES7_[24], .param .s32 __cudaparmf3__ZN15bfs_rank_adjcsr17advance_frontier1EN7phalanx9cuda_gridE6adjcsrINS0_13device_memoryEEiR5queueIiENS0_15stored_sequenceIiS3_EES7_, .param .u64 __cudaparmf4__ZN15bfs_rank_adjcsr17advance_frontier1EN7phalanx9cuda_gridE6adjcsrINS0_13device_memoryEEiR5queueIiENS0_15stored_sequenceIiS3_EES7_, .param .align 8 .b8 __cudaparmf5__ZN15bfs_rank_adjcsr17advance_frontier1EN7phalanx9cuda_gridE6adjcsrINS0_13device_memoryEEiR5queueIiENS0_15stored_sequenceIiS3_EES7_[16], .param .u64 __cudaparmf6__ZN15bfs_rank_adjcsr17advance_frontier1EN7phalanx9cuda_gridE6adjcsrINS0_13device_memoryEEiR5queueIiENS0_15stored_sequenceIiS3_EES7_)
+
+	.visible .func (.param .align 8 .b8 __cudaretf__ZN7phalanx20distributed_sequenceIiNS_13device_memoryEE11subsequenceEi[16]) _ZN7phalanx20distributed_sequenceIiNS_13device_memoryEE11subsequenceEi (.param .u64 __cudaparmf1__ZN7phalanx20distributed_sequenceIiNS_13device_memoryEE11subsequenceEi, .param .s32 __cudaparmf2__ZN7phalanx20distributed_sequenceIiNS_13device_memoryEE11subsequenceEi)
+
+	.visible .func (.param .align 8 .b8 __cudaretf__ZN7adjpcsrIN7phalanx13device_memoryEE9submatrixEi[24]) _ZN7adjpcsrIN7phalanx13device_memoryEE9submatrixEi (.param .u64 __cudaparmf1__ZN7adjpcsrIN7phalanx13device_memoryEE9submatrixEi, .param .s32 __cudaparmf2__ZN7adjpcsrIN7phalanx13device_memoryEE9submatrixEi)
+
+	.visible .func (.param .u64 __cudaretf__ZN17distributed_queueIiEixEi) _ZN17distributed_queueIiEixEi (.param .u64 __cudaparmf1__ZN17distributed_queueIiEixEi, .param .s32 __cudaparmf2__ZN17distributed_queueIiEixEi)
+
+	.visible .func _ZN15bfs_rank_adjcsr13pull_frontierERKN7phalanx9cuda_gridEiiNS0_15stored_sequenceIiNS0_13device_memoryEEER5queueIiES6_S9_ (.param .u64 __cudaparmf1__ZN15bfs_rank_adjcsr13pull_frontierERKN7phalanx9cuda_gridEiiNS0_15stored_sequenceIiNS0_13device_memoryEEER5queueIiES6_S9_, .param .s32 __cudaparmf2__ZN15bfs_rank_adjcsr13pull_frontierERKN7phalanx9cuda_gridEiiNS0_15stored_sequenceIiNS0_13device_memoryEEER5queueIiES6_S9_, .param .s32 __cudaparmf3__ZN15bfs_rank_adjcsr13pull_frontierERKN7phalanx9cuda_gridEiiNS0_15stored_sequenceIiNS0_13device_memoryEEER5queueIiES6_S9_, .param .align 8 .b8 __cudaparmf4__ZN15bfs_rank_adjcsr13pull_frontierERKN7phalanx9cuda_gridEiiNS0_15stored_sequenceIiNS0_13device_memoryEEER5queueIiES6_S9_[16], .param .u64 __cudaparmf5__ZN15bfs_rank_adjcsr13pull_frontierERKN7phalanx9cuda_gridEiiNS0_15stored_sequenceIiNS0_13device_memoryEEER5queueIiES6_S9_, .param .align 8 .b8 __cudaparmf6__ZN15bfs_rank_adjcsr13pull_frontierERKN7phalanx9cuda_gridEiiNS0_15stored_sequenceIiNS0_13device_memoryEEER5queueIiES6_S9_[16], .param .u64 __cudaparmf7__ZN15bfs_rank_adjcsr13pull_frontierERKN7phalanx9cuda_gridEiiNS0_15stored_sequenceIiNS0_13device_memoryEEER5queueIiES6_S9_)
+
+	.visible .func _ZN15bfs_rank_adjcsr14cull_frontier1IN7phalanx15stored_sequenceIiNS1_13device_memoryEEEEEvRKNS1_9cuda_gridERT_S4_R5queueIiESC_ (.param .u64 __cudaparmf1__ZN15bfs_rank_adjcsr14cull_frontier1IN7phalanx15stored_sequenceIiNS1_13device_memoryEEEEEvRKNS1_9cuda_gridERT_S4_R5queueIiESC_, .param .u64 __cudaparmf2__ZN15bfs_rank_adjcsr14cull_frontier1IN7phalanx15stored_sequenceIiNS1_13device_memoryEEEEEvRKNS1_9cuda_gridERT_S4_R5queueIiESC_, .param .align 8 .b8 __cudaparmf3__ZN15bfs_rank_adjcsr14cull_frontier1IN7phalanx15stored_sequenceIiNS1_13device_memoryEEEEEvRKNS1_9cuda_gridERT_S4_R5queueIiESC_[16], .param .u64 __cudaparmf4__ZN15bfs_rank_adjcsr14cull_frontier1IN7phalanx15stored_sequenceIiNS1_13device_memoryEEEEEvRKNS1_9cuda_gridERT_S4_R5queueIiESC_, .param .u64 __cudaparmf5__ZN15bfs_rank_adjcsr14cull_frontier1IN7phalanx15stored_sequenceIiNS1_13device_memoryEEEEEvRKNS1_9cuda_gridERT_S4_R5queueIiESC_)
+
+	.visible .func _ZN15bfs_rank_adjcsr14cull_frontier1IN7phalanx20distributed_sequenceIiNS1_13device_memoryEEEEEvRKNS1_9cuda_gridERT_NS1_15stored_sequenceIiS3_EER5queueIiESE_ (.param .u64 __cudaparmf1__ZN15bfs_rank_adjcsr14cull_frontier1IN7phalanx20distributed_sequenceIiNS1_13device_memoryEEEEEvRKNS1_9cuda_gridERT_NS1_15stored_sequenceIiS3_EER5queueIiESE_, .param .u64 __cudaparmf2__ZN15bfs_rank_adjcsr14cull_frontier1IN7phalanx20distributed_sequenceIiNS1_13device_memoryEEEEEvRKNS1_9cuda_gridERT_NS1_15stored_sequenceIiS3_EER5queueIiESE_, .param .align 8 .b8 __cudaparmf3__ZN15bfs_rank_adjcsr14cull_frontier1IN7phalanx20distributed_sequenceIiNS1_13device_memoryEEEEEvRKNS1_9cuda_gridERT_NS1_15stored_sequenceIiS3_EER5queueIiESE_[16], .param .u64 __cudaparmf4__ZN15bfs_rank_adjcsr14cull_frontier1IN7phalanx20distributed_sequenceIiNS1_13device_memoryEEEEEvRKNS1_9cuda_gridERT_NS1_15stored_sequenceIiS3_EER5queueIiESE_, .param .u64 __cudaparmf5__ZN15bfs_rank_adjcsr14cull_frontier1IN7phalanx20distributed_sequenceIiNS1_13device_memoryEEEEEvRKNS1_9cuda_gridERT_NS1_15stored_sequenceIiS3_EER5queueIiESE_)
+
+	.visible .func _ZN6adjcsrIN7phalanx11host_memoryEEC1Ev (.param .u64 __cudaparmf1__ZN6adjcsrIN7phalanx11host_memoryEEC1Ev)
+
+	.visible .func (.param .align 8 .b8 __cudaretf__ZN7adjpcsrIN7phalanx11host_memoryEE9submatrixEi[24]) _ZN7adjpcsrIN7phalanx11host_memoryEE9submatrixEi (.param .u64 __cudaparmf1__ZN7adjpcsrIN7phalanx11host_memoryEE9submatrixEi, .param .s32 __cudaparmf2__ZN7adjpcsrIN7phalanx11host_memoryEE9submatrixEi)
+
+	.visible .func _ZN7adjpcsrIN7phalanx13device_memoryEEC1Ev (.param .u64 __cudaparmf1__ZN7adjpcsrIN7phalanx13device_memoryEEC1Ev)
+
+	.visible .func (.param .s32 __cudaretf__ZNK5queueIiE8capacityEv) _ZNK5queueIiE8capacityEv (.param .u64 __cudaparmf1__ZNK5queueIiE8capacityEv)
+
+	.visible .func (.param .s32 __cudaretf__ZNK5queueIiE5beginEv) _ZNK5queueIiE5beginEv (.param .u64 __cudaparmf1__ZNK5queueIiE5beginEv)
+
+	.visible .func (.param .s32 __cudaretf__ZNK5queueIiE3endEv) _ZNK5queueIiE3endEv (.param .u64 __cudaparmf1__ZNK5queueIiE3endEv)
+
+	.visible .func (.param .s32 __cudaretf__ZNK5queueIiEixEi) _ZNK5queueIiEixEi (.param .u64 __cudaparmf1__ZNK5queueIiEixEi, .param .s32 __cudaparmf2__ZNK5queueIiEixEi)
+
+	.visible .func (.param .s32 __cudaretf__ZN5queueIiE7enqueueERKN7phalanx11cuda_threadEi) _ZN5queueIiE7enqueueERKN7phalanx11cuda_threadEi (.param .u64 __cudaparmf1__ZN5queueIiE7enqueueERKN7phalanx11cuda_threadEi, .param .u64 __cudaparmf2__ZN5queueIiE7enqueueERKN7phalanx11cuda_threadEi, .param .s32 __cudaparmf3__ZN5queueIiE7enqueueERKN7phalanx11cuda_threadEi)
+
+	.visible .func (.param .s32 __cudaretf__ZN5queueIiE7enqueueERKN7phalanx10cuda_blockEiPi) _ZN5queueIiE7enqueueERKN7phalanx10cuda_blockEiPi (.param .u64 __cudaparmf1__ZN5queueIiE7enqueueERKN7phalanx10cuda_blockEiPi, .param .u64 __cudaparmf2__ZN5queueIiE7enqueueERKN7phalanx10cuda_blockEiPi, .param .s32 __cudaparmf3__ZN5queueIiE7enqueueERKN7phalanx10cuda_blockEiPi, .param .u64 __cudaparmf4__ZN5queueIiE7enqueueERKN7phalanx10cuda_blockEiPi)
+
+	.visible .func (.param .s32 __cudaretf__ZN5queueIiE4sizeIN7phalanx9cuda_gridEEEiRKT_) _ZN5queueIiE4sizeIN7phalanx9cuda_gridEEEiRKT_ (.param .u64 __cudaparmf1__ZN5queueIiE4sizeIN7phalanx9cuda_gridEEEiRKT_, .param .u64 __cudaparmf2__ZN5queueIiE4sizeIN7phalanx9cuda_gridEEEiRKT_)
+
+	.visible .func _ZN7phalanx6domainINS_17sequential_domainEEC1Ei (.param .u64 __cudaparmf1__ZN7phalanx6domainINS_17sequential_domainEEC1Ei, .param .s32 __cudaparmf2__ZN7phalanx6domainINS_17sequential_domainEEC1Ei)
+
+	.visible .func (.param .s32 __cudaretf__ZNK7phalanx6domainINS_17sequential_domainEE4sizeEv) _ZNK7phalanx6domainINS_17sequential_domainEE4sizeEv (.param .u64 __cudaparmf1__ZNK7phalanx6domainINS_17sequential_domainEE4sizeEv)
+
+	.visible .func _ZN7phalanx15parallel_domainINS_17sequential_domainEEC1Ei (.param .u64 __cudaparmf1__ZN7phalanx15parallel_domainINS_17sequential_domainEEC1Ei, .param .s32 __cudaparmf2__ZN7phalanx15parallel_domainINS_17sequential_domainEEC1Ei)
+
+	.visible .func _ZN7phalanx16domain_resourcesINS_13nil_resourcesEEC1EiiS1_ (.param .u64 __cudaparmf1__ZN7phalanx16domain_resourcesINS_13nil_resourcesEEC1EiiS1_, .param .s32 __cudaparmf2__ZN7phalanx16domain_resourcesINS_13nil_resourcesEEC1EiiS1_, .param .s32 __cudaparmf3__ZN7phalanx16domain_resourcesINS_13nil_resourcesEEC1EiiS1_, .param .align 1 .b8 __cudaparmf4__ZN7phalanx16domain_resourcesINS_13nil_resourcesEEC1EiiS1_[1])
+
+	.visible .func (.param .s32 __cudaretf__ZNK7phalanx16domain_resourcesINS_13nil_resourcesEE16bytes_per_threadEv) _ZNK7phalanx16domain_resourcesINS_13nil_resourcesEE16bytes_per_threadEv (.param .u64 __cudaparmf1__ZNK7phalanx16domain_resourcesINS_13nil_resourcesEE16bytes_per_threadEv)
+
+	.visible .func _ZN7phalanx9any_placeC1ERKS0_ (.param .u64 __cudaparmf1__ZN7phalanx9any_placeC1ERKS0_, .param .u64 __cudaparmf2__ZN7phalanx9any_placeC1ERKS0_)
+
+	.visible .func _ZN7phalanx8cuda_gpuC1ERKS0_ (.param .u64 __cudaparmf1__ZN7phalanx8cuda_gpuC1ERKS0_, .param .u64 __cudaparmf2__ZN7phalanx8cuda_gpuC1ERKS0_)
+
+	.visible .func _ZN7phalanx11default_cpuC1Ev (.param .u64 __cudaparmf1__ZN7phalanx11default_cpuC1Ev)
+
+	.visible .func _ZN7phalanx10placed_ptrIfNS_13device_memoryEEC1INS_8cuda_gpuEEERKNS0_IfT_EE (.param .u64 __cudaparmf1__ZN7phalanx10placed_ptrIfNS_13device_memoryEEC1INS_8cuda_gpuEEERKNS0_IfT_EE, .param .u64 __cudaparmf2__ZN7phalanx10placed_ptrIfNS_13device_memoryEEC1INS_8cuda_gpuEEERKNS0_IfT_EE)
+
+	.visible .func (.param .u64 __cudaretf__ZNK7phalanx6detail8base_ptrIfNS_8cuda_gpuEE7raw_ptrEv) _ZNK7phalanx6detail8base_ptrIfNS_8cuda_gpuEE7raw_ptrEv (.param .u64 __cudaparmf1__ZNK7phalanx6detail8base_ptrIfNS_8cuda_gpuEE7raw_ptrEv)
+
+	.visible .func _ZN7phalanx10placed_ptrIdNS_13device_memoryEEC1INS_8cuda_gpuEEERKNS0_IdT_EE (.param .u64 __cudaparmf1__ZN7phalanx10placed_ptrIdNS_13device_memoryEEC1INS_8cuda_gpuEEERKNS0_IdT_EE, .param .u64 __cudaparmf2__ZN7phalanx10placed_ptrIdNS_13device_memoryEEC1INS_8cuda_gpuEEERKNS0_IdT_EE)
+
+	.visible .func (.param .u64 __cudaretf__ZNK7phalanx6detail8base_ptrIdNS_8cuda_gpuEE7raw_ptrEv) _ZNK7phalanx6detail8base_ptrIdNS_8cuda_gpuEE7raw_ptrEv (.param .u64 __cudaparmf1__ZNK7phalanx6detail8base_ptrIdNS_8cuda_gpuEE7raw_ptrEv)
+
+	.visible .func _ZN7phalanx6detail8base_ptrIiNS_13device_memoryEEC1EPiRKS2_ (.param .u64 __cudaparmf1__ZN7phalanx6detail8base_ptrIiNS_13device_memoryEEC1EPiRKS2_, .param .u64 __cudaparmf2__ZN7phalanx6detail8base_ptrIiNS_13device_memoryEEC1EPiRKS2_, .param .u64 __cudaparmf3__ZN7phalanx6detail8base_ptrIiNS_13device_memoryEEC1EPiRKS2_)
+
+	.visible .func _ZN7phalanx10placed_ptrIiNS_13device_memoryEEC1INS_8cuda_gpuEEERKNS0_IiT_EE (.param .u64 __cudaparmf1__ZN7phalanx10placed_ptrIiNS_13device_memoryEEC1INS_8cuda_gpuEEERKNS0_IiT_EE, .param .u64 __cudaparmf2__ZN7phalanx10placed_ptrIiNS_13device_memoryEEC1INS_8cuda_gpuEEERKNS0_IiT_EE)
+
+	.visible .func (.param .u64 __cudaretf__ZNK7phalanx6detail8base_ptrIiNS_8cuda_gpuEE7raw_ptrEv) _ZNK7phalanx6detail8base_ptrIiNS_8cuda_gpuEE7raw_ptrEv (.param .u64 __cudaparmf1__ZNK7phalanx6detail8base_ptrIiNS_8cuda_gpuEE7raw_ptrEv)
+
+	.visible .func _ZN7phalanx6domainINS_15parallel_domainINS_17sequential_domainEEEEC1EiS3_ (.param .u64 __cudaparmf1__ZN7phalanx6domainINS_15parallel_domainINS_17sequential_domainEEEEC1EiS3_, .param .s32 __cudaparmf2__ZN7phalanx6domainINS_15parallel_domainINS_17sequential_domainEEEEC1EiS3_, .param .align 4 .b8 __cudaparmf3__ZN7phalanx6domainINS_15parallel_domainINS_17sequential_domainEEEEC1EiS3_[16])
+
+	.visible .func (.param .s32 __cudaretf__ZNK7phalanx6domainINS_15parallel_domainINS_17sequential_domainEEEE4sizeEv) _ZNK7phalanx6domainINS_15parallel_domainINS_17sequential_domainEEEE4sizeEv (.param .u64 __cudaparmf1__ZNK7phalanx6domainINS_15parallel_domainINS_17sequential_domainEEEE4sizeEv)
+
+	.visible .func _ZN7phalanx6domainINS_16streaming_domainINS_15parallel_domainINS_17sequential_domainEEEEEEC1EiS5_ (.param .u64 __cudaparmf1__ZN7phalanx6domainINS_16streaming_domainINS_15parallel_domainINS_17sequential_domainEEEEEEC1EiS5_, .param .s32 __cudaparmf2__ZN7phalanx6domainINS_16streaming_domainINS_15parallel_domainINS_17sequential_domainEEEEEEC1EiS5_, .param .align 4 .b8 __cudaparmf3__ZN7phalanx6domainINS_16streaming_domainINS_15parallel_domainINS_17sequential_domainEEEEEEC1EiS5_[28])
+
+	.visible .func _ZN7phalanx16domain_resourcesINS0_INS_13nil_resourcesEEEEC1EiiS2_ (.param .u64 __cudaparmf1__ZN7phalanx16domain_resourcesINS0_INS_13nil_resourcesEEEEC1EiiS2_, .param .s32 __cudaparmf2__ZN7phalanx16domain_resourcesINS0_INS_13nil_resourcesEEEEC1EiiS2_, .param .s32 __cudaparmf3__ZN7phalanx16domain_resourcesINS0_INS_13nil_resourcesEEEEC1EiiS2_, .param .align 4 .b8 __cudaparmf4__ZN7phalanx16domain_resourcesINS0_INS_13nil_resourcesEEEEC1EiiS2_[12])
+
+	.visible .func (.param .s32 __cudaretf__ZNK7phalanx16domain_resourcesINS0_INS_13nil_resourcesEEEE15bytes_per_groupEv) _ZNK7phalanx16domain_resourcesINS0_INS_13nil_resourcesEEEE15bytes_per_groupEv (.param .u64 __cudaparmf1__ZNK7phalanx16domain_resourcesINS0_INS_13nil_resourcesEEEE15bytes_per_groupEv)
+
+	.visible .func _ZN7phalanx15cuda_any_threadC1ERKNS_9cuda_gridE (.param .u64 __cudaparmf1__ZN7phalanx15cuda_any_threadC1ERKNS_9cuda_gridE, .param .u64 __cudaparmf2__ZN7phalanx15cuda_any_threadC1ERKNS_9cuda_gridE)
+
+	.visible .func _ZN7phalanx9cuda_gridC1ERKNS_16domain_resourcesINS_13nil_resourcesEEE (.param .u64 __cudaparmf1__ZN7phalanx9cuda_gridC1ERKNS_16domain_resourcesINS_13nil_resourcesEEE, .param .u64 __cudaparmf2__ZN7phalanx9cuda_gridC1ERKNS_16domain_resourcesINS_13nil_resourcesEEE)
+
+	.visible .func _ZN7phalanx15stored_sequenceIiNS_13device_memoryEEC1EPii (.param .u64 __cudaparmf1__ZN7phalanx15stored_sequenceIiNS_13device_memoryEEC1EPii, .param .u64 __cudaparmf2__ZN7phalanx15stored_sequenceIiNS_13device_memoryEEC1EPii, .param .s32 __cudaparmf3__ZN7phalanx15stored_sequenceIiNS_13device_memoryEEC1EPii)
+
+	.visible .func (.param .s32 __cudaretf__ZNK7phalanx15stored_sequenceIiNS_13device_memoryEE4sizeEv) _ZNK7phalanx15stored_sequenceIiNS_13device_memoryEE4sizeEv (.param .u64 __cudaparmf1__ZNK7phalanx15stored_sequenceIiNS_13device_memoryEE4sizeEv)
+
+	.visible .func (.param .u64 __cudaretf__ZN7phalanx15stored_sequenceIiNS_13device_memoryEEixEi) _ZN7phalanx15stored_sequenceIiNS_13device_memoryEEixEi (.param .u64 __cudaparmf1__ZN7phalanx15stored_sequenceIiNS_13device_memoryEEixEi, .param .s32 __cudaparmf2__ZN7phalanx15stored_sequenceIiNS_13device_memoryEEixEi)
+
+	.visible .func _ZN7phalanx20distributed_sequenceIiNS_13device_memoryEEC1Ev (.param .u64 __cudaparmf1__ZN7phalanx20distributed_sequenceIiNS_13device_memoryEEC1Ev)
+
+	.visible .func _ZN7phalanx20distributed_sequenceIiNS_13device_memoryEEC1EiPNS_10placed_ptrIiS1_EEPm (.param .u64 __cudaparmf1__ZN7phalanx20distributed_sequenceIiNS_13device_memoryEEC1EiPNS_10placed_ptrIiS1_EEPm, .param .s32 __cudaparmf2__ZN7phalanx20distributed_sequenceIiNS_13device_memoryEEC1EiPNS_10placed_ptrIiS1_EEPm, .param .u64 __cudaparmf3__ZN7phalanx20distributed_sequenceIiNS_13device_memoryEEC1EiPNS_10placed_ptrIiS1_EEPm, .param .u64 __cudaparmf4__ZN7phalanx20distributed_sequenceIiNS_13device_memoryEEC1EiPNS_10placed_ptrIiS1_EEPm)
+
+	.visible .func _ZN7phalanx20distributed_sequenceIiNS_13device_memoryEED1Ev (.param .u64 __cudaparmf1__ZN7phalanx20distributed_sequenceIiNS_13device_memoryEED1Ev)
+
+	.visible .func _ZN7phalanx6detail8base_ptrIfNS_13device_memoryEEC1EPfRKS2_ (.param .u64 __cudaparmf1__ZN7phalanx6detail8base_ptrIfNS_13device_memoryEEC1EPfRKS2_, .param .u64 __cudaparmf2__ZN7phalanx6detail8base_ptrIfNS_13device_memoryEEC1EPfRKS2_, .param .u64 __cudaparmf3__ZN7phalanx6detail8base_ptrIfNS_13device_memoryEEC1EPfRKS2_)
+
+	.visible .func _ZN7phalanx6detail8base_ptrIdNS_13device_memoryEEC1EPdRKS2_ (.param .u64 __cudaparmf1__ZN7phalanx6detail8base_ptrIdNS_13device_memoryEEC1EPdRKS2_, .param .u64 __cudaparmf2__ZN7phalanx6detail8base_ptrIdNS_13device_memoryEEC1EPdRKS2_, .param .u64 __cudaparmf3__ZN7phalanx6detail8base_ptrIdNS_13device_memoryEEC1EPdRKS2_)
+
+	.visible .func _ZN7phalanx6detail8base_ptrIiNS_8cuda_gpuEEC1EPiRKS2_ (.param .u64 __cudaparmf1__ZN7phalanx6detail8base_ptrIiNS_8cuda_gpuEEC1EPiRKS2_, .param .u64 __cudaparmf2__ZN7phalanx6detail8base_ptrIiNS_8cuda_gpuEEC1EPiRKS2_, .param .u64 __cudaparmf3__ZN7phalanx6detail8base_ptrIiNS_8cuda_gpuEEC1EPiRKS2_)
+
+	.visible .func (.param .align 4 .b8 __cudaretf__ZN7phalanx19group_shared_memoryEi[12]) _ZN7phalanx19group_shared_memoryEi (.param .s32 __cudaparmf1__ZN7phalanx19group_shared_memoryEi)
+
+	.visible .func (.param .align 4 .b8 __cudaretf__ZN7phalanx21thread_private_memoryEi[12]) _ZN7phalanx21thread_private_memoryEi (.param .s32 __cudaparmf1__ZN7phalanx21thread_private_memoryEi)
+
+	.visible .func (.param .align 4 .b8 __cudaretf__ZN7phalanx5rangeEii[12]) _ZN7phalanx5rangeEii (.param .s32 __cudaparmf1__ZN7phalanx5rangeEii, .param .s32 __cudaparmf2__ZN7phalanx5rangeEii)
+
+	.visible .func (.param .align 4 .b8 __cudaretf__ZN7phalanx13sequence_fromIiNS_9operators8identityEEENS_19functional_sequenceIT_T0_EES5_ii[12]) _ZN7phalanx13sequence_fromIiNS_9operators8identityEEENS_19functional_sequenceIT_T0_EES5_ii (.param .align 1 .b8 __cudaparmf1__ZN7phalanx13sequence_fromIiNS_9operators8identityEEENS_19functional_sequenceIT_T0_EES5_ii[1], .param .s32 __cudaparmf2__ZN7phalanx13sequence_fromIiNS_9operators8identityEEENS_19functional_sequenceIT_T0_EES5_ii, .param .s32 __cudaparmf3__ZN7phalanx13sequence_fromIiNS_9operators8identityEEENS_19functional_sequenceIT_T0_EES5_ii)
+
+	.visible .func (.param .align 4 .b8 __cudaretf__ZN7phalanx9streamingINS_15parallel_domainINS_17sequential_domainEEEEENS_16streaming_domainIT_EEiS5_[28]) _ZN7phalanx9streamingINS_15parallel_domainINS_17sequential_domainEEEEENS_16streaming_domainIT_EEiS5_ (.param .s32 __cudaparmf1__ZN7phalanx9streamingINS_15parallel_domainINS_17sequential_domainEEEEENS_16streaming_domainIT_EEiS5_, .param .align 4 .b8 __cudaparmf2__ZN7phalanx9streamingINS_15parallel_domainINS_17sequential_domainEEEEENS_16streaming_domainIT_EEiS5_[16])
+
+	.visible .func (.param .align 4 .b8 __cudaretf__ZN7phalanx8parallelINS_16streaming_domainINS_15parallel_domainINS_17sequential_domainEEEEEEENS2_IT_EEiS6_[40]) _ZN7phalanx8parallelINS_16streaming_domainINS_15parallel_domainINS_17sequential_domainEEEEEEENS2_IT_EEiS6_ (.param .s32 __cudaparmf1__ZN7phalanx8parallelINS_16streaming_domainINS_15parallel_domainINS_17sequential_domainEEEEEEENS2_IT_EEiS6_, .param .align 4 .b8 __cudaparmf2__ZN7phalanx8parallelINS_16streaming_domainINS_15parallel_domainINS_17sequential_domainEEEEEEENS2_IT_EEiS6_[28])
+
+	.visible .func (.param .u64 __cudaretf__ZN6thrust6detail4util9divide_riImiEET_S3_T0_) _ZN6thrust6detail4util9divide_riImiEET_S3_T0_ (.param .u64 __cudaparmf1__ZN6thrust6detail4util9divide_riImiEET_S3_T0_, .param .s32 __cudaparmf2__ZN6thrust6detail4util9divide_riImiEET_S3_T0_)
+
+	.visible .func (.param .u64 __cudaretf__ZN6thrust6detail4util7round_iImmEET_S3_T0_) _ZN6thrust6detail4util7round_iImmEET_S3_T0_ (.param .u64 __cudaparmf1__ZN6thrust6detail4util7round_iImmEET_S3_T0_, .param .u64 __cudaparmf2__ZN6thrust6detail4util7round_iImmEET_S3_T0_)
+
+	//-----------------------------------------------------------
+	// Compiling /tmp/tmpxft_000055ef_00000000-9_bfs.cpp3.i (/tmp/ccBI#.i1a3z8)
+	//-----------------------------------------------------------
+
+	//-----------------------------------------------------------
+	// Options:
+	//-----------------------------------------------------------
+	//  Target:ptx, ISA:sm_20, Endian:little, Pointer Size:64
+	//  -O3	(Optimization level)
+	//  -g0	(Debug level)
+	//  -m2	(Report advisories)
+	//-----------------------------------------------------------
+
+	.file	1	"<command-line>"
+	.file	2	"/tmp/tmpxft_000055ef_00000000-8_bfs.cudafe2.gpu"
+	.file	3	"/home/normal/checkout/phalanx/examples/bfs/adjcsr.h"
+	.file	4	"/home/normal/checkout/phalanx/examples/bfs/queue.h"
+	.file	5	"/home/normal/checkout/phalanx/phalanx/platform/placed_ptr.h"
+	.file	6	"/home/normal/checkout/phalanx/phalanx/platform/../views/../platform/cuda/places.h"
+	.file	7	"/home/normal/checkout/phalanx/phalanx/platform/domains.h"
+	.file	8	"/home/normal/checkout/phalanx/phalanx/platform/domain_resources.h"
+	.file	9	"/home/normal/checkout/phalanx/phalanx/platform/cuda/thread_groups.h"
+	.file	10	"/home/normal/checkout/phalanx/phalanx/platform/../views/../operators.h"
+	.file	11	"/home/normal/checkout/phalanx/phalanx/platform/../views/generated.h"
+	.file	12	"/home/normal/checkout/phalanx/phalanx/platform/../views/stored_sequence.h"
+	.file	13	"/home/normal/checkout/phalanx/phalanx/views/distributed_sequence.h"
+	.file	14	"/usr/lib/x86_64-linux-gnu/gcc/x86_64-linux-gnu/4.5.2/include/stddef.h"
+	.file	15	"/usr/local/cuda/bin/../include/crt/device_runtime.h"
+	.file	16	"/usr/local/cuda/bin/../include/host_defines.h"
+	.file	17	"/usr/local/cuda/bin/../include/builtin_types.h"
+	.file	18	"/usr/local/cuda/bin/../include/device_types.h"
+	.file	19	"/usr/local/cuda/bin/../include/driver_types.h"
+	.file	20	"/usr/local/cuda/bin/../include/surface_types.h"
+	.file	21	"/usr/local/cuda/bin/../include/texture_types.h"
+	.file	22	"/usr/local/cuda/bin/../include/vector_types.h"
+	.file	23	"/usr/local/cuda/bin/../include/device_launch_parameters.h"
+	.file	24	"/usr/local/cuda/bin/../include/crt/storage_class.h"
+	.file	25	"/usr/include/bits/types.h"
+	.file	26	"/usr/include/time.h"
+	.file	27	"/home/normal/checkout/phalanx/examples/bfs/bfs.cu"
+	.file	28	"/home/normal/checkout/phalanx/examples/bfs/support.cu"
+	.file	29	"/home/normal/checkout/phalanx/examples/bfs/support.h"
+	.file	30	"/home/normal/checkout/phalanx/phalanx/platform/cuda/memory.h"
+	.file	31	"/usr/local/cuda/bin/../include/thrust/detail/util/blocking.h"
+	.file	32	"/usr/local/cuda/bin/../include/common_functions.h"
+	.file	33	"/usr/local/cuda/bin/../include/math_functions.h"
+	.file	34	"/usr/local/cuda/bin/../include/math_constants.h"
+	.file	35	"/usr/local/cuda/bin/../include/device_functions.h"
+	.file	36	"/usr/local/cuda/bin/../include/sm_11_atomic_functions.h"
+	.file	37	"/usr/local/cuda/bin/../include/sm_12_atomic_functions.h"
+	.file	38	"/usr/local/cuda/bin/../include/sm_13_double_functions.h"
+	.file	39	"/usr/local/cuda/bin/../include/sm_20_atomic_functions.h"
+	.file	40	"/usr/local/cuda/bin/../include/sm_20_intrinsics.h"
+	.file	41	"/usr/local/cuda/bin/../include/surface_functions.h"
+	.file	42	"/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+	.file	43	"/usr/local/cuda/bin/../include/math_functions_dbl_ptx3.h"
+
+
+	.entry _Z10initializeIN7phalanx9cuda_gridENS0_15stored_sequenceIiNS0_13device_memoryEEEiEvT_T0_T1_ (
+		.param .align 4 .b8 __cudaparm__Z10initializeIN7phalanx9cuda_gridENS0_15stored_sequenceIiNS0_13device_memoryEEEiEvT_T0_T1__here[12],
+		.param .align 8 .b8 __cudaparm__Z10initializeIN7phalanx9cuda_gridENS0_15stored_sequenceIiNS0_13device_memoryEEEiEvT_T0_T1____val_paramx[16],
+		.param .s32 __cudaparm__Z10initializeIN7phalanx9cuda_gridENS0_15stored_sequenceIiNS0_13device_memoryEEEiEvT_T0_T1__x0)
+	{
+	.reg .u32 %r<12>;
+	.reg .u64 %rd<8>;
+	.reg .pred %p<4>;
+	.loc	27	54	0
+$LDWbegin__Z10initializeIN7phalanx9cuda_gridENS0_15stored_sequenceIiNS0_13device_memoryEEEiEvT_T0_T1_:
+	.loc	27	56	0
+	mov.u32 	%r1, %ntid.x;
+	mov.u32 	%r2, %ctaid.x;
+	mul.lo.u32 	%r3, %r2, %r1;
+	mov.u32 	%r4, %tid.x;
+	add.u32 	%r5, %r4, %r3;
+	mov.s32 	%r6, %r5;
+	ld.param.s32 	%r7, [__cudaparm__Z10initializeIN7phalanx9cuda_gridENS0_15stored_sequenceIiNS0_13device_memoryEEEiEvT_T0_T1____val_paramx+8];
+	setp.le.s32 	%p1, %r7, %r5;
+	@%p1 bra 	$Lt_0_1282;
+	mov.u32 	%r8, %nctaid.x;
+	mul.lo.u32 	%r9, %r8, %r1;
+	cvt.s64.u32 	%rd1, %r9;
+	ld.param.u64 	%rd2, [__cudaparm__Z10initializeIN7phalanx9cuda_gridENS0_15stored_sequenceIiNS0_13device_memoryEEEiEvT_T0_T1____val_paramx+0];
+	cvt.s64.s32 	%rd3, %r5;
+	mul.wide.s32 	%rd4, %r5, 4;
+	add.u64 	%rd5, %rd2, %rd4;
+	mul.wide.u32 	%rd6, %r9, 4;
+	ld.param.s32 	%r10, [__cudaparm__Z10initializeIN7phalanx9cuda_gridENS0_15stored_sequenceIiNS0_13device_memoryEEEiEvT_T0_T1__x0];
+$Lt_0_1794:
+ //<loop> Loop body line 56, nesting depth: 1, estimated iterations: unknown
+	.loc	27	57	0
+	st.global.s32 	[%rd5+0], %r10;
+	add.s32 	%r6, %r6, %r9;
+	add.u64 	%rd5, %rd5, %rd6;
+	setp.lt.s32 	%p2, %r6, %r7;
+	@%p2 bra 	$Lt_0_1794;
+$Lt_0_1282:
+	.loc	27	59	0
+	exit;
+$LDWend__Z10initializeIN7phalanx9cuda_gridENS0_15stored_sequenceIiNS0_13device_memoryEEEiEvT_T0_T1_:
+	} // _Z10initializeIN7phalanx9cuda_gridENS0_15stored_sequenceIiNS0_13device_memoryEEEiEvT_T0_T1_
+
+	.entry _Z10initializeIN7phalanx9cuda_gridEiEvT_PT0_S3_ (
+		.param .align 4 .b8 __cudaparm__Z10initializeIN7phalanx9cuda_gridEiEvT_PT0_S3__here[12],
+		.param .u64 __cudaparm__Z10initializeIN7phalanx9cuda_gridEiEvT_PT0_S3__x,
+		.param .s32 __cudaparm__Z10initializeIN7phalanx9cuda_gridEiEvT_PT0_S3__x0)
+	{
+	.reg .u32 %r<9>;
+	.reg .u64 %rd<3>;
+	.reg .pred %p<3>;
+	.loc	27	63	0
+$LDWbegin__Z10initializeIN7phalanx9cuda_gridEiEvT_PT0_S3_:
+	mov.u32 	%r1, %tid.x;
+	mov.u32 	%r2, %ctaid.x;
+	mov.u32 	%r3, %ntid.x;
+	mul.lo.u32 	%r4, %r2, %r3;
+	add.u32 	%r5, %r1, %r4;
+	mov.u32 	%r6, 0;
+	setp.ne.s32 	%p1, %r5, %r6;
+	@%p1 bra 	$Lt_1_1026;
+	.loc	27	64	0
+	ld.param.s32 	%r7, [__cudaparm__Z10initializeIN7phalanx9cuda_gridEiEvT_PT0_S3__x0];
+	ld.param.u64 	%rd1, [__cudaparm__Z10initializeIN7phalanx9cuda_gridEiEvT_PT0_S3__x];
+	st.global.s32 	[%rd1+0], %r7;
+$Lt_1_1026:
+	.loc	27	65	0
+	exit;
+$LDWend__Z10initializeIN7phalanx9cuda_gridEiEvT_PT0_S3_:
+	} // _Z10initializeIN7phalanx9cuda_gridEiEvT_PT0_S3_
+
+	.entry _Z10initializeIN7phalanx18cuda_multigpu_gridENS0_20distributed_sequenceIiNS0_13device_memoryEEEiEvT_T0_T1_ (
+		.param .align 8 .b8 __cudaparm__Z10initializeIN7phalanx18cuda_multigpu_gridENS0_20distributed_sequenceIiNS0_13device_memoryEEEiEvT_T0_T1____val_paramhere[40],
+		.param .align 8 .b8 __cudaparm__Z10initializeIN7phalanx18cuda_multigpu_gridENS0_20distributed_sequenceIiNS0_13device_memoryEEEiEvT_T0_T1____val_paramx[136],
+		.param .s32 __cudaparm__Z10initializeIN7phalanx18cuda_multigpu_gridENS0_20distributed_sequenceIiNS0_13device_memoryEEEiEvT_T0_T1__x0)
+	{
+	.reg .u32 %r<27>;
+	.reg .u64 %rd<39>;
+	.reg .pred %p<10>;
+	.local .align 8 .b8 __cuda___cuda_x_0248[136];
+	.loc	27	54	0
+$LDWbegin__Z10initializeIN7phalanx18cuda_multigpu_gridENS0_20distributed_sequenceIiNS0_13device_memoryEEEiEvT_T0_T1_:
+	ld.param.s32 	%r1, [__cudaparm__Z10initializeIN7phalanx18cuda_multigpu_gridENS0_20distributed_sequenceIiNS0_13device_memoryEEEiEvT_T0_T1____val_paramx+0];
+	st.local.s32 	[__cuda___cuda_x_0248+0], %r1;
+	ld.param.u64 	%rd1, [__cudaparm__Z10initializeIN7phalanx18cuda_multigpu_gridENS0_20distributed_sequenceIiNS0_13device_memoryEEEiEvT_T0_T1____val_paramx+8];
+	st.local.u64 	[__cuda___cuda_x_0248+8], %rd1;
+	ld.param.u64 	%rd2, [__cudaparm__Z10initializeIN7phalanx18cuda_multigpu_gridENS0_20distributed_sequenceIiNS0_13device_memoryEEEiEvT_T0_T1____val_paramx+16];
+	st.local.u64 	[__cuda___cuda_x_0248+16], %rd2;
+	ld.param.u64 	%rd3, [__cudaparm__Z10initializeIN7phalanx18cuda_multigpu_gridENS0_20distributed_sequenceIiNS0_13device_memoryEEEiEvT_T0_T1____val_paramx+24];
+	st.local.u64 	[__cuda___cuda_x_0248+24], %rd3;
+	ld.param.u64 	%rd4, [__cudaparm__Z10initializeIN7phalanx18cuda_multigpu_gridENS0_20distributed_sequenceIiNS0_13device_memoryEEEiEvT_T0_T1____val_paramx+32];
+	st.local.u64 	[__cuda___cuda_x_0248+32], %rd4;
+	ld.param.u64 	%rd5, [__cudaparm__Z10initializeIN7phalanx18cuda_multigpu_gridENS0_20distributed_sequenceIiNS0_13device_memoryEEEiEvT_T0_T1____val_paramx+40];
+	st.local.u64 	[__cuda___cuda_x_0248+40], %rd5;
+	ld.param.u64 	%rd6, [__cudaparm__Z10initializeIN7phalanx18cuda_multigpu_gridENS0_20distributed_sequenceIiNS0_13device_memoryEEEiEvT_T0_T1____val_paramx+48];
+	st.local.u64 	[__cuda___cuda_x_0248+48], %rd6;
+	ld.param.u64 	%rd7, [__cudaparm__Z10initializeIN7phalanx18cuda_multigpu_gridENS0_20distributed_sequenceIiNS0_13device_memoryEEEiEvT_T0_T1____val_paramx+56];
+	st.local.u64 	[__cuda___cuda_x_0248+56], %rd7;
+	ld.param.u64 	%rd8, [__cudaparm__Z10initializeIN7phalanx18cuda_multigpu_gridENS0_20distributed_sequenceIiNS0_13device_memoryEEEiEvT_T0_T1____val_paramx+64];
+	st.local.u64 	[__cuda___cuda_x_0248+64], %rd8;
+	ld.param.u64 	%rd9, [__cudaparm__Z10initializeIN7phalanx18cuda_multigpu_gridENS0_20distributed_sequenceIiNS0_13device_memoryEEEiEvT_T0_T1____val_paramx+72];
+	st.local.u64 	[__cuda___cuda_x_0248+72], %rd9;
+	ld.param.u64 	%rd10, [__cudaparm__Z10initializeIN7phalanx18cuda_multigpu_gridENS0_20distributed_sequenceIiNS0_13device_memoryEEEiEvT_T0_T1____val_paramx+80];
+	st.local.u64 	[__cuda___cuda_x_0248+80], %rd10;
+	ld.param.u64 	%rd11, [__cudaparm__Z10initializeIN7phalanx18cuda_multigpu_gridENS0_20distributed_sequenceIiNS0_13device_memoryEEEiEvT_T0_T1____val_paramx+88];
+	st.local.u64 	[__cuda___cuda_x_0248+88], %rd11;
+	ld.param.u64 	%rd12, [__cudaparm__Z10initializeIN7phalanx18cuda_multigpu_gridENS0_20distributed_sequenceIiNS0_13device_memoryEEEiEvT_T0_T1____val_paramx+96];
+	st.local.u64 	[__cuda___cuda_x_0248+96], %rd12;
+	ld.param.u64 	%rd13, [__cudaparm__Z10initializeIN7phalanx18cuda_multigpu_gridENS0_20distributed_sequenceIiNS0_13device_memoryEEEiEvT_T0_T1____val_paramx+104];
+	st.local.u64 	[__cuda___cuda_x_0248+104], %rd13;
+	ld.param.u64 	%rd14, [__cudaparm__Z10initializeIN7phalanx18cuda_multigpu_gridENS0_20distributed_sequenceIiNS0_13device_memoryEEEiEvT_T0_T1____val_paramx+112];
+	st.local.u64 	[__cuda___cuda_x_0248+112], %rd14;
+	ld.param.u64 	%rd15, [__cudaparm__Z10initializeIN7phalanx18cuda_multigpu_gridENS0_20distributed_sequenceIiNS0_13device_memoryEEEiEvT_T0_T1____val_paramx+120];
+	st.local.u64 	[__cuda___cuda_x_0248+120], %rd15;
+	ld.param.u64 	%rd16, [__cudaparm__Z10initializeIN7phalanx18cuda_multigpu_gridENS0_20distributed_sequenceIiNS0_13device_memoryEEEiEvT_T0_T1____val_paramx+128];
+	st.local.u64 	[__cuda___cuda_x_0248+128], %rd16;
+	.loc	27	56	0
+	mov.u32 	%r2, %ntid.x;
+	mov.u32 	%r3, %nctaid.x;
+	mul.lo.u32 	%r4, %r3, %r2;
+	mov.u32 	%r5, %ctaid.x;
+	mul.lo.u32 	%r6, %r5, %r2;
+	ld.param.s32 	%r7, [__cudaparm__Z10initializeIN7phalanx18cuda_multigpu_gridENS0_20distributed_sequenceIiNS0_13device_memoryEEEiEvT_T0_T1____val_paramhere+32];
+	mul.lo.s32 	%r8, %r7, %r4;
+	mov.u32 	%r9, %tid.x;
+	add.u32 	%r10, %r9, %r6;
+	add.s32 	%r11, %r8, %r10;
+	mov.s32 	%r12, %r11;
+	mov.s32 	%r13, 0;
+	setp.gt.s32 	%p1, %r1, %r13;
+	@!%p1 bra 	$Lt_2_8706;
+	mov.s32 	%r14, %r1;
+	cvta.local.u64 	%rd17, __cuda___cuda_x_0248;
+	mov.s32 	%r15, 0;
+	mov.u64 	%rd18, 0;
+	mov.s32 	%r16, %r14;
+$Lt_2_6146:
+ //<loop> Loop body line 56, nesting depth: 1, estimated iterations: unknown
+	.loc	13	117	0
+	ld.u64 	%rd19, [%rd17+72];
+	add.u64 	%rd18, %rd19, %rd18;
+	add.s32 	%r15, %r15, 1;
+	add.u64 	%rd17, %rd17, 8;
+	setp.ne.s32 	%p2, %r15, %r1;
+	@%p2 bra 	$Lt_2_6146;
+	bra.uni 	$Lt_2_5634;
+$Lt_2_8706:
+	mov.u64 	%rd18, 0;
+$Lt_2_5634:
+	.loc	27	56	0
+	cvt.s64.s32 	%rd20, %r11;
+	setp.ge.u64 	%p3, %rd20, %rd18;
+	@%p3 bra 	$Lt_2_6658;
+	mov.s64 	%rd21, %rd20;
+	ld.param.s32 	%r17, [__cudaparm__Z10initializeIN7phalanx18cuda_multigpu_gridENS0_20distributed_sequenceIiNS0_13device_memoryEEEiEvT_T0_T1____val_paramhere+0];
+	mul.lo.s32 	%r18, %r17, %r4;
+	ld.param.s32 	%r19, [__cudaparm__Z10initializeIN7phalanx18cuda_multigpu_gridENS0_20distributed_sequenceIiNS0_13device_memoryEEEiEvT_T0_T1__x0];
+	cvta.local.u64 	%rd22, __cuda___cuda_x_0248;
+$Lt_2_7170:
+	.loc	13	131	0
+	@!%p1 bra 	$Lt_2_9218;
+	setp.lt.u64 	%p4, %rd21, %rd9;
+	@%p4 bra 	$Lt_2_9474;
+	cvta.local.u64 	%rd23, __cuda___cuda_x_0248;
+	mov.s32 	%r20, 0;
+	mov.s32 	%r21, 0;
+$L_2_4610:
+	ld.u32 	%r22, [%rd23+72];
+	add.u32 	%r20, %r20, %r22;
+	add.s32 	%r21, %r21, 1;
+	setp.ge.s32 	%p5, %r21, %r1;
+	@%p5 bra 	$Lt_2_9730;
+	cvt.s64.s32 	%rd24, %r21;
+	mul.wide.s32 	%rd25, %r21, 8;
+	add.u64 	%rd26, %rd22, %rd25;
+	mov.s64 	%rd23, %rd26;
+	cvt.s64.s32 	%rd27, %r20;
+	ld.u64 	%rd28, [%rd26+72];
+	add.u64 	%rd29, %rd27, %rd28;
+	setp.ge.u64 	%p6, %rd21, %rd29;
+	@%p6 bra 	$L_2_4610;
+	bra.uni 	$L_2_4866;
+$Lt_2_9730:
+	cvt.s64.s32 	%rd30, %r21;
+	mul.wide.s32 	%rd31, %r21, 8;
+	add.u64 	%rd23, %rd22, %rd31;
+	bra.uni 	$L_2_4866;
+$Lt_2_9218:
+	cvta.local.u64 	%rd23, __cuda___cuda_x_0248;
+	mov.s32 	%r20, 0;
+	bra.uni 	$L_2_4866;
+$Lt_2_9474:
+	cvta.local.u64 	%rd23, __cuda___cuda_x_0248;
+	mov.s32 	%r20, 0;
+$L_2_4866:
+	.loc	27	57	0
+	ld.u64 	%rd32, [%rd23+8];
+	sub.s32 	%r23, %r12, %r20;
+	cvt.s64.s32 	%rd33, %r23;
+	mul.wide.s32 	%rd34, %r23, 4;
+	add.u64 	%rd35, %rd32, %rd34;
+	st.s32 	[%rd35+0], %r19;
+	.loc	27	56	0
+	add.s32 	%r12, %r18, %r12;
+	cvt.s64.s32 	%rd36, %r18;
+	add.s64 	%rd21, %rd36, %rd21;
+	@!%p1 bra 	$Lt_2_9986;
+	mov.s32 	%r24, %r1;
+	cvta.local.u64 	%rd17, __cuda___cuda_x_0248;
+	mov.s32 	%r15, 0;
+	mov.u64 	%rd18, 0;
+	mov.s32 	%r25, %r24;
+$Lt_2_7938:
+ //<loop> Loop body line 56, nesting depth: 1, estimated iterations: unknown
+	.loc	13	117	0
+	ld.u64 	%rd37, [%rd17+72];
+	add.u64 	%rd18, %rd37, %rd18;
+	add.s32 	%r15, %r15, 1;
+	add.u64 	%rd17, %rd17, 8;
+	setp.ne.s32 	%p7, %r15, %r1;
+	@%p7 bra 	$Lt_2_7938;
+	bra.uni 	$Lt_2_7426;
+$Lt_2_9986:
+	mov.u64 	%rd18, 0;
+$Lt_2_7426:
+	.loc	27	56	0
+	setp.lt.u64 	%p8, %rd21, %rd18;
+	@%p8 bra 	$Lt_2_7170;
+$Lt_2_6658:
+	.loc	27	59	0
+	exit;
+$LDWend__Z10initializeIN7phalanx18cuda_multigpu_gridENS0_20distributed_sequenceIiNS0_13device_memoryEEEiEvT_T0_T1_:
+	} // _Z10initializeIN7phalanx18cuda_multigpu_gridENS0_20distributed_sequenceIiNS0_13device_memoryEEEiEvT_T0_T1_
+
+	.entry _Z10initializeIN7phalanx18cuda_multigpu_gridEiEvT_PT0_S3_ (
+		.param .align 8 .b8 __cudaparm__Z10initializeIN7phalanx18cuda_multigpu_gridEiEvT_PT0_S3____val_paramhere[40],
+		.param .u64 __cudaparm__Z10initializeIN7phalanx18cuda_multigpu_gridEiEvT_PT0_S3__x,
+		.param .s32 __cudaparm__Z10initializeIN7phalanx18cuda_multigpu_gridEiEvT_PT0_S3__x0)
+	{
+	.reg .u32 %r<14>;
+	.reg .u64 %rd<3>;
+	.reg .pred %p<3>;
+	.loc	27	63	0
+$LDWbegin__Z10initializeIN7phalanx18cuda_multigpu_gridEiEvT_PT0_S3_:
+	mov.u32 	%r1, %ntid.x;
+	ld.param.s32 	%r2, [__cudaparm__Z10initializeIN7phalanx18cuda_multigpu_gridEiEvT_PT0_S3____val_paramhere+32];
+	mov.u32 	%r3, %nctaid.x;
+	mul.lo.u32 	%r4, %r3, %r1;
+	mul.lo.s32 	%r5, %r2, %r4;
+	mov.u32 	%r6, %tid.x;
+	mov.u32 	%r7, %ctaid.x;
+	mul.lo.u32 	%r8, %r7, %r1;
+	add.u32 	%r9, %r6, %r8;
+	add.s32 	%r10, %r5, %r9;
+	mov.u32 	%r11, 0;
+	setp.ne.s32 	%p1, %r10, %r11;
+	@%p1 bra 	$Lt_3_1026;
+	.loc	27	64	0
+	ld.param.s32 	%r12, [__cudaparm__Z10initializeIN7phalanx18cuda_multigpu_gridEiEvT_PT0_S3__x0];
+	ld.param.u64 	%rd1, [__cudaparm__Z10initializeIN7phalanx18cuda_multigpu_gridEiEvT_PT0_S3__x];
+	st.global.s32 	[%rd1+0], %r12;
+$Lt_3_1026:
+	.loc	27	65	0
+	exit;
+$LDWend__Z10initializeIN7phalanx18cuda_multigpu_gridEiEvT_PT0_S3_:
+	} // _Z10initializeIN7phalanx18cuda_multigpu_gridEiEvT_PT0_S3_
+
+	.entry _Z15subtract_offsetPiii (
+		.param .u64 __cudaparm__Z15subtract_offsetPiii_offsets,
+		.param .s32 __cudaparm__Z15subtract_offsetPiii_n,
+		.param .s32 __cudaparm__Z15subtract_offsetPiii_offset0)
+	{
+	.reg .u32 %r<14>;
+	.reg .u64 %rd<8>;
+	.reg .pred %p<4>;
+	.loc	28	51	0
+$LDWbegin__Z15subtract_offsetPiii:
+	.loc	28	52	0
+	mov.u32 	%r1, %ntid.x;
+	mov.u32 	%r2, %ctaid.x;
+	mul.lo.u32 	%r3, %r2, %r1;
+	mov.u32 	%r4, %tid.x;
+	add.u32 	%r5, %r4, %r3;
+	mov.s32 	%r6, %r5;
+	ld.param.s32 	%r7, [__cudaparm__Z15subtract_offsetPiii_n];
+	setp.le.s32 	%p1, %r7, %r5;
+	@%p1 bra 	$Lt_4_1282;
+	mov.u32 	%r8, %nctaid.x;
+	mul.lo.u32 	%r9, %r8, %r1;
+	cvt.s64.u32 	%rd1, %r9;
+	ld.param.u64 	%rd2, [__cudaparm__Z15subtract_offsetPiii_offsets];
+	cvt.s64.s32 	%rd3, %r5;
+	mul.wide.s32 	%rd4, %r5, 4;
+	add.u64 	%rd5, %rd2, %rd4;
+	mul.wide.u32 	%rd6, %r9, 4;
+	ld.param.s32 	%r10, [__cudaparm__Z15subtract_offsetPiii_offset0];
+$Lt_4_1794:
+ //<loop> Loop body line 52, nesting depth: 1, estimated iterations: unknown
+	.loc	28	54	0
+	ld.global.s32 	%r11, [%rd5+0];
+	sub.s32 	%r12, %r11, %r10;
+	st.global.s32 	[%rd5+0], %r12;
+	add.u32 	%r6, %r6, %r9;
+	add.u64 	%rd5, %rd5, %rd6;
+	setp.lt.s32 	%p2, %r6, %r7;
+	@%p2 bra 	$Lt_4_1794;
+$Lt_4_1282:
+	.loc	28	55	0
+	exit;
+$LDWend__Z15subtract_offsetPiii:
+	} // _Z15subtract_offsetPiii
+
+	.entry _Z12__initializeIiEviPT_S0_ (
+		.param .s32 __cudaparm__Z12__initializeIiEviPT_S0__n,
+		.param .u64 __cudaparm__Z12__initializeIiEviPT_S0__x,
+		.param .s32 __cudaparm__Z12__initializeIiEviPT_S0__x0)
+	{
+	.reg .u32 %r<12>;
+	.reg .u64 %rd<8>;
+	.reg .pred %p<4>;
+	.loc	29	49	0
+$LDWbegin__Z12__initializeIiEviPT_S0_:
+	.loc	29	50	0
+	mov.u32 	%r1, %ntid.x;
+	mov.u32 	%r2, %ctaid.x;
+	mul.lo.u32 	%r3, %r2, %r1;
+	mov.u32 	%r4, %tid.x;
+	add.u32 	%r5, %r4, %r3;
+	mov.s32 	%r6, %r5;
+	ld.param.s32 	%r7, [__cudaparm__Z12__initializeIiEviPT_S0__n];
+	setp.le.s32 	%p1, %r7, %r5;
+	@%p1 bra 	$Lt_5_1282;
+	mov.u32 	%r8, %nctaid.x;
+	mul.lo.u32 	%r9, %r8, %r1;
+	cvt.s64.u32 	%rd1, %r9;
+	ld.param.u64 	%rd2, [__cudaparm__Z12__initializeIiEviPT_S0__x];
+	cvt.s64.s32 	%rd3, %r5;
+	mul.wide.s32 	%rd4, %r5, 4;
+	add.u64 	%rd5, %rd2, %rd4;
+	mul.wide.u32 	%rd6, %r9, 4;
+	ld.param.s32 	%r10, [__cudaparm__Z12__initializeIiEviPT_S0__x0];
+$Lt_5_1794:
+ //<loop> Loop body line 50, nesting depth: 1, estimated iterations: unknown
+	.loc	29	52	0
+	st.global.s32 	[%rd5+0], %r10;
+	add.u32 	%r6, %r6, %r9;
+	add.u64 	%rd5, %rd5, %rd6;
+	setp.lt.s32 	%p2, %r6, %r7;
+	@%p2 bra 	$Lt_5_1794;
+$Lt_5_1282:
+	.loc	29	53	0
+	exit;
+$LDWend__Z12__initializeIiEviPT_S0_:
+	} // _Z12__initializeIiEviPT_S0_
+	.shared .s32 __cuda_local_var_131063_31_non_const_headptr__0;
+
+	.entry _ZN15bfs_rank_adjcsr16advance_frontierEN7phalanx9cuda_gridE6adjcsrINS0_13device_memoryEE5queueIiENS0_15stored_sequenceIiS3_EES6_ (
+		.param .align 4 .b8 __cudaparm__ZN15bfs_rank_adjcsr16advance_frontierEN7phalanx9cuda_gridE6adjcsrINS0_13device_memoryEE5queueIiENS0_15stored_sequenceIiS3_EES6__here[12],
+		.param .align 8 .b8 __cudaparm__ZN15bfs_rank_adjcsr16advance_frontierEN7phalanx9cuda_gridE6adjcsrINS0_13device_memoryEE5queueIiENS0_15stored_sequenceIiS3_EES6__G[24],
+		.param .align 8 .b8 __cudaparm__ZN15bfs_rank_adjcsr16advance_frontierEN7phalanx9cuda_gridE6adjcsrINS0_13device_memoryEE5queueIiENS0_15stored_sequenceIiS3_EES6____val_paraminqueue[16],
+		.param .align 8 .b8 __cudaparm__ZN15bfs_rank_adjcsr16advance_frontierEN7phalanx9cuda_gridE6adjcsrINS0_13device_memoryEE5queueIiENS0_15stored_sequenceIiS3_EES6__parents[16],
+		.param .align 8 .b8 __cudaparm__ZN15bfs_rank_adjcsr16advance_frontierEN7phalanx9cuda_gridE6adjcsrINS0_13device_memoryEE5queueIiENS0_15stored_sequenceIiS3_EES6____val_paramoutqueue[16])
+	{
+	.reg .u32 %r<32>;
+	.reg .u64 %rd<51>;
+	.reg .pred %p<8>;
+	.loc	27	94	0
+$LDWbegin__ZN15bfs_rank_adjcsr16advance_frontierEN7phalanx9cuda_gridE6adjcsrINS0_13device_memoryEE5queueIiENS0_15stored_sequenceIiS3_EES6_:
+	.loc	27	76	0
+	ld.param.u64 	%rd1, [__cudaparm__ZN15bfs_rank_adjcsr16advance_frontierEN7phalanx9cuda_gridE6adjcsrINS0_13device_memoryEE5queueIiENS0_15stored_sequenceIiS3_EES6____val_paraminqueue+0];
+	ldu.global.s32 	%r1, [%rd1+4];
+	cvt.s32.u32 	%r2, %ctaid.x;
+	add.s32 	%r3, %r1, %r2;
+	ldu.global.s32 	%r4, [%rd1+0];
+	setp.le.s32 	%p1, %r4, %r3;
+	@%p1 bra 	$Lt_6_4098;
+	ld.param.u64 	%rd2, [__cudaparm__ZN15bfs_rank_adjcsr16advance_frontierEN7phalanx9cuda_gridE6adjcsrINS0_13device_memoryEE5queueIiENS0_15stored_sequenceIiS3_EES6____val_paraminqueue+8];
+	mov.u32 	%r5, %tid.x;
+	mov.u32 	%r6, 0;
+	setp.eq.u32 	%p2, %r5, %r6;
+	sub.s64 	%rd3, %rd1, %rd2;
+	shr.s64 	%rd4, %rd3, 63;
+	mov.s64 	%rd5, 3;
+	and.b64 	%rd6, %rd4, %rd5;
+	add.s64 	%rd7, %rd6, %rd3;
+	shr.s64 	%rd8, %rd7, 2;
+	cvt.s32.s64 	%r7, %rd8;
+	cvt.s32.u32 	%r8, %nctaid.x;
+	cvt.s32.u32 	%r9, %tid.x;
+	ld.param.u64 	%rd9, [__cudaparm__ZN15bfs_rank_adjcsr16advance_frontierEN7phalanx9cuda_gridE6adjcsrINS0_13device_memoryEE5queueIiENS0_15stored_sequenceIiS3_EES6__G+16];
+	ld.param.u64 	%rd10, [__cudaparm__ZN15bfs_rank_adjcsr16advance_frontierEN7phalanx9cuda_gridE6adjcsrINS0_13device_memoryEE5queueIiENS0_15stored_sequenceIiS3_EES6__G+8];
+$Lt_6_4610:
+	.loc	27	79	0
+	rem.s32 	%r10, %r3, %r7;
+	cvt.s64.s32 	%rd11, %r10;
+	mul.wide.s32 	%rd12, %r10, 4;
+	add.u64 	%rd13, %rd2, %rd12;
+	ld.global.s32 	%r11, [%rd13+0];
+	.loc	27	80	0
+	cvt.s64.s32 	%rd14, %r11;
+	mul.wide.s32 	%rd15, %r11, 4;
+	add.u64 	%rd16, %rd10, %rd15;
+	ld.global.s32 	%r12, [%rd16+0];
+	cvt.s64.s32 	%rd17, %r12;
+	mul.wide.s32 	%rd18, %r12, 4;
+	add.u64 	%rd19, %rd9, %rd18;
+	.loc	27	81	0
+	ld.global.s32 	%r13, [%rd16+4];
+	cvt.u32.s64 	%r14, %rd17;
+	cvt.u64.u32 	%rd20, %r14;
+	cvt.u32.u64 	%r15, %rd20;
+	sub.s32 	%r16, %r13, %r15;
+	.loc	27	83	0
+	@!%p2 bra 	$Lt_6_4866;
+	.loc	4	166	0
+	ld.param.u64 	%rd21, [__cudaparm__ZN15bfs_rank_adjcsr16advance_frontierEN7phalanx9cuda_gridE6adjcsrINS0_13device_memoryEE5queueIiENS0_15stored_sequenceIiS3_EES6____val_paramoutqueue+0];
+	atom.global.add.s32 	%r17, [%rd21], %r16;
+	mov.s32 	%r18, %r17;
+	st.shared.s32 	[__cuda_local_var_131063_31_non_const_headptr__0], %r18;
+$Lt_6_4866:
+	.loc	4	168	0
+	bar.sync 	0;
+	.loc	4	170	0
+	mov.s32 	%r19, %r9;
+	setp.lt.s32 	%p3, %r19, %r16;
+	@!%p3 bra 	$Lt_6_5378;
+	ld.param.u64 	%rd22, [__cudaparm__ZN15bfs_rank_adjcsr16advance_frontierEN7phalanx9cuda_gridE6adjcsrINS0_13device_memoryEE5queueIiENS0_15stored_sequenceIiS3_EES6____val_paramoutqueue+8];
+	ld.param.u64 	%rd23, [__cudaparm__ZN15bfs_rank_adjcsr16advance_frontierEN7phalanx9cuda_gridE6adjcsrINS0_13device_memoryEE5queueIiENS0_15stored_sequenceIiS3_EES6____val_paramoutqueue+0];
+	sub.s64 	%rd24, %rd23, %rd22;
+	cvt.s32.u32 	%r20, %ntid.x;
+	ld.shared.s32 	%r21, [__cuda_local_var_131063_31_non_const_headptr__0];
+	add.s32 	%r22, %r19, %r21;
+	add.s32 	%r23, %r16, %r21;
+	shr.s64 	%rd25, %rd24, 63;
+	mov.s64 	%rd26, 3;
+	and.b64 	%rd27, %rd25, %rd26;
+	add.s64 	%rd28, %rd27, %rd24;
+	shr.s64 	%rd29, %rd28, 2;
+	cvt.s64.s32 	%rd30, %r20;
+	mul.wide.s32 	%rd31, %r20, 4;
+	cvt.s32.s64 	%r24, %rd29;
+	cvt.s64.s32 	%rd32, %r19;
+	mul.wide.s32 	%rd33, %r19, 4;
+	add.u64 	%rd34, %rd19, %rd33;
+$Lt_6_5890:
+ //<loop> Loop body line 170, nesting depth: 1, estimated iterations: unknown
+	.loc	4	171	0
+	ld.global.s32 	%r25, [%rd34+0];
+	rem.s32 	%r26, %r22, %r24;
+	cvt.s64.s32 	%rd35, %r26;
+	mul.wide.s32 	%rd36, %r26, 4;
+	add.u64 	%rd37, %rd22, %rd36;
+	st.global.s32 	[%rd37+0], %r25;
+	add.s32 	%r22, %r22, %r20;
+	add.u64 	%rd34, %rd31, %rd34;
+	setp.lt.s32 	%p4, %r22, %r23;
+	@%p4 bra 	$Lt_6_5890;
+$Lt_6_5378:
+	.loc	27	83	0
+	@!%p3 bra 	$Lt_6_6402;
+	ld.shared.s32 	%r27, [__cuda_local_var_131063_31_non_const_headptr__0];
+	add.s32 	%r28, %r19, %r27;
+	add.s32 	%r23, %r16, %r27;
+	ld.param.u64 	%rd38, [__cudaparm__ZN15bfs_rank_adjcsr16advance_frontierEN7phalanx9cuda_gridE6adjcsrINS0_13device_memoryEE5queueIiENS0_15stored_sequenceIiS3_EES6____val_paramoutqueue+0];
+	ld.param.u64 	%rd39, [__cudaparm__ZN15bfs_rank_adjcsr16advance_frontierEN7phalanx9cuda_gridE6adjcsrINS0_13device_memoryEE5queueIiENS0_15stored_sequenceIiS3_EES6____val_paramoutqueue+8];
+	sub.s64 	%rd40, %rd38, %rd39;
+	shr.s64 	%rd41, %rd40, 63;
+	mov.s64 	%rd42, 3;
+	and.b64 	%rd43, %rd41, %rd42;
+	add.s64 	%rd44, %rd43, %rd40;
+	shr.s64 	%rd45, %rd44, 2;
+	cvt.s32.s64 	%r24, %rd45;
+	cvt.s32.u32 	%r20, %ntid.x;
+	ld.param.u64 	%rd46, [__cudaparm__ZN15bfs_rank_adjcsr16advance_frontierEN7phalanx9cuda_gridE6adjcsrINS0_13device_memoryEE5queueIiENS0_15stored_sequenceIiS3_EES6__parents+0];
+$Lt_6_6914:
+ //<loop> Loop body line 83, nesting depth: 1, estimated iterations: unknown
+	.loc	27	87	0
+	rem.s32 	%r29, %r28, %r24;
+	cvt.s64.s32 	%rd47, %r29;
+	mul.wide.s32 	%rd48, %r29, 4;
+	add.u64 	%rd49, %rd46, %rd48;
+	st.global.s32 	[%rd49+0], %r11;
+	add.s32 	%r28, %r28, %r20;
+	setp.lt.s32 	%p5, %r28, %r23;
+	@%p5 bra 	$Lt_6_6914;
+$Lt_6_6402:
+	.loc	27	76	0
+	add.s32 	%r3, %r3, %r8;
+	ld.global.s32 	%r30, [%rd1+0];
+	setp.gt.s32 	%p6, %r30, %r3;
+	@%p6 bra 	$Lt_6_4610;
+$Lt_6_4098:
+	.loc	27	97	0
+	exit;
+$LDWend__ZN15bfs_rank_adjcsr16advance_frontierEN7phalanx9cuda_gridE6adjcsrINS0_13device_memoryEE5queueIiENS0_15stored_sequenceIiS3_EES6_:
+	} // _ZN15bfs_rank_adjcsr16advance_frontierEN7phalanx9cuda_gridE6adjcsrINS0_13device_memoryEE5queueIiENS0_15stored_sequenceIiS3_EES6_
+
+	.entry _ZN15bfs_rank_adjcsr17advance_frontierpEN7phalanx18cuda_multigpu_gridE7adjpcsrINS0_13device_memoryEE17distributed_queueIiENS0_20distributed_sequenceIiS3_EES6_ (
+		.param .align 8 .b8 __cudaparm__ZN15bfs_rank_adjcsr17advance_frontierpEN7phalanx18cuda_multigpu_gridE7adjpcsrINS0_13device_memoryEE17distributed_queueIiENS0_20distributed_sequenceIiS3_EES6____val_paramhere[40],
+		.param .align 8 .b8 __cudaparm__ZN15bfs_rank_adjcsr17advance_frontierpEN7phalanx18cuda_multigpu_gridE7adjpcsrINS0_13device_memoryEE17distributed_queueIiENS0_20distributed_sequenceIiS3_EES6____val_paramG[40],
+		.param .align 8 .b8 __cudaparm__ZN15bfs_rank_adjcsr17advance_frontierpEN7phalanx18cuda_multigpu_gridE7adjpcsrINS0_13device_memoryEE17distributed_queueIiENS0_20distributed_sequenceIiS3_EES6____val_paraminqueue[16],
+		.param .align 8 .b8 __cudaparm__ZN15bfs_rank_adjcsr17advance_frontierpEN7phalanx18cuda_multigpu_gridE7adjpcsrINS0_13device_memoryEE17distributed_queueIiENS0_20distributed_sequenceIiS3_EES6____val_paramparents[136],
+		.param .align 8 .b8 __cudaparm__ZN15bfs_rank_adjcsr17advance_frontierpEN7phalanx18cuda_multigpu_gridE7adjpcsrINS0_13device_memoryEE17distributed_queueIiENS0_20distributed_sequenceIiS3_EES6____val_paramoutqueue[16])
+	{
+	.reg .u16 %rh<3>;
+	.reg .u32 %r<39>;
+	.reg .u64 %rd<83>;
+	.reg .pred %p<9>;
+	.local .align 8 .b8 __cuda___cuda_parents_56808[136];
+	// here = 16
+	.loc	27	102	0
+$LDWbegin__ZN15bfs_rank_adjcsr17advance_frontierpEN7phalanx18cuda_multigpu_gridE7adjpcsrINS0_13device_memoryEE17distributed_queueIiENS0_20distributed_sequenceIiS3_EES6_:
+	ld.param.s8 	%r1, [__cudaparm__ZN15bfs_rank_adjcsr17advance_frontierpEN7phalanx18cuda_multigpu_gridE7adjpcsrINS0_13device_memoryEE17distributed_queueIiENS0_20distributed_sequenceIiS3_EES6____val_paramhere+20];
+	cvt.s8.s32 	%rh1, %r1;
+	ld.param.s32 	%r2, [__cudaparm__ZN15bfs_rank_adjcsr17advance_frontierpEN7phalanx18cuda_multigpu_gridE7adjpcsrINS0_13device_memoryEE17distributed_queueIiENS0_20distributed_sequenceIiS3_EES6____val_paramparents+0];
+	st.local.s32 	[__cuda___cuda_parents_56808+0], %r2;
+	ld.param.u64 	%rd1, [__cudaparm__ZN15bfs_rank_adjcsr17advance_frontierpEN7phalanx18cuda_multigpu_gridE7adjpcsrINS0_13device_memoryEE17distributed_queueIiENS0_20distributed_sequenceIiS3_EES6____val_paramparents+8];
+	st.local.u64 	[__cuda___cuda_parents_56808+8], %rd1;
+	ld.param.u64 	%rd2, [__cudaparm__ZN15bfs_rank_adjcsr17advance_frontierpEN7phalanx18cuda_multigpu_gridE7adjpcsrINS0_13device_memoryEE17distributed_queueIiENS0_20distributed_sequenceIiS3_EES6____val_paramparents+16];
+	st.local.u64 	[__cuda___cuda_parents_56808+16], %rd2;
+	ld.param.u64 	%rd3, [__cudaparm__ZN15bfs_rank_adjcsr17advance_frontierpEN7phalanx18cuda_multigpu_gridE7adjpcsrINS0_13device_memoryEE17distributed_queueIiENS0_20distributed_sequenceIiS3_EES6____val_paramparents+24];
+	st.local.u64 	[__cuda___cuda_parents_56808+24], %rd3;
+	ld.param.u64 	%rd4, [__cudaparm__ZN15bfs_rank_adjcsr17advance_frontierpEN7phalanx18cuda_multigpu_gridE7adjpcsrINS0_13device_memoryEE17distributed_queueIiENS0_20distributed_sequenceIiS3_EES6____val_paramparents+32];
+	st.local.u64 	[__cuda___cuda_parents_56808+32], %rd4;
+	ld.param.u64 	%rd5, [__cudaparm__ZN15bfs_rank_adjcsr17advance_frontierpEN7phalanx18cuda_multigpu_gridE7adjpcsrINS0_13device_memoryEE17distributed_queueIiENS0_20distributed_sequenceIiS3_EES6____val_paramparents+40];
+	st.local.u64 	[__cuda___cuda_parents_56808+40], %rd5;
+	ld.param.u64 	%rd6, [__cudaparm__ZN15bfs_rank_adjcsr17advance_frontierpEN7phalanx18cuda_multigpu_gridE7adjpcsrINS0_13device_memoryEE17distributed_queueIiENS0_20distributed_sequenceIiS3_EES6____val_paramparents+48];
+	st.local.u64 	[__cuda___cuda_parents_56808+48], %rd6;
+	ld.param.u64 	%rd7, [__cudaparm__ZN15bfs_rank_adjcsr17advance_frontierpEN7phalanx18cuda_multigpu_gridE7adjpcsrINS0_13device_memoryEE17distributed_queueIiENS0_20distributed_sequenceIiS3_EES6____val_paramparents+56];
+	st.local.u64 	[__cuda___cuda_parents_56808+56], %rd7;
+	ld.param.u64 	%rd8, [__cudaparm__ZN15bfs_rank_adjcsr17advance_frontierpEN7phalanx18cuda_multigpu_gridE7adjpcsrINS0_13device_memoryEE17distributed_queueIiENS0_20distributed_sequenceIiS3_EES6____val_paramparents+64];
+	st.local.u64 	[__cuda___cuda_parents_56808+64], %rd8;
+	ld.param.u64 	%rd9, [__cudaparm__ZN15bfs_rank_adjcsr17advance_frontierpEN7phalanx18cuda_multigpu_gridE7adjpcsrINS0_13device_memoryEE17distributed_queueIiENS0_20distributed_sequenceIiS3_EES6____val_paramparents+72];
+	st.local.u64 	[__cuda___cuda_parents_56808+72], %rd9;
+	ld.param.u64 	%rd10, [__cudaparm__ZN15bfs_rank_adjcsr17advance_frontierpEN7phalanx18cuda_multigpu_gridE7adjpcsrINS0_13device_memoryEE17distributed_queueIiENS0_20distributed_sequenceIiS3_EES6____val_paramparents+80];
+	st.local.u64 	[__cuda___cuda_parents_56808+80], %rd10;
+	ld.param.u64 	%rd11, [__cudaparm__ZN15bfs_rank_adjcsr17advance_frontierpEN7phalanx18cuda_multigpu_gridE7adjpcsrINS0_13device_memoryEE17distributed_queueIiENS0_20distributed_sequenceIiS3_EES6____val_paramparents+88];
+	st.local.u64 	[__cuda___cuda_parents_56808+88], %rd11;
+	ld.param.u64 	%rd12, [__cudaparm__ZN15bfs_rank_adjcsr17advance_frontierpEN7phalanx18cuda_multigpu_gridE7adjpcsrINS0_13device_memoryEE17distributed_queueIiENS0_20distributed_sequenceIiS3_EES6____val_paramparents+96];
+	st.local.u64 	[__cuda___cuda_parents_56808+96], %rd12;
+	ld.param.u64 	%rd13, [__cudaparm__ZN15bfs_rank_adjcsr17advance_frontierpEN7phalanx18cuda_multigpu_gridE7adjpcsrINS0_13device_memoryEE17distributed_queueIiENS0_20distributed_sequenceIiS3_EES6____val_paramparents+104];
+	st.local.u64 	[__cuda___cuda_parents_56808+104], %rd13;
+	ld.param.u64 	%rd14, [__cudaparm__ZN15bfs_rank_adjcsr17advance_frontierpEN7phalanx18cuda_multigpu_gridE7adjpcsrINS0_13device_memoryEE17distributed_queueIiENS0_20distributed_sequenceIiS3_EES6____val_paramparents+112];
+	st.local.u64 	[__cuda___cuda_parents_56808+112], %rd14;
+	ld.param.u64 	%rd15, [__cudaparm__ZN15bfs_rank_adjcsr17advance_frontierpEN7phalanx18cuda_multigpu_gridE7adjpcsrINS0_13device_memoryEE17distributed_queueIiENS0_20distributed_sequenceIiS3_EES6____val_paramparents+120];
+	st.local.u64 	[__cuda___cuda_parents_56808+120], %rd15;
+	ld.param.u64 	%rd16, [__cudaparm__ZN15bfs_rank_adjcsr17advance_frontierpEN7phalanx18cuda_multigpu_gridE7adjpcsrINS0_13device_memoryEE17distributed_queueIiENS0_20distributed_sequenceIiS3_EES6____val_paramparents+128];
+	st.local.u64 	[__cuda___cuda_parents_56808+128], %rd16;
+	.loc	27	105	0
+	ld.param.s32 	%r3, [__cudaparm__ZN15bfs_rank_adjcsr17advance_frontierpEN7phalanx18cuda_multigpu_gridE7adjpcsrINS0_13device_memoryEE17distributed_queueIiENS0_20distributed_sequenceIiS3_EES6____val_paramhere+32];
+	cvt.s64.s32 	%rd17, %r3;
+	mul.wide.s32 	%rd18, %r3, 8;
+	setp.lt.s32 	%p1, %r3, %r2;
+	@%p1 bra 	$Lt_7_5378;
+	mov.u64 	%rd19, 0;
+	bra.uni 	$LDWendi__ZN7phalanx20distributed_sequenceIiNS_13device_memoryEE11subsequenceEi_194_1;
+$Lt_7_5378:
+	.loc	13	126	0
+	cvta.local.u64 	%rd20, __cuda___cuda_parents_56808;
+	add.u64 	%rd21, %rd18, %rd20;
+	ld.u64 	%rd19, [%rd21+8];
+$LDWendi__ZN7phalanx20distributed_sequenceIiNS_13device_memoryEE11subsequenceEi_194_1:
+	.loc	27	106	0
+	cvt.s32.s8 	%r4, %rh1;
+	.loc	3	69	0
+	ld.param.u64 	%rd22, [__cudaparm__ZN15bfs_rank_adjcsr17advance_frontierpEN7phalanx18cuda_multigpu_gridE7adjpcsrINS0_13device_memoryEE17distributed_queueIiENS0_20distributed_sequenceIiS3_EES6____val_paramG+24];
+	add.u64 	%rd23, %rd22, %rd18;
+	ldu.global.u64 	%rd24, [%rd23+0];
+	ld.param.u64 	%rd25, [__cudaparm__ZN15bfs_rank_adjcsr17advance_frontierpEN7phalanx18cuda_multigpu_gridE7adjpcsrINS0_13device_memoryEE17distributed_queueIiENS0_20distributed_sequenceIiS3_EES6____val_paramG+32];
+	add.u64 	%rd26, %rd25, %rd18;
+	ldu.global.u64 	%rd27, [%rd26+0];
+	.loc	27	106	0
+	ld.param.u64 	%rd28, [__cudaparm__ZN15bfs_rank_adjcsr17advance_frontierpEN7phalanx18cuda_multigpu_gridE7adjpcsrINS0_13device_memoryEE17distributed_queueIiENS0_20distributed_sequenceIiS3_EES6____val_paramG+16];
+	mul.lo.u64 	%rd29, %rd17, 4;
+	add.u64 	%rd30, %rd28, %rd29;
+	ldu.global.s32 	%r5, [%rd30+0];
+	.loc	27	76	0
+	mul.lo.u64 	%rd31, %rd17, 16;
+	ld.param.u64 	%rd32, [__cudaparm__ZN15bfs_rank_adjcsr17advance_frontierpEN7phalanx18cuda_multigpu_gridE7adjpcsrINS0_13device_memoryEE17distributed_queueIiENS0_20distributed_sequenceIiS3_EES6____val_paraminqueue+8];
+	add.u64 	%rd33, %rd32, %rd31;
+	ldu.global.u64 	%rd34, [%rd33+0];
+	ld.s32 	%r6, [%rd34+4];
+	cvt.s32.u32 	%r7, %ctaid.x;
+	add.s32 	%r8, %r6, %r7;
+	ld.s32 	%r9, [%rd34+0];
+	setp.le.s32 	%p2, %r9, %r8;
+	@%p2 bra 	$Lt_7_5890;
+	ld.param.u64 	%rd35, [__cudaparm__ZN15bfs_rank_adjcsr17advance_frontierpEN7phalanx18cuda_multigpu_gridE7adjpcsrINS0_13device_memoryEE17distributed_queueIiENS0_20distributed_sequenceIiS3_EES6____val_paramoutqueue+8];
+	add.u64 	%rd36, %rd35, %rd31;
+	mov.u32 	%r10, %tid.x;
+	mov.u32 	%r11, 0;
+	setp.eq.u32 	%p3, %r10, %r11;
+	cvt.s32.u32 	%r12, %nctaid.x;
+	cvt.s32.u32 	%r13, %tid.x;
+$Lt_7_6402:
+	.loc	27	79	0
+	ld.global.u64 	%rd37, [%rd33+8];
+	sub.s64 	%rd38, %rd34, %rd37;
+	shr.s64 	%rd39, %rd38, 63;
+	mov.s64 	%rd40, 3;
+	and.b64 	%rd41, %rd39, %rd40;
+	add.s64 	%rd42, %rd41, %rd38;
+	shr.s64 	%rd43, %rd42, 2;
+	cvt.s32.s64 	%r14, %rd43;
+	rem.s32 	%r15, %r8, %r14;
+	cvt.s64.s32 	%rd44, %r15;
+	mul.wide.s32 	%rd45, %r15, 4;
+	add.u64 	%rd46, %rd37, %rd45;
+	ld.s32 	%r16, [%rd46+0];
+	.loc	27	80	0
+	sub.s32 	%r17, %r16, %r5;
+	cvt.s64.s32 	%rd47, %r17;
+	mul.wide.s32 	%rd48, %r17, 4;
+	add.u64 	%rd49, %rd24, %rd48;
+	ld.s32 	%r18, [%rd49+0];
+	cvt.s64.s32 	%rd50, %r18;
+	mul.wide.s32 	%rd51, %r18, 4;
+	add.u64 	%rd52, %rd27, %rd51;
+	.loc	27	81	0
+	ld.s32 	%r19, [%rd49+4];
+	cvt.u32.s64 	%r20, %rd50;
+	cvt.u64.u32 	%rd53, %r20;
+	cvt.u32.u64 	%r21, %rd53;
+	sub.s32 	%r22, %r19, %r21;
+	.loc	27	83	0
+	@!%p3 bra 	$Lt_7_6658;
+	.loc	4	166	0
+	ld.global.u64 	%rd54, [%rd36+0];
+	atom.global.add.s32 	%r23, [%rd54], %r22;
+	mov.s32 	%r24, %r23;
+	st.shared.s32 	[__cuda_local_var_131063_31_non_const_headptr__0], %r24;
+$Lt_7_6658:
+	.loc	4	168	0
+	bar.sync 	0;
+	.loc	4	170	0
+	mov.s32 	%r25, %r13;
+	setp.lt.s32 	%p4, %r25, %r22;
+	@!%p4 bra 	$Lt_7_7170;
+	cvt.s32.u32 	%r26, %ntid.x;
+	ld.shared.s32 	%r27, [__cuda_local_var_131063_31_non_const_headptr__0];
+	add.s32 	%r28, %r25, %r27;
+	add.s32 	%r29, %r22, %r27;
+	cvt.s64.s32 	%rd55, %r26;
+	mul.wide.s32 	%rd56, %r26, 4;
+	cvt.s64.s32 	%rd57, %r25;
+	mul.wide.s32 	%rd58, %r25, 4;
+	add.u64 	%rd59, %rd52, %rd58;
+$Lt_7_7682:
+ //<loop> Loop body line 170, nesting depth: 1, estimated iterations: unknown
+	.loc	4	171	0
+	ld.global.u64 	%rd60, [%rd36+8];
+	ld.s32 	%r30, [%rd59+0];
+	ld.global.u64 	%rd61, [%rd36+0];
+	sub.s64 	%rd62, %rd61, %rd60;
+	shr.s64 	%rd63, %rd62, 63;
+	mov.s64 	%rd64, 3;
+	and.b64 	%rd65, %rd63, %rd64;
+	add.s64 	%rd66, %rd65, %rd62;
+	shr.s64 	%rd67, %rd66, 2;
+	cvt.s32.s64 	%r31, %rd67;
+	rem.s32 	%r32, %r28, %r31;
+	cvt.s64.s32 	%rd68, %r32;
+	mul.wide.s32 	%rd69, %r32, 4;
+	add.u64 	%rd70, %rd60, %rd69;
+	st.s32 	[%rd70+0], %r30;
+	add.s32 	%r28, %r28, %r26;
+	add.u64 	%rd59, %rd56, %rd59;
+	setp.lt.s32 	%p5, %r28, %r29;
+	@%p5 bra 	$Lt_7_7682;
+$Lt_7_7170:
+	.loc	27	83	0
+	@!%p4 bra 	$Lt_7_8194;
+	ld.shared.s32 	%r33, [__cuda_local_var_131063_31_non_const_headptr__0];
+	add.s32 	%r34, %r25, %r33;
+	add.s32 	%r29, %r22, %r33;
+	cvt.s32.u32 	%r26, %ntid.x;
+$Lt_7_8706:
+ //<loop> Loop body line 83, nesting depth: 1, estimated iterations: unknown
+	.loc	27	87	0
+	ld.global.u64 	%rd71, [%rd36+0];
+	ld.global.u64 	%rd72, [%rd36+8];
+	sub.s64 	%rd73, %rd71, %rd72;
+	shr.s64 	%rd74, %rd73, 63;
+	mov.s64 	%rd75, 3;
+	and.b64 	%rd76, %rd74, %rd75;
+	add.s64 	%rd77, %rd76, %rd73;
+	shr.s64 	%rd78, %rd77, 2;
+	cvt.s32.s64 	%r35, %rd78;
+	rem.s32 	%r36, %r34, %r35;
+	cvt.s64.s32 	%rd79, %r36;
+	mul.wide.s32 	%rd80, %r36, 4;
+	add.u64 	%rd81, %rd19, %rd80;
+	st.s32 	[%rd81+0], %r16;
+	add.s32 	%r34, %r34, %r26;
+	setp.lt.s32 	%p6, %r34, %r29;
+	@%p6 bra 	$Lt_7_8706;
+$Lt_7_8194:
+	.loc	27	76	0
+	add.s32 	%r8, %r8, %r12;
+	ld.global.u64 	%rd34, [%rd33+0];
+	ld.s32 	%r37, [%rd34+0];
+	setp.gt.s32 	%p7, %r37, %r8;
+	@%p7 bra 	$Lt_7_6402;
+$Lt_7_5890:
+	.loc	27	108	0
+	exit;
+$LDWend__ZN15bfs_rank_adjcsr17advance_frontierpEN7phalanx18cuda_multigpu_gridE7adjpcsrINS0_13device_memoryEE17distributed_queueIiENS0_20distributed_sequenceIiS3_EES6_:
+	} // _ZN15bfs_rank_adjcsr17advance_frontierpEN7phalanx18cuda_multigpu_gridE7adjpcsrINS0_13device_memoryEE17distributed_queueIiENS0_20distributed_sequenceIiS3_EES6_
+
+	.entry _ZN15bfs_rank_adjcsr14pull_frontierpEN7phalanx18cuda_multigpu_gridEiPiNS0_20distributed_sequenceIiNS0_13device_memoryEEE17distributed_queueIiES5_S7_ (
+		.param .align 8 .b8 __cudaparm__ZN15bfs_rank_adjcsr14pull_frontierpEN7phalanx18cuda_multigpu_gridEiPiNS0_20distributed_sequenceIiNS0_13device_memoryEEE17distributed_queueIiES5_S7____val_paramhere[40],
+		.param .s32 __cudaparm__ZN15bfs_rank_adjcsr14pull_frontierpEN7phalanx18cuda_multigpu_gridEiPiNS0_20distributed_sequenceIiNS0_13device_memoryEEE17distributed_queueIiES5_S7__p,
+		.param .u64 __cudaparm__ZN15bfs_rank_adjcsr14pull_frontierpEN7phalanx18cuda_multigpu_gridEiPiNS0_20distributed_sequenceIiNS0_13device_memoryEEE17distributed_queueIiES5_S7__partition,
+		.param .align 8 .b8 __cudaparm__ZN15bfs_rank_adjcsr14pull_frontierpEN7phalanx18cuda_multigpu_gridEiPiNS0_20distributed_sequenceIiNS0_13device_memoryEEE17distributed_queueIiES5_S7____val_paraminparent[136],
+		.param .align 8 .b8 __cudaparm__ZN15bfs_rank_adjcsr14pull_frontierpEN7phalanx18cuda_multigpu_gridEiPiNS0_20distributed_sequenceIiNS0_13device_memoryEEE17distributed_queueIiES5_S7____val_paraminqueue[16],
+		.param .align 8 .b8 __cudaparm__ZN15bfs_rank_adjcsr14pull_frontierpEN7phalanx18cuda_multigpu_gridEiPiNS0_20distributed_sequenceIiNS0_13device_memoryEEE17distributed_queueIiES5_S7____val_paramoutparent[136],
+		.param .align 8 .b8 __cudaparm__ZN15bfs_rank_adjcsr14pull_frontierpEN7phalanx18cuda_multigpu_gridEiPiNS0_20distributed_sequenceIiNS0_13device_memoryEEE17distributed_queueIiES5_S7____val_paramoutqueue[16])
+	{
+	.reg .u16 %rh<3>;
+	.reg .u32 %r<45>;
+	.reg .u64 %rd<88>;
+	.reg .pred %p<9>;
+	.local .align 8 .b8 __cuda___cuda_inparent_561304[136];
+	.local .align 8 .b8 __cuda___cuda_outparent_1921440[136];
+	// here = 16
+	.loc	27	132	0
+$LDWbegin__ZN15bfs_rank_adjcsr14pull_frontierpEN7phalanx18cuda_multigpu_gridEiPiNS0_20distributed_sequenceIiNS0_13device_memoryEEE17distributed_queueIiES5_S7_:
+	ld.param.s8 	%r1, [__cudaparm__ZN15bfs_rank_adjcsr14pull_frontierpEN7phalanx18cuda_multigpu_gridEiPiNS0_20distributed_sequenceIiNS0_13device_memoryEEE17distributed_queueIiES5_S7____val_paramhere+20];
+	cvt.s8.s32 	%rh1, %r1;
+	ld.param.s32 	%r2, [__cudaparm__ZN15bfs_rank_adjcsr14pull_frontierpEN7phalanx18cuda_multigpu_gridEiPiNS0_20distributed_sequenceIiNS0_13device_memoryEEE17distributed_queueIiES5_S7____val_paraminparent+0];
+	st.local.s32 	[__cuda___cuda_inparent_561304+0], %r2;
+	ld.param.u64 	%rd1, [__cudaparm__ZN15bfs_rank_adjcsr14pull_frontierpEN7phalanx18cuda_multigpu_gridEiPiNS0_20distributed_sequenceIiNS0_13device_memoryEEE17distributed_queueIiES5_S7____val_paraminparent+8];
+	st.local.u64 	[__cuda___cuda_inparent_561304+8], %rd1;
+	ld.param.u64 	%rd2, [__cudaparm__ZN15bfs_rank_adjcsr14pull_frontierpEN7phalanx18cuda_multigpu_gridEiPiNS0_20distributed_sequenceIiNS0_13device_memoryEEE17distributed_queueIiES5_S7____val_paraminparent+16];
+	st.local.u64 	[__cuda___cuda_inparent_561304+16], %rd2;
+	ld.param.u64 	%rd3, [__cudaparm__ZN15bfs_rank_adjcsr14pull_frontierpEN7phalanx18cuda_multigpu_gridEiPiNS0_20distributed_sequenceIiNS0_13device_memoryEEE17distributed_queueIiES5_S7____val_paraminparent+24];
+	st.local.u64 	[__cuda___cuda_inparent_561304+24], %rd3;
+	ld.param.u64 	%rd4, [__cudaparm__ZN15bfs_rank_adjcsr14pull_frontierpEN7phalanx18cuda_multigpu_gridEiPiNS0_20distributed_sequenceIiNS0_13device_memoryEEE17distributed_queueIiES5_S7____val_paraminparent+32];
+	st.local.u64 	[__cuda___cuda_inparent_561304+32], %rd4;
+	ld.param.u64 	%rd5, [__cudaparm__ZN15bfs_rank_adjcsr14pull_frontierpEN7phalanx18cuda_multigpu_gridEiPiNS0_20distributed_sequenceIiNS0_13device_memoryEEE17distributed_queueIiES5_S7____val_paraminparent+40];
+	st.local.u64 	[__cuda___cuda_inparent_561304+40], %rd5;
+	ld.param.u64 	%rd6, [__cudaparm__ZN15bfs_rank_adjcsr14pull_frontierpEN7phalanx18cuda_multigpu_gridEiPiNS0_20distributed_sequenceIiNS0_13device_memoryEEE17distributed_queueIiES5_S7____val_paraminparent+48];
+	st.local.u64 	[__cuda___cuda_inparent_561304+48], %rd6;
+	ld.param.u64 	%rd7, [__cudaparm__ZN15bfs_rank_adjcsr14pull_frontierpEN7phalanx18cuda_multigpu_gridEiPiNS0_20distributed_sequenceIiNS0_13device_memoryEEE17distributed_queueIiES5_S7____val_paraminparent+56];
+	st.local.u64 	[__cuda___cuda_inparent_561304+56], %rd7;
+	ld.param.u64 	%rd8, [__cudaparm__ZN15bfs_rank_adjcsr14pull_frontierpEN7phalanx18cuda_multigpu_gridEiPiNS0_20distributed_sequenceIiNS0_13device_memoryEEE17distributed_queueIiES5_S7____val_paraminparent+64];
+	st.local.u64 	[__cuda___cuda_inparent_561304+64], %rd8;
+	ld.param.u64 	%rd9, [__cudaparm__ZN15bfs_rank_adjcsr14pull_frontierpEN7phalanx18cuda_multigpu_gridEiPiNS0_20distributed_sequenceIiNS0_13device_memoryEEE17distributed_queueIiES5_S7____val_paraminparent+72];
+	st.local.u64 	[__cuda___cuda_inparent_561304+72], %rd9;
+	ld.param.u64 	%rd10, [__cudaparm__ZN15bfs_rank_adjcsr14pull_frontierpEN7phalanx18cuda_multigpu_gridEiPiNS0_20distributed_sequenceIiNS0_13device_memoryEEE17distributed_queueIiES5_S7____val_paraminparent+80];
+	st.local.u64 	[__cuda___cuda_inparent_561304+80], %rd10;
+	ld.param.u64 	%rd11, [__cudaparm__ZN15bfs_rank_adjcsr14pull_frontierpEN7phalanx18cuda_multigpu_gridEiPiNS0_20distributed_sequenceIiNS0_13device_memoryEEE17distributed_queueIiES5_S7____val_paraminparent+88];
+	st.local.u64 	[__cuda___cuda_inparent_561304+88], %rd11;
+	ld.param.u64 	%rd12, [__cudaparm__ZN15bfs_rank_adjcsr14pull_frontierpEN7phalanx18cuda_multigpu_gridEiPiNS0_20distributed_sequenceIiNS0_13device_memoryEEE17distributed_queueIiES5_S7____val_paraminparent+96];
+	st.local.u64 	[__cuda___cuda_inparent_561304+96], %rd12;
+	ld.param.u64 	%rd13, [__cudaparm__ZN15bfs_rank_adjcsr14pull_frontierpEN7phalanx18cuda_multigpu_gridEiPiNS0_20distributed_sequenceIiNS0_13device_memoryEEE17distributed_queueIiES5_S7____val_paraminparent+104];
+	st.local.u64 	[__cuda___cuda_inparent_561304+104], %rd13;
+	ld.param.u64 	%rd14, [__cudaparm__ZN15bfs_rank_adjcsr14pull_frontierpEN7phalanx18cuda_multigpu_gridEiPiNS0_20distributed_sequenceIiNS0_13device_memoryEEE17distributed_queueIiES5_S7____val_paraminparent+112];
+	st.local.u64 	[__cuda___cuda_inparent_561304+112], %rd14;
+	ld.param.u64 	%rd15, [__cudaparm__ZN15bfs_rank_adjcsr14pull_frontierpEN7phalanx18cuda_multigpu_gridEiPiNS0_20distributed_sequenceIiNS0_13device_memoryEEE17distributed_queueIiES5_S7____val_paraminparent+120];
+	st.local.u64 	[__cuda___cuda_inparent_561304+120], %rd15;
+	ld.param.u64 	%rd16, [__cudaparm__ZN15bfs_rank_adjcsr14pull_frontierpEN7phalanx18cuda_multigpu_gridEiPiNS0_20distributed_sequenceIiNS0_13device_memoryEEE17distributed_queueIiES5_S7____val_paraminparent+128];
+	st.local.u64 	[__cuda___cuda_inparent_561304+128], %rd16;
+	ld.param.s32 	%r3, [__cudaparm__ZN15bfs_rank_adjcsr14pull_frontierpEN7phalanx18cuda_multigpu_gridEiPiNS0_20distributed_sequenceIiNS0_13device_memoryEEE17distributed_queueIiES5_S7____val_paramoutparent+0];
+	st.local.s32 	[__cuda___cuda_outparent_1921440+0], %r3;
+	ld.param.u64 	%rd17, [__cudaparm__ZN15bfs_rank_adjcsr14pull_frontierpEN7phalanx18cuda_multigpu_gridEiPiNS0_20distributed_sequenceIiNS0_13device_memoryEEE17distributed_queueIiES5_S7____val_paramoutparent+8];
+	st.local.u64 	[__cuda___cuda_outparent_1921440+8], %rd17;
+	ld.param.u64 	%rd18, [__cudaparm__ZN15bfs_rank_adjcsr14pull_frontierpEN7phalanx18cuda_multigpu_gridEiPiNS0_20distributed_sequenceIiNS0_13device_memoryEEE17distributed_queueIiES5_S7____val_paramoutparent+16];
+	st.local.u64 	[__cuda___cuda_outparent_1921440+16], %rd18;
+	ld.param.u64 	%rd19, [__cudaparm__ZN15bfs_rank_adjcsr14pull_frontierpEN7phalanx18cuda_multigpu_gridEiPiNS0_20distributed_sequenceIiNS0_13device_memoryEEE17distributed_queueIiES5_S7____val_paramoutparent+24];
+	st.local.u64 	[__cuda___cuda_outparent_1921440+24], %rd19;
+	ld.param.u64 	%rd20, [__cudaparm__ZN15bfs_rank_adjcsr14pull_frontierpEN7phalanx18cuda_multigpu_gridEiPiNS0_20distributed_sequenceIiNS0_13device_memoryEEE17distributed_queueIiES5_S7____val_paramoutparent+32];
+	st.local.u64 	[__cuda___cuda_outparent_1921440+32], %rd20;
+	ld.param.u64 	%rd21, [__cudaparm__ZN15bfs_rank_adjcsr14pull_frontierpEN7phalanx18cuda_multigpu_gridEiPiNS0_20distributed_sequenceIiNS0_13device_memoryEEE17distributed_queueIiES5_S7____val_paramoutparent+40];
+	st.local.u64 	[__cuda___cuda_outparent_1921440+40], %rd21;
+	ld.param.u64 	%rd22, [__cudaparm__ZN15bfs_rank_adjcsr14pull_frontierpEN7phalanx18cuda_multigpu_gridEiPiNS0_20distributed_sequenceIiNS0_13device_memoryEEE17distributed_queueIiES5_S7____val_paramoutparent+48];
+	st.local.u64 	[__cuda___cuda_outparent_1921440+48], %rd22;
+	ld.param.u64 	%rd23, [__cudaparm__ZN15bfs_rank_adjcsr14pull_frontierpEN7phalanx18cuda_multigpu_gridEiPiNS0_20distributed_sequenceIiNS0_13device_memoryEEE17distributed_queueIiES5_S7____val_paramoutparent+56];
+	st.local.u64 	[__cuda___cuda_outparent_1921440+56], %rd23;
+	ld.param.u64 	%rd24, [__cudaparm__ZN15bfs_rank_adjcsr14pull_frontierpEN7phalanx18cuda_multigpu_gridEiPiNS0_20distributed_sequenceIiNS0_13device_memoryEEE17distributed_queueIiES5_S7____val_paramoutparent+64];
+	st.local.u64 	[__cuda___cuda_outparent_1921440+64], %rd24;
+	ld.param.u64 	%rd25, [__cudaparm__ZN15bfs_rank_adjcsr14pull_frontierpEN7phalanx18cuda_multigpu_gridEiPiNS0_20distributed_sequenceIiNS0_13device_memoryEEE17distributed_queueIiES5_S7____val_paramoutparent+72];
+	st.local.u64 	[__cuda___cuda_outparent_1921440+72], %rd25;
+	ld.param.u64 	%rd26, [__cudaparm__ZN15bfs_rank_adjcsr14pull_frontierpEN7phalanx18cuda_multigpu_gridEiPiNS0_20distributed_sequenceIiNS0_13device_memoryEEE17distributed_queueIiES5_S7____val_paramoutparent+80];
+	st.local.u64 	[__cuda___cuda_outparent_1921440+80], %rd26;
+	ld.param.u64 	%rd27, [__cudaparm__ZN15bfs_rank_adjcsr14pull_frontierpEN7phalanx18cuda_multigpu_gridEiPiNS0_20distributed_sequenceIiNS0_13device_memoryEEE17distributed_queueIiES5_S7____val_paramoutparent+88];
+	st.local.u64 	[__cuda___cuda_outparent_1921440+88], %rd27;
+	ld.param.u64 	%rd28, [__cudaparm__ZN15bfs_rank_adjcsr14pull_frontierpEN7phalanx18cuda_multigpu_gridEiPiNS0_20distributed_sequenceIiNS0_13device_memoryEEE17distributed_queueIiES5_S7____val_paramoutparent+96];
+	st.local.u64 	[__cuda___cuda_outparent_1921440+96], %rd28;
+	ld.param.u64 	%rd29, [__cudaparm__ZN15bfs_rank_adjcsr14pull_frontierpEN7phalanx18cuda_multigpu_gridEiPiNS0_20distributed_sequenceIiNS0_13device_memoryEEE17distributed_queueIiES5_S7____val_paramoutparent+104];
+	st.local.u64 	[__cuda___cuda_outparent_1921440+104], %rd29;
+	ld.param.u64 	%rd30, [__cudaparm__ZN15bfs_rank_adjcsr14pull_frontierpEN7phalanx18cuda_multigpu_gridEiPiNS0_20distributed_sequenceIiNS0_13device_memoryEEE17distributed_queueIiES5_S7____val_paramoutparent+112];
+	st.local.u64 	[__cuda___cuda_outparent_1921440+112], %rd30;
+	ld.param.u64 	%rd31, [__cudaparm__ZN15bfs_rank_adjcsr14pull_frontierpEN7phalanx18cuda_multigpu_gridEiPiNS0_20distributed_sequenceIiNS0_13device_memoryEEE17distributed_queueIiES5_S7____val_paramoutparent+120];
+	st.local.u64 	[__cuda___cuda_outparent_1921440+120], %rd31;
+	ld.param.u64 	%rd32, [__cudaparm__ZN15bfs_rank_adjcsr14pull_frontierpEN7phalanx18cuda_multigpu_gridEiPiNS0_20distributed_sequenceIiNS0_13device_memoryEEE17distributed_queueIiES5_S7____val_paramoutparent+128];
+	st.local.u64 	[__cuda___cuda_outparent_1921440+128], %rd32;
+	.loc	27	136	0
+	ld.param.s32 	%r4, [__cudaparm__ZN15bfs_rank_adjcsr14pull_frontierpEN7phalanx18cuda_multigpu_gridEiPiNS0_20distributed_sequenceIiNS0_13device_memoryEEE17distributed_queueIiES5_S7____val_paramhere+32];
+	cvt.s64.s32 	%rd33, %r4;
+	ld.param.u64 	%rd34, [__cudaparm__ZN15bfs_rank_adjcsr14pull_frontierpEN7phalanx18cuda_multigpu_gridEiPiNS0_20distributed_sequenceIiNS0_13device_memoryEEE17distributed_queueIiES5_S7__partition];
+	mul.wide.s32 	%rd35, %r4, 4;
+	add.u64 	%rd36, %rd34, %rd35;
+	ldu.global.s32 	%r5, [%rd36+0];
+	.loc	27	137	0
+	ldu.global.s32 	%r6, [%rd36+4];
+	.loc	27	139	0
+	setp.lt.s32 	%p1, %r4, %r3;
+	@%p1 bra 	$Lt_8_5890;
+	mov.u64 	%rd37, 0;
+	bra.uni 	$LDWendi__ZN7phalanx20distributed_sequenceIiNS_13device_memoryEE11subsequenceEi_198_3;
+$Lt_8_5890:
+	.loc	13	126	0
+	cvta.local.u64 	%rd38, __cuda___cuda_outparent_1921440;
+	mul.lo.u64 	%rd39, %rd33, 8;
+	add.u64 	%rd40, %rd38, %rd39;
+	ld.u64 	%rd37, [%rd40+8];
+$LDWendi__ZN7phalanx20distributed_sequenceIiNS_13device_memoryEE11subsequenceEi_198_3:
+	.loc	27	140	0
+	ld.param.s32 	%r7, [__cudaparm__ZN15bfs_rank_adjcsr14pull_frontierpEN7phalanx18cuda_multigpu_gridEiPiNS0_20distributed_sequenceIiNS0_13device_memoryEEE17distributed_queueIiES5_S7__p];
+	mov.u32 	%r8, 0;
+	setp.le.s32 	%p2, %r7, %r8;
+	@%p2 bra 	$Lt_8_6402;
+	ld.param.u64 	%rd41, [__cudaparm__ZN15bfs_rank_adjcsr14pull_frontierpEN7phalanx18cuda_multigpu_gridEiPiNS0_20distributed_sequenceIiNS0_13device_memoryEEE17distributed_queueIiES5_S7____val_paramoutqueue+8];
+	mul.lo.u64 	%rd42, %rd33, 16;
+	add.u64 	%rd43, %rd41, %rd42;
+	mov.s32 	%r9, %r7;
+	mov.s64 	%rd44, 0;
+	mov.u32 	%r10, %ntid.x;
+	mov.u32 	%r11, %ctaid.x;
+	mul.lo.u32 	%r12, %r11, %r10;
+	mov.u32 	%r13, %tid.x;
+	add.u32 	%r14, %r13, %r12;
+	ld.param.u64 	%rd45, [__cudaparm__ZN15bfs_rank_adjcsr14pull_frontierpEN7phalanx18cuda_multigpu_gridEiPiNS0_20distributed_sequenceIiNS0_13device_memoryEEE17distributed_queueIiES5_S7____val_paraminqueue+8];
+	mov.s32 	%r15, 0;
+	cvta.local.u64 	%rd46, __cuda___cuda_inparent_561304;
+	mov.s32 	%r16, %r9;
+$Lt_8_6914:
+ //<loop> Loop body line 140, nesting depth: 1, estimated iterations: unknown
+	.loc	27	143	0
+	cvt.s32.s8 	%r17, %rh1;
+	setp.lt.s32 	%p3, %r15, %r2;
+	@%p3 bra 	$Lt_8_7170;
+	mov.u64 	%rd47, 0;
+	bra.uni 	$LDWendi__ZN7phalanx20distributed_sequenceIiNS_13device_memoryEE11subsequenceEi_198_1;
+$Lt_8_7170:
+	.loc	13	126	0
+	mul.lo.u64 	%rd48, %rd44, 8;
+	add.u64 	%rd49, %rd46, %rd48;
+	ld.u64 	%rd47, [%rd49+8];
+$LDWendi__ZN7phalanx20distributed_sequenceIiNS_13device_memoryEE11subsequenceEi_198_1:
+	.loc	27	115	0
+	mov.s32 	%r18, %r14;
+	ld.global.u64 	%rd50, [%rd45+0];
+	ld.s32 	%r19, [%rd50+0];
+	ld.s32 	%r20, [%rd50+4];
+	sub.s32 	%r21, %r19, %r20;
+	setp.le.s32 	%p4, %r21, %r14;
+	@%p4 bra 	$Lt_8_7682;
+	mov.u32 	%r22, %nctaid.x;
+	mul.lo.u32 	%r23, %r22, %r10;
+$Lt_8_8194:
+ //<loop> Loop body line 115, nesting depth: 2, estimated iterations: unknown
+	.loc	27	118	0
+	ld.global.u64 	%rd51, [%rd45+8];
+	sub.s64 	%rd52, %rd50, %rd51;
+	shr.s64 	%rd53, %rd52, 63;
+	mov.s64 	%rd54, 3;
+	and.b64 	%rd55, %rd53, %rd54;
+	add.s64 	%rd56, %rd55, %rd52;
+	shr.s64 	%rd57, %rd56, 2;
+	cvt.s32.s64 	%r24, %rd57;
+	add.s32 	%r25, %r20, %r18;
+	rem.s32 	%r26, %r25, %r24;
+	.loc	27	120	0
+	rem.s32 	%r27, %r26, %r24;
+	cvt.s64.s32 	%rd58, %r27;
+	mul.wide.s32 	%rd59, %r27, 4;
+	add.u64 	%rd60, %rd51, %rd59;
+	ld.s32 	%r28, [%rd60+0];
+	.loc	27	121	0
+	cvt.s64.s32 	%rd61, %r26;
+	mul.wide.s32 	%rd62, %r26, 4;
+	add.u64 	%rd63, %rd47, %rd62;
+	ld.s32 	%r29, [%rd63+0];
+	set.gt.u32.s32 	%r30, %r6, %r28;
+	neg.s32 	%r31, %r30;
+	set.le.u32.s32 	%r32, %r5, %r28;
+	neg.s32 	%r33, %r32;
+	and.b32 	%r34, %r31, %r33;
+	mov.u32 	%r35, 0;
+	setp.eq.s32 	%p5, %r34, %r35;
+	@%p5 bra 	$Lt_8_8450;
+	.loc	4	120	0
+	ld.global.u64 	%rd64, [%rd43+0];
+	mov.s32 	%r36, 1;
+	atom.global.add.s32 	%r37, [%rd64], %r36;
+	mov.s32 	%r38, %r37;
+	ld.global.u64 	%rd65, [%rd43+8];
+	ld.global.u64 	%rd66, [%rd43+0];
+	sub.s64 	%rd67, %rd66, %rd65;
+	shr.s64 	%rd68, %rd67, 63;
+	mov.s64 	%rd69, 3;
+	and.b64 	%rd70, %rd68, %rd69;
+	add.s64 	%rd71, %rd70, %rd67;
+	shr.s64 	%rd72, %rd71, 2;
+	cvt.s32.s64 	%r39, %rd72;
+	rem.s32 	%r40, %r38, %r39;
+	cvt.s64.s32 	%rd73, %r40;
+	mul.wide.s32 	%rd74, %r40, 4;
+	add.u64 	%rd75, %rd65, %rd74;
+	st.s32 	[%rd75+0], %r28;
+	.loc	27	124	0
+	ld.global.u64 	%rd76, [%rd43+0];
+	ld.global.u64 	%rd77, [%rd43+8];
+	sub.s64 	%rd78, %rd76, %rd77;
+	shr.s64 	%rd79, %rd78, 63;
+	mov.s64 	%rd80, 3;
+	and.b64 	%rd81, %rd79, %rd80;
+	add.s64 	%rd82, %rd81, %rd78;
+	shr.s64 	%rd83, %rd82, 2;
+	cvt.s32.s64 	%r41, %rd83;
+	rem.s32 	%r42, %r40, %r41;
+	cvt.s64.s32 	%rd84, %r42;
+	mul.wide.s32 	%rd85, %r42, 4;
+	add.u64 	%rd86, %rd37, %rd85;
+	st.s32 	[%rd86+0], %r29;
+	ld.global.u64 	%rd50, [%rd45+0];
+	ld.s32 	%r43, [%rd50+0];
+	ld.s32 	%r20, [%rd50+4];
+	sub.s32 	%r21, %r43, %r20;
+$Lt_8_8450:
+	.loc	27	115	0
+	add.s32 	%r18, %r18, %r23;
+	setp.gt.s32 	%p6, %r21, %r18;
+	@%p6 bra 	$Lt_8_8194;
+$Lt_8_7682:
+	.loc	27	143	0
+	add.s32 	%r15, %r15, 1;
+	add.s64 	%rd44, %rd44, 1;
+	add.u64 	%rd45, %rd45, 16;
+	setp.ne.s32 	%p7, %r7, %r15;
+	@%p7 bra 	$Lt_8_6914;
+$Lt_8_6402:
+	.loc	27	147	0
+	exit;
+$LDWend__ZN15bfs_rank_adjcsr14pull_frontierpEN7phalanx18cuda_multigpu_gridEiPiNS0_20distributed_sequenceIiNS0_13device_memoryEEE17distributed_queueIiES5_S7_:
+	} // _ZN15bfs_rank_adjcsr14pull_frontierpEN7phalanx18cuda_multigpu_gridEiPiNS0_20distributed_sequenceIiNS0_13device_memoryEEE17distributed_queueIiES5_S7_
+
+	.entry _ZN15bfs_rank_adjcsr13cull_frontierEN7phalanx9cuda_gridENS0_15stored_sequenceIiNS0_13device_memoryEEES4_5queueIiES6_ (
+		.param .align 4 .b8 __cudaparm__ZN15bfs_rank_adjcsr13cull_frontierEN7phalanx9cuda_gridENS0_15stored_sequenceIiNS0_13device_memoryEEES4_5queueIiES6____val_paramhere[12],
+		.param .align 8 .b8 __cudaparm__ZN15bfs_rank_adjcsr13cull_frontierEN7phalanx9cuda_gridENS0_15stored_sequenceIiNS0_13device_memoryEEES4_5queueIiES6____val_paramrank[16],
+		.param .align 8 .b8 __cudaparm__ZN15bfs_rank_adjcsr13cull_frontierEN7phalanx9cuda_gridENS0_15stored_sequenceIiNS0_13device_memoryEEES4_5queueIiES6__parents[16],
+		.param .align 8 .b8 __cudaparm__ZN15bfs_rank_adjcsr13cull_frontierEN7phalanx9cuda_gridENS0_15stored_sequenceIiNS0_13device_memoryEEES4_5queueIiES6____val_paraminqueue[16],
+		.param .align 8 .b8 __cudaparm__ZN15bfs_rank_adjcsr13cull_frontierEN7phalanx9cuda_gridENS0_15stored_sequenceIiNS0_13device_memoryEEES4_5queueIiES6____val_paramoutqueue[16])
+	{
+	.reg .u32 %r<32>;
+	.reg .u64 %rd<35>;
+	.reg .pred %p<5>;
+	.loc	27	170	0
+$LDWbegin__ZN15bfs_rank_adjcsr13cull_frontierEN7phalanx9cuda_gridENS0_15stored_sequenceIiNS0_13device_memoryEEES4_5queueIiES6_:
+	.loc	27	158	0
+	mov.u32 	%r1, %ntid.x;
+	mov.u32 	%r2, %ctaid.x;
+	mul.lo.u32 	%r3, %r2, %r1;
+	mov.u32 	%r4, %tid.x;
+	add.u32 	%r5, %r4, %r3;
+	mov.s32 	%r6, %r5;
+	ld.param.u64 	%rd1, [__cudaparm__ZN15bfs_rank_adjcsr13cull_frontierEN7phalanx9cuda_gridENS0_15stored_sequenceIiNS0_13device_memoryEEES4_5queueIiES6____val_paraminqueue+0];
+	ldu.global.s32 	%r7, [%rd1+4];
+	ldu.global.s32 	%r8, [%rd1+0];
+	sub.s32 	%r9, %r8, %r7;
+	setp.ge.s32 	%p1, %r5, %r9;
+	@%p1 bra 	$Lt_9_2050;
+	ld.param.u64 	%rd2, [__cudaparm__ZN15bfs_rank_adjcsr13cull_frontierEN7phalanx9cuda_gridENS0_15stored_sequenceIiNS0_13device_memoryEEES4_5queueIiES6____val_paraminqueue+8];
+	mov.u32 	%r10, %nctaid.x;
+	mul.lo.u32 	%r11, %r10, %r1;
+	sub.s64 	%rd3, %rd1, %rd2;
+	shr.s64 	%rd4, %rd3, 63;
+	mov.s64 	%rd5, 3;
+	and.b64 	%rd6, %rd4, %rd5;
+	add.s64 	%rd7, %rd6, %rd3;
+	shr.s64 	%rd8, %rd7, 2;
+	cvt.s32.s64 	%r12, %rd8;
+	ld.param.u64 	%rd9, [__cudaparm__ZN15bfs_rank_adjcsr13cull_frontierEN7phalanx9cuda_gridENS0_15stored_sequenceIiNS0_13device_memoryEEES4_5queueIiES6__parents+0];
+	ld.param.u64 	%rd10, [__cudaparm__ZN15bfs_rank_adjcsr13cull_frontierEN7phalanx9cuda_gridENS0_15stored_sequenceIiNS0_13device_memoryEEES4_5queueIiES6____val_paramrank+0];
+$Lt_9_2562:
+ //<loop> Loop body line 158, nesting depth: 1, estimated iterations: unknown
+	.loc	27	161	0
+	add.s32 	%r13, %r7, %r6;
+	rem.s32 	%r14, %r13, %r12;
+	rem.s32 	%r15, %r14, %r12;
+	cvt.s64.s32 	%rd11, %r15;
+	mul.wide.s32 	%rd12, %r15, 4;
+	add.u64 	%rd13, %rd2, %rd12;
+	ld.global.s32 	%r16, [%rd13+0];
+	.loc	27	163	0
+	cvt.s64.s32 	%rd14, %r16;
+	mul.wide.s32 	%rd15, %r16, 4;
+	add.u64 	%rd16, %rd10, %rd15;
+	mov.s32 	%r17, -1;
+	cvt.s64.s32 	%rd17, %r14;
+	mul.wide.s32 	%rd18, %r14, 4;
+	add.u64 	%rd19, %rd9, %rd18;
+	ld.global.s32 	%r18, [%rd19+0];
+	cvt.s64.s32 	%rd20, %r18;
+	mul.wide.s32 	%rd21, %r18, 4;
+	add.u64 	%rd22, %rd10, %rd21;
+	ld.global.s32 	%r19, [%rd22+0];
+	add.s32 	%r20, %r19, 1;
+	atom.global.cas.b32 	%r21, [%rd16], %r17, %r20;
+	mov.s32 	%r22, %r21;
+	mov.u32 	%r23, -1;
+	setp.ne.s32 	%p2, %r22, %r23;
+	@%p2 bra 	$Lt_9_2818;
+	.loc	4	120	0
+	ld.param.u64 	%rd23, [__cudaparm__ZN15bfs_rank_adjcsr13cull_frontierEN7phalanx9cuda_gridENS0_15stored_sequenceIiNS0_13device_memoryEEES4_5queueIiES6____val_paramoutqueue+0];
+	mov.s32 	%r24, 1;
+	atom.global.add.s32 	%r25, [%rd23], %r24;
+	mov.s32 	%r26, %r25;
+	ld.param.u64 	%rd24, [__cudaparm__ZN15bfs_rank_adjcsr13cull_frontierEN7phalanx9cuda_gridENS0_15stored_sequenceIiNS0_13device_memoryEEES4_5queueIiES6____val_paramoutqueue+8];
+	sub.s64 	%rd25, %rd23, %rd24;
+	shr.s64 	%rd26, %rd25, 63;
+	mov.s64 	%rd27, 3;
+	and.b64 	%rd28, %rd26, %rd27;
+	add.s64 	%rd29, %rd28, %rd25;
+	shr.s64 	%rd30, %rd29, 2;
+	cvt.s32.s64 	%r27, %rd30;
+	rem.s32 	%r28, %r26, %r27;
+	cvt.s64.s32 	%rd31, %r28;
+	mul.wide.s32 	%rd32, %r28, 4;
+	add.u64 	%rd33, %rd24, %rd32;
+	st.global.s32 	[%rd33+0], %r16;
+$Lt_9_2818:
+	.loc	27	158	0
+	add.s32 	%r6, %r6, %r11;
+	ld.global.s32 	%r7, [%rd1+4];
+	ld.global.s32 	%r29, [%rd1+0];
+	sub.s32 	%r30, %r29, %r7;
+	setp.lt.s32 	%p3, %r6, %r30;
+	@%p3 bra 	$Lt_9_2562;
+$Lt_9_2050:
+	.loc	27	172	0
+	exit;
+$LDWend__ZN15bfs_rank_adjcsr13cull_frontierEN7phalanx9cuda_gridENS0_15stored_sequenceIiNS0_13device_memoryEEES4_5queueIiES6_:
+	} // _ZN15bfs_rank_adjcsr13cull_frontierEN7phalanx9cuda_gridENS0_15stored_sequenceIiNS0_13device_memoryEEES4_5queueIiES6_
+
+	.entry _ZN15bfs_rank_adjcsr14cull_frontierpEN7phalanx18cuda_multigpu_gridENS0_20distributed_sequenceIiNS0_13device_memoryEEES4_17distributed_queueIiES6_ (
+		.param .align 8 .b8 __cudaparm__ZN15bfs_rank_adjcsr14cull_frontierpEN7phalanx18cuda_multigpu_gridENS0_20distributed_sequenceIiNS0_13device_memoryEEES4_17distributed_queueIiES6____val_paramhere[40],
+		.param .align 8 .b8 __cudaparm__ZN15bfs_rank_adjcsr14cull_frontierpEN7phalanx18cuda_multigpu_gridENS0_20distributed_sequenceIiNS0_13device_memoryEEES4_17distributed_queueIiES6____val_paramrank[136],
+		.param .align 8 .b8 __cudaparm__ZN15bfs_rank_adjcsr14cull_frontierpEN7phalanx18cuda_multigpu_gridENS0_20distributed_sequenceIiNS0_13device_memoryEEES4_17distributed_queueIiES6____val_paramparents[136],
+		.param .align 8 .b8 __cudaparm__ZN15bfs_rank_adjcsr14cull_frontierpEN7phalanx18cuda_multigpu_gridENS0_20distributed_sequenceIiNS0_13device_memoryEEES4_17distributed_queueIiES6____val_paraminqueue[16],
+		.param .align 8 .b8 __cudaparm__ZN15bfs_rank_adjcsr14cull_frontierpEN7phalanx18cuda_multigpu_gridENS0_20distributed_sequenceIiNS0_13device_memoryEEES4_17distributed_queueIiES6____val_paramoutqueue[16])
+	{
+	.reg .u16 %rh<3>;
+	.reg .u32 %r<44>;
+	.reg .u64 %rd<98>;
+	.reg .pred %p<13>;
+	.local .align 8 .b8 __cuda___cuda_rank_722000[136];
+	.local .align 8 .b8 __cuda___cuda_parents_2082136[136];
+	// here = 32
+	.loc	27	177	0
+$LDWbegin__ZN15bfs_rank_adjcsr14cull_frontierpEN7phalanx18cuda_multigpu_gridENS0_20distributed_sequenceIiNS0_13device_memoryEEES4_17distributed_queueIiES6_:
+	ld.param.s8 	%r1, [__cudaparm__ZN15bfs_rank_adjcsr14cull_frontierpEN7phalanx18cuda_multigpu_gridENS0_20distributed_sequenceIiNS0_13device_memoryEEES4_17distributed_queueIiES6____val_paramhere+20];
+	cvt.s8.s32 	%rh1, %r1;
+	ld.param.s32 	%r2, [__cudaparm__ZN15bfs_rank_adjcsr14cull_frontierpEN7phalanx18cuda_multigpu_gridENS0_20distributed_sequenceIiNS0_13device_memoryEEES4_17distributed_queueIiES6____val_paramrank+0];
+	st.local.s32 	[__cuda___cuda_rank_722000+0], %r2;
+	ld.param.u64 	%rd1, [__cudaparm__ZN15bfs_rank_adjcsr14cull_frontierpEN7phalanx18cuda_multigpu_gridENS0_20distributed_sequenceIiNS0_13device_memoryEEES4_17distributed_queueIiES6____val_paramrank+8];
+	st.local.u64 	[__cuda___cuda_rank_722000+8], %rd1;
+	ld.param.u64 	%rd2, [__cudaparm__ZN15bfs_rank_adjcsr14cull_frontierpEN7phalanx18cuda_multigpu_gridENS0_20distributed_sequenceIiNS0_13device_memoryEEES4_17distributed_queueIiES6____val_paramrank+16];
+	st.local.u64 	[__cuda___cuda_rank_722000+16], %rd2;
+	ld.param.u64 	%rd3, [__cudaparm__ZN15bfs_rank_adjcsr14cull_frontierpEN7phalanx18cuda_multigpu_gridENS0_20distributed_sequenceIiNS0_13device_memoryEEES4_17distributed_queueIiES6____val_paramrank+24];
+	st.local.u64 	[__cuda___cuda_rank_722000+24], %rd3;
+	ld.param.u64 	%rd4, [__cudaparm__ZN15bfs_rank_adjcsr14cull_frontierpEN7phalanx18cuda_multigpu_gridENS0_20distributed_sequenceIiNS0_13device_memoryEEES4_17distributed_queueIiES6____val_paramrank+32];
+	st.local.u64 	[__cuda___cuda_rank_722000+32], %rd4;
+	ld.param.u64 	%rd5, [__cudaparm__ZN15bfs_rank_adjcsr14cull_frontierpEN7phalanx18cuda_multigpu_gridENS0_20distributed_sequenceIiNS0_13device_memoryEEES4_17distributed_queueIiES6____val_paramrank+40];
+	st.local.u64 	[__cuda___cuda_rank_722000+40], %rd5;
+	ld.param.u64 	%rd6, [__cudaparm__ZN15bfs_rank_adjcsr14cull_frontierpEN7phalanx18cuda_multigpu_gridENS0_20distributed_sequenceIiNS0_13device_memoryEEES4_17distributed_queueIiES6____val_paramrank+48];
+	st.local.u64 	[__cuda___cuda_rank_722000+48], %rd6;
+	ld.param.u64 	%rd7, [__cudaparm__ZN15bfs_rank_adjcsr14cull_frontierpEN7phalanx18cuda_multigpu_gridENS0_20distributed_sequenceIiNS0_13device_memoryEEES4_17distributed_queueIiES6____val_paramrank+56];
+	st.local.u64 	[__cuda___cuda_rank_722000+56], %rd7;
+	ld.param.u64 	%rd8, [__cudaparm__ZN15bfs_rank_adjcsr14cull_frontierpEN7phalanx18cuda_multigpu_gridENS0_20distributed_sequenceIiNS0_13device_memoryEEES4_17distributed_queueIiES6____val_paramrank+64];
+	st.local.u64 	[__cuda___cuda_rank_722000+64], %rd8;
+	ld.param.u64 	%rd9, [__cudaparm__ZN15bfs_rank_adjcsr14cull_frontierpEN7phalanx18cuda_multigpu_gridENS0_20distributed_sequenceIiNS0_13device_memoryEEES4_17distributed_queueIiES6____val_paramrank+72];
+	st.local.u64 	[__cuda___cuda_rank_722000+72], %rd9;
+	ld.param.u64 	%rd10, [__cudaparm__ZN15bfs_rank_adjcsr14cull_frontierpEN7phalanx18cuda_multigpu_gridENS0_20distributed_sequenceIiNS0_13device_memoryEEES4_17distributed_queueIiES6____val_paramrank+80];
+	st.local.u64 	[__cuda___cuda_rank_722000+80], %rd10;
+	ld.param.u64 	%rd11, [__cudaparm__ZN15bfs_rank_adjcsr14cull_frontierpEN7phalanx18cuda_multigpu_gridENS0_20distributed_sequenceIiNS0_13device_memoryEEES4_17distributed_queueIiES6____val_paramrank+88];
+	st.local.u64 	[__cuda___cuda_rank_722000+88], %rd11;
+	ld.param.u64 	%rd12, [__cudaparm__ZN15bfs_rank_adjcsr14cull_frontierpEN7phalanx18cuda_multigpu_gridENS0_20distributed_sequenceIiNS0_13device_memoryEEES4_17distributed_queueIiES6____val_paramrank+96];
+	st.local.u64 	[__cuda___cuda_rank_722000+96], %rd12;
+	ld.param.u64 	%rd13, [__cudaparm__ZN15bfs_rank_adjcsr14cull_frontierpEN7phalanx18cuda_multigpu_gridENS0_20distributed_sequenceIiNS0_13device_memoryEEES4_17distributed_queueIiES6____val_paramrank+104];
+	st.local.u64 	[__cuda___cuda_rank_722000+104], %rd13;
+	ld.param.u64 	%rd14, [__cudaparm__ZN15bfs_rank_adjcsr14cull_frontierpEN7phalanx18cuda_multigpu_gridENS0_20distributed_sequenceIiNS0_13device_memoryEEES4_17distributed_queueIiES6____val_paramrank+112];
+	st.local.u64 	[__cuda___cuda_rank_722000+112], %rd14;
+	ld.param.u64 	%rd15, [__cudaparm__ZN15bfs_rank_adjcsr14cull_frontierpEN7phalanx18cuda_multigpu_gridENS0_20distributed_sequenceIiNS0_13device_memoryEEES4_17distributed_queueIiES6____val_paramrank+120];
+	st.local.u64 	[__cuda___cuda_rank_722000+120], %rd15;
+	ld.param.u64 	%rd16, [__cudaparm__ZN15bfs_rank_adjcsr14cull_frontierpEN7phalanx18cuda_multigpu_gridENS0_20distributed_sequenceIiNS0_13device_memoryEEES4_17distributed_queueIiES6____val_paramrank+128];
+	st.local.u64 	[__cuda___cuda_rank_722000+128], %rd16;
+	ld.param.s32 	%r3, [__cudaparm__ZN15bfs_rank_adjcsr14cull_frontierpEN7phalanx18cuda_multigpu_gridENS0_20distributed_sequenceIiNS0_13device_memoryEEES4_17distributed_queueIiES6____val_paramparents+0];
+	st.local.s32 	[__cuda___cuda_parents_2082136+0], %r3;
+	ld.param.u64 	%rd17, [__cudaparm__ZN15bfs_rank_adjcsr14cull_frontierpEN7phalanx18cuda_multigpu_gridENS0_20distributed_sequenceIiNS0_13device_memoryEEES4_17distributed_queueIiES6____val_paramparents+8];
+	st.local.u64 	[__cuda___cuda_parents_2082136+8], %rd17;
+	ld.param.u64 	%rd18, [__cudaparm__ZN15bfs_rank_adjcsr14cull_frontierpEN7phalanx18cuda_multigpu_gridENS0_20distributed_sequenceIiNS0_13device_memoryEEES4_17distributed_queueIiES6____val_paramparents+16];
+	st.local.u64 	[__cuda___cuda_parents_2082136+16], %rd18;
+	ld.param.u64 	%rd19, [__cudaparm__ZN15bfs_rank_adjcsr14cull_frontierpEN7phalanx18cuda_multigpu_gridENS0_20distributed_sequenceIiNS0_13device_memoryEEES4_17distributed_queueIiES6____val_paramparents+24];
+	st.local.u64 	[__cuda___cuda_parents_2082136+24], %rd19;
+	ld.param.u64 	%rd20, [__cudaparm__ZN15bfs_rank_adjcsr14cull_frontierpEN7phalanx18cuda_multigpu_gridENS0_20distributed_sequenceIiNS0_13device_memoryEEES4_17distributed_queueIiES6____val_paramparents+32];
+	st.local.u64 	[__cuda___cuda_parents_2082136+32], %rd20;
+	ld.param.u64 	%rd21, [__cudaparm__ZN15bfs_rank_adjcsr14cull_frontierpEN7phalanx18cuda_multigpu_gridENS0_20distributed_sequenceIiNS0_13device_memoryEEES4_17distributed_queueIiES6____val_paramparents+40];
+	st.local.u64 	[__cuda___cuda_parents_2082136+40], %rd21;
+	ld.param.u64 	%rd22, [__cudaparm__ZN15bfs_rank_adjcsr14cull_frontierpEN7phalanx18cuda_multigpu_gridENS0_20distributed_sequenceIiNS0_13device_memoryEEES4_17distributed_queueIiES6____val_paramparents+48];
+	st.local.u64 	[__cuda___cuda_parents_2082136+48], %rd22;
+	ld.param.u64 	%rd23, [__cudaparm__ZN15bfs_rank_adjcsr14cull_frontierpEN7phalanx18cuda_multigpu_gridENS0_20distributed_sequenceIiNS0_13device_memoryEEES4_17distributed_queueIiES6____val_paramparents+56];
+	st.local.u64 	[__cuda___cuda_parents_2082136+56], %rd23;
+	ld.param.u64 	%rd24, [__cudaparm__ZN15bfs_rank_adjcsr14cull_frontierpEN7phalanx18cuda_multigpu_gridENS0_20distributed_sequenceIiNS0_13device_memoryEEES4_17distributed_queueIiES6____val_paramparents+64];
+	st.local.u64 	[__cuda___cuda_parents_2082136+64], %rd24;
+	ld.param.u64 	%rd25, [__cudaparm__ZN15bfs_rank_adjcsr14cull_frontierpEN7phalanx18cuda_multigpu_gridENS0_20distributed_sequenceIiNS0_13device_memoryEEES4_17distributed_queueIiES6____val_paramparents+72];
+	st.local.u64 	[__cuda___cuda_parents_2082136+72], %rd25;
+	ld.param.u64 	%rd26, [__cudaparm__ZN15bfs_rank_adjcsr14cull_frontierpEN7phalanx18cuda_multigpu_gridENS0_20distributed_sequenceIiNS0_13device_memoryEEES4_17distributed_queueIiES6____val_paramparents+80];
+	st.local.u64 	[__cuda___cuda_parents_2082136+80], %rd26;
+	ld.param.u64 	%rd27, [__cudaparm__ZN15bfs_rank_adjcsr14cull_frontierpEN7phalanx18cuda_multigpu_gridENS0_20distributed_sequenceIiNS0_13device_memoryEEES4_17distributed_queueIiES6____val_paramparents+88];
+	st.local.u64 	[__cuda___cuda_parents_2082136+88], %rd27;
+	ld.param.u64 	%rd28, [__cudaparm__ZN15bfs_rank_adjcsr14cull_frontierpEN7phalanx18cuda_multigpu_gridENS0_20distributed_sequenceIiNS0_13device_memoryEEES4_17distributed_queueIiES6____val_paramparents+96];
+	st.local.u64 	[__cuda___cuda_parents_2082136+96], %rd28;
+	ld.param.u64 	%rd29, [__cudaparm__ZN15bfs_rank_adjcsr14cull_frontierpEN7phalanx18cuda_multigpu_gridENS0_20distributed_sequenceIiNS0_13device_memoryEEES4_17distributed_queueIiES6____val_paramparents+104];
+	st.local.u64 	[__cuda___cuda_parents_2082136+104], %rd29;
+	ld.param.u64 	%rd30, [__cudaparm__ZN15bfs_rank_adjcsr14cull_frontierpEN7phalanx18cuda_multigpu_gridENS0_20distributed_sequenceIiNS0_13device_memoryEEES4_17distributed_queueIiES6____val_paramparents+112];
+	st.local.u64 	[__cuda___cuda_parents_2082136+112], %rd30;
+	ld.param.u64 	%rd31, [__cudaparm__ZN15bfs_rank_adjcsr14cull_frontierpEN7phalanx18cuda_multigpu_gridENS0_20distributed_sequenceIiNS0_13device_memoryEEES4_17distributed_queueIiES6____val_paramparents+120];
+	st.local.u64 	[__cuda___cuda_parents_2082136+120], %rd31;
+	ld.param.u64 	%rd32, [__cudaparm__ZN15bfs_rank_adjcsr14cull_frontierpEN7phalanx18cuda_multigpu_gridENS0_20distributed_sequenceIiNS0_13device_memoryEEES4_17distributed_queueIiES6____val_paramparents+128];
+	st.local.u64 	[__cuda___cuda_parents_2082136+128], %rd32;
+	.loc	27	181	0
+	cvt.s32.s8 	%r4, %rh1;
+	ld.param.s32 	%r5, [__cudaparm__ZN15bfs_rank_adjcsr14cull_frontierpEN7phalanx18cuda_multigpu_gridENS0_20distributed_sequenceIiNS0_13device_memoryEEES4_17distributed_queueIiES6____val_paramhere+32];
+	cvt.s64.s32 	%rd33, %r5;
+	setp.lt.s32 	%p1, %r5, %r3;
+	@%p1 bra 	$Lt_10_7938;
+	mov.u64 	%rd34, 0;
+	bra.uni 	$LDWendi__ZN7phalanx20distributed_sequenceIiNS_13device_memoryEE11subsequenceEi_202_1;
+$Lt_10_7938:
+	.loc	13	126	0
+	cvta.local.u64 	%rd35, __cuda___cuda_parents_2082136;
+	mul.lo.u64 	%rd36, %rd33, 8;
+	add.u64 	%rd37, %rd35, %rd36;
+	ld.u64 	%rd34, [%rd37+8];
+$LDWendi__ZN7phalanx20distributed_sequenceIiNS_13device_memoryEE11subsequenceEi_202_1:
+	.loc	27	158	0
+	mov.u32 	%r6, %ntid.x;
+	mov.u32 	%r7, %ctaid.x;
+	mul.lo.u32 	%r8, %r7, %r6;
+	mov.u32 	%r9, %tid.x;
+	add.u32 	%r10, %r9, %r8;
+	mov.s32 	%r11, %r10;
+	mul.lo.u64 	%rd38, %rd33, 16;
+	ld.param.u64 	%rd39, [__cudaparm__ZN15bfs_rank_adjcsr14cull_frontierpEN7phalanx18cuda_multigpu_gridENS0_20distributed_sequenceIiNS0_13device_memoryEEES4_17distributed_queueIiES6____val_paraminqueue+8];
+	add.u64 	%rd40, %rd39, %rd38;
+	ldu.global.u64 	%rd41, [%rd40+0];
+	ld.s32 	%r12, [%rd41+4];
+	ld.s32 	%r13, [%rd41+0];
+	sub.s32 	%r14, %r13, %r12;
+	setp.ge.s32 	%p2, %r10, %r14;
+	@%p2 bra 	$Lt_10_8450;
+	ld.param.u64 	%rd42, [__cudaparm__ZN15bfs_rank_adjcsr14cull_frontierpEN7phalanx18cuda_multigpu_gridENS0_20distributed_sequenceIiNS0_13device_memoryEEES4_17distributed_queueIiES6____val_paramoutqueue+8];
+	add.u64 	%rd43, %rd42, %rd38;
+	mov.s32 	%r15, 0;
+	setp.gt.s32 	%p3, %r2, %r15;
+	mov.u32 	%r16, %nctaid.x;
+	mul.lo.u32 	%r17, %r16, %r6;
+	cvta.local.u64 	%rd44, __cuda___cuda_rank_722000;
+$Lt_10_8962:
+ //<loop> Loop body line 158, nesting depth: 1, estimated iterations: unknown
+	.loc	27	160	0
+	ld.global.u64 	%rd45, [%rd40+8];
+	sub.s64 	%rd46, %rd41, %rd45;
+	shr.s64 	%rd47, %rd46, 63;
+	mov.s64 	%rd48, 3;
+	and.b64 	%rd49, %rd47, %rd48;
+	add.s64 	%rd50, %rd49, %rd46;
+	shr.s64 	%rd51, %rd50, 2;
+	cvt.s32.s64 	%r18, %rd51;
+	add.s32 	%r19, %r12, %r11;
+	rem.s32 	%r20, %r19, %r18;
+	.loc	27	161	0
+	cvt.s64.s32 	%rd52, %r20;
+	mul.wide.s32 	%rd53, %r20, 4;
+	add.u64 	%rd54, %rd34, %rd53;
+	ld.s32 	%r21, [%rd54+0];
+	rem.s32 	%r22, %r20, %r18;
+	cvt.s64.s32 	%rd55, %r22;
+	mul.wide.s32 	%rd56, %r22, 4;
+	add.u64 	%rd57, %rd45, %rd56;
+	ld.s32 	%r23, [%rd57+0];
+	.loc	13	131	0
+	@!%p3 bra 	$Lt_10_10242;
+	cvt.s64.s32 	%rd58, %r23;
+	setp.lt.u64 	%p4, %rd58, %rd9;
+	@%p4 bra 	$Lt_10_10498;
+	cvta.local.u64 	%rd59, __cuda___cuda_rank_722000;
+	mov.s32 	%r24, 0;
+	mov.s32 	%r25, 0;
+$L_10_5890:
+	ld.u32 	%r26, [%rd59+72];
+	add.u32 	%r24, %r24, %r26;
+	add.s32 	%r25, %r25, 1;
+	setp.ge.s32 	%p5, %r25, %r2;
+	@%p5 bra 	$Lt_10_10754;
+	cvt.s64.s32 	%rd60, %r25;
+	mul.wide.s32 	%rd61, %r25, 8;
+	add.u64 	%rd62, %rd44, %rd61;
+	mov.s64 	%rd59, %rd62;
+	cvt.s64.s32 	%rd63, %r24;
+	ld.u64 	%rd64, [%rd62+72];
+	add.u64 	%rd65, %rd63, %rd64;
+	setp.ge.u64 	%p6, %rd58, %rd65;
+	@%p6 bra 	$L_10_5890;
+	bra.uni 	$L_10_6146;
+$Lt_10_10754:
+	cvt.s64.s32 	%rd66, %r25;
+	mul.wide.s32 	%rd67, %r25, 8;
+	add.u64 	%rd59, %rd44, %rd67;
+	bra.uni 	$L_10_6146;
+$Lt_10_10242:
+	cvta.local.u64 	%rd59, __cuda___cuda_rank_722000;
+	mov.s32 	%r24, 0;
+	bra.uni 	$L_10_6146;
+$Lt_10_10498:
+	cvta.local.u64 	%rd59, __cuda___cuda_rank_722000;
+	mov.s32 	%r24, 0;
+$L_10_6146:
+	.loc	13	132	0
+	ld.u64 	%rd68, [%rd59+8];
+	sub.s32 	%r27, %r23, %r24;
+	cvt.s64.s32 	%rd69, %r27;
+	mul.wide.s32 	%rd70, %r27, 4;
+	add.u64 	%rd71, %rd68, %rd70;
+	.loc	13	131	0
+	@!%p3 bra 	$Lt_10_11010;
+	cvt.s64.s32 	%rd72, %r21;
+	setp.lt.u64 	%p7, %rd72, %rd9;
+	@%p7 bra 	$Lt_10_11266;
+	cvta.local.u64 	%rd59, __cuda___cuda_rank_722000;
+	mov.s32 	%r24, 0;
+	mov.s32 	%r25, 0;
+$L_10_6914:
+	ld.u32 	%r28, [%rd59+72];
+	add.u32 	%r24, %r24, %r28;
+	add.s32 	%r25, %r25, 1;
+	setp.ge.s32 	%p8, %r25, %r2;
+	@%p8 bra 	$Lt_10_11522;
+	cvt.s64.s32 	%rd73, %r25;
+	mul.wide.s32 	%rd74, %r25, 8;
+	add.u64 	%rd75, %rd44, %rd74;
+	mov.s64 	%rd59, %rd75;
+	cvt.s64.s32 	%rd76, %r24;
+	ld.u64 	%rd77, [%rd75+72];
+	add.u64 	%rd78, %rd76, %rd77;
+	setp.ge.u64 	%p9, %rd72, %rd78;
+	@%p9 bra 	$L_10_6914;
+	bra.uni 	$L_10_7170;
+$Lt_10_11522:
+	cvt.s64.s32 	%rd79, %r25;
+	mul.wide.s32 	%rd80, %r25, 8;
+	add.u64 	%rd59, %rd44, %rd80;
+	bra.uni 	$L_10_7170;
+$Lt_10_11010:
+	cvta.local.u64 	%rd59, __cuda___cuda_rank_722000;
+	mov.s32 	%r24, 0;
+	bra.uni 	$L_10_7170;
+$Lt_10_11266:
+	cvta.local.u64 	%rd59, __cuda___cuda_rank_722000;
+	mov.s32 	%r24, 0;
+$L_10_7170:
+	.loc	27	163	0
+	mov.s32 	%r29, -1;
+	ld.u64 	%rd81, [%rd59+8];
+	sub.s32 	%r30, %r21, %r24;
+	cvt.s64.s32 	%rd82, %r30;
+	mul.wide.s32 	%rd83, %r30, 4;
+	add.u64 	%rd84, %rd81, %rd83;
+	ld.s32 	%r31, [%rd84+0];
+	add.s32 	%r32, %r31, 1;
+	atom.cas.b32 	%r33, [%rd71], %r29, %r32;
+	mov.s32 	%r34, %r33;
+	mov.u32 	%r35, -1;
+	setp.ne.s32 	%p10, %r34, %r35;
+	@%p10 bra 	$Lt_10_9218;
+	.loc	4	120	0
+	ld.global.u64 	%rd85, [%rd43+0];
+	mov.s32 	%r36, 1;
+	atom.global.add.s32 	%r37, [%rd85], %r36;
+	mov.s32 	%r38, %r37;
+	ld.global.u64 	%rd86, [%rd43+8];
+	ld.global.u64 	%rd87, [%rd43+0];
+	sub.s64 	%rd88, %rd87, %rd86;
+	shr.s64 	%rd89, %rd88, 63;
+	mov.s64 	%rd90, 3;
+	and.b64 	%rd91, %rd89, %rd90;
+	add.s64 	%rd92, %rd91, %rd88;
+	shr.s64 	%rd93, %rd92, 2;
+	cvt.s32.s64 	%r39, %rd93;
+	rem.s32 	%r40, %r38, %r39;
+	cvt.s64.s32 	%rd94, %r40;
+	mul.wide.s32 	%rd95, %r40, 4;
+	add.u64 	%rd96, %rd86, %rd95;
+	st.s32 	[%rd96+0], %r23;
+$Lt_10_9218:
+	.loc	27	158	0
+	add.s32 	%r11, %r11, %r17;
+	ld.global.u64 	%rd41, [%rd40+0];
+	ld.s32 	%r12, [%rd41+4];
+	ld.s32 	%r41, [%rd41+0];
+	sub.s32 	%r42, %r41, %r12;
+	setp.lt.s32 	%p11, %r11, %r42;
+	@%p11 bra 	$Lt_10_8962;
+$Lt_10_8450:
+	.loc	27	183	0
+	exit;
+$LDWend__ZN15bfs_rank_adjcsr14cull_frontierpEN7phalanx18cuda_multigpu_gridENS0_20distributed_sequenceIiNS0_13device_memoryEEES4_17distributed_queueIiES6_:
+	} // _ZN15bfs_rank_adjcsr14cull_frontierpEN7phalanx18cuda_multigpu_gridENS0_20distributed_sequenceIiNS0_13device_memoryEEES4_17distributed_queueIiES6_
+
+	.visible .func _ZN6adjcsrIN7phalanx11host_memoryEEC1Ev (.param .u64 __cudaparmf1__ZN6adjcsrIN7phalanx11host_memoryEEC1Ev)
+	{
+	.reg .u32 %r<4>;
+	.reg .u64 %rd<6>;
+	.loc	3	47	0
+$LDWbegin__ZN6adjcsrIN7phalanx11host_memoryEEC1Ev:
+	ld.param.u64 	%rd1, [__cudaparmf1__ZN6adjcsrIN7phalanx11host_memoryEEC1Ev];
+	mov.s64 	%rd2, %rd1;
+	.loc	3	46	0
+	mov.s32 	%r1, 0;
+	mov.s32 	%r2, 0;
+	st.v2.s32 	[%rd2+0], {%r1,%r2};
+	mov.u64 	%rd3, 0;
+	st.u64 	[%rd2+8], %rd3;
+	mov.u64 	%rd4, 0;
+	st.u64 	[%rd2+16], %rd4;
+	ret;
+$LDWend__ZN6adjcsrIN7phalanx11host_memoryEEC1Ev:
+	} // _ZN6adjcsrIN7phalanx11host_memoryEEC1Ev
+
+	.visible .func (.param .align 8 .b8 __cudaretf__ZN7adjpcsrIN7phalanx11host_memoryEE9submatrixEi[24]) _ZN7adjpcsrIN7phalanx11host_memoryEE9submatrixEi (.param .u64 __cudaparmf1__ZN7adjpcsrIN7phalanx11host_memoryEE9submatrixEi, .param .s32 __cudaparmf2__ZN7adjpcsrIN7phalanx11host_memoryEE9submatrixEi)
+	{
+	.reg .u32 %r<8>;
+	.reg .u64 %rd<17>;
+	.loc	3	68	0
+$LDWbegin__ZN7adjpcsrIN7phalanx11host_memoryEE9submatrixEi:
+	ld.param.u64 	%rd1, [__cudaparmf1__ZN7adjpcsrIN7phalanx11host_memoryEE9submatrixEi];
+	mov.s64 	%rd2, %rd1;
+	ld.param.u32 	%r1, [__cudaparmf2__ZN7adjpcsrIN7phalanx11host_memoryEE9submatrixEi];
+	mov.s32 	%r2, %r1;
+	.loc	3	69	0
+	ld.u64 	%rd3, [%rd2+16];
+	cvt.s64.s32 	%rd4, %r2;
+	mul.wide.s32 	%rd5, %r2, 4;
+	add.u64 	%rd6, %rd3, %rd5;
+	ld.s32 	%r3, [%rd6+4];
+	ld.s32 	%r4, [%rd6+0];
+	sub.s32 	%r5, %r3, %r4;
+	st.param.s32 	[__cudaretf__ZN7adjpcsrIN7phalanx11host_memoryEE9submatrixEi+0], %r5;
+	ld.u64 	%rd7, [%rd2+8];
+	add.u64 	%rd8, %rd7, %rd5;
+	ld.s32 	%r6, [%rd8+0];
+	st.param.s32 	[__cudaretf__ZN7adjpcsrIN7phalanx11host_memoryEE9submatrixEi+4], %r6;
+	mul.wide.s32 	%rd9, %r2, 8;
+	ld.u64 	%rd10, [%rd2+24];
+	add.u64 	%rd11, %rd10, %rd9;
+	ld.u64 	%rd12, [%rd11+0];
+	st.param.u64 	[__cudaretf__ZN7adjpcsrIN7phalanx11host_memoryEE9submatrixEi+8], %rd12;
+	ld.u64 	%rd13, [%rd2+32];
+	add.u64 	%rd14, %rd13, %rd9;
+	ld.u64 	%rd15, [%rd14+0];
+	st.param.u64 	[__cudaretf__ZN7adjpcsrIN7phalanx11host_memoryEE9submatrixEi+16], %rd15;
+	ret;
+$LDWend__ZN7adjpcsrIN7phalanx11host_memoryEE9submatrixEi:
+	} // _ZN7adjpcsrIN7phalanx11host_memoryEE9submatrixEi
+
+	.visible .func (.param .align 8 .b8 __cudaretf__ZN7adjpcsrIN7phalanx13device_memoryEE9submatrixEi[24]) _ZN7adjpcsrIN7phalanx13device_memoryEE9submatrixEi (.param .u64 __cudaparmf1__ZN7adjpcsrIN7phalanx13device_memoryEE9submatrixEi, .param .s32 __cudaparmf2__ZN7adjpcsrIN7phalanx13device_memoryEE9submatrixEi)
+	{
+	.reg .u32 %r<8>;
+	.reg .u64 %rd<17>;
+	.loc	3	68	0
+$LDWbegin__ZN7adjpcsrIN7phalanx13device_memoryEE9submatrixEi:
+	ld.param.u64 	%rd1, [__cudaparmf1__ZN7adjpcsrIN7phalanx13device_memoryEE9submatrixEi];
+	mov.s64 	%rd2, %rd1;
+	ld.param.u32 	%r1, [__cudaparmf2__ZN7adjpcsrIN7phalanx13device_memoryEE9submatrixEi];
+	mov.s32 	%r2, %r1;
+	.loc	3	69	0
+	ld.u64 	%rd3, [%rd2+16];
+	cvt.s64.s32 	%rd4, %r2;
+	mul.wide.s32 	%rd5, %r2, 4;
+	add.u64 	%rd6, %rd3, %rd5;
+	ld.s32 	%r3, [%rd6+4];
+	ld.s32 	%r4, [%rd6+0];
+	sub.s32 	%r5, %r3, %r4;
+	st.param.s32 	[__cudaretf__ZN7adjpcsrIN7phalanx13device_memoryEE9submatrixEi+0], %r5;
+	ld.u64 	%rd7, [%rd2+8];
+	add.u64 	%rd8, %rd7, %rd5;
+	ld.s32 	%r6, [%rd8+0];
+	st.param.s32 	[__cudaretf__ZN7adjpcsrIN7phalanx13device_memoryEE9submatrixEi+4], %r6;
+	mul.wide.s32 	%rd9, %r2, 8;
+	ld.u64 	%rd10, [%rd2+24];
+	add.u64 	%rd11, %rd10, %rd9;
+	ld.u64 	%rd12, [%rd11+0];
+	st.param.u64 	[__cudaretf__ZN7adjpcsrIN7phalanx13device_memoryEE9submatrixEi+8], %rd12;
+	ld.u64 	%rd13, [%rd2+32];
+	add.u64 	%rd14, %rd13, %rd9;
+	ld.u64 	%rd15, [%rd14+0];
+	st.param.u64 	[__cudaretf__ZN7adjpcsrIN7phalanx13device_memoryEE9submatrixEi+16], %rd15;
+	ret;
+$LDWend__ZN7adjpcsrIN7phalanx13device_memoryEE9submatrixEi:
+	} // _ZN7adjpcsrIN7phalanx13device_memoryEE9submatrixEi
+
+	.visible .func _ZN7adjpcsrIN7phalanx13device_memoryEEC1Ev (.param .u64 __cudaparmf1__ZN7adjpcsrIN7phalanx13device_memoryEEC1Ev)
+	{
+	.reg .u32 %r<3>;
+	.reg .u64 %rd<8>;
+	.loc	3	76	0
+$LDWbegin__ZN7adjpcsrIN7phalanx13device_memoryEEC1Ev:
+	ld.param.u64 	%rd1, [__cudaparmf1__ZN7adjpcsrIN7phalanx13device_memoryEEC1Ev];
+	mov.s64 	%rd2, %rd1;
+	.loc	3	75	0
+	mov.s32 	%r1, 0;
+	st.s32 	[%rd2+0], %r1;
+	mov.u64 	%rd3, 0;
+	st.u64 	[%rd2+8], %rd3;
+	mov.u64 	%rd4, 0;
+	st.u64 	[%rd2+16], %rd4;
+	mov.u64 	%rd5, 0;
+	st.u64 	[%rd2+24], %rd5;
+	mov.u64 	%rd6, 0;
+	st.u64 	[%rd2+32], %rd6;
+	ret;
+$LDWend__ZN7adjpcsrIN7phalanx13device_memoryEEC1Ev:
+	} // _ZN7adjpcsrIN7phalanx13device_memoryEEC1Ev
+
+	.visible .func (.param .s32 __cudaretf__ZNK5queueIiE8capacityEv) _ZNK5queueIiE8capacityEv (.param .u64 __cudaparmf1__ZNK5queueIiE8capacityEv)
+	{
+	.reg .u32 %r<3>;
+	.reg .u64 %rd<12>;
+	.loc	4	83	0
+$LDWbegin__ZNK5queueIiE8capacityEv:
+	ld.param.u64 	%rd1, [__cudaparmf1__ZNK5queueIiE8capacityEv];
+	mov.s64 	%rd2, %rd1;
+	ld.u64 	%rd3, [%rd2+0];
+	ld.u64 	%rd4, [%rd2+8];
+	sub.s64 	%rd5, %rd3, %rd4;
+	shr.s64 	%rd6, %rd5, 63;
+	mov.s64 	%rd7, 3;
+	and.b64 	%rd8, %rd6, %rd7;
+	add.s64 	%rd9, %rd8, %rd5;
+	shr.s64 	%rd10, %rd9, 2;
+	cvt.s32.s64 	%r1, %rd10;
+	st.param.s32 	[__cudaretf__ZNK5queueIiE8capacityEv], %r1;
+	ret;
+$LDWend__ZNK5queueIiE8capacityEv:
+	} // _ZNK5queueIiE8capacityEv
+
+	.visible .func (.param .s32 __cudaretf__ZNK5queueIiE5beginEv) _ZNK5queueIiE5beginEv (.param .u64 __cudaparmf1__ZNK5queueIiE5beginEv)
+	{
+	.reg .u32 %r<3>;
+	.reg .u64 %rd<5>;
+	.loc	4	86	0
+$LDWbegin__ZNK5queueIiE5beginEv:
+	ld.param.u64 	%rd1, [__cudaparmf1__ZNK5queueIiE5beginEv];
+	mov.s64 	%rd2, %rd1;
+	ld.u64 	%rd3, [%rd2+0];
+	ld.s32 	%r1, [%rd3+4];
+	st.param.s32 	[__cudaretf__ZNK5queueIiE5beginEv], %r1;
+	ret;
+$LDWend__ZNK5queueIiE5beginEv:
+	} // _ZNK5queueIiE5beginEv
+
+	.visible .func (.param .s32 __cudaretf__ZNK5queueIiE3endEv) _ZNK5queueIiE3endEv (.param .u64 __cudaparmf1__ZNK5queueIiE3endEv)
+	{
+	.reg .u32 %r<3>;
+	.reg .u64 %rd<5>;
+	.loc	4	89	0
+$LDWbegin__ZNK5queueIiE3endEv:
+	ld.param.u64 	%rd1, [__cudaparmf1__ZNK5queueIiE3endEv];
+	mov.s64 	%rd2, %rd1;
+	ld.u64 	%rd3, [%rd2+0];
+	ld.s32 	%r1, [%rd3+0];
+	st.param.s32 	[__cudaretf__ZNK5queueIiE3endEv], %r1;
+	ret;
+$LDWend__ZNK5queueIiE3endEv:
+	} // _ZNK5queueIiE3endEv
+
+	.visible .func (.param .s32 __cudaretf__ZNK5queueIiEixEi) _ZNK5queueIiEixEi (.param .u64 __cudaparmf1__ZNK5queueIiEixEi, .param .s32 __cudaparmf2__ZNK5queueIiEixEi)
+	{
+	.reg .u32 %r<7>;
+	.reg .u64 %rd<15>;
+	.loc	4	91	0
+$LDWbegin__ZNK5queueIiEixEi:
+	ld.param.u64 	%rd1, [__cudaparmf1__ZNK5queueIiEixEi];
+	mov.s64 	%rd2, %rd1;
+	ld.param.u32 	%r1, [__cudaparmf2__ZNK5queueIiEixEi];
+	mov.s32 	%r2, %r1;
+	.loc	4	92	0
+	ld.u64 	%rd3, [%rd2+8];
+	ld.u64 	%rd4, [%rd2+0];
+	sub.s64 	%rd5, %rd4, %rd3;
+	shr.s64 	%rd6, %rd5, 63;
+	mov.s64 	%rd7, 3;
+	and.b64 	%rd8, %rd6, %rd7;
+	add.s64 	%rd9, %rd8, %rd5;
+	shr.s64 	%rd10, %rd9, 2;
+	cvt.s32.s64 	%r3, %rd10;
+	rem.s32 	%r4, %r2, %r3;
+	cvt.s64.s32 	%rd11, %r4;
+	mul.wide.s32 	%rd12, %r4, 4;
+	add.u64 	%rd13, %rd3, %rd12;
+	ld.s32 	%r5, [%rd13+0];
+	st.param.s32 	[__cudaretf__ZNK5queueIiEixEi], %r5;
+	ret;
+$LDWend__ZNK5queueIiEixEi:
+	} // _ZNK5queueIiEixEi
+
+	.visible .func (.param .s32 __cudaretf__ZN5queueIiE7enqueueERKN7phalanx11cuda_threadEi) _ZN5queueIiE7enqueueERKN7phalanx11cuda_threadEi (.param .u64 __cudaparmf1__ZN5queueIiE7enqueueERKN7phalanx11cuda_threadEi, .param .u64 __cudaparmf2__ZN5queueIiE7enqueueERKN7phalanx11cuda_threadEi, .param .s32 __cudaparmf3__ZN5queueIiE7enqueueERKN7phalanx11cuda_threadEi)
+	{
+	.reg .u32 %r<10>;
+	.reg .u64 %rd<16>;
+	.loc	4	118	0
+$LDWbegin__ZN5queueIiE7enqueueERKN7phalanx11cuda_threadEi:
+	ld.param.u64 	%rd1, [__cudaparmf1__ZN5queueIiE7enqueueERKN7phalanx11cuda_threadEi];
+	mov.s64 	%rd2, %rd1;
+	ld.param.u32 	%r1, [__cudaparmf3__ZN5queueIiE7enqueueERKN7phalanx11cuda_threadEi];
+	mov.s32 	%r2, %r1;
+	.loc	4	120	0
+	ld.u64 	%rd3, [%rd2+0];
+	mov.s32 	%r3, 1;
+	atom.add.s32 	%r4, [%rd3], %r3;
+	mov.s32 	%r5, %r4;
+	ld.u64 	%rd4, [%rd2+8];
+	ld.u64 	%rd5, [%rd2+0];
+	sub.s64 	%rd6, %rd5, %rd4;
+	shr.s64 	%rd7, %rd6, 63;
+	mov.s64 	%rd8, 3;
+	and.b64 	%rd9, %rd7, %rd8;
+	add.s64 	%rd10, %rd9, %rd6;
+	shr.s64 	%rd11, %rd10, 2;
+	cvt.s32.s64 	%r6, %rd11;
+	rem.s32 	%r7, %r5, %r6;
+	cvt.s64.s32 	%rd12, %r7;
+	mul.wide.s32 	%rd13, %r7, 4;
+	add.u64 	%rd14, %rd4, %rd13;
+	st.s32 	[%rd14+0], %r2;
+	.loc	4	121	0
+	mov.s32 	%r8, %r7;
+	st.param.s32 	[__cudaretf__ZN5queueIiE7enqueueERKN7phalanx11cuda_threadEi], %r8;
+	ret;
+$LDWend__ZN5queueIiE7enqueueERKN7phalanx11cuda_threadEi:
+	} // _ZN5queueIiE7enqueueERKN7phalanx11cuda_threadEi
+
+	.visible .func (.param .s32 __cudaretf__ZN5queueIiE7enqueueERKN7phalanx10cuda_blockEiPi) _ZN5queueIiE7enqueueERKN7phalanx10cuda_blockEiPi (.param .u64 __cudaparmf1__ZN5queueIiE7enqueueERKN7phalanx10cuda_blockEiPi, .param .u64 __cudaparmf2__ZN5queueIiE7enqueueERKN7phalanx10cuda_blockEiPi, .param .s32 __cudaparmf3__ZN5queueIiE7enqueueERKN7phalanx10cuda_blockEiPi, .param .u64 __cudaparmf4__ZN5queueIiE7enqueueERKN7phalanx10cuda_blockEiPi)
+	{
+	.reg .u32 %r<17>;
+	.reg .u64 %rd<23>;
+	.reg .pred %p<5>;
+	.loc	4	162	0
+$LDWbegin__ZN5queueIiE7enqueueERKN7phalanx10cuda_blockEiPi:
+	ld.param.u64 	%rd1, [__cudaparmf1__ZN5queueIiE7enqueueERKN7phalanx10cuda_blockEiPi];
+	mov.s64 	%rd2, %rd1;
+	ld.param.u32 	%r1, [__cudaparmf3__ZN5queueIiE7enqueueERKN7phalanx10cuda_blockEiPi];
+	mov.s32 	%r2, %r1;
+	ld.param.u64 	%rd3, [__cudaparmf4__ZN5queueIiE7enqueueERKN7phalanx10cuda_blockEiPi];
+	mov.s64 	%rd4, %rd3;
+	mov.u32 	%r3, %tid.x;
+	mov.u32 	%r4, 0;
+	setp.ne.u32 	%p1, %r3, %r4;
+	@%p1 bra 	$Lt_20_2050;
+	.loc	4	166	0
+	ld.u64 	%rd5, [%rd2+0];
+	atom.add.s32 	%r5, [%rd5], %r2;
+	mov.s32 	%r6, %r5;
+	st.shared.s32 	[__cuda_local_var_131063_31_non_const_headptr__0], %r6;
+$Lt_20_2050:
+	.loc	4	168	0
+	bar.sync 	0;
+	.loc	4	170	0
+	cvt.s32.u32 	%r7, %tid.x;
+	ld.shared.s32 	%r8, [__cuda_local_var_131063_31_non_const_headptr__0];
+	setp.ge.s32 	%p2, %r7, %r2;
+	@%p2 bra 	$Lt_20_2562;
+	cvt.s32.u32 	%r9, %ntid.x;
+	add.s32 	%r10, %r7, %r8;
+	add.s32 	%r11, %r2, %r8;
+	cvt.s64.s32 	%rd6, %r9;
+	mul.wide.s32 	%rd7, %r9, 4;
+	cvt.s64.s32 	%rd8, %r7;
+	mul.wide.s32 	%rd9, %r7, 4;
+	add.u64 	%rd10, %rd4, %rd9;
+$Lt_20_3074:
+ //<loop> Loop body line 170, nesting depth: 1, estimated iterations: unknown
+	.loc	4	171	0
+	ld.u64 	%rd11, [%rd2+8];
+	ld.s32 	%r12, [%rd10+0];
+	ld.u64 	%rd12, [%rd2+0];
+	sub.s64 	%rd13, %rd12, %rd11;
+	shr.s64 	%rd14, %rd13, 63;
+	mov.s64 	%rd15, 3;
+	and.b64 	%rd16, %rd14, %rd15;
+	add.s64 	%rd17, %rd16, %rd13;
+	shr.s64 	%rd18, %rd17, 2;
+	cvt.s32.s64 	%r13, %rd18;
+	rem.s32 	%r14, %r10, %r13;
+	cvt.s64.s32 	%rd19, %r14;
+	mul.wide.s32 	%rd20, %r14, 4;
+	add.u64 	%rd21, %rd11, %rd20;
+	st.s32 	[%rd21+0], %r12;
+	add.s32 	%r10, %r10, %r9;
+	add.u64 	%rd10, %rd7, %rd10;
+	setp.lt.s32 	%p3, %r10, %r11;
+	@%p3 bra 	$Lt_20_3074;
+$Lt_20_2562:
+	.loc	4	173	0
+	mov.s32 	%r15, %r8;
+	st.param.s32 	[__cudaretf__ZN5queueIiE7enqueueERKN7phalanx10cuda_blockEiPi], %r15;
+	ret;
+$LDWend__ZN5queueIiE7enqueueERKN7phalanx10cuda_blockEiPi:
+	} // _ZN5queueIiE7enqueueERKN7phalanx10cuda_blockEiPi
+
+	.visible .func (.param .s32 __cudaretf__ZN5queueIiE4sizeIN7phalanx9cuda_gridEEEiRKT_) _ZN5queueIiE4sizeIN7phalanx9cuda_gridEEEiRKT_ (.param .u64 __cudaparmf1__ZN5queueIiE4sizeIN7phalanx9cuda_gridEEEiRKT_, .param .u64 __cudaparmf2__ZN5queueIiE4sizeIN7phalanx9cuda_gridEEEiRKT_)
+	{
+	.reg .u32 %r<5>;
+	.reg .u64 %rd<5>;
+	.loc	4	97	0
+$LDWbegin__ZN5queueIiE4sizeIN7phalanx9cuda_gridEEEiRKT_:
+	ld.param.u64 	%rd1, [__cudaparmf1__ZN5queueIiE4sizeIN7phalanx9cuda_gridEEEiRKT_];
+	mov.s64 	%rd2, %rd1;
+	ld.u64 	%rd3, [%rd2+0];
+	ld.s32 	%r1, [%rd3+0];
+	ld.s32 	%r2, [%rd3+4];
+	sub.s32 	%r3, %r1, %r2;
+	st.param.s32 	[__cudaretf__ZN5queueIiE4sizeIN7phalanx9cuda_gridEEEiRKT_], %r3;
+	ret;
+$LDWend__ZN5queueIiE4sizeIN7phalanx9cuda_gridEEEiRKT_:
+	} // _ZN5queueIiE4sizeIN7phalanx9cuda_gridEEEiRKT_
+
+	.visible .func (.param .u64 __cudaretf__ZN17distributed_queueIiEixEi) _ZN17distributed_queueIiEixEi (.param .u64 __cudaparmf1__ZN17distributed_queueIiEixEi, .param .s32 __cudaparmf2__ZN17distributed_queueIiEixEi)
+	{
+	.reg .u32 %r<4>;
+	.reg .u64 %rd<8>;
+	.loc	4	226	0
+$LDWbegin__ZN17distributed_queueIiEixEi:
+	ld.param.u64 	%rd1, [__cudaparmf1__ZN17distributed_queueIiEixEi];
+	mov.s64 	%rd2, %rd1;
+	ld.param.u32 	%r1, [__cudaparmf2__ZN17distributed_queueIiEixEi];
+	mov.s32 	%r2, %r1;
+	.loc	4	227	0
+	ld.u64 	%rd3, [%rd2+8];
+	cvt.s64.s32 	%rd4, %r2;
+	mul.wide.s32 	%rd5, %r2, 16;
+	add.u64 	%rd6, %rd3, %rd5;
+	st.param.u64 	[__cudaretf__ZN17distributed_queueIiEixEi], %rd6;
+	ret;
+$LDWend__ZN17distributed_queueIiEixEi:
+	} // _ZN17distributed_queueIiEixEi
+
+	.visible .func _ZN7phalanx6domainINS_17sequential_domainEEC1Ei (.param .u64 __cudaparmf1__ZN7phalanx6domainINS_17sequential_domainEEC1Ei, .param .s32 __cudaparmf2__ZN7phalanx6domainINS_17sequential_domainEEC1Ei)
+	{
+	.reg .u32 %r<6>;
+	.reg .u64 %rd<4>;
+	.loc	7	63	0
+$LDWbegin__ZN7phalanx6domainINS_17sequential_domainEEC1Ei:
+	ld.param.u64 	%rd1, [__cudaparmf1__ZN7phalanx6domainINS_17sequential_domainEEC1Ei];
+	mov.s64 	%rd2, %rd1;
+	ld.param.u32 	%r1, [__cudaparmf2__ZN7phalanx6domainINS_17sequential_domainEEC1Ei];
+	mov.s32 	%r2, %r1;
+	.loc	7	64	0
+	mov.s32 	%r3, 0;
+	st.s32 	[%rd2+0], %r3;
+	st.s32 	[%rd2+4], %r2;
+	mov.s32 	%r4, 1;
+	st.s32 	[%rd2+8], %r4;
+	ret;
+$LDWend__ZN7phalanx6domainINS_17sequential_domainEEC1Ei:
+	} // _ZN7phalanx6domainINS_17sequential_domainEEC1Ei
+
+	.visible .func (.param .s32 __cudaretf__ZNK7phalanx6domainINS_17sequential_domainEE4sizeEv) _ZNK7phalanx6domainINS_17sequential_domainEE4sizeEv (.param .u64 __cudaparmf1__ZNK7phalanx6domainINS_17sequential_domainEE4sizeEv)
+	{
+	.reg .u32 %r<5>;
+	.reg .u64 %rd<4>;
+	.loc	7	72	0
+$LDWbegin__ZNK7phalanx6domainINS_17sequential_domainEE4sizeEv:
+	ld.param.u64 	%rd1, [__cudaparmf1__ZNK7phalanx6domainINS_17sequential_domainEE4sizeEv];
+	mov.s64 	%rd2, %rd1;
+	.loc	7	71	0
+	ld.s32 	%r1, [%rd2+4];
+	ld.s32 	%r2, [%rd2+0];
+	sub.s32 	%r3, %r1, %r2;
+	st.param.s32 	[__cudaretf__ZNK7phalanx6domainINS_17sequential_domainEE4sizeEv], %r3;
+	ret;
+$LDWend__ZNK7phalanx6domainINS_17sequential_domainEE4sizeEv:
+	} // _ZNK7phalanx6domainINS_17sequential_domainEE4sizeEv
+
+	.visible .func _ZN7phalanx15parallel_domainINS_17sequential_domainEEC1Ei (.param .u64 __cudaparmf1__ZN7phalanx15parallel_domainINS_17sequential_domainEEC1Ei, .param .s32 __cudaparmf2__ZN7phalanx15parallel_domainINS_17sequential_domainEEC1Ei)
+	{
+	.reg .u32 %r<6>;
+	.reg .u64 %rd<4>;
+	.loc	7	78	0
+$LDWbegin__ZN7phalanx15parallel_domainINS_17sequential_domainEEC1Ei:
+	ld.param.u64 	%rd1, [__cudaparmf1__ZN7phalanx15parallel_domainINS_17sequential_domainEEC1Ei];
+	mov.s64 	%rd2, %rd1;
+	ld.param.u32 	%r1, [__cudaparmf2__ZN7phalanx15parallel_domainINS_17sequential_domainEEC1Ei];
+	mov.s32 	%r2, %r1;
+	mov.s32 	%r3, 0;
+	st.s32 	[%rd2+0], %r3;
+	st.s32 	[%rd2+4], %r2;
+	mov.s32 	%r4, 1;
+	st.s32 	[%rd2+8], %r4;
+	ret;
+$LDWend__ZN7phalanx15parallel_domainINS_17sequential_domainEEC1Ei:
+	} // _ZN7phalanx15parallel_domainINS_17sequential_domainEEC1Ei
+
+	.visible .func _ZN7phalanx16domain_resourcesINS_13nil_resourcesEEC1EiiS1_ (.param .u64 __cudaparmf1__ZN7phalanx16domain_resourcesINS_13nil_resourcesEEC1EiiS1_, .param .s32 __cudaparmf2__ZN7phalanx16domain_resourcesINS_13nil_resourcesEEC1EiiS1_, .param .s32 __cudaparmf3__ZN7phalanx16domain_resourcesINS_13nil_resourcesEEC1EiiS1_, .param .align 1 .b8 __cudaparmf4__ZN7phalanx16domain_resourcesINS_13nil_resourcesEEC1EiiS1_[1])
+	{
+	.reg .u32 %r<8>;
+	.reg .u64 %rd<4>;
+	.loc	8	55	0
+$LDWbegin__ZN7phalanx16domain_resourcesINS_13nil_resourcesEEC1EiiS1_:
+	ld.param.u64 	%rd1, [__cudaparmf1__ZN7phalanx16domain_resourcesINS_13nil_resourcesEEC1EiiS1_];
+	mov.s64 	%rd2, %rd1;
+	ld.param.u32 	%r1, [__cudaparmf2__ZN7phalanx16domain_resourcesINS_13nil_resourcesEEC1EiiS1_];
+	mov.s32 	%r2, %r1;
+	ld.param.u32 	%r3, [__cudaparmf3__ZN7phalanx16domain_resourcesINS_13nil_resourcesEEC1EiiS1_];
+	mov.s32 	%r4, %r3;
+	ld.param.u8 	%r5, [__cudaparmf4__ZN7phalanx16domain_resourcesINS_13nil_resourcesEEC1EiiS1_+0];
+	mov.s32 	%r6, %r5;
+	.loc	8	58	0
+	st.s32 	[%rd2+0], %r2;
+	st.s32 	[%rd2+4], %r4;
+	st.volatile.s8 	[%rd2+8], %r6;
+	ret;
+$LDWend__ZN7phalanx16domain_resourcesINS_13nil_resourcesEEC1EiiS1_:
+	} // _ZN7phalanx16domain_resourcesINS_13nil_resourcesEEC1EiiS1_
+
+	.visible .func (.param .s32 __cudaretf__ZNK7phalanx16domain_resourcesINS_13nil_resourcesEE16bytes_per_threadEv) _ZNK7phalanx16domain_resourcesINS_13nil_resourcesEE16bytes_per_threadEv (.param .u64 __cudaparmf1__ZNK7phalanx16domain_resourcesINS_13nil_resourcesEE16bytes_per_threadEv)
+	{
+	.reg .u32 %r<3>;
+	.reg .u64 %rd<4>;
+	.loc	8	72	0
+$LDWbegin__ZNK7phalanx16domain_resourcesINS_13nil_resourcesEE16bytes_per_threadEv:
+	ld.param.u64 	%rd1, [__cudaparmf1__ZNK7phalanx16domain_resourcesINS_13nil_resourcesEE16bytes_per_threadEv];
+	mov.s64 	%rd2, %rd1;
+	.loc	8	71	0
+	ld.s32 	%r1, [%rd2+4];
+	st.param.s32 	[__cudaretf__ZNK7phalanx16domain_resourcesINS_13nil_resourcesEE16bytes_per_threadEv], %r1;
+	ret;
+$LDWend__ZNK7phalanx16domain_resourcesINS_13nil_resourcesEE16bytes_per_threadEv:
+	} // _ZNK7phalanx16domain_resourcesINS_13nil_resourcesEE16bytes_per_threadEv
+
+	.visible .func _ZN7phalanx9any_placeC1Ev (.param .u64 __cudaparmf1__ZN7phalanx9any_placeC1Ev)
+	{
+	.loc	6	53	0
+$LDWbegin__ZN7phalanx9any_placeC1Ev:
+	.loc	6	52	0
+	ret;
+$LDWend__ZN7phalanx9any_placeC1Ev:
+	} // _ZN7phalanx9any_placeC1Ev
+
+	.visible .func _ZN7phalanx9any_placeC1ERKS0_ (.param .u64 __cudaparmf1__ZN7phalanx9any_placeC1ERKS0_, .param .u64 __cudaparmf2__ZN7phalanx9any_placeC1ERKS0_)
+	{
+	.loc	6	56	0
+$LDWbegin__ZN7phalanx9any_placeC1ERKS0_:
+	.loc	6	55	0
+	ret;
+$LDWend__ZN7phalanx9any_placeC1ERKS0_:
+	} // _ZN7phalanx9any_placeC1ERKS0_
+
+	.visible .func _ZN7phalanx8cuda_gpuC1ERKS0_ (.param .u64 __cudaparmf1__ZN7phalanx8cuda_gpuC1ERKS0_, .param .u64 __cudaparmf2__ZN7phalanx8cuda_gpuC1ERKS0_)
+	{
+	.reg .u32 %r<3>;
+	.reg .u64 %rd<6>;
+	.loc	6	129	0
+$LDWbegin__ZN7phalanx8cuda_gpuC1ERKS0_:
+	ld.param.u64 	%rd1, [__cudaparmf1__ZN7phalanx8cuda_gpuC1ERKS0_];
+	mov.s64 	%rd2, %rd1;
+	ld.param.u64 	%rd3, [__cudaparmf2__ZN7phalanx8cuda_gpuC1ERKS0_];
+	mov.s64 	%rd4, %rd3;
+	ld.s32 	%r1, [%rd4+0];
+	st.s32 	[%rd2+0], %r1;
+	ret;
+$LDWend__ZN7phalanx8cuda_gpuC1ERKS0_:
+	} // _ZN7phalanx8cuda_gpuC1ERKS0_
+
+	.visible .func _ZN7phalanx11default_cpuC1Ev (.param .u64 __cudaparmf1__ZN7phalanx11default_cpuC1Ev)
+	{
+	.loc	6	208	0
+$LDWbegin__ZN7phalanx11default_cpuC1Ev:
+	.loc	6	207	0
+	ret;
+$LDWend__ZN7phalanx11default_cpuC1Ev:
+	} // _ZN7phalanx11default_cpuC1Ev
+
+	.visible .func _ZN7phalanx10placed_ptrIfNS_13device_memoryEEC1INS_8cuda_gpuEEERKNS0_IfT_EE (.param .u64 __cudaparmf1__ZN7phalanx10placed_ptrIfNS_13device_memoryEEC1INS_8cuda_gpuEEERKNS0_IfT_EE, .param .u64 __cudaparmf2__ZN7phalanx10placed_ptrIfNS_13device_memoryEEC1INS_8cuda_gpuEEERKNS0_IfT_EE)
+	{
+	.reg .u64 %rd<7>;
+	.loc	30	219	0
+$LDWbegin__ZN7phalanx10placed_ptrIfNS_13device_memoryEEC1INS_8cuda_gpuEEERKNS0_IfT_EE:
+	ld.param.u64 	%rd1, [__cudaparmf1__ZN7phalanx10placed_ptrIfNS_13device_memoryEEC1INS_8cuda_gpuEEERKNS0_IfT_EE];
+	mov.s64 	%rd2, %rd1;
+	ld.param.u64 	%rd3, [__cudaparmf2__ZN7phalanx10placed_ptrIfNS_13device_memoryEEC1INS_8cuda_gpuEEERKNS0_IfT_EE];
+	mov.s64 	%rd4, %rd3;
+	.loc	5	49	0
+	ld.u64 	%rd5, [%rd4+8];
+	st.u64 	[%rd2+0], %rd5;
+	.loc	30	220	0
+	ret;
+$LDWend__ZN7phalanx10placed_ptrIfNS_13device_memoryEEC1INS_8cuda_gpuEEERKNS0_IfT_EE:
+	} // _ZN7phalanx10placed_ptrIfNS_13device_memoryEEC1INS_8cuda_gpuEEERKNS0_IfT_EE
+
+	.visible .func _ZN7phalanx10placed_ptrIdNS_13device_memoryEEC1INS_8cuda_gpuEEERKNS0_IdT_EE (.param .u64 __cudaparmf1__ZN7phalanx10placed_ptrIdNS_13device_memoryEEC1INS_8cuda_gpuEEERKNS0_IdT_EE, .param .u64 __cudaparmf2__ZN7phalanx10placed_ptrIdNS_13device_memoryEEC1INS_8cuda_gpuEEERKNS0_IdT_EE)
+	{
+	.reg .u64 %rd<7>;
+	.loc	30	224	0
+$LDWbegin__ZN7phalanx10placed_ptrIdNS_13device_memoryEEC1INS_8cuda_gpuEEERKNS0_IdT_EE:
+	ld.param.u64 	%rd1, [__cudaparmf1__ZN7phalanx10placed_ptrIdNS_13device_memoryEEC1INS_8cuda_gpuEEERKNS0_IdT_EE];
+	mov.s64 	%rd2, %rd1;
+	ld.param.u64 	%rd3, [__cudaparmf2__ZN7phalanx10placed_ptrIdNS_13device_memoryEEC1INS_8cuda_gpuEEERKNS0_IdT_EE];
+	mov.s64 	%rd4, %rd3;
+	.loc	5	49	0
+	ld.u64 	%rd5, [%rd4+8];
+	st.u64 	[%rd2+0], %rd5;
+	.loc	30	225	0
+	ret;
+$LDWend__ZN7phalanx10placed_ptrIdNS_13device_memoryEEC1INS_8cuda_gpuEEERKNS0_IdT_EE:
+	} // _ZN7phalanx10placed_ptrIdNS_13device_memoryEEC1INS_8cuda_gpuEEERKNS0_IdT_EE
+
+	.visible .func _ZN7phalanx10placed_ptrIiNS_13device_memoryEEC1EPiRKS1_ (.param .u64 __cudaparmf1__ZN7phalanx10placed_ptrIiNS_13device_memoryEEC1EPiRKS1_, .param .u64 __cudaparmf2__ZN7phalanx10placed_ptrIiNS_13device_memoryEEC1EPiRKS1_, .param .u64 __cudaparmf3__ZN7phalanx10placed_ptrIiNS_13device_memoryEEC1EPiRKS1_)
+	{
+	.reg .u64 %rd<6>;
+	.loc	5	105	0
+$LDWbegin__ZN7phalanx10placed_ptrIiNS_13device_memoryEEC1EPiRKS1_:
+	ld.param.u64 	%rd1, [__cudaparmf1__ZN7phalanx10placed_ptrIiNS_13device_memoryEEC1EPiRKS1_];
+	mov.s64 	%rd2, %rd1;
+	ld.param.u64 	%rd3, [__cudaparmf2__ZN7phalanx10placed_ptrIiNS_13device_memoryEEC1EPiRKS1_];
+	mov.s64 	%rd4, %rd3;
+	.loc	5	47	0
+	st.u64 	[%rd2+0], %rd4;
+	.loc	5	106	0
+	ret;
+$LDWend__ZN7phalanx10placed_ptrIiNS_13device_memoryEEC1EPiRKS1_:
+	} // _ZN7phalanx10placed_ptrIiNS_13device_memoryEEC1EPiRKS1_
+
+	.visible .func _ZN7phalanx10placed_ptrIiNS_13device_memoryEEC1INS_8cuda_gpuEEERKNS0_IiT_EE (.param .u64 __cudaparmf1__ZN7phalanx10placed_ptrIiNS_13device_memoryEEC1INS_8cuda_gpuEEERKNS0_IiT_EE, .param .u64 __cudaparmf2__ZN7phalanx10placed_ptrIiNS_13device_memoryEEC1INS_8cuda_gpuEEERKNS0_IiT_EE)
+	{
+	.reg .u64 %rd<7>;
+	.loc	30	229	0
+$LDWbegin__ZN7phalanx10placed_ptrIiNS_13device_memoryEEC1INS_8cuda_gpuEEERKNS0_IiT_EE:
+	ld.param.u64 	%rd1, [__cudaparmf1__ZN7phalanx10placed_ptrIiNS_13device_memoryEEC1INS_8cuda_gpuEEERKNS0_IiT_EE];
+	mov.s64 	%rd2, %rd1;
+	ld.param.u64 	%rd3, [__cudaparmf2__ZN7phalanx10placed_ptrIiNS_13device_memoryEEC1INS_8cuda_gpuEEERKNS0_IiT_EE];
+	mov.s64 	%rd4, %rd3;
+	.loc	5	49	0
+	ld.u64 	%rd5, [%rd4+8];
+	st.u64 	[%rd2+0], %rd5;
+	.loc	30	230	0
+	ret;
+$LDWend__ZN7phalanx10placed_ptrIiNS_13device_memoryEEC1INS_8cuda_gpuEEERKNS0_IiT_EE:
+	} // _ZN7phalanx10placed_ptrIiNS_13device_memoryEEC1INS_8cuda_gpuEEERKNS0_IiT_EE
+
+	.visible .func _ZN7phalanx6domainINS_15parallel_domainINS_17sequential_domainEEEEC1EiS3_ (.param .u64 __cudaparmf1__ZN7phalanx6domainINS_15parallel_domainINS_17sequential_domainEEEEC1EiS3_, .param .s32 __cudaparmf2__ZN7phalanx6domainINS_15parallel_domainINS_17sequential_domainEEEEC1EiS3_, .param .align 4 .b8 __cudaparmf3__ZN7phalanx6domainINS_15parallel_domainINS_17sequential_domainEEEEC1EiS3_[16])
+	{
+	.reg .u32 %r<14>;
+	.reg .u64 %rd<4>;
+	.loc	7	67	0
+$LDWbegin__ZN7phalanx6domainINS_15parallel_domainINS_17sequential_domainEEEEC1EiS3_:
+	ld.param.u64 	%rd1, [__cudaparmf1__ZN7phalanx6domainINS_15parallel_domainINS_17sequential_domainEEEEC1EiS3_];
+	mov.s64 	%rd2, %rd1;
+	ld.param.u32 	%r1, [__cudaparmf2__ZN7phalanx6domainINS_15parallel_domainINS_17sequential_domainEEEEC1EiS3_];
+	mov.s32 	%r2, %r1;
+	ld.param.u32 	%r3, [__cudaparmf3__ZN7phalanx6domainINS_15parallel_domainINS_17sequential_domainEEEEC1EiS3_+0];
+	mov.s32 	%r4, %r3;
+	ld.param.u32 	%r5, [__cudaparmf3__ZN7phalanx6domainINS_15parallel_domainINS_17sequential_domainEEEEC1EiS3_+4];
+	mov.s32 	%r6, %r5;
+	ld.param.u32 	%r7, [__cudaparmf3__ZN7phalanx6domainINS_15parallel_domainINS_17sequential_domainEEEEC1EiS3_+8];
+	mov.s32 	%r8, %r7;
+	ld.param.u8 	%r9, [__cudaparmf3__ZN7phalanx6domainINS_15parallel_domainINS_17sequential_domainEEEEC1EiS3_+12];
+	mov.s32 	%r10, %r9;
+	.loc	7	68	0
+	mov.s32 	%r11, 0;
+	st.s32 	[%rd2+0], %r11;
+	st.s32 	[%rd2+4], %r2;
+	mov.s32 	%r12, 1;
+	st.s32 	[%rd2+8], %r12;
+	st.s32 	[%rd2+12], %r4;
+	st.s32 	[%rd2+16], %r6;
+	st.s32 	[%rd2+20], %r8;
+	st.volatile.s8 	[%rd2+24], %r10;
+	ret;
+$LDWend__ZN7phalanx6domainINS_15parallel_domainINS_17sequential_domainEEEEC1EiS3_:
+	} // _ZN7phalanx6domainINS_15parallel_domainINS_17sequential_domainEEEEC1EiS3_
+
+	.visible .func (.param .s32 __cudaretf__ZNK7phalanx6domainINS_15parallel_domainINS_17sequential_domainEEEE4sizeEv) _ZNK7phalanx6domainINS_15parallel_domainINS_17sequential_domainEEEE4sizeEv (.param .u64 __cudaparmf1__ZNK7phalanx6domainINS_15parallel_domainINS_17sequential_domainEEEE4sizeEv)
+	{
+	.reg .u32 %r<5>;
+	.reg .u64 %rd<4>;
+	.loc	7	72	0
+$LDWbegin__ZNK7phalanx6domainINS_15parallel_domainINS_17sequential_domainEEEE4sizeEv:
+	ld.param.u64 	%rd1, [__cudaparmf1__ZNK7phalanx6domainINS_15parallel_domainINS_17sequential_domainEEEE4sizeEv];
+	mov.s64 	%rd2, %rd1;
+	.loc	7	71	0
+	ld.s32 	%r1, [%rd2+4];
+	ld.s32 	%r2, [%rd2+0];
+	sub.s32 	%r3, %r1, %r2;
+	st.param.s32 	[__cudaretf__ZNK7phalanx6domainINS_15parallel_domainINS_17sequential_domainEEEE4sizeEv], %r3;
+	ret;
+$LDWend__ZNK7phalanx6domainINS_15parallel_domainINS_17sequential_domainEEEE4sizeEv:
+	} // _ZNK7phalanx6domainINS_15parallel_domainINS_17sequential_domainEEEE4sizeEv
+
+	.visible .func _ZN7phalanx6domainINS_16streaming_domainINS_15parallel_domainINS_17sequential_domainEEEEEEC1EiS5_ (.param .u64 __cudaparmf1__ZN7phalanx6domainINS_16streaming_domainINS_15parallel_domainINS_17sequential_domainEEEEEEC1EiS5_, .param .s32 __cudaparmf2__ZN7phalanx6domainINS_16streaming_domainINS_15parallel_domainINS_17sequential_domainEEEEEEC1EiS5_, .param .align 4 .b8 __cudaparmf3__ZN7phalanx6domainINS_16streaming_domainINS_15parallel_domainINS_17sequential_domainEEEEEEC1EiS5_[28])
+	{
+	.reg .u32 %r<20>;
+	.reg .u64 %rd<4>;
+	.loc	7	67	0
+$LDWbegin__ZN7phalanx6domainINS_16streaming_domainINS_15parallel_domainINS_17sequential_domainEEEEEEC1EiS5_:
+	ld.param.u64 	%rd1, [__cudaparmf1__ZN7phalanx6domainINS_16streaming_domainINS_15parallel_domainINS_17sequential_domainEEEEEEC1EiS5_];
+	mov.s64 	%rd2, %rd1;
+	ld.param.u32 	%r1, [__cudaparmf2__ZN7phalanx6domainINS_16streaming_domainINS_15parallel_domainINS_17sequential_domainEEEEEEC1EiS5_];
+	mov.s32 	%r2, %r1;
+	ld.param.u32 	%r3, [__cudaparmf3__ZN7phalanx6domainINS_16streaming_domainINS_15parallel_domainINS_17sequential_domainEEEEEEC1EiS5_+0];
+	mov.s32 	%r4, %r3;
+	ld.param.u32 	%r5, [__cudaparmf3__ZN7phalanx6domainINS_16streaming_domainINS_15parallel_domainINS_17sequential_domainEEEEEEC1EiS5_+4];
+	mov.s32 	%r6, %r5;
+	ld.param.u32 	%r7, [__cudaparmf3__ZN7phalanx6domainINS_16streaming_domainINS_15parallel_domainINS_17sequential_domainEEEEEEC1EiS5_+8];
+	mov.s32 	%r8, %r7;
+	ld.param.u32 	%r9, [__cudaparmf3__ZN7phalanx6domainINS_16streaming_domainINS_15parallel_domainINS_17sequential_domainEEEEEEC1EiS5_+12];
+	mov.s32 	%r10, %r9;
+	ld.param.u32 	%r11, [__cudaparmf3__ZN7phalanx6domainINS_16streaming_domainINS_15parallel_domainINS_17sequential_domainEEEEEEC1EiS5_+16];
+	mov.s32 	%r12, %r11;
+	ld.param.u32 	%r13, [__cudaparmf3__ZN7phalanx6domainINS_16streaming_domainINS_15parallel_domainINS_17sequential_domainEEEEEEC1EiS5_+20];
+	mov.s32 	%r14, %r13;
+	ld.param.u8 	%r15, [__cudaparmf3__ZN7phalanx6domainINS_16streaming_domainINS_15parallel_domainINS_17sequential_domainEEEEEEC1EiS5_+24];
+	mov.s32 	%r16, %r15;
+	.loc	7	68	0
+	mov.s32 	%r17, 0;
+	st.s32 	[%rd2+0], %r17;
+	st.s32 	[%rd2+4], %r2;
+	mov.s32 	%r18, 1;
+	st.s32 	[%rd2+8], %r18;
+	st.s32 	[%rd2+12], %r4;
+	st.s32 	[%rd2+16], %r6;
+	st.s32 	[%rd2+20], %r8;
+	st.s32 	[%rd2+24], %r10;
+	st.s32 	[%rd2+28], %r12;
+	st.s32 	[%rd2+32], %r14;
+	st.volatile.s8 	[%rd2+36], %r16;
+	ret;
+$LDWend__ZN7phalanx6domainINS_16streaming_domainINS_15parallel_domainINS_17sequential_domainEEEEEEC1EiS5_:
+	} // _ZN7phalanx6domainINS_16streaming_domainINS_15parallel_domainINS_17sequential_domainEEEEEEC1EiS5_
+
+	.visible .func _ZN7phalanx16domain_resourcesINS0_INS_13nil_resourcesEEEEC1EiiS2_ (.param .u64 __cudaparmf1__ZN7phalanx16domain_resourcesINS0_INS_13nil_resourcesEEEEC1EiiS2_, .param .s32 __cudaparmf2__ZN7phalanx16domain_resourcesINS0_INS_13nil_resourcesEEEEC1EiiS2_, .param .s32 __cudaparmf3__ZN7phalanx16domain_resourcesINS0_INS_13nil_resourcesEEEEC1EiiS2_, .param .align 4 .b8 __cudaparmf4__ZN7phalanx16domain_resourcesINS0_INS_13nil_resourcesEEEEC1EiiS2_[12])
+	{
+	.reg .u32 %r<12>;
+	.reg .u64 %rd<4>;
+	.loc	8	55	0
+$LDWbegin__ZN7phalanx16domain_resourcesINS0_INS_13nil_resourcesEEEEC1EiiS2_:
+	ld.param.u64 	%rd1, [__cudaparmf1__ZN7phalanx16domain_resourcesINS0_INS_13nil_resourcesEEEEC1EiiS2_];
+	mov.s64 	%rd2, %rd1;
+	ld.param.u32 	%r1, [__cudaparmf2__ZN7phalanx16domain_resourcesINS0_INS_13nil_resourcesEEEEC1EiiS2_];
+	mov.s32 	%r2, %r1;
+	ld.param.u32 	%r3, [__cudaparmf3__ZN7phalanx16domain_resourcesINS0_INS_13nil_resourcesEEEEC1EiiS2_];
+	mov.s32 	%r4, %r3;
+	ld.param.u32 	%r5, [__cudaparmf4__ZN7phalanx16domain_resourcesINS0_INS_13nil_resourcesEEEEC1EiiS2_+0];
+	mov.s32 	%r6, %r5;
+	ld.param.u32 	%r7, [__cudaparmf4__ZN7phalanx16domain_resourcesINS0_INS_13nil_resourcesEEEEC1EiiS2_+4];
+	mov.s32 	%r8, %r7;
+	ld.param.u8 	%r9, [__cudaparmf4__ZN7phalanx16domain_resourcesINS0_INS_13nil_resourcesEEEEC1EiiS2_+8];
+	mov.s32 	%r10, %r9;
+	.loc	8	58	0
+	st.s32 	[%rd2+0], %r2;
+	st.s32 	[%rd2+4], %r4;
+	st.s32 	[%rd2+8], %r6;
+	st.s32 	[%rd2+12], %r8;
+	st.volatile.s8 	[%rd2+16], %r10;
+	ret;
+$LDWend__ZN7phalanx16domain_resourcesINS0_INS_13nil_resourcesEEEEC1EiiS2_:
+	} // _ZN7phalanx16domain_resourcesINS0_INS_13nil_resourcesEEEEC1EiiS2_
+
+	.visible .func (.param .s32 __cudaretf__ZNK7phalanx16domain_resourcesINS0_INS_13nil_resourcesEEEE15bytes_per_groupEv) _ZNK7phalanx16domain_resourcesINS0_INS_13nil_resourcesEEEE15bytes_per_groupEv (.param .u64 __cudaparmf1__ZNK7phalanx16domain_resourcesINS0_INS_13nil_resourcesEEEE15bytes_per_groupEv)
+	{
+	.reg .u32 %r<3>;
+	.reg .u64 %rd<4>;
+	.loc	8	69	0
+$LDWbegin__ZNK7phalanx16domain_resourcesINS0_INS_13nil_resourcesEEEE15bytes_per_groupEv:
+	ld.param.u64 	%rd1, [__cudaparmf1__ZNK7phalanx16domain_resourcesINS0_INS_13nil_resourcesEEEE15bytes_per_groupEv];
+	mov.s64 	%rd2, %rd1;
+	.loc	8	68	0
+	ld.s32 	%r1, [%rd2+0];
+	st.param.s32 	[__cudaretf__ZNK7phalanx16domain_resourcesINS0_INS_13nil_resourcesEEEE15bytes_per_groupEv], %r1;
+	ret;
+$LDWend__ZNK7phalanx16domain_resourcesINS0_INS_13nil_resourcesEEEE15bytes_per_groupEv:
+	} // _ZNK7phalanx16domain_resourcesINS0_INS_13nil_resourcesEEEE15bytes_per_groupEv
+
+	.visible .func _ZN7phalanx15cuda_any_threadC1ERKNS_9cuda_gridE (.param .u64 __cudaparmf1__ZN7phalanx15cuda_any_threadC1ERKNS_9cuda_gridE, .param .u64 __cudaparmf2__ZN7phalanx15cuda_any_threadC1ERKNS_9cuda_gridE)
+	{
+	.reg .u64 %rd<6>;
+	.loc	9	75	0
+$LDWbegin__ZN7phalanx15cuda_any_threadC1ERKNS_9cuda_gridE:
+	ld.param.u64 	%rd1, [__cudaparmf1__ZN7phalanx15cuda_any_threadC1ERKNS_9cuda_gridE];
+	mov.s64 	%rd2, %rd1;
+	ld.param.u64 	%rd3, [__cudaparmf2__ZN7phalanx15cuda_any_threadC1ERKNS_9cuda_gridE];
+	mov.s64 	%rd4, %rd3;
+	st.u64 	[%rd2+0], %rd4;
+	ret;
+$LDWend__ZN7phalanx15cuda_any_threadC1ERKNS_9cuda_gridE:
+	} // _ZN7phalanx15cuda_any_threadC1ERKNS_9cuda_gridE
+
+	.visible .func _ZN7phalanx9cuda_gridC1ERKNS_16domain_resourcesINS_13nil_resourcesEEE (.param .u64 __cudaparmf1__ZN7phalanx9cuda_gridC1ERKNS_16domain_resourcesINS_13nil_resourcesEEE, .param .u64 __cudaparmf2__ZN7phalanx9cuda_gridC1ERKNS_16domain_resourcesINS_13nil_resourcesEEE)
+	{
+	.reg .u32 %r<5>;
+	.reg .u64 %rd<6>;
+	.loc	9	169	0
+$LDWbegin__ZN7phalanx9cuda_gridC1ERKNS_16domain_resourcesINS_13nil_resourcesEEE:
+	ld.param.u64 	%rd1, [__cudaparmf1__ZN7phalanx9cuda_gridC1ERKNS_16domain_resourcesINS_13nil_resourcesEEE];
+	mov.s64 	%rd2, %rd1;
+	ld.param.u64 	%rd3, [__cudaparmf2__ZN7phalanx9cuda_gridC1ERKNS_16domain_resourcesINS_13nil_resourcesEEE];
+	mov.s64 	%rd4, %rd3;
+	.loc	9	170	0
+	ld.s32 	%r1, [%rd4+0];
+	st.s32 	[%rd2+0], %r1;
+	ld.s32 	%r2, [%rd4+4];
+	st.s32 	[%rd2+4], %r2;
+	ld.volatile.s8 	%r3, [%rd4+8];
+	st.volatile.s8 	[%rd2+8], %r3;
+	ret;
+$LDWend__ZN7phalanx9cuda_gridC1ERKNS_16domain_resourcesINS_13nil_resourcesEEE:
+	} // _ZN7phalanx9cuda_gridC1ERKNS_16domain_resourcesINS_13nil_resourcesEEE
+
+	.visible .func _ZN7phalanx15stored_sequenceIiNS_13device_memoryEEC1EPii (.param .u64 __cudaparmf1__ZN7phalanx15stored_sequenceIiNS_13device_memoryEEC1EPii, .param .u64 __cudaparmf2__ZN7phalanx15stored_sequenceIiNS_13device_memoryEEC1EPii, .param .s32 __cudaparmf3__ZN7phalanx15stored_sequenceIiNS_13device_memoryEEC1EPii)
+	{
+	.reg .u32 %r<4>;
+	.reg .u64 %rd<6>;
+	.loc	12	47	0
+$LDWbegin__ZN7phalanx15stored_sequenceIiNS_13device_memoryEEC1EPii:
+	ld.param.u64 	%rd1, [__cudaparmf1__ZN7phalanx15stored_sequenceIiNS_13device_memoryEEC1EPii];
+	mov.s64 	%rd2, %rd1;
+	ld.param.u64 	%rd3, [__cudaparmf2__ZN7phalanx15stored_sequenceIiNS_13device_memoryEEC1EPii];
+	mov.s64 	%rd4, %rd3;
+	ld.param.u32 	%r1, [__cudaparmf3__ZN7phalanx15stored_sequenceIiNS_13device_memoryEEC1EPii];
+	mov.s32 	%r2, %r1;
+	st.u64 	[%rd2+0], %rd4;
+	st.s32 	[%rd2+8], %r2;
+	ret;
+$LDWend__ZN7phalanx15stored_sequenceIiNS_13device_memoryEEC1EPii:
+	} // _ZN7phalanx15stored_sequenceIiNS_13device_memoryEEC1EPii
+
+	.visible .func (.param .s32 __cudaretf__ZNK7phalanx15stored_sequenceIiNS_13device_memoryEE4sizeEv) _ZNK7phalanx15stored_sequenceIiNS_13device_memoryEE4sizeEv (.param .u64 __cudaparmf1__ZNK7phalanx15stored_sequenceIiNS_13device_memoryEE4sizeEv)
+	{
+	.reg .u32 %r<3>;
+	.reg .u64 %rd<4>;
+	.loc	12	69	0
+$LDWbegin__ZNK7phalanx15stored_sequenceIiNS_13device_memoryEE4sizeEv:
+	ld.param.u64 	%rd1, [__cudaparmf1__ZNK7phalanx15stored_sequenceIiNS_13device_memoryEE4sizeEv];
+	mov.s64 	%rd2, %rd1;
+	.loc	12	68	0
+	ld.s32 	%r1, [%rd2+8];
+	st.param.s32 	[__cudaretf__ZNK7phalanx15stored_sequenceIiNS_13device_memoryEE4sizeEv], %r1;
+	ret;
+$LDWend__ZNK7phalanx15stored_sequenceIiNS_13device_memoryEE4sizeEv:
+	} // _ZNK7phalanx15stored_sequenceIiNS_13device_memoryEE4sizeEv
+
+	.visible .func (.param .u64 __cudaretf__ZN7phalanx15stored_sequenceIiNS_13device_memoryEEixEi) _ZN7phalanx15stored_sequenceIiNS_13device_memoryEEixEi (.param .u64 __cudaparmf1__ZN7phalanx15stored_sequenceIiNS_13device_memoryEEixEi, .param .s32 __cudaparmf2__ZN7phalanx15stored_sequenceIiNS_13device_memoryEEixEi)
+	{
+	.reg .u32 %r<4>;
+	.reg .u64 %rd<8>;
+	.loc	12	101	0
+$LDWbegin__ZN7phalanx15stored_sequenceIiNS_13device_memoryEEixEi:
+	ld.param.u64 	%rd1, [__cudaparmf1__ZN7phalanx15stored_sequenceIiNS_13device_memoryEEixEi];
+	mov.s64 	%rd2, %rd1;
+	ld.param.u32 	%r1, [__cudaparmf2__ZN7phalanx15stored_sequenceIiNS_13device_memoryEEixEi];
+	mov.s32 	%r2, %r1;
+	ld.u64 	%rd3, [%rd2+0];
+	cvt.s64.s32 	%rd4, %r2;
+	mul.wide.s32 	%rd5, %r2, 4;
+	add.u64 	%rd6, %rd3, %rd5;
+	st.param.u64 	[__cudaretf__ZN7phalanx15stored_sequenceIiNS_13device_memoryEEixEi], %rd6;
+	ret;
+$LDWend__ZN7phalanx15stored_sequenceIiNS_13device_memoryEEixEi:
+	} // _ZN7phalanx15stored_sequenceIiNS_13device_memoryEEixEi
+
+	.visible .func _ZN7phalanx20distributed_sequenceIiNS_13device_memoryEEC1Ev (.param .u64 __cudaparmf1__ZN7phalanx20distributed_sequenceIiNS_13device_memoryEEC1Ev)
+	{
+	.reg .u32 %r<3>;
+	.reg .u64 %rd<12>;
+	.loc	13	52	0
+$LDWbegin__ZN7phalanx20distributed_sequenceIiNS_13device_memoryEEC1Ev:
+	ld.param.u64 	%rd1, [__cudaparmf1__ZN7phalanx20distributed_sequenceIiNS_13device_memoryEEC1Ev];
+	mov.s64 	%rd2, %rd1;
+	.loc	13	51	0
+	mov.s32 	%r1, 0;
+	st.s32 	[%rd2+0], %r1;
+	.loc	5	47	0
+	mov.u64 	%rd3, 0;
+	st.u64 	[%rd2+8], %rd3;
+	mov.u64 	%rd4, 0;
+	st.u64 	[%rd2+16], %rd4;
+	mov.u64 	%rd5, 0;
+	st.u64 	[%rd2+24], %rd5;
+	mov.u64 	%rd6, 0;
+	st.u64 	[%rd2+32], %rd6;
+	mov.u64 	%rd7, 0;
+	st.u64 	[%rd2+40], %rd7;
+	mov.u64 	%rd8, 0;
+	st.u64 	[%rd2+48], %rd8;
+	mov.u64 	%rd9, 0;
+	st.u64 	[%rd2+56], %rd9;
+	mov.u64 	%rd10, 0;
+	st.u64 	[%rd2+64], %rd10;
+	.loc	13	51	0
+	ret;
+$LDWend__ZN7phalanx20distributed_sequenceIiNS_13device_memoryEEC1Ev:
+	} // _ZN7phalanx20distributed_sequenceIiNS_13device_memoryEEC1Ev
+
+	.visible .func _ZN7phalanx20distributed_sequenceIiNS_13device_memoryEEC1EiPNS_10placed_ptrIiS1_EEPm (.param .u64 __cudaparmf1__ZN7phalanx20distributed_sequenceIiNS_13device_memoryEEC1EiPNS_10placed_ptrIiS1_EEPm, .param .s32 __cudaparmf2__ZN7phalanx20distributed_sequenceIiNS_13device_memoryEEC1EiPNS_10placed_ptrIiS1_EEPm, .param .u64 __cudaparmf3__ZN7phalanx20distributed_sequenceIiNS_13device_memoryEEC1EiPNS_10placed_ptrIiS1_EEPm, .param .u64 __cudaparmf4__ZN7phalanx20distributed_sequenceIiNS_13device_memoryEEC1EiPNS_10placed_ptrIiS1_EEPm)
+	{
+	.reg .u32 %r<7>;
+	.reg .u64 %rd<21>;
+	.reg .pred %p<4>;
+	.loc	13	54	0
+$LDWbegin__ZN7phalanx20distributed_sequenceIiNS_13device_memoryEEC1EiPNS_10placed_ptrIiS1_EEPm:
+	ld.param.u64 	%rd1, [__cudaparmf1__ZN7phalanx20distributed_sequenceIiNS_13device_memoryEEC1EiPNS_10placed_ptrIiS1_EEPm];
+	mov.s64 	%rd2, %rd1;
+	ld.param.u32 	%r1, [__cudaparmf2__ZN7phalanx20distributed_sequenceIiNS_13device_memoryEEC1EiPNS_10placed_ptrIiS1_EEPm];
+	mov.s32 	%r2, %r1;
+	ld.param.u64 	%rd3, [__cudaparmf3__ZN7phalanx20distributed_sequenceIiNS_13device_memoryEEC1EiPNS_10placed_ptrIiS1_EEPm];
+	mov.s64 	%rd4, %rd3;
+	ld.param.u64 	%rd5, [__cudaparmf4__ZN7phalanx20distributed_sequenceIiNS_13device_memoryEEC1EiPNS_10placed_ptrIiS1_EEPm];
+	mov.s64 	%rd6, %rd5;
+	.loc	13	56	0
+	st.s32 	[%rd2+0], %r2;
+	.loc	5	47	0
+	mov.u64 	%rd7, 0;
+	st.u64 	[%rd2+8], %rd7;
+	mov.u64 	%rd8, 0;
+	st.u64 	[%rd2+16], %rd8;
+	mov.u64 	%rd9, 0;
+	st.u64 	[%rd2+24], %rd9;
+	mov.u64 	%rd10, 0;
+	st.u64 	[%rd2+32], %rd10;
+	mov.u64 	%rd11, 0;
+	st.u64 	[%rd2+40], %rd11;
+	mov.u64 	%rd12, 0;
+	st.u64 	[%rd2+48], %rd12;
+	mov.u64 	%rd13, 0;
+	st.u64 	[%rd2+56], %rd13;
+	mov.u64 	%rd14, 0;
+	st.u64 	[%rd2+64], %rd14;
+	.loc	13	56	0
+	mov.u32 	%r3, 0;
+	setp.le.s32 	%p1, %r2, %r3;
+	@%p1 bra 	$Lt_47_2562;
+	mov.s64 	%rd15, %rd4;
+	mov.s64 	%rd16, %rd2;
+	mov.s64 	%rd17, %rd6;
+	mov.s32 	%r4, 0;
+$Lt_47_3074:
+ //<loop> Loop body line 56, nesting depth: 1, estimated iterations: unknown
+	.loc	13	59	0
+	ld.u64 	%rd18, [%rd15+0];
+	st.u64 	[%rd16+8], %rd18;
+	.loc	13	60	0
+	ld.u64 	%rd19, [%rd17+0];
+	st.u64 	[%rd16+72], %rd19;
+	.loc	13	57	0
+	add.s32 	%r4, %r4, 1;
+	add.u64 	%rd17, %rd17, 8;
+	add.u64 	%rd16, %rd16, 8;
+	add.u64 	%rd15, %rd15, 8;
+	ld.s32 	%r5, [%rd2+0];
+	setp.gt.s32 	%p2, %r5, %r4;
+	@%p2 bra 	$Lt_47_3074;
+$Lt_47_2562:
+	.loc	13	62	0
+	ret;
+$LDWend__ZN7phalanx20distributed_sequenceIiNS_13device_memoryEEC1EiPNS_10placed_ptrIiS1_EEPm:
+	} // _ZN7phalanx20distributed_sequenceIiNS_13device_memoryEEC1EiPNS_10placed_ptrIiS1_EEPm
+
+	.visible .func _ZN7phalanx20distributed_sequenceIiNS_13device_memoryEED1Ev (.param .u64 __cudaparmf1__ZN7phalanx20distributed_sequenceIiNS_13device_memoryEED1Ev)
+	{
+	.loc	13	112	0
+$LDWbegin__ZN7phalanx20distributed_sequenceIiNS_13device_memoryEED1Ev:
+	.loc	13	111	0
+	ret;
+$LDWend__ZN7phalanx20distributed_sequenceIiNS_13device_memoryEED1Ev:
+	} // _ZN7phalanx20distributed_sequenceIiNS_13device_memoryEED1Ev
+
+	.visible .func (.param .u64 __cudaretf__ZNK7phalanx20distributed_sequenceIiNS_13device_memoryEE4sizeEv) _ZNK7phalanx20distributed_sequenceIiNS_13device_memoryEE4sizeEv (.param .u64 __cudaparmf1__ZNK7phalanx20distributed_sequenceIiNS_13device_memoryEE4sizeEv)
+	{
+	.reg .u32 %r<7>;
+	.reg .u64 %rd<8>;
+	.reg .pred %p<4>;
+	.loc	13	115	0
+$LDWbegin__ZNK7phalanx20distributed_sequenceIiNS_13device_memoryEE4sizeEv:
+	ld.param.u64 	%rd1, [__cudaparmf1__ZNK7phalanx20distributed_sequenceIiNS_13device_memoryEE4sizeEv];
+	mov.s64 	%rd2, %rd1;
+	ld.s32 	%r1, [%rd2+0];
+	mov.u32 	%r2, 0;
+	setp.le.s32 	%p1, %r1, %r2;
+	@%p1 bra 	$Lt_49_2306;
+	mov.s32 	%r3, %r1;
+	mov.s64 	%rd3, %rd2;
+	mov.s32 	%r4, 0;
+	mov.u64 	%rd4, 0;
+	mov.s32 	%r5, %r3;
+$Lt_49_1794:
+ //<loop> Loop body line 115, nesting depth: 1, estimated iterations: unknown
+	.loc	13	117	0
+	ld.u64 	%rd5, [%rd3+72];
+	add.u64 	%rd4, %rd5, %rd4;
+	add.s32 	%r4, %r4, 1;
+	add.u64 	%rd3, %rd3, 8;
+	setp.ne.s32 	%p2, %r1, %r4;
+	@%p2 bra 	$Lt_49_1794;
+	bra.uni 	$Lt_49_1282;
+$Lt_49_2306:
+	mov.u64 	%rd4, 0;
+$Lt_49_1282:
+	.loc	13	118	0
+	mov.s64 	%rd6, %rd4;
+	st.param.u64 	[__cudaretf__ZNK7phalanx20distributed_sequenceIiNS_13device_memoryEE4sizeEv], %rd6;
+	ret;
+$LDWend__ZNK7phalanx20distributed_sequenceIiNS_13device_memoryEE4sizeEv:
+	} // _ZNK7phalanx20distributed_sequenceIiNS_13device_memoryEE4sizeEv
+
+	.visible .func (.param .align 8 .b8 __cudaretf__ZN7phalanx20distributed_sequenceIiNS_13device_memoryEE11subsequenceEi[16]) _ZN7phalanx20distributed_sequenceIiNS_13device_memoryEE11subsequenceEi (.param .u64 __cudaparmf1__ZN7phalanx20distributed_sequenceIiNS_13device_memoryEE11subsequenceEi, .param .s32 __cudaparmf2__ZN7phalanx20distributed_sequenceIiNS_13device_memoryEE11subsequenceEi)
+	{
+	.reg .u32 %r<7>;
+	.reg .u64 %rd<9>;
+	.reg .pred %p<3>;
+	.loc	13	122	0
+$LDWbegin__ZN7phalanx20distributed_sequenceIiNS_13device_memoryEE11subsequenceEi:
+	ld.param.u64 	%rd1, [__cudaparmf1__ZN7phalanx20distributed_sequenceIiNS_13device_memoryEE11subsequenceEi];
+	mov.s64 	%rd2, %rd1;
+	ld.param.u32 	%r1, [__cudaparmf2__ZN7phalanx20distributed_sequenceIiNS_13device_memoryEE11subsequenceEi];
+	mov.s32 	%r2, %r1;
+	ld.s32 	%r3, [%rd2+0];
+	setp.gt.s32 	%p1, %r3, %r2;
+	@%p1 bra 	$Lt_50_1026;
+	.loc	13	124	0
+	mov.u64 	%rd3, 0;
+	mov.s32 	%r4, -1;
+	bra.uni 	$LBB4__ZN7phalanx20distributed_sequenceIiNS_13device_memoryEE11subsequenceEi;
+$Lt_50_1026:
+	.loc	13	126	0
+	cvt.s64.s32 	%rd4, %r2;
+	mul.wide.s32 	%rd5, %r2, 8;
+	add.u64 	%rd6, %rd2, %rd5;
+	ld.u64 	%rd3, [%rd6+8];
+	ld.s32 	%r4, [%rd6+72];
+$LBB4__ZN7phalanx20distributed_sequenceIiNS_13device_memoryEE11subsequenceEi:
+	mov.s64 	%rd7, %rd3;
+	st.param.u64 	[__cudaretf__ZN7phalanx20distributed_sequenceIiNS_13device_memoryEE11subsequenceEi+0], %rd7;
+	mov.s32 	%r5, %r4;
+	st.param.s32 	[__cudaretf__ZN7phalanx20distributed_sequenceIiNS_13device_memoryEE11subsequenceEi+8], %r5;
+	ret;
+$LDWend__ZN7phalanx20distributed_sequenceIiNS_13device_memoryEE11subsequenceEi:
+	} // _ZN7phalanx20distributed_sequenceIiNS_13device_memoryEE11subsequenceEi
+
+	.visible .func (.param .u64 __cudaretf__ZN7phalanx20distributed_sequenceIiNS_13device_memoryEEixEi) _ZN7phalanx20distributed_sequenceIiNS_13device_memoryEEixEi (.param .u64 __cudaparmf1__ZN7phalanx20distributed_sequenceIiNS_13device_memoryEEixEi, .param .s32 __cudaparmf2__ZN7phalanx20distributed_sequenceIiNS_13device_memoryEEixEi)
+	{
+	.reg .u32 %r<10>;
+	.reg .u64 %rd<19>;
+	.reg .pred %p<6>;
+	.loc	13	129	0
+$LDWbegin__ZN7phalanx20distributed_sequenceIiNS_13device_memoryEEixEi:
+	ld.param.u64 	%rd1, [__cudaparmf1__ZN7phalanx20distributed_sequenceIiNS_13device_memoryEEixEi];
+	mov.s64 	%rd2, %rd1;
+	ld.param.u32 	%r1, [__cudaparmf2__ZN7phalanx20distributed_sequenceIiNS_13device_memoryEEixEi];
+	mov.s32 	%r2, %r1;
+	.loc	13	131	0
+	ld.s32 	%r3, [%rd2+0];
+	mov.u32 	%r4, 0;
+	setp.le.s32 	%p1, %r3, %r4;
+	@%p1 bra 	$Lt_51_2562;
+	cvt.s64.s32 	%rd3, %r2;
+	ld.u64 	%rd4, [%rd2+72];
+	setp.lt.u64 	%p2, %rd3, %rd4;
+	@%p2 bra 	$Lt_51_2818;
+	mov.s64 	%rd5, %rd2;
+	mov.s32 	%r5, 0;
+	mov.s32 	%r6, 0;
+$L_51_1538:
+	ld.u32 	%r7, [%rd5+72];
+	add.u32 	%r5, %r5, %r7;
+	add.s32 	%r6, %r6, 1;
+	setp.le.s32 	%p3, %r3, %r6;
+	@%p3 bra 	$Lt_51_3074;
+	cvt.s64.s32 	%rd6, %r6;
+	mul.wide.s32 	%rd7, %r6, 8;
+	add.u64 	%rd8, %rd2, %rd7;
+	mov.s64 	%rd5, %rd8;
+	cvt.s64.s32 	%rd9, %r5;
+	ld.u64 	%rd10, [%rd8+72];
+	add.u64 	%rd11, %rd9, %rd10;
+	setp.ge.u64 	%p4, %rd3, %rd11;
+	@%p4 bra 	$L_51_1538;
+	bra.uni 	$L_51_1794;
+$Lt_51_3074:
+	cvt.s64.s32 	%rd12, %r6;
+	mul.wide.s32 	%rd13, %r6, 8;
+	add.u64 	%rd5, %rd2, %rd13;
+	bra.uni 	$L_51_1794;
+$Lt_51_2562:
+	mov.s64 	%rd5, %rd2;
+	mov.s32 	%r5, 0;
+	bra.uni 	$L_51_1794;
+$Lt_51_2818:
+	mov.s64 	%rd5, %rd2;
+	mov.s32 	%r5, 0;
+$L_51_1794:
+	.loc	13	132	0
+	ld.u64 	%rd14, [%rd5+8];
+	sub.s32 	%r8, %r2, %r5;
+	cvt.s64.s32 	%rd15, %r8;
+	mul.wide.s32 	%rd16, %r8, 4;
+	add.u64 	%rd17, %rd14, %rd16;
+	st.param.u64 	[__cudaretf__ZN7phalanx20distributed_sequenceIiNS_13device_memoryEEixEi], %rd17;
+	ret;
+$LDWend__ZN7phalanx20distributed_sequenceIiNS_13device_memoryEEixEi:
+	} // _ZN7phalanx20distributed_sequenceIiNS_13device_memoryEEixEi
+
+	.visible .func _ZN7phalanx6detail8base_ptrIfNS_13device_memoryEEC1EPfRKS2_ (.param .u64 __cudaparmf1__ZN7phalanx6detail8base_ptrIfNS_13device_memoryEEC1EPfRKS2_, .param .u64 __cudaparmf2__ZN7phalanx6detail8base_ptrIfNS_13device_memoryEEC1EPfRKS2_, .param .u64 __cudaparmf3__ZN7phalanx6detail8base_ptrIfNS_13device_memoryEEC1EPfRKS2_)
+	{
+	.reg .u64 %rd<6>;
+	.loc	5	47	0
+$LDWbegin__ZN7phalanx6detail8base_ptrIfNS_13device_memoryEEC1EPfRKS2_:
+	ld.param.u64 	%rd1, [__cudaparmf1__ZN7phalanx6detail8base_ptrIfNS_13device_memoryEEC1EPfRKS2_];
+	mov.s64 	%rd2, %rd1;
+	ld.param.u64 	%rd3, [__cudaparmf2__ZN7phalanx6detail8base_ptrIfNS_13device_memoryEEC1EPfRKS2_];
+	mov.s64 	%rd4, %rd3;
+	st.u64 	[%rd2+0], %rd4;
+	ret;
+$LDWend__ZN7phalanx6detail8base_ptrIfNS_13device_memoryEEC1EPfRKS2_:
+	} // _ZN7phalanx6detail8base_ptrIfNS_13device_memoryEEC1EPfRKS2_
+
+	.visible .func (.param .u64 __cudaretf__ZNK7phalanx6detail8base_ptrIfNS_8cuda_gpuEE7raw_ptrEv) _ZNK7phalanx6detail8base_ptrIfNS_8cuda_gpuEE7raw_ptrEv (.param .u64 __cudaparmf1__ZNK7phalanx6detail8base_ptrIfNS_8cuda_gpuEE7raw_ptrEv)
+	{
+	.reg .u64 %rd<5>;
+	.loc	5	57	0
+$LDWbegin__ZNK7phalanx6detail8base_ptrIfNS_8cuda_gpuEE7raw_ptrEv:
+	ld.param.u64 	%rd1, [__cudaparmf1__ZNK7phalanx6detail8base_ptrIfNS_8cuda_gpuEE7raw_ptrEv];
+	mov.s64 	%rd2, %rd1;
+	.loc	5	56	0
+	ld.u64 	%rd3, [%rd2+8];
+	st.param.u64 	[__cudaretf__ZNK7phalanx6detail8base_ptrIfNS_8cuda_gpuEE7raw_ptrEv], %rd3;
+	ret;
+$LDWend__ZNK7phalanx6detail8base_ptrIfNS_8cuda_gpuEE7raw_ptrEv:
+	} // _ZNK7phalanx6detail8base_ptrIfNS_8cuda_gpuEE7raw_ptrEv
+
+	.visible .func _ZN7phalanx6detail8base_ptrIdNS_13device_memoryEEC1EPdRKS2_ (.param .u64 __cudaparmf1__ZN7phalanx6detail8base_ptrIdNS_13device_memoryEEC1EPdRKS2_, .param .u64 __cudaparmf2__ZN7phalanx6detail8base_ptrIdNS_13device_memoryEEC1EPdRKS2_, .param .u64 __cudaparmf3__ZN7phalanx6detail8base_ptrIdNS_13device_memoryEEC1EPdRKS2_)
+	{
+	.reg .u64 %rd<6>;
+	.loc	5	47	0
+$LDWbegin__ZN7phalanx6detail8base_ptrIdNS_13device_memoryEEC1EPdRKS2_:
+	ld.param.u64 	%rd1, [__cudaparmf1__ZN7phalanx6detail8base_ptrIdNS_13device_memoryEEC1EPdRKS2_];
+	mov.s64 	%rd2, %rd1;
+	ld.param.u64 	%rd3, [__cudaparmf2__ZN7phalanx6detail8base_ptrIdNS_13device_memoryEEC1EPdRKS2_];
+	mov.s64 	%rd4, %rd3;
+	st.u64 	[%rd2+0], %rd4;
+	ret;
+$LDWend__ZN7phalanx6detail8base_ptrIdNS_13device_memoryEEC1EPdRKS2_:
+	} // _ZN7phalanx6detail8base_ptrIdNS_13device_memoryEEC1EPdRKS2_
+
+	.visible .func (.param .u64 __cudaretf__ZNK7phalanx6detail8base_ptrIdNS_8cuda_gpuEE7raw_ptrEv) _ZNK7phalanx6detail8base_ptrIdNS_8cuda_gpuEE7raw_ptrEv (.param .u64 __cudaparmf1__ZNK7phalanx6detail8base_ptrIdNS_8cuda_gpuEE7raw_ptrEv)
+	{
+	.reg .u64 %rd<5>;
+	.loc	5	57	0
+$LDWbegin__ZNK7phalanx6detail8base_ptrIdNS_8cuda_gpuEE7raw_ptrEv:
+	ld.param.u64 	%rd1, [__cudaparmf1__ZNK7phalanx6detail8base_ptrIdNS_8cuda_gpuEE7raw_ptrEv];
+	mov.s64 	%rd2, %rd1;
+	.loc	5	56	0
+	ld.u64 	%rd3, [%rd2+8];
+	st.param.u64 	[__cudaretf__ZNK7phalanx6detail8base_ptrIdNS_8cuda_gpuEE7raw_ptrEv], %rd3;
+	ret;
+$LDWend__ZNK7phalanx6detail8base_ptrIdNS_8cuda_gpuEE7raw_ptrEv:
+	} // _ZNK7phalanx6detail8base_ptrIdNS_8cuda_gpuEE7raw_ptrEv
+
+	.visible .func _ZN7phalanx6detail8base_ptrIiNS_13device_memoryEEC1EPiRKS2_ (.param .u64 __cudaparmf1__ZN7phalanx6detail8base_ptrIiNS_13device_memoryEEC1EPiRKS2_, .param .u64 __cudaparmf2__ZN7phalanx6detail8base_ptrIiNS_13device_memoryEEC1EPiRKS2_, .param .u64 __cudaparmf3__ZN7phalanx6detail8base_ptrIiNS_13device_memoryEEC1EPiRKS2_)
+	{
+	.reg .u64 %rd<6>;
+	.loc	5	47	0
+$LDWbegin__ZN7phalanx6detail8base_ptrIiNS_13device_memoryEEC1EPiRKS2_:
+	ld.param.u64 	%rd1, [__cudaparmf1__ZN7phalanx6detail8base_ptrIiNS_13device_memoryEEC1EPiRKS2_];
+	mov.s64 	%rd2, %rd1;
+	ld.param.u64 	%rd3, [__cudaparmf2__ZN7phalanx6detail8base_ptrIiNS_13device_memoryEEC1EPiRKS2_];
+	mov.s64 	%rd4, %rd3;
+	st.u64 	[%rd2+0], %rd4;
+	ret;
+$LDWend__ZN7phalanx6detail8base_ptrIiNS_13device_memoryEEC1EPiRKS2_:
+	} // _ZN7phalanx6detail8base_ptrIiNS_13device_memoryEEC1EPiRKS2_
+
+	.visible .func _ZN7phalanx6detail8base_ptrIiNS_8cuda_gpuEEC1EPiRKS2_ (.param .u64 __cudaparmf1__ZN7phalanx6detail8base_ptrIiNS_8cuda_gpuEEC1EPiRKS2_, .param .u64 __cudaparmf2__ZN7phalanx6detail8base_ptrIiNS_8cuda_gpuEEC1EPiRKS2_, .param .u64 __cudaparmf3__ZN7phalanx6detail8base_ptrIiNS_8cuda_gpuEEC1EPiRKS2_)
+	{
+	.reg .u32 %r<3>;
+	.reg .u64 %rd<8>;
+$LDWbegin__ZN7phalanx6detail8base_ptrIiNS_8cuda_gpuEEC1EPiRKS2_:
+	ld.param.u64 	%rd1, [__cudaparmf1__ZN7phalanx6detail8base_ptrIiNS_8cuda_gpuEEC1EPiRKS2_];
+	mov.s64 	%rd2, %rd1;
+	ld.param.u64 	%rd3, [__cudaparmf2__ZN7phalanx6detail8base_ptrIiNS_8cuda_gpuEEC1EPiRKS2_];
+	mov.s64 	%rd4, %rd3;
+	ld.param.u64 	%rd5, [__cudaparmf3__ZN7phalanx6detail8base_ptrIiNS_8cuda_gpuEEC1EPiRKS2_];
+	mov.s64 	%rd6, %rd5;
+	ld.s32 	%r1, [%rd6+0];
+	st.s32 	[%rd2+0], %r1;
+	st.u64 	[%rd2+8], %rd4;
+	ret;
+$LDWend__ZN7phalanx6detail8base_ptrIiNS_8cuda_gpuEEC1EPiRKS2_:
+	} // _ZN7phalanx6detail8base_ptrIiNS_8cuda_gpuEEC1EPiRKS2_
+
+	.visible .func (.param .u64 __cudaretf__ZNK7phalanx6detail8base_ptrIiNS_8cuda_gpuEE7raw_ptrEv) _ZNK7phalanx6detail8base_ptrIiNS_8cuda_gpuEE7raw_ptrEv (.param .u64 __cudaparmf1__ZNK7phalanx6detail8base_ptrIiNS_8cuda_gpuEE7raw_ptrEv)
+	{
+	.reg .u64 %rd<5>;
+	.loc	5	57	0
+$LDWbegin__ZNK7phalanx6detail8base_ptrIiNS_8cuda_gpuEE7raw_ptrEv:
+	ld.param.u64 	%rd1, [__cudaparmf1__ZNK7phalanx6detail8base_ptrIiNS_8cuda_gpuEE7raw_ptrEv];
+	mov.s64 	%rd2, %rd1;
+	.loc	5	56	0
+	ld.u64 	%rd3, [%rd2+8];
+	st.param.u64 	[__cudaretf__ZNK7phalanx6detail8base_ptrIiNS_8cuda_gpuEE7raw_ptrEv], %rd3;
+	ret;
+$LDWend__ZNK7phalanx6detail8base_ptrIiNS_8cuda_gpuEE7raw_ptrEv:
+	} // _ZNK7phalanx6detail8base_ptrIiNS_8cuda_gpuEE7raw_ptrEv
+
+	.visible .func (.param .align 4 .b8 __cudaretf__ZN7phalanx19group_shared_memoryEi[12]) _ZN7phalanx19group_shared_memoryEi (.param .s32 __cudaparmf1__ZN7phalanx19group_shared_memoryEi)
+	{
+	.reg .u16 %rh<3>;
+	.reg .u32 %r<7>;
+	// __T2939 = 0
+	.loc	8	84	0
+$LDWbegin__ZN7phalanx19group_shared_memoryEi:
+	ld.param.u32 	%r1, [__cudaparmf1__ZN7phalanx19group_shared_memoryEi];
+	mov.s32 	%r2, %r1;
+	.loc	8	85	0
+	mov.s32 	%r3, %r2;
+	st.param.s32 	[__cudaretf__ZN7phalanx19group_shared_memoryEi+0], %r3;
+	mov.s32 	%r4, 0;
+	st.param.s32 	[__cudaretf__ZN7phalanx19group_shared_memoryEi+4], %r4;
+	cvt.s32.s8 	%r5, %rh1;
+	st.param.s8 	[__cudaretf__ZN7phalanx19group_shared_memoryEi+8], %r5;
+	ret;
+$LDWend__ZN7phalanx19group_shared_memoryEi:
+	} // _ZN7phalanx19group_shared_memoryEi
+
+	.visible .func (.param .align 4 .b8 __cudaretf__ZN7phalanx21thread_private_memoryEi[12]) _ZN7phalanx21thread_private_memoryEi (.param .s32 __cudaparmf1__ZN7phalanx21thread_private_memoryEi)
+	{
+	.reg .u16 %rh<3>;
+	.reg .u32 %r<7>;
+	// __T2941 = 0
+	.loc	8	89	0
+$LDWbegin__ZN7phalanx21thread_private_memoryEi:
+	ld.param.u32 	%r1, [__cudaparmf1__ZN7phalanx21thread_private_memoryEi];
+	mov.s32 	%r2, %r1;
+	.loc	8	90	0
+	mov.s32 	%r3, 0;
+	st.param.s32 	[__cudaretf__ZN7phalanx21thread_private_memoryEi+0], %r3;
+	mov.s32 	%r4, %r2;
+	st.param.s32 	[__cudaretf__ZN7phalanx21thread_private_memoryEi+4], %r4;
+	cvt.s32.s8 	%r5, %rh1;
+	st.param.s8 	[__cudaretf__ZN7phalanx21thread_private_memoryEi+8], %r5;
+	ret;
+$LDWend__ZN7phalanx21thread_private_memoryEi:
+	} // _ZN7phalanx21thread_private_memoryEi
+
+	.visible .func (.param .align 4 .b8 __cudaretf__ZN7phalanx5rangeEii[12]) _ZN7phalanx5rangeEii (.param .s32 __cudaparmf1__ZN7phalanx5rangeEii, .param .s32 __cudaparmf2__ZN7phalanx5rangeEii)
+	{
+	.reg .u16 %rh<3>;
+	.reg .u32 %r<9>;
+	// __T2942 = 0
+	.loc	11	123	0
+$LDWbegin__ZN7phalanx5rangeEii:
+	ld.param.u32 	%r1, [__cudaparmf1__ZN7phalanx5rangeEii];
+	mov.s32 	%r2, %r1;
+	ld.param.u32 	%r3, [__cudaparmf2__ZN7phalanx5rangeEii];
+	mov.s32 	%r4, %r3;
+	.loc	11	125	0
+	cvt.s32.s8 	%r5, %rh1;
+	st.param.s8 	[__cudaretf__ZN7phalanx5rangeEii+0], %r5;
+	mov.s32 	%r6, %r2;
+	st.param.s32 	[__cudaretf__ZN7phalanx5rangeEii+4], %r6;
+	sub.s32 	%r7, %r4, %r2;
+	st.param.s32 	[__cudaretf__ZN7phalanx5rangeEii+8], %r7;
+	ret;
+$LDWend__ZN7phalanx5rangeEii:
+	} // _ZN7phalanx5rangeEii
+
+	.visible .func (.param .align 4 .b8 __cudaretf__ZN7phalanx13sequence_fromIiNS_9operators8identityEEENS_19functional_sequenceIT_T0_EES5_ii[12]) _ZN7phalanx13sequence_fromIiNS_9operators8identityEEENS_19functional_sequenceIT_T0_EES5_ii (.param .align 1 .b8 __cudaparmf1__ZN7phalanx13sequence_fromIiNS_9operators8identityEEENS_19functional_sequenceIT_T0_EES5_ii[1], .param .s32 __cudaparmf2__ZN7phalanx13sequence_fromIiNS_9operators8identityEEENS_19functional_sequenceIT_T0_EES5_ii, .param .s32 __cudaparmf3__ZN7phalanx13sequence_fromIiNS_9operators8identityEEENS_19functional_sequenceIT_T0_EES5_ii)
+	{
+	.reg .u32 %r<11>;
+	.loc	11	117	0
+$LDWbegin__ZN7phalanx13sequence_fromIiNS_9operators8identityEEENS_19functional_sequenceIT_T0_EES5_ii:
+	ld.param.u8 	%r1, [__cudaparmf1__ZN7phalanx13sequence_fromIiNS_9operators8identityEEENS_19functional_sequenceIT_T0_EES5_ii+0];
+	mov.s32 	%r2, %r1;
+	ld.param.u32 	%r3, [__cudaparmf2__ZN7phalanx13sequence_fromIiNS_9operators8identityEEENS_19functional_sequenceIT_T0_EES5_ii];
+	mov.s32 	%r4, %r3;
+	ld.param.u32 	%r5, [__cudaparmf3__ZN7phalanx13sequence_fromIiNS_9operators8identityEEENS_19functional_sequenceIT_T0_EES5_ii];
+	mov.s32 	%r6, %r5;
+	.loc	11	119	0
+	mov.s32 	%r7, %r2;
+	st.param.s8 	[__cudaretf__ZN7phalanx13sequence_fromIiNS_9operators8identityEEENS_19functional_sequenceIT_T0_EES5_ii+0], %r7;
+	mov.s32 	%r8, %r6;
+	st.param.s32 	[__cudaretf__ZN7phalanx13sequence_fromIiNS_9operators8identityEEENS_19functional_sequenceIT_T0_EES5_ii+4], %r8;
+	mov.s32 	%r9, %r4;
+	st.param.s32 	[__cudaretf__ZN7phalanx13sequence_fromIiNS_9operators8identityEEENS_19functional_sequenceIT_T0_EES5_ii+8], %r9;
+	ret;
+$LDWend__ZN7phalanx13sequence_fromIiNS_9operators8identityEEENS_19functional_sequenceIT_T0_EES5_ii:
+	} // _ZN7phalanx13sequence_fromIiNS_9operators8identityEEENS_19functional_sequenceIT_T0_EES5_ii
+
+	.visible .func (.param .align 4 .b8 __cudaretf__ZN7phalanx9streamingINS_15parallel_domainINS_17sequential_domainEEEEENS_16streaming_domainIT_EEiS5_[28]) _ZN7phalanx9streamingINS_15parallel_domainINS_17sequential_domainEEEEENS_16streaming_domainIT_EEiS5_ (.param .s32 __cudaparmf1__ZN7phalanx9streamingINS_15parallel_domainINS_17sequential_domainEEEEENS_16streaming_domainIT_EEiS5_, .param .align 4 .b8 __cudaparmf2__ZN7phalanx9streamingINS_15parallel_domainINS_17sequential_domainEEEEENS_16streaming_domainIT_EEiS5_[16])
+	{
+	.reg .u32 %r<19>;
+	.loc	7	111	0
+$LDWbegin__ZN7phalanx9streamingINS_15parallel_domainINS_17sequential_domainEEEEENS_16streaming_domainIT_EEiS5_:
+	ld.param.u32 	%r1, [__cudaparmf1__ZN7phalanx9streamingINS_15parallel_domainINS_17sequential_domainEEEEENS_16streaming_domainIT_EEiS5_];
+	mov.s32 	%r2, %r1;
+	ld.param.u32 	%r3, [__cudaparmf2__ZN7phalanx9streamingINS_15parallel_domainINS_17sequential_domainEEEEENS_16streaming_domainIT_EEiS5_+0];
+	mov.s32 	%r4, %r3;
+	ld.param.u32 	%r5, [__cudaparmf2__ZN7phalanx9streamingINS_15parallel_domainINS_17sequential_domainEEEEENS_16streaming_domainIT_EEiS5_+4];
+	mov.s32 	%r6, %r5;
+	ld.param.u32 	%r7, [__cudaparmf2__ZN7phalanx9streamingINS_15parallel_domainINS_17sequential_domainEEEEENS_16streaming_domainIT_EEiS5_+8];
+	mov.s32 	%r8, %r7;
+	ld.param.u8 	%r9, [__cudaparmf2__ZN7phalanx9streamingINS_15parallel_domainINS_17sequential_domainEEEEENS_16streaming_domainIT_EEiS5_+12];
+	mov.s32 	%r10, %r9;
+	.loc	7	113	0
+	mov.s32 	%r11, 0;
+	st.param.s32 	[__cudaretf__ZN7phalanx9streamingINS_15parallel_domainINS_17sequential_domainEEEEENS_16streaming_domainIT_EEiS5_+0], %r11;
+	mov.s32 	%r12, %r2;
+	st.param.s32 	[__cudaretf__ZN7phalanx9streamingINS_15parallel_domainINS_17sequential_domainEEEEENS_16streaming_domainIT_EEiS5_+4], %r12;
+	mov.s32 	%r13, 1;
+	st.param.s32 	[__cudaretf__ZN7phalanx9streamingINS_15parallel_domainINS_17sequential_domainEEEEENS_16streaming_domainIT_EEiS5_+8], %r13;
+	mov.s32 	%r14, %r4;
+	st.param.s32 	[__cudaretf__ZN7phalanx9streamingINS_15parallel_domainINS_17sequential_domainEEEEENS_16streaming_domainIT_EEiS5_+12], %r14;
+	mov.s32 	%r15, %r6;
+	st.param.s32 	[__cudaretf__ZN7phalanx9streamingINS_15parallel_domainINS_17sequential_domainEEEEENS_16streaming_domainIT_EEiS5_+16], %r15;
+	mov.s32 	%r16, %r8;
+	st.param.s32 	[__cudaretf__ZN7phalanx9streamingINS_15parallel_domainINS_17sequential_domainEEEEENS_16streaming_domainIT_EEiS5_+20], %r16;
+	mov.s32 	%r17, %r10;
+	st.param.s8 	[__cudaretf__ZN7phalanx9streamingINS_15parallel_domainINS_17sequential_domainEEEEENS_16streaming_domainIT_EEiS5_+24], %r17;
+	ret;
+$LDWend__ZN7phalanx9streamingINS_15parallel_domainINS_17sequential_domainEEEEENS_16streaming_domainIT_EEiS5_:
+	} // _ZN7phalanx9streamingINS_15parallel_domainINS_17sequential_domainEEEEENS_16streaming_domainIT_EEiS5_
+
+	.visible .func (.param .align 4 .b8 __cudaretf__ZN7phalanx8parallelINS_16streaming_domainINS_15parallel_domainINS_17sequential_domainEEEEEEENS2_IT_EEiS6_[40]) _ZN7phalanx8parallelINS_16streaming_domainINS_15parallel_domainINS_17sequential_domainEEEEEEENS2_IT_EEiS6_ (.param .s32 __cudaparmf1__ZN7phalanx8parallelINS_16streaming_domainINS_15parallel_domainINS_17sequential_domainEEEEEEENS2_IT_EEiS6_, .param .align 4 .b8 __cudaparmf2__ZN7phalanx8parallelINS_16streaming_domainINS_15parallel_domainINS_17sequential_domainEEEEEEENS2_IT_EEiS6_[28])
+	{
+	.reg .u32 %r<28>;
+	.loc	7	98	0
+$LDWbegin__ZN7phalanx8parallelINS_16streaming_domainINS_15parallel_domainINS_17sequential_domainEEEEEEENS2_IT_EEiS6_:
+	ld.param.u32 	%r1, [__cudaparmf1__ZN7phalanx8parallelINS_16streaming_domainINS_15parallel_domainINS_17sequential_domainEEEEEEENS2_IT_EEiS6_];
+	mov.s32 	%r2, %r1;
+	ld.param.u32 	%r3, [__cudaparmf2__ZN7phalanx8parallelINS_16streaming_domainINS_15parallel_domainINS_17sequential_domainEEEEEEENS2_IT_EEiS6_+0];
+	mov.s32 	%r4, %r3;
+	ld.param.u32 	%r5, [__cudaparmf2__ZN7phalanx8parallelINS_16streaming_domainINS_15parallel_domainINS_17sequential_domainEEEEEEENS2_IT_EEiS6_+4];
+	mov.s32 	%r6, %r5;
+	ld.param.u32 	%r7, [__cudaparmf2__ZN7phalanx8parallelINS_16streaming_domainINS_15parallel_domainINS_17sequential_domainEEEEEEENS2_IT_EEiS6_+8];
+	mov.s32 	%r8, %r7;
+	ld.param.u32 	%r9, [__cudaparmf2__ZN7phalanx8parallelINS_16streaming_domainINS_15parallel_domainINS_17sequential_domainEEEEEEENS2_IT_EEiS6_+12];
+	mov.s32 	%r10, %r9;
+	ld.param.u32 	%r11, [__cudaparmf2__ZN7phalanx8parallelINS_16streaming_domainINS_15parallel_domainINS_17sequential_domainEEEEEEENS2_IT_EEiS6_+16];
+	mov.s32 	%r12, %r11;
+	ld.param.u32 	%r13, [__cudaparmf2__ZN7phalanx8parallelINS_16streaming_domainINS_15parallel_domainINS_17sequential_domainEEEEEEENS2_IT_EEiS6_+20];
+	mov.s32 	%r14, %r13;
+	ld.param.u8 	%r15, [__cudaparmf2__ZN7phalanx8parallelINS_16streaming_domainINS_15parallel_domainINS_17sequential_domainEEEEEEENS2_IT_EEiS6_+24];
+	mov.s32 	%r16, %r15;
+	.loc	7	100	0
+	mov.s32 	%r17, 0;
+	st.param.s32 	[__cudaretf__ZN7phalanx8parallelINS_16streaming_domainINS_15parallel_domainINS_17sequential_domainEEEEEEENS2_IT_EEiS6_+0], %r17;
+	mov.s32 	%r18, %r2;
+	st.param.s32 	[__cudaretf__ZN7phalanx8parallelINS_16streaming_domainINS_15parallel_domainINS_17sequential_domainEEEEEEENS2_IT_EEiS6_+4], %r18;
+	mov.s32 	%r19, 1;
+	st.param.s32 	[__cudaretf__ZN7phalanx8parallelINS_16streaming_domainINS_15parallel_domainINS_17sequential_domainEEEEEEENS2_IT_EEiS6_+8], %r19;
+	mov.s32 	%r20, %r4;
+	st.param.s32 	[__cudaretf__ZN7phalanx8parallelINS_16streaming_domainINS_15parallel_domainINS_17sequential_domainEEEEEEENS2_IT_EEiS6_+12], %r20;
+	mov.s32 	%r21, %r6;
+	st.param.s32 	[__cudaretf__ZN7phalanx8parallelINS_16streaming_domainINS_15parallel_domainINS_17sequential_domainEEEEEEENS2_IT_EEiS6_+16], %r21;
+	mov.s32 	%r22, %r8;
+	st.param.s32 	[__cudaretf__ZN7phalanx8parallelINS_16streaming_domainINS_15parallel_domainINS_17sequential_domainEEEEEEENS2_IT_EEiS6_+20], %r22;
+	mov.s32 	%r23, %r10;
+	st.param.s32 	[__cudaretf__ZN7phalanx8parallelINS_16streaming_domainINS_15parallel_domainINS_17sequential_domainEEEEEEENS2_IT_EEiS6_+24], %r23;
+	mov.s32 	%r24, %r12;
+	st.param.s32 	[__cudaretf__ZN7phalanx8parallelINS_16streaming_domainINS_15parallel_domainINS_17sequential_domainEEEEEEENS2_IT_EEiS6_+28], %r24;
+	mov.s32 	%r25, %r14;
+	st.param.s32 	[__cudaretf__ZN7phalanx8parallelINS_16streaming_domainINS_15parallel_domainINS_17sequential_domainEEEEEEENS2_IT_EEiS6_+32], %r25;
+	mov.s32 	%r26, %r16;
+	st.param.s8 	[__cudaretf__ZN7phalanx8parallelINS_16streaming_domainINS_15parallel_domainINS_17sequential_domainEEEEEEENS2_IT_EEiS6_+36], %r26;
+	ret;
+$LDWend__ZN7phalanx8parallelINS_16streaming_domainINS_15parallel_domainINS_17sequential_domainEEEEEEENS2_IT_EEiS6_:
+	} // _ZN7phalanx8parallelINS_16streaming_domainINS_15parallel_domainINS_17sequential_domainEEEEEEENS2_IT_EEiS6_
+
+	.visible .func (.param .u64 __cudaretf__ZN6thrust6detail4util9divide_riImiEET_S3_T0_) _ZN6thrust6detail4util9divide_riImiEET_S3_T0_ (.param .u64 __cudaparmf1__ZN6thrust6detail4util9divide_riImiEET_S3_T0_, .param .s32 __cudaparmf2__ZN6thrust6detail4util9divide_riImiEET_S3_T0_)
+	{
+	.reg .u32 %r<4>;
+	.reg .u64 %rd<8>;
+	.loc	31	33	0
+$LDWbegin__ZN6thrust6detail4util9divide_riImiEET_S3_T0_:
+	ld.param.u64 	%rd1, [__cudaparmf1__ZN6thrust6detail4util9divide_riImiEET_S3_T0_];
+	mov.s64 	%rd2, %rd1;
+	ld.param.u32 	%r1, [__cudaparmf2__ZN6thrust6detail4util9divide_riImiEET_S3_T0_];
+	mov.s32 	%r2, %r1;
+	.loc	31	35	0
+	cvt.s64.s32 	%rd3, %r2;
+	add.u64 	%rd4, %rd3, %rd2;
+	sub.u64 	%rd5, %rd4, 1;
+	div.u64 	%rd6, %rd5, %rd3;
+	st.param.u64 	[__cudaretf__ZN6thrust6detail4util9divide_riImiEET_S3_T0_], %rd6;
+	ret;
+$LDWend__ZN6thrust6detail4util9divide_riImiEET_S3_T0_:
+	} // _ZN6thrust6detail4util9divide_riImiEET_S3_T0_
+
+	.visible .func (.param .u64 __cudaretf__ZN6thrust6detail4util7round_iImmEET_S3_T0_) _ZN6thrust6detail4util7round_iImmEET_S3_T0_ (.param .u64 __cudaparmf1__ZN6thrust6detail4util7round_iImmEET_S3_T0_, .param .u64 __cudaparmf2__ZN6thrust6detail4util7round_iImmEET_S3_T0_)
+	{
+	.reg .u64 %rd<10>;
+	.loc	31	47	0
+$LDWbegin__ZN6thrust6detail4util7round_iImmEET_S3_T0_:
+	ld.param.u64 	%rd1, [__cudaparmf1__ZN6thrust6detail4util7round_iImmEET_S3_T0_];
+	mov.s64 	%rd2, %rd1;
+	ld.param.u64 	%rd3, [__cudaparmf2__ZN6thrust6detail4util7round_iImmEET_S3_T0_];
+	mov.s64 	%rd4, %rd3;
+	add.u64 	%rd5, %rd2, %rd4;
+	sub.u64 	%rd6, %rd5, 1;
+	div.u64 	%rd7, %rd6, %rd4;
+	mul.lo.u64 	%rd8, %rd4, %rd7;
+	st.param.u64 	[__cudaretf__ZN6thrust6detail4util7round_iImmEET_S3_T0_], %rd8;
+	ret;
+$LDWend__ZN6thrust6detail4util7round_iImmEET_S3_T0_:
+	} // _ZN6thrust6detail4util7round_iImmEET_S3_T0_
+
+	.visible .func _ZN15bfs_rank_adjcsr17advance_frontier1EN7phalanx9cuda_gridE6adjcsrINS0_13device_memoryEEiR5queueIiENS0_15stored_sequenceIiS3_EES7_ (.param .align 4 .b8 __cudaparmf1__ZN15bfs_rank_adjcsr17advance_frontier1EN7phalanx9cuda_gridE6adjcsrINS0_13device_memoryEEiR5queueIiENS0_15stored_sequenceIiS3_EES7_[12], .param .align 8 .b8 __cudaparmf2__ZN15bfs_rank_adjcsr17advance_frontier1EN7phalanx9cuda_gridE6adjcsrINS0_13device_memoryEEiR5queueIiENS0_15stored_sequenceIiS3_EES7_[24], .param .s32 __cudaparmf3__ZN15bfs_rank_adjcsr17advance_frontier1EN7phalanx9cuda_gridE6adjcsrINS0_13device_memoryEEiR5queueIiENS0_15stored_sequenceIiS3_EES7_, .param .u64 __cudaparmf4__ZN15bfs_rank_adjcsr17advance_frontier1EN7phalanx9cuda_gridE6adjcsrINS0_13device_memoryEEiR5queueIiENS0_15stored_sequenceIiS3_EES7_, .param .align 8 .b8 __cudaparmf5__ZN15bfs_rank_adjcsr17advance_frontier1EN7phalanx9cuda_gridE6adjcsrINS0_13device_memoryEEiR5queueIiENS0_15stored_sequenceIiS3_EES7_[16], .param .u64 __cudaparmf6__ZN15bfs_rank_adjcsr17advance_frontier1EN7phalanx9cuda_gridE6adjcsrINS0_13device_memoryEEiR5queueIiENS0_15stored_sequenceIiS3_EES7_)
+	{
+	.reg .u16 %rh<3>;
+	.reg .u32 %r<41>;
+	.reg .u64 %rd<61>;
+	.reg .pred %p<8>;
+	.loc	27	74	0
+$LDWbegin__ZN15bfs_rank_adjcsr17advance_frontier1EN7phalanx9cuda_gridE6adjcsrINS0_13device_memoryEEiR5queueIiENS0_15stored_sequenceIiS3_EES7_:
+	ld.param.u32 	%r1, [__cudaparmf1__ZN15bfs_rank_adjcsr17advance_frontier1EN7phalanx9cuda_gridE6adjcsrINS0_13device_memoryEEiR5queueIiENS0_15stored_sequenceIiS3_EES7_+0];
+	mov.s32 	%r2, %r1;
+	ld.param.u32 	%r3, [__cudaparmf1__ZN15bfs_rank_adjcsr17advance_frontier1EN7phalanx9cuda_gridE6adjcsrINS0_13device_memoryEEiR5queueIiENS0_15stored_sequenceIiS3_EES7_+4];
+	mov.s32 	%r4, %r3;
+	ld.param.u8 	%r5, [__cudaparmf1__ZN15bfs_rank_adjcsr17advance_frontier1EN7phalanx9cuda_gridE6adjcsrINS0_13device_memoryEEiR5queueIiENS0_15stored_sequenceIiS3_EES7_+8];
+	cvt.s8.s32 	%rh1, %r5;
+	ld.param.u64 	%rd1, [__cudaparmf2__ZN15bfs_rank_adjcsr17advance_frontier1EN7phalanx9cuda_gridE6adjcsrINS0_13device_memoryEEiR5queueIiENS0_15stored_sequenceIiS3_EES7_+8];
+	mov.s64 	%rd2, %rd1;
+	ld.param.u64 	%rd3, [__cudaparmf2__ZN15bfs_rank_adjcsr17advance_frontier1EN7phalanx9cuda_gridE6adjcsrINS0_13device_memoryEEiR5queueIiENS0_15stored_sequenceIiS3_EES7_+16];
+	mov.s64 	%rd4, %rd3;
+	ld.param.u32 	%r6, [__cudaparmf3__ZN15bfs_rank_adjcsr17advance_frontier1EN7phalanx9cuda_gridE6adjcsrINS0_13device_memoryEEiR5queueIiENS0_15stored_sequenceIiS3_EES7_];
+	mov.s32 	%r7, %r6;
+	ld.param.u64 	%rd5, [__cudaparmf4__ZN15bfs_rank_adjcsr17advance_frontier1EN7phalanx9cuda_gridE6adjcsrINS0_13device_memoryEEiR5queueIiENS0_15stored_sequenceIiS3_EES7_];
+	mov.s64 	%rd6, %rd5;
+	ld.param.u64 	%rd7, [__cudaparmf5__ZN15bfs_rank_adjcsr17advance_frontier1EN7phalanx9cuda_gridE6adjcsrINS0_13device_memoryEEiR5queueIiENS0_15stored_sequenceIiS3_EES7_+0];
+	mov.s64 	%rd8, %rd7;
+	ld.param.u64 	%rd9, [__cudaparmf6__ZN15bfs_rank_adjcsr17advance_frontier1EN7phalanx9cuda_gridE6adjcsrINS0_13device_memoryEEiR5queueIiENS0_15stored_sequenceIiS3_EES7_];
+	mov.s64 	%rd10, %rd9;
+	.loc	27	76	0
+	ld.u64 	%rd11, [%rd6+0];
+	ld.s32 	%r8, [%rd11+4];
+	cvt.s32.u32 	%r9, %ctaid.x;
+	add.s32 	%r10, %r8, %r9;
+	ld.s32 	%r11, [%rd11+0];
+	setp.le.s32 	%p1, %r11, %r10;
+	@%p1 bra 	$Lt_67_4098;
+	mov.u32 	%r12, %tid.x;
+	mov.u32 	%r13, 0;
+	setp.eq.u32 	%p2, %r12, %r13;
+	cvt.s32.u32 	%r14, %nctaid.x;
+	cvt.s32.u32 	%r15, %tid.x;
+	mov.s64 	%rd12, %rd4;
+	mov.s64 	%rd13, %rd2;
+$Lt_67_4610:
+	.loc	27	79	0
+	ld.u64 	%rd14, [%rd6+8];
+	sub.s64 	%rd15, %rd11, %rd14;
+	shr.s64 	%rd16, %rd15, 63;
+	mov.s64 	%rd17, 3;
+	and.b64 	%rd18, %rd16, %rd17;
+	add.s64 	%rd19, %rd18, %rd15;
+	shr.s64 	%rd20, %rd19, 2;
+	cvt.s32.s64 	%r16, %rd20;
+	rem.s32 	%r17, %r10, %r16;
+	cvt.s64.s32 	%rd21, %r17;
+	mul.wide.s32 	%rd22, %r17, 4;
+	add.u64 	%rd23, %rd14, %rd22;
+	ld.s32 	%r18, [%rd23+0];
+	.loc	27	80	0
+	sub.s32 	%r19, %r18, %r7;
+	cvt.s64.s32 	%rd24, %r19;
+	mul.wide.s32 	%rd25, %r19, 4;
+	add.u64 	%rd26, %rd13, %rd25;
+	ld.s32 	%r20, [%rd26+0];
+	cvt.s64.s32 	%rd27, %r20;
+	mul.wide.s32 	%rd28, %r20, 4;
+	add.u64 	%rd29, %rd12, %rd28;
+	.loc	27	81	0
+	ld.s32 	%r21, [%rd26+4];
+	cvt.u32.s64 	%r22, %rd27;
+	cvt.u64.u32 	%rd30, %r22;
+	cvt.u32.u64 	%r23, %rd30;
+	sub.s32 	%r24, %r21, %r23;
+	.loc	27	83	0
+	@!%p2 bra 	$Lt_67_4866;
+	.loc	4	166	0
+	ld.u64 	%rd31, [%rd10+0];
+	atom.add.s32 	%r25, [%rd31], %r24;
+	mov.s32 	%r26, %r25;
+	st.shared.s32 	[__cuda_local_var_131063_31_non_const_headptr__0], %r26;
+$Lt_67_4866:
+	.loc	4	168	0
+	bar.sync 	0;
+	.loc	4	170	0
+	mov.s32 	%r27, %r15;
+	setp.lt.s32 	%p3, %r27, %r24;
+	@!%p3 bra 	$Lt_67_5378;
+	cvt.s32.u32 	%r28, %ntid.x;
+	ld.shared.s32 	%r29, [__cuda_local_var_131063_31_non_const_headptr__0];
+	add.s32 	%r30, %r27, %r29;
+	add.s32 	%r31, %r24, %r29;
+	cvt.s64.s32 	%rd32, %r28;
+	mul.wide.s32 	%rd33, %r28, 4;
+	cvt.s64.s32 	%rd34, %r27;
+	mul.wide.s32 	%rd35, %r27, 4;
+	add.u64 	%rd36, %rd29, %rd35;
+$Lt_67_5890:
+ //<loop> Loop body line 170, nesting depth: 1, estimated iterations: unknown
+	.loc	4	171	0
+	ld.u64 	%rd37, [%rd10+8];
+	ld.s32 	%r32, [%rd36+0];
+	ld.u64 	%rd38, [%rd10+0];
+	sub.s64 	%rd39, %rd38, %rd37;
+	shr.s64 	%rd40, %rd39, 63;
+	mov.s64 	%rd41, 3;
+	and.b64 	%rd42, %rd40, %rd41;
+	add.s64 	%rd43, %rd42, %rd39;
+	shr.s64 	%rd44, %rd43, 2;
+	cvt.s32.s64 	%r33, %rd44;
+	rem.s32 	%r34, %r30, %r33;
+	cvt.s64.s32 	%rd45, %r34;
+	mul.wide.s32 	%rd46, %r34, 4;
+	add.u64 	%rd47, %rd37, %rd46;
+	st.s32 	[%rd47+0], %r32;
+	add.s32 	%r30, %r30, %r28;
+	add.u64 	%rd36, %rd33, %rd36;
+	setp.lt.s32 	%p4, %r30, %r31;
+	@%p4 bra 	$Lt_67_5890;
+$Lt_67_5378:
+	.loc	27	83	0
+	@!%p3 bra 	$Lt_67_6402;
+	ld.shared.s32 	%r35, [__cuda_local_var_131063_31_non_const_headptr__0];
+	add.s32 	%r36, %r27, %r35;
+	add.s32 	%r31, %r24, %r35;
+	cvt.s32.u32 	%r28, %ntid.x;
+	mov.s64 	%rd48, %rd8;
+$Lt_67_6914:
+ //<loop> Loop body line 83, nesting depth: 1, estimated iterations: unknown
+	.loc	27	87	0
+	ld.u64 	%rd49, [%rd10+0];
+	ld.u64 	%rd50, [%rd10+8];
+	sub.s64 	%rd51, %rd49, %rd50;
+	shr.s64 	%rd52, %rd51, 63;
+	mov.s64 	%rd53, 3;
+	and.b64 	%rd54, %rd52, %rd53;
+	add.s64 	%rd55, %rd54, %rd51;
+	shr.s64 	%rd56, %rd55, 2;
+	cvt.s32.s64 	%r37, %rd56;
+	rem.s32 	%r38, %r36, %r37;
+	cvt.s64.s32 	%rd57, %r38;
+	mul.wide.s32 	%rd58, %r38, 4;
+	add.u64 	%rd59, %rd48, %rd58;
+	st.s32 	[%rd59+0], %r18;
+	add.s32 	%r36, %r36, %r28;
+	setp.lt.s32 	%p5, %r36, %r31;
+	@%p5 bra 	$Lt_67_6914;
+$Lt_67_6402:
+	.loc	27	76	0
+	add.s32 	%r10, %r10, %r14;
+	ld.u64 	%rd11, [%rd6+0];
+	ld.s32 	%r39, [%rd11+0];
+	setp.gt.s32 	%p6, %r39, %r10;
+	@%p6 bra 	$Lt_67_4610;
+$Lt_67_4098:
+	.loc	27	90	0
+	ret;
+$LDWend__ZN15bfs_rank_adjcsr17advance_frontier1EN7phalanx9cuda_gridE6adjcsrINS0_13device_memoryEEiR5queueIiENS0_15stored_sequenceIiS3_EES7_:
+	} // _ZN15bfs_rank_adjcsr17advance_frontier1EN7phalanx9cuda_gridE6adjcsrINS0_13device_memoryEEiR5queueIiENS0_15stored_sequenceIiS3_EES7_
+
+	.visible .func _ZN15bfs_rank_adjcsr13pull_frontierERKN7phalanx9cuda_gridEiiNS0_15stored_sequenceIiNS0_13device_memoryEEER5queueIiES6_S9_ (.param .u64 __cudaparmf1__ZN15bfs_rank_adjcsr13pull_frontierERKN7phalanx9cuda_gridEiiNS0_15stored_sequenceIiNS0_13device_memoryEEER5queueIiES6_S9_, .param .s32 __cudaparmf2__ZN15bfs_rank_adjcsr13pull_frontierERKN7phalanx9cuda_gridEiiNS0_15stored_sequenceIiNS0_13device_memoryEEER5queueIiES6_S9_, .param .s32 __cudaparmf3__ZN15bfs_rank_adjcsr13pull_frontierERKN7phalanx9cuda_gridEiiNS0_15stored_sequenceIiNS0_13device_memoryEEER5queueIiES6_S9_, .param .align 8 .b8 __cudaparmf4__ZN15bfs_rank_adjcsr13pull_frontierERKN7phalanx9cuda_gridEiiNS0_15stored_sequenceIiNS0_13device_memoryEEER5queueIiES6_S9_[16], .param .u64 __cudaparmf5__ZN15bfs_rank_adjcsr13pull_frontierERKN7phalanx9cuda_gridEiiNS0_15stored_sequenceIiNS0_13device_memoryEEER5queueIiES6_S9_, .param .align 8 .b8 __cudaparmf6__ZN15bfs_rank_adjcsr13pull_frontierERKN7phalanx9cuda_gridEiiNS0_15stored_sequenceIiNS0_13device_memoryEEER5queueIiES6_S9_[16], .param .u64 __cudaparmf7__ZN15bfs_rank_adjcsr13pull_frontierERKN7phalanx9cuda_gridEiiNS0_15stored_sequenceIiNS0_13device_memoryEEER5queueIiES6_S9_)
+	{
+	.reg .u32 %r<36>;
+	.reg .u64 %rd<49>;
+	.reg .pred %p<5>;
+	.loc	27	113	0
+$LDWbegin__ZN15bfs_rank_adjcsr13pull_frontierERKN7phalanx9cuda_gridEiiNS0_15stored_sequenceIiNS0_13device_memoryEEER5queueIiES6_S9_:
+	ld.param.u32 	%r1, [__cudaparmf2__ZN15bfs_rank_adjcsr13pull_frontierERKN7phalanx9cuda_gridEiiNS0_15stored_sequenceIiNS0_13device_memoryEEER5queueIiES6_S9_];
+	mov.s32 	%r2, %r1;
+	ld.param.u32 	%r3, [__cudaparmf3__ZN15bfs_rank_adjcsr13pull_frontierERKN7phalanx9cuda_gridEiiNS0_15stored_sequenceIiNS0_13device_memoryEEER5queueIiES6_S9_];
+	mov.s32 	%r4, %r3;
+	ld.param.u64 	%rd1, [__cudaparmf4__ZN15bfs_rank_adjcsr13pull_frontierERKN7phalanx9cuda_gridEiiNS0_15stored_sequenceIiNS0_13device_memoryEEER5queueIiES6_S9_+0];
+	mov.s64 	%rd2, %rd1;
+	ld.param.u64 	%rd3, [__cudaparmf5__ZN15bfs_rank_adjcsr13pull_frontierERKN7phalanx9cuda_gridEiiNS0_15stored_sequenceIiNS0_13device_memoryEEER5queueIiES6_S9_];
+	mov.s64 	%rd4, %rd3;
+	ld.param.u64 	%rd5, [__cudaparmf6__ZN15bfs_rank_adjcsr13pull_frontierERKN7phalanx9cuda_gridEiiNS0_15stored_sequenceIiNS0_13device_memoryEEER5queueIiES6_S9_+0];
+	mov.s64 	%rd6, %rd5;
+	ld.param.u64 	%rd7, [__cudaparmf7__ZN15bfs_rank_adjcsr13pull_frontierERKN7phalanx9cuda_gridEiiNS0_15stored_sequenceIiNS0_13device_memoryEEER5queueIiES6_S9_];
+	mov.s64 	%rd8, %rd7;
+	.loc	27	115	0
+	mov.u32 	%r5, %ntid.x;
+	mov.u32 	%r6, %ctaid.x;
+	mul.lo.u32 	%r7, %r6, %r5;
+	mov.u32 	%r8, %tid.x;
+	add.u32 	%r9, %r8, %r7;
+	mov.s32 	%r10, %r9;
+	ld.u64 	%rd9, [%rd4+0];
+	ld.s32 	%r11, [%rd9+0];
+	ld.s32 	%r12, [%rd9+4];
+	sub.s32 	%r13, %r11, %r12;
+	setp.le.s32 	%p1, %r13, %r9;
+	@%p1 bra 	$Lt_68_2306;
+	mov.u32 	%r14, %nctaid.x;
+	mul.lo.u32 	%r15, %r14, %r5;
+	mov.s64 	%rd10, %rd2;
+$Lt_68_2818:
+ //<loop> Loop body line 115, nesting depth: 1, estimated iterations: unknown
+	.loc	27	118	0
+	ld.u64 	%rd11, [%rd4+8];
+	sub.s64 	%rd12, %rd9, %rd11;
+	shr.s64 	%rd13, %rd12, 63;
+	mov.s64 	%rd14, 3;
+	and.b64 	%rd15, %rd13, %rd14;
+	add.s64 	%rd16, %rd15, %rd12;
+	shr.s64 	%rd17, %rd16, 2;
+	cvt.s32.s64 	%r16, %rd17;
+	add.s32 	%r17, %r12, %r10;
+	rem.s32 	%r18, %r17, %r16;
+	.loc	27	120	0
+	rem.s32 	%r19, %r18, %r16;
+	cvt.s64.s32 	%rd18, %r19;
+	mul.wide.s32 	%rd19, %r19, 4;
+	add.u64 	%rd20, %rd11, %rd19;
+	ld.s32 	%r20, [%rd20+0];
+	.loc	27	121	0
+	cvt.s64.s32 	%rd21, %r18;
+	mul.wide.s32 	%rd22, %r18, 4;
+	add.u64 	%rd23, %rd10, %rd22;
+	ld.s32 	%r21, [%rd23+0];
+	set.gt.u32.s32 	%r22, %r4, %r20;
+	neg.s32 	%r23, %r22;
+	set.le.u32.s32 	%r24, %r2, %r20;
+	neg.s32 	%r25, %r24;
+	and.b32 	%r26, %r23, %r25;
+	mov.u32 	%r27, 0;
+	setp.eq.s32 	%p2, %r26, %r27;
+	@%p2 bra 	$Lt_68_3074;
+	.loc	4	120	0
+	ld.u64 	%rd24, [%rd8+0];
+	mov.s32 	%r28, 1;
+	atom.add.s32 	%r29, [%rd24], %r28;
+	mov.s32 	%r30, %r29;
+	ld.u64 	%rd25, [%rd8+8];
+	ld.u64 	%rd26, [%rd8+0];
+	sub.s64 	%rd27, %rd26, %rd25;
+	shr.s64 	%rd28, %rd27, 63;
+	mov.s64 	%rd29, 3;
+	and.b64 	%rd30, %rd28, %rd29;
+	add.s64 	%rd31, %rd30, %rd27;
+	shr.s64 	%rd32, %rd31, 2;
+	cvt.s32.s64 	%r31, %rd32;
+	rem.s32 	%r32, %r30, %r31;
+	cvt.s64.s32 	%rd33, %r32;
+	mul.wide.s32 	%rd34, %r32, 4;
+	add.u64 	%rd35, %rd25, %rd34;
+	st.s32 	[%rd35+0], %r20;
+	.loc	27	124	0
+	mov.s64 	%rd36, %rd6;
+	ld.u64 	%rd37, [%rd8+0];
+	ld.u64 	%rd38, [%rd8+8];
+	sub.s64 	%rd39, %rd37, %rd38;
+	shr.s64 	%rd40, %rd39, 63;
+	mov.s64 	%rd41, 3;
+	and.b64 	%rd42, %rd40, %rd41;
+	add.s64 	%rd43, %rd42, %rd39;
+	shr.s64 	%rd44, %rd43, 2;
+	cvt.s32.s64 	%r33, %rd44;
+	rem.s32 	%r34, %r32, %r33;
+	cvt.s64.s32 	%rd45, %r34;
+	mul.wide.s32 	%rd46, %r34, 4;
+	add.u64 	%rd47, %rd36, %rd46;
+	st.s32 	[%rd47+0], %r21;
+	ld.u64 	%rd9, [%rd4+0];
+	ld.s32 	%r11, [%rd9+0];
+	ld.s32 	%r12, [%rd9+4];
+	sub.s32 	%r13, %r11, %r12;
+$Lt_68_3074:
+	.loc	27	115	0
+	add.s32 	%r10, %r10, %r15;
+	setp.gt.s32 	%p3, %r13, %r10;
+	@%p3 bra 	$Lt_68_2818;
+$Lt_68_2306:
+	.loc	27	127	0
+	ret;
+$LDWend__ZN15bfs_rank_adjcsr13pull_frontierERKN7phalanx9cuda_gridEiiNS0_15stored_sequenceIiNS0_13device_memoryEEER5queueIiES6_S9_:
+	} // _ZN15bfs_rank_adjcsr13pull_frontierERKN7phalanx9cuda_gridEiiNS0_15stored_sequenceIiNS0_13device_memoryEEER5queueIiES6_S9_
+
+	.visible .func _ZN15bfs_rank_adjcsr14cull_frontier1IN7phalanx15stored_sequenceIiNS1_13device_memoryEEEEEvRKNS1_9cuda_gridERT_S4_R5queueIiESC_ (.param .u64 __cudaparmf1__ZN15bfs_rank_adjcsr14cull_frontier1IN7phalanx15stored_sequenceIiNS1_13device_memoryEEEEEvRKNS1_9cuda_gridERT_S4_R5queueIiESC_, .param .u64 __cudaparmf2__ZN15bfs_rank_adjcsr14cull_frontier1IN7phalanx15stored_sequenceIiNS1_13device_memoryEEEEEvRKNS1_9cuda_gridERT_S4_R5queueIiESC_, .param .align 8 .b8 __cudaparmf3__ZN15bfs_rank_adjcsr14cull_frontier1IN7phalanx15stored_sequenceIiNS1_13device_memoryEEEEEvRKNS1_9cuda_gridERT_S4_R5queueIiESC_[16], .param .u64 __cudaparmf4__ZN15bfs_rank_adjcsr14cull_frontier1IN7phalanx15stored_sequenceIiNS1_13device_memoryEEEEEvRKNS1_9cuda_gridERT_S4_R5queueIiESC_, .param .u64 __cudaparmf5__ZN15bfs_rank_adjcsr14cull_frontier1IN7phalanx15stored_sequenceIiNS1_13device_memoryEEEEEvRKNS1_9cuda_gridERT_S4_R5queueIiESC_)
+	{
+	.reg .u32 %r<32>;
+	.reg .u64 %rd<44>;
+	.reg .pred %p<5>;
+	.loc	27	156	0
+$LDWbegin__ZN15bfs_rank_adjcsr14cull_frontier1IN7phalanx15stored_sequenceIiNS1_13device_memoryEEEEEvRKNS1_9cuda_gridERT_S4_R5queueIiESC_:
+	ld.param.u64 	%rd1, [__cudaparmf2__ZN15bfs_rank_adjcsr14cull_frontier1IN7phalanx15stored_sequenceIiNS1_13device_memoryEEEEEvRKNS1_9cuda_gridERT_S4_R5queueIiESC_];
+	mov.s64 	%rd2, %rd1;
+	ld.param.u64 	%rd3, [__cudaparmf3__ZN15bfs_rank_adjcsr14cull_frontier1IN7phalanx15stored_sequenceIiNS1_13device_memoryEEEEEvRKNS1_9cuda_gridERT_S4_R5queueIiESC_+0];
+	mov.s64 	%rd4, %rd3;
+	ld.param.u64 	%rd5, [__cudaparmf4__ZN15bfs_rank_adjcsr14cull_frontier1IN7phalanx15stored_sequenceIiNS1_13device_memoryEEEEEvRKNS1_9cuda_gridERT_S4_R5queueIiESC_];
+	mov.s64 	%rd6, %rd5;
+	ld.param.u64 	%rd7, [__cudaparmf5__ZN15bfs_rank_adjcsr14cull_frontier1IN7phalanx15stored_sequenceIiNS1_13device_memoryEEEEEvRKNS1_9cuda_gridERT_S4_R5queueIiESC_];
+	mov.s64 	%rd8, %rd7;
+	.loc	27	158	0
+	mov.u32 	%r1, %ntid.x;
+	mov.u32 	%r2, %ctaid.x;
+	mul.lo.u32 	%r3, %r2, %r1;
+	mov.u32 	%r4, %tid.x;
+	add.u32 	%r5, %r4, %r3;
+	mov.s32 	%r6, %r5;
+	ld.u64 	%rd9, [%rd6+0];
+	ld.s32 	%r7, [%rd9+4];
+	ld.s32 	%r8, [%rd9+0];
+	sub.s32 	%r9, %r8, %r7;
+	setp.ge.s32 	%p1, %r5, %r9;
+	@%p1 bra 	$Lt_69_2050;
+	mov.u32 	%r10, %nctaid.x;
+	mul.lo.u32 	%r11, %r10, %r1;
+	mov.s64 	%rd10, %rd4;
+$Lt_69_2562:
+ //<loop> Loop body line 158, nesting depth: 1, estimated iterations: unknown
+	.loc	27	161	0
+	ld.u64 	%rd11, [%rd6+8];
+	add.s32 	%r12, %r7, %r6;
+	sub.s64 	%rd12, %rd9, %rd11;
+	shr.s64 	%rd13, %rd12, 63;
+	mov.s64 	%rd14, 3;
+	and.b64 	%rd15, %rd13, %rd14;
+	add.s64 	%rd16, %rd15, %rd12;
+	shr.s64 	%rd17, %rd16, 2;
+	cvt.s32.s64 	%r13, %rd17;
+	rem.s32 	%r14, %r12, %r13;
+	rem.s32 	%r15, %r14, %r13;
+	cvt.s64.s32 	%rd18, %r15;
+	mul.wide.s32 	%rd19, %r15, 4;
+	add.u64 	%rd20, %rd11, %rd19;
+	ld.s32 	%r16, [%rd20+0];
+	.loc	27	163	0
+	ld.u64 	%rd21, [%rd2+0];
+	cvt.s64.s32 	%rd22, %r16;
+	mul.wide.s32 	%rd23, %r16, 4;
+	add.u64 	%rd24, %rd21, %rd23;
+	mov.s32 	%r17, -1;
+	cvt.s64.s32 	%rd25, %r14;
+	mul.wide.s32 	%rd26, %r14, 4;
+	add.u64 	%rd27, %rd10, %rd26;
+	ld.s32 	%r18, [%rd27+0];
+	cvt.s64.s32 	%rd28, %r18;
+	mul.wide.s32 	%rd29, %r18, 4;
+	add.u64 	%rd30, %rd21, %rd29;
+	ld.s32 	%r19, [%rd30+0];
+	add.s32 	%r20, %r19, 1;
+	atom.cas.b32 	%r21, [%rd24], %r17, %r20;
+	mov.s32 	%r22, %r21;
+	mov.u32 	%r23, -1;
+	setp.ne.s32 	%p2, %r22, %r23;
+	@%p2 bra 	$Lt_69_2818;
+	.loc	4	120	0
+	ld.u64 	%rd31, [%rd8+0];
+	mov.s32 	%r24, 1;
+	atom.add.s32 	%r25, [%rd31], %r24;
+	mov.s32 	%r26, %r25;
+	ld.u64 	%rd32, [%rd8+8];
+	ld.u64 	%rd33, [%rd8+0];
+	sub.s64 	%rd34, %rd33, %rd32;
+	shr.s64 	%rd35, %rd34, 63;
+	mov.s64 	%rd36, 3;
+	and.b64 	%rd37, %rd35, %rd36;
+	add.s64 	%rd38, %rd37, %rd34;
+	shr.s64 	%rd39, %rd38, 2;
+	cvt.s32.s64 	%r27, %rd39;
+	rem.s32 	%r28, %r26, %r27;
+	cvt.s64.s32 	%rd40, %r28;
+	mul.wide.s32 	%rd41, %r28, 4;
+	add.u64 	%rd42, %rd32, %rd41;
+	st.s32 	[%rd42+0], %r16;
+$Lt_69_2818:
+	.loc	27	158	0
+	add.s32 	%r6, %r6, %r11;
+	ld.u64 	%rd9, [%rd6+0];
+	ld.s32 	%r7, [%rd9+4];
+	ld.s32 	%r29, [%rd9+0];
+	sub.s32 	%r30, %r29, %r7;
+	setp.lt.s32 	%p3, %r6, %r30;
+	@%p3 bra 	$Lt_69_2562;
+$Lt_69_2050:
+	.loc	27	166	0
+	ret;
+$LDWend__ZN15bfs_rank_adjcsr14cull_frontier1IN7phalanx15stored_sequenceIiNS1_13device_memoryEEEEEvRKNS1_9cuda_gridERT_S4_R5queueIiESC_:
+	} // _ZN15bfs_rank_adjcsr14cull_frontier1IN7phalanx15stored_sequenceIiNS1_13device_memoryEEEEEvRKNS1_9cuda_gridERT_S4_R5queueIiESC_
+
+	.visible .func _ZN15bfs_rank_adjcsr14cull_frontier1IN7phalanx20distributed_sequenceIiNS1_13device_memoryEEEEEvRKNS1_9cuda_gridERT_NS1_15stored_sequenceIiS3_EER5queueIiESE_ (.param .u64 __cudaparmf1__ZN15bfs_rank_adjcsr14cull_frontier1IN7phalanx20distributed_sequenceIiNS1_13device_memoryEEEEEvRKNS1_9cuda_gridERT_NS1_15stored_sequenceIiS3_EER5queueIiESE_, .param .u64 __cudaparmf2__ZN15bfs_rank_adjcsr14cull_frontier1IN7phalanx20distributed_sequenceIiNS1_13device_memoryEEEEEvRKNS1_9cuda_gridERT_NS1_15stored_sequenceIiS3_EER5queueIiESE_, .param .align 8 .b8 __cudaparmf3__ZN15bfs_rank_adjcsr14cull_frontier1IN7phalanx20distributed_sequenceIiNS1_13device_memoryEEEEEvRKNS1_9cuda_gridERT_NS1_15stored_sequenceIiS3_EER5queueIiESE_[16], .param .u64 __cudaparmf4__ZN15bfs_rank_adjcsr14cull_frontier1IN7phalanx20distributed_sequenceIiNS1_13device_memoryEEEEEvRKNS1_9cuda_gridERT_NS1_15stored_sequenceIiS3_EER5queueIiESE_, .param .u64 __cudaparmf5__ZN15bfs_rank_adjcsr14cull_frontier1IN7phalanx20distributed_sequenceIiNS1_13device_memoryEEEEEvRKNS1_9cuda_gridERT_NS1_15stored_sequenceIiS3_EER5queueIiESE_)
+	{
+	.reg .u32 %r<40>;
+	.reg .u64 %rd<66>;
+	.reg .pred %p<12>;
+	.loc	27	156	0
+$LDWbegin__ZN15bfs_rank_adjcsr14cull_frontier1IN7phalanx20distributed_sequenceIiNS1_13device_memoryEEEEEvRKNS1_9cuda_gridERT_NS1_15stored_sequenceIiS3_EER5queueIiESE_:
+	ld.param.u64 	%rd1, [__cudaparmf2__ZN15bfs_rank_adjcsr14cull_frontier1IN7phalanx20distributed_sequenceIiNS1_13device_memoryEEEEEvRKNS1_9cuda_gridERT_NS1_15stored_sequenceIiS3_EER5queueIiESE_];
+	mov.s64 	%rd2, %rd1;
+	ld.param.u64 	%rd3, [__cudaparmf3__ZN15bfs_rank_adjcsr14cull_frontier1IN7phalanx20distributed_sequenceIiNS1_13device_memoryEEEEEvRKNS1_9cuda_gridERT_NS1_15stored_sequenceIiS3_EER5queueIiESE_+0];
+	mov.s64 	%rd4, %rd3;
+	ld.param.u64 	%rd5, [__cudaparmf4__ZN15bfs_rank_adjcsr14cull_frontier1IN7phalanx20distributed_sequenceIiNS1_13device_memoryEEEEEvRKNS1_9cuda_gridERT_NS1_15stored_sequenceIiS3_EER5queueIiESE_];
+	mov.s64 	%rd6, %rd5;
+	ld.param.u64 	%rd7, [__cudaparmf5__ZN15bfs_rank_adjcsr14cull_frontier1IN7phalanx20distributed_sequenceIiNS1_13device_memoryEEEEEvRKNS1_9cuda_gridERT_NS1_15stored_sequenceIiS3_EER5queueIiESE_];
+	mov.s64 	%rd8, %rd7;
+	.loc	27	158	0
+	mov.u32 	%r1, %ntid.x;
+	mov.u32 	%r2, %ctaid.x;
+	mul.lo.u32 	%r3, %r2, %r1;
+	mov.u32 	%r4, %tid.x;
+	add.u32 	%r5, %r4, %r3;
+	mov.s32 	%r6, %r5;
+	ld.u64 	%rd9, [%rd6+0];
+	ld.s32 	%r7, [%rd9+4];
+	ld.s32 	%r8, [%rd9+0];
+	sub.s32 	%r9, %r8, %r7;
+	setp.ge.s32 	%p1, %r5, %r9;
+	@%p1 bra 	$Lt_70_6658;
+	mov.u32 	%r10, %nctaid.x;
+	mul.lo.u32 	%r11, %r10, %r1;
+	mov.s64 	%rd10, %rd4;
+$Lt_70_7170:
+ //<loop> Loop body line 158, nesting depth: 1, estimated iterations: unknown
+	.loc	27	160	0
+	ld.u64 	%rd11, [%rd6+8];
+	sub.s64 	%rd12, %rd9, %rd11;
+	shr.s64 	%rd13, %rd12, 63;
+	mov.s64 	%rd14, 3;
+	and.b64 	%rd15, %rd13, %rd14;
+	add.s64 	%rd16, %rd15, %rd12;
+	shr.s64 	%rd17, %rd16, 2;
+	cvt.s32.s64 	%r12, %rd17;
+	add.s32 	%r13, %r7, %r6;
+	rem.s32 	%r14, %r13, %r12;
+	.loc	27	161	0
+	cvt.s64.s32 	%rd18, %r14;
+	mul.wide.s32 	%rd19, %r14, 4;
+	add.u64 	%rd20, %rd10, %rd19;
+	ld.s32 	%r15, [%rd20+0];
+	rem.s32 	%r16, %r14, %r12;
+	cvt.s64.s32 	%rd21, %r16;
+	mul.wide.s32 	%rd22, %r16, 4;
+	add.u64 	%rd23, %rd11, %rd22;
+	ld.s32 	%r17, [%rd23+0];
+	.loc	13	131	0
+	ld.s32 	%r18, [%rd2+0];
+	mov.s32 	%r19, 0;
+	setp.gt.s32 	%p2, %r18, %r19;
+	@!%p2 bra 	$Lt_70_8450;
+	cvt.s64.s32 	%rd24, %r17;
+	ld.u64 	%rd25, [%rd2+72];
+	setp.lt.u64 	%p3, %rd24, %rd25;
+	@%p3 bra 	$Lt_70_8706;
+	mov.s64 	%rd26, %rd2;
+	mov.s32 	%r20, 0;
+	mov.s32 	%r21, 0;
+$L_70_4610:
+	ld.u32 	%r22, [%rd26+72];
+	add.u32 	%r20, %r20, %r22;
+	add.s32 	%r21, %r21, 1;
+	setp.le.s32 	%p4, %r18, %r21;
+	@%p4 bra 	$Lt_70_8962;
+	cvt.s64.s32 	%rd27, %r21;
+	mul.wide.s32 	%rd28, %r21, 8;
+	add.u64 	%rd29, %rd2, %rd28;
+	mov.s64 	%rd26, %rd29;
+	cvt.s64.s32 	%rd30, %r20;
+	ld.u64 	%rd31, [%rd29+72];
+	add.u64 	%rd32, %rd30, %rd31;
+	setp.ge.u64 	%p5, %rd24, %rd32;
+	@%p5 bra 	$L_70_4610;
+	bra.uni 	$L_70_4866;
+$Lt_70_8962:
+	cvt.s64.s32 	%rd33, %r21;
+	mul.wide.s32 	%rd34, %r21, 8;
+	add.u64 	%rd26, %rd2, %rd34;
+	bra.uni 	$L_70_4866;
+$Lt_70_8450:
+	mov.s64 	%rd26, %rd2;
+	mov.s32 	%r20, 0;
+	bra.uni 	$L_70_4866;
+$Lt_70_8706:
+	mov.s64 	%rd26, %rd2;
+	mov.s32 	%r20, 0;
+$L_70_4866:
+	.loc	13	132	0
+	ld.u64 	%rd35, [%rd26+8];
+	sub.s32 	%r23, %r17, %r20;
+	cvt.s64.s32 	%rd36, %r23;
+	mul.wide.s32 	%rd37, %r23, 4;
+	add.u64 	%rd38, %rd35, %rd37;
+	.loc	13	131	0
+	@!%p2 bra 	$Lt_70_9218;
+	cvt.s64.s32 	%rd39, %r15;
+	ld.u64 	%rd40, [%rd2+72];
+	setp.lt.u64 	%p6, %rd39, %rd40;
+	@%p6 bra 	$Lt_70_9474;
+	mov.s64 	%rd26, %rd2;
+	mov.s32 	%r20, 0;
+	mov.s32 	%r21, 0;
+$L_70_5634:
+	ld.u32 	%r24, [%rd26+72];
+	add.u32 	%r20, %r20, %r24;
+	add.s32 	%r21, %r21, 1;
+	setp.le.s32 	%p7, %r18, %r21;
+	@%p7 bra 	$Lt_70_9730;
+	cvt.s64.s32 	%rd41, %r21;
+	mul.wide.s32 	%rd42, %r21, 8;
+	add.u64 	%rd43, %rd2, %rd42;
+	mov.s64 	%rd26, %rd43;
+	cvt.s64.s32 	%rd44, %r20;
+	ld.u64 	%rd45, [%rd43+72];
+	add.u64 	%rd46, %rd44, %rd45;
+	setp.ge.u64 	%p8, %rd39, %rd46;
+	@%p8 bra 	$L_70_5634;
+	bra.uni 	$L_70_5890;
+$Lt_70_9730:
+	cvt.s64.s32 	%rd47, %r21;
+	mul.wide.s32 	%rd48, %r21, 8;
+	add.u64 	%rd26, %rd2, %rd48;
+	bra.uni 	$L_70_5890;
+$Lt_70_9218:
+	mov.s64 	%rd26, %rd2;
+	mov.s32 	%r20, 0;
+	bra.uni 	$L_70_5890;
+$Lt_70_9474:
+	mov.s64 	%rd26, %rd2;
+	mov.s32 	%r20, 0;
+$L_70_5890:
+	.loc	27	163	0
+	mov.s32 	%r25, -1;
+	ld.u64 	%rd49, [%rd26+8];
+	sub.s32 	%r26, %r15, %r20;
+	cvt.s64.s32 	%rd50, %r26;
+	mul.wide.s32 	%rd51, %r26, 4;
+	add.u64 	%rd52, %rd49, %rd51;
+	ld.s32 	%r27, [%rd52+0];
+	add.s32 	%r28, %r27, 1;
+	atom.cas.b32 	%r29, [%rd38], %r25, %r28;
+	mov.s32 	%r30, %r29;
+	mov.u32 	%r31, -1;
+	setp.ne.s32 	%p9, %r30, %r31;
+	@%p9 bra 	$Lt_70_7426;
+	.loc	4	120	0
+	ld.u64 	%rd53, [%rd8+0];
+	mov.s32 	%r32, 1;
+	atom.add.s32 	%r33, [%rd53], %r32;
+	mov.s32 	%r34, %r33;
+	ld.u64 	%rd54, [%rd8+8];
+	ld.u64 	%rd55, [%rd8+0];
+	sub.s64 	%rd56, %rd55, %rd54;
+	shr.s64 	%rd57, %rd56, 63;
+	mov.s64 	%rd58, 3;
+	and.b64 	%rd59, %rd57, %rd58;
+	add.s64 	%rd60, %rd59, %rd56;
+	shr.s64 	%rd61, %rd60, 2;
+	cvt.s32.s64 	%r35, %rd61;
+	rem.s32 	%r36, %r34, %r35;
+	cvt.s64.s32 	%rd62, %r36;
+	mul.wide.s32 	%rd63, %r36, 4;
+	add.u64 	%rd64, %rd54, %rd63;
+	st.s32 	[%rd64+0], %r17;
+$Lt_70_7426:
+	.loc	27	158	0
+	add.s32 	%r6, %r6, %r11;
+	ld.u64 	%rd9, [%rd6+0];
+	ld.s32 	%r7, [%rd9+4];
+	ld.s32 	%r37, [%rd9+0];
+	sub.s32 	%r38, %r37, %r7;
+	setp.lt.s32 	%p10, %r6, %r38;
+	@%p10 bra 	$Lt_70_7170;
+$Lt_70_6658:
+	.loc	27	166	0
+	ret;
+$LDWend__ZN15bfs_rank_adjcsr14cull_frontier1IN7phalanx20distributed_sequenceIiNS1_13device_memoryEEEEEvRKNS1_9cuda_gridERT_NS1_15stored_sequenceIiS3_EER5queueIiESE_:
+	} // _ZN15bfs_rank_adjcsr14cull_frontier1IN7phalanx20distributed_sequenceIiNS1_13device_memoryEEEEEvRKNS1_9cuda_gridERT_NS1_15stored_sequenceIiS3_EER5queueIiESE_
+

@@ -1,0 +1,304 @@
+	.version 2.3
+	.target sm_20
+	.address_size 64
+	// compiled with /usr/local/cuda/open64/lib//be
+	// nvopencc 4.0 built on 2011-02-18
+
+	//-----------------------------------------------------------
+	// Compiling /tmp/tmpxft_0000180c_00000000-9_find_ellipse_kernel.cpp3.i (/tmp/ccBI#.UuwsDv)
+	//-----------------------------------------------------------
+
+	//-----------------------------------------------------------
+	// Options:
+	//-----------------------------------------------------------
+	//  Target:ptx, ISA:sm_20, Endian:little, Pointer Size:64
+	//  -O3	(Optimization level)
+	//  -g0	(Debug level)
+	//  -m2	(Report advisories)
+	//-----------------------------------------------------------
+
+	.file	1	"<command-line>"
+	.file	2	"/tmp/tmpxft_0000180c_00000000-8_find_ellipse_kernel.cudafe2.gpu"
+	.file	3	"/usr/lib/x86_64-linux-gnu/gcc/x86_64-linux-gnu/4.5.2/include/stddef.h"
+	.file	4	"/usr/local/cuda/bin/../include/crt/device_runtime.h"
+	.file	5	"/usr/local/cuda/bin/../include/host_defines.h"
+	.file	6	"/usr/local/cuda/bin/../include/builtin_types.h"
+	.file	7	"/usr/local/cuda/bin/../include/device_types.h"
+	.file	8	"/usr/local/cuda/bin/../include/driver_types.h"
+	.file	9	"/usr/local/cuda/bin/../include/surface_types.h"
+	.file	10	"/usr/local/cuda/bin/../include/texture_types.h"
+	.file	11	"/usr/local/cuda/bin/../include/vector_types.h"
+	.file	12	"/usr/local/cuda/bin/../include/device_launch_parameters.h"
+	.file	13	"/usr/local/cuda/bin/../include/crt/storage_class.h"
+	.file	14	"/usr/include/bits/types.h"
+	.file	15	"/usr/include/time.h"
+	.file	16	"find_ellipse_kernel.cu"
+	.file	17	"/usr/local/cuda/bin/../include/common_functions.h"
+	.file	18	"/usr/local/cuda/bin/../include/math_functions.h"
+	.file	19	"/usr/local/cuda/bin/../include/math_constants.h"
+	.file	20	"/usr/local/cuda/bin/../include/device_functions.h"
+	.file	21	"/usr/local/cuda/bin/../include/sm_11_atomic_functions.h"
+	.file	22	"/usr/local/cuda/bin/../include/sm_12_atomic_functions.h"
+	.file	23	"/usr/local/cuda/bin/../include/sm_13_double_functions.h"
+	.file	24	"/usr/local/cuda/bin/../include/sm_20_atomic_functions.h"
+	.file	25	"/usr/local/cuda/bin/../include/sm_20_intrinsics.h"
+	.file	26	"/usr/local/cuda/bin/../include/surface_functions.h"
+	.file	27	"/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+	.file	28	"/usr/local/cuda/bin/../include/math_functions_dbl_ptx3.h"
+
+	.const .align 4 .b8 c_sin_angle[600];
+	.const .align 4 .b8 c_cos_angle[600];
+	.const .align 4 .b8 c_tX[4200];
+	.const .align 4 .b8 c_tY[4200];
+	.global .texref t_grad_x;
+	.global .texref t_grad_y;
+
+	.entry _Z12GICOV_kerneliPf (
+		.param .s32 __cudaparm__Z12GICOV_kerneliPf_grad_m,
+		.param .u64 __cudaparm__Z12GICOV_kerneliPf_gicov)
+	{
+	.reg .u32 %r<35>;
+	.reg .u64 %rd<17>;
+	.reg .f32 %f<30>;
+	.reg .pred %p<5>;
+	.loc	16	32	0
+$LDWbegin__Z12GICOV_kerneliPf:
+	mov.u32 	%r1, %tid.x;
+	add.s32 	%r2, %r1, 22;
+	mov.u32 	%r3, %ctaid.x;
+	add.s32 	%r4, %r3, 22;
+	mov.s64 	%rd1, 0;
+	ld.param.s32 	%r5, [__cudaparm__Z12GICOV_kerneliPf_grad_m];
+	mov.s32 	%r6, 0;
+	mov.f32 	%f1, 0f00000000;     	// 0
+	mov.u64 	%rd2, c_tY;
+	mov.u64 	%rd3, c_cos_angle;
+	mov.u64 	%rd4, c_tX;
+	mov.u64 	%rd5, c_sin_angle;
+$Lt_0_3586:
+ //<loop> Loop body line 32, nesting depth: 1, iterations: 7
+	mov.s32 	%r7, 1;
+	mov.s64 	%rd6, %rd1;
+	mov.s64 	%rd7, %rd3;
+	mov.s64 	%rd8, %rd5;
+	mul.lo.u64 	%rd9, %rd6, 4;
+	add.u64 	%rd10, %rd9, %rd2;
+	add.u64 	%rd11, %rd9, %rd4;
+	mov.f32 	%f2, 0f00000000;     	// 0
+	mov.f32 	%f3, 0f00000000;     	// 0
+	mov.f32 	%f4, 0f00000000;     	// 0
+$Lt_0_4354:
+ //<loop> Loop body line 32, nesting depth: 2, iterations: 150
+	ld.const.s32 	%r8, [%rd10+0];
+	ld.const.s32 	%r9, [%rd11+0];
+	add.s32 	%r10, %r8, %r1;
+	add.s32 	%r11, %r9, %r3;
+	add.s32 	%r12, %r11, 22;
+	mul.lo.s32 	%r13, %r12, %r5;
+	add.s32 	%r14, %r10, %r13;
+	add.s32 	%r15, %r14, 22;
+	mov.u32 	%r16, %r15;
+	mov.s32 	%r17, 0;
+	mov.u32 	%r18, %r17;
+	mov.s32 	%r19, 0;
+	mov.u32 	%r20, %r19;
+	mov.s32 	%r21, 0;
+	mov.u32 	%r22, %r21;
+	tex.1d.v4.f32.s32 {%f5,%f6,%f7,%f8},[t_grad_x,{%r16,%r18,%r20,%r22}];
+	.loc	16	56	0
+	mov.f32 	%f9, %f5;
+	mov.u32 	%r23, %r15;
+	mov.s32 	%r24, 0;
+	mov.u32 	%r25, %r24;
+	mov.s32 	%r26, 0;
+	mov.u32 	%r27, %r26;
+	mov.s32 	%r28, 0;
+	mov.u32 	%r29, %r28;
+	tex.1d.v4.f32.s32 {%f10,%f11,%f12,%f13},[t_grad_y,{%r23,%r25,%r27,%r29}];
+	mov.f32 	%f14, %f10;
+	.loc	16	60	0
+	ld.const.f32 	%f15, [%rd7+0];
+	ld.const.f32 	%f16, [%rd8+0];
+	mul.f32 	%f17, %f15, %f9;
+	fma.rn.f32 	%f18, %f16, %f14, %f17;
+	add.f32 	%f4, %f18, %f4;
+	.loc	16	63	0
+	sub.f32 	%f19, %f18, %f2;
+	.loc	16	64	0
+	cvt.rn.f32.s32 	%f20, %r7;
+	div.rn.f32 	%f21, %f19, %f20;
+	add.f32 	%f2, %f2, %f21;
+	.loc	16	65	0
+	sub.f32 	%f22, %f18, %f2;
+	fma.rn.f32 	%f3, %f19, %f22, %f3;
+	add.u64 	%rd11, %rd11, 4;
+	add.u64 	%rd10, %rd10, 4;
+	add.s32 	%r7, %r7, 1;
+	add.u64 	%rd8, %rd8, 4;
+	add.u64 	%rd7, %rd7, 4;
+	mov.u32 	%r30, 151;
+	setp.ne.s32 	%p1, %r7, %r30;
+	@%p1 bra 	$Lt_0_4354;
+	.loc	16	75	0
+	mov.f32 	%f23, 0f43160000;    	// 150
+	div.rn.f32 	%f24, %f4, %f23;
+	mov.f32 	%f25, 0f43150000;    	// 149
+	div.rn.f32 	%f26, %f3, %f25;
+	mul.f32 	%f27, %f24, %f24;
+	div.rn.f32 	%f28, %f27, %f26;
+	setp.gt.f32 	%p2, %f28, %f1;
+	@!%p2 bra 	$Lt_0_4866;
+	mov.f32 	%f1, %f28;
+$Lt_0_4866:
+	add.s32 	%r6, %r6, 1;
+	add.s64 	%rd1, %rd6, 150;
+	mov.u32 	%r31, 7;
+	setp.ne.s32 	%p3, %r6, %r31;
+	@%p3 bra 	$Lt_0_3586;
+	.loc	16	79	0
+	ld.param.u64 	%rd12, [__cudaparm__Z12GICOV_kerneliPf_gicov];
+	mul.lo.s32 	%r32, %r4, %r5;
+	add.s32 	%r33, %r1, %r32;
+	cvt.s64.s32 	%rd13, %r33;
+	mul.wide.s32 	%rd14, %r33, 4;
+	add.u64 	%rd15, %rd12, %rd14;
+	st.global.f32 	[%rd15+88], %f1;
+	.loc	16	80	0
+	exit;
+$LDWend__Z12GICOV_kerneliPf:
+	} // _Z12GICOV_kerneliPf
+	.const .align 4 .b8 c_strel[2500];
+	.global .texref t_img;
+
+	.entry _Z13dilate_kerneliiiiPf (
+		.param .s32 __cudaparm__Z13dilate_kerneliiiiPf_img_m,
+		.param .s32 __cudaparm__Z13dilate_kerneliiiiPf_img_n,
+		.param .s32 __cudaparm__Z13dilate_kerneliiiiPf_strel_m,
+		.param .s32 __cudaparm__Z13dilate_kerneliiiiPf_strel_n,
+		.param .u64 __cudaparm__Z13dilate_kerneliiiiPf_dilated)
+	{
+	.reg .u32 %r<64>;
+	.reg .u64 %rd<10>;
+	.reg .f32 %f<10>;
+	.reg .pred %p<10>;
+	.loc	16	146	0
+$LDWbegin__Z13dilate_kerneliiiiPf:
+	mov.u32 	%r1, %ctaid.x;
+	mov.u32 	%r2, %ntid.x;
+	mul.lo.u32 	%r3, %r1, %r2;
+	mov.u32 	%r4, %tid.x;
+	add.u32 	%r5, %r4, %r3;
+	ld.param.s32 	%r6, [__cudaparm__Z13dilate_kerneliiiiPf_img_m];
+	div.s32 	%r7, %r5, %r6;
+	ld.param.s32 	%r8, [__cudaparm__Z13dilate_kerneliiiiPf_strel_m];
+	mov.u32 	%r9, 0;
+	setp.le.s32 	%p1, %r8, %r9;
+	@%p1 bra 	$Lt_1_8450;
+	ld.param.s32 	%r10, [__cudaparm__Z13dilate_kerneliiiiPf_strel_n];
+	shr.s32 	%r11, %r10, 31;
+	mov.s32 	%r12, 1;
+	and.b32 	%r13, %r11, %r12;
+	add.s32 	%r14, %r13, %r10;
+	shr.s32 	%r15, %r14, 1;
+	mov.s32 	%r16, %r8;
+	shr.s32 	%r17, %r8, 31;
+	mov.s32 	%r18, 1;
+	and.b32 	%r19, %r17, %r18;
+	add.s32 	%r20, %r19, %r8;
+	shr.s32 	%r21, %r20, 1;
+	rem.s32 	%r22, %r5, %r6;
+	sub.s32 	%r23, %r22, %r21;
+	mov.s32 	%r24, %r23;
+	add.s32 	%r25, %r23, %r8;
+	ld.param.s32 	%r26, [__cudaparm__Z13dilate_kerneliiiiPf_img_n];
+	mov.s32 	%r27, 0;
+	mov.f32 	%f1, 0f00000000;     	// 0
+	mov.u64 	%rd1, c_strel;
+	mov.s32 	%r28, %r16;
+$Lt_1_6402:
+ //<loop> Loop body line 146, nesting depth: 1, estimated iterations: unknown
+	mov.s32 	%r29, 0;
+	set.ge.u32.s32 	%r30, %r24, %r29;
+	neg.s32 	%r31, %r30;
+	set.lt.u32.s32 	%r32, %r24, %r6;
+	neg.s32 	%r33, %r32;
+	and.b32 	%r34, %r31, %r33;
+	mov.u32 	%r35, 0;
+	setp.eq.s32 	%p2, %r34, %r35;
+	@%p2 bra 	$Lt_1_7170;
+	mov.u32 	%r36, 0;
+	setp.le.s32 	%p3, %r10, %r36;
+	@%p3 bra 	$Lt_1_7170;
+	mov.s32 	%r37, %r10;
+	sub.s32 	%r38, %r7, %r15;
+	mov.s32 	%r39, %r38;
+	add.s32 	%r40, %r38, %r10;
+	mov.s32 	%r41, 0;
+	mov.s32 	%r42, %r37;
+$Lt_1_7682:
+ //<loop> Loop body line 146, nesting depth: 2, estimated iterations: unknown
+	.loc	16	167	0
+	mov.s32 	%r43, 0;
+	set.ge.u32.s32 	%r44, %r39, %r43;
+	neg.s32 	%r45, %r44;
+	set.lt.u32.s32 	%r46, %r39, %r26;
+	neg.s32 	%r47, %r46;
+	and.b32 	%r48, %r45, %r47;
+	mov.u32 	%r49, 0;
+	setp.eq.s32 	%p4, %r48, %r49;
+	@%p4 bra 	$Lt_1_8962;
+	mul.lo.s32 	%r50, %r10, %r27;
+	add.s32 	%r51, %r41, %r50;
+	cvt.s64.s32 	%rd2, %r51;
+	mul.wide.s32 	%rd3, %r51, 4;
+	add.u64 	%rd4, %rd1, %rd3;
+	ld.const.f32 	%f2, [%rd4+0];
+	mov.f32 	%f3, 0f00000000;     	// 0
+	setp.neu.f32 	%p5, %f2, %f3;
+	@!%p5 bra 	$Lt_1_8962;
+	mul.lo.s32 	%r52, %r39, %r6;
+	add.s32 	%r53, %r24, %r52;
+	mov.u32 	%r54, %r53;
+	mov.s32 	%r55, 0;
+	mov.u32 	%r56, %r55;
+	mov.s32 	%r57, 0;
+	mov.u32 	%r58, %r57;
+	mov.s32 	%r59, 0;
+	mov.u32 	%r60, %r59;
+	tex.1d.v4.f32.s32 {%f4,%f5,%f6,%f7},[t_img,{%r54,%r56,%r58,%r60}];
+	.loc	16	175	0
+	mov.f32 	%f8, %f4;
+	.loc	16	174	0
+	setp.gt.f32 	%p6, %f8, %f1;
+	selp.f32 	%f1, %f8, %f1, %p6;
+$Lt_1_8962:
+$L_1_5378:
+	add.s32 	%r41, %r41, 1;
+	add.s32 	%r39, %r39, 1;
+	setp.ne.s32 	%p7, %r39, %r40;
+	@%p7 bra 	$Lt_1_7682;
+$Lt_1_7170:
+$Lt_1_6658:
+	add.s32 	%r27, %r27, 1;
+	add.s32 	%r24, %r24, 1;
+	setp.ne.s32 	%p8, %r24, %r25;
+	@%p8 bra 	$Lt_1_6402;
+	bra.uni 	$Lt_1_5890;
+$Lt_1_8450:
+	rem.s32 	%r22, %r5, %r6;
+	ld.param.s32 	%r26, [__cudaparm__Z13dilate_kerneliiiiPf_img_n];
+	mov.f32 	%f1, 0f00000000;     	// 0
+$Lt_1_5890:
+	.loc	16	183	0
+	ld.param.u64 	%rd5, [__cudaparm__Z13dilate_kerneliiiiPf_dilated];
+	mul.lo.s32 	%r61, %r22, %r26;
+	add.s32 	%r62, %r7, %r61;
+	cvt.s64.s32 	%rd6, %r62;
+	mul.wide.s32 	%rd7, %r62, 4;
+	add.u64 	%rd8, %rd5, %rd7;
+	st.global.f32 	[%rd8+0], %f1;
+	.loc	16	184	0
+	exit;
+$LDWend__Z13dilate_kerneliiiiPf:
+	} // _Z13dilate_kerneliiiiPf
+

@@ -1,0 +1,1370 @@
+	.version 2.3
+	.target sm_20
+	.address_size 64
+	// compiled with /usr/local/cuda/open64/lib//be
+	// nvopencc 4.0 built on 2011-02-18
+
+	//-----------------------------------------------------------
+	// Compiling /tmp/tmpxft_00001889_00000000-9_lud_kernel.cpp3.i (/tmp/ccBI#.rJvOiM)
+	//-----------------------------------------------------------
+
+	//-----------------------------------------------------------
+	// Options:
+	//-----------------------------------------------------------
+	//  Target:ptx, ISA:sm_20, Endian:little, Pointer Size:64
+	//  -O3	(Optimization level)
+	//  -g0	(Debug level)
+	//  -m2	(Report advisories)
+	//-----------------------------------------------------------
+
+	.file	1	"<command-line>"
+	.file	2	"/tmp/tmpxft_00001889_00000000-8_lud_kernel.cudafe2.gpu"
+	.file	3	"/usr/lib/x86_64-linux-gnu/gcc/x86_64-linux-gnu/4.5.2/include/stddef.h"
+	.file	4	"/usr/local/cuda/bin/../include/crt/device_runtime.h"
+	.file	5	"/usr/local/cuda/bin/../include/host_defines.h"
+	.file	6	"/usr/local/cuda/bin/../include/builtin_types.h"
+	.file	7	"/usr/local/cuda/bin/../include/device_types.h"
+	.file	8	"/usr/local/cuda/bin/../include/driver_types.h"
+	.file	9	"/usr/local/cuda/bin/../include/surface_types.h"
+	.file	10	"/usr/local/cuda/bin/../include/texture_types.h"
+	.file	11	"/usr/local/cuda/bin/../include/vector_types.h"
+	.file	12	"/usr/local/cuda/bin/../include/device_launch_parameters.h"
+	.file	13	"/usr/local/cuda/bin/../include/crt/storage_class.h"
+	.file	14	"/usr/include/bits/types.h"
+	.file	15	"/usr/include/time.h"
+	.file	16	"lud_kernel.cu"
+	.file	17	"/usr/local/cuda/bin/../include/common_functions.h"
+	.file	18	"/usr/local/cuda/bin/../include/math_functions.h"
+	.file	19	"/usr/local/cuda/bin/../include/math_constants.h"
+	.file	20	"/usr/local/cuda/bin/../include/device_functions.h"
+	.file	21	"/usr/local/cuda/bin/../include/sm_11_atomic_functions.h"
+	.file	22	"/usr/local/cuda/bin/../include/sm_12_atomic_functions.h"
+	.file	23	"/usr/local/cuda/bin/../include/sm_13_double_functions.h"
+	.file	24	"/usr/local/cuda/bin/../include/sm_20_atomic_functions.h"
+	.file	25	"/usr/local/cuda/bin/../include/sm_20_intrinsics.h"
+	.file	26	"/usr/local/cuda/bin/../include/surface_functions.h"
+	.file	27	"/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+	.file	28	"/usr/local/cuda/bin/../include/math_functions_dbl_ptx3.h"
+
+
+	.entry _Z12lud_diagonalPfii (
+		.param .u64 __cudaparm__Z12lud_diagonalPfii_m,
+		.param .s32 __cudaparm__Z12lud_diagonalPfii_matrix_dim,
+		.param .s32 __cudaparm__Z12lud_diagonalPfii_offset)
+	{
+	.reg .u32 %r<79>;
+	.reg .u64 %rd<122>;
+	.reg .f32 %f<43>;
+	.reg .pred %p<8>;
+	.shared .align 4 .b8 __cuda___cuda_local_var_39953_33_non_const_shadow16[1024];
+	.loc	16	7	0
+$LDWbegin__Z12lud_diagonalPfii:
+	mov.u64 	%rd1, __cuda___cuda_local_var_39953_33_non_const_shadow16;
+	.loc	16	14	0
+	ld.param.s32 	%r1, [__cudaparm__Z12lud_diagonalPfii_offset];
+	ld.param.s32 	%r2, [__cudaparm__Z12lud_diagonalPfii_matrix_dim];
+	mul.lo.s32 	%r3, %r1, %r2;
+	mov.u32 	%r4, %tid.x;
+	cvt.u64.u32 	%rd2, %r4;
+	add.s32 	%r5, %r3, %r1;
+	mul.wide.u32 	%rd3, %r4, 4;
+	add.u64 	%rd4, %rd1, %rd3;
+	ld.param.u64 	%rd5, [__cudaparm__Z12lud_diagonalPfii_m];
+	add.u32 	%r6, %r5, %r4;
+	cvt.u64.u32 	%rd6, %r6;
+	mul.wide.u32 	%rd7, %r6, 4;
+	add.u64 	%rd8, %rd5, %rd7;
+	ld.global.f32 	%f1, [%rd8+0];
+	st.shared.f32 	[%rd4+0], %f1;
+	add.s32 	%r7, %r5, %r2;
+	add.u32 	%r8, %r7, %r4;
+	cvt.u64.u32 	%rd9, %r8;
+	mul.wide.u32 	%rd10, %r8, 4;
+	add.u64 	%rd11, %rd5, %rd10;
+	ld.global.f32 	%f2, [%rd11+0];
+	st.shared.f32 	[%rd4+64], %f2;
+	add.s32 	%r9, %r7, %r2;
+	add.u32 	%r10, %r9, %r4;
+	cvt.u64.u32 	%rd12, %r10;
+	mul.wide.u32 	%rd13, %r10, 4;
+	add.u64 	%rd14, %rd5, %rd13;
+	ld.global.f32 	%f3, [%rd14+0];
+	st.shared.f32 	[%rd4+128], %f3;
+	add.s32 	%r11, %r9, %r2;
+	add.u32 	%r12, %r11, %r4;
+	cvt.u64.u32 	%rd15, %r12;
+	mul.wide.u32 	%rd16, %r12, 4;
+	add.u64 	%rd17, %rd5, %rd16;
+	ld.global.f32 	%f4, [%rd17+0];
+	st.shared.f32 	[%rd4+192], %f4;
+	add.s32 	%r13, %r11, %r2;
+	add.u32 	%r14, %r13, %r4;
+	cvt.u64.u32 	%rd18, %r14;
+	mul.wide.u32 	%rd19, %r14, 4;
+	add.u64 	%rd20, %rd5, %rd19;
+	ld.global.f32 	%f5, [%rd20+0];
+	st.shared.f32 	[%rd4+256], %f5;
+	add.s32 	%r15, %r13, %r2;
+	add.u32 	%r16, %r15, %r4;
+	cvt.u64.u32 	%rd21, %r16;
+	mul.wide.u32 	%rd22, %r16, 4;
+	add.u64 	%rd23, %rd5, %rd22;
+	ld.global.f32 	%f6, [%rd23+0];
+	st.shared.f32 	[%rd4+320], %f6;
+	add.s32 	%r17, %r15, %r2;
+	add.u32 	%r18, %r17, %r4;
+	cvt.u64.u32 	%rd24, %r18;
+	mul.wide.u32 	%rd25, %r18, 4;
+	add.u64 	%rd26, %rd5, %rd25;
+	ld.global.f32 	%f7, [%rd26+0];
+	st.shared.f32 	[%rd4+384], %f7;
+	add.s32 	%r19, %r17, %r2;
+	add.u32 	%r20, %r19, %r4;
+	cvt.u64.u32 	%rd27, %r20;
+	mul.wide.u32 	%rd28, %r20, 4;
+	add.u64 	%rd29, %rd5, %rd28;
+	ld.global.f32 	%f8, [%rd29+0];
+	st.shared.f32 	[%rd4+448], %f8;
+	add.s32 	%r21, %r19, %r2;
+	add.u32 	%r22, %r21, %r4;
+	cvt.u64.u32 	%rd30, %r22;
+	mul.wide.u32 	%rd31, %r22, 4;
+	add.u64 	%rd32, %rd5, %rd31;
+	ld.global.f32 	%f9, [%rd32+0];
+	st.shared.f32 	[%rd4+512], %f9;
+	add.s32 	%r23, %r21, %r2;
+	add.u32 	%r24, %r23, %r4;
+	cvt.u64.u32 	%rd33, %r24;
+	mul.wide.u32 	%rd34, %r24, 4;
+	add.u64 	%rd35, %rd5, %rd34;
+	ld.global.f32 	%f10, [%rd35+0];
+	st.shared.f32 	[%rd4+576], %f10;
+	.loc	16	15	0
+	add.s32 	%r25, %r23, %r2;
+	.loc	16	14	0
+	add.u32 	%r26, %r25, %r4;
+	cvt.u64.u32 	%rd36, %r26;
+	mul.wide.u32 	%rd37, %r26, 4;
+	add.u64 	%rd38, %rd5, %rd37;
+	ld.global.f32 	%f11, [%rd38+0];
+	st.shared.f32 	[%rd4+640], %f11;
+	.loc	16	15	0
+	add.s32 	%r27, %r25, %r2;
+	.loc	16	14	0
+	add.u32 	%r28, %r27, %r4;
+	cvt.u64.u32 	%rd39, %r28;
+	mul.wide.u32 	%rd40, %r28, 4;
+	add.u64 	%rd41, %rd5, %rd40;
+	ld.global.f32 	%f12, [%rd41+0];
+	st.shared.f32 	[%rd4+704], %f12;
+	.loc	16	15	0
+	add.s32 	%r29, %r27, %r2;
+	.loc	16	14	0
+	add.u32 	%r30, %r29, %r4;
+	cvt.u64.u32 	%rd42, %r30;
+	mul.wide.u32 	%rd43, %r30, 4;
+	add.u64 	%rd44, %rd5, %rd43;
+	ld.global.f32 	%f13, [%rd44+0];
+	st.shared.f32 	[%rd4+768], %f13;
+	.loc	16	15	0
+	add.s32 	%r31, %r29, %r2;
+	.loc	16	14	0
+	add.u32 	%r32, %r31, %r4;
+	cvt.u64.u32 	%rd45, %r32;
+	mul.wide.u32 	%rd46, %r32, 4;
+	add.u64 	%rd47, %rd5, %rd46;
+	ld.global.f32 	%f14, [%rd47+0];
+	st.shared.f32 	[%rd4+832], %f14;
+	.loc	16	15	0
+	add.s32 	%r33, %r31, %r2;
+	.loc	16	14	0
+	add.u32 	%r34, %r33, %r4;
+	cvt.u64.u32 	%rd48, %r34;
+	mul.wide.u32 	%rd49, %r34, 4;
+	add.u64 	%rd50, %rd5, %rd49;
+	ld.global.f32 	%f15, [%rd50+0];
+	st.shared.f32 	[%rd4+896], %f15;
+	add.s32 	%r35, %r33, %r2;
+	add.u32 	%r36, %r4, %r35;
+	cvt.u64.u32 	%rd51, %r36;
+	mul.wide.u32 	%rd52, %r36, 4;
+	add.u64 	%rd53, %rd5, %rd52;
+	ld.global.f32 	%f16, [%rd53+0];
+	st.shared.f32 	[%rd4+960], %f16;
+	.loc	16	17	0
+	bar.sync 	0;
+	mov.s32 	%r37, 0;
+$Lt_0_7426:
+ //<loop> Loop body line 17, nesting depth: 1, iterations: 15
+	setp.lt.u32 	%p1, %r37, %r4;
+	@!%p1 bra 	$Lt_0_7682;
+	mov.u32 	%r38, 0;
+	setp.le.s32 	%p2, %r37, %r38;
+	@%p2 bra 	$Lt_0_11010;
+	mov.s32 	%r39, %r37;
+	cvt.s64.s32 	%rd54, %r37;
+	mul.lo.u64 	%rd55, %rd2, 16;
+	add.u64 	%rd56, %rd54, %rd55;
+	mul.lo.u64 	%rd57, %rd56, 4;
+	add.u64 	%rd58, %rd57, %rd1;
+	mul.lo.u64 	%rd59, %rd55, 4;
+	add.u64 	%rd60, %rd1, %rd59;
+	mul.wide.s32 	%rd61, %r37, 4;
+	add.u64 	%rd62, %rd1, %rd61;
+	ld.shared.f32 	%f17, [%rd58+0];
+	mov.s32 	%r40, 0;
+	mov.s32 	%r41, %r39;
+$Lt_0_8706:
+ //<loop> Loop body line 17, nesting depth: 2, estimated iterations: unknown
+	.loc	16	23	0
+	ld.shared.f32 	%f18, [%rd62+0];
+	ld.shared.f32 	%f19, [%rd60+0];
+	mul.f32 	%f20, %f18, %f19;
+	sub.f32 	%f17, %f17, %f20;
+	st.shared.f32 	[%rd58+0], %f17;
+	add.s32 	%r40, %r40, 1;
+	add.u64 	%rd60, %rd60, 4;
+	add.u64 	%rd62, %rd62, 64;
+	setp.ne.s32 	%p3, %r40, %r37;
+	@%p3 bra 	$Lt_0_8706;
+	bra.uni 	$Lt_0_8194;
+$Lt_0_11010:
+	cvt.s64.s32 	%rd54, %r37;
+	mul.lo.u64 	%rd63, %rd2, 16;
+	add.u64 	%rd64, %rd54, %rd63;
+	mul.lo.u64 	%rd65, %rd64, 4;
+	add.u64 	%rd58, %rd1, %rd65;
+	ld.shared.f32 	%f17, [%rd58+0];
+$Lt_0_8194:
+	.loc	16	24	0
+	mul.lo.u64 	%rd66, %rd54, 68;
+	add.u64 	%rd67, %rd1, %rd66;
+	ld.shared.f32 	%f21, [%rd67+0];
+	div.rn.f32 	%f22, %f17, %f21;
+	st.shared.f32 	[%rd58+0], %f22;
+$Lt_0_7682:
+	.loc	16	27	0
+	bar.sync 	0;
+	@!%p1 bra 	$Lt_0_9730;
+	add.s32 	%r42, %r37, 1;
+	mov.u32 	%r43, 0;
+	setp.le.s32 	%p4, %r42, %r43;
+	@%p4 bra 	$Lt_0_9730;
+	mov.s32 	%r44, %r42;
+	cvt.s64.s32 	%rd68, %r37;
+	mul.wide.s32 	%rd69, %r37, 16;
+	add.u64 	%rd70, %rd2, %rd69;
+	mul.lo.u64 	%rd71, %rd70, 4;
+	add.u64 	%rd72, %rd1, %rd71;
+	mul.lo.u64 	%rd73, %rd69, 4;
+	add.u64 	%rd74, %rd1, %rd73;
+	mov.s64 	%rd75, %rd4;
+	ld.shared.f32 	%f23, [%rd72+64];
+	mov.s32 	%r40, 0;
+	mov.s32 	%r45, %r44;
+$Lt_0_10242:
+ //<loop> Loop body line 27, nesting depth: 2, estimated iterations: unknown
+	.loc	16	31	0
+	ld.shared.f32 	%f24, [%rd75+0];
+	ld.shared.f32 	%f25, [%rd74+64];
+	mul.f32 	%f26, %f24, %f25;
+	sub.f32 	%f23, %f23, %f26;
+	st.shared.f32 	[%rd72+64], %f23;
+	add.s32 	%r40, %r40, 1;
+	add.u64 	%rd74, %rd74, 4;
+	add.u64 	%rd75, %rd75, 64;
+	setp.ne.s32 	%p5, %r42, %r40;
+	@%p5 bra 	$Lt_0_10242;
+$Lt_0_9730:
+$Lt_0_9218:
+	.loc	16	33	0
+	bar.sync 	0;
+	add.s32 	%r42, %r37, 1;
+	mov.s32 	%r37, %r42;
+	mov.u32 	%r46, 15;
+	setp.ne.s32 	%p6, %r42, %r46;
+	@%p6 bra 	$Lt_0_7426;
+	.loc	16	45	0
+	add.s32 	%r47, %r1, 1;
+	mul.lo.s32 	%r48, %r47, %r2;
+	add.s32 	%r49, %r48, %r1;
+	ld.shared.f32 	%f27, [%rd4+64];
+	add.u32 	%r50, %r49, %r4;
+	cvt.u64.u32 	%rd76, %r50;
+	mul.wide.u32 	%rd77, %r50, 4;
+	add.u64 	%rd78, %rd5, %rd77;
+	st.global.f32 	[%rd78+0], %f27;
+	add.s32 	%r51, %r49, %r2;
+	ld.shared.f32 	%f28, [%rd4+128];
+	add.u32 	%r52, %r51, %r4;
+	cvt.u64.u32 	%rd79, %r52;
+	mul.wide.u32 	%rd80, %r52, 4;
+	add.u64 	%rd81, %rd5, %rd80;
+	st.global.f32 	[%rd81+0], %f28;
+	add.s32 	%r53, %r51, %r2;
+	ld.shared.f32 	%f29, [%rd4+192];
+	add.u32 	%r54, %r53, %r4;
+	cvt.u64.u32 	%rd82, %r54;
+	mul.wide.u32 	%rd83, %r54, 4;
+	add.u64 	%rd84, %rd5, %rd83;
+	st.global.f32 	[%rd84+0], %f29;
+	add.s32 	%r55, %r53, %r2;
+	ld.shared.f32 	%f30, [%rd4+256];
+	add.u32 	%r56, %r55, %r4;
+	cvt.u64.u32 	%rd85, %r56;
+	mul.wide.u32 	%rd86, %r56, 4;
+	add.u64 	%rd87, %rd5, %rd86;
+	st.global.f32 	[%rd87+0], %f30;
+	add.s32 	%r57, %r55, %r2;
+	ld.shared.f32 	%f31, [%rd4+320];
+	add.u32 	%r58, %r57, %r4;
+	cvt.u64.u32 	%rd88, %r58;
+	mul.wide.u32 	%rd89, %r58, 4;
+	add.u64 	%rd90, %rd5, %rd89;
+	st.global.f32 	[%rd90+0], %f31;
+	add.s32 	%r59, %r57, %r2;
+	ld.shared.f32 	%f32, [%rd4+384];
+	add.u32 	%r60, %r59, %r4;
+	cvt.u64.u32 	%rd91, %r60;
+	mul.wide.u32 	%rd92, %r60, 4;
+	add.u64 	%rd93, %rd5, %rd92;
+	st.global.f32 	[%rd93+0], %f32;
+	add.s32 	%r61, %r59, %r2;
+	ld.shared.f32 	%f33, [%rd4+448];
+	add.u32 	%r62, %r61, %r4;
+	cvt.u64.u32 	%rd94, %r62;
+	mul.wide.u32 	%rd95, %r62, 4;
+	add.u64 	%rd96, %rd5, %rd95;
+	st.global.f32 	[%rd96+0], %f33;
+	add.s32 	%r63, %r61, %r2;
+	ld.shared.f32 	%f34, [%rd4+512];
+	add.u32 	%r64, %r63, %r4;
+	cvt.u64.u32 	%rd97, %r64;
+	mul.wide.u32 	%rd98, %r64, 4;
+	add.u64 	%rd99, %rd5, %rd98;
+	st.global.f32 	[%rd99+0], %f34;
+	add.s32 	%r65, %r63, %r2;
+	ld.shared.f32 	%f35, [%rd4+576];
+	add.u32 	%r66, %r65, %r4;
+	cvt.u64.u32 	%rd100, %r66;
+	mul.wide.u32 	%rd101, %r66, 4;
+	add.u64 	%rd102, %rd5, %rd101;
+	st.global.f32 	[%rd102+0], %f35;
+	.loc	16	46	0
+	add.s32 	%r67, %r65, %r2;
+	.loc	16	45	0
+	ld.shared.f32 	%f36, [%rd4+640];
+	add.u32 	%r68, %r67, %r4;
+	cvt.u64.u32 	%rd103, %r68;
+	mul.wide.u32 	%rd104, %r68, 4;
+	add.u64 	%rd105, %rd5, %rd104;
+	st.global.f32 	[%rd105+0], %f36;
+	.loc	16	46	0
+	add.s32 	%r69, %r67, %r2;
+	.loc	16	45	0
+	ld.shared.f32 	%f37, [%rd4+704];
+	add.u32 	%r70, %r69, %r4;
+	cvt.u64.u32 	%rd106, %r70;
+	mul.wide.u32 	%rd107, %r70, 4;
+	add.u64 	%rd108, %rd5, %rd107;
+	st.global.f32 	[%rd108+0], %f37;
+	.loc	16	46	0
+	add.s32 	%r71, %r69, %r2;
+	.loc	16	45	0
+	ld.shared.f32 	%f38, [%rd4+768];
+	add.u32 	%r72, %r71, %r4;
+	cvt.u64.u32 	%rd109, %r72;
+	mul.wide.u32 	%rd110, %r72, 4;
+	add.u64 	%rd111, %rd5, %rd110;
+	st.global.f32 	[%rd111+0], %f38;
+	.loc	16	46	0
+	add.s32 	%r73, %r71, %r2;
+	.loc	16	45	0
+	ld.shared.f32 	%f39, [%rd4+832];
+	add.u32 	%r74, %r73, %r4;
+	cvt.u64.u32 	%rd112, %r74;
+	mul.wide.u32 	%rd113, %r74, 4;
+	add.u64 	%rd114, %rd5, %rd113;
+	st.global.f32 	[%rd114+0], %f39;
+	.loc	16	46	0
+	add.s32 	%r33, %r73, %r2;
+	.loc	16	45	0
+	ld.shared.f32 	%f40, [%rd4+896];
+	add.u32 	%r75, %r33, %r4;
+	cvt.u64.u32 	%rd115, %r75;
+	mul.wide.u32 	%rd116, %r75, 4;
+	add.u64 	%rd117, %rd5, %rd116;
+	st.global.f32 	[%rd117+0], %f40;
+	ld.shared.f32 	%f41, [%rd4+960];
+	add.s32 	%r76, %r33, %r2;
+	add.u32 	%r77, %r4, %r76;
+	cvt.u64.u32 	%rd118, %r77;
+	mul.wide.u32 	%rd119, %r77, 4;
+	add.u64 	%rd120, %rd5, %rd119;
+	st.global.f32 	[%rd120+0], %f41;
+	.loc	16	48	0
+	exit;
+$LDWend__Z12lud_diagonalPfii:
+	} // _Z12lud_diagonalPfii
+
+	.entry _Z13lud_perimeterPfii (
+		.param .u64 __cudaparm__Z13lud_perimeterPfii_m,
+		.param .s32 __cudaparm__Z13lud_perimeterPfii_matrix_dim,
+		.param .s32 __cudaparm__Z13lud_perimeterPfii_offset)
+	{
+	.reg .u32 %r<244>;
+	.reg .u64 %rd<279>;
+	.reg .f32 %f<91>;
+	.reg .pred %p<10>;
+	.shared .align 4 .b8 __cuda___cuda_local_var_39997_33_non_const_peri_row1056[1024];
+	.shared .align 4 .b8 __cuda___cuda_local_var_39996_33_non_const_dia2080[1024];
+	.shared .align 4 .b8 __cuda___cuda_local_var_39998_33_non_const_peri_col3104[1024];
+	.loc	16	51	0
+$LDWbegin__Z13lud_perimeterPfii:
+	mov.u32 	%r1, %tid.x;
+	mov.u32 	%r2, 15;
+	setp.le.u32 	%p1, %r1, %r2;
+	mov.u32 	%r3, %ctaid.x;
+	mul.lo.u32 	%r4, %r3, 16;
+	ld.param.u64 	%rd1, [__cudaparm__Z13lud_perimeterPfii_m];
+	ld.param.s32 	%r5, [__cudaparm__Z13lud_perimeterPfii_matrix_dim];
+	ld.param.s32 	%r6, [__cudaparm__Z13lud_perimeterPfii_offset];
+	@!%p1 bra 	$Lt_1_13058;
+	.loc	16	65	0
+	mov.u64 	%rd2, __cuda___cuda_local_var_39997_33_non_const_peri_row1056;
+	mov.u64 	%rd3, __cuda___cuda_local_var_39996_33_non_const_dia2080;
+	cvt.s32.u32 	%r7, %tid.x;
+	cvt.s64.s32 	%rd4, %r7;
+	mul.lo.s32 	%r8, %r5, %r6;
+	mul.wide.s32 	%rd5, %r7, 4;
+	add.s32 	%r9, %r8, %r6;
+	add.u64 	%rd6, %rd5, %rd3;
+	add.s32 	%r10, %r9, %r7;
+	cvt.s64.s32 	%rd7, %r10;
+	mul.wide.s32 	%rd8, %r10, 4;
+	add.u64 	%rd9, %rd1, %rd8;
+	ld.global.f32 	%f1, [%rd9+0];
+	st.shared.f32 	[%rd6+0], %f1;
+	add.s32 	%r11, %r9, %r5;
+	add.s32 	%r12, %r11, %r7;
+	cvt.s64.s32 	%rd10, %r12;
+	mul.wide.s32 	%rd11, %r12, 4;
+	add.u64 	%rd12, %rd1, %rd11;
+	ld.global.f32 	%f2, [%rd12+0];
+	st.shared.f32 	[%rd6+64], %f2;
+	add.s32 	%r13, %r11, %r5;
+	add.s32 	%r14, %r13, %r7;
+	cvt.s64.s32 	%rd13, %r14;
+	mul.wide.s32 	%rd14, %r14, 4;
+	add.u64 	%rd15, %rd1, %rd14;
+	ld.global.f32 	%f3, [%rd15+0];
+	st.shared.f32 	[%rd6+128], %f3;
+	add.s32 	%r15, %r13, %r5;
+	add.s32 	%r16, %r15, %r7;
+	cvt.s64.s32 	%rd16, %r16;
+	mul.wide.s32 	%rd17, %r16, 4;
+	add.u64 	%rd18, %rd1, %rd17;
+	ld.global.f32 	%f4, [%rd18+0];
+	st.shared.f32 	[%rd6+192], %f4;
+	add.s32 	%r17, %r15, %r5;
+	add.s32 	%r18, %r17, %r7;
+	cvt.s64.s32 	%rd19, %r18;
+	mul.wide.s32 	%rd20, %r18, 4;
+	add.u64 	%rd21, %rd1, %rd20;
+	ld.global.f32 	%f5, [%rd21+0];
+	st.shared.f32 	[%rd6+256], %f5;
+	add.s32 	%r19, %r17, %r5;
+	add.s32 	%r20, %r19, %r7;
+	cvt.s64.s32 	%rd22, %r20;
+	mul.wide.s32 	%rd23, %r20, 4;
+	add.u64 	%rd24, %rd1, %rd23;
+	ld.global.f32 	%f6, [%rd24+0];
+	st.shared.f32 	[%rd6+320], %f6;
+	add.s32 	%r21, %r19, %r5;
+	add.s32 	%r22, %r21, %r7;
+	cvt.s64.s32 	%rd25, %r22;
+	mul.wide.s32 	%rd26, %r22, 4;
+	add.u64 	%rd27, %rd1, %rd26;
+	ld.global.f32 	%f7, [%rd27+0];
+	st.shared.f32 	[%rd6+384], %f7;
+	add.s32 	%r23, %r21, %r5;
+	add.s32 	%r24, %r23, %r7;
+	cvt.s64.s32 	%rd28, %r24;
+	mul.wide.s32 	%rd29, %r24, 4;
+	add.u64 	%rd30, %rd1, %rd29;
+	ld.global.f32 	%f8, [%rd30+0];
+	st.shared.f32 	[%rd6+448], %f8;
+	.loc	16	71	0
+	add.u64 	%rd31, %rd5, %rd2;
+	add.u32 	%r25, %r9, %r4;
+	add.u32 	%r26, %r7, %r25;
+	add.u32 	%r27, %r26, 16;
+	cvt.u64.u32 	%rd32, %r27;
+	mul.wide.u32 	%rd33, %r27, 4;
+	add.u64 	%rd34, %rd1, %rd33;
+	ld.global.f32 	%f9, [%rd34+0];
+	st.shared.f32 	[%rd31+0], %f9;
+	add.u32 	%r28, %r11, %r4;
+	add.u32 	%r29, %r7, %r28;
+	add.u32 	%r30, %r29, 16;
+	cvt.u64.u32 	%rd35, %r30;
+	mul.wide.u32 	%rd36, %r30, 4;
+	add.u64 	%rd37, %rd1, %rd36;
+	ld.global.f32 	%f10, [%rd37+0];
+	st.shared.f32 	[%rd31+64], %f10;
+	add.u32 	%r31, %r13, %r4;
+	add.u32 	%r32, %r7, %r31;
+	add.u32 	%r33, %r32, 16;
+	cvt.u64.u32 	%rd38, %r33;
+	mul.wide.u32 	%rd39, %r33, 4;
+	add.u64 	%rd40, %rd1, %rd39;
+	ld.global.f32 	%f11, [%rd40+0];
+	st.shared.f32 	[%rd31+128], %f11;
+	add.u32 	%r34, %r15, %r4;
+	add.u32 	%r35, %r7, %r34;
+	add.u32 	%r36, %r35, 16;
+	cvt.u64.u32 	%rd41, %r36;
+	mul.wide.u32 	%rd42, %r36, 4;
+	add.u64 	%rd43, %rd1, %rd42;
+	ld.global.f32 	%f12, [%rd43+0];
+	st.shared.f32 	[%rd31+192], %f12;
+	add.u32 	%r37, %r17, %r4;
+	add.u32 	%r38, %r7, %r37;
+	add.u32 	%r39, %r38, 16;
+	cvt.u64.u32 	%rd44, %r39;
+	mul.wide.u32 	%rd45, %r39, 4;
+	add.u64 	%rd46, %rd1, %rd45;
+	ld.global.f32 	%f13, [%rd46+0];
+	st.shared.f32 	[%rd31+256], %f13;
+	add.u32 	%r40, %r19, %r4;
+	add.u32 	%r41, %r7, %r40;
+	add.u32 	%r42, %r41, 16;
+	cvt.u64.u32 	%rd47, %r42;
+	mul.wide.u32 	%rd48, %r42, 4;
+	add.u64 	%rd49, %rd1, %rd48;
+	ld.global.f32 	%f14, [%rd49+0];
+	st.shared.f32 	[%rd31+320], %f14;
+	add.u32 	%r43, %r21, %r4;
+	add.u32 	%r44, %r7, %r43;
+	add.u32 	%r45, %r44, 16;
+	cvt.u64.u32 	%rd50, %r45;
+	mul.wide.u32 	%rd51, %r45, 4;
+	add.u64 	%rd52, %rd1, %rd51;
+	ld.global.f32 	%f15, [%rd52+0];
+	st.shared.f32 	[%rd31+384], %f15;
+	add.u32 	%r46, %r23, %r4;
+	add.u32 	%r47, %r7, %r46;
+	add.u32 	%r48, %r47, 16;
+	cvt.u64.u32 	%rd53, %r48;
+	mul.wide.u32 	%rd54, %r48, 4;
+	add.u64 	%rd55, %rd1, %rd54;
+	ld.global.f32 	%f16, [%rd55+0];
+	st.shared.f32 	[%rd31+448], %f16;
+	add.s32 	%r49, %r23, %r5;
+	add.u32 	%r50, %r49, %r4;
+	add.u32 	%r51, %r7, %r50;
+	add.u32 	%r52, %r51, 16;
+	cvt.u64.u32 	%rd56, %r52;
+	mul.wide.u32 	%rd57, %r52, 4;
+	add.u64 	%rd58, %rd1, %rd57;
+	ld.global.f32 	%f17, [%rd58+0];
+	st.shared.f32 	[%rd31+512], %f17;
+	add.s32 	%r53, %r49, %r5;
+	add.u32 	%r54, %r53, %r4;
+	add.u32 	%r55, %r7, %r54;
+	add.u32 	%r56, %r55, 16;
+	cvt.u64.u32 	%rd59, %r56;
+	mul.wide.u32 	%rd60, %r56, 4;
+	add.u64 	%rd61, %rd1, %rd60;
+	ld.global.f32 	%f18, [%rd61+0];
+	st.shared.f32 	[%rd31+576], %f18;
+	.loc	16	72	0
+	add.s32 	%r57, %r53, %r5;
+	.loc	16	71	0
+	add.u32 	%r58, %r57, %r4;
+	add.u32 	%r59, %r7, %r58;
+	add.u32 	%r60, %r59, 16;
+	cvt.u64.u32 	%rd62, %r60;
+	mul.wide.u32 	%rd63, %r60, 4;
+	add.u64 	%rd64, %rd1, %rd63;
+	ld.global.f32 	%f19, [%rd64+0];
+	st.shared.f32 	[%rd31+640], %f19;
+	.loc	16	72	0
+	add.s32 	%r61, %r57, %r5;
+	.loc	16	71	0
+	add.u32 	%r62, %r61, %r4;
+	add.u32 	%r63, %r7, %r62;
+	add.u32 	%r64, %r63, 16;
+	cvt.u64.u32 	%rd65, %r64;
+	mul.wide.u32 	%rd66, %r64, 4;
+	add.u64 	%rd67, %rd1, %rd66;
+	ld.global.f32 	%f20, [%rd67+0];
+	st.shared.f32 	[%rd31+704], %f20;
+	.loc	16	72	0
+	add.s32 	%r65, %r61, %r5;
+	.loc	16	71	0
+	add.u32 	%r66, %r65, %r4;
+	add.u32 	%r67, %r7, %r66;
+	add.u32 	%r68, %r67, 16;
+	cvt.u64.u32 	%rd68, %r68;
+	mul.wide.u32 	%rd69, %r68, 4;
+	add.u64 	%rd70, %rd1, %rd69;
+	ld.global.f32 	%f21, [%rd70+0];
+	st.shared.f32 	[%rd31+768], %f21;
+	.loc	16	72	0
+	add.s32 	%r69, %r65, %r5;
+	.loc	16	71	0
+	add.u32 	%r70, %r69, %r4;
+	add.u32 	%r71, %r7, %r70;
+	add.u32 	%r72, %r71, 16;
+	cvt.u64.u32 	%rd71, %r72;
+	mul.wide.u32 	%rd72, %r72, 4;
+	add.u64 	%rd73, %rd1, %rd72;
+	ld.global.f32 	%f22, [%rd73+0];
+	st.shared.f32 	[%rd31+832], %f22;
+	.loc	16	72	0
+	add.s32 	%r73, %r69, %r5;
+	.loc	16	71	0
+	add.u32 	%r74, %r73, %r4;
+	add.u32 	%r75, %r7, %r74;
+	add.u32 	%r76, %r75, 16;
+	cvt.u64.u32 	%rd74, %r76;
+	mul.wide.u32 	%rd75, %r76, 4;
+	add.u64 	%rd76, %rd1, %rd75;
+	ld.global.f32 	%f23, [%rd76+0];
+	st.shared.f32 	[%rd31+896], %f23;
+	add.s32 	%r77, %r73, %r5;
+	add.u32 	%r78, %r4, %r77;
+	add.u32 	%r79, %r7, %r78;
+	add.u32 	%r80, %r79, 16;
+	cvt.u64.u32 	%rd77, %r80;
+	mul.wide.u32 	%rd78, %r80, 4;
+	add.u64 	%rd79, %rd1, %rd78;
+	ld.global.f32 	%f24, [%rd79+0];
+	st.shared.f32 	[%rd31+960], %f24;
+	mov.u64 	%rd80, __cuda___cuda_local_var_39998_33_non_const_peri_col3104;
+	bra.uni 	$Lt_1_12802;
+$Lt_1_13058:
+	mov.u64 	%rd3, __cuda___cuda_local_var_39996_33_non_const_dia2080;
+	mov.u64 	%rd80, __cuda___cuda_local_var_39998_33_non_const_peri_col3104;
+	.loc	16	80	0
+	add.s32 	%r81, %r6, 8;
+	mul.lo.s32 	%r82, %r81, %r5;
+	cvt.s64.s32 	%rd81, %r1;
+	mul.wide.s32 	%rd82, %r1, 4;
+	add.s32 	%r83, %r82, %r6;
+	add.u64 	%rd83, %rd82, %rd3;
+	add.s32 	%r84, %r83, %r1;
+	cvt.s64.s32 	%rd84, %r84;
+	mul.wide.s32 	%rd85, %r84, 4;
+	add.u64 	%rd86, %rd1, %rd85;
+	ld.global.f32 	%f25, [%rd86+-64];
+	st.shared.f32 	[%rd83+448], %f25;
+	add.s32 	%r85, %r83, %r5;
+	add.s32 	%r86, %r85, %r1;
+	cvt.s64.s32 	%rd87, %r86;
+	mul.wide.s32 	%rd88, %r86, 4;
+	add.u64 	%rd89, %rd1, %rd88;
+	ld.global.f32 	%f26, [%rd89+-64];
+	st.shared.f32 	[%rd83+512], %f26;
+	add.s32 	%r87, %r85, %r5;
+	add.s32 	%r88, %r87, %r1;
+	cvt.s64.s32 	%rd90, %r88;
+	mul.wide.s32 	%rd91, %r88, 4;
+	add.u64 	%rd92, %rd1, %rd91;
+	ld.global.f32 	%f27, [%rd92+-64];
+	st.shared.f32 	[%rd83+576], %f27;
+	add.s32 	%r89, %r87, %r5;
+	add.s32 	%r90, %r89, %r1;
+	cvt.s64.s32 	%rd93, %r90;
+	mul.wide.s32 	%rd94, %r90, 4;
+	add.u64 	%rd95, %rd1, %rd94;
+	ld.global.f32 	%f28, [%rd95+-64];
+	st.shared.f32 	[%rd83+640], %f28;
+	add.s32 	%r91, %r89, %r5;
+	add.s32 	%r92, %r91, %r1;
+	cvt.s64.s32 	%rd96, %r92;
+	mul.wide.s32 	%rd97, %r92, 4;
+	add.u64 	%rd98, %rd1, %rd97;
+	ld.global.f32 	%f29, [%rd98+-64];
+	st.shared.f32 	[%rd83+704], %f29;
+	add.s32 	%r93, %r91, %r5;
+	add.s32 	%r94, %r93, %r1;
+	cvt.s64.s32 	%rd99, %r94;
+	mul.wide.s32 	%rd100, %r94, 4;
+	add.u64 	%rd101, %rd1, %rd100;
+	ld.global.f32 	%f30, [%rd101+-64];
+	st.shared.f32 	[%rd83+768], %f30;
+	add.s32 	%r95, %r93, %r5;
+	add.s32 	%r96, %r95, %r1;
+	cvt.s64.s32 	%rd102, %r96;
+	mul.wide.s32 	%rd103, %r96, 4;
+	add.u64 	%rd104, %rd1, %rd103;
+	ld.global.f32 	%f31, [%rd104+-64];
+	st.shared.f32 	[%rd83+832], %f31;
+	add.s32 	%r97, %r95, %r5;
+	add.s32 	%r98, %r1, %r97;
+	cvt.s64.s32 	%rd105, %r98;
+	mul.wide.s32 	%rd106, %r98, 4;
+	add.u64 	%rd107, %rd1, %rd106;
+	ld.global.f32 	%f32, [%rd107+-64];
+	st.shared.f32 	[%rd83+896], %f32;
+	.loc	16	86	0
+	add.u32 	%r99, %r6, %r4;
+	add.u64 	%rd108, %rd82, %rd80;
+	add.u32 	%r100, %r99, 16;
+	mul.lo.u32 	%r101, %r5, %r100;
+	add.u32 	%r102, %r6, %r101;
+	add.s32 	%r103, %r102, %r1;
+	cvt.s64.s32 	%rd109, %r103;
+	mul.wide.s32 	%rd110, %r103, 4;
+	add.u64 	%rd111, %rd1, %rd110;
+	ld.global.f32 	%f33, [%rd111+-64];
+	st.shared.f32 	[%rd108+-64], %f33;
+	add.s32 	%r104, %r5, %r102;
+	add.s32 	%r105, %r104, %r1;
+	cvt.s64.s32 	%rd112, %r105;
+	mul.wide.s32 	%rd113, %r105, 4;
+	add.u64 	%rd114, %rd1, %rd113;
+	ld.global.f32 	%f34, [%rd114+-64];
+	st.shared.f32 	[%rd108+0], %f34;
+	add.s32 	%r106, %r104, %r5;
+	add.s32 	%r107, %r106, %r1;
+	cvt.s64.s32 	%rd115, %r107;
+	mul.wide.s32 	%rd116, %r107, 4;
+	add.u64 	%rd117, %rd1, %rd116;
+	ld.global.f32 	%f35, [%rd117+-64];
+	st.shared.f32 	[%rd108+64], %f35;
+	add.s32 	%r108, %r106, %r5;
+	add.s32 	%r109, %r108, %r1;
+	cvt.s64.s32 	%rd118, %r109;
+	mul.wide.s32 	%rd119, %r109, 4;
+	add.u64 	%rd120, %rd1, %rd119;
+	ld.global.f32 	%f36, [%rd120+-64];
+	st.shared.f32 	[%rd108+128], %f36;
+	add.s32 	%r110, %r108, %r5;
+	add.s32 	%r111, %r110, %r1;
+	cvt.s64.s32 	%rd121, %r111;
+	mul.wide.s32 	%rd122, %r111, 4;
+	add.u64 	%rd123, %rd1, %rd122;
+	ld.global.f32 	%f37, [%rd123+-64];
+	st.shared.f32 	[%rd108+192], %f37;
+	add.s32 	%r112, %r110, %r5;
+	add.s32 	%r113, %r112, %r1;
+	cvt.s64.s32 	%rd124, %r113;
+	mul.wide.s32 	%rd125, %r113, 4;
+	add.u64 	%rd126, %rd1, %rd125;
+	ld.global.f32 	%f38, [%rd126+-64];
+	st.shared.f32 	[%rd108+256], %f38;
+	add.s32 	%r114, %r112, %r5;
+	add.s32 	%r115, %r114, %r1;
+	cvt.s64.s32 	%rd127, %r115;
+	mul.wide.s32 	%rd128, %r115, 4;
+	add.u64 	%rd129, %rd1, %rd128;
+	ld.global.f32 	%f39, [%rd129+-64];
+	st.shared.f32 	[%rd108+320], %f39;
+	.loc	16	87	0
+	add.s32 	%r116, %r114, %r5;
+	.loc	16	86	0
+	add.s32 	%r117, %r116, %r1;
+	cvt.s64.s32 	%rd130, %r117;
+	mul.wide.s32 	%rd131, %r117, 4;
+	add.u64 	%rd132, %rd1, %rd131;
+	ld.global.f32 	%f40, [%rd132+-64];
+	st.shared.f32 	[%rd108+384], %f40;
+	.loc	16	87	0
+	add.s32 	%r118, %r116, %r5;
+	.loc	16	86	0
+	add.s32 	%r119, %r118, %r1;
+	cvt.s64.s32 	%rd133, %r119;
+	mul.wide.s32 	%rd134, %r119, 4;
+	add.u64 	%rd135, %rd1, %rd134;
+	ld.global.f32 	%f41, [%rd135+-64];
+	st.shared.f32 	[%rd108+448], %f41;
+	.loc	16	87	0
+	add.s32 	%r120, %r118, %r5;
+	.loc	16	86	0
+	add.s32 	%r121, %r120, %r1;
+	cvt.s64.s32 	%rd136, %r121;
+	mul.wide.s32 	%rd137, %r121, 4;
+	add.u64 	%rd138, %rd1, %rd137;
+	ld.global.f32 	%f42, [%rd138+-64];
+	st.shared.f32 	[%rd108+512], %f42;
+	.loc	16	87	0
+	add.s32 	%r122, %r120, %r5;
+	.loc	16	86	0
+	add.s32 	%r123, %r122, %r1;
+	cvt.s64.s32 	%rd139, %r123;
+	mul.wide.s32 	%rd140, %r123, 4;
+	add.u64 	%rd141, %rd1, %rd140;
+	ld.global.f32 	%f43, [%rd141+-64];
+	st.shared.f32 	[%rd108+576], %f43;
+	.loc	16	87	0
+	add.s32 	%r124, %r122, %r5;
+	.loc	16	86	0
+	add.s32 	%r125, %r124, %r1;
+	cvt.s64.s32 	%rd142, %r125;
+	mul.wide.s32 	%rd143, %r125, 4;
+	add.u64 	%rd144, %rd1, %rd143;
+	ld.global.f32 	%f44, [%rd144+-64];
+	st.shared.f32 	[%rd108+640], %f44;
+	.loc	16	87	0
+	add.s32 	%r126, %r124, %r5;
+	.loc	16	86	0
+	add.s32 	%r127, %r126, %r1;
+	cvt.s64.s32 	%rd145, %r127;
+	mul.wide.s32 	%rd146, %r127, 4;
+	add.u64 	%rd147, %rd1, %rd146;
+	ld.global.f32 	%f45, [%rd147+-64];
+	st.shared.f32 	[%rd108+704], %f45;
+	.loc	16	87	0
+	add.s32 	%r128, %r126, %r5;
+	.loc	16	86	0
+	add.s32 	%r129, %r128, %r1;
+	cvt.s64.s32 	%rd148, %r129;
+	mul.wide.s32 	%rd149, %r129, 4;
+	add.u64 	%rd150, %rd1, %rd149;
+	ld.global.f32 	%f46, [%rd150+-64];
+	st.shared.f32 	[%rd108+768], %f46;
+	.loc	16	87	0
+	add.s32 	%r130, %r128, %r5;
+	.loc	16	86	0
+	add.s32 	%r131, %r130, %r1;
+	cvt.s64.s32 	%rd151, %r131;
+	mul.wide.s32 	%rd152, %r131, 4;
+	add.u64 	%rd153, %rd1, %rd152;
+	ld.global.f32 	%f47, [%rd153+-64];
+	st.shared.f32 	[%rd108+832], %f47;
+	add.s32 	%r132, %r130, %r5;
+	add.s32 	%r133, %r1, %r132;
+	cvt.s64.s32 	%rd154, %r133;
+	mul.wide.s32 	%rd155, %r133, 4;
+	add.u64 	%rd156, %rd1, %rd155;
+	ld.global.f32 	%f48, [%rd156+-64];
+	st.shared.f32 	[%rd108+896], %f48;
+	mov.u64 	%rd2, __cuda___cuda_local_var_39997_33_non_const_peri_row1056;
+$Lt_1_12802:
+	.loc	16	91	0
+	bar.sync 	0;
+	@!%p1 bra 	$Lt_1_13570;
+	.loc	16	94	0
+	cvt.s32.u32 	%r7, %tid.x;
+	mov.s32 	%r134, %r7;
+	mov.s32 	%r135, 1;
+$Lt_1_14338:
+ //<loop> Loop body line 94, nesting depth: 1, iterations: 15
+	mov.u32 	%r136, 0;
+	setp.le.s32 	%p2, %r135, %r136;
+	@%p2 bra 	$Lt_1_14594;
+	mov.s32 	%r137, %r135;
+	cvt.s64.s32 	%rd157, %r7;
+	cvt.s64.s32 	%rd158, %r135;
+	mul.wide.s32 	%rd159, %r135, 16;
+	mul.wide.s32 	%rd5, %r7, 4;
+	add.u64 	%rd160, %rd157, %rd159;
+	mul.lo.u64 	%rd161, %rd160, 4;
+	add.u64 	%rd162, %rd2, %rd161;
+	mul.lo.u64 	%rd163, %rd159, 4;
+	add.u64 	%rd164, %rd3, %rd163;
+	add.u64 	%rd165, %rd5, %rd2;
+	ld.shared.f32 	%f49, [%rd162+0];
+	mov.s32 	%r138, 0;
+	mov.s32 	%r139, %r137;
+$Lt_1_15106:
+ //<loop> Loop body line 94, nesting depth: 2, estimated iterations: unknown
+	.loc	16	97	0
+	ld.shared.f32 	%f50, [%rd164+0];
+	ld.shared.f32 	%f51, [%rd165+0];
+	mul.f32 	%f52, %f50, %f51;
+	sub.f32 	%f49, %f49, %f52;
+	st.shared.f32 	[%rd162+0], %f49;
+	add.s32 	%r138, %r138, 1;
+	add.u64 	%rd164, %rd164, 4;
+	add.u64 	%rd165, %rd165, 64;
+	setp.ne.s32 	%p3, %r138, %r135;
+	@%p3 bra 	$Lt_1_15106;
+$Lt_1_14594:
+	add.s32 	%r135, %r135, 1;
+	mov.u32 	%r140, 16;
+	setp.ne.s32 	%p4, %r135, %r140;
+	@%p4 bra 	$Lt_1_14338;
+	.loc	16	102	0
+	cvt.s64.s32 	%rd166, %r7;
+	add.s32 	%r141, %r6, 1;
+	mul.wide.s32 	%rd5, %r7, 4;
+	mul.lo.s32 	%r142, %r141, %r5;
+	add.u64 	%rd167, %rd5, %rd2;
+	add.s32 	%r143, %r142, %r6;
+	ld.shared.f32 	%f53, [%rd167+64];
+	add.u32 	%r144, %r143, %r4;
+	add.u32 	%r145, %r7, %r144;
+	add.u32 	%r146, %r145, 16;
+	cvt.u64.u32 	%rd168, %r146;
+	mul.wide.u32 	%rd169, %r146, 4;
+	add.u64 	%rd170, %rd1, %rd169;
+	st.global.f32 	[%rd170+0], %f53;
+	add.s32 	%r147, %r143, %r5;
+	ld.shared.f32 	%f54, [%rd167+128];
+	add.u32 	%r148, %r147, %r4;
+	add.u32 	%r149, %r7, %r148;
+	add.u32 	%r150, %r149, 16;
+	cvt.u64.u32 	%rd171, %r150;
+	mul.wide.u32 	%rd172, %r150, 4;
+	add.u64 	%rd173, %rd1, %rd172;
+	st.global.f32 	[%rd173+0], %f54;
+	add.s32 	%r151, %r147, %r5;
+	ld.shared.f32 	%f55, [%rd167+192];
+	add.u32 	%r152, %r151, %r4;
+	add.u32 	%r153, %r7, %r152;
+	add.u32 	%r154, %r153, 16;
+	cvt.u64.u32 	%rd174, %r154;
+	mul.wide.u32 	%rd175, %r154, 4;
+	add.u64 	%rd176, %rd1, %rd175;
+	st.global.f32 	[%rd176+0], %f55;
+	add.s32 	%r155, %r151, %r5;
+	ld.shared.f32 	%f56, [%rd167+256];
+	add.u32 	%r156, %r155, %r4;
+	add.u32 	%r157, %r7, %r156;
+	add.u32 	%r158, %r157, 16;
+	cvt.u64.u32 	%rd177, %r158;
+	mul.wide.u32 	%rd178, %r158, 4;
+	add.u64 	%rd179, %rd1, %rd178;
+	st.global.f32 	[%rd179+0], %f56;
+	add.s32 	%r159, %r155, %r5;
+	ld.shared.f32 	%f57, [%rd167+320];
+	add.u32 	%r160, %r159, %r4;
+	add.u32 	%r161, %r7, %r160;
+	add.u32 	%r162, %r161, 16;
+	cvt.u64.u32 	%rd180, %r162;
+	mul.wide.u32 	%rd181, %r162, 4;
+	add.u64 	%rd182, %rd1, %rd181;
+	st.global.f32 	[%rd182+0], %f57;
+	add.s32 	%r163, %r159, %r5;
+	ld.shared.f32 	%f58, [%rd167+384];
+	add.u32 	%r164, %r163, %r4;
+	add.u32 	%r165, %r7, %r164;
+	add.u32 	%r166, %r165, 16;
+	cvt.u64.u32 	%rd183, %r166;
+	mul.wide.u32 	%rd184, %r166, 4;
+	add.u64 	%rd185, %rd1, %rd184;
+	st.global.f32 	[%rd185+0], %f58;
+	add.s32 	%r167, %r163, %r5;
+	ld.shared.f32 	%f59, [%rd167+448];
+	add.u32 	%r168, %r167, %r4;
+	add.u32 	%r169, %r7, %r168;
+	add.u32 	%r170, %r169, 16;
+	cvt.u64.u32 	%rd186, %r170;
+	mul.wide.u32 	%rd187, %r170, 4;
+	add.u64 	%rd188, %rd1, %rd187;
+	st.global.f32 	[%rd188+0], %f59;
+	add.s32 	%r171, %r167, %r5;
+	ld.shared.f32 	%f60, [%rd167+512];
+	add.u32 	%r172, %r171, %r4;
+	add.u32 	%r173, %r7, %r172;
+	add.u32 	%r174, %r173, 16;
+	cvt.u64.u32 	%rd189, %r174;
+	mul.wide.u32 	%rd190, %r174, 4;
+	add.u64 	%rd191, %rd1, %rd190;
+	st.global.f32 	[%rd191+0], %f60;
+	add.s32 	%r175, %r171, %r5;
+	ld.shared.f32 	%f61, [%rd167+576];
+	add.u32 	%r176, %r175, %r4;
+	add.u32 	%r177, %r7, %r176;
+	add.u32 	%r178, %r177, 16;
+	cvt.u64.u32 	%rd192, %r178;
+	mul.wide.u32 	%rd193, %r178, 4;
+	add.u64 	%rd194, %rd1, %rd193;
+	st.global.f32 	[%rd194+0], %f61;
+	.loc	16	103	0
+	add.s32 	%r179, %r175, %r5;
+	.loc	16	102	0
+	ld.shared.f32 	%f62, [%rd167+640];
+	add.u32 	%r180, %r179, %r4;
+	add.u32 	%r181, %r7, %r180;
+	add.u32 	%r182, %r181, 16;
+	cvt.u64.u32 	%rd195, %r182;
+	mul.wide.u32 	%rd196, %r182, 4;
+	add.u64 	%rd197, %rd1, %rd196;
+	st.global.f32 	[%rd197+0], %f62;
+	.loc	16	103	0
+	add.s32 	%r183, %r179, %r5;
+	.loc	16	102	0
+	ld.shared.f32 	%f63, [%rd167+704];
+	add.u32 	%r184, %r183, %r4;
+	add.u32 	%r185, %r7, %r184;
+	add.u32 	%r186, %r185, 16;
+	cvt.u64.u32 	%rd198, %r186;
+	mul.wide.u32 	%rd199, %r186, 4;
+	add.u64 	%rd200, %rd1, %rd199;
+	st.global.f32 	[%rd200+0], %f63;
+	.loc	16	103	0
+	add.s32 	%r187, %r183, %r5;
+	.loc	16	102	0
+	ld.shared.f32 	%f64, [%rd167+768];
+	add.u32 	%r188, %r187, %r4;
+	add.u32 	%r189, %r7, %r188;
+	add.u32 	%r190, %r189, 16;
+	cvt.u64.u32 	%rd201, %r190;
+	mul.wide.u32 	%rd202, %r190, 4;
+	add.u64 	%rd203, %rd1, %rd202;
+	st.global.f32 	[%rd203+0], %f64;
+	.loc	16	103	0
+	add.s32 	%r191, %r187, %r5;
+	.loc	16	102	0
+	ld.shared.f32 	%f65, [%rd167+832];
+	add.u32 	%r192, %r191, %r4;
+	add.u32 	%r193, %r7, %r192;
+	add.u32 	%r194, %r193, 16;
+	cvt.u64.u32 	%rd204, %r194;
+	mul.wide.u32 	%rd205, %r194, 4;
+	add.u64 	%rd206, %rd1, %rd205;
+	st.global.f32 	[%rd206+0], %f65;
+	.loc	16	103	0
+	add.s32 	%r195, %r191, %r5;
+	.loc	16	102	0
+	ld.shared.f32 	%f66, [%rd167+896];
+	add.u32 	%r196, %r195, %r4;
+	add.u32 	%r197, %r7, %r196;
+	add.u32 	%r198, %r197, 16;
+	cvt.u64.u32 	%rd207, %r198;
+	mul.wide.u32 	%rd208, %r198, 4;
+	add.u64 	%rd209, %rd1, %rd208;
+	st.global.f32 	[%rd209+0], %f66;
+	ld.shared.f32 	%f67, [%rd167+960];
+	add.s32 	%r199, %r195, %r5;
+	add.u32 	%r200, %r4, %r199;
+	add.u32 	%r201, %r7, %r200;
+	add.u32 	%r202, %r201, 16;
+	cvt.u64.u32 	%rd210, %r202;
+	mul.wide.u32 	%rd211, %r202, 4;
+	add.u64 	%rd212, %rd1, %rd211;
+	st.global.f32 	[%rd212+0], %f67;
+	bra.uni 	$Lt_1_13314;
+$Lt_1_13570:
+	.loc	16	106	0
+	sub.s32 	%r134, %r1, 16;
+	mov.s64 	%rd213, 0;
+	cvt.s64.s32 	%rd214, %r134;
+	mul.wide.s32 	%rd215, %r134, 16;
+	mov.s64 	%rd216, %rd3;
+	mov.s32 	%r135, 0;
+$Lt_1_16386:
+ //<loop> Loop body line 106, nesting depth: 1, iterations: 16
+	mov.u32 	%r203, 0;
+	setp.le.s32 	%p5, %r135, %r203;
+	@%p5 bra 	$Lt_1_18690;
+	mov.s32 	%r204, %r135;
+	mov.s64 	%rd217, %rd213;
+	add.u64 	%rd218, %rd217, %rd215;
+	mul.lo.u64 	%rd219, %rd218, 4;
+	add.u64 	%rd220, %rd219, %rd80;
+	mul.lo.u64 	%rd221, %rd215, 4;
+	add.u64 	%rd222, %rd80, %rd221;
+	mul.lo.u64 	%rd223, %rd217, 4;
+	add.u64 	%rd224, %rd3, %rd223;
+	ld.shared.f32 	%f68, [%rd220+0];
+	mov.s32 	%r138, 0;
+	mov.s32 	%r205, %r204;
+$Lt_1_17154:
+ //<loop> Loop body line 106, nesting depth: 2, estimated iterations: unknown
+	.loc	16	109	0
+	ld.shared.f32 	%f69, [%rd224+0];
+	ld.shared.f32 	%f70, [%rd222+0];
+	mul.f32 	%f71, %f69, %f70;
+	sub.f32 	%f68, %f68, %f71;
+	st.shared.f32 	[%rd220+0], %f68;
+	add.s32 	%r138, %r138, 1;
+	add.u64 	%rd222, %rd222, 4;
+	add.u64 	%rd224, %rd224, 64;
+	setp.ne.s32 	%p6, %r138, %r135;
+	@%p6 bra 	$Lt_1_17154;
+	bra.uni 	$Lt_1_16642;
+$Lt_1_18690:
+	mov.s64 	%rd217, %rd213;
+	add.u64 	%rd225, %rd217, %rd215;
+	mul.lo.u64 	%rd226, %rd225, 4;
+	add.u64 	%rd220, %rd80, %rd226;
+	ld.shared.f32 	%f68, [%rd220+0];
+$Lt_1_16642:
+	.loc	16	110	0
+	ld.shared.f32 	%f72, [%rd216+0];
+	div.rn.f32 	%f73, %f68, %f72;
+	st.shared.f32 	[%rd220+0], %f73;
+	add.s32 	%r135, %r135, 1;
+	add.s64 	%rd213, %rd217, 1;
+	add.u64 	%rd216, %rd216, 68;
+	mov.u32 	%r206, 16;
+	setp.ne.s32 	%p7, %r135, %r206;
+	@%p7 bra 	$Lt_1_16386;
+$Lt_1_13314:
+	.loc	16	113	0
+	bar.sync 	0;
+	mov.u32 	%r207, 15;
+	setp.le.u32 	%p8, %r1, %r207;
+	@%p8 bra 	$Lt_1_17922;
+	.loc	16	117	0
+	add.u32 	%r208, %r6, %r4;
+	add.u32 	%r209, %r208, 16;
+	cvt.s64.s32 	%rd227, %r134;
+	mul.wide.s32 	%rd228, %r134, 4;
+	add.u64 	%rd229, %rd80, %rd228;
+	mul.lo.u32 	%r210, %r5, %r209;
+	add.u32 	%r211, %r6, %r210;
+	ld.shared.f32 	%f74, [%rd229+0];
+	add.s32 	%r212, %r134, %r211;
+	cvt.s64.s32 	%rd230, %r212;
+	mul.wide.s32 	%rd231, %r212, 4;
+	add.u64 	%rd232, %rd1, %rd231;
+	st.global.f32 	[%rd232+0], %f74;
+	add.s32 	%r213, %r5, %r211;
+	ld.shared.f32 	%f75, [%rd229+64];
+	add.s32 	%r214, %r213, %r134;
+	cvt.s64.s32 	%rd233, %r214;
+	mul.wide.s32 	%rd234, %r214, 4;
+	add.u64 	%rd235, %rd1, %rd234;
+	st.global.f32 	[%rd235+0], %f75;
+	add.s32 	%r215, %r213, %r5;
+	ld.shared.f32 	%f76, [%rd229+128];
+	add.s32 	%r216, %r215, %r134;
+	cvt.s64.s32 	%rd236, %r216;
+	mul.wide.s32 	%rd237, %r216, 4;
+	add.u64 	%rd238, %rd1, %rd237;
+	st.global.f32 	[%rd238+0], %f76;
+	add.s32 	%r217, %r215, %r5;
+	ld.shared.f32 	%f77, [%rd229+192];
+	add.s32 	%r218, %r217, %r134;
+	cvt.s64.s32 	%rd239, %r218;
+	mul.wide.s32 	%rd240, %r218, 4;
+	add.u64 	%rd241, %rd1, %rd240;
+	st.global.f32 	[%rd241+0], %f77;
+	add.s32 	%r219, %r217, %r5;
+	ld.shared.f32 	%f78, [%rd229+256];
+	add.s32 	%r220, %r219, %r134;
+	cvt.s64.s32 	%rd242, %r220;
+	mul.wide.s32 	%rd243, %r220, 4;
+	add.u64 	%rd244, %rd1, %rd243;
+	st.global.f32 	[%rd244+0], %f78;
+	add.s32 	%r221, %r219, %r5;
+	ld.shared.f32 	%f79, [%rd229+320];
+	add.s32 	%r222, %r221, %r134;
+	cvt.s64.s32 	%rd245, %r222;
+	mul.wide.s32 	%rd246, %r222, 4;
+	add.u64 	%rd247, %rd1, %rd246;
+	st.global.f32 	[%rd247+0], %f79;
+	add.s32 	%r223, %r221, %r5;
+	ld.shared.f32 	%f80, [%rd229+384];
+	add.s32 	%r224, %r223, %r134;
+	cvt.s64.s32 	%rd248, %r224;
+	mul.wide.s32 	%rd249, %r224, 4;
+	add.u64 	%rd250, %rd1, %rd249;
+	st.global.f32 	[%rd250+0], %f80;
+	.loc	16	118	0
+	add.s32 	%r225, %r223, %r5;
+	.loc	16	117	0
+	ld.shared.f32 	%f81, [%rd229+448];
+	add.s32 	%r226, %r225, %r134;
+	cvt.s64.s32 	%rd251, %r226;
+	mul.wide.s32 	%rd252, %r226, 4;
+	add.u64 	%rd253, %rd1, %rd252;
+	st.global.f32 	[%rd253+0], %f81;
+	.loc	16	118	0
+	add.s32 	%r227, %r225, %r5;
+	.loc	16	117	0
+	ld.shared.f32 	%f82, [%rd229+512];
+	add.s32 	%r228, %r227, %r134;
+	cvt.s64.s32 	%rd254, %r228;
+	mul.wide.s32 	%rd255, %r228, 4;
+	add.u64 	%rd256, %rd1, %rd255;
+	st.global.f32 	[%rd256+0], %f82;
+	.loc	16	118	0
+	add.s32 	%r229, %r227, %r5;
+	.loc	16	117	0
+	ld.shared.f32 	%f83, [%rd229+576];
+	add.s32 	%r230, %r229, %r134;
+	cvt.s64.s32 	%rd257, %r230;
+	mul.wide.s32 	%rd258, %r230, 4;
+	add.u64 	%rd259, %rd1, %rd258;
+	st.global.f32 	[%rd259+0], %f83;
+	.loc	16	118	0
+	add.s32 	%r231, %r229, %r5;
+	.loc	16	117	0
+	ld.shared.f32 	%f84, [%rd229+640];
+	add.s32 	%r232, %r231, %r134;
+	cvt.s64.s32 	%rd260, %r232;
+	mul.wide.s32 	%rd261, %r232, 4;
+	add.u64 	%rd262, %rd1, %rd261;
+	st.global.f32 	[%rd262+0], %f84;
+	.loc	16	118	0
+	add.s32 	%r233, %r231, %r5;
+	.loc	16	117	0
+	ld.shared.f32 	%f85, [%rd229+704];
+	add.s32 	%r234, %r233, %r134;
+	cvt.s64.s32 	%rd263, %r234;
+	mul.wide.s32 	%rd264, %r234, 4;
+	add.u64 	%rd265, %rd1, %rd264;
+	st.global.f32 	[%rd265+0], %f85;
+	.loc	16	118	0
+	add.s32 	%r235, %r233, %r5;
+	.loc	16	117	0
+	ld.shared.f32 	%f86, [%rd229+768];
+	add.s32 	%r236, %r235, %r134;
+	cvt.s64.s32 	%rd266, %r236;
+	mul.wide.s32 	%rd267, %r236, 4;
+	add.u64 	%rd268, %rd1, %rd267;
+	st.global.f32 	[%rd268+0], %f86;
+	.loc	16	118	0
+	add.s32 	%r237, %r235, %r5;
+	.loc	16	117	0
+	ld.shared.f32 	%f87, [%rd229+832];
+	add.s32 	%r238, %r237, %r134;
+	cvt.s64.s32 	%rd269, %r238;
+	mul.wide.s32 	%rd270, %r238, 4;
+	add.u64 	%rd271, %rd1, %rd270;
+	st.global.f32 	[%rd271+0], %f87;
+	.loc	16	118	0
+	add.s32 	%r239, %r237, %r5;
+	.loc	16	117	0
+	ld.shared.f32 	%f88, [%rd229+896];
+	add.s32 	%r240, %r239, %r134;
+	cvt.s64.s32 	%rd272, %r240;
+	mul.wide.s32 	%rd273, %r240, 4;
+	add.u64 	%rd274, %rd1, %rd273;
+	st.global.f32 	[%rd274+0], %f88;
+	ld.shared.f32 	%f89, [%rd229+960];
+	add.s32 	%r241, %r239, %r5;
+	add.s32 	%r242, %r134, %r241;
+	cvt.s64.s32 	%rd275, %r242;
+	mul.wide.s32 	%rd276, %r242, 4;
+	add.u64 	%rd277, %rd1, %rd276;
+	st.global.f32 	[%rd277+0], %f89;
+$Lt_1_17922:
+	.loc	16	122	0
+	exit;
+$LDWend__Z13lud_perimeterPfii:
+	} // _Z13lud_perimeterPfii
+
+	.entry _Z12lud_internalPfii (
+		.param .u64 __cudaparm__Z12lud_internalPfii_m,
+		.param .s32 __cudaparm__Z12lud_internalPfii_matrix_dim,
+		.param .s32 __cudaparm__Z12lud_internalPfii_offset)
+	{
+	.reg .u32 %r<25>;
+	.reg .u64 %rd<25>;
+	.reg .f32 %f<55>;
+	.shared .align 4 .b8 __cuda___cuda_local_var_40071_33_non_const_peri_col4144[1024];
+	.shared .align 4 .b8 __cuda___cuda_local_var_40070_33_non_const_peri_row5168[1024];
+	.loc	16	125	0
+$LDWbegin__Z12lud_internalPfii:
+	mov.u64 	%rd1, __cuda___cuda_local_var_40071_33_non_const_peri_col4144;
+	mov.u64 	%rd2, __cuda___cuda_local_var_40070_33_non_const_peri_row5168;
+	.loc	16	136	0
+	mov.u32 	%r1, %ctaid.x;
+	mul.lo.u32 	%r2, %r1, 16;
+	mov.u32 	%r3, %tid.x;
+	cvt.u64.u32 	%rd3, %r3;
+	mov.u32 	%r4, %tid.y;
+	cvt.u64.u32 	%rd4, %r4;
+	ld.param.s32 	%r5, [__cudaparm__Z12lud_internalPfii_offset];
+	add.u32 	%r6, %r5, %r2;
+	mul.wide.u32 	%rd5, %r4, 16;
+	add.u64 	%rd6, %rd3, %rd5;
+	mul.lo.u64 	%rd7, %rd6, 4;
+	ld.param.s32 	%r7, [__cudaparm__Z12lud_internalPfii_matrix_dim];
+	ld.param.u64 	%rd8, [__cudaparm__Z12lud_internalPfii_m];
+	add.u32 	%r8, %r5, %r4;
+	mul.lo.u32 	%r9, %r7, %r8;
+	add.u32 	%r10, %r6, %r9;
+	add.u32 	%r11, %r3, %r10;
+	add.u32 	%r12, %r11, 16;
+	cvt.u64.u32 	%rd9, %r12;
+	mul.wide.u32 	%rd10, %r12, 4;
+	add.u64 	%rd11, %rd8, %rd10;
+	ld.global.f32 	%f1, [%rd11+0];
+	add.u64 	%rd12, %rd7, %rd2;
+	st.shared.f32 	[%rd12+0], %f1;
+	.loc	16	137	0
+	mov.u32 	%r13, %ctaid.y;
+	mul.lo.u32 	%r14, %r13, 16;
+	add.u32 	%r15, %r5, %r14;
+	add.u32 	%r16, %r15, %r4;
+	add.u32 	%r17, %r16, 16;
+	mul.lo.u32 	%r18, %r7, %r17;
+	add.u32 	%r19, %r5, %r18;
+	add.u32 	%r20, %r3, %r19;
+	cvt.u64.u32 	%rd13, %r20;
+	mul.wide.u32 	%rd14, %r20, 4;
+	add.u64 	%rd15, %rd8, %rd14;
+	ld.global.f32 	%f2, [%rd15+0];
+	add.u64 	%rd16, %rd7, %rd1;
+	st.shared.f32 	[%rd16+0], %f2;
+	.loc	16	139	0
+	bar.sync 	0;
+	.loc	16	143	0
+	mul.wide.u32 	%rd17, %r3, 4;
+	add.u64 	%rd18, %rd2, %rd17;
+	mul.wide.u32 	%rd19, %r4, 64;
+	add.u64 	%rd20, %rd1, %rd19;
+	mov.f32 	%f3, 0f00000000;     	// 0
+	ld.shared.f32 	%f4, [%rd18+0];
+	ld.shared.f32 	%f5, [%rd20+0];
+	fma.rn.f32 	%f6, %f4, %f5, %f3;
+	ld.shared.f32 	%f7, [%rd18+64];
+	ld.shared.f32 	%f8, [%rd20+4];
+	fma.rn.f32 	%f9, %f7, %f8, %f6;
+	ld.shared.f32 	%f10, [%rd18+128];
+	ld.shared.f32 	%f11, [%rd20+8];
+	fma.rn.f32 	%f12, %f10, %f11, %f9;
+	ld.shared.f32 	%f13, [%rd18+192];
+	ld.shared.f32 	%f14, [%rd20+12];
+	fma.rn.f32 	%f15, %f13, %f14, %f12;
+	ld.shared.f32 	%f16, [%rd18+256];
+	ld.shared.f32 	%f17, [%rd20+16];
+	fma.rn.f32 	%f18, %f16, %f17, %f15;
+	ld.shared.f32 	%f19, [%rd18+320];
+	ld.shared.f32 	%f20, [%rd20+20];
+	fma.rn.f32 	%f21, %f19, %f20, %f18;
+	ld.shared.f32 	%f22, [%rd18+384];
+	ld.shared.f32 	%f23, [%rd20+24];
+	fma.rn.f32 	%f24, %f22, %f23, %f21;
+	ld.shared.f32 	%f25, [%rd18+448];
+	ld.shared.f32 	%f26, [%rd20+28];
+	fma.rn.f32 	%f27, %f25, %f26, %f24;
+	ld.shared.f32 	%f28, [%rd18+512];
+	ld.shared.f32 	%f29, [%rd20+32];
+	fma.rn.f32 	%f30, %f28, %f29, %f27;
+	ld.shared.f32 	%f31, [%rd18+576];
+	ld.shared.f32 	%f32, [%rd20+36];
+	fma.rn.f32 	%f33, %f31, %f32, %f30;
+	ld.shared.f32 	%f34, [%rd18+640];
+	ld.shared.f32 	%f35, [%rd20+40];
+	fma.rn.f32 	%f36, %f34, %f35, %f33;
+	ld.shared.f32 	%f37, [%rd18+704];
+	ld.shared.f32 	%f38, [%rd20+44];
+	fma.rn.f32 	%f39, %f37, %f38, %f36;
+	ld.shared.f32 	%f40, [%rd18+768];
+	ld.shared.f32 	%f41, [%rd20+48];
+	fma.rn.f32 	%f42, %f40, %f41, %f39;
+	ld.shared.f32 	%f43, [%rd18+832];
+	ld.shared.f32 	%f44, [%rd20+52];
+	fma.rn.f32 	%f45, %f43, %f44, %f42;
+	ld.shared.f32 	%f46, [%rd18+896];
+	ld.shared.f32 	%f47, [%rd20+56];
+	fma.rn.f32 	%f48, %f46, %f47, %f45;
+	ld.shared.f32 	%f49, [%rd18+960];
+	ld.shared.f32 	%f50, [%rd20+60];
+	fma.rn.f32 	%f51, %f49, %f50, %f48;
+	.loc	16	144	0
+	add.u32 	%r21, %r6, %r18;
+	add.u32 	%r22, %r21, %r3;
+	add.u32 	%r23, %r22, 16;
+	cvt.u64.u32 	%rd21, %r23;
+	mul.wide.u32 	%rd22, %r23, 4;
+	add.u64 	%rd23, %rd8, %rd22;
+	ld.global.f32 	%f52, [%rd23+0];
+	sub.f32 	%f53, %f52, %f51;
+	st.global.f32 	[%rd23+0], %f53;
+	.loc	16	147	0
+	exit;
+$LDWend__Z12lud_internalPfii:
+	} // _Z12lud_internalPfii
+

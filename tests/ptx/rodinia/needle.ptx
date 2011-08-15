@@ -1,0 +1,693 @@
+	.version 2.3
+	.target sm_20
+	.address_size 64
+	// compiled with /usr/local/cuda/open64/lib//be
+	// nvopencc 4.0 built on 2011-02-18
+
+	.visible .func (.param .s32 __cudaretf__Z7maximumiii) _Z7maximumiii (.param .s32 __cudaparmf1__Z7maximumiii, .param .s32 __cudaparmf2__Z7maximumiii, .param .s32 __cudaparmf3__Z7maximumiii)
+
+	//-----------------------------------------------------------
+	// Compiling /tmp/tmpxft_000018f1_00000000-9_needle.cpp3.i (/tmp/ccBI#.eJqJwf)
+	//-----------------------------------------------------------
+
+	//-----------------------------------------------------------
+	// Options:
+	//-----------------------------------------------------------
+	//  Target:ptx, ISA:sm_20, Endian:little, Pointer Size:64
+	//  -O3	(Optimization level)
+	//  -g0	(Debug level)
+	//  -m2	(Report advisories)
+	//-----------------------------------------------------------
+
+	.file	1	"<command-line>"
+	.file	2	"/tmp/tmpxft_000018f1_00000000-8_needle.cudafe2.gpu"
+	.file	3	"/usr/lib/x86_64-linux-gnu/gcc/x86_64-linux-gnu/4.5.2/include/stddef.h"
+	.file	4	"/usr/local/cuda/bin/../include/crt/device_runtime.h"
+	.file	5	"/usr/local/cuda/bin/../include/host_defines.h"
+	.file	6	"/usr/local/cuda/bin/../include/builtin_types.h"
+	.file	7	"/usr/local/cuda/bin/../include/device_types.h"
+	.file	8	"/usr/local/cuda/bin/../include/driver_types.h"
+	.file	9	"/usr/local/cuda/bin/../include/surface_types.h"
+	.file	10	"/usr/local/cuda/bin/../include/texture_types.h"
+	.file	11	"/usr/local/cuda/bin/../include/vector_types.h"
+	.file	12	"/usr/local/cuda/bin/../include/device_launch_parameters.h"
+	.file	13	"/usr/local/cuda/bin/../include/crt/storage_class.h"
+	.file	14	"/usr/include/bits/types.h"
+	.file	15	"/usr/include/time.h"
+	.file	16	"needle_kernel.cu"
+	.file	17	"/usr/local/cuda/bin/../include/common_functions.h"
+	.file	18	"/usr/local/cuda/bin/../include/math_functions.h"
+	.file	19	"/usr/local/cuda/bin/../include/math_constants.h"
+	.file	20	"/usr/local/cuda/bin/../include/device_functions.h"
+	.file	21	"/usr/local/cuda/bin/../include/sm_11_atomic_functions.h"
+	.file	22	"/usr/local/cuda/bin/../include/sm_12_atomic_functions.h"
+	.file	23	"/usr/local/cuda/bin/../include/sm_13_double_functions.h"
+	.file	24	"/usr/local/cuda/bin/../include/sm_20_atomic_functions.h"
+	.file	25	"/usr/local/cuda/bin/../include/sm_20_intrinsics.h"
+	.file	26	"/usr/local/cuda/bin/../include/surface_functions.h"
+	.file	27	"/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+	.file	28	"/usr/local/cuda/bin/../include/math_functions_dbl_ptx3.h"
+
+
+	.visible .func (.param .s32 __cudaretf__Z7maximumiii) _Z7maximumiii (.param .s32 __cudaparmf1__Z7maximumiii, .param .s32 __cudaparmf2__Z7maximumiii, .param .s32 __cudaparmf3__Z7maximumiii)
+	{
+	.reg .u32 %r<10>;
+	.reg .pred %p<4>;
+	.loc	16	11	0
+$LDWbegin__Z7maximumiii:
+	ld.param.u32 	%r1, [__cudaparmf1__Z7maximumiii];
+	mov.s32 	%r2, %r1;
+	ld.param.u32 	%r3, [__cudaparmf2__Z7maximumiii];
+	mov.s32 	%r4, %r3;
+	ld.param.u32 	%r5, [__cudaparmf3__Z7maximumiii];
+	mov.s32 	%r6, %r5;
+	setp.le.s32 	%p1, %r2, %r4;
+	selp.s32 	%r7, %r4, %r2, %p1;
+	setp.le.s32 	%p2, %r7, %r6;
+	selp.s32 	%r8, %r6, %r7, %p2;
+	st.param.s32 	[__cudaretf__Z7maximumiii], %r8;
+	ret;
+$LDWend__Z7maximumiii:
+	} // _Z7maximumiii
+
+	.entry _Z20needle_cuda_shared_1PiS_S_iiii (
+		.param .u64 __cudaparm__Z20needle_cuda_shared_1PiS_S_iiii_referrence,
+		.param .u64 __cudaparm__Z20needle_cuda_shared_1PiS_S_iiii_matrix_cuda,
+		.param .u64 __cudaparm__Z20needle_cuda_shared_1PiS_S_iiii_matrix_cuda_out,
+		.param .s32 __cudaparm__Z20needle_cuda_shared_1PiS_S_iiii_cols,
+		.param .s32 __cudaparm__Z20needle_cuda_shared_1PiS_S_iiii_penalty,
+		.param .s32 __cudaparm__Z20needle_cuda_shared_1PiS_S_iiii_i,
+		.param .s32 __cudaparm__Z20needle_cuda_shared_1PiS_S_iiii_block_width)
+	{
+	.reg .u32 %r<109>;
+	.reg .u64 %rd<104>;
+	.reg .pred %p<11>;
+	.shared .align 4 .b8 __cuda___cuda_local_var_40361_31_non_const_temp40[1156];
+	.shared .align 4 .b8 __cuda___cuda_local_var_40362_31_non_const_ref1196[1024];
+	.loc	16	33	0
+$LDWbegin__Z20needle_cuda_shared_1PiS_S_iiii:
+	mov.u64 	%rd1, __cuda___cuda_local_var_40361_31_non_const_temp40;
+	cvt.s32.u32 	%r1, %ctaid.x;
+	ld.param.s32 	%r2, [__cudaparm__Z20needle_cuda_shared_1PiS_S_iiii_i];
+	sub.s32 	%r3, %r2, %r1;
+	cvt.s32.u32 	%r4, %tid.x;
+	cvt.s64.s32 	%rd2, %r4;
+	sub.s32 	%r5, %r3, 1;
+	ld.param.s32 	%r6, [__cudaparm__Z20needle_cuda_shared_1PiS_S_iiii_cols];
+	mul.lo.s32 	%r7, %r5, %r6;
+	mul.wide.s32 	%rd3, %r4, 68;
+	add.u64 	%rd4, %rd1, %rd3;
+	add.s32 	%r8, %r7, %r1;
+	mul.lo.s32 	%r9, %r8, 16;
+	ld.param.u64 	%rd5, [__cudaparm__Z20needle_cuda_shared_1PiS_S_iiii_matrix_cuda];
+	mov.u32 	%r10, 0;
+	setp.ne.s32 	%p1, %r4, %r10;
+	@%p1 bra 	$Lt_1_9730;
+	.loc	16	50	0
+	cvt.s64.s32 	%rd6, %r9;
+	mul.wide.s32 	%rd7, %r9, 4;
+	add.u64 	%rd8, %rd5, %rd7;
+	ldu.global.s32 	%r11, [%rd8+0];
+	st.shared.s32 	[%rd4+0], %r11;
+$Lt_1_9730:
+	mov.u64 	%rd9, __cuda___cuda_local_var_40362_31_non_const_ref1196;
+	.loc	16	54	0
+	mul.lo.u64 	%rd10, %rd2, 4;
+	add.u64 	%rd11, %rd10, %rd9;
+	add.s32 	%r12, %r9, %r4;
+	add.s32 	%r13, %r12, %r6;
+	cvt.s64.s32 	%rd12, %r13;
+	mul.wide.s32 	%rd13, %r13, 4;
+	ld.param.u64 	%rd14, [__cudaparm__Z20needle_cuda_shared_1PiS_S_iiii_referrence];
+	add.u64 	%rd15, %rd13, %rd14;
+	ld.global.s32 	%r14, [%rd15+4];
+	st.shared.s32 	[%rd11+0], %r14;
+	add.s32 	%r15, %r13, %r6;
+	cvt.s64.s32 	%rd16, %r15;
+	mul.wide.s32 	%rd17, %r15, 4;
+	add.u64 	%rd18, %rd17, %rd14;
+	ld.global.s32 	%r16, [%rd18+4];
+	st.shared.s32 	[%rd11+64], %r16;
+	mul.lo.s32 	%r17, %r6, 2;
+	add.s32 	%r18, %r13, %r17;
+	cvt.s64.s32 	%rd19, %r18;
+	mul.wide.s32 	%rd20, %r18, 4;
+	add.u64 	%rd21, %rd20, %rd14;
+	ld.global.s32 	%r19, [%rd21+4];
+	st.shared.s32 	[%rd11+128], %r19;
+	mul.lo.s32 	%r20, %r6, 3;
+	add.s32 	%r21, %r13, %r20;
+	cvt.s64.s32 	%rd22, %r21;
+	mul.wide.s32 	%rd23, %r21, 4;
+	add.u64 	%rd24, %rd23, %rd14;
+	ld.global.s32 	%r22, [%rd24+4];
+	st.shared.s32 	[%rd11+192], %r22;
+	mul.lo.s32 	%r23, %r6, 4;
+	add.s32 	%r24, %r13, %r23;
+	cvt.s64.s32 	%rd25, %r24;
+	mul.wide.s32 	%rd26, %r24, 4;
+	add.u64 	%rd27, %rd26, %rd14;
+	ld.global.s32 	%r25, [%rd27+4];
+	st.shared.s32 	[%rd11+256], %r25;
+	mul.lo.s32 	%r26, %r6, 5;
+	add.s32 	%r27, %r13, %r26;
+	cvt.s64.s32 	%rd28, %r27;
+	mul.wide.s32 	%rd29, %r27, 4;
+	add.u64 	%rd30, %rd29, %rd14;
+	ld.global.s32 	%r28, [%rd30+4];
+	st.shared.s32 	[%rd11+320], %r28;
+	mul.lo.s32 	%r29, %r6, 6;
+	add.s32 	%r30, %r13, %r29;
+	cvt.s64.s32 	%rd31, %r30;
+	mul.wide.s32 	%rd32, %r30, 4;
+	add.u64 	%rd33, %rd32, %rd14;
+	ld.global.s32 	%r31, [%rd33+4];
+	st.shared.s32 	[%rd11+384], %r31;
+	mul.lo.s32 	%r32, %r6, 7;
+	add.s32 	%r33, %r13, %r32;
+	cvt.s64.s32 	%rd34, %r33;
+	mul.wide.s32 	%rd35, %r33, 4;
+	add.u64 	%rd36, %rd35, %rd14;
+	ld.global.s32 	%r34, [%rd36+4];
+	st.shared.s32 	[%rd11+448], %r34;
+	mul.lo.s32 	%r35, %r6, 8;
+	add.s32 	%r36, %r13, %r35;
+	cvt.s64.s32 	%rd37, %r36;
+	mul.wide.s32 	%rd38, %r36, 4;
+	add.u64 	%rd39, %rd38, %rd14;
+	ld.global.s32 	%r37, [%rd39+4];
+	st.shared.s32 	[%rd11+512], %r37;
+	mul.lo.s32 	%r38, %r6, 9;
+	add.s32 	%r39, %r13, %r38;
+	cvt.s64.s32 	%rd40, %r39;
+	mul.wide.s32 	%rd41, %r39, 4;
+	add.u64 	%rd42, %rd41, %rd14;
+	ld.global.s32 	%r40, [%rd42+4];
+	st.shared.s32 	[%rd11+576], %r40;
+	mul.lo.s32 	%r41, %r6, 10;
+	add.s32 	%r42, %r13, %r41;
+	cvt.s64.s32 	%rd43, %r42;
+	mul.wide.s32 	%rd44, %r42, 4;
+	add.u64 	%rd45, %rd44, %rd14;
+	ld.global.s32 	%r43, [%rd45+4];
+	st.shared.s32 	[%rd11+640], %r43;
+	mul.lo.s32 	%r44, %r6, 11;
+	add.s32 	%r45, %r13, %r44;
+	cvt.s64.s32 	%rd46, %r45;
+	mul.wide.s32 	%rd47, %r45, 4;
+	add.u64 	%rd48, %rd47, %rd14;
+	ld.global.s32 	%r46, [%rd48+4];
+	st.shared.s32 	[%rd11+704], %r46;
+	mul.lo.s32 	%r47, %r6, 12;
+	add.s32 	%r48, %r13, %r47;
+	cvt.s64.s32 	%rd49, %r48;
+	mul.wide.s32 	%rd50, %r48, 4;
+	add.u64 	%rd51, %rd50, %rd14;
+	ld.global.s32 	%r49, [%rd51+4];
+	st.shared.s32 	[%rd11+768], %r49;
+	mul.lo.s32 	%r50, %r6, 13;
+	add.s32 	%r51, %r13, %r50;
+	cvt.s64.s32 	%rd52, %r51;
+	mul.wide.s32 	%rd53, %r51, 4;
+	add.u64 	%rd54, %rd53, %rd14;
+	ld.global.s32 	%r52, [%rd54+4];
+	st.shared.s32 	[%rd11+832], %r52;
+	mul.lo.s32 	%r53, %r6, 14;
+	add.s32 	%r54, %r13, %r53;
+	cvt.s64.s32 	%rd55, %r54;
+	mul.wide.s32 	%rd56, %r54, 4;
+	add.u64 	%rd57, %rd56, %rd14;
+	ld.global.s32 	%r55, [%rd57+4];
+	st.shared.s32 	[%rd11+896], %r55;
+	mul.lo.s32 	%r56, %r6, 15;
+	add.s32 	%r57, %r13, %r56;
+	cvt.s64.s32 	%rd58, %r57;
+	mul.wide.s32 	%rd59, %r57, 4;
+	add.u64 	%rd60, %rd59, %rd14;
+	ld.global.s32 	%r58, [%rd60+4];
+	st.shared.s32 	[%rd11+960], %r58;
+	.loc	16	56	0
+	bar.sync 	0;
+	.loc	16	58	0
+	add.s32 	%r59, %r9, %r6;
+	mul.lo.s32 	%r60, %r6, %r4;
+	add.s32 	%r61, %r59, %r60;
+	cvt.s64.s32 	%rd61, %r61;
+	mul.wide.s32 	%rd62, %r61, 4;
+	add.u64 	%rd63, %rd5, %rd62;
+	ld.global.s32 	%r62, [%rd63+0];
+	st.shared.s32 	[%rd4+68], %r62;
+	.loc	16	60	0
+	bar.sync 	0;
+	.loc	16	62	0
+	add.u64 	%rd64, %rd10, %rd1;
+	cvt.s64.s32 	%rd65, %r12;
+	mul.wide.s32 	%rd66, %r12, 4;
+	add.u64 	%rd67, %rd5, %rd66;
+	ld.global.s32 	%r63, [%rd67+4];
+	st.shared.s32 	[%rd64+4], %r63;
+	.loc	16	64	0
+	bar.sync 	0;
+	mov.s32 	%r64, 0;
+$Lt_1_10754:
+ //<loop> Loop body line 64, nesting depth: 1, iterations: 16
+	setp.lt.s32 	%p2, %r64, %r4;
+	@%p2 bra 	$Lt_1_11010;
+	.loc	16	19	0
+	sub.s32 	%r65, %r64, %r4;
+	cvt.s64.s32 	%rd68, %r65;
+	mul.wide.s32 	%rd69, %r65, 17;
+	add.u64 	%rd70, %rd2, %rd69;
+	mul.lo.u64 	%rd71, %rd70, 4;
+	add.u64 	%rd72, %rd1, %rd71;
+	mul.wide.s32 	%rd73, %r65, 16;
+	add.u64 	%rd74, %rd2, %rd73;
+	mul.lo.u64 	%rd75, %rd74, 4;
+	add.u64 	%rd76, %rd9, %rd75;
+	ld.shared.s32 	%r66, [%rd72+0];
+	ld.shared.s32 	%r67, [%rd72+68];
+	ld.shared.s32 	%r68, [%rd72+4];
+	ld.shared.s32 	%r69, [%rd76+0];
+	ld.param.s32 	%r70, [__cudaparm__Z20needle_cuda_shared_1PiS_S_iiii_penalty];
+	sub.s32 	%r71, %r67, %r70;
+	sub.s32 	%r72, %r68, %r70;
+	add.s32 	%r73, %r66, %r69;
+	setp.ge.s32 	%p3, %r71, %r73;
+	selp.s32 	%r74, %r71, %r73, %p3;
+	setp.ge.s32 	%p4, %r72, %r74;
+	selp.s32 	%r75, %r72, %r74, %p4;
+	.loc	16	74	0
+	st.shared.s32 	[%rd72+72], %r75;
+$Lt_1_11010:
+	.loc	16	82	0
+	bar.sync 	0;
+	add.s32 	%r64, %r64, 1;
+	mov.u32 	%r76, 16;
+	setp.ne.s32 	%p5, %r64, %r76;
+	@%p5 bra 	$Lt_1_10754;
+	mov.s32 	%r77, 14;
+$Lt_1_12290:
+ //<loop> Loop body line 82, nesting depth: 1, iterations: 15
+	setp.lt.s32 	%p6, %r77, %r4;
+	@%p6 bra 	$Lt_1_12546;
+	.loc	16	19	0
+	sub.s32 	%r78, %r4, %r77;
+	cvt.s64.s32 	%rd77, %r78;
+	mov.s32 	%r79, 16;
+	sub.s32 	%r80, %r79, %r4;
+	cvt.s64.s32 	%rd78, %r80;
+	mul.wide.s32 	%rd79, %r80, 17;
+	add.u64 	%rd80, %rd77, %rd79;
+	mul.lo.u64 	%rd81, %rd80, 4;
+	add.u64 	%rd82, %rd1, %rd81;
+	mul.wide.s32 	%rd83, %r80, 16;
+	add.u64 	%rd84, %rd77, %rd83;
+	mul.lo.u64 	%rd85, %rd84, 4;
+	add.u64 	%rd86, %rd9, %rd85;
+	ld.shared.s32 	%r81, [%rd82+-8];
+	ld.shared.s32 	%r82, [%rd82+60];
+	ld.shared.s32 	%r83, [%rd82+-4];
+	ld.shared.s32 	%r84, [%rd86+-4];
+	ld.param.s32 	%r85, [__cudaparm__Z20needle_cuda_shared_1PiS_S_iiii_penalty];
+	sub.s32 	%r86, %r82, %r85;
+	sub.s32 	%r87, %r83, %r85;
+	add.s32 	%r88, %r81, %r84;
+	setp.ge.s32 	%p7, %r86, %r88;
+	selp.s32 	%r89, %r86, %r88, %p7;
+	setp.ge.s32 	%p8, %r87, %r89;
+	selp.s32 	%r90, %r87, %r89, %p8;
+	.loc	16	93	0
+	st.shared.s32 	[%rd82+64], %r90;
+$Lt_1_12546:
+	.loc	16	99	0
+	bar.sync 	0;
+	sub.s32 	%r77, %r77, 1;
+	mov.u32 	%r91, -1;
+	setp.ne.s32 	%p9, %r77, %r91;
+	@%p9 bra 	$Lt_1_12290;
+	.loc	16	103	0
+	ld.shared.s32 	%r92, [%rd64+72];
+	add.u64 	%rd87, %rd13, %rd5;
+	st.global.s32 	[%rd87+4], %r92;
+	ld.shared.s32 	%r93, [%rd64+140];
+	add.u64 	%rd88, %rd17, %rd5;
+	st.global.s32 	[%rd88+4], %r93;
+	ld.shared.s32 	%r94, [%rd64+208];
+	add.u64 	%rd89, %rd20, %rd5;
+	st.global.s32 	[%rd89+4], %r94;
+	ld.shared.s32 	%r95, [%rd64+276];
+	add.u64 	%rd90, %rd23, %rd5;
+	st.global.s32 	[%rd90+4], %r95;
+	ld.shared.s32 	%r96, [%rd64+344];
+	add.u64 	%rd91, %rd26, %rd5;
+	st.global.s32 	[%rd91+4], %r96;
+	ld.shared.s32 	%r97, [%rd64+412];
+	add.u64 	%rd92, %rd29, %rd5;
+	st.global.s32 	[%rd92+4], %r97;
+	ld.shared.s32 	%r98, [%rd64+480];
+	add.u64 	%rd93, %rd32, %rd5;
+	st.global.s32 	[%rd93+4], %r98;
+	ld.shared.s32 	%r99, [%rd64+548];
+	add.u64 	%rd94, %rd35, %rd5;
+	st.global.s32 	[%rd94+4], %r99;
+	ld.shared.s32 	%r100, [%rd64+616];
+	add.u64 	%rd95, %rd38, %rd5;
+	st.global.s32 	[%rd95+4], %r100;
+	ld.shared.s32 	%r101, [%rd64+684];
+	add.u64 	%rd96, %rd41, %rd5;
+	st.global.s32 	[%rd96+4], %r101;
+	ld.shared.s32 	%r102, [%rd64+752];
+	add.u64 	%rd97, %rd44, %rd5;
+	st.global.s32 	[%rd97+4], %r102;
+	ld.shared.s32 	%r103, [%rd64+820];
+	add.u64 	%rd98, %rd47, %rd5;
+	st.global.s32 	[%rd98+4], %r103;
+	ld.shared.s32 	%r104, [%rd64+888];
+	add.u64 	%rd99, %rd50, %rd5;
+	st.global.s32 	[%rd99+4], %r104;
+	ld.shared.s32 	%r105, [%rd64+956];
+	add.u64 	%rd100, %rd53, %rd5;
+	st.global.s32 	[%rd100+4], %r105;
+	ld.shared.s32 	%r106, [%rd64+1024];
+	add.u64 	%rd101, %rd56, %rd5;
+	st.global.s32 	[%rd101+4], %r106;
+	ld.shared.s32 	%r107, [%rd64+1092];
+	add.u64 	%rd102, %rd59, %rd5;
+	st.global.s32 	[%rd102+4], %r107;
+	.loc	16	105	0
+	exit;
+$LDWend__Z20needle_cuda_shared_1PiS_S_iiii:
+	} // _Z20needle_cuda_shared_1PiS_S_iiii
+
+	.entry _Z20needle_cuda_shared_2PiS_S_iiii (
+		.param .u64 __cudaparm__Z20needle_cuda_shared_2PiS_S_iiii_referrence,
+		.param .u64 __cudaparm__Z20needle_cuda_shared_2PiS_S_iiii_matrix_cuda,
+		.param .u64 __cudaparm__Z20needle_cuda_shared_2PiS_S_iiii_matrix_cuda_out,
+		.param .s32 __cudaparm__Z20needle_cuda_shared_2PiS_S_iiii_cols,
+		.param .s32 __cudaparm__Z20needle_cuda_shared_2PiS_S_iiii_penalty,
+		.param .s32 __cudaparm__Z20needle_cuda_shared_2PiS_S_iiii_i,
+		.param .s32 __cudaparm__Z20needle_cuda_shared_2PiS_S_iiii_block_width)
+	{
+	.reg .u32 %r<112>;
+	.reg .u64 %rd<104>;
+	.reg .pred %p<11>;
+	.shared .align 4 .b8 __cuda___cuda_local_var_40446_31_non_const_ref2264[1024];
+	.shared .align 4 .b8 __cuda___cuda_local_var_40445_31_non_const_temp3288[1156];
+	.loc	16	116	0
+$LDWbegin__Z20needle_cuda_shared_2PiS_S_iiii:
+	mov.u64 	%rd1, __cuda___cuda_local_var_40446_31_non_const_ref2264;
+	.loc	16	134	0
+	cvt.s32.u32 	%r1, %ctaid.x;
+	ld.param.s32 	%r2, [__cudaparm__Z20needle_cuda_shared_2PiS_S_iiii_block_width];
+	sub.s32 	%r3, %r2, %r1;
+	add.s32 	%r4, %r1, %r2;
+	cvt.s32.u32 	%r5, %tid.x;
+	cvt.s64.s32 	%rd2, %r5;
+	sub.s32 	%r6, %r3, 1;
+	ld.param.s32 	%r7, [__cudaparm__Z20needle_cuda_shared_2PiS_S_iiii_i];
+	sub.s32 	%r8, %r4, %r7;
+	mul.wide.s32 	%rd3, %r5, 4;
+	ld.param.s32 	%r9, [__cudaparm__Z20needle_cuda_shared_2PiS_S_iiii_cols];
+	mul.lo.s32 	%r10, %r6, %r9;
+	add.u64 	%rd4, %rd3, %rd1;
+	add.s32 	%r11, %r8, %r10;
+	mul.lo.s32 	%r12, %r11, 16;
+	add.s32 	%r13, %r12, %r5;
+	add.s32 	%r14, %r13, %r9;
+	cvt.s64.s32 	%rd5, %r14;
+	mul.wide.s32 	%rd6, %r14, 4;
+	ld.param.u64 	%rd7, [__cudaparm__Z20needle_cuda_shared_2PiS_S_iiii_referrence];
+	add.u64 	%rd8, %rd6, %rd7;
+	ld.global.s32 	%r15, [%rd8+4];
+	st.shared.s32 	[%rd4+0], %r15;
+	add.s32 	%r16, %r14, %r9;
+	cvt.s64.s32 	%rd9, %r16;
+	mul.wide.s32 	%rd10, %r16, 4;
+	add.u64 	%rd11, %rd10, %rd7;
+	ld.global.s32 	%r17, [%rd11+4];
+	st.shared.s32 	[%rd4+64], %r17;
+	mul.lo.s32 	%r18, %r9, 2;
+	add.s32 	%r19, %r14, %r18;
+	cvt.s64.s32 	%rd12, %r19;
+	mul.wide.s32 	%rd13, %r19, 4;
+	add.u64 	%rd14, %rd13, %rd7;
+	ld.global.s32 	%r20, [%rd14+4];
+	st.shared.s32 	[%rd4+128], %r20;
+	mul.lo.s32 	%r21, %r9, 3;
+	add.s32 	%r22, %r14, %r21;
+	cvt.s64.s32 	%rd15, %r22;
+	mul.wide.s32 	%rd16, %r22, 4;
+	add.u64 	%rd17, %rd16, %rd7;
+	ld.global.s32 	%r23, [%rd17+4];
+	st.shared.s32 	[%rd4+192], %r23;
+	mul.lo.s32 	%r24, %r9, 4;
+	add.s32 	%r25, %r14, %r24;
+	cvt.s64.s32 	%rd18, %r25;
+	mul.wide.s32 	%rd19, %r25, 4;
+	add.u64 	%rd20, %rd19, %rd7;
+	ld.global.s32 	%r26, [%rd20+4];
+	st.shared.s32 	[%rd4+256], %r26;
+	mul.lo.s32 	%r27, %r9, 5;
+	add.s32 	%r28, %r14, %r27;
+	cvt.s64.s32 	%rd21, %r28;
+	mul.wide.s32 	%rd22, %r28, 4;
+	add.u64 	%rd23, %rd22, %rd7;
+	ld.global.s32 	%r29, [%rd23+4];
+	st.shared.s32 	[%rd4+320], %r29;
+	mul.lo.s32 	%r30, %r9, 6;
+	add.s32 	%r31, %r14, %r30;
+	cvt.s64.s32 	%rd24, %r31;
+	mul.wide.s32 	%rd25, %r31, 4;
+	add.u64 	%rd26, %rd25, %rd7;
+	ld.global.s32 	%r32, [%rd26+4];
+	st.shared.s32 	[%rd4+384], %r32;
+	mul.lo.s32 	%r33, %r9, 7;
+	add.s32 	%r34, %r14, %r33;
+	cvt.s64.s32 	%rd27, %r34;
+	mul.wide.s32 	%rd28, %r34, 4;
+	add.u64 	%rd29, %rd28, %rd7;
+	ld.global.s32 	%r35, [%rd29+4];
+	st.shared.s32 	[%rd4+448], %r35;
+	mul.lo.s32 	%r36, %r9, 8;
+	add.s32 	%r37, %r14, %r36;
+	cvt.s64.s32 	%rd30, %r37;
+	mul.wide.s32 	%rd31, %r37, 4;
+	add.u64 	%rd32, %rd31, %rd7;
+	ld.global.s32 	%r38, [%rd32+4];
+	st.shared.s32 	[%rd4+512], %r38;
+	mul.lo.s32 	%r39, %r9, 9;
+	add.s32 	%r40, %r14, %r39;
+	cvt.s64.s32 	%rd33, %r40;
+	mul.wide.s32 	%rd34, %r40, 4;
+	add.u64 	%rd35, %rd34, %rd7;
+	ld.global.s32 	%r41, [%rd35+4];
+	st.shared.s32 	[%rd4+576], %r41;
+	mul.lo.s32 	%r42, %r9, 10;
+	add.s32 	%r43, %r14, %r42;
+	cvt.s64.s32 	%rd36, %r43;
+	mul.wide.s32 	%rd37, %r43, 4;
+	add.u64 	%rd38, %rd37, %rd7;
+	ld.global.s32 	%r44, [%rd38+4];
+	st.shared.s32 	[%rd4+640], %r44;
+	mul.lo.s32 	%r45, %r9, 11;
+	add.s32 	%r46, %r14, %r45;
+	cvt.s64.s32 	%rd39, %r46;
+	mul.wide.s32 	%rd40, %r46, 4;
+	add.u64 	%rd41, %rd40, %rd7;
+	ld.global.s32 	%r47, [%rd41+4];
+	st.shared.s32 	[%rd4+704], %r47;
+	mul.lo.s32 	%r48, %r9, 12;
+	add.s32 	%r49, %r14, %r48;
+	cvt.s64.s32 	%rd42, %r49;
+	mul.wide.s32 	%rd43, %r49, 4;
+	add.u64 	%rd44, %rd43, %rd7;
+	ld.global.s32 	%r50, [%rd44+4];
+	st.shared.s32 	[%rd4+768], %r50;
+	mul.lo.s32 	%r51, %r9, 13;
+	add.s32 	%r52, %r14, %r51;
+	cvt.s64.s32 	%rd45, %r52;
+	mul.wide.s32 	%rd46, %r52, 4;
+	add.u64 	%rd47, %rd46, %rd7;
+	ld.global.s32 	%r53, [%rd47+4];
+	st.shared.s32 	[%rd4+832], %r53;
+	mul.lo.s32 	%r54, %r9, 14;
+	add.s32 	%r55, %r14, %r54;
+	cvt.s64.s32 	%rd48, %r55;
+	mul.wide.s32 	%rd49, %r55, 4;
+	add.u64 	%rd50, %rd49, %rd7;
+	ld.global.s32 	%r56, [%rd50+4];
+	st.shared.s32 	[%rd4+896], %r56;
+	mul.lo.s32 	%r57, %r9, 15;
+	add.s32 	%r58, %r14, %r57;
+	cvt.s64.s32 	%rd51, %r58;
+	mul.wide.s32 	%rd52, %r58, 4;
+	add.u64 	%rd53, %rd52, %rd7;
+	ld.global.s32 	%r59, [%rd53+4];
+	st.shared.s32 	[%rd4+960], %r59;
+	.loc	16	136	0
+	bar.sync 	0;
+	mov.u64 	%rd54, __cuda___cuda_local_var_40445_31_non_const_temp3288;
+	mul.wide.s32 	%rd55, %r5, 68;
+	add.u64 	%rd56, %rd54, %rd55;
+	ld.param.u64 	%rd57, [__cudaparm__Z20needle_cuda_shared_2PiS_S_iiii_matrix_cuda];
+	mov.u32 	%r60, 0;
+	setp.ne.s32 	%p1, %r5, %r60;
+	@%p1 bra 	$Lt_2_9730;
+	.loc	16	139	0
+	cvt.s64.s32 	%rd58, %r12;
+	mul.wide.s32 	%rd59, %r12, 4;
+	add.u64 	%rd60, %rd57, %rd59;
+	ld.global.s32 	%r61, [%rd60+0];
+	st.shared.s32 	[%rd56+0], %r61;
+$Lt_2_9730:
+	.loc	16	142	0
+	add.s32 	%r62, %r12, %r9;
+	mul.lo.s32 	%r63, %r9, %r5;
+	add.s32 	%r64, %r62, %r63;
+	cvt.s64.s32 	%rd61, %r64;
+	mul.wide.s32 	%rd62, %r64, 4;
+	add.u64 	%rd63, %rd57, %rd62;
+	ld.global.s32 	%r65, [%rd63+0];
+	st.shared.s32 	[%rd56+68], %r65;
+	.loc	16	144	0
+	bar.sync 	0;
+	.loc	16	146	0
+	add.u64 	%rd64, %rd3, %rd54;
+	cvt.s64.s32 	%rd65, %r13;
+	mul.wide.s32 	%rd66, %r13, 4;
+	add.u64 	%rd67, %rd57, %rd66;
+	ld.global.s32 	%r66, [%rd67+4];
+	st.shared.s32 	[%rd64+4], %r66;
+	.loc	16	148	0
+	bar.sync 	0;
+	mov.s32 	%r67, 0;
+$Lt_2_10754:
+ //<loop> Loop body line 148, nesting depth: 1, iterations: 16
+	setp.lt.s32 	%p2, %r67, %r5;
+	@%p2 bra 	$Lt_2_11010;
+	.loc	16	19	0
+	sub.s32 	%r68, %r67, %r5;
+	cvt.s64.s32 	%rd68, %r68;
+	mul.wide.s32 	%rd69, %r68, 17;
+	add.u64 	%rd70, %rd2, %rd69;
+	mul.lo.u64 	%rd71, %rd70, 4;
+	add.u64 	%rd72, %rd54, %rd71;
+	mul.wide.s32 	%rd73, %r68, 16;
+	add.u64 	%rd74, %rd2, %rd73;
+	mul.lo.u64 	%rd75, %rd74, 4;
+	add.u64 	%rd76, %rd1, %rd75;
+	ld.shared.s32 	%r69, [%rd72+0];
+	ld.shared.s32 	%r70, [%rd72+68];
+	ld.shared.s32 	%r71, [%rd72+4];
+	ld.shared.s32 	%r72, [%rd76+0];
+	ld.param.s32 	%r73, [__cudaparm__Z20needle_cuda_shared_2PiS_S_iiii_penalty];
+	sub.s32 	%r74, %r70, %r73;
+	sub.s32 	%r75, %r71, %r73;
+	add.s32 	%r76, %r69, %r72;
+	setp.ge.s32 	%p3, %r74, %r76;
+	selp.s32 	%r77, %r74, %r76, %p3;
+	setp.ge.s32 	%p4, %r75, %r77;
+	selp.s32 	%r78, %r75, %r77, %p4;
+	.loc	16	158	0
+	st.shared.s32 	[%rd72+72], %r78;
+$Lt_2_11010:
+	.loc	16	164	0
+	bar.sync 	0;
+	add.s32 	%r67, %r67, 1;
+	mov.u32 	%r79, 16;
+	setp.ne.s32 	%p5, %r67, %r79;
+	@%p5 bra 	$Lt_2_10754;
+	mov.s32 	%r80, 14;
+$Lt_2_12290:
+ //<loop> Loop body line 164, nesting depth: 1, iterations: 15
+	setp.lt.s32 	%p6, %r80, %r5;
+	@%p6 bra 	$Lt_2_12546;
+	.loc	16	19	0
+	sub.s32 	%r81, %r5, %r80;
+	cvt.s64.s32 	%rd77, %r81;
+	mov.s32 	%r82, 16;
+	sub.s32 	%r83, %r82, %r5;
+	cvt.s64.s32 	%rd78, %r83;
+	mul.wide.s32 	%rd79, %r83, 17;
+	add.u64 	%rd80, %rd77, %rd79;
+	mul.lo.u64 	%rd81, %rd80, 4;
+	add.u64 	%rd82, %rd54, %rd81;
+	mul.wide.s32 	%rd83, %r83, 16;
+	add.u64 	%rd84, %rd77, %rd83;
+	mul.lo.u64 	%rd85, %rd84, 4;
+	add.u64 	%rd86, %rd1, %rd85;
+	ld.shared.s32 	%r84, [%rd82+-8];
+	ld.shared.s32 	%r85, [%rd82+60];
+	ld.shared.s32 	%r86, [%rd82+-4];
+	ld.shared.s32 	%r87, [%rd86+-4];
+	ld.param.s32 	%r88, [__cudaparm__Z20needle_cuda_shared_2PiS_S_iiii_penalty];
+	sub.s32 	%r89, %r85, %r88;
+	sub.s32 	%r90, %r86, %r88;
+	add.s32 	%r91, %r84, %r87;
+	setp.ge.s32 	%p7, %r89, %r91;
+	selp.s32 	%r92, %r89, %r91, %p7;
+	setp.ge.s32 	%p8, %r90, %r92;
+	selp.s32 	%r93, %r90, %r92, %p8;
+	.loc	16	176	0
+	st.shared.s32 	[%rd82+64], %r93;
+$Lt_2_12546:
+	.loc	16	183	0
+	bar.sync 	0;
+	sub.s32 	%r80, %r80, 1;
+	mov.u32 	%r94, -1;
+	setp.ne.s32 	%p9, %r80, %r94;
+	@%p9 bra 	$Lt_2_12290;
+	.loc	16	188	0
+	ld.shared.s32 	%r95, [%rd64+72];
+	add.u64 	%rd87, %rd6, %rd57;
+	st.global.s32 	[%rd87+4], %r95;
+	ld.shared.s32 	%r96, [%rd64+140];
+	add.u64 	%rd88, %rd10, %rd57;
+	st.global.s32 	[%rd88+4], %r96;
+	ld.shared.s32 	%r97, [%rd64+208];
+	add.u64 	%rd89, %rd13, %rd57;
+	st.global.s32 	[%rd89+4], %r97;
+	ld.shared.s32 	%r98, [%rd64+276];
+	add.u64 	%rd90, %rd16, %rd57;
+	st.global.s32 	[%rd90+4], %r98;
+	ld.shared.s32 	%r99, [%rd64+344];
+	add.u64 	%rd91, %rd19, %rd57;
+	st.global.s32 	[%rd91+4], %r99;
+	ld.shared.s32 	%r100, [%rd64+412];
+	add.u64 	%rd92, %rd22, %rd57;
+	st.global.s32 	[%rd92+4], %r100;
+	ld.shared.s32 	%r101, [%rd64+480];
+	add.u64 	%rd93, %rd25, %rd57;
+	st.global.s32 	[%rd93+4], %r101;
+	ld.shared.s32 	%r102, [%rd64+548];
+	add.u64 	%rd94, %rd28, %rd57;
+	st.global.s32 	[%rd94+4], %r102;
+	ld.shared.s32 	%r103, [%rd64+616];
+	add.u64 	%rd95, %rd31, %rd57;
+	st.global.s32 	[%rd95+4], %r103;
+	ld.shared.s32 	%r104, [%rd64+684];
+	add.u64 	%rd96, %rd34, %rd57;
+	st.global.s32 	[%rd96+4], %r104;
+	ld.shared.s32 	%r105, [%rd64+752];
+	add.u64 	%rd97, %rd37, %rd57;
+	st.global.s32 	[%rd97+4], %r105;
+	ld.shared.s32 	%r106, [%rd64+820];
+	add.u64 	%rd98, %rd40, %rd57;
+	st.global.s32 	[%rd98+4], %r106;
+	ld.shared.s32 	%r107, [%rd64+888];
+	add.u64 	%rd99, %rd43, %rd57;
+	st.global.s32 	[%rd99+4], %r107;
+	ld.shared.s32 	%r108, [%rd64+956];
+	add.u64 	%rd100, %rd46, %rd57;
+	st.global.s32 	[%rd100+4], %r108;
+	ld.shared.s32 	%r109, [%rd64+1024];
+	add.u64 	%rd101, %rd49, %rd57;
+	st.global.s32 	[%rd101+4], %r109;
+	ld.shared.s32 	%r110, [%rd64+1092];
+	add.u64 	%rd102, %rd52, %rd57;
+	st.global.s32 	[%rd102+4], %r110;
+	.loc	16	190	0
+	exit;
+$LDWend__Z20needle_cuda_shared_2PiS_S_iiii:
+	} // _Z20needle_cuda_shared_2PiS_S_iiii
+

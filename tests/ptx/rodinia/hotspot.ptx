@@ -1,0 +1,342 @@
+	.version 2.3
+	.target sm_20
+	.address_size 64
+	// compiled with /usr/local/cuda/open64/lib//be
+	// nvopencc 4.0 built on 2011-02-18
+
+	//-----------------------------------------------------------
+	// Compiling /tmp/tmpxft_00001783_00000000-9_hotspot.cpp3.i (/tmp/ccBI#.Ajf8ff)
+	//-----------------------------------------------------------
+
+	//-----------------------------------------------------------
+	// Options:
+	//-----------------------------------------------------------
+	//  Target:ptx, ISA:sm_20, Endian:little, Pointer Size:64
+	//  -O3	(Optimization level)
+	//  -g0	(Debug level)
+	//  -m2	(Report advisories)
+	//-----------------------------------------------------------
+
+	.file	1	"<command-line>"
+	.file	2	"/tmp/tmpxft_00001783_00000000-8_hotspot.cudafe2.gpu"
+	.file	3	"/usr/lib/x86_64-linux-gnu/gcc/x86_64-linux-gnu/4.5.2/include/stddef.h"
+	.file	4	"/usr/local/cuda/bin/../include/crt/device_runtime.h"
+	.file	5	"/usr/local/cuda/bin/../include/host_defines.h"
+	.file	6	"/usr/local/cuda/bin/../include/builtin_types.h"
+	.file	7	"/usr/local/cuda/bin/../include/device_types.h"
+	.file	8	"/usr/local/cuda/bin/../include/driver_types.h"
+	.file	9	"/usr/local/cuda/bin/../include/surface_types.h"
+	.file	10	"/usr/local/cuda/bin/../include/texture_types.h"
+	.file	11	"/usr/local/cuda/bin/../include/vector_types.h"
+	.file	12	"/usr/local/cuda/bin/../include/device_launch_parameters.h"
+	.file	13	"/usr/local/cuda/bin/../include/crt/storage_class.h"
+	.file	14	"/usr/include/bits/types.h"
+	.file	15	"/usr/include/time.h"
+	.file	16	"hotspot.cu"
+	.file	17	"/usr/local/cuda/bin/../include/common_functions.h"
+	.file	18	"/usr/local/cuda/bin/../include/math_functions.h"
+	.file	19	"/usr/local/cuda/bin/../include/math_constants.h"
+	.file	20	"/usr/local/cuda/bin/../include/device_functions.h"
+	.file	21	"/usr/local/cuda/bin/../include/sm_11_atomic_functions.h"
+	.file	22	"/usr/local/cuda/bin/../include/sm_12_atomic_functions.h"
+	.file	23	"/usr/local/cuda/bin/../include/sm_13_double_functions.h"
+	.file	24	"/usr/local/cuda/bin/../include/sm_20_atomic_functions.h"
+	.file	25	"/usr/local/cuda/bin/../include/sm_20_intrinsics.h"
+	.file	26	"/usr/local/cuda/bin/../include/surface_functions.h"
+	.file	27	"/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+	.file	28	"/usr/local/cuda/bin/../include/math_functions_dbl_ptx3.h"
+
+
+	.entry _Z14calculate_tempiPfS_S_iiiiffffff (
+		.param .s32 __cudaparm__Z14calculate_tempiPfS_S_iiiiffffff_iteration,
+		.param .u64 __cudaparm__Z14calculate_tempiPfS_S_iiiiffffff_power,
+		.param .u64 __cudaparm__Z14calculate_tempiPfS_S_iiiiffffff_temp_src,
+		.param .u64 __cudaparm__Z14calculate_tempiPfS_S_iiiiffffff_temp_dst,
+		.param .s32 __cudaparm__Z14calculate_tempiPfS_S_iiiiffffff_grid_cols,
+		.param .s32 __cudaparm__Z14calculate_tempiPfS_S_iiiiffffff_grid_rows,
+		.param .s32 __cudaparm__Z14calculate_tempiPfS_S_iiiiffffff_border_cols,
+		.param .s32 __cudaparm__Z14calculate_tempiPfS_S_iiiiffffff_border_rows,
+		.param .f32 __cudaparm__Z14calculate_tempiPfS_S_iiiiffffff_Cap,
+		.param .f32 __cudaparm__Z14calculate_tempiPfS_S_iiiiffffff_Rx,
+		.param .f32 __cudaparm__Z14calculate_tempiPfS_S_iiiiffffff_Ry,
+		.param .f32 __cudaparm__Z14calculate_tempiPfS_S_iiiiffffff_Rz,
+		.param .f32 __cudaparm__Z14calculate_tempiPfS_S_iiiiffffff_step,
+		.param .f32 __cudaparm__Z14calculate_tempiPfS_S_iiiiffffff_time_elapsed)
+	{
+	.reg .u16 %rh<3>;
+	.reg .u32 %r<81>;
+	.reg .u64 %rd<59>;
+	.reg .f32 %f<27>;
+	.reg .f64 %fd<17>;
+	.reg .pred %p<25>;
+	.shared .align 4 .b8 __cuda___cuda_local_var_32792_39_non_const_temp_on_cuda72[1024];
+	.shared .align 4 .b8 __cuda___cuda_local_var_32793_39_non_const_power_on_cuda1096[1024];
+	.shared .align 4 .b8 __cuda___cuda_local_var_32794_39_non_const_temp_t2120[1024];
+	// __cuda_local_var_32860_14_non_const_computed = 0
+	.loc	16	107	0
+$LDWbegin__Z14calculate_tempiPfS_S_iiiiffffff:
+	ld.param.s32 	%r1, [__cudaparm__Z14calculate_tempiPfS_S_iiiiffffff_iteration];
+	mul.lo.s32 	%r2, %r1, 2;
+	mov.s32 	%r3, 16;
+	sub.s32 	%r4, %r3, %r2;
+	cvt.s32.u32 	%r5, %ctaid.y;
+	mul.lo.s32 	%r6, %r5, %r4;
+	ld.param.s32 	%r7, [__cudaparm__Z14calculate_tempiPfS_S_iiiiffffff_border_rows];
+	sub.s32 	%r8, %r6, %r7;
+	cvt.s32.u32 	%r9, %tid.y;
+	add.s32 	%r10, %r8, %r9;
+	mov.u32 	%r11, 0;
+	setp.lt.s32 	%p1, %r10, %r11;
+	@%p1 bra 	$Lt_0_15106;
+	ld.param.s32 	%r12, [__cudaparm__Z14calculate_tempiPfS_S_iiiiffffff_grid_rows];
+	sub.s32 	%r13, %r12, 1;
+	setp.gt.s32 	%p2, %r10, %r13;
+	@%p2 bra 	$Lt_0_15106;
+	cvt.s32.u32 	%r14, %ctaid.x;
+	mul.lo.s32 	%r15, %r14, %r4;
+	ld.param.s32 	%r16, [__cudaparm__Z14calculate_tempiPfS_S_iiiiffffff_border_cols];
+	sub.s32 	%r17, %r15, %r16;
+	cvt.s32.u32 	%r18, %tid.x;
+	add.s32 	%r19, %r17, %r18;
+	mov.u32 	%r20, 0;
+	setp.lt.s32 	%p3, %r19, %r20;
+	@%p3 bra 	$Lt_0_15106;
+	ld.param.s32 	%r21, [__cudaparm__Z14calculate_tempiPfS_S_iiiiffffff_grid_cols];
+	sub.s32 	%r22, %r21, 1;
+	setp.gt.s32 	%p4, %r19, %r22;
+	@%p4 bra 	$Lt_0_15106;
+	.loc	16	154	0
+	mov.u64 	%rd1, __cuda___cuda_local_var_32792_39_non_const_temp_on_cuda72;
+	mov.u64 	%rd2, __cuda___cuda_local_var_32793_39_non_const_power_on_cuda1096;
+	cvt.s64.s32 	%rd3, %r18;
+	cvt.s64.s32 	%rd4, %r9;
+	mul.wide.s32 	%rd5, %r9, 16;
+	add.u64 	%rd6, %rd3, %rd5;
+	mul.lo.u64 	%rd7, %rd6, 4;
+	mul.lo.s32 	%r23, %r10, %r12;
+	add.s32 	%r24, %r19, %r23;
+	cvt.s64.s32 	%rd8, %r24;
+	mul.wide.s32 	%rd9, %r24, 4;
+	ld.param.u64 	%rd10, [__cudaparm__Z14calculate_tempiPfS_S_iiiiffffff_temp_src];
+	add.u64 	%rd11, %rd10, %rd9;
+	ld.global.f32 	%f1, [%rd11+0];
+	add.u64 	%rd12, %rd7, %rd1;
+	st.shared.f32 	[%rd12+0], %f1;
+	.loc	16	155	0
+	ld.param.u64 	%rd13, [__cudaparm__Z14calculate_tempiPfS_S_iiiiffffff_power];
+	add.u64 	%rd14, %rd13, %rd9;
+	ld.global.f32 	%f2, [%rd14+0];
+	add.u64 	%rd15, %rd7, %rd2;
+	st.shared.f32 	[%rd15+0], %f2;
+$Lt_0_15106:
+$L_0_10498:
+	mov.u64 	%rd1, __cuda___cuda_local_var_32792_39_non_const_temp_on_cuda72;
+	mov.u64 	%rd2, __cuda___cuda_local_var_32793_39_non_const_power_on_cuda1096;
+	.loc	16	157	0
+	bar.sync 	0;
+	mov.u32 	%r25, 0;
+	setp.le.s32 	%p5, %r1, %r25;
+	@%p5 bra 	$Lt_0_15618;
+	cvt.s32.u32 	%r26, %ctaid.x;
+	mul.lo.s32 	%r27, %r26, %r4;
+	ld.param.s32 	%r28, [__cudaparm__Z14calculate_tempiPfS_S_iiiiffffff_border_cols];
+	sub.s32 	%r29, %r27, %r28;
+	mov.s32 	%r30, 0;
+	setp.lt.s32 	%p6, %r29, %r30;
+	neg.s32 	%r31, %r29;
+	mov.s32 	%r32, 0;
+	selp.s32 	%r33, %r31, %r32, %p6;
+	ld.param.s32 	%r34, [__cudaparm__Z14calculate_tempiPfS_S_iiiiffffff_grid_cols];
+	sub.s32 	%r35, %r34, 1;
+	add.s32 	%r36, %r29, 15;
+	sub.s32 	%r37, %r34, %r29;
+	setp.gt.s32 	%p7, %r36, %r35;
+	sub.s32 	%r38, %r37, 1;
+	mov.s32 	%r39, 15;
+	selp.s32 	%r40, %r38, %r39, %p7;
+	mov.s32 	%r41, 0;
+	setp.lt.s32 	%p8, %r8, %r41;
+	neg.s32 	%r42, %r8;
+	mov.s32 	%r43, 0;
+	selp.s32 	%r44, %r42, %r43, %p8;
+	ld.param.s32 	%r45, [__cudaparm__Z14calculate_tempiPfS_S_iiiiffffff_grid_rows];
+	sub.s32 	%r46, %r45, 1;
+	add.s32 	%r47, %r8, 15;
+	sub.s32 	%r48, %r45, %r8;
+	setp.gt.s32 	%p9, %r47, %r46;
+	sub.s32 	%r49, %r48, 1;
+	mov.s32 	%r50, 15;
+	selp.s32 	%r51, %r49, %r50, %p9;
+	ld.param.f32 	%f3, [__cudaparm__Z14calculate_tempiPfS_S_iiiiffffff_step];
+	ld.param.f32 	%f4, [__cudaparm__Z14calculate_tempiPfS_S_iiiiffffff_Cap];
+	div.rn.f32 	%f5, %f3, %f4;
+	ld.param.f32 	%f6, [__cudaparm__Z14calculate_tempiPfS_S_iiiiffffff_Rz];
+	rcp.rn.f32 	%f7, %f6;
+	ld.param.f32 	%f8, [__cudaparm__Z14calculate_tempiPfS_S_iiiiffffff_Ry];
+	rcp.rn.f32 	%f9, %f8;
+	sub.s32 	%r52, %r9, 1;
+	max.s32 	%r53, %r52, %r44;
+	add.s32 	%r54, %r9, 1;
+	min.s32 	%r55, %r54, %r51;
+	ld.param.f32 	%f10, [__cudaparm__Z14calculate_tempiPfS_S_iiiiffffff_Rx];
+	rcp.rn.f32 	%f11, %f10;
+	cvt.s32.u32 	%r18, %tid.x;
+	sub.s32 	%r56, %r18, 1;
+	max.s32 	%r57, %r56, %r33;
+	add.s32 	%r58, %r18, 1;
+	min.s32 	%r59, %r58, %r40;
+	mov.s32 	%r60, %r1;
+	sub.s32 	%r61, %r1, 1;
+	mov.s32 	%r62, 0;
+	mov.u64 	%rd16, __cuda___cuda_local_var_32794_39_non_const_temp_t2120;
+	mov.s32 	%r63, %r60;
+$Lt_0_13058:
+ //<loop> Loop body line 157, nesting depth: 1, estimated iterations: unknown
+	.loc	16	179	0
+	mov.s32 	%r64, 0;
+	add.s32 	%r65, %r62, 1;
+	setp.gt.s32 	%p10, %r65, %r18;
+	@%p10 bra 	$Lt_0_17410;
+	mov.s32 	%r66, 14;
+	sub.s32 	%r67, %r66, %r62;
+	setp.lt.s32 	%p11, %r67, %r18;
+	@%p11 bra 	$Lt_0_17410;
+	setp.gt.s32 	%p12, %r65, %r9;
+	@%p12 bra 	$Lt_0_17410;
+	setp.lt.s32 	%p13, %r67, %r9;
+	@%p13 bra 	$Lt_0_17410;
+	setp.gt.s32 	%p14, %r33, %r18;
+	@%p14 bra 	$Lt_0_17410;
+	setp.lt.s32 	%p15, %r40, %r18;
+	@%p15 bra 	$Lt_0_17410;
+	setp.gt.s32 	%p16, %r44, %r9;
+	@%p16 bra 	$Lt_0_17410;
+	setp.lt.s32 	%p17, %r51, %r9;
+	@%p17 bra 	$Lt_0_17410;
+	.loc	16	184	0
+	mov.s32 	%r64, 1;
+	.loc	16	185	0
+	cvt.s64.s32 	%rd17, %r18;
+	cvt.s64.s32 	%rd18, %r9;
+	mul.wide.s32 	%rd19, %r9, 16;
+	add.u64 	%rd20, %rd17, %rd19;
+	mul.lo.u64 	%rd7, %rd20, 4;
+	add.u64 	%rd21, %rd7, %rd1;
+	ld.shared.f32 	%f12, [%rd21+0];
+	cvt.f64.f32 	%fd1, %f12;
+	add.f64 	%fd2, %fd1, %fd1;
+	cvt.f64.f32 	%fd3, %f5;
+	mov.f32 	%f13, 0f42a00000;    	// 80
+	sub.f32 	%f14, %f13, %f12;
+	mul.f32 	%f15, %f7, %f14;
+	cvt.f64.f32 	%fd4, %f15;
+	add.u64 	%rd22, %rd7, %rd2;
+	ld.shared.f32 	%f16, [%rd22+0];
+	cvt.f64.f32 	%fd5, %f16;
+	cvt.f64.f32 	%fd6, %f9;
+	cvt.s64.s32 	%rd23, %r53;
+	mul.wide.s32 	%rd24, %r53, 16;
+	add.u64 	%rd25, %rd17, %rd24;
+	mul.lo.u64 	%rd26, %rd25, 4;
+	add.u64 	%rd27, %rd1, %rd26;
+	ld.shared.f32 	%f17, [%rd27+0];
+	cvt.s64.s32 	%rd28, %r55;
+	mul.wide.s32 	%rd29, %r55, 16;
+	add.u64 	%rd30, %rd17, %rd29;
+	mul.lo.u64 	%rd31, %rd30, 4;
+	add.u64 	%rd32, %rd1, %rd31;
+	ld.shared.f32 	%f18, [%rd32+0];
+	add.f32 	%f19, %f17, %f18;
+	cvt.f64.f32 	%fd7, %f19;
+	sub.f64 	%fd8, %fd7, %fd2;
+	mad.rn.f64 	%fd9, %fd6, %fd8, %fd5;
+	cvt.f64.f32 	%fd10, %f11;
+	cvt.s64.s32 	%rd33, %r57;
+	add.u64 	%rd34, %rd33, %rd19;
+	mul.lo.u64 	%rd35, %rd34, 4;
+	add.u64 	%rd36, %rd1, %rd35;
+	ld.shared.f32 	%f20, [%rd36+0];
+	cvt.s64.s32 	%rd37, %r59;
+	add.u64 	%rd38, %rd37, %rd19;
+	mul.lo.u64 	%rd39, %rd38, 4;
+	add.u64 	%rd40, %rd1, %rd39;
+	ld.shared.f32 	%f21, [%rd40+0];
+	add.f32 	%f22, %f20, %f21;
+	cvt.f64.f32 	%fd11, %f22;
+	sub.f64 	%fd12, %fd11, %fd2;
+	mad.rn.f64 	%fd13, %fd10, %fd12, %fd9;
+	add.f64 	%fd14, %fd4, %fd13;
+	mad.rn.f64 	%fd15, %fd3, %fd14, %fd1;
+	cvt.rn.f32.f64 	%f23, %fd15;
+	add.u64 	%rd41, %rd7, %rd16;
+	st.shared.f32 	[%rd41+0], %f23;
+$Lt_0_17410:
+$L_0_11266:
+	.loc	16	191	0
+	bar.sync 	0;
+	.loc	16	193	0
+	setp.eq.s32 	%p18, %r61, %r62;
+	@%p18 bra 	$Lt_0_17922;
+	mov.s32 	%r68, 0;
+	setp.ne.s32 	%p19, %r64, %r68;
+	mov.pred 	%p20, %p19;
+	mov.pred 	%p21, %p22;
+	@!%p19 bra 	$Lt_0_13314;
+	.loc	16	195	0
+	cvt.s64.s32 	%rd42, %r18;
+	cvt.s64.s32 	%rd43, %r9;
+	mul.wide.s32 	%rd44, %r9, 16;
+	add.u64 	%rd45, %rd42, %rd44;
+	mul.lo.u64 	%rd7, %rd45, 4;
+	add.u64 	%rd46, %rd7, %rd16;
+	ld.shared.f32 	%f24, [%rd46+0];
+	add.u64 	%rd47, %rd7, %rd1;
+	st.shared.f32 	[%rd47+0], %f24;
+$Lt_0_13314:
+	.loc	16	196	0
+	bar.sync 	0;
+	.loc	16	178	0
+	mov.s32 	%r62, %r65;
+	setp.ne.s32 	%p23, %r65, %r1;
+	@%p23 bra 	$Lt_0_13058;
+	bra.uni 	$Lt_0_258;
+$Lt_0_15618:
+	cvt.s32.s8 	%r69, %rh1;
+	mov.s32 	%r70, 0;
+	setp.ne.s32 	%p20, %r69, %r70;
+	mov.u64 	%rd16, __cuda___cuda_local_var_32794_39_non_const_temp_t2120;
+	bra.uni 	$Lt_0_258;
+$Lt_0_17922:
+	mov.s32 	%r71, 0;
+	setp.ne.s32 	%p20, %r64, %r71;
+$Lt_0_258:
+	.loc	16	197	0
+	@!%p20 bra 	$Lt_0_14082;
+	.loc	16	203	0
+	cvt.s32.u32 	%r18, %tid.x;
+	cvt.s64.s32 	%rd48, %r18;
+	cvt.s64.s32 	%rd49, %r9;
+	mul.wide.s32 	%rd50, %r9, 16;
+	add.u64 	%rd51, %rd48, %rd50;
+	mul.lo.u64 	%rd52, %rd51, 4;
+	add.u64 	%rd53, %rd16, %rd52;
+	ld.shared.f32 	%f25, [%rd53+0];
+	ld.param.u64 	%rd54, [__cudaparm__Z14calculate_tempiPfS_S_iiiiffffff_temp_dst];
+	cvt.s32.u32 	%r72, %ctaid.x;
+	mul.lo.s32 	%r73, %r72, %r4;
+	ld.param.s32 	%r74, [__cudaparm__Z14calculate_tempiPfS_S_iiiiffffff_border_cols];
+	sub.s32 	%r75, %r73, %r74;
+	add.s32 	%r76, %r18, %r75;
+	ld.param.s32 	%r77, [__cudaparm__Z14calculate_tempiPfS_S_iiiiffffff_grid_rows];
+	mul.lo.s32 	%r78, %r77, %r10;
+	add.s32 	%r79, %r76, %r78;
+	cvt.s64.s32 	%rd55, %r79;
+	mul.wide.s32 	%rd56, %r79, 4;
+	add.u64 	%rd57, %rd54, %rd56;
+	st.global.f32 	[%rd57+0], %f25;
+$Lt_0_14082:
+	.loc	16	205	0
+	exit;
+$LDWend__Z14calculate_tempiPfS_S_iiiiffffff:
+	} // _Z14calculate_tempiPfS_S_iiiiffffff
+

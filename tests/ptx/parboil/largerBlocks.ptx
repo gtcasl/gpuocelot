@@ -1,0 +1,302 @@
+	.version 2.3
+	.target sm_20
+	.address_size 64
+	// compiled with /usr/local/cuda/open64/lib//be
+	// nvopencc 4.0 built on 2011-02-18
+
+	//-----------------------------------------------------------
+	// Compiling /tmp/tmpxft_00001472_00000000-9_largerBlocks.cpp3.i (/tmp/ccBI#.vpJV5R)
+	//-----------------------------------------------------------
+
+	//-----------------------------------------------------------
+	// Options:
+	//-----------------------------------------------------------
+	//  Target:ptx, ISA:sm_20, Endian:little, Pointer Size:64
+	//  -O3	(Optimization level)
+	//  -g0	(Debug level)
+	//  -m2	(Report advisories)
+	//-----------------------------------------------------------
+
+	.file	1	"<command-line>"
+	.file	2	"/tmp/tmpxft_00001472_00000000-8_largerBlocks.cudafe2.gpu"
+	.file	3	"/usr/lib/x86_64-linux-gnu/gcc/x86_64-linux-gnu/4.5.2/include/stddef.h"
+	.file	4	"/usr/local/cuda/bin/../include/crt/device_runtime.h"
+	.file	5	"/usr/local/cuda/bin/../include/host_defines.h"
+	.file	6	"/usr/local/cuda/bin/../include/builtin_types.h"
+	.file	7	"/usr/local/cuda/bin/../include/device_types.h"
+	.file	8	"/usr/local/cuda/bin/../include/driver_types.h"
+	.file	9	"/usr/local/cuda/bin/../include/surface_types.h"
+	.file	10	"/usr/local/cuda/bin/../include/texture_types.h"
+	.file	11	"/usr/local/cuda/bin/../include/vector_types.h"
+	.file	12	"/usr/local/cuda/bin/../include/device_launch_parameters.h"
+	.file	13	"/usr/local/cuda/bin/../include/crt/storage_class.h"
+	.file	14	"/usr/include/bits/types.h"
+	.file	15	"/usr/include/time.h"
+	.file	16	"largerBlocks.cu"
+	.file	17	"/usr/local/cuda/bin/../include/common_functions.h"
+	.file	18	"/usr/local/cuda/bin/../include/math_functions.h"
+	.file	19	"/usr/local/cuda/bin/../include/math_constants.h"
+	.file	20	"/usr/local/cuda/bin/../include/device_functions.h"
+	.file	21	"/usr/local/cuda/bin/../include/sm_11_atomic_functions.h"
+	.file	22	"/usr/local/cuda/bin/../include/sm_12_atomic_functions.h"
+	.file	23	"/usr/local/cuda/bin/../include/sm_13_double_functions.h"
+	.file	24	"/usr/local/cuda/bin/../include/sm_20_atomic_functions.h"
+	.file	25	"/usr/local/cuda/bin/../include/sm_20_intrinsics.h"
+	.file	26	"/usr/local/cuda/bin/../include/surface_functions.h"
+	.file	27	"/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+	.file	28	"/usr/local/cuda/bin/../include/math_functions_dbl_ptx3.h"
+
+
+	.entry _Z17larger_sad_calc_8Ptii (
+		.param .u64 __cudaparm__Z17larger_sad_calc_8Ptii_blk_sad,
+		.param .s32 __cudaparm__Z17larger_sad_calc_8Ptii_mb_width,
+		.param .s32 __cudaparm__Z17larger_sad_calc_8Ptii_mb_height)
+	{
+	.reg .u32 %r<74>;
+	.reg .u64 %rd<34>;
+	.reg .pred %p<5>;
+	// __cuda_local_var_32628_26_non_const_bo_5 = 16
+	// __cuda_local_var_32628_33_non_const_bo_4 = 24
+	.loc	16	21	0
+$LDWbegin__Z17larger_sad_calc_8Ptii:
+	mov.u32 	%r1, %tid.y;
+	shr.u32 	%r2, %r1, 1;
+	mov.u32 	%r3, 99;
+	setp.gt.s32 	%p1, %r2, %r3;
+	@%p1 bra 	$Lt_0_2050;
+	.loc	16	51	0
+	ld.param.s32 	%r4, [__cudaparm__Z17larger_sad_calc_8Ptii_mb_width];
+	cvt.s32.u32 	%r5, %ctaid.y;
+	mul24.lo.s32 	%r6, %r5, %r4;
+	ld.param.s32 	%r7, [__cudaparm__Z17larger_sad_calc_8Ptii_mb_height];
+	mul24.lo.s32 	%r8, %r4, %r7;
+	cvt.s32.u32 	%r9, %tid.y;
+	and.b32 	%r10, %r9, 1;
+	cvt.s32.u32 	%r11, %ctaid.x;
+	add.s32 	%r12, %r11, %r6;
+	ld.param.u64 	%rd1, [__cudaparm__Z17larger_sad_calc_8Ptii_blk_sad];
+	mul.lo.s32 	%r13, %r12, 8768;
+	cvt.s64.s32 	%rd2, %r13;
+	mul.lo.s32 	%r14, %r2, 4;
+	add.s32 	%r15, %r10, %r14;
+	shl.b32 	%r16, %r8, 3;
+	add.s32 	%r17, %r8, %r16;
+	add.s32 	%r18, %r15, %r17;
+	mul.lo.s32 	%r19, %r18, 1096;
+	cvt.s64.s32 	%rd3, %r19;
+	add.u64 	%rd4, %rd2, %rd3;
+	mul.lo.u64 	%rd5, %rd4, 2;
+	add.u64 	%rd6, %rd1, %rd5;
+	mov.s64 	%rd7, %rd6;
+	.loc	16	56	0
+	mul.lo.s32 	%r20, %r12, 4384;
+	cvt.s64.s32 	%rd8, %r20;
+	mul.lo.s32 	%r21, %r2, 2;
+	add.s32 	%r22, %r10, %r21;
+	shl.b32 	%r23, %r8, 2;
+	add.s32 	%r24, %r8, %r23;
+	add.s32 	%r25, %r22, %r24;
+	mul.lo.s32 	%r26, %r25, 1096;
+	cvt.s64.s32 	%rd9, %r26;
+	add.u64 	%rd10, %rd8, %rd9;
+	mul.lo.u64 	%rd11, %rd10, 2;
+	add.u64 	%rd12, %rd1, %rd11;
+	mov.s64 	%rd13, %rd12;
+$Lt_0_2050:
+	.loc	16	61	0
+	cvt.s32.u32 	%r27, %tid.x;
+	mov.s32 	%r28, %r27;
+	mov.u32 	%r29, 544;
+	setp.gt.s32 	%p2, %r27, %r29;
+	@%p2 bra 	$Lt_0_2562;
+	mov.s32 	%r30, 576;
+	sub.s32 	%r31, %r30, %r27;
+	shr.s32 	%r32, %r31, 31;
+	mov.s32 	%r33, 31;
+	and.b32 	%r34, %r32, %r33;
+	add.s32 	%r35, %r34, %r31;
+	shr.s32 	%r36, %r35, 5;
+	ld.param.s32 	%r37, [__cudaparm__Z17larger_sad_calc_8Ptii_mb_width];
+	cvt.s32.u32 	%r38, %ctaid.y;
+	mul24.lo.s32 	%r39, %r38, %r37;
+	ld.param.s32 	%r40, [__cudaparm__Z17larger_sad_calc_8Ptii_mb_height];
+	mul24.lo.s32 	%r41, %r37, %r40;
+	cvt.s32.u32 	%r42, %tid.y;
+	and.b32 	%r43, %r42, 1;
+	mul.lo.s32 	%r44, %r2, 4;
+	mul.lo.s32 	%r45, %r2, 2;
+	cvt.s32.u32 	%r46, %ctaid.x;
+	add.s32 	%r47, %r46, %r39;
+	mov.s32 	%r48, 25;
+	mul24.lo.s32 	%r49, %r41, %r48;
+	shl.b32 	%r50, %r41, 4;
+	cvt.s64.s32 	%rd14, %r27;
+	mul.wide.s32 	%rd15, %r27, 4;
+	add.s32 	%r51, %r44, %r43;
+	add.s32 	%r52, %r45, %r43;
+	mul.lo.s32 	%r53, %r47, 8768;
+	add.s32 	%r54, %r50, %r41;
+	mov.s64 	%rd16, %rd7;
+	add.u64 	%rd17, %rd16, %rd15;
+	mov.s64 	%rd18, %rd13;
+	add.u64 	%rd19, %rd18, %rd15;
+	mul.lo.s32 	%r55, %r51, 2;
+	mul.lo.s32 	%r56, %r52, 2;
+	cvt.s64.s32 	%rd20, %r53;
+	ld.param.u64 	%rd21, [__cudaparm__Z17larger_sad_calc_8Ptii_blk_sad];
+	mul.lo.s32 	%r57, %r47, 17536;
+	cvt.s64.s32 	%rd22, %r57;
+	add.s32 	%r58, %r49, %r55;
+	mul.lo.s32 	%r59, %r58, 1096;
+	cvt.s64.s32 	%rd23, %r59;
+	add.u64 	%rd24, %rd22, %rd23;
+	mul.lo.u64 	%rd25, %rd24, 2;
+	add.s64 	%rd26, %rd21, %rd25;
+	add.s64 	%rd27, %rd15, %rd26;
+	add.s32 	%r60, %r54, %r56;
+	mul.lo.s32 	%r61, %r60, 1096;
+	cvt.s64.s32 	%rd28, %r61;
+	add.u64 	%rd29, %rd28, %rd20;
+	mul.lo.u64 	%rd30, %rd29, 2;
+	add.s64 	%rd31, %rd21, %rd30;
+	add.s64 	%rd32, %rd15, %rd31;
+	mov.s32 	%r62, %r36;
+$Lt_0_3074:
+ //<loop> Loop body line 61, nesting depth: 1, estimated iterations: unknown
+	.loc	16	66	0
+	ld.global.u32 	%r63, [%rd27+0];
+	.loc	16	67	0
+	ld.global.u32 	%r64, [%rd27+2192];
+	.loc	16	68	0
+	ld.global.u32 	%r65, [%rd27+8768];
+	.loc	16	69	0
+	ld.global.u32 	%r66, [%rd27+10960];
+	.loc	16	71	0
+	add.u32 	%r67, %r63, %r65;
+	st.global.u32 	[%rd32+0], %r67;
+	.loc	16	72	0
+	add.u32 	%r68, %r64, %r66;
+	st.global.u32 	[%rd32+2192], %r68;
+	.loc	16	73	0
+	add.u32 	%r69, %r63, %r64;
+	st.global.u32 	[%rd17+0], %r69;
+	.loc	16	74	0
+	add.u32 	%r70, %r65, %r66;
+	st.global.u32 	[%rd17+4384], %r70;
+	.loc	16	75	0
+	add.u32 	%r71, %r69, %r70;
+	st.global.u32 	[%rd19+0], %r71;
+	add.s32 	%r28, %r28, 32;
+	add.s64 	%rd32, %rd32, 128;
+	add.s64 	%rd27, %rd27, 128;
+	add.u64 	%rd19, %rd19, 128;
+	add.u64 	%rd17, %rd17, 128;
+	mov.u32 	%r72, 544;
+	setp.le.s32 	%p3, %r28, %r72;
+	@%p3 bra 	$Lt_0_3074;
+$Lt_0_2562:
+	.loc	16	77	0
+	exit;
+$LDWend__Z17larger_sad_calc_8Ptii:
+	} // _Z17larger_sad_calc_8Ptii
+
+	.entry _Z18larger_sad_calc_16Ptii (
+		.param .u64 __cudaparm__Z18larger_sad_calc_16Ptii_blk_sad,
+		.param .s32 __cudaparm__Z18larger_sad_calc_16Ptii_mb_width,
+		.param .s32 __cudaparm__Z18larger_sad_calc_16Ptii_mb_height)
+	{
+	.reg .u32 %r<37>;
+	.reg .u64 %rd<25>;
+	.reg .pred %p<4>;
+	.loc	16	81	0
+$LDWbegin__Z18larger_sad_calc_16Ptii:
+	.loc	16	109	0
+	cvt.s32.u32 	%r1, %tid.x;
+	mov.s32 	%r2, %r1;
+	mov.u32 	%r3, 544;
+	setp.gt.s32 	%p1, %r1, %r3;
+	@%p1 bra 	$Lt_1_1282;
+	mov.s32 	%r4, 576;
+	sub.s32 	%r5, %r4, %r1;
+	shr.s32 	%r6, %r5, 31;
+	mov.s32 	%r7, 31;
+	and.b32 	%r8, %r6, %r7;
+	add.s32 	%r9, %r8, %r5;
+	shr.s32 	%r10, %r9, 5;
+	ld.param.s32 	%r11, [__cudaparm__Z18larger_sad_calc_16Ptii_mb_width];
+	ld.param.s32 	%r12, [__cudaparm__Z18larger_sad_calc_16Ptii_mb_height];
+	mul24.lo.s32 	%r13, %r11, %r12;
+	cvt.s32.u32 	%r14, %ctaid.y;
+	mul24.lo.s32 	%r15, %r14, %r11;
+	cvt.s32.u32 	%r16, %ctaid.x;
+	add.s32 	%r17, %r16, %r15;
+	cvt.s64.s32 	%rd1, %r1;
+	mul.wide.s32 	%rd2, %r1, 4;
+	mul.lo.s32 	%r18, %r13, 1096;
+	cvt.s64.s32 	%rd3, %r18;
+	add.s32 	%r19, %r13, %r17;
+	mul.lo.s32 	%r20, %r19, 1096;
+	ld.param.u64 	%rd4, [__cudaparm__Z18larger_sad_calc_16Ptii_blk_sad];
+	mul.lo.s32 	%r21, %r17, 1096;
+	cvt.s64.s32 	%rd5, %r21;
+	mul.wide.s32 	%rd6, %r21, 2;
+	add.s64 	%rd7, %rd4, %rd6;
+	add.s64 	%rd8, %rd2, %rd7;
+	mul.lo.s32 	%r22, %r17, 2192;
+	cvt.s64.s32 	%rd9, %r22;
+	add.u64 	%rd10, %rd9, %rd3;
+	mul.lo.u64 	%rd11, %rd10, 2;
+	add.s64 	%rd12, %rd4, %rd11;
+	add.s64 	%rd13, %rd2, %rd12;
+	shl.b32 	%r23, %r20, 2;
+	cvt.s64.s32 	%rd14, %r23;
+	add.u64 	%rd15, %rd14, %rd3;
+	mul.lo.u64 	%rd16, %rd15, 2;
+	add.s64 	%rd17, %rd4, %rd16;
+	add.s64 	%rd18, %rd2, %rd17;
+	shl.b32 	%r24, %r20, 1;
+	cvt.s64.s32 	%rd19, %r24;
+	add.u64 	%rd20, %rd19, %rd3;
+	mul.lo.u64 	%rd21, %rd20, 2;
+	add.s64 	%rd22, %rd4, %rd21;
+	add.s64 	%rd23, %rd2, %rd22;
+	mov.s32 	%r25, %r10;
+$Lt_1_1794:
+ //<loop> Loop body line 109, nesting depth: 1, estimated iterations: unknown
+	.loc	16	114	0
+	ld.global.u32 	%r26, [%rd18+0];
+	.loc	16	115	0
+	ld.global.u32 	%r27, [%rd18+2192];
+	.loc	16	116	0
+	ld.global.u32 	%r28, [%rd18+4384];
+	.loc	16	117	0
+	ld.global.u32 	%r29, [%rd18+6576];
+	.loc	16	119	0
+	add.u32 	%r30, %r26, %r28;
+	st.global.u32 	[%rd23+0], %r30;
+	.loc	16	120	0
+	add.u32 	%r31, %r27, %r29;
+	st.global.u32 	[%rd23+2192], %r31;
+	.loc	16	121	0
+	add.u32 	%r32, %r26, %r27;
+	st.global.u32 	[%rd13+0], %r32;
+	.loc	16	122	0
+	add.u32 	%r33, %r28, %r29;
+	st.global.u32 	[%rd13+2192], %r33;
+	.loc	16	123	0
+	add.u32 	%r34, %r32, %r33;
+	st.global.u32 	[%rd8+0], %r34;
+	add.s32 	%r2, %r2, 32;
+	add.s64 	%rd23, %rd23, 128;
+	add.s64 	%rd18, %rd18, 128;
+	add.s64 	%rd13, %rd13, 128;
+	add.s64 	%rd8, %rd8, 128;
+	mov.u32 	%r35, 544;
+	setp.le.s32 	%p2, %r2, %r35;
+	@%p2 bra 	$Lt_1_1794;
+$Lt_1_1282:
+	.loc	16	125	0
+	exit;
+$LDWend__Z18larger_sad_calc_16Ptii:
+	} // _Z18larger_sad_calc_16Ptii
+

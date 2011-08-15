@@ -31,12 +31,66 @@ void splitBlock(ir::ControlFlowGraph& cfg,
 	
 	while(block->instructions.size() > maxSize)
 	{
-		std::stringstream stream;
+		unsigned int splitPoint = maxSize - 1;
+		bool split = true;
 		
-		stream << label << "_" << count++;
+		// don't split up function call setup instructions
+		unsigned int counter = 0;
+		ir::ControlFlowGraph::instruction_iterator i =
+			block->instructions.begin();
+		for(; i != block->instructions.end(); ++i, ++counter)
+		{
+			ir::PTXInstruction& ptx = *static_cast<ir::PTXInstruction*>(*i);
+			
+			bool isParamLoad = ptx.opcode == ir::PTXInstruction::Ld &&
+				ptx.addressSpace == ir::PTXInstruction::Param &&
+				ptx.a.addressMode == ir::PTXOperand::Address;
+			
+			if(ptx.opcode == ir::PTXInstruction::Call)
+			{
+				split = false;
+			}
+			else if(!isParamLoad)
+			{
+				split = true;
+			}
+			
+			if(counter == maxSize - 1) break;
+		}
+		
+		for(; i != block->instructions.end(); ++i, ++counter)
+		{
+			ir::PTXInstruction& ptx = *static_cast<ir::PTXInstruction*>(*i);
+		
+			bool isParamStore = ptx.opcode == ir::PTXInstruction::St &&
+				ptx.addressSpace == ir::PTXInstruction::Param &&
+				ptx.d.addressMode == ir::PTXOperand::Address;
+			bool isParamLoad = ptx.opcode == ir::PTXInstruction::Ld &&
+				ptx.addressSpace == ir::PTXInstruction::Param &&
+				ptx.a.addressMode == ir::PTXOperand::Address;
+			
+			if(ptx.opcode != ir::PTXInstruction::Call && !isParamStore
+				&& !isParamLoad)
+			{
+				split = true;
+				splitPoint = counter;
+				break;
+			}
+		}
+
+		if(split)
+		{
+			std::stringstream stream;
+		
+			stream << label << "_" << count++;
 	
-		block = cfg.split_block(block, maxSize - 1, ir::Edge::FallThrough,
-			stream.str());
+			block = cfg.split_block(block, splitPoint, ir::Edge::FallThrough,
+				stream.str());
+		}
+		else
+		{
+			break;
+		}
 	}
 }
 

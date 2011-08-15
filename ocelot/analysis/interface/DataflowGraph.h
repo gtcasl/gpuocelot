@@ -246,6 +246,8 @@ class DataflowGraph : public KernelAnalysis
 				ir::ControlFlowGraph::BasicBlock::Id id() const;
 				/*! \brief Get a pointer to the underlying block */
 				ir::ControlFlowGraph::iterator block();
+				/*! \brief Get a pointer to the underlying block */
+				ir::ControlFlowGraph::const_iterator block() const;
 
 			public:
 				/*! \brief Determine the block that produced a register */

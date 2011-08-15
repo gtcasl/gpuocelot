@@ -490,6 +490,10 @@ namespace analysis
 	{
 		return _block;
 	}
+	
+	ir::ControlFlowGraph::const_iterator DataflowGraph::Block::block() const {
+		return _block;
+	}
 
 	DataflowGraph::DataflowGraph()  
 		: KernelAnalysis(Analysis::DataflowGraphAnalysis,

@@ -1,5 +1,6 @@
 COD SETUP:
 
+
 1. Configure, make and make install cercs_env.
 2. Configure, make and make install atl.
 3. Configure, make and make install ffs/fm.
@@ -9,3 +10,12 @@ COD SETUP:
 7. Make sure LD_LIBRARY_PATH is set to /usr/local/lib.
 
 Now building ocelot will correctly link with the cod dependencies.
+
+This sequence of commands executed in the /lynx directory should accomplish steps 1-5 above:
+
+	cd cercs_env; ./configure && make && sudo make install; cd ..
+	cd alt; ./configure && make && sudo make install; cd ..
+	cd ffs/ffm; ./configure && make && sudo make install; cd ../..
+	cd dill; ./configure && make && sudo make install; cd ..
+	cd ffs/cod; ./configure && make && sudo make install; cd ../..
+

@@ -40,6 +40,9 @@
 // report all ptx modules
 #define REPORT_ALL_PTX 0
 
+// report PTX after instrumentation passes
+#define REPORT_INSTRUMENTED_PTX 1
+
 ////////////////////////////////////////////////////////////////////////////////
 //
 // Error handling macros
@@ -467,6 +470,10 @@ void cuda::CudaRuntime::_registerModule(ModuleMap::iterator module) {
 	}
 	
 	manager.runOnModule();
+	
+	#if REPORT_BASE && REPORT_INSTRUMENTED_PTX 
+	module->second.writeIR(std::cout);
+	#endif
 	
 	for(DeviceVector::iterator device = _devices.begin(); 
 		device != _devices.end(); ++device) {

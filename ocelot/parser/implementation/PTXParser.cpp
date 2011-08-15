@@ -232,8 +232,7 @@ namespace parser
 		operands.insert( std::make_pair( "%clock", OperandWrapper( 
 			ir::PTXOperand( ir::PTXOperand::clock, ir::PTXOperand::ix ) ) ) );
 		operands.insert( std::make_pair( "%clock64", OperandWrapper( 
-			ir::PTXOperand( ir::PTXOperand::clock64, ir::PTXOperand::ix, 
-			ir::PTXOperand::u64 ) ) ) );
+			ir::PTXOperand( ir::PTXOperand::clock64, ir::PTXOperand::ix, ir::PTXOperand::u64 ) ) ) );
 
 		operands.insert( std::make_pair( "%pm0", OperandWrapper( 
 			ir::PTXOperand( ir::PTXOperand::pm0, ir::PTXOperand::ix ) ) ) );

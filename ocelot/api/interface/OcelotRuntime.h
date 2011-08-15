@@ -16,7 +16,6 @@
 #include <ocelot/analysis/interface/BasicBlockInstrumentor.h>
 #include <ocelot/analysis/interface/BranchDivergenceInstrumentor.h>
 #include <ocelot/analysis/interface/MemoryEfficiencyInstrumentor.h>
-#include <ocelot/analysis/interface/ModulePassTestInstrumentor.h>
 
 #include <ocelot/transforms/interface/StructuralTransform.h>
 #include <ocelot/transforms/interface/ConvertPredicationToSelectPass.h>

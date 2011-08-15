@@ -1105,7 +1105,7 @@ void PTXToLLVMTranslator::_translate( const ir::PTXInstruction& i,
 	const analysis::DataflowGraph::Block& block )
 {
 	report( "   Translating: " << i.toString() );
-	assertM( i.valid() == "", "Instruction " << i.toString() 
+	assertM( i.valid() == "", "Instruction " << i.toString() << " in block " << block.block()->label
 		<< " is not valid: " << i.valid() );
 	switch( i.opcode )
 	{

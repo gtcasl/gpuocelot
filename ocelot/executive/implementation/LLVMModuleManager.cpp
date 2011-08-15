@@ -49,9 +49,14 @@
 #undef REPORT_BASE
 #endif
 
+// Toggles all reporting messages
 #define REPORT_BASE 0
 
+//
 #define REPORT_ALL_LLVM_ASSEMBLY 0
+
+//
+#define REPORT_POSTPROCESSED_PTX 0
 
 namespace executive
 {
@@ -799,6 +804,13 @@ static unsigned int optimizePTX(ir::PTXKernel& kernel,
 	manager.addPass(removeBarriers);
 	
 	manager.runOnKernel(kernel);
+
+	#if REPORT_POSTPROCESSED_PTX
+	std::cout<< "optimizePTX() - post execution model transformation" << std::endl;
+	kernel.write(std::cout);
+	std::cout << "optimizePTX() - returning" << std::endl;
+	#endif
+
 
 	return removeBarriers.usesBarriers;
 }

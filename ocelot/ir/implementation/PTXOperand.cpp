@@ -709,7 +709,6 @@ std::string ir::PTXOperand::toString() const {
 		case ntid: // fall through
 		case ctaId: // fall through
 		case nctaId:  // fall through
-		case smId:  // fall through
 		case nsmId:  // fall through
 		case gridId:  // fall through
 			isScalar = false;

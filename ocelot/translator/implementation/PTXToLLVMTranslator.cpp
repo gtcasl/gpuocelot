@@ -8033,6 +8033,20 @@ std::string PTXToLLVMTranslator::_loadSpecialRegister(
 			return cast.d.name;
 			break;
 		}
+		case ir::PTXOperand::clock64:
+		{
+			ir::LLVMCall call;
+			
+			call.name = "@llvm.readcyclecounter";
+			call.d.type.category = ir::LLVMInstruction::Type::Element;
+			call.d.type.type = ir::LLVMInstruction::I64;
+			call.d.name = _tempRegister();
+
+			_add( call );
+			
+			return call.d.name;
+			break;
+		}
 		case ir::PTXOperand::pm0:
 		{
 			assertM( false, "Special register " 

@@ -169,6 +169,8 @@ namespace translator
         inst.a = ir::PTXOperand(ir::PTXOperand::smId);
         inst.a.addressMode = ir::PTXOperand::Special;
         inst.a.type = ir::PTXOperand::u32;
+        inst.a.vec = ir::PTXOperand::v1;
+        inst.a.vIndex = ir::PTXOperand::ix;
         
         stmt.instruction = inst;
         statements.push_back(stmt);        
@@ -1492,6 +1494,8 @@ namespace translator
                 inst.addressSpace = ir::PTXInstruction::Global; 
             
             inst.type = type;
+            inst.d.type = type;
+            inst.a.type = type;
             
 	        int store = (insn->insn_code & 0x10) && 0x10;
 	        if(store) {
@@ -1503,7 +1507,6 @@ namespace translator
                 
                 inst.d.addressMode = ir::PTXOperand::Indirect;
                 inst.a.addressMode = ir::PTXOperand::Register;
-                inst.a.type = type;
 	        }
 	        else {
 	            
@@ -1517,7 +1520,6 @@ namespace translator
                 
                 inst.a.addressMode = ir::PTXOperand::Indirect;
                 inst.d.addressMode = ir::PTXOperand::Register;
-                inst.d.type = type;
 	        }
 	           
 	        ir::PTXInstruction prev = statements.back().instruction;
@@ -1743,8 +1745,8 @@ namespace translator
                                         unsigned long computeBaseAddress();\
                                         unsigned long atomicIncrement(unsigned long *memBuffer, unsigned long offset);\
                                         unsigned long uniqueElementCount(unsigned long *memBuffer);\
-                                        unsigned long deviceMem[2];\
-                                        unsigned long sharedMem[2];";
+                                        unsigned long deviceMem[2];";
+                                        //unsigned long sharedMem[2];";
                         
 	    static cod_extern_entry externs[] = 
 	    {
@@ -1783,7 +1785,7 @@ namespace translator
             {(char *)"uniqueElementCount", (void*)(unsigned long)(*uniqueElementCount)},
             {(char *)"atomicIncrement", (void*)(unsigned long)(*atomicIncrement)},
             {(char *)"deviceMem", (void *)deviceMem},
-            {(char *)"sharedMem", (void *)deviceMem},
+            //{(char *)"sharedMem", (void *)deviceMem},
 	        {NULL, (void*)0}
 	    };
      

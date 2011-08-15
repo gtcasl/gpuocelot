@@ -884,6 +884,9 @@ static void translate(llvm::Module*& module, ir::PTXKernel& kernel,
 	module = new llvm::Module(kernel.name.c_str(), llvm::getGlobalContext());
 
 	reportE(REPORT_ALL_LLVM_ASSEMBLY, llvmKernel->code());
+#if REPORT_ALL_LLVM_ASSEMBLY
+	std::cout << llvmKernel->code() << std::endl;
+#endif
 
 	report("  Parsing LLVM assembly.");
 	module = llvm::ParseAssemblyString(llvmKernel->code().c_str(), 

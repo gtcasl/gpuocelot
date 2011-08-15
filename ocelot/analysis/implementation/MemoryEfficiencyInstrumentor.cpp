@@ -39,10 +39,10 @@ namespace analysis
         
         counter = 0;
 
-        if(cudaMalloc((void **) &counter, 1 * sizeof(size_t)) != cudaSuccess){
+        if(cudaMalloc((void **) &counter, 2 * sizeof(size_t)) != cudaSuccess){
             throw hydrazine::Exception( "Could not allocate sufficient memory on device (cudaMalloc failed)!" );
         }
-        if(cudaMemset( counter, 0, 1 * sizeof( size_t )) != cudaSuccess){
+        if(cudaMemset( counter, 0, 2 * sizeof( size_t )) != cudaSuccess){
             throw hydrazine::Exception( "cudaMemset failed!" );
         }
         
@@ -65,9 +65,9 @@ namespace analysis
 
     void MemoryEfficiencyInstrumentor::extractResults(std::ostream *out) {
 
-        size_t *info = new size_t[1];
+        size_t *info = new size_t[2];
         if(counter) {
-            cudaMemcpy(info, counter, 1 * sizeof( size_t ), cudaMemcpyDeviceToHost);
+            cudaMemcpy(info, counter, 2 * sizeof( size_t ), cudaMemcpyDeviceToHost);
             cudaFree(counter);
         }
 
@@ -91,7 +91,7 @@ namespace analysis
                 *out << "Thread Block Count: " << threadBlocks << "\n";
                 *out << "Thread Count: " << threads << "\n\n";
                 
-               std::cout << "Total Global Memory Transactions: " << info[0]  << "\n";
+               std::cout << "Memory Transactions Per Global Memory Operations: " << info[0]  << "/" << info[1] << "\n\n";
            
             break;
         }

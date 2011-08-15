@@ -94,4 +94,6 @@ unsigned long leastActiveThreadInWarp();
 
 unsigned long uniqueElementCount(unsigned long *memBuffer);
 
+unsigned long atomicIncrement(unsigned long *memBuffer, unsigned long offset);
+
 #endif

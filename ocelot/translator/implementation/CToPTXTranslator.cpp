@@ -48,8 +48,8 @@ namespace translator
 	    for (p =base; (char*) p < s->p->cur_ip;) {
 	      
 	        l = translator.translate(s, &info, (void *)p);
-	        //l = s->j->print_insn(s, &info, (void *)p);
-	        //printf("\n");
+	        l = s->j->print_insn(s, &info, (void *)p);
+	        printf("\n");
 	        if (l <= 0) return;
 	        p = (char*)p + l;
 	        insn_count++;
@@ -1067,6 +1067,34 @@ namespace translator
     
     }
     
+    void CToPTXTranslator::generateAtomicIncrement(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn)
+    {
+        inst.opcode = ir::PTXInstruction::Atom;
+        inst.atomicOperation = ir::PTXInstruction::AtomicAdd;
+            
+        inst.addressSpace = ir::PTXInstruction::Global; 
+        inst.a.addressMode = ir::PTXOperand::Indirect;
+        inst.a.type = type;
+        inst.a.identifier = baseReg;
+        inst.a.offset = sizeof(size_t);
+        
+        inst.d.addressMode = ir::PTXOperand::Register;
+        inst.d.type = type;
+        inst.d.identifier = COD_REG + boost::lexical_cast<std::string>(++maxRegister);
+        registers.push_back(inst.d.identifier);
+        
+        inst.b.addressMode = ir::PTXOperand::Immediate;
+        inst.b.type = type;
+        inst.b.imm_uint = 1;
+        
+        setPredicate(inst);
+        stmt.instruction = inst;
+        statements.push_back(stmt);
+        
+        registerMap[REG + boost::lexical_cast<std::string>(insn->opnds.calli.src)] = inst.d.identifier;  
+    
+    }
+     
     int CToPTXTranslator::translate(dill_stream c, void *info_ptr, void *i)
     {
         ir::PTXOperand::DataType type = (sizeof(size_t) == 8 ? ir::PTXOperand::u64: ir::PTXOperand::u32);
@@ -1346,6 +1374,11 @@ namespace translator
                     case uniqueElementCountSymbol:
                     {
                         generateUniqueElementCount(inst, stmt, type, insn, call_name);
+                    }
+                    break;
+                    case atomicIncrementSymbol:
+                    {
+                        generateAtomicIncrement(inst, stmt, type, insn);
                     }
                     break;
                     case basicBlockIdSymbol:
@@ -1707,6 +1740,7 @@ namespace translator
                                         unsigned long predicateEvalWarpDivergent();\
                                         unsigned long leastActiveThreadInWarp();\
                                         unsigned long computeBaseAddress();\
+                                        unsigned long atomicIncrement(unsigned long *memBuffer, unsigned long offset);\
                                         unsigned long uniqueElementCount(unsigned long *memBuffer);\
                                         unsigned long deviceMem[2];\
                                         unsigned long sharedMem[2];";
@@ -1744,8 +1778,9 @@ namespace translator
             {(char *)"predicateEvalWarpUniform", (void*)(unsigned long)(*predicateEvalWarpUniform)},
             {(char *)"predicateEvalWarpDivergent", (void*)(unsigned long)(*predicateEvalWarpDivergent)},
             {(char *)"leastActiveThreadInWarp", (void*)(unsigned long)(*leastActiveThreadInWarp)},
-            {(char *)"computeBaseAddress", (void*)(*computeBaseAddress)},
-            {(char *)"uniqueElementCount", (void*)(*uniqueElementCount)},
+            {(char *)"computeBaseAddress", (void*)(unsigned long)(*computeBaseAddress)},
+            {(char *)"uniqueElementCount", (void*)(unsigned long)(*uniqueElementCount)},
+            {(char *)"atomicIncrement", (void*)(unsigned long)(*atomicIncrement)},
             {(char *)"deviceMem", (void *)deviceMem},
             {(char *)"sharedMem", (void *)deviceMem},
 	        {NULL, (void*)0}
@@ -1818,7 +1853,7 @@ namespace translator
         functionCalls["computeBaseAddress"] = computeBaseAddressSymbol;
         functionCalls["uniqueElementCount"] = uniqueElementCountSymbol;
         functionCalls["leastActiveThreadInWarp"] = leastActiveThreadInWarpSymbol;
-        functionCalls["computeBaseAddress"] = computeBaseAddressSymbol;
+        functionCalls["atomicIncrement"] = atomicIncrementSymbol;
         
         specifierList = { ON_MEM_READ, ON_MEM_WRITE, ON_PREDICATED, ON_BRANCH, ON_CALL, ON_BARRIER, ON_ATOMIC, ON_ARITH_OP,
             GLOBAL, LOCAL, SHARED, CONST, PARAM, TEXTURE, TYPE_INT, TYPE_FP };

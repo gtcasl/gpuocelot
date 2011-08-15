@@ -11,6 +11,7 @@
 #include <ocelot/analysis/interface/DataflowGraph.h>
 #include <ocelot/translator/interface/CToPTXTranslator.h>
 #include <ocelot/ir/interface/PTXInstruction.h>
+#include <ocelot/ir/interface/PTXStatement.h>
 #include <ocelot/ir/interface/PTXOperand.h>
 
 #include <map>
@@ -100,11 +101,12 @@ namespace transforms
 		public:
 
 			CToPTXInstrumentationPass(std::string resource);
-			
+			bool isClockCycleInstrumentation;
 			std::map<std::string, analysis::DataflowGraph::RegisterId> newRegisterMap;
 			std::string baseAddress;
 			
 	    private:
+		TranslationBlock handleClockCycle(TranslationBlock translationBlock);
 	        ir::PTXStatement computeBaseAddress(ir::PTXStatement statement, ir::PTXInstruction original);
 	        ir::PTXStatement prepareStatementToInsert(ir::PTXStatement statement, StaticAttributes attributes);
 	        void insertNewBasicBlocks(TranslationBlock translationBlock, analysis::DataflowGraph::iterator basicBlock);

@@ -230,6 +230,7 @@ namespace translator
         inst.d.addressMode = ir::PTXOperand::Register;
         inst.a = ir::PTXOperand(ir::PTXOperand::clock64, ir::PTXOperand::ix);
         inst.a.type = ir::PTXOperand::u64;
+	inst.a.vec = ir::PTXOperand::v1;
 
         inst.d.identifier = COD_REG + boost::lexical_cast<std::string>(++maxRegister);	
         registers.push_back(inst.d.identifier);	      

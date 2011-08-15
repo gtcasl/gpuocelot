@@ -249,13 +249,25 @@ namespace transforms
         unsigned long count = 0;
         for( unsigned int j = 0; j < translationBlock.statements.size(); j++) {
             ir::PTXStatement toInsert = prepareStatementToInsert(translationBlock.statements.at(j), attributes);
-
+	    if(isClockCycleInstrumentation && toInsert.instruction.opcode == ir::PTXInstruction::Bra)
+            {
+		toInsert.instruction.d.identifier = "$blockSplit";
+	    }
             if(toInsert.instruction.opcode == ir::PTXInstruction::Nop)
             {
                 continue;
             }
             dfg().insert(basicBlock, toInsert.instruction, loc++);
-            count++;
+	    count++;
+	    if(isClockCycleInstrumentation && toInsert.instruction.opcode == ir::PTXInstruction::Bra)
+            {
+		analysis::DataflowGraph::iterator splitBasicBlock = dfg().split(basicBlock, loc, true);
+		splitBasicBlock->block()->label = "$blockSplit";
+		ir::Edge edge(basicBlock->block(), splitBasicBlock->block(), ir::Edge::Branch);
+		dfg().cfg()->insert_edge(edge);
+		basicBlock = dfg().insert(basicBlock, splitBasicBlock, "$storeResults");
+		loc = 0;
+	    }
         }
         
         return count;
@@ -434,6 +446,39 @@ namespace transforms
     
     }
 
+    TranslationBlock CToPTXInstrumentationPass::handleClockCycle(TranslationBlock translationBlock)
+    {
+	TranslationBlock newBlock;
+
+        for( unsigned int j = 0; j < translationBlock.statements.size(); j++) {
+	    ir::PTXStatement statement = translationBlock.statements.at(j);	    
+
+	    if(statement.instruction.opcode == ir::PTXInstruction::SetP)
+	    {
+		ir::PTXStatement branch(ir::PTXStatement::Instr);
+ 		ir::PTXInstruction inst(ir::PTXInstruction::Bra);
+		inst.pg.addressMode = ir::PTXOperand::Register;
+		inst.pg.condition = ir::PTXOperand::InvPred;
+		inst.pg.identifier = statement.instruction.d.identifier;
+		inst.d.addressMode = ir::PTXOperand::Label;
+		branch.instruction = inst;
+                newBlock.statements.push_back(statement);
+		newBlock.statements.push_back(branch);
+		continue;
+	    }
+	
+	    if(statement.instruction.pg.condition == ir::PTXOperand::Pred || statement.instruction.pg.condition == ir::PTXOperand::InvPred)
+	    {
+		statement.instruction.pg.condition = ir::PTXOperand::PT;
+		statement.instruction.pg.identifier.clear();        
+            }
+
+            newBlock.statements.push_back(statement);
+        }
+
+	return newBlock;
+    }
+
     void CToPTXInstrumentationPass::instrumentKernel(TranslationBlock translationBlock) 
     {
         StaticAttributes attributes;
@@ -463,7 +508,15 @@ namespace transforms
             loc = block->instructions().size() - 1;
         }
         
-        insertBefore(translationBlock, attributes, block, loc);
+	if(isClockCycleInstrumentation)
+	{
+	    TranslationBlock newBlock = handleClockCycle(translationBlock);
+            insertBefore(newBlock, attributes, block, loc);
+	}
+        else
+	{
+	    insertBefore(translationBlock, attributes, block, loc);
+	}
     }
 
     void CToPTXInstrumentationPass::runOnKernel( ir::IRKernel & k)
@@ -663,6 +716,9 @@ namespace transforms
 		: KernelPass( Analysis::DataflowGraphAnalysis,
 			"CToPTXInstrumentationPass" )
 	{
+	    if(resource == "resources/clockCycleCount.c")
+		isClockCycleInstrumentation = true;
+	
 	    translator::CToPTXTranslator translator;
 	    translation = translator.generate(resource);
 	    baseAddress = translation.globals.front().name;
@@ -705,7 +761,7 @@ namespace transforms
 	    opcodeMap[ir::PTXInstruction::CopySign] = ON_ARITH_OP;
 	    opcodeMap[ir::PTXInstruction::Lg2] = ON_ARITH_OP;
 	    opcodeMap[ir::PTXInstruction::Ex2] = ON_ARITH_OP;
-        opcodeMap[ir::PTXInstruction::Neg] = ON_ARITH_OP;
+            opcodeMap[ir::PTXInstruction::Neg] = ON_ARITH_OP;
 	   
 	    addressSpaceMap[GLOBAL] = ir::PTXInstruction::Global;
 	    addressSpaceMap[LOCAL] = ir::PTXInstruction::Local;

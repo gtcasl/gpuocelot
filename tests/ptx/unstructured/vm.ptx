@@ -1,0 +1,6145 @@
+	.version 2.3
+	.target sm_20
+	.address_size 64
+	// compiled with /usr/local/cuda/open64/lib//be
+	// nvopencc 4.0 built on 2011-02-18
+
+	.visible .func _Z13copyDataToRegP13sphyraena_memPcS1_ii (.param .u64 __cudaparmf1__Z13copyDataToRegP13sphyraena_memPcS1_ii, .param .u64 __cudaparmf2__Z13copyDataToRegP13sphyraena_memPcS1_ii, .param .u64 __cudaparmf3__Z13copyDataToRegP13sphyraena_memPcS1_ii, .param .s32 __cudaparmf4__Z13copyDataToRegP13sphyraena_memPcS1_ii, .param .s32 __cudaparmf5__Z13copyDataToRegP13sphyraena_memPcS1_ii)
+
+	.visible .func (.param .s32 __cudaretf__Z9castToIntP13sphyraena_mem) _Z9castToIntP13sphyraena_mem (.param .u64 __cudaparmf1__Z9castToIntP13sphyraena_mem)
+
+	.visible .func (.param .f32 __cudaretf__Z11castToFloatP13sphyraena_mem) _Z11castToFloatP13sphyraena_mem (.param .u64 __cudaparmf1__Z11castToFloatP13sphyraena_mem)
+
+	.visible .func (.param .s64 __cudaretf__Z11castToInt64P13sphyraena_mem) _Z11castToInt64P13sphyraena_mem (.param .u64 __cudaparmf1__Z11castToInt64P13sphyraena_mem)
+
+	.visible .func (.param .f64 __cudaretf__Z12castToDoubleP13sphyraena_mem) _Z12castToDoubleP13sphyraena_mem (.param .u64 __cudaparmf1__Z12castToDoubleP13sphyraena_mem)
+
+	//-----------------------------------------------------------
+	// Compiling /tmp/tmpxft_00002733_00000000-9_vm.cpp3.i (/tmp/ccBI#.RtMmJQ)
+	//-----------------------------------------------------------
+
+	//-----------------------------------------------------------
+	// Options:
+	//-----------------------------------------------------------
+	//  Target:ptx, ISA:sm_20, Endian:little, Pointer Size:64
+	//  -O3	(Optimization level)
+	//  -g0	(Debug level)
+	//  -m2	(Report advisories)
+	//-----------------------------------------------------------
+
+	.file	1	"<command-line>"
+	.file	2	"/tmp/tmpxft_00002733_00000000-8_vm.cudafe2.gpu"
+	.file	3	"sphyraena.h"
+	.file	4	"/usr/lib/x86_64-linux-gnu/gcc/x86_64-linux-gnu/4.5.2/include/stddef.h"
+	.file	5	"/usr/local/cuda/bin/../include/crt/device_runtime.h"
+	.file	6	"/usr/local/cuda/bin/../include/host_defines.h"
+	.file	7	"/usr/local/cuda/bin/../include/builtin_types.h"
+	.file	8	"/usr/local/cuda/bin/../include/device_types.h"
+	.file	9	"/usr/local/cuda/bin/../include/driver_types.h"
+	.file	10	"/usr/local/cuda/bin/../include/surface_types.h"
+	.file	11	"/usr/local/cuda/bin/../include/texture_types.h"
+	.file	12	"/usr/local/cuda/bin/../include/vector_types.h"
+	.file	13	"/usr/local/cuda/bin/../include/device_launch_parameters.h"
+	.file	14	"/usr/local/cuda/bin/../include/crt/storage_class.h"
+	.file	15	"/usr/include/bits/types.h"
+	.file	16	"/usr/include/time.h"
+	.file	17	"../sqlite/sqlite3.h"
+	.file	18	"../sqlite/tsrc/sqliteInt.h"
+	.file	19	"vm.cu"
+	.file	20	"/usr/local/cuda/bin/../include/common_functions.h"
+	.file	21	"/usr/local/cuda/bin/../include/math_functions.h"
+	.file	22	"/usr/local/cuda/bin/../include/math_constants.h"
+	.file	23	"/usr/local/cuda/bin/../include/device_functions.h"
+	.file	24	"/usr/local/cuda/bin/../include/sm_11_atomic_functions.h"
+	.file	25	"/usr/local/cuda/bin/../include/sm_12_atomic_functions.h"
+	.file	26	"/usr/local/cuda/bin/../include/sm_13_double_functions.h"
+	.file	27	"/usr/local/cuda/bin/../include/sm_20_atomic_functions.h"
+	.file	28	"/usr/local/cuda/bin/../include/sm_20_intrinsics.h"
+	.file	29	"/usr/local/cuda/bin/../include/surface_functions.h"
+	.file	30	"/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+	.file	31	"/usr/local/cuda/bin/../include/math_functions_dbl_ptx3.h"
+
+	.const .align 4 .b8 cdata[140];
+
+	.visible .func _Z13copyDataToRegP13sphyraena_memPcS1_ii (.param .u64 __cudaparmf1__Z13copyDataToRegP13sphyraena_memPcS1_ii, .param .u64 __cudaparmf2__Z13copyDataToRegP13sphyraena_memPcS1_ii, .param .u64 __cudaparmf3__Z13copyDataToRegP13sphyraena_memPcS1_ii, .param .s32 __cudaparmf4__Z13copyDataToRegP13sphyraena_memPcS1_ii, .param .s32 __cudaparmf5__Z13copyDataToRegP13sphyraena_memPcS1_ii)
+	{
+	.reg .u32 %r<14>;
+	.reg .u64 %rd<23>;
+	.reg .f32 %f<3>;
+	.reg .f64 %fd<3>;
+	.reg .pred %p<6>;
+	.loc	19	761	0
+$LDWbegin__Z13copyDataToRegP13sphyraena_memPcS1_ii:
+	ld.param.u64 	%rd1, [__cudaparmf1__Z13copyDataToRegP13sphyraena_memPcS1_ii];
+	mov.s64 	%rd2, %rd1;
+	ld.param.u64 	%rd3, [__cudaparmf3__Z13copyDataToRegP13sphyraena_memPcS1_ii];
+	mov.s64 	%rd4, %rd3;
+	ld.param.u32 	%r1, [__cudaparmf4__Z13copyDataToRegP13sphyraena_memPcS1_ii];
+	mov.s32 	%r2, %r1;
+	mov.u64 	%rd5, cdata;
+	.loc	19	763	0
+	cvt.s64.s32 	%rd6, %r2;
+	mul.wide.s32 	%rd7, %r2, 4;
+	add.u64 	%rd8, %rd7, %rd5;
+	ld.const.s32 	%r3, [%rd8+12];
+	st.s32 	[%rd2+8], %r3;
+	.loc	19	803	0
+	mov.u32 	%r4, 0;
+	setp.eq.s32 	%p1, %r3, %r4;
+	@%p1 bra 	$Lt_0_258;
+	mov.u32 	%r5, 2;
+	setp.eq.s32 	%p2, %r3, %r5;
+	@%p2 bra 	$Lt_0_770;
+	mov.u32 	%r6, 1;
+	setp.eq.s32 	%p3, %r3, %r6;
+	@%p3 bra 	$Lt_0_1026;
+	mov.u32 	%r7, 3;
+	setp.eq.s32 	%p4, %r3, %r7;
+	@%p4 bra 	$Lt_0_1282;
+	bra.uni 	$Lt_0_514;
+$Lt_0_258:
+	.loc	19	805	0
+	add.u64 	%rd9, %rd7, %rd5;
+	ld.const.s32 	%r8, [%rd9+76];
+	cvt.s64.s32 	%rd10, %r8;
+	add.u64 	%rd11, %rd10, %rd4;
+	ld.s32 	%r9, [%rd11+0];
+	st.s32 	[%rd2+0], %r9;
+	.loc	19	806	0
+	bra.uni 	$Lt_0_514;
+$Lt_0_770:
+	.loc	19	808	0
+	add.u64 	%rd12, %rd7, %rd5;
+	ld.const.s32 	%r10, [%rd12+76];
+	cvt.s64.s32 	%rd13, %r10;
+	add.u64 	%rd14, %rd13, %rd4;
+	ld.f32 	%f1, [%rd14+0];
+	st.f32 	[%rd2+0], %f1;
+	.loc	19	809	0
+	bra.uni 	$Lt_0_514;
+$Lt_0_1026:
+	.loc	19	811	0
+	add.u64 	%rd15, %rd7, %rd5;
+	ld.const.s32 	%r11, [%rd15+76];
+	cvt.s64.s32 	%rd16, %r11;
+	add.u64 	%rd17, %rd16, %rd4;
+	ld.s64 	%rd18, [%rd17+0];
+	st.s64 	[%rd2+0], %rd18;
+	.loc	19	815	0
+	bra.uni 	$Lt_0_514;
+$Lt_0_1282:
+	.loc	19	817	0
+	add.u64 	%rd19, %rd7, %rd5;
+	ld.const.s32 	%r12, [%rd19+76];
+	cvt.s64.s32 	%rd20, %r12;
+	add.u64 	%rd21, %rd20, %rd4;
+	ld.f64 	%fd1, [%rd21+0];
+	st.f64 	[%rd2+0], %fd1;
+$Lt_0_514:
+	.loc	19	822	0
+	ret;
+$LDWend__Z13copyDataToRegP13sphyraena_memPcS1_ii:
+	} // _Z13copyDataToRegP13sphyraena_memPcS1_ii
+
+	.visible .func (.param .s32 __cudaretf__Z9castToIntP13sphyraena_mem) _Z9castToIntP13sphyraena_mem (.param .u64 __cudaparmf1__Z9castToIntP13sphyraena_mem)
+	{
+	.reg .u32 %r<9>;
+	.reg .u64 %rd<4>;
+	.reg .f32 %f<3>;
+	.reg .f64 %fd<3>;
+	.reg .pred %p<6>;
+	.loc	19	824	0
+$LDWbegin__Z9castToIntP13sphyraena_mem:
+	ld.param.u64 	%rd1, [__cudaparmf1__Z9castToIntP13sphyraena_mem];
+	mov.s64 	%rd2, %rd1;
+	.loc	19	826	0
+	ld.s32 	%r1, [%rd2+8];
+	mov.u32 	%r2, 0;
+	setp.eq.s32 	%p1, %r1, %r2;
+	@%p1 bra 	$Lt_1_258;
+	mov.u32 	%r3, 2;
+	setp.eq.s32 	%p2, %r1, %r3;
+	@%p2 bra 	$Lt_1_514;
+	mov.u32 	%r4, 1;
+	setp.eq.s32 	%p3, %r1, %r4;
+	@%p3 bra 	$Lt_1_770;
+	mov.u32 	%r5, 3;
+	setp.eq.s32 	%p4, %r1, %r5;
+	@%p4 bra 	$Lt_1_1026;
+	bra.uni 	$Lt_1_1794;
+$Lt_1_258:
+	.loc	19	828	0
+	ld.s32 	%r6, [%rd2+0];
+	bra.uni 	$LBB11__Z9castToIntP13sphyraena_mem;
+$Lt_1_514:
+	.loc	19	830	0
+	ld.f32 	%f1, [%rd2+0];
+	cvt.rzi.s32.f32 	%r6, %f1;
+	bra.uni 	$LBB11__Z9castToIntP13sphyraena_mem;
+$Lt_1_770:
+	.loc	19	832	0
+	ld.s32 	%r6, [%rd2+0];
+	bra.uni 	$LBB11__Z9castToIntP13sphyraena_mem;
+$Lt_1_1026:
+	.loc	19	834	0
+	ld.f64 	%fd1, [%rd2+0];
+	cvt.rzi.s32.f64 	%r6, %fd1;
+	bra.uni 	$LBB11__Z9castToIntP13sphyraena_mem;
+$Lt_1_1794:
+	.loc	19	836	0
+	mov.s32 	%r6, 0;
+$LBB11__Z9castToIntP13sphyraena_mem:
+	mov.s32 	%r7, %r6;
+	st.param.s32 	[__cudaretf__Z9castToIntP13sphyraena_mem], %r7;
+	ret;
+$LDWend__Z9castToIntP13sphyraena_mem:
+	} // _Z9castToIntP13sphyraena_mem
+
+	.visible .func (.param .f32 __cudaretf__Z11castToFloatP13sphyraena_mem) _Z11castToFloatP13sphyraena_mem (.param .u64 __cudaparmf1__Z11castToFloatP13sphyraena_mem)
+	{
+	.reg .u32 %r<8>;
+	.reg .u64 %rd<5>;
+	.reg .f32 %f<4>;
+	.reg .f64 %fd<3>;
+	.reg .pred %p<6>;
+	.loc	19	839	0
+$LDWbegin__Z11castToFloatP13sphyraena_mem:
+	ld.param.u64 	%rd1, [__cudaparmf1__Z11castToFloatP13sphyraena_mem];
+	mov.s64 	%rd2, %rd1;
+	.loc	19	841	0
+	ld.s32 	%r1, [%rd2+8];
+	mov.u32 	%r2, 2;
+	setp.eq.s32 	%p1, %r1, %r2;
+	@%p1 bra 	$Lt_2_258;
+	mov.u32 	%r3, 0;
+	setp.eq.s32 	%p2, %r1, %r3;
+	@%p2 bra 	$Lt_2_514;
+	mov.u32 	%r4, 1;
+	setp.eq.s32 	%p3, %r1, %r4;
+	@%p3 bra 	$Lt_2_770;
+	mov.u32 	%r5, 3;
+	setp.eq.s32 	%p4, %r1, %r5;
+	@%p4 bra 	$Lt_2_1026;
+	bra.uni 	$Lt_2_1794;
+$Lt_2_258:
+	.loc	19	843	0
+	ld.f32 	%f1, [%rd2+0];
+	bra.uni 	$LBB11__Z11castToFloatP13sphyraena_mem;
+$Lt_2_514:
+	.loc	19	845	0
+	ld.s32 	%r6, [%rd2+0];
+	cvt.rn.f32.s32 	%f1, %r6;
+	bra.uni 	$LBB11__Z11castToFloatP13sphyraena_mem;
+$Lt_2_770:
+	.loc	19	847	0
+	ld.s64 	%rd3, [%rd2+0];
+	cvt.rn.f32.s64 	%f1, %rd3;
+	bra.uni 	$LBB11__Z11castToFloatP13sphyraena_mem;
+$Lt_2_1026:
+	.loc	19	849	0
+	ld.f64 	%fd1, [%rd2+0];
+	cvt.rn.f32.f64 	%f1, %fd1;
+	bra.uni 	$LBB11__Z11castToFloatP13sphyraena_mem;
+$Lt_2_1794:
+	.loc	19	851	0
+	mov.f32 	%f1, 0f00000000;     	// 0
+$LBB11__Z11castToFloatP13sphyraena_mem:
+	mov.f32 	%f2, %f1;
+	st.param.f32 	[__cudaretf__Z11castToFloatP13sphyraena_mem], %f2;
+	ret;
+$LDWend__Z11castToFloatP13sphyraena_mem:
+	} // _Z11castToFloatP13sphyraena_mem
+
+	.visible .func (.param .s64 __cudaretf__Z11castToInt64P13sphyraena_mem) _Z11castToInt64P13sphyraena_mem (.param .u64 __cudaparmf1__Z11castToInt64P13sphyraena_mem)
+	{
+	.reg .u32 %r<8>;
+	.reg .u64 %rd<6>;
+	.reg .f32 %f<3>;
+	.reg .f64 %fd<3>;
+	.reg .pred %p<6>;
+	.loc	19	854	0
+$LDWbegin__Z11castToInt64P13sphyraena_mem:
+	ld.param.u64 	%rd1, [__cudaparmf1__Z11castToInt64P13sphyraena_mem];
+	mov.s64 	%rd2, %rd1;
+	.loc	19	856	0
+	ld.s32 	%r1, [%rd2+8];
+	mov.u32 	%r2, 1;
+	setp.eq.s32 	%p1, %r1, %r2;
+	@%p1 bra 	$Lt_3_258;
+	mov.u32 	%r3, 0;
+	setp.eq.s32 	%p2, %r1, %r3;
+	@%p2 bra 	$Lt_3_514;
+	mov.u32 	%r4, 2;
+	setp.eq.s32 	%p3, %r1, %r4;
+	@%p3 bra 	$Lt_3_770;
+	mov.u32 	%r5, 3;
+	setp.eq.s32 	%p4, %r1, %r5;
+	@%p4 bra 	$Lt_3_1026;
+	bra.uni 	$Lt_3_1794;
+$Lt_3_258:
+	.loc	19	858	0
+	ld.s64 	%rd3, [%rd2+0];
+	bra.uni 	$LBB11__Z11castToInt64P13sphyraena_mem;
+$Lt_3_514:
+	.loc	19	860	0
+	ld.s32 	%r6, [%rd2+0];
+	cvt.s64.s32 	%rd3, %r6;
+	bra.uni 	$LBB11__Z11castToInt64P13sphyraena_mem;
+$Lt_3_770:
+	.loc	19	862	0
+	ld.f32 	%f1, [%rd2+0];
+	cvt.rzi.s64.f32 	%rd3, %f1;
+	bra.uni 	$LBB11__Z11castToInt64P13sphyraena_mem;
+$Lt_3_1026:
+	.loc	19	864	0
+	ld.f64 	%fd1, [%rd2+0];
+	cvt.rzi.s64.f64 	%rd3, %fd1;
+	bra.uni 	$LBB11__Z11castToInt64P13sphyraena_mem;
+$Lt_3_1794:
+	.loc	19	866	0
+	mov.s64 	%rd3, 0;
+$LBB11__Z11castToInt64P13sphyraena_mem:
+	mov.s64 	%rd4, %rd3;
+	st.param.s64 	[__cudaretf__Z11castToInt64P13sphyraena_mem], %rd4;
+	ret;
+$LDWend__Z11castToInt64P13sphyraena_mem:
+	} // _Z11castToInt64P13sphyraena_mem
+
+	.visible .func (.param .f64 __cudaretf__Z12castToDoubleP13sphyraena_mem) _Z12castToDoubleP13sphyraena_mem (.param .u64 __cudaparmf1__Z12castToDoubleP13sphyraena_mem)
+	{
+	.reg .u32 %r<8>;
+	.reg .u64 %rd<5>;
+	.reg .f32 %f<3>;
+	.reg .f64 %fd<4>;
+	.reg .pred %p<6>;
+	.loc	19	869	0
+$LDWbegin__Z12castToDoubleP13sphyraena_mem:
+	ld.param.u64 	%rd1, [__cudaparmf1__Z12castToDoubleP13sphyraena_mem];
+	mov.s64 	%rd2, %rd1;
+	.loc	19	871	0
+	ld.s32 	%r1, [%rd2+8];
+	mov.u32 	%r2, 3;
+	setp.eq.s32 	%p1, %r1, %r2;
+	@%p1 bra 	$Lt_4_258;
+	mov.u32 	%r3, 0;
+	setp.eq.s32 	%p2, %r1, %r3;
+	@%p2 bra 	$Lt_4_514;
+	mov.u32 	%r4, 2;
+	setp.eq.s32 	%p3, %r1, %r4;
+	@%p3 bra 	$Lt_4_770;
+	mov.u32 	%r5, 1;
+	setp.eq.s32 	%p4, %r1, %r5;
+	@%p4 bra 	$Lt_4_1026;
+	bra.uni 	$Lt_4_1794;
+$Lt_4_258:
+	.loc	19	873	0
+	ld.f64 	%fd1, [%rd2+0];
+	bra.uni 	$LBB11__Z12castToDoubleP13sphyraena_mem;
+$Lt_4_514:
+	.loc	19	875	0
+	ld.s32 	%r6, [%rd2+0];
+	cvt.rn.f64.s32 	%fd1, %r6;
+	bra.uni 	$LBB11__Z12castToDoubleP13sphyraena_mem;
+$Lt_4_770:
+	.loc	19	877	0
+	ld.f32 	%f1, [%rd2+0];
+	cvt.f64.f32 	%fd1, %f1;
+	bra.uni 	$LBB11__Z12castToDoubleP13sphyraena_mem;
+$Lt_4_1026:
+	.loc	19	879	0
+	ld.s64 	%rd3, [%rd2+0];
+	cvt.rn.f64.s64 	%fd1, %rd3;
+	bra.uni 	$LBB11__Z12castToDoubleP13sphyraena_mem;
+$Lt_4_1794:
+	.loc	19	881	0
+	mov.f64 	%fd1, 0d0000000000000000;	// 0
+$LBB11__Z12castToDoubleP13sphyraena_mem:
+	mov.f64 	%fd2, %fd1;
+	st.param.f64 	[__cudaretf__Z12castToDoubleP13sphyraena_mem], %fd2;
+	ret;
+$LDWend__Z12castToDoubleP13sphyraena_mem:
+	} // _Z12castToDoubleP13sphyraena_mem
+	.global .align 32 .b8 cstmt[2080];
+	.shared .align 4 .b8 reductionblock[768];
+	.global .align 8 .b8 reg_global[128];
+	.shared .s32 result_start;
+	.shared .s32 block_start;
+	.global .u32 block_order;
+
+	.entry _Z8VmKernelPcP17sphyraena_resultsiii (
+		.param .u64 __cudaparm__Z8VmKernelPcP17sphyraena_resultsiii_data,
+		.param .u64 __cudaparm__Z8VmKernelPcP17sphyraena_resultsiii_results,
+		.param .s32 __cudaparm__Z8VmKernelPcP17sphyraena_resultsiii_start_row,
+		.param .s32 __cudaparm__Z8VmKernelPcP17sphyraena_resultsiii_num_blocks,
+		.param .s32 __cudaparm__Z8VmKernelPcP17sphyraena_resultsiii_rows)
+	{
+	.reg .u32 %r<1017>;
+	.reg .u64 %rd<465>;
+	.reg .f32 %f<106>;
+	.reg .f64 %fd<111>;
+	.reg .pred %p<521>;
+	.local .align 8 .b8 __cuda___cuda_local_var_50715_16_non_const_reg_163216[512];
+	// __cuda_local_var_50724_6_non_const_val_p1 = 528
+	// __cuda_local_var_50724_14_non_const_val_p2 = 532
+	// __cuda_local_var_50740_9_non_const_j = 536
+	// __cuda_local_var_51218_11_non_const_sum = 540
+	.loc	19	107	0
+$LDWbegin__Z8VmKernelPcP17sphyraena_resultsiii:
+	.loc	19	111	0
+	mov.s32 	%r1, 0;
+	st.shared.s32 	[block_start], %r1;
+	mov.u32 	%r2, %ctaid.x;
+	mov.u32 	%r3, %tid.x;
+	mov.u32 	%r4, 7;
+	setp.gt.u32 	%p1, %r3, %r4;
+	@%p1 bra 	$Lt_5_296194;
+	mov.u32 	%r5, 0;
+	setp.ne.u32 	%p2, %r2, %r5;
+	@%p2 bra 	$Lt_5_296706;
+	.loc	19	117	0
+	mov.u64 	%rd1, reg_global;
+	cvt.u64.u32 	%rd2, %r3;
+	mul.wide.u32 	%rd3, %r3, 16;
+	add.u64 	%rd4, %rd1, %rd3;
+	mov.s64 	%rd5, 0;
+	st.global.s64 	[%rd4+0], %rd5;
+	.loc	19	118	0
+	mov.s32 	%r6, 5;
+	st.global.s32 	[%rd4+8], %r6;
+$Lt_5_296706:
+	mov.u64 	%rd1, reg_global;
+$Lt_5_296194:
+	mov.u64 	%rd1, reg_global;
+	ld.param.s32 	%r7, [__cudaparm__Z8VmKernelPcP17sphyraena_resultsiii_rows];
+	mov.s32 	%r8, 1;
+	max.s32 	%r9, %r7, %r8;
+	ld.param.u64 	%rd6, [__cudaparm__Z8VmKernelPcP17sphyraena_resultsiii_results];
+	add.u64 	%rd7, %rd6, 140;
+	mov.s32 	%r10, 0;
+	ld.const.s32 	%r11, [cdata+0];
+	ld.param.s32 	%r12, [__cudaparm__Z8VmKernelPcP17sphyraena_resultsiii_start_row];
+	mov.u32 	%r13, %ntid.x;
+	mov.s32 	%r14, 0;
+	mov.u64 	%rd8, cdata;
+	mov.u64 	%rd9, reductionblock;
+	mov.u64 	%rd10, cstmt;
+	mov.u64 	%rd11, __cuda___cuda_local_var_50715_16_non_const_reg_163216;
+	mov.s32 	%r15, %r9;
+$Lt_5_297474:
+ //<loop> Loop body line 118, nesting depth: 1, estimated iterations: unknown
+	.loc	19	146	0
+	mov.s64 	%rd12, %rd7;
+	add.u32 	%r16, %r10, %r2;
+	mul.lo.u32 	%r17, %r16, %r13;
+	add.u32 	%r18, %r17, %r3;
+	add.u32 	%r19, %r12, %r18;
+	setp.gt.s32 	%p3, %r11, %r19;
+	@%p3 bra 	$Lt_5_297986;
+	bra.uni 	$LBB1247__Z8VmKernelPcP17sphyraena_resultsiii;
+$Lt_5_297986:
+	.loc	19	154	0
+	mov.s32 	%r20, 0;
+	mov.s32 	%r21, 0;
+	mov.s32 	%r22, 0;
+$Lt_5_514:
+	.loc	19	159	0
+	mov.s32 	%r23, 63;
+	setp.le.s32 	%p4, %r22, %r23;
+	@!%p4 bra 	$Lt_5_298242;
+$Lt_5_298754:
+	.loc	19	171	0
+	cvt.s64.s32 	%rd13, %r22;
+	mul.wide.s32 	%rd14, %r22, 32;
+	add.u64 	%rd15, %rd10, %rd14;
+	ld.global.u8 	%r24, [%rd15+32];
+	mov.u32 	%r25, 28;
+	setp.eq.s32 	%p5, %r24, %r25;
+	@%p5 bra 	$Lt_5_770;
+	mov.u32 	%r26, 86;
+	setp.eq.s32 	%p6, %r24, %r26;
+	@%p6 bra 	$Lt_5_1282;
+	mov.u32 	%r27, 20;
+	setp.eq.s32 	%p7, %r24, %r27;
+	@%p7 bra 	$Lt_5_3586;
+	mov.u32 	%r28, 115;
+	setp.eq.s32 	%p8, %r24, %r28;
+	@%p8 bra 	$Lt_5_3842;
+	mov.u32 	%r29, 69;
+	setp.eq.s32 	%p9, %r24, %r29;
+	@%p9 bra 	$Lt_5_6146;
+	mov.u32 	%r30, 82;
+	setp.eq.s32 	%p10, %r24, %r30;
+	@%p10 bra 	$Lt_5_10498;
+	mov.u32 	%r31, 93;
+	setp.eq.s32 	%p11, %r24, %r31;
+	@%p11 bra 	$Lt_5_10754;
+	mov.u32 	%r32, 83;
+	setp.eq.s32 	%p12, %r24, %r32;
+	@%p12 bra 	$Lt_5_11010;
+	mov.u32 	%r33, 14;
+	setp.eq.s32 	%p13, %r24, %r33;
+	@%p13 bra 	$Lt_5_11266;
+	mov.u32 	%r34, 15;
+	setp.eq.s32 	%p14, %r24, %r34;
+	@%p14 bra 	$Lt_5_11266;
+	mov.u32 	%r35, 89;
+	setp.eq.s32 	%p15, %r24, %r35;
+	@%p15 bra 	$Lt_5_11778;
+	mov.u32 	%r36, 76;
+	setp.eq.s32 	%p16, %r24, %r36;
+	@%p16 bra 	$Lt_5_14082;
+	mov.u32 	%r37, 80;
+	setp.eq.s32 	%p17, %r24, %r37;
+	@%p17 bra 	$Lt_5_16386;
+	mov.u32 	%r38, 77;
+	setp.eq.s32 	%p18, %r24, %r38;
+	@%p18 bra 	$Lt_5_18690;
+	mov.u32 	%r39, 6;
+	setp.eq.s32 	%p19, %r24, %r39;
+	@%p19 bra 	$Lt_5_307970;
+	mov.u32 	%r40, 26;
+	setp.eq.s32 	%p20, %r24, %r40;
+	@%p20 bra 	$Lt_5_21506;
+	mov.u32 	%r41, 113;
+	setp.eq.s32 	%p21, %r24, %r41;
+	@%p21 bra 	$Lt_5_23810;
+	mov.u32 	%r42, 27;
+	setp.eq.s32 	%p22, %r24, %r42;
+	@%p22 bra 	$Lt_5_24066;
+	mov.u32 	%r43, 112;
+	setp.eq.s32 	%p23, %r24, %r43;
+	@%p23 bra 	$Lt_5_26370;
+	mov.u32 	%r44, 114;
+	setp.eq.s32 	%p24, %r24, %r44;
+	@%p24 bra 	$Lt_5_26626;
+	mov.u32 	%r45, 8;
+	setp.eq.s32 	%p25, %r24, %r45;
+	@%p25 bra 	$Lt_5_26882;
+	mov.u32 	%r46, 7;
+	setp.eq.s32 	%p26, %r24, %r46;
+	@%p26 bra 	$Lt_5_27138;
+	mov.u32 	%r47, 78;
+	setp.eq.s32 	%p27, %r24, %r47;
+	@%p27 bra 	$Lt_5_27394;
+	mov.u32 	%r48, 79;
+	setp.eq.s32 	%p28, %r24, %r48;
+	@%p28 bra 	$Lt_5_29698;
+	mov.u32 	%r49, 88;
+	setp.eq.s32 	%p29, %r24, %r49;
+	@%p29 bra 	$Lt_5_32002;
+	mov.u32 	%r50, 75;
+	setp.eq.s32 	%p30, %r24, %r50;
+	@%p30 bra 	$Lt_5_34306;
+	mov.u32 	%r51, 66;
+	setp.eq.s32 	%p31, %r24, %r51;
+	@%p31 bra 	$Lt_5_298242;
+	mov.u32 	%r52, 19;
+	setp.eq.s32 	%p32, %r24, %r52;
+	@%p32 bra 	$Lt_5_37122;
+	mov.u32 	%r53, 10;
+	setp.eq.s32 	%p33, %r24, %r53;
+	@%p33 bra 	$Lt_5_39426;
+	mov.u32 	%r54, 68;
+	setp.eq.s32 	%p34, %r24, %r54;
+	@%p34 bra 	$Lt_5_39682;
+	mov.u32 	%r55, 130;
+	setp.eq.s32 	%p35, %r24, %r55;
+	@%p35 bra 	$Lt_5_44034;
+	mov.u32 	%r56, 90;
+	setp.eq.s32 	%p36, %r24, %r56;
+	@%p36 bra 	$Lt_5_1026;
+	mov.u32 	%r57, 16;
+	setp.eq.s32 	%p37, %r24, %r57;
+	@%p37 bra 	$Lt_5_44546;
+	mov.u32 	%r58, 60;
+	setp.eq.s32 	%p38, %r24, %r58;
+	@%p38 bra 	$Lt_5_48898;
+	mov.u32 	%r59, 84;
+	setp.eq.s32 	%p39, %r24, %r59;
+	@%p39 bra 	$Lt_5_49154;
+	mov.u32 	%r60, 85;
+	setp.eq.s32 	%p40, %r24, %r60;
+	@%p40 bra 	$Lt_5_49410;
+	mov.u32 	%r61, 87;
+	setp.eq.s32 	%p41, %r24, %r61;
+	@%p41 bra 	$Lt_5_49666;
+	bra.uni 	$Lt_5_51970;
+$Lt_5_770:
+	ld.global.v2.s32 	{%r62,%r63}, [%rd15+40];
+	.loc	19	763	0
+	cvt.s64.s32 	%rd16, %r62;
+	mul.wide.s32 	%rd17, %r62, 4;
+	add.u64 	%rd18, %rd17, %rd8;
+	cvt.s64.s32 	%rd19, %r63;
+	ld.const.s32 	%r64, [%rd18+12];
+	mul.wide.s32 	%rd20, %r63, 16;
+	add.u64 	%rd21, %rd11, %rd20;
+	st.local.s32 	[%rd21+8], %r64;
+	.loc	19	803	0
+	mov.u32 	%r65, 0;
+	setp.eq.s32 	%p42, %r64, %r65;
+	@%p42 bra 	$Lt_5_250114;
+	mov.u32 	%r66, 2;
+	setp.eq.s32 	%p43, %r64, %r66;
+	@%p43 bra 	$Lt_5_250626;
+	mov.u32 	%r67, 1;
+	setp.eq.s32 	%p44, %r64, %r67;
+	@%p44 bra 	$Lt_5_250882;
+	mov.u32 	%r68, 3;
+	setp.eq.s32 	%p45, %r64, %r68;
+	@%p45 bra 	$Lt_5_251138;
+	bra.uni 	$Lt_5_250370;
+$Lt_5_250114:
+	.loc	19	805	0
+	add.u64 	%rd22, %rd17, %rd8;
+	ld.const.s32 	%r69, [%rd22+76];
+	cvt.s64.s32 	%rd23, %r69;
+	ld.const.s32 	%r70, [cdata+8];
+	mul.lo.s32 	%r71, %r70, %r19;
+	cvt.u64.s32 	%rd24, %r71;
+	ld.param.u64 	%rd25, [__cudaparm__Z8VmKernelPcP17sphyraena_resultsiii_data];
+	add.u64 	%rd26, %rd24, %rd25;
+	add.u64 	%rd27, %rd23, %rd26;
+	ld.global.s32 	%r72, [%rd27+0];
+	st.local.s32 	[%rd21+0], %r72;
+	.loc	19	806	0
+	bra.uni 	$Lt_5_250370;
+$Lt_5_250626:
+	.loc	19	808	0
+	add.u64 	%rd28, %rd17, %rd8;
+	ld.const.s32 	%r73, [%rd28+76];
+	cvt.s64.s32 	%rd29, %r73;
+	ld.const.s32 	%r74, [cdata+8];
+	mul.lo.s32 	%r75, %r74, %r19;
+	cvt.u64.s32 	%rd30, %r75;
+	ld.param.u64 	%rd31, [__cudaparm__Z8VmKernelPcP17sphyraena_resultsiii_data];
+	add.u64 	%rd32, %rd30, %rd31;
+	add.u64 	%rd33, %rd29, %rd32;
+	ld.global.f32 	%f1, [%rd33+0];
+	st.local.f32 	[%rd21+0], %f1;
+	.loc	19	809	0
+	bra.uni 	$Lt_5_250370;
+$Lt_5_250882:
+	.loc	19	811	0
+	add.u64 	%rd34, %rd17, %rd8;
+	ld.const.s32 	%r76, [%rd34+76];
+	cvt.s64.s32 	%rd35, %r76;
+	ld.const.s32 	%r77, [cdata+8];
+	mul.lo.s32 	%r78, %r77, %r19;
+	cvt.u64.s32 	%rd36, %r78;
+	ld.param.u64 	%rd37, [__cudaparm__Z8VmKernelPcP17sphyraena_resultsiii_data];
+	add.u64 	%rd38, %rd36, %rd37;
+	add.u64 	%rd39, %rd35, %rd38;
+	ld.global.s64 	%rd40, [%rd39+0];
+	st.local.s64 	[%rd21+0], %rd40;
+	.loc	19	815	0
+	bra.uni 	$Lt_5_250370;
+$Lt_5_251138:
+	.loc	19	817	0
+	add.u64 	%rd41, %rd17, %rd8;
+	ld.const.s32 	%r79, [%rd41+76];
+	cvt.s64.s32 	%rd42, %r79;
+	ld.const.s32 	%r80, [cdata+8];
+	mul.lo.s32 	%r81, %r80, %r19;
+	cvt.u64.s32 	%rd43, %r81;
+	ld.param.u64 	%rd44, [__cudaparm__Z8VmKernelPcP17sphyraena_resultsiii_data];
+	add.u64 	%rd45, %rd43, %rd44;
+	add.u64 	%rd46, %rd42, %rd45;
+	ld.global.f64 	%fd1, [%rd46+0];
+	st.local.f64 	[%rd21+0], %fd1;
+$Lt_5_250370:
+	.loc	19	176	0
+	add.s32 	%r82, %r22, 1;
+	mov.s32 	%r22, %r82;
+	.loc	19	177	0
+	mov.s32 	%r83, 63;
+	setp.le.s32 	%p4, %r82, %r83;
+	bra.uni 	$Lt_5_1026;
+$Lt_5_1282:
+	ld.global.v4.s32 	{_,%r84,%r62,%r85}, [%rd15+32];
+	.loc	19	180	0
+	cvt.s64.s32 	%rd47, %r84;
+	cvt.s64.s32 	%rd48, %r62;
+	mul.wide.s32 	%rd49, %r84, 16;
+	mul.wide.s32 	%rd50, %r62, 16;
+	add.u64 	%rd51, %rd49, %rd11;
+	add.u64 	%rd52, %rd50, %rd11;
+	ld.local.s32 	%r86, [%rd52+8];
+	ld.local.s32 	%r87, [%rd51+8];
+	max.s32 	%r88, %r86, %r87;
+	cvt.s64.s32 	%rd19, %r85;
+	cvt.u32.s64 	%r89, %rd19;
+	cvt.u64.u32 	%rd53, %r89;
+	cvt.u32.u64 	%r90, %rd53;
+	cvt.u64.u32 	%rd54, %r90;
+	mul.wide.u32 	%rd55, %r90, 16;
+	add.u64 	%rd56, %rd11, %rd55;
+	st.local.s32 	[%rd56+8], %r88;
+	mov.u32 	%r91, 0;
+	setp.eq.s32 	%p46, %r88, %r91;
+	@%p46 bra 	$Lt_5_1538;
+	mov.u32 	%r92, 2;
+	setp.eq.s32 	%p47, %r88, %r92;
+	@%p47 bra 	$Lt_5_2050;
+	mov.u32 	%r93, 1;
+	setp.eq.s32 	%p48, %r88, %r93;
+	@%p48 bra 	$Lt_5_2306;
+	mov.u32 	%r94, 3;
+	setp.eq.s32 	%p49, %r88, %r94;
+	@%p49 bra 	$Lt_5_2562;
+	bra.uni 	$Lt_5_1794;
+$Lt_5_1538:
+	.loc	19	826	0
+	ld.local.s32 	%r95, [%rd52+8];
+	mov.u32 	%r96, 0;
+	setp.eq.s32 	%p50, %r95, %r96;
+	@%p50 bra 	$Lt_5_248066;
+	mov.u32 	%r97, 2;
+	setp.eq.s32 	%p51, %r95, %r97;
+	@%p51 bra 	$Lt_5_248322;
+	mov.u32 	%r98, 1;
+	setp.eq.s32 	%p52, %r95, %r98;
+	@%p52 bra 	$Lt_5_248578;
+	mov.u32 	%r99, 3;
+	setp.eq.s32 	%p53, %r95, %r99;
+	@%p53 bra 	$Lt_5_248834;
+	bra.uni 	$Lt_5_249602;
+$Lt_5_248066:
+	.loc	19	828	0
+	ld.local.s32 	%r100, [%rd52+0];
+	bra.uni 	$LDWendi__Z9castToIntP13sphyraena_mem_185_968;
+$Lt_5_248322:
+	.loc	19	830	0
+	ld.local.f32 	%f2, [%rd52+0];
+	cvt.rzi.s32.f32 	%r100, %f2;
+	bra.uni 	$LDWendi__Z9castToIntP13sphyraena_mem_185_968;
+$Lt_5_248578:
+	.loc	19	832	0
+	ld.local.s32 	%r100, [%rd52+0];
+	bra.uni 	$LDWendi__Z9castToIntP13sphyraena_mem_185_968;
+$Lt_5_248834:
+	.loc	19	834	0
+	ld.local.f64 	%fd2, [%rd52+0];
+	cvt.rzi.s32.f64 	%r100, %fd2;
+	bra.uni 	$LDWendi__Z9castToIntP13sphyraena_mem_185_968;
+$Lt_5_249602:
+	.loc	19	836	0
+	mov.s32 	%r100, 0;
+$LDWendi__Z9castToIntP13sphyraena_mem_185_968:
+	.loc	19	826	0
+	ld.local.s32 	%r101, [%rd51+8];
+	mov.u32 	%r102, 0;
+	setp.eq.s32 	%p54, %r101, %r102;
+	@%p54 bra 	$Lt_5_245762;
+	mov.u32 	%r103, 2;
+	setp.eq.s32 	%p55, %r101, %r103;
+	@%p55 bra 	$Lt_5_246018;
+	mov.u32 	%r104, 1;
+	setp.eq.s32 	%p56, %r101, %r104;
+	@%p56 bra 	$Lt_5_246274;
+	mov.u32 	%r105, 3;
+	setp.eq.s32 	%p57, %r101, %r105;
+	@%p57 bra 	$Lt_5_246530;
+	bra.uni 	$Lt_5_247298;
+$Lt_5_245762:
+	.loc	19	828	0
+	ld.local.s32 	%r106, [%rd51+0];
+	bra.uni 	$LDWendi__Z9castToIntP13sphyraena_mem_185_959;
+$Lt_5_246018:
+	.loc	19	830	0
+	ld.local.f32 	%f3, [%rd51+0];
+	cvt.rzi.s32.f32 	%r106, %f3;
+	bra.uni 	$LDWendi__Z9castToIntP13sphyraena_mem_185_959;
+$Lt_5_246274:
+	.loc	19	832	0
+	ld.local.s32 	%r106, [%rd51+0];
+	bra.uni 	$LDWendi__Z9castToIntP13sphyraena_mem_185_959;
+$Lt_5_246530:
+	.loc	19	834	0
+	ld.local.f64 	%fd3, [%rd51+0];
+	cvt.rzi.s32.f64 	%r106, %fd3;
+	bra.uni 	$LDWendi__Z9castToIntP13sphyraena_mem_185_959;
+$Lt_5_247298:
+	.loc	19	836	0
+	mov.s32 	%r106, 0;
+$LDWendi__Z9castToIntP13sphyraena_mem_185_959:
+	.loc	19	180	0
+	add.s32 	%r107, %r106, %r100;
+	cvt.s64.s32 	%rd57, %r90;
+	mul.wide.s32 	%rd58, %r90, 16;
+	add.u64 	%rd59, %rd11, %rd58;
+	st.local.s32 	[%rd59+0], %r107;
+	bra.uni 	$Lt_5_1794;
+$Lt_5_2050:
+	.loc	19	841	0
+	ld.local.s32 	%r95, [%rd52+8];
+	mov.u32 	%r108, 2;
+	setp.eq.s32 	%p58, %r95, %r108;
+	@%p58 bra 	$Lt_5_243458;
+	mov.u32 	%r109, 0;
+	setp.eq.s32 	%p59, %r95, %r109;
+	@%p59 bra 	$Lt_5_243714;
+	mov.u32 	%r110, 1;
+	setp.eq.s32 	%p60, %r95, %r110;
+	@%p60 bra 	$Lt_5_243970;
+	mov.u32 	%r111, 3;
+	setp.eq.s32 	%p61, %r95, %r111;
+	@%p61 bra 	$Lt_5_244226;
+	bra.uni 	$Lt_5_244994;
+$Lt_5_243458:
+	.loc	19	843	0
+	ld.local.f32 	%f4, [%rd52+0];
+	bra.uni 	$LDWendi__Z11castToFloatP13sphyraena_mem_185_950;
+$Lt_5_243714:
+	.loc	19	845	0
+	ld.local.s32 	%r112, [%rd52+0];
+	cvt.rn.f32.s32 	%f4, %r112;
+	bra.uni 	$LDWendi__Z11castToFloatP13sphyraena_mem_185_950;
+$Lt_5_243970:
+	.loc	19	847	0
+	ld.local.s64 	%rd60, [%rd52+0];
+	cvt.rn.f32.s64 	%f4, %rd60;
+	bra.uni 	$LDWendi__Z11castToFloatP13sphyraena_mem_185_950;
+$Lt_5_244226:
+	.loc	19	849	0
+	ld.local.f64 	%fd4, [%rd52+0];
+	cvt.rn.f32.f64 	%f4, %fd4;
+	bra.uni 	$LDWendi__Z11castToFloatP13sphyraena_mem_185_950;
+$Lt_5_244994:
+	.loc	19	851	0
+	mov.f32 	%f4, 0f00000000;     	// 0
+$LDWendi__Z11castToFloatP13sphyraena_mem_185_950:
+	.loc	19	841	0
+	ld.local.s32 	%r101, [%rd51+8];
+	mov.u32 	%r113, 2;
+	setp.eq.s32 	%p62, %r101, %r113;
+	@%p62 bra 	$Lt_5_241154;
+	mov.u32 	%r114, 0;
+	setp.eq.s32 	%p63, %r101, %r114;
+	@%p63 bra 	$Lt_5_241410;
+	mov.u32 	%r115, 1;
+	setp.eq.s32 	%p64, %r101, %r115;
+	@%p64 bra 	$Lt_5_241666;
+	mov.u32 	%r116, 3;
+	setp.eq.s32 	%p65, %r101, %r116;
+	@%p65 bra 	$Lt_5_241922;
+	bra.uni 	$Lt_5_242690;
+$Lt_5_241154:
+	.loc	19	843	0
+	ld.local.f32 	%f5, [%rd51+0];
+	bra.uni 	$LDWendi__Z11castToFloatP13sphyraena_mem_185_941;
+$Lt_5_241410:
+	.loc	19	845	0
+	ld.local.s32 	%r117, [%rd51+0];
+	cvt.rn.f32.s32 	%f5, %r117;
+	bra.uni 	$LDWendi__Z11castToFloatP13sphyraena_mem_185_941;
+$Lt_5_241666:
+	.loc	19	847	0
+	ld.local.s64 	%rd61, [%rd51+0];
+	cvt.rn.f32.s64 	%f5, %rd61;
+	bra.uni 	$LDWendi__Z11castToFloatP13sphyraena_mem_185_941;
+$Lt_5_241922:
+	.loc	19	849	0
+	ld.local.f64 	%fd5, [%rd51+0];
+	cvt.rn.f32.f64 	%f5, %fd5;
+	bra.uni 	$LDWendi__Z11castToFloatP13sphyraena_mem_185_941;
+$Lt_5_242690:
+	.loc	19	851	0
+	mov.f32 	%f5, 0f00000000;     	// 0
+$LDWendi__Z11castToFloatP13sphyraena_mem_185_941:
+	.loc	19	180	0
+	add.f32 	%f6, %f5, %f4;
+	cvt.s64.s32 	%rd62, %r90;
+	mul.wide.s32 	%rd63, %r90, 16;
+	add.u64 	%rd64, %rd11, %rd63;
+	st.local.f32 	[%rd64+0], %f6;
+	bra.uni 	$Lt_5_1794;
+$Lt_5_2306:
+	.loc	19	856	0
+	ld.local.s32 	%r95, [%rd52+8];
+	mov.u32 	%r118, 1;
+	setp.eq.s32 	%p66, %r95, %r118;
+	@%p66 bra 	$Lt_5_238850;
+	mov.u32 	%r119, 0;
+	setp.eq.s32 	%p67, %r95, %r119;
+	@%p67 bra 	$Lt_5_239106;
+	mov.u32 	%r120, 2;
+	setp.eq.s32 	%p68, %r95, %r120;
+	@%p68 bra 	$Lt_5_239362;
+	mov.u32 	%r121, 3;
+	setp.eq.s32 	%p69, %r95, %r121;
+	@%p69 bra 	$Lt_5_239618;
+	bra.uni 	$Lt_5_240386;
+$Lt_5_238850:
+	.loc	19	858	0
+	ld.local.s64 	%rd65, [%rd52+0];
+	bra.uni 	$LDWendi__Z11castToInt64P13sphyraena_mem_185_932;
+$Lt_5_239106:
+	.loc	19	860	0
+	ld.local.s32 	%r122, [%rd52+0];
+	cvt.s64.s32 	%rd65, %r122;
+	bra.uni 	$LDWendi__Z11castToInt64P13sphyraena_mem_185_932;
+$Lt_5_239362:
+	.loc	19	862	0
+	ld.local.f32 	%f7, [%rd52+0];
+	cvt.rzi.s64.f32 	%rd65, %f7;
+	bra.uni 	$LDWendi__Z11castToInt64P13sphyraena_mem_185_932;
+$Lt_5_239618:
+	.loc	19	864	0
+	ld.local.f64 	%fd6, [%rd52+0];
+	cvt.rzi.s64.f64 	%rd65, %fd6;
+	bra.uni 	$LDWendi__Z11castToInt64P13sphyraena_mem_185_932;
+$Lt_5_240386:
+	.loc	19	866	0
+	mov.s64 	%rd65, 0;
+$LDWendi__Z11castToInt64P13sphyraena_mem_185_932:
+	.loc	19	856	0
+	ld.local.s32 	%r101, [%rd51+8];
+	mov.u32 	%r123, 1;
+	setp.eq.s32 	%p70, %r101, %r123;
+	@%p70 bra 	$Lt_5_236546;
+	mov.u32 	%r124, 0;
+	setp.eq.s32 	%p71, %r101, %r124;
+	@%p71 bra 	$Lt_5_236802;
+	mov.u32 	%r125, 2;
+	setp.eq.s32 	%p72, %r101, %r125;
+	@%p72 bra 	$Lt_5_237058;
+	mov.u32 	%r126, 3;
+	setp.eq.s32 	%p73, %r101, %r126;
+	@%p73 bra 	$Lt_5_237314;
+	bra.uni 	$Lt_5_238082;
+$Lt_5_236546:
+	.loc	19	858	0
+	ld.local.s64 	%rd66, [%rd51+0];
+	bra.uni 	$LDWendi__Z11castToInt64P13sphyraena_mem_185_923;
+$Lt_5_236802:
+	.loc	19	860	0
+	ld.local.s32 	%r127, [%rd51+0];
+	cvt.s64.s32 	%rd66, %r127;
+	bra.uni 	$LDWendi__Z11castToInt64P13sphyraena_mem_185_923;
+$Lt_5_237058:
+	.loc	19	862	0
+	ld.local.f32 	%f8, [%rd51+0];
+	cvt.rzi.s64.f32 	%rd66, %f8;
+	bra.uni 	$LDWendi__Z11castToInt64P13sphyraena_mem_185_923;
+$Lt_5_237314:
+	.loc	19	864	0
+	ld.local.f64 	%fd7, [%rd51+0];
+	cvt.rzi.s64.f64 	%rd66, %fd7;
+	bra.uni 	$LDWendi__Z11castToInt64P13sphyraena_mem_185_923;
+$Lt_5_238082:
+	.loc	19	866	0
+	mov.s64 	%rd66, 0;
+$LDWendi__Z11castToInt64P13sphyraena_mem_185_923:
+	.loc	19	180	0
+	add.s64 	%rd67, %rd66, %rd65;
+	cvt.s64.s32 	%rd68, %r90;
+	mul.wide.s32 	%rd69, %r90, 16;
+	add.u64 	%rd70, %rd11, %rd69;
+	st.local.s64 	[%rd70+0], %rd67;
+	bra.uni 	$Lt_5_1794;
+$Lt_5_2562:
+	.loc	19	871	0
+	ld.local.s32 	%r95, [%rd52+8];
+	mov.u32 	%r128, 3;
+	setp.eq.s32 	%p74, %r95, %r128;
+	@%p74 bra 	$Lt_5_234242;
+	mov.u32 	%r129, 0;
+	setp.eq.s32 	%p75, %r95, %r129;
+	@%p75 bra 	$Lt_5_234498;
+	mov.u32 	%r130, 2;
+	setp.eq.s32 	%p76, %r95, %r130;
+	@%p76 bra 	$Lt_5_234754;
+	mov.u32 	%r131, 1;
+	setp.eq.s32 	%p77, %r95, %r131;
+	@%p77 bra 	$Lt_5_235010;
+	bra.uni 	$Lt_5_235778;
+$Lt_5_234242:
+	.loc	19	873	0
+	ld.local.f64 	%fd8, [%rd52+0];
+	bra.uni 	$LDWendi__Z12castToDoubleP13sphyraena_mem_185_914;
+$Lt_5_234498:
+	.loc	19	875	0
+	ld.local.s32 	%r132, [%rd52+0];
+	cvt.rn.f64.s32 	%fd8, %r132;
+	bra.uni 	$LDWendi__Z12castToDoubleP13sphyraena_mem_185_914;
+$Lt_5_234754:
+	.loc	19	877	0
+	ld.local.f32 	%f9, [%rd52+0];
+	cvt.f64.f32 	%fd8, %f9;
+	bra.uni 	$LDWendi__Z12castToDoubleP13sphyraena_mem_185_914;
+$Lt_5_235010:
+	.loc	19	879	0
+	ld.local.s64 	%rd71, [%rd52+0];
+	cvt.rn.f64.s64 	%fd8, %rd71;
+	bra.uni 	$LDWendi__Z12castToDoubleP13sphyraena_mem_185_914;
+$Lt_5_235778:
+	.loc	19	881	0
+	mov.f64 	%fd8, 0d0000000000000000;	// 0
+$LDWendi__Z12castToDoubleP13sphyraena_mem_185_914:
+	.loc	19	871	0
+	ld.local.s32 	%r101, [%rd51+8];
+	mov.u32 	%r133, 3;
+	setp.eq.s32 	%p78, %r101, %r133;
+	@%p78 bra 	$Lt_5_231938;
+	mov.u32 	%r134, 0;
+	setp.eq.s32 	%p79, %r101, %r134;
+	@%p79 bra 	$Lt_5_232194;
+	mov.u32 	%r135, 2;
+	setp.eq.s32 	%p80, %r101, %r135;
+	@%p80 bra 	$Lt_5_232450;
+	mov.u32 	%r136, 1;
+	setp.eq.s32 	%p81, %r101, %r136;
+	@%p81 bra 	$Lt_5_232706;
+	bra.uni 	$Lt_5_233474;
+$Lt_5_231938:
+	.loc	19	873	0
+	ld.local.f64 	%fd9, [%rd51+0];
+	bra.uni 	$LDWendi__Z12castToDoubleP13sphyraena_mem_185_905;
+$Lt_5_232194:
+	.loc	19	875	0
+	ld.local.s32 	%r137, [%rd51+0];
+	cvt.rn.f64.s32 	%fd9, %r137;
+	bra.uni 	$LDWendi__Z12castToDoubleP13sphyraena_mem_185_905;
+$Lt_5_232450:
+	.loc	19	877	0
+	ld.local.f32 	%f10, [%rd51+0];
+	cvt.f64.f32 	%fd9, %f10;
+	bra.uni 	$LDWendi__Z12castToDoubleP13sphyraena_mem_185_905;
+$Lt_5_232706:
+	.loc	19	879	0
+	ld.local.s64 	%rd72, [%rd51+0];
+	cvt.rn.f64.s64 	%fd9, %rd72;
+	bra.uni 	$LDWendi__Z12castToDoubleP13sphyraena_mem_185_905;
+$Lt_5_233474:
+	.loc	19	881	0
+	mov.f64 	%fd9, 0d0000000000000000;	// 0
+$LDWendi__Z12castToDoubleP13sphyraena_mem_185_905:
+	.loc	19	180	0
+	add.f64 	%fd10, %fd9, %fd8;
+	cvt.s64.s32 	%rd73, %r90;
+	mul.wide.s32 	%rd74, %r90, 16;
+	add.u64 	%rd75, %rd11, %rd74;
+	st.local.f64 	[%rd75+0], %fd10;
+$Lt_5_1794:
+	.loc	19	181	0
+	add.s32 	%r82, %r22, 1;
+	mov.s32 	%r22, %r82;
+	.loc	19	182	0
+	mov.s32 	%r138, 63;
+	setp.le.s32 	%p4, %r82, %r138;
+	bra.uni 	$Lt_5_1026;
+$Lt_5_3586:
+	.loc	19	826	0
+	ld.global.s32 	%r84, [%rd15+36];
+	cvt.s64.s32 	%rd76, %r84;
+	mul.wide.s32 	%rd77, %r84, 16;
+	add.u64 	%rd51, %rd11, %rd77;
+	ld.local.s32 	%r139, [%rd51+8];
+	mov.u32 	%r140, 0;
+	setp.eq.s32 	%p82, %r139, %r140;
+	@%p82 bra 	$Lt_5_229634;
+	mov.u32 	%r141, 2;
+	setp.eq.s32 	%p83, %r139, %r141;
+	@%p83 bra 	$Lt_5_229890;
+	mov.u32 	%r142, 1;
+	setp.eq.s32 	%p84, %r139, %r142;
+	@%p84 bra 	$Lt_5_230146;
+	mov.u32 	%r143, 3;
+	setp.eq.s32 	%p85, %r139, %r143;
+	@%p85 bra 	$Lt_5_230402;
+	bra.uni 	$Lt_5_231170;
+$Lt_5_229634:
+	.loc	19	828	0
+	ld.local.s32 	%r144, [%rd51+0];
+	bra.uni 	$LDWendi__Z9castToIntP13sphyraena_mem_185_896;
+$Lt_5_229890:
+	.loc	19	830	0
+	ld.local.f32 	%f11, [%rd51+0];
+	cvt.rzi.s32.f32 	%r144, %f11;
+	bra.uni 	$LDWendi__Z9castToIntP13sphyraena_mem_185_896;
+$Lt_5_230146:
+	.loc	19	832	0
+	ld.local.s32 	%r144, [%rd51+0];
+	bra.uni 	$LDWendi__Z9castToIntP13sphyraena_mem_185_896;
+$Lt_5_230402:
+	.loc	19	834	0
+	ld.local.f64 	%fd11, [%rd51+0];
+	cvt.rzi.s32.f64 	%r144, %fd11;
+	bra.uni 	$LDWendi__Z9castToIntP13sphyraena_mem_185_896;
+$Lt_5_231170:
+	.loc	19	836	0
+	mov.s32 	%r144, 0;
+$LDWendi__Z9castToIntP13sphyraena_mem_185_896:
+	.loc	19	185	0
+	ld.global.s32 	%r145, [%rd15+40];
+	add.s32 	%r146, %r145, %r144;
+	st.local.s32 	[%rd51+0], %r146;
+	.loc	19	186	0
+	add.s32 	%r82, %r22, 1;
+	mov.s32 	%r22, %r82;
+	.loc	19	187	0
+	mov.s32 	%r147, 63;
+	setp.le.s32 	%p4, %r82, %r147;
+	bra.uni 	$Lt_5_1026;
+$Lt_5_3842:
+	.loc	19	190	0
+	ld.global.s32 	%r148, [%rd15+48];
+	mov.u32 	%r149, 0;
+	setp.eq.s32 	%p86, %r148, %r149;
+	@%p86 bra 	$Lt_5_4098;
+	mov.u32 	%r150, 3;
+	setp.eq.s32 	%p87, %r148, %r150;
+	@%p87 bra 	$Lt_5_4610;
+	mov.u32 	%r151, 1;
+	setp.eq.s32 	%p88, %r148, %r151;
+	@%p88 bra 	$Lt_5_4610;
+	mov.u32 	%r152, 2;
+	setp.eq.s32 	%p89, %r148, %r152;
+	@%p89 bra 	$Lt_5_4610;
+	mov.u32 	%r153, 4;
+	setp.eq.s32 	%p90, %r148, %r153;
+	@%p90 bra 	$Lt_5_4610;
+	bra.uni 	$Lt_5_4354;
+$Lt_5_4098:
+	.loc	19	192	0
+	mov.s32 	%r154, 1;
+	ld.global.s32 	%r155, [%rd15+44];
+	cvt.s64.s32 	%rd78, %r155;
+	cvt.u32.s64 	%r156, %rd78;
+	cvt.u64.u32 	%rd79, %r156;
+	cvt.u32.u64 	%r157, %rd79;
+	cvt.u64.u32 	%rd80, %r157;
+	mul.wide.u32 	%rd81, %r157, 16;
+	add.u64 	%rd82, %rd11, %rd81;
+	st.local.s32 	[%rd82+0], %r154;
+	.loc	19	193	0
+	bra.uni 	$Lt_5_4354;
+$Lt_5_4610:
+$Lt_5_4866:
+$Lt_5_5122:
+$Lt_5_5378:
+	ld.global.v2.s32 	{%r62,%r158}, [%rd15+40];
+	.loc	19	199	0
+	cvt.s64.s32 	%rd19, %r158;
+	cvt.s64.s32 	%rd48, %r62;
+	cvt.u32.s64 	%r89, %rd19;
+	mul.wide.s32 	%rd50, %r62, 16;
+	cvt.u64.u32 	%rd53, %r89;
+	add.u64 	%rd52, %rd50, %rd11;
+	cvt.u32.u64 	%r90, %rd53;
+	ld.local.s64 	%rd83, [%rd52+0];
+	cvt.u64.u32 	%rd84, %r90;
+	mul.wide.u32 	%rd85, %r90, 16;
+	add.u64 	%rd86, %rd11, %rd85;
+	st.local.s64 	[%rd86+0], %rd83;
+	.loc	19	200	0
+	ld.local.s32 	%r159, [%rd52+8];
+	cvt.s64.s32 	%rd87, %r90;
+	mul.wide.s32 	%rd88, %r90, 16;
+	add.u64 	%rd89, %rd11, %rd88;
+	st.local.s32 	[%rd89+8], %r159;
+$Lt_5_4354:
+	.loc	19	203	0
+	add.s32 	%r82, %r22, 1;
+	mov.s32 	%r22, %r82;
+	.loc	19	204	0
+	mov.s32 	%r160, 63;
+	setp.le.s32 	%p4, %r82, %r160;
+	bra.uni 	$Lt_5_1026;
+$Lt_5_6146:
+	.loc	19	207	0
+	ld.global.s32 	%r84, [%rd15+36];
+	cvt.s64.s32 	%rd90, %r84;
+	mul.wide.s32 	%rd91, %r84, 16;
+	add.u64 	%rd51, %rd11, %rd91;
+	ld.local.s32 	%r139, [%rd51+8];
+	mov.u32 	%r161, 0;
+	setp.eq.s32 	%p91, %r139, %r161;
+	@%p91 bra 	$Lt_5_6402;
+	mov.u32 	%r162, 2;
+	setp.eq.s32 	%p92, %r139, %r162;
+	@%p92 bra 	$Lt_5_6914;
+	mov.u32 	%r163, 1;
+	setp.eq.s32 	%p93, %r139, %r163;
+	@%p93 bra 	$Lt_5_7170;
+	mov.u32 	%r164, 3;
+	setp.eq.s32 	%p94, %r139, %r164;
+	@%p94 bra 	$Lt_5_7426;
+	mov.s32 	%r165, %r166;
+	bra.uni 	$Lt_5_6658;
+$Lt_5_6402:
+	ld.local.s32 	%r165, [%rd51+0];
+	mov.s32 	%r166, %r165;
+	bra.uni 	$Lt_5_6658;
+$Lt_5_6914:
+	ld.local.f32 	%f12, [%rd51+0];
+	mov.f32 	%f13, 0f00000000;    	// 0
+	set.neu.u32.f32 	%r167, %f12, %f13;
+	neg.s32 	%r165, %r167;
+	mov.s32 	%r166, %r165;
+	bra.uni 	$Lt_5_6658;
+$Lt_5_7170:
+	ld.local.s64 	%rd92, [%rd51+0];
+	mov.s64 	%rd93, 0;
+	set.ne.u32.s64 	%r168, %rd92, %rd93;
+	neg.s32 	%r165, %r168;
+	mov.s32 	%r166, %r165;
+	bra.uni 	$Lt_5_6658;
+$Lt_5_7426:
+	ld.local.f64 	%fd12, [%rd51+0];
+	mov.f64 	%fd13, 0d0000000000000000;	// 0
+	set.ne.u32.f64 	%r169, %fd12, %fd13;
+	neg.s32 	%r165, %r169;
+	mov.s32 	%r166, %r165;
+$Lt_5_6658:
+	ld.global.s32 	%r62, [%rd15+40];
+	cvt.s64.s32 	%rd94, %r62;
+	mul.wide.s32 	%rd95, %r62, 16;
+	add.u64 	%rd52, %rd11, %rd95;
+	ld.local.s32 	%r170, [%rd52+8];
+	mov.u32 	%r171, 0;
+	setp.eq.s32 	%p95, %r170, %r171;
+	@%p95 bra 	$Lt_5_8450;
+	mov.u32 	%r172, 2;
+	setp.eq.s32 	%p96, %r170, %r172;
+	@%p96 bra 	$Lt_5_8962;
+	mov.u32 	%r173, 1;
+	setp.eq.s32 	%p97, %r170, %r173;
+	@%p97 bra 	$Lt_5_9218;
+	mov.u32 	%r174, 3;
+	setp.eq.s32 	%p98, %r170, %r174;
+	@%p98 bra 	$Lt_5_9474;
+	mov.s32 	%r175, %r176;
+	bra.uni 	$Lt_5_8706;
+$Lt_5_8450:
+	ld.local.s32 	%r175, [%rd52+0];
+	mov.s32 	%r176, %r175;
+	bra.uni 	$Lt_5_8706;
+$Lt_5_8962:
+	ld.local.f32 	%f14, [%rd52+0];
+	mov.f32 	%f15, 0f00000000;    	// 0
+	set.neu.u32.f32 	%r177, %f14, %f15;
+	neg.s32 	%r175, %r177;
+	mov.s32 	%r176, %r175;
+	bra.uni 	$Lt_5_8706;
+$Lt_5_9218:
+	ld.local.s64 	%rd96, [%rd52+0];
+	mov.s64 	%rd97, 0;
+	set.ne.u32.s64 	%r178, %rd96, %rd97;
+	neg.s32 	%r175, %r178;
+	mov.s32 	%r176, %r175;
+	bra.uni 	$Lt_5_8706;
+$Lt_5_9474:
+	ld.local.f64 	%fd14, [%rd52+0];
+	mov.f64 	%fd15, 0d0000000000000000;	// 0
+	set.ne.u32.f64 	%r179, %fd14, %fd15;
+	neg.s32 	%r175, %r179;
+	mov.s32 	%r176, %r175;
+$Lt_5_8706:
+	ld.global.s32 	%r180, [%rd15+44];
+	cvt.s64.s32 	%rd19, %r180;
+	cvt.u32.s64 	%r181, %rd19;
+	cvt.u64.u32 	%rd98, %r181;
+	cvt.u32.u64 	%r90, %rd98;
+	mov.s32 	%r182, 0;
+	cvt.u64.u32 	%rd99, %r90;
+	mul.wide.u32 	%rd100, %r90, 16;
+	add.u64 	%rd101, %rd11, %rd100;
+	st.local.s32 	[%rd101+8], %r182;
+	mov.s32 	%r183, 0;
+	set.ne.u32.s32 	%r184, %r175, %r183;
+	neg.s32 	%r185, %r184;
+	mov.s32 	%r186, 0;
+	set.ne.u32.s32 	%r187, %r165, %r186;
+	neg.s32 	%r188, %r187;
+	and.b32 	%r189, %r185, %r188;
+	cvt.s64.s32 	%rd102, %r90;
+	mul.wide.s32 	%rd103, %r90, 16;
+	add.u64 	%rd104, %rd11, %rd103;
+	st.local.s32 	[%rd104+0], %r189;
+	.loc	19	208	0
+	add.s32 	%r82, %r22, 1;
+	mov.s32 	%r22, %r82;
+	.loc	19	209	0
+	mov.s32 	%r190, 63;
+	setp.le.s32 	%p4, %r82, %r190;
+	bra.uni 	$Lt_5_1026;
+$Lt_5_10498:
+	ld.global.v4.s32 	{_,%r191,%r192,%r193}, [%rd15+32];
+	.loc	19	212	0
+	cvt.s64.s32 	%rd105, %r191;
+	mul.wide.s32 	%rd106, %r191, 16;
+	add.u64 	%rd107, %rd11, %rd106;
+	ld.local.s64 	%rd108, [%rd107+0];
+	cvt.s64.s32 	%rd109, %r192;
+	mul.wide.s32 	%rd110, %r192, 16;
+	add.u64 	%rd111, %rd11, %rd110;
+	ld.local.s64 	%rd112, [%rd111+0];
+	and.b64 	%rd113, %rd108, %rd112;
+	cvt.s64.s32 	%rd114, %r193;
+	cvt.u32.s64 	%r194, %rd114;
+	cvt.u64.u32 	%rd115, %r194;
+	cvt.u32.u64 	%r195, %rd115;
+	cvt.u64.u32 	%rd116, %r195;
+	mul.wide.u32 	%rd117, %r195, 16;
+	add.u64 	%rd118, %rd11, %rd117;
+	st.local.s64 	[%rd118+0], %rd113;
+	.loc	19	213	0
+	add.s32 	%r82, %r22, 1;
+	mov.s32 	%r22, %r82;
+	.loc	19	214	0
+	mov.s32 	%r196, 63;
+	setp.le.s32 	%p4, %r82, %r196;
+	bra.uni 	$Lt_5_1026;
+$Lt_5_10754:
+	.loc	19	217	0
+	ld.global.s32 	%r197, [%rd15+36];
+	cvt.s64.s32 	%rd119, %r197;
+	mul.wide.s32 	%rd120, %r197, 16;
+	add.u64 	%rd121, %rd11, %rd120;
+	ld.local.s64 	%rd122, [%rd121+0];
+	not.b64 	%rd123, %rd122;
+	ld.global.s32 	%r198, [%rd15+40];
+	cvt.s64.s32 	%rd124, %r198;
+	mul.wide.s32 	%rd125, %r198, 16;
+	add.u64 	%rd126, %rd11, %rd125;
+	st.local.s64 	[%rd126+0], %rd123;
+	.loc	19	218	0
+	add.s32 	%r82, %r22, 1;
+	mov.s32 	%r22, %r82;
+	.loc	19	219	0
+	mov.s32 	%r199, 63;
+	setp.le.s32 	%p4, %r82, %r199;
+	bra.uni 	$Lt_5_1026;
+$Lt_5_11010:
+	ld.global.v4.s32 	{_,%r200,%r201,%r202}, [%rd15+32];
+	.loc	19	222	0
+	cvt.s64.s32 	%rd127, %r200;
+	mul.wide.s32 	%rd128, %r200, 16;
+	add.u64 	%rd129, %rd11, %rd128;
+	ld.local.s64 	%rd130, [%rd129+0];
+	cvt.s64.s32 	%rd131, %r201;
+	mul.wide.s32 	%rd132, %r201, 16;
+	add.u64 	%rd133, %rd11, %rd132;
+	ld.local.s64 	%rd134, [%rd133+0];
+	or.b64 	%rd135, %rd130, %rd134;
+	cvt.s64.s32 	%rd136, %r202;
+	cvt.u32.s64 	%r203, %rd136;
+	cvt.u64.u32 	%rd137, %r203;
+	cvt.u32.u64 	%r204, %rd137;
+	cvt.u64.u32 	%rd138, %r204;
+	mul.wide.u32 	%rd139, %r204, 16;
+	add.u64 	%rd140, %rd11, %rd139;
+	st.local.s64 	[%rd140+0], %rd135;
+	.loc	19	223	0
+	add.s32 	%r82, %r22, 1;
+	mov.s32 	%r22, %r82;
+	.loc	19	224	0
+	mov.s32 	%r205, 63;
+	setp.le.s32 	%p4, %r82, %r205;
+	bra.uni 	$Lt_5_1026;
+$Lt_5_11266:
+$Lt_5_11522:
+	.loc	19	228	0
+	ld.global.s32 	%r84, [%rd15+36];
+	ld.global.s32 	%r62, [%rd15+40];
+	cvt.s64.s32 	%rd47, %r84;
+	cvt.s64.s32 	%rd48, %r62;
+	mul.wide.s32 	%rd49, %r84, 16;
+	mul.wide.s32 	%rd50, %r62, 16;
+	add.u64 	%rd51, %rd49, %rd11;
+	add.u64 	%rd52, %rd50, %rd11;
+	ld.local.s32 	%r206, [%rd51+8];
+	st.local.s32 	[%rd52+8], %r206;
+	.loc	19	229	0
+	ld.local.s64 	%rd141, [%rd51+0];
+	st.local.s64 	[%rd52+0], %rd141;
+	.loc	19	230	0
+	add.s32 	%r82, %r22, 1;
+	mov.s32 	%r22, %r82;
+	.loc	19	231	0
+	mov.s32 	%r207, 63;
+	setp.le.s32 	%p4, %r82, %r207;
+	bra.uni 	$Lt_5_1026;
+$Lt_5_11778:
+	ld.global.v4.s32 	{_,%r84,%r62,%r208}, [%rd15+32];
+	.loc	19	234	0
+	cvt.s64.s32 	%rd47, %r84;
+	cvt.s64.s32 	%rd48, %r62;
+	mul.wide.s32 	%rd49, %r84, 16;
+	mul.wide.s32 	%rd50, %r62, 16;
+	add.u64 	%rd51, %rd49, %rd11;
+	add.u64 	%rd52, %rd50, %rd11;
+	ld.local.s32 	%r209, [%rd52+8];
+	ld.local.s32 	%r210, [%rd51+8];
+	max.s32 	%r88, %r209, %r210;
+	cvt.s64.s32 	%rd19, %r208;
+	cvt.u32.s64 	%r89, %rd19;
+	cvt.u64.u32 	%rd53, %r89;
+	cvt.u32.u64 	%r90, %rd53;
+	cvt.u64.u32 	%rd142, %r90;
+	mul.wide.u32 	%rd143, %r90, 16;
+	add.u64 	%rd144, %rd11, %rd143;
+	st.local.s32 	[%rd144+8], %r88;
+	mov.u32 	%r211, 0;
+	setp.eq.s32 	%p99, %r88, %r211;
+	@%p99 bra 	$Lt_5_12034;
+	mov.u32 	%r212, 2;
+	setp.eq.s32 	%p100, %r88, %r212;
+	@%p100 bra 	$Lt_5_12546;
+	mov.u32 	%r213, 1;
+	setp.eq.s32 	%p101, %r88, %r213;
+	@%p101 bra 	$Lt_5_12802;
+	mov.u32 	%r214, 3;
+	setp.eq.s32 	%p102, %r88, %r214;
+	@%p102 bra 	$Lt_5_13058;
+	bra.uni 	$Lt_5_12290;
+$Lt_5_12034:
+	.loc	19	826	0
+	ld.local.s32 	%r215, [%rd52+8];
+	mov.u32 	%r216, 0;
+	setp.eq.s32 	%p103, %r215, %r216;
+	@%p103 bra 	$Lt_5_227330;
+	mov.u32 	%r217, 2;
+	setp.eq.s32 	%p104, %r215, %r217;
+	@%p104 bra 	$Lt_5_227586;
+	mov.u32 	%r218, 1;
+	setp.eq.s32 	%p105, %r215, %r218;
+	@%p105 bra 	$Lt_5_227842;
+	mov.u32 	%r219, 3;
+	setp.eq.s32 	%p106, %r215, %r219;
+	@%p106 bra 	$Lt_5_228098;
+	bra.uni 	$Lt_5_228866;
+$Lt_5_227330:
+	.loc	19	828	0
+	ld.local.s32 	%r220, [%rd52+0];
+	bra.uni 	$LDWendi__Z9castToIntP13sphyraena_mem_185_887;
+$Lt_5_227586:
+	.loc	19	830	0
+	ld.local.f32 	%f16, [%rd52+0];
+	cvt.rzi.s32.f32 	%r220, %f16;
+	bra.uni 	$LDWendi__Z9castToIntP13sphyraena_mem_185_887;
+$Lt_5_227842:
+	.loc	19	832	0
+	ld.local.s32 	%r220, [%rd52+0];
+	bra.uni 	$LDWendi__Z9castToIntP13sphyraena_mem_185_887;
+$Lt_5_228098:
+	.loc	19	834	0
+	ld.local.f64 	%fd16, [%rd52+0];
+	cvt.rzi.s32.f64 	%r220, %fd16;
+	bra.uni 	$LDWendi__Z9castToIntP13sphyraena_mem_185_887;
+$Lt_5_228866:
+	.loc	19	836	0
+	mov.s32 	%r220, 0;
+$LDWendi__Z9castToIntP13sphyraena_mem_185_887:
+	.loc	19	826	0
+	ld.local.s32 	%r221, [%rd51+8];
+	mov.u32 	%r222, 0;
+	setp.eq.s32 	%p107, %r221, %r222;
+	@%p107 bra 	$Lt_5_225026;
+	mov.u32 	%r223, 2;
+	setp.eq.s32 	%p108, %r221, %r223;
+	@%p108 bra 	$Lt_5_225282;
+	mov.u32 	%r224, 1;
+	setp.eq.s32 	%p109, %r221, %r224;
+	@%p109 bra 	$Lt_5_225538;
+	mov.u32 	%r225, 3;
+	setp.eq.s32 	%p110, %r221, %r225;
+	@%p110 bra 	$Lt_5_225794;
+	bra.uni 	$Lt_5_226562;
+$Lt_5_225026:
+	.loc	19	828	0
+	ld.local.s32 	%r226, [%rd51+0];
+	bra.uni 	$LDWendi__Z9castToIntP13sphyraena_mem_185_878;
+$Lt_5_225282:
+	.loc	19	830	0
+	ld.local.f32 	%f17, [%rd51+0];
+	cvt.rzi.s32.f32 	%r226, %f17;
+	bra.uni 	$LDWendi__Z9castToIntP13sphyraena_mem_185_878;
+$Lt_5_225538:
+	.loc	19	832	0
+	ld.local.s32 	%r226, [%rd51+0];
+	bra.uni 	$LDWendi__Z9castToIntP13sphyraena_mem_185_878;
+$Lt_5_225794:
+	.loc	19	834	0
+	ld.local.f64 	%fd17, [%rd51+0];
+	cvt.rzi.s32.f64 	%r226, %fd17;
+	bra.uni 	$LDWendi__Z9castToIntP13sphyraena_mem_185_878;
+$Lt_5_226562:
+	.loc	19	836	0
+	mov.s32 	%r226, 0;
+$LDWendi__Z9castToIntP13sphyraena_mem_185_878:
+	.loc	19	234	0
+	div.s32 	%r227, %r220, %r226;
+	cvt.s64.s32 	%rd145, %r90;
+	mul.wide.s32 	%rd146, %r90, 16;
+	add.u64 	%rd147, %rd11, %rd146;
+	st.local.s32 	[%rd147+0], %r227;
+	bra.uni 	$Lt_5_12290;
+$Lt_5_12546:
+	.loc	19	841	0
+	ld.local.s32 	%r215, [%rd52+8];
+	mov.u32 	%r228, 2;
+	setp.eq.s32 	%p111, %r215, %r228;
+	@%p111 bra 	$Lt_5_222722;
+	mov.u32 	%r229, 0;
+	setp.eq.s32 	%p112, %r215, %r229;
+	@%p112 bra 	$Lt_5_222978;
+	mov.u32 	%r230, 1;
+	setp.eq.s32 	%p113, %r215, %r230;
+	@%p113 bra 	$Lt_5_223234;
+	mov.u32 	%r231, 3;
+	setp.eq.s32 	%p114, %r215, %r231;
+	@%p114 bra 	$Lt_5_223490;
+	bra.uni 	$Lt_5_224258;
+$Lt_5_222722:
+	.loc	19	843	0
+	ld.local.f32 	%f18, [%rd52+0];
+	bra.uni 	$LDWendi__Z11castToFloatP13sphyraena_mem_185_869;
+$Lt_5_222978:
+	.loc	19	845	0
+	ld.local.s32 	%r232, [%rd52+0];
+	cvt.rn.f32.s32 	%f18, %r232;
+	bra.uni 	$LDWendi__Z11castToFloatP13sphyraena_mem_185_869;
+$Lt_5_223234:
+	.loc	19	847	0
+	ld.local.s64 	%rd148, [%rd52+0];
+	cvt.rn.f32.s64 	%f18, %rd148;
+	bra.uni 	$LDWendi__Z11castToFloatP13sphyraena_mem_185_869;
+$Lt_5_223490:
+	.loc	19	849	0
+	ld.local.f64 	%fd18, [%rd52+0];
+	cvt.rn.f32.f64 	%f18, %fd18;
+	bra.uni 	$LDWendi__Z11castToFloatP13sphyraena_mem_185_869;
+$Lt_5_224258:
+	.loc	19	851	0
+	mov.f32 	%f18, 0f00000000;    	// 0
+$LDWendi__Z11castToFloatP13sphyraena_mem_185_869:
+	.loc	19	841	0
+	ld.local.s32 	%r221, [%rd51+8];
+	mov.u32 	%r233, 2;
+	setp.eq.s32 	%p115, %r221, %r233;
+	@%p115 bra 	$Lt_5_220418;
+	mov.u32 	%r234, 0;
+	setp.eq.s32 	%p116, %r221, %r234;
+	@%p116 bra 	$Lt_5_220674;
+	mov.u32 	%r235, 1;
+	setp.eq.s32 	%p117, %r221, %r235;
+	@%p117 bra 	$Lt_5_220930;
+	mov.u32 	%r236, 3;
+	setp.eq.s32 	%p118, %r221, %r236;
+	@%p118 bra 	$Lt_5_221186;
+	bra.uni 	$Lt_5_221954;
+$Lt_5_220418:
+	.loc	19	843	0
+	ld.local.f32 	%f19, [%rd51+0];
+	bra.uni 	$LDWendi__Z11castToFloatP13sphyraena_mem_185_860;
+$Lt_5_220674:
+	.loc	19	845	0
+	ld.local.s32 	%r237, [%rd51+0];
+	cvt.rn.f32.s32 	%f19, %r237;
+	bra.uni 	$LDWendi__Z11castToFloatP13sphyraena_mem_185_860;
+$Lt_5_220930:
+	.loc	19	847	0
+	ld.local.s64 	%rd149, [%rd51+0];
+	cvt.rn.f32.s64 	%f19, %rd149;
+	bra.uni 	$LDWendi__Z11castToFloatP13sphyraena_mem_185_860;
+$Lt_5_221186:
+	.loc	19	849	0
+	ld.local.f64 	%fd19, [%rd51+0];
+	cvt.rn.f32.f64 	%f19, %fd19;
+	bra.uni 	$LDWendi__Z11castToFloatP13sphyraena_mem_185_860;
+$Lt_5_221954:
+	.loc	19	851	0
+	mov.f32 	%f19, 0f00000000;    	// 0
+$LDWendi__Z11castToFloatP13sphyraena_mem_185_860:
+	.loc	19	234	0
+	div.rn.f32 	%f20, %f18, %f19;
+	cvt.s64.s32 	%rd150, %r90;
+	mul.wide.s32 	%rd151, %r90, 16;
+	add.u64 	%rd152, %rd11, %rd151;
+	st.local.f32 	[%rd152+0], %f20;
+	bra.uni 	$Lt_5_12290;
+$Lt_5_12802:
+	.loc	19	856	0
+	ld.local.s32 	%r215, [%rd52+8];
+	mov.u32 	%r238, 1;
+	setp.eq.s32 	%p119, %r215, %r238;
+	@%p119 bra 	$Lt_5_218114;
+	mov.u32 	%r239, 0;
+	setp.eq.s32 	%p120, %r215, %r239;
+	@%p120 bra 	$Lt_5_218370;
+	mov.u32 	%r240, 2;
+	setp.eq.s32 	%p121, %r215, %r240;
+	@%p121 bra 	$Lt_5_218626;
+	mov.u32 	%r241, 3;
+	setp.eq.s32 	%p122, %r215, %r241;
+	@%p122 bra 	$Lt_5_218882;
+	bra.uni 	$Lt_5_219650;
+$Lt_5_218114:
+	.loc	19	858	0
+	ld.local.s64 	%rd153, [%rd52+0];
+	bra.uni 	$LDWendi__Z11castToInt64P13sphyraena_mem_185_851;
+$Lt_5_218370:
+	.loc	19	860	0
+	ld.local.s32 	%r242, [%rd52+0];
+	cvt.s64.s32 	%rd153, %r242;
+	bra.uni 	$LDWendi__Z11castToInt64P13sphyraena_mem_185_851;
+$Lt_5_218626:
+	.loc	19	862	0
+	ld.local.f32 	%f21, [%rd52+0];
+	cvt.rzi.s64.f32 	%rd153, %f21;
+	bra.uni 	$LDWendi__Z11castToInt64P13sphyraena_mem_185_851;
+$Lt_5_218882:
+	.loc	19	864	0
+	ld.local.f64 	%fd20, [%rd52+0];
+	cvt.rzi.s64.f64 	%rd153, %fd20;
+	bra.uni 	$LDWendi__Z11castToInt64P13sphyraena_mem_185_851;
+$Lt_5_219650:
+	.loc	19	866	0
+	mov.s64 	%rd153, 0;
+$LDWendi__Z11castToInt64P13sphyraena_mem_185_851:
+	.loc	19	856	0
+	ld.local.s32 	%r221, [%rd51+8];
+	mov.u32 	%r243, 1;
+	setp.eq.s32 	%p123, %r221, %r243;
+	@%p123 bra 	$Lt_5_215810;
+	mov.u32 	%r244, 0;
+	setp.eq.s32 	%p124, %r221, %r244;
+	@%p124 bra 	$Lt_5_216066;
+	mov.u32 	%r245, 2;
+	setp.eq.s32 	%p125, %r221, %r245;
+	@%p125 bra 	$Lt_5_216322;
+	mov.u32 	%r246, 3;
+	setp.eq.s32 	%p126, %r221, %r246;
+	@%p126 bra 	$Lt_5_216578;
+	bra.uni 	$Lt_5_217346;
+$Lt_5_215810:
+	.loc	19	858	0
+	ld.local.s64 	%rd154, [%rd51+0];
+	bra.uni 	$LDWendi__Z11castToInt64P13sphyraena_mem_185_842;
+$Lt_5_216066:
+	.loc	19	860	0
+	ld.local.s32 	%r247, [%rd51+0];
+	cvt.s64.s32 	%rd154, %r247;
+	bra.uni 	$LDWendi__Z11castToInt64P13sphyraena_mem_185_842;
+$Lt_5_216322:
+	.loc	19	862	0
+	ld.local.f32 	%f22, [%rd51+0];
+	cvt.rzi.s64.f32 	%rd154, %f22;
+	bra.uni 	$LDWendi__Z11castToInt64P13sphyraena_mem_185_842;
+$Lt_5_216578:
+	.loc	19	864	0
+	ld.local.f64 	%fd21, [%rd51+0];
+	cvt.rzi.s64.f64 	%rd154, %fd21;
+	bra.uni 	$LDWendi__Z11castToInt64P13sphyraena_mem_185_842;
+$Lt_5_217346:
+	.loc	19	866	0
+	mov.s64 	%rd154, 0;
+$LDWendi__Z11castToInt64P13sphyraena_mem_185_842:
+	.loc	19	234	0
+	div.s64 	%rd155, %rd153, %rd154;
+	cvt.s64.s32 	%rd156, %r90;
+	mul.wide.s32 	%rd157, %r90, 16;
+	add.u64 	%rd158, %rd11, %rd157;
+	st.local.s64 	[%rd158+0], %rd155;
+	bra.uni 	$Lt_5_12290;
+$Lt_5_13058:
+	.loc	19	871	0
+	ld.local.s32 	%r215, [%rd52+8];
+	mov.u32 	%r248, 3;
+	setp.eq.s32 	%p127, %r215, %r248;
+	@%p127 bra 	$Lt_5_213506;
+	mov.u32 	%r249, 0;
+	setp.eq.s32 	%p128, %r215, %r249;
+	@%p128 bra 	$Lt_5_213762;
+	mov.u32 	%r250, 2;
+	setp.eq.s32 	%p129, %r215, %r250;
+	@%p129 bra 	$Lt_5_214018;
+	mov.u32 	%r251, 1;
+	setp.eq.s32 	%p130, %r215, %r251;
+	@%p130 bra 	$Lt_5_214274;
+	bra.uni 	$Lt_5_215042;
+$Lt_5_213506:
+	.loc	19	873	0
+	ld.local.f64 	%fd22, [%rd52+0];
+	bra.uni 	$LDWendi__Z12castToDoubleP13sphyraena_mem_185_833;
+$Lt_5_213762:
+	.loc	19	875	0
+	ld.local.s32 	%r252, [%rd52+0];
+	cvt.rn.f64.s32 	%fd22, %r252;
+	bra.uni 	$LDWendi__Z12castToDoubleP13sphyraena_mem_185_833;
+$Lt_5_214018:
+	.loc	19	877	0
+	ld.local.f32 	%f23, [%rd52+0];
+	cvt.f64.f32 	%fd22, %f23;
+	bra.uni 	$LDWendi__Z12castToDoubleP13sphyraena_mem_185_833;
+$Lt_5_214274:
+	.loc	19	879	0
+	ld.local.s64 	%rd159, [%rd52+0];
+	cvt.rn.f64.s64 	%fd22, %rd159;
+	bra.uni 	$LDWendi__Z12castToDoubleP13sphyraena_mem_185_833;
+$Lt_5_215042:
+	.loc	19	881	0
+	mov.f64 	%fd22, 0d0000000000000000;	// 0
+$LDWendi__Z12castToDoubleP13sphyraena_mem_185_833:
+	.loc	19	871	0
+	ld.local.s32 	%r221, [%rd51+8];
+	mov.u32 	%r253, 3;
+	setp.eq.s32 	%p131, %r221, %r253;
+	@%p131 bra 	$Lt_5_211202;
+	mov.u32 	%r254, 0;
+	setp.eq.s32 	%p132, %r221, %r254;
+	@%p132 bra 	$Lt_5_211458;
+	mov.u32 	%r255, 2;
+	setp.eq.s32 	%p133, %r221, %r255;
+	@%p133 bra 	$Lt_5_211714;
+	mov.u32 	%r256, 1;
+	setp.eq.s32 	%p134, %r221, %r256;
+	@%p134 bra 	$Lt_5_211970;
+	bra.uni 	$Lt_5_212738;
+$Lt_5_211202:
+	.loc	19	873	0
+	ld.local.f64 	%fd23, [%rd51+0];
+	bra.uni 	$LDWendi__Z12castToDoubleP13sphyraena_mem_185_824;
+$Lt_5_211458:
+	.loc	19	875	0
+	ld.local.s32 	%r257, [%rd51+0];
+	cvt.rn.f64.s32 	%fd23, %r257;
+	bra.uni 	$LDWendi__Z12castToDoubleP13sphyraena_mem_185_824;
+$Lt_5_211714:
+	.loc	19	877	0
+	ld.local.f32 	%f24, [%rd51+0];
+	cvt.f64.f32 	%fd23, %f24;
+	bra.uni 	$LDWendi__Z12castToDoubleP13sphyraena_mem_185_824;
+$Lt_5_211970:
+	.loc	19	879	0
+	ld.local.s64 	%rd160, [%rd51+0];
+	cvt.rn.f64.s64 	%fd23, %rd160;
+	bra.uni 	$LDWendi__Z12castToDoubleP13sphyraena_mem_185_824;
+$Lt_5_212738:
+	.loc	19	881	0
+	mov.f64 	%fd23, 0d0000000000000000;	// 0
+$LDWendi__Z12castToDoubleP13sphyraena_mem_185_824:
+	.loc	19	234	0
+	div.rn.f64 	%fd24, %fd22, %fd23;
+	cvt.s64.s32 	%rd161, %r90;
+	mul.wide.s32 	%rd162, %r90, 16;
+	add.u64 	%rd163, %rd11, %rd162;
+	st.local.f64 	[%rd163+0], %fd24;
+$Lt_5_12290:
+	.loc	19	235	0
+	add.s32 	%r82, %r22, 1;
+	mov.s32 	%r22, %r82;
+	.loc	19	236	0
+	mov.s32 	%r258, 63;
+	setp.le.s32 	%p4, %r82, %r258;
+	bra.uni 	$Lt_5_1026;
+$Lt_5_14082:
+	.loc	19	239	0
+	ld.global.s32 	%r84, [%rd15+36];
+	ld.global.s32 	%r259, [%rd15+44];
+	cvt.s64.s32 	%rd19, %r259;
+	cvt.s64.s32 	%rd164, %r84;
+	mul.wide.s32 	%rd165, %r84, 16;
+	add.u64 	%rd51, %rd11, %rd165;
+	ld.local.s32 	%r139, [%rd51+8];
+	cvt.u32.s64 	%r260, %rd19;
+	cvt.u64.u32 	%rd166, %r260;
+	cvt.u32.u64 	%r261, %rd166;
+	cvt.u64.u32 	%rd167, %r261;
+	mul.wide.u32 	%rd168, %r261, 16;
+	add.u64 	%rd169, %rd11, %rd168;
+	ld.local.s32 	%r262, [%rd169+8];
+	max.s32 	%r263, %r262, %r139;
+	mov.u32 	%r264, 0;
+	setp.eq.s32 	%p135, %r263, %r264;
+	@%p135 bra 	$Lt_5_14338;
+	mov.u32 	%r265, 2;
+	setp.eq.s32 	%p136, %r263, %r265;
+	@%p136 bra 	$Lt_5_14850;
+	mov.u32 	%r266, 1;
+	setp.eq.s32 	%p137, %r263, %r266;
+	@%p137 bra 	$Lt_5_15106;
+	mov.u32 	%r267, 3;
+	setp.eq.s32 	%p138, %r263, %r267;
+	@%p138 bra 	$Lt_5_15362;
+	bra.uni 	$Lt_5_14594;
+$Lt_5_14338:
+	.loc	19	826	0
+	mul.lo.u64 	%rd170, %rd19, 16;
+	add.u64 	%rd21, %rd11, %rd170;
+	ld.local.s32 	%r268, [%rd21+8];
+	mov.u32 	%r269, 0;
+	setp.eq.s32 	%p139, %r268, %r269;
+	@%p139 bra 	$Lt_5_208898;
+	mov.u32 	%r270, 2;
+	setp.eq.s32 	%p140, %r268, %r270;
+	@%p140 bra 	$Lt_5_209154;
+	mov.u32 	%r271, 1;
+	setp.eq.s32 	%p141, %r268, %r271;
+	@%p141 bra 	$Lt_5_209410;
+	mov.u32 	%r272, 3;
+	setp.eq.s32 	%p142, %r268, %r272;
+	@%p142 bra 	$Lt_5_209666;
+	bra.uni 	$Lt_5_210434;
+$Lt_5_208898:
+	.loc	19	828	0
+	ld.local.s32 	%r273, [%rd21+0];
+	bra.uni 	$LDWendi__Z9castToIntP13sphyraena_mem_185_815;
+$Lt_5_209154:
+	.loc	19	830	0
+	ld.local.f32 	%f25, [%rd21+0];
+	cvt.rzi.s32.f32 	%r273, %f25;
+	bra.uni 	$LDWendi__Z9castToIntP13sphyraena_mem_185_815;
+$Lt_5_209410:
+	.loc	19	832	0
+	ld.local.s32 	%r273, [%rd21+0];
+	bra.uni 	$LDWendi__Z9castToIntP13sphyraena_mem_185_815;
+$Lt_5_209666:
+	.loc	19	834	0
+	ld.local.f64 	%fd25, [%rd21+0];
+	cvt.rzi.s32.f64 	%r273, %fd25;
+	bra.uni 	$LDWendi__Z9castToIntP13sphyraena_mem_185_815;
+$Lt_5_210434:
+	.loc	19	836	0
+	mov.s32 	%r273, 0;
+$LDWendi__Z9castToIntP13sphyraena_mem_185_815:
+	.loc	19	826	0
+	mov.u32 	%r274, 0;
+	setp.eq.s32 	%p143, %r139, %r274;
+	@%p143 bra 	$Lt_5_206594;
+	mov.u32 	%r275, 2;
+	setp.eq.s32 	%p144, %r139, %r275;
+	@%p144 bra 	$Lt_5_206850;
+	mov.u32 	%r276, 1;
+	setp.eq.s32 	%p145, %r139, %r276;
+	@%p145 bra 	$Lt_5_207106;
+	mov.u32 	%r277, 3;
+	setp.eq.s32 	%p146, %r139, %r277;
+	@%p146 bra 	$Lt_5_207362;
+	bra.uni 	$Lt_5_208130;
+$Lt_5_206594:
+	.loc	19	828	0
+	ld.local.s32 	%r278, [%rd51+0];
+	bra.uni 	$LDWendi__Z9castToIntP13sphyraena_mem_185_806;
+$Lt_5_206850:
+	.loc	19	830	0
+	ld.local.f32 	%f26, [%rd51+0];
+	cvt.rzi.s32.f32 	%r278, %f26;
+	bra.uni 	$LDWendi__Z9castToIntP13sphyraena_mem_185_806;
+$Lt_5_207106:
+	.loc	19	832	0
+	ld.local.s32 	%r278, [%rd51+0];
+	bra.uni 	$LDWendi__Z9castToIntP13sphyraena_mem_185_806;
+$Lt_5_207362:
+	.loc	19	834	0
+	ld.local.f64 	%fd26, [%rd51+0];
+	cvt.rzi.s32.f64 	%r278, %fd26;
+	bra.uni 	$LDWendi__Z9castToIntP13sphyraena_mem_185_806;
+$Lt_5_208130:
+	.loc	19	836	0
+	mov.s32 	%r278, 0;
+$LDWendi__Z9castToIntP13sphyraena_mem_185_806:
+	.loc	19	239	0
+	set.eq.u32.s32 	%r279, %r278, %r273;
+	neg.s32 	%r20, %r279;
+	bra.uni 	$Lt_5_14594;
+$Lt_5_14850:
+	.loc	19	841	0
+	mul.lo.u64 	%rd171, %rd19, 16;
+	add.u64 	%rd21, %rd11, %rd171;
+	ld.local.s32 	%r268, [%rd21+8];
+	mov.u32 	%r280, 2;
+	setp.eq.s32 	%p147, %r268, %r280;
+	@%p147 bra 	$Lt_5_204290;
+	mov.u32 	%r281, 0;
+	setp.eq.s32 	%p148, %r268, %r281;
+	@%p148 bra 	$Lt_5_204546;
+	mov.u32 	%r282, 1;
+	setp.eq.s32 	%p149, %r268, %r282;
+	@%p149 bra 	$Lt_5_204802;
+	mov.u32 	%r283, 3;
+	setp.eq.s32 	%p150, %r268, %r283;
+	@%p150 bra 	$Lt_5_205058;
+	bra.uni 	$Lt_5_205826;
+$Lt_5_204290:
+	.loc	19	843	0
+	ld.local.f32 	%f27, [%rd21+0];
+	bra.uni 	$LDWendi__Z11castToFloatP13sphyraena_mem_185_797;
+$Lt_5_204546:
+	.loc	19	845	0
+	ld.local.s32 	%r284, [%rd21+0];
+	cvt.rn.f32.s32 	%f27, %r284;
+	bra.uni 	$LDWendi__Z11castToFloatP13sphyraena_mem_185_797;
+$Lt_5_204802:
+	.loc	19	847	0
+	ld.local.s64 	%rd172, [%rd21+0];
+	cvt.rn.f32.s64 	%f27, %rd172;
+	bra.uni 	$LDWendi__Z11castToFloatP13sphyraena_mem_185_797;
+$Lt_5_205058:
+	.loc	19	849	0
+	ld.local.f64 	%fd27, [%rd21+0];
+	cvt.rn.f32.f64 	%f27, %fd27;
+	bra.uni 	$LDWendi__Z11castToFloatP13sphyraena_mem_185_797;
+$Lt_5_205826:
+	.loc	19	851	0
+	mov.f32 	%f27, 0f00000000;    	// 0
+$LDWendi__Z11castToFloatP13sphyraena_mem_185_797:
+	.loc	19	841	0
+	mov.u32 	%r285, 2;
+	setp.eq.s32 	%p151, %r139, %r285;
+	@%p151 bra 	$Lt_5_201986;
+	mov.u32 	%r286, 0;
+	setp.eq.s32 	%p152, %r139, %r286;
+	@%p152 bra 	$Lt_5_202242;
+	mov.u32 	%r287, 1;
+	setp.eq.s32 	%p153, %r139, %r287;
+	@%p153 bra 	$Lt_5_202498;
+	mov.u32 	%r288, 3;
+	setp.eq.s32 	%p154, %r139, %r288;
+	@%p154 bra 	$Lt_5_202754;
+	bra.uni 	$Lt_5_203522;
+$Lt_5_201986:
+	.loc	19	843	0
+	ld.local.f32 	%f28, [%rd51+0];
+	bra.uni 	$LDWendi__Z11castToFloatP13sphyraena_mem_185_788;
+$Lt_5_202242:
+	.loc	19	845	0
+	ld.local.s32 	%r289, [%rd51+0];
+	cvt.rn.f32.s32 	%f28, %r289;
+	bra.uni 	$LDWendi__Z11castToFloatP13sphyraena_mem_185_788;
+$Lt_5_202498:
+	.loc	19	847	0
+	ld.local.s64 	%rd173, [%rd51+0];
+	cvt.rn.f32.s64 	%f28, %rd173;
+	bra.uni 	$LDWendi__Z11castToFloatP13sphyraena_mem_185_788;
+$Lt_5_202754:
+	.loc	19	849	0
+	ld.local.f64 	%fd28, [%rd51+0];
+	cvt.rn.f32.f64 	%f28, %fd28;
+	bra.uni 	$LDWendi__Z11castToFloatP13sphyraena_mem_185_788;
+$Lt_5_203522:
+	.loc	19	851	0
+	mov.f32 	%f28, 0f00000000;    	// 0
+$LDWendi__Z11castToFloatP13sphyraena_mem_185_788:
+	.loc	19	239	0
+	set.eq.u32.f32 	%r290, %f28, %f27;
+	neg.s32 	%r20, %r290;
+	bra.uni 	$Lt_5_14594;
+$Lt_5_15106:
+	.loc	19	856	0
+	mul.lo.u64 	%rd174, %rd19, 16;
+	add.u64 	%rd21, %rd11, %rd174;
+	ld.local.s32 	%r268, [%rd21+8];
+	mov.u32 	%r291, 1;
+	setp.eq.s32 	%p155, %r268, %r291;
+	@%p155 bra 	$Lt_5_199682;
+	mov.u32 	%r292, 0;
+	setp.eq.s32 	%p156, %r268, %r292;
+	@%p156 bra 	$Lt_5_199938;
+	mov.u32 	%r293, 2;
+	setp.eq.s32 	%p157, %r268, %r293;
+	@%p157 bra 	$Lt_5_200194;
+	mov.u32 	%r294, 3;
+	setp.eq.s32 	%p158, %r268, %r294;
+	@%p158 bra 	$Lt_5_200450;
+	bra.uni 	$Lt_5_201218;
+$Lt_5_199682:
+	.loc	19	858	0
+	ld.local.s64 	%rd175, [%rd21+0];
+	bra.uni 	$LDWendi__Z11castToInt64P13sphyraena_mem_185_779;
+$Lt_5_199938:
+	.loc	19	860	0
+	ld.local.s32 	%r295, [%rd21+0];
+	cvt.s64.s32 	%rd175, %r295;
+	bra.uni 	$LDWendi__Z11castToInt64P13sphyraena_mem_185_779;
+$Lt_5_200194:
+	.loc	19	862	0
+	ld.local.f32 	%f29, [%rd21+0];
+	cvt.rzi.s64.f32 	%rd175, %f29;
+	bra.uni 	$LDWendi__Z11castToInt64P13sphyraena_mem_185_779;
+$Lt_5_200450:
+	.loc	19	864	0
+	ld.local.f64 	%fd29, [%rd21+0];
+	cvt.rzi.s64.f64 	%rd175, %fd29;
+	bra.uni 	$LDWendi__Z11castToInt64P13sphyraena_mem_185_779;
+$Lt_5_201218:
+	.loc	19	866	0
+	mov.s64 	%rd175, 0;
+$LDWendi__Z11castToInt64P13sphyraena_mem_185_779:
+	.loc	19	856	0
+	mov.u32 	%r296, 1;
+	setp.eq.s32 	%p159, %r139, %r296;
+	@%p159 bra 	$Lt_5_197378;
+	mov.u32 	%r297, 0;
+	setp.eq.s32 	%p160, %r139, %r297;
+	@%p160 bra 	$Lt_5_197634;
+	mov.u32 	%r298, 2;
+	setp.eq.s32 	%p161, %r139, %r298;
+	@%p161 bra 	$Lt_5_197890;
+	mov.u32 	%r299, 3;
+	setp.eq.s32 	%p162, %r139, %r299;
+	@%p162 bra 	$Lt_5_198146;
+	bra.uni 	$Lt_5_198914;
+$Lt_5_197378:
+	.loc	19	858	0
+	ld.local.s64 	%rd176, [%rd51+0];
+	bra.uni 	$LDWendi__Z11castToInt64P13sphyraena_mem_185_770;
+$Lt_5_197634:
+	.loc	19	860	0
+	ld.local.s32 	%r300, [%rd51+0];
+	cvt.s64.s32 	%rd176, %r300;
+	bra.uni 	$LDWendi__Z11castToInt64P13sphyraena_mem_185_770;
+$Lt_5_197890:
+	.loc	19	862	0
+	ld.local.f32 	%f30, [%rd51+0];
+	cvt.rzi.s64.f32 	%rd176, %f30;
+	bra.uni 	$LDWendi__Z11castToInt64P13sphyraena_mem_185_770;
+$Lt_5_198146:
+	.loc	19	864	0
+	ld.local.f64 	%fd30, [%rd51+0];
+	cvt.rzi.s64.f64 	%rd176, %fd30;
+	bra.uni 	$LDWendi__Z11castToInt64P13sphyraena_mem_185_770;
+$Lt_5_198914:
+	.loc	19	866	0
+	mov.s64 	%rd176, 0;
+$LDWendi__Z11castToInt64P13sphyraena_mem_185_770:
+	.loc	19	239	0
+	set.eq.u32.s64 	%r301, %rd176, %rd175;
+	neg.s32 	%r20, %r301;
+	bra.uni 	$Lt_5_14594;
+$Lt_5_15362:
+	.loc	19	871	0
+	mul.lo.u64 	%rd177, %rd19, 16;
+	add.u64 	%rd21, %rd11, %rd177;
+	ld.local.s32 	%r268, [%rd21+8];
+	mov.u32 	%r302, 3;
+	setp.eq.s32 	%p163, %r268, %r302;
+	@%p163 bra 	$Lt_5_195074;
+	mov.u32 	%r303, 0;
+	setp.eq.s32 	%p164, %r268, %r303;
+	@%p164 bra 	$Lt_5_195330;
+	mov.u32 	%r304, 2;
+	setp.eq.s32 	%p165, %r268, %r304;
+	@%p165 bra 	$Lt_5_195586;
+	mov.u32 	%r305, 1;
+	setp.eq.s32 	%p166, %r268, %r305;
+	@%p166 bra 	$Lt_5_195842;
+	bra.uni 	$Lt_5_196610;
+$Lt_5_195074:
+	.loc	19	873	0
+	ld.local.f64 	%fd31, [%rd21+0];
+	bra.uni 	$LDWendi__Z12castToDoubleP13sphyraena_mem_185_761;
+$Lt_5_195330:
+	.loc	19	875	0
+	ld.local.s32 	%r306, [%rd21+0];
+	cvt.rn.f64.s32 	%fd31, %r306;
+	bra.uni 	$LDWendi__Z12castToDoubleP13sphyraena_mem_185_761;
+$Lt_5_195586:
+	.loc	19	877	0
+	ld.local.f32 	%f31, [%rd21+0];
+	cvt.f64.f32 	%fd31, %f31;
+	bra.uni 	$LDWendi__Z12castToDoubleP13sphyraena_mem_185_761;
+$Lt_5_195842:
+	.loc	19	879	0
+	ld.local.s64 	%rd178, [%rd21+0];
+	cvt.rn.f64.s64 	%fd31, %rd178;
+	bra.uni 	$LDWendi__Z12castToDoubleP13sphyraena_mem_185_761;
+$Lt_5_196610:
+	.loc	19	881	0
+	mov.f64 	%fd31, 0d0000000000000000;	// 0
+$LDWendi__Z12castToDoubleP13sphyraena_mem_185_761:
+	.loc	19	871	0
+	mov.u32 	%r307, 3;
+	setp.eq.s32 	%p167, %r139, %r307;
+	@%p167 bra 	$Lt_5_192770;
+	mov.u32 	%r308, 0;
+	setp.eq.s32 	%p168, %r139, %r308;
+	@%p168 bra 	$Lt_5_193026;
+	mov.u32 	%r309, 2;
+	setp.eq.s32 	%p169, %r139, %r309;
+	@%p169 bra 	$Lt_5_193282;
+	mov.u32 	%r310, 1;
+	setp.eq.s32 	%p170, %r139, %r310;
+	@%p170 bra 	$Lt_5_193538;
+	bra.uni 	$Lt_5_194306;
+$Lt_5_192770:
+	.loc	19	873	0
+	ld.local.f64 	%fd32, [%rd51+0];
+	bra.uni 	$LDWendi__Z12castToDoubleP13sphyraena_mem_185_752;
+$Lt_5_193026:
+	.loc	19	875	0
+	ld.local.s32 	%r311, [%rd51+0];
+	cvt.rn.f64.s32 	%fd32, %r311;
+	bra.uni 	$LDWendi__Z12castToDoubleP13sphyraena_mem_185_752;
+$Lt_5_193282:
+	.loc	19	877	0
+	ld.local.f32 	%f32, [%rd51+0];
+	cvt.f64.f32 	%fd32, %f32;
+	bra.uni 	$LDWendi__Z12castToDoubleP13sphyraena_mem_185_752;
+$Lt_5_193538:
+	.loc	19	879	0
+	ld.local.s64 	%rd179, [%rd51+0];
+	cvt.rn.f64.s64 	%fd32, %rd179;
+	bra.uni 	$LDWendi__Z12castToDoubleP13sphyraena_mem_185_752;
+$Lt_5_194306:
+	.loc	19	881	0
+	mov.f64 	%fd32, 0d0000000000000000;	// 0
+$LDWendi__Z12castToDoubleP13sphyraena_mem_185_752:
+	.loc	19	239	0
+	set.eq.u32.f64 	%r312, %fd32, %fd31;
+	neg.s32 	%r20, %r312;
+$Lt_5_14594:
+	mov.u32 	%r313, 0;
+	setp.eq.s32 	%p171, %r20, %r313;
+	@%p171 bra 	$Lt_5_299266;
+	ld.global.s32 	%r22, [%rd15+40];
+	bra.uni 	$Lt_5_299010;
+$Lt_5_299266:
+	add.s32 	%r22, %r22, 1;
+$Lt_5_299010:
+	.loc	19	240	0
+	mov.s32 	%r314, 63;
+	setp.le.s32 	%p4, %r22, %r314;
+	bra.uni 	$Lt_5_1026;
+$Lt_5_16386:
+	.loc	19	243	0
+	ld.global.s32 	%r84, [%rd15+36];
+	ld.global.s32 	%r315, [%rd15+44];
+	cvt.s64.s32 	%rd19, %r315;
+	cvt.s64.s32 	%rd180, %r84;
+	mul.wide.s32 	%rd181, %r84, 16;
+	add.u64 	%rd51, %rd11, %rd181;
+	ld.local.s32 	%r139, [%rd51+8];
+	cvt.u32.s64 	%r316, %rd19;
+	cvt.u64.u32 	%rd182, %r316;
+	cvt.u32.u64 	%r317, %rd182;
+	cvt.u64.u32 	%rd183, %r317;
+	mul.wide.u32 	%rd184, %r317, 16;
+	add.u64 	%rd185, %rd11, %rd184;
+	ld.local.s32 	%r318, [%rd185+8];
+	max.s32 	%r263, %r318, %r139;
+	mov.u32 	%r319, 0;
+	setp.eq.s32 	%p172, %r263, %r319;
+	@%p172 bra 	$Lt_5_16642;
+	mov.u32 	%r320, 2;
+	setp.eq.s32 	%p173, %r263, %r320;
+	@%p173 bra 	$Lt_5_17154;
+	mov.u32 	%r321, 1;
+	setp.eq.s32 	%p174, %r263, %r321;
+	@%p174 bra 	$Lt_5_17410;
+	mov.u32 	%r322, 3;
+	setp.eq.s32 	%p175, %r263, %r322;
+	@%p175 bra 	$Lt_5_17666;
+	bra.uni 	$Lt_5_16898;
+$Lt_5_16642:
+	.loc	19	826	0
+	mul.lo.u64 	%rd186, %rd19, 16;
+	add.u64 	%rd21, %rd11, %rd186;
+	ld.local.s32 	%r268, [%rd21+8];
+	mov.u32 	%r323, 0;
+	setp.eq.s32 	%p176, %r268, %r323;
+	@%p176 bra 	$Lt_5_190466;
+	mov.u32 	%r324, 2;
+	setp.eq.s32 	%p177, %r268, %r324;
+	@%p177 bra 	$Lt_5_190722;
+	mov.u32 	%r325, 1;
+	setp.eq.s32 	%p178, %r268, %r325;
+	@%p178 bra 	$Lt_5_190978;
+	mov.u32 	%r326, 3;
+	setp.eq.s32 	%p179, %r268, %r326;
+	@%p179 bra 	$Lt_5_191234;
+	bra.uni 	$Lt_5_192002;
+$Lt_5_190466:
+	.loc	19	828	0
+	ld.local.s32 	%r327, [%rd21+0];
+	bra.uni 	$LDWendi__Z9castToIntP13sphyraena_mem_185_743;
+$Lt_5_190722:
+	.loc	19	830	0
+	ld.local.f32 	%f33, [%rd21+0];
+	cvt.rzi.s32.f32 	%r327, %f33;
+	bra.uni 	$LDWendi__Z9castToIntP13sphyraena_mem_185_743;
+$Lt_5_190978:
+	.loc	19	832	0
+	ld.local.s32 	%r327, [%rd21+0];
+	bra.uni 	$LDWendi__Z9castToIntP13sphyraena_mem_185_743;
+$Lt_5_191234:
+	.loc	19	834	0
+	ld.local.f64 	%fd33, [%rd21+0];
+	cvt.rzi.s32.f64 	%r327, %fd33;
+	bra.uni 	$LDWendi__Z9castToIntP13sphyraena_mem_185_743;
+$Lt_5_192002:
+	.loc	19	836	0
+	mov.s32 	%r327, 0;
+$LDWendi__Z9castToIntP13sphyraena_mem_185_743:
+	.loc	19	826	0
+	mov.u32 	%r328, 0;
+	setp.eq.s32 	%p180, %r139, %r328;
+	@%p180 bra 	$Lt_5_188162;
+	mov.u32 	%r329, 2;
+	setp.eq.s32 	%p181, %r139, %r329;
+	@%p181 bra 	$Lt_5_188418;
+	mov.u32 	%r330, 1;
+	setp.eq.s32 	%p182, %r139, %r330;
+	@%p182 bra 	$Lt_5_188674;
+	mov.u32 	%r331, 3;
+	setp.eq.s32 	%p183, %r139, %r331;
+	@%p183 bra 	$Lt_5_188930;
+	bra.uni 	$Lt_5_189698;
+$Lt_5_188162:
+	.loc	19	828	0
+	ld.local.s32 	%r332, [%rd51+0];
+	bra.uni 	$LDWendi__Z9castToIntP13sphyraena_mem_185_734;
+$Lt_5_188418:
+	.loc	19	830	0
+	ld.local.f32 	%f34, [%rd51+0];
+	cvt.rzi.s32.f32 	%r332, %f34;
+	bra.uni 	$LDWendi__Z9castToIntP13sphyraena_mem_185_734;
+$Lt_5_188674:
+	.loc	19	832	0
+	ld.local.s32 	%r332, [%rd51+0];
+	bra.uni 	$LDWendi__Z9castToIntP13sphyraena_mem_185_734;
+$Lt_5_188930:
+	.loc	19	834	0
+	ld.local.f64 	%fd34, [%rd51+0];
+	cvt.rzi.s32.f64 	%r332, %fd34;
+	bra.uni 	$LDWendi__Z9castToIntP13sphyraena_mem_185_734;
+$Lt_5_189698:
+	.loc	19	836	0
+	mov.s32 	%r332, 0;
+$LDWendi__Z9castToIntP13sphyraena_mem_185_734:
+	.loc	19	243	0
+	set.le.u32.s32 	%r333, %r332, %r327;
+	neg.s32 	%r20, %r333;
+	bra.uni 	$Lt_5_16898;
+$Lt_5_17154:
+	.loc	19	841	0
+	mul.lo.u64 	%rd187, %rd19, 16;
+	add.u64 	%rd21, %rd11, %rd187;
+	ld.local.s32 	%r268, [%rd21+8];
+	mov.u32 	%r334, 2;
+	setp.eq.s32 	%p184, %r268, %r334;
+	@%p184 bra 	$Lt_5_185858;
+	mov.u32 	%r335, 0;
+	setp.eq.s32 	%p185, %r268, %r335;
+	@%p185 bra 	$Lt_5_186114;
+	mov.u32 	%r336, 1;
+	setp.eq.s32 	%p186, %r268, %r336;
+	@%p186 bra 	$Lt_5_186370;
+	mov.u32 	%r337, 3;
+	setp.eq.s32 	%p187, %r268, %r337;
+	@%p187 bra 	$Lt_5_186626;
+	bra.uni 	$Lt_5_187394;
+$Lt_5_185858:
+	.loc	19	843	0
+	ld.local.f32 	%f35, [%rd21+0];
+	bra.uni 	$LDWendi__Z11castToFloatP13sphyraena_mem_185_725;
+$Lt_5_186114:
+	.loc	19	845	0
+	ld.local.s32 	%r338, [%rd21+0];
+	cvt.rn.f32.s32 	%f35, %r338;
+	bra.uni 	$LDWendi__Z11castToFloatP13sphyraena_mem_185_725;
+$Lt_5_186370:
+	.loc	19	847	0
+	ld.local.s64 	%rd188, [%rd21+0];
+	cvt.rn.f32.s64 	%f35, %rd188;
+	bra.uni 	$LDWendi__Z11castToFloatP13sphyraena_mem_185_725;
+$Lt_5_186626:
+	.loc	19	849	0
+	ld.local.f64 	%fd35, [%rd21+0];
+	cvt.rn.f32.f64 	%f35, %fd35;
+	bra.uni 	$LDWendi__Z11castToFloatP13sphyraena_mem_185_725;
+$Lt_5_187394:
+	.loc	19	851	0
+	mov.f32 	%f35, 0f00000000;    	// 0
+$LDWendi__Z11castToFloatP13sphyraena_mem_185_725:
+	.loc	19	841	0
+	mov.u32 	%r339, 2;
+	setp.eq.s32 	%p188, %r139, %r339;
+	@%p188 bra 	$Lt_5_183554;
+	mov.u32 	%r340, 0;
+	setp.eq.s32 	%p189, %r139, %r340;
+	@%p189 bra 	$Lt_5_183810;
+	mov.u32 	%r341, 1;
+	setp.eq.s32 	%p190, %r139, %r341;
+	@%p190 bra 	$Lt_5_184066;
+	mov.u32 	%r342, 3;
+	setp.eq.s32 	%p191, %r139, %r342;
+	@%p191 bra 	$Lt_5_184322;
+	bra.uni 	$Lt_5_185090;
+$Lt_5_183554:
+	.loc	19	843	0
+	ld.local.f32 	%f36, [%rd51+0];
+	bra.uni 	$LDWendi__Z11castToFloatP13sphyraena_mem_185_716;
+$Lt_5_183810:
+	.loc	19	845	0
+	ld.local.s32 	%r343, [%rd51+0];
+	cvt.rn.f32.s32 	%f36, %r343;
+	bra.uni 	$LDWendi__Z11castToFloatP13sphyraena_mem_185_716;
+$Lt_5_184066:
+	.loc	19	847	0
+	ld.local.s64 	%rd189, [%rd51+0];
+	cvt.rn.f32.s64 	%f36, %rd189;
+	bra.uni 	$LDWendi__Z11castToFloatP13sphyraena_mem_185_716;
+$Lt_5_184322:
+	.loc	19	849	0
+	ld.local.f64 	%fd36, [%rd51+0];
+	cvt.rn.f32.f64 	%f36, %fd36;
+	bra.uni 	$LDWendi__Z11castToFloatP13sphyraena_mem_185_716;
+$Lt_5_185090:
+	.loc	19	851	0
+	mov.f32 	%f36, 0f00000000;    	// 0
+$LDWendi__Z11castToFloatP13sphyraena_mem_185_716:
+	.loc	19	243	0
+	set.le.u32.f32 	%r344, %f36, %f35;
+	neg.s32 	%r20, %r344;
+	bra.uni 	$Lt_5_16898;
+$Lt_5_17410:
+	.loc	19	856	0
+	mul.lo.u64 	%rd190, %rd19, 16;
+	add.u64 	%rd21, %rd11, %rd190;
+	ld.local.s32 	%r268, [%rd21+8];
+	mov.u32 	%r345, 1;
+	setp.eq.s32 	%p192, %r268, %r345;
+	@%p192 bra 	$Lt_5_181250;
+	mov.u32 	%r346, 0;
+	setp.eq.s32 	%p193, %r268, %r346;
+	@%p193 bra 	$Lt_5_181506;
+	mov.u32 	%r347, 2;
+	setp.eq.s32 	%p194, %r268, %r347;
+	@%p194 bra 	$Lt_5_181762;
+	mov.u32 	%r348, 3;
+	setp.eq.s32 	%p195, %r268, %r348;
+	@%p195 bra 	$Lt_5_182018;
+	bra.uni 	$Lt_5_182786;
+$Lt_5_181250:
+	.loc	19	858	0
+	ld.local.s64 	%rd191, [%rd21+0];
+	bra.uni 	$LDWendi__Z11castToInt64P13sphyraena_mem_185_707;
+$Lt_5_181506:
+	.loc	19	860	0
+	ld.local.s32 	%r349, [%rd21+0];
+	cvt.s64.s32 	%rd191, %r349;
+	bra.uni 	$LDWendi__Z11castToInt64P13sphyraena_mem_185_707;
+$Lt_5_181762:
+	.loc	19	862	0
+	ld.local.f32 	%f37, [%rd21+0];
+	cvt.rzi.s64.f32 	%rd191, %f37;
+	bra.uni 	$LDWendi__Z11castToInt64P13sphyraena_mem_185_707;
+$Lt_5_182018:
+	.loc	19	864	0
+	ld.local.f64 	%fd37, [%rd21+0];
+	cvt.rzi.s64.f64 	%rd191, %fd37;
+	bra.uni 	$LDWendi__Z11castToInt64P13sphyraena_mem_185_707;
+$Lt_5_182786:
+	.loc	19	866	0
+	mov.s64 	%rd191, 0;
+$LDWendi__Z11castToInt64P13sphyraena_mem_185_707:
+	.loc	19	856	0
+	mov.u32 	%r350, 1;
+	setp.eq.s32 	%p196, %r139, %r350;
+	@%p196 bra 	$Lt_5_178946;
+	mov.u32 	%r351, 0;
+	setp.eq.s32 	%p197, %r139, %r351;
+	@%p197 bra 	$Lt_5_179202;
+	mov.u32 	%r352, 2;
+	setp.eq.s32 	%p198, %r139, %r352;
+	@%p198 bra 	$Lt_5_179458;
+	mov.u32 	%r353, 3;
+	setp.eq.s32 	%p199, %r139, %r353;
+	@%p199 bra 	$Lt_5_179714;
+	bra.uni 	$Lt_5_180482;
+$Lt_5_178946:
+	.loc	19	858	0
+	ld.local.s64 	%rd192, [%rd51+0];
+	bra.uni 	$LDWendi__Z11castToInt64P13sphyraena_mem_185_698;
+$Lt_5_179202:
+	.loc	19	860	0
+	ld.local.s32 	%r354, [%rd51+0];
+	cvt.s64.s32 	%rd192, %r354;
+	bra.uni 	$LDWendi__Z11castToInt64P13sphyraena_mem_185_698;
+$Lt_5_179458:
+	.loc	19	862	0
+	ld.local.f32 	%f38, [%rd51+0];
+	cvt.rzi.s64.f32 	%rd192, %f38;
+	bra.uni 	$LDWendi__Z11castToInt64P13sphyraena_mem_185_698;
+$Lt_5_179714:
+	.loc	19	864	0
+	ld.local.f64 	%fd38, [%rd51+0];
+	cvt.rzi.s64.f64 	%rd192, %fd38;
+	bra.uni 	$LDWendi__Z11castToInt64P13sphyraena_mem_185_698;
+$Lt_5_180482:
+	.loc	19	866	0
+	mov.s64 	%rd192, 0;
+$LDWendi__Z11castToInt64P13sphyraena_mem_185_698:
+	.loc	19	243	0
+	set.le.u32.s64 	%r355, %rd192, %rd191;
+	neg.s32 	%r20, %r355;
+	bra.uni 	$Lt_5_16898;
+$Lt_5_17666:
+	.loc	19	871	0
+	mul.lo.u64 	%rd193, %rd19, 16;
+	add.u64 	%rd21, %rd11, %rd193;
+	ld.local.s32 	%r268, [%rd21+8];
+	mov.u32 	%r356, 3;
+	setp.eq.s32 	%p200, %r268, %r356;
+	@%p200 bra 	$Lt_5_176642;
+	mov.u32 	%r357, 0;
+	setp.eq.s32 	%p201, %r268, %r357;
+	@%p201 bra 	$Lt_5_176898;
+	mov.u32 	%r358, 2;
+	setp.eq.s32 	%p202, %r268, %r358;
+	@%p202 bra 	$Lt_5_177154;
+	mov.u32 	%r359, 1;
+	setp.eq.s32 	%p203, %r268, %r359;
+	@%p203 bra 	$Lt_5_177410;
+	bra.uni 	$Lt_5_178178;
+$Lt_5_176642:
+	.loc	19	873	0
+	ld.local.f64 	%fd39, [%rd21+0];
+	bra.uni 	$LDWendi__Z12castToDoubleP13sphyraena_mem_185_689;
+$Lt_5_176898:
+	.loc	19	875	0
+	ld.local.s32 	%r360, [%rd21+0];
+	cvt.rn.f64.s32 	%fd39, %r360;
+	bra.uni 	$LDWendi__Z12castToDoubleP13sphyraena_mem_185_689;
+$Lt_5_177154:
+	.loc	19	877	0
+	ld.local.f32 	%f39, [%rd21+0];
+	cvt.f64.f32 	%fd39, %f39;
+	bra.uni 	$LDWendi__Z12castToDoubleP13sphyraena_mem_185_689;
+$Lt_5_177410:
+	.loc	19	879	0
+	ld.local.s64 	%rd194, [%rd21+0];
+	cvt.rn.f64.s64 	%fd39, %rd194;
+	bra.uni 	$LDWendi__Z12castToDoubleP13sphyraena_mem_185_689;
+$Lt_5_178178:
+	.loc	19	881	0
+	mov.f64 	%fd39, 0d0000000000000000;	// 0
+$LDWendi__Z12castToDoubleP13sphyraena_mem_185_689:
+	.loc	19	871	0
+	mov.u32 	%r361, 3;
+	setp.eq.s32 	%p204, %r139, %r361;
+	@%p204 bra 	$Lt_5_174338;
+	mov.u32 	%r362, 0;
+	setp.eq.s32 	%p205, %r139, %r362;
+	@%p205 bra 	$Lt_5_174594;
+	mov.u32 	%r363, 2;
+	setp.eq.s32 	%p206, %r139, %r363;
+	@%p206 bra 	$Lt_5_174850;
+	mov.u32 	%r364, 1;
+	setp.eq.s32 	%p207, %r139, %r364;
+	@%p207 bra 	$Lt_5_175106;
+	bra.uni 	$Lt_5_175874;
+$Lt_5_174338:
+	.loc	19	873	0
+	ld.local.f64 	%fd40, [%rd51+0];
+	bra.uni 	$LDWendi__Z12castToDoubleP13sphyraena_mem_185_680;
+$Lt_5_174594:
+	.loc	19	875	0
+	ld.local.s32 	%r365, [%rd51+0];
+	cvt.rn.f64.s32 	%fd40, %r365;
+	bra.uni 	$LDWendi__Z12castToDoubleP13sphyraena_mem_185_680;
+$Lt_5_174850:
+	.loc	19	877	0
+	ld.local.f32 	%f40, [%rd51+0];
+	cvt.f64.f32 	%fd40, %f40;
+	bra.uni 	$LDWendi__Z12castToDoubleP13sphyraena_mem_185_680;
+$Lt_5_175106:
+	.loc	19	879	0
+	ld.local.s64 	%rd195, [%rd51+0];
+	cvt.rn.f64.s64 	%fd40, %rd195;
+	bra.uni 	$LDWendi__Z12castToDoubleP13sphyraena_mem_185_680;
+$Lt_5_175874:
+	.loc	19	881	0
+	mov.f64 	%fd40, 0d0000000000000000;	// 0
+$LDWendi__Z12castToDoubleP13sphyraena_mem_185_680:
+	.loc	19	243	0
+	set.le.u32.f64 	%r366, %fd40, %fd39;
+	neg.s32 	%r20, %r366;
+$Lt_5_16898:
+	mov.u32 	%r367, 0;
+	setp.eq.s32 	%p208, %r20, %r367;
+	@%p208 bra 	$Lt_5_299778;
+	ld.global.s32 	%r22, [%rd15+40];
+	bra.uni 	$Lt_5_299522;
+$Lt_5_299778:
+	add.s32 	%r22, %r22, 1;
+$Lt_5_299522:
+	.loc	19	244	0
+	mov.s32 	%r368, 63;
+	setp.le.s32 	%p4, %r22, %r368;
+	bra.uni 	$Lt_5_1026;
+$Lt_5_18690:
+	.loc	19	247	0
+	ld.global.s32 	%r84, [%rd15+36];
+	ld.global.s32 	%r369, [%rd15+44];
+	cvt.s64.s32 	%rd19, %r369;
+	cvt.s64.s32 	%rd196, %r84;
+	mul.wide.s32 	%rd197, %r84, 16;
+	add.u64 	%rd51, %rd11, %rd197;
+	ld.local.s32 	%r139, [%rd51+8];
+	cvt.u32.s64 	%r370, %rd19;
+	cvt.u64.u32 	%rd198, %r370;
+	cvt.u32.u64 	%r371, %rd198;
+	cvt.u64.u32 	%rd199, %r371;
+	mul.wide.u32 	%rd200, %r371, 16;
+	add.u64 	%rd201, %rd11, %rd200;
+	ld.local.s32 	%r372, [%rd201+8];
+	max.s32 	%r263, %r372, %r139;
+	mov.u32 	%r373, 0;
+	setp.eq.s32 	%p209, %r263, %r373;
+	@%p209 bra 	$Lt_5_18946;
+	mov.u32 	%r374, 2;
+	setp.eq.s32 	%p210, %r263, %r374;
+	@%p210 bra 	$Lt_5_19458;
+	mov.u32 	%r375, 1;
+	setp.eq.s32 	%p211, %r263, %r375;
+	@%p211 bra 	$Lt_5_19714;
+	mov.u32 	%r376, 3;
+	setp.eq.s32 	%p212, %r263, %r376;
+	@%p212 bra 	$Lt_5_19970;
+	bra.uni 	$Lt_5_19202;
+$Lt_5_18946:
+	.loc	19	826	0
+	mul.lo.u64 	%rd202, %rd19, 16;
+	add.u64 	%rd21, %rd11, %rd202;
+	ld.local.s32 	%r268, [%rd21+8];
+	mov.u32 	%r377, 0;
+	setp.eq.s32 	%p213, %r268, %r377;
+	@%p213 bra 	$Lt_5_172034;
+	mov.u32 	%r378, 2;
+	setp.eq.s32 	%p214, %r268, %r378;
+	@%p214 bra 	$Lt_5_172290;
+	mov.u32 	%r379, 1;
+	setp.eq.s32 	%p215, %r268, %r379;
+	@%p215 bra 	$Lt_5_172546;
+	mov.u32 	%r380, 3;
+	setp.eq.s32 	%p216, %r268, %r380;
+	@%p216 bra 	$Lt_5_172802;
+	bra.uni 	$Lt_5_173570;
+$Lt_5_172034:
+	.loc	19	828	0
+	ld.local.s32 	%r381, [%rd21+0];
+	bra.uni 	$LDWendi__Z9castToIntP13sphyraena_mem_185_671;
+$Lt_5_172290:
+	.loc	19	830	0
+	ld.local.f32 	%f41, [%rd21+0];
+	cvt.rzi.s32.f32 	%r381, %f41;
+	bra.uni 	$LDWendi__Z9castToIntP13sphyraena_mem_185_671;
+$Lt_5_172546:
+	.loc	19	832	0
+	ld.local.s32 	%r381, [%rd21+0];
+	bra.uni 	$LDWendi__Z9castToIntP13sphyraena_mem_185_671;
+$Lt_5_172802:
+	.loc	19	834	0
+	ld.local.f64 	%fd41, [%rd21+0];
+	cvt.rzi.s32.f64 	%r381, %fd41;
+	bra.uni 	$LDWendi__Z9castToIntP13sphyraena_mem_185_671;
+$Lt_5_173570:
+	.loc	19	836	0
+	mov.s32 	%r381, 0;
+$LDWendi__Z9castToIntP13sphyraena_mem_185_671:
+	.loc	19	826	0
+	mov.u32 	%r382, 0;
+	setp.eq.s32 	%p217, %r139, %r382;
+	@%p217 bra 	$Lt_5_169730;
+	mov.u32 	%r383, 2;
+	setp.eq.s32 	%p218, %r139, %r383;
+	@%p218 bra 	$Lt_5_169986;
+	mov.u32 	%r384, 1;
+	setp.eq.s32 	%p219, %r139, %r384;
+	@%p219 bra 	$Lt_5_170242;
+	mov.u32 	%r385, 3;
+	setp.eq.s32 	%p220, %r139, %r385;
+	@%p220 bra 	$Lt_5_170498;
+	bra.uni 	$Lt_5_171266;
+$Lt_5_169730:
+	.loc	19	828	0
+	ld.local.s32 	%r386, [%rd51+0];
+	bra.uni 	$LDWendi__Z9castToIntP13sphyraena_mem_185_662;
+$Lt_5_169986:
+	.loc	19	830	0
+	ld.local.f32 	%f42, [%rd51+0];
+	cvt.rzi.s32.f32 	%r386, %f42;
+	bra.uni 	$LDWendi__Z9castToIntP13sphyraena_mem_185_662;
+$Lt_5_170242:
+	.loc	19	832	0
+	ld.local.s32 	%r386, [%rd51+0];
+	bra.uni 	$LDWendi__Z9castToIntP13sphyraena_mem_185_662;
+$Lt_5_170498:
+	.loc	19	834	0
+	ld.local.f64 	%fd42, [%rd51+0];
+	cvt.rzi.s32.f64 	%r386, %fd42;
+	bra.uni 	$LDWendi__Z9castToIntP13sphyraena_mem_185_662;
+$Lt_5_171266:
+	.loc	19	836	0
+	mov.s32 	%r386, 0;
+$LDWendi__Z9castToIntP13sphyraena_mem_185_662:
+	.loc	19	247	0
+	set.lt.u32.s32 	%r387, %r386, %r381;
+	neg.s32 	%r20, %r387;
+	bra.uni 	$Lt_5_19202;
+$Lt_5_19458:
+	.loc	19	841	0
+	mul.lo.u64 	%rd203, %rd19, 16;
+	add.u64 	%rd21, %rd11, %rd203;
+	ld.local.s32 	%r268, [%rd21+8];
+	mov.u32 	%r388, 2;
+	setp.eq.s32 	%p221, %r268, %r388;
+	@%p221 bra 	$Lt_5_167426;
+	mov.u32 	%r389, 0;
+	setp.eq.s32 	%p222, %r268, %r389;
+	@%p222 bra 	$Lt_5_167682;
+	mov.u32 	%r390, 1;
+	setp.eq.s32 	%p223, %r268, %r390;
+	@%p223 bra 	$Lt_5_167938;
+	mov.u32 	%r391, 3;
+	setp.eq.s32 	%p224, %r268, %r391;
+	@%p224 bra 	$Lt_5_168194;
+	bra.uni 	$Lt_5_168962;
+$Lt_5_167426:
+	.loc	19	843	0
+	ld.local.f32 	%f43, [%rd21+0];
+	bra.uni 	$LDWendi__Z11castToFloatP13sphyraena_mem_185_653;
+$Lt_5_167682:
+	.loc	19	845	0
+	ld.local.s32 	%r392, [%rd21+0];
+	cvt.rn.f32.s32 	%f43, %r392;
+	bra.uni 	$LDWendi__Z11castToFloatP13sphyraena_mem_185_653;
+$Lt_5_167938:
+	.loc	19	847	0
+	ld.local.s64 	%rd204, [%rd21+0];
+	cvt.rn.f32.s64 	%f43, %rd204;
+	bra.uni 	$LDWendi__Z11castToFloatP13sphyraena_mem_185_653;
+$Lt_5_168194:
+	.loc	19	849	0
+	ld.local.f64 	%fd43, [%rd21+0];
+	cvt.rn.f32.f64 	%f43, %fd43;
+	bra.uni 	$LDWendi__Z11castToFloatP13sphyraena_mem_185_653;
+$Lt_5_168962:
+	.loc	19	851	0
+	mov.f32 	%f43, 0f00000000;    	// 0
+$LDWendi__Z11castToFloatP13sphyraena_mem_185_653:
+	.loc	19	841	0
+	mov.u32 	%r393, 2;
+	setp.eq.s32 	%p225, %r139, %r393;
+	@%p225 bra 	$Lt_5_165122;
+	mov.u32 	%r394, 0;
+	setp.eq.s32 	%p226, %r139, %r394;
+	@%p226 bra 	$Lt_5_165378;
+	mov.u32 	%r395, 1;
+	setp.eq.s32 	%p227, %r139, %r395;
+	@%p227 bra 	$Lt_5_165634;
+	mov.u32 	%r396, 3;
+	setp.eq.s32 	%p228, %r139, %r396;
+	@%p228 bra 	$Lt_5_165890;
+	bra.uni 	$Lt_5_166658;
+$Lt_5_165122:
+	.loc	19	843	0
+	ld.local.f32 	%f44, [%rd51+0];
+	bra.uni 	$LDWendi__Z11castToFloatP13sphyraena_mem_185_644;
+$Lt_5_165378:
+	.loc	19	845	0
+	ld.local.s32 	%r397, [%rd51+0];
+	cvt.rn.f32.s32 	%f44, %r397;
+	bra.uni 	$LDWendi__Z11castToFloatP13sphyraena_mem_185_644;
+$Lt_5_165634:
+	.loc	19	847	0
+	ld.local.s64 	%rd205, [%rd51+0];
+	cvt.rn.f32.s64 	%f44, %rd205;
+	bra.uni 	$LDWendi__Z11castToFloatP13sphyraena_mem_185_644;
+$Lt_5_165890:
+	.loc	19	849	0
+	ld.local.f64 	%fd44, [%rd51+0];
+	cvt.rn.f32.f64 	%f44, %fd44;
+	bra.uni 	$LDWendi__Z11castToFloatP13sphyraena_mem_185_644;
+$Lt_5_166658:
+	.loc	19	851	0
+	mov.f32 	%f44, 0f00000000;    	// 0
+$LDWendi__Z11castToFloatP13sphyraena_mem_185_644:
+	.loc	19	247	0
+	set.lt.u32.f32 	%r398, %f44, %f43;
+	neg.s32 	%r20, %r398;
+	bra.uni 	$Lt_5_19202;
+$Lt_5_19714:
+	.loc	19	856	0
+	mul.lo.u64 	%rd206, %rd19, 16;
+	add.u64 	%rd21, %rd11, %rd206;
+	ld.local.s32 	%r268, [%rd21+8];
+	mov.u32 	%r399, 1;
+	setp.eq.s32 	%p229, %r268, %r399;
+	@%p229 bra 	$Lt_5_162818;
+	mov.u32 	%r400, 0;
+	setp.eq.s32 	%p230, %r268, %r400;
+	@%p230 bra 	$Lt_5_163074;
+	mov.u32 	%r401, 2;
+	setp.eq.s32 	%p231, %r268, %r401;
+	@%p231 bra 	$Lt_5_163330;
+	mov.u32 	%r402, 3;
+	setp.eq.s32 	%p232, %r268, %r402;
+	@%p232 bra 	$Lt_5_163586;
+	bra.uni 	$Lt_5_164354;
+$Lt_5_162818:
+	.loc	19	858	0
+	ld.local.s64 	%rd207, [%rd21+0];
+	bra.uni 	$LDWendi__Z11castToInt64P13sphyraena_mem_185_635;
+$Lt_5_163074:
+	.loc	19	860	0
+	ld.local.s32 	%r403, [%rd21+0];
+	cvt.s64.s32 	%rd207, %r403;
+	bra.uni 	$LDWendi__Z11castToInt64P13sphyraena_mem_185_635;
+$Lt_5_163330:
+	.loc	19	862	0
+	ld.local.f32 	%f45, [%rd21+0];
+	cvt.rzi.s64.f32 	%rd207, %f45;
+	bra.uni 	$LDWendi__Z11castToInt64P13sphyraena_mem_185_635;
+$Lt_5_163586:
+	.loc	19	864	0
+	ld.local.f64 	%fd45, [%rd21+0];
+	cvt.rzi.s64.f64 	%rd207, %fd45;
+	bra.uni 	$LDWendi__Z11castToInt64P13sphyraena_mem_185_635;
+$Lt_5_164354:
+	.loc	19	866	0
+	mov.s64 	%rd207, 0;
+$LDWendi__Z11castToInt64P13sphyraena_mem_185_635:
+	.loc	19	856	0
+	mov.u32 	%r404, 1;
+	setp.eq.s32 	%p233, %r139, %r404;
+	@%p233 bra 	$Lt_5_160514;
+	mov.u32 	%r405, 0;
+	setp.eq.s32 	%p234, %r139, %r405;
+	@%p234 bra 	$Lt_5_160770;
+	mov.u32 	%r406, 2;
+	setp.eq.s32 	%p235, %r139, %r406;
+	@%p235 bra 	$Lt_5_161026;
+	mov.u32 	%r407, 3;
+	setp.eq.s32 	%p236, %r139, %r407;
+	@%p236 bra 	$Lt_5_161282;
+	bra.uni 	$Lt_5_162050;
+$Lt_5_160514:
+	.loc	19	858	0
+	ld.local.s64 	%rd208, [%rd51+0];
+	bra.uni 	$LDWendi__Z11castToInt64P13sphyraena_mem_185_626;
+$Lt_5_160770:
+	.loc	19	860	0
+	ld.local.s32 	%r408, [%rd51+0];
+	cvt.s64.s32 	%rd208, %r408;
+	bra.uni 	$LDWendi__Z11castToInt64P13sphyraena_mem_185_626;
+$Lt_5_161026:
+	.loc	19	862	0
+	ld.local.f32 	%f46, [%rd51+0];
+	cvt.rzi.s64.f32 	%rd208, %f46;
+	bra.uni 	$LDWendi__Z11castToInt64P13sphyraena_mem_185_626;
+$Lt_5_161282:
+	.loc	19	864	0
+	ld.local.f64 	%fd46, [%rd51+0];
+	cvt.rzi.s64.f64 	%rd208, %fd46;
+	bra.uni 	$LDWendi__Z11castToInt64P13sphyraena_mem_185_626;
+$Lt_5_162050:
+	.loc	19	866	0
+	mov.s64 	%rd208, 0;
+$LDWendi__Z11castToInt64P13sphyraena_mem_185_626:
+	.loc	19	247	0
+	set.lt.u32.s64 	%r409, %rd208, %rd207;
+	neg.s32 	%r20, %r409;
+	bra.uni 	$Lt_5_19202;
+$Lt_5_19970:
+	.loc	19	871	0
+	mul.lo.u64 	%rd209, %rd19, 16;
+	add.u64 	%rd21, %rd11, %rd209;
+	ld.local.s32 	%r268, [%rd21+8];
+	mov.u32 	%r410, 3;
+	setp.eq.s32 	%p237, %r268, %r410;
+	@%p237 bra 	$Lt_5_158210;
+	mov.u32 	%r411, 0;
+	setp.eq.s32 	%p238, %r268, %r411;
+	@%p238 bra 	$Lt_5_158466;
+	mov.u32 	%r412, 2;
+	setp.eq.s32 	%p239, %r268, %r412;
+	@%p239 bra 	$Lt_5_158722;
+	mov.u32 	%r413, 1;
+	setp.eq.s32 	%p240, %r268, %r413;
+	@%p240 bra 	$Lt_5_158978;
+	bra.uni 	$Lt_5_159746;
+$Lt_5_158210:
+	.loc	19	873	0
+	ld.local.f64 	%fd47, [%rd21+0];
+	bra.uni 	$LDWendi__Z12castToDoubleP13sphyraena_mem_185_617;
+$Lt_5_158466:
+	.loc	19	875	0
+	ld.local.s32 	%r414, [%rd21+0];
+	cvt.rn.f64.s32 	%fd47, %r414;
+	bra.uni 	$LDWendi__Z12castToDoubleP13sphyraena_mem_185_617;
+$Lt_5_158722:
+	.loc	19	877	0
+	ld.local.f32 	%f47, [%rd21+0];
+	cvt.f64.f32 	%fd47, %f47;
+	bra.uni 	$LDWendi__Z12castToDoubleP13sphyraena_mem_185_617;
+$Lt_5_158978:
+	.loc	19	879	0
+	ld.local.s64 	%rd210, [%rd21+0];
+	cvt.rn.f64.s64 	%fd47, %rd210;
+	bra.uni 	$LDWendi__Z12castToDoubleP13sphyraena_mem_185_617;
+$Lt_5_159746:
+	.loc	19	881	0
+	mov.f64 	%fd47, 0d0000000000000000;	// 0
+$LDWendi__Z12castToDoubleP13sphyraena_mem_185_617:
+	.loc	19	871	0
+	mov.u32 	%r415, 3;
+	setp.eq.s32 	%p241, %r139, %r415;
+	@%p241 bra 	$Lt_5_155906;
+	mov.u32 	%r416, 0;
+	setp.eq.s32 	%p242, %r139, %r416;
+	@%p242 bra 	$Lt_5_156162;
+	mov.u32 	%r417, 2;
+	setp.eq.s32 	%p243, %r139, %r417;
+	@%p243 bra 	$Lt_5_156418;
+	mov.u32 	%r418, 1;
+	setp.eq.s32 	%p244, %r139, %r418;
+	@%p244 bra 	$Lt_5_156674;
+	bra.uni 	$Lt_5_157442;
+$Lt_5_155906:
+	.loc	19	873	0
+	ld.local.f64 	%fd48, [%rd51+0];
+	bra.uni 	$LDWendi__Z12castToDoubleP13sphyraena_mem_185_608;
+$Lt_5_156162:
+	.loc	19	875	0
+	ld.local.s32 	%r419, [%rd51+0];
+	cvt.rn.f64.s32 	%fd48, %r419;
+	bra.uni 	$LDWendi__Z12castToDoubleP13sphyraena_mem_185_608;
+$Lt_5_156418:
+	.loc	19	877	0
+	ld.local.f32 	%f48, [%rd51+0];
+	cvt.f64.f32 	%fd48, %f48;
+	bra.uni 	$LDWendi__Z12castToDoubleP13sphyraena_mem_185_608;
+$Lt_5_156674:
+	.loc	19	879	0
+	ld.local.s64 	%rd211, [%rd51+0];
+	cvt.rn.f64.s64 	%fd48, %rd211;
+	bra.uni 	$LDWendi__Z12castToDoubleP13sphyraena_mem_185_608;
+$Lt_5_157442:
+	.loc	19	881	0
+	mov.f64 	%fd48, 0d0000000000000000;	// 0
+$LDWendi__Z12castToDoubleP13sphyraena_mem_185_608:
+	.loc	19	247	0
+	set.lt.u32.f64 	%r420, %fd48, %fd47;
+	neg.s32 	%r20, %r420;
+$Lt_5_19202:
+	mov.u32 	%r421, 0;
+	setp.eq.s32 	%p245, %r20, %r421;
+	@%p245 bra 	$Lt_5_300290;
+	ld.global.s32 	%r22, [%rd15+40];
+	bra.uni 	$Lt_5_300034;
+$Lt_5_300290:
+	add.s32 	%r22, %r22, 1;
+$Lt_5_300034:
+	.loc	19	248	0
+	mov.s32 	%r422, 63;
+	setp.le.s32 	%p4, %r22, %r422;
+	bra.uni 	$Lt_5_1026;
+$Lt_5_21506:
+	.loc	19	254	0
+	ld.global.s32 	%r84, [%rd15+36];
+	cvt.s64.s32 	%rd212, %r84;
+	mul.wide.s32 	%rd213, %r84, 16;
+	add.u64 	%rd51, %rd11, %rd213;
+	ld.local.s32 	%r139, [%rd51+8];
+	mov.u32 	%r423, 0;
+	setp.eq.s32 	%p246, %r139, %r423;
+	@%p246 bra 	$Lt_5_21762;
+	mov.u32 	%r424, 2;
+	setp.eq.s32 	%p247, %r139, %r424;
+	@%p247 bra 	$Lt_5_22274;
+	mov.u32 	%r425, 1;
+	setp.eq.s32 	%p248, %r139, %r425;
+	@%p248 bra 	$Lt_5_22530;
+	mov.u32 	%r426, 3;
+	setp.eq.s32 	%p249, %r139, %r426;
+	@%p249 bra 	$Lt_5_22786;
+	mov.s32 	%r165, %r166;
+	bra.uni 	$Lt_5_22018;
+$Lt_5_21762:
+	ld.local.s32 	%r165, [%rd51+0];
+	mov.s32 	%r166, %r165;
+	bra.uni 	$Lt_5_22018;
+$Lt_5_22274:
+	ld.local.f32 	%f49, [%rd51+0];
+	mov.f32 	%f50, 0f00000000;    	// 0
+	set.neu.u32.f32 	%r427, %f49, %f50;
+	neg.s32 	%r165, %r427;
+	mov.s32 	%r166, %r165;
+	bra.uni 	$Lt_5_22018;
+$Lt_5_22530:
+	ld.local.s64 	%rd214, [%rd51+0];
+	mov.s64 	%rd215, 0;
+	set.ne.u32.s64 	%r428, %rd214, %rd215;
+	neg.s32 	%r165, %r428;
+	mov.s32 	%r166, %r165;
+	bra.uni 	$Lt_5_22018;
+$Lt_5_22786:
+	ld.local.f64 	%fd49, [%rd51+0];
+	mov.f64 	%fd50, 0d0000000000000000;	// 0
+	set.ne.u32.f64 	%r429, %fd49, %fd50;
+	neg.s32 	%r165, %r429;
+	mov.s32 	%r166, %r165;
+$Lt_5_22018:
+	mov.u32 	%r430, 0;
+	setp.eq.s32 	%p250, %r165, %r430;
+	@%p250 bra 	$Lt_5_300802;
+	.loc	19	256	0
+	ld.global.s32 	%r22, [%rd15+40];
+	bra.uni 	$Lt_5_300546;
+$Lt_5_300802:
+	.loc	19	258	0
+	add.s32 	%r22, %r22, 1;
+$Lt_5_300546:
+	.loc	19	259	0
+	mov.s32 	%r431, 63;
+	setp.le.s32 	%p4, %r22, %r431;
+	bra.uni 	$Lt_5_1026;
+$Lt_5_23810:
+	.loc	19	261	0
+	ld.global.s32 	%r432, [%rd15+36];
+	cvt.s64.s32 	%rd216, %r432;
+	mul.wide.s32 	%rd217, %r432, 16;
+	add.u64 	%rd218, %rd11, %rd217;
+	ld.local.s32 	%r433, [%rd218+0];
+	mov.u32 	%r434, 0;
+	setp.ge.s32 	%p251, %r433, %r434;
+	@%p251 bra 	$Lt_5_301314;
+	.loc	19	263	0
+	ld.global.s32 	%r22, [%rd15+40];
+	bra.uni 	$Lt_5_301058;
+$Lt_5_301314:
+	.loc	19	265	0
+	add.s32 	%r22, %r22, 1;
+$Lt_5_301058:
+	.loc	19	266	0
+	mov.s32 	%r435, 63;
+	setp.le.s32 	%p4, %r22, %r435;
+	bra.uni 	$Lt_5_1026;
+$Lt_5_24066:
+	.loc	19	269	0
+	ld.global.s32 	%r84, [%rd15+36];
+	cvt.s64.s32 	%rd219, %r84;
+	mul.wide.s32 	%rd220, %r84, 16;
+	add.u64 	%rd51, %rd11, %rd220;
+	ld.local.s32 	%r139, [%rd51+8];
+	mov.u32 	%r436, 0;
+	setp.eq.s32 	%p252, %r139, %r436;
+	@%p252 bra 	$Lt_5_24322;
+	mov.u32 	%r437, 2;
+	setp.eq.s32 	%p253, %r139, %r437;
+	@%p253 bra 	$Lt_5_24834;
+	mov.u32 	%r438, 1;
+	setp.eq.s32 	%p254, %r139, %r438;
+	@%p254 bra 	$Lt_5_25090;
+	mov.u32 	%r439, 3;
+	setp.eq.s32 	%p255, %r139, %r439;
+	@%p255 bra 	$Lt_5_25346;
+	mov.s32 	%r165, %r166;
+	bra.uni 	$Lt_5_24578;
+$Lt_5_24322:
+	ld.local.s32 	%r165, [%rd51+0];
+	mov.s32 	%r166, %r165;
+	bra.uni 	$Lt_5_24578;
+$Lt_5_24834:
+	ld.local.f32 	%f51, [%rd51+0];
+	mov.f32 	%f52, 0f00000000;    	// 0
+	set.neu.u32.f32 	%r440, %f51, %f52;
+	neg.s32 	%r165, %r440;
+	mov.s32 	%r166, %r165;
+	bra.uni 	$Lt_5_24578;
+$Lt_5_25090:
+	ld.local.s64 	%rd221, [%rd51+0];
+	mov.s64 	%rd222, 0;
+	set.ne.u32.s64 	%r441, %rd221, %rd222;
+	neg.s32 	%r165, %r441;
+	mov.s32 	%r166, %r165;
+	bra.uni 	$Lt_5_24578;
+$Lt_5_25346:
+	ld.local.f64 	%fd51, [%rd51+0];
+	mov.f64 	%fd52, 0d0000000000000000;	// 0
+	set.ne.u32.f64 	%r442, %fd51, %fd52;
+	neg.s32 	%r165, %r442;
+	mov.s32 	%r166, %r165;
+$Lt_5_24578:
+	mov.u32 	%r443, 0;
+	setp.ne.s32 	%p256, %r165, %r443;
+	@%p256 bra 	$Lt_5_301826;
+	.loc	19	271	0
+	ld.global.s32 	%r22, [%rd15+40];
+	bra.uni 	$Lt_5_301570;
+$Lt_5_301826:
+	.loc	19	273	0
+	add.s32 	%r22, %r22, 1;
+$Lt_5_301570:
+	.loc	19	274	0
+	mov.s32 	%r444, 63;
+	setp.le.s32 	%p4, %r22, %r444;
+	bra.uni 	$Lt_5_1026;
+$Lt_5_26370:
+	.loc	19	276	0
+	ld.global.s32 	%r445, [%rd15+36];
+	cvt.s64.s32 	%rd223, %r445;
+	mul.wide.s32 	%rd224, %r445, 16;
+	add.u64 	%rd225, %rd11, %rd224;
+	ld.local.s32 	%r446, [%rd225+0];
+	mov.u32 	%r447, 0;
+	setp.ge.s32 	%p257, %r446, %r447;
+	@%p257 bra 	$Lt_5_302338;
+	.loc	19	278	0
+	ld.global.s32 	%r22, [%rd15+40];
+	bra.uni 	$Lt_5_302082;
+$Lt_5_302338:
+	.loc	19	280	0
+	add.s32 	%r22, %r22, 1;
+$Lt_5_302082:
+	.loc	19	281	0
+	mov.s32 	%r448, 63;
+	setp.le.s32 	%p4, %r22, %r448;
+	bra.uni 	$Lt_5_1026;
+$Lt_5_26626:
+	.loc	19	283	0
+	ld.global.s32 	%r449, [%rd15+36];
+	cvt.s64.s32 	%rd226, %r449;
+	mul.wide.s32 	%rd227, %r449, 16;
+	add.u64 	%rd228, %rd11, %rd227;
+	ld.local.s32 	%r450, [%rd228+0];
+	mov.u32 	%r451, 0;
+	setp.ne.s32 	%p258, %r450, %r451;
+	@%p258 bra 	$Lt_5_302850;
+	.loc	19	285	0
+	ld.global.s32 	%r22, [%rd15+40];
+	bra.uni 	$Lt_5_302594;
+$Lt_5_302850:
+	.loc	19	287	0
+	add.s32 	%r22, %r22, 1;
+$Lt_5_302594:
+	.loc	19	288	0
+	mov.s32 	%r452, 63;
+	setp.le.s32 	%p4, %r22, %r452;
+	bra.uni 	$Lt_5_1026;
+$Lt_5_26882:
+	.loc	19	291	0
+	ld.global.s32 	%r62, [%rd15+40];
+	cvt.s64.s32 	%rd229, %r62;
+	mul.wide.s32 	%rd230, %r62, 16;
+	add.u64 	%rd52, %rd11, %rd230;
+	mov.s32 	%r453, 1;
+	st.local.s32 	[%rd52+8], %r453;
+	.loc	19	292	0
+	ld.global.s64 	%rd231, [%rd15+48];
+	st.local.s64 	[%rd52+0], %rd231;
+	.loc	19	293	0
+	add.s32 	%r82, %r22, 1;
+	mov.s32 	%r22, %r82;
+	.loc	19	294	0
+	mov.s32 	%r454, 63;
+	setp.le.s32 	%p4, %r82, %r454;
+	bra.uni 	$Lt_5_1026;
+$Lt_5_27138:
+	.loc	19	297	0
+	ld.global.s32 	%r62, [%rd15+40];
+	cvt.s64.s32 	%rd232, %r62;
+	mul.wide.s32 	%rd233, %r62, 16;
+	add.u64 	%rd52, %rd11, %rd233;
+	mov.s32 	%r455, 0;
+	st.local.s32 	[%rd52+8], %r455;
+	.loc	19	298	0
+	ld.global.s32 	%r456, [%rd15+36];
+	st.local.s32 	[%rd52+0], %r456;
+	.loc	19	299	0
+	add.s32 	%r82, %r22, 1;
+	mov.s32 	%r22, %r82;
+	.loc	19	300	0
+	mov.s32 	%r457, 63;
+	setp.le.s32 	%p4, %r82, %r457;
+	bra.uni 	$Lt_5_1026;
+$Lt_5_27394:
+	.loc	19	303	0
+	ld.global.s32 	%r84, [%rd15+36];
+	ld.global.s32 	%r458, [%rd15+44];
+	cvt.s64.s32 	%rd19, %r458;
+	cvt.s64.s32 	%rd234, %r84;
+	mul.wide.s32 	%rd235, %r84, 16;
+	add.u64 	%rd51, %rd11, %rd235;
+	ld.local.s32 	%r139, [%rd51+8];
+	cvt.u32.s64 	%r459, %rd19;
+	cvt.u64.u32 	%rd236, %r459;
+	cvt.u32.u64 	%r460, %rd236;
+	cvt.u64.u32 	%rd237, %r460;
+	mul.wide.u32 	%rd238, %r460, 16;
+	add.u64 	%rd239, %rd11, %rd238;
+	ld.local.s32 	%r461, [%rd239+8];
+	max.s32 	%r263, %r461, %r139;
+	mov.u32 	%r462, 0;
+	setp.eq.s32 	%p259, %r263, %r462;
+	@%p259 bra 	$Lt_5_27650;
+	mov.u32 	%r463, 2;
+	setp.eq.s32 	%p260, %r263, %r463;
+	@%p260 bra 	$Lt_5_28162;
+	mov.u32 	%r464, 1;
+	setp.eq.s32 	%p261, %r263, %r464;
+	@%p261 bra 	$Lt_5_28418;
+	mov.u32 	%r465, 3;
+	setp.eq.s32 	%p262, %r263, %r465;
+	@%p262 bra 	$Lt_5_28674;
+	bra.uni 	$Lt_5_27906;
+$Lt_5_27650:
+	.loc	19	826	0
+	mul.lo.u64 	%rd240, %rd19, 16;
+	add.u64 	%rd21, %rd11, %rd240;
+	ld.local.s32 	%r268, [%rd21+8];
+	mov.u32 	%r466, 0;
+	setp.eq.s32 	%p263, %r268, %r466;
+	@%p263 bra 	$Lt_5_153602;
+	mov.u32 	%r467, 2;
+	setp.eq.s32 	%p264, %r268, %r467;
+	@%p264 bra 	$Lt_5_153858;
+	mov.u32 	%r468, 1;
+	setp.eq.s32 	%p265, %r268, %r468;
+	@%p265 bra 	$Lt_5_154114;
+	mov.u32 	%r469, 3;
+	setp.eq.s32 	%p266, %r268, %r469;
+	@%p266 bra 	$Lt_5_154370;
+	bra.uni 	$Lt_5_155138;
+$Lt_5_153602:
+	.loc	19	828	0
+	ld.local.s32 	%r470, [%rd21+0];
+	bra.uni 	$LDWendi__Z9castToIntP13sphyraena_mem_185_599;
+$Lt_5_153858:
+	.loc	19	830	0
+	ld.local.f32 	%f53, [%rd21+0];
+	cvt.rzi.s32.f32 	%r470, %f53;
+	bra.uni 	$LDWendi__Z9castToIntP13sphyraena_mem_185_599;
+$Lt_5_154114:
+	.loc	19	832	0
+	ld.local.s32 	%r470, [%rd21+0];
+	bra.uni 	$LDWendi__Z9castToIntP13sphyraena_mem_185_599;
+$Lt_5_154370:
+	.loc	19	834	0
+	ld.local.f64 	%fd53, [%rd21+0];
+	cvt.rzi.s32.f64 	%r470, %fd53;
+	bra.uni 	$LDWendi__Z9castToIntP13sphyraena_mem_185_599;
+$Lt_5_155138:
+	.loc	19	836	0
+	mov.s32 	%r470, 0;
+$LDWendi__Z9castToIntP13sphyraena_mem_185_599:
+	.loc	19	826	0
+	mov.u32 	%r471, 0;
+	setp.eq.s32 	%p267, %r139, %r471;
+	@%p267 bra 	$Lt_5_151298;
+	mov.u32 	%r472, 2;
+	setp.eq.s32 	%p268, %r139, %r472;
+	@%p268 bra 	$Lt_5_151554;
+	mov.u32 	%r473, 1;
+	setp.eq.s32 	%p269, %r139, %r473;
+	@%p269 bra 	$Lt_5_151810;
+	mov.u32 	%r474, 3;
+	setp.eq.s32 	%p270, %r139, %r474;
+	@%p270 bra 	$Lt_5_152066;
+	bra.uni 	$Lt_5_152834;
+$Lt_5_151298:
+	.loc	19	828	0
+	ld.local.s32 	%r475, [%rd51+0];
+	bra.uni 	$LDWendi__Z9castToIntP13sphyraena_mem_185_590;
+$Lt_5_151554:
+	.loc	19	830	0
+	ld.local.f32 	%f54, [%rd51+0];
+	cvt.rzi.s32.f32 	%r475, %f54;
+	bra.uni 	$LDWendi__Z9castToIntP13sphyraena_mem_185_590;
+$Lt_5_151810:
+	.loc	19	832	0
+	ld.local.s32 	%r475, [%rd51+0];
+	bra.uni 	$LDWendi__Z9castToIntP13sphyraena_mem_185_590;
+$Lt_5_152066:
+	.loc	19	834	0
+	ld.local.f64 	%fd54, [%rd51+0];
+	cvt.rzi.s32.f64 	%r475, %fd54;
+	bra.uni 	$LDWendi__Z9castToIntP13sphyraena_mem_185_590;
+$Lt_5_152834:
+	.loc	19	836	0
+	mov.s32 	%r475, 0;
+$LDWendi__Z9castToIntP13sphyraena_mem_185_590:
+	.loc	19	303	0
+	set.ge.u32.s32 	%r476, %r475, %r470;
+	neg.s32 	%r20, %r476;
+	bra.uni 	$Lt_5_27906;
+$Lt_5_28162:
+	.loc	19	841	0
+	mul.lo.u64 	%rd241, %rd19, 16;
+	add.u64 	%rd21, %rd11, %rd241;
+	ld.local.s32 	%r268, [%rd21+8];
+	mov.u32 	%r477, 2;
+	setp.eq.s32 	%p271, %r268, %r477;
+	@%p271 bra 	$Lt_5_148994;
+	mov.u32 	%r478, 0;
+	setp.eq.s32 	%p272, %r268, %r478;
+	@%p272 bra 	$Lt_5_149250;
+	mov.u32 	%r479, 1;
+	setp.eq.s32 	%p273, %r268, %r479;
+	@%p273 bra 	$Lt_5_149506;
+	mov.u32 	%r480, 3;
+	setp.eq.s32 	%p274, %r268, %r480;
+	@%p274 bra 	$Lt_5_149762;
+	bra.uni 	$Lt_5_150530;
+$Lt_5_148994:
+	.loc	19	843	0
+	ld.local.f32 	%f55, [%rd21+0];
+	bra.uni 	$LDWendi__Z11castToFloatP13sphyraena_mem_185_581;
+$Lt_5_149250:
+	.loc	19	845	0
+	ld.local.s32 	%r481, [%rd21+0];
+	cvt.rn.f32.s32 	%f55, %r481;
+	bra.uni 	$LDWendi__Z11castToFloatP13sphyraena_mem_185_581;
+$Lt_5_149506:
+	.loc	19	847	0
+	ld.local.s64 	%rd242, [%rd21+0];
+	cvt.rn.f32.s64 	%f55, %rd242;
+	bra.uni 	$LDWendi__Z11castToFloatP13sphyraena_mem_185_581;
+$Lt_5_149762:
+	.loc	19	849	0
+	ld.local.f64 	%fd55, [%rd21+0];
+	cvt.rn.f32.f64 	%f55, %fd55;
+	bra.uni 	$LDWendi__Z11castToFloatP13sphyraena_mem_185_581;
+$Lt_5_150530:
+	.loc	19	851	0
+	mov.f32 	%f55, 0f00000000;    	// 0
+$LDWendi__Z11castToFloatP13sphyraena_mem_185_581:
+	.loc	19	841	0
+	mov.u32 	%r482, 2;
+	setp.eq.s32 	%p275, %r139, %r482;
+	@%p275 bra 	$Lt_5_146690;
+	mov.u32 	%r483, 0;
+	setp.eq.s32 	%p276, %r139, %r483;
+	@%p276 bra 	$Lt_5_146946;
+	mov.u32 	%r484, 1;
+	setp.eq.s32 	%p277, %r139, %r484;
+	@%p277 bra 	$Lt_5_147202;
+	mov.u32 	%r485, 3;
+	setp.eq.s32 	%p278, %r139, %r485;
+	@%p278 bra 	$Lt_5_147458;
+	bra.uni 	$Lt_5_148226;
+$Lt_5_146690:
+	.loc	19	843	0
+	ld.local.f32 	%f56, [%rd51+0];
+	bra.uni 	$LDWendi__Z11castToFloatP13sphyraena_mem_185_572;
+$Lt_5_146946:
+	.loc	19	845	0
+	ld.local.s32 	%r486, [%rd51+0];
+	cvt.rn.f32.s32 	%f56, %r486;
+	bra.uni 	$LDWendi__Z11castToFloatP13sphyraena_mem_185_572;
+$Lt_5_147202:
+	.loc	19	847	0
+	ld.local.s64 	%rd243, [%rd51+0];
+	cvt.rn.f32.s64 	%f56, %rd243;
+	bra.uni 	$LDWendi__Z11castToFloatP13sphyraena_mem_185_572;
+$Lt_5_147458:
+	.loc	19	849	0
+	ld.local.f64 	%fd56, [%rd51+0];
+	cvt.rn.f32.f64 	%f56, %fd56;
+	bra.uni 	$LDWendi__Z11castToFloatP13sphyraena_mem_185_572;
+$Lt_5_148226:
+	.loc	19	851	0
+	mov.f32 	%f56, 0f00000000;    	// 0
+$LDWendi__Z11castToFloatP13sphyraena_mem_185_572:
+	.loc	19	303	0
+	set.ge.u32.f32 	%r487, %f56, %f55;
+	neg.s32 	%r20, %r487;
+	bra.uni 	$Lt_5_27906;
+$Lt_5_28418:
+	.loc	19	856	0
+	mul.lo.u64 	%rd244, %rd19, 16;
+	add.u64 	%rd21, %rd11, %rd244;
+	ld.local.s32 	%r268, [%rd21+8];
+	mov.u32 	%r488, 1;
+	setp.eq.s32 	%p279, %r268, %r488;
+	@%p279 bra 	$Lt_5_144386;
+	mov.u32 	%r489, 0;
+	setp.eq.s32 	%p280, %r268, %r489;
+	@%p280 bra 	$Lt_5_144642;
+	mov.u32 	%r490, 2;
+	setp.eq.s32 	%p281, %r268, %r490;
+	@%p281 bra 	$Lt_5_144898;
+	mov.u32 	%r491, 3;
+	setp.eq.s32 	%p282, %r268, %r491;
+	@%p282 bra 	$Lt_5_145154;
+	bra.uni 	$Lt_5_145922;
+$Lt_5_144386:
+	.loc	19	858	0
+	ld.local.s64 	%rd245, [%rd21+0];
+	bra.uni 	$LDWendi__Z11castToInt64P13sphyraena_mem_185_563;
+$Lt_5_144642:
+	.loc	19	860	0
+	ld.local.s32 	%r492, [%rd21+0];
+	cvt.s64.s32 	%rd245, %r492;
+	bra.uni 	$LDWendi__Z11castToInt64P13sphyraena_mem_185_563;
+$Lt_5_144898:
+	.loc	19	862	0
+	ld.local.f32 	%f57, [%rd21+0];
+	cvt.rzi.s64.f32 	%rd245, %f57;
+	bra.uni 	$LDWendi__Z11castToInt64P13sphyraena_mem_185_563;
+$Lt_5_145154:
+	.loc	19	864	0
+	ld.local.f64 	%fd57, [%rd21+0];
+	cvt.rzi.s64.f64 	%rd245, %fd57;
+	bra.uni 	$LDWendi__Z11castToInt64P13sphyraena_mem_185_563;
+$Lt_5_145922:
+	.loc	19	866	0
+	mov.s64 	%rd245, 0;
+$LDWendi__Z11castToInt64P13sphyraena_mem_185_563:
+	.loc	19	856	0
+	mov.u32 	%r493, 1;
+	setp.eq.s32 	%p283, %r139, %r493;
+	@%p283 bra 	$Lt_5_142082;
+	mov.u32 	%r494, 0;
+	setp.eq.s32 	%p284, %r139, %r494;
+	@%p284 bra 	$Lt_5_142338;
+	mov.u32 	%r495, 2;
+	setp.eq.s32 	%p285, %r139, %r495;
+	@%p285 bra 	$Lt_5_142594;
+	mov.u32 	%r496, 3;
+	setp.eq.s32 	%p286, %r139, %r496;
+	@%p286 bra 	$Lt_5_142850;
+	bra.uni 	$Lt_5_143618;
+$Lt_5_142082:
+	.loc	19	858	0
+	ld.local.s64 	%rd246, [%rd51+0];
+	bra.uni 	$LDWendi__Z11castToInt64P13sphyraena_mem_185_554;
+$Lt_5_142338:
+	.loc	19	860	0
+	ld.local.s32 	%r497, [%rd51+0];
+	cvt.s64.s32 	%rd246, %r497;
+	bra.uni 	$LDWendi__Z11castToInt64P13sphyraena_mem_185_554;
+$Lt_5_142594:
+	.loc	19	862	0
+	ld.local.f32 	%f58, [%rd51+0];
+	cvt.rzi.s64.f32 	%rd246, %f58;
+	bra.uni 	$LDWendi__Z11castToInt64P13sphyraena_mem_185_554;
+$Lt_5_142850:
+	.loc	19	864	0
+	ld.local.f64 	%fd58, [%rd51+0];
+	cvt.rzi.s64.f64 	%rd246, %fd58;
+	bra.uni 	$LDWendi__Z11castToInt64P13sphyraena_mem_185_554;
+$Lt_5_143618:
+	.loc	19	866	0
+	mov.s64 	%rd246, 0;
+$LDWendi__Z11castToInt64P13sphyraena_mem_185_554:
+	.loc	19	303	0
+	set.ge.u32.s64 	%r498, %rd246, %rd245;
+	neg.s32 	%r20, %r498;
+	bra.uni 	$Lt_5_27906;
+$Lt_5_28674:
+	.loc	19	871	0
+	mul.lo.u64 	%rd247, %rd19, 16;
+	add.u64 	%rd21, %rd11, %rd247;
+	ld.local.s32 	%r268, [%rd21+8];
+	mov.u32 	%r499, 3;
+	setp.eq.s32 	%p287, %r268, %r499;
+	@%p287 bra 	$Lt_5_139778;
+	mov.u32 	%r500, 0;
+	setp.eq.s32 	%p288, %r268, %r500;
+	@%p288 bra 	$Lt_5_140034;
+	mov.u32 	%r501, 2;
+	setp.eq.s32 	%p289, %r268, %r501;
+	@%p289 bra 	$Lt_5_140290;
+	mov.u32 	%r502, 1;
+	setp.eq.s32 	%p290, %r268, %r502;
+	@%p290 bra 	$Lt_5_140546;
+	bra.uni 	$Lt_5_141314;
+$Lt_5_139778:
+	.loc	19	873	0
+	ld.local.f64 	%fd59, [%rd21+0];
+	bra.uni 	$LDWendi__Z12castToDoubleP13sphyraena_mem_185_545;
+$Lt_5_140034:
+	.loc	19	875	0
+	ld.local.s32 	%r503, [%rd21+0];
+	cvt.rn.f64.s32 	%fd59, %r503;
+	bra.uni 	$LDWendi__Z12castToDoubleP13sphyraena_mem_185_545;
+$Lt_5_140290:
+	.loc	19	877	0
+	ld.local.f32 	%f59, [%rd21+0];
+	cvt.f64.f32 	%fd59, %f59;
+	bra.uni 	$LDWendi__Z12castToDoubleP13sphyraena_mem_185_545;
+$Lt_5_140546:
+	.loc	19	879	0
+	ld.local.s64 	%rd248, [%rd21+0];
+	cvt.rn.f64.s64 	%fd59, %rd248;
+	bra.uni 	$LDWendi__Z12castToDoubleP13sphyraena_mem_185_545;
+$Lt_5_141314:
+	.loc	19	881	0
+	mov.f64 	%fd59, 0d0000000000000000;	// 0
+$LDWendi__Z12castToDoubleP13sphyraena_mem_185_545:
+	.loc	19	871	0
+	mov.u32 	%r504, 3;
+	setp.eq.s32 	%p291, %r139, %r504;
+	@%p291 bra 	$Lt_5_137474;
+	mov.u32 	%r505, 0;
+	setp.eq.s32 	%p292, %r139, %r505;
+	@%p292 bra 	$Lt_5_137730;
+	mov.u32 	%r506, 2;
+	setp.eq.s32 	%p293, %r139, %r506;
+	@%p293 bra 	$Lt_5_137986;
+	mov.u32 	%r507, 1;
+	setp.eq.s32 	%p294, %r139, %r507;
+	@%p294 bra 	$Lt_5_138242;
+	bra.uni 	$Lt_5_139010;
+$Lt_5_137474:
+	.loc	19	873	0
+	ld.local.f64 	%fd60, [%rd51+0];
+	bra.uni 	$LDWendi__Z12castToDoubleP13sphyraena_mem_185_536;
+$Lt_5_137730:
+	.loc	19	875	0
+	ld.local.s32 	%r508, [%rd51+0];
+	cvt.rn.f64.s32 	%fd60, %r508;
+	bra.uni 	$LDWendi__Z12castToDoubleP13sphyraena_mem_185_536;
+$Lt_5_137986:
+	.loc	19	877	0
+	ld.local.f32 	%f60, [%rd51+0];
+	cvt.f64.f32 	%fd60, %f60;
+	bra.uni 	$LDWendi__Z12castToDoubleP13sphyraena_mem_185_536;
+$Lt_5_138242:
+	.loc	19	879	0
+	ld.local.s64 	%rd249, [%rd51+0];
+	cvt.rn.f64.s64 	%fd60, %rd249;
+	bra.uni 	$LDWendi__Z12castToDoubleP13sphyraena_mem_185_536;
+$Lt_5_139010:
+	.loc	19	881	0
+	mov.f64 	%fd60, 0d0000000000000000;	// 0
+$LDWendi__Z12castToDoubleP13sphyraena_mem_185_536:
+	.loc	19	303	0
+	set.ge.u32.f64 	%r509, %fd60, %fd59;
+	neg.s32 	%r20, %r509;
+$Lt_5_27906:
+	mov.u32 	%r510, 0;
+	setp.eq.s32 	%p295, %r20, %r510;
+	@%p295 bra 	$Lt_5_303362;
+	ld.global.s32 	%r22, [%rd15+40];
+	bra.uni 	$Lt_5_303106;
+$Lt_5_303362:
+	add.s32 	%r22, %r22, 1;
+$Lt_5_303106:
+	.loc	19	304	0
+	mov.s32 	%r511, 63;
+	setp.le.s32 	%p4, %r22, %r511;
+	bra.uni 	$Lt_5_1026;
+$Lt_5_29698:
+	.loc	19	307	0
+	ld.global.s32 	%r84, [%rd15+36];
+	ld.global.s32 	%r512, [%rd15+44];
+	cvt.s64.s32 	%rd19, %r512;
+	cvt.s64.s32 	%rd250, %r84;
+	mul.wide.s32 	%rd251, %r84, 16;
+	add.u64 	%rd51, %rd11, %rd251;
+	ld.local.s32 	%r139, [%rd51+8];
+	cvt.u32.s64 	%r513, %rd19;
+	cvt.u64.u32 	%rd252, %r513;
+	cvt.u32.u64 	%r514, %rd252;
+	cvt.u64.u32 	%rd253, %r514;
+	mul.wide.u32 	%rd254, %r514, 16;
+	add.u64 	%rd255, %rd11, %rd254;
+	ld.local.s32 	%r515, [%rd255+8];
+	max.s32 	%r263, %r515, %r139;
+	mov.u32 	%r516, 0;
+	setp.eq.s32 	%p296, %r263, %r516;
+	@%p296 bra 	$Lt_5_29954;
+	mov.u32 	%r517, 2;
+	setp.eq.s32 	%p297, %r263, %r517;
+	@%p297 bra 	$Lt_5_30466;
+	mov.u32 	%r518, 1;
+	setp.eq.s32 	%p298, %r263, %r518;
+	@%p298 bra 	$Lt_5_30722;
+	mov.u32 	%r519, 3;
+	setp.eq.s32 	%p299, %r263, %r519;
+	@%p299 bra 	$Lt_5_30978;
+	bra.uni 	$Lt_5_30210;
+$Lt_5_29954:
+	.loc	19	826	0
+	mul.lo.u64 	%rd256, %rd19, 16;
+	add.u64 	%rd21, %rd11, %rd256;
+	ld.local.s32 	%r268, [%rd21+8];
+	mov.u32 	%r520, 0;
+	setp.eq.s32 	%p300, %r268, %r520;
+	@%p300 bra 	$Lt_5_135170;
+	mov.u32 	%r521, 2;
+	setp.eq.s32 	%p301, %r268, %r521;
+	@%p301 bra 	$Lt_5_135426;
+	mov.u32 	%r522, 1;
+	setp.eq.s32 	%p302, %r268, %r522;
+	@%p302 bra 	$Lt_5_135682;
+	mov.u32 	%r523, 3;
+	setp.eq.s32 	%p303, %r268, %r523;
+	@%p303 bra 	$Lt_5_135938;
+	bra.uni 	$Lt_5_136706;
+$Lt_5_135170:
+	.loc	19	828	0
+	ld.local.s32 	%r524, [%rd21+0];
+	bra.uni 	$LDWendi__Z9castToIntP13sphyraena_mem_185_527;
+$Lt_5_135426:
+	.loc	19	830	0
+	ld.local.f32 	%f61, [%rd21+0];
+	cvt.rzi.s32.f32 	%r524, %f61;
+	bra.uni 	$LDWendi__Z9castToIntP13sphyraena_mem_185_527;
+$Lt_5_135682:
+	.loc	19	832	0
+	ld.local.s32 	%r524, [%rd21+0];
+	bra.uni 	$LDWendi__Z9castToIntP13sphyraena_mem_185_527;
+$Lt_5_135938:
+	.loc	19	834	0
+	ld.local.f64 	%fd61, [%rd21+0];
+	cvt.rzi.s32.f64 	%r524, %fd61;
+	bra.uni 	$LDWendi__Z9castToIntP13sphyraena_mem_185_527;
+$Lt_5_136706:
+	.loc	19	836	0
+	mov.s32 	%r524, 0;
+$LDWendi__Z9castToIntP13sphyraena_mem_185_527:
+	.loc	19	826	0
+	mov.u32 	%r525, 0;
+	setp.eq.s32 	%p304, %r139, %r525;
+	@%p304 bra 	$Lt_5_132866;
+	mov.u32 	%r526, 2;
+	setp.eq.s32 	%p305, %r139, %r526;
+	@%p305 bra 	$Lt_5_133122;
+	mov.u32 	%r527, 1;
+	setp.eq.s32 	%p306, %r139, %r527;
+	@%p306 bra 	$Lt_5_133378;
+	mov.u32 	%r528, 3;
+	setp.eq.s32 	%p307, %r139, %r528;
+	@%p307 bra 	$Lt_5_133634;
+	bra.uni 	$Lt_5_134402;
+$Lt_5_132866:
+	.loc	19	828	0
+	ld.local.s32 	%r529, [%rd51+0];
+	bra.uni 	$LDWendi__Z9castToIntP13sphyraena_mem_185_518;
+$Lt_5_133122:
+	.loc	19	830	0
+	ld.local.f32 	%f62, [%rd51+0];
+	cvt.rzi.s32.f32 	%r529, %f62;
+	bra.uni 	$LDWendi__Z9castToIntP13sphyraena_mem_185_518;
+$Lt_5_133378:
+	.loc	19	832	0
+	ld.local.s32 	%r529, [%rd51+0];
+	bra.uni 	$LDWendi__Z9castToIntP13sphyraena_mem_185_518;
+$Lt_5_133634:
+	.loc	19	834	0
+	ld.local.f64 	%fd62, [%rd51+0];
+	cvt.rzi.s32.f64 	%r529, %fd62;
+	bra.uni 	$LDWendi__Z9castToIntP13sphyraena_mem_185_518;
+$Lt_5_134402:
+	.loc	19	836	0
+	mov.s32 	%r529, 0;
+$LDWendi__Z9castToIntP13sphyraena_mem_185_518:
+	.loc	19	307	0
+	set.gt.u32.s32 	%r530, %r529, %r524;
+	neg.s32 	%r20, %r530;
+	bra.uni 	$Lt_5_30210;
+$Lt_5_30466:
+	.loc	19	841	0
+	mul.lo.u64 	%rd257, %rd19, 16;
+	add.u64 	%rd21, %rd11, %rd257;
+	ld.local.s32 	%r268, [%rd21+8];
+	mov.u32 	%r531, 2;
+	setp.eq.s32 	%p308, %r268, %r531;
+	@%p308 bra 	$Lt_5_130562;
+	mov.u32 	%r532, 0;
+	setp.eq.s32 	%p309, %r268, %r532;
+	@%p309 bra 	$Lt_5_130818;
+	mov.u32 	%r533, 1;
+	setp.eq.s32 	%p310, %r268, %r533;
+	@%p310 bra 	$Lt_5_131074;
+	mov.u32 	%r534, 3;
+	setp.eq.s32 	%p311, %r268, %r534;
+	@%p311 bra 	$Lt_5_131330;
+	bra.uni 	$Lt_5_132098;
+$Lt_5_130562:
+	.loc	19	843	0
+	ld.local.f32 	%f63, [%rd21+0];
+	bra.uni 	$LDWendi__Z11castToFloatP13sphyraena_mem_185_509;
+$Lt_5_130818:
+	.loc	19	845	0
+	ld.local.s32 	%r535, [%rd21+0];
+	cvt.rn.f32.s32 	%f63, %r535;
+	bra.uni 	$LDWendi__Z11castToFloatP13sphyraena_mem_185_509;
+$Lt_5_131074:
+	.loc	19	847	0
+	ld.local.s64 	%rd258, [%rd21+0];
+	cvt.rn.f32.s64 	%f63, %rd258;
+	bra.uni 	$LDWendi__Z11castToFloatP13sphyraena_mem_185_509;
+$Lt_5_131330:
+	.loc	19	849	0
+	ld.local.f64 	%fd63, [%rd21+0];
+	cvt.rn.f32.f64 	%f63, %fd63;
+	bra.uni 	$LDWendi__Z11castToFloatP13sphyraena_mem_185_509;
+$Lt_5_132098:
+	.loc	19	851	0
+	mov.f32 	%f63, 0f00000000;    	// 0
+$LDWendi__Z11castToFloatP13sphyraena_mem_185_509:
+	.loc	19	841	0
+	mov.u32 	%r536, 2;
+	setp.eq.s32 	%p312, %r139, %r536;
+	@%p312 bra 	$Lt_5_128258;
+	mov.u32 	%r537, 0;
+	setp.eq.s32 	%p313, %r139, %r537;
+	@%p313 bra 	$Lt_5_128514;
+	mov.u32 	%r538, 1;
+	setp.eq.s32 	%p314, %r139, %r538;
+	@%p314 bra 	$Lt_5_128770;
+	mov.u32 	%r539, 3;
+	setp.eq.s32 	%p315, %r139, %r539;
+	@%p315 bra 	$Lt_5_129026;
+	bra.uni 	$Lt_5_129794;
+$Lt_5_128258:
+	.loc	19	843	0
+	ld.local.f32 	%f64, [%rd51+0];
+	bra.uni 	$LDWendi__Z11castToFloatP13sphyraena_mem_185_500;
+$Lt_5_128514:
+	.loc	19	845	0
+	ld.local.s32 	%r540, [%rd51+0];
+	cvt.rn.f32.s32 	%f64, %r540;
+	bra.uni 	$LDWendi__Z11castToFloatP13sphyraena_mem_185_500;
+$Lt_5_128770:
+	.loc	19	847	0
+	ld.local.s64 	%rd259, [%rd51+0];
+	cvt.rn.f32.s64 	%f64, %rd259;
+	bra.uni 	$LDWendi__Z11castToFloatP13sphyraena_mem_185_500;
+$Lt_5_129026:
+	.loc	19	849	0
+	ld.local.f64 	%fd64, [%rd51+0];
+	cvt.rn.f32.f64 	%f64, %fd64;
+	bra.uni 	$LDWendi__Z11castToFloatP13sphyraena_mem_185_500;
+$Lt_5_129794:
+	.loc	19	851	0
+	mov.f32 	%f64, 0f00000000;    	// 0
+$LDWendi__Z11castToFloatP13sphyraena_mem_185_500:
+	.loc	19	307	0
+	set.gt.u32.f32 	%r541, %f64, %f63;
+	neg.s32 	%r20, %r541;
+	bra.uni 	$Lt_5_30210;
+$Lt_5_30722:
+	.loc	19	856	0
+	mul.lo.u64 	%rd260, %rd19, 16;
+	add.u64 	%rd21, %rd11, %rd260;
+	ld.local.s32 	%r268, [%rd21+8];
+	mov.u32 	%r542, 1;
+	setp.eq.s32 	%p316, %r268, %r542;
+	@%p316 bra 	$Lt_5_125954;
+	mov.u32 	%r543, 0;
+	setp.eq.s32 	%p317, %r268, %r543;
+	@%p317 bra 	$Lt_5_126210;
+	mov.u32 	%r544, 2;
+	setp.eq.s32 	%p318, %r268, %r544;
+	@%p318 bra 	$Lt_5_126466;
+	mov.u32 	%r545, 3;
+	setp.eq.s32 	%p319, %r268, %r545;
+	@%p319 bra 	$Lt_5_126722;
+	bra.uni 	$Lt_5_127490;
+$Lt_5_125954:
+	.loc	19	858	0
+	ld.local.s64 	%rd261, [%rd21+0];
+	bra.uni 	$LDWendi__Z11castToInt64P13sphyraena_mem_185_491;
+$Lt_5_126210:
+	.loc	19	860	0
+	ld.local.s32 	%r546, [%rd21+0];
+	cvt.s64.s32 	%rd261, %r546;
+	bra.uni 	$LDWendi__Z11castToInt64P13sphyraena_mem_185_491;
+$Lt_5_126466:
+	.loc	19	862	0
+	ld.local.f32 	%f65, [%rd21+0];
+	cvt.rzi.s64.f32 	%rd261, %f65;
+	bra.uni 	$LDWendi__Z11castToInt64P13sphyraena_mem_185_491;
+$Lt_5_126722:
+	.loc	19	864	0
+	ld.local.f64 	%fd65, [%rd21+0];
+	cvt.rzi.s64.f64 	%rd261, %fd65;
+	bra.uni 	$LDWendi__Z11castToInt64P13sphyraena_mem_185_491;
+$Lt_5_127490:
+	.loc	19	866	0
+	mov.s64 	%rd261, 0;
+$LDWendi__Z11castToInt64P13sphyraena_mem_185_491:
+	.loc	19	856	0
+	mov.u32 	%r547, 1;
+	setp.eq.s32 	%p320, %r139, %r547;
+	@%p320 bra 	$Lt_5_123650;
+	mov.u32 	%r548, 0;
+	setp.eq.s32 	%p321, %r139, %r548;
+	@%p321 bra 	$Lt_5_123906;
+	mov.u32 	%r549, 2;
+	setp.eq.s32 	%p322, %r139, %r549;
+	@%p322 bra 	$Lt_5_124162;
+	mov.u32 	%r550, 3;
+	setp.eq.s32 	%p323, %r139, %r550;
+	@%p323 bra 	$Lt_5_124418;
+	bra.uni 	$Lt_5_125186;
+$Lt_5_123650:
+	.loc	19	858	0
+	ld.local.s64 	%rd262, [%rd51+0];
+	bra.uni 	$LDWendi__Z11castToInt64P13sphyraena_mem_185_482;
+$Lt_5_123906:
+	.loc	19	860	0
+	ld.local.s32 	%r551, [%rd51+0];
+	cvt.s64.s32 	%rd262, %r551;
+	bra.uni 	$LDWendi__Z11castToInt64P13sphyraena_mem_185_482;
+$Lt_5_124162:
+	.loc	19	862	0
+	ld.local.f32 	%f66, [%rd51+0];
+	cvt.rzi.s64.f32 	%rd262, %f66;
+	bra.uni 	$LDWendi__Z11castToInt64P13sphyraena_mem_185_482;
+$Lt_5_124418:
+	.loc	19	864	0
+	ld.local.f64 	%fd66, [%rd51+0];
+	cvt.rzi.s64.f64 	%rd262, %fd66;
+	bra.uni 	$LDWendi__Z11castToInt64P13sphyraena_mem_185_482;
+$Lt_5_125186:
+	.loc	19	866	0
+	mov.s64 	%rd262, 0;
+$LDWendi__Z11castToInt64P13sphyraena_mem_185_482:
+	.loc	19	307	0
+	set.gt.u32.s64 	%r552, %rd262, %rd261;
+	neg.s32 	%r20, %r552;
+	bra.uni 	$Lt_5_30210;
+$Lt_5_30978:
+	.loc	19	871	0
+	mul.lo.u64 	%rd263, %rd19, 16;
+	add.u64 	%rd21, %rd11, %rd263;
+	ld.local.s32 	%r268, [%rd21+8];
+	mov.u32 	%r553, 3;
+	setp.eq.s32 	%p324, %r268, %r553;
+	@%p324 bra 	$Lt_5_121346;
+	mov.u32 	%r554, 0;
+	setp.eq.s32 	%p325, %r268, %r554;
+	@%p325 bra 	$Lt_5_121602;
+	mov.u32 	%r555, 2;
+	setp.eq.s32 	%p326, %r268, %r555;
+	@%p326 bra 	$Lt_5_121858;
+	mov.u32 	%r556, 1;
+	setp.eq.s32 	%p327, %r268, %r556;
+	@%p327 bra 	$Lt_5_122114;
+	bra.uni 	$Lt_5_122882;
+$Lt_5_121346:
+	.loc	19	873	0
+	ld.local.f64 	%fd67, [%rd21+0];
+	bra.uni 	$LDWendi__Z12castToDoubleP13sphyraena_mem_185_473;
+$Lt_5_121602:
+	.loc	19	875	0
+	ld.local.s32 	%r557, [%rd21+0];
+	cvt.rn.f64.s32 	%fd67, %r557;
+	bra.uni 	$LDWendi__Z12castToDoubleP13sphyraena_mem_185_473;
+$Lt_5_121858:
+	.loc	19	877	0
+	ld.local.f32 	%f67, [%rd21+0];
+	cvt.f64.f32 	%fd67, %f67;
+	bra.uni 	$LDWendi__Z12castToDoubleP13sphyraena_mem_185_473;
+$Lt_5_122114:
+	.loc	19	879	0
+	ld.local.s64 	%rd264, [%rd21+0];
+	cvt.rn.f64.s64 	%fd67, %rd264;
+	bra.uni 	$LDWendi__Z12castToDoubleP13sphyraena_mem_185_473;
+$Lt_5_122882:
+	.loc	19	881	0
+	mov.f64 	%fd67, 0d0000000000000000;	// 0
+$LDWendi__Z12castToDoubleP13sphyraena_mem_185_473:
+	.loc	19	871	0
+	mov.u32 	%r558, 3;
+	setp.eq.s32 	%p328, %r139, %r558;
+	@%p328 bra 	$Lt_5_119042;
+	mov.u32 	%r559, 0;
+	setp.eq.s32 	%p329, %r139, %r559;
+	@%p329 bra 	$Lt_5_119298;
+	mov.u32 	%r560, 2;
+	setp.eq.s32 	%p330, %r139, %r560;
+	@%p330 bra 	$Lt_5_119554;
+	mov.u32 	%r561, 1;
+	setp.eq.s32 	%p331, %r139, %r561;
+	@%p331 bra 	$Lt_5_119810;
+	bra.uni 	$Lt_5_120578;
+$Lt_5_119042:
+	.loc	19	873	0
+	ld.local.f64 	%fd68, [%rd51+0];
+	bra.uni 	$LDWendi__Z12castToDoubleP13sphyraena_mem_185_464;
+$Lt_5_119298:
+	.loc	19	875	0
+	ld.local.s32 	%r562, [%rd51+0];
+	cvt.rn.f64.s32 	%fd68, %r562;
+	bra.uni 	$LDWendi__Z12castToDoubleP13sphyraena_mem_185_464;
+$Lt_5_119554:
+	.loc	19	877	0
+	ld.local.f32 	%f68, [%rd51+0];
+	cvt.f64.f32 	%fd68, %f68;
+	bra.uni 	$LDWendi__Z12castToDoubleP13sphyraena_mem_185_464;
+$Lt_5_119810:
+	.loc	19	879	0
+	ld.local.s64 	%rd265, [%rd51+0];
+	cvt.rn.f64.s64 	%fd68, %rd265;
+	bra.uni 	$LDWendi__Z12castToDoubleP13sphyraena_mem_185_464;
+$Lt_5_120578:
+	.loc	19	881	0
+	mov.f64 	%fd68, 0d0000000000000000;	// 0
+$LDWendi__Z12castToDoubleP13sphyraena_mem_185_464:
+	.loc	19	307	0
+	set.gt.u32.f64 	%r563, %fd68, %fd67;
+	neg.s32 	%r20, %r563;
+$Lt_5_30210:
+	mov.u32 	%r564, 0;
+	setp.eq.s32 	%p332, %r20, %r564;
+	@%p332 bra 	$Lt_5_303874;
+	ld.global.s32 	%r22, [%rd15+40];
+	bra.uni 	$Lt_5_303618;
+$Lt_5_303874:
+	add.s32 	%r22, %r22, 1;
+$Lt_5_303618:
+	.loc	19	308	0
+	mov.s32 	%r565, 63;
+	setp.le.s32 	%p4, %r22, %r565;
+	bra.uni 	$Lt_5_1026;
+$Lt_5_32002:
+	ld.global.v4.s32 	{_,%r84,%r62,%r566}, [%rd15+32];
+	.loc	19	311	0
+	cvt.s64.s32 	%rd47, %r84;
+	cvt.s64.s32 	%rd48, %r62;
+	mul.wide.s32 	%rd49, %r84, 16;
+	mul.wide.s32 	%rd50, %r62, 16;
+	add.u64 	%rd51, %rd49, %rd11;
+	add.u64 	%rd52, %rd50, %rd11;
+	ld.local.s32 	%r567, [%rd52+8];
+	ld.local.s32 	%r568, [%rd51+8];
+	max.s32 	%r88, %r567, %r568;
+	cvt.s64.s32 	%rd19, %r566;
+	cvt.u32.s64 	%r89, %rd19;
+	cvt.u64.u32 	%rd53, %r89;
+	cvt.u32.u64 	%r90, %rd53;
+	cvt.u64.u32 	%rd266, %r90;
+	mul.wide.u32 	%rd267, %r90, 16;
+	add.u64 	%rd268, %rd11, %rd267;
+	st.local.s32 	[%rd268+8], %r88;
+	mov.u32 	%r569, 0;
+	setp.eq.s32 	%p333, %r88, %r569;
+	@%p333 bra 	$Lt_5_32258;
+	mov.u32 	%r570, 2;
+	setp.eq.s32 	%p334, %r88, %r570;
+	@%p334 bra 	$Lt_5_32770;
+	mov.u32 	%r571, 1;
+	setp.eq.s32 	%p335, %r88, %r571;
+	@%p335 bra 	$Lt_5_33026;
+	mov.u32 	%r572, 3;
+	setp.eq.s32 	%p336, %r88, %r572;
+	@%p336 bra 	$Lt_5_33282;
+	bra.uni 	$Lt_5_32514;
+$Lt_5_32258:
+	.loc	19	826	0
+	ld.local.s32 	%r573, [%rd52+8];
+	mov.u32 	%r574, 0;
+	setp.eq.s32 	%p337, %r573, %r574;
+	@%p337 bra 	$Lt_5_116738;
+	mov.u32 	%r575, 2;
+	setp.eq.s32 	%p338, %r573, %r575;
+	@%p338 bra 	$Lt_5_116994;
+	mov.u32 	%r576, 1;
+	setp.eq.s32 	%p339, %r573, %r576;
+	@%p339 bra 	$Lt_5_117250;
+	mov.u32 	%r577, 3;
+	setp.eq.s32 	%p340, %r573, %r577;
+	@%p340 bra 	$Lt_5_117506;
+	bra.uni 	$Lt_5_118274;
+$Lt_5_116738:
+	.loc	19	828	0
+	ld.local.s32 	%r578, [%rd52+0];
+	bra.uni 	$LDWendi__Z9castToIntP13sphyraena_mem_185_455;
+$Lt_5_116994:
+	.loc	19	830	0
+	ld.local.f32 	%f69, [%rd52+0];
+	cvt.rzi.s32.f32 	%r578, %f69;
+	bra.uni 	$LDWendi__Z9castToIntP13sphyraena_mem_185_455;
+$Lt_5_117250:
+	.loc	19	832	0
+	ld.local.s32 	%r578, [%rd52+0];
+	bra.uni 	$LDWendi__Z9castToIntP13sphyraena_mem_185_455;
+$Lt_5_117506:
+	.loc	19	834	0
+	ld.local.f64 	%fd69, [%rd52+0];
+	cvt.rzi.s32.f64 	%r578, %fd69;
+	bra.uni 	$LDWendi__Z9castToIntP13sphyraena_mem_185_455;
+$Lt_5_118274:
+	.loc	19	836	0
+	mov.s32 	%r578, 0;
+$LDWendi__Z9castToIntP13sphyraena_mem_185_455:
+	.loc	19	826	0
+	ld.local.s32 	%r579, [%rd51+8];
+	mov.u32 	%r580, 0;
+	setp.eq.s32 	%p341, %r579, %r580;
+	@%p341 bra 	$Lt_5_114434;
+	mov.u32 	%r581, 2;
+	setp.eq.s32 	%p342, %r579, %r581;
+	@%p342 bra 	$Lt_5_114690;
+	mov.u32 	%r582, 1;
+	setp.eq.s32 	%p343, %r579, %r582;
+	@%p343 bra 	$Lt_5_114946;
+	mov.u32 	%r583, 3;
+	setp.eq.s32 	%p344, %r579, %r583;
+	@%p344 bra 	$Lt_5_115202;
+	bra.uni 	$Lt_5_115970;
+$Lt_5_114434:
+	.loc	19	828	0
+	ld.local.s32 	%r584, [%rd51+0];
+	bra.uni 	$LDWendi__Z9castToIntP13sphyraena_mem_185_446;
+$Lt_5_114690:
+	.loc	19	830	0
+	ld.local.f32 	%f70, [%rd51+0];
+	cvt.rzi.s32.f32 	%r584, %f70;
+	bra.uni 	$LDWendi__Z9castToIntP13sphyraena_mem_185_446;
+$Lt_5_114946:
+	.loc	19	832	0
+	ld.local.s32 	%r584, [%rd51+0];
+	bra.uni 	$LDWendi__Z9castToIntP13sphyraena_mem_185_446;
+$Lt_5_115202:
+	.loc	19	834	0
+	ld.local.f64 	%fd70, [%rd51+0];
+	cvt.rzi.s32.f64 	%r584, %fd70;
+	bra.uni 	$LDWendi__Z9castToIntP13sphyraena_mem_185_446;
+$Lt_5_115970:
+	.loc	19	836	0
+	mov.s32 	%r584, 0;
+$LDWendi__Z9castToIntP13sphyraena_mem_185_446:
+	.loc	19	311	0
+	mul.lo.s32 	%r585, %r584, %r578;
+	cvt.s64.s32 	%rd269, %r90;
+	mul.wide.s32 	%rd270, %r90, 16;
+	add.u64 	%rd271, %rd11, %rd270;
+	st.local.s32 	[%rd271+0], %r585;
+	bra.uni 	$Lt_5_32514;
+$Lt_5_32770:
+	.loc	19	841	0
+	ld.local.s32 	%r573, [%rd52+8];
+	mov.u32 	%r586, 2;
+	setp.eq.s32 	%p345, %r573, %r586;
+	@%p345 bra 	$Lt_5_112130;
+	mov.u32 	%r587, 0;
+	setp.eq.s32 	%p346, %r573, %r587;
+	@%p346 bra 	$Lt_5_112386;
+	mov.u32 	%r588, 1;
+	setp.eq.s32 	%p347, %r573, %r588;
+	@%p347 bra 	$Lt_5_112642;
+	mov.u32 	%r589, 3;
+	setp.eq.s32 	%p348, %r573, %r589;
+	@%p348 bra 	$Lt_5_112898;
+	bra.uni 	$Lt_5_113666;
+$Lt_5_112130:
+	.loc	19	843	0
+	ld.local.f32 	%f71, [%rd52+0];
+	bra.uni 	$LDWendi__Z11castToFloatP13sphyraena_mem_185_437;
+$Lt_5_112386:
+	.loc	19	845	0
+	ld.local.s32 	%r590, [%rd52+0];
+	cvt.rn.f32.s32 	%f71, %r590;
+	bra.uni 	$LDWendi__Z11castToFloatP13sphyraena_mem_185_437;
+$Lt_5_112642:
+	.loc	19	847	0
+	ld.local.s64 	%rd272, [%rd52+0];
+	cvt.rn.f32.s64 	%f71, %rd272;
+	bra.uni 	$LDWendi__Z11castToFloatP13sphyraena_mem_185_437;
+$Lt_5_112898:
+	.loc	19	849	0
+	ld.local.f64 	%fd71, [%rd52+0];
+	cvt.rn.f32.f64 	%f71, %fd71;
+	bra.uni 	$LDWendi__Z11castToFloatP13sphyraena_mem_185_437;
+$Lt_5_113666:
+	.loc	19	851	0
+	mov.f32 	%f71, 0f00000000;    	// 0
+$LDWendi__Z11castToFloatP13sphyraena_mem_185_437:
+	.loc	19	841	0
+	ld.local.s32 	%r579, [%rd51+8];
+	mov.u32 	%r591, 2;
+	setp.eq.s32 	%p349, %r579, %r591;
+	@%p349 bra 	$Lt_5_109826;
+	mov.u32 	%r592, 0;
+	setp.eq.s32 	%p350, %r579, %r592;
+	@%p350 bra 	$Lt_5_110082;
+	mov.u32 	%r593, 1;
+	setp.eq.s32 	%p351, %r579, %r593;
+	@%p351 bra 	$Lt_5_110338;
+	mov.u32 	%r594, 3;
+	setp.eq.s32 	%p352, %r579, %r594;
+	@%p352 bra 	$Lt_5_110594;
+	bra.uni 	$Lt_5_111362;
+$Lt_5_109826:
+	.loc	19	843	0
+	ld.local.f32 	%f72, [%rd51+0];
+	bra.uni 	$LDWendi__Z11castToFloatP13sphyraena_mem_185_428;
+$Lt_5_110082:
+	.loc	19	845	0
+	ld.local.s32 	%r595, [%rd51+0];
+	cvt.rn.f32.s32 	%f72, %r595;
+	bra.uni 	$LDWendi__Z11castToFloatP13sphyraena_mem_185_428;
+$Lt_5_110338:
+	.loc	19	847	0
+	ld.local.s64 	%rd273, [%rd51+0];
+	cvt.rn.f32.s64 	%f72, %rd273;
+	bra.uni 	$LDWendi__Z11castToFloatP13sphyraena_mem_185_428;
+$Lt_5_110594:
+	.loc	19	849	0
+	ld.local.f64 	%fd72, [%rd51+0];
+	cvt.rn.f32.f64 	%f72, %fd72;
+	bra.uni 	$LDWendi__Z11castToFloatP13sphyraena_mem_185_428;
+$Lt_5_111362:
+	.loc	19	851	0
+	mov.f32 	%f72, 0f00000000;    	// 0
+$LDWendi__Z11castToFloatP13sphyraena_mem_185_428:
+	.loc	19	311	0
+	mul.f32 	%f73, %f72, %f71;
+	cvt.s64.s32 	%rd274, %r90;
+	mul.wide.s32 	%rd275, %r90, 16;
+	add.u64 	%rd276, %rd11, %rd275;
+	st.local.f32 	[%rd276+0], %f73;
+	bra.uni 	$Lt_5_32514;
+$Lt_5_33026:
+	.loc	19	856	0
+	ld.local.s32 	%r573, [%rd52+8];
+	mov.u32 	%r596, 1;
+	setp.eq.s32 	%p353, %r573, %r596;
+	@%p353 bra 	$Lt_5_107522;
+	mov.u32 	%r597, 0;
+	setp.eq.s32 	%p354, %r573, %r597;
+	@%p354 bra 	$Lt_5_107778;
+	mov.u32 	%r598, 2;
+	setp.eq.s32 	%p355, %r573, %r598;
+	@%p355 bra 	$Lt_5_108034;
+	mov.u32 	%r599, 3;
+	setp.eq.s32 	%p356, %r573, %r599;
+	@%p356 bra 	$Lt_5_108290;
+	bra.uni 	$Lt_5_109058;
+$Lt_5_107522:
+	.loc	19	858	0
+	ld.local.s64 	%rd277, [%rd52+0];
+	bra.uni 	$LDWendi__Z11castToInt64P13sphyraena_mem_185_419;
+$Lt_5_107778:
+	.loc	19	860	0
+	ld.local.s32 	%r600, [%rd52+0];
+	cvt.s64.s32 	%rd277, %r600;
+	bra.uni 	$LDWendi__Z11castToInt64P13sphyraena_mem_185_419;
+$Lt_5_108034:
+	.loc	19	862	0
+	ld.local.f32 	%f74, [%rd52+0];
+	cvt.rzi.s64.f32 	%rd277, %f74;
+	bra.uni 	$LDWendi__Z11castToInt64P13sphyraena_mem_185_419;
+$Lt_5_108290:
+	.loc	19	864	0
+	ld.local.f64 	%fd73, [%rd52+0];
+	cvt.rzi.s64.f64 	%rd277, %fd73;
+	bra.uni 	$LDWendi__Z11castToInt64P13sphyraena_mem_185_419;
+$Lt_5_109058:
+	.loc	19	866	0
+	mov.s64 	%rd277, 0;
+$LDWendi__Z11castToInt64P13sphyraena_mem_185_419:
+	.loc	19	856	0
+	ld.local.s32 	%r579, [%rd51+8];
+	mov.u32 	%r601, 1;
+	setp.eq.s32 	%p357, %r579, %r601;
+	@%p357 bra 	$Lt_5_105218;
+	mov.u32 	%r602, 0;
+	setp.eq.s32 	%p358, %r579, %r602;
+	@%p358 bra 	$Lt_5_105474;
+	mov.u32 	%r603, 2;
+	setp.eq.s32 	%p359, %r579, %r603;
+	@%p359 bra 	$Lt_5_105730;
+	mov.u32 	%r604, 3;
+	setp.eq.s32 	%p360, %r579, %r604;
+	@%p360 bra 	$Lt_5_105986;
+	bra.uni 	$Lt_5_106754;
+$Lt_5_105218:
+	.loc	19	858	0
+	ld.local.s64 	%rd278, [%rd51+0];
+	bra.uni 	$LDWendi__Z11castToInt64P13sphyraena_mem_185_410;
+$Lt_5_105474:
+	.loc	19	860	0
+	ld.local.s32 	%r605, [%rd51+0];
+	cvt.s64.s32 	%rd278, %r605;
+	bra.uni 	$LDWendi__Z11castToInt64P13sphyraena_mem_185_410;
+$Lt_5_105730:
+	.loc	19	862	0
+	ld.local.f32 	%f75, [%rd51+0];
+	cvt.rzi.s64.f32 	%rd278, %f75;
+	bra.uni 	$LDWendi__Z11castToInt64P13sphyraena_mem_185_410;
+$Lt_5_105986:
+	.loc	19	864	0
+	ld.local.f64 	%fd74, [%rd51+0];
+	cvt.rzi.s64.f64 	%rd278, %fd74;
+	bra.uni 	$LDWendi__Z11castToInt64P13sphyraena_mem_185_410;
+$Lt_5_106754:
+	.loc	19	866	0
+	mov.s64 	%rd278, 0;
+$LDWendi__Z11castToInt64P13sphyraena_mem_185_410:
+	.loc	19	311	0
+	mul.lo.s64 	%rd279, %rd278, %rd277;
+	cvt.s64.s32 	%rd280, %r90;
+	mul.wide.s32 	%rd281, %r90, 16;
+	add.u64 	%rd282, %rd11, %rd281;
+	st.local.s64 	[%rd282+0], %rd279;
+	bra.uni 	$Lt_5_32514;
+$Lt_5_33282:
+	.loc	19	871	0
+	ld.local.s32 	%r573, [%rd52+8];
+	mov.u32 	%r606, 3;
+	setp.eq.s32 	%p361, %r573, %r606;
+	@%p361 bra 	$Lt_5_102914;
+	mov.u32 	%r607, 0;
+	setp.eq.s32 	%p362, %r573, %r607;
+	@%p362 bra 	$Lt_5_103170;
+	mov.u32 	%r608, 2;
+	setp.eq.s32 	%p363, %r573, %r608;
+	@%p363 bra 	$Lt_5_103426;
+	mov.u32 	%r609, 1;
+	setp.eq.s32 	%p364, %r573, %r609;
+	@%p364 bra 	$Lt_5_103682;
+	bra.uni 	$Lt_5_104450;
+$Lt_5_102914:
+	.loc	19	873	0
+	ld.local.f64 	%fd75, [%rd52+0];
+	bra.uni 	$LDWendi__Z12castToDoubleP13sphyraena_mem_185_401;
+$Lt_5_103170:
+	.loc	19	875	0
+	ld.local.s32 	%r610, [%rd52+0];
+	cvt.rn.f64.s32 	%fd75, %r610;
+	bra.uni 	$LDWendi__Z12castToDoubleP13sphyraena_mem_185_401;
+$Lt_5_103426:
+	.loc	19	877	0
+	ld.local.f32 	%f76, [%rd52+0];
+	cvt.f64.f32 	%fd75, %f76;
+	bra.uni 	$LDWendi__Z12castToDoubleP13sphyraena_mem_185_401;
+$Lt_5_103682:
+	.loc	19	879	0
+	ld.local.s64 	%rd283, [%rd52+0];
+	cvt.rn.f64.s64 	%fd75, %rd283;
+	bra.uni 	$LDWendi__Z12castToDoubleP13sphyraena_mem_185_401;
+$Lt_5_104450:
+	.loc	19	881	0
+	mov.f64 	%fd75, 0d0000000000000000;	// 0
+$LDWendi__Z12castToDoubleP13sphyraena_mem_185_401:
+	.loc	19	871	0
+	ld.local.s32 	%r579, [%rd51+8];
+	mov.u32 	%r611, 3;
+	setp.eq.s32 	%p365, %r579, %r611;
+	@%p365 bra 	$Lt_5_100610;
+	mov.u32 	%r612, 0;
+	setp.eq.s32 	%p366, %r579, %r612;
+	@%p366 bra 	$Lt_5_100866;
+	mov.u32 	%r613, 2;
+	setp.eq.s32 	%p367, %r579, %r613;
+	@%p367 bra 	$Lt_5_101122;
+	mov.u32 	%r614, 1;
+	setp.eq.s32 	%p368, %r579, %r614;
+	@%p368 bra 	$Lt_5_101378;
+	bra.uni 	$Lt_5_102146;
+$Lt_5_100610:
+	.loc	19	873	0
+	ld.local.f64 	%fd76, [%rd51+0];
+	bra.uni 	$LDWendi__Z12castToDoubleP13sphyraena_mem_185_392;
+$Lt_5_100866:
+	.loc	19	875	0
+	ld.local.s32 	%r615, [%rd51+0];
+	cvt.rn.f64.s32 	%fd76, %r615;
+	bra.uni 	$LDWendi__Z12castToDoubleP13sphyraena_mem_185_392;
+$Lt_5_101122:
+	.loc	19	877	0
+	ld.local.f32 	%f77, [%rd51+0];
+	cvt.f64.f32 	%fd76, %f77;
+	bra.uni 	$LDWendi__Z12castToDoubleP13sphyraena_mem_185_392;
+$Lt_5_101378:
+	.loc	19	879	0
+	ld.local.s64 	%rd284, [%rd51+0];
+	cvt.rn.f64.s64 	%fd76, %rd284;
+	bra.uni 	$LDWendi__Z12castToDoubleP13sphyraena_mem_185_392;
+$Lt_5_102146:
+	.loc	19	881	0
+	mov.f64 	%fd76, 0d0000000000000000;	// 0
+$LDWendi__Z12castToDoubleP13sphyraena_mem_185_392:
+	.loc	19	311	0
+	mul.f64 	%fd77, %fd76, %fd75;
+	cvt.s64.s32 	%rd285, %r90;
+	mul.wide.s32 	%rd286, %r90, 16;
+	add.u64 	%rd287, %rd11, %rd286;
+	st.local.f64 	[%rd287+0], %fd77;
+$Lt_5_32514:
+	.loc	19	312	0
+	add.s32 	%r82, %r22, 1;
+	mov.s32 	%r22, %r82;
+	.loc	19	313	0
+	mov.s32 	%r616, 63;
+	setp.le.s32 	%p4, %r82, %r616;
+	bra.uni 	$Lt_5_1026;
+$Lt_5_34306:
+	.loc	19	316	0
+	ld.global.s32 	%r84, [%rd15+36];
+	ld.global.s32 	%r617, [%rd15+44];
+	cvt.s64.s32 	%rd19, %r617;
+	cvt.s64.s32 	%rd288, %r84;
+	mul.wide.s32 	%rd289, %r84, 16;
+	add.u64 	%rd51, %rd11, %rd289;
+	ld.local.s32 	%r139, [%rd51+8];
+	cvt.u32.s64 	%r618, %rd19;
+	cvt.u64.u32 	%rd290, %r618;
+	cvt.u32.u64 	%r619, %rd290;
+	cvt.u64.u32 	%rd291, %r619;
+	mul.wide.u32 	%rd292, %r619, 16;
+	add.u64 	%rd293, %rd11, %rd292;
+	ld.local.s32 	%r620, [%rd293+8];
+	max.s32 	%r263, %r620, %r139;
+	mov.u32 	%r621, 0;
+	setp.eq.s32 	%p369, %r263, %r621;
+	@%p369 bra 	$Lt_5_34562;
+	mov.u32 	%r622, 2;
+	setp.eq.s32 	%p370, %r263, %r622;
+	@%p370 bra 	$Lt_5_35074;
+	mov.u32 	%r623, 1;
+	setp.eq.s32 	%p371, %r263, %r623;
+	@%p371 bra 	$Lt_5_35330;
+	mov.u32 	%r624, 3;
+	setp.eq.s32 	%p372, %r263, %r624;
+	@%p372 bra 	$Lt_5_35586;
+	bra.uni 	$Lt_5_34818;
+$Lt_5_34562:
+	.loc	19	826	0
+	mul.lo.u64 	%rd294, %rd19, 16;
+	add.u64 	%rd21, %rd11, %rd294;
+	ld.local.s32 	%r268, [%rd21+8];
+	mov.u32 	%r625, 0;
+	setp.eq.s32 	%p373, %r268, %r625;
+	@%p373 bra 	$Lt_5_98306;
+	mov.u32 	%r626, 2;
+	setp.eq.s32 	%p374, %r268, %r626;
+	@%p374 bra 	$Lt_5_98562;
+	mov.u32 	%r627, 1;
+	setp.eq.s32 	%p375, %r268, %r627;
+	@%p375 bra 	$Lt_5_98818;
+	mov.u32 	%r628, 3;
+	setp.eq.s32 	%p376, %r268, %r628;
+	@%p376 bra 	$Lt_5_99074;
+	bra.uni 	$Lt_5_99842;
+$Lt_5_98306:
+	.loc	19	828	0
+	ld.local.s32 	%r629, [%rd21+0];
+	bra.uni 	$LDWendi__Z9castToIntP13sphyraena_mem_185_383;
+$Lt_5_98562:
+	.loc	19	830	0
+	ld.local.f32 	%f78, [%rd21+0];
+	cvt.rzi.s32.f32 	%r629, %f78;
+	bra.uni 	$LDWendi__Z9castToIntP13sphyraena_mem_185_383;
+$Lt_5_98818:
+	.loc	19	832	0
+	ld.local.s32 	%r629, [%rd21+0];
+	bra.uni 	$LDWendi__Z9castToIntP13sphyraena_mem_185_383;
+$Lt_5_99074:
+	.loc	19	834	0
+	ld.local.f64 	%fd78, [%rd21+0];
+	cvt.rzi.s32.f64 	%r629, %fd78;
+	bra.uni 	$LDWendi__Z9castToIntP13sphyraena_mem_185_383;
+$Lt_5_99842:
+	.loc	19	836	0
+	mov.s32 	%r629, 0;
+$LDWendi__Z9castToIntP13sphyraena_mem_185_383:
+	.loc	19	826	0
+	mov.u32 	%r630, 0;
+	setp.eq.s32 	%p377, %r139, %r630;
+	@%p377 bra 	$Lt_5_96002;
+	mov.u32 	%r631, 2;
+	setp.eq.s32 	%p378, %r139, %r631;
+	@%p378 bra 	$Lt_5_96258;
+	mov.u32 	%r632, 1;
+	setp.eq.s32 	%p379, %r139, %r632;
+	@%p379 bra 	$Lt_5_96514;
+	mov.u32 	%r633, 3;
+	setp.eq.s32 	%p380, %r139, %r633;
+	@%p380 bra 	$Lt_5_96770;
+	bra.uni 	$Lt_5_97538;
+$Lt_5_96002:
+	.loc	19	828	0
+	ld.local.s32 	%r634, [%rd51+0];
+	bra.uni 	$LDWendi__Z9castToIntP13sphyraena_mem_185_374;
+$Lt_5_96258:
+	.loc	19	830	0
+	ld.local.f32 	%f79, [%rd51+0];
+	cvt.rzi.s32.f32 	%r634, %f79;
+	bra.uni 	$LDWendi__Z9castToIntP13sphyraena_mem_185_374;
+$Lt_5_96514:
+	.loc	19	832	0
+	ld.local.s32 	%r634, [%rd51+0];
+	bra.uni 	$LDWendi__Z9castToIntP13sphyraena_mem_185_374;
+$Lt_5_96770:
+	.loc	19	834	0
+	ld.local.f64 	%fd79, [%rd51+0];
+	cvt.rzi.s32.f64 	%r634, %fd79;
+	bra.uni 	$LDWendi__Z9castToIntP13sphyraena_mem_185_374;
+$Lt_5_97538:
+	.loc	19	836	0
+	mov.s32 	%r634, 0;
+$LDWendi__Z9castToIntP13sphyraena_mem_185_374:
+	.loc	19	316	0
+	set.ne.u32.s32 	%r635, %r634, %r629;
+	neg.s32 	%r20, %r635;
+	bra.uni 	$Lt_5_34818;
+$Lt_5_35074:
+	.loc	19	841	0
+	mul.lo.u64 	%rd295, %rd19, 16;
+	add.u64 	%rd21, %rd11, %rd295;
+	ld.local.s32 	%r268, [%rd21+8];
+	mov.u32 	%r636, 2;
+	setp.eq.s32 	%p381, %r268, %r636;
+	@%p381 bra 	$Lt_5_93698;
+	mov.u32 	%r637, 0;
+	setp.eq.s32 	%p382, %r268, %r637;
+	@%p382 bra 	$Lt_5_93954;
+	mov.u32 	%r638, 1;
+	setp.eq.s32 	%p383, %r268, %r638;
+	@%p383 bra 	$Lt_5_94210;
+	mov.u32 	%r639, 3;
+	setp.eq.s32 	%p384, %r268, %r639;
+	@%p384 bra 	$Lt_5_94466;
+	bra.uni 	$Lt_5_95234;
+$Lt_5_93698:
+	.loc	19	843	0
+	ld.local.f32 	%f80, [%rd21+0];
+	bra.uni 	$LDWendi__Z11castToFloatP13sphyraena_mem_185_365;
+$Lt_5_93954:
+	.loc	19	845	0
+	ld.local.s32 	%r640, [%rd21+0];
+	cvt.rn.f32.s32 	%f80, %r640;
+	bra.uni 	$LDWendi__Z11castToFloatP13sphyraena_mem_185_365;
+$Lt_5_94210:
+	.loc	19	847	0
+	ld.local.s64 	%rd296, [%rd21+0];
+	cvt.rn.f32.s64 	%f80, %rd296;
+	bra.uni 	$LDWendi__Z11castToFloatP13sphyraena_mem_185_365;
+$Lt_5_94466:
+	.loc	19	849	0
+	ld.local.f64 	%fd80, [%rd21+0];
+	cvt.rn.f32.f64 	%f80, %fd80;
+	bra.uni 	$LDWendi__Z11castToFloatP13sphyraena_mem_185_365;
+$Lt_5_95234:
+	.loc	19	851	0
+	mov.f32 	%f80, 0f00000000;    	// 0
+$LDWendi__Z11castToFloatP13sphyraena_mem_185_365:
+	.loc	19	841	0
+	mov.u32 	%r641, 2;
+	setp.eq.s32 	%p385, %r139, %r641;
+	@%p385 bra 	$Lt_5_91394;
+	mov.u32 	%r642, 0;
+	setp.eq.s32 	%p386, %r139, %r642;
+	@%p386 bra 	$Lt_5_91650;
+	mov.u32 	%r643, 1;
+	setp.eq.s32 	%p387, %r139, %r643;
+	@%p387 bra 	$Lt_5_91906;
+	mov.u32 	%r644, 3;
+	setp.eq.s32 	%p388, %r139, %r644;
+	@%p388 bra 	$Lt_5_92162;
+	bra.uni 	$Lt_5_92930;
+$Lt_5_91394:
+	.loc	19	843	0
+	ld.local.f32 	%f81, [%rd51+0];
+	bra.uni 	$LDWendi__Z11castToFloatP13sphyraena_mem_185_356;
+$Lt_5_91650:
+	.loc	19	845	0
+	ld.local.s32 	%r645, [%rd51+0];
+	cvt.rn.f32.s32 	%f81, %r645;
+	bra.uni 	$LDWendi__Z11castToFloatP13sphyraena_mem_185_356;
+$Lt_5_91906:
+	.loc	19	847	0
+	ld.local.s64 	%rd297, [%rd51+0];
+	cvt.rn.f32.s64 	%f81, %rd297;
+	bra.uni 	$LDWendi__Z11castToFloatP13sphyraena_mem_185_356;
+$Lt_5_92162:
+	.loc	19	849	0
+	ld.local.f64 	%fd81, [%rd51+0];
+	cvt.rn.f32.f64 	%f81, %fd81;
+	bra.uni 	$LDWendi__Z11castToFloatP13sphyraena_mem_185_356;
+$Lt_5_92930:
+	.loc	19	851	0
+	mov.f32 	%f81, 0f00000000;    	// 0
+$LDWendi__Z11castToFloatP13sphyraena_mem_185_356:
+	.loc	19	316	0
+	set.neu.u32.f32 	%r646, %f81, %f80;
+	neg.s32 	%r20, %r646;
+	bra.uni 	$Lt_5_34818;
+$Lt_5_35330:
+	.loc	19	856	0
+	mul.lo.u64 	%rd298, %rd19, 16;
+	add.u64 	%rd21, %rd11, %rd298;
+	ld.local.s32 	%r268, [%rd21+8];
+	mov.u32 	%r647, 1;
+	setp.eq.s32 	%p389, %r268, %r647;
+	@%p389 bra 	$Lt_5_89090;
+	mov.u32 	%r648, 0;
+	setp.eq.s32 	%p390, %r268, %r648;
+	@%p390 bra 	$Lt_5_89346;
+	mov.u32 	%r649, 2;
+	setp.eq.s32 	%p391, %r268, %r649;
+	@%p391 bra 	$Lt_5_89602;
+	mov.u32 	%r650, 3;
+	setp.eq.s32 	%p392, %r268, %r650;
+	@%p392 bra 	$Lt_5_89858;
+	bra.uni 	$Lt_5_90626;
+$Lt_5_89090:
+	.loc	19	858	0
+	ld.local.s64 	%rd299, [%rd21+0];
+	bra.uni 	$LDWendi__Z11castToInt64P13sphyraena_mem_185_347;
+$Lt_5_89346:
+	.loc	19	860	0
+	ld.local.s32 	%r651, [%rd21+0];
+	cvt.s64.s32 	%rd299, %r651;
+	bra.uni 	$LDWendi__Z11castToInt64P13sphyraena_mem_185_347;
+$Lt_5_89602:
+	.loc	19	862	0
+	ld.local.f32 	%f82, [%rd21+0];
+	cvt.rzi.s64.f32 	%rd299, %f82;
+	bra.uni 	$LDWendi__Z11castToInt64P13sphyraena_mem_185_347;
+$Lt_5_89858:
+	.loc	19	864	0
+	ld.local.f64 	%fd82, [%rd21+0];
+	cvt.rzi.s64.f64 	%rd299, %fd82;
+	bra.uni 	$LDWendi__Z11castToInt64P13sphyraena_mem_185_347;
+$Lt_5_90626:
+	.loc	19	866	0
+	mov.s64 	%rd299, 0;
+$LDWendi__Z11castToInt64P13sphyraena_mem_185_347:
+	.loc	19	856	0
+	mov.u32 	%r652, 1;
+	setp.eq.s32 	%p393, %r139, %r652;
+	@%p393 bra 	$Lt_5_86786;
+	mov.u32 	%r653, 0;
+	setp.eq.s32 	%p394, %r139, %r653;
+	@%p394 bra 	$Lt_5_87042;
+	mov.u32 	%r654, 2;
+	setp.eq.s32 	%p395, %r139, %r654;
+	@%p395 bra 	$Lt_5_87298;
+	mov.u32 	%r655, 3;
+	setp.eq.s32 	%p396, %r139, %r655;
+	@%p396 bra 	$Lt_5_87554;
+	bra.uni 	$Lt_5_88322;
+$Lt_5_86786:
+	.loc	19	858	0
+	ld.local.s64 	%rd300, [%rd51+0];
+	bra.uni 	$LDWendi__Z11castToInt64P13sphyraena_mem_185_338;
+$Lt_5_87042:
+	.loc	19	860	0
+	ld.local.s32 	%r656, [%rd51+0];
+	cvt.s64.s32 	%rd300, %r656;
+	bra.uni 	$LDWendi__Z11castToInt64P13sphyraena_mem_185_338;
+$Lt_5_87298:
+	.loc	19	862	0
+	ld.local.f32 	%f83, [%rd51+0];
+	cvt.rzi.s64.f32 	%rd300, %f83;
+	bra.uni 	$LDWendi__Z11castToInt64P13sphyraena_mem_185_338;
+$Lt_5_87554:
+	.loc	19	864	0
+	ld.local.f64 	%fd83, [%rd51+0];
+	cvt.rzi.s64.f64 	%rd300, %fd83;
+	bra.uni 	$LDWendi__Z11castToInt64P13sphyraena_mem_185_338;
+$Lt_5_88322:
+	.loc	19	866	0
+	mov.s64 	%rd300, 0;
+$LDWendi__Z11castToInt64P13sphyraena_mem_185_338:
+	.loc	19	316	0
+	set.ne.u32.s64 	%r657, %rd300, %rd299;
+	neg.s32 	%r20, %r657;
+	bra.uni 	$Lt_5_34818;
+$Lt_5_35586:
+	.loc	19	871	0
+	mul.lo.u64 	%rd301, %rd19, 16;
+	add.u64 	%rd21, %rd11, %rd301;
+	ld.local.s32 	%r268, [%rd21+8];
+	mov.u32 	%r658, 3;
+	setp.eq.s32 	%p397, %r268, %r658;
+	@%p397 bra 	$Lt_5_84482;
+	mov.u32 	%r659, 0;
+	setp.eq.s32 	%p398, %r268, %r659;
+	@%p398 bra 	$Lt_5_84738;
+	mov.u32 	%r660, 2;
+	setp.eq.s32 	%p399, %r268, %r660;
+	@%p399 bra 	$Lt_5_84994;
+	mov.u32 	%r661, 1;
+	setp.eq.s32 	%p400, %r268, %r661;
+	@%p400 bra 	$Lt_5_85250;
+	bra.uni 	$Lt_5_86018;
+$Lt_5_84482:
+	.loc	19	873	0
+	ld.local.f64 	%fd84, [%rd21+0];
+	bra.uni 	$LDWendi__Z12castToDoubleP13sphyraena_mem_185_329;
+$Lt_5_84738:
+	.loc	19	875	0
+	ld.local.s32 	%r662, [%rd21+0];
+	cvt.rn.f64.s32 	%fd84, %r662;
+	bra.uni 	$LDWendi__Z12castToDoubleP13sphyraena_mem_185_329;
+$Lt_5_84994:
+	.loc	19	877	0
+	ld.local.f32 	%f84, [%rd21+0];
+	cvt.f64.f32 	%fd84, %f84;
+	bra.uni 	$LDWendi__Z12castToDoubleP13sphyraena_mem_185_329;
+$Lt_5_85250:
+	.loc	19	879	0
+	ld.local.s64 	%rd302, [%rd21+0];
+	cvt.rn.f64.s64 	%fd84, %rd302;
+	bra.uni 	$LDWendi__Z12castToDoubleP13sphyraena_mem_185_329;
+$Lt_5_86018:
+	.loc	19	881	0
+	mov.f64 	%fd84, 0d0000000000000000;	// 0
+$LDWendi__Z12castToDoubleP13sphyraena_mem_185_329:
+	.loc	19	871	0
+	mov.u32 	%r663, 3;
+	setp.eq.s32 	%p401, %r139, %r663;
+	@%p401 bra 	$Lt_5_82178;
+	mov.u32 	%r664, 0;
+	setp.eq.s32 	%p402, %r139, %r664;
+	@%p402 bra 	$Lt_5_82434;
+	mov.u32 	%r665, 2;
+	setp.eq.s32 	%p403, %r139, %r665;
+	@%p403 bra 	$Lt_5_82690;
+	mov.u32 	%r666, 1;
+	setp.eq.s32 	%p404, %r139, %r666;
+	@%p404 bra 	$Lt_5_82946;
+	bra.uni 	$Lt_5_83714;
+$Lt_5_82178:
+	.loc	19	873	0
+	ld.local.f64 	%fd85, [%rd51+0];
+	bra.uni 	$LDWendi__Z12castToDoubleP13sphyraena_mem_185_320;
+$Lt_5_82434:
+	.loc	19	875	0
+	ld.local.s32 	%r667, [%rd51+0];
+	cvt.rn.f64.s32 	%fd85, %r667;
+	bra.uni 	$LDWendi__Z12castToDoubleP13sphyraena_mem_185_320;
+$Lt_5_82690:
+	.loc	19	877	0
+	ld.local.f32 	%f85, [%rd51+0];
+	cvt.f64.f32 	%fd85, %f85;
+	bra.uni 	$LDWendi__Z12castToDoubleP13sphyraena_mem_185_320;
+$Lt_5_82946:
+	.loc	19	879	0
+	ld.local.s64 	%rd303, [%rd51+0];
+	cvt.rn.f64.s64 	%fd85, %rd303;
+	bra.uni 	$LDWendi__Z12castToDoubleP13sphyraena_mem_185_320;
+$Lt_5_83714:
+	.loc	19	881	0
+	mov.f64 	%fd85, 0d0000000000000000;	// 0
+$LDWendi__Z12castToDoubleP13sphyraena_mem_185_320:
+	.loc	19	316	0
+	set.ne.u32.f64 	%r668, %fd85, %fd84;
+	neg.s32 	%r20, %r668;
+$Lt_5_34818:
+	mov.u32 	%r669, 0;
+	setp.eq.s32 	%p405, %r20, %r669;
+	@%p405 bra 	$Lt_5_304386;
+	ld.global.s32 	%r22, [%rd15+40];
+	bra.uni 	$Lt_5_304130;
+$Lt_5_304386:
+	add.s32 	%r22, %r22, 1;
+$Lt_5_304130:
+	.loc	19	317	0
+	mov.s32 	%r670, 63;
+	setp.le.s32 	%p4, %r22, %r670;
+	bra.uni 	$Lt_5_1026;
+$Lt_5_37122:
+	.loc	19	323	0
+	ld.global.s32 	%r84, [%rd15+36];
+	cvt.s64.s32 	%rd304, %r84;
+	mul.wide.s32 	%rd305, %r84, 16;
+	add.u64 	%rd51, %rd11, %rd305;
+	ld.local.s32 	%r139, [%rd51+8];
+	mov.u32 	%r671, 0;
+	setp.eq.s32 	%p406, %r139, %r671;
+	@%p406 bra 	$Lt_5_37378;
+	mov.u32 	%r672, 2;
+	setp.eq.s32 	%p407, %r139, %r672;
+	@%p407 bra 	$Lt_5_37890;
+	mov.u32 	%r673, 1;
+	setp.eq.s32 	%p408, %r139, %r673;
+	@%p408 bra 	$Lt_5_38146;
+	mov.u32 	%r674, 3;
+	setp.eq.s32 	%p409, %r139, %r674;
+	@%p409 bra 	$Lt_5_38402;
+	mov.s32 	%r165, %r166;
+	bra.uni 	$Lt_5_37634;
+$Lt_5_37378:
+	ld.local.s32 	%r165, [%rd51+0];
+	mov.s32 	%r166, %r165;
+	bra.uni 	$Lt_5_37634;
+$Lt_5_37890:
+	ld.local.f32 	%f86, [%rd51+0];
+	mov.f32 	%f87, 0f00000000;    	// 0
+	set.neu.u32.f32 	%r675, %f86, %f87;
+	neg.s32 	%r165, %r675;
+	mov.s32 	%r166, %r165;
+	bra.uni 	$Lt_5_37634;
+$Lt_5_38146:
+	ld.local.s64 	%rd306, [%rd51+0];
+	mov.s64 	%rd307, 0;
+	set.ne.u32.s64 	%r676, %rd306, %rd307;
+	neg.s32 	%r165, %r676;
+	mov.s32 	%r166, %r165;
+	bra.uni 	$Lt_5_37634;
+$Lt_5_38402:
+	ld.local.f64 	%fd86, [%rd51+0];
+	mov.f64 	%fd87, 0d0000000000000000;	// 0
+	set.ne.u32.f64 	%r677, %fd86, %fd87;
+	neg.s32 	%r165, %r677;
+	mov.s32 	%r166, %r165;
+$Lt_5_37634:
+	.loc	19	324	0
+	ld.global.s32 	%r62, [%rd15+40];
+	cvt.s64.s32 	%rd308, %r62;
+	mul.wide.s32 	%rd309, %r62, 16;
+	add.u64 	%rd52, %rd11, %rd309;
+	mov.s32 	%r678, 0;
+	st.local.s32 	[%rd52+8], %r678;
+	.loc	19	325	0
+	mov.s32 	%r679, 0;
+	set.eq.u32.s32 	%r680, %r165, %r679;
+	neg.s32 	%r681, %r680;
+	st.local.s32 	[%rd52+0], %r681;
+	.loc	19	326	0
+	add.s32 	%r82, %r22, 1;
+	mov.s32 	%r22, %r82;
+	.loc	19	327	0
+	mov.s32 	%r682, 63;
+	setp.le.s32 	%p4, %r82, %r682;
+	bra.uni 	$Lt_5_1026;
+$Lt_5_39426:
+	.loc	19	330	0
+	ld.global.s32 	%r62, [%rd15+40];
+	cvt.s64.s32 	%rd310, %r62;
+	mul.wide.s32 	%rd311, %r62, 16;
+	add.u64 	%rd52, %rd11, %rd311;
+	mov.s64 	%rd312, 0;
+	st.local.s64 	[%rd52+0], %rd312;
+	.loc	19	331	0
+	mov.s32 	%r683, 5;
+	st.local.s32 	[%rd52+8], %r683;
+	.loc	19	332	0
+	add.s32 	%r82, %r22, 1;
+	mov.s32 	%r22, %r82;
+	.loc	19	333	0
+	mov.s32 	%r684, 63;
+	setp.le.s32 	%p4, %r82, %r684;
+	bra.uni 	$Lt_5_1026;
+$Lt_5_39682:
+	.loc	19	336	0
+	ld.global.s32 	%r84, [%rd15+36];
+	cvt.s64.s32 	%rd313, %r84;
+	mul.wide.s32 	%rd314, %r84, 16;
+	add.u64 	%rd51, %rd11, %rd314;
+	ld.local.s32 	%r139, [%rd51+8];
+	mov.u32 	%r685, 0;
+	setp.eq.s32 	%p410, %r139, %r685;
+	@%p410 bra 	$Lt_5_39938;
+	mov.u32 	%r686, 2;
+	setp.eq.s32 	%p411, %r139, %r686;
+	@%p411 bra 	$Lt_5_40450;
+	mov.u32 	%r687, 1;
+	setp.eq.s32 	%p412, %r139, %r687;
+	@%p412 bra 	$Lt_5_40706;
+	mov.u32 	%r688, 3;
+	setp.eq.s32 	%p413, %r139, %r688;
+	@%p413 bra 	$Lt_5_40962;
+	mov.s32 	%r165, %r166;
+	bra.uni 	$Lt_5_40194;
+$Lt_5_39938:
+	ld.local.s32 	%r165, [%rd51+0];
+	mov.s32 	%r166, %r165;
+	bra.uni 	$Lt_5_40194;
+$Lt_5_40450:
+	ld.local.f32 	%f88, [%rd51+0];
+	mov.f32 	%f89, 0f00000000;    	// 0
+	set.neu.u32.f32 	%r689, %f88, %f89;
+	neg.s32 	%r165, %r689;
+	mov.s32 	%r166, %r165;
+	bra.uni 	$Lt_5_40194;
+$Lt_5_40706:
+	ld.local.s64 	%rd315, [%rd51+0];
+	mov.s64 	%rd316, 0;
+	set.ne.u32.s64 	%r690, %rd315, %rd316;
+	neg.s32 	%r165, %r690;
+	mov.s32 	%r166, %r165;
+	bra.uni 	$Lt_5_40194;
+$Lt_5_40962:
+	ld.local.f64 	%fd88, [%rd51+0];
+	mov.f64 	%fd89, 0d0000000000000000;	// 0
+	set.ne.u32.f64 	%r691, %fd88, %fd89;
+	neg.s32 	%r165, %r691;
+	mov.s32 	%r166, %r165;
+$Lt_5_40194:
+	ld.global.s32 	%r62, [%rd15+40];
+	cvt.s64.s32 	%rd317, %r62;
+	mul.wide.s32 	%rd318, %r62, 16;
+	add.u64 	%rd52, %rd11, %rd318;
+	ld.local.s32 	%r170, [%rd52+8];
+	mov.u32 	%r692, 0;
+	setp.eq.s32 	%p414, %r170, %r692;
+	@%p414 bra 	$Lt_5_41986;
+	mov.u32 	%r693, 2;
+	setp.eq.s32 	%p415, %r170, %r693;
+	@%p415 bra 	$Lt_5_42498;
+	mov.u32 	%r694, 1;
+	setp.eq.s32 	%p416, %r170, %r694;
+	@%p416 bra 	$Lt_5_42754;
+	mov.u32 	%r695, 3;
+	setp.eq.s32 	%p417, %r170, %r695;
+	@%p417 bra 	$Lt_5_43010;
+	mov.s32 	%r175, %r176;
+	bra.uni 	$Lt_5_42242;
+$Lt_5_41986:
+	ld.local.s32 	%r175, [%rd52+0];
+	mov.s32 	%r176, %r175;
+	bra.uni 	$Lt_5_42242;
+$Lt_5_42498:
+	ld.local.f32 	%f90, [%rd52+0];
+	mov.f32 	%f91, 0f00000000;    	// 0
+	set.neu.u32.f32 	%r696, %f90, %f91;
+	neg.s32 	%r175, %r696;
+	mov.s32 	%r176, %r175;
+	bra.uni 	$Lt_5_42242;
+$Lt_5_42754:
+	ld.local.s64 	%rd319, [%rd52+0];
+	mov.s64 	%rd320, 0;
+	set.ne.u32.s64 	%r697, %rd319, %rd320;
+	neg.s32 	%r175, %r697;
+	mov.s32 	%r176, %r175;
+	bra.uni 	$Lt_5_42242;
+$Lt_5_43010:
+	ld.local.f64 	%fd90, [%rd52+0];
+	mov.f64 	%fd91, 0d0000000000000000;	// 0
+	set.ne.u32.f64 	%r698, %fd90, %fd91;
+	neg.s32 	%r175, %r698;
+	mov.s32 	%r176, %r175;
+$Lt_5_42242:
+	ld.global.s32 	%r699, [%rd15+44];
+	cvt.s64.s32 	%rd19, %r699;
+	cvt.u32.s64 	%r700, %rd19;
+	cvt.u64.u32 	%rd321, %r700;
+	cvt.u32.u64 	%r90, %rd321;
+	mov.s32 	%r701, 0;
+	cvt.u64.u32 	%rd322, %r90;
+	mul.wide.u32 	%rd323, %r90, 16;
+	add.u64 	%rd324, %rd11, %rd323;
+	st.local.s32 	[%rd324+8], %r701;
+	mov.s32 	%r702, 0;
+	set.ne.u32.s32 	%r703, %r175, %r702;
+	neg.s32 	%r704, %r703;
+	mov.s32 	%r705, 0;
+	set.ne.u32.s32 	%r706, %r165, %r705;
+	neg.s32 	%r707, %r706;
+	or.b32 	%r708, %r704, %r707;
+	cvt.s64.s32 	%rd325, %r90;
+	mul.wide.s32 	%rd326, %r90, 16;
+	add.u64 	%rd327, %rd11, %rd326;
+	st.local.s32 	[%rd327+0], %r708;
+	.loc	19	337	0
+	add.s32 	%r82, %r22, 1;
+	mov.s32 	%r22, %r82;
+	.loc	19	338	0
+	mov.s32 	%r709, 63;
+	setp.le.s32 	%p4, %r82, %r709;
+	bra.uni 	$Lt_5_1026;
+$Lt_5_44034:
+	.loc	19	341	0
+	ld.global.s32 	%r62, [%rd15+40];
+	cvt.s64.s32 	%rd328, %r62;
+	mul.wide.s32 	%rd329, %r62, 16;
+	add.u64 	%rd52, %rd11, %rd329;
+	mov.s32 	%r710, 3;
+	st.local.s32 	[%rd52+8], %r710;
+	.loc	19	342	0
+	ld.global.f64 	%fd92, [%rd15+48];
+	st.local.f64 	[%rd52+0], %fd92;
+	.loc	19	343	0
+	add.s32 	%r82, %r22, 1;
+	mov.s32 	%r22, %r82;
+	.loc	19	344	0
+	mov.s32 	%r711, 63;
+	setp.le.s32 	%p4, %r82, %r711;
+	bra.uni 	$Lt_5_1026;
+$Lt_5_44546:
+	.loc	19	349	0
+	ld.shared.s32 	%r712, [block_start];
+	mov.u32 	%r713, -1;
+	setp.eq.s32 	%p418, %r712, %r713;
+	@%p418 bra 	$Lt_5_304898;
+	.loc	19	353	0
+	mov.u64 	%rd330, block_start;
+	mov.s32 	%r714, 1;
+	atom.shared.add.s32 	%r715, [%rd330], %r714;
+	mov.s32 	%r716, %r715;
+	mov.s32 	%r717, %r716;
+	mov.s32 	%r718, %r717;
+	bra.uni 	$Lt_5_304642;
+$Lt_5_304898:
+	mov.s32 	%r717, %r718;
+$Lt_5_304642:
+	.loc	19	355	0
+	ld.global.s32 	%r84, [%rd15+36];
+	ld.global.s32 	%r62, [%rd15+40];
+	add.s32 	%r719, %r62, %r84;
+	setp.gt.s32 	%p419, %r719, %r84;
+	@!%p419 bra 	$Lt_5_305154;
+	mov.s32 	%r720, %r62;
+	cvt.s64.s32 	%rd331, %r84;
+	mul.wide.s32 	%rd332, %r84, 16;
+	add.u64 	%rd333, %rd11, %rd332;
+	mov.s32 	%r721, 0;
+	mov.s64 	%rd334, %rd6;
+	mov.s32 	%r722, %r720;
+$Lt_5_305666:
+ //<loop> Loop body line 355, nesting depth: 1, estimated iterations: unknown
+	.loc	19	356	0
+	ld.local.s32 	%r723, [%rd333+8];
+	st.global.s32 	[%rd334+12], %r723;
+	.loc	19	357	0
+	st.global.s32 	[%rd334+76], %r21;
+	.loc	19	359	0
+	mov.u32 	%r724, 0;
+	setp.eq.s32 	%p420, %r723, %r724;
+	@%p420 bra 	$Lt_5_44802;
+	mov.u32 	%r725, 2;
+	setp.eq.s32 	%p421, %r723, %r725;
+	@%p421 bra 	$Lt_5_45314;
+	mov.u32 	%r726, 1;
+	setp.eq.s32 	%p422, %r723, %r726;
+	@%p422 bra 	$Lt_5_45570;
+	mov.u32 	%r727, 3;
+	setp.eq.s32 	%p423, %r723, %r727;
+	@%p423 bra 	$Lt_5_45826;
+	bra.uni 	$Lt_5_45058;
+$Lt_5_44802:
+	.loc	19	361	0
+	add.s32 	%r21, %r21, 4;
+	.loc	19	362	0
+	bra.uni 	$Lt_5_45058;
+$Lt_5_45314:
+	.loc	19	364	0
+	add.s32 	%r21, %r21, 4;
+	.loc	19	365	0
+	bra.uni 	$Lt_5_45058;
+$Lt_5_45570:
+	.loc	19	367	0
+	add.s32 	%r21, %r21, 8;
+	.loc	19	368	0
+	bra.uni 	$Lt_5_45058;
+$Lt_5_45826:
+	.loc	19	370	0
+	add.s32 	%r21, %r21, 8;
+$Lt_5_45058:
+	.loc	19	372	0
+	add.s32 	%r721, %r721, 1;
+	add.u64 	%rd334, %rd334, 4;
+	add.u64 	%rd333, %rd333, 16;
+	setp.ne.s32 	%p424, %r721, %r62;
+	@%p424 bra 	$Lt_5_305666;
+$Lt_5_305154:
+	.loc	19	383	0
+	bar.sync 	0;
+	ld.shared.s32 	%r728, [block_start];
+	mov.s32 	%r729, 0;
+	set.eq.u32.s32 	%r730, %r717, %r729;
+	neg.s32 	%r731, %r730;
+	mov.s32 	%r732, 0;
+	set.ne.u32.s32 	%r733, %r728, %r732;
+	neg.s32 	%r734, %r733;
+	and.b32 	%r735, %r731, %r734;
+	mov.u32 	%r736, 0;
+	setp.eq.s32 	%p425, %r735, %r736;
+	@%p425 bra 	$Lt_5_306178;
+	.loc	19	386	0
+	atom.global.add.s32 	%r737, [%rd6], %r728;
+	mov.s32 	%r738, %r737;
+	st.shared.s32 	[result_start], %r738;
+	.loc	19	387	0
+	mov.s32 	%r739, 0;
+	st.shared.s32 	[block_start], %r739;
+$Lt_5_306178:
+	.loc	19	390	0
+	bar.sync 	0;
+	.loc	19	399	0
+	sub.s32 	%r740, %r21, 1;
+	shr.s32 	%r741, %r740, 1;
+	or.b32 	%r742, %r740, %r741;
+	shr.s32 	%r743, %r742, 2;
+	or.b32 	%r744, %r742, %r743;
+	shr.s32 	%r745, %r744, 4;
+	or.b32 	%r746, %r744, %r745;
+	shr.s32 	%r747, %r746, 8;
+	or.b32 	%r748, %r746, %r747;
+	shr.s32 	%r749, %r748, 16;
+	or.b32 	%r750, %r748, %r749;
+	add.s32 	%r751, %r750, 1;
+	.loc	19	400	0
+	mul.lo.s32 	%r21, %r751, 4;
+	.loc	19	402	0
+	st.global.s32 	[%rd6+8], %r21;
+	.loc	19	403	0
+	st.global.s32 	[%rd6+4], %r62;
+	.loc	19	405	0
+	ld.shared.s32 	%r752, [result_start];
+	add.s32 	%r753, %r752, %r717;
+	mul.lo.s32 	%r754, %r21, %r753;
+	cvt.u64.s32 	%rd335, %r754;
+	add.u64 	%rd12, %rd335, %rd12;
+	.loc	19	407	0
+	mov.s32 	%r755, %r84;
+	@!%p419 bra 	$Lt_5_306690;
+	mov.s32 	%r756, %r62;
+	cvt.s64.s32 	%rd336, %r84;
+	mul.wide.s32 	%rd337, %r84, 16;
+	add.u64 	%rd333, %rd11, %rd337;
+	mov.s32 	%r757, %r756;
+$Lt_5_307202:
+ //<loop> Loop body line 407, nesting depth: 1, estimated iterations: unknown
+	.loc	19	408	0
+	ld.local.s32 	%r758, [%rd333+8];
+	mov.u32 	%r759, 0;
+	setp.eq.s32 	%p426, %r758, %r759;
+	@%p426 bra 	$Lt_5_46850;
+	mov.u32 	%r760, 2;
+	setp.eq.s32 	%p427, %r758, %r760;
+	@%p427 bra 	$Lt_5_47362;
+	mov.u32 	%r761, 1;
+	setp.eq.s32 	%p428, %r758, %r761;
+	@%p428 bra 	$Lt_5_47618;
+	mov.u32 	%r762, 3;
+	setp.eq.s32 	%p429, %r758, %r762;
+	@%p429 bra 	$Lt_5_47874;
+	bra.uni 	$Lt_5_47106;
+$Lt_5_46850:
+	.loc	19	410	0
+	ld.local.s32 	%r763, [%rd333+0];
+	st.global.s32 	[%rd12+0], %r763;
+	.loc	19	411	0
+	add.u64 	%rd12, %rd12, 4;
+	.loc	19	412	0
+	bra.uni 	$Lt_5_47106;
+$Lt_5_47362:
+	.loc	19	414	0
+	ld.local.f32 	%f92, [%rd333+0];
+	st.global.f32 	[%rd12+0], %f92;
+	.loc	19	415	0
+	add.u64 	%rd12, %rd12, 4;
+	.loc	19	416	0
+	bra.uni 	$Lt_5_47106;
+$Lt_5_47618:
+	.loc	19	419	0
+	ld.local.s64 	%rd338, [%rd333+0];
+	st.global.s64 	[%rd12+0], %rd338;
+	.loc	19	420	0
+	add.u64 	%rd12, %rd12, 8;
+	.loc	19	421	0
+	bra.uni 	$Lt_5_47106;
+$Lt_5_47874:
+	.loc	19	423	0
+	ld.local.f64 	%fd93, [%rd333+0];
+	st.global.f64 	[%rd12+0], %fd93;
+	.loc	19	424	0
+	add.u64 	%rd12, %rd12, 8;
+$Lt_5_47106:
+	.loc	19	426	0
+	add.s32 	%r755, %r755, 1;
+	add.u64 	%rd333, %rd333, 16;
+	setp.ne.s32 	%p430, %r719, %r755;
+	@%p430 bra 	$Lt_5_307202;
+$Lt_5_306690:
+	.loc	19	429	0
+	add.s32 	%r82, %r22, 1;
+	mov.s32 	%r22, %r82;
+	.loc	19	430	0
+	mov.s32 	%r764, 63;
+	setp.le.s32 	%p4, %r82, %r764;
+	bra.uni 	$Lt_5_1026;
+$Lt_5_48898:
+	.loc	19	763	0
+	ld.global.s32 	%r62, [%rd15+40];
+	cvt.s64.s32 	%rd339, %r62;
+	mul.wide.s32 	%rd340, %r62, 16;
+	add.u64 	%rd52, %rd11, %rd340;
+	ld.const.s32 	%r765, [cdata+12];
+	st.local.s32 	[%rd52+8], %r765;
+	.loc	19	803	0
+	mov.u32 	%r766, 0;
+	setp.eq.s32 	%p431, %r765, %r766;
+	@%p431 bra 	$Lt_5_79874;
+	mov.u32 	%r767, 2;
+	setp.eq.s32 	%p432, %r765, %r767;
+	@%p432 bra 	$Lt_5_80386;
+	mov.u32 	%r768, 1;
+	setp.eq.s32 	%p433, %r765, %r768;
+	@%p433 bra 	$Lt_5_80642;
+	mov.u32 	%r769, 3;
+	setp.eq.s32 	%p434, %r765, %r769;
+	@%p434 bra 	$Lt_5_80898;
+	bra.uni 	$Lt_5_80130;
+$Lt_5_79874:
+	.loc	19	805	0
+	ld.const.s32 	%r770, [cdata+76];
+	cvt.s64.s32 	%rd341, %r770;
+	ld.const.s32 	%r771, [cdata+8];
+	mul.lo.s32 	%r772, %r771, %r19;
+	cvt.u64.s32 	%rd342, %r772;
+	ld.param.u64 	%rd343, [__cudaparm__Z8VmKernelPcP17sphyraena_resultsiii_data];
+	add.u64 	%rd344, %rd342, %rd343;
+	add.u64 	%rd345, %rd341, %rd344;
+	ld.global.s32 	%r773, [%rd345+0];
+	st.local.s32 	[%rd52+0], %r773;
+	.loc	19	806	0
+	bra.uni 	$Lt_5_80130;
+$Lt_5_80386:
+	.loc	19	808	0
+	ld.const.s32 	%r774, [cdata+76];
+	cvt.s64.s32 	%rd346, %r774;
+	ld.const.s32 	%r775, [cdata+8];
+	mul.lo.s32 	%r776, %r775, %r19;
+	cvt.u64.s32 	%rd347, %r776;
+	ld.param.u64 	%rd348, [__cudaparm__Z8VmKernelPcP17sphyraena_resultsiii_data];
+	add.u64 	%rd349, %rd347, %rd348;
+	add.u64 	%rd350, %rd346, %rd349;
+	ld.global.f32 	%f93, [%rd350+0];
+	st.local.f32 	[%rd52+0], %f93;
+	.loc	19	809	0
+	bra.uni 	$Lt_5_80130;
+$Lt_5_80642:
+	.loc	19	811	0
+	ld.const.s32 	%r777, [cdata+76];
+	cvt.s64.s32 	%rd351, %r777;
+	ld.const.s32 	%r778, [cdata+8];
+	mul.lo.s32 	%r779, %r778, %r19;
+	cvt.u64.s32 	%rd352, %r779;
+	ld.param.u64 	%rd353, [__cudaparm__Z8VmKernelPcP17sphyraena_resultsiii_data];
+	add.u64 	%rd354, %rd352, %rd353;
+	add.u64 	%rd355, %rd351, %rd354;
+	ld.global.s64 	%rd356, [%rd355+0];
+	st.local.s64 	[%rd52+0], %rd356;
+	.loc	19	815	0
+	bra.uni 	$Lt_5_80130;
+$Lt_5_80898:
+	.loc	19	817	0
+	ld.const.s32 	%r780, [cdata+76];
+	cvt.s64.s32 	%rd357, %r780;
+	ld.const.s32 	%r781, [cdata+8];
+	mul.lo.s32 	%r782, %r781, %r19;
+	cvt.u64.s32 	%rd358, %r782;
+	ld.param.u64 	%rd359, [__cudaparm__Z8VmKernelPcP17sphyraena_resultsiii_data];
+	add.u64 	%rd360, %rd358, %rd359;
+	add.u64 	%rd361, %rd357, %rd360;
+	ld.global.f64 	%fd94, [%rd361+0];
+	st.local.f64 	[%rd52+0], %fd94;
+$Lt_5_80130:
+	.loc	19	435	0
+	add.s32 	%r82, %r22, 1;
+	mov.s32 	%r22, %r82;
+	.loc	19	436	0
+	mov.s32 	%r783, 63;
+	setp.le.s32 	%p4, %r82, %r783;
+	bra.uni 	$Lt_5_1026;
+$Lt_5_49154:
+	ld.global.v4.s32 	{_,%r784,%r62,%r785}, [%rd15+32];
+	.loc	19	439	0
+	cvt.s64.s32 	%rd19, %r785;
+	cvt.s64.s32 	%rd48, %r62;
+	cvt.u32.s64 	%r89, %rd19;
+	mul.wide.s32 	%rd50, %r62, 16;
+	cvt.u64.u32 	%rd53, %r89;
+	add.u64 	%rd52, %rd50, %rd11;
+	cvt.u32.u64 	%r90, %rd53;
+	ld.local.s32 	%r786, [%rd52+8];
+	cvt.u64.u32 	%rd362, %r90;
+	mul.wide.u32 	%rd363, %r90, 16;
+	add.u64 	%rd364, %rd11, %rd363;
+	st.local.s32 	[%rd364+8], %r786;
+	.loc	19	440	0
+	ld.local.s64 	%rd365, [%rd52+0];
+	shl.b64 	%rd366, %rd365, %r784;
+	cvt.s64.s32 	%rd367, %r90;
+	mul.wide.s32 	%rd368, %r90, 16;
+	add.u64 	%rd369, %rd11, %rd368;
+	st.local.s64 	[%rd369+0], %rd366;
+	.loc	19	441	0
+	add.s32 	%r82, %r22, 1;
+	mov.s32 	%r22, %r82;
+	.loc	19	442	0
+	mov.s32 	%r787, 63;
+	setp.le.s32 	%p4, %r82, %r787;
+	bra.uni 	$Lt_5_1026;
+$Lt_5_49410:
+	ld.global.v4.s32 	{_,%r788,%r62,%r789}, [%rd15+32];
+	.loc	19	445	0
+	cvt.s64.s32 	%rd19, %r789;
+	cvt.s64.s32 	%rd48, %r62;
+	cvt.u32.s64 	%r89, %rd19;
+	mul.wide.s32 	%rd50, %r62, 16;
+	cvt.u64.u32 	%rd53, %r89;
+	add.u64 	%rd52, %rd50, %rd11;
+	cvt.u32.u64 	%r90, %rd53;
+	ld.local.s32 	%r790, [%rd52+8];
+	cvt.u64.u32 	%rd370, %r90;
+	mul.wide.u32 	%rd371, %r90, 16;
+	add.u64 	%rd372, %rd11, %rd371;
+	st.local.s32 	[%rd372+8], %r790;
+	.loc	19	446	0
+	ld.local.s64 	%rd373, [%rd52+0];
+	shr.s64 	%rd374, %rd373, %r788;
+	cvt.s64.s32 	%rd375, %r90;
+	mul.wide.s32 	%rd376, %r90, 16;
+	add.u64 	%rd377, %rd11, %rd376;
+	st.local.s64 	[%rd377+0], %rd374;
+	.loc	19	447	0
+	add.s32 	%r82, %r22, 1;
+	mov.s32 	%r22, %r82;
+	.loc	19	448	0
+	mov.s32 	%r791, 63;
+	setp.le.s32 	%p4, %r82, %r791;
+	bra.uni 	$Lt_5_1026;
+$Lt_5_49666:
+	ld.global.v4.s32 	{_,%r84,%r62,%r792}, [%rd15+32];
+	.loc	19	451	0
+	cvt.s64.s32 	%rd47, %r84;
+	cvt.s64.s32 	%rd48, %r62;
+	mul.wide.s32 	%rd49, %r84, 16;
+	mul.wide.s32 	%rd50, %r62, 16;
+	add.u64 	%rd51, %rd49, %rd11;
+	add.u64 	%rd52, %rd50, %rd11;
+	ld.local.s32 	%r793, [%rd52+8];
+	ld.local.s32 	%r794, [%rd51+8];
+	max.s32 	%r88, %r793, %r794;
+	cvt.s64.s32 	%rd19, %r792;
+	cvt.u32.s64 	%r89, %rd19;
+	cvt.u64.u32 	%rd53, %r89;
+	cvt.u32.u64 	%r90, %rd53;
+	cvt.u64.u32 	%rd378, %r90;
+	mul.wide.u32 	%rd379, %r90, 16;
+	add.u64 	%rd380, %rd11, %rd379;
+	st.local.s32 	[%rd380+8], %r88;
+	mov.u32 	%r795, 0;
+	setp.eq.s32 	%p435, %r88, %r795;
+	@%p435 bra 	$Lt_5_49922;
+	mov.u32 	%r796, 2;
+	setp.eq.s32 	%p436, %r88, %r796;
+	@%p436 bra 	$Lt_5_50434;
+	mov.u32 	%r797, 1;
+	setp.eq.s32 	%p437, %r88, %r797;
+	@%p437 bra 	$Lt_5_50690;
+	mov.u32 	%r798, 3;
+	setp.eq.s32 	%p438, %r88, %r798;
+	@%p438 bra 	$Lt_5_50946;
+	bra.uni 	$Lt_5_50178;
+$Lt_5_49922:
+	.loc	19	826	0
+	ld.local.s32 	%r799, [%rd52+8];
+	mov.u32 	%r800, 0;
+	setp.eq.s32 	%p439, %r799, %r800;
+	@%p439 bra 	$Lt_5_77826;
+	mov.u32 	%r801, 2;
+	setp.eq.s32 	%p440, %r799, %r801;
+	@%p440 bra 	$Lt_5_78082;
+	mov.u32 	%r802, 1;
+	setp.eq.s32 	%p441, %r799, %r802;
+	@%p441 bra 	$Lt_5_78338;
+	mov.u32 	%r803, 3;
+	setp.eq.s32 	%p442, %r799, %r803;
+	@%p442 bra 	$Lt_5_78594;
+	bra.uni 	$Lt_5_79362;
+$Lt_5_77826:
+	.loc	19	828	0
+	ld.local.s32 	%r804, [%rd52+0];
+	bra.uni 	$LDWendi__Z9castToIntP13sphyraena_mem_185_303;
+$Lt_5_78082:
+	.loc	19	830	0
+	ld.local.f32 	%f94, [%rd52+0];
+	cvt.rzi.s32.f32 	%r804, %f94;
+	bra.uni 	$LDWendi__Z9castToIntP13sphyraena_mem_185_303;
+$Lt_5_78338:
+	.loc	19	832	0
+	ld.local.s32 	%r804, [%rd52+0];
+	bra.uni 	$LDWendi__Z9castToIntP13sphyraena_mem_185_303;
+$Lt_5_78594:
+	.loc	19	834	0
+	ld.local.f64 	%fd95, [%rd52+0];
+	cvt.rzi.s32.f64 	%r804, %fd95;
+	bra.uni 	$LDWendi__Z9castToIntP13sphyraena_mem_185_303;
+$Lt_5_79362:
+	.loc	19	836	0
+	mov.s32 	%r804, 0;
+$LDWendi__Z9castToIntP13sphyraena_mem_185_303:
+	.loc	19	826	0
+	ld.local.s32 	%r805, [%rd51+8];
+	mov.u32 	%r806, 0;
+	setp.eq.s32 	%p443, %r805, %r806;
+	@%p443 bra 	$Lt_5_75522;
+	mov.u32 	%r807, 2;
+	setp.eq.s32 	%p444, %r805, %r807;
+	@%p444 bra 	$Lt_5_75778;
+	mov.u32 	%r808, 1;
+	setp.eq.s32 	%p445, %r805, %r808;
+	@%p445 bra 	$Lt_5_76034;
+	mov.u32 	%r809, 3;
+	setp.eq.s32 	%p446, %r805, %r809;
+	@%p446 bra 	$Lt_5_76290;
+	bra.uni 	$Lt_5_77058;
+$Lt_5_75522:
+	.loc	19	828	0
+	ld.local.s32 	%r810, [%rd51+0];
+	bra.uni 	$LDWendi__Z9castToIntP13sphyraena_mem_185_294;
+$Lt_5_75778:
+	.loc	19	830	0
+	ld.local.f32 	%f95, [%rd51+0];
+	cvt.rzi.s32.f32 	%r810, %f95;
+	bra.uni 	$LDWendi__Z9castToIntP13sphyraena_mem_185_294;
+$Lt_5_76034:
+	.loc	19	832	0
+	ld.local.s32 	%r810, [%rd51+0];
+	bra.uni 	$LDWendi__Z9castToIntP13sphyraena_mem_185_294;
+$Lt_5_76290:
+	.loc	19	834	0
+	ld.local.f64 	%fd96, [%rd51+0];
+	cvt.rzi.s32.f64 	%r810, %fd96;
+	bra.uni 	$LDWendi__Z9castToIntP13sphyraena_mem_185_294;
+$Lt_5_77058:
+	.loc	19	836	0
+	mov.s32 	%r810, 0;
+$LDWendi__Z9castToIntP13sphyraena_mem_185_294:
+	.loc	19	451	0
+	sub.s32 	%r811, %r804, %r810;
+	cvt.s64.s32 	%rd381, %r90;
+	mul.wide.s32 	%rd382, %r90, 16;
+	add.u64 	%rd383, %rd11, %rd382;
+	st.local.s32 	[%rd383+0], %r811;
+	bra.uni 	$Lt_5_50178;
+$Lt_5_50434:
+	.loc	19	841	0
+	ld.local.s32 	%r799, [%rd52+8];
+	mov.u32 	%r812, 2;
+	setp.eq.s32 	%p447, %r799, %r812;
+	@%p447 bra 	$Lt_5_73218;
+	mov.u32 	%r813, 0;
+	setp.eq.s32 	%p448, %r799, %r813;
+	@%p448 bra 	$Lt_5_73474;
+	mov.u32 	%r814, 1;
+	setp.eq.s32 	%p449, %r799, %r814;
+	@%p449 bra 	$Lt_5_73730;
+	mov.u32 	%r815, 3;
+	setp.eq.s32 	%p450, %r799, %r815;
+	@%p450 bra 	$Lt_5_73986;
+	bra.uni 	$Lt_5_74754;
+$Lt_5_73218:
+	.loc	19	843	0
+	ld.local.f32 	%f96, [%rd52+0];
+	bra.uni 	$LDWendi__Z11castToFloatP13sphyraena_mem_185_285;
+$Lt_5_73474:
+	.loc	19	845	0
+	ld.local.s32 	%r816, [%rd52+0];
+	cvt.rn.f32.s32 	%f96, %r816;
+	bra.uni 	$LDWendi__Z11castToFloatP13sphyraena_mem_185_285;
+$Lt_5_73730:
+	.loc	19	847	0
+	ld.local.s64 	%rd384, [%rd52+0];
+	cvt.rn.f32.s64 	%f96, %rd384;
+	bra.uni 	$LDWendi__Z11castToFloatP13sphyraena_mem_185_285;
+$Lt_5_73986:
+	.loc	19	849	0
+	ld.local.f64 	%fd97, [%rd52+0];
+	cvt.rn.f32.f64 	%f96, %fd97;
+	bra.uni 	$LDWendi__Z11castToFloatP13sphyraena_mem_185_285;
+$Lt_5_74754:
+	.loc	19	851	0
+	mov.f32 	%f96, 0f00000000;    	// 0
+$LDWendi__Z11castToFloatP13sphyraena_mem_185_285:
+	.loc	19	841	0
+	ld.local.s32 	%r805, [%rd51+8];
+	mov.u32 	%r817, 2;
+	setp.eq.s32 	%p451, %r805, %r817;
+	@%p451 bra 	$Lt_5_70914;
+	mov.u32 	%r818, 0;
+	setp.eq.s32 	%p452, %r805, %r818;
+	@%p452 bra 	$Lt_5_71170;
+	mov.u32 	%r819, 1;
+	setp.eq.s32 	%p453, %r805, %r819;
+	@%p453 bra 	$Lt_5_71426;
+	mov.u32 	%r820, 3;
+	setp.eq.s32 	%p454, %r805, %r820;
+	@%p454 bra 	$Lt_5_71682;
+	bra.uni 	$Lt_5_72450;
+$Lt_5_70914:
+	.loc	19	843	0
+	ld.local.f32 	%f97, [%rd51+0];
+	bra.uni 	$LDWendi__Z11castToFloatP13sphyraena_mem_185_276;
+$Lt_5_71170:
+	.loc	19	845	0
+	ld.local.s32 	%r821, [%rd51+0];
+	cvt.rn.f32.s32 	%f97, %r821;
+	bra.uni 	$LDWendi__Z11castToFloatP13sphyraena_mem_185_276;
+$Lt_5_71426:
+	.loc	19	847	0
+	ld.local.s64 	%rd385, [%rd51+0];
+	cvt.rn.f32.s64 	%f97, %rd385;
+	bra.uni 	$LDWendi__Z11castToFloatP13sphyraena_mem_185_276;
+$Lt_5_71682:
+	.loc	19	849	0
+	ld.local.f64 	%fd98, [%rd51+0];
+	cvt.rn.f32.f64 	%f97, %fd98;
+	bra.uni 	$LDWendi__Z11castToFloatP13sphyraena_mem_185_276;
+$Lt_5_72450:
+	.loc	19	851	0
+	mov.f32 	%f97, 0f00000000;    	// 0
+$LDWendi__Z11castToFloatP13sphyraena_mem_185_276:
+	.loc	19	451	0
+	sub.f32 	%f98, %f96, %f97;
+	cvt.s64.s32 	%rd386, %r90;
+	mul.wide.s32 	%rd387, %r90, 16;
+	add.u64 	%rd388, %rd11, %rd387;
+	st.local.f32 	[%rd388+0], %f98;
+	bra.uni 	$Lt_5_50178;
+$Lt_5_50690:
+	.loc	19	856	0
+	ld.local.s32 	%r799, [%rd52+8];
+	mov.u32 	%r822, 1;
+	setp.eq.s32 	%p455, %r799, %r822;
+	@%p455 bra 	$Lt_5_68610;
+	mov.u32 	%r823, 0;
+	setp.eq.s32 	%p456, %r799, %r823;
+	@%p456 bra 	$Lt_5_68866;
+	mov.u32 	%r824, 2;
+	setp.eq.s32 	%p457, %r799, %r824;
+	@%p457 bra 	$Lt_5_69122;
+	mov.u32 	%r825, 3;
+	setp.eq.s32 	%p458, %r799, %r825;
+	@%p458 bra 	$Lt_5_69378;
+	bra.uni 	$Lt_5_70146;
+$Lt_5_68610:
+	.loc	19	858	0
+	ld.local.s64 	%rd389, [%rd52+0];
+	bra.uni 	$LDWendi__Z11castToInt64P13sphyraena_mem_185_267;
+$Lt_5_68866:
+	.loc	19	860	0
+	ld.local.s32 	%r826, [%rd52+0];
+	cvt.s64.s32 	%rd389, %r826;
+	bra.uni 	$LDWendi__Z11castToInt64P13sphyraena_mem_185_267;
+$Lt_5_69122:
+	.loc	19	862	0
+	ld.local.f32 	%f99, [%rd52+0];
+	cvt.rzi.s64.f32 	%rd389, %f99;
+	bra.uni 	$LDWendi__Z11castToInt64P13sphyraena_mem_185_267;
+$Lt_5_69378:
+	.loc	19	864	0
+	ld.local.f64 	%fd99, [%rd52+0];
+	cvt.rzi.s64.f64 	%rd389, %fd99;
+	bra.uni 	$LDWendi__Z11castToInt64P13sphyraena_mem_185_267;
+$Lt_5_70146:
+	.loc	19	866	0
+	mov.s64 	%rd389, 0;
+$LDWendi__Z11castToInt64P13sphyraena_mem_185_267:
+	.loc	19	856	0
+	ld.local.s32 	%r805, [%rd51+8];
+	mov.u32 	%r827, 1;
+	setp.eq.s32 	%p459, %r805, %r827;
+	@%p459 bra 	$Lt_5_66306;
+	mov.u32 	%r828, 0;
+	setp.eq.s32 	%p460, %r805, %r828;
+	@%p460 bra 	$Lt_5_66562;
+	mov.u32 	%r829, 2;
+	setp.eq.s32 	%p461, %r805, %r829;
+	@%p461 bra 	$Lt_5_66818;
+	mov.u32 	%r830, 3;
+	setp.eq.s32 	%p462, %r805, %r830;
+	@%p462 bra 	$Lt_5_67074;
+	bra.uni 	$Lt_5_67842;
+$Lt_5_66306:
+	.loc	19	858	0
+	ld.local.s64 	%rd390, [%rd51+0];
+	bra.uni 	$LDWendi__Z11castToInt64P13sphyraena_mem_185_258;
+$Lt_5_66562:
+	.loc	19	860	0
+	ld.local.s32 	%r831, [%rd51+0];
+	cvt.s64.s32 	%rd390, %r831;
+	bra.uni 	$LDWendi__Z11castToInt64P13sphyraena_mem_185_258;
+$Lt_5_66818:
+	.loc	19	862	0
+	ld.local.f32 	%f100, [%rd51+0];
+	cvt.rzi.s64.f32 	%rd390, %f100;
+	bra.uni 	$LDWendi__Z11castToInt64P13sphyraena_mem_185_258;
+$Lt_5_67074:
+	.loc	19	864	0
+	ld.local.f64 	%fd100, [%rd51+0];
+	cvt.rzi.s64.f64 	%rd390, %fd100;
+	bra.uni 	$LDWendi__Z11castToInt64P13sphyraena_mem_185_258;
+$Lt_5_67842:
+	.loc	19	866	0
+	mov.s64 	%rd390, 0;
+$LDWendi__Z11castToInt64P13sphyraena_mem_185_258:
+	.loc	19	451	0
+	sub.s64 	%rd391, %rd389, %rd390;
+	cvt.s64.s32 	%rd392, %r90;
+	mul.wide.s32 	%rd393, %r90, 16;
+	add.u64 	%rd394, %rd11, %rd393;
+	st.local.s64 	[%rd394+0], %rd391;
+	bra.uni 	$Lt_5_50178;
+$Lt_5_50946:
+	.loc	19	871	0
+	ld.local.s32 	%r799, [%rd52+8];
+	mov.u32 	%r832, 3;
+	setp.eq.s32 	%p463, %r799, %r832;
+	@%p463 bra 	$Lt_5_64002;
+	mov.u32 	%r833, 0;
+	setp.eq.s32 	%p464, %r799, %r833;
+	@%p464 bra 	$Lt_5_64258;
+	mov.u32 	%r834, 2;
+	setp.eq.s32 	%p465, %r799, %r834;
+	@%p465 bra 	$Lt_5_64514;
+	mov.u32 	%r835, 1;
+	setp.eq.s32 	%p466, %r799, %r835;
+	@%p466 bra 	$Lt_5_64770;
+	bra.uni 	$Lt_5_65538;
+$Lt_5_64002:
+	.loc	19	873	0
+	ld.local.f64 	%fd101, [%rd52+0];
+	bra.uni 	$LDWendi__Z12castToDoubleP13sphyraena_mem_185_249;
+$Lt_5_64258:
+	.loc	19	875	0
+	ld.local.s32 	%r836, [%rd52+0];
+	cvt.rn.f64.s32 	%fd101, %r836;
+	bra.uni 	$LDWendi__Z12castToDoubleP13sphyraena_mem_185_249;
+$Lt_5_64514:
+	.loc	19	877	0
+	ld.local.f32 	%f101, [%rd52+0];
+	cvt.f64.f32 	%fd101, %f101;
+	bra.uni 	$LDWendi__Z12castToDoubleP13sphyraena_mem_185_249;
+$Lt_5_64770:
+	.loc	19	879	0
+	ld.local.s64 	%rd395, [%rd52+0];
+	cvt.rn.f64.s64 	%fd101, %rd395;
+	bra.uni 	$LDWendi__Z12castToDoubleP13sphyraena_mem_185_249;
+$Lt_5_65538:
+	.loc	19	881	0
+	mov.f64 	%fd101, 0d0000000000000000;	// 0
+$LDWendi__Z12castToDoubleP13sphyraena_mem_185_249:
+	.loc	19	871	0
+	ld.local.s32 	%r805, [%rd51+8];
+	mov.u32 	%r837, 3;
+	setp.eq.s32 	%p467, %r805, %r837;
+	@%p467 bra 	$Lt_5_61698;
+	mov.u32 	%r838, 0;
+	setp.eq.s32 	%p468, %r805, %r838;
+	@%p468 bra 	$Lt_5_61954;
+	mov.u32 	%r839, 2;
+	setp.eq.s32 	%p469, %r805, %r839;
+	@%p469 bra 	$Lt_5_62210;
+	mov.u32 	%r840, 1;
+	setp.eq.s32 	%p470, %r805, %r840;
+	@%p470 bra 	$Lt_5_62466;
+	bra.uni 	$Lt_5_63234;
+$Lt_5_61698:
+	.loc	19	873	0
+	ld.local.f64 	%fd102, [%rd51+0];
+	bra.uni 	$LDWendi__Z12castToDoubleP13sphyraena_mem_185_240;
+$Lt_5_61954:
+	.loc	19	875	0
+	ld.local.s32 	%r841, [%rd51+0];
+	cvt.rn.f64.s32 	%fd102, %r841;
+	bra.uni 	$LDWendi__Z12castToDoubleP13sphyraena_mem_185_240;
+$Lt_5_62210:
+	.loc	19	877	0
+	ld.local.f32 	%f102, [%rd51+0];
+	cvt.f64.f32 	%fd102, %f102;
+	bra.uni 	$LDWendi__Z12castToDoubleP13sphyraena_mem_185_240;
+$Lt_5_62466:
+	.loc	19	879	0
+	ld.local.s64 	%rd396, [%rd51+0];
+	cvt.rn.f64.s64 	%fd102, %rd396;
+	bra.uni 	$LDWendi__Z12castToDoubleP13sphyraena_mem_185_240;
+$Lt_5_63234:
+	.loc	19	881	0
+	mov.f64 	%fd102, 0d0000000000000000;	// 0
+$LDWendi__Z12castToDoubleP13sphyraena_mem_185_240:
+	.loc	19	451	0
+	sub.f64 	%fd103, %fd101, %fd102;
+	cvt.s64.s32 	%rd397, %r90;
+	mul.wide.s32 	%rd398, %r90, 16;
+	add.u64 	%rd399, %rd11, %rd398;
+	st.local.f64 	[%rd399+0], %fd103;
+$Lt_5_50178:
+	.loc	19	452	0
+	add.s32 	%r82, %r22, 1;
+	mov.s32 	%r22, %r82;
+	.loc	19	453	0
+	mov.s32 	%r842, 63;
+	setp.le.s32 	%p4, %r82, %r842;
+	bra.uni 	$Lt_5_1026;
+$Lt_5_51970:
+	.loc	19	456	0
+	add.s32 	%r82, %r22, 1;
+	mov.s32 	%r22, %r82;
+	.loc	19	457	0
+	mov.s32 	%r843, 63;
+	setp.le.s32 	%p4, %r82, %r843;
+$Lt_5_1026:
+	.loc	19	458	0
+	@%p4 bra 	$Lt_5_298754;
+	bra.uni 	$Lt_5_307970;
+$Lt_5_298242:
+$Lt_5_36866:
+	.loc	19	472	0
+	@!%p4 bra 	$Lt_5_307970;
+	mov.s32 	%r844, 64;
+	sub.s32 	%r845, %r844, %r22;
+	mov.s32 	%r846, %r845;
+$Lt_5_308482:
+ //<loop> Loop body line 472, nesting depth: 2, estimated iterations: unknown
+	.loc	19	477	0
+	cvt.s64.s32 	%rd400, %r22;
+	mul.wide.s32 	%rd401, %r22, 32;
+	add.u64 	%rd15, %rd10, %rd401;
+	ld.global.u8 	%r847, [%rd15+32];
+	mov.u32 	%r848, 116;
+	setp.eq.s32 	%p471, %r847, %r848;
+	@%p471 bra 	$Lt_5_52482;
+	mov.u32 	%r849, 28;
+	setp.eq.s32 	%p472, %r847, %r849;
+	@%p472 bra 	$Lt_5_514;
+	mov.u32 	%r850, 14;
+	setp.eq.s32 	%p473, %r847, %r850;
+	@%p473 bra 	$Lt_5_55298;
+	mov.u32 	%r851, 15;
+	setp.eq.s32 	%p474, %r847, %r851;
+	@%p474 bra 	$Lt_5_55298;
+	mov.u32 	%r852, 6;
+	setp.eq.s32 	%p475, %r847, %r852;
+	@%p475 bra 	$Lt_5_307970;
+	mov.u32 	%r853, 16;
+	setp.eq.s32 	%p476, %r847, %r853;
+	@%p476 bra 	$Lt_5_56066;
+	bra.uni 	$Lt_5_60418;
+$Lt_5_52482:
+	.loc	19	482	0
+	ld.global.s32 	%r854, [%rd15+48];
+	mov.u32 	%r855, 0;
+	setp.eq.s32 	%p477, %r854, %r855;
+	@%p477 bra 	$Lt_5_52738;
+	mov.u32 	%r856, 3;
+	setp.eq.s32 	%p478, %r854, %r856;
+	@%p478 bra 	$Lt_5_53250;
+	mov.u32 	%r857, 1;
+	setp.eq.s32 	%p479, %r854, %r857;
+	@%p479 bra 	$Lt_5_53506;
+	mov.u32 	%r858, 2;
+	setp.eq.s32 	%p480, %r854, %r858;
+	@%p480 bra 	$Lt_5_53762;
+	mov.u32 	%r859, 4;
+	setp.eq.s32 	%p481, %r854, %r859;
+	@%p481 bra 	$Lt_5_54018;
+	bra.uni 	$Lt_5_323586;
+$Lt_5_52738:
+	.loc	19	488	0
+	mov.s32 	%r717, 256;
+	.loc	19	492	0
+	cvt.u64.u32 	%rd402, %r3;
+	mul.wide.u32 	%rd403, %r3, 4;
+	add.u64 	%rd404, %rd9, %rd403;
+	ld.global.s32 	%r860, [%rd15+36];
+	cvt.s64.s32 	%rd405, %r860;
+	mul.wide.s32 	%rd406, %r860, 16;
+	add.u64 	%rd407, %rd406, %rd11;
+	ld.local.s32 	%r861, [%rd407+0];
+	st.shared.s32 	[%rd404+0], %r861;
+	mov.s32 	%r755, 128;
+$Lt_5_309250:
+ //<loop> Loop body line 492, nesting depth: 3, estimated iterations: unknown
+	mov.u32 	%r862, 31;
+	setp.le.s32 	%p482, %r755, %r862;
+	@%p482 bra 	$Lt_5_309506;
+	.loc	19	496	0
+	bar.sync 	0;
+$Lt_5_309506:
+	set.gt.u32.u32 	%r863, %r717, %r3;
+	neg.s32 	%r864, %r863;
+	set.le.u32.u32 	%r865, %r755, %r3;
+	neg.s32 	%r866, %r865;
+	and.b32 	%r867, %r864, %r866;
+	mov.u32 	%r868, 0;
+	setp.eq.s32 	%p483, %r867, %r868;
+	@%p483 bra 	$Lt_5_310018;
+	.loc	19	498	0
+	sub.u32 	%r869, %r3, %r755;
+	sub.u32 	%r870, %r755, %r869;
+	sub.u32 	%r871, %r870, 1;
+	cvt.u64.u32 	%rd408, %r871;
+	mul.wide.u32 	%rd409, %r871, 4;
+	add.u64 	%rd410, %rd9, %rd409;
+	ld.shared.s32 	%r872, [%rd410+0];
+	ld.shared.s32 	%r873, [%rd404+0];
+	add.s32 	%r874, %r872, %r873;
+	st.shared.s32 	[%rd410+0], %r874;
+$Lt_5_310018:
+	.loc	19	494	0
+	shr.s32 	%r755, %r755, 1;
+	shr.s32 	%r717, %r717, 1;
+	mov.u32 	%r875, 0;
+	setp.gt.s32 	%p484, %r755, %r875;
+	@%p484 bra 	$Lt_5_309250;
+	mov.s32 	%r718, %r717;
+	mov.u32 	%r876, 0;
+	setp.ne.u32 	%p485, %r3, %r876;
+	@%p485 bra 	$Lt_5_323586;
+	.loc	19	539	0
+	add.u64 	%rd411, %rd406, %rd1;
+	ld.shared.s32 	%r877, [reductionblock+0];
+	cvt.s64.s32 	%rd412, %r877;
+	atom.global.add.u64 	%rd413, [%rd411], %rd412;
+	mov.s64 	%rd414, %rd413;
+	.loc	19	540	0
+	ld.shared.s32 	%r878, [reductionblock+0];
+	cvt.s64.s32 	%rd415, %r878;
+	add.u64 	%rd416, %rd415, %rd414;
+	st.local.s64 	[%rd407+0], %rd416;
+	.loc	19	541	0
+	mov.s32 	%r879, 0;
+	st.local.s32 	[%rd407+8], %r879;
+	bra.uni 	$Lt_5_323586;
+$Lt_5_53250:
+	.loc	19	548	0
+	mov.s32 	%r717, 256;
+	.loc	19	551	0
+	cvt.u64.u32 	%rd417, %r3;
+	mul.wide.u32 	%rd418, %r3, 4;
+	add.u64 	%rd404, %rd9, %rd418;
+	ld.global.s32 	%r860, [%rd15+36];
+	cvt.s64.s32 	%rd419, %r860;
+	mul.wide.s32 	%rd406, %r860, 16;
+	add.u64 	%rd407, %rd406, %rd11;
+	ld.local.s32 	%r880, [%rd407+0];
+	st.shared.s32 	[%rd404+0], %r880;
+	mov.s32 	%r755, 128;
+$Lt_5_311810:
+ //<loop> Loop body line 551, nesting depth: 3, estimated iterations: unknown
+	mov.u32 	%r881, 31;
+	setp.le.s32 	%p486, %r755, %r881;
+	@%p486 bra 	$Lt_5_312066;
+	.loc	19	555	0
+	bar.sync 	0;
+$Lt_5_312066:
+	set.gt.u32.u32 	%r882, %r717, %r3;
+	neg.s32 	%r883, %r882;
+	set.le.u32.u32 	%r884, %r755, %r3;
+	neg.s32 	%r885, %r884;
+	and.b32 	%r886, %r883, %r885;
+	mov.u32 	%r887, 0;
+	setp.eq.s32 	%p487, %r886, %r887;
+	@%p487 bra 	$Lt_5_312578;
+	.loc	19	557	0
+	sub.u32 	%r869, %r3, %r755;
+	sub.u32 	%r870, %r755, %r869;
+	sub.u32 	%r888, %r870, 1;
+	cvt.u64.u32 	%rd420, %r888;
+	mul.wide.u32 	%rd421, %r888, 4;
+	add.u64 	%rd410, %rd9, %rd421;
+	ld.shared.s32 	%r889, [%rd410+0];
+	ld.shared.s32 	%r890, [%rd404+0];
+	add.s32 	%r891, %r889, %r890;
+	st.shared.s32 	[%rd410+0], %r891;
+$Lt_5_312578:
+	.loc	19	553	0
+	shr.s32 	%r755, %r755, 1;
+	shr.s32 	%r717, %r717, 1;
+	mov.u32 	%r892, 0;
+	setp.gt.s32 	%p488, %r755, %r892;
+	@%p488 bra 	$Lt_5_311810;
+	mov.s32 	%r718, %r717;
+	mov.u32 	%r893, 0;
+	setp.ne.u32 	%p489, %r3, %r893;
+	@%p489 bra 	$Lt_5_323586;
+	.loc	19	561	0
+	add.u64 	%rd422, %rd406, %rd1;
+	ld.shared.s32 	%r894, [reductionblock+0];
+	cvt.s64.s32 	%rd423, %r894;
+	atom.global.add.u64 	%rd424, [%rd422], %rd423;
+	mov.s64 	%rd425, %rd424;
+	.loc	19	562	0
+	ld.shared.s32 	%r895, [reductionblock+0];
+	cvt.s64.s32 	%rd426, %r895;
+	add.u64 	%rd427, %rd426, %rd425;
+	st.local.s64 	[%rd407+0], %rd427;
+	.loc	19	563	0
+	mov.s32 	%r896, 0;
+	st.local.s32 	[%rd407+8], %r896;
+	bra.uni 	$Lt_5_323586;
+$Lt_5_53506:
+	.loc	19	570	0
+	mov.s32 	%r717, 256;
+	.loc	19	573	0
+	cvt.u64.u32 	%rd428, %r3;
+	mul.wide.u32 	%rd429, %r3, 4;
+	add.u64 	%rd404, %rd9, %rd429;
+	ld.global.s32 	%r860, [%rd15+36];
+	cvt.s64.s32 	%rd430, %r860;
+	mul.wide.s32 	%rd406, %r860, 16;
+	add.u64 	%rd407, %rd406, %rd11;
+	ld.local.s32 	%r897, [%rd407+0];
+	st.shared.s32 	[%rd404+0], %r897;
+	mov.s32 	%r755, 128;
+$Lt_5_314370:
+ //<loop> Loop body line 573, nesting depth: 3, estimated iterations: unknown
+	mov.u32 	%r898, 31;
+	setp.le.s32 	%p490, %r755, %r898;
+	@%p490 bra 	$Lt_5_314626;
+	.loc	19	577	0
+	bar.sync 	0;
+$Lt_5_314626:
+	set.gt.u32.u32 	%r899, %r717, %r3;
+	neg.s32 	%r900, %r899;
+	set.le.u32.u32 	%r901, %r755, %r3;
+	neg.s32 	%r902, %r901;
+	and.b32 	%r903, %r900, %r902;
+	mov.u32 	%r904, 0;
+	setp.eq.s32 	%p491, %r903, %r904;
+	@%p491 bra 	$Lt_5_315138;
+	.loc	19	579	0
+	sub.u32 	%r869, %r3, %r755;
+	sub.u32 	%r870, %r755, %r869;
+	sub.u32 	%r905, %r870, 1;
+	cvt.u64.u32 	%rd431, %r905;
+	mul.wide.u32 	%rd432, %r905, 4;
+	add.u64 	%rd410, %rd9, %rd432;
+	ld.shared.s32 	%r906, [%rd410+0];
+	ld.shared.s32 	%r907, [%rd404+0];
+	min.s32 	%r908, %r906, %r907;
+	st.shared.s32 	[%rd410+0], %r908;
+$Lt_5_315138:
+	.loc	19	575	0
+	shr.s32 	%r755, %r755, 1;
+	shr.s32 	%r717, %r717, 1;
+	mov.u32 	%r909, 0;
+	setp.gt.s32 	%p492, %r755, %r909;
+	@%p492 bra 	$Lt_5_314370;
+	mov.s32 	%r718, %r717;
+	mov.u32 	%r910, 0;
+	setp.ne.u32 	%p493, %r3, %r910;
+	@%p493 bra 	$Lt_5_323586;
+	.loc	19	583	0
+	add.u64 	%rd433, %rd406, %rd1;
+	ld.shared.s32 	%r911, [reductionblock+0];
+	atom.global.min.s32 	%r912, [%rd433], %r911;
+	mov.s32 	%r913, %r912;
+	.loc	19	585	0
+	ld.shared.s32 	%r914, [reductionblock+0];
+	min.s32 	%r915, %r914, %r913;
+	cvt.s64.s32 	%rd434, %r915;
+	st.local.s64 	[%rd407+0], %rd434;
+	.loc	19	586	0
+	mov.s32 	%r916, 0;
+	st.local.s32 	[%rd407+8], %r916;
+	bra.uni 	$Lt_5_323586;
+$Lt_5_53762:
+	.loc	19	594	0
+	mov.s32 	%r717, 256;
+	.loc	19	597	0
+	cvt.u64.u32 	%rd435, %r3;
+	mul.wide.u32 	%rd436, %r3, 4;
+	add.u64 	%rd404, %rd9, %rd436;
+	ld.global.s32 	%r860, [%rd15+36];
+	cvt.s64.s32 	%rd437, %r860;
+	mul.wide.s32 	%rd406, %r860, 16;
+	add.u64 	%rd407, %rd406, %rd11;
+	ld.local.s32 	%r917, [%rd407+0];
+	st.shared.s32 	[%rd404+0], %r917;
+	mov.s32 	%r755, 128;
+$Lt_5_316930:
+ //<loop> Loop body line 597, nesting depth: 3, estimated iterations: unknown
+	mov.u32 	%r918, 31;
+	setp.le.s32 	%p494, %r755, %r918;
+	@%p494 bra 	$Lt_5_317186;
+	.loc	19	601	0
+	bar.sync 	0;
+$Lt_5_317186:
+	set.gt.u32.u32 	%r919, %r717, %r3;
+	neg.s32 	%r920, %r919;
+	set.le.u32.u32 	%r921, %r755, %r3;
+	neg.s32 	%r922, %r921;
+	and.b32 	%r923, %r920, %r922;
+	mov.u32 	%r924, 0;
+	setp.eq.s32 	%p495, %r923, %r924;
+	@%p495 bra 	$Lt_5_317698;
+	.loc	19	603	0
+	sub.u32 	%r869, %r3, %r755;
+	sub.u32 	%r870, %r755, %r869;
+	sub.u32 	%r925, %r870, 1;
+	cvt.u64.u32 	%rd438, %r925;
+	mul.wide.u32 	%rd439, %r925, 4;
+	add.u64 	%rd410, %rd9, %rd439;
+	ld.shared.s32 	%r926, [%rd410+0];
+	ld.shared.s32 	%r927, [%rd404+0];
+	max.s32 	%r928, %r926, %r927;
+	st.shared.s32 	[%rd410+0], %r928;
+$Lt_5_317698:
+	.loc	19	599	0
+	shr.s32 	%r755, %r755, 1;
+	shr.s32 	%r717, %r717, 1;
+	mov.u32 	%r929, 0;
+	setp.gt.s32 	%p496, %r755, %r929;
+	@%p496 bra 	$Lt_5_316930;
+	mov.s32 	%r718, %r717;
+	mov.u32 	%r930, 0;
+	setp.ne.u32 	%p497, %r3, %r930;
+	@%p497 bra 	$Lt_5_323586;
+	.loc	19	607	0
+	add.u64 	%rd440, %rd406, %rd1;
+	ld.shared.s32 	%r931, [reductionblock+0];
+	atom.global.max.s32 	%r932, [%rd440], %r931;
+	mov.s32 	%r933, %r932;
+	.loc	19	609	0
+	ld.shared.s32 	%r934, [reductionblock+0];
+	max.s32 	%r935, %r934, %r933;
+	cvt.s64.s32 	%rd441, %r935;
+	st.local.s64 	[%rd407+0], %rd441;
+	.loc	19	610	0
+	mov.s32 	%r936, 0;
+	st.local.s32 	[%rd407+8], %r936;
+	bra.uni 	$Lt_5_323586;
+$Lt_5_54018:
+	.loc	19	617	0
+	mov.s32 	%r717, 256;
+	.loc	19	620	0
+	cvt.u64.u32 	%rd442, %r3;
+	mul.wide.u32 	%rd443, %r3, 4;
+	add.u64 	%rd404, %rd9, %rd443;
+	ld.global.s32 	%r860, [%rd15+36];
+	cvt.s64.s32 	%rd444, %r860;
+	mul.wide.s32 	%rd406, %r860, 16;
+	add.u64 	%rd407, %rd406, %rd11;
+	ld.local.s32 	%r937, [%rd407+8];
+	mov.s32 	%r938, 5;
+	set.ne.u32.s32 	%r939, %r937, %r938;
+	neg.s32 	%r940, %r939;
+	st.shared.s32 	[%rd404+0], %r940;
+	mov.s32 	%r755, 128;
+$Lt_5_319490:
+ //<loop> Loop body line 620, nesting depth: 3, estimated iterations: unknown
+	mov.u32 	%r941, 31;
+	setp.le.s32 	%p498, %r755, %r941;
+	@%p498 bra 	$Lt_5_319746;
+	.loc	19	624	0
+	bar.sync 	0;
+$Lt_5_319746:
+	set.gt.u32.u32 	%r942, %r717, %r3;
+	neg.s32 	%r943, %r942;
+	set.le.u32.u32 	%r944, %r755, %r3;
+	neg.s32 	%r945, %r944;
+	and.b32 	%r946, %r943, %r945;
+	mov.u32 	%r947, 0;
+	setp.eq.s32 	%p499, %r946, %r947;
+	@%p499 bra 	$Lt_5_320258;
+	.loc	19	626	0
+	sub.u32 	%r869, %r3, %r755;
+	sub.u32 	%r870, %r755, %r869;
+	sub.u32 	%r948, %r870, 1;
+	cvt.u64.u32 	%rd445, %r948;
+	mul.wide.u32 	%rd446, %r948, 4;
+	add.u64 	%rd410, %rd9, %rd446;
+	ld.shared.s32 	%r949, [%rd410+0];
+	ld.shared.s32 	%r950, [%rd404+0];
+	add.s32 	%r951, %r949, %r950;
+	st.shared.s32 	[%rd410+0], %r951;
+$Lt_5_320258:
+	.loc	19	622	0
+	shr.s32 	%r755, %r755, 1;
+	shr.s32 	%r717, %r717, 1;
+	mov.u32 	%r952, 0;
+	setp.gt.s32 	%p500, %r755, %r952;
+	@%p500 bra 	$Lt_5_319490;
+	mov.u32 	%r953, 0;
+	setp.eq.u32 	%p501, %r3, %r953;
+	@!%p501 bra 	$Lt_5_321026;
+	.loc	19	632	0
+	ld.shared.s32 	%r954, [reductionblock+0];
+	atom.global.add.s32 	%r955, [%rd1], %r954;
+	mov.s32 	%r956, %r955;
+	.loc	19	633	0
+	ld.shared.s32 	%r957, [reductionblock+0];
+	add.s32 	%r958, %r957, %r956;
+	mov.s32 	%r959, %r958;
+$Lt_5_321026:
+	.loc	19	639	0
+	mov.s32 	%r717, 256;
+	.loc	19	643	0
+	ld.local.s32 	%r960, [%rd407+0];
+	st.shared.s32 	[%rd404+0], %r960;
+	mov.s32 	%r755, 128;
+$Lt_5_322050:
+ //<loop> Loop body line 643, nesting depth: 3, estimated iterations: unknown
+	mov.u32 	%r961, 31;
+	setp.le.s32 	%p502, %r755, %r961;
+	@%p502 bra 	$Lt_5_322306;
+	.loc	19	647	0
+	bar.sync 	0;
+$Lt_5_322306:
+	set.gt.u32.u32 	%r962, %r717, %r3;
+	neg.s32 	%r963, %r962;
+	set.le.u32.u32 	%r964, %r755, %r3;
+	neg.s32 	%r965, %r964;
+	and.b32 	%r966, %r963, %r965;
+	mov.u32 	%r967, 0;
+	setp.eq.s32 	%p503, %r966, %r967;
+	@%p503 bra 	$Lt_5_322818;
+	.loc	19	649	0
+	sub.u32 	%r869, %r3, %r755;
+	sub.u32 	%r870, %r755, %r869;
+	sub.u32 	%r968, %r870, 1;
+	cvt.u64.u32 	%rd447, %r968;
+	mul.wide.u32 	%rd448, %r968, 4;
+	add.u64 	%rd410, %rd9, %rd448;
+	ld.shared.s32 	%r969, [%rd410+0];
+	ld.shared.s32 	%r970, [%rd404+0];
+	add.s32 	%r971, %r969, %r970;
+	st.shared.s32 	[%rd410+0], %r971;
+$Lt_5_322818:
+	.loc	19	645	0
+	shr.s32 	%r755, %r755, 1;
+	shr.s32 	%r717, %r717, 1;
+	mov.u32 	%r972, 0;
+	setp.gt.s32 	%p504, %r755, %r972;
+	@%p504 bra 	$Lt_5_322050;
+	mov.s32 	%r718, %r717;
+	@!%p501 bra 	$Lt_5_323586;
+	.loc	19	655	0
+	add.u64 	%rd449, %rd406, %rd1;
+	ld.shared.s32 	%r973, [reductionblock+0];
+	cvt.s64.s32 	%rd450, %r973;
+	atom.global.add.u64 	%rd451, [%rd449], %rd450;
+	mov.s64 	%rd452, %rd451;
+	.loc	19	658	0
+	ld.shared.s32 	%r974, [reductionblock+0];
+	cvt.rn.f64.s32 	%fd104, %r974;
+	cvt.rn.f64.u64 	%fd105, %rd452;
+	add.f64 	%fd106, %fd104, %fd105;
+	mov.s32 	%r975, %r959;
+	cvt.rn.f64.s32 	%fd107, %r975;
+	div.rn.f64 	%fd108, %fd106, %fd107;
+	cvt.rn.f32.f64 	%f103, %fd108;
+	st.local.f32 	[%rd407+0], %f103;
+	.loc	19	659	0
+	mov.s32 	%r976, 2;
+	st.local.s32 	[%rd407+8], %r976;
+$Lt_5_323586:
+$Lt_5_52994:
+	.loc	19	664	0
+	add.s32 	%r977, %r22, 1;
+	mov.s32 	%r22, %r977;
+	.loc	19	665	0
+	bra.uni 	$Lt_5_54786;
+$Lt_5_55298:
+$Lt_5_55554:
+	.loc	19	672	0
+	ld.global.s32 	%r860, [%rd15+36];
+	ld.global.s32 	%r978, [%rd15+40];
+	cvt.s64.s32 	%rd453, %r860;
+	mul.wide.s32 	%rd406, %r860, 16;
+	add.u64 	%rd407, %rd406, %rd11;
+	cvt.s64.s32 	%rd454, %r978;
+	mul.wide.s32 	%rd455, %r978, 16;
+	add.u64 	%rd456, %rd11, %rd455;
+	ld.local.s32 	%r979, [%rd407+8];
+	st.local.s32 	[%rd456+8], %r979;
+	.loc	19	673	0
+	ld.local.s64 	%rd457, [%rd407+0];
+	st.local.s64 	[%rd456+0], %rd457;
+	.loc	19	674	0
+	add.s32 	%r977, %r22, 1;
+	mov.s32 	%r22, %r977;
+	.loc	19	675	0
+	bra.uni 	$Lt_5_54786;
+$Lt_5_56066:
+	.loc	19	680	0
+	mov.u32 	%r980, 0;
+	setp.ne.u32 	%p505, %r3, %r980;
+	@%p505 bra 	$Lt_5_324354;
+	.loc	19	683	0
+	mov.u64 	%rd458, block_order;
+	mov.u32 	%r981, 1;
+	atom.global.add.u32 	%r982, [%rd458], %r981;
+	mov.s32 	%r983, %r982;
+	mov.s32 	%r755, %r983;
+	bra.uni 	$Lt_5_324098;
+$Lt_5_324354:
+	.loc	19	685	0
+	mov.s32 	%r755, 0;
+$Lt_5_324098:
+	mov.u32 	%r984, %nctaid.x;
+	sub.u32 	%r985, %r984, 1;
+	setp.ne.u32 	%p506, %r755, %r985;
+	@%p506 bra 	$Lt_5_326146;
+	.loc	19	688	0
+	mov.u32 	%r986, 0;
+	st.global.u32 	[block_order], %r986;
+	.loc	19	690	0
+	ld.global.s32 	%r860, [%rd15+36];
+	ld.global.s32 	%r978, [%rd15+40];
+	add.s32 	%r719, %r978, %r860;
+	setp.gt.s32 	%p507, %r719, %r860;
+	@!%p507 bra 	$Lt_5_325122;
+	mov.s32 	%r987, %r978;
+	cvt.s64.s32 	%rd459, %r860;
+	mul.wide.s32 	%rd460, %r860, 16;
+	add.u64 	%rd333, %rd11, %rd460;
+	mov.s32 	%r721, 0;
+	mov.s64 	%rd334, %rd6;
+	mov.s32 	%r988, %r987;
+$Lt_5_325634:
+ //<loop> Loop body line 690, nesting depth: 1, estimated iterations: unknown
+	.loc	19	691	0
+	ld.local.s32 	%r989, [%rd333+8];
+	st.global.s32 	[%rd334+12], %r989;
+	.loc	19	692	0
+	st.global.s32 	[%rd334+76], %r21;
+	.loc	19	694	0
+	mov.u32 	%r990, 0;
+	setp.eq.s32 	%p508, %r989, %r990;
+	@%p508 bra 	$Lt_5_56322;
+	mov.u32 	%r991, 2;
+	setp.eq.s32 	%p509, %r989, %r991;
+	@%p509 bra 	$Lt_5_56834;
+	mov.u32 	%r992, 1;
+	setp.eq.s32 	%p510, %r989, %r992;
+	@%p510 bra 	$Lt_5_57090;
+	mov.u32 	%r993, 3;
+	setp.eq.s32 	%p511, %r989, %r993;
+	@%p511 bra 	$Lt_5_57346;
+	bra.uni 	$Lt_5_56578;
+$Lt_5_56322:
+	.loc	19	696	0
+	add.s32 	%r21, %r21, 4;
+	.loc	19	697	0
+	bra.uni 	$Lt_5_56578;
+$Lt_5_56834:
+	.loc	19	699	0
+	add.s32 	%r21, %r21, 4;
+	.loc	19	700	0
+	bra.uni 	$Lt_5_56578;
+$Lt_5_57090:
+	.loc	19	702	0
+	add.s32 	%r21, %r21, 8;
+	.loc	19	703	0
+	bra.uni 	$Lt_5_56578;
+$Lt_5_57346:
+	.loc	19	705	0
+	add.s32 	%r21, %r21, 8;
+$Lt_5_56578:
+	.loc	19	707	0
+	add.s32 	%r721, %r721, 1;
+	add.u64 	%rd334, %rd334, 4;
+	add.u64 	%rd333, %rd333, 16;
+	setp.ne.s32 	%p512, %r721, %r978;
+	@%p512 bra 	$Lt_5_325634;
+$Lt_5_325122:
+	.loc	19	716	0
+	sub.s32 	%r994, %r21, 1;
+	shr.s32 	%r995, %r994, 1;
+	or.b32 	%r996, %r994, %r995;
+	shr.s32 	%r997, %r996, 2;
+	or.b32 	%r998, %r996, %r997;
+	shr.s32 	%r999, %r998, 4;
+	or.b32 	%r1000, %r998, %r999;
+	shr.s32 	%r1001, %r1000, 8;
+	or.b32 	%r1002, %r1000, %r1001;
+	shr.s32 	%r1003, %r1002, 16;
+	or.b32 	%r1004, %r1002, %r1003;
+	add.s32 	%r21, %r1004, 1;
+	.loc	19	718	0
+	st.global.s32 	[%rd6+8], %r21;
+	.loc	19	719	0
+	st.global.s32 	[%rd6+4], %r978;
+	.loc	19	720	0
+	mov.s32 	%r1005, 1;
+	st.global.s32 	[%rd6+0], %r1005;
+	.loc	19	722	0
+	mov.s32 	%r755, %r860;
+	@!%p507 bra 	$Lt_5_326146;
+	mov.s32 	%r1006, %r978;
+	cvt.s64.s32 	%rd461, %r860;
+	mul.wide.s32 	%rd462, %r860, 16;
+	add.u64 	%rd333, %rd11, %rd462;
+	mov.s32 	%r1007, %r1006;
+$Lt_5_326658:
+ //<loop> Loop body line 722, nesting depth: 1, estimated iterations: unknown
+	.loc	19	723	0
+	ld.local.s32 	%r1008, [%rd333+8];
+	mov.u32 	%r1009, 0;
+	setp.eq.s32 	%p513, %r1008, %r1009;
+	@%p513 bra 	$Lt_5_58370;
+	mov.u32 	%r1010, 2;
+	setp.eq.s32 	%p514, %r1008, %r1010;
+	@%p514 bra 	$Lt_5_58882;
+	mov.u32 	%r1011, 1;
+	setp.eq.s32 	%p515, %r1008, %r1011;
+	@%p515 bra 	$Lt_5_59138;
+	mov.u32 	%r1012, 3;
+	setp.eq.s32 	%p516, %r1008, %r1012;
+	@%p516 bra 	$Lt_5_59394;
+	bra.uni 	$Lt_5_58626;
+$Lt_5_58370:
+	.loc	19	725	0
+	ld.local.s32 	%r1013, [%rd333+0];
+	st.global.s32 	[%rd12+0], %r1013;
+	.loc	19	726	0
+	add.u64 	%rd12, %rd12, 4;
+	.loc	19	727	0
+	bra.uni 	$Lt_5_58626;
+$Lt_5_58882:
+	.loc	19	729	0
+	ld.local.f32 	%f104, [%rd333+0];
+	st.global.f32 	[%rd12+0], %f104;
+	.loc	19	730	0
+	add.u64 	%rd12, %rd12, 4;
+	.loc	19	731	0
+	bra.uni 	$Lt_5_58626;
+$Lt_5_59138:
+	.loc	19	733	0
+	ld.local.s64 	%rd463, [%rd333+0];
+	st.global.s64 	[%rd12+0], %rd463;
+	.loc	19	734	0
+	add.u64 	%rd12, %rd12, 8;
+	.loc	19	735	0
+	bra.uni 	$Lt_5_58626;
+$Lt_5_59394:
+	.loc	19	737	0
+	ld.local.f64 	%fd109, [%rd333+0];
+	st.global.f64 	[%rd12+0], %fd109;
+	.loc	19	738	0
+	add.u64 	%rd12, %rd12, 8;
+$Lt_5_58626:
+	.loc	19	740	0
+	add.s32 	%r755, %r755, 1;
+	add.u64 	%rd333, %rd333, 16;
+	setp.ne.s32 	%p517, %r719, %r755;
+	@%p517 bra 	$Lt_5_326658;
+$Lt_5_326146:
+$Lt_5_324610:
+	.loc	19	744	0
+	add.s32 	%r977, %r22, 1;
+	mov.s32 	%r22, %r977;
+	.loc	19	745	0
+	bra.uni 	$Lt_5_54786;
+$Lt_5_60418:
+	.loc	19	748	0
+	add.s32 	%r977, %r22, 1;
+	mov.s32 	%r22, %r977;
+$Lt_5_54786:
+	.loc	19	750	0
+	mov.u32 	%r1014, 64;
+	setp.ne.s32 	%p518, %r977, %r1014;
+	@%p518 bra 	$Lt_5_308482;
+$Lt_5_307970:
+$Lt_5_21250:
+	.loc	19	755	0
+	add.s32 	%r14, %r14, 1;
+	ld.param.s32 	%r1015, [__cudaparm__Z8VmKernelPcP17sphyraena_resultsiii_num_blocks];
+	add.s32 	%r10, %r1015, %r10;
+	setp.gt.s32 	%p519, %r7, %r14;
+	@%p519 bra 	$Lt_5_297474;
+$LBB1247__Z8VmKernelPcP17sphyraena_resultsiii:
+	.loc	19	759	0
+	exit;
+$LDWend__Z8VmKernelPcP17sphyraena_resultsiii:
+	} // _Z8VmKernelPcP17sphyraena_resultsiii
+	.global .align 8 .b8 count_global[64];
+	.global .texref texRef;
+

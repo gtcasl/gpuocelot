@@ -1,0 +1,513 @@
+	.version 2.3
+	.target sm_20
+	.address_size 64
+	// compiled with /usr/local/cuda/open64/lib//be
+	// nvopencc 4.0 built on 2011-02-18
+
+	.visible .func (.param .s32 __cudaretf__Z20_cudaUpdateFastBgGMMifffPi) _Z20_cudaUpdateFastBgGMMifffPi (.param .s32 __cudaparmf1__Z20_cudaUpdateFastBgGMMifffPi, .param .f32 __cudaparmf2__Z20_cudaUpdateFastBgGMMifffPi, .param .f32 __cudaparmf3__Z20_cudaUpdateFastBgGMMifffPi, .param .f32 __cudaparmf4__Z20_cudaUpdateFastBgGMMifffPi, .param .u64 __cudaparmf5__Z20_cudaUpdateFastBgGMMifffPi)
+
+	.visible .func (.param .s32 __cudaretf__Z20_cudaRemoveShadowGMMifffi) _Z20_cudaRemoveShadowGMMifffi (.param .s32 __cudaparmf1__Z20_cudaRemoveShadowGMMifffi, .param .f32 __cudaparmf2__Z20_cudaRemoveShadowGMMifffi, .param .f32 __cudaparmf3__Z20_cudaRemoveShadowGMMifffi, .param .f32 __cudaparmf4__Z20_cudaRemoveShadowGMMifffi, .param .s32 __cudaparmf5__Z20_cudaRemoveShadowGMMifffi)
+
+	.visible .func _Z30_cudaReplacePixelBackgroundGMMiP6uchar4 (.param .s32 __cudaparmf1__Z30_cudaReplacePixelBackgroundGMMiP6uchar4, .param .u64 __cudaparmf2__Z30_cudaReplacePixelBackgroundGMMiP6uchar4)
+
+	//-----------------------------------------------------------
+	// Compiling /tmp/tmpxft_00001b94_00000000-9_CvFastBgGMM_ver5.cpp3.i (/tmp/ccBI#.CfirNk)
+	//-----------------------------------------------------------
+
+	//-----------------------------------------------------------
+	// Options:
+	//-----------------------------------------------------------
+	//  Target:ptx, ISA:sm_20, Endian:little, Pointer Size:64
+	//  -O3	(Optimization level)
+	//  -g0	(Debug level)
+	//  -m2	(Report advisories)
+	//-----------------------------------------------------------
+
+	.file	1	"<command-line>"
+	.file	2	"/tmp/tmpxft_00001b94_00000000-8_CvFastBgGMM_ver5.cudafe2.gpu"
+	.file	3	"CvFastBgGMM_ver5.cu"
+	.file	4	"/usr/lib/x86_64-linux-gnu/gcc/x86_64-linux-gnu/4.5.2/include/stddef.h"
+	.file	5	"/usr/local/cuda/bin/../include/crt/device_runtime.h"
+	.file	6	"/usr/local/cuda/bin/../include/host_defines.h"
+	.file	7	"/usr/local/cuda/bin/../include/builtin_types.h"
+	.file	8	"/usr/local/cuda/bin/../include/device_types.h"
+	.file	9	"/usr/local/cuda/bin/../include/driver_types.h"
+	.file	10	"/usr/local/cuda/bin/../include/surface_types.h"
+	.file	11	"/usr/local/cuda/bin/../include/texture_types.h"
+	.file	12	"/usr/local/cuda/bin/../include/vector_types.h"
+	.file	13	"/usr/local/cuda/bin/../include/device_launch_parameters.h"
+	.file	14	"/usr/local/cuda/bin/../include/crt/storage_class.h"
+	.file	15	"/usr/include/bits/types.h"
+	.file	16	"/usr/include/time.h"
+	.file	17	"/usr/local/cuda/bin/../include/common_functions.h"
+	.file	18	"/usr/local/cuda/bin/../include/math_functions.h"
+	.file	19	"/usr/local/cuda/bin/../include/math_constants.h"
+	.file	20	"/usr/local/cuda/bin/../include/device_functions.h"
+	.file	21	"/usr/local/cuda/bin/../include/sm_11_atomic_functions.h"
+	.file	22	"/usr/local/cuda/bin/../include/sm_12_atomic_functions.h"
+	.file	23	"/usr/local/cuda/bin/../include/sm_13_double_functions.h"
+	.file	24	"/usr/local/cuda/bin/../include/sm_20_atomic_functions.h"
+	.file	25	"/usr/local/cuda/bin/../include/sm_20_intrinsics.h"
+	.file	26	"/usr/local/cuda/bin/../include/surface_functions.h"
+	.file	27	"/usr/local/cuda/bin/../include/texture_fetch_functions.h"
+	.file	28	"/usr/local/cuda/bin/../include/math_functions_dbl_ptx3.h"
+
+	.const .align 4 .b8 d_GMMParams[60];
+	.const .align 8 .b8 d_GMMData[24];
+	.const .align 4 .b8 d_arrImageInfo[8];
+
+	.visible .func (.param .s32 __cudaretf__Z20_cudaUpdateFastBgGMMifffPi) _Z20_cudaUpdateFastBgGMMifffPi (.param .s32 __cudaparmf1__Z20_cudaUpdateFastBgGMMifffPi, .param .f32 __cudaparmf2__Z20_cudaUpdateFastBgGMMifffPi, .param .f32 __cudaparmf3__Z20_cudaUpdateFastBgGMMifffPi, .param .f32 __cudaparmf4__Z20_cudaUpdateFastBgGMMifffPi, .param .u64 __cudaparmf5__Z20_cudaUpdateFastBgGMMifffPi)
+	{
+	.reg .u32 %r<46>;
+	.reg .u64 %rd<46>;
+	.reg .f32 %f<73>;
+	.reg .pred %p<22>;
+	.loc	3	108	0
+$LDWbegin__Z20_cudaUpdateFastBgGMMifffPi:
+	ld.param.u32 	%r1, [__cudaparmf1__Z20_cudaUpdateFastBgGMMifffPi];
+	mov.s32 	%r2, %r1;
+	ld.param.f32 	%f1, [__cudaparmf2__Z20_cudaUpdateFastBgGMMifffPi];
+	mov.f32 	%f2, %f1;
+	ld.param.f32 	%f3, [__cudaparmf3__Z20_cudaUpdateFastBgGMMifffPi];
+	mov.f32 	%f4, %f3;
+	ld.param.f32 	%f5, [__cudaparmf4__Z20_cudaUpdateFastBgGMMifffPi];
+	mov.f32 	%f6, %f5;
+	ld.param.u64 	%rd1, [__cudaparmf5__Z20_cudaUpdateFastBgGMMifffPi];
+	mov.s64 	%rd2, %rd1;
+	.loc	3	118	0
+	ld.s32 	%r3, [%rd2+0];
+	mov.s32 	%r4, 0;
+	setp.gt.s32 	%p1, %r3, %r4;
+	@!%p1 bra 	$Lt_0_25090;
+	ld.const.f32 	%f7, [d_GMMParams+0];
+	mov.f32 	%f8, 0f3f800000;     	// 1
+	sub.f32 	%f9, %f8, %f7;
+	mov.s32 	%r5, 0;
+	mov.s32 	%r6, 1;
+	setp.ne.s32 	%p2, %r6, %r5;
+	cvt.s64.s32 	%rd3, %r2;
+	mov.s64 	%rd4, %rd3;
+	ld.const.s32 	%r7, [d_arrImageInfo+0];
+	cvt.s64.s32 	%rd5, %r7;
+	mul.wide.s32 	%rd6, %r2, 4;
+	mul.wide.s32 	%rd7, %r7, 4;
+	ld.const.u64 	%rd8, [d_GMMData+8];
+	add.u64 	%rd9, %rd6, %rd8;
+	ld.const.f32 	%f10, [d_GMMParams+36];
+	mov.s32 	%r8, 0;
+	mov.f32 	%f11, 0f00000000;    	// 0
+	mov.s32 	%r9, 0;
+$Lt_0_16386:
+ //<loop> Loop body line 118, nesting depth: 1, estimated iterations: unknown
+	.loc	3	127	0
+	ld.f32 	%f12, [%rd9+0];
+	fma.rn.f32 	%f13, %f9, %f12, %f10;
+	@!%p2 bra 	$Lt_0_16898;
+	.loc	3	134	0
+	ld.const.u64 	%rd10, [d_GMMData+0];
+	mul.lo.u64 	%rd11, %rd4, 16;
+	add.u64 	%rd12, %rd10, %rd11;
+	ld.v4.f32 	{%f14,%f15,%f16,%f17}, [%rd12+0];
+	.loc	3	146	0
+	sub.f32 	%f18, %f15, %f4;
+	sub.f32 	%f19, %f14, %f2;
+	sub.f32 	%f20, %f16, %f6;
+	mul.f32 	%f21, %f18, %f18;
+	fma.rn.f32 	%f22, %f19, %f19, %f21;
+	fma.rn.f32 	%f23, %f20, %f20, %f22;
+	.loc	3	134	0
+	ld.const.f32 	%f24, [d_GMMParams+12];
+	setp.gt.f32 	%p3, %f24, %f11;
+	@!%p3 bra 	$Lt_0_25346;
+	ld.const.f32 	%f25, [d_GMMParams+4];
+	mul.f32 	%f26, %f25, %f17;
+	setp.lt.f32 	%p4, %f23, %f26;
+	@!%p4 bra 	$Lt_0_25346;
+	mov.s32 	%r9, 1;
+$Lt_0_25346:
+$L_0_15362:
+	.loc	3	150	0
+	ld.const.f32 	%f27, [d_GMMParams+8];
+	mul.f32 	%f28, %f27, %f17;
+	setp.lt.f32 	%p5, %f23, %f28;
+	@!%p5 bra 	$Lt_0_17410;
+	.loc	20	546	0
+	div.rn.f32 	%f29, %f7, %f12;
+	.loc	3	161	0
+	add.f32 	%f12, %f13, %f7;
+	.loc	3	162	0
+	mul.f32 	%f30, %f19, %f29;
+	sub.f32 	%f14, %f14, %f30;
+	.loc	3	163	0
+	mul.f32 	%f31, %f18, %f29;
+	sub.f32 	%f15, %f15, %f31;
+	.loc	3	164	0
+	mul.f32 	%f32, %f20, %f29;
+	sub.f32 	%f16, %f16, %f32;
+	sub.f32 	%f33, %f23, %f17;
+	fma.rn.f32 	%f34, %f29, %f33, %f17;
+	mov.f32 	%f35, 0f40800000;    	// 4
+	setp.lt.f32 	%p6, %f34, %f35;
+	@!%p6 bra 	$Lt_0_17922;
+	.loc	3	171	0
+	mov.f32 	%f36, 0f40800000;    	// 4
+	bra.uni 	$Lt_0_17666;
+$Lt_0_17922:
+	ld.const.f32 	%f37, [d_GMMParams+16];
+	mov.f32 	%f38, 0f40a00000;    	// 5
+	mul.f32 	%f39, %f37, %f38;
+	setp.lt.f32 	%p7, %f39, %f34;
+	selp.f32 	%f36, %f39, %f34, %p7;
+$Lt_0_17666:
+	st.v4.f32 	[%rd12+0], {%f14,%f15,%f16,%f36};
+	.loc	3	180	0
+	mov.s32 	%r10, %r8;
+	mov.u32 	%r11, 0;
+	setp.le.s32 	%p8, %r8, %r11;
+	@%p8 bra 	$Lt_0_18178;
+	mov.s32 	%r12, %r8;
+	mov.s32 	%r13, %r12;
+$Lt_0_18690:
+ //<loop> Loop body line 180, nesting depth: 2, estimated iterations: unknown
+	mul.lo.s32 	%r14, %r10, %r7;
+	add.s32 	%r15, %r14, %r2;
+	sub.s32 	%r16, %r15, %r7;
+	cvt.s64.s32 	%rd13, %r16;
+	mul.wide.s32 	%rd14, %r16, 4;
+	add.u64 	%rd15, %rd8, %rd14;
+	ld.f32 	%f40, [%rd15+0];
+	setp.gt.f32 	%p9, %f40, %f12;
+	@!%p9 bra 	$Lt_0_19202;
+	bra.uni 	$Lt_0_18178;
+$Lt_0_19202:
+	.loc	3	192	0
+	cvt.s64.s32 	%rd16, %r15;
+	mul.wide.s32 	%rd17, %r15, 16;
+	add.u64 	%rd18, %rd10, %rd17;
+	ld.v4.f32 	{%f41,%f42,%f43,%f44}, [%rd18+0];
+	mul.lo.u64 	%rd19, %rd13, 16;
+	add.u64 	%rd20, %rd10, %rd19;
+	ld.v4.f32 	{%f45,%f46,%f47,%f48}, [%rd20+0];
+	st.v4.f32 	[%rd18+0], {%f45,%f46,%f47,%f48};
+	st.v4.f32 	[%rd20+0], {%f41,%f42,%f43,%f44};
+	.loc	3	195	0
+	mul.wide.s32 	%rd21, %r15, 4;
+	add.u64 	%rd22, %rd8, %rd21;
+	ld.f32 	%f49, [%rd22+0];
+	ld.f32 	%f50, [%rd15+0];
+	st.f32 	[%rd22+0], %f50;
+	st.f32 	[%rd15+0], %f49;
+	.loc	3	180	0
+	sub.s32 	%r10, %r10, 1;
+	mov.u32 	%r17, 0;
+	setp.ne.s32 	%p10, %r10, %r17;
+	@%p10 bra 	$Lt_0_18690;
+$Lt_0_18178:
+$Lt_0_258:
+	.loc	3	199	0
+	mov.s32 	%r18, 0;
+	mov.s32 	%r19, 0;
+	setp.ne.s32 	%p2, %r19, %r18;
+	bra.uni 	$Lt_0_20226;
+$Lt_0_17410:
+	.loc	3	205	0
+	mov.f32 	%f12, %f13;
+	neg.f32 	%f51, %f10;
+	setp.lt.f32 	%p11, %f13, %f51;
+	@!%p11 bra 	$Lt_0_20226;
+	.loc	3	211	0
+	sub.s32 	%r3, %r3, 1;
+	mov.f32 	%f12, 0f00000000;    	// 0
+	bra.uni 	$Lt_0_20226;
+$Lt_0_16898:
+	.loc	3	221	0
+	mov.f32 	%f12, %f13;
+	neg.f32 	%f52, %f10;
+	setp.lt.f32 	%p12, %f13, %f52;
+	@!%p12 bra 	$Lt_0_20226;
+	.loc	3	226	0
+	sub.s32 	%r3, %r3, 1;
+	mov.f32 	%f12, 0f00000000;    	// 0
+$Lt_0_20226:
+$Lt_0_16642:
+	.loc	3	231	0
+	add.f32 	%f11, %f12, %f11;
+	.loc	3	232	0
+	st.f32 	[%rd9+0], %f12;
+	.loc	3	124	0
+	add.s32 	%r8, %r8, 1;
+	add.s64 	%rd4, %rd4, %rd5;
+	add.u64 	%rd9, %rd9, %rd7;
+	setp.gt.s32 	%p13, %r3, %r8;
+	@%p13 bra 	$Lt_0_16386;
+	mov.s32 	%r20, 0;
+	setp.gt.s32 	%p1, %r3, %r20;
+	bra.uni 	$Lt_0_15874;
+$Lt_0_25090:
+	mov.s32 	%r21, 0;
+	mov.s32 	%r22, 1;
+	setp.ne.s32 	%p2, %r22, %r21;
+	mov.f32 	%f11, 0f00000000;    	// 0
+	mov.s32 	%r9, 0;
+$Lt_0_15874:
+	@!%p1 bra 	$Lt_0_20994;
+	mov.s32 	%r23, %r3;
+	cvt.s64.s32 	%rd23, %r2;
+	ld.const.s32 	%r24, [d_arrImageInfo+0];
+	cvt.s64.s32 	%rd24, %r24;
+	mul.wide.s32 	%rd6, %r2, 4;
+	mul.wide.s32 	%rd7, %r24, 4;
+	ld.const.u64 	%rd25, [d_GMMData+8];
+	add.u64 	%rd26, %rd25, %rd6;
+	mov.s32 	%r25, 0;
+	mov.s32 	%r26, %r23;
+$Lt_0_21506:
+ //<loop> Loop body line 124, nesting depth: 1, estimated iterations: unknown
+	.loc	3	240	0
+	ld.f32 	%f53, [%rd26+0];
+	div.rn.f32 	%f54, %f53, %f11;
+	st.f32 	[%rd26+0], %f54;
+	add.s32 	%r25, %r25, 1;
+	add.u64 	%rd26, %rd26, %rd7;
+	setp.ne.s32 	%p14, %r3, %r25;
+	@%p14 bra 	$Lt_0_21506;
+$Lt_0_20994:
+	@!%p2 bra 	$Lt_0_23554;
+	.loc	3	246	0
+	add.s32 	%r27, %r3, 1;
+	ld.const.s32 	%r28, [d_GMMParams+24];
+	setp.eq.s32 	%p15, %r28, %r3;
+	selp.s32 	%r3, %r3, %r27, %p15;
+	.loc	3	257	0
+	sub.s32 	%r29, %r3, 1;
+	ld.const.s32 	%r7, [d_arrImageInfo+0];
+	mul.lo.s32 	%r30, %r29, %r7;
+	add.s32 	%r31, %r2, %r30;
+	cvt.s64.s32 	%rd27, %r31;
+	ld.const.u64 	%rd8, [d_GMMData+8];
+	ld.const.f32 	%f7, [d_GMMParams+0];
+	mov.f32 	%f55, 0f3f800000;    	// 1
+	mov.s32 	%r32, 1;
+	setp.eq.s32 	%p16, %r3, %r32;
+	selp.f32 	%f56, %f55, %f7, %p16;
+	mul.wide.s32 	%rd28, %r31, 4;
+	add.u64 	%rd29, %rd8, %rd28;
+	st.f32 	[%rd29+0], %f56;
+	mov.s32 	%r33, 0;
+	setp.gt.s32 	%p17, %r29, %r33;
+	@!%p17 bra 	$Lt_0_22530;
+	mov.s32 	%r34, %r29;
+	mov.f32 	%f57, 0f3f800000;    	// 1
+	sub.f32 	%f9, %f57, %f7;
+	cvt.s64.s32 	%rd30, %r2;
+	cvt.s64.s32 	%rd31, %r7;
+	mul.wide.s32 	%rd6, %r2, 4;
+	mul.wide.s32 	%rd7, %r7, 4;
+	add.u64 	%rd32, %rd6, %rd8;
+	mov.s32 	%r35, 0;
+	mov.s32 	%r36, %r34;
+$Lt_0_23042:
+ //<loop> Loop body line 257, nesting depth: 1, estimated iterations: unknown
+	.loc	3	267	0
+	ld.f32 	%f58, [%rd32+0];
+	mul.f32 	%f59, %f58, %f9;
+	st.f32 	[%rd32+0], %f59;
+	add.s32 	%r35, %r35, 1;
+	add.u64 	%rd32, %rd32, %rd7;
+	setp.ne.s32 	%p18, %r29, %r35;
+	@%p18 bra 	$Lt_0_23042;
+$Lt_0_22530:
+	.loc	3	275	0
+	ld.const.u64 	%rd10, [d_GMMData+0];
+	mul.lo.u64 	%rd33, %rd27, 16;
+	add.u64 	%rd34, %rd10, %rd33;
+	ld.const.f32 	%f60, [d_GMMParams+16];
+	st.v4.f32 	[%rd34+0], {%f2,%f4,%f6,%f60};
+	.loc	3	279	0
+	mov.s32 	%r37, %r29;
+	@!%p17 bra 	$Lt_0_23554;
+	mov.s32 	%r38, %r29;
+	mov.s32 	%r39, %r38;
+$Lt_0_24066:
+ //<loop> Loop body line 279, nesting depth: 1, estimated iterations: unknown
+	mul.lo.s32 	%r40, %r37, %r7;
+	add.s32 	%r41, %r40, %r2;
+	sub.s32 	%r42, %r41, %r7;
+	cvt.s64.s32 	%rd35, %r42;
+	mul.wide.s32 	%rd36, %r42, 4;
+	add.u64 	%rd37, %rd8, %rd36;
+	ld.f32 	%f61, [%rd37+0];
+	setp.gt.f32 	%p19, %f61, %f7;
+	@!%p19 bra 	$Lt_0_24578;
+	bra.uni 	$Lt_0_23554;
+$Lt_0_24578:
+	.loc	3	291	0
+	cvt.s64.s32 	%rd38, %r41;
+	mul.wide.s32 	%rd39, %r41, 16;
+	add.u64 	%rd40, %rd10, %rd39;
+	ld.v4.f32 	{%f62,%f63,%f64,%f65}, [%rd40+0];
+	mul.lo.u64 	%rd41, %rd35, 16;
+	add.u64 	%rd42, %rd10, %rd41;
+	ld.v4.f32 	{%f66,%f67,%f68,%f69}, [%rd42+0];
+	st.v4.f32 	[%rd40+0], {%f66,%f67,%f68,%f69};
+	st.v4.f32 	[%rd42+0], {%f62,%f63,%f64,%f65};
+	.loc	3	294	0
+	mul.wide.s32 	%rd43, %r41, 4;
+	add.u64 	%rd44, %rd8, %rd43;
+	ld.f32 	%f70, [%rd44+0];
+	ld.f32 	%f71, [%rd37+0];
+	st.f32 	[%rd44+0], %f71;
+	st.f32 	[%rd37+0], %f70;
+	.loc	3	279	0
+	sub.s32 	%r37, %r37, 1;
+	mov.u32 	%r43, 0;
+	setp.ne.s32 	%p20, %r37, %r43;
+	@%p20 bra 	$Lt_0_24066;
+$Lt_0_23554:
+$Lt_0_514:
+$Lt_0_22018:
+	.loc	3	302	0
+	st.s32 	[%rd2+0], %r3;
+	.loc	3	304	0
+	mov.s32 	%r44, %r9;
+	st.param.s32 	[__cudaretf__Z20_cudaUpdateFastBgGMMifffPi], %r44;
+	ret;
+$LDWend__Z20_cudaUpdateFastBgGMMifffPi:
+	} // _Z20_cudaUpdateFastBgGMMifffPi
+
+	.visible .func (.param .s32 __cudaretf__Z20_cudaRemoveShadowGMMifffi) _Z20_cudaRemoveShadowGMMifffi (.param .s32 __cudaparmf1__Z20_cudaRemoveShadowGMMifffi, .param .f32 __cudaparmf2__Z20_cudaRemoveShadowGMMifffi, .param .f32 __cudaparmf3__Z20_cudaRemoveShadowGMMifffi, .param .f32 __cudaparmf4__Z20_cudaRemoveShadowGMMifffi, .param .s32 __cudaparmf5__Z20_cudaRemoveShadowGMMifffi)
+	{
+	.reg .u32 %r<19>;
+	.reg .u64 %rd<11>;
+	.reg .f32 %f<38>;
+	.reg .pred %p<8>;
+	.loc	3	312	0
+$LDWbegin__Z20_cudaRemoveShadowGMMifffi:
+	ld.param.u32 	%r1, [__cudaparmf1__Z20_cudaRemoveShadowGMMifffi];
+	mov.s32 	%r2, %r1;
+	ld.param.f32 	%f1, [__cudaparmf2__Z20_cudaRemoveShadowGMMifffi];
+	mov.f32 	%f2, %f1;
+	ld.param.f32 	%f3, [__cudaparmf3__Z20_cudaRemoveShadowGMMifffi];
+	mov.f32 	%f4, %f3;
+	ld.param.f32 	%f5, [__cudaparmf4__Z20_cudaRemoveShadowGMMifffi];
+	mov.f32 	%f6, %f5;
+	ld.param.u32 	%r3, [__cudaparmf5__Z20_cudaRemoveShadowGMMifffi];
+	mov.s32 	%r4, %r3;
+	mov.u32 	%r5, 0;
+	setp.le.s32 	%p1, %r4, %r5;
+	@%p1 bra 	$Lt_1_6146;
+	mov.s32 	%r6, %r4;
+	cvt.s64.s32 	%rd1, %r2;
+	mul.wide.s32 	%rd2, %r2, 16;
+	ld.const.u64 	%rd3, [d_GMMData+8];
+	ld.const.u64 	%rd4, [d_GMMData+0];
+	mov.s32 	%r7, 0;
+	mov.f32 	%f7, 0f00000000;     	// 0
+	mov.s32 	%r8, %r6;
+$Lt_1_4354:
+ //<loop> Loop body line 312, nesting depth: 1, estimated iterations: unknown
+	.loc	3	325	0
+	add.u64 	%rd5, %rd2, %rd4;
+	ld.v4.f32 	{%f8,%f9,%f10,_}, [%rd5+0];
+	.loc	3	327	0
+	mul.lo.u64 	%rd6, %rd1, 4;
+	add.u64 	%rd7, %rd3, %rd6;
+	ld.f32 	%f11, [%rd7+0];
+	add.f32 	%f7, %f11, %f7;
+	.loc	3	334	0
+	mul.f32 	%f12, %f9, %f9;
+	fma.rn.f32 	%f13, %f8, %f8, %f12;
+	fma.rn.f32 	%f14, %f10, %f10, %f13;
+	mov.f32 	%f15, 0f00000000;    	// 0
+	setp.eq.f32 	%p2, %f14, %f15;
+	@%p2 bra 	$Lt_1_6146;
+	.loc	3	336	0
+	mul.f32 	%f16, %f4, %f9;
+	fma.rn.f32 	%f17, %f2, %f8, %f16;
+	fma.rn.f32 	%f18, %f6, %f10, %f17;
+	div.rn.f32 	%f19, %f18, %f14;
+	ld.const.f32 	%f20, [d_GMMParams+32];
+	set.le.u32.f32 	%r9, %f20, %f19;
+	neg.s32 	%r10, %r9;
+	mov.f32 	%f21, 0f3f800000;    	// 1
+	set.le.u32.f32 	%r11, %f19, %f21;
+	neg.s32 	%r12, %r11;
+	and.b32 	%r13, %r10, %r12;
+	mov.u32 	%r14, 0;
+	setp.eq.s32 	%p3, %r13, %r14;
+	@%p3 bra 	$Lt_1_5378;
+	mul.f32 	%f22, %f9, %f19;
+	sub.f32 	%f23, %f22, %f4;
+	mul.f32 	%f24, %f8, %f19;
+	sub.f32 	%f25, %f24, %f2;
+	mul.f32 	%f26, %f10, %f19;
+	sub.f32 	%f27, %f26, %f6;
+	mul.f32 	%f28, %f23, %f23;
+	fma.rn.f32 	%f29, %f25, %f25, %f28;
+	fma.rn.f32 	%f30, %f27, %f27, %f29;
+	ld.f32 	%f31, [%rd5+12];
+	ld.const.f32 	%f32, [d_GMMParams+4];
+	mul.f32 	%f33, %f31, %f32;
+	mul.f32 	%f34, %f19, %f33;
+	mul.f32 	%f35, %f19, %f34;
+	setp.lt.f32 	%p4, %f30, %f35;
+	@!%p4 bra 	$Lt_1_5378;
+	.loc	3	352	0
+	mov.s32 	%r15, 2;
+	bra.uni 	$LBB12__Z20_cudaRemoveShadowGMMifffi;
+$Lt_1_5378:
+$Lt_1_4610:
+	.loc	3	357	0
+	ld.const.f32 	%f36, [d_GMMParams+12];
+	setp.lt.f32 	%p5, %f36, %f7;
+	@%p5 bra 	$Lt_1_6146;
+	.loc	3	322	0
+	add.s32 	%r7, %r7, 1;
+	ld.const.s32 	%r16, [d_arrImageInfo+0];
+	cvt.s64.s32 	%rd8, %r16;
+	add.s64 	%rd1, %rd1, %rd8;
+	mul.wide.s32 	%rd9, %r16, 16;
+	add.u64 	%rd2, %rd2, %rd9;
+	setp.ne.s32 	%p6, %r4, %r7;
+	@%p6 bra 	$Lt_1_4354;
+$Lt_1_6146:
+$Lt_1_258:
+	.loc	3	360	0
+	mov.s32 	%r15, 0;
+$LBB12__Z20_cudaRemoveShadowGMMifffi:
+	mov.s32 	%r17, %r15;
+	st.param.s32 	[__cudaretf__Z20_cudaRemoveShadowGMMifffi], %r17;
+	ret;
+$LDWend__Z20_cudaRemoveShadowGMMifffi:
+	} // _Z20_cudaRemoveShadowGMMifffi
+
+	.visible .func _Z30_cudaReplacePixelBackgroundGMMiP6uchar4 (.param .s32 __cudaparmf1__Z30_cudaReplacePixelBackgroundGMMiP6uchar4, .param .u64 __cudaparmf2__Z30_cudaReplacePixelBackgroundGMMiP6uchar4)
+	{
+	.reg .u16 %rh<3>;
+	.reg .u32 %r<8>;
+	.reg .u64 %rd<8>;
+	.reg .f32 %f<5>;
+	// __cuda_local_var_32907_9_non_const_tmp = 16
+	.loc	3	367	0
+$LDWbegin__Z30_cudaReplacePixelBackgroundGMMiP6uchar4:
+	ld.param.u32 	%r1, [__cudaparmf1__Z30_cudaReplacePixelBackgroundGMMiP6uchar4];
+	mov.s32 	%r2, %r1;
+	ld.param.u64 	%rd1, [__cudaparmf2__Z30_cudaReplacePixelBackgroundGMMiP6uchar4];
+	mov.s64 	%rd2, %rd1;
+	.loc	3	370	0
+	ld.const.u64 	%rd3, [d_GMMData+0];
+	cvt.s64.s32 	%rd4, %r2;
+	mul.wide.s32 	%rd5, %r2, 16;
+	add.u64 	%rd6, %rd3, %rd5;
+	ld.v4.f32 	{%f1,%f2,%f3,_}, [%rd6+0];
+	.loc	3	374	0
+	cvt.rzi.u32.f32 	%r3, %f3;
+	cvt.rzi.u32.f32 	%r4, %f2;
+	cvt.rzi.u32.f32 	%r5, %f1;
+	cvt.u32.u8 	%r6, %rh1;
+	st.v4.u8 	[%rd2+0], {%r3,%r4,%r5,%r6};
+	.loc	3	375	0
+	ret;
+$LDWend__Z30_cudaReplacePixelBackgroundGMMiP6uchar4:
+	} // _Z30_cudaReplacePixelBackgroundGMMiP6uchar4
+

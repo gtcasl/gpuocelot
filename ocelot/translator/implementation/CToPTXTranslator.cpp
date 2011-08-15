@@ -18,6 +18,8 @@
 #define COD_REG     "\%codr"
 #define COD_PRED    "\%codp"
 
+#define EMIT_COD    0
+
 namespace translator
 {
 
@@ -48,8 +50,10 @@ namespace translator
 	    for (p =base; (char*) p < s->p->cur_ip;) {
 	      
 	        l = translator.translate(s, &info, (void *)p);
+	        #if EMIT_COD
 	        l = s->j->print_insn(s, &info, (void *)p);
 	        printf("\n");
+	        #endif
 	        if (l <= 0) return;
 	        p = (char*)p + l;
 	        insn_count++;
@@ -1437,11 +1441,10 @@ namespace translator
 	            predicateInfo.set = true;
 	        }
 	        else if(br_op >= 0 && br_op < 11){
-	            inst.comparisonOperator = ir::PTXInstruction::Ne;
 	            predicateInfo.condition = PredicateInfo::TAKEN;
 	            inst.type = ir::PTXOperand::b32;
-		    inst.b.addressMode = ir::PTXOperand::Immediate;
-		    inst.b.imm_uint = 0;
+		        inst.b.addressMode = ir::PTXOperand::Immediate;
+		        inst.b.imm_uint = 0;
 	            predicateInfo.set = true;
 	        }
 	       
@@ -1745,8 +1748,8 @@ namespace translator
                                         unsigned long computeBaseAddress();\
                                         unsigned long atomicIncrement(unsigned long *memBuffer, unsigned long offset);\
                                         unsigned long uniqueElementCount(unsigned long *memBuffer);\
-                                        unsigned long deviceMem[2];";
-                                        //unsigned long sharedMem[2];";
+                                        unsigned long deviceMem[2];\
+                                        unsigned long sharedMem[2];";
                         
 	    static cod_extern_entry externs[] = 
 	    {
@@ -1785,7 +1788,7 @@ namespace translator
             {(char *)"uniqueElementCount", (void*)(unsigned long)(*uniqueElementCount)},
             {(char *)"atomicIncrement", (void*)(unsigned long)(*atomicIncrement)},
             {(char *)"deviceMem", (void *)deviceMem},
-            //{(char *)"sharedMem", (void *)deviceMem},
+            {(char *)"sharedMem", (void *)deviceMem},
 	        {NULL, (void*)0}
 	    };
      

@@ -24,7 +24,10 @@ namespace analysis
 class SuperblockAnalysis : public ProgramStructureGraph
 {
 public:
-	
+	SuperblockAnalysis(ir::ControlFlowGraph& cfg, unsigned int blockSize = 50);
+
+private:
+	ir::ControlFlowGraph* _cfg;
 };
 
 }

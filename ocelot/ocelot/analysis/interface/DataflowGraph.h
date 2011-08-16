@@ -148,7 +148,8 @@ class DataflowGraph : public KernelAnalysis
 		};
 
 		/*! \brief A vector of Block pointers */
-		typedef std::unordered_set< BlockVector::iterator, BlockVector_Hash > BlockPointerSet;
+		typedef std::unordered_set< BlockVector::iterator,
+			BlockVector_Hash > BlockPointerSet;
 		
 		/*! \brief A class for referring to a generic basic block of 
 				instructions.

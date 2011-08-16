@@ -15,6 +15,7 @@
 #include <ocelot/executive/interface/NVIDIAExecutableKernel.h>
 #include <ocelot/cuda/interface/CudaDriver.h>
 #include <ocelot/cuda/interface/cuda_runtime.h>
+#include <ocelot/trace/interface/DynamicCompilationOverhead.h>
 
 // hydrazine includes
 #include <hydrazine/interface/SystemCompatibility.h>
@@ -366,6 +367,9 @@ namespace executive
 	
 	void NVIDIAGPUDevice::Module::load()
 	{
+	
+		trace::DynamicCompilationOverhead::instance.start();
+	
 		report("Loading module - " << ir->path() << " on NVIDIA GPU.");
 		assert(!loaded());
 		std::stringstream stream;
@@ -408,6 +412,9 @@ namespace executive
 		}
 		
 		report(" Module loaded successfully.");
+		
+		trace::DynamicCompilationOverhead::instance.stop(
+			& trace::DynamicCompilationOverhead::ptxEmitOcelot);
 		
 		for(ir::Module::TextureMap::const_iterator 
 			texture = ir->textures().begin(); 

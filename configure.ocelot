@@ -23,6 +23,9 @@
 		cacheSimulator: {
 			enabled: false,
 		},
+		dynamicCompilation: {
+			enabled: true,
+		},
 		branch: false,
 		memory: false
 	},

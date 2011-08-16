@@ -5,6 +5,7 @@
 */
 
 #include <ocelot/executive/interface/NVIDIAExecutableKernel.h>
+#include <ocelot/trace/interface/DynamicCompilationOverhead.h>
 
 #include <hydrazine/implementation/debug.h>
 #include <hydrazine/implementation/Exception.h>
@@ -74,6 +75,8 @@ void executive::NVIDIAExecutableKernel::launchGrid(int width, int height,
 			"feature, please file a bug against Ocelot.");
 	}
 
+	trace::DynamicCompilationOverhead::instance.start();
+
 	result = cuda::CudaDriver::cuLaunchGrid(cuFunction, width, height);
 	if (result != CUDA_SUCCESS) {
 		report("  - cuLaunchGrid() failed: " << result);
@@ -91,6 +94,9 @@ void executive::NVIDIAExecutableKernel::launchGrid(int width, int height,
 	else {
 		report("  - cuCtxSynchronize() after cuLaunchGrid() succeeded!");
 	}
+	
+	trace::DynamicCompilationOverhead::instance.stop(
+		& trace::DynamicCompilationOverhead::kernelExecute);
 }
 
 /*!

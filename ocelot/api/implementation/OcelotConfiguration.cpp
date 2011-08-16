@@ -115,6 +115,10 @@ api::OcelotConfiguration::TraceGeneration::MemoryChecker::MemoryChecker():
 
 }
 
+api::OcelotConfiguration::TraceGeneration::DynamicCompilationOverhead::DynamicCompilationOverhead():
+	enabled(false) {
+}
+
 api::OcelotConfiguration::TraceGeneration::TraceGeneration()
 {
 
@@ -164,6 +168,7 @@ static void initializeInstrument(api::OcelotConfiguration::Instrumentation &inst
             instrument.memoryEfficiencyInstrumentor.enabled = memoryEfficiencyConfig.parse<bool>("enabled", true);
             instrument.memoryEfficiencyInstrumentor.logfile = memoryEfficiencyConfig.parse<std::string>("logfile", "");
     }
+    
 }
 
 static void initializeTrace(api::OcelotConfiguration::TraceGeneration &trace, 
@@ -186,11 +191,15 @@ static void initializeTrace(api::OcelotConfiguration::TraceGeneration &trace,
 
     hydrazine::json::Visitor debugConfig = config["debugger"];
     if (!debugConfig.is_null()) {
-            trace.debugger.enabled = debugConfig.parse<bool>("enabled", false);
-            trace.debugger.kernelFilter = 
-            	debugConfig.parse<std::string>("kernelFilter", "");
-            trace.debugger.alwaysAttach = 
-            	debugConfig.parse<bool>("alwaysAttach", false);
+		  trace.debugger.enabled = debugConfig.parse<bool>("enabled", false);
+		  trace.debugger.kernelFilter = 
+		  	debugConfig.parse<std::string>("kernelFilter", "");
+		  trace.debugger.alwaysAttach = 
+		  	debugConfig.parse<bool>("alwaysAttach", false);
+    }
+    hydrazine::json::Visitor dynComp = config["dynamicCompilation"];
+    if (!dynComp.is_null()) {
+    	trace.dynamicCompilation.enabled = dynComp.parse<bool>("enabled", false);
     }
 }
 

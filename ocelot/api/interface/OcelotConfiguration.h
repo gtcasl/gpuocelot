@@ -76,11 +76,7 @@ namespace api {
 					//	with the same value
 					bool ignoreIrrelevantWrites;
 			};
-
-		public:
-			TraceGeneration();
-
-		public:
+			
 			//! \brief Check memory errors
 			class MemoryChecker
 			{
@@ -91,14 +87,29 @@ namespace api {
 					bool checkInitialization;
 			};
 			
+			class DynamicCompilationOverhead {
+			public:
+				DynamicCompilationOverhead();
+			public:
+				bool enabled;
+			};
+
+		public:
+			TraceGeneration();
+
+		public:
+			
 			//! \brief Race detection
 			RaceDetector raceDetector;
                         
-            //! \brief Interactive Debugger
-            Debugger debugger;
+      //! \brief Interactive Debugger
+      Debugger debugger;
 
-            //! \brief Memory checker
-            MemoryChecker memoryChecker;
+      //! \brief Memory checker
+      MemoryChecker memoryChecker;
+      
+      //! 
+      DynamicCompilationOverhead dynamicCompilation;
 		};
 
         //! Configuration for instrumentation facilities

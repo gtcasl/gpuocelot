@@ -16,6 +16,7 @@
 #include <ocelot/ir/interface/PTXInstruction.h>
 #include <ocelot/executive/interface/RuntimeException.h>
 #include <ocelot/transforms/interface/PassManager.h>
+#include <ocelot/trace/interface/DynamicCompilationOverhead.h>
 
 // Hydrazine includes
 #include <hydrazine/implementation/Exception.h>
@@ -441,6 +442,8 @@ cuda::HostThreadContext& cuda::CudaRuntime::_getCurrentThread() {
 }
 
 void cuda::CudaRuntime::_registerModule(ModuleMap::iterator module) {
+	trace::DynamicCompilationOverhead::instance.start();
+	
 	if(module->second.loaded()) return;
 	module->second.loadNow();
 
@@ -482,6 +485,9 @@ void cuda::CudaRuntime::_registerModule(ModuleMap::iterator module) {
 		(*device)->setOptimizationLevel(_optimization);
 		(*device)->unselect();
 	}
+	
+	trace::DynamicCompilationOverhead::instance.stop(
+		& trace::DynamicCompilationOverhead::instrumentPtx);
 }
 
 void cuda::CudaRuntime::_registerModule(const std::string& name) {
@@ -567,6 +573,8 @@ void** cuda::CudaRuntime::cudaRegisterFatBinary(void *fatCubin) {
 	size_t handle = 0;
 	_lock();
 
+	trace::DynamicCompilationOverhead::instance.start();
+
 	handle = _fatBinaries.size();
 	
 	FatBinaryContext cubinContext(fatCubin);
@@ -592,6 +600,9 @@ void** cuda::CudaRuntime::cudaRegisterFatBinary(void *fatCubin) {
 	reportE(REPORT_ALL_PTX, " with PTX\n" << cubinContext.ptx());
 		
 	_unlock();
+	
+	trace::DynamicCompilationOverhead::instance.stop(
+		& trace::DynamicCompilationOverhead::ptxParseOcelot);
 	
 	return (void **)handle;
 }

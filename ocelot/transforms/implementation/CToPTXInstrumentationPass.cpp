@@ -249,25 +249,27 @@ namespace transforms
         unsigned long count = 0;
         for( unsigned int j = 0; j < translationBlock.statements.size(); j++) {
             ir::PTXStatement toInsert = prepareStatementToInsert(translationBlock.statements.at(j), attributes);
-	    if(isClockCycleInstrumentation && toInsert.instruction.opcode == ir::PTXInstruction::Bra)
+
+	        if(isClockCycleInstrumentation && toInsert.instruction.opcode == ir::PTXInstruction::Bra)
             {
-		toInsert.instruction.d.identifier = "$blockSplit";
-	    }
+		        toInsert.instruction.d.identifier = "$blockSplit";
+	        }
             if(toInsert.instruction.opcode == ir::PTXInstruction::Nop)
             {
                 continue;
             }
             dfg().insert(basicBlock, toInsert.instruction, loc++);
-	    count++;
-	    if(isClockCycleInstrumentation && toInsert.instruction.opcode == ir::PTXInstruction::Bra)
+	        count++;
+	        
+	        if(isClockCycleInstrumentation && toInsert.instruction.opcode == ir::PTXInstruction::Bra)
             {
-		analysis::DataflowGraph::iterator splitBasicBlock = dfg().split(basicBlock, loc, true);
-		splitBasicBlock->block()->label = "$blockSplit";
-		ir::Edge edge(basicBlock->block(), splitBasicBlock->block(), ir::Edge::Branch);
-		dfg().cfg()->insert_edge(edge);
-		basicBlock = dfg().insert(basicBlock, splitBasicBlock, "$storeResults");
-		loc = 0;
-	    }
+		        analysis::DataflowGraph::iterator splitBasicBlock = dfg().split(basicBlock, loc, true);
+		        splitBasicBlock->block()->label = "$blockSplit";
+		        ir::Edge edge(basicBlock->block(), splitBasicBlock->block(), ir::Edge::Branch);
+		        dfg().cfg()->insert_edge(edge);
+		        basicBlock = dfg().insert(basicBlock, splitBasicBlock, "$storeResults");
+		        loc = 0;
+	        }
         }
         
         return count;

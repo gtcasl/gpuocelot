@@ -15,13 +15,10 @@
         {
             GLOBAL_MEM:
             {
-                deviceMem[0] = deviceMem[0] + uniqueElementCount(sharedMem);   
+                unsigned long uniqueCount = uniqueElementCount(sharedMem);
+                atomicAdd(deviceMem, 0, uniqueCount);   
+                atomicIncrement(deviceMem, 1);
             }
         }
-        
-        GLOBAL_MEM:
-        {
-            atomicIncrement(deviceMem, 1);
-        } 
     }    
 }

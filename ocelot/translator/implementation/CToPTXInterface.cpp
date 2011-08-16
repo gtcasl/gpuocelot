@@ -138,8 +138,12 @@ unsigned long uniqueElementCount(unsigned long *memBuffer) {
     return 1;
 }
 
-unsigned long atomicIncrement(unsigned long *memBuffer, unsigned long offset) {
-    return 0;
+void atomicIncrement(unsigned long *memBuffer, unsigned long offset) {
+    return;
+}
+
+void atomicAdd(unsigned long *memBuffer, unsigned long offset, unsigned long toAdd) {
+    return;
 }
 
 #endif

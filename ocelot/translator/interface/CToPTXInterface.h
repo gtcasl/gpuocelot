@@ -94,6 +94,8 @@ unsigned long leastActiveThreadInWarp();
 
 unsigned long uniqueElementCount(unsigned long *memBuffer);
 
-unsigned long atomicIncrement(unsigned long *memBuffer, unsigned long offset);
+void atomicIncrement(unsigned long *memBuffer, unsigned long offset);
+
+void atomicAdd(unsigned long *memBuffer, unsigned long offset, unsigned long toAdd);
 
 #endif

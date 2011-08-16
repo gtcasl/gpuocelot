@@ -1939,7 +1939,6 @@ std::string ir::PTXInstruction::guard() const {
 }
 
 std::string ir::PTXInstruction::toString() const {
-	std::cout << "Attempting to print: " << toString(opcode) << std::endl;
 	
 	switch (opcode) {
 		case Abs: {

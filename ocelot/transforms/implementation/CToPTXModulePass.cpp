@@ -72,73 +72,6 @@ namespace transforms
         stmt.instruction = inst;
         statements.push_back(stmt);
         
-    
-        //generate blockDim
-        inst.opcode = ir::PTXInstruction::Cvt;  
-        inst.d.addressMode = ir::PTXOperand::Register;
-
-        inst.a = ir::PTXOperand(ir::PTXOperand::ntid, ir::PTXOperand::ix, ir::PTXOperand::u32);
-        inst.a.vec = ir::PTXOperand::v1;       
-        
-        inst.d.identifier = "ntidx";
-        
-        stmt.instruction = inst;
-        statements.push_back(stmt);
-        
-        inst.opcode = ir::PTXInstruction::Cvt;  
-        inst.d.addressMode = ir::PTXOperand::Register;
-
-        inst.a = ir::PTXOperand(ir::PTXOperand::ntid, ir::PTXOperand::iy, ir::PTXOperand::u32);
-        inst.a.vec = ir::PTXOperand::v1;       
-        
-        inst.d.identifier = "ntidy";
-        
-        stmt.instruction = inst;
-        statements.push_back(stmt);
-        
-        inst.opcode = ir::PTXInstruction::Cvt;  
-        inst.d.addressMode = ir::PTXOperand::Register;
-
-        inst.a = ir::PTXOperand(ir::PTXOperand::ntid, ir::PTXOperand::iz, ir::PTXOperand::u32);
-        inst.a.vec = ir::PTXOperand::v1;       
-        
-        inst.d.identifier = "ntidz";
-        
-        stmt.instruction = inst;
-        statements.push_back(stmt);
-        
-        inst.d.identifier.clear();
-        inst.a.identifier.clear();
-        inst.b.identifier.clear();
-
-        inst.opcode = ir::PTXInstruction::Mul;     
-           
-        inst.modifier = ir::PTXInstruction::lo;
-        inst.d.addressMode = ir::PTXOperand::Register;
-        inst.d.type = type;
-        
-        inst.d.identifier = "ntid";
-        
-        inst.a.addressMode = ir::PTXOperand::Register;
-        inst.a.type = type;
-        inst.a.identifier = "ntidx";
-        inst.b.addressMode = ir::PTXOperand::Register;
-        inst.b.type = type;
-        inst.b.identifier = "ntidy";
-         
-        stmt.instruction = inst;
-        statements.push_back(stmt);
-        
-        inst.a.addressMode = ir::PTXOperand::Register;
-        inst.a.type = type;
-        inst.a.identifier = "ntid";
-        inst.b.addressMode = ir::PTXOperand::Register;
-        inst.b.type = type;
-        inst.b.identifier = "ntidz";
-         
-        stmt.instruction = inst;
-        statements.push_back(stmt);
-
         inst.opcode = ir::PTXInstruction::Mov;
                  
         inst.d.identifier = "uniqueCount";
@@ -177,8 +110,8 @@ namespace transforms
         inst.a.addressMode = ir::PTXOperand::Register;
         inst.a.identifier = "i";
         inst.b.type = type;
-        inst.b.addressMode = ir::PTXOperand::Register;
-        inst.b.identifier = "ntid";
+        inst.b.addressMode = ir::PTXOperand::Immediate;
+        inst.b.imm_uint = 32;
         
         stmt.instruction = inst;
         statements.push_back(stmt);

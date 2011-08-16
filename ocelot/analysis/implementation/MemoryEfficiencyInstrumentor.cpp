@@ -45,7 +45,7 @@ namespace analysis
         if(cudaMemset( counter, 0, 2 * sizeof( size_t )) != cudaSuccess){
             throw hydrazine::Exception( "cudaMemset failed!" );
         }
-        
+
         sharedMemSize = threads * 8;
         
         if(cudaMemcpyToSymbol(symbol.c_str(), &counter, sizeof(size_t *), 0, cudaMemcpyHostToDevice) != cudaSuccess) {
@@ -71,8 +71,6 @@ namespace analysis
             cudaFree(counter);
         }
 
-       
-
         switch(fmt) {
 
             case json:
@@ -90,8 +88,10 @@ namespace analysis
                 *out << "Kernel Name: " << kernelName << "\n";
                 *out << "Thread Block Count: " << threadBlocks << "\n";
                 *out << "Thread Count: " << threads << "\n\n";
-                
-               std::cout << "Memory Transactions Per Global Memory Operations: " << info[0]  << "/" << info[1] << "\n\n";
+
+	       std::cout << "Dynamic Warps Executing Global Memory Operations: " << 2 * info[1] << "\n";
+	       std::cout << "Memory Transactions: " << info[0] << "\n\n";
+               std::cout << "Memory Efficiency: " << (2 * info[1]) << "/" << info[0] << "\n\n";
            
             break;
         }

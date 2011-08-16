@@ -76,8 +76,8 @@ namespace translator
             || instruction.opcode == ir::PTXInstruction::Call
             || instruction.opcode == ir::PTXInstruction::Add
             || instruction.opcode == ir::PTXInstruction::Atom
-            || instruction.opcode == ir::PTXInstruction::Div
-            || instruction.opcode == ir::PTXInstruction::Mul
+            || instruction.opcode == ir::PTXInstruction::And
+            || instruction.opcode == ir::PTXInstruction::Not
             || instruction.opcode == ir::PTXInstruction::Mad)){
                 
                 if(pred->inv)
@@ -894,6 +894,7 @@ namespace translator
         inst.d.identifier = COD_REG + boost::lexical_cast<std::string>(++maxRegister);
         registers.push_back(inst.d.identifier);
         std::string notResult = inst.d.identifier;
+	specialRegisterMap["notResult"] = notResult;
         registers.push_back(inst.d.identifier);  
         inst.a.addressMode = ir::PTXOperand::Immediate;
         inst.a.imm_uint = 63;
@@ -909,6 +910,8 @@ namespace translator
         inst.a.identifier = callName;
         inst.b.addressMode = ir::PTXOperand::Register;
         inst.b.identifier = notResult;
+
+	specialRegisterMap["andResult"] = callName;
         
         setPredicate(inst);
         stmt.instruction = inst;
@@ -965,6 +968,7 @@ namespace translator
         inst.d.type = ir::PTXOperand::b32;
         inst.d.addressMode = ir::PTXOperand::Register;
         inst.d.identifier = "bitmask";
+	specialRegisterMap["bitmask"] = inst.d.identifier;
         registers.push_back(inst.d.identifier);
         inst.a.addressMode = ir::PTXOperand::Register;
         inst.a.type = ir::PTXOperand::pred;
@@ -991,30 +995,62 @@ namespace translator
         setPredicate(inst);
         stmt.instruction = inst;
         statements.push_back(stmt);  
-           
-	    //mov.s32 %r0, %bitmask;
-	    inst.opcode = ir::PTXInstruction::Mov;
-            
-        inst.d.type = ir::PTXOperand::s32;
-        inst.type = ir::PTXOperand::s32;
-        inst.d.addressMode = ir::PTXOperand::Register;
-        inst.d.identifier = COD_REG + boost::lexical_cast<std::string>(++maxRegister);
-        std::string bitmask = inst.d.identifier;
-        registers.push_back(inst.d.identifier);
-        inst.a.type = ir::PTXOperand::b32;
-        inst.a.addressMode = ir::PTXOperand::Register;
-        inst.a.identifier = "bitmask";
-        
-        setPredicate(inst);
-        stmt.instruction = inst;
-        statements.push_back(stmt);
         
         registerMap[REG + boost::lexical_cast<std::string>(insn->opnds.calli.src)] = rb0;       
     }
     
     void CToPTXTranslator::generateUniqueElementCount(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn, std::string callName)
     {
-    
+
+	    inst.opcode = ir::PTXInstruction::Not;
+        inst.type = ir::PTXOperand::b64;
+        inst.d.identifier = specialRegisterMap["notResult"];
+        registers.push_back(inst.d.identifier);  
+        inst.a.addressMode = ir::PTXOperand::Immediate;
+        inst.a.imm_uint = 31;
+        
+        setPredicate(inst);
+        stmt.instruction = inst;
+        statements.push_back(stmt);    
+        
+        inst.opcode = ir::PTXInstruction::And;
+        inst.type = ir::PTXOperand::b64;
+	    inst.d.type = ir::PTXOperand::b64;
+	    inst.b.type = ir::PTXOperand::b64;
+        inst.a.addressMode = ir::PTXOperand::Register;
+        inst.a.identifier = specialRegisterMap["blockThreadId"];
+        inst.b.addressMode = ir::PTXOperand::Register;
+        inst.b.identifier = specialRegisterMap["notResult"];
+        
+        setPredicate(inst);
+        stmt.instruction = inst;
+        statements.push_back(stmt);    
+        
+        inst.opcode = ir::PTXInstruction::Mad;
+	    inst.modifier = ir::PTXInstruction::lo;
+	    inst.type = type;
+	    inst.d.type = type;
+	    inst.a.type = type;
+	    inst.b.type = type;
+        
+        std::string reductionBufferOffset = COD_REG + boost::lexical_cast<std::string>(14);
+	    inst.d.identifier = reductionBufferOffset;
+        inst.a.identifier = specialRegisterMap["notResult"];
+	    inst.b.addressMode = ir::PTXOperand::Immediate;
+        inst.b.imm_uint = sizeof(size_t);
+        inst.c.addressMode = ir::PTXOperand::Register;
+        inst.c.identifier = sharedMemReg;
+        inst.c.type = type;
+        
+        setPredicate(inst);
+        stmt.instruction = inst;
+        statements.push_back(stmt);
+        
+        inst.a.addressMode = inst.b.addressMode = inst.c.addressMode = ir::PTXOperand::Invalid;
+        inst.a.identifier.clear();
+        inst.b.identifier.clear();
+        inst.c.identifier.clear();
+        
         inst.opcode = ir::PTXInstruction::Div;
         inst.d.type = inst.a.type = inst.b.type = type;
         inst.d.addressMode = inst.a.addressMode = ir::PTXOperand::Register;
@@ -1060,16 +1096,38 @@ namespace translator
         inst.c.identifier.clear();
         
         ir::PTXStatement reductionBuffer = ir::PTXStatement(ir::PTXStatement::Param);
-	    reductionBuffer.name = "reductionBuffer";
-	    reductionBuffer.type = type;
-	    reductionBuffer.array.stride = ir::PTXStatement::ArrayStrideVector(1, 1);
+        reductionBuffer.name = "reductionBuffer";
+        reductionBuffer.type = type;
+        reductionBuffer.array.stride = ir::PTXStatement::ArrayStrideVector(1, 1);
         statements.push_back(reductionBuffer);
         
         ir::PTXStatement uniqueCount = ir::PTXStatement(ir::PTXStatement::Param);
 	    uniqueCount.name = "uniqueCount";
         uniqueCount.type = type;
         statements.push_back(uniqueCount);
+
+	    ir::PTXStatement bitMask = ir::PTXStatement(ir::PTXStatement::Param);
+	    bitMask.name = "bitMask";
+        bitMask.type = ir::PTXOperand::b32;
+        statements.push_back(bitMask);
     
+	    inst.type = ir::PTXOperand::b32;
+	    inst.opcode = ir::PTXInstruction::St;
+        inst.addressSpace = ir::PTXInstruction::Param;
+        
+        inst.a.addressMode = ir::PTXOperand::Register;
+        inst.a.type = ir::PTXOperand::b32;
+        
+        inst.a.identifier = specialRegisterMap["bitmask"];
+        inst.d.identifier = bitMask.name;
+        inst.d.addressMode = ir::PTXOperand::Address;
+        inst.d.offset = 0;
+        
+        setPredicate(inst);
+        stmt.instruction = inst;
+        statements.push_back(stmt);
+
+	    inst.type = type;
         inst.opcode = ir::PTXInstruction::St;
         inst.addressSpace = ir::PTXInstruction::Param;
         
@@ -1091,9 +1149,12 @@ namespace translator
         inst.a.identifier = callName;
 
         inst.b.addressMode = ir::PTXOperand::ArgumentList;
-        ir::PTXOperand input = ir::PTXOperand(ir::PTXOperand::Register, reductionBuffer.name);
-        input.type = type;
-        inst.b.array.push_back(input);
+        ir::PTXOperand input1 = ir::PTXOperand(ir::PTXOperand::Register, reductionBuffer.name);
+        input1.type = type;
+        inst.b.array.push_back(input1);
+	    ir::PTXOperand input2 = ir::PTXOperand(ir::PTXOperand::Register, bitMask.name);
+        input2.type = ir::PTXOperand::b32;
+        inst.b.array.push_back(input2);
         
         inst.d.addressMode = ir::PTXOperand::ArgumentList;
         ir::PTXOperand retVal = ir::PTXOperand(ir::PTXOperand::Register, uniqueCount.name);
@@ -1111,7 +1172,6 @@ namespace translator
         inst.d.type = type;
         
         inst.d.identifier = COD_REG + boost::lexical_cast<std::string>(14);
-        //registers.push_back(inst.d.identifier);
         inst.a.identifier = uniqueCount.name;
         inst.a.addressMode = ir::PTXOperand::Address;
         inst.a.offset = 0;

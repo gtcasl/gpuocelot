@@ -47,6 +47,10 @@ namespace transforms
 	    ir::PTXStatement reductionBuffer = ir::PTXStatement(ir::PTXStatement::Param);
 	    reductionBuffer.name = "reductionBuffer";
         reductionBuffer.type = type;
+
+	    ir::PTXStatement bitMask = ir::PTXStatement(ir::PTXStatement::Param);
+	    bitMask.name = "bitMask";
+            bitMask.type = ir::PTXOperand::b32;
         
         ir::PTXStatement uniqueCount = ir::PTXStatement(ir::PTXStatement::Param);
 	    uniqueCount.name = "uniqueCount";
@@ -71,6 +75,23 @@ namespace transforms
         
         stmt.instruction = inst;
         statements.push_back(stmt);
+        
+	    inst.opcode = ir::PTXInstruction::Ld;
+        inst.addressSpace = ir::PTXInstruction::Param;
+        
+	    inst.type = ir::PTXOperand::b32;
+        inst.d.addressMode = ir::PTXOperand::Register;
+        inst.d.type = ir::PTXOperand::b32;
+        
+        inst.d.identifier = "bitmask";
+        inst.a.identifier = bitMask.name;
+        inst.a.addressMode = ir::PTXOperand::Address;
+        inst.a.offset = 0;
+        
+        stmt.instruction = inst;
+        statements.push_back(stmt);
+	
+	    inst.type = type;
         
         inst.opcode = ir::PTXInstruction::Mov;
                  
@@ -158,6 +179,90 @@ namespace transforms
         
         stmt.instruction = inst;
         statements.push_back(stmt);     
+           
+        //mov.s32 %rb1, %bitmask;
+        inst.opcode = ir::PTXInstruction::Mov;
+    	inst.type = ir::PTXOperand::s32;
+        inst.d.type = ir::PTXOperand::s32;
+        inst.d.addressMode = ir::PTXOperand::Register;
+        inst.d.identifier = "rb1";
+        inst.a.addressMode = ir::PTXOperand::Register;
+        inst.a.identifier = "bitmask";
+        
+        stmt.instruction = inst;
+        statements.push_back(stmt);
+	
+	    //cvt.u32.u64
+	    inst.opcode = ir::PTXInstruction::Cvt;  
+	    inst.type = ir::PTXOperand::u32;
+	    inst.d.type = ir::PTXOperand::u32;
+        inst.d.addressMode = ir::PTXOperand::Register;
+        inst.d.identifier = "i_b32";
+	    inst.a.identifier = "i";
+        inst.a.type = type;
+        
+        stmt.instruction = inst;
+        statements.push_back(stmt);
+
+	    //shl.b32 %rb2, 1, i;
+        inst.opcode = ir::PTXInstruction::Shl;
+    	inst.type = ir::PTXOperand::b32;
+        inst.d.type = ir::PTXOperand::b32;
+        inst.d.addressMode = ir::PTXOperand::Register;
+        inst.d.identifier = "rb2";
+        inst.a.addressMode = ir::PTXOperand::Immediate;
+        inst.a.imm_uint = 1;
+	    inst.b.addressMode = ir::PTXOperand::Register;
+	    inst.b.type = ir::PTXOperand::b32;        
+	    inst.b.identifier = "i_b32";
+        
+        stmt.instruction = inst;
+        statements.push_back(stmt);
+
+	    //and %rb3, bitmask, %rb2
+	    inst.opcode = ir::PTXInstruction::And;
+        inst.type = ir::PTXOperand::b32;
+        inst.d.identifier = "rb3";
+        inst.a.addressMode = ir::PTXOperand::Register;
+        inst.a.identifier = "bitmask";
+        inst.b.addressMode = ir::PTXOperand::Register;
+        inst.b.identifier = "rb2";
+
+	    stmt.instruction = inst;
+        statements.push_back(stmt);
+
+	    inst.type = ir::PTXOperand::s32;
+        inst.d.type = ir::PTXOperand::s32;
+
+	    inst.opcode = ir::PTXInstruction::SetP;
+            
+        inst.d.type = ir::PTXOperand::pred;
+        inst.d.addressMode = ir::PTXOperand::Register;
+        inst.d.identifier = "isNotActive";
+        
+        inst.comparisonOperator = ir::PTXInstruction::Eq;
+        inst.a.type = type;
+        inst.a.addressMode = ir::PTXOperand::Register;
+        inst.a.identifier = "rb3";
+        inst.b.type = type;
+        inst.b.addressMode = ir::PTXOperand::Immediate;
+        inst.b.imm_uint = 0;
+        
+        stmt.instruction = inst;
+        statements.push_back(stmt);
+
+	    inst.opcode = ir::PTXInstruction::Bra;
+        inst.d.addressMode = ir::PTXOperand::Label;
+        inst.d.identifier = FIRST_LOOP_INC;
+        inst.pg.condition = ir::PTXOperand::Pred;
+        inst.pg.identifier = "isNotActive";
+
+	    stmt.instruction = inst;
+        statements.push_back(stmt);
+
+	    inst.type = type; 
+	    inst.pg.condition = ir::PTXOperand::PT;
+        inst.pg.identifier.clear();
         
         ir::PTXStatement beginSecondLoop(ir::PTXStatement::Label);
         beginSecondLoop.name = BEGIN_SECOND_LOOP;
@@ -375,7 +480,46 @@ namespace transforms
         
         inst.pg.condition = ir::PTXOperand::Pred;
         inst.pg.identifier = "isUniqueTrue";
+    
+	    inst.opcode = ir::PTXInstruction::Mad;     
+           
+        inst.modifier = ir::PTXInstruction::lo;
+        inst.d.addressMode = ir::PTXOperand::Register;
+        inst.d.type = type;
         
+        inst.d.identifier = "uniqueCount_offset";
+       
+        inst.a.type = type;
+        inst.a.addressMode = ir::PTXOperand::Register;
+        inst.a.identifier = "uniqueCount";
+        
+        inst.b.addressMode = ir::PTXOperand::Immediate;
+        inst.b.type = type;
+        inst.b.imm_uint = sizeof(size_t);
+        
+        inst.c.type = type;
+        inst.c.addressMode = ir::PTXOperand::Register;
+        inst.c.identifier = "sharedMemReg";
+        
+        stmt.instruction = inst;
+        statements.push_back(stmt);
+        
+        inst.c.addressMode = ir::PTXOperand::Invalid;
+        
+        inst.opcode = ir::PTXInstruction::St;
+            
+        inst.addressSpace = ir::PTXInstruction::Shared; 
+        inst.a.addressMode = ir::PTXOperand::Register;
+        inst.a.type = type;
+        
+        inst.d.addressMode = ir::PTXOperand::Indirect;
+        inst.a.identifier = "rhs";
+        inst.d.identifier = "uniqueCount_offset";
+        inst.d.offset = 0;
+        
+        stmt.instruction = inst;
+        statements.push_back(stmt);        
+
         inst.opcode = ir::PTXInstruction::Add;     
            
         inst.modifier = ir::PTXInstruction::Modifier_invalid;
@@ -429,53 +573,6 @@ namespace transforms
         ir::PTXStatement storeResults(ir::PTXStatement::Label);
         storeResults.name = STORE_RESULTS;
         statements.push_back(storeResults);
-        /*
-        inst.opcode = ir::PTXInstruction::Mov;
-                 
-        inst.d.identifier = "globalMem";
-             
-        inst.d.type = type;          
-        inst.d.addressMode = ir::PTXOperand::Register;
-        inst.a.identifier = "__ocelot_base_address_101";
-        inst.a.type = type;
-        inst.a.addressMode = ir::PTXOperand::Address;
-        inst.a.offset = 0;
-        
-        stmt.instruction = inst;
-        statements.push_back(stmt);     
-
-        inst.opcode = ir::PTXInstruction::Ld;
-        
-        inst.addressSpace = ir::PTXInstruction::Global; 
-        inst.d.addressMode = ir::PTXOperand::Register;
-        inst.d.type = type;
-        
-        inst.d.identifier = "globalMemReg";
-        inst.a.identifier = "globalMem";
-        inst.a.addressMode = ir::PTXOperand::Indirect;
-        
-        stmt.instruction = inst;
-        statements.push_back(stmt);
-        
-        inst.opcode = ir::PTXInstruction::Atom;
-        inst.atomicOperation = ir::PTXInstruction::AtomicAdd;
-            
-        inst.addressSpace = ir::PTXInstruction::Global; 
-        inst.a.addressMode = ir::PTXOperand::Indirect;
-        inst.a.type = type;
-        inst.a.identifier = "globalMem";
-        
-        inst.d.addressMode = ir::PTXOperand::Register;
-        inst.d.type = type;
-        inst.d.identifier = "prevUniqueCount";
-        
-        inst.b.addressMode = ir::PTXOperand::Register;
-        inst.b.type = type;
-        inst.b.identifier = "sharedMemReg";
-        
-        stmt.instruction = inst;
-        statements.push_back(stmt);
-        */
         
         inst.opcode = ir::PTXInstruction::St;
         inst.addressSpace = ir::PTXInstruction::Param;
@@ -500,6 +597,7 @@ namespace transforms
 	    kernel->name = "uniqueElementCount";
 	    
 	    kernel->arguments.push_back(ir::Parameter(reductionBuffer, true, false));
+        kernel->arguments.push_back(ir::Parameter(bitMask, true, false));
 	    kernel->arguments.push_back(ir::Parameter(uniqueCount, true, true));
 
 	    return kernel;

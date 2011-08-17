@@ -171,11 +171,10 @@ PTXKernel::RegisterVector PTXKernel::getReferencedRegisters() const
 			const ir::PTXInstruction& ptx = static_cast<
 				const ir::PTXInstruction&>(**instruction);
 			
-			if( ptx.opcode == ir::PTXInstruction::St ) continue;
-			
-			const ir::PTXOperand* operands[] = {&ptx.pq, &ptx.d, &ptx.a};
+			const ir::PTXOperand* operands[] = {&ptx.pq, &ptx.d, &ptx.a, &ptx.b,
+				&ptx.c, &ptx.pg};
 
-			for( unsigned int i = 0; i < 3; ++i )
+			for( unsigned int i = 0; i < 6; ++i )
 			{
 				const ir::PTXOperand& d = *operands[i];
 				if( d.addressMode != ir::PTXOperand::Register &&

@@ -179,7 +179,7 @@ PTXKernel::RegisterVector PTXKernel::getReferencedRegisters() const
 				const ir::PTXOperand& d = *operands[i];
 				if( d.addressMode != ir::PTXOperand::Register &&
 					d.addressMode != ir::PTXOperand::ArgumentList ) continue;
-										
+				
 				if( d.type != ir::PTXOperand::pred )
 				{
 					if( d.array.empty() )
@@ -202,9 +202,9 @@ PTXKernel::RegisterVector PTXKernel::getReferencedRegisters() const
 							operand = d.array.begin(); 
 							operand != d.array.end(); ++operand )
 						{
-							report( "   Added %r" << operand->reg );
 							if( operand->addressMode
 								!= ir::PTXOperand::Register ) continue;
+							report( "   Added %r" << operand->reg );
 							analysis::DataflowGraph::Register live_reg( 
 								operand->reg, operand->type );
 							if (addedRegisters.find(live_reg.id)
@@ -217,15 +217,19 @@ PTXKernel::RegisterVector PTXKernel::getReferencedRegisters() const
 				}
 				else
 				{
-					if( predicates.insert( d.reg ).second )
+					if( d.condition == ir::PTXOperand::Pred
+						|| d.condition == ir::PTXOperand::InvPred )
 					{
-						report( "   Added %p" << d.reg );
-						analysis::DataflowGraph::Register live_reg( 
-							d.reg, d.type );
-						if (addedRegisters.find(live_reg.id)
-							== addedRegisters.end()) {
-							regs.push_back( live_reg );
-							addedRegisters.insert(live_reg.id);
+						if( predicates.insert( d.reg ).second )
+						{
+							report( "   Added %p" << d.reg );
+							analysis::DataflowGraph::Register live_reg( 
+								d.reg, d.type );
+							if (addedRegisters.find(live_reg.id)
+								== addedRegisters.end()) {
+								regs.push_back( live_reg );
+								addedRegisters.insert(live_reg.id);
+							}
 						}
 					}
 				}

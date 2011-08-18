@@ -1051,50 +1051,6 @@ namespace translator
         inst.b.identifier.clear();
         inst.c.identifier.clear();
         
-        inst.opcode = ir::PTXInstruction::Div;
-        inst.d.type = inst.a.type = inst.b.type = type;
-        inst.d.addressMode = inst.a.addressMode = ir::PTXOperand::Register;
-        std::string divResult = COD_REG + boost::lexical_cast<std::string>(++maxRegister);
-        inst.d.identifier = divResult;
-        registers.push_back(inst.d.identifier);
-        inst.a.identifier = specialRegisterMap["blockThreadId"];
-        inst.b.addressMode = ir::PTXOperand::Immediate;
-        inst.b.imm_uint = 32;
-        
-        setPredicate(inst);
-        stmt.instruction = inst;
-        statements.push_back(stmt);
-        
-        inst.opcode = ir::PTXInstruction::Mul;
-        inst.modifier = ir::PTXInstruction::lo;
-        std::string mulResult = COD_REG + boost::lexical_cast<std::string>(++maxRegister);
-        inst.d.identifier = mulResult;
-        registers.push_back(inst.d.identifier);
-        inst.a.identifier = divResult;
-        
-        setPredicate(inst);
-        stmt.instruction = inst;
-        statements.push_back(stmt);
-        
-        inst.opcode = ir::PTXInstruction::Mad;
-        std::string reductionBufferOffset = COD_REG + boost::lexical_cast<std::string>(++maxRegister);
-        inst.d.identifier = reductionBufferOffset;
-        registers.push_back(inst.d.identifier);
-        inst.a.identifier = mulResult;
-        inst.b.imm_uint = sizeof(size_t);
-        inst.c.addressMode = ir::PTXOperand::Register;
-        inst.c.identifier = sharedMemReg;
-        inst.c.type = type;
-        
-        setPredicate(inst);
-        stmt.instruction = inst;
-        statements.push_back(stmt);
-        
-        inst.a.addressMode = inst.b.addressMode = inst.c.addressMode = ir::PTXOperand::Invalid;
-        inst.a.identifier.clear();
-        inst.b.identifier.clear();
-        inst.c.identifier.clear();
-        
         ir::PTXStatement reductionBuffer = ir::PTXStatement(ir::PTXStatement::Param);
         reductionBuffer.name = "reductionBuffer";
         reductionBuffer.type = type;
@@ -1264,7 +1220,7 @@ namespace translator
             {
                 ir::PTXStatement shared(ir::PTXStatement::Shared);
                 shared.name = baseAddress() + baseAddressId;
-                shared.array.stride = ir::PTXStatement::ArrayStrideVector(1, 256);
+                shared.array.stride = ir::PTXStatement::ArrayStrideVector(1, 512);
                 shared.alignment = 64;
                 shared.type = type;
                 //shared.attribute = ir::PTXStatement::Extern;

@@ -50,7 +50,7 @@ namespace transforms
 
 	    ir::PTXStatement bitMask = ir::PTXStatement(ir::PTXStatement::Param);
 	    bitMask.name = "bitMask";
-            bitMask.type = ir::PTXOperand::b32;
+        bitMask.type = ir::PTXOperand::b32;
         
         ir::PTXStatement uniqueCount = ir::PTXStatement(ir::PTXStatement::Param);
 	    uniqueCount.name = "uniqueCount";
@@ -106,16 +106,82 @@ namespace transforms
         stmt.instruction = inst;
         statements.push_back(stmt);    
         
-        
-        inst.d.identifier = "i";
-        
+	    inst.d.identifier = "halfWarp";
+	
+	    stmt.instruction = inst;
+        statements.push_back(stmt);            
+
+	    inst.pg.condition = ir::PTXOperand::PT;
+        inst.pg.identifier.clear();
+
+	    ir::PTXStatement beginHalfWarpLoop(ir::PTXStatement::Label);
+        beginHalfWarpLoop.name = BEGIN_HALF_WARP_LOOP;
+        statements.push_back(beginHalfWarpLoop);
+
+	    inst.opcode = ir::PTXInstruction::Mul;
+	    inst.modifier = ir::PTXInstruction::lo;
+	    inst.d.addressMode = inst.a.addressMode = ir::PTXOperand::Register;
+        inst.d.identifier = "offset";
+	    inst.a.identifier = "halfWarp";
+	    inst.d.type = inst.a.type = inst.b.type = type;
+	    inst.b.addressMode = ir::PTXOperand::Immediate;
+	    inst.b.imm_uint = 16;        
+
         stmt.instruction = inst;
         statements.push_back(stmt);    
         
+	    inst.modifier = ir::PTXInstruction::Modifier_invalid;
+
         inst.pg.condition = ir::PTXOperand::PT;
         inst.pg.identifier.clear();
         
+	    ir::PTXStatement halfWarpLoop(ir::PTXStatement::Label);
+        halfWarpLoop.name = HALF_WARP_LOOP;
+        statements.push_back(halfWarpLoop);
+
+	    inst.opcode = ir::PTXInstruction::SetP;
+            
+        inst.d.type = ir::PTXOperand::pred;
+        inst.d.addressMode = ir::PTXOperand::Register;
+        inst.d.identifier = "halfWarpLoopPred";
         
+        inst.comparisonOperator = ir::PTXInstruction::Eq;
+        inst.a.type = type;
+        inst.a.addressMode = ir::PTXOperand::Register;
+        inst.a.identifier = "halfWarp";
+        inst.b.type = type;
+        inst.b.addressMode = ir::PTXOperand::Immediate;
+        inst.b.imm_uint = 2;
+        
+        stmt.instruction = inst;
+        statements.push_back(stmt);
+
+	    inst.opcode = ir::PTXInstruction::Mov;
+                 
+        inst.d.identifier = "i";
+             
+        inst.d.type = type;          
+        inst.d.addressMode = ir::PTXOperand::Register;
+        inst.a.addressMode = ir::PTXOperand::Immediate;
+        inst.a.type = type;
+        inst.a.imm_int = 0;
+        
+        stmt.instruction = inst;
+        statements.push_back(stmt);   
+        
+        inst.opcode = ir::PTXInstruction::Bra;
+        inst.d.addressMode = ir::PTXOperand::Label;
+        inst.d.identifier = STORE_RESULTS;
+        inst.pg.addressMode = ir::PTXOperand::Register;
+        inst.pg.condition = ir::PTXOperand::Pred;
+        inst.pg.identifier = "halfWarpLoopPred";
+        
+        stmt.instruction = inst;
+        statements.push_back(stmt);
+        
+        inst.pg.condition = ir::PTXOperand::PT;
+        inst.pg.identifier.clear();
+
         ir::PTXStatement beginFirstLoop(ir::PTXStatement::Label);
         beginFirstLoop.name = BEGIN_FIRST_LOOP;
         statements.push_back(beginFirstLoop);
@@ -132,14 +198,14 @@ namespace transforms
         inst.a.identifier = "i";
         inst.b.type = type;
         inst.b.addressMode = ir::PTXOperand::Immediate;
-        inst.b.imm_uint = 32;
+        inst.b.imm_uint = 16;
         
         stmt.instruction = inst;
         statements.push_back(stmt);
         
         inst.opcode = ir::PTXInstruction::Bra;
         inst.d.addressMode = ir::PTXOperand::Label;
-        inst.d.identifier = STORE_RESULTS;
+        inst.d.identifier = HALF_WARP_LOOP_INC;
         inst.pg.addressMode = ir::PTXOperand::Register;
         inst.pg.condition = ir::PTXOperand::Pred;
         inst.pg.identifier = "firstLoopPred";
@@ -285,6 +351,18 @@ namespace transforms
         stmt.instruction = inst;
         statements.push_back(stmt);
         
+	    inst.comparisonOperator = ir::PTXInstruction::CmpOp_Invalid;
+
+	    inst.opcode = ir::PTXInstruction::Add;
+	    inst.d.type = inst.a.type = inst.b.type = type;
+	    inst.d.addressMode = inst.a.addressMode = inst.b.addressMode = ir::PTXOperand::Register;
+	    inst.d.identifier = "i_offset";
+	    inst.a.identifier = "i";
+	    inst.b.identifier = "offset";
+
+	    stmt.instruction = inst;
+        statements.push_back(stmt);
+
         inst.opcode = ir::PTXInstruction::Mad;     
            
         inst.modifier = ir::PTXInstruction::lo;
@@ -340,6 +418,18 @@ namespace transforms
         inst.pg.condition = ir::PTXOperand::PT;
         inst.pg.identifier.clear();
         
+	    inst.modifier = ir::PTXInstruction::Modifier_invalid;
+
+	    inst.opcode = ir::PTXInstruction::Add;
+	    inst.d.type = inst.a.type = inst.b.type = type;
+	    inst.d.addressMode = inst.a.addressMode = inst.b.addressMode = ir::PTXOperand::Register;
+	    inst.d.identifier = "j_offset";
+	    inst.a.identifier = "j";
+	    inst.b.identifier = "offset";
+
+	    stmt.instruction = inst;
+        statements.push_back(stmt);
+
         inst.opcode = ir::PTXInstruction::Mad;     
            
         inst.modifier = ir::PTXInstruction::lo;
@@ -481,6 +571,16 @@ namespace transforms
         inst.pg.condition = ir::PTXOperand::Pred;
         inst.pg.identifier = "isUniqueTrue";
     
+	    inst.opcode = ir::PTXInstruction::Add;
+	    inst.d.type = inst.a.type = inst.b.type = type;
+	    inst.d.addressMode = inst.a.addressMode = inst.b.addressMode = ir::PTXOperand::Register;
+	    inst.d.identifier = "uniqueCount_offset";
+	    inst.a.identifier = "uniqueCount";
+	    inst.b.identifier = "offset";
+
+	    stmt.instruction = inst;
+        statements.push_back(stmt);
+
 	    inst.opcode = ir::PTXInstruction::Mad;     
            
         inst.modifier = ir::PTXInstruction::lo;
@@ -570,6 +670,38 @@ namespace transforms
         stmt.instruction = inst;
         statements.push_back(stmt);
         
+	    inst.pg.condition = ir::PTXOperand::PT;
+        inst.pg.identifier.clear();
+        
+        ir::PTXStatement halfWarpLoopInc(ir::PTXStatement::Label);
+        halfWarpLoopInc.name = HALF_WARP_LOOP_INC;
+        statements.push_back(halfWarpLoopInc);
+        
+        inst.opcode = ir::PTXInstruction::Add;     
+           
+        inst.modifier = ir::PTXInstruction::Modifier_invalid;
+        inst.d.addressMode = ir::PTXOperand::Register;
+        inst.d.type = type;
+        
+        inst.d.identifier = "halfWarp";
+        
+        inst.a.addressMode = ir::PTXOperand::Register;
+        inst.a.type = type;
+        inst.a.identifier = "halfWarp";
+        inst.b.addressMode = ir::PTXOperand::Immediate;
+        inst.b.type = type;
+        inst.b.imm_uint = 1;
+         
+        stmt.instruction = inst;
+        statements.push_back(stmt);
+        
+        inst.opcode = ir::PTXInstruction::Bra;
+        inst.d.addressMode = ir::PTXOperand::Label;
+        inst.d.identifier = BEGIN_HALF_WARP_LOOP;
+        
+        stmt.instruction = inst;
+        statements.push_back(stmt);
+
         ir::PTXStatement storeResults(ir::PTXStatement::Label);
         storeResults.name = STORE_RESULTS;
         statements.push_back(storeResults);

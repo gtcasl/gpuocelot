@@ -85,14 +85,14 @@ namespace analysis
             break;
             case text:
 
-                *out << "Kernel Name: " << kernelName << "\n";
                 *out << "Thread Block Count: " << threadBlocks << "\n";
-                *out << "Thread Count: " << threads << "\n\n";
-
-	       std::cout << "Dynamic Warps Executing Global Memory Operations: " << 2 * info[1] << "\n";
-	       std::cout << "Memory Transactions: " << info[0] << "\n\n";
-               std::cout << "Memory Efficiency: " << (2 * info[1]) << "/" << info[0] << "\n\n";
-           
+		        *out << "Kernel Name: " << kernelName << "\n";		
+		        *out << "Thread Count: " << threads << "\n";
+		
+                *out << "Dynamic Warps Executing Global Memory Operations: " << info[1] << "\n";
+                *out << "Memory Transactions: " << info[0] << "\n\n";              
+                *out << "Memory Efficiency: " << ((double)info[1]/(double)info[0]) * 100 << "%\n\n";
+		
             break;
         }
 

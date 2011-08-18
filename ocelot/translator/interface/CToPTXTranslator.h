@@ -77,8 +77,11 @@
 #define BEGIN_INST_COUNT_LOOP   "$beginInstCountLoop"
 #define BEGIN_FIRST_LOOP        "$beginFirstLoop"
 #define BEGIN_SECOND_LOOP       "$beginSecondLoop"
+#define BEGIN_HALF_WARP_LOOP    "$beginHalfWarpLoop"
+#define HALF_WARP_LOOP    	    "$halfWarpLoop"
 #define FIRST_LOOP              "$firstLoop"
 #define SECOND_LOOP             "$secondLoop"
+#define HALF_WARP_LOOP_INC      "$halfWarpLoopInc"
 #define FIRST_LOOP_INC          "$firstLoopInc"
 #define SECOND_LOOP_INC         "$secondLoopInc"
 #define INST_COUNT_LOOP_INC     "$instCountLoopInc"
@@ -86,7 +89,7 @@
 #define STORE_RESULTS           "$storeResults"
 #define EXIT                    "$exit"
 #define LOOP_BEGIN              "$loopBegin"
-#define LOOP                   "$loop"
+#define LOOP                    "$loop"
 #define LOOP_END                "$loopEnd"
 
 

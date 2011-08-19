@@ -112,6 +112,25 @@ namespace executive
 	{
 	
 	}
+
+	NVIDIAGPUDevice::MemoryAllocation::MemoryAllocation(
+		void* pointer, size_t size, unsigned int flags) :
+		Device::MemoryAllocation(false, true), 
+		_flags(flags), _size(size), 
+		_devicePointer(0), 
+		_hostPointer(pointer), _external(true)
+	{
+		checkError(driver::cuMemHostRegister(_hostPointer, size, _flags));
+		if(CUDA_SUCCESS != driver::cuMemHostGetDevicePointer(&_devicePointer, 
+			_hostPointer, 0)) 
+		{
+			_devicePointer = 0;
+		}
+		report("MemoryAllocation::MemoryAllocation() - registered " << _size 
+			<< " bytes of host-allocated memory");
+		report("  host: " << (const void *)_hostPointer << ", device pointer: "
+			<< (const void *)_devicePointer);
+	}
 	
 	NVIDIAGPUDevice::MemoryAllocation::~MemoryAllocation()
 	{
@@ -903,6 +922,20 @@ namespace executive
 
 		report("NVIDIAGPUDevice::allocateHost() - adding key "
 			<< allocation->mappedPointer());
+
+		return allocation;
+	}
+
+	Device::MemoryAllocation* NVIDIAGPUDevice::registerHost(void* pointer,
+		size_t size, unsigned int flags)
+	{
+		MemoryAllocation* allocation =
+			new MemoryAllocation(pointer, size, flags);
+		_hostAllocations.insert(std::make_pair(allocation->pointer(),
+			allocation));
+
+		report("NVIDIAGPUDevice::registerHost() - adding key "
+			<< allocation->pointer());
 
 		return allocation;
 	}

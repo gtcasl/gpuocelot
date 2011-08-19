@@ -153,6 +153,13 @@ cudaError_t  cudaHostGetFlags(unsigned int *pFlags, void *pHost) {
 	return cuda::CudaRuntimeInterface::get()->cudaHostGetFlags(pFlags, pHost);
 }
 
+cudaError_t cudaHostRegister(void *pHost, size_t bytes, unsigned int flags) {
+	return cuda::CudaRuntimeInterface::get()->cudaHostRegister(pHost, bytes, flags);
+}
+
+cudaError_t cudaHostUnregister(void *pHost) {
+	return cuda::CudaRuntimeInterface::get()->cudaHostUnregister(pHost);
+}
 
 
 /*******************************************************************************

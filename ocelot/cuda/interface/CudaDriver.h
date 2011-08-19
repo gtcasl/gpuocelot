@@ -92,6 +92,11 @@ namespace cuda
 					CUresult (*cuMemFreeHost)(void *p);
 					CUresult (*cuMemHostAlloc)(void **pp, 
 						unsigned long long bytesize, unsigned int Flags );
+					CUresult (*cuMemHostRegister)(void *pp, 
+						unsigned long long bytesize, unsigned int Flags );
+					CUresult (*cuMemHostUnregister)(void *pp);
+
+
 					CUresult (*cuMemHostGetDevicePointer)( CUdeviceptr *pdptr, 
 						void *p, unsigned int Flags );
 					CUresult (*cuMemHostGetFlags)( unsigned int *pFlags, 
@@ -370,6 +375,9 @@ namespace cuda
 
 			static CUresult cuMemHostAlloc(void **pp, 
 				unsigned long long bytesize, unsigned int Flags );
+			static CUresult cuMemHostRegister(void *pp, 
+				unsigned long long bytesize, unsigned int Flags );
+			static CUresult cuMemHostUnregister(void *pp);
 
 			static CUresult cuMemHostGetDevicePointer( CUdeviceptr *pdptr, 
 				void *p, unsigned int Flags );

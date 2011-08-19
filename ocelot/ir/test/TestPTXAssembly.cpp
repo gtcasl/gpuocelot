@@ -204,6 +204,62 @@ char* uniformFloat(test::Test::MersenneTwister& generator)
 ////////////////////////////////////////////////////////////////////////////////
 
 ////////////////////////////////////////////////////////////////////////////////
+// TEST Function Pointer Array
+std::string testFunctionPointerArray_PTX()
+{
+	std::stringstream ptx;
+
+	ptx << ".version 2.3\n";
+	ptx << "\n";
+
+	ptx << "\n";
+	ptx << ".entry test(.param .u64 out, .param .u64 in)   \n";
+	ptx << "{\t                                            \n";
+	ptx << "\t.reg .u64 %rIn, %rOut;                       \n";
+	ptx << "\t.reg .u64 %address;                          \n";
+	ptx << "\t.reg " << typeString    << " %rt;            \n";
+	ptx << "\t.reg .pred %pd;                              \n";
+	if(space == ir::PTXInstruction::Local)
+	{	
+		ptx << addressSpace << " " << typeString << " %variable;\n";
+	}
+
+	ptx << "\tld.param.u64 %rIn, [in];                     \n";
+	ptx << "\tld.param.u64 %rOut, [out];                   \n";
+	ptx << "\tld.global" << typeString << " %rt, [%rIn];   \n";
+	
+	ptx << "\tst" << addressSpace << typeString << " [%variable], %rt;     \n";
+	ptx << "\tcvta" << addressSpace << typeString << " %address, %variable;\n";
+	ptx << "\tld" << typeString << " %rt, [%address];     \n";
+
+	ptx << "\tst" << addressSpace << typeString << " [%variable], %rt;     \n";
+	ptx << "\tcvta.to" << addressSpace << typeString << " %address, %address;\n";
+	ptx << "\tld" << addressSpace << typeString << " %rt, [%address];     \n";
+
+	ptx << "\tst.global" << typeString << " [%rOut], %rt; \n";
+	ptx << "\texit;                                        \n";
+	ptx << "}                                              \n";
+	ptx << "                                               \n";
+	
+	return ptx.str();
+}
+
+template<typename dtype>
+void testCvta_REF(void* output, void* input)
+{
+	dtype r0 = getParameter<dtype>(input, 0);
+
+	setParameter(output, 0, r0);
+}
+
+test::TestPTXAssembly::TypeVector testCvta_INOUT(
+	test::TestPTXAssembly::DataType type)
+{
+	return test::TestPTXAssembly::TypeVector(1, type);
+}
+////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////
 // TEST CVTA
 std::string testCvta_PTX(ir::PTXOperand::DataType type, 
 	ir::PTXInstruction::AddressSpace space)

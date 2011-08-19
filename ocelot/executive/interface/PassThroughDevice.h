@@ -38,6 +38,9 @@ namespace executive
 			/*! \brief Make this a host memory allocation */
 			Device::MemoryAllocation* allocateHost(size_t size, 
 				unsigned int flags = 0);
+			/*! \brief Register a host memory allocation */
+			Device::MemoryAllocation* registerHost(void* pointer, size_t size, 
+				unsigned int flags);
 			/*! \brief Free an existing non-global allocation */
 			void free(void* pointer);
 			/*! \brief Get nearby allocations to a pointer */

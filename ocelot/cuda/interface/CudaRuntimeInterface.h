@@ -122,6 +122,9 @@ namespace cuda {
 			Memory - host allocations
 		*/
 
+		virtual cudaError_t cudaHostRegister(void *pHost, size_t bytes, 
+			unsigned int flags);
+		virtual cudaError_t cudaHostUnregister(void *pHost);
 		virtual cudaError_t cudaHostAlloc(void **pHost, size_t bytes, 
 			unsigned int flags);
 		virtual cudaError_t cudaHostGetDevicePointer(void **pDevice, 

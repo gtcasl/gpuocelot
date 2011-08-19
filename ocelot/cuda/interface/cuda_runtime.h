@@ -386,6 +386,8 @@ extern cudaError_t cudaHostGetDevicePointer(void **pDevice, void *pHost,
 	unsigned int flags);
 extern cudaError_t cudaHostGetFlags(unsigned int *pFlags, void *pHost);
 
+extern cudaError_t cudaHostRegister(void *pHost, size_t bytes, unsigned int flags);
+extern cudaError_t cudaHostUnregister(void *pHost);
 
 /*******************************************************************************
 *                                                                              *

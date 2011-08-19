@@ -487,6 +487,17 @@ executive::Device::MemoryAllocation* executive::RemoteDevice::allocateHost(
 	return allocation;
 }
 
+/*! \brief Make this a host memory allocation */
+executive::Device::MemoryAllocation* executive::RemoteDevice::registerHost(
+	void* pointer,
+	size_t size, 
+	unsigned int flags) {
+	assert(selected());
+
+	assert(0 && "unimplemented");
+	return 0;
+}
+
 /*! \brief Free an existing non-global allocation */
 void executive::RemoteDevice::free(void* pointer) {
 	assert(selected());

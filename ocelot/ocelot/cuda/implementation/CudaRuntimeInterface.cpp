@@ -273,6 +273,16 @@ cudaError_t cuda::CudaRuntimeInterface::cudaFreeArray(struct cudaArray *array) {
 	return cudaErrorNotYetImplemented;
 }
 
+cudaError_t cuda::CudaRuntimeInterface::cudaHostRegister(void *pHost,
+	size_t bytes, unsigned int flags) {
+	assert(0 && "unimplemented");
+	return cudaErrorNotYetImplemented;
+}
+
+cudaError_t cuda::CudaRuntimeInterface::cudaHostUnregister(void *pHost) {
+	assert(0 && "unimplemented");
+	return cudaErrorNotYetImplemented;
+}
 
 cudaError_t cuda::CudaRuntimeInterface::cudaHostAlloc(void **pHost,
 	size_t bytes, unsigned int flags) {

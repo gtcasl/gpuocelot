@@ -373,12 +373,18 @@ namespace cuda {
 		virtual cudaError_t  cudaMalloc3DArray(struct cudaArray** arrayPtr, 
 			const struct cudaChannelFormatDesc* desc, struct cudaExtent extent);
 
+		// Host Interface
+
 		virtual cudaError_t  cudaHostAlloc(void **pHost, size_t bytes, 
 			unsigned int flags);
 		virtual cudaError_t  cudaHostGetDevicePointer(void **pDevice, 
 			void *pHost, unsigned int flags);
 		virtual cudaError_t  cudaHostGetFlags(unsigned int *pFlags, 
 			void *pHost);
+		virtual cudaError_t cudaHostRegister(void *pHost, size_t bytes, 
+			unsigned int flags);
+		virtual cudaError_t cudaHostUnregister(void *pHost);
+
 
 	public:
 		//

@@ -1051,10 +1051,56 @@ cudaError_t cuda::CudaRuntime::cudaHostGetFlags(unsigned int *pFlags,
 			executive::Device::HostAllocation);
 	
 	if (allocation != 0) {
+		result = cudaSuccess;
 		*pFlags = allocation->flags();
 	}
 	
 	_release();
+	return _setLastError(result);
+}
+
+cudaError_t cuda::CudaRuntime::cudaHostRegister(void *pHost, size_t bytes, 
+	unsigned int flags)
+{
+	cudaError_t result = cudaErrorInvalidValue;
+	_acquire();
+	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
+
+	executive::Device::MemoryAllocation *allocation =
+		_getDevice().registerHost(pHost, bytes, flags);
+
+	if (allocation != 0) {	
+		assert(allocation->host());
+		result = cudaSuccess;
+	}
+	else {
+		report("cudaHostRegister() - failed to register host allocation at "
+			<< (const void *)pHost);
+	}
+
+	_release();
+	
+	return _setLastError(result);
+}
+
+cudaError_t cuda::CudaRuntime::cudaHostUnregister(void *pHost)
+{
+	cudaError_t result = cudaErrorInvalidValue;
+	_acquire();
+	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
+
+	try {
+		if (pHost) {
+			_getDevice().free(pHost);
+		}
+		result = cudaSuccess;
+	}
+	catch(hydrazine::Exception&) {
+		
+	}
+
+	_release();
+	
 	return _setLastError(result);
 }
 

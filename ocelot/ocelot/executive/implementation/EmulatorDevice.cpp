@@ -87,8 +87,17 @@ namespace executive
 	}
 
 	EmulatorDevice::MemoryAllocation::MemoryAllocation(void* pointer, 
-		size_t size) : Device::MemoryAllocation(false, false), _size(size),
+		size_t size)
+	: Device::MemoryAllocation(false, false), _size(size),
 		_pointer(pointer), _flags(0), _external(true)
+	{
+	
+	}
+
+	EmulatorDevice::MemoryAllocation::MemoryAllocation(void* pointer, 
+		size_t size, unsigned int flags)
+	: Device::MemoryAllocation(false, true), _size(size),
+		_pointer(pointer), _flags(flags), _external(true)
 	{
 	
 	}
@@ -162,6 +171,7 @@ namespace executive
 	void* EmulatorDevice::MemoryAllocation::mappedPointer() const
 	{
 		assert(host());
+		if(_external) return _pointer;
 		return align(_pointer);
 	}
 	
@@ -451,6 +461,15 @@ namespace executive
 			allocation));
 		return allocation;
 	}
+
+	Device::MemoryAllocation* EmulatorDevice::registerHost(void* pointer,
+		size_t size, unsigned int flags)
+	{
+		MemoryAllocation* allocation = new MemoryAllocation(
+			pointer, size, flags);
+		_allocations.insert(std::make_pair(allocation->pointer(), allocation));
+		return allocation;
+	}
 	
 	void EmulatorDevice::free(void* pointer)
 	{
@@ -591,7 +610,7 @@ namespace executive
 				
 			_allocations.insert(std::make_pair(graphic->second.pointer, 
 				new MemoryAllocation(graphic->second.pointer, bytes)));
-		
+			
 			report(" Binding GL array buffer back to 0.");
 			glBindBuffer(GL_ARRAY_BUFFER, 0);
 

@@ -91,6 +91,11 @@ namespace executive {
 			the instruction sequence if it does not already exist */
 		void lazyLink(int callPC, const std::string& functionName);
 
+		/*! Looks up a named function in the module and inserts it into the
+			instruction stream if it does not exist.  Returns the PC of the
+			function in the instruction stream. */
+		size_t link(const std::string& functionName);
+
 		/*! Finds the kernel beginning at the specified PC */
 		const EmulatedKernel* getKernel(int PC) const;
 		
@@ -163,6 +168,10 @@ namespace executive {
 		/*!	Scans the kernel and builds the set of textures using references 
 				in tex instructions */
 		void initializeTextureMemory();
+
+		/*! Setup symbols that are referenced in global variables.		
+		*/
+		void initializeSymbolReferences();
 
 		/*! Sets the target of call instructions to invalid pcs so that they
 			can be lazily compiled and allocated */

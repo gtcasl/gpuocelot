@@ -12,7 +12,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 ir::Kernel::Kernel(Instruction::Architecture isa, const std::string& n, 
 	bool isFunction, const ir::Module* m) :

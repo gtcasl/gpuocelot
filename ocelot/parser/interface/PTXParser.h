@@ -148,6 +148,8 @@ namespace parser
 					void identifierList2( const std::string& identifier );
 					void decimalListSingle( long long int value );
 					void decimalListSingle2( long long int value );
+					void symbolListSingle( const std::string& identifier );
+					void symbolListSingle2( const std::string& identifier );
 					void floatList( double value );
 					void floatList1( double value );
 					void singleList( float value );

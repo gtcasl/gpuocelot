@@ -212,50 +212,85 @@ std::string testFunctionPointerArray_PTX()
 	ptx << ".version 2.3\n";
 	ptx << "\n";
 
+	ptx << ".visible .func (.param .u32 return) add0(.param .u32 a)\n";
+	ptx << ".visible .func (.param .u32 return) add1(.param .u32 a)\n";
+	ptx << ".visible .func (.param .u32 return) add2(.param .u32 a)\n";
+	ptx << ".visible .func (.param .u32 return) add3(.param .u32 a)\n";
 	ptx << "\n";
+
+	ptx << ".global .u64 functionPointerArray[4] ="
+		" { add0, add1, add2, add3 };\n";
+	ptx << "\n";
+	
 	ptx << ".entry test(.param .u64 out, .param .u64 in)   \n";
 	ptx << "{\t                                            \n";
 	ptx << "\t.reg .u64 %rIn, %rOut;                       \n";
-	ptx << "\t.reg .u64 %address;                          \n";
-	ptx << "\t.reg " << typeString    << " %rt;            \n";
-	ptx << "\t.reg .pred %pd;                              \n";
-	if(space == ir::PTXInstruction::Local)
-	{	
-		ptx << addressSpace << " " << typeString << " %variable;\n";
-	}
-
+	ptx << "\t.reg .u32 %r<3>;                             \n";
+	ptx << "\t.reg .u64 %functionPointerArrayBase;         \n";
+	ptx << "\t.reg .u64 %functionPointer;                  \n";
+	ptx << "\t.reg .u64 %offset;                           \n";
+	ptx << "\t.param .u32 operandA;                        \n";
+	ptx << "\t.param .u32 result;                          \n";
 	ptx << "\tld.param.u64 %rIn, [in];                     \n";
 	ptx << "\tld.param.u64 %rOut, [out];                   \n";
-	ptx << "\tld.global" << typeString << " %rt, [%rIn];   \n";
-	
-	ptx << "\tst" << addressSpace << typeString << " [%variable], %rt;     \n";
-	ptx << "\tcvta" << addressSpace << typeString << " %address, %variable;\n";
-	ptx << "\tld" << typeString << " %rt, [%address];     \n";
-
-	ptx << "\tst" << addressSpace << typeString << " [%variable], %rt;     \n";
-	ptx << "\tcvta.to" << addressSpace << typeString << " %address, %address;\n";
-	ptx << "\tld" << addressSpace << typeString << " %rt, [%address];     \n";
-
-	ptx << "\tst.global" << typeString << " [%rOut], %rt; \n";
+	ptx << "\tld.global.u32 %r0, [%rIn];                   \n";
+	ptx << "\tst.param.u32 [operandA], %r0;                \n";
+	ptx << "\tcvt.u64.u32 %offset, %tid.x;                 \n";
+	ptx << "\tmul.lo.u64 %offset, %offset, 8;              \n";
+	ptx << "\tmov.u64 %functionPointerArrayBase, functionPointerArray;\n";
+	ptx << "\tadd.u64 %functionPointerArrayBase, "
+		"%functionPointerArrayBase, %offset;\n";
+	ptx << "\tld.global.u64 %functionPointer, [%functionPointerArrayBase];\n";
+	ptx << "\tprototype: .callprototype (.param .u32 _)    \n";
+	ptx << "\t    _ (.param .u32 _);                       \n";
+	ptx << "\tcall (result), %functionPointer,             \n";
+	ptx << "\t    (operandA), prototype;                   \n";
+	ptx << "\tld.param.u32 %r2, [result];                  \n";
+	ptx << "\tcvt.u64.u32 %offset, %tid.x;                 \n";
+	ptx << "\tmul.lo.u64 %offset, %offset, 4;              \n";
+	ptx << "\tadd.u64 %rOut, %offset, %rOut;               \n";
+	ptx << "\tst.global.u32 [%rOut], %r2;                  \n";
 	ptx << "\texit;                                        \n";
 	ptx << "}                                              \n";
 	ptx << "                                               \n";
+
+	ptx << ".visible .func (.param .u32 return) add0(.param .u32 a) \n";
+	ptx << "{\t                                 \n";
+	ptx << "\t.reg .u32 %r<3>;                  \n";
+	ptx << "\tld.param.u32 %r0, [a];            \n";
+	ptx << "\tadd.u32 %r0, %r0, 0;              \n";
+	ptx << "\tst.param.u32 [return], %r0;       \n";
+	ptx << "\tret 0;                            \n";
+	ptx << "}                                   \n";
+
+	ptx << ".visible .func (.param .u32 return) add1(.param .u32 a) \n";
+	ptx << "{\t                                 \n";
+	ptx << "\t.reg .u32 %r<3>;                  \n";
+	ptx << "\tld.param.u32 %r0, [a];            \n";
+	ptx << "\tadd.u32 %r0, %r0, 1;              \n";
+	ptx << "\tst.param.u32 [return], %r0;       \n";
+	ptx << "\tret 0;                            \n";
+	ptx << "}                                   \n";
+
+	ptx << ".visible .func (.param .u32 return) add2(.param .u32 a) \n";
+	ptx << "{\t                                 \n";
+	ptx << "\t.reg .u32 %r<3>;                  \n";
+	ptx << "\tld.param.u32 %r0, [a];            \n";
+	ptx << "\tadd.u32 %r0, %r0, 2;              \n";
+	ptx << "\tst.param.u32 [return], %r0;       \n";
+	ptx << "\tret 0;                            \n";
+	ptx << "}                                   \n";
+
+	ptx << ".visible .func (.param .u32 return) add3(.param .u32 a) \n";
+	ptx << "{\t                                 \n";
+	ptx << "\t.reg .u32 %r<3>;                  \n";
+	ptx << "\tld.param.u32 %r0, [a];            \n";
+	ptx << "\tadd.u32 %r0, %r0, 3;              \n";
+	ptx << "\tst.param.u32 [return], %r0;       \n";
+	ptx << "\tret 0;                            \n";
+	ptx << "}                                   \n";
 	
 	return ptx.str();
-}
-
-template<typename dtype>
-void testCvta_REF(void* output, void* input)
-{
-	dtype r0 = getParameter<dtype>(input, 0);
-
-	setParameter(output, 0, r0);
-}
-
-test::TestPTXAssembly::TypeVector testCvta_INOUT(
-	test::TestPTXAssembly::DataType type)
-{
-	return test::TestPTXAssembly::TypeVector(1, type);
 }
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -5250,6 +5285,11 @@ namespace test
 		add("TestCall-Indirect", testIndirectFunctionCall_REF, 
 			testIndirectFunctionCall_PTX(), testIndirectFunctionCall_OUT(), 
 			testIndirectFunctionCall_IN(), 
+			uniformRandom<unsigned int, 1>, 4, 1);
+
+		add("TestFunctionPointerArray", testIndirectFunctionCall_REF, 
+			testFunctionPointerArray_PTX(), testIndirectFunctionCall_OUT(), 
+			testIndirectFunctionCall_IN(),
 			uniformRandom<unsigned int, 1>, 4, 1);
 
 		add("TestTestP-f32-Finite", 

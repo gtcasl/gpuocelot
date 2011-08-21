@@ -40,7 +40,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 
 #define REPORT_KERNEL_INSTRUCTIONS 1
 #define REPORT_LAUNCH_CONFIGURATION 0
@@ -96,6 +96,8 @@ bool executive::EmulatedKernel::executable() const {
 void executive::EmulatedKernel::launchGrid(int width, int height, int depth) {
 	report("EmulatedKernel::launchGrid called for " << name);
 	report("  " << _registerCount << " registers");
+
+	initializeSymbolReferences();
 
 	_gridDim = ir::Dim3(width, height, depth);	
 	
@@ -824,34 +826,46 @@ void executive::EmulatedKernel::initializeGlobalMemory() {
 	}
 }
 
-void executive::EmulatedKernel::lazyLink(int callPC, 
-	const std::string& functionName) {
+size_t executive::EmulatedKernel::link(const std::string& functionName) {
+	report("Getting PC for kernel '" << functionName << "'");
 	EmulatedKernel* kernel = static_cast<EmulatedKernel*>(
 		device->getKernel(module->path(), functionName));
 	assertM(kernel != 0, "Kernel function '" << functionName 
 		<< "' not found in module '" << module->path() << "'");
-	FunctionNameMap::iterator 
-		entryPoint = functionEntryPoints.find(functionName);
+	FunctionNameMap::iterator entryPoint =
+		functionEntryPoints.find(functionName);
 
 	if (entryPoint == functionEntryPoints.end()) {
 		int newPC = instructions.size();
-		report("Linking kernel '" << functionName << "' at pc " << newPC);
+		report(" linking kernel '" << functionName << "' at pc " << newPC);
 		kernelEntryPoints.insert(std::make_pair(newPC, kernel));
-
+		
 		std::string name = functionName;
-
+		
 		instructions.insert(instructions.end(), kernel->instructions.begin(), 
 			kernel->instructions.end());
-
+		
 		entryPoint = functionEntryPoints.insert(
 			std::make_pair(name, newPC)).first;
 	}
 	
-	instructions[callPC].branchTargetInstruction = entryPoint->second;
+	return entryPoint->second;
+}
+
+void executive::EmulatedKernel::lazyLink(int callPC, 
+	const std::string& functionName) {
+	int pc = link(functionName);
+	
+	instructions[callPC].branchTargetInstruction = pc;
 	
 	if (instructions[callPC].opcode == ir::PTXInstruction::Call) {
+		EmulatedKernel* kernel = static_cast<EmulatedKernel*>(
+				device->getKernel(module->path(), functionName));
+		assertM(kernel != 0, "Kernel function '" << functionName 
+			<< "' not found in module '" << module->path() << "'");
+	
 		instructions[callPC].a.stackMemorySize = 
-		kernel->parameterMemorySize();
+			kernel->parameterMemorySize();
 		instructions[callPC].a.localMemorySize = kernel->localMemorySize();
 		instructions[callPC].a.sharedMemorySize = kernel->sharedMemorySize();
 		instructions[callPC].a.registerCount = kernel->registerCount();
@@ -1034,6 +1048,36 @@ void executive::EmulatedKernel::initializeTextureMemory() {
 			<< " - data: " << textures[ind_it->second]->data);
 	}
 	#endif
+}
+
+void executive::EmulatedKernel::initializeSymbolReferences() {
+	report("Initializing symbol references stored in global variables.");
+	
+	if (module != 0) {
+		for (ir::Module::GlobalMap::const_iterator 
+			it = module->globals().begin(); 
+			it != module->globals().end(); ++it) {
+			for (ir::PTXStatement::SymbolVector::const_iterator symbol =
+				it->second.statement.symbols.begin(); symbol !=
+				it->second.statement.symbols.end(); ++symbol) {
+				Device::MemoryAllocation* allocation = 
+					device->getGlobalAllocation(module->path(),
+					it->second.name());
+				assert(allocation != 0);
+				
+				size_t pc = link(symbol->name);
+				
+				size_t size = ir::PTXOperand::bytes(it->second.statement.type);
+				size_t offset = symbol->offset * size;
+				
+				report(" Setting symbol '" << symbol->name << "' to " << pc
+					<< " in global '" << it->second.name() << "' at offset "
+					<< offset);
+				std::memcpy((char*)allocation->pointer() + offset, &pc, size);
+			}
+		}
+	}
+	
 }
 
 void executive::EmulatedKernel::invalidateCallTargets() {

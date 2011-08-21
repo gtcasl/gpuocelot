@@ -183,6 +183,18 @@ identifierList : identifierList ',' identifier
 	state.identifierList2( $<text>3 );
 };
 
+decimalListSingle : identifier
+{
+	state.decimalListSingle( 0 );
+	state.symbolListSingle( $<text>1 );
+};
+
+decimalListSingle : decimalListSingle ',' identifier
+{
+	state.decimalListSingle2( 0 );
+	state.symbolListSingle2( $<text>3 );
+};
+
 decimalListSingle : TOKEN_DECIMAL_CONSTANT
 {
 	state.decimalListSingle( $<value>1 );

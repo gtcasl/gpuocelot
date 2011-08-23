@@ -1,7 +1,7 @@
 {
 	ocelot: "ocelot",
     instrument: {
-        memoryEfficiency: {
+        clockCycleCount: {
             logfile: ""
         }
     },
@@ -24,7 +24,7 @@
 			enabled: false,
 		},
 		dynamicCompilation: {
-			enabled: true,
+			enabled: false,
 		},
 		branch: false,
 		memory: false

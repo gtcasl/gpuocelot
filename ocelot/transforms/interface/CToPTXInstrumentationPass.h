@@ -101,7 +101,6 @@ namespace transforms
 		public:
 
 			CToPTXInstrumentationPass(std::string resource);
-			bool isClockCycleInstrumentation;
 			std::map<std::string, analysis::DataflowGraph::RegisterId> newRegisterMap;
 			std::string baseAddress;
 			

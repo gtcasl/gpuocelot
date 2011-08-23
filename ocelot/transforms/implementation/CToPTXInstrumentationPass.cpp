@@ -28,53 +28,6 @@ namespace transforms
 		return static_cast<analysis::DataflowGraph&>(*graph);
 	}
 
-    ir::PTXStatement CToPTXInstrumentationPass::computeBaseAddress(ir::PTXStatement statement, ir::PTXInstruction original)
-    {
-        ir::PTXStatement toInsert = statement;
-        
-        if(statement.instruction.a.identifier == COMPUTE_BASE_ADDRESS)
-            {
-                toInsert.instruction.d.reg = newRegisterMap[COMPUTE_BASE_ADDRESS];
-                toInsert.instruction.a.reg = newRegisterMap[COMPUTE_BASE_ADDRESS];
-                toInsert.instruction.b.reg = newRegisterMap[statement.instruction.b.identifier];
-                toInsert.instruction.d.identifier.clear();
-                toInsert.instruction.a.identifier.clear();
-                toInsert.instruction.b.identifier.clear();
-                return toInsert;
-            }
-        
-            toInsert.instruction.d.reg = dfg().newRegister();
-            newRegisterMap[toInsert.instruction.d.identifier] = toInsert.instruction.d.reg;
-            toInsert.instruction.d.identifier.clear();
-            
-            if(original.opcode == ir::PTXInstruction::St)
-            {
-                if(original.d.addressMode == ir::PTXOperand::Indirect)
-                {
-                    toInsert.instruction.a.identifier.clear();
-                    toInsert.instruction.b.identifier.clear();
-                    toInsert.instruction.opcode = ir::PTXInstruction::Add;
-                    toInsert.instruction.a.addressMode = ir::PTXOperand::Register;
-                    toInsert.instruction.a.reg = original.d.reg;   
-                    toInsert.instruction.b.addressMode = ir::PTXOperand::Immediate;
-                    toInsert.instruction.b.imm_int = original.d.offset;   
-                }
-            }
-            else if(original.opcode == ir::PTXInstruction::Ld)
-            {
-                if(original.a.addressMode == ir::PTXOperand::Indirect)
-                {
-                    toInsert.instruction.opcode = ir::PTXInstruction::Add;
-                    toInsert.instruction.a.addressMode = ir::PTXOperand::Register;
-                    toInsert.instruction.a.reg = original.a.reg;   
-                    toInsert.instruction.b.addressMode = ir::PTXOperand::Immediate;
-                    toInsert.instruction.b.imm_int = original.a.offset;   
-                }
-            
-            }
-    
-            return toInsert;
-    }
 
     /* This method assigns unused registers for each PTX statement to be inserted and replaces all static attribute place-holders with actual values */
     ir::PTXStatement CToPTXInstrumentationPass::prepareStatementToInsert(ir::PTXStatement statement, StaticAttributes attributes) {
@@ -407,33 +360,6 @@ namespace transforms
         }    
     }
 
-    unsigned int CToPTXInstrumentationPass::kernelInstructionCount(TranslationBlock translationBlock)
-    {
-        analysis::DataflowGraph::iterator block = dfg().begin();
-	    ++block;
-	    
-	    unsigned long kernelInstructionCount = 0;
-	    
-	    for( analysis::DataflowGraph::iterator basicBlock = block; 
-            basicBlock != dfg().end(); ++basicBlock )
-        {
-            if(basicBlock->instructions().empty())
-              continue;
-            
-            /* Iterating through each instruction */
-            for( analysis::DataflowGraph::InstructionVector::const_iterator instruction = basicBlock->instructions().begin();
-                instruction != basicBlock->instructions().end(); ++instruction)
-            {
-                ir::PTXInstruction *ptxInstruction = (ir::PTXInstruction *)instruction->i;
-                if(instrumentationConditionsMet(*ptxInstruction, translationBlock))
-                    kernelInstructionCount++;
-            }
-        }
-        
-        return kernelInstructionCount;
-    
-    }
-
     void CToPTXInstrumentationPass::instrumentKernel(TranslationBlock translationBlock) 
     {
         StaticAttributes attributes;
@@ -465,6 +391,88 @@ namespace transforms
         
 	    insertBefore(translationBlock, attributes, block, loc);
     }
+    
+    unsigned int CToPTXInstrumentationPass::kernelInstructionCount(TranslationBlock translationBlock)
+    {
+        analysis::DataflowGraph::iterator block = dfg().begin();
+	    ++block;
+	    
+	    unsigned long kernelInstructionCount = 0;
+	    
+	    for( analysis::DataflowGraph::iterator basicBlock = block; 
+            basicBlock != dfg().end(); ++basicBlock )
+        {
+            if(basicBlock->instructions().empty())
+              continue;
+            
+            /* Iterating through each instruction */
+            for( analysis::DataflowGraph::InstructionVector::const_iterator instruction = basicBlock->instructions().begin();
+                instruction != basicBlock->instructions().end(); ++instruction)
+            {
+                ir::PTXInstruction *ptxInstruction = (ir::PTXInstruction *)instruction->i;
+                if(instrumentationConditionsMet(*ptxInstruction, translationBlock))
+                    kernelInstructionCount++;
+            }
+        }
+        
+        return kernelInstructionCount;
+    
+    }
+
+    ir::PTXStatement CToPTXInstrumentationPass::computeBaseAddress(ir::PTXStatement statement, ir::PTXInstruction original)
+    {
+        ir::PTXStatement toInsert = statement;
+        
+        if(statement.instruction.a.identifier == COMPUTE_BASE_ADDRESS)
+            {
+                toInsert.instruction.d.reg = newRegisterMap[COMPUTE_BASE_ADDRESS];
+                toInsert.instruction.a.reg = newRegisterMap[COMPUTE_BASE_ADDRESS];
+                toInsert.instruction.b.reg = newRegisterMap[statement.instruction.b.identifier];
+                toInsert.instruction.d.identifier.clear();
+                toInsert.instruction.a.identifier.clear();
+                toInsert.instruction.b.identifier.clear();
+                return toInsert;
+            }
+        
+            toInsert.instruction.d.reg = dfg().newRegister();
+            newRegisterMap[toInsert.instruction.d.identifier] = toInsert.instruction.d.reg;
+            toInsert.instruction.d.identifier.clear();
+            
+            if(original.opcode == ir::PTXInstruction::St)
+            {
+                if(original.d.addressMode == ir::PTXOperand::Indirect)
+                {
+                    toInsert.instruction.a.identifier.clear();
+                    toInsert.instruction.b.identifier.clear();
+                    toInsert.instruction.opcode = ir::PTXInstruction::Add;
+                    toInsert.instruction.a.addressMode = ir::PTXOperand::Register;
+                    toInsert.instruction.a.reg = original.d.reg;   
+                    toInsert.instruction.b.addressMode = ir::PTXOperand::Immediate;
+                    toInsert.instruction.b.imm_int = original.d.offset;   
+                }
+            }
+            else if(original.opcode == ir::PTXInstruction::Ld)
+            {
+                if(original.a.addressMode == ir::PTXOperand::Indirect)
+                {
+                    toInsert.instruction.opcode = ir::PTXInstruction::Add;
+                    toInsert.instruction.a.addressMode = ir::PTXOperand::Register;
+                    toInsert.instruction.a.reg = original.a.reg;   
+                    toInsert.instruction.b.addressMode = ir::PTXOperand::Immediate;
+                    toInsert.instruction.b.imm_int = original.a.offset;   
+                }
+            
+            }
+    
+            return toInsert;
+    }
+
+
+/*******************************************************************************************
+
+    runOnKernel
+
+********************************************************************************************/
 
     void CToPTXInstrumentationPass::runOnKernel( ir::IRKernel & k)
 	{

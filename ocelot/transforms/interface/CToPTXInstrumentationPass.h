@@ -32,7 +32,7 @@ namespace transforms
         public:
             
             typedef std::vector<std::string> StringVector;
-  
+
             std::string id;
             bool checkForPredication;
             bool isPredicated;
@@ -40,7 +40,7 @@ namespace transforms
             StringVector addressSpaceVector;
             StringVector dataTypeVector;
             StringVector predicateVector;
-            
+
             InstrumentationSpecifier();
     };
     
@@ -83,17 +83,17 @@ namespace transforms
 	{
 		private:
 			
-			typedef std::map<ir::PTXInstruction::Opcode, std::string> OpcodeMap; 
+            typedef std::map<ir::PTXInstruction::Opcode, std::string> OpcodeMap; 
             typedef std::map<std::string, ir::PTXInstruction::AddressSpace> AddressSpaceMap;   
             typedef std::map<ir::PTXOperand::DataType, std::string> DataTypeMap; 
-			
-			OpcodeMap opcodeMap;
+
+            OpcodeMap opcodeMap;
             AddressSpaceMap addressSpaceMap;
             DataTypeMap dataTypeMap;
-			translator::CToPTXData translation;
-			std::vector<std::string> instructionClasses;
-			std::vector<std::string> addressSpaceSpecifiers;
-			std::vector<std::string> types;
+            translator::CToPTXData translation;
+            std::vector<std::string> instructionClasses;
+            std::vector<std::string> addressSpaceSpecifiers;
+            std::vector<std::string> types;
 			
 		protected:
 		    analysis::DataflowGraph& dfg();
@@ -105,17 +105,19 @@ namespace transforms
 			std::string baseAddress;
 			
 	    private:
-		TranslationBlock handleClockCycle(TranslationBlock translationBlock);
-	        ir::PTXStatement computeBaseAddress(ir::PTXStatement statement, ir::PTXInstruction original);
+	    
 	        ir::PTXStatement prepareStatementToInsert(ir::PTXStatement statement, StaticAttributes attributes);
-	        void insertNewBasicBlocks(TranslationBlock translationBlock, analysis::DataflowGraph::iterator basicBlock);
-	        unsigned int kernelInstructionCount(TranslationBlock translationBlock);
+	        bool instrumentationConditionsMet(ir::PTXInstruction instruction, TranslationBlock translationBlock);
+	        
+	        unsigned long insertBefore(TranslationBlock translationBlock, StaticAttributes attributes, analysis::DataflowGraph::iterator basicBlock, unsigned int loc);
+			void insertAfter(TranslationBlock translationBlock, StaticAttributes attributes, analysis::DataflowGraph::iterator basicBlock, unsigned int loc);
+	        
 	        void instrumentInstruction(TranslationBlock translationBlock); 
 	        void instrumentBasicBlock(TranslationBlock translationBlock);
 	        void instrumentKernel(TranslationBlock translationBlock);
-	        bool instrumentationConditionsMet(ir::PTXInstruction instruction, TranslationBlock translationBlock);
-			unsigned long insertBefore(TranslationBlock translationBlock, StaticAttributes attributes, analysis::DataflowGraph::iterator basicBlock, unsigned int loc);
-			void insertAfter(TranslationBlock translationBlock, StaticAttributes attributes, analysis::DataflowGraph::iterator basicBlock, unsigned int loc);
+	        
+			unsigned int kernelInstructionCount(TranslationBlock translationBlock);
+			ir::PTXStatement computeBaseAddress(ir::PTXStatement statement, ir::PTXInstruction original);
 			
 		public:
 			/*! \brief Initialize the pass using a specific kernel */

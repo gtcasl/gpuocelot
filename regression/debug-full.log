@@ -25,7 +25,7 @@ INFO     ==== INDIVIDUAL TEST RESULTS ====
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestEmulator 
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestDeviceSwitching 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestEmulator
-INFO     Test completed in 0.131707906723 seconds
+INFO     Test completed in 0.139279127121 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -35,8 +35,8 @@ Name : TestEmulator
 Description: 
 
 
-Test Seed : 1313174841
-Test time : 0.0755603
+Test Seed : 1313920183
+Test time : 0.0780051
 
 Status : Test output:
 10 registers
@@ -50,7 +50,7 @@ Full kernel test passed
 
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestLexer -i ../tests/ptx 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestDeviceSwitching
-INFO     Test completed in 0.169718027115 seconds
+INFO     Test completed in 0.173434019089 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -69,8 +69,8 @@ Description: A unit test for the ability of the CUDA runtime to switch
              parallel.
 
 
-Test Seed : 1313174841
-Test time : 0.0847178
+Test Seed : 1313920183
+Test time : 0.0801642
 
 Status : Test Point 1 Passed
 Test Point 2 Passed
@@ -80,13 +80,13 @@ Test Point 3 Passed
 
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaSequence 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaSequence
-INFO     Test completed in 0.175758123398 seconds
+INFO     Test completed in 0.187930107117 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestDataflowGraph -i ../tests/ptx 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestLexer
-INFO     Test completed in 73.8955981731 seconds
+INFO     Test completed in 114.258082867 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -98,15 +98,51 @@ Description: Tests for the PTX lexer. Test Point 1: Scan a PTX file and
              two sets of tokens match
 
 
-Test Seed : 1313174841
-Test time : 73.8401
+Test Seed : 1313920183
+Test time : 114.205
 
-Status : For file ../tests/ptx/thrust/Unique.ptx, Test Point 1 (Scan): Passed
+Status : For file ../tests/ptx/cp.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/cuenergy_pre8_coalesce.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/thrust/Unique.ptx, Test Point 1 (Scan): Passed
 For file ../tests/ptx/thrust/Sort.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/thrust/bfs.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/unstructured/CvFastBgGMM_ver5.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/unstructured/MC-GPU_v1.1.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/unstructured/renderer.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/unstructured/vm.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/unstructured/mcx_core.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/unstructured/Mandelbrot_sm13.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/parboil/crys_kernel.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/parboil/mri-fhd.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/parboil/tpacf.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/parboil/computeQ.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/parboil/cp.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/parboil/cuenergy_pre8_coalesce.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/parboil/computeFH.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/parboil/sad.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/parboil/rpes.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/parboil/scan_largearray_kernel.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/parboil/sad4.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/parboil/mri-q.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/parboil/pns.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/parboil/largerBlocks.ptx, Test Point 1 (Scan): Passed
 For file ../tests/ptx/optix/closest_hit_radiance_CPU_INPUT.ptx, Test Point 1 (Scan): Passed
 For file ../tests/ptx/optix/zoneplate_megakernel.ptx, Test Point 1 (Scan): Passed
 For file ../tests/ptx/optix/closest_hit_radiance_CPU_INPUT_immediate.ptx, Test Point 1 (Scan): Passed
 For file ../tests/ptx/optix/kernel_trace_device0_1.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/rodinia/srad_kernel.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/rodinia/track_ellipse_kernel.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/rodinia/lud.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/rodinia/needle.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/rodinia/find_ellipse_kernel.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/rodinia/backprop_cuda_kernel.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/rodinia/lud_kernel.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/rodinia/hotspot.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/rodinia/srad.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/rodinia/mummergpu.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/rodinia/hwt.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/rodinia/needle_kernel.ptx, Test Point 1 (Scan): Passed
+For file ../tests/ptx/rodinia/backprop_cuda.ptx, Test Point 1 (Scan): Passed
 For file ../tests/ptx/sdk2.2/histogram256_SM10.ptx, Test Point 1 (Scan): Passed
 For file ../tests/ptx/sdk2.2/dct8x8.ptx, Test Point 1 (Scan): Passed
 For file ../tests/ptx/sdk2.2/histogram64.ptx, Test Point 1 (Scan): Passed
@@ -210,14 +246,20 @@ For file ../tests/ptx/synthetic/generic.ptx, Test Point 1 (Scan): Passed
 
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCalVectorScale 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCalVectorScale
-INFO     Test completed in 0.0967299938202 seconds
+INFO     Test completed in 0.102236032486 seconds
 INFO      It produced the following output:
 No CAL devices found
 Pass/Fail : Pass
 
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestIndirectFunctionCall 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestIndirectFunctionCall
-INFO     Test completed in 0.216793060303 seconds
+INFO     Test completed in 0.223057031631 seconds
+INFO      It produced the following output:
+Pass/Fail : Pass
+
+INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestPTXAssembly 
+INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestPTXAssembly
+INFO     Test completed in 16.7708499432 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -228,8 +270,8 @@ Description: A unit test framework for PTX. Runs random inputs through unit
              tests on all available devices until a timer expires.
 
 
-Test Seed : 1312783290
-Test time : 17.1055
+Test Seed : 1313920298
+Test time : 16.6681
 
 Status : Ran 'TestVectorElements-u32' for 1 iterations.
 Ran 'TestAdd-u16' for 2 iterations.
@@ -258,7 +300,7 @@ Ran 'TestMul-Hi-s16' for 2 iterations.
 Ran 'TestMul-Wide-s16' for 2 iterations.
 Ran 'TestMul-Lo-u32' for 2 iterations.
 Ran 'TestMul-Hi-u32' for 2 iterations.
-Ran 'TestMul-Wide-u32' for 2 iterations.
+Ran 'TestMul-Wide-u32' for 1 iterations.
 Ran 'TestMul-Lo-s32' for 2 iterations.
 Ran 'TestMul-Hi-s32' for 2 iterations.
 Ran 'TestMul-Wide-s32' for 2 iterations.
@@ -272,13 +314,13 @@ Ran 'TestMad-Wide-u16' for 2 iterations.
 Ran 'TestMad-Lo-s16' for 2 iterations.
 Ran 'TestMad-Hi-s16' for 2 iterations.
 Ran 'TestMad-Wide-s16' for 2 iterations.
-Ran 'TestMad-Lo-u32' for 2 iterations.
-Ran 'TestMad-Hi-u32' for 2 iterations.
+Ran 'TestMad-Lo-u32' for 1 iterations.
+Ran 'TestMad-Hi-u32' for 1 iterations.
 Ran 'TestMad-Wide-u32' for 2 iterations.
 Ran 'TestMad-Lo-s32' for 2 iterations.
 Ran 'TestMad-Hi-s32' for 2 iterations.
-Ran 'TestMad-Sat-Hi-s32' for 2 iterations.
-Ran 'TestMad-Wide-s32' for 2 iterations.
+Ran 'TestMad-Sat-Hi-s32' for 1 iterations.
+Ran 'TestMad-Wide-s32' for 1 iterations.
 Ran 'TestMad-Lo-u64' for 2 iterations.
 Ran 'TestMad-Hi-u64' for 2 iterations.
 Ran 'TestMad-Lo-s64' for 2 iterations.
@@ -288,7 +330,7 @@ Ran 'TestSad-s16' for 2 iterations.
 Ran 'TestSad-u32' for 2 iterations.
 Ran 'TestSad-s32' for 2 iterations.
 Ran 'TestSad-u64' for 2 iterations.
-Ran 'TestSad-s64' for 2 iterations.
+Ran 'TestSad-s64' for 1 iterations.
 Ran 'TestDiv-u16' for 2 iterations.
 Ran 'TestDiv-s16' for 2 iterations.
 Ran 'TestDiv-u32' for 2 iterations.
@@ -333,7 +375,7 @@ Ran 'TestBfind-shiftamount-s32' for 2 iterations.
 Ran 'TestBfind-shiftamount-s64' for 2 iterations.
 Ran 'TestBrev-b32' for 2 iterations.
 Ran 'TestBrev-b64' for 2 iterations.
-Ran 'TestBfi-b32' for 2 iterations.
+Ran 'TestBfi-b32' for 1 iterations.
 Ran 'TestBfi-b64' for 2 iterations.
 Ran 'TestPrmt-b32' for 2 iterations.
 Ran 'TestPrmt-f4e-b32' for 2 iterations.
@@ -347,14 +389,15 @@ Ran 'TestCall-Nondivergent' for 1 iterations.
 Ran 'TestCall-Divergent' for 1 iterations.
 Ran 'TestCall-Recursive' for 1 iterations.
 Ran 'TestCall-Indirect' for 1 iterations.
+Ran 'TestFunctionPointerArray' for 1 iterations.
 Ran 'TestTestP-f32-Finite' for 2 iterations.
 Ran 'TestTestP-f32-Infinite' for 2 iterations.
-Ran 'TestTestP-f32-Number' for 2 iterations.
+Ran 'TestTestP-f32-Number' for 1 iterations.
 Ran 'TestTestP-f32-NotANumber' for 2 iterations.
 Ran 'TestTestP-f32-Normal' for 2 iterations.
 Ran 'TestTestP-f32-SubNormal' for 2 iterations.
 Ran 'TestTestP-f64-Finite' for 2 iterations.
-Ran 'TestTestP-f64-Infinite' for 2 iterations.
+Ran 'TestTestP-f64-Infinite' for 1 iterations.
 Ran 'TestTestP-f64-Number' for 2 iterations.
 Ran 'TestTestP-f64-NotANumber' for 2 iterations.
 Ran 'TestTestP-f64-Normal' for 2 iterations.
@@ -373,17 +416,17 @@ Ran 'TestSub-f32-ftz-sat' for 2 iterations.
 Ran 'TestSub-f64' for 2 iterations.
 Ran 'TestMul-f32' for 2 iterations.
 Ran 'TestMul-f32-sat' for 2 iterations.
-Ran 'TestMul-f32-ftz' for 2 iterations.
-Ran 'TestMul-f32-ftz-sat' for 2 iterations.
+Ran 'TestMul-f32-ftz' for 1 iterations.
+Ran 'TestMul-f32-ftz-sat' for 1 iterations.
 Ran 'TestMul-f64' for 2 iterations.
 Ran 'TestMad-f32' for 2 iterations.
 Ran 'TestMad-f32-sat' for 2 iterations.
-Ran 'TestMad-f32-ftz' for 2 iterations.
+Ran 'TestMad-f32-ftz' for 1 iterations.
 Ran 'TestMad-f32-ftz-sat' for 2 iterations.
-Ran 'TestMad-f64' for 2 iterations.
+Ran 'TestMad-f64' for 1 iterations.
 Ran 'TestFma-f32' for 2 iterations.
 Ran 'TestFma-f32-sat' for 2 iterations.
-Ran 'TestFma-f32-ftz' for 2 iterations.
+Ran 'TestFma-f32-ftz' for 1 iterations.
 Ran 'TestFma-f32-ftz-sat' for 2 iterations.
 Ran 'TestFma-f64' for 2 iterations.
 Ran 'TestDiv-f32' for 2 iterations.
@@ -398,8 +441,8 @@ Ran 'TestAbs-f32-ftz' for 2 iterations.
 Ran 'TestAbs-f64' for 2 iterations.
 Ran 'TestNeg-f32' for 2 iterations.
 Ran 'TestNeg-f32-ftz' for 2 iterations.
-Ran 'TestNeg-f64' for 2 iterations.
-Ran 'TestMin-f32' for 2 iterations.
+Ran 'TestNeg-f64' for 1 iterations.
+Ran 'TestMin-f32' for 1 iterations.
 Ran 'TestMin-f32-ftz' for 2 iterations.
 Ran 'TestMin-f64' for 2 iterations.
 Ran 'TestMax-f32' for 2 iterations.
@@ -419,7 +462,7 @@ Ran 'TestSqrt-f64' for 2 iterations.
 Ran 'TestRsqrt-f32' for 2 iterations.
 Ran 'TestRsqrt-f32-ftz' for 2 iterations.
 Ran 'TestRsqrt-f64' for 2 iterations.
-Ran 'TestCos-f32' for 2 iterations.
+Ran 'TestCos-f32' for 1 iterations.
 Ran 'TestCos-f32-ftz' for 2 iterations.
 Ran 'TestSin-f32' for 2 iterations.
 Ran 'TestSin-f32-ftz' for 2 iterations.
@@ -427,50 +470,50 @@ Ran 'TestEx2-f32' for 2 iterations.
 Ran 'TestEx2-f32-ftz' for 2 iterations.
 Ran 'TestLg2-f32' for 2 iterations.
 Ran 'TestLg2-f32-ftz' for 2 iterations.
-Ran 'TestSet-lt-u32-u16' for 2 iterations.
-Ran 'TestSet-lt-s32-u16' for 2 iterations.
-Ran 'TestSet-lt-f32-u16' for 2 iterations.
-Ran 'TestSet-lt-s32-u32' for 2 iterations.
-Ran 'TestSet-lt-s32-u64' for 2 iterations.
-Ran 'TestSet-lt-s32-s16' for 2 iterations.
-Ran 'TestSet-lt-s32-s32' for 2 iterations.
-Ran 'TestSet-lt-s32-s64' for 2 iterations.
-Ran 'TestSet-lt-s32-f32' for 2 iterations.
-Ran 'TestSet-lt-s32-f64' for 2 iterations.
-Ran 'TestSet-lt-ftz-s32-f32' for 2 iterations.
-Ran 'TestSet-Eq-s32-s32' for 2 iterations.
-Ran 'TestSet-Ne-s32-s32' for 2 iterations.
-Ran 'TestSet-Le-s32-s32' for 2 iterations.
+Ran 'TestSet-lt-u32-u16' for 1 iterations.
+Ran 'TestSet-lt-s32-u16' for 1 iterations.
+Ran 'TestSet-lt-f32-u16' for 1 iterations.
+Ran 'TestSet-lt-s32-u32' for 1 iterations.
+Ran 'TestSet-lt-s32-u64' for 1 iterations.
+Ran 'TestSet-lt-s32-s16' for 1 iterations.
+Ran 'TestSet-lt-s32-s32' for 1 iterations.
+Ran 'TestSet-lt-s32-s64' for 1 iterations.
+Ran 'TestSet-lt-s32-f32' for 1 iterations.
+Ran 'TestSet-lt-s32-f64' for 1 iterations.
+Ran 'TestSet-lt-ftz-s32-f32' for 1 iterations.
+Ran 'TestSet-Eq-s32-s32' for 1 iterations.
+Ran 'TestSet-Ne-s32-s32' for 1 iterations.
+Ran 'TestSet-Le-s32-s32' for 1 iterations.
 Ran 'TestSet-Gt-s32-s32' for 1 iterations.
 Ran 'TestSet-Ge-s32-s32' for 1 iterations.
 Ran 'TestSet-Lo-s32-u32' for 1 iterations.
-Ran 'TestSet-Ls-s32-u32' for 2 iterations.
+Ran 'TestSet-Ls-s32-u32' for 1 iterations.
 Ran 'TestSet-Hi-s32-u32' for 1 iterations.
 Ran 'TestSet-Hs-s32-u32' for 1 iterations.
-Ran 'TestSet-Eq-s32-f32' for 2 iterations.
-Ran 'TestSet-Ne-s32-f32' for 2 iterations.
-Ran 'TestSet-Lt-s32-f32' for 2 iterations.
-Ran 'TestSet-Le-s32-f32' for 2 iterations.
+Ran 'TestSet-Eq-s32-f32' for 1 iterations.
+Ran 'TestSet-Ne-s32-f32' for 1 iterations.
+Ran 'TestSet-Lt-s32-f32' for 1 iterations.
+Ran 'TestSet-Le-s32-f32' for 1 iterations.
 Ran 'TestSet-Gt-s32-f32' for 1 iterations.
 Ran 'TestSet-Ge-s32-f32' for 1 iterations.
-Ran 'TestSet-Lo-s32-u32' for 2 iterations.
+Ran 'TestSet-Lo-s32-u32' for 1 iterations.
 Ran 'TestSet-Ls-s32-u32' for 1 iterations.
-Ran 'TestSet-Hi-s32-u32' for 2 iterations.
-Ran 'TestSet-Hs-s32-u32' for 2 iterations.
+Ran 'TestSet-Hi-s32-u32' for 1 iterations.
+Ran 'TestSet-Hs-s32-u32' for 1 iterations.
 Ran 'TestSet-Equ-s32-f32' for 1 iterations.
-Ran 'TestSet-Neu-s32-f32' for 2 iterations.
-Ran 'TestSet-Ltu-s32-f32' for 2 iterations.
-Ran 'TestSet-Leu-s32-f32' for 2 iterations.
-Ran 'TestSet-Gtu-s32-f32' for 2 iterations.
-Ran 'TestSet-Geu-s32-f32' for 2 iterations.
-Ran 'TestSet-Num-s32-f32' for 2 iterations.
-Ran 'TestSet-Nan-s32-f32' for 2 iterations.
-Ran 'TestSet-Lt-s32-s32-And' for 2 iterations.
-Ran 'TestSet-Lt-s32-s32-Or' for 2 iterations.
-Ran 'TestSet-Lt-s32-s32-Xor' for 2 iterations.
-Ran 'TestSet-Lt-s32-s32-And-Inv' for 2 iterations.
-Ran 'TestSetP-lt-u16' for 2 iterations.
-Ran 'TestSetP-lt-u32' for 2 iterations.
+Ran 'TestSet-Neu-s32-f32' for 1 iterations.
+Ran 'TestSet-Ltu-s32-f32' for 1 iterations.
+Ran 'TestSet-Leu-s32-f32' for 1 iterations.
+Ran 'TestSet-Gtu-s32-f32' for 1 iterations.
+Ran 'TestSet-Geu-s32-f32' for 1 iterations.
+Ran 'TestSet-Num-s32-f32' for 1 iterations.
+Ran 'TestSet-Nan-s32-f32' for 1 iterations.
+Ran 'TestSet-Lt-s32-s32-And' for 1 iterations.
+Ran 'TestSet-Lt-s32-s32-Or' for 1 iterations.
+Ran 'TestSet-Lt-s32-s32-Xor' for 1 iterations.
+Ran 'TestSet-Lt-s32-s32-And-Inv' for 1 iterations.
+Ran 'TestSetP-lt-u16' for 1 iterations.
+Ran 'TestSetP-lt-u32' for 1 iterations.
 Ran 'TestSetP-lt-u32-pq' for 1 iterations.
 Ran 'TestSetP-lt-u64' for 1 iterations.
 Ran 'TestSetP-lt-s16' for 1 iterations.
@@ -482,30 +525,30 @@ Ran 'TestSetP-lt-u32-pq-and' for 1 iterations.
 Ran 'TestSetP-lt-u32-pq-or' for 1 iterations.
 Ran 'TestSetP-lt-u32-pq-xor' for 1 iterations.
 Ran 'TestSetP-lt-f32-pq-and-ftz' for 1 iterations.
-Ran 'TestSelp-u16' for 2 iterations.
-Ran 'TestSelp-u32' for 2 iterations.
-Ran 'TestSelp-u64' for 2 iterations.
-Ran 'TestSelp-s16' for 2 iterations.
-Ran 'TestSelp-s32' for 2 iterations.
-Ran 'TestSelp-s64' for 2 iterations.
-Ran 'TestSelp-f32' for 2 iterations.
+Ran 'TestSelp-u16' for 1 iterations.
+Ran 'TestSelp-u32' for 1 iterations.
+Ran 'TestSelp-u64' for 1 iterations.
+Ran 'TestSelp-s16' for 1 iterations.
+Ran 'TestSelp-s32' for 1 iterations.
+Ran 'TestSelp-s64' for 1 iterations.
+Ran 'TestSelp-f32' for 1 iterations.
 Ran 'TestSelp-f64' for 1 iterations.
 Ran 'TestSlct-u16-s32' for 1 iterations.
 Ran 'TestSlct-u32-s32' for 2 iterations.
-Ran 'TestSlct-u64-s32' for 2 iterations.
-Ran 'TestSlct-s16-s32' for 2 iterations.
+Ran 'TestSlct-u64-s32' for 1 iterations.
+Ran 'TestSlct-s16-s32' for 1 iterations.
 Ran 'TestSlct-s32-s32' for 2 iterations.
 Ran 'TestSlct-s64-s32' for 2 iterations.
-Ran 'TestSlct-f32-s32' for 2 iterations.
-Ran 'TestSlct-f64-s32' for 2 iterations.
+Ran 'TestSlct-f32-s32' for 1 iterations.
+Ran 'TestSlct-f64-s32' for 1 iterations.
 Ran 'TestSlct-u16-f32' for 2 iterations.
-Ran 'TestSlct-u32-f32' for 2 iterations.
+Ran 'TestSlct-u32-f32' for 1 iterations.
 Ran 'TestSlct-u64-f32' for 2 iterations.
 Ran 'TestSlct-s16-f32' for 2 iterations.
 Ran 'TestSlct-s32-f32' for 2 iterations.
 Ran 'TestSlct-s64-f32' for 2 iterations.
 Ran 'TestSlct-f32-f32' for 2 iterations.
-Ran 'TestSlct-f64-f32' for 1 iterations.
+Ran 'TestSlct-f64-f32' for 2 iterations.
 Ran 'TestSlct-f32-f32-ftz' for 1 iterations.
 Ran 'TestAnd-pred' for 1 iterations.
 Ran 'TestAnd-b16' for 2 iterations.
@@ -519,10 +562,10 @@ Ran 'TestXor-pred' for 1 iterations.
 Ran 'TestXor-b16' for 2 iterations.
 Ran 'TestXor-b32' for 2 iterations.
 Ran 'TestXor-b64' for 2 iterations.
-Ran 'TestNot-pred' for 2 iterations.
+Ran 'TestNot-pred' for 1 iterations.
 Ran 'TestNot-b16' for 2 iterations.
 Ran 'TestNot-b32' for 2 iterations.
-Ran 'TestNot-b64' for 1 iterations.
+Ran 'TestNot-b64' for 2 iterations.
 Ran 'TestCNot-b16' for 2 iterations.
 Ran 'TestCNot-b32' for 2 iterations.
 Ran 'TestCNot-b64' for 2 iterations.
@@ -537,20 +580,20 @@ Ran 'TestShr-s32' for 2 iterations.
 Ran 'TestShr-s64' for 2 iterations.
 Ran 'TestMov-pred' for 1 iterations.
 Ran 'TestMov-u16' for 2 iterations.
-Ran 'TestMov-u32' for 1 iterations.
+Ran 'TestMov-u32' for 2 iterations.
 Ran 'TestMov-u64' for 2 iterations.
 Ran 'TestMov-s16' for 2 iterations.
 Ran 'TestMov-s32' for 2 iterations.
 Ran 'TestMov-s64' for 2 iterations.
-Ran 'TestMov-f32' for 2 iterations.
-Ran 'TestMov-f64' for 2 iterations.
-Ran 'TestMovLabel-global-v1' for 2 iterations.
-Ran 'TestMovLabel-global-v1-index' for 2 iterations.
-Ran 'TestMovLabel-global-v2' for 2 iterations.
+Ran 'TestMov-f32' for 1 iterations.
+Ran 'TestMov-f64' for 1 iterations.
+Ran 'TestMovLabel-global-v1' for 1 iterations.
+Ran 'TestMovLabel-global-v1-index' for 1 iterations.
+Ran 'TestMovLabel-global-v2' for 1 iterations.
 Ran 'TestMovLabel-global-v4' for 1 iterations.
-Ran 'TestMovLabel-local-v1' for 2 iterations.
-Ran 'TestMovLabel-local-v1-index' for 2 iterations.
-Ran 'TestMovLabel-local-v2' for 2 iterations.
+Ran 'TestMovLabel-local-v1' for 1 iterations.
+Ran 'TestMovLabel-local-v1-index' for 1 iterations.
+Ran 'TestMovLabel-local-v2' for 1 iterations.
 Ran 'TestMovLabel-local-v4' for 1 iterations.
 Ran 'TestMovLabel-shared-v1' for 1 iterations.
 Ran 'TestMovLabel-shared-v1-index' for 1 iterations.
@@ -585,7 +628,7 @@ Ran 'TestCvt-u32-s32' for 2 iterations.
 Ran 'TestCvt-u32-s64' for 2 iterations.
 Ran 'TestCvt-u32-f32' for 2 iterations.
 Ran 'TestCvt-u32-f32-ftz-sat-rzi' for 2 iterations.
-Ran 'TestCvt-u32-f32-rmi' for 2 iterations.
+Ran 'TestCvt-u32-f32-rmi' for 1 iterations.
 Ran 'TestCvt-u32-f64' for 2 iterations.
 Ran 'TestCvt-u64-u8' for 2 iterations.
 Ran 'TestCvt-u64-u16' for 2 iterations.
@@ -595,8 +638,8 @@ Ran 'TestCvt-u64-s8' for 2 iterations.
 Ran 'TestCvt-u64-s16' for 2 iterations.
 Ran 'TestCvt-u64-s32' for 2 iterations.
 Ran 'TestCvt-u64-s64' for 2 iterations.
-Ran 'TestCvt-u64-f32' for 2 iterations.
-Ran 'TestCvt-u64-f64' for 2 iterations.
+Ran 'TestCvt-u64-f32' for 1 iterations.
+Ran 'TestCvt-u64-f64' for 1 iterations.
 Ran 'TestCvt-s8-u8' for 2 iterations.
 Ran 'TestCvt-s8-u16' for 2 iterations.
 Ran 'TestCvt-s8-u32' for 2 iterations.
@@ -606,29 +649,29 @@ Ran 'TestCvt-s8-s16' for 2 iterations.
 Ran 'TestCvt-s8-s32' for 2 iterations.
 Ran 'TestCvt-s8-s64' for 2 iterations.
 Ran 'TestCvt-s8-f32' for 2 iterations.
-Ran 'TestCvt-s8-f64' for 2 iterations.
+Ran 'TestCvt-s8-f64' for 1 iterations.
 Ran 'TestCvt-s16-u8' for 2 iterations.
-Ran 'TestCvt-s16-u16' for 1 iterations.
-Ran 'TestCvt-s16-u32' for 1 iterations.
-Ran 'TestCvt-s16-u64' for 1 iterations.
-Ran 'TestCvt-s16-s8' for 1 iterations.
+Ran 'TestCvt-s16-u16' for 2 iterations.
+Ran 'TestCvt-s16-u32' for 2 iterations.
+Ran 'TestCvt-s16-u64' for 2 iterations.
+Ran 'TestCvt-s16-s8' for 2 iterations.
 Ran 'TestCvt-s16-s16' for 2 iterations.
 Ran 'TestCvt-s16-s32' for 2 iterations.
 Ran 'TestCvt-s16-s64' for 2 iterations.
-Ran 'TestCvt-s16-f32' for 2 iterations.
-Ran 'TestCvt-s16-f64' for 1 iterations.
-Ran 'TestCvt-s32-u8' for 1 iterations.
-Ran 'TestCvt-s32-u16' for 1 iterations.
-Ran 'TestCvt-s32-u32' for 1 iterations.
-Ran 'TestCvt-s32-u64' for 1 iterations.
-Ran 'TestCvt-s32-s8' for 1 iterations.
+Ran 'TestCvt-s16-f32' for 1 iterations.
+Ran 'TestCvt-s16-f64' for 2 iterations.
+Ran 'TestCvt-s32-u8' for 2 iterations.
+Ran 'TestCvt-s32-u16' for 2 iterations.
+Ran 'TestCvt-s32-u32' for 2 iterations.
+Ran 'TestCvt-s32-u64' for 2 iterations.
+Ran 'TestCvt-s32-s8' for 2 iterations.
 Ran 'TestCvt-s32-s16' for 2 iterations.
 Ran 'TestCvt-s32-s32' for 2 iterations.
 Ran 'TestCvt-s32-s64' for 2 iterations.
-Ran 'TestCvt-s32-f32' for 2 iterations.
+Ran 'TestCvt-s32-f32' for 1 iterations.
 Ran 'TestCvt-s32-f64' for 2 iterations.
 Ran 'TestCvt-s64-u8' for 2 iterations.
-Ran 'TestCvt-s64-u16' for 1 iterations.
+Ran 'TestCvt-s64-u16' for 2 iterations.
 Ran 'TestCvt-s64-u32' for 2 iterations.
 Ran 'TestCvt-s64-u64' for 2 iterations.
 Ran 'TestCvt-s64-s8' for 2 iterations.
@@ -644,7 +687,7 @@ Ran 'TestCvt-f32-u64' for 2 iterations.
 Ran 'TestCvt-f32-s8' for 2 iterations.
 Ran 'TestCvt-f32-s16' for 2 iterations.
 Ran 'TestCvt-f32-s32' for 2 iterations.
-Ran 'TestCvt-f32-s64' for 1 iterations.
+Ran 'TestCvt-f32-s64' for 2 iterations.
 Ran 'TestCvt-f32-f32' for 2 iterations.
 Ran 'TestCvt-f32-f32-rz' for 2 iterations.
 Ran 'TestCvt-f32-f64' for 2 iterations.
@@ -662,18 +705,18 @@ Ran 'TestLocalMemory-u8' for 2 iterations.
 Ran 'TestLocalMemory-u8-global' for 2 iterations.
 Ran 'TestLocalMemory-u8-scoped' for 1 iterations.
 Ran 'TestLocalMemory-u8-global-scoped' for 1 iterations.
-Ran 'TestCvta-local-u32' for 2 iterations.
-Ran 'TestCvta-local-u64' for 2 iterations.
-Ran 'TestCvta-global-u32' for 2 iterations.
-Ran 'TestCvta-global-u64' for 2 iterations.
-Ran 'TestCvta-shared-u32' for 2 iterations.
-Ran 'TestCvta-shared-u64' for 2 iterations.
+Ran 'TestCvta-local-u32' for 1 iterations.
+Ran 'TestCvta-local-u64' for 1 iterations.
+Ran 'TestCvta-global-u32' for 1 iterations.
+Ran 'TestCvta-global-u64' for 1 iterations.
+Ran 'TestCvta-shared-u32' for 1 iterations.
+Ran 'TestCvta-shared-u64' for 1 iterations.
 
 
 
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaMalloc 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaMalloc
-INFO     Test completed in 1.70296692848 seconds
+INFO     Test completed in 1.68949198723 seconds
 INFO      It produced the following output:
 test_malloc(256, 128)
 PASSED
@@ -692,7 +735,7 @@ Pass/Fail : Pass
 
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestKernels 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestKernels
-INFO     Test completed in 0.328357934952 seconds
+INFO     Test completed in 0.352233886719 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -702,8 +745,8 @@ Name : TestKernels
 Description: 
 
 
-Test Seed : 1313174917
-Test time : 0.259397
+Test Seed : 1313920316
+Test time : 0.280724
 
 Status : Test output:
 looping kernel succeeded
@@ -713,7 +756,7 @@ matrix vector kernel succeeded
 
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestLLVMInstructions 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestLLVMInstructions
-INFO     Test completed in 0.0663409233093 seconds
+INFO     Test completed in 0.0743401050568 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -727,8 +770,8 @@ Description: A test for the assembly code generation and automatic
              check, compare to references from the LLVM manual.
 
 
-Test Seed : 1313174917
-Test time : 0.00932002
+Test Seed : 1313920317
+Test time : 0.011205
 
 Status :  Checked instruction "<result> = add i32 4, %var"
 Add Instruction Passed
@@ -859,465 +902,9 @@ Zext Instruction Passed
 
 
 
-INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestPTXAssembly 
-INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestPTXAssembly
-INFO     Test completed in 17.3005669117 seconds
-INFO      It produced the following output:
-Pass/Fail : Pass
-
-
-Name : TestPTXAssembly
-
-Description: A unit test framework for PTX. Runs random inputs through unit 
-             tests on all available devices until a timer expires.
-
-
-Test Seed : 1313174917
-Test time : 17.2074
-
-Status : Ran 'TestVectorElements-u32' for 1 iterations.
-Ran 'TestAdd-u16' for 2 iterations.
-Ran 'TestAdd-s16' for 2 iterations.
-Ran 'TestAdd-u32' for 2 iterations.
-Ran 'TestAdd-s32' for 2 iterations.
-Ran 'TestAdd-s32-sat' for 2 iterations.
-Ran 'TestAdd-u64' for 2 iterations.
-Ran 'TestAdd-s64' for 2 iterations.
-Ran 'TestSub-u16' for 2 iterations.
-Ran 'TestSub-s16' for 2 iterations.
-Ran 'TestSub-u32' for 2 iterations.
-Ran 'TestSub-s32' for 2 iterations.
-Ran 'TestSub-s32-sat' for 2 iterations.
-Ran 'TestSub-u64' for 2 iterations.
-Ran 'TestSub-s64' for 2 iterations.
-Ran 'TestSub-Carry-s32' for 2 iterations.
-Ran 'TestSub-Carry-u32' for 2 iterations.
-Ran 'TestAdd-Carry-s32' for 2 iterations.
-Ran 'TestAdd-Carry-u32' for 2 iterations.
-Ran 'TestMul-Lo-u16' for 2 iterations.
-Ran 'TestMul-Hi-u16' for 2 iterations.
-Ran 'TestMul-Wide-u16' for 2 iterations.
-Ran 'TestMul-Lo-s16' for 2 iterations.
-Ran 'TestMul-Hi-s16' for 2 iterations.
-Ran 'TestMul-Wide-s16' for 2 iterations.
-Ran 'TestMul-Lo-u32' for 2 iterations.
-Ran 'TestMul-Hi-u32' for 2 iterations.
-Ran 'TestMul-Wide-u32' for 2 iterations.
-Ran 'TestMul-Lo-s32' for 1 iterations.
-Ran 'TestMul-Hi-s32' for 2 iterations.
-Ran 'TestMul-Wide-s32' for 2 iterations.
-Ran 'TestMul-Lo-u64' for 2 iterations.
-Ran 'TestMul-Hi-u64' for 2 iterations.
-Ran 'TestMul-Lo-s64' for 2 iterations.
-Ran 'TestMul-Hi-s64' for 2 iterations.
-Ran 'TestMad-Lo-u16' for 2 iterations.
-Ran 'TestMad-Hi-u16' for 2 iterations.
-Ran 'TestMad-Wide-u16' for 2 iterations.
-Ran 'TestMad-Lo-s16' for 2 iterations.
-Ran 'TestMad-Hi-s16' for 2 iterations.
-Ran 'TestMad-Wide-s16' for 2 iterations.
-Ran 'TestMad-Lo-u32' for 2 iterations.
-Ran 'TestMad-Hi-u32' for 2 iterations.
-Ran 'TestMad-Wide-u32' for 2 iterations.
-Ran 'TestMad-Lo-s32' for 2 iterations.
-Ran 'TestMad-Hi-s32' for 2 iterations.
-Ran 'TestMad-Sat-Hi-s32' for 2 iterations.
-Ran 'TestMad-Wide-s32' for 2 iterations.
-Ran 'TestMad-Lo-u64' for 2 iterations.
-Ran 'TestMad-Hi-u64' for 2 iterations.
-Ran 'TestMad-Lo-s64' for 2 iterations.
-Ran 'TestMad-Hi-s64' for 2 iterations.
-Ran 'TestSad-u16' for 2 iterations.
-Ran 'TestSad-s16' for 2 iterations.
-Ran 'TestSad-u32' for 2 iterations.
-Ran 'TestSad-s32' for 2 iterations.
-Ran 'TestSad-u64' for 2 iterations.
-Ran 'TestSad-s64' for 2 iterations.
-Ran 'TestDiv-u16' for 2 iterations.
-Ran 'TestDiv-s16' for 2 iterations.
-Ran 'TestDiv-u32' for 2 iterations.
-Ran 'TestDiv-s32' for 2 iterations.
-Ran 'TestDiv-u64' for 2 iterations.
-Ran 'TestDiv-s64' for 2 iterations.
-Ran 'TestRem-u16' for 2 iterations.
-Ran 'TestRem-s16' for 2 iterations.
-Ran 'TestRem-u32' for 2 iterations.
-Ran 'TestRem-s32' for 2 iterations.
-Ran 'TestRem-u64' for 2 iterations.
-Ran 'TestRem-s64' for 2 iterations.
-Ran 'TestAbs-s16' for 2 iterations.
-Ran 'TestAbs-s32' for 2 iterations.
-Ran 'TestAbs-s64' for 2 iterations.
-Ran 'TestNeg-s16' for 2 iterations.
-Ran 'TestNeg-s32' for 2 iterations.
-Ran 'TestNeg-s64' for 2 iterations.
-Ran 'TestMax-u16' for 2 iterations.
-Ran 'TestMax-u32' for 2 iterations.
-Ran 'TestMax-u64' for 2 iterations.
-Ran 'TestMax-s16' for 2 iterations.
-Ran 'TestMax-s32' for 2 iterations.
-Ran 'TestMax-s64' for 2 iterations.
-Ran 'TestMin-u16' for 2 iterations.
-Ran 'TestMin-u32' for 2 iterations.
-Ran 'TestMin-u64' for 2 iterations.
-Ran 'TestMin-s16' for 2 iterations.
-Ran 'TestMin-s32' for 2 iterations.
-Ran 'TestMin-s64' for 2 iterations.
-Ran 'TestPopc-b32' for 2 iterations.
-Ran 'TestPopc-b64' for 2 iterations.
-Ran 'TestClz-b32' for 2 iterations.
-Ran 'TestClz-b64' for 2 iterations.
-Ran 'TestBfind-u32' for 2 iterations.
-Ran 'TestBfind-u64' for 2 iterations.
-Ran 'TestBfind-s32' for 2 iterations.
-Ran 'TestBfind-s64' for 2 iterations.
-Ran 'TestBfind-shiftamount-u32' for 2 iterations.
-Ran 'TestBfind-shiftamount-u64' for 2 iterations.
-Ran 'TestBfind-shiftamount-s32' for 2 iterations.
-Ran 'TestBfind-shiftamount-s64' for 2 iterations.
-Ran 'TestBrev-b32' for 2 iterations.
-Ran 'TestBrev-b64' for 2 iterations.
-Ran 'TestBfi-b32' for 1 iterations.
-Ran 'TestBfi-b64' for 2 iterations.
-Ran 'TestPrmt-b32' for 2 iterations.
-Ran 'TestPrmt-f4e-b32' for 2 iterations.
-Ran 'TestPrmt-b4e-b32' for 2 iterations.
-Ran 'TestPrmt-rc8-b32' for 2 iterations.
-Ran 'TestPrmt-ecl-b32' for 2 iterations.
-Ran 'TestPrmt-ecr-b32' for 2 iterations.
-Ran 'TestPrmt-rc16-b32' for 2 iterations.
-Ran 'TestCall-Uni' for 1 iterations.
-Ran 'TestCall-Nondivergent' for 1 iterations.
-Ran 'TestCall-Divergent' for 1 iterations.
-Ran 'TestCall-Recursive' for 1 iterations.
-Ran 'TestCall-Indirect' for 1 iterations.
-Ran 'TestTestP-f32-Finite' for 2 iterations.
-Ran 'TestTestP-f32-Infinite' for 2 iterations.
-Ran 'TestTestP-f32-Number' for 2 iterations.
-Ran 'TestTestP-f32-NotANumber' for 1 iterations.
-Ran 'TestTestP-f32-Normal' for 2 iterations.
-Ran 'TestTestP-f32-SubNormal' for 2 iterations.
-Ran 'TestTestP-f64-Finite' for 2 iterations.
-Ran 'TestTestP-f64-Infinite' for 2 iterations.
-Ran 'TestTestP-f64-Number' for 2 iterations.
-Ran 'TestTestP-f64-NotANumber' for 2 iterations.
-Ran 'TestTestP-f64-Normal' for 2 iterations.
-Ran 'TestTestP-f64-SubNormal' for 2 iterations.
-Ran 'TestCopysign-f32' for 2 iterations.
-Ran 'TestCopysign-f64' for 2 iterations.
-Ran 'TestAdd-f32' for 2 iterations.
-Ran 'TestAdd-f32-sat' for 2 iterations.
-Ran 'TestAdd-f32-ftz' for 2 iterations.
-Ran 'TestAdd-f32-ftz-sat' for 2 iterations.
-Ran 'TestAdd-f64' for 2 iterations.
-Ran 'TestSub-f32' for 2 iterations.
-Ran 'TestSub-f32-sat' for 2 iterations.
-Ran 'TestSub-f32-ftz' for 2 iterations.
-Ran 'TestSub-f32-ftz-sat' for 2 iterations.
-Ran 'TestSub-f64' for 2 iterations.
-Ran 'TestMul-f32' for 2 iterations.
-Ran 'TestMul-f32-sat' for 2 iterations.
-Ran 'TestMul-f32-ftz' for 2 iterations.
-Ran 'TestMul-f32-ftz-sat' for 2 iterations.
-Ran 'TestMul-f64' for 2 iterations.
-Ran 'TestMad-f32' for 2 iterations.
-Ran 'TestMad-f32-sat' for 2 iterations.
-Ran 'TestMad-f32-ftz' for 2 iterations.
-Ran 'TestMad-f32-ftz-sat' for 2 iterations.
-Ran 'TestMad-f64' for 2 iterations.
-Ran 'TestFma-f32' for 2 iterations.
-Ran 'TestFma-f32-sat' for 2 iterations.
-Ran 'TestFma-f32-ftz' for 2 iterations.
-Ran 'TestFma-f32-ftz-sat' for 2 iterations.
-Ran 'TestFma-f64' for 2 iterations.
-Ran 'TestDiv-f32' for 2 iterations.
-Ran 'TestDiv-f32-ftz' for 2 iterations.
-Ran 'TestDiv-f32-approx' for 2 iterations.
-Ran 'TestDiv-f32-full' for 2 iterations.
-Ran 'TestDiv-f32-approx-ftz' for 2 iterations.
-Ran 'TestDiv-f32-full-ftz' for 2 iterations.
-Ran 'TestDiv-f64' for 2 iterations.
-Ran 'TestAbs-f32' for 2 iterations.
-Ran 'TestAbs-f32-ftz' for 2 iterations.
-Ran 'TestAbs-f64' for 2 iterations.
-Ran 'TestNeg-f32' for 2 iterations.
-Ran 'TestNeg-f32-ftz' for 2 iterations.
-Ran 'TestNeg-f64' for 2 iterations.
-Ran 'TestMin-f32' for 2 iterations.
-Ran 'TestMin-f32-ftz' for 2 iterations.
-Ran 'TestMin-f64' for 2 iterations.
-Ran 'TestMax-f32' for 2 iterations.
-Ran 'TestMax-f32-ftz' for 2 iterations.
-Ran 'TestMax-f64' for 2 iterations.
-Ran 'TestRcp-f32' for 2 iterations.
-Ran 'TestRcp-f32-approx' for 2 iterations.
-Ran 'TestRcp-f32-ftz' for 2 iterations.
-Ran 'TestRcp-f32-approx-ftz' for 1 iterations.
-Ran 'TestRcp-f64' for 2 iterations.
-Ran 'TestRcp-f64-approx-ftz' for 2 iterations.
-Ran 'TestSqrt-f32' for 2 iterations.
-Ran 'TestSqrt-f32-approx' for 2 iterations.
-Ran 'TestSqrt-f32-ftz' for 2 iterations.
-Ran 'TestSqrt-f32-approx-ftz' for 2 iterations.
-Ran 'TestSqrt-f64' for 2 iterations.
-Ran 'TestRsqrt-f32' for 2 iterations.
-Ran 'TestRsqrt-f32-ftz' for 2 iterations.
-Ran 'TestRsqrt-f64' for 2 iterations.
-Ran 'TestCos-f32' for 2 iterations.
-Ran 'TestCos-f32-ftz' for 2 iterations.
-Ran 'TestSin-f32' for 2 iterations.
-Ran 'TestSin-f32-ftz' for 2 iterations.
-Ran 'TestEx2-f32' for 2 iterations.
-Ran 'TestEx2-f32-ftz' for 2 iterations.
-Ran 'TestLg2-f32' for 2 iterations.
-Ran 'TestLg2-f32-ftz' for 2 iterations.
-Ran 'TestSet-lt-u32-u16' for 2 iterations.
-Ran 'TestSet-lt-s32-u16' for 2 iterations.
-Ran 'TestSet-lt-f32-u16' for 2 iterations.
-Ran 'TestSet-lt-s32-u32' for 2 iterations.
-Ran 'TestSet-lt-s32-u64' for 2 iterations.
-Ran 'TestSet-lt-s32-s16' for 2 iterations.
-Ran 'TestSet-lt-s32-s32' for 2 iterations.
-Ran 'TestSet-lt-s32-s64' for 2 iterations.
-Ran 'TestSet-lt-s32-f32' for 2 iterations.
-Ran 'TestSet-lt-s32-f64' for 2 iterations.
-Ran 'TestSet-lt-ftz-s32-f32' for 2 iterations.
-Ran 'TestSet-Eq-s32-s32' for 2 iterations.
-Ran 'TestSet-Ne-s32-s32' for 2 iterations.
-Ran 'TestSet-Le-s32-s32' for 1 iterations.
-Ran 'TestSet-Gt-s32-s32' for 2 iterations.
-Ran 'TestSet-Ge-s32-s32' for 2 iterations.
-Ran 'TestSet-Lo-s32-u32' for 2 iterations.
-Ran 'TestSet-Ls-s32-u32' for 2 iterations.
-Ran 'TestSet-Hi-s32-u32' for 1 iterations.
-Ran 'TestSet-Hs-s32-u32' for 2 iterations.
-Ran 'TestSet-Eq-s32-f32' for 2 iterations.
-Ran 'TestSet-Ne-s32-f32' for 2 iterations.
-Ran 'TestSet-Lt-s32-f32' for 2 iterations.
-Ran 'TestSet-Le-s32-f32' for 2 iterations.
-Ran 'TestSet-Gt-s32-f32' for 2 iterations.
-Ran 'TestSet-Ge-s32-f32' for 2 iterations.
-Ran 'TestSet-Lo-s32-u32' for 2 iterations.
-Ran 'TestSet-Ls-s32-u32' for 2 iterations.
-Ran 'TestSet-Hi-s32-u32' for 1 iterations.
-Ran 'TestSet-Hs-s32-u32' for 2 iterations.
-Ran 'TestSet-Equ-s32-f32' for 2 iterations.
-Ran 'TestSet-Neu-s32-f32' for 2 iterations.
-Ran 'TestSet-Ltu-s32-f32' for 2 iterations.
-Ran 'TestSet-Leu-s32-f32' for 2 iterations.
-Ran 'TestSet-Gtu-s32-f32' for 2 iterations.
-Ran 'TestSet-Geu-s32-f32' for 2 iterations.
-Ran 'TestSet-Num-s32-f32' for 2 iterations.
-Ran 'TestSet-Nan-s32-f32' for 2 iterations.
-Ran 'TestSet-Lt-s32-s32-And' for 2 iterations.
-Ran 'TestSet-Lt-s32-s32-Or' for 1 iterations.
-Ran 'TestSet-Lt-s32-s32-Xor' for 1 iterations.
-Ran 'TestSet-Lt-s32-s32-And-Inv' for 1 iterations.
-Ran 'TestSetP-lt-u16' for 1 iterations.
-Ran 'TestSetP-lt-u32' for 1 iterations.
-Ran 'TestSetP-lt-u32-pq' for 1 iterations.
-Ran 'TestSetP-lt-u64' for 1 iterations.
-Ran 'TestSetP-lt-s16' for 1 iterations.
-Ran 'TestSetP-lt-s32' for 1 iterations.
-Ran 'TestSetP-lt-s64' for 1 iterations.
-Ran 'TestSetP-lt-f32' for 1 iterations.
-Ran 'TestSetP-lt-f64' for 1 iterations.
-Ran 'TestSetP-lt-u32-pq-and' for 1 iterations.
-Ran 'TestSetP-lt-u32-pq-or' for 1 iterations.
-Ran 'TestSetP-lt-u32-pq-xor' for 1 iterations.
-Ran 'TestSetP-lt-f32-pq-and-ftz' for 1 iterations.
-Ran 'TestSelp-u16' for 1 iterations.
-Ran 'TestSelp-u32' for 1 iterations.
-Ran 'TestSelp-u64' for 1 iterations.
-Ran 'TestSelp-s16' for 1 iterations.
-Ran 'TestSelp-s32' for 1 iterations.
-Ran 'TestSelp-s64' for 1 iterations.
-Ran 'TestSelp-f32' for 1 iterations.
-Ran 'TestSelp-f64' for 1 iterations.
-Ran 'TestSlct-u16-s32' for 2 iterations.
-Ran 'TestSlct-u32-s32' for 2 iterations.
-Ran 'TestSlct-u64-s32' for 2 iterations.
-Ran 'TestSlct-s16-s32' for 2 iterations.
-Ran 'TestSlct-s32-s32' for 2 iterations.
-Ran 'TestSlct-s64-s32' for 2 iterations.
-Ran 'TestSlct-f32-s32' for 2 iterations.
-Ran 'TestSlct-f64-s32' for 2 iterations.
-Ran 'TestSlct-u16-f32' for 2 iterations.
-Ran 'TestSlct-u32-f32' for 2 iterations.
-Ran 'TestSlct-u64-f32' for 2 iterations.
-Ran 'TestSlct-s16-f32' for 2 iterations.
-Ran 'TestSlct-s32-f32' for 2 iterations.
-Ran 'TestSlct-s64-f32' for 2 iterations.
-Ran 'TestSlct-f32-f32' for 2 iterations.
-Ran 'TestSlct-f64-f32' for 2 iterations.
-Ran 'TestSlct-f32-f32-ftz' for 2 iterations.
-Ran 'TestAnd-pred' for 1 iterations.
-Ran 'TestAnd-b16' for 2 iterations.
-Ran 'TestAnd-b32' for 2 iterations.
-Ran 'TestAnd-b64' for 2 iterations.
-Ran 'TestOr-pred' for 1 iterations.
-Ran 'TestOr-b16' for 2 iterations.
-Ran 'TestOr-b32' for 2 iterations.
-Ran 'TestOr-b64' for 2 iterations.
-Ran 'TestXor-pred' for 1 iterations.
-Ran 'TestXor-b16' for 2 iterations.
-Ran 'TestXor-b32' for 2 iterations.
-Ran 'TestXor-b64' for 2 iterations.
-Ran 'TestNot-pred' for 1 iterations.
-Ran 'TestNot-b16' for 2 iterations.
-Ran 'TestNot-b32' for 2 iterations.
-Ran 'TestNot-b64' for 2 iterations.
-Ran 'TestCNot-b16' for 2 iterations.
-Ran 'TestCNot-b32' for 2 iterations.
-Ran 'TestCNot-b64' for 2 iterations.
-Ran 'TestShl-b16' for 2 iterations.
-Ran 'TestShl-b32' for 2 iterations.
-Ran 'TestShl-b64' for 2 iterations.
-Ran 'TestShr-u16' for 2 iterations.
-Ran 'TestShr-u32' for 2 iterations.
-Ran 'TestShr-u64' for 2 iterations.
-Ran 'TestShr-s16' for 2 iterations.
-Ran 'TestShr-s32' for 2 iterations.
-Ran 'TestShr-s64' for 2 iterations.
-Ran 'TestMov-pred' for 1 iterations.
-Ran 'TestMov-u16' for 2 iterations.
-Ran 'TestMov-u32' for 2 iterations.
-Ran 'TestMov-u64' for 2 iterations.
-Ran 'TestMov-s16' for 2 iterations.
-Ran 'TestMov-s32' for 2 iterations.
-Ran 'TestMov-s64' for 2 iterations.
-Ran 'TestMov-f32' for 2 iterations.
-Ran 'TestMov-f64' for 2 iterations.
-Ran 'TestMovLabel-global-v1' for 2 iterations.
-Ran 'TestMovLabel-global-v1-index' for 2 iterations.
-Ran 'TestMovLabel-global-v2' for 2 iterations.
-Ran 'TestMovLabel-global-v4' for 1 iterations.
-Ran 'TestMovLabel-local-v1' for 2 iterations.
-Ran 'TestMovLabel-local-v1-index' for 1 iterations.
-Ran 'TestMovLabel-local-v2' for 2 iterations.
-Ran 'TestMovLabel-local-v4' for 1 iterations.
-Ran 'TestMovLabel-shared-v1' for 2 iterations.
-Ran 'TestMovLabel-shared-v1-index' for 2 iterations.
-Ran 'TestMovLabel-shared-v4' for 1 iterations.
-Ran 'TestCvt-u8-u8' for 2 iterations.
-Ran 'TestCvt-u8-u16' for 2 iterations.
-Ran 'TestCvt-u8-u32' for 2 iterations.
-Ran 'TestCvt-u8-u64' for 2 iterations.
-Ran 'TestCvt-u8-s8' for 2 iterations.
-Ran 'TestCvt-u8-s16' for 2 iterations.
-Ran 'TestCvt-u8-s32' for 2 iterations.
-Ran 'TestCvt-u8-s64' for 2 iterations.
-Ran 'TestCvt-u8-f32' for 2 iterations.
-Ran 'TestCvt-u8-f64' for 1 iterations.
-Ran 'TestCvt-u16-u8' for 1 iterations.
-Ran 'TestCvt-u16-u16' for 2 iterations.
-Ran 'TestCvt-u16-u32' for 2 iterations.
-Ran 'TestCvt-u16-u64' for 2 iterations.
-Ran 'TestCvt-u16-s8' for 2 iterations.
-Ran 'TestCvt-u16-s16' for 2 iterations.
-Ran 'TestCvt-u16-s32' for 2 iterations.
-Ran 'TestCvt-u16-s64' for 2 iterations.
-Ran 'TestCvt-u16-f32' for 2 iterations.
-Ran 'TestCvt-u16-f64' for 2 iterations.
-Ran 'TestCvt-u32-u8' for 2 iterations.
-Ran 'TestCvt-u32-u16' for 2 iterations.
-Ran 'TestCvt-u32-u32' for 2 iterations.
-Ran 'TestCvt-u32-u64' for 2 iterations.
-Ran 'TestCvt-u32-s8' for 2 iterations.
-Ran 'TestCvt-u32-s16' for 2 iterations.
-Ran 'TestCvt-u32-s32' for 2 iterations.
-Ran 'TestCvt-u32-s64' for 2 iterations.
-Ran 'TestCvt-u32-f32' for 2 iterations.
-Ran 'TestCvt-u32-f32-ftz-sat-rzi' for 1 iterations.
-Ran 'TestCvt-u32-f32-rmi' for 2 iterations.
-Ran 'TestCvt-u32-f64' for 2 iterations.
-Ran 'TestCvt-u64-u8' for 2 iterations.
-Ran 'TestCvt-u64-u16' for 2 iterations.
-Ran 'TestCvt-u64-u32' for 2 iterations.
-Ran 'TestCvt-u64-u64' for 2 iterations.
-Ran 'TestCvt-u64-s8' for 2 iterations.
-Ran 'TestCvt-u64-s16' for 2 iterations.
-Ran 'TestCvt-u64-s32' for 2 iterations.
-Ran 'TestCvt-u64-s64' for 2 iterations.
-Ran 'TestCvt-u64-f32' for 2 iterations.
-Ran 'TestCvt-u64-f64' for 2 iterations.
-Ran 'TestCvt-s8-u8' for 2 iterations.
-Ran 'TestCvt-s8-u16' for 2 iterations.
-Ran 'TestCvt-s8-u32' for 2 iterations.
-Ran 'TestCvt-s8-u64' for 2 iterations.
-Ran 'TestCvt-s8-s8' for 2 iterations.
-Ran 'TestCvt-s8-s16' for 2 iterations.
-Ran 'TestCvt-s8-s32' for 2 iterations.
-Ran 'TestCvt-s8-s64' for 2 iterations.
-Ran 'TestCvt-s8-f32' for 2 iterations.
-Ran 'TestCvt-s8-f64' for 2 iterations.
-Ran 'TestCvt-s16-u8' for 2 iterations.
-Ran 'TestCvt-s16-u16' for 2 iterations.
-Ran 'TestCvt-s16-u32' for 2 iterations.
-Ran 'TestCvt-s16-u64' for 2 iterations.
-Ran 'TestCvt-s16-s8' for 2 iterations.
-Ran 'TestCvt-s16-s16' for 2 iterations.
-Ran 'TestCvt-s16-s32' for 2 iterations.
-Ran 'TestCvt-s16-s64' for 2 iterations.
-Ran 'TestCvt-s16-f32' for 2 iterations.
-Ran 'TestCvt-s16-f64' for 2 iterations.
-Ran 'TestCvt-s32-u8' for 2 iterations.
-Ran 'TestCvt-s32-u16' for 2 iterations.
-Ran 'TestCvt-s32-u32' for 2 iterations.
-Ran 'TestCvt-s32-u64' for 2 iterations.
-Ran 'TestCvt-s32-s8' for 2 iterations.
-Ran 'TestCvt-s32-s16' for 2 iterations.
-Ran 'TestCvt-s32-s32' for 2 iterations.
-Ran 'TestCvt-s32-s64' for 2 iterations.
-Ran 'TestCvt-s32-f32' for 2 iterations.
-Ran 'TestCvt-s32-f64' for 2 iterations.
-Ran 'TestCvt-s64-u8' for 2 iterations.
-Ran 'TestCvt-s64-u16' for 2 iterations.
-Ran 'TestCvt-s64-u32' for 2 iterations.
-Ran 'TestCvt-s64-u64' for 2 iterations.
-Ran 'TestCvt-s64-s8' for 2 iterations.
-Ran 'TestCvt-s64-s16' for 2 iterations.
-Ran 'TestCvt-s64-s32' for 2 iterations.
-Ran 'TestCvt-s64-s64' for 2 iterations.
-Ran 'TestCvt-s64-f32' for 2 iterations.
-Ran 'TestCvt-s64-f64' for 2 iterations.
-Ran 'TestCvt-f32-u8' for 2 iterations.
-Ran 'TestCvt-f32-u16' for 2 iterations.
-Ran 'TestCvt-f32-u32' for 2 iterations.
-Ran 'TestCvt-f32-u64' for 2 iterations.
-Ran 'TestCvt-f32-s8' for 2 iterations.
-Ran 'TestCvt-f32-s16' for 2 iterations.
-Ran 'TestCvt-f32-s32' for 2 iterations.
-Ran 'TestCvt-f32-s64' for 2 iterations.
-Ran 'TestCvt-f32-f32' for 2 iterations.
-Ran 'TestCvt-f32-f32-rz' for 2 iterations.
-Ran 'TestCvt-f32-f64' for 2 iterations.
-Ran 'TestCvt-f64-u8' for 2 iterations.
-Ran 'TestCvt-f64-u16' for 2 iterations.
-Ran 'TestCvt-f64-u32' for 2 iterations.
-Ran 'TestCvt-f64-u64' for 2 iterations.
-Ran 'TestCvt-f64-s8' for 2 iterations.
-Ran 'TestCvt-f64-s16' for 2 iterations.
-Ran 'TestCvt-f64-s32' for 2 iterations.
-Ran 'TestCvt-f64-s64' for 2 iterations.
-Ran 'TestCvt-f64-f32' for 2 iterations.
-Ran 'TestCvt-f64-f64' for 2 iterations.
-Ran 'TestLocalMemory-u8' for 2 iterations.
-Ran 'TestLocalMemory-u8-global' for 2 iterations.
-Ran 'TestLocalMemory-u8-scoped' for 1 iterations.
-Ran 'TestLocalMemory-u8-global-scoped' for 1 iterations.
-Ran 'TestCvta-local-u32' for 2 iterations.
-Ran 'TestCvta-local-u64' for 2 iterations.
-Ran 'TestCvta-global-u32' for 1 iterations.
-Ran 'TestCvta-global-u64' for 2 iterations.
-Ran 'TestCvta-shared-u32' for 2 iterations.
-Ran 'TestCvta-shared-u64' for 1 iterations.
-
-
-
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestPTXToLLVMTranslator -i ../tests/ptx 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestDataflowGraph
-INFO     Test completed in 551.768620968 seconds
+INFO     Test completed in 988.38308692 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -1332,10 +919,13 @@ Description: A test for the DataflowGraph class. Test Points: 1)
              ranges spanning blocks are consistent.
 
 
-Test Seed : 1313174841
-Test time : 551.701
+Test Seed : 1313920183
+Test time : 988.321
 
 Status : Testing Generic Dataflow
+ For File: ../tests/ptx/cp.ptx
+ For File: ../tests/ptx/cuenergy_pre8_coalesce.ptx
+  For Kernel: _Z7cenergyifPf
  For File: ../tests/ptx/thrust/Unique.ptx
   For Kernel: _ZN6thrust6detail27tuple_host_device_transformINS0_27device_dereference_iterator5applyENS_5tupleINS0_15normal_iteratorINS_10device_ptrItEEEES8_NS5_INS6_IiEEEENS_9null_typeESB_SB_SB_SB_SB_SB_EES2_EENS0_20tuple_meta_transformIT0_T_XsrNS_10tuple_sizeISE_EE5valueEE4typeERKSE_T1_
   For Kernel: _ZN6thrust6detail6device4cuda6detail23launch_closure_by_valueINS2_18for_each_n_closureINS_12zip_iteratorINS_5tupleINS0_15normal_iteratorINS_10device_ptrIhEEEESB_NS8_INS9_IiEEEENS_9null_typeESE_SE_SE_SE_SE_SE_EEEEiNS0_31device_binary_transform_functorINS0_13binary_negateINS_8equal_toIhEEEEEEEEEEvT_
@@ -1529,6 +1119,296 @@ Status : Testing Generic Dataflow
   For Kernel: _ZN6thrust6detail6device4cuda6detail4b40c17ScanScatterDigitsIjNS4_12KeysOnlyTypeELi1ELi4ELi4ENS4_10NopFunctorIjEES8_EEvPbPiPT_SC_PT0_SE_NS4_16CtaDecompositionE
   For Kernel: _ZN6thrust6detail6device4cuda6detail4b40c15RakingReductionIjNS4_12KeysOnlyTypeELi6ELi4ELi24ENS4_10NopFunctorIjEEEEvPbPiPT_SC_NS4_16CtaDecompositionE
   For Kernel: _ZN6thrust6detail6device4cuda6detail4b40c12DecodeDigitsIjLx16ELi4ELi2ELi4ELi132EEEvPNS4_7VecTypeIT_Li2EE4TypeEP4int2SC_
+ For File: ../tests/ptx/thrust/bfs.ptx
+  For Kernel: _ZN7phalanx9streamingINS_15parallel_domainINS_17sequential_domainEEEEENS_16streaming_domainIT_EEiS5_
+  For Kernel: _ZNK7phalanx6domainINS_17sequential_domainEE4sizeEv
+  For Kernel: _ZN6thrust6detail4util9divide_riImiEET_S3_T0_
+  For Kernel: _ZN5queueIiE7enqueueERKN7phalanx10cuda_blockEiPi
+  For Kernel: _ZN7phalanx10placed_ptrIiNS_13device_memoryEEC1EPiRKS1_
+  For Kernel: _ZN7phalanx6domainINS_16streaming_domainINS_15parallel_domainINS_17sequential_domainEEEEEEC1EiS5_
+  For Kernel: _ZN7phalanx8cuda_gpuC1ERKS0_
+  For Kernel: _ZN7phalanx15stored_sequenceIiNS_13device_memoryEEixEi
+  For Kernel: _Z10initializeIN7phalanx9cuda_gridEiEvT_PT0_S3_
+  For Kernel: _Z10initializeIN7phalanx18cuda_multigpu_gridEiEvT_PT0_S3_
+  For Kernel: _ZN15bfs_rank_adjcsr17advance_frontierpEN7phalanx18cuda_multigpu_gridE7adjpcsrINS0_13device_memoryEE17distributed_queueIiENS0_20distributed_sequenceIiS3_EES6_
+  For Kernel: _ZN7adjpcsrIN7phalanx13device_memoryEEC1Ev
+  For Kernel: _ZN7phalanx20distributed_sequenceIiNS_13device_memoryEE11subsequenceEi
+  For Kernel: _ZN7adjpcsrIN7phalanx13device_memoryEE9submatrixEi
+  For Kernel: _ZN7phalanx10placed_ptrIfNS_13device_memoryEEC1INS_8cuda_gpuEEERKNS0_IfT_EE
+  For Kernel: _ZN7phalanx9cuda_gridC1ERKNS_16domain_resourcesINS_13nil_resourcesEEE
+  For Kernel: _ZN5queueIiE4sizeIN7phalanx9cuda_gridEEEiRKT_
+  For Kernel: _Z15subtract_offsetPiii
+  For Kernel: _ZN7phalanx15cuda_any_threadC1ERKNS_9cuda_gridE
+  For Kernel: _ZN7phalanx20distributed_sequenceIiNS_13device_memoryEEixEi
+  For Kernel: _ZN15bfs_rank_adjcsr13cull_frontierEN7phalanx9cuda_gridENS0_15stored_sequenceIiNS0_13device_memoryEEES4_5queueIiES6_
+  For Kernel: _ZN15bfs_rank_adjcsr14cull_frontierpEN7phalanx18cuda_multigpu_gridENS0_20distributed_sequenceIiNS0_13device_memoryEEES4_17distributed_queueIiES6_
+  For Kernel: _ZN15bfs_rank_adjcsr14pull_frontierpEN7phalanx18cuda_multigpu_gridEiPiNS0_20distributed_sequenceIiNS0_13device_memoryEEE17distributed_queueIiES5_S7_
+  For Kernel: _ZNK7phalanx6detail8base_ptrIiNS_8cuda_gpuEE7raw_ptrEv
+  For Kernel: _ZN7phalanx6domainINS_15parallel_domainINS_17sequential_domainEEEEC1EiS3_
+  For Kernel: _ZN7phalanx20distributed_sequenceIiNS_13device_memoryEED1Ev
+  For Kernel: _ZNK7phalanx16domain_resourcesINS0_INS_13nil_resourcesEEEE15bytes_per_groupEv
+  For Kernel: _ZNK5queueIiEixEi
+  For Kernel: _ZNK7phalanx6detail8base_ptrIdNS_8cuda_gpuEE7raw_ptrEv
+  For Kernel: _ZNK7phalanx6detail8base_ptrIfNS_8cuda_gpuEE7raw_ptrEv
+  For Kernel: _ZN7phalanx15parallel_domainINS_17sequential_domainEEC1Ei
+  For Kernel: _ZN6thrust6detail4util7round_iImmEET_S3_T0_
+  For Kernel: _ZN7phalanx13sequence_fromIiNS_9operators8identityEEENS_19functional_sequenceIT_T0_EES5_ii
+  For Kernel: _ZN7phalanx6detail8base_ptrIdNS_13device_memoryEEC1EPdRKS2_
+  For Kernel: _ZNK5queueIiE5beginEv
+  For Kernel: _ZN7phalanx9any_placeC1ERKS0_
+  For Kernel: _ZN7phalanx9any_placeC1Ev
+  For Kernel: _Z10initializeIN7phalanx18cuda_multigpu_gridENS0_20distributed_sequenceIiNS0_13device_memoryEEEiEvT_T0_T1_
+  For Kernel: _ZN7phalanx16domain_resourcesINS0_INS_13nil_resourcesEEEEC1EiiS2_
+  For Kernel: _ZN7phalanx19group_shared_memoryEi
+  For Kernel: _ZN7phalanx10placed_ptrIiNS_13device_memoryEEC1INS_8cuda_gpuEEERKNS0_IiT_EE
+  For Kernel: _ZN7phalanx20distributed_sequenceIiNS_13device_memoryEEC1EiPNS_10placed_ptrIiS1_EEPm
+  For Kernel: _ZN6adjcsrIN7phalanx11host_memoryEEC1Ev
+  For Kernel: _ZN7phalanx20distributed_sequenceIiNS_13device_memoryEEC1Ev
+  For Kernel: _ZNK5queueIiE8capacityEv
+  For Kernel: _ZN17distributed_queueIiEixEi
+  For Kernel: _ZN15bfs_rank_adjcsr16advance_frontierEN7phalanx9cuda_gridE6adjcsrINS0_13device_memoryEE5queueIiENS0_15stored_sequenceIiS3_EES6_
+  For Kernel: _ZNK7phalanx20distributed_sequenceIiNS_13device_memoryEE4sizeEv
+  For Kernel: _ZN15bfs_rank_adjcsr14cull_frontier1IN7phalanx20distributed_sequenceIiNS1_13device_memoryEEEEEvRKNS1_9cuda_gridERT_NS1_15stored_sequenceIiS3_EER5queueIiESE_
+  For Kernel: _ZN7phalanx6detail8base_ptrIfNS_13device_memoryEEC1EPfRKS2_
+  For Kernel: _ZN7phalanx6detail8base_ptrIiNS_8cuda_gpuEEC1EPiRKS2_
+  For Kernel: _Z12__initializeIiEviPT_S0_
+  For Kernel: _ZN7phalanx16domain_resourcesINS_13nil_resourcesEEC1EiiS1_
+  For Kernel: _ZN7phalanx6domainINS_17sequential_domainEEC1Ei
+  For Kernel: _ZN7adjpcsrIN7phalanx11host_memoryEE9submatrixEi
+  For Kernel: _ZN7phalanx15stored_sequenceIiNS_13device_memoryEEC1EPii
+  For Kernel: _ZN15bfs_rank_adjcsr17advance_frontier1EN7phalanx9cuda_gridE6adjcsrINS0_13device_memoryEEiR5queueIiENS0_15stored_sequenceIiS3_EES7_
+  For Kernel: _ZN7phalanx6detail8base_ptrIiNS_13device_memoryEEC1EPiRKS2_
+  For Kernel: _ZNK5queueIiE3endEv
+  For Kernel: _ZN15bfs_rank_adjcsr13pull_frontierERKN7phalanx9cuda_gridEiiNS0_15stored_sequenceIiNS0_13device_memoryEEER5queueIiES6_S9_
+  For Kernel: _ZN7phalanx5rangeEii
+  For Kernel: _ZN7phalanx11default_cpuC1Ev
+  For Kernel: _Z10initializeIN7phalanx9cuda_gridENS0_15stored_sequenceIiNS0_13device_memoryEEEiEvT_T0_T1_
+  For Kernel: _ZN15bfs_rank_adjcsr14cull_frontier1IN7phalanx15stored_sequenceIiNS1_13device_memoryEEEEEvRKNS1_9cuda_gridERT_S4_R5queueIiESC_
+  For Kernel: _ZNK7phalanx6domainINS_15parallel_domainINS_17sequential_domainEEEE4sizeEv
+  For Kernel: _ZN7phalanx10placed_ptrIdNS_13device_memoryEEC1INS_8cuda_gpuEEERKNS0_IdT_EE
+  For Kernel: _ZN7phalanx8parallelINS_16streaming_domainINS_15parallel_domainINS_17sequential_domainEEEEEEENS2_IT_EEiS6_
+  For Kernel: _ZNK7phalanx15stored_sequenceIiNS_13device_memoryEE4sizeEv
+  For Kernel: _ZNK7phalanx16domain_resourcesINS_13nil_resourcesEE16bytes_per_threadEv
+  For Kernel: _ZN7phalanx21thread_private_memoryEi
+  For Kernel: _ZN5queueIiE7enqueueERKN7phalanx11cuda_threadEi
+ For File: ../tests/ptx/unstructured/CvFastBgGMM_ver5.ptx
+  For Kernel: _Z30_cudaReplacePixelBackgroundGMMiP6uchar4
+  For Kernel: _Z20_cudaUpdateFastBgGMMifffPi
+  For Kernel: _Z20_cudaRemoveShadowGMMifffi
+ For File: ../tests/ptx/unstructured/MC-GPU_v1.1.ptx
+  For Kernel: _Z20init_image_array_GPUPyi
+  For Kernel: _Z6ranecuP4int2
+  For Kernel: _Z4GCOaPfPdPiP4int2P14compton_struct
+  For Kernel: _Z6abMODmiii
+  For Kernel: _Z9init_PRNGiiiP4int2
+  For Kernel: _Z15track_particlesiiiPyP6float2S1_P6float3S3_P15rayleigh_structP14compton_struct
+  For Kernel: _Z4GRAaPfPdPiS_P4int2P15rayleigh_struct
+  For Kernel: _Z13rotate_doubleP6float3dd
+  For Kernel: _Z12set_positionPiPfP6float3S2_
+  For Kernel: _Z11tally_imagePiPfP6float3S2_PaPyS2_
+  For Kernel: _Z12locate_voxelP6float3
+  For Kernel: _Z6sourcePiP6float3S1_PfP4int2S_
+  For Kernel: _Z13ranecu_doubleP4int2
+ For File: ../tests/ptx/unstructured/renderer.ptx
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb1ELb0ELb0ELb1ELb1EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z8RaytraceILi2ELb0ELb0ELb1ELb0ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb0ELb0ELb1ELb0ELb0EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z8RaytraceILi0ELb1ELb1ELb1ELb1ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi2ELb1ELb1ELb0ELb0ELb0EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi1ELb1ELb1ELb1ELb1ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb0ELb1ELb1ELb0ELb0EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z8RaytraceILi2ELb0ELb0ELb1ELb1ELb0EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi2ELb1ELb0ELb1ELb0ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi2ELb0ELb0ELb0ELb1ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb0ELb0ELb0ELb1ELb0EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb1ELb1ELb0ELb0ELb0EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z8RaytraceILi2ELb0ELb1ELb1ELb1ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z7dotCUDARK7Vector3S1_
+  For Kernel: _Z8RaytraceILi0ELb0ELb0ELb0ELb1ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi0ELb1ELb0ELb0ELb0ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi1ELb0ELb1ELb1ELb0ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi2ELb1ELb1ELb0ELb1ELb0EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb1ELb0ELb1ELb0ELb1EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z8RaytraceILi0ELb1ELb0ELb0ELb1ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi2ELb0ELb0ELb0ELb0ELb0EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi1ELb0ELb1ELb1ELb1ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z9crossCUDARK7Vector3S1_
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb0ELb1ELb0ELb1ELb0EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z8RaytraceILi1ELb0ELb0ELb1ELb0ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb1ELb1ELb0ELb0ELb1EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb0ELb1ELb0ELb1ELb1EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb0ELb1ELb0ELb0ELb1EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z8RaytraceILi0ELb1ELb1ELb0ELb1ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb0ELb0ELb0ELb1ELb1EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z8RaytraceILi2ELb1ELb0ELb0ELb1ELb0EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi1ELb1ELb0ELb0ELb0ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi0ELb0ELb1ELb1ELb0ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb0ELb0ELb0ELb0ELb0EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z8RaytraceILi2ELb0ELb1ELb0ELb0ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb0ELb0ELb1ELb1ELb0EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z8RaytraceILi1ELb1ELb1ELb0ELb1ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi2ELb0ELb1ELb0ELb0ELb0EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi2ELb1ELb1ELb1ELb0ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z17CoreLoopTrianglesPiP7Matrix3P8TriangleP7Vector3
+  For Kernel: _Z12distanceCUDARK7Vector3S1_
+  For Kernel: _Z8RaytraceILi1ELb1ELb1ELb1ELb0ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi2ELb1ELb0ELb1ELb1ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi2ELb1ELb1ELb1ELb1ELb0EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb0ELb1ELb1ELb1ELb0EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z8RaytraceILi2ELb1ELb0ELb1ELb1ELb0EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z17multiplyRightWithRK7Matrix3RK7Vector3
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb1ELb0ELb1ELb1ELb0EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z16CoreLoopVerticesPiP7Matrix3P7Vector3
+  For Kernel: _Z8RaytraceILi1ELb0ELb0ELb0ELb1ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi2ELb1ELb0ELb0ELb1ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi1ELb0ELb0ELb1ELb1ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi1ELb1ELb1ELb0ELb0ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb0ELb0ELb1ELb1ELb1EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb0ELb1ELb1ELb1ELb1EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z8RaytraceILi0ELb1ELb1ELb0ELb0ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi0ELb1ELb1ELb1ELb0ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb1ELb1ELb1ELb1ELb1EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z8RaytraceILi1ELb1ELb0ELb1ELb0ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb1ELb1ELb0ELb1ELb1EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb0ELb0ELb0ELb0ELb1EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z8RaytraceILi0ELb1ELb0ELb1ELb0ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi1ELb0ELb1ELb0ELb0ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi2ELb1ELb1ELb1ELb0ELb0EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi2ELb1ELb0ELb0ELb0ELb0EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb1ELb1ELb1ELb0ELb1EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z8RaytraceILi1ELb1ELb0ELb0ELb1ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z22BVH_IntersectTrianglesILb1ELb1EEbRK7Vector3S2_jRiRS0_RfS5_S5_
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb0ELb0ELb1ELb0ELb1EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z16RayIntersectsBoxRK7Vector3S1_i
+  For Kernel: _Z8RaytraceILi2ELb0ELb0ELb0ELb0ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi2ELb1ELb1ELb0ELb0ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi1ELb1ELb0ELb1ELb1ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb1ELb1ELb1ELb1ELb0EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z8RaytraceILi2ELb0ELb1ELb1ELb0ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi0ELb1ELb0ELb1ELb1ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi2ELb0ELb0ELb1ELb1ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi1ELb0ELb1ELb0ELb1ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi0ELb0ELb1ELb0ELb0ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb1ELb1ELb1ELb0ELb0EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb1ELb1ELb0ELb1ELb0EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z8RaytraceILi0ELb0ELb1ELb1ELb1ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb1ELb0ELb1ELb1ELb1EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z8RaytraceILi2ELb0ELb1ELb0ELb1ELb0EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi2ELb1ELb1ELb1ELb1ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi2ELb0ELb1ELb1ELb1ELb0EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi2ELb0ELb1ELb1ELb0ELb0EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi0ELb0ELb0ELb1ELb0ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb0ELb1ELb1ELb0ELb1EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z8getColorR5Pixel
+  For Kernel: _Z8RaytraceILi1ELb0ELb0ELb0ELb0ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z7dotCUDARK7Vector3RK6float4
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb1ELb0ELb1ELb0ELb0EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z7dotCUDARK6float4RK7Vector3
+  For Kernel: _Z14distancesqCUDARK7Vector3S1_
+  For Kernel: _Z8RaytraceILi0ELb0ELb0ELb1ELb1ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z22BVH_IntersectTrianglesILb0ELb1EEbRK7Vector3S2_jRiRS0_RfS5_S5_
+  For Kernel: _Z8RaytraceILi0ELb0ELb0ELb0ELb0ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi2ELb1ELb0ELb1ELb0ELb0EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi2ELb0ELb0ELb0ELb1ELb0EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi0ELb0ELb1ELb0ELb1ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb1ELb0ELb0ELb0ELb0EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb1ELb0ELb0ELb1ELb0EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z8RaytraceILi2ELb1ELb0ELb0ELb0ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb0ELb1ELb0ELb0ELb0EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z8RaytraceILi2ELb0ELb0ELb1ELb0ELb0EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi2ELb0ELb1ELb0ELb1ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb1ELb0ELb0ELb0ELb1EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z14ProjectAndPlotRK7Vector3Pii
+  For Kernel: _Z8RaytraceILi2ELb1ELb1ELb0ELb1ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+ For File: ../tests/ptx/unstructured/vm.ptx
+  For Kernel: _Z8VmKernelPcP17sphyraena_resultsiii
+  For Kernel: _Z12castToDoubleP13sphyraena_mem
+  For Kernel: _Z9castToIntP13sphyraena_mem
+  For Kernel: _Z13copyDataToRegP13sphyraena_memPcS1_ii
+  For Kernel: _Z11castToInt64P13sphyraena_mem
+  For Kernel: _Z11castToFloatP13sphyraena_mem
+ For File: ../tests/ptx/unstructured/mcx_core.ptx
+  For Kernel: _Z17rand_next_scatlenPf
+  For Kernel: _Z17rand_next_reflectPf
+  For Kernel: _Z13logistic_initPfS_Pjj
+  For Kernel: _Z13logistic_stepPfS_i
+  For Kernel: _Z13mcx_main_loopiiPhPfS0_PjP6float4S3_S3_S0_S1_
+  For Kernel: _Z16rand_next_aanglePf
+  For Kernel: _Z14rand_uniform01f
+  For Kernel: _Z22mcx_sum_trueabsorptionPfPhS_i5uint3
+  For Kernel: _Z14rand_need_morePfS_
+  For Kernel: _Z16rand_do_roulettePf
+  For Kernel: _Z12gpu_rng_initPfS_Pji
+  For Kernel: _Z16rand_next_zanglePf
+ For File: ../tests/ptx/unstructured/Mandelbrot_sm13.ptx
+  For Kernel: _Z14CalcMandelbrotIdEvPiPKT_S1_S1_S1_ibi
+  For Kernel: _Z14CalcMandelbrotIdEiT_S0_S0_S0_ib
+  For Kernel: _Z14CalcMandelbrotIfEiT_S0_S0_S0_ib
+  For Kernel: _Z16Mandelbrot0_sm13IdLi16EEvP6uchar4iiiT_S2_S2_S2_S2_S0_iiiib
+  For Kernel: _Z16CalcMandelbrotDSffffffib
+  For Kernel: _Z16Mandelbrot0_sm13IfLi16EEvP6uchar4iiiT_S2_S2_S2_S2_S0_iiiib
+  For Kernel: _Z14CalcMandelbrotIfEvPiPKT_S1_S1_S1_ibi
+  For Kernel: _Z16Mandelbrot1_sm13IdEvP6uchar4iiiT_S2_S2_S2_S2_S0_iiiib
+  For Kernel: _Z18MandelbrotDS1_sm13P6uchar4iiifffffffS_iiiib
+  For Kernel: _Z18MandelbrotDS0_sm13P6uchar4iiifffffffS_iiiib
+  For Kernel: _Z16Mandelbrot1_sm13IfEvP6uchar4iiiT_S2_S2_S2_S2_S0_iiiib
+ For File: ../tests/ptx/parboil/crys_kernel.ptx
+  For Kernel: _Z8ComputeXP5uint4Pfi
+  For Kernel: _Z5dist26float3S_
+  For Kernel: _Z10ReducePair6float4S_6float2S0_f
+  For Kernel: _Z11DoReductionPfS_P5uint2ii
+  For Kernel: _Z5GetNsiiiiiRiS_S_S_
+  For Kernel: _Z10GetOffsetsiRiS_S_S_
+  For Kernel: _Z8GetBasesiiiRiS_S_S_S_
+  For Kernel: _Z5dist26float4S_
+  For Kernel: _Z8GetAtomsiRiS_S_S_
+  For Kernel: _Z9product1Dfffff
+  For Kernel: _Z4Rootf
+ For File: ../tests/ptx/parboil/mri-fhd.ptx
+  For Kernel: _Z13ComputeFH_GPUiiPfS_S_S_S_
+  For Kernel: _Z16ComputeRhoPhiGPUiPfS_S_S_S_S_
+ For File: ../tests/ptx/parboil/tpacf.ptx
+  For Kernel: _Z9gen_histsPyPfS0_S0_ii
+ For File: ../tests/ptx/parboil/computeQ.ptx
+  For Kernel: _Z17ComputePhiMag_GPUPfS_S_i
+  For Kernel: _Z12ComputeQ_GPUiiPfS_S_S_S_
+ For File: ../tests/ptx/parboil/cp.ptx
+ For File: ../tests/ptx/parboil/cuenergy_pre8_coalesce.ptx
+  For Kernel: _Z7cenergyifPf
+ For File: ../tests/ptx/parboil/computeFH.ptx
+  For Kernel: _Z13ComputeFH_GPUiiPfS_S_S_S_
+  For Kernel: _Z16ComputeRhoPhiGPUiPfS_S_S_S_S_
+ For File: ../tests/ptx/parboil/sad.ptx
+ For File: ../tests/ptx/parboil/rpes.ptx
+  For Kernel: _Z8ComputeXP5uint4Pfi
+  For Kernel: _Z5dist26float3S_
+  For Kernel: _Z10ReducePair6float4S_6float2S0_f
+  For Kernel: _Z11DoReductionPfS_P5uint2ii
+  For Kernel: _Z5GetNsiiiiiRiS_S_S_
+  For Kernel: _Z10GetOffsetsiRiS_S_S_
+  For Kernel: _Z8GetBasesiiiRiS_S_S_S_
+  For Kernel: _Z5dist26float4S_
+  For Kernel: _Z8GetAtomsiRiS_S_S_
+  For Kernel: _Z9product1Dfffff
+  For Kernel: _Z4Rootf
+ For File: ../tests/ptx/parboil/scan_largearray_kernel.ptx
+  For Kernel: _Z9gen_histsPyPfS0_S0_ii
+ For File: ../tests/ptx/parboil/sad4.ptx
+  For Kernel: _Z11mb_sad_calcPtS_ii
+ For File: ../tests/ptx/parboil/mri-q.ptx
+  For Kernel: _Z17ComputePhiMag_GPUPfS_S_i
+  For Kernel: _Z12ComputeQ_GPUiiPfS_S_S_S_
+ For File: ../tests/ptx/parboil/pns.ptx
+  For Kernel: _Z7BRandomv
+  For Kernel: _Z14PetrinetKernelPiPfS_iii
+  For Kernel: _Z14run_trajectoryPiii
+  For Kernel: _Z10RandomInitj
+  For Kernel: _Z15fire_transitionPcPiiiiii
+  For Kernel: _Z19compute_reward_statPiPfS_i
+  For Kernel: _Z15initialize_gridPiii
+ For File: ../tests/ptx/parboil/largerBlocks.ptx
+  For Kernel: _Z18larger_sad_calc_16Ptii
+  For Kernel: _Z17larger_sad_calc_8Ptii
  For File: ../tests/ptx/optix/closest_hit_radiance_CPU_INPUT.ptx
   For Kernel: closest_hit_radiance
  For File: ../tests/ptx/optix/zoneplate_megakernel.ptx
@@ -1537,6 +1417,52 @@ Status : Testing Generic Dataflow
   For Kernel: closest_hit_radiance
  For File: ../tests/ptx/optix/kernel_trace_device0_1.ptx
   For Kernel: __globfunc__Z5tracev
+ For File: ../tests/ptx/rodinia/srad_kernel.ptx
+  For Kernel: _Z11srad_cuda_2PfS_S_S_S_S_iiff
+  For Kernel: _Z11srad_cuda_1PfS_S_S_S_S_iif
+ For File: ../tests/ptx/rodinia/track_ellipse_kernel.ptx
+  For Kernel: _Z9heavisidef
+  For Kernel: _Z12IMGVF_kernelPPfS0_PiS1_fffif
+ For File: ../tests/ptx/rodinia/lud.ptx
+ For File: ../tests/ptx/rodinia/needle.ptx
+  For Kernel: _Z7maximumiii
+  For Kernel: _Z20needle_cuda_shared_1PiS_S_iiii
+  For Kernel: _Z20needle_cuda_shared_2PiS_S_iiii
+ For File: ../tests/ptx/rodinia/find_ellipse_kernel.ptx
+  For Kernel: _Z12GICOV_kerneliPf
+  For Kernel: _Z13dilate_kerneliiiiPf
+ For File: ../tests/ptx/rodinia/backprop_cuda_kernel.ptx
+  For Kernel: _Z24bpnn_adjust_weights_cudaPfiS_iS_S_ff
+  For Kernel: _Z22bpnn_layerforward_CUDAPfS_S_S_ii
+ For File: ../tests/ptx/rodinia/lud_kernel.ptx
+  For Kernel: _Z13lud_perimeterPfii
+  For Kernel: _Z12lud_internalPfii
+  For Kernel: _Z12lud_diagonalPfii
+ For File: ../tests/ptx/rodinia/hotspot.ptx
+  For Kernel: _Z14calculate_tempiPfS_S_iiiiffffff
+ For File: ../tests/ptx/rodinia/srad.ptx
+  For Kernel: _Z11srad_cuda_2PfS_S_S_S_S_iiff
+  For Kernel: _Z11srad_cuda_1PfS_S_S_S_S_iif
+ For File: ../tests/ptx/rodinia/mummergpu.ptx
+  For Kernel: _Z15mummergpuKernelPvPcS0_PKiS2_ii
+  For Kernel: _Z10set_resultjP11_MatchCoordiiii
+  For Kernel: _Z7getNodejb
+  For Kernel: _Z11printKernelP9MatchInfoiP9AlignmentPcPKiS5_iiiii
+  For Kernel: _Z2rcc
+  For Kernel: _Z7addr2idj
+  For Kernel: id2addr
+  For Kernel: _Z17mummergpuRCKernelP10MatchCoordPcPKiS3_ii
+  For Kernel: _Z11getChildrenjb
+  For Kernel: _Z14arrayToAddress6uchar3Rj
+ For File: ../tests/ptx/rodinia/hwt.ptx
+  For Kernel: _Z6kernelv
+ For File: ../tests/ptx/rodinia/needle_kernel.ptx
+  For Kernel: _Z7maximumiii
+  For Kernel: _Z20needle_cuda_shared_1PiS_S_iiii
+  For Kernel: _Z20needle_cuda_shared_2PiS_S_iiii
+ For File: ../tests/ptx/rodinia/backprop_cuda.ptx
+  For Kernel: _Z24bpnn_adjust_weights_cudaPfiS_iS_S_ff
+  For Kernel: _Z22bpnn_layerforward_CUDAPfS_S_S_ii
  For File: ../tests/ptx/sdk2.2/histogram256_SM10.ptx
   For Kernel: _Z23mergeHistogram256KernelPj
   For Kernel: _Z18histogram256KernelPjS_i
@@ -2615,6 +2541,9 @@ Status : Testing Generic Dataflow
   For Kernel: genericmemory
  Test Passed
 Testing SSA Dataflow
+ For File: ../tests/ptx/cp.ptx
+ For File: ../tests/ptx/cuenergy_pre8_coalesce.ptx
+  For Kernel: _Z7cenergyifPf
  For File: ../tests/ptx/thrust/Unique.ptx
   For Kernel: _ZN6thrust6detail27tuple_host_device_transformINS0_27device_dereference_iterator5applyENS_5tupleINS0_15normal_iteratorINS_10device_ptrItEEEES8_NS5_INS6_IiEEEENS_9null_typeESB_SB_SB_SB_SB_SB_EES2_EENS0_20tuple_meta_transformIT0_T_XsrNS_10tuple_sizeISE_EE5valueEE4typeERKSE_T1_
   For Kernel: _ZN6thrust6detail6device4cuda6detail23launch_closure_by_valueINS2_18for_each_n_closureINS_12zip_iteratorINS_5tupleINS0_15normal_iteratorINS_10device_ptrIhEEEESB_NS8_INS9_IiEEEENS_9null_typeESE_SE_SE_SE_SE_SE_EEEEiNS0_31device_binary_transform_functorINS0_13binary_negateINS_8equal_toIhEEEEEEEEEEvT_
@@ -2808,6 +2737,296 @@ Testing SSA Dataflow
   For Kernel: _ZN6thrust6detail6device4cuda6detail4b40c17ScanScatterDigitsIjNS4_12KeysOnlyTypeELi1ELi4ELi4ENS4_10NopFunctorIjEES8_EEvPbPiPT_SC_PT0_SE_NS4_16CtaDecompositionE
   For Kernel: _ZN6thrust6detail6device4cuda6detail4b40c15RakingReductionIjNS4_12KeysOnlyTypeELi6ELi4ELi24ENS4_10NopFunctorIjEEEEvPbPiPT_SC_NS4_16CtaDecompositionE
   For Kernel: _ZN6thrust6detail6device4cuda6detail4b40c12DecodeDigitsIjLx16ELi4ELi2ELi4ELi132EEEvPNS4_7VecTypeIT_Li2EE4TypeEP4int2SC_
+ For File: ../tests/ptx/thrust/bfs.ptx
+  For Kernel: _ZN7phalanx9streamingINS_15parallel_domainINS_17sequential_domainEEEEENS_16streaming_domainIT_EEiS5_
+  For Kernel: _ZNK7phalanx6domainINS_17sequential_domainEE4sizeEv
+  For Kernel: _ZN6thrust6detail4util9divide_riImiEET_S3_T0_
+  For Kernel: _ZN5queueIiE7enqueueERKN7phalanx10cuda_blockEiPi
+  For Kernel: _ZN7phalanx10placed_ptrIiNS_13device_memoryEEC1EPiRKS1_
+  For Kernel: _ZN7phalanx6domainINS_16streaming_domainINS_15parallel_domainINS_17sequential_domainEEEEEEC1EiS5_
+  For Kernel: _ZN7phalanx8cuda_gpuC1ERKS0_
+  For Kernel: _ZN7phalanx15stored_sequenceIiNS_13device_memoryEEixEi
+  For Kernel: _Z10initializeIN7phalanx9cuda_gridEiEvT_PT0_S3_
+  For Kernel: _Z10initializeIN7phalanx18cuda_multigpu_gridEiEvT_PT0_S3_
+  For Kernel: _ZN15bfs_rank_adjcsr17advance_frontierpEN7phalanx18cuda_multigpu_gridE7adjpcsrINS0_13device_memoryEE17distributed_queueIiENS0_20distributed_sequenceIiS3_EES6_
+  For Kernel: _ZN7adjpcsrIN7phalanx13device_memoryEEC1Ev
+  For Kernel: _ZN7phalanx20distributed_sequenceIiNS_13device_memoryEE11subsequenceEi
+  For Kernel: _ZN7adjpcsrIN7phalanx13device_memoryEE9submatrixEi
+  For Kernel: _ZN7phalanx10placed_ptrIfNS_13device_memoryEEC1INS_8cuda_gpuEEERKNS0_IfT_EE
+  For Kernel: _ZN7phalanx9cuda_gridC1ERKNS_16domain_resourcesINS_13nil_resourcesEEE
+  For Kernel: _ZN5queueIiE4sizeIN7phalanx9cuda_gridEEEiRKT_
+  For Kernel: _Z15subtract_offsetPiii
+  For Kernel: _ZN7phalanx15cuda_any_threadC1ERKNS_9cuda_gridE
+  For Kernel: _ZN7phalanx20distributed_sequenceIiNS_13device_memoryEEixEi
+  For Kernel: _ZN15bfs_rank_adjcsr13cull_frontierEN7phalanx9cuda_gridENS0_15stored_sequenceIiNS0_13device_memoryEEES4_5queueIiES6_
+  For Kernel: _ZN15bfs_rank_adjcsr14cull_frontierpEN7phalanx18cuda_multigpu_gridENS0_20distributed_sequenceIiNS0_13device_memoryEEES4_17distributed_queueIiES6_
+  For Kernel: _ZN15bfs_rank_adjcsr14pull_frontierpEN7phalanx18cuda_multigpu_gridEiPiNS0_20distributed_sequenceIiNS0_13device_memoryEEE17distributed_queueIiES5_S7_
+  For Kernel: _ZNK7phalanx6detail8base_ptrIiNS_8cuda_gpuEE7raw_ptrEv
+  For Kernel: _ZN7phalanx6domainINS_15parallel_domainINS_17sequential_domainEEEEC1EiS3_
+  For Kernel: _ZN7phalanx20distributed_sequenceIiNS_13device_memoryEED1Ev
+  For Kernel: _ZNK7phalanx16domain_resourcesINS0_INS_13nil_resourcesEEEE15bytes_per_groupEv
+  For Kernel: _ZNK5queueIiEixEi
+  For Kernel: _ZNK7phalanx6detail8base_ptrIdNS_8cuda_gpuEE7raw_ptrEv
+  For Kernel: _ZNK7phalanx6detail8base_ptrIfNS_8cuda_gpuEE7raw_ptrEv
+  For Kernel: _ZN7phalanx15parallel_domainINS_17sequential_domainEEC1Ei
+  For Kernel: _ZN6thrust6detail4util7round_iImmEET_S3_T0_
+  For Kernel: _ZN7phalanx13sequence_fromIiNS_9operators8identityEEENS_19functional_sequenceIT_T0_EES5_ii
+  For Kernel: _ZN7phalanx6detail8base_ptrIdNS_13device_memoryEEC1EPdRKS2_
+  For Kernel: _ZNK5queueIiE5beginEv
+  For Kernel: _ZN7phalanx9any_placeC1ERKS0_
+  For Kernel: _ZN7phalanx9any_placeC1Ev
+  For Kernel: _Z10initializeIN7phalanx18cuda_multigpu_gridENS0_20distributed_sequenceIiNS0_13device_memoryEEEiEvT_T0_T1_
+  For Kernel: _ZN7phalanx16domain_resourcesINS0_INS_13nil_resourcesEEEEC1EiiS2_
+  For Kernel: _ZN7phalanx19group_shared_memoryEi
+  For Kernel: _ZN7phalanx10placed_ptrIiNS_13device_memoryEEC1INS_8cuda_gpuEEERKNS0_IiT_EE
+  For Kernel: _ZN7phalanx20distributed_sequenceIiNS_13device_memoryEEC1EiPNS_10placed_ptrIiS1_EEPm
+  For Kernel: _ZN6adjcsrIN7phalanx11host_memoryEEC1Ev
+  For Kernel: _ZN7phalanx20distributed_sequenceIiNS_13device_memoryEEC1Ev
+  For Kernel: _ZNK5queueIiE8capacityEv
+  For Kernel: _ZN17distributed_queueIiEixEi
+  For Kernel: _ZN15bfs_rank_adjcsr16advance_frontierEN7phalanx9cuda_gridE6adjcsrINS0_13device_memoryEE5queueIiENS0_15stored_sequenceIiS3_EES6_
+  For Kernel: _ZNK7phalanx20distributed_sequenceIiNS_13device_memoryEE4sizeEv
+  For Kernel: _ZN15bfs_rank_adjcsr14cull_frontier1IN7phalanx20distributed_sequenceIiNS1_13device_memoryEEEEEvRKNS1_9cuda_gridERT_NS1_15stored_sequenceIiS3_EER5queueIiESE_
+  For Kernel: _ZN7phalanx6detail8base_ptrIfNS_13device_memoryEEC1EPfRKS2_
+  For Kernel: _ZN7phalanx6detail8base_ptrIiNS_8cuda_gpuEEC1EPiRKS2_
+  For Kernel: _Z12__initializeIiEviPT_S0_
+  For Kernel: _ZN7phalanx16domain_resourcesINS_13nil_resourcesEEC1EiiS1_
+  For Kernel: _ZN7phalanx6domainINS_17sequential_domainEEC1Ei
+  For Kernel: _ZN7adjpcsrIN7phalanx11host_memoryEE9submatrixEi
+  For Kernel: _ZN7phalanx15stored_sequenceIiNS_13device_memoryEEC1EPii
+  For Kernel: _ZN15bfs_rank_adjcsr17advance_frontier1EN7phalanx9cuda_gridE6adjcsrINS0_13device_memoryEEiR5queueIiENS0_15stored_sequenceIiS3_EES7_
+  For Kernel: _ZN7phalanx6detail8base_ptrIiNS_13device_memoryEEC1EPiRKS2_
+  For Kernel: _ZNK5queueIiE3endEv
+  For Kernel: _ZN15bfs_rank_adjcsr13pull_frontierERKN7phalanx9cuda_gridEiiNS0_15stored_sequenceIiNS0_13device_memoryEEER5queueIiES6_S9_
+  For Kernel: _ZN7phalanx5rangeEii
+  For Kernel: _ZN7phalanx11default_cpuC1Ev
+  For Kernel: _Z10initializeIN7phalanx9cuda_gridENS0_15stored_sequenceIiNS0_13device_memoryEEEiEvT_T0_T1_
+  For Kernel: _ZN15bfs_rank_adjcsr14cull_frontier1IN7phalanx15stored_sequenceIiNS1_13device_memoryEEEEEvRKNS1_9cuda_gridERT_S4_R5queueIiESC_
+  For Kernel: _ZNK7phalanx6domainINS_15parallel_domainINS_17sequential_domainEEEE4sizeEv
+  For Kernel: _ZN7phalanx10placed_ptrIdNS_13device_memoryEEC1INS_8cuda_gpuEEERKNS0_IdT_EE
+  For Kernel: _ZN7phalanx8parallelINS_16streaming_domainINS_15parallel_domainINS_17sequential_domainEEEEEEENS2_IT_EEiS6_
+  For Kernel: _ZNK7phalanx15stored_sequenceIiNS_13device_memoryEE4sizeEv
+  For Kernel: _ZNK7phalanx16domain_resourcesINS_13nil_resourcesEE16bytes_per_threadEv
+  For Kernel: _ZN7phalanx21thread_private_memoryEi
+  For Kernel: _ZN5queueIiE7enqueueERKN7phalanx11cuda_threadEi
+ For File: ../tests/ptx/unstructured/CvFastBgGMM_ver5.ptx
+  For Kernel: _Z30_cudaReplacePixelBackgroundGMMiP6uchar4
+  For Kernel: _Z20_cudaUpdateFastBgGMMifffPi
+  For Kernel: _Z20_cudaRemoveShadowGMMifffi
+ For File: ../tests/ptx/unstructured/MC-GPU_v1.1.ptx
+  For Kernel: _Z20init_image_array_GPUPyi
+  For Kernel: _Z6ranecuP4int2
+  For Kernel: _Z4GCOaPfPdPiP4int2P14compton_struct
+  For Kernel: _Z6abMODmiii
+  For Kernel: _Z9init_PRNGiiiP4int2
+  For Kernel: _Z15track_particlesiiiPyP6float2S1_P6float3S3_P15rayleigh_structP14compton_struct
+  For Kernel: _Z4GRAaPfPdPiS_P4int2P15rayleigh_struct
+  For Kernel: _Z13rotate_doubleP6float3dd
+  For Kernel: _Z12set_positionPiPfP6float3S2_
+  For Kernel: _Z11tally_imagePiPfP6float3S2_PaPyS2_
+  For Kernel: _Z12locate_voxelP6float3
+  For Kernel: _Z6sourcePiP6float3S1_PfP4int2S_
+  For Kernel: _Z13ranecu_doubleP4int2
+ For File: ../tests/ptx/unstructured/renderer.ptx
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb1ELb0ELb0ELb1ELb1EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z8RaytraceILi2ELb0ELb0ELb1ELb0ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb0ELb0ELb1ELb0ELb0EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z8RaytraceILi0ELb1ELb1ELb1ELb1ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi2ELb1ELb1ELb0ELb0ELb0EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi1ELb1ELb1ELb1ELb1ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb0ELb1ELb1ELb0ELb0EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z8RaytraceILi2ELb0ELb0ELb1ELb1ELb0EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi2ELb1ELb0ELb1ELb0ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi2ELb0ELb0ELb0ELb1ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb0ELb0ELb0ELb1ELb0EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb1ELb1ELb0ELb0ELb0EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z8RaytraceILi2ELb0ELb1ELb1ELb1ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z7dotCUDARK7Vector3S1_
+  For Kernel: _Z8RaytraceILi0ELb0ELb0ELb0ELb1ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi0ELb1ELb0ELb0ELb0ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi1ELb0ELb1ELb1ELb0ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi2ELb1ELb1ELb0ELb1ELb0EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb1ELb0ELb1ELb0ELb1EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z8RaytraceILi0ELb1ELb0ELb0ELb1ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi2ELb0ELb0ELb0ELb0ELb0EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi1ELb0ELb1ELb1ELb1ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z9crossCUDARK7Vector3S1_
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb0ELb1ELb0ELb1ELb0EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z8RaytraceILi1ELb0ELb0ELb1ELb0ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb1ELb1ELb0ELb0ELb1EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb0ELb1ELb0ELb1ELb1EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb0ELb1ELb0ELb0ELb1EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z8RaytraceILi0ELb1ELb1ELb0ELb1ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb0ELb0ELb0ELb1ELb1EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z8RaytraceILi2ELb1ELb0ELb0ELb1ELb0EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi1ELb1ELb0ELb0ELb0ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi0ELb0ELb1ELb1ELb0ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb0ELb0ELb0ELb0ELb0EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z8RaytraceILi2ELb0ELb1ELb0ELb0ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb0ELb0ELb1ELb1ELb0EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z8RaytraceILi1ELb1ELb1ELb0ELb1ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi2ELb0ELb1ELb0ELb0ELb0EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi2ELb1ELb1ELb1ELb0ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z17CoreLoopTrianglesPiP7Matrix3P8TriangleP7Vector3
+  For Kernel: _Z12distanceCUDARK7Vector3S1_
+  For Kernel: _Z8RaytraceILi1ELb1ELb1ELb1ELb0ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi2ELb1ELb0ELb1ELb1ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi2ELb1ELb1ELb1ELb1ELb0EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb0ELb1ELb1ELb1ELb0EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z8RaytraceILi2ELb1ELb0ELb1ELb1ELb0EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z17multiplyRightWithRK7Matrix3RK7Vector3
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb1ELb0ELb1ELb1ELb0EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z16CoreLoopVerticesPiP7Matrix3P7Vector3
+  For Kernel: _Z8RaytraceILi1ELb0ELb0ELb0ELb1ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi2ELb1ELb0ELb0ELb1ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi1ELb0ELb0ELb1ELb1ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi1ELb1ELb1ELb0ELb0ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb0ELb0ELb1ELb1ELb1EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb0ELb1ELb1ELb1ELb1EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z8RaytraceILi0ELb1ELb1ELb0ELb0ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi0ELb1ELb1ELb1ELb0ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb1ELb1ELb1ELb1ELb1EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z8RaytraceILi1ELb1ELb0ELb1ELb0ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb1ELb1ELb0ELb1ELb1EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb0ELb0ELb0ELb0ELb1EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z8RaytraceILi0ELb1ELb0ELb1ELb0ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi1ELb0ELb1ELb0ELb0ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi2ELb1ELb1ELb1ELb0ELb0EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi2ELb1ELb0ELb0ELb0ELb0EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb1ELb1ELb1ELb0ELb1EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z8RaytraceILi1ELb1ELb0ELb0ELb1ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z22BVH_IntersectTrianglesILb1ELb1EEbRK7Vector3S2_jRiRS0_RfS5_S5_
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb0ELb0ELb1ELb0ELb1EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z16RayIntersectsBoxRK7Vector3S1_i
+  For Kernel: _Z8RaytraceILi2ELb0ELb0ELb0ELb0ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi2ELb1ELb1ELb0ELb0ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi1ELb1ELb0ELb1ELb1ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb1ELb1ELb1ELb1ELb0EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z8RaytraceILi2ELb0ELb1ELb1ELb0ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi0ELb1ELb0ELb1ELb1ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi2ELb0ELb0ELb1ELb1ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi1ELb0ELb1ELb0ELb1ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi0ELb0ELb1ELb0ELb0ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb1ELb1ELb1ELb0ELb0EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb1ELb1ELb0ELb1ELb0EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z8RaytraceILi0ELb0ELb1ELb1ELb1ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb1ELb0ELb1ELb1ELb1EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z8RaytraceILi2ELb0ELb1ELb0ELb1ELb0EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi2ELb1ELb1ELb1ELb1ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi2ELb0ELb1ELb1ELb1ELb0EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi2ELb0ELb1ELb1ELb0ELb0EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi0ELb0ELb0ELb1ELb0ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb0ELb1ELb1ELb0ELb1EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z8getColorR5Pixel
+  For Kernel: _Z8RaytraceILi1ELb0ELb0ELb0ELb0ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z7dotCUDARK7Vector3RK6float4
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb1ELb0ELb1ELb0ELb0EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z7dotCUDARK6float4RK7Vector3
+  For Kernel: _Z14distancesqCUDARK7Vector3S1_
+  For Kernel: _Z8RaytraceILi0ELb0ELb0ELb1ELb1ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z22BVH_IntersectTrianglesILb0ELb1EEbRK7Vector3S2_jRiRS0_RfS5_S5_
+  For Kernel: _Z8RaytraceILi0ELb0ELb0ELb0ELb0ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi2ELb1ELb0ELb1ELb0ELb0EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi2ELb0ELb0ELb0ELb1ELb0EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi0ELb0ELb1ELb0ELb1ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb1ELb0ELb0ELb0ELb0EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb1ELb0ELb0ELb1ELb0EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z8RaytraceILi2ELb1ELb0ELb0ELb0ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb0ELb1ELb0ELb0ELb0EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z8RaytraceILi2ELb0ELb0ELb1ELb0ELb0EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi2ELb0ELb1ELb0ELb1ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb1ELb0ELb0ELb0ELb1EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z14ProjectAndPlotRK7Vector3Pii
+  For Kernel: _Z8RaytraceILi2ELb1ELb1ELb0ELb1ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+ For File: ../tests/ptx/unstructured/vm.ptx
+  For Kernel: _Z8VmKernelPcP17sphyraena_resultsiii
+  For Kernel: _Z12castToDoubleP13sphyraena_mem
+  For Kernel: _Z9castToIntP13sphyraena_mem
+  For Kernel: _Z13copyDataToRegP13sphyraena_memPcS1_ii
+  For Kernel: _Z11castToInt64P13sphyraena_mem
+  For Kernel: _Z11castToFloatP13sphyraena_mem
+ For File: ../tests/ptx/unstructured/mcx_core.ptx
+  For Kernel: _Z17rand_next_scatlenPf
+  For Kernel: _Z17rand_next_reflectPf
+  For Kernel: _Z13logistic_initPfS_Pjj
+  For Kernel: _Z13logistic_stepPfS_i
+  For Kernel: _Z13mcx_main_loopiiPhPfS0_PjP6float4S3_S3_S0_S1_
+  For Kernel: _Z16rand_next_aanglePf
+  For Kernel: _Z14rand_uniform01f
+  For Kernel: _Z22mcx_sum_trueabsorptionPfPhS_i5uint3
+  For Kernel: _Z14rand_need_morePfS_
+  For Kernel: _Z16rand_do_roulettePf
+  For Kernel: _Z12gpu_rng_initPfS_Pji
+  For Kernel: _Z16rand_next_zanglePf
+ For File: ../tests/ptx/unstructured/Mandelbrot_sm13.ptx
+  For Kernel: _Z14CalcMandelbrotIdEvPiPKT_S1_S1_S1_ibi
+  For Kernel: _Z14CalcMandelbrotIdEiT_S0_S0_S0_ib
+  For Kernel: _Z14CalcMandelbrotIfEiT_S0_S0_S0_ib
+  For Kernel: _Z16Mandelbrot0_sm13IdLi16EEvP6uchar4iiiT_S2_S2_S2_S2_S0_iiiib
+  For Kernel: _Z16CalcMandelbrotDSffffffib
+  For Kernel: _Z16Mandelbrot0_sm13IfLi16EEvP6uchar4iiiT_S2_S2_S2_S2_S0_iiiib
+  For Kernel: _Z14CalcMandelbrotIfEvPiPKT_S1_S1_S1_ibi
+  For Kernel: _Z16Mandelbrot1_sm13IdEvP6uchar4iiiT_S2_S2_S2_S2_S0_iiiib
+  For Kernel: _Z18MandelbrotDS1_sm13P6uchar4iiifffffffS_iiiib
+  For Kernel: _Z18MandelbrotDS0_sm13P6uchar4iiifffffffS_iiiib
+  For Kernel: _Z16Mandelbrot1_sm13IfEvP6uchar4iiiT_S2_S2_S2_S2_S0_iiiib
+ For File: ../tests/ptx/parboil/crys_kernel.ptx
+  For Kernel: _Z8ComputeXP5uint4Pfi
+  For Kernel: _Z5dist26float3S_
+  For Kernel: _Z10ReducePair6float4S_6float2S0_f
+  For Kernel: _Z11DoReductionPfS_P5uint2ii
+  For Kernel: _Z5GetNsiiiiiRiS_S_S_
+  For Kernel: _Z10GetOffsetsiRiS_S_S_
+  For Kernel: _Z8GetBasesiiiRiS_S_S_S_
+  For Kernel: _Z5dist26float4S_
+  For Kernel: _Z8GetAtomsiRiS_S_S_
+  For Kernel: _Z9product1Dfffff
+  For Kernel: _Z4Rootf
+ For File: ../tests/ptx/parboil/mri-fhd.ptx
+  For Kernel: _Z13ComputeFH_GPUiiPfS_S_S_S_
+  For Kernel: _Z16ComputeRhoPhiGPUiPfS_S_S_S_S_
+ For File: ../tests/ptx/parboil/tpacf.ptx
+  For Kernel: _Z9gen_histsPyPfS0_S0_ii
+ For File: ../tests/ptx/parboil/computeQ.ptx
+  For Kernel: _Z17ComputePhiMag_GPUPfS_S_i
+  For Kernel: _Z12ComputeQ_GPUiiPfS_S_S_S_
+ For File: ../tests/ptx/parboil/cp.ptx
+ For File: ../tests/ptx/parboil/cuenergy_pre8_coalesce.ptx
+  For Kernel: _Z7cenergyifPf
+ For File: ../tests/ptx/parboil/computeFH.ptx
+  For Kernel: _Z13ComputeFH_GPUiiPfS_S_S_S_
+  For Kernel: _Z16ComputeRhoPhiGPUiPfS_S_S_S_S_
+ For File: ../tests/ptx/parboil/sad.ptx
+ For File: ../tests/ptx/parboil/rpes.ptx
+  For Kernel: _Z8ComputeXP5uint4Pfi
+  For Kernel: _Z5dist26float3S_
+  For Kernel: _Z10ReducePair6float4S_6float2S0_f
+  For Kernel: _Z11DoReductionPfS_P5uint2ii
+  For Kernel: _Z5GetNsiiiiiRiS_S_S_
+  For Kernel: _Z10GetOffsetsiRiS_S_S_
+  For Kernel: _Z8GetBasesiiiRiS_S_S_S_
+  For Kernel: _Z5dist26float4S_
+  For Kernel: _Z8GetAtomsiRiS_S_S_
+  For Kernel: _Z9product1Dfffff
+  For Kernel: _Z4Rootf
+ For File: ../tests/ptx/parboil/scan_largearray_kernel.ptx
+  For Kernel: _Z9gen_histsPyPfS0_S0_ii
+ For File: ../tests/ptx/parboil/sad4.ptx
+  For Kernel: _Z11mb_sad_calcPtS_ii
+ For File: ../tests/ptx/parboil/mri-q.ptx
+  For Kernel: _Z17ComputePhiMag_GPUPfS_S_i
+  For Kernel: _Z12ComputeQ_GPUiiPfS_S_S_S_
+ For File: ../tests/ptx/parboil/pns.ptx
+  For Kernel: _Z7BRandomv
+  For Kernel: _Z14PetrinetKernelPiPfS_iii
+  For Kernel: _Z14run_trajectoryPiii
+  For Kernel: _Z10RandomInitj
+  For Kernel: _Z15fire_transitionPcPiiiiii
+  For Kernel: _Z19compute_reward_statPiPfS_i
+  For Kernel: _Z15initialize_gridPiii
+ For File: ../tests/ptx/parboil/largerBlocks.ptx
+  For Kernel: _Z18larger_sad_calc_16Ptii
+  For Kernel: _Z17larger_sad_calc_8Ptii
  For File: ../tests/ptx/optix/closest_hit_radiance_CPU_INPUT.ptx
   For Kernel: closest_hit_radiance
  For File: ../tests/ptx/optix/zoneplate_megakernel.ptx
@@ -2816,6 +3035,52 @@ Testing SSA Dataflow
   For Kernel: closest_hit_radiance
  For File: ../tests/ptx/optix/kernel_trace_device0_1.ptx
   For Kernel: __globfunc__Z5tracev
+ For File: ../tests/ptx/rodinia/srad_kernel.ptx
+  For Kernel: _Z11srad_cuda_2PfS_S_S_S_S_iiff
+  For Kernel: _Z11srad_cuda_1PfS_S_S_S_S_iif
+ For File: ../tests/ptx/rodinia/track_ellipse_kernel.ptx
+  For Kernel: _Z9heavisidef
+  For Kernel: _Z12IMGVF_kernelPPfS0_PiS1_fffif
+ For File: ../tests/ptx/rodinia/lud.ptx
+ For File: ../tests/ptx/rodinia/needle.ptx
+  For Kernel: _Z7maximumiii
+  For Kernel: _Z20needle_cuda_shared_1PiS_S_iiii
+  For Kernel: _Z20needle_cuda_shared_2PiS_S_iiii
+ For File: ../tests/ptx/rodinia/find_ellipse_kernel.ptx
+  For Kernel: _Z12GICOV_kerneliPf
+  For Kernel: _Z13dilate_kerneliiiiPf
+ For File: ../tests/ptx/rodinia/backprop_cuda_kernel.ptx
+  For Kernel: _Z24bpnn_adjust_weights_cudaPfiS_iS_S_ff
+  For Kernel: _Z22bpnn_layerforward_CUDAPfS_S_S_ii
+ For File: ../tests/ptx/rodinia/lud_kernel.ptx
+  For Kernel: _Z13lud_perimeterPfii
+  For Kernel: _Z12lud_internalPfii
+  For Kernel: _Z12lud_diagonalPfii
+ For File: ../tests/ptx/rodinia/hotspot.ptx
+  For Kernel: _Z14calculate_tempiPfS_S_iiiiffffff
+ For File: ../tests/ptx/rodinia/srad.ptx
+  For Kernel: _Z11srad_cuda_2PfS_S_S_S_S_iiff
+  For Kernel: _Z11srad_cuda_1PfS_S_S_S_S_iif
+ For File: ../tests/ptx/rodinia/mummergpu.ptx
+  For Kernel: _Z15mummergpuKernelPvPcS0_PKiS2_ii
+  For Kernel: _Z10set_resultjP11_MatchCoordiiii
+  For Kernel: _Z7getNodejb
+  For Kernel: _Z11printKernelP9MatchInfoiP9AlignmentPcPKiS5_iiiii
+  For Kernel: _Z2rcc
+  For Kernel: _Z7addr2idj
+  For Kernel: id2addr
+  For Kernel: _Z17mummergpuRCKernelP10MatchCoordPcPKiS3_ii
+  For Kernel: _Z11getChildrenjb
+  For Kernel: _Z14arrayToAddress6uchar3Rj
+ For File: ../tests/ptx/rodinia/hwt.ptx
+  For Kernel: _Z6kernelv
+ For File: ../tests/ptx/rodinia/needle_kernel.ptx
+  For Kernel: _Z7maximumiii
+  For Kernel: _Z20needle_cuda_shared_1PiS_S_iiii
+  For Kernel: _Z20needle_cuda_shared_2PiS_S_iiii
+ For File: ../tests/ptx/rodinia/backprop_cuda.ptx
+  For Kernel: _Z24bpnn_adjust_weights_cudaPfiS_iS_S_ff
+  For Kernel: _Z22bpnn_layerforward_CUDAPfS_S_S_ii
  For File: ../tests/ptx/sdk2.2/histogram256_SM10.ptx
   For Kernel: _Z23mergeHistogram256KernelPj
   For Kernel: _Z18histogram256KernelPjS_i
@@ -3894,6 +4159,9 @@ Testing SSA Dataflow
   For Kernel: genericmemory
  Test Passed
 Testing SSA then back Dataflow
+ For File: ../tests/ptx/cp.ptx
+ For File: ../tests/ptx/cuenergy_pre8_coalesce.ptx
+  For Kernel: _Z7cenergyifPf
  For File: ../tests/ptx/thrust/Unique.ptx
   For Kernel: _ZN6thrust6detail27tuple_host_device_transformINS0_27device_dereference_iterator5applyENS_5tupleINS0_15normal_iteratorINS_10device_ptrItEEEES8_NS5_INS6_IiEEEENS_9null_typeESB_SB_SB_SB_SB_SB_EES2_EENS0_20tuple_meta_transformIT0_T_XsrNS_10tuple_sizeISE_EE5valueEE4typeERKSE_T1_
   For Kernel: _ZN6thrust6detail6device4cuda6detail23launch_closure_by_valueINS2_18for_each_n_closureINS_12zip_iteratorINS_5tupleINS0_15normal_iteratorINS_10device_ptrIhEEEESB_NS8_INS9_IiEEEENS_9null_typeESE_SE_SE_SE_SE_SE_EEEEiNS0_31device_binary_transform_functorINS0_13binary_negateINS_8equal_toIhEEEEEEEEEEvT_
@@ -4087,6 +4355,296 @@ Testing SSA then back Dataflow
   For Kernel: _ZN6thrust6detail6device4cuda6detail4b40c17ScanScatterDigitsIjNS4_12KeysOnlyTypeELi1ELi4ELi4ENS4_10NopFunctorIjEES8_EEvPbPiPT_SC_PT0_SE_NS4_16CtaDecompositionE
   For Kernel: _ZN6thrust6detail6device4cuda6detail4b40c15RakingReductionIjNS4_12KeysOnlyTypeELi6ELi4ELi24ENS4_10NopFunctorIjEEEEvPbPiPT_SC_NS4_16CtaDecompositionE
   For Kernel: _ZN6thrust6detail6device4cuda6detail4b40c12DecodeDigitsIjLx16ELi4ELi2ELi4ELi132EEEvPNS4_7VecTypeIT_Li2EE4TypeEP4int2SC_
+ For File: ../tests/ptx/thrust/bfs.ptx
+  For Kernel: _ZN7phalanx9streamingINS_15parallel_domainINS_17sequential_domainEEEEENS_16streaming_domainIT_EEiS5_
+  For Kernel: _ZNK7phalanx6domainINS_17sequential_domainEE4sizeEv
+  For Kernel: _ZN6thrust6detail4util9divide_riImiEET_S3_T0_
+  For Kernel: _ZN5queueIiE7enqueueERKN7phalanx10cuda_blockEiPi
+  For Kernel: _ZN7phalanx10placed_ptrIiNS_13device_memoryEEC1EPiRKS1_
+  For Kernel: _ZN7phalanx6domainINS_16streaming_domainINS_15parallel_domainINS_17sequential_domainEEEEEEC1EiS5_
+  For Kernel: _ZN7phalanx8cuda_gpuC1ERKS0_
+  For Kernel: _ZN7phalanx15stored_sequenceIiNS_13device_memoryEEixEi
+  For Kernel: _Z10initializeIN7phalanx9cuda_gridEiEvT_PT0_S3_
+  For Kernel: _Z10initializeIN7phalanx18cuda_multigpu_gridEiEvT_PT0_S3_
+  For Kernel: _ZN15bfs_rank_adjcsr17advance_frontierpEN7phalanx18cuda_multigpu_gridE7adjpcsrINS0_13device_memoryEE17distributed_queueIiENS0_20distributed_sequenceIiS3_EES6_
+  For Kernel: _ZN7adjpcsrIN7phalanx13device_memoryEEC1Ev
+  For Kernel: _ZN7phalanx20distributed_sequenceIiNS_13device_memoryEE11subsequenceEi
+  For Kernel: _ZN7adjpcsrIN7phalanx13device_memoryEE9submatrixEi
+  For Kernel: _ZN7phalanx10placed_ptrIfNS_13device_memoryEEC1INS_8cuda_gpuEEERKNS0_IfT_EE
+  For Kernel: _ZN7phalanx9cuda_gridC1ERKNS_16domain_resourcesINS_13nil_resourcesEEE
+  For Kernel: _ZN5queueIiE4sizeIN7phalanx9cuda_gridEEEiRKT_
+  For Kernel: _Z15subtract_offsetPiii
+  For Kernel: _ZN7phalanx15cuda_any_threadC1ERKNS_9cuda_gridE
+  For Kernel: _ZN7phalanx20distributed_sequenceIiNS_13device_memoryEEixEi
+  For Kernel: _ZN15bfs_rank_adjcsr13cull_frontierEN7phalanx9cuda_gridENS0_15stored_sequenceIiNS0_13device_memoryEEES4_5queueIiES6_
+  For Kernel: _ZN15bfs_rank_adjcsr14cull_frontierpEN7phalanx18cuda_multigpu_gridENS0_20distributed_sequenceIiNS0_13device_memoryEEES4_17distributed_queueIiES6_
+  For Kernel: _ZN15bfs_rank_adjcsr14pull_frontierpEN7phalanx18cuda_multigpu_gridEiPiNS0_20distributed_sequenceIiNS0_13device_memoryEEE17distributed_queueIiES5_S7_
+  For Kernel: _ZNK7phalanx6detail8base_ptrIiNS_8cuda_gpuEE7raw_ptrEv
+  For Kernel: _ZN7phalanx6domainINS_15parallel_domainINS_17sequential_domainEEEEC1EiS3_
+  For Kernel: _ZN7phalanx20distributed_sequenceIiNS_13device_memoryEED1Ev
+  For Kernel: _ZNK7phalanx16domain_resourcesINS0_INS_13nil_resourcesEEEE15bytes_per_groupEv
+  For Kernel: _ZNK5queueIiEixEi
+  For Kernel: _ZNK7phalanx6detail8base_ptrIdNS_8cuda_gpuEE7raw_ptrEv
+  For Kernel: _ZNK7phalanx6detail8base_ptrIfNS_8cuda_gpuEE7raw_ptrEv
+  For Kernel: _ZN7phalanx15parallel_domainINS_17sequential_domainEEC1Ei
+  For Kernel: _ZN6thrust6detail4util7round_iImmEET_S3_T0_
+  For Kernel: _ZN7phalanx13sequence_fromIiNS_9operators8identityEEENS_19functional_sequenceIT_T0_EES5_ii
+  For Kernel: _ZN7phalanx6detail8base_ptrIdNS_13device_memoryEEC1EPdRKS2_
+  For Kernel: _ZNK5queueIiE5beginEv
+  For Kernel: _ZN7phalanx9any_placeC1ERKS0_
+  For Kernel: _ZN7phalanx9any_placeC1Ev
+  For Kernel: _Z10initializeIN7phalanx18cuda_multigpu_gridENS0_20distributed_sequenceIiNS0_13device_memoryEEEiEvT_T0_T1_
+  For Kernel: _ZN7phalanx16domain_resourcesINS0_INS_13nil_resourcesEEEEC1EiiS2_
+  For Kernel: _ZN7phalanx19group_shared_memoryEi
+  For Kernel: _ZN7phalanx10placed_ptrIiNS_13device_memoryEEC1INS_8cuda_gpuEEERKNS0_IiT_EE
+  For Kernel: _ZN7phalanx20distributed_sequenceIiNS_13device_memoryEEC1EiPNS_10placed_ptrIiS1_EEPm
+  For Kernel: _ZN6adjcsrIN7phalanx11host_memoryEEC1Ev
+  For Kernel: _ZN7phalanx20distributed_sequenceIiNS_13device_memoryEEC1Ev
+  For Kernel: _ZNK5queueIiE8capacityEv
+  For Kernel: _ZN17distributed_queueIiEixEi
+  For Kernel: _ZN15bfs_rank_adjcsr16advance_frontierEN7phalanx9cuda_gridE6adjcsrINS0_13device_memoryEE5queueIiENS0_15stored_sequenceIiS3_EES6_
+  For Kernel: _ZNK7phalanx20distributed_sequenceIiNS_13device_memoryEE4sizeEv
+  For Kernel: _ZN15bfs_rank_adjcsr14cull_frontier1IN7phalanx20distributed_sequenceIiNS1_13device_memoryEEEEEvRKNS1_9cuda_gridERT_NS1_15stored_sequenceIiS3_EER5queueIiESE_
+  For Kernel: _ZN7phalanx6detail8base_ptrIfNS_13device_memoryEEC1EPfRKS2_
+  For Kernel: _ZN7phalanx6detail8base_ptrIiNS_8cuda_gpuEEC1EPiRKS2_
+  For Kernel: _Z12__initializeIiEviPT_S0_
+  For Kernel: _ZN7phalanx16domain_resourcesINS_13nil_resourcesEEC1EiiS1_
+  For Kernel: _ZN7phalanx6domainINS_17sequential_domainEEC1Ei
+  For Kernel: _ZN7adjpcsrIN7phalanx11host_memoryEE9submatrixEi
+  For Kernel: _ZN7phalanx15stored_sequenceIiNS_13device_memoryEEC1EPii
+  For Kernel: _ZN15bfs_rank_adjcsr17advance_frontier1EN7phalanx9cuda_gridE6adjcsrINS0_13device_memoryEEiR5queueIiENS0_15stored_sequenceIiS3_EES7_
+  For Kernel: _ZN7phalanx6detail8base_ptrIiNS_13device_memoryEEC1EPiRKS2_
+  For Kernel: _ZNK5queueIiE3endEv
+  For Kernel: _ZN15bfs_rank_adjcsr13pull_frontierERKN7phalanx9cuda_gridEiiNS0_15stored_sequenceIiNS0_13device_memoryEEER5queueIiES6_S9_
+  For Kernel: _ZN7phalanx5rangeEii
+  For Kernel: _ZN7phalanx11default_cpuC1Ev
+  For Kernel: _Z10initializeIN7phalanx9cuda_gridENS0_15stored_sequenceIiNS0_13device_memoryEEEiEvT_T0_T1_
+  For Kernel: _ZN15bfs_rank_adjcsr14cull_frontier1IN7phalanx15stored_sequenceIiNS1_13device_memoryEEEEEvRKNS1_9cuda_gridERT_S4_R5queueIiESC_
+  For Kernel: _ZNK7phalanx6domainINS_15parallel_domainINS_17sequential_domainEEEE4sizeEv
+  For Kernel: _ZN7phalanx10placed_ptrIdNS_13device_memoryEEC1INS_8cuda_gpuEEERKNS0_IdT_EE
+  For Kernel: _ZN7phalanx8parallelINS_16streaming_domainINS_15parallel_domainINS_17sequential_domainEEEEEEENS2_IT_EEiS6_
+  For Kernel: _ZNK7phalanx15stored_sequenceIiNS_13device_memoryEE4sizeEv
+  For Kernel: _ZNK7phalanx16domain_resourcesINS_13nil_resourcesEE16bytes_per_threadEv
+  For Kernel: _ZN7phalanx21thread_private_memoryEi
+  For Kernel: _ZN5queueIiE7enqueueERKN7phalanx11cuda_threadEi
+ For File: ../tests/ptx/unstructured/CvFastBgGMM_ver5.ptx
+  For Kernel: _Z30_cudaReplacePixelBackgroundGMMiP6uchar4
+  For Kernel: _Z20_cudaUpdateFastBgGMMifffPi
+  For Kernel: _Z20_cudaRemoveShadowGMMifffi
+ For File: ../tests/ptx/unstructured/MC-GPU_v1.1.ptx
+  For Kernel: _Z20init_image_array_GPUPyi
+  For Kernel: _Z6ranecuP4int2
+  For Kernel: _Z4GCOaPfPdPiP4int2P14compton_struct
+  For Kernel: _Z6abMODmiii
+  For Kernel: _Z9init_PRNGiiiP4int2
+  For Kernel: _Z15track_particlesiiiPyP6float2S1_P6float3S3_P15rayleigh_structP14compton_struct
+  For Kernel: _Z4GRAaPfPdPiS_P4int2P15rayleigh_struct
+  For Kernel: _Z13rotate_doubleP6float3dd
+  For Kernel: _Z12set_positionPiPfP6float3S2_
+  For Kernel: _Z11tally_imagePiPfP6float3S2_PaPyS2_
+  For Kernel: _Z12locate_voxelP6float3
+  For Kernel: _Z6sourcePiP6float3S1_PfP4int2S_
+  For Kernel: _Z13ranecu_doubleP4int2
+ For File: ../tests/ptx/unstructured/renderer.ptx
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb1ELb0ELb0ELb1ELb1EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z8RaytraceILi2ELb0ELb0ELb1ELb0ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb0ELb0ELb1ELb0ELb0EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z8RaytraceILi0ELb1ELb1ELb1ELb1ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi2ELb1ELb1ELb0ELb0ELb0EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi1ELb1ELb1ELb1ELb1ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb0ELb1ELb1ELb0ELb0EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z8RaytraceILi2ELb0ELb0ELb1ELb1ELb0EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi2ELb1ELb0ELb1ELb0ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi2ELb0ELb0ELb0ELb1ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb0ELb0ELb0ELb1ELb0EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb1ELb1ELb0ELb0ELb0EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z8RaytraceILi2ELb0ELb1ELb1ELb1ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z7dotCUDARK7Vector3S1_
+  For Kernel: _Z8RaytraceILi0ELb0ELb0ELb0ELb1ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi0ELb1ELb0ELb0ELb0ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi1ELb0ELb1ELb1ELb0ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi2ELb1ELb1ELb0ELb1ELb0EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb1ELb0ELb1ELb0ELb1EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z8RaytraceILi0ELb1ELb0ELb0ELb1ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi2ELb0ELb0ELb0ELb0ELb0EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi1ELb0ELb1ELb1ELb1ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z9crossCUDARK7Vector3S1_
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb0ELb1ELb0ELb1ELb0EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z8RaytraceILi1ELb0ELb0ELb1ELb0ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb1ELb1ELb0ELb0ELb1EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb0ELb1ELb0ELb1ELb1EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb0ELb1ELb0ELb0ELb1EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z8RaytraceILi0ELb1ELb1ELb0ELb1ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb0ELb0ELb0ELb1ELb1EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z8RaytraceILi2ELb1ELb0ELb0ELb1ELb0EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi1ELb1ELb0ELb0ELb0ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi0ELb0ELb1ELb1ELb0ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb0ELb0ELb0ELb0ELb0EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z8RaytraceILi2ELb0ELb1ELb0ELb0ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb0ELb0ELb1ELb1ELb0EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z8RaytraceILi1ELb1ELb1ELb0ELb1ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi2ELb0ELb1ELb0ELb0ELb0EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi2ELb1ELb1ELb1ELb0ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z17CoreLoopTrianglesPiP7Matrix3P8TriangleP7Vector3
+  For Kernel: _Z12distanceCUDARK7Vector3S1_
+  For Kernel: _Z8RaytraceILi1ELb1ELb1ELb1ELb0ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi2ELb1ELb0ELb1ELb1ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi2ELb1ELb1ELb1ELb1ELb0EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb0ELb1ELb1ELb1ELb0EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z8RaytraceILi2ELb1ELb0ELb1ELb1ELb0EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z17multiplyRightWithRK7Matrix3RK7Vector3
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb1ELb0ELb1ELb1ELb0EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z16CoreLoopVerticesPiP7Matrix3P7Vector3
+  For Kernel: _Z8RaytraceILi1ELb0ELb0ELb0ELb1ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi2ELb1ELb0ELb0ELb1ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi1ELb0ELb0ELb1ELb1ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi1ELb1ELb1ELb0ELb0ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb0ELb0ELb1ELb1ELb1EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb0ELb1ELb1ELb1ELb1EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z8RaytraceILi0ELb1ELb1ELb0ELb0ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi0ELb1ELb1ELb1ELb0ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb1ELb1ELb1ELb1ELb1EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z8RaytraceILi1ELb1ELb0ELb1ELb0ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb1ELb1ELb0ELb1ELb1EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb0ELb0ELb0ELb0ELb1EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z8RaytraceILi0ELb1ELb0ELb1ELb0ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi1ELb0ELb1ELb0ELb0ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi2ELb1ELb1ELb1ELb0ELb0EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi2ELb1ELb0ELb0ELb0ELb0EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb1ELb1ELb1ELb0ELb1EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z8RaytraceILi1ELb1ELb0ELb0ELb1ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z22BVH_IntersectTrianglesILb1ELb1EEbRK7Vector3S2_jRiRS0_RfS5_S5_
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb0ELb0ELb1ELb0ELb1EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z16RayIntersectsBoxRK7Vector3S1_i
+  For Kernel: _Z8RaytraceILi2ELb0ELb0ELb0ELb0ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi2ELb1ELb1ELb0ELb0ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi1ELb1ELb0ELb1ELb1ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb1ELb1ELb1ELb1ELb0EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z8RaytraceILi2ELb0ELb1ELb1ELb0ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi0ELb1ELb0ELb1ELb1ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi2ELb0ELb0ELb1ELb1ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi1ELb0ELb1ELb0ELb1ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi0ELb0ELb1ELb0ELb0ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb1ELb1ELb1ELb0ELb0EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb1ELb1ELb0ELb1ELb0EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z8RaytraceILi0ELb0ELb1ELb1ELb1ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb1ELb0ELb1ELb1ELb1EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z8RaytraceILi2ELb0ELb1ELb0ELb1ELb0EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi2ELb1ELb1ELb1ELb1ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi2ELb0ELb1ELb1ELb1ELb0EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi2ELb0ELb1ELb1ELb0ELb0EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi0ELb0ELb0ELb1ELb0ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb0ELb1ELb1ELb0ELb1EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z8getColorR5Pixel
+  For Kernel: _Z8RaytraceILi1ELb0ELb0ELb0ELb0ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z7dotCUDARK7Vector3RK6float4
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb1ELb0ELb1ELb0ELb0EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z7dotCUDARK6float4RK7Vector3
+  For Kernel: _Z14distancesqCUDARK7Vector3S1_
+  For Kernel: _Z8RaytraceILi0ELb0ELb0ELb1ELb1ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z22BVH_IntersectTrianglesILb0ELb1EEbRK7Vector3S2_jRiRS0_RfS5_S5_
+  For Kernel: _Z8RaytraceILi0ELb0ELb0ELb0ELb0ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi2ELb1ELb0ELb1ELb0ELb0EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi2ELb0ELb0ELb0ELb1ELb0EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi0ELb0ELb1ELb0ELb1ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb1ELb0ELb0ELb0ELb0EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb1ELb0ELb0ELb1ELb0EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z8RaytraceILi2ELb1ELb0ELb0ELb0ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb0ELb1ELb0ELb0ELb0EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z8RaytraceILi2ELb0ELb0ELb1ELb0ELb0EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z8RaytraceILi2ELb0ELb1ELb0ELb1ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+  For Kernel: _Z26CoreLoopTrianglesRaycasterILb1ELb0ELb0ELb0ELb1EEvPiP7Matrix3P8TriangleP7Vector3S6_Pj
+  For Kernel: _Z14ProjectAndPlotRK7Vector3Pii
+  For Kernel: _Z8RaytraceILi2ELb1ELb1ELb0ELb1ELb1EE5Pixel7Vector3S1_iP8TrianglePS1_S4_
+ For File: ../tests/ptx/unstructured/vm.ptx
+  For Kernel: _Z8VmKernelPcP17sphyraena_resultsiii
+  For Kernel: _Z12castToDoubleP13sphyraena_mem
+  For Kernel: _Z9castToIntP13sphyraena_mem
+  For Kernel: _Z13copyDataToRegP13sphyraena_memPcS1_ii
+  For Kernel: _Z11castToInt64P13sphyraena_mem
+  For Kernel: _Z11castToFloatP13sphyraena_mem
+ For File: ../tests/ptx/unstructured/mcx_core.ptx
+  For Kernel: _Z17rand_next_scatlenPf
+  For Kernel: _Z17rand_next_reflectPf
+  For Kernel: _Z13logistic_initPfS_Pjj
+  For Kernel: _Z13logistic_stepPfS_i
+  For Kernel: _Z13mcx_main_loopiiPhPfS0_PjP6float4S3_S3_S0_S1_
+  For Kernel: _Z16rand_next_aanglePf
+  For Kernel: _Z14rand_uniform01f
+  For Kernel: _Z22mcx_sum_trueabsorptionPfPhS_i5uint3
+  For Kernel: _Z14rand_need_morePfS_
+  For Kernel: _Z16rand_do_roulettePf
+  For Kernel: _Z12gpu_rng_initPfS_Pji
+  For Kernel: _Z16rand_next_zanglePf
+ For File: ../tests/ptx/unstructured/Mandelbrot_sm13.ptx
+  For Kernel: _Z14CalcMandelbrotIdEvPiPKT_S1_S1_S1_ibi
+  For Kernel: _Z14CalcMandelbrotIdEiT_S0_S0_S0_ib
+  For Kernel: _Z14CalcMandelbrotIfEiT_S0_S0_S0_ib
+  For Kernel: _Z16Mandelbrot0_sm13IdLi16EEvP6uchar4iiiT_S2_S2_S2_S2_S0_iiiib
+  For Kernel: _Z16CalcMandelbrotDSffffffib
+  For Kernel: _Z16Mandelbrot0_sm13IfLi16EEvP6uchar4iiiT_S2_S2_S2_S2_S0_iiiib
+  For Kernel: _Z14CalcMandelbrotIfEvPiPKT_S1_S1_S1_ibi
+  For Kernel: _Z16Mandelbrot1_sm13IdEvP6uchar4iiiT_S2_S2_S2_S2_S0_iiiib
+  For Kernel: _Z18MandelbrotDS1_sm13P6uchar4iiifffffffS_iiiib
+  For Kernel: _Z18MandelbrotDS0_sm13P6uchar4iiifffffffS_iiiib
+  For Kernel: _Z16Mandelbrot1_sm13IfEvP6uchar4iiiT_S2_S2_S2_S2_S0_iiiib
+ For File: ../tests/ptx/parboil/crys_kernel.ptx
+  For Kernel: _Z8ComputeXP5uint4Pfi
+  For Kernel: _Z5dist26float3S_
+  For Kernel: _Z10ReducePair6float4S_6float2S0_f
+  For Kernel: _Z11DoReductionPfS_P5uint2ii
+  For Kernel: _Z5GetNsiiiiiRiS_S_S_
+  For Kernel: _Z10GetOffsetsiRiS_S_S_
+  For Kernel: _Z8GetBasesiiiRiS_S_S_S_
+  For Kernel: _Z5dist26float4S_
+  For Kernel: _Z8GetAtomsiRiS_S_S_
+  For Kernel: _Z9product1Dfffff
+  For Kernel: _Z4Rootf
+ For File: ../tests/ptx/parboil/mri-fhd.ptx
+  For Kernel: _Z13ComputeFH_GPUiiPfS_S_S_S_
+  For Kernel: _Z16ComputeRhoPhiGPUiPfS_S_S_S_S_
+ For File: ../tests/ptx/parboil/tpacf.ptx
+  For Kernel: _Z9gen_histsPyPfS0_S0_ii
+ For File: ../tests/ptx/parboil/computeQ.ptx
+  For Kernel: _Z17ComputePhiMag_GPUPfS_S_i
+  For Kernel: _Z12ComputeQ_GPUiiPfS_S_S_S_
+ For File: ../tests/ptx/parboil/cp.ptx
+ For File: ../tests/ptx/parboil/cuenergy_pre8_coalesce.ptx
+  For Kernel: _Z7cenergyifPf
+ For File: ../tests/ptx/parboil/computeFH.ptx
+  For Kernel: _Z13ComputeFH_GPUiiPfS_S_S_S_
+  For Kernel: _Z16ComputeRhoPhiGPUiPfS_S_S_S_S_
+ For File: ../tests/ptx/parboil/sad.ptx
+ For File: ../tests/ptx/parboil/rpes.ptx
+  For Kernel: _Z8ComputeXP5uint4Pfi
+  For Kernel: _Z5dist26float3S_
+  For Kernel: _Z10ReducePair6float4S_6float2S0_f
+  For Kernel: _Z11DoReductionPfS_P5uint2ii
+  For Kernel: _Z5GetNsiiiiiRiS_S_S_
+  For Kernel: _Z10GetOffsetsiRiS_S_S_
+  For Kernel: _Z8GetBasesiiiRiS_S_S_S_
+  For Kernel: _Z5dist26float4S_
+  For Kernel: _Z8GetAtomsiRiS_S_S_
+  For Kernel: _Z9product1Dfffff
+  For Kernel: _Z4Rootf
+ For File: ../tests/ptx/parboil/scan_largearray_kernel.ptx
+  For Kernel: _Z9gen_histsPyPfS0_S0_ii
+ For File: ../tests/ptx/parboil/sad4.ptx
+  For Kernel: _Z11mb_sad_calcPtS_ii
+ For File: ../tests/ptx/parboil/mri-q.ptx
+  For Kernel: _Z17ComputePhiMag_GPUPfS_S_i
+  For Kernel: _Z12ComputeQ_GPUiiPfS_S_S_S_
+ For File: ../tests/ptx/parboil/pns.ptx
+  For Kernel: _Z7BRandomv
+  For Kernel: _Z14PetrinetKernelPiPfS_iii
+  For Kernel: _Z14run_trajectoryPiii
+  For Kernel: _Z10RandomInitj
+  For Kernel: _Z15fire_transitionPcPiiiiii
+  For Kernel: _Z19compute_reward_statPiPfS_i
+  For Kernel: _Z15initialize_gridPiii
+ For File: ../tests/ptx/parboil/largerBlocks.ptx
+  For Kernel: _Z18larger_sad_calc_16Ptii
+  For Kernel: _Z17larger_sad_calc_8Ptii
  For File: ../tests/ptx/optix/closest_hit_radiance_CPU_INPUT.ptx
   For Kernel: closest_hit_radiance
  For File: ../tests/ptx/optix/zoneplate_megakernel.ptx
@@ -4095,6 +4653,52 @@ Testing SSA then back Dataflow
   For Kernel: closest_hit_radiance
  For File: ../tests/ptx/optix/kernel_trace_device0_1.ptx
   For Kernel: __globfunc__Z5tracev
+ For File: ../tests/ptx/rodinia/srad_kernel.ptx
+  For Kernel: _Z11srad_cuda_2PfS_S_S_S_S_iiff
+  For Kernel: _Z11srad_cuda_1PfS_S_S_S_S_iif
+ For File: ../tests/ptx/rodinia/track_ellipse_kernel.ptx
+  For Kernel: _Z9heavisidef
+  For Kernel: _Z12IMGVF_kernelPPfS0_PiS1_fffif
+ For File: ../tests/ptx/rodinia/lud.ptx
+ For File: ../tests/ptx/rodinia/needle.ptx
+  For Kernel: _Z7maximumiii
+  For Kernel: _Z20needle_cuda_shared_1PiS_S_iiii
+  For Kernel: _Z20needle_cuda_shared_2PiS_S_iiii
+ For File: ../tests/ptx/rodinia/find_ellipse_kernel.ptx
+  For Kernel: _Z12GICOV_kerneliPf
+  For Kernel: _Z13dilate_kerneliiiiPf
+ For File: ../tests/ptx/rodinia/backprop_cuda_kernel.ptx
+  For Kernel: _Z24bpnn_adjust_weights_cudaPfiS_iS_S_ff
+  For Kernel: _Z22bpnn_layerforward_CUDAPfS_S_S_ii
+ For File: ../tests/ptx/rodinia/lud_kernel.ptx
+  For Kernel: _Z13lud_perimeterPfii
+  For Kernel: _Z12lud_internalPfii
+  For Kernel: _Z12lud_diagonalPfii
+ For File: ../tests/ptx/rodinia/hotspot.ptx
+  For Kernel: _Z14calculate_tempiPfS_S_iiiiffffff
+ For File: ../tests/ptx/rodinia/srad.ptx
+  For Kernel: _Z11srad_cuda_2PfS_S_S_S_S_iiff
+  For Kernel: _Z11srad_cuda_1PfS_S_S_S_S_iif
+ For File: ../tests/ptx/rodinia/mummergpu.ptx
+  For Kernel: _Z15mummergpuKernelPvPcS0_PKiS2_ii
+  For Kernel: _Z10set_resultjP11_MatchCoordiiii
+  For Kernel: _Z7getNodejb
+  For Kernel: _Z11printKernelP9MatchInfoiP9AlignmentPcPKiS5_iiiii
+  For Kernel: _Z2rcc
+  For Kernel: _Z7addr2idj
+  For Kernel: id2addr
+  For Kernel: _Z17mummergpuRCKernelP10MatchCoordPcPKiS3_ii
+  For Kernel: _Z11getChildrenjb
+  For Kernel: _Z14arrayToAddress6uchar3Rj
+ For File: ../tests/ptx/rodinia/hwt.ptx
+  For Kernel: _Z6kernelv
+ For File: ../tests/ptx/rodinia/needle_kernel.ptx
+  For Kernel: _Z7maximumiii
+  For Kernel: _Z20needle_cuda_shared_1PiS_S_iiii
+  For Kernel: _Z20needle_cuda_shared_2PiS_S_iiii
+ For File: ../tests/ptx/rodinia/backprop_cuda.ptx
+  For Kernel: _Z24bpnn_adjust_weights_cudaPfiS_iS_S_ff
+  For Kernel: _Z22bpnn_layerforward_CUDAPfS_S_S_ii
  For File: ../tests/ptx/sdk2.2/histogram256_SM10.ptx
   For Kernel: _Z23mergeHistogram256KernelPj
   For Kernel: _Z18histogram256KernelPjS_i
@@ -5177,14 +5781,36 @@ Testing SSA then back Dataflow
 
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestFunctionCall 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestFunctionCall
-INFO     Test completed in 0.687418937683 seconds
+INFO     Test completed in 0.180701971054 seconds
 INFO      It produced the following output:
 Hello CUDA 2
 Pass/Fail : Pass
 
+INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestExternalFunctions 
+INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestExternalFunctions
+INFO     Test completed in 0.601039886475 seconds
+INFO      It produced the following output:
+Hello CUDA 2
+Pass/Fail : Pass
+
+
+Name : TestExternalFunctions
+
+Description: A unit test for calling an external host function from PTX 1) 
+             The first test calls malloc/free from a PTX kernel. 2) The 
+             second test calls printf from a PTX kernel. 3) The last test calls a 
+             user defined function from a PTX kernel. 
+
+
+Test Seed : 1313921172
+Test time : 0.542009
+
+Status : 
+
+
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestLLVMKernels 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestLLVMKernels
-INFO     Test completed in 4.04237008095 seconds
+INFO     Test completed in 2.64960885048 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -5195,8 +5821,8 @@ Description: A unit test for the LLVM executive runtime. Test Points: 1)
              Execute a kernel with a loop. 2) Execute a matrix multiply kernel.
 
 
-Test Seed : 1313175394
-Test time : 3.82567
+Test Seed : 1313921173
+Test time : 2.54396
 
 Status : A = [
  1 0 0 0 0 0 0 0 ;
@@ -5233,35 +5859,13 @@ R = [
 
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaTexture2D 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaTexture2D
-INFO     Test completed in 0.84314084053 seconds
+INFO     Test completed in 0.80769109726 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
-
-INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestExternalFunctions 
-INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestExternalFunctions
-INFO     Test completed in 0.563945055008 seconds
-INFO      It produced the following output:
-Hello CUDA 2
-Pass/Fail : Pass
-
-
-Name : TestExternalFunctions
-
-Description: A unit test for calling an external host function from PTX 1) 
-             The first test calls malloc/free from a PTX kernel. 2) The 
-             second test calls printf from a PTX kernel. 3) The last test calls a 
-             user defined function from a PTX kernel. 
-
-
-Test Seed : 1313175399
-Test time : 0.499824
-
-Status : 
-
 
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestParser -i ../tests/ptx 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestPTXToLLVMTranslator
-INFO     Test completed in 867.272235155 seconds
+INFO     Test completed in 1279.66649699 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -5274,15 +5878,51 @@ Description: This is a basic test that just tries to get through a
              translate them.
 
 
-Test Seed : 1313174934
-Test time : 867.215
+Test Seed : 1313920317
+Test time : 1279.6
 
-Status : For file ../tests/ptx/thrust/Unique.ptx, Test Point 1 (Translate): Passed
+Status : For file ../tests/ptx/cp.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/cuenergy_pre8_coalesce.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/thrust/Unique.ptx, Test Point 1 (Translate): Passed
 For file ../tests/ptx/thrust/Sort.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/thrust/bfs.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/unstructured/CvFastBgGMM_ver5.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/unstructured/MC-GPU_v1.1.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/unstructured/renderer.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/unstructured/vm.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/unstructured/mcx_core.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/unstructured/Mandelbrot_sm13.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/parboil/crys_kernel.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/parboil/mri-fhd.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/parboil/tpacf.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/parboil/computeQ.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/parboil/cp.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/parboil/cuenergy_pre8_coalesce.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/parboil/computeFH.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/parboil/sad.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/parboil/rpes.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/parboil/scan_largearray_kernel.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/parboil/sad4.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/parboil/mri-q.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/parboil/pns.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/parboil/largerBlocks.ptx, Test Point 1 (Translate): Passed
 For file ../tests/ptx/optix/closest_hit_radiance_CPU_INPUT.ptx, Test Point 1 (Translate): Passed
 For file ../tests/ptx/optix/zoneplate_megakernel.ptx, Test Point 1 (Translate): Passed
 For file ../tests/ptx/optix/closest_hit_radiance_CPU_INPUT_immediate.ptx, Test Point 1 (Translate): Passed
 For file ../tests/ptx/optix/kernel_trace_device0_1.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/rodinia/srad_kernel.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/rodinia/track_ellipse_kernel.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/rodinia/lud.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/rodinia/needle.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/rodinia/find_ellipse_kernel.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/rodinia/backprop_cuda_kernel.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/rodinia/lud_kernel.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/rodinia/hotspot.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/rodinia/srad.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/rodinia/mummergpu.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/rodinia/hwt.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/rodinia/needle_kernel.ptx, Test Point 1 (Translate): Passed
+For file ../tests/ptx/rodinia/backprop_cuda.ptx, Test Point 1 (Translate): Passed
 For file ../tests/ptx/sdk2.2/histogram256_SM10.ptx, Test Point 1 (Translate): Passed
 For file ../tests/ptx/sdk2.2/dct8x8.ptx, Test Point 1 (Translate): Passed
 For file ../tests/ptx/sdk2.2/histogram64.ptx, Test Point 1 (Translate): Passed
@@ -5386,7 +6026,7 @@ For file ../tests/ptx/synthetic/generic.ptx, Test Point 1 (Translate): Passed
 
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestInstructions 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestInstructions
-INFO     Test completed in 0.152611970901 seconds
+INFO     Test completed in 0.152858018875 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -5396,8 +6036,8 @@ Name : TestInstructions
 Description: 
 
 
-Test Seed : 1313175802
-Test time : 0.0343297
+Test Seed : 1313921596
+Test time : 0.0344234
 
 Status : Test output:
 Accessors test passed.
@@ -5414,13 +6054,13 @@ pass: predicated Add and Ld isntructions
 
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaTextureArray 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaTextureArray
-INFO     Test completed in 0.775743961334 seconds
+INFO     Test completed in 0.774194002151 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
 INFO     Running test program /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaGlobals 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaGlobals
-INFO     Test completed in 0.173558950424 seconds
+INFO     Test completed in 0.1787109375 seconds
 INFO      It produced the following output:
 cudaSetDevice() - 0 - Ocelot PTX Emulator 
 Pass/Fail : Pass
@@ -5432,7 +6072,7 @@ INFO      It produced the following output:
 Pass/Fail : Pass
 
 INFO     Test /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestParser
-INFO     Test completed in 412.952040911 seconds
+INFO     Test completed in 566.512034178 seconds
 INFO      It produced the following output:
 Pass/Fail : Pass
 
@@ -5445,15 +6085,51 @@ Description: A test for the PTXParser class. Test Points: 1) Load a PTX file
              generating a new module, compare both to make sure that they match.
 
 
-Test Seed : 1313175399
-Test time : 412.895
+Test Seed : 1313921176
+Test time : 566.454
 
-Status : For file ../tests/ptx/thrust/Unique.ptx, Test Point 1 (Parse): Passed
+Status : For file ../tests/ptx/cp.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/cuenergy_pre8_coalesce.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/thrust/Unique.ptx, Test Point 1 (Parse): Passed
 For file ../tests/ptx/thrust/Sort.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/thrust/bfs.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/unstructured/CvFastBgGMM_ver5.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/unstructured/MC-GPU_v1.1.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/unstructured/renderer.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/unstructured/vm.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/unstructured/mcx_core.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/unstructured/Mandelbrot_sm13.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/parboil/crys_kernel.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/parboil/mri-fhd.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/parboil/tpacf.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/parboil/computeQ.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/parboil/cp.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/parboil/cuenergy_pre8_coalesce.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/parboil/computeFH.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/parboil/sad.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/parboil/rpes.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/parboil/scan_largearray_kernel.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/parboil/sad4.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/parboil/mri-q.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/parboil/pns.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/parboil/largerBlocks.ptx, Test Point 1 (Parse): Passed
 For file ../tests/ptx/optix/closest_hit_radiance_CPU_INPUT.ptx, Test Point 1 (Parse): Passed
 For file ../tests/ptx/optix/zoneplate_megakernel.ptx, Test Point 1 (Parse): Passed
 For file ../tests/ptx/optix/closest_hit_radiance_CPU_INPUT_immediate.ptx, Test Point 1 (Parse): Passed
 For file ../tests/ptx/optix/kernel_trace_device0_1.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/rodinia/srad_kernel.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/rodinia/track_ellipse_kernel.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/rodinia/lud.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/rodinia/needle.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/rodinia/find_ellipse_kernel.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/rodinia/backprop_cuda_kernel.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/rodinia/lud_kernel.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/rodinia/hotspot.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/rodinia/srad.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/rodinia/mummergpu.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/rodinia/hwt.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/rodinia/needle_kernel.ptx, Test Point 1 (Parse): Passed
+For file ../tests/ptx/rodinia/backprop_cuda.ptx, Test Point 1 (Parse): Passed
 For file ../tests/ptx/sdk2.2/histogram256_SM10.ptx, Test Point 1 (Parse): Passed
 For file ../tests/ptx/sdk2.2/dct8x8.ptx, Test Point 1 (Parse): Passed
 For file ../tests/ptx/sdk2.2/histogram64.ptx, Test Point 1 (Parse): Passed
@@ -5557,24 +6233,24 @@ For file ../tests/ptx/synthetic/generic.ptx, Test Point 1 (Parse): Passed
 
 INFO     
 Passing tests:
- (0.097s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCalVectorScale : Passed
- (0.328s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestKernels : Passed
- (4.042s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestLLVMKernels : Passed
- (0.174s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaGlobals : Passed
- (0.170s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestDeviceSwitching : Passed
- (0.132s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestEmulator : Passed
- (0.066s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestLLVMInstructions : Passed
- (551.769s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestDataflowGraph : Passed
- (0.776s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaTextureArray : Passed
- (412.952s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestParser : Passed
- (0.564s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestExternalFunctions : Passed
- (1.703s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaMalloc : Passed
- (17.301s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestPTXAssembly : Passed
- (0.176s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaSequence : Passed
+ (0.102s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCalVectorScale : Passed
+ (0.352s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestKernels : Passed
+ (2.650s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestLLVMKernels : Passed
+ (0.179s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaGlobals : Passed
+ (0.173s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestDeviceSwitching : Passed
+ (0.139s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestEmulator : Passed
+ (0.074s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestLLVMInstructions : Passed
+ (988.383s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestDataflowGraph : Passed
+ (0.774s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaTextureArray : Passed
+ (566.512s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestParser : Passed
+ (0.601s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestExternalFunctions : Passed
+ (1.689s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaMalloc : Passed
+ (16.771s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestPTXAssembly : Passed
+ (0.188s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaSequence : Passed
  (0.153s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestInstructions : Passed
- (0.843s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaTexture2D : Passed
- (0.687s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestFunctionCall : Passed
- (73.896s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestLexer : Passed
- (867.272s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestPTXToLLVMTranslator : Passed
- (0.217s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestIndirectFunctionCall : Passed
+ (0.808s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestCudaTexture2D : Passed
+ (0.181s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestFunctionCall : Passed
+ (114.258s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestLexer : Passed
+ (1279.666s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestPTXToLLVMTranslator : Passed
+ (0.223s) : /home/normal/checkout/gpuocelot/ocelot/.debug_build/TestIndirectFunctionCall : Passed
 

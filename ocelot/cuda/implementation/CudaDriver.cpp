@@ -125,6 +125,10 @@ namespace cuda
 		DynLinkV(cuMemFree);
 		DynLinkV(cuMemGetAddressRange);
 		DynLinkV(cuMemAllocHost);
+
+		DynLinkV(cuMemAllocHost);
+		DynLinkV(cuMemHostRegister);
+		DynLinkV(cuMemHostUnregister);
 		
 		DynLink(cuMemFreeHost);
 		DynLink(cuMemHostAlloc);
@@ -478,6 +482,19 @@ namespace cuda
 	{
 		CHECK();
 		return (*_interface.cuMemHostAlloc)(pp, bytesize, Flags);
+	}
+
+	CUresult CudaDriver::cuMemHostRegister(void *pp, 
+		unsigned long long bytesize, unsigned int Flags )
+	{
+		CHECK();
+		return (*_interface.cuMemHostRegister)(pp, bytesize, Flags);
+	}
+
+	CUresult CudaDriver::cuMemHostUnregister(void *pp)
+	{
+		CHECK();
+		return (*_interface.cuMemHostUnregister)(pp);
 	}
 
 	CUresult CudaDriver::cuMemHostGetDevicePointer( CUdeviceptr *pdptr, 

@@ -184,6 +184,9 @@ namespace executive
 				const std::string& module, const std::string& name) = 0;
 			/*! \brief Allocate some new dynamic memory on this device */
 			virtual MemoryAllocation* allocate(size_t size) = 0;
+			/*! \brief Register some host memory */
+			virtual MemoryAllocation* registerHost(void* p, size_t size, 
+				unsigned int flags = 0) = 0;
 			/*! \brief Make this a host memory allocation */
 			virtual MemoryAllocation* allocateHost(size_t size, 
 				unsigned int flags = 0) = 0;

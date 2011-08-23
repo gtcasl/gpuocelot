@@ -94,7 +94,15 @@ executive::Device::MemoryAllocation* executive::PassThroughDevice::allocateHost(
 	return _target->allocateHost(size, flags);
 }
 
-/*! \brief Free an existing non-global allocation */
+executive::Device::MemoryAllocation* executive::PassThroughDevice::registerHost(
+	void* pointer,
+	size_t size, 
+	unsigned int flags) {
+	TRACE();
+	CHECK();
+	return _target->registerHost(pointer, size, flags);
+}
+
 void executive::PassThroughDevice::free(void* pointer) {
 	TRACE();
 	CHECK();

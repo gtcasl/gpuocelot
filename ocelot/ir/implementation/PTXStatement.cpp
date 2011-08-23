@@ -14,6 +14,12 @@
 
 namespace ir {
 
+	PTXStatement::Symbol::Symbol(const std::string& n, unsigned int o)
+	: name(n), offset(o)
+	{
+	
+	}
+
 	static void write(std::ostream &out,
 		const ir::PTXStatement::ArrayVector & values,
 		ir::PTXOperand::DataType type) {

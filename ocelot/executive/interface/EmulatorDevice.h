@@ -21,7 +21,7 @@ namespace executive
 	class ExecutableKernel;
 }
 
-namespace executive 
+namespace executive
 {
 	/*! Interface that should be bound to the ptx emulator */
 	class EmulatorDevice : public Device
@@ -51,6 +51,9 @@ namespace executive
 					MemoryAllocation(const ir::Global& global);
 					/*! \brief Construct an external allocaton */
 					MemoryAllocation(void* pointer, size_t size);
+					/*! \brief Construct an external host allocaton */
+					MemoryAllocation(void* pointer, size_t size,
+						unsigned int flags);
 					/*! \brief Desructor */
 					~MemoryAllocation();
 
@@ -202,6 +205,9 @@ namespace executive
 			Device::MemoryAllocation* allocate(size_t size);
 			/*! \brief Make this a host memory allocation */
 			Device::MemoryAllocation* allocateHost(size_t size, 
+				unsigned int flags);
+			/*! \brief Register a host memory allocation */
+			Device::MemoryAllocation* registerHost(void* pointer, size_t size, 
 				unsigned int flags);
 			/*! \brief Free an existing non-global allocation */
 			void free(void* pointer);

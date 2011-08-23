@@ -413,6 +413,30 @@ namespace parser
 		statement.array.values.push_back( data );
 	}
 
+	void PTXParser::State::symbolListSingle( const std::string& identifier )
+	{
+		report( "  Rule: identifier" );
+		unsigned int index = statement.array.values.size() - 1;
+	
+		report( "   Appending " << identifier << ", " << index
+			<< " to symbol list.");
+		
+		statement.symbols.push_back(
+			ir::PTXStatement::Symbol( identifier, index ) );
+	}
+
+	void PTXParser::State::symbolListSingle2( const std::string& identifier )
+	{
+		report( "  Rule: decimalList ',' identifier" );
+		unsigned int index = statement.array.values.size() - 1;
+	
+		report( "   Appending " << identifier << ", " << index
+			<< " to symbol list.");
+		
+		statement.symbols.push_back(
+			ir::PTXStatement::Symbol( identifier, index ) );
+	}
+
 	void PTXParser::State::floatList( double value )
 	{
 		report( "  Rule: DOUBLE_CONSTANT" );
@@ -586,6 +610,7 @@ namespace parser
 
 		operand = ir::PTXOperand();
 		statement.array.values.clear();
+		statement.symbols.clear();
 		alignment = 1;
 		statement.array.vec = ir::PTXOperand::v1;
 		statement.instruction.statementIndex = statements.size();
@@ -595,6 +620,7 @@ namespace parser
 	{
 		report( "  Clearing doubles" );
 		statement.array.values.clear();
+		statement.symbols.clear();
 	}
 	
 	void PTXParser::State::registerDeclaration( const std::string& name, 

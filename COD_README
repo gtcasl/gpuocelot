@@ -14,8 +14,8 @@ Now building ocelot will correctly link with the cod dependencies.
 This sequence of commands executed in the /lynx directory should accomplish steps 1-5 above:
 
 	cd cercs_env; ./configure && make && sudo make install; cd ..
-	cd alt; ./configure && make && sudo make install; cd ..
-	cd ffs/ffm; ./configure && make && sudo make install; cd ../..
+	cd atl; ./configure && make && sudo make install; cd ..
+	cd ffs/fm; ./configure && make && sudo make install; cd ../..
 	cd dill; ./configure && make && sudo make install; cd ..
 	cd ffs/cod; ./configure && make && sudo make install; cd ../..
 

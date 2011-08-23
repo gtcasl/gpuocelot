@@ -341,6 +341,13 @@ namespace executive
 		return 0;
 	}
 
+	Device::MemoryAllocation *ATIGPUDevice::registerHost(void* pointer,
+		size_t size, unsigned int flags)
+	{
+		assertM(false, "Not implemented yet");
+		return 0;
+	}
+
 	void ATIGPUDevice::free(void *pointer)
 	{
 		if(pointer == 0) return;

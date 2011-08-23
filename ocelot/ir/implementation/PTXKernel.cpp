@@ -179,16 +179,15 @@ PTXKernel::RegisterVector PTXKernel::getReferencedRegisters() const
 			const ir::PTXInstruction& ptx = static_cast<
 				const ir::PTXInstruction&>(**instruction);
 			
-			if( ptx.opcode == ir::PTXInstruction::St ) continue;
-			
-			const ir::PTXOperand* operands[] = {&ptx.pq, &ptx.d, &ptx.a};
+			const ir::PTXOperand* operands[] = {&ptx.pq, &ptx.d, &ptx.a, &ptx.b,
+				&ptx.c, &ptx.pg};
 
-			for( unsigned int i = 0; i < 3; ++i )
+			for( unsigned int i = 0; i < 6; ++i )
 			{
 				const ir::PTXOperand& d = *operands[i];
 				if( d.addressMode != ir::PTXOperand::Register &&
 					d.addressMode != ir::PTXOperand::ArgumentList ) continue;
-										
+				
 				if( d.type != ir::PTXOperand::pred )
 				{
 					if( d.array.empty() )
@@ -211,9 +210,9 @@ PTXKernel::RegisterVector PTXKernel::getReferencedRegisters() const
 							operand = d.array.begin(); 
 							operand != d.array.end(); ++operand )
 						{
-							report( "   Added %r" << operand->reg );
 							if( operand->addressMode
 								!= ir::PTXOperand::Register ) continue;
+							report( "   Added %r" << operand->reg );
 							analysis::DataflowGraph::Register live_reg( 
 								operand->reg, operand->type );
 							if (addedRegisters.find(live_reg.id)
@@ -226,15 +225,19 @@ PTXKernel::RegisterVector PTXKernel::getReferencedRegisters() const
 				}
 				else
 				{
-					if( predicates.insert( d.reg ).second )
+					if( d.condition == ir::PTXOperand::Pred
+						|| d.condition == ir::PTXOperand::InvPred )
 					{
-						report( "   Added %p" << d.reg );
-						analysis::DataflowGraph::Register live_reg( 
-							d.reg, d.type );
-						if (addedRegisters.find(live_reg.id)
-							== addedRegisters.end()) {
-							regs.push_back( live_reg );
-							addedRegisters.insert(live_reg.id);
+						if( predicates.insert( d.reg ).second )
+						{
+							report( "   Added %p" << d.reg );
+							analysis::DataflowGraph::Register live_reg( 
+								d.reg, d.type );
+							if (addedRegisters.find(live_reg.id)
+								== addedRegisters.end()) {
+								regs.push_back( live_reg );
+								addedRegisters.insert(live_reg.id);
+							}
 						}
 					}
 				}

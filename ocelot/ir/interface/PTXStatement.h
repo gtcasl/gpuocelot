@@ -75,10 +75,21 @@ namespace ir {
 			PTXB64 b64;
 		};
 		
+		class Symbol
+		{
+		public:
+			Symbol(const std::string& name = "", unsigned int o = 0);
+		
+		public:
+			std::string name;
+			unsigned int offset;
+		};
+		
 		typedef std::vector< unsigned int > ArrayStrideVector;
 		typedef std::vector< Data > ArrayVector;
 		typedef std::vector< std::string > StringVector;
 		typedef std::vector< PTXOperand::DataType > TypeVector;
+		typedef std::vector< Symbol > SymbolVector;
 
 		class StaticArray {
 			public:
@@ -156,6 +167,8 @@ namespace ir {
 		TypeVector argumentTypes;
 		
 		bool isReturnArgument;
+		
+		SymbolVector symbols;
 
 	public:
 		PTXStatement( Directive directive = Directive_invalid );

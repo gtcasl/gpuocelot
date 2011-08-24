@@ -96,6 +96,8 @@ unsigned long uniqueElementCount(unsigned long *memBuffer);
 
 void atomicIncrement(unsigned long *memBuffer, unsigned long offset);
 
+void atomicIncrement0(unsigned long *memBuffer, unsigned long offset);
+
 void atomicAdd(unsigned long *memBuffer, unsigned long offset, unsigned long toAdd);
 
 #endif

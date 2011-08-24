@@ -142,6 +142,10 @@ void atomicIncrement(unsigned long *memBuffer, unsigned long offset) {
     return;
 }
 
+void atomicIncrement0(unsigned long *memBuffer, unsigned long offset) {
+    return;
+}
+
 void atomicAdd(unsigned long *memBuffer, unsigned long offset, unsigned long toAdd) {
     return;
 }

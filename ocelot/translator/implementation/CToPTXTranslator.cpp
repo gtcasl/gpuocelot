@@ -1142,7 +1142,7 @@ namespace translator
     
     }
     
-    void CToPTXTranslator::generateAtomicIncrement(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn)
+    void CToPTXTranslator::generateAtomicIncrement(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn, unsigned int index)
     {
         inst.opcode = ir::PTXInstruction::Atom;
         inst.atomicOperation = ir::PTXInstruction::AtomicAdd;
@@ -1151,7 +1151,7 @@ namespace translator
         inst.a.addressMode = ir::PTXOperand::Indirect;
         inst.a.type = type;
         inst.a.identifier = baseReg;
-        inst.a.offset = sizeof(size_t);
+        inst.a.offset = index * sizeof(size_t);
         
         inst.d.addressMode = ir::PTXOperand::Register;
         inst.d.type = type;
@@ -1481,7 +1481,12 @@ namespace translator
                     break;
                     case atomicIncrementSymbol:
                     {
-                        generateAtomicIncrement(inst, stmt, type, insn);
+                        generateAtomicIncrement(inst, stmt, type, insn, 1);
+                    }
+                    break;
+                    case atomicIncrement0Symbol:
+                    {
+                        generateAtomicIncrement(inst, stmt, type, insn, 0);
                     }
                     break;
                     case atomicAddSymbol:
@@ -1848,6 +1853,7 @@ namespace translator
                                         unsigned long leastActiveThreadInWarp();\
                                         unsigned long computeBaseAddress();\
                                         void atomicIncrement(unsigned long *memBuffer, unsigned long offset);\
+                                        void atomicIncrement0(unsigned long *memBuffer, unsigned long offset);\
                                         void atomicAdd(unsigned long *memBuffer, unsigned long offset, unsigned long toAdd);\
                                         unsigned long uniqueElementCount(unsigned long *memBuffer);\
                                         unsigned long deviceMem[2];\
@@ -1889,6 +1895,7 @@ namespace translator
             {(char *)"computeBaseAddress", (void*)(unsigned long)(*computeBaseAddress)},
             {(char *)"uniqueElementCount", (void*)(unsigned long)(*uniqueElementCount)},
             {(char *)"atomicIncrement", (void*)(*atomicIncrement)},
+            {(char *)"atomicIncrement0", (void*)(*atomicIncrement0)},
             {(char *)"atomicAdd", (void*)(*atomicAdd)},
             {(char *)"deviceMem", (void *)deviceMem},
             {(char *)"sharedMem", (void *)deviceMem},
@@ -1963,6 +1970,7 @@ namespace translator
         functionCalls["uniqueElementCount"] = uniqueElementCountSymbol;
         functionCalls["leastActiveThreadInWarp"] = leastActiveThreadInWarpSymbol;
         functionCalls["atomicIncrement"] = atomicIncrementSymbol;
+        functionCalls["atomicIncrement0"] = atomicIncrement0Symbol;
         functionCalls["atomicAdd"] = atomicAddSymbol;
         
         specifierList = { ON_MEM_READ, ON_MEM_WRITE, ON_PREDICATED, ON_BRANCH, ON_CALL, ON_BARRIER, ON_ATOMIC, ON_ARITH_OP,

@@ -163,6 +163,7 @@ namespace translator {
                 uniqueElementCountSymbol,
                 leastActiveThreadInWarpSymbol,
                 atomicIncrementSymbol,
+                atomicIncrement0Symbol,
                 atomicAddSymbol
 		    };
 		    
@@ -215,7 +216,7 @@ namespace translator {
 		        void generateComputeBaseAddress(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn, std::string callName);
 		        void generateLeastActiveThreadInWarp(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn);
 		        void generateUniqueElementCount(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn, std::string callName);
-		        void generateAtomicIncrement(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn);
+		        void generateAtomicIncrement(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn, unsigned int index);
 		        void generateAtomicAdd(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn);
 		        void generatePredicateEvalWarpUniform(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn, bool isUniform);
 		        void generateSyncThreads(ir::PTXInstruction inst, ir::PTXStatement stmt);

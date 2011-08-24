@@ -12,6 +12,7 @@
 #include <ocelot/cuda/interface/cuda_runtime.h>
 
 #include <ocelot/transforms/interface/CToPTXInstrumentationPass.h>
+#include <ocelot/transforms/interface/CToPTXModulePass.h>
 #include <ocelot/ir/interface/Module.h>
 
 #include <hydrazine/implementation/ArgumentParser.h>
@@ -33,109 +34,68 @@ namespace analysis
     }
 
     void BranchDivergenceInstrumentor::analyze(ir::Module &module) {
-        
-        warpCount = 0;
-        
-        struct cudaDeviceProp properties;
-        cudaGetDeviceProperties(&properties, 0);
-        
-        warpCount = (unsigned long)ceil((threads/threadBlocks)/properties.warpSize);
-        if(warpCount == 0)
-            warpCount = 1;
-        for (ir::Module::KernelMap::const_iterator kernel = module.kernels().begin(); 
-	        kernel != module.kernels().end(); ++kernel) 
-	    {
-	        totalBranchesMap[kernel->first] = 0;
-	        conditionalBranchesMap[kernel->first] = 0;
-	        
-            for( ir::ControlFlowGraph::const_iterator block = kernel->second->cfg()->begin(); 
-			    block != kernel->second->cfg()->end(); ++block ) {
-                
-                for( ir::ControlFlowGraph::InstructionList::const_iterator instruction = block->instructions.begin();
-                    instruction != block->instructions.end(); ++instruction)
-                {
-                    ir::PTXInstruction *ptxInst = (ir::PTXInstruction *)*instruction;
-                
-                    if(ptxInst->opcode == ir::PTXInstruction::Bra)
-                    {
-                        totalBranchesMap[kernel->first]++;
-                        
-                        if(ptxInst->pg.condition == ir::PTXOperand::Pred || ptxInst->pg.condition == ir::PTXOperand::InvPred)
-                            conditionalBranchesMap[kernel->first]++;
-                    }
-                }
-            } 
-        }     
+       
     }
 
     void BranchDivergenceInstrumentor::initialize() {
-        branchDivInfo = 0;
+        
+        counter = 0;
 
-        if(conditionalBranchesMap[kernelName] == 0 || warpCount == 0)
-            return;
+        if(cudaMalloc((void **) &counter, 2 * sizeof(size_t)) != cudaSuccess){
+            throw hydrazine::Exception( "Could not allocate sufficient memory on device (cudaMalloc failed)!" );
+        }
+        if(cudaMemset( counter, 0, 2 * sizeof( size_t )) != cudaSuccess){
+            throw hydrazine::Exception( "cudaMemset failed!" );
+        }
 
-        cudaMalloc((void **) &branchDivInfo, conditionalBranchesMap[kernelName] * warpCount * sizeof(size_t));
-        cudaMemset( branchDivInfo, 0, conditionalBranchesMap[kernelName] * warpCount * sizeof( size_t ));
-    
-        cudaMemcpyToSymbol(symbol.c_str(), &branchDivInfo, sizeof(size_t *), 0, cudaMemcpyHostToDevice);   
+        sharedMemSize = threads * 8;
+        
+        if(cudaMemcpyToSymbol(symbol.c_str(), &counter, sizeof(size_t *), 0, cudaMemcpyHostToDevice) != cudaSuccess) {
+            throw hydrazine::Exception( "cudaMemcpyToSymbol failed!");
+        }
     }
 
     void BranchDivergenceInstrumentor::createPasses() 
     {
         transforms::CToPTXInstrumentationPass *pass = new transforms::CToPTXInstrumentationPass("resources/branchDivergence.c");
         symbol = pass->baseAddress;
-        passes[0] = pass;
+        transforms::CToPTXModulePass *modulePass = new transforms::CToPTXModulePass;
+        
+        passes[0] = pass;   
+        passes[1] = modulePass;
     }
 
     void BranchDivergenceInstrumentor::extractResults(std::ostream *out) {
             
-        if(conditionalBranchesMap[kernelName] == 0 || warpCount == 0)
-        {
-            std::cout << "No conditional branches in this kernel.\n";    
-            return;
-        }    
-        
-        size_t conditionalBranches = conditionalBranchesMap[kernelName];
-        size_t *info = new size_t[conditionalBranches * warpCount];
-        
-        if(branchDivInfo) {
-            cudaMemcpy(info, branchDivInfo, conditionalBranches * warpCount * sizeof( size_t ), cudaMemcpyDeviceToHost);      
-            cudaFree(branchDivInfo);
+        size_t *info = new size_t[2];
+        if(counter) {
+            cudaMemcpy(info, counter, 2 * sizeof( size_t ), cudaMemcpyDeviceToHost);
+            cudaFree(counter);
         }
 
-        struct cudaDeviceProp properties;
-        cudaGetDeviceProperties(&properties, 0);
-        
-        unsigned long dynamicDivergentBranches = 0;
-        
-        for(size_t i = 0; i < conditionalBranches; i++) {
-            for(size_t j = 0; j < warpCount; j++) {
-                if(info[warpCount * i + j] == 1) {
-                    dynamicDivergentBranches++;
-                }      
-            }
-        } 
-
-        
-    
         switch(fmt) {
-    
+
             case json:
 
+                *out << "{\n\"kernel\": " << kernelName << ",\n";
+                *out << "\n\"threadBlocks\": " << threadBlocks << ",\n";
+                *out << "\n\"threads\": " << threads << ",\n";
+                *out << "\n\"counters\": {\n";
                 
-            
-            break;
-            
-            case text:   
+                *out << "\n}\n";
 
-                *out << "Kernel Name: " << kernelName << "\n";
+            break;
+            case text:
+
                 *out << "Thread Block Count: " << threadBlocks << "\n";
-                *out << "Thread Count: " << threads << "\n";
-                
-                *out << "\n% Branch Divergence: " << dynamicDivergentBranches << "/" << (warpCount * totalBranchesMap[kernelName]) << "\n\n"; 
-            
+		        *out << "Kernel Name: " << kernelName << "\n";		
+		        *out << "Thread Count: " << threads << "\n";
+		
+                *out << "Divergent Dynamic Branches: " << info[1] << "\n";
+                *out << "Total Dynamic Branches: " << info[0] << "\n\n";              
+                *out << "Branch Divergence: " << ((double)info[1]/(double)info[0]) * 100 << "%\n\n";
+		
             break;
-
         }
 
         if(info)

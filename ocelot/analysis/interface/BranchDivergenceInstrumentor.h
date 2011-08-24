@@ -25,13 +25,8 @@ namespace analysis
             /*! \brief The description of the specified pass */
             std::string description;
       
-            size_t *branchDivInfo;
-            
-        private:
-            unsigned long warpCount;
-		    KernelDataMap totalBranchesMap;
-		    KernelDataMap conditionalBranchesMap;
-			
+            size_t *counter;
+       	
 		public:
 			/*! \brief The default constructor */
 			BranchDivergenceInstrumentor();

@@ -82,9 +82,7 @@ unsigned long warpCount();
 
 unsigned long warpId();
 
-unsigned long predicateEvalWarpUniform();
-
-unsigned long predicateEvalWarpDivergent();
+unsigned long getPredicateValue();
 
 unsigned long instructionCount();
 
@@ -95,8 +93,6 @@ unsigned long leastActiveThreadInWarp();
 unsigned long uniqueElementCount(unsigned long *memBuffer);
 
 void atomicIncrement(unsigned long *memBuffer, unsigned long offset);
-
-void atomicIncrement0(unsigned long *memBuffer, unsigned long offset);
 
 void atomicAdd(unsigned long *memBuffer, unsigned long offset, unsigned long toAdd);
 

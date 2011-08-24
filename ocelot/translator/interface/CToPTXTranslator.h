@@ -71,6 +71,7 @@
 #define INSTRUCTION_COUNT               "instructionCount"
 
 #define COMPUTE_BASE_ADDRESS            "computeBaseAddress"
+#define GET_PREDICATE_VALUE             "getPredicateValue"
 
 #define EXIT                            "$exit"
 #define LOOP_BEGIN                      "$loopBegin"
@@ -157,13 +158,13 @@ namespace translator {
                 warpIdSymbol,
                 predicateEvalWarpUniformSymbol,
                 predicateEvalWarpDivergentSymbol,
+                getPredicateValueSymbol,
                 computeBaseAddressSymbol,
                 memoryTransactionCountSymbol,
                 computeUniqueMemTransactionsSymbol,
                 uniqueElementCountSymbol,
                 leastActiveThreadInWarpSymbol,
                 atomicIncrementSymbol,
-                atomicIncrement0Symbol,
                 atomicAddSymbol
 		    };
 		    
@@ -202,6 +203,9 @@ namespace translator {
 		    std::string baseReg;	
 		    std::string sharedMemReg;  
 		    
+            unsigned int uInput;
+            std::string regInput;
+
 		    private:
 		        void generateBlockId(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn);
 		        void generateSMId(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn);
@@ -216,10 +220,9 @@ namespace translator {
 		        void generateComputeBaseAddress(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn, std::string callName);
 		        void generateLeastActiveThreadInWarp(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn);
 		        void generateUniqueElementCount(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn, std::string callName);
-		        void generateAtomicIncrement(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn, unsigned int index);
-		        void generateAtomicAdd(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn);
-		        void generatePredicateEvalWarpUniform(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn, bool isUniform);
-		        void generateSyncThreads(ir::PTXInstruction inst, ir::PTXStatement stmt);
+		        void generateAtomicIncrement(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn, unsigned int uInput);
+		        void generateAtomicAdd(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn, std::string regInput);
+                void generateSyncThreads(ir::PTXInstruction inst, ir::PTXStatement stmt);
 		        void generateStaticAttributes(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn, std::string callName);
 		    
 		    public: 

@@ -96,6 +96,23 @@ namespace transforms
 
             return toInsert;
         }
+
+        if(statement.instruction.d.identifier == GET_PREDICATE_VALUE)
+        {
+            toInsert.instruction.opcode = ir::PTXInstruction::SelP;
+            toInsert.instruction.c.type = ir::PTXOperand::pred;
+            toInsert.instruction.d.addressMode = toInsert.instruction.c.addressMode = ir::PTXOperand::Register;
+            toInsert.instruction.a.addressMode = toInsert.instruction.b.addressMode = ir::PTXOperand::Immediate;
+            toInsert.instruction.a.imm_uint = 1;
+            toInsert.instruction.b.imm_uint = 0;
+        
+            toInsert.instruction.d.reg = dfg().newRegister();
+            newRegisterMap[toInsert.instruction.d.identifier] = toInsert.instruction.d.reg;
+            toInsert.instruction.d.identifier.clear();
+
+            toInsert.instruction.c = attributes.originalInstruction.pg;
+            return toInsert;
+        }
         
         ir::PTXOperand ir::PTXInstruction::* operands[] = { &ir::PTXInstruction::a, & ir::PTXInstruction::b, & ir::PTXInstruction::c, 
             & ir::PTXInstruction::d, & ir::PTXInstruction::pg };

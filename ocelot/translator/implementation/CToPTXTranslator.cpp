@@ -78,7 +78,8 @@ namespace translator
             || instruction.opcode == ir::PTXInstruction::Atom
             || instruction.opcode == ir::PTXInstruction::And
             || instruction.opcode == ir::PTXInstruction::Not
-            || instruction.opcode == ir::PTXInstruction::Mad)){
+            || instruction.opcode == ir::PTXInstruction::Mad
+            || instruction.opcode == ir::PTXInstruction::SetP)){
                 
                 if(pred->inv)
                     instruction.pg.condition = ir::PTXOperand::InvPred;
@@ -788,59 +789,6 @@ namespace translator
     
     }
     
-    void CToPTXTranslator::generatePredicateEvalWarpUniform(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn, bool isUniform)
-    {
-    
-        inst.opcode = ir::PTXInstruction::Vote;
-        inst.vote = ir::PTXInstruction::Uni;
-        inst.type = ir::PTXOperand::pred;
-        
-        inst.d.type = ir::PTXOperand::pred;
-        inst.d.addressMode = ir::PTXOperand::Register;
-        inst.d.identifier = COD_PRED + boost::lexical_cast<std::string>(++maxPredicate);
-        registers.push_back(inst.d.identifier);
-        
-        inst.a = inst.d;
-        
-        PredicateInfo predicateInfo;
-        predicateInfo.id = inst.d.identifier;
-        predicateInfo.set = false;
-        
-        stmt.instruction = inst;
-        statements.push_back(stmt);
-        
-        inst.opcode = ir::PTXInstruction::SelP;
-        inst.type = type;
-        inst.d.type = type;
-        inst.d.addressMode = ir::PTXOperand::Register;
-        inst.d.identifier = COD_REG + boost::lexical_cast<std::string>(++maxRegister);
-        registers.push_back(inst.d.identifier);  
-        
-        inst.a.type = inst.b.type = type;
-        inst.a.addressMode = inst.b.addressMode = ir::PTXOperand::Immediate;
-        if(isUniform)
-        {
-            inst.a.imm_int = 1;
-            inst.b.imm_int = 0;
-        }
-        else
-        {
-            predicateInfo.inv = true;
-            inst.a.imm_int = 0;
-            inst.b.imm_int = 1;
-        }
-            
-        inst.c.type = ir::PTXOperand::pred;
-        inst.c.addressMode = ir::PTXOperand::Register;
-        inst.c.identifier = predicateInfo.id;
-        
-        predicateList.push_back(predicateInfo);
-        stmt.instruction = inst;
-        statements.push_back(stmt);
-        
-        registerMap[REG + boost::lexical_cast<std::string>(insn->opnds.calli.src)] = inst.d.identifier;  
-    }
-    
     void CToPTXTranslator::generateSyncThreads(ir::PTXInstruction inst, ir::PTXStatement stmt)
     {
         inst.opcode = ir::PTXInstruction::Bar;
@@ -894,7 +842,7 @@ namespace translator
         inst.d.identifier = COD_REG + boost::lexical_cast<std::string>(++maxRegister);
         registers.push_back(inst.d.identifier);
         std::string notResult = inst.d.identifier;
-	specialRegisterMap["notResult"] = notResult;
+	    specialRegisterMap["notResult"] = notResult;
         registers.push_back(inst.d.identifier);  
         inst.a.addressMode = ir::PTXOperand::Immediate;
         inst.a.imm_uint = 63;
@@ -911,7 +859,7 @@ namespace translator
         inst.b.addressMode = ir::PTXOperand::Register;
         inst.b.identifier = notResult;
 
-	specialRegisterMap["andResult"] = callName;
+	    specialRegisterMap["andResult"] = callName;
         
         setPredicate(inst);
         stmt.instruction = inst;
@@ -968,7 +916,7 @@ namespace translator
         inst.d.type = ir::PTXOperand::b32;
         inst.d.addressMode = ir::PTXOperand::Register;
         inst.d.identifier = "bitmask";
-	specialRegisterMap["bitmask"] = inst.d.identifier;
+	    specialRegisterMap["bitmask"] = inst.d.identifier;
         registers.push_back(inst.d.identifier);
         inst.a.addressMode = ir::PTXOperand::Register;
         inst.a.type = ir::PTXOperand::pred;
@@ -1004,7 +952,8 @@ namespace translator
 
         inst.opcode = ir::PTXInstruction::Not;
         inst.type = ir::PTXOperand::b64;
-        inst.d.identifier = specialRegisterMap["notResult"];
+        inst.d.identifier = COD_REG + boost::lexical_cast<std::string>(++maxRegister);
+        std::string notResult = inst.d.identifier;
         registers.push_back(inst.d.identifier);  
         inst.a.addressMode = ir::PTXOperand::Immediate;
         inst.a.imm_uint = 31;
@@ -1020,7 +969,7 @@ namespace translator
         inst.a.addressMode = ir::PTXOperand::Register;
         inst.a.identifier = specialRegisterMap["blockThreadId"];
         inst.b.addressMode = ir::PTXOperand::Register;
-        inst.b.identifier = specialRegisterMap["notResult"];
+        inst.b.identifier = notResult;
 
         setPredicate(inst);
         stmt.instruction = inst;
@@ -1033,9 +982,10 @@ namespace translator
         inst.a.type = type;
         inst.b.type = type;
 
-        std::string reductionBufferOffset = COD_REG + boost::lexical_cast<std::string>(14);
-        inst.d.identifier = reductionBufferOffset;
-        inst.a.identifier = specialRegisterMap["notResult"];
+        inst.d.identifier = COD_REG + boost::lexical_cast<std::string>(++maxRegister);
+        std::string madResult = inst.d.identifier;
+        registers.push_back(inst.d.identifier);  
+        inst.a.identifier = notResult;
         inst.b.addressMode = ir::PTXOperand::Immediate;
         inst.b.imm_uint = sizeof(size_t);
         inst.c.addressMode = ir::PTXOperand::Register;
@@ -1090,7 +1040,7 @@ namespace translator
         inst.a.addressMode = ir::PTXOperand::Register;
         inst.a.type = type;
 
-        inst.a.identifier = reductionBufferOffset;
+        inst.a.identifier = madResult;
         inst.d.identifier = reductionBuffer.name;
         inst.d.addressMode = ir::PTXOperand::Address;
         inst.d.offset = 0;
@@ -1124,10 +1074,10 @@ namespace translator
         inst.opcode = ir::PTXInstruction::Ld;
         inst.addressSpace = ir::PTXInstruction::Param;
 
+        inst.d.identifier = madResult;
         inst.d.addressMode = ir::PTXOperand::Register;
         inst.d.type = type;
 
-        inst.d.identifier = COD_REG + boost::lexical_cast<std::string>(14);
         inst.a.identifier = uniqueCount.name;
         inst.a.addressMode = ir::PTXOperand::Address;
         inst.a.offset = 0;
@@ -1142,7 +1092,7 @@ namespace translator
     
     }
     
-    void CToPTXTranslator::generateAtomicIncrement(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn, unsigned int index)
+    void CToPTXTranslator::generateAtomicIncrement(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn, unsigned int uInput)
     {
         inst.opcode = ir::PTXInstruction::Atom;
         inst.atomicOperation = ir::PTXInstruction::AtomicAdd;
@@ -1151,7 +1101,7 @@ namespace translator
         inst.a.addressMode = ir::PTXOperand::Indirect;
         inst.a.type = type;
         inst.a.identifier = baseReg;
-        inst.a.offset = index * sizeof(size_t);
+        inst.a.offset = uInput * sizeof(size_t);
         
         inst.d.addressMode = ir::PTXOperand::Register;
         inst.d.type = type;
@@ -1170,7 +1120,7 @@ namespace translator
     
     }
     
-    void CToPTXTranslator::generateAtomicAdd(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn)
+    void CToPTXTranslator::generateAtomicAdd(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn, std::string regInput)
     {
         inst.opcode = ir::PTXInstruction::Atom;
         inst.atomicOperation = ir::PTXInstruction::AtomicAdd;
@@ -1188,7 +1138,7 @@ namespace translator
         
         inst.b.addressMode = ir::PTXOperand::Register;
         inst.b.type = type;
-        inst.b.identifier = specialRegisterMap["uniqueElementCount"];
+        inst.b.identifier = registerMap[regInput];
         
         setPredicate(inst);
         stmt.instruction = inst;
@@ -1315,12 +1265,13 @@ namespace translator
         case iclass_convert:
         {
             std::string src1 = (REG + boost::lexical_cast<std::string>(insn->opnds.a2.src));
-        
             std::map<std::string,std::string>::iterator it = registerMap.find(src1);
             if(it != registerMap.end()) {
                 registerMap[(REG + boost::lexical_cast<std::string>(insn->opnds.a2.dest))] = it->second;
                 if(insn->class_code == iclass_mov)
+                {
                     registerMap.erase(src1);
+                }
             }
 
             break;
@@ -1454,16 +1405,6 @@ namespace translator
                     
                     }
                     break;
-                    case predicateEvalWarpUniformSymbol:
-                    {
-                        generatePredicateEvalWarpUniform(inst, stmt, type, insn, true);
-                    }
-                    break;
-                    case predicateEvalWarpDivergentSymbol:
-                    {
-                        generatePredicateEvalWarpUniform(inst, stmt, type, insn, false);
-                    }
-                    break;
                     case computeBaseAddressSymbol:
                     {
                         generateComputeBaseAddress(inst, stmt, type, insn, call_name);
@@ -1481,17 +1422,12 @@ namespace translator
                     break;
                     case atomicIncrementSymbol:
                     {
-                        generateAtomicIncrement(inst, stmt, type, insn, 1);
-                    }
-                    break;
-                    case atomicIncrement0Symbol:
-                    {
-                        generateAtomicIncrement(inst, stmt, type, insn, 0);
+                        generateAtomicIncrement(inst, stmt, type, insn, uInput);
                     }
                     break;
                     case atomicAddSymbol:
                     {
-                        generateAtomicAdd(inst, stmt, type, insn);
+                        generateAtomicAdd(inst, stmt, type, insn, regInput);
                     }
                     break;
                     case basicBlockIdSymbol:
@@ -1499,6 +1435,7 @@ namespace translator
                     case basicBlockExecInstCountSymbol:
                     case instructionIdSymbol:
                     case instructionCountSymbol:
+                    case getPredicateValueSymbol:
                     {
                         generateStaticAttributes(inst, stmt, type, insn, call_name);
                     }
@@ -1511,6 +1448,7 @@ namespace translator
             break;
         }
         case iclass_branch:
+        case iclass_branchi:
         {
             inst.opcode = ir::PTXInstruction::SetP;
             
@@ -1522,24 +1460,41 @@ namespace translator
             inst.comparisonOperator = ir::PTXInstruction::Eq;
             inst.a.type = type;
             inst.a.addressMode = ir::PTXOperand::Register;
-            inst.a.identifier = registerMap[REG + boost::lexical_cast<std::string>(insn->opnds.br.src1)];
             inst.b.type = type;
             inst.b.addressMode = ir::PTXOperand::Register;
-            inst.b.identifier = registerMap[REG + boost::lexical_cast<std::string>(insn->opnds.br.src2)];
             
+            std::string label;
+            int br_op = insn->insn_code;
+	        struct branch_table *t = &c->p->branch_table;
+
+            if(insn->class_code == iclass_branch)
+            {
+                inst.a.identifier = registerMap[REG + boost::lexical_cast<std::string>(insn->opnds.br.src1)];
+                inst.b.identifier = registerMap[REG + boost::lexical_cast<std::string>(insn->opnds.br.src2)];
+
+                if (t->label_name[insn->opnds.br.label] != NULL) {
+                    label = t->label_name[insn->opnds.br.label];
+	            }
+	            else {
+	                label = "L" + boost::lexical_cast<std::string>(insn->opnds.br.label);
+	            }
+            }   
+            else
+            {
+                inst.a.identifier = registerMap[REG + boost::lexical_cast<std::string>(insn->opnds.bri.src)];
+                inst.b.addressMode = ir::PTXOperand::Immediate;                
+                inst.b.imm_uint = insn->opnds.bri.imm_l;
+
+                if (t->label_name[insn->opnds.bri.label] != NULL) {
+                    label = t->label_name[insn->opnds.bri.label];
+	            }
+	            else {
+	                label = "L" + boost::lexical_cast<std::string>(insn->opnds.bri.label);
+	            }
+            }         
+
 	        PredicateInfo predicateInfo;
 	        predicateInfo.id = inst.d.identifier;
-	        
-	        std::string label;
-
-	        int br_op = insn->insn_code;
-	        struct branch_table *t = &c->p->branch_table;
-            if (t->label_name[insn->opnds.br.label] != NULL) {
-                label = t->label_name[insn->opnds.br.label];
-	        }
-	        else {
-	            label = "L" + boost::lexical_cast<std::string>(insn->opnds.br.label);
-	        }
 	        
 	        predicateInfo.branchLabel = label;
 	        if(br_op >= 55 && br_op < 66){
@@ -1553,6 +1508,11 @@ namespace translator
 		        inst.b.imm_uint = 0;
 	            predicateInfo.set = true;
 	        }
+            else if(br_op >= 33 && br_op < 44){
+                predicateInfo.condition = PredicateInfo::TAKEN;
+                inst.comparisonOperator = ir::PTXInstruction::Gt; 
+                predicateInfo.set = true;
+            }
 	       
 	        if(label == "loop end")
 	        {
@@ -1562,7 +1522,7 @@ namespace translator
                 blockLabels.push_back(LOOP);
 	        }
 	       
-	       
+	        setPredicate(inst);
 	        stmt.instruction = inst;
 	        statements.push_back(stmt);
 	          
@@ -1789,8 +1749,22 @@ namespace translator
 	        break;
         }
         
-	    case iclass_push:
         case iclass_pushi:
+        {
+            int typ = insn->insn_code & 0xf;
+            if(typ == 7)
+                uInput = insn->opnds.a3i.u.imm;
+
+            break;
+        }
+        case iclass_push:
+        {
+            int typ = insn->insn_code & 0xf;
+            if(typ == 7)
+                regInput = REG + boost::lexical_cast<std::string>(insn->opnds.a1.src);
+
+            break;
+        }
         case iclass_pushf:
         case iclass_nop:
 	        break;
@@ -1848,12 +1822,10 @@ namespace translator
                                         unsigned long instructionCount();\
                                         unsigned long warpCount();\
                                         unsigned long warpId();\
-                                        unsigned long predicateEvalWarpUniform();\
-                                        unsigned long predicateEvalWarpDivergent();\
+                                        unsigned long getPredicateValue();\
                                         unsigned long leastActiveThreadInWarp();\
                                         unsigned long computeBaseAddress();\
                                         void atomicIncrement(unsigned long *memBuffer, unsigned long offset);\
-                                        void atomicIncrement0(unsigned long *memBuffer, unsigned long offset);\
                                         void atomicAdd(unsigned long *memBuffer, unsigned long offset, unsigned long toAdd);\
                                         unsigned long uniqueElementCount(unsigned long *memBuffer);\
                                         unsigned long deviceMem[2];\
@@ -1889,13 +1861,11 @@ namespace translator
             {(char *)"instructionCount", (void*)(unsigned long)(*instructionCount)},
             {(char *)"warpCount", (void*)(unsigned long)(*warpCount)},
             {(char *)"warpId", (void*)(unsigned long)(*warpId)},
-            {(char *)"predicateEvalWarpUniform", (void*)(unsigned long)(*predicateEvalWarpUniform)},
-            {(char *)"predicateEvalWarpDivergent", (void*)(unsigned long)(*predicateEvalWarpDivergent)},
+            {(char *)"getPredicateValue", (void*)(unsigned long)(*getPredicateValue)},
             {(char *)"leastActiveThreadInWarp", (void*)(unsigned long)(*leastActiveThreadInWarp)},
             {(char *)"computeBaseAddress", (void*)(unsigned long)(*computeBaseAddress)},
             {(char *)"uniqueElementCount", (void*)(unsigned long)(*uniqueElementCount)},
             {(char *)"atomicIncrement", (void*)(*atomicIncrement)},
-            {(char *)"atomicIncrement0", (void*)(*atomicIncrement0)},
             {(char *)"atomicAdd", (void*)(*atomicAdd)},
             {(char *)"deviceMem", (void *)deviceMem},
             {(char *)"sharedMem", (void *)deviceMem},
@@ -1932,7 +1902,7 @@ namespace translator
     }
     
     CToPTXTranslator::CToPTXTranslator()
-        : maxRegister(0), maxPredicate(0)
+        : maxRegister(0), maxPredicate(0), uInput(0)
     {
         memoryType = globalMemory;
     
@@ -1964,15 +1934,13 @@ namespace translator
         functionCalls["instructionCount"] = instructionCountSymbol;
         functionCalls["warpCount"] = warpCountSymbol;
         functionCalls["warpId"] = warpIdSymbol;
-        functionCalls["predicateEvalWarpUniform"] = predicateEvalWarpUniformSymbol;
-        functionCalls["predicateEvalWarpDivergent"] = predicateEvalWarpDivergentSymbol;
+        functionCalls["getPredicateValue"] = getPredicateValueSymbol;        
         functionCalls["computeBaseAddress"] = computeBaseAddressSymbol;
         functionCalls["uniqueElementCount"] = uniqueElementCountSymbol;
         functionCalls["leastActiveThreadInWarp"] = leastActiveThreadInWarpSymbol;
         functionCalls["atomicIncrement"] = atomicIncrementSymbol;
-        functionCalls["atomicIncrement0"] = atomicIncrement0Symbol;
         functionCalls["atomicAdd"] = atomicAddSymbol;
-        
+                
         specifierList = { ON_MEM_READ, ON_MEM_WRITE, ON_PREDICATED, ON_BRANCH, ON_CALL, ON_BARRIER, ON_ATOMIC, ON_ARITH_OP,
             GLOBAL, LOCAL, SHARED, CONST, PARAM, TEXTURE, TYPE_INT, TYPE_FP };
             

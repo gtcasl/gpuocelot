@@ -10,8 +10,8 @@
     stop = clockCounter();
         if (threadIndexX() == 0) {
             unsigned long currentBlockId = blockId();
-            deviceMem[2 * currentBlockId] = stop - start;
-            deviceMem[2 * currentBlockId + 1] = smId();
+            globalMem[2 * currentBlockId] = stop - start;
+            globalMem[2 * currentBlockId + 1] = smId();
         }
     }
 }

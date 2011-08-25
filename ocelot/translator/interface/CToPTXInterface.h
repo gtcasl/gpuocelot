@@ -12,7 +12,7 @@
 #define NUM_BLOCKS  1
 #define NUM_GRIDS   1
 
-unsigned long deviceMem[NUM_THREADS * NUM_BLOCKS * NUM_GRIDS];
+unsigned long globalMem[NUM_THREADS * NUM_BLOCKS * NUM_GRIDS];
 unsigned long sharedMem[NUM_THREADS * NUM_BLOCKS * NUM_GRIDS];
 
 /* corresponds to PTX register clock/clock64 */

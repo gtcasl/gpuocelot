@@ -18,7 +18,7 @@
 #define COD_REG     "\%codr"
 #define COD_PRED    "\%codp"
 
-#define EMIT_COD    0
+#define EMIT_COD    1
 
 namespace translator
 {
@@ -1457,7 +1457,8 @@ namespace translator
             
             inst.d.type = ir::PTXOperand::pred;
             inst.d.addressMode = ir::PTXOperand::Register;
-            inst.d.identifier = COD_PRED + boost::lexical_cast<std::string>(++maxPredicate);
+            std::string pred = COD_PRED + boost::lexical_cast<std::string>(++maxPredicate);
+            inst.d.identifier = pred;
             registers.push_back(inst.d.identifier);
             
             inst.comparisonOperator = ir::PTXInstruction::Eq;
@@ -1526,6 +1527,26 @@ namespace translator
 	        }
 	       
 	        setPredicate(inst);
+	        
+	        /* if a predicate condition is set on the SetP instruction, 
+	            initialize the destination predicate to 0 to make sure it does not have an undefined value for some threads */
+	        if(inst.pg.condition == ir::PTXOperand::Pred || inst.pg.condition == ir::PTXOperand::InvPred)
+	        {
+	            ir::PTXInstruction initPred = ir::PTXInstruction(ir::PTXInstruction::SetP);
+	            inst.comparisonOperator = ir::PTXInstruction::Eq;
+	            initPred.type = type;
+	            initPred.d.addressMode = ir::PTXOperand::Register;
+	            initPred.d.type = ir::PTXOperand::pred;
+	            initPred.a.type = initPred.b.type = type;
+	            initPred.a.addressMode = initPred.b.addressMode = ir::PTXOperand::Immediate;
+	            initPred.a.imm_uint = 1;
+	            initPred.b.imm_uint = 0;
+	            initPred.d.identifier = pred;
+	            initPred.pg.condition = ir::PTXOperand::PT;
+	            stmt.instruction = initPred;
+	            statements.push_back(stmt);
+	        }
+	        
 	        stmt.instruction = inst;
 	        statements.push_back(stmt);
 	          
@@ -1559,11 +1580,6 @@ namespace translator
                 dst = REG + boost::lexical_cast<std::string>(insn->opnds.a3i.dest);
                 inst.d.offset = insn->opnds.a3i.u.imm;
             }
-            
-            if(memoryType == sharedMemory)
-                inst.addressSpace = ir::PTXInstruction::Shared;
-            else
-                inst.addressSpace = ir::PTXInstruction::Global; 
             
             inst.type = type;
             inst.d.type = type;
@@ -1599,6 +1615,8 @@ namespace translator
             if(prev.opcode == ir::PTXInstruction::Add
                 && (prev.d.identifier == inst.d.identifier || prev.d.identifier == inst.a.identifier)) {
             
+                memoryType = prev.b.imm_int;
+                
                 for(ir::PTXKernel::PTXStatementVector::iterator s = statements.begin(); s != statements.end(); ++s)
                 { 
                     if(s->instruction.opcode == ir::PTXInstruction::Mov && (s->instruction.d.identifier == prev.d.identifier || 
@@ -1611,10 +1629,14 @@ namespace translator
             
                 prev.b.addressMode = ir::PTXOperand::Register;
                 
-                if(memoryType == sharedMemory)
+                if(memoryType == SHARED_MEM)
+                {
                     prev.b.identifier = sharedMemReg;
-                else    
+                }
+                else
+                {    
                     prev.b.identifier = baseReg;
+                }
                 
                 statements.pop_back();
                 stmt.instruction = prev;
@@ -1624,6 +1646,8 @@ namespace translator
             if(prev.opcode == ir::PTXInstruction::Mov
                 && (prev.d.identifier == inst.d.identifier || prev.d.identifier == inst.a.identifier)) {
             
+                memoryType = prev.b.imm_int;
+                    
                 for(ir::PTXKernel::PTXStatementVector::iterator s = statements.begin(); s != statements.end(); ++s)
                 { 
                     if(s->instruction.opcode == ir::PTXInstruction::Mov && (s->instruction.d.identifier == prev.d.identifier || 
@@ -1636,20 +1660,33 @@ namespace translator
                 
                 if(inst.opcode == ir::PTXInstruction::Ld)
                 {
-                    if(memoryType == sharedMemory)
+                    if(memoryType == SHARED_MEM)
+                    {
                         inst.a.identifier = sharedMemReg;
+                    }
                     else
+                    {
                         inst.a.identifier = baseReg;
+                    }
                 }
                 else
                 {
-                    if(memoryType == sharedMemory)
+                    if(memoryType == SHARED_MEM)
+                    {
                         inst.d.identifier = sharedMemReg;
+                    }
                     else
+                    {
                         inst.d.identifier = baseReg;
+                    }
                 
                 }
             }
+            
+            if(memoryType == SHARED_MEM)
+                inst.addressSpace = ir::PTXInstruction::Shared;
+            else
+                inst.addressSpace = ir::PTXInstruction::Global;
                
             setPredicate(inst);
             stmt.instruction = inst;
@@ -1713,11 +1750,6 @@ namespace translator
                 blockLabels.push_back(LOOP_END);
             }
 
-            if(label == SHARED_MEM)
-                memoryType = sharedMemory;
-            else if(label == GLOBAL_MEM)
-                memoryType = globalMemory;
-
             for(StringVector::const_iterator specifier = specifierList.begin(); 
                 specifier != specifierList.end(); ++specifier)
             {
@@ -1757,7 +1789,11 @@ namespace translator
             int typ = insn->insn_code & 0xf;
             if(typ == 7)
                 uInput = insn->opnds.a3i.u.imm;
+            /* pushing pointer type */
+            else if(typ == 8) 
+                memoryType = insn->opnds.a3i.u.imm;
 
+                
             break;
         }
         case iclass_push:
@@ -1831,8 +1867,8 @@ namespace translator
                                         void atomicIncrement(unsigned long *memBuffer, unsigned long offset);\
                                         void atomicAdd(unsigned long *memBuffer, unsigned long offset, unsigned long toAdd);\
                                         unsigned long uniqueElementCount(unsigned long *memBuffer, unsigned long overHalfWarp);\
-                                        unsigned long deviceMem[2];\
-                                        unsigned long sharedMem[2];";
+                                        unsigned long globalMem[1];\
+                                        unsigned long sharedMem[1];";
                         
 	    static cod_extern_entry externs[] = 
 	    {
@@ -1870,8 +1906,8 @@ namespace translator
             {(char *)"uniqueElementCount", (void*)(unsigned long)(*uniqueElementCount)},
             {(char *)"atomicIncrement", (void*)(*atomicIncrement)},
             {(char *)"atomicAdd", (void*)(*atomicAdd)},
-            {(char *)"deviceMem", (void *)deviceMem},
-            {(char *)"sharedMem", (void *)deviceMem},
+            {(char *)"globalMem", (void *)GLOBAL_MEM},
+            {(char *)"sharedMem", (void *)SHARED_MEM},
             {NULL, (void*)0}
 	    };
      
@@ -1908,7 +1944,7 @@ namespace translator
     CToPTXTranslator::CToPTXTranslator()
         : maxRegister(0), maxPredicate(0), uInput(0)
     {
-        memoryType = globalMemory;
+        memoryType = GLOBAL_MEM;
     
         functionCalls["clockCounter"] = clockCounterSymbol;
         functionCalls["globalThreadId"] = globalThreadIdSymbol;

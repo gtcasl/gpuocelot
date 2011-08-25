@@ -4,6 +4,6 @@
 
     ON_BASIC_BLOCK_ENTRY:{
         unsigned long offset = currentBlockDim * basicBlockId() + currentThreadId;
-        deviceMem[offset] = deviceMem[offset] + 1;
+        globalMem[offset] = globalMem[offset] + 1;
     }
 }

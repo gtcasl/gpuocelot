@@ -5,20 +5,15 @@
     PREDICATED: 
     BRANCH:
     {
-        SHARED_MEM: 
-        {
-            sharedMem[threadId] = getPredicateValue();
-        }
+        sharedMem[threadId] = getPredicateValue();
         
         if(leastActiveThreadInWarp() != 0)
         {
-            GLOBAL_MEM:
-            {
-                unsigned long uniqueCount = uniqueElementCount(sharedMem, 0);
-                atomicIncrement(deviceMem, 0);    
-                if(uniqueCount > 1)
-                    atomicIncrement(deviceMem, 1);      
-            }
+            unsigned long uniqueCount = uniqueElementCount(sharedMem, 0);
+            atomicIncrement(globalMem, 0);    
+            if(uniqueCount > 1)
+                atomicIncrement(globalMem, 1);      
+            
         }
     }
 }

@@ -59,8 +59,8 @@
 #define TYPE_FP             "FLOATING_POINT"
 
 /* Memory type */
-#define SHARED_MEM          "SHARED_MEM"
-#define GLOBAL_MEM          "GLOBAL_MEM"
+#define GLOBAL_MEM          1
+#define SHARED_MEM          2
 
 
 /* basic block constructs */
@@ -172,12 +172,7 @@ namespace translator {
 		    
 		    SpecialSymbols symbols;
 		    
-		    enum MemoryType {
-		        sharedMemory,
-		        globalMemory
-		    };
-		    
-		    MemoryType memoryType;
+		    unsigned long memoryType;
 		
 		    typedef std::map<std::string, std::string> RegisterMap;
 		    typedef std::map<std::string, size_t> FunctionCallMap;

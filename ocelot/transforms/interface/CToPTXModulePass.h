@@ -17,6 +17,13 @@
 #include <algorithm>
 #include <vector>
 
+
+/* function names */
+
+#define UNIQUE_ELEMENT_COUNT            "uniqueElementCount"
+
+/* label names */
+
 #define LEAST_ACTIVE_THREAD             "$leastActiveThread"
 #define BEGIN_REDUCTION                 "$beginReduction"
 #define BEGIN_INST_COUNT_LOOP           "$beginInstCountLoop"
@@ -44,6 +51,12 @@ namespace transforms
 
 	class CToPTXModulePass : public ModulePass
 	{			
+	    public:
+	    
+	        typedef std::map<std::string, size_t> FunctionParameterMap;
+			
+			FunctionParameterMap parameterMap;
+	
 		public:
 			
 			void initialize(ir::Module& m);

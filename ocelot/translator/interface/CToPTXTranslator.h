@@ -110,12 +110,14 @@ namespace translator {
 	        typedef std::vector<std::string> RegisterVector;
 	        typedef std::vector<std::string> StringVector;
 	        typedef std::map<std::string, std::string> RegisterMap;
+	        typedef std::map<std::string, size_t> FunctionParameterMap;
 	        
 	        ir::PTXKernel::PTXStatementVector statements;
 		    ir::PTXKernel::PTXStatementVector globals;
 		    RegisterVector registers;
 		    StringVector blockLabels;
 		    RegisterMap specialRegisterMap;
+		    FunctionParameterMap parameterMap;
 	
 	};
 
@@ -182,6 +184,7 @@ namespace translator {
 		    typedef std::vector<PredicateInfo> PredicateList;
 		    typedef std::vector<std::string> RegisterVector;
 		    typedef std::vector<std::string> StringVector;
+		    typedef std::map<std::string, size_t> FunctionParameterMap;
 		    
 		    ir::PTXKernel *kernel;
 		    ir::PTXKernel::PTXStatementVector statements;
@@ -196,6 +199,7 @@ namespace translator {
 		    StringVector specifiers;
 		    StringVector targetList;
 		    StringVector targets;
+		    FunctionParameterMap parameterMap;
 		    
 		    unsigned int maxRegister;	
 		    unsigned int maxPredicate;
@@ -219,7 +223,7 @@ namespace translator {
 		        void generateBlockThreadId(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn);
 		        void generateComputeBaseAddress(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn, std::string callName);
 		        void generateLeastActiveThreadInWarp(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn);
-		        void generateUniqueElementCount(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn, std::string callName);
+		        void generateUniqueElementCount(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn, std::string callName, unsigned long uInput);
 		        void generateAtomicIncrement(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn, unsigned int uInput);
 		        void generateAtomicAdd(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn, std::string regInput);
                 void generateSyncThreads(ir::PTXInstruction inst, ir::PTXStatement stmt);

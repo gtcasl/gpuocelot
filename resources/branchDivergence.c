@@ -14,7 +14,7 @@
         {
             GLOBAL_MEM:
             {
-                unsigned long uniqueCount = uniqueElementCount(sharedMem);
+                unsigned long uniqueCount = uniqueElementCount(sharedMem, 0);
                 atomicIncrement(deviceMem, 0);    
                 if(uniqueCount > 1)
                     atomicIncrement(deviceMem, 1);      

@@ -90,7 +90,7 @@ unsigned long computeBaseAddress();
 
 unsigned long leastActiveThreadInWarp();
 
-unsigned long uniqueElementCount(unsigned long *memBuffer);
+unsigned long uniqueElementCount(unsigned long *memBuffer, unsigned long overHalfWarp);
 
 void atomicIncrement(unsigned long *memBuffer, unsigned long offset);
 

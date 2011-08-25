@@ -130,7 +130,7 @@ unsigned long leastActiveThreadInWarp() {
     return 1;
 }
 
-unsigned long uniqueElementCount(unsigned long *memBuffer) {
+unsigned long uniqueElementCount(unsigned long *memBuffer, unsigned long overHalfWarp) {
     return 1;
 }
 

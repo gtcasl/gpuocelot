@@ -691,7 +691,9 @@ namespace transforms
 	    translator::CToPTXTranslator translator;
 	    translation = translator.generate(resource);
 	    baseAddress = translation.globals.front().name;
-	
+	    
+	    parameterMap = translation.parameterMap;
+	 
 	    instructionClasses = { ON_MEM_READ, ON_MEM_WRITE, ON_PREDICATED, ON_BRANCH, ON_CALL, ON_BARRIER, ON_ATOMIC, ON_ARITH_OP };
 	    addressSpaceSpecifiers = { GLOBAL, LOCAL, SHARED, CONST, PARAM, TEXTURE };
 	    types = { TYPE_INT, TYPE_FP };

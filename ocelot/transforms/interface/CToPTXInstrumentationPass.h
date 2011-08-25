@@ -104,6 +104,10 @@ namespace transforms
 			std::map<std::string, analysis::DataflowGraph::RegisterId> newRegisterMap;
 			std::string baseAddress;
 			
+			typedef std::map<std::string, size_t> FunctionParameterMap;
+			
+			FunctionParameterMap parameterMap;
+			
 	    private:
 	    
 	        ir::PTXStatement prepareStatementToInsert(ir::PTXStatement statement, StaticAttributes attributes);

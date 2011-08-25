@@ -58,6 +58,7 @@ namespace analysis
         transforms::CToPTXInstrumentationPass *pass = new transforms::CToPTXInstrumentationPass("resources/memoryEfficiency.c");
         symbol = pass->baseAddress;
         transforms::CToPTXModulePass *modulePass = new transforms::CToPTXModulePass;
+        modulePass->parameterMap = pass->parameterMap;
         
         passes[0] = pass;   
         passes[1] = modulePass;

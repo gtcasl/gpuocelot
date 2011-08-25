@@ -947,8 +947,11 @@ namespace translator
         registerMap[REG + boost::lexical_cast<std::string>(insn->opnds.calli.src)] = rb0;       
     }
     
-    void CToPTXTranslator::generateUniqueElementCount(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn, std::string callName)
+    void CToPTXTranslator::generateUniqueElementCount(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, 
+        virtual_insn *insn, std::string callName, unsigned long uInput)
     {
+    
+        parameterMap[callName] = uInput;
 
         inst.opcode = ir::PTXInstruction::Not;
         inst.type = ir::PTXOperand::b64;
@@ -1417,7 +1420,7 @@ namespace translator
                     break;
                     case uniqueElementCountSymbol:
                     {
-                        generateUniqueElementCount(inst, stmt, type, insn, call_name);
+                        generateUniqueElementCount(inst, stmt, type, insn, call_name, uInput);
                     }
                     break;
                     case atomicIncrementSymbol:
@@ -1827,7 +1830,7 @@ namespace translator
                                         unsigned long computeBaseAddress();\
                                         void atomicIncrement(unsigned long *memBuffer, unsigned long offset);\
                                         void atomicAdd(unsigned long *memBuffer, unsigned long offset, unsigned long toAdd);\
-                                        unsigned long uniqueElementCount(unsigned long *memBuffer);\
+                                        unsigned long uniqueElementCount(unsigned long *memBuffer, unsigned long overHalfWarp);\
                                         unsigned long deviceMem[2];\
                                         unsigned long sharedMem[2];";
                         
@@ -1897,6 +1900,7 @@ namespace translator
 	    data.registers = translator.registers;
 	    data.blockLabels = translator.blockLabels;
 	    data.specialRegisterMap = translator.specialRegisterMap;
+	    data.parameterMap = translator.parameterMap;
 	    
 	    return data;
     }

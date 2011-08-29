@@ -26,6 +26,15 @@
 #define REPORT_BASE 0
 
 namespace analysis {
+
+StructuralAnalysis::Node::~Node()
+{
+	for(auto n : childNode)
+	{
+		delete n;
+	}
+}
+
 // buildSimpleCFG - Build a Simple CFG out of the LLVM CFG
 void StructuralAnalysis::buildSimpleCFG(NodeSetTy &N) {
 	// Create a simple CFG node for every Basic Block
@@ -1811,6 +1820,14 @@ BEGIN:
 				goto BEGIN;
 			} 
 		}
+	}
+}
+
+StructuralAnalysis::~StructuralAnalysis()
+{
+	for(NodeSetTy::iterator n = Net.begin(); n != Net.end(); ++n)
+	{
+		delete *n;
 	}
 }
 

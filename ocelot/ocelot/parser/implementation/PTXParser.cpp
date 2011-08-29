@@ -1938,17 +1938,25 @@ namespace parser
 	{
 		report( "  Rule callPrototype: TOKEN_LABEL TOKEN_CALL_PROTOTYPE " 
 			<< "returnTypeList identifier argumentTypeList ';'" );
-			
+		
 		prototype.name = name;
-			
-		if( !prototypes.insert( std::make_pair( name, prototype ) ).second )
+		
+		PrototypeMap::iterator duplicate = prototypes.find( name );
+		
+		if( duplicate != prototypes.end() )
 		{
-			throw_exception( toString( location, *this ) 
-				<< "Function/Kernel prototype " << statement.name 
-				<< " already declared in this scope.", 
-				DuplicateDeclaration );
+			if( !prototype.compare( duplicate->second ) )
+			{
+				throw_exception( toString( location, *this ) 
+					<< "Function/Kernel prototype " << name
+					<< " already declared in this scope with "
+					"different arguments.", 
+					DuplicateDeclaration );
+			}
 		}
-	
+		
+		prototypes.insert( std::make_pair( name, prototype ) );
+		
 		operands.insert( std::make_pair( name, 
 			ir::PTXOperand( ir::PTXOperand::FunctionName, 
 			ir::PTXOperand::TypeSpecifier_invalid, name ) ) );

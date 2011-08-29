@@ -406,8 +406,7 @@ void PTXToLLVMTranslator::_debug(
 void PTXToLLVMTranslator::_reportReads( 
 	const analysis::DataflowGraph::Instruction& i )
 {
-	if( optimizationLevel != DebugOptimization
-		&& optimizationLevel != ReportOptimization ) return;
+	if( optimizationLevel != DebugOptimization ) return;
 
 	ir::LLVMCall call;
 	
@@ -505,8 +504,7 @@ void PTXToLLVMTranslator::_reportReads(
 void PTXToLLVMTranslator::_reportWrites( 
 	const analysis::DataflowGraph::Instruction& i )
 {
-	if( optimizationLevel != DebugOptimization
-		&& optimizationLevel != ReportOptimization ) return;
+	if( optimizationLevel != DebugOptimization ) return;
 
 	ir::LLVMCall call;
 	
@@ -645,9 +643,10 @@ void PTXToLLVMTranslator::_check( ir::PTXInstruction::AddressSpace space,
 			}
 			break;
 		}
-		default: assertM(false, "Invalid space " 
-			<< ir::PTXInstruction::toString( space ) 
-			<< " for memory checking.");
+		default: 
+		{
+			call.name = "@__ocelot_check_generic_memory_access";
+		}
 	}
 	
 	call.parameters.resize( 4 );
@@ -723,6 +722,9 @@ void PTXToLLVMTranslator::_addMemoryCheckingDeclarations()
 	
 	check.label = "__ocelot_check_argument_memory_access";
 	_llvmKernel->push_front( check );
+	
+	check.label = "__ocelot_check_generic_memory_access";
+	_llvmKernel->push_front( check );
 }
 
 void PTXToLLVMTranslator::_insertDebugSymbols()
@@ -771,7 +773,7 @@ void PTXToLLVMTranslator::_insertDebugSymbols()
 
 	_llvmKernel->push_front( instruction );
 
-	if( optimizationLevel != ReportOptimization ) return;		
+	if( optimizationLevel != DebugOptimization ) return;		
 
 	instruction.parameters.resize( 2 );
 	instruction.parameters[0].type.category 
@@ -2578,29 +2580,59 @@ void PTXToLLVMTranslator::_translateCvt( const ir::PTXInstruction& i )
 
 void PTXToLLVMTranslator::_translateCvta( const ir::PTXInstruction& i )
 {
-	switch( i.addressSpace )
+	if( ir::PTXInstruction::Global == i.addressSpace )
 	{
-	case ir::PTXInstruction::Global: _translateMov( i ); break;
-	case ir::PTXInstruction::Shared:
-	case ir::PTXInstruction::Local:
+		_translateMov( i );
+		return;
+	}
+	
+	if( i.toAddrSpace )
 	{
-		assertM( i.addressSpace != ir::PTXInstruction::Local
-			|| i.a.addressMode != ir::PTXOperand::Address
-			|| !i.a.isGlobalLocal, "Taking the address of a globally local "
-			"value is not supported." );
+		ir::LLVMInstruction::Operand base = _getMemoryBasePointer( 
+		 	i.addressSpace, false, false );
 		
+		ir::LLVMSub sub;
+		
+		sub.a = _translate( i.a );
+		sub.d = _destination( i );
+	
 		ir::LLVMPtrtoint toint;
 		
-		toint.a = _getLoadOrStorePointer( i.a, 
-			i.addressSpace, _translate( i.type ), i.vec );
-
-		toint.d = _destination( i );
-
+		toint.a = base;
+		toint.d = ir::LLVMInstruction::Operand( _tempRegister(), sub.d.type );
+		
 		_add( toint );
-
-		break;
+		
+		sub.b = toint.d;
+		
+		_add( sub );
 	}
-	default: assertM(false, "Invalid address space for cvta.");
+	else
+	{
+		switch( i.addressSpace )
+		{
+		case ir::PTXInstruction::Shared: /* fall through */
+		case ir::PTXInstruction::Local:
+		{
+			assertM( i.addressSpace != ir::PTXInstruction::Local
+				|| i.a.addressMode != ir::PTXOperand::Address
+				|| !i.a.isGlobalLocal, 
+				"Taking the address of a globally local "
+				"value is not supported." );
+		
+			ir::LLVMPtrtoint toint;
+		
+			toint.a = _getLoadOrStorePointer( i.a, 
+				i.addressSpace, _translate( i.type ), i.vec );
+
+			toint.d = _destination( i );
+
+			_add( toint );
+
+			break;
+		}
+		default: assertM(false, "Invalid address space for cvta.");
+		}
 	}
 }
 
@@ -7137,26 +7169,6 @@ void PTXToLLVMTranslator::_convert( const ir::LLVMInstruction::Operand& d,
 				
 					tempA = sitofp.d;
 				}
-				else if( modifier & ir::PTXInstruction::rm )
-				{
-					ir::LLVMFsub subtract;
-				
-					subtract.d.name = _tempRegister();
-					subtract.d.type.category = ir::LLVMInstruction::Type::Element;
-					subtract.d.type.type = ir::LLVMInstruction::F32;
-
-					subtract.a = tempA;
-				
-					subtract.b.constant = true;
-					subtract.b.f32 = 0.5;
-					subtract.b.type.category 
-						= ir::LLVMInstruction::Type::Element;
-					subtract.b.type.type = ir::LLVMInstruction::F32;
-				
-					_add( subtract );
-				
-					tempA = subtract.d;
-				}
 				else if( modifier & ir::PTXInstruction::rp )
 				{
 					ir::LLVMFadd add;
@@ -7168,7 +7180,7 @@ void PTXToLLVMTranslator::_convert( const ir::LLVMInstruction::Operand& d,
 					add.a = tempA;
 				
 					add.b.constant = true;
-					add.b.f32 = 0.5;
+					add.b.f32 = 1.0f;
 					add.b.type.category 
 						= ir::LLVMInstruction::Type::Element;
 					add.b.type.type = ir::LLVMInstruction::F32;
@@ -8492,6 +8504,7 @@ void PTXToLLVMTranslator::_initializeRegisters()
 
 void PTXToLLVMTranslator::_addGlobalDeclarations()
 {
+	report("Translating Globals...");
 	for( ir::Module::GlobalMap::const_iterator 
 		global = _llvmKernel->module->globals().begin(); 
 		global != _llvmKernel->module->globals().end(); ++global )
@@ -8499,6 +8512,7 @@ void PTXToLLVMTranslator::_addGlobalDeclarations()
 		if( global->second.statement.directive 
 			!= ir::PTXStatement::Global ) continue;
 	
+		report(" translating '" << global->second.statement.toString() << "'");
 		ir::LLVMStatement statement( 
 			ir::LLVMStatement::VariableDeclaration );
 
@@ -8532,6 +8546,8 @@ void PTXToLLVMTranslator::_addGlobalDeclarations()
 			global->second.statement.type );
 		statement.alignment = ir::PTXOperand::bytes( 
 			global->second.statement.type );
+	
+		report("  adding LLVM statement '" << statement.toString() << "'");
 	
 		_llvmKernel->push_front( statement );
 	}

@@ -83,6 +83,8 @@ namespace test
 			hydrazine::Timer::Second timeLimit;
 			/*! \brief Only enumerate the tests, do not run them */
 			bool enumerate;
+			/*! \brief print out status information as the test is running */
+			bool veryVerbose;
 		
 		public:
 			/*! \brief Constructor */

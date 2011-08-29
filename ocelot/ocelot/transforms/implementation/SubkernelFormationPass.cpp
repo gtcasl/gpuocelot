@@ -637,8 +637,6 @@ static void createScheduler(ir::PTXKernel& kernel,
 	while(scheduler->out_edges.size() > 2)
 	{
 		ir::ControlFlowGraph::edge_iterator target = scheduler->out_edges[0];
-		ir::ControlFlowGraph::edge_iterator 
-			fallthrough = scheduler->out_edges[1];
 		
 		ir::PTXInstruction* compare = new ir::PTXInstruction(
 			ir::PTXInstruction::SetP);

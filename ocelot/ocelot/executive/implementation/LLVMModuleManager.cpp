@@ -820,7 +820,7 @@ static void setupCallTargets(ir::PTXKernel& kernel,
 			if(ptx.opcode != ir::PTXInstruction::Call 
 				&& ptx.opcode != ir::PTXInstruction::Mov) continue;
 
-			if(ptx.opcode == ir::PTXInstruction::Call )
+			if(ptx.opcode == ir::PTXInstruction::Call)
 			{
 				if(ptx.tailCall) continue;
 				
@@ -1012,8 +1012,10 @@ static void optimize(llvm::Module& module,
 
 
 static void link(llvm::Module& module, const ir::PTXKernel& kernel, 
-	Device* device, const ir::ExternalFunctionSet& externals)
+	Device* device, const ir::ExternalFunctionSet& externals,
+	const LLVMModuleManager::ModuleDatabase& database)
 {
+	// Add global variables
 	report("  Linking global variables.");
 	
 	for(ir::Module::GlobalMap::const_iterator 
@@ -1030,12 +1032,43 @@ static void link(llvm::Module& module, const ir::PTXKernel& kernel,
 			Device::MemoryAllocation* allocation = device->getGlobalAllocation( 
 				kernel.module->path(), global->first);
 			assert(allocation != 0);
-			report("  Binding global variable " << global->first 
+			report("   Binding global variable " << global->first 
 				<< " to " << allocation->pointer());
 			LLVMState::jit()->addGlobalMapping(value, allocation->pointer());
 		}
 	}
 	
+	// Add global references to function entry points
+	report("  Linking global references to function entry points.");
+	for(ir::Module::GlobalMap::const_iterator 
+		global = kernel.module->globals().begin(); 
+		global != kernel.module->globals().end(); ++global) 
+	{
+		for(ir::PTXStatement::SymbolVector::const_iterator symbol =
+			global->second.statement.symbols.begin(); symbol !=
+			global->second.statement.symbols.end(); ++symbol)
+		{
+			assert(device != 0);
+			
+			size_t size = ir::PTXOperand::bytes(global->second.statement.type);
+			size_t offset = symbol->offset * size;
+			
+			Device::MemoryAllocation* allocation = device->getGlobalAllocation( 
+				kernel.module->path(), global->first);
+			assert(allocation != 0);
+			report("   Adding symbol " << symbol->name 
+				<< " to global " << global->first << " at byte-offset "
+				<< offset);
+			
+			LLVMModuleManager::FunctionId id = database.getFunctionId(
+				kernel.module->path(), symbol->name);
+			
+			std::memcpy((char*)allocation->pointer() + offset, &id, size);
+		}
+	}
+	
+	// Add externals
+	report("  Linking global pointers to external (host) functions.");
 	if(&externals == 0) return;
 	
 	for(ir::Module::FunctionPrototypeMap::const_iterator
@@ -1050,7 +1083,7 @@ static void link(llvm::Module& module, const ir::PTXKernel& kernel,
 			llvm::GlobalValue* value = module.getNamedValue(external->name());
 			assertM(value != 0, "Global function " << external->name() 
 				<< " not found in llvm module.");
-			report("  Binding global variable " << external->name() 
+			report("   Binding global variable " << external->name() 
 				<< " to " << external->functionPointer());
 			LLVMState::jit()->addGlobalMapping(value,
 				external->functionPointer());
@@ -1060,13 +1093,14 @@ static void link(llvm::Module& module, const ir::PTXKernel& kernel,
 
 static void codegen(LLVMModuleManager::Function& function, llvm::Module& module,
 	const ir::PTXKernel& kernel, Device* device,
-	const ir::ExternalFunctionSet& externals)
+	const ir::ExternalFunctionSet& externals,
+	const LLVMModuleManager::ModuleDatabase& database)
 {
 	report(" Generating native code.");
 	
 	LLVMState::jit()->addModule(&module);
 
-	link(module, kernel, device, externals);
+	link(module, kernel, device, externals, database);
 
 	report("  Invoking LLVM to Native JIT");
 
@@ -1154,7 +1188,7 @@ LLVMModuleManager::KernelAndTranslation::MetaData*
 	{
 		optimize(*_module, _optimizationLevel);
 		codegen(_metadata->function, *_module, *_kernel, _device,
-			_database->getExternalFunctionSet());
+			_database->getExternalFunctionSet(), *_database);
 	}
 	catch(...)
 	{

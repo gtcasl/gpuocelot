@@ -79,6 +79,8 @@ public:
 		bool isLoopHeader;
 		bool isBackEdge;
 		struct Node *loopExitNode;
+		
+		~Node();
 	} NodeTy;
 
 	// NodeSetTy - used to holds nodes in a set 
@@ -94,7 +96,7 @@ public:
 	typedef std::map<NodeTy *, bool> VisitMapTy;
 
 public:
-	StructuralAnalysis() {}
+	~StructuralAnalysis();
 	void analyze(ir::IRKernel& k);
 
 	// Get a text representation of the analysis

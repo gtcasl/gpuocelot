@@ -118,7 +118,8 @@ PTXOptimizer = env.Program('PTXOptimizer', \
 	['ocelot/tools/PTXOptimizer.cpp'], LIBS=ocelot_libs)
 env.Depends(PTXOptimizer, libocelot)
 OcelotServer = env.Program('OcelotServer', \
-	['ocelot/tools/OcelotServer.cpp'], LIBS=ocelot_libs + ['-lboost_system-mt'])
+	['ocelot/tools/OcelotServer.cpp'],
+	LIBS=ocelot_libs + ['-lboost_system-mt', '-lpthread'])
 env.Depends(OcelotServer, libocelot)
 OcelotHarness = env.Program('OcelotKernelTestHarness', \
 	['ocelot/tools/KernelTestHarness.cpp'], LIBS=ocelot_libs)

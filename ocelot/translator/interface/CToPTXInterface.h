@@ -92,6 +92,8 @@ unsigned long leastActiveThreadInWarp();
 
 unsigned long uniqueElementCount(unsigned long *memBuffer, unsigned long overHalfWarp);
 
+unsigned long activeThreadSum(unsigned long *memBuffer);
+
 void atomicIncrement(unsigned long *memBuffer, unsigned long offset);
 
 void atomicAdd(unsigned long *memBuffer, unsigned long offset, unsigned long toAdd);

@@ -732,7 +732,7 @@ namespace transforms
 	    opcodeMap[ir::PTXInstruction::CopySign] = ON_ARITH_OP;
 	    opcodeMap[ir::PTXInstruction::Lg2] = ON_ARITH_OP;
 	    opcodeMap[ir::PTXInstruction::Ex2] = ON_ARITH_OP;
-            opcodeMap[ir::PTXInstruction::Neg] = ON_ARITH_OP;
+        opcodeMap[ir::PTXInstruction::Neg] = ON_ARITH_OP;
 	   
 	    addressSpaceMap[GLOBAL] = ir::PTXInstruction::Global;
 	    addressSpaceMap[LOCAL] = ir::PTXInstruction::Local;

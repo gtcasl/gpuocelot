@@ -129,19 +129,6 @@ namespace api {
                     std::string logfile;
 			};
 			
-			/*! \brief configuration properties for BranchDivergenceInstrumentor */
-			class BranchDivergenceInstrumentor
-			{
-			public:
-					BranchDivergenceInstrumentor();
-				
-			public:
-					//! \brief specifies if instrumentation is enabled */
-					bool enabled;
-                    //! \brief specifies the logfile for storing results of this instrumentation */
-                    std::string logfile;
-			};
-
             /*! \brief configuration properties for analysis::BasicBlockInstrumentor */
 			class BasicBlockInstrumentor
 			{
@@ -163,19 +150,27 @@ namespace api {
                     BasicBlockInstrumentationType type;
 			};
 
-            /*! \brief configuration properties for analysis::MemoryEfficiencyInstrumentor */
-			class MemoryEfficiencyInstrumentor
+            /*! \brief configuration properties for analysis::WarpReductionInstrumentor */
+			class WarpReductionInstrumentor
 			{
 			public:
-					MemoryEfficiencyInstrumentor();
+					WarpReductionInstrumentor();
 				
+            public:
+                    enum InstrumentationType {
+			            memoryEfficiency,
+			            branchDivergence,
+                        instructionCount
+		            };	
+
 			public:
 			
 					//! \brief specifies if instrumentation is enabled */
 					bool enabled;
                     //! \brief specifies the logfile for storing results of this instrumentation */
-                    std::string logfile;			
-          
+                    std::string logfile;		
+                    //! \brief type of instrumentation */
+                    InstrumentationType type;	
 			};
 			
 		public:
@@ -188,11 +183,8 @@ namespace api {
             //! \brief Basic block execution count instrumentor
 			BasicBlockInstrumentor basicBlockInstrumentor;
 			
-			//! \brief Branch divergence instrumentor
-			BranchDivergenceInstrumentor branchDivergenceInstrumentor;
-			
-			//! \brief Memory efficiency instrumentor
-			MemoryEfficiencyInstrumentor memoryEfficiencyInstrumentor;
+			//! \brief Warp reduction instrumentor
+			WarpReductionInstrumentor warpReductionInstrumentor;
 		};
 
 		class CudaRuntimeImplementation {

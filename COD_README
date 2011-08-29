@@ -19,3 +19,8 @@ This sequence of commands executed in the /lynx directory should accomplish step
 	cd dill; ./configure && make && sudo make install; cd ..
 	cd ffs/cod; ./configure && make && sudo make install; cd ../..
 
+Also need to do the following:
+    modify dill_internal.h in dill directory:
+        find "virtual" and replace with "_virtual"
+    copy dill_internal.h to /usr/local/include.
+

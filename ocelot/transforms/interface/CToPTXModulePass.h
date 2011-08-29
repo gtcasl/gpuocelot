@@ -21,6 +21,7 @@
 /* function names */
 
 #define UNIQUE_ELEMENT_COUNT            "uniqueElementCount"
+#define ACTIVE_THREAD_SUM               "activeThreadSum"
 
 /* label names */
 
@@ -56,15 +57,19 @@ namespace transforms
 	        typedef std::map<std::string, size_t> FunctionParameterMap;
 			
 			FunctionParameterMap parameterMap;
+            std::string functionName;
 	
 		public:
-			
+        			
+            CToPTXModulePass(std::string functionName);
+
 			void initialize(ir::Module& m);
 			/*! \brief Run the pass on a specific module */
 			void runOnModule(ir::Module& m);
 			void finalize();
 			
         private:
+            ir::PTXKernel * activeThreadSum();
 			ir::PTXKernel * uniqueElementCount();
 	};
 }

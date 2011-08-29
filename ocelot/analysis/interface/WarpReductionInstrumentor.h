@@ -1,11 +1,11 @@
-/*! \file MemoryEfficiencyInstrumentor.h
+/*! \file WarpReductionInstrumentor.h
 	\date Saturday July 30, 2011
 	\author Naila Farooqui <naila@cc.gatech.edu>
-	\brief The header file for MemoryEfficiencyInstrumentor
+	\brief The header file for WarpReductionInstrumentor
 */
 
-#ifndef MEMORY_EFFICIENCY_INSTRUMENTOR_H_INCLUDED
-#define MEMORY_EFFICIENCY_INSTRUMENTOR_H_INCLUDED
+#ifndef WARP_REDUCTION_INSTRUMENTOR_H_INCLUDED
+#define WARP_REDUCTION_INSTRUMENTOR_H_INCLUDED
 
 #include <string>
 #include <ocelot/ir/interface/Module.h>
@@ -14,12 +14,20 @@
 
 namespace analysis
 {
-    /*! \brief Able to run the memory efficiency instrumentation pass over PTX modules */
-	class MemoryEfficiencyInstrumentor : public analysis::PTXInstrumentor
+    /*! \brief Able to run the warp-level reduction instrumentation passes over PTX modules */
+	class WarpReductionInstrumentor : public analysis::PTXInstrumentor
 	{
 		public:
-		
-            /*! \brief The memory efficiency counter */
+            
+            enum InstrumentationType {
+		        memoryEfficiency,
+		        branchDivergence,
+                instructionCount
+		    };		
+
+            InstrumentationType type;
+
+            /*! \brief The counter */
             size_t *counter;        
 
             /*! \brief The description of the specified pass */
@@ -27,7 +35,7 @@ namespace analysis
         	
 		public:
 			/*! \brief The default constructor */
-			MemoryEfficiencyInstrumentor();
+			WarpReductionInstrumentor();
 
             /*! \brief The checkConditions method verifies that the defined conditions are met for this instrumentation */
             void checkConditions();

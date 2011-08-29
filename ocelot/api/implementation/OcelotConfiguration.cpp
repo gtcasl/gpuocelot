@@ -68,7 +68,7 @@ api::OcelotConfiguration::Instrumentation::ClockCycleCountInstrumentor::ClockCyc
 
 }
 
-api::OcelotConfiguration::Instrumentation::BranchDivergenceInstrumentor::BranchDivergenceInstrumentor():
+api::OcelotConfiguration::Instrumentation::WarpReductionInstrumentor::WarpReductionInstrumentor():
         enabled(false)
 {
 
@@ -80,13 +80,6 @@ api::OcelotConfiguration::Instrumentation::BasicBlockInstrumentor::BasicBlockIns
 {
 
 }
-
-api::OcelotConfiguration::Instrumentation::MemoryEfficiencyInstrumentor::MemoryEfficiencyInstrumentor():
-        enabled(false)
-{
-
-}
-
 
 api::OcelotConfiguration::Instrumentation::Instrumentation()
 {
@@ -149,25 +142,30 @@ static void initializeInstrument(api::OcelotConfiguration::Instrumentation &inst
                 api::OcelotConfiguration::Instrumentation::BasicBlockInstrumentor::instructionCount;
     }
 
-    basicBlockConfig = config["memoryIntensity"];
-    if (!basicBlockConfig.is_null()) {
-            instrument.basicBlockInstrumentor.enabled = basicBlockConfig.parse<bool>("enabled", true);
-            instrument.basicBlockInstrumentor.logfile = basicBlockConfig.parse<std::string>("logfile", "");
-            instrument.basicBlockInstrumentor.type =        
-                api::OcelotConfiguration::Instrumentation::BasicBlockInstrumentor::memoryIntensity;
+    hydrazine::json::Visitor warpReductionConfig = config["branchDivergence"];
+    if (!warpReductionConfig.is_null()) {
+            instrument.warpReductionInstrumentor.enabled = warpReductionConfig.parse<bool>("enabled", true);
+            instrument.warpReductionInstrumentor.logfile = warpReductionConfig.parse<std::string>("logfile", "");
+            instrument.warpReductionInstrumentor.type =        
+                api::OcelotConfiguration::Instrumentation::WarpReductionInstrumentor::branchDivergence;
     }
     
-    hydrazine::json::Visitor branchDivConfig = config["branchDivergence"];
-    if (!branchDivConfig.is_null()) {
-            instrument.branchDivergenceInstrumentor.enabled = branchDivConfig.parse<bool>("enabled", true);
-            instrument.branchDivergenceInstrumentor.logfile = branchDivConfig.parse<std::string>("logfile", "");
+    warpReductionConfig = config["memoryEfficiency"];
+    if (!warpReductionConfig.is_null()) {
+            instrument.warpReductionInstrumentor.enabled = warpReductionConfig.parse<bool>("enabled", true);
+            instrument.warpReductionInstrumentor.logfile = warpReductionConfig.parse<std::string>("logfile", "");
+            instrument.warpReductionInstrumentor.type =        
+                api::OcelotConfiguration::Instrumentation::WarpReductionInstrumentor::memoryEfficiency;
     }
     
-    hydrazine::json::Visitor memoryEfficiencyConfig = config["memoryEfficiency"];
-    if (!memoryEfficiencyConfig.is_null()) {
-            instrument.memoryEfficiencyInstrumentor.enabled = memoryEfficiencyConfig.parse<bool>("enabled", true);
-            instrument.memoryEfficiencyInstrumentor.logfile = memoryEfficiencyConfig.parse<std::string>("logfile", "");
+    warpReductionConfig = config["warpInstructionCount"];
+    if (!warpReductionConfig.is_null()) {
+            instrument.warpReductionInstrumentor.enabled = warpReductionConfig.parse<bool>("enabled", true);
+            instrument.warpReductionInstrumentor.logfile = warpReductionConfig.parse<std::string>("logfile", "");
+            instrument.warpReductionInstrumentor.type =        
+                api::OcelotConfiguration::Instrumentation::WarpReductionInstrumentor::instructionCount;
     }
+
     
 }
 

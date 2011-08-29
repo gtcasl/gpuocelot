@@ -158,17 +158,23 @@ namespace ocelot
             _clockCycleCountInstrumentor.output = c.instrument.clockCycleCountInstrumentor.logfile;
             ocelot::addInstrumentor(_clockCycleCountInstrumentor);
         }
-        if(c.instrument.branchDivergenceInstrumentor.enabled)
+        if(c.instrument.warpReductionInstrumentor.enabled)
         {   
-            report("Creating branch divergence instrumentor");
-            _branchDivergenceInstrumentor.output = c.instrument.branchDivergenceInstrumentor.logfile;
-            ocelot::addInstrumentor(_branchDivergenceInstrumentor);
-        }
-        if(c.instrument.memoryEfficiencyInstrumentor.enabled)
-        {   
-            report("Creating memory efficiency instrumentor");
-            _memoryEfficiencyInstrumentor.output = c.instrument.memoryEfficiencyInstrumentor.logfile;
-            ocelot::addInstrumentor(_memoryEfficiencyInstrumentor);
+            report("Creating warp reduction instrumentor");
+             switch(c.instrument.warpReductionInstrumentor.type) {
+                case api::OcelotConfiguration::Instrumentation::WarpReductionInstrumentor::memoryEfficiency:
+                    _warpReductionInstrumentor.type = analysis::WarpReductionInstrumentor::memoryEfficiency;
+                    break;
+                case api::OcelotConfiguration::Instrumentation::WarpReductionInstrumentor::instructionCount:
+                    _warpReductionInstrumentor.type = analysis::WarpReductionInstrumentor::instructionCount;
+                    break;
+                case api::OcelotConfiguration::Instrumentation::WarpReductionInstrumentor::branchDivergence:
+                    _warpReductionInstrumentor.type = analysis::WarpReductionInstrumentor::branchDivergence;
+                    break;
+            }
+             
+            _warpReductionInstrumentor.output = c.instrument.warpReductionInstrumentor.logfile;
+            ocelot::addInstrumentor(_warpReductionInstrumentor);    
         }
         if(c.instrument.basicBlockInstrumentor.enabled)
         {   

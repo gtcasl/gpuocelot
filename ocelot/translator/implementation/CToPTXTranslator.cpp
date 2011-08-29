@@ -946,6 +946,151 @@ namespace translator
         
         registerMap[REG + boost::lexical_cast<std::string>(insn->opnds.calli.src)] = rb0;       
     }
+
+   void CToPTXTranslator::generateActiveThreadSum(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, 
+        virtual_insn *insn, std::string callName)
+    {
+        inst.opcode = ir::PTXInstruction::Not;
+        inst.type = ir::PTXOperand::b64;
+        inst.d.identifier = COD_REG + boost::lexical_cast<std::string>(++maxRegister);
+        std::string notResult = inst.d.identifier;
+        registers.push_back(inst.d.identifier);  
+        inst.a.addressMode = ir::PTXOperand::Immediate;
+        inst.a.imm_uint = 31;
+
+        setPredicate(inst);
+        stmt.instruction = inst;
+        statements.push_back(stmt);    
+
+        inst.opcode = ir::PTXInstruction::And;
+        inst.type = ir::PTXOperand::b64;
+        inst.d.type = ir::PTXOperand::b64;
+        inst.b.type = ir::PTXOperand::b64;
+        inst.a.addressMode = ir::PTXOperand::Register;
+        inst.a.identifier = specialRegisterMap["blockThreadId"];
+        inst.b.addressMode = ir::PTXOperand::Register;
+        inst.b.identifier = notResult;
+
+        setPredicate(inst);
+        stmt.instruction = inst;
+        statements.push_back(stmt);    
+
+        inst.opcode = ir::PTXInstruction::Mad;
+        inst.modifier = ir::PTXInstruction::lo;
+        inst.type = type;
+        inst.d.type = type;
+        inst.a.type = type;
+        inst.b.type = type;
+
+        inst.d.identifier = COD_REG + boost::lexical_cast<std::string>(++maxRegister);
+        std::string madResult = inst.d.identifier;
+        registers.push_back(inst.d.identifier);  
+        inst.a.identifier = notResult;
+        inst.b.addressMode = ir::PTXOperand::Immediate;
+        inst.b.imm_uint = sizeof(size_t);
+        inst.c.addressMode = ir::PTXOperand::Register;
+        inst.c.identifier = sharedMemReg;
+        inst.c.type = type;
+
+        setPredicate(inst);
+        stmt.instruction = inst;
+        statements.push_back(stmt);
+
+        inst.a.addressMode = inst.b.addressMode = inst.c.addressMode = ir::PTXOperand::Invalid;
+        inst.a.identifier.clear();
+        inst.b.identifier.clear();
+        inst.c.identifier.clear();
+
+        ir::PTXStatement reductionBuffer = ir::PTXStatement(ir::PTXStatement::Param);
+        reductionBuffer.name = "reductionBuffer";
+        reductionBuffer.type = type;
+        reductionBuffer.array.stride = ir::PTXStatement::ArrayStrideVector(1, 1);
+        statements.push_back(reductionBuffer);
+
+        ir::PTXStatement sum = ir::PTXStatement(ir::PTXStatement::Param);
+        sum.name = "sum";
+        sum.type = type;
+        statements.push_back(sum);
+
+        ir::PTXStatement bitMask = ir::PTXStatement(ir::PTXStatement::Param);
+        bitMask.name = "bitMask";
+        bitMask.type = ir::PTXOperand::b32;
+        statements.push_back(bitMask);
+
+        inst.type = ir::PTXOperand::b32;
+        inst.opcode = ir::PTXInstruction::St;
+        inst.addressSpace = ir::PTXInstruction::Param;
+
+        inst.a.addressMode = ir::PTXOperand::Register;
+        inst.a.type = ir::PTXOperand::b32;
+
+        inst.a.identifier = specialRegisterMap["bitmask"];
+        inst.d.identifier = bitMask.name;
+        inst.d.addressMode = ir::PTXOperand::Address;
+        inst.d.offset = 0;
+
+        setPredicate(inst);
+        stmt.instruction = inst;
+        statements.push_back(stmt);
+
+        inst.type = type;
+        inst.opcode = ir::PTXInstruction::St;
+        inst.addressSpace = ir::PTXInstruction::Param;
+
+        inst.a.addressMode = ir::PTXOperand::Register;
+        inst.a.type = type;
+
+        inst.a.identifier = madResult;
+        inst.d.identifier = reductionBuffer.name;
+        inst.d.addressMode = ir::PTXOperand::Address;
+        inst.d.offset = 0;
+
+        setPredicate(inst);
+        stmt.instruction = inst;
+        statements.push_back(stmt);
+
+        inst.opcode = ir::PTXInstruction::Call;
+        inst.tailCall = false;
+        inst.a.addressMode = ir::PTXOperand::Label;
+        inst.a.identifier = callName;
+
+        inst.b.addressMode = ir::PTXOperand::ArgumentList;
+        ir::PTXOperand input1 = ir::PTXOperand(ir::PTXOperand::Register, reductionBuffer.name);
+        input1.type = type;
+        inst.b.array.push_back(input1);
+        ir::PTXOperand input2 = ir::PTXOperand(ir::PTXOperand::Register, bitMask.name);
+        input2.type = ir::PTXOperand::b32;
+        inst.b.array.push_back(input2);
+
+        inst.d.addressMode = ir::PTXOperand::ArgumentList;
+        ir::PTXOperand retVal = ir::PTXOperand(ir::PTXOperand::Register, sum.name);
+        retVal.type = type;
+        inst.d.array.push_back(retVal);
+
+        setPredicate(inst);
+        stmt.instruction = inst;
+        statements.push_back(stmt);    
+
+        inst.opcode = ir::PTXInstruction::Ld;
+        inst.addressSpace = ir::PTXInstruction::Param;
+
+        inst.d.identifier = madResult;
+        inst.d.addressMode = ir::PTXOperand::Register;
+        inst.d.type = type;
+
+        inst.a.identifier = sum.name;
+        inst.a.addressMode = ir::PTXOperand::Address;
+        inst.a.offset = 0;
+
+        setPredicate(inst);
+        stmt.instruction = inst;
+        statements.push_back(stmt);
+
+        specialRegisterMap["sum"] = inst.d.identifier;
+
+        registerMap[REG + boost::lexical_cast<std::string>(insn->opnds.calli.src)] = inst.d.identifier;  
+
+    }
     
     void CToPTXTranslator::generateUniqueElementCount(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, 
         virtual_insn *insn, std::string callName, unsigned long uInput)
@@ -1423,6 +1568,11 @@ namespace translator
                         generateUniqueElementCount(inst, stmt, type, insn, call_name, uInput);
                     }
                     break;
+                    case activeThreadSumSymbol:
+                    {
+                        generateActiveThreadSum(inst, stmt, type, insn, call_name);
+                    }
+                    break;
                     case atomicIncrementSymbol:
                     {
                         generateAtomicIncrement(inst, stmt, type, insn, uInput);
@@ -1867,6 +2017,7 @@ namespace translator
                                         void atomicIncrement(unsigned long *memBuffer, unsigned long offset);\
                                         void atomicAdd(unsigned long *memBuffer, unsigned long offset, unsigned long toAdd);\
                                         unsigned long uniqueElementCount(unsigned long *memBuffer, unsigned long overHalfWarp);\
+                                        unsigned long activeThreadSum(unsigned long *memBuffer);\
                                         unsigned long globalMem[1];\
                                         unsigned long sharedMem[1];";
                         
@@ -1904,6 +2055,7 @@ namespace translator
             {(char *)"leastActiveThreadInWarp", (void*)(unsigned long)(*leastActiveThreadInWarp)},
             {(char *)"computeBaseAddress", (void*)(unsigned long)(*computeBaseAddress)},
             {(char *)"uniqueElementCount", (void*)(unsigned long)(*uniqueElementCount)},
+            {(char *)"activeThreadSum", (void*)(unsigned long)(*activeThreadSum)},
             {(char *)"atomicIncrement", (void*)(*atomicIncrement)},
             {(char *)"atomicAdd", (void*)(*atomicAdd)},
             {(char *)"globalMem", (void *)GLOBAL_MEM},
@@ -1977,6 +2129,7 @@ namespace translator
         functionCalls["getPredicateValue"] = getPredicateValueSymbol;        
         functionCalls["computeBaseAddress"] = computeBaseAddressSymbol;
         functionCalls["uniqueElementCount"] = uniqueElementCountSymbol;
+        functionCalls["activeThreadSum"] = activeThreadSumSymbol;
         functionCalls["leastActiveThreadInWarp"] = leastActiveThreadInWarpSymbol;
         functionCalls["atomicIncrement"] = atomicIncrementSymbol;
         functionCalls["atomicAdd"] = atomicAddSymbol;

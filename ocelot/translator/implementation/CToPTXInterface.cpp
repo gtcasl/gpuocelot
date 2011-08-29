@@ -134,11 +134,12 @@ unsigned long uniqueElementCount(unsigned long *memBuffer, unsigned long overHal
     return 1;
 }
 
-void atomicIncrement(unsigned long *memBuffer, unsigned long offset) {
-    return;
+unsigned long activeThreadSum(unsigned long *memBuffer) {
+    return 1;
 }
 
-void atomicIncrement0(unsigned long *memBuffer, unsigned long offset) {
+
+void atomicIncrement(unsigned long *memBuffer, unsigned long offset) {
     return;
 }
 

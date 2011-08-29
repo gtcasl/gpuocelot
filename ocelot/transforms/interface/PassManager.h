@@ -85,11 +85,14 @@ public:
 	void invalidateAnalysis(int type);
 
 public:
+	// Come on MSVS, get your act together!		
+	#if !defined(_MSC_VER)
 	/*! \brief Disallow the copy constructor */
 	PassManager(const PassManager&) = delete;
 	/*! \brief Disallow the assignment operator */
 	const PassManager& operator=(const PassManager&) = delete;
-	
+	#endif
+
 private:
 	typedef std::multimap<int, Pass*, std::greater<int>> PassMap;
 	

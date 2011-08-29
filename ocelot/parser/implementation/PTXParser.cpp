@@ -1170,9 +1170,6 @@ namespace parser
 		statement.name = name;
 		statement.alignment = alignment;
 		statement.type = operand.type;
-		statement.array.stride.assign( 
-			statement.array.stride.begin(), 
-			statement.array.stride.end() );
 	
 		operand.identifier = statement.name;
 		operand.addressMode = ir::PTXOperand::Address;

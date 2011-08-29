@@ -37,7 +37,6 @@ namespace executive
 	class RemoteDevice : public Device
 	{
 		public:
-			friend class RemoteDevice::MemoryAllocation;
 			/*! \brief An interface to a managed memory allocation */
 			class MemoryAllocation : public Device::MemoryAllocation
 			{
@@ -87,6 +86,8 @@ namespace executive
 					void copy(Device::MemoryAllocation* allocation, 
 						size_t toOffset, size_t fromOffset, size_t size) const;				
 			};
+
+			friend class RemoteDevice::MemoryAllocation;
 
 			/*! \brief A map of memory allocations */
 			typedef std::map<void*, MemoryAllocation*> AllocationMap;

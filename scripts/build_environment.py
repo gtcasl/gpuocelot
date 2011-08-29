@@ -75,6 +75,11 @@ def getBoostPaths():
 		bin_path = '/usr/bin'
 		lib_path = '/usr/lib'
 		inc_path = '/usr/include'
+	elif os.name == 'nt':
+		boost_path = 'C:\\code\\boost_1_46_1\\stage-64'
+		bin_path = boost_path + "\\bin"
+		lib_path = boost_path + "\\lib"
+		inc_path = boost_path + "\\.."
 	else:
 		raise ValueError, 'Error: unknown OS.  Where is boost installed?'
 
@@ -125,6 +130,10 @@ def getGLEWPaths(env):
 		bin_path = '/usr/bin'
 		lib_path = '/usr/lib'
 		inc_path = '/usr/include'
+	elif os.name == 'nt':
+		bin_path = ''
+		lib_path = ''
+		inc_path = ''
 	else:
 		raise ValueError, 'Error: unknown OS.  Where is GLEW installed?'
 
@@ -154,16 +163,13 @@ def getLLVMPaths(enabled):
 		return (False, [], [], [], [], [], [])
 	
 	# determine defaults
-	if os.name == 'posix':
-		bin_path = os.popen('llvm-config --bindir').read().split()
-		lib_path = os.popen('llvm-config --libdir').read().split()
-		inc_path = os.popen('llvm-config --includedir').read().split()
-		cflags   = os.popen('llvm-config --cppflags').read().split()
-		lflags   = os.popen('llvm-config --ldflags').read().split()
-		libs     = os.popen('llvm-config --libs core jit native \
-			asmparser instcombine').read().split()
-	else:
-		raise ValueError, 'Error: unknown OS.  Where is LLVM installed?'
+	bin_path = os.popen('llvm-config --bindir').read().split()
+	lib_path = os.popen('llvm-config --libdir').read().split()
+	inc_path = os.popen('llvm-config --includedir').read().split()
+	cflags   = os.popen('llvm-config --cppflags').read().split()
+	lflags   = os.popen('llvm-config --ldflags').read().split()
+	libs     = os.popen('llvm-config --libs core jit native \
+		asmparser instcombine').read().split()
 	
 	# remove -DNDEBUG
 	if '-DNDEBUG' in cflags:
@@ -204,9 +210,9 @@ gCompilerOptions = {
 			'optimization' : '-O2', 'debug' : '-g',
 			'exception_handling' : '',
 			'standard': ['-stdlib=libc++', '-std=c++0x', '-pthread']},
-		'cl'  : {'warn_all' : '/Wall', 'warn_errors' : '/WX',
-			'optimization' : '/Ox', 'debug' : ['/Zi', '-D_DEBUG', '/MTd'],
-			'exception_handling' : '/EHsc', 'standard': ''}
+		'cl'  : {'warn_all' : '', 'warn_errors' : '/WX',
+				'optimization' : '/Ox', 'debug' : ['/Zi', '-D_DEBUG', '/MTd'], 
+				'exception_handling' : '/EHsc', 'standard': ''}
 	}
 
 
@@ -320,6 +326,16 @@ def getVersion(base):
 
 	return base + '.' + revision
 
+def getExtraLibs():
+	if os.name == 'nt':
+		return ['libboost_system-vc100-mt-s-1_46_1.lib',
+			'libboost_filesystem-vc100-mt-s-1_46_1.lib',
+			'libboost_thread-vc100-mt-s-1_46_1.lib']
+	else:
+		return ['-lboost_system-mt', '-lboost_filesystem-mt',
+			'-lboost_thread-mt']
+
+
 def defineConfigFlags(env):
 	
 	include_path = os.path.join(env['INSTALL_PATH'], "include")
@@ -348,6 +364,9 @@ def importEnvironment():
 	
 	if 'CC' in os.environ:
 		env['CC'] = os.environ['CC']
+	
+	if 'TMP' in os.environ:
+		env['TMP'] = os.environ['TMP']
 	
 	if 'LD_LIBRARY_PATH' in os.environ:
 		env['LD_LIBRARY_PATH'] = os.environ['LD_LIBRARY_PATH']
@@ -464,8 +483,8 @@ def Environment():
 	env.AppendUnique(LIBPATH = os.path.abspath('.'))
 	
 	# set extra libs 
-	env.Replace(EXTRA_LIBS=['-lboost_system-mt', '-lboost_filesystem-mt', \
-		'-lboost_thread-mt'])
+	env.Replace(EXTRA_LIBS=getExtraLibs())
+
 	if glew:
 		env.AppendUnique(EXTRA_LIBS = ['-lGLEW'])
 	
@@ -479,6 +498,8 @@ def Environment():
 	
 	# include the build directory in case of generated files
 	env.Prepend(CPPPATH = env.Dir('.'))
+	if os.name == 'nt':
+		env.AppendUnique(CPPPATH = ["D:\\MinGW\\msys\\1.0\\include"])
 
 	# generate OcelotConfig flags
 	defineConfigFlags(env)

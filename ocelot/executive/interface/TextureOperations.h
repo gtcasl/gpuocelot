@@ -11,8 +11,8 @@
 #include <ocelot/ir/interface/Texture.h>
 #include <ocelot/trace/interface/TraceEvent.h>
 
-#include <math.h>
-#include <float.h>
+#include <cmath>
+#include <cfloat>
 
 #include <hydrazine/interface/Casts.h>
 #include <hydrazine/implementation/debug.h>

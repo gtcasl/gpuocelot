@@ -20,6 +20,7 @@
 
 // Hydrazine Includes
 #include <hydrazine/interface/Casts.h>
+#include <hydrazine/interface/FloatingPoint.h>
 #include <hydrazine/implementation/debug.h>
 #include <hydrazine/implementation/math.h>
 
@@ -28,8 +29,6 @@
 #include <cmath>
 #include <cstring>
 #include <climits>
-#include <cfloat>
-#include <cfenv> 
 #include <algorithm>
 
 // Preprocessor Macros
@@ -115,8 +114,8 @@ static T CTAAbs(T a) {
 template<typename T>
 bool issubnormal(T r0)
 {
-	return !std::isnormal(r0) && !std::isnan(r0)
-		&& !std::isinf(r0) && r0 != (T)0;
+	return !hydrazine::isnormal(r0) && !hydrazine::isnan(r0)
+		&& !hydrazine::isinf(r0) && r0 != (T)0;
 }
 
 #define max(a, b) ((a) < (b) ? (b) : (a))
@@ -315,15 +314,16 @@ ir::PTXU32 executive::CooperativeThreadArray::getSpecialValue(
 
 ir::PTXF32 executive::CooperativeThreadArray::sat(int modifier, ir::PTXF32 f) {
 	if (modifier & ir::PTXInstruction::sat) {
-		return (f <= 0 || std::isnan(f) ? 0 : (f >= 1.0f ? 1.0f : f));
+		return (f <= 0 || hydrazine::isnan(f) ? 0 : (f >= 1.0f ? 1.0f : f));
 	}
 	return f;
 }
 
 static ir::PTXF32 ftz(int modifier, ir::PTXF32 f) {
 	if (modifier & ir::PTXInstruction::ftz) {
-		return (!std::isnormal(f) && !std::isnan(f) && !std::isinf(f)
-			? std::copysign(0.0f, f) : f);
+		return (!hydrazine::isnormal(f) &&
+			!hydrazine::isnan(f) && !hydrazine::isinf(f))
+			? hydrazine::copysign(0.0f, f) : f;
 	}
 	return f;
 }
@@ -2245,35 +2245,32 @@ void executive::CooperativeThreadArray::eval_Brev(CTAContext& context,
 	}
 }
 
-void executive::CooperativeThreadArray::eval_Bfe(CTAContext &context, const ir::PTXInstruction &instr) {
+void executive::CooperativeThreadArray::eval_Bfe(CTAContext &context,
+	const ir::PTXInstruction &instr) {
 	trace();
 	for (int tid = 0; tid < threadCount; tid++) {
 		if (!context.predicated(tid, instr)) {
 			continue;
 		}
-		bool size32bit = (instr.type == ir::PTXOperand::u32 || instr.type == ir::PTXOperand::s32);
-		bool isSigned = (instr.type == ir::PTXOperand::s32 || instr.type == ir::PTXOperand::s64);
+		bool size32bit = (instr.type == ir::PTXOperand::u32
+			|| instr.type == ir::PTXOperand::s32);
+		bool isSigned = (instr.type == ir::PTXOperand::s32
+			|| instr.type == ir::PTXOperand::s64);
 		
 		ir::PTXU32 msb = (size32bit ? 31 : 63);
 		ir::PTXU32 pos = operandAsU32(tid, instr.b);
 		ir::PTXU32 len = operandAsU32(tid, instr.c);
-		ir::PTXU32 sbit = 0;
 		ir::PTXU64 a = operandAsU64(tid, instr.a);
 		ir::PTXU64 mask = ((1 << len) - 1);
 		ir::PTXU64 result = 0;
-		
-		if (instr.type == ir::PTXOperand::s32 || instr.type == ir::PTXOperand::s64) {
-			ir::PTXU32 start = pos + len - 1;
-			ir::PTXU32 mbit = (start < msb ? msb : start);
-			sbit = ((a >> mbit) & 0x01);
-		}
 		
 		if (isSigned) {
 			result = (msb ? -1 : 0) & (~mask);
 		}
 		result |= ((a >> pos) & mask);
 		if (size32bit) {
-			setRegAsU32(tid, instr.d.reg, hydrazine::bit_cast<ir::PTXU32, ir::PTXU64>(result));
+			setRegAsU32(tid, instr.d.reg,
+				hydrazine::bit_cast<ir::PTXU32, ir::PTXU64>(result));
 		}
 		else {
 			setRegAsU64(tid, instr.d.reg, result);
@@ -2288,13 +2285,9 @@ void executive::CooperativeThreadArray::eval_Bar(CTAContext& context,
 	const PTXInstruction& instr) {
 	trace();
 	
-	ir::PTXU32 barrierName = 0;
 	size_t participating = context.active.size();
 	
-	if (instr.a.addressMode == ir::PTXOperand::Immediate) {
-		barrierName = (ir::PTXU32)instr.a.imm_uint;
-	}
-	else if (instr.a.addressMode != ir::PTXOperand::Invalid) {
+	if (instr.a.addressMode != ir::PTXOperand::Invalid) {
 		report("eval_Bar() - barrier name must be constant");
 		throw RuntimeException("barrier name must be a constant in this "
 			"version of Ocelot PTX Emulator",
@@ -2369,7 +2362,8 @@ void executive::CooperativeThreadArray::eval_Bra(CTAContext &context,
 	Reconverge instruction is inserted into the PTX during analysis and construction of the
 	emulated kernel. 
 */
-void executive::CooperativeThreadArray::eval_Reconverge(CTAContext &context, const PTXInstruction &instr) {
+void executive::CooperativeThreadArray::eval_Reconverge(
+	CTAContext &context, const PTXInstruction &instr) {
 	using namespace std;
 	trace();
 	
@@ -2406,7 +2400,7 @@ void executive::CooperativeThreadArray::copyArgument(const ir::PTXOperand& s,
 */
 void executive::CooperativeThreadArray::eval_Call(CTAContext &context, 
 	const PTXInstruction &instr) {
-	typedef std::unordered_map<int, CTAContext> TargetMap;
+	typedef std::unordered_map<PTXU64, CTAContext> TargetMap;
 	trace();
 	
 	// Is this a direct or indirect call?
@@ -2736,35 +2730,35 @@ void executive::CooperativeThreadArray::eval_Cos(CTAContext &context,
 
 template< typename Int >
 static ir::PTXF32 toF32(Int value, int modifier) {
-	int mode = fegetround();
+	int mode = hydrazine::fegetround();
 	if (modifier & PTXInstruction::rn) {
-		fesetround(FE_TONEAREST);
+		hydrazine::fesetround(FE_TONEAREST);
 	} else if (modifier & PTXInstruction::rz) {
-		fesetround(FE_TOWARDZERO);
+		hydrazine::fesetround(FE_TOWARDZERO);
 	} else if (modifier & PTXInstruction::rm) {
-		fesetround(FE_DOWNWARD);
+		hydrazine::fesetround(FE_DOWNWARD);
 	} else if (modifier & PTXInstruction::rp) {
-		fesetround(FE_UPWARD);
+		hydrazine::fesetround(FE_UPWARD);
 	}
 	ir::PTXF32 d = value;
-	fesetround(mode);
+	hydrazine::fesetround(mode);
 	return d;
 }
 
 template< typename Int >
 static ir::PTXF64 toF64(Int value, int modifier) {
-	int mode = fegetround();
+	int mode = hydrazine::fegetround();
 	if (modifier & PTXInstruction::rn) {
-		fesetround(FE_TONEAREST);
+		hydrazine::fesetround(FE_TONEAREST);
 	} else if (modifier & PTXInstruction::rz) {
-		fesetround(FE_TOWARDZERO);
+		hydrazine::fesetround(FE_TOWARDZERO);
 	} else if (modifier & PTXInstruction::rm) {
-		fesetround(FE_DOWNWARD);
+		hydrazine::fesetround(FE_DOWNWARD);
 	} else if (modifier & PTXInstruction::rp) {
-		fesetround(FE_UPWARD);
+		hydrazine::fesetround(FE_UPWARD);
 	}
 	ir::PTXF64 d = value;
-	fesetround(mode);
+	hydrazine::fesetround(mode);
 	return d;
 }
 
@@ -2772,9 +2766,9 @@ template< typename Float >
 static Float round(Float a, int modifier) {
 	Float fd = 0;
 	if (modifier & PTXInstruction::rn) {
-		fd = nearbyintf(a);
+		fd = hydrazine::nearbyintf(a);
 	} else if (modifier & PTXInstruction::rz) {
-		fd = trunc(a);
+		fd = hydrazine::trunc(a);
 	} else if (modifier & PTXInstruction::rm) {
 		fd = floor(a);
 	} else if (modifier & PTXInstruction::rp) {
@@ -4157,7 +4151,7 @@ void executive::CooperativeThreadArray::eval_Ex2(CTAContext &context,
 			if (!context.predicated(threadID, instr)) continue;
 			
 			PTXF32 d, a = operandAsF32(threadID, instr.a);
-			d = ftz(instr.modifier, std::exp2f(a));
+			d = ftz(instr.modifier, hydrazine::exp2f(a));
 			setRegAsF32(threadID, instr.d.reg, d);
 		}
 	}	
@@ -4851,7 +4845,7 @@ void executive::CooperativeThreadArray::eval_Lg2(CTAContext &context,
 		for (int threadID = 0; threadID < threadCount; threadID++) {
 			if (!context.predicated(threadID, instr)) continue;
 			PTXF32 d, a = ftz(instr.modifier, operandAsF32(threadID, instr.a));
-			d = ftz(instr.modifier, std::log2f(a));
+			d = ftz(instr.modifier, hydrazine::log2f(a));
 			setRegAsF32(threadID, instr.d.reg, d);
 		}
 	}	
@@ -5098,11 +5092,11 @@ void executive::CooperativeThreadArray::eval_Max(CTAContext &context,
 			PTXF32 d, a = operandAsF32(threadID, instr.a),
 				b = operandAsF32(threadID, instr.b);
 
-			if(std::isnan(a))
+			if(hydrazine::isnan(a))
 			{
 				d = ftz(instr.modifier, b);
 			}
-			else if(std::isnan(b))
+			else if(hydrazine::isnan(b))
 			{
 				d = ftz(instr.modifier, a);
 			}
@@ -5121,11 +5115,11 @@ void executive::CooperativeThreadArray::eval_Max(CTAContext &context,
 			PTXF64 d, a = operandAsF64(threadID, instr.a),
 				b = operandAsF64(threadID, instr.b);
 
-			if(std::isnan(a))
+			if(hydrazine::isnan(a))
 			{
 				d = b;
 			}
-			else if(std::isnan(b))
+			else if(hydrazine::isnan(b))
 			{
 				d = a;
 			}
@@ -5215,11 +5209,11 @@ void executive::CooperativeThreadArray::eval_Min(CTAContext &context,
 			PTXF32 d, a = operandAsF32(threadID, instr.a),
 				b = operandAsF32(threadID, instr.b);
 
-			if(std::isnan(a))
+			if(hydrazine::isnan(a))
 			{
 				d = ftz(instr.modifier, b);
 			}
-			else if(std::isnan(b))
+			else if(hydrazine::isnan(b))
 			{
 				d = ftz(instr.modifier, a);
 			}
@@ -5238,11 +5232,11 @@ void executive::CooperativeThreadArray::eval_Min(CTAContext &context,
 			PTXF64 d, a = operandAsF64(threadID, instr.a),
 				b = operandAsF64(threadID, instr.b);
 
-			if(std::isnan(a))
+			if(hydrazine::isnan(a))
 			{
 				d = b;
 			}
-			else if(std::isnan(b))
+			else if(hydrazine::isnan(b))
 			{
 				d = a;
 			}
@@ -6836,10 +6830,10 @@ void executive::CooperativeThreadArray::eval_SetP(CTAContext &context,
 						break;
 
 					case PTXInstruction::Num:
-						t = !std::isnan(a) && !std::isnan(b);
+						t = !hydrazine::isnan(a) && !hydrazine::isnan(b);
 						break;
 					case PTXInstruction::Nan:
-						t = std::isnan(a) || std::isnan(b);					
+						t = hydrazine::isnan(a) || hydrazine::isnan(b);					
 						break;
 
 					default:
@@ -6934,10 +6928,10 @@ void executive::CooperativeThreadArray::eval_SetP(CTAContext &context,
 						break;
 
 					case PTXInstruction::Num:
-						t = !std::isnan(a) && !std::isnan(b);
+						t = !hydrazine::isnan(a) && !hydrazine::isnan(b);
 						break;
 					case PTXInstruction::Nan:
-						t = std::isnan(a) || std::isnan(b);					
+						t = hydrazine::isnan(a) || hydrazine::isnan(b);					
 						break;
 
 					default:
@@ -7226,7 +7220,7 @@ void executive::CooperativeThreadArray::eval_Set(CTAContext &context,
 						break;
 					case PTXInstruction::Neu:
 					case PTXInstruction::Ne:
-						t = !std::isnan(b) && !std::isnan(a) && (a != b);
+						t = !hydrazine::isnan(b) && !hydrazine::isnan(a) && (a != b);
 						break;
 					
 					case PTXInstruction::Ltu:
@@ -7254,7 +7248,7 @@ void executive::CooperativeThreadArray::eval_Set(CTAContext &context,
 						break;
 
 					case PTXInstruction::Num:
-						t = !std::isnan(a) && !std::isnan(b);
+						t = !hydrazine::isnan(a) && !hydrazine::isnan(b);
 						break;
 					
 					case PTXInstruction::Nan:
@@ -7274,7 +7268,7 @@ void executive::CooperativeThreadArray::eval_Set(CTAContext &context,
 					case PTXInstruction::Geu:
 					case PTXInstruction::Nan:
 						// if either is NaN, set t to true
-						t = (std::isnan(a) || std::isnan(b) || t);
+						t = (hydrazine::isnan(a) || hydrazine::isnan(b) || t);
 						break;
 					default:
 						break;
@@ -7363,10 +7357,10 @@ void executive::CooperativeThreadArray::eval_Set(CTAContext &context,
 						break;
 
 					case PTXInstruction::Num:
-						t = !std::isnan(a) && !std::isnan(b);
+						t = !hydrazine::isnan(a) && !hydrazine::isnan(b);
 						break;
 					case PTXInstruction::Nan:
-						t = std::isnan(a) || std::isnan(b);
+						t = hydrazine::isnan(a) || hydrazine::isnan(b);
 						break;
 
 					default:
@@ -7384,7 +7378,7 @@ void executive::CooperativeThreadArray::eval_Set(CTAContext &context,
 					case PTXInstruction::Num:
 					case PTXInstruction::Nan:
 						// if either is NaN, set t to true
-						t = (std::isnan(a) || std::isnan(b) || t);
+						t = (hydrazine::isnan(a) || hydrazine::isnan(b) || t);
 						break;
 					default:
 						break;
@@ -7958,7 +7952,7 @@ void executive::CooperativeThreadArray::eval_Sqrt(CTAContext &context,
 			
 			PTXF32 d, a = ftz(instr.modifier, operandAsF32(threadID, instr.a));
 			
-			if(a < 0.0f || std::isnan(a))
+			if(a < 0.0f || hydrazine::isnan(a))
 			{
 				d = std::numeric_limits<float>::signaling_NaN();
 			}
@@ -8577,27 +8571,27 @@ void executive::CooperativeThreadArray::eval_TestP(CTAContext &context,
 			{
 			case PTXInstruction::Finite:
 			{
-				d = !std::isinf(a) && !std::isnan(a);
+				d = !hydrazine::isinf(a) && !hydrazine::isnan(a);
 			}
 			break;
 			case PTXInstruction::Infinite:
 			{
-				d = std::isinf(a);
+				d = hydrazine::isinf(a);
 			}
 			break;
 			case PTXInstruction::Number:
 			{
-				d = !std::isnan(a);			
+				d = !hydrazine::isnan(a);			
 			}
 			break;
 			case PTXInstruction::NotANumber:
 			{
-				d = std::isnan(a);			
+				d = hydrazine::isnan(a);			
 			}
 			break;
 			case PTXInstruction::Normal:
 			{
-				d = std::isnormal(a);
+				d = hydrazine::isnormal(a);
 			}
 			break;
 			case PTXInstruction::SubNormal:
@@ -8623,32 +8617,32 @@ void executive::CooperativeThreadArray::eval_TestP(CTAContext &context,
 			{
 			case PTXInstruction::Finite:
 			{
-				d = !std::isinf(a) && !std::isnan(a);
+				d = !hydrazine::isinf(a) && !hydrazine::isnan(a);
 			}
 			break;
 			case PTXInstruction::Infinite:
 			{
-				d = std::isinf(a);
+				d = hydrazine::isinf(a);
 			}
 			break;
 			case PTXInstruction::Number:
 			{
-				d = !std::isnan(a);			
+				d = !hydrazine::isnan(a);			
 			}
 			break;
 			case PTXInstruction::NotANumber:
 			{
-				d = std::isnan(a);			
+				d = hydrazine::isnan(a);			
 			}
 			break;
 			case PTXInstruction::Normal:
 			{
-				d = std::isnormal(a);
+				d = hydrazine::isnormal(a);
 			}
 			break;
 			case PTXInstruction::SubNormal:
 			{
-				d = !std::isnormal(a) && !std::isnan(a) && !std::isinf(a);
+				d = !hydrazine::isnormal(a) && !hydrazine::isnan(a) && !hydrazine::isinf(a);
 			}
 			break;
 			default: assertM(false, "Invalid floating point mode.");

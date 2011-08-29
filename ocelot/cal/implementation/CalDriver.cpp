@@ -14,7 +14,13 @@
 
 // Linux system headers
 #if __GNUC__
-#include <dlfcn.h>
+	#include <dlfcn.h>
+#else 
+	// TODO Add dynamic loading support on windows
+	#define dlopen(a,b) 0
+	#define dlclose(a) -1
+	#define dlerror() "Unknown error"
+	#define dlsym(a,b) 0
 #endif
 
 #ifdef REPORT_BASE

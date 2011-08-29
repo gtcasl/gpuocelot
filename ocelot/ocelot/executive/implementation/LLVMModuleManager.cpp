@@ -1173,6 +1173,7 @@ LLVMModuleManager::KernelAndTranslation::MetaData*
 	return _metadata;
 	#else
 	assertM(false, "LLVM support not compiled into ocelot.");
+	return 0;
 	#endif
 }
 

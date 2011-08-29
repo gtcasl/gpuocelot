@@ -105,7 +105,10 @@ libocelot = env.SharedLibrary('ocelot', sources, LIBS=ocelot_dep_libs)
 if 'install' in COMMAND_LINE_TARGETS:
 	libocelot = env.Install(os.path.join(env['install_path'], "lib"), libocelot)
 
-ocelot_libs = ['-locelot']
+if os.name == 'nt':
+	ocelot_libs = ['ocelot.lib']
+else:
+	ocelot_libs = ['-locelot']
 
 OcelotConfig = env.Program('OcelotConfig', \
 	['ocelot/tools/OcelotConfig.cpp'], LIBS=ocelot_libs, \

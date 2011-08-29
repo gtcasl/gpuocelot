@@ -105,7 +105,10 @@ libocelot = env.SharedLibrary('ocelot', sources, LIBS=ocelot_dep_libs)
 if 'install' in COMMAND_LINE_TARGETS:
 	libocelot = env.Install(os.path.join(env['install_path'], "lib"), libocelot)
 
-ocelot_libs = ['-locelot']
+if os.name == 'nt':
+	ocelot_libs = ['ocelot.lib']
+else:
+	ocelot_libs = ['-locelot']
 
 OcelotConfig = env.Program('OcelotConfig', \
 	['ocelot/tools/OcelotConfig.cpp'], LIBS=ocelot_libs, \
@@ -115,7 +118,7 @@ PTXOptimizer = env.Program('PTXOptimizer', \
 	['ocelot/tools/PTXOptimizer.cpp'], LIBS=ocelot_libs)
 env.Depends(PTXOptimizer, libocelot)
 OcelotServer = env.Program('OcelotServer', \
-	['ocelot/tools/OcelotServer.cpp'], LIBS=ocelot_libs)
+	['ocelot/tools/OcelotServer.cpp'], LIBS=ocelot_libs + ['-lboost_system-mt'])
 env.Depends(OcelotServer, libocelot)
 OcelotHarness = env.Program('OcelotKernelTestHarness', \
 	['ocelot/tools/KernelTestHarness.cpp'], LIBS=ocelot_libs)
@@ -127,12 +130,15 @@ Default(OcelotConfig)
 
 # Create the ocelot unit tests
 tests = []
-tests.append(('TestLexer',  'ocelot/parser/test/TestLexer.cpp', 'basic'))
-tests.append(('TestParser', 'ocelot/parser/test/TestParser.cpp', 'basic'))
+tests.append(('TestLexer',  'ocelot/parser/test/TestLexer.cpp', 'basic',
+	['-lboost_system-mt', '-lboost_filesystem-mt']))
+tests.append(('TestParser', 'ocelot/parser/test/TestParser.cpp', 'basic',
+	['-lboost_system-mt', '-lboost_filesystem-mt']))
 tests.append(('TestInstructions', \
 	'ocelot/executive/test/TestInstructions.cpp', 'basic'))
 tests.append(('TestDataflowGraph', \
-	'ocelot/analysis/test/TestDataflowGraph.cpp', 'basic'))
+	'ocelot/analysis/test/TestDataflowGraph.cpp', 'basic',
+	['-lboost_system-mt', '-lboost_filesystem-mt']))
 tests.append(('TestLLVMInstructions', \
 	'ocelot/ir/test/TestLLVMInstructions.cpp', 'basic'))
 tests.append(('TestKernels', \
@@ -142,9 +148,10 @@ tests.append(('TestLLVMKernels', \
 tests.append(('TestEmulator', \
 	'ocelot/executive/test/TestEmulator.cpp', 'basic'))
 tests.append(('TestPTXToLLVMTranslator', \
-	'ocelot/translator/test/TestPTXToLLVMTranslator.cpp', 'basic'))
+	'ocelot/translator/test/TestPTXToLLVMTranslator.cpp', 'basic',
+	['-lboost_system-mt', '-lboost_filesystem-mt']))
 tests.append(('TestCudaSequence', \
-	'ocelot/cuda/test/kernels/sequence.cu.cpp', 'full'))
+	'ocelot/cuda/test/kernels/sequence.cu.cpp', 'full', ['-ldl']))
 tests.append(('TestCudaGenericMemory', \
 	'ocelot/cuda/test/memory/generic.cpp', 'full'))
 tests.append(('TestCudaMalloc', \
@@ -173,7 +180,10 @@ tests.append(('TestPTXAssembly', \
 	'ocelot/ir/test/TestPTXAssembly.cpp', 'full'))
 
 for test in tests:
-	Test = env.Program(test[0], [test[1]], LIBS=ocelot_libs)
+	libs = ocelot_libs
+	if len(test) > 3:
+		libs = libs + test[3]
+	Test = env.Program(test[0], [test[1]], LIBS=libs)
 	env.Depends(Test, libocelot)
 
 if env['test_level'] != 'none':

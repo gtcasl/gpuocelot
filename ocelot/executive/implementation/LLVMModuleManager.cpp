@@ -31,7 +31,7 @@
 #include <hydrazine/interface/Casts.h>
 
 // LLVM Includes
-//#if HAVE_LLVM
+#if HAVE_LLVM
 #include <llvm/Transforms/Scalar.h>
 #include <llvm/PassManager.h>
 #include <llvm/Target/TargetData.h>
@@ -42,21 +42,16 @@
 #include <llvm/Module.h>
 #include <llvm/Support/SourceMgr.h>
 #include <llvm/Support/raw_ostream.h>
-//#endif
+#endif
 
 // Preprocessor Macros
 #ifdef REPORT_BASE
 #undef REPORT_BASE
 #endif
 
-// Toggles all reporting messages
 #define REPORT_BASE 0
 
-//
 #define REPORT_ALL_LLVM_ASSEMBLY 0
-
-//
-#define REPORT_POSTPROCESSED_PTX 0
 
 namespace executive
 {
@@ -109,7 +104,7 @@ void LLVMModuleManager::clearExternalFunctionSet()
 
 ////////////////////////////////////////////////////////////////////////////////
 // Helper Functions
-//#if HAVE_LLVM
+#if HAVE_LLVM
 static unsigned int pad(unsigned int& size, unsigned int alignment)
 {
 	unsigned int padding = alignment - (size % alignment);
@@ -805,13 +800,6 @@ static unsigned int optimizePTX(ir::PTXKernel& kernel,
 	
 	manager.runOnKernel(kernel);
 
-	#if REPORT_POSTPROCESSED_PTX
-	std::cout<< "optimizePTX() - post execution model transformation" << std::endl;
-	kernel.write(std::cout);
-	std::cout << "optimizePTX() - returning" << std::endl;
-	#endif
-
-
 	return removeBarriers.usesBarriers;
 }
 
@@ -884,9 +872,6 @@ static void translate(llvm::Module*& module, ir::PTXKernel& kernel,
 	module = new llvm::Module(kernel.name.c_str(), llvm::getGlobalContext());
 
 	reportE(REPORT_ALL_LLVM_ASSEMBLY, llvmKernel->code());
-#if REPORT_ALL_LLVM_ASSEMBLY
-	std::cout << llvmKernel->code() << std::endl;
-#endif
 
 	report("  Parsing LLVM assembly.");
 	module = llvm::ParseAssemblyString(llvmKernel->code().c_str(), 
@@ -1093,7 +1078,7 @@ static void codegen(LLVMModuleManager::Function& function, llvm::Module& module,
 	function = hydrazine::bit_cast<LLVMModuleManager::Function>(
 		LLVMState::jit()->getPointerToFunction(llvmFunction));
 }
-//#endif
+#endif
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -1110,7 +1095,7 @@ LLVMModuleManager::KernelAndTranslation::KernelAndTranslation(ir::PTXKernel* k,
 
 void LLVMModuleManager::KernelAndTranslation::unload()
 {
-	//#if HAVE_LLVM
+	#if HAVE_LLVM
 	if(_metadata == 0)
 	{
 		delete _kernel;
@@ -1126,17 +1111,17 @@ void LLVMModuleManager::KernelAndTranslation::unload()
 	delete _kernel;
 	delete _module;
 	delete _metadata;
-	//#else
+	#else
 	// Is it possible this is called when LLVMModuleManager is being destructed even with no LLVM
 	// device present?
 //	assertM(false, "LLVM support not compiled into ocelot. You should use a different device.");
-	//#endif
+	#endif
 }
 
 LLVMModuleManager::KernelAndTranslation::MetaData*
 	LLVMModuleManager::KernelAndTranslation::metadata()
 {
-	//#if HAVE_LLVM
+	#if HAVE_LLVM
 	report("Getting metadata for kernel '" << _kernel->name << "'");
 
 	if(_metadata != 0) return _metadata;
@@ -1186,9 +1171,10 @@ LLVMModuleManager::KernelAndTranslation::MetaData*
 	}
 
 	return _metadata;
-	//#else
-	//assertM(false, "LLVM support not compiled into ocelot.");
-	//#endif
+	#else
+	assertM(false, "LLVM support not compiled into ocelot.");
+	return 0;
+	#endif
 }
 
 const std::string& LLVMModuleManager::KernelAndTranslation::name() const
@@ -1267,24 +1253,8 @@ void LLVMModuleManager::Module::shiftId(FunctionId nextId)
 LLVMModuleManager::ModuleDatabase::ModuleDatabase()
 {
 	start();
-	std::stringstream ptx;
 	
-	ptx << 
-		".entry _ZOcelotBarrierKernel()\n"
-		"{\t\n"
-		"\t.reg .u32 %r<2>;\n"
-		"\t.local .u32 _Zocelot_barrier_next_kernel;\n"
-		"\tentry:\n"
-		"\tmov.u32 %r0, _Zocelot_barrier_next_kernel;\n"
-		"\tld.local.u32 %r1, [%r0];\n"
-		"BarrierPrototype: .callprototype _ ();\n"
-		"\tcall.tail %r1, BarrierPrototype;\n"
-		"\texit;\n"
-		"}\n";
-	
-	_barrierModule.load(ptx, "_ZOcelotBarrierModule");
-	
-	loadModule(&_barrierModule, translator::Translator::NoOptimization, 0);
+
 }
 
 LLVMModuleManager::ModuleDatabase::~ModuleDatabase()
@@ -1308,6 +1278,28 @@ LLVMModuleManager::ModuleDatabase::~ModuleDatabase()
 void LLVMModuleManager::ModuleDatabase::loadModule(const ir::Module* module, 
 	translator::Translator::OptimizationLevel level, Device* device)
 {
+	if(!_barrierModule.loaded())
+	{
+		std::stringstream ptx;
+	
+		ptx << 
+			".entry _ZOcelotBarrierKernel()\n"
+			"{\t\n"
+			"\t.reg .u32 %r<2>;\n"
+			"\t.local .u32 _Zocelot_barrier_next_kernel;\n"
+			"\tentry:\n"
+			"\tmov.u32 %r0, _Zocelot_barrier_next_kernel;\n"
+			"\tld.local.u32 %r1, [%r0];\n"
+			"BarrierPrototype: .callprototype _ ();\n"
+			"\tcall.tail %r1, BarrierPrototype;\n"
+			"\texit;\n"
+			"}\n";
+	
+		_barrierModule.load(ptx, "_ZOcelotBarrierModule");
+
+		loadModule(&_barrierModule, translator::Translator::NoOptimization, 0);
+	}
+	
 	typedef api::OcelotConfiguration config;
 
 	assert(!isModuleLoaded(module->path()));

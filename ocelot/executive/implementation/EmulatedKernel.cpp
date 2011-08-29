@@ -854,14 +854,16 @@ size_t executive::EmulatedKernel::link(const std::string& functionName) {
 
 void executive::EmulatedKernel::lazyLink(int callPC, 
 	const std::string& functionName) {
-	int pc = link(functionName);
+	std::string name = functionName;
+	
+	int pc = link(name);
 	
 	instructions[callPC].branchTargetInstruction = pc;
 	
 	if (instructions[callPC].opcode == ir::PTXInstruction::Call) {
 		EmulatedKernel* kernel = static_cast<EmulatedKernel*>(
-				device->getKernel(module->path(), functionName));
-		assertM(kernel != 0, "Kernel function '" << functionName 
+				device->getKernel(module->path(), name));
+		assertM(kernel != 0, "Kernel function '" << name 
 			<< "' not found in module '" << module->path() << "'");
 	
 		instructions[callPC].a.stackMemorySize = 

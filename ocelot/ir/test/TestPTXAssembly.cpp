@@ -309,7 +309,7 @@ std::string testCvta_PTX(ir::PTXOperand::DataType type,
 
 	if(space != ir::PTXInstruction::Local)
 	{	
-		ptx << addressSpace << " " << typeString << " %variable;\n";
+		ptx << addressSpace << " " << typeString << " variable;\n";
 	}
 
 	ptx << "\n";
@@ -321,18 +321,18 @@ std::string testCvta_PTX(ir::PTXOperand::DataType type,
 	ptx << "\t.reg .pred %pd;                              \n";
 	if(space == ir::PTXInstruction::Local)
 	{	
-		ptx << addressSpace << " " << typeString << " %variable;\n";
+		ptx << addressSpace << " " << typeString << " variable;\n";
 	}
 
 	ptx << "\tld.param.u64 %rIn, [in];                     \n";
 	ptx << "\tld.param.u64 %rOut, [out];                   \n";
 	ptx << "\tld.global" << typeString << " %rt, [%rIn];   \n";
 	
-	ptx << "\tst" << addressSpace << typeString << " [%variable], %rt;     \n";
-	ptx << "\tcvta" << addressSpace << typeString << " %address, %variable;\n";
+	ptx << "\tst" << addressSpace << typeString << " [variable], %rt;     \n";
+	ptx << "\tcvta" << addressSpace << typeString << " %address, variable;\n";
 	ptx << "\tld" << typeString << " %rt, [%address];     \n";
 
-	ptx << "\tst" << addressSpace << typeString << " [%variable], %rt;     \n";
+	ptx << "\tst" << addressSpace << typeString << " [variable], %rt;     \n";
 	ptx << "\tcvta.to" << addressSpace << typeString << " %address, %address;\n";
 	ptx << "\tld" << addressSpace << typeString << " %rt, [%address];     \n";
 
@@ -4599,6 +4599,16 @@ namespace test
 			if(devices > 0) device = random() % devices;
 			cudaSetDevice(device);
 			
+			if(veryVerbose)
+			{
+				cudaDeviceProp properties;
+				cudaGetDeviceProperties(&properties, device);
+			
+				std::cout << " Running Test '" << test.name 
+					<< "' on device - " << device << " - '" 
+					<< properties.name << "'\n";
+			}
+			
 			cudaMalloc((void**)&deviceInput, inputSize);
 			cudaMalloc((void**)&deviceOutput, outputSize);
 			
@@ -7286,6 +7296,8 @@ int main(int argc, char** argv)
 
 	parser.parse("-v", "--verbose", test.verbose, false,
 		"Print out status info after the test.");
+	parser.parse("-V", "--very-verbose", test.veryVerbose, false,
+		"Print out information as the test is running.");
 	parser.parse("-p", "--print-ptx", test.print, false,
 		"Print test kernels as they are added.");
 	parser.parse("-e", "--enumerate", test.enumerate, false,

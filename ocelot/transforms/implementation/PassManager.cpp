@@ -164,9 +164,9 @@ static void allocateNewDataStructures(AnalysisMap& analyses,
 				new analysis::StructuralAnalysis;
 			
 			report("   Allocating structural analysis for kernel " << k->name);
-			AnalysisMap::iterator analysis = analyses.insert(std::make_pair(
+			analyses.insert(std::make_pair(
 				analysis::Analysis::StructuralAnalysis,
-				structuralAnalysis)).first;
+				structuralAnalysis));
 			
 			structuralAnalysis->setPassManager(manager);
 			allocateNewDataStructures(analyses, k,
@@ -183,9 +183,9 @@ static void allocateNewDataStructures(AnalysisMap& analyses,
 			
 			report("   Allocating thread frontier analysis"
 				" for kernel " << k->name);
-			AnalysisMap::iterator analysis = analyses.insert(std::make_pair(
+			analyses.insert(std::make_pair(
 				analysis::Analysis::ThreadFrontierAnalysis,
-				frontierAnalysis)).first;
+				frontierAnalysis));
 			
 			frontierAnalysis->setPassManager(manager);
 			allocateNewDataStructures(analyses, k,

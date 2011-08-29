@@ -149,8 +149,6 @@ void sinkBarrier(ir::PTXKernel& kernel, BlockSet& barriers,
 	ir::ControlFlowGraph::iterator pdom, analysis::DataflowGraph* dfg)
 {
 	bool split = true;
-	ir::ControlFlowGraph::iterator currentBlock = block;
-
 	while(split)
 	{
 		split = false;

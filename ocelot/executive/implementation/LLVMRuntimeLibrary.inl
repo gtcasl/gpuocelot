@@ -726,6 +726,14 @@ extern "C"
 			assertM(false, "Aborting execution.");
 		}	
 	}
+	
+	void __ocelot_check_generic_memory_access( executive::LLVMContext* context,
+		ir::PTXU64 address, unsigned int bytes, unsigned int statement )
+	{
+		// TODO check this correctly
+		__ocelot_check_global_memory_access( context, address,
+			bytes, statement );
+	}
 		
 	void __ocelot_tex_3d_fs( float* result, executive::LLVMContext* context, 
 		unsigned int index, unsigned int c0, unsigned int c1, unsigned int c2,

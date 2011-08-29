@@ -663,7 +663,7 @@ void StructuralTransform::initialize(const ir::Module& m)
 }
 
 void StructuralTransform::runOnKernel(ir::IRKernel& k) {
-	bool change = false;
+	
 	_kernel = static_cast<ir::PTXKernel *>(&k);
 	index = 0;
 
@@ -687,27 +687,20 @@ void StructuralTransform::runOnKernel(ir::IRKernel& k) {
 		for (SA::NodeSetTy::iterator i = SA.unreachableNodeSet.begin(),
 			e = SA.unreachableNodeSet.end(); i != e; ++i) {
 			if (Cut(*i)) {
-				change = true;
-
 				goto ANALYSIS;
 			}
 		}
 
 		if (ForwardCopy(entry)) {
-			change = true;
-
 			goto ANALYSIS;
 		}
 
 		if (Cut(entry)) {
-			change = true;
 
 			goto ANALYSIS;
 		}
 
 		if (BackwardCopy(entry)) {
-			change = true;
-
 			goto ANALYSIS;
 		}
 

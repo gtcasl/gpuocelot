@@ -338,7 +338,7 @@ namespace transforms
                         add.d.identifier = add.a.identifier = BASIC_BLOCK_EXEC_INST_COUNT;
                         add.b.reg = predCount;
                         
-                        ir::PTXKernel::PTXStatementVector::iterator position;
+                        ir::PTXKernel::PTXStatementVector::iterator position = translationBlock.statements.end();
                         for(ir::PTXKernel::PTXStatementVector::iterator statement = translationBlock.statements.begin();
                             statement != translationBlock.statements.end(); ++statement) {    
                             if(statement->instruction.d.identifier == BASIC_BLOCK_EXEC_INST_COUNT)

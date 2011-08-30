@@ -15,6 +15,8 @@
 #include <ocelot/ir/interface/PTXKernel.h>
 #include <ocelot/analysis/interface/DataflowGraph.h>
 
+#include <hydrazine/implementation/Exception.h>
+
 namespace transforms
 {
 
@@ -336,11 +338,24 @@ namespace transforms
                         add.d.identifier = add.a.identifier = BASIC_BLOCK_EXEC_INST_COUNT;
                         add.b.reg = predCount;
                         
+                        ir::PTXKernel::PTXStatementVector::iterator position;
+                        for(ir::PTXKernel::PTXStatementVector::iterator statement = translationBlock.statements.begin();
+                            statement != translationBlock.statements.end(); ++statement) {    
+                            if(statement->instruction.d.identifier == BASIC_BLOCK_EXEC_INST_COUNT)
+                            {
+                                position = statement;
+                                break;
+                            }
+                        }                    
+        
+                        if(position == translationBlock.statements.end())
+                            throw hydrazine::Exception("Unable to locate BASIC_BLOCK_EXEC_INST_COUNT statement!");
+
                         ir::PTXStatement stmt(ir::PTXStatement::Instr);
                         stmt.instruction = selp;
-                        translationBlock.statements.insert(translationBlock.statements.end() - 7, stmt);
+                        position = translationBlock.statements.insert(position + 1, stmt);
                         stmt.instruction = add;
-                        translationBlock.statements.insert(translationBlock.statements.end() - 7, stmt);
+                        translationBlock.statements.insert(position + 1, stmt);
                     
                     }
                     else

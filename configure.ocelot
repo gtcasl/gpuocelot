@@ -17,7 +17,7 @@
 		},
 		debugger: {
 			enabled: false,
-			kernelFilter: "sequence",
+			kernelFilter: "testShr",
 			alwaysAttach: true
 		},
 		cacheSimulator: {
@@ -34,7 +34,7 @@
 		runtimeApiTrace: "trace/CudaAPI.trace"
 	},
 	executive: {
-		devices: [ nvidia ],
+		devices: [ emulated ],
 		port: 2011,
 		host: "127.0.0.1",
 		optimizationLevel: none,

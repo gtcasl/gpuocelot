@@ -79,6 +79,8 @@ namespace translator
             || instruction.opcode == ir::PTXInstruction::And
             || instruction.opcode == ir::PTXInstruction::Not
             || instruction.opcode == ir::PTXInstruction::Mad
+            || instruction.opcode == ir::PTXInstruction::Mul
+            || instruction.opcode == ir::PTXInstruction::Popc
             || instruction.opcode == ir::PTXInstruction::SetP)){
                 
                 if(pred->inv)
@@ -908,6 +910,7 @@ namespace translator
         setPredicate(inst);
         stmt.instruction = inst;
         statements.push_back(stmt); 
+
         //vote.ballot.b32 %bitmask, %p0;
 	    inst.opcode = ir::PTXInstruction::Vote;
         inst.vote = ir::PTXInstruction::Ballot;
@@ -945,6 +948,84 @@ namespace translator
         statements.push_back(stmt);  
         
         registerMap[REG + boost::lexical_cast<std::string>(insn->opnds.calli.src)] = rb0;       
+    }
+
+    void CToPTXTranslator::generateActiveThreadCount(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, 
+        virtual_insn *insn)
+    {
+        if(specialRegisterMap["bitmask"].empty())
+        {
+            //mov.pred %p0, 1;
+            inst.opcode = ir::PTXInstruction::SetP;
+                
+            inst.d.type = ir::PTXOperand::pred;
+            inst.d.addressMode = ir::PTXOperand::Register;
+            inst.d.identifier = COD_PRED + boost::lexical_cast<std::string>(++maxPredicate);
+            std::string p0 = inst.d.identifier;
+            registers.push_back(inst.d.identifier);
+            
+            inst.comparisonOperator = ir::PTXInstruction::Eq;
+            inst.a.type = type;
+            inst.a.addressMode = ir::PTXOperand::Immediate;
+            inst.a.imm_uint = 0;
+            inst.b.type = type;
+            inst.b.addressMode = ir::PTXOperand::Immediate;
+            inst.b.imm_uint = 0;
+            
+            setPredicate(inst);
+            stmt.instruction = inst;
+            statements.push_back(stmt); 
+
+            //vote.ballot.b32 %bitmask, %p0;
+	        inst.opcode = ir::PTXInstruction::Vote;
+            inst.vote = ir::PTXInstruction::Ballot;
+            inst.type = ir::PTXOperand::b32;
+            
+            inst.d.type = ir::PTXOperand::b32;
+            inst.d.addressMode = ir::PTXOperand::Register;
+            inst.d.identifier = "bitmask";
+	        specialRegisterMap["bitmask"] = inst.d.identifier;
+            registers.push_back(inst.d.identifier);
+            inst.a.addressMode = ir::PTXOperand::Register;
+            inst.a.type = ir::PTXOperand::pred;
+            inst.a.identifier = p0;
+            
+            stmt.instruction = inst;
+            statements.push_back(stmt);
+        }
+
+        inst.vote = ir::PTXInstruction::VoteMode_Invalid;
+        
+        inst.opcode = ir::PTXInstruction::Popc;
+        inst.type = ir::PTXOperand::b32;
+        inst.d.type = ir::PTXOperand::u32;
+        inst.a.type = ir::PTXOperand::b32;
+        inst.d.addressMode = inst.a.addressMode = ir::PTXOperand::Register;
+        inst.a.identifier = specialRegisterMap["bitmask"];
+
+        std::string popcResult = COD_REG + boost::lexical_cast<std::string>(++maxRegister);
+        inst.d.identifier = popcResult;        
+        registers.push_back(inst.d.identifier);  
+        
+        setPredicate(inst);
+        stmt.instruction = inst;
+        statements.push_back(stmt);
+
+        inst.opcode = ir::PTXInstruction::Cvt;
+        inst.type = type;
+        inst.d.type = type;
+        inst.a.type = ir::PTXOperand::u32;
+        inst.d.addressMode = inst.a.addressMode = ir::PTXOperand::Register;
+        inst.a.identifier = popcResult;
+
+        inst.d.identifier = COD_REG + boost::lexical_cast<std::string>(++maxRegister);
+        registers.push_back(inst.d.identifier);  
+        
+        setPredicate(inst);
+        stmt.instruction = inst;
+        statements.push_back(stmt);
+
+        registerMap[REG + boost::lexical_cast<std::string>(insn->opnds.calli.src)] = inst.d.identifier;  
     }
 
    void CToPTXTranslator::generateActiveThreadSum(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, 
@@ -1573,6 +1654,11 @@ namespace translator
                         generateActiveThreadSum(inst, stmt, type, insn, call_name);
                     }
                     break;
+                     case activeThreadCountSymbol:
+                    {
+                        generateActiveThreadCount(inst, stmt, type, insn);
+                    }
+                    break;
                     case atomicIncrementSymbol:
                     {
                         generateAtomicIncrement(inst, stmt, type, insn, uInput);
@@ -2018,6 +2104,7 @@ namespace translator
                                         void atomicAdd(unsigned long *memBuffer, unsigned long offset, unsigned long toAdd);\
                                         unsigned long uniqueElementCount(unsigned long *memBuffer, unsigned long overHalfWarp);\
                                         unsigned long activeThreadSum(unsigned long *memBuffer);\
+                                        unsigned long activeThreadCount();\
                                         unsigned long globalMem[1];\
                                         unsigned long sharedMem[1];";
                         
@@ -2056,6 +2143,7 @@ namespace translator
             {(char *)"computeBaseAddress", (void*)(unsigned long)(*computeBaseAddress)},
             {(char *)"uniqueElementCount", (void*)(unsigned long)(*uniqueElementCount)},
             {(char *)"activeThreadSum", (void*)(unsigned long)(*activeThreadSum)},
+            {(char *)"activeThreadCount", (void*)(unsigned long)(*activeThreadCount)},
             {(char *)"atomicIncrement", (void*)(*atomicIncrement)},
             {(char *)"atomicAdd", (void*)(*atomicAdd)},
             {(char *)"globalMem", (void *)GLOBAL_MEM},
@@ -2130,6 +2218,7 @@ namespace translator
         functionCalls["computeBaseAddress"] = computeBaseAddressSymbol;
         functionCalls["uniqueElementCount"] = uniqueElementCountSymbol;
         functionCalls["activeThreadSum"] = activeThreadSumSymbol;
+        functionCalls["activeThreadCount"] = activeThreadCountSymbol;
         functionCalls["leastActiveThreadInWarp"] = leastActiveThreadInWarpSymbol;
         functionCalls["atomicIncrement"] = atomicIncrementSymbol;
         functionCalls["atomicAdd"] = atomicAddSymbol;

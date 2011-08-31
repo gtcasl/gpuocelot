@@ -90,6 +90,8 @@ unsigned long computeBaseAddress();
 
 unsigned long leastActiveThreadInWarp();
 
+unsigned long activeThreadCount();
+
 unsigned long uniqueElementCount(unsigned long *memBuffer, unsigned long overHalfWarp);
 
 unsigned long activeThreadSum(unsigned long *memBuffer);

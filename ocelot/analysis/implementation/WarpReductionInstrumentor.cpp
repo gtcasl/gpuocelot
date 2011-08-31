@@ -82,11 +82,8 @@ namespace analysis
             {
                 transforms::CToPTXInstrumentationPass *pass = new transforms::CToPTXInstrumentationPass("resources/optimizedDynamicInstructionCount.c");
                 symbol = pass->baseAddress;
-                transforms::CToPTXModulePass *modulePass = new transforms::CToPTXModulePass(ACTIVE_THREAD_SUM);
-                modulePass->parameterMap = pass->parameterMap;
                 
                 passes[0] = pass;   
-                passes[1] = modulePass;
             }
             break;
             default:

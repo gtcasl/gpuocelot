@@ -138,6 +138,9 @@ unsigned long activeThreadSum(unsigned long *memBuffer) {
     return 1;
 }
 
+unsigned long activeThreadCount() {
+    return 1;
+}
 
 void atomicIncrement(unsigned long *memBuffer, unsigned long offset) {
     return;

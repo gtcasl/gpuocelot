@@ -123,6 +123,7 @@ def getGLEWPaths(env):
 	glew = configure.CheckLib('GLEW')		
 	
 	if not glew:
+		print "Glew disabled: not found"
 		return (glew, '', '', '')
 
 	# determine defaults
@@ -336,20 +337,25 @@ def getExtraLibs():
 			'-lboost_thread-mt']
 
 
+def fixPath(path):
+	if (os.name == 'nt'):
+		return path.replace('\\', '\\\\')
+ 
 def defineConfigFlags(env):
 	
 	include_path = os.path.join(env['INSTALL_PATH'], "include")
 	library_path = os.path.join(env['INSTALL_PATH'], "lib")
 	bin_path     = os.path.join(env['INSTALL_PATH'], "bin")
 
-	configFlags =  '-DOCELOT_CXXFLAGS="\\"' + env['CXXFLAGS'] + '\\""' \
+	configFlags = env['CXXFLAGS'] + '-DOCELOT_CXXFLAGS="\\"' \
+		+ env['CXXFLAGS'] + '\\""' \
 		+ ' -DPACKAGE="\\"ocelot\\""' \
 		+ ' -DVERSION="\\"' + env['VERSION'] + '\\""' \
-		+ ' -DOCELOT_PREFIX_PATH="\\"' + env['INSTALL_PATH'] + '\\""' \
-		+ ' -DOCELOT_LDFLAGS="\\"' + env['OCELOT_LDFLAGS'] + '\\""' \
-		+ ' -DOCELOT_INCLUDE_PATH="\\"'+ include_path + '\\""' \
-		+ ' -DOCELOT_LIB_PATH="\\"' + library_path + '\\""' \
-		+ ' -DOCELOT_BIN_PATH="\\"' + bin_path + '\\""'
+		+ ' -DOCELOT_PREFIX_PATH="\\"' + fixPath(env['INSTALL_PATH']) + '\\""' \
+		+ ' -DOCELOT_LDFLAGS="\\"' + fixPath(env['OCELOT_LDFLAGS']) + '\\""' \
+		+ ' -DOCELOT_INCLUDE_PATH="\\"'+ fixPath(include_path) + '\\""' \
+		+ ' -DOCELOT_LIB_PATH="\\"' + fixPath(library_path) + '\\""' \
+		+ ' -DOCELOT_BIN_PATH="\\"' + fixPath(bin_path) + '\\""'
 
 	env.Replace(OCELOT_CONFIG_FLAGS = configFlags)
 

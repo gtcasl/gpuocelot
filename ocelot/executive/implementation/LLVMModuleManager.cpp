@@ -1080,6 +1080,9 @@ static void link(llvm::Module& module, const ir::PTXKernel& kernel,
 	
 		if(external != 0)
 		{
+			// Would you ever want to call into address 0?
+			assert(external->functionPointer() != 0);
+			
 			llvm::GlobalValue* value = module.getNamedValue(external->name());
 			assertM(value != 0, "Global function " << external->name() 
 				<< " not found in llvm module.");

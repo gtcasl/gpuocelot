@@ -250,7 +250,7 @@ class DataflowGraph : public KernelAnalysis
 
 			public:
 				/*! \brief Determine the block that produced a register */
-				const std::string& producer( const Register& r ) const;
+				const std::string* producer( const Register& r ) const;
 				/*! \brief Determine the alive registers immediately
 					before a given instruction in the block */
 				RegisterSet alive( const 

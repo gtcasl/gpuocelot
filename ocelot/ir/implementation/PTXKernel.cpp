@@ -713,7 +713,8 @@ void PTXKernel::canonicalBlockLabels(int kernelID) {
 ir::PTXKernel::Prototype ir::PTXKernel::getPrototype() const {
 	ir::PTXKernel::Prototype prototype;
 	prototype.linkingDirective = ir::PTXKernel::Prototype::Visible;
-	prototype.callType = (function() ? ir::PTXKernel::Prototype::Func : ir::PTXKernel::Prototype::Entry);
+	prototype.callType = (function() ?
+		ir::PTXKernel::Prototype::Func : ir::PTXKernel::Prototype::Entry);
 	prototype.identifier = name;
 
 	for (ir::Kernel::ParameterVector::const_iterator param = arguments.begin();

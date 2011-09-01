@@ -1755,36 +1755,6 @@ namespace parser
 		
 		statement.instruction.a = operand->second.operand;
 	
-		statement.instruction.b.addressMode = ir::PTXOperand::ArgumentList;
-
-		FunctionPrototype proto;
-		
-		report( "   return operands(" << returnOperands << "):" );
-		
-		if( returnOperands > 0 )
-		{
-			statement.instruction.d.addressMode = ir::PTXOperand::ArgumentList;
-		}
-		
-		unsigned int operandIndex = 1;
-		for( ; returnOperands > 0; --returnOperands, ++operandIndex )
-		{
-			report( "    " << operandVector[ operandIndex ].toString() );
-			statement.instruction.d.array.push_back( 
-				operandVector[ operandIndex ] );
-			proto.returnTypes.push_back( operandVector[ operandIndex ].type );
-		}
-
-		report( "   operands:" );
-		
-		for( ; operandIndex < operandVector.size(); ++operandIndex )
-		{
-			report( "    " << operandVector[ operandIndex ].toString() );
-			statement.instruction.b.array.push_back(
-				operandVector[ operandIndex ] );
-			proto.argumentTypes.push_back( operandVector[ operandIndex ].type );
-		}
-		
 		if( statement.instruction.a.addressMode == ir::PTXOperand::Register )
 		{
 			statement.instruction.c.addressMode = ir::PTXOperand::FunctionName;
@@ -1804,7 +1774,57 @@ namespace parser
 				<< "' not declared in this scope.", 
 				NoDeclaration );	
 		}
+
+		statement.instruction.b.addressMode = ir::PTXOperand::ArgumentList;
+
+		FunctionPrototype proto;
 		
+		report( "   return operands(" << returnOperands << "):" );
+		
+		if( returnOperands > 0 )
+		{
+			statement.instruction.d.addressMode = ir::PTXOperand::ArgumentList;
+		}
+		
+		unsigned int operandIndex = 1;
+		for( ; returnOperands > 0; --returnOperands, ++operandIndex )
+		{
+			ir::PTXOperand& operand = operandVector[ operandIndex ];
+
+			if( operand.addressMode == ir::PTXOperand::BitBucket )
+			{
+				operand.type = pi->second.returnTypes[
+					proto.returnTypes.size() ];
+			}
+
+			proto.returnTypes.push_back( operand.type );
+
+			statement.instruction.d.array.push_back( 
+				operandVector[ operandIndex ] );
+
+			report( "    " << operand.toString() );				
+		}
+
+		report( "   operands:" );
+		
+		for( ; operandIndex < operandVector.size(); ++operandIndex )
+		{
+			ir::PTXOperand& operand = operandVector[ operandIndex ];
+
+			if( operand.addressMode == ir::PTXOperand::BitBucket )
+			{
+				operand.type = pi->second.argumentTypes[
+					proto.argumentTypes.size() ];
+			}
+
+			proto.argumentTypes.push_back( operand.type );
+
+			statement.instruction.b.array.push_back(
+				operandVector[ operandIndex ] );
+
+			report( "    " << operand.toString() );				
+		}
+				
 		if( !pi->second.compare( proto ) )
 		{
 			throw_exception( toString( location, *this ) 

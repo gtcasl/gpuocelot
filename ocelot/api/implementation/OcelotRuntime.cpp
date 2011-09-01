@@ -22,7 +22,7 @@
 
 #define REPORT_BASE 0
 
-static void* cudaMallocWrapper(long long unsigned int bytes)
+static void* cudaMallocWrapper(size_t bytes)
 {
 	void* pointer = 0;
 	cudaMalloc(&pointer, bytes);
@@ -34,15 +34,14 @@ static void cudaFreeWrapper(void* pointer)
 	cudaFree(pointer);
 }
 
-static long long unsigned int align(long long unsigned int address,
-	long long unsigned int alignment)
+static size_t align(size_t address, size_t alignment)
 {
-	long long unsigned int remainder = address % alignment;
+	size_t remainder = address % alignment;
 	return remainder == 0 ? address : address + alignment - remainder;
 }
 
 template<typename T>
-void parse(std::string& result, long long unsigned int& parameters,
+void parse(std::string& result, size_t& parameters,
 	std::ios_base& (*format)(std::ios_base&) = std::dec)
 {
 	std::stringstream stream;
@@ -52,8 +51,7 @@ void parse(std::string& result, long long unsigned int& parameters,
 	parameters += sizeof(T);
 }
 
-static int printfWrapper(long long unsigned int string,
-	long long unsigned int parameters)
+static int printfWrapper(size_t string, size_t parameters)
 {
 	const char* format = (const char*)string;
 	std::string result;
@@ -81,9 +79,9 @@ static int printfWrapper(long long unsigned int string,
 			}
 			else if (*f == 's')
 			{
-				std::string temp((const char*)parameters);
+				std::string temp(*(const char**)parameters);
 				result += temp;
-				parameters += temp.size() + 1;
+				parameters += sizeof(const char*);
 			}
 			else if (*f == 'u')
 			{

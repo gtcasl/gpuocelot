@@ -29,9 +29,9 @@ namespace analysis {
 
 StructuralAnalysis::Node::~Node()
 {
-	for(auto n : childNode)
+	for(auto n = childNode.begin(); n != childNode.end(); ++n)
 	{
-		delete n;
+		delete *n;
 	}
 }
 

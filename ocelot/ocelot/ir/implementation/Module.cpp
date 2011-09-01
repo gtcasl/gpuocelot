@@ -272,9 +272,11 @@ void ir::Module::writeIR( std::ostream& stream ) const {
 			}
 		}
 		
-		for (KernelMap::const_iterator kernel = _kernels.begin(); kernel != _kernels.end(); ++kernel) {
+		for (KernelMap::const_iterator kernel = _kernels.begin();
+			kernel != _kernels.end(); ++kernel) {
 			if (kernel->second->function() && 
-				encounteredPrototypes.find((kernel->second)->name) == encounteredPrototypes.end()) {
+				encounteredPrototypes.find((kernel->second)->name) ==
+				encounteredPrototypes.end()) {
 			
 				stream << kernel->second->getPrototype().toString() << "\n";
 				encounteredPrototypes.insert(kernel->second->name);

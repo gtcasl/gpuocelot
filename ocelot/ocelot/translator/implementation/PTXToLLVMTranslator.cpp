@@ -1014,11 +1014,9 @@ void PTXToLLVMTranslator::_translateInstructions()
 			{			
 				ir::LLVMPhi::Node node;
 				
-				try
-				{
-					node.label = "%" + block->producer( *s );
-				}
-				catch( analysis::DataflowGraph::NoProducerException& )
+				const std::string* producer = block->producer( *s );
+				
+				if(producer == 0)
 				{
 					node.label = "%$OcelotRegisterInitializerBlock";
 					_uninitialized.push_back( *s );
@@ -1034,6 +1032,10 @@ void PTXToLLVMTranslator::_translateInstructions()
 				
 					p.nodes.push_back( node );
 					continue;
+				}
+				else
+				{
+					node.label = "%" + *producer;
 				}
 				
 				node.reg = s->id;

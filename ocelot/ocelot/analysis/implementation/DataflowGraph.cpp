@@ -423,7 +423,7 @@ namespace analysis
 		return _block->label;
 	}
 
-	const std::string& DataflowGraph::Block::producer( const Register& r ) const
+	const std::string* DataflowGraph::Block::producer( const Register& r ) const
 	{
 		assertM( aliveIn().count( r ) != 0, "Register " << r.id 
 			<< " is not in the alive-in set of block " << label() );
@@ -443,10 +443,10 @@ namespace analysis
 		
 		if( predecessor == predecessors().end() )
 		{
-			throw NoProducerException( r.id );
+			return 0;
 		}
 		
-		return (*predecessor)->label();
+		return &(*predecessor)->label();
 	}
 	
 	DataflowGraph::Block::RegisterSet DataflowGraph::Block::alive( 

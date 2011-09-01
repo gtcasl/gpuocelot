@@ -29,7 +29,7 @@ SuperblockAnalysis::SuperblockAnalysis(ir::ControlFlowGraph& c, unsigned int b)
 	typedef std::unordered_set<ir::ControlFlowGraph::iterator> BlockSet;
 		
 	// Find all trivial superblocks, assume they were freed up previously
-	//  by tail duplication
+	//  by tail duplication, unrolling, and peeling
 	report("Finding superblocks.");
 	report(" Seeding superblocks.");
 	BlockSet superblocks;

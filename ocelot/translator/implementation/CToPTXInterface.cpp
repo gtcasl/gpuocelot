@@ -90,6 +90,10 @@ unsigned long smId() {
 void syncThreads() {
 }
 
+unsigned long basicBlockCount() {
+    return 1;
+}
+
 unsigned long basicBlockId() {
     return 0;
 }

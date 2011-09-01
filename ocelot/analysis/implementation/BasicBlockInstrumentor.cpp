@@ -111,22 +111,10 @@ namespace analysis
         _kernelProfile.basicBlockExecutionCountMap.clear();
         _kernelProfile.memoryOperationsMap.clear();
 
-        size_t i = 0;
         size_t j = 0;
-        size_t k = 0;
-        double totalMemOps = 0;
+ 
         _kernelProfile.instructionCount = 0;
-        
-        for(k = 0; k < threadBlocks; k++) {
-            for(i = 0; i < kernelDataMap[kernelName]; i++) {
-                for(j = 0; j < (threads * entries); j = j + entries) {
-                    _kernelProfile.basicBlockExecutionCountMap[i] += info[(i * entries * threads) + (k * kernelDataMap[kernelName] * threads * entries) + j];
-                    if(type == memoryIntensity)
-                        _kernelProfile.memoryOperationsMap[i] += info[(i * entries * threads) + (k * kernelDataMap[kernelName] * threads * entries) + (j + 1)];
-                    
-                }
-            }   
-        }
+    
 
         switch(fmt) {
 
@@ -137,14 +125,6 @@ namespace analysis
                 *out << "\n\"threads\": " << threads << ",\n";
                 *out << "\n\"counters\": {\n";
 
-                for(j = 0; j < kernelDataMap[kernelName]; j++) {
-                    *out << "\"" << kernelLabelsMap[kernelName].at(j) << "\": " << _kernelProfile.basicBlockExecutionCountMap[j] << ", ";
-                    if(type == memoryIntensity)
-                         *out << _kernelProfile.memoryOperationsMap[j];
-                
-                    *out << "\n";
-                }
-                
                 *out << "\n}\n}\n";
 
             break;
@@ -157,38 +137,16 @@ namespace analysis
 
                 *out << "Kernel Name: " << kernelName << "\n";
                 *out << "Thread Block Count: " << threadBlocks << "\n";
-                *out << "Thread Count: " << threads << "\n";
-                
+                *out << "Thread Count: " << threads << "\n\n";
 
-                
-                if(type == executionCount)
-                    *out << "\nBasic Block Execution Count:\n\n";
-                else
-                    *out << "\nDynamic Instruction Count:\n\n";
-
-                for(j = 0; j < kernelDataMap[kernelName]; j++) {
-                    *out << kernelLabelsMap[kernelName].at(j) << ": " << _kernelProfile.basicBlockExecutionCountMap[j] << "\n";
-                    _kernelProfile.instructionCount += _kernelProfile.basicBlockExecutionCountMap[j];
+                for(j = 0; j < kernelDataMap[kernelName] * threads * threadBlocks; j++) {
+                   
+                    _kernelProfile.instructionCount += info[j];
                     
                 }
 
-                if(type == memoryIntensity){
-                    *out << "\nMemory Intensity:\n\n";
-
-                    for(j = 0; j < kernelDataMap[kernelName]; j++) {
-                        *out << "\"" << kernelLabelsMap[kernelName].at(j) << "\": " << "[" << _kernelProfile.memoryOperationsMap[j] << ":" << _kernelProfile.basicBlockExecutionCountMap[j] << "]\n";
-                        totalMemOps += _kernelProfile.memoryOperationsMap[j];
-                    }
-                }
-
-                if(type == instructionCount || type == memoryIntensity){
-
-                    *out << "\nTotal Dynamic Instruction Count: " << _kernelProfile.instructionCount << "\n";
-                }            
-                if(type == memoryIntensity) {
-                    *out << "Aggregate Memory Intensity: " << "[" << totalMemOps << ":" << _kernelProfile.instructionCount << "] " << (totalMemOps / _kernelProfile.instructionCount) * 100 << " %\n";
-                }    
-
+                *out << "\nTotal Dynamic Instruction Count: " << _kernelProfile.instructionCount << "\n";
+              
                 *out << "\n\n";        
 
             break;

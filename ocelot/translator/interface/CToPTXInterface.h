@@ -67,7 +67,10 @@ unsigned long smId();
 
 void syncThreads();
 
+unsigned long basicBlockCount();
+
 unsigned long basicBlockId();
+
 unsigned long basicBlockInstructionCount();
 
 /*  Only instructions that are actually executed will be counted. 

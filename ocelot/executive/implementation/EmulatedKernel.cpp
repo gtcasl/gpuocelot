@@ -968,18 +968,16 @@ void executive::EmulatedKernel::initializeStackMemory() {
 					<< "' stack offset " << offset << " -> argument offset " 
 					<< argument->offset);
 
-				assert(offsets.count(argument->identifier) == 0);
 				offsets.insert(std::make_pair(argument->identifier, offset));
 
 				offset += ir::PTXOperand::bytes(argument->type);
 			}
-						
+			
 			for (ir::PTXOperand::Array::iterator argument = fi->b.array.begin(); 
 				argument != fi->b.array.end(); ++argument) {
 				offset = align(offset, ir::PTXOperand::bytes(argument->type));
 				argument->offset = offset;
 				
-				assert(offsets.count(argument->identifier) == 0);
 				offsets.insert(std::make_pair(argument->identifier, offset));
 
 				report( "   For call argument '" << argument->identifier 

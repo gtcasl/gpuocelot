@@ -56,7 +56,8 @@ namespace transforms
             toInsert.instruction.a.identifier.clear();
         }
         
-        if(statement.instruction.d.identifier == BASIC_BLOCK_INST_COUNT || 
+        if( statement.instruction.d.identifier == BASIC_BLOCK_COUNT || 
+            statement.instruction.d.identifier == BASIC_BLOCK_INST_COUNT || 
             statement.instruction.d.identifier == BASIC_BLOCK_EXEC_INST_COUNT ||
             statement.instruction.d.identifier == BASIC_BLOCK_PRED_INST_COUNT ||
             statement.instruction.d.identifier == BASIC_BLOCK_ID || 
@@ -66,7 +67,9 @@ namespace transforms
             newRegisterMap[toInsert.instruction.d.identifier] = toInsert.instruction.d.reg;
             toInsert.instruction.d.identifier.clear();
             
-            if(statement.instruction.d.identifier == BASIC_BLOCK_INST_COUNT) 
+            if(statement.instruction.d.identifier == BASIC_BLOCK_COUNT) 
+                toInsert.instruction.a.imm_int = attributes.basicBlockCount;
+            else if(statement.instruction.d.identifier == BASIC_BLOCK_INST_COUNT) 
                 toInsert.instruction.a.imm_int = attributes.basicBlockInstructionCount;
             else if(statement.instruction.d.identifier == BASIC_BLOCK_EXEC_INST_COUNT || statement.instruction.d.identifier == BASIC_BLOCK_PRED_INST_COUNT) 
                 toInsert.instruction.a.imm_int = attributes.basicBlockExecutedInstructionCount;
@@ -292,6 +295,7 @@ namespace transforms
         StaticAttributes attributes;
         attributes.basicBlockId = 0;
         attributes.basicBlockInstructionCount = 0;
+        attributes.basicBlockCount = dfg().size() - 2;
         
         analysis::DataflowGraph::iterator block = dfg().begin();
         ++block;

@@ -1,7 +1,7 @@
-# 1 "/tmp/tmpxft_000033ca_00000000-1_sequence.cudafe1.cpp"
+# 1 "/tmp/tmpxft_0000421d_00000000-1_sequence.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_000033ca_00000000-1_sequence.cudafe1.cpp"
+# 1 "/tmp/tmpxft_0000421d_00000000-1_sequence.cudafe1.cpp"
 # 1 "sequence.cu"
 # 46 "/usr/local/cuda/bin/../include/device_types.h"
 # 149 "/usr/lib/gcc/x86_64-linux-gnu/4.4.5/include/stddef.h" 3
@@ -9787,8 +9787,8 @@ printf("Pass/Fail : Pass\n");
 return 0;
 # 173 "sequence.cu"
 }
-# 1 "/tmp/tmpxft_000033ca_00000000-1_sequence.cudafe1.stub.c"
-# 1 "/tmp/tmpxft_000033ca_00000000-1_sequence.cudafe1.stub.c" 1
+# 1 "/tmp/tmpxft_0000421d_00000000-1_sequence.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_0000421d_00000000-1_sequence.cudafe1.stub.c" 1
 # 1 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 1
 # 91 "/usr/local/cuda/bin/../include/crt/host_runtime.h"
 extern "C" {
@@ -10190,8 +10190,8 @@ extern __attribute__((__weak__)) unsigned long long int ullmax(unsigned long lon
 
 
 #pragma pack()
-# 2 "/tmp/tmpxft_000033ca_00000000-1_sequence.cudafe1.stub.c" 2
-# 1 "/tmp/tmpxft_000033ca_00000000-3_sequence.fatbin.c" 1
+# 2 "/tmp/tmpxft_0000421d_00000000-1_sequence.cudafe1.stub.c" 2
+# 1 "/tmp/tmpxft_0000421d_00000000-3_sequence.fatbin.c" 1
 # 1 "/usr/local/cuda/bin/../include/__cudaFatFormat.h" 1
 # 83 "/usr/local/cuda/bin/../include/__cudaFatFormat.h"
 extern "C" {
@@ -10269,7 +10269,7 @@ void __cudaFatFreePTX( char* ptx );
 
 
 }
-# 2 "/tmp/tmpxft_000033ca_00000000-3_sequence.fatbin.c" 2
+# 2 "/tmp/tmpxft_0000421d_00000000-3_sequence.fatbin.c" 2
 
 asm(
 ".section .rodata\n"
@@ -10413,9 +10413,9 @@ asm(
 ".quad 0x206e6f20746c6975,0x2d39302d30313032,0x2d2f2f090a0a3830,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x43202f2f090a2d2d,0x676e696c69706d6f\n"
-".quad 0x6d742f706d742f20,0x3030305f74667870,0x30305f6163333330,0x372d303030303030\n"
-".quad 0x636e65757165735f,0x692e337070632e65,0x632f706d742f2820,0x4b77532e23494263\n"
-".quad 0x2f2f090a29554877,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
+".quad 0x6d742f706d742f20,0x3030305f74667870,0x30305f6431323430,0x372d303030303030\n"
+".quad 0x636e65757165735f,0x692e337070632e65,0x632f706d742f2820,0x76367a2e23494263\n"
+".quad 0x2f2f090a29357541,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2f2f090a0a2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
@@ -10429,7 +10429,7 @@ asm(
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x662e090a0a2d2d2d\n"
 ".quad 0x3c22093109656c69,0x2d646e616d6d6f63,0x090a223e656e696c,0x093209656c69662e\n"
-".quad 0x6d742f706d742f22,0x3030305f74667870,0x30305f6163333330,0x362d303030303030\n"
+".quad 0x6d742f706d742f22,0x3030305f74667870,0x30305f6431323430,0x362d303030303030\n"
 ".quad 0x636e65757165735f,0x6566616475632e65,0x090a227570672e32,0x093309656c69662e\n"
 ".quad 0x696c2f7273752f22,0x38782f6363672f62,0x6e696c2d34365f36,0x342f756e672d7875\n"
 ".quad 0x636e692f352e342e,0x6474732f6564756c,0x090a22682e666564,0x093409656c69662e\n"
@@ -10608,8 +10608,8 @@ static __cudaFatElfEntry __elfEntries1 = {(char*)"sm_20", (char*)__deviceText_$s
 
 
 
-static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000004,0xa14f518d,(char*)"410bbdbbef0d251c",(char*)"sequence.cu",(char*)" ",__ptxEntries,__cubinEntries,&__debugEntries0,0,0,0,0,0,0xf5c301ff,&__elfEntries1};
-# 3 "/tmp/tmpxft_000033ca_00000000-1_sequence.cudafe1.stub.c" 2
+static __cudaFatCudaBinary __fatDeviceText __attribute__ ((section (".nvFatBinSegment")))= {0x1ee55a01,0x00000004,0xa14f518d,(char*)"ebec819228721b7c",(char*)"sequence.cu",(char*)" ",__ptxEntries,__cubinEntries,&__debugEntries0,0,0,0,0,0,0x0db7ceb0,&__elfEntries1};
+# 3 "/tmp/tmpxft_0000421d_00000000-1_sequence.cudafe1.stub.c" 2
 struct __T20 {int *__par0;int __par1;int __dummy_field;};
 struct __T21 {int *__par0;int __dummy_field;};
 struct __T22 {int4 *__par0;int __par1;int __dummy_field;};
@@ -10618,7 +10618,7 @@ extern void __device_stub__Z8sequencePii(int *, int);
 extern void __device_stub__Z15testShareSimplePi(int *);
 extern void __device_stub__Z10v4sequenceP4int4i(int4 *, int);
 extern void __device_stub__Z7testShrPi(int *);
-static void __sti____cudaRegisterAll_43_tmpxft_000033ca_00000000_4_sequence_cpp1_ii_074584c3(void) __attribute__((__constructor__));
+static void __sti____cudaRegisterAll_43_tmpxft_0000421d_00000000_4_sequence_cpp1_ii_074584c3(void) __attribute__((__constructor__));
 void __device_stub__Z8sequencePii(int *__par0, int __par1){ struct __T20 *__T24 = 0;
 if (cudaSetupArgument((void*)(char*)&__par0, sizeof(__par0), (size_t)&__T24->__par0) != cudaSuccess) return;if (cudaSetupArgument((void*)(char*)&__par1, sizeof(__par1), (size_t)&__T24->__par1) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(int *, int))sequence)); (void)cudaLaunch(((char *)((void ( *)(int *, int))sequence))); };}
 void sequence( int *__cuda_0,int __cuda_1)
@@ -10629,7 +10629,7 @@ void sequence( int *__cuda_0,int __cuda_1)
 
 
 }
-# 1 "/tmp/tmpxft_000033ca_00000000-1_sequence.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_0000421d_00000000-1_sequence.cudafe1.stub.c"
 void __device_stub__Z15testShareSimplePi( int *__par0) { struct __T21 *__T25 = 0;
 if (cudaSetupArgument((void*)(char*)&__par0, sizeof(__par0), (size_t)&__T25->__par0) != cudaSuccess) return; { volatile static char *__f; __f = ((char *)((void ( *)(int *))testShareSimple)); (void)cudaLaunch(((char *)((void ( *)(int *))testShareSimple))); }; }
 void testShareSimple( int *__cuda_0)
@@ -10637,7 +10637,7 @@ void testShareSimple( int *__cuda_0)
 {__device_stub__Z15testShareSimplePi( __cuda_0);
 # 30 "sequence.cu"
 }
-# 1 "/tmp/tmpxft_000033ca_00000000-1_sequence.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_0000421d_00000000-1_sequence.cudafe1.stub.c"
 void __device_stub__Z10v4sequenceP4int4i( int4 *__par0, int __par1) { struct __T22 *__T26 = 0;
 if (cudaSetupArgument((void*)(char*)&__par0, sizeof(__par0), (size_t)&__T26->__par0) != cudaSuccess) return; if (cudaSetupArgument((void*)(char*)&__par1, sizeof(__par1), (size_t)&__T26->__par1) != cudaSuccess) return; { volatile static char *__f; __f = ((char *)((void ( *)(int4 *, int))v4sequence)); (void)cudaLaunch(((char *)((void ( *)(int4 *, int))v4sequence))); }; }
 void v4sequence( int4 *__cuda_0,int __cuda_1)
@@ -10647,7 +10647,7 @@ void v4sequence( int4 *__cuda_0,int __cuda_1)
 
 
 }
-# 1 "/tmp/tmpxft_000033ca_00000000-1_sequence.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_0000421d_00000000-1_sequence.cudafe1.stub.c"
 void __device_stub__Z7testShrPi( int *__par0) { struct __T23 *__T27 = 0;
 if (cudaSetupArgument((void*)(char*)&__par0, sizeof(__par0), (size_t)&__T27->__par0) != cudaSuccess) return; { volatile static char *__f; __f = ((char *)((void ( *)(int *))testShr)); (void)cudaLaunch(((char *)((void ( *)(int *))testShr))); }; }
 void testShr( int *__cuda_0)
@@ -10655,6 +10655,6 @@ void testShr( int *__cuda_0)
 {__device_stub__Z7testShrPi( __cuda_0);
 # 54 "sequence.cu"
 }
-# 1 "/tmp/tmpxft_000033ca_00000000-1_sequence.cudafe1.stub.c"
-static void __sti____cudaRegisterAll_43_tmpxft_000033ca_00000000_4_sequence_cpp1_ii_074584c3(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(int *))testShr), (char*)"testShr", "testShr", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(int4 *, int))v4sequence), (char*)"v4sequence", "v4sequence", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(int *))testShareSimple), (char*)"testShareSimple", "testShareSimple", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(int *, int))sequence), (char*)"sequence", "sequence", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); }
-# 1 "/tmp/tmpxft_000033ca_00000000-1_sequence.cudafe1.stub.c" 2
+# 1 "/tmp/tmpxft_0000421d_00000000-1_sequence.cudafe1.stub.c"
+static void __sti____cudaRegisterAll_43_tmpxft_0000421d_00000000_4_sequence_cpp1_ii_074584c3(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(int *))testShr), (char*)"testShr", "testShr", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(int4 *, int))v4sequence), (char*)"v4sequence", "v4sequence", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(int *))testShareSimple), (char*)"testShareSimple", "testShareSimple", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(int *, int))sequence), (char*)"sequence", "sequence", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); }
+# 1 "/tmp/tmpxft_0000421d_00000000-1_sequence.cudafe1.stub.c" 2

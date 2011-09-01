@@ -68,6 +68,7 @@ namespace transforms
     
         public:
         
+            unsigned int basicBlockCount;
             unsigned int basicBlockId;
             unsigned int basicBlockInstructionCount;
             unsigned int basicBlockExecutedInstructionCount;

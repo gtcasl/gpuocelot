@@ -77,6 +77,7 @@ unsigned long basicBlockInstructionCount();
     Instructions that are predicated and the predicate is false
     will be ignored 
 */
+
 unsigned long basicBlockExecutedInstructionCount();
 
 unsigned long basicBlockPredicatedInstructionCount();

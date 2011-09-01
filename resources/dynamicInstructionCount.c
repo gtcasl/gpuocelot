@@ -1,9 +1,9 @@
 {
-    unsigned long totalThreads = blockDim() * gridDim();
-    unsigned long currentThreadId = globalThreadId();
+    unsigned long totalThreadsPerBlock = blockDim();
+    unsigned long currentThreadId = blockThreadId();
     ON_BASIC_BLOCK_EXIT:
     {
-            unsigned long offset = totalThreads * basicBlockId() + currentThreadId;
-            atomicAdd(globalMem, offset, basicBlockExecutedInstructionCount());
+            unsigned long offset = basicBlockCount() * basicBlockId() + totalThreadsPerBlock * blockId() + currentThreadId;
+            globalMem[offset] = globalMem[offset] + basicBlockExecutedInstructionCount();
     }
 }

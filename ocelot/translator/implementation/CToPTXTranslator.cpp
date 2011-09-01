@@ -1655,6 +1655,7 @@ namespace translator
                         generateAtomicAdd(inst, stmt, type, insn, regInput);
                     }
                     break;
+                    case basicBlockCountSymbol:
                     case basicBlockIdSymbol:
                     case basicBlockInstCountSymbol: 
                     case basicBlockExecInstCountSymbol:
@@ -2077,6 +2078,7 @@ namespace translator
                                         unsigned long gridId();\
                                         unsigned long smId();\
                                         void syncThreads();\
+                                        unsigned long basicBlockCount();\
                                         unsigned long basicBlockId();\
                                         unsigned long basicBlockInstructionCount();\
                                         unsigned long basicBlockExecutedInstructionCount();\
@@ -2119,6 +2121,7 @@ namespace translator
             {(char *)"gridId", (void*)(unsigned long)(*gridId)},
             {(char *)"smId", (void*)(unsigned long)(*smId)},
             {(char *)"syncThreads", (void *)(*syncThreads)},
+            {(char *)"basicBlockCount", (void*)(unsigned long)(*basicBlockCount)},            
             {(char *)"basicBlockId", (void*)(unsigned long)(*basicBlockId)},
             {(char *)"basicBlockInstructionCount", (void*)(unsigned long)(*basicBlockInstructionCount)},
             {(char *)"basicBlockExecutedInstructionCount", (void*)(unsigned long)(*basicBlockExecutedInstructionCount)},
@@ -2197,6 +2200,7 @@ namespace translator
         functionCalls["smId"] = smIdSymbol;
         functionCalls["syncThreads"] = syncThreadsSymbol;
         functionCalls["basicBlockId"] = basicBlockIdSymbol;
+        functionCalls["basicBlockCount"] = basicBlockCountSymbol;
         functionCalls["basicBlockInstructionCount"] = basicBlockInstCountSymbol;
         functionCalls["basicBlockExecutedInstructionCount"] = basicBlockExecInstCountSymbol;
         functionCalls["basicBlockPredicatedInstructionCount"] = basicBlockPredInstCountSymbol;

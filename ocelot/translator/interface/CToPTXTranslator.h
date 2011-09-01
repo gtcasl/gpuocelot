@@ -64,6 +64,7 @@
 
 
 /* basic block constructs */
+#define BASIC_BLOCK_COUNT               "basicBlockCount"
 #define BASIC_BLOCK_ID                  "basicBlockId"
 #define BASIC_BLOCK_INST_COUNT          "basicBlockInstructionCount"
 #define BASIC_BLOCK_EXEC_INST_COUNT     "basicBlockExecutedInstructionCount"
@@ -152,6 +153,7 @@ namespace translator {
 			    gridIdSymbol,
 			    smIdSymbol,
 			    syncThreadsSymbol,
+                basicBlockCountSymbol,
 			    basicBlockIdSymbol,
                 basicBlockInstCountSymbol,
                 basicBlockExecInstCountSymbol,

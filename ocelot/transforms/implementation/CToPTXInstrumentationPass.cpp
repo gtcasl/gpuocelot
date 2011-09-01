@@ -37,12 +37,9 @@ namespace transforms
         ir::PTXStatement toInsert = statement;
         
         if(statement.instruction.opcode == ir::PTXInstruction::Call)
-        {
-            
+        { 
             toInsert.instruction.pg.reg = newRegisterMap[toInsert.instruction.pg.identifier];
             toInsert.instruction.pg.identifier.clear();
-            
-            return toInsert;
         }
         
         if(statement.instruction.a.identifier == BASIC_BLOCK_EXEC_INST_COUNT && statement.instruction.d.identifier == BASIC_BLOCK_EXEC_INST_COUNT)
@@ -50,12 +47,18 @@ namespace transforms
             toInsert.instruction.d.reg = toInsert.instruction.a.reg = newRegisterMap[BASIC_BLOCK_EXEC_INST_COUNT];
             toInsert.instruction.d.identifier.clear();
             toInsert.instruction.a.identifier.clear();
-            
-            return toInsert;
+        }
+        
+        if(statement.instruction.a.identifier == BASIC_BLOCK_PRED_INST_COUNT && statement.instruction.d.identifier == BASIC_BLOCK_PRED_INST_COUNT)
+        {
+            toInsert.instruction.d.reg = toInsert.instruction.a.reg = newRegisterMap[BASIC_BLOCK_PRED_INST_COUNT];
+            toInsert.instruction.d.identifier.clear();
+            toInsert.instruction.a.identifier.clear();
         }
         
         if(statement.instruction.d.identifier == BASIC_BLOCK_INST_COUNT || 
             statement.instruction.d.identifier == BASIC_BLOCK_EXEC_INST_COUNT ||
+            statement.instruction.d.identifier == BASIC_BLOCK_PRED_INST_COUNT ||
             statement.instruction.d.identifier == BASIC_BLOCK_ID || 
             statement.instruction.d.identifier == INSTRUCTION_ID ||
             statement.instruction.d.identifier == INSTRUCTION_COUNT) {
@@ -65,7 +68,7 @@ namespace transforms
             
             if(statement.instruction.d.identifier == BASIC_BLOCK_INST_COUNT) 
                 toInsert.instruction.a.imm_int = attributes.basicBlockInstructionCount;
-            else if(statement.instruction.d.identifier == BASIC_BLOCK_EXEC_INST_COUNT) 
+            else if(statement.instruction.d.identifier == BASIC_BLOCK_EXEC_INST_COUNT || statement.instruction.d.identifier == BASIC_BLOCK_PRED_INST_COUNT) 
                 toInsert.instruction.a.imm_int = attributes.basicBlockExecutedInstructionCount;
             else if(statement.instruction.d.identifier == BASIC_BLOCK_ID)    
                 toInsert.instruction.a.imm_int = attributes.basicBlockId; 
@@ -73,8 +76,6 @@ namespace transforms
                 toInsert.instruction.a.imm_int = attributes.instructionId;
             else if(statement.instruction.d.identifier == INSTRUCTION_COUNT)   
                 toInsert.instruction.a.imm_int = attributes.kernelInstructionCount;
-          
-            return toInsert;
         }
         
         if(statement.instruction.d.identifier == COMPUTE_BASE_ADDRESS)
@@ -113,7 +114,6 @@ namespace transforms
             toInsert.instruction.d.identifier.clear();
 
             toInsert.instruction.c = attributes.originalInstruction.pg;
-            return toInsert;
         }
         
         ir::PTXOperand ir::PTXInstruction::* operands[] = { &ir::PTXInstruction::a, & ir::PTXInstruction::b, & ir::PTXInstruction::c, 
@@ -318,26 +318,9 @@ namespace transforms
                     if(translationBlock.specifier.checkForPredication && 
                         (ptxInstruction->pg.condition == ir::PTXOperand::Pred || ptxInstruction->pg.condition == ir::PTXOperand::InvPred))
                     {
-                        analysis::DataflowGraph::RegisterId predCount = dfg().newRegister();
-                
-                        ir::PTXOperand::DataType type = (sizeof(size_t) == 8 ? ir::PTXOperand::u64: ir::PTXOperand::u32);
-                        ir::PTXInstruction selp(ir::PTXInstruction::SelP);
-                        selp.type = selp.d.type = selp.b.type = selp.a.type = selp.c.type = type;
-                        selp.d.addressMode = selp.c.addressMode = ir::PTXOperand::Register;
-                        selp.a.addressMode = selp.b.addressMode = ir::PTXOperand::Immediate;
-                        
-                        selp.d.reg = predCount;
-                        selp.b.imm_int = 0;
-                        selp.a.imm_int = 1;
-                        selp.c = ptxInstruction->pg;
-
-                        ir::PTXInstruction add(ir::PTXInstruction::Add);
-                        add.type = add.d.type = add.a.type = add.b.type = type;
-                        add.d.addressMode = add.a.addressMode = add.b.addressMode = ir::PTXOperand::Register;
-                        
-                        add.d.identifier = add.a.identifier = BASIC_BLOCK_EXEC_INST_COUNT;
-                        add.b.reg = predCount;
-                        
+                        bool isPredInstCount = false;
+                        ir::PTXOperand guard;
+                    
                         ir::PTXKernel::PTXStatementVector::iterator position = translationBlock.statements.end();
                         for(ir::PTXKernel::PTXStatementVector::iterator statement = translationBlock.statements.begin();
                             statement != translationBlock.statements.end(); ++statement) {    
@@ -346,16 +329,100 @@ namespace transforms
                                 position = statement;
                                 break;
                             }
+                            else if(statement->instruction.d.identifier == BASIC_BLOCK_PRED_INST_COUNT)
+                            {
+                                position = statement;
+                                isPredInstCount = true;
+                                guard = statement->instruction.pg;
+                                break;
+                            }
                         }                    
         
                         if(position == translationBlock.statements.end())
-                            throw hydrazine::Exception("Unable to locate BASIC_BLOCK_EXEC_INST_COUNT statement!");
+                            throw hydrazine::Exception("Unable to locate BASIC_BLOCK_EXEC_INST_COUNT or BASIC_BLOCK_PRED_INST_COUNT statement!");
+                    
+                        analysis::DataflowGraph::RegisterId predCount = dfg().newRegister();
+                        ir::PTXOperand::DataType type = (sizeof(size_t) == 8 ? ir::PTXOperand::u64: ir::PTXOperand::u32);
+                
+                        if(isPredInstCount)
+                        {
+                            ir::PTXInstruction ballot(ir::PTXInstruction::Vote);
+                            ballot.vote = ir::PTXInstruction::Ballot;
+                            ballot.type = ir::PTXOperand::b32;
+                            
+                            ballot.d.type = ir::PTXOperand::b32;
+                            ballot.d.addressMode = ir::PTXOperand::Register;
+                            ballot.d.reg = predCount;
+                            ballot.a.addressMode = ir::PTXOperand::Register;
+                            ballot.a.type = ir::PTXOperand::pred;
+                            ballot.a = ptxInstruction->pg;
 
-                        ir::PTXStatement stmt(ir::PTXStatement::Instr);
-                        stmt.instruction = selp;
-                        position = translationBlock.statements.insert(position + 1, stmt);
-                        stmt.instruction = add;
-                        translationBlock.statements.insert(position + 1, stmt);
+                            ir::PTXInstruction popc(ir::PTXInstruction::Popc);
+                            popc.type = ir::PTXOperand::b32;
+                            popc.d.type = ir::PTXOperand::u32;
+                            popc.a.type = ir::PTXOperand::b32;
+                            popc.d.addressMode = popc.a.addressMode = ir::PTXOperand::Register;
+                            popc.a = ballot.d;   
+                            analysis::DataflowGraph::RegisterId popcResult = dfg().newRegister();
+                            popc.d.reg = popcResult;
+
+                            ir::PTXInstruction cvt(ir::PTXInstruction::Cvt);
+                            cvt.type = type;
+                            cvt.d.type = type;
+                            analysis::DataflowGraph::RegisterId cvtResult = dfg().newRegister();
+                            cvt.d.reg = cvtResult;
+                            cvt.a.type = ir::PTXOperand::u32;
+                            cvt.d.addressMode = cvt.a.addressMode = ir::PTXOperand::Register;
+                            cvt.a = popc.d;
+
+                            ir::PTXInstruction add(ir::PTXInstruction::Add);
+                            add.type = add.d.type = add.a.type = add.b.type = type;
+                            add.d.addressMode = add.a.addressMode = add.b.addressMode = ir::PTXOperand::Register;
+                            
+                            add.d.identifier = add.a.identifier = BASIC_BLOCK_PRED_INST_COUNT;
+                            add.b.reg = cvtResult;
+                            
+                            add.pg = guard;
+                            add.pg.condition = ir::PTXOperand::Pred;
+                            
+                            ir::PTXStatement stmt(ir::PTXStatement::Instr);
+                            stmt.instruction = ballot;
+                            position = translationBlock.statements.insert(position + 1, stmt);
+                            stmt.instruction = popc;
+                            position = translationBlock.statements.insert(position + 1, stmt);
+                            stmt.instruction = cvt;
+                            position = translationBlock.statements.insert(position + 1, stmt);
+                            add.d = add.a = (position + 1)->instruction.d;
+                            stmt.instruction = add;
+                            position = translationBlock.statements.insert(position + 2, stmt);
+                            
+                        }
+                        else
+                        {   
+                            ir::PTXInstruction selp(ir::PTXInstruction::SelP);
+                            selp.type = selp.d.type = selp.b.type = selp.a.type = selp.c.type = type;
+                            selp.d.addressMode = selp.c.addressMode = ir::PTXOperand::Register;
+                            selp.a.addressMode = selp.b.addressMode = ir::PTXOperand::Immediate;
+                            
+                            selp.d.reg = predCount;
+                            selp.b.imm_int = 0;
+                            selp.a.imm_int = 1;
+                            selp.c = ptxInstruction->pg;
+
+                            ir::PTXInstruction add(ir::PTXInstruction::Add);
+                            add.type = add.d.type = add.a.type = add.b.type = type;
+                            add.d.addressMode = add.a.addressMode = add.b.addressMode = ir::PTXOperand::Register;
+                            
+                            add.d.identifier = add.a.identifier = BASIC_BLOCK_EXEC_INST_COUNT;
+                            add.b.reg = predCount;
+                            
+
+                            ir::PTXStatement stmt(ir::PTXStatement::Instr);
+                            stmt.instruction = selp;
+                            position = translationBlock.statements.insert(position + 1, stmt);
+                            stmt.instruction = add;
+                            translationBlock.statements.insert(position + 1, stmt);
+                        }
                     
                     }
                     else
@@ -383,6 +450,13 @@ namespace transforms
                     if(statement->instruction.opcode == ir::PTXInstruction::SelP && (statement+1)->instruction.opcode == ir::PTXInstruction::Add)
                     {
                         translationBlock.statements.erase(statement, statement + 2);
+                    } 
+                    
+                    if(statement->instruction.opcode == ir::PTXInstruction::Vote && (statement+1)->instruction.opcode == ir::PTXInstruction::Popc
+                        && (statement+2)->instruction.opcode == ir::PTXInstruction::Cvt && (statement+4)->instruction.opcode == ir::PTXInstruction::Add)
+                    {
+                        ir::PTXKernel::PTXStatementVector::iterator position = translationBlock.statements.erase(statement, statement + 3);
+                        translationBlock.statements.erase(position + 1);
                     } 
                 
                 }
@@ -534,7 +608,8 @@ namespace transforms
             }
             
             /* check if predication is enabled */
-            if(statement->directive == ir::PTXStatement::Instr && statement->instruction.d.identifier == BASIC_BLOCK_EXEC_INST_COUNT)
+            if(statement->directive == ir::PTXStatement::Instr && 
+                (statement->instruction.d.identifier == BASIC_BLOCK_EXEC_INST_COUNT || statement->instruction.d.identifier == BASIC_BLOCK_PRED_INST_COUNT))
             {
                 if(translationBlocks.size() > 0){
                     transforms::TranslationBlock last = translationBlocks.back();

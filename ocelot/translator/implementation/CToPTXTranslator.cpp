@@ -71,28 +71,14 @@ namespace translator
         for (PredicateList::const_iterator pred = predicateList.begin(); 
 	        pred != predicateList.end(); ++pred) {
 
-            if(pred->set && (instruction.opcode == ir::PTXInstruction::St 
-            || instruction.opcode == ir::PTXInstruction::Ld
-            || instruction.opcode == ir::PTXInstruction::Call
-            || instruction.opcode == ir::PTXInstruction::Add
-            || instruction.opcode == ir::PTXInstruction::Atom
-            || instruction.opcode == ir::PTXInstruction::And
-            || instruction.opcode == ir::PTXInstruction::Not
-            || instruction.opcode == ir::PTXInstruction::Mad
-            || instruction.opcode == ir::PTXInstruction::Mul
-            || instruction.opcode == ir::PTXInstruction::Popc
-            || instruction.opcode == ir::PTXInstruction::SetP)){
-                
-                if(pred->inv)
-                    instruction.pg.condition = ir::PTXOperand::InvPred;
-                else    
-                    instruction.pg.condition = ir::PTXOperand::Pred;
-                
-                instruction.pg.identifier = pred->id;
-                instruction.pg.type = ir::PTXOperand::pred;
-                instruction.pg.addressMode = ir::PTXOperand::Register;
-            }
-                     
+            if(pred->inv)
+                instruction.pg.condition = ir::PTXOperand::InvPred;
+            else    
+                instruction.pg.condition = ir::PTXOperand::Pred;
+            
+            instruction.pg.identifier = pred->id;
+            instruction.pg.type = ir::PTXOperand::pred;
+            instruction.pg.addressMode = ir::PTXOperand::Register;       
         }
     }
     
@@ -1675,6 +1661,7 @@ namespace translator
                     case instructionIdSymbol:
                     case instructionCountSymbol:
                     case getPredicateValueSymbol:
+                    case basicBlockPredInstCountSymbol:    
                     {
                         generateStaticAttributes(inst, stmt, type, insn, call_name);
                     }
@@ -2093,6 +2080,7 @@ namespace translator
                                         unsigned long basicBlockId();\
                                         unsigned long basicBlockInstructionCount();\
                                         unsigned long basicBlockExecutedInstructionCount();\
+                                        unsigned long basicBlockPredicatedInstructionCount();\
                                         unsigned long instructionId();\
                                         unsigned long instructionCount();\
                                         unsigned long warpCount();\
@@ -2134,6 +2122,7 @@ namespace translator
             {(char *)"basicBlockId", (void*)(unsigned long)(*basicBlockId)},
             {(char *)"basicBlockInstructionCount", (void*)(unsigned long)(*basicBlockInstructionCount)},
             {(char *)"basicBlockExecutedInstructionCount", (void*)(unsigned long)(*basicBlockExecutedInstructionCount)},
+            {(char *)"basicBlockPredicatedInstructionCount", (void*)(unsigned long)(*basicBlockPredicatedInstructionCount)},
             {(char *)"instructionId", (void*)(unsigned long)(*instructionId)},
             {(char *)"instructionCount", (void*)(unsigned long)(*instructionCount)},
             {(char *)"warpCount", (void*)(unsigned long)(*warpCount)},
@@ -2210,6 +2199,7 @@ namespace translator
         functionCalls["basicBlockId"] = basicBlockIdSymbol;
         functionCalls["basicBlockInstructionCount"] = basicBlockInstCountSymbol;
         functionCalls["basicBlockExecutedInstructionCount"] = basicBlockExecInstCountSymbol;
+        functionCalls["basicBlockPredicatedInstructionCount"] = basicBlockPredInstCountSymbol;
         functionCalls["instructionId"] = instructionIdSymbol;
         functionCalls["instructionCount"] = instructionCountSymbol;
         functionCalls["warpCount"] = warpCountSymbol;

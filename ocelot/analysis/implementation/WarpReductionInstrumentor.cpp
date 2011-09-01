@@ -42,11 +42,9 @@ namespace analysis
         if(cudaMalloc((void **) &counter, 2 * sizeof(size_t)) != cudaSuccess){
             throw hydrazine::Exception( "Could not allocate sufficient memory on device (cudaMalloc failed)!" );
         }
-        if(cudaMemset( counter, 0, 2 * sizeof( size_t )) != cudaSuccess){
+        if(cudaMemset( counter, 0, 2  * sizeof( size_t )) != cudaSuccess){
             throw hydrazine::Exception( "cudaMemset failed!" );
         }
-
-        sharedMemSize = threads * 8;
         
         if(cudaMemcpyToSymbol(symbol.c_str(), &counter, sizeof(size_t *), 0, cudaMemcpyHostToDevice) != cudaSuccess) {
             throw hydrazine::Exception( "cudaMemcpyToSymbol failed!");
@@ -138,7 +136,7 @@ namespace analysis
                     break;
                     case instructionCount:
                     {
-                        *out << "Instruction Count: " << info[0] << "\n";
+                        *out << "\nDynamic Instruction Count: " << info[0] << "\n\n";
                     }                    
                     break;
                     default:

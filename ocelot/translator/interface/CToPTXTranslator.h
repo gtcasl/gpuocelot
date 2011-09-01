@@ -67,6 +67,7 @@
 #define BASIC_BLOCK_ID                  "basicBlockId"
 #define BASIC_BLOCK_INST_COUNT          "basicBlockInstructionCount"
 #define BASIC_BLOCK_EXEC_INST_COUNT     "basicBlockExecutedInstructionCount"
+#define BASIC_BLOCK_PRED_INST_COUNT     "basicBlockPredicatedInstructionCount"
 #define INSTRUCTION_ID                  "instructionId"
 #define INSTRUCTION_COUNT               "instructionCount"
 
@@ -154,6 +155,7 @@ namespace translator {
 			    basicBlockIdSymbol,
                 basicBlockInstCountSymbol,
                 basicBlockExecInstCountSymbol,
+                basicBlockPredInstCountSymbol,
                 instructionIdSymbol,
                 instructionCountSymbol,
                 warpCountSymbol,

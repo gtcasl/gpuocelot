@@ -102,6 +102,10 @@ unsigned long basicBlockExecutedInstructionCount() {
     return 1;
 }
 
+unsigned long basicBlockPredicatedInstructionCount() {
+    return 1;
+}
+
 unsigned long instructionId() {
     return 0;
 }

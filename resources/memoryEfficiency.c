@@ -12,7 +12,7 @@
         if(leastActiveThreadInWarp() != 0)
         {
             unsigned long uniqueCount = uniqueElementCount(sharedMem, 1);
-            atomicAdd(globalMem, 0, uniqueCount);   
+            globalMem[0] = globalMem[0] + uniqueCount;
             atomicIncrement(globalMem, 1);
         }
     }    

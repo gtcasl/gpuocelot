@@ -84,28 +84,38 @@ bool TestExternalFunctions::testMallocFree()
 
 bool TestExternalFunctions::testPrintf()
 {
+	std::string pointerType;
+	
+	if(sizeof(size_t) == 4)
+	{
+		pointerType = ".u32";
+	}
+	else
+	{
+		pointerType = ".u64";	
+	}
+
 	std::string ptx = ".version 2.3\n"
-		".address_size 64\n"
 		"\n"
-		".extern .func (.param .s32 return) vprintf (.param .u64 string,"
-		" .param .u64 parameters)\n"
+		".extern .func (.param .s32 return) vprintf (.param "
+		+ pointerType + " string, .param " + pointerType + " parameters)\n"
 		"\n"
 		".global .align 1 .b8 message[15]"
 		" = {0x48,0x65,0x6c,0x6c,0x6f,0x20,0x43,0x55,0x44,"
 		" 0x41,0x20,0x25,0x64,0xa,0x0};\n"
 		"\n"
 		".entry kernel() {\n"
-		"\t\t.reg .u64 %r<5>;\n"
+		"\t\t.reg " + pointerType + " %r<5>;\n"
 		"\t\t.local .align 8 .b8 parameters[8];\n"
-		"\t\t.param .u64 string;\n"
-		"\t\t.param .u64 parameters_pointer;\n"
+		"\t\t.param " + pointerType + " string;\n"
+		"\t\t.param " + pointerType + " parameters_pointer;\n"
 		"\t$begin:\n"
-		"\t\tmov.s64            %r1,                  2;\n"
-		"\t\tst.local.s64       [parameters+0],       %r1;\n"
-		"\t\tcvta.global.u64    %r2,                  message;\n"
-		"\t\tst.param.u64       [string],             %r2;\n"
-		"\t\tcvta.local.u64     %r3,                  parameters;\n"
-		"\t\tst.param.u64       [parameters_pointer], %r3;\n"
+		"\t\tmov" + pointerType + "        %r1,                  2;\n"
+		"\t\tst.local" + pointerType + "   [parameters+0],       %r1;\n"
+		"\t\tcvta.global" + pointerType + " %r2,                  message;\n"
+		"\t\tst.param" + pointerType + "   [string],             %r2;\n"
+		"\t\tcvta.local" + pointerType + "  %r3,                  parameters;\n"
+		"\t\tst.param" + pointerType + "   [parameters_pointer], %r3;\n"
 		"\t\tcall.uni (_),      vprintf, (string, parameters_pointer);\n"
 		"\t\texit;\n"
 		"\t$end:\n"

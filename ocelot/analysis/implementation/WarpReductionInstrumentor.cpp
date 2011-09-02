@@ -38,11 +38,13 @@ namespace analysis
     void WarpReductionInstrumentor::initialize() {
         
         counter = 0;
+        
+        warpCount = (threads * threadBlocks)/32;
 
-        if(cudaMalloc((void **) &counter, 2 * sizeof(size_t)) != cudaSuccess){
+        if(cudaMalloc((void **) &counter, entries * warpCount * sizeof(size_t)) != cudaSuccess){
             throw hydrazine::Exception( "Could not allocate sufficient memory on device (cudaMalloc failed)!" );
         }
-        if(cudaMemset( counter, 0, 2  * sizeof( size_t )) != cudaSuccess){
+        if(cudaMemset( counter, 0, entries * warpCount  * sizeof( size_t )) != cudaSuccess){
             throw hydrazine::Exception( "cudaMemset failed!" );
         }
         
@@ -52,6 +54,8 @@ namespace analysis
     }
 
     void WarpReductionInstrumentor::createPasses() {
+        
+        entries = 1;
 
         switch(type){
             case memoryEfficiency:
@@ -63,6 +67,8 @@ namespace analysis
                 
                 passes[0] = pass;   
                 passes[1] = modulePass;
+                
+                entries = 2;
             }
             break;
             case branchDivergence:
@@ -94,9 +100,9 @@ namespace analysis
 
     void WarpReductionInstrumentor::extractResults(std::ostream *out) {
 
-        size_t *info = new size_t[2];
+        size_t *info = new size_t[entries * warpCount];
         if(counter) {
-            cudaMemcpy(info, counter, 2 * sizeof( size_t ), cudaMemcpyDeviceToHost);
+            cudaMemcpy(info, counter, entries * warpCount * sizeof( size_t ), cudaMemcpyDeviceToHost);
             cudaFree(counter);
         }
 
@@ -122,9 +128,18 @@ namespace analysis
                 {
                     case memoryEfficiency:
                     {
-                        *out << "Dynamic Warps Executing Global Memory Operations: " << info[1] << "\n";
-                        *out << "Memory Transactions: " << info[0] << "\n\n";              
-                        *out << "Memory Efficiency: " << ((double)info[1]/(double)info[0]) * 100 << "%\n\n";
+                        unsigned int dynamicWarps = 0;
+                        unsigned int memTransactions = 0;
+                        
+                        for(unsigned int i = 0; i < warpCount * entries; i++)
+                        {
+                            memTransactions += info[i * entries];
+                            dynamicWarps += info[i * entries + 1];
+                        }
+                    
+                        *out << "Dynamic Warps Executing Global Memory Operations: " << dynamicWarps << "\n";
+                        *out << "Memory Transactions: " << memTransactions << "\n\n";              
+                        *out << "Memory Efficiency: " << ((double)dynamicWarps/(double)memTransactions) * 100 << "%\n\n";
                     }
                     break;
                     case branchDivergence:
@@ -136,7 +151,11 @@ namespace analysis
                     break;
                     case instructionCount:
                     {
-                        *out << "\nDynamic Instruction Count: " << info[0] << "\n\n";
+                        unsigned int instCount = 0;
+                        for(unsigned int i = 0; i < warpCount; i++)
+                            instCount += info[0];
+                        
+                        *out << "\nDynamic Instruction Count: " << instCount << "\n\n";
                     }                    
                     break;
                     default:

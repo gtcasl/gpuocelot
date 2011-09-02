@@ -18,7 +18,7 @@
 #define COD_REG     "\%codr"
 #define COD_PRED    "\%codp"
 
-#define EMIT_COD    0
+#define EMIT_COD    1
 
 namespace translator
 {
@@ -149,6 +149,8 @@ namespace translator
         registers.push_back(ctaid);
         
         registerMap[REG + boost::lexical_cast<std::string>(insn->opnds.calli.src)] = ctaid;
+        
+        specialRegisterMap["ctaid"] = ctaid;
     
     }
     
@@ -178,24 +180,41 @@ namespace translator
     
     void CToPTXTranslator::generateWarpId(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn)
     {
-        inst.opcode = ir::PTXInstruction::Cvt;
-        setPredicate(inst);
+        generateBlockId(inst, stmt, type, insn);
+        generateBlockDim(inst, stmt, type, insn);
+        generateBlockThreadId(inst, stmt, type, insn);
         
-        inst.d.type = type;
+        inst.opcode = ir::PTXInstruction::Mad;
+        inst.modifier = ir::PTXInstruction::lo;
+        inst.type = inst.d.type = inst.a.type = inst.b.type = inst.c.type = type;
+        inst.a.addressMode = inst.b.addressMode = inst.c.addressMode = inst.d.addressMode = ir::PTXOperand::Register;
         
-        inst.d.identifier = COD_REG + boost::lexical_cast<std::string>(++maxRegister);
+        std::string madResult = COD_REG + boost::lexical_cast<std::string>(++maxRegister);
+        inst.d.identifier = madResult;
         registers.push_back(inst.d.identifier);
         
-        inst.d.addressMode = ir::PTXOperand::Register;
-        inst.a = ir::PTXOperand(ir::PTXOperand::warpId);
-        inst.a.addressMode = ir::PTXOperand::Special;
-        inst.a.type = ir::PTXOperand::u32;
+        inst.a.identifier = specialRegisterMap["ctaid"];
+        inst.b.identifier = specialRegisterMap["ntid"];
+        inst.c.identifier = specialRegisterMap["blockThreadId"];
         
         stmt.instruction = inst;
-        statements.push_back(stmt);        
+        statements.push_back(stmt);    
+        
+        inst.opcode = ir::PTXInstruction::Div;
+        inst.c.addressMode = ir::PTXOperand::Invalid;
+        
+        std::string warpId = COD_REG + boost::lexical_cast<std::string>(++maxRegister);
+        inst.d.identifier = warpId;
+        registers.push_back(inst.d.identifier);
+        
+        inst.a.identifier = madResult;
+        inst.b.addressMode = ir::PTXOperand::Immediate;
+        inst.b.imm_uint = 32; //warpSize
+        
+        stmt.instruction = inst;
+        statements.push_back(stmt);    
         
         registerMap[REG + boost::lexical_cast<std::string>(insn->opnds.calli.src)] = inst.d.identifier;    
-    
     }
     
     void CToPTXTranslator::generateWarpCount(ir::PTXInstruction inst, ir::PTXStatement stmt, ir::PTXOperand::DataType type, virtual_insn *insn)

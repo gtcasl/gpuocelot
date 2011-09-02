@@ -32,6 +32,10 @@ namespace analysis
 
             /*! \brief The description of the specified pass */
             std::string description;
+            
+            unsigned int warpCount;
+            
+            unsigned int entries;
         	
 		public:
 			/*! \brief The default constructor */

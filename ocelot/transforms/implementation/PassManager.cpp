@@ -42,8 +42,8 @@ static void freeUnusedDataStructures(AnalysisMap& analyses,
 {
 	typedef std::vector<int> TypeVector;
 	
-	#if defined(__clang__)
-	// clang doesn't support initializer lists yet
+	#if defined(__clang__) || defined(_WIN32)
+	// clang/win32 doesn't support initializer lists yet
 	TypeVector types;
 	
 	types.push_back(analysis::Analysis::DivergenceAnalysis);

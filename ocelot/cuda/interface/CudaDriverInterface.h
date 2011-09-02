@@ -13,6 +13,10 @@
 // C++ includes
 #include <string>
 
+#ifdef _WIN32
+#include <Windows.h>
+#endif
+
 #include <GL/gl.h>
 
 // Ocelot includes

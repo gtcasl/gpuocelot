@@ -76,10 +76,10 @@ def getBoostPaths():
 		lib_path = '/usr/lib'
 		inc_path = '/usr/include'
 	elif os.name == 'nt':
-		boost_path = 'C:\\code\\boost_1_46_1\\stage-64'
-		bin_path = boost_path + "\\bin"
-		lib_path = boost_path + "\\lib"
-		inc_path = boost_path + "\\.."
+		boost_path = '../../../../tools/boost_1_46_1'
+		bin_path = boost_path + "/bin"
+		lib_path = boost_path + "/lib/win32"
+		inc_path = boost_path + "/"
 	else:
 		raise ValueError, 'Error: unknown OS.  Where is boost installed?'
 
@@ -101,15 +101,15 @@ def getFlexPaths(env):
 
 	# determine defaults
 	if os.name == 'posix':
-		inc_path = '/usr/include'
+		inc_path = ['/usr/include']
 	elif os.name == 'nt':
-		inc_path = 'C:\MinGW\1.0'
+		inc_path = inc_path = ['../../../../tools/MinGW/msys/1.0/include']
 	else:
-		raise ValueError, 'Error: unknown OS.  Where is GLEW installed?'
+		raise ValueError, 'Error: unknown OS.  Where is FLEX installed?'
 
 	# override with environement variables
 	if 'FLEX_INC_PATH' in os.environ:
-		inc_path = os.path.abspath(os.environ['GLEW_INC_PATH'])
+		inc_path = os.path.abspath(os.environ['FLEX_INC_PATH'])
 
 	return (inc_path)
 
@@ -213,7 +213,7 @@ gCompilerOptions = {
 			'standard': ['-stdlib=libc++', '-std=c++0x', '-pthread']},
 		'cl'  : {'warn_all' : '', 'warn_errors' : '/WX',
 				'optimization' : '/Ox', 'debug' : ['/Zi', '-D_DEBUG', '/MTd'], 
-				'exception_handling' : '/EHsc', 'standard': ''}
+				'exception_handling' : '/EHsc', 'standard': '-DYY_NO_UNISTD_H'}
 	}
 
 
@@ -331,7 +331,7 @@ def getExtraLibs():
 	if os.name == 'nt':
 		return ['libboost_system-vc100-mt-s-1_46_1.lib',
 			'libboost_filesystem-vc100-mt-s-1_46_1.lib',
-			'libboost_thread-vc100-mt-s-1_46_1.lib']
+			'libboost_thread-vc100-mt-s-1_46_1.lib', 'opengl32.lib']
 	else:
 		return ['-lboost_system-mt', '-lboost_filesystem-mt',
 			'-lboost_thread-mt']
@@ -377,6 +377,11 @@ def importEnvironment():
 	if 'LD_LIBRARY_PATH' in os.environ:
 		env['LD_LIBRARY_PATH'] = os.environ['LD_LIBRARY_PATH']
 
+	# append the default VC++ paths
+	if os.name == 'nt':
+		env.Append(LIBPATH = str.split(os.environ['LIB'], ';'))
+		env.Append(CPPPATH = str.split(os.environ['INCLUDE'], ';'))
+
 	return env
 
 def Environment():
@@ -384,7 +389,7 @@ def Environment():
 
 	# allow the user discretion to choose the MSVC version
 	if os.name == 'nt':
-		vars.Add(EnumVariable('MSVC_VERSION', 'MS Visual C++ version', \
+		vars.Add(EnumVariable('MSVC_VERSION', 'MS Visual C++ version',
 			None, allowed_values=('8.0', '9.0', '10.0')))
 
 	# add a variable to handle RELEASE/DEBUG mode
@@ -393,21 +398,29 @@ def Environment():
 
 	# add a variable to handle warnings
 	vars.Add(BoolVariable('Wall', 'Enable all compilation warnings', 1))
-
+	
+	# shared or static libraries
+	libraryDefault = 'shared'
+	if os.name == 'nt':
+		libraryDefault = 'static'
+	
+	vars.Add(EnumVariable('library', 'Build shared or static library',
+		libraryDefault, allowed_values = ('shared', 'static')))
+	
 	# add a variable to treat warnings as errors
 	vars.Add(BoolVariable('Werror', 'Treat warnings as errors', 1))
 
 	# add a variable to treat warnings as errors
-	vars.Add(BoolVariable('enable_llvm', \
+	vars.Add(BoolVariable('enable_llvm',
 		'Compile in support for LLVM if available', 1))
 	
 	# add a variable to compile the ocelot unit tests
-	vars.Add(EnumVariable('test_level', \
-		'Build the ocelot unit tests at the given test level', 'none', \
+	vars.Add(EnumVariable('test_level',
+		'Build the ocelot unit tests at the given test level', 'none',
 		allowed_values = ('none', 'basic', 'full')))
 
 	# add a variable to determine the install path
-	vars.Add(PathVariable('install_path', 'The ocelot install path', \
+	vars.Add(PathVariable('install_path', 'The ocelot install path',
 		'/usr/local'))
 
 	# create an Environment
@@ -415,7 +428,8 @@ def Environment():
 		tools = getTools(), variables = vars)
 
 	# always link with the c++ compiler
-	env['LINK'] = env['CXX']
+	if os.name != 'nt':
+		env['LINK'] = env['CXX']
 	
 	# set the version
 	env.Replace(VERSION = getVersion("2.1"))
@@ -504,8 +518,6 @@ def Environment():
 	
 	# include the build directory in case of generated files
 	env.Prepend(CPPPATH = env.Dir('.'))
-	if os.name == 'nt':
-		env.AppendUnique(CPPPATH = ["D:\\MinGW\\msys\\1.0\\include"])
 
 	# generate OcelotConfig flags
 	defineConfigFlags(env)

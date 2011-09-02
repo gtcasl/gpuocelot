@@ -90,7 +90,8 @@ const ir::Parameter* ir::Kernel::getParameter(const std::string& name) const {
 	return 0;
 }
 
-void ir::Kernel::insertParameter(const ir::Parameter &parameter, bool asParameter) {
+void ir::Kernel::insertParameter(const ir::Parameter &parameter,
+	bool asParameter) {
 	if (asParameter) {
 		parameters[parameter.name] = parameter;
 	}

@@ -100,13 +100,17 @@ for source in bison_sources:
 ocelot_dep_libs = env['EXTRA_LIBS']
 ocelot_dep_libs.extend(env['LLVM_LIBS'])
 
-libocelot = env.SharedLibrary('ocelot', sources, LIBS=ocelot_dep_libs)
+if env['library'] == 'shared':
+	libocelot = env.SharedLibrary('ocelot', sources, LIBS=ocelot_dep_libs)
+else:
+	libocelot = env.StaticLibrary('ocelot', sources, LIBS=ocelot_dep_libs)
 
 if 'install' in COMMAND_LINE_TARGETS:
 	libocelot = env.Install(os.path.join(env['install_path'], "lib"), libocelot)
 
+# Create ocelot built-in programs
 if os.name == 'nt':
-	ocelot_libs = ['ocelot.lib']
+	ocelot_libs = ['ocelot.lib', 'opengl32.lib']
 else:
 	ocelot_libs = ['-locelot']
 
@@ -114,32 +118,43 @@ OcelotConfig = env.Program('OcelotConfig', \
 	['ocelot/tools/OcelotConfig.cpp'], LIBS=ocelot_libs, \
 	CXXFLAGS = env['OCELOT_CONFIG_FLAGS'])
 env.Depends(OcelotConfig, libocelot)
+
 PTXOptimizer = env.Program('PTXOptimizer', \
 	['ocelot/tools/PTXOptimizer.cpp'], LIBS=ocelot_libs)
 env.Depends(PTXOptimizer, libocelot)
+
+ocelot_server_libs = ['']
+
+if os.name != 'nt':
+	ocelot_server_libs = ['-lboost_system-mt', '-lpthread']
+
 OcelotServer = env.Program('OcelotServer', \
 	['ocelot/tools/OcelotServer.cpp'],
-	LIBS=ocelot_libs + ['-lboost_system-mt', '-lpthread'])
+	LIBS=ocelot_libs + ocelot_server_libs)
 env.Depends(OcelotServer, libocelot)
+
 OcelotHarness = env.Program('OcelotKernelTestHarness', \
 	['ocelot/tools/KernelTestHarness.cpp'], LIBS=ocelot_libs)
 env.Depends(OcelotHarness, libocelot)
+
 CFG = env.Program('CFG', ['ocelot/tools/CFG.cpp'], LIBS=ocelot_libs)
 env.Depends(CFG, libocelot)
 
 Default(OcelotConfig)
 
 # Create the ocelot unit tests
+
+test_libs = ['-lboost_system-mt', '-lboost_filesystem-mt']
+
 tests = []
 tests.append(('TestLexer',  'ocelot/parser/test/TestLexer.cpp', 'basic',
-	['-lboost_system-mt', '-lboost_filesystem-mt']))
+	test_libs))
 tests.append(('TestParser', 'ocelot/parser/test/TestParser.cpp', 'basic',
-	['-lboost_system-mt', '-lboost_filesystem-mt']))
+	test_libs))
 tests.append(('TestInstructions', \
 	'ocelot/executive/test/TestInstructions.cpp', 'basic'))
 tests.append(('TestDataflowGraph', \
-	'ocelot/analysis/test/TestDataflowGraph.cpp', 'basic',
-	['-lboost_system-mt', '-lboost_filesystem-mt']))
+	'ocelot/analysis/test/TestDataflowGraph.cpp', 'basic', test_libs))
 tests.append(('TestLLVMInstructions', \
 	'ocelot/ir/test/TestLLVMInstructions.cpp', 'basic'))
 tests.append(('TestKernels', \
@@ -149,8 +164,7 @@ tests.append(('TestLLVMKernels', \
 tests.append(('TestEmulator', \
 	'ocelot/executive/test/TestEmulator.cpp', 'basic'))
 tests.append(('TestPTXToLLVMTranslator', \
-	'ocelot/translator/test/TestPTXToLLVMTranslator.cpp', 'basic',
-	['-lboost_system-mt', '-lboost_filesystem-mt']))
+	'ocelot/translator/test/TestPTXToLLVMTranslator.cpp', 'basic', test_libs))
 tests.append(('TestCudaSequence', \
 	'ocelot/cuda/test/kernels/sequence.cu.cpp', 'full', ['-ldl']))
 tests.append(('TestCudaGenericMemory', \

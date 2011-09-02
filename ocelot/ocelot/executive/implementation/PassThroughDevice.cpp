@@ -508,7 +508,7 @@ void  executive::PassThroughDevice::_recordStatePreExecution() {
 	for (Device::MemoryAllocationVector::const_iterator
 		allocation = allocations.begin();
 		allocation != allocations.end(); ++allocation) {
-		if (!(*allocation)->global()) {
+		if (!(*allocation)->global()) {		
 			util::ExtractedDeviceState::GlobalAllocationMap::iterator memory
 				= _state.globalAllocations.insert(std::make_pair(
 				(*allocation)->pointer(),
@@ -526,6 +526,9 @@ void  executive::PassThroughDevice::_recordStatePreExecution() {
 		for (ir::Module::GlobalMap::const_iterator
 			global = (*module)->globals().begin();
 			global != (*module)->globals().end(); ++global) {
+			// ignore shared/local memory globals
+			if(global->second.space() == ir::PTXInstruction::Shared) continue;
+			if(global->second.space() == ir::PTXInstruction::Local)  continue;
 		
 			Device::MemoryAllocation* allocation = getGlobalAllocation(
 				(*module)->path(), global->second.name());
@@ -589,6 +592,8 @@ void  executive::PassThroughDevice::_recordStatePostExecution() {
 		for (ir::Module::GlobalMap::const_iterator
 			global = (*module)->globals().begin();
 			global != (*module)->globals().end(); ++global) {
+			if(global->second.space() == ir::PTXInstruction::Shared) continue;
+			if(global->second.space() == ir::PTXInstruction::Local)  continue;
 		
 			Device::MemoryAllocation* allocation = getGlobalAllocation(
 				(*module)->path(), global->second.name());

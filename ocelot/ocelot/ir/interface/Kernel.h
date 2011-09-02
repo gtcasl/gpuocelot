@@ -55,7 +55,8 @@ namespace ir {
 		
 		/*! Inserts a parameter into the appropriate data structure
 			\param param defines parameter to insert
-			\param asParameter if true, assumes this is param declaration that is not a kernel argument
+			\param asParameter if true, assumes this is param declaration that
+				is not a kernel argument
 		*/
 		void insertParameter(const ir::Parameter &param, bool asParameter=true);
 

@@ -369,6 +369,9 @@ namespace transforms
                             popc.a = ballot.d;   
                             analysis::DataflowGraph::RegisterId popcResult = dfg().newRegister();
                             popc.d.reg = popcResult;
+                            
+                            popc.pg = guard;
+                            popc.pg.condition = ir::PTXOperand::Pred;
 
                             ir::PTXInstruction cvt(ir::PTXInstruction::Cvt);
                             cvt.type = type;
@@ -378,6 +381,9 @@ namespace transforms
                             cvt.a.type = ir::PTXOperand::u32;
                             cvt.d.addressMode = cvt.a.addressMode = ir::PTXOperand::Register;
                             cvt.a = popc.d;
+                            
+                            cvt.pg = guard;
+                            cvt.pg.condition = ir::PTXOperand::Pred;
 
                             ir::PTXInstruction add(ir::PTXInstruction::Add);
                             add.type = add.d.type = add.a.type = add.b.type = type;

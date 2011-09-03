@@ -18,7 +18,7 @@
 #define COD_REG     "\%codr"
 #define COD_PRED    "\%codp"
 
-#define EMIT_COD    1
+#define EMIT_COD    0
 
 namespace translator
 {

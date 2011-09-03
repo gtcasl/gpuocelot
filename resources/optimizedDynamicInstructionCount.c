@@ -1,14 +1,15 @@
 {
     unsigned long warpId = (blockId() * blockDim() + blockThreadId())/32;
     
-    ON_BASIC_BLOCK_EXIT:
+    unsigned long leastActive = leastActiveThreadInWarp();
+    
+    if(leastActive != 0)
     {
-        if(leastActiveThreadInWarp() != 0)
-        {   
-            unsigned long instCount = basicBlockPredicatedInstructionCount() * activeThreadCount();
-            globalMem[warpId] = globalMem[warpId] + instCount;
-            
-        }
+        unsigned long activeThreads = activeThreadCount();
+    
+        ON_BASIC_BLOCK_EXIT: {
+            globalMem[warpId] = globalMem[warpId] + (basicBlockPredicatedInstructionCount() * activeThreads);
+        }    
     }    
 }
 

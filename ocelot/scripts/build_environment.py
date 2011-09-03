@@ -505,6 +505,10 @@ def Environment():
 	# set extra libs 
 	env.Replace(EXTRA_LIBS=getExtraLibs())
 
+	if os.name == 'nt':      
+               env.AppendUnique(CFLAGS   = "-DYY_NO_UNISTD_H")
+               env.AppendUnique(CXXFLAGS = "-DYY_NO_UNISTD_H")
+
 	if glew:
 		env.AppendUnique(EXTRA_LIBS = ['-lGLEW'])
 	

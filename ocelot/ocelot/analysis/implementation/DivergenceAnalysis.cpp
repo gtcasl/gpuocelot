@@ -77,7 +77,7 @@ void DivergenceAnalysis::_analyzeDataFlow()
 						divergenceSources.insert(&ptxInstruction->c);
 				}
 
-				if(ptxInstruction->opcode == ir::PTXInstruction::Opcode::Atom){
+				if(ptxInstruction->opcode == ir::PTXInstruction::Atom){
 					atom = true;
 				}
 			}
@@ -169,7 +169,7 @@ void DivergenceAnalysis::_analyzeControlFlow()
 				ptxInstruction =
 					static_cast<ir::PTXInstruction*>(lastInstruction.i);
 
-				if ((ptxInstruction->opcode == ir::PTXInstruction::Opcode::Bra)
+				if ((ptxInstruction->opcode == ir::PTXInstruction::Bra)
 					&& (ptxInstruction->uni == false)
 					&& (lastInstruction.s.size() != 0)) {
 					ir::ControlFlowGraph::iterator

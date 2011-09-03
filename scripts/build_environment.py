@@ -377,11 +377,6 @@ def importEnvironment():
 	if 'LD_LIBRARY_PATH' in os.environ:
 		env['LD_LIBRARY_PATH'] = os.environ['LD_LIBRARY_PATH']
 
-	# append the default VC++ paths
-	if os.name == 'nt':
-		env.Append(LIBPATH = str.split(os.environ['LIB'], ';'))
-		env.Append(CPPPATH = str.split(os.environ['INCLUDE'], ';'))
-
 	return env
 
 def Environment():
@@ -467,6 +462,11 @@ def Environment():
 		
 	# get CUDA paths
 	(cuda_exe_path, cuda_lib_path, cuda_inc_path)  = getCudaPaths()
+
+	# append the default VC++ paths
+	if os.name == 'nt':
+		env.Append(LIBPATH = str.split(os.environ['LIB'], ';'))
+		env.Append(CPPPATH = str.split(os.environ['INCLUDE'], ';'))
 
 	# get boost paths
 	(boost_exe_path,boost_lib_path,boost_inc_path) = getBoostPaths()

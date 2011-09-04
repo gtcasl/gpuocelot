@@ -75,11 +75,10 @@ namespace analysis
             {
                 transforms::CToPTXInstrumentationPass *pass = new transforms::CToPTXInstrumentationPass("resources/branchDivergence.c");
                 symbol = pass->baseAddress;
-                transforms::CToPTXModulePass *modulePass = new transforms::CToPTXModulePass(UNIQUE_ELEMENT_COUNT);
-                modulePass->parameterMap = pass->parameterMap;
                 
                 passes[0] = pass;   
-                passes[1] = modulePass;
+                
+                entries = 2;
             }
             break;
             case instructionCount:
@@ -131,7 +130,7 @@ namespace analysis
                         unsigned int dynamicWarps = 0;
                         unsigned int memTransactions = 0;
                         
-                        for(unsigned int i = 0; i < warpCount * entries; i++)
+                        for(unsigned int i = 0; i < warpCount; i++)
                         {
                             memTransactions += info[i * entries];
                             dynamicWarps += info[i * entries + 1];
@@ -144,9 +143,19 @@ namespace analysis
                     break;
                     case branchDivergence:
                     {
-                        *out << "Divergent Dynamic Branches: " << info[1] << "\n";
-                        *out << "Total Dynamic Branches: " << info[0] << "\n\n";              
-                        *out << "Branch Divergence: " << ((double)info[1]/(double)info[0]) * 100 << "%\n\n";
+                        unsigned int divergentBranches = 0;
+                        unsigned int totalCondBranches = 0;
+                        
+                        for(unsigned int i = 0; i < warpCount; i++)
+                        {
+                            divergentBranches += info[i * entries];
+                            totalCondBranches += info[i * entries + 1];
+                        }
+                    
+                        *out << "Divergent Dynamic Branches: " << divergentBranches << "\n";
+                        *out << "Total Dynamic Conditional Branches: " << totalCondBranches << "\n\n";              
+                        *out << "Branch Divergence: " << ((double)divergentBranches/(double)totalCondBranches) * 100 << "%\n\n";
+                    
                     }
                     break;
                     case instructionCount:

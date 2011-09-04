@@ -360,6 +360,9 @@ namespace transforms
                             ballot.a.addressMode = ir::PTXOperand::Register;
                             ballot.a.type = ir::PTXOperand::pred;
                             ballot.a = ptxInstruction->pg;
+                            
+                            ballot.pg = guard;
+                            ballot.pg.condition = ir::PTXOperand::Pred;
 
                             ir::PTXInstruction popc(ir::PTXInstruction::Popc);
                             popc.type = ir::PTXOperand::b32;

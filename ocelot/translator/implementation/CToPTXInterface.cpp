@@ -158,4 +158,8 @@ void atomicAdd(unsigned long *memBuffer, unsigned long offset, unsigned long toA
     return;
 }
 
+unsigned long predicateEvalWarpDivergent() {
+    return 0;
+}
+
 #endif

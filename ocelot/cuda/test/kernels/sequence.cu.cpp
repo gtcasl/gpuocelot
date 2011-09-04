@@ -1,7 +1,7 @@
-# 1 "/tmp/tmpxft_00001962_00000000-1_sequence.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00001c1b_00000000-1_sequence.cudafe1.cpp"
 # 1 "<built-in>"
 # 1 "<command-line>"
-# 1 "/tmp/tmpxft_00001962_00000000-1_sequence.cudafe1.cpp"
+# 1 "/tmp/tmpxft_00001c1b_00000000-1_sequence.cudafe1.cpp"
 # 1 "sequence.cu"
 # 60 "/usr/local/cuda/bin/../include/device_types.h"
 # 149 "/usr/lib/gcc/x86_64-linux-gnu/4.4.3/include/stddef.h" 3
@@ -10670,8 +10670,8 @@ printf("Pass/Fail : Pass\n");
 return 0;
 # 173 "sequence.cu"
 }
-# 1 "/tmp/tmpxft_00001962_00000000-1_sequence.cudafe1.stub.c"
-# 1 "/tmp/tmpxft_00001962_00000000-1_sequence.cudafe1.stub.c" 1
+# 1 "/tmp/tmpxft_00001c1b_00000000-1_sequence.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00001c1b_00000000-1_sequence.cudafe1.stub.c" 1
 # 1 "/usr/local/cuda/bin/../include/crt/host_runtime.h" 1
 # 74 "/usr/local/cuda/bin/../include/crt/host_runtime.h"
 template <typename T>
@@ -11114,8 +11114,8 @@ inline unsigned long long int ullmax(unsigned long long int a, unsigned long lon
 
 
 #pragma pack()
-# 2 "/tmp/tmpxft_00001962_00000000-1_sequence.cudafe1.stub.c" 2
-# 1 "/tmp/tmpxft_00001962_00000000-3_sequence.fatbin.c" 1
+# 2 "/tmp/tmpxft_00001c1b_00000000-1_sequence.cudafe1.stub.c" 2
+# 1 "/tmp/tmpxft_00001c1b_00000000-3_sequence.fatbin.c" 1
 asm(
 ".section .rodata\n"
 ".align 32\n"
@@ -11248,8 +11248,8 @@ asm(
 ".quad 0x32312d35302d3131,0x2d2d2d2f2f090a0a,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x6d6f43202f2f090a,0x2f20676e696c6970,0x78706d742f706d74\n"
-".quad 0x31303030305f7466,0x303030305f323639,0x735f372d30303030,0x2e65636e65757165\n"
-".quad 0x2820692e33707063,0x4263632f706d742f,0x776a46644b2e2349,0x2d2d2f2f090a2972\n"
+".quad 0x31303030305f7466,0x303030305f623163,0x735f372d30303030,0x2e65636e65757165\n"
+".quad 0x2820692e33707063,0x4263632f706d742f,0x737956666f2e2349,0x2d2d2f2f090a2977\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2f2f090a0a2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
@@ -11264,7 +11264,7 @@ asm(
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d\n"
 ".quad 0x2d2d2d2d2d2d2d2d,0x2d2d2d2d2d2d2d2d,0x6c69662e090a0a2d,0x6f633c2209310965\n"
 ".quad 0x696c2d646e616d6d,0x662e090a223e656e,0x2f22093209656c69,0x78706d742f706d74\n"
-".quad 0x31303030305f7466,0x303030305f323639,0x735f362d30303030,0x2e65636e65757165\n"
+".quad 0x31303030305f7466,0x303030305f623163,0x735f362d30303030,0x2e65636e65757165\n"
 ".quad 0x2e32656661647563,0x662e090a22757067,0x2f22093309656c69,0x2f62696c2f727375\n"
 ".quad 0x5f3638782f636367,0x78756e696c2d3436,0x342e342f756e672d,0x756c636e692f332e\n"
 ".quad 0x65646474732f6564,0x662e090a22682e66,0x2f22093409656c69,0x61636f6c2f727375\n"
@@ -11438,12 +11438,12 @@ extern const unsigned long long fatbinData[1225];
 
 static struct {int m; int v; const unsigned long long* d; char* f;} __fatDeviceText __attribute__ ((aligned (8))) __attribute__ ((section (".nvFatBinSegment")))=
  { 0x466243b1, 1, fatbinData, 0 };
-# 3 "/tmp/tmpxft_00001962_00000000-1_sequence.cudafe1.stub.c" 2
+# 3 "/tmp/tmpxft_00001c1b_00000000-1_sequence.cudafe1.stub.c" 2
 extern void __device_stub__Z8sequencePii(int *, int);
 extern void __device_stub__Z15testShareSimplePi(int *);
 extern void __device_stub__Z10v4sequenceP4int4i(int4 *, int);
 extern void __device_stub__Z7testShrPi(int *);
-static void __sti____cudaRegisterAll_43_tmpxft_00001962_00000000_4_sequence_cpp1_ii_074584c3(void) __attribute__((__constructor__));
+static void __sti____cudaRegisterAll_43_tmpxft_00001c1b_00000000_4_sequence_cpp1_ii_074584c3(void) __attribute__((__constructor__));
 void __device_stub__Z8sequencePii(int *__par0, int __par1){if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return;if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return;{ volatile static char *__f; __f = ((char *)((void ( *)(int *, int))sequence)); (void)cudaLaunch(((char *)((void ( *)(int *, int))sequence))); };}
 void sequence( int *__cuda_0,int __cuda_1)
 # 14 "sequence.cu"
@@ -11453,14 +11453,14 @@ void sequence( int *__cuda_0,int __cuda_1)
 
 
 }
-# 1 "/tmp/tmpxft_00001962_00000000-1_sequence.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00001c1b_00000000-1_sequence.cudafe1.stub.c"
 void __device_stub__Z15testShareSimplePi( int *__par0) { if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return; { volatile static char *__f; __f = ((char *)((void ( *)(int *))testShareSimple)); (void)cudaLaunch(((char *)((void ( *)(int *))testShareSimple))); }; }
 void testShareSimple( int *__cuda_0)
 # 21 "sequence.cu"
 {__device_stub__Z15testShareSimplePi( __cuda_0);
 # 30 "sequence.cu"
 }
-# 1 "/tmp/tmpxft_00001962_00000000-1_sequence.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00001c1b_00000000-1_sequence.cudafe1.stub.c"
 void __device_stub__Z10v4sequenceP4int4i( int4 *__par0, int __par1) { if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return; if (cudaSetupArgument((void *)(char *)&__par1, sizeof(__par1), (size_t)8UL) != cudaSuccess) return; { volatile static char *__f; __f = ((char *)((void ( *)(int4 *, int))v4sequence)); (void)cudaLaunch(((char *)((void ( *)(int4 *, int))v4sequence))); }; }
 void v4sequence( int4 *__cuda_0,int __cuda_1)
 # 32 "sequence.cu"
@@ -11469,13 +11469,13 @@ void v4sequence( int4 *__cuda_0,int __cuda_1)
 
 
 }
-# 1 "/tmp/tmpxft_00001962_00000000-1_sequence.cudafe1.stub.c"
+# 1 "/tmp/tmpxft_00001c1b_00000000-1_sequence.cudafe1.stub.c"
 void __device_stub__Z7testShrPi( int *__par0) { if (cudaSetupArgument((void *)(char *)&__par0, sizeof(__par0), (size_t)0UL) != cudaSuccess) return; { volatile static char *__f; __f = ((char *)((void ( *)(int *))testShr)); (void)cudaLaunch(((char *)((void ( *)(int *))testShr))); }; }
 void testShr( int *__cuda_0)
 # 40 "sequence.cu"
 {__device_stub__Z7testShrPi( __cuda_0);
 # 54 "sequence.cu"
 }
-# 1 "/tmp/tmpxft_00001962_00000000-1_sequence.cudafe1.stub.c"
-static void __sti____cudaRegisterAll_43_tmpxft_00001962_00000000_4_sequence_cpp1_ii_074584c3(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(int *))testShr), (char*)"testShr", "testShr", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(int4 *, int))v4sequence), (char*)"v4sequence", "v4sequence", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(int *))testShareSimple), (char*)"testShareSimple", "testShareSimple", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(int *, int))sequence), (char*)"sequence", "sequence", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); }
-# 1 "/tmp/tmpxft_00001962_00000000-1_sequence.cudafe1.stub.c" 2
+# 1 "/tmp/tmpxft_00001c1b_00000000-1_sequence.cudafe1.stub.c"
+static void __sti____cudaRegisterAll_43_tmpxft_00001c1b_00000000_4_sequence_cpp1_ii_074584c3(void) { __cudaFatCubinHandle = __cudaRegisterFatBinary((void*)&__fatDeviceText); atexit(__cudaUnregisterBinaryUtil); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(int *))testShr), (char*)"testShr", "testShr", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(int4 *, int))v4sequence), (char*)"v4sequence", "v4sequence", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(int *))testShareSimple), (char*)"testShareSimple", "testShareSimple", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); __cudaRegisterFunction(__cudaFatCubinHandle, (const char*)((void ( *)(int *, int))sequence), (char*)"sequence", "sequence", -1, (uint3*)0, (uint3*)0, (dim3*)0, (dim3*)0, (int*)0); }
+# 1 "/tmp/tmpxft_00001c1b_00000000-1_sequence.cudafe1.stub.c" 2

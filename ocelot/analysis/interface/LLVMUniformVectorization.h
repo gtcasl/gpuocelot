@@ -439,7 +439,7 @@ namespace analysis
 		virtual llvm::PassKind getPassKind() const;
 
 	public:
-		const llvm::IntegerType *getTyInt(int n) const;
+		llvm::IntegerType *getTyInt(int n) const;
 	
 		llvm::ConstantInt *getConstInt32(int n) const;
 		llvm::ConstantInt *getConstInt16(short n) const;

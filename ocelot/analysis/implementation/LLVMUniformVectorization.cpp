@@ -18,6 +18,7 @@
 // LLVM includes
 #include <llvm/Instructions.h>
 #include <llvm/Constants.h>
+#include <llvm/DerivedTypes.h>
 #include <llvm/Support/CFG.h>
 #include <llvm/Support/raw_ostream.h>
 
@@ -168,14 +169,14 @@ bool analysis::LLVMUniformVectorization::doInitialize(llvm::Module &_M) {
 	const int w = 32;
 	M = &_M;
 	{
-		std::vector<const llvm::Type *> types;
+		std::vector<llvm::Type *> types;
 		types.push_back(getTyInt(w));
 		types.push_back(getTyInt(w));
 		types.push_back(getTyInt(w));
 		tyDimension = llvm::StructType::get(_M.getContext(), types, "tyDimension");
 	}
 	{
-		std::vector<const llvm::Type *> types;
+		std::vector<llvm::Type *> types;
 		types.push_back(llvm::PointerType::get(getTyInt(8), 0));
 		types.push_back(getTyInt(w));
 		types.push_back(getTyInt(w));
@@ -183,7 +184,7 @@ bool analysis::LLVMUniformVectorization::doInitialize(llvm::Module &_M) {
 		tyThreadDescriptor = llvm::StructType::get(_M.getContext(), types, "tyThreadDescriptor");
 	}
 	{
-		std::vector<const llvm::Type *> types;
+		std::vector<llvm::Type *> types;
 		types.push_back(getTyInt(w));
 		types.push_back(getTyInt(w));
 		types.push_back(getTyInt(w));
@@ -199,9 +200,9 @@ bool analysis::LLVMUniformVectorization::doInitialize(llvm::Module &_M) {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-const llvm::IntegerType *analysis::LLVMUniformVectorization::getTyInt(int n) const {
+llvm::IntegerType *analysis::LLVMUniformVectorization::getTyInt(int n) const {
 	assert(M);
-	return llvm::IntegerType::get(M->getContext(), n);
+	return (llvm::IntegerType *)llvm::IntegerType::get(M->getContext(), n);
 }
 
 llvm::ConstantInt *analysis::LLVMUniformVectorization::getConstInt32(int n) const {
@@ -473,8 +474,8 @@ void analysis::LLVMUniformVectorization::Translation::loadThreadLocalArguments()
 		
 		std::vector< llvm::Value *> idx;
 		idx.push_back(pass->getConstInt32(tid));
-		llvm::GetElementPtrInst *ctxPtr = llvm::GetElementPtrInst::Create(context, idx.begin(), 
-			idx.end(), "ptrCtx", schedulerBlock);
+		llvm::GetElementPtrInst *ctxPtr = llvm::GetElementPtrInst::Create(context, idx, 
+			"ptrCtx", schedulerBlock);
 		llvm::LoadInst *loadedCtx = new llvm::LoadInst(ctxPtr, ssl.str(), schedulerBlock);
 		threadLocalArguments.contextObject.push_back(loadedCtx);
 	
@@ -484,7 +485,7 @@ void analysis::LLVMUniformVectorization::Translation::loadThreadLocalArguments()
 		idx.push_back(pass->getConstInt32(4));
 	
 		llvm::Instruction *ptr = llvm::GetElementPtrInst::Create(loadedCtx,
-			idx.begin(), idx.end(), "ptrLocalMemPtr", schedulerBlock);
+			idx, "ptrLocalMemPtr", schedulerBlock);
 	
 		ss << "localMemPtr." << tid;
 		threadLocalArguments.localPointer.push_back(new llvm::LoadInst(ptr, ss.str(), schedulerBlock));
@@ -528,7 +529,7 @@ void analysis::LLVMUniformVectorization::Translation::loadThreadLocalArguments()
 				idx.push_back(pass->getConstInt32(xx));
 	
 				llvm::Instruction *ptr = llvm::GetElementPtrInst::Create(threadLocalArguments.contextObject[tid],
-					idx.begin(), idx.end(), std::string("ptr.") + label[j] + "." + suffix[xx], schedulerBlock);
+					idx, std::string("ptr.") + label[j] + "." + suffix[xx], schedulerBlock);
 	
 				ss << label[j] << "_" << suffix[xx] << "." << tid << ".";
 				(threadLocalArguments.*localArgumentVector[j*3+xx]).push_back(
@@ -543,7 +544,7 @@ void analysis::LLVMUniformVectorization::Translation::loadThreadLocalArguments()
 			idx.push_back(pass->getConstInt32(j + 5));
 
 			llvm::Instruction *ptr = llvm::GetElementPtrInst::Create(threadLocalArguments.contextObject[tid],
-				idx.begin(), idx.end(), std::string("ptr.") + label[j + 5] + ".", schedulerBlock);
+				idx, std::string("ptr.") + label[j + 5] + ".", schedulerBlock);
 
 			ss << label[j] << "Ptr." << tid << ".";
 			(threadLocalArguments.*ctaArgumentsVector[j]).push_back(
@@ -955,7 +956,7 @@ void analysis::LLVMUniformVectorization::Translation::updateDependencies(
 				// update phi nodes
 				llvm::PHINode *phiNode = static_cast<llvm::PHINode *>(operand);
 				llvm::PHINode *phiClone = llvm::PHINode::Create(phiNode->getType(), 
-					phiNode->getNameStr(), instr);
+					phiNode->getNumIncomingValues(), phiNode->getNameStr(), instr);
 				
 				for (unsigned int j = 0; j < phiNode->getNumIncomingValues(); ++j) {
 					op_it = warpInstructionMap.find(phiNode->getIncomingValue(j));
@@ -1156,7 +1157,7 @@ void analysis::LLVMUniformVectorization::Translation::handleDivergentBranch(
 		divergent.warpBlock->getTerminator()->removeFromParent();	 // remove dummy
 		
 		// construct reduction
-		const llvm::Type *intTy = pass->getTyInt(32);
+		llvm::Type *intTy = pass->getTyInt(32);
 		llvm::Instruction *branchConditional = new llvm::ZExtInst(ws_it->second.replicated[0], intTy, 
 			"condZ", divergent.warpBlock);
 		
@@ -1215,7 +1216,7 @@ void analysis::LLVMUniformVectorization::Translation::divergenceHandlerBranch(
 	VectorizedInstruction &condition) {
 
 	// trap to host environment on reaching a divergent region
-	std::vector< const llvm::Type *> argTypes;
+	std::vector< llvm::Type *> argTypes;
 	argTypes.push_back(pass->getTyInt(32));
 	argTypes.push_back(pass->getTyInt(32));
 	llvm::FunctionType *funcType = llvm::FunctionType::get(llvm::Type::getVoidTy(
@@ -1225,7 +1226,7 @@ void analysis::LLVMUniformVectorization::Translation::divergenceHandlerBranch(
 	args.push_back(pass->getConstInt32(1));
 	args.push_back(pass->getConstInt32(0));
 	llvm::CallInst::Create(F->getParent()->getOrInsertFunction("__ocelot_abort", funcType), 
-		args.begin(), args.end(), "", divergent.handler->getTerminator());
+		args, "", divergent.handler->getTerminator());
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1381,7 +1382,7 @@ analysis::LLVMUniformVectorization::InstructionVector
 llvm::Instruction *analysis::LLVMUniformVectorization::Translation::getInstructionAsVectorized(
 	llvm::Value *inst, llvm::Instruction *before) {
 
-	const llvm::Type *tyInt32 = llvm::Type::getInt32Ty(F->getContext());
+	llvm::IntegerType *tyInt32 = llvm::Type::getInt32Ty(F->getContext());
 	llvm::Instruction *vectorInstruction = 0;
 
 	llvm::Instruction *instruction = llvm::dyn_cast<llvm::Instruction>(inst);
@@ -1470,7 +1471,7 @@ void analysis::LLVMUniformVectorization::Translation::vectorize(llvm::Instructio
 	}
 
 	assert(found && before);
-	const llvm::Type *tyInt32 = llvm::Type::getInt32Ty(F->getContext());
+	llvm::IntegerType *tyInt32 = llvm::Type::getInt32Ty(F->getContext());
 	
 	if (ws_it->second.isVectorizable()) {
 		bool created = false;
@@ -1598,7 +1599,7 @@ bool analysis::LLVMUniformVectorization::Translation::vectorizeCall(
 			if (!funcIntrinsic) {
 				report("creating intrinsic type " << calleeName);
 				llvm::VectorType *vecType = llvm::VectorType::get(callInst->getType(), warpSize);
-				std::vector< const llvm::Type *> args;
+				std::vector< llvm::Type *> args;
 				args.push_back(vecType);
 				llvm::FunctionType *funcType = llvm::FunctionType::get(vecType, args, false);
 				funcIntrinsic = llvm::Function::Create(funcType, 
@@ -1621,8 +1622,7 @@ bool analysis::LLVMUniformVectorization::Translation::vectorizeCall(
 	report("  vectorizing call to function type " << funcIntrinsic << " with " << args.size() << " arguments");
 
 	std::string name = callInst->getNameStr() + ".vec.";
-	llvm::CallInst *vecCallInst = llvm::CallInst::Create(funcIntrinsic, args.begin(), args.end(), 
-		name, before);
+	llvm::CallInst *vecCallInst = llvm::CallInst::Create(funcIntrinsic, args, name, before);
 	vecInstr.vector = vecCallInst;
 	return true;
 }
@@ -1642,7 +1642,7 @@ bool analysis::LLVMUniformVectorization::Translation::vectorizePhiNode(
 	// phi nodes are special little creatures
 	std::string name = phiNode->getNameStr() + ".vec.";
 	llvm::VectorType *vecType = llvm::VectorType::get(phiNode->getType(), warpSize);
-	llvm::PHINode *vecPhi = llvm::PHINode::Create(vecType, name, before);
+	llvm::PHINode *vecPhi = llvm::PHINode::Create(vecType, phiNode->getNumIncomingValues(), name, before);
 	
 	vecInstr.vector = vecPhi;
 	
@@ -1735,13 +1735,12 @@ void analysis::LLVMUniformVectorization::Translation::updateSubkernelEntries() {
 	assert(threadLocalArguments.localPointer[0]);
 	
 	// get the warp entry ID from one of the thread's resume point
-	const llvm::IntegerType *int32Ty = pass->getTyInt(32);
+	llvm::IntegerType *int32Ty = pass->getTyInt(32);
 	std::vector<llvm::Value *> idx;
 	idx.push_back(llvm::ConstantInt::get(int32Ty, 4));
 	llvm::GetElementPtrInst *gempInst = llvm::GetElementPtrInst::Create(
 		threadLocalArguments.localPointer[0], 
-		idx.begin(),
-		idx.end(),
+		idx,
 		"ptr", 
 		schedulerBlock);
 		

@@ -18,8 +18,8 @@
 
 #ifdef HAVE_LLVM
 #include <llvm/Target/TargetSelect.h>
-#include <llvm/ExecutionEngine/ExecutionEngine.h>
 #include <llvm/ExecutionEngine/JIT.h> 
+#include <llvm/ExecutionEngine/ExecutionEngine.h>
 #include <llvm/LLVMContext.h>
 #include <llvm/Module.h>
 #endif
@@ -29,7 +29,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 namespace executive
 {
@@ -51,13 +51,22 @@ llvm::ExecutionEngine* LLVMState::StateWrapper::jit()
 	{
 		report("Bringing the LLVM JIT-Compiler online.");
 
-		_module = new llvm::Module("Ocelot-LLVM-JIT-Blank Module", 
-			llvm::getGlobalContext());
+		_module = new llvm::Module("Ocelot-LLVM-JIT-Blank Module", llvm::getGlobalContext());
 		assertM(_module != 0, "Creating global module failed.");
 	
 		llvm::InitializeNativeTarget();
 		
-		_jit = llvm::EngineBuilder(_module).create();
+		report("  initialized native target");
+		
+		//_jit = llvm::EngineBuilder(_module).create();
+		std::string errorString;
+		_jit = llvm::ExecutionEngine::createJIT(_module, &errorString);
+		if (!_jit) {
+			std::cerr << "Failed to create JIT: " << errorString << std::endl;
+		}
+		
+		report("  created engine builder");
+		
 		_jit->DisableLazyCompilation(true);
 	
 		assertM(_jit != 0, "Creating the JIT failed.");

@@ -35,6 +35,7 @@
 #include <llvm/Transforms/Scalar.h>
 #include <llvm/PassManager.h>
 #include <llvm/Target/TargetData.h>
+#include <llvm/ExecutionEngine/JIT.h>
 #include <llvm/ExecutionEngine/ExecutionEngine.h>
 #include <llvm/Assembly/Parser.h>
 #include <llvm/Analysis/Verifier.h>

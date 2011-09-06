@@ -32,6 +32,7 @@
 #include <llvm/Transforms/Scalar.h>
 #include <llvm/PassManager.h>
 #include <llvm/Target/TargetData.h>
+#include <llvm/ExecutionEngine/JIT.h>
 #include <llvm/ExecutionEngine/ExecutionEngine.h>
 #include <llvm/Assembly/Parser.h>
 #include <llvm/Analysis/Verifier.h>
@@ -57,7 +58,7 @@
 #define REPORT_PTX_SUBKERNELS 0
 
 #define REPORT_LLVM_MASTER 1							// master toggle for reporting LLVM kernels
-#define REPORT_SOURCE_LLVM_ASSEMBLY 0			// assembly output of translator
+#define REPORT_SOURCE_LLVM_ASSEMBLY 1			// assembly output of translator
 #define REPORT_ALL_LLVM_ASSEMBLY 0				// turns on LLOVM assembly at each state
 #define REPORT_OPTIMIZED_LLVM_ASSEMBLY 1	// final output of LLVM translation and optimization
 #define REPORT_LLVM_VERIFY_FAILURE 1			// emit assembly if verification fails
@@ -66,7 +67,7 @@
 
 #define REPORT_TRANSLATIONS 0
 
-#define REPORT_BASE 0
+#define REPORT_BASE 1
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1269,6 +1270,11 @@ static void cloneAndOptimizeTranslation(
 	translation->llvmFunction = llvm::CloneFunction(translatedKernel.scalarTranslation);
 	translation->llvmFunction->setName(ss.str());
 	translation->llvmFunction->setLinkage(llvm::GlobalValue::InternalLinkage);
+	
+	std::cerr << "Cloned function:\n";
+	translation->llvmFunction->dump();
+	std::cerr << std::endl;
+	
 	translatedKernel.kernelModule->getFunctionList().push_back(translation->llvmFunction);
 	
 	analysis::KernelPartitioningPass::EntryIdBlockLabelMap labelMap;

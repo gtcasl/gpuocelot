@@ -8647,8 +8647,8 @@ namespace translator
 		_llvmKernel->_statements.push_front( atom );
 		atom.label = "llvm.atomic.load.umax.i32.p0i32";
 		_llvmKernel->_statements.push_front( atom );
-		atom.label = "llvm.atomic.load.min.i32.p0i32";
-		_llvmKernel->_statements.push_front( atom );
+		//atom.label = "llvm.atomic.load.min.i32.p0i32";
+		//_llvmKernel->_statements.push_front( atom );
 		atom.label = "llvm.atomic.swap.i32.p0i32";
 		_llvmKernel->_statements.push_front( atom );
 
@@ -8672,8 +8672,8 @@ namespace translator
 		_llvmKernel->_statements.push_front( atom );
 		atom.label = "llvm.atomic.load.umax.i64.p0i64";
 		_llvmKernel->_statements.push_front( atom );
-		atom.label = "llvm.atomic.load.min.i64.p0i64";
-		_llvmKernel->_statements.push_front( atom );
+		//atom.label = "llvm.atomic.load.min.i64.p0i64";
+		//_llvmKernel->_statements.push_front( atom );
 		atom.label = "llvm.atomic.swap.i64.p0i64";
 		_llvmKernel->_statements.push_front( atom );
 

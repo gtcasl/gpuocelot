@@ -152,6 +152,8 @@ namespace trace
 			*/
 			virtual void event(const TraceEvent& event);
 			
+			virtual void postEvent(const TraceEvent& event);
+
 			/*!  \brief Called when a kernel is finished. There will be no more 
 					events for this kernel.
 			*/

@@ -102,6 +102,22 @@ namespace ir
 		return *this;
 	}
 	
+	
+	/*! \brief Get the address space of the global */
+	PTXInstruction::AddressSpace Global::space() const {
+		// todo fix this
+		switch (statement.directive) {
+			case ir::PTXStatement::Local:
+				return PTXInstruction::Local;
+			case ir::PTXStatement::Shared:
+				return PTXInstruction::Shared;
+			case ir::PTXStatement::Global:	// fall through
+			default:
+				break;			
+		}
+		return PTXInstruction::Global;
+	}
+	
 	const std::string& Global::name() const
 	{
 		return statement.name;

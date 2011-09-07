@@ -742,7 +742,10 @@ cudaError_t cuda::CudaRuntime::cudaMalloc(void **devPtr, size_t size) {
 	if(!_inExecute)
 	{
 		_acquire();
-		if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
+		if (_devices.empty()) {
+			 _executingMutex.unlock();
+			return _setLastError(cudaErrorNoDevice);
+		}
 	}
 		
 	try {
@@ -1929,12 +1932,24 @@ cudaError_t cuda::CudaRuntime::cudaMemcpy3DAsync(const struct cudaMemcpy3DParms 
 
 cudaError_t cuda::CudaRuntime::cudaMemset(void *devPtr, int value, size_t count) {
 	cudaError_t result = cudaErrorInvalidDevicePointer;
-	
-	_acquire();
-	if (_devices.empty()) return _setLastError(cudaErrorNoDevice);
+
+	 _executingMutex.lock();
+
+	if(!_inExecute)
+	{
+		_acquire();
+		if (_devices.empty()) {
+			 _executingMutex.unlock();
+			return _setLastError(cudaErrorNoDevice);
+		}
+	}
 	
 	if (!_getDevice().checkMemoryAccess(devPtr, count)) {
-		_release();
+		if(!_inExecute)
+		{
+			 _executingMutex.unlock();
+			_release();
+		}
 		_memoryError(devPtr, count, "cudaMemset");
 	}
 	
@@ -1946,7 +1961,12 @@ cudaError_t cuda::CudaRuntime::cudaMemset(void *devPtr, int value, size_t count)
 	allocation->memset(offset, value, count);
 	result = cudaSuccess;
 	
-	_release();
+	if(!_inExecute)
+	{
+		_release();
+	}
+	
+	_executingMutex.unlock();
 	
 	return _setLastError(result);
 }

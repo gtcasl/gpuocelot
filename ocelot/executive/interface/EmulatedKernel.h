@@ -86,10 +86,17 @@ namespace executive {
 		/*!	Maps identifiers to global memory allocations. */
 		void initializeGlobalMemory();
 		
+	public:
 		/*! Lazily sets the target of a call instruction to the entry point
 			of the specified function.  This function will be inserted into
 			the instruction sequence if it does not already exist */
 		void lazyLink(int callPC, const std::string& functionName);
+
+		/*! Code that was linked in still uses absolute branch targets, they
+			need to be updated now that the code is located in a different
+			place.
+		*/
+		void fixBranchTargets(size_t newPC);
 
 		/*! Looks up a named function in the module and inserts it into the
 			instruction stream if it does not exist.  Returns the PC of the
@@ -102,6 +109,7 @@ namespace executive {
 		/*! If the kernel is executing, jump to the specified PC */
 		void jumpToPC(int PC);
 
+	public:
 		/* Get a snapshot of the current register file */
 		RegisterFile getCurrentRegisterFile() const;
 
@@ -120,8 +128,17 @@ namespace executive {
 		/* Get the argument memory size of the current frame */
 		unsigned int getCurrentFrameArgumentMemorySize() const;
 
+		/* Get the local memory size of the current frame */
+		unsigned int getCurrentFrameLocalMemorySize() const;
+
 		/* Get the parameter memory size of the current frame */
 		unsigned int getCurrentFrameParameterMemorySize() const;
+
+		/* Get a pointer to the base of stack memory for the specified thread */
+		const char* getStackBase(unsigned int threadId) const;
+
+		/* Get the total stack size for the specified thread */
+		unsigned int getTotalStackSize(unsigned int threadId) const;
 
 	protected:
 		/*! Cleans up the EmulatedKernel instance*/

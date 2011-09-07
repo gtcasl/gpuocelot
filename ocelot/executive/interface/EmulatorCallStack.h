@@ -61,6 +61,11 @@ class EmulatorCallStack
 			unsigned int localSize = 0, unsigned int globalLocalSize = 0,
 			unsigned int sharedSize = 0);
 	
+		/*! \brief Get a pointer to the base of the stack */
+		void* stackBase();
+		/*! \brief Get the total size of the stack */
+		unsigned int totalStackSize() const;
+		
 		/*! \brief Get a pointer to the base of the current stack frame */
 		void* stackFramePointer(unsigned int thread);
 		/*! \brief Get a pointer to the stack frame at the saved offset */

@@ -22,7 +22,7 @@
 #undef REPORT_BASE
 #endif
 
-#define REPORT_BASE 1
+#define REPORT_BASE 0
 #define REPORT_KERNEL_INSTRUCTIONS 0
 
 namespace trace
@@ -196,9 +196,9 @@ namespace trace
 							continue;
 						}
 					}
-					if( (ir::PTXU64)_kernel->getLocalMemory(thread) <= *address 
-						&& *address < (ir::PTXU64)_kernel->getLocalMemory(thread)
-						+ _local.extent )
+					if( (ir::PTXU64)_kernel->getStackBase(thread) <= *address 
+						&& *address < (ir::PTXU64)_kernel->getStackBase(thread)
+						+ (ir::PTXU64)_kernel->getTotalStackSize(thread))
 					{
 						++address;
 						continue;
@@ -677,6 +677,15 @@ namespace trace
 		{
 			if( checkInitialization )
 				_checkInstructions( event );
+		}
+	}
+
+	void MemoryChecker::postEvent( const TraceEvent& event )
+	{
+		if( event.instruction->opcode == ir::PTXInstruction::Call
+			|| event.instruction->opcode == ir::PTXInstruction::Ret )
+		{
+			_local.extent = _kernel->getCurrentFrameLocalMemorySize();
 		}
 	}
 	

@@ -49,6 +49,9 @@ namespace executive
 			globalAlignment, 0),
 		_globalLocalSize(align(globalLocalSize))
 	{
+		// Reserve 1MB so that the stack never gets realloced
+		_stack.reserve(1 << 20);
+	
 		_stackFrameSizes.push_back(align(initialFrameSize));
 		
 		_resizeSharedMemory(sharedSize);
@@ -64,6 +67,16 @@ namespace executive
 		assert(!_stack.empty());
 		return _stackBase(_stackPointer + align(3 * sizeof(unsigned int))
 			+ thread * stackFrameSize());
+	}
+
+	void* EmulatorCallStack::stackBase()
+	{
+		return _stackBase(0);
+	}
+
+	unsigned int EmulatorCallStack::totalStackSize() const
+	{
+		return _stackSize();
 	}
 
 	void* EmulatorCallStack::savedStackFramePointer(unsigned int thread)

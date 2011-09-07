@@ -594,7 +594,7 @@ void executive::EmulatedKernel::initializeLocalMemory() {
 		if (it->second.space == ir::PTXInstruction::Local) {
 			unsigned int offset;
 
-			report("Found local local variable " 
+			report("  found local local variable " 
 				<< it->second.name);
 			_computeOffset(it->second.statement(), 
 				offset, localOffset);						
@@ -620,7 +620,7 @@ void executive::EmulatedKernel::initializeLocalMemory() {
 						(instr.*operands[n]).isGlobalLocal = false;
 						(instr.*operands[n]).type = ir::PTXOperand::u64;
 						(instr.*operands[n]).imm_uint = l_it->second;
-						report("For instruction " << instr.toString() 
+						report("  for instruction " << instr.toString() 
 							<< ", mapping local label " << l_it->first 
 							<< " to " << l_it->second);
 					}
@@ -631,6 +631,7 @@ void executive::EmulatedKernel::initializeLocalMemory() {
 
 	// allocate local memory object
 	_localMemorySize = localOffset;
+	report(" Total local memory size " << _localMemorySize);
 }
 
 void executive::EmulatedKernel::initializeGlobalLocalMemory() {
@@ -826,6 +827,24 @@ void executive::EmulatedKernel::initializeGlobalMemory() {
 	}
 }
 
+void executive::EmulatedKernel::fixBranchTargets(size_t basePC) {
+	for (size_t pc = basePC; pc != instructions.size(); ++pc) {
+		ir::PTXInstruction& ptx = static_cast<ir::PTXInstruction&>(
+			instructions[pc]);
+		
+		ptx.pc = pc;
+		
+		if(ptx.opcode == ir::PTXInstruction::Bra
+			|| ptx.opcode == ir::PTXInstruction::Call
+			|| (ptx.opcode == ir::PTXInstruction::Mov
+				&& ptx.a.addressMode == ir::PTXOperand::FunctionName)) {
+			if(ptx.branchTargetInstruction != -1) {
+				ptx.branchTargetInstruction += basePC;
+			}
+		}
+	}
+}
+
 size_t executive::EmulatedKernel::link(const std::string& functionName) {
 	report("Getting PC for kernel '" << functionName << "'");
 	EmulatedKernel* kernel = static_cast<EmulatedKernel*>(
@@ -840,10 +859,14 @@ size_t executive::EmulatedKernel::link(const std::string& functionName) {
 		report(" linking kernel '" << functionName << "' at pc " << newPC);
 		kernelEntryPoints.insert(std::make_pair(newPC, kernel));
 		
+		kernel->updateGlobals();
+		
 		std::string name = functionName;
 		
 		instructions.insert(instructions.end(), kernel->instructions.begin(), 
 			kernel->instructions.end());
+		
+		fixBranchTargets(newPC);
 		
 		entryPoint = functionEntryPoints.insert(
 			std::make_pair(name, newPC)).first;
@@ -917,9 +940,27 @@ unsigned int
 }
 
 unsigned int
+	executive::EmulatedKernel::getCurrentFrameLocalMemorySize() const {
+	assert(CTA != 0);
+	return CTA->functionCallStack.localMemorySize();
+}
+
+unsigned int
 	executive::EmulatedKernel::getCurrentFrameParameterMemorySize() const {
 	assert(CTA != 0);
 	return CTA->functionCallStack.stackFrameSize();
+}
+
+const char* executive::EmulatedKernel::getStackBase(
+	unsigned int threadId) const {
+	assert(CTA != 0);
+	return (const char*)CTA->functionCallStack.stackBase();
+}
+
+unsigned int executive::EmulatedKernel::getTotalStackSize(
+	unsigned int threadId) const {
+	assert(CTA != 0);
+	return CTA->functionCallStack.totalStackSize();
 }
 
 void executive::EmulatedKernel::initializeStackMemory() {
